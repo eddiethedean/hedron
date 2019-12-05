@@ -1,6 +1,7 @@
 import pandas as pd
 import cluster_functions as cl
 
+
 class Cluster(pd.DataFrame):
     """Holds a pandas DataFrame with coordinate data"""
     def __init__(self, df, lat_header, lon_header, date_time_header, id_header):
@@ -40,7 +41,7 @@ class Cluster(pd.DataFrame):
 class SuperCluster(dict):
     """Holds multiple Cluster Objects"""
     def __init__(self, data):
-        """data if a dictionary of Cluster objects"""
+        """data is a dictionary of Cluster objects"""
         dict.__init__(self, data)
 
     def clusters(self):
@@ -69,6 +70,7 @@ class SuperCluster(dict):
 
     # TODO: to_xlsx method, stores each cluster in a tab. saves in xlsx file
 
+
 def convert_dict_to_super(cluster, d):
     if len(d)==0: return SuperCluster(dict())
     return SuperCluster({key:Cluster(df, cluster.lat_header, cluster.lon_header, cluster.date_time_header, cluster.id_header) for key, df in d.items()})
@@ -79,7 +81,7 @@ def main():
     df = pd.read_csv('test_coords.csv')
     # Check for headers
     if not {'Registration ID', 'Date Formatted', 'Latitude', 'Longitude'}.issubset(df.columns):
-        return 'Headers Missing'
+        return print('Headers Missing')
     # Remove duplicates
     df.drop_duplicates(['Registration ID', 'Date Formatted', 'Latitude', 'Longitude'], inplace=True)
 
