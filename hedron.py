@@ -40,10 +40,6 @@ class Cluster(pd.DataFrame):
 
 class SuperCluster(dict):
     """Holds multiple Cluster Objects"""
-    def __init__(self, data):
-        """data is a dictionary of Cluster objects"""
-        dict.__init__(self, data)
-
     def clusters(self):
         return self.values()
 
@@ -77,6 +73,16 @@ def convert_dict_to_super(cluster, d):
 
 
 def main():
+
+    def fix_df_dates(df, date_header):
+        df = df.copy()
+        df[date_header] = df[date_header].apply(fix_date)
+        df[date_header] = pd.to_datetime(df[date_header])
+        return df
+
+    def fix_date(date):
+        return date.split('(')[0]
+
     # Load data into DataFrame
     df = pd.read_csv('test_coords.csv')
     # Check for headers
@@ -100,17 +106,6 @@ def main():
 
     day_co = colocations.day_colocation_clusters()
     print(len(day_co))
-
-
-def fix_df_dates(df, date_header):
-    df = df.copy()
-    df[date_header] = df[date_header].apply(fix_date)
-    df[date_header] = pd.to_datetime(df[date_header])
-    return df
-
-
-def fix_date(date):
-    return date.split('(')[0]
 
 
 if __name__ == '__main__':
