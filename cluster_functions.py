@@ -1,11 +1,12 @@
 import pandas as pd
 
+
 def main():
     # Load data into DataFrame
     df = pd.read_csv('test_coords.csv')
     # Check for headers
     if not {'Registration ID', 'Date Formatted', 'Latitude', 'Longitude'}.issubset(df.columns):
-        return 'Headers Missing'
+        return print('Headers Missing')
 
     def fix_df_dates(df, date_header):
         df = df.copy()
@@ -35,11 +36,11 @@ def main():
     colocations = colocation_clusters(clusters, 'Registration ID')
 
     # Make colocation clusters from DataFrame
-    #all_at_once_colocations = colocation_cluster_coords(df, 'Latitude', 'Longitude', 'Registration ID', 3)
+    all_at_once_colocations = colocation_cluster_coords(df, 'Latitude', 'Longitude', 'Registration ID', 3)
 
     print(len(clusters))
     print(len(colocations))
-    #print(len(all_at_once_colocations))
+    print(len(all_at_once_colocations))
 
     day_co = day_colocations_clusters(colocations, 'day', 'Registration ID')
 
@@ -48,8 +49,6 @@ def main():
 
 def day_colocations_clusters(clusters, day_header, id_header):
     """Check each cluster for ids on same day"""
-    # future summary function output {key:day, ids counts}
-    # this function output all the metadata for each day colocation point
     out = dict()
     for key,df in clusters.items():
         day_co = day_colocations(df, day_header, id_header)
