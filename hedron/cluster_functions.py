@@ -3,46 +3,32 @@ import pandas as pd
 
 def main():
     # Load data into DataFrame
-    df = pd.read_csv('test_coords.csv')
+    ids = ['a','b','c','d','e','f']
+    dates = pd.to_datetime(['Dec 6, 2019 2:27:45 PM', 'Dec 6, 2019 2:27:45 PM', 'Dec 8, 2019 2:27:45 PM', 'Dec 8, 2019 2:27:45 PM', 'Dec 10, 2019 2:27:45 PM', 'Dec 11, 2019 2:27:45 PM'])
+    lats = [29.4259671, 29.42525, 29.4237056, 29.423606, 29.4239835, 29.4239835]
+    lons = [-98.4861419, -98.4860167, -98.4868973, -98.4860462, -98.4851705, -98.4851705]
+    df = pd.DataFrame({'ID':ids, 'Date':dates, 'Latitude':lats, 'Longitude':lons})
     # Check for headers
-    if not {'Registration ID', 'Date Formatted', 'Latitude', 'Longitude'}.issubset(df.columns):
+    if not {'ID', 'Date', 'Latitude', 'Longitude'}.issubset(df.columns):
         return print('Headers Missing')
 
-    def fix_df_dates(df, date_header):
-        df = df.copy()
-        df[date_header] = df[date_header].apply(fix_date)
-        df[date_header] = pd.to_datetime(df[date_header])
-        return df
-
-    def fix_date(date):
-        return date.split('(')[0]
-
-    def to_date(date_time):
-        return date_time.date()
-
-    # Remove duplicates
-    df.drop_duplicates(['Registration ID', 'Date Formatted', 'Latitude', 'Longitude'], inplace=True)
-
-    # Fix dates
-    df = fix_df_dates(df, 'Date Formatted')
-
     # Add day column
-    df['day'] = df['Date Formatted'].apply(to_date)
+    df['day'] = df['Date'].apply(to_date)
 
     # Make coordinate clusters
     clusters = cluster_coords(df, 'Latitude', 'Longitude', 3)
 
     # Filter clusters to colocation clusters
-    colocations = colocation_clusters(clusters, 'Registration ID')
+    colocations = colocation_clusters(clusters, 'ID')
 
     # Make colocation clusters from DataFrame
-    all_at_once_colocations = colocation_cluster_coords(df, 'Latitude', 'Longitude', 'Registration ID', 3)
+    all_at_once_colocations = colocation_cluster_coords(df, 'Latitude', 'Longitude', 'ID', 3)
 
     print(len(clusters))
     print(len(colocations))
     print(len(all_at_once_colocations))
 
-    day_co = day_colocations_clusters(colocations, 'day', 'Registration ID')
+    day_co = day_colocations_clusters(colocations, 'day', 'ID')
 
     print(len(day_co))
 
