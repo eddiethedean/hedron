@@ -1,5 +1,5 @@
 import pandas as pd
-import cluster_functions as cl
+from . import cluster_functions as cl
 
 
 class Cluster(pd.DataFrame):
