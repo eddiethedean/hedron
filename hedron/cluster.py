@@ -149,32 +149,3 @@ class SuperCluster(dict):
 def convert_dict_to_super(cluster, d):
     if len(d)==0: return SuperCluster(dict())
     return SuperCluster({key:Cluster(df, cluster.lat_header, cluster.lon_header, cluster.date_time_header, cluster.id_header) for key, df in d.items()})
-
-
-def main():
-    # Load data into DataFrame
-    ids = ['a','b','c','d','e','f']
-    dates = pd.to_datetime(['Dec 6, 2019 2:27:45 PM', 'Dec 6, 2019 2:27:45 PM', 'Dec 8, 2019 2:27:45 PM', 'Dec 8, 2019 2:27:45 PM', 'Dec 10, 2019 2:27:45 PM', 'Dec 11, 2019 2:27:45 PM'])
-    lats = [29.4259671, 29.42525, 29.4237056, 29.423606, 29.4239835, 29.4239835]
-    lons = [-98.4861419, -98.4860167, -98.4868973, -98.4860462, -98.4851705, -98.4851705]
-    df = pd.DataFrame({'ID':ids, 'Date':dates, 'Latitude':lats, 'Longitude':lons})
-    # Check for headers
-    if not {'ID', 'Date', 'Latitude', 'Longitude'}.issubset(df.columns):
-        return print('Headers Missing')
-
-    c = Cluster(df, lat_header='Latitude', lon_header='Longitude', date_time_header='Date', id_header='ID')
-
-    # Make coordinate clusters
-    clusters = c.make_clusters(3)
-    print(len(clusters))
-
-    # Filter clusters to colocation clusters
-    colocations = clusters.colocation_clusters()
-    print(len(colocations))
-
-    day_co = colocations.day_colocation_clusters()
-    print(len(day_co))
-
-
-if __name__ == '__main__':
-    main()
