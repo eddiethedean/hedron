@@ -1,2 +1,3 @@
-import hedron as hd
+import pandas as pd
+from hedron import hedron as hd
 
