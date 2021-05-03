@@ -1,2 +1,2 @@
 from .cluster import Cluster, SuperCluster
-from hedron import cluster_functions
+import cluster_functions

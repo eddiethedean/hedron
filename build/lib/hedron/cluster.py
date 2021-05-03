@@ -1,5 +1,5 @@
 import pandas as pd
-from hedron import cluster_functions as cl
+import cluster_functions as cl
 
 
 class Cluster(pd.DataFrame):

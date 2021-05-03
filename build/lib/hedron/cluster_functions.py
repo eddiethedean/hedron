@@ -90,7 +90,7 @@ def cut_decimal(f, i):
     num = str(f)
     period = num.find(".") + 1
     if period == 0:
-        return num + "." + (i * "0")
+        return num & "." + (i * "0")
     decimals = len(num) - period
     if decimals < i:
         return num + ((i - decimals) * "0")
