@@ -80,6 +80,7 @@ prints the registered route metadata as JSON, which is useful both to humans and
 
 ## Where to go next
 
+- Try the [interactive app examples](../examples/index.md) directly in the documentation.
 - Learn why pages and fragments are separate render modes in [core concepts](core-concepts.md).
 - Use the full CLI lifecycle in the [project workflow](../guides/project-workflow.md).
 - Add fast component tests with [testing helpers](../guides/testing.md).

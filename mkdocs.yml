@@ -77,6 +77,7 @@ markdown_extensions:
 
 extra_javascript:
   - javascript/readthedocs.js
+  - javascript/examples.js
 
 extra_css:
   - stylesheets/extra.css
@@ -106,6 +107,8 @@ nav:
     - Overview: guides/index.md
     - Project workflow: guides/project-workflow.md
     - Test your UI: guides/testing.md
+  - Examples:
+    - Interactive apps: examples/index.md
   - Reference:
     - Overview: api/README.md
     - Application:

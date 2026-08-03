@@ -304,3 +304,400 @@ a.hedron-card:hover {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Interactive application examples */
+.sr-only {
+  border: 0 !important;
+  clip: rect(0, 0, 0, 0) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  white-space: nowrap !important;
+  width: 1px !important;
+}
+
+.hedron-demo {
+  --demo-bg: #f5f7fa;
+  --demo-panel: #ffffff;
+  --demo-nav: #102a3a;
+  --demo-text: #183144;
+  --demo-muted: #6a7c89;
+  --demo-line: #dde5ea;
+  --demo-teal: #0d9488;
+  background: var(--demo-bg);
+  border: 1px solid var(--hedron-border);
+  border-radius: 0.9rem;
+  box-shadow: 0 24px 65px rgba(9, 31, 45, 0.14);
+  color: var(--demo-text);
+  font-size: 0.72rem;
+  margin: 1.6rem 0 2.6rem;
+  overflow: hidden;
+}
+
+[data-md-color-scheme="slate"] .hedron-demo {
+  --demo-bg: #0d1922;
+  --demo-panel: #13232e;
+  --demo-nav: #08151d;
+  --demo-text: #e8f2f6;
+  --demo-muted: #9cb0bc;
+  --demo-line: #29404d;
+}
+
+.hedron-demo button,
+.hedron-demo input,
+.hedron-demo select {
+  font: inherit;
+}
+
+.hedron-demo__chrome {
+  align-items: center;
+  background: #e8edf1;
+  border-bottom: 1px solid #d5dfe5;
+  display: flex;
+  gap: 0.35rem;
+  height: 2.15rem;
+  padding: 0 0.75rem;
+}
+
+[data-md-color-scheme="slate"] .hedron-demo__chrome {
+  background: #101d26;
+  border-bottom-color: #263a46;
+}
+
+.hedron-demo__chrome > span {
+  background: #a9b7c0;
+  border-radius: 50%;
+  height: 0.45rem;
+  width: 0.45rem;
+}
+
+.hedron-demo__chrome > span:first-child { background: #f4756b; }
+.hedron-demo__chrome > span:nth-child(2) { background: #eab953; }
+.hedron-demo__chrome > span:nth-child(3) { background: #53bd79; }
+
+.hedron-demo__address {
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 0.35rem;
+  color: #627581;
+  font-size: 0.57rem;
+  margin: 0 auto;
+  padding: 0.28rem 1rem;
+  text-align: center;
+  width: min(25rem, 58%);
+}
+
+[data-md-color-scheme="slate"] .hedron-demo__address {
+  background: rgba(255, 255, 255, 0.06);
+  color: #8fa5b2;
+}
+
+.hedron-app-shell,
+.hedron-explorer-shell {
+  display: grid;
+  grid-template-columns: 10.5rem minmax(0, 1fr);
+  min-height: 34rem;
+}
+
+.hedron-app-nav,
+.hedron-explorer-nav {
+  background: var(--demo-nav);
+  color: #afc0ca;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0.75rem;
+}
+
+.hedron-app-brand {
+  align-items: center;
+  color: #f5fbfd;
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 750;
+  gap: 0.5rem;
+  margin: 0 0.4rem 1.5rem;
+}
+
+.hedron-app-brand img {
+  height: 1.2rem;
+  width: 1.2rem;
+}
+
+.hedron-app-nav nav {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.hedron-app-nav nav a {
+  align-items: center;
+  border-radius: 0.38rem;
+  color: #9fb2bd;
+  display: flex;
+  gap: 0.55rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.hedron-app-nav nav a:hover,
+.hedron-app-nav nav a.is-active {
+  background: rgba(94, 234, 212, 0.1);
+  color: #eefbfb;
+}
+
+.hedron-app-nav nav a.is-active {
+  box-shadow: inset 2px 0 #5eead4;
+}
+
+.hedron-app-user {
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding: 0.85rem 0.25rem 0;
+}
+
+.hedron-app-user > span {
+  align-items: center;
+  background: #226b72;
+  border-radius: 50%;
+  color: white;
+  display: inline-flex;
+  height: 1.65rem;
+  justify-content: center;
+  width: 1.65rem;
+}
+
+.hedron-app-user strong,
+.hedron-app-user small {
+  display: block;
+  line-height: 1.35;
+}
+
+.hedron-app-user strong { color: #e8f2f6; }
+.hedron-app-user small { color: #7f96a3; font-size: 0.52rem; }
+
+.hedron-app-main,
+.hedron-explorer-main {
+  background: var(--demo-bg);
+  padding: 1.65rem;
+}
+
+.hedron-app-heading,
+.hedron-explorer-heading {
+  align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.hedron-app-kicker {
+  color: var(--demo-teal);
+  display: block;
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+}
+
+.hedron-demo h2,
+.hedron-demo h3 {
+  color: var(--demo-text);
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.hedron-demo h2 { font-size: 1.35rem; }
+.hedron-demo h3 { font-size: 0.85rem; }
+
+.hedron-app-heading p,
+.hedron-app-toolbar p,
+.hedron-preview-canvas p,
+.hedron-explorer-panel > p {
+  color: var(--demo-muted);
+  margin: 0.18rem 0 0;
+}
+
+.hedron-ui-button {
+  background: var(--demo-panel);
+  border: 1px solid var(--demo-line);
+  border-radius: 0.38rem;
+  color: var(--demo-text);
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0.48rem 0.75rem;
+}
+
+.hedron-ui-button:hover { border-color: var(--demo-teal); }
+.hedron-ui-button--primary { background: var(--demo-teal); border-color: var(--demo-teal); color: white; }
+
+.hedron-app-metrics {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 1.25rem 0;
+}
+
+.hedron-app-metrics > div {
+  background: var(--demo-panel);
+  border: 1px solid var(--demo-line);
+  border-radius: 0.5rem;
+  display: grid;
+  padding: 0.8rem;
+}
+
+.hedron-app-metrics span { color: var(--demo-muted); font-size: 0.58rem; }
+.hedron-app-metrics strong { color: var(--demo-text); font-size: 1.2rem; line-height: 1.4; }
+.hedron-app-metrics small { color: var(--demo-muted); font-size: 0.52rem; }
+
+.hedron-app-panel {
+  background: var(--demo-panel);
+  border: 1px solid var(--demo-line);
+  border-radius: 0.55rem;
+  overflow: hidden;
+}
+
+.hedron-app-toolbar {
+  align-items: center;
+  border-bottom: 1px solid var(--demo-line);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+}
+
+.hedron-demo-search {
+  align-items: center;
+  background: var(--demo-bg);
+  border: 1px solid var(--demo-line);
+  border-radius: 0.35rem;
+  color: var(--demo-muted);
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.hedron-demo-search:focus-within { border-color: var(--demo-teal); box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.14); }
+.hedron-demo-search input { background: transparent; border: 0; color: var(--demo-text); outline: 0; width: 7rem; }
+
+.hedron-demo-table-wrap { overflow-x: auto; }
+.hedron-demo table { border-collapse: collapse; display: table; font-size: 0.61rem; margin: 0; width: 100%; }
+.hedron-demo th { background: transparent; color: var(--demo-muted); font-size: 0.5rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.hedron-demo th,
+.hedron-demo td { border-bottom: 1px solid var(--demo-line); padding: 0.65rem 0.8rem; text-align: left; vertical-align: middle; }
+.hedron-demo tbody tr:last-child td { border-bottom: 0; }
+.hedron-demo td:first-child { align-items: center; display: flex; gap: 0.5rem; }
+
+.hedron-avatar {
+  align-items: center;
+  background: #7656c8;
+  border-radius: 50%;
+  color: white;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.5rem;
+  font-weight: 800;
+  height: 1.55rem;
+  justify-content: center;
+  width: 1.55rem;
+}
+
+.hedron-avatar--blue { background: #3376b8; }
+.hedron-avatar--amber { background: #b9782f; }
+.hedron-avatar--teal { background: #178b82; }
+
+.hedron-role,
+.hedron-status,
+.hedron-stable-pill,
+.hedron-method,
+.hedron-ok {
+  background: rgba(13, 148, 136, 0.12);
+  border-radius: 99px;
+  color: #08766e;
+  display: inline-block;
+  font-size: 0.5rem;
+  font-weight: 750;
+  padding: 0.18rem 0.4rem;
+}
+
+[data-md-color-scheme="slate"] .hedron-role,
+[data-md-color-scheme="slate"] .hedron-status,
+[data-md-color-scheme="slate"] .hedron-stable-pill,
+[data-md-color-scheme="slate"] .hedron-ok { color: #62dfd3; }
+
+.hedron-role--muted { background: rgba(106, 124, 137, 0.12); color: var(--demo-muted); }
+.hedron-status::before { background: #13a36f; border-radius: 50%; content: ""; display: inline-block; height: 0.3rem; margin-right: 0.25rem; width: 0.3rem; }
+.hedron-demo-empty { color: var(--demo-muted); padding: 1rem; text-align: center; }
+
+.hedron-demo-dialog {
+  background: var(--demo-panel);
+  border: 1px solid var(--demo-line);
+  border-radius: 0.65rem;
+  box-shadow: 0 24px 70px rgba(4, 20, 30, 0.3);
+  color: var(--demo-text);
+  max-width: min(24rem, calc(100vw - 2rem));
+  padding: 1.2rem;
+  width: 100%;
+}
+
+.hedron-demo-dialog::backdrop { background: rgba(4, 20, 30, 0.7); backdrop-filter: blur(3px); }
+.hedron-demo-dialog form { display: grid; gap: 0.75rem; }
+.hedron-dialog-heading { align-items: flex-start; display: flex; justify-content: space-between; }
+.hedron-dialog-close { background: transparent; border: 0; color: var(--demo-muted); cursor: pointer; font-size: 1.2rem; }
+.hedron-demo-dialog label { color: var(--demo-text); display: grid; font-size: 0.6rem; font-weight: 700; gap: 0.28rem; }
+.hedron-demo-dialog input,
+.hedron-demo-dialog select { background: var(--demo-bg); border: 1px solid var(--demo-line); border-radius: 0.35rem; color: var(--demo-text); padding: 0.48rem; }
+.hedron-demo-dialog input:focus,
+.hedron-demo-dialog select:focus { border-color: var(--demo-teal); outline: 2px solid rgba(13, 148, 136, 0.15); }
+.hedron-dialog-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.35rem; }
+
+.hedron-explorer-shell { grid-template-columns: 11rem minmax(0, 1fr); min-height: 28rem; }
+.hedron-explorer-nav small { color: #69818f; font-size: 0.48rem; font-weight: 800; letter-spacing: 0.1em; margin: 0 0.4rem 0.4rem; }
+.hedron-explorer-item { background: transparent; border-radius: 0.35rem; color: #91a7b3; display: flex; justify-content: space-between; padding: 0.45rem 0.55rem; }
+.hedron-explorer-item.is-selected { background: rgba(94, 234, 212, 0.1); color: white; }
+.hedron-explorer-heading { border-bottom: 1px solid var(--demo-line); padding-bottom: 1rem; }
+.hedron-demo-tabs { border-bottom: 1px solid var(--demo-line); display: flex; gap: 1rem; margin-top: 0.6rem; }
+.hedron-demo-tabs button { background: transparent; border: 0; border-bottom: 2px solid transparent; color: var(--demo-muted); cursor: pointer; padding: 0.6rem 0.15rem 0.5rem; }
+.hedron-demo-tabs button[aria-selected="true"] { border-bottom-color: var(--demo-teal); color: var(--demo-text); font-weight: 750; }
+.hedron-explorer-panel { padding-top: 1rem; }
+
+.hedron-preview-canvas {
+  align-items: center;
+  background-image: radial-gradient(var(--demo-line) 0.6px, transparent 0.6px);
+  background-size: 10px 10px;
+  border: 1px solid var(--demo-line);
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  min-height: 10rem;
+  padding: 1rem;
+}
+
+.hedron-preview-canvas article { align-items: center; background: var(--demo-panel); border: 1px solid var(--demo-line); border-radius: 0.5rem; box-shadow: 0 10px 30px rgba(4, 20, 30, 0.1); display: flex; gap: 0.65rem; padding: 0.8rem; width: min(19rem, 90%); }
+.hedron-preview-canvas article > div { flex: 1; }
+.hedron-preview-canvas p { font-size: 0.55rem; }
+.hedron-explorer-facts { display: grid; gap: 0.6rem; grid-template-columns: repeat(3, 1fr); margin-top: 0.75rem; }
+.hedron-explorer-facts > div { background: var(--demo-panel); border: 1px solid var(--demo-line); border-radius: 0.4rem; display: grid; padding: 0.6rem; }
+.hedron-explorer-facts span { color: var(--demo-muted); font-size: 0.5rem; }
+.hedron-explorer-facts strong { color: var(--demo-text); font-size: 0.68rem; }
+.hedron-explorer-facts strong.is-clean { color: var(--demo-teal); }
+.hedron-request-line { align-items: center; background: var(--demo-panel); border: 1px solid var(--demo-line); border-radius: 0.45rem; display: flex; gap: 0.6rem; padding: 0.75rem; }
+.hedron-method { background: rgba(51, 118, 184, 0.15); color: #3376b8; }
+.hedron-ok { margin-left: auto; }
+.hedron-explorer-panel pre { border: 1px solid var(--demo-line); border-radius: 0.45rem; margin-top: 0.65rem; }
+
+@media screen and (max-width: 50em) {
+  .hedron-app-shell,
+  .hedron-explorer-shell { grid-template-columns: 1fr; }
+  .hedron-app-nav,
+  .hedron-explorer-nav { display: none; }
+  .hedron-app-main,
+  .hedron-explorer-main { padding: 1rem; }
+  .hedron-app-metrics { grid-template-columns: 1fr; }
+  .hedron-app-heading,
+  .hedron-app-toolbar { align-items: stretch; flex-direction: column; }
+  .hedron-demo-search input { width: 100%; }
+  .hedron-explorer-facts { grid-template-columns: 1fr; }
+  .hedron-demo__address { width: 72%; }
+}

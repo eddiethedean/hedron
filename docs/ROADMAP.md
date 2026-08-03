@@ -89,7 +89,8 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - HDN grammar, parser, portable expression engine, type checking, render-program compilation, formatter, diagnostics, and source maps.
 - `inspect` and `eject` workflows for built-in component templates.
 - Scoped CSS AST compiler, typed style symbols, keyframe scoping, explicit globals, variants, cascade layers, and token contracts.
-- Theme registration, light/dark modes, accessible tokens, and application override layers.
+- Theme registration, light/dark **token modes**, accessible tokens, and application override layers
+  (system `prefers-color-scheme` and `data-theme` selectors; no first-party toggle UI yet).
 - Fingerprinted asset pipeline, component-relative assets, external CSP-compatible bundles, and offline production manifests.
 - Component-folder discovery for templates, styles, examples, tests, documentation, and registered browser modules.
 - Web Component registration, typed custom-event contracts, light-versus-Shadow-DOM policy, and lifecycle-safe behavior across HTMX swaps.
@@ -136,10 +137,14 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - Server-authoritative writable-field policy, CSRF, authorization, audit hooks, bounded queries, and private caching.
 - `cache_data`, `cache_component`, explicit invalidation tags/versioning, single-flight behavior, scope metadata, and Explorer cache traces.
 - `Metric`, `FileUpload`, `DownloadButton`, `CodeViewer`, `JSONViewer`, `Progress`, `Status`, `Toast`, `Expander`, `Tabs`, `Sidebar`, and explicit `Grid` components.
+- First-party **light/dark styling controls**: `ColorMode` / theme-mode API, accessible toggle UI,
+  preference persistence (cookie/session/local with documented defaults), and explicit override of
+  system preference while keeping contrast, forced-colors, and reduced-motion contracts.
 
 ### Exit gate
 
 - The reference application securely edits a paged async dataset, handles validation and stale-update conflicts, and demonstrates intelligent rendering and utility components.
+- Light/dark styling can be switched from the reference UI without breaking scoped styles or accessibility contracts.
 - Forged writes, cache-scope leaks, unsafe uploads/downloads, inaccessible grid behavior, and implicit large-data collection are covered by acceptance tests.
 
 ## 0.6 — Visualization and first-party integrations (`v0.6.0`)
@@ -251,7 +256,8 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 | HDN formatter, diagnostics, source maps, compiled render programs | 0.3 | No Node.js requirement. |
 | `inspect` and `eject` customization workflow | 0.3 | Progressive control over built-ins. |
 | Scoped classes, keyframes, globals, variants, layers | 0.3 | AST-based deterministic CSS rewriting. |
-| Tokens, themes, light/dark modes, override layers | 0.3 | Accessible CSS-custom-property architecture. |
+| Tokens, themes, light/dark token modes, override layers | 0.3 | Accessible CSS-custom-property architecture; system preference + `data-theme`. |
+| Light/dark styling toggle, ColorMode API, preference persistence | 0.5 | First-party UI and explicit override of system preference. |
 | Fingerprinted assets, CSS URL rewriting, CSP/offline manifests | 0.3 | Production performs no required runtime compilation. |
 | Component folders with code, HDN, CSS, examples, tests, docs, browser modules | 0.3 | Colocated ownership with explicit discovery. |
 | Web Component registration, typed events, light/Shadow DOM policy | 0.3 | Browser-local interaction integrates safely with HTMX swaps. |
@@ -288,6 +294,7 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 | Cache decorators, scopes, invalidation, single flight, diagnostics | 0.5 | External backends for multi-worker durability. |
 | `Metric`, `FileUpload`, `DownloadButton`, `CodeViewer`, `JSONViewer` | 0.5 | Security, limits, escaping, and accessibility contracts included. |
 | `Progress`, `Status`, `Toast`, `Expander`, `Tabs`, `Sidebar`, `Grid` | 0.5 | Composition and semantic patterns rather than widget-centric layout. |
+| Light/dark styling controls and ColorMode preference persistence | 0.5 | Builds on 0.3 theme token modes; includes accessible toggle UI. |
 | `hedron-data` and Tabulator browser adapter package | 0.5 | Core remains free of dataframe and grid dependencies. |
 | SQLAlchemy/SQLModel source adapters | 0.6 | No automatic persistence or ORM ownership. |
 | AG Grid Community interoperability | 0.6 | Application API remains backend-neutral. |

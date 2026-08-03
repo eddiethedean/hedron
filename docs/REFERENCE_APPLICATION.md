@@ -2,6 +2,8 @@
 
 The first implementation is validated through a single coherent application rather than isolated demos.
 
+[Try the interactive team-admin and Explorer interfaces](examples/index.md){ .md-button .md-button--primary }
+
 ## Scenario
 
 An authenticated team administration application contains:

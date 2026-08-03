@@ -17,7 +17,7 @@ a JavaScript application stack.
 
 <div class="hedron-actions" markdown>
 [Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Explore the API](api/README.md){ .md-button }
+[Try the live examples](examples/index.md){ .md-button }
 </div>
 
 <div class="hedron-signal-row">
@@ -91,7 +91,7 @@ a JavaScript application stack.
 
 <div class="hedron-availability">
   <p><strong>Ready to try it?</strong><br>The flagship package includes pages, routing, security, state, CLI tooling, and testing helpers.</p>
-  <code>pip install hedron</code>
+  <p><code>pip install hedron</code> · <a href="examples/">Open interactive examples →</a></p>
 </div>
 
 ## Choose your path
