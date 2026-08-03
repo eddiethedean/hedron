@@ -4,9 +4,46 @@ version = "0.1.0"
 description = "Framework-neutral typed rendering core for Hedron"
 readme = "README.md"
 requires-python = ">=3.12,<3.15"
+authors = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+maintainers = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+keywords = [
+    "components",
+    "html",
+    "htmx",
+    "pydantic",
+    "rendering",
+    "server-rendered",
+    "typed",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
 dependencies = [
     "pydantic>=2.13.4,<2.14",
 ]
+# License metadata is intentionally unset until D-030 is resolved.
+# The release workflow refuses to publish without LICENSE + [project].license.
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/hedron"
+Repository = "https://github.com/eddiethedean/hedron"
+Issues = "https://github.com/eddiethedean/hedron/issues"
+Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-core/CHANGELOG.md"
+Documentation = "https://github.com/eddiethedean/hedron/tree/main/docs"
 
 [build-system]
 requires = ["hatchling"]
@@ -16,4 +53,9 @@ build-backend = "hatchling.build"
 packages = ["src/hedron_core"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/hedron_core", "README.md"]
+only-include = [
+    "src/hedron_core",
+    "README.md",
+    "CHANGELOG.md",
+    "pyproject.toml",
+]

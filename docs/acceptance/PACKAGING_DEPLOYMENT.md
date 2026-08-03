@@ -1,8 +1,16 @@
 # Packaging and deployment acceptance
 
+## Phase 0.1 (`v0.1.0`) subset
+
+- [x] `hedron-core` installs and imports without FastAPI, Flask, or Django.
+- [x] Wheel and sdist build with Hatchling; clean-install smoke renders a `Page`.
+- [x] Typed marker (`py.typed`), README, changelog, authors, classifiers, and project URLs ship with the distribution.
+- [ ] Root `LICENSE` and `[project].license` metadata are present (D-030; blocks public PyPI publish).
+- [x] Release workflow verifies tag/version/changelog sync and refuses publish without a license.
+
 ## Packages
 
-- [ ] `hedron-core` installs and imports without FastAPI, Flask, or Django.
+- [x] `hedron-core` installs and imports without FastAPI, Flask, or Django.
 - [ ] `hedron-flask` and `hedron-django` do not install FastAPI.
 - [ ] Optional integrations import lazily and publish compatibility ranges.
 - [ ] Wheels and source distributions contain typing metadata, HDN/CSS data, browser assets, and licenses.

@@ -21,7 +21,7 @@ No implementation may silently resolve a specification conflict. It must update 
 - [Vision](foundations/01_VISION.md), [philosophy](foundations/02_PHILOSOPHY.md), [design principles](foundations/03_DESIGN_PRINCIPLES.md), and [non-goals](foundations/04_NON_GOALS.md)
 - [Architecture](ARCHITECTURE.md), [decisions](DECISIONS.md), [glossary](GLOSSARY.md), [roadmap](../ROADMAP.md), and [project status](STATUS.md)
 - [Compatibility](COMPATIBILITY.md), [project layout](PROJECT_LAYOUT.md), [engineering baseline](ENGINEERING_BASELINE.md), [configuration](CONFIGURATION.md), [diagnostics](DIAGNOSTICS.md), and [identifiers](IDENTIFIERS.md)
-- [Reference application](REFERENCE_APPLICATION.md), [traceability](TRACEABILITY.md), [readiness report](READINESS_REPORT.md), and [contribution process](CONTRIBUTING.md)
+- [Reference application](REFERENCE_APPLICATION.md), [traceability](TRACEABILITY.md), [readiness report](READINESS_REPORT.md), [contribution process](CONTRIBUTING.md), and [cutting a release](RELEASE.md)
 - [Architecture RFCs](rfcs/README.md)
 - [Public API contracts](api/README.md)
 - [Implementation specifications](implementation/README.md)
@@ -37,6 +37,6 @@ Coding may begin when:
 - the relevant implementation and acceptance specifications exist;
 - open questions are either resolved or explicitly deferred without destabilizing the slice.
 
-The phase 0.0 readiness sweep has satisfied this gate for the phase 0.1 typed rendering core targeting `v0.1.0`. Later-phase work must still satisfy the owning release gate before implementation begins.
+The phase 0.0 readiness sweep has satisfied this gate for the phase 0.1 typed rendering core targeting `v0.1.0`. Phase 0.1 implementation is complete; cutting the public `v0.1.0` tag still requires license selection (D-030). See [RELEASE.md](RELEASE.md). Later-phase work must still satisfy the owning release gate before implementation begins.
 
 The cumulative [reference application](REFERENCE_APPLICATION.md) grows from the phase 0.1 (`v0.1.0`) static rendering proof into a secure FastAPI CRUD application with addressable resources, typed actions and forms, DataEditor, Plotly, scoped styles, and Component Explorer as their owning phases arrive.

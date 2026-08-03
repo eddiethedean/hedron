@@ -2,7 +2,7 @@
 
 Hedron is a Python-first framework for building typed, server-rendered component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web Components—without requiring Node.js.
 
-> **Project status:** Phase 0.1 is complete. The framework-neutral `hedron-core` package (`0.1.0`) can define, validate, compose, and safely render components without FastAPI. A harden pass closed residual XSS, Secret-redaction, FormField a11y, and model-guardrail defects on the same `0.1.0` line. The next milestone is phase 0.2, the secure FastAPI and HTMX application MVP, targeting `v0.2.0`. The flagship `hedron` FastAPI distribution is not published yet.
+> **Project status:** Phase 0.1 is complete. The framework-neutral `hedron-core` package (`0.1.0`) can define, validate, compose, and safely render components without FastAPI. A harden pass closed residual XSS, Secret-redaction, FormField a11y, and model-guardrail defects on the same `0.1.0` line. Cutting the public `v0.1.0` release is ready except for license selection (D-030). The next milestone is phase 0.2, the secure FastAPI and HTMX application MVP, targeting `v0.2.0`. The flagship `hedron` FastAPI distribution is not published yet.
 
 ## Product direction
 
@@ -77,6 +77,7 @@ The specification remains the authority for implementation:
 - [Implementation specifications](docs/implementation/README.md)
 - [Acceptance specifications](docs/acceptance/README.md)
 - [Compatibility policy](docs/COMPATIBILITY.md) and [engineering baseline](docs/ENGINEERING_BASELINE.md)
+- [Cutting a release](docs/RELEASE.md) (`v0.1.0` ready pending license selection)
 
 Accepted RFC and API status means the design has been selected; it does not mean every feature is implemented. Availability follows the roadmap phase.
 
