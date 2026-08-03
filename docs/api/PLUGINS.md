@@ -6,10 +6,6 @@ status: shipped
 
 **Status:** Accepted · **Shipped in 0.4**
 
-!!! note "Requires 0.4 / main"
-
-    Plugin loading and `hedron.plugins` entry points ship in **0.4.0**.
-
 Plugins declare an entry point in group `hedron.plugins` pointing at a callable that
 receives a `PluginContext`.
 

@@ -11,8 +11,7 @@ Hedron documentation separates **callable APIs that ship in this release** from
 
 ## Shipped in 0.4
 
-These surfaces are implemented on `main` at package version `0.4.0` (PyPI may still
-serve `0.3.0` — see [installation](../getting-started/installation.md)).
+These surfaces are implemented and published on the **0.4.0** train.
 
 ### Application
 

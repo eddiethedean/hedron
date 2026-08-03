@@ -7,10 +7,6 @@ Third-party-shaped sample Hedron plugin package for the **0.4** developer
 platform. Demonstrates a component (`Callout`), styles, asset, named example,
 Explorer panel, and diagnostic owner via the `hedron.plugins` entry point.
 
-> **Version note:** Requires Hedron **0.4+**. PyPI still serves Hedron **0.3.0**
-> until `v0.4.0` publishes — install Hedron from `main` when trying this kit
-> early. Docs: [hedron.readthedocs.io](https://hedron.readthedocs.io/en/latest/).
-
 ## Install
 
 ```bash

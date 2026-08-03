@@ -2,22 +2,16 @@
 
 Task-oriented guidance for moving from a working page to a maintainable Hedron project.
 
-!!! info "0.4-gated guides"
-
-    [Project workflow](project-workflow.md) and [Test your UI](testing.md) require
-    Hedron **0.4 / main**. Security, deployment, FAQ, and troubleshooting apply to both
-    published trains where noted.
-
 <div class="hedron-grid">
   <a class="hedron-card" href="project-workflow/">
     <span class="hedron-card__icon" aria-hidden="true">↗</span>
     <strong>Project workflow</strong>
-    <p>Scaffold, develop, inspect, check, and create a sealed production build (0.4+).</p>
+    <p>Scaffold, develop, inspect, check, and create a sealed production build.</p>
   </a>
   <a class="hedron-card" href="testing/">
     <span class="hedron-card__icon" aria-hidden="true">✓</span>
     <strong>Test your UI</strong>
-    <p>Render components directly, exercise HTMX fragments, and keep snapshots stable (0.4+).</p>
+    <p>Render components directly, exercise HTMX fragments, and keep snapshots stable.</p>
   </a>
   <a class="hedron-card" href="security/">
     <span class="hedron-card__icon" aria-hidden="true">◇</span>

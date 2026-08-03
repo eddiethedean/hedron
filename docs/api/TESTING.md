@@ -6,12 +6,6 @@ status: shipped
 
 **Status:** Accepted · **Shipped in 0.4**
 
-!!! warning "Requires 0.4 / main"
-
-    `from hedron.testing import ...` fails on PyPI **0.3.0**. See
-    [installation](../getting-started/installation.md) and the
-    [testing guide](../guides/testing.md).
-
 Import helpers from `hedron.testing`:
 
 | Helper | Signature (summary) | Purpose |

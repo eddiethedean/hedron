@@ -1,18 +1,12 @@
 # Troubleshooting
 
-## Install / version mismatches
+## Wrong or unexpected version
 
-**Symptom:** Docs mention CLI or `hedron.testing`, but commands/imports fail.
+**Symptom:** Features in the docs are missing from your install.
 
-**Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. If you see
-`0.3.0`, you are on PyPI. Either stay on the quickstart path or install **0.4** from
-`main` — [installation](../getting-started/installation.md).
-
-## `hedron new` then `uv lock` fails with unsatisfiable `hedron>=0.4.0`
-
-**Cause:** Scaffold targets 0.4 while PyPI only has 0.3.
-
-**Fix:** Install Hedron from git/`main` into the project, or wait for the PyPI publish.
+**Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
+`pip install -U hedron` (or `uv add hedron@latest`). The current published train is
+**0.4.0**. See [STATUS](../STATUS.md).
 
 ## CSRF 403 on POST
 
@@ -38,7 +32,7 @@ locally; use `secured` with auth in rare cases; keep production off.
 
 ## Cannot import `Auto` / `DataTable` / chart helpers
 
-**Cause:** Those APIs are planned, not shipped.
+**Cause:** Those APIs are planned, not shipped in 0.4.
 
 **Fix:** Use shipped built-ins and FastAPI endpoints. See
 [Planned contracts](../api/README.md#planned-contracts).
@@ -49,14 +43,7 @@ locally; use `secured` with auth in rare cases; keep production off.
 
 **Fix:** `from hedron_core import NodeLike` (or avoid naming it and return built-ins).
 
-## Duplicate component registration after `run_build` + app start
-
-**Cause:** Historical issue when builds left plugins registered in-process.
-
-**Fix:** Current 0.4 builds restore the registry after compilation. Upgrade to current
-`main` if you still see duplicates.
-
 ## Still stuck?
 
-Open a GitHub issue with Hedron version, install source (PyPI vs git), command/traceback,
-and whether `HEDRON_ENV` is set. Check [FAQ](faq.md) first.
+Open a GitHub issue with Hedron version, command/traceback, and whether `HEDRON_ENV` is
+set. Check [FAQ](faq.md) first.

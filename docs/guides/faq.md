@@ -1,15 +1,15 @@
 # FAQ
 
-## Why does `pip install hedron` give me 0.3.0 while the docs say 0.4?
+## Which version should I install?
 
-These docs describe package version **0.4.0** on `main`, which is ready to cut.
-**PyPI still serves 0.3.0** until the `v0.4.0` tag publishes. See
-[STATUS](../STATUS.md) and the [installation matrix](../getting-started/installation.md).
+```bash
+pip install hedron
+# or
+uv add hedron
+```
 
-## Why is `hedron new` / `hedron check` / `hedron.testing` missing?
-
-Those ship in **0.4**. On PyPI 0.3 they are absent. Install from `main` or wait for the
-release tag.
+That installs the current PyPI release on the **0.4** train (`0.4.0` and later patches).
+See [STATUS](../STATUS.md).
 
 ## Do I need Node.js?
 
@@ -17,23 +17,24 @@ No. Hedron does not require npm or a JavaScript bundler for development or produ
 
 ## `uv add hedron` failed with “No pyproject.toml”
 
-Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`.
+Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or use
+`hedron new my-app` after `pip install hedron`.
 
 ## Should I use `uv init` or `hedron new`?
 
-On PyPI 0.3, use `uv init` (or pip + venv) and write `app.py` from the quickstart.
-On 0.4 / main, either works—do not nest both into the same directory by accident.
+Either works. Prefer one path: `uv init` + hand-written `app.py` from the quickstart, or
+`hedron new` alone. Do not nest both into the same directory by accident.
 
 ## Are Auto, DataTable, and charts available?
 
 Not in 0.4. They are **Accepted design contracts** under
-[Planned](../api/README.md#planned-contracts) for later phases.
+[Planned](../api/README.md#planned-contracts) for later phases (starting with 0.5).
 
-## Are the docs “live examples” a running Hedron server?
+## Are the docs “interactive demos” a running Hedron server?
 
 No. They are in-browser simulations. The runnable backend is the
 [reference application](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)
-in the repo.
+in the repo (`uv sync` after clone).
 
 ## Where do I put configuration?
 

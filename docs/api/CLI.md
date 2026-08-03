@@ -6,11 +6,6 @@ status: shipped
 
 **Status:** Accepted · **Shipped in 0.4**
 
-!!! warning "Requires 0.4 / main"
-
-    The `hedron` entry point commands below ship in **0.4.0**. They are not available
-    on PyPI **0.3.0**. See [installation](../getting-started/installation.md).
-
 Entry point: `hedron` → `hedron.cli:main`.
 
 Global option:

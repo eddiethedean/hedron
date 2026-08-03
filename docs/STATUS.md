@@ -1,7 +1,6 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.4 implemented on `main` at `0.4.0`; **ready to cut
-`v0.4.0`** (latest published train remains `v0.3.0`); phase 0.5 next after publish  
+**Roadmap position:** phase 0.4 **published** as `v0.4.0`; phase 0.5 next  
 **Date:** 2026-08-03  
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` `0.4.0`; MIT licensed (D-033)
 

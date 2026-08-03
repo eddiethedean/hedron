@@ -11,12 +11,10 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase 0.4 is implemented on `main` at package version
-> `0.4.0` and is ready to cut as `v0.4.0` (PyPI still serves `0.3.0` until the
-> release tag publishes). Full Explorer, CLI `new`/`check`/`graph`/`audit-components`,
-> plugins, SARIF diagnostics, testing helpers, and `hedron-sample-kit` ship on this
-> train. The project is MIT-licensed. Next milestone after publish: phase 0.5
-> (data applications, intelligent rendering, caching, and utility UI).
+> **Project status:** Phase 0.4 is **published** as `v0.4.0` (Explorer, CLI
+> `new`/`check`/`graph`/`audit-components`, plugins, SARIF diagnostics, testing
+> helpers, and `hedron-sample-kit`). The project is MIT-licensed. Next milestone:
+> phase 0.5 (data applications, intelligent rendering, caching, and utility UI).
 
 ## Packages
 
@@ -93,7 +91,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 | 0.1 | `v0.1.0` | Framework-neutral typed rendering core (**complete**) |
 | 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP (**published**) |
 | 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes (**published**) |
-| 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform (**ready to cut**) |
+| 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform (**published**) |
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI |
 | 0.6 | `v0.6.0` | Visualization and first-party integrations |
 | 0.7 | `v0.7.0` | Flask/Django adapters and production operations |
@@ -135,10 +133,9 @@ The specification remains the authority for implementation:
 
 Accepted RFC and API status means the design has been selected; it does not mean every feature is implemented. Availability follows the roadmap phase.
 
-## Cutting `v0.4.0`
+## Current release
 
-Implementation is complete on `main`. Follow [Cutting a release](https://hedron.readthedocs.io/en/latest/RELEASE/)
-to push the annotated `v0.4.0` tag when CI is green. After publish, the next
+Install from PyPI: `pip install hedron` (coordinated train `0.4.0`). Next
 implementation target is phase 0.5 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing

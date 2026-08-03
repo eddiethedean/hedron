@@ -42,8 +42,7 @@ Already published. Do not retag.
 
 ## Cut `v0.4.0` (developer platform)
 
-> **Status:** Implementation complete on `main` at package version `0.4.0`.
-> Cut the annotated tag when CI is green; do not retag after the Release workflow succeeds.
+> **Status:** Published as `v0.4.0` on 2026-08-03. Do not retag.
 
 1. Confirm `check_release_gate.py 0.4.0` and acceptance suites for Explorer/CLI/Plugins/Testing.
 2. Confirm latest `main` CI is green on 3.11–3.14 (including MkDocs strict build).

@@ -4,7 +4,7 @@ In this guide, you will render a complete page from typed Python components and 
 how the same route responds to an HTMX fragment request.
 
 Complete [installation](installation.md) first so `app.py` lives in a project with
-`hedron` and `uvicorn` installed.
+`hedron` and `uvicorn` installed (or use `hedron new`).
 
 ## 1. Create the application
 
@@ -65,13 +65,7 @@ The response contains route content rather than a duplicate document shell. Hedr
 chooses page or fragment rendering from explicit request headers; your route continues
 to return the same typed component tree.
 
-## 4. Check the project (requires 0.4 / main)
-
-!!! warning "0.4-only commands"
-
-    `hedron check` and related CLI commands ship in **0.4.0**. They are **not** on
-    PyPI **0.3.0**. Confirm with `python -c "import hedron; print(hedron.__version__)"`
-    or install from `main` — see [installation](installation.md).
+## 4. Check the project
 
 ```bash
 uv run hedron --app app:app check
@@ -92,6 +86,6 @@ prints the registered route metadata as JSON, which is useful both to humans and
 
 - Try the [interactive demos](../examples/index.md) (in-browser simulations).
 - Learn why pages and fragments are separate render modes in [core concepts](core-concepts.md).
-- Use the full CLI lifecycle in the [project workflow](../guides/project-workflow.md) (0.4+).
-- Add fast component tests with [testing helpers](../guides/testing.md) (0.4+).
+- Use the full CLI lifecycle in the [project workflow](../guides/project-workflow.md).
+- Add fast component tests with [testing helpers](../guides/testing.md).
 - Browse [shipped APIs](../api/README.md) versus [planned contracts](../api/README.md#planned-contracts).

@@ -11,10 +11,6 @@ Defines models, security boundary types, components, the HTML serializer, and
 the public `render(...) -> RenderResult` API with **no** FastAPI, Flask, Django,
 ASGI, or WSGI dependency.
 
-> **Version note:** This repository packages **0.4.0**. PyPI may still serve
-> **0.3.0** until the coordinated `v0.4.0` tag publishes. See
-> [status](https://hedron.readthedocs.io/en/latest/STATUS/).
-
 ## Install
 
 ```bash
