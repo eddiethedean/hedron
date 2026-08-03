@@ -19,9 +19,11 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
    refuses to publish without this.
 5. `PYPI_API_TOKEN` is configured in GitHub Actions secrets (already required by
    `.github/workflows/release.yml`).
-6. **PyPI name:** publishing `hedron==0.2.0` reclaims the existing PyPI project
-   `hedron` (same author; prior geolocation releases ≤`0.0.6`). Confirm that
-   reclaim is intentional before pushing the tag.
+6. **PyPI name:** publishing `hedron==0.2.0` **intentionally reclaims** the
+   existing PyPI project `hedron` (same author). Prior geolocation releases
+   (`<=0.0.6`) are superseded by this FastAPI framework train; update the PyPI
+   project description after publish if the landing page still shows the old
+   summary.
 
 ## Cut `v0.1.0` (`hedron-core` only)
 
@@ -30,8 +32,8 @@ Already published. Do not retag.
 ## Cut `v0.2.0` (coordinated train)
 
 > **Status:** Implementation and acceptance subsets for the 0.2 MVP are on
-> `main` at package version `0.2.0`. Cut when CI is green and maintainers are
-> ready to publish.
+> `main` at package version `0.2.0`. PyPI reclaim of `hedron` is intentional.
+> Cut when CI is green.
 
 1. Confirm `packages/{hedron-core,hedron,hedron-explorer}` all say `0.2.0` in
    `pyproject.toml` and `__version__`, with matching `CHANGELOG.md` sections.

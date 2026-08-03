@@ -26,7 +26,7 @@ Core stays free of FastAPI/ASGI imports. The authenticated CRUD reference applic
 - Suites: unit, snapshot, security, a11y, conformance, performance, FastAPI integration, HTML parity, reference CRUD.
 - Reference app: authenticated team admin with CSRF (header and form field), lazy table, create/update/delete, Explorer under `explorer="development"`.
 - CLI: `hedron routes|components|preview` with optional `--app module:attr`.
-- PyPI note: publishing `hedron==0.2.0` reclaims the existing `hedron` project name (same author; prior geolocation package ≤0.0.6).
+- PyPI: `hedron==0.2.0` **intentionally reclaims** the existing project name (same author; prior geolocation package ≤0.0.6 is superseded).
 
 ## Cut instructions
 
