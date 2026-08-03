@@ -162,11 +162,39 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - AG Grid Community interoperability and a stable adapter boundary for separately licensed DataEditor backends.
 - Explorer visualization, data schema, payload, assets, accessibility, cache, and security panels.
 - Compatibility ranges, lazy imports, precise missing-extra guidance, and upstream contract tests.
+- HTMX 2 browser conformance for focus, titles, live regions, OOB swaps, history misses, request
+  races, error fragments, and custom-element teardown around first-party integrations.
+- A shared typed FastAPI/HTMX interaction contract—`HtmxRequest`, `InteractionResult`, and
+  `InteractionPolicy` or equivalent—that represents request context, primary content, validated
+  targets/swaps, OOB updates, event timing, history changes, status, concurrency, and cache policy
+  without hiding the resulting HTML, HTTP status, or `HX-*` headers.
+- Semantic HTML response handling for FastAPI validation and common interaction outcomes: 202 job
+  acceptance, 204 no-swap events, 401/403 session and authorization states, 409 conflicts, 422
+  validation fragments, 429 retry states, and stable 5xx error regions. Ordinary non-HTMX API
+  requests retain framework-native JSON behavior.
+- Route-declared fragment regions and target-aware rendering with authorization-safe allowlists;
+  boosted navigation preserves titles, canonical/history behavior, progressive full-page
+  navigation, and declared assets rather than treating every page child as an interchangeable
+  fragment.
+- Correct page/fragment cache variation and keys (`HX-Request`, history restoration, and
+  `HX-Target` only when output varies by target), plus form/search policies for `hx-sync`, disabled
+  controls, indicators, `aria-busy`, CSRF, focus restoration, and idempotency where required.
+- Explorer interaction debugging for ordinary, boosted, fragment, history-restore, validation,
+  conflict, and error requests, including primary/OOB destinations, event timing, history effects,
+  asset requirements, cache variation, and the inference/override source.
+- Explicit fragment asset/head policy: predeclared shell assets by default, with conformance-gated
+  evaluation of pinned `head-support`, Idiomorph, response-targets, and View Transitions where core
+  HTMX behavior is insufficient.
 
 ### Exit gate
 
 - The complete data-and-chart reference workflow runs offline with locally served assets and no secret-field leakage.
 - Initial visualization and content adapters pass security, accessibility, payload, browser-lifecycle, and optional-dependency tests.
+- HTMX navigation and swaps do not lose required assets, focus, accessible status, or browser-local
+  widget state; any selected extension has pinned local assets and documented fallbacks.
+- The reference application demonstrates the typed interaction contract, declared fragment regions,
+  semantic 422 validation, a conflict/error path, OOB updates, correctly varied page/fragment
+  caching, synchronized submission, and independently navigable boosted URLs.
 
 ## 0.7 — Framework adapters and production operations (`v0.7.0`)
 
@@ -181,11 +209,28 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - Structured `hedron.gather()`, `hedron.run_sync()` legacy blocking-call bridge, async cache backends, and lifecycle-ordered plugin resources.
 - FastAPI `BackgroundTasks` helpers and pluggable durable `JobBackend` contracts with addressable status resources.
 - Logging, tracing, health/readiness, cache/job failure, component-package audit, and supply-chain operating guidance.
+- Cross-adapter HTMX 2 conformance for all supported headers, DELETE query parameters,
+  boost/history, 204 and validation/error responses, 3xx header behavior, proxies, and root paths.
+- Request-aware route reversal for component references and generated HTMX URLs, preserving mount
+  prefixes, router parameters, URL encoding, ASGI `root_path`, reverse proxies, and framework-native
+  URL-generation/security rules instead of storing deployment-sensitive literal paths.
+- End-to-end cancellation for superseded/disconnected HTMX requests at safe checkpoints in
+  expensive data, chart, and job operations, with structured traces distinguishing browser abort,
+  application timeout, server cancellation, and completed-but-discarded work.
+- A 202 job interaction contract with an accessible bounded-polling baseline and optional official
+  SSE promotion; WebSockets remain opt-in and only for genuinely bidirectional workflows.
+- Independently versioned HTMX extension asset contracts; evaluate official SSE for addressable job
+  updates and keep official WebSockets opt-in for genuinely bidirectional workflows.
 
 ### Exit gate
 
 - Advertised FastAPI, Flask, and Django packages pass their declared compatibility and conformance matrices.
 - The reference application deploys behind a prefixed reverse proxy with multiple workers, external cache/job test doubles, and externally hosted static assets.
+- Any selected HTMX extension passes offline asset, CSP, authentication, reconnect/cancellation,
+  lifecycle, and cross-adapter conformance; removed HTMX 1 attributes remain rejected.
+- Framework adapters preserve the same interaction-result semantics, request-aware URLs, cache
+  variation, validation/error fragments, cancellation, and job-status behavior while using each
+  host framework's native routing, validation, security, and response lifecycle.
 
 ## 0.8 — Release candidate and hardening (`v0.8.0`)
 
@@ -198,6 +243,13 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - Complete security threat-model review, dependency and browser-asset audit, accessibility audit, and performance budgets.
 - Packaging tests for wheels and source distributions across supported platforms and Python versions.
 - Documentation usability testing, error-message review, example verification, and no-Node/offline test path.
+- Chromium, Firefox, and WebKit HTMX conformance for history, focus, OOB, races, extension teardown,
+  CSP, and reduced motion; pinned core/extension asset and license audit.
+- Measured opt-in preload evaluation for safe GET navigation, including cache correctness, bounded
+  speculative traffic, privacy, and `HX-Preloaded` observability.
+- Release tests prove that intermediary and application caches cannot confuse pages, fragments, or
+  target-specific variants; the complete interaction-status matrix preserves authorization,
+  accessibility, retry semantics, and useful non-HTMX fallbacks.
 - Release-candidate stabilization: only fixes, documentation, compatibility work, and explicitly approved scope changes.
 
 ### Exit gate
@@ -322,6 +374,13 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 | `hedron-flask` and `hedron-django` release artifacts | 0.7 | Published and tested independently of the flagship package. |
 | Native framework auth, CSRF, sessions, forms, lifecycle, URL reversing | 0.7 | Host framework remains authoritative. |
 | Cross-adapter rendering/HTMX/security/testing conformance | 0.7 | Verifies the framework-neutral core boundary. |
+| Typed FastAPI/HTMX request, result, policy, OOB/event/history contract | 0.6 | One explicit interaction envelope; HTML and HTTP mechanics stay visible. |
+| Declared fragment regions, boosted metadata, semantic validation/status responses | 0.6 | Target allowlists, full-page fallbacks, and accessible errors. |
+| Page/fragment/target cache variation and synchronized form/search policy | 0.6 | Prevents cache confusion and request races. |
+| Request-aware URL reversal, disconnect cancellation, and 202 job interactions | 0.7 | Correct under mounts/proxies and expensive asynchronous work. |
+| HTMX 2 rich-browser lifecycle, head/assets, errors, morphing, transitions | 0.6 | Core behavior first; optional extensions require conformance evidence. |
+| HTMX 2 extension asset/transport contract and adapter matrix | 0.7 | Independent pins, local serving, CSP, SSE evaluation, optional WebSockets. |
+| HTMX 2 real-browser, privacy, supply-chain, and preload hardening | 0.8 | Release evidence across Chromium, Firefox, and WebKit. |
 | Structured gather, blocking bridge, lifecycle-ordered async resources | 0.7 | No separate async runtime or detached request tasks. |
 | External cache contracts and durable job-backend protocol | 0.7 | BackgroundTasks remains for small post-response work. |
 | Container, multi-worker, proxy/root-path, static host, offline deployment | 0.7 | Includes graceful shutdown and health/readiness. |
@@ -340,12 +399,12 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 | 0001 Vision | 0.0 |
 | 0002 Core architecture | 0.0–0.2; adapter proof in 0.7 |
 | 0003 Component model | 0.1 |
-| 0004 FastAPI integration | 0.2 |
+| 0004 FastAPI integration | 0.2 baseline; typed HTMX interaction contract in 0.6 |
 | 0005 HDN language | 0.3 |
 | 0006 Scoped styles | 0.3 |
 | 0007 Component Explorer | 0.2 minimal; 0.4 full; extended through 0.7 |
 | 0008 Addressable components | 0.2 |
-| 0009 HTMX integration | 0.2 |
+| 0009 HTMX integration | 0.2 baseline; interaction/lifecycle hardening in 0.6–0.8 |
 | 0010 Data components | 0.5; optional adapters in 0.6 |
 | 0011 Visualization | 0.6 |
 | 0012 Security | 0.1–0.8 |
@@ -371,10 +430,14 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 
 The following ideas remain planned possibilities but are not part of the 1.0 commitment. Each requires a separate accepted RFC and demonstrated demand:
 
-- **Live transport:** SSE live regions, WebSocket components, focused chunked lists, and general streamed documents.
+- **Live transport beyond the 0.7 evaluation:** stable SSE live regions, WebSocket components,
+  focused chunked lists, and general streamed documents, using separately versioned HTMX 2
+  extensions rather than removed `hx-sse` / `hx-ws` attributes.
 - **Advanced async:** component-level async `prepare()` lifecycle, adaptive concurrency, and distributed tracing integrations.
 - **HDN tooling:** language server, editor extensions, advanced static analysis, and guided React-to-HDN conversion.
-- **Styles and assets:** route-level CSS splitting, dynamic HTMX asset negotiation, cross-file composition, optional preprocessors, advanced minification, hot style replacement, and a full design-token compiler.
+- **Styles and assets:** route-level CSS splitting beyond the 0.6 fragment/head contract, fully
+  dynamic HTMX asset negotiation, cross-file composition, optional preprocessors, advanced
+  minification, hot style replacement, and a full design-token compiler.
 - **DataEditor:** formulas, merged cells, Excel-formatting parity, pivot tables, tree grids, collaborative editing, additional enterprise grid adapters, and spreadsheet import/export beyond CSV.
 - **Data scale:** Dask/distributed sources, automatic server transform planning, and more advanced lazy-query pushdown.
 - **Visualization:** ECharts, Datashader, MapLibre, Folium, Bokeh, HoloViews/hvPlot, Pygal, geospatial layers, Plotly resampling, and advanced Vega server transforms.

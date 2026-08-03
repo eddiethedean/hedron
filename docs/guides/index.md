@@ -40,6 +40,6 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
   </a>
 </div>
 
-Looking for callable APIs in this release? Start with [Shipped in 0.4](../api/README.md).
+Looking for callable APIs in this release? Start with [Shipped in 0.5](../api/README.md).
 Design contracts that are accepted but not implemented yet live under
 [Planned](../api/README.md#planned-contracts).

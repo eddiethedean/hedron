@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import base64
+import hashlib
+
 import pytest
 from fastapi import FastAPI, Form, Request
 from fastapi.testclient import TestClient
@@ -15,6 +18,7 @@ from hedron import (
     Text,
     approved_headers,
     hedron_response,
+    htmx_context,
     mount_hedron_static,
     redirect_external,
     render,
@@ -102,6 +106,65 @@ def test_approved_headers_reject_external_push_and_location() -> None:
     assert headers["HX-Location"] == "/elsewhere"
 
 
+def test_approved_headers_cover_htmx_2_response_surface() -> None:
+    headers = approved_headers(
+        trigger_after_swap={"usersChanged": {"count": 2}},
+        trigger_after_settle="usersSettled",
+        replace_url="/users?page=2",
+        reselect="#user-table",
+    )
+    assert headers["HX-Trigger-After-Swap"] == '{"usersChanged": {"count": 2}}'
+    assert headers["HX-Trigger-After-Settle"] == "usersSettled"
+    assert headers["HX-Replace-Url"] == "/users?page=2"
+    assert headers["HX-Reselect"] == "#user-table"
+
+    with pytest.raises(ValueError):
+        approved_headers(replace_url="https://evil.example")
+    with pytest.raises(ValueError):
+        approved_headers(reselect="body; script")
+
+
+def test_htmx_context_exposes_official_request_headers() -> None:
+    app = FastAPI()
+
+    @app.get("/")
+    def context(request: Request) -> dict[str, object]:
+        ctx = htmx_context(request)
+        return {
+            "is_htmx": ctx.is_htmx,
+            "trigger_name": ctx.trigger_name,
+            "prompt": ctx.prompt,
+            "boosted": ctx.boosted,
+            "history_restore": ctx.history_restore,
+        }
+
+    response = TestClient(app).get(
+        "/",
+        headers={
+            "HX-Request": "true",
+            "HX-Trigger-Name": "save",
+            "HX-Prompt": "confirmed",
+            "HX-Boosted": "true",
+        },
+    )
+    assert response.json() == {
+        "is_htmx": True,
+        "trigger_name": "save",
+        "prompt": "confirmed",
+        "boosted": True,
+        "history_restore": False,
+    }
+
+    history = TestClient(app).get("/", headers={"HX-History-Restore-Request": "true"})
+    assert history.json() == {
+        "is_htmx": False,
+        "trigger_name": None,
+        "prompt": None,
+        "boosted": False,
+        "history_restore": True,
+    }
+
+
 def test_history_restore_uses_page_mode() -> None:
     app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
 
@@ -116,6 +179,28 @@ def test_history_restore_uses_page_mode() -> None:
     )
     assert response.status_code == 200
     assert response.text.startswith("<!DOCTYPE html>")
+    assert 'name="htmx-config"' in response.text
+    assert '"historyRestoreAsHxRequest":false' in response.text
+    assert '"allowEval":false' in response.text
+
+
+def test_explicit_htmx_config_replaces_hedron_defaults() -> None:
+    from hedron import html
+
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Text("home"),
+            title="Home",
+            head=html.meta(name="htmx-config", content='{"allowEval":true}'),
+        )
+
+    response = TestClient(app).get("/")
+    assert response.text.count('name="htmx-config"') == 1
+    assert 'content="{&quot;allowEval&quot;:true}"' in response.text
+    assert '"historyRestoreAsHxRequest":false' not in response.text
 
 
 def test_pagination_renders_with_safe_urls() -> None:
@@ -136,6 +221,8 @@ def test_htmx_static_mounted_for_plain_and_hedron() -> None:
         asset = client.get("/hedron-static/htmx.min.js")
         assert asset.status_code == 200
         assert len(asset.content) > 1000
+        digest = base64.b64encode(hashlib.sha384(asset.content).digest()).decode("ascii")
+        assert digest == "H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
 
 
 def test_authenticated_cache_headers() -> None:

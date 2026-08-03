@@ -25,6 +25,10 @@ def _core_body(html: str) -> str:
         text = text.split("<body>", 1)[1].rsplit("</body>", 1)[0]
     # Drop injected HTMX script if present.
     text = text.replace('<script src="/hedron-static/htmx.min.js" defer></script>', "")
+    start = text.find('<meta name="htmx-config" ')
+    if start >= 0:
+        end = text.find(">", start)
+        text = text[:start] + text[end + 1 :]
     return "".join(text.split())
 
 

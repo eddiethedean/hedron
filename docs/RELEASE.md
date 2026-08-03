@@ -57,26 +57,18 @@ git push origin v0.4.0
 
 ## Cut `v0.5.0` (data application toolkit)
 
-> **Status:** **Ready to cut** on `main` at package version `0.5.0`; **not tagged/published yet**.
-> Creating `v0.5.0` publishes the coordinated train via `.github/workflows/release.yml`.
+> **Status:** Published as `v0.5.0` on 2026-08-03. Do not retag.
 
-1. Confirm `check_release_gate.py 0.5.0` and acceptance suites for:
-   - [DATA_EDITOR.md](acceptance/DATA_EDITOR.md)
-   - [CACHING_UTILITIES.md](acceptance/CACHING_UTILITIES.md)
-   - Security forged-edit / CSRF coverage for DataEditor mutations
-   - Accessibility smoke for 0.5 utilities/tables (narrow scope in ACCESSIBILITY.md)
-2. Confirm latest `main` CI is green on 3.11–3.14 (including MkDocs strict build and
-   clean-install smoke that imports `hedron_data` / constructs `DataTable`).
-3. Confirm `PYPI_API_TOKEN` is set in GitHub Actions secrets.
-4. Tag and push **only when cutting**:
+1. Confirm `check_release_gate.py 0.5.0` and acceptance suites for DATA_EDITOR / CACHING.
+2. Confirm latest `main` CI is green on 3.11–3.14.
+3. Tag and push:
 
 ```bash
 git tag -a v0.5.0 -m "Hedron 0.5.0"
 git push origin v0.5.0
 ```
 
-5. After publish, update STATUS/README from “implemented, not yet published” / Ready-to-cut
-   to **published**, and point at phase 0.6.
+4. After publish, update STATUS/README to record publication and point at phase 0.6.
 
 ## After publication
 

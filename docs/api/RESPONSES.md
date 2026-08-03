@@ -38,6 +38,12 @@ app.include_router(router)
 
 Full-page responses inject the bundled HTMX script tag when the asset is mounted. Use `Hedron()` or `mount_hedron_static(app)` so `/hedron-static/htmx.min.js` resolves.
 
+They also inject a declarative HTMX 2 configuration that disables eval, response script tags, and
+HTMX's inline indicator style; keeps requests same-origin; disables `HX-Request` on history cache
+misses; and enables native form-validity reporting. If the page already contains a
+`<meta name="htmx-config">` element, Hedron leaves it untouched and the application owns the full
+configuration.
+
 All Hedron responses use contextual escaping, registered assets, declared headers, and framework-managed background tasks. Response helpers do not weaken cache, CSP, CSRF, or redirect policy.
 
 General component streaming is outside the 1.0 contract. Applications that need a streaming escape hatch use the framework's explicit `StreamingResponse`; Hedron does not expose a public `StreamingComponentResponse` in the 0.x–1.0 API.

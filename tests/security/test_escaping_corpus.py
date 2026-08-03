@@ -109,6 +109,27 @@ def test_hx_get_requires_safe_url() -> None:
 
 
 @pytest.mark.security
+def test_htmx_2_attribute_contract() -> None:
+    out = render(
+        html.form(
+            **{
+                "hx-disinherit": "hx-target",
+                "hx-inherit": "hx-headers",
+                "hx-validate": "true",
+            }
+        )
+    ).html
+    assert 'hx-disinherit="hx-target"' in out
+    assert 'hx-inherit="hx-headers"' in out
+    assert 'hx-validate="true"' in out
+
+    for removed in ("hx-sse", "hx-ws", "hx-href"):
+        with pytest.raises(HedronError) as exc:
+            html.div(**{removed: "/legacy"})
+        assert exc.value.diagnostic.code == "HED-HTML-0005"
+
+
+@pytest.mark.security
 def test_srcset_ping_and_hx_push_url_require_safe_urls() -> None:
     with pytest.raises(HedronError) as exc:
         html.img(

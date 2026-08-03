@@ -187,7 +187,6 @@ def _purpose_for_attr(attr: str) -> UrlPurpose:
         "hx-put",
         "hx-patch",
         "hx-delete",
-        "hx-href",
         "hx-push-url",
         "hx-replace-url",
     }:

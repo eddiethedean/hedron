@@ -191,7 +191,6 @@ URL_ATTRS = frozenset(
         "hx-put",
         "hx-patch",
         "hx-delete",
-        "hx-href",
         "hx-push-url",
         "hx-replace-url",
     }
@@ -296,21 +295,22 @@ ALLOWED_ATTRS = (
             "hx-confirm",
             "hx-disable",
             "hx-disabled-elt",
+            "hx-disinherit",
             "hx-encoding",
             "hx-ext",
             "hx-headers",
             "hx-history",
             "hx-history-elt",
             "hx-include",
+            "hx-inherit",
             "hx-params",
             "hx-preserve",
             "hx-prompt",
             "hx-request",
             "hx-sync",
+            "hx-validate",
             "hx-vals",
             "hx-boost",
-            "hx-ws",
-            "hx-sse",
         }
     )
     | BOOLEAN_ATTRS

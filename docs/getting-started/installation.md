@@ -55,9 +55,8 @@ uv run python -c "import hedron; print(hedron.__version__)"
 ```
 
 The installed version should print `0.5.0` (or a later patch on the 0.5 train) without an
-import error once that train is published. Until then, install from a checkout or wheel.
-Data APIs require `hedron-data` (`pip install "hedron[data]"`). Hedron follows semantic
-versioning while it moves toward the public API freeze described in the
+import error. Data APIs require `hedron-data` (`pip install "hedron[data]"`). Hedron follows
+semantic versioning while it moves toward the public API freeze described in the
 [roadmap](../ROADMAP.md).
 
 ## Contributor checkout

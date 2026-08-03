@@ -25,6 +25,10 @@ helpers, ColorMode persistence, and re-exports for `hedron-data` / Auto / utilit
 - Cache rejects `user` / `tenant` / `session` scopes without `vary_on`, and public-scope
   request/session positional args.
 - Build fingerprints registered plugin CSS assets (DataEditor host stylesheet).
+- HTMX 2 context exposes every official request header, including history restores without
+  `HX-Request`; response helpers cover replace/reselect and all trigger timings.
+- Full pages apply CSP-compatible HTMX defaults for history, eval/scripts, same-origin requests,
+  indicator styles, and native form-validity reporting.
 
 ## [0.4.0] - 2026-08-03
 

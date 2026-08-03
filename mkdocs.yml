@@ -162,6 +162,7 @@ nav:
   - Project:
     - Status: STATUS.md
     - Roadmap: ROADMAP.md
+    - HTMX 2 audit: HTMX_2_AUDIT.md
     - Architecture: ARCHITECTURE.md
     - Cutting a release: RELEASE.md
     - Contributing: CONTRIBUTING.md

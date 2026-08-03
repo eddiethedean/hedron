@@ -11,10 +11,9 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase 0.5 is **implemented, not yet published** (`0.5.0` on
-> `main`: data applications, `Auto()`, DataTable/DataEditor, caching, utility UI,
-> ColorMode, and `hedron-data`). Install from PyPI still resolves the prior train
-> until `v0.5.0` is cut. The project is MIT-licensed. Next milestone: phase 0.6
+> **Project status:** Phase 0.5 is **published** as `v0.5.0` (data applications,
+> `Auto()`, DataTable/DataEditor, caching, utility UI, ColorMode, and
+> `hedron-data`). The project is MIT-licensed. Next milestone: phase 0.6
 > (visualization adapters and first-party integrations).
 
 ## Packages
@@ -94,7 +93,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 | 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP (**published**) |
 | 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes (**published**) |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform (**published**) |
-| 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI |
+| 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI (**published**) |
 | 0.6 | `v0.6.0` | Visualization and first-party integrations |
 | 0.7 | `v0.7.0` | Flask/Django adapters and production operations |
 | 0.8 | `v0.8.0` | Public API freeze, release candidate, and hardening |
@@ -137,8 +136,9 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 ## Current release
 
-Install from PyPI: `pip install hedron` (coordinated train `0.4.0`). Next
-implementation target is phase 0.5 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
+Install from PyPI: `pip install hedron` (coordinated train `0.5.0`; use
+`pip install "hedron[data]"` for DataTable/DataEditor). Next implementation
+target is phase 0.6 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing
 

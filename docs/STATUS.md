@@ -1,28 +1,14 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.5 **implemented, not yet published** as `0.5.0`; phase 0.6 next  
+**Roadmap position:** phase 0.5 **published** as `v0.5.0`; phase 0.6 next  
 **Date:** 2026-08-03  
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
-`hedron-data` `0.5.0` on `main` (MIT licensed, D-033); PyPI still serves the prior train until
-`v0.5.0` is tagged and published.
+`hedron-data` `0.5.0` on PyPI (MIT licensed, D-033)
 
 Phase 0.5 delivers the data application toolkit: `Auto()` and Data Intelligence,
 `DataTable` / `DataEditor` with Tabulator host, data-source protocols, caching,
 utility components, ColorMode UI, Explorer cache/data/Auto panels, and
 `hedron-data`.
-
-## Ready to cut `v0.5.0`
-
-Preflight is green on `main` (do **not** tag until maintainers intentionally cut):
-
-- [x] Package versions, `__version__`, licenses, and `[0.5.0]` changelog sections agree
-  (`uv run python scripts/check_release_gate.py 0.5.0`)
-- [x] Acceptance: [DATA_EDITOR](acceptance/DATA_EDITOR.md),
-  [CACHING_UTILITIES](acceptance/CACHING_UTILITIES.md); forged-edit/CSRF and a11y smoke scoped
-- [x] CI on `main` green for Python 3.11–3.14 (quality + tests), including `hedron_data` smoke
-- [x] Local: ruff, pyright, pytest, release gate, `mkdocs build --strict`
-- [ ] Tag/push `v0.5.0` (triggers Release workflow → PyPI + GitHub Release)
-- [ ] After publish: flip this STATUS/README to **published** and point at phase 0.6
 
 ## Current conclusions
 
@@ -40,7 +26,7 @@ Preflight is green on `main` (do **not** tag until maintainers intentionally cut
 - Acceptance: [DATA_EDITOR](acceptance/DATA_EDITOR.md),
   [CACHING_UTILITIES](acceptance/CACHING_UTILITIES.md).
 - Inference inventory: [INFERENCE_OVERRIDES.md](INFERENCE_OVERRIDES.md).
-- Release gate: `uv run python scripts/check_release_gate.py 0.5.0`.
-- Cut procedure: [RELEASE.md](RELEASE.md) (`Cut v0.5.0`).
+- Release: [GitHub `v0.5.0`](https://github.com/eddiethedean/hedron/releases/tag/v0.5.0);
+  cut procedure archived in [RELEASE.md](RELEASE.md).
 
 See the [roadmap](ROADMAP.md) for the phase 0.6 visualization gate.

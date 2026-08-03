@@ -236,9 +236,25 @@ def _inject_build_assets(
 
 
 def _ensure_htmx_asset(html_text: str, mode: RenderMode) -> str:
-    """Inject the bundled HTMX script into full-page documents."""
+    """Inject the bundled HTMX runtime and Hedron's secure v2 defaults."""
     if mode is not RenderMode.PAGE:
         return html_text
+    config = (
+        '<meta name="htmx-config" '
+        "content='{"
+        '"allowEval":false,'
+        '"allowScriptTags":false,'
+        '"historyRestoreAsHxRequest":false,'
+        '"includeIndicatorStyles":false,'
+        '"reportValidityOfForms":true,'
+        '"selfRequestsOnly":true'
+        "}'>"
+    )
+    if 'name="htmx-config"' not in html_text and "name='htmx-config'" not in html_text:
+        if "</head>" in html_text:
+            html_text = html_text.replace("</head>", f"{config}</head>", 1)
+        else:
+            html_text = config + html_text
     tag = '<script src="/hedron-static/htmx.min.js" defer></script>'
     if "htmx.min.js" in html_text:
         return html_text

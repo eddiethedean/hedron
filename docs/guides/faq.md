@@ -8,10 +8,8 @@ pip install hedron
 uv add hedron
 ```
 
-That installs the current PyPI release on the **0.4** train (`0.4.0` and later patches).
-Phase 0.5 (`0.5.0`) is implemented on `main` and not yet published—see
-[STATUS](../STATUS.md). For DataTable/DataEditor after 0.5 publishes, install
-`hedron[data]`.
+That installs the current PyPI release on the **0.5** train (`0.5.0` and later patches).
+See [STATUS](../STATUS.md). For DataTable/DataEditor, install `hedron[data]`.
 
 ## Do I need Node.js?
 

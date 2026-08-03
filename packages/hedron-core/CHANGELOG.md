@@ -27,6 +27,8 @@ utility components, and ColorMode.
 - Cache single-flight keeps results until waiters finish (no waiter `KeyError` race).
 - `Sidebar` uses `aria={"label": ...}` (render no longer crashes).
 - `ColorModeToggle` emits a hidden `csrf_token` when provided.
+- Native attributes match HTMX 2: `hx-disinherit`, `hx-inherit`, and `hx-validate` are accepted;
+  removed `hx-sse` / `hx-ws` and non-core `hx-href` are rejected.
 
 ## [0.4.0] - 2026-08-03
 

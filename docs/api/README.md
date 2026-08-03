@@ -11,9 +11,8 @@ Hedron documentation separates **callable APIs that ship in this release** from
 
 ## Shipped in 0.5
 
-These surfaces are implemented on the **0.5.0** train (includes all 0.1–0.4 surfaces
-plus the data application toolkit). Packages are ready to publish; treat docs as the
-callable API once `v0.5.0` is tagged.
+These surfaces are implemented and published on the **0.5.0** train (includes all
+0.1–0.4 surfaces plus the data application toolkit).
 
 ### Application
 
