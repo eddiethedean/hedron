@@ -17,18 +17,22 @@ Components—without requiring Node.js.
 > Django QuerySet DataSource remain Deferred. Next milestone after the `v0.7.0` cut: phase 0.8
 > (API freeze and hardening).
 
+**Package maturity:** `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
+`hedron-flask`, and `hedron-django` are Beta. `hedron-charts` and `hedron-sample-kit`
+remain Alpha.
+
 ## Packages
 
-| Package | Role | Install |
-|---|---|---|
-| [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship (pages, HTMX, security, CLI) | `pip install hedron` |
-| [`hedron-core`](https://pypi.org/project/hedron-core/) | Framework-neutral typed rendering core | `pip install hedron-core` |
-| [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Dev Component Explorer | `pip install "hedron[dev]"` |
-| [`hedron-data`](https://pypi.org/project/hedron-data/) | DataTable, DataEditor, data sources | `pip install "hedron[data]"` or `hedron-data` |
-| [`hedron-charts`](https://pypi.org/project/hedron-charts/) | Visualization adapters | `pip install "hedron[charts]"` or `hedron-charts` |
-| [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask adapter (Supported) | `pip install hedron-flask` |
-| [`hedron-django`](https://pypi.org/project/hedron-django/) | Django adapter (Supported) | `pip install hedron-django` |
-| [`hedron-sample-kit`](https://pypi.org/project/hedron-sample-kit/) | Sample third-party plugin package | `pip install hedron-sample-kit` |
+| Package | Maturity | Role | Install |
+|---|---|---|---|
+| [`hedron`](https://pypi.org/project/hedron/) | Beta | FastAPI flagship (pages, HTMX, security, CLI) | `pip install hedron` |
+| [`hedron-core`](https://pypi.org/project/hedron-core/) | Beta | Framework-neutral typed rendering core | `pip install hedron-core` |
+| [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Beta | Dev Component Explorer | `pip install "hedron[dev]"` |
+| [`hedron-data`](https://pypi.org/project/hedron-data/) | Beta | DataTable, DataEditor, data sources | `pip install "hedron[data]"` or `hedron-data` |
+| [`hedron-charts`](https://pypi.org/project/hedron-charts/) | Alpha | Visualization adapters | `pip install "hedron[charts]"` or `hedron-charts` |
+| [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Beta | Flask adapter (Supported) | `pip install hedron-flask` |
+| [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Django adapter (Supported) | `pip install hedron-django` |
+| [`hedron-sample-kit`](https://pypi.org/project/hedron-sample-kit/) | Alpha | Sample third-party plugin package | `pip install hedron-sample-kit` |
 
 ## Product direction
 

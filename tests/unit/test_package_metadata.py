@@ -57,6 +57,29 @@ def test_public_metadata_fields() -> None:
     assert (ROOT / "LICENSE").is_file()
 
 
+def test_package_maturity_classifiers() -> None:
+    expected = {
+        "hedron": "Development Status :: 4 - Beta",
+        "hedron-core": "Development Status :: 4 - Beta",
+        "hedron-data": "Development Status :: 4 - Beta",
+        "hedron-django": "Development Status :: 4 - Beta",
+        "hedron-explorer": "Development Status :: 4 - Beta",
+        "hedron-flask": "Development Status :: 4 - Beta",
+        "hedron-charts": "Development Status :: 3 - Alpha",
+        "hedron-sample-kit": "Development Status :: 3 - Alpha",
+    }
+    for package, maturity in expected.items():
+        project = tomllib.loads(
+            (ROOT / "packages" / package / "pyproject.toml").read_text(encoding="utf-8")
+        )["project"]
+        development_status = [
+            classifier
+            for classifier in project["classifiers"]
+            if classifier.startswith("Development Status ::")
+        ]
+        assert development_status == [maturity], package
+
+
 def test_installed_distribution_metadata() -> None:
     dist = metadata.distribution("hedron-core")
     assert dist.version == __version__

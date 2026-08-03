@@ -172,116 +172,6 @@ does not claim Python 3.14 and its Flask deployment documentation notes that it 
 request bodies and uses one process with multiple threads. Python 3.14 and request-limit behavior
 must be promoted only after native evidence, not inferred from a version range.
 
-## Required 0.7C implementation floor
-
-These are release prerequisites, not post-freeze ideas.
-
-### FLK-001 — package, factory, and state isolation
-
-- Create a separately buildable `hedron-flask` wheel and sdist with `py.typed`, license, changelog,
-  static assets, Flask classifier, and no `hedron`, FastAPI, Starlette, or ASGI dependency.
-- Re-export the framework-neutral beginner component surface from `hedron-core` without importing
-  optional data/chart packages eagerly.
-- Implement `HedronFlask.init_app` with idempotent or explicitly rejected double initialization,
-  `app.extensions["hedron"]` state, prefixed config keys, and multi-app isolation tests.
-- Keep development/Explorer bridges optional and prove that installing them does not pull FastAPI.
-
-### FLK-002 — native response and request adapters
-
-- Convert `Component`, `HTML`, `RenderResult`, `InteractionResult`, and already-created Flask
-  `Response` values inside Hedron view wrappers.
-- Preserve normal Flask tuple behavior `(body, status, headers)` where the Hedron body is supported;
-  pass ordinary strings, bytes, dicts, lists, generators, and WSGI responses back to Flask.
-- Derive locale, theme, authenticated signal, HTMX facts, host reverse, and asset references from the
-  active Flask request without retaining proxies in core values.
-- Add an explicit `html_response` helper for existing ordinary Flask routes.
-- Use Flask's response class and conditional/file response utilities rather than importing
-  Starlette response types.
-
-### FLK-003 — `HedronBlueprint` and route identity
-
-- Implement `page`, `component`, `action`, and `include_component` over documented Blueprint and
-  `add_url_rule` APIs.
-- Preserve converters, defaults, strict slashes, subdomains, endpoint names, automatic `HEAD` and
-  `OPTIONS`, decorator ordering, and Flask class-based view compatibility.
-- Finalize registry entries at registration time; test nested and repeated blueprint mounts with
-  unique names and prefixes.
-- Reverse through `url_for`, including query parameters, Unicode, anchors, `_external`, subdomains,
-  `SCRIPT_NAME`, and proxy prefixes. Never concatenate URL strings in the adapter.
-
-### FLK-004 — complete HTMX interaction conversion
-
-- Reuse the portable header allowlist, OOB authorization, page/fragment selection, declared target
-  regions, history, cache policy, and status policies.
-- Preserve `Vary: HX-Request, HX-History-Restore-Request` and add `HX-Target` only for declared
-  target-dependent variants. Merge existing `Vary` values rather than overwriting them.
-- Prove 202, 204, 3xx, 401, 403, 409, 422, 429, and 5xx behavior for HTMX and ordinary requests.
-- Include DELETE query parameters, boosted navigation, history restore, focus, OOB ordering, and
-  bounded polling in the shared browser corpus.
-
-### FLK-005 — explicit typed input and accessible errors
-
-- Provide explicit Pydantic helpers or a clearly named decorator for form, query, and JSON models.
-  Do not infer a FastAPI-like dependency graph from every function signature.
-- Preserve Werkzeug `MultiDict` semantics, repeated form fields, uploads, malformed bodies, and
-  content types. Define whether unknown fields are rejected per model/policy.
-- Translate adapter-owned `ValidationError` values into the shared accessible 422 fragment for HTMX
-  and a documented ordinary Flask response for non-HTMX requests.
-- Do not blanket-catch `Exception`; preserve Werkzeug `HTTPException`, Flask debug propagation,
-  app/blueprint handler precedence, logging, and observability hooks.
-
-### FLK-006 — sessions, CSRF, headers, and redirects
-
-- Implement typed `SessionState[T]` over the active Flask `session`, including assignment,
-  clearing, validation failure, custom `SessionInterface`, and cookie-size tests.
-- Document that Flask's default session cookie is signed, not encrypted; secrets and large values do
-  not belong in it.
-- Apply the existing double-submit CSRF policy with one request-scoped token, constant-time compare,
-  header and form-field support, safe methods, secure cookie attributes, and useful 403 fragments.
-- Map Hedron profiles to `SESSION_COOKIE_SECURE`, `SESSION_COOKIE_HTTPONLY`,
-  `SESSION_COOKIE_SAMESITE`, `TRUSTED_HOSTS`, request/form limits, CSP, referrer, frame, MIME, and
-  authenticated cache controls without weakening explicit stricter app settings.
-- Support `SECRET_KEY_FALLBACKS` and publish a key-rotation rehearsal. Refuse the development secret
-  in strict/production mode.
-- Use request-aware local redirect checks; external redirects remain an explicit policy opt-in.
-
-### FLK-007 — static and compiled assets under real mounts
-
-- Remove adapter-visible hard-coded `/hedron-static` and `/hedron-assets` URLs. Resolve them through
-  Flask endpoints and `url_for` so `SCRIPT_NAME`, blueprint prefixes, and external static hosts work.
-- Serve packaged assets through a dedicated blueprint or safe endpoint; serve build assets with
-  safe joined paths, conditional responses, ETags, correct MIME types, immutable fingerprint cache
-  policy, and no directory exposure.
-- Define route-collision behavior with an application's own `static` endpoint.
-- Prove offline/no-Node startup, manifest replacement, stale/missing build failure, CSP, and exact
-  asset digest/license inventory.
-
-### FLK-008 — diagnostics, CLI, Explorer, and observability
-
-- Add factory-aware `flask hedron routes`, `flask hedron check`, and build/asset inspection commands
-  or a documented bridge to the existing `hedron` CLI.
-- Mount Explorer through an optional Flask blueprint with development/secured/off modes and native
-  authorization hooks. Production development mode must fail closed as it does in the flagship.
-- Use Flask request/error signals or native hooks for sanitized timing, route, HTMX, cache, and error
-  traces. Signals are preferable for passive metrics; request hooks remain appropriate when they
-  must affect a response.
-- Keep telemetry exporters optional and never record cookies, CSRF tokens, session contents, form
-  bodies, or authorization headers.
-
-### FLK-009 — native reference slice, deployment, and evidence
-
-- Build the required team-admin Flask slice with auth signal, typed create/edit/delete form,
-  validation fragments, CSRF/session, reverse URLs, static/build assets, an addressable component,
-  and one shared data/chart component.
-- Test with Flask's `test_client`, `session_transaction`, request/app contexts, and
-  `test_cli_runner`; add real Waitress HTTP tests for behavior the in-process client cannot prove.
-- Test exact proxy trust counts with `ProxyFix`, `X-Forwarded-Prefix`, `SCRIPT_NAME`, Host attacks,
-  direct-backend bypass, HTTPS cookie behavior, and prefix-aware assets/redirects.
-- Run a clean environment matrix across supported Python, Flask, Werkzeug, Waitress, OS, and wheel /
-  sdist combinations. A range is Supported only when the matching cells are green.
-- Add thread-safety and multiple-app tests for extension state, registries, caches, route metadata,
-  CSRF values, and diagnostics.
-
 ## Phase 0.8 hardening plan
 
 No item below creates a new public feature.
@@ -291,16 +181,23 @@ No item below creates a new public feature.
    deprecation policy from 0.7 artifacts.
 2. **Run the full compatibility matrix.** Minimum and latest supported Flask/Werkzeug patch,
    Waitress, Python 3.11–3.14, supported platforms, clean wheels/sdists, and dependency-minimum jobs.
-3. **Complete security evidence.** Threat model, secret rotation, hostile Host/proxy headers,
+3. **Close existing correctness defects.** Fix the session-proxy use in `auth_signal`; make the
+   reference factory's WSGI entry point unambiguous; settle coroutine-route behavior; and prove
+   request-aware reversal without requiring an undocumented `SERVER_NAME`. Treat these as fixes to
+   existing functions and claims, not new public features.
+4. **Deepen portable interaction conformance.** Run the complete status, OOB, target-region,
+   history, cache-variation, redirect, error, and non-HTMX fallback corpus against the Flask adapter,
+   with one evidence ID per behavior cluster.
+5. **Complete security evidence.** Threat model, secret rotation, hostile Host/proxy headers,
    cookie flags, CSRF replay/rotation, request/form/file limits, path corpus, header injection,
    cache separation, SBOM, vulnerabilities, licenses, and provenance.
-4. **Complete browser and accessibility evidence.** Chromium, Firefox, and WebKit for HTMX history,
+6. **Complete browser and accessibility evidence.** Chromium, Firefox, and WebKit for HTMX history,
    focus, OOB, races, errors, CSRF, reduced motion, keyboard behavior, and non-JavaScript fallback.
-5. **Set and enforce performance budgets.** Cold factory initialization, route registration,
-   page/fragment rendering, Pydantic form binding, session serialization, static conditional GET,
-   concurrency under Waitress threads, and proxy deployment. Compare against plain Flask and the
-   FastAPI adapter without claiming WSGI/ASGI throughput equivalence.
-6. **Rehearse published artifacts.** Install, upgrade, key rotation, deployment, rollback, and
+7. **Set and enforce performance budgets.** App construction, route registration, page/fragment
+   rendering, interaction conversion, CSRF validation, URL reversal, concurrent Waitress threads,
+   and proxy deployment. Compare against plain Flask and the FastAPI adapter without claiming
+   WSGI/ASGI throughput equivalence.
+8. **Rehearse published artifacts.** Install, upgrade, key rotation, deployment, rollback, and
    removal from published `1.0.0rcN` artifacts. Retain immutable evidence tied to the lockfile and
    source revision.
 
@@ -308,7 +205,23 @@ No item below creates a new public feature.
 
 These are ordered by expected value and architectural fit. They should not be pulled into 0.8.
 
-### 1.1 — native ecosystem bridges
+### 1.1 — Flask-native ergonomics and parity uplift
+
+1. **Additive factory/extension API.** Allow `HedronFlask().init_app(app)` with per-app state in
+   `app.extensions`, while retaining the stable 1.0 constructor through the deprecation policy.
+2. **`HedronBlueprint`.** Native reusable `page`, `component`, `action`, and `include_component`
+   registration with nested/repeated mounts, endpoint-aware registry identities, and `url_for`
+   authority.
+3. **Request-aware render context and assets.** Locale/theme/auth facts plus endpoint-resolved static
+   and compiled asset URLs that honor `SCRIPT_NAME`, blueprint mounts, and external static hosts.
+4. **Typed request binding and semantic errors.** Explicit Pydantic form/query/JSON helpers with
+   Werkzeug `MultiDict` semantics and accessible HTMX/non-HTMX validation responses—without cloning
+   FastAPI dependency injection.
+5. **Security-profile installer.** Optional native hooks for Hedron response headers, CSRF,
+   authenticated caching, cookie policy, `TRUSTED_HOSTS`, and form limits while preserving stricter
+   application configuration.
+
+### 1.2 — native ecosystem bridges
 
 1. **Jinja interoperability.** A safe `render_component(...)` Jinja global/filter and an explicit
    trusted-template-to-Hedron boundary, with autoescape and CSP tests.
@@ -319,7 +232,7 @@ These are ordered by expected value and architectural fit. They should not be pu
 4. **Flash-message bridge.** Render Flask `flash()` categories as accessible Hedron alerts/toasts,
    with consume-once and non-HTMX behavior.
 
-### 1.2 — richer typed Flask ergonomics
+### 1.3 — richer typed Flask ergonomics
 
 1. **`MethodView` component support.** Reusable page/component/action class views that preserve
    decorators, per-request instance rules, and method discovery.
@@ -330,7 +243,7 @@ These are ordered by expected value and architectural fit. They should not be pu
 4. **Server-side session adapters.** Documented compatibility with custom `SessionInterface`
    implementations plus size, serialization, expiry, and failure conformance.
 
-### 1.3 — operations and jobs integrations
+### 1.4 — operations and jobs integrations
 
 1. **Celery and RQ `JobBackend` bridges.** Pass identifiers and tenant/auth scope rather than Flask
    request objects; execute tasks under an explicit app context; retain the shared polling UI.
@@ -353,11 +266,12 @@ These are ordered by expected value and architectural fit. They should not be pu
 
 ## Highest-risk implementation traps
 
-1. **Hard-coded asset URLs:** current FastAPI response code embeds root-relative asset paths; Flask
-   prefix correctness requires an adapter-neutral resolver before the first route is shipped.
-2. **Premature Supported labels:** the current capability scaffold calls Flask Supported before its
-   package and evidence exist. Keep it Planned/Experimental until `ADP-FLK-001` through `003` are
-   Verified.
+1. **Hard-coded asset URLs:** root-relative asset paths can bypass `SCRIPT_NAME` or blueprint mounts;
+   0.8 should verify every currently claimed asset path, and a post-1.0 resolver should use Flask URL
+   building.
+2. **Coarse evidence hiding narrow defects:** `ADP-FLK-001` through `003` are Verified rollups, but
+   seven smoke tests cannot localize all routing, session, CSRF, asset, URL, and WSGI claims. Add
+   child evidence without reopening the completed phase.
 3. **Using app-context teardown as process shutdown:** this can close shared resources after every
    request.
 4. **Async wrappers that call coroutines directly:** every adapter decorator must use
@@ -375,20 +289,20 @@ These are ordered by expected value and architectural fit. They should not be pu
 10. **Thread-unsafe globals:** Waitress uses worker threads; global current-request, route-build,
     registry mutation, or CSRF state will leak between requests.
 
-## Release gate additions worth making before implementation
+## Release gate additions worth making for 0.8
 
-The existing three Flask IDs are too coarse to diagnose quality. Keep them as rollups, but add
-stable child requirements for:
+The existing three Flask IDs are too coarse to diagnose quality. Keep the completed 0.7 IDs as
+rollups, but add stable 0.8 child requirements for:
 
 - factory/multi-app isolation;
 - response return-type matrix;
-- blueprint nesting/repeated registration;
-- typed binding and semantic errors;
+- existing route-wrapper return and error semantics;
+- existing interaction/OOB/status behavior;
 - HTMX/status/cache conformance;
 - CSRF/session/security profiles and key rotation;
 - asset/prefix/proxy behavior;
 - async-extra and explicit WSGI limitations;
-- Explorer/CLI/diagnostics isolation;
+- diagnostics and import isolation;
 - thread safety and real Waitress deployment;
 - clean-install dependency graph and artifact contents; and
 - accessibility, browser, security, and performance evidence.

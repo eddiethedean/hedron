@@ -9,6 +9,9 @@ license-files = ["LICENSE"]
 dependencies = [
     "hedron-core==0.7.0",
 ]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+]
 
 [project.entry-points."hedron.plugins"]
 sample_kit = "hedron_sample_kit.plugin:register"

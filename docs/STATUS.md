@@ -4,6 +4,8 @@
 **Date:** 2026-08-03
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
 `hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` `0.7.0` (MIT licensed, D-033)
+**Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
+`hedron-flask`, `hedron-django`; Alpha — `hedron-charts`, `hedron-sample-kit`.
 
 Phase 0.7 delivers the portable adapter foundation in `hedron-core`, Supported FastAPI
 operations (gather/run_sync, Redis cache/jobs conformance, health/readiness, deploy topology),
