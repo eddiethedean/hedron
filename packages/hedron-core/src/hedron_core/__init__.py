@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from hedron_core.addressable import AddressableDescriptor, addressable
+from hedron_core.auto import Auto, inspect_data, register_renderer
 from hedron_core.builtins import (
     Alert,
     Aside,
@@ -11,9 +12,11 @@ from hedron_core.builtins import (
     Card,
     Checkbox,
     CodeBlock,
+    CodeViewer,
     Container,
     DescriptionList,
     Divider,
+    Expander,
     Footer,
     Form,
     FormErrors,
@@ -26,25 +29,41 @@ from hedron_core.builtins import (
     IconButton,
     Image,
     Inline,
+    JSONViewer,
     Label,
     Link,
     LinkButton,
     List,
     Main,
+    Metric,
     Nav,
     Page,
+    Progress,
     RadioGroup,
     Section,
     Select,
+    Sidebar,
     Skeleton,
     Stack,
+    Status,
     SubmitButton,
     Table,
+    Tabs,
     Text,
     TextArea,
     TextInput,
     Title,
+    Toast,
 )
+from hedron_core.cache import (
+    CacheScope,
+    CacheTrace,
+    InMemoryCacheBackend,
+    get_cache_traces,
+    invalidate_tags,
+    reset_cache_for_tests,
+)
+from hedron_core.color_mode import ColorMode, ColorModeToggle, resolve_color_mode
 from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.css import compile_css, scoped_identifier
 from hedron_core.diagnostics import (
@@ -80,7 +99,7 @@ from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.theme import Theme, default_theme, emit_theme_css
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 __all__ = [
     "AddressableDescriptor",
@@ -149,6 +168,27 @@ __all__ = [
     "Title",
     "TrustedHtml",
     "UrlPurpose",
+    "Auto",
+    "CacheScope",
+    "CacheTrace",
+    "CodeViewer",
+    "ColorMode",
+    "ColorModeToggle",
+    "Expander",
+    "InMemoryCacheBackend",
+    "JSONViewer",
+    "Metric",
+    "Progress",
+    "Sidebar",
+    "Status",
+    "Tabs",
+    "Toast",
+    "get_cache_traces",
+    "inspect_data",
+    "invalidate_tags",
+    "register_renderer",
+    "reset_cache_for_tests",
+    "resolve_color_mode",
     "__version__",
     "addressable",
     "apply_suppressions",
@@ -203,6 +243,17 @@ def _register_builtins() -> None:
         List,
         DescriptionList,
         Table,
+        Metric,
+        CodeViewer,
+        JSONViewer,
+        Progress,
+        Status,
+        Toast,
+        Expander,
+        Tabs,
+        Sidebar,
+        ColorModeToggle,
+        Auto,
         Card,
         Badge,
         Alert,

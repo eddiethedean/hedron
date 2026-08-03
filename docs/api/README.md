@@ -9,9 +9,10 @@ Hedron documentation separates **callable APIs that ship in this release** from
     Advanced typing and rendering primitives such as `NodeLike`, `RenderMode`, and
     `get_registry` live in `hedron_core`. Prefer `hedron` re-exports when available.
 
-## Shipped in 0.4
+## Shipped in 0.5
 
-These surfaces are implemented and published on the **0.4.0** train.
+These surfaces are implemented and published on the **0.5.0** train (includes all
+0.1–0.4 surfaces plus the data application toolkit).
 
 ### Application
 
@@ -27,16 +28,22 @@ These surfaces are implemented and published on the **0.4.0** train.
 - [Built-ins](BUILT_INS.md)
 - [Addressable components](ADDRESSABLE.md)
 - [Action](ACTION.md)
+- [Auto](AUTO.md)
+- [Utility components](UTILITY_COMPONENTS.md)
+- [ColorMode](COLORMODE.md)
 
 ### Data and models
 
 - [Models and Props](MODELS.md)
 - [Field](FIELD.md)
+- [Data](DATA.md)
+- [Data sources](DATA_SOURCE.md)
 
 ### Platform
 
 - [Rendering](RENDERING.md)
 - [Themes](THEME.md)
+- [Cache](CACHE.md)
 - [Security types](SECURITY_TYPES.md)
 - [Explorer](EXPLORER.md)
 - [Plugins](PLUGINS.md)
@@ -50,14 +57,9 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTIC
 ## Planned contracts
 
 **Accepted ≠ shipped.** These design contracts describe future public APIs. They are
-**not** importable in 0.4. Do not treat them as a product catalog for this release.
+**not** importable in 0.5. Do not treat them as a product catalog for this release.
 
-- [Auto](AUTO.md) — phase 0.5+
-- [Utility components](UTILITY_COMPONENTS.md) — phase 0.5+
-- [Data](DATA.md) — phase 0.5+
-- [Data sources](DATA_SOURCE.md) — phase 0.5+
-- [Charts](CHART.md) — phase 0.5+
-- [Cache](CACHE.md) — phase 0.5+
+- [Charts](CHART.md) — phase 0.6 (`hedron-charts`)
 
 Each shipped page documents purpose, signatures or representative usage, guarantees,
 errors, and extension boundaries. Material public changes require the decision and RFC

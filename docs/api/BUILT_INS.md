@@ -34,9 +34,18 @@ Built-ins use native semantic HTML, expose documented slots and variants, and sa
 
 `Lazy` and `Poll` honor `ComponentRef.hx_attrs()` (method and query params). `Pagination` emits `SafeUrl`-backed `href` / `hx-get` values. HTMX targets are validated against a safe CSS-selector subset.
 
+## Phase 0.5 data application toolkit (`v0.5.0`)
+
+- Intelligent rendering: `Auto` with inspectable renderer registry and bounded Data Intelligence.
+- Data: `DataTable`, `DataEditor` (via `hedron-data`), typed change sets, data-source protocols.
+- Cache: `cache_data`, `cache_component` with scoped keys, single-flight, and Explorer traces.
+- Utilities: `Metric`, `FileUpload`, `DownloadButton`, `CodeViewer`, `JSONViewer`, `Progress`,
+  `Status`, `Toast`, `Expander`, `Tabs`, `Sidebar` (layout `Grid` remains from 0.1).
+- ColorMode: preference API, accessible toggle, cookie/session persistence.
+
 ## Later catalogs
 
-Phase 0.5 (`v0.5.0`) adds DataTable, DataEditor, Metric, FileUpload, DownloadButton, CodeViewer, JSONViewer, Progress, Status, Toast, Expander, Tabs, and Sidebar. Phase 0.6 (`v0.6.0`) adds chart components and trusted icon/SVG registry integrations.
+Phase 0.6 (`v0.6.0`) adds chart components and trusted icon/SVG registry integrations.
 
 ## Naming rule
 

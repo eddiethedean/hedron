@@ -10,6 +10,7 @@ FastAPI-native typed component framework for HTML and HTMX.
 Builds on framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/)
 with pages, addressable components, typed actions, CSRF-aware forms, OpenAPI
 `text/html` metadata, interaction built-ins (`Lazy`, `Poll`, `Pagination`, …),
+caching (`cache_data` / `cache_component`), utility UI, ColorMode persistence,
 a thin `Hedron()` application facade, CLI (`new`/`check`/`graph`/`build`/…),
 plugin loader, and public `hedron.testing` helpers.
 

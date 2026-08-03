@@ -120,6 +120,9 @@ def _shell(title: str, body: str, *, active: str = "components") -> str:
         ("graph", "Graph", "/hedron-explorer/graph"),
         ("security", "Security", "/hedron-explorer/security"),
         ("a11y", "Accessibility", "/hedron-explorer/a11y"),
+        ("cache", "Cache", "/hedron-explorer/cache"),
+        ("data", "Data", "/hedron-explorer/data"),
+        ("auto", "Auto", "/hedron-explorer/auto"),
         ("packages", "Packages", "/hedron-explorer/packages"),
         ("settings", "Settings", "/hedron-explorer/settings"),
     ]
@@ -320,6 +323,74 @@ def explorer_router() -> APIRouter:
             f"<h2>Accessibility</h2><ul>{items}</ul>",
             active="a11y",
         )
+
+    @router.get("/cache", response_class=HTMLResponse, include_in_schema=False)
+    async def cache_view() -> str:
+        from hedron_core.cache import CacheTrace
+
+        events = CacheTrace.recent(50)
+        rows = "".join(
+            "<tr>"
+            f"<td>{html_lib.escape(e['kind'])}</td>"
+            f"<td><code>{html_lib.escape(e['key_fingerprint'])}</code></td>"
+            f"<td>{html_lib.escape(e['scope'])}</td>"
+            f"<td>{html_lib.escape(str(e.get('age_ms')))}</td>"
+            f"<td>{html_lib.escape(str(e.get('size')))}</td>"
+            f"<td>{html_lib.escape(e.get('detail') or '')}</td>"
+            "</tr>"
+            for e in events
+        )
+        body = f"""
+        <h2>Cache traces</h2>
+        <p>Key fingerprints only — secret values are never shown.</p>
+        <table>
+          <thead><tr><th>Kind</th><th>Key</th><th>Scope</th><th>Age ms</th>
+          <th>Size</th><th>Detail</th></tr></thead>
+          <tbody>{rows or "<tr><td colspan='6'>No cache activity</td></tr>"}</tbody>
+        </table>
+        """
+        return _shell("Cache", body, active="cache")
+
+    @router.get("/data", response_class=HTMLResponse, include_in_schema=False)
+    async def data_view() -> str:
+        body = """
+        <h2>Data</h2>
+        <p>Explorer data previews use isolated sample rows by default.
+        Writable-field policy is server-authoritative; forged writes are rejected.</p>
+        <ul>
+          <li>Schema and column editors derive from Hedron Field metadata</li>
+          <li>Changes, conflicts, timing, and endpoints appear on save diagnostics</li>
+          <li>Large sources must use bounded DataEditorSource paging</li>
+        </ul>
+        """
+        return _shell("Data", body, active="data")
+
+    @router.get("/auto", response_class=HTMLResponse, include_in_schema=False)
+    async def auto_view() -> str:
+        from hedron_core.auto import get_last_auto_decision
+
+        decision = get_last_auto_decision()
+        if decision is None:
+            detail = "<p>No Auto() decision recorded yet in this process.</p>"
+        else:
+            rejected = "".join(
+                f"<li><code>{html_lib.escape(name)}</code>: {html_lib.escape(reason)}</li>"
+                for name, reason in decision.rejected
+            )
+            detail = f"""
+            <dl>
+              <dt>Selected</dt>
+              <dd><code>{html_lib.escape(decision.selected)}</code></dd>
+              <dt>Candidates</dt>
+              <dd><code>{html_lib.escape(", ".join(decision.candidates))}</code></dd>
+              <dt>Inspection</dt>
+              <dd><pre>{html_lib.escape(str(dict(decision.inspection)))}</pre></dd>
+            </dl>
+            <h3>Rejected</h3>
+            <ul>{rejected or "<li>None</li>"}</ul>
+            """
+        body = f"<h2>Auto renderer evidence</h2>{detail}"
+        return _shell("Auto", body, active="auto")
 
     @router.get("/packages", response_class=HTMLResponse, include_in_schema=False)
     async def packages_view() -> str:

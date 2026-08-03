@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workspace"
-version = "0.4.0"
+version = "0.5.0"
 description = "Hedron monorepo workspace"
 requires-python = ">=3.11,<3.15"
 readme = "README.md"
@@ -14,6 +14,7 @@ members = [
     "packages/hedron",
     "packages/hedron-explorer",
     "packages/hedron-sample-kit",
+    "packages/hedron-data",
 ]
 
 [dependency-groups]
@@ -22,6 +23,7 @@ dev = [
     "hedron",
     "hedron-explorer",
     "hedron-sample-kit",
+    "hedron-data",
     "pytest>=8.3",
     "httpx>=0.28",
     "anyio>=4.8",
@@ -40,6 +42,7 @@ hedron-core = { workspace = true }
 hedron = { workspace = true }
 hedron-explorer = { workspace = true }
 hedron-sample-kit = { workspace = true }
+hedron-data = { workspace = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]
@@ -52,7 +55,7 @@ markers = [
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "tests", "examples"]
+src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "tests", "examples"]
 extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
@@ -69,7 +72,7 @@ include = [
     "packages/hedron-core/src",
     "packages/hedron/src",
     "packages/hedron-explorer/src",
-    "packages/hedron-sample-kit/src",
+    "packages/hedron-sample-kit/src", "packages/hedron-data/src",
 ]
 pythonVersion = "3.11"
 typeCheckingMode = "strict"

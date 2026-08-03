@@ -10,8 +10,12 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from hedron import (
     Alert,
+    Auto,
     Card,
+    ColorModeToggle,
+    DownloadButton,
     ErrorState,
+    FileUpload,
     Footer,
     FormErrors,
     FormField,
@@ -19,25 +23,40 @@ from hedron import (
     Heading,
     Hedron,
     HedronRouter,
+    JSONViewer,
     Lazy,
     Main,
+    Metric,
     Nav,
     Page,
+    Progress,
     RefreshButton,
     Section,
     Select,
     Stack,
+    Status,
     SubmitButton,
     Table,
     Text,
     TextInput,
+    cache_data,
     html,
 )
+from hedron.color_mode import apply_color_mode_cookie
 from hedron.routing.reverse import ComponentRef
 from hedron.security.csrf import csrf_token_for_request
 from hedron.security.policy import SecurityPolicy
-from hedron_core import Field, FormModel, addressable
+from hedron_core import ColorMode, Field, FormModel, Model, addressable
 from hedron_core.security import SafeUrl, UrlPurpose
+from hedron_data import (
+    Column,
+    DataChanges,
+    DataEditor,
+    DataQuery,
+    DataSaveResult,
+    DataTable,
+    InMemoryDataSource,
+)
 
 Role = Literal["admin", "member"]
 
@@ -84,12 +103,68 @@ class Store:
 STORE = Store()
 security = HTTPBasic(auto_error=False)
 USERS = {"admin": "secret", "member": "secret"}
+AUDIT_LOG: list[str] = []
+
+
+class EmployeeRow(Model):
+    id: Annotated[str, Field(read_only=True, sortable=True)]
+    name: Annotated[str, Field(sortable=True, filterable=True)]
+    title: Annotated[str, Field()]
+    active: Annotated[bool, Field(editor="boolean")] = True
 
 
 class UserForm(FormModel):
     name: Annotated[str, Field(min_length=1)]
     email: Annotated[str, Field(min_length=3)]
     role: Role = "member"
+
+
+def _audit_employees(changes: DataChanges[dict[str, object]]) -> None:
+    AUDIT_LOG.append(
+        f"updates={len(changes.updates)} inserts={len(changes.inserts)} "
+        f"deletes={len(changes.deletes)}"
+    )
+
+
+EMPLOYEE_SOURCE = InMemoryDataSource(
+    [
+        {"id": "e1", "name": "Ada Lovelace", "title": "Analyst", "active": True},
+        {"id": "e2", "name": "Grace Hopper", "title": "Engineer", "active": True},
+        {"id": "e3", "name": "Alan Turing", "title": "Researcher", "active": False},
+        {"id": "e4", "name": "Katherine Johnson", "title": "Mathematician", "active": True},
+        {"id": "e5", "name": "Donald Knuth", "title": "Scientist", "active": True},
+    ],
+    key_field="id",
+    schema=tuple(
+        Column(
+            name=c.name,
+            label=c.label,
+            editor=c.editor,
+            read_only=c.read_only,
+            hidden=c.hidden,
+            sortable=c.sortable,
+            filterable=c.filterable,
+        ).to_schema()
+        for c in (
+            Column(name="id", read_only=True, sortable=True),
+            Column(name="name", sortable=True, filterable=True),
+            Column(name="title"),
+            Column(name="active", editor="boolean"),
+        )
+    ),
+    writable_fields=frozenset({"name", "title", "active"}),
+    version="1",
+    audit_hook=_audit_employees,
+)
+
+
+@cache_data(ttl=30, scope="tenant", tags=("team-summary",), vary_on=("team_id",))
+async def load_team_summary(team_id: int) -> dict[str, object]:
+    return {
+        "team_id": team_id,
+        "members": len(STORE.list_users()),
+        "employees": len(EMPLOYEE_SOURCE.fetch(DataQuery(limit=100)).rows),
+    }
 
 
 def get_store() -> Store:
@@ -162,6 +237,7 @@ def dashboard_page(
                         tone="info",
                         title="Phase 0.3",
                     ),
+                    _phase05_section(csrf_token=csrf_token),
                     _status_banner_section(request=request),
                 )
             )
@@ -169,6 +245,55 @@ def dashboard_page(
         Footer(Text("© Hedron reference application")),
         title="Team Admin",
         lang="en",
+    )
+
+
+def _phase05_section(*, csrf_token: str) -> Any:
+    page = EMPLOYEE_SOURCE.fetch(
+        DataQuery(
+            limit=5,
+            allowlisted_sort_fields=frozenset({"id", "name"}),
+            allowlisted_filter_fields=frozenset({"active"}),
+        )
+    )
+    editor = DataEditor(
+        page=page,
+        key="employees",
+        row_model=EmployeeRow,
+        key_field="id",
+        columns=[
+            Column(name="id", read_only=True, sortable=True),
+            Column(name="name", sortable=True, filterable=True),
+            Column(name="title"),
+            Column(name="active", editor="boolean"),
+        ],
+        save_endpoint="/employees/save",
+        caption="Employees",
+    )
+    sample_rows = [{"id": u.id, "name": u.name, "role": u.role} for u in STORE.list_users()]
+    return Stack(
+        Heading("Data application toolkit", level=2),
+        ColorModeToggle(preference=ColorMode.SYSTEM, action="/color-mode"),
+        Metric("Team size", len(STORE.list_users()), delta="+0", delta_tone="neutral"),
+        Status("Cache and editor demos ready", tone="success"),
+        Progress(40, maximum=100, label="Onboarding"),
+        Auto(sample_rows),
+        Auto({"region": "east", "active": True}),
+        JSONViewer({"csrf": "***", "users": len(STORE.list_users())}),
+        DataTable(page=page, row_model=EmployeeRow, caption="Employees (read-only)"),
+        editor,
+        FileUpload(accept=".csv,text/csv", maximum_size=1_000_000, label="Upload roster CSV"),
+        DownloadButton(
+            href=SafeUrl.parse("/downloads/roster.csv", purpose=UrlPurpose.NAVIGATION),
+            filename="roster.csv",
+            label="Download roster",
+        ),
+        html.meta(name="csrf-token", content=csrf_token),
+        Alert(
+            "Paged DataEditor, Auto(), cache_data, utilities, and ColorMode (phase 0.5).",
+            tone="info",
+            title="Phase 0.5",
+        ),
     )
 
 
@@ -393,6 +518,99 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
     ) -> Table:
         store.delete(user_id)
         return users_table_component(store)
+
+    @app.post("/color-mode")
+    async def set_color_mode(
+        request: Request,
+        color_mode: Annotated[str, Form()] = "system",
+        _: str = Depends(require_user),
+    ) -> Any:
+        from fastapi.responses import RedirectResponse
+
+        try:
+            pref = ColorMode(color_mode)
+        except ValueError:
+            pref = ColorMode.SYSTEM
+        response = RedirectResponse("/", status_code=303)
+        apply_color_mode_cookie(response, pref)
+        if hasattr(request, "session"):
+            request.session["color_mode"] = pref.value
+        return response
+
+    @app.post("/employees/save")
+    async def save_employees(
+        request: Request,
+        _: str = Depends(require_admin),
+    ) -> dict[str, object]:
+        from hedron_data import CellUpdate, filter_writable_changes
+
+        payload = await request.json()
+        changes = DataChanges(
+            updates=tuple(
+                CellUpdate(
+                    row_key=str(u["row_key"]),
+                    field=str(u["field"]),
+                    value=u.get("value"),
+                    row_version=u.get("row_version"),
+                )
+                for u in payload.get("updates", [])
+            ),
+            inserts=tuple(payload.get("inserts", [])),
+            deletes=tuple(str(d) for d in payload.get("deletes", [])),
+            dataset_version=payload.get("dataset_version"),
+        )
+        cleaned, errors = filter_writable_changes(
+            changes,
+            writable_fields=frozenset({"name", "title", "active", "id"}),
+            read_only_fields=frozenset({"id"}),
+            hidden_fields=frozenset(),
+        )
+        if errors:
+            return {
+                "ok": False,
+                "errors": [
+                    {"row_key": e.row_key, "field": e.field, "message": e.message} for e in errors
+                ],
+                "conflicts": [],
+            }
+        result: DataSaveResult[dict[str, object]] = EMPLOYEE_SOURCE.apply(cleaned)
+        return {
+            "ok": result.ok,
+            "errors": [
+                {"row_key": e.row_key, "field": e.field, "message": e.message}
+                for e in result.errors
+            ],
+            "conflicts": [
+                {
+                    "row_key": c.row_key,
+                    "field": c.field,
+                    "server_value": c.server_value,
+                    "client_value": c.client_value,
+                    "message": c.message,
+                }
+                for c in result.conflicts
+            ],
+            "version": result.version,
+        }
+
+    @app.get("/downloads/roster.csv")
+    async def download_roster(_: str = Depends(require_user)) -> Any:
+        from fastapi.responses import Response
+
+        page = EMPLOYEE_SOURCE.fetch(DataQuery(limit=100))
+        table = DataTable(page=page, row_model=EmployeeRow)
+        return Response(
+            content=table.to_csv(),
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": 'attachment; filename="roster.csv"',
+                "Cache-Control": "private, no-store",
+            },
+        )
+
+    @app.get("/api/team-summary")
+    async def team_summary(_: str = Depends(require_user)) -> dict[str, object]:
+        return await load_team_summary(team_id=1)
 
     app.include_router(users)
     return app

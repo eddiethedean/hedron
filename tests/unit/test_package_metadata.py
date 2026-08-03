@@ -25,7 +25,7 @@ def test_version_is_synchronized() -> None:
     assert project["version"] == __version__
     changelog = (PKG / "CHANGELOG.md").read_text(encoding="utf-8")
     assert f"[{__version__}]" in changelog
-    for name in ("hedron", "hedron-explorer", "hedron-sample-kit"):
+    for name in ("hedron", "hedron-explorer", "hedron-sample-kit", "hedron-data"):
         other = tomllib.loads(
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]

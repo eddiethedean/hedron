@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.5.0] - 2026-08-03
+
+Data application foundations in core: `Auto()` renderer registry, cache protocols,
+utility components, and ColorMode.
+
+### Added
+
+- `Auto`, renderer registry, and bounded Data Intelligence inspection.
+- Cache protocols, in-memory backend, key builder, single-flight, and Explorer traces.
+- Utility built-ins: Metric, CodeViewer, JSONViewer, Progress, Status, Toast,
+  Expander, Tabs, Sidebar.
+- `ColorMode`, `ColorModeToggle`, and `resolve_color_mode`.
+
 ## [0.4.0] - 2026-08-03
 
 Developer platform: JSON/SARIF diagnostics, suppressions, source spans, and plugin
@@ -109,3 +122,5 @@ Initial public release of the framework-neutral typed rendering core.
 
 [0.2.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.2.0
 [0.1.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.1.0
+
+[0.5.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.5.0

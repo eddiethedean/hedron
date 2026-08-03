@@ -1,0 +1,72 @@
+[project]
+name = "hedron-data"
+version = "0.5.0"
+description = "DataTable, DataEditor, and data-source toolkit for Hedron"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+maintainers = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+keywords = [
+    "components",
+    "data",
+    "datatable",
+    "dataeditor",
+    "hedron",
+    "tabulator",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "hedron-core==0.5.0",
+]
+
+[project.optional-dependencies]
+pandas = ["pandas>=2.0", "narwhals>=1.0"]
+polars = ["polars>=1.0", "narwhals>=1.0"]
+pyarrow = ["pyarrow>=15.0", "narwhals>=1.0"]
+dataframes = ["pandas>=2.0", "polars>=1.0", "pyarrow>=15.0", "narwhals>=1.0"]
+
+[project.entry-points."hedron.plugins"]
+hedron_data = "hedron_data.plugin:register"
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/hedron"
+Repository = "https://github.com/eddiethedean/hedron"
+Issues = "https://github.com/eddiethedean/hedron/issues"
+Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-data/CHANGELOG.md"
+Documentation = "https://hedron.readthedocs.io/en/latest/"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hedron_data"]
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "src/hedron_data",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "pyproject.toml",
+]

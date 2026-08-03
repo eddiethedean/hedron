@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.5.0] - 2026-08-03
+
+Explorer panels for cache traces, data policy, and Auto renderer evidence.
+
+### Added
+
+- First-party `/hedron-explorer/cache`, `/data`, and `/auto` panels.
+
 ## [0.4.0] - 2026-08-03
 
 Full HTMX Explorer shell with panels for components, routes, graph, security,
@@ -40,3 +48,5 @@ Initial Explorer preview for the FastAPI MVP.
 - Shared registry identity with `hedron` routing and OpenAPI.
 
 [0.2.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.2.0
+
+[0.5.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.5.0

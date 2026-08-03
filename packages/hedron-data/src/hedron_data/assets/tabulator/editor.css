@@ -1,0 +1,12 @@
+.hedron-data-editor { display: block; }
+.hedron-data-editor-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.hedron-data-editor-grid { width: 100%; border-collapse: collapse; }
+.hedron-data-editor-grid th,
+.hedron-data-editor-grid td { border: 1px solid currentColor; padding: 0.25rem 0.5rem; }
+.hedron-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+.hedron-data-table { width: 100%; border-collapse: collapse; }
+.hedron-data-table th,
+.hedron-data-table td { border-bottom: 1px solid currentColor; padding: 0.35rem 0.5rem; text-align: left; }

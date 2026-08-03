@@ -7,9 +7,10 @@
 
 Framework-neutral typed rendering core for Hedron.
 
-Defines models, security boundary types, components, the HTML serializer, and
-the public `render(...) -> RenderResult` API with **no** FastAPI, Flask, Django,
-ASGI, or WSGI dependency.
+Defines models, security boundary types, components, the HTML serializer,
+`Auto()` intelligent rendering, cache protocols, ColorMode, utility built-ins,
+and the public `render(...) -> RenderResult` API with **no** FastAPI, Flask,
+Django, ASGI, or WSGI dependency.
 
 ## Install
 

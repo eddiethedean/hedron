@@ -4,61 +4,115 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_NO_PROGRESS: "1"
+  UV_VERSION: "0.12.1"
 
 jobs:
   test:
+    name: Tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
+          version: ${{ env.UV_VERSION }}
           enable-cache: true
+          cache-dependency-glob: uv.lock
       - name: Set up Python
         run: uv python install ${{ matrix.python-version }}
-      - name: Sync
-        run: uv sync --python ${{ matrix.python-version }}
-      - name: Format check
-        run: uv run ruff format --check packages tests examples
+      - name: Install dependencies
+        run: uv sync --locked --python ${{ matrix.python-version }}
+      - name: Run tests
+        run: uv run --python ${{ matrix.python-version }} pytest -q
+
+  quality:
+    name: Quality, docs, and packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install all dependency groups
+        run: uv sync --locked --all-groups --python 3.12
+      - name: Check formatting
+        run: uv run --python 3.12 ruff format --check packages tests examples
       - name: Lint
-        run: uv run ruff check packages tests examples
+        run: uv run --python 3.12 ruff check packages tests examples
       - name: Type check
-        run: uv run pyright
-      - name: Tests
-        run: uv run pytest -q
+        run: uv run --python 3.12 pyright
       - name: Build packages
         run: |
           set -euo pipefail
-          for pkg in hedron-core hedron hedron-explorer hedron-sample-kit; do
-            uv build --package "$pkg"
+          for pyproject in packages/*/pyproject.toml; do
+            package="$(basename "$(dirname "$pyproject")")"
+            echo "Building $package"
+            uv build --package "$package"
           done
-      - name: Clean-install smoke
+      - name: Test clean wheel installation
         run: |
           set -euo pipefail
-          uv venv /tmp/hedron-smoke --python ${{ matrix.python-version }}
-          uv pip install --python /tmp/hedron-smoke dist/hedron_core-*.whl
-          uv pip install --python /tmp/hedron-smoke dist/hedron-[0-9]*.whl
+          uv venv /tmp/hedron-smoke --python 3.12
+          uv pip install --python /tmp/hedron-smoke dist/*.whl
           /tmp/hedron-smoke/bin/python - <<'PY'
-          from hedron_core import Page, Text, RenderMode, render
+          from hedron_core import Page, RenderMode, Text, render
+
           html = render(Page(Text("smoke"), title="Smoke"), mode=RenderMode.PAGE).html
           assert html.startswith("<!DOCTYPE html>")
           assert "smoke" in html
-          from hedron import Hedron, Page, Text
-          app = Hedron(title="smoke", security="standard", explorer="off")
+
+          from hedron import Hedron
+          from hedron_explorer import explorer_router
+          from hedron_sample_kit import __version__ as sample_kit_version
+
+          app = Hedron(
+              title="smoke",
+              security="standard",
+              explorer="off",
+              session_secret="smoke-secret",
+          )
+
           @app.page("/")
           def home():
               return Page(Text("ok"), title="Ok")
-          print("ok: clean-install render + Hedron")
+
+          assert explorer_router is not None
+          assert sample_kit_version
+          print("ok: all workspace wheels install and import cleanly")
           PY
       - name: Prove hedron-core has no web-framework dependency
         run: |
-          uv run python - <<'PY'
-          import ast, tomllib
+          uv run --python 3.12 python - <<'PY'
+          import ast
+          import tomllib
           from pathlib import Path
+
           forbidden = {"fastapi", "flask", "django", "starlette", "asgiref"}
           project = tomllib.loads(Path("packages/hedron-core/pyproject.toml").read_text())["project"]
           deps = " ".join(project.get("dependencies", [])).lower()
@@ -76,11 +130,12 @@ jobs:
           test ! -f package.json
           test ! -d node_modules
           echo "ok: no Node package tooling in repo"
-      - name: Doc link smoke
+      - name: Check documentation links
         run: |
-          uv run python - <<'PY'
-          from pathlib import Path
+          uv run --python 3.12 python - <<'PY'
           import re
+          from pathlib import Path
+
           roots = [Path("docs"), Path("README.md"), Path("ROADMAP.md")]
           missing = []
           files = []
@@ -93,8 +148,8 @@ jobs:
               if path.is_symlink():
                   continue
               text = path.read_text(encoding="utf-8")
-              for m in re.finditer(r"\]\(([^)#]+)(?:#[^)]*)?\)", text):
-                  target = m.group(1)
+              for match in re.finditer(r"\]\(([^)#]+)(?:#[^)]*)?\)", text):
+                  target = match.group(1)
                   if target.startswith(("http://", "https://", "mailto:")):
                       continue
                   resolved = (path.parent / target).resolve()
@@ -104,8 +159,5 @@ jobs:
               raise SystemExit("\n".join(missing[:50]))
           print("ok: relative doc links resolve")
           PY
-      - name: MkDocs build
-        if: matrix.python-version == '3.12'
-        run: |
-          uv sync --group docs --python ${{ matrix.python-version }}
-          uv run --group docs mkdocs build --strict
+      - name: Build documentation
+        run: uv run --python 3.12 --group docs mkdocs build --strict

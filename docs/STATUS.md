@@ -1,13 +1,14 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.4 **published** as `v0.4.0`; phase 0.5 next  
+**Roadmap position:** phase 0.5 **implemented** as `v0.5.0`; phase 0.6 next  
 **Date:** 2026-08-03  
-**Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` `0.4.0`; MIT licensed (D-033)
+**Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
+`hedron-data` `0.5.0`; MIT licensed (D-033)
 
-Phase 0.4 delivers the developer platform: full Component Explorer (HTMX panels),
-CLI `new`/`check`/`graph`/`audit-components`, plugin loader with rollback, SARIF
-diagnostics, public `hedron.testing` helpers, and the `hedron-sample-kit` third-party
-sample package.
+Phase 0.5 delivers the data application toolkit: `Auto()` and Data Intelligence,
+`DataTable` / `DataEditor` with Tabulator host, data-source protocols, caching,
+utility components, ColorMode UI, Explorer cache/data/Auto panels, and
+`hedron-data`.
 
 ## Current conclusions
 
@@ -20,12 +21,12 @@ sample package.
 - HDN is optional; built-in Python components remain the beginner path (D-010).
 - Decisions D-001 through D-034 remain in force.
 
-## Phase 0.4 evidence
+## Phase 0.5 evidence
 
-- Acceptance: [EXPLORER](acceptance/EXPLORER.md), [CLI](acceptance/CLI.md),
-  [PLUGINS](acceptance/PLUGINS.md), [TESTING](acceptance/TESTING.md).
+- Acceptance: [DATA_EDITOR](acceptance/DATA_EDITOR.md),
+  [CACHING_UTILITIES](acceptance/CACHING_UTILITIES.md).
 - Inference inventory: [INFERENCE_OVERRIDES.md](INFERENCE_OVERRIDES.md).
-- Release gate: `uv run python scripts/check_release_gate.py 0.4.0`.
-- Cut procedure: [RELEASE.md](RELEASE.md) (`Cut v0.4.0`).
+- Release gate: `uv run python scripts/check_release_gate.py 0.5.0`.
+- Cut procedure: [RELEASE.md](RELEASE.md) (`Cut v0.5.0`).
 
-See the [roadmap](ROADMAP.md) for the phase 0.5 data application gate.
+See the [roadmap](ROADMAP.md) for the phase 0.6 visualization gate.

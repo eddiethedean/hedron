@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.4</div>
+<div class="hedron-eyebrow">Python-first UI framework · v0.5</div>
 
 # Ship the interface.<br><span class="hedron-gradient-text">Keep the Python.</span>
 

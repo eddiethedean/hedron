@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.5.0] - 2026-08-03
+
+Data application toolkit on the FastAPI flagship: caching decorators, upload/download
+helpers, ColorMode persistence, and re-exports for `hedron-data` / Auto / utilities.
+
+### Added
+
+- `cache_data` / `cache_component` with scoped keys and single-flight.
+- `FileUpload`, `DownloadButton`, `safe_download_response`.
+- ColorMode cookie/session helpers.
+- Re-exports for DataTable, DataEditor, Auto, utilities, and ColorMode.
+
 ## [0.4.0] - 2026-08-03
 
 Developer platform for the FastAPI flagship.
@@ -97,3 +109,5 @@ Initial FastAPI flagship distribution for the secure HTML/HTMX application MVP.
 - Optional `hedron[dev]` Explorer preview via `hedron-explorer`.
 
 [0.2.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.2.0
+
+[0.5.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.5.0

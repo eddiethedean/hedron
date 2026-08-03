@@ -140,23 +140,25 @@ nav:
       - Platform:
         - Rendering: api/RENDERING.md
         - Themes: api/THEME.md
+        - ColorMode: api/COLORMODE.md
+        - Cache: api/CACHE.md
         - Security types: api/SECURITY_TYPES.md
         - Explorer: api/EXPLORER.md
         - Plugins: api/PLUGINS.md
         - Testing: api/TESTING.md
         - API diagnostics: api/DIAGNOSTICS.md
+      - Data toolkit:
+        - Auto: api/AUTO.md
+        - Utility components: api/UTILITY_COMPONENTS.md
+        - Data: api/DATA.md
+        - Data sources: api/DATA_SOURCE.md
       - Configuration: CONFIGURATION.md
       - CLI: api/CLI.md
       - Diagnostics: DIAGNOSTICS.md
       - Compatibility: COMPATIBILITY.md
       - Glossary: GLOSSARY.md
     - Planned:
-      - Auto: api/AUTO.md
-      - Utility components: api/UTILITY_COMPONENTS.md
-      - Data: api/DATA.md
-      - Data sources: api/DATA_SOURCE.md
       - Charts: api/CHART.md
-      - Cache: api/CACHE.md
   - Project:
     - Status: STATUS.md
     - Roadmap: ROADMAP.md
