@@ -8,7 +8,7 @@
 4. Build a normalized node tree.
 5. Collect registry-declared assets and metadata.
 6. Serialize through the HTML serializer.
-7. Produce a `RenderResult` containing HTML bytes/string, mode, assets, headers, identity map, and trace.
+7. Produce a `RenderResult` containing a Unicode HTML string, mode, assets, approved headers, identity map, diagnostics, and an optional redacted trace. HTTP encoding belongs to the framework adapter.
 
 ## Node model
 
@@ -23,4 +23,3 @@ A page render composes document shell, metadata, body, and asset references. A f
 ## Verification
 
 Golden tests cover composition, slots, pages, fragments, identity, assets, trace boundaries, cycles, limits, and sync determinism. Benchmarks separate tree construction from serialization.
-

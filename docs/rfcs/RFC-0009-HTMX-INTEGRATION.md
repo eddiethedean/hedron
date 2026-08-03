@@ -1,6 +1,6 @@
 # RFC-0009: HTMX integration
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Model
 

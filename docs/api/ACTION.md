@@ -1,6 +1,6 @@
 # `Action`
 
-**Status:** Proposed
+**Status:** Accepted
 
 An action is a typed server operation bound to UI controls and normal FastAPI request processing.
 
@@ -11,7 +11,7 @@ async def delete_user(
     current_user: User = Depends(require_admin),
 ) -> UserTable:
     await service.delete(user_id)
-    return await user_table(...)
+    return UserTable(rows=await service.list_users(current_user.team_id))
 ```
 
 ## Contract
@@ -25,4 +25,3 @@ async def delete_user(
 Actions may return components, explicit responses, redirects, or structured action results that set approved HTMX headers. Local redirects reject untrusted external destinations; external redirects use a distinct explicit API.
 
 Background work attached to the response uses FastAPI `BackgroundTasks`; durable work returns or references a job resource.
-

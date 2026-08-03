@@ -1,10 +1,12 @@
 # RFC-0004: FastAPI integration
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Design
 
 `HedronRoute(APIRoute)` recognizes component return contracts, runs normal FastAPI dependency and request processing, validates the returned component type, and selects a Hedron response. `HedronRouter(APIRouter)` organizes pages, components, and actions. `Hedron(FastAPI)` is a thin convenience application configured with those primitives.
+
+The canonical app-local decorators are `page`, `component`, and `action` on `HedronRouter` or the root `Hedron` application. Reusable addressable descriptors require explicit `include_component` exposure.
 
 Hedron uses FastAPI lifespan, middleware, `BackgroundTasks`, `StaticFiles`, dependency overrides, custom operation IDs, and OpenAPI extensions. It does not monkey-patch FastAPI response serialization.
 
@@ -25,4 +27,3 @@ Hedron uses FastAPI lifespan, middleware, `BackgroundTasks`, `StaticFiles`, depe
 - Equivalent FastAPI dependency tests pass on Hedron routes.
 - Component and JSON routes coexist in one router.
 - Plain FastAPI adoption requires no application subclass.
-

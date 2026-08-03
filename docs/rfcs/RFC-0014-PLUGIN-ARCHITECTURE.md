@@ -1,6 +1,6 @@
 # RFC-0014: Plugin architecture
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Purpose
 

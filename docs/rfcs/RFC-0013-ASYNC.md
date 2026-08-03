@@ -1,6 +1,6 @@
 # RFC-0013: Async architecture
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Model
 

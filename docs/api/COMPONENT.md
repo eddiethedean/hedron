@@ -1,21 +1,24 @@
 # `Component`
 
-**Status:** Proposed
+**Status:** Accepted
 
 `Component` is the base protocol for reusable server-rendered UI.
 
 ```python
-from hedron import Component, Card, Text
+from hedron import Card, Component, NodeLike, Props, Text
+
+class UserCardProps(Props):
+    name: str
 
 class UserCard(Component[UserCardProps]):
-    def render(self) -> ComponentNode:
-        return Card(Text(self.props.user.name))
+    def render(self) -> NodeLike:
+        return Card(Text(self.props.name))
 ```
 
 ## Contract
 
 - Construction validates the declared props contract.
-- `render()` performs no hidden I/O and returns a supported node or render result.
+- `render()` performs no hidden I/O and returns `NodeLike`; the top-level rendering engine alone produces `RenderResult`.
 - Props are immutable for the duration of rendering.
 - Text values are escaped; native attributes are normalized and context checked.
 - Children and named slots follow the component’s declared cardinality.
@@ -26,4 +29,3 @@ Composition helpers accept components, native nodes, strings, supported sequence
 Component identity is deterministic for diagnostics and targets when requested. It excludes secret values and is never an authorization mechanism.
 
 Applications normally subclass `Component`, compose built-ins in functions, or author HDN-backed components. Internal node classes are not a stability promise unless listed in this API set.
-

@@ -1,6 +1,6 @@
 # RFC-0022: Theming
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Design
 

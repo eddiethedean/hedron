@@ -1,6 +1,6 @@
 # RFC-0016: OpenAPI
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Authority split
 

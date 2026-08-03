@@ -1,10 +1,10 @@
 # RFC-0003: Component model
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Model
 
-A component has an identity, props contract, children or named slots, render implementation, optional examples, assets, styles, documentation, and browser behavior. It returns a node tree or a validated render result.
+A component has an identity, props contract, children or named slots, render implementation, optional examples, assets, styles, documentation, and browser behavior. Its `render()` method returns `NodeLike`; only the top-level rendering engine creates a validated `RenderResult`.
 
 Components are either:
 
@@ -27,4 +27,3 @@ Unknown props, invalid children, missing slots, unsafe attributes, and return-co
 - Nested components render with deterministic escaping and attribute normalization.
 - A renderable component cannot be requested until separately declared addressable.
 - Examples and tests can construct components without a live server.
-

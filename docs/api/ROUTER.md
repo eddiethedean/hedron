@@ -1,6 +1,6 @@
 # `HedronRouter` and `HedronRoute`
 
-**Status:** Proposed
+**Status:** Accepted
 
 ```python
 from fastapi import Depends
@@ -16,7 +16,15 @@ def users_page() -> UsersPage:
     return UsersPage()
 ```
 
-`HedronRouter` extends FastAPI `APIRouter` and supports its prefixes, tags, dependencies, responses, and metadata. It adds `page`, `component`, and `action` registration conveniences backed by `HedronRoute`.
+`HedronRouter` extends FastAPI `APIRouter` and supports its prefixes, tags, dependencies, responses, and metadata. It adds the canonical `page`, `component`, and `action` registration decorators backed by `HedronRoute`. `Hedron` exposes the same decorators through its root router.
+
+```python
+@users.component("/table")
+async def user_table() -> UserTable: ...
+
+@users.action("/{user_id}", method="DELETE")
+async def delete_user(user_id: str) -> UserTable: ...
+```
 
 ## Guarantees
 
@@ -25,6 +33,6 @@ def users_page() -> UsersPage:
 - Internal component resources default to `include_in_schema=False`.
 - Component URL generation respects prefixes, mounts, path parameters, and application root paths.
 - Component-folder discovery imports only declared router modules and never exposes ordinary components.
+- `include_component(descriptor, *, path=...)` is the explicit exposure API for reusable `@addressable` descriptors.
 
 `HedronRoute` is public for advanced integration but most users configure it through the router. Subclassing requires preserving component return handling, registry metadata, OpenAPI behavior, and FastAPI dependency semantics.
-

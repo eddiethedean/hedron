@@ -1,6 +1,6 @@
 # RFC-0017: CLI
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Commands
 

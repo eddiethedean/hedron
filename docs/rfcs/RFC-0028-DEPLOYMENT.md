@@ -1,6 +1,6 @@
 # RFC-0028: Deployment
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Production model
 

@@ -1,6 +1,6 @@
 # RFC-0023: Accessibility
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Commitment
 

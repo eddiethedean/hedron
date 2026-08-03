@@ -1,6 +1,6 @@
 # RFC-0001: Vision
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Summary
 

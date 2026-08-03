@@ -1,6 +1,6 @@
 # `Auto`
 
-**Status:** Proposed
+**Status:** Accepted
 
 `Auto(value)` selects an appropriate component through the registered intelligent-rendering pipeline.
 

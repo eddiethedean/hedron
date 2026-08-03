@@ -1,6 +1,6 @@
 # RFC-0019: Testing
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Layers
 

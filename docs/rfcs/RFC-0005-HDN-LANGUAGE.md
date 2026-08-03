@@ -1,6 +1,6 @@
 # RFC-0005: HDN language
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Purpose
 

@@ -2,7 +2,7 @@
 
 ## Responsibilities
 
-The model package implements Hedron-owned `Model`, `Props`, `FormModel`, `EventPayload`, `Field`, `Secret`, `TrustedHtml`, and safe URL types on a constrained Pydantic foundation.
+The model package implements Hedron-owned `Model`, `Props`, `FormModel`, `EventPayload`, `Field`, `Secret`, `TrustedHtml`, `SafeUrl`, and `UrlPurpose` on a constrained Pydantic foundation. Their public behavior is fixed by the model and [security-type](../api/SECURITY_TYPES.md) contracts.
 
 At class creation it inspects annotations and Hedron metadata, rejects unsupported constructs, freezes a portable field schema, and emits registry-ready documentation and presentation metadata. Pydantic schemas are implementation inputs, not the canonical public representation.
 
@@ -20,4 +20,3 @@ Props and endpoint inputs remain separate schemas. Extra fields are forbidden by
 ## Verification
 
 Test supported and rejected types, nested redaction, schema determinism, Pydantic version compatibility, form metadata, extra-field handling, and absence of Pydantic-specific objects from public serialization.
-

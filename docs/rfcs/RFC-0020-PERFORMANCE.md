@@ -1,6 +1,6 @@
 # RFC-0020: Performance
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Approach
 

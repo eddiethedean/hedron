@@ -1,10 +1,10 @@
 # Specification status
 
-**Baseline:** 0.1 pre-implementation  
+**Roadmap position:** phase 0.0 — specification and project foundation  
 **Date:** 2026-08-02  
-**Implementation:** not started
+**Implementation:** ready to begin phase 0.1, targeting `v0.1.0`
 
-The architecture is frozen enough to prepare a first vertical slice, but RFC acceptance remains the formal coding gate. The documents currently describe the intended 1.0 shape and distinguish MVP requirements from deferred capabilities.
+The phase 0.0 specification and project-foundation gate is complete; it publishes no package. The accepted documents describe the cumulative phase 0.0–1.0 path, distinguish planned contracts from implemented behavior, and provide enough detail to start the phase 0.1 typed rendering core for `v0.1.0` without inventing foundational policy.
 
 ## Current conclusions
 
@@ -16,12 +16,14 @@ The architecture is frozen enough to prepare a first vertical slice, but RFC acc
 - HTMX is the default server-interaction layer; Web Components own durable browser-local behavior.
 - HDN, scoped styles, Explorer, DataEditor, integrations, and async boundaries have defined architectures.
 - Rust and cross-language runtimes are deferred until Python semantics stabilize and profiling supplies evidence.
+- All 29 baseline RFCs and all indexed public API contracts are Accepted as planned designs; none is represented as implemented.
+- Decisions D-001 through D-032 are resolved, and the compatibility, project-layout, configuration, identifier, diagnostic, built-in, release-version, and toolchain baselines are explicit.
 
-## Before the first code commit
+## Readiness evidence
 
-1. Review RFC-0001 through RFC-0009 and RFC-0012.
-2. Resolve the open questions listed in [DECISIONS.md](DECISIONS.md).
-3. Mark the vertical-slice RFCs Accepted.
-4. Select supported Python and FastAPI version ranges.
-5. Select the package namespace and repository layout.
+- RFC and API statuses agree with their indexes.
+- The 0.1–1.0 roadmap assigns every accepted RFC and every planned feature family to a phase.
+- Local Markdown links, heading structure, code fences, indexes, and feature coverage pass the final documentation audit.
+- The remaining license choice is deliberately a publication gate, not a local implementation blocker; no license has been inferred on the owner's behalf.
 
+See the [readiness report](READINESS_REPORT.md) for the audit record and the [roadmap](../ROADMAP.md) for the next implementation gate.

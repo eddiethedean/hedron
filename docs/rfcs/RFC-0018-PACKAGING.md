@@ -1,6 +1,6 @@
 # RFC-0018: Packaging
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Distributions
 
@@ -10,6 +10,8 @@
 - `hedron-explorer`, `hedron-data`, and `hedron-charts`: substantial optional subsystems.
 
 Small integrations may use extras such as `hedron[dev]`, `[test]`, `[markdown]`, `[code]`, `[images]`, and `[email]`. Heavy libraries are never required by the core. Imports are lazy, version-gated, and based on public upstream APIs.
+
+The repository is a `uv` workspace built with Hatchling. Distribution names use hyphens and their Python import packages use underscores. Component Explorer ships as the `hedron-explorer` distribution and is installed for application development through `hedron[dev]`; it is not a production dependency of `hedron`. The authoritative source tree and release sequence are defined in [Project layout](../PROJECT_LAYOUT.md).
 
 ## Compatibility
 
@@ -21,4 +23,3 @@ Packages declare supported Python, Hedron, and upstream version ranges. Optional
 - Flask and Django packages do not install FastAPI.
 - Missing extras yield an exact install command.
 - Wheel and source-distribution tests verify package data, assets, typing markers, and offline operation.
-

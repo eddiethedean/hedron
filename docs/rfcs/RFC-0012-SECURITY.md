@@ -1,6 +1,6 @@
 # RFC-0012: Security
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Principle
 

@@ -1,0 +1,28 @@
+# Specification traceability
+
+This matrix identifies the primary public, implementation, and acceptance owner for each architecture area.
+
+| Area / RFCs | Public contract | Implementation | Acceptance |
+|---|---|---|---|
+| Vision and core (0001–0002) | `HEDRON`, `COMPONENT` | Model, renderer, registry | Component model, 1.0 |
+| Components and lifecycle (0003, 0025) | `COMPONENT`, `MODELS`, `FIELD`, `PAGE` | Model system, rendering engine, serializer | Component model |
+| Security boundary values (0012) | `SECURITY_TYPES` | Model system, serializer, security controls | Security, component model |
+| Rendering and built-ins (0002–0003, 0025) | `RENDERING`, `BUILT_INS` | Renderer, serializer, registry | Component model, accessibility |
+| FastAPI and routing (0004, 0015) | `HEDRON`, `ROUTER`, `RESPONSES` | Router generator | FastAPI integration |
+| HDN (0005) | `COMPONENT` | HDN parser/compiler | HDN |
+| Styles and themes (0006, 0022) | `THEME` | CSS compiler, asset pipeline | Scoped styles, accessibility |
+| Explorer and DX (0007, 0024) | `AUTO` | Explorer backend/frontend, registry | Explorer |
+| Caching and utilities (0013, 0024, 0026) | `CACHE`, `UTILITY_COMPONENTS` | Cache layer, security controls | Caching/utilities |
+| Addressability and HTMX (0008–0009) | `ADDRESSABLE`, `ACTION`, `RESPONSES` | Router, renderer, security | FastAPI, security |
+| Data (0010, 0027) | `DATA`, `DATA_SOURCE` | Models, browser/asset integration | DataEditor |
+| Visualization (0011) | `CHART` | Asset/plugin pipelines | Visualization |
+| Security and accessibility (0012, 0023) | All | Security controls, serializer | Security, accessibility |
+| Async and state (0013, 0026) | `ADDRESSABLE`, `ACTION`, `DATA_SOURCE` | Async runtime | Async |
+| Session and state scopes (0026) | `STATE` | Router/dependency adapters, cache layer | Security, async |
+| Plugins and packages (0014, 0018) | Extension protocols | Plugin loader, build | Packaging/deployment |
+| OpenAPI and CLI (0016–0017) | Router/response metadata | OpenAPI generator, build | FastAPI, packaging |
+| Testing and performance (0019–0020) | Test helpers later | Every subsystem | Performance and subsystem suites |
+| Browser and deployment (0021, 0028) | `DATA`, `CHART`, `THEME` | Explorer frontend, assets, build | Accessibility, packaging |
+| Roadmap (0029) | All | All | 1.0 |
+
+Every implementation pull request must name the owning RFC, public contract if any, implementation specification, and acceptance checks.

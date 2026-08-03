@@ -1,6 +1,6 @@
 # Chart APIs
 
-**Status:** Proposed
+**Status:** Accepted
 
 ```python
 LineChart(

@@ -1,6 +1,6 @@
 # RFC-0010: Data components
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Scope
 
@@ -12,7 +12,7 @@ The browser grid owns selection, keyboard navigation, copy/paste, virtualization
 
 Typed changes include updated cells, inserted rows, deleted stable row keys, and optional versions. Manual batch save is the default. Server validation remains authoritative and returns row/column error locations without discarding edits. Stale updates return structured conflicts.
 
-The proposed default grid adapter is Tabulator. AG Grid Community and separately licensed backends may be optional adapters. Application code depends on Hedron contracts, not backend-specific options.
+The initial default grid adapter is Tabulator. AG Grid Community and separately licensed backends may be optional adapters. Application code depends on Hedron contracts, not backend-specific options.
 
 ## Acceptance criteria
 
@@ -20,4 +20,3 @@ The proposed default grid adapter is Tabulator. AG Grid Community and separately
 - Large sources use bounded server-side paging, filters, and sorting.
 - Changes support CSRF, authorization, optimistic concurrency, and audit hooks.
 - Accessible keyboard editing and CSV download are part of the initial component.
-

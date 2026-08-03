@@ -4,6 +4,8 @@
 
 **Addressable component** — A component factory explicitly registered as an HTTP resource. It may be loaded, refreshed, polled, cached, previewed, and tested independently.
 
+**Addressable declaration** — Reusable component metadata created with `@addressable`; it becomes reachable only when a router or application explicitly includes it at a path.
+
 **Auto** — The intelligent rendering entry point that selects a component for a supported Python value through the renderer registry.
 
 **Component** — A typed, reusable unit that produces a Hedron node tree or render result.
@@ -26,13 +28,24 @@
 
 **Page** — A component rendered as a complete HTML document for ordinary navigation and commonly as an appropriate fragment for HTMX navigation.
 
+**NodeLike** — The public recursive value shape accepted by the renderer: component nodes, text, fragments, supported primitives, or sequences of those values.
+
 **Prepared component** — Optional resolved state produced before deterministic tree rendering.
 
 **Renderable component** — A component with no HTTP resource unless separately declared addressable.
+
+**RenderContext** — An immutable framework-neutral rendering context; request adapters derive it without embedding raw request, session, or dependency objects.
+
+**RenderResult** — The immutable framework-neutral result containing a Unicode HTML string plus registered asset, approved header, identity, diagnostic, and optional redacted trace metadata.
+
+**SafeUrl** — An immutable URL validated for a declared purpose and still subject to the final rendering or redirect context policy.
+
+**Secret** — A typed sensitive value whose representations and framework metadata are redacted and whose application access is explicit.
+
+**SessionState** — A typed request-scoped facade over the active framework's session; it is not a global Hedron state store.
 
 **Scoped styles** — Component-local CSS whose local symbols and keyframes are structurally rewritten to deterministic collision-free identifiers.
 
 **TrustedHtml** — An explicit trusted type accepted by raw HTML rendering. Ordinary strings never imply trust.
 
 **Web Component** — A standards-based custom element used for persistent browser-local behavior such as a data grid or chart runtime.
-

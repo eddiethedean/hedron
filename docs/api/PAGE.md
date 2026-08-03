@@ -1,6 +1,6 @@
 # `Page`
 
-**Status:** Proposed
+**Status:** Accepted
 
 `Page` represents a complete navigable document and its associated metadata.
 

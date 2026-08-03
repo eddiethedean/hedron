@@ -1,6 +1,6 @@
 # RFC-0025: Component lifecycle
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Lifecycle
 

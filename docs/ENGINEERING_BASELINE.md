@@ -1,0 +1,40 @@
+# Engineering baseline
+
+**Status:** Accepted for the phase 0.0 baseline
+
+## Toolchain
+
+- `uv` manages the development workspace, lockfile, environments, and release test installs.
+- Hatchling builds wheels and source distributions.
+- Ruff provides formatting and linting.
+- Pyright runs strict type checking on public packages; documented narrow exceptions require justification.
+- pytest, pytest-anyio, httpx, and browser tooling implement the test layers.
+- Markdown links and the specification indexes are checked in CI.
+
+These are contributor tools, not runtime dependencies. Application users may install Hedron with any standards-compliant Python package installer.
+
+## CI gates
+
+Every change runs:
+
+1. formatting, lint, and type checks;
+2. unit, snapshot, conformance, integration, and security tests relevant to the change;
+3. package build and clean-install smoke tests;
+4. documentation link, index, terminology, and RFC-status checks;
+5. compatibility tests for the supported Python and upstream ranges;
+6. browser and accessibility tests when emitted markup or browser assets change;
+7. non-blocking benchmark comparison until a release budget becomes normative.
+
+The default CPython matrix covers 3.12, 3.13, and 3.14. Linux runs the full suite; macOS and Windows run package, core, and representative integration tests. Free-threaded CPython and PyPy are informational until separately promoted.
+
+## Quality policy
+
+- Warnings are not ignored globally; every suppression is scoped and explained.
+- Public functions, classes, protocols, decorators, and configuration have typing and documentation.
+- Generated artifacts are deterministic or declare their intentional variability.
+- Tests do not depend on network access except separately labeled upstream compatibility jobs.
+- Security, accessibility, and compatibility regressions block release.
+
+## Licensing policy
+
+No open-source license is inferred by the architecture documents. Until the package owner selects and adds a license, the repository is treated as all rights reserved and must not be publicly distributed as an open-source release. License selection is required before the first public package publication, not before local phase 0.1 implementation for `v0.1.0`.

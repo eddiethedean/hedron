@@ -1,6 +1,6 @@
 # RFC-0007: Component Explorer
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Purpose
 

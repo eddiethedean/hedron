@@ -1,6 +1,6 @@
 # RFC-0026: State management
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Principle
 

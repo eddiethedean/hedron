@@ -1,6 +1,6 @@
 # Themes and scoped styles
 
-**Status:** Proposed
+**Status:** Accepted
 
 ```python
 app = Hedron(theme="default")

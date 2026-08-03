@@ -1,6 +1,6 @@
 # RFC-0024: Developer experience
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Learning ladder
 

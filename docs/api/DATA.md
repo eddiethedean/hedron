@@ -1,6 +1,6 @@
 # `DataTable` and `DataEditor`
 
-**Status:** Proposed
+**Status:** Accepted
 
 ```python
 DataTable(rows, row_model=EmployeeRow)
@@ -12,6 +12,8 @@ DataEditor(
     on_save=save_employees,
 )
 ```
+
+`on_save` is server-only factory configuration that creates a typed action binding. It is never part of the serializable component props contract. Reusable and large-data editors should prefer an explicit `DataEditorSource`.
 
 ## `DataTable`
 
@@ -26,4 +28,3 @@ Adds a Web Component grid and typed save resources. Column editors derive from r
 Visible fields are not automatically writable. The server validates read-only and authorization rules on every change. Large data uses a `DataEditorSource`; full client serialization is bounded.
 
 Backend-specific options require an adapter namespace or escape hatch and cannot undermine security, accessibility, or portability guarantees.
-

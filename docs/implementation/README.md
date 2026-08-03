@@ -15,6 +15,6 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Asset pipeline](ASSET_PIPELINE.md)
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
+- [Cache layer](CACHE_LAYER.md)
 - [Security controls](SECURITY_CONTROLS.md)
 - [Build system](BUILD_SYSTEM.md)
-

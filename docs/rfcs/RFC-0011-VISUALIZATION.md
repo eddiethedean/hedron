@@ -1,6 +1,6 @@
 # RFC-0011: Visualization
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Architecture
 

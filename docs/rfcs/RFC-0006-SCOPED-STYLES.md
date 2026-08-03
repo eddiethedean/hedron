@@ -1,6 +1,6 @@
 # RFC-0006: Scoped styles
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Design
 

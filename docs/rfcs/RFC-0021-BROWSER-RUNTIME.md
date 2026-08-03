@@ -1,6 +1,6 @@
 # RFC-0021: Browser runtime
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Boundary
 

@@ -1,6 +1,6 @@
 # Data-source protocols
 
-**Status:** Proposed
+**Status:** Accepted
 
 ```python
 class UsersSource(DataEditorSource[UserRow]):

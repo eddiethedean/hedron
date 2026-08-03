@@ -1,6 +1,6 @@
 # RFC-0002: Core architecture
 
-**Status:** Proposed
+**Status:** Accepted
 
 ## Summary
 

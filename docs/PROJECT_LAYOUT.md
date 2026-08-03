@@ -1,0 +1,68 @@
+# Project and package layout
+
+**Status:** Accepted for the phase 0.0 baseline
+
+Hedron uses a Python monorepo with independently publishable distributions. Distribution names use hyphens; import packages use underscores. The flagship `hedron` package re-exports the beginner-facing core API.
+
+```text
+hedron/
+├── README.md
+├── ROADMAP.md
+├── pyproject.toml
+├── uv.lock
+├── packages/
+│   ├── hedron-core/
+│   │   └── src/hedron_core/
+│   ├── hedron/
+│   │   └── src/hedron/
+│   ├── hedron-explorer/
+│   │   └── src/hedron_explorer/
+│   ├── hedron-data/
+│   │   └── src/hedron_data/
+│   ├── hedron-charts/
+│   │   └── src/hedron_charts/
+│   ├── hedron-flask/
+│   │   └── src/hedron_flask/
+│   └── hedron-django/
+│       └── src/hedron_django/
+├── tests/
+│   ├── conformance/
+│   ├── integration/
+│   ├── browser/
+│   ├── security/
+│   └── performance/
+├── examples/
+│   └── reference-app/
+└── docs/
+```
+
+## Distribution boundaries
+
+| Distribution | Import | Required dependencies | First release |
+|---|---|---|---:|
+| `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` |
+| `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform in `v0.4.0` |
+| `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras | `v0.5.0` |
+| `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras | `v0.6.0` |
+| `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` |
+| `hedron-django` | `hedron_django` | `hedron-core`, Django | `v0.7.0` |
+
+`hedron` does not require Explorer in production. Beginning with the `v0.2.0` preview, `hedron[dev]` installs `hedron-explorer` plus development diagnostics and watching; the full Explorer surface is a phase 0.4 (`v0.4.0`) gate. The flagship package contains the registry and trace hooks needed by Explorer but not the Explorer frontend.
+
+## Dependency rules
+
+- Packages depend only toward `hedron-core`; optional subsystems do not become core dependencies.
+- `hedron-core` imports no FastAPI, Starlette, ASGI, WSGI, Flask, or Django types.
+- Flask and Django packages do not depend on `hedron` or install FastAPI.
+- `hedron-data` and `hedron-charts` share protocols but neither depends on a concrete dataframe or visualization backend by default.
+- Browser assets are package resources with manifests; application users require no Node.js installation.
+- The reference application imports packages exactly as an external application would.
+
+## Repository tooling
+
+The root is a `uv` workspace with one lockfile for development and compatibility testing. Each distribution owns its own `pyproject.toml`, metadata, dependencies, typing marker, package assets, changelog fragment, and tests. Hatchling is the initial PEP 517 build backend. Published artifacts remain installable with ordinary `pip` and are not coupled to `uv`.
+
+## Release numbering
+
+First-party distributions use a coordinated release train. The Git tag and release name include `v`—for example `v0.1.0`—while Python package metadata uses the normalized version without the prefix, such as `0.1.0`. Every first-party distribution already introduced by a phase uses that release-train version; a distribution introduced later begins at the current train version shown in the table above. Patch releases such as `v0.1.1` fix the owning phase without creating another roadmap phase. Phase 0.0 creates neither a release tag nor a package artifact.

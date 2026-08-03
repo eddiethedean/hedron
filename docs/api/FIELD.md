@@ -1,10 +1,14 @@
 # `Field`
 
-**Status:** Proposed
+**Status:** Accepted
 
 `Field` declares validation, presentation, security, and data-editing metadata supported by Hedron.
 
 ```python
+from decimal import Decimal
+
+from hedron import Field, Model, Secret
+
 class EmployeeRow(Model):
     employee_id: int = Field(label="ID", read_only=True)
     salary: Decimal = Field(minimum=0, display="currency")
@@ -22,4 +26,3 @@ class EmployeeRow(Model):
 Metadata is declarative and statically inspectable. It may guide forms, tables, DataEditor, examples, OpenAPI extensions, and Explorer, but it never grants authorization or supplies business validation.
 
 Unsupported or contradictory options fail when the model class is created. Secret fields are redacted from representations, examples, logs, identities, cache keys, traces, and Explorer samples.
-

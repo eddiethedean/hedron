@@ -1,6 +1,6 @@
 # `Hedron`
 
-**Status:** Proposed
+**Status:** Accepted
 
 `Hedron` is the batteries-included FastAPI application. It preserves all normal FastAPI behavior while installing Hedron route classes, response handling, lifespan composition, assets, registry, security defaults, and optional development Explorer.
 
