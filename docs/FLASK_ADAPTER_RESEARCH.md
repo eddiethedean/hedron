@@ -72,9 +72,11 @@ and correctness fixes the feature-frozen 0.8 phase is intended to catch before t
 
 ## Upstream findings that affect the design
 
-### Use the Flask extension and application-factory model
+### Prefer the Flask extension and application-factory model for a post-1.0 ergonomic layer
 
-The primary API should follow Flask's documented extension pattern:
+The frozen 0.7 API constructs and exposes a native Flask app through `HedronFlask.flask`; 0.8 should
+stabilize that behavior rather than replace it. For a later ergonomic layer, Flask's documented
+extension pattern is the strongest fit:
 
 ```python
 from flask import Flask
@@ -95,15 +97,16 @@ def create_app() -> Flask:
     return app
 ```
 
-`HedronFlask.init_app(app)` should store only per-application state in
+If introduced after 1.0, `HedronFlask.init_app(app)` should store only per-application state in
 `app.extensions["hedron"]`. The extension object must not retain an app. This supports multiple app
 instances, test factories, and normal extension composition. `HedronBlueprint` should own
 `page`, `component`, `action`, and `include_component` registration using `Blueprint` and
 `add_url_rule`; route wrappers should call `current_app.ensure_sync(view)` so optional coroutine
 views follow Flask's supported dispatch path.
 
-An optional `Hedron(Flask)` convenience subclass may be considered after the extension API is
-stable. It should not be the primary path. An explicit `html_response(value, ...)` helper should be
+This should be additive or follow a normal deprecation window; it must not silently invalidate the
+existing constructor API. An optional `Hedron(Flask)` convenience subclass may also be considered.
+It should not be the primary path. An explicit `html_response(value, ...)` helper should be
 the interoperability path for ordinary `@app.route` views. Globally monkey-patching
 `Flask.make_response` from an extension would be surprising and likely to conflict with other
 extensions.
@@ -150,9 +153,9 @@ instead of silently changing `hedron-flask` claims.
 
 ### Modern Flask security features justify a narrower tested floor
 
-The current [compatibility policy](COMPATIBILITY.md) says Flask and Werkzeug `>=3.0,<4`. Before a
-Supported release, test and strongly consider raising the minimums to Flask `>=3.1.3` and Werkzeug
-`>=3.1.8`:
+The current [compatibility policy](COMPATIBILITY.md) says Flask and Werkzeug `>=3.0,<4`. During 0.8,
+test and strongly consider raising the minimums to Flask `>=3.1.3` and Werkzeug `>=3.1.8` as an
+approved compatibility/security correction:
 
 - Flask 3.1 added `TRUSTED_HOSTS`, request/form resource limits, partitioned session cookies, and
   `SECRET_KEY_FALLBACKS` for key rotation.
