@@ -6,7 +6,7 @@
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
 `pip install -U hedron` (or `uv add hedron@latest`). The current **published** train on
-PyPI is **0.5.0**. See [STATUS](../STATUS.md).
+PyPI is **0.6.0**. See [STATUS](../STATUS.md).
 
 ## CSRF 403 on POST
 
@@ -32,10 +32,18 @@ locally; use `secured` with auth in rare cases; keep production off.
 
 ## Cannot import `Auto` / `DataTable` / chart helpers
 
-**Cause:** Those APIs are planned, not shipped in 0.4.
+**Cause:** Missing optional extra, not a planned feature gap.
 
-**Fix:** Use shipped built-ins and FastAPI endpoints. See
-[Planned contracts](../api/README.md#planned-contracts).
+**Fix:**
+
+```bash
+pip install "hedron[data]"      # Auto, DataTable, DataEditor
+pip install "hedron[charts]"    # LineChart / adapters
+pip install "hedron-charts[plotly]"   # example backend
+```
+
+See [Installation](../getting-started/installation.md) and
+[charts and HTMX](charts-and-htmx.md).
 
 ## `NodeLike` import error from `hedron`
 

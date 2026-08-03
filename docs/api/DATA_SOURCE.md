@@ -27,7 +27,8 @@ class AsyncUsersSource(AsyncDataEditorSource[UserRow]):
 - `DataSaveResult[T]`: accepted changes, normalized values, errors, conflicts, and new versions.
 - `DataEditorSource[T]`: sync fetch and apply protocol.
 - `AsyncDataEditorSource[T]`: async fetch and apply protocol.
-- `VisualizationSource[T]`: load protocol for charts and maps (phase 0.6).
+- `VisualizationSource[T]`: async/sync load protocol for charts (shipped in 0.6 with
+  `hedron-charts`).
 
 ## Sync vs async construction
 

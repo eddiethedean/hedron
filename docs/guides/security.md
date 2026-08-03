@@ -60,6 +60,17 @@ curl -b jar -H "X-CSRF-Token: $TOKEN" -X POST http://127.0.0.1:8000/do
 Prefer `explorer="off"` in scaffolds and production. Install `hedron[dev]` when you need
 Explorer.
 
+## Markdown sanitize and chart callbacks
+
+- `Markdown` renders through `TrustedHtml.nh3` — install `hedron[markdown]` /
+  `hedron[sanitize]`. Do not pass unsanitized HTML through `html.raw` without an explicit
+  trust boundary (`TrustedHtml.reviewed` or `TrustedHtml.nh3`).
+- Chart adapters reject raw JavaScript callbacks and unapproved remote CDN assets.
+  Browser runtimes are pinned and served locally under Hedron static paths.
+
+See [Content](../api/CONTENT.md), [Charts](../api/CHART.md), and
+[Security types](../api/SECURITY_TYPES.md).
+
 ## See also
 
 - [Deployment](deployment.md)

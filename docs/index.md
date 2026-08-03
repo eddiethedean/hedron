@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.5</div>
+<div class="hedron-eyebrow">Python-first UI framework · v0.6</div>
 
 # Ship the interface.<br><span class="hedron-gradient-text">Keep the Python.</span>
 
@@ -97,8 +97,9 @@ a JavaScript application stack.
 <div class="hedron-availability">
   <p><strong>Ready to try it?</strong><br>
   The flagship package includes pages, routing, security, state, CLI tooling,
-  plugins, and testing helpers.</p>
+  plugins, testing helpers, and optional charts / content extras.</p>
   <p><code>pip install hedron</code> ·
+  <code>pip install "hedron[charts]"</code> ·
   <a href="getting-started/installation/">Install options →</a> ·
   <a href="examples/">Interactive demos →</a></p>
 </div>

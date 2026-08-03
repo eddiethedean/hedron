@@ -35,4 +35,20 @@ An authenticated team administration application contains:
 
 The application must work through `Hedron()` and demonstrate at least one router mounted into plain `FastAPI`. It must use released-style package imports, dependency overrides in tests and examples, generated OpenAPI, strict CSP, an offline/no-Node asset path, browser keyboard tests, and documented deployment behind a root-path proxy.
 
-The application grows cumulatively from the static rendering proof in phase 0.1 (`v0.1.0`) through the complete data-and-visualization workflow in phase 0.6 (`v0.6.0`). Its clean-install production deployment is the phase 0.8 (`v0.8.0`) architectural validation gate, not merely a tutorial milestone.
+Phase 0.7 adds two deliberately small native adapter slices rather than forcing the complete
+FastAPI application into framework-shaped abstractions:
+
+- the Flask slice proves native routing, request context, CSRF/session integration, validation/error
+  fragments, reverse URLs, assets, and the declared WSGI capability set; and
+- the Django slice proves native URL configuration, middleware, CSRF/session/forms behavior,
+  reverse URLs, assets, async/WSGI capability labels, and the Django QuerySet adapter decision.
+
+The FastAPI application remains the production-operations proof. It deploys with multiple workers
+behind a prefixed reverse proxy using external static assets plus executable cache and job
+conformance implementations. Adapter slices prove native behavior; they are not cosmetic render-only
+demos.
+
+The application grows cumulatively from the static rendering proof in phase 0.1 (`v0.1.0`) through
+the complete data-and-visualization workflow in phase 0.6 (`v0.6.0`). Phase 0.7 adds operations and
+native adapter slices. Its clean-install production deployment from published `1.0.0rcN` artifacts
+is the phase 0.8 architectural validation gate, not merely a tutorial milestone.

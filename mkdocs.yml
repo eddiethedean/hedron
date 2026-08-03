@@ -92,7 +92,7 @@ extra:
   status:
     new: New
     stable: Stable
-    shipped: Shipped in 0.4
+    shipped: Shipped in 0.6
     planned: Planned
   social:
     - icon: fontawesome/brands/github
@@ -113,6 +113,7 @@ nav:
   - Guides:
     - Overview: guides/index.md
     - Project workflow: guides/project-workflow.md
+    - Charts and HTMX: guides/charts-and-htmx.md
     - Test your UI: guides/testing.md
     - Security: guides/security.md
     - Deployment: guides/deployment.md
@@ -122,18 +123,21 @@ nav:
     - Interactive demos: examples/index.md
   - Reference:
     - Overview: api/README.md
-    - Shipped in 0.4:
+    - Shipped in 0.6:
       - Application:
         - Hedron: api/HEDRON.md
         - Router: api/ROUTER.md
         - Page: api/PAGE.md
         - Responses: api/RESPONSES.md
+        - Interaction: api/INTERACTION.md
         - State: api/STATE.md
       - Components:
         - Component: api/COMPONENT.md
         - Built-ins: api/BUILT_INS.md
         - Addressable components: api/ADDRESSABLE.md
         - Action: api/ACTION.md
+        - Charts: api/CHART.md
+        - Content: api/CONTENT.md
       - Data and models:
         - Models and Props: api/MODELS.md
         - Field: api/FIELD.md
@@ -143,6 +147,7 @@ nav:
         - ColorMode: api/COLORMODE.md
         - Cache: api/CACHE.md
         - Security types: api/SECURITY_TYPES.md
+        - Auth: api/AUTH.md
         - Explorer: api/EXPLORER.md
         - Plugins: api/PLUGINS.md
         - Testing: api/TESTING.md
@@ -158,7 +163,8 @@ nav:
       - Compatibility: COMPATIBILITY.md
       - Glossary: GLOSSARY.md
     - Planned:
-      - Charts: api/CHART.md
+      - Framework adapters: api/ADAPTERS.md
+      - Jobs: api/JOBS.md
   - Project:
     - Status: STATUS.md
     - Roadmap: ROADMAP.md

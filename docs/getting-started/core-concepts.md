@@ -73,9 +73,13 @@ headers, and applies CSRF policy to unsafe cookie-authenticated requests. Durabl
 browser-local behavior belongs in standards-based Web Components rather than a hidden
 client runtime.
 
-Use `SafeUrl`, `TrustedHtml`, and `Secret` only at deliberate trust boundaries. Plain text
-remains escaped, redirects use explicit local or external policies, and authenticated
-fragments receive conservative cache behavior.
+Handlers may return `InteractionResult` for typed primary content, OOB updates, history,
+and cache/`Vary` hints instead of assembling `HX-*` headers by hand. See
+[Responses](../api/RESPONSES.md) and [Charts and HTMX](../guides/charts-and-htmx.md).
+
+Use `SafeUrl`, `TrustedHtml` (including `TrustedHtml.nh3`), and `Secret` only at deliberate
+trust boundaries. Plain text remains escaped, redirects use explicit local or external
+policies, and authenticated fragments receive conservative cache behavior.
 
 ## The build boundary
 

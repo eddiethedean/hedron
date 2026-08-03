@@ -84,8 +84,9 @@ prints the registered route metadata as JSON, which is useful both to humans and
 
 ## Where to go next
 
+- Add charts and typed HTMX fragments with [Charts and HTMX](../guides/charts-and-htmx.md).
 - Try the [interactive demos](../examples/index.md) (in-browser simulations).
 - Learn why pages and fragments are separate render modes in [core concepts](core-concepts.md).
 - Use the full CLI lifecycle in the [project workflow](../guides/project-workflow.md).
 - Add fast component tests with [testing helpers](../guides/testing.md).
-- Browse [shipped APIs](../api/README.md) versus [planned contracts](../api/README.md#planned-contracts).
+- Browse [shipped APIs](../api/README.md).

@@ -12,9 +12,11 @@ your browser so they work on Read the Docs without an application server.
 !!! info "Simulated in the browser — not a live Hedron server"
 
     Filtering, tabs, dialogs, and form updates below are real client-side interactions.
-    Authentication, CSRF enforcement, persistence, and HTMX requests require the
+    Authentication, CSRF enforcement, persistence, HTMX requests, charts, and Markdown
+    require the
     [runnable reference application](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)
-    (clone the repo and `uv sync`; not available from `pip install hedron` alone).
+    (clone the repo and `uv sync`; not available from `pip install hedron` alone). That app's
+    phase-06 section covers `LineChart`, Markdown, and `/charts/*` interaction routes.
 
 ## Team administration
 

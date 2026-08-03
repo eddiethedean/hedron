@@ -1,6 +1,6 @@
 # HTMX 2 integration audit
 
-**Status:** Active plan for phases 0.6–0.8  
+**Status:** Phase 0.6 complete; active plan for phases 0.7–0.8  
 **Reviewed:** 2026-08-03  
 **Baseline:** HTMX 2.0.10
 
@@ -71,9 +71,10 @@ versioned browser assets and are never implied by the core compatibility range.
 - Add an extension asset contract: exact independent versions and digests, local/offline serving,
   CSP declarations, deterministic load order after core HTMX, compatibility tests, and Explorer
   inventory. No extension is bundled merely because it exists.
-- Evaluate the official SSE extension for addressable job/status updates where it demonstrably
-  improves on bounded polling. Keep the official WebSocket extension opt-in for genuinely
-  bidirectional workflows; never reintroduce removed `hx-sse` or `hx-ws` attributes.
+- Time-box evaluation of the official SSE extension for addressable job/status updates where it
+  demonstrably improves on bounded polling. SSE is not required for the 0.7 exit gate and remains
+  post-1.0 when evidence is insufficient. WebSocket components remain post-1.0 absent a new accepted
+  RFC; never reintroduce removed `hx-sse` or `hx-ws` attributes.
 - Cover reverse proxies, root paths, reconnect/backoff, cancellation, cache headers, CSRF, and
   authorization for any selected extension transport.
 
@@ -86,9 +87,6 @@ versioned browser assets and are never implied by the core compatibility range.
   extension teardown, CSP, and reduced-motion behavior.
 - Audit the pinned HTMX core and extension assets, recorded digests, licenses, compatibility, and
   upgrade notes. Patch upgrades require the browser suite as well as Python integration tests.
-- Benchmark an opt-in official preload extension on safe GET navigation only. Adoption requires
-  cache correctness, bounded speculative traffic, `HX-Preloaded` observability, and a demonstrated
-  latency win; it is not a global default.
 - Verify sensitive pages opt out of history snapshots and that cached snapshots, preloaded
   responses, and extension diagnostics cannot disclose private content.
 
@@ -99,6 +97,8 @@ versioned browser assets and are never implied by the core compatibility range.
 - Enabling inline executable attributes, JavaScript-valued headers/values, or response scripts by
   default.
 - Bundling every official extension. Core HTML/HTTP mechanisms remain preferred when sufficient.
+- Introducing navigation preloading during the 0.8 feature freeze; measured preload remains a
+  post-1.0 candidate.
 
 ## Primary sources
 

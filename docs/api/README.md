@@ -20,6 +20,7 @@ surfaces plus visualization and first-party integrations).
 - [Router](ROUTER.md)
 - [Page](PAGE.md)
 - [Responses](RESPONSES.md)
+- [Interaction](INTERACTION.md)
 - [State](STATE.md)
 
 ### Components
@@ -32,6 +33,7 @@ surfaces plus visualization and first-party integrations).
 - [Utility components](UTILITY_COMPONENTS.md)
 - [ColorMode](COLORMODE.md)
 - [Charts](CHART.md)
+- [Content](CONTENT.md)
 
 ### Data and models
 
@@ -46,6 +48,7 @@ surfaces plus visualization and first-party integrations).
 - [Themes](THEME.md)
 - [Cache](CACHE.md)
 - [Security types](SECURITY_TYPES.md)
+- [Auth](AUTH.md)
 - [Explorer](EXPLORER.md)
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
@@ -58,4 +61,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTIC
 ## Planned contracts
 
 **Accepted ≠ shipped.** Future public APIs remain documented as design contracts until
-their owning phase lands. Phase 0.6 chart APIs have moved to **Shipped** above.
+their owning phase lands.
+
+- [Framework adapter contracts](ADAPTERS.md) — portable foundation in 0.7A
+- [Job interaction contracts](JOBS.md) — durable work interaction in 0.7E

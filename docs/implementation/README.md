@@ -18,3 +18,7 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Cache layer](CACHE_LAYER.md)
 - [Security controls](SECURITY_CONTROLS.md)
 - [Build system](BUILD_SYSTEM.md)
+- [Framework adapters](FRAMEWORK_ADAPTERS.md)
+- [Production operations](OPERATIONS.md)
+- [Job interaction runtime](JOB_RUNTIME.md)
+- [Observability](OBSERVABILITY.md)

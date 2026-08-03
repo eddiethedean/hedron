@@ -8,6 +8,11 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
     <strong>Project workflow</strong>
     <p>Scaffold, develop, inspect, check, and create a sealed production build.</p>
   </a>
+  <a class="hedron-card" href="charts-and-htmx/">
+    <span class="hedron-card__icon" aria-hidden="true">⌀</span>
+    <strong>Charts and HTMX</strong>
+    <p>Install charts, render LineChart, Markdown, and typed InteractionResult fragments.</p>
+  </a>
   <a class="hedron-card" href="testing/">
     <span class="hedron-card__icon" aria-hidden="true">✓</span>
     <strong>Test your UI</strong>
@@ -40,6 +45,7 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
   </a>
 </div>
 
-Looking for callable APIs in this release? Start with [Shipped in 0.5](../api/README.md).
+Looking for callable APIs in this release? Start with [Shipped in 0.6](../api/README.md).
+For charts and typed HTMX fragments, see [Charts and HTMX](charts-and-htmx.md).
 Design contracts that are accepted but not implemented yet live under
 [Planned](../api/README.md#planned-contracts).

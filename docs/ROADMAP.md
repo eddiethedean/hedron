@@ -196,67 +196,150 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
   semantic 422 validation, a conflict/error path, OOB updates, correctly varied page/fragment
   caching, synchronized submission, and independently navigable boosted URLs.
 
+### Phase 0.6 closure gate
+
+Phase 0.7 implementation does not begin merely because `0.6.0` metadata is internally
+consistent. The 0.6 behavioral contracts are dependencies of every later framework adapter and
+must first be closed with linked evidence:
+
+- typed interaction headers cannot bypass local-URL, selector, cache, or approved-header policy;
+- OOB swap/select behavior, declared fragment-region authorization, target-aware rendering, and
+  `private` / `no-store` / target-specific cache behavior pass integration and browser tests;
+- chart fallback output and trusted SVG/icon paths pass adversarial active-content tests;
+- Plotly and Vega browser runtimes are pinned, fingerprinted, locally served, and exercised offline;
+- SQLAlchemy/SQLModel adapters apply bounded query operations rather than collecting an unbounded
+  result before paging; and
+- every checked 0.6 acceptance requirement names an automated test or immutable evidence artifact.
+
+Unclosed behavior is fixed in the 0.6 maintenance line or explicitly reclassified as experimental;
+it is not silently inherited as a portable 0.7 contract.
+
 ## 0.7 — Framework adapters and production operations (`v0.7.0`)
 
-**Outcome:** Hedron has a credible multi-framework core and documented production operating model.
+**Outcome:** Hedron has a proven portable adapter boundary, capability-accurate framework
+integrations, and a documented production operating model.
 
-### Scope
+### Entry gate
 
-- `hedron-flask` and `hedron-django` distributions that preserve framework-native routing, security, CSRF, sessions, forms, lifecycle, and URL reversing.
-- Shared cross-adapter component, rendering, HTMX, security, and testing conformance suites.
-- Container, multi-worker, reverse-proxy/root-path, external static-host, and offline deployment guides.
-- Structured async diagnostics, cancellation and timeout traces, bounded concurrency, single-flight backend contracts, and graceful shutdown.
-- Structured `hedron.gather()`, `hedron.run_sync()` legacy blocking-call bridge, async cache backends, and lifecycle-ordered plugin resources.
-- FastAPI `BackgroundTasks` helpers and pluggable durable `JobBackend` contracts with addressable status resources.
-- Logging, tracing, health/readiness, cache/job failure, component-package audit, and supply-chain operating guidance.
-- Cross-adapter HTMX 2 conformance for all supported headers, DELETE query parameters,
-  boost/history, 204 and validation/error responses, 3xx header behavior, proxies, and root paths.
-- Request-aware route reversal for component references and generated HTMX URLs, preserving mount
-  prefixes, router parameters, URL encoding, ASGI `root_path`, reverse proxies, and framework-native
-  URL-generation/security rules instead of storing deployment-sensitive literal paths.
-- End-to-end cancellation for superseded/disconnected HTMX requests at safe checkpoints in
-  expensive data, chart, and job operations, with structured traces distinguishing browser abort,
-  application timeout, server cancellation, and completed-but-discarded work.
-- A 202 job interaction contract with an accessible bounded-polling baseline and optional official
-  SSE promotion; WebSockets remain opt-in and only for genuinely bidirectional workflows.
-- Independently versioned HTMX extension asset contracts; evaluate official SSE for addressable job
-  updates and keep official WebSockets opt-in for genuinely bidirectional workflows.
+- The phase 0.6 closure gate is green.
+- Adapter, operations, jobs, and observability acceptance specifications exist with stable IDs and
+  named evidence commands.
+- Supported Flask, Django, ASGI/WSGI server, cache-backend, and browser ranges are recorded in the
+  compatibility matrix before adapter implementation begins.
+- Adapter-neutral interaction, URL, asset/build-manifest, session/auth signal, lifecycle, and
+  diagnostic contracts have accepted public ownership in `hedron-core`; concrete framework request
+  and response objects remain in their adapter packages.
+- The Explorer dependency direction is resolved so adapter packages do not acquire FastAPI through
+  a required development or runtime dependency.
+
+### Staged delivery
+
+#### 0.7A — Portable adapter foundation
+
+- Move adapter-neutral interaction values and policies out of the FastAPI package boundary while
+  keeping raw request, response, session, and dependency objects framework-owned.
+- Define protocols for request context, page/fragment selection, safe response headers, URL
+  reversal, static/build assets, authenticated-state signals, lifespan resources, and diagnostics.
+- Publish a capability matrix that separates the portable baseline from ASGI-only, WSGI-only, and
+  framework-specific behavior. Identical rendering and HTTP semantics are required where portable;
+  cancellation, dependency injection, validation, lifespan, and background work are capability
+  claims rather than fictional parity.
+- Restructure Explorer services and adapter bridges to consume sanitized core registry/trace
+  contracts without creating circular dependencies.
+
+#### 0.7B — FastAPI production operations
+
+- Container, multi-worker, reverse-proxy/root-path, external static-host, and offline deployment
+  proof with deterministic configuration and graceful shutdown.
+- Structured async diagnostics, deadlines, cancellation checkpoints, bounded concurrency,
+  single-flight backend contracts, and lifecycle-ordered plugin resources.
+- A precisely specified `hedron.gather()` and `hedron.run_sync()` contract covering sibling failure,
+  partial results, `ContextVar` propagation, thread capacity, cancellation, and CPU-heavy rejection.
+- External cache conformance plus logging, traces, health/readiness, cache/job failure reporting,
+  component-package audit, and supply-chain operating guidance.
+
+#### 0.7C — Flask adapter
+
+- A separately installable `hedron-flask` distribution using native Flask routing, request context,
+  security hooks, CSRF/session integrations, error handling, lifecycle, and `url_for` behavior.
+- A native Flask reference slice and shared conformance suite; WSGI limitations are reported in the
+  capability matrix rather than hidden behind FastAPI-shaped APIs.
+
+#### 0.7D — Django adapter
+
+- A separately installable `hedron-django` distribution using native URL configuration, middleware,
+  CSRF, sessions, forms/validation, async capability, lifecycle, and `reverse` behavior.
+- A native Django reference slice, Django QuerySet data-source decision, and shared conformance suite.
+
+#### 0.7E — Jobs and cross-adapter behavior
+
+- FastAPI `BackgroundTasks` helpers remain limited to small post-response work; a pluggable durable
+  `JobBackend` contract defines submission, idempotency, authorization/tenant scope, status states,
+  retry/failure semantics, retention, cancellation requests, and cleanup.
+- A 202 interaction renders an accessible bounded-polling status component, uses `Retry-After`, and
+  provides useful non-HTMX behavior without requiring a live transport.
+- Cross-adapter HTMX 2 conformance covers supported headers, DELETE query parameters,
+  boost/history, 204 and validation/error responses, 3xx header behavior, proxies, and deployment
+  prefixes through each framework's request-aware reverse router.
+
+#### 0.7F — Optional transport decision
+
+- Define an independently versioned HTMX extension asset contract with exact versions/digests,
+  local serving, CSP declarations, load order, compatibility tests, and Explorer inventory.
+- Time-box evaluation of the official SSE extension against bounded polling. SSE adoption is not a
+  phase exit requirement; if evidence is insufficient it remains post-1.0.
+- WebSocket components remain post-1.0 unless a new accepted RFC demonstrates a genuinely
+  bidirectional requirement.
 
 ### Exit gate
 
-- Advertised FastAPI, Flask, and Django packages pass their declared compatibility and conformance matrices.
-- The reference application deploys behind a prefixed reverse proxy with multiple workers, external cache/job test doubles, and externally hosted static assets.
+- Every advertised adapter has an explicit `supported`, `experimental`, or `deferred` stability
+  label. Supported adapters pass their declared compatibility, packaging, security, and conformance
+  matrices; unfinished adapters do not count toward the phase gate.
+- Portable semantics pass once through a shared suite, and every framework capability claim has a
+  native test. ASGI/WSGI differences are documented rather than normalized into misleading parity.
+- The FastAPI reference application deploys behind a prefixed reverse proxy with multiple workers,
+  an external cache and job conformance implementation, and externally hosted static assets.
+- Native Flask and Django reference slices prove routing, CSRF/session behavior, validation,
+  reverse URLs, assets, and error responses without importing FastAPI.
 - Any selected HTMX extension passes offline asset, CSP, authentication, reconnect/cancellation,
   lifecycle, and cross-adapter conformance; removed HTMX 1 attributes remain rejected.
-- Framework adapters preserve the same interaction-result semantics, request-aware URLs, cache
-  variation, validation/error fragments, cancellation, and job-status behavior while using each
-  host framework's native routing, validation, security, and response lifecycle.
+- Adapter, operations, jobs, and observability acceptance ledgers link every completed requirement
+  to a test command and evidence artifact; checkbox state alone is insufficient.
 
 ## 0.8 — Release candidate and hardening (`v0.8.0`)
 
-**Outcome:** Hedron’s `v1.0.0` public surface is frozen and supported by release-quality evidence.
+**Outcome:** Hedron’s `v1.0.0` public surface is frozen at a hardening baseline and supported by
+release-quality evidence. Phase 0.8 adds no new product subsystem, framework adapter, or transport.
 
 ### Scope
 
 - Public API, HDN, registry metadata, plugin protocol, compiled artifact, and rendered-markup stability classifications.
-- Compatibility matrix, semantic-versioning rules, deprecation window, upgrade tooling, changelog, and migration guides.
+- Enforce the compatibility matrix, semantic-versioning rules, numeric deprecation window, upgrade
+  tooling, changelog, and migration guides established before the freeze.
 - Complete security threat-model review, dependency and browser-asset audit, accessibility audit, and performance budgets.
 - Packaging tests for wheels and source distributions across supported platforms and Python versions.
 - Documentation usability testing, error-message review, example verification, and no-Node/offline test path.
 - Chromium, Firefox, and WebKit HTMX conformance for history, focus, OOB, races, extension teardown,
   CSP, and reduced motion; pinned core/extension asset and license audit.
-- Measured opt-in preload evaluation for safe GET navigation, including cache correctness, bounded
-  speculative traffic, privacy, and `HX-Preloaded` observability.
 - Release tests prove that intermediary and application caches cannot confuse pages, fragments, or
   target-specific variants; the complete interaction-status matrix preserves authorization,
   accessibility, retry semantics, and useful non-HTMX fallbacks.
+- Produce an SBOM, dependency and browser-asset vulnerability report, license inventory, build
+  provenance/attestation, rollback rehearsal, and immutable acceptance evidence bundle.
 - Release-candidate stabilization: only fixes, documentation, compatibility work, and explicitly approved scope changes.
+
+`v0.8.0` is the public API-freeze baseline, not a substitute for testing the final version number.
+After the 0.8 maintenance line is green, publish one or more PEP 440 prereleases
+(`1.0.0rc1`, `1.0.0rc2`, ...) for clean-install, upgrade, deployment, and rollback rehearsals. No
+stable `1.0.0` artifact is published without a successful `1.0.0rcN` rehearsal.
 
 ### Exit gate
 
-- All `v1.0.0` acceptance documents pass using published release-candidate artifacts.
+- All `v1.0.0` acceptance documents pass using published `1.0.0rcN` artifacts.
 - No unresolved critical/high security issue, release-blocking accessibility defect, undocumented breaking change, or unowned compatibility failure remains.
 - The full reference application is deployed and tested from a clean installation.
+- No net-new feature or newly advertised adapter enters after the 0.8 freeze.
 
 ## 1.0 — Stable Hedron (`v1.0.0`)
 
@@ -269,6 +352,8 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - Secure components, addressable resources, HTMX interaction, HDN, scoped styles, themes, Explorer, data tools, charts, plugins, and production tooling at their documented stability levels.
 - Published reference application, tutorials, API reference, architecture/RFC history, deployment guides, and migration support.
 - Reproducible release artifacts, provenance, vulnerability response process, and maintained acceptance baselines.
+- Published support, maintenance/backport, deprecation, and security-response policies with named
+  ownership and supported adapter/server/browser matrices.
 
 ### 1.0 gate
 
@@ -370,26 +455,28 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 
 | Planned capability | Target phase | Notes |
 |---|---:|---|
-| Flask and Django distributions and re-exported component API | 0.7 | Do not install FastAPI. |
-| `hedron-flask` and `hedron-django` release artifacts | 0.7 | Published and tested independently of the flagship package. |
+| Portable framework-adapter context, interaction, URL, asset, lifecycle, and diagnostic protocols | 0.7A | Owned by `hedron-core`; raw framework objects stay in adapters. |
+| Framework capability matrix | 0.7A | Portable guarantees are separated from ASGI, WSGI, and native-framework capabilities. |
+| Flask and Django distributions and re-exported component API | 0.7C–0.7D | Do not install FastAPI; stability is explicit. |
+| `hedron-flask` and `hedron-django` release artifacts | 0.7C–0.7D | Published and tested independently of the flagship package when their gates pass. |
 | Native framework auth, CSRF, sessions, forms, lifecycle, URL reversing | 0.7 | Host framework remains authoritative. |
 | Cross-adapter rendering/HTMX/security/testing conformance | 0.7 | Verifies the framework-neutral core boundary. |
 | Typed FastAPI/HTMX request, result, policy, OOB/event/history contract | 0.6 | One explicit interaction envelope; HTML and HTTP mechanics stay visible. |
 | Declared fragment regions, boosted metadata, semantic validation/status responses | 0.6 | Target allowlists, full-page fallbacks, and accessible errors. |
 | Page/fragment/target cache variation and synchronized form/search policy | 0.6 | Prevents cache confusion and request races. |
-| Request-aware URL reversal, disconnect cancellation, and 202 job interactions | 0.7 | Correct under mounts/proxies and expensive asynchronous work. |
+| Request-aware URL reversal, capability-aware cancellation, and 202 job interactions | 0.7A–0.7E | Correct under mounts/proxies and explicit ASGI/WSGI capability boundaries. |
 | HTMX 2 rich-browser lifecycle, head/assets, errors, morphing, transitions | 0.6 | Core behavior first; optional extensions require conformance evidence. |
-| HTMX 2 extension asset/transport contract and adapter matrix | 0.7 | Independent pins, local serving, CSP, SSE evaluation, optional WebSockets. |
-| HTMX 2 real-browser, privacy, supply-chain, and preload hardening | 0.8 | Release evidence across Chromium, Firefox, and WebKit. |
+| HTMX 2 extension asset contract and transport decision | 0.7F | Independent pins, local serving, CSP; polling is sufficient and SSE may remain deferred. |
+| HTMX 2 real-browser, privacy, and supply-chain hardening | 0.8 | Release evidence across Chromium, Firefox, and WebKit. |
 | Structured gather, blocking bridge, lifecycle-ordered async resources | 0.7 | No separate async runtime or detached request tasks. |
 | External cache contracts and durable job-backend protocol | 0.7 | BackgroundTasks remains for small post-response work. |
 | Container, multi-worker, proxy/root-path, static host, offline deployment | 0.7 | Includes graceful shutdown and health/readiness. |
 | Logging, traces, timing, cache/job failures, component supply-chain audit | 0.7 | Secrets are redacted before storage or display. |
 | Security development/standard/strict profiles | 0.2, 0.8 | Baseline enforcement at 0.2; final audit at 0.8. |
 | Accessibility contracts and WCAG-oriented acceptance | 0.1–0.8 | Required incrementally for every built-in and integration. |
-| Performance benchmarks, payload limits, and budgets | 0.1–0.8 | Stage-level evidence before optimization. |
+| Performance benchmarks, payload limits, and budgets | 0.1–0.8 | 0.7 establishes production workloads/budgets; 0.8 enforces them. |
 | Public API/artifact stability classification and freeze | 0.8 | Includes HDN, plugin, manifest, metadata, and markup promises. |
-| Semantic versioning, deprecation, upgrade, migration, compatibility | 0.8 | Enforced before 1.0. |
+| Semantic versioning, deprecation, upgrade, migration, compatibility | 0.7–0.8 | Defined before the freeze and enforced through RC rehearsal. |
 | Published reference application and release artifacts | 0.1–1.0 | Grows cumulatively and validates clean installation. |
 
 ## RFC-to-phase coverage
@@ -430,9 +517,12 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 
 The following ideas remain planned possibilities but are not part of the 1.0 commitment. Each requires a separate accepted RFC and demonstrated demand:
 
-- **Live transport beyond the 0.7 evaluation:** stable SSE live regions, WebSocket components,
+- **Live transport beyond the 0.7 decision:** stable SSE live regions, WebSocket components,
   focused chunked lists, and general streamed documents, using separately versioned HTMX 2
   extensions rather than removed `hx-sse` / `hx-ws` attributes.
+- **Navigation preloading:** measured opt-in preload for safe GET navigation, including cache
+  correctness, bounded speculative traffic, privacy, and `HX-Preloaded` observability. Preload is
+  not introduced during the 0.8 feature freeze.
 - **Advanced async:** component-level async `prepare()` lifecycle, adaptive concurrency, and distributed tracing integrations.
 - **HDN tooling:** language server, editor extensions, advanced static analysis, and guided React-to-HDN conversion.
 - **Styles and assets:** route-level CSS splitting beyond the 0.6 fragment/head contract, fully

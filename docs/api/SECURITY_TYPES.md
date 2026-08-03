@@ -22,9 +22,19 @@ body = TrustedHtml.reviewed(sanitized_html, source="application-sanitizer:v1")
 
 ## `TrustedHtml`
 
-`TrustedHtml.reviewed(value, *, source)` creates an immutable raw-markup value at an explicit trust boundary. `source` is non-secret provenance for audit and diagnostics. The direct constructor is not public. Integrations with supported sanitizers may provide equivalent named constructors that record a policy/version.
+`TrustedHtml.reviewed(value, *, source)` creates an immutable raw-markup value at an explicit trust boundary. `source` is non-secret provenance for audit and diagnostics. The direct constructor is not public.
 
-Only the dedicated `hedron.html.raw(...)` primitive accepts `TrustedHtml`. Wrapping a value does not sanitize it, weaken Content Security Policy, permit unregistered scripts/assets, or authorize its source. Ordinary strings always render as escaped text.
+`TrustedHtml.nh3(value, *, tags=None)` sanitizes HTML with [nh3](https://github.com/messense/nh3) and records `source` as `nh3:<version>`. Requires the optional dependency:
+
+```bash
+pip install "hedron[sanitize]"
+# or
+pip install "hedron[markdown]"
+```
+
+Missing nh3 raises `HED-SEC-0020` with that remediation. Integrations with supported sanitizers may provide equivalent named constructors that record a policy/version.
+
+Only the dedicated `hedron.html.raw(...)` primitive accepts `TrustedHtml`. Wrapping a value does not sanitize it (except via `TrustedHtml.nh3`), weaken Content Security Policy, permit unregistered scripts/assets, or authorize its source. Ordinary strings always render as escaped text.
 
 ## `SafeUrl` and `UrlPurpose`
 

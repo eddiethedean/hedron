@@ -43,9 +43,13 @@ Built-ins use native semantic HTML, expose documented slots and variants, and sa
   `Status`, `Toast`, `Expander`, `Tabs`, `Sidebar` (layout `Grid` remains from 0.1).
 - ColorMode: preference API, accessible toggle, cookie/session persistence.
 
-## Later catalogs
+## Phase 0.6 visualization and content (`v0.6.0`)
 
-Phase 0.6 (`v0.6.0`) adds chart components and trusted icon/SVG registry integrations.
+- Charts: `LineChart` and Matplotlib/Plotly/Altair adapters via `hedron-charts`
+  (`pip install "hedron[charts]"`).
+- Content: `Markdown`, `highlight_code`, `process_image`, `validate_email_address`.
+- Trust: `TrustedHtml.nh3`, trusted icon/SVG registry.
+- Interaction: `InteractionResult`, `HtmxRequest`, fragment regions, status policies.
 
 ## Naming rule
 

@@ -9,6 +9,7 @@ This matrix identifies the primary public, implementation, and acceptance owner 
 | Security boundary values (0012) | `SECURITY_TYPES` | Model system, serializer, security controls | Security, component model |
 | Rendering and built-ins (0002–0003, 0025) | `RENDERING`, `BUILT_INS` | Renderer, serializer, registry | Component model, accessibility |
 | FastAPI and routing (0004, 0015) | `HEDRON`, `ROUTER`, `RESPONSES` | Router generator | FastAPI integration |
+| Portable adapters (0002, 0009, 0015, 0018) | `ADAPTERS`, `RESPONSES`, `STATE` | Framework adapters | Adapters |
 | HDN (0005) | `COMPONENT` | HDN parser/compiler | HDN |
 | Styles and themes (0006, 0022) | `THEME` | CSS compiler, asset pipeline | Scoped styles, accessibility |
 | Explorer and DX (0007, 0024) | `AUTO`, `EXPLORER` | Explorer backend/frontend, registry | Explorer |
@@ -18,11 +19,15 @@ This matrix identifies the primary public, implementation, and acceptance owner 
 | Visualization (0011) | `CHART` | Asset/plugin pipelines | Visualization |
 | Security and accessibility (0012, 0023) | All | Security controls, serializer | Security, accessibility |
 | Async and state (0013, 0026) | `ADDRESSABLE`, `ACTION`, `DATA_SOURCE` | Async runtime | Async |
+| Durable jobs (0013, 0026, 0028) | `JOBS`, `RESPONSES` | Job interaction runtime | Jobs, async |
 | Session and state scopes (0026) | `STATE` | Router/dependency adapters, cache layer | Security, async |
 | Plugins and packages (0014, 0018) | Extension protocols | Plugin loader, build | Packaging/deployment |
 | OpenAPI and CLI (0016–0017) | Router/response metadata | OpenAPI generator, build | FastAPI, packaging |
 | Testing and performance (0019–0020) | Test helpers later | Every subsystem | Performance and subsystem suites |
-| Browser and deployment (0021, 0028) | `DATA`, `CHART`, `THEME` | Explorer frontend, assets, build | Accessibility, packaging |
+| Browser and deployment (0021, 0028) | `DATA`, `CHART`, `THEME`, `ADAPTERS` | Explorer frontend, assets, build, operations | Accessibility, packaging, operations |
+| Observability and operating diagnostics (0012, 0013, 0020, 0028) | `DIAGNOSTICS`, `ADAPTERS`, `JOBS` | Observability, operations | Observability, performance, security |
 | Roadmap (0029) | All | All | 1.0 |
 
-Every implementation pull request must name the owning RFC, public contract if any, implementation specification, and acceptance checks.
+Every implementation pull request must name the owning RFC, public contract if any, implementation
+specification, and acceptance checks. Phase 0.6 closure and later work also names stable evidence IDs
+and the commands/artifacts that will satisfy them.

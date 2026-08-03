@@ -38,7 +38,20 @@ This is the authoritative decision log for the phase 0.0 specification baseline.
 | D-031 | Accepted | The specification phase is 0.0, every subsequent pre-1.0 phase shifts down by one minor number through the phase 0.8 release candidate, and the stable target remains phase 1.0. Scope, order, and gates are otherwise unchanged. |
 | D-032 | Accepted | Phase 0.0 publishes no package. Each implementation phase `0.N` has initial release tag `v0.N.0` and Python package version `0.N.0`; phase 1.0 has `v1.0.0`/`1.0.0`. First-party distributions use the coordinated release train, and patch releases remain within their owning roadmap phase. |
 | D-033 | Accepted | Hedron is licensed under the MIT License; the repository root and each publishable distribution ship `LICENSE` with matching package metadata. |
+| D-035 | Accepted | Phase 0.7 retains the `v0.7.0` train but is governed by a phase 0.6 behavioral closure gate and staged internal gates: portable adapter foundation, FastAPI operations, Flask, Django, jobs/conformance, and an optional-transport decision. Portable semantics are shared; ASGI, WSGI, and framework-native differences are explicit capability claims. Phase 0.8 is feature-frozen hardening, and final-version rehearsals use published `1.0.0rcN` artifacts before `v1.0.0`. Completion from phase 0.6 onward requires linked automated or immutable evidence; checked prose alone is not release evidence. This supersedes D-031 only where D-031 preserved the former 0.7/0.8 scope and gate shape unchanged. |
 
-## Implementation blockers
+## Phase 0.7 entry blockers
 
-None. Changes to accepted decisions require an explicit superseding decision and affected RFC/API updates.
+The following are deliberate planning gates rather than permission to invent behavior during
+implementation:
+
+- close or explicitly reclassify every phase 0.6 behavioral dependency named in the roadmap;
+- assign adapter-neutral interaction, URL, asset/build, session/auth signal, lifecycle, and
+  diagnostic contracts to `hedron-core` public APIs;
+- resolve the Explorer-to-adapter dependency direction without making FastAPI a required dependency
+  of Flask or Django packages;
+- publish Flask, Django, reference ASGI/WSGI server, external cache, and browser compatibility ranges;
+  and
+- create evidence-backed adapter, operations, jobs, and observability acceptance ledgers.
+
+Changes to accepted decisions require an explicit superseding decision and affected RFC/API updates.

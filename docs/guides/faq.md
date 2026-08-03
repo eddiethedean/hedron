@@ -8,8 +8,9 @@ pip install hedron
 uv add hedron
 ```
 
-That installs the current PyPI release on the **0.5** train (`0.5.0` and later patches).
-See [STATUS](../STATUS.md). For DataTable/DataEditor, install `hedron[data]`.
+That installs the current PyPI release on the **0.6** train (`0.6.0` and later patches).
+See [STATUS](../STATUS.md). For DataTable/DataEditor, install `hedron[data]`. For charts,
+install `hedron[charts]`.
 
 ## Do I need Node.js?
 
@@ -27,8 +28,15 @@ Either works. Prefer one path: `uv init` + hand-written `app.py` from the quicks
 
 ## Are Auto, DataTable, and charts available?
 
-Not in 0.4. They are **Accepted design contracts** under
-[Planned](../api/README.md#planned-contracts) for later phases (starting with 0.5).
+Yes on the 0.6 train:
+
+```bash
+pip install "hedron[data]"     # Auto, DataTable, DataEditor
+pip install "hedron[charts]"   # LineChart and visualization adapters
+```
+
+See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), and the
+[charts and HTMX guide](charts-and-htmx.md).
 
 ## Are the docs “interactive demos” a running Hedron server?
 

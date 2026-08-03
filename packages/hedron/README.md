@@ -22,6 +22,13 @@ pip install hedron
 uv add hedron
 ```
 
+Optional data and charts:
+
+```bash
+pip install "hedron[data]"
+pip install "hedron[charts]"
+```
+
 Development Explorer:
 
 ```bash

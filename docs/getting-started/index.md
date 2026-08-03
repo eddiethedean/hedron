@@ -37,3 +37,6 @@ five minutes if Python is already installed.
 No Node.js installation or frontend build tool is required.
 
 [Install Hedron :material-arrow-right:](installation.md){ .md-button .md-button--primary }
+
+After the hello page, continue with [Charts and HTMX](../guides/charts-and-htmx.md) for
+`LineChart`, Markdown, and `InteractionResult` fragments.

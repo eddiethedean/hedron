@@ -11,10 +11,9 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase 0.6 is **implemented** on main as `0.6.0` (visualization
-> adapters, content/auth extras, typed HTMX interactions, `hedron-charts`). Phase 0.5
-> remains the latest published tag until `v0.6.0` is cut. The project is MIT-licensed.
-> Next milestone: phase 0.7 (framework adapters and production operations).
+> **Project status:** Phase 0.6 is **published** as `v0.6.0` (visualization adapters,
+> content/auth extras, typed HTMX interactions, and `hedron-charts`). The project is
+> MIT-licensed. Next milestone: phase 0.7 (framework adapters and production operations).
 
 ## Packages
 
@@ -95,7 +94,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 | 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes (**published**) |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform (**published**) |
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI (**published**) |
-| 0.6 | `v0.6.0` | Visualization and first-party integrations (**implemented on main**) |
+| 0.6 | `v0.6.0` | Visualization and first-party integrations (**published**) |
 | 0.7 | `v0.7.0` | Flask/Django adapters and production operations |
 | 0.8 | `v0.8.0` | Public API freeze, release candidate, and hardening |
 | 1.0 | `v1.0.0` | Stable supported Hedron release |
@@ -137,9 +136,10 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 ## Current release
 
-Install from PyPI: `pip install hedron` (coordinated train `0.5.0`; use
-`pip install "hedron[data]"` for DataTable/DataEditor). Next implementation
-target is phase 0.6 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
+Install from PyPI: `pip install hedron` (coordinated train `0.6.0`). Use
+`pip install "hedron[data]"` for DataTable/DataEditor and
+`pip install "hedron[charts]"` for visualization adapters. Next implementation
+target is phase 0.7 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing
 

@@ -4,7 +4,7 @@ status: shipped
 
 # Response APIs
 
-**Status:** Accepted
+**Status:** Shipped in `0.6.0`
 
 ## `HTML(component)`
 
@@ -48,6 +48,63 @@ All Hedron responses use contextual escaping, registered assets, declared header
 
 General component streaming is outside the 1.0 contract. Applications that need a streaming escape hatch use the framework's explicit `StreamingResponse`; Hedron does not expose a public `StreamingComponentResponse` in the 0.x–1.0 API.
 
-## InteractionResult (0.6)
+## `InteractionResult`
 
-Handlers may return `InteractionResult` for typed primary content, OOB updates, status, history, and cache/`Vary` hints. HTML and `HX-*` headers remain visible via `approved_headers` / `interaction_headers`.
+Handlers may return `InteractionResult` for typed primary content, out-of-band (OOB) updates,
+status, history, and cache/`Vary` hints. HTML and `HX-*` headers remain visible via
+`interaction_headers` / `approved_headers`.
+
+```python
+from hedron import Hedron, InteractionResult, OobUpdate, Text
+
+app = Hedron(title="Demo", security="standard", session_secret="replace-me")
+
+
+@app.page("/panel")
+def panel() -> InteractionResult:
+    return InteractionResult(
+        content=Text("Primary panel"),
+        oob=(OobUpdate(Text("Sidebar note"), swap="true"),),
+        trigger="panelUpdated",
+        history="push",
+        cache="vary-htmx",
+        explanation="Refresh primary panel and announce sidebar note",
+    )
+```
+
+### Fields
+
+| Field | Role |
+|---|---|
+| `content` | Primary swap body (`NodeLike` / `Component` / `None`) |
+| `status_code` | HTTP status (default `200`) |
+| `target` / `retarget` / `reswap` / `reselect` | HTMX target/swap overrides |
+| `oob` | Tuple of `OobUpdate(content, swap=..., select=...)` |
+| `trigger` / `trigger_after_swap` / `trigger_after_settle` | `HX-Trigger*` payloads |
+| `push_url` / `replace_url` / `history` | History (`push` / `replace` / `none`) |
+| `refresh` / `location` | Full refresh or `HX-Location` |
+| `cache` | `"private"` / `"no-store"` / `"vary-htmx"` (default) |
+| `region_id` / `policy` | Declared fragment region + `InteractionPolicy` |
+| `headers` | Extra response headers (merged after Hedron defaults) |
+| `explanation` | Diagnostics / Explorer trace text |
+
+When `cache="vary-htmx"`, responses include `Vary: HX-Request, HX-History-Restore-Request`
+(and `HX-Target` when `policy.vary_on_target` is set).
+
+See [Interaction](INTERACTION.md) for `HtmxRequest`, policies, and form sync attrs.
+
+## Validation errors: HTMX HTML vs JSON
+
+FastAPI request-validation failures use semantic **422** handling:
+
+- HTMX requests (`HX-Request: true`) receive an **HTML fragment** suitable for swap/retarget
+  (accessible validation feedback), not a JSON error body.
+- Ordinary API clients continue to receive FastAPI's JSON validation payload.
+
+```python
+# Browser HTMX form POST missing a required field → 422 text/html fragment
+# curl -H "Accept: application/json" without HX-Request → 422 application/json
+```
+
+Default status policies for 202, 204, 401, 403, 409, 422, 429, and 500 are available through
+`status_policy_for` — see [Interaction](INTERACTION.md).

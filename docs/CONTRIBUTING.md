@@ -10,7 +10,13 @@ cd hedron
 uv sync
 ```
 
-Workspace packages: `hedron-core`, `hedron`, `hedron-explorer`, `hedron-sample-kit`.
+Workspace packages: `hedron-core`, `hedron`, `hedron-explorer`, `hedron-data`,
+`hedron-charts`, `hedron-sample-kit`.
+
+`uv sync` (dev group) already pulls chart/content test dependencies used by the
+workspace. Against a minimal consumer install, optional extras are
+`hedron[charts]`, `hedron[markdown]`, `hedron[sanitize]`, and backends such as
+`hedron-charts[matplotlib]`.
 
 ### Checks
 
@@ -42,6 +48,8 @@ uv run --group docs mkdocs serve
 | `packages/hedron-core` | Framework-neutral rendering core |
 | `packages/hedron` | FastAPI flagship |
 | `packages/hedron-explorer` | Dev Explorer (`hedron[dev]`) |
+| `packages/hedron-data` | DataTable / DataEditor (`hedron[data]`) |
+| `packages/hedron-charts` | Visualization adapters (`hedron[charts]`) |
 | `packages/hedron-sample-kit` | Sample plugin |
 | `tests/` | Unit, integration, conformance |
 | `examples/reference-app` | Cumulative example application |
