@@ -44,6 +44,25 @@ def _registry_empty_hint(*, app: str | None, what: str) -> None:
     )
 
 
+def _apply_project_discovery(base: Path | None = None) -> Any:
+    """Load settings, discover folders, and optionally load configured plugins."""
+    from hedron.config import load_hedron_settings
+    from hedron.plugins import load_plugins
+    from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
+
+    root = (base or Path.cwd()).resolve()
+    settings = load_hedron_settings(root)
+    discovered = discover_component_folders(settings.resolved_roots(base=root))
+    apply_discovery_to_registry(discovered)
+    if settings.plugins is not None:
+        try:
+            load_plugins(enabled=list(settings.plugins))
+        except Exception as exc:  # noqa: BLE001 — CLI surfaces plugin errors
+            print(f"Plugin load failed: {exc}", file=sys.stderr)
+            raise SystemExit(1) from exc
+    return settings
+
+
 def _cmd_routes(args: argparse.Namespace) -> int:
     _load_app(args.app)
     registry = get_registry()
@@ -268,6 +287,11 @@ def _cmd_new(args: argparse.Namespace) -> int:
     if dest.exists() and any(dest.iterdir()) and not args.force:
         print(f"Refusing to overwrite non-empty {dest} (use --force)", file=sys.stderr)
         return 1
+    guarded = [dest / "app.py", dest / "pyproject.toml"]
+    if any(path.exists() for path in guarded) and not args.force:
+        existing = ", ".join(str(p) for p in guarded if p.exists())
+        print(f"Refusing to overwrite existing {existing} (use --force)", file=sys.stderr)
+        return 1
     dest.mkdir(parents=True, exist_ok=True)
     (dest / "components").mkdir(exist_ok=True)
     (dest / "pyproject.toml").write_text(
@@ -322,9 +346,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
 
     _load_app(args.app)
     base = Path(args.project or Path.cwd()).resolve()
-    from hedron.config import load_hedron_settings
-
-    settings = load_hedron_settings(base)
+    settings = _apply_project_discovery(base)
     diags = []
     # Routes / components presence
     registry = get_registry()
@@ -360,40 +382,42 @@ def _cmd_check(args: argparse.Namespace) -> int:
                 except HedronError as exc:
                     diags.extend(exc.diagnostics)
 
-    # Security / a11y informational findings
-    diags.append(
+    # Security / a11y informational findings (display only; excluded from exit code)
+    info_diags = [
         make_diagnostic(
             "HED-SEC-0001",
             severity=DiagnosticSeverity.INFORMATION,
             title="CSRF required for unsafe actions",
             explanation="Cookie-authenticated unsafe methods must validate CSRF.",
             remediation="Use HedronRouter.action and standard security profile.",
-        )
-    )
-    diags.append(
+        ),
         make_diagnostic(
             "HED-A11Y-0001",
             severity=DiagnosticSeverity.INFORMATION,
             title="Run axe for interactive surfaces",
             explanation="Static markup checks do not replace browser accessibility analysis.",
             remediation="Use hedron[browser] axe hooks for Explorer and forms.",
-        )
-    )
+        ),
+    ]
+    all_diags = [*diags, *info_diags]
 
     threshold = DiagnosticSeverity(args.severity)
     fmt = args.format
     if fmt == "json":
-        print(json.dumps(diagnostics_to_json(diags), indent=2))
+        print(json.dumps(diagnostics_to_json(all_diags), indent=2))
     elif fmt == "sarif":
-        print(json.dumps(diagnostics_to_sarif(diags), indent=2))
+        print(json.dumps(diagnostics_to_sarif(all_diags), indent=2))
     else:
-        text = diagnostics_to_text(diags)
+        text = diagnostics_to_text(all_diags)
         print(text or "No diagnostics.")
+    # Exit on real findings only — evergreen INFORMATION never fails the gate.
     return 1 if meets_severity_threshold(diags, threshold) else 0
 
 
 def _cmd_graph(args: argparse.Namespace) -> int:
     _load_app(args.app)
+    base = Path(getattr(args, "project", None) or Path.cwd()).resolve()
+    _apply_project_discovery(base)
     registry = get_registry()
     nodes = []
     edges = []
@@ -415,6 +439,8 @@ def _cmd_graph(args: argparse.Namespace) -> int:
 
 def _cmd_audit_components(args: argparse.Namespace) -> int:
     _load_app(args.app)
+    base = Path(getattr(args, "project", None) or Path.cwd()).resolve()
+    _apply_project_discovery(base)
     from hedron_core.plugins import get_diagnostic_owners, get_explorer_panels
 
     registry = get_registry()
@@ -434,8 +460,33 @@ def _cmd_audit_components(args: argparse.Namespace) -> int:
                 },
             }
         )
+    plugin_rows: list[dict[str, Any]] = []
+    try:
+        from importlib.metadata import entry_points
+
+        from hedron.plugins import ENTRY_POINT_GROUP
+
+        eps = entry_points()
+        discovered = (
+            list(eps.select(group=ENTRY_POINT_GROUP))
+            if hasattr(eps, "select")
+            else list(eps.get(ENTRY_POINT_GROUP, []))  # type: ignore[arg-type]
+        )
+        for ep in discovered:
+            try:
+                target = ep.load()
+                meta = getattr(target, "PLUGIN_META", None)
+                if meta is not None:
+                    plugin_rows.append(meta.to_dict())
+                else:
+                    plugin_rows.append({"name": ep.name, "version": "unknown"})
+            except Exception as exc:  # noqa: BLE001
+                plugin_rows.append({"name": ep.name, "error": str(exc)})
+    except Exception:  # noqa: BLE001
+        plugin_rows = []
     payload = {
         "components": rows,
+        "plugins": plugin_rows,
         "explorer_panels": [p.to_dict() for p in get_explorer_panels()],
         "diagnostic_owners": dict(get_diagnostic_owners()),
     }

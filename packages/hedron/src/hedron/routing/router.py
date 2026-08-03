@@ -31,9 +31,15 @@ __all__ = ["HedronRouter", "current_request"]
 
 current_request: ContextVar[Request | None] = ContextVar("hedron_current_request", default=None)
 
+_SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
+
 
 def _logical_id(fn: Callable[..., Any], distribution: str = "hedron") -> str:
     return component_type_id(distribution, fn.__module__, fn.__name__)
+
+
+def _requires_csrf(methods: Sequence[str]) -> bool:
+    return any(m.upper() not in _SAFE_METHODS for m in methods)
 
 
 def _wrap_endpoint(
@@ -58,7 +64,7 @@ def _wrap_endpoint(
                 request = maybe
         if request is None:
             raise RuntimeError("Hedron endpoints require an active Request")
-        if require_csrf:
+        if require_csrf and request.method.upper() not in _SAFE_METHODS:
             policy: SecurityPolicy = getattr(
                 request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
             )
@@ -108,12 +114,15 @@ class HedronRouter(APIRouter):
 
             route_name = name or fn.__name__
             logical_id = _logical_id(fn)
-            op_id = operation_id_for("page", route_name, path, (methods or ["GET"])[0])
-            wrapped = _wrap_endpoint(fn, kind="page", mode=None, require_csrf=False)
+            verb_list = list(methods or ["GET"])
+            op_id = operation_id_for("page", route_name, path, verb_list[0])
+            wrapped = _wrap_endpoint(
+                fn, kind="page", mode=None, require_csrf=_requires_csrf(verb_list)
+            )
             self.add_api_route(
                 path,
                 wrapped,
-                methods=list(methods or ["GET"]),
+                methods=verb_list,
                 name=route_name,
                 operation_id=op_id,
                 include_in_schema=include_in_schema,
@@ -128,7 +137,7 @@ class HedronRouter(APIRouter):
                 logical_id=logical_id,
                 name=route_name,
                 path=f"{self.prefix}{path}",
-                methods=tuple(m.upper() for m in (methods or ["GET"])),
+                methods=tuple(m.upper() for m in verb_list),
                 operation_id=op_id,
                 include_in_schema=include_in_schema,
                 module=fn.__module__,
@@ -160,14 +169,18 @@ class HedronRouter(APIRouter):
 
             route_name = name or fn.__name__
             logical_id = _logical_id(fn)
-            op_id = operation_id_for("component", route_name, path, (methods or ["GET"])[0])
+            verb_list = list(methods or ["GET"])
+            op_id = operation_id_for("component", route_name, path, verb_list[0])
             wrapped = _wrap_endpoint(
-                fn, kind="component", mode=RenderMode.FRAGMENT, require_csrf=False
+                fn,
+                kind="component",
+                mode=RenderMode.FRAGMENT,
+                require_csrf=_requires_csrf(verb_list),
             )
             self.add_api_route(
                 path,
                 wrapped,
-                methods=list(methods or ["GET"]),
+                methods=verb_list,
                 name=route_name,
                 operation_id=op_id,
                 include_in_schema=include_in_schema,
@@ -182,7 +195,7 @@ class HedronRouter(APIRouter):
                 logical_id=logical_id,
                 name=route_name,
                 path=f"{self.prefix}{path}",
-                methods=tuple(m.upper() for m in (methods or ["GET"])),
+                methods=tuple(m.upper() for m in verb_list),
                 operation_id=op_id,
                 include_in_schema=include_in_schema,
                 module=fn.__module__,
@@ -220,9 +233,11 @@ class HedronRouter(APIRouter):
             logical_id = _logical_id(fn)
             primary = verb_list[0].upper()
             op_id = operation_id_for("action", route_name, path, primary)
-            require_csrf = primary not in {"GET", "HEAD", "OPTIONS", "TRACE"}
             wrapped = _wrap_endpoint(
-                fn, kind="action", mode=RenderMode.FRAGMENT, require_csrf=require_csrf
+                fn,
+                kind="action",
+                mode=RenderMode.FRAGMENT,
+                require_csrf=_requires_csrf(verb_list),
             )
             self.add_api_route(
                 path,

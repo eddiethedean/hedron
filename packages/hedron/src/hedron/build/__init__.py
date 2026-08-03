@@ -145,6 +145,11 @@ def _run_build(
     discovered = discover_component_folders(roots)
     apply_discovery_to_registry(discovered)
 
+    if settings.plugins is not None:
+        from hedron.plugins import load_plugins
+
+        load_plugins(enabled=list(settings.plugins))
+
     final_dir = settings.resolved_build_dir(base=base)
     final_dir.parent.mkdir(parents=True, exist_ok=True)
     # Same filesystem as final_dir to avoid Errno 18 cross-device rename.

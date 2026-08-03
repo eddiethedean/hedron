@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from enum import StrEnum
+from pathlib import PurePath
 from typing import Any
 
 
@@ -20,7 +21,21 @@ _SEVERITY_RANK = {
     DiagnosticSeverity.ERROR: 2,
 }
 
+# Security diagnostics cannot be suppressed. Documented in diagnostics contract.
 _UNSUPPRESSIBLE_PREFIXES = ("HED-SEC-",)
+
+
+def _scope_matches_path(scope: str, path: str) -> bool:
+    """Exact path match or PurePath prefix; bare suffixes like ``.css`` do not match."""
+    if scope in {"*", "all"}:
+        return True
+    if path == scope:
+        return True
+    try:
+        PurePath(path).relative_to(PurePath(scope))
+        return True
+    except ValueError:
+        return False
 
 
 @dataclass(frozen=True, slots=True)
@@ -179,9 +194,13 @@ def diagnostics_to_sarif(
     diagnostics: Sequence[Diagnostic],
     *,
     tool_name: str = "hedron",
-    tool_version: str = "0.4.0",
+    tool_version: str | None = None,
 ) -> dict[str, Any]:
     """Emit SARIF 2.1.0 for a diagnostic collection."""
+    if tool_version is None:
+        from hedron_core import __version__ as package_version
+
+        tool_version = package_version
     results: list[dict[str, Any]] = []
     rules: dict[str, dict[str, Any]] = {}
     for diag in diagnostics:
@@ -241,7 +260,12 @@ def apply_suppressions(
     diagnostics: Sequence[Diagnostic],
     suppressions: Sequence[Suppression],
 ) -> tuple[Diagnostic, ...]:
-    """Filter suppressible diagnostics by code and optional path scope."""
+    """Filter suppressible diagnostics by code and optional path scope.
+
+    Path scopes match exactly or as a PurePath prefix of the diagnostic path.
+    Suffix matches such as ``scope=".css"`` are intentionally rejected.
+    ``HED-SEC-*`` codes are never suppressible.
+    """
     kept: list[Diagnostic] = []
     for diag in diagnostics:
         if any(diag.code.startswith(prefix) for prefix in _UNSUPPRESSIBLE_PREFIXES):
@@ -254,9 +278,7 @@ def apply_suppressions(
             if item.scope in {"*", "all"}:
                 suppressed = True
                 break
-            if diag.span is not None and (
-                diag.span.path == item.scope or diag.span.path.endswith(item.scope)
-            ):
+            if diag.span is not None and _scope_matches_path(item.scope, diag.span.path):
                 suppressed = True
                 break
             if diag.component_id and diag.component_id == item.scope:

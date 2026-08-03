@@ -53,6 +53,13 @@ def test_apply_suppressions_by_scope() -> None:
             span=SourceSpan(path="a.css", start_line=1),
         ),
         make_diagnostic(
+            "HED-CSS-0004",
+            severity=DiagnosticSeverity.WARNING,
+            title="Bare selector",
+            explanation="html {}",
+            span=SourceSpan(path="components/Pill/styles.css", start_line=1),
+        ),
+        make_diagnostic(
             "HED-SEC-0002",
             severity=DiagnosticSeverity.ERROR,
             title="Unsafe",
@@ -63,8 +70,42 @@ def test_apply_suppressions_by_scope() -> None:
         diags,
         (Suppression(code="HED-CSS-0004", scope="a.css", justification="legacy"),),
     )
-    assert len(kept) == 1
-    assert kept[0].code == "HED-SEC-0002"
+    assert len(kept) == 2
+    assert kept[0].span is not None and kept[0].span.path.endswith("styles.css")
+    assert kept[1].code == "HED-SEC-0002"
+
+    # Suffix scopes must not suppress unrelated paths.
+    kept_suffix = apply_suppressions(
+        diags,
+        (Suppression(code="HED-CSS-0004", scope=".css", justification="too broad"),),
+    )
+    assert sum(1 for d in kept_suffix if d.code == "HED-CSS-0004") == 2
+
+    # Directory prefix scopes are allowed.
+    kept_prefix = apply_suppressions(
+        diags,
+        (
+            Suppression(
+                code="HED-CSS-0004",
+                scope="components/Pill",
+                justification="folder",
+            ),
+        ),
+    )
+    assert sum(1 for d in kept_prefix if d.code == "HED-CSS-0004") == 1
+
+
+def test_sarif_tool_version_matches_package() -> None:
+    from hedron_core import __version__
+
+    diag = make_diagnostic(
+        "HED-HDN-0001",
+        severity=DiagnosticSeverity.ERROR,
+        title="Bad",
+        explanation="x",
+    )
+    sarif = diagnostics_to_sarif([diag])
+    assert sarif["runs"][0]["tool"]["driver"]["version"] == __version__
 
 
 def test_severity_threshold() -> None:

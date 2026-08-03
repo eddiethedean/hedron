@@ -26,7 +26,9 @@ __all__ = [
     "register_route",
     "register_theme",
     "reset_registry_for_tests",
+    "restore_registry_builder",
     "seal_registry",
+    "snapshot_registry_builder",
     "component_meta_from_class",
     "update_component_meta",
 ]
@@ -513,6 +515,35 @@ def get_registry() -> Registry:
         dict(_builder._assets),
         dict(_builder._browser_modules),
     )
+
+
+def snapshot_registry_builder() -> dict[str, dict[str, Any]]:
+    """Capture mutable builder maps for plugin-load rollback."""
+    return {
+        "components": dict(_builder._components),
+        "addressables": dict(_builder._addressables),
+        "routes": dict(_builder._routes),
+        "themes": dict(_builder._themes),
+        "assets": dict(_builder._assets),
+        "browser_modules": dict(_builder._browser_modules),
+    }
+
+
+def restore_registry_builder(snapshot: dict[str, dict[str, Any]]) -> None:
+    """Restore builder maps from ``snapshot_registry_builder``."""
+    if _builder._sealed:
+        raise error(
+            "HED-RENDER-0006",
+            title="Registry is sealed",
+            explanation="Cannot restore builder state on a sealed registry.",
+            remediation="Roll back plugins before seal_registry().",
+        )
+    _builder._components = dict(snapshot["components"])
+    _builder._addressables = dict(snapshot["addressables"])
+    _builder._routes = dict(snapshot["routes"])
+    _builder._themes = dict(snapshot["themes"])
+    _builder._assets = dict(snapshot["assets"])
+    _builder._browser_modules = dict(snapshot["browser_modules"])
 
 
 def reset_registry_for_tests() -> None:

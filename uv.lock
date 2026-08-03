@@ -150,6 +150,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "hedron-core" },
     { name = "itsdangerous" },
+    { name = "packaging" },
     { name = "python-multipart" },
 ]
 
@@ -167,6 +168,7 @@ requires-dist = [
     { name = "hedron-core", editable = "packages/hedron-core" },
     { name = "hedron-explorer", marker = "extra == 'dev'", editable = "packages/hedron-explorer" },
     { name = "itsdangerous", specifier = ">=2.2" },
+    { name = "packaging", specifier = ">=24.0" },
     { name = "playwright", marker = "extra == 'browser'", specifier = ">=1.40" },
     { name = "python-multipart", specifier = ">=0.0.9" },
 ]

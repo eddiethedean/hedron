@@ -11,6 +11,7 @@ from hedron_core.registry import get_registry
 from hedron_core.rendering import RenderMode, RenderResult, render
 
 __all__ = [
+    "assert_render_result",
     "assert_renders",
     "fragment_client",
     "iter_named_examples",
@@ -31,6 +32,10 @@ def assert_renders(node: Any, *, contains: str, mode: RenderMode = RenderMode.FR
     return html
 
 
+def assert_render_result(result: RenderResult, *, contains: str) -> None:
+    assert contains in result.html
+
+
 def normalize_snapshot_html(html: str) -> str:
     """Normalize only documented nondeterminism (fingerprinted asset hashes)."""
     html = re.sub(r"/hedron-assets/[A-Za-z0-9._-]+", "/hedron-assets/<asset>", html)
@@ -40,14 +45,17 @@ def normalize_snapshot_html(html: str) -> str:
 
 @contextmanager
 def override_dependencies(
+    app: Any,
     overrides: Mapping[Any, Any],
-) -> Generator[Mapping[Any, Any], None, None]:
-    """Isolate example dependency overrides; reset on exit."""
-    token = dict(overrides)
+) -> Generator[None, None, None]:
+    """Apply FastAPI ``dependency_overrides`` and restore the prior map on exit."""
+    previous = dict(getattr(app, "dependency_overrides", {}))
+    app.dependency_overrides.update(dict(overrides))
     try:
-        yield token
+        yield
     finally:
-        token.clear()
+        app.dependency_overrides.clear()
+        app.dependency_overrides.update(previous)
 
 
 def named_example(name: str) -> Any | None:
@@ -70,7 +78,3 @@ def fragment_client(app: Any) -> Any:
     client = TestClient(app)
     client.headers.update({"HX-Request": "true"})
     return client
-
-
-def assert_render_result(result: RenderResult, *, contains: str) -> None:
-    assert contains in result.html

@@ -33,7 +33,7 @@ jobs:
       - name: Build packages
         run: |
           set -euo pipefail
-          for pkg in hedron-core hedron hedron-explorer; do
+          for pkg in hedron-core hedron hedron-explorer hedron-sample-kit; do
             uv build --package "$pkg"
           done
       - name: Clean-install smoke

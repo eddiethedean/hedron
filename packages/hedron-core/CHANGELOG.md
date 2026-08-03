@@ -19,7 +19,9 @@ metadata contracts in core.
 
 ### Fixed / hardened
 
-- (none beyond 0.3 train)
+- Suppression scopes use exact or PurePath prefix matching (suffixes like `.css` no longer match).
+- SARIF `tool.driver.version` comes from package `__version__`.
+- Registry builder snapshot/restore helpers for plugin rollback.
 
 ## [0.3.0] - 2026-08-03
 

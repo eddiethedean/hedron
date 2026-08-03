@@ -12,6 +12,14 @@ Full HTMX Explorer shell with panels for components, routes, graph, security,
 accessibility, packages, and settings; sanitized JSON APIs; rate limiting and
 audit hooks; mutation simulation disabled by default.
 
+### Fixed
+
+- HDN/CSS reads are allowlisted under component `folder_path` / configured roots.
+- Preview markup is embedded in a sandboxed iframe (`srcdoc`); absolute paths stay basename-redacted.
+- Static CSS is served via a routed `FileResponse` under Explorer guards (not a bare StaticFiles mount).
+- `/api/simulate` rejects bad JSON and unknown keys; CSRF is required when the CSRF cookie is present.
+- Unknown components return HTTP 404.
+
 [0.4.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.4.0
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 

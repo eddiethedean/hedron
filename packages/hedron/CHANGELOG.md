@@ -17,6 +17,16 @@ Developer platform for the FastAPI flagship.
 - Public `hedron.testing` helpers and optional `hedron[browser]` hooks.
 - Inference explanations/overrides in CLI `preview`.
 
+### Fixed
+
+- Plugin loads roll back the full registry builder (not only Explorer panels) on failure.
+- `plugins = []` loads no plugins; unset plugins discover all at lifespan; missing enabled names error.
+- Version compatibility uses `packaging` specifier sets (fail closed on invalid ranges).
+- Lifespan always surfaces plugin load/`start` failures and shuts down started hooks.
+- CSRF applies when any declared method is unsafe for page/component/action routes.
+- CLI `check`/`graph`/`audit-components` apply discovery; evergreen INFORMATION findings do not fail the exit gate; `new` guards existing `app.py`/`pyproject.toml`.
+- Builds load explicitly configured plugins; `override_dependencies` restores FastAPI overrides.
+
 ## [0.3.0] - 2026-08-03
 
 Authoring, styles, assets, and themes for the FastAPI flagship.

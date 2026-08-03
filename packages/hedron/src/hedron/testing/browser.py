@@ -2,19 +2,29 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+from contextlib import contextmanager
 from typing import Any
 
-__all__ = ["axe_scan", "playwright_page"]
+__all__ = ["axe_scan", "playwright", "playwright_page"]
 
 
-def playwright_page(*args: Any, **kwargs: Any) -> Any:
+@contextmanager
+def playwright(*args: Any, **kwargs: Any) -> Iterator[Any]:
+    """Yield a Playwright sync API instance (requires ``hedron[browser]``)."""
     try:
         import importlib
 
         sync_api = importlib.import_module("playwright.sync_api")
     except ImportError as exc:  # pragma: no cover
         raise ImportError("Install browser extras: pip install 'hedron[browser]'") from exc
-    return sync_api.sync_playwright()
+    with sync_api.sync_playwright(*args, **kwargs) as pw:
+        yield pw
+
+
+def playwright_page(*args: Any, **kwargs: Any) -> Any:
+    """Deprecated alias for :func:`playwright` (returns a context manager, not a page)."""
+    return playwright(*args, **kwargs)
 
 
 def axe_scan(page: Any) -> list[dict[str, Any]]:

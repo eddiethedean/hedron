@@ -67,7 +67,7 @@ class HedronSettings:
     build_dir: str = ".hedron/build"
     theme: str | None = "default"
     asset_policy: AssetPolicy = field(default_factory=AssetPolicy)
-    plugins: tuple[str, ...] = ()
+    plugins: tuple[str, ...] | None = None
     explorer: str = "off"
     compiler_checks: bool = True
     diagnostic_severities: Mapping[str, str] = field(default_factory=dict)
@@ -94,7 +94,7 @@ def settings_digest(settings: HedronSettings) -> str:
             "registered_roots": list(settings.asset_policy.registered_roots),
             "reject_inline_style": settings.asset_policy.reject_inline_style,
         },
-        "plugins": list(settings.plugins),
+        "plugins": None if settings.plugins is None else list(settings.plugins),
         "explorer": settings.explorer,
         "compiler_checks": settings.compiler_checks,
         "diagnostic_severities": dict(sorted(settings.diagnostic_severities.items())),
@@ -216,7 +216,9 @@ def load_hedron_settings(
         build_dir=str(raw.get("build_dir", ".hedron/build")),
         theme=raw.get("theme", "default"),
         asset_policy=_parse_asset_policy(raw.get("asset_policy")),
-        plugins=tuple(str(x) for x in raw.get("plugins", ())),
+        plugins=(
+            None if "plugins" not in raw else tuple(str(x) for x in (raw.get("plugins") or ()))
+        ),
         explorer=str(raw.get("explorer", "off")),
         compiler_checks=bool(raw.get("compiler_checks", True)),
         diagnostic_severities={

@@ -18,6 +18,23 @@ __all__ = ["compose_lifespan"]
 Lifespan = Callable[[FastAPI], AbstractAsyncContextManager[None]]
 
 
+def _settings_root(app: FastAPI, resolved_build: Path) -> Path:
+    """Prefer an explicit project root, then build parent, then cwd."""
+    explicit = getattr(app.state, "hedron_project_root", None)
+    if explicit:
+        return Path(explicit).resolve()
+    build_parent = resolved_build.resolve().parent
+    # `.hedron/build` → project root is parent of `.hedron`
+    if build_parent.name == ".hedron":
+        return build_parent.parent
+    cwd = Path.cwd()
+    if (cwd / "pyproject.toml").is_file():
+        return cwd
+    if (resolved_build.parent / "pyproject.toml").is_file():
+        return resolved_build.parent.resolve()
+    return cwd
+
+
 def compose_lifespan(
     user_lifespan: Lifespan | None = None,
     *,
@@ -84,19 +101,23 @@ def compose_lifespan(
                     app.state.hedron_build_dir = str(resolved_build.resolve())
                     mount_build_assets(app, resolved_build)
 
-            from hedron.config import load_hedron_settings
+            from hedron.config import HedronSettings, load_hedron_settings
             from hedron.plugins import load_plugins
 
-            settings = load_hedron_settings(Path.cwd())
-            enabled = list(settings.plugins) if settings.plugins else None
+            settings_root = _settings_root(app, resolved_build)
+            app.state.hedron_project_root = str(settings_root)
+            if (settings_root / "pyproject.toml").is_file():
+                settings = load_hedron_settings(settings_root)
+            else:
+                settings = HedronSettings()
+            enabled = None if settings.plugins is None else list(settings.plugins)
+            plugin_loader = load_plugins(enabled=enabled)
+            app.state.hedron_plugin_loader = plugin_loader
             try:
-                plugin_loader = load_plugins(enabled=enabled)
-                app.state.hedron_plugin_loader = plugin_loader
                 plugin_loader.start()
             except Exception:
-                if enabled:
-                    raise
-                app.state.hedron_plugin_loader = None
+                # Keep loader on app.state so finally still runs shutdown hooks.
+                raise
 
             seal_registry()
             if user_lifespan is not None:

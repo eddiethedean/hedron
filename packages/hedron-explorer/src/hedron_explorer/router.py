@@ -9,8 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 
 from hedron_core.plugins import get_explorer_panels
 from hedron_core.registry import get_registry
@@ -21,6 +20,7 @@ __all__ = ["explorer_router"]
 _TRACE: deque[dict[str, Any]] = deque(maxlen=100)
 _RATE: dict[str, list[float]] = {}
 _AUDIT: deque[dict[str, Any]] = deque(maxlen=200)
+_SIMULATE_KEYS = frozenset({"route", "allow_mutations"})
 
 
 def _redact(value: str | None) -> str | None:
@@ -33,6 +33,58 @@ def _redact(value: str | None) -> str | None:
 
 def _audit(event: str, **payload: Any) -> None:
     _AUDIT.appendleft({"event": event, **payload, "ts": time.time()})
+
+
+def _allowed_roots(meta: Any, request: Request | None = None) -> list[Path]:
+    roots: list[Path] = []
+    folder = getattr(meta, "folder_path", None)
+    if folder:
+        roots.append(Path(folder).resolve())
+    if request is not None:
+        configured = getattr(request.app.state, "hedron_component_roots", None)
+        if configured:
+            roots.extend(Path(p).resolve() for p in configured)
+        project_root = getattr(request.app.state, "hedron_project_root", None)
+        if project_root:
+            try:
+                from hedron.config import load_hedron_settings
+
+                settings = load_hedron_settings(Path(project_root))
+                roots.extend(settings.resolved_roots(base=Path(project_root)))
+            except Exception:  # noqa: BLE001 — explorer stays available without config
+                pass
+    return roots
+
+
+def _safe_read_text(path_str: str | None, meta: Any, request: Request | None = None) -> str | None:
+    """Read a file only when it resolves under an allowlisted component root."""
+    if not path_str:
+        return None
+    try:
+        candidate = Path(path_str).resolve()
+    except OSError:
+        return None
+    if not candidate.is_file():
+        return None
+    for root in _allowed_roots(meta, request):
+        try:
+            candidate.relative_to(root)
+        except ValueError:
+            continue
+        try:
+            return candidate.read_text(encoding="utf-8")
+        except OSError:
+            return None
+    return None
+
+
+def _preview_frame(html: str) -> str:
+    """Embed untrusted preview markup in a sandboxed iframe (no scripts)."""
+    srcdoc = html_lib.escape(html, quote=True)
+    return (
+        '<iframe class="preview-frame" sandbox="" referrerpolicy="no-referrer" '
+        f'srcdoc="{srcdoc}" title="Component preview"></iframe>'
+    )
 
 
 async def explorer_guards(request: Request) -> None:
@@ -87,14 +139,21 @@ def _shell(title: str, body: str, *, active: str = "components") -> str:
 
 def explorer_router() -> APIRouter:
     router = APIRouter(tags=["hedron-explorer"], dependencies=[Depends(explorer_guards)])
-
     static_dir = Path(__file__).resolve().parent / "static"
-    if static_dir.is_dir():
-        router.mount(
-            "/static",
-            StaticFiles(directory=str(static_dir)),
-            name="hedron-explorer-static",
-        )
+
+    @router.get("/static/{asset_path:path}", include_in_schema=False)
+    async def explorer_static(asset_path: str) -> FileResponse:
+        if not static_dir.is_dir():
+            raise HTTPException(status_code=404, detail="Explorer static assets missing")
+        base = static_dir.resolve()
+        target = (base / asset_path).resolve()
+        try:
+            target.relative_to(base)
+        except ValueError as exc:
+            raise HTTPException(status_code=404, detail="Not found") from exc
+        if not target.is_file():
+            raise HTTPException(status_code=404, detail="Not found")
+        return FileResponse(target)
 
     @router.get("/", response_class=HTMLResponse, include_in_schema=False)
     async def index() -> str:
@@ -137,20 +196,34 @@ def explorer_router() -> APIRouter:
         return _shell("Routes", body, active="routes")
 
     @router.get("/component/{name}", response_class=HTMLResponse, include_in_schema=False)
-    async def component_detail(name: str) -> str:
+    async def component_detail(name: str, request: Request) -> str:
         meta = None
         for c in get_registry().components():
             if c.name == name or c.logical_id.endswith(f".{name}"):
                 meta = c
                 break
         if meta is None:
-            return _shell("Missing", f"<p>Unknown component {html_lib.escape(name)}</p>")
-        hdn = ""
-        styles = ""
-        if meta.hdn_source and Path(meta.hdn_source).is_file():
-            hdn = Path(meta.hdn_source).read_text(encoding="utf-8")
-        if meta.styles_path and Path(meta.styles_path).is_file():
-            styles = Path(meta.styles_path).read_text(encoding="utf-8")
+            raise HTTPException(status_code=404, detail=f"Unknown component {name}")
+        hdn = _safe_read_text(meta.hdn_source, meta, request)
+        styles = _safe_read_text(meta.styles_path, meta, request)
+        hdn_block = (
+            html_lib.escape(hdn)
+            if hdn is not None
+            else (
+                "(template unavailable or outside allowlisted component roots)"
+                if meta.hdn_source
+                else "(no template.hdn)"
+            )
+        )
+        styles_block = (
+            html_lib.escape(styles)
+            if styles is not None
+            else (
+                "(styles unavailable or outside allowlisted component roots)"
+                if meta.styles_path
+                else "(no styles.css)"
+            )
+        )
         explanations = [
             f"Style symbols: {dict(meta.style_symbols) or '{}'}",
             "HDN templates compile ahead of time in production (HED-BUILD-0004).",
@@ -171,7 +244,7 @@ def explorer_router() -> APIRouter:
         <p><code>{html_lib.escape(meta.logical_id)}</code></p>
         <section>
           <h3>Preview</h3>
-          <div class="preview">{preview_html}</div>
+          <div class="preview">{_preview_frame(preview_html)}</div>
         </section>
         <section>
           <h3>Inference explanations</h3>
@@ -179,11 +252,11 @@ def explorer_router() -> APIRouter:
         </section>
         <section>
           <h3>Source / HDN</h3>
-          <pre>{html_lib.escape(hdn or "(no template.hdn)")}</pre>
+          <pre>{hdn_block}</pre>
         </section>
         <section>
           <h3>Styles</h3>
-          <pre>{html_lib.escape(styles or "(no styles.css)")}</pre>
+          <pre>{styles_block}</pre>
         </section>
         <section>
           <h3>Assets</h3>
@@ -331,13 +404,36 @@ def explorer_router() -> APIRouter:
 
     @router.post("/api/simulate", include_in_schema=False)
     async def api_simulate(request: Request) -> Any:
-        payload = await request.json()
+        try:
+            payload = await request.json()
+        except Exception:  # noqa: BLE001 — malformed JSON
+            return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
+        if not isinstance(payload, dict):
+            return JSONResponse({"detail": "JSON object required"}, status_code=400)
+        unknown = set(payload) - _SIMULATE_KEYS
+        if unknown:
+            return JSONResponse(
+                {"detail": f"Unknown keys: {', '.join(sorted(unknown))}"},
+                status_code=400,
+            )
         if payload.get("allow_mutations"):
             return JSONResponse(
                 {"detail": "Mutation simulation is disabled by default"},
                 status_code=403,
             )
+
+        policy = getattr(request.app.state, "hedron_security", None)
+        if policy is not None and getattr(policy, "csrf_enabled", False):
+            csrf_name = getattr(policy, "csrf_cookie_name", "hedron_csrf")
+            if request.cookies.get(csrf_name):
+                from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
+
+                await prepare_csrf_from_request(request, policy)
+                validate_csrf(request, policy)
+
         name = payload.get("route")
+        if not isinstance(name, str) or not name:
+            return JSONResponse({"detail": "route is required"}, status_code=400)
         routes = {r.name: r for r in get_registry().routes()}
         if name not in routes:
             return JSONResponse(
@@ -348,3 +444,10 @@ def explorer_router() -> APIRouter:
         return {"ok": True, "route": name, "mutations": False}
 
     return router
+
+
+def reset_explorer_runtime_for_tests() -> None:
+    """Clear rate-limit / audit state between tests."""
+    _TRACE.clear()
+    _RATE.clear()
+    _AUDIT.clear()

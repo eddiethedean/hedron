@@ -25,6 +25,9 @@ def test_compatible_hedron_version() -> None:
     assert compatible_hedron_version(">=0.4,<0.5", "0.4.0")
     assert not compatible_hedron_version(">=0.4,<0.5", "0.5.0")
     assert not compatible_hedron_version(">=0.4,<0.5", "0.3.9")
+    assert compatible_hedron_version(">=0.4,<=0.4.0", "0.4.0")
+    assert not compatible_hedron_version("<=0.3.9", "0.4.0")
+    assert not compatible_hedron_version("not-a-spec", "0.4.0")
 
 
 def test_plugin_loader_registers_panel_and_rolls_back_on_failure() -> None:
@@ -65,6 +68,90 @@ def test_plugin_loader_registers_panel_and_rolls_back_on_failure() -> None:
     with pytest.raises(RuntimeError, match="boom"):
         load_plugins(entry_points=[EP("good", good), EP("bad", bad)])
     assert get_explorer_panels() == ()
+
+
+def test_plugin_loader_rolls_back_components_on_failure() -> None:
+    reset_registry_for_tests()
+    reset_explorer_panels_for_tests()
+
+    def good(ctx: PluginContext) -> None:
+        ctx.register_component(
+            logical_id="demo:x.Good",
+            name="Good",
+            module="x",
+            distribution="demo",
+        )
+
+    good.PLUGIN_META = PluginMeta(  # type: ignore[attr-defined]
+        name="good",
+        version="0.4.0",
+        distribution="good",
+        capabilities=PluginCapabilities(python=True),
+    )
+
+    def bad(ctx: PluginContext) -> None:
+        raise RuntimeError("component boom")
+
+    bad.PLUGIN_META = PluginMeta(  # type: ignore[attr-defined]
+        name="bad",
+        version="0.4.0",
+        distribution="bad",
+    )
+
+    class EP:
+        def __init__(self, name: str, fn: object) -> None:
+            self.name = name
+            self._fn = fn
+
+        def load(self) -> object:
+            return self._fn
+
+    with pytest.raises(RuntimeError, match="component boom"):
+        load_plugins(entry_points=[EP("good", good), EP("bad", bad)])
+    assert not any(c.name == "Good" for c in get_registry().components())
+
+
+def test_plugin_enabled_empty_loads_none() -> None:
+    reset_registry_for_tests()
+    reset_explorer_panels_for_tests()
+
+    def register(ctx: PluginContext) -> None:
+        ctx.register_component(
+            logical_id="demo:x.Widget",
+            name="Widget",
+            module="x",
+            distribution="demo",
+        )
+
+    register.PLUGIN_META = PluginMeta(  # type: ignore[attr-defined]
+        name="demo",
+        version="0.4.0",
+        distribution="demo",
+    )
+
+    class EP:
+        name = "demo"
+
+        def load(self) -> object:
+            return register
+
+    loader = load_plugins(enabled=[], entry_points=[EP()])
+    assert loader.loaded == []
+    assert not any(c.name == "Widget" for c in get_registry().components())
+
+
+def test_plugin_enabled_missing_raises() -> None:
+    from hedron_core.diagnostics import HedronError
+
+    class EP:
+        name = "demo"
+
+        def load(self) -> object:
+            return lambda ctx: None
+
+    with pytest.raises(HedronError) as exc:
+        load_plugins(enabled=["missing"], entry_points=[EP()])
+    assert exc.value.diagnostic.code == "HED-PLUGIN-0001"
 
 
 def test_plugin_loader_success() -> None:
@@ -138,6 +225,35 @@ def test_testing_helpers_render() -> None:
     assert "<asset>" in normalize_snapshot_html("/hedron-assets/foo.abc123.css")
 
 
+def test_explorer_blocks_path_outside_allowlist(tmp_path: Path) -> None:
+    reset_registry_for_tests()
+    secret = tmp_path / "secret.txt"
+    secret.write_text("TOP_SECRET", encoding="utf-8")
+    folder = tmp_path / "components" / "Safe"
+    folder.mkdir(parents=True)
+    (folder / "template.hdn").write_text("<div>ok</div>", encoding="utf-8")
+    register_component(
+        logical_id="app:safe.Safe",
+        name="Safe",
+        module="safe",
+        distribution="app",
+        hdn_source=str(secret),  # points outside folder on purpose
+        folder_path=str(folder),
+    )
+    app = Hedron(
+        title="ex",
+        security="standard",
+        explorer="development",
+        session_secret="secret",
+    )
+    with TestClient(app) as client:
+        detail = client.get("/hedron-explorer/component/Safe")
+        assert detail.status_code == 200
+        assert "TOP_SECRET" not in detail.text
+        assert "allowlisted" in detail.text or "unavailable" in detail.text
+        assert "iframe" in detail.text and "sandbox" in detail.text
+
+
 def test_explorer_panels_and_simulate() -> None:
     app = Hedron(
         title="ex",
@@ -155,6 +271,8 @@ def test_explorer_panels_and_simulate() -> None:
         assert index.status_code == 200
         assert "Skip to content" in index.text
         assert "Components" in index.text
+        css = client.get("/hedron-explorer/static/explorer.css")
+        assert css.status_code == 200
         routes = client.get("/hedron-explorer/routes")
         assert routes.status_code == 200
         a11y = client.get("/hedron-explorer/a11y")
@@ -162,11 +280,24 @@ def test_explorer_panels_and_simulate() -> None:
         api = client.get("/hedron-explorer/api/routes")
         assert api.status_code == 200
         assert "explanations" in api.json()[0]
+        missing = client.get("/hedron-explorer/component/DoesNotExist")
+        assert missing.status_code == 404
         denied = client.post(
             "/hedron-explorer/api/simulate",
             json={"route": "missing", "allow_mutations": False},
         )
         assert denied.status_code == 400
+        bad_json = client.post(
+            "/hedron-explorer/api/simulate",
+            content=b"{not-json",
+            headers={"content-type": "application/json"},
+        )
+        assert bad_json.status_code == 400
+        unknown_key = client.post(
+            "/hedron-explorer/api/simulate",
+            json={"route": "home", "extra": 1},
+        )
+        assert unknown_key.status_code == 400
         mutations = client.post(
             "/hedron-explorer/api/simulate",
             json={"route": "home", "allow_mutations": True},
@@ -174,7 +305,34 @@ def test_explorer_panels_and_simulate() -> None:
         assert mutations.status_code == 403
 
 
+def test_csrf_on_mixed_method_page_and_action() -> None:
+    app = Hedron(title="csrf-mixed", security="standard", explorer="off", session_secret="secret")
+
+    @app.page("/form", methods=["GET", "POST"])
+    def form_page() -> Page:
+        return Page(Text("form"), title="Form")
+
+    @app.action("/act", methods=["GET", "POST"])
+    def act() -> Text:
+        return Text("ok")
+
+    with TestClient(app) as client:
+        get_ok = client.get("/form")
+        assert get_ok.status_code == 200
+        denied_page = client.post("/form", data={"x": "1"})
+        assert denied_page.status_code == 403
+        token = get_ok.cookies.get("hedron_csrf")
+        assert token
+        ok_page = client.post("/form", data={"x": "1", "csrf_token": token})
+        assert ok_page.status_code == 200
+        denied_action = client.post("/act", data={"x": "1"})
+        assert denied_action.status_code == 403
+        ok_action = client.post("/act", data={"x": "1", "csrf_token": token})
+        assert ok_action.status_code == 200
+
+
 def test_sample_kit_plugin_module() -> None:
+    from hedron_sample_kit.components.Callout import Callout, default
     from hedron_sample_kit.plugin import PLUGIN_META, register
 
     reset_registry_for_tests()
@@ -183,3 +341,7 @@ def test_sample_kit_plugin_module() -> None:
     register(ctx)
     assert any(c.name == "Callout" for c in get_registry().components())
     assert any(p.panel_id == "sample-kit-callout" for p in get_explorer_panels())
+    assert any(a.logical_id.endswith("callout.mark") for a in get_registry().assets())
+    rendered = render_html(Callout(message="hi"))
+    assert "hi" in rendered
+    assert default().props.message

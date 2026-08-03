@@ -7,6 +7,9 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
+from packaging.specifiers import InvalidSpecifier, SpecifierSet
+from packaging.version import InvalidVersion, Version
+
 from hedron_core.codes import (
     HED_PLUGIN_CYCLE,
     HED_PLUGIN_DUPLICATE,
@@ -16,6 +19,7 @@ from hedron_core.codes import (
 )
 from hedron_core.diagnostics import error
 from hedron_core.plugins import PluginContext, PluginMeta
+from hedron_core.registry import restore_registry_builder, snapshot_registry_builder
 
 logger = logging.getLogger("hedron.plugins")
 
@@ -67,22 +71,11 @@ class PluginLoader:
 
 
 def compatible_hedron_version(spec: str, version: str) -> bool:
-    """Minimal ``>=X.Y,<A.B`` checker used by the plugin loader."""
-    parts = [p.strip() for p in spec.split(",") if p.strip()]
-    major_minor = tuple(int(x) for x in version.split(".")[:2])
-    for part in parts:
-        if part.startswith(">="):
-            floor = tuple(int(x) for x in part[2:].split(".")[:2])
-            if major_minor < floor:
-                return False
-        elif part.startswith("<"):
-            ceil = tuple(int(x) for x in part[1:].split(".")[:2])
-            if major_minor >= ceil:
-                return False
-        elif part.startswith("=="):
-            if version != part[2:]:
-                return False
-    return True
+    """Return True when ``version`` satisfies the PEP 440 specifier set."""
+    try:
+        return Version(version) in SpecifierSet(spec)
+    except (InvalidSpecifier, InvalidVersion):
+        return False
 
 
 def load_plugins(
@@ -93,76 +86,94 @@ def load_plugins(
 ) -> PluginLoader:
     """Discover and activate plugins into a temporary contribution pass.
 
-    On failure the loader leaves no partially started hooks. Contributions that
-    register into the global registry are expected to run before ``seal_registry``.
+    ``enabled`` semantics:
+    - ``None``: load every discovered entry point
+    - empty sequence: load none
+    - non-empty: load only named entry points; missing names raise ``HED-PLUGIN-MISSING``
+
+    On failure, registry contributions and Explorer panels are rolled back.
     """
     from hedron_core import __version__ as core_version
-
-    version = hedron_version or core_version
-    # Snapshot panel state for rollback of panel contributions only.
     from hedron_core import plugins as plugins_mod
 
+    version = hedron_version or core_version
+    registry_snapshot = snapshot_registry_builder()
     panel_snapshot = dict(plugins_mod._panels)
     owner_snapshot = dict(plugins_mod._diagnostic_owners)
 
-    discovered = list(entry_points) if entry_points is not None else _discover_entry_points()
-    metas: dict[str, tuple[Any, PluginMeta]] = {}
-    for ep in discovered:
-        name = getattr(ep, "name", None) or str(ep)
-        if enabled is not None and name not in enabled and enabled:
-            continue
-        try:
-            target = ep.load() if hasattr(ep, "load") else ep
-        except Exception as exc:  # noqa: BLE001
-            raise error(
-                HED_PLUGIN_MISSING,
-                title="Plugin import failed",
-                explanation=f"Could not load plugin {name!r}: {exc}",
-                remediation="Install the plugin package or fix the entry point.",
-            ) from exc
-        meta = getattr(target, "PLUGIN_META", None)
-        if not isinstance(meta, PluginMeta):
-            # Callable that returns meta+register
-            if not callable(target):
-                raise error(
-                    HED_PLUGIN_FAILED,
-                    title="Invalid plugin entry point",
-                    explanation=f"Plugin {name!r} must be callable or expose PLUGIN_META.",
-                    remediation="Export a register(ctx) callable.",
-                )
-            # Deferred meta via attribute on wrapper
-            meta = PluginMeta(
-                name=name,
-                version="0.0.0",
-                distribution=name,
-            )
-        if not compatible_hedron_version(meta.hedron_version, version):
-            # Rollback panels
-            plugins_mod._panels.clear()
-            plugins_mod._panels.update(panel_snapshot)
-            plugins_mod._diagnostic_owners.clear()
-            plugins_mod._diagnostic_owners.update(owner_snapshot)
-            raise error(
-                HED_PLUGIN_INCOMPATIBLE,
-                title="Incompatible plugin",
-                explanation=(
-                    f"Plugin {meta.name!r} requires Hedron {meta.hedron_version}, "
-                    f"running {version}."
-                ),
-                remediation="Upgrade/downgrade the plugin or Hedron.",
-            )
-        if meta.name in metas:
-            raise error(
-                HED_PLUGIN_DUPLICATE,
-                title="Duplicate plugin",
-                explanation=f"Plugin {meta.name!r} discovered more than once.",
-                remediation="Remove the duplicate entry point.",
-            )
-        metas[meta.name] = (target, meta)
+    def _rollback() -> None:
+        restore_registry_builder(registry_snapshot)
+        plugins_mod._panels.clear()
+        plugins_mod._panels.update(panel_snapshot)
+        plugins_mod._diagnostic_owners.clear()
+        plugins_mod._diagnostic_owners.update(owner_snapshot)
 
-    order = _topo_sort({name: meta.depends_on for name, (_, meta) in metas.items()})
-    loader = PluginLoader()
+    discovered = list(entry_points) if entry_points is not None else _discover_entry_points()
+    discovered_names: list[str] = []
+    metas: dict[str, tuple[Any, PluginMeta]] = {}
     try:
+        for ep in discovered:
+            name = getattr(ep, "name", None) or str(ep)
+            discovered_names.append(name)
+            if enabled is not None and name not in enabled:
+                continue
+            try:
+                target = ep.load() if hasattr(ep, "load") else ep
+            except Exception as exc:  # noqa: BLE001
+                raise error(
+                    HED_PLUGIN_MISSING,
+                    title="Plugin import failed",
+                    explanation=f"Could not load plugin {name!r}: {exc}",
+                    remediation="Install the plugin package or fix the entry point.",
+                ) from exc
+            meta = getattr(target, "PLUGIN_META", None)
+            if not isinstance(meta, PluginMeta):
+                if not callable(target):
+                    raise error(
+                        HED_PLUGIN_FAILED,
+                        title="Invalid plugin entry point",
+                        explanation=f"Plugin {name!r} must be callable or expose PLUGIN_META.",
+                        remediation="Export a register(ctx) callable.",
+                    )
+                meta = PluginMeta(
+                    name=name,
+                    version="0.0.0",
+                    distribution=name,
+                )
+            if not compatible_hedron_version(meta.hedron_version, version):
+                raise error(
+                    HED_PLUGIN_INCOMPATIBLE,
+                    title="Incompatible plugin",
+                    explanation=(
+                        f"Plugin {meta.name!r} requires Hedron {meta.hedron_version}, "
+                        f"running {version}."
+                    ),
+                    remediation="Upgrade/downgrade the plugin or Hedron.",
+                )
+            if meta.name in metas:
+                raise error(
+                    HED_PLUGIN_DUPLICATE,
+                    title="Duplicate plugin",
+                    explanation=f"Plugin {meta.name!r} discovered more than once.",
+                    remediation="Remove the duplicate entry point.",
+                )
+            metas[meta.name] = (target, meta)
+
+        if enabled is not None:
+            missing = [n for n in enabled if n not in discovered_names]
+            if missing:
+                raise error(
+                    HED_PLUGIN_MISSING,
+                    title="Enabled plugin not found",
+                    explanation=(
+                        "Configured plugins were not discovered: "
+                        + ", ".join(repr(n) for n in missing)
+                    ),
+                    remediation="Install the plugin package or fix [tool.hedron] plugins.",
+                )
+
+        order = _topo_sort({name: meta.depends_on for name, (_, meta) in metas.items()})
+        loader = PluginLoader()
         for name in order:
             target, meta = metas[name]
             ctx = PluginContext(meta)
@@ -177,10 +188,7 @@ def load_plugins(
             register(ctx)
             loader.loaded.append(LoadedPlugin(meta=meta, context=ctx, entry_point=name))
     except Exception:
-        plugins_mod._panels.clear()
-        plugins_mod._panels.update(panel_snapshot)
-        plugins_mod._diagnostic_owners.clear()
-        plugins_mod._diagnostic_owners.update(owner_snapshot)
+        _rollback()
         raise
 
     return loader
