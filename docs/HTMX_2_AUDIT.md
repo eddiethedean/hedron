@@ -87,8 +87,8 @@ versioned browser assets and are never implied by the core compatibility range.
   extension teardown, CSP, and reduced-motion behavior.
 - Audit the pinned HTMX core and extension assets, recorded digests, licenses, compatibility, and
   upgrade notes. Patch upgrades require the browser suite as well as Python integration tests.
-- Verify sensitive pages opt out of history snapshots and that cached snapshots, preloaded
-  responses, and extension diagnostics cannot disclose private content.
+- Verify sensitive pages opt out of history snapshots and that cached snapshots and extension
+  diagnostics cannot disclose private content.
 
 ## Explicit non-goals through 1.0
 

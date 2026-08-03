@@ -2,19 +2,25 @@
 
 ## Adapters
 
-- [x] Matplotlib static output, Plotly interactive JSON, and Altair/Vega-Lite specifications follow one lifecycle contract.
+- [ ] Matplotlib static output, Plotly interactive JSON, and Altair/Vega-Lite specifications follow
+  one lifecycle contract with real-browser evidence. *(implementation shipped; closure evidence open)*
 - [x] Optional packages are lazy and missing dependencies produce exact installation commands.
-- [x] Browser runtimes are pinned, fingerprinted, locally served, and deduplicated.
+- [ ] Browser runtimes, not only host shims, are pinned, fingerprinted, locally served,
+  deduplicated, and exercised offline. *(0.6 closure gate)*
 - [x] Payload and row limits prevent accidental large browser transfers.
-- [x] Raw executable callbacks and unapproved remote resources are rejected.
+- [ ] Raw executable callbacks, unapproved remote resources, and active content in chart/SVG
+  fallback paths are rejected by an adversarial corpus. *(0.6 closure gate)*
 
 ## Accessibility and diagnostics
 
 - [x] Every chart has a title and description or explicit waiver.
-- [x] Static charts require alt text; supported simple charts offer tabular fallback.
-- [x] Color, keyboard, focus, and screen-reader behavior meet the chart contract.
-- [x] Explorer shows backend, specification, data schema, redaction, size, timing, assets, caching, and fallback.
+- [ ] Static charts require alt text; supported simple charts offer tabular fallback.
+- [ ] Color, keyboard, focus, and screen-reader behavior meet the chart contract in a real browser.
+- [ ] Explorer shows backend, specification, data schema, redaction, size, timing, assets, caching,
+  and fallback with evidence linked under [EVIDENCE.md](EVIDENCE.md).
 
 ## Exit
 
-All three initial adapters render in the reference application under strict CSP and private authenticated caching without leaking secret columns.
+All three initial adapters render in the reference application under strict CSP and private
+authenticated caching without leaking secret columns. The exit remains open until every requirement
+above is `Verified` under [EVIDENCE.md](EVIDENCE.md).

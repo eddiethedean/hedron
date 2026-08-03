@@ -25,6 +25,12 @@ Every change runs:
 6. browser and accessibility tests when emitted markup or browser assets change;
 7. non-blocking benchmark comparison until a release budget becomes normative.
 
+Beginning with the phase 0.6 closure gate, CI status is necessary but not sufficient for a release
+claim. Stable evidence IDs map requirements to exact commands, supported matrix dimensions, retained
+artifacts, and owners under [acceptance/EVIDENCE.md](acceptance/EVIDENCE.md). Before `v0.7.0`, the
+release checker consumes a machine-readable gate manifest and fails closed on missing or unowned
+evidence.
+
 The default CPython matrix covers 3.11, 3.12, 3.13, and 3.14. Linux runs the full suite; macOS and Windows run package, core, and representative integration tests. Free-threaded CPython and PyPy are informational until separately promoted.
 
 ## Quality policy
@@ -34,6 +40,8 @@ The default CPython matrix covers 3.11, 3.12, 3.13, and 3.14. Linux runs the ful
 - Generated artifacts are deterministic or declare their intentional variability.
 - Tests do not depend on network access except separately labeled upstream compatibility jobs.
 - Security, accessibility, and compatibility regressions block release.
+- A framework capability is advertised only when its native framework/server evidence is retained;
+  portable conformance cannot manufacture ASGI, WSGI, or framework-specific guarantees.
 
 ## Licensing policy
 

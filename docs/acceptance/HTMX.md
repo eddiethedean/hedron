@@ -15,24 +15,25 @@
 
 ## Later
 
-- [x] Phase 0.6: browser focus, title, live-region, custom-element lifecycle, OOB, history-miss,
-  request-race, and error-fragment conformance.
-- [x] Phase 0.6: typed HTMX request/result/policy envelope with validated primary/OOB swaps, event
-  timing, history, status, concurrency, cache behavior, and transparent header/attribute output.
+- [ ] Phase 0.6 closure: browser focus, title, live-region, custom-element lifecycle, OOB,
+  history-miss, request-race, and error-fragment conformance runs in a real browser.
+- [ ] Phase 0.6 closure: typed HTMX request/result/policy envelope validates primary/OOB swaps,
+  event timing, history, status, concurrency, cache behavior, and raw header overrides.
 - [x] Phase 0.6: semantic 422 FastAPI validation fragments plus declared policies for 202, 204,
   401/403, 409, 429, and 5xx responses; non-HTMX requests preserve framework-native JSON.
-- [x] Phase 0.6: authorized declared fragment regions, boosted title/history/full-page fallbacks,
-  correct `Vary`/cache keys, synchronized accessible forms/search, and Explorer interaction traces.
+- [ ] Phase 0.6 closure: authorized declared fragment regions drive runtime target-aware rendering;
+  boosted title/history/full-page fallbacks, `Vary`/cache keys, synchronized accessible forms/search,
+  and Explorer interaction traces have linked evidence.
 - [x] Phase 0.6: explicit fragment asset/head policy and conformance-gated evaluation of
   `head-support`, Idiomorph, response-targets, and View Transitions.
 - [ ] Phase 0.7: cross-adapter HTMX 2 header, DELETE query-parameter, boost/history, 204, 3xx,
   validation, proxy/root-path, and optional transport conformance.
 - [ ] Phase 0.7: request-aware URL reversal, disconnect/cancellation propagation, and a 202 job
   contract with bounded polling plus optional SSE promotion.
-- [ ] Phase 0.7: independently pinned extension asset contract; evaluate official SSE for jobs and
-  keep official WebSockets opt-in for bidirectional use cases.
-- [ ] Phase 0.8: Chromium/Firefox/WebKit matrix, core/extension supply-chain audit, history privacy,
-  and measured opt-in preload evaluation.
+- [ ] Phase 0.7: independently pinned extension asset contract and a time-boxed official SSE
+  decision for jobs. Polling is the required baseline; SSE may remain deferred and WebSocket
+  components remain post-1.0 absent a new accepted RFC.
+- [ ] Phase 0.8: Chromium/Firefox/WebKit matrix, core/extension supply-chain audit, and history privacy.
 - [ ] Phase 0.8: application/intermediary cache-separation evidence for pages, fragments, history
   restores, and target variants, plus authorization/accessibility/fallback coverage for every
   supported interaction status.

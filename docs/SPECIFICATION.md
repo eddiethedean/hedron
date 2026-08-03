@@ -55,6 +55,11 @@ targeting `v0.1.0`. Phases 0.1 through 0.6 are published and MIT-licensed (D-033
 [RELEASE.md](RELEASE.md) and [STATUS.md](STATUS.md). Later-phase work must still satisfy
 the owning release gate before implementation begins.
 
+Under D-035, phase 0.7 additionally requires the phase 0.6 behavioral closure gate, accepted
+adapter-neutral ownership, resolved package dependency direction, concrete compatibility ranges,
+and evidence-backed adapter/operations/jobs/observability ledgers. Phase 0.8 is feature-frozen; final
+release rehearsal uses published `1.0.0rcN` artifacts.
+
 The cumulative [reference application](REFERENCE_APPLICATION.md) grows from the phase 0.1
 static rendering proof through the phase 0.2 authenticated FastAPI CRUD application into
 a secure application with addressable resources, typed actions and forms, DataEditor,

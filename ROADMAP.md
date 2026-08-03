@@ -307,7 +307,7 @@ integrations, and a documented production operating model.
 - Adapter, operations, jobs, and observability acceptance ledgers link every completed requirement
   to a test command and evidence artifact; checkbox state alone is insufficient.
 
-## 0.8 — Release candidate and hardening (`v0.8.0`)
+## 0.8 — API freeze and hardening (`v0.8.0`)
 
 **Outcome:** Hedron’s `v1.0.0` public surface is frozen at a hardening baseline and supported by
 release-quality evidence. Phase 0.8 adds no new product subsystem, framework adapter, or transport.

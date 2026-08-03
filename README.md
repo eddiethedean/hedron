@@ -13,7 +13,8 @@ Components—without requiring Node.js.
 
 > **Project status:** Phase 0.6 is **published** as `v0.6.0` (visualization adapters,
 > content/auth extras, typed HTMX interactions, and `hedron-charts`). The project is
-> MIT-licensed. Next milestone: phase 0.7 (framework adapters and production operations).
+> MIT-licensed. Before phase 0.7 implementation, the roadmap requires a 0.6 behavioral closure
+> gate with linked security, interaction, browser, visualization, and bounded-query evidence.
 
 ## Packages
 
@@ -96,7 +97,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI (**published**) |
 | 0.6 | `v0.6.0` | Visualization and first-party integrations (**published**) |
 | 0.7 | `v0.7.0` | Flask/Django adapters and production operations |
-| 0.8 | `v0.8.0` | Public API freeze, release candidate, and hardening |
+| 0.8 | `v0.8.0` | Feature-frozen public API baseline and hardening |
 | 1.0 | `v1.0.0` | Stable supported Hedron release |
 
 See the complete [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/) for scope, feature ownership, RFC assignments, and release gates.
