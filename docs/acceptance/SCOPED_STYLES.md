@@ -14,7 +14,7 @@
 - [x] One fingerprinted bundle styles initial and HTMX-loaded components (reference app builds and injects `/hedron-assets/` under strict CSP).
 - [x] Production requires no runtime CSS compilation (`HED-BUILD-0004` on compile APIs).
 - [x] Strict CSP works with external styles.
-- [x] Explorer maps symbols to compiled output and reports diagnostics. *(registry metadata ready; full Explorer panels remain phase 0.4)*
+- [x] Explorer maps symbols to compiled output and reports diagnostics. *(phase 0.4 Explorer panels)*
 
 ## Exit
 

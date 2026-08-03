@@ -17,6 +17,8 @@ hedron/
 │   │   └── src/hedron/
 │   ├── hedron-explorer/
 │   │   └── src/hedron_explorer/
+│   ├── hedron-sample-kit/
+│   │   └── src/hedron_sample_kit/
 │   ├── hedron-data/
 │   │   └── src/hedron_data/
 │   ├── hedron-charts/
@@ -41,14 +43,15 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (train at `0.3.0`) |
-| `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; train at `0.3.0`; full platform in `v0.4.0` |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (train at `0.4.0`) |
+| `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
+| `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras | `v0.5.0` |
 | `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras | `v0.6.0` |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django | `v0.7.0` |
 
-`hedron` does not require Explorer in production. Beginning with the `v0.2.0` preview, `hedron[dev]` installs `hedron-explorer` for development diagnostics; the full Explorer surface is a phase 0.4 (`v0.4.0`) gate. The flagship package contains the registry and trace hooks needed by Explorer but not the Explorer frontend.
+`hedron` does not require Explorer in production. Beginning with the `v0.2.0` preview, `hedron[dev]` installs `hedron-explorer` for development diagnostics; the full Explorer surface ships in `v0.4.0`. The flagship package contains the registry and trace hooks needed by Explorer but not the Explorer frontend.
 
 ## Dependency rules
 

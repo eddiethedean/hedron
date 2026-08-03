@@ -15,7 +15,7 @@ The phase 0.0 specification and project-foundation gate passes and publishes no 
 - Fixed the canonical addressability model: application-local resources use `@app.component` or `@router.component`; reusable packages use `@addressable` plus explicit `include_component` exposure.
 - Fixed the rendering boundary: component `render()` methods return `NodeLike`; only the framework-neutral top-level renderer returns `RenderResult`; concrete serializer nodes remain private.
 - Removed a pre-1.0 `StreamingComponentResponse` leak. General component streaming remains a post-1.0 candidate, while explicit framework streaming remains an escape hatch.
-- Fixed the package/import map and clarified that the `hedron-explorer` preview begins in `v0.2.0` through `hedron[dev]`, with the full platform gated at phase 0.4 (`v0.4.0`).
+- Fixed the package/import map and clarified that the `hedron-explorer` preview begins in `v0.2.0` through `hedron[dev]`, with the full platform shipping in `v0.4.0`.
 - Fixed the initial built-in component catalog and its release ownership.
 - Fixed deterministic logical, DOM-instance, and asset identifier formats.
 - Fixed configuration precedence, structured diagnostic codes, supported runtime ranges, and the contributor toolchain.

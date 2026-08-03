@@ -7,7 +7,7 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 1. `main` is green on CI for Python 3.11–3.14.
 2. Package version, `__version__`, and changelog entry agree
-   (`uv run python scripts/check_release_gate.py 0.4.0`).
+   (`uv run python scripts/check_release_gate.py <version>`).
 3. Phase acceptance subsets for the release are checked (or explicitly Deferred):
    - [SECURITY.md](acceptance/SECURITY.md) phase 0.2 + 0.3 asset URL policy + 0.4 SARIF
    - [FASTAPI_INTEGRATION.md](acceptance/FASTAPI_INTEGRATION.md) MVP exit
@@ -42,19 +42,7 @@ Already published. Do not retag.
 
 ## Cut `v0.4.0` (developer platform)
 
-> **Status:** Implementation complete on `main` at package version `0.4.0`.
-> Cut the annotated tag when CI is green; do not retag after the Release workflow succeeds.
-
-1. Confirm `check_release_gate.py 0.4.0` and acceptance suites for Explorer/CLI/Plugins/Testing.
-2. Confirm latest `main` CI is green on 3.11–3.14.
-3. Tag and push:
-
-```bash
-git tag -a v0.4.0 -m "Hedron 0.4.0"
-git push origin v0.4.0
-```
-
-4. After publish, update STATUS/README to record publication and point at phase 0.5.
+> **Status:** Published as `v0.4.0` on 2026-08-03. Do not retag.
 
 ## After publication
 

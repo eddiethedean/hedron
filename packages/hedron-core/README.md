@@ -38,19 +38,20 @@ print(result.html)
 
 - `Model`, `Props`, `FormModel`, `EventPayload`, and `Field`
 - Trust boundary types: `Secret`, `TrustedHtml`, `SafeUrl`, `UrlPurpose`
-- Component protocol, registry, diagnostics, and deterministic identity
+- Component protocol, registry, diagnostics (JSON/SARIF), and deterministic identity
 - Context-aware HTML serializer and `render(...) -> RenderResult`
-- Phase 0.1 built-ins for pages, forms, layout, landmarks, and content
+- HDN, scoped CSS, themes, assets, and discovery helpers
+- Built-ins for pages, forms, layout, landmarks, and content
+- Framework-neutral plugin metadata and Explorer panel registration helpers
 
 ## What it does not include
 
 - HTTP routing, FastAPI/Flask/Django adapters, HTMX request handling
-- HDN, scoped CSS, CLI, Component Explorer, charts, or data grids
+- CLI, Component Explorer UI, charts, or data grids
 
-Those arrive in later Hedron phases. Prefer the FastAPI package
-[`hedron`](https://pypi.org/project/hedron/) for application work. See the
-[project README](https://github.com/eddiethedean/hedron) and
-[roadmap](https://github.com/eddiethedean/hedron/blob/main/ROADMAP.md).
+Prefer the FastAPI package [`hedron`](https://pypi.org/project/hedron/) for
+application work. See the [project README](https://github.com/eddiethedean/hedron)
+and [roadmap](https://github.com/eddiethedean/hedron/blob/main/ROADMAP.md).
 
 ## Links
 

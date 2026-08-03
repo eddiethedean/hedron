@@ -5,10 +5,11 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Development Component Explorer preview for Hedron.
+Development Component Explorer for Hedron (`v0.4.0`).
 
-Provides registry-backed inspection of routes, components, HTMX inference, and
-security findings. Installed through `hedron[dev]`; not required in production.
+Provides HTMX panels for components, routes, graph, security, accessibility,
+packages, and settings, plus sanitized JSON APIs with rate limiting and audit
+hooks. Installed through `hedron[dev]`; not required in production.
 
 ## Install
 

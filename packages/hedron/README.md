@@ -10,7 +10,8 @@ FastAPI-native typed component framework for HTML and HTMX.
 Builds on framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/)
 with pages, addressable components, typed actions, CSRF-aware forms, OpenAPI
 `text/html` metadata, interaction built-ins (`Lazy`, `Poll`, `Pagination`, …),
-and a thin `Hedron()` application facade.
+a thin `Hedron()` application facade, CLI (`new`/`check`/`graph`/`build`/…),
+plugin loader, and public `hedron.testing` helpers.
 
 ## Install
 
@@ -20,10 +21,16 @@ pip install hedron
 uv add hedron
 ```
 
-Development Explorer preview:
+Development Explorer:
 
 ```bash
 pip install "hedron[dev]"
+```
+
+Optional browser testing extras:
+
+```bash
+pip install "hedron[browser]"
 ```
 
 Requires Python 3.11, 3.12, 3.13, or 3.14.
@@ -70,9 +77,13 @@ app.include_router(router)
 CLI inspection (optionally load an app module first):
 
 ```bash
+hedron new demoapp
 hedron --app myapp:app routes
 hedron --app myapp:app components
 hedron --app myapp:app preview home
+hedron check --format json --severity error
+hedron graph
+hedron audit-components
 ```
 
 ## Links
@@ -80,7 +91,7 @@ hedron --app myapp:app preview home
 - [Documentation](https://github.com/eddiethedean/hedron/tree/main/docs)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron/CHANGELOG.md)
 - [Source](https://github.com/eddiethedean/hedron)
-- [`hedron-core`](https://pypi.org/project/hedron-core/) · [`hedron-explorer`](https://pypi.org/project/hedron-explorer/)
+- [`hedron-core`](https://pypi.org/project/hedron-core/) · [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) · [`hedron-sample-kit`](https://pypi.org/project/hedron-sample-kit/)
 
 ## License
 
