@@ -44,6 +44,7 @@ Then follow the [quickstart](quickstart.md), or use the generated `app.py` from
 |---|---|---|
 | `hedron` | You are building a FastAPI web application | `uv add hedron` |
 | `hedron-core` | You need framework-neutral component rendering | `uv add hedron-core` |
+| `hedron[data]` | You need DataTable / DataEditor / data sources | `uv add "hedron[data]"` |
 | `hedron[dev]` | You also want Component Explorer | `uv add "hedron[dev]"` |
 | `hedron[browser]` | You need browser and accessibility test helpers | `uv add "hedron[browser]"` |
 
@@ -53,9 +54,11 @@ Then follow the [quickstart](quickstart.md), or use the generated `app.py` from
 uv run python -c "import hedron; print(hedron.__version__)"
 ```
 
-The installed version should print `0.4.0` (or a later patch on the 0.4 train) without an
-import error. Hedron follows semantic versioning while it moves toward the public API
-freeze described in the [roadmap](../ROADMAP.md).
+The installed version should print `0.5.0` (or a later patch on the 0.5 train) without an
+import error once that train is published. Until then, install from a checkout or wheel.
+Data APIs require `hedron-data` (`pip install "hedron[data]"`). Hedron follows semantic
+versioning while it moves toward the public API freeze described in the
+[roadmap](../ROADMAP.md).
 
 ## Contributor checkout
 

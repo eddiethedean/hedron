@@ -88,8 +88,12 @@ jobs:
           assert "smoke" in html
 
           from hedron import Hedron
+          from hedron_data import DataTable
           from hedron_explorer import explorer_router
           from hedron_sample_kit import __version__ as sample_kit_version
+
+          table = DataTable([{"id": "1", "name": "Ada"}])
+          assert "Ada" in render(table).html
 
           app = Hedron(
               title="smoke",

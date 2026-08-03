@@ -42,13 +42,14 @@ from hedron import (
     cache_data,
     html,
 )
-from hedron.color_mode import apply_color_mode_cookie
+from hedron.color_mode import apply_color_mode_cookie, read_color_mode_preference
 from hedron.routing.reverse import ComponentRef
-from hedron.security.csrf import csrf_token_for_request
+from hedron.security.csrf import csrf_token_for_request, prepare_csrf_from_request, validate_csrf
 from hedron.security.policy import SecurityPolicy
-from hedron_core import ColorMode, Field, FormModel, Model, addressable
+from hedron_core import ColorMode, Field, FormModel, Model, addressable, resolve_color_mode
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_data import (
+    AsyncInMemoryDataSource,
     Column,
     DataChanges,
     DataEditor,
@@ -156,6 +157,7 @@ EMPLOYEE_SOURCE = InMemoryDataSource(
     version="1",
     audit_hook=_audit_employees,
 )
+ASYNC_EMPLOYEE_SOURCE = AsyncInMemoryDataSource(EMPLOYEE_SOURCE)
 
 
 @cache_data(ttl=30, scope="tenant", tags=("team-summary",), vary_on=("team_id",))
@@ -214,6 +216,12 @@ def dashboard_page(
         method="GET",
         target="#user-table",
     )
+    preference = ColorMode.SYSTEM
+    data_theme: str | None = None
+    if request is not None:
+        preference = read_color_mode_preference(request)
+        if preference is not ColorMode.SYSTEM:
+            data_theme = resolve_color_mode(preference)
     return Page(
         Header(
             Heading("Hedron Team Admin", level=1),
@@ -237,7 +245,10 @@ def dashboard_page(
                         tone="info",
                         title="Phase 0.3",
                     ),
-                    _phase05_section(csrf_token=csrf_token),
+                    _phase05_section(
+                        csrf_token=csrf_token,
+                        preference=preference,
+                    ),
                     _status_banner_section(request=request),
                 )
             )
@@ -245,17 +256,34 @@ def dashboard_page(
         Footer(Text("© Hedron reference application")),
         title="Team Admin",
         lang="en",
+        data_theme=data_theme,
     )
 
 
-def _phase05_section(*, csrf_token: str) -> Any:
-    page = EMPLOYEE_SOURCE.fetch(
+async def _employee_page() -> Any:
+    return await ASYNC_EMPLOYEE_SOURCE.fetch(
         DataQuery(
             limit=5,
             allowlisted_sort_fields=frozenset({"id", "name"}),
             allowlisted_filter_fields=frozenset({"active"}),
         )
     )
+
+
+def _phase05_section(
+    *,
+    csrf_token: str,
+    preference: ColorMode = ColorMode.SYSTEM,
+    page: Any | None = None,
+) -> Any:
+    if page is None:
+        page = EMPLOYEE_SOURCE.fetch(
+            DataQuery(
+                limit=5,
+                allowlisted_sort_fields=frozenset({"id", "name"}),
+                allowlisted_filter_fields=frozenset({"active"}),
+            )
+        )
     editor = DataEditor(
         page=page,
         key="employees",
@@ -267,13 +295,18 @@ def _phase05_section(*, csrf_token: str) -> Any:
             Column(name="title"),
             Column(name="active", editor="boolean"),
         ],
+        source=ASYNC_EMPLOYEE_SOURCE,
         save_endpoint="/employees/save",
         caption="Employees",
     )
     sample_rows = [{"id": u.id, "name": u.name, "role": u.role} for u in STORE.list_users()]
     return Stack(
         Heading("Data application toolkit", level=2),
-        ColorModeToggle(preference=ColorMode.SYSTEM, action="/color-mode"),
+        ColorModeToggle(
+            preference=preference,
+            action="/color-mode",
+            csrf_token=csrf_token,
+        ),
         Metric("Team size", len(STORE.list_users()), delta="+0", delta_tone="neutral"),
         Status("Cache and editor demos ready", tone="success"),
         Progress(40, maximum=100, label="Onboarding"),
@@ -290,7 +323,7 @@ def _phase05_section(*, csrf_token: str) -> Any:
         ),
         html.meta(name="csrf-token", content=csrf_token),
         Alert(
-            "Paged DataEditor, Auto(), cache_data, utilities, and ColorMode (phase 0.5).",
+            "Paged async DataEditor, Auto(), cache_data, utilities, and ColorMode (phase 0.5).",
             tone="info",
             title="Phase 0.5",
         ),
@@ -519,6 +552,14 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         store.delete(user_id)
         return users_table_component(store)
 
+    mount_phase05_routes(app)
+    app.include_router(users)
+    return app
+
+
+def mount_phase05_routes(app: FastAPI) -> None:
+    """Shared 0.5 mutation/download/cache routes for Hedron and plain FastAPI builders."""
+
     @app.post("/color-mode")
     async def set_color_mode(
         request: Request,
@@ -527,6 +568,9 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
     ) -> Any:
         from fastapi.responses import RedirectResponse
 
+        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("strict"))
+        await prepare_csrf_from_request(request, policy)
+        validate_csrf(request, policy)
         try:
             pref = ColorMode(color_mode)
         except ValueError:
@@ -544,6 +588,9 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
     ) -> dict[str, object]:
         from hedron_data import CellUpdate, filter_writable_changes
 
+        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("strict"))
+        await prepare_csrf_from_request(request, policy)
+        validate_csrf(request, policy)
         payload = await request.json()
         changes = DataChanges(
             updates=tuple(
@@ -561,9 +608,11 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         )
         cleaned, errors = filter_writable_changes(
             changes,
-            writable_fields=frozenset({"name", "title", "active", "id"}),
+            writable_fields=frozenset({"name", "title", "active"}),
             read_only_fields=frozenset({"id"}),
             hidden_fields=frozenset(),
+            allow_deletes=True,
+            key_field="id",
         )
         if errors:
             return {
@@ -573,7 +622,7 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
                 ],
                 "conflicts": [],
             }
-        result: DataSaveResult[dict[str, object]] = EMPLOYEE_SOURCE.apply(cleaned)
+        result: DataSaveResult[dict[str, object]] = await ASYNC_EMPLOYEE_SOURCE.apply(cleaned)
         return {
             "ok": result.ok,
             "errors": [
@@ -611,9 +660,6 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
     @app.get("/api/team-summary")
     async def team_summary(_: str = Depends(require_user)) -> dict[str, object]:
         return await load_team_summary(team_id=1)
-
-    app.include_router(users)
-    return app
 
 
 def build_plain_fastapi_app() -> FastAPI:
@@ -685,6 +731,7 @@ def build_plain_fastapi_app() -> FastAPI:
         store.delete(user_id)
         return users_table_component(store)
 
+    mount_phase05_routes(app)
     app.include_router(router)
     app.include_router(users)
     return app

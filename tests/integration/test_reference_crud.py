@@ -160,3 +160,123 @@ def test_explorer_preview_available(hedron_client: TestClient) -> None:
 def test_private_cache_on_authenticated_dashboard(hedron_client: TestClient) -> None:
     response = hedron_client.get("/", headers=_auth())
     assert response.headers.get("Cache-Control") == "private, no-store"
+
+
+def test_employee_save_requires_csrf(hedron_client: TestClient) -> None:
+    denied = hedron_client.post(
+        "/employees/save",
+        headers={**_auth(), "Content-Type": "application/json"},
+        json={
+            "updates": [{"row_key": "e1", "field": "name", "value": "Ada2", "row_version": "1"}],
+            "inserts": [],
+            "deletes": [],
+            "dataset_version": "1",
+        },
+    )
+    assert denied.status_code == 403
+
+    seeded = hedron_client.get("/", headers=_auth())
+    token = seeded.cookies.get("hedron_csrf")
+    assert token
+    version = _MOD.EMPLOYEE_SOURCE.dataset_version
+    ok = hedron_client.post(
+        "/employees/save",
+        headers={
+            **_auth(),
+            "Content-Type": "application/json",
+            "X-CSRF-Token": token,
+        },
+        json={
+            "updates": [
+                {
+                    "row_key": "e1",
+                    "field": "name",
+                    "value": "Ada2",
+                    "row_version": version,
+                }
+            ],
+            "inserts": [],
+            "deletes": [],
+            "dataset_version": version,
+        },
+    )
+    assert ok.status_code == 200
+    body = ok.json()
+    assert body["ok"] is True
+
+
+def test_employee_save_rejects_forged_readonly(hedron_client: TestClient) -> None:
+    seeded = hedron_client.get("/", headers=_auth())
+    token = seeded.cookies.get("hedron_csrf")
+    assert token
+    forged = hedron_client.post(
+        "/employees/save",
+        headers={
+            **_auth(),
+            "Content-Type": "application/json",
+            "X-CSRF-Token": token,
+        },
+        json={
+            "updates": [{"row_key": "e1", "field": "id", "value": "hack", "row_version": "1"}],
+            "inserts": [],
+            "deletes": [],
+            "dataset_version": "1",
+        },
+    )
+    assert forged.status_code == 200
+    body = forged.json()
+    assert body["ok"] is False
+    assert body["errors"]
+
+
+def test_color_mode_sets_cookie_and_theme(hedron_client: TestClient) -> None:
+    seeded = hedron_client.get("/", headers=_auth())
+    token = seeded.cookies.get("hedron_csrf")
+    assert token
+    response = hedron_client.post(
+        "/color-mode",
+        headers=_auth(),
+        data={"color_mode": "dark", "csrf_token": token},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert response.cookies.get("hedron_color_mode") == "dark"
+    themed = hedron_client.get("/", headers=_auth())
+    assert 'data-theme="dark"' in themed.text
+
+
+def test_roster_download_requires_auth(hedron_client: TestClient) -> None:
+    assert hedron_client.get("/downloads/roster.csv").status_code == 401
+    ok = hedron_client.get("/downloads/roster.csv", headers=_auth())
+    assert ok.status_code == 200
+    assert "text/csv" in ok.headers.get("content-type", "")
+    assert "Ada" in ok.text or "name" in ok.text
+
+
+def test_explorer_phase05_panels(hedron_client: TestClient) -> None:
+    for path in ("/hedron-explorer/cache", "/hedron-explorer/data", "/hedron-explorer/auto"):
+        response = hedron_client.get(path, headers=_auth())
+        assert response.status_code == 200, path
+    data = hedron_client.get("/hedron-explorer/data", headers=_auth())
+    assert "Writable" in data.text or "writable" in data.text.lower() or "Data" in data.text
+
+
+def test_plain_fastapi_phase05_routes(plain_client: TestClient) -> None:
+    seeded = plain_client.get("/", headers=_auth())
+    assert seeded.status_code == 200
+    token = seeded.cookies.get("hedron_csrf")
+    assert token
+    save = plain_client.post(
+        "/employees/save",
+        headers={
+            **_auth(),
+            "Content-Type": "application/json",
+            "X-CSRF-Token": token,
+        },
+        json={"updates": [], "inserts": [], "deletes": [], "dataset_version": "1"},
+    )
+    assert save.status_code == 200
+    roster = plain_client.get("/downloads/roster.csv", headers=_auth())
+    assert roster.status_code == 200
+    summary = plain_client.get("/api/team-summary", headers=_auth())
+    assert summary.status_code == 200

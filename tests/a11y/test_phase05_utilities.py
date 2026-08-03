@@ -31,3 +31,11 @@ def test_utility_live_regions_and_semantics() -> None:
     assert "<summary>" in render(Expander("More", "x")).html
     assert 'role="tablist"' in render(Tabs(("A", "1"), ("B", "2"))).html
     assert 'aria-label="Color mode"' in render(ColorModeToggle()).html
+
+
+@pytest.mark.a11y
+def test_sidebar_accessible_label() -> None:
+    from hedron_core import Sidebar, Text
+
+    html = render(Sidebar(Text("item"), label="Navigation")).html
+    assert 'aria-label="Navigation"' in html

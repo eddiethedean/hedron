@@ -9,8 +9,8 @@ status: shipped
 These built-ins capture the low-friction Python workflows learned from Streamlit while preserving normal FastAPI and component architecture.
 
 - `Metric(label, value, delta=...)`: semantic value and change, not color-only meaning.
-- `FileUpload(accept=..., maximum_size=...)`: typed upload integrated with forms, limits, CSRF, and application-owned storage.
-- `DownloadButton(source=..., filename=...)`: safe file response with explicit content type, filename policy, authorization, and streaming source.
+- `FileUpload(accept=..., maximum_size=...)`: typed upload integrated with forms, limits, CSRF, and application-owned storage. Enforce `maximum_size` in the route with `validate_upload_size` (markup alone is advisory).
+- `DownloadButton(href=..., filename=...)` (alias `source=`): link to an authorized download route; pair with `safe_download_response` for path/auth/filename policy.
 - `CodeViewer(code, language=...)`: escaped code with optional registered highlighting.
 - `JSONViewer(value)`: bounded, escaped structured data with secret redaction.
 - `Progress(value, maximum=...)` and `Status(...)`: accessible progress and state announcements.

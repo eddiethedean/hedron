@@ -63,7 +63,7 @@ from hedron_core.cache import (
     invalidate_tags,
     reset_cache_for_tests,
 )
-from hedron_core.color_mode import ColorMode, ColorModeToggle, resolve_color_mode
+from hedron_core.color_mode import ColorMode, ColorModeToggle, color_mode_script, resolve_color_mode
 from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.css import compile_css, scoped_identifier
 from hedron_core.diagnostics import (
@@ -174,6 +174,7 @@ __all__ = [
     "CodeViewer",
     "ColorMode",
     "ColorModeToggle",
+    "color_mode_script",
     "Expander",
     "InMemoryCacheBackend",
     "JSONViewer",

@@ -31,6 +31,38 @@ def _vary_from_kwargs(kwargs: Mapping[str, Any], vary_on: tuple[str, ...]) -> di
     return {k: kwargs[k] for k in vary_on if k in kwargs}
 
 
+_SENSITIVE_SCOPES = frozenset(
+    {
+        CacheScope.USER.value,
+        CacheScope.TENANT.value,
+        CacheScope.SESSION.value,
+    }
+)
+_PUBLIC_SENSITIVE_NAMES = frozenset(
+    {"user", "user_id", "request", "session", "tenant", "tenant_id"}
+)
+
+
+def _should_reject_cache(
+    *,
+    scope: str,
+    args: tuple[Any, ...],
+    kwargs: Mapping[str, Any],
+    vary_on: tuple[str, ...],
+) -> str | None:
+    if scope in _SENSITIVE_SCOPES and not vary_on:
+        return f"scope {scope!r} requires vary_on dimensions"
+    if scope == CacheScope.PUBLIC.value:
+        if any(k in _PUBLIC_SENSITIVE_NAMES for k in kwargs):
+            return "user-specific kwargs under public scope"
+        # Positional request-like objects must not be cached publicly.
+        for arg in args:
+            type_name = type(arg).__name__
+            if type_name in {"Request", "HTTPConnection"} or "Session" in type_name:
+                return "request/session positional arg under public scope"
+    return None
+
+
 def _decorate(
     fn: Callable[P, R],
     *,
@@ -41,26 +73,22 @@ def _decorate(
     vary_on: tuple[str, ...],
     component: bool,
 ) -> Callable[P, R]:
+    del component  # reserved for future prepared-component policy hooks
     identity = _identity_for(fn)
     is_async = inspect.iscoroutinefunction(fn)
-
-    if scope == CacheScope.PUBLIC.value and component:
-        # Policy: reject user-specific output under public scope at call time via vary dims.
-        pass
 
     if is_async:
 
         @functools.wraps(fn)
         async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-            if scope == CacheScope.PUBLIC.value and any(
-                k in kwargs for k in ("user", "user_id", "request", "session")
-            ):
+            reject = _should_reject_cache(scope=scope, args=args, kwargs=kwargs, vary_on=vary_on)
+            if reject:
                 record_cache_trace(
                     CacheEvent(
                         kind="reject",
                         key_fingerprint=identity,
                         scope=scope,
-                        detail="user-specific output under public scope",
+                        detail=reject,
                     )
                 )
                 return await fn(*args, **kwargs)  # type: ignore[misc]
@@ -92,7 +120,6 @@ def _decorate(
                 try:
                     value = await backend.single_flight_async(key, loader)
                 except Exception:
-                    # Failures are not cached by default.
                     raise
                 backend.set(key, value, ttl=ttl, tags=tags)
                 record_cache_trace(
@@ -113,15 +140,14 @@ def _decorate(
 
     @functools.wraps(fn)
     def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-        if scope == CacheScope.PUBLIC.value and any(
-            k in kwargs for k in ("user", "user_id", "request", "session")
-        ):
+        reject = _should_reject_cache(scope=scope, args=args, kwargs=kwargs, vary_on=vary_on)
+        if reject:
             record_cache_trace(
                 CacheEvent(
                     kind="reject",
                     key_fingerprint=identity,
                     scope=scope,
-                    detail="user-specific output under public scope",
+                    detail=reject,
                 )
             )
             return fn(*args, **kwargs)

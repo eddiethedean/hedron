@@ -18,6 +18,7 @@ __all__ = [
     "FileUpload",
     "safe_download_response",
     "validate_upload_filename",
+    "validate_upload_size",
 ]
 
 _UNSAFE_FILENAME = re.compile(r"[^A-Za-z0-9._-]+")
@@ -31,6 +32,15 @@ def validate_upload_filename(name: str) -> str:
     if not cleaned or cleaned.startswith("."):
         raise ValueError("Unsafe upload filename")
     return cleaned
+
+
+def validate_upload_size(size: int, *, maximum_size: int) -> int:
+    """App-owned size gate for uploads (FileUpload.maximum_size is advisory markup)."""
+    if size < 0:
+        raise ValueError("Upload size cannot be negative")
+    if size > maximum_size:
+        raise ValueError(f"Upload exceeds maximum size of {maximum_size} bytes")
+    return size
 
 
 def safe_download_response(
@@ -121,16 +131,20 @@ class DownloadButton(Component[DownloadButtonProps]):
     def __init__(
         self,
         *,
-        href: SafeUrl | str,
+        href: SafeUrl | str | None = None,
         filename: str,
         label: str = "Download",
+        source: SafeUrl | str | None = None,
         **kwargs: Any,
     ) -> None:
         validate_upload_filename(filename)
+        target = href if href is not None else source
+        if target is None:
+            raise ValueError("DownloadButton requires href= or source=")
         url = (
-            href
-            if isinstance(href, SafeUrl)
-            else SafeUrl.parse(href, purpose=UrlPurpose.NAVIGATION, allow_external=False)
+            target
+            if isinstance(target, SafeUrl)
+            else SafeUrl.parse(target, purpose=UrlPurpose.NAVIGATION, allow_external=False)
         )
         super().__init__(DownloadButtonProps(href=url, filename=filename, label=label, **kwargs))
 

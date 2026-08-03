@@ -51,7 +51,8 @@ Coding may begin when:
 - open questions are either resolved or explicitly deferred without destabilizing the slice.
 
 The phase 0.0 readiness sweep satisfied this gate for the phase 0.1 typed rendering core
-targeting `v0.1.0`. Phases 0.1 through 0.4 are published and MIT-licensed (D-033). See
+targeting `v0.1.0`. Phases 0.1 through 0.4 are published and MIT-licensed (D-033). Phase
+0.5 is implemented at package version `0.5.0` on `main` and awaits the `v0.5.0` cut. See
 [RELEASE.md](RELEASE.md) and [STATUS.md](STATUS.md). Later-phase work must still satisfy
 the owning release gate before implementation begins.
 

@@ -8,6 +8,11 @@ status: shipped
 
 ```python
 class UsersSource(DataEditorSource[UserRow]):
+    def fetch(self, query: DataQuery) -> DataPage[UserRow]: ...
+    def apply(self, changes: DataChanges[UserRow]) -> DataSaveResult[UserRow]: ...
+
+
+class AsyncUsersSource(AsyncDataEditorSource[UserRow]):
     async def fetch(self, query: DataQuery) -> DataPage[UserRow]: ...
     async def apply(
         self, changes: DataChanges[UserRow]
@@ -20,10 +25,23 @@ class UsersSource(DataEditorSource[UserRow]):
 - `DataPage[T]`: rows, schema, continuation/count metadata, and optional version.
 - `DataChanges[T]`: inserts, updates, deletes, and submitted versions.
 - `DataSaveResult[T]`: accepted changes, normalized values, errors, conflicts, and new versions.
-- `DataEditorSource[T]`: fetch and apply protocol.
-- `VisualizationSource[T]`: load protocol for charts and maps.
+- `DataEditorSource[T]`: sync fetch and apply protocol.
+- `AsyncDataEditorSource[T]`: async fetch and apply protocol.
+- `VisualizationSource[T]`: load protocol for charts and maps (phase 0.6).
 
-Protocols support synchronous and asynchronous implementations without changing component construction. Application adapters own transactions, tenant scope, authorization, and domain validation. Hedron owns request validation, size bounds, cancellation, diagnostics, and serialization.
+## Sync vs async construction
+
+Protocols support synchronous and asynchronous implementations. `DataEditor` construction
+is synchronous:
+
+- Sync sources may be passed as `source=`; Hedron calls `fetch` during construction.
+- Async sources must not be awaited during construction. Await `source.fetch(...)` in the
+  route and pass `page=...` (optionally still attach `source=` for `apply_changes_async`).
+- Sync `DataEditor.apply_changes` raises if `source.apply` returns an awaitable; use
+  `await editor.apply_changes_async(...)` instead.
+
+Application adapters own transactions, tenant scope, authorization, and domain validation.
+Hedron owns request validation, size bounds, cancellation, diagnostics, and serialization.
 
 No source is automatically inferred from an ORM model in the MVP because such inference could accidentally expose fields or mutation behavior.
 

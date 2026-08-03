@@ -13,6 +13,7 @@ from hedron_core.models import Props
 class PageProps(Props):
     lang: str = "en"
     title: str | None = None
+    data_theme: str | None = None
 
 
 class Page(Component[PageProps]):
@@ -28,9 +29,10 @@ class Page(Component[PageProps]):
         title: str | None = None,
         head: Any = None,
         children: Any = None,
+        data_theme: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(PageProps(lang=lang, title=title, **kwargs))
+        super().__init__(PageProps(lang=lang, title=title, data_theme=data_theme, **kwargs))
         nodes = list(body)
         if children is not None:
             if isinstance(children, Sequence) and not isinstance(children, (str, bytes)):
@@ -50,10 +52,13 @@ class Page(Component[PageProps]):
             head_nodes.append(html.title(self.props.title))
         if "head" in self._slot_values:
             head_nodes.append(self._slot_values["head"])
+        html_attrs: dict[str, Any] = {"lang": self.props.lang}
+        if self.props.data_theme:
+            html_attrs["data"] = {"theme": self.props.data_theme}
         return html.html(
             html.head(*head_nodes),
             html.body(*self._children),
-            lang=self.props.lang,
+            **html_attrs,
         )
 
 

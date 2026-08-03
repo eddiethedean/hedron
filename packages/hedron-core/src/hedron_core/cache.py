@@ -168,6 +168,7 @@ class InMemoryCacheBackend(CacheBackend):
         self._flights: dict[str, threading.Event] = {}
         self._flight_results: dict[str, Any] = {}
         self._flight_errors: dict[str, BaseException] = {}
+        self._flight_waiters: dict[str, int] = {}
         self._async_flights: dict[str, asyncio.Future[Any]] = {}
 
     def get(self, key: str) -> Any | None:
@@ -224,16 +225,28 @@ class InMemoryCacheBackend(CacheBackend):
                 return cached  # type: ignore[return-value]
             if key in self._flights:
                 event = self._flights[key]
+                self._flight_waiters[key] = self._flight_waiters.get(key, 0) + 1
                 waiter = True
             else:
                 event = threading.Event()
                 self._flights[key] = event
+                self._flight_waiters[key] = 0
                 waiter = False
         if waiter:
-            event.wait()
-            if key in self._flight_errors:
-                raise self._flight_errors[key]
-            return self._flight_results[key]  # type: ignore[return-value]
+            try:
+                event.wait()
+                if key in self._flight_errors:
+                    raise self._flight_errors[key]
+                return self._flight_results[key]  # type: ignore[return-value]
+            finally:
+                with self._lock:
+                    remaining = self._flight_waiters.get(key, 1) - 1
+                    if remaining <= 0:
+                        self._flight_waiters.pop(key, None)
+                        self._flight_results.pop(key, None)
+                        self._flight_errors.pop(key, None)
+                    else:
+                        self._flight_waiters[key] = remaining
         try:
             value = loader()
             self._flight_results[key] = value
@@ -245,8 +258,11 @@ class InMemoryCacheBackend(CacheBackend):
             with self._lock:
                 event.set()
                 self._flights.pop(key, None)
-                self._flight_results.pop(key, None)
-                self._flight_errors.pop(key, None)
+                # Owner keeps results until waiters drain (or none were registered).
+                if self._flight_waiters.get(key, 0) <= 0:
+                    self._flight_waiters.pop(key, None)
+                    self._flight_results.pop(key, None)
+                    self._flight_errors.pop(key, None)
 
     async def single_flight_async(self, key: str, loader: Callable[[], Any]) -> Any:
         cached = self.get(key)

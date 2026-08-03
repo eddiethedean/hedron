@@ -11,10 +11,10 @@ This matrix identifies the primary public, implementation, and acceptance owner 
 | FastAPI and routing (0004, 0015) | `HEDRON`, `ROUTER`, `RESPONSES` | Router generator | FastAPI integration |
 | HDN (0005) | `COMPONENT` | HDN parser/compiler | HDN |
 | Styles and themes (0006, 0022) | `THEME` | CSS compiler, asset pipeline | Scoped styles, accessibility |
-| Explorer and DX (0007, 0024) | `AUTO` | Explorer backend/frontend, registry | Explorer |
-| Caching and utilities (0013, 0024, 0026) | `CACHE`, `UTILITY_COMPONENTS` | Cache layer, security controls | Caching/utilities |
+| Explorer and DX (0007, 0024) | `AUTO`, `EXPLORER` | Explorer backend/frontend, registry | Explorer |
+| Caching and utilities (0013, 0024, 0026) | `CACHE`, `UTILITY_COMPONENTS`, `COLORMODE` | Cache layer, ColorMode, security controls | Caching/utilities |
 | Addressability and HTMX (0008–0009) | `ADDRESSABLE`, `ACTION`, `RESPONSES` | Router, renderer, security | FastAPI, security |
-| Data (0010, 0027) | `DATA`, `DATA_SOURCE` | Models, browser/asset integration | DataEditor |
+| Data (0010, 0027) | `DATA`, `DATA_SOURCE` | Models, `hedron-data`, browser/asset integration | DataEditor |
 | Visualization (0011) | `CHART` | Asset/plugin pipelines | Visualization |
 | Security and accessibility (0012, 0023) | All | Security controls, serializer | Security, accessibility |
 | Async and state (0013, 0026) | `ADDRESSABLE`, `ACTION`, `DATA_SOURCE` | Async runtime | Async |

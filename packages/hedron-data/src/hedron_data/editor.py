@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import inspect
 import json
 from collections.abc import Callable, Mapping, Sequence
 from typing import Any, Literal
 
 from hedron_core.component import Component
+from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Model, Props
 from hedron_core.security import Secret
@@ -45,6 +47,8 @@ def filter_writable_changes(
     writable_fields: frozenset[str],
     read_only_fields: frozenset[str],
     hidden_fields: frozenset[str],
+    allow_deletes: bool = True,
+    key_field: str | None = None,
 ) -> tuple[DataChanges[Any], tuple[FieldError, ...]]:
     """Server-authoritative writable-field policy for forged client edits."""
     errors: list[FieldError] = []
@@ -66,20 +70,49 @@ def filter_writable_changes(
         updates.append(upd)
     inserts: list[Any] = []
     for row in changes.inserts:
-        if isinstance(row, Mapping):
-            cleaned = {
-                k: v
-                for k, v in row.items()
-                if k in writable_fields and k not in read_only_fields and k not in hidden_fields
-            }
-            inserts.append(cleaned)
+        if not isinstance(row, Mapping):
+            errors.append(
+                FieldError(
+                    row_key=None,
+                    field=None,
+                    message="Insert rows must be mappings",
+                )
+            )
+            continue
+        cleaned = {
+            k: v
+            for k, v in row.items()
+            if (k == key_field or k in writable_fields)
+            and k not in read_only_fields
+            and k not in hidden_fields
+        }
+        if (
+            key_field
+            and key_field not in cleaned
+            and key_field in row
+            and key_field not in hidden_fields
+        ):
+            # Identity key may be read-only but still required on insert.
+            cleaned[key_field] = row[key_field]
+        inserts.append(cleaned)
+    deletes: list[str] = []
+    if changes.deletes:
+        if not allow_deletes:
+            for key in changes.deletes:
+                errors.append(
+                    FieldError(
+                        row_key=key,
+                        field=None,
+                        message="Deletes are not authorized",
+                    )
+                )
         else:
-            inserts.append(row)
+            deletes = list(changes.deletes)
     return (
         DataChanges(
             updates=tuple(updates),
             inserts=tuple(inserts),
-            deletes=changes.deletes,
+            deletes=tuple(deletes),
             dataset_version=changes.dataset_version,
         ),
         tuple(errors),
@@ -115,6 +148,7 @@ class DataEditor(Component[DataEditorProps]):
         page_size: int = 25,
         caption: str | None = None,
         save_endpoint: str | None = None,
+        allow_deletes: bool = True,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -132,26 +166,46 @@ class DataEditor(Component[DataEditorProps]):
         self._key_field = key_field
         self._save_endpoint = save_endpoint
         self._row_model = row_model
+        self._allow_deletes = allow_deletes
 
         if page is not None:
             raw = list(page.rows)
             self._version = page.version
             self._total = page.total
         elif source is not None:
-            # Prefer an explicitly provided page for async sources.
-            raw = normalize_rows(rows)
-            self._version = None
-            self._total = None
             fetch = getattr(source, "fetch", None)
-            if callable(fetch):
-                try:
-                    fetched = fetch(DataQuery(limit=page_size))
-                    if isinstance(fetched, DataPage):
-                        raw = list(fetched.rows)
-                        self._version = fetched.version
-                        self._total = fetched.total
-                except Exception:  # noqa: BLE001
-                    pass
+            if not callable(fetch):
+                raise error(
+                    "HED-DATA-0005",
+                    title="Invalid data source",
+                    explanation="DataEditor source must expose fetch().",
+                    remediation="Pass a DataEditorSource or an explicit page=.",
+                )
+            fetched = fetch(DataQuery(limit=page_size))
+            if inspect.isawaitable(fetched):
+                if inspect.iscoroutine(fetched):
+                    fetched.close()
+                raise error(
+                    "HED-DATA-0006",
+                    title="Async source requires explicit page",
+                    explanation=(
+                        "Async DataEditorSource.fetch cannot be awaited during "
+                        "synchronous component construction."
+                    ),
+                    remediation=(
+                        "Await source.fetch(...) and pass page=..., or use a sync source."
+                    ),
+                )
+            if not isinstance(fetched, DataPage):
+                raise error(
+                    "HED-DATA-0005",
+                    title="Invalid fetch result",
+                    explanation="source.fetch must return DataPage.",
+                    remediation="Return a DataPage from fetch().",
+                )
+            raw = list(fetched.rows)
+            self._version = fetched.version
+            self._total = fetched.total
         else:
             raw = normalize_rows(rows)
             self._version = None
@@ -179,21 +233,66 @@ class DataEditor(Component[DataEditorProps]):
             c.name for c in self._columns if not c.read_only and not c.hidden and not c.secret
         )
 
-    def apply_changes(self, changes: DataChanges[Any]) -> DataSaveResult[Any]:
-        cleaned, policy_errors = filter_writable_changes(
+    def _policy_clean(
+        self, changes: DataChanges[Any]
+    ) -> tuple[DataChanges[Any], tuple[FieldError, ...]]:
+        return filter_writable_changes(
             changes,
-            writable_fields=self.writable_fields() | {self._key_field},
+            writable_fields=self.writable_fields(),
             read_only_fields=frozenset(c.name for c in self._columns if c.read_only),
             hidden_fields=frozenset(c.name for c in self._columns if c.hidden),
+            allow_deletes=self._allow_deletes,
+            key_field=self._key_field,
         )
+
+    def apply_changes(self, changes: DataChanges[Any]) -> DataSaveResult[Any]:
+        cleaned, policy_errors = self._policy_clean(changes)
         if policy_errors:
             return DataSaveResult(ok=False, errors=policy_errors, version=self._version)
         if self._on_save is not None:
             return self._on_save(cleaned)
         if self._source is not None and hasattr(self._source, "apply"):
             result = self._source.apply(cleaned)  # type: ignore[union-attr]
+            if inspect.isawaitable(result):
+                if inspect.iscoroutine(result):
+                    result.close()
+                raise error(
+                    "HED-DATA-0006",
+                    title="Async apply requires apply_changes_async",
+                    explanation="source.apply returned an awaitable.",
+                    remediation="Await DataEditor.apply_changes_async(...) for async sources.",
+                )
             if isinstance(result, DataSaveResult):
                 return result
+            raise error(
+                "HED-DATA-0005",
+                title="Invalid apply result",
+                explanation="source.apply must return DataSaveResult.",
+                remediation="Return a DataSaveResult from apply().",
+            )
+        return DataSaveResult(ok=True, accepted=cleaned, version=self._version)
+
+    async def apply_changes_async(self, changes: DataChanges[Any]) -> DataSaveResult[Any]:
+        cleaned, policy_errors = self._policy_clean(changes)
+        if policy_errors:
+            return DataSaveResult(ok=False, errors=policy_errors, version=self._version)
+        if self._on_save is not None:
+            result = self._on_save(cleaned)
+            if inspect.isawaitable(result):
+                return await result  # type: ignore[no-any-return]
+            return result
+        if self._source is not None and hasattr(self._source, "apply"):
+            result = self._source.apply(cleaned)  # type: ignore[union-attr]
+            if inspect.isawaitable(result):
+                result = await result
+            if isinstance(result, DataSaveResult):
+                return result
+            raise error(
+                "HED-DATA-0005",
+                title="Invalid apply result",
+                explanation="source.apply must return DataSaveResult.",
+                remediation="Return a DataSaveResult from apply().",
+            )
         return DataSaveResult(ok=True, accepted=cleaned, version=self._version)
 
     def render(self) -> Any:
@@ -205,6 +304,7 @@ class DataEditor(Component[DataEditorProps]):
                 "visible": not c.hidden,
                 "headerSort": c.sortable,
                 "width": c.width,
+                "choices": list(c.choices) if c.choices else None,
             }
             for c in self._columns
             if not c.secret
@@ -218,6 +318,8 @@ class DataEditor(Component[DataEditorProps]):
             "version": self._version,
             "saveEndpoint": self._save_endpoint,
             "total": self._total,
+            "allowDeletes": self._allow_deletes,
+            "conflictActions": list(conflict_actions()),
         }
         noscript = DataTableFallback(self._columns, public_rows, self.props.caption)
         return html.div(

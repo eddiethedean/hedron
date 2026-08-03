@@ -107,13 +107,18 @@ def emit_theme_css(theme: Theme) -> str:
     dark = theme.modes.get("dark")
     if dark:
         lines.append("@media (prefers-color-scheme: dark) {")
-        lines.append("  :root {")
+        lines.append('  :root:not([data-theme="light"]) {')
         for key, value in sorted(dark.items()):
             lines.append(f"    {_token_to_css_var(key)}: {value};")
         lines.append("  }")
         lines.append("}")
         lines.append(':root[data-theme="dark"] {')
         for key, value in sorted(dark.items()):
+            lines.append(f"  {_token_to_css_var(key)}: {value};")
+        lines.append("}")
+        # Explicit light preference must defeat system dark preference.
+        lines.append(':root[data-theme="light"] {')
+        for key, value in sorted(theme.tokens.items()):
             lines.append(f"  {_token_to_css_var(key)}: {value};")
         lines.append("}")
     lines.append("@media (prefers-reduced-motion: reduce) {")

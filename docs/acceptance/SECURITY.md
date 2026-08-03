@@ -15,7 +15,8 @@
 - [x] Safe redirects: `redirect_local` rejects externals; `redirect_external` is denied unless `allow_external_redirects=True`, and only `http`/`https` URLs are accepted.
 - [x] Approved HTMX response headers (`HX-Redirect`, `HX-Push-Url`, `HX-Location`) require local paths.
 - [x] CSS/asset URL traversal, symlink escape, remote fetch, and missing assets are rejected. *(phase 0.3 scoped styles / asset pipeline)*
-- [ ] Plugin/Explorer abuse and DataEditor forged edits. *(later phases)*
+- [x] DataEditor forged edits (read-only/hidden/unauthorized fields and unauthorized deletes) rejected server-side. *(phase 0.5)*
+- [ ] Plugin/Explorer abuse corpus beyond default guards. *(later phases)*
 - [ ] Markdown/chart/SVG sanitizer corpus beyond baseline rejection. *(later phases)*
 
 ## Release controls

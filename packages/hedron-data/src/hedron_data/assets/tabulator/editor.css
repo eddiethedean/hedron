@@ -1,5 +1,7 @@
 .hedron-data-editor { display: block; }
-.hedron-data-editor-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.hedron-data-editor-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.hedron-data-editor-conflicts { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.hedron-data-editor-conflicts[hidden] { display: none; }
 .hedron-data-editor-grid { width: 100%; border-collapse: collapse; }
 .hedron-data-editor-grid th,
 .hedron-data-editor-grid td { border: 1px solid currentColor; padding: 0.25rem 0.5rem; }

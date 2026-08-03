@@ -353,10 +353,46 @@ def explorer_router() -> APIRouter:
 
     @router.get("/data", response_class=HTMLResponse, include_in_schema=False)
     async def data_view() -> str:
-        body = """
+        from hedron_core.registry import get_registry
+
+        registry = get_registry()
+        data_components = [
+            c
+            for c in registry.components()
+            if c.name in {"DataTable", "DataEditor"} or "hedron_data" in (c.module or "")
+        ]
+        rows = "".join(
+            "<tr>"
+            f"<td><code>{html_lib.escape(c.name)}</code></td>"
+            f"<td><code>{html_lib.escape(c.distribution)}</code></td>"
+            f"<td>{html_lib.escape(c.accessibility_notes or '')}</td>"
+            f"<td>{'yes' if c.browser_modules else 'no'}</td>"
+            "</tr>"
+            for c in data_components
+        )
+        sample_schema = (
+            "<tr><td>id</td><td>read-only key</td><td>no</td></tr>"
+            "<tr><td>name</td><td>text</td><td>yes</td></tr>"
+            "<tr><td>title</td><td>text</td><td>yes</td></tr>"
+            "<tr><td>active</td><td>boolean</td><td>yes</td></tr>"
+        )
+        body = f"""
         <h2>Data</h2>
         <p>Explorer data previews use isolated sample rows by default.
         Writable-field policy is server-authoritative; forged writes are rejected.</p>
+        <h3>Registered data components</h3>
+        <table>
+          <thead><tr><th>Name</th><th>Distribution</th><th>A11y notes</th>
+          <th>Browser host</th></tr></thead>
+          <tbody>{
+            rows or "<tr><td colspan='4'>No DataTable/DataEditor registered</td></tr>"
+        }</tbody>
+        </table>
+        <h3>Sample writable policy</h3>
+        <table>
+          <thead><tr><th>Field</th><th>Role</th><th>Writable</th></tr></thead>
+          <tbody>{sample_schema}</tbody>
+        </table>
         <ul>
           <li>Schema and column editors derive from Hedron Field metadata</li>
           <li>Changes, conflicts, timing, and endpoints appear on save diagnostics</li>

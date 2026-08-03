@@ -77,3 +77,16 @@ def test_filter_writable_changes_strips_unauthorized() -> None:
     )
     assert len(errors) == 1
     assert cleaned.updates[0].field == "name"
+
+
+@pytest.mark.security
+def test_deletes_require_allow_deletes() -> None:
+    cleaned, errors = filter_writable_changes(
+        DataChanges(deletes=("1", "2")),
+        writable_fields=frozenset({"name"}),
+        read_only_fields=frozenset(),
+        hidden_fields=frozenset(),
+        allow_deletes=False,
+    )
+    assert cleaned.deletes == ()
+    assert len(errors) == 2

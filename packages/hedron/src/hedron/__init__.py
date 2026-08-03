@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from hedron.app import Hedron, mount_hedron_static
 from hedron.builtins import (
     AutoForm,
@@ -121,8 +123,8 @@ from hedron_core import (  # noqa: F401
     styles_from_manifest,
 )
 
-try:
-    from hedron_data import (  # noqa: F401
+if TYPE_CHECKING:
+    from hedron_data import (
         DataChanges,
         DataEditor,
         DataPage,
@@ -131,9 +133,32 @@ try:
         DataTable,
         InMemoryDataSource,
     )
-except ImportError:  # pragma: no cover
-    DataChanges = DataEditor = DataPage = DataQuery = None  # type: ignore[misc, assignment]
-    DataSaveResult = DataTable = InMemoryDataSource = None  # type: ignore[misc, assignment]
+
+_DATA_EXPORTS = frozenset(
+    {
+        "DataChanges",
+        "DataEditor",
+        "DataPage",
+        "DataQuery",
+        "DataSaveResult",
+        "DataTable",
+        "InMemoryDataSource",
+    }
+)
+
+
+def __getattr__(name: str) -> object:
+    if name in _DATA_EXPORTS:
+        try:
+            import hedron_data as _hedron_data
+        except ImportError as exc:  # pragma: no cover - exercised when extra missing
+            raise ImportError(
+                f"{name} requires the hedron-data package. "
+                'Install with: pip install "hedron[data]" or pip install hedron-data'
+            ) from exc
+        return getattr(_hedron_data, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 
 __version__ = "0.5.0"
 

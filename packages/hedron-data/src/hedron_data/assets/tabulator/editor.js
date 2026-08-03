@@ -5,12 +5,21 @@
 (function () {
   const TAG = "hedron-data-editor";
 
+  function cssEscape(value) {
+    if (window.CSS && CSS.escape) return CSS.escape(String(value));
+    return String(value).replace(/[^a-zA-Z0-9_-]/g, "\\$&");
+  }
+
   class HedronDataEditor extends HTMLElement {
     constructor() {
       super();
       this._pending = [];
       this._history = [];
+      this._inserts = [];
+      this._deletes = [];
       this._disposed = false;
+      this._rows = [];
+      this._tempId = 0;
     }
 
     connectedCallback() {
@@ -25,11 +34,15 @@
     dispose() {
       this._disposed = true;
       this._pending = [];
+      this._history = [];
+      this._inserts = [];
+      this._deletes = [];
       this.innerHTML = "";
     }
 
     _boot() {
-      const host = this.closest("[data-hedron-module='hedron-data:tabulator-editor']") || this;
+      const host =
+        this.closest("[data-hedron-module='hedron-data:tabulator-editor']") || this;
       let payload = {};
       try {
         payload = JSON.parse(host.getAttribute("data-hedron-payload") || "{}");
@@ -37,6 +50,7 @@
         payload = {};
       }
       this._payload = payload;
+      this._rows = Array.isArray(payload.rows) ? payload.rows.map((r) => ({ ...r })) : [];
       this._renderShell(payload);
       this._announce("Data editor ready. Use Tab to move between cells.");
     }
@@ -70,17 +84,49 @@
       undoBtn.addEventListener("click", () => this._undo());
       toolbar.appendChild(undoBtn);
 
+      const insertBtn = document.createElement("button");
+      insertBtn.type = "button";
+      insertBtn.textContent = "Insert row";
+      insertBtn.addEventListener("click", () => this._insertRow());
+      toolbar.appendChild(insertBtn);
+
+      if (payload.allowDeletes !== false) {
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.textContent = "Delete selected";
+        delBtn.addEventListener("click", () => this._deleteSelected());
+        toolbar.appendChild(delBtn);
+      }
+
       const exportBtn = document.createElement("button");
       exportBtn.type = "button";
       exportBtn.textContent = "Export CSV";
       exportBtn.addEventListener("click", () => this._exportCsv());
       toolbar.appendChild(exportBtn);
 
+      const conflictBar = document.createElement("div");
+      conflictBar.className = "hedron-data-editor-conflicts";
+      conflictBar.hidden = true;
+      conflictBar.setAttribute("data-conflict-bar", "");
+      (payload.conflictActions || ["reload", "retain-and-retry", "compare", "cancel"]).forEach(
+        (action) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = action;
+          b.addEventListener("click", () => this._handleConflict(action));
+          conflictBar.appendChild(b);
+        }
+      );
+
       const table = document.createElement("table");
       table.setAttribute("role", "grid");
       table.className = "hedron-data-editor-grid";
       const thead = document.createElement("thead");
       const hr = document.createElement("tr");
+      const selTh = document.createElement("th");
+      selTh.scope = "col";
+      selTh.textContent = "Select";
+      hr.appendChild(selTh);
       (payload.columns || []).forEach((col) => {
         if (col.visible === false) return;
         const th = document.createElement("th");
@@ -92,58 +138,174 @@
       table.appendChild(thead);
 
       const tbody = document.createElement("tbody");
-      (payload.rows || []).forEach((row) => {
-        const tr = document.createElement("tr");
-        tr.dataset.rowKey = String(row[payload.keyField || "id"] ?? "");
-        (payload.columns || []).forEach((col) => {
-          if (col.visible === false) return;
-          const td = document.createElement("td");
-          td.tabIndex = 0;
-          td.dataset.field = col.field;
-          td.textContent = row[col.field] == null ? "" : String(row[col.field]);
+      tbody.setAttribute("data-editor-body", "");
+      this._rows.forEach((row) => tbody.appendChild(this._rowElement(row, payload)));
+      table.appendChild(tbody);
+
+      this.replaceChildren(toolbar, conflictBar, table);
+    }
+
+    _rowElement(row, payload) {
+      const tr = document.createElement("tr");
+      const key = String(row[payload.keyField || "id"] ?? "");
+      tr.dataset.rowKey = key;
+      const selTd = document.createElement("td");
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.setAttribute("aria-label", "Select row " + key);
+      selTd.appendChild(cb);
+      tr.appendChild(selTd);
+      (payload.columns || []).forEach((col) => {
+        if (col.visible === false) return;
+        const td = document.createElement("td");
+        td.tabIndex = 0;
+        td.dataset.field = col.field;
+        const value = row[col.field];
+        if (col.editor === "boolean") {
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.checked = Boolean(value);
+          input.disabled = !col.editor;
+          input.addEventListener("change", () => {
+            this._queueUpdate(key, col.field, input.checked, String(value));
+            if ((payload.saveMode || "batch") === "cell") this._save();
+          });
+          td.appendChild(input);
+        } else if (col.choices && col.choices.length) {
+          const select = document.createElement("select");
+          col.choices.forEach((choice) => {
+            const opt = document.createElement("option");
+            opt.value = String(choice);
+            opt.textContent = String(choice);
+            if (String(choice) === String(value ?? "")) opt.selected = true;
+            select.appendChild(opt);
+          });
+          select.disabled = col.editor === false;
+          select.addEventListener("change", () => {
+            this._queueUpdate(key, col.field, select.value, String(value ?? ""));
+            if ((payload.saveMode || "batch") === "cell") this._save();
+          });
+          td.appendChild(select);
+        } else {
+          td.textContent = value == null ? "" : String(value);
           if (col.editor) {
             td.contentEditable = "true";
+            td.addEventListener("focus", () => {
+              td.dataset.original = td.textContent || "";
+            });
             td.addEventListener("blur", () => {
-              this._queueUpdate(tr.dataset.rowKey, col.field, td.textContent);
+              this._queueUpdate(key, col.field, td.textContent, td.dataset.original || "");
+              if ((payload.saveMode || "batch") === "cell") this._save();
             });
             td.addEventListener("keydown", (ev) => {
               if (ev.key === "Enter") {
                 ev.preventDefault();
                 td.blur();
+                if ((payload.saveMode || "batch") === "row") this._save();
               }
             });
           }
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
+        }
+        tr.appendChild(td);
       });
-      table.appendChild(tbody);
-
-      this.replaceChildren(toolbar, table);
+      return tr;
     }
 
-    _queueUpdate(rowKey, field, value) {
-      this._history.push({ rowKey, field, value });
+    _queueUpdate(rowKey, field, value, previous) {
+      this._history.push({
+        kind: "update",
+        rowKey,
+        field,
+        value,
+        previous: previous == null ? "" : String(previous),
+      });
       this._pending = this._pending.filter(
         (u) => !(u.row_key === rowKey && u.field === field)
       );
-      this._pending.push({ row_key: rowKey, field, value, row_version: this._payload.version });
-      this._announce(`Pending edit ${field} on row ${rowKey}`);
+      this._pending.push({
+        row_key: rowKey,
+        field,
+        value,
+        row_version: this._payload.version,
+      });
+      this._announce("Pending edit " + field + " on row " + rowKey);
+    }
+
+    _insertRow() {
+      this._tempId += 1;
+      const key = "new-" + this._tempId;
+      const row = { [this._payload.keyField || "id"]: key };
+      (this._payload.columns || []).forEach((col) => {
+        if (col.field !== (this._payload.keyField || "id")) row[col.field] = "";
+      });
+      this._rows.push(row);
+      this._inserts.push(row);
+      this._history.push({ kind: "insert", rowKey: key, row });
+      const body = this.querySelector("[data-editor-body]");
+      if (body) body.appendChild(this._rowElement(row, this._payload));
+      this._announce("Inserted row " + key);
+      if ((this._payload.saveMode || "batch") === "row") this._save();
+    }
+
+    _deleteSelected() {
+      const body = this.querySelector("[data-editor-body]");
+      if (!body) return;
+      Array.from(body.querySelectorAll("tr")).forEach((tr) => {
+        const cb = tr.querySelector('input[type="checkbox"]');
+        if (!cb || !cb.checked) return;
+        const key = tr.dataset.rowKey;
+        this._deletes.push(key);
+        this._pending = this._pending.filter((u) => u.row_key !== key);
+        this._inserts = this._inserts.filter(
+          (r) => String(r[this._payload.keyField || "id"]) !== key
+        );
+        this._history.push({ kind: "delete", rowKey: key, html: tr.outerHTML });
+        tr.remove();
+      });
+      this._announce("Deleted selected rows");
+      if ((this._payload.saveMode || "batch") === "row") this._save();
     }
 
     _undo() {
       const last = this._history.pop();
       if (!last) return;
-      this._pending = this._pending.filter(
-        (u) => !(u.row_key === last.rowKey && u.field === last.field)
-      );
+      if (last.kind === "update") {
+        this._pending = this._pending.filter(
+          (u) => !(u.row_key === last.rowKey && u.field === last.field)
+        );
+        const cell = this.querySelector(
+          'tr[data-row-key="' +
+            cssEscape(last.rowKey) +
+            '"] td[data-field="' +
+            cssEscape(last.field) +
+            '"]'
+        );
+        if (cell) {
+          const input = cell.querySelector("input,select");
+          if (input && input.type === "checkbox") input.checked = last.previous === "true";
+          else if (input) input.value = last.previous;
+          else cell.textContent = last.previous;
+        }
+      } else if (last.kind === "insert") {
+        this._inserts = this._inserts.filter(
+          (r) => String(r[this._payload.keyField || "id"]) !== last.rowKey
+        );
+        const tr = this.querySelector('tr[data-row-key="' + cssEscape(last.rowKey) + '"]');
+        if (tr) tr.remove();
+      } else if (last.kind === "delete") {
+        this._deletes = this._deletes.filter((k) => k !== last.rowKey);
+        const body = this.querySelector("[data-editor-body]");
+        if (body && last.html) {
+          body.insertAdjacentHTML("beforeend", last.html);
+        }
+      }
       this._announce("Undid last edit");
     }
 
     _exportCsv() {
       const cols = (this._payload.columns || []).filter((c) => c.visible !== false);
       const lines = [cols.map((c) => c.title || c.field).join(",")];
-      (this._payload.rows || []).forEach((row) => {
+      this._rows.forEach((row) => {
         lines.push(cols.map((c) => JSON.stringify(row[c.field] ?? "")).join(","));
       });
       const blob = new Blob([lines.join("\n")], { type: "text/csv" });
@@ -154,6 +316,28 @@
       URL.revokeObjectURL(a.href);
     }
 
+    _handleConflict(action) {
+      const bar = this.querySelector("[data-conflict-bar]");
+      if (action === "reload") {
+        window.location.reload();
+        return;
+      }
+      if (action === "cancel") {
+        this._pending = [];
+        if (bar) bar.hidden = true;
+        this._announce("Cancelled pending conflicted edits");
+        return;
+      }
+      if (action === "retain-and-retry") {
+        if (bar) bar.hidden = true;
+        this._save();
+        return;
+      }
+      if (action === "compare") {
+        this._announce("Compare server and client values, then choose retry or cancel");
+      }
+    }
+
     async _save() {
       const endpoint = this._payload.saveEndpoint;
       if (!endpoint) {
@@ -162,8 +346,8 @@
       }
       const body = {
         updates: this._pending,
-        inserts: [],
-        deletes: [],
+        inserts: this._inserts,
+        deletes: this._deletes,
         dataset_version: this._payload.version,
       };
       const csrf = document.querySelector('meta[name="csrf-token"]');
@@ -177,21 +361,33 @@
           body: JSON.stringify(body),
         });
         const data = await res.json();
+        const bar = this.querySelector("[data-conflict-bar]");
         if (data.ok) {
           this._pending = [];
+          this._inserts = [];
+          this._deletes = [];
+          if (bar) bar.hidden = true;
+          if (data.version) this._payload.version = data.version;
           this._announce("Saved successfully");
         } else if (data.conflicts && data.conflicts.length) {
           this._announce("Conflict: choose reload, retain-and-retry, compare, or cancel");
+          if (bar) bar.hidden = false;
           this.dispatchEvent(
             new CustomEvent("hedron-data-conflict", { detail: data, bubbles: true })
           );
         } else if (data.errors && data.errors.length) {
           const first = data.errors[0];
-          this._announce(`Validation error: ${first.message || "invalid"}`);
+          this._announce("Validation error: " + (first.message || "invalid"));
           const cell = this.querySelector(
-            `tr[data-row-key="${first.row_key}"] td[data-field="${first.field}"]`
+            'tr[data-row-key="' +
+              cssEscape(first.row_key || "") +
+              '"] td[data-field="' +
+              cssEscape(first.field || "") +
+              '"]'
           );
           if (cell) cell.focus();
+        } else if (res.status === 403) {
+          this._announce("Save forbidden (CSRF or authorization)");
         }
       } catch (err) {
         this._announce("Save failed");
@@ -204,11 +400,13 @@
   }
 
   function enhance(root) {
-    root.querySelectorAll("[data-hedron-module='hedron-data:tabulator-editor']").forEach((host) => {
-      if (host.querySelector(TAG)) return;
-      const el = document.createElement(TAG);
-      host.appendChild(el);
-    });
+    root
+      .querySelectorAll("[data-hedron-module='hedron-data:tabulator-editor']")
+      .forEach((host) => {
+        if (host.querySelector(TAG)) return;
+        const el = document.createElement(TAG);
+        host.appendChild(el);
+      });
   }
 
   function disposeAll(root) {
@@ -216,10 +414,10 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => enhance(document));
-  document.body && document.body.addEventListener("htmx:afterSwap", (ev) => {
+  document.addEventListener("htmx:afterSwap", (ev) => {
     enhance(ev.target || document);
   });
-  document.body && document.body.addEventListener("htmx:beforeSwap", (ev) => {
+  document.addEventListener("htmx:beforeSwap", (ev) => {
     disposeAll(ev.target || document);
   });
 

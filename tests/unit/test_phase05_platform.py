@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+from pathlib import Path
 
 import pytest
 
@@ -18,6 +19,7 @@ from hedron_core import (
     Progress,
     Status,
     Tabs,
+    Text,
     Toast,
     render,
     resolve_color_mode,
@@ -247,11 +249,129 @@ def test_utilities_render() -> None:
     assert 'role="tablist"' in render(Tabs(("One", "a"), ("Two", "b"), active="One")).html
     assert resolve_color_mode(ColorMode.SYSTEM, system_dark=True) == "dark"
     assert "data-hedron-color-mode" in render(ColorModeToggle()).html
+    assert 'name="csrf_token"' in render(ColorModeToggle(csrf_token="abc")).html
+
+
+def test_sidebar_render() -> None:
+    from hedron_core import Sidebar
+
+    html = render(Sidebar(Text("nav"), label="Main")).html
+    assert "hedron-sidebar" in html
+    assert 'aria-label="Main"' in html
+
+
+def test_async_dataeditor_requires_page() -> None:
+    from hedron_data import AsyncInMemoryDataSource
+
+    async_src = AsyncInMemoryDataSource(
+        InMemoryDataSource([{"id": "1", "name": "Ada"}], writable_fields=frozenset({"name"}))
+    )
+    with pytest.raises(HedronError) as exc:
+        DataEditor(source=async_src, columns=[Column(name="id"), Column(name="name")])
+    assert exc.value.diagnostic.code == "HED-DATA-0006"
+
+    page = asyncio.run(async_src.fetch(DataQuery(limit=10)))
+    editor = DataEditor(
+        source=async_src,
+        page=page,
+        columns=[Column(name="id", read_only=True), Column(name="name")],
+        key_field="id",
+    )
+    with pytest.raises(HedronError) as apply_exc:
+        editor.apply_changes(
+            DataChanges(updates=(CellUpdate(row_key="1", field="name", value="Ada2"),))
+        )
+    assert apply_exc.value.diagnostic.code == "HED-DATA-0006"
+    # Close any unawaited coroutine from the sync apply probe without leaking.
+    result = asyncio.run(
+        editor.apply_changes_async(
+            DataChanges(updates=(CellUpdate(row_key="1", field="name", value="Ada2"),))
+        )
+    )
+    assert result.ok
+
+
+def test_filter_rejects_unauthorized_deletes_and_non_mapping_inserts() -> None:
+    cleaned, errors = filter_writable_changes(
+        DataChanges(deletes=("1",), inserts=("not-a-mapping",)),  # type: ignore[arg-type]
+        writable_fields=frozenset({"name"}),
+        read_only_fields=frozenset({"id"}),
+        hidden_fields=frozenset(),
+        allow_deletes=False,
+    )
+    assert cleaned.deletes == ()
+    assert cleaned.inserts == ()
+    assert len(errors) == 2
+
+
+def test_cache_sensitive_scope_requires_vary_on() -> None:
+    reset_cache_for_tests()
+
+    @cache_data(ttl=60, scope="user")
+    def load(user_id: int) -> int:
+        return user_id
+
+    assert load(user_id=1) == 1
+    assert any(e.kind == "reject" for e in get_cache_traces())
+
+
+def test_cache_single_flight_concurrent_waiters() -> None:
+    import threading
+    import time
+
+    from hedron_core.cache import InMemoryCacheBackend
+
+    backend = InMemoryCacheBackend()
+    calls = {"n": 0}
+    barrier = threading.Barrier(4)
+
+    def loader() -> str:
+        calls["n"] += 1
+        time.sleep(0.05)
+        return "ok"
+
+    results: list[str] = []
+
+    def worker() -> None:
+        barrier.wait()
+        results.append(backend.single_flight("k", loader))
+
+    threads = [threading.Thread(target=worker) for _ in range(4)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert results == ["ok", "ok", "ok", "ok"]
+    assert calls["n"] == 1
 
 
 def test_upload_filename_validation() -> None:
+    from hedron.builtins.files import validate_upload_size
+
     assert validate_upload_filename("roster.csv") == "roster.csv"
     with pytest.raises(ValueError):
         validate_upload_filename("../etc/passwd")
     with pytest.raises(ValueError):
         validate_upload_filename("")
+    assert validate_upload_size(10, maximum_size=100) == 10
+    with pytest.raises(ValueError):
+        validate_upload_size(200, maximum_size=100)
+
+
+def test_safe_download_requires_auth(tmp_path: Path) -> None:
+    from hedron.builtins.files import safe_download_response
+
+    path = tmp_path / "roster.csv"
+    path.write_text("id,name\n1,Ada\n", encoding="utf-8")
+    with pytest.raises(PermissionError):
+        safe_download_response(path, filename="roster.csv", authorized=False)
+    response = safe_download_response(path, filename="roster.csv", authorized=True)
+    assert response.media_type == "text/csv" or "octet-stream" in (response.media_type or "")
+
+
+def test_theme_light_override_emitted() -> None:
+    from hedron_core.theme import default_theme, emit_theme_css
+
+    css = emit_theme_css(default_theme())
+    assert ':root[data-theme="light"]' in css
+    assert ':root:not([data-theme="light"])' in css

@@ -290,6 +290,9 @@ dependencies = [
 browser = [
     { name = "playwright" },
 ]
+data = [
+    { name = "hedron-data" },
+]
 dev = [
     { name = "hedron-explorer" },
 ]
@@ -298,13 +301,14 @@ dev = [
 requires-dist = [
     { name = "fastapi", specifier = ">=0.141.1,<0.142" },
     { name = "hedron-core", editable = "packages/hedron-core" },
+    { name = "hedron-data", marker = "extra == 'data'", editable = "packages/hedron-data" },
     { name = "hedron-explorer", marker = "extra == 'dev'", editable = "packages/hedron-explorer" },
     { name = "itsdangerous", specifier = ">=2.2" },
     { name = "packaging", specifier = ">=24.0" },
     { name = "playwright", marker = "extra == 'browser'", specifier = ">=1.40" },
     { name = "python-multipart", specifier = ">=0.0.9" },
 ]
-provides-extras = ["dev", "browser"]
+provides-extras = ["dev", "data", "browser"]
 
 [[package]]
 name = "hedron-core"

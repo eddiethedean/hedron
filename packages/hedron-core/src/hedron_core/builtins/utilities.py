@@ -325,4 +325,4 @@ class Sidebar(Component[SidebarProps]):
         body = self._slot_values.get("body", self._body)
         if not isinstance(body, tuple):
             body = (body,)
-        return html.aside(*body, class_="hedron-sidebar", aria_label=self.props.label)
+        return html.aside(*body, class_="hedron-sidebar", aria={"label": self.props.label})

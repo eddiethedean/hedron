@@ -304,6 +304,29 @@ def _execute_build(
                 )
                 asset_entries.append(entry)
 
+        # Plugin/package assets registered via register_asset (e.g. DataEditor CSS).
+        component_browser_paths = {
+            Path(bp).resolve() for meta in registry.components() for bp in meta.browser_modules
+        }
+        for asset in registry.assets():
+            path = Path(asset.path)
+            if not path.is_file():
+                continue
+            resolved = path.resolve()
+            if resolved in component_browser_paths:
+                continue
+            attrs = dict(asset.attributes)
+            if asset.kind == "css":
+                attrs.setdefault("rel", "stylesheet")
+            entry = fingerprint_file(
+                path,
+                output_dir=assets_dir,
+                logical_id=asset.logical_id,
+                kind=asset.kind,
+                attributes=attrs,
+            )
+            asset_entries.append(entry)
+
         css_parts.append("@layer utilities {\n}\n")
         css_parts.append("@layer overrides {\n}\n")
         bundle = "".join(css_parts).encode("utf-8")

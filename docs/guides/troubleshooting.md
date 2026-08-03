@@ -5,8 +5,9 @@
 **Symptom:** Features in the docs are missing from your install.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U hedron` (or `uv add hedron@latest`). The current published train is
-**0.4.0**. See [STATUS](../STATUS.md).
+`pip install -U hedron` (or `uv add hedron@latest`). The current **published** train on
+PyPI is **0.4.0**; phase 0.5 (`0.5.0`) is implemented on `main` but not tagged yet. See
+[STATUS](../STATUS.md).
 
 ## CSRF 403 on POST
 

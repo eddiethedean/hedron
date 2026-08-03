@@ -69,12 +69,22 @@ jobs:
           fi
           if ((${#hedron_wheels[@]})); then
             uv pip install --python /tmp/hedron-smoke "${hedron_wheels[@]}"
+            data_wheels=(dist/hedron_data-*.whl)
+            if ((${#data_wheels[@]})); then
+              uv pip install --python /tmp/hedron-smoke "${data_wheels[@]}"
+            fi
             /tmp/hedron-smoke/bin/python - <<'PY'
           from hedron import Hedron, Page, Text
+          from hedron_core import render
           app = Hedron(title="smoke", security="standard", explorer="off", session_secret="smoke-secret")
           @app.page("/")
           def home():
               return Page(Text("ok"), title="Ok")
+          try:
+              from hedron_data import DataTable
+              assert "Ada" in render(DataTable([{"id": "1", "name": "Ada"}])).html
+          except ImportError:
+              pass
           print("ok: clean-install Hedron")
           PY
           fi

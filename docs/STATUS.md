@@ -1,9 +1,10 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.5 **implemented** as `v0.5.0`; phase 0.6 next  
+**Roadmap position:** phase 0.5 **implemented, not yet published** as `0.5.0`; phase 0.6 next  
 **Date:** 2026-08-03  
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
-`hedron-data` `0.5.0`; MIT licensed (D-033)
+`hedron-data` `0.5.0` on `main` (MIT licensed, D-033); PyPI still serves the prior train until
+`v0.5.0` is tagged and published.
 
 Phase 0.5 delivers the data application toolkit: `Auto()` and Data Intelligence,
 `DataTable` / `DataEditor` with Tabulator host, data-source protocols, caching,

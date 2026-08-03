@@ -11,9 +11,10 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase 0.5 is **implemented** as `v0.5.0` (data applications,
-> `Auto()`, DataTable/DataEditor, caching, utility UI, ColorMode, and
-> `hedron-data`). The project is MIT-licensed. Next milestone: phase 0.6
+> **Project status:** Phase 0.5 is **implemented, not yet published** (`0.5.0` on
+> `main`: data applications, `Auto()`, DataTable/DataEditor, caching, utility UI,
+> ColorMode, and `hedron-data`). Install from PyPI still resolves the prior train
+> until `v0.5.0` is cut. The project is MIT-licensed. Next milestone: phase 0.6
 > (visualization adapters and first-party integrations).
 
 ## Packages
@@ -23,7 +24,7 @@ Components—without requiring Node.js.
 | [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship (pages, HTMX, security, CLI) | `pip install hedron` |
 | [`hedron-core`](https://pypi.org/project/hedron-core/) | Framework-neutral typed rendering core | `pip install hedron-core` |
 | [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Dev Component Explorer | `pip install "hedron[dev]"` |
-| [`hedron-data`](https://pypi.org/project/hedron-data/) | DataTable, DataEditor, data sources | `pip install hedron-data` |
+| [`hedron-data`](https://pypi.org/project/hedron-data/) | DataTable, DataEditor, data sources | `pip install "hedron[data]"` or `hedron-data` |
 | [`hedron-sample-kit`](https://pypi.org/project/hedron-sample-kit/) | Sample third-party plugin package | `pip install hedron-sample-kit` |
 
 ## Product direction
