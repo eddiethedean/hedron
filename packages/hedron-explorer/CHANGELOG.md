@@ -13,6 +13,7 @@ Explorer panels for cache traces, data policy, and Auto renderer evidence.
 ### Added
 
 - First-party `/hedron-explorer/cache`, `/data`, and `/auto` panels.
+- `/data` lists registered DataTable/DataEditor components and a sample writable policy.
 
 ## [0.4.0] - 2026-08-03
 

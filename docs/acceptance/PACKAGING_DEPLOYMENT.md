@@ -12,9 +12,9 @@
 
 - [x] `hedron-core` installs and imports without FastAPI, Flask, or Django.
 - [ ] `hedron-flask` and `hedron-django` do not install FastAPI. *(phase 0.7)*
-- [ ] Optional integrations import lazily and publish compatibility ranges. *(later phases)*
+- [ ] Optional integrations import lazily and publish compatibility ranges. *(later phases — charts/Flask/Django)*
 - [x] Wheels and source distributions contain typing metadata, browser assets (HTMX / disclose), and licenses. *(Application HDN/CSS ship via project builds, not the framework wheel.)*
-- [ ] Missing extras produce exact install instructions without breaking unrelated imports. *(later — adapters/extras beyond `hedron[dev]`)*
+- [x] Missing extras produce exact install instructions without breaking unrelated imports. *(`hedron[data]` / `hedron-data`; other adapters remain later)*
 
 ## Deployment
 

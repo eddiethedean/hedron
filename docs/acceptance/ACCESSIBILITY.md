@@ -8,7 +8,7 @@
 - [x] Dialog-like, tab, expander, toast, progress, and status patterns. *(phase 0.5 utility smoke markup)*
 - [x] Lazy and error regions expose busy and retry affordances (`aria-busy` / `aria-live` on `Lazy`/`Loading`; `role="alert"` and retry controls on `ErrorState`). *(phase 0.2 markup)*
 - [x] Phase 0.5 utility/table smoke: DataTable captions/`scope`, Metric/Progress/Status/Toast/Expander/Tabs/ColorMode/Sidebar accessible names and live regions. *(unit/a11y smoke; not full AT coverage)*
-- [ ] Charts, richer DataEditor keyboard/AT corpus, uploads/downloads beyond markup contracts. *(phases 0.5 hardening / 0.6)*
+- [ ] Charts, richer DataEditor keyboard/AT corpus, uploads/downloads beyond markup contracts. *(phase 0.6+)*
 
 ## Visual and responsive
 

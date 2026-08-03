@@ -11,6 +11,19 @@ Phase 0.5 delivers the data application toolkit: `Auto()` and Data Intelligence,
 utility components, ColorMode UI, Explorer cache/data/Auto panels, and
 `hedron-data`.
 
+## Ready to cut `v0.5.0`
+
+Preflight is green on `main` (do **not** tag until maintainers intentionally cut):
+
+- [x] Package versions, `__version__`, licenses, and `[0.5.0]` changelog sections agree
+  (`uv run python scripts/check_release_gate.py 0.5.0`)
+- [x] Acceptance: [DATA_EDITOR](acceptance/DATA_EDITOR.md),
+  [CACHING_UTILITIES](acceptance/CACHING_UTILITIES.md); forged-edit/CSRF and a11y smoke scoped
+- [x] CI on `main` green for Python 3.11–3.14 (quality + tests), including `hedron_data` smoke
+- [x] Local: ruff, pyright, pytest, release gate, `mkdocs build --strict`
+- [ ] Tag/push `v0.5.0` (triggers Release workflow → PyPI + GitHub Release)
+- [ ] After publish: flip this STATUS/README to **published** and point at phase 0.6
+
 ## Current conclusions
 
 - Python is the reference implementation.

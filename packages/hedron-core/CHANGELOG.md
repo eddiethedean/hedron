@@ -17,7 +17,16 @@ utility components, and ColorMode.
 - Cache protocols, in-memory backend, key builder, single-flight, and Explorer traces.
 - Utility built-ins: Metric, CodeViewer, JSONViewer, Progress, Status, Toast,
   Expander, Tabs, Sidebar.
-- `ColorMode`, `ColorModeToggle`, and `resolve_color_mode`.
+- `ColorMode`, `ColorModeToggle`, `color_mode_script`, and `resolve_color_mode`.
+- `Page(data_theme=...)` for explicit `data-theme` on `<html>`.
+
+### Fixed
+
+- Theme CSS: system dark uses `:root:not([data-theme="light"])`; explicit light preference
+  overrides system dark.
+- Cache single-flight keeps results until waiters finish (no waiter `KeyError` race).
+- `Sidebar` uses `aria={"label": ...}` (render no longer crashes).
+- `ColorModeToggle` emits a hidden `csrf_token` when provided.
 
 ## [0.4.0] - 2026-08-03
 

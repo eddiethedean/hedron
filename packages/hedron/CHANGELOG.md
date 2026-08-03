@@ -14,9 +14,17 @@ helpers, ColorMode persistence, and re-exports for `hedron-data` / Auto / utilit
 ### Added
 
 - `cache_data` / `cache_component` with scoped keys and single-flight.
-- `FileUpload`, `DownloadButton`, `safe_download_response`.
+- `FileUpload`, `DownloadButton`, `safe_download_response`, `validate_upload_size`.
 - ColorMode cookie/session helpers.
+- Optional extra `hedron[data]` → `hedron-data==0.5.0`.
+- Lazy `DataTable` / `DataEditor` imports with install guidance when `hedron-data` is absent.
 - Re-exports for DataTable, DataEditor, Auto, utilities, and ColorMode.
+
+### Fixed
+
+- Cache rejects `user` / `tenant` / `session` scopes without `vary_on`, and public-scope
+  request/session positional args.
+- Build fingerprints registered plugin CSS assets (DataEditor host stylesheet).
 
 ## [0.4.0] - 2026-08-03
 
