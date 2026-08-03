@@ -1,6 +1,8 @@
 # Hedron specification
 
-This directory is the canonical pre-implementation specification for Hedron and provides a versioned, internally consistent baseline.
+This directory is the canonical specification for Hedron and provides a versioned,
+internally consistent baseline. It is also the MkDocs / Read the Docs site home
+([hedron.readthedocs.io](https://hedron.readthedocs.io/)).
 
 Hedron is a Python-first, FastAPI-native framework for building typed, server-rendered component applications with HTML, HTMX, scoped CSS, and optional Web Components. It aims for React-like composition and Streamlit-like ease without requiring Node.js, hydration, a virtual DOM, or a proprietary browser runtime.
 
@@ -19,7 +21,7 @@ No implementation may silently resolve a specification conflict. It must update 
 ## Document sets
 
 - [Vision](foundations/01_VISION.md), [philosophy](foundations/02_PHILOSOPHY.md), [design principles](foundations/03_DESIGN_PRINCIPLES.md), and [non-goals](foundations/04_NON_GOALS.md)
-- [Architecture](ARCHITECTURE.md), [decisions](DECISIONS.md), [glossary](GLOSSARY.md), [roadmap](../ROADMAP.md), and [project status](STATUS.md)
+- [Architecture](ARCHITECTURE.md), [decisions](DECISIONS.md), [glossary](GLOSSARY.md), [roadmap](ROADMAP.md), and [project status](STATUS.md)
 - [Compatibility](COMPATIBILITY.md), [project layout](PROJECT_LAYOUT.md), [engineering baseline](ENGINEERING_BASELINE.md), [configuration](CONFIGURATION.md), [diagnostics](DIAGNOSTICS.md), and [identifiers](IDENTIFIERS.md)
 - [Reference application](REFERENCE_APPLICATION.md), [traceability](TRACEABILITY.md), [readiness report](READINESS_REPORT.md), [contribution process](CONTRIBUTING.md), and [cutting a release](RELEASE.md)
 - [Architecture RFCs](rfcs/README.md)

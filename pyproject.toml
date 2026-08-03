@@ -29,6 +29,11 @@ dev = [
     "ruff>=0.11",
     "pyright>=1.1.400",
 ]
+docs = [
+    "mkdocs>=1.6,<2",
+    "mkdocs-material>=9.5,<10",
+    "pymdown-extensions>=10.0,<11",
+]
 
 [tool.uv.sources]
 hedron-core = { workspace = true }

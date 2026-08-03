@@ -10,7 +10,7 @@
 
 Hedron develops through cumulative, usable phases rather than isolated infrastructure. Phase 0.0 is a documentation baseline with no package publication. Phases 0.1 through 0.8 lead to the 1.0 stability commitment and produce initial release tags `v0.1.0` through `v0.8.0`; phase 1.0 produces `v1.0.0`. Python package versions omit the tag prefix, and first-party distributions use the coordinated release train. Each implementation phase includes public API, implementation, documentation, security, accessibility, testing, performance evidence, and Explorer or CLI visibility where it introduces inference.
 
-The detailed normative scope and exit criteria live in the project [roadmap](../../ROADMAP.md).
+The detailed normative scope and exit criteria live in the project [roadmap](../ROADMAP.md).
 
 ## Phase and release sequence
 

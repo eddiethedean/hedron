@@ -20,3 +20,5 @@ htmlcov/
 .audit-build-proj/
 examples/reference-app/.hedron/
 *.html.gz
+/site/
+docs/ROADMAP.md

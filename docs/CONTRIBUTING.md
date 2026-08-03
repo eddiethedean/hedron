@@ -24,3 +24,7 @@ Do not expose private helpers merely to avoid designing a stable contract. Do no
 ## Documentation definition of done
 
 Examples compile, links resolve, names match public typing, errors and escape hatches are documented, and status/index tables are updated.
+
+Hosted documentation is built with MkDocs (Material) via Read the Docs
+(`.readthedocs.yaml`, `mkdocs.yml`). Preview locally with
+`uv sync --group docs && uv run mkdocs serve`.

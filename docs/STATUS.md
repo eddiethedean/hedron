@@ -27,4 +27,4 @@ sample package.
 - Inference inventory: [INFERENCE_OVERRIDES.md](INFERENCE_OVERRIDES.md).
 - Published as `v0.4.0` on 2026-08-03 ([GitHub Release](https://github.com/eddiethedean/hedron/releases/tag/v0.4.0)).
 
-See the [roadmap](../ROADMAP.md) for the phase 0.5 data application gate.
+See the [roadmap](ROADMAP.md) for the phase 0.5 data application gate.

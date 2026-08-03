@@ -90,6 +90,8 @@ jobs:
               else:
                   files.extend(root.rglob("*.md"))
           for path in files:
+              if path.is_symlink():
+                  continue
               text = path.read_text(encoding="utf-8")
               for m in re.finditer(r"\]\(([^)#]+)(?:#[^)]*)?\)", text):
                   target = m.group(1)
@@ -102,3 +104,8 @@ jobs:
               raise SystemExit("\n".join(missing[:50]))
           print("ok: relative doc links resolve")
           PY
+      - name: MkDocs build
+        if: matrix.python-version == '3.12'
+        run: |
+          uv sync --group docs --python ${{ matrix.python-version }}
+          uv run mkdocs build --strict

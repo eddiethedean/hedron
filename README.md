@@ -1,6 +1,7 @@
 # Hedron
 
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![Docs](https://readthedocs.org/projects/hedron/badge/?version=latest)](https://hedron.readthedocs.io/en/latest/?badge=latest)
 [![PyPI](https://img.shields.io/pypi/v/hedron.svg?label=hedron)](https://pypi.org/project/hedron/)
 [![Python](https://img.shields.io/pypi/pyversions/hedron.svg)](https://pypi.org/project/hedron/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -99,6 +100,15 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 See the complete [roadmap](ROADMAP.md) for scope, feature ownership, RFC assignments, and release gates.
 
 ## Documentation
+
+Hosted docs (MkDocs / Read the Docs): [hedron.readthedocs.io](https://hedron.readthedocs.io/)
+
+Build locally:
+
+```bash
+uv sync --group docs
+uv run mkdocs serve
+```
 
 The specification remains the authority for implementation:
 
