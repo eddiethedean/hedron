@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
-from flask import Flask, Request
+from flask import Flask, Request, Response
 from flask import session as flask_session
 
 from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
@@ -66,11 +66,12 @@ class HedronFlask:
     ) -> str:
         from hedron_flask.responses import _render_body
 
+        headers = dict(request.headers)
         result = _render_body(
             value,
-            headers=request.headers,
+            headers=headers,
             context=context,
-            mode=mode or render_mode_for_request(request.headers),
+            mode=mode or render_mode_for_request(headers),
         )
         return result.html
 
@@ -116,7 +117,9 @@ class HedronFlask:
     def csrf_token(self, request: Request) -> str:
         return csrf_token_for_request(request, cookie_name=self.csrf_cookie_name)
 
-    def attach_csrf_cookie(self, response, request: Request, token: str | None = None):
+    def attach_csrf_cookie(
+        self, response: Response, request: Request, token: str | None = None
+    ) -> str:
         value = token or self.csrf_token(request)
         ensure_csrf_cookie(
             response,
@@ -127,4 +130,4 @@ class HedronFlask:
         return value
 
     def htmx(self, request: Request):
-        return htmx_context(request.headers)
+        return htmx_context(dict(request.headers))

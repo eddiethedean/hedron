@@ -6,10 +6,10 @@ import json
 import secrets
 import threading
 import time
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any, Protocol, runtime_checkable
+from typing import Any, Protocol, cast, runtime_checkable
 
 __all__ = [
     "InMemoryJobBackend",
@@ -362,7 +362,7 @@ class RedisJobBackend:
         keys_fn = getattr(self._client, "keys", None)
         if not callable(keys_fn):
             return 0
-        for key in keys_fn(f"{self._prefix}*"):
+        for key in cast(Iterable[object], keys_fn(f"{self._prefix}*")):
             key_s = self._decode(key) or ""
             if ":idem:" in key_s:
                 continue

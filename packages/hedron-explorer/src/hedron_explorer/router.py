@@ -59,14 +59,17 @@ def _project_component_roots(request: Request | None) -> list[Path]:
             loader = getattr(request.app.state, "hedron_settings_loader", None)
             if callable(loader):
                 settings = loader(Path(project_root))
-                roots.extend(settings.resolved_roots(base=Path(project_root)))
             else:
                 # Optional: flagship config without hard-depending on `hedron`.
                 from importlib import import_module
 
                 mod = import_module("hedron.config")
                 settings = mod.load_hedron_settings(Path(project_root))
-                roots.extend(settings.resolved_roots(base=Path(project_root)))
+            resolved = getattr(settings, "resolved_roots", None)
+            if callable(resolved):
+                extra = resolved(base=Path(project_root))
+                if isinstance(extra, (list, tuple)):
+                    roots.extend(Path(p) for p in extra)
         except Exception:  # noqa: BLE001 — explorer stays available without config
             pass
     return roots

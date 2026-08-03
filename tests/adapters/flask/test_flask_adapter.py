@@ -98,9 +98,7 @@ def test_oob_authorization() -> None:
     ok = InteractionResult(
         content=Text("main"),
         oob=(OobUpdate(content=Text("side"), element_id="side"),),
-        policy=InteractionPolicy(
-            declared_regions=(FragmentRegion(id="side", selector="#side"),)
-        ),
+        policy=InteractionPolicy(declared_regions=(FragmentRegion(id="side", selector="#side"),)),
     )
     with hedron.flask.test_request_context("/"):
         response = interaction_response(ok)
@@ -110,9 +108,7 @@ def test_oob_authorization() -> None:
     bad = InteractionResult(
         content=Text("main"),
         oob=(OobUpdate(content=Text("evil"), element_id="evil"),),
-        policy=InteractionPolicy(
-            declared_regions=(FragmentRegion(id="side", selector="#side"),)
-        ),
+        policy=InteractionPolicy(declared_regions=(FragmentRegion(id="side", selector="#side"),)),
     )
     with hedron.flask.test_request_context("/"):
         denied = interaction_response(bad)

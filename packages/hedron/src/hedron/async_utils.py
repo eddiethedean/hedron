@@ -37,7 +37,7 @@ async def await_if_needed(value: T | Awaitable[T]) -> T:
 
 def mark_cpu_heavy(fn: Callable[..., T]) -> Callable[..., T]:
     """Mark a callable as unsuitable for run_sync thread offload."""
-    fn.__hedron_cpu_heavy__ = True
+    fn.__hedron_cpu_heavy__ = True  # type: ignore[attr-defined]
     return fn
 
 

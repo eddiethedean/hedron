@@ -43,7 +43,7 @@ def _render_body(
 ) -> RenderResult:
     if isinstance(value, RenderResult):
         return value
-    hdrs = dict(headers or flask_request.headers)
+    hdrs = dict(headers) if headers is not None else dict(flask_request.headers)
     selected_mode = render_mode_for_request(hdrs, force=mode)
     render_context = context or RenderContext.standalone()
     to_render: NodeLike | Component[Any] = value

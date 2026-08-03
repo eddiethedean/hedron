@@ -17,9 +17,7 @@ from hedron_core.interaction import (
 
 
 def test_shared_fragment_region_authorization() -> None:
-    policy = InteractionPolicy(
-        declared_regions=(FragmentRegion(id="main", selector="#main"),)
-    )
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
     assert resolve_fragment_region(policy, "#main") is not None
     with pytest.raises(FragmentRegionError):
         resolve_fragment_region(policy, "#other")

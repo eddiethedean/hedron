@@ -27,7 +27,17 @@ __all__ = [
 def _headers_mapping(request: HttpRequest | None) -> dict[str, str]:
     if request is None:
         return {}
-    return {k: v for k, v in request.headers.items()}
+    headers = getattr(request, "headers", None)
+    items = getattr(headers, "items", None)
+    if not callable(items):
+        return {}
+    raw_items = items()
+    if not isinstance(raw_items, (list, tuple)):
+        try:
+            raw_items = list(raw_items)  # type: ignore[arg-type]
+        except TypeError:
+            return {}
+    return {str(k): str(v) for k, v in raw_items}
 
 
 def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[Any]:
@@ -77,7 +87,12 @@ def component_response(
     _merge_vary(headers)
     if extra_headers:
         headers.update(extra_headers)
-    return HttpResponse(result.html, status=status_code, content_type="text/html", headers=headers)
+    return HttpResponse(
+        result.html.encode("utf-8"),
+        status=status_code,
+        content_type="text/html; charset=utf-8",
+        headers=headers,
+    )
 
 
 def interaction_response(
@@ -91,7 +106,11 @@ def interaction_response(
     try:
         node = materialize_interaction_nodes(result)
     except (FragmentRegionError, ValueError) as exc:
-        return HttpResponse(str(exc), status=403, content_type="text/plain")
+        return HttpResponse(
+            str(exc).encode("utf-8"),
+            status=403,
+            content_type="text/plain; charset=utf-8",
+        )
     headers = interaction_headers(result)
     if extra_headers:
         headers.update(dict(extra_headers))
@@ -104,4 +123,9 @@ def interaction_response(
             mode=mode or RenderMode.FRAGMENT,
         )
         body = rendered.html
-    return HttpResponse(body, status=result.status_code, content_type="text/html", headers=headers)
+    return HttpResponse(
+        body.encode("utf-8"),
+        status=result.status_code,
+        content_type="text/html; charset=utf-8",
+        headers=headers,
+    )

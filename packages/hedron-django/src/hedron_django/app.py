@@ -13,7 +13,7 @@ from hedron_core.interaction import InteractionResult
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_django.csrf import csrf_token_for_request
 from hedron_django.htmx import htmx_context, render_mode_for_request
-from hedron_django.responses import component_response, interaction_response
+from hedron_django.responses import _headers_mapping, component_response, interaction_response
 from hedron_django.routing import DjangoUrlReverser
 
 __all__ = ["HedronDjango", "QUERYSET_DATASOURCE_DEFERRED"]
@@ -47,7 +47,7 @@ class HedronDjango:
             value,
             request=request,
             context=context,
-            mode=mode or render_mode_for_request(dict(request.headers)),
+            mode=mode or render_mode_for_request(_headers_mapping(request)),
         )
         return result.html
 
@@ -76,7 +76,8 @@ class HedronDjango:
         pk = getattr(user, "pk", None)
         subject_id = str(pk) if authenticated and pk is not None else None
         scopes: tuple[str, ...] = ()
-        tenant_id = request.session.get("tenant_id") if hasattr(request, "session") else None
+        session = getattr(request, "session", None)
+        tenant_id = session.get("tenant_id") if session is not None else None
         return AuthSignal(
             authenticated=authenticated,
             subject_id=subject_id,
@@ -88,4 +89,4 @@ class HedronDjango:
         return csrf_token_for_request(request)
 
     def htmx(self, request: HttpRequest):
-        return htmx_context(dict(request.headers))
+        return htmx_context(_headers_mapping(request))

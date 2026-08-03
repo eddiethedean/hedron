@@ -91,9 +91,10 @@ def is_local_path(url: str) -> bool:
     if decoded.startswith("//"):
         return False
     path = parsed.path or "/"
-    return _LOCAL_PATH.fullmatch(path) is not None and _LOCAL_PATH.fullmatch(
-        urlparse(decoded).path or "/"
-    ) is not None
+    return (
+        _LOCAL_PATH.fullmatch(path) is not None
+        and _LOCAL_PATH.fullmatch(urlparse(decoded).path or "/") is not None
+    )
 
 
 def safe_css_selector(selector: str) -> bool:
