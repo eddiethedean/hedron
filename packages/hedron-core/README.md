@@ -55,7 +55,7 @@ and [roadmap](https://github.com/eddiethedean/hedron/blob/main/ROADMAP.md).
 
 ## Links
 
-- [Documentation](https://hedron-py.readthedocs.io/)
+- [Documentation](https://hedron.readthedocs.io/en/latest/)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-core/CHANGELOG.md)
 - [Source](https://github.com/eddiethedean/hedron)
 - [`hedron`](https://pypi.org/project/hedron/)

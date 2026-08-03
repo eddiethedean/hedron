@@ -40,7 +40,7 @@ Homepage = "https://github.com/eddiethedean/hedron"
 Repository = "https://github.com/eddiethedean/hedron"
 Issues = "https://github.com/eddiethedean/hedron/issues"
 Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-explorer/CHANGELOG.md"
-Documentation = "https://hedron-py.readthedocs.io/"
+Documentation = "https://hedron.readthedocs.io/en/latest/"
 
 [build-system]
 requires = ["hatchling"]
