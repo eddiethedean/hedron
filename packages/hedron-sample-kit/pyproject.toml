@@ -16,6 +16,7 @@ sample_kit = "hedron_sample_kit.plugin:register"
 [project.urls]
 Homepage = "https://github.com/eddiethedean/hedron"
 Repository = "https://github.com/eddiethedean/hedron"
+Documentation = "https://hedron.readthedocs.io/"
 
 [build-system]
 requires = ["hatchling"]

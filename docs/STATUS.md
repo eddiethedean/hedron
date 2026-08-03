@@ -1,6 +1,7 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.4 published (`v0.4.0`); phase 0.5 next  
+**Roadmap position:** phase 0.4 implemented on `main` at `0.4.0`; **ready to cut
+`v0.4.0`** (latest published train remains `v0.3.0`); phase 0.5 next after publish  
 **Date:** 2026-08-03  
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` `0.4.0`; MIT licensed (D-033)
 
@@ -25,6 +26,7 @@ sample package.
 - Acceptance: [EXPLORER](acceptance/EXPLORER.md), [CLI](acceptance/CLI.md),
   [PLUGINS](acceptance/PLUGINS.md), [TESTING](acceptance/TESTING.md).
 - Inference inventory: [INFERENCE_OVERRIDES.md](INFERENCE_OVERRIDES.md).
-- Published as `v0.4.0` on 2026-08-03 ([GitHub Release](https://github.com/eddiethedean/hedron/releases/tag/v0.4.0)).
+- Release gate: `uv run python scripts/check_release_gate.py 0.4.0`.
+- Cut procedure: [RELEASE.md](RELEASE.md) (`Cut v0.4.0`).
 
 See the [roadmap](ROADMAP.md) for the phase 0.5 data application gate.
