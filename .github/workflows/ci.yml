@@ -22,9 +22,9 @@ jobs:
       - name: Sync
         run: uv sync --python ${{ matrix.python-version }}
       - name: Format check
-        run: uv run ruff format --check .
+        run: uv run ruff format --check packages tests examples
       - name: Lint
-        run: uv run ruff check .
+        run: uv run ruff check packages tests examples
       - name: Type check
         run: uv run pyright
       - name: Tests

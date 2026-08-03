@@ -36,6 +36,7 @@ markers = [
 target-version = "py312"
 line-length = 100
 src = ["packages/hedron-core/src", "tests", "examples"]
+extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
