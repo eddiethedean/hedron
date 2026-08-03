@@ -1,8 +1,30 @@
 # Hedron
 
-Hedron is a Python-first framework for building typed, server-rendered component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web Components—without requiring Node.js.
+[![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/hedron.svg?label=hedron)](https://pypi.org/project/hedron/)
+[![Python](https://img.shields.io/pypi/pyversions/hedron.svg)](https://pypi.org/project/hedron/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/releases/latest)
 
-> **Project status:** Phase 0.2 is ready to cut `v0.2.0` (packages already at `0.2.0` on `main`). The FastAPI flagship `hedron` package ships pages, addressable components, typed actions, CSRF-aware forms, OpenAPI `text/html` metadata, interaction built-ins, and a minimal CLI/Explorer preview on top of `hedron-core`. The project is MIT-licensed. After publication, phase 0.3 (HDN, scoped styles, assets, and themes) is next.
+Hedron is a Python-first framework for building typed, server-rendered
+component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
+Components—without requiring Node.js.
+
+> **Project status:** Phase 0.2 is published as
+> [`v0.2.0`](https://github.com/eddiethedean/hedron/releases/tag/v0.2.0)
+> (`pip install hedron`). The FastAPI flagship ships pages, addressable
+> components, typed actions, CSRF-aware forms, OpenAPI `text/html` metadata,
+> interaction built-ins, and a minimal CLI/Explorer preview on top of
+> `hedron-core`. The project is MIT-licensed. Next milestone: phase 0.3 (HDN,
+> scoped styles, assets, and themes).
+
+## Packages
+
+| Package | Role | Install |
+|---|---|---|
+| [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship (pages, HTMX, security, CLI) | `pip install hedron` |
+| [`hedron-core`](https://pypi.org/project/hedron-core/) | Framework-neutral typed rendering core | `pip install hedron-core` |
+| [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Dev Component Explorer preview | `pip install "hedron[dev]"` |
 
 ## Product direction
 
@@ -65,7 +87,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 |---|---|---|
 | 0.0 | None | Accepted specification and project foundation |
 | 0.1 | `v0.1.0` | Framework-neutral typed rendering core (**complete**) |
-| 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP (**ready to cut**) |
+| 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP (**published**) |
 | 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform |
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI |

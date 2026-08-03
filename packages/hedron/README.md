@@ -1,11 +1,16 @@
 # hedron
 
-FastAPI-native typed component framework for HTML and HTMX (`0.2.0`).
+[![PyPI](https://img.shields.io/pypi/v/hedron.svg)](https://pypi.org/project/hedron/)
+[![Python](https://img.shields.io/pypi/pyversions/hedron.svg)](https://pypi.org/project/hedron/)
+[![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Builds on framework-neutral `hedron-core` with pages, addressable components,
-typed actions, CSRF-aware forms, OpenAPI `text/html` metadata, interaction
-built-ins (`Lazy`, `Poll`, `Pagination`, …), and a thin `Hedron()` application
-facade.
+FastAPI-native typed component framework for HTML and HTMX.
+
+Builds on framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/)
+with pages, addressable components, typed actions, CSRF-aware forms, OpenAPI
+`text/html` metadata, interaction built-ins (`Lazy`, `Poll`, `Pagination`, …),
+and a thin `Hedron()` application facade.
 
 ## Install
 
@@ -69,6 +74,13 @@ hedron --app myapp:app routes
 hedron --app myapp:app components
 hedron --app myapp:app preview home
 ```
+
+## Links
+
+- [Documentation](https://github.com/eddiethedean/hedron/tree/main/docs)
+- [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron/CHANGELOG.md)
+- [Source](https://github.com/eddiethedean/hedron)
+- [`hedron-core`](https://pypi.org/project/hedron-core/) · [`hedron-explorer`](https://pypi.org/project/hedron-explorer/)
 
 ## License
 

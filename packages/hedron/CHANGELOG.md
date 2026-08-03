@@ -33,4 +33,4 @@ Initial FastAPI flagship distribution for the secure HTML/HTMX application MVP.
 - Minimal CLI: `hedron [--app module:attr] routes|components|preview`.
 - Optional `hedron[dev]` Explorer preview via `hedron-explorer`.
 
-[0.2.0]: https://github.com/eddiethedean/hedron/commits/main
+[0.2.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.2.0

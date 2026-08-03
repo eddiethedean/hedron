@@ -31,9 +31,7 @@ Already published. Do not retag.
 
 ## Cut `v0.2.0` (coordinated train)
 
-> **Status:** Implementation and acceptance subsets for the 0.2 MVP are on
-> `main` at package version `0.2.0`. PyPI reclaim of `hedron` is intentional.
-> Cut when CI is green.
+> **Status:** Published as `v0.2.0` on 2026-08-03. Do not retag.
 
 1. Confirm `packages/{hedron-core,hedron,hedron-explorer}` all say `0.2.0` in
    `pyproject.toml` and `__version__`, with matching `CHANGELOG.md` sections.
@@ -59,7 +57,7 @@ gh release view v0.2.0
 ```
 
 7. Point changelog compare URLs at the new release tag and update
-   `docs/STATUS.md` to record publication.
+   `docs/STATUS.md` to record publication. **Done** for `v0.2.0`.
 
 ## After publication
 

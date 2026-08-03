@@ -1,10 +1,10 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.2 ready to cut `v0.2.0`  
+**Roadmap position:** phase 0.2 published (`v0.2.0`); phase 0.3 next  
 **Date:** 2026-08-03  
-**Implementation:** `hedron` / `hedron-core` / `hedron-explorer` `0.2.0` on `main`; MIT licensed (D-033); release gate green; phase 0.3 (`v0.3.0`) follows publication
+**Implementation:** `hedron` / `hedron-core` / `hedron-explorer` `0.2.0` published to PyPI; MIT licensed (D-033); next is phase 0.3 (`v0.3.0`)
 
-Phase 0.1 remains complete. Phase 0.2 implements the FastAPI flagship: `Hedron()`, `HedronRouter`/`HedronRoute`, pages, addressable components, typed actions, CSRF, HTMX page/fragment responses, OpenAPI `text/html` metadata, `SessionState`, interaction built-ins (including polling/pagination/infinite-scroll helpers), minimal CLI (`--app`), and an Explorer preview via `hedron[dev]`.
+Phase 0.1 remains complete. Phase 0.2 ships the FastAPI flagship: `Hedron()`, `HedronRouter`/`HedronRoute`, pages, addressable components, typed actions, CSRF, HTMX page/fragment responses, OpenAPI `text/html` metadata, `SessionState`, interaction built-ins (including polling/pagination/infinite-scroll helpers), minimal CLI (`--app`), and an Explorer preview via `hedron[dev]`.
 
 Core stays free of FastAPI/ASGI imports. The authenticated CRUD reference application works in both `Hedron()` and plain FastAPI + `HedronRouter` modes. CI covers Python 3.11–3.14.
 
@@ -20,16 +20,10 @@ Core stays free of FastAPI/ASGI imports. The authenticated CRUD reference applic
 
 ## Phase 0.2 evidence
 
-- Packages: `packages/hedron-core`, `packages/hedron`, `packages/hedron-explorer` at `0.2.0`.
-- Gate: `uv run python scripts/check_release_gate.py 0.2.0` passes (versions, `__version__`, changelogs, LICENSE).
-- Acceptance subsets for cut: SECURITY 0.2, FASTAPI MVP, HTMX 0.2, Explorer preview, COMPONENT_MODEL FastAPI parity, PACKAGING Explorer-absent-by-default.
+- Release: [v0.2.0](https://github.com/eddiethedean/hedron/releases/tag/v0.2.0)
+- PyPI: [`hedron`](https://pypi.org/project/hedron/0.2.0/), [`hedron-core`](https://pypi.org/project/hedron-core/0.2.0/), [`hedron-explorer`](https://pypi.org/project/hedron-explorer/0.2.0/)
+- `hedron==0.2.0` intentionally reclaims the existing PyPI project name (same author; prior geolocation package superseded).
+- Acceptance subsets: SECURITY 0.2, FASTAPI MVP, HTMX 0.2, Explorer preview, COMPONENT_MODEL FastAPI parity.
 - Suites: unit, snapshot, security, a11y, conformance, performance, FastAPI integration, HTML parity, reference CRUD.
-- Reference app: authenticated team admin with CSRF (header and form field), lazy table, create/update/delete, Explorer under `explorer="development"`.
-- CLI: `hedron routes|components|preview` with optional `--app module:attr`.
-- PyPI: `hedron==0.2.0` **intentionally reclaims** the existing project name (same author; prior geolocation package ≤0.0.6 is superseded).
-
-## Cut instructions
-
-Follow [RELEASE.md](RELEASE.md) section **Cut `v0.2.0`**: green CI on `main`, then annotated tag `v0.2.0`. Do not retag. After publication, flip changelog compare URLs and mark this status published.
 
 See the [roadmap](../ROADMAP.md) for the phase 0.3 authoring and styles gate.

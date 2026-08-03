@@ -1,6 +1,11 @@
 # hedron-core
 
-Framework-neutral typed rendering core for Hedron (`0.2.0`).
+[![PyPI](https://img.shields.io/pypi/v/hedron-core.svg)](https://pypi.org/project/hedron-core/)
+[![Python](https://img.shields.io/pypi/pyversions/hedron-core.svg)](https://pypi.org/project/hedron-core/)
+[![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
+
+Framework-neutral typed rendering core for Hedron.
 
 Defines models, security boundary types, components, the HTML serializer, and
 the public `render(...) -> RenderResult` API with **no** FastAPI, Flask, Django,
@@ -42,8 +47,17 @@ print(result.html)
 - HTTP routing, FastAPI/Flask/Django adapters, HTMX request handling
 - HDN, scoped CSS, CLI, Component Explorer, charts, or data grids
 
-Those arrive in later Hedron phases. See the [project README](https://github.com/eddiethedean/hedron)
-and [roadmap](https://github.com/eddiethedean/hedron/blob/main/ROADMAP.md).
+Those arrive in later Hedron phases. Prefer the FastAPI package
+[`hedron`](https://pypi.org/project/hedron/) for application work. See the
+[project README](https://github.com/eddiethedean/hedron) and
+[roadmap](https://github.com/eddiethedean/hedron/blob/main/ROADMAP.md).
+
+## Links
+
+- [Documentation](https://github.com/eddiethedean/hedron/tree/main/docs)
+- [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-core/CHANGELOG.md)
+- [Source](https://github.com/eddiethedean/hedron)
+- [`hedron`](https://pypi.org/project/hedron/)
 
 ## License
 

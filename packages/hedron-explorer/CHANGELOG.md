@@ -17,4 +17,4 @@ Initial Explorer preview for the FastAPI MVP.
 - Production absence by default with redacted metadata views.
 - Shared registry identity with `hedron` routing and OpenAPI.
 
-[0.2.0]: https://github.com/eddiethedean/hedron/commits/main
+[0.2.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.2.0
