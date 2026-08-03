@@ -35,38 +35,7 @@ Already published. Do not retag.
 
 ## Cut `v0.3.0` (authoring, styles, assets, themes)
 
-> **Status:** Implementation complete on `main` at package version `0.3.0`.
-> Cut the annotated tag below when ready to publish; do not retag after the
-> Release workflow succeeds.
-
-1. Confirm `packages/{hedron-core,hedron,hedron-explorer}` all say `0.3.0` in
-   `pyproject.toml` and `__version__`, with matching `CHANGELOG.md` sections
-   (`uv run python scripts/check_release_gate.py 0.3.0`).
-2. Confirm the acceptance subsets listed under Preconditions (HDN and scoped
-   styles in particular).
-3. Confirm the latest `main` CI run is green (format, lint, pyright, tests,
-   build, smoke on 3.11–3.14).
-4. Push `main` if needed, then create and push the annotated tag:
-
-```bash
-git tag -a v0.3.0 -m "Hedron 0.3.0"
-git push origin v0.3.0
-```
-
-5. The Release workflow builds and publishes every workspace package, then creates
-   a GitHub Release attaching all wheels/sdists.
-6. Verify:
-
-```bash
-pip index versions hedron-core
-pip index versions hedron
-pip index versions hedron-explorer
-gh release view v0.3.0
-```
-
-7. After publication, update [STATUS.md](STATUS.md) and the root [README.md](../README.md)
-   to record that `v0.3.0` is published, and move the “next milestone” pointer to
-   phase 0.4.
+> **Status:** Published as `v0.3.0` on 2026-08-03. Do not retag.
 
 ## After publication
 
