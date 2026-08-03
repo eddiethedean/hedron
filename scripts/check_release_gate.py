@@ -20,7 +20,7 @@ def main() -> int:
     errors: list[str] = []
 
     if not (ROOT / "LICENSE").is_file():
-        errors.append("D-030: missing root LICENSE (required before public publication)")
+        errors.append("missing root LICENSE (required before public publication)")
 
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
@@ -30,7 +30,7 @@ def main() -> int:
         if version != tag_version:
             errors.append(f"{name}: package version {version!r} != tag {tag_version!r}")
         if "license" not in project and "license-files" not in project:
-            errors.append(f"{name}: [project].license (or license-files) is required (D-030)")
+            errors.append(f"{name}: [project].license (or license-files) is required")
         pkg_dir = pyproject.parent
         init = next(pkg_dir.glob("src/*/__init__.py"))
         init_text = init.read_text(encoding="utf-8")

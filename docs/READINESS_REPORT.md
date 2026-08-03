@@ -36,7 +36,7 @@ The phase 0.0 specification and project-foundation gate passes and publishes no 
 
 ## Deliberate non-blockers
 
-- The owner must choose a license before public package publication. No license was inferred; local development may begin under the recorded all-rights-reserved baseline.
+- The owner must choose a license before public package publication. No license was inferred; local development may begin under the recorded all-rights-reserved baseline. *(Resolved by D-033: MIT.)*
 - The first `uv.lock` and exact transitive dependency set are implementation artifacts created with the package scaffold. They must satisfy the accepted direct compatibility ranges.
 - RFCs for later releases are accepted architecture plans, but their implementation must not jump ahead of their roadmap gates.
 - There is no code yet, so implementation, package, browser, security, accessibility, and performance tests are future release evidence rather than documentation-audit evidence.

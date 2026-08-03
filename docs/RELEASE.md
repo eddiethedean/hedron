@@ -8,7 +8,7 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 1. `main` is green on CI for Python 3.12–3.14.
 2. Package version, `__version__`, and changelog entry agree.
 3. Phase acceptance subsets for the release are checked.
-4. **License (D-030):** a root `LICENSE` file exists and every publishable
+4. **License (D-033):** a root `LICENSE` file exists and every publishable
    package declares `[project].license` / `license-files`. The release workflow
    refuses to publish without this.
 5. `PYPI_API_TOKEN` is configured in GitHub Actions secrets (already required by

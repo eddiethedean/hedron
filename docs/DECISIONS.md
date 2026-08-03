@@ -33,9 +33,10 @@ This is the authoritative decision log for the phase 0.0 specification baseline.
 | D-027 | Accepted | Logical IDs are readable namespaced identifiers; generated instance and asset IDs use versioned SHA-256-derived formats with collision checks as specified in `IDENTIFIERS.md`. |
 | D-028 | Accepted | The phase 0.1/0.2 built-in component catalog is fixed by `api/BUILT_INS.md`; later data, utility, and chart catalogs remain assigned to their roadmap phases. |
 | D-029 | Accepted | The repository uses a uv workspace, Hatchling, Ruff, Pyright, pytest/pytest-anyio, and the configuration and diagnostic contracts documented for 0.0. |
-| D-030 | Accepted | No open-source license is inferred; license selection blocks public publication but not local phase 0.1 implementation. |
+| D-030 | Superseded | No open-source license is inferred; license selection blocks public publication but not local phase 0.1 implementation. Superseded by D-033. |
 | D-031 | Accepted | The specification phase is 0.0, every subsequent pre-1.0 phase shifts down by one minor number through the phase 0.8 release candidate, and the stable target remains phase 1.0. Scope, order, and gates are otherwise unchanged. |
 | D-032 | Accepted | Phase 0.0 publishes no package. Each implementation phase `0.N` has initial release tag `v0.N.0` and Python package version `0.N.0`; phase 1.0 has `v1.0.0`/`1.0.0`. First-party distributions use the coordinated release train, and patch releases remain within their owning roadmap phase. |
+| D-033 | Accepted | Hedron is licensed under the MIT License; the repository root and each publishable distribution ship `LICENSE` with matching package metadata. |
 
 ## Implementation blockers
 

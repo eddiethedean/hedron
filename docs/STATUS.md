@@ -2,11 +2,11 @@
 
 **Roadmap position:** phase 0.1 — typed rendering core  
 **Date:** 2026-08-03  
-**Implementation:** `hedron-core` `0.1.0` complete (including harden pass); release-ready except D-030 license; phase 0.2 (`v0.2.0`) is next
+**Implementation:** `hedron-core` `0.1.0` complete; MIT licensed (D-033); phase 0.2 (`v0.2.0`) is next
 
 Phase 0.0 (specification and project foundation) remains complete. Phase 0.1 ships the framework-neutral `hedron-core` package: models, security boundary types, components, private HTML serializer, sealable registry, 0.1 built-ins, and `render(...) -> RenderResult`. A harden pass closed residual XSS, Secret-redaction, FormField a11y, registry sealing, and model-guardrail defects while remaining on `0.1.0`.
 
-Core tests run without FastAPI, Flask, Django, or Node.js tooling. The reference application’s static team-admin tree renders offline. CI is green on Python 3.12–3.14. The PyPI name `hedron-core` is available. Cutting `v0.1.0` is blocked only by license selection (D-030); see [Release](RELEASE.md).
+Core tests run without FastAPI, Flask, Django, or Node.js tooling. The reference application’s static team-admin tree renders offline. CI is green on Python 3.12–3.14. The project is MIT-licensed (D-033). See [Release](RELEASE.md).
 
 ## Current conclusions
 
@@ -17,8 +17,8 @@ Core tests run without FastAPI, Flask, Django, or Node.js tooling. The reference
 - Addressability is explicit and preserves framework-native security dependencies (0.2).
 - HTMX is the default server-interaction layer; Web Components own durable browser-local behavior (0.2+).
 - All 29 baseline RFCs and indexed public API contracts remain Accepted as designs; the 0.1 surface is implemented in `hedron-core`.
-- Decisions D-001 through D-032 remain in force.
-- No open-source license has been selected (D-030); the release workflow refuses public PyPI publication until `LICENSE` and package license metadata exist.
+- Decisions D-001 through D-033 remain in force (D-030 superseded by D-033 MIT).
+- The repository and `hedron-core` are MIT-licensed.
 
 ## Phase 0.1 evidence
 

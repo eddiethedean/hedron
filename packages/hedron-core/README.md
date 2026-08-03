@@ -47,5 +47,4 @@ and [roadmap](https://github.com/eddiethedean/hedron/blob/main/ROADMAP.md).
 
 ## License
 
-No open-source license has been selected yet (decision D-030). Until one is
-added, public redistribution as an open-source package is not authorized.
+MIT. See [LICENSE](LICENSE).

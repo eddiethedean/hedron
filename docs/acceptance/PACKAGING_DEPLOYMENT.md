@@ -5,7 +5,7 @@
 - [x] `hedron-core` installs and imports without FastAPI, Flask, or Django.
 - [x] Wheel and sdist build with Hatchling; clean-install smoke renders a `Page`.
 - [x] Typed marker (`py.typed`), README, changelog, authors, classifiers, and project URLs ship with the distribution.
-- [ ] Root `LICENSE` and `[project].license` metadata are present (D-030; blocks public PyPI publish).
+- [x] Root `LICENSE` and `[project].license` metadata are present (MIT; D-033).
 - [x] Release workflow verifies tag/version/changelog sync and refuses publish without a license.
 
 ## Packages

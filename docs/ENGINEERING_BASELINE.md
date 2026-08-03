@@ -37,4 +37,4 @@ The default CPython matrix covers 3.12, 3.13, and 3.14. Linux runs the full suit
 
 ## Licensing policy
 
-No open-source license is inferred by the architecture documents. Until the package owner selects and adds a license, the repository is treated as all rights reserved and must not be publicly distributed as an open-source release. License selection is required before the first public package publication, not before local phase 0.1 implementation for `v0.1.0`.
+Hedron uses the MIT License (D-033). The repository root and each publishable distribution include `LICENSE`, and package metadata declares `license = "MIT"`. The release workflow refuses to publish when those artifacts are missing.

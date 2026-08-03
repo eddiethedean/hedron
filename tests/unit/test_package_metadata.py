@@ -31,6 +31,8 @@ def test_public_metadata_fields() -> None:
     project = _project()
     assert project["name"] == "hedron-core"
     assert project["requires-python"] == ">=3.12,<3.15"
+    assert project["license"] == "MIT"
+    assert project["license-files"] == ["LICENSE"]
     dependencies = project["dependencies"]
     assert isinstance(dependencies, list)
     assert "pydantic>=2.13.4,<2.14" in dependencies
@@ -42,9 +44,12 @@ def test_public_metadata_fields() -> None:
     classifiers = project["classifiers"]
     assert isinstance(classifiers, list)
     assert "Typing :: Typed" in classifiers
+    assert "License :: OSI Approved :: MIT License" in classifiers
     assert (PKG / "src" / "hedron_core" / "py.typed").is_file()
     assert (PKG / "README.md").is_file()
     assert (PKG / "CHANGELOG.md").is_file()
+    assert (PKG / "LICENSE").is_file()
+    assert (ROOT / "LICENSE").is_file()
 
 
 def test_installed_distribution_metadata() -> None:
