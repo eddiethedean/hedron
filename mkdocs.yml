@@ -113,6 +113,7 @@ nav:
   - Guides:
     - Overview: guides/index.md
     - Project workflow: guides/project-workflow.md
+    - HTMX interactions: guides/htmx-interactions.md
     - Charts and HTMX: guides/charts-and-htmx.md
     - Test your UI: guides/testing.md
     - Security: guides/security.md

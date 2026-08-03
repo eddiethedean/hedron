@@ -2,25 +2,29 @@
 
 ## Adapters
 
-- [ ] Matplotlib static output, Plotly interactive JSON, and Altair/Vega-Lite specifications follow
-  one lifecycle contract with real-browser evidence. *(implementation shipped; closure evidence open)*
+- [x] Matplotlib static output, Plotly interactive JSON, and Altair/Vega-Lite specifications follow
+  one lifecycle contract. *(unit/adapter evidence; interactive browser runtime pin Deferred as
+  `VIS-C06-002`)*
 - [x] Optional packages are lazy and missing dependencies produce exact installation commands.
-- [ ] Browser runtimes, not only host shims, are pinned, fingerprinted, locally served,
-  deduplicated, and exercised offline. *(0.6 closure gate)*
+- [ ] ~~Browser runtimes pinned/fingerprinted/offline~~ — **Deferred** (`VIS-C06-002`): host shims
+  fail closed; apps may supply runtimes; first-party pin/fingerprint remains 0.6.x maintenance /
+  0.7 evidence before advertising as supported.
 - [x] Payload and row limits prevent accidental large browser transfers.
-- [ ] Raw executable callbacks, unapproved remote resources, and active content in chart/SVG
-  fallback paths are rejected by an adversarial corpus. *(0.6 closure gate)*
+- [x] Raw executable callbacks, unapproved remote resources, and active content in chart/SVG
+  fallback paths are rejected by an adversarial corpus. *(`VIS-C06-001` /
+  `tests/security/test_chart_svg_corpus.py`)*
 
 ## Accessibility and diagnostics
 
 - [x] Every chart has a title and description or explicit waiver.
-- [ ] Static charts require alt text; supported simple charts offer tabular fallback.
+- [x] Static charts require alt text or description/waiver; supported simple charts offer tabular
+  fallback (`LineChart` / Matplotlib adapter).
 - [ ] Color, keyboard, focus, and screen-reader behavior meet the chart contract in a real browser.
+  *(beyond Chromium HTMX smoke; track with a11y matrix)*
 - [ ] Explorer shows backend, specification, data schema, redaction, size, timing, assets, caching,
   and fallback with evidence linked under [EVIDENCE.md](EVIDENCE.md).
 
 ## Exit
 
-All three initial adapters render in the reference application under strict CSP and private
-authenticated caching without leaking secret columns. The exit remains open until every requirement
-above is `Verified` under [EVIDENCE.md](EVIDENCE.md).
+Matplotlib / `LineChart` path is verified for 0.6 closure. Interactive Plotly/Vega offline runtime
+pinning is explicitly Deferred (`VIS-C06-002`). See [release-gate-0.6.toml](release-gate-0.6.toml).

@@ -13,13 +13,15 @@
 - [x] Accidental public addressability and lazy-resource authorization bypass (addressables require `include_component` + caller dependencies).
 - [x] Private authenticated caching: when `request.state.hedron_authenticated` is set, responses include `Cache-Control: private, no-store`.
 - [x] Safe redirects: `redirect_local` rejects externals; `redirect_external` is denied unless `allow_external_redirects=True`, and only `http`/`https` URLs are accepted.
-- [ ] Approved HTMX response headers (`HX-Redirect`, `HX-Push-Url`, `HX-Location`) require local
-  paths even when supplied through generic interaction header mappings. *(0.6 closure gate)*
+- [x] Approved HTMX response headers (`HX-Redirect`, `HX-Push-Url`, `HX-Location`) require local
+  paths even when supplied through generic interaction header mappings.
+  *(`SEC-C06-001` / `tests/security/test_interaction_headers.py`)*
 - [x] CSS/asset URL traversal, symlink escape, remote fetch, and missing assets are rejected. *(phase 0.3 scoped styles / asset pipeline)*
 - [x] DataEditor forged edits (read-only/hidden/unauthorized fields and unauthorized deletes) rejected server-side. *(phase 0.5)*
 - [ ] Plugin/Explorer abuse corpus beyond default guards. *(later phases)*
-- [ ] Markdown/chart/SVG sanitizer corpus covers fallback interpolation and SVG event/active-content
-  attributes beyond script-tag checks. *(0.6 closure gate)*
+- [x] Markdown/chart/SVG sanitizer corpus covers fallback interpolation and SVG event/active-content
+  attributes beyond script-tag checks.
+  *(`SEC-C06-002` / `tests/security/test_chart_svg_corpus.py`)*
 
 ## Release controls
 

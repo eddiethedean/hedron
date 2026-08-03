@@ -614,10 +614,11 @@ def mount_phase06_routes(app: FastAPI) -> None:
 
     regions = (
         FragmentRegion(id="chart-region", selector="#chart-region", description="Chart panel"),
+        FragmentRegion(id="oob-status", selector="#oob-status", description="OOB status"),
     )
     router = HedronRouter(prefix="/charts", dependencies=[Depends(require_user)])
 
-    @router.component("/fragment")
+    @router.component("/fragment", fragment_regions=regions)
     def chart_fragment() -> InteractionResult:
         chart = LineChart(
             [

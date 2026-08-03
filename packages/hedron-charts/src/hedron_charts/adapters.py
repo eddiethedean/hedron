@@ -13,6 +13,7 @@ from hedron_charts.limits import (
     missing_extra,
     payload_size,
     redact_rows,
+    reject_active_svg,
     reject_callbacks,
     reject_remote_urls,
 )
@@ -77,15 +78,7 @@ class MatplotlibAdapter:
         value.savefig(buf, format="svg", bbox_inches="tight")
         svg = buf.getvalue().decode("utf-8")
         ensure_limits(None, svg, limits=limits)
-        if "<script" in svg.lower():
-            from hedron_core.diagnostics import error
-
-            raise error(
-                "HED-CHART-0006",
-                title="Matplotlib SVG contained script",
-                explanation="Static SVG output must not include executable script tags.",
-                remediation="Disable interactive matplotlib backends that emit scripts.",
-            )
+        reject_active_svg(svg)
         return ChartOutput(
             kind="svg",
             body=svg,

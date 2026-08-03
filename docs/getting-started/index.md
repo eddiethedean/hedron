@@ -38,5 +38,6 @@ No Node.js installation or frontend build tool is required.
 
 [Install Hedron :material-arrow-right:](installation.md){ .md-button .md-button--primary }
 
-After the hello page, continue with [Charts and HTMX](../guides/charts-and-htmx.md) for
-`LineChart`, Markdown, and `InteractionResult` fragments.
+After the hello page, build your first targeted server update in
+[HTMX interactions](../guides/htmx-interactions.md). Then continue with
+[Charts and HTMX](../guides/charts-and-htmx.md) for `LineChart` and Markdown.

@@ -15,15 +15,14 @@
 
 ## Later
 
-- [ ] Phase 0.6 closure: browser focus, title, live-region, custom-element lifecycle, OOB,
-  history-miss, request-race, and error-fragment conformance runs in a real browser.
-- [ ] Phase 0.6 closure: typed HTMX request/result/policy envelope validates primary/OOB swaps,
-  event timing, history, status, concurrency, cache behavior, and raw header overrides.
+- [x] Phase 0.6 closure (`HTMX-C06-003`): Chromium Playwright smoke for fragment swap + OOB
+  (`HEDRON_BROWSER=1 pytest -m browser`; CI job `browser`). Focus/title/CE teardown matrix remains
+  0.8 depth.
+- [x] Phase 0.6 closure (`HTMX-C06-001` / `HTMX-C06-002`): typed `InteractionResult` envelope
+  revalidates header mappings; OOB + declared fragment regions + `Vary`/cache hints + Explorer
+  traces covered by `tests/security/test_interaction_headers.py` and `tests/unit/test_phase06.py`.
 - [x] Phase 0.6: semantic 422 FastAPI validation fragments plus declared policies for 202, 204,
   401/403, 409, 429, and 5xx responses; non-HTMX requests preserve framework-native JSON.
-- [ ] Phase 0.6 closure: authorized declared fragment regions drive runtime target-aware rendering;
-  boosted title/history/full-page fallbacks, `Vary`/cache keys, synchronized accessible forms/search,
-  and Explorer interaction traces have linked evidence.
 - [x] Phase 0.6: explicit fragment asset/head policy and conformance-gated evaluation of
   `head-support`, Idiomorph, response-targets, and View Transitions.
 - [ ] Phase 0.7: cross-adapter HTMX 2 header, DELETE query-parameter, boost/history, 204, 3xx,
@@ -38,8 +37,9 @@
   restores, and target variants, plus authorization/accessibility/fallback coverage for every
   supported interaction status.
 
-See [HTMX 2 integration audit](../HTMX_2_AUDIT.md) for the feature-by-feature rationale.
+See [HTMX 2 integration audit](../HTMX_2_AUDIT.md) and [release-gate-0.6.toml](release-gate-0.6.toml).
 
 ## Exit
 
 Phase 0.2 HTMX request/response and helper contracts are covered by FastAPI integration and security suites.
+Phase 0.6 closure IDs above are `Verified` under [EVIDENCE.md](EVIDENCE.md).

@@ -45,9 +45,64 @@ result = InteractionResult(
 )
 ```
 
-Unauthorized `HX-Target` values against `declared_regions` raise at resolve time
-(`resolve_fragment_region`). Declare regions on routes via router/`fragment_regions`
-when you need an allowlist of swap targets.
+Prefer declaring the allowlist on the route:
+
+```python
+from hedron import FragmentRegion, InteractionResult, Text
+
+MAIN = FragmentRegion(id="main", selector="#main", description="Primary panel")
+
+
+@app.component("/panel", fragment_regions=(MAIN,))
+def panel() -> InteractionResult:
+    return InteractionResult(content=Text("Updated"), region_id=MAIN.id)
+```
+
+Route-declared regions are authoritative and are merged into the result policy. An HTMX
+request with an `HX-Target` outside that allowlist receives `403`. `page` and `component`
+routes accept `fragment_regions`; values may be `FragmentRegion` instances or IDs, which
+are normalized to `#id` selectors.
+
+For lower-level use, `resolve_fragment_region(policy, target)` returns the matching region
+or raises `FragmentRegionError` when the target is unauthorized.
+
+## `InteractionResult`
+
+`InteractionResult` keeps fragment mechanics typed and inspectable:
+
+| Area | Fields | Notes |
+|---|---|---|
+| Content | `content`, `status_code`, `region_id` | Primary body, HTTP status, and declared destination. |
+| Swap | `target`, `swap`, `retarget`, `reswap`, `reselect` | Selectors are checked against Hedron's safe subset. |
+| Events | `trigger`, `trigger_after_swap`, `trigger_after_settle` | Strings or mappings encoded as `HX-Trigger*`. |
+| Navigation | `redirect`, `location`, `push_url`, `replace_url`, `history` | URL-bearing headers require local paths. |
+| Cache | `cache` | `private`, `no-store`, `vary-htmx`, or `None`. |
+| Additional updates | `oob` | A tuple of `OobUpdate` values. |
+| Diagnostics | `explanation` | Visible to Explorer traces; it is not rendered. |
+
+Prefer these fields over `headers`. If `headers` is needed, Hedron accepts only approved
+`HX-*`, `Cache-Control`, and `Vary` names and re-validates URL and selector values.
+
+### Out-of-band updates
+
+```python
+from hedron import InteractionResult, OobUpdate, Text
+
+result = InteractionResult(
+    content=Text("Primary update"),
+    oob=(
+        OobUpdate(
+            content=Text("Saved"),
+            element_id="status",
+            swap="true",
+        ),
+    ),
+)
+```
+
+`element_id` asks Hedron to wrap the content with the corresponding `hx-swap-oob`
+element. When the route declares fragment regions, OOB `element_id` and `select` values
+must also resolve to authorized regions.
 
 ## `status_policy_for`
 
@@ -73,8 +128,16 @@ attrs = form_sync_attrs(default_interaction_policy(indicator="#spinner"))
 
 ## Cache `Vary`
 
-Prefer `InteractionResult(cache="vary-htmx")` so page vs fragment vs history-restore
-responses do not confuse shared caches. Enable `vary_on_target=True` when the same URL
-serves multiple authorized fragment regions.
+| Hint | Response behavior |
+|---|---|
+| `vary-htmx` | Adds `Vary: HX-Request, HX-History-Restore-Request`; also `HX-Target` with `vary_on_target=True`. |
+| `private` | Adds `Cache-Control: private`. |
+| `no-store` | Adds `Cache-Control: private, no-store`. |
+| `None` | Adds no interaction-specific cache header. |
 
-Full response shape: [Responses](RESPONSES.md). Walkthrough: [Charts and HTMX](../guides/charts-and-htmx.md).
+Prefer `vary-htmx` when one URL can return both a document and a fragment. Enable
+`vary_on_target=True` when it serves multiple authorized fragment regions. Use
+`no-store` for sensitive or user-specific results that must not be retained.
+
+Full response shape: [Responses](RESPONSES.md). Walkthrough:
+[Build an HTMX interaction](../guides/htmx-interactions.md).

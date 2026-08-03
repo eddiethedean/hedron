@@ -84,6 +84,7 @@ prints the registered route metadata as JSON, which is useful both to humans and
 
 ## Where to go next
 
+- Build a targeted server update with [HTMX interactions](../guides/htmx-interactions.md).
 - Add charts and typed HTMX fragments with [Charts and HTMX](../guides/charts-and-htmx.md).
 - Try the [interactive demos](../examples/index.md) (in-browser simulations).
 - Learn why pages and fragments are separate render modes in [core concepts](core-concepts.md).

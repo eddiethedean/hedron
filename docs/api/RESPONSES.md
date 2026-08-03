@@ -64,7 +64,7 @@ app = Hedron(title="Demo", security="standard", session_secret="replace-me")
 def panel() -> InteractionResult:
     return InteractionResult(
         content=Text("Primary panel"),
-        oob=(OobUpdate(Text("Sidebar note"), swap="true"),),
+        oob=(OobUpdate(Text("Sidebar note"), element_id="sidebar-note"),),
         trigger="panelUpdated",
         history="push",
         cache="vary-htmx",
@@ -78,20 +78,22 @@ def panel() -> InteractionResult:
 |---|---|
 | `content` | Primary swap body (`NodeLike` / `Component` / `None`) |
 | `status_code` | HTTP status (default `200`) |
-| `target` / `retarget` / `reswap` / `reselect` | HTMX target/swap overrides |
-| `oob` | Tuple of `OobUpdate(content, swap=..., select=...)` |
+| `target` / `swap` / `retarget` / `reswap` / `reselect` | HTMX target/swap overrides |
+| `oob` | Tuple of `OobUpdate(content, swap=..., select=..., element_id=...)` |
 | `trigger` / `trigger_after_swap` / `trigger_after_settle` | `HX-Trigger*` payloads |
 | `push_url` / `replace_url` / `history` | History (`push` / `replace` / `none`) |
-| `refresh` / `location` | Full refresh or `HX-Location` |
+| `redirect` / `refresh` / `location` | Local redirect, full refresh, or `HX-Location` |
 | `cache` | `"private"` / `"no-store"` / `"vary-htmx"` (default) |
 | `region_id` / `policy` | Declared fragment region + `InteractionPolicy` |
-| `headers` | Extra response headers (merged after Hedron defaults) |
+| `headers` | Approved extra response headers; names and values are re-validated |
 | `explanation` | Diagnostics / Explorer trace text |
 
 When `cache="vary-htmx"`, responses include `Vary: HX-Request, HX-History-Restore-Request`
 (and `HX-Target` when `policy.vary_on_target` is set).
 
 See [Interaction](INTERACTION.md) for `HtmxRequest`, policies, and form sync attrs.
+For a complete endpoint and test, follow
+[Build an HTMX interaction](../guides/htmx-interactions.md).
 
 ## Validation errors: HTMX HTML vs JSON
 

@@ -13,6 +13,11 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
     <strong>Charts and HTMX</strong>
     <p>Install charts, render LineChart, Markdown, and typed InteractionResult fragments.</p>
   </a>
+  <a class="hedron-card" href="htmx-interactions/">
+    <span class="hedron-card__icon" aria-hidden="true">⇄</span>
+    <strong>HTMX interactions</strong>
+    <p>Refresh a declared region, return a typed fragment, inspect headers, and test the boundary.</p>
+  </a>
   <a class="hedron-card" href="testing/">
     <span class="hedron-card__icon" aria-hidden="true">✓</span>
     <strong>Test your UI</strong>
@@ -46,6 +51,7 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
 </div>
 
 Looking for callable APIs in this release? Start with [Shipped in 0.6](../api/README.md).
-For charts and typed HTMX fragments, see [Charts and HTMX](charts-and-htmx.md).
+For your first server interaction, see [HTMX interactions](htmx-interactions.md); then add
+visualization with [Charts and HTMX](charts-and-htmx.md).
 Design contracts that are accepted but not implemented yet live under
 [Planned](../api/README.md#planned-contracts).

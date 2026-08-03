@@ -12,8 +12,16 @@ from fastapi.routing import APIRoute
 from starlette.responses import Response as StarletteResponse
 
 from hedron.async_utils import await_if_needed
+from hedron.builtins import oob_swap
 from hedron.context import render_context_from_request
-from hedron.interaction import InteractionResult, interaction_headers, resolve_fragment_region
+from hedron.interaction import (
+    FragmentRegion,
+    FragmentRegionError,
+    InteractionResult,
+    authorize_oob_update,
+    interaction_headers,
+    resolve_fragment_region,
+)
 from hedron.responses import HTML, render_component_response
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
@@ -108,6 +116,7 @@ class HedronRoute(APIRoute):
         *,
         mode: RenderMode | None = None,
         kind: str = "page",
+        fragment_regions: tuple[FragmentRegion, ...] = (),
     ) -> StarletteResponse:
         policy: SecurityPolicy = getattr(
             request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
@@ -128,6 +137,7 @@ class HedronRoute(APIRoute):
                 kind=kind,
                 policy=policy,
                 authenticated=authenticated,
+                fragment_regions=fragment_regions,
             )
         if isinstance(result, HTML):
             response = render_component_response(
@@ -173,17 +183,28 @@ class HedronRoute(APIRoute):
         kind: str,
         policy: SecurityPolicy,
         authenticated: bool,
+        fragment_regions: tuple[FragmentRegion, ...] = (),
     ) -> StarletteResponse:
+        from fastapi import HTTPException
         from starlette.responses import Response
+
+        from hedron.interaction import merge_route_regions
+
+        if fragment_regions:
+            result = merge_route_regions(result, fragment_regions)
 
         if result.status_code == 204 or result.content is None and result.status_code == 204:
             headers = interaction_headers(result, request=request)
             return Response(status_code=204, headers=headers)
 
         target = request.headers.get("HX-Target")
+        regions = result.policy.declared_regions if result.policy is not None else ()
         region = None
-        if result.policy is not None and result.policy.declared_regions:
-            region = resolve_fragment_region(result.policy, result.region_id or target)
+        if regions:
+            try:
+                region = resolve_fragment_region(result.policy, result.region_id or target)
+            except FragmentRegionError as exc:
+                raise HTTPException(status_code=403, detail=str(exc)) from exc
 
         content: Any = result.content
         if result.oob:
@@ -191,7 +212,14 @@ class HedronRoute(APIRoute):
             if content is not None:
                 nodes.append(content)
             for update in result.oob:
-                nodes.append(update.content)
+                try:
+                    authorize_oob_update(update, regions=regions)
+                except (FragmentRegionError, ValueError) as exc:
+                    raise HTTPException(status_code=403, detail=str(exc)) from exc
+                node: Any = update.content
+                if update.element_id is not None:
+                    node = oob_swap(update.element_id, update.content, swap=update.swap)
+                nodes.append(node)
             content = Fragment(*nodes)
 
         headers = interaction_headers(result, request=request)

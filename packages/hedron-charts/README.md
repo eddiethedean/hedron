@@ -2,7 +2,12 @@
 
 Visualization adapters and chart components for Hedron: beginner `LineChart`,
 Matplotlib static SVG/PNG, Plotly interactive JSON, and Altair/Vega-Lite
-specifications with pinned local browser runtimes.
+specifications.
+
+Interactive Plotly/Vega **full browser runtimes** are **experimental**: Hedron ships
+host shims that fail closed when `window.Plotly` / `window.vegaEmbed` are missing.
+Applications may supply pinned local runtimes; first-party offline runtime
+fingerprinting remains deferred on the 0.6 maintenance line.
 
 ```bash
 pip install hedron-charts

@@ -52,11 +52,27 @@ def register_icon(
             remediation="Pass title= with a human-readable label.",
         )
     trusted = svg if isinstance(svg, TrustedHtml) else TrustedHtml.reviewed(svg, source=source)
-    if "<script" in trusted.value.lower() or "javascript:" in trusted.value.lower():
+    lowered = trusted.value.lower()
+    if "<script" in lowered or "javascript:" in lowered:
         raise error(
             "HED-ICON-0003",
             title="Active script content rejected",
             explanation="Icon SVG must not contain script or javascript: URLs.",
+            remediation="Sanitize SVG before registration or use TrustedHtml.nh3(...).",
+        )
+    banned = (
+        "onload=",
+        "onerror=",
+        "onclick=",
+        "onmouseover=",
+        "onfocus=",
+        "<foreignobject",
+    )
+    if any(token in lowered for token in banned):
+        raise error(
+            "HED-ICON-0003",
+            title="Active script content rejected",
+            explanation="Icon SVG must not contain event handlers or foreignObject.",
             remediation="Sanitize SVG before registration or use TrustedHtml.nh3(...).",
         )
     entry = IconEntry(name=name, svg=trusted, title=title, source=source)

@@ -227,7 +227,7 @@ a.hedron-card:hover {
   counter-reset: path-step;
   display: grid;
   gap: 0.9rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 1.4rem 0 3rem;
 }
 

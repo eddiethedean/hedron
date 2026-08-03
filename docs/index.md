@@ -119,6 +119,10 @@ a JavaScript application stack.
     <strong>Build with confidence</strong>
     Scaffold, inspect, check, test, and package a real project.
   </a>
+  <a href="guides/htmx-interactions/">
+    <strong>Add interaction</strong>
+    Refresh declared regions with typed, validated HTMX responses.
+  </a>
 </div>
 
 ## Designed for inspectability

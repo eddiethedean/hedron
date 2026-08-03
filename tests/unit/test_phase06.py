@@ -170,6 +170,34 @@ def test_sqlalchemy_extra_guidance() -> None:
         pass
 
 
+def test_cache_hints_and_explorer_trace() -> None:
+    from starlette.requests import Request
+
+    from hedron.interaction import interaction_headers
+
+    private = interaction_headers(InteractionResult(content=Text("x"), cache="private"))
+    assert private["Cache-Control"] == "private"
+    scope = {
+        "type": "http",
+        "asgi": {"version": "3.0"},
+        "http_version": "1.1",
+        "method": "GET",
+        "path": "/",
+        "raw_path": b"/",
+        "root_path": "",
+        "scheme": "http",
+        "server": ("test", 80),
+        "client": ("test", 123),
+        "headers": [(b"hx-request", b"true")],
+    }
+    request = Request(scope)
+    interaction_headers(
+        InteractionResult(content=Text("x"), cache="no-store", explanation="cached"),
+        request=request,
+    )
+    assert request.state.hedron_interaction["cache"] == "no-store"
+
+
 def test_htmx_request_wrapper() -> None:
     from starlette.requests import Request
 

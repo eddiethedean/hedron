@@ -19,6 +19,7 @@ __all__ = [
     "missing_extra",
     "payload_size",
     "redact_rows",
+    "reject_active_svg",
     "reject_callbacks",
     "reject_remote_urls",
 ]
@@ -83,6 +84,13 @@ def redact_rows(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
 
 
 def reject_callbacks(obj: Any) -> None:
+    if _walk_callbacks(obj):
+        raise error(
+            "HED-CHART-0004",
+            title="Executable chart callbacks rejected",
+            explanation="Raw JavaScript callbacks are not allowed in chart specifications.",
+            remediation="Remove callbacks and use server-side HTMX actions instead.",
+        )
     text = obj if isinstance(obj, str) else json.dumps(obj, default=str)
     lowered = text.lower()
     if (
@@ -98,15 +106,95 @@ def reject_callbacks(obj: Any) -> None:
         )
 
 
+def _walk_callbacks(obj: Any) -> bool:
+    if isinstance(obj, Mapping):
+        for key, value in obj.items():
+            key_l = str(key).lower()
+            if key_l.startswith("on") and len(key_l) > 2:
+                return True
+            if key_l in {"callback", "callbacks", "js", "javascript"}:
+                return True
+            if _walk_callbacks(value):
+                return True
+    elif isinstance(obj, (list, tuple)):
+        return any(_walk_callbacks(item) for item in obj)
+    elif isinstance(obj, str):
+        lowered = obj.lower()
+        return "function(" in lowered or "javascript:" in lowered
+    return False
+
+
 def reject_remote_urls(obj: Any) -> None:
-    text = obj if isinstance(obj, str) else json.dumps(obj, default=str)
-    if "https://" in text or "http://" in text or "//cdn." in text.lower():
-        # Allow data: URLs for static images only when already trusted elsewhere.
+    if _walk_remote(obj):
         raise error(
             "HED-CHART-0005",
             title="Remote chart assets rejected",
             explanation="Unapproved remote URLs are not allowed in chart payloads.",
             remediation="Use locally registered Hedron assets and offline runtimes.",
+        )
+
+
+def _walk_remote(obj: Any) -> bool:
+    if isinstance(obj, Mapping):
+        for key, value in obj.items():
+            key_l = str(key).lower()
+            if (
+                key_l in {"url", "href", "src", "source", "image"}
+                and isinstance(value, str)
+                and _is_remote_url(value)
+            ):
+                return True
+            if _walk_remote(value):
+                return True
+    elif isinstance(obj, (list, tuple)):
+        return any(_walk_remote(item) for item in obj)
+    elif isinstance(obj, str):
+        return _is_remote_url(obj) and (
+            "http://" in obj.lower() or "https://" in obj.lower() or "//cdn." in obj.lower()
+        )
+    return False
+
+
+def _is_remote_url(value: str) -> bool:
+    lowered = value.lower().strip()
+    if lowered.startswith("data:"):
+        return False
+    return (
+        lowered.startswith("http://")
+        or lowered.startswith("https://")
+        or lowered.startswith("//")
+        or "//cdn." in lowered
+    )
+
+
+def reject_active_svg(svg: str) -> None:
+    """Reject script tags and common SVG event/active-content patterns."""
+    lowered = svg.lower()
+    if "<script" in lowered or "javascript:" in lowered:
+        raise error(
+            "HED-CHART-0006",
+            title="Active SVG content rejected",
+            explanation="Chart SVG must not contain script or javascript: URLs.",
+            remediation="Disable interactive matplotlib backends that emit scripts.",
+        )
+    banned = (
+        "onload=",
+        "onerror=",
+        "onclick=",
+        "onmouseover=",
+        "onfocus=",
+        "<foreignobject",
+        'xlink:href="http',
+        "xlink:href='http",
+        'href="http',
+        "href='http",
+    )
+    if any(token in lowered for token in banned):
+        raise error(
+            "HED-CHART-0006",
+            title="Active SVG content rejected",
+            explanation="Chart SVG must not contain event handlers or remote hrefs.",
+            remediation="Sanitize SVG before rendering or use TrustedHtml.nh3(...).",
         )
 
 

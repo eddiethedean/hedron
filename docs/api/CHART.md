@@ -55,7 +55,14 @@ MatplotlibChart(figure, alt="Revenue by month")
 AltairChart(chart, description="Declarative Vega-Lite figure")
 ```
 
-Every chart declares title, description or alt text, output mode, data policy, and optional tabular fallback. Interactive adapters register browser assets once and serialize specifications as non-executable data. Raw JavaScript callbacks and unapproved remote assets are rejected by default.
+Every chart declares title, description or alt text, output mode, data policy, and optional tabular fallback. Interactive adapters register host shims and serialize specifications as non-executable data. Raw JavaScript callbacks and unapproved remote assets are rejected by default.
+
+!!! note "Plotly / Vega runtimes (deferred)"
+
+    Full offline pin/fingerprint/serve of Plotly.js and Vega/vega-embed is
+    **Deferred / experimental**. Host scripts fail closed when the globals are
+    missing. Supply a local runtime yourself, or use Matplotlib / `LineChart`
+    for supported static charts.
 
 Adapters implement a public `VisualizationAdapter` capability contract but may keep backend compilation types internal. Missing optional dependencies produce a precise installation command. Payload limits and server-transform policies are explicit and visible in Explorer.
 

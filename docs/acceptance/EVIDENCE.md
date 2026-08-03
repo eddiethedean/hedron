@@ -26,11 +26,23 @@ claim.
 
 ## Machine-readable manifest
 
-Before `v0.7.0`, the repository will add a versioned release-gate manifest consumed by
-`scripts/check_release_gate.py`. It records required evidence IDs and expected CI artifact names for
-each train. The checker fails closed when an ID is missing, duplicated, deferred without ownership,
-or marked complete without its artifact. Human-readable acceptance pages remain the explanation;
-the manifest is the enforceable index.
+The phase 0.6 closure index lives at
+[release-gate-0.6.toml](release-gate-0.6.toml). `scripts/check_release_gate.py <version>`
+validates package metadata and fails closed when an evidence ID is missing, duplicated,
+`Verified` without a command, or `Deferred` without ownership/rationale/destination.
+
+## Phase 0.6 closure IDs
+
+| ID | State | Command |
+|---|---|---|
+| `HTMX-C06-001` | Verified | `uv run pytest tests/security/test_interaction_headers.py -q` |
+| `HTMX-C06-002` | Verified | `uv run pytest tests/security/test_interaction_headers.py tests/unit/test_phase06.py -q` |
+| `HTMX-C06-003` | Verified | `HEDRON_BROWSER=1 uv run pytest -m browser -q` |
+| `SEC-C06-001` | Verified | `uv run pytest tests/security/test_interaction_headers.py -q` |
+| `SEC-C06-002` | Verified | `uv run pytest tests/security/test_chart_svg_corpus.py -q` |
+| `VIS-C06-001` | Verified | `uv run pytest tests/security/test_chart_svg_corpus.py -q` |
+| `VIS-C06-002` | Deferred | Plotly/Vega full offline runtime pin (experimental host shims) |
+| `DATA-C06-001` | Verified | `uv run pytest tests/unit/test_sqlalchemy_source.py -q` |
 
 ## Minimum retained bundle
 

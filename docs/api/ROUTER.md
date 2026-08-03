@@ -35,12 +35,27 @@ async def user_table() -> Text: ...
 async def delete_user(user_id: str) -> Text: ...
 ```
 
+Declare the fragment regions a page or component route is authorized to update:
+
+```python
+from hedron import FragmentRegion, InteractionResult
+
+USERS_TABLE = FragmentRegion(id="users-table", selector="#users-table")
+
+
+@users.component("/table", fragment_regions=(USERS_TABLE,))
+async def user_table() -> InteractionResult: ...
+```
+
+An `HX-Target` outside the route allowlist receives `403`. Route declarations override a
+conflicting `InteractionResult.policy.declared_regions` value.
+
 ## Decorators
 
 | Decorator | Typical return | Notes |
 |---|---|---|
-| `@router.page(path, **kwargs)` | `Page` / document | PAGE mode for navigation; fragment for `HX-Request` |
-| `@router.component(path, **kwargs)` | Component / fragment | FRAGMENT mode |
+| `@router.page(path, **kwargs)` | `Page` / document | PAGE mode for navigation; fragment for `HX-Request`; accepts `fragment_regions` |
+| `@router.component(path, **kwargs)` | Component / fragment | FRAGMENT mode; accepts `fragment_regions` |
 | `@router.action(path, method=..., **kwargs)` | Component or redirect | CSRF required for unsafe methods when enabled |
 
 Keyword arguments follow FastAPI route options (`name`, `dependencies`,

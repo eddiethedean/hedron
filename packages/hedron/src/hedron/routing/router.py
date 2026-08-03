@@ -42,12 +42,24 @@ def _requires_csrf(methods: Sequence[str]) -> bool:
     return any(m.upper() not in _SAFE_METHODS for m in methods)
 
 
+def _normalize_fragment_regions(fragment_regions: Sequence[Any] | None) -> tuple[Any, ...]:
+    from hedron.interaction import FragmentRegion
+
+    if not fragment_regions:
+        return ()
+    return tuple(
+        r if isinstance(r, FragmentRegion) else FragmentRegion(id=str(r), selector=f"#{r}")
+        for r in fragment_regions
+    )
+
+
 def _wrap_endpoint(
     fn: Callable[..., Any],
     *,
     kind: str,
     mode: RenderMode | None,
     require_csrf: bool,
+    fragment_regions: tuple[Any, ...] = (),
 ) -> Callable[..., Any]:
     import typing
 
@@ -72,7 +84,13 @@ def _wrap_endpoint(
             validate_csrf(request, policy)
         result = fn(*args, **kwargs)
         result = await await_if_needed(result)
-        return await HedronRoute.convert_endpoint_result(request, result, mode=mode, kind=kind)
+        return await HedronRoute.convert_endpoint_result(
+            request,
+            result,
+            mode=mode,
+            kind=kind,
+            fragment_regions=fragment_regions,  # type: ignore[arg-type]
+        )
 
     # Resolve annotations in the original function's globals so Depends survives wrapping.
     try:
@@ -88,6 +106,7 @@ def _wrap_endpoint(
         parameters=params,
         return_annotation=hints.get("return", sig.return_annotation),
     )
+    endpoint._hedron_fragment_regions = fragment_regions  # type: ignore[attr-defined]
     return endpoint
 
 
@@ -111,24 +130,20 @@ class HedronRouter(APIRouter):
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
-            from hedron.interaction import FragmentRegion
             from hedron.responses import PageResponse
 
             route_name = name or fn.__name__
             logical_id = _logical_id(fn)
             verb_list = list(methods or ["GET"])
             op_id = operation_id_for("page", route_name, path, verb_list[0])
-            regions: tuple[FragmentRegion, ...] = ()
-            if fragment_regions:
-                regions = tuple(
-                    r
-                    if isinstance(r, FragmentRegion)
-                    else FragmentRegion(id=str(r), selector=f"#{r}")
-                    for r in fragment_regions
-                )
+            regions = _normalize_fragment_regions(fragment_regions)
             fn._hedron_fragment_regions = regions  # type: ignore[attr-defined]
             wrapped = _wrap_endpoint(
-                fn, kind="page", mode=None, require_csrf=_requires_csrf(verb_list)
+                fn,
+                kind="page",
+                mode=None,
+                require_csrf=_requires_csrf(verb_list),
+                fragment_regions=regions,
             )
             self.add_api_route(
                 path,
@@ -176,6 +191,7 @@ class HedronRouter(APIRouter):
         include_in_schema: bool = False,
         dependencies: Sequence[params.Depends] | None = None,
         tags: list[str | Enum] | None = None,
+        fragment_regions: Sequence[Any] | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
@@ -185,11 +201,14 @@ class HedronRouter(APIRouter):
             logical_id = _logical_id(fn)
             verb_list = list(methods or ["GET"])
             op_id = operation_id_for("component", route_name, path, verb_list[0])
+            regions = _normalize_fragment_regions(fragment_regions)
+            fn._hedron_fragment_regions = regions  # type: ignore[attr-defined]
             wrapped = _wrap_endpoint(
                 fn,
                 kind="component",
                 mode=RenderMode.FRAGMENT,
                 require_csrf=_requires_csrf(verb_list),
+                fragment_regions=regions,
             )
             self.add_api_route(
                 path,

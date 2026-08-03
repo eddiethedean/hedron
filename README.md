@@ -13,8 +13,9 @@ Components—without requiring Node.js.
 
 > **Project status:** Phase 0.6 is **published** as `v0.6.0` (visualization adapters,
 > content/auth extras, typed HTMX interactions, and `hedron-charts`). The project is
-> MIT-licensed. Before phase 0.7 implementation, the roadmap requires a 0.6 behavioral closure
-> gate with linked security, interaction, browser, visualization, and bounded-query evidence.
+> MIT-licensed. The 0.6 behavioral closure gate is green (Plotly/Vega full offline runtime
+> pin remains Deferred/experimental). Next milestone: phase 0.7 (framework adapters and
+> production operations).
 
 ## Packages
 
@@ -110,6 +111,7 @@ Start here in the published site:
 
 - [Getting started](https://hedron.readthedocs.io/en/latest/getting-started/)
 - [Guides](https://hedron.readthedocs.io/en/latest/guides/)
+- [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/)
 - [API reference](https://hedron.readthedocs.io/en/latest/api/)
 - [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/)
 - [Status](https://hedron.readthedocs.io/en/latest/STATUS/) and [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/)

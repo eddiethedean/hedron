@@ -24,7 +24,7 @@ app = Hedron(
 )
 ```
 
-See [Security types](../api/SECURITY_TYPES.md) for boundary types (`SafeURL`, …).
+See [Security types](../api/SECURITY_TYPES.md) for boundary types (`SafeUrl`, …).
 
 ## CSRF
 
@@ -48,6 +48,14 @@ curl -b jar -H "X-CSRF-Token: $TOKEN" -X POST http://127.0.0.1:8000/do
 - `redirect_local("/path")` accepts only local paths (rejects `//…` and `\` open-redirect forms).
 - `redirect_external(...)` fails closed unless the policy sets `allow_external_redirects=True`.
 - Approved HTMX headers (`HX-Redirect`, `HX-Push-Url`, …) must use local paths.
+- HTMX target and reselect values must use Hedron's safe selector subset.
+- Route `fragment_regions` allowlists reject an unauthorized `HX-Target` with `403`.
+- `InteractionResult.headers` cannot introduce arbitrary response headers; approved names
+  are re-validated through the same URL and selector checks as typed fields.
+
+Use `InteractionResult(redirect=..., retarget=..., cache=...)` instead of constructing
+raw `HX-*` headers when a typed field exists. See the
+[HTMX interaction guide](htmx-interactions.md).
 
 ## Explorer modes
 

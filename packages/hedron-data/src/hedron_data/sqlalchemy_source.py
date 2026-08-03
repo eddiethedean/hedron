@@ -33,7 +33,11 @@ def require_sqlalchemy() -> Any:
 
 
 class SQLAlchemyDataSource(Generic[T]):
-    """Explicit adapter: caller supplies session factory and row codecs."""
+    """Explicit adapter: caller supplies session factory and row codecs.
+
+    ``statement`` must be a SQLAlchemy 2.x ``Select``. Paging is applied with
+    ``OFFSET``/``LIMIT`` in SQL — rows are not collected then sliced in Python.
+    """
 
     def __init__(
         self,
@@ -46,6 +50,17 @@ class SQLAlchemyDataSource(Generic[T]):
         schema: Sequence[Any] = (),
     ) -> None:
         require_sqlalchemy()
+        from sqlalchemy.sql import Select
+
+        if not isinstance(statement, Select):
+            raise error(
+                "HED-DATA-0011",
+                title="SQLAlchemy statement must be a Select",
+                explanation=(
+                    f"Got {type(statement)!r}; bounded paging requires sqlalchemy.sql.Select."
+                ),
+                remediation="Pass select(Model) or an equivalent Select statement.",
+            )
         self._session_factory = session_factory
         self._statement = statement
         self._row_key = row_key
@@ -54,18 +69,22 @@ class SQLAlchemyDataSource(Generic[T]):
         self._schema = tuple(schema)
 
     def fetch(self, query: DataQuery) -> DataPage[T]:
+        from sqlalchemy import func, select
+
         q = query.validated()
         session = self._session_factory()
         try:
-            result = session.execute(self._statement)
+            paged = self._statement.offset(q.offset).limit(q.limit)
+            result = session.execute(paged)
             rows = list(result.scalars().all() if hasattr(result, "scalars") else result.all())
             mapped = [self._to_row(row) for row in rows]
-            page = mapped[q.offset : q.offset + q.limit]
-            next_offset = q.offset + q.limit if q.offset + q.limit < len(mapped) else None
+            count_stmt = select(func.count()).select_from(self._statement.order_by(None).subquery())
+            total = int(session.execute(count_stmt).scalar_one())
+            next_offset = q.offset + q.limit if q.offset + q.limit < total else None
             return DataPage(
-                rows=page,
+                rows=mapped,
                 schema=self._schema,  # type: ignore[arg-type]
-                total=len(mapped),
+                total=total,
                 next_offset=next_offset,
             )
         finally:

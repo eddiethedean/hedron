@@ -10,15 +10,11 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.6.toml"
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("version", help="Package version without the leading v")
-    args = parser.parse_args()
-    tag_version: str = args.version
+def check_packages(tag_version: str) -> list[str]:
     errors: list[str] = []
-
     if not (ROOT / "LICENSE").is_file():
         errors.append("missing root LICENSE (required before public publication)")
 
@@ -44,11 +40,73 @@ def main() -> int:
             errors.append(f"{name}: missing CHANGELOG.md")
         elif f"[{tag_version}]" not in changelog.read_text(encoding="utf-8"):
             errors.append(f"{name}: CHANGELOG.md lacks [{tag_version}] section")
+    return errors
 
+
+def check_evidence_manifest(path: Path) -> list[str]:
+    errors: list[str] = []
+    if not path.is_file():
+        return [f"missing evidence manifest: {path}"]
+    data = tomllib.loads(path.read_text(encoding="utf-8"))
+    rows = data.get("evidence")
+    if not isinstance(rows, list) or not rows:
+        return [f"{path}: [[evidence]] entries required"]
+    seen: set[str] = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            errors.append(f"{path}: evidence row must be a table")
+            continue
+        eid = str(row.get("id", "")).strip()
+        state = str(row.get("state", "")).strip()
+        command = str(row.get("command", "")).strip()
+        owner = str(row.get("owner", "")).strip()
+        if not eid:
+            errors.append(f"{path}: evidence id is required")
+            continue
+        if eid in seen:
+            errors.append(f"{path}: duplicate evidence id {eid}")
+        seen.add(eid)
+        if state not in {"Planned", "Implemented", "Verified", "Deferred", "Blocked"}:
+            errors.append(f"{eid}: invalid state {state!r}")
+        if not owner:
+            errors.append(f"{eid}: owner is required")
+        if state == "Verified" and not command:
+            errors.append(f"{eid}: Verified entries require a named command")
+        if state == "Deferred":
+            if not str(row.get("rationale", "")).strip():
+                errors.append(f"{eid}: Deferred entries require rationale")
+            if not str(row.get("destination", "")).strip():
+                errors.append(f"{eid}: Deferred entries require destination")
+        if state in {"Blocked", "Implemented", "Planned"}:
+            errors.append(
+                f"{eid}: state {state!r} does not close the 0.6 gate "
+                "(use Verified or Deferred with ownership)"
+            )
+    return errors
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("version", help="Package version without the leading v")
+    parser.add_argument(
+        "--evidence-manifest",
+        type=Path,
+        default=DEFAULT_EVIDENCE,
+        help="Path to release-gate evidence TOML (default: docs/acceptance/release-gate-0.6.toml)",
+    )
+    parser.add_argument(
+        "--skip-evidence",
+        action="store_true",
+        help="Skip evidence manifest checks (metadata-only)",
+    )
+    args = parser.parse_args()
+    errors = check_packages(args.version)
+    if not args.skip_evidence:
+        errors.extend(check_evidence_manifest(args.evidence_manifest))
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    print(f"ok: release gate for {tag_version}")
+    print(f"ok: release gate for {args.version}")
     return 0
 
 

@@ -62,6 +62,7 @@ markers = [
     "security: adversarial security corpus",
     "a11y: accessibility core checks",
     "performance: non-blocking benchmark foundations",
+    "browser: optional Playwright Chromium evidence (HEDRON_BROWSER=1)",
 ]
 
 [tool.ruff]

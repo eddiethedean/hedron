@@ -5,8 +5,20 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from hedron_charts.adapters import AltairAdapter, MatplotlibAdapter, PlotlyAdapter, compile_figure
-from hedron_charts.limits import accessibility_or_raise, ensure_limits, redact_rows
+from hedron_charts.adapters import (
+    AltairAdapter,
+    MatplotlibAdapter,
+    PlotlyAdapter,
+    _fallback_table,
+    compile_figure,
+)
+from hedron_charts.limits import (
+    accessibility_or_raise,
+    ensure_limits,
+    redact_rows,
+    reject_active_svg,
+)
+from hedron_core.builtins.content import Text
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -116,10 +128,12 @@ class LineChart(Component[_ChartProps]):
                 )
                 from hedron_core.security import TrustedHtml
 
+                reject_active_svg(svg)
                 return html.figure(
                     html.h2(acc.title),
                     html.p(acc.description or ""),
                     html.raw(TrustedHtml.reviewed(svg, source="hedron-charts:line-fallback")),
+                    _fallback_table(acc.tabular_fallback) if acc.tabular_fallback else Text(""),
                     class_="hedron-chart hedron-chart-line",
                 )
             return html.figure(html.h2(acc.title), html.p("No data"), class_="hedron-chart")

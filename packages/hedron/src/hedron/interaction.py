@@ -3,16 +3,24 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Literal
 
 from starlette.requests import Request
 
-from hedron.htmx import HtmxContext, approved_headers, htmx_context, is_htmx_request
+from hedron.htmx import (
+    APPROVED_RESPONSE_HEADERS,
+    HtmxContext,
+    _safe_css_selector,
+    approved_headers,
+    htmx_context,
+    is_htmx_request,
+)
 from hedron_core.component import Component, NodeLike
 
 __all__ = [
     "FragmentRegion",
+    "FragmentRegionError",
     "HtmxRequest",
     "InteractionPolicy",
     "InteractionResult",
@@ -21,12 +29,30 @@ __all__ = [
     "default_interaction_policy",
     "htmx_request",
     "interaction_headers",
+    "merge_route_regions",
     "resolve_fragment_region",
     "status_policy_for",
 ]
 
 CacheHint = Literal["private", "no-store", "vary-htmx"]
 HistoryMode = Literal["push", "replace", "none"]
+
+_EXTRA_HEADER_KWARGS: dict[str, str] = {
+    "HX-Redirect": "redirect",
+    "HX-Push-Url": "push_url",
+    "HX-Replace-Url": "replace_url",
+    "HX-Retarget": "retarget",
+    "HX-Reswap": "reswap",
+    "HX-Reselect": "reselect",
+    "HX-Location": "location",
+    "HX-Trigger": "trigger",
+    "HX-Trigger-After-Swap": "trigger_after_swap",
+    "HX-Trigger-After-Settle": "trigger_after_settle",
+}
+
+
+class FragmentRegionError(ValueError):
+    """HX-Target is not an authorized declared fragment region."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,6 +69,7 @@ class OobUpdate:
     content: NodeLike | Component[Any]
     swap: str = "true"
     select: str | None = None
+    element_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -109,6 +136,7 @@ class InteractionResult:
     trigger_after_settle: str | Mapping[str, Any] | None = None
     push_url: str | bool | None = None
     replace_url: str | bool | None = None
+    redirect: str | None = None
     refresh: bool = False
     retarget: str | None = None
     reswap: str | None = None
@@ -135,6 +163,17 @@ def htmx_request(request: Request) -> HtmxRequest:
     return HtmxRequest(request=request, context=htmx_context(request))
 
 
+def merge_route_regions(
+    result: InteractionResult,
+    route_regions: tuple[FragmentRegion, ...],
+) -> InteractionResult:
+    """Route-declared regions are authoritative when present."""
+    if not route_regions:
+        return result
+    policy = result.policy or InteractionPolicy()
+    return replace(result, policy=replace(policy, declared_regions=route_regions))
+
+
 def resolve_fragment_region(
     policy: InteractionPolicy | None,
     target: str | None,
@@ -143,10 +182,46 @@ def resolve_fragment_region(
         return None
     if target is None:
         return policy.declared_regions[0] if policy.declared_regions else None
+    needle = target.lstrip("#")
     for region in policy.declared_regions:
-        if region.selector == target or region.id == target or target.lstrip("#") == region.id:
+        if (
+            region.selector == target
+            or region.id == target
+            or region.selector == f"#{needle}"
+            or region.id == needle
+        ):
             return region
-    raise ValueError(f"HX-Target {target!r} is not an authorized fragment region for this route")
+    raise FragmentRegionError(
+        f"HX-Target {target!r} is not an authorized fragment region for this route"
+    )
+
+
+def _validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
+    """Re-validate InteractionResult.headers through approved_headers / allowlist."""
+    if not extra:
+        return {}
+    kwargs: dict[str, Any] = {}
+    other: dict[str, str] = {}
+    for key, value in extra.items():
+        if key == "HX-Refresh":
+            kwargs["refresh"] = str(value).lower() == "true"
+            continue
+        if key in _EXTRA_HEADER_KWARGS:
+            arg = _EXTRA_HEADER_KWARGS[key]
+            if arg in {"push_url", "replace_url"} and str(value).lower() in {"true", "false"}:
+                kwargs[arg] = str(value).lower() == "true"
+            else:
+                kwargs[arg] = value
+            continue
+        if key in {"Cache-Control", "Vary"}:
+            other[key] = value
+            continue
+        if key in APPROVED_RESPONSE_HEADERS:
+            raise ValueError(f"Unsupported approved header mapping for {key}")
+        raise ValueError(f"Unapproved response header: {key}")
+    out = approved_headers(**kwargs) if kwargs else {}
+    out.update(other)
+    return out
 
 
 def interaction_headers(
@@ -158,6 +233,7 @@ def interaction_headers(
         trigger=result.trigger,
         trigger_after_swap=result.trigger_after_swap,
         trigger_after_settle=result.trigger_after_settle,
+        redirect=result.redirect,
         push_url=result.push_url,
         replace_url=result.replace_url,
         refresh=result.refresh,
@@ -170,7 +246,11 @@ def interaction_headers(
         headers["HX-Push-Url"] = "true"
     elif result.history == "replace" and "HX-Replace-Url" not in headers:
         headers["HX-Replace-Url"] = "true"
-    if result.cache == "vary-htmx":
+    if result.cache == "private":
+        headers["Cache-Control"] = "private"
+    elif result.cache == "no-store":
+        headers["Cache-Control"] = "private, no-store"
+    elif result.cache == "vary-htmx":
         vary = {"HX-Request", "HX-History-Restore-Request"}
         policy = result.policy
         if policy and policy.vary_on_target:
@@ -179,7 +259,13 @@ def interaction_headers(
         parts = {p.strip() for p in existing.split(",") if p.strip()}
         parts.update(vary)
         headers["Vary"] = ", ".join(sorted(parts))
-    headers.update(dict(result.headers))
+    # Validated extras may add headers but cannot skip local-URL / selector checks.
+    extras = _validated_extra_headers(result.headers)
+    for key, value in extras.items():
+        if key == "Cache-Control" and result.cache in {"private", "no-store"}:
+            # Typed cache hints win over raw Cache-Control overrides.
+            continue
+        headers[key] = value
     if request is not None and is_htmx_request(request):
         # Keep mechanics visible for Explorer traces.
         request.state.hedron_interaction = {
@@ -193,6 +279,34 @@ def interaction_headers(
             "explanation": result.explanation,
         }
     return headers
+
+
+def authorize_oob_update(
+    update: OobUpdate,
+    *,
+    regions: tuple[FragmentRegion, ...] = (),
+) -> None:
+    """Validate OOB swap/select against CSS safety and optional region allowlist.
+
+    When ``regions`` is non-empty, OOB ``select`` / ``element_id`` must name an
+    authorized region (declare OOB destinations alongside primary targets).
+    """
+    if update.select is not None:
+        if not _safe_css_selector(update.select):
+            raise ValueError("Unsafe OOB select selector")
+        if regions:
+            resolve_fragment_region(
+                InteractionPolicy(declared_regions=regions),
+                update.select,
+            )
+    if update.element_id is not None:
+        if not update.element_id.replace("-", "").replace("_", "").isalnum():
+            raise ValueError("Unsafe OOB element id")
+        if regions:
+            resolve_fragment_region(
+                InteractionPolicy(declared_regions=regions),
+                f"#{update.element_id}",
+            )
 
 
 _STATUS_DEFAULTS: dict[int, StatusPolicy] = {
