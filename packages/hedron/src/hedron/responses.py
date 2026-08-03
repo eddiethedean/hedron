@@ -63,7 +63,8 @@ class FileComponentResponse(ComponentResponse):
     ) -> None:
         hdrs = dict(headers or {})
         if filename:
-            hdrs.setdefault("Content-Disposition", f'attachment; filename="{filename}"')
+            safe_name = _safe_content_disposition_filename(filename)
+            hdrs.setdefault("Content-Disposition", f'attachment; filename="{safe_name}"')
         super().__init__(
             content=content,
             status_code=status_code,
@@ -71,6 +72,12 @@ class FileComponentResponse(ComponentResponse):
             media_type=media_type,
             background=background,
         )
+
+
+def _safe_content_disposition_filename(filename: str) -> str:
+    cleaned = filename.replace("\r", "").replace("\n", "").replace('"', "").replace("\\", "")
+    cleaned = cleaned.strip() or "download"
+    return cleaned[:200]
 
 
 def hedron_response(component_type: type[Any] | None = None) -> dict[str, Any]:

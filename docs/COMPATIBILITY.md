@@ -1,7 +1,7 @@
 # Compatibility policy
 
 **Status:** Accepted for the phase 0.0 baseline  
-**Reviewed:** 2026-08-02
+**Reviewed:** 2026-08-03
 
 ## Initial runtime ranges
 

@@ -60,3 +60,27 @@ def test_checkbox_has_label() -> None:
     html = render(Checkbox("tos", "I agree")).html
     assert "<label" in html
     assert 'type="checkbox"' in html
+
+
+@pytest.mark.a11y
+def test_form_field_checkbox_aria_on_input_not_wrapper() -> None:
+    field = FormField(
+        name="tos",
+        label="Terms",
+        control=Checkbox("tos", "I agree"),
+        required=True,
+        error="Required",
+    )
+    html = render(Form(field)).html
+    # Outer FormField label is omitted for Checkbox; control keeps its own label.
+    assert html.count("<label") == 1
+    assert 'type="checkbox"' in html
+    assert 'aria-invalid="true"' in html
+    # aria must be on the input, not only a wrapping div without the input attrs.
+    assert 'type="checkbox"' in html
+    input_idx = html.index('type="checkbox"')
+    # Find the input tag containing checkbox and ensure aria-invalid is nearby on same tag.
+    tag_start = html.rfind("<input", 0, input_idx)
+    tag_end = html.find(">", input_idx)
+    input_tag = html[tag_start:tag_end]
+    assert 'aria-invalid="true"' in input_tag

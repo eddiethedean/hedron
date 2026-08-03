@@ -19,13 +19,16 @@ Built-ins use native semantic HTML, expose documented slots and variants, and sa
 
 ### Native HTML primitives
 
-`html.<tag>(*children, **attributes) -> ComponentNode` exposes known lowercase HTML elements without exposing private serializer nodes. Python keyword aliases include `class_` and `for_`; `data={...}` and `aria={...}` are explicit mappings to normalized `data-*` and `aria-*` attributes. Boolean attributes accept booleans, absent values use `None`, event-handler attributes are rejected, and URL-bearing attributes receive `SafeUrl` policy checks. Unknown tags or attributes fail with a diagnostic. Raw markup is available only as `html.raw(TrustedHtml)`.
+`html.<tag>(*children, **attributes) -> ComponentNode` exposes known lowercase HTML elements without exposing private serializer nodes. Python keyword aliases include `class_` and `for_`; `data={...}` and `aria={...}` are explicit mappings to normalized `data-*` and `aria-*` attributes. Boolean attributes accept booleans, absent values use `None`, event-handler attributes are rejected, and URL-bearing attributes (`href`, `src`, `action`, `srcset`, `ping`, HTMX URL attrs including `hx-push-url` / `hx-replace-url`, …) receive `SafeUrl` policy checks. Unknown tags or attributes fail with a diagnostic. Raw markup is available only as `html.raw(TrustedHtml)`.
 
 ## Phase 0.2 FastAPI interaction additions (`v0.2.0`)
 
-- `AutoForm`, `RefreshButton`, `Lazy`, `Pagination`, `Loading`, and retryable `ErrorState`.
+- `AutoForm`, `RefreshButton`, `Lazy`, `Poll`, `InfiniteScroll`, `Pagination`, `Loading`, and retryable `ErrorState`.
+- `action_attrs(ref, *, include_csrf=..., csrf_token=...)` and `oob_swap(id, content)` helpers.
 - Typed action bindings and validation-fragment helpers.
-- Page layout and HTMX navigation helpers.
+- Page layout and HTMX navigation helpers (`approved_headers`, history-restore PAGE mode).
+
+`Lazy` and `Poll` honor `ComponentRef.hx_attrs()` (method and query params). `Pagination` emits `SafeUrl`-backed `href` / `hx-get` values. HTMX targets are validated against a safe CSS-selector subset.
 
 ## Later catalogs
 

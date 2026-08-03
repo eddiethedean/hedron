@@ -35,4 +35,6 @@ async def delete_user(user_id: str) -> UserTable: ...
 - Component-folder discovery imports only declared router modules and never exposes ordinary components.
 - `include_component(descriptor, *, path=...)` is the explicit exposure API for reusable `@addressable` descriptors.
 
-`HedronRoute` is public for advanced integration but most users configure it through the router. Subclassing requires preserving component return handling, registry metadata, OpenAPI behavior, and FastAPI dependency semantics.
+`HedronRoute` is public for advanced integration but most users configure it through the router. It converts `HTML(...)` and component returns before FastAPI serializes them, and issues CSRF cookies once per safe GET when CSRF is enabled. Subclassing requires preserving component return handling, registry metadata, OpenAPI behavior, and FastAPI dependency semantics.
+
+Plain FastAPI apps should call `mount_hedron_static(app)` so PAGE responses that inject `/hedron-static/htmx.min.js` resolve.

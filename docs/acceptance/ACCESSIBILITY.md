@@ -6,7 +6,7 @@
 - [x] Controls expose accessible names (`Button`, `IconButton` aria-label).
 - [x] Forms associate labels (`for`/`id`), help, required/`aria-required`, errors/`aria-invalid`/`aria-describedby`.
 - [ ] Dialog-like, tab, expander, toast, progress, and status patterns. *(later built-ins)*
-- [ ] Lazy and error regions expose busy and retry states. *(phase 0.2)*
+- [x] Lazy and error regions expose busy and retry affordances (`aria-busy` / `aria-live` on `Lazy`/`Loading`; `role="alert"` and retry controls on `ErrorState`). *(phase 0.2 markup)*
 - [ ] Data tables, DataEditor, charts, code, JSON, uploads, and downloads. *(phases 0.5–0.6)*
 
 ## Visual and responsive

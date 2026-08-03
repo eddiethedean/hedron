@@ -14,7 +14,7 @@ body = TrustedHtml.reviewed(sanitized_html, source="application-sanitizer:v1")
 
 ## `Secret[T]`
 
-`Secret(value)` stores a typed sensitive value. Its string conversion, representation, serialization, examples, diagnostics, traces, identities, and Explorer display are redacted. `reveal()` is the explicit application-only access operation; Hedron never reveals a secret implicitly to props, markup, URLs, cache-key text, logs, or browser metadata.
+`Secret(value)` stores a typed sensitive value. When used in Hedron/Pydantic models as `Secret[T]`, the inner value is validated against `T` (for example `Secret[str]` rejects an `int`). Its string conversion, representation, serialization, examples, diagnostics, traces, identities, and Explorer display are redacted. `reveal()` is the explicit application-only access operation; Hedron never reveals a secret implicitly to props, markup, URLs, cache-key text, logs, or browser metadata.
 
 ## `TrustedHtml`
 
@@ -26,7 +26,9 @@ Only the dedicated `hedron.html.raw(...)` primitive accepts `TrustedHtml`. Wrapp
 
 `SafeUrl.parse(value, *, purpose, allow_external=False)` validates and normalizes a URL for one of the initial purposes: `NAVIGATION`, `ASSET`, `FORM_ACTION`, or `REDIRECT`. Relative same-origin URLs are the default. HTTP(S) external URLs require `allow_external=True`; `mailto` and `tel` are allowed only for an explicitly supported navigation context. Dangerous, ambiguous, credential-bearing, control-character, or policy-incompatible schemes fail validation.
 
-A `SafeUrl` remains subject to the final rendering or redirect context policy. It is not an authorization decision, open-redirect bypass, signature, or proof that a remote resource is trusted. Registered application asset references remain preferable to arbitrary asset URLs.
+URL-bearing HTML attributes—including `href`, `src`, `action`, `srcset`, `ping`, and HTMX URL attrs such as `hx-get` / `hx-push-url` / `hx-replace-url`—require `SafeUrl` (or a validated `srcset` string whose candidates pass `SafeUrl` checks). Local HTMX path strings starting with `/` may be coerced at construction for HTMX attrs.
+
+A `SafeUrl` remains subject to the final rendering or redirect context policy. Application helpers `redirect_local` and `redirect_external` enforce the same local-vs-external split; `redirect_external` is disabled unless the security policy sets `allow_external_redirects=True`.
 
 ## Stability and errors
 

@@ -25,6 +25,40 @@ def _is_allowed_attr(name: str) -> bool:
     return lower in ALLOWED_ATTRS
 
 
+def _normalize_srcset(value: Any) -> str:
+    """Validate srcset candidates; each URL must be SafeUrl or a safe relative path."""
+    if isinstance(value, SafeUrl):
+        check_url_purpose_for_attribute(value, "srcset")
+        return str(value)
+    if not isinstance(value, str):
+        raise error(
+            "HED-SEC-0003",
+            title="URL attribute requires SafeUrl",
+            explanation="Attribute 'srcset' has unsupported type.",
+            remediation="Pass SafeUrl.parse(...) or a validated srcset string of SafeUrl paths.",
+        )
+    parts: list[str] = []
+    for candidate in value.split(","):
+        piece = candidate.strip()
+        if not piece:
+            continue
+        tokens = piece.split()
+        url_token = tokens[0]
+        rest = " ".join(tokens[1:])
+        # Reject javascript: and other dangerous schemes in raw srcset strings.
+        lowered = url_token.lower()
+        if "javascript:" in lowered or lowered.startswith("data:text/html"):
+            raise error(
+                "HED-SEC-0003",
+                title="URL attribute requires SafeUrl",
+                explanation=f"srcset candidate {url_token!r} is not a safe URL.",
+                remediation="Pass SafeUrl-backed asset URLs only.",
+            )
+        SafeUrl.parse(url_token, purpose=UrlPurpose.ASSET)
+        parts.append(f"{url_token} {rest}".strip())
+    return ", ".join(parts)
+
+
 def _normalize_attrs(attrs: dict[str, Any], *, tag: str) -> dict[str, Any]:
     out: dict[str, Any] = {}
     for key, value in attrs.items():
@@ -62,6 +96,17 @@ def _normalize_attrs(attrs: dict[str, Any], *, tag: str) -> dict[str, Any]:
                 remediation="Use documented attributes, data={...}, or aria={...}.",
             )
         if lower in URL_ATTRS or lower.endswith("href") or lower.endswith("src"):
+            if lower == "srcset":
+                out[lower] = _normalize_srcset(value)
+                continue
+            if lower in {"hx-push-url", "hx-replace-url"} and isinstance(value, bool):
+                out[lower] = value
+                continue
+            if lower in {"hx-push-url", "hx-replace-url"} and isinstance(value, str):
+                lowered = value.lower()
+                if lowered in {"true", "false"}:
+                    out[lower] = lowered
+                    continue
             if isinstance(value, SafeUrl):
                 check_url_purpose_for_attribute(value, lower)
                 out[lower] = value
@@ -70,12 +115,21 @@ def _normalize_attrs(attrs: dict[str, Any], *, tag: str) -> dict[str, Any]:
                     UrlPurpose.FORM_ACTION
                     if lower in {"action", "formaction"}
                     else UrlPurpose.ASSET
-                    if lower in {"src", "poster"} or lower.endswith("src")
+                    if lower in {"src", "poster", "ping"} or lower.endswith("src")
                     else UrlPurpose.NAVIGATION
                 )
                 # Local HTMX/resource paths may be provided as strings and are coerced.
                 if lower.startswith("hx-") and value.startswith("/") and not value.startswith("//"):
                     out[lower] = SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION)
+                elif lower == "ping":
+                    # ping may contain space-separated URLs; require SafeUrl for single URL,
+                    # or reject raw strings with javascript:.
+                    raise error(
+                        "HED-SEC-0003",
+                        title="URL attribute requires SafeUrl",
+                        explanation=f"Attribute {lower!r} must be a SafeUrl.",
+                        remediation="Pass SafeUrl.parse(...).",
+                    )
                 else:
                     raise error(
                         "HED-SEC-0003",

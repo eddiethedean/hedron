@@ -109,6 +109,36 @@ def test_hx_get_requires_safe_url() -> None:
 
 
 @pytest.mark.security
+def test_srcset_ping_and_hx_push_url_require_safe_urls() -> None:
+    with pytest.raises(HedronError) as exc:
+        html.img(
+            src=SafeUrl.parse("/a.png", purpose=UrlPurpose.ASSET),
+            alt="x",
+            srcset="javascript:alert(1) 1x",
+        )
+    assert exc.value.diagnostic.code == "HED-SEC-0003"
+
+    with pytest.raises(HedronError):
+        html.a(
+            "x",
+            href=SafeUrl.parse("/", purpose=UrlPurpose.NAVIGATION),
+            ping="javascript:alert(1)",
+        )
+
+    with pytest.raises(HedronError):
+        html.div(**{"hx-push-url": "javascript:alert(1)"})
+
+    ok = render(
+        html.img(
+            src=SafeUrl.parse("/a.png", purpose=UrlPurpose.ASSET),
+            alt="x",
+            srcset="/a.png 1x, /b.png 2x",
+        )
+    ).html
+    assert "srcset=" in ok
+
+
+@pytest.mark.security
 def test_unknown_attr_rejected() -> None:
     with pytest.raises(HedronError) as exc:
         html.span(foo="bar")

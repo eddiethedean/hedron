@@ -2,7 +2,7 @@
 
 Hedron is a Python-first framework for building typed, server-rendered component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web Components—without requiring Node.js.
 
-> **Project status:** Phase 0.2 is complete. The FastAPI flagship `hedron` package (`0.2.0`) ships pages, addressable components, typed actions, CSRF-aware forms, OpenAPI `text/html` metadata, and a minimal CLI/Explorer preview on top of `hedron-core`. The project is MIT-licensed. The next milestone is phase 0.3 (HDN, scoped styles, assets, and themes), targeting `v0.3.0`.
+> **Project status:** Phase 0.2 implementation is on `main` at package version `0.2.0` (git tag / PyPI publish deferred). The FastAPI flagship `hedron` package ships pages, addressable components, typed actions, CSRF-aware forms, OpenAPI `text/html` metadata, interaction built-ins, and a minimal CLI/Explorer preview on top of `hedron-core`. The project is MIT-licensed. The next milestone after cutting `v0.2.0` is phase 0.3 (HDN, scoped styles, assets, and themes).
 
 ## Product direction
 
@@ -36,7 +36,7 @@ uv add hedron
 ```python
 from hedron import Hedron, Page, Text
 
-app = Hedron(title="Demo", security="standard")
+app = Hedron(title="Demo", security="standard", session_secret="replace-me")
 
 @app.page("/")
 def home() -> Page:
@@ -47,7 +47,7 @@ def home() -> Page:
 uv run uvicorn app:app --reload
 ```
 
-Open `/` for a full HTML page. Send `HX-Request: true` (or navigate with HTMX) to receive a fragment without the document shell. CSRF cookies are issued on safe GETs; unsafe actions validate `X-CSRF-Token`.
+Open `/` for a full HTML page. Send `HX-Request: true` (or navigate with HTMX) to receive a fragment without the document shell. CSRF cookies are issued on safe GETs and reused; unsafe actions validate `X-CSRF-Token` or a `csrf_token` form field.
 
 ## Quick start (`hedron-core` only)
 
@@ -65,7 +65,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 |---|---|---|
 | 0.0 | None | Accepted specification and project foundation |
 | 0.1 | `v0.1.0` | Framework-neutral typed rendering core (**complete**) |
-| 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP (**complete**) |
+| 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP (**implementation on `main`; tag deferred**) |
 | 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform |
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI |

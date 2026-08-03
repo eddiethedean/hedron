@@ -20,8 +20,9 @@ async def delete_user(
 - Hedron may infer URL, target, swap, CSRF mechanics, loading state, and validation-fragment handling from registration.
 - It never infers permission, destructive meaning, confirmation policy, or persistence.
 - GET actions cannot mutate by contract.
-- Unsafe cookie-authenticated actions include and validate CSRF protection.
+- Unsafe cookie-authenticated actions include and validate CSRF protection. Tokens may be supplied via the `X-CSRF-Token` header or the `csrf_token` form field and must match the `hedron_csrf` cookie. The cookie is issued on safe GETs and reused (not rotated) for subsequent requests in the same session.
+- Local redirects reject untrusted external destinations; external redirects use `redirect_external` and require an enabling security policy.
 
-Actions may return components, explicit responses, redirects, or structured action results that set approved HTMX headers. Local redirects reject untrusted external destinations; external redirects use a distinct explicit API.
+Actions may return components, explicit responses, redirects, or structured results that set approved HTMX headers via `approved_headers(...)`.
 
 Background work attached to the response uses FastAPI `BackgroundTasks`; durable work returns or references a job resource.

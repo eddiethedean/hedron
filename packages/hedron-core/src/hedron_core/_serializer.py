@@ -73,7 +73,12 @@ def _format_attr(name: str, value: Any) -> str | None:
             remediation="Pass True, False, or None.",
         )
     if lower in URL_ATTRS or lower.endswith("href") or lower.endswith("src"):
-        if isinstance(value, SafeUrl):
+        if lower == "srcset" and isinstance(value, str):
+            # Construction already validates candidates; re-check schemes at serialize.
+            from hedron_core.html import _normalize_srcset
+
+            text = _normalize_srcset(value)
+        elif isinstance(value, SafeUrl):
             check_url_purpose_for_attribute(value, lower)
             text = value.value
         elif isinstance(value, str):

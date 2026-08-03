@@ -19,6 +19,15 @@ Framework-neutral support for the FastAPI MVP release train.
 - Public exports: `addressable`, `AddressableDescriptor`, `AddressableMeta`,
   `RouteMeta`, `register_addressable`, and `register_route`.
 
+### Fixed / hardened
+
+- Render cycle detection uses component instance identity so nested same-type
+  composition is valid; `__hedron_node__` / `ComponentNode` are honored by `render`.
+- URL attrs `srcset`, `ping`, `hx-push-url`, and `hx-replace-url` require SafeUrl
+  policy (with validated `srcset` candidates).
+- `FormField` binds controls without mutating shared props; Checkbox aria lands on
+  the input; `Secret[T]` validates the inner type `T`.
+
 ## [0.1.0] - 2026-08-03
 
 Initial public release of the framework-neutral typed rendering core.
@@ -43,5 +52,5 @@ Initial public release of the framework-neutral typed rendering core.
 - Secret redaction in diagnostics and identity records.
 - Adversarial escaping corpus covering XSS smuggling paths exercised in CI.
 
-[0.2.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.2.0
+[0.2.0]: https://github.com/eddiethedean/hedron/commits/main
 [0.1.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.1.0

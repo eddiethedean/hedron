@@ -48,7 +48,7 @@ hedron/
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django | `v0.7.0` |
 
-`hedron` does not require Explorer in production. Beginning with the `v0.2.0` preview, `hedron[dev]` installs `hedron-explorer` plus development diagnostics and watching; the full Explorer surface is a phase 0.4 (`v0.4.0`) gate. The flagship package contains the registry and trace hooks needed by Explorer but not the Explorer frontend.
+`hedron` does not require Explorer in production. Beginning with the `v0.2.0` preview, `hedron[dev]` installs `hedron-explorer` for development diagnostics; the full Explorer surface is a phase 0.4 (`v0.4.0`) gate. The flagship package contains the registry and trace hooks needed by Explorer but not the Explorer frontend.
 
 ## Dependency rules
 

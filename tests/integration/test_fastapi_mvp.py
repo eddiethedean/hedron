@@ -22,7 +22,7 @@ def _fresh_registry() -> None:
 
 
 def test_hedron_page_and_fragment() -> None:
-    app = Hedron(title="demo", security="standard", explorer="off")
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
 
     @app.page("/")
     def home() -> Page:
@@ -51,26 +51,21 @@ def test_plain_fastapi_html_helper() -> None:
     def card() -> HTML:
         return HTML(Text("plain"))
 
-    # Use HedronRoute conversion via page decorator instead for reliability.
-    @router.page("/page")
-    def page() -> Page:
-        return Page(Text("plain-page"), title="P")
-
     app.state.hedron_security = __import__(
         "hedron.security.policy", fromlist=["SecurityPolicy"]
     ).SecurityPolicy.from_name("standard")
     app.include_router(router)
     client = TestClient(app)
-    response = client.get("/page")
+    response = client.get("/card")
     assert response.status_code == 200
-    assert "plain-page" in response.text
+    assert "plain" in response.text
 
 
 def test_json_and_html_coexist() -> None:
     class Item(Model):
         name: str
 
-    app = Hedron(title="demo", security="standard", explorer="off")
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
 
     @app.get("/api/item", response_model=Item)
     def item() -> Item:
@@ -86,7 +81,7 @@ def test_json_and_html_coexist() -> None:
 
 
 def test_component_hidden_from_openapi_by_default() -> None:
-    app = Hedron(title="demo", security="standard", explorer="off")
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
     router = HedronRouter(prefix="/c")
 
     @router.component("/box")
@@ -114,7 +109,7 @@ def test_addressable_include_component_requires_auth_deps() -> None:
     def resource() -> Text:
         return Text("secret-resource")
 
-    app = Hedron(title="demo", security="standard", explorer="off")
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
     router = HedronRouter(prefix="/r")
     router.include_component(resource, path="/x", dependencies=[Depends(gate)])
     app.include_router(router)
@@ -126,7 +121,7 @@ def test_addressable_include_component_requires_auth_deps() -> None:
 
 
 def test_csrf_required_on_action() -> None:
-    app = Hedron(title="demo", security="standard", explorer="off")
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
     router = HedronRouter()
 
     @router.action("/do", method="POST")
@@ -152,7 +147,7 @@ def test_csrf_required_on_action() -> None:
 
 
 def test_sync_and_async_endpoints() -> None:
-    app = Hedron(title="demo", security="standard", explorer="off")
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
 
     @app.page("/sync")
     def sync_page() -> Page:
@@ -176,7 +171,7 @@ def test_yield_dependency_cleanup() -> None:
         finally:
             cleaned.append(True)
 
-    app = Hedron(title="demo", security="standard", explorer="off")
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
 
     @app.page("/y")
     def page(v: str = Depends(dep)) -> Page:
@@ -188,13 +183,15 @@ def test_yield_dependency_cleanup() -> None:
 
 
 def test_explorer_absent_in_production_profile() -> None:
-    app = Hedron(title="demo", security="standard", explorer="off")
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
     client = TestClient(app)
     assert client.get("/hedron-explorer/").status_code == 404
 
 
 def test_explorer_present_in_development() -> None:
-    app = Hedron(title="demo", security="development", explorer="development")
+    app = Hedron(
+        title="demo", security="development", explorer="development", session_secret="test-secret"
+    )
     client = TestClient(app)
     response = client.get("/hedron-explorer/")
     assert response.status_code == 200
@@ -202,7 +199,7 @@ def test_explorer_present_in_development() -> None:
 
 
 def test_registry_routes_visible_to_cli_surface() -> None:
-    app = Hedron(title="demo", security="standard", explorer="off")
+    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
 
     @app.page("/cli-page")
     def cli_page() -> Page:

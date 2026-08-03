@@ -26,7 +26,7 @@ def test_addressable_registers_without_route() -> None:
     assert meta is not None
     assert meta.route is None
     assert meta.include_in_schema is False
-    assert widget().render() == "w" or True
+    assert widget().props.content == "w"
     result = widget()
     assert isinstance(result, Text)
 

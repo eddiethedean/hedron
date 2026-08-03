@@ -165,6 +165,8 @@ def dashboard_page(*, csrf_token: str, username: str, form_errors: tuple[str, ..
 
 
 def _create_form(*, csrf_token: str, form_errors: tuple[str, ...] = ()) -> Any:
+    import json
+
     from hedron import Form
 
     return Form(
@@ -200,7 +202,7 @@ def _create_form(*, csrf_token: str, form_errors: tuple[str, ...] = ()) -> Any:
             "hx-post": "/users",
             "hx-target": "#user-table",
             "hx-swap": "innerHTML",
-            "hx-headers": f'{{"X-CSRF-Token": "{csrf_token}"}}',
+            "hx-headers": json.dumps({"X-CSRF-Token": csrf_token}),
         },
     )
 
@@ -291,6 +293,7 @@ def build_plain_fastapi_app() -> FastAPI:
     from starlette.middleware.sessions import SessionMiddleware
 
     import hedron_core
+    from hedron.app import mount_hedron_static
     from hedron.lifespan import compose_lifespan
     from hedron.openapi import install_openapi
     from hedron.security.headers import SecurityHeadersMiddleware
@@ -306,6 +309,7 @@ def build_plain_fastapi_app() -> FastAPI:
     app.add_middleware(SessionMiddleware, secret_key="reference-app-secret")
     app.add_middleware(SecurityHeadersMiddleware, policy=policy)
     install_openapi(app)
+    mount_hedron_static(app)
 
     router = HedronRouter(dependencies=[Depends(require_user)])
 
@@ -329,6 +333,27 @@ def build_plain_fastapi_app() -> FastAPI:
         _: str = Depends(require_admin),
     ) -> Table:
         store.create(name=name, email=email, role=role)
+        return users_table_component(store)
+
+    @users.action("/{user_id}", method="POST")
+    async def update_user(
+        user_id: str,
+        name: Annotated[str, Form()],
+        email: Annotated[str, Form()],
+        role: Annotated[Role, Form()] = "member",
+        store: Store = Depends(get_store),
+        _: str = Depends(require_admin),
+    ) -> Table:
+        store.update(user_id, name=name, email=email, role=role)
+        return users_table_component(store)
+
+    @users.action("/{user_id}/delete", method="POST")
+    async def delete_user(
+        user_id: str,
+        store: Store = Depends(get_store),
+        _: str = Depends(require_admin),
+    ) -> Table:
+        store.delete(user_id)
         return users_table_component(store)
 
     app.include_router(router)

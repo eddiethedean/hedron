@@ -14,6 +14,7 @@ from hedron_core.rendering import RenderMode
 __all__ = [
     "HtmxContext",
     "approved_headers",
+    "htmx_context",
     "is_htmx_request",
     "render_mode_for_request",
 ]
@@ -85,7 +86,16 @@ def htmx_context(request: Request) -> HtmxContext:
 def render_mode_for_request(request: Request, *, force: RenderMode | None = None) -> RenderMode:
     if force is not None:
         return force
-    return RenderMode.FRAGMENT if is_htmx_request(request) else RenderMode.PAGE
+    ctx = htmx_context(request)
+    if ctx.history_restore:
+        return RenderMode.PAGE
+    return RenderMode.FRAGMENT if ctx.is_htmx else RenderMode.PAGE
+
+
+def _require_local_path(url: str, header_name: str) -> str:
+    if not url.startswith("/") or url.startswith("//"):
+        raise ValueError(f"{header_name} must be a local path")
+    return url
 
 
 def approved_headers(
@@ -102,16 +112,14 @@ def approved_headers(
     if trigger is not None:
         headers["HX-Trigger"] = trigger if isinstance(trigger, str) else json.dumps(trigger)
     if redirect is not None:
-        if not redirect.startswith("/") or redirect.startswith("//"):
-            raise ValueError("HX-Redirect must be a local path")
-        headers["HX-Redirect"] = redirect
+        headers["HX-Redirect"] = _require_local_path(redirect, "HX-Redirect")
     if push_url is not None:
         if push_url is False:
             headers["HX-Push-Url"] = "false"
         elif push_url is True:
             headers["HX-Push-Url"] = "true"
         else:
-            headers["HX-Push-Url"] = str(push_url)
+            headers["HX-Push-Url"] = _require_local_path(str(push_url), "HX-Push-Url")
     if refresh:
         headers["HX-Refresh"] = "true"
     if retarget is not None:
@@ -121,7 +129,14 @@ def approved_headers(
     if reswap is not None:
         headers["HX-Reswap"] = reswap
     if location is not None:
-        headers["HX-Location"] = location if isinstance(location, str) else json.dumps(location)
+        if isinstance(location, str):
+            headers["HX-Location"] = _require_local_path(location, "HX-Location")
+        else:
+            path = location.get("path")
+            if not isinstance(path, str):
+                raise ValueError("HX-Location mapping requires a local path")
+            _require_local_path(path, "HX-Location")
+            headers["HX-Location"] = json.dumps(location)
     unknown = set(headers) - APPROVED_RESPONSE_HEADERS
     if unknown:
         raise ValueError(f"Unapproved HTMX response headers: {sorted(unknown)}")
@@ -129,6 +144,6 @@ def approved_headers(
 
 
 def _safe_css_selector(selector: str) -> bool:
-    if not selector or any(ch in selector for ch in "<>\"'`"):
+    if not selector or any(ch in selector for ch in "<>\"'`);{}"):
         return False
     return selector.startswith("#") or selector.startswith(".") or selector.startswith("[")

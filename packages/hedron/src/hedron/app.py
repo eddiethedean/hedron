@@ -2,22 +2,42 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+import logging
+import warnings
+from collections.abc import Callable, Sequence
 from importlib import resources
 from pathlib import Path
 from typing import Any, Literal
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.requests import Request
 
 from hedron.lifespan import compose_lifespan
 from hedron.openapi import install_openapi
 from hedron.routing.router import HedronRouter
 from hedron.security.headers import SecurityHeadersMiddleware
-from hedron.security.policy import SecurityPolicy, SecurityProfileName
+from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
 
 ExplorerMode = Literal["off", "development", "secured"]
+
+_DEFAULT_SESSION_SECRET = "hedron-dev-secret-change-me"
+logger = logging.getLogger("hedron")
+
+__all__ = ["Hedron", "mount_hedron_static"]
+
+
+def mount_hedron_static(app: FastAPI, *, path: str = "/hedron-static") -> None:
+    """Mount bundled Hedron static assets (HTMX) on any FastAPI app."""
+    static_dir = Path(str(resources.files("hedron").joinpath("static")))
+    if not static_dir.is_dir():
+        return
+    # Avoid double-mount errors when called more than once.
+    for route in app.routes:
+        if getattr(route, "path", None) == path:
+            return
+    app.mount(path, StaticFiles(directory=str(static_dir)), name="hedron-static")
 
 
 class Hedron(FastAPI):
@@ -28,8 +48,9 @@ class Hedron(FastAPI):
         *args: Any,
         security: SecurityProfileName | str | SecurityPolicy = "standard",
         explorer: ExplorerMode | str = "off",
-        session_secret: str = "hedron-dev-secret-change-me",
+        session_secret: str = _DEFAULT_SESSION_SECRET,
         enable_sessions: bool = True,
+        explorer_dependencies: Sequence[Any] | None = None,
         **kwargs: Any,
     ) -> None:
         user_lifespan = kwargs.pop("lifespan", None)
@@ -39,31 +60,60 @@ class Hedron(FastAPI):
         self.hedron_policy = SecurityPolicy.from_name(security)
         self.hedron_explorer_mode = str(explorer)
         self.state.hedron_security = self.hedron_policy
+        self._explorer_dependencies = list(explorer_dependencies or [])
 
         if enable_sessions:
+            if (
+                session_secret == _DEFAULT_SESSION_SECRET
+                and self.hedron_policy.profile is SecurityProfile.STRICT
+            ):
+                raise ValueError(
+                    "security='strict' requires an explicit session_secret "
+                    "(do not use the development default)."
+                )
+            if session_secret == _DEFAULT_SESSION_SECRET:
+                warnings.warn(
+                    "Hedron is using the default development session_secret; "
+                    "set session_secret explicitly before production deployment.",
+                    UserWarning,
+                    stacklevel=2,
+                )
             self.add_middleware(SessionMiddleware, secret_key=session_secret)
         self.add_middleware(SecurityHeadersMiddleware, policy=self.hedron_policy)
 
-        static_dir = Path(str(resources.files("hedron").joinpath("static")))
-        if static_dir.is_dir():
-            self.mount(
-                "/hedron-static", StaticFiles(directory=str(static_dir)), name="hedron-static"
-            )
+        mount_hedron_static(self)
 
         self._root_router = HedronRouter()
         install_openapi(self)
 
-        if (
-            self.hedron_explorer_mode == "development" and self.hedron_policy.explorer_enabled
-        ) or self.hedron_explorer_mode == "secured":
-            self._maybe_mount_explorer()
+        if self.hedron_explorer_mode == "development":
+            # Explicit explorer intent mounts even under standard security.
+            self._maybe_mount_explorer(secured=False)
+        elif self.hedron_explorer_mode == "secured":
+            self._maybe_mount_explorer(secured=True)
 
-    def _maybe_mount_explorer(self) -> None:
+    def _maybe_mount_explorer(self, *, secured: bool) -> None:
         try:
             from hedron_explorer import explorer_router
         except ImportError:
+            logger.warning("hedron-explorer is not installed; Explorer was not mounted")
             return
-        self.include_router(explorer_router(), prefix="/hedron-explorer")
+        deps: list[Any] = list(self._explorer_dependencies)
+        if secured and not deps:
+
+            async def _require_authenticated(request: Request) -> None:
+                if not getattr(request.state, "hedron_authenticated", False):
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Explorer requires authentication",
+                    )
+
+            deps.append(Depends(_require_authenticated))
+        self.include_router(
+            explorer_router(),
+            prefix="/hedron-explorer",
+            dependencies=deps or None,
+        )
 
     def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
         super().include_router(router, *args, **kwargs)

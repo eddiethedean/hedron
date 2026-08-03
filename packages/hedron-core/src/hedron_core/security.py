@@ -5,10 +5,10 @@ from __future__ import annotations
 import html as html_stdlib
 import re
 from enum import StrEnum
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, get_args, get_origin
 from urllib.parse import unquote, urlsplit
 
-from pydantic import GetCoreSchemaHandler
+from pydantic import GetCoreSchemaHandler, TypeAdapter
 from pydantic_core import core_schema
 
 from hedron_core.diagnostics import HedronError, error
@@ -24,6 +24,25 @@ class UrlPurpose(StrEnum):
     ASSET = "asset"
     FORM_ACTION = "form_action"
     REDIRECT = "redirect"
+
+
+def _validate_secret_inner(source_type: Any, value: Any) -> Any:
+    args = get_args(source_type)
+    if not args:
+        return value
+    inner = args[0]
+    origin = get_origin(inner) or inner
+    if origin is Any:
+        return value
+    try:
+        return TypeAdapter(inner).validate_python(value)
+    except Exception as exc:  # noqa: BLE001
+        raise error(
+            "HED-SEC-0010",
+            title="Secret value type mismatch",
+            explanation=f"Secret expected {inner!r}, got {type(value).__name__}.",
+            remediation="Pass a value matching the Secret[T] type parameter.",
+        ) from exc
 
 
 class Secret(Generic[T]):
@@ -63,8 +82,10 @@ class Secret(Generic[T]):
     ) -> core_schema.CoreSchema:
         def validate(value: Any) -> Secret[Any]:
             if isinstance(value, Secret):
-                return value
-            return Secret(value)
+                inner = _validate_secret_inner(source_type, value.reveal())
+                return Secret(inner)
+            inner = _validate_secret_inner(source_type, value)
+            return Secret(inner)
 
         return core_schema.no_info_plain_validator_function(
             validate,
@@ -158,9 +179,18 @@ def _purpose_for_attr(attr: str) -> UrlPurpose:
     lower = attr.lower()
     if lower in {"action", "formaction"}:
         return UrlPurpose.FORM_ACTION
-    if lower in {"src", "poster"} or lower.endswith("src"):
+    if lower in {"src", "poster", "srcset", "ping"} or lower.endswith("src"):
         return UrlPurpose.ASSET
-    if lower in {"hx-get", "hx-post", "hx-put", "hx-patch", "hx-delete", "hx-href"}:
+    if lower in {
+        "hx-get",
+        "hx-post",
+        "hx-put",
+        "hx-patch",
+        "hx-delete",
+        "hx-href",
+        "hx-push-url",
+        "hx-replace-url",
+    }:
         return UrlPurpose.NAVIGATION
     return UrlPurpose.NAVIGATION
 

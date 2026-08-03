@@ -17,7 +17,7 @@ from starlette.responses import Response
 from hedron.async_utils import await_if_needed
 from hedron.openapi import operation_id_for
 from hedron.routing.route import HedronRoute
-from hedron.security.csrf import validate_csrf
+from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
 from hedron.security.policy import SecurityPolicy
 from hedron_core.addressable import AddressableDescriptor
 from hedron_core.identifiers import component_type_id
@@ -62,6 +62,7 @@ def _wrap_endpoint(
             policy: SecurityPolicy = getattr(
                 request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
             )
+            await prepare_csrf_from_request(request, policy)
             validate_csrf(request, policy)
         result = fn(*args, **kwargs)
         result = await await_if_needed(result)

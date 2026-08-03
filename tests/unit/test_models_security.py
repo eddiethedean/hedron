@@ -48,6 +48,16 @@ def test_secret_redacted_in_model_dump_and_json() -> None:
     assert "abc" not in repr(row)
 
 
+def test_secret_validates_inner_type() -> None:
+    class Row(Model):
+        token: Secret[str]
+
+    with pytest.raises((ValidationError, HedronError)):
+        Row(token=12)  # type: ignore[arg-type]
+    with pytest.raises((ValidationError, HedronError)):
+        Row(token={"a": 1})  # type: ignore[arg-type]
+
+
 def test_trusted_html_requires_reviewed() -> None:
     with pytest.raises(TypeError):
         TrustedHtml("<b>x</b>")  # type: ignore[call-arg]

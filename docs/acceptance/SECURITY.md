@@ -3,22 +3,28 @@
 ## Phase 0.1 (`v0.1.0`) subset
 
 - [x] XSS attempts in text, attributes, URLs, raw HTML, and blocked active tags (`script`/`style`/`iframe`/`srcdoc`/`style` attrs).
-- [x] Unsafe URL schemes including encoded/entity smuggling; URL attrs require `SafeUrl` with purpose checks.
-- [x] Secret leakage blocked through repr, dump/JSON, identities, and validation messages for secret fields.
+- [x] Unsafe URL schemes including encoded/entity smuggling; URL attrs require `SafeUrl` with purpose checks (including `srcset`, `ping`, `hx-push-url`, and `hx-replace-url`).
+- [x] Secret leakage blocked through repr, dump/JSON, identities, and validation messages for secret fields; `Secret[T]` validates the inner type `T`.
 - [x] Mass assignment blocked via `extra="forbid"` on Hedron models.
-- [x] CSRF on unsafe cookie-authenticated forms, actions, and editor mutations. *(phase 0.2)*
-- [x] Accidental public addressability and lazy-resource authorization bypass. *(phase 0.2)*
-- [x] Public caching of user, tenant, locale, or permission-sensitive fragments. *(phase 0.2)*
+
+## Phase 0.2 (`v0.2.0`) subset
+
+- [x] CSRF on unsafe actions: cookie is reused across GETs (not rotated per response); header `X-CSRF-Token` and form field `csrf_token` both validate against the cookie.
+- [x] Accidental public addressability and lazy-resource authorization bypass (addressables require `include_component` + caller dependencies).
+- [x] Private authenticated caching: when `request.state.hedron_authenticated` is set, responses include `Cache-Control: private, no-store`.
+- [x] Safe redirects: `redirect_local` rejects externals; `redirect_external` is denied unless `allow_external_redirects=True`, and only `http`/`https` URLs are accepted.
+- [x] Approved HTMX response headers (`HX-Redirect`, `HX-Push-Url`, `HX-Location`) require local paths.
 - [ ] Asset traversal, plugin/Explorer abuse, DataEditor forged edits. *(later phases)*
 - [ ] Markdown/chart/SVG sanitizer corpus beyond baseline rejection. *(later phases)*
 
 ## Release controls
 
 - [x] Standard and strict profiles have documented headers and CSP behavior. *(phase 0.2+)*
+- [x] Strict profile requires an explicit `session_secret` (default development secret is rejected).
 - [ ] CI can emit stable text, JSON, and SARIF diagnostics. *(phase 0.4)*
 - [ ] Dependency and component-package audits run in the release pipeline.
 - [ ] A maintained threat model records trust boundaries and residual risks.
 
 ## Exit
 
-Phase 0.1 core security corpus is green. No critical or high finding remains open for the offline rendering surface.
+Phase 0.1 core security corpus is green. Phase 0.2 CSRF, redirect, cache, and HTMX header suites pass. No critical or high finding remains open for the offline rendering surface or the FastAPI MVP security path.

@@ -183,6 +183,8 @@ URL_ATTRS = frozenset(
         "href",
         "poster",
         "src",
+        "srcset",
+        "ping",
         "xlink:href",
         "hx-get",
         "hx-post",
@@ -190,6 +192,8 @@ URL_ATTRS = frozenset(
         "hx-patch",
         "hx-delete",
         "hx-href",
+        "hx-push-url",
+        "hx-replace-url",
     }
 )
 
@@ -258,7 +262,6 @@ ALLOWED_ATTRS = (
             "accept-charset",
             "media",
             "sizes",
-            "srcset",
             "loading",
             "decoding",
             "crossorigin",
@@ -266,7 +269,6 @@ ALLOWED_ATTRS = (
             "integrity",
             "as",
             "hreflang",
-            "ping",
             "datetime",
             "open",
             "cite",
@@ -288,8 +290,6 @@ ALLOWED_ATTRS = (
             "hx-swap",
             "hx-trigger",
             "hx-indicator",
-            "hx-push-url",
-            "hx-replace-url",
             "hx-select",
             "hx-select-oob",
             "hx-swap-oob",

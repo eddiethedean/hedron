@@ -26,6 +26,7 @@ def redirect_local(
     status_code: int = 303,
     policy: SecurityPolicy | None = None,
 ) -> Response:
+    del policy  # reserved for future host allowlists
     if not _is_local(url):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -40,11 +41,15 @@ def redirect_external(
     status_code: int = 303,
     policy: SecurityPolicy | None = None,
 ) -> Response:
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid external redirect URL",
+        )
     if policy is not None and not policy.allow_external_redirects:
-        parsed = urlparse(url)
-        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid external redirect URL",
-            )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="External redirects are disabled by security policy",
+        )
     return RedirectResponse(url=url, status_code=status_code)

@@ -96,12 +96,17 @@ def test_cycle_detection() -> None:
             super().__init__(NameProps(name="x"))
 
         def render(self):
-            return Loop()
+            return self
 
     with pytest.raises(HedronError) as exc:
         render(Loop())
     assert exc.value.diagnostic.code == "HED-RENDER-0012"
-    assert "hedron_core" in exc.value.diagnostic.explanation or "Loop" in str(exc.value)
+    assert "Loop" in str(exc.value) or "hedron" in exc.value.diagnostic.explanation
+
+
+def test_nested_same_type_is_not_a_cycle() -> None:
+    result = render(Stack(Stack(Text("nested"))))
+    assert "nested" in result.html
 
 
 def test_registry_no_route_by_default() -> None:

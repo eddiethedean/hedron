@@ -22,7 +22,7 @@
 - [ ] Production startup uses precompiled deterministic manifests and succeeds offline.
 - [ ] Static assets work through `StaticFiles` and an external host configuration.
 - [ ] Lifespan, graceful shutdown, caches, background tasks, and external jobs are documented.
-- [ ] Explorer is absent from default production routes.
+- [x] Explorer is absent from default production routes (`explorer="off"`; verified in FastAPI MVP tests).
 - [ ] Dependency, browser-asset, and component-package licenses and vulnerabilities are auditable.
 
 ## Exit

@@ -102,13 +102,17 @@ class FormField(Component[FormFieldProps]):
         self._slot_values["control"] = self._bind_control(control)
 
     def _bind_control(self, control: Any) -> Any:
-        """Force control id and propagate required / aria wiring."""
+        """Bind control id / required via a copied control; never mutate shared props."""
         field_id = self._field_id
         help_id = f"{field_id}-help" if self.props.help else None
         error_id = f"{field_id}-error" if self.props.error else None
         described_by = " ".join(x for x in (help_id, error_id) if x) or None
+        aria = {
+            "describedby": described_by,
+            "invalid": "true" if self.props.error else None,
+            "required": "true" if self.props.required else None,
+        }
 
-        # Prefer mutating known built-in controls via props reconstruction.
         if isinstance(control, Component):
             props = control.props
             updates: dict[str, Any] = {}
@@ -116,15 +120,20 @@ class FormField(Component[FormFieldProps]):
                 updates["id"] = field_id
             if self.props.required and hasattr(props, "required"):
                 updates["required"] = True
-            if updates:
-                new_props = props.model_copy(update=updates)
-                control._props = new_props  # type: ignore[attr-defined]
-            # Stash aria on a side channel consumed in render wrapper.
-            control._hedron_aria = {  # type: ignore[attr-defined]
-                "describedby": described_by,
-                "invalid": "true" if self.props.error else None,
-                "required": "true" if self.props.required else None,
-            }
+            new_props = props.model_copy(update=updates) if updates else props
+            # Reconstruct a shallow copy of the control with updated props.
+            bound = control.__class__.__new__(control.__class__)
+            Component.__init__(bound, new_props)
+            # Preserve non-props instance state used by built-ins (options, etc.).
+            for attr_name, attr_value in vars(control).items():
+                if attr_name in {"_props", "_children", "_slot_values", "_key"}:
+                    continue
+                setattr(bound, attr_name, attr_value)
+            bound._children = control._children
+            bound._slot_values = dict(control._slot_values)
+            bound._key = control._key
+            object.__setattr__(bound, "_hedron_aria", aria)
+            return bound
         return control
 
     def render(self) -> Any:
@@ -133,17 +142,18 @@ class FormField(Component[FormFieldProps]):
         control = self._slot_values["control"]
         aria = getattr(control, "_hedron_aria", {}) or {}
 
-        # Wrap control so aria-* lands on the actual interactive element when possible.
+        skip_outer_label = isinstance(control, Checkbox)
+
         if isinstance(control, Component) and hasattr(control, "render"):
             rendered = control.render()
             control_node = self._apply_aria(rendered, aria)
         else:
             control_node = self._apply_aria(control, aria)
 
-        parts: list[Any] = [
-            Label(self.props.label, for_=self._field_id),
-            control_node,
-        ]
+        parts: list[Any] = []
+        if not skip_outer_label:
+            parts.append(Label(self.props.label, for_=self._field_id))
+        parts.append(control_node)
         if self.props.help:
             parts.append(html.p(self.props.help, id=help_id, class_="hedron-field-help"))
         if self.props.error:
@@ -162,17 +172,36 @@ class FormField(Component[FormFieldProps]):
 
         if not isinstance(node, _NativeElement):
             return node
-        attrs = dict(node.attributes)
-        if aria.get("describedby"):
-            attrs["aria-describedby"] = aria["describedby"]
-        if aria.get("invalid"):
-            attrs["aria-invalid"] = aria["invalid"]
-        if aria.get("required"):
-            attrs["aria-required"] = aria["required"]
-        # Rebuild with merged attributes through ElementNode path at render time.
-        merged = _NativeElement(node.tag, node.children, {})
-        merged.attributes = attrs
-        return merged
+
+        def merge_attrs(el: Any) -> Any:
+            attrs = dict(el.attributes)
+            if aria.get("describedby"):
+                attrs["aria-describedby"] = aria["describedby"]
+            if aria.get("invalid"):
+                attrs["aria-invalid"] = aria["invalid"]
+            if aria.get("required"):
+                attrs["aria-required"] = aria["required"]
+            return _NativeElement(el.tag, el.children, attrs)
+
+        # Prefer applying aria to the interactive control inside wrappers (e.g. Checkbox).
+        if node.tag == "div" and node.children:
+            new_children = []
+            applied = False
+            for child in node.children:
+                if (
+                    not applied
+                    and isinstance(child, _NativeElement)
+                    and child.tag in {"input", "select", "textarea", "button"}
+                ):
+                    new_children.append(merge_attrs(child))
+                    applied = True
+                else:
+                    new_children.append(child)
+            if applied:
+                return _NativeElement(node.tag, tuple(new_children), dict(node.attributes))
+        if node.tag in {"input", "select", "textarea", "button"}:
+            return merge_attrs(node)
+        return merge_attrs(node)
 
 
 class TextInputProps(Props):

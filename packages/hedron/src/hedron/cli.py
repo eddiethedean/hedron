@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import sys
 from typing import Any
@@ -12,7 +13,23 @@ from hedron_core.registry import get_registry
 __all__ = ["main"]
 
 
-def _cmd_routes(_: argparse.Namespace) -> int:
+def _load_app(app_path: str | None) -> Any | None:
+    if not app_path:
+        return None
+    if ":" not in app_path:
+        raise SystemExit("--app must look like 'module.path:attribute'")
+    module_name, attr = app_path.split(":", 1)
+    module = importlib.import_module(module_name)
+    target: Any = module
+    for part in attr.split("."):
+        target = getattr(target, part)
+    if callable(target) and not hasattr(target, "routes"):
+        target = target()
+    return target
+
+
+def _cmd_routes(args: argparse.Namespace) -> int:
+    _load_app(args.app)
     registry = get_registry()
     rows = [
         {
@@ -30,7 +47,8 @@ def _cmd_routes(_: argparse.Namespace) -> int:
     return 0
 
 
-def _cmd_components(_: argparse.Namespace) -> int:
+def _cmd_components(args: argparse.Namespace) -> int:
+    _load_app(args.app)
     registry = get_registry()
     rows: list[dict[str, Any]] = [
         {
@@ -58,6 +76,7 @@ def _cmd_components(_: argparse.Namespace) -> int:
 
 
 def _cmd_preview(args: argparse.Namespace) -> int:
+    _load_app(args.app)
     registry = get_registry()
     logical_id = args.logical_id
     route = None
@@ -87,6 +106,11 @@ def _cmd_preview(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="hedron", description="Hedron inspection CLI")
+    parser.add_argument(
+        "--app",
+        help="Import path to an application factory or instance (module:attr)",
+        default=None,
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     routes_p = sub.add_parser("routes", help="List registered Hedron routes")

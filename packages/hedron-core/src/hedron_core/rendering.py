@@ -16,7 +16,7 @@ from hedron_core._nodes import (
     TextNode,
 )
 from hedron_core._serializer import serialize_tree
-from hedron_core.component import Component, NodeLike
+from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, error, make_diagnostic
 from hedron_core.html import _NativeElement, _TrustedRaw
 from hedron_core.security import Secret
@@ -74,10 +74,11 @@ class _RenderState:
         self.identity_map: dict[str, str] = {}
         self.seen_instance_ids: set[str] = set()
         self.diagnostics: list[Diagnostic] = []
-        self.stack: list[str] = []
+        self.stack: list[int] = []
+        self.stack_labels: list[str] = []
 
     def path(self) -> str:
-        return " > ".join(self.stack) if self.stack else "<root>"
+        return " > ".join(self.stack_labels) if self.stack_labels else "<root>"
 
 
 def _reject_generator(value: Any) -> None:
@@ -144,6 +145,14 @@ def _normalize(
         return (value.to_element_node(tuple(child_nodes)),)
     if isinstance(value, Component):
         return _render_component(value, state, depth=depth)
+    # Honor public ComponentNode protocol / __hedron_node__ contract.
+    hedron_node = getattr(value, "__hedron_node__", None)
+    if callable(hedron_node) and not isinstance(value, type):
+        return _normalize(hedron_node(), state, depth=depth + 1)
+    if isinstance(value, ComponentNode) and not isinstance(value, Component):
+        node_fn = getattr(value, "__hedron_node__", None)
+        if callable(node_fn):
+            return _normalize(node_fn(), state, depth=depth + 1)
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
         _reject_generator(value)
         nodes: list[Node] = []
@@ -167,7 +176,8 @@ def _render_component(
     component: Component[Any], state: _RenderState, *, depth: int
 ) -> tuple[Node, ...]:
     logical = component.logical_id()
-    if logical in state.stack:
+    identity_key = id(component)
+    if identity_key in state.stack:
         raise error(
             "HED-RENDER-0012",
             title="Component render cycle detected",
@@ -175,7 +185,8 @@ def _render_component(
             remediation="Break the recursive render() call chain.",
             component_id=logical,
         )
-    state.stack.append(logical)
+    state.stack.append(identity_key)
+    state.stack_labels.append(logical)
     try:
         component.validate_slots()
         identity = component.identity_fields()
@@ -210,6 +221,7 @@ def _render_component(
         )
     finally:
         state.stack.pop()
+        state.stack_labels.pop()
 
 
 def render(

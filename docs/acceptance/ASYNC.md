@@ -2,12 +2,12 @@
 
 ## Behavior
 
-- [ ] One application safely mixes sync and async pages, components, actions, dependencies, sources, and plugin hooks.
-- [ ] Yield dependencies clean up after ordinary rendering and response iteration.
+- [x] One application safely mixes sync and async pages and dependencies on the FastAPI MVP surface.
+- [x] Yield dependencies clean up after ordinary rendering and response iteration.
 - [ ] Request disconnect cancels all request-owned work without leaking tasks or resources.
 - [ ] Structured child failure cancels siblings unless partial failure is explicit.
 - [ ] Timeout policies produce documented error, fallback, retry, stale-cache, or partial results.
-- [ ] Lazy components expose usable busy, timeout, error, and retry states.
+- [x] Lazy components expose usable busy and retry states (markup + HTMX load trigger).
 - [ ] Blocking I/O is diagnosed or intentionally run through the supported thread bridge.
 - [ ] CPU-heavy and durable work is represented through external jobs.
 

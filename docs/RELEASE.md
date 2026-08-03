@@ -40,9 +40,14 @@ and remain within the owning roadmap phase.
 
 ## Cut `v0.2.0` (coordinated train)
 
+> **Status:** Package metadata is already `0.2.0` on `main`. Do not cut the tag
+> until phase 0.2 acceptance subsets below are green and maintainers choose to
+> publish. Until then, changelog compare links point at `main`.
+
 1. Confirm `packages/{hedron-core,hedron,hedron-explorer}` all say `0.2.0` in
    `pyproject.toml` and `__version__`, with matching `CHANGELOG.md` sections.
-2. Confirm FastAPI/security/HTMX acceptance subsets for phase 0.2 are checked.
+2. Confirm FastAPI / security / Explorer-preview / HTMX acceptance subsets for
+   phase 0.2 are checked (see `docs/acceptance/`).
 3. Push `main` if needed, then create and push the annotated tag:
 
 ```bash
@@ -60,6 +65,9 @@ pip index versions hedron
 pip index versions hedron-explorer
 gh release view v0.2.0
 ```
+
+6. Point changelog compare URLs at the new release tag and update
+   `docs/STATUS.md` to record publication.
 
 ## After publication
 

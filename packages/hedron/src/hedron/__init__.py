@@ -2,16 +2,20 @@
 
 from __future__ import annotations
 
-from hedron.app import Hedron
+from hedron.app import Hedron, mount_hedron_static
 from hedron.builtins import (
     AutoForm,
     ErrorState,
+    InfiniteScroll,
     Lazy,
     Loading,
     Pagination,
+    Poll,
     RefreshButton,
     action_attrs,
+    oob_swap,
 )
+from hedron.htmx import approved_headers, htmx_context
 from hedron.responses import (
     HTML,
     ComponentResponse,
@@ -19,6 +23,7 @@ from hedron.responses import (
     FragmentResponse,
     PageResponse,
     hedron_response,
+    merge_htmx_headers,
 )
 from hedron.routing import ComponentRef, HedronRoute, HedronRouter, resolve_route_path
 from hedron.security import (
@@ -125,6 +130,7 @@ __all__ = [
     "HedronRouter",
     "IconButton",
     "Image",
+    "InfiniteScroll",
     "Inline",
     "Label",
     "Lazy",
@@ -138,6 +144,7 @@ __all__ = [
     "Page",
     "PageResponse",
     "Pagination",
+    "Poll",
     "Props",
     "RadioGroup",
     "RefreshButton",
@@ -164,8 +171,13 @@ __all__ = [
     "__version__",
     "action_attrs",
     "addressable",
+    "approved_headers",
     "hedron_response",
     "html",
+    "htmx_context",
+    "merge_htmx_headers",
+    "mount_hedron_static",
+    "oob_swap",
     "redirect_external",
     "redirect_local",
     "render",

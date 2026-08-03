@@ -6,7 +6,7 @@
 - [x] Props validate at construction and remain immutable during rendering.
 - [ ] Python and HDN components lower to equivalent node semantics. *(HDN deferred to phase 0.3)*
 - [x] Renderable components expose no route by default.
-- [ ] Addressable components retain a distinct factory input contract. *(phase 0.2)*
+- [x] Addressable components retain a distinct factory input contract (`@addressable` → `AddressableDescriptor`; HTTP only via `include_component`). *(phase 0.2)*
 - [x] Page and fragment rendering produce correct assets and metadata.
 - [ ] Return-annotation mismatches produce component-aware diagnostics. *(deferred; construction diagnostics covered)*
 
@@ -14,7 +14,7 @@
 
 - [x] Text, attribute, URL, CSS, and trusted-HTML boundaries pass the security corpus. *(Markdown/SVG charts deferred)*
 - [x] Component identity is deterministic and excludes secrets.
-- [x] Cycles and resource limits fail with a readable component path.
+- [x] Cycles (same instance re-entering `render`) and resource limits fail with a readable component path; nested same-type components are allowed.
 - [x] Built-ins document props, slots, accessibility, examples, and escape hatches.
 - [x] Representative trees have stable snapshots and performance baselines.
 

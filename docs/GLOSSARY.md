@@ -38,11 +38,11 @@
 
 **RenderResult** — The immutable framework-neutral result containing a Unicode HTML string plus registered asset, approved header, identity, diagnostic, and optional redacted trace metadata.
 
-**SafeUrl** — An immutable URL validated for a declared purpose and still subject to the final rendering or redirect context policy.
+**SafeUrl** — An immutable URL validated for a declared purpose and still subject to the final rendering or redirect context policy. URL-bearing HTML attributes (including `srcset`, `ping`, and HTMX URL attrs) require SafeUrl checks.
 
-**Secret** — A typed sensitive value whose representations and framework metadata are redacted and whose application access is explicit.
+**Secret** — A typed sensitive value that redacts in public representations; model fields typed as `Secret[T]` validate the inner value against `T`. Application access is explicit via `reveal()`.
 
-**SessionState** — A typed request-scoped facade over the active framework's session; it is not a global Hedron state store.
+**SessionState** — A typed request-scoped facade over the active framework's session, obtained via `session_state(key, annotation)`; it is not a global Hedron state store.
 
 **Scoped styles** — Component-local CSS whose local symbols and keyframes are structurally rewritten to deterministic collision-free identifiers.
 

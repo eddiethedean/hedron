@@ -17,8 +17,9 @@ def home() -> Page:
 
 - Ordinary navigation produces a valid document including language, head metadata, asset references, and body content.
 - An HTMX request produces the declared fragment or layout-aware content rather than duplicating the document shell.
+- An HTMX history-restore request (`HX-History-Restore-Request: true`) selects PAGE mode so the browser receives a full document.
 - Page metadata may include title, description, canonical URL, viewport, selected theme, history policy, and approved head contributions.
-- Scripts and styles enter through registered assets, not arbitrary string injection.
+- Scripts and styles enter through registered assets, not arbitrary string injection. Phase 0.2 injects the bundled HTMX script for PAGE responses when `/hedron-static/` is mounted.
 
 Layouts are explicit components or registered policies. Hedron may provide a default layout but does not infer navigation, permissions, or application information architecture.
 
