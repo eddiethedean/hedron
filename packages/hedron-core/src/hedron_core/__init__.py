@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import contextlib
-
 from hedron_core.builtins import (
     Alert,
     Aside,
@@ -173,17 +171,16 @@ def _register_builtins() -> None:
             f"{getattr(cls, 'distribution', 'hedron-core')}:"
             f"{cls.__module__}.{getattr(cls, 'logical_name', cls.__name__)}"
         )
-        with contextlib.suppress(HedronError):
-            register_component(
-                logical_id=logical,
-                name=getattr(cls, "logical_name", cls.__name__) or cls.__name__,
-                module=cls.__module__,
-                distribution=getattr(cls, "distribution", "hedron-core"),
-                props_model=getattr(cls, "props_type", type(None)).__name__,
-                slots=getattr(cls, "slots", {}),
-                accessibility_notes="Uses native semantic HTML without JavaScript.",
-            )
-    seal_registry()
+        register_component(
+            logical_id=logical,
+            name=getattr(cls, "logical_name", cls.__name__) or cls.__name__,
+            module=cls.__module__,
+            distribution=getattr(cls, "distribution", "hedron-core"),
+            props_model=getattr(cls, "props_type", type(None)).__name__,
+            slots=getattr(cls, "slots", {}),
+            accessibility_notes="Uses native semantic HTML without JavaScript.",
+        )
+    # Do not seal on import — applications seal at lifespan; tests may register more.
 
 
 _register_builtins()

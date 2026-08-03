@@ -6,7 +6,14 @@ import html as html_stdlib
 from collections.abc import Mapping
 from typing import Any
 
-from hedron_core._html_meta import ATTR_ORDER, BOOLEAN_ATTRS, URL_ATTRS, VOID_TAGS
+from hedron_core._html_meta import (
+    ATTR_ORDER,
+    BOOLEAN_ATTRS,
+    FORBIDDEN_ATTRS,
+    FORBIDDEN_TAGS,
+    URL_ATTRS,
+    VOID_TAGS,
+)
 from hedron_core._nodes import (
     CommentNode,
     ComponentBoundaryNode,
@@ -18,7 +25,7 @@ from hedron_core._nodes import (
     TrustedHtmlNode,
 )
 from hedron_core.diagnostics import error
-from hedron_core.security import SafeUrl
+from hedron_core.security import SafeUrl, check_url_purpose_for_attribute
 
 
 def escape_text(value: str) -> str:
@@ -47,6 +54,13 @@ def _format_attr(name: str, value: Any) -> str | None:
             remediation="Use HTMX attributes or registered Web Components instead.",
         )
     lower = name.lower()
+    if lower in FORBIDDEN_ATTRS:
+        raise error(
+            "HED-SEC-0007",
+            title="Forbidden attribute",
+            explanation=f"Attribute {name!r} is not permitted under baseline policy.",
+            remediation="Remove style/srcdoc attributes.",
+        )
     if lower in BOOLEAN_ATTRS:
         if value is False:
             return None
@@ -60,6 +74,7 @@ def _format_attr(name: str, value: Any) -> str | None:
         )
     if lower in URL_ATTRS or lower.endswith("href") or lower.endswith("src"):
         if isinstance(value, SafeUrl):
+            check_url_purpose_for_attribute(value, lower)
             text = value.value
         elif isinstance(value, str):
             raise error(
@@ -122,6 +137,12 @@ def serialize_node(node: Node) -> str:
         return "".join(serialize_node(child) for child in node.children)
     if isinstance(node, ElementNode):
         tag = node.tag.lower()
+        if tag in FORBIDDEN_TAGS:
+            raise error(
+                "HED-SEC-0009",
+                title="Active HTML element rejected",
+                explanation=f"<{tag}> cannot be serialized under baseline policy.",
+            )
         attrs = serialize_attributes(node.attributes)
         if node.void or tag in VOID_TAGS:
             if node.children:

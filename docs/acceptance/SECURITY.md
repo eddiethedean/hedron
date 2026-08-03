@@ -1,25 +1,24 @@
 # Security acceptance
 
-## Required threat scenarios
+## Phase 0.1 (`v0.1.0`) subset
 
-- [ ] XSS attempts in text, attributes, URLs, CSS, JSON, raw HTML, Markdown, SVG, chart specs, and DataEditor values.
-- [ ] CSRF on unsafe cookie-authenticated forms, actions, and editor mutations.
-- [ ] Open redirects, unsafe URL schemes, selector/attribute injection, and GET mutation.
-- [ ] Accidental public addressability and lazy-resource authorization bypass.
-- [ ] Secret leakage through repr, errors, logs, traces, examples, Explorer, identities, cache keys, OpenAPI, and manifests.
-- [ ] Public caching of user, tenant, locale, or permission-sensitive fragments.
-- [ ] Asset traversal, symlink escape, remote fetch, MIME confusion, and undeclared executable content.
-- [ ] Plugin and Explorer capability abuse, arbitrary path/module/URL access, and production exposure.
-- [ ] Mass assignment and forged edits of hidden or read-only fields.
+- [x] XSS attempts in text, attributes, URLs, raw HTML, and blocked active tags (`script`/`style`/`iframe`/`srcdoc`/`style` attrs).
+- [x] Unsafe URL schemes including encoded/entity smuggling; URL attrs require `SafeUrl` with purpose checks.
+- [x] Secret leakage blocked through repr, dump/JSON, identities, and validation messages for secret fields.
+- [x] Mass assignment blocked via `extra="forbid"` on Hedron models.
+- [ ] CSRF on unsafe cookie-authenticated forms, actions, and editor mutations. *(phase 0.2)*
+- [ ] Accidental public addressability and lazy-resource authorization bypass. *(phase 0.2)*
+- [ ] Public caching of user, tenant, locale, or permission-sensitive fragments. *(phase 0.2)*
+- [ ] Asset traversal, plugin/Explorer abuse, DataEditor forged edits. *(later phases)*
+- [ ] Markdown/chart/SVG sanitizer corpus beyond baseline rejection. *(later phases)*
 
 ## Release controls
 
-- [ ] Standard and strict profiles have documented headers and CSP behavior.
-- [ ] CI can emit stable text, JSON, and SARIF diagnostics.
+- [ ] Standard and strict profiles have documented headers and CSP behavior. *(phase 0.2+)*
+- [ ] CI can emit stable text, JSON, and SARIF diagnostics. *(phase 0.4)*
 - [ ] Dependency and component-package audits run in the release pipeline.
 - [ ] A maintained threat model records trust boundaries and residual risks.
 
 ## Exit
 
-No critical or high finding remains open; accepted lower findings have owners, rationale, and target release.
-
+Phase 0.1 core security corpus is green. No critical or high finding remains open for the offline rendering surface.

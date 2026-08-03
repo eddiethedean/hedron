@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import StrEnum
-from types import GeneratorType
+from types import GeneratorType, MappingProxyType
 from typing import Any
 
 from hedron_core._nodes import (
@@ -16,16 +16,19 @@ from hedron_core._nodes import (
     TextNode,
 )
 from hedron_core._serializer import serialize_tree
-from hedron_core.component import Component, ComponentNode
+from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, error, make_diagnostic
 from hedron_core.html import _NativeElement, _TrustedRaw
-from hedron_core.identifiers import instance_id
 from hedron_core.security import Secret
 
-# Public recursive alias for accepted render inputs / component returns.
-NodeLike = (
-    Component[Any] | ComponentNode | str | int | float | bool | None | Sequence["NodeLike"]
-)
+__all__ = [
+    "AssetRef",
+    "NodeLike",
+    "RenderContext",
+    "RenderMode",
+    "RenderResult",
+    "render",
+]
 
 
 class RenderMode(StrEnum):
@@ -49,7 +52,7 @@ class RenderContext:
 class AssetRef:
     kind: str
     href: str
-    attributes: Mapping[str, str] = field(default_factory=dict)
+    attributes: Mapping[str, str] = field(default_factory=lambda: MappingProxyType({}))
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,8 +60,8 @@ class RenderResult:
     html: str
     mode: RenderMode
     assets: tuple[AssetRef, ...] = ()
-    headers: Mapping[str, str] = field(default_factory=dict)
-    identity_map: Mapping[str, str] = field(default_factory=dict)
+    headers: Mapping[str, str] = field(default_factory=lambda: MappingProxyType({}))
+    identity_map: Mapping[str, str] = field(default_factory=lambda: MappingProxyType({}))
     diagnostics: tuple[Diagnostic, ...] = ()
     trace: Mapping[str, Any] | None = None
 
@@ -67,7 +70,7 @@ class _RenderState:
     def __init__(self, context: RenderContext) -> None:
         self.context = context
         self.node_count = 0
-        self.occurrence = 0
+        self.occurrence_by_logical: dict[str, int] = {}
         self.identity_map: dict[str, str] = {}
         self.seen_instance_ids: set[str] = set()
         self.diagnostics: list[Diagnostic] = []
@@ -174,16 +177,15 @@ def _render_component(
         )
     state.stack.append(logical)
     try:
-        state.occurrence += 1
-        ordinal = state.occurrence
-        instance = instance_id(
-            {
-                "logical_id": logical,
-                "identity": component.identity_fields(),
-                "path": state.path(),
-                "ordinal": ordinal,
-            }
-        )
+        component.validate_slots()
+        identity = component.identity_fields()
+        auto_key: str | None = None
+        if "key" not in identity:
+            # No explicit key / identity fields: assign deterministic sibling ordinal as key.
+            count = state.occurrence_by_logical.get(logical, 0) + 1
+            state.occurrence_by_logical[logical] = count
+            auto_key = f"auto-{count}"
+        instance = component.compute_instance_id(auto_key=auto_key)
         if instance in state.seen_instance_ids:
             raise error(
                 "HED-RENDER-0013",
@@ -193,7 +195,8 @@ def _render_component(
                 component_id=logical,
             )
         state.seen_instance_ids.add(instance)
-        state.identity_map[f"{logical}#{ordinal}"] = instance
+        map_key = f"{logical}#{identity.get('key', auto_key)}"
+        state.identity_map[map_key] = instance
 
         rendered = component.render()
         children = _normalize(rendered, state, depth=depth + 1)
@@ -210,7 +213,7 @@ def _render_component(
 
 
 def render(
-    value: Any,
+    value: NodeLike,
     *,
     context: RenderContext | None = None,
     mode: RenderMode = RenderMode.FRAGMENT,
@@ -221,7 +224,6 @@ def render(
     nodes = _normalize(value, state, depth=0)
 
     if mode is RenderMode.PAGE:
-        # Wrap fragment content in a minimal document shell when the root is not Page.
         from hedron_core.builtins.document import Page
 
         if isinstance(value, Page):
@@ -245,15 +247,17 @@ def render(
         html=html_text,
         mode=mode,
         assets=(),
-        headers={},
-        identity_map=dict(state.identity_map),
+        headers=MappingProxyType({}),
+        identity_map=MappingProxyType(dict(state.identity_map)),
         diagnostics=tuple(state.diagnostics),
-        trace={
-            "path": state.path(),
-            "node_count": state.node_count,
-            "locale": ctx.locale,
-            "theme": ctx.theme,
-        },
+        trace=MappingProxyType(
+            {
+                "path": state.path(),
+                "node_count": state.node_count,
+                "locale": ctx.locale,
+                "theme": ctx.theme,
+            }
+        ),
     )
 
 

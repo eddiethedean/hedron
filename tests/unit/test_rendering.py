@@ -1,4 +1,4 @@
-"""Unit tests for rendering, identity, and composition."""
+"""Unit tests for rendering, identity, registry, and composition."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from hedron_core import (
     Card,
     Component,
+    Field,
     Fragment,
     Heading,
     HedronError,
@@ -20,7 +21,9 @@ from hedron_core import (
     Text,
     get_registry,
     html,
+    register_component,
     render,
+    seal_registry,
 )
 from hedron_core.identifiers import instance_id
 
@@ -76,7 +79,7 @@ def test_instance_id_deterministic() -> None:
     b = instance_id({"logical_id": "x", "identity": {"key": "1"}})
     assert a == b
     assert a.startswith("h-")
-    assert len(a) == 22  # h- + 20
+    assert len(a) == 22
 
 
 def test_secret_cannot_render() -> None:
@@ -98,6 +101,7 @@ def test_cycle_detection() -> None:
     with pytest.raises(HedronError) as exc:
         render(Loop())
     assert exc.value.diagnostic.code == "HED-RENDER-0012"
+    assert "hedron_core" in exc.value.diagnostic.explanation or "Loop" in str(exc.value)
 
 
 def test_registry_no_route_by_default() -> None:
@@ -105,6 +109,15 @@ def test_registry_no_route_by_default() -> None:
     metas = list(registry.components())
     assert metas
     assert all(m.route is None for m in metas)
+
+
+def test_register_before_seal() -> None:
+    register_component(logical_id="test-pkg:mod.Extra", name="Extra", module="mod")
+    seal_registry()
+    assert get_registry().get("test-pkg:mod.Extra") is not None
+    # Idempotent seal
+    again = seal_registry()
+    assert again.get("test-pkg:mod.Extra") is not None
 
 
 def test_composition_slots_and_fragments() -> None:
@@ -124,3 +137,46 @@ def test_standalone_context() -> None:
     assert result.trace is not None
     assert result.trace["locale"] == "fr"
     assert result.trace["theme"] == "default"
+
+
+def test_render_result_immutable_maps() -> None:
+    result = render(Text("x"))
+    with pytest.raises(TypeError):
+        result.headers["X"] = "1"  # type: ignore[index]
+
+
+def test_identity_excludes_secret_fields() -> None:
+    class SecretProps2(Props):
+        user_id: int = Field(identity=True)
+        password: str = Field(secret=True)
+
+    class Box2(Component[SecretProps2]):
+        props_type = SecretProps2
+
+        def __init__(self, user_id: int, password: str) -> None:
+            super().__init__(SecretProps2(user_id=user_id, password=password))
+
+        def render(self):
+            return Text("x")
+
+    fields = Box2(1, "hunter2").identity_fields()
+    assert fields == {"user_id": 1}
+    assert "hunter2" not in str(fields)
+
+
+def test_depth_limit() -> None:
+    # Build a deep native-element tree (avoids component cycle detection).
+    node: object = "end"
+    for _ in range(10):
+        node = html.div(node)
+    with pytest.raises(HedronError) as exc:
+        render(node, context=RenderContext(locale="en", max_depth=3))
+    assert exc.value.diagnostic.code == "HED-RENDER-0009"
+
+
+def test_same_explicit_key_collides() -> None:
+    a = Hello("Ada").key("k")
+    b = Hello("Grace").key("k")
+    with pytest.raises(HedronError) as exc:
+        render([a, b])
+    assert exc.value.diagnostic.code == "HED-RENDER-0013"

@@ -27,13 +27,24 @@ def test_landmarks_use_semantic_elements() -> None:
 
 
 @pytest.mark.a11y
-def test_form_field_label_association() -> None:
-    control = TextInput("email", type="email")
-    field = FormField(name="email", label="Email", control=control, required=True)
+def test_form_field_label_association_and_aria() -> None:
+    control = TextInput("email", type="email", id="custom-ignored")
+    field = FormField(
+        name="email",
+        label="Email",
+        control=control,
+        required=True,
+        help="Work email",
+        error="Required",
+    )
     html = render(Form(field)).html
     assert 'for="field-email"' in html
     assert 'id="field-email"' in html
-    assert "<label" in html
+    assert 'aria-describedby="field-email-help field-email-error"' in html
+    assert 'aria-invalid="true"' in html
+    assert 'aria-required="true"' in html
+    assert "required" in html
+    assert 'id="custom-ignored"' not in html
 
 
 @pytest.mark.a11y

@@ -2,10 +2,24 @@
 
 from __future__ import annotations
 
+import importlib.util
+import sys
+from pathlib import Path
+
 import pytest
-from app import render_page, render_users_fragment, team_admin_page
 
 from hedron_core import HedronError, SafeUrl, TrustedHtml, UrlPurpose, html, render
+
+_APP_PATH = Path(__file__).resolve().parent / "app.py"
+_SPEC = importlib.util.spec_from_file_location("reference_app", _APP_PATH)
+assert _SPEC and _SPEC.loader
+_MOD = importlib.util.module_from_spec(_SPEC)
+sys.modules["reference_app"] = _MOD
+_SPEC.loader.exec_module(_MOD)
+
+render_page = _MOD.render_page
+render_users_fragment = _MOD.render_users_fragment
+team_admin_page = _MOD.team_admin_page
 
 
 def test_reference_page_renders_offline() -> None:

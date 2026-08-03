@@ -94,16 +94,51 @@ class FormField(Component[FormFieldProps]):
                 **kwargs,
             )
         )
-        self._slot_values["control"] = control
         self._field_id = f"field-{name}"
+        self._slot_values["control"] = self._bind_control(control)
+
+    def _bind_control(self, control: Any) -> Any:
+        """Force control id and propagate required / aria wiring."""
+        field_id = self._field_id
+        help_id = f"{field_id}-help" if self.props.help else None
+        error_id = f"{field_id}-error" if self.props.error else None
+        described_by = " ".join(x for x in (help_id, error_id) if x) or None
+
+        # Prefer mutating known built-in controls via props reconstruction.
+        if isinstance(control, Component):
+            props = control.props
+            updates: dict[str, Any] = {}
+            if hasattr(props, "id"):
+                updates["id"] = field_id
+            if self.props.required and hasattr(props, "required"):
+                updates["required"] = True
+            if updates:
+                new_props = props.model_copy(update=updates)
+                control._props = new_props  # type: ignore[attr-defined]
+            # Stash aria on a side channel consumed in render wrapper.
+            control._hedron_aria = {  # type: ignore[attr-defined]
+                "describedby": described_by,
+                "invalid": "true" if self.props.error else None,
+                "required": "true" if self.props.required else None,
+            }
+        return control
 
     def render(self) -> Any:
         help_id = f"{self._field_id}-help" if self.props.help else None
         error_id = f"{self._field_id}-error" if self.props.error else None
-        described_by = " ".join(x for x in (help_id, error_id) if x) or None
+        control = self._slot_values["control"]
+        aria = getattr(control, "_hedron_aria", {}) or {}
+
+        # Wrap control so aria-* lands on the actual interactive element when possible.
+        if isinstance(control, Component) and hasattr(control, "render"):
+            rendered = control.render()
+            control_node = self._apply_aria(rendered, aria)
+        else:
+            control_node = self._apply_aria(control, aria)
+
         parts: list[Any] = [
             Label(self.props.label, for_=self._field_id),
-            self._slot_values["control"],
+            control_node,
         ]
         if self.props.help:
             parts.append(html.p(self.props.help, id=help_id, class_="hedron-field-help"))
@@ -116,10 +151,24 @@ class FormField(Component[FormFieldProps]):
                     role="alert",
                 )
             )
-        attrs: dict[str, Any] = {"class_": "hedron-form-field"}
-        if described_by:
-            attrs["data"] = {"describedby": described_by}
-        return html.div(*parts, **attrs)
+        return html.div(*parts, class_="hedron-form-field")
+
+    def _apply_aria(self, node: Any, aria: dict[str, Any]) -> Any:
+        from hedron_core.html import _NativeElement
+
+        if not isinstance(node, _NativeElement):
+            return node
+        attrs = dict(node.attributes)
+        if aria.get("describedby"):
+            attrs["aria-describedby"] = aria["describedby"]
+        if aria.get("invalid"):
+            attrs["aria-invalid"] = aria["invalid"]
+        if aria.get("required"):
+            attrs["aria-required"] = aria["required"]
+        # Rebuild with merged attributes through ElementNode path at render time.
+        merged = _NativeElement(node.tag, node.children, {})
+        merged.attributes = attrs
+        return merged
 
 
 class TextInputProps(Props):

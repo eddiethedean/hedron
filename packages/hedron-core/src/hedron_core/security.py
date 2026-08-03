@@ -2,16 +2,21 @@
 
 from __future__ import annotations
 
+import html as html_stdlib
 import re
 from enum import StrEnum
 from typing import Any, TypeVar
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
+
+from pydantic import GetCoreSchemaHandler
+from pydantic_core import core_schema
 
 from hedron_core.diagnostics import HedronError, error
 
 T = TypeVar("T")
 
 _REDACTED = "***"
+_DECODE_ROUNDS = 3
 
 
 class UrlPurpose(StrEnum):
@@ -51,6 +56,24 @@ class Secret[T]:
 
     def __setattr__(self, name: str, value: Any) -> None:
         raise AttributeError("Secret is immutable")
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> core_schema.CoreSchema:
+        def validate(value: Any) -> Secret[Any]:
+            if isinstance(value, Secret):
+                return value
+            return Secret(value)
+
+        return core_schema.no_info_plain_validator_function(
+            validate,
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                lambda _v: _REDACTED,
+                info_arg=False,
+                return_schema=core_schema.str_schema(),
+            ),
+        )
 
 
 class TrustedHtml:
@@ -106,6 +129,90 @@ _DANGEROUS_SCHEMES = frozenset(
     }
 )
 _CONTROL_CHARS = re.compile(r"[\x00-\x1f\x7f]")
+_SCHEME_PREFIX = re.compile(r"^([a-z][a-z0-9+.-]*):", re.IGNORECASE)
+
+
+def _normalize_for_scheme_scan(value: str) -> str:
+    """HTML-unescape and percent-decode (bounded) to defeat scheme smuggling."""
+    current = value
+    for _ in range(_DECODE_ROUNDS):
+        unescaped = html_stdlib.unescape(current)
+        try:
+            decoded = unquote(unescaped, errors="strict")
+        except Exception:
+            decoded = unquote(unescaped)
+        # Collapse whitespace used to break scheme detection.
+        collapsed = re.sub(r"\s+", "", decoded)
+        if collapsed == current:
+            break
+        current = collapsed
+    return current.lower()
+
+
+def _extract_scheme(value: str) -> str:
+    match = _SCHEME_PREFIX.match(value)
+    return match.group(1).lower() if match else ""
+
+
+def _purpose_for_attr(attr: str) -> UrlPurpose:
+    lower = attr.lower()
+    if lower in {"action", "formaction"}:
+        return UrlPurpose.FORM_ACTION
+    if lower in {"src", "poster"} or lower.endswith("src"):
+        return UrlPurpose.ASSET
+    if lower in {"hx-get", "hx-post", "hx-put", "hx-patch", "hx-delete", "hx-href"}:
+        return UrlPurpose.NAVIGATION
+    return UrlPurpose.NAVIGATION
+
+
+def check_url_purpose_for_attribute(url: SafeUrl, attr: str) -> None:
+    """Enforce SafeUrl purpose against the final attribute class."""
+    expected = _purpose_for_attr(attr)
+    # NAVIGATION may appear on href; REDIRECT is stricter and only for redirect contexts.
+    if url.purpose is UrlPurpose.REDIRECT and expected is not UrlPurpose.NAVIGATION:
+        raise error(
+            "HED-SEC-0006",
+            title="URL purpose mismatch",
+            explanation=(
+                f"SafeUrl purpose={url.purpose.value!r} is not valid for attribute {attr!r}."
+            ),
+            remediation=f"Parse the URL with purpose={expected.value!r}.",
+        )
+    if url.purpose is UrlPurpose.ASSET and expected not in {
+        UrlPurpose.ASSET,
+        UrlPurpose.NAVIGATION,
+    }:
+        raise error(
+            "HED-SEC-0006",
+            title="URL purpose mismatch",
+            explanation=(
+                f"SafeUrl purpose={url.purpose.value!r} is not valid for attribute {attr!r}."
+            ),
+            remediation=f"Parse the URL with purpose={expected.value!r}.",
+        )
+    if url.purpose is UrlPurpose.FORM_ACTION and expected is not UrlPurpose.FORM_ACTION:
+        raise error(
+            "HED-SEC-0006",
+            title="URL purpose mismatch",
+            explanation=(
+                f"SafeUrl purpose={url.purpose.value!r} is not valid for attribute {attr!r}."
+            ),
+            remediation=f"Parse the URL with purpose={expected.value!r}.",
+        )
+    if url.purpose is UrlPurpose.NAVIGATION and expected is UrlPurpose.FORM_ACTION:
+        raise error(
+            "HED-SEC-0006",
+            title="URL purpose mismatch",
+            explanation="Navigation URLs cannot be used as form actions.",
+            remediation="Parse with purpose=form_action.",
+        )
+    if url.purpose is UrlPurpose.NAVIGATION and expected is UrlPurpose.ASSET:
+        raise error(
+            "HED-SEC-0006",
+            title="URL purpose mismatch",
+            explanation="Navigation URLs cannot be used as asset sources.",
+            remediation="Parse with purpose=asset.",
+        )
 
 
 class SafeUrl:
@@ -133,20 +240,26 @@ class SafeUrl:
         if not raw:
             raise _url_error("URL is empty", purpose)
 
-        # Block scheme smuggling via whitespace / mixed case before parse.
-        lowered = raw.lower()
+        if "\\" in raw or "\n" in raw or "\r" in raw or "\t" in raw:
+            raise _url_error("URL contains disallowed characters", purpose)
+
+        scanned = _normalize_for_scheme_scan(raw)
+        if _CONTROL_CHARS.search(scanned):
+            raise _url_error("URL contains control characters after decoding", purpose)
+
+        scanned_scheme = _extract_scheme(scanned)
+        if scanned_scheme in _DANGEROUS_SCHEMES:
+            raise _url_error(f"Disallowed URL scheme for {purpose.value}", purpose)
+
+        # Also reject dangerous scheme tokens at the start after decode.
         for scheme in _DANGEROUS_SCHEMES:
-            if lowered.startswith(f"{scheme}:"):
+            if scanned.startswith(f"{scheme}:"):
                 raise _url_error(f"Disallowed URL scheme for {purpose.value}", purpose)
 
         parts = urlsplit(raw)
         scheme = parts.scheme.lower()
-
         if scheme in _DANGEROUS_SCHEMES:
             raise _url_error(f"Disallowed URL scheme for {purpose.value}", purpose)
-
-        if "\\" in raw or "\n" in raw or "\r" in raw:
-            raise _url_error("URL contains disallowed characters", purpose)
 
         if scheme in {"mailto", "tel"}:
             if purpose is not UrlPurpose.NAVIGATION:
@@ -157,18 +270,19 @@ class SafeUrl:
             if not parts.netloc:
                 raise _url_error("HTTP(S) URL requires a host", purpose)
         elif scheme == "":
-            # Relative / same-origin path or fragment.
-            if raw.startswith("//"):
+            if raw.startswith("//") or scanned.startswith("//"):
                 raise _url_error(
                     "Protocol-relative URLs require an explicit absolute scheme",
                     purpose,
                 )
-            if purpose is UrlPurpose.REDIRECT and raw.startswith("//"):
-                raise _url_error("Open redirect via protocol-relative URL", purpose)
+            # Reject encoded absolute schemes that urlsplit treated as relative.
+            if scanned_scheme and scanned_scheme not in {"", "mailto", "tel", "http", "https"}:
+                raise _url_error(f"Unsupported or encoded URL scheme {scanned_scheme!r}", purpose)
+            if scanned_scheme in {"http", "https"} and not allow_external:
+                raise _url_error("External HTTP(S) URLs require allow_external=True", purpose)
         else:
             raise _url_error(f"Unsupported URL scheme {scheme!r}", purpose)
 
-        # Credential-bearing absolute URLs are rejected.
         if parts.username is not None or parts.password is not None:
             raise _url_error("URLs must not contain credentials", purpose)
 
@@ -221,4 +335,10 @@ def is_secret(value: Any) -> bool:
 def redact_value(value: Any) -> Any:
     if isinstance(value, Secret):
         return _REDACTED
+    if isinstance(value, list):
+        return [redact_value(v) for v in value]
+    if isinstance(value, tuple):
+        return tuple(redact_value(v) for v in value)
+    if isinstance(value, dict):
+        return {k: redact_value(v) for k, v in value.items()}
     return value

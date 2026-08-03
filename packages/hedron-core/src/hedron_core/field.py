@@ -55,15 +55,19 @@ def Field(  # noqa: N802 — public API matches specification
             explanation="A field cannot be both read_only and have a writable_policy.",
             remediation="Remove one of read_only or writable_policy.",
         )
-    if hidden and accessible_label is None and label is None:
-        # Hidden fields may omit visible labels; ok.
-        pass
     if secret and display == "plaintext":
         raise error(
             "HED-MODEL-0001",
             title="Contradictory field metadata",
             explanation="A secret field cannot use plaintext display.",
             remediation="Remove display='plaintext' or secret=True.",
+        )
+    if secret and identity:
+        raise error(
+            "HED-MODEL-0001",
+            title="Contradictory field metadata",
+            explanation="A secret field cannot participate in component identity.",
+            remediation="Remove secret=True or identity=True.",
         )
     if extra:
         raise error(
@@ -73,23 +77,35 @@ def Field(  # noqa: N802 — public API matches specification
             remediation="Use only documented Field metadata groups.",
         )
 
-    ge = minimum
-    le = maximum
+    # Store string constraints in Hedron meta so Secret[T] fields are not broken
+    # by Pydantic applying min_length to the Secret wrapper.
+    hedron_constraints = {
+        "minimum": minimum,
+        "maximum": maximum,
+        "min_length": min_length,
+        "max_length": max_length,
+        "pattern": pattern,
+        "choices": list(choices) if choices is not None else None,
+    }
+
     pydantic_kwargs: dict[str, Any] = {}
     if default_factory is not None:
         pydantic_kwargs["default_factory"] = default_factory
     elif default is not ...:
         pydantic_kwargs["default"] = default
-    if ge is not None:
-        pydantic_kwargs["ge"] = ge
-    if le is not None:
-        pydantic_kwargs["le"] = le
-    if min_length is not None:
-        pydantic_kwargs["min_length"] = min_length
-    if max_length is not None:
-        pydantic_kwargs["max_length"] = max_length
-    if pattern is not None:
-        pydantic_kwargs["pattern"] = pattern
+    # Numeric bounds still apply to plain numbers via Pydantic.
+    if minimum is not None:
+        pydantic_kwargs["ge"] = minimum
+    if maximum is not None:
+        pydantic_kwargs["le"] = maximum
+    # Only apply length/pattern to non-secret fields at the Pydantic layer.
+    if not secret:
+        if min_length is not None:
+            pydantic_kwargs["min_length"] = min_length
+        if max_length is not None:
+            pydantic_kwargs["max_length"] = max_length
+        if pattern is not None:
+            pydantic_kwargs["pattern"] = pattern
 
     json_schema_extra = {
         "hedron": {
@@ -112,8 +128,8 @@ def Field(  # noqa: N802 — public API matches specification
             "accessible_label": accessible_label,
             "accessible_description": accessible_description,
             "accessible_error": accessible_error,
-            "choices": list(choices) if choices is not None else None,
             "required": required,
+            **hedron_constraints,
         }
     }
     pydantic_kwargs["json_schema_extra"] = json_schema_extra
@@ -125,5 +141,5 @@ def hedron_meta(info: FieldInfo) -> dict[str, Any]:
     if isinstance(extra, dict):
         meta = extra.get("hedron")
         if isinstance(meta, dict):
-            return meta
+            return dict(meta)
     return {}

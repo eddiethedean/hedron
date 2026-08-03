@@ -20,7 +20,7 @@ class ComponentMeta:
     slots: Mapping[str, str]
     examples: tuple[str, ...] = ()
     docs: str | None = None
-    route: str | None = None  # Always None for renderables by default
+    route: str | None = None
     accessibility_notes: str | None = None
 
 
@@ -100,16 +100,20 @@ def register_component(
 
 
 def seal_registry() -> Registry:
+    """Seal the builder. Idempotent: returns the existing snapshot if already sealed."""
     global _active
+    if _builder._sealed and _active is not None:
+        return _active
     _active = _builder.seal()
     return _active
 
 
 def get_registry() -> Registry:
+    """Return the sealed registry, or an unsealed snapshot of current registrations."""
     global _active
-    if _active is None:
-        _active = _builder.seal()
-    return _active
+    if _active is not None:
+        return _active
+    return Registry(dict(_builder._components))
 
 
 def reset_registry_for_tests() -> None:

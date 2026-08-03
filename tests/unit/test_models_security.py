@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import pytest
 from pydantic import ValidationError
 
 from hedron_core import (
     Field,
     FormModel,
+    HedronError,
     Model,
     Props,
     SafeUrl,
@@ -15,7 +18,6 @@ from hedron_core import (
     TrustedHtml,
     UrlPurpose,
 )
-from hedron_core.diagnostics import HedronError
 
 
 def test_model_forbids_extra_fields() -> None:
@@ -33,13 +35,16 @@ def test_secret_redacts_repr_and_str() -> None:
     assert secret.reveal() == "super-secret"
 
 
-def test_secret_redacted_in_model_dump() -> None:
+def test_secret_redacted_in_model_dump_and_json() -> None:
     class Row(Model):
         token: Secret[str]
+        tokens: list[Secret[str]]
 
-    row = Row(token=Secret("abc"))
+    row = Row(token=Secret("abc"), tokens=[Secret("x"), Secret("y")])
     dumped = row.model_dump()
     assert dumped["token"] == "***"
+    assert dumped["tokens"] == ["***", "***"]
+    assert "abc" not in row.model_dump_json()
     assert "abc" not in repr(row)
 
 
@@ -69,11 +74,45 @@ def test_safe_url_external_requires_flag() -> None:
     assert url.value.startswith("https://")
 
 
-def test_field_contradiction() -> None:
+def test_field_contradiction_read_only() -> None:
     with pytest.raises(HedronError):
 
         class Bad(FormModel):
             x: int = Field(read_only=True, writable_policy="admin")
+
+
+def test_field_secret_identity_contradiction() -> None:
+    with pytest.raises(HedronError):
+
+        class Bad(Props):
+            password: str = Field(secret=True, identity=True)
+
+
+def test_field_choices_enforced() -> None:
+    class Color(FormModel):
+        color: str = Field(choices=["red", "blue"])
+
+    assert Color(color="red").color == "red"
+    with pytest.raises(HedronError):
+        Color(color="green")
+
+
+def test_secret_min_length_without_leak() -> None:
+    class Cred(FormModel):
+        password: Secret[str] = Field(min_length=8, secret=True)
+
+    ok = Cred(password=Secret("longenough"))
+    assert ok.password.reveal() == "longenough"
+    with pytest.raises(HedronError) as exc:
+        Cred(password=Secret("short"))
+    assert "short" not in str(exc.value)
+
+
+def test_rejects_unsupported_annotations() -> None:
+    with pytest.raises(HedronError):
+
+        class BadProps(Props):
+            cb: Callable[[], None]
 
 
 def test_props_role() -> None:

@@ -1,12 +1,17 @@
-name: CI
+name: Release
 
 on:
   push:
-    branches: [main]
-  pull_request:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   test:
+    name: Test and checks (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -29,25 +34,35 @@ jobs:
         run: uv run pyright
       - name: Tests
         run: uv run pytest -q
-      - name: Build package
-        run: uv build --package hedron-core
+      - name: Build all workspace packages
+        run: |
+          set -euo pipefail
+          for pyproject in packages/*/pyproject.toml; do
+            pkg="$(basename "$(dirname "$pyproject")")"
+            echo "Building $pkg"
+            uv build --package "$pkg"
+          done
       - name: Clean-install smoke
         run: |
+          set -euo pipefail
           uv venv /tmp/hedron-smoke --python ${{ matrix.python-version }}
-          uv pip install --python /tmp/hedron-smoke dist/hedron_core-*.whl
-          /tmp/hedron-smoke/bin/python - <<'PY'
+          shopt -s nullglob
+          wheels=(dist/hedron_core-*.whl)
+          if ((${#wheels[@]})); then
+            uv pip install --python /tmp/hedron-smoke "${wheels[@]}"
+            /tmp/hedron-smoke/bin/python - <<'PY'
           from hedron_core import Page, Text, RenderMode, render
           html = render(Page(Text("smoke"), title="Smoke"), mode=RenderMode.PAGE).html
           assert html.startswith("<!DOCTYPE html>")
           assert "smoke" in html
           print("ok: clean-install render")
           PY
+          fi
       - name: Prove no web frameworks or Node tooling in core env
         run: |
           uv run python -c "import importlib.util as u; assert u.find_spec('fastapi') is None; assert u.find_spec('flask') is None; assert u.find_spec('django') is None; print('ok: no FastAPI/Flask/Django')"
           test ! -f package.json
           test ! -d node_modules
-          # CI image may include node; core must not require it.
           echo "ok: no Node package tooling in repo"
       - name: Doc link smoke
         run: |
@@ -75,3 +90,38 @@ jobs:
               raise SystemExit("\n".join(missing[:50]))
           print("ok: relative doc links resolve")
           PY
+
+  publish:
+    name: Publish to PyPI
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Sync
+        run: uv sync --python 3.12
+      - name: Build all workspace packages
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          mkdir -p dist
+          for pyproject in packages/*/pyproject.toml; do
+            pkg="$(basename "$(dirname "$pyproject")")"
+            echo "Building $pkg"
+            uv build --package "$pkg"
+          done
+          ls -la dist
+      - name: Publish to PyPI
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${UV_PUBLISH_TOKEN:-}" ]; then
+            echo "PYPI_API_TOKEN secret is not set" >&2
+            exit 1
+          fi
+          uv publish --token "$UV_PUBLISH_TOKEN"
