@@ -108,4 +108,4 @@ jobs:
         if: matrix.python-version == '3.12'
         run: |
           uv sync --group docs --python ${{ matrix.python-version }}
-          uv run mkdocs build --strict
+          uv run --group docs mkdocs build --strict
