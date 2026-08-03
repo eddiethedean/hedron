@@ -299,6 +299,11 @@ def test_explorer_panels_and_simulate() -> None:
         return Page(Text("hi"), title="T")
 
     with TestClient(app) as client:
+        home = client.get("/")
+        assert home.status_code == 200
+        token = home.cookies.get("hedron_csrf")
+        assert token
+        csrf_headers = {"X-CSRF-Token": token}
         index = client.get("/hedron-explorer/")
         assert index.status_code == 200
         assert "Skip to content" in index.text
@@ -317,24 +322,32 @@ def test_explorer_panels_and_simulate() -> None:
         denied = client.post(
             "/hedron-explorer/api/simulate",
             json={"route": "missing", "allow_mutations": False},
+            headers=csrf_headers,
         )
         assert denied.status_code == 400
         bad_json = client.post(
             "/hedron-explorer/api/simulate",
             content=b"{not-json",
-            headers={"content-type": "application/json"},
+            headers={"content-type": "application/json", **csrf_headers},
         )
         assert bad_json.status_code == 400
         unknown_key = client.post(
             "/hedron-explorer/api/simulate",
             json={"route": "home", "extra": 1},
+            headers=csrf_headers,
         )
         assert unknown_key.status_code == 400
         mutations = client.post(
             "/hedron-explorer/api/simulate",
             json={"route": "home", "allow_mutations": True},
+            headers=csrf_headers,
         )
         assert mutations.status_code == 403
+        bare = client.post(
+            "/hedron-explorer/api/simulate",
+            json={"route": "missing", "allow_mutations": False},
+        )
+        assert bare.status_code == 403
 
 
 def test_csrf_on_mixed_method_page_and_action() -> None:

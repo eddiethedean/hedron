@@ -63,6 +63,60 @@ def test_interaction_headers(django_client: Client) -> None:
     assert "Updated" in response.content.decode()
 
 
+def test_component_vary_header(django_client: Client) -> None:
+    response = django_client.get("/fragment/", HTTP_HX_REQUEST="true")
+    vary = response.headers.get("Vary", "")
+    assert "HX-Request" in vary
+
+
+def test_csrf_header_name_matches_django_default() -> None:
+    from hedron_django.csrf import DEFAULT_CSRF_HEADER, csrf_header_name
+
+    assert csrf_header_name() == "X-CSRFToken"
+    assert DEFAULT_CSRF_HEADER == "X-CSRFToken"
+
+
+def test_oob_authorization(django_client: Client) -> None:
+    from hedron_core import Text
+    from hedron_core.interaction import (
+        FragmentRegion,
+        InteractionPolicy,
+        InteractionResult,
+        OobUpdate,
+    )
+    from hedron_django.responses import interaction_response
+
+    ok = InteractionResult(
+        content=Text("main"),
+        oob=(OobUpdate(content=Text("side"), element_id="side"),),
+        policy=InteractionPolicy(
+            declared_regions=(FragmentRegion(id="side", selector="#side"),)
+        ),
+    )
+    response = interaction_response(ok)
+    assert response.status_code == 200
+    assert b"hx-swap-oob" in response.content
+
+    bad = InteractionResult(
+        content=Text("main"),
+        oob=(OobUpdate(content=Text("evil"), element_id="evil"),),
+        policy=InteractionPolicy(
+            declared_regions=(FragmentRegion(id="side", selector="#side"),)
+        ),
+    )
+    denied = interaction_response(bad)
+    assert denied.status_code == 403
+
+
+def test_render_mode_history_restore() -> None:
+    assert (
+        render_mode_for_request(
+            {"HX-Request": "true", "HX-History-Restore-Request": "true"}
+        )
+        is RenderMode.PAGE
+    )
+
+
 def test_render_mode_for_request() -> None:
     assert render_mode_for_request({}) is RenderMode.PAGE
     assert render_mode_for_request({"HX-Request": "true"}) is RenderMode.FRAGMENT

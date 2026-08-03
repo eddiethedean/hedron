@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from flask import Flask, Request
+from flask import session as flask_session
 
 from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
@@ -27,11 +28,26 @@ class HedronFlask:
         import_name: str,
         *,
         csrf_cookie_name: str = "hedron_csrf",
+        auto_csrf_cookie: bool = True,
         **kwargs: Any,
     ) -> None:
         self.flask = Flask(import_name, **kwargs)
         self.csrf_cookie_name = csrf_cookie_name
         self.url_reverser = FlaskUrlReverser(self.flask)
+        if auto_csrf_cookie:
+
+            @self.flask.after_request
+            def _attach_csrf(response):  # type: ignore[no-untyped-def]
+                from flask import request
+
+                if request.method in {"GET", "HEAD"}:
+                    ensure_csrf_cookie(
+                        response,
+                        csrf_token_for_request(request, cookie_name=self.csrf_cookie_name),
+                        cookie_name=self.csrf_cookie_name,
+                        secure=request.is_secure,
+                    )
+                return response
 
     @property
     def capabilities(self):
@@ -68,23 +84,32 @@ class HedronFlask:
         extra_headers: Mapping[str, str] | None = None,
     ):
         if isinstance(value, InteractionResult):
-            return interaction_response(value, context=context, mode=mode)
+            return interaction_response(
+                value,
+                context=context,
+                mode=mode,
+                extra_headers=extra_headers,
+                headers_map=dict(request.headers),
+            )
         return component_response(
             value,
             context=context,
             mode=mode,
             extra_headers=extra_headers,
+            headers_map=dict(request.headers),
         )
 
-    def auth_signal(self, request: Request) -> AuthSignal:
-        user_id = request.session.get("user_id") if request.session else None
+    def auth_signal(self, request: Request | None = None) -> AuthSignal:
+        del request  # Flask session is the request-local proxy.
+        user_id = flask_session.get("user_id")
         authenticated = bool(user_id)
-        scopes = tuple(request.session.get("scopes", ())) if request.session else ()
-        tenant_id = request.session.get("tenant_id") if request.session else None
+        scopes_raw = flask_session.get("scopes", ())
+        scopes = tuple(scopes_raw) if isinstance(scopes_raw, (list, tuple)) else ()
+        tenant_id = flask_session.get("tenant_id")
         return AuthSignal(
             authenticated=authenticated,
             subject_id=str(user_id) if user_id is not None else None,
-            scopes=scopes if isinstance(scopes, tuple) else tuple(scopes),
+            scopes=scopes,
             tenant_id=str(tenant_id) if tenant_id is not None else None,
         )
 

@@ -69,6 +69,71 @@ def test_interaction_headers(client: FlaskClient) -> None:
     assert "Updated" in response.get_data(as_text=True)
 
 
+def test_component_vary_header(client: FlaskClient) -> None:
+    response = client.get("/fragment", headers={"HX-Request": "true"})
+    vary = response.headers.get("Vary", "")
+    assert "HX-Request" in vary
+
+
+def test_auth_signal_uses_flask_session() -> None:
+    hedron = HedronFlask(__name__)
+    hedron.flask.secret_key = "test"
+    with hedron.flask.test_request_context("/"):
+        from flask import session
+
+        session["user_id"] = "u1"
+        session["scopes"] = ["read"]
+        session["tenant_id"] = "t1"
+        signal = hedron.auth_signal()
+    assert signal.authenticated is True
+    assert signal.subject_id == "u1"
+    assert signal.scopes == ("read",)
+    assert signal.tenant_id == "t1"
+
+
+def test_oob_authorization() -> None:
+    from hedron_core.interaction import FragmentRegion, InteractionPolicy, OobUpdate
+
+    hedron = HedronFlask(__name__)
+    ok = InteractionResult(
+        content=Text("main"),
+        oob=(OobUpdate(content=Text("side"), element_id="side"),),
+        policy=InteractionPolicy(
+            declared_regions=(FragmentRegion(id="side", selector="#side"),)
+        ),
+    )
+    with hedron.flask.test_request_context("/"):
+        response = interaction_response(ok)
+    assert response.status_code == 200
+    assert "hx-swap-oob" in response.get_data(as_text=True)
+
+    bad = InteractionResult(
+        content=Text("main"),
+        oob=(OobUpdate(content=Text("evil"), element_id="evil"),),
+        policy=InteractionPolicy(
+            declared_regions=(FragmentRegion(id="side", selector="#side"),)
+        ),
+    )
+    with hedron.flask.test_request_context("/"):
+        denied = interaction_response(bad)
+    assert denied.status_code == 403
+
+
+def test_csrf_cookie_on_get() -> None:
+    hedron = HedronFlask(__name__)
+    hedron.flask.secret_key = "test"
+
+    @hedron.flask.get("/safe")
+    def safe():
+        return "ok"
+
+    client = hedron.flask.test_client()
+    response = client.get("/safe")
+    assert response.status_code == 200
+    set_cookie = response.headers.getlist("Set-Cookie")
+    assert any("hedron_csrf=" in c for c in set_cookie)
+
+
 def test_render_mode_for_request() -> None:
     assert render_mode_for_request({}) is RenderMode.PAGE
     assert render_mode_for_request({"HX-Request": "true"}) is RenderMode.FRAGMENT

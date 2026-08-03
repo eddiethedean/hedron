@@ -1,7 +1,11 @@
 """CSRF and session helpers for Django.
 
 Django's built-in ``CsrfViewMiddleware`` and session middleware remain authoritative.
-These helpers only expose Hedron-aligned token/header names for forms and HTMX headers.
+These helpers expose token/header names aligned with stock Django defaults.
+
+Stock Django accepts ``X-CSRFToken`` (``CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"``).
+Apps that prefer Hedron's portable ``X-CSRF-Token`` can set
+``CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"`` in Django settings.
 """
 
 from __future__ import annotations
@@ -17,7 +21,8 @@ __all__ = [
     "extract_csrf_from_post",
 ]
 
-DEFAULT_CSRF_HEADER = "X-CSRF-Token"
+# Matches Django's default CSRF_HEADER_NAME / HTTP_X_CSRFTOKEN.
+DEFAULT_CSRF_HEADER = "X-CSRFToken"
 
 
 def csrf_header_name() -> str:

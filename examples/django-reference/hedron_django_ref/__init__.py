@@ -53,3 +53,11 @@ urlpatterns = [
 ]
 
 application = get_wsgi_application()
+
+try:
+    from django.core.asgi import get_asgi_application
+
+    asgi_application = get_asgi_application()
+except Exception:  # noqa: BLE001 — ASGI optional for the WSGI-first slice
+    asgi_application = None
+

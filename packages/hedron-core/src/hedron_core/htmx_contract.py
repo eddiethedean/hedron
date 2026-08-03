@@ -72,15 +72,28 @@ class HtmxContext:
 
 def is_local_path(url: str) -> bool:
     """Same-origin relative path check used by approved redirect/location headers."""
+    from urllib.parse import unquote
+
     if "\\" in url or any(ord(ch) < 32 for ch in url):
         return False
+    # Reject encoded slash tricks before parsing (/%2f%2fevil).
+    decoded = unquote(url)
+    if decoded != url:
+        if "\\" in decoded or any(ord(ch) < 32 for ch in decoded):
+            return False
+        if decoded.startswith("//") or "://" in decoded:
+            return False
     parsed = urlparse(url)
     if parsed.scheme or parsed.netloc:
         return False
     if not url.startswith("/") or url.startswith("//"):
         return False
+    if decoded.startswith("//"):
+        return False
     path = parsed.path or "/"
-    return _LOCAL_PATH.fullmatch(path) is not None
+    return _LOCAL_PATH.fullmatch(path) is not None and _LOCAL_PATH.fullmatch(
+        urlparse(decoded).path or "/"
+    ) is not None
 
 
 def safe_css_selector(selector: str) -> bool:

@@ -12,6 +12,7 @@ from hedron_core.redis_cache import RedisCacheBackend
 class _StubRedis:
     def __init__(self) -> None:
         self._store: dict[str, str] = {}
+        self._sets: dict[str, set[str]] = {}
 
     def get(self, key: str) -> str | None:
         return self._store.get(key)
@@ -22,7 +23,15 @@ class _StubRedis:
         return True
 
     def delete(self, key: str) -> int:
+        self._sets.pop(key, None)
         return 1 if self._store.pop(key, None) is not None else 0
+
+    def sadd(self, key: str, member: str) -> int:
+        self._sets.setdefault(key, set()).add(member)
+        return 1
+
+    def smembers(self, key: str) -> set[str]:
+        return set(self._sets.get(key, set()))
 
     def ping(self) -> bool:
         return True
@@ -43,6 +52,15 @@ def test_redis_cache_roundtrip() -> None:
     assert backend.get("a") == {"n": 1}
     assert backend.invalidate(keys=("a",)) == 1
     assert backend.get("a") is None
+
+
+def test_redis_cache_tag_invalidation() -> None:
+    backend = RedisCacheBackend(_StubRedis())
+    backend.set("a", {"n": 1}, tags=("t1",))
+    backend.set("b", {"n": 2}, tags=("t1",))
+    assert backend.invalidate(tags=("t1",)) == 2
+    assert backend.get("a") is None
+    assert backend.get("b") is None
 
 
 def test_redis_cache_rejects_bad_json() -> None:

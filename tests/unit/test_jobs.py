@@ -22,6 +22,26 @@ def test_submit_idempotent_and_cancel() -> None:
     assert st.cancel_requested is True
 
 
+def test_cleanup_drops_idempotency() -> None:
+    backend = InMemoryJobBackend()
+    handle = backend.submit("demo", {}, idempotency_key="gone")
+    backend.mark(handle.job_id, JobState.SUCCEEDED)
+    # Force expiry by rewriting updated_at via mark then cleanup with tiny window.
+    rec = backend._jobs[handle.job_id]
+    from hedron_core.jobs import JobStatus
+
+    rec.status = JobStatus(
+        job_id=rec.status.job_id,
+        state=JobState.SUCCEEDED,
+        job_type=rec.status.job_type,
+        updated_at=0.0,
+        created_at=0.0,
+    )
+    assert backend.cleanup_expired(older_than_seconds=1) == 1
+    again = backend.submit("demo", {}, idempotency_key="gone")
+    assert again.job_id != handle.job_id
+
+
 def test_mark_and_status_interaction() -> None:
     backend = InMemoryJobBackend()
     handle = backend.submit("demo", {})

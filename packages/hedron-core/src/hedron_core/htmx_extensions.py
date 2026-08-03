@@ -44,7 +44,7 @@ def known_extensions() -> tuple[ExtensionAsset, ...]:
             path="/hedron-static/ext/head-support.js",
             csp="script-src 'self'",
             load_order=10,
-            deferred=False,
-            notes="Optional; must be locally served with digest when enabled.",
+            deferred=True,
+            notes="Optional; deferred until a first-party digest pin ships.",
         ),
     )

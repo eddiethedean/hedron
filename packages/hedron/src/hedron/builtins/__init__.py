@@ -41,7 +41,9 @@ def action_attrs(
 
 def oob_swap(element_id: str, content: NodeLike, *, swap: str = "true") -> Any:
     """Mark a node for HTMX out-of-band swap via hx-swap-oob."""
-    return html.div(content, id=element_id, **{"hx-swap-oob": swap})
+    from hedron_core.interaction import oob_swap as core_oob_swap
+
+    return core_oob_swap(element_id, content, swap=swap)
 
 
 def _safe_target(target: str | None) -> str | None:

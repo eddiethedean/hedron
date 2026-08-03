@@ -604,25 +604,29 @@ def explorer_router() -> APIRouter:
 
         policy = getattr(request.app.state, "hedron_security", None)
         if policy is not None and getattr(policy, "csrf_enabled", False):
+            from hedron_core.csrf import validate_double_submit
+
             csrf_name = getattr(policy, "csrf_cookie_name", "hedron_csrf")
             cookie = request.cookies.get(csrf_name)
-            if cookie:
-                from hedron_core.csrf import validate_double_submit
-
-                header = request.headers.get("X-CSRF-Token") or request.headers.get(
-                    "X-Hedron-CSRF"
-                )
-                form_token = None
-                # Prefer adapter-injected validator when present (FastAPI Hedron).
-                validator = getattr(request.app.state, "hedron_csrf_validate", None)
-                if callable(validator):
+            header_name = getattr(policy, "csrf_header_name", "X-CSRF-Token")
+            header = (
+                request.headers.get(header_name)
+                or request.headers.get("X-CSRF-Token")
+                or request.headers.get("X-Hedron-CSRF")
+            )
+            form_token = None
+            validator = getattr(request.app.state, "hedron_csrf_validate", None)
+            if callable(validator):
+                try:
                     result = validator(request, policy)
                     if hasattr(result, "__await__"):
                         await result  # type: ignore[misc]
-                elif not validate_double_submit(
-                    cookie_token=cookie, header_token=header, form_token=form_token
-                ):
+                except Exception:  # noqa: BLE001 — FastAPI CSRF raises HTTPException
                     return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
+            elif not validate_double_submit(
+                cookie_token=cookie, header_token=header, form_token=form_token
+            ):
+                return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
 
         name = payload.get("route")
         if not isinstance(name, str) or not name:

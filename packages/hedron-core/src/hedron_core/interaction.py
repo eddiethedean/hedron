@@ -28,7 +28,9 @@ __all__ = [
     "default_interaction_policy",
     "form_sync_attrs",
     "interaction_headers",
+    "materialize_interaction_nodes",
     "merge_route_regions",
+    "oob_swap",
     "resolve_fragment_region",
     "status_policy_for",
 ]
@@ -209,6 +211,12 @@ def _validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
         if key in {"Cache-Control", "Vary"}:
             other[key] = value
             continue
+        if key == "Retry-After":
+            text = str(value).strip()
+            if not text.isdigit() or int(text) < 0:
+                raise ValueError("Retry-After must be a non-negative integer seconds value")
+            other[key] = text
+            continue
         if key in APPROVED_RESPONSE_HEADERS:
             raise ValueError(f"Unsupported approved header mapping for {key}")
         raise ValueError(f"Unapproved response header: {key}")
@@ -275,6 +283,10 @@ def authorize_oob_update(
     *,
     regions: tuple[FragmentRegion, ...] = (),
 ) -> None:
+    if regions and update.select is None and update.element_id is None:
+        raise ValueError(
+            "OOB updates require element_id or select when fragment regions are declared"
+        )
     if update.select is not None:
         if not safe_css_selector(update.select):
             raise ValueError("Unsafe OOB select selector")
@@ -323,3 +335,35 @@ def form_sync_attrs(policy: InteractionPolicy | None = None) -> dict[str, str]:
     if pol.aria_busy:
         attrs["aria-busy"] = "true"
     return attrs
+
+
+def oob_swap(element_id: str, content: NodeLike | Component[Any], *, swap: str = "true") -> Any:
+    """Mark a node for HTMX out-of-band swap via hx-swap-oob (framework-neutral)."""
+    if not element_id.replace("-", "").replace("_", "").isalnum():
+        raise ValueError("Unsafe OOB element id")
+    from hedron_core.html import html
+
+    return html.div(content, id=element_id, **{"hx-swap-oob": swap})
+
+
+def materialize_interaction_nodes(result: InteractionResult) -> Any | None:
+    """Authorize OOB updates and return a renderable node tree (or None)."""
+    from hedron_core.builtins import Fragment
+
+    regions = result.policy.declared_regions if result.policy is not None else ()
+    if not result.oob:
+        return result.content
+    nodes: list[Any] = []
+    if result.content is not None:
+        nodes.append(result.content)
+    for update in result.oob:
+        authorize_oob_update(update, regions=regions)
+        node: Any = update.content
+        if update.element_id is not None:
+            node = oob_swap(update.element_id, update.content, swap=update.swap)
+        nodes.append(node)
+    if not nodes:
+        return None
+    if len(nodes) == 1:
+        return nodes[0]
+    return Fragment(*nodes)

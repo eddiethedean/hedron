@@ -10,7 +10,12 @@ from flask import request as flask_request
 
 from hedron_core.builtins.document import Page
 from hedron_core.component import Component, NodeLike
-from hedron_core.interaction import InteractionResult, interaction_headers
+from hedron_core.interaction import (
+    FragmentRegionError,
+    InteractionResult,
+    interaction_headers,
+    materialize_interaction_nodes,
+)
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 from hedron_flask.htmx import render_mode_for_request
 
@@ -47,6 +52,12 @@ def _render_body(
     return render(to_render, context=render_context, mode=selected_mode)
 
 
+def _merge_vary(headers: dict[str, str]) -> None:
+    existing = {p.strip() for p in headers.get("Vary", "").split(",") if p.strip()}
+    existing.update({"HX-Request", "HX-History-Restore-Request"})
+    headers["Vary"] = ", ".join(sorted(existing))
+
+
 def component_response(
     value: NodeLike | Component[Any] | RenderResult,
     *,
@@ -54,9 +65,11 @@ def component_response(
     context: RenderContext | None = None,
     mode: RenderMode | None = None,
     extra_headers: Mapping[str, str] | None = None,
+    headers_map: Mapping[str, str] | None = None,
 ) -> Response:
-    result = _render_body(value, context=context, mode=mode)
+    result = _render_body(value, headers=headers_map, context=context, mode=mode)
     headers = dict(result.headers)
+    _merge_vary(headers)
     if extra_headers:
         headers.update(extra_headers)
     return Response(result.html, status=status_code, mimetype="text/html", headers=headers)
@@ -67,26 +80,25 @@ def interaction_response(
     *,
     context: RenderContext | None = None,
     mode: RenderMode | None = None,
+    extra_headers: Mapping[str, str] | None = None,
+    headers_map: Mapping[str, str] | None = None,
 ) -> Response:
+    try:
+        node = materialize_interaction_nodes(result)
+    except (FragmentRegionError, ValueError) as exc:
+        return Response(str(exc), status=403, mimetype="text/plain")
     headers = interaction_headers(result)
+    if extra_headers:
+        headers.update(dict(extra_headers))
     body = ""
-    if result.content is not None:
-        rendered = _render_body(result.content, context=context, mode=mode)
+    if node is not None:
+        rendered = _render_body(
+            node,
+            headers=headers_map,
+            context=context,
+            mode=mode or RenderMode.FRAGMENT,
+        )
         body = rendered.html
-    if result.oob:
-        from hedron_core.rendering import render as core_render
-
-        render_context = context or RenderContext.standalone()
-        parts: list[str] = [body]
-        for update in result.oob:
-            chunk = core_render(update.content, context=render_context, mode=RenderMode.FRAGMENT)
-            tag = chunk.html
-            if update.element_id and 'id="' not in tag:
-                tag = tag.replace(">", f' id="{update.element_id}" hx-swap-oob="{update.swap}">', 1)
-            elif update.swap != "true" and "hx-swap-oob" not in tag:
-                tag = tag.replace(">", f' hx-swap-oob="{update.swap}">', 1)
-            parts.append(tag)
-        body = "".join(parts)
     return Response(
         body,
         status=result.status_code,

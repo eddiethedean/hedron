@@ -666,6 +666,7 @@ dependencies = [
     { name = "hedron-core" },
     { name = "itsdangerous" },
     { name = "packaging" },
+    { name = "pydantic" },
     { name = "python-multipart" },
 ]
 
@@ -720,6 +721,7 @@ requires-dist = [
     { name = "packaging", specifier = ">=24.0" },
     { name = "pillow", marker = "extra == 'images'", specifier = ">=10.0" },
     { name = "playwright", marker = "extra == 'browser'", specifier = ">=1.40" },
+    { name = "pydantic", specifier = ">=2.13.4,<2.14" },
     { name = "pygments", marker = "extra == 'code'", specifier = ">=2.17" },
     { name = "python-multipart", specifier = ">=0.0.9" },
 ]

@@ -29,8 +29,9 @@ def fragment():
     return InteractionResult(content=Text("HTMX fragment refreshed"), explanation="demo fragment")
 
 
-def create_app() -> HedronFlask:
-    return hedron
+def create_app():
+    """WSGI/ASGI factory returning the native Flask application."""
+    return app
 
 
 if __name__ == "__main__":

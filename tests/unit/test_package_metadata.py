@@ -80,6 +80,13 @@ def test_package_maturity_classifiers() -> None:
         assert development_status == [maturity], package
 
 
+def test_flagship_declares_direct_pydantic_dependency() -> None:
+    project = tomllib.loads(
+        (ROOT / "packages" / "hedron" / "pyproject.toml").read_text(encoding="utf-8")
+    )["project"]
+    assert "pydantic>=2.13.4,<2.14" in project["dependencies"]
+
+
 def test_installed_distribution_metadata() -> None:
     dist = metadata.distribution("hedron-core")
     assert dist.version == __version__

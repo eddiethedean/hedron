@@ -6,11 +6,12 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any, TypeVar
 
-from flask import Flask, url_for
+from flask import Flask, current_app, url_for
 
 from hedron_core.adapter import UrlReverseRequest
 from hedron_core.component import Component
 from hedron_core.interaction import InteractionResult
+from hedron_core.rendering import RenderResult
 from hedron_flask.responses import component_response, interaction_response
 
 __all__ = [
@@ -55,9 +56,11 @@ def hedron_route(
         @app.route(rule, endpoint=endpoint, methods=methods, **options)
         @wraps(view)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
-            value = view(*args, **kwargs)
+            value = current_app.ensure_sync(view)(*args, **kwargs)
             if isinstance(value, InteractionResult):
                 return interaction_response(value)
+            if isinstance(value, RenderResult):
+                return component_response(value)
             if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
                 return component_response(value)  # type: ignore[arg-type]
             return value

@@ -9,4 +9,5 @@ def test_sse_deferred_and_assets_declared() -> None:
     assert SSE_EXTENSION_DEFERRED is True
     exts = {e.name: e for e in known_extensions()}
     assert exts["htmx-ext-sse"].deferred is True
+    assert exts["htmx-ext-head-support"].deferred is True
     assert exts["htmx-ext-head-support"].path.startswith("/hedron-static/")

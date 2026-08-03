@@ -86,6 +86,46 @@ class JobBackend(Protocol):
 class _JobRecord:
     status: JobStatus
     payload: dict[str, Any] = field(default_factory=dict)
+    idempotency_key: str | None = None
+
+
+def _status_from_dict(data: Mapping[str, Any]) -> JobStatus:
+    return JobStatus(
+        job_id=str(data["job_id"]),
+        state=JobState(str(data["state"])),
+        job_type=str(data["job_type"]),
+        tenant_id=data.get("tenant_id"),
+        auth_subject=data.get("auth_subject"),
+        result=data.get("result"),
+        error=data.get("error"),
+        retry_after=int(data.get("retry_after", 2)),
+        created_at=float(data.get("created_at", 0)),
+        updated_at=float(data.get("updated_at", 0)),
+        cancel_requested=bool(data.get("cancel_requested", False)),
+    )
+
+
+def _status_to_dict(
+    status: JobStatus,
+    *,
+    payload: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    data: dict[str, Any] = {
+        "job_id": status.job_id,
+        "state": status.state.value,
+        "job_type": status.job_type,
+        "tenant_id": status.tenant_id,
+        "auth_subject": status.auth_subject,
+        "result": status.result,
+        "error": status.error,
+        "retry_after": status.retry_after,
+        "created_at": status.created_at,
+        "updated_at": status.updated_at,
+        "cancel_requested": status.cancel_requested,
+    }
+    if payload is not None:
+        data["payload"] = dict(payload)
+    return data
 
 
 class InMemoryJobBackend:
@@ -120,7 +160,11 @@ class InMemoryJobBackend:
                 created_at=now,
                 updated_at=now,
             )
-            self._jobs[job_id] = _JobRecord(status=status, payload=dict(payload))
+            self._jobs[job_id] = _JobRecord(
+                status=status,
+                payload=dict(payload),
+                idempotency_key=idempotency_key,
+            )
             if idempotency_key:
                 self._idempotency[idempotency_key] = job_id
             return JobHandle(job_id=job_id, idempotency_key=idempotency_key)
@@ -164,6 +208,8 @@ class InMemoryJobBackend:
                     JobState.CANCELLED,
                 }:
                     del self._jobs[job_id]
+                    if rec.idempotency_key and self._idempotency.get(rec.idempotency_key) == job_id:
+                        del self._idempotency[rec.idempotency_key]
                     removed += 1
         return removed
 
@@ -199,15 +245,38 @@ class InMemoryJobBackend:
 
 
 class RedisJobBackend:
-    """Redis-backed JobBackend using JSON values and ``h1:job:`` keys."""
+    """Redis-backed JobBackend using JSON values and shared idempotency keys."""
 
-    def __init__(self, client: Any, *, prefix: str = "h1:job:") -> None:
+    def __init__(self, client: Any, *, prefix: str = "h1:job:", ttl_seconds: int = 86400) -> None:
         self._client = client
         self._prefix = prefix
-        self._memory = InMemoryJobBackend()  # idempotency map fallback for tests
+        self._ttl = ttl_seconds
 
     def _key(self, job_id: str) -> str:
         return f"{self._prefix}{job_id}"
+
+    def _idem_key(self, idempotency_key: str) -> str:
+        return f"{self._prefix}idem:{idempotency_key}"
+
+    def _decode(self, raw: Any) -> str | None:
+        if raw is None:
+            return None
+        if isinstance(raw, bytes):
+            return raw.decode("utf-8")
+        return str(raw)
+
+    def _load(self, job_id: str) -> dict[str, Any] | None:
+        raw = self._decode(self._client.get(self._key(job_id)))
+        if raw is None:
+            return None
+        return json.loads(raw)
+
+    def _store(self, data: Mapping[str, Any]) -> None:
+        self._client.set(
+            self._key(str(data["job_id"])),
+            json.dumps(data, default=str, separators=(",", ":")),
+            ex=self._ttl,
+        )
 
     def submit(
         self,
@@ -218,63 +287,101 @@ class RedisJobBackend:
         tenant_id: str | None = None,
         auth_subject: str | None = None,
     ) -> JobHandle:
-        handle = self._memory.submit(
-            job_type,
-            payload,
-            idempotency_key=idempotency_key,
+        if idempotency_key:
+            existing = self._decode(self._client.get(self._idem_key(idempotency_key)))
+            if existing is not None:
+                return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+
+        job_id = secrets.token_urlsafe(16)
+        if idempotency_key:
+            # SET NX so concurrent workers share one job id.
+            created = self._client.set(
+                self._idem_key(idempotency_key),
+                job_id,
+                nx=True,
+                ex=self._ttl,
+            )
+            if not created:
+                existing = self._decode(self._client.get(self._idem_key(idempotency_key)))
+                if existing is not None:
+                    return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+
+        now = time.time()
+        status = JobStatus(
+            job_id=job_id,
+            state=JobState.QUEUED,
+            job_type=job_type,
             tenant_id=tenant_id,
             auth_subject=auth_subject,
+            created_at=now,
+            updated_at=now,
         )
-        status = self._memory.get(handle.job_id)
-        assert status is not None
-        self._client.set(
-            self._key(handle.job_id),
-            json.dumps(
-                {
-                    "job_id": status.job_id,
-                    "state": status.state.value,
-                    "job_type": status.job_type,
-                    "tenant_id": status.tenant_id,
-                    "auth_subject": status.auth_subject,
-                    "retry_after": status.retry_after,
-                    "created_at": status.created_at,
-                    "updated_at": status.updated_at,
-                    "payload": dict(payload),
-                },
-                separators=(",", ":"),
-            ),
-            ex=86400,
-        )
-        return handle
+        data = _status_to_dict(status, payload=payload)
+        if idempotency_key:
+            data["idempotency_key"] = idempotency_key
+        self._store(data)
+        return JobHandle(job_id=job_id, idempotency_key=idempotency_key)
 
     def get(self, job_id: str) -> JobStatus | None:
-        raw = self._client.get(self._key(job_id))
-        if raw is None:
-            return self._memory.get(job_id)
-        data = json.loads(raw)
-        return JobStatus(
-            job_id=data["job_id"],
-            state=JobState(data["state"]),
-            job_type=data["job_type"],
-            tenant_id=data.get("tenant_id"),
-            auth_subject=data.get("auth_subject"),
-            result=data.get("result"),
-            error=data.get("error"),
-            retry_after=int(data.get("retry_after", 2)),
-            created_at=float(data.get("created_at", 0)),
-            updated_at=float(data.get("updated_at", 0)),
-            cancel_requested=bool(data.get("cancel_requested", False)),
-        )
+        data = self._load(job_id)
+        if data is None:
+            return None
+        return _status_from_dict(data)
 
     def request_cancel(self, job_id: str) -> bool:
-        ok = self._memory.request_cancel(job_id)
-        status = self._memory.get(job_id)
-        if status is not None:
-            self.mark(job_id, status.state, error=status.error)
-        return ok
+        data = self._load(job_id)
+        if data is None:
+            return False
+        status = _status_from_dict(data)
+        if status.state in {JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED}:
+            return False
+        updated = JobStatus(
+            job_id=status.job_id,
+            state=JobState.CANCELLED if status.state == JobState.QUEUED else status.state,
+            job_type=status.job_type,
+            tenant_id=status.tenant_id,
+            auth_subject=status.auth_subject,
+            result=status.result,
+            error=status.error,
+            retry_after=status.retry_after,
+            created_at=status.created_at,
+            updated_at=time.time(),
+            cancel_requested=True,
+        )
+        payload = data.get("payload") if isinstance(data.get("payload"), dict) else {}
+        stored = _status_to_dict(updated, payload=payload)  # type: ignore[arg-type]
+        if "idempotency_key" in data:
+            stored["idempotency_key"] = data["idempotency_key"]
+        self._store(stored)
+        return True
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:
-        return self._memory.cleanup_expired(older_than_seconds=older_than_seconds)
+        # Redis TTLs own expiry; scan is best-effort for tests/stubs without SCAN.
+        removed = 0
+        cutoff = time.time() - older_than_seconds
+        keys_fn = getattr(self._client, "keys", None)
+        if not callable(keys_fn):
+            return 0
+        for key in keys_fn(f"{self._prefix}*"):
+            key_s = self._decode(key) or ""
+            if ":idem:" in key_s:
+                continue
+            raw = self._decode(self._client.get(key))
+            if raw is None:
+                continue
+            data = json.loads(raw)
+            status = _status_from_dict(data)
+            if status.updated_at < cutoff and status.state in {
+                JobState.SUCCEEDED,
+                JobState.FAILED,
+                JobState.CANCELLED,
+            }:
+                self._client.delete(key)
+                idem = data.get("idempotency_key")
+                if isinstance(idem, str) and idem:
+                    self._client.delete(self._idem_key(idem))
+                removed += 1
+        return removed
 
     def mark(
         self,
@@ -284,31 +391,31 @@ class RedisJobBackend:
         result: Any = None,
         error: str | None = None,
     ) -> JobStatus | None:
-        status = self._memory.mark(job_id, state, result=result, error=error)
-        if status is None:
+        data = self._load(job_id)
+        if data is None:
             return None
-        self._client.set(
-            self._key(job_id),
-            json.dumps(
-                {
-                    "job_id": status.job_id,
-                    "state": status.state.value,
-                    "job_type": status.job_type,
-                    "tenant_id": status.tenant_id,
-                    "auth_subject": status.auth_subject,
-                    "result": status.result,
-                    "error": status.error,
-                    "retry_after": status.retry_after,
-                    "created_at": status.created_at,
-                    "updated_at": status.updated_at,
-                    "cancel_requested": status.cancel_requested,
-                },
-                default=str,
-                separators=(",", ":"),
-            ),
-            ex=86400,
+        status = _status_from_dict(data)
+        if status.cancel_requested and state == JobState.RUNNING:
+            state = JobState.CANCELLED
+        updated = JobStatus(
+            job_id=status.job_id,
+            state=state,
+            job_type=status.job_type,
+            tenant_id=status.tenant_id,
+            auth_subject=status.auth_subject,
+            result=result if result is not None else status.result,
+            error=error if error is not None else status.error,
+            retry_after=status.retry_after,
+            created_at=status.created_at,
+            updated_at=time.time(),
+            cancel_requested=status.cancel_requested,
         )
-        return status
+        payload = data.get("payload") if isinstance(data.get("payload"), dict) else {}
+        stored = _status_to_dict(updated, payload=payload)  # type: ignore[arg-type]
+        if "idempotency_key" in data:
+            stored["idempotency_key"] = data["idempotency_key"]
+        self._store(stored)
+        return updated
 
 
 _backend: JobBackend = InMemoryJobBackend()
