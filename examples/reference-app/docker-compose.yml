@@ -1,0 +1,27 @@
+services:
+  redis:
+    image: redis:7-alpine
+  static:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./static-external:/usr/share/nginx/html:ro
+    ports:
+      - "8081:80"
+  proxy:
+    image: caddy:2.8-alpine
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+  app:
+    build:
+      context: ../..
+      dockerfile: examples/reference-app/Dockerfile
+    environment:
+      HEDRON_REDIS_URL: redis://redis:6379/0
+      HEDRON_ROOT_PATH: /hedron
+    depends_on:
+      - redis
+      - static

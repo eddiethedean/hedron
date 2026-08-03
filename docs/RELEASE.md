@@ -85,13 +85,21 @@ Before any 0.7 adapter contract is implemented:
 
 ## Cut `v0.7.0` (portable adapters and operations)
 
-1. Confirm staged gates 0.7A–0.7F and the adapter, operations, jobs, and observability ledgers.
-2. Confirm every advertised adapter is labeled supported, experimental, or deferred; only supported
-   adapters count toward the release claim.
-3. Run native Flask/Django package and reference-slice tests without FastAPI installed, plus the
-   FastAPI multi-worker/proxy/external-cache/job deployment proof.
-4. Retain capability-matrix, browser, package, deployment, security, accessibility, and performance
-   artifacts under the release evidence bundle.
+> **Status:** Ready to cut. Do not retag after publish.
+
+1. Confirm staged gates 0.7A–0.7F via `uv run python scripts/check_release_gate.py 0.7.0` and
+   [release-gate-0.7.toml](acceptance/release-gate-0.7.toml).
+2. Confirm adapters: FastAPI / Flask / Django = **supported**; SSE transport and Django QuerySet =
+   **deferred** (D-036, D-037).
+3. Confirm CI green on 3.11–3.14 including adapter/ops suites.
+4. Tag and push:
+
+```bash
+git tag -a v0.7.0 -m "Hedron 0.7.0"
+git push origin v0.7.0
+```
+
+5. After publish, update STATUS/README to record publication and point at phase 0.8.
 
 ## Cut `v0.8.0` (feature-freeze baseline)
 

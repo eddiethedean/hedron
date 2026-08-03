@@ -140,6 +140,25 @@ class Hedron(FastAPI):
 
         install_interaction_handlers(self)
 
+        # Explorer bridges (ADP-005): injectable hooks avoid explorer→hedron imports.
+        self.state.hedron_settings_loader = None
+        try:
+            from hedron.config import load_hedron_settings
+
+            self.state.hedron_settings_loader = load_hedron_settings
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
+
+            async def _csrf_validate(request: Request, policy: Any) -> None:
+                await prepare_csrf_from_request(request, policy)
+                validate_csrf(request, policy)
+
+            self.state.hedron_csrf_validate = _csrf_validate
+        except Exception:  # noqa: BLE001
+            self.state.hedron_csrf_validate = None
+
         if self.hedron_explorer_mode == "development":
             self._maybe_mount_explorer(secured=False)
         elif self.hedron_explorer_mode == "secured":

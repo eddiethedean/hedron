@@ -27,9 +27,11 @@ claim.
 ## Machine-readable manifest
 
 The phase 0.6 closure index lives at
-[release-gate-0.6.toml](release-gate-0.6.toml). `scripts/check_release_gate.py <version>`
-validates package metadata and fails closed when an evidence ID is missing, duplicated,
-`Verified` without a command, or `Deferred` without ownership/rationale/destination.
+[release-gate-0.6.toml](release-gate-0.6.toml). The phase 0.7 index lives at
+[release-gate-0.7.toml](release-gate-0.7.toml). `scripts/check_release_gate.py <version>`
+selects the matching manifest and validates package metadata; it fails closed when an evidence ID is
+missing, duplicated, `Verified` without a command, or `Deferred` without ownership/rationale/destination.
+Use `--allow-planned` while scaffolds are incomplete.
 
 ## Phase 0.6 closure IDs
 

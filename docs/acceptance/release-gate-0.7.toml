@@ -1,0 +1,211 @@
+# Phase 0.7 adapter/operations evidence index.
+# Consumed by scripts/check_release_gate.py 0.7.0
+
+[[evidence]]
+id = "ADP-001"
+state = "Verified"
+command = "uv run pytest tests/unit/test_env_isolation.py tests/conformance/test_portable_interaction.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-002"
+state = "Verified"
+command = "uv run pytest tests/conformance -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-003"
+state = "Verified"
+command = "uv run pytest tests/unit/test_capability_matrix.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-004"
+state = "Verified"
+command = "uv run pytest tests/conformance/test_url_reverse.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-005"
+state = "Verified"
+command = "uv run pytest tests/unit/test_explorer_deps.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-FLK-001"
+state = "Verified"
+command = "uv run pytest tests/adapters/flask -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-FLK-002"
+state = "Verified"
+command = "uv run pytest tests/adapters/flask -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-FLK-003"
+state = "Verified"
+command = "uv run pytest tests/adapters/flask/test_packaging.py -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-DJG-001"
+state = "Verified"
+command = "uv run pytest tests/adapters/django -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-DJG-002"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron"
+rationale = "Django QuerySet DataSource remains post-adapter; native Django adapter does not require first-party QuerySet bridging for Supported claim."
+destination = "0.8 or dedicated data RFC"
+stability_impact = "Apps use explicit list/mapping DataSources or custom adapters; QuerySet is not a supported portable contract."
+
+[[evidence]]
+id = "ADP-DJG-003"
+state = "Verified"
+command = "uv run pytest tests/adapters/django/test_packaging.py -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "OPS-001"
+state = "Verified"
+command = "uv run pytest tests/ops/test_offline_startup.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "OPS-002"
+state = "Verified"
+command = "uv run pytest tests/ops/test_deploy_topology.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "OPS-003"
+state = "Verified"
+command = "uv run pytest tests/ops/test_external_cache.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "OPS-004"
+state = "Verified"
+command = "uv run pytest tests/ops/test_health.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "OPS-005"
+state = "Verified"
+command = "uv run pytest tests/ops/test_graceful_shutdown.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "OPS-006"
+state = "Verified"
+command = "uv run pytest tests/ops/test_proxy_config.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "OPS-007"
+state = "Verified"
+command = "uv run pytest tests/ops/test_rollback_docs.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "JOB-001"
+state = "Verified"
+command = "uv run pytest tests/unit/test_jobs.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "JOB-002"
+state = "Verified"
+command = "uv run pytest tests/unit/test_jobs.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "JOB-003"
+state = "Verified"
+command = "uv run pytest tests/unit/test_jobs.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "JOB-004"
+state = "Verified"
+command = "uv run pytest tests/conformance/test_job_status.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "JOB-005"
+state = "Verified"
+command = "uv run pytest tests/unit/test_background_tasks.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "JOB-006"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron"
+rationale = "Official HTMX SSE extension evaluated against bounded polling; polling remains sufficient for 0.7 job status. SSE stays post-1.0."
+destination = "post-1.0 live transport"
+stability_impact = "No SSE live regions in Supported surface; extension asset contract still pins optional packages when present."
+
+[[evidence]]
+id = "OBS-001"
+state = "Verified"
+command = "uv run pytest tests/ops/test_observability.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "OBS-002"
+state = "Verified"
+command = "uv run pytest tests/ops/test_observability.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "OBS-003"
+state = "Verified"
+command = "uv run pytest tests/ops/test_external_cache.py tests/unit/test_jobs.py -q"
+ci_job = "ops"
+owner = "hedron"
+
+[[evidence]]
+id = "OBS-004"
+state = "Verified"
+command = "uv run pytest tests/unit/test_env_isolation.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "OBS-005"
+state = "Verified"
+command = "uv run pytest tests/ops/test_health.py -q"
+ci_job = "ops"
+owner = "hedron"

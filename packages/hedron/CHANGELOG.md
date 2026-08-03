@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.0] — 2026-08-03
+
+- Phase 0.7 portable adapters, operations, and jobs train.
+
+
 All notable changes to `hedron` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),

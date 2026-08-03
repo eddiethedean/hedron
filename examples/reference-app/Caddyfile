@@ -1,0 +1,8 @@
+:8080 {
+  handle_path /hedron/* {
+    reverse_proxy app:8000
+  }
+  handle /static/* {
+    reverse_proxy static:80
+  }
+}

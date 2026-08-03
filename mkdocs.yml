@@ -92,7 +92,7 @@ extra:
   status:
     new: New
     stable: Stable
-    shipped: Shipped in 0.6
+    shipped: Shipped in 0.7
     planned: Planned
   social:
     - icon: fontawesome/brands/github
@@ -124,7 +124,7 @@ nav:
     - Interactive demos: examples/index.md
   - Reference:
     - Overview: api/README.md
-    - Shipped in 0.6:
+    - Shipped in 0.7:
       - Application:
         - Hedron: api/HEDRON.md
         - Router: api/ROUTER.md
@@ -147,6 +147,8 @@ nav:
         - Themes: api/THEME.md
         - ColorMode: api/COLORMODE.md
         - Cache: api/CACHE.md
+        - Framework adapters: api/ADAPTERS.md
+        - Jobs: api/JOBS.md
         - Security types: api/SECURITY_TYPES.md
         - Auth: api/AUTH.md
         - Explorer: api/EXPLORER.md
@@ -163,9 +165,6 @@ nav:
       - Diagnostics: DIAGNOSTICS.md
       - Compatibility: COMPATIBILITY.md
       - Glossary: GLOSSARY.md
-    - Planned:
-      - Framework adapters: api/ADAPTERS.md
-      - Jobs: api/JOBS.md
   - Project:
     - Status: STATUS.md
     - Roadmap: ROADMAP.md

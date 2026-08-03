@@ -1,5 +1,5 @@
 ---
-status: planned
+status: implemented
 ---
 
 # Framework adapter contracts

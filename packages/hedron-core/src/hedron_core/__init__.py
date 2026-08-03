@@ -2,6 +2,13 @@
 
 from __future__ import annotations
 
+from hedron_core.adapter import (
+    AuthSignal,
+    CapabilityRecord,
+    LifecycleResource,
+    UrlReverseRequest,
+    capability_matrix,
+)
 from hedron_core.addressable import AddressableDescriptor, addressable
 from hedron_core.auto import Auto, inspect_data, register_renderer
 from hedron_core.builtins import (
@@ -81,7 +88,17 @@ from hedron_core.diagnostics import (
 from hedron_core.field import Field
 from hedron_core.hdn import compile_hdn, format_hdn, load_hdn_program, run_program
 from hedron_core.html import html
+from hedron_core.htmx_contract import HtmxContext, approved_headers
 from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
+from hedron_core.interaction import (
+    FragmentRegion,
+    InteractionPolicy,
+    InteractionResult,
+    OobUpdate,
+    StatusPolicy,
+    default_interaction_policy,
+    interaction_headers,
+)
 from hedron_core.models import EventPayload, FormModel, Model, Props
 from hedron_core.registry import (
     AddressableMeta,
@@ -106,12 +123,26 @@ from hedron_core.visualization import (
     VisualizationLimits,
 )
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 __all__ = [
     "AddressableDescriptor",
     "AddressableMeta",
     "Alert",
+    "AuthSignal",
+    "CapabilityRecord",
+    "FragmentRegion",
+    "HtmxContext",
+    "InteractionPolicy",
+    "InteractionResult",
+    "LifecycleResource",
+    "OobUpdate",
+    "StatusPolicy",
+    "UrlReverseRequest",
+    "approved_headers",
+    "capability_matrix",
+    "default_interaction_policy",
+    "interaction_headers",
     "Aside",
     "AssetRef",
     "Badge",

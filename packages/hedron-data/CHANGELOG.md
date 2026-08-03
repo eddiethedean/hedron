@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.0] — 2026-08-03
+
+- Phase 0.7 portable adapters, operations, and jobs train.
+
+
 ## [0.6.0] - 2026-08-03
 
 - Async `VisualizationSource` protocol and viz row/payload defaults.

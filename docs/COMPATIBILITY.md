@@ -25,17 +25,29 @@
 
 ## Phase 0.7 compatibility entry gate
 
-The following matrix must contain concrete reviewed ranges before phase 0.7 adapter implementation
-begins. `TBD` is a blocker, not an implied claim.
+Concrete reviewed ranges for adapter and operations work. A version in dependency metadata is not
+supported until its native conformance slice is green.
 
-| Capability | Required declaration before 0.7 code |
+| Capability | Supported declaration |
 |---|---|
-| Flask | Supported Flask and Werkzeug ranges; reference WSGI server; session and CSRF integration policy |
-| Django | Supported Django and asgiref ranges; supported ASGI/WSGI modes; forms, sessions, and CSRF policy |
-| FastAPI operations | Reference ASGI server/version and proxy-forwarding policy |
-| External cache | At least one executable conformance implementation, serialization/version policy, and failure semantics |
-| Durable jobs | At least one executable conformance implementation and polling/status retention policy |
-| Browsers | Chromium, Firefox, and WebKit versions/channels used for 0.7 evidence and 0.8 release hardening |
+| Flask | Flask `>=3.0,<4`; Werkzeug `>=3.0,<4`; reference WSGI server **Waitress** `>=3.0,<4`. Sessions use Flask signed cookies (`SECRET_KEY`); CSRF uses the double-submit cookie pattern via `hedron-flask` (same token semantics as FastAPI adapter). |
+| Django | Django `>=5.0,<6`; asgiref `>=3.8,<4`. Supported modes: **WSGI** (gunicorn sync workers) and **ASGI** (uvicorn/`Django` ASGI). Sessions and CSRF use Django middleware; forms/validation remain Django-native. QuerySet DataSource is **Deferred** (D-036). |
+| FastAPI operations | Uvicorn `>=0.30,<1` with `--workers` ≥ 2; proxy-forwarding via explicit `ProxyHeadersMiddleware` / trusted hosts only (fail closed when misconfigured). `root_path` and `X-Forwarded-Prefix` must match the reverse-proxy mount. |
+| External cache | **Redis** `>=7.0` server; client `redis` `>=5,<6`. Serialization: JSON UTF-8 with key version prefix `h1:`; failures raise and surface via readiness without caching poisoned values. Conformance uses `fakeredis` in unit CI and Redis in ops topology. |
+| Durable jobs | `JobBackend` protocol with **in-memory** test double and **Redis** conformance backend. Polling status retention default 24h; `Retry-After` from backend capability. BackgroundTasks remain non-durable. |
+| Browsers (0.7 evidence) | Chromium (Playwright pinned channel) for interactive HTMX/job evidence. Firefox and WebKit channels are recorded for inventory; release-blocking three-engine suite is phase **0.8**. |
+
+### Framework capability matrix (portable vs host)
+
+| Guarantee | Class |
+|---|---|
+| Safe HTML render, fragment/page selection, OOB, approved HTMX headers, cache Vary | Portable |
+| Request-aware URL reverse under mounts / `root_path` / `SCRIPT_NAME` | Portable (via host reverse) |
+| Disconnect cancellation, cooperative deadlines | ASGI |
+| Sync-only endpoints, limited lifespan hooks | WSGI |
+| FastAPI Depends / lifespan / BackgroundTasks | Framework-specific (FastAPI) |
+| Flask `url_for`, cookie sessions, WSGI middleware | Framework-specific (Flask) |
+| Django URLconf, middleware CSRF/sessions, forms | Framework-specific (Django) |
 
 The framework capability matrix labels each guarantee as portable, ASGI, WSGI, or
 framework-specific. A version appearing in dependency metadata is not considered supported until

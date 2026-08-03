@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ast
-import importlib.util
 import shutil
 import tomllib
 from pathlib import Path
@@ -47,7 +46,21 @@ def test_node_not_required_for_core() -> None:
     assert not (ROOT / "node_modules").exists()
 
 
-def test_flask_django_not_required_in_workspace() -> None:
-    # FastAPI is expected for packages/hedron; Flask/Django remain phase 0.7.
-    assert importlib.util.find_spec("flask") is None
-    assert importlib.util.find_spec("django") is None
+def test_adapter_packages_do_not_depend_on_fastapi() -> None:
+    # Flask/Django may be installed for adapter packages; they must not require FastAPI.
+    import re
+
+    for package in ("hedron-flask", "hedron-django"):
+        pyproject = ROOT / "packages" / package / "pyproject.toml"
+        project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
+        deps = list(project.get("dependencies", []))
+        optional = project.get("optional-dependencies") or {}
+        for group in optional.values():
+            deps.extend(group)
+        joined = "\n".join(str(d).lower() for d in deps)
+        for name in ("fastapi", "starlette", "uvicorn"):
+            assert name not in joined, f"{package} must not depend on {name}"
+        # Exact flagship package name, not hedron-core / hedron-flask.
+        assert re.search(r"(?m)^hedron([=<>!~]|$)", joined) is None, (
+            f"{package} must not depend on flagship hedron"
+        )

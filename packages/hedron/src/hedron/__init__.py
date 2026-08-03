@@ -18,6 +18,7 @@ from hedron.builtins import (
     oob_swap,
 )
 from hedron.builtins.files import DownloadButton, FileUpload, safe_download_response
+from hedron.async_utils import await_if_needed, gather, run_sync
 from hedron.cache import cache_component, cache_data
 from hedron.color_mode import (
     apply_color_mode_cookie,
@@ -213,7 +214,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 __all__ = [
     "Alert",
@@ -325,6 +326,9 @@ __all__ = [
     "apply_color_mode_cookie",
     "cache_component",
     "cache_data",
+    "gather",
+    "run_sync",
+    "await_if_needed",
     "create_oauth_client",
     "default_interaction_policy",
     "form_sync_attrs",

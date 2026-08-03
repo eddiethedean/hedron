@@ -1,0 +1,191 @@
+"""Portable HTMX header allowlists and approved response builders (framework-neutral)."""
+
+from __future__ import annotations
+
+import json
+import re
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import Any
+from urllib.parse import urlparse
+
+__all__ = [
+    "APPROVED_REQUEST_HEADERS",
+    "APPROVED_RESPONSE_HEADERS",
+    "HtmxContext",
+    "approved_headers",
+    "htmx_context_from_headers",
+    "is_local_path",
+    "safe_css_selector",
+]
+
+APPROVED_REQUEST_HEADERS = frozenset(
+    {
+        "HX-Request",
+        "HX-Target",
+        "HX-Trigger",
+        "HX-Trigger-Name",
+        "HX-Current-URL",
+        "HX-Prompt",
+        "HX-Boosted",
+        "HX-History-Restore-Request",
+    }
+)
+
+APPROVED_RESPONSE_HEADERS = frozenset(
+    {
+        "HX-Location",
+        "HX-Push-Url",
+        "HX-Redirect",
+        "HX-Refresh",
+        "HX-Replace-Url",
+        "HX-Reswap",
+        "HX-Retarget",
+        "HX-Reselect",
+        "HX-Trigger",
+        "HX-Trigger-After-Settle",
+        "HX-Trigger-After-Swap",
+    }
+)
+
+_LOCAL_PATH = re.compile(r"^/[A-Za-z0-9._~!$&'()*+,;=:@%/\-]*$")
+
+
+def _empty_headers() -> dict[str, str]:
+    return {}
+
+
+@dataclass(frozen=True, slots=True)
+class HtmxContext:
+    """Portable HTMX request facts (no raw framework request object)."""
+
+    is_htmx: bool
+    target: str | None = None
+    trigger: str | None = None
+    trigger_name: str | None = None
+    current_url: str | None = None
+    prompt: str | None = None
+    boosted: bool = False
+    history_restore: bool = False
+    extras: Mapping[str, str] = field(default_factory=_empty_headers)
+
+
+def is_local_path(url: str) -> bool:
+    """Same-origin relative path check used by approved redirect/location headers."""
+    if "\\" in url or any(ord(ch) < 32 for ch in url):
+        return False
+    parsed = urlparse(url)
+    if parsed.scheme or parsed.netloc:
+        return False
+    if not url.startswith("/") or url.startswith("//"):
+        return False
+    path = parsed.path or "/"
+    return _LOCAL_PATH.fullmatch(path) is not None
+
+
+def safe_css_selector(selector: str) -> bool:
+    if not selector or any(ch in selector for ch in "<>\"'`);{}"):
+        return False
+    return selector.startswith("#") or selector.startswith(".") or selector.startswith("[")
+
+
+def htmx_context_from_headers(headers: Mapping[str, str]) -> HtmxContext:
+    def get(name: str) -> str | None:
+        lower = {k.lower(): v for k, v in headers.items()}
+        return lower.get(name.lower())
+
+    is_htmx = (get("HX-Request") or "").lower() == "true"
+    extras: dict[str, str] = {}
+    for key in APPROVED_REQUEST_HEADERS - {"HX-Request", "HX-Target", "HX-Trigger"}:
+        value = get(key)
+        if value is not None:
+            extras[key] = value
+    return HtmxContext(
+        is_htmx=is_htmx,
+        target=get("HX-Target"),
+        trigger=get("HX-Trigger"),
+        trigger_name=get("HX-Trigger-Name"),
+        current_url=get("HX-Current-URL"),
+        prompt=get("HX-Prompt"),
+        boosted=(get("HX-Boosted") or "").lower() == "true",
+        history_restore=(get("HX-History-Restore-Request") or "").lower() == "true",
+        extras=extras,
+    )
+
+
+def _require_local_path(url: str, header_name: str) -> str:
+    if not is_local_path(url):
+        raise ValueError(f"{header_name} must be a local path")
+    return url
+
+
+def approved_headers(
+    *,
+    trigger: str | Mapping[str, Any] | None = None,
+    trigger_after_swap: str | Mapping[str, Any] | None = None,
+    trigger_after_settle: str | Mapping[str, Any] | None = None,
+    redirect: str | None = None,
+    push_url: str | bool | None = None,
+    replace_url: str | bool | None = None,
+    refresh: bool = False,
+    retarget: str | None = None,
+    reswap: str | None = None,
+    reselect: str | None = None,
+    location: str | Mapping[str, Any] | None = None,
+) -> dict[str, str]:
+    headers: dict[str, str] = {}
+    if trigger is not None:
+        headers["HX-Trigger"] = trigger if isinstance(trigger, str) else json.dumps(trigger)
+    if trigger_after_swap is not None:
+        headers["HX-Trigger-After-Swap"] = (
+            trigger_after_swap
+            if isinstance(trigger_after_swap, str)
+            else json.dumps(trigger_after_swap)
+        )
+    if trigger_after_settle is not None:
+        headers["HX-Trigger-After-Settle"] = (
+            trigger_after_settle
+            if isinstance(trigger_after_settle, str)
+            else json.dumps(trigger_after_settle)
+        )
+    if redirect is not None:
+        headers["HX-Redirect"] = _require_local_path(redirect, "HX-Redirect")
+    if push_url is not None:
+        if push_url is False:
+            headers["HX-Push-Url"] = "false"
+        elif push_url is True:
+            headers["HX-Push-Url"] = "true"
+        else:
+            headers["HX-Push-Url"] = _require_local_path(str(push_url), "HX-Push-Url")
+    if replace_url is not None:
+        if replace_url is False:
+            headers["HX-Replace-Url"] = "false"
+        elif replace_url is True:
+            headers["HX-Replace-Url"] = "true"
+        else:
+            headers["HX-Replace-Url"] = _require_local_path(str(replace_url), "HX-Replace-Url")
+    if refresh:
+        headers["HX-Refresh"] = "true"
+    if retarget is not None:
+        if not safe_css_selector(retarget):
+            raise ValueError("Unsafe HTMX retarget selector")
+        headers["HX-Retarget"] = retarget
+    if reswap is not None:
+        headers["HX-Reswap"] = reswap
+    if reselect is not None:
+        if not safe_css_selector(reselect):
+            raise ValueError("Unsafe HTMX reselect selector")
+        headers["HX-Reselect"] = reselect
+    if location is not None:
+        if isinstance(location, str):
+            headers["HX-Location"] = _require_local_path(location, "HX-Location")
+        else:
+            path = location.get("path")
+            if not isinstance(path, str):
+                raise ValueError("HX-Location mapping requires a local path")
+            _require_local_path(path, "HX-Location")
+            headers["HX-Location"] = json.dumps(location)
+    unknown = set(headers) - APPROVED_RESPONSE_HEADERS
+    if unknown:
+        raise ValueError(f"Unapproved HTMX response headers: {sorted(unknown)}")
+    return headers

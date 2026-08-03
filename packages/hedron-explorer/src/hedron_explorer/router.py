@@ -56,10 +56,17 @@ def _project_component_roots(request: Request | None) -> list[Path]:
     project_root = getattr(request.app.state, "hedron_project_root", None)
     if project_root:
         try:
-            from hedron.config import load_hedron_settings
+            loader = getattr(request.app.state, "hedron_settings_loader", None)
+            if callable(loader):
+                settings = loader(Path(project_root))
+                roots.extend(settings.resolved_roots(base=Path(project_root)))
+            else:
+                # Optional: flagship config without hard-depending on `hedron`.
+                from importlib import import_module
 
-            settings = load_hedron_settings(Path(project_root))
-            roots.extend(settings.resolved_roots(base=Path(project_root)))
+                mod = import_module("hedron.config")
+                settings = mod.load_hedron_settings(Path(project_root))
+                roots.extend(settings.resolved_roots(base=Path(project_root)))
         except Exception:  # noqa: BLE001 — explorer stays available without config
             pass
     return roots
@@ -598,11 +605,24 @@ def explorer_router() -> APIRouter:
         policy = getattr(request.app.state, "hedron_security", None)
         if policy is not None and getattr(policy, "csrf_enabled", False):
             csrf_name = getattr(policy, "csrf_cookie_name", "hedron_csrf")
-            if request.cookies.get(csrf_name):
-                from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
+            cookie = request.cookies.get(csrf_name)
+            if cookie:
+                from hedron_core.csrf import validate_double_submit
 
-                await prepare_csrf_from_request(request, policy)
-                validate_csrf(request, policy)
+                header = request.headers.get("X-CSRF-Token") or request.headers.get(
+                    "X-Hedron-CSRF"
+                )
+                form_token = None
+                # Prefer adapter-injected validator when present (FastAPI Hedron).
+                validator = getattr(request.app.state, "hedron_csrf_validate", None)
+                if callable(validator):
+                    result = validator(request, policy)
+                    if hasattr(result, "__await__"):
+                        await result  # type: ignore[misc]
+                elif not validate_double_submit(
+                    cookie_token=cookie, header_token=header, form_token=form_token
+                ):
+                    return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
 
         name = payload.get("route")
         if not isinstance(name, str) or not name:
