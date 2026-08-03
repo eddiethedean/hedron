@@ -118,6 +118,15 @@ def _cmd_preview(args: argparse.Namespace) -> int:
         "methods": list(route.methods),
         "operation_id": route.operation_id,
         "htmx_inference": dict(route.htmx_inference),
+        "explanations": [
+            f"HTMX inference for this route: {dict(route.htmx_inference)}",
+            "Override swap/target via explicit hx-swap / hx-target on the response component.",
+            "Production previews use the sealed registry and build manifest when present.",
+        ],
+        "overrides": {
+            "hx-target": "Set explicitly on the component to replace inference",
+            "hx-swap": "Set explicitly on the component to replace inference",
+        },
         "security_findings": [
             "Internal component resources default to include_in_schema=False",
             "Unsafe cookie-authenticated actions require CSRF",
@@ -254,6 +263,186 @@ def _cmd_build(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_new(args: argparse.Namespace) -> int:
+    dest = Path(args.path or args.name).resolve()
+    if dest.exists() and any(dest.iterdir()) and not args.force:
+        print(f"Refusing to overwrite non-empty {dest} (use --force)", file=sys.stderr)
+        return 1
+    dest.mkdir(parents=True, exist_ok=True)
+    (dest / "components").mkdir(exist_ok=True)
+    (dest / "pyproject.toml").write_text(
+        f'''[project]
+name = "{args.name}"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["hedron>=0.4.0"]
+
+[tool.hedron]
+component_roots = ["components"]
+theme = "default"
+explorer = "development"
+''',
+        encoding="utf-8",
+    )
+    (dest / "app.py").write_text(
+        """from hedron import Hedron, Page, Text
+
+app = Hedron(
+    title="Hedron App",
+    security="standard",
+    explorer="development",
+    session_secret="dev-secret",
+)
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(Text("Hello from hedron new"), title="Home")
+""",
+        encoding="utf-8",
+    )
+    print(
+        json.dumps(
+            {"created": str(dest), "files": ["pyproject.toml", "app.py", "components/"]}, indent=2
+        )
+    )
+    return 0
+
+
+def _cmd_check(args: argparse.Namespace) -> int:
+    from hedron_core import (
+        DiagnosticSeverity,
+        diagnostics_to_json,
+        diagnostics_to_sarif,
+        diagnostics_to_text,
+        meets_severity_threshold,
+    )
+    from hedron_core.diagnostics import make_diagnostic
+    from hedron_core.discovery import discover_component_folders
+
+    _load_app(args.app)
+    base = Path(args.project or Path.cwd()).resolve()
+    from hedron.config import load_hedron_settings
+
+    settings = load_hedron_settings(base)
+    diags = []
+    # Routes / components presence
+    registry = get_registry()
+    if not list(registry.components()) and not list(registry.routes()):
+        diags.append(
+            make_diagnostic(
+                "HED-CONFIG-0003",
+                severity=DiagnosticSeverity.WARNING,
+                title="Empty registry",
+                explanation="No components or routes found during check.",
+                remediation="Pass --app or discover component folders.",
+            )
+        )
+    # HDN/CSS discovery compile checks
+    from hedron_core import HedronError, compile_css, compile_hdn
+    from hedron_core.compile_gate import force_runtime_compile
+
+    with force_runtime_compile():
+        for item in discover_component_folders(settings.resolved_roots(base=base)):
+            if item.styles_css and item.styles_css.is_file():
+                try:
+                    compile_css(
+                        item.styles_css.read_text(encoding="utf-8"),
+                        component_id=f"check:{item.name}",
+                        registered_roots=[item.folder],
+                        component_dir=item.folder,
+                    )
+                except HedronError as exc:
+                    diags.extend(exc.diagnostics)
+            if item.template_hdn and item.template_hdn.is_file():
+                try:
+                    compile_hdn(item.template_hdn.read_text(encoding="utf-8"))
+                except HedronError as exc:
+                    diags.extend(exc.diagnostics)
+
+    # Security / a11y informational findings
+    diags.append(
+        make_diagnostic(
+            "HED-SEC-0001",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="CSRF required for unsafe actions",
+            explanation="Cookie-authenticated unsafe methods must validate CSRF.",
+            remediation="Use HedronRouter.action and standard security profile.",
+        )
+    )
+    diags.append(
+        make_diagnostic(
+            "HED-A11Y-0001",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="Run axe for interactive surfaces",
+            explanation="Static markup checks do not replace browser accessibility analysis.",
+            remediation="Use hedron[browser] axe hooks for Explorer and forms.",
+        )
+    )
+
+    threshold = DiagnosticSeverity(args.severity)
+    fmt = args.format
+    if fmt == "json":
+        print(json.dumps(diagnostics_to_json(diags), indent=2))
+    elif fmt == "sarif":
+        print(json.dumps(diagnostics_to_sarif(diags), indent=2))
+    else:
+        text = diagnostics_to_text(diags)
+        print(text or "No diagnostics.")
+    return 1 if meets_severity_threshold(diags, threshold) else 0
+
+
+def _cmd_graph(args: argparse.Namespace) -> int:
+    _load_app(args.app)
+    registry = get_registry()
+    nodes = []
+    edges = []
+    for c in registry.components():
+        nodes.append({"id": c.logical_id, "name": c.name, "kind": "component"})
+        for dep in c.browser_modules:
+            edges.append({"from": c.logical_id, "to": dep, "kind": "browser_module"})
+        if c.styles_path:
+            edges.append({"from": c.logical_id, "to": c.styles_path, "kind": "styles"})
+        if c.hdn_source:
+            edges.append({"from": c.logical_id, "to": c.hdn_source, "kind": "hdn"})
+    inverse: dict[str, list[str]] = {}
+    for edge in edges:
+        inverse.setdefault(str(edge["to"]), []).append(str(edge["from"]))
+    payload = {"nodes": nodes, "edges": edges, "inverse_consumers": inverse}
+    print(json.dumps(payload, indent=2))
+    return 0
+
+
+def _cmd_audit_components(args: argparse.Namespace) -> int:
+    _load_app(args.app)
+    from hedron_core.plugins import get_diagnostic_owners, get_explorer_panels
+
+    registry = get_registry()
+    rows = []
+    for c in registry.components():
+        rows.append(
+            {
+                "logical_id": c.logical_id,
+                "name": c.name,
+                "distribution": c.distribution,
+                "module": c.module,
+                "capabilities": {
+                    "hdn": bool(c.hdn_source),
+                    "styles": bool(c.styles_path),
+                    "browser_js": bool(c.browser_modules),
+                    "assets": bool(c.asset_roots),
+                },
+            }
+        )
+    payload = {
+        "components": rows,
+        "explorer_panels": [p.to_dict() for p in get_explorer_panels()],
+        "diagnostic_owners": dict(get_diagnostic_owners()),
+    }
+    print(json.dumps(payload, indent=2))
+    return 0
+
+
 def _cmd_dev(args: argparse.Namespace) -> int:
     from hedron.build import run_build
     from hedron.config import load_hedron_settings
@@ -330,6 +519,33 @@ def main(argv: list[str] | None = None) -> None:
     build_p.add_argument("--project", default=None)
     build_p.add_argument("--dev", action="store_true", help="Use readable development names")
     build_p.set_defaults(func=_cmd_build)
+
+    new_p = sub.add_parser("new", help="Scaffold a new Hedron application")
+    new_p.add_argument("name", help="Project name")
+    new_p.add_argument("--path", default=None, help="Destination directory")
+    new_p.add_argument("--force", action="store_true")
+    new_p.set_defaults(func=_cmd_new)
+
+    check_p = sub.add_parser("check", help="Run project diagnostics")
+    check_p.add_argument("--project", default=None)
+    check_p.add_argument(
+        "--format",
+        choices=("text", "json", "sarif"),
+        default="text",
+    )
+    check_p.add_argument(
+        "--severity",
+        choices=("error", "warning", "information"),
+        default="error",
+        help="Fail when diagnostics meet or exceed this severity",
+    )
+    check_p.set_defaults(func=_cmd_check)
+
+    graph_p = sub.add_parser("graph", help="Component dependency graph")
+    graph_p.set_defaults(func=_cmd_graph)
+
+    audit_p = sub.add_parser("audit-components", help="Capability and package audit")
+    audit_p.set_defaults(func=_cmd_audit_components)
 
     dev_p = sub.add_parser("dev", help="Watch HDN/CSS/assets and rebuild atomically")
     dev_p.add_argument("--project", default=None)

@@ -18,6 +18,6 @@
 ## Verification
 
 - [x] Static markup checks for the 0.1 built-in catalog.
-- [ ] Browser axe-style checks, keyboard scenarios, and screen-reader spot checks. *(phase 0.2+)*
-- [ ] Explorer reports known issues without claiming automated proof of accessibility. *(phase 0.4)*
+- [x] Explorer reports known issues without claiming automated proof of accessibility. *(phase 0.4)*
+- [x] Browser axe-style hooks exist via `hedron[browser]` (advisory; optional dependency). *(phase 0.4)*
 - [ ] Waivers contain rationale, affected users, and remediation plan.

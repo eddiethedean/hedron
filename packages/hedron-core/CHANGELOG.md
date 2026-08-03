@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.4.0] - 2026-08-03
+
+Developer platform: JSON/SARIF diagnostics, suppressions, source spans, and plugin
+metadata contracts in core.
+
+### Added
+
+- `Diagnostic.as_json`, `diagnostics_to_sarif`, `Suppression`, `SourceSpan`,
+  `apply_suppressions`, `meets_severity_threshold`.
+- Framework-neutral plugin metadata and Explorer panel registration helpers.
+
+### Fixed / hardened
+
+- (none beyond 0.3 train)
+
 ## [0.3.0] - 2026-08-03
 
 Authoring, scoped styles, themes, and assets for the phase 0.3 release train.
@@ -41,6 +56,7 @@ Authoring, scoped styles, themes, and assets for the phase 0.3 release train.
 - Production compile gate on `compile_hdn`/`compile_css` (`HED-BUILD-0004`) with
   force-allow for `hedron build`.
 
+[0.4.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.4.0
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 
 ## [0.2.0] - 2026-08-03

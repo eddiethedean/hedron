@@ -47,7 +47,18 @@ from hedron_core.builtins import (
 )
 from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.css import compile_css, scoped_identifier
-from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, HedronError
+from hedron_core.diagnostics import (
+    Diagnostic,
+    DiagnosticSeverity,
+    HedronError,
+    SourceSpan,
+    Suppression,
+    apply_suppressions,
+    diagnostics_to_json,
+    diagnostics_to_sarif,
+    diagnostics_to_text,
+    meets_severity_threshold,
+)
 from hedron_core.field import Field
 from hedron_core.hdn import compile_hdn, format_hdn, load_hdn_program, run_program
 from hedron_core.html import html
@@ -69,7 +80,7 @@ from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.theme import Theme, default_theme, emit_theme_css
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 __all__ = [
     "AddressableDescriptor",
@@ -126,8 +137,10 @@ __all__ = [
     "Select",
     "Skeleton",
     "Stack",
+    "SourceSpan",
     "StyleSymbols",
     "SubmitButton",
+    "Suppression",
     "Table",
     "Text",
     "TextArea",
@@ -138,14 +151,19 @@ __all__ = [
     "UrlPurpose",
     "__version__",
     "addressable",
+    "apply_suppressions",
     "compile_css",
     "compile_hdn",
     "default_theme",
+    "diagnostics_to_json",
+    "diagnostics_to_sarif",
+    "diagnostics_to_text",
     "emit_theme_css",
     "format_hdn",
     "get_registry",
     "html",
     "load_hdn_program",
+    "meets_severity_threshold",
     "register_addressable",
     "register_browser_module",
     "register_component",

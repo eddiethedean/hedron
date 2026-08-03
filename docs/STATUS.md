@@ -1,20 +1,14 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.3 published (`v0.3.0`); phase 0.4 next  
+**Roadmap position:** phase 0.4 implemented on `main` at `0.4.0`; **ready to cut
+`v0.4.0`** (latest published train remains `v0.3.0`); phase 0.5 next after publish  
 **Date:** 2026-08-03  
-**Implementation:** `hedron` / `hedron-core` / `hedron-explorer` `0.3.0`; MIT licensed (D-033)
+**Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` `0.4.0`; MIT licensed (D-033)
 
-Phase 0.3 adds HDN authoring, scoped CSS, themes, fingerprinted assets, component-folder
-discovery, `inspect`/`eject`/`build`/`dev` CLI commands, and a minimal HTMX-safe Web
-Component proof (`hedron-disclose`). Production lifespan disables runtime HDN/CSS
-compilation (`HED-BUILD-0004` on `compile_hdn`/`compile_css`; build uses an explicit
-force-allow). Strict CSP uses external stylesheets from the build manifest. First-load
-CSRF form/`hx-headers` tokens match the CSRF cookie. Build promote stays on the target
-filesystem; CSS `url(...)` values are rewritten to fingerprinted asset paths.
-
-Core stays free of FastAPI/ASGI imports. The reference application includes equivalent
-Python and HDN `StatusBanner` twins with scoped style symbols, theme tokens, and a local
-build for strict CSP.
+Phase 0.4 delivers the developer platform: full Component Explorer (HTMX panels),
+CLI `new`/`check`/`graph`/`audit-components`, plugin loader with rollback, SARIF
+diagnostics, public `hedron.testing` helpers, and the `hedron-sample-kit` third-party
+sample package.
 
 ## Current conclusions
 
@@ -27,11 +21,12 @@ build for strict CSP.
 - HDN is optional; built-in Python components remain the beginner path (D-010).
 - Decisions D-001 through D-034 remain in force.
 
-## Phase 0.3 evidence
+## Phase 0.4 evidence
 
-- HDN, scoped-style, theme, asset, and build acceptance suites.
-- Suites: unit (HDN/CSS/theme/assets/build), security HDN corpus, conformance Python/HDN parity,
-  FastAPI integration and reference CRUD.
-- Published as `v0.3.0` on 2026-08-03 ([GitHub Release](https://github.com/eddiethedean/hedron/releases/tag/v0.3.0)).
+- Acceptance: [EXPLORER](acceptance/EXPLORER.md), [CLI](acceptance/CLI.md),
+  [PLUGINS](acceptance/PLUGINS.md), [TESTING](acceptance/TESTING.md).
+- Inference inventory: [INFERENCE_OVERRIDES.md](INFERENCE_OVERRIDES.md).
+- Release gate: `uv run python scripts/check_release_gate.py 0.4.0`.
+- Cut procedure: [RELEASE.md](RELEASE.md) (`Cut v0.4.0`).
 
-See the [roadmap](../ROADMAP.md) for the phase 0.4 developer platform gate.
+See the [roadmap](../ROADMAP.md) for the phase 0.5 data application gate.

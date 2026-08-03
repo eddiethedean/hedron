@@ -84,6 +84,20 @@ def compose_lifespan(
                     app.state.hedron_build_dir = str(resolved_build.resolve())
                     mount_build_assets(app, resolved_build)
 
+            from hedron.config import load_hedron_settings
+            from hedron.plugins import load_plugins
+
+            settings = load_hedron_settings(Path.cwd())
+            enabled = list(settings.plugins) if settings.plugins else None
+            try:
+                plugin_loader = load_plugins(enabled=enabled)
+                app.state.hedron_plugin_loader = plugin_loader
+                plugin_loader.start()
+            except Exception:
+                if enabled:
+                    raise
+                app.state.hedron_plugin_loader = None
+
             seal_registry()
             if user_lifespan is not None:
                 async with user_lifespan(app):
@@ -91,6 +105,12 @@ def compose_lifespan(
             else:
                 yield
         finally:
+            loader = getattr(app.state, "hedron_plugin_loader", None)
+            if loader is not None:
+                from contextlib import suppress
+
+                with suppress(Exception):
+                    loader.shutdown()
             if is_production:
                 set_runtime_compile_allowed(True)
 

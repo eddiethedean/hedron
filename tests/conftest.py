@@ -10,6 +10,9 @@ from hedron_core import reset_registry_for_tests
 @pytest.fixture(autouse=True)
 def _reset_hedron_registry() -> None:
     reset_registry_for_tests()
+    from hedron_core.plugins import reset_explorer_panels_for_tests
+
+    reset_explorer_panels_for_tests()
     import hedron_core
 
     hedron_core._register_builtins()  # type: ignore[attr-defined]

@@ -22,5 +22,12 @@ These documents define the accepted, planned user-facing Python contracts. `Acce
 - [Data sources](DATA_SOURCE.md)
 - [Charts](CHART.md)
 - [Themes and styles](THEME.md)
+- [Explorer](EXPLORER.md)
+- [CLI](CLI.md)
+- [Plugins](PLUGINS.md)
+- [Testing](TESTING.md)
+- [Diagnostics formatters](DIAGNOSTICS.md)
+
+See also [inference explain/override inventory](../INFERENCE_OVERRIDES.md) for phase 0.4.
 
 Each contract documents purpose, representative usage, guarantees, errors, and extension boundaries. Examples are normative in intent but may receive minor syntax corrections during implementation. Material public changes require the decision and RFC process.

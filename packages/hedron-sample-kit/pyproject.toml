@@ -1,0 +1,34 @@
+[project]
+name = "hedron-sample-kit"
+version = "0.4.0"
+description = "Third-party-shaped sample Hedron plugin package for phase 0.4"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "hedron-core==0.4.0",
+]
+
+[project.entry-points."hedron.plugins"]
+sample_kit = "hedron_sample_kit.plugin:register"
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/hedron"
+Repository = "https://github.com/eddiethedean/hedron"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hedron_sample_kit"]
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "src/hedron_sample_kit",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "pyproject.toml",
+]

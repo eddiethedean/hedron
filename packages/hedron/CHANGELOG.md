@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.4.0] - 2026-08-03
+
+Developer platform for the FastAPI flagship.
+
+### Added
+
+- CLI `new`, `check` (text/JSON/SARIF), `graph`, and `audit-components`.
+- Plugin loader with entry points, compatibility gates, lifespan hooks, and rollback.
+- Public `hedron.testing` helpers and optional `hedron[browser]` hooks.
+- Inference explanations/overrides in CLI `preview`.
+
 ## [0.3.0] - 2026-08-03
 
 Authoring, styles, assets, and themes for the FastAPI flagship.
@@ -39,6 +50,7 @@ Authoring, styles, assets, and themes for the FastAPI flagship.
   `hedron.static_mount` to avoid lifespan↔app circular imports.
 - Explorer mounting follows `SecurityPolicy.explorer_enabled` unless `explorer=` is set.
 
+[0.4.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.4.0
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 
 ## [0.2.0] - 2026-08-03

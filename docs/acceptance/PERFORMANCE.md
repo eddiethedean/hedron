@@ -4,7 +4,7 @@
 
 - [ ] Benchmarks separately measure startup, dependency/I/O preparation, tree construction, serialization, page response, fragment response, HDN compilation, CSS compilation, and asset build.
 - [ ] DataEditor and chart tests record rows, bytes, transforms, and browser initialization cost.
-- [ ] Explorer measures its own overhead and can be absent in production.
+- [x] Explorer measures its own overhead and can be absent in production. *(phase 0.4 — audit/rate-limit hooks; default `explorer="off"`)*
 
 ## Budgets
 

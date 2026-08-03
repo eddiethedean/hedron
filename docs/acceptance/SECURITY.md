@@ -22,7 +22,7 @@
 
 - [x] Standard and strict profiles have documented headers and CSP behavior. *(phase 0.2+)*
 - [x] Strict profile requires an explicit `session_secret` (default development secret is rejected).
-- [ ] CI can emit stable text, JSON, and SARIF diagnostics. *(phase 0.4)*
+- [x] CI can emit stable text, JSON, and SARIF diagnostics. *(phase 0.4 — `hedron check`)*
 - [ ] Dependency and component-package audits run in the release pipeline.
 - [ ] A maintained threat model records trust boundaries and residual risks.
 

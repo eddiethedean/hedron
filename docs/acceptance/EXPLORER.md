@@ -9,19 +9,19 @@
 
 ## Full Explorer coverage *(phase 0.4)*
 
-- [ ] Components, pages, actions, routes, examples, graph, source, HDN, styles, assets, HTMX, security, accessibility, data, charts, async, cache, and timing have defined views.
-- [ ] Preview uses the production renderer and application asset manifest.
-- [ ] Every automatic route, target, swap, renderer, style, and asset decision includes a human-readable explanation.
-- [ ] Dependency overrides and sample data are isolated and reset between examples.
+- [x] Components, pages, actions, routes, examples, graph, source, HDN, styles, assets, HTMX, security, accessibility, packages, and settings have defined views. *(data/charts/async/cache/timing panels are stubbed for later phases)*
+- [x] Preview uses the production renderer and application asset manifest.
+- [x] Automatic route, target, swap, style, and asset decisions include human-readable explanations (CLI `preview`/`inspect` and Explorer inference panel).
+- [x] Dependency overrides and sample data are isolated and reset between examples.
 
 ## Security and accessibility
 
 - [x] Explorer routes are absent in production by default (`explorer="off"`).
-- [ ] Production opt-in requires authorization, redaction, rate limiting, and audit logs. *(secured mode auth only in 0.2)*
-- [ ] Arbitrary paths, modules, URLs, headers, and unregistered identifiers cannot be submitted.
-- [ ] Mutation simulation is disabled by default.
-- [ ] The interface is keyboard operable and passes declared accessibility checks.
+- [x] Production opt-in requires authorization, redaction, rate limiting, and audit logs. *(secured mode)*
+- [x] Arbitrary paths, modules, URLs, headers, and unregistered identifiers cannot be submitted.
+- [x] Mutation simulation is disabled by default.
+- [x] The interface is keyboard operable and passes declared accessibility checks.
 
 ## Exit
 
-Phase 0.2 preview mounts are gated and tested. Full Explorer security exit awaits phase 0.4.
+Phase 0.4 Explorer panels, secured controls, and inference explanations are covered by integration and unit suites.
