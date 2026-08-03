@@ -283,9 +283,7 @@ class HedronRouter(APIRouter):
             schema = (
                 descriptor.include_in_schema if include_in_schema is None else include_in_schema
             )
-            tag_list: list[str | Enum] = (
-                list(tags) if tags is not None else list(descriptor.tags)
-            )
+            tag_list: list[str | Enum] = list(tags) if tags is not None else list(descriptor.tags)
         else:
             factory = descriptor
             route_name = name or factory.__name__
