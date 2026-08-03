@@ -1,10 +1,10 @@
 # Hedron
 
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
-[![Docs](https://readthedocs.org/projects/hedron/badge/?version=latest)](https://hedron.readthedocs.io/en/latest/?badge=latest)
+[![Docs](https://readthedocs.org/projects/hedron-py/badge/?version=latest)](https://hedron-py.readthedocs.io/en/latest/?badge=latest)
 [![PyPI](https://img.shields.io/pypi/v/hedron.svg?label=hedron)](https://pypi.org/project/hedron/)
 [![Python](https://img.shields.io/pypi/pyversions/hedron.svg)](https://pypi.org/project/hedron/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/v/release/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/releases/latest)
 
 Hedron is a Python-first framework for building typed, server-rendered
@@ -52,6 +52,8 @@ The initial audience is Python teams building FastAPI CRUD applications, interna
 
 ## Five-minute secure page
 
+See the hosted [quickstart](https://hedron-py.readthedocs.io/en/latest/getting-started/quickstart/) for a fuller walkthrough.
+
 ```bash
 uv add hedron
 ```
@@ -98,11 +100,19 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 | 0.8 | `v0.8.0` | Public API freeze, release candidate, and hardening |
 | 1.0 | `v1.0.0` | Stable supported Hedron release |
 
-See the complete [roadmap](ROADMAP.md) for scope, feature ownership, RFC assignments, and release gates.
+See the complete [roadmap](https://hedron-py.readthedocs.io/en/latest/ROADMAP/) for scope, feature ownership, RFC assignments, and release gates.
 
 ## Documentation
 
-Hosted docs (MkDocs / Read the Docs): [hedron.readthedocs.io](https://hedron.readthedocs.io/)
+Hosted docs (MkDocs / Read the Docs): [hedron-py.readthedocs.io](https://hedron-py.readthedocs.io/en/latest/)
+
+Start here in the published site:
+
+- [Getting started](https://hedron-py.readthedocs.io/en/latest/getting-started/)
+- [Guides](https://hedron-py.readthedocs.io/en/latest/guides/)
+- [API reference](https://hedron-py.readthedocs.io/en/latest/api/)
+- [Architecture](https://hedron-py.readthedocs.io/en/latest/ARCHITECTURE/)
+- [Status](https://hedron-py.readthedocs.io/en/latest/STATUS/) and [roadmap](https://hedron-py.readthedocs.io/en/latest/ROADMAP/)
 
 Build locally:
 
@@ -113,28 +123,28 @@ uv run mkdocs serve
 
 The specification remains the authority for implementation:
 
-- [Specification index](docs/SPECIFICATION.md)
-- [Current status](docs/STATUS.md) and [pre-coding readiness report](docs/READINESS_REPORT.md)
-- [Architecture](docs/ARCHITECTURE.md), [decisions](docs/DECISIONS.md), and [project layout](docs/PROJECT_LAYOUT.md)
-- [Foundations](docs/foundations/README.md) and [RFC index](docs/rfcs/README.md)
-- [Public API contracts](docs/api/README.md)
-- [Implementation specifications](docs/implementation/README.md)
-- [Acceptance specifications](docs/acceptance/README.md)
-- [Compatibility policy](docs/COMPATIBILITY.md) and [engineering baseline](docs/ENGINEERING_BASELINE.md)
-- [Cutting a release](docs/RELEASE.md)
+- [Specification index](https://hedron-py.readthedocs.io/en/latest/SPECIFICATION/)
+- [Current status](https://hedron-py.readthedocs.io/en/latest/STATUS/) and [pre-coding readiness report](https://hedron-py.readthedocs.io/en/latest/READINESS_REPORT/)
+- [Architecture](https://hedron-py.readthedocs.io/en/latest/ARCHITECTURE/), [decisions](https://hedron-py.readthedocs.io/en/latest/DECISIONS/), and [project layout](https://hedron-py.readthedocs.io/en/latest/PROJECT_LAYOUT/)
+- [Foundations](https://hedron-py.readthedocs.io/en/latest/foundations/) and [RFC index](https://hedron-py.readthedocs.io/en/latest/rfcs/)
+- [Public API contracts](https://hedron-py.readthedocs.io/en/latest/api/)
+- [Implementation specifications](https://hedron-py.readthedocs.io/en/latest/implementation/)
+- [Acceptance specifications](https://hedron-py.readthedocs.io/en/latest/acceptance/)
+- [Compatibility policy](https://hedron-py.readthedocs.io/en/latest/COMPATIBILITY/) and [engineering baseline](https://hedron-py.readthedocs.io/en/latest/ENGINEERING_BASELINE/)
+- [Cutting a release](https://hedron-py.readthedocs.io/en/latest/RELEASE/)
 
 Accepted RFC and API status means the design has been selected; it does not mean every feature is implemented. Availability follows the roadmap phase.
 
 ## Cutting `v0.4.0`
 
-Implementation is complete on `main`. Follow [Cutting a release](docs/RELEASE.md)
+Implementation is complete on `main`. Follow [Cutting a release](https://hedron-py.readthedocs.io/en/latest/RELEASE/)
 to push the annotated `v0.4.0` tag when CI is green. After publish, the next
-implementation target is phase 0.5 — see the [roadmap](ROADMAP.md).
+implementation target is phase 0.5 — see the [roadmap](https://hedron-py.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing
 
-Read [CONTRIBUTING.md](docs/CONTRIBUTING.md) before changing an accepted contract. Material changes require an architectural decision and an RFC revision or superseding RFC. Implementations must name their owning RFC, public contract, implementation specification, and acceptance checks.
+Read [Contributing](https://hedron-py.readthedocs.io/en/latest/CONTRIBUTING/) before changing an accepted contract. Material changes require an architectural decision and an RFC revision or superseding RFC. Implementations must name their owning RFC, public contract, implementation specification, and acceptance checks.
 
 ## License
 
-Hedron is released under the [MIT License](LICENSE).
+Hedron is released under the [MIT License](https://github.com/eddiethedean/hedron/blob/main/LICENSE).
