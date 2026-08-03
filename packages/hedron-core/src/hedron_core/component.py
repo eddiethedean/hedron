@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any, ClassVar, Protocol, TypeVar, runtime_checkable
+from typing import Any, ClassVar, Generic, Protocol, TypeAlias, TypeVar, runtime_checkable
 
 from pydantic import ValidationError
 
@@ -23,7 +23,7 @@ class ComponentNode(Protocol):
     def __hedron_node__(self) -> Any: ...
 
 
-class Component[PropsT: Props]:
+class Component(Generic[PropsT]):
     """Base class for reusable server-rendered UI components."""
 
     props_type: ClassVar[type[Props]]
@@ -173,6 +173,6 @@ class Component[PropsT: Props]:
 
 
 # Shared public recursive alias (imported by rendering and package root).
-type NodeLike = (
+NodeLike: TypeAlias = (
     Component[Any] | ComponentNode | str | int | float | bool | None | Sequence["NodeLike"]
 )

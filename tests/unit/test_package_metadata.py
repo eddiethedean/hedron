@@ -30,7 +30,7 @@ def test_version_is_synchronized() -> None:
 def test_public_metadata_fields() -> None:
     project = _project()
     assert project["name"] == "hedron-core"
-    assert project["requires-python"] == ">=3.12,<3.15"
+    assert project["requires-python"] == ">=3.11,<3.15"
     assert project["license"] == "MIT"
     assert project["license-files"] == ["LICENSE"]
     dependencies = project["dependencies"]

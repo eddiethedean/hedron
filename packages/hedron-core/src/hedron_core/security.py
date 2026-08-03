@@ -5,7 +5,7 @@ from __future__ import annotations
 import html as html_stdlib
 import re
 from enum import StrEnum
-from typing import Any, TypeVar
+from typing import Any, Generic, TypeVar
 from urllib.parse import unquote, urlsplit
 
 from pydantic import GetCoreSchemaHandler
@@ -26,7 +26,7 @@ class UrlPurpose(StrEnum):
     REDIRECT = "redirect"
 
 
-class Secret[T]:
+class Secret(Generic[T]):
     """Typed sensitive value that never appears in public representations."""
 
     __slots__ = ("_value",)

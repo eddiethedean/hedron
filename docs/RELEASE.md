@@ -5,7 +5,7 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Preconditions
 
-1. `main` is green on CI for Python 3.12–3.14.
+1. `main` is green on CI for Python 3.11–3.14.
 2. Package version, `__version__`, and changelog entry agree.
 3. Phase acceptance subsets for the release are checked.
 4. **License (D-033):** a root `LICENSE` file exists and every publishable

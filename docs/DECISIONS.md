@@ -26,7 +26,8 @@ This is the authoritative decision log for the phase 0.0 specification baseline.
 | D-020 | Accepted | Durable work belongs to external job systems; FastAPI `BackgroundTasks` is used only for small post-response work. |
 | D-021 | Accepted | Hedron exposes scoped cache decorators and Streamlit-inspired utility components while leaving cache services, storage, and durable state to the application ecosystem. |
 | D-022 | Superseded | The original pre-1.0 roadmap used cumulative releases 0.1 through 0.9; D-031 replaces only that numbering. |
-| D-023 | Accepted | The initial matrix is CPython 3.12–3.14, FastAPI `>=0.141.1,<0.142`, Pydantic `>=2.13.4,<2.14`, and bundled HTMX 2.0.10 under the compatibility policy. |
+| D-023 | Superseded | The initial matrix was CPython 3.12–3.14 with FastAPI `>=0.141.1,<0.142`, Pydantic `>=2.13.4,<2.14`, and bundled HTMX 2.0.10. Python range superseded by D-034. |
+| D-034 | Accepted | Supported CPython is 3.11–3.14 (`requires-python = ">=3.11,<3.15"`). FastAPI `>=0.141.1,<0.142`, Pydantic `>=2.13.4,<2.14`, and bundled HTMX 2.0.10 remain as under the compatibility policy. |
 | D-024 | Accepted | Hedron uses the documented monorepo distribution/import layout; Explorer is installed through `hedron[dev]`, not required by production `hedron`. |
 | D-025 | Accepted | `@app.page`/`@router.page`, `@app.component`/`@router.component`, and `@app.action`/`@router.action` are the canonical app-local decorators. `@addressable` defines a reusable component resource that becomes reachable only through `include_component`. |
 | D-026 | Accepted | Public code renders through opaque `ComponentNode`/`NodeLike` contracts and `render(...) -> RenderResult`; concrete serializer nodes and the serializer implementation remain private in 0.x. |

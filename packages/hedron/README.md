@@ -20,7 +20,7 @@ Development Explorer preview:
 pip install "hedron[dev]"
 ```
 
-Requires Python 3.12, 3.13, or 3.14.
+Requires Python 3.11, 3.12, 3.13, or 3.14.
 
 ## Quick start
 

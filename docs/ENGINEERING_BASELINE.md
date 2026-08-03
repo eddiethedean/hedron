@@ -25,7 +25,7 @@ Every change runs:
 6. browser and accessibility tests when emitted markup or browser assets change;
 7. non-blocking benchmark comparison until a release budget becomes normative.
 
-The default CPython matrix covers 3.12, 3.13, and 3.14. Linux runs the full suite; macOS and Windows run package, core, and representative integration tests. Free-threaded CPython and PyPy are informational until separately promoted.
+The default CPython matrix covers 3.11, 3.12, 3.13, and 3.14. Linux runs the full suite; macOS and Windows run package, core, and representative integration tests. Free-threaded CPython and PyPy are informational until separately promoted.
 
 ## Quality policy
 

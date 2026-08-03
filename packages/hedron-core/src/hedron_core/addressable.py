@@ -5,12 +5,15 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, overload
+from typing import Any, ParamSpec, TypeVar, overload
 
 from hedron_core.identifiers import component_type_id, registry_resource_id
 from hedron_core.registry import register_addressable
 
 __all__ = ["AddressableDescriptor", "addressable"]
+
+P = ParamSpec("P")
+R = TypeVar("R")
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,11 +49,11 @@ class AddressableDescriptor:
 
 
 @overload
-def addressable[**P, R](factory: Callable[P, R], /) -> AddressableDescriptor: ...
+def addressable(factory: Callable[P, R], /) -> AddressableDescriptor: ...
 
 
 @overload
-def addressable[**P, R](
+def addressable(
     *,
     name: str | None = None,
     distribution: str = "hedron-core",
@@ -62,7 +65,7 @@ def addressable[**P, R](
 ) -> Callable[[Callable[P, R]], AddressableDescriptor]: ...
 
 
-def addressable[**P, R](
+def addressable(
     factory: Callable[P, R] | None = None,
     /,
     *,
