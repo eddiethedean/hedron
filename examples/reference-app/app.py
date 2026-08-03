@@ -1,4 +1,4 @@
-"""Authenticated team-admin CRUD reference application (phase 0.2)."""
+"""Authenticated team-admin CRUD reference application (phase 0.3)."""
 
 from __future__ import annotations
 
@@ -155,12 +155,54 @@ def dashboard_page(*, csrf_token: str, username: str, form_errors: tuple[str, ..
                         tone="info",
                         title="Phase 0.2",
                     ),
+                    _status_banner_section(),
                 )
             )
         ),
         Footer(Text("© Hedron reference application")),
         title="Team Admin",
         lang="en",
+    )
+
+
+def _status_banner_section() -> Any:
+    """Python StatusBanner beside an HDN-compiled twin with equivalent output."""
+    import importlib.util
+    from pathlib import Path
+
+    from hedron_core import compile_css, compile_hdn, run_program
+    from hedron_core.html import _HtmlTag
+
+    root = Path(__file__).resolve().parent / "components" / "StatusBanner"
+    spec = importlib.util.spec_from_file_location(
+        "reference_status_banner",
+        root / "component.py",
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    StatusBanner = module.StatusBanner
+
+    python_banner = StatusBanner(label="Phase 0.3 ready", tone="info")
+    css = compile_css(
+        (root / "styles.css").read_text(encoding="utf-8"),
+        component_id="hedron-reference:StatusBanner",
+    )
+    hdn_nodes = run_program(
+        compile_hdn((root / "template.hdn").read_text(encoding="utf-8")).program,
+        {"label": "Phase 0.3 ready", "tone": "info"},
+    )
+    disclose = _HtmlTag("hedron-disclose")(
+        html.p("Web Component disclose survives HTMX swaps."),
+        **{"label": "About phase 0.3"},
+    )
+    return Stack(
+        Heading("Authoring twins", level=3),
+        Text("Python StatusBanner and HDN StatusBanner produce equivalent structure."),
+        python_banner,
+        *hdn_nodes,
+        disclose,
+        Text(f"Scoped root class: {css.manifest.symbols.get('root', '')}"),
     )
 
 
@@ -234,6 +276,7 @@ def build_hedron_app() -> Hedron:
         security="standard",
         explorer="development",
         session_secret="reference-app-secret",
+        theme="default",
     )
     users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
 

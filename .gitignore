@@ -17,4 +17,5 @@ htmlcov/
 .hypothesis/
 .tox/
 .nox/
+.hedron/
 *.html.gz

@@ -13,4 +13,6 @@ def render_context_from_request(request: Request) -> RenderContext:
     """Build a framework-neutral RenderContext without embedding the request."""
     locale = request.headers.get("Accept-Language", "en").split(",")[0].strip() or "en"
     theme = request.headers.get("X-Hedron-Theme")
+    if not theme:
+        theme = getattr(request.app.state, "hedron_theme", None)
     return RenderContext.standalone(locale=locale, theme=theme)

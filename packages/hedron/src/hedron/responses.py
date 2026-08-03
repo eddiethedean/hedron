@@ -131,7 +131,12 @@ def render_component_response(
             selected_mode = render_mode_for_request(request, force=force_mode)
         else:
             selected_mode = force_mode or RenderMode.PAGE
-        render_context = context or RenderContext.standalone()
+        render_context = context
+        if render_context is None and request is not None:
+            from hedron.context import render_context_from_request
+
+            render_context = render_context_from_request(request)
+        render_context = render_context or RenderContext.standalone()
         to_render: NodeLike | Component[Any] = value
         if selected_mode is RenderMode.FRAGMENT:
             to_render = _fragment_value(value)
@@ -146,12 +151,64 @@ def render_component_response(
     response_cls: type[ComponentResponse] = (
         FragmentResponse if selected_mode is RenderMode.FRAGMENT else PageResponse
     )
+    html_text = result.html
+    if request is not None:
+        html_text = _inject_build_assets(html_text, selected_mode, request, result)
+    else:
+        html_text = _ensure_htmx_asset(html_text, selected_mode)
     return response_cls(
-        content=_ensure_htmx_asset(result.html, selected_mode),
+        content=html_text,
         status_code=status_code,
         headers=headers,
         background=background,
     )
+
+
+def _inject_build_assets(
+    html_text: str,
+    mode: RenderMode,
+    request: Request,
+    result: RenderResult,
+) -> str:
+    html_text = _ensure_htmx_asset(html_text, mode)
+    if mode is not RenderMode.PAGE:
+        return html_text
+    assets_prefix = getattr(request.app.state, "hedron_assets_path", "/hedron-assets")
+    tags: list[str] = []
+    manifest = getattr(request.app.state, "hedron_build_manifest", None)
+    if manifest is not None:
+        for entry in manifest.assets.assets:
+            href = f"{assets_prefix}/{entry.path}"
+            if entry.kind == "css":
+                tag = f'<link rel="stylesheet" href="{href}">'
+                if tag not in html_text:
+                    tags.append(tag)
+            elif entry.kind == "module":
+                tag = f'<script type="module" src="{href}"></script>'
+                if tag not in html_text:
+                    tags.append(tag)
+    for asset in result.assets:
+        if asset.kind == "css":
+            tag = f'<link rel="stylesheet" href="{asset.href}">'
+            if tag not in html_text:
+                tags.append(tag)
+        elif asset.kind in {"js", "module"}:
+            typ = ' type="module"' if asset.kind == "module" else ""
+            tag = f'<script{typ} src="{asset.href}"></script>'
+            if tag not in html_text:
+                tags.append(tag)
+    # Always offer bundled disclose module from package static for WC proof
+    disclose = '<script type="module" src="/hedron-static/hedron-disclose.mjs"></script>'
+    if "hedron-disclose.mjs" not in html_text:
+        tags.append(disclose)
+    if not tags:
+        return html_text
+    injection = "\n".join(tags)
+    if "</head>" in html_text:
+        return html_text.replace("</head>", f"{injection}\n</head>", 1)
+    if "</body>" in html_text:
+        return html_text.replace("</body>", f"{injection}\n</body>", 1)
+    return html_text + injection
 
 
 def _ensure_htmx_asset(html_text: str, mode: RenderMode) -> str:

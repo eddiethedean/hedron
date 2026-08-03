@@ -80,20 +80,26 @@ from hedron_core import (  # noqa: F401
     Select,
     Skeleton,
     Stack,
+    StyleSymbols,
     SubmitButton,
     Table,
     Text,
     TextArea,
     TextInput,
+    Theme,
     Title,
     TrustedHtml,
     UrlPurpose,
     addressable,
+    compile_css,
+    compile_hdn,
+    format_hdn,
     html,
     render,
+    styles_from_manifest,
 )
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "Alert",
@@ -160,11 +166,13 @@ __all__ = [
     "SessionState",
     "Skeleton",
     "Stack",
+    "StyleSymbols",
     "SubmitButton",
     "Table",
     "Text",
     "TextArea",
     "TextInput",
+    "Theme",
     "Title",
     "TrustedHtml",
     "UrlPurpose",
@@ -172,6 +180,9 @@ __all__ = [
     "action_attrs",
     "addressable",
     "approved_headers",
+    "compile_css",
+    "compile_hdn",
+    "format_hdn",
     "hedron_response",
     "html",
     "htmx_context",
@@ -183,4 +194,5 @@ __all__ = [
     "render",
     "resolve_route_path",
     "session_state",
+    "styles_from_manifest",
 ]

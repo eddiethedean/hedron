@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.3.0] - 2026-08-03
+
+Authoring, styles, assets, and themes for the FastAPI flagship.
+
+### Added
+
+- `[tool.hedron]` configuration loader and `Hedron(theme=..., build_dir=..., production=...)`.
+- CLI commands: `build`, `dev`, `inspect`, and `eject` (plus existing routes/components/preview).
+- Build orchestration that compiles HDN/CSS, fingerprints assets, and atomically
+  promotes versioned manifests; production lifespan rejects missing manifests.
+- Manifest-driven `/hedron-assets` StaticFiles mounting and page asset injection.
+- Strict CSP without `style-src 'unsafe-inline'` for external stylesheets.
+- First-party `hedron-disclose` Web Component with HTMX swap-safe lifecycle.
+
+[0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
+
 ## [0.2.0] - 2026-08-03
 
 Initial FastAPI flagship distribution for the secure HTML/HTMX application MVP.

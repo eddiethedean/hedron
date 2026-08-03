@@ -190,7 +190,8 @@ class _NativeElement:
                 ),
                 remediation="Use TrustedHtml only through approved asset/sanitizer paths later.",
             )
-        if tag_l not in KNOWN_TAGS:
+        # Hyphenated tags are custom elements (Web Components).
+        if tag_l not in KNOWN_TAGS and "-" not in tag_l:
             raise error(
                 "HED-HTML-0004",
                 title="Unknown HTML tag",

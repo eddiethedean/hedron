@@ -56,7 +56,7 @@ class SecurityPolicy:
                 security_headers=True,
                 content_security_policy=(
                     "default-src 'self'; script-src 'self'; "
-                    "style-src 'self' 'unsafe-inline'; "
+                    "style-src 'self'; "
                     "img-src 'self' data:; object-src 'none'; "
                     "base-uri 'self'; frame-ancestors 'none'"
                 ),

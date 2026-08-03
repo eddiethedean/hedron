@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.3.0] - 2026-08-03
+
+Coordinated release train bump with `hedron` 0.3.0. Explorer preview unchanged;
+full style/HDN panels remain phase 0.4.
+
+[0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
+
 ## [0.2.0] - 2026-08-03
 
 Initial Explorer preview for the FastAPI MVP.

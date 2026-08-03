@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import warnings
 from collections.abc import Callable, Sequence
 from importlib import resources
@@ -19,13 +20,14 @@ from hedron.openapi import install_openapi
 from hedron.routing.router import HedronRouter
 from hedron.security.headers import SecurityHeadersMiddleware
 from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
+from hedron_core.theme import ensure_default_theme_registered
 
 ExplorerMode = Literal["off", "development", "secured"]
 
 _DEFAULT_SESSION_SECRET = "hedron-dev-secret-change-me"
 logger = logging.getLogger("hedron")
 
-__all__ = ["Hedron", "mount_hedron_static"]
+__all__ = ["Hedron", "mount_hedron_static", "mount_build_assets"]
 
 
 def mount_hedron_static(app: FastAPI, *, path: str = "/hedron-static") -> None:
@@ -33,11 +35,32 @@ def mount_hedron_static(app: FastAPI, *, path: str = "/hedron-static") -> None:
     static_dir = Path(str(resources.files("hedron").joinpath("static")))
     if not static_dir.is_dir():
         return
-    # Avoid double-mount errors when called more than once.
     for route in app.routes:
         if getattr(route, "path", None) == path:
             return
     app.mount(path, StaticFiles(directory=str(static_dir)), name="hedron-static")
+
+
+def mount_build_assets(
+    app: FastAPI,
+    build_dir: Path | str | None = None,
+    *,
+    path: str = "/hedron-assets",
+) -> Path | None:
+    """Mount fingerprinted build assets from a Hedron build directory."""
+    if build_dir is None:
+        build_dir = os.environ.get("HEDRON_BUILD_DIR", ".hedron/build")
+    root = Path(build_dir)
+    assets = root / "assets"
+    if not assets.is_dir():
+        return None
+    for route in app.routes:
+        if getattr(route, "path", None) == path:
+            return assets
+    app.mount(path, StaticFiles(directory=str(assets)), name="hedron-assets")
+    app.state.hedron_assets_path = path
+    app.state.hedron_build_dir = str(root.resolve())
+    return assets
 
 
 class Hedron(FastAPI):
@@ -51,16 +74,31 @@ class Hedron(FastAPI):
         session_secret: str = _DEFAULT_SESSION_SECRET,
         enable_sessions: bool = True,
         explorer_dependencies: Sequence[Any] | None = None,
+        theme: str | None = "default",
+        build_dir: str | Path | None = None,
+        production: bool | None = None,
         **kwargs: Any,
     ) -> None:
         user_lifespan = kwargs.pop("lifespan", None)
-        kwargs.setdefault("lifespan", compose_lifespan(user_lifespan))
+        kwargs.setdefault(
+            "lifespan",
+            compose_lifespan(
+                user_lifespan,
+                production=production,
+                build_dir=build_dir,
+                theme=theme,
+            ),
+        )
         super().__init__(*args, **kwargs)
 
         self.hedron_policy = SecurityPolicy.from_name(security)
         self.hedron_explorer_mode = str(explorer)
+        self.hedron_theme = theme
         self.state.hedron_security = self.hedron_policy
+        self.state.hedron_theme = theme
         self._explorer_dependencies = list(explorer_dependencies or [])
+
+        ensure_default_theme_registered()
 
         if enable_sessions:
             if (
@@ -82,12 +120,12 @@ class Hedron(FastAPI):
         self.add_middleware(SecurityHeadersMiddleware, policy=self.hedron_policy)
 
         mount_hedron_static(self)
+        mount_build_assets(self, build_dir)
 
         self._root_router = HedronRouter()
         install_openapi(self)
 
         if self.hedron_explorer_mode == "development":
-            # Explicit explorer intent mounts even under standard security.
             self._maybe_mount_explorer(secured=False)
         elif self.hedron_explorer_mode == "secured":
             self._maybe_mount_explorer(secured=True)
@@ -123,7 +161,6 @@ class Hedron(FastAPI):
 
         def wrap(fn: Callable[..., Any]) -> Callable[..., Any]:
             decorator(fn)
-            # Re-include routes added to root router.
             if self._root_router.routes:
                 route = self._root_router.routes[-1]
                 if route not in self.router.routes:

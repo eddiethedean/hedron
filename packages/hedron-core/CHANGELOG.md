@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.3.0] - 2026-08-03
+
+Authoring, scoped styles, themes, and assets for the phase 0.3 release train.
+
+### Added
+
+- HDN lexer/parser/expression engine, typed render programs, formatter, and
+  source maps (`compile_hdn`, `format_hdn`, `run_program`).
+- Scoped CSS AST compiler with stable symbols, `:global(...)`, keyframes,
+  cascade layers, and typed `styles` bindings.
+- `Theme` API with required accessibility tokens, light/dark modes, and token
+  CSS emission into the `tokens` cascade layer.
+- Fingerprinted asset pipeline and versioned build/CSS/asset manifests.
+- Component-folder discovery for colocated HDN, CSS, and browser modules.
+- Web Component registration metadata and custom-element HTML support.
+
+[0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
+
 ## [0.2.0] - 2026-08-03
 
 Framework-neutral support for the FastAPI MVP release train.

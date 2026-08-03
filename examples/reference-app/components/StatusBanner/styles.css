@@ -1,0 +1,30 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--hedron-space-unit) * 2);
+  padding: calc(var(--hedron-space-unit) * 2) calc(var(--hedron-space-unit) * 3);
+  border-radius: 0.375rem;
+  background: var(--hedron-color-bg);
+  color: var(--hedron-color-fg);
+  border: 1px solid var(--hedron-color-muted);
+  font-family: var(--hedron-font-family);
+  font-size: var(--hedron-font-size);
+}
+
+.root[data-tone="info"] {
+  border-color: var(--hedron-color-accent);
+}
+
+.root[data-tone="danger"] {
+  border-color: var(--hedron-color-danger);
+  color: var(--hedron-color-danger);
+}
+
+@keyframes pulse {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+.root {
+  animation: pulse var(--hedron-motion-duration) ease-in-out;
+}

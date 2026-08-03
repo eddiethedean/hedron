@@ -1,0 +1,10 @@
+[tool.hedron]
+format_version = 1
+component_roots = ["components"]
+build_dir = ".hedron/build"
+theme = "default"
+
+[tool.hedron.asset_policy]
+allow_remote = false
+strict_csp = true
+reject_inline_style = true

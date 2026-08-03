@@ -10,13 +10,11 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase 0.2 is published as
-> [`v0.2.0`](https://github.com/eddiethedean/hedron/releases/tag/v0.2.0)
-> (`pip install hedron`). The FastAPI flagship ships pages, addressable
-> components, typed actions, CSRF-aware forms, OpenAPI `text/html` metadata,
-> interaction built-ins, and a minimal CLI/Explorer preview on top of
-> `hedron-core`. The project is MIT-licensed. Next milestone: phase 0.3 (HDN,
-> scoped styles, assets, and themes).
+> **Project status:** Phase 0.3 is implemented as
+> `v0.3.0` (`pip install hedron`). HDN, scoped styles, themes, fingerprinted
+> assets, `build`/`dev`/`inspect`/`eject`, and a minimal Web Component proof ship
+> on top of the FastAPI MVP. The project is MIT-licensed. Next milestone: phase 0.4
+> (developer platform and ecosystem contracts).
 
 ## Packages
 

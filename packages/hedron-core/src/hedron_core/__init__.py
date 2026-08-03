@@ -46,8 +46,10 @@ from hedron_core.builtins import (
     Title,
 )
 from hedron_core.component import Component, ComponentNode, NodeLike
+from hedron_core.css import compile_css, scoped_identifier
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, HedronError
 from hedron_core.field import Field
+from hedron_core.hdn import compile_hdn, format_hdn, run_program
 from hedron_core.html import html
 from hedron_core.models import EventPayload, FormModel, Model, Props
 from hedron_core.registry import (
@@ -55,15 +57,19 @@ from hedron_core.registry import (
     RouteMeta,
     get_registry,
     register_addressable,
+    register_browser_module,
     register_component,
     register_route,
+    register_theme,
     reset_registry_for_tests,
     seal_registry,
 )
 from hedron_core.rendering import AssetRef, RenderContext, RenderMode, RenderResult, render
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
+from hedron_core.styles import StyleSymbols, styles_from_manifest
+from hedron_core.theme import Theme, default_theme, emit_theme_css
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "AddressableDescriptor",
@@ -120,24 +126,36 @@ __all__ = [
     "Select",
     "Skeleton",
     "Stack",
+    "StyleSymbols",
     "SubmitButton",
     "Table",
     "Text",
     "TextArea",
     "TextInput",
+    "Theme",
     "Title",
     "TrustedHtml",
     "UrlPurpose",
     "__version__",
     "addressable",
+    "compile_css",
+    "compile_hdn",
+    "default_theme",
+    "emit_theme_css",
+    "format_hdn",
     "get_registry",
     "html",
     "register_addressable",
+    "register_browser_module",
     "register_component",
     "register_route",
+    "register_theme",
     "render",
     "reset_registry_for_tests",
+    "run_program",
+    "scoped_identifier",
     "seal_registry",
+    "styles_from_manifest",
 ]
 
 
@@ -197,7 +215,6 @@ def _register_builtins() -> None:
             slots=getattr(cls, "slots", {}),
             accessibility_notes="Uses native semantic HTML without JavaScript.",
         )
-    # Do not seal on import — applications seal at lifespan; tests may register more.
 
 
 _register_builtins()

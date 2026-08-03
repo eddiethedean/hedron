@@ -1,12 +1,16 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.2 published (`v0.2.0`); phase 0.3 next  
+**Roadmap position:** phase 0.3 implemented (`v0.3.0`); phase 0.4 next  
 **Date:** 2026-08-03  
-**Implementation:** `hedron` / `hedron-core` / `hedron-explorer` `0.2.0` published to PyPI; MIT licensed (D-033); next is phase 0.3 (`v0.3.0`)
+**Implementation:** `hedron` / `hedron-core` / `hedron-explorer` `0.3.0`; MIT licensed (D-033)
 
-Phase 0.1 remains complete. Phase 0.2 ships the FastAPI flagship: `Hedron()`, `HedronRouter`/`HedronRoute`, pages, addressable components, typed actions, CSRF, HTMX page/fragment responses, OpenAPI `text/html` metadata, `SessionState`, interaction built-ins (including polling/pagination/infinite-scroll helpers), minimal CLI (`--app`), and an Explorer preview via `hedron[dev]`.
+Phase 0.3 adds HDN authoring, scoped CSS, themes, fingerprinted assets, component-folder
+discovery, `inspect`/`eject`/`build`/`dev` CLI commands, and a minimal HTMX-safe Web
+Component proof (`hedron-disclose`). Production consumes versioned build manifests with
+no required runtime HDN/CSS compilation. Strict CSP uses external styles only.
 
-Core stays free of FastAPI/ASGI imports. The authenticated CRUD reference application works in both `Hedron()` and plain FastAPI + `HedronRouter` modes. CI covers Python 3.11–3.14.
+Core stays free of FastAPI/ASGI imports. The reference application includes equivalent
+Python and HDN `StatusBanner` twins with scoped styles and theme tokens.
 
 ## Current conclusions
 
@@ -15,15 +19,14 @@ Core stays free of FastAPI/ASGI imports. The authenticated CRUD reference applic
 - `hedron-core` remains independent of ASGI, WSGI, FastAPI, Flask, and Django.
 - HTML endpoints return components; JSON endpoints return models.
 - Addressability is explicit; lazy resources do not inherit parent authorization.
-- HTMX is the default server-interaction layer.
-- Decisions D-001 through D-034 remain in force (D-023 Python range superseded by D-034; D-030 superseded by D-033 MIT).
+- HTMX is the default server-interaction layer; Web Components own persistent local UI.
+- HDN is optional; built-in Python components remain the beginner path (D-010).
+- Decisions D-001 through D-034 remain in force.
 
-## Phase 0.2 evidence
+## Phase 0.3 evidence
 
-- Release: [v0.2.0](https://github.com/eddiethedean/hedron/releases/tag/v0.2.0)
-- PyPI: [`hedron`](https://pypi.org/project/hedron/0.2.0/), [`hedron-core`](https://pypi.org/project/hedron-core/0.2.0/), [`hedron-explorer`](https://pypi.org/project/hedron-explorer/0.2.0/)
-- `hedron==0.2.0` intentionally reclaims the existing PyPI project name (same author; prior geolocation package superseded).
-- Acceptance subsets: SECURITY 0.2, FASTAPI MVP, HTMX 0.2, Explorer preview, COMPONENT_MODEL FastAPI parity.
-- Suites: unit, snapshot, security, a11y, conformance, performance, FastAPI integration, HTML parity, reference CRUD.
+- HDN, scoped-style, theme, asset, and build acceptance suites.
+- Suites: unit (HDN/CSS/theme/assets/build), security HDN corpus, conformance Python/HDN parity,
+  FastAPI integration and reference CRUD.
 
-See the [roadmap](../ROADMAP.md) for the phase 0.3 authoring and styles gate.
+See the [roadmap](../ROADMAP.md) for the phase 0.4 developer platform gate.
