@@ -21,4 +21,4 @@
 ## Exit
 
 - [x] The reference CRUD page can be rendered without a live HTTP server.
-- [ ] Produces the same core HTML when invoked through FastAPI. *(phase 0.2)*
+- [x] Produces the same core HTML when invoked through FastAPI (body parity; PAGE responses may additionally inject the bundled HTMX script). *(phase 0.2)*

@@ -4,6 +4,7 @@ Acceptance documents are release gates. A subsystem is not complete when its imp
 
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
+- [HTMX](HTMX.md)
 - [HDN](HDN.md)
 - [Scoped styles](SCOPED_STYLES.md)
 - [Component Explorer](EXPLORER.md)

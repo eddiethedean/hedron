@@ -13,7 +13,7 @@
 
 - [ ] Reference themes meet WCAG 2.2 AA contrast where applicable. *(phase 0.3)*
 - [ ] Zoom, reflow, reduced motion, forced colors, touch targets, and color-independent meaning are tested.
-- [ ] HTMX swaps preserve logical focus and announcements. *(phase 0.2)*
+- [ ] HTMX swaps preserve logical focus and announcements. *(Deferred: browser/keyboard suite; phase 0.4+)*
 
 ## Verification
 

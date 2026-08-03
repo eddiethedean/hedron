@@ -53,9 +53,11 @@ app.state.hedron_security = SecurityPolicy.from_name("standard")
 mount_hedron_static(app)
 router = HedronRouter()
 
+
 @router.get("/card", **hedron_response())
 def card():
     return HTML(Text("plain"))
+
 
 app.include_router(router)
 ```

@@ -48,15 +48,27 @@ jobs:
           set -euo pipefail
           uv venv /tmp/hedron-smoke --python ${{ matrix.python-version }}
           shopt -s nullglob
-          wheels=(dist/hedron_core-*.whl)
-          if ((${#wheels[@]})); then
-            uv pip install --python /tmp/hedron-smoke "${wheels[@]}"
+          core_wheels=(dist/hedron_core-*.whl)
+          hedron_wheels=(dist/hedron-0.*.whl)
+          if ((${#core_wheels[@]})); then
+            uv pip install --python /tmp/hedron-smoke "${core_wheels[@]}"
             /tmp/hedron-smoke/bin/python - <<'PY'
           from hedron_core import Page, Text, RenderMode, render
           html = render(Page(Text("smoke"), title="Smoke"), mode=RenderMode.PAGE).html
           assert html.startswith("<!DOCTYPE html>")
           assert "smoke" in html
-          print("ok: clean-install render")
+          print("ok: clean-install hedron-core render")
+          PY
+          fi
+          if ((${#hedron_wheels[@]})); then
+            uv pip install --python /tmp/hedron-smoke "${hedron_wheels[@]}"
+            /tmp/hedron-smoke/bin/python - <<'PY'
+          from hedron import Hedron, Page, Text
+          app = Hedron(title="smoke", security="standard", explorer="off", session_secret="smoke-secret")
+          @app.page("/")
+          def home():
+              return Page(Text("ok"), title="Ok")
+          print("ok: clean-install Hedron")
           PY
           fi
       - name: Prove no web frameworks or Node tooling in core env
