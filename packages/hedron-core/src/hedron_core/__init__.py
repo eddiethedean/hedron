@@ -81,6 +81,7 @@ from hedron_core.diagnostics import (
 from hedron_core.field import Field
 from hedron_core.hdn import compile_hdn, format_hdn, load_hdn_program, run_program
 from hedron_core.html import html
+from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
 from hedron_core.models import EventPayload, FormModel, Model, Props
 from hedron_core.registry import (
     AddressableMeta,
@@ -98,8 +99,14 @@ from hedron_core.rendering import AssetRef, RenderContext, RenderMode, RenderRes
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.theme import Theme, default_theme, emit_theme_css
+from hedron_core.visualization import (
+    ChartAccessibility,
+    ChartOutput,
+    VisualizationAdapter,
+    VisualizationLimits,
+)
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 __all__ = [
     "AddressableDescriptor",
@@ -171,11 +178,14 @@ __all__ = [
     "Auto",
     "CacheScope",
     "CacheTrace",
+    "ChartAccessibility",
+    "ChartOutput",
     "CodeViewer",
     "ColorMode",
     "ColorModeToggle",
     "color_mode_script",
     "Expander",
+    "IconEntry",
     "InMemoryCacheBackend",
     "JSONViewer",
     "Metric",
@@ -184,12 +194,18 @@ __all__ = [
     "Status",
     "Tabs",
     "Toast",
+    "VisualizationAdapter",
+    "VisualizationLimits",
     "get_cache_traces",
+    "get_icon",
     "inspect_data",
     "invalidate_tags",
+    "list_icons",
+    "register_icon",
     "register_renderer",
     "reset_cache_for_tests",
     "resolve_color_mode",
+    "trusted_svg",
     "__version__",
     "addressable",
     "apply_suppressions",

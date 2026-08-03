@@ -13,9 +13,11 @@ from starlette.responses import Response as StarletteResponse
 
 from hedron.async_utils import await_if_needed
 from hedron.context import render_context_from_request
+from hedron.interaction import InteractionResult, interaction_headers, resolve_fragment_region
 from hedron.responses import HTML, render_component_response
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
+from hedron_core.builtins import Fragment
 from hedron_core.component import Component
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
@@ -24,7 +26,7 @@ __all__ = ["HedronRoute"]
 
 
 def _is_hedron_value(value: Any) -> bool:
-    if isinstance(value, (HTML, Component, StarletteResponse)):
+    if isinstance(value, (HTML, Component, StarletteResponse, InteractionResult)):
         return True
     if isinstance(value, Model) and not isinstance(value, Component):
         return True
@@ -112,11 +114,21 @@ class HedronRoute(APIRoute):
         )
         authenticated = bool(getattr(request.state, "hedron_authenticated", False))
         result = await await_if_needed(result)
+        vary = {"Vary": "HX-Request, HX-History-Restore-Request"}
 
         if isinstance(result, StarletteResponse):
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(result, policy, request=request)
             return result
+        if isinstance(result, InteractionResult):
+            return await HedronRoute._convert_interaction_result(
+                request,
+                result,
+                mode=mode,
+                kind=kind,
+                policy=policy,
+                authenticated=authenticated,
+            )
         if isinstance(result, HTML):
             response = render_component_response(
                 result,
@@ -124,6 +136,7 @@ class HedronRoute(APIRoute):
                 context=render_context_from_request(request),
                 policy=policy,
                 authenticated=authenticated,
+                extra_headers=vary,
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(response, policy, request=request)
@@ -144,8 +157,64 @@ class HedronRoute(APIRoute):
                 mode=force,
                 policy=policy,
                 authenticated=authenticated,
+                extra_headers=vary,
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(response, policy, request=request)
             return response
         raise TypeError(f"Unsupported Hedron endpoint return type: {type(result)!r}")
+
+    @staticmethod
+    async def _convert_interaction_result(
+        request: Request,
+        result: InteractionResult,
+        *,
+        mode: RenderMode | None,
+        kind: str,
+        policy: SecurityPolicy,
+        authenticated: bool,
+    ) -> StarletteResponse:
+        from starlette.responses import Response
+
+        if result.status_code == 204 or result.content is None and result.status_code == 204:
+            headers = interaction_headers(result, request=request)
+            return Response(status_code=204, headers=headers)
+
+        target = request.headers.get("HX-Target")
+        region = None
+        if result.policy is not None and result.policy.declared_regions:
+            region = resolve_fragment_region(result.policy, result.region_id or target)
+
+        content: Any = result.content
+        if result.oob:
+            nodes: list[Any] = []
+            if content is not None:
+                nodes.append(content)
+            for update in result.oob:
+                nodes.append(update.content)
+            content = Fragment(*nodes)
+
+        headers = interaction_headers(result, request=request)
+        if region is not None and result.policy and result.policy.vary_on_target:
+            existing = {p.strip() for p in headers.get("Vary", "").split(",") if p.strip()}
+            existing.update({"HX-Request", "HX-History-Restore-Request", "HX-Target"})
+            headers["Vary"] = ", ".join(sorted(existing))
+
+        force = mode
+        if kind == "component":
+            force = force or RenderMode.FRAGMENT
+        if content is None:
+            return Response(status_code=result.status_code, headers=headers)
+        response = render_component_response(
+            content,
+            request=request,
+            context=render_context_from_request(request),
+            mode=force,
+            policy=policy,
+            authenticated=authenticated,
+            extra_headers=headers,
+            status_code=result.status_code,
+        )
+        if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
+            ensure_csrf_cookie(response, policy, request=request)
+        return response

@@ -5,13 +5,23 @@
 
 ## Initial runtime ranges
 
-| Dependency | `v0.1.0`/`v0.2.0` baseline | Policy |
+| Dependency | `v0.6.0` baseline | Policy |
 |---|---|---|
 | Python | CPython 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.11,<3.15"`; 3.15 prereleases are not supported. |
 | FastAPI | `>=0.141.1,<0.142` | Required by `hedron`, not `hedron-core`; expand only after adapter conformance. |
 | Pydantic | `>=2.13.4,<2.14` | Required by `hedron-core`; Hedron shields public contracts from Pydantic internals. |
 | Starlette | FastAPI-managed compatible version | No independent direct pin unless implementation use requires one; test the resolved FastAPI set. |
-| HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js` (SRI digests deferred to the asset-pipeline phase). |
+| HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js`. |
+| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Lazy optional; exact missing-extra guidance. |
+| Plotly | `>=5.18,<7` via `hedron-charts[plotly]` | Lazy optional; local host asset, no CDN callbacks. |
+| Altair | `>=5.2,<6` via `hedron-charts[altair]` | Lazy optional; Vega-Lite JSON as data. |
+| nh3 | `>=0.2` via `hedron[sanitize]` / `[markdown]` | TrustedHtml.nh3 named constructor. |
+| Pygments | `>=2.17` via `hedron[code]` | Optional syntax highlighting for CodeViewer. |
+| Pillow | `>=10.0` via `hedron[images]` | Optional image processing. |
+| email-validator | `>=2.0` via `hedron[email]` | Optional email validation helpers. |
+| SQLAlchemy | `>=2.0,<3` via `hedron-data[sqlalchemy]` | Explicit adapters; app owns sessions. |
+| SQLModel | `>=0.0.22` via `hedron-data[sqlmodel]` | Optional on top of SQLAlchemy. |
+| Authlib | `>=1.3` via `hedron[auth]` | Convenience helpers only; no identity ownership. |
 
 Python 3.11 and 3.12 remain supported by upstream security fixes through 2027 and 2028 respectively; 3.13 and 3.14 are in bugfix support. Python 3.15 is prerelease as of this review. FastAPI 0.141.1 and Pydantic 2.13.4 are the latest stable releases reviewed for the baseline. HTMX’s official repository documents 2.0.10, while later major-line work is not used for the initial contract.
 

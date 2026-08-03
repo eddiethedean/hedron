@@ -249,6 +249,7 @@ def dashboard_page(
                         csrf_token=csrf_token,
                         preference=preference,
                     ),
+                    _phase06_section(csrf_token=csrf_token),
                     _status_banner_section(request=request),
                 )
             )
@@ -326,6 +327,54 @@ def _phase05_section(
             "Paged async DataEditor, Auto(), cache_data, utilities, and ColorMode (phase 0.5).",
             tone="info",
             title="Phase 0.5",
+        ),
+    )
+
+
+def _phase06_section(*, csrf_token: str) -> Any:
+    from hedron.content import Markdown
+    from hedron_charts import LineChart
+
+    chart_rows = [
+        {"month": "Jan", "revenue": 10, "secret_token": "nope"},
+        {"month": "Feb", "revenue": 14, "secret_token": "nope"},
+        {"month": "Mar", "revenue": 18, "secret_token": "nope"},
+    ]
+    return Stack(
+        Heading("Visualization and interactions", level=2),
+        LineChart(
+            chart_rows,
+            x="month",
+            y="revenue",
+            title="Monthly revenue",
+            description="Revenue increased during the period.",
+        ),
+        html.div(
+            RefreshButton(
+                "Refresh chart fragment",
+                href="/charts/fragment",
+                target="#chart-region",
+            ),
+            id="chart-region",
+        ),
+        html.div(Text("OOB status idle"), id="oob-status"),
+        Markdown("# Phase 0.6\n\nTyped HTMX interactions and charts."),
+        html.form(
+            html.input(type="hidden", name="csrf_token", value=csrf_token),
+            TextInput("query", value=""),
+            SubmitButton("Search"),
+            action=SafeUrl.parse("/charts/search", purpose=UrlPurpose.FORM_ACTION),
+            method="post",
+            **{
+                "hx-post": "/charts/search",
+                "hx-target": "#chart-region",
+                "hx-sync": "closest form:drop",
+            },
+        ),
+        Alert(
+            "Charts, Markdown, typed InteractionResult, declared regions, and sync forms.",
+            tone="info",
+            title="Phase 0.6",
         ),
     )
 
@@ -553,8 +602,66 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         return users_table_component(store)
 
     mount_phase05_routes(app)
+    mount_phase06_routes(app)
     app.include_router(users)
     return app
+
+
+def mount_phase06_routes(app: FastAPI) -> None:
+    """Phase 0.6 chart + interaction demo routes."""
+    from hedron.interaction import FragmentRegion, InteractionPolicy, InteractionResult, OobUpdate
+    from hedron_charts import LineChart
+
+    regions = (
+        FragmentRegion(id="chart-region", selector="#chart-region", description="Chart panel"),
+    )
+    router = HedronRouter(prefix="/charts", dependencies=[Depends(require_user)])
+
+    @router.component("/fragment")
+    def chart_fragment() -> InteractionResult:
+        chart = LineChart(
+            [
+                {"month": "Jan", "revenue": 10},
+                {"month": "Feb", "revenue": 16},
+                {"month": "Mar", "revenue": 22},
+            ],
+            x="month",
+            y="revenue",
+            title="Monthly revenue",
+            description="Updated fragment chart.",
+        )
+        oob = html.div(Text("OOB status refreshed"), id="oob-status", **{"hx-swap-oob": "true"})
+        return InteractionResult(
+            content=chart,
+            oob=(OobUpdate(content=oob),),
+            policy=InteractionPolicy(declared_regions=regions, vary_on_target=True),
+            cache="vary-htmx",
+            explanation="Declared chart region with OOB status update",
+        )
+
+    @router.action("/search", method="POST")
+    async def chart_search(
+        request: Request,
+        query: Annotated[str, Form()] = "",
+    ) -> InteractionResult:
+        rows = [
+            {"month": "Jan", "revenue": 10},
+            {"month": "Feb", "revenue": 14 if "feb" not in query.lower() else 20},
+            {"month": "Mar", "revenue": 18},
+        ]
+        return InteractionResult(
+            content=LineChart(
+                rows,
+                x="month",
+                y="revenue",
+                title="Search results",
+                description=f"Filtered by {query or 'all'}.",
+            ),
+            policy=InteractionPolicy(declared_regions=regions, hx_sync="drop"),
+            explanation="Synchronized search form submission",
+        )
+
+    app.include_router(router)
 
 
 def mount_phase05_routes(app: FastAPI) -> None:
@@ -732,6 +839,7 @@ def build_plain_fastapi_app() -> FastAPI:
         return users_table_component(store)
 
     mount_phase05_routes(app)
+    mount_phase06_routes(app)
     app.include_router(router)
     app.include_router(users)
     return app

@@ -142,6 +142,17 @@ class AsyncDataEditorSource(Protocol[T]):
     async def apply(self, changes: DataChanges[T]) -> DataSaveResult[T]: ...
 
 
+DEFAULT_MAX_VIZ_ROWS = 10_000
+DEFAULT_MAX_VIZ_PAYLOAD_BYTES = 1_000_000
+
+
 @runtime_checkable
 class VisualizationSource(Protocol[T]):
+    """Load bounded tabular pages for chart and map adapters."""
+
     def load(self, query: DataQuery) -> DataPage[T]: ...
+
+
+@runtime_checkable
+class AsyncVisualizationSource(Protocol[T]):
+    async def load(self, query: DataQuery) -> DataPage[T]: ...

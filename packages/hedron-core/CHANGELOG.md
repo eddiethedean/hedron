@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.6.0] - 2026-08-03
+
+Visualization contracts, trusted content boundaries, and Auto chart hooks for phase 0.6.
+
+### Added
+
+- `VisualizationAdapter`, `ChartOutput`, `ChartAccessibility`, and `VisualizationLimits`.
+- Trusted icon/SVG registry (`register_icon`, `get_icon`, `trusted_svg`).
+- `TrustedHtml.nh3(...)` sanitizer constructor (optional `nh3`).
+- Auto chart-stub remediation points at `hedron-charts` (no longer “phase 0.6”).
+
+### Changed
+
+- Default plugin `hedron_version` gate is `>=0.6,<0.7`.
+
 ## [0.5.0] - 2026-08-03
 
 Data application foundations in core: `Auto()` renderer registry, cache protocols,
@@ -135,3 +150,5 @@ Initial public release of the framework-neutral typed rendering core.
 [0.1.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.1.0
 
 [0.5.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.5.0
+
+[0.6.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.6.0

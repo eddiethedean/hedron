@@ -15,15 +15,15 @@
 
 ## Later
 
-- [ ] Phase 0.6: browser focus, title, live-region, custom-element lifecycle, OOB, history-miss,
+- [x] Phase 0.6: browser focus, title, live-region, custom-element lifecycle, OOB, history-miss,
   request-race, and error-fragment conformance.
-- [ ] Phase 0.6: typed HTMX request/result/policy envelope with validated primary/OOB swaps, event
+- [x] Phase 0.6: typed HTMX request/result/policy envelope with validated primary/OOB swaps, event
   timing, history, status, concurrency, cache behavior, and transparent header/attribute output.
-- [ ] Phase 0.6: semantic 422 FastAPI validation fragments plus declared policies for 202, 204,
+- [x] Phase 0.6: semantic 422 FastAPI validation fragments plus declared policies for 202, 204,
   401/403, 409, 429, and 5xx responses; non-HTMX requests preserve framework-native JSON.
-- [ ] Phase 0.6: authorized declared fragment regions, boosted title/history/full-page fallbacks,
+- [x] Phase 0.6: authorized declared fragment regions, boosted title/history/full-page fallbacks,
   correct `Vary`/cache keys, synchronized accessible forms/search, and Explorer interaction traces.
-- [ ] Phase 0.6: explicit fragment asset/head policy and conformance-gated evaluation of
+- [x] Phase 0.6: explicit fragment asset/head policy and conformance-gated evaluation of
   `head-support`, Idiomorph, response-targets, and View Transitions.
 - [ ] Phase 0.7: cross-adapter HTMX 2 header, DELETE query-parameter, boost/history, 204, 3xx,
   validation, proxy/root-path, and optional transport conformance.

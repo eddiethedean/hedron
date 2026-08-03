@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.0] - 2026-08-03
+
+- Async `VisualizationSource` protocol and viz row/payload defaults.
+- `SQLAlchemyDataSource` adapter (`hedron-data[sqlalchemy]` / `[sqlmodel]`).
+- AG Grid Community host shim and `ensure_aggrid_assets()` (`hedron-data[aggrid]`).
+
 ## [0.5.0] - 2026-08-03
 
 - Initial `hedron-data` package: data-source protocols, `DataTable`, `DataEditor`,
@@ -13,3 +19,5 @@
   and boolean editors, escaped selectors; CSS fingerprinted via plugin assets.
 
 [0.5.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.5.0
+
+[0.6.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.6.0

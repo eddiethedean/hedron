@@ -163,6 +163,7 @@ nav:
     - Status: STATUS.md
     - Roadmap: ROADMAP.md
     - HTMX 2 audit: HTMX_2_AUDIT.md
+    - HTMX 2 extensions: HTMX_2_EXTENSIONS.md
     - Architecture: ARCHITECTURE.md
     - Cutting a release: RELEASE.md
     - Contributing: CONTRIBUTING.md

@@ -1,0 +1,72 @@
+[project]
+name = "hedron-charts"
+version = "0.6.0"
+description = "Visualization adapters and chart components for Hedron"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+maintainers = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+keywords = [
+    "altair",
+    "charts",
+    "hedron",
+    "matplotlib",
+    "plotly",
+    "visualization",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "hedron-core==0.6.0",
+]
+
+[project.optional-dependencies]
+matplotlib = ["matplotlib>=3.8,<4"]
+plotly = ["plotly>=5.18,<7"]
+altair = ["altair>=5.2,<6", "vl-convert-python>=1.0"]
+all = ["matplotlib>=3.8,<4", "plotly>=5.18,<7", "altair>=5.2,<6", "vl-convert-python>=1.0"]
+
+[project.entry-points."hedron.plugins"]
+hedron_charts = "hedron_charts.plugin:register"
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/hedron"
+Repository = "https://github.com/eddiethedean/hedron"
+Issues = "https://github.com/eddiethedean/hedron/issues"
+Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-charts/CHANGELOG.md"
+Documentation = "https://hedron.readthedocs.io/en/latest/"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hedron_charts"]
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "src/hedron_charts",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "pyproject.toml",
+]

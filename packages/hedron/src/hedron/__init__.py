@@ -25,6 +25,16 @@ from hedron.color_mode import (
     resolved_theme_from_request,
 )
 from hedron.htmx import approved_headers, htmx_context
+from hedron.interaction import (
+    FragmentRegion,
+    HtmxRequest,
+    InteractionPolicy,
+    InteractionResult,
+    OobUpdate,
+    default_interaction_policy,
+    form_sync_attrs,
+    htmx_request,
+)
 from hedron.responses import (
     HTML,
     ComponentResponse,
@@ -115,15 +125,29 @@ from hedron_core import (  # noqa: F401
     compile_css,
     compile_hdn,
     format_hdn,
+    get_icon,
     html,
     invalidate_tags,
+    list_icons,
+    register_icon,
     render,
     resolve_color_mode,
     run_program,
     styles_from_manifest,
+    trusted_svg,
 )
 
 if TYPE_CHECKING:
+    from hedron.auth import OAuthHelper as OAuthHelper
+    from hedron.auth import create_oauth_client as create_oauth_client
+    from hedron.content import Markdown as Markdown
+    from hedron.content import highlight_code as highlight_code
+    from hedron.content import process_image as process_image
+    from hedron.content import validate_email_address as validate_email_address
+    from hedron_charts import AltairChart as AltairChart
+    from hedron_charts import LineChart as LineChart
+    from hedron_charts import MatplotlibChart as MatplotlibChart
+    from hedron_charts import PlotlyChart as PlotlyChart
     from hedron_data import (
         DataChanges,
         DataEditor,
@@ -145,6 +169,14 @@ _DATA_EXPORTS = frozenset(
         "InMemoryDataSource",
     }
 )
+_CHART_EXPORTS = frozenset(
+    {
+        "AltairChart",
+        "LineChart",
+        "MatplotlibChart",
+        "PlotlyChart",
+    }
+)
 
 
 def __getattr__(name: str) -> object:
@@ -157,10 +189,31 @@ def __getattr__(name: str) -> object:
                 'Install with: pip install "hedron[data]" or pip install hedron-data'
             ) from exc
         return getattr(_hedron_data, name)
+    if name in _CHART_EXPORTS:
+        try:
+            import hedron_charts as _hedron_charts
+        except ImportError as exc:  # pragma: no cover
+            raise ImportError(
+                f"{name} requires the hedron-charts package. "
+                'Install with: pip install "hedron[charts]" or pip install hedron-charts'
+            ) from exc
+        return getattr(_hedron_charts, name)
+    if name == "Markdown":
+        from hedron.content import Markdown
+
+        return Markdown
+    if name in {"validate_email_address", "highlight_code", "process_image"}:
+        import hedron.content as _content
+
+        return getattr(_content, name)
+    if name in {"OAuthHelper", "create_oauth_client"}:
+        import hedron.auth as _auth
+
+        return getattr(_auth, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 __all__ = [
     "Alert",
@@ -238,6 +291,7 @@ __all__ = [
     "TrustedHtml",
     "UrlPurpose",
     "Auto",
+    "AltairChart",
     "CodeViewer",
     "ColorMode",
     "ColorModeToggle",
@@ -250,9 +304,19 @@ __all__ = [
     "DownloadButton",
     "Expander",
     "FileUpload",
+    "FragmentRegion",
+    "HtmxRequest",
     "InMemoryDataSource",
+    "InteractionPolicy",
+    "InteractionResult",
     "JSONViewer",
+    "LineChart",
+    "Markdown",
+    "MatplotlibChart",
     "Metric",
+    "OAuthHelper",
+    "OobUpdate",
+    "PlotlyChart",
     "Progress",
     "Sidebar",
     "Status",
@@ -261,11 +325,22 @@ __all__ = [
     "apply_color_mode_cookie",
     "cache_component",
     "cache_data",
+    "create_oauth_client",
+    "default_interaction_policy",
+    "form_sync_attrs",
+    "get_icon",
+    "highlight_code",
+    "htmx_request",
     "invalidate_tags",
+    "list_icons",
+    "process_image",
     "read_color_mode_preference",
+    "register_icon",
     "resolve_color_mode",
     "resolved_theme_from_request",
     "safe_download_response",
+    "trusted_svg",
+    "validate_email_address",
     "__version__",
     "action_attrs",
     "addressable",

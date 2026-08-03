@@ -9,10 +9,10 @@ Hedron documentation separates **callable APIs that ship in this release** from
     Advanced typing and rendering primitives such as `NodeLike`, `RenderMode`, and
     `get_registry` live in `hedron_core`. Prefer `hedron` re-exports when available.
 
-## Shipped in 0.5
+## Shipped in 0.6
 
-These surfaces are implemented and published on the **0.5.0** train (includes all
-0.1–0.4 surfaces plus the data application toolkit).
+These surfaces are implemented on the **0.6.0** train (includes all 0.1–0.5
+surfaces plus visualization and first-party integrations).
 
 ### Application
 
@@ -31,6 +31,7 @@ These surfaces are implemented and published on the **0.5.0** train (includes al
 - [Auto](AUTO.md)
 - [Utility components](UTILITY_COMPONENTS.md)
 - [ColorMode](COLORMODE.md)
+- [Charts](CHART.md)
 
 ### Data and models
 
@@ -56,11 +57,5 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTIC
 
 ## Planned contracts
 
-**Accepted ≠ shipped.** These design contracts describe future public APIs. They are
-**not** importable in 0.5. Do not treat them as a product catalog for this release.
-
-- [Charts](CHART.md) — phase 0.6 (`hedron-charts`)
-
-Each shipped page documents purpose, signatures or representative usage, guarantees,
-errors, and extension boundaries. Material public changes require the decision and RFC
-process described under Project → Internals.
+**Accepted ≠ shipped.** Future public APIs remain documented as design contracts until
+their owning phase lands. Phase 0.6 chart APIs have moved to **Shipped** above.

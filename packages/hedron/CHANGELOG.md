@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
+## [0.6.0] - 2026-08-03
+
+Visualization extras, typed HTMX interaction envelope, and first-party content/auth helpers.
+
+### Added
+
+- `HtmxRequest`, `InteractionResult`, `InteractionPolicy`, `FragmentRegion`, OOB helpers.
+- Semantic HTMX status handlers (422 validation fragments; JSON for non-HTMX).
+- Declared fragment regions on `@page`, `Vary` for page/fragment(/target), form `hx-sync` defaults.
+- Extras: `charts`, `markdown`, `code`, `images`, `email`, `sanitize`, `auth`.
+- `Markdown`, email/code/image helpers, Authlib conveniences, icon re-exports.
+- `htmx_vary_dimensions` for cache/response variation documentation.
+
 ## [0.5.0] - 2026-08-03
 
 Data application toolkit on the FastAPI flagship: caching decorators, upload/download
@@ -123,3 +136,5 @@ Initial FastAPI flagship distribution for the secure HTML/HTMX application MVP.
 [0.2.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.2.0
 
 [0.5.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.5.0
+
+[0.6.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.6.0

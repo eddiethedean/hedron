@@ -1,14 +1,14 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.5 **published** as `v0.5.0`; phase 0.6 next  
+**Roadmap position:** phase 0.6 **implemented** on main as `0.6.0` (cut when tagged)  
 **Date:** 2026-08-03  
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
-`hedron-data` `0.5.0` on PyPI (MIT licensed, D-033)
+`hedron-data` / `hedron-charts` `0.6.0`
 
-Phase 0.5 delivers the data application toolkit: `Auto()` and Data Intelligence,
-`DataTable` / `DataEditor` with Tabulator host, data-source protocols, caching,
-utility components, ColorMode UI, Explorer cache/data/Auto panels, and
-`hedron-data`.
+Phase 0.6 delivers visualization adapters (`hedron-charts`), content/auth extras,
+SQLAlchemy and AG Grid adapter boundaries, typed HTMX interaction envelopes,
+semantic status responses, fragment regions, cache `Vary`, and Explorer chart /
+interaction simulation panels.
 
 ## Current conclusions
 
@@ -20,13 +20,14 @@ utility components, ColorMode UI, Explorer cache/data/Auto panels, and
 - HTMX is the default server-interaction layer; Web Components own persistent local UI.
 - HDN is optional; built-in Python components remain the beginner path (D-010).
 - Decisions D-001 through D-034 remain in force.
+- Optional HTMX extensions remain deferred; default fragment asset policy is
+  predeclared page-shell assets ([HTMX_2_EXTENSIONS.md](HTMX_2_EXTENSIONS.md)).
 
-## Phase 0.5 evidence
+## Phase 0.6 evidence
 
-- Acceptance: [DATA_EDITOR](acceptance/DATA_EDITOR.md),
-  [CACHING_UTILITIES](acceptance/CACHING_UTILITIES.md).
-- Inference inventory: [INFERENCE_OVERRIDES.md](INFERENCE_OVERRIDES.md).
-- Release: [GitHub `v0.5.0`](https://github.com/eddiethedean/hedron/releases/tag/v0.5.0);
-  cut procedure archived in [RELEASE.md](RELEASE.md).
+- Acceptance: [VISUALIZATION](acceptance/VISUALIZATION.md), [HTMX](acceptance/HTMX.md).
+- Packages: `hedron-charts` with Matplotlib/Plotly/Altair adapters; flagship extras
+  `charts`, `markdown`, `code`, `images`, `email`, `sanitize`, `auth`.
+- Reference application: chart + Markdown section and `/charts/*` interaction routes.
 
-See the [roadmap](ROADMAP.md) for the phase 0.6 visualization gate.
+See the [roadmap](ROADMAP.md) for the phase 0.7 adapter/operations gate.

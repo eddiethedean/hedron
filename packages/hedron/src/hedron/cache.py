@@ -20,7 +20,15 @@ from hedron_core.cache import (
 P = ParamSpec("P")
 R = TypeVar("R")
 
-__all__ = ["cache_component", "cache_data"]
+__all__ = ["cache_component", "cache_data", "htmx_vary_dimensions"]
+
+
+def htmx_vary_dimensions(*, vary_on_target: bool = False) -> tuple[str, ...]:
+    """Cache/response dimensions that separate pages from HTMX fragments."""
+    dims = ("HX-Request", "HX-History-Restore-Request")
+    if vary_on_target:
+        return (*dims, "HX-Target")
+    return dims
 
 
 def _identity_for(fn: Callable[..., Any]) -> str:

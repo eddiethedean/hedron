@@ -216,8 +216,8 @@ def _factory_chart_reject(value: Any) -> Any:
     raise error(
         "HED-AUTO-0004",
         title="Chart adapters require hedron-charts",
-        explanation=f"No chart renderer for {type(value).__name__} in phase 0.5.",
-        remediation="Install hedron-charts (phase 0.6) or pass an explicit chart component.",
+        explanation=f"No chart renderer for {type(value).__name__} .",
+        remediation="Install hedron-charts or pass an explicit chart component.",
     )
 
 
@@ -239,7 +239,7 @@ def _register_defaults() -> None:
             priority=900,
             predicate=_is_chart_like,
             optional_package="hedron-charts",
-            explanation="Charts deferred to phase 0.6",
+            explanation="Charts via hedron-charts when installed",
             factory=_factory_chart_reject,
         )
     )

@@ -116,6 +116,28 @@ class TrustedHtml:
         object.__setattr__(obj, "_source", source)
         return obj
 
+    @classmethod
+    def nh3(cls, value: str, *, tags: set[str] | None = None) -> TrustedHtml:
+        """Sanitize HTML with nh3 and record policy provenance.
+
+        Requires the optional ``nh3`` dependency (``pip install "hedron[sanitize]"``
+        or ``pip install "hedron[markdown]"``).
+        """
+        if not isinstance(value, str):
+            raise TypeError("TrustedHtml value must be a string")
+        try:
+            import nh3
+        except ImportError as exc:  # pragma: no cover - exercised when extra missing
+            raise error(
+                "HED-SEC-0020",
+                title="nh3 sanitizer not installed",
+                explanation="TrustedHtml.nh3 requires the nh3 package.",
+                remediation='Install with: pip install "hedron[sanitize]" or pip install nh3',
+            ) from exc
+        cleaned = nh3.clean(value, tags=tags) if tags is not None else nh3.clean(value)
+        version = getattr(nh3, "__version__", "unknown")
+        return cls.reviewed(cleaned, source=f"nh3:{version}")
+
     @property
     def value(self) -> str:
         return self._value  # type: ignore[attr-defined]

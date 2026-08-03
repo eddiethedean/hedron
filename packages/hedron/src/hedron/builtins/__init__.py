@@ -337,6 +337,8 @@ class AutoForm(Component[Props]):
             form_attrs["hx-post" if self.method == "post" else "hx-get"] = action_url
             form_attrs["hx-target"] = self.target
             form_attrs["hx-swap"] = "innerHTML"
+            form_attrs["hx-sync"] = "closest form:drop"
+            form_attrs["aria-busy"] = "false"
         from hedron_core.builtins.forms import Form
 
         return Form(*fields, **form_attrs)

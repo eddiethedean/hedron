@@ -107,15 +107,26 @@ class HedronRouter(APIRouter):
         include_in_schema: bool = True,
         dependencies: Sequence[params.Depends] | None = None,
         tags: list[str | Enum] | None = None,
+        fragment_regions: Sequence[Any] | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
+            from hedron.interaction import FragmentRegion
             from hedron.responses import PageResponse
 
             route_name = name or fn.__name__
             logical_id = _logical_id(fn)
             verb_list = list(methods or ["GET"])
             op_id = operation_id_for("page", route_name, path, verb_list[0])
+            regions: tuple[FragmentRegion, ...] = ()
+            if fragment_regions:
+                regions = tuple(
+                    r
+                    if isinstance(r, FragmentRegion)
+                    else FragmentRegion(id=str(r), selector=f"#{r}")
+                    for r in fragment_regions
+                )
+            fn._hedron_fragment_regions = regions  # type: ignore[attr-defined]
             wrapped = _wrap_endpoint(
                 fn, kind="page", mode=None, require_csrf=_requires_csrf(verb_list)
             )
@@ -132,6 +143,7 @@ class HedronRouter(APIRouter):
                 response_model=None,
                 **kwargs,
             )
+            region_meta = {r.id: f"{r.selector}|{r.description}" for r in regions}
             register_route(
                 kind="page",
                 logical_id=logical_id,
@@ -147,6 +159,8 @@ class HedronRouter(APIRouter):
                 htmx_inference={
                     "page_fragment": "HX-Request selects FRAGMENT vs PAGE",
                     "history": "browser history for full-page navigation",
+                    "fragment_regions": str(region_meta),
+                    "boosted": "title/history/assets preserved; full-page fallback required",
                 },
             )
             return fn

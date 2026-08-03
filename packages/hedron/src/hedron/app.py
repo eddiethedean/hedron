@@ -136,6 +136,10 @@ class Hedron(FastAPI):
         self._root_router = HedronRouter()
         install_openapi(self)
 
+        from hedron.status_responses import install_interaction_handlers
+
+        install_interaction_handlers(self)
+
         if self.hedron_explorer_mode == "development":
             self._maybe_mount_explorer(secured=False)
         elif self.hedron_explorer_mode == "secured":

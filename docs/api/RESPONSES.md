@@ -47,3 +47,7 @@ configuration.
 All Hedron responses use contextual escaping, registered assets, declared headers, and framework-managed background tasks. Response helpers do not weaken cache, CSP, CSRF, or redirect policy.
 
 General component streaming is outside the 1.0 contract. Applications that need a streaming escape hatch use the framework's explicit `StreamingResponse`; Hedron does not expose a public `StreamingComponentResponse` in the 0.x–1.0 API.
+
+## InteractionResult (0.6)
+
+Handlers may return `InteractionResult` for typed primary content, OOB updates, status, history, and cache/`Vary` hints. HTML and `HX-*` headers remain visible via `approved_headers` / `interaction_headers`.

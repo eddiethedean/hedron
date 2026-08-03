@@ -1,18 +1,14 @@
 ---
-status: planned
+status: shipped
 ---
 
 # Chart APIs
 
-!!! warning "Not shipped in 0.4"
-
-    This is an **Accepted design contract**. The API is **not importable**
-    in the current release. See [Planned contracts](README.md#planned-contracts).
-
-
-**Status:** Accepted
+**Status:** Shipped in `0.6.0`
 
 ```python
+from hedron_charts import LineChart, PlotlyChart, MatplotlibChart, AltairChart
+
 LineChart(
     data,
     x="month",
@@ -23,6 +19,7 @@ LineChart(
 
 PlotlyChart(figure, description="Revenue by region")
 MatplotlibChart(figure, alt="Revenue by month")
+AltairChart(chart, description="Declarative Vega-Lite figure")
 ```
 
 Beginner charts expose backend-neutral contracts for common plots. Familiar-library components accept upstream objects without hiding the chosen backend.
@@ -31,5 +28,4 @@ Every chart declares title, description or alt text, output mode, data policy, a
 
 Adapters implement a public `VisualizationAdapter` capability contract but may keep backend compilation types internal. Missing optional dependencies produce a precise installation command. Payload limits and server-transform policies are explicit and visible in Explorer.
 
-Hedron does not promise that changing the configured beginner backend produces pixel-identical charts; it promises stable input semantics, accessibility requirements, security policy, and lifecycle behavior.
-
+Install: `pip install "hedron[charts]"` or `pip install "hedron-charts[matplotlib|plotly|altair]"`.

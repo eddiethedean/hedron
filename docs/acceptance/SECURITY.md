@@ -17,7 +17,7 @@
 - [x] CSS/asset URL traversal, symlink escape, remote fetch, and missing assets are rejected. *(phase 0.3 scoped styles / asset pipeline)*
 - [x] DataEditor forged edits (read-only/hidden/unauthorized fields and unauthorized deletes) rejected server-side. *(phase 0.5)*
 - [ ] Plugin/Explorer abuse corpus beyond default guards. *(later phases)*
-- [ ] Markdown/chart/SVG sanitizer corpus beyond baseline rejection. *(later phases)*
+- [x] Markdown/chart/SVG sanitizer corpus beyond baseline rejection. *(0.6: `TrustedHtml.nh3`, chart callback/remote rejection, icon SVG registry)*
 
 ## Release controls
 

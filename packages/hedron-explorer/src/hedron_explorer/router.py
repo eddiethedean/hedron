@@ -20,7 +20,17 @@ __all__ = ["explorer_router"]
 _TRACE: deque[dict[str, Any]] = deque(maxlen=100)
 _RATE: dict[str, list[float]] = {}
 _AUDIT: deque[dict[str, Any]] = deque(maxlen=200)
-_SIMULATE_KEYS = frozenset({"route", "allow_mutations"})
+_SIMULATE_KEYS = frozenset(
+    {
+        "route",
+        "allow_mutations",
+        "mode",
+        "target",
+        "boosted",
+        "history_restore",
+        "status",
+    }
+)
 
 
 def _redact(value: str | None) -> str | None:
@@ -122,6 +132,7 @@ def _shell(title: str, body: str, *, active: str = "components") -> str:
         ("a11y", "Accessibility", "/hedron-explorer/a11y"),
         ("cache", "Cache", "/hedron-explorer/cache"),
         ("data", "Data", "/hedron-explorer/data"),
+        ("charts", "Charts", "/hedron-explorer/charts"),
         ("auto", "Auto", "/hedron-explorer/auto"),
         ("packages", "Packages", "/hedron-explorer/packages"),
         ("settings", "Settings", "/hedron-explorer/settings"),
@@ -351,6 +362,52 @@ def explorer_router() -> APIRouter:
         """
         return _shell("Cache", body, active="cache")
 
+    @router.get("/charts", response_class=HTMLResponse, include_in_schema=False)
+    async def charts_view() -> str:
+        from hedron_core.registry import get_registry
+
+        registry = get_registry()
+        chart_components = [
+            c
+            for c in registry.components()
+            if c.distribution == "hedron-charts"
+            or c.name in {"LineChart", "MatplotlibChart", "PlotlyChart", "AltairChart"}
+        ]
+        rows = "".join(
+            "<tr>"
+            f"<td><code>{html_lib.escape(c.name)}</code></td>"
+            f"<td><code>{html_lib.escape(c.distribution)}</code></td>"
+            f"<td>{html_lib.escape(c.accessibility_notes or '')}</td>"
+            f"<td>{'yes' if c.browser_modules else 'no'}</td>"
+            "</tr>"
+            for c in chart_components
+        )
+        assets = "".join(
+            f"<li><code>{html_lib.escape(a.logical_id)}</code> ({html_lib.escape(a.kind)})</li>"
+            for a in registry.assets()
+            if "chart" in a.logical_id or "plotly" in a.logical_id or "vega" in a.logical_id
+        )
+        body = f"""
+        <h2>Visualization</h2>
+        <p>Charts require title and description/alt/waiver. Payload limits and secret
+        redaction are enforced by adapters. Browser runtimes are pinned and local.</p>
+        <h3>Registered chart components</h3>
+        <table>
+          <thead><tr><th>Name</th><th>Distribution</th><th>A11y notes</th>
+          <th>Browser host</th></tr></thead>
+          <tbody>{rows or "<tr><td colspan='4'>No chart components registered</td></tr>"}</tbody>
+        </table>
+        <h3>Chart assets</h3>
+        <ul>{assets or "<li>No chart assets registered yet</li>"}</ul>
+        <h3>Security policy</h3>
+        <ul>
+          <li>Reject raw JavaScript callbacks</li>
+          <li>Reject unapproved remote CDN URLs</li>
+          <li>Private authenticated caching defaults apply</li>
+        </ul>
+        """
+        return _shell("Charts", body, active="charts")
+
     @router.get("/data", response_class=HTMLResponse, include_in_schema=False)
     async def data_view() -> str:
         from hedron_core.registry import get_registry
@@ -557,7 +614,57 @@ def explorer_router() -> APIRouter:
                 status_code=400,
             )
         _TRACE.appendleft({"kind": "simulate", "route": name, "mutations": False})
-        return {"ok": True, "route": name, "mutations": False}
+        mode = str(payload.get("mode") or "fragment")
+        route = routes[name]
+        inference = dict(getattr(route, "htmx_inference", {}) or {})
+        status_code = int(payload.get("status") or 200)
+        target = payload.get("target")
+        regions_raw = inference.get("fragment_regions") or ""
+        regions: dict[str, str] = {}
+        if isinstance(regions_raw, dict):
+            regions = {str(k): str(v) for k, v in regions_raw.items()}
+        elif isinstance(regions_raw, str) and regions_raw.startswith("{"):
+            import ast
+
+            try:
+                parsed = ast.literal_eval(regions_raw)
+            except (SyntaxError, ValueError):
+                parsed = {}
+            if isinstance(parsed, dict):
+                regions = {str(k): str(v) for k, v in parsed.items()}
+        region_ok = True
+        region_error = None
+        if target and regions:
+            region_ok = any(
+                target == value.split("|", 1)[0] or target.lstrip("#") == rid
+                for rid, value in regions.items()
+            )
+            if not region_ok:
+                region_error = f"HX-Target {target!r} is not an authorized fragment region"
+        return {
+            "ok": region_ok,
+            "route": name,
+            "mutations": False,
+            "mode": mode,
+            "boosted": bool(payload.get("boosted")),
+            "history_restore": bool(payload.get("history_restore")),
+            "status": status_code,
+            "target": target,
+            "primary": {
+                "kind": route.kind,
+                "path": route.path,
+                "swap": "innerHTML",
+            },
+            "oob": [],
+            "event_timing": {"trigger": None, "after_swap": None, "after_settle": None},
+            "history": "push" if mode in {"boosted", "page"} else "none",
+            "assets": "predeclared-shell",
+            "cache_variation": ["HX-Request", "HX-History-Restore-Request"]
+            + (["HX-Target"] if inference.get("fragment_regions") else []),
+            "inference": inference,
+            "override_source": "route.htmx_inference",
+            "error": region_error,
+        }
 
     return router
 
