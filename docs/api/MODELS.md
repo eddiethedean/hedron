@@ -1,3 +1,7 @@
+---
+status: shipped
+---
+
 # `Model`, `Props`, `FormModel`, and `EventPayload`
 
 **Status:** Accepted

@@ -5,11 +5,15 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Development Component Explorer for Hedron (`v0.4.0`).
+Development Component Explorer for Hedron (`0.4.0` on `main`).
 
 Provides HTMX panels for components, routes, graph, security, accessibility,
 packages, and settings, plus sanitized JSON APIs with rate limiting and audit
 hooks. Installed through `hedron[dev]`; not required in production.
+
+> **Version note:** Full Explorer panels ship with the **0.4** train. PyPI may
+> still serve an earlier coordinated release until `v0.4.0` publishes. See
+> [status](https://hedron.readthedocs.io/en/latest/STATUS/).
 
 ## Install
 

@@ -3,11 +3,16 @@
 Build and run a small Hedron application, then learn the few concepts that scale from a
 single page to a production UI.
 
+!!! info "Docs vs PyPI"
+
+    These pages describe **0.4.0** on `main`. PyPI still serves **0.3.0**. The
+    [installation](installation.md) matrix shows both paths. A hello-page on PyPI 0.3
+    takes a few minutes; full CLI/`hedron.testing` need a 0.4 install.
+
 ## What you will build
 
 The quickstart creates a FastAPI-native application with a typed page, server-rendered
-components, Hedron's standard security profile, and a development server. It takes about
-five minutes if Python is already installed.
+components, Hedron's standard security profile, and a development server.
 
 <div class="hedron-grid">
   <a class="hedron-card" href="installation/">

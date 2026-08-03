@@ -143,7 +143,10 @@ implementation target is phase 0.5 — see the [roadmap](https://hedron.readthed
 
 ## Contributing
 
-Read [Contributing](https://hedron.readthedocs.io/en/latest/CONTRIBUTING/) before changing an accepted contract. Material changes require an architectural decision and an RFC revision or superseding RFC. Implementations must name their owning RFC, public contract, implementation specification, and acceptance checks.
+Read [Contributing](https://hedron.readthedocs.io/en/latest/CONTRIBUTING/) for
+code setup (`uv sync`, tests, docs preview) and for specification/RFC process.
+Material public API changes still require an architectural decision and an RFC
+revision or superseding RFC.
 
 ## License
 

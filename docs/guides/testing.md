@@ -1,5 +1,11 @@
 # Test your UI
 
+!!! warning "Requires Hedron 0.4 / main"
+
+    `hedron.testing` ships in **0.4.0**. Importing it on PyPI **0.3.0** raises
+    `ModuleNotFoundError`. Install from `main` or wait for `v0.4.0` —
+    see [installation](../getting-started/installation.md).
+
 Hedron components are deterministic Python objects, so most interface tests need neither
 an ASGI server nor a browser. Add progressively broader tests only where HTTP or browser
 behavior is part of the contract.

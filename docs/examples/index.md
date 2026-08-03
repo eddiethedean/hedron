@@ -3,17 +3,18 @@ hide:
   - toc
 ---
 
-# Interactive app examples
+# Interactive app demos
 
 Explore complete interface states directly in the documentation. These demos use the
 same semantic HTML patterns as Hedron's runnable examples; their interactions stay in
 your browser so they work on Read the Docs without an application server.
 
-!!! info "What is simulated?"
+!!! info "Simulated in the browser — not a live Hedron server"
 
     Filtering, tabs, dialogs, and form updates below are real client-side interactions.
     Authentication, CSRF enforcement, persistence, and HTMX requests require the
-    [runnable reference application](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app).
+    [runnable reference application](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)
+    (clone the repo and `uv sync`; not available from `pip install hedron` alone).
 
 ## Team administration
 

@@ -1,39 +1,75 @@
+---
+status: shipped
+---
+
 # `Hedron`
 
-**Status:** Accepted
+**Status:** Accepted · **Shipped in 0.4**
 
-`Hedron` is the batteries-included FastAPI application. It preserves all normal FastAPI behavior while installing Hedron route classes, response handling, lifespan composition, assets, registry, security defaults, and optional development Explorer.
+`Hedron` is the batteries-included FastAPI application. It preserves normal FastAPI
+behavior while installing Hedron route classes, response handling, lifespan composition,
+assets, registry, security defaults, and optional development Explorer.
 
 ```python
-from hedron import Hedron
+from hedron import Hedron, Page, Text
 
 app = Hedron(
     title="Example",
     security="standard",
-    explorer="development",
+    explorer="off",
     session_secret="replace-me",
+    theme="default",
+    build_dir=".hedron/build",
+    production=None,
 )
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(Text("ok"), title="Home")
 ```
 
-## Constructor notes
+## Constructor
 
-- `security`: `"development"`, `"standard"`, or `"strict"` (or a `SecurityPolicy`).
-- `explorer`: `"off"` (default), `"development"` (mounts Explorer even under standard security), or `"secured"` (mounts Explorer behind authentication).
-- `session_secret`: required for production. The built-in development default emits a warning; `security="strict"` refuses that default.
-- `explorer_dependencies`: optional FastAPI dependencies applied to Explorer routes (used with `explorer="secured"`).
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `security` | `"development"` \| `"standard"` \| `"strict"` \| `SecurityPolicy` | `"standard"` | Security profile or explicit policy |
+| `explorer` | `"off"` \| `"development"` \| `"secured"` \| `None` | `None` | `None` follows policy / `[tool.hedron] explorer`; production forces `development` off |
+| `session_secret` | `str` | development default | Required for production; `strict` refuses the built-in default |
+| `enable_sessions` | `bool` | `True` | Install Starlette `SessionMiddleware` |
+| `explorer_dependencies` | sequence of FastAPI dependencies | `()` | Applied to Explorer when `explorer="secured"` |
+| `theme` | `str` \| `None` | `"default"` | Registered theme name for lifespan/build |
+| `build_dir` | `str` \| `Path` \| `None` | `None` | Build/manifest directory (else settings / `HEDRON_BUILD_DIR`) |
+| `production` | `bool` \| `None` | `None` | `None` uses `HEDRON_ENV`; `True` requires a build manifest and gates runtime compile |
+
+All other keyword arguments are passed to `FastAPI` (`title`, `lifespan`, …).
+
+## Methods
+
+| Method | Description |
+|---|---|
+| `page(path, **kwargs)` | Register a PAGE route |
+| `component(path, **kwargs)` | Register a FRAGMENT/component route |
+| `action(path, **kwargs)` | Register an action route (unsafe methods get CSRF) |
+| `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
+| `include_router(...)` | Standard FastAPI router include |
+
+Also see module helpers `mount_hedron_static(app)` and `mount_build_assets(app, build_dir)`.
 
 ## Contract
 
-- Accepts ordinary `FastAPI` constructor options unless explicitly documented otherwise.
-- Uses `HedronRoute` and compatible `HedronRouter` instances.
+- Uses `HedronRoute` / `HedronRouter` semantics for component returns.
 - Component-returning routes render HTML; model-returning routes retain FastAPI JSON behavior.
-- User lifespan is composed with Hedron startup and shutdown rather than replaced.
+- User lifespan is composed with Hedron startup/shutdown rather than replaced.
 - Explicit `Response` objects pass through unchanged.
-- Bundled HTMX is mounted at `/hedron-static/` (also available via `mount_hedron_static(app)` for plain FastAPI apps).
-- Explorer is absent when `explorer="off"`. Explicit `development` / `secured` modes mount the preview from `hedron[dev]`.
+- Bundled HTMX is mounted at `/hedron-static/`.
+- Explorer is absent when `explorer="off"`. Modes `development` / `secured` require `hedron[dev]`.
 
-`Hedron` is an ergonomic facade, not a second dependency-injection container, router, task system, or ASGI runtime. Existing applications may use `FastAPI` plus `HedronRouter` without this class.
+`Hedron` is an ergonomic facade, not a second DI container or ASGI runtime. Existing apps
+may use `FastAPI` plus `HedronRouter` without this class.
 
 ## Errors
 
-Startup fails for registry collisions, incompatible plugins, invalid component routes, asset conflicts, compiler errors, or unsafe production configuration (including a default session secret under `strict`). Errors identify the responsible subsystem and source.
+Startup fails for registry collisions, incompatible plugins, invalid component routes,
+asset conflicts, compiler errors, missing production manifests, or a default session
+secret under `strict`. Errors identify the responsible subsystem and source.

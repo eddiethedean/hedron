@@ -1,19 +1,29 @@
+---
+status: shipped
+---
+
 # `Component`
 
-**Status:** Accepted
+**Status:** Accepted · **Shipped in 0.4**
 
 `Component` is the base protocol for reusable server-rendered UI.
 
 ```python
-from hedron import Card, Component, NodeLike, Props, Text
+from hedron import Card, Component, Props, Text
+from hedron_core import NodeLike
+
 
 class UserCardProps(Props):
     name: str
+
 
 class UserCard(Component[UserCardProps]):
     def render(self) -> NodeLike:
         return Card(Text(self.props.name))
 ```
+
+`NodeLike` is exported from **`hedron_core`**, not `hedron`. Day-to-day composition
+often returns built-ins (`Card`, `Text`, …) without naming `NodeLike` explicitly.
 
 ## Contract
 
@@ -24,7 +34,7 @@ class UserCard(Component[UserCardProps]):
 - Children and named slots follow the component’s declared cardinality.
 - Components may declare examples, documentation, styles, and browser assets.
 
-Composition helpers accept components, native nodes, strings, supported sequences, and `None`; unsupported arbitrary values produce a type-aware error and may recommend `Auto()`.
+Composition helpers accept components, native nodes, strings, supported sequences, and `None`; unsupported arbitrary values produce a type-aware error. Planned `Auto()` inference is documented under [Planned contracts](README.md#planned-contracts) and is not available in 0.4.
 
 Component identity is deterministic for diagnostics and targets when requested. It excludes secret values and is never an authorization mechanism.
 

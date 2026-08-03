@@ -1,13 +1,28 @@
+---
+status: shipped
+---
+
 # Testing API
 
-**Status:** Accepted for phase 0.4
+**Status:** Accepted · **Shipped in 0.4**
+
+!!! warning "Requires 0.4 / main"
+
+    `from hedron.testing import ...` fails on PyPI **0.3.0**. See
+    [installation](../getting-started/installation.md) and the
+    [testing guide](../guides/testing.md).
 
 Import helpers from `hedron.testing`:
 
-- `render_html` / `assert_renders` / `assert_render_result` for component trees
-- `fragment_client` for HTMX-style fragment requests
-- `override_dependencies(app, overrides)` wiring FastAPI `dependency_overrides` (restored on exit)
-- `named_example` / `iter_named_examples` for registry examples
-- `normalize_snapshot_html` for documented nondeterminism only
+| Helper | Signature (summary) | Purpose |
+|---|---|---|
+| `render_html` | `(node, *, mode=FRAGMENT) -> str` | Render HTML string |
+| `assert_renders` | `(node, *, contains, mode=FRAGMENT) -> str` | Assert substring and return HTML |
+| `assert_render_result` | `(result, *, contains) -> None` | Assert against `RenderResult` |
+| `fragment_client` | `(app) -> context manager` | TestClient with HTMX fragment headers |
+| `override_dependencies` | `(app, overrides) -> context manager` | Temporary FastAPI `dependency_overrides` |
+| `named_example` / `iter_named_examples` | registry helpers | Named component examples |
+| `normalize_snapshot_html` | `(html) -> str` | Normalize fingerprinted asset hashes only |
 
-Optional browser extras live under `hedron.testing.browser` (`playwright()` context manager; `axe_scan`) and require `hedron[browser]`.
+Optional browser extras live under `hedron.testing.browser` (`playwright()` context
+manager; `axe_scan`) and require `hedron[browser]`.

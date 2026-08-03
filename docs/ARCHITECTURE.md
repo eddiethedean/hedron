@@ -20,13 +20,17 @@ Hedron is a collection of typed component primitives, FastAPI routers and routes
 hedron                         FastAPI flagship and beginner API
 ├── hedron-core                models, components, renderer, HDN, registry protocols
 ├── FastAPI / Starlette        routing, DI, security, ASGI, responses
-└── optional integrations      Explorer, data, charts, content, browser adapters
+└── optional integrations      Explorer (hedron-explorer), sample plugins
 
-hedron-flask ──> hedron-core   framework-native Flask adapter
-hedron-django -> hedron-core   framework-native Django adapter
+# Planned (not shipped): framework adapters would depend on hedron-core only
+# hedron-flask ──> hedron-core
+# hedron-django -> hedron-core
 ```
 
-`hedron-core` does not import application-framework or transport types. Integrations depend on stable core/adapter protocols and are lazy where optional. Distribution and import boundaries are normative in [Project layout](PROJECT_LAYOUT.md).
+`hedron-core` does not import application-framework or transport types. Integrations
+depend on stable core/adapter protocols and are lazy where optional. Distribution and
+import boundaries are normative in [Project layout](PROJECT_LAYOUT.md). Flask and Django
+adapters are **roadmap ideas**, not published packages.
 
 ## Shared registry
 

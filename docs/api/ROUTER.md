@@ -1,40 +1,76 @@
+---
+status: shipped
+---
+
 # `HedronRouter` and `HedronRoute`
 
-**Status:** Accepted
+**Status:** Accepted · **Shipped in 0.4**
 
 ```python
 from fastapi import Depends
-from hedron import HedronRouter
+from hedron import HedronRouter, Page, Text
 
 users = HedronRouter(
     prefix="/users",
     dependencies=[Depends(require_user)],
 )
 
+
 @users.page("/")
-def users_page() -> UsersPage:
-    return UsersPage()
+def users_page() -> Page:
+    return Page(Text("Users"), title="Users")
 ```
 
-`HedronRouter` extends FastAPI `APIRouter` and supports its prefixes, tags, dependencies, responses, and metadata. It adds the canonical `page`, `component`, and `action` registration decorators backed by `HedronRoute`. `Hedron` exposes the same decorators through its root router.
+`HedronRouter` extends FastAPI `APIRouter` and supports prefixes, tags, dependencies,
+responses, and metadata. It adds `page`, `component`, and `action` registration
+decorators backed by `HedronRoute`. `Hedron` exposes the same decorators on its root
+router.
 
 ```python
 @users.component("/table")
-async def user_table() -> UserTable: ...
+async def user_table() -> Text: ...
+
 
 @users.action("/{user_id}", method="DELETE")
-async def delete_user(user_id: str) -> UserTable: ...
+async def delete_user(user_id: str) -> Text: ...
 ```
+
+## Decorators
+
+| Decorator | Typical return | Notes |
+|---|---|---|
+| `@router.page(path, **kwargs)` | `Page` / document | PAGE mode for navigation; fragment for `HX-Request` |
+| `@router.component(path, **kwargs)` | Component / fragment | FRAGMENT mode |
+| `@router.action(path, method=..., **kwargs)` | Component or redirect | CSRF required for unsafe methods when enabled |
+
+Keyword arguments follow FastAPI route options (`name`, `dependencies`,
+`include_in_schema`, `methods`, `tags`, …).
+
+## `include_component`
+
+```python
+from hedron_core import addressable
+
+@addressable(methods=("GET", "POST"))
+def piece() -> Text:
+    return Text("ok")
+
+router.include_component(piece, path="/piece", dependencies=[Depends(gate)])
+```
+
+CSRF applies when any declared method is unsafe.
 
 ## Guarantees
 
-- Router dependencies apply to every generated route in the same way as FastAPI routes.
+- Router dependencies apply to every generated route like FastAPI.
 - Names and operation IDs are deterministic and collision checked.
 - Internal component resources default to `include_in_schema=False`.
-- Component URL generation respects prefixes, mounts, path parameters, and application root paths.
-- Component-folder discovery imports only declared router modules and never exposes ordinary components.
-- `include_component(descriptor, *, path=...)` is the explicit exposure API for reusable `@addressable` descriptors.
+- Component URL generation respects prefixes, mounts, path parameters, and root paths.
+- `include_component` is the explicit exposure API for reusable `@addressable` descriptors.
 
-`HedronRoute` is public for advanced integration but most users configure it through the router. It converts `HTML(...)` and component returns before FastAPI serializes them, and issues CSRF cookies once per safe GET when CSRF is enabled. Subclassing requires preserving component return handling, registry metadata, OpenAPI behavior, and FastAPI dependency semantics.
+`HedronRoute` is public for advanced integration. It converts `HTML(...)` and component
+returns before FastAPI serializes them, and issues CSRF cookies once per safe GET when
+CSRF is enabled.
 
-Plain FastAPI apps should call `mount_hedron_static(app)` so PAGE responses that inject `/hedron-static/htmx.min.js` resolve.
+Plain FastAPI apps should call `mount_hedron_static(app)` so PAGE responses that inject
+`/hedron-static/htmx.min.js` resolve.

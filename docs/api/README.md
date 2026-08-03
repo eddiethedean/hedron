@@ -1,33 +1,65 @@
-# Public API contracts
+# Public API
 
-These documents define the accepted, planned user-facing Python contracts. `Accepted` means the design is selected; it does not claim implementation or availability before the owning roadmap phase. Implementations must not add public behavior that is absent here.
+Hedron documentation separates **callable APIs that ship in this release** from
+**Accepted design contracts** that are not importable yet.
 
-- [Hedron application](HEDRON.md)
-- [Router and routing](ROUTER.md)
-- [Component](COMPONENT.md)
-- [Rendering](RENDERING.md)
-- [Built-in components](BUILT_INS.md)
-- [Models and Props](MODELS.md)
-- [Security boundary types](SECURITY_TYPES.md)
-- [Field](FIELD.md)
+!!! tip "`hedron` vs `hedron_core`"
+
+    Day-to-day apps import from `hedron` (FastAPI facade, router, responses, testing).
+    Advanced typing and rendering primitives such as `NodeLike`, `RenderMode`, and
+    `get_registry` live in `hedron_core`. Prefer `hedron` re-exports when available.
+
+## Shipped in 0.4
+
+These surfaces are implemented on `main` at package version `0.4.0` (PyPI may still
+serve `0.3.0` — see [installation](../getting-started/installation.md)).
+
+### Application
+
+- [Hedron](HEDRON.md)
+- [Router](ROUTER.md)
 - [Page](PAGE.md)
+- [Responses](RESPONSES.md)
+- [State](STATE.md)
+
+### Components
+
+- [Component](COMPONENT.md)
+- [Built-ins](BUILT_INS.md)
 - [Addressable components](ADDRESSABLE.md)
 - [Action](ACTION.md)
-- [Responses](RESPONSES.md)
-- [Auto](AUTO.md)
-- [Caching](CACHE.md)
-- [State boundaries](STATE.md)
-- [Utility components](UTILITY_COMPONENTS.md)
-- [Data components](DATA.md)
-- [Data sources](DATA_SOURCE.md)
-- [Charts](CHART.md)
-- [Themes and styles](THEME.md)
+
+### Data and models
+
+- [Models and Props](MODELS.md)
+- [Field](FIELD.md)
+
+### Platform
+
+- [Rendering](RENDERING.md)
+- [Themes](THEME.md)
+- [Security types](SECURITY_TYPES.md)
 - [Explorer](EXPLORER.md)
-- [CLI](CLI.md)
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
-- [Diagnostics formatters](DIAGNOSTICS.md)
+- [API diagnostics](DIAGNOSTICS.md)
+- [CLI](CLI.md)
 
-See also [inference explain/override inventory](../INFERENCE_OVERRIDES.md) for phase 0.4.
+Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTICS.md) ·
+[Compatibility](../COMPATIBILITY.md) · [Glossary](../GLOSSARY.md)
 
-Each contract documents purpose, representative usage, guarantees, errors, and extension boundaries. Examples are normative in intent but may receive minor syntax corrections during implementation. Material public changes require the decision and RFC process.
+## Planned contracts
+
+**Accepted ≠ shipped.** These design contracts describe future public APIs. They are
+**not** importable in 0.4. Do not treat them as a product catalog for this release.
+
+- [Auto](AUTO.md) — phase 0.5+
+- [Utility components](UTILITY_COMPONENTS.md) — phase 0.5+
+- [Data](DATA.md) — phase 0.5+
+- [Data sources](DATA_SOURCE.md) — phase 0.5+
+- [Charts](CHART.md) — phase 0.5+
+- [Cache](CACHE.md) — phase 0.5+
+
+Each shipped page documents purpose, signatures or representative usage, guarantees,
+errors, and extension boundaries. Material public changes require the decision and RFC
+process described under Project → Internals.

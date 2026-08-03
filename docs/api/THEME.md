@@ -1,3 +1,7 @@
+---
+status: shipped
+---
+
 # Themes and scoped styles
 
 **Status:** Accepted

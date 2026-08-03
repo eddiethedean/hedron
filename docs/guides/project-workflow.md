@@ -1,5 +1,11 @@
 # Project workflow
 
+!!! warning "Requires Hedron 0.4 / main"
+
+    This guide uses CLI commands (`new`, `dev`, `check`, `graph`, `audit-components`)
+    that ship in **0.4.0**. They are **missing on PyPI 0.3.0**. Install from `main` or
+    wait for the `v0.4.0` tag — see [installation](../getting-started/installation.md).
+
 Hedron's CLI is non-interactive by default and emits stable, automation-friendly output.
 Use it to keep local development and CI on the same compilation path.
 

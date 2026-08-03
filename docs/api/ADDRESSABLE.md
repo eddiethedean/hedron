@@ -1,3 +1,7 @@
+---
+status: shipped
+---
+
 # Addressable component APIs
 
 **Status:** Accepted

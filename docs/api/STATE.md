@@ -1,3 +1,7 @@
+---
+status: shipped
+---
+
 # State APIs and boundaries
 
 **Status:** Accepted

@@ -1,3 +1,7 @@
+---
+status: shipped
+---
+
 # Diagnostics formatters
 
 **Status:** Accepted for phase 0.4

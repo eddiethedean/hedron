@@ -1,3 +1,7 @@
+---
+status: shipped
+---
+
 # Rendering API
 
 **Status:** Accepted

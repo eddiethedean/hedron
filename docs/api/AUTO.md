@@ -1,4 +1,14 @@
+---
+status: planned
+---
+
 # `Auto`
+
+!!! warning "Not shipped in 0.4"
+
+    This is an **Accepted design contract**. The API is **not importable**
+    in the current release. See [Planned contracts](README.md#planned-contracts).
+
 
 **Status:** Accepted
 

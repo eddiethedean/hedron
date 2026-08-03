@@ -11,7 +11,11 @@ route registration, static assets, and optional Explorer mounting.
 ```python
 from hedron import Hedron
 
-app = Hedron(title="Operations", security="standard")
+app = Hedron(
+    title="Operations",
+    security="standard",
+    session_secret="replace-in-production",
+)
 ```
 
 Use normal FastAPI middleware, dependencies, JSON endpoints, and lifespan behavior beside

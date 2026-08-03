@@ -1,3 +1,7 @@
+---
+status: shipped
+---
+
 # `Action`
 
 **Status:** Accepted

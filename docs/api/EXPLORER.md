@@ -1,3 +1,7 @@
+---
+status: shipped
+---
+
 # Explorer API
 
 **Status:** Accepted for phase 0.4

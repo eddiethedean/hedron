@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.4</div>
+<div class="hedron-eyebrow">Python-first UI framework · docs track 0.4.0 on main</div>
 
 # Ship the interface.<br><span class="hedron-gradient-text">Keep the Python.</span>
 
@@ -15,9 +15,15 @@ FastAPI and HTMX. Build dashboards, admin tools, and CRUD workflows without adop
 a JavaScript application stack.
 { .hedron-lede }
 
+!!! warning "PyPI vs docs"
+
+    These docs describe package version **0.4.0** on `main` (ready to cut).
+    **PyPI currently serves 0.3.0.** See [installation](getting-started/installation.md)
+    for a working path on either train, and [status](STATUS.md) for the publish gap.
+
 <div class="hedron-actions" markdown>
 [Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Try the live examples](examples/index.md){ .md-button }
+[Explore interactive demos](examples/index.md){ .md-button }
 </div>
 
 <div class="hedron-signal-row">
@@ -51,11 +57,17 @@ a JavaScript application stack.
 
 ## From zero to a rendered page
 
-=== "1 · Install"
+=== "1 · Create a project"
 
     ```bash
-    uv add hedron
+    uv init my-hedron-app
+    cd my-hedron-app
+    uv add hedron "uvicorn[standard]"
     ```
+
+    `pip install hedron uvicorn` works the same after creating a venv. Today that
+    installs **0.3.0** from PyPI. For **0.4** CLI/`hedron.testing`, install from
+    `main` — see [installation](getting-started/installation.md).
 
 === "2 · Create `app.py`"
 
@@ -90,8 +102,13 @@ a JavaScript application stack.
     return an HTMX fragment when the request asks for one.
 
 <div class="hedron-availability">
-  <p><strong>Ready to try it?</strong><br>The flagship package includes pages, routing, security, state, CLI tooling, and testing helpers.</p>
-  <p><code>pip install hedron</code> · <a href="examples/">Open interactive examples →</a></p>
+  <p><strong>Ready to try it?</strong><br>
+  The flagship package includes pages, routing, security, and state on PyPI today.
+  Full 0.4 CLI, plugins, and testing helpers ship on <code>main</code> and will
+  publish with <code>v0.4.0</code>.</p>
+  <p><code>pip install hedron</code> ·
+  <a href="getting-started/installation/">Install options →</a> ·
+  <a href="examples/">Interactive demos →</a></p>
 </div>
 
 ## Choose your path
@@ -107,7 +124,7 @@ a JavaScript application stack.
   </a>
   <a href="guides/project-workflow/">
     <strong>Build with confidence</strong>
-    Scaffold, inspect, check, test, and package a real project.
+    Scaffold, inspect, check, test, and package a real project (requires 0.4 / main).
   </a>
 </div>
 

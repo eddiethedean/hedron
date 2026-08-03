@@ -10,8 +10,11 @@ FastAPI-native typed component framework for HTML and HTMX.
 Builds on framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/)
 with pages, addressable components, typed actions, CSRF-aware forms, OpenAPI
 `text/html` metadata, interaction built-ins (`Lazy`, `Poll`, `Pagination`, …),
-a thin `Hedron()` application facade, CLI (`new`/`check`/`graph`/`build`/…),
-plugin loader, and public `hedron.testing` helpers.
+and a thin `Hedron()` application facade.
+
+> **Version note:** This repository packages **0.4.0** (CLI `new`/`check`/`graph`,
+> plugins, `hedron.testing`, full Explorer). **PyPI currently serves 0.3.0** until
+> `v0.4.0` publishes. Docs: [hedron.readthedocs.io](https://hedron.readthedocs.io/en/latest/).
 
 ## Install
 
@@ -21,13 +24,17 @@ pip install hedron
 uv add hedron
 ```
 
-Development Explorer:
+That installs the latest **PyPI** release (0.3.0 today). For 0.4 features before the
+tag, install from git/`main` — see the
+[installation guide](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
+
+Development Explorer (0.4+):
 
 ```bash
 pip install "hedron[dev]"
 ```
 
-Optional browser testing extras:
+Optional browser testing extras (0.4+):
 
 ```bash
 pip install "hedron[browser]"
@@ -74,13 +81,14 @@ def card():
 app.include_router(router)
 ```
 
-CLI inspection (optionally load an app module first):
+CLI inspection (**0.4+** / `main`; optionally load an app module first):
 
 ```bash
 hedron new demoapp
-hedron --app myapp:app routes
-hedron --app myapp:app components
-hedron --app myapp:app preview home
+cd demoapp
+hedron --app app:app routes
+hedron --app app:app components
+hedron --app app:app preview home
 hedron check --format json --severity error
 hedron graph
 hedron audit-components

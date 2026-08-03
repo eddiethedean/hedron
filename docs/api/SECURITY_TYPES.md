@@ -1,3 +1,7 @@
+---
+status: shipped
+---
+
 # Security boundary types
 
 **Status:** Accepted
