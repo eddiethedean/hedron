@@ -6,13 +6,15 @@
 
 Phase 0.3 adds HDN authoring, scoped CSS, themes, fingerprinted assets, component-folder
 discovery, `inspect`/`eject`/`build`/`dev` CLI commands, and a minimal HTMX-safe Web
-Component proof (`hedron-disclose`). Production consumes versioned build manifests with
-no required runtime HDN/CSS compilation (`HED-BUILD-0004` when compile is attempted).
-Strict CSP uses external styles only. Build promote stays on the target filesystem;
-CSS `url(...)` values are rewritten to fingerprinted asset paths.
+Component proof (`hedron-disclose`). Production lifespan disables runtime HDN/CSS
+compilation (`HED-BUILD-0004` on `compile_hdn`/`compile_css`; build uses an explicit
+force-allow). Strict CSP uses external stylesheets from the build manifest. First-load
+CSRF form/`hx-headers` tokens match the CSRF cookie. Build promote stays on the target
+filesystem; CSS `url(...)` values are rewritten to fingerprinted asset paths.
 
 Core stays free of FastAPI/ASGI imports. The reference application includes equivalent
-Python and HDN `StatusBanner` twins with scoped style symbols and theme tokens.
+Python and HDN `StatusBanner` twins with scoped style symbols, theme tokens, and a local
+build for strict CSP.
 
 ## Current conclusions
 

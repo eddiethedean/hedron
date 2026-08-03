@@ -50,26 +50,40 @@ class HedronDisclose extends HTMLElement {
   }
 
   #ensureStructure() {
-    let btn = this.querySelector(":scope > [data-hedron-disclose-btn]");
-    let panel = this.querySelector(":scope > [data-hedron-disclose-panel]");
+    const btn = this.querySelector(":scope > [data-hedron-disclose-btn]");
+    const panel = this.querySelector(":scope > [data-hedron-disclose-panel]");
     if (btn && panel) {
       return;
     }
 
-    // Preserve existing light-DOM children into the panel.
-    const preserved = Array.from(this.childNodes);
+    // Incomplete chrome: collect content nodes, dropping broken markers.
+    const preserved = [];
+    for (const node of Array.from(this.childNodes)) {
+      if (
+        node.nodeType === 1 &&
+        (node.hasAttribute?.("data-hedron-disclose-btn") ||
+          node.hasAttribute?.("data-hedron-disclose-panel"))
+      ) {
+        // Keep panel children if rebuilding a partial panel.
+        if (node.hasAttribute?.("data-hedron-disclose-panel")) {
+          preserved.push(...Array.from(node.childNodes));
+        }
+        continue;
+      }
+      preserved.push(node);
+    }
 
-    btn = document.createElement("button");
-    btn.type = "button";
-    btn.setAttribute("data-hedron-disclose-btn", "");
+    const nextBtn = document.createElement("button");
+    nextBtn.type = "button";
+    nextBtn.setAttribute("data-hedron-disclose-btn", "");
 
-    panel = document.createElement("div");
-    panel.setAttribute("data-hedron-disclose-panel", "");
+    const nextPanel = document.createElement("div");
+    nextPanel.setAttribute("data-hedron-disclose-panel", "");
 
     this.replaceChildren();
-    this.append(btn, panel);
+    this.append(nextBtn, nextPanel);
     for (const node of preserved) {
-      panel.append(node);
+      nextPanel.append(node);
     }
   }
 
@@ -86,6 +100,12 @@ class HedronDisclose extends HTMLElement {
     if (open) panel.removeAttribute("hidden");
     else panel.setAttribute("hidden", "");
   }
+
+  rebind() {
+    this.#ensureStructure();
+    this.#sync();
+    this.#bind();
+  }
 }
 
 if (!customElements.get("hedron-disclose")) {
@@ -101,8 +121,7 @@ function rebindDisclose(root) {
   root.querySelectorAll?.("hedron-disclose").forEach((el) => nodes.push(el));
   for (const el of nodes) {
     if (el instanceof HedronDisclose) {
-      el.disconnectedCallback();
-      el.connectedCallback();
+      el.rebind();
     }
   }
 }

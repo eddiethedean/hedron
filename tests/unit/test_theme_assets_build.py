@@ -124,8 +124,9 @@ def test_build_with_component_folder(tmp_path: Path) -> None:
     assert "@layer tokens" in css
     assert "@layer components" in css
     assert "/hedron-assets/" in css
-    assert "badge.png" not in css or "badge-" in css or "/hedron-assets/" in css
-    assert "url(" in css and "/hedron-assets/" in css
+    assert "url(" in css
+    # Authored relative name rewritten to fingerprinted path.
+    assert "badge.png)" not in css.replace(" ", "")
     BuildManifest.from_dict(first.manifest.to_dict()).validate_format()
     AssetManifest.from_dict(first.manifest.assets.to_dict()).validate_format()
 
@@ -172,5 +173,5 @@ def test_disclose_script_avoids_label_innerhtml_interpolation() -> None:
         / "hedron-disclose.mjs"
     ).read_text(encoding="utf-8")
     assert "${label}" not in script
-    assert "innerHTML" not in script or "textContent" in script
+    assert "innerHTML" not in script
     assert "textContent = label" in script

@@ -58,6 +58,7 @@ from hedron import Hedron, Page, Text
 
 app = Hedron(title="Demo", security="standard", session_secret="replace-me")
 
+
 @app.page("/")
 def home() -> Page:
     return Page(Text("Hello, Hedron"), title="Demo")

@@ -17,5 +17,6 @@ htmlcov/
 .hypothesis/
 .tox/
 .nox/
-.hedron/
+.audit-build-proj/
+examples/reference-app/.hedron/
 *.html.gz

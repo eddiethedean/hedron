@@ -11,6 +11,7 @@ from starlette.responses import Response
 from hedron.security.policy import SecurityPolicy, SecurityProfile
 
 __all__ = [
+    "csrf_token_for_request",
     "ensure_csrf_cookie",
     "extract_csrf_from_form",
     "generate_csrf_token",
@@ -23,6 +24,24 @@ def generate_csrf_token() -> str:
     return secrets.token_urlsafe(32)
 
 
+def csrf_token_for_request(request: Request, policy: SecurityPolicy) -> str:
+    """Return a single CSRF token for this request (cookie or request-scoped cache).
+
+    Pages and ``ensure_csrf_cookie`` must share this value so form / ``hx-headers``
+    tokens match the ``Set-Cookie`` value on first load.
+    """
+    existing = request.cookies.get(policy.csrf_cookie_name)
+    if isinstance(existing, str) and existing:
+        request.state.hedron_csrf_token = existing
+        return existing
+    cached = getattr(request.state, "hedron_csrf_token", None)
+    if isinstance(cached, str) and cached:
+        return cached
+    value = generate_csrf_token()
+    request.state.hedron_csrf_token = value
+    return value
+
+
 def ensure_csrf_cookie(
     response: Response,
     policy: SecurityPolicy,
@@ -30,17 +49,22 @@ def ensure_csrf_cookie(
     *,
     request: Request | None = None,
 ) -> str:
-    """Set the CSRF cookie once, reusing an existing request cookie when present."""
+    """Set the CSRF cookie once, reusing the request-scoped token when present."""
     if request is not None and getattr(request.state, "hedron_csrf_cookie_set", False):
-        existing = request.cookies.get(policy.csrf_cookie_name)
         cached = getattr(request.state, "hedron_csrf_token", None)
         if isinstance(cached, str):
             return cached
+        existing = request.cookies.get(policy.csrf_cookie_name)
         return existing or token or generate_csrf_token()
 
-    existing = request.cookies.get(policy.csrf_cookie_name) if request is not None else None
-    value = token or existing or generate_csrf_token()
-    secure = policy.profile is SecurityProfile.STRICT
+    if request is not None:
+        value = token or csrf_token_for_request(request, policy)
+    else:
+        value = token or generate_csrf_token()
+
+    secure = False
+    if policy.profile is SecurityProfile.STRICT:
+        secure = bool(request.url.is_secure) if request is not None else True
     response.set_cookie(
         key=policy.csrf_cookie_name,
         value=value,

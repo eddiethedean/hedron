@@ -24,20 +24,22 @@ def _auth(user: str = "admin", password: str = "secret") -> dict[str, str]:
 
 
 @pytest.fixture()
-def hedron_client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
+def hedron_client(monkeypatch: pytest.MonkeyPatch):
     store = _MOD.Store()
     monkeypatch.setattr(_MOD, "STORE", store)
     app = _MOD.build_hedron_app()
     # strict CSP sets Secure CSRF cookies; exercise HTTPS like production.
-    return TestClient(app, base_url="https://testserver")
+    with TestClient(app, base_url="https://testserver") as client:
+        yield client
 
 
 @pytest.fixture()
-def plain_client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
+def plain_client(monkeypatch: pytest.MonkeyPatch):
     store = _MOD.Store()
     monkeypatch.setattr(_MOD, "STORE", store)
     app = _MOD.build_plain_fastapi_app()
-    return TestClient(app)
+    with TestClient(app) as client:
+        yield client
 
 
 def test_anonymous_rejected(hedron_client: TestClient) -> None:
@@ -49,7 +51,18 @@ def test_dashboard_authenticated(hedron_client: TestClient) -> None:
     assert response.status_code == 200
     assert "Team Admin" in response.text
     assert "htmx.min.js" in response.text
-    assert response.cookies.get("hedron_csrf")
+    assert "/hedron-assets/" in response.text
+    assert 'rel="stylesheet"' in response.text
+    assert "hedron-disclose.mjs" in response.text
+    cookie = response.cookies.get("hedron_csrf")
+    assert cookie
+    import re
+
+    hidden = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', response.text)
+    assert hidden is not None
+    assert hidden.group(1) == cookie
+    assert cookie in response.text
+    assert "X-CSRF-Token" in response.text
 
 
 def test_lazy_table_requires_auth(hedron_client: TestClient) -> None:
@@ -61,9 +74,14 @@ def test_lazy_table_requires_auth(hedron_client: TestClient) -> None:
 
 
 def test_create_user_csrf_and_admin(hedron_client: TestClient) -> None:
+    import re
+
     seeded = hedron_client.get("/", headers=_auth())
-    token = seeded.cookies.get("hedron_csrf")
-    assert token
+    cookie = seeded.cookies.get("hedron_csrf")
+    hidden = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', seeded.text)
+    assert cookie and hidden
+    token = hidden.group(1)
+    assert token == cookie
     denied = hedron_client.post(
         "/users",
         headers=_auth(),

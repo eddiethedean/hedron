@@ -73,7 +73,15 @@ def fingerprint_file(
     prefix: str | None = None,
     attributes: Mapping[str, str] | None = None,
 ) -> AssetEntry:
-    data = source.read_bytes()
+    try:
+        data = source.read_bytes()
+    except FileNotFoundError as exc:
+        raise error(
+            HED_ASSET_MISSING,
+            title="Asset missing",
+            explanation=f"Asset file {source} was not found.",
+            remediation="Add the file or fix the reference.",
+        ) from exc
     digest = content_digest(data)
     stem = asset_filename_stem(digest)
     suffix = source.suffix or ""

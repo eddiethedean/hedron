@@ -80,53 +80,120 @@ def parse_expr(source: str) -> ast.AST:
 
 
 def _rewrite_nullish(source: str) -> str:
-    """Rewrite ``a ?? b`` into ``__coalesce(a, b)`` without splitting string literals."""
+    """Rewrite ``a ?? b`` into ``__coalesce(a, b)`` with string/paren awareness.
+
+    Depth-0 ``??`` is rewritten recursively on each operand so chains like
+    ``a ?? b ?? c`` become ``__coalesce(a, __coalesce(b, c))`` without treating
+    commas inside an outer call as part of an operand.
+    """
     if "??" not in source:
         return source
-    parts: list[str] = []
-    buf: list[str] = []
-    i = 0
-    n = len(source)
-    in_str: str | None = None
-    while i < n:
-        ch = source[i]
-        if in_str:
-            buf.append(ch)
-            if ch == "\\" and i + 1 < n:
-                buf.append(source[i + 1])
-                i += 2
+
+    def find_depth0_split(s: str) -> int | None:
+        i = 0
+        n = len(s)
+        in_str: str | None = None
+        depth = 0
+        while i < n:
+            ch = s[i]
+            if in_str:
+                if ch == "\\" and i + 1 < n:
+                    i += 2
+                    continue
+                if ch == in_str:
+                    in_str = None
+                i += 1
                 continue
-            if ch == in_str:
-                in_str = None
+            if ch in {'"', "'"}:
+                in_str = ch
+                i += 1
+                continue
+            if ch in "([{":
+                depth += 1
+                i += 1
+                continue
+            if ch in ")]}":
+                depth = max(0, depth - 1)
+                i += 1
+                continue
+            if depth == 0 and ch == "?" and i + 1 < n and s[i + 1] == "?":
+                return i
             i += 1
-            continue
-        if ch in {'"', "'"}:
-            in_str = ch
-            buf.append(ch)
+        return None
+
+    def rewrite_inner_groups(s: str) -> str:
+        """Rewrite ``??`` inside the first balanced group that contains it."""
+        i = 0
+        n = len(s)
+        in_str: str | None = None
+        while i < n:
+            ch = s[i]
+            if in_str:
+                if ch == "\\" and i + 1 < n:
+                    i += 2
+                    continue
+                if ch == in_str:
+                    in_str = None
+                i += 1
+                continue
+            if ch in {'"', "'"}:
+                in_str = ch
+                i += 1
+                continue
+            if ch in "([{":
+                open_ch = ch
+                close_ch = {"(": ")", "[": "]", "{": "}"}[ch]
+                start = i
+                i += 1
+                depth = 1
+                while i < n and depth:
+                    c = s[i]
+                    if c in {'"', "'"}:
+                        q = c
+                        i += 1
+                        while i < n and s[i] != q:
+                            if s[i] == "\\" and i + 1 < n:
+                                i += 2
+                            else:
+                                i += 1
+                        i += 1
+                        continue
+                    if c == open_ch:
+                        depth += 1
+                    elif c == close_ch:
+                        depth -= 1
+                    i += 1
+                inner = s[start + 1 : i - 1]
+                if "??" in inner:
+                    return s[: start + 1] + _rewrite_nullish(inner) + s[i - 1 :]
+                continue
             i += 1
-            continue
-        if ch == "?" and i + 1 < n and source[i + 1] == "?":
-            parts.append("".join(buf).strip())
-            buf = []
-            i += 2
-            continue
-        buf.append(ch)
-        i += 1
-    parts.append("".join(buf).strip())
-    if len(parts) == 1:
-        return source
-    if any(not p for p in parts):
-        raise error(
-            HED_HDN_TYPE,
-            title="Invalid nullish coalescing",
-            explanation=f"Malformed ?? expression in {source!r}.",
-            remediation="Use `a ?? b` with non-empty operands.",
-            context={"expression": source},
-        )
-    expr = parts[0]
-    for part in parts[1:]:
-        expr = f"__coalesce({expr}, {part})"
-    return expr
+        return s
+
+    def rewrite(s: str) -> str:
+        working = s.strip()
+        if "??" not in working:
+            return working
+        split_at = find_depth0_split(working)
+        if split_at is not None:
+            left = working[:split_at].strip()
+            right = working[split_at + 2 :].strip()
+            if not left or not right:
+                raise error(
+                    HED_HDN_TYPE,
+                    title="Invalid nullish coalescing",
+                    explanation=f"Malformed ?? expression in {source!r}.",
+                    remediation="Use `a ?? b` with non-empty operands.",
+                    context={"expression": source},
+                )
+            return f"__coalesce({rewrite(left)}, {rewrite(right)})"
+        nxt = rewrite_inner_groups(working)
+        if nxt != working:
+            return rewrite(nxt)
+        # Remaining ?? are only inside string literals (or unrewritable).
+        return working
+
+    return rewrite(source)
 
 
 def eval_expr(source: str, env: Mapping[str, Any]) -> Any:

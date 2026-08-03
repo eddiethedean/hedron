@@ -1,0 +1,441 @@
+"""Regression tests for phase 0.3.0 deep-dive hardening."""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+from starlette.requests import Request
+
+from hedron import Hedron, Page, Text
+from hedron.lifespan import compose_lifespan
+from hedron.security.csrf import csrf_token_for_request, ensure_csrf_cookie
+from hedron.security.policy import SecurityPolicy
+from hedron.static_mount import mount_build_assets
+from hedron_core import (
+    HedronError,
+    RenderMode,
+    compile_css,
+    compile_hdn,
+    load_hdn_program,
+    render,
+    run_program,
+)
+from hedron_core.compile_gate import force_runtime_compile, set_runtime_compile_allowed
+from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
+from hedron_core.hdn.expr import eval_expr
+from hedron_core.registry import get_registry, reset_registry_for_tests
+
+
+def test_nullish_coalesce_in_parens_calls_indexes() -> None:
+    assert eval_expr("(a ?? b) + 1", {"a": None, "b": 2}) == 3
+    assert eval_expr("len(x ?? [])", {"x": None}) == 0
+    assert eval_expr("(x ?? 1) > 0", {"x": None}) is True
+    assert eval_expr("a[b ?? 0]", {"a": [9], "b": None}) == 9
+    assert eval_expr('"a ?? b"', {}) == "a ?? b"
+    assert eval_expr("a ?? b ?? c", {"a": None, "b": None, "c": 7}) == 7
+    assert eval_expr("(a ?? b) ?? c", {"a": None, "b": 2, "c": 9}) == 2
+
+
+def test_runtime_compile_gate_blocks_and_force_allows(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    set_runtime_compile_allowed(True)
+    with pytest.raises(HedronError) as exc:
+        compile_hdn("<p>x</p>")
+    assert exc.value.diagnostic.code == "HED-BUILD-0004"
+    with pytest.raises(HedronError) as css_exc:
+        compile_css(".x { color: red; }", component_id="app:x")
+    assert css_exc.value.diagnostic.code == "HED-BUILD-0004"
+    with force_runtime_compile():
+        compile_hdn("<p>x</p>")
+        compile_css(".x { color: red; }", component_id="app:x")
+    monkeypatch.delenv("HEDRON_ENV", raising=False)
+    set_runtime_compile_allowed(False)
+    with pytest.raises(HedronError) as process_exc:
+        compile_hdn("<p>y</p>")
+    assert process_exc.value.diagnostic.code == "HED-BUILD-0004"
+    set_runtime_compile_allowed(True)
+
+
+def test_css_error_diagnostics_raise() -> None:
+    with pytest.raises(HedronError) as exc:
+        compile_css("html { margin: 0; }", component_id="app:x")
+    assert exc.value.diagnostic.code == "HED-CSS-0004"
+    with pytest.raises(HedronError) as body_exc:
+        compile_css("body { margin: 0; }", component_id="app:x")
+    assert body_exc.value.diagnostic.code == "HED-CSS-0004"
+
+
+def test_css_declaration_without_semicolon() -> None:
+    result = compile_css(".x{color:red}", component_id="app:x")
+    assert "color: red" in result.css
+
+
+def test_css_missing_asset_file(tmp_path: Path) -> None:
+    root = tmp_path / "comp"
+    root.mkdir()
+    with pytest.raises(HedronError) as exc:
+        compile_css(
+            ".x { background: url(missing.png); }",
+            component_id="app:x",
+            registered_roots=[root],
+            component_dir=root,
+        )
+    assert exc.value.diagnostic.code == "HED-ASSET-0004"
+
+
+def test_css_symlink_asset_rejected(tmp_path: Path) -> None:
+    root = tmp_path / "comp"
+    root.mkdir()
+    target = tmp_path / "outside.png"
+    target.write_bytes(b"png")
+    link = root / "icon.png"
+    link.symlink_to(target)
+    with pytest.raises(HedronError) as exc:
+        compile_css(
+            ".x { background: url(icon.png); }",
+            component_id="app:x",
+            registered_roots=[root],
+            component_dir=root,
+        )
+    assert exc.value.diagnostic.code == "HED-ASSET-0002"
+
+
+def test_css_no_semicolon_url_is_validated(tmp_path: Path) -> None:
+    root = tmp_path / "comp"
+    root.mkdir()
+    (root / "icon.png").write_bytes(b"png")
+    result = compile_css(
+        ".x { background: url(icon.png) }",
+        component_id="app:x",
+        registered_roots=[root],
+        component_dir=root,
+    )
+    assert "icon.png" in result.asset_urls
+    assert "url(" in result.css
+
+
+def test_hdn_digest_includes_style_symbols() -> None:
+    a = compile_hdn('<div class="root"></div>', style_symbols={"root": "h-a"})
+    b = compile_hdn('<div class="root"></div>', style_symbols={"root": "h-b"})
+    assert a.digest != b.digest
+    assert 'class="h-a"' in str(a.program.ops) or any("h-a" in str(op.data) for op in a.program.ops)
+
+
+def test_load_hdn_program_rejects_bad_format(tmp_path: Path) -> None:
+    path = tmp_path / "bad.json"
+    path.write_text('{"format_version": 99, "ops": []}\n', encoding="utf-8")
+    with pytest.raises(HedronError) as exc:
+        load_hdn_program(path)
+    assert exc.value.diagnostic.code == "HED-HDN-0008"
+
+
+def test_load_hdn_program_roundtrip(tmp_path: Path) -> None:
+    from hedron.build import run_build
+    from hedron.config import HedronSettings
+
+    components = tmp_path / "components" / "Pill"
+    components.mkdir(parents=True)
+    (components / "styles.css").write_text(".root { color: blue; }\n", encoding="utf-8")
+    (components / "template.hdn").write_text('<div class="root">{label}</div>\n', encoding="utf-8")
+    settings = HedronSettings(
+        component_roots=("components",),
+        build_dir=".hedron/build",
+        theme="default",
+    )
+    result = run_build(project_dir=tmp_path, settings=settings, production=True)
+    assert len(result.manifest.hdn_programs) == 1
+    logical_id, rel = next(iter(result.manifest.hdn_programs.items()))
+    assert "Pill" in logical_id
+    assert rel.startswith("hdn/") and "Pill" in rel
+    program = load_hdn_program(result.build_dir / rel)
+    live = compile_hdn(
+        (components / "template.hdn").read_text(encoding="utf-8"),
+        style_symbols=dict(result.manifest.css_symbols[0].symbols),
+    ).program
+    built_html = render(run_program(program, {"label": "Hi"}), mode=RenderMode.FRAGMENT).html
+    live_html = render(run_program(live, {"label": "Hi"}), mode=RenderMode.FRAGMENT).html
+    assert built_html == live_html
+    assert "Hi" in built_html
+    assert result.manifest.css_symbols[0].symbols["root"] in built_html
+
+
+def test_hdn_artifact_paths_unique_for_same_name(tmp_path: Path) -> None:
+    from hedron.build import run_build
+    from hedron.config import HedronSettings
+    from hedron_core.registry import register_component
+
+    reset_registry_for_tests()
+    a = tmp_path / "sources" / "a" / "Widget"
+    b = tmp_path / "sources" / "b" / "Widget"
+    for folder, dist in ((a, "dist-a"), (b, "dist-b")):
+        folder.mkdir(parents=True)
+        (folder / "template.hdn").write_text(f'<div class="root">{dist}</div>\n', encoding="utf-8")
+        register_component(
+            logical_id=f"{dist}:mod.Widget",
+            name="Widget",
+            module="mod",
+            distribution=dist,
+            hdn_source=str(folder / "template.hdn"),
+            folder_path=str(folder),
+        )
+    # Keep component_roots empty so discovery does not collapse same-named folders.
+    settings = HedronSettings(
+        component_roots=(),
+        build_dir=".hedron/build",
+        theme="default",
+    )
+    result = run_build(project_dir=tmp_path, settings=settings, production=True)
+    paths = list(result.manifest.hdn_programs.values())
+    assert len(paths) == 2
+    assert len(paths) == len(set(paths))
+    assert all((result.build_dir / rel).is_file() for rel in paths)
+    assert "dist-a__mod.Widget" in paths[0] or "dist-a__mod.Widget" in paths[1]
+    assert "dist-b__mod.Widget" in paths[0] or "dist-b__mod.Widget" in paths[1]
+
+
+def test_unknown_theme_fails_build(tmp_path: Path) -> None:
+    from hedron.build import run_build
+    from hedron.config import HedronSettings
+
+    settings = HedronSettings(
+        component_roots=("components",),
+        build_dir=".hedron/build",
+        theme="nope",
+    )
+    (tmp_path / "components").mkdir()
+    with pytest.raises(HedronError) as exc:
+        run_build(project_dir=tmp_path, settings=settings, production=True)
+    assert exc.value.diagnostic.code == "HED-THEME-0001"
+
+
+def test_production_lifespan_missing_manifest(tmp_path: Path) -> None:
+    set_runtime_compile_allowed(True)
+    app = FastAPI(lifespan=compose_lifespan(production=True, build_dir=tmp_path / "missing-build"))
+    with pytest.raises(HedronError) as exc, TestClient(app):
+        pass
+    assert exc.value.diagnostic.code == "HED-BUILD-0003"
+    set_runtime_compile_allowed(True)
+
+
+def test_production_lifespan_invalid_manifest(tmp_path: Path) -> None:
+    build = tmp_path / "build"
+    build.mkdir()
+    (build / "manifest.json").write_text('{"format_version": 1}\n', encoding="utf-8")
+    set_runtime_compile_allowed(True)
+    app = FastAPI(lifespan=compose_lifespan(production=True, build_dir=build))
+    with pytest.raises(HedronError) as exc, TestClient(app):
+        pass
+    assert exc.value.diagnostic.code == "HED-BUILD-0003"
+    set_runtime_compile_allowed(True)
+
+
+def test_csrf_token_for_request_matches_cookie() -> None:
+    app = Hedron(title="csrf", security="standard", explorer="off", session_secret="secret")
+
+    @app.page("/")
+    def home(request: Request) -> Page:
+        policy = request.app.state.hedron_security
+        token = csrf_token_for_request(request, policy)
+        return Page(Text(token), title="T")
+
+    with TestClient(app) as client:
+        response = client.get("/")
+        cookie = response.cookies.get("hedron_csrf")
+        assert cookie
+        assert cookie in response.text
+        # Second GET reuses the same token.
+        second = client.get("/")
+        assert cookie in second.text
+        assert second.cookies.get("hedron_csrf") in {None, cookie}
+
+
+def test_csrf_html_token_post_succeeds_on_first_load() -> None:
+    from fastapi import Form
+
+    from hedron.routing import HedronRouter
+
+    app = Hedron(title="csrf", security="standard", explorer="off", session_secret="secret")
+    router = HedronRouter()
+
+    @router.page("/seed")
+    def seed(request: Request) -> Page:
+        policy = request.app.state.hedron_security
+        token = csrf_token_for_request(request, policy)
+        return Page(Text(f"token={token}"), title="S")
+
+    @router.action("/do", method="POST")
+    def do_action(note: str = Form("ok")) -> Text:
+        return Text(note)
+
+    app.include_router(router)
+    with TestClient(app) as client:
+        seeded = client.get("/seed")
+        cookie = seeded.cookies.get("hedron_csrf")
+        match = re.search(r"token=([A-Za-z0-9_-]+)", seeded.text)
+        assert cookie and match
+        html_token = match.group(1)
+        assert html_token == cookie
+        ok = client.post("/do", headers={"X-CSRF-Token": html_token}, data={"note": "done"})
+        assert ok.status_code == 200
+        assert "done" in ok.text
+
+
+def test_strict_csrf_secure_flag_follows_scheme() -> None:
+    from starlette.responses import Response
+
+    policy = SecurityPolicy.from_name("strict")
+    https_app = Hedron(title="s", security="strict", explorer="off", session_secret="secret")
+
+    @https_app.page("/")
+    def home() -> Page:
+        return Page(Text("ok"), title="T")
+
+    with TestClient(https_app, base_url="https://testserver") as client:
+        response = client.get("/")
+        assert "Secure" in (response.headers.get("set-cookie") or "")
+
+    # Direct helper: HTTP request should not force Secure when scheme is http.
+    scope = {
+        "type": "http",
+        "method": "GET",
+        "path": "/",
+        "headers": [],
+        "scheme": "http",
+        "server": ("testserver", 80),
+        "client": ("127.0.0.1", 123),
+    }
+    request = Request(scope)
+    request.state.hedron_csrf_token = "abc"
+    response = Response("ok")
+    ensure_csrf_cookie(response, policy, token="abc", request=request)
+    header = response.headers.get("set-cookie") or ""
+    assert "hedron_csrf=abc" in header
+    assert "Secure" not in header
+
+
+def test_asset_injection_not_duplicated(tmp_path: Path) -> None:
+    from hedron.build import run_build
+    from hedron.config import HedronSettings
+
+    components = tmp_path / "components" / "X"
+    components.mkdir(parents=True)
+    (components / "styles.css").write_text(".root { color: red; }\n", encoding="utf-8")
+    settings = HedronSettings(
+        component_roots=("components",),
+        build_dir=".hedron/build",
+        theme="default",
+    )
+    built = run_build(project_dir=tmp_path, settings=settings, production=True)
+    app = Hedron(
+        title="assets",
+        security="standard",
+        explorer="off",
+        session_secret="secret",
+        build_dir=built.build_dir,
+    )
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(Text("hi"), title="T")
+
+    with TestClient(app) as client:
+        response = client.get("/")
+        assert response.text.count('rel="stylesheet"') == 1
+        assert response.text.count("/hedron-assets/") >= 1
+        assert response.text.count("hedron-disclose.mjs") == 1
+        assert getattr(app.state, "hedron_build_manifest", None) is not None
+        assert app.state.hedron_build_manifest.assets.assets
+
+
+def test_mount_build_assets_replaces_different_tree(tmp_path: Path) -> None:
+    a = tmp_path / "a" / "assets"
+    b = tmp_path / "b" / "assets"
+    a.mkdir(parents=True)
+    b.mkdir(parents=True)
+    (a / "a.txt").write_text("A", encoding="utf-8")
+    (b / "b.txt").write_text("B", encoding="utf-8")
+    app = FastAPI()
+    mount_build_assets(app, tmp_path / "a")
+    mount_build_assets(app, tmp_path / "b")
+    assert Path(app.state.hedron_assets_dir).resolve() == b.resolve()
+    with TestClient(app) as client:
+        assert client.get("/hedron-assets/b.txt").status_code == 200
+        assert client.get("/hedron-assets/a.txt").status_code == 404
+
+
+def test_browser_only_folder_registers_component(tmp_path: Path) -> None:
+    reset_registry_for_tests()
+    folder = tmp_path / "components" / "Glow"
+    folder.mkdir(parents=True)
+    (folder / "browser.mjs").write_text("export {}", encoding="utf-8")
+    discovered = discover_component_folders([tmp_path / "components"])
+    apply_discovery_to_registry(discovered)
+    metas = list(get_registry().components())
+    assert any(m.name == "Glow" and m.browser_modules for m in metas)
+
+
+def test_cli_empty_registry_hints(capsys: pytest.CaptureFixture[str]) -> None:
+    from hedron.cli import main
+
+    reset_registry_for_tests()
+    with pytest.raises(SystemExit) as routes_exc:
+        main(["routes"])
+    assert routes_exc.value.code == 0
+    err = capsys.readouterr().err
+    assert "--app" in err
+    with pytest.raises(SystemExit) as components_exc:
+        main(["components"])
+    assert components_exc.value.code == 0
+    err = capsys.readouterr().err
+    assert "--app" in err
+
+
+def test_cli_eject_nothing_written_exits_nonzero(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from hedron.cli import main
+    from hedron_core.registry import register_component
+
+    reset_registry_for_tests()
+    (tmp_path / "pyproject.toml").write_text(
+        '[project]\nname = "eject-fixture"\nversion = "0.0.0"\n\n[tool.hedron]\n',
+        encoding="utf-8",
+    )
+    out = tmp_path / "ejected"
+    out.mkdir()
+    (out / "template.hdn").write_text("x", encoding="utf-8")
+    (out / "styles.css").write_text("y", encoding="utf-8")
+    register_component(
+        logical_id="app:demo.Empty",
+        name="Empty",
+        module="demo",
+        distribution="app",
+        folder_path=str(out),
+    )
+    monkeypatch.chdir(tmp_path)
+    # No source paths and starters already exist without --force → nothing written.
+    with pytest.raises(SystemExit) as exc:
+        main(["eject", "Empty", "--out", str(out)])
+    assert exc.value.code == 1
+
+
+def test_disclose_script_contract() -> None:
+    script = (
+        Path(__file__).resolve().parents[2]
+        / "packages"
+        / "hedron"
+        / "src"
+        / "hedron"
+        / "static"
+        / "hedron-disclose.mjs"
+    ).read_text(encoding="utf-8")
+    assert "${label}" not in script
+    assert "innerHTML" not in script
+    assert "textContent = label" in script
+    assert "rebind()" in script
+    assert "data-hedron-disclose-btn" in script
+    assert "data-hedron-disclose-panel" in script

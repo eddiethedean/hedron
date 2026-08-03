@@ -9,6 +9,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from hedron_core.codes import (
+    HED_ASSET_MISSING,
     HED_ASSET_TRAVERSAL,
     HED_CSS_DUPLICATE,
     HED_CSS_PARSE,
@@ -16,7 +17,13 @@ from hedron_core.codes import (
     HED_CSS_UNSAFE_GLOBAL,
 )
 from hedron_core.css.ast import CssDecl, CssRule, CssStylesheet, emit_stylesheet, parse_stylesheet
-from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, error, make_diagnostic
+from hedron_core.diagnostics import (
+    Diagnostic,
+    DiagnosticSeverity,
+    HedronError,
+    error,
+    make_diagnostic,
+)
 from hedron_core.identifiers import content_digest
 from hedron_core.manifests import CSS_SYMBOL_MANIFEST_FORMAT, CssSymbolManifest
 
@@ -205,7 +212,15 @@ def _check_urls_in_sheet(
                     explanation=f"url({url}) requires a component_dir for resolution.",
                     remediation="Pass component_dir when compiling CSS with relative URLs.",
                 )
-            candidate = (component_dir / url).resolve()
+            link = component_dir / url
+            if link.is_symlink():
+                raise error(
+                    HED_ASSET_TRAVERSAL,
+                    title="Symlinked CSS asset rejected",
+                    explanation=f"url({url}) resolves through a symlink.",
+                    remediation="Use a real file under a registered root.",
+                )
+            candidate = link.resolve()
             if not any(candidate == root or root in candidate.parents for root in roots):
                 raise error(
                     HED_ASSET_TRAVERSAL,
@@ -213,12 +228,12 @@ def _check_urls_in_sheet(
                     explanation=f"url({url}) resolves outside registered asset roots.",
                     remediation="Register the asset root or relocate the file.",
                 )
-            if candidate.is_symlink() or Path(url).is_symlink():
+            if not candidate.is_file():
                 raise error(
-                    HED_ASSET_TRAVERSAL,
-                    title="Symlinked CSS asset rejected",
-                    explanation=f"url({url}) resolves through a symlink.",
-                    remediation="Use a real file under a registered root.",
+                    HED_ASSET_MISSING,
+                    title="CSS asset missing",
+                    explanation=f"url({url}) does not resolve to an existing file.",
+                    remediation="Add the asset file or fix the URL.",
                 )
             found.append(url)
             q = quote or '"'
@@ -245,7 +260,10 @@ def compile_css(
     production_names: bool = False,
 ) -> CssCompileResult:
     """Compile component CSS into scoped output + symbol manifest via AST rewrite."""
+    from hedron_core.compile_gate import assert_runtime_compile_allowed
     from hedron_core.css.layers import wrap_in_layer
+
+    assert_runtime_compile_allowed(what="CSS")
 
     try:
         sheet = parse_stylesheet(source)
@@ -268,6 +286,10 @@ def compile_css(
         )
 
     classes, keyframes, diagnostics = _discover(sheet)
+    errors = [d for d in diagnostics if d.severity is DiagnosticSeverity.ERROR]
+    if errors:
+        raise HedronError(*errors)
+
     class_map: dict[str, str] = {}
     for name in classes:
         scoped = scoped_identifier(component_id, name, kind="class")

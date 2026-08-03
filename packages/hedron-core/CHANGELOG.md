@@ -25,15 +25,21 @@ Authoring, scoped styles, themes, and assets for the phase 0.3 release train.
 ### Fixed / hardened
 
 - Compile-time rejection of arbitrary HDN calls; `{#for}` / expression failures
-  raise `HedronError`; `??` rewrite does not split inside string literals.
+  raise `HedronError`; `??` rewrite respects parentheses/calls/indexes and strings,
+  and chains (`a ?? b ?? c`) rewrite recursively without treating call commas as
+  operands.
 - CSS URL policy resolves registered roots, rejects empty-root relative URLs,
-  absolute/`file:` paths, and remote URLs when disallowed.
-- Discovery uses `cls.distribution` when present; duplicate browser-module
-  registration warns instead of swallowing all exceptions.
+  absolute/`file:` paths, missing files (`HED-ASSET-0004`), symlinks, and remote URLs
+  when disallowed; ERROR diagnostics fail `compile_css`; declarations without trailing
+  `;` are preserved.
+- Discovery uses `cls.distribution` when present; browser-only folders register a
+  component stub; duplicate browser-module registration warns.
 - Unknown configured themes fail build with `HED-THEME-0001`.
 - `write_json_atomic` uses a unique same-directory temp file + `os.replace`.
-- `RenderProgram.from_dict` / `load_hdn_program` for production artifact loading.
-- Production compile gate (`HED-BUILD-0004`).
+- `RenderProgram.from_dict` / `load_hdn_program` validate format (`HED-HDN-0008`);
+  digests include style-symbol maps.
+- Production compile gate on `compile_hdn`/`compile_css` (`HED-BUILD-0004`) with
+  force-allow for `hedron build`.
 
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 

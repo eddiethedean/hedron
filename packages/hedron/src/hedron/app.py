@@ -35,7 +35,7 @@ class Hedron(FastAPI):
         self,
         *args: Any,
         security: SecurityProfileName | str | SecurityPolicy = "standard",
-        explorer: ExplorerMode | str = "off",
+        explorer: ExplorerMode | str | None = None,
         session_secret: str = _DEFAULT_SESSION_SECRET,
         enable_sessions: bool = True,
         explorer_dependencies: Sequence[Any] | None = None,
@@ -57,7 +57,13 @@ class Hedron(FastAPI):
         super().__init__(*args, **kwargs)
 
         self.hedron_policy = SecurityPolicy.from_name(security)
-        self.hedron_explorer_mode = str(explorer)
+        # Explicit explorer= overrides policy.explorer_enabled; None follows policy.
+        if explorer is None:
+            self.hedron_explorer_mode = (
+                "development" if self.hedron_policy.explorer_enabled else "off"
+            )
+        else:
+            self.hedron_explorer_mode = str(explorer)
         self.hedron_theme = theme
         self.state.hedron_security = self.hedron_policy
         self.state.hedron_theme = theme

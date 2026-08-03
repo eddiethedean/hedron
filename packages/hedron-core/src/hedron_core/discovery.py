@@ -154,7 +154,7 @@ def apply_discovery_to_registry(
                 folder_path=str(item.folder),
                 asset_roots=(str(item.folder),),
             )
-        elif item.template_hdn or item.styles_css:
+        elif item.template_hdn or item.styles_css or item.browser_mjs:
             register_component(
                 logical_id=logical_id,
                 name=logical_name,

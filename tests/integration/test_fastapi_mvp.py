@@ -182,10 +182,16 @@ def test_yield_dependency_cleanup() -> None:
     assert cleaned == [True]
 
 
-def test_explorer_absent_in_production_profile() -> None:
-    app = Hedron(title="demo", security="standard", explorer="off", session_secret="test-secret")
+def test_explorer_absent_when_policy_disables() -> None:
+    # standard profile: explorer_enabled=False; default explorer follows policy.
+    app = Hedron(title="demo", security="standard", session_secret="test-secret")
     client = TestClient(app)
     assert client.get("/hedron-explorer/").status_code == 404
+
+
+def test_explorer_follows_development_policy_default() -> None:
+    app = Hedron(title="demo", security="development", session_secret="test-secret")
+    assert app.hedron_explorer_mode == "development"
 
 
 def test_explorer_present_in_development() -> None:

@@ -24,14 +24,20 @@ Authoring, styles, assets, and themes for the FastAPI flagship.
 
 - Same-device atomic build promote (avoids cross-device rename failures) and CSS
   `url(...)` rewrite to fingerprinted `/hedron-assets/...` paths.
-- Production loads compiled HDN from the build manifest; runtime compile is gated.
-- `RenderResult.assets` filled from the active build manifest during response assembly.
+- Production loads compiled HDN from the build manifest; runtime compile is gated
+  on the compile APIs with build force-allow.
+- `RenderResult.assets` filled from the active build manifest; injection deduped.
+- First-load CSRF form/`hx-headers` tokens match the CSRF cookie
+  (`csrf_token_for_request`).
+- Unique HDN/css-symbol artifact paths from logical ids; style component ids honor
+  `STYLE_COMPONENT_ID` when present.
 - `hedron-disclose` uses `textContent` for labels, preserves light-DOM children, and
-  rebinds when the swap target is the element itself.
+  rebuilds incomplete chrome cleanly.
 - CLI hints when the registry is empty without `--app`; `eject` exits non-zero when
   nothing is written.
 - `run_program` exported from the public `hedron` API; static mounts live in
   `hedron.static_mount` to avoid lifespan↔app circular imports.
+- Explorer mounting follows `SecurityPolicy.explorer_enabled` unless `explorer=` is set.
 
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 

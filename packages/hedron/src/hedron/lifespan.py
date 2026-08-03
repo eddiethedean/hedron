@@ -9,7 +9,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
-from hedron_core.compile_gate import is_production_env
+from hedron_core.compile_gate import is_production_env, set_runtime_compile_allowed
 from hedron_core.registry import seal_registry
 from hedron_core.theme import ensure_default_theme_registered
 
@@ -32,6 +32,8 @@ def compose_lifespan(
 
         is_production = is_production_env(production=production)
         app.state.hedron_production = is_production
+        if is_production:
+            set_runtime_compile_allowed(False)
 
         resolved_build = Path(
             build_dir
@@ -42,34 +44,54 @@ def compose_lifespan(
         from hedron.build import load_build_manifest
         from hedron.static_mount import mount_build_assets
 
-        if is_production:
-            if not manifest_path.is_file():
-                from hedron_core.codes import HED_BUILD_MISSING_MANIFEST
-                from hedron_core.diagnostics import error
+        try:
+            if is_production:
+                if not manifest_path.is_file():
+                    from hedron_core.codes import HED_BUILD_MISSING_MANIFEST
+                    from hedron_core.diagnostics import error
 
-                raise error(
-                    HED_BUILD_MISSING_MANIFEST,
-                    title="Production build manifest missing",
-                    explanation=(
-                        f"Production mode requires {manifest_path}. "
-                        "Runtime HDN/CSS compilation is disabled."
-                    ),
-                    remediation="Run `hedron build` and set HEDRON_BUILD_DIR if needed.",
-                )
-            manifest = load_build_manifest(resolved_build)
-            app.state.hedron_build_manifest = manifest
-            app.state.hedron_build_dir = str(resolved_build.resolve())
-            mount_build_assets(app, resolved_build)
-        elif manifest_path.is_file():
-            app.state.hedron_build_manifest = load_build_manifest(resolved_build)
-            app.state.hedron_build_dir = str(resolved_build.resolve())
-            mount_build_assets(app, resolved_build)
+                    raise error(
+                        HED_BUILD_MISSING_MANIFEST,
+                        title="Production build manifest missing",
+                        explanation=(
+                            f"Production mode requires {manifest_path}. "
+                            "Runtime HDN/CSS compilation is disabled."
+                        ),
+                        remediation="Run `hedron build` and set HEDRON_BUILD_DIR if needed.",
+                    )
+                try:
+                    manifest = load_build_manifest(resolved_build)
+                except Exception as exc:
+                    from hedron_core.codes import HED_BUILD_MISSING_MANIFEST
+                    from hedron_core.diagnostics import HedronError, error
 
-        seal_registry()
-        if user_lifespan is not None:
-            async with user_lifespan(app):
+                    if isinstance(exc, HedronError):
+                        raise
+                    raise error(
+                        HED_BUILD_MISSING_MANIFEST,
+                        title="Production build manifest invalid",
+                        explanation=f"Failed to load {manifest_path}: {exc}",
+                        remediation="Run `hedron build` to regenerate a valid manifest.",
+                    ) from exc
+                app.state.hedron_build_manifest = manifest
+                app.state.hedron_build_dir = str(resolved_build.resolve())
+                mount_build_assets(app, resolved_build)
+            elif manifest_path.is_file():
+                from contextlib import suppress
+
+                with suppress(Exception):
+                    app.state.hedron_build_manifest = load_build_manifest(resolved_build)
+                    app.state.hedron_build_dir = str(resolved_build.resolve())
+                    mount_build_assets(app, resolved_build)
+
+            seal_registry()
+            if user_lifespan is not None:
+                async with user_lifespan(app):
+                    yield
+            else:
                 yield
-        else:
-            yield
+        finally:
+            if is_production:
+                set_runtime_compile_allowed(True)
 
     return lifespan

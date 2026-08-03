@@ -32,14 +32,21 @@ def mount_build_assets(
     """Mount fingerprinted build assets from a Hedron build directory."""
     if build_dir is None:
         build_dir = os.environ.get("HEDRON_BUILD_DIR", ".hedron/build")
-    root = Path(build_dir)
+    root = Path(build_dir).resolve()
     assets = root / "assets"
     if not assets.is_dir():
         return None
-    for route in app.routes:
-        if getattr(route, "path", None) == path:
+    existing_dir = getattr(app.state, "hedron_assets_dir", None)
+    for idx, route in enumerate(list(app.routes)):
+        if getattr(route, "path", None) != path:
+            continue
+        if existing_dir is not None and Path(existing_dir).resolve() == assets.resolve():
             return assets
+        # Different build tree already mounted — replace the mount.
+        app.routes.pop(idx)
+        break
     app.mount(path, StaticFiles(directory=str(assets)), name="hedron-assets")
-    app.state.hedron_assets_path = path
-    app.state.hedron_build_dir = str(root.resolve())
+    app.state.hedron_assets_path = path.rstrip("/") or path
+    app.state.hedron_assets_dir = str(assets.resolve())
+    app.state.hedron_build_dir = str(root)
     return assets

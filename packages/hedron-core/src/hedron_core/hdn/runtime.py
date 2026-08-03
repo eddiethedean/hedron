@@ -8,13 +8,20 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from hedron_core.codes import HED_HDN_TRUSTED, HED_HDN_TYPE, HED_HDN_UNKNOWN_COMPONENT
+from hedron_core.codes import (
+    HED_HDN_FORMAT,
+    HED_HDN_TRUSTED,
+    HED_HDN_TYPE,
+    HED_HDN_UNKNOWN_COMPONENT,
+)
 from hedron_core.diagnostics import error
 from hedron_core.hdn.expr import eval_expr
 from hedron_core.html import html
 from hedron_core.security import TrustedHtml
 
 __all__ = ["Op", "RenderProgram", "load_hdn_program", "run_program"]
+
+HDN_FORMAT_VERSION = 1
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,12 +47,23 @@ class RenderProgram:
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> RenderProgram:
+        format_version = int(data["format_version"])
+        if format_version != HDN_FORMAT_VERSION:
+            raise error(
+                HED_HDN_FORMAT,
+                title="Unsupported HDN program format",
+                explanation=(
+                    f"HDN program format_version {format_version} is not supported "
+                    f"(expected {HDN_FORMAT_VERSION})."
+                ),
+                remediation="Rebuild with a matching Hedron release.",
+            )
         ops = tuple(
             Op(kind=str(item["kind"]), data=dict(item.get("data") or {}))
             for item in data.get("ops", ())
         )
         return cls(
-            format_version=int(data["format_version"]),
+            format_version=format_version,
             ops=ops,
             source_map=tuple(dict(item) for item in data.get("source_map", ())),
             dependencies=tuple(str(x) for x in data.get("dependencies", ())),

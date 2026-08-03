@@ -22,12 +22,10 @@ from hedron_core.hdn.ast import (
 )
 from hedron_core.hdn.expr import PURE_HELPERS, parse_expr
 from hedron_core.hdn.parser import parse_hdn
-from hedron_core.hdn.runtime import Op, RenderProgram
+from hedron_core.hdn.runtime import HDN_FORMAT_VERSION, Op, RenderProgram
 from hedron_core.identifiers import content_digest
 
 __all__ = ["HDN_FORMAT_VERSION", "HdnCompileResult", "compile_hdn", "validate_expr"]
-
-HDN_FORMAT_VERSION = 1
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,6 +72,10 @@ def compile_hdn(
     *,
     style_symbols: Mapping[str, str] | None = None,
 ) -> HdnCompileResult:
+    from hedron_core.compile_gate import assert_runtime_compile_allowed
+    from hedron_core.manifests import canonical_json
+
+    assert_runtime_compile_allowed(what="HDN")
     doc = parse_hdn(source)
     ops: list[Op] = []
     source_map: list[dict[str, Any]] = []
@@ -86,7 +88,7 @@ def compile_hdn(
         source_map=tuple(source_map),
         dependencies=tuple(sorted(deps)),
     )
-    digest = content_digest(source)
+    digest = content_digest(source + "\0" + canonical_json(symbols))
     return HdnCompileResult(program=program, digest=digest, source_map=tuple(source_map))
 
 

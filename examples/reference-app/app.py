@@ -34,7 +34,8 @@ from hedron import (
     html,
 )
 from hedron.routing.reverse import ComponentRef
-from hedron.security.csrf import generate_csrf_token
+from hedron.security.csrf import csrf_token_for_request
+from hedron.security.policy import SecurityPolicy
 from hedron_core import Field, FormModel, addressable
 from hedron_core.security import SafeUrl, UrlPurpose
 
@@ -171,14 +172,15 @@ def dashboard_page(
     )
 
 
-def _status_banner_section(*, request: Request | None = None) -> Any:
-    """Python StatusBanner beside an HDN twin loaded from build artifacts when present."""
+_STATUS_BANNER_MOD = None
+
+
+def _load_status_banner_module():
+    global _STATUS_BANNER_MOD
+    if _STATUS_BANNER_MOD is not None:
+        return _STATUS_BANNER_MOD
     import importlib.util
     from pathlib import Path
-
-    from hedron_core.compile_gate import assert_runtime_compile_allowed, is_production_env
-    from hedron_core.hdn import compile_hdn, load_hdn_program, run_program
-    from hedron_core.html import _HtmlTag
 
     root = Path(__file__).resolve().parent / "components" / "StatusBanner"
     spec = importlib.util.spec_from_file_location(
@@ -188,6 +190,20 @@ def _status_banner_section(*, request: Request | None = None) -> Any:
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    _STATUS_BANNER_MOD = module
+    return module
+
+
+def _status_banner_section(*, request: Request | None = None) -> Any:
+    """Python StatusBanner beside an HDN twin loaded from build artifacts when present."""
+    from pathlib import Path
+
+    from hedron_core.compile_gate import assert_runtime_compile_allowed, is_production_env
+    from hedron_core.hdn import compile_hdn, load_hdn_program, run_program
+    from hedron_core.html import _HtmlTag
+
+    root = Path(__file__).resolve().parent / "components" / "StatusBanner"
+    module = _load_status_banner_module()
     StatusBanner = module.StatusBanner
 
     program = None
@@ -197,7 +213,7 @@ def _status_banner_section(*, request: Request | None = None) -> Any:
         build_dir = getattr(request.app.state, "hedron_build_dir", None)
         if manifest is not None and build_dir is not None:
             for logical_id, rel in dict(manifest.hdn_programs).items():
-                if logical_id.endswith(".StatusBanner") or logical_id.endswith(":StatusBanner"):
+                if "StatusBanner" in logical_id:
                     program = load_hdn_program(Path(build_dir) / rel)
                     break
             for sym in manifest.css_symbols:
@@ -284,8 +300,12 @@ def _create_form(*, csrf_token: str, form_errors: tuple[str, ...] = ()) -> Any:
     )
 
 
-def build_hedron_app() -> Hedron:
+def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
+    from pathlib import Path
+
     import hedron_core
+    from hedron.build import run_build
+    from hedron.config import HedronSettings
     from hedron_core import reset_registry_for_tests
 
     reset_registry_for_tests()
@@ -306,18 +326,30 @@ def build_hedron_app() -> Hedron:
         factory=user_table.factory,
     )
 
+    ref_root = Path(__file__).resolve().parent
+    build_dir = ref_root / ".hedron" / "build"
+    if ensure_build:
+        settings = HedronSettings(
+            component_roots=("components",),
+            build_dir=".hedron/build",
+            theme="default",
+        )
+        run_build(project_dir=ref_root, settings=settings, production=True)
+
     app = Hedron(
         title="Hedron Team Admin",
         security="strict",
         explorer="development",
         session_secret="reference-app-secret",
         theme="default",
+        build_dir=build_dir,
     )
     users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
 
     @app.page("/")
     def home(request: Request, username: Annotated[str, Depends(require_user)]) -> Page:
-        token = request.cookies.get("hedron_csrf") or generate_csrf_token()
+        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("strict"))
+        token = csrf_token_for_request(request, policy)
         return dashboard_page(csrf_token=token, username=username, request=request)
 
     @users.component("/table")
@@ -393,7 +425,8 @@ def build_plain_fastapi_app() -> FastAPI:
 
     @router.page("/")
     def home(request: Request, username: Annotated[str, Depends(require_user)]) -> Page:
-        token = request.cookies.get("hedron_csrf") or generate_csrf_token()
+        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("standard"))
+        token = csrf_token_for_request(request, policy)
         return dashboard_page(csrf_token=token, username=username, request=request)
 
     users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])

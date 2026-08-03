@@ -93,6 +93,8 @@ def _cmd_components(args: argparse.Namespace) -> int:
         }
         for a in registry.addressables()
     )
+    if not rows:
+        _registry_empty_hint(app=args.app, what="components")
     print(json.dumps(rows, indent=2))
     return 0
 

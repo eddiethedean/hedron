@@ -204,34 +204,24 @@ def _inject_build_assets(
     html_text = _ensure_htmx_asset(html_text, mode)
     if mode is not RenderMode.PAGE:
         return html_text
-    assets_prefix = getattr(request.app.state, "hedron_assets_path", "/hedron-assets")
     tags: list[str] = []
-    manifest = getattr(request.app.state, "hedron_build_manifest", None)
-    if manifest is not None:
-        for entry in manifest.assets.assets:
-            href = f"{assets_prefix}/{entry.path}"
-            if entry.kind == "css":
-                tag = f'<link rel="stylesheet" href="{href}">'
-                if tag not in html_text:
-                    tags.append(tag)
-            elif entry.kind == "module":
-                tag = f'<script type="module" src="{href}"></script>'
-                if tag not in html_text:
-                    tags.append(tag)
+    seen: set[str] = set()
+
+    def add(tag: str) -> None:
+        if tag in html_text or tag in seen:
+            return
+        seen.add(tag)
+        tags.append(tag)
+
     for asset in result.assets:
         if asset.kind == "css":
-            tag = f'<link rel="stylesheet" href="{asset.href}">'
-            if tag not in html_text:
-                tags.append(tag)
+            add(f'<link rel="stylesheet" href="{asset.href}">')
         elif asset.kind in {"js", "module"}:
             typ = ' type="module"' if asset.kind == "module" else ""
-            tag = f'<script{typ} src="{asset.href}"></script>'
-            if tag not in html_text:
-                tags.append(tag)
+            add(f'<script{typ} src="{asset.href}"></script>')
     # Always offer bundled disclose module from package static for WC proof
-    disclose = '<script type="module" src="/hedron-static/hedron-disclose.mjs"></script>'
     if "hedron-disclose.mjs" not in html_text:
-        tags.append(disclose)
+        add('<script type="module" src="/hedron-static/hedron-disclose.mjs"></script>')
     if not tags:
         return html_text
     injection = "\n".join(tags)

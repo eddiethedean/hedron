@@ -104,6 +104,10 @@ def parse_stylesheet(source: str) -> CssStylesheet:
                     CssRule(prelude=prelude, decls=child_decls, children=child_rules, kind=kind)
                 )
                 continue
+            # Last declaration without trailing semicolon before `}`.
+            if prelude and ":" in prelude:
+                prop, _, value = prelude.partition(":")
+                decls.append(CssDecl(prop.strip(), value.strip()))
             break
         return decls, children
 

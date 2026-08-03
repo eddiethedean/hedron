@@ -8,6 +8,7 @@ import shutil
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from hedron.config import HedronSettings, load_hedron_settings, settings_digest
 from hedron_core import __version__ as CORE_VERSION
@@ -94,6 +95,44 @@ def run_build(
     production: bool = True,
     assets_url_prefix: str = "/hedron-assets",
 ) -> BuildResult:
+    from hedron_core.compile_gate import force_runtime_compile
+
+    with force_runtime_compile():
+        return _run_build(
+            project_dir=project_dir,
+            settings=settings,
+            production=production,
+            assets_url_prefix=assets_url_prefix,
+        )
+
+
+def _artifact_stem(logical_id: str) -> str:
+    return logical_id.replace(":", "__").replace("/", "_").replace("\\", "_")
+
+
+def _style_component_id(meta: Any) -> str:
+    import sys
+
+    mod = sys.modules.get(meta.module)
+    if mod is not None:
+        sid = getattr(mod, "STYLE_COMPONENT_ID", None)
+        if isinstance(sid, str) and sid:
+            return sid
+        cls = getattr(mod, meta.name, None)
+        if cls is not None:
+            sid = getattr(cls, "STYLE_COMPONENT_ID", None)
+            if isinstance(sid, str) and sid:
+                return sid
+    return meta.logical_id
+
+
+def _run_build(
+    *,
+    project_dir: Path | None = None,
+    settings: HedronSettings | None = None,
+    production: bool = True,
+    assets_url_prefix: str = "/hedron-assets",
+) -> BuildResult:
     base = (project_dir or Path.cwd()).resolve()
     settings = settings or load_hedron_settings(base)
     ensure_default_theme_registered()
@@ -148,13 +187,14 @@ def run_build(
 
         registry = get_registry()
         for meta in registry.components():
+            style_id = _style_component_id(meta)
             if meta.styles_path:
                 source = Path(meta.styles_path)
                 component_root = source.parent.resolve()
                 roots_for_css = registered or [component_root]
                 result = compile_css(
                     source.read_text(encoding="utf-8"),
-                    component_id=meta.logical_id,
+                    component_id=style_id,
                     allow_remote=settings.asset_policy.allow_remote,
                     registered_roots=roots_for_css,
                     component_dir=component_root,
@@ -192,11 +232,12 @@ def run_build(
                 hdn_source = Path(meta.hdn_source).read_text(encoding="utf-8")
                 style_syms: dict[str, str] = dict(meta.style_symbols)
                 for sym in css_symbols:
-                    if sym.component_id == meta.logical_id:
+                    if sym.component_id == style_id:
                         style_syms = dict(sym.symbols)
                         break
                 compiled = compile_hdn(hdn_source, style_symbols=style_syms or None)
-                rel = f"hdn/{meta.name}.json"
+                stem = _artifact_stem(meta.logical_id)
+                rel = f"hdn/{stem}.json"
                 payload = {
                     "format_version": compiled.program.format_version,
                     "digest": compiled.digest,
@@ -206,7 +247,7 @@ def run_build(
                     "source_map": list(compiled.program.source_map),
                     "dependencies": list(compiled.program.dependencies),
                 }
-                out = hdn_dir / f"{meta.name}.json"
+                out = hdn_dir / f"{stem}.json"
                 out.write_text(canonical_json(payload) + "\n", encoding="utf-8")
                 hdn_programs[meta.logical_id] = rel
 
@@ -280,7 +321,7 @@ def run_build(
         write_json_atomic(tmp_root / "assets.json", asset_manifest.to_dict())
         for sym in css_symbols:
             write_json_atomic(
-                tmp_root / "css-symbols" / f"{sym.component_id.replace(':', '_')}.json",
+                tmp_root / "css-symbols" / f"{_artifact_stem(sym.component_id)}.json",
                 sym.to_dict(),
             )
 
