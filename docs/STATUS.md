@@ -1,10 +1,10 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.6 **published** as `v0.6.0`; behavioral closure gate **green**
-(with Plotly/Vega full offline runtime pin Deferred as `VIS-C06-002`)  
+**Roadmap position:** phase 0.6 **cut-ready** as `0.6.0` (tag `v0.6.0` when cut); behavioral
+closure gate **green** (with Plotly/Vega full offline runtime pin Deferred as `VIS-C06-002`)  
 **Date:** 2026-08-03  
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
-`hedron-data` / `hedron-charts` `0.6.0` on PyPI (MIT licensed, D-033)
+`hedron-data` / `hedron-charts` `0.6.0` (MIT licensed, D-033)
 
 Phase 0.6 delivers visualization adapters (`hedron-charts`), content/auth extras,
 SQLAlchemy and AG Grid adapter boundaries, typed HTMX interaction envelopes,
@@ -37,7 +37,7 @@ interaction simulation panels.
 - Packages: `hedron-charts` with Matplotlib/Plotly/Altair adapters; flagship extras
   `charts`, `markdown`, `code`, `images`, `email`, `sanitize`, `auth`.
 - Reference application: chart + Markdown section and `/charts/*` interaction routes.
-- Release: [GitHub `v0.6.0`](https://github.com/eddiethedean/hedron/releases/tag/v0.6.0);
-  cut procedure archived in [RELEASE.md](RELEASE.md).
+- Cut procedure: [RELEASE.md](RELEASE.md) (`## Cut v0.6.0`). PyPI / GitHub release appear
+  after `git push origin v0.6.0` triggers the release workflow.
 
 See the [roadmap](ROADMAP.md) for the phase 0.7 adapter/operations entry gate.

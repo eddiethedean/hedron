@@ -5,6 +5,7 @@
 - Async `VisualizationSource` protocol and viz row/payload defaults.
 - `SQLAlchemyDataSource` adapter (`hedron-data[sqlalchemy]` / `[sqlmodel]`).
 - AG Grid Community host shim and `ensure_aggrid_assets()` (`hedron-data[aggrid]`).
+- Bounded SQLAlchemy paging: `OFFSET`/`LIMIT` applied in SQL (not collect-all-then-slice).
 
 ## [0.5.0] - 2026-08-03
 

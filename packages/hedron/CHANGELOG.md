@@ -8,16 +8,29 @@ with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
 ## [0.6.0] - 2026-08-03
 
-Visualization extras, typed HTMX interaction envelope, and first-party content/auth helpers.
+Visualization extras, typed HTMX interaction envelope, first-party content/auth helpers,
+and 0.6 behavioral closure hardening.
 
 ### Added
 
 - `HtmxRequest`, `InteractionResult`, `InteractionPolicy`, `FragmentRegion`, OOB helpers.
 - Semantic HTMX status handlers (422 validation fragments; JSON for non-HTMX).
-- Declared fragment regions on `@page`, `Vary` for page/fragment(/target), form `hx-sync` defaults.
+- Declared fragment regions on `@page` / `@component`, `Vary` for page/fragment(/target),
+  form `hx-sync` defaults.
 - Extras: `charts`, `markdown`, `code`, `images`, `email`, `sanitize`, `auth`.
 - `Markdown`, email/code/image helpers, Authlib conveniences, icon re-exports.
 - `htmx_vary_dimensions` for cache/response variation documentation.
+
+### Security
+
+- `InteractionResult.headers` revalidated through approved local-URL / selector checks
+  (no raw `HX-*` bypass).
+- Route-declared fragment regions and OOB destinations enforced at runtime.
+- Chart/SVG/Markdown adversarial corpus; icon registry rejects event-handler SVG.
+
+### Fixed
+
+- `cache="private"` / `"no-store"` emit `Cache-Control` on interaction responses.
 
 ## [0.5.0] - 2026-08-03
 

@@ -11,11 +11,11 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase 0.6 is **published** as `v0.6.0` (visualization adapters,
+> **Project status:** Phase 0.6 is **cut-ready** as `0.6.0` (visualization adapters,
 > content/auth extras, typed HTMX interactions, and `hedron-charts`). The project is
 > MIT-licensed. The 0.6 behavioral closure gate is green (Plotly/Vega full offline runtime
-> pin remains Deferred/experimental). Next milestone: phase 0.7 (framework adapters and
-> production operations).
+> pin remains Deferred/experimental). Next milestone after the `v0.6.0` cut: phase 0.7
+> (framework adapters and production operations).
 
 ## Packages
 
@@ -96,7 +96,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 | 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes (**published**) |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform (**published**) |
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI (**published**) |
-| 0.6 | `v0.6.0` | Visualization and first-party integrations (**published**) |
+| 0.6 | `v0.6.0` | Visualization and first-party integrations (**cut-ready**) |
 | 0.7 | `v0.7.0` | Flask/Django adapters and production operations |
 | 0.8 | `v0.8.0` | Feature-frozen public API baseline and hardening |
 | 1.0 | `v1.0.0` | Stable supported Hedron release |
@@ -139,10 +139,11 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 ## Current release
 
-Install from PyPI: `pip install hedron` (coordinated train `0.6.0`). Use
+PyPI currently serves the **0.5** train until `v0.6.0` is tagged. After the cut,
+install `pip install hedron` for coordinated train `0.6.0`, with
 `pip install "hedron[data]"` for DataTable/DataEditor and
 `pip install "hedron[charts]"` for visualization adapters. Next implementation
-target is phase 0.7 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
+target after publish is phase 0.7 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing
 

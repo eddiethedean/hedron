@@ -17,6 +17,10 @@ Visualization contracts, trusted content boundaries, and Auto chart hooks for ph
 - `TrustedHtml.nh3(...)` sanitizer constructor (optional `nh3`).
 - Auto chart-stub remediation points at `hedron-charts` (no longer “phase 0.6”).
 
+### Security
+
+- Icon SVG registration rejects script URLs and common event-handler / `foreignObject` patterns.
+
 ### Changed
 
 - Default plugin `hedron_version` gate is `>=0.6,<0.7`.

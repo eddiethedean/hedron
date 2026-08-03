@@ -110,10 +110,11 @@ Before any 0.7 adapter contract is implemented:
 
 ## Cut `v0.6.0` (visualization and first-party integrations)
 
-> **Status:** Published as `v0.6.0` on 2026-08-03. Do not retag.
+> **Status:** Ready to cut. Do not retag after publish.
 
-1. Confirm `check_release_gate.py 0.6.0` and acceptance suites for VISUALIZATION / HTMX.
-2. Confirm latest `main` CI is green on 3.11–3.14.
+1. Confirm `check_release_gate.py 0.6.0`, [release-gate-0.6.toml](acceptance/release-gate-0.6.toml),
+   and acceptance suites for VISUALIZATION / HTMX / SECURITY (closure IDs Verified or Deferred).
+2. Confirm latest `main` CI is green on 3.11–3.14 (including browser job when present).
 3. Tag and push:
 
 ```bash
