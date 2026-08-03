@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install ${{ matrix.python-version }}
+      - name: Sync
+        run: uv sync --python ${{ matrix.python-version }}
+      - name: Format check
+        run: uv run ruff format --check .
+      - name: Lint
+        run: uv run ruff check .
+      - name: Type check
+        run: uv run pyright
+      - name: Tests
+        run: uv run pytest -q
+      - name: Build package
+        run: uv build --package hedron-core
+      - name: Prove no web frameworks in core env
+        run: |
+          uv run python -c "import importlib.util as u; assert u.find_spec('fastapi') is None; assert u.find_spec('flask') is None; assert u.find_spec('django') is None; print('ok: no FastAPI/Flask/Django')"
+      - name: Doc link smoke
+        run: |
+          uv run python - <<'PY'
+          from pathlib import Path
+          import re
+          root = Path("docs")
+          missing = []
+          for path in root.rglob("*.md"):
+              text = path.read_text(encoding="utf-8")
+              for m in re.finditer(r"\]\(([^)#]+)(?:#[^)]*)?\)", text):
+                  target = m.group(1)
+                  if target.startswith(("http://", "https://", "mailto:")):
+                      continue
+                  resolved = (path.parent / target).resolve()
+                  if not resolved.exists():
+                      missing.append(f"{path}: {target}")
+          if missing:
+              raise SystemExit("\n".join(missing[:50]))
+          print("ok: relative doc links resolve")
+          PY

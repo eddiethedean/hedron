@@ -2,7 +2,7 @@
 
 Hedron is a Python-first framework for building typed, server-rendered component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web Components—without requiring Node.js.
 
-> **Project status:** Phase 0.0, the specification and project foundation, is complete. Implementation has not started. The next milestone is phase 0.1, the typed rendering core, targeting `v0.1.0`. There is no installable Hedron package yet.
+> **Project status:** Phase 0.1 is complete. The framework-neutral `hedron-core` package (`0.1.0`) can define, validate, compose, and safely render components without FastAPI. The next milestone is phase 0.2, the secure FastAPI and HTMX application MVP, targeting `v0.2.0`. The flagship `hedron` FastAPI distribution is not published yet.
 
 ## Product direction
 
@@ -27,6 +27,25 @@ The initial audience is Python teams building FastAPI CRUD applications, interna
 - Contextual escaping, typed trust boundaries, accessibility contracts, and private authenticated caching are secure defaults.
 - Hedron is not an ORM, identity provider, client-side SPA runtime, durable job queue, distributed cache, or whole-script rerun engine.
 
+## Quick start (`hedron-core`)
+
+```bash
+uv sync
+uv run python -c "from hedron_core import Page, Text, RenderMode, render; print(render(Page(Text('Hello'), title='Hi'), mode=RenderMode.PAGE).html)"
+uv run pytest -q
+```
+
+```python
+from hedron_core import Page, RenderContext, RenderMode, Text, render
+
+result = render(
+    Page(Text("Hello, Hedron"), title="Demo"),
+    context=RenderContext.standalone(locale="en"),
+    mode=RenderMode.PAGE,
+)
+print(result.html)
+```
+
 ## Roadmap
 
 Phase 0.0 publishes no package. Each implementation phase maps to an initial release tag; Python package versions omit the leading `v`.
@@ -34,7 +53,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 | Phase | Initial release | Outcome |
 |---|---|---|
 | 0.0 | None | Accepted specification and project foundation |
-| 0.1 | `v0.1.0` | Framework-neutral typed rendering core |
+| 0.1 | `v0.1.0` | Framework-neutral typed rendering core (**complete**) |
 | 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP |
 | 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform |
@@ -48,7 +67,7 @@ See the complete [roadmap](ROADMAP.md) for scope, feature ownership, RFC assignm
 
 ## Documentation
 
-The specification is the current project deliverable and the sole authority for implementation:
+The specification remains the authority for implementation:
 
 - [Specification index](docs/README.md)
 - [Current status](docs/STATUS.md) and [pre-coding readiness report](docs/READINESS_REPORT.md)
@@ -59,18 +78,15 @@ The specification is the current project deliverable and the sole authority for 
 - [Acceptance specifications](docs/acceptance/README.md)
 - [Compatibility policy](docs/COMPATIBILITY.md) and [engineering baseline](docs/ENGINEERING_BASELINE.md)
 
-Accepted RFC and API status means the design has been selected; it does not mean the feature is implemented or available before its roadmap phase.
+Accepted RFC and API status means the design has been selected; it does not mean every feature is implemented. Availability follows the roadmap phase.
 
-## Starting phase 0.1
+## Starting phase 0.2
 
-The initial implementation target is `hedron-core` at `v0.1.0`. The implementation packet is:
+The next implementation target is the FastAPI flagship package at `v0.2.0`. The packet begins with:
 
-- [Phase 0.1 roadmap scope](ROADMAP.md)
-- [Rendering API](docs/api/RENDERING.md), [component API](docs/api/COMPONENT.md), [security types](docs/api/SECURITY_TYPES.md), and [built-ins](docs/api/BUILT_INS.md)
-- [Model system](docs/implementation/MODEL_SYSTEM.md), [rendering engine](docs/implementation/RENDERING_ENGINE.md), and [HTML serializer](docs/implementation/HTML_SERIALIZER.md)
-- [Component-model acceptance](docs/acceptance/COMPONENT_MODEL.md), [security acceptance](docs/acceptance/SECURITY.md), and [accessibility acceptance](docs/acceptance/ACCESSIBILITY.md)
-
-Installation and usage instructions will be added when the first working package exists. Until then, examples in the specification describe accepted API intent rather than released behavior.
+- [Phase 0.2 roadmap scope](ROADMAP.md)
+- [Router](docs/api/ROUTER.md), [Page](docs/api/PAGE.md), [Addressable](docs/api/ADDRESSABLE.md), [Action](docs/api/ACTION.md), and [Responses](docs/api/RESPONSES.md)
+- FastAPI integration RFCs and acceptance suites for security, HTMX, and OpenAPI
 
 ## Contributing
 

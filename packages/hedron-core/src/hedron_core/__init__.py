@@ -1,0 +1,189 @@
+"""hedron-core: framework-neutral typed rendering core."""
+
+from __future__ import annotations
+
+import contextlib
+
+from hedron_core.builtins import (
+    Alert,
+    Aside,
+    Badge,
+    Button,
+    Card,
+    Checkbox,
+    CodeBlock,
+    Container,
+    DescriptionList,
+    Divider,
+    Footer,
+    Form,
+    FormErrors,
+    FormField,
+    Fragment,
+    Grid,
+    Head,
+    Header,
+    Heading,
+    IconButton,
+    Image,
+    Inline,
+    Label,
+    Link,
+    LinkButton,
+    List,
+    Main,
+    Nav,
+    Page,
+    RadioGroup,
+    Section,
+    Select,
+    Skeleton,
+    Stack,
+    SubmitButton,
+    Table,
+    Text,
+    TextArea,
+    TextInput,
+    Title,
+)
+from hedron_core.component import Component, ComponentNode, NodeLike
+from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, HedronError
+from hedron_core.field import Field
+from hedron_core.html import html
+from hedron_core.models import EventPayload, FormModel, Model, Props
+from hedron_core.registry import get_registry, register_component, seal_registry
+from hedron_core.rendering import AssetRef, RenderContext, RenderMode, RenderResult, render
+from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
+
+__version__ = "0.1.0"
+
+__all__ = [
+    "Alert",
+    "Aside",
+    "AssetRef",
+    "Badge",
+    "Button",
+    "Card",
+    "Checkbox",
+    "CodeBlock",
+    "Component",
+    "ComponentNode",
+    "Container",
+    "DescriptionList",
+    "Diagnostic",
+    "DiagnosticSeverity",
+    "Divider",
+    "EventPayload",
+    "Field",
+    "Footer",
+    "Form",
+    "FormErrors",
+    "FormField",
+    "FormModel",
+    "Fragment",
+    "Grid",
+    "Head",
+    "Header",
+    "Heading",
+    "HedronError",
+    "IconButton",
+    "Image",
+    "Inline",
+    "Label",
+    "Link",
+    "LinkButton",
+    "List",
+    "Main",
+    "Model",
+    "Nav",
+    "NodeLike",
+    "Page",
+    "Props",
+    "RadioGroup",
+    "RenderContext",
+    "RenderMode",
+    "RenderResult",
+    "SafeUrl",
+    "Secret",
+    "Section",
+    "Select",
+    "Skeleton",
+    "Stack",
+    "SubmitButton",
+    "Table",
+    "Text",
+    "TextArea",
+    "TextInput",
+    "Title",
+    "TrustedHtml",
+    "UrlPurpose",
+    "__version__",
+    "get_registry",
+    "html",
+    "register_component",
+    "render",
+    "seal_registry",
+]
+
+
+def _register_builtins() -> None:
+    for cls in (
+        Page,
+        Fragment,
+        Head,
+        Title,
+        Header,
+        Main,
+        Nav,
+        Aside,
+        Footer,
+        Section,
+        Container,
+        Stack,
+        Inline,
+        Grid,
+        Divider,
+        Heading,
+        Text,
+        Link,
+        Image,
+        CodeBlock,
+        List,
+        DescriptionList,
+        Table,
+        Card,
+        Badge,
+        Alert,
+        Skeleton,
+        Button,
+        LinkButton,
+        IconButton,
+        Form,
+        FormField,
+        Label,
+        TextInput,
+        TextArea,
+        Select,
+        Checkbox,
+        RadioGroup,
+        SubmitButton,
+        FormErrors,
+    ):
+        logical = (
+            f"{getattr(cls, 'distribution', 'hedron-core')}:"
+            f"{cls.__module__}.{getattr(cls, 'logical_name', cls.__name__)}"
+        )
+        with contextlib.suppress(HedronError):
+            register_component(
+                logical_id=logical,
+                name=getattr(cls, "logical_name", cls.__name__) or cls.__name__,
+                module=cls.__module__,
+                distribution=getattr(cls, "distribution", "hedron-core"),
+                props_model=getattr(cls, "props_type", type(None)).__name__,
+                slots=getattr(cls, "slots", {}),
+                accessibility_notes="Uses native semantic HTML without JavaScript.",
+            )
+    seal_registry()
+
+
+_register_builtins()

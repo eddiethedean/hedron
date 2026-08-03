@@ -1,0 +1,57 @@
+[project]
+name = "hedron-workspace"
+version = "0.1.0"
+description = "Hedron monorepo workspace"
+requires-python = ">=3.12,<3.15"
+readme = "README.md"
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/hedron-core"]
+
+[dependency-groups]
+dev = [
+    "hedron-core",
+    "pytest>=8.3",
+    "anyio>=4.8",
+    "syrupy>=4.8",
+    "ruff>=0.11",
+    "pyright>=1.1.400",
+]
+
+[tool.uv.sources]
+hedron-core = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "examples"]
+pythonpath = ["packages/hedron-core/src"]
+markers = [
+    "security: adversarial security corpus",
+    "a11y: accessibility core checks",
+    "performance: non-blocking benchmark foundations",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["packages/hedron-core/src", "tests", "examples"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pyright]
+include = ["packages/hedron-core/src"]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+venvPath = "."
+venv = ".venv"
+reportMissingTypeStubs = "none"
+reportPrivateUsage = "warning"
+reportUnknownVariableType = "warning"
+reportUnknownArgumentType = "warning"
+reportUnknownMemberType = "warning"
+reportUnknownParameterType = "warning"
+reportUnnecessaryIsInstance = "warning"
+reportUnnecessaryComparison = "warning"

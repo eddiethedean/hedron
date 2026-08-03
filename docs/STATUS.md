@@ -1,29 +1,28 @@
-# Specification status
+# Specification and implementation status
 
-**Roadmap position:** phase 0.0 — specification and project foundation  
+**Roadmap position:** phase 0.1 — typed rendering core  
 **Date:** 2026-08-02  
-**Implementation:** ready to begin phase 0.1, targeting `v0.1.0`
+**Implementation:** `hedron-core` `0.1.0` complete; phase 0.2 (`v0.2.0`) is next
 
-The phase 0.0 specification and project-foundation gate is complete; it publishes no package. The accepted documents describe the cumulative phase 0.0–1.0 path, distinguish planned contracts from implemented behavior, and provide enough detail to start the phase 0.1 typed rendering core for `v0.1.0` without inventing foundational policy.
+Phase 0.0 (specification and project foundation) remains complete. Phase 0.1 ships the framework-neutral `hedron-core` package: models, security boundary types, components, private HTML serializer, sealable registry, 0.1 built-ins, and `render(...) -> RenderResult`. Core tests run without FastAPI, Flask, Django, or Node.js. The reference application’s static team-admin tree renders offline.
 
 ## Current conclusions
 
 - Python is the reference implementation.
-- FastAPI is the flagship integration and its documented extension points are authoritative.
+- FastAPI is the flagship integration and its documented extension points are authoritative; they are not yet implemented (phase 0.2).
 - `hedron-core` remains independent of ASGI, WSGI, FastAPI, Flask, and Django.
-- HTML endpoints return components; JSON endpoints return models.
-- Addressability is explicit and preserves framework-native security dependencies.
-- HTMX is the default server-interaction layer; Web Components own durable browser-local behavior.
-- HDN, scoped styles, Explorer, DataEditor, integrations, and async boundaries have defined architectures.
-- Rust and cross-language runtimes are deferred until Python semantics stabilize and profiling supplies evidence.
-- All 29 baseline RFCs and all indexed public API contracts are Accepted as planned designs; none is represented as implemented.
-- Decisions D-001 through D-032 are resolved, and the compatibility, project-layout, configuration, identifier, diagnostic, built-in, release-version, and toolchain baselines are explicit.
+- HTML endpoints will return components; JSON endpoints return models (HTTP adapters in 0.2).
+- Addressability is explicit and preserves framework-native security dependencies (0.2).
+- HTMX is the default server-interaction layer; Web Components own durable browser-local behavior (0.2+).
+- All 29 baseline RFCs and indexed public API contracts remain Accepted as designs; the 0.1 surface is also implemented in `hedron-core`.
+- Decisions D-001 through D-032 remain in force.
+- No open-source license has been selected (D-030); local packaging is allowed.
 
-## Readiness evidence
+## Phase 0.1 evidence
 
-- RFC and API statuses agree with their indexes.
-- The 0.1–1.0 roadmap assigns every accepted RFC and every planned feature family to a phase.
-- Local Markdown links, heading structure, code fences, indexes, and feature coverage pass the final documentation audit.
-- The remaining license choice is deliberately a publication gate, not a local implementation blocker; no license has been inferred on the owner's behalf.
+- Package: `packages/hedron-core` version `0.1.0`, import `hedron_core`.
+- Tooling: uv workspace, Hatchling, Ruff, Pyright, pytest, Syrupy snapshots, GitHub Actions CI.
+- Suites: unit, snapshot, security corpus, a11y core, conformance, performance foundations, environment isolation.
+- Reference app: `examples/reference-app` static PAGE and FRAGMENT renders.
 
-See the [readiness report](READINESS_REPORT.md) for the audit record and the [roadmap](../ROADMAP.md) for the next implementation gate.
+See the [roadmap](../ROADMAP.md) for the phase 0.2 secure FastAPI application MVP gate.
