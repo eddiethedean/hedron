@@ -357,7 +357,7 @@ stable `1.0.0` artifact is published without a successful `1.0.0rcN` rehearsal.
 
 ### 1.0 gate
 
-The [`v1.0.0` release acceptance specification](acceptance/RELEASE_1_0.md) is complete and signed off. Features that do not meet the gate are clearly marked experimental or removed from the 1.0 promise rather than shipped as silently incomplete stable APIs.
+The [`v1.0.0` release acceptance specification](docs/acceptance/RELEASE_1_0.md) is complete and signed off. Features that do not meet the gate are clearly marked experimental or removed from the 1.0 promise rather than shipped as silently incomplete stable APIs.
 
 ## Complete feature-to-release ledger
 
