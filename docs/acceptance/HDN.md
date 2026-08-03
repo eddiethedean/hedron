@@ -3,10 +3,10 @@
 ## Language
 
 - [x] Grammar covers native tags, components, custom elements, fragments, props, children, slots (MVP default-content fragments; named fill contracts deferred), conditions, loops, and pure helpers.
-- [ ] Operator precedence and error recovery are specified by fixtures.
+- [ ] Operator precedence and error recovery are specified by fixtures. *(Deferred — expand fixture corpus in a later hardening pass; current expressions cover helpers, comparisons, indexing, and nullish coalesce.)*
 - [x] Arbitrary Python/JavaScript execution, imports, reflection, filesystem, and network access are impossible through the language.
 - [x] Contextual escaping and `TrustedHtml` rules match Python rendering.
-- [ ] HTML, component, accessibility, style-symbol, and security errors include source spans.
+- [ ] HTML, component, accessibility, style-symbol, and security errors include source spans. *(Deferred — diagnostics carry expression/context today; full span coverage lands with richer tooling in phase 0.4+.)*
 
 ## Tooling
 

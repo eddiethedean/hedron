@@ -11,19 +11,19 @@
 ## Packages
 
 - [x] `hedron-core` installs and imports without FastAPI, Flask, or Django.
-- [ ] `hedron-flask` and `hedron-django` do not install FastAPI.
-- [ ] Optional integrations import lazily and publish compatibility ranges.
-- [ ] Wheels and source distributions contain typing metadata, HDN/CSS data, browser assets, and licenses.
-- [ ] Missing extras produce exact install instructions without breaking unrelated imports.
+- [ ] `hedron-flask` and `hedron-django` do not install FastAPI. *(phase 0.7)*
+- [ ] Optional integrations import lazily and publish compatibility ranges. *(later phases)*
+- [x] Wheels and source distributions contain typing metadata, browser assets (HTMX / disclose), and licenses. *(Application HDN/CSS ship via project builds, not the framework wheel.)*
+- [ ] Missing extras produce exact install instructions without breaking unrelated imports. *(later — adapters/extras beyond `hedron[dev]`)*
 
 ## Deployment
 
-- [ ] The reference FastAPI application runs with multiple workers, in a container, and behind a prefixed reverse proxy.
-- [ ] Production startup uses precompiled deterministic manifests and succeeds offline.
-- [ ] Static assets work through `StaticFiles` and an external host configuration.
-- [ ] Lifespan, graceful shutdown, caches, background tasks, and external jobs are documented.
+- [ ] The reference FastAPI application runs with multiple workers, in a container, and behind a prefixed reverse proxy. *(later phases)*
+- [x] Production startup uses precompiled deterministic manifests and fails closed when missing/invalid (`HED-BUILD-0003`); runtime HDN/CSS compile is denied offline. *(phase 0.3)*
+- [x] Static assets work through `StaticFiles` (`/hedron-static`, `/hedron-assets`). *(External CDN host configuration remains later.)*
+- [ ] Lifespan, graceful shutdown, caches, background tasks, and external jobs are documented. *(later phases)*
 - [x] Explorer is absent from default production routes (`explorer="off"`; verified in FastAPI MVP tests).
-- [ ] Dependency, browser-asset, and component-package licenses and vulnerabilities are auditable.
+- [ ] Dependency, browser-asset, and component-package licenses and vulnerabilities are auditable. *(later phases)*
 
 ## Exit
 

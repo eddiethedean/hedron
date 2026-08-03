@@ -11,7 +11,7 @@
 - [ ] Representative page and fragment latency budgets are set before release candidates.
 - [ ] Output, CSS, JavaScript, and chart payload budgets are documented.
 - [ ] Lazy/distributed data cannot be collected implicitly.
-- [ ] Production performs no required runtime HDN/CSS compilation.
+- [x] Production performs no required runtime HDN/CSS compilation. *(phase 0.3 — `HED-BUILD-0004` + production lifespan deny; build uses force-allow)*
 - [ ] Cache single-flight and bounded concurrency prevent stampedes and resource exhaustion.
 
 ## Native decision gate

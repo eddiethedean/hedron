@@ -41,8 +41,8 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` |
-| `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform in `v0.4.0` |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (train at `0.3.0`) |
+| `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; train at `0.3.0`; full platform in `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras | `v0.5.0` |
 | `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras | `v0.6.0` |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` |

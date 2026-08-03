@@ -14,7 +14,8 @@
 - [x] Private authenticated caching: when `request.state.hedron_authenticated` is set, responses include `Cache-Control: private, no-store`.
 - [x] Safe redirects: `redirect_local` rejects externals; `redirect_external` is denied unless `allow_external_redirects=True`, and only `http`/`https` URLs are accepted.
 - [x] Approved HTMX response headers (`HX-Redirect`, `HX-Push-Url`, `HX-Location`) require local paths.
-- [ ] Asset traversal, plugin/Explorer abuse, DataEditor forged edits. *(later phases)*
+- [x] CSS/asset URL traversal, symlink escape, remote fetch, and missing assets are rejected. *(phase 0.3 scoped styles / asset pipeline)*
+- [ ] Plugin/Explorer abuse and DataEditor forged edits. *(later phases)*
 - [ ] Markdown/chart/SVG sanitizer corpus beyond baseline rejection. *(later phases)*
 
 ## Release controls

@@ -10,11 +10,12 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase 0.3 is implemented as
-> `v0.3.0` (`pip install hedron`). HDN, scoped styles, themes, fingerprinted
-> assets, `build`/`dev`/`inspect`/`eject`, and a minimal Web Component proof ship
-> on top of the FastAPI MVP. The project is MIT-licensed. Next milestone: phase 0.4
-> (developer platform and ecosystem contracts).
+> **Project status:** Phase 0.3 is implemented on `main` at package version
+> `0.3.0` and is ready to cut as `v0.3.0` (PyPI still serves `0.2.0` until the
+> release tag publishes). HDN, scoped styles, themes, fingerprinted assets,
+> `build`/`dev`/`inspect`/`eject`, and a minimal Web Component proof ship on top
+> of the FastAPI MVP. The project is MIT-licensed. After `v0.3.0` publishes, the
+> next milestone is phase 0.4 (developer platform and ecosystem contracts).
 
 ## Packages
 
@@ -87,7 +88,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 | 0.0 | None | Accepted specification and project foundation |
 | 0.1 | `v0.1.0` | Framework-neutral typed rendering core (**complete**) |
 | 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP (**published**) |
-| 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes |
+| 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes (**ready to cut**) |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform |
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI |
 | 0.6 | `v0.6.0` | Visualization and first-party integrations |
@@ -113,9 +114,11 @@ The specification remains the authority for implementation:
 
 Accepted RFC and API status means the design has been selected; it does not mean every feature is implemented. Availability follows the roadmap phase.
 
-## Starting phase 0.3
+## Cutting `v0.3.0`
 
-The next implementation target is authoring, styles, assets, and themes at `v0.3.0`. See the [phase 0.3 roadmap scope](ROADMAP.md).
+Implementation is complete on `main`. Follow [Cutting a release](docs/RELEASE.md)
+to push the annotated `v0.3.0` tag when CI is green. After publish, the next
+implementation target is phase 0.4 — see the [roadmap](ROADMAP.md).
 
 ## Contributing
 

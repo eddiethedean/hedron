@@ -1,6 +1,8 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.3 implemented (`v0.3.0`); phase 0.4 next  
+**Roadmap position:** phase 0.3 implemented on `main` at `0.3.0`; **ready to cut
+`v0.3.0`** (not yet published to PyPI — latest public train remains `v0.2.0`);
+phase 0.4 next after publish  
 **Date:** 2026-08-03  
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` `0.3.0`; MIT licensed (D-033)
 
@@ -32,5 +34,7 @@ build for strict CSP.
 - HDN, scoped-style, theme, asset, and build acceptance suites.
 - Suites: unit (HDN/CSS/theme/assets/build), security HDN corpus, conformance Python/HDN parity,
   FastAPI integration and reference CRUD.
+- Release gate: `uv run python scripts/check_release_gate.py 0.3.0`.
+- Cut procedure: [RELEASE.md](RELEASE.md) (`Cut v0.3.0`).
 
 See the [roadmap](../ROADMAP.md) for the phase 0.4 developer platform gate.

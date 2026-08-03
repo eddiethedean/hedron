@@ -3,7 +3,7 @@
 ## Compilation
 
 - [x] Classes, compound selectors, keyframes, animation shorthands, and relative URLs are structurally rewritten.
-- [ ] Full nesting / pseudo / variant suites (partial coverage via keyframes + classes).
+- [ ] Full nesting / pseudo / variant suites. *(Deferred — partial coverage via keyframes + classes is enough for the 0.3 exit; expand suites later.)*
 - [x] Generated identifiers are stable across machines, paths, timestamps, and import order.
 - [x] Unknown `styles.name` references fail with source and suggestions.
 - [x] `:global(...)`, tokens, layers, and application overrides follow documented semantics.
