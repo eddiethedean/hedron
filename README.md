@@ -2,7 +2,7 @@
 
 Hedron is a Python-first framework for building typed, server-rendered component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web Components—without requiring Node.js.
 
-> **Project status:** Phase 0.1 is complete. The framework-neutral `hedron-core` package (`0.1.0`) can define, validate, compose, and safely render components without FastAPI. A harden pass closed residual XSS, Secret-redaction, FormField a11y, and model-guardrail defects on the same `0.1.0` line. The project is MIT-licensed. The next milestone is phase 0.2, the secure FastAPI and HTMX application MVP, targeting `v0.2.0`. The flagship `hedron` FastAPI distribution is not published yet.
+> **Project status:** Phase 0.2 is complete. The FastAPI flagship `hedron` package (`0.2.0`) ships pages, addressable components, typed actions, CSRF-aware forms, OpenAPI `text/html` metadata, and a minimal CLI/Explorer preview on top of `hedron-core`. The project is MIT-licensed. The next milestone is phase 0.3 (HDN, scoped styles, assets, and themes), targeting `v0.3.0`.
 
 ## Product direction
 
@@ -27,23 +27,34 @@ The initial audience is Python teams building FastAPI CRUD applications, interna
 - Contextual escaping, typed trust boundaries, accessibility contracts, and private authenticated caching are secure defaults.
 - Hedron is not an ORM, identity provider, client-side SPA runtime, durable job queue, distributed cache, or whole-script rerun engine.
 
-## Quick start (`hedron-core`)
+## Five-minute secure page
+
+```bash
+uv add hedron
+```
+
+```python
+from hedron import Hedron, Page, Text
+
+app = Hedron(title="Demo", security="standard")
+
+@app.page("/")
+def home() -> Page:
+    return Page(Text("Hello, Hedron"), title="Demo")
+```
+
+```bash
+uv run uvicorn app:app --reload
+```
+
+Open `/` for a full HTML page. Send `HX-Request: true` (or navigate with HTMX) to receive a fragment without the document shell. CSRF cookies are issued on safe GETs; unsafe actions validate `X-CSRF-Token`.
+
+## Quick start (`hedron-core` only)
 
 ```bash
 uv sync
 uv run python -c "from hedron_core import Page, Text, RenderMode, render; print(render(Page(Text('Hello'), title='Hi'), mode=RenderMode.PAGE).html)"
 uv run pytest -q
-```
-
-```python
-from hedron_core import Page, RenderContext, RenderMode, Text, render
-
-result = render(
-    Page(Text("Hello, Hedron"), title="Demo"),
-    context=RenderContext.standalone(locale="en"),
-    mode=RenderMode.PAGE,
-)
-print(result.html)
 ```
 
 ## Roadmap
@@ -54,7 +65,7 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 |---|---|---|
 | 0.0 | None | Accepted specification and project foundation |
 | 0.1 | `v0.1.0` | Framework-neutral typed rendering core (**complete**) |
-| 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP |
+| 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP (**complete**) |
 | 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform |
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI |
@@ -81,13 +92,9 @@ The specification remains the authority for implementation:
 
 Accepted RFC and API status means the design has been selected; it does not mean every feature is implemented. Availability follows the roadmap phase.
 
-## Starting phase 0.2
+## Starting phase 0.3
 
-The next implementation target is the FastAPI flagship package at `v0.2.0`. The packet begins with:
-
-- [Phase 0.2 roadmap scope](ROADMAP.md)
-- [Router](docs/api/ROUTER.md), [Page](docs/api/PAGE.md), [Addressable](docs/api/ADDRESSABLE.md), [Action](docs/api/ACTION.md), and [Responses](docs/api/RESPONSES.md)
-- FastAPI integration RFCs and acceptance suites for security, HTMX, and OpenAPI
+The next implementation target is authoring, styles, assets, and themes at `v0.3.0`. See the [phase 0.3 roadmap scope](ROADMAP.md).
 
 ## Contributing
 

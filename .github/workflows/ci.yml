@@ -29,25 +29,51 @@ jobs:
         run: uv run pyright
       - name: Tests
         run: uv run pytest -q
-      - name: Build package
-        run: uv build --package hedron-core
+      - name: Build packages
+        run: |
+          set -euo pipefail
+          for pkg in hedron-core hedron hedron-explorer; do
+            uv build --package "$pkg"
+          done
       - name: Clean-install smoke
         run: |
+          set -euo pipefail
           uv venv /tmp/hedron-smoke --python ${{ matrix.python-version }}
           uv pip install --python /tmp/hedron-smoke dist/hedron_core-*.whl
+          uv pip install --python /tmp/hedron-smoke dist/hedron-0.*.whl
           /tmp/hedron-smoke/bin/python - <<'PY'
           from hedron_core import Page, Text, RenderMode, render
           html = render(Page(Text("smoke"), title="Smoke"), mode=RenderMode.PAGE).html
           assert html.startswith("<!DOCTYPE html>")
           assert "smoke" in html
-          print("ok: clean-install render")
+          from hedron import Hedron, Page, Text
+          app = Hedron(title="smoke", security="standard", explorer="off")
+          @app.page("/")
+          def home():
+              return Page(Text("ok"), title="Ok")
+          print("ok: clean-install render + Hedron")
           PY
-      - name: Prove no web frameworks or Node tooling in core env
+      - name: Prove hedron-core has no web-framework dependency
         run: |
-          uv run python -c "import importlib.util as u; assert u.find_spec('fastapi') is None; assert u.find_spec('flask') is None; assert u.find_spec('django') is None; print('ok: no FastAPI/Flask/Django')"
+          uv run python - <<'PY'
+          import ast, tomllib
+          from pathlib import Path
+          forbidden = {"fastapi", "flask", "django", "starlette", "asgiref"}
+          project = tomllib.loads(Path("packages/hedron-core/pyproject.toml").read_text())["project"]
+          deps = " ".join(project.get("dependencies", [])).lower()
+          assert not any(name in deps for name in forbidden)
+          for path in Path("packages/hedron-core/src/hedron_core").rglob("*.py"):
+              tree = ast.parse(path.read_text(), filename=str(path))
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Import):
+                      for alias in node.names:
+                          assert alias.name.split(".", 1)[0] not in forbidden
+                  elif isinstance(node, ast.ImportFrom) and node.module:
+                      assert node.module.split(".", 1)[0] not in forbidden
+          print("ok: hedron-core remains framework-neutral")
+          PY
           test ! -f package.json
           test ! -d node_modules
-          # CI image may include node; core must not require it.
           echo "ok: no Node package tooling in repo"
       - name: Doc link smoke
         run: |

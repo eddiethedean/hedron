@@ -73,14 +73,18 @@ def _normalize_attrs(attrs: dict[str, Any], *, tag: str) -> dict[str, Any]:
                     if lower in {"src", "poster"} or lower.endswith("src")
                     else UrlPurpose.NAVIGATION
                 )
-                raise error(
-                    "HED-SEC-0003",
-                    title="URL attribute requires SafeUrl",
-                    explanation=(
-                        f"Attribute {lower!r} must be a SafeUrl (purpose={purpose.value})."
-                    ),
-                    remediation="Pass SafeUrl.parse(...).",
-                )
+                # Local HTMX/resource paths may be provided as strings and are coerced.
+                if lower.startswith("hx-") and value.startswith("/") and not value.startswith("//"):
+                    out[lower] = SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION)
+                else:
+                    raise error(
+                        "HED-SEC-0003",
+                        title="URL attribute requires SafeUrl",
+                        explanation=(
+                            f"Attribute {lower!r} must be a SafeUrl (purpose={purpose.value})."
+                        ),
+                        remediation="Pass SafeUrl.parse(...).",
+                    )
             else:
                 raise error(
                     "HED-SEC-0003",

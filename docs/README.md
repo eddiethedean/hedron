@@ -37,6 +37,6 @@ Coding may begin when:
 - the relevant implementation and acceptance specifications exist;
 - open questions are either resolved or explicitly deferred without destabilizing the slice.
 
-The phase 0.0 readiness sweep has satisfied this gate for the phase 0.1 typed rendering core targeting `v0.1.0`. Phase 0.1 implementation is complete and MIT-licensed (D-033). See [RELEASE.md](RELEASE.md). Later-phase work must still satisfy the owning release gate before implementation begins.
+The phase 0.0 readiness sweep has satisfied this gate for the phase 0.1 typed rendering core targeting `v0.1.0`. Phase 0.1 and phase 0.2 implementation are complete and MIT-licensed (D-033). See [RELEASE.md](RELEASE.md). Later-phase work must still satisfy the owning release gate before implementation begins.
 
-The cumulative [reference application](REFERENCE_APPLICATION.md) grows from the phase 0.1 (`v0.1.0`) static rendering proof into a secure FastAPI CRUD application with addressable resources, typed actions and forms, DataEditor, Plotly, scoped styles, and Component Explorer as their owning phases arrive.
+The cumulative [reference application](REFERENCE_APPLICATION.md) grows from the phase 0.1 (`v0.1.0`) static rendering proof through the phase 0.2 (`v0.2.0`) authenticated FastAPI CRUD application into a secure application with addressable resources, typed actions and forms, DataEditor, Plotly, scoped styles, and Component Explorer as their owning phases arrive.

@@ -1,0 +1,163 @@
+"""Component HTML response helpers."""
+
+from __future__ import annotations
+
+from collections.abc import Mapping
+from typing import Any
+
+from fastapi.responses import HTMLResponse
+from starlette.background import BackgroundTask
+from starlette.requests import Request
+
+from hedron.htmx import approved_headers, render_mode_for_request
+from hedron.security.policy import SecurityPolicy
+from hedron_core.builtins.document import Page
+from hedron_core.component import Component, NodeLike
+from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
+
+__all__ = [
+    "ComponentResponse",
+    "FileComponentResponse",
+    "FragmentResponse",
+    "HTML",
+    "PageResponse",
+    "hedron_response",
+    "render_component_response",
+]
+
+
+class HTML:
+    """Explicit HTML intent wrapper for plain FastAPI routes."""
+
+    __slots__ = ("value", "mode")
+
+    def __init__(self, value: NodeLike | Component[Any], *, mode: RenderMode | None = None) -> None:
+        self.value = value
+        self.mode = mode
+
+
+class ComponentResponse(HTMLResponse):
+    media_type = "text/html"
+
+
+class PageResponse(ComponentResponse):
+    pass
+
+
+class FragmentResponse(ComponentResponse):
+    pass
+
+
+class FileComponentResponse(ComponentResponse):
+    """File/download results produced through safe source contracts."""
+
+    def __init__(
+        self,
+        content: str | bytes,
+        *,
+        status_code: int = 200,
+        headers: Mapping[str, str] | None = None,
+        media_type: str = "application/octet-stream",
+        filename: str | None = None,
+        background: BackgroundTask | None = None,
+    ) -> None:
+        hdrs = dict(headers or {})
+        if filename:
+            hdrs.setdefault("Content-Disposition", f'attachment; filename="{filename}"')
+        super().__init__(
+            content=content,
+            status_code=status_code,
+            headers=hdrs,
+            media_type=media_type,
+            background=background,
+        )
+
+
+def hedron_response(component_type: type[Any] | None = None) -> dict[str, Any]:
+    """OpenAPI metadata for plain FastAPI component routes."""
+    description = "Hedron HTML response"
+    if component_type is not None:
+        description = f"Hedron HTML response ({component_type.__name__})"
+    return {
+        "response_class": ComponentResponse,
+        "responses": {
+            200: {
+                "content": {"text/html": {"schema": {"type": "string"}}},
+                "description": description,
+            }
+        },
+        "response_model": None,
+    }
+
+
+def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[Any]:
+    """Avoid duplicating the document shell for HTMX fragment navigation."""
+    if isinstance(value, Page):
+        children = list(value._children)
+        if len(children) == 1:
+            return children[0]  # type: ignore[no-any-return]
+        return children  # type: ignore[return-value]
+    return value
+
+
+def render_component_response(
+    value: NodeLike | Component[Any] | HTML | RenderResult,
+    *,
+    request: Request | None = None,
+    context: RenderContext | None = None,
+    mode: RenderMode | None = None,
+    policy: SecurityPolicy | None = None,
+    authenticated: bool = False,
+    extra_headers: Mapping[str, str] | None = None,
+    status_code: int = 200,
+    background: BackgroundTask | None = None,
+) -> ComponentResponse:
+    force_mode = mode
+    if isinstance(value, HTML):
+        force_mode = value.mode or force_mode
+        value = value.value
+    if isinstance(value, RenderResult):
+        result = value
+        selected_mode = result.mode
+    else:
+        if request is not None:
+            selected_mode = render_mode_for_request(request, force=force_mode)
+        else:
+            selected_mode = force_mode or RenderMode.PAGE
+        render_context = context or RenderContext.standalone()
+        to_render: NodeLike | Component[Any] = value
+        if selected_mode is RenderMode.FRAGMENT:
+            to_render = _fragment_value(value)
+        result = render(to_render, context=render_context, mode=selected_mode)
+
+    headers = dict(result.headers)
+    if policy is not None:
+        headers.update(policy.response_headers(authenticated=authenticated))
+    if extra_headers:
+        headers.update(extra_headers)
+
+    response_cls: type[ComponentResponse] = (
+        FragmentResponse if selected_mode is RenderMode.FRAGMENT else PageResponse
+    )
+    return response_cls(
+        content=_ensure_htmx_asset(result.html, selected_mode),
+        status_code=status_code,
+        headers=headers,
+        background=background,
+    )
+
+
+def _ensure_htmx_asset(html_text: str, mode: RenderMode) -> str:
+    """Inject the bundled HTMX script into full-page documents."""
+    if mode is not RenderMode.PAGE:
+        return html_text
+    tag = '<script src="/hedron-static/htmx.min.js" defer></script>'
+    if "htmx.min.js" in html_text:
+        return html_text
+    if "</body>" in html_text:
+        return html_text.replace("</body>", f"{tag}</body>", 1)
+    return html_text + tag
+
+
+def merge_htmx_headers(**kwargs: Any) -> dict[str, str]:
+    return approved_headers(**kwargs)

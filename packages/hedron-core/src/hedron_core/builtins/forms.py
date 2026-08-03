@@ -33,11 +33,15 @@ class Form(Component[FormProps]):
                 if isinstance(action, SafeUrl)
                 else SafeUrl.parse(action, purpose=UrlPurpose.FORM_ACTION)
             )
-        super().__init__(FormProps(action=url, method=method, **kwargs))
+        # Extra kwargs are native/HTMX attributes forwarded to the form element.
+        extras = {k: v for k, v in kwargs.items() if k not in FormProps.model_fields}
+        props_kwargs = {k: v for k, v in kwargs.items() if k in FormProps.model_fields}
+        super().__init__(FormProps(action=url, method=method, **props_kwargs))
         self._children = children
+        self._html_attrs = extras
 
     def render(self) -> Any:
-        attrs: dict[str, Any] = {"method": self.props.method}
+        attrs: dict[str, Any] = {"method": self.props.method, **self._html_attrs}
         if self.props.action is not None:
             attrs["action"] = self.props.action
         return html.form(*self._children, **attrs)

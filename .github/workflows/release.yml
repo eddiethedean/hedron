@@ -60,7 +60,23 @@ jobs:
           fi
       - name: Prove no web frameworks or Node tooling in core env
         run: |
-          uv run python -c "import importlib.util as u; assert u.find_spec('fastapi') is None; assert u.find_spec('flask') is None; assert u.find_spec('django') is None; print('ok: no FastAPI/Flask/Django')"
+          uv run python - <<'PY'
+          import ast, tomllib
+          from pathlib import Path
+          forbidden = {"fastapi", "flask", "django", "starlette", "asgiref"}
+          project = tomllib.loads(Path("packages/hedron-core/pyproject.toml").read_text())["project"]
+          deps = " ".join(project.get("dependencies", [])).lower()
+          assert not any(name in deps for name in forbidden)
+          for path in Path("packages/hedron-core/src/hedron_core").rglob("*.py"):
+              tree = ast.parse(path.read_text(), filename=str(path))
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Import):
+                      for alias in node.names:
+                          assert alias.name.split(".", 1)[0] not in forbidden
+                  elif isinstance(node, ast.ImportFrom) and node.module:
+                      assert node.module.split(".", 1)[0] not in forbidden
+          print("ok: hedron-core remains framework-neutral")
+          PY
           test ! -f package.json
           test ! -d node_modules
           echo "ok: no Node package tooling in repo"
@@ -148,7 +164,7 @@ jobs:
           set -euo pipefail
           TAG="${GITHUB_REF_NAME}"
           VERSION="${TAG#v}"
-          NOTES="$(uv run python scripts/release_notes.py "$VERSION")"
-          gh release create "$TAG" dist/hedron_core-* \
-            --title "hedron-core ${VERSION}" \
+          NOTES="$(uv run python scripts/release_notes.py "$VERSION" --package hedron)"
+          gh release create "$TAG" dist/* \
+            --title "Hedron ${VERSION}" \
             --notes "$NOTES"

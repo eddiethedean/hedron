@@ -1,7 +1,7 @@
 [project]
-name = "hedron-core"
+name = "hedron-explorer"
 version = "0.2.0"
-description = "Framework-neutral typed rendering core for Hedron"
+description = "Development Component Explorer preview for Hedron"
 readme = "README.md"
 requires-python = ">=3.12,<3.15"
 license = "MIT"
@@ -14,12 +14,9 @@ maintainers = [
 ]
 keywords = [
     "components",
-    "html",
-    "htmx",
-    "pydantic",
-    "rendering",
-    "server-rendered",
-    "typed",
+    "development",
+    "explorer",
+    "hedron",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -31,19 +28,17 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
-    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
-    "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
 dependencies = [
-    "pydantic>=2.13.4,<2.14",
+    "hedron==0.2.0",
 ]
 
 [project.urls]
 Homepage = "https://github.com/eddiethedean/hedron"
 Repository = "https://github.com/eddiethedean/hedron"
 Issues = "https://github.com/eddiethedean/hedron/issues"
-Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-core/CHANGELOG.md"
+Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-explorer/CHANGELOG.md"
 Documentation = "https://github.com/eddiethedean/hedron/tree/main/docs"
 
 [build-system]
@@ -51,11 +46,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/hedron_core"]
+packages = ["src/hedron_explorer"]
 
 [tool.hatch.build.targets.sdist]
 only-include = [
-    "src/hedron_core",
+    "src/hedron_explorer",
     "README.md",
     "CHANGELOG.md",
     "LICENSE",

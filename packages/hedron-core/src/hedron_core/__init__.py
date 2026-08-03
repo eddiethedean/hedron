@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from hedron_core.addressable import AddressableDescriptor, addressable
 from hedron_core.builtins import (
     Alert,
     Aside,
@@ -49,13 +50,24 @@ from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, HedronError
 from hedron_core.field import Field
 from hedron_core.html import html
 from hedron_core.models import EventPayload, FormModel, Model, Props
-from hedron_core.registry import get_registry, register_component, seal_registry
+from hedron_core.registry import (
+    AddressableMeta,
+    RouteMeta,
+    get_registry,
+    register_addressable,
+    register_component,
+    register_route,
+    reset_registry_for_tests,
+    seal_registry,
+)
 from hedron_core.rendering import AssetRef, RenderContext, RenderMode, RenderResult, render
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
+    "AddressableDescriptor",
+    "AddressableMeta",
     "Alert",
     "Aside",
     "AssetRef",
@@ -101,6 +113,7 @@ __all__ = [
     "RenderContext",
     "RenderMode",
     "RenderResult",
+    "RouteMeta",
     "SafeUrl",
     "Secret",
     "Section",
@@ -116,10 +129,14 @@ __all__ = [
     "TrustedHtml",
     "UrlPurpose",
     "__version__",
+    "addressable",
     "get_registry",
     "html",
+    "register_addressable",
     "register_component",
+    "register_route",
     "render",
+    "reset_registry_for_tests",
     "seal_registry",
 ]
 

@@ -38,6 +38,29 @@ gh release view v0.1.0
 Do not retag or republish the same version. Patch releases use `v0.1.1`, etc.,
 and remain within the owning roadmap phase.
 
+## Cut `v0.2.0` (coordinated train)
+
+1. Confirm `packages/{hedron-core,hedron,hedron-explorer}` all say `0.2.0` in
+   `pyproject.toml` and `__version__`, with matching `CHANGELOG.md` sections.
+2. Confirm FastAPI/security/HTMX acceptance subsets for phase 0.2 are checked.
+3. Push `main` if needed, then create and push the annotated tag:
+
+```bash
+git tag -a v0.2.0 -m "Hedron 0.2.0"
+git push origin v0.2.0
+```
+
+4. The Release workflow builds and publishes every workspace package, then creates
+   a GitHub Release attaching all wheels/sdists.
+5. Verify:
+
+```bash
+pip index versions hedron-core
+pip index versions hedron
+pip index versions hedron-explorer
+gh release view v0.2.0
+```
+
 ## After publication
 
 - Install from a clean venv and re-run the smoke render.

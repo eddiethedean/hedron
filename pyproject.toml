@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workspace"
-version = "0.1.0"
+version = "0.2.0"
 description = "Hedron monorepo workspace"
 requires-python = ">=3.12,<3.15"
 readme = "README.md"
@@ -9,12 +9,15 @@ readme = "README.md"
 package = false
 
 [tool.uv.workspace]
-members = ["packages/hedron-core"]
+members = ["packages/hedron-core", "packages/hedron", "packages/hedron-explorer"]
 
 [dependency-groups]
 dev = [
     "hedron-core",
+    "hedron",
+    "hedron-explorer",
     "pytest>=8.3",
+    "httpx>=0.28",
     "anyio>=4.8",
     "syrupy>=4.8",
     "ruff>=0.11",
@@ -23,6 +26,8 @@ dev = [
 
 [tool.uv.sources]
 hedron-core = { workspace = true }
+hedron = { workspace = true }
+hedron-explorer = { workspace = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]
@@ -35,14 +40,24 @@ markers = [
 [tool.ruff]
 target-version = "py312"
 line-length = 100
-src = ["packages/hedron-core/src", "tests", "examples"]
+src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "tests", "examples"]
 extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
 
+[tool.ruff.lint.per-file-ignores]
+"examples/**/*.py" = ["B008"]
+"packages/hedron-core/src/hedron_core/addressable.py" = ["UP047"]
+"packages/hedron/src/hedron/async_utils.py" = ["UP047"]
+"packages/hedron/src/hedron/state.py" = ["UP046", "UP047"]
+
 [tool.pyright]
-include = ["packages/hedron-core/src"]
+include = [
+    "packages/hedron-core/src",
+    "packages/hedron/src",
+    "packages/hedron-explorer/src",
+]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
 venvPath = "."
@@ -55,3 +70,7 @@ reportUnknownMemberType = "warning"
 reportUnknownParameterType = "warning"
 reportUnnecessaryIsInstance = "warning"
 reportUnnecessaryComparison = "warning"
+reportUnusedFunction = "warning"
+reportDeprecated = "warning"
+reportInvalidTypeVarUse = "warning"
+reportIncompatibleVariableOverride = "warning"

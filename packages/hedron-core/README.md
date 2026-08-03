@@ -1,6 +1,6 @@
 # hedron-core
 
-Framework-neutral typed rendering core for Hedron (`0.1.0`).
+Framework-neutral typed rendering core for Hedron (`0.2.0`).
 
 Defines models, security boundary types, components, the HTML serializer, and
 the public `render(...) -> RenderResult` API with **no** FastAPI, Flask, Django,

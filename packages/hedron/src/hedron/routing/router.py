@@ -1,0 +1,330 @@
+"""HedronRouter with page, component, and action registration."""
+
+from __future__ import annotations
+
+import functools
+import inspect
+from collections.abc import Callable, Sequence
+from contextvars import ContextVar
+from enum import Enum
+from typing import Any, ParamSpec, TypeVar
+
+from fastapi import params
+from fastapi.routing import APIRouter
+from starlette.requests import Request
+from starlette.responses import Response
+
+from hedron.async_utils import await_if_needed
+from hedron.openapi import operation_id_for
+from hedron.routing.route import HedronRoute
+from hedron.security.csrf import validate_csrf
+from hedron.security.policy import SecurityPolicy
+from hedron_core.addressable import AddressableDescriptor
+from hedron_core.identifiers import component_type_id
+from hedron_core.registry import register_route
+from hedron_core.rendering import RenderMode
+
+P = ParamSpec("P")
+R = TypeVar("R")
+
+__all__ = ["HedronRouter", "current_request"]
+
+current_request: ContextVar[Request | None] = ContextVar("hedron_current_request", default=None)
+
+
+def _logical_id(fn: Callable[..., Any], distribution: str = "hedron") -> str:
+    return component_type_id(distribution, fn.__module__, fn.__name__)
+
+
+def _wrap_endpoint(
+    fn: Callable[..., Any],
+    *,
+    kind: str,
+    mode: RenderMode | None,
+    require_csrf: bool,
+) -> Callable[..., Any]:
+    import typing
+
+    @functools.wraps(fn)
+    async def endpoint(*args: Any, **kwargs: Any) -> Response:
+        request = current_request.get()
+        if request is None:
+            for arg in args:
+                if isinstance(arg, Request):
+                    request = arg
+                    break
+            maybe = kwargs.get("request")
+            if isinstance(maybe, Request):
+                request = maybe
+        if request is None:
+            raise RuntimeError("Hedron endpoints require an active Request")
+        if require_csrf:
+            policy: SecurityPolicy = getattr(
+                request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
+            )
+            validate_csrf(request, policy)
+        result = fn(*args, **kwargs)
+        result = await await_if_needed(result)
+        return await HedronRoute.convert_endpoint_result(request, result, mode=mode, kind=kind)
+
+    # Resolve annotations in the original function's globals so Depends survives wrapping.
+    try:
+        hints = typing.get_type_hints(fn, include_extras=True)
+    except Exception:  # noqa: BLE001 — nested locals / forward refs
+        hints = {}
+    sig = inspect.signature(fn)
+    params = [
+        param.replace(annotation=hints[name]) if name in hints else param
+        for name, param in sig.parameters.items()
+    ]
+    endpoint.__signature__ = sig.replace(  # type: ignore[attr-defined]
+        parameters=params,
+        return_annotation=hints.get("return", sig.return_annotation),
+    )
+    return endpoint
+
+
+class HedronRouter(APIRouter):
+    """APIRouter with Hedron page/component/action decorators."""
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        kwargs.setdefault("route_class", HedronRoute)
+        super().__init__(*args, **kwargs)
+
+    def page(
+        self,
+        path: str,
+        *,
+        methods: Sequence[str] | None = None,
+        name: str | None = None,
+        include_in_schema: bool = True,
+        dependencies: Sequence[params.Depends] | None = None,
+        tags: list[str | Enum] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        def decorator(fn: Callable[P, R]) -> Callable[P, R]:
+            from hedron.responses import PageResponse
+
+            route_name = name or fn.__name__
+            logical_id = _logical_id(fn)
+            op_id = operation_id_for("page", route_name, path, (methods or ["GET"])[0])
+            wrapped = _wrap_endpoint(fn, kind="page", mode=None, require_csrf=False)
+            self.add_api_route(
+                path,
+                wrapped,
+                methods=list(methods or ["GET"]),
+                name=route_name,
+                operation_id=op_id,
+                include_in_schema=include_in_schema,
+                dependencies=dependencies,
+                tags=tags,
+                response_class=kwargs.pop("response_class", None) or PageResponse,
+                response_model=None,
+                **kwargs,
+            )
+            register_route(
+                kind="page",
+                logical_id=logical_id,
+                name=route_name,
+                path=f"{self.prefix}{path}",
+                methods=tuple(m.upper() for m in (methods or ["GET"])),
+                operation_id=op_id,
+                include_in_schema=include_in_schema,
+                module=fn.__module__,
+                tags=tuple(str(t) for t in (tags or ())),
+                docs=inspect.getdoc(fn),
+                endpoint=fn,
+                htmx_inference={
+                    "page_fragment": "HX-Request selects FRAGMENT vs PAGE",
+                    "history": "browser history for full-page navigation",
+                },
+            )
+            return fn
+
+        return decorator
+
+    def component(
+        self,
+        path: str,
+        *,
+        methods: Sequence[str] | None = None,
+        name: str | None = None,
+        include_in_schema: bool = False,
+        dependencies: Sequence[params.Depends] | None = None,
+        tags: list[str | Enum] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        def decorator(fn: Callable[P, R]) -> Callable[P, R]:
+            from hedron.responses import FragmentResponse
+
+            route_name = name or fn.__name__
+            logical_id = _logical_id(fn)
+            op_id = operation_id_for("component", route_name, path, (methods or ["GET"])[0])
+            wrapped = _wrap_endpoint(
+                fn, kind="component", mode=RenderMode.FRAGMENT, require_csrf=False
+            )
+            self.add_api_route(
+                path,
+                wrapped,
+                methods=list(methods or ["GET"]),
+                name=route_name,
+                operation_id=op_id,
+                include_in_schema=include_in_schema,
+                dependencies=dependencies,
+                tags=tags,
+                response_class=kwargs.pop("response_class", None) or FragmentResponse,
+                response_model=None,
+                **kwargs,
+            )
+            register_route(
+                kind="component",
+                logical_id=logical_id,
+                name=route_name,
+                path=f"{self.prefix}{path}",
+                methods=tuple(m.upper() for m in (methods or ["GET"])),
+                operation_id=op_id,
+                include_in_schema=include_in_schema,
+                module=fn.__module__,
+                tags=tuple(str(t) for t in (tags or ())),
+                docs=inspect.getdoc(fn),
+                endpoint=fn,
+                htmx_inference={
+                    "default_mode": "fragment",
+                    "target": "caller-provided hx-target",
+                    "swap": "innerHTML",
+                },
+            )
+            return fn
+
+        return decorator
+
+    def action(
+        self,
+        path: str,
+        *,
+        method: str = "POST",
+        methods: Sequence[str] | None = None,
+        name: str | None = None,
+        include_in_schema: bool = True,
+        dependencies: Sequence[params.Depends] | None = None,
+        tags: list[str | Enum] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        verb_list = list(methods or [method])
+
+        def decorator(fn: Callable[P, R]) -> Callable[P, R]:
+            from hedron.responses import FragmentResponse
+
+            route_name = name or fn.__name__
+            logical_id = _logical_id(fn)
+            primary = verb_list[0].upper()
+            op_id = operation_id_for("action", route_name, path, primary)
+            require_csrf = primary not in {"GET", "HEAD", "OPTIONS", "TRACE"}
+            wrapped = _wrap_endpoint(
+                fn, kind="action", mode=RenderMode.FRAGMENT, require_csrf=require_csrf
+            )
+            self.add_api_route(
+                path,
+                wrapped,
+                methods=verb_list,
+                name=route_name,
+                operation_id=op_id,
+                include_in_schema=include_in_schema,
+                dependencies=dependencies,
+                tags=tags,
+                response_class=kwargs.pop("response_class", None) or FragmentResponse,
+                response_model=None,
+                **kwargs,
+            )
+            route = self.routes[-1]
+            if isinstance(route, HedronRoute):
+                route.hedron_kind = "action"  # type: ignore[attr-defined]
+            register_route(
+                kind="action",
+                logical_id=logical_id,
+                name=route_name,
+                path=f"{self.prefix}{path}",
+                methods=tuple(m.upper() for m in verb_list),
+                operation_id=op_id,
+                include_in_schema=include_in_schema,
+                module=fn.__module__,
+                tags=tuple(str(t) for t in (tags or ())),
+                docs=inspect.getdoc(fn),
+                endpoint=fn,
+                htmx_inference={
+                    "csrf": "required for unsafe cookie-authenticated methods",
+                    "swap": "innerHTML",
+                    "validation_fragment": "form error components",
+                },
+            )
+            return fn
+
+        return decorator
+
+    def include_component(
+        self,
+        descriptor: AddressableDescriptor | Callable[..., Any],
+        *,
+        path: str,
+        name: str | None = None,
+        dependencies: Sequence[params.Depends] | None = None,
+        include_in_schema: bool | None = None,
+        methods: Sequence[str] | None = None,
+        tags: list[str | Enum] | None = None,
+        **kwargs: Any,
+    ) -> None:
+        from hedron.responses import FragmentResponse
+
+        if isinstance(descriptor, AddressableDescriptor):
+            factory = descriptor.factory
+            route_name = name or descriptor.name
+            logical_id = descriptor.logical_id
+            verb_list = list(methods or descriptor.methods)
+            schema = (
+                descriptor.include_in_schema if include_in_schema is None else include_in_schema
+            )
+            tag_list: list[str | Enum] = (
+                list(tags) if tags is not None else list(descriptor.tags)
+            )
+        else:
+            factory = descriptor
+            route_name = name or factory.__name__
+            logical_id = _logical_id(factory)
+            verb_list = list(methods or ["GET"])
+            schema = False if include_in_schema is None else include_in_schema
+            tag_list = list(tags or [])
+
+        op_id = operation_id_for("component", route_name, path, verb_list[0])
+        wrapped = _wrap_endpoint(
+            factory, kind="component", mode=RenderMode.FRAGMENT, require_csrf=False
+        )
+        self.add_api_route(
+            path,
+            wrapped,
+            methods=verb_list,
+            name=route_name,
+            operation_id=op_id,
+            include_in_schema=schema,
+            dependencies=dependencies,
+            tags=tag_list or None,
+            response_class=kwargs.pop("response_class", None) or FragmentResponse,
+            response_model=None,
+            **kwargs,
+        )
+        register_route(
+            kind="component",
+            logical_id=logical_id,
+            name=route_name,
+            path=f"{self.prefix}{path}",
+            methods=tuple(m.upper() for m in verb_list),
+            operation_id=op_id,
+            include_in_schema=schema,
+            module=factory.__module__,
+            tags=tuple(str(t) for t in tag_list),
+            docs=inspect.getdoc(factory),
+            endpoint=factory,
+            htmx_inference={
+                "default_mode": "fragment",
+                "exposure": "include_component",
+            },
+        )
