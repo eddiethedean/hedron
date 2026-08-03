@@ -3,15 +3,12 @@
 from __future__ import annotations
 
 import logging
-import os
 import warnings
 from collections.abc import Callable, Sequence
-from importlib import resources
 from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.requests import Request
 
@@ -20,6 +17,7 @@ from hedron.openapi import install_openapi
 from hedron.routing.router import HedronRouter
 from hedron.security.headers import SecurityHeadersMiddleware
 from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
+from hedron.static_mount import mount_build_assets, mount_hedron_static
 from hedron_core.theme import ensure_default_theme_registered
 
 ExplorerMode = Literal["off", "development", "secured"]
@@ -28,39 +26,6 @@ _DEFAULT_SESSION_SECRET = "hedron-dev-secret-change-me"
 logger = logging.getLogger("hedron")
 
 __all__ = ["Hedron", "mount_hedron_static", "mount_build_assets"]
-
-
-def mount_hedron_static(app: FastAPI, *, path: str = "/hedron-static") -> None:
-    """Mount bundled Hedron static assets (HTMX) on any FastAPI app."""
-    static_dir = Path(str(resources.files("hedron").joinpath("static")))
-    if not static_dir.is_dir():
-        return
-    for route in app.routes:
-        if getattr(route, "path", None) == path:
-            return
-    app.mount(path, StaticFiles(directory=str(static_dir)), name="hedron-static")
-
-
-def mount_build_assets(
-    app: FastAPI,
-    build_dir: Path | str | None = None,
-    *,
-    path: str = "/hedron-assets",
-) -> Path | None:
-    """Mount fingerprinted build assets from a Hedron build directory."""
-    if build_dir is None:
-        build_dir = os.environ.get("HEDRON_BUILD_DIR", ".hedron/build")
-    root = Path(build_dir)
-    assets = root / "assets"
-    if not assets.is_dir():
-        return None
-    for route in app.routes:
-        if getattr(route, "path", None) == path:
-            return assets
-    app.mount(path, StaticFiles(directory=str(assets)), name="hedron-assets")
-    app.state.hedron_assets_path = path
-    app.state.hedron_build_dir = str(root.resolve())
-    return assets
 
 
 class Hedron(FastAPI):
@@ -96,6 +61,7 @@ class Hedron(FastAPI):
         self.hedron_theme = theme
         self.state.hedron_security = self.hedron_policy
         self.state.hedron_theme = theme
+        self.state.hedron_production = production
         self._explorer_dependencies = list(explorer_dependencies or [])
 
         ensure_default_theme_registered()

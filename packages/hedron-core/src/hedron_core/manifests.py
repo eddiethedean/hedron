@@ -37,13 +37,29 @@ def load_json(path: Path) -> Any:
 
 
 def write_json_atomic(path: Path, value: Any) -> str:
-    """Write deterministic JSON and return the content digest."""
+    """Write deterministic JSON via a unique same-dir temp file and os.replace."""
+    import os
+    import tempfile
+    from contextlib import suppress
+
     path.parent.mkdir(parents=True, exist_ok=True)
     text = canonical_json(value) + "\n"
     digest = content_digest(text)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(text, encoding="utf-8")
-    tmp.replace(path)
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+        dir=str(path.parent),
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp_name, path)
+    except Exception:
+        with suppress(OSError):
+            os.unlink(tmp_name)
+        raise
     return digest
 
 

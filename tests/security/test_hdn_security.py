@@ -7,7 +7,7 @@ from contextlib import suppress
 
 import pytest
 
-from hedron_core import HedronError, compile_hdn, run_program
+from hedron_core import HedronError, compile_hdn
 from hedron_core.hdn.expr import eval_expr
 
 
@@ -21,9 +21,9 @@ def test_hdn_blocks_dunder_and_attr_escape() -> None:
 
 @pytest.mark.security
 def test_hdn_blocks_arbitrary_calls() -> None:
-    with pytest.raises(HedronError):
+    with pytest.raises(HedronError) as exc:
         compile_hdn("{evil()}")
-        run_program(compile_hdn("{evil()}").program, {"evil": lambda: 1})
+    assert exc.value.diagnostic.code == "HED-HDN-0007"
 
 
 def test_hdn_fuzz_bounded() -> None:

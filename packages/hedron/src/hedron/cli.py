@@ -31,6 +31,19 @@ def _load_app(app_path: str | None) -> Any | None:
     return target
 
 
+def _registry_empty_hint(*, app: str | None, what: str) -> None:
+    if app:
+        return
+    registry = get_registry()
+    if registry.components() or registry.routes() or registry.addressables():
+        return
+    print(
+        f"No {what} found. Pass --app module:attr to load an application "
+        "before inspecting the registry.",
+        file=sys.stderr,
+    )
+
+
 def _cmd_routes(args: argparse.Namespace) -> int:
     _load_app(args.app)
     registry = get_registry()
@@ -46,6 +59,8 @@ def _cmd_routes(args: argparse.Namespace) -> int:
         }
         for r in registry.routes()
     ]
+    if not rows:
+        _registry_empty_hint(app=args.app, what="routes")
     print(json.dumps(rows, indent=2))
     return 0
 
@@ -130,6 +145,7 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
 
     meta = _find_component(args.component)
     if meta is None:
+        _registry_empty_hint(app=args.app, what="components")
         print(f"Component {args.component!r} not found", file=sys.stderr)
         return 1
     payload: dict[str, Any] = {
@@ -165,6 +181,7 @@ def _cmd_eject(args: argparse.Namespace) -> int:
 
     meta = _find_component(args.component)
     if meta is None:
+        _registry_empty_hint(app=args.app, what="components")
         print(f"Component {args.component!r} not found", file=sys.stderr)
         return 1
     out_dir = Path(args.out or meta.folder_path or f"components/{meta.name}")
@@ -203,6 +220,13 @@ def _cmd_eject(args: argparse.Namespace) -> int:
                 encoding="utf-8",
             )
             written.append(str(dest))
+    if not written:
+        print(
+            f"Nothing written for {meta.logical_id!r} "
+            "(sources missing and starter files already present; use --force).",
+            file=sys.stderr,
+        )
+        return 1
     print(json.dumps({"component": meta.logical_id, "written": written}, indent=2))
     return 0
 

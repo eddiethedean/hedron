@@ -49,7 +49,7 @@ from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.css import compile_css, scoped_identifier
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, HedronError
 from hedron_core.field import Field
-from hedron_core.hdn import compile_hdn, format_hdn, run_program
+from hedron_core.hdn import compile_hdn, format_hdn, load_hdn_program, run_program
 from hedron_core.html import html
 from hedron_core.models import EventPayload, FormModel, Model, Props
 from hedron_core.registry import (
@@ -145,6 +145,7 @@ __all__ = [
     "format_hdn",
     "get_registry",
     "html",
+    "load_hdn_program",
     "register_addressable",
     "register_browser_module",
     "register_component",

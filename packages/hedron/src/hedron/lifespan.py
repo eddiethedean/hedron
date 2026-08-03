@@ -9,6 +9,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
+from hedron_core.compile_gate import is_production_env
 from hedron_core.registry import seal_registry
 from hedron_core.theme import ensure_default_theme_registered
 
@@ -29,12 +30,8 @@ def compose_lifespan(
         ensure_default_theme_registered()
         app.state.hedron_theme = theme or getattr(app.state, "hedron_theme", "default")
 
-        is_production = production
-        if is_production is None:
-            is_production = os.environ.get("HEDRON_ENV", "").lower() in {
-                "prod",
-                "production",
-            }
+        is_production = is_production_env(production=production)
+        app.state.hedron_production = is_production
 
         resolved_build = Path(
             build_dir
@@ -42,6 +39,9 @@ def compose_lifespan(
             or os.environ.get("HEDRON_BUILD_DIR", ".hedron/build")
         )
         manifest_path = resolved_build / "manifest.json"
+        from hedron.build import load_build_manifest
+        from hedron.static_mount import mount_build_assets
+
         if is_production:
             if not manifest_path.is_file():
                 from hedron_core.codes import HED_BUILD_MISSING_MANIFEST
@@ -56,17 +56,13 @@ def compose_lifespan(
                     ),
                     remediation="Run `hedron build` and set HEDRON_BUILD_DIR if needed.",
                 )
-            from hedron.app import mount_build_assets
-            from hedron.build import load_build_manifest
-
             manifest = load_build_manifest(resolved_build)
             app.state.hedron_build_manifest = manifest
+            app.state.hedron_build_dir = str(resolved_build.resolve())
             mount_build_assets(app, resolved_build)
         elif manifest_path.is_file():
-            from hedron.app import mount_build_assets
-            from hedron.build import load_build_manifest
-
             app.state.hedron_build_manifest = load_build_manifest(resolved_build)
+            app.state.hedron_build_dir = str(resolved_build.resolve())
             mount_build_assets(app, resolved_build)
 
         seal_registry()

@@ -8,7 +8,8 @@ class HedronDisclose extends HTMLElement {
   #onToggle = null;
 
   connectedCallback() {
-    this.#render();
+    this.#ensureStructure();
+    this.#sync();
     this.#bind();
   }
 
@@ -18,12 +19,12 @@ class HedronDisclose extends HTMLElement {
 
   attributeChangedCallback() {
     if (this.isConnected) {
-      this.#render();
+      this.#sync();
     }
   }
 
   #unbind() {
-    const btn = this.querySelector("[data-hedron-disclose-btn]");
+    const btn = this.querySelector(":scope > [data-hedron-disclose-btn]");
     if (btn && this.#onToggle) {
       btn.removeEventListener("click", this.#onToggle);
     }
@@ -32,7 +33,7 @@ class HedronDisclose extends HTMLElement {
 
   #bind() {
     this.#unbind();
-    const btn = this.querySelector("[data-hedron-disclose-btn]");
+    const btn = this.querySelector(":scope > [data-hedron-disclose-btn]");
     if (!btn) return;
     this.#onToggle = () => {
       const next = !(this.getAttribute("open") === "true");
@@ -48,18 +49,39 @@ class HedronDisclose extends HTMLElement {
     btn.addEventListener("click", this.#onToggle);
   }
 
-  #render() {
-    const open = this.getAttribute("open") === "true";
-    const label = this.getAttribute("label") || "Details";
-    const panel = this.querySelector("[data-hedron-disclose-panel]");
-    const btn = this.querySelector("[data-hedron-disclose-btn]");
-    if (!btn || !panel) {
-      this.innerHTML = `
-        <button type="button" data-hedron-disclose-btn aria-expanded="${open}">${label}</button>
-        <div data-hedron-disclose-panel ${open ? "" : "hidden"}><slot></slot></div>
-      `;
+  #ensureStructure() {
+    let btn = this.querySelector(":scope > [data-hedron-disclose-btn]");
+    let panel = this.querySelector(":scope > [data-hedron-disclose-panel]");
+    if (btn && panel) {
       return;
     }
+
+    // Preserve existing light-DOM children into the panel.
+    const preserved = Array.from(this.childNodes);
+
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.setAttribute("data-hedron-disclose-btn", "");
+
+    panel = document.createElement("div");
+    panel.setAttribute("data-hedron-disclose-panel", "");
+
+    this.replaceChildren();
+    this.append(btn, panel);
+    for (const node of preserved) {
+      panel.append(node);
+    }
+  }
+
+  #sync() {
+    const open = this.getAttribute("open") === "true";
+    const label = this.getAttribute("label") || "Details";
+    const btn = this.querySelector(":scope > [data-hedron-disclose-btn]");
+    const panel = this.querySelector(":scope > [data-hedron-disclose-panel]");
+    if (!(btn instanceof HTMLElement) || !(panel instanceof HTMLElement)) {
+      return;
+    }
+    btn.textContent = label;
     btn.setAttribute("aria-expanded", open ? "true" : "false");
     if (open) panel.removeAttribute("hidden");
     else panel.setAttribute("hidden", "");
@@ -70,14 +92,21 @@ if (!customElements.get("hedron-disclose")) {
   customElements.define("hedron-disclose", HedronDisclose);
 }
 
-// HTMX swap lifecycle: re-upgrade / re-bind after swaps
-document.body.addEventListener("htmx:afterSwap", (event) => {
-  const root = event.target;
+function rebindDisclose(root) {
   if (!(root instanceof Element)) return;
-  root.querySelectorAll("hedron-disclose").forEach((el) => {
+  const nodes = [];
+  if (root.matches?.("hedron-disclose")) {
+    nodes.push(root);
+  }
+  root.querySelectorAll?.("hedron-disclose").forEach((el) => nodes.push(el));
+  for (const el of nodes) {
     if (el instanceof HedronDisclose) {
       el.disconnectedCallback();
       el.connectedCallback();
     }
-  });
+  }
+}
+
+document.body.addEventListener("htmx:afterSwap", (event) => {
+  rebindDisclose(event.target);
 });

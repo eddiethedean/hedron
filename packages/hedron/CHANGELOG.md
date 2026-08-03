@@ -20,6 +20,19 @@ Authoring, styles, assets, and themes for the FastAPI flagship.
 - Strict CSP without `style-src 'unsafe-inline'` for external stylesheets.
 - First-party `hedron-disclose` Web Component with HTMX swap-safe lifecycle.
 
+### Fixed / hardened
+
+- Same-device atomic build promote (avoids cross-device rename failures) and CSS
+  `url(...)` rewrite to fingerprinted `/hedron-assets/...` paths.
+- Production loads compiled HDN from the build manifest; runtime compile is gated.
+- `RenderResult.assets` filled from the active build manifest during response assembly.
+- `hedron-disclose` uses `textContent` for labels, preserves light-DOM children, and
+  rebinds when the swap target is the element itself.
+- CLI hints when the registry is empty without `--app`; `eject` exits non-zero when
+  nothing is written.
+- `run_program` exported from the public `hedron` API; static mounts live in
+  `hedron.static_mount` to avoid lifespan↔app circular imports.
+
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 
 ## [0.2.0] - 2026-08-03

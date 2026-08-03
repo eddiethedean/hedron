@@ -22,6 +22,19 @@ Authoring, scoped styles, themes, and assets for the phase 0.3 release train.
 - Component-folder discovery for colocated HDN, CSS, and browser modules.
 - Web Component registration metadata and custom-element HTML support.
 
+### Fixed / hardened
+
+- Compile-time rejection of arbitrary HDN calls; `{#for}` / expression failures
+  raise `HedronError`; `??` rewrite does not split inside string literals.
+- CSS URL policy resolves registered roots, rejects empty-root relative URLs,
+  absolute/`file:` paths, and remote URLs when disallowed.
+- Discovery uses `cls.distribution` when present; duplicate browser-module
+  registration warns instead of swallowing all exceptions.
+- Unknown configured themes fail build with `HED-THEME-0001`.
+- `write_json_atomic` uses a unique same-directory temp file + `os.replace`.
+- `RenderProgram.from_dict` / `load_hdn_program` for production artifact loading.
+- Production compile gate (`HED-BUILD-0004`).
+
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 
 ## [0.2.0] - 2026-08-03

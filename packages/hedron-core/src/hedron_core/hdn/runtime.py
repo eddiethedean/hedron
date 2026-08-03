@@ -2,17 +2,19 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
-from hedron_core.codes import HED_HDN_TRUSTED, HED_HDN_UNKNOWN_COMPONENT
+from hedron_core.codes import HED_HDN_TRUSTED, HED_HDN_TYPE, HED_HDN_UNKNOWN_COMPONENT
 from hedron_core.diagnostics import error
 from hedron_core.hdn.expr import eval_expr
 from hedron_core.html import html
 from hedron_core.security import TrustedHtml
 
-__all__ = ["RenderProgram", "run_program"]
+__all__ = ["Op", "RenderProgram", "load_hdn_program", "run_program"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,6 +29,32 @@ class RenderProgram:
     ops: tuple[Op, ...]
     source_map: tuple[Mapping[str, Any], ...] = ()
     dependencies: tuple[str, ...] = ()
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "format_version": self.format_version,
+            "ops": [{"kind": op.kind, "data": dict(op.data)} for op in self.ops],
+            "source_map": list(self.source_map),
+            "dependencies": list(self.dependencies),
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> RenderProgram:
+        ops = tuple(
+            Op(kind=str(item["kind"]), data=dict(item.get("data") or {}))
+            for item in data.get("ops", ())
+        )
+        return cls(
+            format_version=int(data["format_version"]),
+            ops=ops,
+            source_map=tuple(dict(item) for item in data.get("source_map", ())),
+            dependencies=tuple(str(x) for x in data.get("dependencies", ())),
+        )
+
+
+def load_hdn_program(path: Path | str) -> RenderProgram:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    return RenderProgram.from_dict(payload)
 
 
 def run_program(
@@ -104,7 +132,16 @@ def _run_ops(ops: list[Op], scope: dict[str, Any], components: dict[str, Any]) -
             i += 1
             body_ops = ops[i : i + body_count]
             i += body_count
-            for item in iterable:
+            try:
+                iterator = iter(iterable)
+            except TypeError as exc:
+                raise error(
+                    HED_HDN_TYPE,
+                    title="For-loop iterable required",
+                    explanation=f"{{#for}} expected an iterable, got {type(iterable).__name__}.",
+                    remediation="Pass a list, tuple, or other iterable in scope.",
+                ) from exc
+            for item in iterator:
                 child_scope = dict(scope)
                 child_scope[item_name] = item
                 out.extend(_run_ops(body_ops, child_scope, components))
@@ -124,7 +161,6 @@ def _make_element(
     children: list[Any],
     components: dict[str, Any],
 ) -> Any:
-    # Native HTML lowercase; components Uppercase; custom elements hyphenated
     html_attrs = _html_attrs(attrs)
     if tag[:1].isupper():
         cls = components.get(tag)

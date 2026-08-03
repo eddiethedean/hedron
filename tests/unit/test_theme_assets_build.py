@@ -82,8 +82,9 @@ def test_build_with_component_folder(tmp_path: Path) -> None:
 
     components = tmp_path / "components" / "StatusPill"
     components.mkdir(parents=True)
+    (components / "badge.png").write_bytes(b"png-bytes")
     (components / "styles.css").write_text(
-        ".root { color: green; }\n.title { font-weight: 600; }\n",
+        ".root { color: green; background: url(badge.png); }\n.title { font-weight: 600; }\n",
         encoding="utf-8",
     )
     (components / "template.hdn").write_text(
@@ -122,8 +123,33 @@ def test_build_with_component_folder(tmp_path: Path) -> None:
     css = first.css_bundle_path.read_text(encoding="utf-8")
     assert "@layer tokens" in css
     assert "@layer components" in css
+    assert "/hedron-assets/" in css
+    assert "badge.png" not in css or "badge-" in css or "/hedron-assets/" in css
+    assert "url(" in css and "/hedron-assets/" in css
     BuildManifest.from_dict(first.manifest.to_dict()).validate_format()
     AssetManifest.from_dict(first.manifest.assets.to_dict()).validate_format()
+
+
+def test_build_temp_staging_same_device(tmp_path: Path) -> None:
+    """Staging directory must live under the build parent (same filesystem)."""
+    from hedron.build import run_build
+    from hedron.config import HedronSettings
+
+    components = tmp_path / "components" / "X"
+    components.mkdir(parents=True)
+    (components / "styles.css").write_text(".root { color: blue; }\n", encoding="utf-8")
+    (components / "template.hdn").write_text('<div class="root">{label}</div>\n', encoding="utf-8")
+    settings = HedronSettings(
+        component_roots=("components",),
+        build_dir="out/build",
+        theme="default",
+    )
+    result = run_build(project_dir=tmp_path, settings=settings, production=True)
+    assert result.build_dir == (tmp_path / "out" / "build").resolve()
+    assert (result.build_dir / "manifest.json").is_file()
+    # No leftover staging dirs after successful promote.
+    leftovers = list((tmp_path / "out").glob(".hedron-build-tmp-*"))
+    assert leftovers == []
 
 
 def test_strict_csp_no_unsafe_inline_styles() -> None:
@@ -133,3 +159,18 @@ def test_strict_csp_no_unsafe_inline_styles() -> None:
     csp = policy.content_security_policy or ""
     assert "style-src 'self'" in csp
     assert "unsafe-inline" not in csp
+
+
+def test_disclose_script_avoids_label_innerhtml_interpolation() -> None:
+    script = (
+        Path(__file__).resolve().parents[2]
+        / "packages"
+        / "hedron"
+        / "src"
+        / "hedron"
+        / "static"
+        / "hedron-disclose.mjs"
+    ).read_text(encoding="utf-8")
+    assert "${label}" not in script
+    assert "innerHTML" not in script or "textContent" in script
+    assert "textContent = label" in script

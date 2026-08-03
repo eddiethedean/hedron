@@ -153,6 +153,7 @@ def _check_urls_in_sheet(
     component_dir: Path | None,
 ) -> tuple[CssStylesheet, tuple[str, ...]]:
     found: list[str] = []
+    roots = tuple(Path(r).resolve() for r in registered_roots)
 
     def check_value(value: str) -> str:
         def repl(match: re.Match[str]) -> str:
@@ -162,6 +163,13 @@ def _check_urls_in_sheet(
                 found.append(url)
                 return match.group(0)
             parsed = urlparse(url)
+            if parsed.scheme == "file" or (parsed.scheme == "" and url.startswith("/")):
+                raise error(
+                    HED_ASSET_TRAVERSAL,
+                    title="Absolute CSS URL rejected",
+                    explanation=f"url({url}) is an absolute filesystem path.",
+                    remediation="Use a component-relative asset under a registered root.",
+                )
             if parsed.scheme in {"http", "https"} or url.startswith("//"):
                 if not allow_remote:
                     raise error(
@@ -172,31 +180,46 @@ def _check_urls_in_sheet(
                     )
                 found.append(url)
                 return match.group(0)
-            if ".." in Path(url).parts:
+            # Relative asset URL requires registered roots.
+            if not roots:
+                raise error(
+                    HED_ASSET_TRAVERSAL,
+                    title="CSS URL outside registered roots",
+                    explanation=(
+                        f"url({url}) cannot be validated because no registered "
+                        "asset roots were provided."
+                    ),
+                    remediation="Pass registered_roots / component_dir when compiling CSS.",
+                )
+            if any(part == ".." for part in Path(url).parts):
                 raise error(
                     HED_ASSET_TRAVERSAL,
                     title="CSS URL path traversal rejected",
                     explanation=f"url({url}) escapes the registered asset roots.",
                     remediation="Keep asset URLs inside registered component roots.",
                 )
-            if component_dir is not None and registered_roots:
-                candidate = (component_dir / url).resolve()
-                if not any(
-                    candidate == root or root in candidate.parents for root in registered_roots
-                ):
-                    raise error(
-                        HED_ASSET_TRAVERSAL,
-                        title="CSS URL outside registered roots",
-                        explanation=f"url({url}) resolves outside registered asset roots.",
-                        remediation="Register the asset root or relocate the file.",
-                    )
-                if candidate.is_symlink():
-                    raise error(
-                        HED_ASSET_TRAVERSAL,
-                        title="Symlinked CSS asset rejected",
-                        explanation=f"url({url}) resolves through a symlink.",
-                        remediation="Use a real file under a registered root.",
-                    )
+            if component_dir is None:
+                raise error(
+                    HED_ASSET_TRAVERSAL,
+                    title="CSS URL outside registered roots",
+                    explanation=f"url({url}) requires a component_dir for resolution.",
+                    remediation="Pass component_dir when compiling CSS with relative URLs.",
+                )
+            candidate = (component_dir / url).resolve()
+            if not any(candidate == root or root in candidate.parents for root in roots):
+                raise error(
+                    HED_ASSET_TRAVERSAL,
+                    title="CSS URL outside registered roots",
+                    explanation=f"url({url}) resolves outside registered asset roots.",
+                    remediation="Register the asset root or relocate the file.",
+                )
+            if candidate.is_symlink() or Path(url).is_symlink():
+                raise error(
+                    HED_ASSET_TRAVERSAL,
+                    title="Symlinked CSS asset rejected",
+                    explanation=f"url({url}) resolves through a symlink.",
+                    remediation="Use a real file under a registered root.",
+                )
             found.append(url)
             q = quote or '"'
             return f"url({q}{url}{q})"

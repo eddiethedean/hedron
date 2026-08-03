@@ -142,6 +142,9 @@ def render_component_response(
             to_render = _fragment_value(value)
         result = render(to_render, context=render_context, mode=selected_mode)
 
+    if request is not None:
+        result = _attach_manifest_assets(result, request)
+
     headers = dict(result.headers)
     if policy is not None:
         headers.update(policy.response_headers(authenticated=authenticated))
@@ -162,6 +165,34 @@ def render_component_response(
         headers=headers,
         background=background,
     )
+
+
+def _attach_manifest_assets(result: RenderResult, request: Request) -> RenderResult:
+    """Populate ``result.assets`` from the active build manifest when empty."""
+    if result.assets:
+        return result
+    manifest = getattr(request.app.state, "hedron_build_manifest", None)
+    if manifest is None:
+        return result
+    from dataclasses import replace
+    from types import MappingProxyType
+
+    from hedron_core.rendering import AssetRef
+
+    assets_prefix = getattr(request.app.state, "hedron_assets_path", "/hedron-assets")
+    attached: list[AssetRef] = []
+    for entry in manifest.assets.assets:
+        href = f"{assets_prefix.rstrip('/')}/{entry.path}"
+        attached.append(
+            AssetRef(
+                kind=entry.kind,
+                href=href,
+                attributes=MappingProxyType(dict(entry.attributes)),
+            )
+        )
+    if not attached:
+        return result
+    return replace(result, assets=tuple(attached))
 
 
 def _inject_build_assets(

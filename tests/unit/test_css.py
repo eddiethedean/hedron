@@ -42,13 +42,32 @@ def test_css_rejects_remote_and_traversal(tmp_path: Path) -> None:
 
     root = tmp_path / "comp"
     root.mkdir()
-    with pytest.raises(HedronError):
+    with pytest.raises(HedronError) as trav:
         compile_css(
             '.x { background: url("../secret.png"); }',
             component_id="app:x",
             registered_roots=[root],
             component_dir=root,
         )
+    assert trav.value.diagnostic.code == "HED-ASSET-0002"
+
+    with pytest.raises(HedronError) as abs_url:
+        compile_css(
+            ".x { background: url(/etc/passwd); }",
+            component_id="app:x",
+            registered_roots=[root],
+            component_dir=root,
+        )
+    assert abs_url.value.diagnostic.code == "HED-ASSET-0002"
+
+    with pytest.raises(HedronError) as empty_roots:
+        compile_css(
+            ".x { background: url(icon.png); }",
+            component_id="app:x",
+            registered_roots=[],
+            component_dir=root,
+        )
+    assert empty_roots.value.diagnostic.code == "HED-ASSET-0002"
 
 
 def test_css_unknown_style_symbol() -> None:

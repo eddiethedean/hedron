@@ -2,26 +2,36 @@
 
 from __future__ import annotations
 
+import json
+import re
 import shutil
-import tempfile
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
+from hedron.config import HedronSettings, load_hedron_settings, settings_digest
 from hedron_core import __version__ as CORE_VERSION
 from hedron_core.assets import build_asset_manifest, fingerprint_bytes, fingerprint_file
+from hedron_core.codes import HED_THEME_UNKNOWN
 from hedron_core.css import compile_css
+from hedron_core.diagnostics import error
 from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
 from hedron_core.hdn import compile_hdn
 from hedron_core.manifests import (
     BUILD_MANIFEST_FORMAT,
     BuildManifest,
     CssSymbolManifest,
+    canonical_json,
     write_json_atomic,
 )
 from hedron_core.registry import get_registry, update_component_meta
-from hedron_core.theme import default_theme, emit_theme_css, ensure_default_theme_registered, get_theme
-
-from hedron.config import HedronSettings, load_hedron_settings, settings_digest
+from hedron_core.theme import (
+    Theme,
+    default_theme,
+    emit_theme_css,
+    ensure_default_theme_registered,
+    get_theme,
+)
 
 try:
     from importlib.metadata import version as _pkg_version
@@ -30,7 +40,9 @@ try:
 except Exception:  # pragma: no cover
     _hedron_version = CORE_VERSION
 
-__all__ = ["BuildResult", "run_build"]
+__all__ = ["BuildResult", "load_build_manifest", "run_build"]
+
+_URL_RE = re.compile(r"url\(\s*(['\"]?)([^)'\"]+)\1\s*\)", re.IGNORECASE)
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,19 +52,54 @@ class BuildResult:
     css_bundle_path: Path | None
 
 
+def _rewrite_css_urls(css: str, url_map: dict[str, str]) -> str:
+    """Rewrite relative url(...) values to fingerprinted public paths."""
+
+    def repl(match: re.Match[str]) -> str:
+        quote = match.group(1) or '"'
+        url = match.group(2).strip()
+        if url.startswith(("http://", "https://", "//", "data:", "/")):
+            return match.group(0)
+        rewritten = url_map.get(url)
+        if rewritten is None:
+            return match.group(0)
+        return f"url({quote}{rewritten}{quote})"
+
+    return _URL_RE.sub(repl, css)
+
+
+def _atomic_promote(tmp_root: Path, final_dir: Path) -> None:
+    """Promote tmp_root to final_dir using same-device renames only."""
+    final_dir.parent.mkdir(parents=True, exist_ok=True)
+    backup: Path | None = None
+    if final_dir.exists():
+        backup = final_dir.parent / f".hedron-build-bak-{uuid.uuid4().hex}"
+        final_dir.rename(backup)
+    try:
+        tmp_root.rename(final_dir)
+    except Exception:
+        if final_dir.exists():
+            shutil.rmtree(final_dir, ignore_errors=True)
+        if backup is not None and backup.exists():
+            backup.rename(final_dir)
+        raise
+    if backup is not None:
+        shutil.rmtree(backup, ignore_errors=True)
+
+
 def run_build(
     *,
     project_dir: Path | None = None,
     settings: HedronSettings | None = None,
     production: bool = True,
+    assets_url_prefix: str = "/hedron-assets",
 ) -> BuildResult:
     base = (project_dir or Path.cwd()).resolve()
     settings = settings or load_hedron_settings(base)
     ensure_default_theme_registered()
 
     roots = settings.resolved_roots(base=base)
-    # Always include settings registered asset roots relative to base
-    registered = list(roots)
+    registered = [r.resolve() for r in roots]
     for root in settings.asset_policy.registered_roots:
         registered.append((base / root).resolve())
 
@@ -60,25 +107,32 @@ def run_build(
     apply_discovery_to_registry(discovered)
 
     final_dir = settings.resolved_build_dir(base=base)
-    final_dir.mkdir(parents=True, exist_ok=True)
-    tmp_root = Path(tempfile.mkdtemp(prefix="hedron-build-"))
+    final_dir.parent.mkdir(parents=True, exist_ok=True)
+    # Same filesystem as final_dir to avoid Errno 18 cross-device rename.
+    tmp_root = final_dir.parent / f".hedron-build-tmp-{uuid.uuid4().hex}"
+    if tmp_root.exists():
+        shutil.rmtree(tmp_root)
+    tmp_root.mkdir(parents=True, exist_ok=True)
     try:
         assets_dir = tmp_root / "assets"
         assets_dir.mkdir(parents=True, exist_ok=True)
         hdn_dir = tmp_root / "hdn"
         hdn_dir.mkdir(parents=True, exist_ok=True)
 
-        css_parts: list[str] = []
-        # reset layer empty placeholder for deterministic order
-        css_parts.append("@layer reset {\n}\n")
+        css_parts: list[str] = ["@layer reset {\n}\n"]
 
         theme_name = settings.theme or "default"
         theme_meta = get_theme(theme_name)
         if theme_meta is None:
+            if theme_name != "default":
+                raise error(
+                    HED_THEME_UNKNOWN,
+                    title="Unknown theme",
+                    explanation=f"Theme {theme_name!r} is not registered.",
+                    remediation='Register the theme or set theme = "default".',
+                )
             theme = default_theme()
         else:
-            from hedron_core.theme import Theme
-
             theme = Theme(
                 name=theme_meta.name,
                 tokens=theme_meta.tokens,
@@ -96,27 +150,24 @@ def run_build(
         for meta in registry.components():
             if meta.styles_path:
                 source = Path(meta.styles_path)
+                component_root = source.parent.resolve()
+                roots_for_css = registered or [component_root]
                 result = compile_css(
                     source.read_text(encoding="utf-8"),
                     component_id=meta.logical_id,
                     allow_remote=settings.asset_policy.allow_remote,
-                    registered_roots=registered or [source.parent.resolve()],
-                    component_dir=source.parent.resolve(),
+                    registered_roots=roots_for_css,
+                    component_dir=component_root,
                     production_names=production,
                 )
                 if any(d.severity.value == "error" for d in result.diagnostics):
                     from hedron_core.diagnostics import HedronError
 
                     raise HedronError(*result.diagnostics)
-                css_parts.append(result.css)
-                css_symbols.append(result.manifest)
-                update_component_meta(
-                    meta.logical_id,
-                    style_symbols=dict(result.manifest.symbols),
-                )
-                # fingerprint referenced relative assets
+                css_text = result.css
+                local_rewrites: dict[str, str] = {}
                 for rel in result.asset_urls:
-                    if rel.startswith(("http://", "https://", "//", "data:")):
+                    if rel.startswith(("http://", "https://", "//", "data:", "/")):
                         continue
                     asset_path = (source.parent / rel).resolve()
                     entry = fingerprint_file(
@@ -126,14 +177,26 @@ def run_build(
                         kind="media",
                     )
                     asset_entries.append(entry)
+                    public = f"{assets_url_prefix.rstrip('/')}/{entry.path}"
+                    local_rewrites[rel] = public
+                if local_rewrites:
+                    css_text = _rewrite_css_urls(css_text, local_rewrites)
+                css_parts.append(css_text)
+                css_symbols.append(result.manifest)
+                update_component_meta(
+                    meta.logical_id,
+                    style_symbols=dict(result.manifest.symbols),
+                )
 
             if meta.hdn_source:
                 hdn_source = Path(meta.hdn_source).read_text(encoding="utf-8")
-                compiled = compile_hdn(hdn_source)
+                style_syms: dict[str, str] = dict(meta.style_symbols)
+                for sym in css_symbols:
+                    if sym.component_id == meta.logical_id:
+                        style_syms = dict(sym.symbols)
+                        break
+                compiled = compile_hdn(hdn_source, style_symbols=style_syms or None)
                 rel = f"hdn/{meta.name}.json"
-                # store ops as simple JSON via program digest marker
-                from hedron_core.manifests import canonical_json
-
                 payload = {
                     "format_version": compiled.program.format_version,
                     "digest": compiled.digest,
@@ -173,10 +236,11 @@ def run_build(
         )
         asset_entries.insert(0, css_entry)
 
-        # First-party WC proof module if present in package
-        try:
-            from importlib import resources
+        from importlib import resources
 
+        from hedron_core.diagnostics import HedronError
+
+        try:
             proof = Path(str(resources.files("hedron").joinpath("static/hedron-disclose.mjs")))
             if proof.is_file():
                 asset_entries.append(
@@ -188,8 +252,15 @@ def run_build(
                         attributes={"type": "module"},
                     )
                 )
-        except Exception:
-            pass
+        except HedronError:
+            raise
+        except OSError as exc:
+            import logging
+
+            logging.getLogger("hedron.build").warning(
+                "Could not fingerprint hedron-disclose.mjs: %s",
+                exc,
+            )
 
         asset_manifest = build_asset_manifest(asset_entries)
         manifest = BuildManifest(
@@ -205,7 +276,6 @@ def run_build(
             config_digest=settings_digest(settings),
         )
 
-        # Write temp outputs
         write_json_atomic(tmp_root / "manifest.json", manifest.to_dict())
         write_json_atomic(tmp_root / "assets.json", asset_manifest.to_dict())
         for sym in css_symbols:
@@ -214,31 +284,19 @@ def run_build(
                 sym.to_dict(),
             )
 
-        # Atomic promote
-        if final_dir.exists():
-            backup = final_dir.with_suffix(".bak")
-            if backup.exists():
-                shutil.rmtree(backup)
-            final_dir.rename(backup)
-            try:
-                tmp_root.rename(final_dir)
-                shutil.rmtree(backup, ignore_errors=True)
-            except Exception:
-                if final_dir.exists():
-                    shutil.rmtree(final_dir, ignore_errors=True)
-                backup.rename(final_dir)
-                raise
-        else:
-            tmp_root.rename(final_dir)
+        _atomic_promote(tmp_root, final_dir)
+        # Ownership transferred; avoid deleting promoted tree in finally.
+        tmp_root = Path("/nonexistent-hedron-tmp")
 
         css_path = final_dir / "assets" / css_entry.path
         loaded = BuildManifest.from_dict(
-            __import__("json").loads((final_dir / "manifest.json").read_text(encoding="utf-8"))
+            json.loads((final_dir / "manifest.json").read_text(encoding="utf-8"))
         )
         loaded.validate_format()
         return BuildResult(manifest=loaded, build_dir=final_dir, css_bundle_path=css_path)
     except Exception:
-        shutil.rmtree(tmp_root, ignore_errors=True)
+        if tmp_root.exists() and tmp_root.name.startswith(".hedron-build-tmp-"):
+            shutil.rmtree(tmp_root, ignore_errors=True)
         raise
 
 
@@ -246,7 +304,6 @@ def load_build_manifest(build_dir: Path) -> BuildManifest:
     path = build_dir / "manifest.json"
     if not path.is_file():
         from hedron_core.codes import HED_BUILD_MISSING_MANIFEST
-        from hedron_core.diagnostics import error
 
         raise error(
             HED_BUILD_MISSING_MANIFEST,
@@ -254,8 +311,6 @@ def load_build_manifest(build_dir: Path) -> BuildManifest:
             explanation=f"No manifest.json in {build_dir}.",
             remediation="Run `hedron build` before starting in production mode.",
         )
-    import json
-
     manifest = BuildManifest.from_dict(json.loads(path.read_text(encoding="utf-8")))
     manifest.validate_format()
     return manifest

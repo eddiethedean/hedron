@@ -125,7 +125,13 @@ async def user_table(store: Store = Depends(get_store)) -> Table:
     return users_table_component(store)
 
 
-def dashboard_page(*, csrf_token: str, username: str, form_errors: tuple[str, ...] = ()) -> Page:
+def dashboard_page(
+    *,
+    csrf_token: str,
+    username: str,
+    form_errors: tuple[str, ...] = (),
+    request: Request | None = None,
+) -> Page:
     table_ref = ComponentRef(
         logical_id="hedron-reference:examples.reference-app.app.user_table",
         path="/users/table",
@@ -153,9 +159,9 @@ def dashboard_page(*, csrf_token: str, username: str, form_errors: tuple[str, ..
                     Alert(
                         "Authenticated CRUD with CSRF, lazy addressable table, and HTMX swaps.",
                         tone="info",
-                        title="Phase 0.2",
+                        title="Phase 0.3",
                     ),
-                    _status_banner_section(),
+                    _status_banner_section(request=request),
                 )
             )
         ),
@@ -165,12 +171,13 @@ def dashboard_page(*, csrf_token: str, username: str, form_errors: tuple[str, ..
     )
 
 
-def _status_banner_section() -> Any:
-    """Python StatusBanner beside an HDN-compiled twin with equivalent output."""
+def _status_banner_section(*, request: Request | None = None) -> Any:
+    """Python StatusBanner beside an HDN twin loaded from build artifacts when present."""
     import importlib.util
     from pathlib import Path
 
-    from hedron_core import compile_css, compile_hdn, run_program
+    from hedron_core.compile_gate import assert_runtime_compile_allowed, is_production_env
+    from hedron_core.hdn import compile_hdn, load_hdn_program, run_program
     from hedron_core.html import _HtmlTag
 
     root = Path(__file__).resolve().parent / "components" / "StatusBanner"
@@ -183,15 +190,43 @@ def _status_banner_section() -> Any:
     spec.loader.exec_module(module)
     StatusBanner = module.StatusBanner
 
+    program = None
+    style_symbols = None
+    if request is not None:
+        manifest = getattr(request.app.state, "hedron_build_manifest", None)
+        build_dir = getattr(request.app.state, "hedron_build_dir", None)
+        if manifest is not None and build_dir is not None:
+            for logical_id, rel in dict(manifest.hdn_programs).items():
+                if logical_id.endswith(".StatusBanner") or logical_id.endswith(":StatusBanner"):
+                    program = load_hdn_program(Path(build_dir) / rel)
+                    break
+            for sym in manifest.css_symbols:
+                if "StatusBanner" in sym.component_id:
+                    style_symbols = dict(sym.symbols)
+                    break
+
+    production = None
+    if request is not None:
+        production = getattr(request.app.state, "hedron_production", None)
+    in_production = is_production_env(production=production)
+
+    if style_symbols is not None:
+        styles = module.load_styles(style_symbols)
+    elif in_production:
+        assert_runtime_compile_allowed(production=True, what="CSS")
+        styles = module.load_styles()  # pragma: no cover
+    else:
+        styles = module.load_styles()
+
+    if program is None:
+        assert_runtime_compile_allowed(production=in_production, what="HDN")
+        program = compile_hdn(
+            (root / "template.hdn").read_text(encoding="utf-8"),
+            style_symbols=styles.as_dict(),
+        ).program
+
     python_banner = StatusBanner(label="Phase 0.3 ready", tone="info")
-    css = compile_css(
-        (root / "styles.css").read_text(encoding="utf-8"),
-        component_id="hedron-reference:StatusBanner",
-    )
-    hdn_nodes = run_program(
-        compile_hdn((root / "template.hdn").read_text(encoding="utf-8")).program,
-        {"label": "Phase 0.3 ready", "tone": "info"},
-    )
+    hdn_nodes = run_program(program, {"label": "Phase 0.3 ready", "tone": "info"})
     disclose = _HtmlTag("hedron-disclose")(
         html.p("Web Component disclose survives HTMX swaps."),
         **{"label": "About phase 0.3"},
@@ -202,7 +237,7 @@ def _status_banner_section() -> Any:
         python_banner,
         *hdn_nodes,
         disclose,
-        Text(f"Scoped root class: {css.manifest.symbols.get('root', '')}"),
+        Text(f"Scoped root class: {styles.root}"),
     )
 
 
@@ -273,7 +308,7 @@ def build_hedron_app() -> Hedron:
 
     app = Hedron(
         title="Hedron Team Admin",
-        security="standard",
+        security="strict",
         explorer="development",
         session_secret="reference-app-secret",
         theme="default",
@@ -283,7 +318,7 @@ def build_hedron_app() -> Hedron:
     @app.page("/")
     def home(request: Request, username: Annotated[str, Depends(require_user)]) -> Page:
         token = request.cookies.get("hedron_csrf") or generate_csrf_token()
-        return dashboard_page(csrf_token=token, username=username)
+        return dashboard_page(csrf_token=token, username=username, request=request)
 
     @users.component("/table")
     async def table(store: Annotated[Store, Depends(get_store)]) -> Table:
@@ -359,7 +394,7 @@ def build_plain_fastapi_app() -> FastAPI:
     @router.page("/")
     def home(request: Request, username: Annotated[str, Depends(require_user)]) -> Page:
         token = request.cookies.get("hedron_csrf") or generate_csrf_token()
-        return dashboard_page(csrf_token=token, username=username)
+        return dashboard_page(csrf_token=token, username=username, request=request)
 
     users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
 

@@ -80,19 +80,71 @@ def parse_expr(source: str) -> ast.AST:
 
 
 def _rewrite_nullish(source: str) -> str:
-    """Rewrite ``a ?? b`` into ``__coalesce(a, b)`` with simple left-assoc."""
+    """Rewrite ``a ?? b`` into ``__coalesce(a, b)`` without splitting string literals."""
     if "??" not in source:
         return source
-    parts = source.split("??")
-    expr = parts[0].strip()
+    parts: list[str] = []
+    buf: list[str] = []
+    i = 0
+    n = len(source)
+    in_str: str | None = None
+    while i < n:
+        ch = source[i]
+        if in_str:
+            buf.append(ch)
+            if ch == "\\" and i + 1 < n:
+                buf.append(source[i + 1])
+                i += 2
+                continue
+            if ch == in_str:
+                in_str = None
+            i += 1
+            continue
+        if ch in {'"', "'"}:
+            in_str = ch
+            buf.append(ch)
+            i += 1
+            continue
+        if ch == "?" and i + 1 < n and source[i + 1] == "?":
+            parts.append("".join(buf).strip())
+            buf = []
+            i += 2
+            continue
+        buf.append(ch)
+        i += 1
+    parts.append("".join(buf).strip())
+    if len(parts) == 1:
+        return source
+    if any(not p for p in parts):
+        raise error(
+            HED_HDN_TYPE,
+            title="Invalid nullish coalescing",
+            explanation=f"Malformed ?? expression in {source!r}.",
+            remediation="Use `a ?? b` with non-empty operands.",
+            context={"expression": source},
+        )
+    expr = parts[0]
     for part in parts[1:]:
-        expr = f"__coalesce({expr}, {part.strip()})"
+        expr = f"__coalesce({expr}, {part})"
     return expr
 
 
 def eval_expr(source: str, env: Mapping[str, Any]) -> Any:
-    node = parse_expr(source)
-    return _eval(node, dict(env))
+    try:
+        node = parse_expr(source)
+        return _eval(node, dict(env))
+    except Exception as exc:
+        from hedron_core.diagnostics import HedronError
+
+        if isinstance(exc, HedronError):
+            raise
+        raise error(
+            HED_HDN_TYPE,
+            title="Expression evaluation failed",
+            explanation=f"Failed to evaluate {source!r}: {exc}",
+            remediation="Fix the expression or provide valid runtime values.",
+            context={"expression": source},
+        ) from exc
 
 
 def _eval(node: ast.AST, env: dict[str, Any]) -> Any:
@@ -176,7 +228,15 @@ def _eval(node: ast.AST, env: dict[str, Any]) -> Any:
                 explanation=f"Operator {op_type.__name__} is not allowed in HDN.",
                 remediation="Use supported arithmetic or comparison operators.",
             )
-        return _BINOPS[op_type](left, right)
+        try:
+            return _BINOPS[op_type](left, right)
+        except Exception as exc:
+            raise error(
+                HED_HDN_TYPE,
+                title="Arithmetic error",
+                explanation=f"Operator {op_type.__name__} failed: {exc}",
+                remediation="Check operand types and values.",
+            ) from exc
     if isinstance(node, ast.Compare):
         left = _eval(node.left, env)
         for op, comparator in zip(node.ops, node.comparators, strict=True):

@@ -28,7 +28,8 @@ def hedron_client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
     store = _MOD.Store()
     monkeypatch.setattr(_MOD, "STORE", store)
     app = _MOD.build_hedron_app()
-    return TestClient(app)
+    # strict CSP sets Secure CSRF cookies; exercise HTTPS like production.
+    return TestClient(app, base_url="https://testserver")
 
 
 @pytest.fixture()

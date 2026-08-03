@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import importlib.util
+import logging
 import sys
 from collections.abc import Sequence
-from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 from types import ModuleType
 
-from hedron_core.diagnostics import error
+from hedron_core.diagnostics import HedronError, error
 from hedron_core.registry import (
     ComponentMeta,
     get_registry,
@@ -18,6 +18,8 @@ from hedron_core.registry import (
     register_component,
     update_component_meta,
 )
+
+logger = logging.getLogger("hedron.discovery")
 
 __all__ = ["DiscoveredComponent", "discover_component_folders", "load_component_module"]
 
@@ -104,28 +106,38 @@ def apply_discovery_to_registry(
                     ):
                         cls = value
                         break
-        logical_id = (
-            f"{distribution}:{module_name}.{getattr(cls, 'logical_name', logical_name)}"
-            if cls is not None
-            else f"{distribution}:{module_name}.{logical_name}"
-        )
+        dist = distribution
+        name = logical_name
+        if cls is not None:
+            dist = getattr(cls, "distribution", None) or distribution
+            name = getattr(cls, "logical_name", None) or logical_name
+        logical_id = f"{dist}:{module_name}.{name}"
         existing = get_registry().get(logical_id)
         browser_modules = ()
         if item.browser_mjs is not None:
             browser_modules = (str(item.browser_mjs),)
             tag = f"hedron-{logical_name.lower().replace('_', '-')}"
-            with suppress(Exception):
+            try:
                 register_browser_module(
                     logical_id=f"{logical_id}:browser",
                     tag_name=tag,
                     module_path=str(item.browser_mjs),
                 )
+            except HedronError as exc:
+                if exc.diagnostic.code == "HED-ASSET-0010":
+                    logger.warning(
+                        "Skipping duplicate browser module %s: %s",
+                        logical_id,
+                        exc.diagnostic.title,
+                    )
+                else:
+                    raise
         if existing is None and cls is not None:
             register_component(
                 logical_id=logical_id,
-                name=getattr(cls, "logical_name", logical_name) or logical_name,
+                name=name,
                 module=module_name,
-                distribution=distribution,
+                distribution=dist,
                 props_model=getattr(getattr(cls, "props_type", None), "__name__", None),
                 styles_path=str(item.styles_css) if item.styles_css else None,
                 hdn_source=str(item.template_hdn) if item.template_hdn else None,
@@ -147,7 +159,7 @@ def apply_discovery_to_registry(
                 logical_id=logical_id,
                 name=logical_name,
                 module=module_name,
-                distribution=distribution,
+                distribution=dist,
                 styles_path=str(item.styles_css) if item.styles_css else None,
                 hdn_source=str(item.template_hdn) if item.template_hdn else None,
                 browser_modules=browser_modules,

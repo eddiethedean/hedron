@@ -96,6 +96,7 @@ from hedron_core import (  # noqa: F401
     format_hdn,
     html,
     render,
+    run_program,
     styles_from_manifest,
 )
 
@@ -193,6 +194,7 @@ __all__ = [
     "redirect_local",
     "render",
     "resolve_route_path",
+    "run_program",
     "session_state",
     "styles_from_manifest",
 ]
