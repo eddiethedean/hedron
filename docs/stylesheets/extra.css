@@ -1,0 +1,306 @@
+:root {
+  --hedron-teal: #14b8a6;
+  --hedron-cyan: #67e8f9;
+  --hedron-ink: #102a43;
+  --hedron-muted: #526579;
+  --hedron-surface: #f6f9fc;
+  --hedron-border: rgba(25, 55, 85, 0.12);
+  --md-primary-fg-color: #123047;
+  --md-primary-fg-color--light: #1d4962;
+  --md-primary-fg-color--dark: #0b2234;
+  --md-accent-fg-color: #0f9488;
+}
+
+[data-md-color-scheme="slate"] {
+  --hedron-ink: #edf8ff;
+  --hedron-muted: #a9bfd0;
+  --hedron-surface: rgba(20, 45, 62, 0.46);
+  --hedron-border: rgba(151, 201, 220, 0.16);
+  --md-default-bg-color: #0b1620;
+  --md-default-fg-color: #e6f1f7;
+  --md-code-bg-color: #101f2b;
+  --md-accent-fg-color: #5eead4;
+}
+
+body {
+  letter-spacing: -0.006em;
+}
+
+.md-header {
+  background: rgba(13, 40, 58, 0.94);
+  backdrop-filter: blur(16px);
+}
+
+.md-tabs {
+  background: #0d283a;
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 1.7rem;
+  width: 1.7rem;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  color: var(--hedron-ink);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+
+.md-typeset h1 {
+  font-size: clamp(2rem, 5vw, 3.15rem);
+}
+
+.md-typeset h2 {
+  margin-top: 2.4em;
+}
+
+.md-typeset code {
+  border-radius: 0.35rem;
+}
+
+.md-typeset .highlight {
+  border: 1px solid var(--hedron-border);
+  border-radius: 0.7rem;
+  box-shadow: 0 18px 45px rgba(9, 31, 45, 0.08);
+  overflow: hidden;
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 0.65rem;
+  box-shadow: none;
+}
+
+.md-footer {
+  background: #081923;
+}
+
+.hedron-hero {
+  margin: 0 -0.6rem 3.5rem;
+  padding: 3.3rem 0.6rem 1.2rem;
+  position: relative;
+}
+
+.hedron-hero::before {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(103, 232, 249, 0.17), transparent 29rem),
+    radial-gradient(circle at 88% 12%, rgba(20, 184, 166, 0.14), transparent 27rem);
+  content: "";
+  inset: -3rem -8vw -2rem;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.hedron-eyebrow {
+  align-items: center;
+  color: var(--md-accent-fg-color);
+  display: flex;
+  font-size: 0.72rem;
+  font-weight: 750;
+  gap: 0.55rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.hedron-eyebrow::before {
+  background: var(--hedron-teal);
+  border-radius: 99px;
+  content: "";
+  height: 0.45rem;
+  width: 0.45rem;
+}
+
+.hedron-hero h1 {
+  font-size: clamp(2.6rem, 7vw, 5.25rem);
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+  margin: 0;
+  max-width: 15ch;
+}
+
+.hedron-gradient-text {
+  background: linear-gradient(110deg, #0f9488 15%, #1787a8 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[data-md-color-scheme="slate"] .hedron-gradient-text {
+  background-image: linear-gradient(110deg, var(--hedron-cyan), #5eead4);
+}
+
+.hedron-lede {
+  color: var(--hedron-muted);
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  line-height: 1.65;
+  margin: 1.35rem 0 1.65rem;
+  max-width: 47rem;
+}
+
+.hedron-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.hedron-actions p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.md-typeset .hedron-actions .md-button {
+  border-radius: 0.5rem;
+  padding: 0.65em 1.25em;
+}
+
+.md-typeset .hedron-actions .md-button--primary {
+  background: #0f9488;
+  border-color: #0f9488;
+  box-shadow: 0 10px 30px rgba(15, 148, 136, 0.22);
+}
+
+.hedron-signal-row {
+  color: var(--hedron-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.76rem;
+  gap: 0.6rem 1.2rem;
+  margin-top: 1.7rem;
+}
+
+.hedron-signal-row span::before {
+  color: var(--hedron-teal);
+  content: "✓";
+  font-weight: 800;
+  margin-right: 0.38rem;
+}
+
+.hedron-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.4rem 0 3.2rem;
+}
+
+.hedron-card {
+  background: var(--hedron-surface);
+  border: 1px solid var(--hedron-border);
+  border-radius: 0.8rem;
+  color: var(--hedron-muted);
+  min-height: 10rem;
+  padding: 1.25rem;
+  transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+a.hedron-card:hover {
+  border-color: rgba(20, 184, 166, 0.55);
+  box-shadow: 0 14px 35px rgba(9, 31, 45, 0.08);
+  transform: translateY(-2px);
+}
+
+.hedron-card strong {
+  color: var(--hedron-ink);
+  display: block;
+  font-size: 1rem;
+  margin: 0.55rem 0 0.35rem;
+}
+
+.hedron-card p {
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.hedron-card__icon {
+  color: var(--md-accent-fg-color);
+  display: inline-flex;
+  font-size: 1.2rem;
+}
+
+.hedron-path {
+  counter-reset: path-step;
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.4rem 0 3rem;
+}
+
+.hedron-path > a {
+  border-top: 1px solid var(--hedron-border);
+  color: var(--hedron-muted);
+  counter-increment: path-step;
+  padding: 1rem 0.5rem 0 0;
+}
+
+.hedron-path > a::before {
+  color: var(--hedron-teal);
+  content: "0" counter(path-step);
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.45rem;
+}
+
+.hedron-path strong {
+  color: var(--hedron-ink);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.hedron-availability {
+  align-items: center;
+  background: linear-gradient(115deg, rgba(20, 184, 166, 0.09), rgba(103, 232, 249, 0.07));
+  border: 1px solid rgba(20, 184, 166, 0.22);
+  border-radius: 0.8rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin: 2.5rem 0;
+  padding: 1.2rem 1.4rem;
+}
+
+.hedron-availability p {
+  margin: 0;
+}
+
+.hedron-availability code {
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 76.2344em) {
+  .md-nav--primary .md-nav__title[for="__drawer"] {
+    background: #0d283a;
+  }
+}
+
+@media screen and (max-width: 50em) {
+  .hedron-grid,
+  .hedron-path {
+    grid-template-columns: 1fr;
+  }
+
+  .hedron-card {
+    min-height: 0;
+  }
+
+  .hedron-availability {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,5 +1,5 @@
 site_name: Hedron
-site_description: Typed, server-rendered component applications with FastAPI, HTML, and HTMX.
+site_description: Build typed, server-rendered Python applications with FastAPI, HTML, and HTMX—without a frontend build chain.
 site_author: Odos Matthews
 repo_url: https://github.com/eddiethedean/hedron
 repo_name: eddiethedean/hedron
@@ -10,14 +10,30 @@ site_url: !ENV [READTHEDOCS_CANONICAL_URL, "https://hedron.readthedocs.io/"]
 theme:
   name: material
   custom_dir: docs/overrides
+  logo: assets/hedron-mark.svg
+  favicon: assets/hedron-mark.svg
+  font:
+    text: Inter
+    code: JetBrains Mono
   features:
+    - announce.dismiss
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
     - navigation.indexes
     - navigation.top
+    - navigation.footer
+    - toc.follow
     - search.suggest
     - search.highlight
+    - search.share
     - content.code.copy
+    - content.code.annotate
     - content.action.edit
+    - content.action.view
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -50,6 +66,9 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.superfences
   - pymdownx.highlight:
       anchor_linenums: true
@@ -59,26 +78,77 @@ markdown_extensions:
 extra_javascript:
   - javascript/readthedocs.js
 
+extra_css:
+  - stylesheets/extra.css
+
 extra:
+  generator: false
+  status:
+    new: New
+    stable: Stable
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/eddiethedean/hedron
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/hedron/
+      name: Hedron on PyPI
+
+copyright: Copyright &copy; 2026 Odos Matthews · Released under the MIT License
 
 nav:
-  - Home: README.md
+  - Home: index.md
+  - Get started:
+    - Overview: getting-started/index.md
+    - Installation: getting-started/installation.md
+    - Build your first app: getting-started/quickstart.md
+    - Core concepts: getting-started/core-concepts.md
+  - Guides:
+    - Overview: guides/index.md
+    - Project workflow: guides/project-workflow.md
+    - Test your UI: guides/testing.md
+  - Reference:
+    - Overview: api/README.md
+    - Application:
+      - Hedron: api/HEDRON.md
+      - Router: api/ROUTER.md
+      - Page: api/PAGE.md
+      - Responses: api/RESPONSES.md
+      - State: api/STATE.md
+    - Components:
+      - Component: api/COMPONENT.md
+      - Built-ins: api/BUILT_INS.md
+      - Utility components: api/UTILITY_COMPONENTS.md
+      - Addressable components: api/ADDRESSABLE.md
+      - Action: api/ACTION.md
+      - Auto: api/AUTO.md
+    - Data and models:
+      - Models and Props: api/MODELS.md
+      - Field: api/FIELD.md
+      - Data: api/DATA.md
+      - Data sources: api/DATA_SOURCE.md
+      - Charts: api/CHART.md
+      - Cache: api/CACHE.md
+    - Platform:
+      - Rendering: api/RENDERING.md
+      - Themes: api/THEME.md
+      - Security types: api/SECURITY_TYPES.md
+      - Explorer: api/EXPLORER.md
+      - Plugins: api/PLUGINS.md
+      - Testing: api/TESTING.md
+      - API diagnostics: api/DIAGNOSTICS.md
+    - Configuration: CONFIGURATION.md
+    - CLI: api/CLI.md
+    - Diagnostics: DIAGNOSTICS.md
+    - Compatibility: COMPATIBILITY.md
+    - Glossary: GLOSSARY.md
   - Project:
+    - Specification index: SPECIFICATION.md
     - Status: STATUS.md
     - Roadmap: ROADMAP.md
     - Architecture: ARCHITECTURE.md
     - Decisions: DECISIONS.md
-    - Glossary: GLOSSARY.md
-    - Compatibility: COMPATIBILITY.md
     - Project layout: PROJECT_LAYOUT.md
     - Engineering baseline: ENGINEERING_BASELINE.md
-    - Configuration: CONFIGURATION.md
-    - Diagnostics: DIAGNOSTICS.md
     - Identifiers: IDENTIFIERS.md
     - Reference application: REFERENCE_APPLICATION.md
     - Traceability: TRACEABILITY.md
@@ -86,106 +156,8 @@ nav:
     - Inference overrides: INFERENCE_OVERRIDES.md
     - Contributing: CONTRIBUTING.md
     - Cutting a release: RELEASE.md
-  - Foundations:
-    - Overview: foundations/README.md
-    - Vision: foundations/01_VISION.md
-    - Philosophy: foundations/02_PHILOSOPHY.md
-    - Design principles: foundations/03_DESIGN_PRINCIPLES.md
-    - Non-goals: foundations/04_NON_GOALS.md
-  - RFCs:
-    - Overview: rfcs/README.md
-    - RFC 0001 VISION: rfcs/RFC-0001-VISION.md
-    - RFC 0002 CORE ARCHITECTURE: rfcs/RFC-0002-CORE-ARCHITECTURE.md
-    - RFC 0003 COMPONENT MODEL: rfcs/RFC-0003-COMPONENT-MODEL.md
-    - RFC 0004 FASTAPI INTEGRATION: rfcs/RFC-0004-FASTAPI-INTEGRATION.md
-    - RFC 0005 HDN LANGUAGE: rfcs/RFC-0005-HDN-LANGUAGE.md
-    - RFC 0006 SCOPED STYLES: rfcs/RFC-0006-SCOPED-STYLES.md
-    - RFC 0007 COMPONENT EXPLORER: rfcs/RFC-0007-COMPONENT-EXPLORER.md
-    - RFC 0008 ADDRESSABLE COMPONENTS: rfcs/RFC-0008-ADDRESSABLE-COMPONENTS.md
-    - RFC 0009 HTMX INTEGRATION: rfcs/RFC-0009-HTMX-INTEGRATION.md
-    - RFC 0010 DATA COMPONENTS: rfcs/RFC-0010-DATA-COMPONENTS.md
-    - RFC 0011 VISUALIZATION: rfcs/RFC-0011-VISUALIZATION.md
-    - RFC 0012 SECURITY: rfcs/RFC-0012-SECURITY.md
-    - RFC 0013 ASYNC: rfcs/RFC-0013-ASYNC.md
-    - RFC 0014 PLUGIN ARCHITECTURE: rfcs/RFC-0014-PLUGIN-ARCHITECTURE.md
-    - RFC 0015 ROUTING: rfcs/RFC-0015-ROUTING.md
-    - RFC 0016 OPENAPI: rfcs/RFC-0016-OPENAPI.md
-    - RFC 0017 CLI: rfcs/RFC-0017-CLI.md
-    - RFC 0018 PACKAGING: rfcs/RFC-0018-PACKAGING.md
-    - RFC 0019 TESTING: rfcs/RFC-0019-TESTING.md
-    - RFC 0020 PERFORMANCE: rfcs/RFC-0020-PERFORMANCE.md
-    - RFC 0021 BROWSER RUNTIME: rfcs/RFC-0021-BROWSER-RUNTIME.md
-    - RFC 0022 THEMING: rfcs/RFC-0022-THEMING.md
-    - RFC 0023 ACCESSIBILITY: rfcs/RFC-0023-ACCESSIBILITY.md
-    - RFC 0024 DEVELOPER EXPERIENCE: rfcs/RFC-0024-DEVELOPER-EXPERIENCE.md
-    - RFC 0025 COMPONENT LIFECYCLE: rfcs/RFC-0025-COMPONENT-LIFECYCLE.md
-    - RFC 0026 STATE MANAGEMENT: rfcs/RFC-0026-STATE-MANAGEMENT.md
-    - RFC 0027 DATA SOURCES: rfcs/RFC-0027-DATA-SOURCES.md
-    - RFC 0028 DEPLOYMENT: rfcs/RFC-0028-DEPLOYMENT.md
-    - RFC 0029 ROADMAP TO 1.0: rfcs/RFC-0029-ROADMAP-TO-1.0.md
-    - Template: rfcs/TEMPLATE.md
-  - Public API:
-    - Overview: api/README.md
-    - ACTION: api/ACTION.md
-    - ADDRESSABLE: api/ADDRESSABLE.md
-    - AUTO: api/AUTO.md
-    - BUILT INS: api/BUILT_INS.md
-    - CACHE: api/CACHE.md
-    - CHART: api/CHART.md
-    - CLI: api/CLI.md
-    - COMPONENT: api/COMPONENT.md
-    - DATA: api/DATA.md
-    - DATA SOURCE: api/DATA_SOURCE.md
-    - DIAGNOSTICS: api/DIAGNOSTICS.md
-    - EXPLORER: api/EXPLORER.md
-    - FIELD: api/FIELD.md
-    - HEDRON: api/HEDRON.md
-    - MODELS: api/MODELS.md
-    - PAGE: api/PAGE.md
-    - PLUGINS: api/PLUGINS.md
-    - RENDERING: api/RENDERING.md
-    - RESPONSES: api/RESPONSES.md
-    - ROUTER: api/ROUTER.md
-    - SECURITY TYPES: api/SECURITY_TYPES.md
-    - STATE: api/STATE.md
-    - TESTING: api/TESTING.md
-    - THEME: api/THEME.md
-    - UTILITY COMPONENTS: api/UTILITY_COMPONENTS.md
-  - Implementation:
-    - Overview: implementation/README.md
-    - ASSET PIPELINE: implementation/ASSET_PIPELINE.md
-    - ASYNC RUNTIME: implementation/ASYNC_RUNTIME.md
-    - BUILD SYSTEM: implementation/BUILD_SYSTEM.md
-    - CACHE LAYER: implementation/CACHE_LAYER.md
-    - COMPONENT REGISTRY: implementation/COMPONENT_REGISTRY.md
-    - CSS COMPILER: implementation/CSS_COMPILER.md
-    - EXPLORER BACKEND: implementation/EXPLORER_BACKEND.md
-    - EXPLORER FRONTEND: implementation/EXPLORER_FRONTEND.md
-    - HDN PARSER: implementation/HDN_PARSER.md
-    - HTML SERIALIZER: implementation/HTML_SERIALIZER.md
-    - MODEL SYSTEM: implementation/MODEL_SYSTEM.md
-    - OPENAPI GENERATOR: implementation/OPENAPI_GENERATOR.md
-    - PLUGIN LOADER: implementation/PLUGIN_LOADER.md
-    - RENDERING ENGINE: implementation/RENDERING_ENGINE.md
-    - ROUTER GENERATOR: implementation/ROUTER_GENERATOR.md
-    - SECURITY CONTROLS: implementation/SECURITY_CONTROLS.md
-  - Acceptance:
-    - Overview: acceptance/README.md
-    - ACCESSIBILITY: acceptance/ACCESSIBILITY.md
-    - ASYNC: acceptance/ASYNC.md
-    - CACHING UTILITIES: acceptance/CACHING_UTILITIES.md
-    - CLI: acceptance/CLI.md
-    - COMPONENT MODEL: acceptance/COMPONENT_MODEL.md
-    - DATA EDITOR: acceptance/DATA_EDITOR.md
-    - EXPLORER: acceptance/EXPLORER.md
-    - FASTAPI INTEGRATION: acceptance/FASTAPI_INTEGRATION.md
-    - HDN: acceptance/HDN.md
-    - HTMX: acceptance/HTMX.md
-    - PACKAGING DEPLOYMENT: acceptance/PACKAGING_DEPLOYMENT.md
-    - PERFORMANCE: acceptance/PERFORMANCE.md
-    - PLUGINS: acceptance/PLUGINS.md
-    - RELEASE 1 0: acceptance/RELEASE_1_0.md
-    - SCOPED STYLES: acceptance/SCOPED_STYLES.md
-    - SECURITY: acceptance/SECURITY.md
-    - TESTING: acceptance/TESTING.md
-    - VISUALIZATION: acceptance/VISUALIZATION.md
+    - Design library:
+      - Foundations: foundations/README.md
+      - RFC catalog: rfcs/README.md
+      - Implementation specifications: implementation/README.md
+      - Acceptance specifications: acceptance/README.md

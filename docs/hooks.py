@@ -14,5 +14,7 @@ def on_config(config):  # noqa: ANN001
     text = source.read_text(encoding="utf-8")
     # Root ROADMAP links like docs/acceptance/X.md become acceptance/X.md in docs/.
     text = text.replace("](docs/", "](")
-    target.write_text(text, encoding="utf-8")
+    # Avoid retriggering MkDocs' file watcher when the generated copy is current.
+    if not target.exists() or target.read_text(encoding="utf-8") != text:
+        target.write_text(text, encoding="utf-8")
     return config

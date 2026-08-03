@@ -112,7 +112,7 @@ uv run mkdocs serve
 
 The specification remains the authority for implementation:
 
-- [Specification index](docs/README.md)
+- [Specification index](docs/SPECIFICATION.md)
 - [Current status](docs/STATUS.md) and [pre-coding readiness report](docs/READINESS_REPORT.md)
 - [Architecture](docs/ARCHITECTURE.md), [decisions](docs/DECISIONS.md), and [project layout](docs/PROJECT_LAYOUT.md)
 - [Foundations](docs/foundations/README.md) and [RFC index](docs/rfcs/README.md)
