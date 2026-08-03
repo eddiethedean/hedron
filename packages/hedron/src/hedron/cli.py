@@ -304,7 +304,7 @@ dependencies = ["hedron>=0.4.0"]
 [tool.hedron]
 component_roots = ["components"]
 theme = "default"
-explorer = "development"
+explorer = "off"
 ''',
         encoding="utf-8",
     )
@@ -314,7 +314,7 @@ explorer = "development"
 app = Hedron(
     title="Hedron App",
     security="standard",
-    explorer="development",
+    explorer="off",
     session_secret="dev-secret",
 )
 

@@ -35,25 +35,34 @@ def _audit(event: str, **payload: Any) -> None:
     _AUDIT.appendleft({"event": event, **payload, "ts": time.time()})
 
 
-def _allowed_roots(meta: Any, request: Request | None = None) -> list[Path]:
+def _project_component_roots(request: Request | None) -> list[Path]:
+    """Trusted roots only: app.state and [tool.hedron] component_roots."""
     roots: list[Path] = []
-    folder = getattr(meta, "folder_path", None)
-    if folder:
-        roots.append(Path(folder).resolve())
-    if request is not None:
-        configured = getattr(request.app.state, "hedron_component_roots", None)
-        if configured:
-            roots.extend(Path(p).resolve() for p in configured)
-        project_root = getattr(request.app.state, "hedron_project_root", None)
-        if project_root:
-            try:
-                from hedron.config import load_hedron_settings
+    if request is None:
+        return roots
+    configured = getattr(request.app.state, "hedron_component_roots", None)
+    if configured:
+        roots.extend(Path(p).resolve() for p in configured)
+    project_root = getattr(request.app.state, "hedron_project_root", None)
+    if project_root:
+        try:
+            from hedron.config import load_hedron_settings
 
-                settings = load_hedron_settings(Path(project_root))
-                roots.extend(settings.resolved_roots(base=Path(project_root)))
-            except Exception:  # noqa: BLE001 — explorer stays available without config
-                pass
+            settings = load_hedron_settings(Path(project_root))
+            roots.extend(settings.resolved_roots(base=Path(project_root)))
+        except Exception:  # noqa: BLE001 — explorer stays available without config
+            pass
     return roots
+
+
+def _allowed_roots(meta: Any, request: Request | None = None) -> list[Path]:
+    """Allow reads under project component roots only.
+
+    ``meta.folder_path`` is ignored as a root: registry metadata can be
+    attacker-influenced when browsing components in Explorer.
+    """
+    del meta  # retained for call-site compatibility
+    return _project_component_roots(request)
 
 
 def _safe_read_text(path_str: str | None, meta: Any, request: Request | None = None) -> str | None:

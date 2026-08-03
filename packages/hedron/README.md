@@ -88,7 +88,7 @@ hedron audit-components
 
 ## Links
 
-- [Documentation](https://github.com/eddiethedean/hedron/tree/main/docs)
+- [Documentation](https://hedron-py.readthedocs.io/)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron/CHANGELOG.md)
 - [Source](https://github.com/eddiethedean/hedron)
 - [`hedron-core`](https://pypi.org/project/hedron-core/) · [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) · [`hedron-sample-kit`](https://pypi.org/project/hedron-sample-kit/)

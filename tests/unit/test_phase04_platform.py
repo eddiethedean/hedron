@@ -246,12 +246,44 @@ def test_explorer_blocks_path_outside_allowlist(tmp_path: Path) -> None:
         explorer="development",
         session_secret="secret",
     )
+    app.state.hedron_component_roots = [str((tmp_path / "components").resolve())]
     with TestClient(app) as client:
         detail = client.get("/hedron-explorer/component/Safe")
         assert detail.status_code == 200
         assert "TOP_SECRET" not in detail.text
         assert "allowlisted" in detail.text or "unavailable" in detail.text
         assert "iframe" in detail.text and "sandbox" in detail.text
+
+
+def test_explorer_rejects_folder_path_as_root(tmp_path: Path) -> None:
+    """Registry folder_path must not expand the filesystem allowlist."""
+    reset_registry_for_tests()
+    secret = tmp_path / "outside" / "secret.txt"
+    secret.parent.mkdir(parents=True)
+    secret.write_text("TOP_SECRET", encoding="utf-8")
+    folder = tmp_path / "components" / "Safe"
+    folder.mkdir(parents=True)
+    (folder / "template.hdn").write_text("<div>ok</div>", encoding="utf-8")
+    register_component(
+        logical_id="app:safe.Safe",
+        name="Safe",
+        module="safe",
+        distribution="app",
+        hdn_source=str(secret),
+        # Attacker-controlled root covering the secret file.
+        folder_path=str(tmp_path / "outside"),
+    )
+    app = Hedron(
+        title="ex",
+        security="standard",
+        explorer="development",
+        session_secret="secret",
+    )
+    app.state.hedron_component_roots = [str((tmp_path / "components").resolve())]
+    with TestClient(app) as client:
+        detail = client.get("/hedron-explorer/component/Safe")
+        assert detail.status_code == 200
+        assert "TOP_SECRET" not in detail.text
 
 
 def test_explorer_panels_and_simulate() -> None:

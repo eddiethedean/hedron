@@ -20,12 +20,18 @@ Developer platform for the FastAPI flagship.
 ### Fixed
 
 - Plugin loads roll back the full registry builder (not only Explorer panels) on failure.
-- `plugins = []` loads no plugins; unset plugins discover all at lifespan; missing enabled names error.
+- Plugin `start()` failures roll back registry contributions and Explorer panels.
+- `plugins = []` loads no plugins; unset plugins discover all at lifespan and build; missing enabled names error.
 - Version compatibility uses `packaging` specifier sets (fail closed on invalid ranges).
 - Lifespan always surfaces plugin load/`start` failures and shuts down started hooks.
-- CSRF applies when any declared method is unsafe for page/component/action routes.
+- CSRF applies when any declared method is unsafe for page/component/action routes, including `include_component`.
+- CSRF cookies set `Secure` when the request is HTTPS (all profiles).
+- Local redirects and HTMX local-path headers reject backslash open-redirect forms; `redirect_external` fails closed without a policy.
+- Production forces Explorer `development` mode off; scaffolds default `explorer = "off"`.
+- Lifespan applies `[tool.hedron] component_roots` to `app.state.hedron_component_roots`.
 - CLI `check`/`graph`/`audit-components` apply discovery; evergreen INFORMATION findings do not fail the exit gate; `new` guards existing `app.py`/`pyproject.toml`.
-- Builds load explicitly configured plugins; `override_dependencies` restores FastAPI overrides.
+- Builds match lifespan plugin discovery and restore the registry afterward so in-process app startup can reload plugins; `override_dependencies` restores FastAPI overrides.
+- Asset `href` values are HTML-escaped before page injection.
 
 ## [0.3.0] - 2026-08-03
 

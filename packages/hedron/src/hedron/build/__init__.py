@@ -142,14 +142,51 @@ def _run_build(
     for root in settings.asset_policy.registered_roots:
         registered.append((base / root).resolve())
 
-    discovered = discover_component_folders(roots)
-    apply_discovery_to_registry(discovered)
+    from hedron_core import plugins as plugins_mod
+    from hedron_core.registry import restore_registry_builder, snapshot_registry_builder
 
-    if settings.plugins is not None:
+    # Build may register discovered + plugin components; restore afterward so an
+    # in-process app lifespan can load plugins without duplicate registration.
+    registry_snapshot = snapshot_registry_builder()
+    panel_snapshot = dict(plugins_mod._panels)
+    owner_snapshot = dict(plugins_mod._diagnostic_owners)
+
+    def _restore_registry() -> None:
+        restore_registry_builder(registry_snapshot)
+        plugins_mod._panels.clear()
+        plugins_mod._panels.update(panel_snapshot)
+        plugins_mod._diagnostic_owners.clear()
+        plugins_mod._diagnostic_owners.update(owner_snapshot)
+
+    try:
+        discovered = discover_component_folders(roots)
+        apply_discovery_to_registry(discovered)
+
         from hedron.plugins import load_plugins
 
-        load_plugins(enabled=list(settings.plugins))
+        # Match runtime lifespan: None = discover-all; empty = load none.
+        enabled = None if settings.plugins is None else list(settings.plugins)
+        load_plugins(enabled=enabled)
 
+        return _execute_build(
+            base=base,
+            settings=settings,
+            production=production,
+            assets_url_prefix=assets_url_prefix,
+            registered=registered,
+        )
+    finally:
+        _restore_registry()
+
+
+def _execute_build(
+    *,
+    base: Path,
+    settings: HedronSettings,
+    production: bool,
+    assets_url_prefix: str,
+    registered: list[Path],
+) -> BuildResult:
     final_dir = settings.resolved_build_dir(base=base)
     final_dir.parent.mkdir(parents=True, exist_ok=True)
     # Same filesystem as final_dir to avoid Errno 18 cross-device rename.

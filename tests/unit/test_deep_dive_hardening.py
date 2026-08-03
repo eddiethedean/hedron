@@ -145,6 +145,7 @@ def test_load_hdn_program_roundtrip(tmp_path: Path) -> None:
         component_roots=("components",),
         build_dir=".hedron/build",
         theme="default",
+        plugins=(),
     )
     result = run_build(project_dir=tmp_path, settings=settings, production=True)
     assert len(result.manifest.hdn_programs) == 1
@@ -187,6 +188,7 @@ def test_hdn_artifact_paths_unique_for_same_name(tmp_path: Path) -> None:
         component_roots=(),
         build_dir=".hedron/build",
         theme="default",
+        plugins=(),
     )
     result = run_build(project_dir=tmp_path, settings=settings, production=True)
     paths = list(result.manifest.hdn_programs.values())
@@ -205,6 +207,7 @@ def test_unknown_theme_fails_build(tmp_path: Path) -> None:
         component_roots=("components",),
         build_dir=".hedron/build",
         theme="nope",
+        plugins=(),
     )
     (tmp_path / "components").mkdir()
     with pytest.raises(HedronError) as exc:
@@ -328,6 +331,7 @@ def test_asset_injection_not_duplicated(tmp_path: Path) -> None:
         component_roots=("components",),
         build_dir=".hedron/build",
         theme="default",
+        plugins=(),
     )
     built = run_build(project_dir=tmp_path, settings=settings, production=True)
     app = Hedron(
@@ -439,3 +443,123 @@ def test_disclose_script_contract() -> None:
     assert "rebind()" in script
     assert "data-hedron-disclose-btn" in script
     assert "data-hedron-disclose-panel" in script
+
+
+def test_include_component_csrf_on_unsafe_methods() -> None:
+    from hedron.routing.router import HedronRouter
+    from hedron_core.addressable import addressable
+
+    app = Hedron(title="inc", security="standard", explorer="off", session_secret="secret")
+    router = HedronRouter()
+
+    @addressable(methods=("GET", "POST"))
+    def piece() -> Text:
+        return Text("ok")
+
+    router.include_component(piece, path="/piece")
+    app.include_router(router)
+
+    with TestClient(app) as client:
+        get_ok = client.get("/piece")
+        assert get_ok.status_code == 200
+        denied = client.post("/piece")
+        assert denied.status_code == 403
+        token = client.cookies.get("hedron_csrf")
+        assert token
+        allowed = client.post("/piece", headers={"X-CSRF-Token": token})
+        assert allowed.status_code == 200
+
+
+def test_redirect_rejects_backslash_and_external_without_policy() -> None:
+    from fastapi import HTTPException
+
+    from hedron.htmx import approved_headers
+    from hedron.security.redirects import redirect_external, redirect_local
+
+    with pytest.raises(HTTPException):
+        redirect_local("/\\evil.example")
+    with pytest.raises(HTTPException):
+        redirect_local("//evil.example")
+    with pytest.raises(ValueError):
+        approved_headers(redirect="/\\evil.example")
+    with pytest.raises(HTTPException):
+        redirect_external("https://example.com/x")  # policy omitted → fail closed
+    ok = redirect_local("/home?x=1")
+    assert ok.status_code == 303
+
+
+def test_csrf_secure_cookie_on_https_standard() -> None:
+    app = Hedron(title="s", security="standard", explorer="off", session_secret="secret")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(Text("hi"), title="T")
+
+    with TestClient(app, base_url="https://test") as client:
+        response = client.get("/")
+        assert "Secure" in (response.headers.get("set-cookie") or "")
+
+
+def test_production_disables_development_explorer(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    with pytest.warns(UserWarning, match="Explorer development mode"):
+        app = Hedron(
+            title="prod",
+            security="standard",
+            explorer="development",
+            session_secret="secret",
+            production=True,
+        )
+    assert app.hedron_explorer_mode == "off"
+    paths = [getattr(route, "path", "") for route in app.router.routes]
+    assert not any(str(path).startswith("/hedron-explorer") for path in paths)
+    monkeypatch.delenv("HEDRON_ENV", raising=False)
+
+
+def test_plugin_start_failure_rolls_back_registry() -> None:
+    from hedron.plugins import load_plugins
+    from hedron_core.plugins import PluginCapabilities, PluginMeta, get_explorer_panels
+    from hedron_core.registry import get_registry
+
+    reset_registry_for_tests()
+
+    def register(ctx: object) -> None:
+        from hedron_core.plugins import PluginContext
+
+        assert isinstance(ctx, PluginContext)
+
+        def boom() -> None:
+            raise RuntimeError("start failed")
+
+        ctx.on_startup(boom)
+        ctx.register_component(
+            logical_id="demo:fail.Widget",
+            name="FailWidget",
+            module="fail",
+            distribution="demo",
+        )
+        ctx.register_explorer_panel(
+            panel_id="fail-panel",
+            title="Fail",
+        )
+
+    register.PLUGIN_META = PluginMeta(  # type: ignore[attr-defined]
+        name="fail",
+        version="0.4.0",
+        distribution="demo",
+        capabilities=PluginCapabilities(python=True, explorer_panels=True),
+    )
+
+    class EP:
+        name = "fail"
+
+        def load(self) -> object:
+            return register
+
+    loader = load_plugins(entry_points=[EP()])
+    assert any(c.name == "FailWidget" for c in get_registry().components())
+    assert any(p.panel_id == "fail-panel" for p in get_explorer_panels())
+    with pytest.raises(RuntimeError, match="start failed"):
+        loader.start()
+    assert not any(c.name == "FailWidget" for c in get_registry().components())
+    assert not any(p.panel_id == "fail-panel" for p in get_explorer_panels())

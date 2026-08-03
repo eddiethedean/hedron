@@ -114,6 +114,7 @@ def test_build_with_component_folder(tmp_path: Path) -> None:
         component_roots=("components",),
         build_dir=".hedron/build",
         theme="default",
+        plugins=(),
     )
     first = run_build(project_dir=tmp_path, settings=settings, production=True)
     second = run_build(project_dir=tmp_path, settings=settings, production=True)
@@ -144,6 +145,7 @@ def test_build_temp_staging_same_device(tmp_path: Path) -> None:
         component_roots=("components",),
         build_dir="out/build",
         theme="default",
+        plugins=(),
     )
     result = run_build(project_dir=tmp_path, settings=settings, production=True)
     assert result.build_dir == (tmp_path / "out" / "build").resolve()

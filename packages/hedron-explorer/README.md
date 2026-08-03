@@ -47,7 +47,7 @@ Then open the Explorer route published by the app (see
 
 ## Links
 
-- [Documentation](https://github.com/eddiethedean/hedron/tree/main/docs)
+- [Documentation](https://hedron-py.readthedocs.io/)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-explorer/CHANGELOG.md)
 - [Source](https://github.com/eddiethedean/hedron)
 - [`hedron`](https://pypi.org/project/hedron/)

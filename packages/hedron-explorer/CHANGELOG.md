@@ -14,7 +14,7 @@ audit hooks; mutation simulation disabled by default.
 
 ### Fixed
 
-- HDN/CSS reads are allowlisted under component `folder_path` / configured roots.
+- HDN/CSS reads are allowlisted under configured project component roots only (registry `folder_path` is not a trusted root).
 - Preview markup is embedded in a sandboxed iframe (`srcdoc`); absolute paths stay basename-redacted.
 - Static CSS is served via a routed `FileResponse` under Explorer guards (not a bare StaticFiles mount).
 - `/api/simulate` rejects bad JSON and unknown keys; CSRF is required when the CSRF cookie is present.

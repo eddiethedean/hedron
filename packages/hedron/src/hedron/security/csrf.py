@@ -62,8 +62,9 @@ def ensure_csrf_cookie(
     else:
         value = token or generate_csrf_token()
 
-    secure = False
+    secure = bool(request.url.is_secure) if request is not None else False
     if policy.profile is SecurityProfile.STRICT:
+        # Strict never emits a non-Secure cookie, even without a request context.
         secure = bool(request.url.is_secure) if request is not None else True
     response.set_cookie(
         key=policy.csrf_cookie_name,

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
+from contextlib import suppress
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -45,12 +46,26 @@ class LoadedPlugin:
 class PluginLoader:
     loaded: list[LoadedPlugin] = field(default_factory=list)
     _started: bool = False
+    _rollback: Callable[[], None] | None = None
 
     def start(self) -> None:
-        for item in self.loaded:
-            for hook in item.context._startup:
-                hook()
-        self._started = True
+        started: list[LoadedPlugin] = []
+        try:
+            for item in self.loaded:
+                for hook in item.context._startup:
+                    hook()
+                started.append(item)
+            self._started = True
+        except Exception:
+            for item in reversed(started):
+                for hook in reversed(item.context._shutdown):
+                    with suppress(Exception):
+                        hook()
+            if self._rollback is not None:
+                self._rollback()
+            self.loaded.clear()
+            self._started = False
+            raise
 
     def shutdown(self) -> None:
         errors: list[Exception] = []
@@ -173,7 +188,7 @@ def load_plugins(
                 )
 
         order = _topo_sort({name: meta.depends_on for name, (_, meta) in metas.items()})
-        loader = PluginLoader()
+        loader = PluginLoader(_rollback=_rollback)
         for name in order:
             target, meta = metas[name]
             ctx = PluginContext(meta)

@@ -310,7 +310,10 @@ class HedronRouter(APIRouter):
 
         op_id = operation_id_for("component", route_name, path, verb_list[0])
         wrapped = _wrap_endpoint(
-            factory, kind="component", mode=RenderMode.FRAGMENT, require_csrf=False
+            factory,
+            kind="component",
+            mode=RenderMode.FRAGMENT,
+            require_csrf=_requires_csrf(verb_list),
         )
         self.add_api_route(
             path,

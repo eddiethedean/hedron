@@ -93,7 +93,9 @@ def render_mode_for_request(request: Request, *, force: RenderMode | None = None
 
 
 def _require_local_path(url: str, header_name: str) -> str:
-    if not url.startswith("/") or url.startswith("//"):
+    from hedron.security.redirects import _is_local
+
+    if not _is_local(url):
         raise ValueError(f"{header_name} must be a local path")
     return url
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from urllib.parse import urlparse
 
 from fastapi import HTTPException, status
@@ -12,12 +13,20 @@ from hedron.security.policy import SecurityPolicy
 
 __all__ = ["redirect_external", "redirect_local"]
 
+# Reject backslashes and control characters that browsers may normalize into open redirects.
+_LOCAL_PATH = re.compile(r"^/[A-Za-z0-9._~!$&'()*+,;=:@%/\-]*$")
+
 
 def _is_local(url: str) -> bool:
+    if "\\" in url or any(ord(ch) < 32 for ch in url):
+        return False
     parsed = urlparse(url)
-    if not parsed.scheme and not parsed.netloc:
-        return url.startswith("/") and not url.startswith("//")
-    return False
+    if parsed.scheme or parsed.netloc:
+        return False
+    if not url.startswith("/") or url.startswith("//"):
+        return False
+    path = parsed.path or "/"
+    return _LOCAL_PATH.fullmatch(path) is not None
 
 
 def redirect_local(
@@ -47,7 +56,9 @@ def redirect_external(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid external redirect URL",
         )
-    if policy is not None and not policy.allow_external_redirects:
+    # Fail closed: missing policy means external redirects are disabled.
+    allow = bool(policy is not None and policy.allow_external_redirects)
+    if not allow:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="External redirects are disabled by security policy",

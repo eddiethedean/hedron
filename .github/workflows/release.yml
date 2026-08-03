@@ -49,7 +49,7 @@ jobs:
           uv venv /tmp/hedron-smoke --python ${{ matrix.python-version }}
           shopt -s nullglob
           core_wheels=(dist/hedron_core-*.whl)
-          hedron_wheels=(dist/hedron-0.*.whl)
+          hedron_wheels=(dist/hedron-[0-9]*.whl)
           if ((${#core_wheels[@]})); then
             uv pip install --python /tmp/hedron-smoke "${core_wheels[@]}"
             /tmp/hedron-smoke/bin/python - <<'PY'
@@ -119,6 +119,11 @@ jobs:
               raise SystemExit("\n".join(missing[:50]))
           print("ok: relative doc links resolve")
           PY
+      - name: MkDocs build
+        if: matrix.python-version == '3.12'
+        run: |
+          uv sync --group docs --python ${{ matrix.python-version }}
+          uv run --group docs mkdocs build --strict
 
   publish:
     name: Publish to PyPI

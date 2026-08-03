@@ -201,6 +201,8 @@ def _inject_build_assets(
     request: Request,
     result: RenderResult,
 ) -> str:
+    import html as html_lib
+
     html_text = _ensure_htmx_asset(html_text, mode)
     if mode is not RenderMode.PAGE:
         return html_text
@@ -214,11 +216,12 @@ def _inject_build_assets(
         tags.append(tag)
 
     for asset in result.assets:
+        href = html_lib.escape(asset.href, quote=True)
         if asset.kind == "css":
-            add(f'<link rel="stylesheet" href="{asset.href}">')
+            add(f'<link rel="stylesheet" href="{href}">')
         elif asset.kind in {"js", "module"}:
             typ = ' type="module"' if asset.kind == "module" else ""
-            add(f'<script{typ} src="{asset.href}"></script>')
+            add(f'<script{typ} src="{href}"></script>')
     # Always offer bundled disclose module from package static for WC proof
     if "hedron-disclose.mjs" not in html_text:
         add('<script type="module" src="/hedron-static/hedron-disclose.mjs"></script>')

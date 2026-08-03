@@ -110,6 +110,9 @@ def compose_lifespan(
                 settings = load_hedron_settings(settings_root)
             else:
                 settings = HedronSettings()
+            app.state.hedron_component_roots = [
+                str(p) for p in settings.resolved_roots(base=settings_root)
+            ]
             enabled = None if settings.plugins is None else list(settings.plugins)
             plugin_loader = load_plugins(enabled=enabled)
             app.state.hedron_plugin_loader = plugin_loader

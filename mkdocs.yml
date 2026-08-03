@@ -56,6 +56,11 @@ plugins:
 hooks:
   - docs/hooks.py
 
+exclude_docs: |
+  hooks.py
+  requirements-rtd.txt
+  overrides/**
+
 markdown_extensions:
   - admonition
   - attr_list

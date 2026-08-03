@@ -41,7 +41,7 @@ jobs:
           set -euo pipefail
           uv venv /tmp/hedron-smoke --python ${{ matrix.python-version }}
           uv pip install --python /tmp/hedron-smoke dist/hedron_core-*.whl
-          uv pip install --python /tmp/hedron-smoke dist/hedron-0.*.whl
+          uv pip install --python /tmp/hedron-smoke dist/hedron-[0-9]*.whl
           /tmp/hedron-smoke/bin/python - <<'PY'
           from hedron_core import Page, Text, RenderMode, render
           html = render(Page(Text("smoke"), title="Smoke"), mode=RenderMode.PAGE).html

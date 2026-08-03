@@ -18,6 +18,7 @@ from hedron.routing.router import HedronRouter
 from hedron.security.headers import SecurityHeadersMiddleware
 from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
 from hedron.static_mount import mount_build_assets, mount_hedron_static
+from hedron_core.compile_gate import is_production_env
 from hedron_core.theme import ensure_default_theme_registered
 
 ExplorerMode = Literal["off", "development", "secured"]
@@ -25,7 +26,29 @@ ExplorerMode = Literal["off", "development", "secured"]
 _DEFAULT_SESSION_SECRET = "hedron-dev-secret-change-me"
 logger = logging.getLogger("hedron")
 
-__all__ = ["Hedron", "mount_hedron_static", "mount_build_assets"]
+__all__ = ["Hedron", "mount_build_assets", "mount_hedron_static"]
+
+
+def _settings_explorer_hint() -> str | None:
+    """Read explicit [tool.hedron] explorer from cwd when present."""
+    try:
+        import tomllib
+
+        cwd = Path.cwd()
+        pyproject = cwd / "pyproject.toml"
+        if not pyproject.is_file():
+            return None
+        data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+        tool = data.get("tool") or {}
+        hedron = tool.get("hedron") if isinstance(tool, dict) else None
+        if not isinstance(hedron, dict) or "explorer" not in hedron:
+            return None
+        mode = str(hedron["explorer"] or "off")
+        if mode in {"off", "development", "secured"}:
+            return mode
+    except Exception:  # noqa: BLE001 — constructor must not fail on bad config
+        return None
+    return None
 
 
 class Hedron(FastAPI):
@@ -57,17 +80,33 @@ class Hedron(FastAPI):
         super().__init__(*args, **kwargs)
 
         self.hedron_policy = SecurityPolicy.from_name(security)
-        # Explicit explorer= overrides policy.explorer_enabled; None follows policy.
+        # Explicit explorer= overrides policy.explorer_enabled; None follows policy,
+        # then [tool.hedron] explorer when a project pyproject is present.
         if explorer is None:
-            self.hedron_explorer_mode = (
-                "development" if self.hedron_policy.explorer_enabled else "off"
-            )
+            settings_explorer = _settings_explorer_hint()
+            if settings_explorer is not None:
+                self.hedron_explorer_mode = settings_explorer
+            else:
+                self.hedron_explorer_mode = (
+                    "development" if self.hedron_policy.explorer_enabled else "off"
+                )
         else:
             self.hedron_explorer_mode = str(explorer)
+
+        is_prod = is_production_env(production=production)
+        if is_prod and self.hedron_explorer_mode == "development":
+            warnings.warn(
+                "Explorer development mode is disabled in production; "
+                "use explorer='secured' with explorer_dependencies, or explorer='off'.",
+                UserWarning,
+                stacklevel=2,
+            )
+            self.hedron_explorer_mode = "off"
+
         self.hedron_theme = theme
         self.state.hedron_security = self.hedron_policy
         self.state.hedron_theme = theme
-        self.state.hedron_production = production
+        self.state.hedron_production = production if production is not None else is_prod
         self._explorer_dependencies = list(explorer_dependencies or [])
 
         ensure_default_theme_registered()
