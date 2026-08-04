@@ -49,6 +49,70 @@ def test_hdn_component_tag() -> None:
     assert "Hi" in html
 
 
+def test_hdn_explicit_component_import_resolves_logical_id() -> None:
+    component_ref = "hedron-core:hedron_core.builtins.content.Text"
+    source = f'{{@import Copy from "{component_ref}"}}\n<Copy content={{label}} />'
+
+    prog = compile_hdn(source).program
+
+    assert prog.component_imports == {"Copy": component_ref}
+    assert prog.dependencies == (component_ref,)
+    assert prog.ops[0].data["component_ref"] == component_ref
+    restored = type(prog).from_dict(prog.to_dict())
+    assert restored.component_imports == prog.component_imports
+
+    nodes = run_program(restored, {"label": "Explicit"}, components={component_ref: Text})
+    html = render(nodes, mode=RenderMode.FRAGMENT).html
+    assert html == "<p>Explicit</p>"
+
+
+def test_hdn_explicit_import_mode_rejects_undeclared_component() -> None:
+    source = '{@import Copy from "app:Copy"}\n<Other />'
+
+    with pytest.raises(HedronError) as exc:
+        compile_hdn(source)
+
+    assert exc.value.diagnostic.code == "HED-HDN-0004"
+    assert exc.value.diagnostic.title == "Component is not imported"
+
+
+def test_hdn_imported_component_requires_logical_id_mapping() -> None:
+    source = '{@import Copy from "app:components.Copy"}\n<Copy />'
+    prog = compile_hdn(source).program
+
+    with pytest.raises(HedronError) as exc:
+        run_program(prog, {}, components={"Copy": Text})
+
+    assert exc.value.diagnostic.code == "HED-HDN-0004"
+    assert "app:components.Copy" in exc.value.diagnostic.explanation
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        '{@import copy from "app:Copy"}\n<div />',
+        '{@import Copy "app:Copy"}\n<div />',
+        '<div>{@import Copy from "app:Copy"}</div>',
+        '<div />\n{@import Copy from "app:Copy"}',
+    ],
+)
+def test_hdn_rejects_invalid_or_misplaced_component_import(source: str) -> None:
+    with pytest.raises(HedronError) as exc:
+        compile_hdn(source)
+
+    assert exc.value.diagnostic.code == "HED-HDN-0001"
+
+
+def test_hdn_rejects_duplicate_component_import_alias() -> None:
+    source = '{@import Copy from "app:First"}\n{@import Copy from "app:Second"}\n<Copy />'
+
+    with pytest.raises(HedronError) as exc:
+        compile_hdn(source)
+
+    assert exc.value.diagnostic.code == "HED-HDN-0001"
+    assert exc.value.diagnostic.title == "Duplicate component import"
+
+
 def test_hdn_trusted_html_required() -> None:
     prog = compile_hdn("{@html payload}").program
     with pytest.raises(HedronError) as exc:
@@ -71,7 +135,8 @@ def test_hdn_rejects_imports_and_calls() -> None:
 
 
 def test_hdn_formatter_idempotent() -> None:
-    source = """<div>
+    source = """{@import Copy from "app:components.Copy"}
+<div>
 <span>Hi {name}</span>
 </div>
 """
@@ -89,4 +154,4 @@ def test_hdn_nullish_and_helpers() -> None:
 def test_hdn_source_map_present() -> None:
     result = compile_hdn("<p>{name}</p>")
     assert result.source_map
-    assert result.program.format_version == 1
+    assert result.program.format_version == 2

@@ -1,4 +1,4 @@
-# Performance budgets (0.8 freeze)
+# Performance budgets (0.8 compatibility baseline)
 
 **Status:** Published for phase 0.8 enforcement  
 **Evidence:** `PERF-08-001`, `PERF-08-002`

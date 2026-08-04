@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import ast as py_ast
+import re
+
 from hedron_core.codes import HED_HDN_PARSE
 from hedron_core.diagnostics import error
 from hedron_core.hdn.ast import (
@@ -12,6 +15,7 @@ from hedron_core.hdn.ast import (
     FragmentNode,
     HtmlRawNode,
     IfNode,
+    ImportNode,
     Node,
     SlotNode,
     SourceSpan,
@@ -20,6 +24,11 @@ from hedron_core.hdn.ast import (
 from hedron_core.hdn.lexer import Token, TokenKind, lex
 
 __all__ = ["parse_hdn"]
+
+_IMPORT_RE = re.compile(
+    r"^@import\s+(?P<local>[A-Za-z_][A-Za-z0-9_]*)\s+from\s+"
+    r"(?P<source>\"(?:\\.|[^\"\\])*\"|'(?:\\.|[^'\\])*')$"
+)
 
 
 class _Parser:
@@ -52,20 +61,37 @@ class _Parser:
 
     def parse_document(self) -> Document:
         body: list[Node] = []
+        saw_content = False
         while self.peek().kind != TokenKind.EOF:
             if self.peek().kind == TokenKind.COMMENT:
                 self.advance()
                 continue
-            body.append(self.parse_node())
+            node = self.parse_node(allow_import=True)
+            if isinstance(node, ImportNode):
+                if saw_content:
+                    raise error(
+                        HED_HDN_PARSE,
+                        title="Component import must precede markup",
+                        explanation=(
+                            "HDN component imports are only allowed before rendered content."
+                        ),
+                        remediation=(
+                            "Move the {@import ...} declaration to the top of the template."
+                        ),
+                        context={"line": node.span.line, "column": node.span.column},
+                    )
+            elif not isinstance(node, TextNode) or node.value.strip():
+                saw_content = True
+            body.append(node)
         return Document(body=body)
 
-    def parse_node(self) -> Node:
+    def parse_node(self, *, allow_import: bool = False) -> Node:
         tok = self.peek()
         if tok.kind == TokenKind.TEXT:
             self.advance()
             return TextNode(span=self.span(tok), value=tok.value)
         if tok.kind == TokenKind.LBRACE:
-            return self.parse_brace()
+            return self.parse_brace(allow_import=allow_import)
         if tok.kind == TokenKind.LANGLE:
             return self.parse_element_or_fragment()
         raise error(
@@ -76,7 +102,7 @@ class _Parser:
             context={"line": tok.line, "column": tok.column},
         )
 
-    def parse_brace(self) -> Node:
+    def parse_brace(self, *, allow_import: bool = False) -> Node:
         start = self.expect(TokenKind.LBRACE)
         # Next token is IDENT containing expression source (lexer packs it)
         expr_tok = self.expect(TokenKind.IDENT)
@@ -86,6 +112,16 @@ class _Parser:
             return self.parse_if_block(start, src[4:].strip())
         if src.startswith("#for "):
             return self.parse_for_block(start, src[5:].strip())
+        if src.startswith("@import"):
+            if not allow_import:
+                raise error(
+                    HED_HDN_PARSE,
+                    title="Nested component import",
+                    explanation="HDN component imports are only allowed at the document root.",
+                    remediation="Move the {@import ...} declaration to the top of the template.",
+                    context={"line": start.line, "column": start.column},
+                )
+            return self.parse_import(start, src)
         if src.startswith("@html "):
             return HtmlRawNode(span=self.span(start), expression=src[6:].strip())
         if src in {":else", "/if", "/for"}:
@@ -97,6 +133,57 @@ class _Parser:
                 context={"line": start.line, "column": start.column},
             )
         return ExprNode(span=self.span(start), source=src)
+
+    def parse_import(self, start: Token, source: str) -> ImportNode:
+        match = _IMPORT_RE.fullmatch(source)
+        if match is None:
+            raise error(
+                HED_HDN_PARSE,
+                title="Invalid component import",
+                explanation=f"Could not parse component import {source!r}.",
+                remediation='Use {@import LocalName from "component-logical-id"}.',
+                context={"line": start.line, "column": start.column},
+            )
+        local_name = match.group("local")
+        if not local_name[:1].isupper():
+            raise error(
+                HED_HDN_PARSE,
+                title="Invalid component import name",
+                explanation=f"Imported component name {local_name!r} must start uppercase.",
+                remediation="Use an uppercase local name so HDN treats the tag as a component.",
+                context={"line": start.line, "column": start.column},
+            )
+        try:
+            component_ref = py_ast.literal_eval(match.group("source"))
+        except (SyntaxError, ValueError) as exc:
+            raise error(
+                HED_HDN_PARSE,
+                title="Invalid component import reference",
+                explanation="The component logical identifier is not a valid string literal.",
+                remediation='Use {@import LocalName from "component-logical-id"}.',
+                context={"line": start.line, "column": start.column},
+            ) from exc
+        if not isinstance(component_ref, str) or not component_ref.strip():
+            raise error(
+                HED_HDN_PARSE,
+                title="Invalid component import reference",
+                explanation="A component import needs a non-empty logical identifier.",
+                remediation='Use {@import LocalName from "component-logical-id"}.',
+                context={"line": start.line, "column": start.column},
+            )
+        if any(ord(char) < 32 for char in component_ref):
+            raise error(
+                HED_HDN_PARSE,
+                title="Invalid component import reference",
+                explanation="Component logical identifiers cannot contain control characters.",
+                remediation="Use the registered component's stable logical identifier.",
+                context={"line": start.line, "column": start.column},
+            )
+        return ImportNode(
+            span=self.span(start),
+            local_name=local_name,
+            component_ref=component_ref,
+        )
 
     def parse_if_block(self, start: Token, condition: str) -> IfNode:
         then_body: list[Node] = []

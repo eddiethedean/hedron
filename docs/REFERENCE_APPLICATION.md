@@ -16,7 +16,7 @@ An authenticated team administration application contains:
 - `Auto()` rendering for a dataframe and ordinary Python values;
 - a scoped async data cache with visible hit/miss behavior;
 - a bounded upload/download flow plus metric and status components;
-- HDN for one custom component and Python composition for another;
+- one legacy experimental HDN parity sample and Python composition for supported authoring;
 - scoped styles, a custom theme, and locally served assets;
 - Component Explorer examples, route/HTMX traces, security findings, assets, data, and chart panels.
 
@@ -50,5 +50,6 @@ demos.
 
 The application grows cumulatively from the static rendering proof in phase 0.1 (`v0.1.0`) through
 the complete data-and-visualization workflow in phase 0.6 (`v0.6.0`). Phase 0.7 adds operations and
-native adapter slices. Its clean-install production deployment from published `1.0.0rcN` artifacts
-is the phase 0.8 architectural validation gate, not merely a tutorial milestone.
+native adapter slices. Later capability phases extend those slices through their native integration
+and deployment paths; clean-install production deployment from built/published artifacts remains a
+gate for every promoted capability, not merely a tutorial milestone.

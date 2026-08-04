@@ -5,7 +5,7 @@ status: shipped
 # Caching APIs
 
 
-!!! note "Stability (0.8 freeze)"
+!!! note "Stability (0.8 compatibility baseline)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
@@ -34,4 +34,3 @@ def user_table(team_id: int) -> UserTable:
 - Invalidations use explicit tags, versioning, or backend operations; components do not infer domain invalidation.
 
 Backends are pluggable. Hedron does not implement a distributed cache service. Explorer reports hit, miss, wait, age, scope, size, and invalidation metadata without displaying sensitive keys or values.
-

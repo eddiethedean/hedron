@@ -56,16 +56,18 @@ Hedron-owned Django forms). See [Compatibility](../COMPATIBILITY.md),
 ## What does “Supported” vs “Deferred” vs package Beta mean?
 
 - **Package maturity** (Beta/Alpha): how ready the *distribution* is for production judgment.
-- **API stability** (`beta` / `experimental` / `internal` / `deferred`): freeze catalog in
+- **API stability** (`stable` / `beta` / `experimental` / `internal` / `deferred`): compatibility catalog in
   [STABILITY](../api/STABILITY.md).
 - **Adapter capability Supported/Deferred**: what we claim in acceptance evidence
   ([ADAPTERS](../acceptance/ADAPTERS.md)). Deferred features are documented and must not
   be marketed as Supported.
 
-## Preferred HDN template extension?
+## HDN template extension?
 
-Prefer `template.hdx` (JSX-familiar). Legacy `template.hdn` remains a discoverable
-fallback. See the [HDN tutorial](hdn-templates.md).
+Existing experimental templates use `template.hdn`; no alternate extension is discovered. HDN is
+scheduled for staged removal under D-040/RFC-0031, so new components should use Python. The optional
+`hedron-jinja` trusted-template integration is planned for phase 0.11 but is not shipped today. See
+the [legacy HDN guide](hdn-templates.md) and [Jinja API contract](../api/JINJA.md).
 
 ## Are the docs “interactive demos” a running Hedron server?
 

@@ -31,7 +31,7 @@
   contract with bounded polling plus optional SSE promotion.
 - [ ] Phase 0.7: independently pinned extension asset contract and a time-boxed official SSE
   decision for jobs. Polling is the required baseline; SSE may remain deferred and WebSocket
-  components remain post-1.0 absent a new accepted RFC.
+  components remain assigned to phase 0.10 and require an accepted transport RFC.
 - [x] Phase 0.8: Chromium/Firefox/WebKit matrix, core/extension supply-chain audit, and history privacy.
   *(`HTMX-08-001` / `HTMX-08-002` / `SEC-08-003`; CI browser matrix)*
 - [x] Phase 0.8: application/intermediary cache-separation evidence for pages, fragments, history

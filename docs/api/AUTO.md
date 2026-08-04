@@ -5,7 +5,7 @@ status: shipped
 # `Auto`
 
 
-!!! note "Stability (0.8 freeze)"
+!!! note "Stability (0.8 compatibility baseline)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
@@ -32,4 +32,3 @@ Selection is deterministic. Each renderer declares supported types, priority, co
 The Data Intelligence Layer may inspect schema, size, cardinality, datetime columns, and geographic fields to recommend presentation. Expensive inspection is bounded and cannot implicitly collect a lazy dataset. `as_=` and policy options provide explicit override.
 
 Explorer shows the selected renderer, candidates, rejected candidates, inspection evidence, and payload implications.
-

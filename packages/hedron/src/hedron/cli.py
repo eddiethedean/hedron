@@ -218,7 +218,7 @@ def _cmd_eject(args: argparse.Namespace) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
     if meta.hdn_source and Path(meta.hdn_source).is_file():
-        dest = out_dir / "template.hdx"
+        dest = out_dir / "template.hdn"
         if dest.exists() and not args.force:
             print(f"Refusing to overwrite {dest} (use --force)", file=sys.stderr)
             return 1
@@ -226,7 +226,7 @@ def _cmd_eject(args: argparse.Namespace) -> int:
         written.append(str(dest))
     elif meta.hdn_source is None:
         # Eject a starter HDN shell preserving semantic contract notes
-        dest = out_dir / "template.hdx"
+        dest = out_dir / "template.hdn"
         if not dest.exists() or args.force:
             dest.write_text(
                 f"<!-- Ejected template for {meta.logical_id}. -->\n"
@@ -382,7 +382,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
                 except HedronError as exc:
                     diags.extend(exc.diagnostics)
 
-    # Security / a11y / freeze-boundary informational findings (excluded from exit code)
+    # Security / a11y / compatibility-boundary informational findings (excluded from exit code)
     info_diags = [
         make_diagnostic(
             "HED-SEC-0001",
@@ -401,10 +401,10 @@ def _cmd_check(args: argparse.Namespace) -> int:
         make_diagnostic(
             "HED-COMPAT-0001",
             severity=DiagnosticSeverity.INFORMATION,
-            title="0.8 feature freeze is active",
+            title="0.8 compatibility baseline is active",
             explanation=(
-                "Phase 0.8 freezes the public API baseline; no new subsystems, adapters, "
-                "or transports. SSE live transport and Django QuerySet DataSource remain Deferred."
+                "Phase 0.8 classifies the public API and compatibility baseline. "
+                "Django QuerySet integration is assigned to 0.9; SSE/live transport to 0.10."
             ),
             remediation="See docs/api/STABILITY.md and docs/guides/upgrade.md.",
         ),
@@ -424,18 +424,6 @@ def _cmd_check(args: argparse.Namespace) -> int:
                 "browser evidence promote them; prefer Matplotlib static SVG for stable dashboards."
             ),
             remediation="See docs/api/STABILITY.md and docs/api/CHART.md.",
-        ),
-        make_diagnostic(
-            "HED-COMPAT-0004",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="Prefer template.hdx for HDN sources",
-            explanation=(
-                "Component discovery prefers template.hdx; template.hdn remains a compatibility "
-                "fallback. hedron eject writes .hdx."
-            ),
-            remediation=(
-                "Rename template.hdn to template.hdx when convenient; see docs/guides/upgrade.md."
-            ),
         ),
     ]
     all_diags = [*diags, *info_diags]
@@ -541,7 +529,6 @@ def _cmd_dev(args: argparse.Namespace) -> int:
     settings = load_hedron_settings(base)
     roots = list(settings.resolved_roots(base=base))
     watch_exts = {
-        ".hdx",
         ".hdn",
         ".css",
         ".mjs",

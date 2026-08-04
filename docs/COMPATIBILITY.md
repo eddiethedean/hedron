@@ -5,7 +5,7 @@
 
 ## Initial runtime ranges
 
-| Dependency | `v0.8.0` freeze matrix | Policy |
+| Dependency | `v0.8.0` compatibility baseline | Policy |
 |---|---|---|
 | Python | CPython 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.11,<3.15"`; 3.15 prereleases are not supported. |
 | FastAPI | `>=0.141.1,<0.142` | Required by `hedron`, not `hedron-core`; expand only after adapter conformance. |
@@ -35,7 +35,7 @@ supported until its native conformance slice is green.
 | FastAPI operations | Uvicorn `>=0.30,<1` with `--workers` ≥ 2; proxy-forwarding via explicit `ProxyHeadersMiddleware` / trusted hosts only (fail closed when misconfigured). `root_path` and `X-Forwarded-Prefix` must match the reverse-proxy mount. |
 | External cache | **Redis** `>=7.0` server; client `redis` `>=5,<6`. Serialization: JSON UTF-8 with key version prefix `h1:`; failures raise and surface via readiness without caching poisoned values. Conformance uses `fakeredis` in unit CI and Redis in ops topology. |
 | Durable jobs | `JobBackend` protocol with **in-memory** test double and **Redis** conformance backend. Polling status retention default 24h; `Retry-After` from backend capability. BackgroundTasks remain non-durable. |
-| Browsers (0.8 freeze) | Chromium, Firefox, and WebKit (Playwright pinned channels) for release-blocking HTMX/history/focus/OOB/CSP/reduced-motion evidence. |
+| Browsers (0.8 baseline) | Chromium, Firefox, and WebKit (Playwright pinned channels) for release-blocking HTMX/history/focus/OOB/CSP/reduced-motion evidence. |
 
 ### Framework capability matrix (portable vs host)
 
@@ -64,28 +64,36 @@ Hedron uses documented public upstream APIs. Compatibility shims are isolated by
 Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 (`stable` | `beta` | `experimental` | `internal` | `deferred`).
 
-- Pre-1.0 (`0.x`) public APIs may change through accepted RFC revisions, changelog entries, and
-  diagnostics when a replacement exists.
-- After `v1.0.0`, public contracts follow semantic versioning:
-  - **MAJOR** — breaking changes to a `stable` Python API, CLI contract, config key meaning,
-    diagnostic code semantics, plugin protocol, or versioned manifest/HDN format.
-  - **MINOR** — additive APIs, new optional extras, new Supported capability rows, deprecations.
-  - **PATCH** — bug fixes, security fixes, dependency floor bumps within the declared range,
-    documentation.
+- Hedron intentionally remains on capability-driven `0.x` releases; no 1.0 freeze is scheduled.
+- `stable` contracts are compatibility-protected regardless of the distribution's `0.x` version.
+  An incompatible change requires an accepted RFC/decision, migration tooling or guidance, a
+  deprecation diagnostic when feasible, and at least one intervening minor phase before removal.
+- `beta` contracts may change at a minor phase boundary with the same changelog, migration, and
+  evidence obligations; patch releases remain backward compatible except for an urgent security or
+  correctness fix with explicit disclosure.
+- `experimental` contracts may change or be removed in a minor phase but must remain visibly
+  classified. `internal` and `deferred` behavior is not a Supported public promise.
+- Release changes are classified as:
+  - **MINOR PHASE** — additive APIs, new optional extras/capabilities, promoted stability, or an
+    approved beta/experimental revision with migration evidence;
+  - **PATCH** — compatible bug/security fixes, dependency changes within the declared range, and
+    documentation;
+  - **FUTURE MAJOR** — reserved for a separately accepted RFC demonstrating a real ecosystem-wide
+    compatibility boundary, never created merely because the roadmap reached a certain size.
 - Bundled browser-asset pin changes (exact HTMX version/digest) are at least a **MINOR** and require
   the three-engine browser suite plus asset audit evidence.
-- Manifest / `HDN_FORMAT_VERSION` bumps that reject older artifacts are **MAJOR** after 1.0; during
-  0.8 RC they require migration notes in the upgrade guide.
-- Deprecations include a diagnostic code (when feasible), replacement guidance, and a numeric support
-  window of **at least one minor release** after `v1.0.0` before removal. Pre-1.0 removals still
-  require changelog + upgrade-guide coverage.
+- Manifest / `HDN_FORMAT_VERSION` bumps that reject older artifacts require a new minor phase,
+  accepted migration design, upgrade diagnostics, compatibility fixtures, and retained migration
+  evidence.
+- Deprecations include a diagnostic code (when feasible), replacement guidance, and a numeric
+  support window of **at least one intervening minor phase** before removal.
 - Rendered markup, registry metadata, HDN compiled formats, CSS symbol manifests, and plugin
   protocols each declare whether they are public, versioned artifacts or private details
   ([STABILITY.md](api/STABILITY.md)).
 
-## Phase 0.8 freeze matrix
+## Phase 0.8 compatibility baseline
 
-| Dimension | Freeze baseline |
+| Dimension | 0.8 baseline |
 |---|---|
 | Python | CPython 3.11–3.14 |
 | FastAPI flagship | FastAPI `>=0.141.1,<0.142` + Uvicorn workers |
@@ -95,8 +103,8 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 | HTMX | Bundled 2.0.10; contract `>=2.0,<3.0` |
 | Deferred | SSE live transport; Django QuerySet DataSource |
 
-Changing a Supported row after the freeze requires an approved compatibility fix, migration
-analysis, and a complete rerun of affected `release-gate-0.8.toml` evidence.
+Changing a Supported row in a later capability phase requires an accepted compatibility update,
+migration analysis, and a complete rerun of affected baseline plus owning-phase evidence.
 
 ## Cross-package compatibility
 
@@ -119,8 +127,9 @@ Compatibility claims for the 0.2.0 train require clean-install, package, FastAPI
 
 For 0.7 and later, compatibility evidence includes the framework/server capability matrix, native
 adapter slices, offline browser assets, multi-worker deployment, and external cache/job degradation.
-For 0.8 and `1.0.0rcN`, the matrix is immutable except for an approved compatibility fix with
-migration analysis and a complete rerun of affected evidence.
+From 0.8 onward, a phase may revise the matrix only through its accepted capability scope, migration
+analysis, and a complete rerun of affected evidence. Dependency metadata alone never creates a
+Supported claim.
 
 ## Primary sources reviewed
 

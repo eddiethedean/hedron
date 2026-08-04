@@ -20,7 +20,13 @@
 
 **Fragment** — HTML intended to replace or augment part of a document, normally in response to HTMX.
 
-**HDN** — Hedron’s optional JSX-inspired, HTML-first server template language. Its source files use the `.hdx` extension; `.hdn` remains a compatibility alias.
+**HDN** — Hedron's legacy experimental template-language prototype. Existing source files use the
+`.hdn` extension and `template.hdn` filename. D-040/RFC-0031 schedule deprecation in 0.11, default
+discovery removal in 0.12, and first-party runtime removal in 0.13.
+
+**Hedron Jinja integration** — Planned optional phase 0.11 adapter for trusted application Jinja
+templates. It exposes a static allowlist of typed Hedron components and returns a complete
+`RenderResult`; it does not make Jinja a core dependency or a sandbox for untrusted authors.
 
 **HedronRoute** — The `APIRoute` subclass that recognizes component contracts and produces Hedron responses and metadata.
 

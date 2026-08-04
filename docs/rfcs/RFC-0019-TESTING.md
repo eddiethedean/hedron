@@ -5,7 +5,8 @@
 ## Layers
 
 - Pure component and serializer unit tests.
-- Snapshot tests for HTML, manifests, HDN programs, styles, OpenAPI, and chart specifications.
+- Snapshot tests for HTML, manifests, styles, OpenAPI, chart specifications, and legacy HDN
+  programs while they remain supported for migration.
 - Adapter conformance tests for routing, dependencies, security, and response behavior.
 - HTTP tests with FastAPI/httpx clients.
 - Browser tests for HTMX, Web Components, keyboard behavior, and accessibility.
@@ -21,4 +22,3 @@ Snapshots normalize only documented nondeterminism. They must not hide ordering 
 - The reference application runs against released packages, not repository-only imports.
 - Tests cover sync/async parity, cancellation cleanup, security boundaries, and optional-dependency absence.
 - Accessibility checks combine static rules, axe-style browser analysis, and manual keyboard scenarios.
-

@@ -1,6 +1,6 @@
-# Threat model (0.8 freeze)
+# Threat model (0.8 compatibility baseline)
 
-**Status:** Maintained for phase 0.8 / `v1.0.0` acceptance  
+**Status:** Maintained from the phase 0.8 compatibility baseline onward
 **Owner:** hedron  
 **Evidence:** `SEC-08-001`
 
@@ -47,5 +47,5 @@ business validation remain application responsibilities (see product non-goals).
 
 ## Review cadence
 
-Re-review on every minor release and before each `1.0.0rcN`. Record findings in the release
+Re-review on every minor capability release. Record findings in the release
 evidence bundle.

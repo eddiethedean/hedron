@@ -140,7 +140,7 @@ def test_load_hdn_program_roundtrip(tmp_path: Path) -> None:
     components = tmp_path / "components" / "Pill"
     components.mkdir(parents=True)
     (components / "styles.css").write_text(".root { color: blue; }\n", encoding="utf-8")
-    (components / "template.hdx").write_text('<div class="root">{label}</div>\n', encoding="utf-8")
+    (components / "template.hdn").write_text('<div class="root">{label}</div>\n', encoding="utf-8")
     settings = HedronSettings(
         component_roots=("components",),
         build_dir=".hedron/build",
@@ -154,7 +154,7 @@ def test_load_hdn_program_roundtrip(tmp_path: Path) -> None:
     assert rel.startswith("hdn/") and "Pill" in rel
     program = load_hdn_program(result.build_dir / rel)
     live = compile_hdn(
-        (components / "template.hdx").read_text(encoding="utf-8"),
+        (components / "template.hdn").read_text(encoding="utf-8"),
         style_symbols=dict(result.manifest.css_symbols[0].symbols),
     ).program
     built_html = render(run_program(program, {"label": "Hi"}), mode=RenderMode.FRAGMENT).html
@@ -174,13 +174,13 @@ def test_hdn_artifact_paths_unique_for_same_name(tmp_path: Path) -> None:
     b = tmp_path / "sources" / "b" / "Widget"
     for folder, dist in ((a, "dist-a"), (b, "dist-b")):
         folder.mkdir(parents=True)
-        (folder / "template.hdx").write_text(f'<div class="root">{dist}</div>\n', encoding="utf-8")
+        (folder / "template.hdn").write_text(f'<div class="root">{dist}</div>\n', encoding="utf-8")
         register_component(
             logical_id=f"{dist}:mod.Widget",
             name="Widget",
             module="mod",
             distribution=dist,
-            hdn_source=str(folder / "template.hdx"),
+            hdn_source=str(folder / "template.hdn"),
             folder_path=str(folder),
         )
     # Keep component_roots empty so discovery does not collapse same-named folders.
@@ -382,11 +382,10 @@ def test_browser_only_folder_registers_component(tmp_path: Path) -> None:
     assert any(m.name == "Glow" and m.browser_modules for m in metas)
 
 
-@pytest.mark.parametrize("filename", ["template.hdx", "template.hdn"])
-def test_component_discovery_accepts_hdx_and_legacy_hdn(tmp_path: Path, filename: str) -> None:
+def test_component_discovery_accepts_hdn(tmp_path: Path) -> None:
     folder = tmp_path / "components" / "Card"
     folder.mkdir(parents=True)
-    template = folder / filename
+    template = folder / "template.hdn"
     template.write_text("<div>Card</div>", encoding="utf-8")
 
     [discovered] = discover_component_folders([tmp_path / "components"])
@@ -394,15 +393,12 @@ def test_component_discovery_accepts_hdx_and_legacy_hdn(tmp_path: Path, filename
     assert discovered.template_hdn == template
 
 
-def test_component_discovery_prefers_hdx_when_both_extensions_exist(tmp_path: Path) -> None:
+def test_component_discovery_ignores_non_hdn_template_extension(tmp_path: Path) -> None:
     folder = tmp_path / "components" / "Card"
     folder.mkdir(parents=True)
-    (folder / "template.hdx").write_text("<div>Preferred</div>", encoding="utf-8")
-    (folder / "template.hdn").write_text("<div>Legacy</div>", encoding="utf-8")
+    (folder / "template.html").write_text("<div>Not HDN</div>", encoding="utf-8")
 
-    [discovered] = discover_component_folders([tmp_path / "components"])
-
-    assert discovered.template_hdn == folder / "template.hdx"
+    assert discover_component_folders([tmp_path / "components"]) == ()
 
 
 def test_cli_empty_registry_hints(capsys: pytest.CaptureFixture[str]) -> None:
@@ -434,7 +430,7 @@ def test_cli_eject_nothing_written_exits_nonzero(
     )
     out = tmp_path / "ejected"
     out.mkdir()
-    (out / "template.hdx").write_text("x", encoding="utf-8")
+    (out / "template.hdn").write_text("x", encoding="utf-8")
     (out / "styles.css").write_text("y", encoding="utf-8")
     register_component(
         logical_id="app:demo.Empty",

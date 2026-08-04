@@ -21,7 +21,7 @@ from hedron_core.security import TrustedHtml
 
 __all__ = ["Op", "RenderProgram", "load_hdn_program", "run_program"]
 
-HDN_FORMAT_VERSION = 1
+HDN_FORMAT_VERSION = 2
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,6 +36,7 @@ class RenderProgram:
     ops: tuple[Op, ...]
     source_map: tuple[Mapping[str, Any], ...] = ()
     dependencies: tuple[str, ...] = ()
+    component_imports: Mapping[str, str] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -43,6 +44,7 @@ class RenderProgram:
             "ops": [{"kind": op.kind, "data": dict(op.data)} for op in self.ops],
             "source_map": list(self.source_map),
             "dependencies": list(self.dependencies),
+            "component_imports": dict(sorted(self.component_imports.items())),
         }
 
     @classmethod
@@ -67,6 +69,10 @@ class RenderProgram:
             ops=ops,
             source_map=tuple(dict(item) for item in data.get("source_map", ())),
             dependencies=tuple(str(x) for x in data.get("dependencies", ())),
+            component_imports={
+                str(alias): str(component_ref)
+                for alias, component_ref in dict(data.get("component_imports") or {}).items()
+            },
         )
 
 
@@ -81,7 +87,11 @@ def run_program(
     *,
     components: Mapping[str, Any] | None = None,
 ) -> Any:
-    """Execute a compiled render program into NodeLike structures."""
+    """Execute a compiled render program into NodeLike structures.
+
+    Explicitly imported components are keyed by their logical IDs. Templates without
+    import declarations continue to use uppercase tag names as mapping keys.
+    """
     comps = dict(components or {})
     return _run_ops(list(program.ops), dict(scope), comps)
 
@@ -112,6 +122,7 @@ def _run_ops(ops: list[Op], scope: dict[str, Any], components: dict[str, Any]) -
             i += 1
         elif kind == "element":
             tag = str(op.data["tag"])
+            component_ref = str(op.data.get("component_ref") or tag)
             child_count = int(op.data["child_count"])
             attr_specs: Sequence[Mapping[str, Any]] = op.data.get("attrs", ())
             i += 1
@@ -124,7 +135,7 @@ def _run_ops(ops: list[Op], scope: dict[str, Any], components: dict[str, Any]) -
                     attrs[name] = eval_expr(str(spec["source"]), scope)
                 else:
                     attrs[name] = spec.get("value")
-            node = _make_element(tag, attrs, children, components)
+            node = _make_element(tag, attrs, children, components, component_ref=component_ref)
             out.append(node)
         elif kind == "fragment":
             child_count = int(op.data["child_count"])
@@ -178,16 +189,24 @@ def _make_element(
     attrs: dict[str, Any],
     children: list[Any],
     components: dict[str, Any],
+    *,
+    component_ref: str,
 ) -> Any:
     html_attrs = _html_attrs(attrs)
     if tag[:1].isupper():
-        cls = components.get(tag)
+        cls = components.get(component_ref)
         if cls is None:
             raise error(
                 HED_HDN_UNKNOWN_COMPONENT,
                 title="Unknown HDN component",
-                explanation=f"Component tag <{tag}> is not registered in the render scope.",
-                remediation="Pass the component class in the components mapping.",
+                explanation=(
+                    f"Component tag <{tag}> resolves to {component_ref!r}, which is not "
+                    "registered in the render scope."
+                ),
+                remediation=(
+                    f"Pass the component class under key {component_ref!r} in the "
+                    "components mapping."
+                ),
             )
         props = dict(attrs)
         if "class" in props:

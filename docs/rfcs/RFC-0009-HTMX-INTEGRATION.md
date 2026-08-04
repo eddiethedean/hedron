@@ -6,7 +6,7 @@
 
 HTMX owns server requests and DOM swaps. Hedron supplies typed conveniences, page-versus-fragment response selection, component references, safe targets, response headers, testing helpers, and diagnostics while keeping generated `hx-*` attributes visible.
 
-The 1.0 line targets HTMX `>=2.0,<3.0` with an exact reviewed core asset per Hedron release.
+The current compatibility line targets HTMX `>=2.0,<3.0` with an exact reviewed core asset per Hedron release.
 Removed HTMX 1 attributes are not accepted. HTMX 2 extensions are independently pinned, locally
 served optional assets with their own compatibility, CSP, lifecycle, and audit evidence.
 

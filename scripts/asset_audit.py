@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 HTMX_PATH = ROOT / "packages" / "hedron" / "src" / "hedron" / "static" / "htmx.min.js"
-# Exact pin for the 0.8 freeze (HTMX 2.0.10).
+# Exact pin for the 0.8 compatibility baseline (HTMX 2.0.10).
 EXPECTED_VERSION = "2.0.10"
 EXPECTED_SHA256 = "71ea67185bfa8c98c39d31717c6fce5d852370fcdfd129db4543774d3145c0de"
 

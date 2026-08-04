@@ -1,6 +1,6 @@
 # HTMX 2 extension evaluation (phase 0.6–0.7)
 
-**Status:** Phase 0.7 extension asset contract defined; SSE deferred post-1.0 (D-037)  
+**Status:** Phase 0.7 extension asset contract defined; SSE assigned to phase 0.10 (D-037/D-038)
 **Date:** 2026-08-03
 
 Hedron's fragment asset/head policy:
@@ -15,7 +15,7 @@ Hedron's fragment asset/head policy:
 
 | Extension | Decision | Rationale |
 |---|---|---|
-| Official SSE (`htmx-ext-sse`) | **Deferred post-1.0** | Time-boxed against bounded job polling; polling + `Retry-After` satisfies JOB-004. Asset contract remains declared with `deferred=True`. |
+| Official SSE (`htmx-ext-sse`) | **Deferred to 0.10** | Time-boxed against bounded job polling; polling + `Retry-After` satisfies JOB-004. Asset contract remains declared with `deferred=True` until the 0.10 gate passes. |
 | `head-support` | **Optional contract** | May be locally served with digest/CSP/load order when enabled; not a default shell dependency. |
 | Idiomorph | **Deferred (opt-in later)** | Morphing helps preserve custom-element state, but form/focus/CE lifecycle harnesses are not yet green enough to ship a pinned default. |
 | `response-targets` | **Deferred** | Core `HX-Retarget` / `HX-Reselect` plus `InteractionResult` status policies cover declared error/validation targets without another extension. |

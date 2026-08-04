@@ -4,7 +4,9 @@
 
 ## Purpose
 
-Plugins extend components, renderers, integrations, CLI commands, Explorer panels, HDN helpers, data sources, chart adapters, and build diagnostics without expanding required dependencies.
+Plugins extend components, renderers, integrations, CLI commands, Explorer panels, data sources,
+chart adapters, and build diagnostics without expanding required dependencies. Legacy HDN helper
+extension is legacy under D-040/RFC-0031 and is not a forward compatibility promise.
 
 ## Contract
 
@@ -20,4 +22,3 @@ Installing a plugin is equivalent to installing executable Python code. Hedron r
 - Missing optional packages do not prevent unrelated application imports.
 - All registered assets and Explorer extensions appear in audits.
 - Plugin failures include ownership and dependency context and cannot leave partially registered state.
-

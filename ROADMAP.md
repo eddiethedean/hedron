@@ -1,8 +1,15 @@
-# Roadmap to 1.0
+# Capability roadmap
 
-Hedron advances through cumulative product phases from 0.0 to 1.0. Phase 0.0 is the documentation and foundation baseline and publishes no package. Each implementation phase from 0.1 onward produces an initial release whose tag adds a patch component: phase 0.1 produces `v0.1.0`, phase 0.2 produces `v0.2.0`, and so on through phase 0.8 producing `v0.8.0`; phase 1.0 produces `v1.0.0`. Python package metadata omits the tag prefix (`0.1.0`, `0.2.0`, …, `1.0.0`).
+Hedron advances through cumulative, capability-driven `0.x` phases. Phase 0.0 is the documentation
+and foundation baseline and publishes no package. Each implementation phase `0.N` produces initial
+release `v0.N.0`; phase 0.10 therefore produces `v0.10.0`, not a patch of 0.1. Python package
+metadata omits the tag prefix.
 
-Phase numbers describe capability maturity, not calendar commitments. Patch releases such as `v0.1.1` remain maintenance releases within their owning phase and do not create new roadmap phases. Scope may move to a later phase, but an initial release may not claim phase completion with a partially implemented public contract.
+Phase numbers describe capability maturity, not calendar commitments or progress toward an
+arbitrary stable-version deadline. No `1.0` phase is scheduled. Patch releases such as `v0.8.1`
+remain maintenance releases within their owning phase and do not create new roadmap phases. Scope
+may move to a later phase, but an initial release may not claim phase completion with a partially
+implemented public contract.
 
 ## Release-wide definition of done
 
@@ -17,6 +24,22 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - CLI or Component Explorer visibility for new inference;
 - migration notes, examples, and compatibility evidence;
 - a working increment of the reference application using packaged-style imports.
+
+## Cross-phase authoring transition — Jinja / HDN
+
+D-040 and accepted RFC-0031 select an optional `hedron-jinja` integration for trusted application
+templates. Typed Python components remain canonical. Jinja owns template composition; Hedron owns
+allowlisted component bindings, rendering, metadata, diagnostics, assets, HTMX policy, and framework
+adapters. The integration is planned for phase 0.11 and is not shipped on the current train.
+
+The current HDN language, expression evaluator, render-program format, and compile/load/run surface
+remain experimental. Until the phase 0.11 implementation gate:
+
+- Python components remain the recommended shipped authoring model;
+- no new HDN grammar, evaluator, formatter, artifact, editor, or first-party dependency is added;
+- HDN work is limited to critical fixes, inventory, diagnostics, and migration support; and
+- Jinja work follows RFC-0031's separate-package, strict-policy, metadata, conformance, and evidence
+  gates rather than inheriting HDN internals.
 
 ## 0.0 — Specification and project foundation (documentation baseline; no package release)
 
@@ -80,14 +103,17 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - FastAPI conformance, security, HTMX, OpenAPI, sync/async endpoint, and dependency-cleanup suites pass.
 - A new user reaches a secure working page in under five minutes using published instructions.
 
-## 0.3 — Authoring, styles, assets, and themes (`v0.3.0`)
+## 0.3 — Styles, assets, themes, and HDN prototype (`v0.3.0`)
 
-**Outcome:** Developers can move from built-in Python composition to complete markup and presentation control without adding Node.js.
+**Outcome:** Developers gain complete presentation control without adding Node.js. The release also
+shipped the first HDN prototype; D-039 later reclassified that language/runtime as experimental and
+reopened its product premise.
 
 ### Scope
 
-- HDN grammar, parser, portable expression engine, type checking, render-program compilation, formatter, diagnostics, and source maps.
-- `inspect` and `eject` workflows for built-in component templates.
+- Experimental HDN parser, expression evaluator, render-program compiler/runtime, formatter,
+  diagnostics, and source-map prototype.
+- `inspect` and `eject` workflows, retained as RFC-0031 migration inputs.
 - Scoped CSS AST compiler, typed style symbols, keyframe scoping, explicit globals, variants, cascade layers, and token contracts.
 - Theme registration, light/dark **token modes**, accessible tokens, and application override layers
   (system `prefers-color-scheme` and `data-theme` selectors; no first-party toggle UI yet).
@@ -98,9 +124,11 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 
 ### Exit gate
 
-- The reference application contains equivalent representative Python and HDN components.
-- Clean builds are deterministic, production requires no runtime HDN/CSS compilation, and strict CSP passes.
-- HDN, scoped-style, theme, asset, and build acceptance suites pass.
+- The reference application contains a narrow Python/HDN parity proof; it does not establish a
+  complete typed language contract.
+- Clean builds are deterministic, production requires no runtime CSS compilation, and strict CSP passes.
+- Scoped-style, theme, asset, and build acceptance suites pass. HDN evidence is a prototype snapshot
+  governed by the design hold, not a compatibility-protected language gate.
 
 ## 0.4 — Developer platform and ecosystem contracts (`v0.4.0`)
 
@@ -109,7 +137,7 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 ### Scope
 
 - Full Component Explorer navigation, component graph and inverse consumers, request simulator, render/HTMX/style/asset traces, examples, and dependency overrides.
-- Explorer panels for source, HDN, styles, assets, accessibility, security, performance, async timing, caches, packages, settings, and inference explanations.
+- Explorer panels for source, legacy HDN inventory, styles, assets, accessibility, security, performance, async timing, caches, packages, settings, and inference explanations.
 - CLI `new`, `dev`, `build`, `check`, `inspect`, `eject`, `components`, `routes`, `graph`, `preview`, and component audit commands.
 - Stable text, JSON, and SARIF diagnostics with remediation and suppression policy.
 - Pytest helpers, async clients, Syrupy-style snapshots, Playwright browser hooks, axe-style accessibility checks, visual-regression hooks, named examples, and adapter-conformance framework.
@@ -287,8 +315,8 @@ integrations, and a documented production operating model.
 - Define an independently versioned HTMX extension asset contract with exact versions/digests,
   local serving, CSP declarations, load order, compatibility tests, and Explorer inventory.
 - Time-box evaluation of the official SSE extension against bounded polling. SSE adoption is not a
-  phase exit requirement; if evidence is insufficient it remains post-1.0.
-- WebSocket components remain post-1.0 unless a new accepted RFC demonstrates a genuinely
+  phase exit requirement; if evidence is insufficient it remains deferred to phase 0.10.
+- WebSocket components remain deferred to phase 0.10 unless an accepted RFC demonstrates a genuinely
   bidirectional requirement.
 
 ### Exit gate
@@ -307,16 +335,18 @@ integrations, and a documented production operating model.
 - Adapter, operations, jobs, and observability acceptance ledgers link every completed requirement
   to a test command and evidence artifact; checkbox state alone is insufficient.
 
-## 0.8 — API freeze and hardening (`v0.8.0`)
+## 0.8 — Hardening and compatibility baseline (`v0.8.0`)
 
-**Outcome:** Hedron’s `v1.0.0` public surface is frozen at a hardening baseline and supported by
-release-quality evidence. Phase 0.8 adds no new product subsystem, framework adapter, or transport.
+**Outcome:** Hedron has explicit stability classifications, a tested compatibility baseline, and
+release-quality evidence. The baseline makes later changes deliberate and measurable without
+pretending the product is feature-complete.
 
 ### Scope
 
-- Public API, HDN, registry metadata, plugin protocol, compiled artifact, and rendered-markup stability classifications.
-- Enforce the compatibility matrix, semantic-versioning rules, numeric deprecation window, upgrade
-  tooling, changelog, and migration guides established before the freeze.
+- Public API, registry metadata, plugin protocol, compiled artifact, and rendered-markup stability
+  classifications; HDN is explicitly experimental under D-039.
+- Enforce the compatibility matrix, versioning rules, numeric deprecation window, upgrade
+  tooling, changelog, and migration guides established for the compatibility baseline.
 - Complete security threat-model review, dependency and browser-asset audit, accessibility audit, and performance budgets.
 - Packaging tests for wheels and source distributions across supported platforms and Python versions.
 - Documentation usability testing, error-message review, example verification, and no-Node/offline test path.
@@ -327,41 +357,194 @@ release-quality evidence. Phase 0.8 adds no new product subsystem, framework ada
   accessibility, retry semantics, and useful non-HTMX fallbacks.
 - Produce an SBOM, dependency and browser-asset vulnerability report, license inventory, build
   provenance/attestation, rollback rehearsal, and immutable acceptance evidence bundle.
-- Release-candidate stabilization: only fixes, documentation, compatibility work, and explicitly approved scope changes.
-
-`v0.8.0` is the public API-freeze baseline, not a substitute for testing the final version number.
-After the 0.8 maintenance line is green, publish one or more PEP 440 prereleases
-(`1.0.0rc1`, `1.0.0rc2`, ...) for clean-install, upgrade, deployment, and rollback rehearsals. No
-stable `1.0.0` artifact is published without a successful `1.0.0rcN` rehearsal.
+- Establish the evidence template later phases use for new capabilities and compatibility changes.
 
 ### Exit gate
 
-- All `v1.0.0` acceptance documents pass using published `1.0.0rcN` artifacts.
+- The 0.8 evidence index is closed using immutable artifacts tied to the `v0.8.0` source tag.
 - No unresolved critical/high security issue, release-blocking accessibility defect, undocumented breaking change, or unowned compatibility failure remains.
-- The full reference application is deployed and tested from a clean installation.
-- No net-new feature or newly advertised adapter enters after the 0.8 freeze.
+- The full reference application is deployable from built distributions in a clean environment.
+- Stability labels and migration obligations accurately describe the shipped surface.
 
-## 1.0 — Stable Hedron (`v1.0.0`)
+## 0.9 — Native framework depth (`v0.9.0`)
 
-**Outcome:** Hedron is a stable, documented, secure, and supportable framework for typed FastAPI component applications.
+**Outcome:** Flask and Django integrations feel native beyond their initial routing slices, and the
+first-party data boundary supports Django QuerySets without compromising bounded execution or
+framework-neutral core ownership.
 
-### Release commitments
+### Entry gate
 
-- Stable documented public APIs governed by semantic versioning and the compatibility policy.
-- FastAPI flagship experience, framework-neutral core, and accurately stated Flask/Django support.
-- Secure components, addressable resources, HTMX interaction, HDN, scoped styles, themes, Explorer, data tools, charts, plugins, and production tooling at their documented stability levels.
-- Published reference application, tutorials, API reference, architecture/RFC history, deployment guides, and migration support.
-- Reproducible release artifacts, provenance, vulnerability response process, and maintained acceptance baselines.
-- Published support, maintenance/backport, deprecation, and security-response policies with named
-  ownership and supported adapter/server/browser matrices.
+- The 0.8 compatibility and evidence baseline is green.
+- Flask/Django ergonomic layers and QuerySet data-source behavior have accepted RFC revisions with
+  explicit framework ownership, security boundaries, and capability labels.
+- Supported Django/Flask ranges and migration obligations are recorded before implementation.
 
-### 1.0 gate
+### Scope
 
-The [`v1.0.0` release acceptance specification](docs/acceptance/RELEASE_1_0.md) is complete and signed off. Features that do not meet the gate are clearly marked experimental or removed from the 1.0 promise rather than shipped as silently incomplete stable APIs.
+- Flask Blueprint and application-factory integration through a small `init_app`-style layer that
+  preserves the existing constructor and keeps state application-local.
+- Django reusable-app integration through `AppConfig`, namespaced URLs, middleware-aware setup, and
+  framework-native system checks without hidden global mutation.
+- A bounded Django QuerySet `DataSource` with explicit ordering, filtering, projection, tenant/auth
+  hooks, async/sync behavior, transaction ownership, and query-count diagnostics.
+- Django-native form bridging where it can reuse the portable interaction/error contract without
+  claiming parity with Pydantic models.
+- Reviewed Django 6.x compatibility when its supported upstream line and evidence justify promotion.
+- Optional Celery/RQ job bridges that implement the existing `JobBackend` contract; polling remains
+  the portable baseline and applications retain broker/result-backend ownership.
+- Published-artifact install, upgrade-from-0.8, deployment, rollback, documentation, and package
+  isolation proof for every new supported claim.
 
-## Complete feature-to-release ledger
+### Exit gate
 
-This ledger is the coverage check for planned `v1.0.0` capabilities. The detailed phase sections above remain normative; the ledger prevents a subsystem or cross-cutting requirement from disappearing between plans.
+- Flask and Django conveniences remain thin, optional, native integrations rather than parallel
+  runtimes; existing 0.8 adapter shapes have tested migrations.
+- QuerySet operations stay lazy and bounded, reject unauthorized fields/operations, and pass query
+  count, concurrency, transaction, and tenant-isolation evidence.
+- Each new capability is independently installable, accurately classified, and proven from
+  published `0.9.0` artifacts with upgrade and rollback evidence.
+
+## 0.10 — Live interaction and navigation (`v0.10.0`)
+
+**Outcome:** Hedron supports evidence-backed live updates, streaming where it materially helps, and
+measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
+
+### Scope
+
+- Official HTMX SSE extension integration with pinned local assets, authenticated reconnect,
+  resume semantics, bounded retry, cancellation, CSP, proxy buffering guidance, and Explorer traces.
+- WebSocket components only for accepted bidirectional use cases, with authorization, origin,
+  backpressure, disconnect, deployment, and accessible fallback contracts.
+- Focused chunked-list and streamed-document primitives; no implicit conversion of every component
+  into a streaming lifecycle.
+- Opt-in navigation preload for safe GET requests with cache correctness, bounded speculative
+  traffic, privacy controls, cancellation, `HX-Preloaded` observability, and measurable benefit.
+
+### Exit gate
+
+- Polling and ordinary navigation remain supported fallbacks; live/preload behavior never becomes a
+  hidden correctness dependency.
+- Chromium, Firefox, and WebKit pass auth, reconnect, lifecycle, history, cache, CSP, reduced-motion,
+  proxy, and offline asset matrices from published artifacts.
+- Load/backpressure tests demonstrate bounded resources, and performance evidence justifies each
+  enabled transport or preload policy.
+
+## 0.11 — Optional Jinja authoring and HDN migration (`v0.11.0`)
+
+**Outcome:** Hedron ships an experimental, optional Jinja integration for trusted application
+templates, preserves typed component render metadata across templates, and begins the explicit HDN
+deprecation path. Generated output and AI inference never become authoritative.
+
+### Entry gate
+
+- RFC-0031 is accepted with public API, grammar, trust boundary, metadata merge, limits,
+  diagnostics, packaging, framework conformance, and migration contracts.
+- The core render boundary can preserve nested component metadata without making Jinja a core
+  dependency or accepting metadata-lossy HTML strings.
+- The `hedron-jinja` acceptance suite and evidence ledger have stable requirement IDs and owners.
+
+### Scope
+
+- Add the separate `hedron-jinja` distribution and `hedron[jinja]` convenience extra without adding
+  Jinja to `hedron-core` or the default install.
+- Implement `TemplateSpec`, `HedronJinja`, the static component/slot tag grammar, typed view checks,
+  strict escaping/URL/trusted-content policy, bounded render sessions, and deterministic
+  `RenderResult` metadata merging.
+- Add shared FastAPI/Flask/Django conformance, `check`/`dev`/`build`/Explorer integration, source
+  diagnostics, static dependency inventory, and production manifest validation.
+- Inventory every `.hdn` template and compile/format/load/run API use; ship dry-run-first conversion
+  where semantics are exact and actionable `HED-JINJA-0018` reports where they are not.
+- Deprecate HDN across APIs, discovery, CLI, Explorer, examples, and documentation; generators emit
+  only Python or Jinja authoring paths.
+- Route-level CSS splitting, dynamic fragment asset negotiation, cross-file style composition,
+  optional preprocessors, advanced minification, hot style replacement, and a design-token compiler.
+- Broader migration tooling, generated component-endpoint SDKs, and optional OpenAPI
+  callback/webhook presentation.
+- Opt-in AI-assisted Explorer diagnostics and visual authoring with explicit data boundaries,
+  redaction, provenance, review, deterministic export, and a fully local/manual path.
+
+### Exit gate
+
+- `hedron-jinja` passes its experimental release gate from published artifacts and is optional in
+  dependency, import, configuration, and runtime behavior.
+- Nested HTML/assets/headers/identities/diagnostics/traces merge deterministically; strict mode,
+  resource limits, template trust documentation, accessibility, and all three framework paths pass.
+- HDN migration is dry-run-first, source preserving, and never silently converts ambiguous
+  semantics; every legacy surface emits the documented deprecation path.
+- Automated edits are previewable and reversible; generated SDKs and migrations pass compatibility
+  fixtures; no secret or request data leaves its declared boundary.
+- Cold/incremental build, editor latency, payload, accessibility, and browser-style lifecycle budgets
+  are enforced from published artifacts.
+
+## 0.12 — Data and visualization scale (`v0.12.0`)
+
+**Outcome:** Hedron handles richer editing, distributed/lazy data, and geospatial or high-volume
+visualization through bounded, inspectable adapters.
+
+### Scope
+
+- DataEditor formulas, merged cells, richer Excel-formatting compatibility, pivots, tree grids,
+  collaborative editing, additional grid adapters, and spreadsheet import/export beyond CSV.
+- Dask/distributed data sources, explicit server transform plans, and advanced lazy-query pushdown.
+- ECharts, Datashader, MapLibre, Folium, Bokeh, HoloViews/hvPlot, Pygal, geospatial layers, Plotly
+  resampling, and advanced Vega server transforms, introduced individually behind optional extras.
+
+### Exit gate
+
+- No adapter implicitly collects an unbounded source; query/transform plans, limits, cancellation,
+  tenant policy, and memory/network budgets are visible in Explorer and testable.
+- Editing/import formulas and collaborative changes pass authorization, injection, conflict,
+  provenance, and recovery suites.
+- Every visualization has accessible fallback/description behavior, local-asset/CSP evidence,
+  payload limits, lifecycle cleanup, and an independently justified dependency cost.
+
+## 0.13 — Advanced async and observability (`v0.13.0`)
+
+**Outcome:** Applications can prepare component data concurrently and adapt resource use without
+introducing a second hidden runtime or losing trace and cancellation semantics.
+
+### Scope
+
+- Optional component-level async `prepare()` lifecycle with explicit ownership, deadlines,
+  cancellation, partial failure, caching, and deterministic render handoff.
+- Adaptive concurrency controls driven by measured backend capacity rather than unbounded task
+  creation.
+- First-party distributed tracing integrations with redaction, sampling, stable span ownership, and
+  correlation across HTTP, cache, jobs, data sources, preparation, and rendering.
+
+### Exit gate
+
+- Sync rendering remains the deterministic final stage; disconnects and deadlines cancel owned work
+  without leaking tasks or corrupting caches.
+- Concurrency/load evidence covers overload, degradation, shutdown, partial failure, and trace
+  exporter failure across supported ASGI/WSGI capability boundaries.
+- Applications can disable adaptive behavior and tracing without changing component semantics.
+
+## 0.14 — Portable runtimes and acceleration (`v0.14.0`)
+
+**Outcome:** Profiling-backed acceleration and cross-language runtimes can participate in Hedron
+without fragmenting the component, security, rendering, or artifact contracts.
+
+### Scope
+
+- A language-neutral component specification and conformance fixture format extracted only from
+  proven Python contracts.
+- Conformance code generation and experimental Java and Node runtimes.
+- Optional Rust acceleration for measured parser, serializer, style, or data hot paths, with pure
+  Python retained as the semantic reference and supported fallback.
+
+### Exit gate
+
+- Cross-language implementations pass the same escaping, identity, diagnostics, artifact-version,
+  rendering, accessibility, and adversarial conformance fixtures as Python.
+- Native acceleration has reproducible platform wheels, source-build and pure-Python fallback paths,
+  memory-safety/fuzz evidence, and benchmarks showing material end-to-end benefit.
+- Runtime or accelerator absence never changes public semantics, security policy, or deterministic
+  output.
+
+## Complete capability-to-release ledger
+
+This ledger is the coverage check for planned capabilities. The detailed phase sections above remain normative; the ledger prevents a subsystem or cross-cutting requirement from disappearing between plans.
 
 ### Foundation and server architecture
 
@@ -389,14 +572,14 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 
 | Planned capability | Target phase | Notes |
 |---|---:|---|
-| HDN tags, expressions, conditions, loops, slots, trusted HTML | 0.3 | JSX-familiar without arbitrary host-language execution. |
-| HDN formatter, diagnostics, source maps, compiled render programs | 0.3 | No Node.js requirement. |
+| Legacy HDN parser/evaluator/render-program prototype | 0.3; deprecation | Experimental; RFC-0031 migrates it in 0.11, disables default discovery in 0.12, and removes it in 0.13. |
+| Optional Jinja integration and legacy migration | 0.11 | Separate `hedron-jinja` package; Python components remain canonical. |
 | `inspect` and `eject` customization workflow | 0.3 | Progressive control over built-ins. |
 | Scoped classes, keyframes, globals, variants, layers | 0.3 | AST-based deterministic CSS rewriting. |
 | Tokens, themes, light/dark token modes, override layers | 0.3 | Accessible CSS-custom-property architecture; system preference + `data-theme`. |
 | Light/dark styling toggle, ColorMode API, preference persistence | 0.5 | First-party UI and explicit override of system preference. |
 | Fingerprinted assets, CSS URL rewriting, CSP/offline manifests | 0.3 | Production performs no required runtime compilation. |
-| Component folders with code, HDN, CSS, examples, tests, docs, browser modules | 0.3 | Colocated ownership with explicit discovery. |
+| Component folders with code, optional experimental HDN, CSS, examples, tests, docs, browser modules | 0.3 | HDN discovery is retained temporarily for migration evidence. |
 | Web Component registration, typed events, light/Shadow DOM policy | 0.3 | Browser-local interaction integrates safely with HTMX swaps. |
 | Component package authoring and browser-asset declarations | 0.4 | Public extension and audit contracts. |
 | `hedron-explorer` and official Explorer browser assets | 0.2 preview; 0.4 full | Optional development distribution with production opt-in controls. |
@@ -410,7 +593,7 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 | Explorer props/examples/request simulator/graphs/render traces | 0.4 | Includes inverse consumers and source ownership. |
 | Explorer accessibility/security/performance/async/cache/package panels | 0.4 | Later integrations extend the same panels. |
 | CLI new/dev/build/check/inspect/eject/components/routes/graph/preview/audit | 0.4 | Stable text, JSON, and SARIF diagnostics. |
-| Development watching and atomic incremental rebuilds | 0.3–0.4 | HDN/CSS first, full registry/build at 0.4. |
+| Development watching and atomic incremental rebuilds | 0.3–0.4 | CSS/registry/build remain supported; HDN watching is experimental. |
 | Pytest helpers, async clients, snapshots, browser/a11y/visual hooks | 0.4 | Supports named examples and conformance. |
 | Plugin discovery, compatibility, capabilities, lifecycle, rollback | 0.4 | Plugins are executable packages, not sandboxed data. |
 | Project scaffolding, author docs, package conventions | 0.4 | Supports third-party component packages. |
@@ -475,9 +658,15 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 | Security development/standard/strict profiles | 0.2, 0.8 | Baseline enforcement at 0.2; final audit at 0.8. |
 | Accessibility contracts and WCAG-oriented acceptance | 0.1–0.8 | Required incrementally for every built-in and integration. |
 | Performance benchmarks, payload limits, and budgets | 0.1–0.8 | 0.7 establishes production workloads/budgets; 0.8 enforces them. |
-| Public API/artifact stability classification and freeze | 0.8 | Includes HDN, plugin, manifest, metadata, and markup promises. |
-| Semantic versioning, deprecation, upgrade, migration, compatibility | 0.7–0.8 | Defined before the freeze and enforced through RC rehearsal. |
-| Published reference application and release artifacts | 0.1–1.0 | Grows cumulatively and validates clean installation. |
+| Public API/artifact stability classification and compatibility baseline | 0.8 | HDN is reclassified experimental by D-039; other promises remain governed by the catalog. |
+| Versioning, deprecation, upgrade, migration, compatibility | 0.7–0.8; maintained thereafter | Every phase declares and tests its compatibility impact. |
+| Native Flask/Django application integration and QuerySet source | 0.9 | Framework-native ergonomics with bounded data execution. |
+| SSE, WebSocket, focused streaming, and navigation preload | 0.10 | Ordinary HTTP/polling/navigation fallbacks remain supported. |
+| Optional Jinja integration plus style/migration/visual tooling | 0.11 | Trusted application templates, explicit component allowlists, strict defaults, and HDN migration. |
+| Advanced DataEditor, distributed sources, and visualization adapters | 0.12 | Bounded, accessible, optional integrations. |
+| Component preparation, adaptive concurrency, distributed tracing | 0.13 | Explicit ownership, cancellation, and opt-out semantics. |
+| Language-neutral conformance, Java/Node runtimes, Rust acceleration | 0.14 | Python remains the semantic reference and fallback. |
+| Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 
 ## RFC-to-phase coverage
 
@@ -487,7 +676,7 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 | 0002 Core architecture | 0.0–0.2; adapter proof in 0.7 |
 | 0003 Component model | 0.1 |
 | 0004 FastAPI integration | 0.2 baseline; typed HTMX interaction contract in 0.6 |
-| 0005 HDN language | 0.3 |
+| 0005 HDN language (legacy design) | 0.3; experimental hold |
 | 0006 Scoped styles | 0.3 |
 | 0007 Component Explorer | 0.2 minimal; 0.4 full; extended through 0.7 |
 | 0008 Addressable components | 0.2 |
@@ -511,25 +700,14 @@ This ledger is the coverage check for planned `v1.0.0` capabilities. The detaile
 | 0026 State management | 0.2 and 0.5; operations in 0.7 |
 | 0027 Data sources | 0.5–0.6 |
 | 0028 Deployment | 0.7–0.8 |
-| 0029 Roadmap to 1.0 | 0.0–1.0 |
+| 0029 Capability roadmap | 0.0 onward |
+| 0030 Declarative authoring reset | Superseded by 0031 |
+| 0031 Optional Jinja integration | 0.11; beta promotion no earlier than 0.12 |
 
-## Post-1.0 candidates
+## Later-phase policy
 
-The following ideas remain planned possibilities but are not part of the 1.0 commitment. Each requires a separate accepted RFC and demonstrated demand:
-
-- **Live transport beyond the 0.7 decision:** stable SSE live regions, WebSocket components,
-  focused chunked lists, and general streamed documents, using separately versioned HTMX 2
-  extensions rather than removed `hx-sse` / `hx-ws` attributes.
-- **Navigation preloading:** measured opt-in preload for safe GET navigation, including cache
-  correctness, bounded speculative traffic, privacy, and `HX-Preloaded` observability. Preload is
-  not introduced during the 0.8 feature freeze.
-- **Advanced async:** component-level async `prepare()` lifecycle, adaptive concurrency, and distributed tracing integrations.
-- **HDN tooling:** language server, editor extensions, advanced static analysis, and guided React-to-HDN conversion.
-- **Styles and assets:** route-level CSS splitting beyond the 0.6 fragment/head contract, fully
-  dynamic HTMX asset negotiation, cross-file composition, optional preprocessors, advanced
-  minification, hot style replacement, and a full design-token compiler.
-- **DataEditor:** formulas, merged cells, Excel-formatting parity, pivot tables, tree grids, collaborative editing, additional enterprise grid adapters, and spreadsheet import/export beyond CSV.
-- **Data scale:** Dask/distributed sources, automatic server transform planning, and more advanced lazy-query pushdown.
-- **Visualization:** ECharts, Datashader, MapLibre, Folium, Bokeh, HoloViews/hvPlot, Pygal, geospatial layers, Plotly resampling, and advanced Vega server transforms.
-- **Developer tooling:** AI-assisted Explorer diagnostics, visual authoring, broader migration tooling, generated component endpoint SDKs, and optional OpenAPI callback/webhook presentation tools.
-- **Portability and performance:** language-neutral component specification, Java and Node runtimes, conformance code generation, and optional Rust acceleration after profiling.
+The roadmap remains open-ended. New phases are added when a coherent capability packet has an
+accepted design, demonstrated demand, explicit non-goals, and testable exit evidence. A version
+number is never used as a reason to freeze unrelated work or to promote beta/experimental behavior.
+Scope may move between future `0.x` phases through an accepted roadmap revision, but deferred work
+must always retain an owner, rationale, destination, and public stability impact.

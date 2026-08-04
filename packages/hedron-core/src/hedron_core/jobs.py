@@ -447,5 +447,5 @@ def job_status_interaction(status: JobStatus) -> Any:
         status_code=202,
         cache="no-store",
         headers={"Retry-After": str(status.retry_after)},
-        explanation="Bounded polling job status (SSE deferred post-1.0)",
+        explanation="Bounded polling job status (SSE assigned to phase 0.10)",
     )

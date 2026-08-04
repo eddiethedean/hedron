@@ -1,21 +1,34 @@
 # RFC-0005: HDN language
 
-**Status:** Accepted
+**Status:** Implemented
+
+> **Legacy design:** D-040 and [RFC-0031](RFC-0031-JINJA-INTEGRATION.md) select an optional Jinja
+> replacement and schedule this language for staged migration/removal. The shipped HDN surface
+> remains experimental; this document records legacy behavior and does not constrain Jinja.
 
 ## Purpose
 
-HDN is an optional, JSX-inspired, HTML-first language for developers who need direct markup control. Source templates use the JSX-familiar `.hdx` extension (`template.hdx`). The legacy `.hdn` extension remains discoverable for compatibility. HDN is not required for onboarding and does not embed Python or JavaScript execution.
+HDN is an optional, HTML-first language for developers who need direct markup control. Source
+templates use the `.hdn` extension and canonical `template.hdn` filename; no alternate template
+extension is discovered. HDN is not required for onboarding and does not embed Python or JavaScript
+execution.
 
 ## Syntax and semantics
 
 - Lowercase tags are native HTML elements.
-- Uppercase tags resolve registered Hedron components.
+- Uppercase tags resolve Hedron components. Top-level `{@import LocalName from
+  "component-logical-id"}` declarations make those dependencies explicit; templates
+  without declarations retain implicit tag-name lookup for compatibility.
 - Hyphenated tags are custom elements.
 - Expressions support literals, property access, safe operators, conditions, iteration, and a small registry of pure helpers.
 - Children, fragments, named slots, and explicit raw HTML are supported.
 - HTML uses `class` and `for`, not React DOM aliases.
 
-Expression output is contextually escaped. Raw HTML requires `TrustedHtml`; dynamic attribute names, arbitrary imports, reflection, filesystem access, network access, and arbitrary function calls are prohibited.
+Expression output is contextually escaped. Raw HTML requires `TrustedHtml`; dynamic
+attribute names, arbitrary Python/JavaScript module imports, reflection, filesystem
+access, network access, and arbitrary function calls are prohibited. Component import
+declarations are inert logical-ID bindings resolved only from the host-provided component
+mapping.
 
 ## Tooling
 

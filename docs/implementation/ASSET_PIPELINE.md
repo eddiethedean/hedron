@@ -2,7 +2,9 @@
 
 ## Inputs
 
-Assets originate from Hedron core, component packages, scoped CSS, HDN dependencies, themes, browser modules, images, chart adapters, Explorer, and application-registered roots.
+Assets originate from Hedron core, component packages, scoped CSS, themes, browser modules, images,
+chart adapters, Explorer, application-registered roots, and legacy HDN dependencies while the
+D-040/RFC-0031 compatibility path remains.
 
 ## Build
 
@@ -17,4 +19,3 @@ Reject traversal, symlink escape, remote fetch by default, conflicting logical n
 ## Verification
 
 Test deterministic manifests, MIME types, caching headers, mounted/root-path URLs, offline builds, CSS URL rewriting, duplicate content, package resources, symlink/traversal attacks, and missing asset diagnostics.
-

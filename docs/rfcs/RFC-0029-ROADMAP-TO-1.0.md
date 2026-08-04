@@ -1,20 +1,30 @@
-# RFC-0029: Roadmap to 1.0
+# RFC-0029: Capability roadmap
 
 **Status:** Accepted
 
-**Revision:** 2026-08-02 — D-031 shifted the pre-1.0 phase numbers down by one without changing their scope, sequence, or gates.
+**Filename note:** The original filename is retained for durable links; D-038 replaces the former
+1.0-target framing with an open-ended `0.x` capability roadmap.
 
-**Revision:** 2026-08-02 — D-032 fixed the phase-to-release mapping and coordinated first-party release train.
+**Revision:** 2026-08-02 — D-031 shifted the original pre-1.0 phase numbers.
+
+**Revision:** 2026-08-02 — D-032 fixed the original phase-to-release mapping.
 
 **Revision:** 2026-08-03 — D-035 added the 0.6 closure gate, staged 0.7 delivery,
-capability-accurate adapters, evidence-backed release gates, a feature-frozen 0.8 baseline, and
-published `1.0.0rcN` rehearsals.
+capability-accurate adapters, and evidence-backed release gates.
+
+**Revision:** 2026-08-03 — D-038 removed the arbitrary 1.0 target and assigned the former deferred
+backlog to explicit capability phases 0.9–0.14.
 
 ## Release strategy
 
-Hedron develops through cumulative, usable phases rather than isolated infrastructure. Phase 0.0 is a documentation baseline with no package publication. Phases 0.1 through 0.8 lead to the 1.0 stability commitment and produce initial release tags `v0.1.0` through `v0.8.0`; phase 1.0 produces `v1.0.0`. Python package versions omit the tag prefix, and first-party distributions use the coordinated release train. Each implementation phase includes public API, implementation, documentation, security, accessibility, testing, performance evidence, and Explorer or CLI visibility where it introduces inference.
+Hedron develops through cumulative, usable capability phases rather than toward a version-number
+deadline. Phase 0.0 is a documentation baseline with no package publication. Each implementation
+phase `0.N` produces initial release `v0.N.0`; phase 0.10 produces `v0.10.0`. Python package
+versions omit the tag prefix, and first-party distributions use the coordinated release train.
 
-The detailed normative scope and exit criteria live in the project [roadmap](../ROADMAP.md).
+No 1.0 phase is scheduled. Stability is a per-contract classification backed by compatibility,
+deprecation, migration, and evidence obligations; it is not inferred from the distribution version.
+The detailed normative scope and exit criteria live in the project roadmap.
 
 ## Phase and release sequence
 
@@ -27,40 +37,49 @@ The detailed normative scope and exit criteria live in the project [roadmap](../
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform |
 | 0.5 | `v0.5.0` | Intelligent rendering, data components, caching, and utility toolkit |
 | 0.6 | `v0.6.0` | Visualization and first-party integration ecosystem |
-| 0.7 | `v0.7.0` | Portable adapter foundation, capability-accurate Flask/Django adapters, jobs, and production operations |
-| 0.8 | `v0.8.0` | Feature-frozen public API baseline and release hardening |
-| 1.0 | `v1.0.0` | Stable supported Hedron release |
+| 0.7 | `v0.7.0` | Portable adapters, jobs, and production operations |
+| 0.8 | `v0.8.0` | Hardening, stability classification, and compatibility baseline |
+| 0.9 | `v0.9.0` | Native Flask/Django depth and bounded QuerySet integration |
+| 0.10 | `v0.10.0` | Live interaction, focused streaming, and navigation preload |
+| 0.11 | `v0.11.0` | Optional Jinja authoring, HDN migration, editor/style, and visual tooling |
+| 0.12 | `v0.12.0` | Advanced data editing, distributed sources, and visualization scale |
+| 0.13 | `v0.13.0` | Advanced async preparation, concurrency, and observability |
+| 0.14 | `v0.14.0` | Portable runtimes and profiling-backed acceleration |
 
-Phase 0.7 uses internal gates 0.7A–0.7F without creating additional public roadmap versions. Phase
-0.8 publishes the freeze baseline; one or more PEP 440 `1.0.0rcN` prereleases exercise the final
-version line before `v1.0.0`.
+Additional `0.x` phases require an accepted roadmap revision; they are not blocked on declaring a
+future major release.
+
+The authoring transition is governed by D-040/RFC-0031: current HDN remains experimental and enters
+staged removal, while phase 0.11 implements a separate optional Jinja integration for trusted
+application templates without changing Python's canonical role.
 
 ## Gate
 
-No phase is complete while its acceptance suite, documentation, security review, accessibility requirements, performance evidence, compatibility checks, and reference-application increment remain incomplete. Work may be deferred to a later phase, but partially implemented public contracts do not count toward the phase's initial release.
+No phase is complete while its acceptance suite, documentation, security review, accessibility
+requirements, performance evidence, compatibility checks, and reference-application increment
+remain incomplete. Work may move to a later phase, but partially implemented public contracts do
+not count toward the phase's initial release.
 
-Phase 0.7 has an additional entry condition: phase 0.6 interaction, cache, fragment, visualization,
-browser-runtime, trusted-content, and bounded-data-source contracts must pass the closure gate or be
-explicitly reclassified as experimental. Adapter implementation cannot canonize unverified 0.6
-behavior as a portable contract.
+From phase 0.6 closure onward, checked prose is insufficient: completed requirements link to an
+automated command or immutable evidence artifact. Each adapter claim is labeled portable, ASGI,
+WSGI, or framework-specific and is tested only where the host can provide it.
 
-Beginning with phase 0.8 (`v0.8.0`), no net-new subsystem, adapter, or transport enters the release
-line. Public API changes require explicit release-candidate approval and migration analysis. At
-phase 1.0 (`v1.0.0`), stable contracts follow semantic versioning and the published deprecation
-policy.
+From the 0.8 compatibility baseline onward, every additive or incompatible change declares its
+stability impact, migration obligation, supported matrix, and retained evidence. A phase number
+does not automatically promote beta or experimental behavior.
 
 ## Acceptance criteria
 
-- The roadmap maps every public subsystem to an owner RFC, API contract, implementation spec, and acceptance document.
-- Every planned feature has an explicit phase 0.0–1.0 target or a named post-1.0 disposition in the capability ledger.
-- All 29 RFCs appear in the RFC-to-phase coverage table.
-- Every initial release from `v0.1.0` onward is independently installable, testable, documented, and useful.
-- A deprecation and compatibility policy is enforced before phase 0.8 (`v0.8.0`).
-- The complete reference application grows cumulatively across releases and passes using packaged artifacts.
-- From phase 0.6 closure onward, a completed acceptance item links to an automated test command or
-  immutable evidence artifact; checkbox state alone cannot satisfy a release gate.
-- Every adapter claim is labeled portable, ASGI, WSGI, or framework-specific and is tested only
-  where the underlying framework can provide it.
-- `1.0.0` is rehearsed from published `1.0.0rcN` artifacts, including clean install, upgrade,
-  deployment, rollback, SBOM, provenance, and vulnerability/license evidence.
-- Optional Rust or cross-language work remains post-1.0 unless an accepted RFC changes the decision.
+- Every planned capability has a phase target or an explicitly owned deferred disposition.
+- Every initial release from `v0.1.0` onward is independently installable, testable, documented,
+  useful, and verified from built or published artifacts as its gate requires.
+- New framework, transport, tooling, data, visualization, async, or runtime capabilities have
+  explicit non-goals and cannot bypass security, accessibility, performance, or package-isolation
+  evidence.
+- Compatibility-protected contracts use the numeric deprecation and migration policy even while the
+  project remains on the `0.x` line.
+- The reference application grows cumulatively and exercises each promoted capability through its
+  native deployment path.
+- Deferred work retains an owner, rationale, destination phase, and public stability impact.
+- A future major-version proposal, if ever useful, requires a separate accepted RFC justified by
+  actual compatibility needs rather than roadmap ceremony.

@@ -5,7 +5,7 @@ status: shipped
 # Data-source protocols
 
 
-!!! note "Stability (0.8 freeze)"
+!!! note "Stability (0.8 compatibility baseline)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
@@ -50,4 +50,3 @@ Application adapters own transactions, tenant scope, authorization, and domain v
 Hedron owns request validation, size bounds, cancellation, diagnostics, and serialization.
 
 No source is automatically inferred from an ORM model in the MVP because such inference could accidentally expose fields or mutation behavior.
-

@@ -1,4 +1,4 @@
-"""HTMX extension asset contract (phase 0.7F). SSE deferred post-1.0."""
+"""HTMX extension asset contract (phase 0.7F). SSE is assigned to phase 0.10."""
 
 from __future__ import annotations
 

@@ -33,5 +33,5 @@ follows [the release evidence policy](EVIDENCE.md).
 ## Exit
 
 Every advertised adapter is labeled `supported`, `experimental`, or `deferred`. Only `supported`
-adapters contribute to the 0.7 and 1.0 compatibility promise, and every supported claim is
+adapters contribute to the 0.7 and later compatibility baselines, and every supported claim is
 `Verified` rather than inferred from the portable suite.

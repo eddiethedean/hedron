@@ -9,7 +9,7 @@ framework-specific capabilities.
 
 The flagship Hedron application deploys as an ordinary FastAPI ASGI application. Flask and Django
 adapters deploy through their host framework's supported WSGI and/or ASGI paths. Production builds
-precompile HDN and scoped CSS, fingerprint static assets, validate the registry and framework-owned
+precompile legacy experimental HDN where present and scoped CSS, fingerprint static assets, validate the registry and framework-owned
 route metadata, and emit immutable manifests. Runtime compilation is not required.
 
 The deployment path requires no Node.js process. Browser dependencies are vendored or installed as

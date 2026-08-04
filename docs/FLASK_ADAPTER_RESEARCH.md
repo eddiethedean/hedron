@@ -18,7 +18,7 @@ The release sequence matters:
    and the Flask adapter Supported, with `ADP-FLK-001` through `003` recorded as Verified.
 2. **0.8 must harden that baseline without adding features.** The normative roadmap explicitly forbids
    a new subsystem, adapter, or transport during 0.8.
-3. **1.0 stabilizes the frozen surface; net-new Flask conveniences belong after 1.0**, preferably
+3. **0.8 establishes the compatibility baseline; net-new Flask conveniences belong to 0.9**, preferably
    in small minor releases with their
    own capability and conformance evidence.
 
@@ -68,11 +68,11 @@ to reopen 0.7 or add a 0.8 subsystem.
 | Reference slice and capability record | Tie each claimed route, request-context, session/CSRF, error, asset, URL, and WSGI capability to a specific test rather than relying on the three roll-up IDs alone. |
 
 These spot checks do not change the declared phase status. They are exactly the kind of compatibility
-and correctness fixes the feature-frozen 0.8 phase is intended to catch before the 1.0 API promise.
+and correctness fixes phase 0.8 is intended to catch before later capability work.
 
 ## Upstream findings that affect the design
 
-### Prefer the Flask extension and application-factory model for a post-1.0 ergonomic layer
+### Prefer the Flask extension and application-factory model for the phase 0.9 ergonomic layer
 
 The frozen 0.7 API constructs and exposes a native Flask app through `HedronFlask.flask`; 0.8 should
 stabilize that behavior rather than replace it. For a later ergonomic layer, Flask's documented
@@ -97,7 +97,7 @@ def create_app() -> Flask:
     return app
 ```
 
-If introduced after 1.0, `HedronFlask.init_app(app)` should store only per-application state in
+In phase 0.9, `HedronFlask.init_app(app)` should store only per-application state in
 `app.extensions["hedron"]`. The extension object must not retain an app. This supports multiple app
 instances, test factories, and normal extension composition. `HedronBlueprint` should own
 `page`, `component`, `action`, and `include_component` registration using `Blueprint` and
@@ -145,7 +145,7 @@ spawned by a view are cancelled when the view completes. The supported declarati
   `flask[async]` installation and native tests;
 - disconnect cancellation, persistent request event loop, WebSockets, and in-view background tasks:
   unsupported;
-- durable work: shared `JobBackend` plus bounded polling, with optional post-1.0 Celery/RQ bridges.
+- durable work: shared `JobBackend` plus bounded polling, with optional phase 0.9 Celery/RQ bridges.
 
 Serving Flask through `WsgiToAsgi` does not turn its application and request model into a native
 ASGI adapter. If native ASGI becomes a product requirement, evaluate a separate Quart adapter
@@ -198,17 +198,17 @@ No item below creates a new public feature.
    and proxy deployment. Compare against plain Flask and the FastAPI adapter without claiming
    WSGI/ASGI throughput equivalence.
 8. **Rehearse published artifacts.** Install, upgrade, key rotation, deployment, rollback, and
-   removal from published `1.0.0rcN` artifacts. Retain immutable evidence tied to the lockfile and
+   removal from published `0.9.0` artifacts. Retain immutable evidence tied to the lockfile and
    source revision.
 
-## Post-1.0 Flask feature candidates
+## Phase 0.9 Flask capability packet
 
 These are ordered by expected value and architectural fit. They should not be pulled into 0.8.
 
-### 1.1 — Flask-native ergonomics and parity uplift
+### 0.9A — Flask-native ergonomics and parity uplift
 
 1. **Additive factory/extension API.** Allow `HedronFlask().init_app(app)` with per-app state in
-   `app.extensions`, while retaining the stable 1.0 constructor through the deprecation policy.
+   `app.extensions`, while retaining the 0.8 constructor through the deprecation policy.
 2. **`HedronBlueprint`.** Native reusable `page`, `component`, `action`, and `include_component`
    registration with nested/repeated mounts, endpoint-aware registry identities, and `url_for`
    authority.
@@ -221,7 +221,7 @@ These are ordered by expected value and architectural fit. They should not be pu
    authenticated caching, cookie policy, `TRUSTED_HOSTS`, and form limits while preserving stricter
    application configuration.
 
-### 1.2 — native ecosystem bridges
+### 0.9B — native ecosystem bridges
 
 1. **Jinja interoperability.** A safe `render_component(...)` Jinja global/filter and an explicit
    trusted-template-to-Hedron boundary, with autoescape and CSP tests.
@@ -232,7 +232,7 @@ These are ordered by expected value and architectural fit. They should not be pu
 4. **Flash-message bridge.** Render Flask `flash()` categories as accessible Hedron alerts/toasts,
    with consume-once and non-HTMX behavior.
 
-### 1.3 — richer typed Flask ergonomics
+### 0.9C — richer typed Flask ergonomics
 
 1. **`MethodView` component support.** Reusable page/component/action class views that preserve
    decorators, per-request instance rules, and method discovery.
@@ -267,7 +267,7 @@ These are ordered by expected value and architectural fit. They should not be pu
 ## Highest-risk implementation traps
 
 1. **Hard-coded asset URLs:** root-relative asset paths can bypass `SCRIPT_NAME` or blueprint mounts;
-   0.8 should verify every currently claimed asset path, and a post-1.0 resolver should use Flask URL
+   0.8 should verify every currently claimed asset path, and the 0.9 resolver should use Flask URL
    building.
 2. **Coarse evidence hiding narrow defects:** `ADP-FLK-001` through `003` are Verified rollups, but
    seven smoke tests cannot localize all routing, session, CSRF, asset, URL, and WSGI claims. Add

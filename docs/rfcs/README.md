@@ -22,7 +22,7 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0002](RFC-0002-CORE-ARCHITECTURE.md) | Core architecture | Accepted |
 | [0003](RFC-0003-COMPONENT-MODEL.md) | Component model | Accepted |
 | [0004](RFC-0004-FASTAPI-INTEGRATION.md) | FastAPI integration | Accepted |
-| [0005](RFC-0005-HDN-LANGUAGE.md) | HDN language | Accepted |
+| [0005](RFC-0005-HDN-LANGUAGE.md) | HDN language (legacy design; RFC-0031 removal path) | Implemented |
 | [0006](RFC-0006-SCOPED-STYLES.md) | Scoped styles | Accepted |
 | [0007](RFC-0007-COMPONENT-EXPLORER.md) | Component Explorer | Accepted |
 | [0008](RFC-0008-ADDRESSABLE-COMPONENTS.md) | Addressable components | Accepted |
@@ -46,4 +46,6 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0026](RFC-0026-STATE-MANAGEMENT.md) | State management | Accepted |
 | [0027](RFC-0027-DATA-SOURCES.md) | Data sources | Accepted |
 | [0028](RFC-0028-DEPLOYMENT.md) | Deployment | Accepted |
-| [0029](RFC-0029-ROADMAP-TO-1.0.md) | Roadmap to 1.0 | Accepted |
+| [0029](RFC-0029-ROADMAP-TO-1.0.md) | Capability roadmap | Accepted |
+| [0030](RFC-0030-DECLARATIVE-AUTHORING-RESET.md) | Declarative authoring reset | Superseded |
+| [0031](RFC-0031-JINJA-INTEGRATION.md) | Optional Jinja integration | Accepted |

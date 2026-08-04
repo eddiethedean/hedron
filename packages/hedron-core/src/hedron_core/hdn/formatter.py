@@ -10,6 +10,7 @@ from hedron_core.hdn.ast import (
     FragmentNode,
     HtmlRawNode,
     IfNode,
+    ImportNode,
     Node,
     SlotNode,
     TextNode,
@@ -43,6 +44,9 @@ def _format_node(node: Node, level: int) -> str:
         return f"{pad}{{{node.source}}}"
     if isinstance(node, HtmlRawNode):
         return f"{pad}{{@html {node.expression}}}"
+    if isinstance(node, ImportNode):
+        component_ref = node.component_ref.replace("\\", "\\\\").replace('"', '\\"')
+        return f'{pad}{{@import {node.local_name} from "{component_ref}"}}'
     if isinstance(node, IfNode):
         lines = [f"{pad}{{#if {node.condition}}}"]
         for child in node.then_body:

@@ -1,7 +1,7 @@
-# Upgrade guide (0.7 → 0.8 and toward 1.0)
+# Upgrade guide (0.7 → 0.8 and later capability phases)
 
-This guide covers the feature-frozen `0.8.0` train and the path to published `1.0.0rcN` artifacts.
-Phase 0.8 adds **no** new subsystems, adapters, or transports.
+This guide covers the `0.8.0` hardening/compatibility baseline and how later `0.x` capability
+phases declare migration impact. No 1.0 freeze is scheduled.
 
 ## What changed in 0.8
 
@@ -17,9 +17,10 @@ Phase 0.8 adds **no** new subsystems, adapters, or transports.
   `csrfmiddlewaretoken` or Hedron's portable `csrf_token` field.
 - **Hardening evidence:** deeper Flask/Django tests, three-engine browser HTMX suite, performance
   budgets, threat model, SBOM / license / asset audits.
-- **HDN source extension:** preferred component template filename is `template.hdx` (JSX-familiar).
-  `template.hdn` remains a discoverable compatibility fallback; `hedron eject` and new overrides
-  write `.hdx`. Rename existing `template.hdn` files when convenient.
+- **HDN migration:** existing experimental templates use `template.hdn`, but D-040/RFC-0031 select
+  an optional Jinja replacement and schedule HDN deprecation in 0.11, default-discovery removal in
+  0.12, and runtime removal in 0.13. Do not create new HDN dependencies. Current discovery,
+  `hedron eject`, and the development watcher retain the legacy extension temporarily.
 
 ## Still Deferred (unchanged)
 
@@ -40,17 +41,18 @@ Phase 0.8 adds **no** new subsystems, adapters, or transports.
 2. If you use `hedron-django`, ensure Django `>=5.2,<6`.
 3. Run `hedron check` and review freeze-boundary informational diagnostics (Deferred SSE/QuerySet,
    experimental chart runtimes, Django floor).
-4. If you author HDN templates, prefer `template.hdx`. Legacy `template.hdn` still works; when both
-   exist in a folder, discovery uses `.hdx` and logs a warning.
+4. Inventory existing `template.hdn` usage and keep it on the legacy filename for now. Prefer Python
+   for new components; do not treat current imports, expressions, or artifacts as replacement APIs.
 5. Re-run your security, HTMX, and adapter suites; for production, exercise Chromium/Firefox/WebKit
    against critical flows when you consume HTMX history, OOB, or extensions.
 6. Read [STABILITY.md](../api/STABILITY.md) before depending on unmarked or private APIs.
 
-## Toward `1.0.0rcN`
+## Toward 0.9 and later phases
 
-After `v0.8.0` is published, install only published RC wheels for clean-install, upgrade-from-0.8,
-deployment, and rollback rehearsal. Stable `v1.0.0` differs from the final RC only by approved
-version metadata. See [RELEASE.md](../RELEASE.md).
+Phase 0.9 owns native Flask/Django application integration and the bounded QuerySet source; phase
+0.10 owns SSE, WebSocket, focused streaming, and navigation preload. Each phase publishes its own
+upgrade notes and proves clean install, upgrade from supported prior trains, deployment, and
+rollback from built/published artifacts. See [RELEASE.md](../RELEASE.md) and the roadmap.
 
 ## Deprecation tooling
 

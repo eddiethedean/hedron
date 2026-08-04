@@ -1,7 +1,7 @@
 # Hedron reference application (FastAPI)
 
 Cumulative authenticated team-administration application for the FastAPI flagship.
-Repository `main` tracks the **0.8** freeze train; PyPI may still serve **0.7.x** until
+Repository `main` tracks the **0.8** compatibility baseline; PyPI may still serve **0.7.x** until
 `v0.8.0` is tagged.
 
 Demonstrates:

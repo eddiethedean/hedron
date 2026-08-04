@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the 0.8 freeze train on `main`
+**Status:** Accepted; kept current with the 0.8 compatibility baseline on `main`
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -56,10 +56,12 @@ hedron/
 | `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Beta Supported) |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Beta Supported) |
+| `hedron-jinja` *(planned)* | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.11.0` experimental |
 
-`hedron` does not require Explorer in production. `hedron[dev]` installs `hedron-explorer`
-for development diagnostics. The flagship package contains the registry and trace hooks
-needed by Explorer but not the Explorer frontend.
+`hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
+`hedron-explorer` for development diagnostics; the future `hedron[jinja]` extra installs the
+separate integration. The flagship package contains the registry and trace hooks needed by
+Explorer but not the Explorer frontend.
 
 **Publish note:** repository `main` coordinates packages at `0.8.0` cut-ready. PyPI may
 still serve `0.7.x` until `v0.8.0` is tagged—see [STATUS](STATUS.md).

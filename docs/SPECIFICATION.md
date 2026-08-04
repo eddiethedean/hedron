@@ -57,10 +57,17 @@ prior published train until `v0.8.0` is tagged). See [RELEASE.md](RELEASE.md) an
 [STATUS.md](STATUS.md).
 Later-phase work must still satisfy the owning release gate before implementation begins.
 
+D-040 and accepted RFC-0031 select a separate, optional `hedron-jinja` integration for trusted
+application templates in phase 0.11. Python components remain canonical and the current release
+does not ship the integration. HDN APIs and artifacts remain experimental and enter the RFC-0031
+deprecation/migration path rather than constraining the Jinja design.
+
 Under D-035, phase 0.7 additionally requires the phase 0.6 behavioral closure gate, accepted
 adapter-neutral ownership, resolved package dependency direction, concrete compatibility ranges,
-and evidence-backed adapter/operations/jobs/observability ledgers. Phase 0.8 is feature-frozen; final
-release rehearsal uses published `1.0.0rcN` artifacts.
+and evidence-backed adapter/operations/jobs/observability ledgers. Phase 0.8 is feature-frozen;
+phase 0.9 adds native Flask/Django ergonomics and a bounded QuerySet source, while live transports
+remain assigned to phase 0.10. Later work continues through capability-driven `0.x` phases; no 1.0
+freeze is scheduled.
 
 The cumulative [reference application](REFERENCE_APPLICATION.md) grows from the phase 0.1
 static rendering proof through the phase 0.2 authenticated FastAPI CRUD application into

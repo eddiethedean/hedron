@@ -10,7 +10,11 @@ Hedron borrows component trees, props, children, slots, fragments, conditional r
 
 ## Productive before powerful
 
-Beginners start with `Page`, `Card`, `Form`, `DataTable`, `DataEditor`, charts, and `Auto()`. They should not need to understand the renderer, HDN AST, asset graph, or component registry. Advanced users can progressively adopt explicit props, custom components, HDN, scoped styles, Web Components, adapters, and compiler tooling.
+Beginners start with `Page`, `Card`, `Form`, `DataTable`, `DataEditor`, charts, and `Auto()`. They
+should not need to understand the renderer, asset graph, or component registry. Advanced users can
+progressively adopt explicit props, custom Python components, scoped styles, Web Components,
+adapters, and compiler tooling that has independently justified its complexity. Hedron does not
+assume a custom template language is inherently more progressive or approachable.
 
 ## Explain the magic
 
@@ -23,4 +27,3 @@ Hedron owns web integration: lifecycle, rendering, transport, security defaults,
 ## Performance with evidence
 
 The first implementation is pure Python. Internal boundaries should permit targeted native acceleration, but Rust is introduced only when a representative benchmark identifies a bottleneck and parity can be tested against the Python implementation.
-

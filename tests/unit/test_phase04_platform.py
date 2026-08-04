@@ -200,9 +200,9 @@ def test_cli_new_check_graph_audit(tmp_path: Path, monkeypatch: pytest.MonkeyPat
         name="Pill",
         module="demo",
         distribution="app",
-        hdn_source=str(tmp_path / "t.hdx"),
+        hdn_source=str(tmp_path / "t.hdn"),
     )
-    (tmp_path / "t.hdx").write_text("<div>x</div>", encoding="utf-8")
+    (tmp_path / "t.hdn").write_text("<div>x</div>", encoding="utf-8")
     (tmp_path / "pyproject.toml").write_text("[tool.hedron]\n", encoding="utf-8")
 
     with pytest.raises(SystemExit) as graph_exc:
@@ -231,7 +231,7 @@ def test_explorer_blocks_path_outside_allowlist(tmp_path: Path) -> None:
     secret.write_text("TOP_SECRET", encoding="utf-8")
     folder = tmp_path / "components" / "Safe"
     folder.mkdir(parents=True)
-    (folder / "template.hdx").write_text("<div>ok</div>", encoding="utf-8")
+    (folder / "template.hdn").write_text("<div>ok</div>", encoding="utf-8")
     register_component(
         logical_id="app:safe.Safe",
         name="Safe",
@@ -263,7 +263,7 @@ def test_explorer_rejects_folder_path_as_root(tmp_path: Path) -> None:
     secret.write_text("TOP_SECRET", encoding="utf-8")
     folder = tmp_path / "components" / "Safe"
     folder.mkdir(parents=True)
-    (folder / "template.hdx").write_text("<div>ok</div>", encoding="utf-8")
+    (folder / "template.hdn").write_text("<div>ok</div>", encoding="utf-8")
     register_component(
         logical_id="app:safe.Safe",
         name="Safe",
@@ -384,7 +384,10 @@ def test_sample_kit_plugin_module() -> None:
     reset_explorer_panels_for_tests()
     ctx = PluginContext(PLUGIN_META)
     register(ctx)
-    assert any(c.name == "Callout" for c in get_registry().components())
+    callout_meta = next(c for c in get_registry().components() if c.name == "Callout")
+    assert callout_meta.hdn_source is not None
+    assert Path(callout_meta.hdn_source).name == "template.hdn"
+    assert Path(callout_meta.hdn_source).is_file()
     assert any(p.panel_id == "sample-kit-callout" for p in get_explorer_panels())
     assert any(a.logical_id.endswith("callout.mark") for a in get_registry().assets())
     rendered = render_html(Callout(message="hi"))

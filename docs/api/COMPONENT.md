@@ -5,7 +5,7 @@ status: shipped
 # `Component`
 
 
-!!! note "Stability (0.8 freeze)"
+!!! note "Stability (0.8 compatibility baseline)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
@@ -43,10 +43,14 @@ Composition helpers accept components, native nodes, strings, supported sequence
 
 Component identity is deterministic for diagnostics and targets when requested. It excludes secret values and is never an authorization mechanism.
 
-Applications normally subclass `Component`, compose built-ins in functions, or author HDN-backed components. Internal node classes are not a stability promise unless listed in this API set.
+Applications normally subclass `Component` or compose built-ins in functions. RFC-0031 plans an
+optional `hedron-jinja` adapter for trusted application templates in phase 0.11; it does not replace
+this canonical Python contract. The shipped HDN-backed path remains experimental and is scheduled
+for migration/removal under D-040. Internal node classes are not a stability promise unless listed
+in this API set.
 
 ## Component folders
 
-Discovered component folders may include `component.py`, `template.hdx` (preferred HDN source;
-`template.hdn` remains a compatibility fallback), `styles.css`, `browser.mjs`, and `examples.py`.
-`hedron eject` writes `template.hdx` overrides.
+Discovered component folders may currently include `component.py`, experimental `template.hdn`,
+`styles.css`, `browser.mjs`, and `examples.py`. HDN discovery/ejection is retained temporarily for
+compatibility and RFC-0031 migration inventory; it is not the future Jinja layout contract.

@@ -171,8 +171,8 @@ state = "Deferred"
 command = ""
 ci_job = ""
 owner = "hedron"
-rationale = "Official HTMX SSE extension evaluated against bounded polling; polling remains sufficient for 0.7 job status. SSE stays post-1.0."
-destination = "post-1.0 live transport"
+rationale = "Official HTMX SSE extension evaluated against bounded polling; polling remains sufficient for 0.7 job status. SSE is assigned to phase 0.10."
+destination = "phase 0.10 live interaction gate"
 stability_impact = "No SSE live regions in Supported surface; extension asset contract still pins optional packages when present."
 
 [[evidence]]

@@ -5,7 +5,7 @@ status: shipped
 # Utility component contracts
 
 
-!!! note "Stability (0.8 freeze)"
+!!! note "Stability (0.8 compatibility baseline)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
@@ -25,4 +25,3 @@ These built-ins capture the low-friction Python workflows learned from Streamlit
 - `Grid(columns=..., children=...)`: explicit responsive layout; it does not return positional mutable column handles.
 
 All components have server-rendered useful fallbacks. Browser enhancement may preserve transient interaction state but cannot become an application-wide store. Uploads/downloads require explicit authorization and resource limits. Viewers never treat displayed content as executable.
-

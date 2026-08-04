@@ -61,6 +61,12 @@ class HtmlRawNode(Node):
 
 
 @dataclass
+class ImportNode(Node):
+    local_name: str = ""
+    component_ref: str = ""
+
+
+@dataclass
 class SlotNode(Node):
     name: str = "default"
     children: list[Node] = field(default_factory=list)

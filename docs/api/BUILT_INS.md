@@ -5,13 +5,13 @@ status: shipped
 # Built-in component baseline
 
 
-!!! note "Stability (0.8 freeze)"
+!!! note "Stability (0.8 compatibility baseline)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
 **Status:** Accepted
 
-This is the minimum built-in set for phase 0.1 (`v0.1.0`) and the secure CRUD slice in phase 0.2 (`v0.2.0`). It is deliberately smaller than the full 1.0 component catalog.
+This is the minimum built-in set for phase 0.1 (`v0.1.0`) and the secure CRUD slice in phase 0.2 (`v0.2.0`). Later capability phases extend it through their own acceptance gates.
 
 ## Phase 0.1 core (`v0.1.0`)
 

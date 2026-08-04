@@ -21,6 +21,6 @@ Reference and sample packages exercise public helpers rather than private test u
 - [x] Release-gate manifests map stable acceptance IDs to commands, CI jobs, matrix dimensions, and
   retained artifacts under [EVIDENCE.md](EVIDENCE.md).
   *([release-gate-0.8.toml](release-gate-0.8.toml))*
-- [ ] Published `1.0.0rcN` artifacts, not repository imports, pass clean install, upgrade,
-  deployment, rollback, offline, and complete acceptance rehearsals.
-  *(local `scripts/rehearse_rc.py` proves the path; index publish is the cut step)*
+- [ ] Each capability phase's published artifacts, not repository imports, pass clean install,
+  supported upgrade, deployment, rollback, offline, and owning acceptance rehearsals.
+  *(`scripts/rehearse_release.py` provides the package smoke path; phase ledgers own full evidence)*

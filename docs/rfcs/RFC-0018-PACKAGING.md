@@ -7,7 +7,9 @@ an acyclic Explorer/adapter dependency graph before phase 0.7 implementation.
 
 ## Distributions
 
-- `hedron-core`: models, components, rendering, registry protocols, HDN, HTMX metadata, scoped-style contracts, and security primitives.
+- `hedron-core`: models, components, rendering, registry protocols, experimental legacy HDN,
+  HTMX metadata, scoped-style contracts, and security primitives. D-040 moves and removes HDN
+  through the RFC-0031 migration because current placement is not a replacement constraint.
 - `hedron`: flagship FastAPI integration and re-exported beginner API.
 - `hedron-flask` and `hedron-django`: dedicated adapters without FastAPI.
 - `hedron-explorer`, `hedron-data`, and `hedron-charts`: substantial optional subsystems.

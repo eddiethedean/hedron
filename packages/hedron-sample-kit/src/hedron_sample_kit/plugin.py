@@ -34,7 +34,7 @@ def register(ctx: PluginContext) -> None:
         module="hedron_sample_kit.components.Callout",
         distribution="hedron-sample-kit",
         props_model="CalloutProps",
-        hdn_source=str(folder / "template.hdx"),
+        hdn_source=str(folder / "template.hdn"),
         styles_path=str(folder / "styles.css"),
         folder_path=str(folder),
         asset_roots=(str(folder),),

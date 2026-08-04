@@ -57,6 +57,28 @@ strict_csp = true
 reject_inline_style = true
 ```
 
+## Planned `[tool.hedron.jinja]` keys (phase 0.11)
+
+RFC-0031 reserves the following optional-package configuration. These keys are not accepted by the
+current 0.8 loader and become active only when `hedron-jinja` is installed in phase 0.11.
+
+| Key | Type | Default | Description |
+|---|---|---:|---|
+| `application_roots` | `list[str]` | `["templates"]` | Canonical project-relative application template roots |
+| `strict` | `bool` | `true` | Require strict undefined, autoescape, static dependencies, and contextual checks |
+| `allow_dynamic_dependencies` | `bool` | `false` | Experimental opt-out from static include/extends inventory |
+| `max_template_depth` | `int` | `32` | Maximum include/extends nesting |
+| `max_macro_depth` | `int` | `32` | Maximum macro recursion nesting |
+| `max_loop_iterations` | `int` | `10_000` | Maximum iterations for one loop |
+| `max_total_loop_iterations` | `int` | `50_000` | Maximum iterations across one render |
+| `max_component_invocations` | `int` | `10_000` | Maximum Hedron tags in one render |
+| `max_output_chars` | `int` | `10_000_000` | Maximum emitted Unicode characters |
+| `max_metadata_items` | `int` | `10_000` | Maximum accumulated metadata entries |
+
+Runtime arguments may tighten these limits. A production override may not silently weaken build
+policy. Jinja loaders, bytecode caches, filters, globals, and i18n remain Python environment
+configuration, not serialized project objects.
+
 ## Environment variables
 
 | Variable | Effect |
@@ -91,4 +113,4 @@ not in `[tool.hedron]`.
 
 The `[tool.hedron]` schema and production build manifest include a format version.
 Unsupported major versions fail clearly. Additive optional keys are backward compatible;
-changed meaning requires migration documentation and, after `v1.0.0`, the deprecation policy.
+changed meaning requires migration documentation and the compatibility/deprecation policy.

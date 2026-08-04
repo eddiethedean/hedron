@@ -12,7 +12,9 @@ Hedron is not:
 - a JavaScript build tool or reason to require Node.js;
 - a Streamlit-style whole-script rerun engine;
 - a visual application builder in the initial product;
-- a guarantee that arbitrary React applications can be transpiled to HDN;
+- a guarantee that arbitrary React applications can be transpiled to a Hedron declarative format;
+- ownership of a custom template language without demonstrated advantage over typed Python or an
+  established optional engine;
 - a cross-language runtime before the Python contracts have stabilized;
 - a Rust project unless profiling establishes a concrete need;
 - a framework that silently exposes components, grants permissions, trusts markup, or persists data;
@@ -20,5 +22,7 @@ Hedron is not:
 
 ## Explicitly deferred
 
-The following may become optional subsystems after the core is proven: Java and Node adapters, a portable language-neutral specification, native acceleration, SSE live regions, WebSocket components, streamed documents, route-level CSS splitting, collaborative DataEditor, visual builders, and automated React-to-HDN migration assistance.
-
+The following may become optional subsystems after the core is proven: Java and Node adapters, a
+portable language-neutral specification, native acceleration, SSE live regions, WebSocket
+components, streamed documents, route-level CSS splitting, collaborative DataEditor, visual
+builders, and evidence-backed declarative-authoring migration assistance.

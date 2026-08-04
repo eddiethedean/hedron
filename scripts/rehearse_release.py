@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Rehearse a published 1.0.0rcN (or local dist/) install path for phase 0.8 exit.
+"""Rehearse a published Hedron release (or local dist/) install path in a clean environment.
 
 This does not publish. It verifies clean-install smoke against wheels in --dist-dir
-(default: ./dist) or a requirement pin like hedron==1.0.0rc1 from an index.
+(default: ./dist) or a requirement pin like hedron==0.9.0 from an index.
 """
 
 from __future__ import annotations
@@ -28,11 +28,11 @@ def main() -> int:
     parser.add_argument(
         "--requirement",
         default=None,
-        help="Optional pip requirement (e.g. hedron==1.0.0rc1) for index installs",
+        help="Optional pip requirement (e.g. hedron==0.9.0) for index installs",
     )
     args = parser.parse_args()
 
-    with tempfile.TemporaryDirectory(prefix="hedron-rc-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="hedron-release-") as tmp:
         venv_dir = Path(tmp) / "venv"
         if shutil.which("uv"):
             subprocess.check_call(["uv", "venv", str(venv_dir), "--python", "3.12"])
@@ -76,10 +76,10 @@ def main() -> int:
 
         code = (
             "from hedron_core import Page, Text, RenderMode, render\n"
-            "html = render(Page(Text('rc-ok'), title='RC'), mode=RenderMode.PAGE).html\n"
-            "assert 'rc-ok' in html and html.lower().startswith('<!doctype')\n"
+            "html = render(Page(Text('release-ok'), title='Release'), mode=RenderMode.PAGE).html\n"
+            "assert 'release-ok' in html and html.lower().startswith('<!doctype')\n"
             "from hedron import Hedron, __version__\n"
-            "print('ok: rc smoke', __version__)\n"
+            "print('ok: release smoke', __version__)\n"
         )
         subprocess.check_call([str(py), "-c", code])
     return 0

@@ -5,7 +5,7 @@ status: shipped
 # Response APIs
 
 
-!!! note "Stability (0.8 freeze)"
+!!! note "Stability (0.8 compatibility baseline)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
@@ -51,7 +51,9 @@ configuration.
 
 All Hedron responses use contextual escaping, registered assets, declared headers, and framework-managed background tasks. Response helpers do not weaken cache, CSP, CSRF, or redirect policy. Adapter `extra_headers` are merged through the same validation path as `InteractionResult.headers` (no raw overwrite of approved `HX-*` URL/selector fields; no `Cache-Control: public`).
 
-General component streaming is outside the 1.0 contract. Applications that need a streaming escape hatch use the framework's explicit `StreamingResponse`; Hedron does not expose a public `StreamingComponentResponse` in the 0.x–1.0 API.
+General component streaming is assigned to phase 0.10. Until that gate passes, applications that
+need a streaming escape hatch use the framework's explicit `StreamingResponse`; Hedron does not
+expose a public `StreamingComponentResponse` in the current API.
 
 ## `InteractionResult`
 

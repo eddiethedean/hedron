@@ -8,7 +8,9 @@ Every compiler, build, route, security, accessibility, integration, and runtime 
 HED-<AREA>-<NNNN>
 ```
 
-Initial areas are `MODEL`, `RENDER`, `HTML`, `ROUTE`, `API`, `HTMX`, `HDN`, `CSS`, `ASSET`, `PLUGIN`, `DATA`, `CHART`, `ASYNC`, `SEC`, `A11Y`, `PERF`, `BUILD`, and `CONFIG`.
+Initial areas are `MODEL`, `RENDER`, `HTML`, `ROUTE`, `API`, `HTMX`, `HDN` (legacy experimental),
+`CSS`, `ASSET`, `PLUGIN`, `DATA`, `CHART`, `ASYNC`, `SEC`, `A11Y`, `PERF`, `BUILD`, and `CONFIG`.
+RFC-0031 reserves `JINJA` for the planned optional template integration.
 
 Examples: `HED-SEC-0001`, `HED-HDN-0042`, `HED-ROUTE-0010`.
 

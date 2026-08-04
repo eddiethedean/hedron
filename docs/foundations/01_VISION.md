@@ -4,7 +4,9 @@ Hedron enables Python developers to build maintainable, modern web interfaces wi
 
 ## Product promise
 
-> Build typed, component-based FastAPI interfaces with HTML and HTMX, without requiring Node.js. Start with familiar Python objects and built-in components; adopt HDN and browser components only when additional control is needed.
+> Build typed, component-based FastAPI interfaces with HTML and HTMX, without requiring Node.js.
+> Start with familiar Python objects and built-in components; adopt browser components or a future
+> evidence-backed declarative format only when additional control is needed.
 
 Hedron combines:
 
@@ -22,7 +24,8 @@ Flask and Django are intentional adapter targets. They are not part of the flags
 
 ## Success
 
-Hedron succeeds when a new user can render a useful secure page in five minutes, build a CRUD application without writing HDN, inspect every inferred behavior, and progressively replace defaults without abandoning the framework.
+Hedron succeeds when a new user can render a useful secure page in five minutes, build a CRUD
+application with Python components, inspect every inferred behavior, and progressively replace
+defaults without abandoning the framework. A separate template language is not a success criterion.
 
 The output remains ordinary web technology. A Hedron application can be debugged with browser tools, HTTP clients, FastAPI tooling, and standard accessibility and security scanners.
-

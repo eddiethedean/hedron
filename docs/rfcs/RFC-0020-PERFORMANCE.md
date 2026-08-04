@@ -13,7 +13,7 @@ Measure endpoint dependency time, I/O preparation, component rendering, serializ
 - Avoid FFI calls per node if native acceleration is ever introduced.
 - Avoid implicit collection of lazy or distributed dataframes.
 - Bound browser rows, JSON payloads, concurrency, upload sizes, and remote calls.
-- Compile HDN and CSS ahead of time for production.
+- Compile CSS and any legacy experimental HDN compatibility sources ahead of time for production.
 - Prefer lazy addressable regions to streaming entire documents.
 
 ## Native threshold
@@ -25,4 +25,3 @@ Rust work requires a repeatable benchmark, a documented target improvement, repr
 - CI records baseline benchmarks without relying solely on brittle hard failures.
 - Release gates define page render, fragment render, startup, and bundle-size budgets.
 - Regressions can be attributed to a documented stage rather than a single aggregate timer.
-

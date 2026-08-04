@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- HDN `{@import LocalName from "component-logical-id"}` declarations for explicit,
+  host-resolved component dependencies, including aliasing, formatter support, and
+  serialized import metadata.
+
+### Changed
+
+- Bumped `HDN_FORMAT_VERSION` to 2 for explicit component-reference resolution; rebuild
+  compiled HDN artifacts before using them with this runtime.
+
 ## [0.8.0] - 2026-08-03
 
 ### Added
@@ -12,8 +25,7 @@
 ### Changed
 
 - Feature freeze: no new subsystems, adapters, or transports on the 0.8 train.
-- Prefer JSX-familiar `template.hdx` source files during component discovery while retaining
-  `template.hdn` as a compatibility fallback.
+- Use the canonical `template.hdn` filename during component discovery.
 
 ## [0.7.0] — 2026-08-03
 

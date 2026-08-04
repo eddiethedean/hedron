@@ -12,8 +12,7 @@
 ### Changed
 
 - Feature freeze: no new subsystems, adapters, or transports on the 0.8 train.
-- `hedron eject` creates `template.hdx`, and `hedron dev` watches both preferred `.hdx`
-  and compatibility `.hdn` templates.
+- `hedron eject` creates `template.hdn`, and `hedron dev` watches `.hdn` templates.
 
 ## [0.7.0] — 2026-08-03
 

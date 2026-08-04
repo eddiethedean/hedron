@@ -16,8 +16,8 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
    - [CLI.md](acceptance/CLI.md) phase 0.4
    - [PLUGINS.md](acceptance/PLUGINS.md) phase 0.4
    - [TESTING.md](acceptance/TESTING.md) phase 0.4
-   - [COMPONENT_MODEL.md](acceptance/COMPONENT_MODEL.md) FastAPI parity + Python/HDN equivalence
-   - [HDN.md](acceptance/HDN.md) phase 0.3 language/tooling exit
+   - [COMPONENT_MODEL.md](acceptance/COMPONENT_MODEL.md) FastAPI parity; legacy Python/HDN comparison is informational
+   - [HDN.md](acceptance/HDN.md) D-040/RFC-0031 migration gate (legacy 0.3 checks are not promotion)
    - [SCOPED_STYLES.md](acceptance/SCOPED_STYLES.md) phase 0.3 compilation/delivery exit
    - Phase 0.6 and later: every completed item in the owning acceptance ledgers has a stable ID,
      named command, and retained evidence artifact; prose checkbox state alone is insufficient.
@@ -87,11 +87,11 @@ Before any 0.7 adapter contract is implemented:
 
 > **Status:** Published as `v0.7.0`. Do not retag.
 
-## Cut `v0.8.0` (feature-freeze baseline)
+## Cut `v0.8.0` (hardening and compatibility baseline)
 
 > **Status:** Ready to cut. Do not retag after publish.
 
-1. Confirm feature freeze: no net-new subsystems, adapters, or transports.
+1. Confirm phase 0.8 scope: hardening/classification only; no net-new subsystem, adapter, or transport.
 2. Confirm `uv run python scripts/check_release_gate.py 0.8.0` and
    [release-gate-0.8.toml](acceptance/release-gate-0.8.toml) (`Verified` or owned `Deferred`).
 3. Confirm stability catalog ([api/STABILITY.md](api/STABILITY.md)), compatibility/deprecation
@@ -107,19 +107,31 @@ git tag -a v0.8.0 -m "Hedron 0.8.0"
 git push origin v0.8.0
 ```
 
-7. After publish, update STATUS/README to record publication and point at `1.0.0rcN` rehearsal.
+7. After publish, update STATUS/README to record publication and point at phase 0.9.
    Retain the evidence bundle (SBOM, licenses, asset audit, test summaries, lockfile digest).
 
-## Rehearse `1.0.0rcN` and cut `v1.0.0`
+## Build and cut `v0.9.0`
 
-1. Publish `1.0.0rc1` (and later `rcN` as required) through the same package pipeline as stable.
-   Package metadata and tags use PEP 440 prerelease forms (`1.0.0rc1`, tag `v1.0.0rc1`).
-2. From **published** RC artifacts only (not the workspace): clean install, upgrade from `0.8.0`,
-   complete reference deployment, native Flask/Django slices, offline/no-Node, three-engine browser
-   matrix, rollback rehearsal, and [RELEASE_1_0.md](acceptance/RELEASE_1_0.md) owner sign-off.
-3. Iterate `rc2+` for fixes and documentation only.
-4. Publish `v1.0.0` only when the final RC evidence is green and the stable artifact differs only by
-   approved version/release metadata.
+1. Confirm phase 0.9 owning RFC revisions and API/implementation/acceptance contracts are accepted
+   before implementation is claimed complete.
+2. During development, validate the planned evidence shape with
+   `uv run python scripts/check_release_gate.py 0.9.0 --allow-planned` after synchronizing package
+   versions and changelogs on the release branch.
+3. Close [RELEASE_0_9.md](acceptance/RELEASE_0_9.md): Flask application-factory/Blueprint,
+   Django reusable-app, bounded QuerySet, optional job-bridge, native security/lifecycle,
+   compatibility, migration, package-isolation, and reference-slice evidence.
+4. Replace every Planned row in
+   [release-gate-0.9.toml](acceptance/release-gate-0.9.toml) with `Verified` evidence or an explicitly
+   owned `Deferred` disposition. The strict gate must pass before publication:
+   `uv run python scripts/check_release_gate.py 0.9.0`.
+5. Build the coordinated artifacts once through the trusted workflow. From those artifacts, run
+   `scripts/rehearse_release.py`, upgrade from supported `0.8.x`, native Flask/Django deployments,
+   rollback, documentation examples, supported matrices, and the supply-chain bundle.
+6. Tag and publish `v0.9.0`; retain exact source tag, artifact hashes, commands, matrix dimensions,
+   logs, SBOM, licenses, provenance, migration proof, and owner approvals. Never retag or overwrite
+   a published artifact.
+7. Immediately verify public-index installation and hashes. If an artifact is wrong, yank it when
+   appropriate, publish the disposition, and prepare the next valid patch release.
 
 ## Cut `v0.6.0` (visualization and first-party integrations)
 

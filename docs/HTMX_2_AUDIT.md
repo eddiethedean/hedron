@@ -72,9 +72,9 @@ versioned browser assets and are never implied by the core compatibility range.
   CSP declarations, deterministic load order after core HTMX, compatibility tests, and Explorer
   inventory. No extension is bundled merely because it exists.
 - Time-box evaluation of the official SSE extension for addressable job/status updates where it
-  demonstrably improves on bounded polling. SSE is not required for the 0.7 exit gate and remains
-  post-1.0 when evidence is insufficient. WebSocket components remain post-1.0 absent a new accepted
-  RFC; never reintroduce removed `hx-sse` or `hx-ws` attributes.
+  demonstrably improves on bounded polling. SSE is not required for the 0.7 exit gate and is
+  assigned to phase 0.10. WebSocket components share the 0.10 transport gate and still require an
+  accepted bidirectional-use-case RFC; never reintroduce removed `hx-sse` or `hx-ws` attributes.
 - Cover reverse proxies, root paths, reconnect/backoff, cancellation, cache headers, CSRF, and
   authorization for any selected extension transport.
 
@@ -90,15 +90,14 @@ versioned browser assets and are never implied by the core compatibility range.
 - Verify sensitive pages opt out of history snapshots and that cached snapshots and extension
   diagnostics cannot disclose private content.
 
-## Explicit non-goals through 1.0
+## Explicit non-goals through phase 0.9
 
 - Recreating HTMX APIs behind a Python DSL.
 - Supporting removed HTMX 1 attributes or the `htmx-1-compat` extension.
 - Enabling inline executable attributes, JavaScript-valued headers/values, or response scripts by
   default.
 - Bundling every official extension. Core HTML/HTTP mechanisms remain preferred when sufficient.
-- Introducing navigation preloading during the 0.8 feature freeze; measured preload remains a
-  post-1.0 candidate.
+- Introducing navigation preloading before its phase 0.10 cache/privacy/performance gate.
 
 ## Primary sources
 

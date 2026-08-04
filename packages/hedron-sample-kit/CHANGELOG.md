@@ -13,7 +13,7 @@
 ### Changed
 
 - Feature freeze: no new subsystems, adapters, or transports on the 0.8 train.
-- Sample Callout component template renamed to `template.hdx` (preferred HDN source extension).
+- Sample Callout component uses the canonical `template.hdn` filename.
 
 ## [0.7.0] — 2026-08-03
 

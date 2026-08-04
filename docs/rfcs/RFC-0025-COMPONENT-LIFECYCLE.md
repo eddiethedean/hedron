@@ -15,7 +15,9 @@
 
 Normal component constructors perform no hidden network or database I/O. Data belongs in endpoint factories, sources, dependencies, or a future explicit `prepare()` hook. Props are immutable during rendering and request-scoped context is not stored globally.
 
-Startup compiles registries, HDN, CSS, assets, routes, and plugin contributions through application lifespan. Development may recompile affected artifacts; production consumes build manifests.
+Startup compiles registries, CSS, assets, routes, plugin contributions, and any existing experimental
+HDN compatibility artifacts through application lifespan. Development may recompile affected
+artifacts; production consumes build manifests. RFC-0031 replaces and removes the HDN step.
 
 ## Acceptance criteria
 
@@ -23,4 +25,3 @@ Startup compiles registries, HDN, CSS, assets, routes, and plugin contributions 
 - Dependency cleanup occurs after rendering and after streaming iteration when applicable.
 - Development reload cannot leave duplicate registry entries or stale asset mappings.
 - Deterministic components can be rendered in tests without an HTTP request.
-

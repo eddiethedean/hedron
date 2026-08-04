@@ -94,7 +94,7 @@ def main() -> int:
         "hedron-sample-kit",
         "Levels",
         "Artifact classes",
-        "Deferred through the freeze",
+        "Deferred destinations",
     ]
     for section in required_sections:
         if section not in text:
@@ -103,7 +103,7 @@ def main() -> int:
     # Every __all__ name must appear somewhere in the catalog OR be __version__
     # Broad coverage: catalog discusses package groups; enforce non-empty __all__ and version pin.
     if "0.8.0" not in text and "0.8" not in text:
-        errors.append("STABILITY.md should reference the 0.8 freeze train")
+        errors.append("STABILITY.md should reference the 0.8 compatibility baseline")
 
     total = 0
     for pkg in PACKAGES:

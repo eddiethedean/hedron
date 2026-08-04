@@ -7,7 +7,7 @@
 1. Use built-in components and `Auto()`.
 2. Configure props, variants, layout, actions, and slots.
 3. Compose reusable Python components.
-4. Inspect or eject HDN and scoped styles.
+4. Inspect/eject scoped styles and inventory or migrate legacy HDN on the D-040/RFC-0031 path.
 5. Add Web Components, integrations, and plugins.
 
 The first tutorial includes no AST, compiler, Rust, portable specification, or mandatory HDN. Errors identify the component, source, invalid value category, and next action without leaking sensitive values.
@@ -23,4 +23,3 @@ Beginner components include forms, tables, editor, metrics, uploads, downloads, 
 - Common Python objects render without manual serialization.
 - Ambiguous matches have deterministic precedence and an explicit override.
 - Onboarding usability and error-message quality are tested with documented tasks.
-

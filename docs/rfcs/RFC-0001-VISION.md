@@ -10,7 +10,9 @@ Hedron is a typed server-component framework for Python web applications. Its fl
 
 - A new FastAPI user renders a useful secure page within five minutes.
 - Common CRUD, form, data, and dashboard work is possible with Python components alone.
-- Advanced users can control markup with HDN, presentation with scoped CSS, and browser behavior with Web Components.
+- Advanced users can control markup with typed Python/native HTML, presentation with scoped CSS,
+  and browser behavior with Web Components. A separate declarative format must independently
+  justify its existence under D-040/RFC-0031.
 - All inferred behavior is visible in the Explorer or CLI.
 - Existing FastAPI applications can adopt Hedron incrementally.
 - Flask and Django can reuse core semantics through dedicated adapters.
@@ -24,4 +26,3 @@ The public message is “typed component-based FastAPI interfaces without Node.j
 - The reference application demonstrates a page, fragment, form, action, addressable component, rich browser widget, and inspected inference.
 - The application remains understandable through emitted HTML, HTTP routes, and FastAPI metadata.
 - The onboarding guide introduces no compiler or AST concepts.
-

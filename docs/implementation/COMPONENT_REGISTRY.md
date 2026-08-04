@@ -2,7 +2,9 @@
 
 ## Purpose
 
-The registry is the single metadata graph for components, pages, addressable factories, actions, routes, props, examples, HDN, styles, assets, browser modules, security policy, accessibility contracts, and integration ownership.
+The registry is the single metadata graph for components, pages, addressable factories, actions,
+routes, props, examples, styles, assets, browser modules, security policy, accessibility contracts,
+integration ownership, and legacy HDN inventory while D-040/RFC-0031 migration support remains.
 
 ## Lifecycle
 
@@ -19,4 +21,3 @@ Consumers can resolve components, inverse consumers, routes, examples, assets, s
 ## Verification
 
 Test collision detection, dependency cycles, deterministic ordering, sealing, atomic reload, plugin failure rollback, serialization, redaction, and equivalence between routing, Explorer, OpenAPI, and build consumers.
-

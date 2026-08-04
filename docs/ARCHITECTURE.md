@@ -37,7 +37,7 @@ Django QuerySet as a first-party DataSource; Hedron-owned Django forms). See
 
 ```text
 hedron                         FastAPI flagship and beginner API
-├── hedron-core                models, components, renderer, HDN/.hdx, registry protocols
+├── hedron-core                models, components, renderer, registry protocols; legacy experimental HDN
 ├── FastAPI / Starlette        routing, DI, security, ASGI, responses
 └── optional integrations      Explorer, data, charts, sample plugins
 
@@ -57,7 +57,7 @@ rediscovers components or invents identifiers.
 
 ## Build and runtime
 
-Development builds registry, HDN (preferred `.hdx`, legacy `.hdn` fallback), scoped CSS,
+Development builds the registry, scoped CSS, legacy experimental HDN (`.hdn`) where present,
 assets, examples, and diagnostics incrementally. Production uses precompiled deterministic
 manifests and locally served fingerprinted assets. Node.js is not required by application
 developers or deployments.

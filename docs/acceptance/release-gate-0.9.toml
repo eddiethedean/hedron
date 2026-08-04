@@ -1,0 +1,59 @@
+# Phase 0.9 native-framework depth evidence index.
+# Consumed by scripts/check_release_gate.py 0.9.0.
+# Planned rows intentionally keep the gate open until implementation and published proof exist.
+
+[[evidence]]
+id = "FRM-FLK-09-001"
+state = "Planned"
+command = ""
+ci_job = "adapter"
+owner = "hedron-flask"
+
+[[evidence]]
+id = "FRM-DJG-09-001"
+state = "Planned"
+command = ""
+ci_job = "adapter"
+owner = "hedron-django"
+
+[[evidence]]
+id = "FORM-DJG-09-001"
+state = "Planned"
+command = ""
+ci_job = "adapter"
+owner = "hedron-django"
+
+[[evidence]]
+id = "DATA-DJG-09-001"
+state = "Planned"
+command = ""
+ci_job = "data"
+owner = "hedron-data"
+
+[[evidence]]
+id = "JOB-09-001"
+state = "Planned"
+command = ""
+ci_job = "jobs"
+owner = "hedron"
+
+[[evidence]]
+id = "COMPAT-09-001"
+state = "Planned"
+command = ""
+ci_job = "compatibility"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-09-001"
+state = "Planned"
+command = ""
+ci_job = "release"
+owner = "hedron"
+
+[[evidence]]
+id = "MIG-09-001"
+state = "Planned"
+command = ""
+ci_job = "release"
+owner = "hedron"

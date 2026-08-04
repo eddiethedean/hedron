@@ -12,10 +12,15 @@ component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
 > **Project status:** Repository `main` is phase **0.8 cut-ready** (`0.8.0` packages:
-> feature-frozen API baseline and hardening). **PyPI today** still serves the latest
+> hardening and compatibility baseline). **PyPI today** still serves the latest
 > published train (**0.7.x** until `v0.8.0` is tagged). No new subsystems, adapters, or
-> transports on the freeze. SSE transport and Django QuerySet DataSource remain Deferred.
-> After the `v0.8.0` cut, final-version rehearsal uses published `1.0.0rcN` artifacts.
+> transports were added during hardening. SSE transport and Django QuerySet DataSource remain
+> Deferred to phases 0.10 and 0.9 respectively. No arbitrary 1.0 freeze is scheduled.
+
+> **Authoring direction:** [RFC-0031](https://hedron.readthedocs.io/en/latest/rfcs/RFC-0031-JINJA-INTEGRATION/)
+> selects a future optional `hedron-jinja` integration for trusted application templates while
+> keeping typed Python components canonical. It is planned for phase 0.11, not shipped today. The
+> experimental HDN parser/compiler/runtime is on a deprecation path through phases 0.11–0.13.
 
 **Package maturity:** `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, and `hedron-django` are Beta. `hedron-charts` and `hedron-sample-kit`
@@ -86,20 +91,26 @@ Contributor checkout (monorepo only) is documented in [Contributing](https://hed
 
 ## Roadmap
 
-Phase 0.0 publishes no package. Each implementation phase maps to an initial release tag; Python package versions omit the leading `v`.
+Phase 0.0 publishes no package. Each capability phase `0.N` maps to initial release `v0.N.0`;
+phase 0.10 therefore maps to `v0.10.0`. No 1.0 milestone is scheduled.
 
 | Phase | Initial release | Outcome |
 |---|---|---|
 | 0.0 | None | Accepted specification and project foundation |
 | 0.1 | `v0.1.0` | Framework-neutral typed rendering core (**complete**) |
 | 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP (**published**) |
-| 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes (**published**) |
+| 0.3 | `v0.3.0` | Scoped styles, assets, themes, and experimental HDN prototype (**published**) |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform (**published**) |
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI (**published**) |
 | 0.6 | `v0.6.0` | Visualization and first-party integrations (**published**) |
 | 0.7 | `v0.7.0` | Portable adapters, Flask/Django, jobs, and operations (**published**) |
-| 0.8 | `v0.8.0` | Feature-frozen public API baseline and hardening (**cut-ready**) |
-| 1.0 | `v1.0.0` | Stable supported Hedron release |
+| 0.8 | `v0.8.0` | Hardening, stability classification, and compatibility baseline (**cut-ready**) |
+| 0.9 | `v0.9.0` | Native Flask/Django depth and bounded QuerySet integration |
+| 0.10 | `v0.10.0` | Live interaction, focused streaming, and navigation preload |
+| 0.11 | `v0.11.0` | Optional Jinja authoring, HDN migration, and developer tooling |
+| 0.12 | `v0.12.0` | Advanced data editing, distributed sources, and visualization scale |
+| 0.13 | `v0.13.0` | Advanced async preparation, concurrency, and observability |
+| 0.14 | `v0.14.0` | Portable runtimes and profiling-backed acceleration |
 
 See the complete [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/) for scope, feature ownership, RFC assignments, and release gates.
 
@@ -141,13 +152,13 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 **PyPI (install today):** latest published train is **0.7.x** (`pip install hedron`).
 
-**Repository `main`:** coordinated packages are **0.8.0 cut-ready** (feature-frozen API
+**Repository `main`:** coordinated packages are **0.8.0 cut-ready** (hardening and compatibility
 baseline); tag/publish `v0.8.0` when maintainers cut. Until then, `pip install hedron==0.8.0`
 will not resolve from PyPI.
 
 Install `hedron` for the FastAPI flagship, `hedron-flask` / `hedron-django` for Supported
 adapters, `"hedron[data]"` / `"hedron[charts]"` for extras. After the `v0.8.0` cut,
-published `1.0.0rcN` artifacts rehearse toward stable 1.0 — see the
+phase `0.9` deepens native framework integrations; later capability phases remain on the `0.x` line — see the
 [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing

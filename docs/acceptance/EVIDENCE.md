@@ -28,7 +28,7 @@ claim.
 
 The phase 0.6 closure index lives at
 [release-gate-0.6.toml](release-gate-0.6.toml). The phase 0.7 index lives at
-[release-gate-0.7.toml](release-gate-0.7.toml). The phase 0.8 freeze index lives at
+[release-gate-0.7.toml](release-gate-0.7.toml). The phase 0.8 baseline index lives at
 [release-gate-0.8.toml](release-gate-0.8.toml). `scripts/check_release_gate.py <version>`
 selects the matching manifest and validates package metadata; it fails closed when an evidence ID is
 missing, duplicated, `Verified` without a command, or `Deferred` without ownership/rationale/destination.

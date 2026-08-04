@@ -24,7 +24,7 @@ The release boundary is decisive:
 2. **0.8 hardens the existing adapter without adding features.** The normative roadmap forbids a
    new subsystem, adapter, or transport during this phase. Existing correctness, compatibility,
    security, packaging, documentation, and evidence gaps are in scope.
-3. **1.0 stabilizes the frozen surface. Net-new Django conveniences belong after 1.0**, shipped as
+3. **0.8 establishes the compatibility baseline. Net-new Django conveniences belong to 0.9**, shipped as
    additive minor releases with explicit capability and conformance evidence.
 
 This preserves the commitments in the [roadmap](ROADMAP.md),
@@ -76,9 +76,9 @@ behavior, not proposals to reopen that phase or add a 0.8 subsystem.
 | CSRF and auth helpers | Test real middleware ordering, rotated CSRF cookies, header/form tokens, cache variation, anonymous/authenticated/custom users, permission mapping, sessions without a database, and a missing middleware path with an actionable diagnostic. |
 | Advertised WSGI and ASGI modes | Give the reference slice both `application` entry points and run native clients/server smoke tests. The current reference slice exposes WSGI only and omits `AuthenticationMiddleware`, forms, staticfiles, and deployment checks. |
 | Native forms/validation and assets already claimed by ADP-DJG-001 | Tie each claim to a concrete reference-slice test. Current adapter tests cover basic page, fragment, and interaction responses but do not exercise `Form`/`ModelForm`, validation errors, `collectstatic`, or static URL resolution. |
-| Deferred QuerySet DataSource | Keep `QUERYSET_DATASOURCE_DEFERRED=True` and capability metadata consistent through 1.0. Do not let accepting a raw `QuerySet` accidentally become an undocumented lazy data path. |
+| Deferred QuerySet DataSource | Keep `QUERYSET_DATASOURCE_DEFERRED=True` and capability metadata consistent until the 0.9 gate passes. Do not let accepting a raw `QuerySet` accidentally become an undocumented lazy data path. |
 
-The async wrapper is the clearest existing-function defect. Fixing it during a feature freeze does
+The async wrapper is the clearest existing-function defect. Fixing it during the 0.8 hardening phase does
 not imply support for async transactions, Channels, WebSockets, or any other new capability.
 
 ## Upstream findings that affect the design
@@ -92,7 +92,7 @@ series. The 0.8 compatibility/security correction should therefore narrow the su
 `Django>=5.2,<6` and test the latest 5.2 patch. Supporting already-unsupported 5.0/5.1 would weaken
 the adapter's security promise.
 
-Django 6.x belongs in a post-1.0 compatibility release. It is outside the frozen dependency cap,
+Django 6.x belongs in the phase 0.9 compatibility review. It is outside the 0.8 dependency baseline,
 and its Python floor and deprecations must be reconciled with Hedron's Python matrix. Do not widen
 to `<7` based on an import smoke test; run the complete adapter, reference, packaging, forms,
 staticfiles, WSGI, and ASGI matrices first.
@@ -100,7 +100,7 @@ staticfiles, WSGI, and ASGI matrices first.
 Sources: [official Django downloads and support table](https://www.djangoproject.com/download/),
 [Django 5.2 release notes](https://docs.djangoproject.com/en/5.2/releases/5.2/).
 
-### A reusable Django app is the right post-1.0 integration shape
+### A reusable Django app is the right phase 0.9 integration shape
 
 A future ergonomic layer should make `hedron_django` an ordinary installable Django app with an
 `AppConfig`. `AppConfig.ready()` is appropriate for idempotent registration of system checks and
@@ -126,7 +126,7 @@ Sources: [Django applications and `AppConfig`](https://docs.djangoproject.com/en
 
 Hedron route identity should be based on the final namespaced Django view name, not only a function
 name or path string. Reusable apps can be mounted multiple times with distinct instance namespaces,
-and nested application namespaces are normal. The post-1.0 convenience layer should expose a small
+and nested application namespaces are normal. The phase 0.9 convenience layer should expose a small
 `app_name = "hedron"` URLconf or URL-pattern factory; it should not maintain a second router.
 
 Django 5.2 added `query` and `fragment` arguments to `reverse()`/`reverse_lazy()`. Hedron's portable
@@ -231,14 +231,14 @@ No item below creates a new public feature.
    the FastAPI adapter without claiming identical concurrency models.
 8. **Rehearse artifacts and deployments.** Clean wheel/sdist install, `manage.py check`,
    `collectstatic`, migrations-with-no-Hedron-models, WSGI/ASGI startup, prefixed proxy deployment,
-   upgrade, rollback, and removal from published `1.0.0rcN` artifacts.
+   upgrade, rollback, and removal from published `0.9.0` artifacts.
 
-## Post-1.0 Django feature candidates
+## Phase 0.9 Django capability packet
 
 These candidates are ordered by expected value and architectural fit. They should not be pulled
 into 0.8.
 
-### 1.1 — Django-native integration and authoring
+### 0.9A — Django-native integration and authoring
 
 1. **Installable app and system checks.** Add `HedronDjangoConfig` with idempotent, no-I/O
    registration and useful `hedron.*` check IDs for version, middleware, URL, template, and
@@ -259,7 +259,7 @@ into 0.8.
    resolution, external-host support, `collectstatic` checks, and no assumption about the serving
    backend.
 
-### 1.2 — QuerySet DataSource
+### 0.9B — QuerySet DataSource
 
 This is the highest-value Django-specific data feature and the highest-risk candidate. Superseding
 D-036 requires a new accepted design decision and a security/performance evidence plan.
@@ -286,7 +286,7 @@ D-036 requires a new accepted design decision and a security/performance evidenc
 Sources: [QuerySet laziness and async queries](https://docs.djangoproject.com/en/5.2/topics/db/queries/),
 [Django paginator behavior and large-offset warning](https://docs.djangoproject.com/en/5.2/ref/paginator/).
 
-### 1.3 — Django ecosystem bridges
+### 0.9C — Django ecosystem bridges
 
 1. **Authentication and permissions bridge.** Map `request.user`, explicitly selected permissions,
    and application-owned tenant facts into `AuthSignal`; integrate with function decorators and
@@ -356,13 +356,13 @@ Sources: [QuerySet laziness and async queries](https://docs.djangoproject.com/en
 | Release | Django work | Gate |
 |---|---|---|
 | 0.8 | Existing-surface hardening only: supported 5.2 floor, async decorator correction, resolver/prefix proof, native-claim evidence, security, packaging, browser, accessibility, performance | No new public subsystem or convenience layer |
-| 1.0 RCs | Clean install/upgrade/rollback and published-artifact rehearsals for both WSGI and ASGI profiles | All Supported claims traced to immutable evidence |
-| 1.0 | Freeze truthful native adapter surface; QuerySet remains Deferred | Same quality bar as flagship, not the same framework features |
-| 1.1 | Installable app, checks, dual-mode views, URL helpers, Forms bridge, templates/staticfiles | Additive API, native Django conformance, migration guide |
-| 1.2 | QuerySet DataSource, if its RFC and evidence pass | Tenant isolation, query budgets, stable paging, DB and sync/async matrices |
-| 1.3+ | Auth/messages/CBV/cache/jobs/operations bridges | Each optional integration independently installable and evidenced |
+| 0.8 | Establish truthful native adapter baseline; QuerySet remains Deferred | Same quality bar as flagship, not the same framework features |
+| 0.9A | Installable app, checks, dual-mode views, URL helpers, Forms bridge, templates/staticfiles | Additive API, native Django conformance, migration guide |
+| 0.9B | QuerySet DataSource, if its RFC and evidence pass | Tenant isolation, query budgets, paging, DB and sync/async matrices |
+| 0.9C | Auth/messages/CBV/cache/jobs/operations bridges | Each optional integration independently installable and evidenced |
+| 0.9 release | Clean install/upgrade/rollback and published-artifact rehearsals for WSGI and ASGI profiles | All Supported claims traced to immutable evidence |
 
-## Definition of done for post-1.0 Django features
+## Definition of done for phase 0.9 Django capabilities
 
 Every feature above must include:
 

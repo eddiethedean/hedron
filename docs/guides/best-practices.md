@@ -1,6 +1,6 @@
 # Best practices
 
-Practical defaults for production Hedron apps on the 0.8 freeze train.
+Practical defaults for production Hedron apps from the 0.8 compatibility baseline onward.
 
 ## Pages vs fragments
 
@@ -30,7 +30,8 @@ Practical defaults for production Hedron apps on the 0.8 freeze train.
 
 ## Templates
 
-- Prefer `template.hdx`; keep `.hdn` only as legacy fallback.
+- Use Python for new components on the current train. D-040/RFC-0031 plan an optional Jinja adapter
+  for phase 0.11; existing experimental HDN files remain only for compatibility and migration.
 - Do not put secrets or untrusted HTML in templates—use `TrustedHtml` at trust boundaries.
 
 ## Adapters

@@ -9,7 +9,7 @@ Hedron documentation separates **callable APIs that ship in this release** from
     Advanced typing and rendering primitives such as `NodeLike`, `RenderMode`, and
     `get_registry` live in `hedron_core`. Prefer `hedron` re-exports when available.
 
-**Stability:** Phase 0.8 freezes public classifications in [STABILITY.md](STABILITY.md)
+**Stability:** Phase 0.8 establishes public classifications in [STABILITY.md](STABILITY.md)
 (`beta` | `experimental` | `internal` | `deferred`). Package maturity (Beta/Alpha) is separate
 from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
@@ -23,7 +23,7 @@ from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
 ## Shipped through 0.8
 
-These surfaces are implemented on the **0.8.0** freeze train (includes all 0.1–0.7
+These surfaces are implemented on the **0.8.0** compatibility train (includes all 0.1–0.7
 surfaces plus hardening and stability labels).
 
 ### Application
@@ -72,7 +72,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTIC
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — 0.8 freeze catalog
+- [Stability classifications](STABILITY.md) — 0.8 compatibility catalog
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
 - [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling (SSE Deferred)
 
@@ -82,3 +82,8 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTIC
 
 - Django QuerySet as a first-party DataSource
 - Official HTMX SSE live transport
+
+## Planned after 0.8
+
+- [Jinja integration](JINJA.md) — optional `hedron-jinja` trusted-template adapter accepted for
+  phase 0.11; experimental on first implementation

@@ -19,7 +19,7 @@ files are protected unless you explicitly use `--force`.
 hedron dev
 ```
 
-The development command watches Python, HDN (`.hdx` preferred, `.hdn` compatibility), scoped CSS,
+The development command watches Python, scoped CSS, and existing experimental HDN (`.hdn`),
 and registered assets, then rebuilds affected artifacts without exposing a partially compiled
 registry.
 
@@ -57,7 +57,7 @@ uploaded to code scanning systems; JSON is available when another tool owns pres
 hedron build
 ```
 
-The production build compiles HDN and CSS, fingerprints assets, records the selected
+The production build compiles CSS and existing experimental HDN compatibility sources, fingerprints assets, records the selected
 theme and settings digest, and writes a manifest consumed by the application. The runtime
 checks this sealed boundary instead of compiling mutable sources on demand.
 

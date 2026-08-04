@@ -10,8 +10,8 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
   </a>
   <a class="hedron-card" href="hdn-templates/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>
-    <strong>HDN templates</strong>
-    <p>Prefer <code>.hdx</code>, discovery, and <code>hedron eject</code>.</p>
+    <strong>Legacy HDN templates</strong>
+    <p>Experimental design-hold behavior for existing users and migration inventory.</p>
   </a>
   <a class="hedron-card" href="plugin-authoring/">
     <span class="hedron-card__icon" aria-hidden="true">⬡</span>
@@ -51,7 +51,7 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>0.7 → 0.8 freeze notes, Django floor, Deferred claims, and RC path.</p>
+    <p>0.7 → 0.8 compatibility notes, Django floor, and later capability phases.</p>
   </a>
   <a class="hedron-card" href="faq/">
     <span class="hedron-card__icon" aria-hidden="true">?</span>

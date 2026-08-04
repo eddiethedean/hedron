@@ -4,7 +4,10 @@
 
 ## Design
 
-Components may own ordinary `styles.css`. Local classes and keyframes are structurally parsed and rewritten to stable collision-free identifiers. HDN and Python components receive typed `styles.name` symbols. `:global(...)` is the explicit escape hatch.
+Components may own ordinary `styles.css`. Local classes and keyframes are structurally parsed and
+rewritten to stable collision-free identifiers. Python components receive typed `styles.name`
+symbols; the legacy HDN prototype receives rewritten class symbols while D-040 migration support
+remains. `:global(...)` is the explicit escape hatch.
 
 Stable names must not depend on absolute paths, timestamps, randomness, or import order. CSS custom properties carry tokens and themes; semantic variants map to classes. Light DOM is the default.
 
@@ -23,4 +26,3 @@ Unknown symbols, unsafe globals, path traversal, unused local selectors, duplica
 - Selector and keyframe rewriting uses an AST, not regular expressions.
 - Repeated builds produce byte-equivalent names and manifests.
 - HTMX-loaded components are styled without dynamic inline injection.
-
