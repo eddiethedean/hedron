@@ -215,6 +215,9 @@ def _inject_build_assets(
         seen.add(tag)
         tags.append(tag)
 
+    if getattr(request.app.state, "hedron_default_styles", True):
+        add('<link rel="stylesheet" href="/hedron-static/hedron-default.css">')
+
     for asset in result.assets:
         href = html_lib.escape(asset.href, quote=True)
         if asset.kind == "css":

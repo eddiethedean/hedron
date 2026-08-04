@@ -63,6 +63,7 @@ class Hedron(FastAPI):
         enable_sessions: bool = True,
         explorer_dependencies: Sequence[Any] | None = None,
         theme: str | None = "default",
+        default_styles: bool = True,
         build_dir: str | Path | None = None,
         production: bool | None = None,
         **kwargs: Any,
@@ -104,8 +105,10 @@ class Hedron(FastAPI):
             self.hedron_explorer_mode = "off"
 
         self.hedron_theme = theme
+        self.hedron_default_styles = default_styles
         self.state.hedron_security = self.hedron_policy
         self.state.hedron_theme = theme
+        self.state.hedron_default_styles = default_styles
         self.state.hedron_production = production if production is not None else is_prod
         self._explorer_dependencies = list(explorer_dependencies or [])
 

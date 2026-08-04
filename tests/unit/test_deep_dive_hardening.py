@@ -247,8 +247,10 @@ def test_asset_injection_not_duplicated(tmp_path: Path) -> None:
 
     with TestClient(app) as client:
         response = client.get("/")
-        assert response.text.count('rel="stylesheet"') == 1
+        assert response.text.count('rel="stylesheet"') == 2
+        assert response.text.count("hedron-default.css") == 1
         assert response.text.count("/hedron-assets/") >= 1
+        assert response.text.index("hedron-default.css") < response.text.index("/hedron-assets/")
         assert response.text.count("hedron-disclose.mjs") == 1
         assert getattr(app.state, "hedron_build_manifest", None) is not None
         assert app.state.hedron_build_manifest.assets.assets

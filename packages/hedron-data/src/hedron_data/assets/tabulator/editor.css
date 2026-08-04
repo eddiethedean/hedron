@@ -1,14 +1,79 @@
-.hedron-data-editor { display: block; }
-.hedron-data-editor-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
-.hedron-data-editor-conflicts { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
-.hedron-data-editor-conflicts[hidden] { display: none; }
-.hedron-data-editor-grid { width: 100%; border-collapse: collapse; }
-.hedron-data-editor-grid th,
-.hedron-data-editor-grid td { border: 1px solid currentColor; padding: 0.25rem 0.5rem; }
-.hedron-sr-only {
-  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+.hedron-data-editor {
+  display: block;
+  min-width: 0;
 }
-.hedron-data-table { width: 100%; border-collapse: collapse; }
+
+.hedron-data-editor-toolbar,
+.hedron-data-editor-conflicts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.hedron-data-editor-conflicts[hidden] {
+  display: none;
+}
+
+.hedron-data-editor-grid {
+  width: 100%;
+  border: 1px solid var(--hedron-default-border, #dce2eb);
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--hedron-default-radius, 0.8rem);
+  background: var(--hedron-default-surface, #fff);
+}
+
+.hedron-data-editor-grid th,
+.hedron-data-editor-grid td {
+  padding: 0.65rem 0.75rem;
+  border: 0;
+  border-bottom: 1px solid var(--hedron-default-border, #dce2eb);
+  text-align: left;
+}
+
+.hedron-data-editor-grid th {
+  background: var(--hedron-default-surface-muted, #f0f3f8);
+  color: var(--hedron-color-muted, var(--hedron-default-muted, #647084));
+  font-size: 0.76rem;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.hedron-data-editor-grid tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.hedron-data-editor-grid td:focus {
+  outline: var(--hedron-focus-ring, 2px solid #2563eb);
+  outline-offset: -2px;
+}
+
+.hedron-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hedron-data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
 .hedron-data-table th,
-.hedron-data-table td { border-bottom: 1px solid currentColor; padding: 0.35rem 0.5rem; text-align: left; }
+.hedron-data-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--hedron-default-border, #dce2eb);
+  text-align: left;
+}
+
+.hedron-data-table tbody tr:last-child td {
+  border-bottom: 0;
+}

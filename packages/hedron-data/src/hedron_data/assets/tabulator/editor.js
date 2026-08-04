@@ -75,18 +75,21 @@
       const saveBtn = document.createElement("button");
       saveBtn.type = "button";
       saveBtn.textContent = "Save";
+      saveBtn.className = "hedron-button hedron-button-primary";
       saveBtn.addEventListener("click", () => this._save());
       toolbar.appendChild(saveBtn);
 
       const undoBtn = document.createElement("button");
       undoBtn.type = "button";
       undoBtn.textContent = "Undo";
+      undoBtn.className = "hedron-button hedron-button-secondary";
       undoBtn.addEventListener("click", () => this._undo());
       toolbar.appendChild(undoBtn);
 
       const insertBtn = document.createElement("button");
       insertBtn.type = "button";
       insertBtn.textContent = "Insert row";
+      insertBtn.className = "hedron-button hedron-button-secondary";
       insertBtn.addEventListener("click", () => this._insertRow());
       toolbar.appendChild(insertBtn);
 
@@ -94,6 +97,7 @@
         const delBtn = document.createElement("button");
         delBtn.type = "button";
         delBtn.textContent = "Delete selected";
+        delBtn.className = "hedron-button hedron-button-danger";
         delBtn.addEventListener("click", () => this._deleteSelected());
         toolbar.appendChild(delBtn);
       }
@@ -101,6 +105,7 @@
       const exportBtn = document.createElement("button");
       exportBtn.type = "button";
       exportBtn.textContent = "Export CSV";
+      exportBtn.className = "hedron-button hedron-button-secondary";
       exportBtn.addEventListener("click", () => this._exportCsv());
       toolbar.appendChild(exportBtn);
 
@@ -113,6 +118,7 @@
           const b = document.createElement("button");
           b.type = "button";
           b.textContent = action;
+          b.className = "hedron-button hedron-button-secondary";
           b.addEventListener("click", () => this._handleConflict(action));
           conflictBar.appendChild(b);
         }
@@ -406,6 +412,8 @@
         if (host.querySelector(TAG)) return;
         const el = document.createElement(TAG);
         host.appendChild(el);
+        const fallback = host.querySelector(":scope > .hedron-data-editor-fallback");
+        if (fallback) fallback.hidden = true;
       });
   }
 

@@ -23,6 +23,11 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
     <strong>Project workflow</strong>
     <p>Scaffold, develop, inspect, check, and create a sealed production build.</p>
   </a>
+  <a class="hedron-card" href="streamlit-migration/">
+    <span class="hedron-card__icon" aria-hidden="true">⇥</span>
+    <strong>Migrate from Streamlit</strong>
+    <p>Rewrite a rerun-based dashboard as typed routes, forms, metrics, charts, and tables.</p>
+  </a>
   <a class="hedron-card" href="charts-and-htmx/">
     <span class="hedron-card__icon" aria-hidden="true">⌀</span>
     <strong>Charts and HTMX</strong>

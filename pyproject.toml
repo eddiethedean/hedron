@@ -50,6 +50,9 @@ dev = [
     "flask>=3,<4",
     "django>=5.2,<6",
     "waitress>=3,<4",
+    "streamlit>=1.59.1",
+    "pandas>=2.2",
+    "pyarrow>=18,<25",
 ]
 docs = [
     "mkdocs>=1.6,<2",

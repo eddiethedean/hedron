@@ -35,12 +35,35 @@ def test_hedron_page_and_fragment() -> None:
     assert page.text.startswith("<!DOCTYPE html>")
     assert "hello" in page.text
     assert "htmx.min.js" in page.text
+    assert 'href="/hedron-static/hedron-default.css"' in page.text
     assert "X-Content-Type-Options" in page.headers
+    stylesheet = client.get("/hedron-static/hedron-default.css")
+    assert stylesheet.status_code == 200
+    assert stylesheet.headers["content-type"].startswith("text/css")
 
     frag = client.get("/", headers={"HX-Request": "true"})
     assert frag.status_code == 200
     assert "<!DOCTYPE" not in frag.text
     assert "hello" in frag.text
+    assert "hedron-default.css" not in frag.text
+
+
+def test_default_styles_can_be_disabled() -> None:
+    app = Hedron(
+        title="unstyled",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret",
+        default_styles=False,
+    )
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(Text("plain"), title="Plain")
+
+    response = TestClient(app).get("/")
+    assert response.status_code == 200
+    assert "hedron-default.css" not in response.text
 
 
 def test_plain_fastapi_html_helper() -> None:

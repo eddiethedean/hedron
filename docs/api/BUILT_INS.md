@@ -4,6 +4,14 @@ status: shipped
 
 # Built-in component baseline
 
+[Browse all built-in component demos](../components/index.md){ .md-button .md-button--primary }
+
+Every public component listed below has a dedicated guide with a usable semantic preview,
+constructor and parameter reference, composition and backend behavior, accessibility and
+security guidance, common mistakes, and testing advice. HTMX-dependent previews use a
+clearly labelled in-browser simulation; production authorization, validation, persistence,
+and fragment rendering remain server responsibilities.
+
 
 !!! note "Stability (0.8 compatibility baseline)"
 

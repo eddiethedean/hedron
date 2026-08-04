@@ -24,6 +24,7 @@ app = Hedron(
     explorer="off",
     session_secret="replace-me",
     theme="default",
+    default_styles=True,
     build_dir=".hedron/build",
     production=None,
 )
@@ -44,6 +45,7 @@ def home() -> Page:
 | `enable_sessions` | `bool` | `True` | Install Starlette `SessionMiddleware` |
 | `explorer_dependencies` | sequence of FastAPI dependencies | `()` | Applied to Explorer when `explorer="secured"` |
 | `theme` | `str` \| `None` | `"default"` | Registered theme name for lifespan/build |
+| `default_styles` | `bool` | `True` | Include Hedron's responsive baseline presentation; set `False` for a fully custom canvas |
 | `build_dir` | `str` \| `Path` \| `None` | `None` | Build/manifest directory (else settings / `HEDRON_BUILD_DIR`) |
 | `production` | `bool` \| `None` | `None` | `None` uses `HEDRON_ENV`; `True` requires a build manifest and gates runtime compile |
 
@@ -68,6 +70,8 @@ Also see module helpers `mount_hedron_static(app)` and `mount_build_assets(app, 
 - User lifespan is composed with Hedron startup/shutdown rather than replaced.
 - Explicit `Response` objects pass through unchanged.
 - Bundled HTMX is mounted at `/hedron-static/`.
+- Full pages include Hedron's bundled default stylesheet unless `default_styles=False`;
+  fragments do not repeat document-level assets.
 - Explorer is absent when `explorer="off"`. Modes `development` / `secured` require `hedron[dev]`.
 
 `Hedron` is an ergonomic facade, not a second DI container or ASGI runtime. Existing apps

@@ -193,9 +193,14 @@ class AltairAdapter:
         if hasattr(value, "to_dict"):
             spec = value.to_dict()
         elif isinstance(value, dict):
-            spec = value
+            spec = dict(value)
         else:
             raise TypeError("Altair adapter expects a Chart or Vega-Lite dict")
+        # Altair emits a remote JSON-schema identifier as metadata. The browser
+        # renderer does not fetch it, and removing it keeps otherwise local chart
+        # payloads compatible with Hedron's remote-resource policy.
+        spec = dict(spec)
+        spec.pop("$schema", None)
         reject_callbacks(spec)
         reject_remote_urls(spec)
         body = json.dumps(spec, separators=(",", ":"), default=str)

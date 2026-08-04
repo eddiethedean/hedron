@@ -83,9 +83,11 @@ markdown_extensions:
 extra_javascript:
   - javascript/readthedocs.js
   - javascript/examples.js
+  - javascript/component-demos.js
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/component-demos.css
 
 extra:
   generator: false
@@ -115,6 +117,7 @@ nav:
   - Guides:
     - Overview: guides/index.md
     - Project workflow: guides/project-workflow.md
+    - Migrate from Streamlit: guides/streamlit-migration.md
     - HTMX interactions: guides/htmx-interactions.md
     - HDJ authoring: api/JINJA.md
     - Charts and HTMX: guides/charts-and-htmx.md
@@ -129,6 +132,100 @@ nav:
     - Troubleshooting: guides/troubleshooting.md
   - Examples:
     - Interactive demos: examples/index.md
+  - Components:
+    - Overview: components/index.md
+    - Document and composition:
+      - Overview: components/document.md
+      - Page: components/page.md
+      - Fragment: components/fragment.md
+      - Head: components/head.md
+      - Title: components/title.md
+    - Landmarks:
+      - Overview: components/landmarks.md
+      - Header: components/header.md
+      - Main: components/main.md
+      - Nav: components/nav.md
+      - Aside: components/aside.md
+      - Footer: components/footer.md
+      - Section: components/section.md
+    - Layout:
+      - Overview: components/layout.md
+      - Container: components/container.md
+      - Stack: components/stack.md
+      - Inline: components/inline.md
+      - Grid: components/grid.md
+      - Divider: components/divider.md
+    - Content:
+      - Overview: components/content.md
+      - Heading: components/heading.md
+      - Text: components/text.md
+      - Link: components/link.md
+      - Image: components/image.md
+      - CodeBlock: components/code-block.md
+      - List: components/list.md
+      - DescriptionList: components/description-list.md
+      - Table: components/table.md
+      - Markdown: components/markdown.md
+    - Surfaces and status:
+      - Overview: components/surfaces.md
+      - Card: components/card.md
+      - Badge: components/badge.md
+      - Alert: components/alert.md
+      - Skeleton: components/skeleton.md
+    - Controls:
+      - Overview: components/controls.md
+      - Button: components/button.md
+      - LinkButton: components/link-button.md
+      - IconButton: components/icon-button.md
+    - Forms:
+      - Overview: components/forms.md
+      - Form: components/form.md
+      - FormField: components/form-field.md
+      - Label: components/label.md
+      - TextInput: components/text-input.md
+      - TextArea: components/text-area.md
+      - Select: components/select.md
+      - Checkbox: components/checkbox.md
+      - RadioGroup: components/radio-group.md
+      - SubmitButton: components/submit-button.md
+      - FormErrors: components/form-errors.md
+      - AutoForm: components/auto-form.md
+    - Interaction:
+      - Overview: components/interaction.md
+      - RefreshButton: components/refresh-button.md
+      - Lazy: components/lazy.md
+      - Poll: components/poll.md
+      - InfiniteScroll: components/infinite-scroll.md
+      - Pagination: components/pagination.md
+      - Loading: components/loading.md
+      - ErrorState: components/error-state.md
+    - Data:
+      - Overview: components/data.md
+      - Auto: components/auto.md
+      - DataTable: components/data-table.md
+      - DataEditor: components/data-editor.md
+    - Utilities:
+      - Overview: components/utilities.md
+      - Metric: components/metric.md
+      - FileUpload: components/file-upload.md
+      - DownloadButton: components/download-button.md
+      - CodeViewer: components/code-viewer.md
+      - JSONViewer: components/json-viewer.md
+      - Progress: components/progress.md
+      - Status: components/status.md
+      - Toast: components/toast.md
+      - Expander: components/expander.md
+      - Tabs: components/tabs.md
+      - Sidebar: components/sidebar.md
+    - Theme:
+      - Overview: components/theme.md
+      - ColorModeToggle: components/color-mode-toggle.md
+    - Charts:
+      - Overview: components/charts.md
+      - LineChart: components/line-chart.md
+      - MatplotlibChart: components/matplotlib-chart.md
+      - PlotlyChart: components/plotly-chart.md
+      - AltairChart: components/altair-chart.md
   - Reference:
     - Overview: api/README.md
     - Stability: api/STABILITY.md
@@ -176,6 +273,11 @@ nav:
     - Status: STATUS.md
     - Compatibility: COMPATIBILITY.md
     - Roadmap: ROADMAP.md
+    - Streamlit feature cross-check: STREAMLIT_FEATURE_CROSSCHECK.md
+    - streamlit-extras feature cross-check: STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md
+    - Plotly Dash feature cross-check: PLOTLY_DASH_FEATURE_CROSSCHECK.md
+    - Gradio feature cross-check: GRADIO_FEATURE_CROSSCHECK.md
+    - Accessibility feature research: ACCESSIBILITY_FEATURE_RESEARCH.md
     - Architecture: ARCHITECTURE.md
     - Cutting a release: RELEASE.md
     - Contributing: CONTRIBUTING.md

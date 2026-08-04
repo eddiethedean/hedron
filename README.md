@@ -110,6 +110,11 @@ phase 0.10 therefore maps to `v0.10.0`. No 1.0 milestone is scheduled.
 | 0.12 | `v0.12.0` | Advanced data editing, distributed sources, and visualization scale |
 | 0.13 | `v0.13.0` | Advanced async preparation, concurrency, and observability |
 | 0.14 | `v0.14.0` | Portable runtimes and profiling-backed acceleration |
+| 0.15 | `v0.15.0` | Data-app surface completeness: controls, media, chat-adjacent ergonomics, identity, and connections |
+| 0.16 | `v0.16.0` | Curated optional extras, interactive analysis workbenches, media tools, and isolated browser sandboxes |
+| 0.17 | `v0.17.0` | Reactive dashboards, bounded property patches, notebook previews, and explicit agent interfaces |
+| 0.18 | `v0.18.0` | Typed model demos, governed inference scheduling and feedback, Gradio interoperability, and visual inference workflows |
+| 0.19 | `v0.19.0` | Accessibility contracts, inclusive authoring assistance, interaction/AT evidence, and conformance governance |
 
 See the complete [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/) for scope, feature ownership, RFC assignments, and release gates.
 
@@ -125,6 +130,11 @@ Start here in the published site:
 - [API reference](https://hedron.readthedocs.io/en/latest/api/)
 - [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/)
 - [Status](https://hedron.readthedocs.io/en/latest/STATUS/) and [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/)
+- Feature cross-checks for [Streamlit](https://hedron.readthedocs.io/en/latest/STREAMLIT_FEATURE_CROSSCHECK/),
+  [streamlit-extras](https://hedron.readthedocs.io/en/latest/STREAMLIT_EXTRAS_FEATURE_CROSSCHECK/),
+  [Plotly Dash](https://hedron.readthedocs.io/en/latest/PLOTLY_DASH_FEATURE_CROSSCHECK/),
+  and [Gradio](https://hedron.readthedocs.io/en/latest/GRADIO_FEATURE_CROSSCHECK/)
+- [Accessibility feature research](https://hedron.readthedocs.io/en/latest/ACCESSIBILITY_FEATURE_RESEARCH/)
 
 Build locally:
 

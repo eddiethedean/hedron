@@ -51,7 +51,10 @@ deployment.
     ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Hedron renders a full HTML
-document, mounts its browser runtime, and applies the standard security policy.
+document, mounts its browser runtime, applies the standard security policy, and includes
+a responsive default stylesheet. Override its semantic CSS variables or add normal
+application CSS as your design evolves. If you want an unstyled canvas instead, create
+the app with `Hedron(default_styles=False)`.
 
 ## 3. See fragment rendering
 

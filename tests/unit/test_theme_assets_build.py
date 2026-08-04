@@ -24,6 +24,28 @@ def test_default_theme_has_a11y_tokens() -> None:
     assert "prefers-reduced-motion" in css
 
 
+def test_default_stylesheet_is_local_layered_and_customizable() -> None:
+    stylesheet = (
+        Path(__file__).resolve().parents[2]
+        / "packages"
+        / "hedron"
+        / "src"
+        / "hedron"
+        / "static"
+        / "hedron-default.css"
+    ).read_text(encoding="utf-8")
+
+    assert "@layer reset, tokens, base, components, utilities, overrides;" in stylesheet
+    assert ".hedron-card" in stylesheet
+    assert ".hedron-form-field" in stylesheet
+    assert "\n  table {" in stylesheet
+    assert ".hedron-chart-fallback" in stylesheet
+    assert "prefers-color-scheme: dark" in stylesheet
+    assert "http://" not in stylesheet
+    assert "https://" not in stylesheet
+    assert "url(" not in stylesheet
+
+
 def test_theme_missing_token_rejected() -> None:
     with pytest.raises(HedronError) as exc:
         Theme(name="bad", tokens={"color.bg": "#fff"})
@@ -172,3 +194,19 @@ def test_disclose_script_avoids_label_innerhtml_interpolation() -> None:
     assert "${label}" not in script
     assert "innerHTML" not in script
     assert "textContent = label" in script
+
+
+def test_data_editor_enhancement_hides_no_script_fallback() -> None:
+    script = (
+        Path(__file__).resolve().parents[2]
+        / "packages"
+        / "hedron-data"
+        / "src"
+        / "hedron_data"
+        / "assets"
+        / "tabulator"
+        / "editor.js"
+    ).read_text(encoding="utf-8")
+    assert ':scope > .hedron-data-editor-fallback' in script
+    assert "fallback.hidden = true" in script
+    assert 'delBtn.className = "hedron-button hedron-button-danger"' in script

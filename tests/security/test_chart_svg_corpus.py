@@ -40,6 +40,22 @@ def test_benign_spec_allowed() -> None:
     reject_remote_urls({"data": [{"values": [{"a": 1}]}], "mark": "bar"})
 
 
+def test_altair_schema_metadata_is_removed_from_local_payload() -> None:
+    altair = pytest.importorskip("altair")
+    from hedron_charts import AltairAdapter
+    from hedron_core.visualization import ChartAccessibility
+
+    chart = altair.Chart(altair.Data(values=[{"x": "A", "y": 1}])).mark_bar().encode(
+        x="x:N", y="y:Q"
+    )
+    output = AltairAdapter().compile(
+        chart,
+        accessibility=ChartAccessibility(title="Local chart", description="Local values"),
+    )
+
+    assert '"$schema"' not in str(output.body)
+
+
 def test_reject_svg_onload() -> None:
     with pytest.raises(HedronError) as exc:
         reject_active_svg('<svg onload="alert(1)"></svg>')

@@ -420,9 +420,22 @@ measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
 - Official HTMX SSE extension integration with pinned local assets, authenticated reconnect,
   resume semantics, bounded retry, cancellation, CSP, proxy buffering guidance, and Explorer traces.
 - WebSocket components only for accepted bidirectional use cases, with authorization, origin,
-  backpressure, disconnect, deployment, and accessible fallback contracts.
+  backpressure, disconnect, deployment, and accessible fallback contracts. Page/session-scoped
+  channels may stream intermediate updates to declared regions, read current values only from
+  declared client components, and run bounded persistent producers with authenticated reconnect,
+  batching/debounce, disconnect cancellation, resource budgets, and traceable ownership.
 - Focused chunked-list and streamed-document primitives; no implicit conversion of every component
   into a streaming lifecycle.
+- Timed camera/microphone image and audio input sessions plus chunked audio/video generator output,
+  with explicit permission, duration and cadence, codec/bandwidth budgets, backpressure, origin,
+  reconnect, cancellation, teardown, and accessible non-streaming fallbacks. Optional WebRTC may
+  improve accepted low-latency cases but never becomes an implicit public peer or correctness path.
+- `ChatMessage`, `ChatInput`, and bounded generator/token-stream output composed from typed
+  transcripts, explicit submit actions, accessible status, optional attachments, and polling/SSE
+  fallbacks; chat history and model-provider state remain application-owned.
+- `Dialog` / modal interaction with native `<dialog>` fallback, focus trapping and restoration,
+  escape/close semantics, background inertness, fragment-addressable content, and no hidden
+  application-wide rerun scope.
 - Opt-in navigation preload for safe GET requests with cache correctness, bounded speculative
   traffic, privacy controls, cancellation, `HX-Preloaded` observability, and measurable benefit.
 - HDJ registered fragment head management, a two-phase template streaming experiment,
@@ -477,9 +490,29 @@ visualization through bounded, inspectable adapters.
 
 - DataEditor formulas, merged cells, richer Excel-formatting compatibility, pivots, tree grids,
   collaborative editing, additional grid adapters, and spreadsheet import/export beyond CSV.
+  Grid contracts include saved column/filter/sort/selection views, stable row identities, typed
+  cell/edit/selection/viewport/drag/pagination events, and conformance for AG Grid Community's
+  client and infinite row models without treating Enterprise-only behavior as an OSS guarantee.
+  Drag, fill, resize, reorder, and other spatial operations also expose keyboard and single-pointer
+  direct-control alternatives without trapping screen-reader browse/focus modes.
+- A typed column-configuration catalog shared by `DataTable` and `DataEditor`, including numeric,
+  text, checkbox, select/list, date/time, link, image, progress, and compact chart presentations,
+  with explicit display-versus-write policy.
 - Dask/distributed data sources, explicit server transform plans, and advanced lazy-query pushdown.
-- ECharts, Datashader, MapLibre, Folium, Bokeh, HoloViews/hvPlot, Pygal, geospatial layers, Plotly
-  resampling, and advanced Vega server transforms, introduced individually behind optional extras.
+- Beginner `AreaChart`, `BarChart`, and `ScatterChart` components plus direct Vega-Lite,
+  PyDeck/deck.gl, GraphViz, and Mermaid adapters; chart selections and events cross a typed,
+  authorized interaction boundary rather than exposing raw browser callbacks. Plotly events cover
+  hover, click/click-annotation, box/lasso selection, relayout/viewport, restyle/legend, and bounded
+  extend/prepend updates with stable trace/point identity, debounce/coalescing, and
+  accessible alternatives. Charts and maps provide author-reviewed summaries, detailed
+  descriptions, synchronized table/list views, non-color encodings, and equivalent keyboard/direct
+  selection paths where the adapter declares interactive selection.
+- A backend-neutral chart annotation/overlay contract plus optional Chart.js, Great Tables,
+  Sigma.js/NetworkX graph, and Three.js model-viewer adapters. Annotations, selections, model URLs,
+  binary formats, and graph layouts remain typed and policy bounded.
+- ECharts, Datashader, MapLibre, Folium, Bokeh, HoloViews/hvPlot, Pygal, geospatial layers,
+  Plotly resampling, Snowflake-backed bounded sources, and advanced Vega server transforms,
+  introduced individually behind optional extras.
 - HDJ `hedron.data` and `hedron.charts` provider parity, including bounded high-volume presentation,
   asset/capability manifests, and accessible fallback evidence.
 
@@ -542,6 +575,385 @@ without fragmenting the component, security, rendering, or artifact contracts.
 - Runtime or accelerator absence never changes public semantics, security policy, or deterministic
   output.
 
+## 0.15 — Data-app surface completeness (`v0.15.0`)
+
+**Outcome:** Hedron covers the remaining high-value Streamlit data-app surface with typed,
+request-oriented controls, media, browser context, identity, and connection ergonomics without
+adopting whole-script reruns or global mutable application state.
+
+### Entry gate
+
+- The [Streamlit feature cross-check](docs/STREAMLIT_FEATURE_CROSSCHECK.md) is refreshed against the
+  audited Streamlit documentation version and every accepted gap has an owning RFC or an explicit
+  revision to an existing RFC.
+- The 0.10 interaction primitives and 0.12 adapter/column contracts are stable enough that this
+  phase composes them instead of creating parallel widget, transport, or data runtimes.
+
+### Scope
+
+- Typed form/control families for number and range input, date/time/datetime input, multiselect,
+  toggle/switch, segmented control and pills, color input, rating/feedback, select slider, and menu
+  button behavior. Native HTML is the baseline; browser enhancement preserves submitted-value,
+  validation, keyboard, and no-JavaScript semantics.
+- `Audio`, `Video`, `PdfViewer`, a responsive image/video `Gallery`, and application-logo/page-icon
+  helpers plus microphone and camera capture inputs. Media URLs, uploads, ranges, preview,
+  selection, authorized download/download-all, lazy loading, autoplay, device permission,
+  retention, metadata, typed caption/subtitle and audio-description tracks, transcript/descriptive-
+  transcript links, playback controls, live-caption provider hooks, and accessible alternatives
+  remain explicit and policy bounded. Automatic captions or descriptions remain author-reviewed
+  drafts, not accessibility evidence by themselves.
+- `Popover`, sticky/bottom action or chat docks, and semantic spacing primitives, implemented with
+  native platform behavior where available and tested for focus order, zoom, reduced motion,
+  virtual keyboards, safe-area insets, and fragment swaps.
+- Typed clipboard copy, explicit action confirmation, permission-gated geolocation, accessible
+  tooltip/help, and directory upload. Clipboard reads remain excluded; confirmation is not
+  authorization; geolocation is spoofable and never an authorization factor; directory paths,
+  counts, per-file size, total size, and traversal are validated server-side.
+- `Math` / LaTeX rendering, a bounded object/help inspector, and a sandboxed `IFrame` component with
+  local/remote URL, CSP, permissions, referrer, sizing, and untrusted-content policies. Raw trusted
+  HTML remains a separate, explicit trust boundary.
+- A portable typed `BrowserContext` that separates request-derived headers, cookies, URL, client
+  address, and embedding state from browser-reported locale, timezone, color mode, and viewport
+  hints. Proxy trust, spoofability, consent, cache variation, SSR defaults, and stale-client-data
+  behavior are inspectable.
+- A namespaced typed `BrowserStorage` bridge for non-secret local/session preferences, with JSON
+  schemas, quotas, expiry, unavailable-storage behavior, consent hooks, and an explicit prohibition
+  on treating browser storage as an authentication, authorization, or server-durability boundary.
+- Higher-level OIDC login/logout/user-claims conveniences over Authlib and host sessions, including
+  provider discovery, nonce/state/PKCE, callback validation, logout, claim normalization, and
+  Explorer redaction. Login, MFA, recovery, and reauthentication ergonomics preserve password-
+  manager autofill and copy/paste, identify input purpose, and offer a provider-owned path that
+  does not require memorization, puzzles, object recognition, or manual transcription. Hedron still
+  does not infer authorization or own an identity database.
+- A typed resource/connection registry over host dependency injection and lifespan, with named
+  configuration, secret-manager hooks, health/reset semantics, scoped reuse, and optional
+  SQLAlchemy and Snowflake providers. It does not create a second global service locator, ORM,
+  transaction manager, or secret store.
+- A maintained Streamlit migration matrix and examples covering controls, media, chat, charts,
+  state, authentication, connections, and deliberate non-parity, with diagnostics that point to
+  the Hedron request/action equivalent rather than suggesting unsafe call-for-call translation.
+
+### Exit gate
+
+- Every added control and container passes keyboard, screen-reader, zoom/reflow, forced-colors,
+  reduced-motion, fragment-lifecycle, validation-retention, and no-JavaScript fallback suites.
+- Capture, media, iframe, OIDC, browser-context, and connection tests cover permission denial,
+  malicious payloads, cross-origin policy, proxy spoofing, secret/claim redaction, tenant isolation,
+  cancellation, cleanup, and bounded resource use.
+- A reference data/AI application demonstrates typed filters, rich tables, diagrams/maps, chat with
+  streamed output, media capture/playback, OIDC identity, and a named data connection while all
+  mutations remain explicit actions and ordinary HTTP fallbacks remain usable.
+
+## 0.16 — Curated extras and interactive analysis tools (`v0.16.0`)
+
+**Outcome:** Hedron offers a maintained optional toolkit for specialized data-app interactions and
+analysis workbenches without expanding the core runtime or adopting Streamlit-style rerun semantics.
+
+### Entry gate
+
+- The [streamlit-extras feature cross-check](docs/STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md) is
+  refreshed against the audited catalog and every accepted extra has an owning RFC revision,
+  dependency/asset owner, and explicit first-party-versus-recipe disposition.
+- The 0.4 plugin/package contracts, 0.12 visualization boundaries, 0.14 portable-runtime evidence,
+  and 0.15 control/media/browser contracts are stable enough to be reused rather than forked.
+
+### Scope
+
+- An optional `hedron-extras` distribution with independently installable feature extras, lazy
+  imports, pinned local browser assets, capability manifests, precise missing-dependency guidance,
+  and conformance tests. It is a curated package over public Hedron contracts, not a privileged
+  second component runtime.
+- Rich choice and workflow composition: card-based single/multiple choice, avatar/profile recipes,
+  a generic selectable `TreeView`, horizontal/vertical `Steps` with explicit action navigation,
+  persistent resizable split panes, floating action placement, declared keyboard shortcuts, and
+  typed focus/scroll requests by stable component identity.
+  All retain semantic controls, focus order, collision handling, non-drag keyboard/single-pointer
+  alternatives, and non-JavaScript fallbacks.
+- Interactive analysis workbenches: a faceted `DataExplorer` that emits bounded source-transform
+  plans, an editable/schema-aware `JSONEditor`, a chart/data/export/explore workbench, and a typed
+  callable-to-action form adapter. Server authorization, validation, query bounds, side effects,
+  and export policy remain explicit.
+- Interactive image tools for before/after comparison, normalized rectangular/circular crop bounds,
+  and box/lasso region selection. Inputs accept only declared URL/file/byte sources; orientation,
+  touch/keyboard operation, numeric/step/select-and-place alternatives to dragging, output
+  metadata, payload limits, image decoding, and accessible static alternatives are part of the
+  contracts.
+- Specialized display adapters and recipes for network graphs, 3D models, annotated/token-weighted
+  text, architecture-diagram outputs, live job/log consoles, and common link/badge/metric/todo
+  compositions. Adapters reuse 0.12 contracts; recipes do not create redundant primitives.
+- An optional browser-Python/notebook sandbox bridge, such as a pinned JupyterLite/Pyodide runtime,
+  isolated from the application origin and server state. Package/network allowlists, CSP, worker
+  termination, CPU/memory/output budgets, persistence, accessibility, and offline behavior are
+  explicit; arbitrary code never executes in the Hedron server process.
+
+### Exit gate
+
+- Each shipped extra can be installed and audited independently; absent extras add no core import,
+  browser asset, startup, or transitive dependency cost.
+- Choice, tree, steps, split-pane, shortcut, editor, explorer, and image tools pass keyboard,
+  screen-reader, touch, zoom/reflow, forced-colors, reduced-motion, fragment-lifecycle, and
+  no-JavaScript fallback suites appropriate to the component.
+- Data, JSON, image, graph, model, log, and sandbox tests cover malicious payloads, unauthorized
+  actions, unbounded sources, decompression bombs, remote-origin policy, asset integrity, teardown,
+  storage exhaustion, worker termination, and server/session isolation.
+- The reference application composes an analysis workbench from the optional package while the
+  same domain actions and data sources remain usable through ordinary HTTP and core components.
+
+## 0.17 — Reactive dashboards and agent interfaces (`v0.17.0`)
+
+**Outcome:** Hedron supports cohesive cross-filter dashboards, bounded incremental updates,
+server-side notebook previews, and explicitly authorized agent access without adding a universal
+client callback runtime or weakening the request/action boundary.
+
+### Entry gate
+
+- The [Plotly Dash feature cross-check](docs/PLOTLY_DASH_FEATURE_CROSSCHECK.md) is refreshed against
+  the audited Dash and Dash AG Grid versions, and every accepted gap has an owning RFC revision,
+  public stability label, and evidence plan.
+- The 0.10 live-transport lifecycle, 0.12 chart/grid event contracts, 0.15 controls and browser
+  storage, and 0.16 workbench composition are stable enough to be reused rather than forked.
+
+### Scope
+
+- A finite, page-local `DashboardBinding` / `InteractionGraph` layer that declares trigger inputs,
+  snapshot-only state, one or more target regions, initialization policy, and chained derived
+  bindings. Registration performs missing-dependency, cycle, duplicate-writer, authorization,
+  payload, and deterministic-order checks; each edge remains an explicit typed action rather than
+  an application-wide rerun or implicit remote API.
+- Typed `TriggerContext` and a unified dashboard action lifecycle covering changed inputs,
+  component/collection identity, correlation, no-change for all or selected targets, running and
+  disabled states, progress, cancellation, errors, redirects/history, debounce/coalescing, stale
+  results, and final updates. Side effects, cache policy, and authorization remain declared by the
+  underlying action.
+- Versioned, bounded `PropertyPatch` and `CollectionPatch` operations for declared chart, table,
+  store, and component state: assign/merge, append/prepend/extend/insert, remove/delete/clear,
+  reorder/reverse, and explicitly typed numeric operations. Schema, operation count, payload size,
+  version/precondition, target authorization, conflict, rollback, and full-fragment fallback
+  behavior are mandatory; arbitrary browser-object mutation is prohibited.
+- Stable structured collection identities plus typed map, gather, broadcast, exact-member, and
+  ordered-range selectors for repeated/dynamic components. Fragment insertion/removal updates the
+  registry safely; selector resolution is inspectable and never substitutes for tenant or object
+  authorization.
+- Cross-filter dashboard composition over Plotly and other 0.12 event adapters, grid selections,
+  form controls, URL/session/browser state, data-source transforms, jobs, and multi-region results.
+  Saved dashboard views are explicitly versioned and scoped, and Explorer shows the interaction
+  graph with trigger, target, timing, payload, cache, job, transport, and failure information.
+- A server-side `hedron-notebook` preview helper with inline iframe and external-link modes,
+  configurable dimensions, proxy/root-path detection, random port/session token, error forwarding,
+  clean shutdown, collision handling, and warnings for hosted or publicly reachable notebooks.
+  This is distinct from the isolated browser-Python/JupyterLite sandbox in 0.16.
+- An optional `hedron-mcp` distribution using Streamable HTTP. It is disabled and empty by default
+  and projects only explicitly opted-in page/component/data resources and typed action/function
+  tools. Authentication, authorization, tenant filtering, scopes, read-versus-mutate effects,
+  confirmation, schemas, limits, deadlines, cancellation, rate limits, audit/correlation,
+  redaction, prompt-injection diagnostics, deployment prefixes, and disconnect behavior are part
+  of the contract; MCP never grants authority beyond the authenticated principal.
+- Maintained Dash migration inventory, coexistence guidance for supported host/framework
+  combinations, and diagnostics for layouts, component IDs, callback dependencies, clientside
+  code, background work, grid licensing, and state ownership. Tools may generate a review plan but
+  never claim automatic semantic conversion of arbitrary callbacks or JavaScript.
+
+### Exit gate
+
+- Interaction graphs are finite, deterministic, inspectable, and race-tested. Cycles, absent
+  required members, ambiguous writers, stale events, unauthorized targets, oversized state, and
+  invalid patches fail closed, while ordinary full-fragment HTTP interactions remain functional.
+- Chromium, Firefox, and WebKit pass cross-filter, focus, keyboard, screen-reader, zoom/reflow,
+  reconnect, reduced-motion, history, backpressure, patch conflict, dynamic collection, and
+  no-JavaScript fallback suites. Multi-worker and tenant tests prove that browser identity or state
+  cannot bypass server authorization.
+- Notebook preview tests cover proxy prefixes, token leakage, hostile notebook HTML, port reuse,
+  server failure, multiple previews, teardown, and hosted-environment warnings. No preview becomes
+  a supported production server accidentally.
+- MCP conformance covers discovery, schemas, authentication, authorization, tenant isolation,
+  redaction, read/mutate classification, rate and payload limits, cancellation, disconnect,
+  adversarial tool inputs, prompt-injection-bearing resources, audit records, and disabled/default-
+  empty behavior.
+- A reference analytical application demonstrates chart/grid cross-filtering, dynamic repeated
+  panels, partial and full-region fallbacks, a cancellable background calculation, a notebook
+  preview, and opt-in read-only plus mutating MCP tools over the same explicit domain actions.
+
+## 0.18 — Model demos and inference workflows (`v0.18.0`)
+
+**Outcome:** Hedron can turn explicitly registered typed model actions into production-auditable
+demos, schedule inference workloads, collect governed evaluation feedback, interoperate with
+Gradio endpoints, and compose permissioned visual inference workflows without automatically
+publishing arbitrary callables or adding a second application runtime.
+
+### Entry gate
+
+- The [Gradio feature cross-check](docs/GRADIO_FEATURE_CROSSCHECK.md) is refreshed against the audited
+  stable Gradio version, and every accepted gap has an owning RFC revision, public stability label,
+  dependency owner, threat model, and evidence plan.
+- The 0.7 durable job boundary, 0.10 streaming lifecycle, 0.12 media/visualization adapters, 0.15
+  controls/capture/identity/storage, 0.16 workbenches, and 0.17 interaction graph and MCP projection
+  are stable enough to be composed rather than forked.
+
+### Scope
+
+- An `InferenceInterface` / `ModelDemo` composition layer that builds a reviewable input/result
+  surface only from an explicitly registered typed action or callable adapter. Multiple inputs and
+  outputs, submit/clear/stop, declared safe live/debounced mode, preprocessing/postprocessing,
+  artifacts, descriptions, and component overrides are supported; side effects, authorization,
+  rate/resource policy, cache policy, and HTTP/MCP exposure remain independently explicit.
+- `ExampleSet` and sample-dataset gallery/table presentation with partial examples, labels,
+  provenance, pagination, authorization, and eager/lazy cached results keyed by action/model,
+  schema, code, and preprocessing version. Generation cost, invalidation, storage, retention, and
+  stale-result behavior are inspectable.
+- Demo-oriented `PredictionLabel`, `ParameterViewer`, and multi-speaker `Dialogue` components plus
+  media/artifact gallery composition. Ranked scores retain class identity and calibration/precision
+  metadata; parameter schemas redact secrets; dialogue uses accessible speaker labels and carries
+  diarization/timing metadata without relying on color alone.
+- Explicit-consent `PredictionFeedback` and pluggable sinks for rating, label, reason, correction,
+  and selected input/output references. Collection notice, tenant scope, redaction, retention and
+  deletion, abuse controls, authorization, export, audit, and artifact policy are mandatory;
+  feedback is not silently enabled or treated as ground truth.
+- An inference execution policy over `JobBackend` with admission control, fair/priority queues,
+  bounded queue-position and ETA semantics, named model/resource/GPU concurrency groups, durable
+  multi-worker adapters, batch windows and compatible-shape grouping, per-item correlation and
+  partial failure, generator/async-generator streaming, progress, cancellation, timeout, retry,
+  overload, artifact cleanup, and Explorer timing/resource diagnostics. An in-process queue is
+  development-only, not the production durability promise.
+- An interaction/API recorder that emits redacted, reviewable Python and HTTP examples only for
+  explicitly public endpoints, including file fixtures and session assumptions. A generated
+  snippet never expands endpoint authority or records credentials and sensitive values.
+- An optional `hedron-gradio` interoperability package for Gradio endpoint discovery, typed
+  file/artifact transport, authentication, session state, job status/cancel, and streamed results,
+  plus FastAPI coexistence guidance and migration diagnostics for app builders, components,
+  events, state, queues/batches, API visibility, raw HTML/JavaScript, file paths, and share links.
+  It consumes supported public Gradio protocols and does not embed Gradio's UI runtime in core.
+- An optional typed visual inference workflow with versioned JSON, stable node/port identities,
+  explicit reference/input, action/model/remote/dataset operator, and artifact/output nodes;
+  validation, cycle detection, fan-out/fan-in, parallel scheduling, cancellation, partial failure,
+  provenance, and cost/resource diagnostics reuse the same action and inference contracts.
+  Read/run/edit/publish permissions, tenant scope, secret references, optimistic conflicts, audit,
+  rollback, and immutable published revisions are mandatory. Graph data cannot execute arbitrary
+  Python, install packages, access host paths, or automatically create HTTP/MCP endpoints. A
+  structured list/outline/table editor exposes nodes, ports, connections, order, parameters, and
+  results without requiring a visual canvas or drag gesture.
+- Optional Hugging Face model, dataset, Space, OAuth, and ZeroGPU nodes remain vendor adapters over
+  the portable workflow contract. Maintained Gradio migration/coexistence examples call out
+  deliberate non-parity for mutable globals, default-public event APIs, raw code injection,
+  current-directory file exposure, public share tunnels, and deployed host-code-editing modes.
+
+### Exit gate
+
+- Interface generation fails closed for unregistered callables, ambiguous schemas, undeclared side
+  effects, missing authorization/resource policy, or accidental API/MCP exposure; equivalent typed
+  actions remain usable without the demo layer through ordinary HTTP.
+- Examples, cached results, labels, parameters, dialogue, galleries, and feedback pass
+  accessibility, consent, provenance, secret/PII redaction, tenant isolation, retention/deletion,
+  malicious-file, stale-cache, and cost-control suites.
+- Inference scheduling passes multi-worker fairness, capacity, batch isolation, queue rank/ETA,
+  overload, generator failure, disconnect/cancel, timeout, retry, resource exhaustion, cleanup,
+  and durable-backend failure tests without pinning correctness to one web process.
+- Workflow graphs pass schema/version migration, identity, type, cycle, authorization, tenant,
+  secret, edit conflict, immutable publish, rollback, parallel/failure, cancellation, remote-call,
+  provenance, API-exposure, and arbitrary-code/path adversarial suites.
+- Gradio interoperability is contract-tested against the supported upstream range for discovery,
+  files, authentication, sessions, status/cancel, streaming, errors, and version mismatch; absence
+  of the optional package adds no core dependency, route, asset, or startup cost.
+- A reference model application demonstrates examples and governed feedback, ranked/text/media
+  outputs, batched streamed inference on a durable backend, a recorded public client call, a remote
+  Gradio provider, and an editable-to-immutable published workflow over the same explicit actions.
+
+## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
+
+**Outcome:** Hedron makes accessibility obligations, authoring assistance, dynamic interaction
+evidence, assistive-technology support, and known limitations inspectable and release-governed
+across core and optional packages without claiming that automation or framework markup can certify
+an arbitrary application.
+
+### Entry gate
+
+- The [accessibility feature research](docs/ACCESSIBILITY_FEATURE_RESEARCH.md) is refreshed against
+  stable WCAG, HTML, WAI-ARIA, accessible-name, ACT, and ATAG sources. RFC-0023 and the acceptance
+  plan define the normative versions, draft/experimental policy, evidence matrix, severity policy,
+  waiver governance, and boundaries of any public claim.
+- The component catalog, HDJ authoring, Explorer/testing APIs, themes, data/visualization adapters,
+  media/identity controls, extras, dashboards, and inference workflow surfaces through 0.18 are
+  stable enough to receive one shared accessibility contract rather than package-specific checklists.
+
+### Scope
+
+- A versioned standards profile with WCAG 2.2 A/AA and WAI-ARIA 1.2 as the stable baseline, native
+  HTML as the first choice, APG as informative pattern guidance, and explicit ACT/engine/browser/AT
+  versions. WAI-ARIA 1.3, WCAG 3, and other drafts remain labeled experiments until an accepted
+  baseline revision and interoperability evidence promote them.
+- A machine-readable `AccessibilityContract` for every public component, variant, dynamic state,
+  package, and authoring surface. It records native/ARIA semantics, name/description sources,
+  labels and relationships, keyboard/focus behavior, pointer/touch/drag alternatives, target and
+  reflow assumptions, announcements, visual/motion/media/data alternatives, fallbacks, standard
+  mappings, manual checks, support evidence, known limitations, and waivers. Composition can add
+  unmet obligations; leaf contracts never imply whole-application conformance.
+- WCAG 2.2 interaction primitives and conformance cases for focus not obscured under sticky/
+  overlay/virtual-keyboard layouts, 24-by-24 CSS-pixel target or spacing policy, pointer
+  cancellation, label in name, non-drag single-pointer plus keyboard operation, consistent help,
+  redundant-entry support, retained/error/review/undo flows, timeout warning/extension, and
+  accessible authentication across login, MFA, recovery, and reauthentication.
+- ATAG-oriented authoring support across CLI, Explorer, previews, HDJ, inspect/eject, generators,
+  templates, examples, transformations, and the workflow editor. Accessibility properties are
+  available alongside ordinary properties; accessible choices are at least as prominent; metadata
+  survives generation/copy/conversion/optimization; checks locate source and explain manual
+  decisions; repair guidance is reversible and author-reviewed; accessibility features are on by
+  default and documented. An ATAG conformance claim requires a separate applicability report.
+- An expanded Explorer accessibility workspace with rendered accessibility tree and computed
+  role/name/description/value/state, source mapping, headings/landmarks/reading/tab/focus outlines,
+  keyboard map, live-region event log, and review modes for contrast/non-text contrast, target
+  spacing, focus obstruction, text spacing, zoom/reflow/orientation, reduced motion, forced colors,
+  media alternatives, and visualization fallbacks. Findings distinguish automatic,
+  semi-automatic, and manual status and never summarize an empty scan as "accessible."
+- Testing APIs for accessibility-tree snapshots and targeted assertions plus an
+  `AccessibilityScenario` vocabulary covering keyboard, focus, state/value, announcements,
+  pointer/touch alternatives, timeouts, fragments/history, loading/success/error/disconnect, and
+  supported open-shadow/same-origin-frame states. Pinned semantic/ARIA validation and axe/ACT-
+  aligned scans run after meaningful dynamic states and emit stable JSON/SARIF provenance;
+  snapshot changes require review rather than bulk acceptance.
+- A scoped manual browser/assistive-technology evidence matrix including VoiceOver/Safari on macOS
+  and iOS, NVDA with Firefox and Chromium on Windows, TalkBack/Chromium on Android, keyboard-only,
+  voice/switch-compatible label behavior, browser zoom, platform high contrast/forced colors,
+  reduced motion, and user text-spacing/style overrides. Records include versions, settings,
+  representative task, expected behavior/announcement, result, known issue, owner, and retest date.
+- Media and complex-content conformance for caption/subtitle language tracks, transcripts and
+  descriptive transcripts, audio description, accessible player controls, reviewed live-caption
+  providers, tables/editors under virtualization, chart/map summaries and synchronized data
+  alternatives, non-color encodings, and structured non-spatial views for image/3D/dashboard/
+  workflow interactions. Automated alternative content retains author review and provenance.
+- Cognitive and personalization helpers for clear visible labels/instructions, typed help and
+  glossary slots, consistent identification/navigation/help, task progress, review/undo/back,
+  reminders, user-controlled motion/auto-update/media/notification intensity, density and text
+  spacing, simplified presentation supplied by the application, and secure time-limit disclosure.
+  These assist authors but do not automatically judge prose clarity or user comprehension.
+- Language/direction and structural validation covering page and passage language, bidi isolation,
+  translated label-in-name behavior, localized errors, titles, heading hierarchy, landmarks, skip
+  links, reading order, and consistent full-page/fragment navigation. RTL and translated variants
+  receive the same reflow, truncation, focus, target, and assistive-technology evidence.
+- Evidence and governance outputs: rule/version inventory, test and manual results, known
+  limitations and alternatives, third-party boundaries, feedback route, waiver owner/rationale/
+  affected users/expiry/remediation, and accessibility-statement template data. Hedron never
+  automatically emits a WCAG conformance, legal-compliance, certification, or ACR/VPAT claim.
+
+### Exit gate
+
+- Every public built-in, optional first-party component, authoring surface, example, and template
+  has a reviewed `AccessibilityContract`, source-linked diagnostics, documented keyboard/fallback
+  behavior, and no unowned or expired waiver. Third-party boundaries and untested combinations are
+  visible rather than inherited as framework guarantees.
+- Chromium, Firefox, and WebKit automation passes semantic-tree, dynamic-state, focus-obscuration,
+  target/drag/input, reflow/text-spacing/orientation, forced-color/motion, media, data, dashboard,
+  and workflow scenarios. Automatic and incomplete/manual findings retain upstream rule versions
+  and cannot be waived by blindly regenerating snapshots.
+- The published browser/AT matrix completes its representative task set with recorded versions and
+  known limitations. At least the data editor, media flow, authentication/recovery, live update,
+  dashboard, and inference workflow receive appropriately scoped evaluation with compensated
+  disabled participants; user testing complements rather than substitutes for WCAG evaluation.
+- Accessibility metadata survives full/fragment rendering, hydration/enhancement, OOB swaps,
+  serialization, caching, inspect/eject, code generation, transformations, imports/exports, and
+  optimization. Failures preserve safe ordinary-HTML alternatives and do not trap input or focus.
+- A reference application publishes an evidence inventory and human-approved accessibility
+  statement with feedback route, tested environments, known limitations, alternatives, assessment
+  method, and date, while making no broader claim than the scoped evidence supports.
+
 ## Complete capability-to-release ledger
 
 This ledger is the coverage check for planned capabilities. The detailed phase sections above remain normative; the ledger prevents a subsystem or cross-cutting requirement from disappearing between plans.
@@ -579,6 +991,11 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | HDJ data/chart provider parity | 0.12 | Bounded high-volume inputs, assets, capabilities, and accessible fallbacks. |
 | HDJ async I/O contracts, deadlines, cancellation, and traces | 0.13 | Explicit work with deterministic render handoff. |
 | HDJ exact loop/macro instrumentation, extension/helper contracts, contextual analyzer | 0.14 | Optional instrumentation and portable fixtures preserve standard Jinja and pure Python. |
+| Typed `BrowserContext` with request and browser-reported client hints | 0.15 | Locale/timezone/theme/embed hints are spoofable inputs with explicit cache and privacy policy. |
+| Typed namespaced `BrowserStorage` for non-secret preferences | 0.15 | Quotas, expiry, consent, unavailable storage, and server-authority boundaries are explicit. |
+| Structured dynamic collection identities and bounded property patches | 0.17 | Typed selectors, schema/version checks, authorization, and full-fragment fallback; no arbitrary DOM/object mutation. |
+| Versioned typed visual inference workflows with separate run/edit/publish authority | 0.18 | Graphs reuse explicit actions, jobs, and adapters; JSON cannot execute arbitrary host code or publish endpoints. |
+| Versioned standards profile and machine-readable component/package `AccessibilityContract` | 0.19 | Native semantics first; records obligations, evidence, limitations, and waivers without implying application conformance. |
 | `inspect` and `eject` customization workflow | 0.3 | Progressive control over built-ins. |
 | Scoped classes, keyframes, globals, variants, layers | 0.3 | AST-based deterministic CSS rewriting. |
 | Tokens, themes, light/dark token modes, override layers | 0.3 | Accessible CSS-custom-property architecture; system preference + `data-theme`. |
@@ -601,6 +1018,11 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Development watching and atomic incremental rebuilds | 0.3–0.4 | CSS/registry/build remain supported; Jinja dependency watching belongs to `hedron-jinja`. |
 | Pytest helpers, async clients, snapshots, browser/a11y/visual hooks | 0.4 | Supports named examples and conformance. |
 | Plugin discovery, compatibility, capabilities, lifecycle, rollback | 0.4 | Plugins are executable packages, not sandboxed data. |
+| Curated optional `hedron-extras` package and per-feature capability manifests | 0.16 | Built only on public package/plugin contracts; no privileged runtime or eager dependency bundle. |
+| Dash migration inventory, notebook preview helper, and dashboard graph diagnostics | 0.17 | Migration is reviewable guidance, notebook previews are development-only, and Explorer shows graph timing/payload/failures. |
+| Gradio interoperability, migration inventory, interaction recorder, and inference/workflow diagnostics | 0.18 | Optional protocol adapter and reviewable guidance; credentials and sensitive values are never recorded. |
+| ATAG-oriented authoring assistance and Explorer accessibility review workspace | 0.19 | Source-mapped checking/repair guidance, accessibility tree, focus/live-region traces, visual modes, and manual status. |
+| Accessibility scenarios, semantic-tree snapshots, ACT/axe provenance, and browser/AT evidence | 0.19 | Automation, expert/manual evaluation, and disabled-user testing are complementary scoped evidence. |
 | Project scaffolding, author docs, package conventions | 0.4 | Supports third-party component packages. |
 
 ### Data, intelligence, caching, and utility UI
@@ -619,6 +1041,18 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Cache decorators, scopes, invalidation, single flight, diagnostics | 0.5 | External backends for multi-worker durability. |
 | `Metric`, `FileUpload`, `DownloadButton`, `CodeViewer`, `JSONViewer` | 0.5 | Security, limits, escaping, and accessibility contracts included. |
 | `Progress`, `Status`, `Toast`, `Expander`, `Tabs`, `Sidebar`, `Grid` | 0.5 | Composition and semantic patterns rather than widget-centric layout. |
+| Chat transcript/input, bounded token streams, and modal dialog | 0.10 | Explicit actions and fragment/live transports; no implicit script rerun. |
+| Timed camera/microphone chunks and chunked audio/video generator outputs | 0.10 transport; 0.15 media | Permission, duration/cadence, codec, bandwidth, backpressure, teardown, and non-streaming fallback are explicit. |
+| Number/range/date/time/multiselect/toggle/segmented/pills/color/feedback/menu controls | 0.15 | Native submitted-value semantics with optional browser enhancement. |
+| Popover, sticky/bottom dock, and spacing primitives | 0.15 | Focus, virtual keyboard, safe-area, and fragment lifecycle are acceptance gates. |
+| Audio/video/PDF/gallery/logo plus microphone/camera capture | 0.15 | Permission, size, retention, range, preview/download, CSP, and accessible-fallback policy are explicit. |
+| Choice cards, tree view, steps, resizable split panes, floating actions, keyboard shortcuts | 0.16 | Semantic controls, focus, persistence, layout collision, and ordinary-HTTP fallbacks remain explicit. |
+| Faceted data explorer, schema-aware JSON editor, chart workbench, callable action forms | 0.16 | Emit typed bounded plans/actions; never infer authorization or execute an arbitrary callable implicitly. |
+| Image compare, crop, and box/lasso region selection | 0.16 | Normalized events, source policy, decoding limits, touch/keyboard access, and static alternatives. |
+| Deterministic dashboard bindings, trigger context, lifecycle, and cross-filter composition | 0.17 | Explicit actions and declared regions remain authoritative; cycles and ambiguous writers fail registration. |
+| Explicit typed model-demo generation, examples/cached results, prediction presentation, and governed feedback | 0.18 | No arbitrary callable publication, silent data capture, or feedback-as-ground-truth inference. |
+| Durable inference admission, resource concurrency groups, batching, queue status, and generator streaming | 0.18 | Extends `JobBackend`; production correctness is not owned by an in-process web queue. |
+| WCAG 2.2 interaction details, accessible media, complex-content alternatives, and cognitive/personalization helpers | 0.19 | Focus, target, drag, help, entry/auth, captions/descriptions, non-spatial views, and user controls have explicit owners. |
 | Light/dark styling controls and ColorMode preference persistence | 0.5 | Builds on 0.3 theme token modes; includes accessible toggle UI. |
 | `hedron-data` and Tabulator browser adapter package | 0.5 | Core remains free of dataframe and grid dependencies. |
 | SQLAlchemy/SQLModel source adapters | 0.6 | No automatic persistence or ORM ownership. |
@@ -630,6 +1064,11 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 |---|---:|---|
 | Visualization adapter and async source contracts | 0.6 | Hedron owns lifecycle, transport, limits, assets, and diagnostics. |
 | Beginner charts plus Matplotlib, Plotly, and Altair adapters | 0.6 | Static and interactive output modes. |
+| Area/bar/scatter charts; direct Vega-Lite, PyDeck, GraphViz, Mermaid; typed chart events | 0.12 | Each adapter has local assets, payload bounds, lifecycle cleanup, and accessible fallbacks. |
+| Plotly cross-filter events and bounded incremental chart/grid updates | 0.12 events; 0.17 composition | Stable identities, debounce/coalescing, patch preconditions, authorization, and full-region fallback. |
+| Typed chart annotations plus Chart.js, Great Tables, Sigma/NetworkX, and Three.js adapters | 0.12 | Optional adapters reuse the visualization boundary and constrain events, remote assets, graph layout, and model formats. |
+| Token-weighted text, diagram-output, live log, and specialized presentation recipes | 0.16 | Reuse content/job/visualization contracts instead of adding raw-HTML or stdout-global shortcuts. |
+| Optional isolated browser-Python/JupyterLite-style sandbox bridge | 0.16 | Pinned local runtime, origin isolation, budgets, allowlists, teardown, and no server/session access. |
 | `hedron-charts`, `hedron-charts[matplotlib]`, `[plotly]`, `[altair]` | 0.6 | Lazy optional packages with pinned local browser assets. |
 | Chart descriptions, alt text, table fallbacks, payload caps | 0.6 | Security and accessibility are release gates. |
 | Local pinned browser runtimes and strict CSP | 0.6 | No arbitrary JavaScript callbacks. |
@@ -637,6 +1076,9 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | `hedron[markdown]`, `[code]`, `[images]`, `[email]` extras | 0.6 | Missing extras provide exact install guidance. |
 | Email validation, sanitizer integration, trusted icons/SVG | 0.6 | Optional extras with explicit trust boundaries. |
 | Authlib and FastAPI security conveniences | 0.6 | No proprietary identity system. |
+| OIDC login/logout/user claims conveniences | 0.15 | Host sessions and application authorization remain authoritative. |
+| Named resource/connection registry and SQLAlchemy/Snowflake providers | 0.15 | Built on host DI/lifespan and external secret managers; no global service locator. |
+| Math/LaTeX, bounded help inspector, and sandboxed iframe | 0.15 | Executable content, remote URLs, and browser permissions remain explicit trust boundaries. |
 | Lazy imports, version gates, missing-extra guidance | 0.4–0.6 | Required for every optional integration. |
 
 ### Frameworks, operations, quality, and release
@@ -661,7 +1103,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Container, multi-worker, proxy/root-path, static host, offline deployment | 0.7 | Includes graceful shutdown and health/readiness. |
 | Logging, traces, timing, cache/job failures, component supply-chain audit | 0.7 | Secrets are redacted before storage or display. |
 | Security development/standard/strict profiles | 0.2, 0.8 | Baseline enforcement at 0.2; final audit at 0.8. |
-| Accessibility contracts and WCAG-oriented acceptance | 0.1–0.8 | Required incrementally for every built-in and integration. |
+| Accessibility contracts and WCAG-oriented acceptance | 0.1–0.8 baseline; comprehensive engineering in 0.19 | Every built-in/integration gains versioned obligations, dynamic evidence, AT coverage, and transparent limitations. |
 | Performance benchmarks, payload limits, and budgets | 0.1–0.8 | 0.7 establishes production workloads/budgets; 0.8 enforces them. |
 | Public API/artifact stability classification and compatibility baseline | 0.8 | HDN is reclassified experimental by D-039; other promises remain governed by the catalog. |
 | Versioning, deprecation, upgrade, migration, compatibility | 0.7–0.8; maintained thereafter | Every phase declares and tests its compatibility impact. |
@@ -671,6 +1113,11 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Advanced DataEditor, distributed sources, and visualization adapters | 0.12 | Bounded, accessible, optional integrations. |
 | Component preparation, adaptive concurrency, distributed tracing | 0.13 | Explicit ownership, cancellation, and opt-out semantics. |
 | Language-neutral conformance, Java/Node runtimes, Rust acceleration | 0.14 | Python remains the semantic reference and fallback. |
+| Streamlit migration matrix and parity diagnostics | 0.15 | Tracks feature families and preserves explicit non-parity with rerun/global-state semantics. |
+| streamlit-extras catalog matrix and curated extras toolkit | 0.16 | Tracks every active/deprecated extra as covered, planned, recipe/plugin, or deliberate non-parity. |
+| Plotly Dash matrix, reactive dashboard graph, notebook preview, and optional MCP projection | 0.17 | Adopts useful outcomes without a global callback runtime, arbitrary client JavaScript, or broad default tool exposure. |
+| Gradio matrix, model demos, inference scheduling, protocol adapter, and visual workflows | 0.18 | Adopts ML-demo outcomes while preserving explicit action, exposure, state, file, and authorization boundaries. |
+| Accessibility research, inclusive authoring, complex interaction alternatives, and evidence governance | 0.19 | Stable WCAG/ARIA baseline plus ATAG guidance; no automatic certification or legal/conformance claim. |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 
 ## RFC-to-phase coverage
@@ -683,29 +1130,29 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0004 FastAPI integration | 0.2 baseline; typed HTMX interaction contract in 0.6 |
 | 0005 HDN language (removed design) | 0.3; removed in 0.9 |
 | 0006 Scoped styles | 0.3 |
-| 0007 Component Explorer | 0.2 minimal; 0.4 full; extended through 0.7 |
-| 0008 Addressable components | 0.2 |
-| 0009 HTMX integration | 0.2 baseline; interaction/lifecycle hardening in 0.6–0.8 |
-| 0010 Data components | 0.5; optional adapters in 0.6 |
-| 0011 Visualization | 0.6 |
+| 0007 Component Explorer | 0.2 minimal; 0.4 full; extended through 0.7, dashboard graphs in 0.17, inference/workflow diagnostics in 0.18, and accessibility review workspace in 0.19 |
+| 0008 Addressable components | 0.2; structured collections and patches in 0.17 |
+| 0009 HTMX integration | 0.2 baseline; interaction/lifecycle hardening in 0.6–0.8; dashboard composition in 0.17 |
+| 0010 Data components | 0.5; optional adapters in 0.6; interactive analysis tools in 0.16; dashboard/grid state in 0.17; examples and inference artifacts in 0.18 |
+| 0011 Visualization | 0.6; scale in 0.12; specialized optional adapters in 0.16; cross-filter composition in 0.17; model-demo outputs in 0.18 |
 | 0012 Security | 0.1–0.8 |
-| 0013 Async architecture | 0.2, 0.5, and 0.7 |
-| 0014 Plugin architecture | 0.4; integration packages through 0.7 |
+| 0013 Async architecture | 0.2, 0.5, and 0.7; inference admission/batching in 0.18 |
+| 0014 Plugin architecture | 0.4; integration packages through 0.7; curated extras in 0.16; optional MCP package in 0.17; Gradio/provider adapters in 0.18 |
 | 0015 Routing | 0.2 |
-| 0016 OpenAPI | 0.2; Explorer/docs integration in 0.4 |
+| 0016 OpenAPI | 0.2; Explorer/docs integration in 0.4; explicit MCP projection boundary in 0.17; interaction recorder and Gradio remote discovery in 0.18 |
 | 0017 CLI | 0.2 minimal; 0.3 compiler commands; 0.4 full |
 | 0018 Packaging | 0.0–0.8 |
-| 0019 Testing | 0.0–0.8 |
+| 0019 Testing | 0.0–0.8; accessibility scenario/tree/AT evidence in 0.19 |
 | 0020 Performance | 0.1–0.8 |
-| 0021 Browser runtime | 0.3; rich widgets in 0.5–0.6 |
+| 0021 Browser runtime | 0.3; rich widgets in 0.5–0.6; browser context/storage in 0.15; extras and isolated sandbox in 0.16; dashboard patches/collections in 0.17; workflow canvas in 0.18; accessibility evidence in 0.19 |
 | 0022 Theming | 0.3 |
-| 0023 Accessibility | 0.1–0.8 |
-| 0024 Developer experience | 0.2–0.6 |
-| 0025 Component lifecycle | 0.1–0.3 |
-| 0026 State management | 0.2 and 0.5; operations in 0.7 |
+| 0023 Accessibility | 0.1–0.8 baseline; comprehensive contracts, authoring, testing, AT, and governance in 0.19 |
+| 0024 Developer experience | 0.2–0.6; authoring assistance and accessibility diagnostics in 0.19 |
+| 0025 Component lifecycle | 0.1–0.3; dynamic accessibility-state evidence in 0.19 |
+| 0026 State management | 0.2 and 0.5; operations in 0.7; dashboard state and saved views in 0.17; versioned workflow/example state in 0.18 |
 | 0027 Data sources | 0.5–0.6 |
 | 0028 Deployment | 0.7–0.8 |
-| 0029 Capability roadmap | 0.0 onward |
+| 0029 Capability roadmap | 0.0 onward; Gradio-derived model-demo and inference-workflow packet in 0.18 |
 | 0030 Declarative authoring reset | Superseded by 0031 |
 | 0031 HDJ standards-first authoring | 0.9 |
 
