@@ -36,6 +36,8 @@ def test_hedron_page_and_fragment() -> None:
     assert "hello" in page.text
     assert "htmx.min.js" in page.text
     assert "hedron-ui.mjs" in page.text
+    assert "/hedron-static/ext/sse.js" in page.text
+    assert "/hedron-static/ext/head-support.js" in page.text
     assert 'href="/hedron-static/hedron-default.css"' in page.text
     assert "X-Content-Type-Options" in page.headers
     stylesheet = client.get("/hedron-static/hedron-default.css")

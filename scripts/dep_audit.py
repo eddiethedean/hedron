@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Dependency vulnerability audit wrapper for the 0.9 release gate."""
+"""Dependency vulnerability audit wrapper for the 0.10 release gate."""
 
 from __future__ import annotations
 

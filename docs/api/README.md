@@ -9,7 +9,7 @@ Hedron documentation separates **callable APIs that ship in this release** from
     Advanced typing and rendering primitives such as `NodeLike`, `RenderMode`, and
     `get_registry` live in `hedron_core`. Prefer `hedron` re-exports when available.
 
-**Stability:** Phase 0.8 establishes public classifications in [STABILITY.md](STABILITY.md)
+**Stability:** Phase 0.10 continues the public classifications in [STABILITY.md](STABILITY.md)
 (`beta` | `experimental` | `internal` | `deferred`). Package maturity (Beta/Alpha) is separate
 from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
@@ -21,10 +21,10 @@ from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
     field tables, errors, and examples. Prefer those plus the guides when learning;
     read source only for unmarked internals.
 
-## Shipped through 0.9
+## Shipped through 0.10
 
 These surfaces are implemented on repository `main`'s **0.10.0** train (includes the 0.9
-authoring break and 0.10 live interaction).compatibility baseline plus the intentional HDJ authoring replacement).
+authoring break and 0.10 live interaction).
 
 ### Application
 
@@ -72,18 +72,18 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTIC
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — 0.8 compatibility catalog
+- [Stability classifications](STABILITY.md) — 0.8+ compatibility catalog (0.10 live surfaces)
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
-- [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling (SSE Deferred)
+- [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling; SSE Supported in 0.10
 
 ## Deferred contracts
 
-**Accepted ≠ Supported.** These remain Deferred through the freeze (D-036, D-037):
+**Accepted ≠ Supported.** These remain Deferred (D-036 / D-041 / D-045):
 
-- Django QuerySet as a first-party DataSource
-- Official HTMX SSE live transport
+- Django QuerySet as a first-party DataSource (0.11)
+- First-party camera/microphone capture UI (0.15)
 
-## Planned after 0.8
+## Planned after 0.10
 
-- [HDJ authoring](JINJA.md) — optional explicit `.hdj` format over Jinja/HTML/HTMX replacing HDN in
-  phase 0.9
+- Native Flask/Django depth and HDJ route/CSRF/forms reconciliation — phase 0.11
+- Capture UI — phase 0.15

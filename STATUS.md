@@ -1,6 +1,6 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.10 cut-ready on repository `main`.
+**Roadmap position:** phase 0.10 on repository `main` (packages `0.10.0`; not tagged/published yet).
 **Date:** 2026-08-04
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
 `hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` / `hedron-jinja` `0.10.0`
@@ -12,6 +12,10 @@
 focused streaming, page/session WebSocket channels, Chat/Dialog, media chunk transport contracts,
 HDJ head/two-phase streaming, and opt-in navigation preload. Polling and ordinary HTTP remain
 Supported fallbacks. Native Flask/Django depth remains assigned to 0.11; capture UI to 0.15.
+
+**Honest Deferred (owned):** full three-engine live browser matrix beyond asset/HTMX smoke,
+load/proxy backpressure evidence, Explorer live traces, and a first-party live example app
+(`BROWSER-10-001`, `PERF-10-001`, `EXPLORER-10-001`, `EXAMPLES-10-001`).
 
 ## Phase 0.10 evidence
 

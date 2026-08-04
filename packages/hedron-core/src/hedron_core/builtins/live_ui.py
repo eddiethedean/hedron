@@ -14,7 +14,7 @@ class DialogProps(Props):
     title: str
     open: bool = False
     modal: bool = True
-    element_id: str | None = None
+    id: str | None = None
 
 
 class Dialog(Component[DialogProps]):
@@ -31,12 +31,13 @@ class Dialog(Component[DialogProps]):
         children: Any = None,
         open: bool = False,
         modal: bool = True,
+        id: str | None = None,
         element_id: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(
-            DialogProps(title=title, open=open, modal=modal, element_id=element_id, **kwargs)
-        )
+        # ``element_id`` remains accepted as a compatibility alias for ``id``.
+        resolved_id = id if id is not None else element_id
+        super().__init__(DialogProps(title=title, open=open, modal=modal, id=resolved_id, **kwargs))
         self._body = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
@@ -50,8 +51,8 @@ class Dialog(Component[DialogProps]):
             "class_": "hedron-dialog",
             "data": {"hedron-dialog": "true", "modal": "true" if self.props.modal else "false"},
         }
-        if self.props.element_id:
-            attrs["id"] = self.props.element_id
+        if self.props.id:
+            attrs["id"] = self.props.id
         if self.props.open:
             attrs["open"] = True
         close = html.form(

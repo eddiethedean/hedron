@@ -40,7 +40,8 @@ def test_default_stylesheet_is_local_layered_and_customizable() -> None:
     assert ".hedron-form-field" in stylesheet
     assert ".hedron-dialog" in stylesheet
     assert ".hedron-chat-input" in stylesheet
-    assert "attr(data-hedron-gap type(<length-percentage>)" in stylesheet
+    assert "var(--hedron-gap" in stylesheet
+    assert "data-hedron-gap" in stylesheet or "--hedron-gap" in stylesheet
     assert "\n  table {" in stylesheet
     assert ".hedron-chart-fallback" in stylesheet
     assert "prefers-color-scheme: dark" in stylesheet

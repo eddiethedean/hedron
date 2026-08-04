@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from hedron_core._html_meta import (
@@ -16,6 +17,13 @@ from hedron_core._html_meta import (
 from hedron_core._nodes import ElementNode, TrustedHtmlNode
 from hedron_core.diagnostics import error
 from hedron_core.security import SafeUrl, TrustedHtml, UrlPurpose, check_url_purpose_for_attribute
+
+# Only layout CSS custom properties — never arbitrary author CSS.
+_SAFE_LAYOUT_STYLE = re.compile(r"^--hedron-gap:\s*\d+(\.\d+)?(rem|em|px|%);?$")
+
+
+def _is_safe_layout_style(value: Any) -> bool:
+    return isinstance(value, str) and bool(_SAFE_LAYOUT_STYLE.match(value.strip()))
 
 
 def _is_allowed_attr(name: str) -> bool:
@@ -80,6 +88,16 @@ def _normalize_attrs(attrs: dict[str, Any], *, tag: str) -> dict[str, Any]:
                 title="Inline event handler rejected",
                 explanation=f"Attribute {name!r} is an inline event handler.",
                 remediation="Use HTMX attributes or registered Web Components instead.",
+            )
+        if lower == "style" or key == "style_":
+            if _is_safe_layout_style(value):
+                out["style"] = str(value).strip().rstrip(";")
+                continue
+            raise error(
+                "HED-SEC-0007",
+                title="Forbidden attribute",
+                explanation=f"Attribute {name!r} is not permitted under baseline policy.",
+                remediation="Only layout custom properties like '--hedron-gap: 1rem' are allowed.",
             )
         if lower in FORBIDDEN_ATTRS or key in FORBIDDEN_ATTRS:
             raise error(

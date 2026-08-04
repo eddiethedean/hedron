@@ -2,7 +2,7 @@
 """Rehearse a published Hedron release (or local dist/) install path in a clean environment.
 
 This does not publish. It verifies clean-install smoke against wheels in --dist-dir
-(default: ./dist) or a requirement pin like hedron==0.9.0 from an index.
+(default: ./dist) or a requirement pin like hedron==0.10.0 from an index.
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ def main() -> int:
     parser.add_argument(
         "--requirement",
         default=None,
-        help="Optional pip requirement (e.g. hedron==0.9.0) for index installs",
+        help="Optional pip requirement (e.g. hedron==0.10.0) for index installs",
     )
     args = parser.parse_args()
 

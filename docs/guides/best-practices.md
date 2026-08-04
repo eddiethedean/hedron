@@ -33,13 +33,14 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 - Prefer typed Python components for reusable behavior and authorization. Install `hedron-jinja`
   when trusted authors need standards-first control over HTML, CSS, JavaScript, Jinja, and HTMX;
   bind every callable component alias explicitly and keep dynamic trust crossings visible. HDN is
-  not available on the 0.9 train.
+  not available on the 0.9+ train.
 - Do not put secrets or untrusted HTML in templates—use `TrustedHtml` at trust boundaries.
 
 ## Adapters
 
 - Install `hedron-flask` / `hedron-django` separately; they never pull FastAPI.
-- Treat Deferred rows (SSE, QuerySet DataSource, Hedron Django forms) as app-owned workarounds.
+- Treat Deferred rows (QuerySet DataSource, Hedron Django forms, capture UI) as app-owned
+  workarounds until their destination phase.
 
 ## Testing
 

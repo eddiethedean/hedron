@@ -1,4 +1,4 @@
-"""Packaging metadata checks for the coordinated 0.9 train."""
+"""Packaging metadata checks for the coordinated 0.10 train."""
 
 from __future__ import annotations
 

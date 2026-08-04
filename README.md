@@ -161,15 +161,15 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 **PyPI (install today):** latest published train is **0.7.x** (`pip install hedron`).
 
-**Repository `main`:** coordinated packages are now **0.9.0** during the intentional HDN-to-HDJ
-authoring break. Published 0.8 artifacts remain the final option for applications that still need
-HDN; there is no 0.9 compatibility switch.
+**Repository `main`:** coordinated packages are **0.10.0** (live interaction on top of the 0.9
+HDN-to-HDJ authoring break). Published 0.8 artifacts remain the final option for applications that
+still need HDN; there is no HDN compatibility switch on 0.9+.
 
 Install `hedron` for the FastAPI flagship, `hedron-flask` / `hedron-django` for Supported
 adapters, and `"hedron[data]"`, `"hedron[charts]"`, or `"hedron[jinja]"` for optional subsystems.
-Phase `0.9` is the clean authoring replacement; native framework depth moves to 0.11. Later
-capability phases remain on the `0.x` line — see the
-[roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
+Phase `0.10` adds official SSE, focused streaming, WebSocket channels, Dialog/Chat, and opt-in
+preload; native framework depth moves to 0.11. Later capability phases remain on the `0.x` line —
+see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing
 

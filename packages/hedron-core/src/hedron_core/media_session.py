@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Literal
@@ -52,12 +53,20 @@ class MediaSession:
     chunks_received: int = 0
     bytes_received: int = 0
     fallback: Literal["upload", "poll", "none"] = "upload"
+    _started_at_ms: int | None = field(default=None, repr=False)
+    _last_timestamp_ms: int | None = field(default=None, repr=False)
+    _window_started_monotonic: float | None = field(default=None, repr=False)
+    _window_bytes: int = field(default=0, repr=False)
 
     def grant(self) -> None:
         if self.state is MediaSessionState.CLOSED:
             raise RuntimeError("session already closed")
         self.permission_granted = True
         self.state = MediaSessionState.ACTIVE
+        self._started_at_ms = None
+        self._last_timestamp_ms = None
+        self._window_started_monotonic = time.monotonic()
+        self._window_bytes = 0
 
     def accept_chunk(self, chunk: MediaChunk) -> None:
         if not self.permission_granted:
@@ -68,6 +77,35 @@ class MediaSession:
             raise ValueError("chunk exceeds max_chunk_bytes")
         if self.chunks_received >= self.budget.max_chunks:
             raise RuntimeError("max_chunks exceeded")
+
+        started = self._started_at_ms
+        if started is None:
+            started = chunk.timestamp_ms
+            self._started_at_ms = started
+        elapsed_ms = chunk.timestamp_ms - started
+        if elapsed_ms < 0:
+            raise ValueError("chunk timestamp precedes session start")
+        if elapsed_ms / 1000.0 > self.budget.max_duration_seconds:
+            raise RuntimeError("max_duration_seconds exceeded")
+
+        if self._last_timestamp_ms is not None and self.budget.cadence_ms > 0:
+            delta = chunk.timestamp_ms - self._last_timestamp_ms
+            if delta < self.budget.cadence_ms:
+                raise ValueError("chunk cadence_ms violated")
+
+        now = time.monotonic()
+        if self._window_started_monotonic is None:
+            self._window_started_monotonic = now
+            self._window_bytes = 0
+        window_elapsed = now - self._window_started_monotonic
+        if window_elapsed >= 1.0:
+            self._window_started_monotonic = now
+            self._window_bytes = 0
+        if self._window_bytes + len(chunk.data) > self.budget.max_bandwidth_bytes_per_second:
+            raise RuntimeError("max_bandwidth_bytes_per_second exceeded")
+
+        self._window_bytes += len(chunk.data)
+        self._last_timestamp_ms = chunk.timestamp_ms
         self.chunks_received += 1
         self.bytes_received += len(chunk.data)
 

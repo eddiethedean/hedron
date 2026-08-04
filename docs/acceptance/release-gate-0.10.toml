@@ -94,17 +94,39 @@ owner = "hedron"
 
 [[evidence]]
 id = "BROWSER-10-001"
-state = "Verified"
+state = "Deferred"
+destination = "0.10.x follow-up"
 command = "python -m pytest -q tests/browser"
 ci_job = "browser"
 owner = "hedron"
+rationale = "Static extension asset fetch and existing HTMX matrix only; full three-engine SSE reconnect/CSP/proxy/offline matrix deferred."
 
 [[evidence]]
 id = "PERF-10-001"
-state = "Verified"
+state = "Deferred"
+destination = "0.10.x follow-up"
 command = "python -m pytest -q tests/performance/test_live_backpressure.py"
 ci_job = "test"
 owner = "hedron"
+rationale = "In-memory budget caps verified; load/proxy backpressure evidence deferred."
+
+[[evidence]]
+id = "EXPLORER-10-001"
+state = "Deferred"
+destination = "0.10.x follow-up"
+command = "python -c \"print('Explorer live traces not yet shipped')\""
+ci_job = "test"
+owner = "hedron-explorer"
+rationale = "Explorer live SSE/WS/stream/preload traces deferred; cache/chart panels remain."
+
+[[evidence]]
+id = "EXAMPLES-10-001"
+state = "Deferred"
+destination = "0.10.x follow-up"
+command = "python -c \"print('First-party live example app deferred')\""
+ci_job = "test"
+owner = "hedron"
+rationale = "No first-party examples/* live SSE/WS/chat app yet."
 
 [[evidence]]
 id = "REGRESS-10-001"

@@ -1,7 +1,7 @@
 # Public stability classifications
 
 **Status:** Phase 0.10 live interaction
-**Version:** `0.9.0`
+**Version:** `0.10.0`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0`. Levels apply to documented
 contracts; symbols not listed here are **internal** unless a later phase explicitly promotes them.
@@ -14,7 +14,7 @@ contracts; symbols not listed here are **internal** unless a later phase explici
 | `beta` | Intended for production use; may receive additive changes and documented minor-phase revisions with changelog, migration, diagnostic, and evidence obligations. |
 | `experimental` | May change or be removed without a major bump. Must be labeled in docs and Explorer. |
 | `internal` | Not a public promise. Private serializer nodes, private modules, and underscore-prefixed APIs. |
-| `deferred` | Accepted design not advertised as Supported until a later decision (for example QuerySet DataSource, SSE). |
+| `deferred` | Accepted design not advertised as Supported until a later decision (for example QuerySet DataSource, capture UI). |
 
 Package maturity classifiers (Beta/Alpha on PyPI) describe distribution readiness; the levels above
 describe **API/artifact** promises.
@@ -37,12 +37,15 @@ describe **API/artifact** promises.
 | Browser assets | Bundled HTMX (and optional chart runtimes) exact pin + digest | [COMPATIBILITY.md](../COMPATIBILITY.md) |
 | Test helpers | `hedron.testing` documented exports | [TESTING.md](TESTING.md) |
 
-## Package export classifications (0.9 baseline)
+## Package export classifications (0.10 baseline)
 
 ### `hedron` (Beta distribution) — primarily `beta`
 
 Facade re-exports of core built-ins, `Hedron`, `HedronRouter`, responses, interaction helpers,
-security helpers, session state, cache decorators, CLI entry, and testing helpers are **beta**.
+security helpers, session state, cache decorators, CLI entry, testing helpers, and 0.10 live
+helpers (`SseResponse`, `job_status_sse_response`, `StreamingComponentResponse`,
+`accept_page_session_channel`, `send_region_update`, `Dialog`, `ChatMessage`, `ChatInput`,
+preload helpers) are **beta**.
 Lazy optional surfaces (`hedron[data]`, `hedron[charts]`, `hedron[auth]`, content helpers) inherit
 the optional package level.
 

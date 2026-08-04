@@ -25,14 +25,14 @@ The preview is intentionally small enough to inspect with a keyboard and screen 
 ```python
 from hedron import Dialog, Text
 
-component = Dialog('Delete report', Text('This action cannot be undone.'), element_id='delete-report')
+component = Dialog('Delete report', Text('This action cannot be undone.'), id='delete-report')
 ```
 
 In a route, return the component inside a `Page`, or return it directly as a fragment through the framework adapter. Components are immutable descriptions of output: construct the complete state on the server and let the renderer serialize it.
 
 ## How it works
 
-Dialog renders a native `<dialog>` with a level-two title, body region, built-in Close form using the browser's dialog submission method, and an optional actions slot. A button whose `data-hedron-dialog-open` value is the dialog's `#element_id` opens it through the shipped browser module; modal dialogs use `showModal()`, while `modal=False` uses `show()`. The component never treats confirmation as authorization.
+Dialog renders a native `<dialog>` with a level-two title, body region, built-in Close form using the browser's dialog submission method, and an optional actions slot. A button whose `data-hedron-dialog-open` value is the dialog's `#id` opens it through the shipped browser module; modal dialogs use `showModal()`, while `modal=False` uses `show()`. Already-open modal dialogs are upgraded to `showModal()` on boot and after HTMX swaps. The component never treats confirmation as authorization.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
@@ -41,7 +41,7 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Dialog(title, *nodes, children=None, open=False, modal=True, element_id=None)
+Dialog(title, *nodes, children=None, open=False, modal=True, id=None, element_id=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -51,7 +51,8 @@ Dialog(title, *nodes, children=None, open=False, modal=True, element_id=None)
 | `children` | `NodeLike | sequence | None` | Keyword body content; combines with positional nodes. |
 | `open` | `bool` | Render the native open attribute initially. |
 | `modal` | `bool` | Browser-module intent exposed as data-modal. |
-| `element_id` | `str | None` | Stable ID for a trigger and focus restoration. |
+| `id` | `str | None` | Stable ID for a trigger and focus restoration. |
+| `element_id` | `str | None` | Compatibility alias for id. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

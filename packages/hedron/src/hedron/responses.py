@@ -230,6 +230,15 @@ def _inject_build_assets(
         add('<script type="module" src="/hedron-static/hedron-disclose.mjs"></script>')
     if "hedron-ui.mjs" not in html_text:
         add('<script type="module" src="/hedron-static/hedron-ui.mjs"></script>')
+    # Pin non-deferred HTMX extensions after the core runtime (RFC-0032).
+    from hedron_core.htmx_extensions import known_extensions
+
+    for ext in sorted(known_extensions(), key=lambda e: e.load_order):
+        if ext.deferred:
+            continue
+        if ext.path in html_text:
+            continue
+        add(f'<script src="{ext.path}" defer></script>')
     if not tags:
         return html_text
     injection = "\n".join(tags)

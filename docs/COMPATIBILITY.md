@@ -5,7 +5,7 @@
 
 ## Initial runtime ranges
 
-| Dependency | `v0.9.0` compatibility baseline | Policy |
+| Dependency | `v0.10.0` compatibility baseline | Policy |
 |---|---|---|
 | Python | CPython 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.11,<3.15"`; 3.15 prereleases are not supported. |
 | FastAPI | `>=0.141.1,<0.142` | Required by `hedron`, not `hedron-core`; expand only after adapter conformance. |
@@ -24,9 +24,11 @@
 | Authlib | `>=1.3` via `hedron[auth]` | Convenience helpers only; no identity ownership. |
 | Jinja | `>=3.1,<4` via `hedron[jinja]` / `hedron-jinja` | Optional trusted-template integration; not imported by `hedron-core`. |
 
-## Phase 0.9 compatibility baseline
+## Phase 0.10 compatibility baseline
 
-Phase 0.9 keeps the numeric dependency floors above and adds the optional HDJ authoring package.
+Phase 0.10 keeps the numeric dependency floors above, keeps optional HDJ authoring, and adds
+Supported live-transport surfaces (SSE, focused streaming, page/session WebSocket, Dialog/Chat,
+media chunk contracts, navigation preload). Polling and ordinary HTTP remain Supported fallbacks.
 
 | Capability | Supported declaration |
 |---|---|
@@ -34,7 +36,11 @@ Phase 0.9 keeps the numeric dependency floors above and adds the optional HDJ au
 | HDJ source format | UTF-8 `.hdj` with a mandatory format-v1 TOML prologue; ordinary `.html`/`.jinja` stay outside the HDJ loader. |
 | HDN | Removed. Version 0.8 is the final HDN-capable line; no converter or compatibility runtime ships. |
 | Native adapter depth | FastAPI remains the flagship depth; Flask/Django keep their 0.7/0.8 routing slices. Native route/CSRF/forms/CSP reconciliation for HDJ is phase 0.11. |
-| Live HTMX / streaming | Official SSE and focused streaming are Supported in 0.10 (RFC-0032); polling remains the required fallback. |
+| Live HTMX / streaming | Official SSE and focused streaming are Supported (RFC-0032); polling remains the required fallback. PAGE responses inject pinned `htmx-ext-sse` and `htmx-ext-head-support`. |
+
+## Phase 0.9 compatibility baseline (historical)
+
+Phase 0.9 introduced the optional HDJ authoring package and removed HDN.
 
 ## Phase 0.7 compatibility entry gate
 

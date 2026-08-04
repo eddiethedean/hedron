@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble the phase 0.9 release evidence bundle under dist/evidence-bundle/."""
+"""Assemble the phase 0.10 release evidence bundle under dist/evidence-bundle/."""
 
 from __future__ import annotations
 
@@ -28,11 +28,11 @@ def main() -> int:
     lock = ROOT / "uv.lock"
     digest = hashlib.sha256(lock.read_bytes()).hexdigest() if lock.is_file() else ""
     manifest = {
-        "phase": "0.9",
+        "phase": "0.10",
         "generated_at": datetime.now(UTC).isoformat(),
         "uv_lock_sha256": digest,
         "artifacts": sorted(p.name for p in OUT.iterdir() if p.is_file()),
-        "gate_manifest": "docs/acceptance/release-gate-0.9.toml",
+        "gate_manifest": "docs/acceptance/release-gate-0.10.toml",
     }
     (OUT / "bundle-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     print(f"ok: evidence bundle at {OUT.relative_to(ROOT)}")

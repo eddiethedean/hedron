@@ -52,6 +52,8 @@ class ChunkedList:
             total_chars += len(chunk)
             if total_chars > self.budget.max_chars:
                 break
+            if index > 0 and self.budget.chunk_delay_seconds > 0:
+                time.sleep(self.budget.chunk_delay_seconds)
             yield chunk
 
     def fallback(self) -> str:
@@ -86,6 +88,8 @@ class StreamedDocument:
             total += len(chunk)
             if total > self.budget.max_chars:
                 break
+            if index > 0 and self.budget.chunk_delay_seconds > 0:
+                time.sleep(self.budget.chunk_delay_seconds)
             yield ("body", chunk)
 
 
@@ -133,12 +137,16 @@ def bounded_token_chunks(
             total_chars += len(chunk)
             if total_chars > budget.max_chars:
                 break
+            if chunks_emitted > 0 and budget.chunk_delay_seconds > 0:
+                time.sleep(budget.chunk_delay_seconds)
             yield chunk
             chunks_emitted += 1
             buffer.clear()
     if buffer and chunks_emitted < budget.max_chunks:
         chunk = join_with.join(buffer)
         if total_chars + len(chunk) <= budget.max_chars:
+            if chunks_emitted > 0 and budget.chunk_delay_seconds > 0:
+                time.sleep(budget.chunk_delay_seconds)
             yield chunk
 
 
@@ -149,6 +157,8 @@ async def async_token_chunks(
     join_with: str = "",
     max_chunk_tokens: int = 8,
 ) -> AsyncIterator[str]:
+    import asyncio
+
     started = time.monotonic()
     total_chars = 0
     buffer: list[str] = []
@@ -167,10 +177,14 @@ async def async_token_chunks(
             total_chars += len(chunk)
             if total_chars > budget.max_chars:
                 break
+            if chunks_emitted > 0 and budget.chunk_delay_seconds > 0:
+                await asyncio.sleep(budget.chunk_delay_seconds)
             yield chunk
             chunks_emitted += 1
             buffer.clear()
     if buffer and chunks_emitted < budget.max_chunks:
         chunk = join_with.join(buffer)
         if total_chars + len(chunk) <= budget.max_chars:
+            if chunks_emitted > 0 and budget.chunk_delay_seconds > 0:
+                await asyncio.sleep(budget.chunk_delay_seconds)
             yield chunk

@@ -54,6 +54,19 @@ def _format_attr(name: str, value: Any) -> str | None:
             remediation="Use HTMX attributes or registered Web Components instead.",
         )
     lower = name.lower()
+    if lower == "style":
+        from hedron_core.html import _is_safe_layout_style
+
+        if _is_safe_layout_style(value):
+            from html import escape
+
+            return f'style="{escape(str(value).strip().rstrip(";"), quote=True)}"'
+        raise error(
+            "HED-SEC-0007",
+            title="Forbidden attribute",
+            explanation=f"Attribute {name!r} is not permitted under baseline policy.",
+            remediation="Only layout custom properties like '--hedron-gap: 1rem' are allowed.",
+        )
     if lower in FORBIDDEN_ATTRS:
         raise error(
             "HED-SEC-0007",

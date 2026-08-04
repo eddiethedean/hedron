@@ -67,7 +67,12 @@ from hedron.streaming import (
     stream_document,
     stream_tokens,
 )
-from hedron.websocket_channel import accept_page_session_channel, origin_allowed
+from hedron.websocket_channel import (
+    ALLOW_MISSING_ORIGIN,
+    accept_page_session_channel,
+    origin_allowed,
+    send_region_update,
+)
 
 # Re-export beginner core API.
 from hedron_core import (  # noqa: F401
@@ -312,12 +317,14 @@ __all__ = [
     "Title",
     "TrustedHtml",
     "UrlPurpose",
+    "ALLOW_MISSING_ORIGIN",
     "accept_page_session_channel",
     "apply_preload_headers",
     "evaluate_preload_request",
     "extension_script_tags",
     "job_status_sse_response",
     "origin_allowed",
+    "send_region_update",
     "sse_response",
     "stream_chunked_list",
     "stream_document",

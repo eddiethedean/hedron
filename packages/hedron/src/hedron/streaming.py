@@ -17,6 +17,27 @@ __all__ = [
 ]
 
 
+def _prefix_fallback(
+    content: Iterator[bytes] | AsyncIterator[bytes],
+    fallback_html: str,
+) -> Iterator[bytes] | AsyncIterator[bytes]:
+    fallback = fallback_html.encode("utf-8")
+    if hasattr(content, "__aiter__"):
+
+        async def _async() -> AsyncIterator[bytes]:
+            yield fallback
+            async for chunk in content:  # type: ignore[union-attr]
+                yield chunk
+
+        return _async()
+
+    def _sync() -> Iterator[bytes]:
+        yield fallback
+        yield from content  # type: ignore[misc]
+
+    return _sync()
+
+
 class StreamingComponentResponse(StreamingResponse):
     """Stream focused HTML chunks for an addressable region."""
 
@@ -39,6 +60,7 @@ class StreamingComponentResponse(StreamingResponse):
         }
         if fallback_html is not None:
             hdrs["X-Hedron-Stream-Fallback"] = "1"
+            content = _prefix_fallback(content, fallback_html)
         super().__init__(
             content,
             status_code=status_code,

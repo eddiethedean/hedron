@@ -25,7 +25,16 @@ def test_version_is_synchronized() -> None:
     assert project["version"] == __version__
     changelog = (PKG / "CHANGELOG.md").read_text(encoding="utf-8")
     assert f"[{__version__}]" in changelog
-    for name in ("hedron", "hedron-explorer", "hedron-sample-kit", "hedron-data", "hedron-charts"):
+    for name in (
+        "hedron",
+        "hedron-explorer",
+        "hedron-sample-kit",
+        "hedron-data",
+        "hedron-charts",
+        "hedron-flask",
+        "hedron-django",
+        "hedron-jinja",
+    ):
         other = tomllib.loads(
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]
@@ -67,6 +76,7 @@ def test_package_maturity_classifiers() -> None:
         "hedron-flask": "Development Status :: 4 - Beta",
         "hedron-charts": "Development Status :: 3 - Alpha",
         "hedron-sample-kit": "Development Status :: 3 - Alpha",
+        "hedron-jinja": "Development Status :: 4 - Beta",
     }
     for package, maturity in expected.items():
         project = tomllib.loads(

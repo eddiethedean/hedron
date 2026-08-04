@@ -8,9 +8,9 @@ pip install hedron
 uv add hedron
 ```
 
-That installs the latest published release from PyPI. Repository `main` is implementing the
-intentional **0.9.0** HDN-to-HDJ authoring break; published artifacts may lag—see
-[STATUS](../STATUS.md). For DataTable/DataEditor, install
+That installs the latest published release from PyPI. Repository `main` tracks coordinated
+**0.10.0** packages (live interaction on the 0.9 HDJ authoring line); published artifacts may
+lag—see [STATUS](../STATUS.md). For DataTable/DataEditor, install
 `hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
 
 ```bash

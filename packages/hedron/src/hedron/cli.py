@@ -377,7 +377,8 @@ def _cmd_check(args: argparse.Namespace) -> int:
             title="0.8 compatibility baseline is active",
             explanation=(
                 "Phase 0.8 classifies the public API and compatibility baseline. "
-                "Django QuerySet integration is assigned to 0.9; SSE/live transport to 0.10."
+                "Django QuerySet integration is assigned to 0.11; "
+                "live SSE transport shipped in 0.10."
             ),
             remediation="See docs/api/STABILITY.md and docs/guides/upgrade.md.",
         ),

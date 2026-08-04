@@ -3,6 +3,11 @@
 Task-oriented guidance for moving from a working page to a maintainable Hedron project.
 
 <div class="hedron-grid">
+  <a class="hedron-card" href="component-composition/">
+    <span class="hedron-card__icon" aria-hidden="true">⧉</span>
+    <strong>Component composition</strong>
+    <p>Shared children/id/class_ contracts, nested FormField a11y, and layout gaps.</p>
+  </a>
   <a class="hedron-card" href="best-practices/">
     <span class="hedron-card__icon" aria-hidden="true">★</span>
     <strong>Best practices</strong>

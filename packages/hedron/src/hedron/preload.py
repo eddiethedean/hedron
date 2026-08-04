@@ -28,6 +28,7 @@ def evaluate_preload_request(
     *,
     speculative_count: int = 0,
     concurrent: int = 0,
+    navigation_cancelled: bool = False,
 ) -> PreloadDecision:
     same_origin = True
     origin = request.headers.get("origin")
@@ -41,6 +42,8 @@ def evaluate_preload_request(
         same_origin=same_origin,
         speculative_count=speculative_count,
         concurrent=concurrent,
+        cache_control_request=request.headers.get("cache-control"),
+        navigation_cancelled=navigation_cancelled,
     )
 
 
@@ -52,6 +55,10 @@ def apply_preload_headers(
 ) -> Response:
     if decision.allowed and decision.header_value is not None:
         response.headers[HX_PRELOADED] = decision.header_value
+    if decision.cache_control:
+        response.headers["Cache-Control"] = decision.cache_control
+    if decision.cancel_on_navigation:
+        response.headers["X-Hedron-Preload-Cancel"] = "navigation"
     if extra:
         for key, value in extra.items():
             response.headers[key] = value

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify public __all__ exports are covered by the 0.8 stability catalog."""
+"""Verify public __all__ exports are covered by the 0.10 stability catalog."""
 
 from __future__ import annotations
 
@@ -19,7 +19,18 @@ PACKAGES = [
     "hedron_django",
     "hedron_explorer",
     "hedron_sample_kit",
+    "hedron_jinja",
 ]
+LIVE_EXPORTS = (
+    "SseResponse",
+    "job_status_sse_response",
+    "StreamingComponentResponse",
+    "accept_page_session_channel",
+    "send_region_update",
+    "Dialog",
+    "ChatMessage",
+    "ChatInput",
+)
 
 
 def package_init(name: str) -> Path:
@@ -53,6 +64,7 @@ def package_init(name: str) -> Path:
         / "src"
         / "hedron_sample_kit"
         / "__init__.py",
+        "hedron_jinja": ROOT / "packages" / "hedron-jinja" / "src" / "hedron_jinja" / "__init__.py",
     }
     return mapping[name]
 
@@ -92,18 +104,24 @@ def main() -> int:
         "hedron-django",
         "hedron-explorer",
         "hedron-sample-kit",
+        "hedron-jinja",
         "Levels",
         "Artifact classes",
         "Deferred destinations",
+        "Supported in 0.10",
     ]
     for section in required_sections:
         if section not in text:
             errors.append(f"STABILITY.md missing section mention: {section}")
 
-    # Every __all__ name must appear somewhere in the catalog OR be __version__
-    # Broad coverage: catalog discusses package groups; enforce non-empty __all__ and version pin.
+    if "0.10.0" not in text and "0.10" not in text:
+        errors.append("STABILITY.md should reference the 0.10 catalog version")
     if "0.8.0" not in text and "0.8" not in text:
         errors.append("STABILITY.md should reference the 0.8 compatibility baseline")
+
+    for name in LIVE_EXPORTS:
+        if name not in text:
+            errors.append(f"STABILITY.md missing live export mention: {name}")
 
     total = 0
     for pkg in PACKAGES:
@@ -112,8 +130,8 @@ def main() -> int:
             errors.append(f"missing package init: {init}")
             continue
         names = read_all(init)
-        if not names and pkg != "hedron_sample_kit":
-            # sample-kit may only export __version__
+        if not names and pkg not in {"hedron_sample_kit", "hedron_jinja"}:
+            # sample-kit may only export __version__; jinja may use a smaller surface
             errors.append(f"{pkg}: __all__ is empty")
         total += len(names)
         # __version__ should be present in catalog packages

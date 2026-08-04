@@ -140,6 +140,59 @@ def test_generated_form_ids_normalize_unsafe_field_names() -> None:
     assert "billing email[]" not in " ".join(_attribute_values(html, "id"))
 
 
+def test_formfield_applies_aria_to_custom_controls_and_preserves_caller_describedby() -> None:
+    from hedron_core.component import Component
+    from hedron_core.html import html
+    from hedron_core.models import Props
+
+    class CustomProps(Props):
+        id: str | None = None
+        name: str = "x"
+
+    class CustomControl(Component[CustomProps]):
+        props_type = CustomProps
+
+        def __init__(self, name: str = "x", **kwargs: object) -> None:
+            super().__init__(CustomProps(name=name, **kwargs))  # type: ignore[arg-type]
+
+        def render(self):  # type: ignore[no-untyped-def]
+            return html.input(type="text", name=self.props.name, id=self.props.id)
+
+    custom = render(
+        FormField(
+            name="nick",
+            label="Nickname",
+            control=CustomControl("nick"),
+            help="Visible to teammates.",
+            required=True,
+        )
+    ).html
+    assert 'aria-describedby="' in custom
+    assert 'aria-required="true"' in custom
+
+    preserved = render(
+        FormField(
+            name="email",
+            label="Email",
+            control=TextInput("email", aria_describedby="external-hint"),
+        )
+    ).html
+    assert "external-hint" in preserved
+
+
+def test_radio_group_sets_root_fieldset_id() -> None:
+    html = render(
+        RadioGroup("plan", "Plan", [("free", "Free"), ("pro", "Pro")], id="plan-group")
+    ).html
+    assert 'id="plan-group"' in html
+
+
+def test_layout_gap_emits_css_variable() -> None:
+    html = render(Stack(Text("a"), Text("b"), gap="1.25rem")).html
+    assert "--hedron-gap: 1.25rem" in html
+    assert 'data-hedron-gap="1.25rem"' in html
+
+
 def test_representative_application_tree_composes_without_diagnostics() -> None:
     component = Container(
         Stack(

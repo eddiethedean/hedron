@@ -123,13 +123,18 @@ class FormField(Component[FormFieldProps]):
                 updates["id"] = field_id
             if self.props.required and hasattr(props, "required"):
                 updates["required"] = True
-            for name, value in (
-                ("aria_describedby", aria["describedby"]),
-                ("aria_invalid", aria["invalid"]),
-                ("aria_required", aria["required"]),
-            ):
-                if name in props.__class__.model_fields:
-                    updates[name] = value
+            fields = props.__class__.model_fields
+            if "aria_describedby" in fields:
+                existing = getattr(props, "aria_describedby", None)
+                if described_by and existing:
+                    updates["aria_describedby"] = f"{existing} {described_by}".strip()
+                elif described_by:
+                    updates["aria_describedby"] = described_by
+                # Preserve caller aria when FormField has no help/error.
+            if "aria_invalid" in fields and aria["invalid"] is not None:
+                updates["aria_invalid"] = aria["invalid"]
+            if "aria_required" in fields and aria["required"] is not None:
+                updates["aria_required"] = aria["required"]
             new_props = props.model_copy(update=updates) if updates else props
             # Reconstruct a shallow copy of the control with updated props.
             bound = control.__class__.__new__(control.__class__)
@@ -142,6 +147,15 @@ class FormField(Component[FormFieldProps]):
             bound._children = control._children
             bound._slot_values = dict(control._slot_values)
             bound._key = control._key
+            # Custom controls without aria_* props still need attribute linking.
+            applied_via_props = any(
+                name in fields for name in ("aria_describedby", "aria_invalid", "aria_required")
+            )
+            if not applied_via_props and any(aria.values()):
+                node: Any = bound
+                while isinstance(node, Component):
+                    node = node.render()
+                return self._apply_aria(node, aria)
             return bound
         return self._apply_aria(control, aria)
 
@@ -520,7 +534,11 @@ class RadioGroup(Component[RadioGroupProps]):
                     class_="hedron-radio",
                 )
             )
-        return html.fieldset(html.legend(self.props.legend), *inputs)
+        return html.fieldset(
+            html.legend(self.props.legend),
+            *inputs,
+            id=group_id,
+        )
 
 
 class SubmitButtonProps(Props):

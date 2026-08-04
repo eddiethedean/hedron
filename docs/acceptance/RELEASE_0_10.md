@@ -13,7 +13,7 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
 ## Extension assets
 
 - [x] Official `htmx-ext-sse` and `htmx-ext-head-support` pinned with digests, CSP, load order,
-  and local `/hedron-static/ext/` serving. *(`EXT-10-001`)*
+  and local `/hedron-static/ext/` serving (PAGE auto-inject). *(`EXT-10-001`)*
 
 ## HDJ (closes HDJ-DEF-010)
 
@@ -23,22 +23,31 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
 
 ## Live transports
 
-- [x] Official SSE observation with auth, resume, cancel, CSP. *(`SSE-10-001`)*
+- [x] Official SSE observation with resume (`Last-Event-ID`), terminal close, and Poll fallback.
+  *(`SSE-10-001`)*
 - [x] Job SSE preserves `JobBackend` contract; polling remains Supported. *(`JOB-006`)*
-- [x] Focused `ChunkedList` / `StreamedDocument` / token streams. *(`STREAM-10-001`)*
-- [x] Page/session WebSocket channels with declared regions and fallbacks. *(`WS-10-001`)*
+- [x] Focused `ChunkedList` / `StreamedDocument` / token streams with fallback prefix and delay.
+  *(`STREAM-10-001`)*
+- [x] Page/session WebSocket channels with concurrent producer, origin checks, and pong.
+  *(`WS-10-001`)*
 
 ## UI and media
 
-- [x] `Dialog` with native `<dialog>` a11y contract. *(`UI-10-001`)*
-- [x] `ChatMessage` / `ChatInput` with bounded token streams. *(`UI-10-002`)*
-- [x] Media chunk session transport (no capture UI claim). *(`MEDIA-10-001`)*
+- [x] `Dialog` with native `<dialog>` a11y contract and modal boot via `hedron-ui.mjs`.
+  *(`UI-10-001`)*
+- [x] `ChatMessage` / `ChatInput` with a11y smoke (token streams remain helpers). *(`UI-10-002`)*
+- [x] Media chunk session transport with duration/cadence/bandwidth budgets (no capture UI).
+  *(`MEDIA-10-001`)*
 
 ## Navigation and exit
 
-- [x] Opt-in navigation preload with `HX-Preloaded`. *(`PRELOAD-10-001`)*
-- [x] Chromium/Firefox/WebKit live matrix (extension assets + existing HTMX matrix). *(`BROWSER-10-001`)*
-- [x] Load/backpressure budgets for enabled transports. *(`PERF-10-001`)*
+- [x] Opt-in navigation preload with `HX-Preloaded` and private-cache / cancel policy fields.
+  *(`PRELOAD-10-001`)*
+- [ ] Chromium/Firefox/WebKit full live matrix (reconnect/CSP/proxy/offline) — **Deferred**
+  *(`BROWSER-10-001` → 0.10.x)*
+- [ ] Load/proxy backpressure beyond in-memory budgets — **Deferred** *(`PERF-10-001` → 0.10.x)*
+- [ ] Explorer live traces — **Deferred** *(`EXPLORER-10-001` → 0.10.x)*
+- [ ] First-party live example app — **Deferred** *(`EXAMPLES-10-001` → 0.10.x)*
 - [x] Full regression suite. *(`REGRESS-10-001`)*
 - [x] Packaging rehearsal. *(`PKG-10-001`)*
 
@@ -46,4 +55,5 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
 
 The phase can publish only when live/preload behavior never becomes a hidden correctness
 dependency, polling and ordinary navigation remain valid, every release-gate row is `Verified`
-or owned `Deferred`, and three-engine plus load evidence are linked.
+or owned `Deferred`, and remaining Deferred browser/load/Explorer/example rows are explicitly
+owned. Version stays `0.10.0` until tag/publish.

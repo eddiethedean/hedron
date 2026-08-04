@@ -93,5 +93,30 @@ document.addEventListener("keydown", (event) => {
   activateTab(controls[next]);
 });
 
-document.body.addEventListener("htmx:afterSwap", (event) => normalizeTabs(event.target));
+document.body.addEventListener("htmx:afterSwap", (event) => {
+  normalizeTabs(event.target);
+  upgradeOpenModalDialogs(event.target);
+});
 normalizeTabs(document);
+upgradeOpenModalDialogs(document);
+
+function upgradeOpenModalDialogs(root) {
+  const scope = root instanceof Document || root instanceof Element ? root : document;
+  const dialogs = [];
+  if (scope instanceof HTMLDialogElement) dialogs.push(scope);
+  scope.querySelectorAll?.("dialog.hedron-dialog[data-modal='true']").forEach((d) => {
+    dialogs.push(d);
+  });
+  for (const dialog of dialogs) {
+    if (!(dialog instanceof HTMLDialogElement)) continue;
+    // SSR ``open`` is non-modal; close then showModal for focus trap / backdrop.
+    if (!dialog.hasAttribute("open") && !dialog.open) continue;
+    if (typeof dialog.showModal !== "function") continue;
+    try {
+      dialog.close();
+      dialog.showModal();
+    } catch {
+      // Not connected or already modal; ignore.
+    }
+  }
+}

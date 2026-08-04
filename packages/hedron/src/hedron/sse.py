@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from collections.abc import AsyncIterator, Callable, Iterator, Mapping
 from typing import Any
 
@@ -73,8 +74,13 @@ def job_status_sse_response(
     backend: JobBackend | None = None,
     request: Request | None = None,
     html_message: Callable[[Any], str] | None = None,
+    poll_interval_seconds: float | None = None,
 ) -> SseResponse:
-    """Stream job status events until terminal; polling remains a Supported fallback."""
+    """Stream job status events until terminal; polling remains a Supported fallback.
+
+    Honors ``Last-Event-ID`` by skipping already-delivered event ids. Emits only when
+    ``state`` / ``updated_at`` change. Stops when the job is terminal or missing.
+    """
     store = backend or get_job_backend()
 
     def _html(status: Any) -> str:
@@ -89,21 +95,57 @@ def job_status_sse_response(
         last_id: str | None = None
         if request is not None:
             last_id = request.headers.get("last-event-id")
-        status = store.get(job_id)
-        if status is None:
-            yield encode_sse(
-                SseEvent(data="not-found", event="error", id=last_id or job_id)
-            ).encode("utf-8")
-            return
-        terminal = status.state in _TERMINAL
-        for event in job_status_sse_events(
-            job_id=status.job_id,
-            state=status.state.value,
-            message_html=_html(status),
-            event_id=f"{status.job_id}:{status.updated_at}",
-            retry_ms=max(1000, int(status.retry_after) * 1000),
-            terminal=terminal,
-        ):
-            yield encode_sse(event).encode("utf-8")
+        last_emitted_key: tuple[str, float] | None = None
+        while True:
+            status = store.get(job_id)
+            if status is None:
+                yield encode_sse(
+                    SseEvent(data="not-found", event="error", id=last_id or job_id)
+                ).encode("utf-8")
+                return
+            event_id = f"{status.job_id}:{status.updated_at}"
+            # Resume: skip the snapshot already acknowledged by the client.
+            if last_id is not None and event_id == last_id and last_emitted_key is None:
+                if status.state in _TERMINAL:
+                    return
+                interval = (
+                    poll_interval_seconds
+                    if poll_interval_seconds is not None
+                    else max(0.05, float(status.retry_after))
+                )
+                time.sleep(interval)
+                last_id = None  # only skip the first matching snapshot
+                continue
+            key = (status.state.value, status.updated_at)
+            if key == last_emitted_key:
+                if status.state in _TERMINAL:
+                    return
+                interval = (
+                    poll_interval_seconds
+                    if poll_interval_seconds is not None
+                    else max(0.05, float(status.retry_after))
+                )
+                time.sleep(interval)
+                continue
+            terminal = status.state in _TERMINAL
+            for event in job_status_sse_events(
+                job_id=status.job_id,
+                state=status.state.value,
+                message_html=_html(status),
+                event_id=event_id,
+                retry_ms=max(1000, int(status.retry_after) * 1000),
+                terminal=terminal,
+            ):
+                yield encode_sse(event).encode("utf-8")
+            last_emitted_key = key
+            last_id = None
+            if terminal:
+                return
+            interval = (
+                poll_interval_seconds
+                if poll_interval_seconds is not None
+                else max(0.05, float(status.retry_after))
+            )
+            time.sleep(interval)
 
     return SseResponse(_gen())

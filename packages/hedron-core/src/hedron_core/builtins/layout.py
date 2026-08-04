@@ -75,6 +75,7 @@ class Stack(Component[StackProps]):
             *self._children,
             id=self.props.id,
             class_=class_names("hedron-stack", self.props.class_),
+            style=f"--hedron-gap: {self.props.gap}",
             data={"hedron-layout": "stack", "hedron-gap": self.props.gap},
         )
 
@@ -103,6 +104,7 @@ class Inline(Component[InlineProps]):
             *self._children,
             id=self.props.id,
             class_=class_names("hedron-inline", self.props.class_),
+            style=f"--hedron-gap: {self.props.gap}",
             data={"hedron-layout": "inline", "hedron-gap": self.props.gap},
         )
 
@@ -149,6 +151,7 @@ class Grid(Component[GridProps]):
             *self._children,
             id=self.props.id,
             class_=class_names("hedron-grid", self.props.class_),
+            style=f"--hedron-gap: {self.props.gap}",
             data={
                 "hedron-layout": "grid",
                 "hedron-gap": self.props.gap,
