@@ -9,7 +9,7 @@ scripts here when you add them.
 |---|---|
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
-| `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors) |
+| `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
 
 ## Release / gate (maintainers)
 

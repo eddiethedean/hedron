@@ -1,9 +1,54 @@
-# Django — add to an existing project
+# Django — greenfield or existing project
 
-Use `hedron-django` when your app is already Django-native. Requires **Django `>=5.2,<6`**.
-The adapter does not install FastAPI. Hedron does **not** ship `hedron new --django` yet —
-this page assumes an existing project (`django-admin startproject …`) with
-`SessionMiddleware` and `CsrfViewMiddleware`.
+Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
+The adapter does not install FastAPI. Hedron does **not** ship `hedron new --django` yet.
+
+## Greenfield (empty folder → hello)
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+python -m pip install "django>=5.2,<6" "hedron-django>=0.10.1" waitress
+django-admin startproject mysite .
+python manage.py startapp demo
+```
+
+Wire a Hedron view (example `demo/views.py` + `mysite/urls.py`):
+
+```python
+# demo/views.py
+from django.http import HttpRequest
+
+from hedron_core import Heading, Page, Text
+from hedron_django import HedronDjango, hedron_view
+
+hedron = HedronDjango()
+
+
+@hedron_view
+def home(request: HttpRequest):
+    return hedron.respond(
+        Page(Heading("Hello Django", level=1), Text("Typed components on Django."), title="Home"),
+        request,
+    )
+```
+
+```python
+# mysite/urls.py
+from django.urls import path
+
+from demo.views import home
+
+urlpatterns = [path("", home, name="home")]
+```
+
+Ensure `SessionMiddleware` and `CsrfViewMiddleware` remain in `MIDDLEWARE`, then:
+
+```bash
+python manage.py runserver
+# or: waitress-serve --listen=127.0.0.1:8000 mysite.wsgi:application
+```
+
+Open `http://127.0.0.1:8000/`.
 
 ## Fastest path: existing Django project (PyPI)
 

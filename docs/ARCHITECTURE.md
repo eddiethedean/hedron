@@ -71,7 +71,7 @@ Rendering a component never implies a public route — only `@page` / `@componen
 - In-memory session/job state does not span workers — use sticky sessions or an
   external store.
 - SSE/WebSocket: configure reverse-proxy buffering and timeouts. Full load/proxy
-  backpressure evidence is still Deferred in [STATUS](STATUS.md); prefer polling when
+  backpressure evidence is still Deferred in [What's ready](guides/whats-ready.md); prefer polling when
   that proof is required. See [Deployment](guides/deployment.md) and
   [Live interaction](guides/live-interaction.md).
 
@@ -89,7 +89,7 @@ hedron-jinja ──> hedron-core   optional .hdj format
 ```
 
 `hedron-core` does not import application-framework or transport types. Distribution
-rules: [Project layout](PROJECT_LAYOUT.md).
+rules: [Project layout](https://github.com/eddiethedean/hedron/blob/main/docs/PROJECT_LAYOUT.md).
 
 ## Shared registry
 

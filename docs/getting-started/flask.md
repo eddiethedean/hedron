@@ -1,22 +1,19 @@
-# Flask — add to an existing app
+# Flask — greenfield or existing app
 
-Use `hedron-flask` when your app is already Flask-native (or you are creating a Flask
-project yourself). Hedron does **not** ship `hedron new --flask` yet — this page assumes
-you manage the Flask app layout. The adapter renders the same `hedron-core` components and
-`InteractionResult` values as the FastAPI flagship—without installing FastAPI.
+Use `hedron-flask` when your app is Flask-native. Hedron does **not** ship
+`hedron new --flask` yet — create the Flask app yourself (or extend an existing one).
+The adapter renders the same `hedron-core` components and `InteractionResult` values as
+the FastAPI flagship—without installing FastAPI.
 
-## Install
+## Greenfield (empty folder → hello)
 
 ```bash
-uv init my-flask-app && cd my-flask-app
-uv add "hedron-flask>=0.10.1"
+python -m venv .venv && source .venv/bin/activate
+python -m pip install "hedron-flask>=0.10.1"
+# or: uv init my-flask-app && cd my-flask-app && uv add "hedron-flask>=0.10.1"
 ```
 
-Or: `pip install "hedron-flask>=0.10.1"`.
-
-## Minimal app
-
-Save as `app.py` (or wire into your existing Flask module):
+Save as `app.py`:
 
 ```python
 from flask import request

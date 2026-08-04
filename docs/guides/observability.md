@@ -7,8 +7,11 @@ not require a telemetry SDK.
 ## Logging
 
 - Logger names are typically `hedron` and subsystem loggers under packages.
-- Prefer structured messages that include route name, component logical id, and request
-  correlation ids you already use in FastAPI middleware.
+- Prefer structured messages that include route name, component logical id, and a
+  request correlation id you inject in FastAPI middleware (for example
+  `X-Request-ID` → `logging.LoggerAdapter` / contextvars).
+- Suggested fields for app logs: `request_id`, `route`, `logical_id`, `render_mode`
+  (`PAGE`/`FRAGMENT`), `status_code`, `duration_ms`.
 - Never log session secrets, CSRF tokens, or raw credentials. Diagnostics redact secrets
   before formatting.
 
@@ -23,6 +26,17 @@ Expose ordinary FastAPI (or host) health endpoints yourself. Suggested split:
 
 Hedron refuses to start in production without a valid build manifest (`HED-BUILD-0003`).
 That gate is stronger than a custom readiness probe for CSS/asset correctness.
+
+Map `HED-*` failures into alerts by code family (`HED-SEC-*`, `HED-BUILD-*`) rather than
+substring-matching HTML bodies.
+
+## Optional OpenTelemetry
+
+Hedron does not ship an OTel integration. If your platform already instruments FastAPI /
+Starlette, treat Hedron routes like any other HTML endpoint. Propagate the same
+`traceparent` / request id into application logs. Do not expect Hedron-specific metric
+names — define your own (`hedron_fragment_latency_ms`, `hedron_sse_open_connections`) in
+app middleware if needed.
 
 ## Jobs, SSE, and proxies
 

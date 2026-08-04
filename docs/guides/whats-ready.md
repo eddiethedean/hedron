@@ -30,16 +30,15 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics; some live traces Deferred (`EXPLORER-10-001`) |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
-guaranteed multi-worker live-transport proof — see [STATUS](../STATUS.md) Deferred rows.
+guaranteed multi-worker live-transport proof — see [STATUS](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) Deferred rows.
 
 ## Supported examples
 
-- Live interaction sample (**poll + token stream + minimal SSE ping**):
+- Live interaction sample (poll + token stream + SSE + Job SSE + WebSocket accept +
+  preload):
   [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction).
-  Job SSE, WebSocket page/session channels, and navigation preload are **API Supported**
-  on FastAPI and documented in the [live interaction guide](live-interaction.md); they are
-  **not** implemented in that sample yet. Prefer polling when you need a complete
-  learning path without extending the sample.
+  Prefer polling behind load balancers until your own ops evidence covers SSE/WS
+  backpressure ([live interaction guide](live-interaction.md)).
 - FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
 
 ## Treat as Alpha / more volatile

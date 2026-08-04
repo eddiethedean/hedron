@@ -1,0 +1,32 @@
+name: Feature or RFC request
+description: Propose a new capability or public contract change
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Material public-contract changes need an RFC
+        (see `docs/rfcs/TEMPLATE.md` on GitHub). Small ergonomics can stay as issues.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is hard or impossible today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Sketch the API or docs change you want.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This changes a Supported public contract (I will open/update an RFC)
+        - label: Docs / examples only
+        - label: Internal refactor / tests only

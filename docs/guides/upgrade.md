@@ -84,7 +84,7 @@ Supported fallback.
 Phase 0.10 ships SSE, focused streaming, WebSocket channels, Chat/Dialog, and opt-in navigation
 preload (RFC-0032). Native Flask/Django depth remains 0.11. Each phase publishes its own
 upgrade notes and proves clean install, upgrade from supported prior trains, deployment, and
-rollback from built/published artifacts. See [RELEASE.md](../RELEASE.md) and the roadmap.
+rollback from built/published artifacts. See [RELEASE.md](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md) and the roadmap.
 
 ### 0.9 → 0.10
 

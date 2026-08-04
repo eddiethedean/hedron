@@ -74,6 +74,23 @@ exclude_docs: |
   requirements-rtd.txt
   overrides/**
   archive/**
+  rfcs/**
+  acceptance/**
+  foundations/**
+  implementation/**
+  /ROADMAP.md
+  /STATUS.md
+  /RELEASE.md
+  /DECISIONS.md
+  /SPECIFICATION.md
+  /ENGINEERING_BASELINE.md
+  /PROJECT_LAYOUT.md
+  /DIAGNOSTICS.md
+  /IDENTIFIERS.md
+  /PERFORMANCE_BUDGETS.md
+  /REFERENCE_APPLICATION.md
+  /INFERENCE_OVERRIDES.md
+  guides/feature-research.md
   STREAMLIT_FEATURE_CROSSCHECK.md
   STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md
   PLOTLY_DASH_FEATURE_CROSSCHECK.md
@@ -85,7 +102,6 @@ exclude_docs: |
   HTMX_2_EXTENSIONS.md
   READINESS_REPORT.md
   TRACEABILITY.md
-
 
 
 validation:
@@ -154,22 +170,20 @@ nav:
     - Learning path: getting-started/learning-path.md
     - Core concepts: getting-started/core-concepts.md
     - Other hosts:
-      - Add to existing Flask app: getting-started/flask.md
-      - Add to existing Django project: getting-started/django.md
-  - Decide:
-    - What's ready today: guides/whats-ready.md
-    - Evaluate Hedron: guides/evaluate.md
-    - Production readiness: guides/production-readiness.md
-    - Why Hedron: guides/why-hedron.md
-    - Architecture: ARCHITECTURE.md
-    - Evaluate in depth:
+      - Add Flask app: getting-started/flask.md
+      - Add Django project: getting-started/django.md
+    - Evaluate:
+      - What's ready today: guides/whats-ready.md
+      - Why Hedron: guides/why-hedron.md
+      - Evaluate Hedron: guides/evaluate.md
+      - Production readiness: guides/production-readiness.md
+      - Architecture: ARCHITECTURE.md
       - Understanding maturity labels: getting-started/how-to-read.md
       - Support: guides/support.md
       - Enterprise diligence: guides/enterprise-diligence.md
   - Guides:
     - Overview: guides/index.md
     - Interact:
-      - Start here: getting-started/index.md
       - Forms and actions: guides/forms-and-actions.md
       - Mutations (@action vs @component): guides/mutations.md
       - Authentication: guides/authentication.md
@@ -305,45 +319,52 @@ nav:
       - AltairChart: components/altair-chart.md
   - API:
     - Overview: api/README.md
-    - Autodoc (Hedron): api/AUTODOC.md
-    - Public API coverage map: api/COVERAGE.md
-    - Hedron: api/HEDRON.md
-    - Router: api/ROUTER.md
-    - Action: api/ACTION.md
-    - Addressable components: api/ADDRESSABLE.md
-    - Interaction: api/INTERACTION.md
-    - Models and Props: api/MODELS.md
-    - Field: api/FIELD.md
-    - Component: api/COMPONENT.md
-    - Responses: api/RESPONSES.md
-    - Security types: api/SECURITY_TYPES.md
-    - Page: api/PAGE.md
-    - State: api/STATE.md
-    - SSE: api/SSE.md
-    - Streaming: api/STREAMING.md
-    - WebSocket channel: api/WEBSOCKET_CHANNEL.md
-    - Navigation preload: api/PRELOAD.md
-    - Rendering: api/RENDERING.md
-    - Auto: api/AUTO.md
-    - Data: api/DATA.md
-    - Data sources: api/DATA_SOURCE.md
-    - Charts: api/CHART.md
-    - Content: api/CONTENT.md
-    - Built-ins: api/BUILT_INS.md
-    - Utility components: api/UTILITY_COMPONENTS.md
-    - Themes: api/THEME.md
-    - ColorMode: api/COLORMODE.md
-    - Cache: api/CACHE.md
-    - Jobs: api/JOBS.md
-    - Auth: api/AUTH.md
-    - Explorer: api/EXPLORER.md
-    - Plugins: api/PLUGINS.md
-    - Testing: api/TESTING.md
-    - Framework adapters: api/ADAPTERS.md
-    - CLI: api/CLI.md
-    - API diagnostics: api/DIAGNOSTICS.md
-    - HDJ (Jinja): api/JINJA.md
-    - Stability: api/STABILITY.md
+    - Meta:
+      - Autodoc (Hedron): api/AUTODOC.md
+      - Public API coverage map: api/COVERAGE.md
+      - Stability: api/STABILITY.md
+    - Application and routing:
+      - Hedron: api/HEDRON.md
+      - Router: api/ROUTER.md
+      - Page: api/PAGE.md
+      - Action: api/ACTION.md
+      - Addressable components: api/ADDRESSABLE.md
+      - Interaction: api/INTERACTION.md
+      - Responses: api/RESPONSES.md
+    - Models:
+      - Models and Props: api/MODELS.md
+      - Field: api/FIELD.md
+      - Component: api/COMPONENT.md
+      - Security types: api/SECURITY_TYPES.md
+    - Rendering and content:
+      - Rendering: api/RENDERING.md
+      - Auto: api/AUTO.md
+      - Content: api/CONTENT.md
+      - Built-ins: api/BUILT_INS.md
+      - Utility components: api/UTILITY_COMPONENTS.md
+      - Themes: api/THEME.md
+      - ColorMode: api/COLORMODE.md
+    - Data and charts:
+      - Data: api/DATA.md
+      - Data sources: api/DATA_SOURCE.md
+      - Charts: api/CHART.md
+    - Live:
+      - SSE: api/SSE.md
+      - Streaming: api/STREAMING.md
+      - WebSocket channel: api/WEBSOCKET_CHANNEL.md
+      - Navigation preload: api/PRELOAD.md
+      - Jobs: api/JOBS.md
+    - Cross-cutting:
+      - State: api/STATE.md
+      - Cache: api/CACHE.md
+      - Auth: api/AUTH.md
+      - Explorer: api/EXPLORER.md
+      - Plugins: api/PLUGINS.md
+      - Testing: api/TESTING.md
+      - Framework adapters: api/ADAPTERS.md
+      - CLI: api/CLI.md
+      - API diagnostics: api/DIAGNOSTICS.md
+      - HDJ (Jinja): api/JINJA.md
   - Project:
     - Public roadmap: guides/roadmap.md
     - Migrate from Streamlit: guides/streamlit-migration.md
@@ -359,5 +380,3 @@ nav:
     - Code of Conduct: CODE_OF_CONDUCT.md
     - Security disclosure: SECURITY.md
     - For maintainers: guides/maintainers.md
-    - Release runbook: RELEASE.md
-    - Status: STATUS.md

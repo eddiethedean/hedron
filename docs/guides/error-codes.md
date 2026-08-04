@@ -1,7 +1,7 @@
 # Error codes
 
 Stable `HED-*` diagnostics from `hedron_core.codes`. Prefer these codes in CI and
-support reports. Full format: [Diagnostics](../DIAGNOSTICS.md).
+support reports. Full format: [Diagnostics](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md).
 
 ## Config
 

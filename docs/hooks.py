@@ -1,23 +1,13 @@
-"""MkDocs hooks for Read the Docs / local builds."""
+"""MkDocs hooks for Read the Docs / local builds.
+
+STATUS.md and ROADMAP.md are canonical under ``docs/``. Sync them to the repository
+root with ``scripts/sync_status_roadmap.py`` — this hook must not overwrite ``docs/``
+from the root mirrors (that previously clobbered in-progress docs edits).
+"""
 
 from __future__ import annotations
 
-from pathlib import Path
-
 
 def on_config(config):  # noqa: ANN001
-    """Keep docs/ROADMAP.md aligned with the root roadmap (paths rewritten for docs_dir)."""
-    docs_dir = Path(config["docs_dir"])
-    root = docs_dir.parent
-    source = root / "ROADMAP.md"
-    target = docs_dir / "ROADMAP.md"
-    text = source.read_text(encoding="utf-8")
-    # Root ROADMAP links like docs/acceptance/X.md become acceptance/X.md in docs/.
-    text = text.replace("](docs/", "](")
-    # Strip the sync banner so MkDocs serves the roadmap body only.
-    if text.startswith("<!-- Generated from docs/"):
-        text = text.split("\n\n", 1)[-1]
-    # Avoid retriggering MkDocs' file watcher when the committed copy is current.
-    if not target.exists() or target.read_text(encoding="utf-8") != text:
-        target.write_text(text, encoding="utf-8")
+    """No-op config hook kept so ``mkdocs.yml`` can retain an explicit hooks entry."""
     return config

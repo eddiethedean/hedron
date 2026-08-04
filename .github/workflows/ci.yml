@@ -134,6 +134,8 @@ jobs:
           test ! -f package.json
           test ! -d node_modules
           echo "ok: no Node package tooling in repo"
+      - name: Check STATUS/ROADMAP root mirrors
+        run: uv run --python 3.12 python scripts/sync_status_roadmap.py --check
       - name: Check documentation links
         run: |
           uv run --python 3.12 python - <<'PY'

@@ -13,10 +13,8 @@ there until later native depth (0.11).
     Start with the polling clock below (Supported on every host). For a clone-and-run
     FastAPI sample, see
     [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
-    (`EXAMPLES-10-001` Verified for **poll + token stream + minimal SSE**). Job SSE,
-    WebSocket page/session channels, and navigation preload below are **API Supported**
-    on FastAPI and are **not** in that sample yet—extend the sample or follow the API
-    sections after you have a working page.
+    (**poll + token stream + SSE + Job SSE + WebSocket accept + preload**). Follow the
+    sections below after you have a working page; the sample is the paste-and-run proof.
 
 See also: [SSE API](../api/SSE.md) · [Streaming](../api/STREAMING.md) ·
 [WebSocket channel](../api/WEBSOCKET_CHANNEL.md) · [Preload](../api/PRELOAD.md) ·
@@ -139,44 +137,54 @@ def stream_answer():
 `StreamingComponentResponse` sets `X-Hedron-Stream-Region` and may prefix a fallback HTML
 chunk when `fallback_html=` is provided.
 
-## Job status over SSE (FastAPI — API-oriented)
+## Job status over SSE (FastAPI)
 
 Keep a **polling UI for correctness**. The cloneable sample under
 [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
-covers poll + token stream + `/sse/ping`. Job-status SSE below is an API sketch — wire it
-only after you have a real worker; it is not a full paste-and-run app.
+enqueues a demo job, completes it in-process, and streams status via
+`job_status_sse_response`. Minimal pattern:
 
 ```python
+import threading
+import time
+
 from fastapi import Request
 
 from hedron import Hedron, Page, Text, job_status_sse_response
 from hedron.jobs import enqueue_durable
+from hedron_core.jobs import InMemoryJobBackend, JobState, set_job_backend
 
 app = Hedron(title="Jobs", security="standard", session_secret="replace-me")
+backend = InMemoryJobBackend()
+set_job_backend(backend)
+
+
+def _finish(job_id: str) -> None:
+    time.sleep(0.5)
+    backend.mark(job_id, JobState.SUCCEEDED, result={"ok": True})
 
 
 @app.page("/")
 def home() -> Page:
     job_id = enqueue_durable("demo", {"n": 1})
-    return Page(
-        Text(f"Observing job {job_id} — open /jobs/{job_id}/events"),
-        title="Jobs",
-    )
+    threading.Thread(target=_finish, args=(job_id,), daemon=True).start()
+    return Page(Text(f"Open /jobs/{job_id}/events"), title="Jobs")
 
 
 @app.get("/jobs/{job_id}/events")
-def job_events(job_id: str, request: Request):
-    return job_status_sse_response(job_id, request=request, poll_interval_seconds=0.5)
+def events(job_id: str, request: Request):
+    return job_status_sse_response(job_id, backend=backend, request=request)
 ```
 
 Include the pinned extension when using `hx-ext="sse"` (PAGE responses already inject
 known extensions when configured). Honor `Last-Event-ID` for reconnect. Treat the stream
 as observation—polling remains Supported.
 
-## Page/session WebSocket channel (FastAPI — API-oriented)
+## Page/session WebSocket channel (FastAPI)
 
-Server accept-path only — pair with your own page that opens the socket. Not covered
-end-to-end by `examples/live-interaction`.
+Server accept-path — the
+[`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
+sample mounts `/ws/page`. Pair with your own page that opens the socket.
 
 ```python
 from fastapi import WebSocket
@@ -208,10 +216,10 @@ non-browser clients. Push updates with `send_region_update(websocket, update)`.
 and message UIs. They do not require SSE or WebSockets; wire them to HTMX routes or live
 transports only when you need push updates.
 
-## Navigation preload (opt-in, FastAPI — API-oriented)
+## Navigation preload (opt-in, FastAPI)
 
-Preload is off until you enable an explicit policy. Apply headers to a real response
-object. Not part of the first-party live sample app.
+Preload is off until you enable an explicit policy. The live sample applies headers on
+`/next`. Apply headers to a real response object:
 
 ```python
 from fastapi.responses import HTMLResponse

@@ -91,4 +91,4 @@ live-status fallback; they do not ship the FastAPI SSE/WebSocket helpers.
 ## Capability matrix
 
 Machine-readable records: `hedron_core.adapter.capability_matrix()` /
-[COMPATIBILITY](../COMPATIBILITY.md) / [acceptance/ADAPTERS](../acceptance/ADAPTERS.md).
+[COMPATIBILITY](../COMPATIBILITY.md) / [acceptance/ADAPTERS](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/ADAPTERS.md).

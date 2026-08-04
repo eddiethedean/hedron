@@ -11,7 +11,7 @@ and ops.
 <div class="hedron-grid">
   <a class="hedron-card" href="../getting-started/">
     <span class="hedron-card__icon" aria-hidden="true">→</span>
-    <strong>Start here (Get started)</strong>
+    <strong>Golden path (Get started)</strong>
     <p>Install, first app, HTMX region refresh, and minimal form POST.</p>
   </a>
   <a class="hedron-card" href="faq/">
@@ -83,15 +83,5 @@ and ops.
     <span class="hedron-card__icon" aria-hidden="true">◇</span>
     <strong>Security</strong>
     <p>Profiles, CSRF, CSP, redirects, and Explorer modes.</p>
-  </a>
-  <a class="hedron-card" href="faq/">
-    <span class="hedron-card__icon" aria-hidden="true">?</span>
-    <strong>FAQ</strong>
-    <p>Install, maturity, adapters, and common questions.</p>
-  </a>
-  <a class="hedron-card" href="troubleshooting/">
-    <span class="hedron-card__icon" aria-hidden="true">!</span>
-    <strong>Troubleshooting</strong>
-    <p>Symptom → fix for CSRF, builds, and HTMX.</p>
   </a>
 </div>

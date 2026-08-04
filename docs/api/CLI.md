@@ -120,4 +120,4 @@ hedron eject UserCard --out ./ejected --force
 
 - [Project workflow](../guides/project-workflow.md)
 - [Configuration](../CONFIGURATION.md)
-- [Diagnostics](../DIAGNOSTICS.md)
+- [Diagnostics](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md)

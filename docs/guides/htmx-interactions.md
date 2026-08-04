@@ -1,13 +1,25 @@
 # Build an HTMX interaction
 
-Hedron keeps the browser/server boundary explicit: a control makes an ordinary HTTP
-request, the handler returns typed content, and HTMX swaps the resulting HTML into a
-declared region. This guide builds that loop without adding client-side application code.
+HTMX swaps a page region when you click a link or button, without a full reload. Hedron
+keeps that boundary explicit: a control makes an ordinary HTTP request, the handler
+returns typed content, and HTMX swaps the resulting HTML into a declared region—without
+client-side application code.
+
+## 60-second HTMX primer
+
+1. The page includes a button with `hx-get="/status"`, `hx-target="#service-status"`,
+   and `hx-swap="outerHTML"` (Hedron’s `RefreshButton` emits these for you).
+2. The browser requests `/status` with HTMX headers (`HX-Request`, `HX-Target`, …).
+3. The server returns **only the HTML for that region**, not a full document.
+4. HTMX replaces `#service-status` with the response body.
+
+You will build that loop next. Region allowlists and interaction policies come after the
+first click works.
 
 ## What you will build
 
-The page below contains a status panel and a refresh button. Clicking the button requests
-only a replacement panel, while direct navigation still returns a complete document.
+A status panel and a **Refresh status** button. Clicking the button replaces only the
+panel; direct navigation still returns a complete document.
 
 **If you used `hedron new`:** open the scaffold `app.py`. Keep the existing `Hedron(...)`
 app and the scaffold `home` route. Add the imports and `/status` route below, then **edit**
@@ -15,18 +27,16 @@ app and the scaffold `home` route. Add the imports and `/status` route below, th
 Path B (manual `app.py`), create the file as shown in the complete listing at the end of
 this section.
 
-### 1. Add imports and the status region
+### 1. Add imports and a status panel
 
-At the top of `app.py`, extend the imports and add the region helper (keep your existing
-`Hedron` import and `app = Hedron(...)` block):
+At the top of `app.py`, extend the imports (keep your existing `Hedron` import and
+`app = Hedron(...)` block):
 
 ```python
 from datetime import UTC, datetime
 
 from hedron import (
     FragmentRegion,
-    Hedron,
-    InteractionPolicy,
     InteractionResult,
     Page,
     RefreshButton,
@@ -82,12 +92,12 @@ def refresh_status() -> InteractionResult:
     return InteractionResult(
         content=status_panel(),
         region_id=STATUS_REGION.id,
-        trigger={"statusRefreshed": True},
-        cache="vary-htmx",
-        policy=InteractionPolicy(vary_on_target=True),
         explanation="Refresh the declared service status region",
     )
 ```
+
+That is enough for the first click. Cache/vary and triggers are optional polish covered
+below under [Understand the contracts](#understand-the-contracts).
 
 ### Complete file (Path B / reference)
 
@@ -97,7 +107,6 @@ from datetime import UTC, datetime
 from hedron import (
     FragmentRegion,
     Hedron,
-    InteractionPolicy,
     InteractionResult,
     Page,
     RefreshButton,
@@ -150,9 +159,6 @@ def refresh_status() -> InteractionResult:
     return InteractionResult(
         content=status_panel(),
         region_id=STATUS_REGION.id,
-        trigger={"statusRefreshed": True},
-        cache="vary-htmx",
-        policy=InteractionPolicy(vary_on_target=True),
         explanation="Refresh the declared service status region",
     )
 ```
@@ -172,9 +178,12 @@ Run it:
     ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000), then click **Refresh status**.
-`RefreshButton` emits a local `hx-get`, `hx-target`, and `hx-swap`; the component route
-returns a fragment rather than a second document shell. That browser click is the first
-interactive win—prefer it over `curl` when learning.
+The timestamp in the panel should update without a full page reload. That browser click is
+the first interactive win—prefer it over `curl` when learning.
+
+If you get **403**, the `HX-Target` did not match a declared region (often a typo in
+`target=` / `selector=`). See
+[Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request).
 
 ## Understand the contracts
 
@@ -190,6 +199,23 @@ Route-declared regions are authoritative. A request whose `HX-Target` is not in 
 route's `fragment_regions` allowlist receives `403`, even if a handler constructs a
 different policy. This keeps client-provided target selectors from widening the route's
 intended update surface.
+
+Optional polish on the same handler:
+
+```python
+from hedron import InteractionPolicy
+
+@app.component("/status", fragment_regions=(STATUS_REGION,))
+def refresh_status() -> InteractionResult:
+    return InteractionResult(
+        content=status_panel(),
+        region_id=STATUS_REGION.id,
+        trigger={"statusRefreshed": True},
+        cache="vary-htmx",
+        policy=InteractionPolicy(vary_on_target=True),
+        explanation="Refresh the declared service status region",
+    )
+```
 
 !!! tip "Use the typed fields"
 
@@ -209,9 +235,9 @@ curl \
   http://127.0.0.1:8000/status
 ```
 
-The body contains the replacement panel. The response also includes `HX-Trigger` and a
-`Vary` value that separates page, fragment, history-restore, and target-specific cache
-variants.
+The body contains the replacement panel. With the optional polish above, the response also
+includes `HX-Trigger` and a `Vary` value that separates page, fragment, history-restore,
+and target-specific cache variants.
 
 ## Test the boundary
 
@@ -234,7 +260,6 @@ def test_status_fragment() -> None:
     assert response.status_code == 200
     assert "All systems operational" in response.text
     assert "<html" not in response.text
-    assert "HX-Target" in response.headers["Vary"]
 
 
 def test_status_rejects_an_unknown_target() -> None:

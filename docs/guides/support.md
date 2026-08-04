@@ -13,7 +13,7 @@ response time, or paid support contract.
 
 Before filing an issue, check [FAQ](faq.md), [Troubleshooting](troubleshooting.md),
 [Error codes](error-codes.md), and [Production readiness](production-readiness.md).
-Known Deferred rows: [STATUS](../STATUS.md).
+Known Deferred rows: [What's ready](whats-ready.md).
 
 ## Security
 
@@ -31,5 +31,5 @@ treat Alpha packages (`hedron-charts`, `hedron-sample-kit`) as more volatile.
 
 Issues without a minimal reproduction, version string (`hedron.__version__`), and expected
 vs actual behavior may be closed. Feature requests should map to the
-[public roadmap](roadmap.md) / [full roadmap](../ROADMAP.md) or an RFC discussion rather
+[public roadmap](roadmap.md) / [full roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md) or an RFC discussion rather
 than informal “please add X” without context.

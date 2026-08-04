@@ -3,6 +3,26 @@
 **Status:** Accepted for the published **0.10.1** train  
 **Reviewed:** 2026-08-04
 
+## Current train (read this first)
+
+| Dependency | `v0.10.1` baseline | Notes |
+|---|---|---|
+| Python | CPython 3.11–3.14 | `requires-python = ">=3.11,<3.15"` |
+| FastAPI | `>=0.141.1,<0.142` | Required by `hedron` (not `hedron-core`) |
+| Pydantic | `>=2.13.4,<2.14` | Required by `hedron-core` |
+| HTMX | Bundled 2.0.10; contract `>=2.0,<3.0` | Injected on PAGE responses |
+| Flask | `>=3.0,<4` via `hedron-flask` | Waitress `>=3,<4` reference WSGI |
+| Django | `>=5.2,<6` via `hedron-django` | WSGI + ASGI |
+| Jinja (optional HDJ) | `>=3.1,<4` via `hedron[jinja]` | Not a default install |
+
+Live transports (SSE, focused streaming, page/session WebSocket, Chat/Dialog, preload) are
+**API Supported** on the FastAPI flagship in 0.10; polling remains the Supported fallback on
+every host. Full ops/backpressure evidence for live transports is still Deferred — see
+[What's ready](guides/whats-ready.md).
+
+Historical phase baselines (0.7–0.9) and deprecation rules are below. Prefer this section
+when evaluating a new install.
+
 ## Initial runtime ranges
 
 | Dependency | `v0.10.1` compatibility baseline | Policy |
@@ -144,13 +164,16 @@ CPython default builds are normative. Free-threaded CPython and PyPy are informa
 
 ## Release evidence
 
-Compatibility claims for the 0.2.0 train require clean-install, package, FastAPI adapter, OpenAPI, security corpus, and reference-application tests. Browser and compiled-artifact evidence arrive with later phases. The matrix above is the initial tested baseline; changing it requires compatibility evidence and an updated decision or RFC.
+Compatibility claims for the **0.10.1** train require clean-install, package, FastAPI
+adapter, OpenAPI, security corpus, reference-application, and owning-phase live-transport
+suites. Changing a Supported row requires compatibility evidence and an updated decision
+or RFC.
 
-For 0.7 and later, compatibility evidence includes the framework/server capability matrix, native
-adapter slices, offline browser assets, multi-worker deployment, and external cache/job degradation.
-From 0.8 onward, a phase may revise the matrix only through its accepted capability scope, migration
-analysis, and a complete rerun of affected evidence. Dependency metadata alone never creates a
-Supported claim.
+For 0.7 and later, compatibility evidence includes the framework/server capability matrix,
+native adapter slices, offline browser assets, multi-worker deployment, and external
+cache/job degradation. From 0.8 onward, a phase may revise the matrix only through its
+accepted capability scope, migration analysis, and a complete rerun of affected evidence.
+Dependency metadata alone never creates a Supported claim.
 
 ## Primary sources reviewed
 

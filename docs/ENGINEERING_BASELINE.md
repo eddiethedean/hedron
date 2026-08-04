@@ -1,7 +1,8 @@
 # Engineering baseline
 
-**Status:** Living contributor baseline (originated as the phase 0.0 engineering
-acceptance; still the CI/toolchain contract for the published 0.10 train).
+**Status:** Living contributor baseline (CI/toolchain contract for the published 0.10
+train). Detailed acceptance evidence maps live on GitHub under
+[`docs/acceptance/`](https://github.com/eddiethedean/hedron/tree/main/docs/acceptance).
 
 ## Toolchain
 
@@ -9,30 +10,30 @@ acceptance; still the CI/toolchain contract for the published 0.10 train).
 - Hatchling builds wheels and source distributions.
 - Ruff provides formatting and linting.
 - Pyright runs strict type checking on public packages; documented narrow exceptions require justification.
-- pytest, pytest-anyio, httpx, and browser tooling implement the test layers.
-- Markdown links and the specification indexes are checked in CI.
+- pytest, httpx, and optional Playwright browser tooling implement the test layers.
+- Relative documentation links and `mkdocs build --strict` run in CI.
+- Root `STATUS.md` / `ROADMAP.md` mirrors must match `docs/` (`scripts/sync_status_roadmap.py --check`).
 
 These are contributor tools, not runtime dependencies. Application users may install Hedron with any standards-compliant Python package installer.
 
-## CI gates
+## CI gates (actual jobs)
 
-Every change runs:
+Every pull request runs (see `.github/workflows/ci.yml`):
 
-1. formatting, lint, and type checks;
-2. unit, snapshot, conformance, integration, and security tests relevant to the change;
-3. package build and clean-install smoke tests;
-4. documentation link, index, terminology, and RFC-status checks;
-5. compatibility tests for the supported Python and upstream ranges;
-6. browser and accessibility tests when emitted markup or browser assets change;
-7. non-blocking benchmark comparison until a release budget becomes normative.
+| Job | Coverage |
+|---|---|
+| `test` | `pytest` on Ubuntu for Python **3.11, 3.12, 3.13, 3.14** |
+| `quality` | ruff format + check, pyright, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, relative markdown link check, `mkdocs build --strict` |
+| `browser` | Playwright HTMX suite — **Chromium on PRs**; Chromium + Firefox + WebKit on `main` / workflow_dispatch |
+| `evidence` | Supply-chain evidence bundle scripts |
 
-Beginning with the phase 0.6 closure gate, CI status is necessary but not sufficient for a release
-claim. Stable evidence IDs map requirements to exact commands, supported matrix dimensions, retained
-artifacts, and owners under [acceptance/EVIDENCE.md](acceptance/EVIDENCE.md). Before `v0.7.0`, the
-release checker consumes a machine-readable gate manifest and fails closed on missing or unowned
-evidence.
+Beginning with phase 0.6, CI green is necessary but not sufficient for a **release** claim.
+Stable evidence IDs map requirements to commands and owners under
+[acceptance/EVIDENCE.md](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EVIDENCE.md).
+Release cuts also run gate TOML checks via `scripts/check_release_gate.py`.
 
-The default CPython matrix covers 3.11, 3.12, 3.13, and 3.14. Linux runs the full suite; macOS and Windows run package, core, and representative integration tests. Free-threaded CPython and PyPy are informational until separately promoted.
+macOS and Windows are not part of the default GitHub Actions matrix; Linux is normative for
+CI. Free-threaded CPython and PyPy are informational until separately promoted.
 
 ## Quality policy
 

@@ -104,6 +104,16 @@ location / {
 }
 ```
 
+### Kubernetes / Ingress notes
+
+- Use **sticky sessions** (session affinity) when workers hold in-memory session or live
+  channel state.
+- On nginx Ingress, set annotations such as
+  `nginx.ingress.kubernetes.io/proxy-buffering: "off"` and raise
+  `proxy-read-timeout` for SSE routes.
+- Point liveness at `/healthz` and readiness at `/readyz` (see below).
+- Keep `HEDRON_ENV=production` and a built `manifest.json` in the image.
+
 ## Health and readiness
 
 Expose liveness/readiness on the same ASGI app (see [Observability](observability.md)):

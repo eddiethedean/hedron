@@ -52,7 +52,7 @@ def home() -> Page:
 
 Registry identifiers only; redaction; rate limiting and audit hooks in secured mode;
 keyboard-operable shell. Explorer live traces for SSE/WebSocket remain owned Deferred in
-0.10.x — see [STATUS](../STATUS.md).
+0.10.x — see [What's ready](../guides/whats-ready.md).
 
 ## Errors
 

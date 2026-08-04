@@ -325,5 +325,5 @@ HTMX and browser evidence is phase 0.10; broader contextual/provider analysis is
 Capability inspection separately describes the format-v1 facts that an application policy must
 reconcile.
 
-See [RFC-0031](../rfcs/RFC-0031-JINJA-INTEGRATION.md) for the normative feature matrix, trust model,
+See [RFC-0031](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0031-JINJA-INTEGRATION.md) for the normative feature matrix, trust model,
 HTMX contract, lifecycle, inventory, and acceptance requirements.

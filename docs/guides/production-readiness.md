@@ -1,8 +1,8 @@
 # Production readiness
 
-One-page evaluator summary for the published **0.10.1** train. Details:
-[What's ready today](whats-ready.md) · [Compatibility](../COMPATIBILITY.md) ·
-[Support](support.md) · [STATUS](../STATUS.md).
+One-page evaluator summary for the published **0.10.1** train. Authoritative maturity
+snapshot: [What's ready today](whats-ready.md). Also:
+[Compatibility](../COMPATIBILITY.md) · [Support](support.md).
 
 ## What you can ship today (Beta)
 
@@ -16,8 +16,8 @@ SLA**.
 - Flask / Django adapters on the Supported matrix (routing/HTMX; not full Django forms depth)
 - Optional HDJ (`hedron[jinja]`), DataTable/DataEditor (`hedron[data]`), Explorer (`hedron[dev]`) for local diagnostics
 
-**API shipped — ops evidence incomplete (read STATUS Deferred rows before relying on these
-behind load balancers):**
+**API shipped — ops evidence incomplete (read Deferred rows on
+[What's ready](whats-ready.md) before relying on these behind load balancers):**
 
 - Live helpers on FastAPI (SSE, streaming, WebSocket channels, Chat/Dialog, preload)
 - Full multi-engine live browser matrix, load/proxy backpressure proof, and some Explorer

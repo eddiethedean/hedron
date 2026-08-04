@@ -87,7 +87,7 @@ and 0.10 live interaction).
 - [CLI](CLI.md)
 - [Jobs](JOBS.md)
 
-Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTICS.md) ·
+Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md) ·
 [Compatibility](../COMPATIBILITY.md) · [Glossary](../GLOSSARY.md) ·
 [Live interaction guide](../guides/live-interaction.md)
 

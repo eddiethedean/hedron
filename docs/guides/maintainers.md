@@ -4,9 +4,10 @@ Process docs for contributors cutting releases, editing RFCs, and reading accept
 evidence. **Adopters** should stay on [Get started](../getting-started/index.md) and
 [What's ready today](whats-ready.md) — this page is not part of the day-one product path.
 
-Maintainer corpus lives in the repository (and remains linkable from release notes). It
-is intentionally **not** listed in the public documentation tabs so search and navigation
-stay adopter-focused.
+Maintainer corpus (RFCs, acceptance gates, STATUS, RELEASE, ROADMAP, decisions,
+specification, and engineering baselines) lives in the repository on **GitHub only**.
+Those files are excluded from the public MkDocs site so search and navigation stay
+adopter-focused. The adopter maturity snapshot is **What's ready today** only.
 
 | Area | Source in the repo |
 |---|---|
@@ -23,6 +24,13 @@ stay adopter-focused.
 | Acceptance checklists | [`docs/acceptance/`](https://github.com/eddiethedean/hedron/tree/main/docs/acceptance) |
 | Feature research | [`docs/guides/feature-research.md`](https://github.com/eddiethedean/hedron/blob/main/docs/guides/feature-research.md) |
 | Competitive / adapter research notes | Repo `docs/*FEATURE*`, `docs/*ADAPTER_RESEARCH*`, `docs/HTMX_2_*` — **excluded from the public MkDocs site**; browse on GitHub only |
+
+!!! note "STATUS / ROADMAP sync"
+
+    Edit `docs/STATUS.md` and `docs/ROADMAP.md`, then run
+    `uv run python scripts/sync_status_roadmap.py` so root mirrors stay current.
+    MkDocs does **not** copy root → docs (that previously clobbered docs edits).
+    CI runs `scripts/sync_status_roadmap.py --check`.
 
 !!! note "Historical RFC"
 

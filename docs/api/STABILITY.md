@@ -27,7 +27,7 @@ describe **API/artifact** promises.
 | Python public API | `__all__` exports of first-party packages | Import paths and type signatures |
 | CLI | `hedron` subcommands and documented JSON/SARIF shapes | Command set in [CLI.md](CLI.md) |
 | Configuration | `[tool.hedron]` schema | [CONFIGURATION.md](../CONFIGURATION.md) |
-| Diagnostics | `HED-*` codes + SARIF/JSON exporters | [DIAGNOSTICS.md](../DIAGNOSTICS.md) |
+| Diagnostics | `HED-*` codes + SARIF/JSON exporters | [DIAGNOSTICS.md](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md) |
 | Plugin protocol | `PluginMeta`, `PluginCapabilities`, `PluginContext`, entry point `hedron.plugins` | [PLUGINS.md](PLUGINS.md) |
 | Registry metadata | Documented fields of `ComponentMeta`, `AddressableMeta`, `RouteMeta` | Public; private Explorer-only fields are internal |
 | HDJ authoring | `.hdj` format v1, `hedron-jinja`, `TemplateSpec`, `HedronJinja` | Format and profile expansions are versioned; package is `beta`; trusted templates only |

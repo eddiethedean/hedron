@@ -19,8 +19,11 @@ Escaping and CSRF profiles ship as Beta secure defaults — pin versions and rea
 <div class="hedron-actions" markdown>
 [Install Hedron](getting-started/installation.md){ .md-button .md-button--primary }
 [Build your first app](getting-started/quickstart.md){ .md-button }
-[What's ready](guides/whats-ready.md){ .md-button }
+[Is Hedron for me?](guides/why-hedron.md){ .md-button }
 </div>
+
+<p class="hedron-lede" markdown>Evaluating production use? See
+[What’s ready today](guides/whats-ready.md).</p>
 
 <div class="hedron-signal-row">
   <span>Python 3.11–3.14</span>
@@ -56,15 +59,16 @@ Escaping and CSRF profiles ship as Beta secure defaults — pin versions and rea
 **Recommended:** use the CLI scaffold. Do not also hand-write a second `app.py`.
 
 ```bash
-pip install "hedron>=0.10.1" "uvicorn[standard]"
-hedron new my-hedron-app
+python -m venv .venv && source .venv/bin/activate
+python -m pip install "hedron>=0.10.1" "uvicorn[standard]"
+python -m hedron new my-hedron-app
 cd my-hedron-app
-pip install -e .   # or: uv sync
+python -m pip install -e .
 uvicorn app:app --reload
 ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see the scaffold home
-page. Prefer [uv](https://docs.astral.sh/uv/)? Full steps:
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
+Prefer [uv](https://docs.astral.sh/uv/)? Full steps:
 [installation](getting-started/installation.md).
 
 **Manual single-file (not using `hedron new`):** create a project directory, save

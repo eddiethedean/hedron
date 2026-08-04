@@ -76,6 +76,28 @@ the installed sources.
     options:
       heading_level: 3
 
+## Jobs
+
+::: hedron.jobs.enqueue_durable
+    options:
+      heading_level: 3
+
+::: hedron.jobs.job_status_response
+    options:
+      heading_level: 3
+
+::: hedron.jobs.schedule_post_response
+    options:
+      heading_level: 3
+
+::: hedron_core.jobs.InMemoryJobBackend
+    options:
+      heading_level: 3
+
+::: hedron_core.jobs.set_job_backend
+    options:
+      heading_level: 3
+
 ::: hedron.streaming.StreamingComponentResponse
     options:
       heading_level: 3

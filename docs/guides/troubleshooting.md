@@ -5,12 +5,20 @@
 **Cause:** The `hedron` console script is not on your shell PATH, or you installed into a
 different Python than the one your shell uses.
 
-**Fix:**
+**Always-works first:** call the module with the same interpreter you used for `pip`:
+
+```bash
+python -m hedron new my-hedron-app
+python -m hedron check
+```
+
+**Other fixes:**
 
 1. Re-open the terminal after install (PATH updates often need a new shell).
-2. Prefer `uv tool install "hedron>=0.10.1"` so the tool is on PATH, then run `hedron new …`.
+2. Prefer `uv tool install "hedron>=0.10.1"` (or `pipx install "hedron>=0.10.1"`) so the
+   tool is on PATH, then run `hedron new …`.
 3. Inside a scaffolded project, use the project environment: `uv run hedron check` (or
-   activate `.venv` and run `hedron`).
+   activate `.venv` and run `hedron` / `python -m hedron`).
 4. On Windows, add the install’s **Scripts** directory to PATH, or call the full path to
    `hedron.exe`.
 5. Verify the package with the same interpreter as `uvicorn`:
@@ -21,6 +29,17 @@ different Python than the one your shell uses.
 
    If that fails with `ModuleNotFoundError`, activate the correct venv and reinstall
    (`pip install -e .` / `uv sync`). See also [FAQ](faq.md#hedron-command-not-found).
+
+## FastAPI version conflict on install
+
+**Symptom:** `pip` / `uv` reports a resolver error, `ResolutionImpossible`, or refuses to
+install because another package pins FastAPI outside Hedron’s range
+(`>=0.141.1,<0.142`).
+
+**Fix:** Create a **clean virtual environment** for the Hedron app (do not reuse a shared
+env that already pins an older FastAPI). Install only Hedron + uvicorn first, then add
+other dependencies. If you must share an environment, upgrade FastAPI into
+`>=0.141.1,<0.142`. See [Compatibility](../COMPATIBILITY.md).
 
 ## Wrong interpreter or ModuleNotFoundError for hedron
 
@@ -56,7 +75,7 @@ that port in the browser.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
 `pip install -U "hedron>=0.10.1"` (or `uv add "hedron>=0.10.1"`). The published train is
-**0.10.1**—see [STATUS](../STATUS.md). If docs describe a feature from an unreleased next-phase
+**0.10.1**—see [What's ready](whats-ready.md). If docs describe a feature from an unreleased next-phase
 checkout that is missing on your PyPI install, upgrade or use a git checkout of that work.
 
 ## CSRF 403 on POST (FastAPI / Flask)
@@ -66,6 +85,21 @@ checkout that is missing on your PyPI install, upgrade or use a git checkout of 
 **Fix:** Perform a safe GET first to receive `hedron_csrf`, then send `X-CSRF-Token`
 (or form field `csrf_token`) with the same value. On HTTPS, ensure the client stores
 `Secure` cookies. See [Security](security.md).
+
+## HTMX 403 on fragment request
+
+**Cause:** The request’s `HX-Target` is not in the route’s declared `fragment_regions`
+allowlist (typo in `target=` / `selector=`, or wrong component route).
+
+**Fix:** Ensure `RefreshButton(..., target=STATUS_REGION.selector)` matches
+`FragmentRegion(selector=...)`, and that `@app.component(..., fragment_regions=(...))`
+lists that region. Confirm with:
+
+```bash
+curl -H 'HX-Request: true' -H 'HX-Target: #service-status' http://127.0.0.1:8000/status
+```
+
+See [HTMX interactions](htmx-interactions.md).
 
 ## CSRF 403 on Django POST
 

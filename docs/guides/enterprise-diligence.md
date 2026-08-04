@@ -34,7 +34,7 @@ fit: [Evaluate Hedron](evaluate.md) · readiness: [What’s ready](whats-ready.m
 ## Evidence honesty
 
 Live SSE/WebSocket **APIs** ship on FastAPI; full multi-engine live browser matrix and
-load/proxy backpressure rows remain **Deferred** in [STATUS](../STATUS.md). Treat
+load/proxy backpressure rows remain **Deferred** in [What's ready](whats-ready.md). Treat
 “Supported” in adopter docs as capability claims with the Deferred caveats on
 [What’s ready](whats-ready.md) — not as a warranty.
 

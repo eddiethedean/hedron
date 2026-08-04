@@ -178,5 +178,5 @@ FastAPI reference credentials: `admin` / `secret`. That server exercises strict 
 headers, CSRF-protected actions, lazy HTMX resources, typed Python composition, scoped styles, and the
 sealed asset build.
 
-[Read the reference application contract](../REFERENCE_APPLICATION.md){ .md-button }
+[Reference app walkthrough](reference-app.md){ .md-button }
 [Build your first app](../getting-started/quickstart.md){ .md-button .md-button--primary }

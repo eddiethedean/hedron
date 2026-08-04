@@ -46,7 +46,7 @@ plugins, misconfigured deployments, and host-framework CVEs (report those upstre
 Release evidence and dependency inventories are produced by maintainer scripts
 (`scripts/build_evidence_bundle.py`, `scripts/generate_sbom.py`,
 `scripts/license_inventory.py`). Published release notes and GitHub Releases attach or
-link evidence when a train is cut—see [RELEASE](RELEASE.md).
+link evidence when a train is cut—see [RELEASE](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
 
 ## See also
 

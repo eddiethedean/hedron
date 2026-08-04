@@ -4,8 +4,8 @@ Build and run a small Hedron application, then continue through HTMX and forms.
 
 ## Path
 
-1. [Install](installation.md) — `pip install "hedron>=0.10.1"` (and uvicorn)
-2. [Build your first app](quickstart.md) — scaffold or manual page, then run and verify
+1. [Install](installation.md) — clean venv, then `hedron>=0.10.1` (and uvicorn)
+2. [Build your first app](quickstart.md) — verify the scaffold, then run
 3. [HTMX interactions](../guides/htmx-interactions.md) — refresh a declared region in the browser
 4. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
 5. [Learning path](learning-path.md) — continue toward data, auth, and deploy
@@ -16,7 +16,7 @@ Then: [What’s ready](../guides/whats-ready.md) · [Why Hedron](../guides/why-h
 Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
 
 Maturity labels (Beta / Supported / Deferred) are explained under
-[Decide → Understanding maturity labels](how-to-read.md) when you need them — you do not
+[Evaluate → Understanding maturity labels](how-to-read.md) when you need them — you do not
 need that vocabulary to install.
 
 <div class="hedron-grid">

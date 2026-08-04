@@ -21,10 +21,11 @@ Scaffold with `hedron new`, then run. Do not also hand-write a second `app.py` o
 scaffold.
 
 ```bash
-pip install "hedron>=0.10.1" "uvicorn[standard]"
-hedron new my-hedron-app
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
+python -m pip install "hedron>=0.10.1" "uvicorn[standard]"
+python -m hedron new my-hedron-app   # or: hedron new …
 cd my-hedron-app
-pip install -e .
+python -m pip install -e .
 uvicorn app:app --reload
 ```
 
@@ -32,7 +33,7 @@ Prefer [uv](https://docs.astral.sh/uv/)? Use `uv tool install "hedron>=0.10.1"`,
 `hedron new`, `uv sync`, and `uv run uvicorn app:app --reload`. Full steps:
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see the scaffold home page.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 
 **Next:** [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/) →
 [Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →

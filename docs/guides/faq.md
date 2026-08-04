@@ -24,12 +24,14 @@ No. Hedron does not require npm or a JavaScript bundler for development or produ
 ## `hedron: command not found`
 
 The `hedron` CLI is only on your shell PATH when the install environment’s scripts
-directory is active. Common fixes:
+directory is active. **Always-works:** `python -m hedron new …` / `python -m hedron check`
+with the same interpreter you used for `pip`.
 
-1. Prefer **`uv tool install "hedron>=0.10.1"`**, then **re-open the shell** (or run
-   `hash -r` / open a new terminal).
+Other common fixes:
+
+1. Prefer **`uv tool install "hedron>=0.10.1"`** (or `pipx install`), then **re-open the shell**.
 2. After `hedron new` and `pip install -e .` / `uv sync`, run the CLI from the project
-   environment: `uv run hedron …` (or activate the venv and run `hedron` again).
+   environment: `uv run hedron …` (or activate the venv and run `hedron` / `python -m hedron`).
 3. On Windows, ensure the Python **Scripts** folder is on PATH (for example
    `%APPDATA%\Python\Python3x\Scripts` after a user install).
 4. Confirm the library itself installed with the **same** interpreter you use for
@@ -39,8 +41,7 @@ directory is active. Common fixes:
    python -c "import hedron; print(hedron.__version__)"
    ```
 
-There is no `python -m hedron` entry point today—use the `hedron` console script or
-`uv run hedron`. Full steps: [Troubleshooting](troubleshooting.md#hedron-command-not-found).
+Full steps: [Troubleshooting](troubleshooting.md#hedron-command-not-found).
 
 ## Why install Hedron twice (CLI then project)?
 

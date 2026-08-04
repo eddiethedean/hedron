@@ -21,7 +21,7 @@ when evaluating production use.
 ## Phases and versions
 
 Capability phases are numbered `0.N`. The initial release for that phase is **`v0.N.0`**.
-Phase **0.10** therefore maps to package train **`0.10.0`**, not a patch of 0.1.
+Phase **0.10** maps to package train **`0.10.x`** (current **`0.10.1`**), not a patch of 0.1.
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 
@@ -29,8 +29,8 @@ There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 
 | Audience | Where |
 |---|---|
-| Adopters | **Get started**, **Guides**, **Examples**, **Components**, **API**, and the **Project** tab |
-| Maintainers / RFC authors | Repository trees under `docs/rfcs/`, `docs/implementation/`, `docs/acceptance/`, and `docs/foundations/` (often off the public nav; linked from [For maintainers](../guides/maintainers.md)) |
+| Adopters | **Get started** (including Evaluate), **Guides**, **Examples**, **Components**, **API**, and **Project** — maturity snapshot: [What's ready today](../guides/whats-ready.md) |
+| Maintainers / RFC authors | GitHub-only trees (`docs/rfcs/`, `docs/acceptance/`, `docs/STATUS.md`, `docs/RELEASE.md`, …) linked from [For maintainers](../guides/maintainers.md) — excluded from the public MkDocs site |
 
 ## Template history (upgrade only)
 

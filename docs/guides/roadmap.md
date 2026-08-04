@@ -1,7 +1,7 @@
 # Roadmap (public)
 
 Capability phases for adopters. The full phase tables, gates, and RFC ownership live
-in the [maintainer roadmap](../ROADMAP.md).
+in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
 | Phase | Theme | Status |
 |---|---|---|

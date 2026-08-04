@@ -26,7 +26,7 @@ capability as unqualified **Supported** when its owning gate row is **Deferred**
 | `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Beyond asset/HTMX smoke |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | |
-| `EXAMPLES-10-001` | First-party live sample | Verified learning path | [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) (poll + stream) |
+| `EXAMPLES-10-001` | First-party live sample | Verified learning path | [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) (poll + stream + SSE + Job SSE + WS + preload) |
 | — | Flask/Django adapter matrix | Supported routing/HTMX | QuerySet DataSource + Hedron Django forms → **0.11** |
 | — | Official HTMX SSE on Flask/Django | Deferred | Use polling |
 

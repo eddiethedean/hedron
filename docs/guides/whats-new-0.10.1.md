@@ -31,4 +31,4 @@ uv add "hedron>=0.10.1"
 
 - [What’s ready today](whats-ready.md)
 - [Upgrade (0.8 → 0.10)](upgrade.md)
-- [STATUS](../STATUS.md) · [RELEASE runbook](../RELEASE.md)
+- [What's ready](whats-ready.md) · [RELEASE runbook](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md)

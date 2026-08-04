@@ -2,52 +2,61 @@
 
 ## Prerequisites
 
-- CPython **3.11–3.14**
+- CPython **3.11–3.14** (use a **clean virtual environment** for your first try)
 - A package manager (`pip` or [uv](https://docs.astral.sh/uv/))
 - No Node.js required
-- Flagship apps need a compatible **FastAPI** (`>=0.141.1,<0.142`); `pip` / `uv` resolve
-  this when you install `hedron`—upgrade FastAPI if an older pin conflicts
+- Flagship apps need **FastAPI `>=0.141.1,<0.142`** (resolved when you install `hedron`).
+  Shared environments with an older FastAPI pin often fail — see
+  [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install).
 
 ## Recommended: CLI scaffold
 
-This is the path most new users should follow. Pick **pip** or **uv**, then stop—do not
-also hand-write a second `app.py` over the scaffold.
+Pick **pip** or **uv**, then stop—do not also hand-write a second `app.py` over the scaffold.
 
-You install Hedron twice on purpose: once so the **`hedron` CLI** is available, then again
-as the scaffold’s **project dependency** (`pip install -e .` / `uv sync`) so uvicorn uses
-the pinned version. See [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
+You install Hedron twice on purpose: once so the **CLI** is available, then again as the
+scaffold’s **project dependency** so uvicorn uses the pinned version. See
+[FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
 
-=== "pip"
+=== "pip (venv — recommended)"
 
     ```bash
-    pip install "hedron>=0.10.1" "uvicorn[standard]"
+    python -m venv .venv
+    source .venv/bin/activate   # Windows PowerShell: .\.venv\Scripts\Activate.ps1
+    python -m pip install "hedron>=0.10.1" "uvicorn[standard]"
+    # Always-works if `hedron` is not on PATH:
+    #   python -m hedron new my-hedron-app
     hedron new my-hedron-app
     cd my-hedron-app
-    pip install -e .
+    python -m pip install -e .
     uvicorn app:app --reload
     ```
 
-=== "uv"
+=== "uv (recommended CLI)"
 
     ```bash
     uv tool install "hedron>=0.10.1"   # puts `hedron` on your PATH
+    # Always-works alternative: uvx --from "hedron>=0.10.1" hedron new my-hedron-app
     hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
     ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see the scaffold home page.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see the scaffold home page
+with text like **Hello from hedron new**.
 
 `hedron new` scaffolds `app.py` and `pyproject.toml`. It refuses to overwrite a non-empty
 destination unless you pass `--force`. Do **not** also run `uv init` into the same
 directory unless you intend to replace the scaffold.
 
+If `hedron` is not found after install, prefer **`python -m hedron …`** (same interpreter
+as `pip`) or see [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
+
 Then: [Build your first app](quickstart.md) (Path A — after scaffold).
 
 ## Verify
 
-=== "pip"
+=== "pip (activated venv)"
 
     ```bash
     python -c "import hedron; print(hedron.__version__)"
@@ -65,8 +74,9 @@ Expect **`0.10.1`** (or newer patch) from PyPI.
 
 | Symptom | Fix |
 |---|---|
-| `hedron: command not found` | Re-open the shell, use `uv tool install "hedron>=0.10.1"`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
-| `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; run `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
+| `hedron: command not found` | Use `python -m hedron …`, `uv tool install "hedron>=0.10.1"`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
+| `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
+| FastAPI / pip resolver conflict | Empty venv recommended; FastAPI must be `>=0.141.1,<0.142` — [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
 | Wrong / old version | `pip install -U "hedron>=0.10.1"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
@@ -145,8 +155,9 @@ Then create `app.py` from the [quickstart](quickstart.md) (Path B).
 ## Supported environments
 
 The flagship package depends on **FastAPI `>=0.141.1,<0.142`**. Let your package manager
-resolve it; if install fails on an older FastAPI pin in a shared environment, upgrade
-within that range. See the [compatibility policy](../COMPATIBILITY.md).
+resolve it; if install fails on an older FastAPI pin in a shared environment, create a
+**clean virtualenv** and upgrade within that range. See the
+[compatibility policy](../COMPATIBILITY.md).
 
 When evaluating production use, see [What’s ready today](../guides/whats-ready.md) and
 [Evaluate Hedron](../guides/evaluate.md). Maturity vocabulary:
