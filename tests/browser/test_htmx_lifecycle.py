@@ -105,8 +105,13 @@ def browser_app_url() -> Iterator[str]:
         thread.join(timeout=5)
 
 
+def _selected_engine() -> str:
+    return os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium"
+
+
 def _open_ready_page(pw: object, url: str):  # noqa: ANN001
-    browser = pw.chromium.launch(headless=True)  # type: ignore[attr-defined]
+    browser_type = getattr(pw, _selected_engine())
+    browser = browser_type.launch(headless=True)
     page = browser.new_page()
     page.goto(url + "/")
     page.wait_for_selector("#chart-region")

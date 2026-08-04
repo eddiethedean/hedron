@@ -153,9 +153,9 @@ def test_csp_and_reduced_motion_meta(browser_app_url: str, engine: str) -> None:
 
 
 def test_cache_vary_and_forbidden_target(browser_app_url: str, engine: str) -> None:
-    del engine  # API-level assertions; engine matrix still exercises request stack.
+    # API-level assertions via the installed matrix engine (no Chromium hardcode).
     with sync_playwright() as pw:
-        browser = _launch(pw, "chromium")
+        browser = _launch(pw, engine)
         page = browser.new_page()
         try:
             page.goto(browser_app_url + "/")
@@ -175,10 +175,10 @@ def test_cache_vary_and_forbidden_target(browser_app_url: str, engine: str) -> N
             browser.close()
 
 
-def test_history_restore_header_returns_page(browser_app_url: str) -> None:
+def test_history_restore_header_returns_page(browser_app_url: str, engine: str) -> None:
     """History restore must not return a bare fragment shell."""
     with sync_playwright() as pw:
-        browser = _launch(pw, "chromium")
+        browser = _launch(pw, engine)
         page = browser.new_page()
         try:
             restored = page.request.get(
