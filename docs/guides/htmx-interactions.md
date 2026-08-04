@@ -77,13 +77,22 @@ def refresh_status() -> InteractionResult:
 
 Run it:
 
-```bash
-uv run uvicorn app:app --reload
-```
+=== "uv"
+
+    ```bash
+    uv run uvicorn app:app --reload
+    ```
+
+=== "Activated virtualenv (pip)"
+
+    ```bash
+    uvicorn app:app --reload
+    ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000), then click **Refresh status**.
 `RefreshButton` emits a local `hx-get`, `hx-target`, and `hx-swap`; the component route
-returns a fragment rather than a second document shell.
+returns a fragment rather than a second document shell. That browser click is the first
+interactive win—prefer it over `curl` when learning.
 
 ## Understand the contracts
 

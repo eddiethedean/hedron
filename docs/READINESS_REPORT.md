@@ -1,5 +1,12 @@
 # Pre-coding documentation readiness report
 
+!!! warning "Historical archive"
+
+    This report records the **phase 0.0** pre-coding documentation gate (2026-08-02),
+    before packages shipped. It is **not** a current production-readiness statement.
+    For the published **0.10.0** train, use [What’s ready today](guides/whats-ready.md),
+    [Evaluate Hedron](guides/evaluate.md), and [Production readiness](guides/production-readiness.md).
+
 **Date:** 2026-08-02  
 **Outcome:** Ready to begin local phase 0.1 implementation targeting `v0.1.0`  
 **Scope:** 104 canonical specification documents plus this audit record

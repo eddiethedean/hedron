@@ -54,9 +54,15 @@ only when you alter shipped APIs, security behavior, or acceptance evidence.
 | `examples/live-interaction` | Poll + stream + SSE sample |
 | `examples/flask-reference` | Flask slice |
 | `examples/django-reference` | Django slice |
+| `examples/hdj-progressive` | Optional HDJ progressive samples |
 
-Canonical **STATUS** and **ROADMAP** for the published site live under `docs/`. Keep the
-root copies in sync when you edit either (`scripts/sync_status_roadmap.py`).
+Canonical **STATUS** and **ROADMAP** for the published site live under `docs/`
+(`docs/STATUS.md`, `docs/ROADMAP.md`). Edit those files, then run
+`uv run python scripts/sync_status_roadmap.py` so the root `STATUS.md` / `ROADMAP.md`
+mirrors stay aligned. Do **not** hand-edit the root mirrors as the source of truth.
+
+Other dual copies: prefer `docs/CONTRIBUTING.md`, `docs/SECURITY.md`, and
+`docs/CODE_OF_CONDUCT.md` for substantive edits; root stubs point at the docs site.
 
 ---
 

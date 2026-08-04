@@ -40,9 +40,12 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see the scaff
 If `hedron` is not on your PATH after `pip install`, see
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
-**Next:** [Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
+**Next (golden path):** [Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
 [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
-[Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/).
+[Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
+[Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
+
+Install → First app → HTMX interactions → Minimal form → Learning path
 
 Manual `app.py` (only if you are **not** using `hedron new`):
 

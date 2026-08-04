@@ -95,7 +95,7 @@
     UserCard: {
       title: "UserCard",
       stability: "Beta",
-      address: "localhost:8000/hedron-explorer/components/UserCard",
+      address: "docs simulation · UserCard",
       path: "/components/user-card",
       mode: "FRAGMENT",
       nodes: "6",
@@ -113,7 +113,7 @@
     StatusBanner: {
       title: "StatusBanner",
       stability: "Beta",
-      address: "localhost:8000/hedron-explorer/components/StatusBanner",
+      address: "docs simulation · StatusBanner",
       path: "/components/status-banner",
       mode: "FRAGMENT",
       nodes: "4",
@@ -130,7 +130,7 @@
     TeamTable: {
       title: "TeamTable",
       stability: "Beta",
-      address: "localhost:8000/hedron-explorer/components/TeamTable",
+      address: "docs simulation · TeamTable",
       path: "/components/team-table",
       mode: "FRAGMENT",
       nodes: "18",

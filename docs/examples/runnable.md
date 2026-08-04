@@ -1,7 +1,7 @@
 # Runnable examples
 
-Clone the repository to run real Hedron servers. The [component gallery](gallery.md)
-in these docs is a **browser simulation**—not a live Hedron process.
+Clone the repository to run real Hedron servers. The [simulated UI patterns](gallery.md)
+in these docs are a **browser simulation**—not a live Hedron process.
 
 ```bash
 git clone https://github.com/eddiethedean/hedron.git

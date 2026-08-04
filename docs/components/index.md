@@ -5,13 +5,19 @@ hide:
 
 # Component demos
 
-Every public Hedron component has a dedicated, usable example and a detailed operating guide. Static components use real semantic HTML. Features that normally call an HTMX endpoint use a clearly labelled JavaScript simulation so loading, replacement, retry, paging, polling, editing, and validation remain usable on the hosted documentation site.
+Every public Hedron component has a dedicated page with constructor docs and a preview.
+Static previews use semantic HTML. Interactive previews that would need HTMX use a
+**JavaScript simulation** so the hosted docs work without a Python server.
 
-!!! info "What the simulation does"
+!!! warning "Simulated in the docs — not a live Hedron server"
 
-    JavaScript supplies deterministic in-browser responses only inside these docs previews. Production examples keep authentication, authorization, CSRF, validation, persistence, caching, and fragment rendering on the Python server. Each interactive page explains that boundary.
+    JavaScript supplies deterministic in-browser responses only inside these docs
+    previews. Authentication, CSRF, validation, persistence, caching, and real HTMX
+    fragment rendering require a [runnable example](../examples/runnable.md) or your own
+    app. See also [simulated UI patterns](../examples/gallery.md).
 
-Use the pages below to choose a component, inspect its output, understand its constructor, and test its accessibility and backend contract.
+Use the pages below to choose a component, inspect its output, understand its constructor,
+and read its accessibility and backend contract.
 
 ## Document and composition
 

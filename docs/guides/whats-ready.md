@@ -57,6 +57,6 @@ Extras: `"hedron[data]"`, `"hedron[charts]"`, `"hedron[jinja]"`, `"hedron[dev]"`
 
 ## Next reading
 
-- [How to read Hedron docs](../getting-started/how-to-read.md)
+- [Evaluate Hedron](evaluate.md) · [How to read Hedron docs](../getting-started/how-to-read.md)
 - [What’s new in 0.10](whats-new-0.10.md) · [Upgrade](upgrade.md)
 - [Support](support.md) (no commercial SLA)

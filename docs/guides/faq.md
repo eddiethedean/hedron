@@ -67,12 +67,11 @@ fallback on all hosts. See [Compatibility](../COMPATIBILITY.md),
 
 ## What replaced HDN?
 
-Phase 0.9 removes HDN completely. Use typed Python components or install the optional
-`hedron-jinja` package for trusted application templates. There is no `.hdn` discovery,
-compatibility mode, or converter. See the [Jinja API contract](../api/JINJA.md) and
-[0.9 upgrade guide](upgrade.md).
+An experimental template prototype (HDN) was removed in 0.9. New apps use typed Python
+components or optional `hedron[jinja]` (HDJ). Migration details:
+[upgrade guide](upgrade.md).
 
-## Are the docs component gallery demos a running Hedron server?
+## Are the docs simulated UI demos a running Hedron server?
 
 No. They are in-browser simulations. Clone and run a real app from
 [examples/](https://github.com/eddiethedean/hedron/tree/main/examples) (`uv sync` after

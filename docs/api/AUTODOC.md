@@ -8,7 +8,12 @@ the installed sources.
 
 ::: hedron.app.Hedron
     options:
-      members: false
+      members:
+        - page
+        - component
+        - action
+        - include_component
+        - include_router
       show_bases: true
       heading_level: 3
 
@@ -30,6 +35,34 @@ the installed sources.
       heading_level: 3
 
 ::: hedron_core.interaction.FragmentRegion
+    options:
+      heading_level: 3
+
+::: hedron_core.interaction.InteractionPolicy
+    options:
+      heading_level: 3
+
+## Page and rendering
+
+::: hedron_core.builtins.document.Page
+    options:
+      heading_level: 3
+
+::: hedron_core.rendering.RenderMode
+    options:
+      heading_level: 3
+
+## Common built-ins used in guides
+
+::: hedron_core.builtins.content.Text
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.layout.Stack
+    options:
+      heading_level: 3
+
+::: hedron.builtins.RefreshButton
     options:
       heading_level: 3
 
@@ -72,3 +105,4 @@ the installed sources.
 
 - [Hedron contract](HEDRON.md) · [Router](ROUTER.md) · [Interaction](INTERACTION.md)
 - [Component](COMPONENT.md) · [Field](FIELD.md) · [SSE](SSE.md) · [Diagnostics](DIAGNOSTICS.md)
+- [CLI](CLI.md) · [Page](PAGE.md)

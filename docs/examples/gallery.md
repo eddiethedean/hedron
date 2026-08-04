@@ -3,23 +3,21 @@ hide:
   - toc
 ---
 
-# Component gallery
+# Simulated UI patterns (not a Hedron server)
 
-Explore complete interface states directly in the documentation. These demos use the
-same semantic HTML patterns as Hedron's runnable examples; their interactions stay in
-your browser so they work on Read the Docs without an application server.
+These in-docs demos show layout and interaction *patterns*. They are **browser
+simulations**—not a running Hedron process. Authentication, CSRF, persistence, HTMX,
+charts, and Markdown need a real Python server.
 
-!!! info "Simulated in the browser — not a live Hedron server"
+!!! warning "Not a live Hedron app"
 
-    Filtering, tabs, dialogs, and form updates below are real client-side interactions.
-    Authentication, CSRF enforcement, persistence, HTMX requests, charts, and Markdown
-    require a [runnable example](runnable.md) from the repository (clone and `uv sync`;
-    not available from `pip install hedron` alone).
+    Filtering, tabs, dialogs, and form updates below are client-side JavaScript only.
+    For CSRF, HTMX fragments, and persistence, run a [runnable example](runnable.md)
+    (clone and `uv sync`; not available from `pip install hedron` alone).
 
 ## Run a real app first
 
-Prefer the [runnable examples](runnable.md) and
-[reference app walkthrough](reference-app.md) before relying on this gallery.
+Prefer this before scrolling to the simulations:
 
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
@@ -27,6 +25,9 @@ cd hedron
 uv sync
 uv run uvicorn app:app --app-dir examples/reference-app --reload
 ```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Walkthrough:
+[reference app](reference-app.md) · all [runnable examples](runnable.md).
 
 | App | Framework | Notes |
 |---|---|---|
@@ -39,14 +40,14 @@ Quickstarts: [FastAPI](../getting-started/quickstart.md) ·
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) ·
 [HDJ API](../api/JINJA.md) · [Live interaction](../guides/live-interaction.md).
 
-## Simulated gallery
+## Simulated patterns
 
-The sections below are in-docs simulations for layout and interaction patterns.
+Decorative preview chrome below is **not** a real `localhost` server.
 
-<section class="hedron-demo" data-hedron-demo="team-admin" aria-label="Interactive team administration example">
+<section class="hedron-demo" data-hedron-demo="team-admin" aria-label="Simulated team administration pattern">
   <div class="hedron-demo__chrome" aria-hidden="true">
     <span></span><span></span><span></span>
-    <div class="hedron-demo__address">localhost:8000/team</div>
+    <div class="hedron-demo__address">docs simulation · not a server</div>
   </div>
   <div class="hedron-app-shell">
     <aside class="hedron-app-nav">
@@ -111,7 +112,7 @@ response. Switch between the preview, typed props, and request contract below.
 <section class="hedron-demo hedron-explorer-demo" data-hedron-demo="explorer" aria-label="Interactive Component Explorer example">
   <div class="hedron-demo__chrome" aria-hidden="true">
     <span></span><span></span><span></span>
-    <div class="hedron-demo__address" data-demo-address>localhost:8000/hedron-explorer/components/UserCard</div>
+    <div class="hedron-demo__address" data-demo-address>docs simulation · not a server</div>
   </div>
   <div class="hedron-explorer-shell">
     <aside class="hedron-explorer-nav" aria-label="Registered components">

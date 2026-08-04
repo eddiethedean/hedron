@@ -2,6 +2,8 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
+**Golden path:** Install → First app → HTMX interactions → Minimal form → Learning path
+
 Start here after the quickstart: [HTMX interactions](htmx-interactions.md) →
 [Minimal form POST](minimal-form.md) → [Mutations](mutations.md) →
 [Forms and actions](forms-and-actions.md).
@@ -77,16 +79,6 @@ Start here after the quickstart: [HTMX interactions](htmx-interactions.md) →
     <strong>Security</strong>
     <p>Profiles, CSRF, CSP, redirects, and Explorer modes.</p>
   </a>
-  <a class="hedron-card" href="whats-ready/">
-    <span class="hedron-card__icon" aria-hidden="true">✓</span>
-    <strong>What's ready today</strong>
-    <p>Operator snapshot of the 0.10 train, Deferred gaps, and pinning advice.</p>
-  </a>
-  <a class="hedron-card" href="why-hedron/">
-    <span class="hedron-card__icon" aria-hidden="true">◇</span>
-    <strong>Why Hedron</strong>
-    <p>Positioning versus Streamlit, Dash, Gradio, and hand-rolled Jinja+HTMX.</p>
-  </a>
   <a class="hedron-card" href="faq/">
     <span class="hedron-card__icon" aria-hidden="true">?</span>
     <strong>FAQ</strong>
@@ -101,5 +93,5 @@ Start here after the quickstart: [HTMX interactions](htmx-interactions.md) →
 
 Looking for callable APIs? Start with [Shipped through 0.10](../api/README.md).
 Maturity vocabulary: [How to read Hedron docs](../getting-started/how-to-read.md).
-Evaluator snapshot: [What's ready today](whats-ready.md) (Project tab).
-Support: [Support](support.md).
+Evaluator snapshot: [What's ready today](whats-ready.md) · [Evaluate Hedron](evaluate.md)
+(Project tab). Support: [Support](support.md).

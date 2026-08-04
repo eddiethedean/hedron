@@ -135,6 +135,8 @@ nav:
     - Overview: getting-started/index.md
     - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
+    - HTMX interactions: guides/htmx-interactions.md
+    - Minimal form POST: guides/minimal-form.md
     - Learning path: getting-started/learning-path.md
     - Core concepts: getting-started/core-concepts.md
     - Other hosts:
@@ -170,22 +172,16 @@ nav:
       - Plugin authoring: guides/plugin-authoring.md
       - Project workflow: guides/project-workflow.md
       - Plain FastAPI: guides/plain-fastapi.md
-    - Meta:
+    - Help:
       - FAQ: guides/faq.md
       - Troubleshooting: guides/troubleshooting.md
-      - Support: guides/support.md
       - Error codes: guides/error-codes.md
-      - Why Hedron: guides/why-hedron.md
-      - Migrate from Streamlit: guides/streamlit-migration.md
-      - Upgrade (0.8 → 0.10): guides/upgrade.md
-      - What's new in 0.10: guides/whats-new-0.10.md
-      - Release notes: guides/release-notes.md
   - Examples:
     - Overview: examples/index.md
     - Runnable examples: examples/runnable.md
     - Single-file apps: examples/single-file.md
     - Reference app walkthrough: examples/reference-app.md
-    - Component gallery: examples/gallery.md
+    - Simulated UI patterns: examples/gallery.md
     - CRUD tutorial: examples/crud-tutorial.md
     - Try with Codespaces / Dev Container: examples/try-it.md
   - Components:
@@ -327,12 +323,20 @@ nav:
     - HDJ (Jinja): api/JINJA.md
   - Project:
     - What's ready today: guides/whats-ready.md
+    - Evaluate Hedron: guides/evaluate.md
     - Production readiness: guides/production-readiness.md
+    - Why Hedron: guides/why-hedron.md
     - Public roadmap: guides/roadmap.md
+    - Migrate from Streamlit: guides/streamlit-migration.md
+    - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
+    - Upgrade (0.8 → 0.10): guides/upgrade.md
+    - What's new in 0.10: guides/whats-new-0.10.md
+    - Release notes: guides/release-notes.md
     - Compatibility: COMPATIBILITY.md
     - Architecture: ARCHITECTURE.md
     - Configuration: CONFIGURATION.md
     - Glossary: GLOSSARY.md
+    - Support: guides/support.md
     - Contributing: CONTRIBUTING.md
     - Code of Conduct: CODE_OF_CONDUCT.md
     - Security disclosure: SECURITY.md

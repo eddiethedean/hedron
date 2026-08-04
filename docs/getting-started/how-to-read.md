@@ -1,6 +1,10 @@
 # How to read Hedron docs
 
-Hedron uses a few maturity words. For day-to-day reading you only need three:
+You do **not** need maturity vocabulary to install or complete the golden path
+(Install → First app → HTMX → Minimal form → Learning path). Use this page when evaluating
+production use or reading API/stability catalogs.
+
+## Maturity words (when you need them)
 
 | Label | What it means for you |
 |---|---|
@@ -10,7 +14,8 @@ Hedron uses a few maturity words. For day-to-day reading you only need three:
 
 API compatibility levels (`stable` / `beta` / `experimental` / `internal` / `deferred`) live in
 the [STABILITY](../api/STABILITY.md) catalog for callable surfaces. RFC **Accepted** means the
-design is selected—not that every detail is implemented. Prefer [What’s ready today](../guides/whats-ready.md)
+design is selected—not that every detail is implemented. Prefer
+[What’s ready today](../guides/whats-ready.md) and [Evaluate Hedron](../guides/evaluate.md)
 when evaluating production use.
 
 ## Phases and versions
@@ -20,16 +25,23 @@ Phase **0.10** therefore maps to package train **`0.10.0`**, not a patch of 0.1.
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 
-## HDJ vs HDN
+## Public docs vs maintainer corpus
 
-- **HDN** was removed in **0.9**. There is no compatibility mode or converter. Stay on **0.8** if you still need HDN.
-- **HDJ** (Hedron Jinja, `.hdj`) is the optional template format via `hedron[jinja]` / `hedron-jinja`.
+| Audience | Where |
+|---|---|
+| Adopters | **Get started**, **Guides**, **Examples**, **Components**, **API**, and the **Project** tab |
+| Maintainers / RFC authors | Repository trees under `docs/rfcs/`, `docs/implementation/`, `docs/acceptance/`, and `docs/foundations/` (often off the public nav; linked from [For maintainers](../guides/maintainers.md)) |
+
+## Template history (upgrade only)
+
+Optional Jinja/HDJ templates use `hedron[jinja]`. An earlier experimental template prototype
+(**HDN**) was removed in **0.9**—see the [upgrade guide](../guides/upgrade.md) only if you
+are migrating from 0.8.
 
 ## What to read first
 
 1. [Installation](installation.md) → [Quickstart](quickstart.md)
 2. [HTMX interactions](../guides/htmx-interactions.md) → [Minimal form POST](../guides/minimal-form.md)
-3. [What’s ready today](../guides/whats-ready.md) when evaluating production use
-4. Specs, RFCs, and acceptance evidence under the **Maintainers** tab when you need design authority
+3. [What’s ready today](../guides/whats-ready.md) / [Evaluate Hedron](../guides/evaluate.md) when evaluating production use
 
 Stuck on a term? See the [Glossary](../GLOSSARY.md).

@@ -2,20 +2,24 @@
 
 A suggested order from first page to production-minded apps.
 
+**Golden path (start here):** Install → First app → HTMX interactions → Minimal form →
+(then continue below)
+
 ## 1. Ship a page (30 minutes)
 
 1. [Installation](installation.md)
 2. [Build your first app](quickstart.md)
-3. [Core concepts](core-concepts.md)
+3. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region (browser click)
+4. [Minimal form POST](../guides/minimal-form.md) — CSRF-safe classic form (~40 lines)
+
+Then read [Core concepts](core-concepts.md) if you want the page/fragment model explained.
 
 ## 2. Interact without a SPA (next hour)
 
-1. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
-2. [Minimal form POST](../guides/minimal-form.md) — CSRF-safe classic form (~40 lines)
-3. [Mutations](../guides/mutations.md) — `@action` vs `@component` POST
-4. [Forms and actions](../guides/forms-and-actions.md) — validation fragments and HTMX POST
-5. [Security](../guides/security.md) — CSRF profiles and headers
-6. Optional: open `/hedron-explorer/` with `hedron[dev]` and `explorer="development"`
+1. [Mutations](../guides/mutations.md) — `@action` vs `@component` POST
+2. [Forms and actions](../guides/forms-and-actions.md) — validation fragments and HTMX POST
+3. [Security](../guides/security.md) — CSRF profiles and headers
+4. Optional: open `/hedron-explorer/` with `hedron[dev]` and `explorer="development"`
 
 ## 3. Pick your host
 
@@ -41,7 +45,8 @@ A suggested order from first page to production-minded apps.
 
 ## 6. Contribute or evaluate deeply
 
-- [What’s ready today](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md)
+- [What’s ready today](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md) ·
+  [Evaluate Hedron](../guides/evaluate.md)
 - [Production readiness](../guides/production-readiness.md) · [Support](../guides/support.md)
 - [CRUD tutorial](../examples/crud-tutorial.md) · [Try with Codespaces](../examples/try-it.md)
 - [Contributing](../CONTRIBUTING.md) · [Architecture](../ARCHITECTURE.md)

@@ -49,9 +49,17 @@ def save(note: str = Form(...)) -> Page:
 
 Run it:
 
-```bash
-uv run uvicorn app:app --reload
-```
+=== "uv"
+
+    ```bash
+    uv run uvicorn app:app --reload
+    ```
+
+=== "Activated virtualenv (pip)"
+
+    ```bash
+    uvicorn app:app --reload
+    ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000), type a note, and submit.
 Without a matching `csrf_token`, the POST returns `403`.

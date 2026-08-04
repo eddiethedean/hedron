@@ -3,6 +3,17 @@
 Hedron documentation separates **callable APIs that ship in this release** from
 **Accepted design contracts** that are not importable yet.
 
+## Start here (golden path)
+
+After [Install → First app → HTMX → Minimal form](../getting-started/index.md), these five
+contracts match what you just used:
+
+1. [Hedron](HEDRON.md) — FastAPI application facade
+2. [Router](ROUTER.md) — `@page` / `@component` / `@action`
+3. [Page](PAGE.md) — navigable HTML documents
+4. [Interaction](INTERACTION.md) — `FragmentRegion`, `InteractionResult`
+5. [CLI](CLI.md) — `hedron check`, `routes`, `new`, `build`
+
 !!! tip "`hedron` vs `hedron_core`"
 
     Day-to-day apps import from `hedron` (FastAPI facade, router, responses, testing).

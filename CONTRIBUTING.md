@@ -4,8 +4,11 @@ Hedron is a Python monorepo. Full contributor documentation lives in the docs si
 
 - **Setup, checks, PRs:** [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
 - **Code of Conduct:** [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-- **Status / freeze:** [docs/STATUS.md](docs/STATUS.md)
+- **Status / freeze:** [docs/STATUS.md](docs/STATUS.md) (canonical; root `STATUS.md` is a mirror)
+- **Roadmap:** [docs/ROADMAP.md](docs/ROADMAP.md) (canonical; root `ROADMAP.md` is a mirror)
 - **Cutting a release:** [docs/RELEASE.md](docs/RELEASE.md)
+
+Edit STATUS/ROADMAP under `docs/`, then run `uv run python scripts/sync_status_roadmap.py`.
 
 ## Quick setup
 

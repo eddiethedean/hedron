@@ -4,7 +4,7 @@ Short positioning for evaluators.
 
 ## What Hedron optimizes for
 
-- **Python-owned UI** for FastAPI (and Supported Flask/Django adapters)
+- **Python-owned UI** for FastAPI (and Flask/Django adapters)
 - **Typed components** with ordinary HTML/HTMX—no Node.js, no SPA runtime
 - **Secure defaults**: contextual escaping, CSRF, SafeUrl, conservative caches
 - **Inspectability**: automatic choices are visible in Explorer, CLI, and diagnostics
@@ -18,40 +18,27 @@ Streamlit re-runs the script; Hedron returns typed components from FastAPI route
     ```python
     import streamlit as st
 
-    name = st.text_input("Name")
-    if st.button("Save"):
-        st.write(f"Saved {name}")
+    st.write("Hello")
     ```
 
 === "Hedron"
 
     ```python
-    from fastapi import Form, Request
-    from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, html
-    from hedron.security import csrf_token_for_request
+    from hedron import Hedron, Page, Text
 
     app = Hedron(title="Demo", security="standard", session_secret="replace-in-production")
 
 
     @app.page("/")
-    def home(request: Request) -> Page:
-        token = csrf_token_for_request(request, request.app.state.hedron_security)
-        return Page(
-            Stack(
-                html.form(
-                    html.input(type="hidden", name="csrf_token", value=token),
-                    TextInput("name", value=""),
-                    SubmitButton("Save"),
-                    action="/save",
-                    method="post",
-                )
-            ),
-            title="Demo",
-        )
+    def home() -> Page:
+        return Page(Text("Hello"), title="Demo")
     ```
 
-Hedron keeps FastAPI routing, dependency injection, CSRF, and HTMX fragments. Streamlit
-optimizes for the fastest notebook-style dashboard loop.
+Hedron keeps FastAPI routing, dependency injection, OpenAPI, and HTMX fragments.
+Streamlit optimizes for the fastest notebook-style dashboard loop.
+
+Forms and CSRF are a short next step—see [Minimal form POST](minimal-form.md)—not the
+hello-world comparison.
 
 ## Compared to nearby tools
 
@@ -78,5 +65,5 @@ not every Streamlit widget.
 
 ## Next
 
-[What’s ready today](whats-ready.md) · [Quickstart](../getting-started/quickstart.md) ·
-[Architecture](../ARCHITECTURE.md)
+[Evaluate Hedron](evaluate.md) · [What’s ready today](whats-ready.md) ·
+[Quickstart](../getting-started/quickstart.md) · [Architecture](../ARCHITECTURE.md)
