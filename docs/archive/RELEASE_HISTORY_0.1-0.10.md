@@ -13,16 +13,16 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 2. Package version, `__version__`, and changelog entry agree
    (`uv run python scripts/check_release_gate.py 0.4.0`).
 3. Phase acceptance subsets for the release are checked (or explicitly Deferred):
-   - [SECURITY.md](acceptance/SECURITY.md) phase 0.2 + 0.3 asset URL policy + 0.4 SARIF
-   - [FASTAPI_INTEGRATION.md](acceptance/FASTAPI_INTEGRATION.md) MVP exit
-   - [HTMX.md](acceptance/HTMX.md) phase 0.2
-   - [EXPLORER.md](acceptance/EXPLORER.md) phase 0.4
-   - [CLI.md](acceptance/CLI.md) phase 0.4
-   - [PLUGINS.md](acceptance/PLUGINS.md) phase 0.4
-   - [TESTING.md](acceptance/TESTING.md) phase 0.4
-   - [COMPONENT_MODEL.md](acceptance/COMPONENT_MODEL.md) FastAPI component-model evidence
-   - [JINJA.md](acceptance/JINJA.md) phase 0.9 replacement and removal gate
-   - [SCOPED_STYLES.md](acceptance/SCOPED_STYLES.md) phase 0.3 compilation/delivery exit
+   - [SECURITY.md](../acceptance/SECURITY.md) phase 0.2 + 0.3 asset URL policy + 0.4 SARIF
+   - [FASTAPI_INTEGRATION.md](../acceptance/FASTAPI_INTEGRATION.md) MVP exit
+   - [HTMX.md](../acceptance/HTMX.md) phase 0.2
+   - [EXPLORER.md](../acceptance/EXPLORER.md) phase 0.4
+   - [CLI.md](../acceptance/CLI.md) phase 0.4
+   - [PLUGINS.md](../acceptance/PLUGINS.md) phase 0.4
+   - [TESTING.md](../acceptance/TESTING.md) phase 0.4
+   - [COMPONENT_MODEL.md](../acceptance/COMPONENT_MODEL.md) FastAPI component-model evidence
+   - [JINJA.md](../acceptance/JINJA.md) phase 0.9 replacement and removal gate
+   - [SCOPED_STYLES.md](../acceptance/SCOPED_STYLES.md) phase 0.3 compilation/delivery exit
    - Phase 0.6 and later: every completed item in the owning acceptance ledgers has a stable ID,
      named command, and retained evidence artifact; prose checkbox state alone is insufficient.
 4. **License (D-033):** a root `LICENSE` file exists and every publishable
@@ -97,8 +97,8 @@ Before any 0.7 adapter contract is implemented:
 
 1. Confirm phase 0.8 scope: hardening/classification only; no net-new subsystem, adapter, or transport.
 2. Confirm `uv run python scripts/check_release_gate.py 0.8.0` and
-   [release-gate-0.8.toml](acceptance/release-gate-0.8.toml) (`Verified` or owned `Deferred`).
-3. Confirm stability catalog ([api/STABILITY.md](api/STABILITY.md)), compatibility/deprecation
+   [release-gate-0.8.toml](../acceptance/release-gate-0.8.toml) (`Verified` or owned `Deferred`).
+3. Confirm stability catalog ([api/STABILITY.md](../api/STABILITY.md)), compatibility/deprecation
    policy, upgrade guide, SBOM/license/asset audits, three-engine browser matrix, and performance
    budget enforcement are green.
 4. Confirm CI green on Python 3.11–3.14 including adapter, ops, and browser (Chromium/Firefox/WebKit)
@@ -123,12 +123,12 @@ git push origin v0.8.0
 2. During development, validate the planned evidence shape with
    `uv run python scripts/check_release_gate.py 0.9.0 --allow-planned` after synchronizing package
    versions and changelogs on the release branch.
-3. Close [RELEASE_0_9.md](acceptance/RELEASE_0_9.md): complete HDN removal, `.hdj` format/profile
+3. Close [RELEASE_0_9.md](../acceptance/RELEASE_0_9.md): complete HDN removal, `.hdj` format/profile
    conformance, HDJ's standards-first HTML/CSS/JS/Jinja/HTMX surface, Hedron feature parity,
    dynamic trust and CSP capability
    boundaries, metadata preservation, manual upgrade, package isolation, and artifact evidence.
 4. Replace every Planned row in
-   [release-gate-0.9.toml](acceptance/release-gate-0.9.toml) with `Verified` evidence or an explicitly
+   [release-gate-0.9.toml](../acceptance/release-gate-0.9.toml) with `Verified` evidence or an explicitly
    owned `Deferred` disposition. The strict gate must pass before publication:
    `uv run python scripts/check_release_gate.py 0.9.0`.
 5. Build the coordinated artifacts once through the trusted workflow. From those artifacts, run
@@ -149,11 +149,11 @@ git push origin v0.8.0
 2. During development, validate the planned evidence shape with
    `uv run python scripts/check_release_gate.py 0.10.0 --allow-planned` after synchronizing package
    versions and changelogs on the release branch.
-3. Close [RELEASE_0_10.md](acceptance/RELEASE_0_10.md): SSE, focused streaming, WebSocket channels,
+3. Close [RELEASE_0_10.md](../acceptance/RELEASE_0_10.md): SSE, focused streaming, WebSocket channels,
    Chat/Dialog, media chunk transport, HDJ head/streaming, navigation preload, and three-engine
    evidence.
 4. Replace every Planned row in
-   [release-gate-0.10.toml](acceptance/release-gate-0.10.toml) with `Verified` evidence or an
+   [release-gate-0.10.toml](../acceptance/release-gate-0.10.toml) with `Verified` evidence or an
    explicitly owned `Deferred` disposition. The strict gate must pass before publication:
    `uv run python scripts/check_release_gate.py 0.10.0`.
 5. Build the coordinated artifacts once through the trusted workflow. From those artifacts, run
@@ -169,7 +169,7 @@ git push origin v0.8.0
 
 > **Status:** Published as `v0.6.0`. Do not retag.
 
-1. Confirm `check_release_gate.py 0.6.0`, [release-gate-0.6.toml](acceptance/release-gate-0.6.toml),
+1. Confirm `check_release_gate.py 0.6.0`, [release-gate-0.6.toml](../acceptance/release-gate-0.6.toml),
    and acceptance suites for VISUALIZATION / HTMX / SECURITY (closure IDs Verified or Deferred).
 2. Confirm latest `main` CI is green on 3.11–3.14 (including browser job when present).
 3. Tag and push:
