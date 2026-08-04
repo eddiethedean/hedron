@@ -7,6 +7,7 @@ from collections.abc import Mapping
 from starlette.requests import Request
 from starlette.responses import Response
 
+from hedron_core.origin import is_same_origin
 from hedron_core.preload import (
     HX_PRELOADED,
     NavigationPreloadPolicy,
@@ -30,12 +31,16 @@ def evaluate_preload_request(
     concurrent: int = 0,
     navigation_cancelled: bool = False,
 ) -> PreloadDecision:
-    same_origin = True
     origin = request.headers.get("origin")
-    if origin and request.url.hostname:
-        from urllib.parse import urlparse
-
-        same_origin = urlparse(origin).hostname == request.url.hostname
+    if origin is None:
+        same_origin = False
+    else:
+        same_origin = is_same_origin(
+            origin,
+            request_scheme=request.url.scheme or "http",
+            request_hostname=request.url.hostname,
+            request_port=request.url.port,
+        )
     return decide_preload(
         policy,
         method=request.method,

@@ -72,10 +72,15 @@ def test_evaluate_preload_request() -> None:
         "path": "/",
         "raw_path": b"/",
         "query_string": b"",
-        "headers": [],
+        "headers": [(b"origin", b"http://test")],
         "client": ("127.0.0.1", 1),
         "server": ("test", 80),
     }
     request = Request(scope)
     decision = evaluate_preload_request(request, NavigationPreloadPolicy(enabled=True))
     assert decision.allowed is True
+
+    missing_origin = Request({**scope, "headers": []})
+    denied = evaluate_preload_request(missing_origin, NavigationPreloadPolicy(enabled=True))
+    assert denied.allowed is False
+    assert denied.reason == "cross_origin"

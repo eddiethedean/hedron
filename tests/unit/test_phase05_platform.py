@@ -364,8 +364,8 @@ def test_safe_download_requires_auth(tmp_path: Path) -> None:
     path = tmp_path / "roster.csv"
     path.write_text("id,name\n1,Ada\n", encoding="utf-8")
     with pytest.raises(PermissionError):
-        safe_download_response(path, filename="roster.csv", authorized=False)
-    response = safe_download_response(path, filename="roster.csv", authorized=True)
+        safe_download_response(path, root=tmp_path, filename="roster.csv", authorized=False)
+    response = safe_download_response(path, root=tmp_path, filename="roster.csv", authorized=True)
     assert response.media_type == "text/csv" or "octet-stream" in (response.media_type or "")
 
 

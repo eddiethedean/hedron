@@ -10,23 +10,41 @@
 Typed, server-rendered Python UI for FastAPI + HTMX — without a Node.js frontend stack.
 Build dashboards, admin tools, forms, and CRUD apps from typed components.
 
-**Current release:** [`v0.10.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
-(Beta). [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
-[Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.10/) ·
-[Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
-
 ## Five-minute start
 
+Prefer **one** path: scaffold with `hedron new`, then run. Do not also hand-write a second
+`app.py` over the scaffold.
+
+**pip:**
+
 ```bash
-pip install "hedron>=0.10.0"
+pip install "hedron>=0.10.0" "uvicorn[standard]"
 hedron new my-hedron-app
 cd my-hedron-app
-pip install -e .          # or: uv sync
-uvicorn app:app --reload  # or: uv run uvicorn app:app --reload
+pip install -e .
+uvicorn app:app --reload
 ```
 
-Or hand-write a page (only if you are not using `hedron new`):
+**uv:**
+
+```bash
+uv tool install "hedron>=0.10.0"   # puts `hedron` on your PATH
+hedron new my-hedron-app
+cd my-hedron-app
+uv sync
+uv run uvicorn app:app --reload
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see the scaffold home page.
+
+If `hedron` is not on your PATH after `pip install`, see
+[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
+
+**Next:** [Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
+[HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
+[Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/).
+
+Manual `app.py` (only if you are **not** using `hedron new`):
 
 ```python
 from hedron import Hedron, Page, Text
@@ -38,10 +56,6 @@ app = Hedron(title="Demo", security="standard", session_secret="replace-in-produ
 def home() -> Page:
     return Page(Text("Hello, Hedron"), title="Demo")
 ```
-
-Docs: [quickstart](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) ·
-[HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) ·
-[minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/).
 
 ## Packages
 
@@ -58,6 +72,13 @@ Full matrix and install extras: [installation](https://hedron.readthedocs.io/en/
 FastAPI-native typed components, HTMX fragments, and secure HTML defaults. Audience:
 CRUD, internal tools, dashboards, forms, admin, and data apps. Next release focus:
 Flask/Django depth (**0.11**).
+
+Current train: [`v0.10.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
+[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
+[Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
+[Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
+[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.10/) ·
+[Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 
 [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/) ·
 [Public roadmap](https://hedron.readthedocs.io/en/latest/guides/roadmap/).

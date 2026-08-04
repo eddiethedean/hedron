@@ -354,9 +354,10 @@ class HedronJinja:
         environment.loader = HdjLoader(environment.loader)
         environment.template_class = _hdj_template_class(environment.template_class)
         environment.add_extension(HedronJinjaExtension)
+        # Always force autoescape; HDJ never renders with autoescape=False.
+        environment.autoescape = True
         if strict:
             environment.undefined = StrictUndefined
-            environment.autoescape = True
         previous_finalize = environment.finalize
 
         def finalize(value: Any) -> Any:

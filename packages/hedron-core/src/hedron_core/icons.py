@@ -5,8 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from threading import RLock
 
+from hedron_core.active_markup import active_markup_reason
 from hedron_core.diagnostics import error
-from hedron_core.security import TrustedHtml, contains_dangerous_scheme
+from hedron_core.security import TrustedHtml
 
 __all__ = [
     "IconEntry",
@@ -52,27 +53,12 @@ def register_icon(
             remediation="Pass title= with a human-readable label.",
         )
     trusted = svg if isinstance(svg, TrustedHtml) else TrustedHtml.reviewed(svg, source=source)
-    lowered = trusted.value.lower()
-    if "<script" in lowered or contains_dangerous_scheme(trusted.value):
+    reason = active_markup_reason(trusted.value)
+    if reason is not None:
         raise error(
             "HED-ICON-0003",
             title="Active script content rejected",
-            explanation="Icon SVG must not contain script or javascript: URLs.",
-            remediation="Sanitize SVG before registration or use TrustedHtml.nh3(...).",
-        )
-    banned = (
-        "onload=",
-        "onerror=",
-        "onclick=",
-        "onmouseover=",
-        "onfocus=",
-        "<foreignobject",
-    )
-    if any(token in lowered for token in banned):
-        raise error(
-            "HED-ICON-0003",
-            title="Active script content rejected",
-            explanation="Icon SVG must not contain event handlers or foreignObject.",
+            explanation=f"Icon SVG rejected ({reason}).",
             remediation="Sanitize SVG before registration or use TrustedHtml.nh3(...).",
         )
     entry = IconEntry(name=name, svg=trusted, title=title, source=source)

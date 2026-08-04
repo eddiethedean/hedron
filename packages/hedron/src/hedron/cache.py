@@ -35,8 +35,22 @@ def _identity_for(fn: Callable[..., Any]) -> str:
     return f"{fn.__module__}.{fn.__qualname__}"
 
 
+def _bound_arguments(
+    fn: Callable[..., Any], args: tuple[Any, ...], kwargs: Mapping[str, Any]
+) -> dict[str, Any]:
+    try:
+        bound = inspect.signature(fn).bind_partial(*args, **dict(kwargs))
+        bound.apply_defaults()
+        return dict(bound.arguments)
+    except TypeError:
+        return dict(kwargs)
+
+
 def _vary_from_kwargs(kwargs: Mapping[str, Any], vary_on: tuple[str, ...]) -> dict[str, Any]:
-    return {k: kwargs[k] for k in vary_on if k in kwargs}
+    missing = [k for k in vary_on if k not in kwargs]
+    if missing:
+        raise KeyError(f"missing vary_on keys: {', '.join(missing)}")
+    return {k: kwargs[k] for k in vary_on}
 
 
 _SENSITIVE_SCOPES = frozenset(
@@ -57,9 +71,15 @@ def _should_reject_cache(
     args: tuple[Any, ...],
     kwargs: Mapping[str, Any],
     vary_on: tuple[str, ...],
+    bound: Mapping[str, Any] | None = None,
 ) -> str | None:
     if scope in _SENSITIVE_SCOPES and not vary_on:
         return f"scope {scope!r} requires vary_on dimensions"
+    if scope in _SENSITIVE_SCOPES and vary_on:
+        source = bound if bound is not None else kwargs
+        missing = [k for k in vary_on if k not in source or source[k] is None]
+        if missing:
+            return f"scope {scope!r} missing vary_on values: {', '.join(missing)}"
     if scope == CacheScope.PUBLIC.value:
         if any(k in _PUBLIC_SENSITIVE_NAMES for k in kwargs):
             return "user-specific kwargs under public scope"
@@ -89,7 +109,10 @@ def _decorate(
 
         @functools.wraps(fn)
         async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-            reject = _should_reject_cache(scope=scope, args=args, kwargs=kwargs, vary_on=vary_on)
+            bound = _bound_arguments(fn, args, kwargs)
+            reject = _should_reject_cache(
+                scope=scope, args=args, kwargs=kwargs, vary_on=vary_on, bound=bound
+            )
             if reject:
                 record_cache_trace(
                     CacheEvent(
@@ -106,7 +129,7 @@ def _decorate(
                 kwargs=kwargs,
                 version=version,
                 scope=scope,
-                vary=_vary_from_kwargs(kwargs, vary_on),
+                vary=_vary_from_kwargs(bound, vary_on) if vary_on else {},
             )
             backend = get_cache_backend()
             cached = backend.get(key)
@@ -148,7 +171,10 @@ def _decorate(
 
     @functools.wraps(fn)
     def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-        reject = _should_reject_cache(scope=scope, args=args, kwargs=kwargs, vary_on=vary_on)
+        bound = _bound_arguments(fn, args, kwargs)
+        reject = _should_reject_cache(
+            scope=scope, args=args, kwargs=kwargs, vary_on=vary_on, bound=bound
+        )
         if reject:
             record_cache_trace(
                 CacheEvent(
@@ -165,7 +191,7 @@ def _decorate(
             kwargs=kwargs,
             version=version,
             scope=scope,
-            vary=_vary_from_kwargs(kwargs, vary_on),
+            vary=_vary_from_kwargs(bound, vary_on) if vary_on else {},
         )
         backend = get_cache_backend()
         cached = backend.get(key)

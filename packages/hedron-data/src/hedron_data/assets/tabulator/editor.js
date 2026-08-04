@@ -265,7 +265,13 @@
         this._inserts = this._inserts.filter(
           (r) => String(r[this._payload.keyField || "id"]) !== key
         );
-        this._history.push({ kind: "delete", rowKey: key, html: tr.outerHTML });
+        const rowSnapshot = { ...(this._rows.find(
+          (r) => String(r[this._payload.keyField || "id"]) === key
+        ) || {}) };
+        this._rows = this._rows.filter(
+          (r) => String(r[this._payload.keyField || "id"]) !== key
+        );
+        this._history.push({ kind: "delete", rowKey: key, row: rowSnapshot });
         tr.remove();
       });
       this._announce("Deleted selected rows");
@@ -296,13 +302,17 @@
         this._inserts = this._inserts.filter(
           (r) => String(r[this._payload.keyField || "id"]) !== last.rowKey
         );
+        this._rows = this._rows.filter(
+          (r) => String(r[this._payload.keyField || "id"]) !== last.rowKey
+        );
         const tr = this.querySelector('tr[data-row-key="' + cssEscape(last.rowKey) + '"]');
         if (tr) tr.remove();
       } else if (last.kind === "delete") {
         this._deletes = this._deletes.filter((k) => k !== last.rowKey);
         const body = this.querySelector("[data-editor-body]");
-        if (body && last.html) {
-          body.insertAdjacentHTML("beforeend", last.html);
+        if (body && last.row) {
+          this._rows.push({ ...last.row });
+          body.appendChild(this._rowElement(last.row, this._payload));
         }
       }
       this._announce("Undid last edit");

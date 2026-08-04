@@ -17,6 +17,11 @@ __all__ = [
 ]
 
 
+def _reject_header_controls(name: str, value: str) -> None:
+    if any(ord(ch) < 32 for ch in value):
+        raise ValueError(f"{name} must not contain control characters")
+
+
 def _prefix_fallback(
     content: Iterator[bytes] | AsyncIterator[bytes],
     fallback_html: str,
@@ -53,11 +58,14 @@ class StreamingComponentResponse(StreamingResponse):
         background: Any = None,
         fallback_html: str | None = None,
     ) -> None:
+        _reject_header_controls("region_id", region_id)
         hdrs = {
             "Cache-Control": "no-store",
             "X-Hedron-Stream-Region": region_id,
             **dict(headers or {}),
         }
+        for key, value in hdrs.items():
+            _reject_header_controls(key, value)
         if fallback_html is not None:
             hdrs["X-Hedron-Stream-Fallback"] = "1"
             content = _prefix_fallback(content, fallback_html)

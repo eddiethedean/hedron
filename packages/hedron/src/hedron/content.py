@@ -69,11 +69,15 @@ def highlight_code(code: str, *, lexer: str = "python") -> TrustedHtml:
         lex = guess_lexer(code)
     formatter = HtmlFormatter(nowrap=False)
     html_out = highlight(code, lex, formatter)
-    return (
-        TrustedHtml.nh3(html_out)
-        if _nh3_available()
-        else TrustedHtml.reviewed(html_out, source="pygments")
-    )
+    if not _nh3_available():
+        import html as html_stdlib
+
+        escaped = html_stdlib.escape(code)
+        return TrustedHtml.reviewed(
+            f'<pre class="hedron-code"><code>{escaped}</code></pre>',
+            source="pygments-fallback",
+        )
+    return TrustedHtml.nh3(html_out)
 
 
 def _nh3_available() -> bool:

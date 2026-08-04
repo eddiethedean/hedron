@@ -64,9 +64,9 @@ Pick **one** path — scaffold (recommended) or a hand-written `app.py`. Do not 
     uvicorn app:app --reload
     ```
 
-    Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The scaffold already
-    includes `app.py` — do not recreate it. Prefer [uv](https://docs.astral.sh/uv/)?
-    See [installation](getting-started/installation.md).
+    Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see the scaffold home
+    page. The scaffold already includes `app.py` — do not recreate it. Prefer
+    [uv](https://docs.astral.sh/uv/)? See [installation](getting-started/installation.md).
 
 === "Manual `app.py`"
 
@@ -102,15 +102,18 @@ Pick **one** path — scaffold (recommended) or a hand-written `app.py`. Do not 
 
 ## Golden path (next)
 
-After the hello page, follow this order only:
+Use this order only:
+
+**Install → First app → HTMX interactions → Minimal form → Learning path**
 
 1. [Installation](getting-started/installation.md) (if you still need extras or hosts)
 2. [Build your first app](getting-started/quickstart.md)
 3. [HTMX interactions](guides/htmx-interactions.md)
 4. [Minimal form](guides/minimal-form.md)
+5. [Learning path](getting-started/learning-path.md)
 
 Then: [runnable examples](examples/runnable.md) · [What's ready](guides/whats-ready.md) ·
-[Why Hedron](guides/why-hedron.md)
+[Why Hedron](guides/why-hedron.md) · [Evaluate Hedron](guides/evaluate.md)
 
 ## Designed for inspectability
 

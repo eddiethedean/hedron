@@ -277,7 +277,9 @@ def interaction_headers(result: InteractionResult) -> dict[str, str]:
         headers["Cache-Control"] = "private"
     elif result.cache == "no-store":
         headers["Cache-Control"] = "private, no-store"
-    elif result.cache == "vary-htmx":
+    elif result.cache in {"vary-htmx", None}:
+        # Always emit HTMX Vary so shared caches cannot mix page/fragment bodies,
+        # even when Cache-Control is intentionally omitted (cache=None).
         vary = {"HX-Request", "HX-History-Restore-Request"}
         policy = result.policy
         if policy and policy.vary_on_target:

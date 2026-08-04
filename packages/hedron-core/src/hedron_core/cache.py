@@ -97,6 +97,11 @@ def _normalize_arg(value: Any) -> Any:
         return {"__secret__": _fingerprint(repr(value.reveal()))}
     if isinstance(value, (str, int, float, bool)) or value is None:
         return value
+    # Request/dependency objects must never be serialized. Starlette Request is a
+    # Mapping, so reject by type name before the Mapping branch.
+    type_name = type(value).__name__
+    if type_name in {"Request", "HTTPConnection"} or "Dependency" in type_name:
+        raise ValueError(f"Cannot use {type_name} as a cache key argument")
     if isinstance(value, Mapping):
         return {
             str(k): _normalize_arg(v)
@@ -104,10 +109,6 @@ def _normalize_arg(value: Any) -> Any:
         }
     if isinstance(value, (list, tuple)):
         return [_normalize_arg(v) for v in value]
-    # Request/dependency objects must never be serialized.
-    type_name = type(value).__name__
-    if type_name in {"Request", "HTTPConnection"} or "Dependency" in type_name:
-        raise ValueError(f"Cannot use {type_name} as a cache key argument")
     if hasattr(value, "model_dump"):
         return _normalize_arg(value.model_dump())
     return repr(value)

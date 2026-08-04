@@ -331,6 +331,9 @@ class RedisJobBackend:
                         time.sleep(0.01)
                     if self._load(existing) is not None:
                         return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+                raise RuntimeError(
+                    "Idempotent job submit lost the race and the winner record is unavailable"
+                )
 
         return JobHandle(job_id=job_id, idempotency_key=idempotency_key)
 

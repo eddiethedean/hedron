@@ -98,11 +98,10 @@ class MatplotlibAdapter:
                 html.raw(TrustedHtml.reviewed(str(output.body), source="matplotlib:svg"))
             )
         else:
-            alt = acc.alt or acc.title
-            img_html = (
-                f'<img src="data:image/png;base64,{output.body}" '
-                f'alt="{alt.replace(chr(34), "")}" />'
-            )
+            import html as html_stdlib
+
+            alt = html_stdlib.escape(acc.alt or acc.title, quote=True)
+            img_html = f'<img src="data:image/png;base64,{output.body}" alt="{alt}" />'
             children.append(html.raw(TrustedHtml.reviewed(img_html, source="matplotlib:png")))
         if acc.tabular_fallback:
             children.append(_fallback_table(acc.tabular_fallback))

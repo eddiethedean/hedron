@@ -41,6 +41,9 @@ class SseResponse(StreamingResponse):
             "X-Accel-Buffering": "no",
             **dict(headers or {}),
         }
+        for key, value in hdrs.items():
+            if any(ord(ch) < 32 for ch in value):
+                raise ValueError(f"{key} must not contain control characters")
         super().__init__(
             content,
             status_code=status_code,
@@ -75,11 +78,16 @@ def job_status_sse_response(
     request: Request | None = None,
     html_message: Callable[[Any], str] | None = None,
     poll_interval_seconds: float | None = None,
+    auth_subject: str | None = None,
+    tenant_id: str | None = None,
 ) -> SseResponse:
     """Stream job status events until terminal; polling remains a Supported fallback.
 
     Honors ``Last-Event-ID`` by skipping already-delivered event ids. Emits only when
     ``state`` / ``updated_at`` change. Stops when the job is terminal or missing.
+
+    When the stored job has ``auth_subject`` / ``tenant_id`` set, the matching kwargs
+    must be provided and equal or the stream ends with an authorization error event.
     """
     store = backend or get_job_backend()
 
@@ -91,6 +99,11 @@ def job_status_sse_response(
         result = render(Status(f"Job {status.job_id}: {status.state.value}", live=True))
         return result.html
 
+    def _authorized(status: Any) -> bool:
+        subject_ok = status.auth_subject is None or status.auth_subject == auth_subject
+        tenant_ok = status.tenant_id is None or status.tenant_id == tenant_id
+        return subject_ok and tenant_ok
+
     def _gen() -> Iterator[bytes]:
         last_id: str | None = None
         if request is not None:
@@ -101,6 +114,11 @@ def job_status_sse_response(
             if status is None:
                 yield encode_sse(
                     SseEvent(data="not-found", event="error", id=last_id or job_id)
+                ).encode("utf-8")
+                return
+            if not _authorized(status):
+                yield encode_sse(
+                    SseEvent(data="forbidden", event="error", id=last_id or job_id)
                 ).encode("utf-8")
                 return
             event_id = f"{status.job_id}:{status.updated_at}"

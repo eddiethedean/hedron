@@ -17,6 +17,7 @@ __all__ = [
     "htmx_context_from_headers",
     "is_local_path",
     "safe_css_selector",
+    "safe_hx_swap",
 ]
 
 APPROVED_REQUEST_HEADERS = frozenset(
@@ -53,6 +54,33 @@ _SIMPLE_SELECTOR = re.compile(
     r"^(?:#[A-Za-z_][\w\-]*|\.[A-Za-z_][\w\-]*|\[[A-Za-z_][\w\-]*(?:=(?:"
     r'"[^"]*"|\'[^\']*\'|[A-Za-z0-9_\-]+))?\])$'
 )
+_ON_ATTR = re.compile(r"^on[a-z]+$", re.IGNORECASE)
+_HX_SWAP_STYLES = frozenset(
+    {
+        "innerHTML",
+        "outerHTML",
+        "textContent",
+        "beforebegin",
+        "afterbegin",
+        "beforeend",
+        "afterend",
+        "delete",
+        "none",
+    }
+)
+_HX_SWAP_MODIFIERS = frozenset(
+    {
+        "settle",
+        "swap",
+        "focus-scroll",
+        "show",
+        "scroll",
+        "transition",
+        "ignoreTitle",
+    }
+)
+_HX_LOCATION_KEYS = frozenset({"path", "target", "select", "swap", "values"})
+_DECODE_ROUNDS = 8
 
 
 def _empty_headers() -> dict[str, str]:
@@ -74,15 +102,28 @@ class HtmxContext:
     extras: Mapping[str, str] = field(default_factory=_empty_headers)
 
 
+def _path_has_traversal(candidate: str) -> bool:
+    lowered = candidate.lower()
+    if "%2e%2e" in lowered or "%2e." in lowered or ".%2e" in lowered:
+        return True
+    # Normalize semicolon-smuggled segments such as "/..;/etc".
+    normalized = candidate.replace(";", "/")
+    parts = [p for p in normalized.split("/") if p not in {"", "."}]
+    return any(part == ".." or part.startswith("..") for part in parts)
+
+
 def is_local_path(url: str) -> bool:
     """Same-origin relative path check used by approved redirect/location headers."""
     from urllib.parse import unquote
 
     if "\\" in url or any(ord(ch) < 32 for ch in url):
         return False
-    # Reject encoded slash tricks before parsing (/%2f%2fevil).
-    decoded = unquote(url)
-    if decoded != url:
+    decoded = url
+    for _ in range(_DECODE_ROUNDS):
+        next_decoded = unquote(decoded)
+        if next_decoded == decoded:
+            break
+        decoded = next_decoded
         if "\\" in decoded or any(ord(ch) < 32 for ch in decoded):
             return False
         if decoded.startswith("//") or "://" in decoded:
@@ -96,10 +137,8 @@ def is_local_path(url: str) -> bool:
         return False
     path = parsed.path or "/"
     decoded_path = urlparse(decoded).path or "/"
-    # Reject path traversal segments that browsers would normalize away.
     for candidate in (path, decoded_path, url, decoded):
-        parts = [p for p in candidate.split("/") if p not in {"", "."}]
-        if ".." in parts or "%2e%2e" in candidate.lower():
+        if _path_has_traversal(candidate):
             return False
     return (
         _LOCAL_PATH.fullmatch(path) is not None and _LOCAL_PATH.fullmatch(decoded_path) is not None
@@ -115,7 +154,30 @@ def safe_css_selector(selector: str) -> bool:
         return False
     if any(token in text for token in (",", "*", ">", "+", "~", "/", ":")):
         return False
-    return _SIMPLE_SELECTOR.fullmatch(text) is not None
+    if not _SIMPLE_SELECTOR.fullmatch(text):
+        return False
+    if text.startswith("[") and text.endswith("]"):
+        inner = text[1:-1]
+        attr = inner.split("=", 1)[0]
+        if _ON_ATTR.fullmatch(attr):
+            return False
+    return True
+
+
+def safe_hx_swap(value: str) -> bool:
+    """Allow only HTMX swap styles and known modifiers."""
+    if not value or any(ord(ch) < 32 for ch in value) or '"' in value or "'" in value:
+        return False
+    tokens = value.split()
+    if not tokens:
+        return False
+    if tokens[0] not in _HX_SWAP_STYLES:
+        return False
+    for token in tokens[1:]:
+        name, sep, _rest = token.partition(":")
+        if not sep or name not in _HX_SWAP_MODIFIERS:
+            return False
+    return True
 
 
 def htmx_context_from_headers(headers: Mapping[str, str]) -> HtmxContext:
@@ -146,6 +208,38 @@ def _require_local_path(url: str, header_name: str) -> str:
     if not is_local_path(url):
         raise ValueError(f"{header_name} must be a local path")
     return url
+
+
+def _validate_location_mapping(location: Mapping[str, Any]) -> dict[str, Any]:
+    unknown = set(location) - _HX_LOCATION_KEYS
+    if unknown:
+        raise ValueError(f"Unapproved HX-Location keys: {sorted(unknown)}")
+    path = location.get("path")
+    if not isinstance(path, str):
+        raise ValueError("HX-Location mapping requires a local path")
+    _require_local_path(path, "HX-Location")
+    cleaned: dict[str, Any] = {"path": path}
+    target = location.get("target")
+    if target is not None:
+        if not isinstance(target, str) or not safe_css_selector(target):
+            raise ValueError("Unsafe HX-Location target selector")
+        cleaned["target"] = target
+    select = location.get("select")
+    if select is not None:
+        if not isinstance(select, str) or not safe_css_selector(select):
+            raise ValueError("Unsafe HX-Location select selector")
+        cleaned["select"] = select
+    swap = location.get("swap")
+    if swap is not None:
+        if not isinstance(swap, str) or not safe_hx_swap(swap):
+            raise ValueError("Unsafe HX-Location swap value")
+        cleaned["swap"] = swap
+    values = location.get("values")
+    if values is not None:
+        if not isinstance(values, Mapping):
+            raise ValueError("HX-Location values must be a mapping")
+        cleaned["values"] = dict(values)
+    return cleaned
 
 
 def approved_headers(
@@ -200,6 +294,8 @@ def approved_headers(
             raise ValueError("Unsafe HTMX retarget selector")
         headers["HX-Retarget"] = retarget
     if reswap is not None:
+        if not safe_hx_swap(reswap):
+            raise ValueError("Unsafe HTMX reswap value")
         headers["HX-Reswap"] = reswap
     if reselect is not None:
         if not safe_css_selector(reselect):
@@ -209,11 +305,7 @@ def approved_headers(
         if isinstance(location, str):
             headers["HX-Location"] = _require_local_path(location, "HX-Location")
         else:
-            path = location.get("path")
-            if not isinstance(path, str):
-                raise ValueError("HX-Location mapping requires a local path")
-            _require_local_path(path, "HX-Location")
-            headers["HX-Location"] = json.dumps(location)
+            headers["HX-Location"] = json.dumps(_validate_location_mapping(location))
     unknown = set(headers) - APPROVED_RESPONSE_HEADERS
     if unknown:
         raise ValueError(f"Unapproved HTMX response headers: {sorted(unknown)}")

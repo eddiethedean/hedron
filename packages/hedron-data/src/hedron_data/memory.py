@@ -39,7 +39,8 @@ class InMemoryDataSource:
         self._rows: dict[str, dict[str, Any]] = {_row_key(r, key_field): dict(r) for r in rows}
         self._row_versions: dict[str, str] = {k: version for k in self._rows}
         self._schema = tuple(schema)
-        self._writable = writable_fields
+        # Deny-by-default: omitted writable_fields means no field is writable.
+        self._writable = frozenset() if writable_fields is None else writable_fields
         self._dataset_version = version
         self._audit_hook = audit_hook
         self._version_counter = int(version) if version.isdigit() else 1
@@ -118,7 +119,7 @@ class InMemoryDataSource:
         accepted_deletes: list[str] = []
 
         for upd in changes.updates:
-            if self._writable is not None and upd.field not in self._writable:
+            if upd.field not in self._writable:
                 errors.append(
                     FieldError(
                         row_key=upd.row_key,
@@ -167,10 +168,9 @@ class InMemoryDataSource:
                     FieldError(row_key=key, field=self._key_field, message="Duplicate key")
                 )
                 continue
-            if self._writable is not None:
-                for field_name in list(row):
-                    if field_name != self._key_field and field_name not in self._writable:
-                        del row[field_name]
+            for field_name in list(row):
+                if field_name != self._key_field and field_name not in self._writable:
+                    del row[field_name]
             rows[key] = row
             row_versions[key] = next_version()
             accepted_inserts.append(row)

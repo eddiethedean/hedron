@@ -7,11 +7,11 @@ import contextlib
 import json
 from collections.abc import Awaitable, Callable
 from typing import Any
-from urllib.parse import urlparse
 
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from hedron_core.channel import ChannelMessage, PageSessionChannel, RegionUpdate
+from hedron_core.origin import is_same_origin
 
 __all__ = [
     "ALLOW_MISSING_ORIGIN",
@@ -43,30 +43,12 @@ def origin_allowed(
         return bool(allowed_origins is not None and ALLOW_MISSING_ORIGIN in allowed_origins)
     if allowed_origins is not None:
         return origin in allowed_origins
-    # Default: full same-origin (scheme + host + port) with the request URL.
-    parsed = urlparse(origin)
-    if not parsed.hostname or not parsed.scheme:
-        return False
-    req_scheme = websocket.url.scheme or "http"
-    # Browsers report Origin with http/https; WS upgrade uses ws/wss.
-    origin_scheme = parsed.scheme.lower()
-    if origin_scheme in {"http", "https"} and req_scheme in {"ws", "wss"}:
-        req_http = "https" if req_scheme == "wss" else "http"
-    else:
-        req_http = req_scheme
-    if origin_scheme != req_http:
-        return False
-    if parsed.hostname != websocket.url.hostname:
-        return False
-
-    def _effective_port(scheme: str, port: int | None) -> int:
-        if port is not None:
-            return port
-        return 443 if scheme in {"https", "wss"} else 80
-
-    origin_port = _effective_port(origin_scheme, parsed.port)
-    req_port = _effective_port(req_http, websocket.url.port)
-    return origin_port == req_port
+    return is_same_origin(
+        origin,
+        request_scheme=websocket.url.scheme or "http",
+        request_hostname=websocket.url.hostname,
+        request_port=websocket.url.port,
+    )
 
 
 async def accept_page_session_channel(
@@ -87,6 +69,7 @@ async def accept_page_session_channel(
         return
     await websocket.accept()
     producer_task: asyncio.Task[None] | None = None
+    message_count = 0
     try:
         if producer is not None:
             run_producer = producer
@@ -98,15 +81,46 @@ async def accept_page_session_channel(
             # Yield so a concurrent producer can start before a fast receive loop exits.
             await asyncio.sleep(0)
         while True:
-            raw = await websocket.receive_text()
-            data = json.loads(raw)
+            try:
+                raw = await asyncio.wait_for(
+                    websocket.receive_text(),
+                    timeout=channel.budget.idle_timeout_seconds,
+                )
+            except TimeoutError:
+                await websocket.send_text(json.dumps({"kind": "error", "detail": "idle timeout"}))
+                await websocket.close(code=1008)
+                return
+            message_count += 1
+            if message_count > channel.budget.max_messages:
+                await websocket.send_text(
+                    json.dumps({"kind": "error", "detail": "message budget exceeded"})
+                )
+                await websocket.close(code=1009)
+                return
+            if len(raw.encode("utf-8")) > channel.budget.max_message_bytes:
+                await websocket.send_text(
+                    json.dumps({"kind": "error", "detail": "message too large"})
+                )
+                await websocket.close(code=1009)
+                return
+            try:
+                data = json.loads(raw)
+            except json.JSONDecodeError:
+                await websocket.send_text(json.dumps({"kind": "error", "detail": "invalid json"}))
+                await websocket.close(code=1003)
+                return
             kind = str(data.get("kind", ""))
             if kind == "close":
                 break
             if kind == "client-state-request":
                 component_id = str(data.get("component_id", ""))
                 field = str(data.get("field", ""))
-                channel.validate_client_read(component_id, field)
+                try:
+                    channel.validate_client_read(component_id, field)
+                except ValueError as exc:
+                    await websocket.send_text(json.dumps({"kind": "error", "detail": str(exc)}))
+                    await websocket.close(code=1008)
+                    return
                 value = None
                 if on_client_state is not None:
                     value = await on_client_state(component_id, field)

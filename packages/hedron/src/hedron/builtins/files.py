@@ -46,6 +46,7 @@ def validate_upload_size(size: int, *, maximum_size: int) -> int:
 def safe_download_response(
     path: str | Path,
     *,
+    root: Path,
     filename: str,
     content_type: str = "application/octet-stream",
     authorized: bool = False,
@@ -53,7 +54,12 @@ def safe_download_response(
     if not authorized:
         raise PermissionError("Download requires authorization")
     safe_name = validate_upload_filename(filename)
-    file_path = Path(path)
+    root_resolved = Path(root).resolve()
+    file_path = Path(path).resolve()
+    try:
+        file_path.relative_to(root_resolved)
+    except ValueError as exc:
+        raise PermissionError("Download path escapes authorized root") from exc
     if not file_path.is_file():
         raise FileNotFoundError(str(file_path))
     # Prevent path disclosure in headers; only send basename.
