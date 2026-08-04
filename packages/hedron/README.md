@@ -17,9 +17,9 @@ plugin loader, and public `hedron.testing` helpers.
 ## Install
 
 ```bash
-pip install hedron
+pip install "hedron>=0.10.1"
 # or
-uv add hedron
+uv add "hedron>=0.10.1"
 ```
 
 Optional data and charts:
@@ -41,7 +41,7 @@ Optional browser testing extras:
 pip install "hedron[browser]"
 ```
 
-Requires Python 3.11, 3.12, 3.13, or 3.14.
+Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.10.1** (Beta).
 
 ## Quick start
 
@@ -51,7 +51,7 @@ from hedron import Hedron, Page, Text
 app = Hedron(
     title="Demo",
     security="standard",
-    session_secret="replace-me",
+    session_secret="replace-in-production",
     explorer="off",
 )
 

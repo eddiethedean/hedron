@@ -13,6 +13,8 @@ Build and run a small Hedron application, then continue through HTMX and forms.
 Then: [What’s ready](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md) ·
 [Evaluate Hedron](../guides/evaluate.md).
 
+Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
+
 Maturity labels (Beta / Supported / Deferred) are explained under
 [Decide → Understanding maturity labels](how-to-read.md) when you need them — you do not
 need that vocabulary to install.

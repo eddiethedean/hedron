@@ -1,19 +1,22 @@
-# Flask adapter quickstart
+# Flask — add to an existing app
 
-Use `hedron-flask` when your app is Flask-native. The adapter renders the same
-`hedron-core` components and `InteractionResult` values as the FastAPI flagship—without
-installing FastAPI.
+Use `hedron-flask` when your app is already Flask-native (or you are creating a Flask
+project yourself). Hedron does **not** ship `hedron new --flask` yet — this page assumes
+you manage the Flask app layout. The adapter renders the same `hedron-core` components and
+`InteractionResult` values as the FastAPI flagship—without installing FastAPI.
 
 ## Install
 
 ```bash
 uv init my-flask-app && cd my-flask-app
-uv add hedron-flask
+uv add "hedron-flask>=0.10.1"
 ```
 
-Or: `pip install hedron-flask`.
+Or: `pip install "hedron-flask>=0.10.1"`.
 
 ## Minimal app
+
+Save as `app.py` (or wire into your existing Flask module):
 
 ```python
 from flask import request
@@ -56,3 +59,4 @@ Safe GETs issue the `hedron_csrf` cookie. Unsafe methods on `hedron_route` and
 - [Security](../guides/security.md) · [Deployment](../guides/deployment.md) · [Adapters API](../api/ADAPTERS.md)
 - Job status on Flask: use bounded polling (FastAPI SSE helpers are Supported on the flagship
   in 0.10; see [live interaction](../guides/live-interaction.md))
+- FastAPI scaffold path: [Installation](installation.md) (`hedron new`)

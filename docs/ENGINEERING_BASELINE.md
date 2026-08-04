@@ -1,6 +1,7 @@
 # Engineering baseline
 
-**Status:** Accepted for the phase 0.0 baseline
+**Status:** Living contributor baseline (originated as the phase 0.0 engineering
+acceptance; still the CI/toolchain contract for the published 0.10 train).
 
 ## Toolchain
 

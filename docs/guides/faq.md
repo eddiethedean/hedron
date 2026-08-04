@@ -21,6 +21,35 @@ pip install hedron-django   # requires Django >=5.2,<6
 
 No. Hedron does not require npm or a JavaScript bundler for development or production.
 
+## `hedron: command not found`
+
+The `hedron` CLI is only on your shell PATH when the install environment’s scripts
+directory is active. Common fixes:
+
+1. Prefer **`uv tool install "hedron>=0.10.1"`**, then **re-open the shell** (or run
+   `hash -r` / open a new terminal).
+2. After `hedron new` and `pip install -e .` / `uv sync`, run the CLI from the project
+   environment: `uv run hedron …` (or activate the venv and run `hedron` again).
+3. On Windows, ensure the Python **Scripts** folder is on PATH (for example
+   `%APPDATA%\Python\Python3x\Scripts` after a user install).
+4. Confirm the library itself installed with the **same** interpreter you use for
+   `uvicorn`:
+
+   ```bash
+   python -c "import hedron; print(hedron.__version__)"
+   ```
+
+There is no `python -m hedron` entry point today—use the `hedron` console script or
+`uv run hedron`. Full steps: [Troubleshooting](troubleshooting.md#hedron-command-not-found).
+
+## Why install Hedron twice (CLI then project)?
+
+The recommended scaffold path installs Hedron once so the **`hedron` CLI** is available
+(`pip install` / `uv tool install`), then again as a **project dependency**
+(`pip install -e .` / `uv sync`) so `uvicorn app:app` imports the pinned version from
+the app’s environment. That second install is what the scaffold’s `pyproject.toml`
+declares—do not skip it.
+
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or use
@@ -63,8 +92,8 @@ Install them separately; they do not pull in FastAPI. Django apps must use Djang
 Some rows remain Deferred (Django QuerySet as a first-party DataSource; Hedron-owned Django forms).
 Official HTMX SSE is Supported on the FastAPI flagship in 0.10; polling remains the Supported
 fallback on all hosts. See [Compatibility](../COMPATIBILITY.md),
-[Flask quickstart](../getting-started/flask.md), and
-[Django quickstart](../getting-started/django.md).
+[Flask — add to existing app](../getting-started/flask.md), and
+[Django — add to existing project](../getting-started/django.md).
 
 ## What replaced HDN?
 
@@ -99,7 +128,7 @@ pip install "hedron[jinja]"
 uv add "hedron[jinja]"
 ```
 
-See [HDJ authoring](../api/JINJA.md) and [Installation](../getting-started/installation.md).
+See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).
 
 ## How do I contribute code?
 

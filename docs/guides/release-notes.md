@@ -4,7 +4,8 @@ Start with the train you are on, then read package changelogs for detail.
 
 ## Current train (0.10)
 
-- [What’s new in 0.10](whats-new-0.10.md)
+- [What’s new in 0.10.1](whats-new-0.10.1.md) — security/correctness patch
+- [What’s new in 0.10](whats-new-0.10.md) — phase capability notes
 - [Upgrade (0.8 → 0.10)](upgrade.md)
 - [What’s ready today](whats-ready.md)
 

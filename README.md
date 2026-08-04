@@ -8,7 +8,12 @@
 [![Release](https://img.shields.io/github/v/release/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/releases/latest)
 
 Typed, server-rendered Python UI for FastAPI + HTMX — without a Node.js frontend stack.
-Build dashboards, admin tools, forms, and CRUD apps from typed components.
+Build dashboards, admin tools, forms, and CRUD apps from typed components. Packages are
+**Beta** — pin versions and see [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
+
+If `hedron` is not on your PATH after install, see
+[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/)
+([FAQ: command not found](https://hedron.readthedocs.io/en/latest/guides/faq/#hedron-command-not-found)).
 
 ## Quick start
 
@@ -28,8 +33,6 @@ Prefer [uv](https://docs.astral.sh/uv/)? Use `uv tool install "hedron>=0.10.1"`,
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see the scaffold home page.
-
-If `hedron` is not on your PATH after `pip install`, see the installation guide above.
 
 **Next:** [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/) →
 [Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →

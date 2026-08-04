@@ -10,10 +10,15 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**`v0.10.0`** is on PyPI. This tree is prepared for the **`v0.10.1`** patch cut
-(packages `0.10.1`) — see [STATUS.md](STATUS.md).
+**Current train:** `v0.10.1` (packages `0.10.1`) — see [STATUS.md](STATUS.md).
+**Next cut:** `v0.11.0` (capability phase) or `v0.10.2` (patch). Historical cuts:
+[`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md).
 
-## Cut: `v0.10.1` (0.10 security/correctness patch)
+## Cut: `v0.10.1` (0.10 security/correctness patch) — published
+
+The checklist below is retained as the **executed** cut record for `v0.10.1`. Do not
+re-run the tag steps. For a new patch, copy this section for `v0.10.2` (or proceed to
+`v0.11.0`).
 
 ### Preconditions
 

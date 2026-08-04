@@ -12,7 +12,7 @@ An RFC may be rejected without entering the implementation. Material changes to 
 
 ## Required review areas
 
-New RFCs and material revisions must address public behavior, alternatives, security, accessibility, performance, testing, compatibility, migration, open questions, and acceptance criteria. “Not applicable” must include a reason. The phase 0.0 bootstrap RFC set records its compact design in the RFCs and supplies cross-cutting review through [traceability](../TRACEABILITY.md), the linked implementation specifications, and the acceptance-suite specifications; revisions use the full [template](TEMPLATE.md).
+New RFCs and material revisions must address public behavior, alternatives, security, accessibility, performance, testing, compatibility, migration, open questions, and acceptance criteria. “Not applicable” must include a reason. The phase 0.0 bootstrap RFC set records its compact design in the RFCs and supplies cross-cutting review through [traceability](https://github.com/eddiethedean/hedron/blob/main/docs/TRACEABILITY.md), the linked implementation specifications, and the acceptance-suite specifications; revisions use the full [template](TEMPLATE.md).
 
 ## Index
 

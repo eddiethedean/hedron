@@ -8,11 +8,64 @@ deep dive covers validation fragments.
 
 ## What you will build
 
-A page with a note field. Submitting POSTs to an action and returns a confirmation
-page. The GET seeds the CSRF cookie; the form posts the matching token.
+A **notes** page with a note field. Submitting POSTs to an action and returns a
+confirmation page. The GET seeds the CSRF cookie; the form posts the matching token.
 
-**If you used `hedron new`:** replace the scaffold `app.py` with the following (or add
-these routes beside the scaffold home). Do not maintain two competing apps.
+**If you used `hedron new` (or finished the HTMX guide):** keep the existing `Hedron(...)`
+app and your `/` home route. Add the imports below, then add `/notes` and `/save` **beside**
+the routes you already have. Do not create a second app file.
+
+### 1. Add imports
+
+```python
+from fastapi import Form, Request
+
+from hedron import (
+    Hedron,
+    Page,
+    Stack,
+    SubmitButton,
+    Text,
+    TextInput,
+    csrf_token_for_request,
+    html,
+)
+```
+
+(Merge with imports already present; you only need each name once.)
+
+### 2. Add `/notes` and `/save` below your existing routes
+
+```python
+@app.page("/notes")
+def notes(request: Request) -> Page:
+    token = csrf_token_for_request(request, request.app.state.hedron_security)
+    return Page(
+        Stack(
+            Text("Leave a note"),
+            html.form(
+                html.input(type="hidden", name="csrf_token", value=token),
+                TextInput("note", value="", required=True),
+                SubmitButton("Save"),
+                action="/save",
+                method="post",
+            ),
+        ),
+        title="Notes",
+    )
+
+
+@app.action("/save", method="POST")
+def save(note: str = Form(...)) -> Page:
+    return Page(Text(f"Saved: {note}"), title="Saved")
+```
+
+Your scaffold `/` home (and any HTMX routes) keep working. Open
+[http://127.0.0.1:8000/notes](http://127.0.0.1:8000/notes) for this lesson.
+
+### Complete file (Path B / reference)
+
+Use this only if you are starting a fresh manual `app.py` (not extending a scaffold):
 
 ```python title="app.py"
 from fastapi import Form, Request
@@ -63,7 +116,7 @@ Run it:
     uvicorn app:app --reload
     ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000), type a note, and submit.
+Open the notes URL above (or `/` on Path B), type a note, and submit.
 Without a matching `csrf_token`, the POST returns `403`.
 
 ## What this teaches

@@ -32,7 +32,7 @@ Unsafe methods use CSRF protection under cookie authentication. GET never repres
 - Official HTMX assets can be locally served without Node.js.
 
 The phase 0.6+ adoption and extension gates are tracked in the
-[HTMX 2 integration audit](../HTMX_2_AUDIT.md).
+[HTMX 2 integration audit](https://github.com/eddiethedean/hedron/blob/main/docs/HTMX_2_AUDIT.md).
 
 ## Phase 0.10 live extensions
 

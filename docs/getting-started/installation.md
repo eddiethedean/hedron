@@ -5,11 +5,17 @@
 - CPython **3.11–3.14**
 - A package manager (`pip` or [uv](https://docs.astral.sh/uv/))
 - No Node.js required
+- Flagship apps need a compatible **FastAPI** (`>=0.141.1,<0.142`); `pip` / `uv` resolve
+  this when you install `hedron`—upgrade FastAPI if an older pin conflicts
 
 ## Recommended: CLI scaffold
 
 This is the path most new users should follow. Pick **pip** or **uv**, then stop—do not
 also hand-write a second `app.py` over the scaffold.
+
+You install Hedron twice on purpose: once so the **`hedron` CLI** is available, then again
+as the scaffold’s **project dependency** (`pip install -e .` / `uv sync`) so uvicorn uses
+the pinned version. See [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
 
 === "pip"
 
@@ -59,7 +65,8 @@ Expect **`0.10.1`** (or newer patch) from PyPI.
 
 | Symptom | Fix |
 |---|---|
-| `hedron: command not found` | Re-open the shell after install, or use `uv tool install hedron`, or see [FAQ](../guides/faq.md) |
+| `hedron: command not found` | Re-open the shell, use `uv tool install "hedron>=0.10.1"`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
+| `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; run `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
 | Wrong / old version | `pip install -U "hedron>=0.10.1"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
@@ -137,8 +144,9 @@ Then create `app.py` from the [quickstart](quickstart.md) (Path B).
 
 ## Supported environments
 
-The flagship integration pins a compatible FastAPI range; let your package manager
-resolve it. See the [compatibility policy](../COMPATIBILITY.md).
+The flagship package depends on **FastAPI `>=0.141.1,<0.142`**. Let your package manager
+resolve it; if install fails on an older FastAPI pin in a shared environment, upgrade
+within that range. See the [compatibility policy](../COMPATIBILITY.md).
 
 When evaluating production use, see [What’s ready today](../guides/whats-ready.md) and
 [Evaluate Hedron](../guides/evaluate.md). Maturity vocabulary:

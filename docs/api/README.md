@@ -21,13 +21,15 @@ contracts match what you just used:
     `get_registry` live in `hedron_core`. Prefer `hedron` re-exports when available.
 
 **Stability:** Phase 0.10 continues the public classifications in [STABILITY.md](STABILITY.md)
-(`beta` | `experimental` | `internal` | `deferred`). Package maturity (Beta/Alpha) is separate
-from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
+(`beta` | `experimental` | `internal` | `deferred`). No public symbol is classified
+`stable` yet — that level is reserved for a future promotion decision. Package maturity
+(Beta/Alpha) is separate from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
 !!! note "Contracts vs full reference"
 
     API pages are hand-maintained contracts, with **mkdocstrings** signatures for critical
-    surfaces on [Autodoc](AUTODOC.md). For a map of every `hedron.__all__` name to a doc
+    surfaces on [Autodoc](AUTODOC.md) (live helpers, adapters, and core facades — still a
+    subset of every `hedron.__all__` name). For a map of every export to a doc
     page, see [Public API coverage map](COVERAGE.md). Adopter-critical narrative pages
     ([Hedron](HEDRON.md), [Router](ROUTER.md), [Action](ACTION.md),
     [Interaction](INTERACTION.md), [Models](MODELS.md), [Responses](RESPONSES.md),

@@ -32,8 +32,10 @@ decision log and affected RFCs first.
 - [Compatibility](COMPATIBILITY.md), [project layout](PROJECT_LAYOUT.md),
   [engineering baseline](ENGINEERING_BASELINE.md), [configuration](CONFIGURATION.md),
   [diagnostics](DIAGNOSTICS.md), and [identifiers](IDENTIFIERS.md)
-- [Reference application](REFERENCE_APPLICATION.md), [traceability](TRACEABILITY.md),
-  [readiness report](READINESS_REPORT.md), [contribution process](CONTRIBUTING.md), and
+- [Reference application](REFERENCE_APPLICATION.md),
+  [traceability](https://github.com/eddiethedean/hedron/blob/main/docs/TRACEABILITY.md),
+  [readiness report](https://github.com/eddiethedean/hedron/blob/main/docs/READINESS_REPORT.md),
+  [contribution process](CONTRIBUTING.md), and
   [cutting a release](RELEASE.md)
 - [Architecture RFCs](rfcs/README.md)
 - [Public API contracts](api/README.md)

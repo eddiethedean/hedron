@@ -296,7 +296,7 @@ app = Hedron(
     title="Hedron App",
     security="standard",
     explorer="off",
-    session_secret="dev-secret",
+    session_secret="replace-in-production",
 )
 
 

@@ -9,8 +9,87 @@ declared region. This guide builds that loop without adding client-side applicat
 The page below contains a status panel and a refresh button. Clicking the button requests
 only a replacement panel, while direct navigation still returns a complete document.
 
-**If you used `hedron new`:** replace the scaffold `app.py` with the following (or add
-these routes beside the scaffold home). Do not maintain two competing apps.
+**If you used `hedron new`:** open the scaffold `app.py`. Keep the existing `Hedron(...)`
+app and the scaffold `home` route. Add the imports and `/status` route below, then **edit**
+`home()` so it renders the status panel (do not create a second app file). If you are on
+Path B (manual `app.py`), create the file as shown in the complete listing at the end of
+this section.
+
+### 1. Add imports and the status region
+
+At the top of `app.py`, extend the imports and add the region helper (keep your existing
+`Hedron` import and `app = Hedron(...)` block):
+
+```python
+from datetime import UTC, datetime
+
+from hedron import (
+    FragmentRegion,
+    Hedron,
+    InteractionPolicy,
+    InteractionResult,
+    Page,
+    RefreshButton,
+    Stack,
+    Text,
+    html,
+)
+
+# Keep your existing app = Hedron(...) from the scaffold.
+
+STATUS_REGION = FragmentRegion(
+    id="service-status",
+    selector="#service-status",
+    description="Live service status panel",
+)
+
+
+def status_panel():
+    checked_at = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return html.div(
+        Text(f"All systems operational · checked {checked_at}"),
+        id=STATUS_REGION.id,
+        role="status",
+        aria={"live": "polite"},
+    )
+```
+
+### 2. Edit `home()` and add `/status`
+
+Replace only the body of the scaffold `home()` (or keep a greeting above the stack), then
+add the component route **below** it:
+
+```python
+@app.page("/")
+def home() -> Page:
+    return Page(
+        Stack(
+            Text("Hello from hedron new"),
+            status_panel(),
+            RefreshButton(
+                "Refresh status",
+                href="/status",
+                target=STATUS_REGION.selector,
+                swap="outerHTML",
+            ),
+        ),
+        title="Home",
+    )
+
+
+@app.component("/status", fragment_regions=(STATUS_REGION,))
+def refresh_status() -> InteractionResult:
+    return InteractionResult(
+        content=status_panel(),
+        region_id=STATUS_REGION.id,
+        trigger={"statusRefreshed": True},
+        cache="vary-htmx",
+        policy=InteractionPolicy(vary_on_target=True),
+        explanation="Refresh the declared service status region",
+    )
+```
+
+### Complete file (Path B / reference)
 
 ```python title="app.py"
 from datetime import UTC, datetime
@@ -176,8 +255,8 @@ to seed the cookie, then submit the matching token in `X-CSRF-Token` or the `csr
 form field. Authentication, authorization, destructive intent, and persistence remain
 application responsibilities.
 
-**Next:** [Minimal form POST](minimal-form.md) — CSRF-safe create/update loop (golden path
-step 4).
+**Next:** [Minimal form POST](minimal-form.md) — CSRF-safe create/update loop (extend the
+same app).
 
 Also: [Security](security.md) · [Test your UI](testing.md) ·
 [Interaction API](../api/INTERACTION.md)

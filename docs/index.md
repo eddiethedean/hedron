@@ -10,9 +10,10 @@ hide:
 
 # Ship the interface.<br><span class="hedron-gradient-text">Keep the Python.</span>
 
-Hedron turns typed Python components into secure, server-rendered applications with
-FastAPI and HTMX. Build dashboards, admin tools, and CRUD workflows without adopting
-a JavaScript application stack.
+Hedron turns typed Python components into server-rendered HTML with FastAPI and HTMX.
+Build dashboards, admin tools, and CRUD workflows without a Node.js frontend stack.
+Escaping and CSRF profiles ship as Beta secure defaults — pin versions and read
+[What’s ready](guides/whats-ready.md).
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
@@ -24,7 +25,7 @@ a JavaScript application stack.
 <div class="hedron-signal-row">
   <span>Python 3.11–3.14</span>
   <span>FastAPI native</span>
-  <span>Secure defaults</span>
+  <span>Beta · pin versions</span>
   <span>No Node.js required</span>
 </div>
 
@@ -45,60 +46,30 @@ a JavaScript application stack.
   </div>
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">◇</span>
-    <strong>Secure defaults</strong>
-    <p>Contextual escaping, CSRF validation, safe URL types, and conservative cache behavior are framework boundaries.</p>
+    <strong>Secure-by-default boundaries</strong>
+    <p>Contextual escaping, CSRF validation, safe URL types, and conservative cache behavior — Beta package maturity; pin versions.</p>
   </div>
 </div>
 
 ## From zero to a rendered page
 
-Pick **one** path — scaffold (recommended) or a hand-written `app.py`. Do not follow both.
+**Recommended:** use the CLI scaffold. Do not also hand-write a second `app.py`.
 
-=== "Scaffold (recommended)"
+```bash
+pip install "hedron>=0.10.1" "uvicorn[standard]"
+hedron new my-hedron-app
+cd my-hedron-app
+pip install -e .   # or: uv sync
+uvicorn app:app --reload
+```
 
-    ```bash
-    pip install "hedron>=0.10.1" "uvicorn[standard]"
-    hedron new my-hedron-app
-    cd my-hedron-app
-    pip install -e .   # or: uv sync
-    uvicorn app:app --reload
-    ```
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see the scaffold home
+page. Prefer [uv](https://docs.astral.sh/uv/)? Full steps:
+[installation](getting-started/installation.md).
 
-    Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see the scaffold home
-    page. The scaffold already includes `app.py` — do not recreate it. Prefer
-    [uv](https://docs.astral.sh/uv/)? See [installation](getting-started/installation.md).
-
-=== "Manual `app.py`"
-
-    Use this only if you are **not** using `hedron new`.
-
-    ```python
-    from hedron import Card, Heading, Hedron, Page, Stack, Text
-
-    app = Hedron(
-        title="Acme Console",
-        security="standard",
-        session_secret="replace-in-production",
-    )
-
-
-    @app.page("/")
-    def home() -> Page:
-        return Page(
-            Stack(
-                Heading("Acme Console", level=1),
-                Card(Text("Your first typed, server-rendered page.")),
-            ),
-            title="Home",
-        )
-    ```
-
-    ```bash
-    pip install "hedron>=0.10.1" "uvicorn[standard]"
-    uvicorn app:app --reload
-    ```
-
-    Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
+**Manual single-file (not using `hedron new`):** create a project directory, save
+`app.py` from the [single-file examples](examples/single-file.md), install
+`hedron>=0.10.1` and `uvicorn[standard]`, then run `uvicorn app:app --reload`.
 
 ## Next steps
 

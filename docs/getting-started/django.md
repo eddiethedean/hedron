@@ -1,17 +1,19 @@
-# Django adapter quickstart
+# Django — add to an existing project
 
-Use `hedron-django` when your app is Django-native. Requires **Django `>=5.2,<6`**.
-The adapter does not install FastAPI.
+Use `hedron-django` when your app is already Django-native. Requires **Django `>=5.2,<6`**.
+The adapter does not install FastAPI. Hedron does **not** ship `hedron new --django` yet —
+this page assumes an existing project (`django-admin startproject …`) with
+`SessionMiddleware` and `CsrfViewMiddleware`.
 
 ## Fastest path: existing Django project (PyPI)
 
 ```bash
-pip install "hedron-django" "django>=5.2,<6"
-# or: uv add "hedron-django" "django>=5.2,<6"
+pip install "hedron-django>=0.10.1" "django>=5.2,<6"
+# or: uv add "hedron-django>=0.10.1" "django>=5.2,<6"
 ```
 
-Assume you already have a Django project (`django-admin startproject …`) with
-`SessionMiddleware` and `CsrfViewMiddleware`. Register a view:
+Assume you already have a Django project with `SessionMiddleware` and
+`CsrfViewMiddleware`. Register a view:
 
 ```python
 # urls.py (or a urls module pointed at by ROOT_URLCONF)

@@ -1,5 +1,55 @@
 # Troubleshooting
 
+## `hedron: command not found`
+
+**Cause:** The `hedron` console script is not on your shell PATH, or you installed into a
+different Python than the one your shell uses.
+
+**Fix:**
+
+1. Re-open the terminal after install (PATH updates often need a new shell).
+2. Prefer `uv tool install "hedron>=0.10.1"` so the tool is on PATH, then run `hedron new …`.
+3. Inside a scaffolded project, use the project environment: `uv run hedron check` (or
+   activate `.venv` and run `hedron`).
+4. On Windows, add the install’s **Scripts** directory to PATH, or call the full path to
+   `hedron.exe`.
+5. Verify the package with the same interpreter as `uvicorn`:
+
+   ```bash
+   python -c "import hedron; print(hedron.__version__)"
+   ```
+
+   If that fails with `ModuleNotFoundError`, activate the correct venv and reinstall
+   (`pip install -e .` / `uv sync`). See also [FAQ](faq.md#hedron-command-not-found).
+
+## Wrong interpreter or ModuleNotFoundError for hedron
+
+**Cause:** `uvicorn` or `python` is from a different environment than the one where you
+installed Hedron (global vs venv, or forgotten `pip install -e .` after `hedron new`).
+
+**Fix:** Activate the project venv, run `pip install -e .` or `uv sync`, then
+`python -c "import hedron; print(hedron.__version__)"` before starting uvicorn.
+
+## Blank page / HTMX or CSS not loading
+
+**Cause:** Hedron static assets (`/hedron-static/`) or app assets are not reachable—wrong
+host/port, reverse proxy stripping paths, or a plain FastAPI app that never called
+`mount_hedron_static`.
+
+**Fix:** With the `Hedron()` app facade, static mounts are automatic. For plain FastAPI,
+call `mount_hedron_static(app)`. Confirm
+[http://127.0.0.1:8000/hedron-static/](http://127.0.0.1:8000/hedron-static/) returns
+assets while the server runs. Behind a reverse proxy, forward `/hedron-static/` and
+`/hedron-assets/` unchanged. See [Deployment](deployment.md) and
+[Plain FastAPI](plain-fastapi.md).
+
+## Port already in use (`Address already in use` on :8000)
+
+**Cause:** Another process is bound to port 8000.
+
+**Fix:** Stop the other server, or run `uvicorn app:app --reload --port 8001` and open
+that port in the browser.
+
 ## Wrong or unexpected version
 
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.

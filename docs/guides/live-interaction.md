@@ -11,10 +11,12 @@ there until later native depth (0.11).
 !!! note "First-party live demo app"
 
     Start with the polling clock below (Supported on every host). For a clone-and-run
-    FastAPI sample (poll + token stream + `/sse/ping`), see
+    FastAPI sample, see
     [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
-    (`EXAMPLES-10-001` Verified). Advanced WebSocket / preload / job-status SSE helpers
-    below are FastAPI-only and assume you already have a working page.
+    (`EXAMPLES-10-001` Verified for **poll + token stream + minimal SSE**). Job SSE,
+    WebSocket page/session channels, and navigation preload below are **API Supported**
+    on FastAPI and are **not** in that sample yet—extend the sample or follow the API
+    sections after you have a working page.
 
 See also: [SSE API](../api/SSE.md) · [Streaming](../api/STREAMING.md) ·
 [WebSocket channel](../api/WEBSOCKET_CHANNEL.md) · [Preload](../api/PRELOAD.md) ·
@@ -38,7 +40,7 @@ from hedron import (
     Text,
 )
 
-app = Hedron(title="Live clock", security="standard", session_secret="replace-me")
+app = Hedron(title="Live clock", security="standard", session_secret="replace-in-production")
 
 CLOCK = FragmentRegion(
     id="clock",

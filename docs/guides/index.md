@@ -6,11 +6,23 @@ Complete [Get started](../getting-started/index.md) first (Install → First app
 Minimal form). This section continues with forms depth, live transports, data, security,
 and ops.
 
+**Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md) · [Error codes](error-codes.md)
+
 <div class="hedron-grid">
   <a class="hedron-card" href="../getting-started/">
     <span class="hedron-card__icon" aria-hidden="true">→</span>
-    <strong>Get started (tutorials)</strong>
+    <strong>Start here (Get started)</strong>
     <p>Install, first app, HTMX region refresh, and minimal form POST.</p>
+  </a>
+  <a class="hedron-card" href="faq/">
+    <span class="hedron-card__icon" aria-hidden="true">?</span>
+    <strong>FAQ</strong>
+    <p>Versions, PATH / CLI, maturity labels, extras, and hosts.</p>
+  </a>
+  <a class="hedron-card" href="troubleshooting/">
+    <span class="hedron-card__icon" aria-hidden="true">!</span>
+    <strong>Troubleshooting</strong>
+    <p>CSRF, assets, Explorer, production manifests, and live transports.</p>
   </a>
   <a class="hedron-card" href="mutations/">
     <span class="hedron-card__icon" aria-hidden="true">⚡</span>

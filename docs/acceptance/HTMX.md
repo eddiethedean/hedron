@@ -39,7 +39,7 @@
   supported interaction status.
   *(`HTMX-08-003` / `tests/unit/test_htmx_cache_matrix.py`)*
 
-See [HTMX 2 integration audit](../HTMX_2_AUDIT.md) and [release-gate-0.6.toml](release-gate-0.6.toml).
+See [HTMX 2 integration audit](https://github.com/eddiethedean/hedron/blob/main/docs/HTMX_2_AUDIT.md) and [release-gate-0.6.toml](release-gate-0.6.toml).
 
 ## Phase 0.9 HDJ authoring
 

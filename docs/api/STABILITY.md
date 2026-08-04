@@ -11,7 +11,7 @@ unless a later phase explicitly promotes them.
 
 | Level | Meaning |
 |---|---|
-| `stable` | Compatibility-protected across `0.x` phases. Incompatible change requires an accepted decision, migration path, deprecation evidence, and at least one intervening minor phase. |
+| `stable` | Compatibility-protected across `0.x` phases. Incompatible change requires an accepted decision, migration path, deprecation evidence, and at least one intervening minor phase. **Reserved:** no public symbol is classified `stable` on the 0.10 train; everything listed below is `beta`, `experimental`, `internal`, or `deferred`. |
 | `beta` | Intended for production use; may receive additive changes and documented minor-phase revisions with changelog, migration, diagnostic, and evidence obligations. |
 | `experimental` | May change or be removed without a major bump. Must be labeled in docs and Explorer. |
 | `internal` | Not a public promise. Private serializer nodes, private modules, and underscore-prefixed APIs. |

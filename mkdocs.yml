@@ -63,6 +63,8 @@ plugins:
           paths:
             - packages/hedron/src
             - packages/hedron-core/src
+            - packages/hedron-flask/src
+            - packages/hedron-django/src
 
 hooks:
   - docs/hooks.py
@@ -72,6 +74,17 @@ exclude_docs: |
   requirements-rtd.txt
   overrides/**
   archive/**
+  STREAMLIT_FEATURE_CROSSCHECK.md
+  STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md
+  PLOTLY_DASH_FEATURE_CROSSCHECK.md
+  GRADIO_FEATURE_CROSSCHECK.md
+  ACCESSIBILITY_FEATURE_RESEARCH.md
+  DJANGO_ADAPTER_RESEARCH.md
+  FLASK_ADAPTER_RESEARCH.md
+  HTMX_2_AUDIT.md
+  HTMX_2_EXTENSIONS.md
+  READINESS_REPORT.md
+  TRACEABILITY.md
 
 
 
@@ -141,21 +154,22 @@ nav:
     - Learning path: getting-started/learning-path.md
     - Core concepts: getting-started/core-concepts.md
     - Other hosts:
-      - Flask adapter: getting-started/flask.md
-      - Django adapter: getting-started/django.md
+      - Add to existing Flask app: getting-started/flask.md
+      - Add to existing Django project: getting-started/django.md
   - Decide:
     - What's ready today: guides/whats-ready.md
     - Evaluate Hedron: guides/evaluate.md
     - Production readiness: guides/production-readiness.md
     - Why Hedron: guides/why-hedron.md
-    - Understanding maturity labels: getting-started/how-to-read.md
     - Architecture: ARCHITECTURE.md
-    - Support: guides/support.md
-    - Enterprise diligence: guides/enterprise-diligence.md
+    - Evaluate in depth:
+      - Understanding maturity labels: getting-started/how-to-read.md
+      - Support: guides/support.md
+      - Enterprise diligence: guides/enterprise-diligence.md
   - Guides:
     - Overview: guides/index.md
     - Interact:
-      - Golden path tutorials: getting-started/index.md
+      - Start here: getting-started/index.md
       - Forms and actions: guides/forms-and-actions.md
       - Mutations (@action vs @component): guides/mutations.md
       - Authentication: guides/authentication.md
@@ -335,6 +349,7 @@ nav:
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - Upgrade (0.8 → 0.10): guides/upgrade.md
+    - What's new in 0.10.1: guides/whats-new-0.10.1.md
     - What's new in 0.10: guides/whats-new-0.10.md
     - Release notes: guides/release-notes.md
     - Compatibility: COMPATIBILITY.md

@@ -22,6 +22,7 @@ stay adopter-focused.
 | Implementation contracts | [`docs/implementation/`](https://github.com/eddiethedean/hedron/tree/main/docs/implementation) |
 | Acceptance checklists | [`docs/acceptance/`](https://github.com/eddiethedean/hedron/tree/main/docs/acceptance) |
 | Feature research | [`docs/guides/feature-research.md`](https://github.com/eddiethedean/hedron/blob/main/docs/guides/feature-research.md) |
+| Competitive / adapter research notes | Repo `docs/*FEATURE*`, `docs/*ADAPTER_RESEARCH*`, `docs/HTMX_2_*` — **excluded from the public MkDocs site**; browse on GitHub only |
 
 !!! note "Historical RFC"
 

@@ -101,7 +101,9 @@ bindings, prop/slot validation, rendering, metadata, diagnostics, assets, and fr
 
 - The authenticated CRUD portion of the reference application works in both `Hedron()` and plain FastAPI router modes.
 - FastAPI conformance, security, HTMX, OpenAPI, sync/async endpoint, and dependency-cleanup suites pass.
-- A new user reaches a secure working page in under five minutes using published instructions.
+- A new user reaches a scaffold working page in under five minutes using published
+  install instructions (`hedron new` → uvicorn), then extends that same app for HTMX
+  and forms.
 
 ## 0.3 — Styles, assets, themes, and HDN prototype (`v0.3.0`)
 
@@ -617,7 +619,7 @@ adopting whole-script reruns or global mutable application state.
 
 ### Entry gate
 
-- The [Streamlit feature cross-check](docs/STREAMLIT_FEATURE_CROSSCHECK.md) is refreshed against the
+- The [Streamlit feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/STREAMLIT_FEATURE_CROSSCHECK.md) is refreshed against the
   audited Streamlit documentation version and every accepted gap has an owning RFC or an explicit
   revision to an existing RFC.
 - The 0.10 interaction primitives and 0.12 adapter/column contracts are stable enough that this
@@ -699,7 +701,7 @@ analysis workbenches without expanding the core runtime or adopting Streamlit-st
 
 ### Entry gate
 
-- The [streamlit-extras feature cross-check](docs/STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md) is
+- The [streamlit-extras feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md) is
   refreshed against the audited catalog and every accepted extra has an owning RFC revision,
   dependency/asset owner, and explicit first-party-versus-recipe disposition.
 - The 0.4 plugin/package contracts, 0.12 visualization boundaries, 0.14 portable-runtime evidence,
@@ -762,7 +764,7 @@ client callback runtime or weakening the request/action boundary.
 
 ### Entry gate
 
-- The [Plotly Dash feature cross-check](docs/PLOTLY_DASH_FEATURE_CROSSCHECK.md) is refreshed against
+- The [Plotly Dash feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/PLOTLY_DASH_FEATURE_CROSSCHECK.md) is refreshed against
   the audited Dash and Dash AG Grid versions, and every accepted gap has an owning RFC revision,
   public stability label, and evidence plan.
 - The 0.10 live-transport lifecycle, 0.12 chart/grid event contracts, 0.15 controls and browser
@@ -845,7 +847,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ### Entry gate
 
-- The [Gradio feature cross-check](docs/GRADIO_FEATURE_CROSSCHECK.md) is refreshed against the audited
+- The [Gradio feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/GRADIO_FEATURE_CROSSCHECK.md) is refreshed against the audited
   stable Gradio version, and every accepted gap has an owning RFC revision, public stability label,
   dependency owner, threat model, and evidence plan.
 - The 0.7 durable job boundary, 0.10 streaming lifecycle, 0.12 media/visualization adapters, 0.15
@@ -936,7 +938,7 @@ an arbitrary application.
 
 ### Entry gate
 
-- The [accessibility feature research](docs/ACCESSIBILITY_FEATURE_RESEARCH.md) is refreshed against
+- The [accessibility feature research](https://github.com/eddiethedean/hedron/blob/main/docs/ACCESSIBILITY_FEATURE_RESEARCH.md) is refreshed against
   stable WCAG, HTML, WAI-ARIA, accessible-name, ACT, and ATAG sources. RFC-0023 and the acceptance
   plan define the normative versions, draft/experimental policy, evidence matrix, severity policy,
   waiver governance, and boundaries of any public claim.

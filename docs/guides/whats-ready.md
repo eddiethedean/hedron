@@ -34,9 +34,12 @@ guaranteed multi-worker live-transport proof — see [STATUS](../STATUS.md) Defe
 
 ## Supported examples
 
-- Live interaction sample (poll + stream learning path):
-  [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
-  — see also the [live interaction guide](live-interaction.md)
+- Live interaction sample (**poll + token stream + minimal SSE ping**):
+  [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction).
+  Job SSE, WebSocket page/session channels, and navigation preload are **API Supported**
+  on FastAPI and documented in the [live interaction guide](live-interaction.md); they are
+  **not** implemented in that sample yet. Prefer polling when you need a complete
+  learning path without extending the sample.
 - FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
 
 ## Treat as Alpha / more volatile

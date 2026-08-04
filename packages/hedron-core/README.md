@@ -16,12 +16,12 @@ Django, ASGI, or WSGI dependency.
 ## Install
 
 ```bash
-pip install hedron-core
+pip install "hedron-core>=0.10.1"
 # or
-uv add hedron-core
+uv add "hedron-core>=0.10.1"
 ```
 
-Requires Python 3.11, 3.12, 3.13, or 3.14.
+Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.10.1**.
 
 ## Quick start
 
@@ -53,7 +53,7 @@ print(result.html)
 
 Prefer the FastAPI package [`hedron`](https://pypi.org/project/hedron/) for
 application work. See the [project README](https://github.com/eddiethedean/hedron)
-and [roadmap](https://github.com/eddiethedean/hedron/blob/main/ROADMAP.md).
+and the public [roadmap guide](https://hedron.readthedocs.io/en/latest/guides/roadmap/).
 
 ## Links
 
