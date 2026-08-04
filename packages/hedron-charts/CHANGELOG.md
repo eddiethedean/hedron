@@ -4,6 +4,7 @@
 ## [0.10.0] - 2026-08-04
 
 - Joined the coordinated 0.10 package train.
+- Raise the Altair optional extra to `>=6.0,<7` for Python 3.14 TypedDict compatibility.
 
 ## [0.9.0] - 2026-08-04
 

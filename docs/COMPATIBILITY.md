@@ -14,7 +14,7 @@
 | HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js`. |
 | Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Lazy optional; exact missing-extra guidance. |
 | Plotly | `>=5.18,<7` via `hedron-charts[plotly]` | Lazy optional; local host asset, no CDN callbacks. |
-| Altair | `>=5.2,<6` via `hedron-charts[altair]` | Lazy optional; Vega-Lite JSON as data. |
+| Altair | `>=6.0,<7` via `hedron-charts[altair]` | Lazy optional; Vega-Lite JSON as data. Python 3.14 requires Altair 6+ (TypedDict fix). |
 | nh3 | `>=0.2` via `hedron[sanitize]` / `[markdown]` | TrustedHtml.nh3 named constructor. |
 | Pygments | `>=2.17` via `hedron[code]` | Optional syntax highlighting for CodeViewer. |
 | Pillow | `>=10.0` via `hedron[images]` | Optional image processing. |

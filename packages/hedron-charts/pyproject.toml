@@ -42,8 +42,8 @@ dependencies = [
 [project.optional-dependencies]
 matplotlib = ["matplotlib>=3.8,<4"]
 plotly = ["plotly>=5.18,<7"]
-altair = ["altair>=5.2,<6", "vl-convert-python>=1.0"]
-all = ["matplotlib>=3.8,<4", "plotly>=5.18,<7", "altair>=5.2,<6", "vl-convert-python>=1.0"]
+altair = ["altair>=6.0,<7", "vl-convert-python>=1.0"]
+all = ["matplotlib>=3.8,<4", "plotly>=5.18,<7", "altair>=6.0,<7", "vl-convert-python>=1.0"]
 
 [project.entry-points."hedron.plugins"]
 hedron_charts = "hedron_charts.plugin:register"
