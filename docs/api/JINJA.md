@@ -313,12 +313,14 @@ capabilities = templates.capabilities(DASHBOARD)
 ```
 
 `describe()` returns the parsed format version, kind, profile, declared and effective features,
-requirements, assets, and regions without rendering. Checking covers static template dependencies,
-component/slot/view contracts, the finite contextual sink matrix, assets, locally inferable HTMX
-capabilities, render shape, and enforceable resource limits. Route and response integration is
-phase 0.11; version-aware HTMX and browser evidence is phase 0.10; broader contextual/provider
-analysis is phase 0.14. Capability inspection separately describes the format-v1 facts that an
-application policy must reconcile.
+requirements, assets, regions, source digest, and body start line without rendering. Format v1
+rejects dynamic dependencies rather than exposing dependency-bound namespaces; finite fingerprinted
+manifests arrive in phase 0.11. Checking covers static template dependencies, component/slot/view
+contracts, the finite contextual sink matrix, assets, locally inferable HTMX capabilities, render
+shape, and enforceable resource limits. Route and response integration is phase 0.11; version-aware
+HTMX and browser evidence is phase 0.10; broader contextual/provider analysis is phase 0.14.
+Capability inspection separately describes the format-v1 facts that an application policy must
+reconcile.
 
 See [RFC-0031](../rfcs/RFC-0031-JINJA-INTEGRATION.md) for the normative feature matrix, trust model,
 HTMX contract, lifecycle, inventory, and acceptance requirements.

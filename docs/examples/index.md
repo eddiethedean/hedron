@@ -23,9 +23,11 @@ your browser so they work on Read the Docs without an application server.
 | [reference-app](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app) | FastAPI flagship | CRUD, CSRF, charts |
 | [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask adapter | Home + fragment |
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django adapter | Home + fragment |
+| [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | Optional HDJ | Minimal → Jinja → components |
 
 Quickstarts: [FastAPI](../getting-started/quickstart.md) ·
-[Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).
+[Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) ·
+[HDJ API](../api/JINJA.md).
 
 ## Team administration
 

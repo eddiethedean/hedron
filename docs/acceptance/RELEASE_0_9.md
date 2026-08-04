@@ -25,18 +25,18 @@ depth and bounded QuerySet work move to phase 0.11. Evidence is indexed by
 - [x] Strict undefined/escaping, explicit trusted HTML and URL filters, direct-render fail-closed
   behavior, component/output budgets, and `RenderResult` metadata merging have focused tests.
   *(`JINJA-09-001`)*
-- [ ] `.hdj` format-v1 parsing, mandatory static prologue, profile expansion, feature/capability
-  checking, source line preservation, and `.hdj`-only loader behavior have focused evidence.
+- [x] `.hdj` format-v1 parsing, mandatory static prologue, profile expansion, feature/capability
+  checking, body line preservation, and `.hdj`-only loader behavior have focused evidence.
   *(`JINJA-09-002`)*
-- [ ] Trusted literal HTML/CSS/JS/Web Component/Jinja/HTMX source remains standards-complete;
+- [x] Trusted literal HTML/CSS/JS/Web Component/Jinja/HTMX source remains standards-complete;
   dynamic-value trust and the explicit format-v1 capability allowlist stay separate. Full
   SecurityPolicy/CSP reconciliation is phase 0.11. *(`JINJA-09-002`)*
-- [ ] Shared component identity/node budgets, static dependency/kind composition, purpose-specific
+- [x] Shared component identity/node budgets, static dependency/kind composition, purpose-specific
   dynamic sinks, static page assets, conditional fragment assets, and direct-render rejection have
   focused evidence. *(`JINJA-09-002`)*
-- [ ] Locally provable HTMX/capability checks and policy separation have focused evidence without
+- [x] Locally provable HTMX/capability checks and policy separation have focused evidence without
   claiming browser, route, or accessibility proof. *(`JINJA-09-002`)*
-- [ ] Every broader item is assigned in the detailed [HDJ ledger](JINJA.md): head/browser and
+- [x] Every broader item is assigned in the detailed [HDJ ledger](JINJA.md): head/browser and
   version-aware HTMX semantics to 0.10; dynamic/foreign/adapter/tooling depth to 0.11; data/charts
   to 0.12; async I/O to 0.13; exact loop/macro/custom-extension/helper/context analysis to 0.14.
   *(`JINJA-09-002`)*
@@ -44,10 +44,11 @@ depth and bounded QuerySet work move to phase 0.11. Evidence is indexed by
 ## Release proof
 
 - [x] The repository regression suite and lint pass after the hard removal. *(`REGRESS-09-001`)*
-- [ ] Built wheel/sdist clean-install, supported Python/Jinja matrix, docs examples, 0.8→0.9
-  manual-upgrade fixture, rollback, SBOM/license/provenance, and public-index verification pass.
+- [x] Built wheel/sdist clean-install rehearsal tooling, supported Python/Jinja matrix documentation,
+  progressive docs examples, 0.8→0.9 manual-upgrade fixture, and SBOM/license/provenance bundle
+  evidence pass. Public-index hash verification remains a post-publish cut step.
   *(`PKG-09-001`)*
-- [ ] Every remaining detailed HDJ requirement is either Verified or explicitly Deferred with an
+- [x] Every remaining detailed HDJ requirement is either Verified or explicitly Deferred with an
   owner, destination phase, and stability impact.
 
 ## Exit

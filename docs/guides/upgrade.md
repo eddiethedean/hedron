@@ -69,9 +69,12 @@ components.
 3. Delete `.hdn` source and any code reading HDN build artifacts.
 4. Pin the coordinated `0.9.0` train and add `hedron-jinja` only where templates are used.
 5. Delete old build output, rebuild format-2 manifests, and run the Jinja and application suites.
-6. Re-run security, HTMX, and adapter suites; for production, exercise Chromium/Firefox/WebKit
+6. Work through the progressive HDJ examples under
+   [`examples/hdj-progressive`](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive)
+   before migrating production templates.
+7. Re-run security, HTMX, and adapter suites; for production, exercise Chromium/Firefox/WebKit
    against critical flows when you consume HTMX history, OOB, or extensions.
-7. Read [STABILITY.md](../api/STABILITY.md) before depending on unmarked or private APIs.
+8. Read [STABILITY.md](../api/STABILITY.md) before depending on unmarked or private APIs.
 
 ## Toward 0.9 and later phases
 

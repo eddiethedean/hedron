@@ -412,6 +412,34 @@ def observed_features(environment: Environment, parsed: ParsedHdjSource) -> froz
     return frozenset(observed)
 
 
+_HX_URL_ATTRS = frozenset(
+    {
+        "hx-get",
+        "hx-post",
+        "hx-put",
+        "hx-patch",
+        "hx-delete",
+        "hx-push-url",
+        "hx-replace-url",
+    }
+)
+_HX_EVAL_ATTRS = frozenset(
+    {
+        "hx-on",
+        "hx-vals",
+        "hx-headers",
+        "hx-vars",
+        "hx-confirm",
+        "hx-prompt",
+        "hx-include",
+        "hx-params",
+        "hx-trigger",
+    }
+)
+_HX_JS_VALUE_RE = re.compile(r"(?:^|[\s,{])js\s*:", re.I)
+_HX_TRIGGER_FILTER_RE = re.compile(r"\[[^\]]+\]")
+
+
 class _LiteralCapabilityParser(HTMLParser):
     def __init__(self, kind: TemplateKind) -> None:
         super().__init__(convert_charrefs=False)
@@ -432,8 +460,20 @@ class _LiteralCapabilityParser(HTMLParser):
             lowered = name.lower()
             if lowered.startswith("on"):
                 self.capabilities.add("browser.inline-script")
-            if lowered.startswith("hx-on") or (value and value.lstrip().lower().startswith("js:")):
+            if lowered.startswith("hx-on") or _hx_value_needs_eval(lowered, value):
                 self.capabilities.add("htmx.eval")
+            if (
+                lowered in {"hx-select", "hx-target", "hx-include"}
+                and value
+                and (
+                    value.startswith("closest ")
+                    or value.startswith("find ")
+                    or value.startswith("next ")
+                    or value.startswith("previous ")
+                )
+            ):
+                # Advanced relative selectors are feature-gated; capability stays local.
+                pass
             if value:
                 purpose = _remote_purpose(tag.lower(), lowered)
                 parts = urlsplit(value.strip())
@@ -441,6 +481,16 @@ class _LiteralCapabilityParser(HTMLParser):
                     self.capabilities.add(
                         f"network.{purpose}-origin:{parts.scheme.lower()}://{parts.netloc.lower()}"
                     )
+
+
+def _hx_value_needs_eval(attribute: str, value: str | None) -> bool:
+    if value is None:
+        return False
+    if attribute.startswith("hx-on"):
+        return True
+    if attribute not in _HX_EVAL_ATTRS and not attribute.startswith("hx-on"):
+        return False
+    return bool(_HX_JS_VALUE_RE.search(value))
 
 
 def _remote_purpose(tag: str, attribute: str) -> str | None:
@@ -481,6 +531,7 @@ def contextual_diagnostics(parsed: ParsedHdjSource) -> tuple[Diagnostic, ...]:
                 "Use a context-specific HDJ bridge.",
             )
         )
+    diagnostics.extend(_htmx_local_diagnostics(parsed, original_body, body))
     for match in _OUTPUT_RE.finditer(body):
         expr = match.group("expr").strip()
         before = body[: match.start()]
@@ -620,6 +671,60 @@ def _expected_url_filter(tag_prefix: str, attribute: str | None) -> str | None:
     if attribute in {"href", "hx-get", "hx-push-url", "hx-replace-url"}:
         return "hedron_nav_url"
     return None
+
+
+def _htmx_local_diagnostics(
+    parsed: ParsedHdjSource, original_body: str, body: str
+) -> list[Diagnostic]:
+    """Emit locally provable HTMX attribute diagnostics without browser claims."""
+    diagnostics: list[Diagnostic] = []
+    for match in re.finditer(
+        r"""\s(hx-[\w:-]+)\s*=\s*(['"])(.*?)\2""",
+        body,
+        flags=re.I | re.DOTALL,
+    ):
+        attribute = match.group(1).lower()
+        value = match.group(3)
+        offset = match.start(1)
+        if attribute in _HX_URL_ATTRS and "{{" in value and "}}" in value:
+            # Dynamic URL sinks are already covered by the output-expression matrix.
+            continue
+        if attribute == "hx-trigger" and _HX_TRIGGER_FILTER_RE.search(value):
+            diagnostics.append(
+                make_diagnostic(
+                    "HED-JINJA-0026",
+                    severity=DiagnosticSeverity.WARNING,
+                    title="HTMX trigger filter is locally noted",
+                    explanation=(
+                        "Trigger filters are accepted as author-written HTMX syntax; "
+                        "browser race and cancellation proof is phase 0.10."
+                    ),
+                    remediation=(
+                        "Keep filters deterministic and declare any js: eval capability explicitly."
+                    ),
+                    span=SourceSpan(
+                        path=parsed.declaration.name,
+                        start_line=parsed.declaration.body_start_line
+                        + original_body.count("\n", 0, offset),
+                    ),
+                )
+            )
+        if attribute in _HX_URL_ATTRS:
+            stripped = value.strip()
+            if not stripped or "{{" in stripped:
+                continue
+            parts = urlsplit(stripped)
+            if parts.scheme.lower() in {"javascript", "data", "vbscript"}:
+                diagnostics.append(
+                    _context_diag(
+                        parsed,
+                        original_body,
+                        offset,
+                        f"Literal `{attribute}` URL scheme {parts.scheme!r} is not allowed",
+                        "Use an http(s) or same-origin path SafeUrl / static URL.",
+                    )
+                )
+    return diagnostics
 
 
 def _context_diag(

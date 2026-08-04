@@ -1,0 +1,9 @@
+---hdj
+version = 1
+kind = "fragment"
+profile = "standard"
+---
+<section>
+  <h1>Hello, {{ view.name }}</h1>
+  <p>Ordinary Jinja expressions read from the typed <code>view</code> model.</p>
+</section>

@@ -64,6 +64,27 @@ _PAGE_DOCTYPE_RE = re.compile(r"^\s*<!doctype\s+html\b", re.IGNORECASE)
 _CONDITIONAL_ASSET_RE = re.compile(r"{%[-+]?\s*hedron_asset\b")
 
 
+def _hdj_template_class(base: type[Any]) -> type[Any]:
+    """Reject public Jinja streaming while keeping buffered generate() for render."""
+
+    class HdjTemplate(base):  # type: ignore[valid-type,misc]
+        def stream(self, *args: Any, **kwargs: Any) -> Any:
+            raise error(
+                "HED-JINJA-0014",
+                title="Direct Jinja streaming is not supported",
+                explanation=(
+                    "Template.stream() would emit HTML before RenderResult metadata is complete."
+                ),
+                remediation=(
+                    "Use HedronJinja.render() or render_async() for an atomic RenderResult."
+                ),
+            )
+
+    HdjTemplate.__name__ = f"Hdj{base.__name__}"
+    HdjTemplate.__qualname__ = f"Hdj{base.__qualname__}"
+    return HdjTemplate
+
+
 @dataclass(slots=True)
 class _SlotCollector:
     component_alias: str
@@ -317,6 +338,7 @@ class HedronJinja:
         self._frozen = False
 
         environment.loader = HdjLoader(environment.loader)
+        environment.template_class = _hdj_template_class(environment.template_class)
         environment.add_extension(HedronJinjaExtension)
         if strict:
             environment.undefined = StrictUndefined

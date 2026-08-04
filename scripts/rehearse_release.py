@@ -57,6 +57,7 @@ def main() -> int:
             for prefix in (
                 "hedron_core-",
                 "hedron-",
+                "hedron_jinja-",
                 "hedron_data-",
                 "hedron_flask-",
                 "hedron_django-",
@@ -79,7 +80,9 @@ def main() -> int:
             "html = render(Page(Text('release-ok'), title='Release'), mode=RenderMode.PAGE).html\n"
             "assert 'release-ok' in html and html.lower().startswith('<!doctype')\n"
             "from hedron import Hedron, __version__\n"
-            "print('ok: release smoke', __version__)\n"
+            "from hedron_jinja import HedronJinja, TemplateSpec, __version__ as jinja_version\n"
+            "assert jinja_version == __version__\n"
+            "print('ok: release smoke', __version__, 'jinja', jinja_version)\n"
         )
         subprocess.check_call([str(py), "-c", code])
     return 0

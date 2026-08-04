@@ -1,0 +1,8 @@
+---hdj
+version = 1
+kind = "fragment"
+profile = "minimal"
+---
+<section data-role="hero" aria-label="Greeting">
+  <p>Hello from a minimal HDJ template.</p>
+</section>

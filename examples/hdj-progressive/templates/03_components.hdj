@@ -1,0 +1,14 @@
+---hdj
+version = 1
+kind = "fragment"
+profile = "standard"
+---
+{% hedron "Card" title=view.heading with body %}
+  <p>
+    Status:
+    {% hedron "Badge" text=view.status tone="success" %}
+  </p>
+  <p>
+    <a href="{{ view.detail_url|hedron_nav_url }}">Open details</a>
+  </p>
+{% endhedron %}

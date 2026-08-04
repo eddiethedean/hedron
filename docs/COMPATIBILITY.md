@@ -24,6 +24,18 @@
 | Authlib | `>=1.3` via `hedron[auth]` | Convenience helpers only; no identity ownership. |
 | Jinja | `>=3.1,<4` via `hedron[jinja]` / `hedron-jinja` | Optional trusted-template integration; not imported by `hedron-core`. |
 
+## Phase 0.9 compatibility baseline
+
+Phase 0.9 keeps the numeric dependency floors above and adds the optional HDJ authoring package.
+
+| Capability | Supported declaration |
+|---|---|
+| HDJ / Jinja | Optional `hedron-jinja` / `hedron[jinja]` with Jinja2 `>=3.1,<4` and MarkupSafe as resolved by Jinja. Not imported by `hedron-core` or a default `hedron` install. |
+| HDJ source format | UTF-8 `.hdj` with a mandatory format-v1 TOML prologue; ordinary `.html`/`.jinja` stay outside the HDJ loader. |
+| HDN | Removed. Version 0.8 is the final HDN-capable line; no converter or compatibility runtime ships. |
+| Native adapter depth | FastAPI remains the flagship depth; Flask/Django keep their 0.7/0.8 routing slices. Native route/CSRF/forms/CSP reconciliation for HDJ is phase 0.11. |
+| Live HTMX / streaming | Browser-backed HTMX lifecycle and HDJ fragment-head/streaming remain phase 0.10. |
+
 ## Phase 0.7 compatibility entry gate
 
 Concrete reviewed ranges for adapter and operations work. A version in dependency metadata is not

@@ -1,6 +1,6 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.9 implementation on repository `main`.
+**Roadmap position:** phase 0.9 cut-ready on repository `main`.
 **Date:** 2026-08-04
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
 `hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` / `hedron-jinja` `0.9.0`
@@ -17,16 +17,16 @@ The parser, evaluator, formatter, render program, discovery, artifacts, public A
 paths, examples, and tests are gone. `hedron-jinja` is the optional replacement; typed Python
 components remain canonical.
 
-## Phase 0.8 evidence
+## Phase 0.9 evidence
 
-- Closure index: [release-gate-0.8.toml](acceptance/release-gate-0.8.toml)
+- Closure index: [acceptance/release-gate-0.9.toml](acceptance/release-gate-0.9.toml)
   (`Verified` or owned `Deferred`).
+- Acceptance: [acceptance/RELEASE_0_9.md](acceptance/RELEASE_0_9.md) and
+  [acceptance/JINJA.md](acceptance/JINJA.md).
 - Stability: [api/STABILITY.md](api/STABILITY.md).
 - Compatibility / deprecation: [COMPATIBILITY.md](COMPATIBILITY.md).
 - Upgrade: [guides/upgrade.md](guides/upgrade.md).
-- Threat model: [guides/threat-model.md](guides/threat-model.md).
-- Performance budgets: [PERFORMANCE_BUDGETS.md](PERFORMANCE_BUDGETS.md).
-- Supply chain: `scripts/build_evidence_bundle.py` (SBOM, licenses, asset audit).
-- Current gate: [acceptance/RELEASE_0_9.md](acceptance/RELEASE_0_9.md) and
-  [acceptance/release-gate-0.9.toml](acceptance/release-gate-0.9.toml).
+- Progressive examples: repository `examples/hdj-progressive/`.
+- Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_09.py`.
 - Cut procedure: [RELEASE.md](RELEASE.md) (`## Build and cut v0.9.0`).
+  Tag/publish remains an explicit release step after public-index verification.

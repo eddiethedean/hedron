@@ -45,9 +45,7 @@ def force_runtime_compile() -> Iterator[None]:
         _force_allow.reset(token)
 
 
-def assert_runtime_compile_allowed(
-    *, production: bool | None = None, what: str = "CSS"
-) -> None:
+def assert_runtime_compile_allowed(*, production: bool | None = None, what: str = "CSS") -> None:
     if _force_allow.get():
         return
     if production is False:

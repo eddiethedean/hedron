@@ -276,10 +276,12 @@ The optional `mode` operation argument is also an assertion; source kind remains
 `library` sources can be checked and imported but cannot be render entry points.
 
 `TemplateDeclaration` is immutable and exposes `format_version`, `kind`, `profile`,
-`declared_features`, `effective_features`, `requires`, `assets`, `regions`, and bounded dynamic
-dependency namespaces. `describe()` parses and resolves availability without rendering. It is the
-canonical editor/CLI/Explorer answer to “what is available to this source?”; `capabilities()`
-separately reports what the source and its dependency graph actually require from deployment.
+`declared_features`, `effective_features`, `requires`, `assets`, `regions`, `source_digest`, and
+`body_start_line`. Format v1 rejects dynamic dependencies rather than exposing dependency-bound
+namespaces; finite fingerprinted manifests are phase 0.11. `describe()` parses and resolves
+availability without rendering. It is the canonical editor/CLI/Explorer answer to “what is
+available to this source?”; `capabilities()` separately reports what the source and its dependency
+graph actually require from deployment.
 
 ### `HdjContext`
 

@@ -8,5 +8,7 @@
   one shared core render session, and HTML-body/purpose-specific URL trust filters.
 - Add the mandatory prologue parser, `.hdj`-only guarded loader, static dependency/kind checks,
   capability-versus-policy diagnostics, registered assets, and bounded chunk consumption.
-- Reject direct rendering, dynamic/foreign format-v1 dependencies, and conditional page assets;
-  later-phase ownership is recorded in RFC-0031 and the roadmap.
+- Reject direct rendering, dynamic/foreign format-v1 dependencies, conditional page assets, and
+  public `Template.stream()` paths; later-phase ownership is recorded in RFC-0031 and the roadmap.
+- Close format-v1 evidence for profiles, sinks, HTMX local checks, composition parity, progressive
+  examples, and the 0.8→0.9 manual upgrade fixture.

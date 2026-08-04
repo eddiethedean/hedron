@@ -23,6 +23,7 @@ logger = logging.getLogger("hedron.discovery")
 
 __all__ = ["DiscoveredComponent", "discover_component_folders", "load_component_module"]
 
+
 @dataclass(frozen=True, slots=True)
 class DiscoveredComponent:
     name: str

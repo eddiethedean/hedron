@@ -4,7 +4,7 @@
 [[evidence]]
 id = "BREAK-09-001"
 state = "Verified"
-command = "rg -n 'hedron_core\\.hdn|compile_hdn|format_hdn|load_hdn_program|run_program|RenderProgram|HDN_FORMAT_VERSION|template\\.hdn' packages examples tests scripts"
+command = "python scripts/check_hdn_removed.py"
 ci_job = "test"
 owner = "hedron-core"
 
@@ -17,8 +17,8 @@ owner = "hedron-jinja"
 
 [[evidence]]
 id = "JINJA-09-002"
-state = "Planned"
-command = ""
+state = "Verified"
+command = "python -m pytest -q tests/jinja tests/unit/test_render_session.py"
 ci_job = "test"
 owner = "hedron-jinja"
 
@@ -31,7 +31,57 @@ owner = "hedron"
 
 [[evidence]]
 id = "PKG-09-001"
-state = "Planned"
-command = ""
+state = "Verified"
+command = "python scripts/verify_pkg_09.py"
 ci_job = "release"
 owner = "hedron"
+
+[[evidence]]
+id = "HDJ-DEF-010"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron-jinja"
+rationale = "Registered fragment head management, two-phase template streaming, version-aware HTMX semantics, and browser-backed HTMX evidence remain outside the static/atomic 0.9 contract."
+destination = "phase 0.10 live interaction gate"
+stability_impact = "No Supported claim for HDJ streaming, fragment head mutation lifecycle, or browser HTMX proof in 0.9."
+
+[[evidence]]
+id = "HDJ-DEF-011"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron-jinja"
+rationale = "Native FastAPI/Flask/Django route/CSRF/forms/PAGE-FRAGMENT facades, foreign Jinja namespaces, SecurityPolicy/CSP reconciliation, and CLI/build/Explorer inventory are owned by the 0.11 native-depth gate."
+destination = "phase 0.11 native framework depth gate"
+stability_impact = "HDJ 0.9 exposes constructor callbacks and capability reports only; adapters and Explorer remain unchanged."
+
+[[evidence]]
+id = "HDJ-DEF-012"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron-data"
+rationale = "hedron.data / hedron.charts provider parity from HDJ is assigned to the advanced data/visualization phase."
+destination = "phase 0.12 data and visualization scale gate"
+stability_impact = "No Supported HDJ data-table/editor/chart claim in 0.9."
+
+[[evidence]]
+id = "HDJ-DEF-013"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron-jinja"
+rationale = "Async filter/global I/O budgets, deadlines, cancellation, and tracing beyond explicit jinja.async rendering remain deferred."
+destination = "phase 0.13 advanced async gate"
+stability_impact = "0.9 supports core async render only when jinja.async is declared."
+
+[[evidence]]
+id = "HDJ-DEF-014"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron-jinja"
+rationale = "Exact loop/macro instrumentation, arbitrary custom-extension evidence, richer contextual analysis, and portable SARIF-style checker fixtures remain deferred."
+destination = "phase 0.14 portable acceleration gate"
+stability_impact = "0.9 diagnostics stay code/span/remediation focused without claiming exact loop/macro accounting."
