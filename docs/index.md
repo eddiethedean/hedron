@@ -16,9 +16,9 @@ a JavaScript application stack.
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
-[Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
+[Install Hedron](getting-started/installation.md){ .md-button .md-button--primary }
+[Build your first app](getting-started/quickstart.md){ .md-button }
 [What's ready](guides/whats-ready.md){ .md-button }
-[Why Hedron](guides/why-hedron.md){ .md-button }
 </div>
 
 <div class="hedron-signal-row">
@@ -57,7 +57,7 @@ Pick **one** path — scaffold (recommended) or a hand-written `app.py`. Do not 
 === "Scaffold (recommended)"
 
     ```bash
-    pip install "hedron>=0.10.0"
+    pip install "hedron>=0.10.0" "uvicorn[standard]"
     hedron new my-hedron-app
     cd my-hedron-app
     pip install -e .   # or: uv sync
@@ -100,13 +100,9 @@ Pick **one** path — scaffold (recommended) or a hand-written `app.py`. Do not 
 
     Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-## Golden path (next)
+## Next steps
 
-Use this order only:
-
-**Install → First app → HTMX interactions → Minimal form → Learning path**
-
-1. [Installation](getting-started/installation.md) (if you still need extras or hosts)
+1. [Installation](getting-started/installation.md)
 2. [Build your first app](getting-started/quickstart.md)
 3. [HTMX interactions](guides/htmx-interactions.md)
 4. [Minimal form](guides/minimal-form.md)

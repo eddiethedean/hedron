@@ -43,10 +43,10 @@ individual is officially representing the project in public spaces.
 
 ## Enforcement
 
-Report incidents to the project maintainers via GitHub
-[private security advisory](https://github.com/eddiethedean/hedron/security/advisories/new)
-(for sensitive reports) or by opening a confidential contact through the
-[repository owner’s GitHub profile](https://github.com/eddiethedean).
+Report Code of Conduct incidents privately to project maintainers via the
+[repository owner’s GitHub profile](https://github.com/eddiethedean) (confidential
+contact). Do **not** use GitHub security advisories for conduct reports — those are
+reserved for vulnerability disclosure ([SECURITY.md](SECURITY.md)).
 
 All complaints will be reviewed and investigated promptly and fairly.
 

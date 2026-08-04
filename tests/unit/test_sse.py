@@ -124,10 +124,14 @@ def test_job_status_sse_skips_last_event_id() -> None:
 
 
 def test_job_status_sse_not_found() -> None:
+    from fastapi import HTTPException
+
     backend = InMemoryJobBackend()
-    body = _read_sse_body(lambda: job_status_sse_response("missing", backend=backend))
-    assert b"event: error" in body
-    assert b"not-found" in body
+    try:
+        job_status_sse_response("missing", backend=backend)
+        raise AssertionError("expected HTTPException")
+    except HTTPException as exc:
+        assert exc.status_code == 404
 
 
 def test_extension_script_tags_include_sse() -> None:

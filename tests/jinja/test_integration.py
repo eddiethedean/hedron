@@ -15,7 +15,6 @@ from hedron_core import (
     Model,
     RenderMode,
     SafeUrl,
-    Secret,
     TrustedHtml,
     UrlPurpose,
 )
@@ -152,15 +151,20 @@ def test_context_checker_ignores_jinja_comments_and_rejects_html_comment_data() 
     assert any(item.code == "HED-JINJA-0021" for item in diagnostics)
 
 
-def test_template_strict_false_allows_generic_safe_without_laundering_security_types() -> None:
+def test_template_strict_false_still_rejects_generic_safe() -> None:
     source = _hdj("{{ view.value|safe }}")
-    templates = HedronJinja(Environment(loader=DictLoader({"x.hdj": source})))
-    result = templates.render(TemplateSpec("x.hdj", strict=False), {"value": "<em>ok</em>"})
-    assert result.html == "<em>ok</em>"
-
+    templates = HedronJinja(Environment(loader=DictLoader({"x.hdj": source})), strict=False)
+    diagnostics = templates.check(TemplateSpec("x.hdj", strict=False))
+    assert any(
+        "safe" in (item.title or "").lower() or item.code.startswith("HED-JINJA")
+        for item in diagnostics
+    )
     with pytest.raises(HedronError) as exc:
-        templates.render(TemplateSpec("x.hdj", strict=False), {"value": Secret("hidden")})
-    assert exc.value.diagnostic.code == "HED-JINJA-0009"
+        templates.render(TemplateSpec("x.hdj", strict=False), {"value": "<em>ok</em>"})
+    assert (
+        exc.value.diagnostic.code in {"HED-JINJA-0009", "HED-JINJA-0021"}
+        or "safe" in str(exc.value).lower()
+    )
 
 
 @pytest.mark.parametrize(

@@ -38,7 +38,9 @@ Bundled HTMX remains under `/hedron-static/`.
 ## Dockerfile (FastAPI)
 
 Install the **application** dependencies (not only Hedron), build the manifest, then
-run under production mode:
+run under production mode. Treat Dockerfiles under `examples/reference-app/` as
+**starting points** — compose there is maintainer-experimental; prefer local `uvicorn`
+for learning, and adapt the sample Dockerfile to your app layout before production.
 
 ```dockerfile
 FROM python:3.12-slim AS build

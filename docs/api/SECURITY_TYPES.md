@@ -49,6 +49,19 @@ URL-bearing HTML attributes—including `href`, `src`, `action`, `srcset`, `ping
 
 A `SafeUrl` remains subject to the final rendering or redirect context policy. Application helpers `redirect_local` and `redirect_external` enforce the same local-vs-external split; `redirect_external` is disabled unless the security policy sets `allow_external_redirects=True`.
 
+## `csrf_token_for_request`
+
+Public FastAPI helper (re-exported from `hedron` and `hedron.security`) that returns the
+CSRF token for the current request under the app’s `SecurityPolicy`. Use it to seed
+hidden form fields or headers after a safe GET — see
+[Minimal form POST](../guides/minimal-form.md).
+
+```python
+from hedron import csrf_token_for_request
+
+token = csrf_token_for_request(request, request.app.state.hedron_security)
+```
+
 ## Stability and errors
 
 These values are immutable and safe to compare, but their representations never expose secret content.

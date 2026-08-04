@@ -77,12 +77,17 @@ def hedron_route(
             if csrf_protect and request.method.upper() in _UNSAFE_METHODS:
                 validate_csrf(request, cookie_name=csrf_cookie_name)
             value = current_app.ensure_sync(view)(*args, **kwargs)
+            authenticated = False
+            auth_fn = getattr(current_app, "auth_signal", None)
+            if callable(auth_fn):
+                signal = auth_fn(request)
+                authenticated = bool(getattr(signal, "authenticated", False))
             if isinstance(value, InteractionResult):
-                return interaction_response(value)
+                return interaction_response(value, authenticated=authenticated)
             if isinstance(value, RenderResult):
-                return component_response(value)
+                return component_response(value, authenticated=authenticated)
             if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
-                return component_response(value)  # type: ignore[arg-type]
+                return component_response(value, authenticated=authenticated)  # type: ignore[arg-type]
             return value
 
         return wrapped  # type: ignore[return-value]

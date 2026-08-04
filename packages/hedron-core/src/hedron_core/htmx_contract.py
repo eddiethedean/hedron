@@ -309,4 +309,7 @@ def approved_headers(
     unknown = set(headers) - APPROVED_RESPONSE_HEADERS
     if unknown:
         raise ValueError(f"Unapproved HTMX response headers: {sorted(unknown)}")
+    for key, value in headers.items():
+        if any(ord(ch) < 32 for ch in key) or any(ord(ch) < 32 for ch in value):
+            raise ValueError(f"HTMX header {key!r} must not contain control characters")
     return headers

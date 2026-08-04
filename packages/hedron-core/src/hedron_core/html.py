@@ -20,10 +20,24 @@ from hedron_core.security import SafeUrl, TrustedHtml, UrlPurpose, check_url_pur
 
 # Only layout CSS custom properties — never arbitrary author CSS.
 _SAFE_LAYOUT_STYLE = re.compile(r"^--hedron-gap:\s*\d+(\.\d+)?(rem|em|px|%);?$")
+# Attribute names must be tokens — never whitespace, quotes, ``=``, or tag breakouts.
+_SAFE_ATTR_NAME = re.compile(r"^[A-Za-z_][\w.-]*$")
+_META_REFRESH_URL = re.compile(r"url\s*=", re.IGNORECASE)
 
 
 def _is_safe_layout_style(value: Any) -> bool:
     return isinstance(value, str) and bool(_SAFE_LAYOUT_STYLE.match(value.strip()))
+
+
+def _require_safe_attr_name(name: str) -> str:
+    if not name or not _SAFE_ATTR_NAME.match(name) or any(ord(ch) < 32 for ch in name):
+        raise error(
+            "HED-SEC-0010",
+            title="Unsafe attribute name rejected",
+            explanation=f"Attribute name {name!r} contains forbidden characters.",
+            remediation="Use token attribute names matching [A-Za-z_][\\w.-]*.",
+        )
+    return name
 
 
 def _is_allowed_attr(name: str) -> bool:
@@ -74,13 +88,16 @@ def _normalize_attrs(attrs: dict[str, Any], *, tag: str) -> dict[str, Any]:
             continue
         if key == "data" and isinstance(value, dict):
             for dk, dv in value.items():
-                out[f"data-{dk}"] = dv
+                safe_key = _require_safe_attr_name(str(dk))
+                out[f"data-{safe_key}"] = dv
             continue
         if key == "aria" and isinstance(value, dict):
             for ak, av in value.items():
-                out[f"aria-{ak}"] = av
+                safe_key = _require_safe_attr_name(str(ak))
+                out[f"aria-{safe_key}"] = av
             continue
         name = ATTR_ALIASES.get(key, key)
+        _require_safe_attr_name(str(name))
         lower = name.lower()
         if lower.startswith("on"):
             raise error(
@@ -171,7 +188,11 @@ def _normalize_attrs(attrs: dict[str, Any], *, tag: str) -> dict[str, Any]:
     if tag == "meta":
         http_equiv = str(out.get("http-equiv", "")).lower()
         content = out.get("content")
-        if http_equiv == "refresh" and isinstance(content, str) and "url=" in content.lower():
+        if (
+            http_equiv == "refresh"
+            and isinstance(content, str)
+            and _META_REFRESH_URL.search(content) is not None
+        ):
             raise error(
                 "HED-SEC-0008",
                 title="meta refresh URL rejected",

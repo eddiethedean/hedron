@@ -18,7 +18,7 @@ __all__ = [
 
 
 def _reject_header_controls(name: str, value: str) -> None:
-    if any(ord(ch) < 32 for ch in value):
+    if any(ord(ch) < 32 for ch in name) or any(ord(ch) < 32 for ch in value):
         raise ValueError(f"{name} must not contain control characters")
 
 

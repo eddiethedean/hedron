@@ -46,12 +46,13 @@ def _convert(value: Any, request: HttpRequest) -> HttpResponse:
 
     if (request.method or "GET").upper() in {"GET", "HEAD"}:
         seed_csrf_cookie(request)
+    authenticated = bool(getattr(getattr(request, "user", None), "is_authenticated", False))
     if isinstance(value, InteractionResult):
-        return interaction_response(value, request=request)
+        return interaction_response(value, request=request, authenticated=authenticated)
     if isinstance(value, RenderResult):
-        return component_response(value, request=request)
+        return component_response(value, request=request, authenticated=authenticated)
     if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
-        return component_response(value, request=request)  # type: ignore[arg-type]
+        return component_response(value, request=request, authenticated=authenticated)  # type: ignore[arg-type]
     if isinstance(value, HttpResponse):
         return value
     raise TypeError(f"Unsupported Hedron view return type: {type(value)!r}")

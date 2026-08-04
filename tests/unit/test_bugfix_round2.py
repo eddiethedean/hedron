@@ -156,9 +156,9 @@ def test_job_sse_authz_mismatch() -> None:
             poll_interval_seconds=0.01,
         )
 
-    with TestClient(app) as client:
-        body = client.get("/sse").content
-    assert b"forbidden" in body
+    with TestClient(app, raise_server_exceptions=False) as client:
+        response = client.get("/sse")
+    assert response.status_code == 403
     status = backend.get(handle.job_id)
     assert status is not None
     assert status.state is JobState.QUEUED

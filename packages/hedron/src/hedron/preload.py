@@ -66,5 +66,7 @@ def apply_preload_headers(
         response.headers["X-Hedron-Preload-Cancel"] = "navigation"
     if extra:
         for key, value in extra.items():
+            if any(ord(ch) < 32 for ch in key) or any(ord(ch) < 32 for ch in value):
+                raise ValueError(f"{key} must not contain control characters")
             response.headers[key] = value
     return response

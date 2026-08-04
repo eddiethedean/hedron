@@ -80,6 +80,12 @@ the installed sources.
     options:
       heading_level: 3
 
+## CSRF helper
+
+::: hedron.security.csrf.csrf_token_for_request
+    options:
+      heading_level: 3
+
 ## `hedron_core.Field`
 
 ::: hedron_core.field.Field
@@ -105,4 +111,4 @@ the installed sources.
 
 - [Hedron contract](HEDRON.md) · [Router](ROUTER.md) · [Interaction](INTERACTION.md)
 - [Component](COMPONENT.md) · [Field](FIELD.md) · [SSE](SSE.md) · [Diagnostics](DIAGNOSTICS.md)
-- [CLI](CLI.md) · [Page](PAGE.md)
+- [CLI](CLI.md) · [Page](PAGE.md) · [Public API coverage map](COVERAGE.md)

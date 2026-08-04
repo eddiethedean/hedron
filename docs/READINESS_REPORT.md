@@ -1,56 +1,9 @@
-# Pre-coding documentation readiness report
+# Historical readiness report
 
-!!! warning "Historical archive"
+This document is an **archived** phase 0.0 artifact. It is **not** the current readiness gate.
 
-    This report records the **phase 0.0** pre-coding documentation gate (2026-08-02),
-    before packages shipped. It is **not** a current production-readiness statement.
-    For the published **0.10.0** train, use [What’s ready today](guides/whats-ready.md),
-    [Evaluate Hedron](guides/evaluate.md), and [Production readiness](guides/production-readiness.md).
+Current operator view: [What's ready today](guides/whats-ready.md) · [STATUS](STATUS.md) ·
+[Production readiness](guides/production-readiness.md).
 
-**Date:** 2026-08-02  
-**Outcome:** Ready to begin local phase 0.1 implementation targeting `v0.1.0`  
-**Scope:** 104 canonical specification documents plus this audit record
-
-## Gate result
-
-The phase 0.0 specification and project-foundation gate passes and publishes no package. The package skeleton and phase 0.1 typed rendering core for `v0.1.0` can be implemented without choosing an undocumented framework boundary, public rendering contract, dependency range, repository layout, identifier format, diagnostic format, built-in baseline, or quality toolchain.
-
-`Accepted` RFCs and API documents select planned designs; they do not claim those features have been implemented. Each feature remains unavailable until its roadmap phase and acceptance gate are complete.
-
-## Resolutions made in the final sweep
-
-- Fixed the canonical addressability model: application-local resources use `@app.component` or `@router.component`; reusable packages use `@addressable` plus explicit `include_component` exposure.
-- Fixed the rendering boundary: component `render()` methods return `NodeLike`; only the framework-neutral top-level renderer returns `RenderResult`; concrete serializer nodes remain private.
-- Removed an early `StreamingComponentResponse` leak. General component streaming is now assigned
-  to phase 0.10, while explicit framework streaming remains an escape hatch (D-038).
-- Fixed the package/import map and clarified that the `hedron-explorer` preview begins in `v0.2.0` through `hedron[dev]`, with the full platform shipping in `v0.4.0`.
-- Fixed the initial built-in component catalog and its release ownership.
-- Fixed deterministic logical, DOM-instance, and asset identifier formats.
-- Fixed configuration precedence, structured diagnostic codes, supported runtime ranges, and the contributor toolchain.
-- Reconciled all RFC and public-contract statuses with their indexes and clarified that acceptance is design status rather than implementation status.
-- Assigned all 29 RFCs and the original feature families to explicit phases; D-038 later continued
-  that coverage through capability phases 0.9–0.14 without a 1.0 terminus.
-- Recorded the historical D-031/D-032 numbering and release mapping. D-038 later superseded their
-  1.0 terminus while retaining `0.N` → `v0.N.0` for continuing capability phases.
-
-## Verification performed
-
-- Every canonical Markdown file has a top-level heading and balanced fenced-code blocks; all 21 Python examples parse successfully.
-- All relative Markdown targets resolve.
-- The foundations, RFC, API, implementation, and acceptance indexes cover their document sets.
-- All 29 baseline RFC files and all 20 public API contracts have `Accepted` status, and the RFC index agrees.
-- The roadmap contains an ordered, open-ended `0.x` capability sequence, its initial-release
-  mapping, and an assignment for RFC-0001 through RFC-0029.
-- Terminology and stale-marker searches found no old project name, legacy adapter spelling, active pre-acceptance document, unfinished-work marker, or unresolved implementation decision in the canonical specification.
-- Obsolete source archives were removed at the owner's direction; the canonical specification is self-contained.
-
-## Deliberate non-blockers
-
-- The owner must choose a license before public package publication. No license was inferred; local development may begin under the recorded all-rights-reserved baseline. *(Resolved by D-033: MIT.)*
-- The first `uv.lock` and exact transitive dependency set are implementation artifacts created with the package scaffold. They must satisfy the accepted direct compatibility ranges.
-- RFCs for later releases are accepted architecture plans, but their implementation must not jump ahead of their roadmap gates.
-- There is no code yet, so implementation, package, browser, security, accessibility, and performance tests are future release evidence rather than documentation-audit evidence.
-
-## Sign-off
-
-Proceed with the phase 0.1 package scaffold and typed rendering core targeting `v0.1.0`. Use [Project layout](PROJECT_LAYOUT.md), [Engineering baseline](ENGINEERING_BASELINE.md), [Rendering API](api/RENDERING.md), [Built-ins](api/BUILT_INS.md), [model implementation](implementation/MODEL_SYSTEM.md), [rendering implementation](implementation/RENDERING_ENGINE.md), [serializer implementation](implementation/HTML_SERIALIZER.md), and [component-model acceptance](acceptance/COMPONENT_MODEL.md) as the initial implementation packet.
+Archived copy:
+[`docs/archive/phase-0.0-readiness.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/phase-0.0-readiness.md).

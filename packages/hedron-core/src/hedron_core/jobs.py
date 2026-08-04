@@ -19,6 +19,7 @@ __all__ = [
     "JobStatus",
     "RedisJobBackend",
     "get_job_backend",
+    "job_authorized",
     "job_status_interaction",
     "reset_jobs_for_tests",
     "set_job_backend",
@@ -66,9 +67,21 @@ class JobBackend(Protocol):
         auth_subject: str | None = None,
     ) -> JobHandle: ...
 
-    def get(self, job_id: str) -> JobStatus | None: ...
+    def get(
+        self,
+        job_id: str,
+        *,
+        auth_subject: str | None = None,
+        tenant_id: str | None = None,
+    ) -> JobStatus | None: ...
 
-    def request_cancel(self, job_id: str) -> bool: ...
+    def request_cancel(
+        self,
+        job_id: str,
+        *,
+        auth_subject: str | None = None,
+        tenant_id: str | None = None,
+    ) -> bool: ...
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int: ...
 
@@ -82,11 +95,33 @@ class JobBackend(Protocol):
     ) -> JobStatus | None: ...
 
 
+def job_authorized(
+    status: JobStatus,
+    *,
+    auth_subject: str | None = None,
+    tenant_id: str | None = None,
+) -> bool:
+    """Return True when caller credentials satisfy the job's auth/tenant scope."""
+    subject_ok = status.auth_subject is None or status.auth_subject == auth_subject
+    tenant_ok = status.tenant_id is None or status.tenant_id == tenant_id
+    return subject_ok and tenant_ok
+
+
+def _idempotency_scope_key(
+    idempotency_key: str,
+    *,
+    tenant_id: str | None,
+    auth_subject: str | None,
+) -> str:
+    return f"{tenant_id or ''}\x1f{auth_subject or ''}\x1f{idempotency_key}"
+
+
 @dataclass
 class _JobRecord:
     status: JobStatus
     payload: dict[str, Any] = field(default_factory=dict)
     idempotency_key: str | None = None
+    idempotency_scope_key: str | None = None
 
 
 def _status_from_dict(data: Mapping[str, Any]) -> JobStatus:
@@ -144,11 +179,20 @@ class InMemoryJobBackend:
         auth_subject: str | None = None,
     ) -> JobHandle:
         with self._lock:
-            if idempotency_key and idempotency_key in self._idempotency:
-                return JobHandle(
-                    job_id=self._idempotency[idempotency_key],
-                    idempotency_key=idempotency_key,
+            scoped: str | None = None
+            if idempotency_key:
+                scoped = _idempotency_scope_key(
+                    idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
                 )
+                existing_id = self._idempotency.get(scoped)
+                if existing_id is not None:
+                    existing = self._jobs.get(existing_id)
+                    if existing is not None and job_authorized(
+                        existing.status, auth_subject=auth_subject, tenant_id=tenant_id
+                    ):
+                        return JobHandle(job_id=existing_id, idempotency_key=idempotency_key)
+                    # Stale or cross-scope pointer — drop and continue.
+                    del self._idempotency[scoped]
             job_id = secrets.token_urlsafe(16)
             now = time.time()
             status = JobStatus(
@@ -164,22 +208,46 @@ class InMemoryJobBackend:
                 status=status,
                 payload=dict(payload),
                 idempotency_key=idempotency_key,
+                idempotency_scope_key=scoped,
             )
-            if idempotency_key:
-                self._idempotency[idempotency_key] = job_id
+            if scoped is not None:
+                self._idempotency[scoped] = job_id
             return JobHandle(job_id=job_id, idempotency_key=idempotency_key)
 
-    def get(self, job_id: str) -> JobStatus | None:
+    def get(
+        self,
+        job_id: str,
+        *,
+        auth_subject: str | None = None,
+        tenant_id: str | None = None,
+    ) -> JobStatus | None:
         with self._lock:
             rec = self._jobs.get(job_id)
-            return rec.status if rec else None
+            if rec is None:
+                return None
+            # Unrestricted read when caller omits both scope kwargs (internal/workers).
+            # HTTP helpers must pass credentials and call job_authorized explicitly, or
+            # pass matching kwargs here to filter.
+            if auth_subject is None and tenant_id is None:
+                return rec.status
+            if not job_authorized(rec.status, auth_subject=auth_subject, tenant_id=tenant_id):
+                return None
+            return rec.status
 
-    def request_cancel(self, job_id: str) -> bool:
+    def request_cancel(
+        self,
+        job_id: str,
+        *,
+        auth_subject: str | None = None,
+        tenant_id: str | None = None,
+    ) -> bool:
         with self._lock:
             rec = self._jobs.get(job_id)
             if rec is None:
                 return False
             st = rec.status
+            if not job_authorized(st, auth_subject=auth_subject, tenant_id=tenant_id):
+                return False
             if st.state in {JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED}:
                 return False
             rec.status = JobStatus(
@@ -208,8 +276,9 @@ class InMemoryJobBackend:
                     JobState.CANCELLED,
                 }:
                     del self._jobs[job_id]
-                    if rec.idempotency_key and self._idempotency.get(rec.idempotency_key) == job_id:
-                        del self._idempotency[rec.idempotency_key]
+                    scoped = rec.idempotency_scope_key
+                    if scoped and self._idempotency.get(scoped) == job_id:
+                        del self._idempotency[scoped]
                     removed += 1
         return removed
 
@@ -255,8 +324,17 @@ class RedisJobBackend:
     def _key(self, job_id: str) -> str:
         return f"{self._prefix}{job_id}"
 
-    def _idem_key(self, idempotency_key: str) -> str:
-        return f"{self._prefix}idem:{idempotency_key}"
+    def _idem_key(
+        self,
+        idempotency_key: str,
+        *,
+        tenant_id: str | None = None,
+        auth_subject: str | None = None,
+    ) -> str:
+        scoped = _idempotency_scope_key(
+            idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
+        )
+        return f"{self._prefix}idem:{scoped}"
 
     def _decode(self, raw: Any) -> str | None:
         if raw is None:
@@ -278,6 +356,66 @@ class RedisJobBackend:
             ex=self._ttl,
         )
 
+    def _store_cas(self, data: Mapping[str, Any], *, expected_updated_at: float) -> bool:
+        """Compare-and-swap store when Redis WATCH/pipeline is available."""
+        key = self._key(str(data["job_id"]))
+        pipeline_factory = getattr(self._client, "pipeline", None)
+        if not callable(pipeline_factory):
+            # Best-effort merge for stubs without WATCH: re-read cancel flag.
+            latest = self._load(str(data["job_id"]))
+            merged = dict(data)
+            if latest is not None and latest.get("cancel_requested"):
+                merged["cancel_requested"] = True
+                if merged.get("state") == JobState.RUNNING.value:
+                    merged["state"] = JobState.CANCELLED.value
+            self._store(merged)
+            return True
+        pipe: Any = pipeline_factory()
+        watch_error: type[BaseException] | None = None
+        try:
+            from redis.exceptions import WatchError as _WatchError  # type: ignore[import-not-found]
+
+            watch_error = _WatchError
+        except Exception:
+            watch_error = None
+        for _ in range(8):
+            try:
+                pipe.watch(key)
+                raw = self._decode(pipe.get(key) if hasattr(pipe, "get") else self._client.get(key))
+                if raw is None:
+                    pipe.unwatch()
+                    return False
+                current = json.loads(raw)
+                if float(current.get("updated_at", -1)) != float(expected_updated_at):
+                    pipe.unwatch()
+                    return False
+                merged = dict(data)
+                if current.get("cancel_requested"):
+                    merged["cancel_requested"] = True
+                    if merged.get("state") == JobState.RUNNING.value:
+                        merged["state"] = JobState.CANCELLED.value
+                pipe.multi()
+                pipe.set(
+                    key,
+                    json.dumps(merged, default=str, separators=(",", ":")),
+                    ex=self._ttl,
+                )
+                pipe.execute()
+                return True
+            except Exception as exc:
+                if watch_error is not None and isinstance(exc, watch_error):
+                    continue
+                # Client without proper WATCH support — fall back.
+                latest = self._load(str(data["job_id"]))
+                merged = dict(data)
+                if latest is not None and latest.get("cancel_requested"):
+                    merged["cancel_requested"] = True
+                    if merged.get("state") == JobState.RUNNING.value:
+                        merged["state"] = JobState.CANCELLED.value
+                self._store(merged)
+                return True
+        return False
+
     def submit(
         self,
         job_type: str,
@@ -287,13 +425,20 @@ class RedisJobBackend:
         tenant_id: str | None = None,
         auth_subject: str | None = None,
     ) -> JobHandle:
+        idem_redis_key: str | None = None
         if idempotency_key:
-            existing = self._decode(self._client.get(self._idem_key(idempotency_key)))
+            idem_redis_key = self._idem_key(
+                idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
+            )
+            existing = self._decode(self._client.get(idem_redis_key))
             if existing is not None:
-                if self._load(existing) is not None:
-                    return JobHandle(job_id=existing, idempotency_key=idempotency_key)
-                # Stale idempotency pointer: drop it so a fresh job can claim the key.
-                self._client.delete(self._idem_key(idempotency_key))
+                loaded = self._load(existing)
+                if loaded is not None:
+                    status = _status_from_dict(loaded)
+                    if job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
+                        return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+                # Stale or cross-scope pointer: drop it so a fresh job can claim the key.
+                self._client.delete(idem_redis_key)
 
         job_id = secrets.token_urlsafe(16)
         now = time.time()
@@ -309,13 +454,16 @@ class RedisJobBackend:
         data = _status_to_dict(status, payload=payload)
         if idempotency_key:
             data["idempotency_key"] = idempotency_key
+            data["idempotency_scope_key"] = _idempotency_scope_key(
+                idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
+            )
         # Persist the job body before claiming the idempotency key so losers never
         # observe a key that points at a missing record.
         self._store(data)
 
-        if idempotency_key:
+        if idem_redis_key is not None:
             created = self._client.set(
-                self._idem_key(idempotency_key),
+                idem_redis_key,
                 job_id,
                 nx=True,
                 ex=self._ttl,
@@ -323,10 +471,11 @@ class RedisJobBackend:
             if not created:
                 # Another worker won; drop our orphan and return their handle.
                 self._client.delete(self._key(job_id))
-                existing = self._decode(self._client.get(self._idem_key(idempotency_key)))
+                existing = self._decode(self._client.get(idem_redis_key))
                 if existing is not None:
                     for _ in range(5):
-                        if self._load(existing) is not None:
+                        loaded = self._load(existing)
+                        if loaded is not None:
                             return JobHandle(job_id=existing, idempotency_key=idempotency_key)
                         time.sleep(0.01)
                     if self._load(existing) is not None:
@@ -337,38 +486,61 @@ class RedisJobBackend:
 
         return JobHandle(job_id=job_id, idempotency_key=idempotency_key)
 
-    def get(self, job_id: str) -> JobStatus | None:
+    def get(
+        self,
+        job_id: str,
+        *,
+        auth_subject: str | None = None,
+        tenant_id: str | None = None,
+    ) -> JobStatus | None:
         data = self._load(job_id)
         if data is None:
             return None
-        return _status_from_dict(data)
-
-    def request_cancel(self, job_id: str) -> bool:
-        data = self._load(job_id)
-        if data is None:
-            return False
         status = _status_from_dict(data)
-        if status.state in {JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED}:
-            return False
-        updated = JobStatus(
-            job_id=status.job_id,
-            state=JobState.CANCELLED if status.state == JobState.QUEUED else status.state,
-            job_type=status.job_type,
-            tenant_id=status.tenant_id,
-            auth_subject=status.auth_subject,
-            result=status.result,
-            error=status.error,
-            retry_after=status.retry_after,
-            created_at=status.created_at,
-            updated_at=time.time(),
-            cancel_requested=True,
-        )
-        payload = data.get("payload") if isinstance(data.get("payload"), dict) else {}
-        stored = _status_to_dict(updated, payload=payload)  # type: ignore[arg-type]
-        if "idempotency_key" in data:
-            stored["idempotency_key"] = data["idempotency_key"]
-        self._store(stored)
-        return True
+        if auth_subject is None and tenant_id is None:
+            return status
+        if not job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
+            return None
+        return status
+
+    def request_cancel(
+        self,
+        job_id: str,
+        *,
+        auth_subject: str | None = None,
+        tenant_id: str | None = None,
+    ) -> bool:
+        for _ in range(5):
+            data = self._load(job_id)
+            if data is None:
+                return False
+            status = _status_from_dict(data)
+            if not job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
+                return False
+            if status.state in {JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED}:
+                return False
+            updated = JobStatus(
+                job_id=status.job_id,
+                state=JobState.CANCELLED if status.state == JobState.QUEUED else status.state,
+                job_type=status.job_type,
+                tenant_id=status.tenant_id,
+                auth_subject=status.auth_subject,
+                result=status.result,
+                error=status.error,
+                retry_after=status.retry_after,
+                created_at=status.created_at,
+                updated_at=time.time(),
+                cancel_requested=True,
+            )
+            payload = data.get("payload") if isinstance(data.get("payload"), dict) else {}
+            stored = _status_to_dict(updated, payload=payload)  # type: ignore[arg-type]
+            if "idempotency_key" in data:
+                stored["idempotency_key"] = data["idempotency_key"]
+            if "idempotency_scope_key" in data:
+                stored["idempotency_scope_key"] = data["idempotency_scope_key"]
+            if self._store_cas(stored, expected_updated_at=status.updated_at):
+                return True
+        return False
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:
         # Redis TTLs own expiry; scan is best-effort for tests/stubs without SCAN.
@@ -392,9 +564,19 @@ class RedisJobBackend:
                 JobState.CANCELLED,
             }:
                 self._client.delete(key)
-                idem = data.get("idempotency_key")
-                if isinstance(idem, str) and idem:
-                    self._client.delete(self._idem_key(idem))
+                scope = data.get("idempotency_scope_key")
+                if isinstance(scope, str) and scope:
+                    self._client.delete(f"{self._prefix}idem:{scope}")
+                else:
+                    idem = data.get("idempotency_key")
+                    if isinstance(idem, str) and idem:
+                        self._client.delete(
+                            self._idem_key(
+                                idem,
+                                tenant_id=status.tenant_id,
+                                auth_subject=status.auth_subject,
+                            )
+                        )
                 removed += 1
         return removed
 
@@ -410,8 +592,11 @@ class RedisJobBackend:
         if data is None:
             return None
         status = _status_from_dict(data)
-        if status.cancel_requested and state == JobState.RUNNING:
+        cancel_requested = status.cancel_requested
+        if cancel_requested and state == JobState.RUNNING:
             state = JobState.CANCELLED
+        # Refuse to clear a cancel request via a non-cancel terminal overwrite from a
+        # stale worker snapshot — keep cancel_requested sticky.
         updated = JobStatus(
             job_id=status.job_id,
             state=state,
@@ -423,14 +608,46 @@ class RedisJobBackend:
             retry_after=status.retry_after,
             created_at=status.created_at,
             updated_at=time.time(),
-            cancel_requested=status.cancel_requested,
+            cancel_requested=cancel_requested,
         )
         payload = data.get("payload") if isinstance(data.get("payload"), dict) else {}
         stored = _status_to_dict(updated, payload=payload)  # type: ignore[arg-type]
         if "idempotency_key" in data:
             stored["idempotency_key"] = data["idempotency_key"]
-        self._store(stored)
-        return updated
+        if "idempotency_scope_key" in data:
+            stored["idempotency_scope_key"] = data["idempotency_scope_key"]
+        if not self._store_cas(stored, expected_updated_at=status.updated_at):
+            # Contended update — reload and retry once with merged cancel flag.
+            data = self._load(job_id)
+            if data is None:
+                return None
+            status = _status_from_dict(data)
+            cancel_requested = status.cancel_requested or cancel_requested
+            if cancel_requested and state == JobState.RUNNING:
+                state = JobState.CANCELLED
+            updated = JobStatus(
+                job_id=status.job_id,
+                state=state,
+                job_type=status.job_type,
+                tenant_id=status.tenant_id,
+                auth_subject=status.auth_subject,
+                result=result if result is not None else status.result,
+                error=error if error is not None else status.error,
+                retry_after=status.retry_after,
+                created_at=status.created_at,
+                updated_at=time.time(),
+                cancel_requested=cancel_requested,
+            )
+            payload = data.get("payload") if isinstance(data.get("payload"), dict) else {}
+            stored = _status_to_dict(updated, payload=payload)  # type: ignore[arg-type]
+            if "idempotency_key" in data:
+                stored["idempotency_key"] = data["idempotency_key"]
+            if "idempotency_scope_key" in data:
+                stored["idempotency_scope_key"] = data["idempotency_scope_key"]
+            self._store(stored)
+            return _status_from_dict(stored)
+        final = self._load(job_id)
+        return _status_from_dict(final) if final is not None else updated
 
 
 _backend: JobBackend = InMemoryJobBackend()

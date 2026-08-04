@@ -1,7 +1,7 @@
 # Compatibility policy
 
-**Status:** Accepted for the phase 0.0 baseline  
-**Reviewed:** 2026-08-03
+**Status:** Accepted for the published **0.10.0** train  
+**Reviewed:** 2026-08-04
 
 ## Initial runtime ranges
 

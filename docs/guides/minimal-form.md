@@ -11,11 +11,13 @@ deep dive covers validation fragments.
 A page with a note field. Submitting POSTs to an action and returns a confirmation
 page. The GET seeds the CSRF cookie; the form posts the matching token.
 
+**If you used `hedron new`:** replace the scaffold `app.py` with the following (or add
+these routes beside the scaffold home). Do not maintain two competing apps.
+
 ```python title="app.py"
 from fastapi import Form, Request
 
-from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, html
-from hedron.security import csrf_token_for_request
+from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, csrf_token_for_request, html
 
 app = Hedron(
     title="Notes",

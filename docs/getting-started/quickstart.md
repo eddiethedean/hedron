@@ -6,7 +6,7 @@ how the same route responds to an HTMX fragment request.
 Complete [installation](installation.md) first so you have a project with `hedron` and
 `uvicorn` (prefer `hedron new`).
 
-**Golden path:** Install → First app → [HTMX interactions](../guides/htmx-interactions.md) →
+**Next after this page:** [HTMX interactions](../guides/htmx-interactions.md) →
 [Minimal form](../guides/minimal-form.md) → [Learning path](learning-path.md)
 
 Pick **one** path below. Do not scaffold with `hedron new` and then also paste a new

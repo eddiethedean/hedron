@@ -27,7 +27,8 @@ from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 !!! note "Contracts vs full reference"
 
     API pages are hand-maintained contracts, with **mkdocstrings** signatures for critical
-    surfaces on [Autodoc](AUTODOC.md). Adopter-critical narrative pages
+    surfaces on [Autodoc](AUTODOC.md). For a map of every `hedron.__all__` name to a doc
+    page, see [Public API coverage map](COVERAGE.md). Adopter-critical narrative pages
     ([Hedron](HEDRON.md), [Router](ROUTER.md), [Action](ACTION.md),
     [Interaction](INTERACTION.md), [Models](MODELS.md), [Responses](RESPONSES.md),
     [Security types](SECURITY_TYPES.md), [Auto](AUTO.md), [SSE](SSE.md),

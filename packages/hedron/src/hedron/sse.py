@@ -6,10 +6,11 @@ import time
 from collections.abc import AsyncIterator, Callable, Iterator, Mapping
 from typing import Any
 
+from fastapi import HTTPException, status
 from fastapi.responses import StreamingResponse
 from starlette.requests import Request
 
-from hedron_core.jobs import JobBackend, JobState, get_job_backend
+from hedron_core.jobs import JobBackend, JobState, get_job_backend, job_authorized
 from hedron_core.live import SseEvent, encode_sse, iter_sse_bytes, job_status_sse_events
 from hedron_core.rendering import render
 
@@ -22,6 +23,11 @@ __all__ = [
 
 
 _TERMINAL = frozenset({JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED})
+
+
+def _reject_header_controls(name: str, value: str) -> None:
+    if any(ord(ch) < 32 for ch in name) or any(ord(ch) < 32 for ch in value):
+        raise ValueError(f"{name} must not contain control characters")
 
 
 class SseResponse(StreamingResponse):
@@ -42,8 +48,7 @@ class SseResponse(StreamingResponse):
             **dict(headers or {}),
         }
         for key, value in hdrs.items():
-            if any(ord(ch) < 32 for ch in value):
-                raise ValueError(f"{key} must not contain control characters")
+            _reject_header_controls(key, value)
         super().__init__(
             content,
             status_code=status_code,
@@ -71,6 +76,14 @@ def sse_response(events: Iterator[SseEvent] | list[SseEvent]) -> SseResponse:
     return SseResponse(_gen())
 
 
+def _safe_last_event_id(raw: str | None) -> str | None:
+    if raw is None:
+        return None
+    if any(ord(ch) < 32 for ch in raw):
+        return None
+    return raw
+
+
 def job_status_sse_response(
     job_id: str,
     *,
@@ -87,51 +100,56 @@ def job_status_sse_response(
     ``state`` / ``updated_at`` change. Stops when the job is terminal or missing.
 
     When the stored job has ``auth_subject`` / ``tenant_id`` set, the matching kwargs
-    must be provided and equal or the stream ends with an authorization error event.
+    must be provided and equal or the helper raises 403. Missing jobs raise 404.
     """
     store = backend or get_job_backend()
+    initial = store.get(job_id)
+    if initial is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+    if not job_authorized(initial, auth_subject=auth_subject, tenant_id=tenant_id):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Job access forbidden")
 
-    def _html(status: Any) -> str:
+    def _html(status_obj: Any) -> str:
         if html_message is not None:
-            return html_message(status)
+            return html_message(status_obj)
         from hedron_core.builtins import Status
 
-        result = render(Status(f"Job {status.job_id}: {status.state.value}", live=True))
+        result = render(Status(f"Job {status_obj.job_id}: {status_obj.state.value}", live=True))
         return result.html
-
-    def _authorized(status: Any) -> bool:
-        subject_ok = status.auth_subject is None or status.auth_subject == auth_subject
-        tenant_ok = status.tenant_id is None or status.tenant_id == tenant_id
-        return subject_ok and tenant_ok
 
     def _gen() -> Iterator[bytes]:
         last_id: str | None = None
         if request is not None:
-            last_id = request.headers.get("last-event-id")
+            last_id = _safe_last_event_id(request.headers.get("last-event-id"))
+            if request.headers.get("last-event-id") is not None and last_id is None:
+                yield encode_sse(
+                    SseEvent(data="invalid-last-event-id", event="error", id=job_id)
+                ).encode("utf-8")
+                return
         last_emitted_key: tuple[str, float] | None = None
         while True:
-            status = store.get(job_id)
-            if status is None:
+            status_obj = store.get(job_id)
+            if status_obj is None:
                 yield encode_sse(
                     SseEvent(data="not-found", event="error", id=last_id or job_id)
                 ).encode("utf-8")
                 return
-            if not _authorized(status):
+            if not job_authorized(status_obj, auth_subject=auth_subject, tenant_id=tenant_id):
                 yield encode_sse(
                     SseEvent(data="forbidden", event="error", id=last_id or job_id)
                 ).encode("utf-8")
                 return
-            event_id = f"{status.job_id}:{status.updated_at}"
+            event_id = f"{status_obj.job_id}:{status_obj.updated_at}"
             # Resume: skip the snapshot already acknowledged by the client.
             if last_id is not None and event_id == last_id and last_emitted_key is None:
-                if status.state in _TERMINAL:
+                if status_obj.state in _TERMINAL:
                     # Re-emit terminal frames so reconnecting clients still close cleanly.
                     for event in job_status_sse_events(
-                        job_id=status.job_id,
-                        state=status.state.value,
-                        message_html=_html(status),
+                        job_id=status_obj.job_id,
+                        state=status_obj.state.value,
+                        message_html=_html(status_obj),
                         event_id=event_id,
-                        retry_ms=max(1000, int(status.retry_after) * 1000),
+                        retry_ms=max(1000, int(status_obj.retry_after) * 1000),
                         terminal=True,
                     ):
                         yield encode_sse(event).encode("utf-8")
@@ -139,29 +157,29 @@ def job_status_sse_response(
                 interval = (
                     poll_interval_seconds
                     if poll_interval_seconds is not None
-                    else max(0.05, float(status.retry_after))
+                    else max(0.05, float(status_obj.retry_after))
                 )
                 time.sleep(interval)
                 last_id = None  # only skip the first matching snapshot
                 continue
-            key = (status.state.value, status.updated_at)
+            key = (status_obj.state.value, status_obj.updated_at)
             if key == last_emitted_key:
-                if status.state in _TERMINAL:
+                if status_obj.state in _TERMINAL:
                     return
                 interval = (
                     poll_interval_seconds
                     if poll_interval_seconds is not None
-                    else max(0.05, float(status.retry_after))
+                    else max(0.05, float(status_obj.retry_after))
                 )
                 time.sleep(interval)
                 continue
-            terminal = status.state in _TERMINAL
+            terminal = status_obj.state in _TERMINAL
             for event in job_status_sse_events(
-                job_id=status.job_id,
-                state=status.state.value,
-                message_html=_html(status),
+                job_id=status_obj.job_id,
+                state=status_obj.state.value,
+                message_html=_html(status_obj),
                 event_id=event_id,
-                retry_ms=max(1000, int(status.retry_after) * 1000),
+                retry_ms=max(1000, int(status_obj.retry_after) * 1000),
                 terminal=terminal,
             ):
                 yield encode_sse(event).encode("utf-8")
@@ -172,7 +190,7 @@ def job_status_sse_response(
             interval = (
                 poll_interval_seconds
                 if poll_interval_seconds is not None
-                else max(0.05, float(status.retry_after))
+                else max(0.05, float(status_obj.retry_after))
             )
             time.sleep(interval)
 

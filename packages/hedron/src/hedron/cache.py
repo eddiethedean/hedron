@@ -55,6 +55,7 @@ def _vary_from_kwargs(kwargs: Mapping[str, Any], vary_on: tuple[str, ...]) -> di
 
 _SENSITIVE_SCOPES = frozenset(
     {
+        CacheScope.PRIVATE.value,
         CacheScope.USER.value,
         CacheScope.TENANT.value,
         CacheScope.SESSION.value,

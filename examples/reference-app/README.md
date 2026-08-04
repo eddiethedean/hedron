@@ -21,7 +21,8 @@ uv sync
 uv run uvicorn app:app --app-dir examples/reference-app
 ```
 
-Default credentials: `admin` / `secret` (HTTP Basic).
+Default credentials: `admin` / `secret` (HTTP Basic). **Replace before any shared or
+production deploy.**
 
 Open the home page for CRUD + DataEditor + charts/Markdown. Chart interaction endpoints
 live under `/charts/*` (for example `/charts/fragment`, `/charts/search`).
@@ -30,9 +31,11 @@ live under `/charts/*` (for example `/charts/fragment`, `/charts/search`).
 
 Compose under this directory is **maintainer experimental** and may require local static
 assets / proxy config that are not part of the default clone. Prefer the `uvicorn`
-command above for adopters. If you need container packaging, start from
-[`Dockerfile`](Dockerfile) and fix the module path to match how you copy the app
-(`app:app` with `WORKDIR` set to the app directory is the usual pattern).
+command above for adopters. Production packaging guidance (generic Dockerfile pattern):
+[Deployment](https://hedron.readthedocs.io/en/latest/guides/deployment/). If you need
+containers from this tree, start from [`Dockerfile`](Dockerfile) and fix the module path
+to match how you copy the app (`app:app` with `WORKDIR` set to the app directory is the
+usual pattern).
 
 ## Tests
 

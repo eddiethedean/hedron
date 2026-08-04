@@ -41,6 +41,11 @@ def redirect_external(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid external redirect URL",
         )
+    if parsed.username is not None or parsed.password is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="External redirect URL must not contain credentials",
+        )
     # Fail closed: missing policy means external redirects are disabled.
     allow = bool(policy is not None and policy.allow_external_redirects)
     if not allow:

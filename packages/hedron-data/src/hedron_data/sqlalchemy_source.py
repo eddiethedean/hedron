@@ -92,16 +92,16 @@ class SQLAlchemyDataSource(Generic[T]):
         from sqlalchemy import func, select
 
         q = query.validated()
-        if q.sort or q.filters or q.search:
+        if q.sort or q.filters or q.search or q.projection:
             raise error(
                 "HED-DATA-0012",
-                title="SQLAlchemyDataSource does not support sort/filters/search yet",
+                title="SQLAlchemyDataSource does not support sort/filters/search/projection yet",
                 explanation=(
-                    "DataQuery.sort, filters, and search are ignored by the SQL adapter "
-                    "would silently return unfiltered pages; they are rejected instead."
+                    "DataQuery.sort, filters, search, and projection would silently return "
+                    "unscoped pages; they are rejected instead."
                 ),
                 remediation=(
-                    "Apply sorting/filtering in the Select statement, or use "
+                    "Apply sorting/filtering/projection in the Select statement, or use "
                     "InMemoryDataSource for client-side query features."
                 ),
             )

@@ -31,7 +31,9 @@ Pin versions in production. Read [What’s ready today](whats-ready.md) and
 
 - Typed pages/fragments, CSRF profiles, CLI, testing helpers (FastAPI flagship)
 - HTMX fragment loops and `InteractionResult`
-- Live helpers on FastAPI (SSE, streaming, WebSocket channels, Chat/Dialog, preload)
+- Live helpers on FastAPI (SSE, streaming, WebSocket channels, Chat/Dialog, preload) —
+  **API Supported**; full live browser matrix and load/proxy evidence remain Deferred
+  (see [What’s ready](whats-ready.md) and [STATUS](../STATUS.md))
 - Flask / Django adapters on the Supported matrix
 - Optional `hedron[data]`, `hedron[jinja]`, `hedron[dev]`; charts are **Alpha**
 
@@ -48,9 +50,12 @@ first-party DataSource and Hedron-owned Django forms (planned **0.11**).
 
 ## Try it
 
-**Golden path:** Install → First app → HTMX interactions → Minimal form → Learning path
-
 1. [Installation](../getting-started/installation.md)
 2. [Quickstart](../getting-started/quickstart.md)
-3. [Runnable examples](../examples/runnable.md) / [Try with Codespaces](../examples/try-it.md)
-4. [Why Hedron](why-hedron.md) · [Architecture](../ARCHITECTURE.md) · [Public roadmap](roadmap.md)
+3. [HTMX interactions](htmx-interactions.md)
+4. [Minimal form](minimal-form.md)
+5. [Learning path](../getting-started/learning-path.md)
+6. [Runnable examples](../examples/runnable.md) / [Try with Codespaces](../examples/try-it.md)
+
+Then: [Why Hedron](why-hedron.md) · [Architecture](../ARCHITECTURE.md) ·
+[Public roadmap](roadmap.md)

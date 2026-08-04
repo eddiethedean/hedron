@@ -28,8 +28,9 @@ Include:
 - Impact assessment (confidentiality, integrity, availability)
 - Whether a fix is already known
 
-You should receive an acknowledgment within a few business days. Coordinated disclosure
-is preferred; please allow reasonable time before public discussion.
+You should receive an acknowledgment within a few business days (best-effort; there is
+**no contractual security SLA**). Coordinated disclosure is preferred; please allow
+reasonable time before public discussion.
 
 ## Scope
 

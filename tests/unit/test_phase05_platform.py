@@ -187,19 +187,19 @@ def test_cache_secret_not_in_key_plaintext() -> None:
 
 
 def test_cache_invalidation_tags() -> None:
-    @cache_data(ttl=60, tags=("t1",))
-    def load() -> str:
+    @cache_data(ttl=60, tags=("t1",), vary_on=("k",))
+    def load(*, k: str = "default") -> str:
         return "x"
 
-    assert load() == "x"
+    assert load(k="a") == "x"
     assert invalidate_tags("t1") >= 1
-    assert load() == "x"
+    assert load(k="a") == "x"
 
 
 def test_async_cache() -> None:
     calls = {"n": 0}
 
-    @cache_data(ttl=30, scope="private")
+    @cache_data(ttl=30, scope="private", vary_on=("x",))
     async def load(x: int) -> int:
         calls["n"] += 1
         return x

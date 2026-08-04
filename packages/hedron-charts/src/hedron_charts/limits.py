@@ -150,15 +150,20 @@ def _walk_remote(obj: Any) -> bool:
         return any(_walk_remote(item) for item in obj)
     elif isinstance(obj, str):
         return _is_remote_url(obj) and (
-            "http://" in obj.lower() or "https://" in obj.lower() or "//cdn." in obj.lower()
+            obj.lower().startswith("data:")
+            or "http://" in obj.lower()
+            or "https://" in obj.lower()
+            or "//cdn." in obj.lower()
         )
     return False
 
 
 def _is_remote_url(value: str) -> bool:
     lowered = value.lower().strip()
+    # data: payloads are not http(s) remote hosts, but they are still disallowed in
+    # chart specs (SVG/script hosts must not embed arbitrary data URLs).
     if lowered.startswith("data:"):
-        return False
+        return True
     return (
         lowered.startswith("http://")
         or lowered.startswith("https://")

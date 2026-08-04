@@ -78,4 +78,6 @@ configuration** — never part of the serializable props contract. Prefer an exp
 
 ## See also
 
-- [Data apps guide](../guides/data-apps.md) · [Data sources](DATA_SOURCE.md) · [Field](FIELD.md)
+- [Data sources](DATA_SOURCE.md) — protocols, `InMemoryDataSource`, paging
+- [Data applications guide](../guides/data-apps.md) — SQLAlchemy end-to-end
+- [DataTable component](../components/data-table.md) · [DataEditor](../components/data-editor.md) · [Field](FIELD.md)

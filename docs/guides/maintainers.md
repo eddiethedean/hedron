@@ -15,7 +15,8 @@ stay adopter-focused.
 | Phase evidence | [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) |
 | Capability phases | [`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md) |
 | Decisions | [`docs/DECISIONS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) |
-| Cut procedure | [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md) |
+| Cut procedure | [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md) (living); historical cuts in [`docs/archive/`](https://github.com/eddiethedean/hedron/tree/main/docs/archive) |
+| Scripts index | [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md) |
 | RFC catalog | [`docs/rfcs/`](https://github.com/eddiethedean/hedron/tree/main/docs/rfcs) |
 | Foundations | [`docs/foundations/`](https://github.com/eddiethedean/hedron/tree/main/docs/foundations) |
 | Implementation contracts | [`docs/implementation/`](https://github.com/eddiethedean/hedron/tree/main/docs/implementation) |

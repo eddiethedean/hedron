@@ -56,6 +56,7 @@ from hedron.routing import ComponentRef, HedronRoute, HedronRouter, resolve_rout
 from hedron.security import (
     SecurityPolicy,
     SecurityProfile,
+    csrf_token_for_request,
     redirect_external,
     redirect_local,
 )
@@ -302,6 +303,7 @@ __all__ = [
     "SecurityPolicy",
     "SecurityProfile",
     "Select",
+    "csrf_token_for_request",
     "SessionState",
     "Skeleton",
     "SseResponse",

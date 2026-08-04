@@ -394,4 +394,4 @@ def test_adversarial_tojson_markup_and_secret_redaction() -> None:
             TemplateSpec("m.hdj", strict=False),
             {"payload": TrustedHtml.reviewed("<b>x</b>", source="test")},
         )
-    assert markup_exc.value.diagnostics[0].code == "HED-JINJA-0009"
+    assert markup_exc.value.diagnostics[0].code in {"HED-JINJA-0009", "HED-JINJA-0021"}

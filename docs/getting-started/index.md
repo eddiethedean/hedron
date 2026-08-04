@@ -1,11 +1,8 @@
 # Get started
 
-Build and run a small Hedron application in about five minutes, then follow one golden
-path through HTMX and forms.
+Build and run a small Hedron application, then continue through HTMX and forms.
 
-**Golden path:** Install → First app → HTMX interactions → Minimal form → Learning path
-
-## Golden path
+## Path
 
 1. [Install](installation.md) — `pip install "hedron>=0.10.0"` (and uvicorn)
 2. [Build your first app](quickstart.md) — scaffold or manual page, then run and verify
@@ -16,9 +13,9 @@ path through HTMX and forms.
 Then: [What’s ready](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md) ·
 [Evaluate Hedron](../guides/evaluate.md).
 
-Maturity labels (Beta / Supported / Deferred) are explained in
-[How to read these docs](how-to-read.md) when you need them — you do not need that
-vocabulary to install.
+Maturity labels (Beta / Supported / Deferred) are explained under
+[Decide → Understanding maturity labels](how-to-read.md) when you need them — you do not
+need that vocabulary to install.
 
 <div class="hedron-grid">
   <a class="hedron-card" href="installation/">
@@ -36,6 +33,16 @@ vocabulary to install.
     <strong>3. HTMX</strong>
     <p>Refresh a declared region with a button click — the first interactive win.</p>
   </a>
+  <a class="hedron-card" href="../guides/minimal-form/">
+    <span class="hedron-card__icon" aria-hidden="true">04</span>
+    <strong>4. Minimal form</strong>
+    <p>CSRF-safe classic form POST — golden path step 4.</p>
+  </a>
+  <a class="hedron-card" href="learning-path/">
+    <span class="hedron-card__icon" aria-hidden="true">05</span>
+    <strong>5. Learning path</strong>
+    <p>What to read next after your first interactive pages.</p>
+  </a>
 </div>
 
 ## Prerequisites
@@ -48,10 +55,3 @@ vocabulary to install.
 No Node.js installation or frontend build tool is required.
 
 [Install Hedron :material-arrow-right:](installation.md){ .md-button .md-button--primary }
-
-## Other hosts and next topics
-
-- [Flask adapter](flask.md) or [Django adapter](django.md) if you are not on FastAPI
-- [Forms and actions](../guides/forms-and-actions.md) — validation fragments (deep dive)
-- [Authentication](../guides/authentication.md) · [Deployment](../guides/deployment.md)
-- [Core concepts](core-concepts.md) — after your first interactive page

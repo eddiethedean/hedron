@@ -10,12 +10,10 @@
 Typed, server-rendered Python UI for FastAPI + HTMX — without a Node.js frontend stack.
 Build dashboards, admin tools, forms, and CRUD apps from typed components.
 
-## Five-minute start
+## Quick start
 
-Prefer **one** path: scaffold with `hedron new`, then run. Do not also hand-write a second
-`app.py` over the scaffold.
-
-**pip:**
+Scaffold with `hedron new`, then run. Do not also hand-write a second `app.py` over the
+scaffold.
 
 ```bash
 pip install "hedron>=0.10.0" "uvicorn[standard]"
@@ -25,48 +23,31 @@ pip install -e .
 uvicorn app:app --reload
 ```
 
-**uv:**
-
-```bash
-uv tool install "hedron>=0.10.0"   # puts `hedron` on your PATH
-hedron new my-hedron-app
-cd my-hedron-app
-uv sync
-uv run uvicorn app:app --reload
-```
+Prefer [uv](https://docs.astral.sh/uv/)? Use `uv tool install "hedron>=0.10.0"`, then
+`hedron new`, `uv sync`, and `uv run uvicorn app:app --reload`. Full steps:
+[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see the scaffold home page.
 
-If `hedron` is not on your PATH after `pip install`, see
-[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
+If `hedron` is not on your PATH after `pip install`, see the installation guide above.
 
-**Next (golden path):** [Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
+**Next:** [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/) →
+[Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
 [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
-
-Install → First app → HTMX interactions → Minimal form → Learning path
-
-Manual `app.py` (only if you are **not** using `hedron new`):
-
-```python
-from hedron import Hedron, Page, Text
-
-app = Hedron(title="Demo", security="standard", session_secret="replace-in-production")
-
-
-@app.page("/")
-def home() -> Page:
-    return Page(Text("Hello, Hedron"), title="Demo")
-```
 
 ## Packages
 
 | Package | Maturity | Role |
 |---|---|---|
 | [`hedron`](https://pypi.org/project/hedron/) | Beta | FastAPI flagship |
-| [`hedron-flask`](https://pypi.org/project/hedron-flask/) / [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Host adapters |
-| [`hedron[data]`](https://pypi.org/project/hedron-data/) / [`hedron[charts]`](https://pypi.org/project/hedron-charts/) / [`hedron[jinja]`](https://pypi.org/project/hedron-jinja/) / [`hedron[dev]`](https://pypi.org/project/hedron-explorer/) | Beta / Alpha | Optional extras |
+| [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Beta | Flask host adapter |
+| [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Django host adapter |
+| [`hedron[data]`](https://pypi.org/project/hedron-data/) → `hedron-data` | Beta | DataTable / DataEditor |
+| [`hedron[jinja]`](https://pypi.org/project/hedron-jinja/) → `hedron-jinja` | Beta | Optional HDJ templates |
+| [`hedron[dev]`](https://pypi.org/project/hedron-explorer/) → `hedron-explorer` | Beta | Component Explorer (dev) |
+| [`hedron[charts]`](https://pypi.org/project/hedron-charts/) → `hedron-charts` | Alpha | Chart adapters (pin; expect churn) |
 
 Full matrix and install extras: [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
@@ -80,8 +61,9 @@ Current train: [`v0.10.0`](https://hedron.readthedocs.io/en/latest/guides/whats-
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.10/) ·
-[Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
+[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.10/).
+
+Existing apps on 0.8/0.9: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 
 [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/) ·
 [Public roadmap](https://hedron.readthedocs.io/en/latest/guides/roadmap/).

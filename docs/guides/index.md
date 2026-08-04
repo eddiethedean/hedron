@@ -2,22 +2,15 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**Golden path:** Install → First app → HTMX interactions → Minimal form → Learning path
-
-Start here after the quickstart: [HTMX interactions](htmx-interactions.md) →
-[Minimal form POST](minimal-form.md) → [Mutations](mutations.md) →
-[Forms and actions](forms-and-actions.md).
+Complete [Get started](../getting-started/index.md) first (Install → First app → HTMX →
+Minimal form). This section continues with forms depth, live transports, data, security,
+and ops.
 
 <div class="hedron-grid">
-  <a class="hedron-card" href="htmx-interactions/">
-    <span class="hedron-card__icon" aria-hidden="true">⇄</span>
-    <strong>HTMX interactions</strong>
-    <p>Refresh a declared region and test the fragment boundary.</p>
-  </a>
-  <a class="hedron-card" href="minimal-form/">
-    <span class="hedron-card__icon" aria-hidden="true">⏎</span>
-    <strong>Minimal form POST</strong>
-    <p>CSRF-safe classic form in about forty lines.</p>
+  <a class="hedron-card" href="../getting-started/">
+    <span class="hedron-card__icon" aria-hidden="true">→</span>
+    <strong>Get started (tutorials)</strong>
+    <p>Install, first app, HTMX region refresh, and minimal form POST.</p>
   </a>
   <a class="hedron-card" href="mutations/">
     <span class="hedron-card__icon" aria-hidden="true">⚡</span>
@@ -42,7 +35,7 @@ Start here after the quickstart: [HTMX interactions](htmx-interactions.md) →
   <a class="hedron-card" href="data-apps/">
     <span class="hedron-card__icon" aria-hidden="true">▦</span>
     <strong>Data applications</strong>
-    <p>Auto (core), DataTable via hedron[data].</p>
+    <p>Auto, DataTable, InMemoryDataSource, and SQLAlchemy.</p>
   </a>
   <a class="hedron-card" href="cookbook/">
     <span class="hedron-card__icon" aria-hidden="true">☰</span>
@@ -82,16 +75,11 @@ Start here after the quickstart: [HTMX interactions](htmx-interactions.md) →
   <a class="hedron-card" href="faq/">
     <span class="hedron-card__icon" aria-hidden="true">?</span>
     <strong>FAQ</strong>
-    <p>Short answers to common installer and adopter questions.</p>
+    <p>Install, maturity, adapters, and common questions.</p>
   </a>
   <a class="hedron-card" href="troubleshooting/">
     <span class="hedron-card__icon" aria-hidden="true">!</span>
     <strong>Troubleshooting</strong>
-    <p>Fix CSRF, Explorer, build, and import failures.</p>
+    <p>Symptom → fix for CSRF, builds, and HTMX.</p>
   </a>
 </div>
-
-Looking for callable APIs? Start with [Shipped through 0.10](../api/README.md).
-Maturity vocabulary: [How to read Hedron docs](../getting-started/how-to-read.md).
-Evaluator snapshot: [What's ready today](whats-ready.md) · [Evaluate Hedron](evaluate.md)
-(Project tab). Support: [Support](support.md).

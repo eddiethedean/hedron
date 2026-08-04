@@ -553,22 +553,30 @@ def inferred_capabilities(parsed: ParsedHdjSource) -> frozenset[str]:
     return frozenset(parser.capabilities)
 
 
+def generic_safety_escape_diagnostics(parsed: ParsedHdjSource) -> tuple[Diagnostic, ...]:
+    """Reject ``|safe`` and ``{% autoescape false %}`` in every HDJ mode."""
+    original_body = parsed.body
+    body = _mask_raw_expressions(_mask_jinja_comments(original_body))
+    unsafe_escape = re.search(r"\|\s*safe\b|{%[-+]?\s*autoescape\s+false\b", body)
+    if unsafe_escape is None:
+        return ()
+    return (
+        _context_diag(
+            parsed,
+            original_body,
+            unsafe_escape.start(),
+            "Generic Jinja safety escape is not allowed",
+            "Use a context-specific HDJ bridge.",
+        ),
+    )
+
+
 def contextual_diagnostics(parsed: ParsedHdjSource) -> tuple[Diagnostic, ...]:
     """Check the deliberately finite set of strict-mode dynamic output sinks."""
     original_body = parsed.body
     body = _mask_raw_expressions(_mask_jinja_comments(original_body))
     diagnostics: list[Diagnostic] = []
-    unsafe_escape = re.search(r"\|\s*safe\b|{%[-+]?\s*autoescape\s+false\b", body)
-    if unsafe_escape is not None:
-        diagnostics.append(
-            _context_diag(
-                parsed,
-                original_body,
-                unsafe_escape.start(),
-                "Generic Jinja safety escape is not allowed",
-                "Use a context-specific HDJ bridge.",
-            )
-        )
+    diagnostics.extend(generic_safety_escape_diagnostics(parsed))
     diagnostics.extend(_htmx_local_diagnostics(parsed, original_body, body))
     for match in _OUTPUT_RE.finditer(body):
         expr = match.group("expr").strip()

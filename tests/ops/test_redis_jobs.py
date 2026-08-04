@@ -53,7 +53,7 @@ def test_redis_jobs_shared_across_workers() -> None:
     again = b.submit("demo", {"n": 2}, idempotency_key="k1", tenant_id="t")
     assert handle.job_id == again.job_id
     assert b.get(handle.job_id) is not None
-    assert b.request_cancel(handle.job_id) is True
+    assert b.request_cancel(handle.job_id, tenant_id="t") is True
     st = a.get(handle.job_id)
     assert st is not None and st.cancel_requested is True
     marked = b.mark(handle.job_id, JobState.CANCELLED)

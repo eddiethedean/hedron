@@ -89,19 +89,40 @@ class MatplotlibAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
+        from hedron_core.diagnostics import error
+
         acc = output.accessibility
         children: list[Any] = [html.h2(acc.title)]
         if acc.description:
             children.append(html.p(acc.description))
         if output.kind == "svg":
-            children.append(
-                html.raw(TrustedHtml.reviewed(str(output.body), source="matplotlib:svg"))
-            )
+            svg = str(output.body)
+            reject_active_svg(svg)
+            children.append(html.raw(TrustedHtml.reviewed(svg, source="matplotlib:svg")))
         else:
             import html as html_stdlib
+            import re
 
+            encoded = str(output.body).strip()
+            if not re.fullmatch(r"[A-Za-z0-9+/]+=*", encoded):
+                raise error(
+                    "HED-CHART-0007",
+                    title="Invalid chart PNG payload",
+                    explanation="PNG chart body must be strict base64.",
+                    remediation="Compile charts through MatplotlibAdapter.compile().",
+                )
+            try:
+                base64.b64decode(encoded, validate=True)
+            except Exception as exc:
+                raise error(
+                    "HED-CHART-0007",
+                    title="Invalid chart PNG payload",
+                    explanation="PNG chart body must be strict base64.",
+                    remediation="Compile charts through MatplotlibAdapter.compile().",
+                ) from exc
+            # Alphabet-validated body cannot break out of the quoted attribute.
             alt = html_stdlib.escape(acc.alt or acc.title, quote=True)
-            img_html = f'<img src="data:image/png;base64,{output.body}" alt="{alt}" />'
+            img_html = f'<img src="data:image/png;base64,{encoded}" alt="{alt}" />'
             children.append(html.raw(TrustedHtml.reviewed(img_html, source="matplotlib:png")))
         if acc.tabular_fallback:
             children.append(_fallback_table(acc.tabular_fallback))

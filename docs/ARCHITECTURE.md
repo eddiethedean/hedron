@@ -1,39 +1,79 @@
 # Architecture overview
 
-## Product shape
+Hedron is typed, server-rendered UI for Python web apps. The flagship `hedron` package
+extends FastAPI; `hedron-core` renders portable components; Flask/Django adapters share
+the same renderer without FastAPI.
 
-Hedron is a collection of typed component primitives, a framework-neutral renderer
-(`hedron-core`), and thin host adapters. The flagship `hedron` package extends FastAPI
-rather than inventing a separate web runtime. Supported Beta adapters
-(`hedron-flask`, `hedron-django`) render the same portable components and
-`InteractionResult` contracts without depending on FastAPI.
+## Request lifecycle (FastAPI)
 
-## Request paths
+```mermaid
+sequenceDiagram
+  participant Browser
+  participant Middleware
+  participant HedronRoute
+  participant Handler
+  participant Renderer
+  Browser->>Middleware: HTTP request
+  Middleware->>HedronRoute: CSRF session security as configured
+  HedronRoute->>Handler: DI parsed props
+  Handler-->>HedronRoute: Page InteractionResult or Response
+  HedronRoute->>Renderer: PAGE or FRAGMENT mode
+  Renderer-->>HedronRoute: safe HTML plus assets
+  HedronRoute-->>Browser: HTML HTMX headers
+```
 
-### FastAPI (flagship)
+1. The request enters ordinary FastAPI/Starlette middleware (sessions, CORS, your auth).
+2. `HedronRoute` uses FastAPI for parsing, dependency injection, and exceptions.
+3. Built-in security profiles validate CSRF on unsafe methods when enabled.
+4. Your `@app.page` / `@app.component` / `@app.action` handler returns a `Page`,
+   `InteractionResult`, model, or explicit response.
+5. Hedron selects **PAGE** (full document) or **FRAGMENT** (region HTML) from HTMX
+   headers and declared `FragmentRegion` policy — unauthorized targets fail closed.
+6. `hedron-core` builds a node tree, collects assets, and serializes escaped HTML.
+7. The response may include approved HTMX headers from `InteractionResult`.
+8. The browser (HTMX) swaps markup; optional SSE/WebSocket helpers observe or push
+   updates (FastAPI flagship; polling remains the Supported fallback).
 
-1. A request enters ordinary FastAPI/Starlette middleware.
-2. `HedronRoute` delegates parsing, dependency injection, security, and exception behavior to FastAPI.
-3. A page, action, or addressable-component factory returns a model, explicit response, or component.
-4. Hedron selects page or fragment mode and validates the return value.
-5. The deterministic renderer builds a node tree, collects assets, and serializes safe HTML.
-6. A FastAPI/Starlette response carries HTML, cache policy, security headers, and approved HTMX headers.
-7. HTMX performs resource-level requests and swaps; Web Components retain bounded browser-local interaction.
+### Flask / Django
 
-### Flask / Django (Supported adapters)
+Adapters (`hedron_route` / `hedron_view`, `respond`, `interaction_response`) authorize
+fragment/OOB policy and merge validated HTMX headers, then call the same renderer. Host
+middleware owns sessions/CSRF/auth. Official HTMX SSE helpers are FastAPI-only in 0.10.
 
-1. A request enters Flask or Django middleware (sessions, CSRF, auth as configured by the app).
-2. A view returns a component, `InteractionResult`, or host response.
-3. Adapter helpers (`hedron_route` / `hedron_view`, `respond`, `interaction_response`) authorize
-   fragment/OOB policy and merge validated HTMX headers.
-4. The same `hedron-core` renderer produces HTML.
-5. The host framework returns an HTTP response (WSGI or ASGI).
+## PAGE vs FRAGMENT
 
-Official HTMX SSE is **Supported** on the FastAPI flagship (0.10); Flask/Django Supported
-claims still use polling as the live fallback unless otherwise noted. Adapter **Supported**
-claims also exclude documented Deferred rows (Django QuerySet as a first-party DataSource;
-Hedron-owned Django forms). See [Compatibility](COMPATIBILITY.md) and
-[adapter acceptance](acceptance/ADAPTERS.md).
+| Mode | When | Typical return |
+|---|---|---|
+| PAGE | Navigation / full document | `Page(...)` |
+| FRAGMENT | `HX-Request` targeting a declared region | `InteractionResult(content=..., region_id=...)` |
+
+Rendering a component never implies a public route — only `@page` / `@component` /
+`@action` (or adapter equivalents) expose HTTP endpoints.
+
+## Security placement
+
+- **Contextual escaping** is default in the renderer.
+- **CSRF** runs on unsafe methods when using a built-in profile (`standard` / `strict`).
+  Seed tokens with `csrf_token_for_request` (re-exported from `hedron`).
+- **`SafeUrl` / `TrustedHtml` / `Secret`** mark trust boundaries in types.
+- Application authz and persistence remain your responsibility.
+
+## Assets and builds
+
+- Development may compile scoped CSS and serve package static assets.
+- Production expects `hedron build` manifests (`HEDRON_ENV=production`); missing
+  manifests refuse to start (`HED-BUILD-0003`).
+- Fingerprinted app assets: `/hedron-assets/`. Bundled HTMX: `/hedron-static/`.
+- Application developers do not need Node.js.
+
+## Multi-worker and live transports
+
+- In-memory session/job state does not span workers — use sticky sessions or an
+  external store.
+- SSE/WebSocket: configure reverse-proxy buffering and timeouts. Full load/proxy
+  backpressure evidence is still Deferred in [STATUS](STATUS.md); prefer polling when
+  that proof is required. See [Deployment](guides/deployment.md) and
+  [Live interaction](guides/live-interaction.md).
 
 ## Package boundaries
 
@@ -45,31 +85,27 @@ hedron                         FastAPI flagship and beginner API
 
 hedron-flask ──> hedron-core   Flask adapter (Beta Supported; no FastAPI)
 hedron-django ─> hedron-core   Django adapter (Beta Supported; Django >=5.2,<6)
-hedron-jinja ──> hedron-core   optional .hdj format and standards-first composition
+hedron-jinja ──> hedron-core   optional .hdj format
 ```
 
-`hedron-core` does not import application-framework or transport types. Integrations
-depend on portable core/adapter protocols and are lazy where optional. Distribution and
-import boundaries are normative in [Project layout](PROJECT_LAYOUT.md).
+`hedron-core` does not import application-framework or transport types. Distribution
+rules: [Project layout](PROJECT_LAYOUT.md).
 
 ## Shared registry
 
-A sealed registry snapshot is consumed by rendering, routing, OpenAPI, Explorer, assets,
-examples, tests, CLI, security diagnostics, and build tooling. No subsystem independently
-rediscovers components or invents identifiers.
-
-## Build and runtime
-
-Development builds the registry, scoped CSS, assets, examples, and diagnostics incrementally.
-`hedron-jinja` parses and checks `.hdj` profiles through the configured loader. Production uses deterministic
-manifests and locally served fingerprinted assets. Node.js is not required by application
-developers or deployments.
+A sealed registry snapshot feeds rendering, routing, OpenAPI, Explorer, assets, CLI,
+and diagnostics. Subsystems do not independently rediscover components.
 
 ## Architectural invariants
 
 - Rendering never implies route exposure.
 - Request props never default to all component props.
-- Framework security dependencies remain authoritative for each host.
+- Host-framework security remains authoritative per adapter.
 - Rendering contains no hidden I/O.
 - Secrets do not enter public metadata, identities, caches, or diagnostics.
 - Every inference has an explanation and override.
+
+## See also
+
+[What’s ready](guides/whats-ready.md) · [Compatibility](COMPATIBILITY.md) ·
+[Public API coverage](api/COVERAGE.md) · [Configuration](CONFIGURATION.md)

@@ -44,12 +44,13 @@ Detailed API compatibility levels live in [STABILITY](../api/STABILITY.md).
 
 ## Are Auto, DataTable, and charts available?
 
-Yes on the published PyPI train. `Auto` ships in core `hedron` (no extra). Tabular
-widgets and charts need extras:
+**Auto** and **DataTable/DataEditor** are Beta Supported (`hedron` / `hedron[data]`).
+**Charts** (`hedron[charts]`) are **Alpha** — available on PyPI, pin versions, expect churn.
+See [What’s ready](whats-ready.md).
 
 ```bash
 pip install "hedron[data]"     # DataTable, DataEditor (Auto is already in hedron)
-pip install "hedron[charts]"   # LineChart and visualization adapters
+pip install "hedron[charts]"   # Alpha: LineChart and visualization adapters
 ```
 
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), and the

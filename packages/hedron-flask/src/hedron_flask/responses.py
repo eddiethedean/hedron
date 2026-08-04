@@ -58,6 +58,11 @@ def _merge_vary(headers: dict[str, str]) -> None:
     headers["Vary"] = ", ".join(sorted(existing))
 
 
+def _apply_auth_cache_headers(headers: dict[str, str], *, authenticated: bool) -> None:
+    if authenticated:
+        headers.setdefault("Cache-Control", "private, no-store")
+
+
 def component_response(
     value: NodeLike | Component[Any] | RenderResult,
     *,
@@ -66,10 +71,12 @@ def component_response(
     mode: RenderMode | None = None,
     extra_headers: Mapping[str, str] | None = None,
     headers_map: Mapping[str, str] | None = None,
+    authenticated: bool = False,
 ) -> Response:
     result = _render_body(value, headers=headers_map, context=context, mode=mode)
     headers = dict(result.headers)
     _merge_vary(headers)
+    _apply_auth_cache_headers(headers, authenticated=authenticated)
     if extra_headers:
         headers.update(extra_headers)
     return Response(result.html, status=status_code, mimetype="text/html", headers=headers)
@@ -82,12 +89,14 @@ def interaction_response(
     mode: RenderMode | None = None,
     extra_headers: Mapping[str, str] | None = None,
     headers_map: Mapping[str, str] | None = None,
+    authenticated: bool = False,
 ) -> Response:
     try:
         node = materialize_interaction_nodes(result)
     except (FragmentRegionError, ValueError) as exc:
         return Response(str(exc), status=403, mimetype="text/plain")
     headers = merge_interaction_headers(result, extra_headers)
+    _apply_auth_cache_headers(headers, authenticated=authenticated)
     body = ""
     if node is not None:
         rendered = _render_body(

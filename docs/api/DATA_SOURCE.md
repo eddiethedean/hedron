@@ -34,6 +34,10 @@ class AsyncUsersSource(AsyncDataEditorSource[UserRow]):
 - `AsyncDataEditorSource[T]`: async fetch and apply protocol.
 - `VisualizationSource[T]`: async/sync load protocol for charts (shipped in 0.6 with
   `hedron-charts`).
+- `InMemoryDataSource`: concrete sync source for tests and small apps (re-exported from
+  `hedron` when `hedron[data]` is installed). See [data applications](../guides/data-apps.md).
+- `SQLAlchemyDataSource`: `hedron_data.sqlalchemy_source` — app-owned sessions; paging via
+  SQL `OFFSET`/`LIMIT`. Sort/filter/search on `DataQuery` not yet translated (`HED-DATA-0012`).
 
 ## Sync vs async construction
 

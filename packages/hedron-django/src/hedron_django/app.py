@@ -71,6 +71,7 @@ class HedronDjango:
                 context=context,
                 mode=mode,
                 extra_headers=extra_headers,
+                authenticated=self.auth_signal(request).authenticated,
             )
         return component_response(
             value,
@@ -78,6 +79,7 @@ class HedronDjango:
             context=context,
             mode=mode,
             extra_headers=extra_headers,
+            authenticated=self.auth_signal(request).authenticated,
         )
 
     def auth_signal(self, request: HttpRequest) -> AuthSignal:

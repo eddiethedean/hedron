@@ -71,6 +71,7 @@ exclude_docs: |
   hooks.py
   requirements-rtd.txt
   overrides/**
+  archive/**
 
 
 
@@ -142,12 +143,19 @@ nav:
     - Other hosts:
       - Flask adapter: getting-started/flask.md
       - Django adapter: getting-started/django.md
+  - Decide:
+    - What's ready today: guides/whats-ready.md
+    - Evaluate Hedron: guides/evaluate.md
+    - Production readiness: guides/production-readiness.md
+    - Why Hedron: guides/why-hedron.md
     - Understanding maturity labels: getting-started/how-to-read.md
+    - Architecture: ARCHITECTURE.md
+    - Support: guides/support.md
+    - Enterprise diligence: guides/enterprise-diligence.md
   - Guides:
     - Overview: guides/index.md
     - Interact:
-      - HTMX interactions: guides/htmx-interactions.md
-      - Minimal form POST: guides/minimal-form.md
+      - Golden path tutorials: getting-started/index.md
       - Forms and actions: guides/forms-and-actions.md
       - Mutations (@action vs @component): guides/mutations.md
       - Authentication: guides/authentication.md
@@ -178,12 +186,12 @@ nav:
       - Error codes: guides/error-codes.md
   - Examples:
     - Overview: examples/index.md
+    - Try with Codespaces / Dev Container: examples/try-it.md
     - Runnable examples: examples/runnable.md
     - Single-file apps: examples/single-file.md
     - Reference app walkthrough: examples/reference-app.md
-    - Simulated UI patterns: examples/gallery.md
     - CRUD tutorial: examples/crud-tutorial.md
-    - Try with Codespaces / Dev Container: examples/try-it.md
+    - Simulated UI patterns (not a server): examples/gallery.md
   - Components:
     - Overview: components/index.md
     - Document and composition:
@@ -283,8 +291,8 @@ nav:
       - AltairChart: components/altair-chart.md
   - API:
     - Overview: api/README.md
-    - Stability: api/STABILITY.md
     - Autodoc (Hedron): api/AUTODOC.md
+    - Public API coverage map: api/COVERAGE.md
     - Hedron: api/HEDRON.md
     - Router: api/ROUTER.md
     - Action: api/ACTION.md
@@ -321,11 +329,8 @@ nav:
     - CLI: api/CLI.md
     - API diagnostics: api/DIAGNOSTICS.md
     - HDJ (Jinja): api/JINJA.md
+    - Stability: api/STABILITY.md
   - Project:
-    - What's ready today: guides/whats-ready.md
-    - Evaluate Hedron: guides/evaluate.md
-    - Production readiness: guides/production-readiness.md
-    - Why Hedron: guides/why-hedron.md
     - Public roadmap: guides/roadmap.md
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
@@ -333,11 +338,11 @@ nav:
     - What's new in 0.10: guides/whats-new-0.10.md
     - Release notes: guides/release-notes.md
     - Compatibility: COMPATIBILITY.md
-    - Architecture: ARCHITECTURE.md
     - Configuration: CONFIGURATION.md
     - Glossary: GLOSSARY.md
-    - Support: guides/support.md
     - Contributing: CONTRIBUTING.md
     - Code of Conduct: CODE_OF_CONDUCT.md
     - Security disclosure: SECURITY.md
     - For maintainers: guides/maintainers.md
+    - Release runbook: RELEASE.md
+    - Status: STATUS.md

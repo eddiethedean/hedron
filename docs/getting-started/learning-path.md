@@ -1,9 +1,7 @@
 # Learning path
 
-A suggested order from first page to production-minded apps.
-
-**Golden path (start here):** Install → First app → HTMX interactions → Minimal form →
-(then continue below)
+A suggested order from first page to production-minded apps. Start with
+[Get started](index.md) if you have not installed yet.
 
 ## 1. Ship a page (30 minutes)
 
@@ -12,7 +10,8 @@ A suggested order from first page to production-minded apps.
 3. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region (browser click)
 4. [Minimal form POST](../guides/minimal-form.md) — CSRF-safe classic form (~40 lines)
 
-Then read [Core concepts](core-concepts.md) if you want the page/fragment model explained.
+Then read [Core concepts](core-concepts.md) if you want the page/fragment model explained
+(optional — skip until after a working form if you prefer).
 
 ## 2. Interact without a SPA (next hour)
 
@@ -38,18 +37,18 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 
 ## 5. Harden and deploy
 
-1. [Authentication](../guides/authentication.md) · [Testing](../guides/testing.md)
-2. [Deployment](../guides/deployment.md)
-3. [Best practices](../guides/best-practices.md)
-4. [Upgrade](../guides/upgrade.md) when changing trains
+1. [Deployment](../guides/deployment.md)
+2. [Production readiness](../guides/production-readiness.md)
+3. [Testing](../guides/testing.md) · [Troubleshooting](../guides/troubleshooting.md)
 
-## 6. Contribute or evaluate deeply
+## 6. Evaluate (optional)
 
-- [What’s ready today](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md) ·
-  [Evaluate Hedron](../guides/evaluate.md)
-- [Production readiness](../guides/production-readiness.md) · [Support](../guides/support.md)
-- [CRUD tutorial](../examples/crud-tutorial.md) · [Try with Codespaces](../examples/try-it.md)
-- [Contributing](../CONTRIBUTING.md) · [Architecture](../ARCHITECTURE.md)
+[Evaluate Hedron](../guides/evaluate.md) · [What’s ready](../guides/whats-ready.md) ·
+[Architecture](../ARCHITECTURE.md) · [Enterprise diligence](../guides/enterprise-diligence.md)
+
+## 7. Contribute (optional)
+
+[Contributing](../CONTRIBUTING.md) · [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md)
 
 Stuck? [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md) ·
 [How to read these docs](how-to-read.md)

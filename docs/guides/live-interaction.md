@@ -137,11 +137,12 @@ def stream_answer():
 `StreamingComponentResponse` sets `X-Hedron-Stream-Region` and may prefix a fallback HTML
 chunk when `fallback_html=` is provided.
 
-## Job status over SSE (FastAPI, advanced)
+## Job status over SSE (FastAPI — API-oriented)
 
-Keep a **polling UI for correctness**. Optionally observe the same job with SSE after
-you have a worker (or accept that the in-memory demo job may complete immediately).
-Prefer the cloneable sample under `examples/live-interaction` over pasting this alone.
+Keep a **polling UI for correctness**. The cloneable sample under
+[`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
+covers poll + token stream + `/sse/ping`. Job-status SSE below is an API sketch — wire it
+only after you have a real worker; it is not a full paste-and-run app.
 
 ```python
 from fastapi import Request
@@ -170,10 +171,10 @@ Include the pinned extension when using `hx-ext="sse"` (PAGE responses already i
 known extensions when configured). Honor `Last-Event-ID` for reconnect. Treat the stream
 as observation—polling remains Supported.
 
-## Page/session WebSocket channel (FastAPI, advanced)
+## Page/session WebSocket channel (FastAPI — API-oriented)
 
-Use WebSockets for bounded region updates after origin checks. Pair with a page that
-opens the socket; the snippet below is the server accept path only:
+Server accept-path only — pair with your own page that opens the socket. Not covered
+end-to-end by `examples/live-interaction`.
 
 ```python
 from fastapi import WebSocket
@@ -205,10 +206,10 @@ non-browser clients. Push updates with `send_region_update(websocket, update)`.
 and message UIs. They do not require SSE or WebSockets; wire them to HTMX routes or live
 transports only when you need push updates.
 
-## Navigation preload (opt-in, FastAPI)
+## Navigation preload (opt-in, FastAPI — API-oriented)
 
 Preload is off until you enable an explicit policy. Apply headers to a real response
-object (for example a `Page` return handled by Hedron, or an explicit `HTMLResponse`):
+object. Not part of the first-party live sample app.
 
 ```python
 from fastapi.responses import HTMLResponse
@@ -242,4 +243,4 @@ Do not enable speculative preload for authenticated mutation endpoints.
 | Explorer missing live traces | Explorer live traces remain owned Deferred for 0.10.x — use curl/TestClient |
 | Flask/Django looking for SSE helpers | Use polling; helpers are FastAPI-flagship only |
 | Preload rejected | Check `NavigationPreloadPolicy(enabled=True)` and same-origin rules |
-| No first-party live sample in `examples/` | Use [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) or the poll/stream snippets above |
+| Want a clone-and-run live demo | Use [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) (poll + stream + `/sse/ping`) or the poll/stream snippets above |

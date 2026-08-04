@@ -16,7 +16,7 @@ def test_submit_idempotent_and_cancel() -> None:
     h1 = backend.submit("demo", {"x": 1}, idempotency_key="k1", tenant_id="t1")
     h2 = backend.submit("demo", {"x": 2}, idempotency_key="k1", tenant_id="t1")
     assert h1.job_id == h2.job_id
-    assert backend.request_cancel(h1.job_id) is True
+    assert backend.request_cancel(h1.job_id, tenant_id="t1") is True
     st = backend.get(h1.job_id)
     assert st is not None
     assert st.cancel_requested is True

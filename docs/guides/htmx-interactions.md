@@ -9,6 +9,9 @@ declared region. This guide builds that loop without adding client-side applicat
 The page below contains a status panel and a refresh button. Clicking the button requests
 only a replacement panel, while direct navigation still returns a complete document.
 
+**If you used `hedron new`:** replace the scaffold `app.py` with the following (or add
+these routes beside the scaffold home). Do not maintain two competing apps.
+
 ```python title="app.py"
 from datetime import UTC, datetime
 
@@ -173,5 +176,8 @@ to seed the cookie, then submit the matching token in `X-CSRF-Token` or the `csr
 form field. Authentication, authorization, destructive intent, and persistence remain
 application responsibilities.
 
-Continue with [Security](security.md) for CSRF details, [Test your UI](testing.md) for the
-test helper layers, or the [Interaction API](../api/INTERACTION.md) for every result field.
+**Next:** [Minimal form POST](minimal-form.md) — CSRF-safe create/update loop (golden path
+step 4).
+
+Also: [Security](security.md) · [Test your UI](testing.md) ·
+[Interaction API](../api/INTERACTION.md)

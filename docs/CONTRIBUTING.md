@@ -14,10 +14,18 @@ uv run pyright
 uv run pytest -q
 ```
 
-Docs preview: `uv sync --group docs && uv run --group docs mkdocs serve`
+**Docs-only changes:** `uv sync --group docs && uv run --group docs mkdocs serve`
 (or `./scripts/mkdocs.sh serve`). Strict builds: `uv run --group docs mkdocs build --strict`.
+You do not need Playwright or the full browser suite for markdown/typo PRs.
 
-Optional browser suite: install Playwright and set `HEDRON_BROWSER=1` (see CI `browser` job).
+**Optional browser suite:** install Playwright Chromium, then:
+
+```bash
+uv run playwright install chromium
+HEDRON_BROWSER=1 uv run pytest tests/browser -q
+```
+
+See the CI `browser` job for the full three-engine matrix (not required for most PRs).
 
 Smoke the core renderer without the FastAPI flagship:
 
@@ -25,12 +33,28 @@ Smoke the core renderer without the FastAPI flagship:
 uv run python -c "from hedron_core import Page, Text, RenderMode, render; print(render(Page(Text('Hello'), title='Hi'), mode=RenderMode.PAGE).html)"
 ```
 
-### Small PRs
+### Which tests to run
 
-- Keep changes focused; prefer small reviewable PRs (docs typos, tests, narrow bug fixes).
-- Add or update tests with behavior changes.
-- Do not bump coordinated package versions unless the change is a release cut.
-- Follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+| Change area | Suggested command |
+|---|---|
+| Single package / unit | `uv run pytest tests/unit -q` (or path to the test file) |
+| FastAPI integration | `uv run pytest tests/integration -q` |
+| Adapters | `uv run pytest tests/adapters -q` |
+| Security corpus | `uv run pytest tests/security -q` |
+| Conformance | `uv run pytest tests/conformance -q` |
+| Examples | `uv run pytest examples -q` |
+| Full default suite | `uv run pytest -q` |
+
+Prefer the narrowest suite that covers your change before opening a PR.
+
+### PR checklist
+
+- [ ] Focused diff; no unrelated refactors
+- [ ] Tests added/updated for behavior changes
+- [ ] `ruff` + `pyright` clean on touched packages
+- [ ] Docs/examples updated when public behavior changes
+- [ ] No coordinated version bumps unless this is a release cut
+- [ ] Follow the [Code of Conduct](https://github.com/eddiethedean/hedron/blob/main/CODE_OF_CONDUCT.md)
 
 You do **not** need an RFC for typo fixes, test-only changes, or internal refactors that
 do not change public contracts. Jump to [Changing public contracts](#changing-public-contracts)
@@ -49,20 +73,22 @@ only when you alter shipped APIs, security behavior, or acceptance evidence.
 | `packages/hedron-flask` | Flask adapter |
 | `packages/hedron-django` | Django adapter |
 | `packages/hedron-jinja` | Optional HDJ templates |
-| `tests/` | Unit, integration, conformance, adapters |
+| `tests/` | Unit, integration, conformance, adapters, security, browser |
 | `examples/reference-app` | FastAPI cumulative example |
 | `examples/live-interaction` | Poll + stream + SSE sample |
 | `examples/flask-reference` | Flask slice |
 | `examples/django-reference` | Django slice |
 | `examples/hdj-progressive` | Optional HDJ progressive samples |
+| `scripts/` | Tooling index: [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md) |
 
-Canonical **STATUS** and **ROADMAP** for the published site live under `docs/`
-(`docs/STATUS.md`, `docs/ROADMAP.md`). Edit those files, then run
-`uv run python scripts/sync_status_roadmap.py` so the root `STATUS.md` / `ROADMAP.md`
-mirrors stay aligned. Do **not** hand-edit the root mirrors as the source of truth.
+### Canonical doc files
 
-Other dual copies: prefer `docs/CONTRIBUTING.md`, `docs/SECURITY.md`, and
-`docs/CODE_OF_CONDUCT.md` for substantive edits; root stubs point at the docs site.
+| Topic | Edit here | Notes |
+|---|---|---|
+| STATUS / ROADMAP | `docs/STATUS.md`, `docs/ROADMAP.md` | Then `uv run python scripts/sync_status_roadmap.py` |
+| Contributing | `docs/CONTRIBUTING.md` | Root `CONTRIBUTING.md` is a stub pointer |
+| Security policy | `docs/SECURITY.md` | Root `SECURITY.md` is a short pointer |
+| Code of Conduct | root `CODE_OF_CONDUCT.md` | `docs/CODE_OF_CONDUCT.md` points at root + reporting rules |
 
 ---
 
@@ -133,7 +159,8 @@ authorization, persistence, or trust.
 
 Examples compile, links resolve, names match public typing, errors and escape hatches are
 documented, and status/index tables are updated. Hosted documentation is built with MkDocs
-(Material) via Read the Docs (`.readthedocs.yaml`, `mkdocs.yml`).
+(Material) via Read the Docs (`.readthedocs.yaml`, `mkdocs.yml`). Public `__all__` map:
+[api/COVERAGE.md](api/COVERAGE.md).
 
 Release cutting is documented in [RELEASE](RELEASE.md). Project status lives in
 [STATUS](STATUS.md).

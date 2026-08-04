@@ -54,6 +54,7 @@ from hedron_jinja.source import (
     contextual_diagnostics,
     dependency_edges,
     diagnostics_have_errors,
+    generic_safety_escape_diagnostics,
     inferred_capabilities,
     observed_features,
 )
@@ -844,6 +845,9 @@ class HedronJinja:
             diagnostics.extend(self._provider_feature_diagnostics(parsed))
             if self.strict and spec.strict:
                 diagnostics.extend(contextual_diagnostics(parsed))
+            else:
+                # Still reject |safe / autoescape false when strict=False.
+                diagnostics.extend(generic_safety_escape_diagnostics(parsed))
             inferred = inferred_capabilities(parsed)
             graph_capabilities.update(inferred)
             graph_requires.update(declaration.requires)
@@ -1348,14 +1352,16 @@ class HedronJinja:
 
     @staticmethod
     def _generic_safe_filter(value: Any) -> Markup:
-        if isinstance(value, (Secret, TrustedHtml, SafeUrl)):
-            raise error(
-                "HED-JINJA-0009",
-                title="Typed security value cannot use generic safe",
-                explanation="The generic Jinja `safe` filter cannot erase a Hedron trust type.",
-                remediation="Use the matching context-specific HDJ bridge.",
-            )
-        return Markup(value)
+        del value
+        raise error(
+            "HED-JINJA-0009",
+            title="Generic Jinja safe filter rejected",
+            explanation=(
+                "The generic Jinja `safe` filter is never allowed in HDJ; "
+                "use `hedron_trusted` with a reviewed TrustedHtml value."
+            ),
+            remediation="Create trusted content at a reviewed Python boundary.",
+        )
 
     @staticmethod
     def _trusted_filter(value: Any) -> Markup:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html as html_stdlib
+import re
 from collections.abc import Mapping
 from typing import Any
 
@@ -36,6 +37,19 @@ def escape_attr(value: str) -> str:
     return html_stdlib.escape(value, quote=True)
 
 
+_SAFE_ATTR_NAME = re.compile(r"^[A-Za-z_][\w.-]*$")
+
+
+def _require_safe_attr_name(name: str) -> None:
+    if not name or not _SAFE_ATTR_NAME.match(name) or any(ord(ch) < 32 for ch in name):
+        raise error(
+            "HED-SEC-0010",
+            title="Unsafe attribute name rejected",
+            explanation=f"Attribute name {name!r} contains forbidden characters.",
+            remediation="Use token attribute names matching [A-Za-z_][\\w.-]*.",
+        )
+
+
 def _attr_sort_key(name: str) -> tuple[int, str]:
     try:
         return (ATTR_ORDER.index(name), name)
@@ -46,6 +60,7 @@ def _attr_sort_key(name: str) -> tuple[int, str]:
 def _format_attr(name: str, value: Any) -> str | None:
     if value is None:
         return None
+    _require_safe_attr_name(name)
     if name.startswith("on"):
         raise error(
             "HED-SEC-0002",

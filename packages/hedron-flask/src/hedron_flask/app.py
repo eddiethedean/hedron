@@ -97,6 +97,7 @@ class HedronFlask:
                 mode=mode,
                 extra_headers=extra_headers,
                 headers_map=dict(request.headers),
+                authenticated=self.auth_signal(request).authenticated,
             )
         return component_response(
             value,
@@ -104,6 +105,7 @@ class HedronFlask:
             mode=mode,
             extra_headers=extra_headers,
             headers_map=dict(request.headers),
+            authenticated=self.auth_signal(request).authenticated,
         )
 
     def auth_signal(self, request: Request | None = None) -> AuthSignal:

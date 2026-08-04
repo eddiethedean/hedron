@@ -21,6 +21,17 @@ _BANNED_TAGS = (
     "<embed",
 )
 
+# Quoted or unquoted remote / protocol-relative hrefs.
+_REMOTE_HREF = re.compile(
+    r"(?:^|[\s\"'/])(?:xlink:)?href\s*=\s*(?:[\"']\s*)?(?:https?:)?//",
+    re.IGNORECASE,
+)
+# SMIL can assign event-handler attribute names at runtime.
+_SMIL_ON_ATTR = re.compile(
+    r"<(?:set|animate|animateTransform)\b[^>]*\battributeName\s*=\s*[\"']?\s*on[a-z]+",
+    re.IGNORECASE,
+)
+
 
 def _scan_payload(payload: str) -> str | None:
     lowered = payload.lower()
@@ -30,14 +41,9 @@ def _scan_payload(payload: str) -> str | None:
         return "dangerous URL scheme"
     if re.search(r"(?:^|[\s\"'/])on[a-z]+\s*=", lowered):
         return "event handler attribute"
-    # Remote navigable hrefs remain banned even when scheme scan is inconclusive.
-    if re.search(
-        r"(?:^|[\s\"'/])(?:xlink:)?href\s*=\s*[\"']https?://",
-        lowered,
-    ) or re.search(
-        r"<use\s[^>]*(?:xlink:)?href\s*=\s*[\"']https?://",
-        lowered,
-    ):
+    if _SMIL_ON_ATTR.search(payload) is not None:
+        return "SMIL event handler attribute"
+    if _REMOTE_HREF.search(payload) is not None:
         return "remote href"
     return None
 
