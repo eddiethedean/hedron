@@ -45,6 +45,8 @@ This is the authoritative decision log for the phase 0.0 specification baseline.
 | D-039 | Superseded | Placed the experimental HDN language/runtime on a ground-up design hold; D-040 selects the replacement and retains the HDN deprecation boundary. |
 | D-040 | Superseded | Selected optional Jinja authoring and a staged HDN removal; D-041 keeps the replacement but removes the compatibility schedule. |
 | D-041 | Accepted | Phase 0.9 replaces HDN immediately with the separate optional `hedron-jinja` distribution. Python components remain canonical; Jinja templates are trusted application code with explicit component bindings and strict defaults. HDN source discovery, parser/evaluator/formatter, render program, artifacts, public APIs, CLI/Explorer paths, examples, and tests are removed with no compatibility flag, converter, or legacy package. Version 0.8 is the final HDN-capable line. Block component syntax uses explicit `with body` to avoid an ambiguous Jinja grammar. |
+| D-042 | Superseded | Defined standards-first HDJ without a distinct file format; D-043 retains the standards-first boundary but makes `.hdj` an explicit versioned format. |
+| D-043 | Accepted | `.hdj` is the canonical Hedron Jinja template format. A mandatory, static TOML prologue declares format version, template kind, a named feature profile, additional feature IDs, required deployment capabilities, assets, and fragment regions; the remaining body is ordinary Jinja/HTML. Feature declarations improve tooling and production inventory but never authorize routes/actions or weaken SecurityPolicy/CSP. HDJ loaders accept `.hdj` sources; ordinary Jinja files remain usable outside HDJ or through an explicitly declared foreign-template boundary. |
 
 ## Phase 0.7 entry blockers
 

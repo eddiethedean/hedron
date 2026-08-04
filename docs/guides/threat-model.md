@@ -26,12 +26,14 @@
 | Cache / intermediaries | Pages, fragments, and target variants must `Vary` correctly; private authenticated defaults |
 | History snapshots | Sensitive pages opt out; cached snapshots must not disclose private content |
 | Job backends | Authorization/tenant scope on submit and status; polling not SSE |
+| HDJ source | Trusted application/package code; dynamic values remain contextual data; hostile authors unsupported |
 
 ## Adversaries and controls
 
 | Scenario | Primary controls |
 |---|---|
 | XSS via props/children | Contextual escaping; no inline executable attrs by default |
+| HDJ source/policy mismatch | Capability inventory + SecurityPolicy/CSP comparison; never silently enable inline/eval/remote execution |
 | Open redirects / HTMX URL headers | `SafeUrl` / local-path policy; approved header allowlist |
 | CSRF on unsafe methods | Double-submit cookie; header or form field |
 | Cache poisoning / confusion | Cache policy + `Vary` on HTMX dimensions; private defaults when authenticated |
@@ -42,8 +44,9 @@
 
 ## Out of scope (application-owned)
 
-Identity providers, ORM authorization, durable job workers beyond `JobBackend`, and
-business validation remain application responsibilities (see product non-goals).
+Identity providers, ORM authorization, durable job workers beyond `JobBackend`, business
+validation, and containment of hostile template authors remain application responsibilities (see
+product non-goals). Anyone able to change HDJ source has application-code authority.
 
 ## Review cadence
 

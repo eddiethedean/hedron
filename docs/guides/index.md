@@ -10,8 +10,8 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
   </a>
   <a class="hedron-card" href="../api/JINJA/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>
-    <strong>Jinja templates</strong>
-    <p>Strict trusted-template composition with typed Hedron components.</p>
+    <strong>HDJ authoring</strong>
+    <p>Native HTML, CSS, JavaScript, Jinja, and HTMX with typed Hedron bridges.</p>
   </a>
   <a class="hedron-card" href="plugin-authoring/">
     <span class="hedron-card__icon" aria-hidden="true">⬡</span>

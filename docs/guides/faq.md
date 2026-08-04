@@ -9,7 +9,7 @@ uv add hedron
 ```
 
 That installs the latest published release from PyPI. Repository `main` is implementing the
-intentional **0.9.0** HDN-to-Jinja authoring break; published artifacts may lag—see
+intentional **0.9.0** HDN-to-HDJ authoring break; published artifacts may lag—see
 [STATUS](../STATUS.md). For DataTable/DataEditor, install
 `hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
 

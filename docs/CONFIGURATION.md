@@ -64,20 +64,30 @@ RFC-0031 defines the following optional-package configuration. The keys belong t
 
 | Key | Type | Default | Description |
 |---|---|---:|---|
-| `application_roots` | `list[str]` | `["templates"]` | Canonical project-relative application template roots |
-| `strict` | `bool` | `true` | Require strict undefined, autoescape, static dependencies, and contextual checks |
+| `application_roots` | `list[str]` | `["templates"]` | Canonical project-relative `.hdj` application roots |
+| `foreign_roots` | `dict[str, str]` | `{}` | Explicit namespaced roots for plain Jinja dependencies used with `jinja.foreign` |
+| `strict` | `bool` | `true` | Require strict undefined, autoescape, static contracts, and contextual checks for dynamic data; literal trusted source remains standards-complete |
 | `allow_dynamic_dependencies` | `bool` | `false` | Experimental opt-out from static include/extends inventory |
+| `allow_advanced_selectors` | `bool` | `false` | Permit HTMX selectors beyond the statically validated portable subset and report the capability |
+| `allow_unknown_htmx_attributes` | `bool` | `false` | Permit attributes unknown to the installed HTMX pin after emitting a versioned diagnostic |
 | `max_template_depth` | `int` | `32` | Maximum include/extends nesting |
 | `max_macro_depth` | `int` | `32` | Maximum macro recursion nesting |
 | `max_loop_iterations` | `int` | `10_000` | Maximum iterations for one loop |
 | `max_total_loop_iterations` | `int` | `50_000` | Maximum iterations across one render |
+| `max_async_operations` | `int` | `1_000` | Maximum declared async filter/global/include operations in one render |
 | `max_component_invocations` | `int` | `10_000` | Maximum Hedron tags in one render |
 | `max_output_chars` | `int` | `10_000_000` | Maximum emitted Unicode characters |
 | `max_metadata_items` | `int` | `10_000` | Maximum accumulated metadata entries |
 
 Runtime arguments may tighten these limits. A production override may not silently weaken build
-policy. Jinja loaders, bytecode caches, filters, globals, and i18n remain Python environment
-configuration, not serialized project objects.
+policy. Inline/eval/remote browser capabilities are checked against the application's normal
+SecurityPolicy and asset policy rather than duplicated here. Jinja loaders, bytecode caches,
+extensions, filters, tests, globals, and i18n remain Python environment configuration, not
+serialized project objects.
+
+The mandatory `.hdj` prologue is source-owned and is not replaced by project defaults. Configuration
+may deny a declared feature or capability, but cannot silently add one to source. The format version,
+profile expansion, feature IDs, and prologue schema are defined by RFC-0031.
 
 ## Environment variables
 

@@ -23,9 +23,11 @@
 **HDN** — Hedron's removed experimental template-language prototype. Version 0.8 is the last line
 that can execute it; 0.9 has no parser, compatibility flag, converter, or legacy package.
 
-**Hedron Jinja integration** — Optional phase 0.9 adapter for trusted application Jinja
-templates. It exposes a static allowlist of typed Hedron components and returns a complete
-`RenderResult`; it does not make Jinja a core dependency or a sandbox for untrusted authors.
+**HDJ (Hedron Jinja)** — Optional phase 0.9 standards-first `.hdj` format for trusted application
+templates. A static TOML prologue declares the version, kind, features, and required capabilities;
+the body combines native HTML, CSS, JavaScript, Web Components, Jinja, HTMX, and explicit Hedron
+bridges while returning a complete `RenderResult`. It is not a Jinja fork, a core dependency, or a
+sandbox for hostile authors.
 
 **HedronRoute** — The `APIRoute` subclass that recognizes component contracts and produces Hedron responses and metadata.
 

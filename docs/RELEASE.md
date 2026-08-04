@@ -117,9 +117,10 @@ git push origin v0.8.0
 2. During development, validate the planned evidence shape with
    `uv run python scripts/check_release_gate.py 0.9.0 --allow-planned` after synchronizing package
    versions and changelogs on the release branch.
-3. Close [RELEASE_0_9.md](acceptance/RELEASE_0_9.md): complete HDN removal, optional
-   `hedron-jinja`, strict trust/resource boundaries, metadata preservation, manual upgrade,
-   package-isolation, and artifact evidence.
+3. Close [RELEASE_0_9.md](acceptance/RELEASE_0_9.md): complete HDN removal, `.hdj` format/profile
+   conformance, HDJ's standards-first HTML/CSS/JS/Jinja/HTMX surface, Hedron feature parity,
+   dynamic trust and CSP capability
+   boundaries, metadata preservation, manual upgrade, package isolation, and artifact evidence.
 4. Replace every Planned row in
    [release-gate-0.9.toml](acceptance/release-gate-0.9.toml) with `Verified` evidence or an explicitly
    owned `Deferred` disposition. The strict gate must pass before publication:

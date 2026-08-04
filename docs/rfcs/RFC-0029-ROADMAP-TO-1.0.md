@@ -42,7 +42,7 @@ The detailed normative scope and exit criteria live in the project roadmap.
 | 0.6 | `v0.6.0` | Visualization and first-party integration ecosystem |
 | 0.7 | `v0.7.0` | Portable adapters, jobs, and production operations |
 | 0.8 | `v0.8.0` | Hardening, stability classification, and compatibility baseline |
-| 0.9 | `v0.9.0` | Optional Jinja authoring and complete HDN removal |
+| 0.9 | `v0.9.0` | HDJ standards-first authoring and complete HDN removal |
 | 0.10 | `v0.10.0` | Live interaction, focused streaming, and navigation preload |
 | 0.11 | `v0.11.0` | Native Flask/Django depth, bounded QuerySet integration, and visual tooling |
 | 0.12 | `v0.12.0` | Advanced data editing, distributed sources, and visualization scale |
@@ -52,9 +52,9 @@ The detailed normative scope and exit criteria live in the project roadmap.
 Additional `0.x` phases require an accepted roadmap revision; they are not blocked on declaring a
 future major release.
 
-The authoring transition is governed by D-041/RFC-0031: phase 0.9 removes HDN completely and adds a
-separate optional Jinja integration for trusted application templates without changing Python's
-canonical role. There is no compatibility runtime or converter.
+The authoring transition is governed by D-041/D-043/RFC-0031: phase 0.9 removes HDN completely and
+adds HDJ, the separate optional versioned `.hdj` format over Jinja/HTML/HTMX, without changing
+Python's canonical role. There is no compatibility runtime or converter.
 
 ## Gate
 

@@ -14,6 +14,11 @@ status: shipped
 Typed FastAPI/HTMX request and result contracts live in `hedron.interaction` and are
 re-exported from `hedron`.
 
+HDJ templates may use HTMX's native `hx-*` and `hx-on:*` attributes directly. These Python APIs
+remain the preferred server-side boundary for response headers, declared regions, OOB updates,
+cache policy, and diagnostics; they are not a reduced client-side HTMX dialect. See
+[HDJ authoring](JINJA.md#htmx).
+
 ## `HtmxRequest`
 
 Wrap a Starlette/FastAPI request with HTMX context:

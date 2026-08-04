@@ -19,7 +19,7 @@ files are protected unless you explicitly use `--force`.
 hedron dev
 ```
 
-The development command watches Python, Jinja (`.html`, `.jinja`, `.jinja2`), scoped CSS, and
+The development command watches Python, HDJ (`.hdj`), scoped CSS, and
 registered assets, then rebuilds affected artifacts without exposing a partially compiled registry.
 
 If you prefer your existing ASGI workflow, run `uvicorn app:app --reload`; Hedron remains

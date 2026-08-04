@@ -24,7 +24,7 @@ from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 ## Shipped through 0.9
 
 These surfaces are implemented on repository `main`'s **0.9.0** train (includes the 0.8
-compatibility baseline plus the intentional Jinja authoring replacement).
+compatibility baseline plus the intentional HDJ authoring replacement).
 
 ### Application
 
@@ -85,5 +85,5 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTIC
 
 ## Planned after 0.8
 
-- [Jinja integration](JINJA.md) — optional `hedron-jinja` trusted-template adapter replacing HDN
-  in phase 0.9
+- [HDJ authoring](JINJA.md) — optional explicit `.hdj` format over Jinja/HTML/HTMX replacing HDN in
+  phase 0.9

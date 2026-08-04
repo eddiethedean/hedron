@@ -35,6 +35,19 @@
 - [x] Browser-asset pin and digest audit for bundled HTMX.
   *(`SEC-08-003` / `scripts/asset_audit.py`)*
 
+## Phase 0.9 HDJ boundary
+
+- [ ] Trusted literal HDJ source may use native HTML/CSS/JS/HTMX, while dynamic template values
+  retain contextual escaping, `Secret`, `TrustedHtml`, `SafeUrl`, CSRF, authorization, and approved
+  header enforcement.
+- [ ] HDJ capability inspection reports inline/eval/remote/extension/head requirements and compares
+  them with SecurityPolicy/CSP without silently weakening either.
+- [ ] `.hdj` profile, `features`, and `requires` declarations are inventory assertions rather than
+  authorization or sandbox boundaries; adversarial declarations cannot expose routes, install
+  providers, bypass CSRF, or relax CSP/HTMX runtime policy.
+- [ ] Python `html.*`, raw dynamic values, chart callbacks, and other data-driven paths keep their
+  existing active-content restrictions; trusting HDJ source does not create a generic bypass.
+
 ## Exit
 
 Phase 0.1 core security corpus is green. Phase 0.2 CSRF, redirect, cache, and HTMX header suites pass. No critical or high finding remains open for the offline rendering surface or the FastAPI MVP security path.

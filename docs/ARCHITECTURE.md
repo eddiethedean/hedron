@@ -43,7 +43,7 @@ hedron                         FastAPI flagship and beginner API
 
 hedron-flask ──> hedron-core   Flask adapter (Beta Supported; no FastAPI)
 hedron-django ─> hedron-core   Django adapter (Beta Supported; Django >=5.2,<6)
-hedron-jinja ──> hedron-core   optional trusted-template composition
+hedron-jinja ──> hedron-core   optional .hdj format and standards-first composition
 ```
 
 `hedron-core` does not import application-framework or transport types. Integrations
@@ -59,7 +59,7 @@ rediscovers components or invents identifiers.
 ## Build and runtime
 
 Development builds the registry, scoped CSS, assets, examples, and diagnostics incrementally.
-`hedron-jinja` checks templates through the configured loader. Production uses deterministic
+`hedron-jinja` parses and checks `.hdj` profiles through the configured loader. Production uses deterministic
 manifests and locally served fingerprinted assets. Node.js is not required by application
 developers or deployments.
 

@@ -26,7 +26,7 @@ hedron/
 │   │   └── src/hedron_data/
 │   ├── hedron-charts/
 │   │   └── src/hedron_charts/
-│   ├── hedron-jinja/              # Optional strict trusted-template integration
+│   ├── hedron-jinja/              # Optional .hdj format and Jinja/HTML/HTMX integration
 │   │   └── src/hedron_jinja/
 │   ├── hedron-flask/              # Beta Supported adapter
 │   │   └── src/hedron_flask/

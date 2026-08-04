@@ -25,7 +25,7 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - migration notes, examples, and compatibility evidence;
 - a working increment of the reference application using packaged-style imports.
 
-## Phase 0.9 authoring break — Jinja replaces HDN
+## Phase 0.9 authoring break — HDJ replaces HDN
 
 D-041 makes phase 0.9 an intentional clean break. The HDN parser, evaluator, formatter,
 `RenderProgram`, source discovery, build artifacts, CLI/Explorer paths, and public APIs are removed.
@@ -33,7 +33,9 @@ There is no compatibility flag, legacy runtime package, dual discovery period, o
 converter. Applications that need old HDN behavior remain on the 0.8 line and manually rewrite
 templates when adopting 0.9.
 
-The replacement is the `hedron-jinja` distribution importing as `hedron_jinja`. Typed Python
+The replacement is the `hedron-jinja` distribution importing as `hedron_jinja` and the explicit,
+versioned `.hdj` source format defined by D-043/RFC-0031. A static feature/capability prologue makes
+each template's surface inspectable while the body remains ordinary Jinja/HTML. Typed Python
 components remain canonical. Jinja owns trusted template composition; Hedron owns explicit component
 bindings, prop/slot validation, rendering, metadata, diagnostics, assets, and framework policy.
 
@@ -362,15 +364,18 @@ pretending the product is feature-complete.
 - The full reference application is deployable from built distributions in a clean environment.
 - Stability labels and migration obligations accurately describe the shipped surface.
 
-## 0.9 — Jinja authoring and HDN removal (`v0.9.0`)
+## 0.9 — HDJ authoring and HDN removal (`v0.9.0`)
 
-**Outcome:** Hedron replaces its experimental custom template language with strict, optional Jinja
-authoring and removes HDN completely rather than carrying a compatibility subsystem.
+**Outcome:** Hedron replaces its experimental custom template language with the explicit,
+versioned `.hdj` format over Jinja/HTML/HTMX, and removes HDN completely rather than carrying a
+compatibility subsystem.
 
 ### Entry gate
 
-- D-041 and RFC-0031 define the immediate removal boundary, unambiguous component tag grammar,
-  strict trust policy, metadata merging, packaging, and release evidence.
+- D-041/D-043 and RFC-0031 define the immediate removal boundary, explicit `.hdj` format,
+  standards-first freedom,
+  unambiguous component tag grammar, dynamic-value trust policy, capability/CSP separation,
+  metadata merging, packaging, and release evidence.
 - The core render boundary preserves nested component metadata without making Jinja a core
   dependency or accepting metadata-lossy public HTML strings.
 
@@ -378,9 +383,16 @@ authoring and removes HDN completely rather than carrying a compatibility subsys
 
 - Ship `hedron-jinja` and the `hedron[jinja]` extra without adding Jinja to `hedron-core` or the
   default installation.
+- Implement format-v1 `.hdj` prologue parsing, exact feature-profile expansion, declared/inferred
+  capability comparison, `.hdj` loader isolation, and the explicit foreign-Jinja boundary.
 - Implement `TemplateSpec`, `HedronJinja`, explicit inline/body component tags, named slots, typed
   view checks, strict escaping, trusted-content/URL filters, bounded render sessions, and complete
   `RenderResult` metadata merging.
+- Preserve standard Jinja composition and let trusted authors use native HTML, CSS, JavaScript,
+  Web Components, and the pinned HTMX attribute/event surface directly. Add typed Hedron bridges
+  only for components, assets, routes/security values, metadata, and diagnostics.
+- Inventory browser capabilities and enforce SecurityPolicy/CSP compatibility without silently
+  banning author-written source or enabling inline/eval/remote behavior.
 - Remove HDN source discovery, compiler/runtime/formatter code, format constants, registry fields,
   manifest entries, build output, public exports, CLI/Explorer surfaces, examples, and tests.
 - Bump the build-manifest format and coordinated package versions so 0.8 artifacts fail closed.
@@ -391,6 +403,8 @@ authoring and removes HDN completely rather than carrying a compatibility subsys
 - No first-party source or runtime package imports, discovers, compiles, loads, runs, or emits HDN.
 - `hedron-jinja` passes typed component, slot, escaping, trust-boundary, direct-render, resource,
   metadata, package-isolation, and page/fragment tests.
+- Representative HDJ applications prove Jinja inheritance/macros, Hedron feature parity, HTMX
+  progressive enhancement/history/OOB, custom CSS, and browser-module lifecycle.
 - Upgrade documentation states the intentional break and identifies 0.8 as the last HDN-capable line.
 
 ## 0.10 — Live interaction and navigation (`v0.10.0`)
@@ -541,7 +555,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Planned capability | Target phase | Notes |
 |---|---:|---|
 | Legacy HDN parser/evaluator/render-program prototype | 0.3; removed in 0.9 | No compatibility runtime or converter is shipped after 0.8. |
-| Optional Jinja integration | 0.9 | Separate `hedron-jinja` package; Python components remain canonical. |
+| HDJ standards-first authoring | 0.9 | Separate `hedron-jinja` package; native HTML/CSS/JS/HTMX plus typed Hedron bridges; Python components remain canonical. |
 | `inspect` and `eject` customization workflow | 0.3 | Progressive control over built-ins. |
 | Scoped classes, keyframes, globals, variants, layers | 0.3 | AST-based deterministic CSS rewriting. |
 | Tokens, themes, light/dark token modes, override layers | 0.3 | Accessible CSS-custom-property architecture; system preference + `data-theme`. |
@@ -630,7 +644,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Versioning, deprecation, upgrade, migration, compatibility | 0.7–0.8; maintained thereafter | Every phase declares and tests its compatibility impact. |
 | Native Flask/Django application integration and QuerySet source | 0.11 | Framework-native ergonomics with bounded data execution. |
 | SSE, WebSocket, focused streaming, and navigation preload | 0.10 | Ordinary HTTP/polling/navigation fallbacks remain supported. |
-| Optional Jinja integration and HDN removal | 0.9 | Trusted application templates, explicit component allowlists, strict defaults, and no legacy runtime. |
+| HDJ authoring and HDN removal | 0.9 | Versioned `.hdj` profiles, trusted Jinja bodies, complete web-platform freedom, explicit Hedron bridges/capabilities, and no legacy runtime. |
 | Advanced DataEditor, distributed sources, and visualization adapters | 0.12 | Bounded, accessible, optional integrations. |
 | Component preparation, adaptive concurrency, distributed tracing | 0.13 | Explicit ownership, cancellation, and opt-out semantics. |
 | Language-neutral conformance, Java/Node runtimes, Rust acceleration | 0.14 | Python remains the semantic reference and fallback. |
@@ -670,7 +684,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0028 Deployment | 0.7–0.8 |
 | 0029 Capability roadmap | 0.0 onward |
 | 0030 Declarative authoring reset | Superseded by 0031 |
-| 0031 Optional Jinja integration | 0.9 |
+| 0031 HDJ standards-first authoring | 0.9 |
 
 ## Later-phase policy
 

@@ -30,9 +30,10 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 
 ## Templates
 
-- Prefer typed Python components. Install `hedron-jinja` when trusted application templates are the
-  clearer authoring surface; bind every callable component alias explicitly. HDN is not available
-  on the 0.9 train.
+- Prefer typed Python components for reusable behavior and authorization. Install `hedron-jinja`
+  when trusted authors need standards-first control over HTML, CSS, JavaScript, Jinja, and HTMX;
+  bind every callable component alias explicitly and keep dynamic trust crossings visible. HDN is
+  not available on the 0.9 train.
 - Do not put secrets or untrusted HTML in templates—use `TrustedHtml` at trust boundaries.
 
 ## Adapters

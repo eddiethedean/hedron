@@ -26,6 +26,18 @@ app = Hedron(
 
 See [Security types](../api/SECURITY_TYPES.md) for boundary types (`SafeUrl`, …).
 
+## HDJ templates
+
+HDJ files are trusted application source, like Python modules and JavaScript files. They may use
+native HTML, CSS, JavaScript, Web Components, Jinja, and HTMX directly. Strict HDJ mode protects
+dynamic values and component/view contracts; it does not redefine HTML.
+
+Before serving a template, HDJ compares its capability report with the active security and asset
+policy. Inline script/style, HTMX eval or response-script processing, remote origins, and
+extensions must be allowed deliberately. Hedron never adds `unsafe-inline`, `unsafe-eval`, remote
+origins, or a nonce automatically. Prefer registered modules/styles under strict CSP. Template
+authors remain trusted; do not load tenant, CMS, prompt, upload, or database text as executable HDJ.
+
 ## CSRF
 
 When CSRF is enabled (all built-in FastAPI profiles):

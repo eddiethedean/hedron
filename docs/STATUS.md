@@ -6,12 +6,13 @@
 `hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` / `hedron-jinja` `0.9.0`
 (MIT licensed, D-033)
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
-`hedron-flask`, `hedron-django`; Alpha — `hedron-charts`, `hedron-sample-kit`.
+`hedron-flask`, `hedron-django`, `hedron-jinja`; Alpha — `hedron-charts`, `hedron-sample-kit`.
 
-**Phase focus:** replace HDN with optional strict Jinja authoring. Native Flask/Django depth moves to
-0.11; SSE/live transport remains assigned to 0.10.
+**Phase focus:** replace HDN with HDJ, an optional explicit `.hdj` format over Jinja/HTML/HTMX that
+preserves advanced HTML/CSS/JS freedom and Hedron metadata/security integration. Native
+Flask/Django depth moves to 0.11; SSE/live transport remains assigned to 0.10.
 
-**Authoring break:** D-041/RFC-0031 remove HDN in phase 0.9 with no compatibility mode or converter.
+**Authoring break:** D-041/D-043/RFC-0031 remove HDN in phase 0.9 with no compatibility mode or converter.
 The parser, evaluator, formatter, render program, discovery, artifacts, public APIs, CLI/Explorer
 paths, examples, and tests are gone. `hedron-jinja` is the optional replacement; typed Python
 components remain canonical.

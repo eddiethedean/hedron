@@ -41,6 +41,24 @@
 
 See [HTMX 2 integration audit](../HTMX_2_AUDIT.md) and [release-gate-0.6.toml](release-gate-0.6.toml).
 
+## Phase 0.9 HDJ authoring
+
+- [ ] Native HTMX attributes remain native HTML attributes in HDJ; Hedron does not introduce a
+  second interaction syntax or block attributes merely because a typed Python helper lacks them.
+- [ ] Request verbs, triggers, synchronization, targeting, swaps, OOB updates, history, request
+  data, forms, UX state, attribute inheritance, lifecycle events, and supported extensions have
+  conformance evidence through HDJ-rendered templates.
+- [ ] Ordinary navigation and history misses can render a complete page at a pushed URL; fragment
+  rendering, boosted navigation, focus, title, and history privacy retain the existing contracts.
+- [ ] Managed secure defaults and advanced capabilities are explicit: eval-backed trigger filters,
+  inline handlers, response scripts, extension assets, and remote origins are capability-reported
+  and checked against deployment policy rather than silently enabled or rewritten.
+- [ ] Registered client modules can initialize and tear down behavior across `htmx:load`, swap,
+  cleanup, and history-save events without requiring inline script.
+
+The detailed feature matrix and evidence IDs live in the
+[HDJ acceptance ledger](JINJA.md#htmx-attribute-surface).
+
 ## Exit
 
 Phase 0.2 HTMX request/response and helper contracts are covered by FastAPI integration and security suites.

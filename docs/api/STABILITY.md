@@ -29,7 +29,7 @@ describe **API/artifact** promises.
 | Diagnostics | `HED-*` codes + SARIF/JSON exporters | [DIAGNOSTICS.md](../DIAGNOSTICS.md) |
 | Plugin protocol | `PluginMeta`, `PluginCapabilities`, `PluginContext`, entry point `hedron.plugins` | [PLUGINS.md](PLUGINS.md) |
 | Registry metadata | Documented fields of `ComponentMeta`, `AddressableMeta`, `RouteMeta` | Public; private Explorer-only fields are internal |
-| Jinja authoring | `hedron-jinja`, `TemplateSpec`, `HedronJinja` | `beta`; optional package, trusted templates only |
+| HDJ authoring | `.hdj` format v1, `hedron-jinja`, `TemplateSpec`, `HedronJinja` | Format and profile expansions are versioned; package is `beta`; trusted templates only |
 | Build manifests | `BUILD` / `ASSET` / `CSS_SYMBOL` manifest format versions | Versioned; digest fields public |
 | Rendered markup | Semantic structure and documented attributes for built-ins | Serializer implementation nodes are **internal** |
 | HTMX interaction | Approved headers, status matrix, fragment regions, cache `Vary` | [INTERACTION.md](INTERACTION.md) |
@@ -76,10 +76,11 @@ Capability rows marked Deferred (QuerySet DataSource) stay **deferred**.
 
 ### `hedron-sample-kit` (Alpha) — **experimental** sample plugin surface
 
-### `hedron-jinja` (Beta) — `beta`
+### `hedron-jinja` / HDJ (Beta) — `beta`
 
 `TemplateSpec`, `TemplateSource`, `HedronJinja`, and `HedronJinjaExtension` are **beta**. Templates
-are trusted application code; hostile-template sandboxing is not a supported capability.
+are trusted application code. Standard HTML/CSS/JS/Jinja/HTMX source is part of the target surface;
+hostile-template sandboxing is not a supported capability.
 
 ## Deferred destinations
 

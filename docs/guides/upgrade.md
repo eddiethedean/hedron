@@ -29,11 +29,13 @@ mode or automatic converter. Stay on 0.8 until every HDN template has been manua
 - `hedron eject` emits CSS only.
 
 Install Jinja authoring explicitly with `pip install "hedron[jinja]"` or
-`pip install hedron-jinja`. The import namespace is `hedron_jinja`; “HDJ” is only informal shorthand.
+`pip install hedron-jinja`. The import namespace is `hedron_jinja`; `.hdj` is the canonical
+format-v1 template suffix. Each file begins with the static feature/capability prologue documented
+in the [HDJ API](../api/JINJA.md#hdj-format), followed by ordinary Jinja/HTML.
 
 ### Manual syntax rewrite
 
-| HDN 0.8 | Jinja 0.9 |
+| HDN 0.8 | HDJ 0.9 body |
 |---|---|
 | `{value}` | `{{ view.value }}` |
 | `{#if ready}…{/if}` | `{% if view.ready %}…{% endif %}` |
@@ -73,7 +75,7 @@ components.
 
 ## Toward 0.9 and later phases
 
-Phase 0.9 owns the Jinja replacement; phase 0.10 owns SSE, WebSocket, focused streaming, and
+Phase 0.9 owns the HDJ replacement; phase 0.10 owns SSE, WebSocket, focused streaming, and
 navigation preload; native Flask/Django depth moves to 0.11. Each phase publishes its own
 upgrade notes and proves clean install, upgrade from supported prior trains, deployment, and
 rollback from built/published artifacts. See [RELEASE.md](../RELEASE.md) and the roadmap.

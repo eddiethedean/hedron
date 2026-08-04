@@ -14,6 +14,10 @@ The serializer converts normalized nodes to deterministic HTML while enforcing c
 - Require `TrustedHtml` for raw fragments and `SafeUrl` plus final-context policy for URL-bearing attributes.
 - Reject inline event handlers and disallowed dynamic attributes under baseline policy.
 
+These rules govern normalized Python/component nodes and dynamic HDJ values. They do not define a
+reduced source grammar for trusted HDJ files; literal template source is checked through the HDJ
+capability and SecurityPolicy/CSP path before its `RenderResult` is served.
+
 Serialization should write to an efficient append-only buffer. A future native implementation may replace the buffer stage only if it passes byte-level conformance.
 
 ## Context boundaries

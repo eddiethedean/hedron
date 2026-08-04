@@ -16,8 +16,9 @@ Components—without requiring Node.js.
 > `hedron-jinja` package is its replacement. The 0.8 line is the final HDN-capable line.
 
 > **Authoring direction:** [RFC-0031](https://hedron.readthedocs.io/en/latest/rfcs/RFC-0031-JINJA-INTEGRATION/)
-> defines optional Jinja authoring for trusted application templates while keeping typed Python
-> components canonical. D-041 moves the replacement to phase 0.9 with no HDN compatibility layer.
+> defines HDJ, the optional explicit `.hdj` format over Jinja/HTML/HTMX for trusted application
+> authors. Native HTML, CSS, JavaScript, and Web Components remain available; Hedron adds typed
+> bridges without hiding the web platform. D-041 removes HDN with no compatibility layer.
 
 **Package maturity:** `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, and `hedron-django` are Beta. `hedron-charts` and `hedron-sample-kit`
@@ -34,7 +35,7 @@ remain Alpha.
 | [`hedron-charts`](https://pypi.org/project/hedron-charts/) | Alpha | Visualization adapters | `pip install "hedron[charts]"` or `hedron-charts` |
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Beta | Flask adapter (Supported) | `pip install hedron-flask` |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Django adapter (Supported) | `pip install hedron-django` |
-| `hedron-jinja` | Beta | Strict trusted-template authoring | `pip install hedron-jinja` |
+| `hedron-jinja` | Beta | HDJ: explicit advanced `.hdj` templates over Jinja/HTML/HTMX | `pip install hedron-jinja` |
 | [`hedron-sample-kit`](https://pypi.org/project/hedron-sample-kit/) | Alpha | Sample third-party plugin package | `pip install hedron-sample-kit` |
 
 ## Product direction
@@ -103,7 +104,7 @@ phase 0.10 therefore maps to `v0.10.0`. No 1.0 milestone is scheduled.
 | 0.6 | `v0.6.0` | Visualization and first-party integrations (**published**) |
 | 0.7 | `v0.7.0` | Portable adapters, Flask/Django, jobs, and operations (**published**) |
 | 0.8 | `v0.8.0` | Hardening, stability classification, and compatibility baseline (**cut-ready**) |
-| 0.9 | `v0.9.0` | Jinja authoring and complete HDN removal |
+| 0.9 | `v0.9.0` | HDJ authoring and complete HDN removal |
 | 0.10 | `v0.10.0` | Live interaction, focused streaming, and navigation preload |
 | 0.11 | `v0.11.0` | Native Flask/Django depth and bounded QuerySet integration |
 | 0.12 | `v0.12.0` | Advanced data editing, distributed sources, and visualization scale |
@@ -150,7 +151,7 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 **PyPI (install today):** latest published train is **0.7.x** (`pip install hedron`).
 
-**Repository `main`:** coordinated packages are now **0.9.0** during the intentional HDN-to-Jinja
+**Repository `main`:** coordinated packages are now **0.9.0** during the intentional HDN-to-HDJ
 authoring break. Published 0.8 artifacts remain the final option for applications that still need
 HDN; there is no 0.9 compatibility switch.
 
