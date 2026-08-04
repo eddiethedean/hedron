@@ -53,7 +53,7 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
 
 ## Exit
 
-The phase can publish only when live/preload behavior never becomes a hidden correctness
-dependency, polling and ordinary navigation remain valid, every release-gate row is `Verified`
-or owned `Deferred`, and remaining Deferred browser/load/Explorer/example rows are explicitly
-owned. Version stays `0.10.0` until tag/publish.
+**Exit met / published** as coordinated `0.10.0` (`v0.10.0`). Live/preload behavior is not a hidden
+correctness dependency; polling and ordinary navigation remain valid. Every release-gate row is
+`Verified` or owned `Deferred`. Deferred browser/load/Explorer/example rows remain owned for
+`0.10.x` follow-up; they do not reopen the 0.10 train.

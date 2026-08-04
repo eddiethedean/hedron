@@ -122,7 +122,7 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 | Django adapter | Django `>=5.2,<6`; asgiref `>=3.8,<4`; WSGI + ASGI |
 | Browsers | Chromium, Firefox, WebKit (Playwright) |
 | HTMX | Bundled 2.0.10; contract `>=2.0,<3.0` |
-| Deferred | SSE live transport; Django QuerySet DataSource |
+| Deferred (0.8 historical) | SSE live transport (promoted in 0.10); Django QuerySet DataSource (still Deferred → 0.11) |
 
 Changing a Supported row in a later capability phase requires an accepted compatibility update,
 migration analysis, and a complete rerun of affected baseline plus owning-phase evidence.

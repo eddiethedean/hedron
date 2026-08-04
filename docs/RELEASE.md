@@ -89,7 +89,7 @@ Before any 0.7 adapter contract is implemented:
 
 ## Cut `v0.8.0` (hardening and compatibility baseline)
 
-> **Status:** Ready to cut. Do not retag after publish.
+> **Status:** Published as `v0.8.0`. Do not retag.
 
 1. Confirm phase 0.8 scope: hardening/classification only; no net-new subsystem, adapter, or transport.
 2. Confirm `uv run python scripts/check_release_gate.py 0.8.0` and
@@ -111,6 +111,8 @@ git push origin v0.8.0
    Retain the evidence bundle (SBOM, licenses, asset audit, test summaries, lockfile digest).
 
 ## Build and cut `v0.9.0`
+
+> **Status:** Published as `v0.9.0`. Do not retag.
 
 1. Confirm phase 0.9 owning RFC revisions and API/implementation/acceptance contracts are accepted
    before implementation is claimed complete.
@@ -136,6 +138,8 @@ git push origin v0.8.0
 
 ## Build and cut `v0.10.0`
 
+> **Status:** Published as `v0.10.0`. Do not retag.
+
 1. Confirm phase 0.10 owning RFC-0032 and revised RFCs 0009/0013/0021/0025/0031 are accepted
    before implementation is claimed complete.
 2. During development, validate the planned evidence shape with
@@ -159,7 +163,7 @@ git push origin v0.8.0
 
 ## Cut `v0.6.0` (visualization and first-party integrations)
 
-> **Status:** Ready to cut. Do not retag after publish.
+> **Status:** Published as `v0.6.0`. Do not retag.
 
 1. Confirm `check_release_gate.py 0.6.0`, [release-gate-0.6.toml](acceptance/release-gate-0.6.toml),
    and acceptance suites for VISUALIZATION / HTMX / SECURITY (closure IDs Verified or Deferred).
@@ -177,5 +181,5 @@ git push origin v0.6.0
 
 - Install from a clean venv and re-run the smoke render (and a quick
   `hedron build` against the reference app if convenient).
-- Update `docs/STATUS.md` if the published state changed.
-- Begin the next phase packet only after the release is confirmed.
+- Keep `docs/STATUS.md` / root `STATUS.md` aligned with the published train.
+- After `v0.10.0`, begin the **0.11** phase packet (native Flask/Django depth).

@@ -74,9 +74,8 @@ Or install a backend through the flagship package once `hedron[charts]` is prese
 uv run python -c "import hedron; print(hedron.__version__)"
 ```
 
-The installed version should print without an import error. Repository `main` reports **`0.10.0`**
-while the intentional HDN-to-HDJ authoring break is implemented; the public index may lag—see
-[STATUS](../STATUS.md). Data APIs require `hedron-data`
+The installed version should print without an import error. Expect **`0.10.0`** from PyPI for the
+current live-interaction train—see [STATUS](../STATUS.md). Data APIs require `hedron-data`
 (`pip install "hedron[data]"`). Charts require `hedron-charts`
 (`pip install "hedron[charts]"`). Hedron follows semantic versioning; see the
 [roadmap](../ROADMAP.md) and [compatibility policy](../COMPATIBILITY.md).

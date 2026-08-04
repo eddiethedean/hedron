@@ -11,9 +11,9 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Repository `main` is implementing phase **0.10** (`0.10.0` packages).
-> Phase 0.9 introduced HDJ and removed HDN. Phase 0.10 adds live interaction (SSE, focused
-> streaming, WebSocket channels, Chat/Dialog, navigation preload) per RFC-0032.
+> **Project status:** Phase **0.10** is published as **`v0.10.0`**. Live interaction (SSE, focused
+> streaming, WebSocket channels, Chat/Dialog, navigation preload) ships per RFC-0032. Phase 0.9
+> introduced HDJ and removed HDN. Next capability phase: **0.11**.
 
 > **Authoring direction:** [RFC-0031](https://hedron.readthedocs.io/en/latest/rfcs/RFC-0031-JINJA-INTEGRATION/)
 > defines HDJ, the optional explicit `.hdj` format over Jinja/HTML/HTMX for trusted application
@@ -21,8 +21,8 @@ Components—without requiring Node.js.
 > bridges without hiding the web platform. D-041 removes HDN with no compatibility layer.
 
 **Package maturity:** `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
-`hedron-flask`, and `hedron-django` are Beta. `hedron-charts` and `hedron-sample-kit`
-remain Alpha.
+`hedron-flask`, `hedron-django`, and `hedron-jinja` are Beta. `hedron-charts` and
+`hedron-sample-kit` remain Alpha.
 
 ## Packages
 
@@ -103,9 +103,9 @@ phase 0.10 therefore maps to `v0.10.0`. No 1.0 milestone is scheduled.
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI (**published**) |
 | 0.6 | `v0.6.0` | Visualization and first-party integrations (**published**) |
 | 0.7 | `v0.7.0` | Portable adapters, Flask/Django, jobs, and operations (**published**) |
-| 0.8 | `v0.8.0` | Hardening, stability classification, and compatibility baseline (**cut-ready**) |
-| 0.9 | `v0.9.0` | HDJ authoring and complete HDN removal |
-| 0.10 | `v0.10.0` | Live interaction, focused streaming, and navigation preload |
+| 0.8 | `v0.8.0` | Hardening, stability classification, and compatibility baseline (**published**) |
+| 0.9 | `v0.9.0` | HDJ authoring and complete HDN removal (**published**) |
+| 0.10 | `v0.10.0` | Live interaction, focused streaming, and navigation preload (**published**) |
 | 0.11 | `v0.11.0` | Native Flask/Django depth and bounded QuerySet integration |
 | 0.12 | `v0.12.0` | Advanced data editing, distributed sources, and visualization scale |
 | 0.13 | `v0.13.0` | Advanced async preparation, concurrency, and observability |
@@ -159,15 +159,15 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 ## Current release
 
-**PyPI (install today):** latest published train is **0.7.x** (`pip install hedron`).
+**PyPI (install today):** latest published train is **0.10.x** (`pip install hedron`).
 
-**Repository `main`:** coordinated packages are **0.10.0** (live interaction on top of the 0.9
-HDN-to-HDJ authoring break). Published 0.8 artifacts remain the final option for applications that
-still need HDN; there is no HDN compatibility switch on 0.9+.
+**Current train:** coordinated packages are **`0.10.0`** — live interaction on top of the 0.9
+HDN-to-HDJ authoring break. Version **0.8** remains the final line for applications that still need
+HDN; there is no HDN compatibility switch on 0.9+.
 
 Install `hedron` for the FastAPI flagship, `hedron-flask` / `hedron-django` for Supported
 adapters, and `"hedron[data]"`, `"hedron[charts]"`, or `"hedron[jinja]"` for optional subsystems.
-Phase `0.10` adds official SSE, focused streaming, WebSocket channels, Dialog/Chat, and opt-in
+Phase `0.10` includes official SSE, focused streaming, WebSocket channels, Dialog/Chat, and opt-in
 preload; native framework depth moves to 0.11. Later capability phases remain on the `0.x` line —
 see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 

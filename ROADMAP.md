@@ -335,6 +335,7 @@ integrations, and a documented production operating model.
 
 ## 0.8 — Hardening and compatibility baseline (`v0.8.0`)
 
+**Status:** Published.
 **Outcome:** Hedron has explicit stability classifications, a tested compatibility baseline, and
 release-quality evidence. The baseline makes later changes deliberate and measurable without
 pretending the product is feature-complete.
@@ -366,6 +367,7 @@ pretending the product is feature-complete.
 
 ## 0.9 — HDJ authoring and HDN removal (`v0.9.0`)
 
+**Status:** Published.
 **Outcome:** Hedron replaces its experimental custom template language with the explicit,
 versioned `.hdj` format over Jinja/HTML/HTMX, and removes HDN completely rather than carrying a
 compatibility subsystem.
@@ -412,6 +414,8 @@ compatibility subsystem.
 
 ## 0.10 — Live interaction and navigation (`v0.10.0`)
 
+**Status:** Published. Owned Deferred follow-ups (`BROWSER-10-001`, `PERF-10-001`,
+`EXPLORER-10-001`, `EXAMPLES-10-001`) remain for `0.10.x`.
 **Outcome:** Hedron supports evidence-backed live updates, streaming where it materially helps, and
 measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
 

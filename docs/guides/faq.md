@@ -8,9 +8,9 @@ pip install hedron
 uv add hedron
 ```
 
-That installs the latest published release from PyPI. Repository `main` tracks coordinated
-**0.10.0** packages (live interaction on the 0.9 HDJ authoring line); published artifacts may
-lag—see [STATUS](../STATUS.md). For DataTable/DataEditor, install
+That installs the latest published release from PyPI. The current train is **0.10.0** (live
+interaction on the 0.9 HDJ authoring line)—see [STATUS](../STATUS.md). For DataTable/DataEditor,
+install
 `hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
 
 ```bash
@@ -48,8 +48,9 @@ See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), a
 
 Yes as **Beta Supported** adapters (`hedron-flask`, `hedron-django`). Install them
 separately; they do not pull in FastAPI. Django apps must use Django `>=5.2,<6`. Some
-rows remain Deferred (official HTMX SSE; Django QuerySet as a first-party DataSource;
-Hedron-owned Django forms). See [Compatibility](../COMPATIBILITY.md),
+rows remain Deferred (Django QuerySet as a first-party DataSource; Hedron-owned Django forms).
+Official HTMX SSE is Supported on the FastAPI flagship in 0.10; polling remains the Supported
+fallback on all hosts. See [Compatibility](../COMPATIBILITY.md),
 [Flask quickstart](../getting-started/flask.md), and
 [Django quickstart](../getting-started/django.md).
 

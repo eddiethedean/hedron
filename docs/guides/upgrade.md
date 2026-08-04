@@ -1,7 +1,8 @@
-# Upgrade guide (0.8 → 0.9 authoring break)
+# Upgrade guide (0.8 → 0.9 authoring break; 0.10 live)
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
-mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten.
+mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
+upgrade through **0.9** to the current **0.10.0** train for live interaction.
 
 ## What changed in 0.8
 
@@ -49,12 +50,14 @@ HDN helpers and arbitrary expressions should move into the typed Python view mod
 aliases are registered explicitly in `HedronJinja`; templates cannot import or enumerate Python
 components.
 
-## Still Deferred (unchanged)
+## Still Deferred (unchanged through 0.10)
 
 | Claim | Decision | Guidance |
 |---|---|---|
-| Django QuerySet DataSource | D-036 | Bridge QuerySets in application code; do not rely on a first-party portable contract. |
-| HTMX SSE live transport | D-037 / D-044 | Official SSE is Supported in 0.10; bounded polling remains the Supported fallback. |
+| Django QuerySet DataSource | D-036 / D-041 | Bridge QuerySets in application code; first-party portable contract is 0.11. |
+
+Official HTMX SSE live observation is **Supported in 0.10** (D-044); bounded polling remains the
+Supported fallback.
 
 ## Experimental surfaces
 
@@ -76,10 +79,10 @@ components.
    against critical flows when you consume HTMX history, OOB, or extensions.
 8. Read [STABILITY.md](../api/STABILITY.md) before depending on unmarked or private APIs.
 
-## Toward 0.10 and later phases
+## 0.10 live interaction (published)
 
-Phase 0.10 adds SSE, focused streaming, WebSocket channels, Chat/Dialog, and opt-in navigation
-preload (RFC-0032). Native Flask/Django depth moves to 0.11. Each phase publishes its own
+Phase 0.10 ships SSE, focused streaming, WebSocket channels, Chat/Dialog, and opt-in navigation
+preload (RFC-0032). Native Flask/Django depth remains 0.11. Each phase publishes its own
 upgrade notes and proves clean install, upgrade from supported prior trains, deployment, and
 rollback from built/published artifacts. See [RELEASE.md](../RELEASE.md) and the roadmap.
 

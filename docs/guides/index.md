@@ -61,7 +61,7 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>0.7 → 0.8 compatibility notes, Django floor, and later capability phases.</p>
+    <p>0.8 → 0.9 HDJ authoring break, then 0.10 live interaction notes.</p>
   </a>
   <a class="hedron-card" href="faq/">
     <span class="hedron-card__icon" aria-hidden="true">?</span>
@@ -80,7 +80,7 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
   </a>
 </div>
 
-Looking for callable APIs in this release? Start with [Shipped through 0.8](../api/README.md).
+Looking for callable APIs in this release? Start with [Shipped through 0.10](../api/README.md).
 For your first server interaction, see [HTMX interactions](htmx-interactions.md); then add
 visualization with [Charts and HTMX](charts-and-htmx.md).
 Stability classifications live under [STABILITY.md](../api/STABILITY.md); Deferred contracts are

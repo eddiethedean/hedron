@@ -1,8 +1,7 @@
 # Hedron reference application (FastAPI)
 
 Cumulative authenticated team-administration application for the FastAPI flagship.
-Repository `main` tracks the **0.8** compatibility baseline; PyPI may still serve **0.7.x** until
-`v0.8.0` is tagged.
+Tracks the published **0.10.0** train (live interaction on the 0.9 HDJ authoring line).
 
 Demonstrates:
 

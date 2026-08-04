@@ -51,7 +51,7 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.10.0` on `main`) |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current published train `0.10.0`) |
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
@@ -65,8 +65,8 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** repository `main` coordinates packages at `0.10.0` for the live-interaction
-phase. Published artifacts may lag until `v0.10.0` is tagged—see [STATUS](STATUS.md).
+**Publish note:** the coordinated published train is **`0.10.0`** (`v0.10.0`) for live interaction—
+see [STATUS](STATUS.md).
 
 ## Dependency rules
 

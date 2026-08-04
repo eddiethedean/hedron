@@ -1,6 +1,9 @@
 # HDJ authoring acceptance
 
-> **Target:** phase 0.9. `.hdj` is the optional, explicit, standards-first Jinja/HTML/HTMX format.
+> **Target:** phase 0.9 (**published**). `.hdj` is the optional, explicit, standards-first
+> Jinja/HTML/HTMX format. Phase 0.10 closed head management, two-phase streaming, and
+> version-aware HTMX reporting (`HDJ-10-*`); remaining browser-backed navigation/history/OOB
+> lifecycle depth stays owned with `BROWSER-10-001` → `0.10.x`.
 
 ## Deferred ownership
 
@@ -8,7 +11,7 @@ Rows marked with a later phase are excluded from the 0.9 exit gate and owned her
 
 | Later phase | Owned HDJ work |
 |---:|---|
-| 0.10 | Registered fragment head management, two-phase template streaming, version-aware HTMX semantics, and browser-backed navigation/history/OOB/lifecycle evidence. |
+| 0.10 (closed / follow-up) | Head management, two-phase streaming, and version-aware HTMX semantics are Verified on `v0.10.0`. Broader browser-backed navigation/history/OOB/lifecycle evidence remains Deferred with `BROWSER-10-001`. |
 | 0.11 | Finite fingerprinted dynamic dependency manifests, foreign Jinja/package namespaces, native route/CSRF/context/response facades, multi-framework PAGE/FRAGMENT/forms parity, asset/CSP pipeline reconciliation, and CLI/build/Explorer production inventory. |
 | 0.12 | `hedron.data`/`hedron.charts` provider parity and bounded high-volume presentation evidence. |
 | 0.13 | Async filter/global I/O contracts, operation budgets, deadlines, cancellation, and tracing. |
