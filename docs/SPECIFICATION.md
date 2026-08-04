@@ -52,21 +52,19 @@ Coding may begin when:
 
 The phase 0.0 readiness sweep satisfied this gate for the phase 0.1 typed rendering core
 targeting `v0.1.0`. Phases 0.1 through 0.5 are published and MIT-licensed (D-033);
-phase 0.8 is **cut-ready** as `0.8.0` on repository `main` (PyPI may still serve the
-prior published train until `v0.8.0` is tagged). See [RELEASE.md](RELEASE.md) and
+phase 0.9 is implementing the intentional Jinja authoring break. See [RELEASE.md](RELEASE.md) and
 [STATUS.md](STATUS.md).
 Later-phase work must still satisfy the owning release gate before implementation begins.
 
-D-040 and accepted RFC-0031 select a separate, optional `hedron-jinja` integration for trusted
-application templates in phase 0.11. Python components remain canonical and the current release
-does not ship the integration. HDN APIs and artifacts remain experimental and enter the RFC-0031
-deprecation/migration path rather than constraining the Jinja design.
+D-041 and RFC-0031 ship a separate, optional `hedron-jinja` integration for trusted application
+templates in phase 0.9. Python components remain canonical. HDN was removed without a compatibility
+runtime, converter, or legacy package; 0.8 is the final HDN-capable line.
 
 Under D-035, phase 0.7 additionally requires the phase 0.6 behavioral closure gate, accepted
 adapter-neutral ownership, resolved package dependency direction, concrete compatibility ranges,
-and evidence-backed adapter/operations/jobs/observability ledgers. Phase 0.8 is feature-frozen;
-phase 0.9 adds native Flask/Django ergonomics and a bounded QuerySet source, while live transports
-remain assigned to phase 0.10. Later work continues through capability-driven `0.x` phases; no 1.0
+and evidence-backed adapter/operations/jobs/observability ledgers. Phase 0.9 replaces HDN with
+Jinja, live transports remain assigned to phase 0.10, and native Flask/Django depth moves to 0.11.
+Later work continues through capability-driven `0.x` phases; no 1.0
 freeze is scheduled.
 
 The cumulative [reference application](REFERENCE_APPLICATION.md) grows from the phase 0.1

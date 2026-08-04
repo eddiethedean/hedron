@@ -5,8 +5,8 @@
 ## Purpose
 
 Plugins extend components, renderers, integrations, CLI commands, Explorer panels, data sources,
-chart adapters, and build diagnostics without expanding required dependencies. Legacy HDN helper
-extension is legacy under D-040/RFC-0031 and is not a forward compatibility promise.
+chart adapters, and build diagnostics without expanding required dependencies. Optional Jinja
+filters and globals are application environment configuration, not a core plugin contract.
 
 ## Contract
 

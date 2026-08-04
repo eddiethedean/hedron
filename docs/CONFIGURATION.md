@@ -57,10 +57,10 @@ strict_csp = true
 reject_inline_style = true
 ```
 
-## Planned `[tool.hedron.jinja]` keys (phase 0.11)
+## `[tool.hedron.jinja]` contract (phase 0.9)
 
-RFC-0031 reserves the following optional-package configuration. These keys are not accepted by the
-current 0.8 loader and become active only when `hedron-jinja` is installed in phase 0.11.
+RFC-0031 defines the following optional-package configuration. The keys belong to
+`hedron-jinja`, not `hedron-core`; application/tooling wiring is part of the remaining 0.9 work.
 
 | Key | Type | Default | Description |
 |---|---|---:|---|

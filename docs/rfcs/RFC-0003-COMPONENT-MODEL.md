@@ -23,8 +23,7 @@ Unknown props, invalid children, missing slots, unsafe attributes, and return-co
 
 ## Acceptance criteria
 
-- The legacy HDN parity sample lowers to equivalent node semantics; D-040/RFC-0031 revoke any
-  broader language commitment until declarative authoring is selected or removed.
+- Typed Python composition and optional Jinja component calls lower to equivalent node semantics.
 - Nested components render with deterministic escaping and attribute normalization.
 - A renderable component cannot be requested until separately declared addressable.
 - Examples and tests can construct components without a live server.

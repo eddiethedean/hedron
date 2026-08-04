@@ -402,27 +402,17 @@ def _load_status_banner_module():
 
 
 def _status_banner_section(*, request: Request | None = None) -> Any:
-    """Python StatusBanner beside an HDN twin loaded from build artifacts when present."""
-    from pathlib import Path
-
+    """Python StatusBanner with build-produced scoped styles."""
     from hedron_core.compile_gate import assert_runtime_compile_allowed, is_production_env
-    from hedron_core.hdn import compile_hdn, load_hdn_program, run_program
     from hedron_core.html import _HtmlTag
 
-    root = Path(__file__).resolve().parent / "components" / "StatusBanner"
     module = _load_status_banner_module()
     StatusBanner = module.StatusBanner
 
-    program = None
     style_symbols = None
     if request is not None:
         manifest = getattr(request.app.state, "hedron_build_manifest", None)
-        build_dir = getattr(request.app.state, "hedron_build_dir", None)
-        if manifest is not None and build_dir is not None:
-            for logical_id, rel in dict(manifest.hdn_programs).items():
-                if "StatusBanner" in logical_id:
-                    program = load_hdn_program(Path(build_dir) / rel)
-                    break
+        if manifest is not None:
             for sym in manifest.css_symbols:
                 if "StatusBanner" in sym.component_id:
                     style_symbols = dict(sym.symbols)
@@ -441,24 +431,15 @@ def _status_banner_section(*, request: Request | None = None) -> Any:
     else:
         styles = module.load_styles()
 
-    if program is None:
-        assert_runtime_compile_allowed(production=in_production, what="HDN")
-        program = compile_hdn(
-            (root / "template.hdn").read_text(encoding="utf-8"),
-            style_symbols=styles.as_dict(),
-        ).program
-
     python_banner = StatusBanner(label="Phase 0.3 ready", tone="info")
-    hdn_nodes = run_program(program, {"label": "Phase 0.3 ready", "tone": "info"})
     disclose = _HtmlTag("hedron-disclose")(
         html.p("Web Component disclose survives HTMX swaps."),
         **{"label": "About phase 0.3"},
     )
     return Stack(
-        Heading("Authoring twins", level=3),
-        Text("Python StatusBanner and HDN StatusBanner produce equivalent structure."),
+        Heading("Typed component authoring", level=3),
+        Text("Python components remain the canonical reusable component model."),
         python_banner,
-        *hdn_nodes,
         disclose,
         Text(f"Scoped root class: {styles.root}"),
     )

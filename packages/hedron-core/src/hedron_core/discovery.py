@@ -23,15 +23,11 @@ logger = logging.getLogger("hedron.discovery")
 
 __all__ = ["DiscoveredComponent", "discover_component_folders", "load_component_module"]
 
-_TEMPLATE_NAME = "template.hdn"
-
-
 @dataclass(frozen=True, slots=True)
 class DiscoveredComponent:
     name: str
     folder: Path
     component_py: Path | None
-    template_hdn: Path | None
     styles_css: Path | None
     browser_mjs: Path | None
     examples_py: Path | None
@@ -47,18 +43,16 @@ def discover_component_folders(roots: Sequence[Path]) -> tuple[DiscoveredCompone
             if not child.is_dir() or child.name.startswith((".", "_")):
                 continue
             component_py = child / "component.py"
-            template_hdn = child / _TEMPLATE_NAME
             styles_css = child / "styles.css"
             browser_mjs = child / "browser.mjs"
             examples_py = child / "examples.py"
-            if not any(p.is_file() for p in (component_py, template_hdn, styles_css, browser_mjs)):
+            if not any(p.is_file() for p in (component_py, styles_css, browser_mjs)):
                 continue
             found.append(
                 DiscoveredComponent(
                     name=child.name,
                     folder=child,
                     component_py=component_py if component_py.is_file() else None,
-                    template_hdn=template_hdn if template_hdn.is_file() else None,
                     styles_css=styles_css if styles_css.is_file() else None,
                     browser_mjs=browser_mjs if browser_mjs.is_file() else None,
                     examples_py=examples_py if examples_py.is_file() else None,
@@ -142,7 +136,6 @@ def apply_discovery_to_registry(
                 distribution=dist,
                 props_model=getattr(getattr(cls, "props_type", None), "__name__", None),
                 styles_path=str(item.styles_css) if item.styles_css else None,
-                hdn_source=str(item.template_hdn) if item.template_hdn else None,
                 browser_modules=browser_modules,
                 folder_path=str(item.folder),
                 asset_roots=(str(item.folder),),
@@ -151,19 +144,17 @@ def apply_discovery_to_registry(
             update_component_meta(
                 logical_id,
                 styles_path=str(item.styles_css) if item.styles_css else None,
-                hdn_source=str(item.template_hdn) if item.template_hdn else None,
                 browser_modules=browser_modules,
                 folder_path=str(item.folder),
                 asset_roots=(str(item.folder),),
             )
-        elif item.template_hdn or item.styles_css or item.browser_mjs:
+        elif item.styles_css or item.browser_mjs:
             register_component(
                 logical_id=logical_id,
                 name=logical_name,
                 module=module_name,
                 distribution=dist,
                 styles_path=str(item.styles_css) if item.styles_css else None,
-                hdn_source=str(item.template_hdn) if item.template_hdn else None,
                 browser_modules=browser_modules,
                 folder_path=str(item.folder),
                 asset_roots=(str(item.folder),),

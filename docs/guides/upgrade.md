@@ -1,7 +1,7 @@
-# Upgrade guide (0.7 → 0.8 and later capability phases)
+# Upgrade guide (0.8 → 0.9 authoring break)
 
-This guide covers the `0.8.0` hardening/compatibility baseline and how later `0.x` capability
-phases declare migration impact. No 1.0 freeze is scheduled.
+Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
+mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten.
 
 ## What changed in 0.8
 
@@ -17,10 +17,35 @@ phases declare migration impact. No 1.0 freeze is scheduled.
   `csrfmiddlewaretoken` or Hedron's portable `csrf_token` field.
 - **Hardening evidence:** deeper Flask/Django tests, three-engine browser HTMX suite, performance
   budgets, threat model, SBOM / license / asset audits.
-- **HDN migration:** existing experimental templates use `template.hdn`, but D-040/RFC-0031 select
-  an optional Jinja replacement and schedule HDN deprecation in 0.11, default-discovery removal in
-  0.12, and runtime removal in 0.13. Do not create new HDN dependencies. Current discovery,
-  `hedron eject`, and the development watcher retain the legacy extension temporarily.
+- **HDN end-of-line:** 0.8 is the final release line containing HDN.
+
+## Breaking changes in 0.9
+
+- `hedron_core.hdn`, `compile_hdn`, `format_hdn`, `load_hdn_program`, `run_program`,
+  `RenderProgram`, and `HDN_FORMAT_VERSION` are removed.
+- `.hdn` files are not discovered, watched, compiled, displayed, or emitted.
+- `ComponentMeta.hdn_source` and `BuildManifest.hdn_programs` are removed.
+- Build-manifest format 2 rejects 0.8 build artifacts; rebuild after upgrading.
+- `hedron eject` emits CSS only.
+
+Install Jinja authoring explicitly with `pip install "hedron[jinja]"` or
+`pip install hedron-jinja`. The import namespace is `hedron_jinja`; “HDJ” is only informal shorthand.
+
+### Manual syntax rewrite
+
+| HDN 0.8 | Jinja 0.9 |
+|---|---|
+| `{value}` | `{{ view.value }}` |
+| `{#if ready}…{/if}` | `{% if view.ready %}…{% endif %}` |
+| `{#for item in items}…{/for}` | `{% for item in view.items %}…{% endfor %}` |
+| `<Badge text={label} />` | `{% hedron "Badge" text=view.label %}` |
+| component with children | `{% hedron "Card" title=view.title with body %}…{% endhedron %}` |
+| `<slot name="footer">…</slot>` | `{% slot "footer" %}…{% endslot %}` |
+| `{@html value}` | `{{ view.value|hedron_trusted }}` with a `TrustedHtml` value |
+
+HDN helpers and arbitrary expressions should move into the typed Python view model. Component
+aliases are registered explicitly in `HedronJinja`; templates cannot import or enumerate Python
+components.
 
 ## Still Deferred (unchanged)
 
@@ -37,24 +62,23 @@ phases declare migration impact. No 1.0 freeze is scheduled.
 
 ## Upgrade steps
 
-1. Pin the coordinated train: `hedron==0.8.0` (and matching `hedron-core`, extras, adapters).
-2. If you use `hedron-django`, ensure Django `>=5.2,<6`.
-3. Run `hedron check` and review freeze-boundary informational diagnostics (Deferred SSE/QuerySet,
-   experimental chart runtimes, Django floor).
-4. Inventory existing `template.hdn` usage and keep it on the legacy filename for now. Prefer Python
-   for new components; do not treat current imports, expressions, or artifacts as replacement APIs.
-5. Re-run your security, HTMX, and adapter suites; for production, exercise Chromium/Firefox/WebKit
+1. On 0.8, inventory every `.hdn` file and direct HDN API use.
+2. Rewrite each template as typed Python or a Jinja template and add explicit component bindings.
+3. Delete `.hdn` source and any code reading HDN build artifacts.
+4. Pin the coordinated `0.9.0` train and add `hedron-jinja` only where templates are used.
+5. Delete old build output, rebuild format-2 manifests, and run the Jinja and application suites.
+6. Re-run security, HTMX, and adapter suites; for production, exercise Chromium/Firefox/WebKit
    against critical flows when you consume HTMX history, OOB, or extensions.
-6. Read [STABILITY.md](../api/STABILITY.md) before depending on unmarked or private APIs.
+7. Read [STABILITY.md](../api/STABILITY.md) before depending on unmarked or private APIs.
 
 ## Toward 0.9 and later phases
 
-Phase 0.9 owns native Flask/Django application integration and the bounded QuerySet source; phase
-0.10 owns SSE, WebSocket, focused streaming, and navigation preload. Each phase publishes its own
+Phase 0.9 owns the Jinja replacement; phase 0.10 owns SSE, WebSocket, focused streaming, and
+navigation preload; native Flask/Django depth moves to 0.11. Each phase publishes its own
 upgrade notes and proves clean install, upgrade from supported prior trains, deployment, and
 rollback from built/published artifacts. See [RELEASE.md](../RELEASE.md) and the roadmap.
 
 ## Deprecation tooling
 
-`hedron check` emits informational diagnostics for freeze-boundary compatibility notes. There is no
-code-rewriting migrate CLI in 0.8; follow this guide and changelog entries for required changes.
+There is no code-rewriting migration CLI. Follow the semantic table above and keep the application
+on 0.8 until the rewrite is complete.

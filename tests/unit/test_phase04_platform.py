@@ -200,9 +200,9 @@ def test_cli_new_check_graph_audit(tmp_path: Path, monkeypatch: pytest.MonkeyPat
         name="Pill",
         module="demo",
         distribution="app",
-        hdn_source=str(tmp_path / "t.hdn"),
+        styles_path=str(tmp_path / "t.css"),
     )
-    (tmp_path / "t.hdn").write_text("<div>x</div>", encoding="utf-8")
+    (tmp_path / "t.css").write_text(".x { color: red; }", encoding="utf-8")
     (tmp_path / "pyproject.toml").write_text("[tool.hedron]\n", encoding="utf-8")
 
     with pytest.raises(SystemExit) as graph_exc:
@@ -231,13 +231,13 @@ def test_explorer_blocks_path_outside_allowlist(tmp_path: Path) -> None:
     secret.write_text("TOP_SECRET", encoding="utf-8")
     folder = tmp_path / "components" / "Safe"
     folder.mkdir(parents=True)
-    (folder / "template.hdn").write_text("<div>ok</div>", encoding="utf-8")
+    (folder / "styles.css").write_text(".ok { color: green; }", encoding="utf-8")
     register_component(
         logical_id="app:safe.Safe",
         name="Safe",
         module="safe",
         distribution="app",
-        hdn_source=str(secret),  # points outside folder on purpose
+        styles_path=str(secret),  # points outside folder on purpose
         folder_path=str(folder),
     )
     app = Hedron(
@@ -263,13 +263,13 @@ def test_explorer_rejects_folder_path_as_root(tmp_path: Path) -> None:
     secret.write_text("TOP_SECRET", encoding="utf-8")
     folder = tmp_path / "components" / "Safe"
     folder.mkdir(parents=True)
-    (folder / "template.hdn").write_text("<div>ok</div>", encoding="utf-8")
+    (folder / "styles.css").write_text(".ok { color: green; }", encoding="utf-8")
     register_component(
         logical_id="app:safe.Safe",
         name="Safe",
         module="safe",
         distribution="app",
-        hdn_source=str(secret),
+        styles_path=str(secret),
         # Attacker-controlled root covering the secret file.
         folder_path=str(tmp_path / "outside"),
     )
@@ -385,9 +385,9 @@ def test_sample_kit_plugin_module() -> None:
     ctx = PluginContext(PLUGIN_META)
     register(ctx)
     callout_meta = next(c for c in get_registry().components() if c.name == "Callout")
-    assert callout_meta.hdn_source is not None
-    assert Path(callout_meta.hdn_source).name == "template.hdn"
-    assert Path(callout_meta.hdn_source).is_file()
+    assert callout_meta.styles_path is not None
+    assert Path(callout_meta.styles_path).name == "styles.css"
+    assert Path(callout_meta.styles_path).is_file()
     assert any(p.panel_id == "sample-kit-callout" for p in get_explorer_panels())
     assert any(a.logical_id.endswith("callout.mark") for a in get_registry().assets())
     rendered = render_html(Callout(message="hi"))

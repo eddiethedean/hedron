@@ -13,7 +13,7 @@ Measure endpoint dependency time, I/O preparation, component rendering, serializ
 - Avoid FFI calls per node if native acceleration is ever introduced.
 - Avoid implicit collection of lazy or distributed dataframes.
 - Bound browser rows, JSON payloads, concurrency, upload sizes, and remote calls.
-- Compile CSS and any legacy experimental HDN compatibility sources ahead of time for production.
+- Compile scoped CSS and fingerprint assets ahead of time; statically check optional Jinja templates.
 - Prefer lazy addressable regions to streaming entire documents.
 
 ## Native threshold

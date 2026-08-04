@@ -129,7 +129,7 @@ def main() -> int:
         errors.append(f"unexpectedly small public export surface: {total} names")
 
     # Plugin protocol and manifest version markers must be mentioned
-    for needle in ("PluginMeta", "HDN_FORMAT_VERSION", "experimental", "deferred", "beta"):
+    for needle in ("PluginMeta", "HedronJinja", "experimental", "deferred", "beta"):
         if needle not in text:
             errors.append(f"STABILITY.md missing required term: {needle}")
 

@@ -1,26 +1,27 @@
 # Jinja integration acceptance
 
-> **Target:** phase 0.11 experimental implementation; beta promotion no earlier than phase 0.12.
+> **Target:** phase 0.9 replacement implementation. D-041 removes HDN in the same release.
 
 ## Packaging and boundaries
 
-- [ ] `hedron-jinja` installs and imports independently on every supported Python version.
-- [ ] `hedron-core` and default `hedron` wheels contain no required Jinja/MarkupSafe dependency or
+- [x] `hedron-jinja` is a separate workspace distribution and import namespace.
+- [x] `hedron-core` and default `hedron` metadata contain no required Jinja/MarkupSafe dependency or
   eager import.
-- [ ] `hedron[jinja]` installs the version-matched integration package.
+- [x] `hedron[jinja]` installs the version-matched integration package.
 - [ ] Package metadata, license, typing marker, changelog, compatibility matrix, wheel/sdist install,
   and offline startup evidence pass.
 
 ## Public behavior
 
-- [ ] `HedronJinja`, `HedronJinjaExtension`, `TemplateSpec`, and `TemplateSource` match RFC-0031 and
+- [x] `HedronJinja`, `HedronJinjaExtension`, `TemplateSpec`, and `TemplateSource` expose the phase 0.9
+  public surface described by RFC-0031 and
   `api/JINJA.md`.
-- [ ] Registration is explicit, application-local, duplicate-safe, and immutable after freeze.
+- [x] Registration is explicit, application-local, duplicate-safe, and immutable after freeze.
 - [ ] Canonical template names and application/package loader namespaces reject traversal,
   ambiguity, silent shadowing, and undeclared sources.
-- [ ] Sync and async rendering return the normal immutable `RenderResult`; async Jinja execution
+- [x] Sync and async rendering return the normal immutable `RenderResult`; async Jinja execution
   does not make component rendering async.
-- [ ] Hedron tags fail outside the owning render session rather than returning metadata-lossy HTML.
+- [x] Hedron tags fail outside the owning render session rather than returning metadata-lossy HTML.
 
 ## Grammar and component contracts
 
@@ -83,16 +84,14 @@
 - [ ] Component-tag, cold-start, memory, dependency-check, incremental rebuild, installed-size, and
   resource-limit budgets are retained in the phase evidence ledger.
 
-## HDN migration
+## HDN removal
 
-- [ ] Every HDN API, artifact, CLI/Explorer path, example, guide, and discovery use is inventoried
-  and receives the phase 0.11 deprecation diagnostic.
-- [ ] `hedron migrate hdn --to jinja` defaults to dry-run, emits source/destination digests and a
-  machine-readable report, requires explicit writes, and retains the source.
-- [ ] Static/representable fixtures convert; ambiguous expressions, access, imports, trusted
-  content, HTML, and component contracts stop with `HED-JINJA-0018` and no silent semantic change.
-- [ ] Phase 0.12 disables default HDN discovery behind a declared compatibility option; phase 0.13
-  removal tests and documentation identify the final compatible release.
+- [x] HDN parser/evaluator/formatter/runtime modules and public exports are removed.
+- [x] HDN registry metadata, source discovery, compiled artifacts, manifest entries, CLI/Explorer
+  paths, reference examples, and tests are removed.
+- [x] Build-manifest format 2 rejects the former artifact contract.
+- [x] No compatibility option, converter, or legacy package is shipped; 0.8 is the final compatible
+  release line.
 
 ## Evidence and promotion
 
@@ -101,4 +100,4 @@
   diagnostics, diff quality, and preference.
 - [ ] No critical/high security findings remain open and every required check has immutable evidence
   under `acceptance/EVIDENCE.md`.
-- [ ] Beta promotion occurs no earlier than phase 0.12 after real-application evidence.
+- [ ] Beta release requires real-application evidence and closure of the remaining phase 0.9 gates.

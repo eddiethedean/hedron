@@ -5,8 +5,8 @@
 ## Layers
 
 - Pure component and serializer unit tests.
-- Snapshot tests for HTML, manifests, styles, OpenAPI, chart specifications, and legacy HDN
-  programs while they remain supported for migration.
+- Snapshot tests for HTML, manifests, styles, OpenAPI, chart specifications, and optional Jinja
+  template output and metadata.
 - Adapter conformance tests for routing, dependencies, security, and response behavior.
 - HTTP tests with FastAPI/httpx clients.
 - Browser tests for HTMX, Web Components, keyboard behavior, and accessibility.

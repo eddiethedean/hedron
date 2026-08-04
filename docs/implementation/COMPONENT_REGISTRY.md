@@ -4,7 +4,8 @@
 
 The registry is the single metadata graph for components, pages, addressable factories, actions,
 routes, props, examples, styles, assets, browser modules, security policy, accessibility contracts,
-integration ownership, and legacy HDN inventory while D-040/RFC-0031 migration support remains.
+and integration ownership. Jinja aliases are application-local bindings and HDN inventory no
+longer exists.
 
 ## Lifecycle
 

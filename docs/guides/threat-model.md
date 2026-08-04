@@ -9,7 +9,7 @@
 - Authenticated HTML pages and HTMX fragments
 - Session cookies and CSRF tokens
 - Component registry metadata and Explorer (dev-only)
-- Compiled HDN/CSS/asset manifests and digests
+- Build, CSS, asset, and Jinja template manifests and digests
 - Job status payloads and cache entries
 - Bundled browser assets (HTMX, disclose)
 

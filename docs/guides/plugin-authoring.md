@@ -13,9 +13,9 @@ from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 
 PLUGIN_META = PluginMeta(
     name="my_plugin",
-    version="0.8.0",  # keep aligned with your distribution version
+    version="0.9.0",  # keep aligned with your distribution version
     distribution="my-hedron-plugin",
-    hedron_version=">=0.8,<0.9",
+    hedron_version=">=0.9,<0.10",
     capabilities=PluginCapabilities(python=True, styles=True, assets=True),
 )
 

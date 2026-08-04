@@ -1,6 +1,6 @@
 # RFC-0031: Jinja integration
 
-**Status:** Accepted · **Target:** phase 0.11 (`v0.11.0`)
+**Status:** Implementing · **Target:** phase 0.9 (`v0.9.0`)
 
 ## Summary
 
@@ -31,7 +31,7 @@ template-engine candidate with the following constraints:
    complete `RenderResult` metadata.
 6. Strict escaping and template checks are the default, but they do not turn Jinja into a safe
    language for hostile template authors.
-7. HDN is deprecated and removed through the migration schedule in this RFC. Its grammar,
+7. D-041 removes HDN in phase 0.9 without a compatibility runtime or converter. Its grammar,
    evaluator, render program, and file format do not constrain this design.
 
 ## User model
@@ -258,7 +258,7 @@ Rules:
 ### Component with default content
 
 ```jinja
-{% hedron "Card" title=view.title %}
+{% hedron "Card" title=view.title with body %}
   <p>{{ view.summary }}</p>
 {% endhedron %}
 ```
@@ -270,7 +270,7 @@ component explicitly opts into whitespace-preserving children.
 ### Named slots
 
 ```jinja
-{% hedron "Card" title=view.title %}
+{% hedron "Card" title=view.title with body %}
   <p>{{ view.summary }}</p>
 
   {% slot "footer" %}
@@ -539,7 +539,7 @@ For the accepted representative fixtures:
   template in the project; and
 - resource-limit failures are measured for maximum nesting, loops, component count, and output.
 
-Cold-start, memory, artifact, and installed-size budgets are recorded in the phase 0.11 evidence
+Cold-start, memory, artifact, and installed-size budgets are recorded in the phase 0.9 evidence
 ledger. Regressions require a documented budget decision rather than relaxed tests.
 
 ## Security implications
@@ -570,46 +570,20 @@ No security claim relies solely on Jinja sandboxing or autoescape.
 - Strict escaping, trusted HTML, safe URL, CSP, and adversarial suites.
 - Concurrency tests proving render sessions and metadata do not leak across requests.
 - Resource-limit, performance, bytecode-cache, production-manifest, wheel-install, and offline tests.
-- Migration fixtures covering fully convertible, partially convertible, and rejected HDN sources.
+- Manual rewrite fixtures covering representative 0.8 semantics without executing HDN source.
 - Python 3.11–3.14 and the documented Jinja/MarkupSafe compatibility matrix.
 
-## HDN compatibility and migration
+## HDN removal boundary
 
-HDN remains experimental and receives only critical fixes and migration support. The planned
-sequence is:
+D-041 rejects a dual-runtime migration period. Phase 0.9 deletes HDN source discovery, parser,
+expression evaluator, formatter, `RenderProgram`, compiled artifacts, manifest fields, public APIs,
+CLI and Explorer integration, reference examples, and tests. There is no `migrate hdn` command,
+compatibility setting, legacy package, or automatic syntax translation.
 
-### Phase 0.11
-
-- Ship `hedron-jinja` as experimental, with the complete checker and adapter conformance baseline.
-- Mark every HDN API, artifact, CLI command, Explorer panel, guide, example, and discovery path
-  deprecated.
-- Add `hedron migrate hdn --to jinja` with dry-run default, inventory output, source/destination
-  digests, and an explicit edit flag.
-- New projects and generated components use Python or Jinja; no generator emits HDN.
-
-### Phase 0.12
-
-- Promote the proven Jinja surface to beta if its gates pass.
-- Stop discovering HDN by default. Existing applications must enable the named legacy compatibility
-  option, which emits one process-level warning and build evidence.
-- Production builds fail on undeclared HDN compatibility use.
-
-### Phase 0.13
-
-- Remove HDN parser, evaluator, formatter, `RenderProgram`, source discovery, and compile/load/run
-  APIs from first-party runtime packages.
-- Preserve migration documentation and the last compatible release reference. A separate legacy
-  package is not promised; it requires its own maintainer and security decision.
-
-The converter handles only semantics that can be represented confidently. Static HTML, escaped
-bindings, straightforward conditions/loops, and resolved component calls may convert. Arbitrary
-Python-AST expressions, ambiguous attribute access, unresolved imports, raw/trusted behavior,
-unsupported HTML parsing, and incomplete prop/slot contracts stop with `HED-JINJA-0018`. The tool
-never inserts `|safe`, guesses component identities, or silently changes escaping.
-
-Every conversion writes a machine-readable report and supports output to a separate directory.
-Edits require explicit confirmation or `--write`; existing sources are retained until the user
-removes them.
+Applications with HDN remain on the 0.8 line until their templates are manually rewritten as typed
+Python components or Jinja templates. Upgrade documentation provides a semantic rewrite table but
+does not execute old HDN source inside a 0.9 process. The build-manifest format is bumped so old
+artifacts fail closed.
 
 ## Alternatives considered
 
@@ -658,11 +632,11 @@ capability-safe values, and hard CPU/memory containment. It is explicitly out of
 - **Does SandboxedEnvironment permit untrusted authors?** No.
 - **Does Jinja output become a reusable `Component.render()` string?** No; adapters consume the
   integration's `RenderResult`.
-- **Does HDN syntax survive?** No compatibility syntax is carried into Jinja.
+- **Does HDN syntax survive?** No. Version 0.9 contains no HDN parser or compatibility syntax.
 
 ## Acceptance criteria
 
-The phase 0.11 implementation is complete only when:
+The phase 0.9 implementation is complete only when:
 
 - `hedron-jinja` installs independently and the default/core distributions have no Jinja import or
   dependency;
@@ -678,8 +652,8 @@ The phase 0.11 implementation is complete only when:
   recorded as evidence rather than used to weaken safety gates;
 - build/check/dev/Explorer integration, production manifest validation, published-wheel install,
   offline startup, compatibility matrix, and performance budgets pass;
-- the HDN inventory, dry-run converter, diagnostics, deprecation schedule, and non-representable
-  failure reports are verified on repository and external fixtures; and
+- repository inventory proves no first-party HDN runtime, artifact, discovery, public API, example,
+  or test remains; and
 - documentation teaches the trust boundary and pure-Python alternative before advanced escape
   hatches.
 

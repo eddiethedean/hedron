@@ -86,7 +86,6 @@ from hedron_core.diagnostics import (
     meets_severity_threshold,
 )
 from hedron_core.field import Field
-from hedron_core.hdn import compile_hdn, format_hdn, load_hdn_program, run_program
 from hedron_core.html import html
 from hedron_core.htmx_contract import HtmxContext, approved_headers
 from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
@@ -123,7 +122,7 @@ from hedron_core.visualization import (
     VisualizationLimits,
 )
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 
 __all__ = [
     "AddressableDescriptor",
@@ -241,16 +240,13 @@ __all__ = [
     "addressable",
     "apply_suppressions",
     "compile_css",
-    "compile_hdn",
     "default_theme",
     "diagnostics_to_json",
     "diagnostics_to_sarif",
     "diagnostics_to_text",
     "emit_theme_css",
-    "format_hdn",
     "get_registry",
     "html",
-    "load_hdn_program",
     "meets_severity_threshold",
     "register_addressable",
     "register_browser_module",
@@ -259,7 +255,6 @@ __all__ = [
     "register_theme",
     "render",
     "reset_registry_for_tests",
-    "run_program",
     "scoped_identifier",
     "seal_registry",
     "styles_from_manifest",

@@ -8,10 +8,10 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
     <strong>Best practices</strong>
     <p>Pages vs fragments, CSRF, SafeUrl, secrets, and OOB regions.</p>
   </a>
-  <a class="hedron-card" href="hdn-templates/">
+  <a class="hedron-card" href="../api/JINJA/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>
-    <strong>Legacy HDN templates</strong>
-    <p>Experimental design-hold behavior for existing users and migration inventory.</p>
+    <strong>Jinja templates</strong>
+    <p>Strict trusted-template composition with typed Hedron components.</p>
   </a>
   <a class="hedron-card" href="plugin-authoring/">
     <span class="hedron-card__icon" aria-hidden="true">⬡</span>

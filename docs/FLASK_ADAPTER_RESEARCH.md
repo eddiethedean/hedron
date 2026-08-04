@@ -97,7 +97,7 @@ def create_app() -> Flask:
     return app
 ```
 
-In phase 0.9, `HedronFlask.init_app(app)` should store only per-application state in
+In phase 0.11, `HedronFlask.init_app(app)` should store only per-application state in
 `app.extensions["hedron"]`. The extension object must not retain an app. This supports multiple app
 instances, test factories, and normal extension composition. `HedronBlueprint` should own
 `page`, `component`, `action`, and `include_component` registration using `Blueprint` and

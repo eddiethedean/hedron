@@ -30,8 +30,9 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 
 ## Templates
 
-- Use Python for new components on the current train. D-040/RFC-0031 plan an optional Jinja adapter
-  for phase 0.11; existing experimental HDN files remain only for compatibility and migration.
+- Prefer typed Python components. Install `hedron-jinja` when trusted application templates are the
+  clearer authoring surface; bind every callable component alias explicitly. HDN is not available
+  on the 0.9 train.
 - Do not put secrets or untrusted HTML in templates—use `TrustedHtml` at trust boundaries.
 
 ## Adapters

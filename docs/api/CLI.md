@@ -5,7 +5,7 @@ status: shipped
 # CLI reference
 
 
-!!! note "Stability (0.8 compatibility baseline)"
+!!! note "Stability (0.9 authoring break)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
@@ -42,7 +42,7 @@ Exit `0` on success. Refuses to overwrite protected files without `--force`.
 
 ### `dev`
 
-Watch CSS/assets and existing experimental HDN sources and rebuild atomically.
+Watch CSS, Jinja template extensions, and assets and rebuild atomically.
 
 ```bash
 hedron dev
@@ -58,7 +58,7 @@ hedron dev --once
 
 ### `build`
 
-Compile CSS/assets and existing experimental HDN compatibility sources into a versioned build manifest.
+Compile CSS and assets into a versioned build manifest. Jinja source is managed by its configured loader.
 
 ```bash
 hedron build
@@ -113,8 +113,8 @@ hedron eject UserCard --out ./ejected --force
 | Command | Purpose |
 |---|---|
 | `preview <logical_id>` | Inspect a route/component preview payload |
-| `inspect <component>` | Explain template/styles/deps |
-| `eject <component>` | Write editable CSS and legacy experimental HDN overrides as `styles.css` + `template.hdn` (`--out`, `--force`); HDN output is migration-only under D-040/RFC-0031 |
+| `inspect <component>` | Explain styles and dependencies |
+| `eject <component>` | Write an editable `styles.css` override (`--out`, `--force`) |
 
 ## See also
 

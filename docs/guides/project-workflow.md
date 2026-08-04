@@ -19,9 +19,8 @@ files are protected unless you explicitly use `--force`.
 hedron dev
 ```
 
-The development command watches Python, scoped CSS, and existing experimental HDN (`.hdn`),
-and registered assets, then rebuilds affected artifacts without exposing a partially compiled
-registry.
+The development command watches Python, Jinja (`.html`, `.jinja`, `.jinja2`), scoped CSS, and
+registered assets, then rebuilds affected artifacts without exposing a partially compiled registry.
 
 If you prefer your existing ASGI workflow, run `uvicorn app:app --reload`; Hedron remains
 a normal FastAPI application.
@@ -57,9 +56,10 @@ uploaded to code scanning systems; JSON is available when another tool owns pres
 hedron build
 ```
 
-The production build compiles CSS and existing experimental HDN compatibility sources, fingerprints assets, records the selected
-theme and settings digest, and writes a manifest consumed by the application. The runtime
-checks this sealed boundary instead of compiling mutable sources on demand.
+The production build compiles CSS, fingerprints assets, records the selected theme and settings
+digest, and writes a manifest consumed by the application. Jinja templates are checked through
+their application loader rather than compiled into Hedron artifacts. The runtime checks the sealed
+build boundary instead of compiling mutable CSS on demand.
 
 !!! note
 

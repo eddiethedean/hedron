@@ -1,4 +1,4 @@
-"""Production compile gates for HDN/CSS."""
+"""Production compile gates for mutable build inputs such as scoped CSS."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ def is_production_env(*, production: bool | None = None) -> bool:
 
 
 def set_runtime_compile_allowed(allowed: bool) -> None:
-    """Process-wide allow/deny for runtime HDN/CSS compilation."""
+    """Process-wide allow/deny for runtime build-input compilation."""
     global _process_allow_runtime_compile
     _process_allow_runtime_compile = allowed
 
@@ -46,7 +46,7 @@ def force_runtime_compile() -> Iterator[None]:
 
 
 def assert_runtime_compile_allowed(
-    *, production: bool | None = None, what: str = "HDN/CSS"
+    *, production: bool | None = None, what: str = "CSS"
 ) -> None:
     if _force_allow.get():
         return

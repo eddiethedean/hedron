@@ -87,10 +87,6 @@ def test_build_with_component_folder(tmp_path: Path) -> None:
         ".root { color: green; background: url(badge.png); }\n.title { font-weight: 600; }\n",
         encoding="utf-8",
     )
-    (components / "template.hdn").write_text(
-        '<div class="root"><span class="title">{label}</span></div>\n',
-        encoding="utf-8",
-    )
     (components / "component.py").write_text(
         "from hedron_core import Component, Props, Field, html\n"
         "\n"
@@ -140,7 +136,6 @@ def test_build_temp_staging_same_device(tmp_path: Path) -> None:
     components = tmp_path / "components" / "X"
     components.mkdir(parents=True)
     (components / "styles.css").write_text(".root { color: blue; }\n", encoding="utf-8")
-    (components / "template.hdn").write_text('<div class="root">{label}</div>\n', encoding="utf-8")
     settings = HedronSettings(
         component_roots=("components",),
         build_dir="out/build",

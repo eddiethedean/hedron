@@ -1,4 +1,4 @@
-"""Python StatusBanner used as the reference twin of the HDN template."""
+"""Typed Python StatusBanner for the reference application."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from hedron_core import (
 )
 
 _ROOT = Path(__file__).resolve().parent
-# Stable style component id shared by the HDN twin and parity tests.
+# Stable style component id shared by the registry and scoped-style tests.
 STYLE_COMPONENT_ID = "hedron-reference:StatusBanner"
 _styles: StyleSymbols | None = None
 

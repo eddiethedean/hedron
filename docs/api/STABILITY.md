@@ -1,7 +1,7 @@
 # Public stability classifications
 
-**Status:** Phase 0.8 compatibility baseline
-**Version:** `0.8.0`
+**Status:** Phase 0.9 authoring break
+**Version:** `0.9.0`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0`. Levels apply to documented
 contracts; symbols not listed here are **internal** unless a later phase explicitly promotes them.
@@ -29,7 +29,7 @@ describe **API/artifact** promises.
 | Diagnostics | `HED-*` codes + SARIF/JSON exporters | [DIAGNOSTICS.md](../DIAGNOSTICS.md) |
 | Plugin protocol | `PluginMeta`, `PluginCapabilities`, `PluginContext`, entry point `hedron.plugins` | [PLUGINS.md](PLUGINS.md) |
 | Registry metadata | Documented fields of `ComponentMeta`, `AddressableMeta`, `RouteMeta` | Public; private Explorer-only fields are internal |
-| Legacy HDN | `.hdn` / `template.hdn`, `HDN_FORMAT_VERSION = 2`, `RenderProgram` | **Experimental/deprecated in 0.11** (D-040/RFC-0031); default discovery disabled in 0.12 and removal planned for 0.13 |
+| Jinja authoring | `hedron-jinja`, `TemplateSpec`, `HedronJinja` | `beta`; optional package, trusted templates only |
 | Build manifests | `BUILD` / `ASSET` / `CSS_SYMBOL` manifest format versions | Versioned; digest fields public |
 | Rendered markup | Semantic structure and documented attributes for built-ins | Serializer implementation nodes are **internal** |
 | HTMX interaction | Approved headers, status matrix, fragment regions, cache `Vary` | [INTERACTION.md](INTERACTION.md) |
@@ -37,7 +37,7 @@ describe **API/artifact** promises.
 | Browser assets | Bundled HTMX (and optional chart runtimes) exact pin + digest | [COMPATIBILITY.md](../COMPATIBILITY.md) |
 | Test helpers | `hedron.testing` documented exports | [TESTING.md](TESTING.md) |
 
-## Package export classifications (0.8 baseline)
+## Package export classifications (0.9 baseline)
 
 ### `hedron` (Beta distribution) — primarily `beta`
 
@@ -50,9 +50,8 @@ the optional package level.
 
 Component protocol, models, rendering (`render` → `RenderResult`), registry registration APIs,
 security types (`Secret`, `TrustedHtml`, `SafeUrl`), themes, diagnostics, portable adapter types,
-and interaction policy types are **beta**. HDN compile/format/load/run APIs and `RenderProgram` are
-**experimental** on the D-040/RFC-0031 removal path. Concrete HTML serializer node classes
-remain **internal** (see [RENDERING.md](RENDERING.md)).
+and interaction policy types are **beta**. Concrete HTML serializer node classes remain
+**internal** (see [RENDERING.md](RENDERING.md)).
 
 Documented but submodule-imported plugin types (`hedron_core.plugins.*`) are **beta**.
 
@@ -77,22 +76,26 @@ Capability rows marked Deferred (QuerySet DataSource) stay **deferred**.
 
 ### `hedron-sample-kit` (Alpha) — **experimental** sample plugin surface
 
+### `hedron-jinja` (Beta) — `beta`
+
+`TemplateSpec`, `TemplateSource`, `HedronJinja`, and `HedronJinjaExtension` are **beta**. Templates
+are trusted application code; hostile-template sandboxing is not a supported capability.
+
 ## Deferred destinations
 
 | Item | Decision | Destination |
 |---|---|---|
-| Django QuerySet DataSource | D-036 / D-038 | 0.9 |
+| Django QuerySet DataSource | D-036 / D-041 | 0.11 |
 | HTMX SSE live transport | D-037 / D-038 | 0.10 |
-| Flask Blueprint / `init_app` ergonomic layer | D-038 | 0.9 |
-| Django AppConfig convenience layer | D-038 | 0.9 |
+| Flask Blueprint / `init_app` ergonomic layer | D-041 | 0.11 |
+| Django AppConfig convenience layer | D-041 | 0.11 |
 | Navigation preload | D-038 | 0.10 |
 
-## Accepted future surfaces
+## Removed surfaces
 
-| Surface | Decision | Disposition |
-|---|---|---|
-| Optional `hedron-jinja` integration | D-040 / RFC-0031 | Separate package; experimental implementation in 0.11 and beta no earlier than 0.12. |
-| HDN language, evaluator, render program, formatter, and compile/load/run APIs | D-040 / RFC-0031 | Critical fixes and migration only; deprecate in 0.11, disable default discovery in 0.12, remove in 0.13. |
+HDN source, discovery, compiler/evaluator/formatter/runtime, `RenderProgram`, format constants,
+artifacts, and compile/load/run APIs were removed in 0.9 under D-041. They have no compatibility
+package or runtime flag.
 
 ## Inventory check
 

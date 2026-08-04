@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.9.0] - 2026-08-04
+
+- Joined the coordinated 0.9 package train; native framework depth remains planned for 0.11.
 
 ## [0.8.0] - 2026-08-03
 

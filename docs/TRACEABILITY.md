@@ -10,7 +10,7 @@ This matrix identifies the primary public, implementation, and acceptance owner 
 | Rendering and built-ins (0002–0003, 0025) | `RENDERING`, `BUILT_INS` | Renderer, serializer, registry | Component model, accessibility |
 | FastAPI and routing (0004, 0015) | `HEDRON`, `ROUTER`, `RESPONSES` | Router generator | FastAPI integration |
 | Portable adapters (0002, 0009, 0015, 0018) | `ADAPTERS`, `RESPONSES`, `STATE` | Framework adapters | Adapters |
-| Declarative authoring (0005, 0030, 0031) | `COMPONENT`, `JINJA`, `STABILITY` | Legacy HDN parser/compiler; planned separate `hedron-jinja` adapter | HDN migration + Jinja gates |
+| Declarative authoring (0005, 0030, 0031) | `COMPONENT`, `JINJA`, `STABILITY` | Separate `hedron-jinja` adapter; removed HDN history | Jinja replacement gates |
 | Styles and themes (0006, 0022) | `THEME` | CSS compiler, asset pipeline | Scoped styles, accessibility |
 | Explorer and DX (0007, 0024) | `AUTO`, `EXPLORER` | Explorer backend/frontend, registry | Explorer |
 | Caching and utilities (0013, 0024, 0026) | `CACHE`, `UTILITY_COMPONENTS`, `COLORMODE` | Cache layer, ColorMode, security controls | Caching/utilities |
@@ -28,7 +28,7 @@ This matrix identifies the primary public, implementation, and acceptance owner 
 | Observability and operating diagnostics (0012, 0013, 0020, 0028) | `DIAGNOSTICS`, `ADAPTERS`, `JOBS` | Observability, operations | Observability, performance, security |
 | Roadmap (0029) | All | All | Capability phases |
 | Declarative authoring reset (0030) | Component authoring alternatives and legacy audit | Superseded by RFC-0031 | Historical HDN reset gate |
-| Optional Jinja integration (0031) | Trusted templates, typed component bindings, metadata, migration | Planned separate package | Jinja + HDN migration gates, phase 0.11 |
+| Optional Jinja integration (0031) | Trusted templates, typed component bindings, metadata, immediate replacement | `hedron-jinja` implementation | Jinja + HDN removal gates, phase 0.9 |
 
 Every implementation pull request must name the owning RFC, public contract if any, implementation
 specification, and acceptance checks. Phase 0.6 closure and later work also names stable evidence IDs

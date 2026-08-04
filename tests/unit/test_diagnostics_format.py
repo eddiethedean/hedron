@@ -18,19 +18,19 @@ from hedron_core.diagnostics import make_diagnostic
 
 def test_diagnostic_json_and_sarif_include_span() -> None:
     diag = make_diagnostic(
-        "HED-HDN-0001",
+        "HED-JINJA-0005",
         severity=DiagnosticSeverity.ERROR,
         title="Bad template",
         explanation="Missing close tag",
         remediation="Close the element",
-        span=SourceSpan(path="template.hdn", start_line=3, start_column=2),
+        span=SourceSpan(path="template.html", start_line=3, start_column=2),
     )
     payload = diag.as_json()
-    assert payload["code"] == "HED-HDN-0001"
+    assert payload["code"] == "HED-JINJA-0005"
     assert payload["span"]["start_line"] == 3
     sarif = diagnostics_to_sarif([diag])
     assert sarif["version"] == "2.1.0"
-    assert sarif["runs"][0]["results"][0]["ruleId"] == "HED-HDN-0001"
+    assert sarif["runs"][0]["results"][0]["ruleId"] == "HED-JINJA-0005"
     assert (
         sarif["runs"][0]["results"][0]["locations"][0]["physicalLocation"]["region"]["startLine"]
         == 3
@@ -99,7 +99,7 @@ def test_sarif_tool_version_matches_package() -> None:
     from hedron_core import __version__
 
     diag = make_diagnostic(
-        "HED-HDN-0001",
+        "HED-JINJA-0005",
         severity=DiagnosticSeverity.ERROR,
         title="Bad",
         explanation="x",

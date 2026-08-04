@@ -41,7 +41,7 @@ print(result.html)
 - Trust boundary types: `Secret`, `TrustedHtml`, `SafeUrl`, `UrlPurpose`
 - Component protocol, registry, diagnostics (JSON/SARIF), and deterministic identity
 - Context-aware HTML serializer and `render(...) -> RenderResult`
-- HDN, scoped CSS, themes, assets, and discovery helpers
+- scoped CSS, themes, assets, and component discovery helpers
 - Built-ins for pages, forms, layout, landmarks, and content
 - Framework-neutral plugin metadata and Explorer panel registration helpers
 

@@ -1,3 +1,0 @@
-<div class="root" data-tone={tone} data-impl="hdn">
-  <strong>{label}</strong>
-</div>

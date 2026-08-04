@@ -1,21 +1,20 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.8 **cut-ready** as `0.8.0` on repository `main`
-(hardening and compatibility baseline). **PyPI today** publishes the prior train (**0.7.x**) until
-`v0.8.0` is tagged.
-**Date:** 2026-08-03
+**Roadmap position:** phase 0.9 implementation on repository `main`.
+**Date:** 2026-08-04
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
-`hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` `0.8.0` (MIT licensed, D-033)
+`hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` / `hedron-jinja` `0.9.0`
+(MIT licensed, D-033)
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`; Alpha — `hedron-charts`, `hedron-sample-kit`.
 
-**Next capability phase:** 0.9 deepens native Flask/Django integration and promotes a bounded
-QuerySet DataSource if its gate passes. SSE/live transport remains assigned to 0.10 (D-037/D-038).
+**Phase focus:** replace HDN with optional strict Jinja authoring. Native Flask/Django depth moves to
+0.11; SSE/live transport remains assigned to 0.10.
 
-**Authoring direction:** D-040/RFC-0031 select a separate, optional `hedron-jinja` integration for
-trusted application templates in phase 0.11. Typed Python components remain canonical, and Jinja is
-not shipped on the current train. The experimental HDN language, `RenderProgram`, and compile/load/
-run APIs remain available only for critical fixes and migration before staged removal in 0.13.
+**Authoring break:** D-041/RFC-0031 remove HDN in phase 0.9 with no compatibility mode or converter.
+The parser, evaluator, formatter, render program, discovery, artifacts, public APIs, CLI/Explorer
+paths, examples, and tests are gone. `hedron-jinja` is the optional replacement; typed Python
+components remain canonical.
 
 ## Phase 0.8 evidence
 
@@ -27,5 +26,6 @@ run APIs remain available only for critical fixes and migration before staged re
 - Threat model: [guides/threat-model.md](guides/threat-model.md).
 - Performance budgets: [PERFORMANCE_BUDGETS.md](PERFORMANCE_BUDGETS.md).
 - Supply chain: `scripts/build_evidence_bundle.py` (SBOM, licenses, asset audit).
-- Cut procedure: [RELEASE.md](RELEASE.md) (`## Cut v0.8.0`).
-- After publish: enter phase 0.9 via [acceptance/RELEASE_0_9.md](acceptance/RELEASE_0_9.md).
+- Current gate: [acceptance/RELEASE_0_9.md](acceptance/RELEASE_0_9.md) and
+  [acceptance/release-gate-0.9.toml](acceptance/release-gate-0.9.toml).
+- Cut procedure: [RELEASE.md](RELEASE.md) (`## Build and cut v0.9.0`).

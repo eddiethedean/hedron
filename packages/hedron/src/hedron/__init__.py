@@ -124,8 +124,6 @@ from hedron_core import (  # noqa: F401
     UrlPurpose,
     addressable,
     compile_css,
-    compile_hdn,
-    format_hdn,
     get_icon,
     html,
     invalidate_tags,
@@ -133,7 +131,6 @@ from hedron_core import (  # noqa: F401
     register_icon,
     render,
     resolve_color_mode,
-    run_program,
     styles_from_manifest,
     trusted_svg,
 )
@@ -214,7 +211,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 
 __all__ = [
     "Alert",
@@ -350,8 +347,6 @@ __all__ = [
     "addressable",
     "approved_headers",
     "compile_css",
-    "compile_hdn",
-    "format_hdn",
     "hedron_response",
     "html",
     "htmx_context",
@@ -362,7 +357,6 @@ __all__ = [
     "redirect_local",
     "render",
     "resolve_route_path",
-    "run_program",
     "session_state",
     "styles_from_manifest",
 ]

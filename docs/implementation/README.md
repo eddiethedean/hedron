@@ -5,7 +5,6 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Model system](MODEL_SYSTEM.md)
 - [Rendering engine](RENDERING_ENGINE.md)
 - [HTML serializer](HTML_SERIALIZER.md)
-- [HDN parser and compiler](HDN_PARSER.md)
 - [CSS compiler](CSS_COMPILER.md)
 - [Component registry](COMPONENT_REGISTRY.md)
 - [Router generator](ROUTER_GENERATOR.md)

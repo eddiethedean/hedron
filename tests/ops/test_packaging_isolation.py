@@ -1,4 +1,4 @@
-"""Packaging metadata checks for the 0.8 packaging gate."""
+"""Packaging metadata checks for the coordinated 0.9 train."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def test_all_packages_declare_license_and_version() -> None:
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
-        assert project["version"] == "0.8.0", pyproject
+        assert project["version"] == "0.9.0", pyproject
         assert "license" in project or "license-files" in project, pyproject.name
         assert (pyproject.parent / "LICENSE").is_file()
 

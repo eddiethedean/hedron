@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the 0.8 compatibility baseline on `main`
+**Status:** Accepted; kept current with the 0.9 authoring break on `main`
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -26,6 +26,8 @@ hedron/
 │   │   └── src/hedron_data/
 │   ├── hedron-charts/
 │   │   └── src/hedron_charts/
+│   ├── hedron-jinja/              # Optional strict trusted-template integration
+│   │   └── src/hedron_jinja/
 │   ├── hedron-flask/              # Beta Supported adapter
 │   │   └── src/hedron_flask/
 │   └── hedron-django/             # Beta Supported adapter (Django >=5.2,<6)
@@ -49,22 +51,22 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.8.0` on `main`) |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.9.0` on `main`) |
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
 | `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Beta Supported) |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Beta Supported) |
-| `hedron-jinja` *(planned)* | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.11.0` experimental |
+| `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` beta |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
-`hedron-explorer` for development diagnostics; the future `hedron[jinja]` extra installs the
-separate integration. The flagship package contains the registry and trace hooks needed by
+`hedron-explorer` for development diagnostics; `hedron[jinja]` installs the separate integration.
+The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** repository `main` coordinates packages at `0.8.0` cut-ready. PyPI may
-still serve `0.7.x` until `v0.8.0` is tagged—see [STATUS](STATUS.md).
+**Publish note:** repository `main` coordinates packages at `0.9.0` while the authoring replacement
+is implemented. Published artifacts may lag until `v0.9.0` is tagged—see [STATUS](STATUS.md).
 
 ## Dependency rules
 

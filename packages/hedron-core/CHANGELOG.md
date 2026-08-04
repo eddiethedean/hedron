@@ -1,17 +1,15 @@
 # Changelog
 
-## [Unreleased]
+## [0.9.0] - 2026-08-04
 
-### Added
+### Removed
 
-- HDN `{@import LocalName from "component-logical-id"}` declarations for explicit,
-  host-resolved component dependencies, including aliasing, formatter support, and
-  serialized import metadata.
+- The experimental HDN parser, evaluator, formatter, render program, discovery metadata, and
+  public APIs.
 
 ### Changed
 
-- Bumped `HDN_FORMAT_VERSION` to 2 for explicit component-reference resolution; rebuild
-  compiled HDN artifacts before using them with this runtime.
+- Build manifests use format 2 and no longer contain HDN program entries.
 
 ## [0.8.0] - 2026-08-03
 

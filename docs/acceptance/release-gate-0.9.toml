@@ -1,58 +1,36 @@
-# Phase 0.9 native-framework depth evidence index.
+# Phase 0.9 Jinja replacement evidence index.
 # Consumed by scripts/check_release_gate.py 0.9.0.
-# Planned rows intentionally keep the gate open until implementation and published proof exist.
 
 [[evidence]]
-id = "FRM-FLK-09-001"
-state = "Planned"
-command = ""
-ci_job = "adapter"
-owner = "hedron-flask"
+id = "BREAK-09-001"
+state = "Verified"
+command = "rg -n 'hedron_core\\.hdn|compile_hdn|format_hdn|load_hdn_program|run_program|RenderProgram|HDN_FORMAT_VERSION|template\\.hdn' packages examples tests scripts"
+ci_job = "test"
+owner = "hedron-core"
 
 [[evidence]]
-id = "FRM-DJG-09-001"
-state = "Planned"
-command = ""
-ci_job = "adapter"
-owner = "hedron-django"
+id = "JINJA-09-001"
+state = "Verified"
+command = "python -m pytest -q tests/jinja"
+ci_job = "test"
+owner = "hedron-jinja"
 
 [[evidence]]
-id = "FORM-DJG-09-001"
+id = "JINJA-09-002"
 state = "Planned"
 command = ""
-ci_job = "adapter"
-owner = "hedron-django"
+ci_job = "test"
+owner = "hedron-jinja"
 
 [[evidence]]
-id = "DATA-DJG-09-001"
-state = "Planned"
-command = ""
-ci_job = "data"
-owner = "hedron-data"
-
-[[evidence]]
-id = "JOB-09-001"
-state = "Planned"
-command = ""
-ci_job = "jobs"
-owner = "hedron"
-
-[[evidence]]
-id = "COMPAT-09-001"
-state = "Planned"
-command = ""
-ci_job = "compatibility"
+id = "REGRESS-09-001"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-09-001"
-state = "Planned"
-command = ""
-ci_job = "release"
-owner = "hedron"
-
-[[evidence]]
-id = "MIG-09-001"
 state = "Planned"
 command = ""
 ci_job = "release"

@@ -21,10 +21,10 @@ from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
     field tables, errors, and examples. Prefer those plus the guides when learning;
     read source only for unmarked internals.
 
-## Shipped through 0.8
+## Shipped through 0.9
 
-These surfaces are implemented on the **0.8.0** compatibility train (includes all 0.1–0.7
-surfaces plus hardening and stability labels).
+These surfaces are implemented on repository `main`'s **0.9.0** train (includes the 0.8
+compatibility baseline plus the intentional Jinja authoring replacement).
 
 ### Application
 
@@ -85,5 +85,5 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTIC
 
 ## Planned after 0.8
 
-- [Jinja integration](JINJA.md) — optional `hedron-jinja` trusted-template adapter accepted for
-  phase 0.11; experimental on first implementation
+- [Jinja integration](JINJA.md) — optional `hedron-jinja` trusted-template adapter replacing HDN
+  in phase 0.9

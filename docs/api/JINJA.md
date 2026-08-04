@@ -1,13 +1,13 @@
 ---
-status: planned
+status: shipped
 ---
 
 # Jinja integration API
 
 !!! note "Stability"
 
-    This phase 0.11 surface is **planned** by RFC-0031. It is not shipped in `v0.8.0`.
-    The first implementation is experimental; promotion requires the Jinja acceptance suite.
+    This surface replaces HDN in phase 0.9. It is optional in packaging but is the only first-party
+    template integration; typed Python components remain canonical.
 
 Hedron's optional Jinja integration composes trusted application templates with allowlisted typed
 Hedron components while preserving `RenderResult` metadata.
@@ -75,7 +75,7 @@ Inline:
 With body and named slot:
 
 ```jinja
-{% hedron "Card" title=view.heading %}
+{% hedron "Card" title=view.heading with body %}
   <p>{{ view.summary }}</p>
   {% slot "footer" %}
     {% hedron "AccountMenu" account_id=view.account_id %}
@@ -85,7 +85,8 @@ With body and named slot:
 
 Aliases and slot names are string literals. Props are named. `key=` is reserved for Hedron identity.
 Dynamic aliases, spread props, template-level Python imports, and `slot` outside a component block
-are rejected.
+are rejected. A block component must end its opening tag with the literal `with body`; without that
+marker the component is inline and must not have an `{% endhedron %}` tag.
 
 ## Rendering
 

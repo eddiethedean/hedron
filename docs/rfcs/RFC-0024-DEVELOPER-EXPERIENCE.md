@@ -7,10 +7,10 @@
 1. Use built-in components and `Auto()`.
 2. Configure props, variants, layout, actions, and slots.
 3. Compose reusable Python components.
-4. Inspect/eject scoped styles and inventory or migrate legacy HDN on the D-040/RFC-0031 path.
+4. Inspect/eject scoped styles and check optional Jinja templates through their configured loader.
 5. Add Web Components, integrations, and plugins.
 
-The first tutorial includes no AST, compiler, Rust, portable specification, or mandatory HDN. Errors identify the component, source, invalid value category, and next action without leaking sensitive values.
+The first tutorial includes no AST, compiler, Rust, portable specification, or mandatory template language. Errors identify the component, source, invalid value category, and next action without leaking sensitive values.
 
 ## Intelligent rendering
 

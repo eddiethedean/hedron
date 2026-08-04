@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.9.0] - 2026-08-04
+
+- Removed HDN source, graph, and API panels.
 
 ## [0.8.0] - 2026-08-03
 

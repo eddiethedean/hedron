@@ -47,7 +47,6 @@ class ComponentMeta:
     route: str | None = None
     accessibility_notes: str | None = None
     styles_path: str | None = None
-    hdn_source: str | None = None
     browser_modules: tuple[str, ...] = ()
     asset_roots: tuple[str, ...] = ()
     style_symbols: Mapping[str, str] = field(default_factory=dict)
@@ -235,7 +234,6 @@ class RegistryBuilder:
             "route": existing.route,
             "accessibility_notes": existing.accessibility_notes,
             "styles_path": existing.styles_path,
-            "hdn_source": existing.hdn_source,
             "browser_modules": existing.browser_modules,
             "asset_roots": existing.asset_roots,
             "style_symbols": dict(existing.style_symbols),
@@ -327,7 +325,6 @@ def register_component(
     docs: str | None = None,
     accessibility_notes: str | None = None,
     styles_path: str | None = None,
-    hdn_source: str | None = None,
     browser_modules: Iterable[str] = (),
     asset_roots: Iterable[str] = (),
     style_symbols: Mapping[str, str] | None = None,
@@ -346,7 +343,6 @@ def register_component(
             route=None,
             accessibility_notes=accessibility_notes,
             styles_path=styles_path,
-            hdn_source=hdn_source,
             browser_modules=tuple(browser_modules),
             asset_roots=tuple(asset_roots),
             style_symbols=dict(style_symbols or {}),

@@ -16,7 +16,7 @@ An authenticated team administration application contains:
 - `Auto()` rendering for a dataframe and ordinary Python values;
 - a scoped async data cache with visible hit/miss behavior;
 - a bounded upload/download flow plus metric and status components;
-- one legacy experimental HDN parity sample and Python composition for supported authoring;
+- typed Python composition for canonical authoring and optional Jinja coverage in its owning suite;
 - scoped styles, a custom theme, and locally served assets;
 - Component Explorer examples, route/HTMX traces, security findings, assets, data, and chart panels.
 

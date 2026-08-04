@@ -152,8 +152,7 @@ cd examples/django-reference && uv run uvicorn asgi:application --port 8000
 ```
 
 FastAPI reference credentials: `admin` / `secret`. That server exercises strict security
-headers, CSRF-protected actions, lazy HTMX resources, a legacy experimental HDN/`.hdn` parity
-sample, scoped styles, and the
+headers, CSRF-protected actions, lazy HTMX resources, typed Python composition, scoped styles, and the
 sealed asset build.
 
 [Read the reference application contract](../REFERENCE_APPLICATION.md){ .md-button }

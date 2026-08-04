@@ -22,7 +22,7 @@ Collisions within one render are detected and fail with a diagnostic. Explicit d
 
 Asset manifests store the full SHA-256 content digest. Filenames use the first 20 lowercase hexadecimal characters, for example `components.a1b2c3d4e5f60718293a.css`. A prefix collision lengthens the filename rather than overwriting an artifact.
 
-HDN programs, CSS symbol manifests, registry snapshots, and build manifests include a format version and full content digest. Absolute paths, timestamps, and import order do not participate in reproducible content identity.
+Jinja template inventories, CSS symbol manifests, registry snapshots, and build manifests include a format version and full content digest. Absolute paths, timestamps, and import order do not participate in reproducible content identity.
 
 ## Scoped CSS
 

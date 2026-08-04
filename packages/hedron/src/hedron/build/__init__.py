@@ -1,4 +1,4 @@
-"""Build orchestration: compile HDN/CSS/assets into a versioned manifest."""
+"""Build orchestration: compile CSS/assets into a versioned manifest."""
 
 from __future__ import annotations
 
@@ -17,12 +17,10 @@ from hedron_core.codes import HED_THEME_UNKNOWN
 from hedron_core.css import compile_css
 from hedron_core.diagnostics import error
 from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
-from hedron_core.hdn import compile_hdn
 from hedron_core.manifests import (
     BUILD_MANIFEST_FORMAT,
     BuildManifest,
     CssSymbolManifest,
-    canonical_json,
     write_json_atomic,
 )
 from hedron_core.registry import get_registry, update_component_meta
@@ -197,9 +195,6 @@ def _execute_build(
     try:
         assets_dir = tmp_root / "assets"
         assets_dir.mkdir(parents=True, exist_ok=True)
-        hdn_dir = tmp_root / "hdn"
-        hdn_dir.mkdir(parents=True, exist_ok=True)
-
         css_parts: list[str] = ["@layer reset {\n}\n"]
 
         theme_name = settings.theme or "default"
@@ -224,7 +219,6 @@ def _execute_build(
         css_parts.append("@layer base {\n}\n")
 
         css_symbols: list[CssSymbolManifest] = []
-        hdn_programs: dict[str, str] = {}
         asset_entries = []
 
         registry = get_registry()
@@ -269,29 +263,6 @@ def _execute_build(
                     meta.logical_id,
                     style_symbols=dict(result.manifest.symbols),
                 )
-
-            if meta.hdn_source:
-                hdn_source = Path(meta.hdn_source).read_text(encoding="utf-8")
-                style_syms: dict[str, str] = dict(meta.style_symbols)
-                for sym in css_symbols:
-                    if sym.component_id == style_id:
-                        style_syms = dict(sym.symbols)
-                        break
-                compiled = compile_hdn(hdn_source, style_symbols=style_syms or None)
-                stem = _artifact_stem(meta.logical_id)
-                rel = f"hdn/{stem}.json"
-                payload = {
-                    "format_version": compiled.program.format_version,
-                    "digest": compiled.digest,
-                    "ops": [
-                        {"kind": op.kind, "data": dict(op.data)} for op in compiled.program.ops
-                    ],
-                    "source_map": list(compiled.program.source_map),
-                    "dependencies": list(compiled.program.dependencies),
-                }
-                out = hdn_dir / f"{stem}.json"
-                out.write_text(canonical_json(payload) + "\n", encoding="utf-8")
-                hdn_programs[meta.logical_id] = rel
 
             for browser_path in meta.browser_modules:
                 path = Path(browser_path)
@@ -374,7 +345,6 @@ def _execute_build(
             theme=theme.name,
             assets=asset_manifest,
             css_symbols=tuple(css_symbols),
-            hdn_programs=hdn_programs,
             tool_versions={
                 "hedron": _hedron_version,
                 "hedron-core": CORE_VERSION,

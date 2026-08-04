@@ -83,11 +83,10 @@ policies, and authenticated fragments receive conservative cache behavior.
 
 ## The build boundary
 
-Development can discover and compile component folders, scoped CSS, assets, and existing
-experimental HDN sources. A production build fingerprints those artifacts and seals the registry.
-Production does not silently compile mutable source at request time. New components should use
-Python on the current train. D-040/RFC-0031 plan a separate optional Jinja adapter for phase 0.11
-and a staged HDN migration/removal path.
+Development can discover component folders, scoped CSS, and assets. A production build fingerprints
+those artifacts and seals the registry. Production does not silently compile mutable source at
+request time. Typed Python remains the canonical component model; phase 0.9 also provides the
+separate optional `hedron-jinja` adapter for trusted application templates. HDN has been removed.
 
 The [project workflow](../guides/project-workflow.md) shows the CLI commands for this
 lifecycle. For precise guarantees, use the [public API contracts](../api/README.md).

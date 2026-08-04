@@ -11,7 +11,7 @@ The Explorer is Hedron’s development control center and the primary implementa
 - Components, pages, actions, routes, examples, and settings.
 - Isolated previews with editable safe props and dependency overrides.
 - Request simulation with headers, status, timings, HTML, and HTMX traces.
-- Component graph, inverse consumers, render trace, source, HDN, styles, assets, and cache behavior.
+- Component graph, inverse consumers, render trace, source, styles, assets, and cache behavior.
 - Accessibility, security, performance, and package-capability diagnostics.
 
 ## Security
@@ -24,4 +24,3 @@ Explorer routes are unregistered outside development by default. Production enab
 - Secrets, cookies, authorization headers, local paths, and sensitive values are redacted.
 - Preview output uses the same renderer and assets as the application.
 - Explorer absence in production is testable at the routing level.
-

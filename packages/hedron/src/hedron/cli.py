@@ -95,7 +95,6 @@ def _cmd_components(args: argparse.Namespace) -> int:
             "module": c.module,
             "distribution": c.distribution,
             "styles_path": c.styles_path,
-            "hdn_source": c.hdn_source,
             "style_symbols": dict(c.style_symbols),
             "folder_path": c.folder_path,
         }
@@ -186,14 +185,11 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
         "props_model": meta.props_model,
         "slots": dict(meta.slots),
         "styles_path": meta.styles_path,
-        "hdn_source": meta.hdn_source,
         "style_symbols": dict(meta.style_symbols),
         "browser_modules": list(meta.browser_modules),
         "folder_path": meta.folder_path,
         "accessibility_notes": meta.accessibility_notes,
     }
-    if meta.hdn_source and Path(meta.hdn_source).is_file():
-        payload["template"] = Path(meta.hdn_source).read_text(encoding="utf-8")
     if meta.styles_path and Path(meta.styles_path).is_file():
         payload["styles"] = Path(meta.styles_path).read_text(encoding="utf-8")
     print(json.dumps(payload, indent=2))
@@ -217,24 +213,6 @@ def _cmd_eject(args: argparse.Namespace) -> int:
     out_dir = Path(args.out or meta.folder_path or f"components/{meta.name}")
     out_dir.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
-    if meta.hdn_source and Path(meta.hdn_source).is_file():
-        dest = out_dir / "template.hdn"
-        if dest.exists() and not args.force:
-            print(f"Refusing to overwrite {dest} (use --force)", file=sys.stderr)
-            return 1
-        shutil.copy2(meta.hdn_source, dest)
-        written.append(str(dest))
-    elif meta.hdn_source is None:
-        # Eject a starter HDN shell preserving semantic contract notes
-        dest = out_dir / "template.hdn"
-        if not dest.exists() or args.force:
-            dest.write_text(
-                f"<!-- Ejected template for {meta.logical_id}. -->\n"
-                f"<!-- Preserve props/slots contracts for {meta.name}. -->\n"
-                f'<div class="root">{{label}}</div>\n',
-                encoding="utf-8",
-            )
-            written.append(str(dest))
     if meta.styles_path and Path(meta.styles_path).is_file():
         dest = out_dir / "styles.css"
         if dest.exists() and not args.force:
@@ -360,8 +338,8 @@ def _cmd_check(args: argparse.Namespace) -> int:
                 remediation="Pass --app or discover component folders.",
             )
         )
-    # HDN/CSS discovery compile checks
-    from hedron_core import HedronError, compile_css, compile_hdn
+    # CSS discovery compile checks
+    from hedron_core import HedronError, compile_css
     from hedron_core.compile_gate import force_runtime_compile
 
     with force_runtime_compile():
@@ -374,11 +352,6 @@ def _cmd_check(args: argparse.Namespace) -> int:
                         registered_roots=[item.folder],
                         component_dir=item.folder,
                     )
-                except HedronError as exc:
-                    diags.extend(exc.diagnostics)
-            if item.template_hdn and item.template_hdn.is_file():
-                try:
-                    compile_hdn(item.template_hdn.read_text(encoding="utf-8"))
                 except HedronError as exc:
                     diags.extend(exc.diagnostics)
 
@@ -454,8 +427,6 @@ def _cmd_graph(args: argparse.Namespace) -> int:
             edges.append({"from": c.logical_id, "to": dep, "kind": "browser_module"})
         if c.styles_path:
             edges.append({"from": c.logical_id, "to": c.styles_path, "kind": "styles"})
-        if c.hdn_source:
-            edges.append({"from": c.logical_id, "to": c.hdn_source, "kind": "hdn"})
     inverse: dict[str, list[str]] = {}
     for edge in edges:
         inverse.setdefault(str(edge["to"]), []).append(str(edge["from"]))
@@ -480,7 +451,6 @@ def _cmd_audit_components(args: argparse.Namespace) -> int:
                 "distribution": c.distribution,
                 "module": c.module,
                 "capabilities": {
-                    "hdn": bool(c.hdn_source),
                     "styles": bool(c.styles_path),
                     "browser_js": bool(c.browser_modules),
                     "assets": bool(c.asset_roots),
@@ -529,8 +499,10 @@ def _cmd_dev(args: argparse.Namespace) -> int:
     settings = load_hedron_settings(base)
     roots = list(settings.resolved_roots(base=base))
     watch_exts = {
-        ".hdn",
         ".css",
+        ".html",
+        ".jinja",
+        ".jinja2",
         ".mjs",
         ".js",
         ".png",
@@ -593,17 +565,17 @@ def main(argv: list[str] | None = None) -> None:
     preview_p.add_argument("logical_id", help="Route logical id or name")
     preview_p.set_defaults(func=_cmd_preview)
 
-    inspect_p = sub.add_parser("inspect", help="Explain a component template/styles/deps")
+    inspect_p = sub.add_parser("inspect", help="Explain a component's styles and dependencies")
     inspect_p.add_argument("component", help="Component name or logical id")
     inspect_p.set_defaults(func=_cmd_inspect)
 
-    eject_p = sub.add_parser("eject", help="Eject editable local HDN/CSS overrides")
+    eject_p = sub.add_parser("eject", help="Eject editable local CSS overrides")
     eject_p.add_argument("component", help="Component name or logical id")
     eject_p.add_argument("--out", help="Output directory")
     eject_p.add_argument("--force", action="store_true")
     eject_p.set_defaults(func=_cmd_eject)
 
-    build_p = sub.add_parser("build", help="Compile HDN/CSS/assets into a build manifest")
+    build_p = sub.add_parser("build", help="Compile CSS/assets into a build manifest")
     build_p.add_argument("--project", default=None)
     build_p.add_argument("--dev", action="store_true", help="Use readable development names")
     build_p.set_defaults(func=_cmd_build)
@@ -635,7 +607,7 @@ def main(argv: list[str] | None = None) -> None:
     audit_p = sub.add_parser("audit-components", help="Capability and package audit")
     audit_p.set_defaults(func=_cmd_audit_components)
 
-    dev_p = sub.add_parser("dev", help="Watch HDN/CSS/assets and rebuild atomically")
+    dev_p = sub.add_parser("dev", help="Watch Python/Jinja/CSS/assets and rebuild atomically")
     dev_p.add_argument("--project", default=None)
     dev_p.add_argument("--interval", type=float, default=0.5)
     dev_p.add_argument("--once", action="store_true", help="Build once and exit")

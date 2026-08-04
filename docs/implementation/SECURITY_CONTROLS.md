@@ -7,7 +7,7 @@ A versioned `SecurityPolicy` supplies escaping, URL schemes, attributes, CSRF in
 ## Enforcement points
 
 - Model creation: reject unsupported fields and install redaction metadata.
-- HDN/CSS compilation: reject unsafe constructs with source diagnostics.
+- Jinja checking and CSS compilation: reject unsafe constructs with source diagnostics.
 - Routing: require explicit addressability and preserve dependencies.
 - Serialization: contextually escape and require trusted types.
 - Actions/forms: enforce unsafe-method and CSRF policy.
@@ -20,4 +20,3 @@ Hedron integrates framework or application CSRF, authentication, and authorizati
 ## Verification
 
 Maintain a threat model and adversarial fixtures for XSS contexts, CSRF, SSRF-like URLs, open redirects, path traversal, cache confusion, mass assignment, forged DataEditor changes, secret leakage, component-route exposure, plugin assets, and Explorer access. Security diagnostics use stable codes and support SARIF.
-

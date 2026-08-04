@@ -11,16 +11,13 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Repository `main` is phase **0.8 cut-ready** (`0.8.0` packages:
-> hardening and compatibility baseline). **PyPI today** still serves the latest
-> published train (**0.7.x** until `v0.8.0` is tagged). No new subsystems, adapters, or
-> transports were added during hardening. SSE transport and Django QuerySet DataSource remain
-> Deferred to phases 0.10 and 0.9 respectively. No arbitrary 1.0 freeze is scheduled.
+> **Project status:** Repository `main` is implementing phase **0.9** (`0.9.0` packages).
+> This is an intentional breaking authoring release: HDN has been removed and the new optional
+> `hedron-jinja` package is its replacement. The 0.8 line is the final HDN-capable line.
 
 > **Authoring direction:** [RFC-0031](https://hedron.readthedocs.io/en/latest/rfcs/RFC-0031-JINJA-INTEGRATION/)
-> selects a future optional `hedron-jinja` integration for trusted application templates while
-> keeping typed Python components canonical. It is planned for phase 0.11, not shipped today. The
-> experimental HDN parser/compiler/runtime is on a deprecation path through phases 0.11–0.13.
+> defines optional Jinja authoring for trusted application templates while keeping typed Python
+> components canonical. D-041 moves the replacement to phase 0.9 with no HDN compatibility layer.
 
 **Package maturity:** `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, and `hedron-django` are Beta. `hedron-charts` and `hedron-sample-kit`
@@ -37,6 +34,7 @@ remain Alpha.
 | [`hedron-charts`](https://pypi.org/project/hedron-charts/) | Alpha | Visualization adapters | `pip install "hedron[charts]"` or `hedron-charts` |
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Beta | Flask adapter (Supported) | `pip install hedron-flask` |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Django adapter (Supported) | `pip install hedron-django` |
+| `hedron-jinja` | Beta | Strict trusted-template authoring | `pip install hedron-jinja` |
 | [`hedron-sample-kit`](https://pypi.org/project/hedron-sample-kit/) | Alpha | Sample third-party plugin package | `pip install hedron-sample-kit` |
 
 ## Product direction
@@ -105,9 +103,9 @@ phase 0.10 therefore maps to `v0.10.0`. No 1.0 milestone is scheduled.
 | 0.6 | `v0.6.0` | Visualization and first-party integrations (**published**) |
 | 0.7 | `v0.7.0` | Portable adapters, Flask/Django, jobs, and operations (**published**) |
 | 0.8 | `v0.8.0` | Hardening, stability classification, and compatibility baseline (**cut-ready**) |
-| 0.9 | `v0.9.0` | Native Flask/Django depth and bounded QuerySet integration |
+| 0.9 | `v0.9.0` | Jinja authoring and complete HDN removal |
 | 0.10 | `v0.10.0` | Live interaction, focused streaming, and navigation preload |
-| 0.11 | `v0.11.0` | Optional Jinja authoring, HDN migration, and developer tooling |
+| 0.11 | `v0.11.0` | Native Flask/Django depth and bounded QuerySet integration |
 | 0.12 | `v0.12.0` | Advanced data editing, distributed sources, and visualization scale |
 | 0.13 | `v0.13.0` | Advanced async preparation, concurrency, and observability |
 | 0.14 | `v0.14.0` | Portable runtimes and profiling-backed acceleration |
@@ -152,13 +150,14 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 **PyPI (install today):** latest published train is **0.7.x** (`pip install hedron`).
 
-**Repository `main`:** coordinated packages are **0.8.0 cut-ready** (hardening and compatibility
-baseline); tag/publish `v0.8.0` when maintainers cut. Until then, `pip install hedron==0.8.0`
-will not resolve from PyPI.
+**Repository `main`:** coordinated packages are now **0.9.0** during the intentional HDN-to-Jinja
+authoring break. Published 0.8 artifacts remain the final option for applications that still need
+HDN; there is no 0.9 compatibility switch.
 
 Install `hedron` for the FastAPI flagship, `hedron-flask` / `hedron-django` for Supported
-adapters, `"hedron[data]"` / `"hedron[charts]"` for extras. After the `v0.8.0` cut,
-phase `0.9` deepens native framework integrations; later capability phases remain on the `0.x` line — see the
+adapters, and `"hedron[data]"`, `"hedron[charts]"`, or `"hedron[jinja]"` for optional subsystems.
+Phase `0.9` is the clean authoring replacement; native framework depth moves to 0.11. Later
+capability phases remain on the `0.x` line — see the
 [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing

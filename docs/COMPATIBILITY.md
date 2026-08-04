@@ -5,7 +5,7 @@
 
 ## Initial runtime ranges
 
-| Dependency | `v0.8.0` compatibility baseline | Policy |
+| Dependency | `v0.9.0` compatibility baseline | Policy |
 |---|---|---|
 | Python | CPython 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.11,<3.15"`; 3.15 prereleases are not supported. |
 | FastAPI | `>=0.141.1,<0.142` | Required by `hedron`, not `hedron-core`; expand only after adapter conformance. |
@@ -22,6 +22,7 @@
 | SQLAlchemy | `>=2.0,<3` via `hedron-data[sqlalchemy]` | Explicit adapters; app owns sessions. |
 | SQLModel | `>=0.0.22` via `hedron-data[sqlmodel]` | Optional on top of SQLAlchemy. |
 | Authlib | `>=1.3` via `hedron[auth]` | Convenience helpers only; no identity ownership. |
+| Jinja | `>=3.1,<4` via `hedron[jinja]` / `hedron-jinja` | Optional trusted-template integration; not imported by `hedron-core`. |
 
 ## Phase 0.7 compatibility entry gate
 
@@ -82,12 +83,14 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
     compatibility boundary, never created merely because the roadmap reached a certain size.
 - Bundled browser-asset pin changes (exact HTMX version/digest) are at least a **MINOR** and require
   the three-engine browser suite plus asset audit evidence.
-- Manifest / `HDN_FORMAT_VERSION` bumps that reject older artifacts require a new minor phase,
+- Build-manifest format bumps that reject older artifacts require a new minor phase,
   accepted migration design, upgrade diagnostics, compatibility fixtures, and retained migration
   evidence.
 - Deprecations include a diagnostic code (when feasible), replacement guidance, and a numeric
   support window of **at least one intervening minor phase** before removal.
-- Rendered markup, registry metadata, HDN compiled formats, CSS symbol manifests, and plugin
+- D-041 is the explicit exception for experimental HDN: 0.9 removes it without a deprecation
+  window, compatibility runtime, or converter; 0.8 is the final capable line.
+- Rendered markup, registry metadata, Jinja template inventories, CSS symbol manifests, and plugin
   protocols each declare whether they are public, versioned artifacts or private details
   ([STABILITY.md](api/STABILITY.md)).
 

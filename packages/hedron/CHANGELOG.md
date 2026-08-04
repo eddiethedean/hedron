@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.0] - 2026-08-04
+
+### Added
+
+- Optional `hedron-jinja` extra for strict trusted-template composition.
+
+### Removed
+
+- All HDN CLI, discovery, build, and public API integration; 0.8 is the final HDN-capable line.
+
 ## [0.8.0] - 2026-08-03
 
 ### Added

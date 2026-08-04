@@ -17,45 +17,25 @@ from hedron.security.policy import SecurityPolicy
 from hedron.static_mount import mount_build_assets
 from hedron_core import (
     HedronError,
-    RenderMode,
     compile_css,
-    compile_hdn,
-    load_hdn_program,
-    render,
-    run_program,
 )
 from hedron_core.compile_gate import force_runtime_compile, set_runtime_compile_allowed
 from hedron_core.discovery import apply_discovery_to_registry, discover_component_folders
-from hedron_core.hdn.expr import eval_expr
 from hedron_core.registry import get_registry, reset_registry_for_tests
-
-
-def test_nullish_coalesce_in_parens_calls_indexes() -> None:
-    assert eval_expr("(a ?? b) + 1", {"a": None, "b": 2}) == 3
-    assert eval_expr("len(x ?? [])", {"x": None}) == 0
-    assert eval_expr("(x ?? 1) > 0", {"x": None}) is True
-    assert eval_expr("a[b ?? 0]", {"a": [9], "b": None}) == 9
-    assert eval_expr('"a ?? b"', {}) == "a ?? b"
-    assert eval_expr("a ?? b ?? c", {"a": None, "b": None, "c": 7}) == 7
-    assert eval_expr("(a ?? b) ?? c", {"a": None, "b": 2, "c": 9}) == 2
 
 
 def test_runtime_compile_gate_blocks_and_force_allows(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("HEDRON_ENV", "production")
     set_runtime_compile_allowed(True)
-    with pytest.raises(HedronError) as exc:
-        compile_hdn("<p>x</p>")
-    assert exc.value.diagnostic.code == "HED-BUILD-0004"
     with pytest.raises(HedronError) as css_exc:
         compile_css(".x { color: red; }", component_id="app:x")
     assert css_exc.value.diagnostic.code == "HED-BUILD-0004"
     with force_runtime_compile():
-        compile_hdn("<p>x</p>")
         compile_css(".x { color: red; }", component_id="app:x")
     monkeypatch.delenv("HEDRON_ENV", raising=False)
     set_runtime_compile_allowed(False)
     with pytest.raises(HedronError) as process_exc:
-        compile_hdn("<p>y</p>")
+        compile_css(".y { color: blue; }", component_id="app:y")
     assert process_exc.value.diagnostic.code == "HED-BUILD-0004"
     set_runtime_compile_allowed(True)
 
@@ -116,87 +96,6 @@ def test_css_no_semicolon_url_is_validated(tmp_path: Path) -> None:
     )
     assert "icon.png" in result.asset_urls
     assert "url(" in result.css
-
-
-def test_hdn_digest_includes_style_symbols() -> None:
-    a = compile_hdn('<div class="root"></div>', style_symbols={"root": "h-a"})
-    b = compile_hdn('<div class="root"></div>', style_symbols={"root": "h-b"})
-    assert a.digest != b.digest
-    assert 'class="h-a"' in str(a.program.ops) or any("h-a" in str(op.data) for op in a.program.ops)
-
-
-def test_load_hdn_program_rejects_bad_format(tmp_path: Path) -> None:
-    path = tmp_path / "bad.json"
-    path.write_text('{"format_version": 99, "ops": []}\n', encoding="utf-8")
-    with pytest.raises(HedronError) as exc:
-        load_hdn_program(path)
-    assert exc.value.diagnostic.code == "HED-HDN-0008"
-
-
-def test_load_hdn_program_roundtrip(tmp_path: Path) -> None:
-    from hedron.build import run_build
-    from hedron.config import HedronSettings
-
-    components = tmp_path / "components" / "Pill"
-    components.mkdir(parents=True)
-    (components / "styles.css").write_text(".root { color: blue; }\n", encoding="utf-8")
-    (components / "template.hdn").write_text('<div class="root">{label}</div>\n', encoding="utf-8")
-    settings = HedronSettings(
-        component_roots=("components",),
-        build_dir=".hedron/build",
-        theme="default",
-        plugins=(),
-    )
-    result = run_build(project_dir=tmp_path, settings=settings, production=True)
-    assert len(result.manifest.hdn_programs) == 1
-    logical_id, rel = next(iter(result.manifest.hdn_programs.items()))
-    assert "Pill" in logical_id
-    assert rel.startswith("hdn/") and "Pill" in rel
-    program = load_hdn_program(result.build_dir / rel)
-    live = compile_hdn(
-        (components / "template.hdn").read_text(encoding="utf-8"),
-        style_symbols=dict(result.manifest.css_symbols[0].symbols),
-    ).program
-    built_html = render(run_program(program, {"label": "Hi"}), mode=RenderMode.FRAGMENT).html
-    live_html = render(run_program(live, {"label": "Hi"}), mode=RenderMode.FRAGMENT).html
-    assert built_html == live_html
-    assert "Hi" in built_html
-    assert result.manifest.css_symbols[0].symbols["root"] in built_html
-
-
-def test_hdn_artifact_paths_unique_for_same_name(tmp_path: Path) -> None:
-    from hedron.build import run_build
-    from hedron.config import HedronSettings
-    from hedron_core.registry import register_component
-
-    reset_registry_for_tests()
-    a = tmp_path / "sources" / "a" / "Widget"
-    b = tmp_path / "sources" / "b" / "Widget"
-    for folder, dist in ((a, "dist-a"), (b, "dist-b")):
-        folder.mkdir(parents=True)
-        (folder / "template.hdn").write_text(f'<div class="root">{dist}</div>\n', encoding="utf-8")
-        register_component(
-            logical_id=f"{dist}:mod.Widget",
-            name="Widget",
-            module="mod",
-            distribution=dist,
-            hdn_source=str(folder / "template.hdn"),
-            folder_path=str(folder),
-        )
-    # Keep component_roots empty so discovery does not collapse same-named folders.
-    settings = HedronSettings(
-        component_roots=(),
-        build_dir=".hedron/build",
-        theme="default",
-        plugins=(),
-    )
-    result = run_build(project_dir=tmp_path, settings=settings, production=True)
-    paths = list(result.manifest.hdn_programs.values())
-    assert len(paths) == 2
-    assert len(paths) == len(set(paths))
-    assert all((result.build_dir / rel).is_file() for rel in paths)
-    assert "dist-a__mod.Widget" in paths[0] or "dist-a__mod.Widget" in paths[1]
-    assert "dist-b__mod.Widget" in paths[0] or "dist-b__mod.Widget" in paths[1]
 
 
 def test_unknown_theme_fails_build(tmp_path: Path) -> None:
@@ -382,21 +281,12 @@ def test_browser_only_folder_registers_component(tmp_path: Path) -> None:
     assert any(m.name == "Glow" and m.browser_modules for m in metas)
 
 
-def test_component_discovery_accepts_hdn(tmp_path: Path) -> None:
+def test_component_discovery_ignores_application_templates(tmp_path: Path) -> None:
     folder = tmp_path / "components" / "Card"
     folder.mkdir(parents=True)
-    template = folder / "template.hdn"
-    template.write_text("<div>Card</div>", encoding="utf-8")
-
-    [discovered] = discover_component_folders([tmp_path / "components"])
-
-    assert discovered.template_hdn == template
-
-
-def test_component_discovery_ignores_non_hdn_template_extension(tmp_path: Path) -> None:
-    folder = tmp_path / "components" / "Card"
-    folder.mkdir(parents=True)
-    (folder / "template.html").write_text("<div>Not HDN</div>", encoding="utf-8")
+    (folder / "template.html").write_text(
+        "<div>Jinja belongs to the app loader</div>", encoding="utf-8"
+    )
 
     assert discover_component_folders([tmp_path / "components"]) == ()
 
@@ -430,7 +320,6 @@ def test_cli_eject_nothing_written_exits_nonzero(
     )
     out = tmp_path / "ejected"
     out.mkdir()
-    (out / "template.hdn").write_text("x", encoding="utf-8")
     (out / "styles.css").write_text("y", encoding="utf-8")
     register_component(
         logical_id="app:demo.Empty",

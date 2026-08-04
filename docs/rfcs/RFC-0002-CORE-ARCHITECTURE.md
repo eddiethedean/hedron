@@ -12,7 +12,7 @@ Hedron consists of a framework-neutral component engine and framework adapters. 
 2. Components, node trees, registry entries, and render context.
 3. Deterministic HTML serialization and page/fragment render results.
 4. Framework adapters for request context, URLs, responses, security hooks, and lifecycle.
-5. HTMX, assets, HDN, scoped styles, Explorer, and optional integrations.
+5. HTMX, assets, scoped styles, Explorer, and optional integrations such as `hedron-jinja`.
 
 Dependency arrows point inward. `hedron-core` has no ASGI, WSGI, or application-framework imports. Browser packages do not alter core rendering semantics.
 
@@ -29,4 +29,3 @@ Dependency arrows point inward. `hedron-core` has no ASGI, WSGI, or application-
 - Core rendering tests run without FastAPI installed.
 - FastAPI, future Flask, and future Django adapters can pass a shared rendering conformance suite.
 - No circular dependency exists between core, adapters, Explorer, and optional integrations.
-

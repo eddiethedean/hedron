@@ -25,21 +25,17 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - migration notes, examples, and compatibility evidence;
 - a working increment of the reference application using packaged-style imports.
 
-## Cross-phase authoring transition — Jinja / HDN
+## Phase 0.9 authoring break — Jinja replaces HDN
 
-D-040 and accepted RFC-0031 select an optional `hedron-jinja` integration for trusted application
-templates. Typed Python components remain canonical. Jinja owns template composition; Hedron owns
-allowlisted component bindings, rendering, metadata, diagnostics, assets, HTMX policy, and framework
-adapters. The integration is planned for phase 0.11 and is not shipped on the current train.
+D-041 makes phase 0.9 an intentional clean break. The HDN parser, evaluator, formatter,
+`RenderProgram`, source discovery, build artifacts, CLI/Explorer paths, and public APIs are removed.
+There is no compatibility flag, legacy runtime package, dual discovery period, or automated HDN
+converter. Applications that need old HDN behavior remain on the 0.8 line and manually rewrite
+templates when adopting 0.9.
 
-The current HDN language, expression evaluator, render-program format, and compile/load/run surface
-remain experimental. Until the phase 0.11 implementation gate:
-
-- Python components remain the recommended shipped authoring model;
-- no new HDN grammar, evaluator, formatter, artifact, editor, or first-party dependency is added;
-- HDN work is limited to critical fixes, inventory, diagnostics, and migration support; and
-- Jinja work follows RFC-0031's separate-package, strict-policy, metadata, conformance, and evidence
-  gates rather than inheriting HDN internals.
+The replacement is the `hedron-jinja` distribution importing as `hedron_jinja`. Typed Python
+components remain canonical. Jinja owns trusted template composition; Hedron owns explicit component
+bindings, prop/slot validation, rendering, metadata, diagnostics, assets, and framework policy.
 
 ## 0.0 — Specification and project foundation (documentation baseline; no package release)
 
@@ -366,43 +362,36 @@ pretending the product is feature-complete.
 - The full reference application is deployable from built distributions in a clean environment.
 - Stability labels and migration obligations accurately describe the shipped surface.
 
-## 0.9 — Native framework depth (`v0.9.0`)
+## 0.9 — Jinja authoring and HDN removal (`v0.9.0`)
 
-**Outcome:** Flask and Django integrations feel native beyond their initial routing slices, and the
-first-party data boundary supports Django QuerySets without compromising bounded execution or
-framework-neutral core ownership.
+**Outcome:** Hedron replaces its experimental custom template language with strict, optional Jinja
+authoring and removes HDN completely rather than carrying a compatibility subsystem.
 
 ### Entry gate
 
-- The 0.8 compatibility and evidence baseline is green.
-- Flask/Django ergonomic layers and QuerySet data-source behavior have accepted RFC revisions with
-  explicit framework ownership, security boundaries, and capability labels.
-- Supported Django/Flask ranges and migration obligations are recorded before implementation.
+- D-041 and RFC-0031 define the immediate removal boundary, unambiguous component tag grammar,
+  strict trust policy, metadata merging, packaging, and release evidence.
+- The core render boundary preserves nested component metadata without making Jinja a core
+  dependency or accepting metadata-lossy public HTML strings.
 
 ### Scope
 
-- Flask Blueprint and application-factory integration through a small `init_app`-style layer that
-  preserves the existing constructor and keeps state application-local.
-- Django reusable-app integration through `AppConfig`, namespaced URLs, middleware-aware setup, and
-  framework-native system checks without hidden global mutation.
-- A bounded Django QuerySet `DataSource` with explicit ordering, filtering, projection, tenant/auth
-  hooks, async/sync behavior, transaction ownership, and query-count diagnostics.
-- Django-native form bridging where it can reuse the portable interaction/error contract without
-  claiming parity with Pydantic models.
-- Reviewed Django 6.x compatibility when its supported upstream line and evidence justify promotion.
-- Optional Celery/RQ job bridges that implement the existing `JobBackend` contract; polling remains
-  the portable baseline and applications retain broker/result-backend ownership.
-- Published-artifact install, upgrade-from-0.8, deployment, rollback, documentation, and package
-  isolation proof for every new supported claim.
+- Ship `hedron-jinja` and the `hedron[jinja]` extra without adding Jinja to `hedron-core` or the
+  default installation.
+- Implement `TemplateSpec`, `HedronJinja`, explicit inline/body component tags, named slots, typed
+  view checks, strict escaping, trusted-content/URL filters, bounded render sessions, and complete
+  `RenderResult` metadata merging.
+- Remove HDN source discovery, compiler/runtime/formatter code, format constants, registry fields,
+  manifest entries, build output, public exports, CLI/Explorer surfaces, examples, and tests.
+- Bump the build-manifest format and coordinated package versions so 0.8 artifacts fail closed.
+- Publish manual rewrite guidance only; do not ship an HDN parser or converter in 0.9.
 
 ### Exit gate
 
-- Flask and Django conveniences remain thin, optional, native integrations rather than parallel
-  runtimes; existing 0.8 adapter shapes have tested migrations.
-- QuerySet operations stay lazy and bounded, reject unauthorized fields/operations, and pass query
-  count, concurrency, transaction, and tenant-isolation evidence.
-- Each new capability is independently installable, accurately classified, and proven from
-  published `0.9.0` artifacts with upgrade and rollback evidence.
+- No first-party source or runtime package imports, discovers, compiles, loads, runs, or emits HDN.
+- `hedron-jinja` passes typed component, slot, escaping, trust-boundary, direct-render, resource,
+  metadata, package-isolation, and page/fragment tests.
+- Upgrade documentation states the intentional break and identifies 0.8 as the last HDN-capable line.
 
 ## 0.10 — Live interaction and navigation (`v0.10.0`)
 
@@ -429,52 +418,31 @@ measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
 - Load/backpressure tests demonstrate bounded resources, and performance evidence justifies each
   enabled transport or preload policy.
 
-## 0.11 — Optional Jinja authoring and HDN migration (`v0.11.0`)
+## 0.11 — Native framework depth (`v0.11.0`)
 
-**Outcome:** Hedron ships an experimental, optional Jinja integration for trusted application
-templates, preserves typed component render metadata across templates, and begins the explicit HDN
-deprecation path. Generated output and AI inference never become authoritative.
+**Outcome:** Flask and Django integrations feel native beyond their initial routing slices, and the
+first-party data boundary supports Django QuerySets without compromising bounded execution or
+framework-neutral core ownership.
 
 ### Entry gate
 
-- RFC-0031 is accepted with public API, grammar, trust boundary, metadata merge, limits,
-  diagnostics, packaging, framework conformance, and migration contracts.
-- The core render boundary can preserve nested component metadata without making Jinja a core
-  dependency or accepting metadata-lossy HTML strings.
-- The `hedron-jinja` acceptance suite and evidence ledger have stable requirement IDs and owners.
+- The 0.9 authoring break and 0.10 live-interaction evidence are green.
+- Flask/Django ergonomic layers and QuerySet behavior have accepted revisions with explicit
+  framework ownership, security boundaries, and capability labels.
 
 ### Scope
 
-- Add the separate `hedron-jinja` distribution and `hedron[jinja]` convenience extra without adding
-  Jinja to `hedron-core` or the default install.
-- Implement `TemplateSpec`, `HedronJinja`, the static component/slot tag grammar, typed view checks,
-  strict escaping/URL/trusted-content policy, bounded render sessions, and deterministic
-  `RenderResult` metadata merging.
-- Add shared FastAPI/Flask/Django conformance, `check`/`dev`/`build`/Explorer integration, source
-  diagnostics, static dependency inventory, and production manifest validation.
-- Inventory every `.hdn` template and compile/format/load/run API use; ship dry-run-first conversion
-  where semantics are exact and actionable `HED-JINJA-0018` reports where they are not.
-- Deprecate HDN across APIs, discovery, CLI, Explorer, examples, and documentation; generators emit
-  only Python or Jinja authoring paths.
-- Route-level CSS splitting, dynamic fragment asset negotiation, cross-file style composition,
-  optional preprocessors, advanced minification, hot style replacement, and a design-token compiler.
-- Broader migration tooling, generated component-endpoint SDKs, and optional OpenAPI
-  callback/webhook presentation.
-- Opt-in AI-assisted Explorer diagnostics and visual authoring with explicit data boundaries,
-  redaction, provenance, review, deterministic export, and a fully local/manual path.
+- Flask Blueprint/application-factory integration and Django reusable-app integration.
+- A bounded Django QuerySet `DataSource` with ordering, filtering, projection, tenant/auth hooks,
+  transaction ownership, and query-count diagnostics.
+- Django-native form bridging where it reuses portable interaction and error contracts.
+- Optional Celery/RQ bridges implementing the existing `JobBackend` contract.
 
 ### Exit gate
 
-- `hedron-jinja` passes its experimental release gate from published artifacts and is optional in
-  dependency, import, configuration, and runtime behavior.
-- Nested HTML/assets/headers/identities/diagnostics/traces merge deterministically; strict mode,
-  resource limits, template trust documentation, accessibility, and all three framework paths pass.
-- HDN migration is dry-run-first, source preserving, and never silently converts ambiguous
-  semantics; every legacy surface emits the documented deprecation path.
-- Automated edits are previewable and reversible; generated SDKs and migrations pass compatibility
-  fixtures; no secret or request data leaves its declared boundary.
-- Cold/incremental build, editor latency, payload, accessibility, and browser-style lifecycle budgets
-  are enforced from published artifacts.
+- Flask and Django conveniences remain thin native integrations rather than parallel runtimes.
+- QuerySet operations stay lazy and bounded and pass query-count, concurrency, transaction, and
+  tenant-isolation evidence.
 
 ## 0.12 — Data and visualization scale (`v0.12.0`)
 
@@ -572,14 +540,14 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 
 | Planned capability | Target phase | Notes |
 |---|---:|---|
-| Legacy HDN parser/evaluator/render-program prototype | 0.3; deprecation | Experimental; RFC-0031 migrates it in 0.11, disables default discovery in 0.12, and removes it in 0.13. |
-| Optional Jinja integration and legacy migration | 0.11 | Separate `hedron-jinja` package; Python components remain canonical. |
+| Legacy HDN parser/evaluator/render-program prototype | 0.3; removed in 0.9 | No compatibility runtime or converter is shipped after 0.8. |
+| Optional Jinja integration | 0.9 | Separate `hedron-jinja` package; Python components remain canonical. |
 | `inspect` and `eject` customization workflow | 0.3 | Progressive control over built-ins. |
 | Scoped classes, keyframes, globals, variants, layers | 0.3 | AST-based deterministic CSS rewriting. |
 | Tokens, themes, light/dark token modes, override layers | 0.3 | Accessible CSS-custom-property architecture; system preference + `data-theme`. |
 | Light/dark styling toggle, ColorMode API, preference persistence | 0.5 | First-party UI and explicit override of system preference. |
 | Fingerprinted assets, CSS URL rewriting, CSP/offline manifests | 0.3 | Production performs no required runtime compilation. |
-| Component folders with code, optional experimental HDN, CSS, examples, tests, docs, browser modules | 0.3 | HDN discovery is retained temporarily for migration evidence. |
+| Component folders with code, CSS, examples, tests, docs, and browser modules | 0.3; revised 0.9 | Jinja templates live in explicit application/package loader namespaces. |
 | Web Component registration, typed events, light/Shadow DOM policy | 0.3 | Browser-local interaction integrates safely with HTMX swaps. |
 | Component package authoring and browser-asset declarations | 0.4 | Public extension and audit contracts. |
 | `hedron-explorer` and official Explorer browser assets | 0.2 preview; 0.4 full | Optional development distribution with production opt-in controls. |
@@ -593,7 +561,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Explorer props/examples/request simulator/graphs/render traces | 0.4 | Includes inverse consumers and source ownership. |
 | Explorer accessibility/security/performance/async/cache/package panels | 0.4 | Later integrations extend the same panels. |
 | CLI new/dev/build/check/inspect/eject/components/routes/graph/preview/audit | 0.4 | Stable text, JSON, and SARIF diagnostics. |
-| Development watching and atomic incremental rebuilds | 0.3–0.4 | CSS/registry/build remain supported; HDN watching is experimental. |
+| Development watching and atomic incremental rebuilds | 0.3–0.4 | CSS/registry/build remain supported; Jinja dependency watching belongs to `hedron-jinja`. |
 | Pytest helpers, async clients, snapshots, browser/a11y/visual hooks | 0.4 | Supports named examples and conformance. |
 | Plugin discovery, compatibility, capabilities, lifecycle, rollback | 0.4 | Plugins are executable packages, not sandboxed data. |
 | Project scaffolding, author docs, package conventions | 0.4 | Supports third-party component packages. |
@@ -660,9 +628,9 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Performance benchmarks, payload limits, and budgets | 0.1–0.8 | 0.7 establishes production workloads/budgets; 0.8 enforces them. |
 | Public API/artifact stability classification and compatibility baseline | 0.8 | HDN is reclassified experimental by D-039; other promises remain governed by the catalog. |
 | Versioning, deprecation, upgrade, migration, compatibility | 0.7–0.8; maintained thereafter | Every phase declares and tests its compatibility impact. |
-| Native Flask/Django application integration and QuerySet source | 0.9 | Framework-native ergonomics with bounded data execution. |
+| Native Flask/Django application integration and QuerySet source | 0.11 | Framework-native ergonomics with bounded data execution. |
 | SSE, WebSocket, focused streaming, and navigation preload | 0.10 | Ordinary HTTP/polling/navigation fallbacks remain supported. |
-| Optional Jinja integration plus style/migration/visual tooling | 0.11 | Trusted application templates, explicit component allowlists, strict defaults, and HDN migration. |
+| Optional Jinja integration and HDN removal | 0.9 | Trusted application templates, explicit component allowlists, strict defaults, and no legacy runtime. |
 | Advanced DataEditor, distributed sources, and visualization adapters | 0.12 | Bounded, accessible, optional integrations. |
 | Component preparation, adaptive concurrency, distributed tracing | 0.13 | Explicit ownership, cancellation, and opt-out semantics. |
 | Language-neutral conformance, Java/Node runtimes, Rust acceleration | 0.14 | Python remains the semantic reference and fallback. |
@@ -676,7 +644,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0002 Core architecture | 0.0–0.2; adapter proof in 0.7 |
 | 0003 Component model | 0.1 |
 | 0004 FastAPI integration | 0.2 baseline; typed HTMX interaction contract in 0.6 |
-| 0005 HDN language (legacy design) | 0.3; experimental hold |
+| 0005 HDN language (removed design) | 0.3; removed in 0.9 |
 | 0006 Scoped styles | 0.3 |
 | 0007 Component Explorer | 0.2 minimal; 0.4 full; extended through 0.7 |
 | 0008 Addressable components | 0.2 |
@@ -702,7 +670,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0028 Deployment | 0.7–0.8 |
 | 0029 Capability roadmap | 0.0 onward |
 | 0030 Declarative authoring reset | Superseded by 0031 |
-| 0031 Optional Jinja integration | 0.11; beta promotion no earlier than 0.12 |
+| 0031 Optional Jinja integration | 0.9 |
 
 ## Later-phase policy
 

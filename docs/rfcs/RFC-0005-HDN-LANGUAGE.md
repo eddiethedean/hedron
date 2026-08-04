@@ -1,10 +1,10 @@
 # RFC-0005: HDN language
 
-**Status:** Implemented
+**Status:** Historical — removed in 0.9
 
-> **Legacy design:** D-040 and [RFC-0031](RFC-0031-JINJA-INTEGRATION.md) select an optional Jinja
-> replacement and schedule this language for staged migration/removal. The shipped HDN surface
-> remains experimental; this document records legacy behavior and does not constrain Jinja.
+> **Historical design:** D-041 and [RFC-0031](RFC-0031-JINJA-INTEGRATION.md) replace this language
+> with optional Jinja in 0.9 and remove it without a compatibility runtime. This document records
+> 0.8 behavior only and does not constrain Jinja.
 
 ## Purpose
 

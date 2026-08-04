@@ -72,7 +72,7 @@ def compose_lifespan(
                         title="Production build manifest missing",
                         explanation=(
                             f"Production mode requires {manifest_path}. "
-                            "Runtime HDN/CSS compilation is disabled."
+                            "Runtime CSS compilation is disabled."
                         ),
                         remediation="Run `hedron build` and set HEDRON_BUILD_DIR if needed.",
                     )

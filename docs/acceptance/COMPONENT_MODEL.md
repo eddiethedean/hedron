@@ -4,7 +4,7 @@
 
 - [x] Python components compose text, native elements, fragments, children, named slots, optional nodes, and sequences.
 - [x] Props validate at construction and remain immutable during rendering.
-- [x] Python and HDN components lower to equivalent node semantics. *(phase 0.3)*
+- [x] Python components lower to deterministic node semantics. *(phase 0.1; optional Jinja parity is owned by the 0.9 Jinja ledger.)*
 - [x] Renderable components expose no route by default.
 - [x] Addressable components retain a distinct factory input contract (`@addressable` → `AddressableDescriptor`; HTTP only via `include_component`). *(phase 0.2)*
 - [x] Page and fragment rendering produce correct assets and metadata.

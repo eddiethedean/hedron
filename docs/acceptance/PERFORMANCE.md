@@ -2,7 +2,7 @@
 
 ## Baselines
 
-- [ ] Benchmarks separately measure startup, dependency/I/O preparation, tree construction, serialization, page response, fragment response, HDN compilation, CSS compilation, and asset build.
+- [ ] Benchmarks separately measure startup, dependency/I/O preparation, tree construction, serialization, page response, fragment response, Jinja checking/rendering, CSS compilation, and asset build.
 - [ ] DataEditor and chart tests record rows, bytes, transforms, and browser initialization cost.
 - [x] Explorer measures its own overhead and can be absent in production. *(phase 0.4 — audit/rate-limit hooks; default `explorer="off"`)*
 
@@ -14,7 +14,7 @@
 - [x] Output and diagnostic payload budgets are documented and enforced.
   *(`PERF-08-002` / `tests/performance/test_budgets.py`)*
 - [ ] Lazy/distributed data cannot be collected implicitly.
-- [x] Production performs no required runtime HDN/CSS compilation. *(phase 0.3 — `HED-BUILD-0004` + production lifespan deny; build uses force-allow)*
+- [x] Production performs no required runtime CSS compilation. *(phase 0.3 — `HED-BUILD-0004` + production lifespan deny; build uses force-allow)*
 - [ ] Cache single-flight and bounded concurrency prevent stampedes and resource exhaustion.
 
 ## Native decision gate

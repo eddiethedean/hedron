@@ -15,6 +15,9 @@ capability-accurate adapters, and evidence-backed release gates.
 **Revision:** 2026-08-03 — D-038 removed the arbitrary 1.0 target and assigned the former deferred
 backlog to explicit capability phases 0.9–0.14.
 
+**Revision:** 2026-08-04 — D-041 moved the Jinja replacement and complete HDN removal to 0.9;
+native Flask/Django depth moved to 0.11.
+
 ## Release strategy
 
 Hedron develops through cumulative, usable capability phases rather than toward a version-number
@@ -33,15 +36,15 @@ The detailed normative scope and exit criteria live in the project roadmap.
 | 0.0 | None | Accepted specification and project foundation |
 | 0.1 | `v0.1.0` | Framework-neutral typed rendering core |
 | 0.2 | `v0.2.0` | Secure FastAPI and HTMX application MVP |
-| 0.3 | `v0.3.0` | HDN, scoped styles, assets, and themes |
+| 0.3 | `v0.3.0` | Experimental HDN prototype, scoped styles, assets, and themes |
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform |
 | 0.5 | `v0.5.0` | Intelligent rendering, data components, caching, and utility toolkit |
 | 0.6 | `v0.6.0` | Visualization and first-party integration ecosystem |
 | 0.7 | `v0.7.0` | Portable adapters, jobs, and production operations |
 | 0.8 | `v0.8.0` | Hardening, stability classification, and compatibility baseline |
-| 0.9 | `v0.9.0` | Native Flask/Django depth and bounded QuerySet integration |
+| 0.9 | `v0.9.0` | Optional Jinja authoring and complete HDN removal |
 | 0.10 | `v0.10.0` | Live interaction, focused streaming, and navigation preload |
-| 0.11 | `v0.11.0` | Optional Jinja authoring, HDN migration, editor/style, and visual tooling |
+| 0.11 | `v0.11.0` | Native Flask/Django depth, bounded QuerySet integration, and visual tooling |
 | 0.12 | `v0.12.0` | Advanced data editing, distributed sources, and visualization scale |
 | 0.13 | `v0.13.0` | Advanced async preparation, concurrency, and observability |
 | 0.14 | `v0.14.0` | Portable runtimes and profiling-backed acceleration |
@@ -49,9 +52,9 @@ The detailed normative scope and exit criteria live in the project roadmap.
 Additional `0.x` phases require an accepted roadmap revision; they are not blocked on declaring a
 future major release.
 
-The authoring transition is governed by D-040/RFC-0031: current HDN remains experimental and enters
-staged removal, while phase 0.11 implements a separate optional Jinja integration for trusted
-application templates without changing Python's canonical role.
+The authoring transition is governed by D-041/RFC-0031: phase 0.9 removes HDN completely and adds a
+separate optional Jinja integration for trusted application templates without changing Python's
+canonical role. There is no compatibility runtime or converter.
 
 ## Gate
 

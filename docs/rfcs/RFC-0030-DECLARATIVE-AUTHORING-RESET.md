@@ -4,8 +4,8 @@
 
 > **Outcome:** This reset established the design hold and evaluated the credible directions.
 > RFC-0031 selects an optional Jinja integration, keeps Python components authoritative, and
-> defines the HDN migration and removal schedule. The audit below remains the rationale for not
-> extending the current HDN implementation.
+> defines the phase 0.9 Jinja replacement and immediate HDN removal boundary. The audit below is a
+> historical record of why the old implementation was not extended.
 
 ## Summary
 
@@ -19,7 +19,7 @@ This review starts with a more basic question than “what should HDN syntax loo
 
 > Does Hedron need a separate template language at all, and what user job would justify owning one?
 
-The phase 0.11 authoring gate will either select a smaller replacement through an accepted revision
+The superseding phase 0.9 authoring gate selects a smaller replacement through an accepted revision
 of this RFC or remove the custom language after a documented migration window.
 
 ## Motivation and background

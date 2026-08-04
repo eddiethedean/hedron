@@ -19,6 +19,6 @@
 17. **Operational behavior is visible.** Timing, caching, assets, security context, routes, and payload sizes are inspectable.
 18. **Escape hatches earn stability.** Native HTML, attributes, CSS, Web Components, and explicit
     responses remain available. A custom declarative language is optional only if evidence justifies
-    owning it; the current HDN prototype is experimental and scheduled for removal under D-040.
+    owning it; the experimental HDN prototype was removed in 0.9 under D-041.
 19. **Framework adapters preserve authority.** FastAPI, Flask, and Django retain their routing, security, sessions, and lifecycle semantics.
 20. **Optimize after measurement.** Complexity must be justified by representative evidence.

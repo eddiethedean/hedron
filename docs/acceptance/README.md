@@ -10,7 +10,6 @@ status commentary, not a satisfied release gate.
 - [Component model](COMPONENT_MODEL.md)
 - [FastAPI integration](FASTAPI_INTEGRATION.md)
 - [HTMX](HTMX.md)
-- [HDN](HDN.md)
 - [Jinja integration](JINJA.md)
 - [Scoped styles](SCOPED_STYLES.md)
 - [Component Explorer](EXPLORER.md)
@@ -29,7 +28,7 @@ status commentary, not a satisfied release gate.
 - [Accessibility](ACCESSIBILITY.md)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
 - [Performance](PERFORMANCE.md)
-- [`v0.9.0` native frameworks](RELEASE_0_9.md) — Flask/Django depth, QuerySet, migration, release proof
+- [`v0.9.0` Jinja replacement](RELEASE_0_9.md) — clean HDN removal, optional Jinja, release proof
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),
   [release-gate-0.7.toml](release-gate-0.7.toml),

@@ -15,9 +15,9 @@
 
 Normal component constructors perform no hidden network or database I/O. Data belongs in endpoint factories, sources, dependencies, or a future explicit `prepare()` hook. Props are immutable during rendering and request-scoped context is not stored globally.
 
-Startup compiles registries, CSS, assets, routes, plugin contributions, and any existing experimental
-HDN compatibility artifacts through application lifespan. Development may recompile affected
-artifacts; production consumes build manifests. RFC-0031 replaces and removes the HDN step.
+Startup compiles registries, CSS, assets, routes, and plugin contributions through application
+lifespan. Development may recompile affected artifacts; production consumes build manifests.
+Optional Jinja templates are checked through their application-owned loader.
 
 ## Acceptance criteria
 

@@ -23,7 +23,7 @@ __all__ = [
     "write_json_atomic",
 ]
 
-BUILD_MANIFEST_FORMAT = 1
+BUILD_MANIFEST_FORMAT = 2
 ASSET_MANIFEST_FORMAT = 1
 CSS_SYMBOL_MANIFEST_FORMAT = 1
 
@@ -181,7 +181,6 @@ class BuildManifest:
     theme: str | None
     assets: AssetManifest
     css_symbols: tuple[CssSymbolManifest, ...]
-    hdn_programs: Mapping[str, str]  # component_id -> relative path
     tool_versions: Mapping[str, str]
     config_digest: str
     digest: str = ""
@@ -194,7 +193,6 @@ class BuildManifest:
             "css_symbols": [
                 m.to_dict() for m in sorted(self.css_symbols, key=lambda m: m.component_id)
             ],
-            "hdn_programs": dict(sorted(self.hdn_programs.items())),
             "tool_versions": dict(sorted(self.tool_versions.items())),
             "config_digest": self.config_digest,
         }
@@ -210,7 +208,6 @@ class BuildManifest:
             css_symbols=tuple(
                 CssSymbolManifest.from_dict(item) for item in data.get("css_symbols", ())
             ),
-            hdn_programs=dict(data.get("hdn_programs") or {}),
             tool_versions=dict(data.get("tool_versions") or {}),
             config_digest=str(data.get("config_digest") or ""),
             digest=str(data.get("digest") or ""),

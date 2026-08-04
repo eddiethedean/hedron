@@ -8,9 +8,9 @@ pip install hedron
 uv add hedron
 ```
 
-That installs the **latest published** release from PyPI (currently the **0.7.x** train,
-`0.7.0`). Repository `main` is **0.8.0 cut-ready** but not tagged as `v0.8.0` until
-maintainers publish—see [STATUS](../STATUS.md). For DataTable/DataEditor, install
+That installs the latest published release from PyPI. Repository `main` is implementing the
+intentional **0.9.0** HDN-to-Jinja authoring break; published artifacts may lag—see
+[STATUS](../STATUS.md). For DataTable/DataEditor, install
 `hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
 
 ```bash
@@ -62,12 +62,12 @@ Hedron-owned Django forms). See [Compatibility](../COMPATIBILITY.md),
   ([ADAPTERS](../acceptance/ADAPTERS.md)). Deferred features are documented and must not
   be marketed as Supported.
 
-## HDN template extension?
+## What replaced HDN?
 
-Existing experimental templates use `template.hdn`; no alternate extension is discovered. HDN is
-scheduled for staged removal under D-040/RFC-0031, so new components should use Python. The optional
-`hedron-jinja` trusted-template integration is planned for phase 0.11 but is not shipped today. See
-the [legacy HDN guide](hdn-templates.md) and [Jinja API contract](../api/JINJA.md).
+Phase 0.9 removes HDN completely. Use typed Python components or install the optional
+`hedron-jinja` package for trusted application templates. There is no `.hdn` discovery,
+compatibility mode, or converter. See the [Jinja API contract](../api/JINJA.md) and
+[0.9 upgrade guide](upgrade.md).
 
 ## Are the docs “interactive demos” a running Hedron server?
 

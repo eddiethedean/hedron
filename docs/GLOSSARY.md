@@ -20,11 +20,10 @@
 
 **Fragment** — HTML intended to replace or augment part of a document, normally in response to HTMX.
 
-**HDN** — Hedron's legacy experimental template-language prototype. Existing source files use the
-`.hdn` extension and `template.hdn` filename. D-040/RFC-0031 schedule deprecation in 0.11, default
-discovery removal in 0.12, and first-party runtime removal in 0.13.
+**HDN** — Hedron's removed experimental template-language prototype. Version 0.8 is the last line
+that can execute it; 0.9 has no parser, compatibility flag, converter, or legacy package.
 
-**Hedron Jinja integration** — Planned optional phase 0.11 adapter for trusted application Jinja
+**Hedron Jinja integration** — Optional phase 0.9 adapter for trusted application Jinja
 templates. It exposes a static allowlist of typed Hedron components and returns a complete
 `RenderResult`; it does not make Jinja a core dependency or a sandbox for untrusted authors.
 

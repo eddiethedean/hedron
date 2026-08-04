@@ -5,9 +5,8 @@
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U hedron` (or `uv add hedron@latest`). **PyPI today** publishes the
-**0.7.x** train. Repository `main` may show **`0.8.0`** before `v0.8.0` is tagged—see
-[STATUS](../STATUS.md). If docs describe a feature from `main` that is missing on your
+`pip install -U hedron` (or `uv add hedron@latest`). Repository `main` may show **`0.9.0`**
+before that train reaches the public index—see [STATUS](../STATUS.md). If docs describe a feature from `main` that is missing on your
 PyPI install, either upgrade, install from a git checkout, or wait for the published cut.
 
 ## CSRF 403 on POST (FastAPI / Flask)

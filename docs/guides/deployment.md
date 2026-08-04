@@ -23,7 +23,8 @@ See the full [configuration reference](../CONFIGURATION.md).
 ## Build manifests
 
 In production, Hedron refuses to start without a valid `manifest.json` under the build
-directory and disables runtime CSS and legacy HDN-source compilation. Locally:
+directory and disables runtime CSS compilation. Jinja templates are resolved through the
+application's configured loader; Hedron never discovers or compiles HDN source. Locally:
 
 ```bash
 hedron build

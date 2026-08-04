@@ -237,17 +237,7 @@ def explorer_router() -> APIRouter:
                 break
         if meta is None:
             raise HTTPException(status_code=404, detail=f"Unknown component {name}")
-        hdn = _safe_read_text(meta.hdn_source, meta, request)
         styles = _safe_read_text(meta.styles_path, meta, request)
-        hdn_block = (
-            html_lib.escape(hdn)
-            if hdn is not None
-            else (
-                "(template unavailable or outside allowlisted component roots)"
-                if meta.hdn_source
-                else "(no template.hdn)"
-            )
-        )
         styles_block = (
             html_lib.escape(styles)
             if styles is not None
@@ -259,7 +249,7 @@ def explorer_router() -> APIRouter:
         )
         explanations = [
             f"Style symbols: {dict(meta.style_symbols) or '{}'}",
-            "HDN templates compile ahead of time in production (HED-BUILD-0004).",
+            "Jinja templates are application-level sources managed by hedron-jinja.",
             "Browser modules register as fingerprinted assets when present.",
             "Override style symbols via component STYLE_COMPONENT_ID / local eject.",
         ]
@@ -284,10 +274,6 @@ def explorer_router() -> APIRouter:
           <ul>{"".join(f"<li>{html_lib.escape(x)}</li>" for x in explanations)}</ul>
         </section>
         <section>
-          <h3>Source / HDN</h3>
-          <pre>{hdn_block}</pre>
-        </section>
-        <section>
           <h3>Styles</h3>
           <pre>{styles_block}</pre>
         </section>
@@ -303,8 +289,6 @@ def explorer_router() -> APIRouter:
     async def graph_view() -> str:
         edges = []
         for c in get_registry().components():
-            if c.hdn_source:
-                edges.append(f"{c.name} → HDN")
             if c.styles_path:
                 edges.append(f"{c.name} → CSS")
             for m in c.browser_modules:
@@ -561,7 +545,6 @@ def explorer_router() -> APIRouter:
                 "name": c.name,
                 "logical_id": c.logical_id,
                 "distribution": c.distribution,
-                "hdn_source": _redact(c.hdn_source),
                 "styles_path": _redact(c.styles_path),
                 "style_symbols": dict(c.style_symbols),
             }
@@ -573,8 +556,6 @@ def explorer_router() -> APIRouter:
         nodes = [{"id": c.logical_id, "name": c.name} for c in get_registry().components()]
         edges = []
         for c in get_registry().components():
-            if c.hdn_source:
-                edges.append({"from": c.logical_id, "to": _redact(c.hdn_source), "kind": "hdn"})
             if c.styles_path:
                 edges.append(
                     {

@@ -9,7 +9,7 @@
 
 ## Full Explorer coverage *(phase 0.4)*
 
-- [x] Components, routes, graph, source/HDN, styles, assets, security, accessibility, packages, and settings have defined views.
+- [x] Components, routes, graph, source, styles, assets, security, accessibility, packages, and settings have defined views.
 - [ ] Dedicated pages/actions/examples/HTMX panels beyond the shared shell. *(Deferred — covered by routes + component detail for 0.4)*
 - [x] Preview uses the production renderer (sandboxed iframe) and redacts absolute paths.
 - [x] Automatic route, target, swap, style, and asset decisions include human-readable explanations (CLI `preview`/`inspect` and Explorer inference panel).
@@ -19,7 +19,7 @@
 
 - [x] Explorer routes are absent in production by default (`explorer="off"`).
 - [x] Production opt-in requires authorization, redaction, rate limiting, and audit logs. *(secured mode)*
-- [x] Arbitrary paths, modules, URLs, headers, and unregistered identifiers cannot be submitted. *(HDN/CSS reads allowlisted under component roots; simulate rejects unknown keys / bad JSON)*
+- [x] Arbitrary paths, modules, URLs, headers, and unregistered identifiers cannot be submitted. *(CSS reads are allowlisted under component roots; simulate rejects unknown keys / bad JSON.)*
 - [x] Mutation simulation is disabled by default.
 - [x] The interface is keyboard operable and passes declared accessibility checks.
 - [x] Explorer static assets are served through the secured router (not a bare StaticFiles mount).

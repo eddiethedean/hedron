@@ -1,59 +1,45 @@
-# Hedron `v0.9.0` native-framework acceptance
+# Hedron `v0.9.0` Jinja replacement acceptance
 
-Phase 0.9 deepens Flask and Django integration and may promote the currently deferred QuerySet data
-source. Every new claim requires an accepted contract, native-framework evidence, package isolation,
-and published-artifact upgrade/rollback proof. Evidence is indexed by
+Phase 0.9 is the intentional authoring break defined by D-041/RFC-0031. It introduces the optional
+`hedron-jinja` distribution and removes HDN completely. Native Flask/Django depth and bounded
+QuerySet work move to phase 0.11. Evidence is indexed by
 [`release-gate-0.9.toml`](release-gate-0.9.toml).
 
-## Flask application integration
+## Clean removal
 
-- [ ] Blueprint and application-factory usage works through a small `init_app`-style layer without
-  hidden process-global state or a FastAPI dependency. *(`FRM-FLK-09-001`)*
-- [ ] Existing constructor-based 0.8 applications remain supported or have an automated, documented
-  migration with deprecation diagnostics. *(`MIG-09-001`)*
-- [ ] Native routing, `url_for`, sessions, CSRF, errors, assets, lifecycle, WSGI deployment, and
-  multiple-app isolation pass the Supported matrix. *(`FRM-FLK-09-001`)*
+- [x] HDN parser, evaluator, formatter, render program, source discovery, registry fields, manifest
+  entries, build output, exports, CLI/Explorer paths, examples, and tests are removed.
+  *(`BREAK-09-001`)*
+- [x] Build-manifest format 2 rejects old artifacts, coordinated packages report `0.9.0`, and 0.8
+  is documented as the final HDN-capable line. *(`BREAK-09-001`)*
+- [x] No compatibility flag, legacy runtime package, dual discovery period, or converter ships.
+  *(`BREAK-09-001`)*
 
-## Django reusable application
+## Optional Jinja package
 
-- [ ] `AppConfig`, namespaced URL inclusion, middleware-aware setup, and system checks integrate
-  without hidden settings mutation or import-time application access. *(`FRM-DJG-09-001`)*
-- [ ] WSGI and ASGI profiles pass routing, reverse URLs, sessions, CSRF, errors, assets, lifecycle,
-  deployment-prefix, and multiple-site isolation evidence. *(`FRM-DJG-09-001`)*
-- [ ] Any Django-native forms bridge preserves authoritative Django validation and the portable
-  interaction/error contract without claiming Pydantic parity. *(`FORM-DJG-09-001`)*
-- [ ] A newer Django major line is promoted only after upstream support and the full native matrix
-  are recorded; dependency metadata alone does not create a Supported claim. *(`COMPAT-09-001`)*
-
-## QuerySet data source
-
-- [ ] QuerySet paging, ordering, filtering, and projection execute as bounded database operations;
-  implicit collection and unbounded counts are rejected or diagnosed. *(`DATA-DJG-09-001`)*
-- [ ] Field allowlists, tenant/authorization hooks, transaction ownership, sync/async behavior,
-  cancellation, and error mapping are explicit and pass adversarial tests. *(`DATA-DJG-09-001`)*
-- [ ] Query-count and plan evidence covers empty, large, filtered, ordered, concurrent, and degraded
-  cases without leaking model fields or query details. *(`DATA-DJG-09-001`)*
-
-## Optional job bridges
-
-- [ ] Any Celery or RQ bridge implements the existing `JobBackend` state/idempotency/auth/retention/
-  cancellation contract and leaves broker/result-backend ownership to the application.
-  *(`JOB-09-001`)*
-- [ ] Bounded polling remains the portable fallback; adding a broker does not imply SSE or another
-  live transport before phase 0.10. *(`JOB-09-001`)*
+- [x] `hedron-jinja` installs independently, imports as `hedron_jinja`, and is exposed through the
+  optional `hedron[jinja]` extra without making Jinja a core dependency. *(`JINJA-09-001`)*
+- [x] Typed template specs, explicit immutable component bindings, inline components, explicit
+  `with body` blocks, named slots, sync/async entry points, and page/fragment shape checks have
+  focused tests. *(`JINJA-09-001`)*
+- [x] Strict undefined/escaping, explicit trusted HTML and URL filters, direct-render fail-closed
+  behavior, component/output budgets, and `RenderResult` metadata merging have focused tests.
+  *(`JINJA-09-001`)*
+- [ ] Static include/extends inventory, contextual URL-attribute validation, macro/loop/depth
+  budgets, application/package loader namespaces, and full build-manifest integration satisfy the
+  detailed [Jinja ledger](JINJA.md). *(`JINJA-09-002`)*
 
 ## Release proof
 
-- [ ] New distributions/extras install without FastAPI leakage, preserve the dependency graph, and
-  report accurate capability/stability metadata. *(`PKG-09-001`)*
-- [ ] Published `0.9.0` artifacts pass clean install, upgrade from supported `0.8.x`, native
-  reference deployments, documentation examples, rollback, SBOM/license/provenance, and supported
-  Python/framework matrices. *(`PKG-09-001`, `MIG-09-001`)*
-- [ ] Every completed requirement links to a command or retained artifact; Deferred items name an
-  owner, rationale, destination phase, and stability impact.
+- [x] The repository regression suite and lint pass after the hard removal. *(`REGRESS-09-001`)*
+- [ ] Built wheel/sdist clean-install, supported Python/Jinja matrix, docs examples, 0.8→0.9
+  manual-upgrade fixture, rollback, SBOM/license/provenance, and public-index verification pass.
+  *(`PKG-09-001`)*
+- [ ] Every remaining detailed Jinja requirement is either Verified or explicitly Deferred with an
+  owner, destination phase, and stability impact.
 
 ## Exit
 
-All advertised 0.9 capabilities are `Verified` or explicitly owned `Deferred`. The native
-convenience layers remain thin framework integrations, QuerySet operations remain bounded and
-authorization-aware, and existing 0.8 application shapes have tested migrations.
+The phase can publish only when no first-party runtime path understands HDN, the optional Jinja
+package satisfies its advertised beta contract, every release-gate row is `Verified` or owned
+`Deferred`, and the upgrade guide states the deliberate incompatibility plainly.

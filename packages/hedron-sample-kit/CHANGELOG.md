@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.9.0] - 2026-08-04
+
+- Removed the HDN template sample and retained the typed Python component implementation.
 
 ## [0.8.0] - 2026-08-03
 

@@ -16,8 +16,8 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
    - [CLI.md](acceptance/CLI.md) phase 0.4
    - [PLUGINS.md](acceptance/PLUGINS.md) phase 0.4
    - [TESTING.md](acceptance/TESTING.md) phase 0.4
-   - [COMPONENT_MODEL.md](acceptance/COMPONENT_MODEL.md) FastAPI parity; legacy Python/HDN comparison is informational
-   - [HDN.md](acceptance/HDN.md) D-040/RFC-0031 migration gate (legacy 0.3 checks are not promotion)
+   - [COMPONENT_MODEL.md](acceptance/COMPONENT_MODEL.md) FastAPI component-model evidence
+   - [JINJA.md](acceptance/JINJA.md) phase 0.9 replacement and removal gate
    - [SCOPED_STYLES.md](acceptance/SCOPED_STYLES.md) phase 0.3 compilation/delivery exit
    - Phase 0.6 and later: every completed item in the owning acceptance ledgers has a stable ID,
      named command, and retained evidence artifact; prose checkbox state alone is insufficient.
@@ -117,16 +117,16 @@ git push origin v0.8.0
 2. During development, validate the planned evidence shape with
    `uv run python scripts/check_release_gate.py 0.9.0 --allow-planned` after synchronizing package
    versions and changelogs on the release branch.
-3. Close [RELEASE_0_9.md](acceptance/RELEASE_0_9.md): Flask application-factory/Blueprint,
-   Django reusable-app, bounded QuerySet, optional job-bridge, native security/lifecycle,
-   compatibility, migration, package-isolation, and reference-slice evidence.
+3. Close [RELEASE_0_9.md](acceptance/RELEASE_0_9.md): complete HDN removal, optional
+   `hedron-jinja`, strict trust/resource boundaries, metadata preservation, manual upgrade,
+   package-isolation, and artifact evidence.
 4. Replace every Planned row in
    [release-gate-0.9.toml](acceptance/release-gate-0.9.toml) with `Verified` evidence or an explicitly
    owned `Deferred` disposition. The strict gate must pass before publication:
    `uv run python scripts/check_release_gate.py 0.9.0`.
 5. Build the coordinated artifacts once through the trusted workflow. From those artifacts, run
-   `scripts/rehearse_release.py`, upgrade from supported `0.8.x`, native Flask/Django deployments,
-   rollback, documentation examples, supported matrices, and the supply-chain bundle.
+   `scripts/rehearse_release.py`, the manual 0.8→0.9 authoring upgrade fixture, rollback,
+   documentation examples, supported Python/Jinja matrices, and the supply-chain bundle.
 6. Tag and publish `v0.9.0`; retain exact source tag, artifact hashes, commands, matrix dimensions,
    logs, SBOM, licenses, provenance, migration proof, and owner approvals. Never retag or overwrite
    a published artifact.

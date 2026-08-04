@@ -43,14 +43,12 @@ Composition helpers accept components, native nodes, strings, supported sequence
 
 Component identity is deterministic for diagnostics and targets when requested. It excludes secret values and is never an authorization mechanism.
 
-Applications normally subclass `Component` or compose built-ins in functions. RFC-0031 plans an
-optional `hedron-jinja` adapter for trusted application templates in phase 0.11; it does not replace
-this canonical Python contract. The shipped HDN-backed path remains experimental and is scheduled
-for migration/removal under D-040. Internal node classes are not a stability promise unless listed
-in this API set.
+Applications normally subclass `Component` or compose built-ins in functions. The optional
+`hedron-jinja` package composes trusted application templates in phase 0.9; it does not replace this
+canonical Python contract. Internal node classes are not a stability promise unless listed here.
 
 ## Component folders
 
-Discovered component folders may currently include `component.py`, experimental `template.hdn`,
-`styles.css`, `browser.mjs`, and `examples.py`. HDN discovery/ejection is retained temporarily for
-compatibility and RFC-0031 migration inventory; it is not the future Jinja layout contract.
+Discovered component folders may include `component.py`, `styles.css`, `browser.mjs`, and
+`examples.py`. Jinja templates live in explicit application or package loader namespaces and are
+not inferred from component folders.

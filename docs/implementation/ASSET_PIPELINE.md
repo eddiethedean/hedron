@@ -3,8 +3,8 @@
 ## Inputs
 
 Assets originate from Hedron core, component packages, scoped CSS, themes, browser modules, images,
-chart adapters, Explorer, application-registered roots, and legacy HDN dependencies while the
-D-040/RFC-0031 compatibility path remains.
+chart adapters, Explorer, and application-registered roots. Metadata emitted by components invoked
+through Jinja enters the same asset graph as metadata emitted by Python composition.
 
 ## Build
 
