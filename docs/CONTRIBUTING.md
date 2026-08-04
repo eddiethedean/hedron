@@ -73,7 +73,7 @@ For a new component:
    ```bash
    uv run python scripts/generate_component_docs.py
    uv run python scripts/generate_component_docs.py --check
-   NO_MKDOCS_2_WARNING=1 uv run --group docs mkdocs build --strict
+   uv run --group docs mkdocs build --strict
    # or: ./scripts/mkdocs.sh build --strict  (after uv run --group docs)
    ```
 
@@ -98,12 +98,12 @@ Docs preview:
 
 ```bash
 uv sync --group docs
-NO_MKDOCS_2_WARNING=1 uv run --group docs mkdocs serve
+uv run --group docs mkdocs serve
 # or: ./scripts/mkdocs.sh serve
 ```
 
-`NO_MKDOCS_2_WARNING=1` silences Material’s MkDocs 2.0 advisory (CI and Read the Docs set it).
-Strict builds use the same variable with `mkdocs build --strict`.
+Strict builds: `uv run --group docs mkdocs build --strict` (fails on MkDocs warnings).
+
 ### Pull requests
 
 - Keep changes focused; prefer small reviewable PRs.

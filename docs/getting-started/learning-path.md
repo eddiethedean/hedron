@@ -10,9 +10,10 @@ A suggested order from first page to production-minded apps.
 
 ## 2. Interact without a SPA (next hour)
 
-1. [HTMX interactions](../guides/htmx-interactions.md)
-2. [Security](../guides/security.md) (CSRF, profiles)
-3. Optional: open `/hedron-explorer/` with `hedron[dev]` and `explorer="development"`
+1. [Forms and actions](../guides/forms-and-actions.md) (AutoForm, CSRF, validation fragments)
+2. [HTMX interactions](../guides/htmx-interactions.md)
+3. [Security](../guides/security.md) (CSRF, profiles)
+4. Optional: open `/hedron-explorer/` with `hedron[dev]` and `explorer="development"`
 
 ## 3. Pick your host
 
@@ -38,7 +39,9 @@ A suggested order from first page to production-minded apps.
 
 ## 6. Contribute or evaluate deeply
 
+- [What’s ready today](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md)
 - [Contributing](../CONTRIBUTING.md) · [Support](../guides/support.md) ·
   [Architecture](../ARCHITECTURE.md) · [STATUS](../STATUS.md)
 
-Stuck? [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md)
+Stuck? [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md) ·
+[How to read these docs](how-to-read.md)

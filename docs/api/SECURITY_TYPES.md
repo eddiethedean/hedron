@@ -51,4 +51,14 @@ A `SafeUrl` remains subject to the final rendering or redirect context policy. A
 
 ## Stability and errors
 
-These values are immutable and safe to compare, but their representations never expose secret content. Validation errors use stable security diagnostics and include the purpose and remediation without echoing sensitive input. Adding a URL purpose or trusted constructor is a public API change.
+These values are immutable and safe to compare, but their representations never expose secret content.
+
+| Situation | Code / behavior |
+|---|---|
+| Invalid / dangerous URL | `HED-SEC-0001` (and related) |
+| URL purpose mismatch for attribute | `HED-SEC-0006` |
+| Missing nh3 for `TrustedHtml.nh3` | `HED-SEC-0020` |
+| Secret leaked via str/repr | Redacted — use `reveal()` only in trusted app code |
+
+Adding a URL purpose or trusted constructor is a public API change. See
+[Security guide](../guides/security.md).

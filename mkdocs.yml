@@ -128,21 +128,29 @@ nav:
   - Home: index.md
   - Get started:
     - Overview: getting-started/index.md
+    - How to read these docs: getting-started/how-to-read.md
     - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
     - Learning path: getting-started/learning-path.md
+    - Core concepts: getting-started/core-concepts.md
     - Flask adapter: getting-started/flask.md
     - Django adapter: getting-started/django.md
-    - Core concepts: getting-started/core-concepts.md
   - Guides:
     - Overview: guides/index.md
+    - Why Hedron: guides/why-hedron.md
+    - What's ready today: guides/whats-ready.md
+    - Forms and actions: guides/forms-and-actions.md
+    - HTMX interactions: guides/htmx-interactions.md
+    - Live interaction: guides/live-interaction.md
+    - Authentication: guides/authentication.md
+    - Data applications: guides/data-apps.md
+    - Charts and HTMX: guides/charts-and-htmx.md
+    - Cookbook: guides/cookbook.md
+    - Plain FastAPI: guides/plain-fastapi.md
     - Compose built-ins: guides/component-composition.md
     - Project workflow: guides/project-workflow.md
     - Migrate from Streamlit: guides/streamlit-migration.md
-    - HTMX interactions: guides/htmx-interactions.md
-    - Live interaction: guides/live-interaction.md
     - HDJ authoring: api/JINJA.md
-    - Charts and HTMX: guides/charts-and-htmx.md
     - Best practices: guides/best-practices.md
     - Test your UI: guides/testing.md
     - Security: guides/security.md
@@ -151,11 +159,14 @@ nav:
     - Plugin authoring: guides/plugin-authoring.md
     - Upgrade (0.8 → 0.10): guides/upgrade.md
     - What's new in 0.10: guides/whats-new-0.10.md
-    - Support: guides/support.md
+    - Release notes: guides/release-notes.md
     - FAQ: guides/faq.md
     - Troubleshooting: guides/troubleshooting.md
   - Examples:
-    - Component gallery: examples/index.md
+    - Overview: examples/index.md
+    - Runnable examples: examples/runnable.md
+    - Reference app walkthrough: examples/reference-app.md
+    - Component gallery: examples/gallery.md
   - Components:
     - Overview: components/index.md
     - Document and composition:
@@ -253,7 +264,7 @@ nav:
       - MatplotlibChart: components/matplotlib-chart.md
       - PlotlyChart: components/plotly-chart.md
       - AltairChart: components/altair-chart.md
-  - Reference:
+  - API:
     - Overview: api/README.md
     - Stability: api/STABILITY.md
     - Hedron: api/HEDRON.md
@@ -300,7 +311,8 @@ nav:
       - Configuration: CONFIGURATION.md
       - Glossary: GLOSSARY.md
   - Project:
-    - Status: STATUS.md
+    - What's ready today: guides/whats-ready.md
+    - Status (evidence): STATUS.md
     - Compatibility: COMPATIBILITY.md
     - Roadmap: ROADMAP.md
     - Architecture: ARCHITECTURE.md
@@ -309,7 +321,7 @@ nav:
     - Security disclosure: SECURITY.md
     - Cutting a release: RELEASE.md
     - Reference application: REFERENCE_APPLICATION.md
-  - Contributor / Spec:
+  - Specification:
     - Specification index: SPECIFICATION.md
     - Decisions: DECISIONS.md
     - Project layout: PROJECT_LAYOUT.md

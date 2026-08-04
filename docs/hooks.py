@@ -2,12 +2,7 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
-
-# Silence Material's MkDocs 2.0 advisory when this module is imported early enough.
-# CI/RTD also set NO_MKDOCS_2_WARNING; this covers `mkdocs serve` via hooks reload.
-os.environ.setdefault("NO_MKDOCS_2_WARNING", "1")
 
 
 def on_config(config):  # noqa: ANN001

@@ -17,12 +17,14 @@ a JavaScript application stack.
 
 <div class="hedron-actions" markdown>
 [Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Browse component gallery](examples/index.md){ .md-button }
+[Runnable examples](examples/runnable.md){ .md-button }
 </div>
 
 <p class="hedron-lede" style="margin-top:0.5rem;font-size:0.95rem;opacity:0.85">
-Gallery demos are simulated in the docs browser. Clone the
-<a href="https://github.com/eddiethedean/hedron/tree/main/examples/reference-app">reference app</a>
+Gallery demos are simulated in the docs browser. Prefer the
+<a href="examples/runnable/">runnable examples</a>
+or the
+<a href="examples/reference-app/">reference app walkthrough</a>
 to run a live Hedron server.
 </p>
 
@@ -60,13 +62,14 @@ to run a live Hedron server.
 === "1 · Create a project"
 
     ```bash
-    uv init my-hedron-app
+    pip install "hedron>=0.10.0"
+    hedron new my-hedron-app
     cd my-hedron-app
-    uv add hedron "uvicorn[standard]"
+    uv sync   # or: pip install -e .
     ```
 
-    Or scaffold with the CLI: `hedron new my-hedron-app`. See
-    [installation](getting-started/installation.md).
+    Or manually: `uv init my-hedron-app` then `uv add hedron "uvicorn[standard]"`.
+    See [installation](getting-started/installation.md).
 
 === "2 · Create `app.py`"
 
@@ -105,45 +108,45 @@ to run a live Hedron server.
   The flagship package includes pages, routing, security, state, CLI tooling,
   plugins, testing helpers, and optional charts / content extras.</p>
   <p><code>pip install hedron</code> ·
-  <code>pip install "hedron[charts]"</code> ·
+  <code>hedron new my-app</code> ·
   <a href="getting-started/installation/">Install options →</a> ·
-  <a href="examples/">Interactive demos →</a></p>
+  <a href="examples/runnable/">Runnable examples →</a></p>
 </div>
 
 ## Choose your path
 
 <div class="hedron-path">
+  <a href="getting-started/how-to-read/">
+    <strong>How to read the docs</strong>
+    Decode Beta, Supported, Accepted, and phase numbers.
+  </a>
   <a href="getting-started/installation/">
     <strong>Start fresh</strong>
-    Install Hedron and understand the package choices.
+    Prefer <code>hedron new</code>, then run the quickstart.
+  </a>
+  <a href="guides/forms-and-actions/">
+    <strong>Add a form</strong>
+    POST, CSRF, and validation fragments.
   </a>
   <a href="getting-started/core-concepts/">
     <strong>Learn the model</strong>
-    See how apps, pages, components, rendering, and HTMX fit together.
+    Apps, pages, components, rendering, and HTMX.
   </a>
-  <a href="getting-started/flask/">
-    <strong>Flask adapter</strong>
-    Render the same components on native Flask.
+  <a href="guides/why-hedron/">
+    <strong>Why Hedron</strong>
+    Compare with Streamlit, Dash, and Jinja+HTMX.
   </a>
-  <a href="getting-started/django/">
-    <strong>Django adapter</strong>
-    Native Django URLconfs with CSRF alignment notes.
-  </a>
-  <a href="guides/htmx-interactions/">
-    <strong>Add interaction</strong>
-    Refresh declared regions with typed, validated HTMX responses.
-  </a>
-  <a href="guides/security/">
-    <strong>Secure defaults</strong>
-    CSRF, SafeUrl, Explorer, and host-framework notes.
+  <a href="examples/runnable/">
+    <strong>Runnable examples</strong>
+    Clone and run real FastAPI / Flask / Django apps.
   </a>
   <a href="guides/deployment/">
     <strong>Deploy</strong>
-    Production secrets, ASGI/WSGI runners, and env vars.
+    Production secrets, build manifests, and runners.
   </a>
-  <a href="guides/project-workflow/">
-    <strong>Build with confidence</strong>
-    Scaffold, inspect, check, test, and package a real project.
+  <a href="guides/whats-ready/">
+    <strong>What's ready</strong>
+    Honest 0.10 snapshot for evaluators.
   </a>
 </div>
 

@@ -25,7 +25,7 @@ The preview is intentionally small enough to inspect with a keyboard and screen 
 ```python
 from hedron import ColorMode, ColorModeToggle
 
-component = ColorModeToggle(preference=ColorMode.SYSTEM, action='/preferences/color', csrf_token=token)
+component = ColorModeToggle(preference=ColorMode.SYSTEM, action='/preferences/color', csrf_token=csrf_token)
 ```
 
 In a route, return the component inside a `Page`, or return it directly as a fragment through the framework adapter. Components are immutable descriptions of output: construct the complete state on the server and let the renderer serialize it.
@@ -56,29 +56,27 @@ Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass st
 
 ## Composition and backend behavior
 
-Use `ColorModeToggle` at the smallest level that owns its semantics. Page routes normally compose it under `Page`, `Main`, and an explicit heading structure. HTMX routes should return only the component region being replaced and should preserve stable target IDs across success, validation, empty, loading, and error responses.
+Use `ColorModeToggle` at the smallest level that owns its semantics. Page routes normally compose it under `Page`, `Main`, and an explicit heading structure. HTMX fragment routes should return only the region being replaced and keep stable target IDs across success, validation, empty, loading, and error responses.
 
-When a request can mutate data, use POST, validate CSRF, authenticate and authorize on the server, validate typed input again, and return a bounded fragment. GET interactions must remain safe and repeatable. Native links and forms should still reach a useful server response when HTMX is unavailable.
+Mutating flows must use POST, validate CSRF, authorize on the server, re-validate typed input, and return a bounded fragment. GET remains safe and repeatable; native submit should still work without HTMX.
 
 ## Accessibility
 
 Every theme must meet contrast and focus requirements in all three modes; system mode must respond to user-agent preference.
 
-Test the demo and your application with keyboard-only input, visible focus, zoom, reduced motion, and at least one screen reader. Never make color, position, animation, or an icon the only carrier of state. Dynamic results need an appropriate status or alert and a deliberate focus strategy.
+Verify keyboard use, visible focus, zoom, and reduced motion for interactive states. Prefer native semantics and status/alert announcements over color-only cues.
 
 ## Security and validation
 
-Treat all request data, database content, filenames, URLs, labels, chart data, and Markdown as untrusted until the owning boundary validates it. Hedron escapes text and constrains dangerous surfaces, but it cannot decide application authorization or data exposure. Keep responses bounded, redact secrets before rendering, and use the narrowest URL and trust types available.
+Escape and trust-boundary types (`SafeUrl`, `TrustedHtml`) remain framework concerns; authorization and data exposure remain yours. Redact secrets before rendering.
 
 ## Common mistakes
 
 - Treat persistence as a state-changing POST and validate CSRF; do not hide the control based on JavaScript availability.
-- Do not copy the demo's JavaScript into a server application as a substitute for an HTMX endpoint. The simulation exists only because the hosted docs have no application backend.
-- Do not select components by visual appearance alone; choose the native semantics first, then theme them.
+- Do not copy docs-preview JavaScript into an application server; demos simulate HTMX locally.
+- Choose components for semantics first, then theme them.
 
 ## Testing
-
-Render the component at the boundary you intend to ship and assert behavior rather than a large, brittle snapshot:
 
 ```python
 from hedron import RenderMode, render
@@ -88,6 +86,6 @@ assert result.html
 assert not result.diagnostics
 ```
 
-For interactive use, add a framework test that sends the same method, URL, headers, and typed payload as the browser, then assert the returned fragment, status code, cache policy, and security headers. Add a browser test for keyboard behavior, focus, live announcements, and the HTMX swap lifecycle when those behaviors are material.
+For interactive flows, assert method, URL, headers, fragment body, and status with a framework test client. Add a browser test when keyboard or HTMX swap behavior is material.
 
-[All component demos](index.md) · [Built-in API baseline](../api/BUILT_INS.md) · [Testing UI](../guides/testing.md)
+[All component demos](index.md) · [Built-in API baseline](../api/BUILT_INS.md) · [Testing UI](../guides/testing.md) · [Forms and actions](../guides/forms-and-actions.md)

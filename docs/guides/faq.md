@@ -29,8 +29,13 @@ Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or 
 
 ## Should I use `uv init` or `hedron new`?
 
-Either works. Prefer one path: `uv init` + hand-written `app.py` from the quickstart, or
-`hedron new` alone. Do not nest both into the same directory by accident.
+Prefer **`hedron new`** for a ready scaffold on the current train. `uv init` + a hand-written
+`app.py` from the quickstart also works. Do not nest both into the same directory by accident.
+
+## What do Beta, Supported, and Accepted mean?
+
+See [How to read Hedron docs](../getting-started/how-to-read.md). Short version: package Beta ≠
+every capability Supported; Accepted design ≠ always fully shipped.
 
 ## Are Auto, DataTable, and charts available?
 

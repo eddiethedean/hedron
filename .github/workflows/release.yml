@@ -12,7 +12,6 @@ permissions:
 env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
-  NO_MKDOCS_2_WARNING: "1"
 
 jobs:
   test:

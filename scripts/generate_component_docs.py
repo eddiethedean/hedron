@@ -748,20 +748,20 @@ COMPONENTS = (
         "forms",
         "Generate a labelled form from a typed FormModel and optionally submit it through HTMX.",
         "AutoForm(model, *, action, method='post', csrf_token=None, values=None, errors=(), submit_label='Submit', target=None)",
-        "AutoForm(InviteMember, action='/team/invite', csrf_token=token, target='#invite-result', submit_label='Send invite')",
+        "AutoForm(InviteMember, action='/invite', csrf_token=csrf_token, submit_label='Send invite')",
         (
             p("model", "type[FormModel] | FormModel", "Field schema or populated instance."),
             p("action", "SafeUrl | str", "Validated endpoint."),
             p("method", "str", "GET or POST behavior."),
-            p("csrf_token", "str | None", "Hidden CSRF value for state changes."),
+            p("csrf_token", "str | None", "Hidden CSRF value from `csrf_token_for_request`; required for POST."),
             p("values", "Mapping", "Values restored after validation."),
             p("errors", "Sequence[str]", "Form-level errors."),
             p("submit_label", "str", "Primary action label."),
-            p("target", "safe CSS selector | None", "HTMX response target."),
+            p("target", "safe CSS selector | None", "HTMX response target (prefer explicit Form composition when using hx-target)."),
         ),
-        "AutoForm derives field labels and required state from model metadata, adds error and CSRF nodes, and uses normal form submission as its baseline. When `target` is set it emits the corresponding HTMX method, target, innerHTML swap, and duplicate-submit synchronization.",
+        "AutoForm derives field labels and required state from model metadata, adds error and CSRF nodes, and uses normal form submission as its baseline. Obtain `csrf_token` with `csrf_token_for_request(request, policy)` after a safe GET. For HTMX-targeted POSTs, prefer the explicit Form loop in the [forms and actions guide](../guides/forms-and-actions.md).",
         "Review generated labels and add model titles that make domain-specific fields understandable.",
-        "Generation does not replace authorization, CSRF validation, or server-side model validation.",
+        "Generation does not replace authorization, CSRF validation, or server-side model validation. Do not leave `csrf_token` undefined.",
         server="On submit",
         demo="auto-form",
     ),
@@ -1224,7 +1224,7 @@ COMPONENTS = (
         "theme",
         "Let users choose light, dark, or system color preference.",
         "ColorModeToggle(*, preference=ColorMode.SYSTEM, label='Color mode', id=None, action=None, csrf_token=None)",
-        "ColorModeToggle(preference=ColorMode.SYSTEM, action='/preferences/color', csrf_token=token)",
+        "ColorModeToggle(preference=ColorMode.SYSTEM, action='/preferences/color', csrf_token=csrf_token)",
         (
             p("preference", "ColorMode | str", "Current light/dark/system selection."),
             p("label", "str", "Control label."),
@@ -1512,6 +1512,11 @@ def page_text(spec: ComponentDoc) -> str:
         if simulated
         else "This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform."
     )
+    mutation_note = (
+        "Mutating flows must use POST, validate CSRF, authorize on the server, re-validate typed input, and return a bounded fragment. GET remains safe and repeatable; native submit should still work without HTMX."
+        if simulated or spec.server not in {"No", "Page response"}
+        else "This component is primarily presentational; keep any mutation on an explicit action or component route."
+    )
     optional = (
         f"\n\nInstall the optional provider before importing this component:"
         f'\n\n```bash\npip install "{spec.package}"\n```'
@@ -1572,29 +1577,27 @@ Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass st
 
 ## Composition and backend behavior
 
-Use `{spec.name}` at the smallest level that owns its semantics. Page routes normally compose it under `Page`, `Main`, and an explicit heading structure. HTMX routes should return only the component region being replaced and should preserve stable target IDs across success, validation, empty, loading, and error responses.
+Use `{spec.name}` at the smallest level that owns its semantics. Page routes normally compose it under `Page`, `Main`, and an explicit heading structure. HTMX fragment routes should return only the region being replaced and keep stable target IDs across success, validation, empty, loading, and error responses.
 
-When a request can mutate data, use POST, validate CSRF, authenticate and authorize on the server, validate typed input again, and return a bounded fragment. GET interactions must remain safe and repeatable. Native links and forms should still reach a useful server response when HTMX is unavailable.
+{mutation_note}
 
 ## Accessibility
 
 {spec.a11y}
 
-Test the demo and your application with keyboard-only input, visible focus, zoom, reduced motion, and at least one screen reader. Never make color, position, animation, or an icon the only carrier of state. Dynamic results need an appropriate status or alert and a deliberate focus strategy.
+Verify keyboard use, visible focus, zoom, and reduced motion for interactive states. Prefer native semantics and status/alert announcements over color-only cues.
 
 ## Security and validation
 
-Treat all request data, database content, filenames, URLs, labels, chart data, and Markdown as untrusted until the owning boundary validates it. Hedron escapes text and constrains dangerous surfaces, but it cannot decide application authorization or data exposure. Keep responses bounded, redact secrets before rendering, and use the narrowest URL and trust types available.
+Escape and trust-boundary types (`SafeUrl`, `TrustedHtml`) remain framework concerns; authorization and data exposure remain yours. Redact secrets before rendering.
 
 ## Common mistakes
 
 - {spec.pitfall}
-- Do not copy the demo's JavaScript into a server application as a substitute for an HTMX endpoint. The simulation exists only because the hosted docs have no application backend.
-- Do not select components by visual appearance alone; choose the native semantics first, then theme them.
+- Do not copy docs-preview JavaScript into an application server; demos simulate HTMX locally.
+- Choose components for semantics first, then theme them.
 
 ## Testing
-
-Render the component at the boundary you intend to ship and assert behavior rather than a large, brittle snapshot:
 
 ```python
 from hedron import RenderMode, render
@@ -1604,9 +1607,9 @@ assert result.html
 assert not result.diagnostics
 ```
 
-For interactive use, add a framework test that sends the same method, URL, headers, and typed payload as the browser, then assert the returned fragment, status code, cache policy, and security headers. Add a browser test for keyboard behavior, focus, live announcements, and the HTMX swap lifecycle when those behaviors are material.
+For interactive flows, assert method, URL, headers, fragment body, and status with a framework test client. Add a browser test when keyboard or HTMX swap behavior is material.
 
-[All component demos](index.md) · [Built-in API baseline](../api/BUILT_INS.md) · [Testing UI](../guides/testing.md)
+[All component demos](index.md) · [Built-in API baseline](../api/BUILT_INS.md) · [Testing UI](../guides/testing.md) · [Forms and actions](../guides/forms-and-actions.md)
 """
 
 

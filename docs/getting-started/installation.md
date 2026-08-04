@@ -1,10 +1,28 @@
 # Installation
 
-The `hedron` package is the recommended starting point for applications. It includes the
-framework-neutral rendering core plus FastAPI routing, HTMX responses, security policy,
-state, CLI tooling, plugins, and testing helpers.
+The recommended path for new applications is **`hedron new`**, which scaffolds `app.py`,
+`pyproject.toml`, and a component directory for the current train.
 
-## Create a project
+## Recommended: CLI scaffold
+
+```bash
+pip install "hedron>=0.10.0"
+hedron new my-hedron-app
+cd my-hedron-app
+```
+
+Then install deps (`uv sync` or `pip install -e .`) and run:
+
+```bash
+uv run uvicorn app:app --reload
+# or: uvicorn app:app --reload
+```
+
+`hedron new` depends on `hedron>=0.10.0` and `uvicorn[standard]`. It refuses to overwrite a
+non-empty destination unless you pass `--force`. Do **not** also run `uv init` into the same
+directory unless you intend to replace the scaffold.
+
+## Alternative: manual project
 
 === "uv"
 
@@ -14,30 +32,25 @@ state, CLI tooling, plugins, and testing helpers.
     uv add hedron "uvicorn[standard]"
     ```
 
-=== "pip"
+=== "pip (macOS/Linux)"
 
     ```bash
     mkdir my-hedron-app && cd my-hedron-app
     python -m venv .venv
     source .venv/bin/activate
-    python -m pip install hedron "uvicorn[standard]"
+    python -m pip install "hedron>=0.10.0" "uvicorn[standard]"
     ```
 
-=== "CLI scaffold"
+=== "pip (Windows PowerShell)"
 
-    ```bash
-    pip install hedron
-    hedron new my-hedron-app
-    cd my-hedron-app
+    ```powershell
+    mkdir my-hedron-app; cd my-hedron-app
+    python -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+    python -m pip install "hedron>=0.10.0" "uvicorn[standard]"
     ```
 
-`hedron new` creates `app.py`, `pyproject.toml`, and a component directory. The scaffold
-depends on `hedron>=0.10.0` and `uvicorn[standard]`. It refuses to overwrite a non-empty
-destination unless you pass `--force`. Do not run `uv init` and `hedron new` into the same
-directory unless you intend to replace the scaffold.
-
-Then install deps (`uv sync` or `pip install -e .`) and follow the [quickstart](quickstart.md),
-or use the generated `app.py` from `hedron new`.
+Then create `app.py` from the [quickstart](quickstart.md).
 
 ### Component Explorer
 
@@ -83,10 +96,16 @@ uv run python -c "import hedron; print(hedron.__version__)"
 ```
 
 The installed version should print without an import error. Expect **`0.10.0`** from PyPI for the
-current live-interaction train—see [STATUS](../STATUS.md). Data APIs require `hedron-data`
-(`pip install "hedron[data]"`). Charts require `hedron-charts`
+current live-interaction train—see [What’s ready today](../guides/whats-ready.md). Data APIs require
+`hedron-data` (`pip install "hedron[data]"`). Charts require `hedron-charts`
 (`pip install "hedron[charts]"`). Hedron follows semantic versioning; see the
 [roadmap](../ROADMAP.md) and [compatibility policy](../COMPATIBILITY.md).
+
+## Prerequisites
+
+- CPython **3.11–3.14**
+- A package manager (`pip` or [uv](https://docs.astral.sh/uv/))
+- No Node.js required
 
 ## Contributor checkout
 
@@ -106,5 +125,7 @@ Hedron supports CPython 3.11–3.14. The flagship integration pins a compatible 
 range; let your package manager resolve it instead of installing FastAPI separately at
 an incompatible version. See the [compatibility policy](../COMPATIBILITY.md) for the
 full support matrix and deprecation rules.
+
+New to the maturity vocabulary? Read [How to read Hedron docs](how-to-read.md).
 
 [Build your first app :material-arrow-right:](quickstart.md){ .md-button .md-button--primary }

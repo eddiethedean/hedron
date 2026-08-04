@@ -1,0 +1,20 @@
+# Runnable examples
+
+Clone the repository to run real Hedron servers. The [component gallery](gallery.md)
+in these docs is a **browser simulation**—not a live Hedron process.
+
+```bash
+git clone https://github.com/eddiethedean/hedron.git
+cd hedron
+uv sync
+```
+
+| Example | Framework | Run |
+|---|---|---|
+| [reference-app](reference-app.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/reference-app --reload` |
+| [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask | See example README |
+| [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | See example README |
+| [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | HDJ | Prints HTML to stdout (not a web server) |
+
+Quickstarts without cloning: [FastAPI](../getting-started/quickstart.md) ·
+[Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).

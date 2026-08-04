@@ -3,6 +3,9 @@
 Build and run a small Hedron application, then learn the few concepts that scale from a
 single page to a production UI.
 
+New to Beta / Supported / phase numbers?
+[How to read these docs](how-to-read.md).
+
 ## What you will build
 
 The quickstart creates a FastAPI-native application with a typed page, server-rendered
@@ -41,6 +44,7 @@ No Node.js installation or frontend build tool is required.
 After the hello page, continue with:
 
 - [Learning path](learning-path.md) for a guided order
+- [Forms and actions](../guides/forms-and-actions.md) for AutoForm, CSRF, and validation
 - [Flask adapter](flask.md) or [Django adapter](django.md) if you are not on FastAPI
 - [HTMX interactions](../guides/htmx-interactions.md)
 - [Live interaction](../guides/live-interaction.md) (0.10 FastAPI)

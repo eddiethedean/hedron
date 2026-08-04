@@ -4,24 +4,42 @@ status: shipped
 
 # `Action`
 
-
 !!! note "Stability (0.8 compatibility baseline)"
 
-    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
-**Status:** Accepted
+**Status:** Accepted · **Shipped**
 
-An action is a typed server operation bound to UI controls and normal FastAPI request processing.
+An action is a typed server operation bound to UI controls and normal FastAPI request
+processing.
 
 ```python
+from hedron import HedronRouter, Text
+
+users = HedronRouter(prefix="/users")
+
+
 @users.action("/{user_id}", method="DELETE")
-async def delete_user(
-    user_id: int,
-    current_user: User = Depends(require_admin),
-) -> UserTable:
+async def delete_user(user_id: int) -> Text:
     await service.delete(user_id)
-    return UserTable(rows=await service.list_users(current_user.team_id))
+    return Text("deleted")
 ```
+
+## Decorator
+
+`@router.action(path, *, method="POST", methods=None, name=None, dependencies=None, tags=None, **fastapi_kwargs)`
+
+| Parameter | Description |
+|---|---|
+| `path` | Route path relative to the router prefix |
+| `method` / `methods` | HTTP verbs; unsafe methods get CSRF when enabled |
+| `dependencies` | FastAPI dependencies (auth gates, etc.) |
+| Other kwargs | Passed to FastAPI `add_api_route` |
+
+Returns are rendered as fragments by default. Prefer `InteractionResult` when you need
+typed HTMX metadata. Note: `fragment_regions` is supported on `@component` / `@page`, not
+on `@action` today—use `@component(..., methods=["POST"], fragment_regions=...)` when you
+need an allowlisted HTMX target for a mutation ([forms guide](../guides/forms-and-actions.md)).
 
 ## Contract
 
@@ -29,9 +47,16 @@ async def delete_user(
 - Hedron may infer URL, target, swap, CSRF mechanics, loading state, and validation-fragment handling from registration.
 - It never infers permission, destructive meaning, confirmation policy, or persistence.
 - GET actions cannot mutate by contract.
-- Unsafe cookie-authenticated actions include and validate CSRF protection. Tokens may be supplied via the `X-CSRF-Token` header or the `csrf_token` form field and must match the `hedron_csrf` cookie. The cookie is issued on safe GETs and reused (not rotated) for subsequent requests in the same session.
-- Local redirects reject untrusted external destinations; external redirects use `redirect_external` and require an enabling security policy.
+- Unsafe cookie-authenticated actions validate CSRF (`X-CSRF-Token` or `csrf_token` form field vs `hedron_csrf` cookie).
 
-Actions may return components, explicit responses, redirects, or structured results that set approved HTMX headers via `approved_headers(...)`.
+## Errors
 
-Background work attached to the response uses FastAPI `BackgroundTasks`; durable work returns or references a job resource.
+| Situation | Behavior |
+|---|---|
+| Missing/invalid CSRF | HTTP 403 |
+| Unauthorized application dependency | Your dependency’s HTTP error |
+| Invalid local redirect | Rejected by security policy |
+
+## See also
+
+- [Router](ROUTER.md) · [Interaction](INTERACTION.md) · [Security](../guides/security.md)

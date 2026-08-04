@@ -56,7 +56,8 @@ dev = [
 ]
 docs = [
     "mkdocs>=1.6,<2",
-    "mkdocs-material>=9.5,<10",
+    # Material 9.7.2+ prints a MkDocs 2.0 campaign banner on every build; stay below that.
+    "mkdocs-material>=9.5,<9.7.2",
     "pymdown-extensions>=11.0,<12",
 ]
 

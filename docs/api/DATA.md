@@ -4,36 +4,52 @@ status: shipped
 
 # `DataTable` and `DataEditor`
 
-
 !!! note "Stability (0.8 compatibility baseline)"
 
-    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
-**Status:** Accepted
+**Status:** Accepted · **Shipped** (install `hedron[data]`)
 
-```python
-DataTable(rows, row_model=EmployeeRow)
-
-DataEditor(
-    employees,
-    key="employees",
-    row_model=EmployeeRow,
-    on_save=save_employees,
-)
+```bash
+pip install "hedron[data]"
 ```
 
-`on_save` is server-only factory configuration that creates a typed action binding. It is never part of the serializable component props contract. Reusable and large-data editors should prefer an explicit `DataEditorSource`.
+```python
+from hedron_data import Column, DataTable, InMemoryDataSource
+
+source = InMemoryDataSource(
+    rows=({"id": "1", "name": "Ada"},),
+    columns=(Column("id", label="ID"), Column("name", label="Name")),
+)
+DataTable(source=source)
+```
+
+`on_save` on `DataEditor` is server-only factory configuration. It is never part of the
+serializable component props contract. Prefer an explicit `DataEditorSource` for large data.
 
 ## `DataTable`
 
-Presents normalized tabular data with declared columns, accessible headers, bounded pagination, sorting, filtering, empty state, and download policy. It does not make data editable.
+Presents normalized tabular data with declared columns, accessible headers, bounded
+pagination, sorting, filtering, empty state, and download policy. It does not make data
+editable.
 
 ## `DataEditor`
 
-Adds a Web Component grid and typed save resources. Column editors derive from row-model metadata and explicit column objects. Manual batch save is the default; row and cell commit modes share the same change contract.
+Adds a Web Component grid and typed save resources. `DataChanges[Row]` carries updates,
+inserts, deletes, and optional versions. `DataSaveResult[Row]` reports success,
+normalized values, validation errors, and optimistic-concurrency conflicts.
 
-`DataChanges[Row]` contains updated cells, inserted rows, deleted stable keys, and optional dataset or row versions. `DataSaveResult[Row]` reports success, normalized values, row/field validation errors, and optimistic-concurrency conflicts.
+Visible fields are not automatically writable. The server validates read-only and
+authorization rules on every change.
 
-Visible fields are not automatically writable. The server validates read-only and authorization rules on every change. Large data uses a `DataEditorSource`; full client serialization is bounded.
+## Errors
 
-Backend-specific options require an adapter namespace or escape hatch and cannot undermine security, accessibility, or portability guarantees.
+| Situation | Behavior |
+|---|---|
+| Missing `hedron-data` | Import error — install `hedron[data]` |
+| Unauthorized / invalid save | Application/`DataSaveResult` field errors |
+| Oversized client payload | Bounded serialization failure / diagnostic |
+
+## See also
+
+- [Data apps guide](../guides/data-apps.md) · [Data sources](DATA_SOURCE.md) · [Field](FIELD.md)

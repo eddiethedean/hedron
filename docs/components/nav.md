@@ -55,29 +55,27 @@ Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass st
 
 ## Composition and backend behavior
 
-Use `Nav` at the smallest level that owns its semantics. Page routes normally compose it under `Page`, `Main`, and an explicit heading structure. HTMX routes should return only the component region being replaced and should preserve stable target IDs across success, validation, empty, loading, and error responses.
+Use `Nav` at the smallest level that owns its semantics. Page routes normally compose it under `Page`, `Main`, and an explicit heading structure. HTMX fragment routes should return only the region being replaced and keep stable target IDs across success, validation, empty, loading, and error responses.
 
-When a request can mutate data, use POST, validate CSRF, authenticate and authorize on the server, validate typed input again, and return a bounded fragment. GET interactions must remain safe and repeatable. Native links and forms should still reach a useful server response when HTMX is unavailable.
+This component is primarily presentational; keep any mutation on an explicit action or component route.
 
 ## Accessibility
 
 Give each navigation landmark a distinct accessible label when a page contains more than one.
 
-Test the demo and your application with keyboard-only input, visible focus, zoom, reduced motion, and at least one screen reader. Never make color, position, animation, or an icon the only carrier of state. Dynamic results need an appropriate status or alert and a deliberate focus strategy.
+Verify keyboard use, visible focus, zoom, and reduced motion for interactive states. Prefer native semantics and status/alert announcements over color-only cues.
 
 ## Security and validation
 
-Treat all request data, database content, filenames, URLs, labels, chart data, and Markdown as untrusted until the owning boundary validates it. Hedron escapes text and constrains dangerous surfaces, but it cannot decide application authorization or data exposure. Keep responses bounded, redact secrets before rendering, and use the narrowest URL and trust types available.
+Escape and trust-boundary types (`SafeUrl`, `TrustedHtml`) remain framework concerns; authorization and data exposure remain yours. Redact secrets before rendering.
 
 ## Common mistakes
 
 - Do not use Nav for every group of links; reserve it for significant navigation.
-- Do not copy the demo's JavaScript into a server application as a substitute for an HTMX endpoint. The simulation exists only because the hosted docs have no application backend.
-- Do not select components by visual appearance alone; choose the native semantics first, then theme them.
+- Do not copy docs-preview JavaScript into an application server; demos simulate HTMX locally.
+- Choose components for semantics first, then theme them.
 
 ## Testing
-
-Render the component at the boundary you intend to ship and assert behavior rather than a large, brittle snapshot:
 
 ```python
 from hedron import RenderMode, render
@@ -87,6 +85,6 @@ assert result.html
 assert not result.diagnostics
 ```
 
-For interactive use, add a framework test that sends the same method, URL, headers, and typed payload as the browser, then assert the returned fragment, status code, cache policy, and security headers. Add a browser test for keyboard behavior, focus, live announcements, and the HTMX swap lifecycle when those behaviors are material.
+For interactive flows, assert method, URL, headers, fragment body, and status with a framework test client. Add a browser test when keyboard or HTMX swap behavior is material.
 
-[All component demos](index.md) · [Built-in API baseline](../api/BUILT_INS.md) · [Testing UI](../guides/testing.md)
+[All component demos](index.md) · [Built-in API baseline](../api/BUILT_INS.md) · [Testing UI](../guides/testing.md) · [Forms and actions](../guides/forms-and-actions.md)

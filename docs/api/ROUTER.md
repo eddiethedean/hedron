@@ -92,5 +92,14 @@ CSRF applies when any declared method is unsafe.
 returns before FastAPI serializes them, and issues CSRF cookies once per safe GET when
 CSRF is enabled.
 
+## Errors
+
+| Situation | Behavior |
+|---|---|
+| HX-Target outside allowlist | HTTP 403 |
+| CSRF failure on unsafe method | HTTP 403 |
+| Operation ID / name collision | Startup failure |
+| Missing static mount for PAGE HTMX | Browser 404 on `/hedron-static/...` |
+
 Plain FastAPI apps should call `mount_hedron_static(app)` so PAGE responses that inject
-`/hedron-static/htmx.min.js` resolve.
+`/hedron-static/htmx.min.js` resolve. See [Plain FastAPI](../guides/plain-fastapi.md).

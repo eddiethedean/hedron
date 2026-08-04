@@ -4,14 +4,13 @@ status: shipped
 
 # `Field`
 
-
 !!! note "Stability (0.8 compatibility baseline)"
 
-    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
-**Status:** Accepted
+**Status:** Accepted · **Shipped**
 
-`Field` declares validation, presentation, security, and data-editing metadata supported by Hedron.
+`Field` declares validation, presentation, security, and data-editing metadata.
 
 ```python
 from decimal import Decimal
@@ -24,14 +23,24 @@ class EmployeeRow(Model):
     password: Secret = Field(autocomplete="current-password")
 ```
 
-## Metadata groups
+## Parameters (common)
 
-- Validation: minimum, maximum, length, pattern, choices, required state.
-- Presentation: label, help, placeholder, display, autocomplete, format.
-- Access: read-only, hidden, secret, writable policy identifier.
-- Data: stable key, sortable, filterable, editor kind, width.
-- Accessibility: accessible label, description, error and relationship metadata.
+| Parameter | Group | Meaning |
+|---|---|---|
+| `minimum` / `maximum` | Validation | Numeric bounds |
+| `min_length` / `max_length` / `pattern` | Validation | String constraints |
+| `choices` / `required` | Validation | Enumerations and required state |
+| `label` / `help` / `placeholder` / `display` / `autocomplete` / `format` | Presentation | Form and table presentation |
+| `read_only` / `hidden` / `secret` / `writable_policy` | Access | Access metadata (not authorization) |
+| `key` / `sortable` / `filterable` / `editor` / `width` / `identity` | Data | Table/editor hints |
+| `accessible_label` / `accessible_description` / `accessible_error` | Accessibility | ATIA-oriented metadata |
 
-Metadata is declarative and statically inspectable. It may guide forms, tables, DataEditor, examples, OpenAPI extensions, and Explorer, but it never grants authorization or supplies business validation.
+Unknown keyword options raise at class definition (`HED-MODEL-0002`). Contradictory
+combinations (for example `read_only` with `writable_policy`) raise `HED-MODEL-0001`.
 
-Unsupported or contradictory options fail when the model class is created. Secret fields are redacted from representations, examples, logs, identities, cache keys, traces, and Explorer samples.
+Metadata may guide forms, tables, DataEditor, examples, OpenAPI extensions, and Explorer.
+It never grants authorization or replaces business validation.
+
+## See also
+
+- [Models](MODELS.md) · [Forms and actions](../guides/forms-and-actions.md)

@@ -23,8 +23,9 @@ See the full [configuration reference](../CONFIGURATION.md).
 ## Build manifests
 
 In production, Hedron refuses to start without a valid `manifest.json` under the build
-directory and disables runtime CSS compilation. Jinja templates are resolved through the
-application's configured loader; Hedron never discovers or compiles HDN source. Locally:
+directory (`HED-BUILD-0003` if missing) and disables runtime CSS compilation. Jinja
+templates are resolved through the application's configured loader; Hedron never
+discovers or compiles HDN source. Locally:
 
 ```bash
 hedron build
@@ -33,6 +34,32 @@ HEDRON_ENV=production uv run uvicorn app:app --host 0.0.0.0 --port 8000
 
 Fingerprinted assets are served from `/hedron-assets/` (or your configured mount).
 Bundled HTMX remains under `/hedron-static/`.
+
+## Dockerfile (FastAPI sketch)
+
+```dockerfile
+FROM python:3.12-slim
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+RUN pip install --no-cache-dir "hedron>=0.10.0" "uvicorn[standard]"
+COPY . .
+RUN hedron build
+ENV HEDRON_ENV=production
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+Adjust copy/`WORKDIR` so `app:app` resolves. Multi-stage and lockfile installs are fine;
+keep the build manifest in the runtime image.
+
+## Reverse proxy
+
+Terminate TLS at nginx, Caddy, or your cloud load balancer. Forward
+`X-Forwarded-Proto` so Secure cookies and redirects see HTTPS. When the app is mounted
+under a subpath, configure ASGI `root_path` (uvicorn `--root-path`) or WSGI
+`SCRIPT_NAME`, and set `HEDRON_ROOT_PATH` when your deploy samples use it.
+
+Disable response buffering for `text/event-stream` if you use SSE
+([live interaction](live-interaction.md)).
 
 ## Process model
 
@@ -43,9 +70,11 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --workers 2
 # or gunicorn -k uvicorn.workers.UvicornWorker ...
 ```
 
-### Flask (WSGI)
+With multiple workers, use sticky sessions or an external session store. Do not assume
+in-process memory is shared. Redis is only required when you configure a job backend that
+needs `HEDRON_REDIS_URL`.
 
-Use Waitress (Supported matrix) or gunicorn:
+### Flask (WSGI)
 
 ```bash
 waitress-serve --listen=0.0.0.0:8000 "myapp:create_app()"
@@ -56,7 +85,7 @@ Set Flask `SECRET_KEY` from a secret store. CSRF cookies are issued on safe GETs
 
 ### Django (WSGI / ASGI)
 
-Django floor: `>=5.2,<6`. Example:
+Django floor: `>=5.2,<6`.
 
 ```bash
 gunicorn wsgi:application -b 0.0.0.0:8000
@@ -66,10 +95,6 @@ uvicorn asgi:application --host 0.0.0.0 --port 8000
 Set `SECRET_KEY` and align `CSRF_HEADER_NAME` if clients send `X-CSRF-Token`
 ([Django quickstart](../getting-started/django.md)).
 
-Terminate TLS at your reverse proxy. Forward `X-Forwarded-Proto` so request schemes
-(and Secure cookies) reflect HTTPS. Configure ASGI `root_path` / WSGI `SCRIPT_NAME` when
-mounted under a subpath.
-
 ## Secrets
 
 Store session secrets and credentials in your platform secret store or process
@@ -78,7 +103,5 @@ local use only.
 
 ## See also
 
-- [Security](security.md)
-- [Project workflow](project-workflow.md)
-- [STATUS](../STATUS.md)
-- [Compatibility](../COMPATIBILITY.md)
+- [Security](security.md) · [Cookbook](cookbook.md) · [Project workflow](project-workflow.md)
+- [What’s ready today](whats-ready.md) · [Compatibility](../COMPATIBILITY.md)

@@ -19,8 +19,8 @@ uv run pyright
 uv run pytest -q
 ```
 
-Docs preview: `uv sync --group docs && NO_MKDOCS_2_WARNING=1 uv run --group docs mkdocs serve`
-(or `./scripts/mkdocs.sh serve`). `NO_MKDOCS_2_WARNING=1` silences Material’s MkDocs 2.0 advisory.
+Docs preview: `uv sync --group docs && uv run --group docs mkdocs serve`
+(or `./scripts/mkdocs.sh serve`). Strict builds: `uv run --group docs mkdocs build --strict`.
 
 Optional browser suite: install Playwright and set `HEDRON_BROWSER=1`
 (see CI `browser` job). Adapter packages (`hedron-flask`, `hedron-django`) are part of
