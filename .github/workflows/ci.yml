@@ -152,9 +152,12 @@ jobs:
               if path.is_symlink():
                   continue
               text = path.read_text(encoding="utf-8")
-              for match in re.finditer(r"\]\(([^)#]+)(?:#[^)]*)?\)", text):
-                  target = match.group(1)
-                  if target.startswith(("http://", "https://", "mailto:")):
+              # Ignore fenced code so Python generics like TemplateSpec[T]( do not
+              # look like markdown links.
+              text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
+              for match in re.finditer(r"\]\(([^)#\n]+)(?:#[^)]*)?\)", text):
+                  target = match.group(1).strip()
+                  if not target or target.startswith(("http://", "https://", "mailto:")):
                       continue
                   resolved = (path.parent / target).resolve()
                   if not resolved.exists():
