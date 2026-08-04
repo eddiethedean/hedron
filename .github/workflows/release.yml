@@ -196,10 +196,11 @@ jobs:
             exit 1
           fi
 
-          # Publish one distribution at a time. Existing PyPI projects upload
-          # immediately. Creating a *new* project waits 10 minutes after any
-          # previous new-project upload in this run (PyPI rate limit).
-          published_new=0
+          # Classify against the PyPI simple index, then publish existing
+          # projects first so a new-project 429 cannot block them. New
+          # projects upload afterward with 10 minutes between creates.
+          existing_names=()
+          new_names=()
           for pyproject in packages/*/pyproject.toml; do
             name="$(uv run --python 3.11 python - <<PY
           import tomllib
@@ -212,38 +213,47 @@ jobs:
             code="$(curl -sS -o /dev/null -w '%{http_code}' \
               -H 'Accept: application/vnd.pypi.simple.v1+json' \
               "https://pypi.org/simple/${normalized}/")"
-            is_new=0
-            if [ "$code" = "404" ]; then
-              is_new=1
-            elif [ "$code" != "200" ]; then
+            if [ "$code" = "200" ]; then
+              existing_names+=("$name")
+            elif [ "$code" = "404" ]; then
+              new_names+=("$name")
+            else
               echo "Unexpected PyPI status ${code} for ${name}" >&2
               exit 1
             fi
+          done
 
-            if [ "$is_new" -eq 1 ] && [ "$published_new" -eq 1 ]; then
-              echo "Waiting 10 minutes before creating new PyPI project: ${name}"
-              sleep 600
-            fi
+          echo "Existing PyPI projects (publish first): ${existing_names[*]:-none}"
+          echo "New PyPI projects (publish after): ${new_names[*]:-none}"
 
+          publish_one() {
+            local name="$1"
+            local kind="$2"
             # Match hatchling artifacts: hyphens become underscores in filenames.
-            stem="${name//-/_}"
+            local stem="${name//-/_}"
+            local -a files
             shopt -s nullglob
             files=(dist/"${stem}"-*.whl dist/"${stem}"-*.tar.gz)
             if ((${#files[@]} == 0)); then
               echo "No dist artifacts for ${name} (stem=${stem})" >&2
-              exit 1
+              return 1
             fi
-
-            if [ "$is_new" -eq 1 ]; then
-              echo "Publishing NEW project ${name}: ${files[*]}"
-            else
-              echo "Publishing existing project ${name}: ${files[*]}"
-            fi
+            echo "Publishing ${kind} project ${name}: ${files[*]}"
             uv publish --token "$UV_PUBLISH_TOKEN" "${files[@]}"
+          }
 
-            if [ "$is_new" -eq 1 ]; then
-              published_new=1
+          for name in "${existing_names[@]}"; do
+            publish_one "$name" "existing"
+          done
+
+          published_new=0
+          for name in "${new_names[@]}"; do
+            if [ "$published_new" -eq 1 ]; then
+              echo "Waiting 10 minutes before creating new PyPI project: ${name}"
+              sleep 600
             fi
+            publish_one "$name" "NEW"
+            published_new=1
           done
       - name: Create GitHub Release
         env:
