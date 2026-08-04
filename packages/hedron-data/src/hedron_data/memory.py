@@ -99,6 +99,18 @@ class InMemoryDataSource:
                 version=self._dataset_version,
             )
 
+        # Validate against a working copy so a failed batch never partially mutates.
+        rows = copy.deepcopy(self._rows)
+        row_versions = dict(self._row_versions)
+        version_counter = self._version_counter
+        dataset_version = self._dataset_version
+
+        def next_version() -> str:
+            nonlocal version_counter, dataset_version
+            version_counter += 1
+            dataset_version = str(version_counter)
+            return dataset_version
+
         errors: list[FieldError] = []
         conflicts: list[Conflict] = []
         accepted_updates: list[CellUpdate] = []
@@ -125,13 +137,13 @@ class InMemoryDataSource:
                     )
                 )
                 continue
-            row = self._rows.get(upd.row_key)
+            row = rows.get(upd.row_key)
             if row is None:
                 errors.append(
                     FieldError(row_key=upd.row_key, field=upd.field, message="Unknown row")
                 )
                 continue
-            current_ver = self._row_versions.get(upd.row_key)
+            current_ver = row_versions.get(upd.row_key)
             if upd.row_version is not None and upd.row_version != current_ver:
                 conflicts.append(
                     Conflict(
@@ -144,13 +156,13 @@ class InMemoryDataSource:
                 )
                 continue
             row[upd.field] = upd.value
-            self._row_versions[upd.row_key] = self._next_version()
+            row_versions[upd.row_key] = next_version()
             accepted_updates.append(upd)
 
         for inserted in changes.inserts:
             row = dict(inserted)
             key = _row_key(row, self._key_field)
-            if key in self._rows:
+            if key in rows:
                 errors.append(
                     FieldError(row_key=key, field=self._key_field, message="Duplicate key")
                 )
@@ -159,19 +171,24 @@ class InMemoryDataSource:
                 for field_name in list(row):
                     if field_name != self._key_field and field_name not in self._writable:
                         del row[field_name]
-            self._rows[key] = row
-            self._row_versions[key] = self._next_version()
+            rows[key] = row
+            row_versions[key] = next_version()
             accepted_inserts.append(row)
 
         for key in changes.deletes:
-            if key not in self._rows:
+            if key not in rows:
                 errors.append(FieldError(row_key=key, field=None, message="Unknown row"))
                 continue
-            del self._rows[key]
-            self._row_versions.pop(key, None)
+            del rows[key]
+            row_versions.pop(key, None)
             accepted_deletes.append(key)
 
         ok = not errors and not conflicts
+        if ok:
+            self._rows = rows
+            self._row_versions = row_versions
+            self._version_counter = version_counter
+            self._dataset_version = dataset_version
         accepted = DataChanges(
             updates=tuple(accepted_updates),
             inserts=tuple(accepted_inserts),

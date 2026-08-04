@@ -119,11 +119,12 @@ class FormField(Component[FormFieldProps]):
         if isinstance(control, Component):
             props = control.props
             updates: dict[str, Any] = {}
-            if hasattr(props, "id"):
-                updates["id"] = field_id
-            if self.props.required and hasattr(props, "required"):
-                updates["required"] = True
             fields = props.__class__.model_fields
+            # Always force the label's for= target onto the control when possible.
+            if "id" in fields:
+                updates["id"] = field_id
+            if self.props.required and "required" in fields:
+                updates["required"] = True
             if "aria_describedby" in fields:
                 existing = getattr(props, "aria_describedby", None)
                 if described_by and existing:
@@ -147,17 +148,24 @@ class FormField(Component[FormFieldProps]):
             bound._children = control._children
             bound._slot_values = dict(control._slot_values)
             bound._key = control._key
-            # Custom controls without aria_* props still need attribute linking.
-            applied_via_props = any(
+            # Prefer returning the Component so identity/cycle checks still run.
+            # Only fall back to HTML attribute merge when the control has no id/aria props.
+            applied_via_props = "id" in fields and any(
                 name in fields for name in ("aria_describedby", "aria_invalid", "aria_required")
             )
-            if not applied_via_props and any(aria.values()):
+            needs_html_merge = ("id" not in fields) or (
+                not any(
+                    name in fields for name in ("aria_describedby", "aria_invalid", "aria_required")
+                )
+                and any(aria.values())
+            )
+            if needs_html_merge and not applied_via_props:
                 node: Any = bound
                 while isinstance(node, Component):
                     node = node.render()
-                return self._apply_aria(node, aria)
+                return self._apply_aria(node, aria, element_id=field_id)
             return bound
-        return self._apply_aria(control, aria)
+        return self._apply_aria(control, aria, element_id=field_id)
 
     def render(self) -> Any:
         field_id = self.props.id or (
@@ -167,7 +175,9 @@ class FormField(Component[FormFieldProps]):
         error_id = f"{field_id}-error" if self.props.error else None
         control = self._bind_control(self._slot_values["control"], field_id=field_id)
 
-        skip_outer_label = isinstance(control, Checkbox)
+        skip_outer_label = isinstance(control, Checkbox) or isinstance(
+            self._slot_values["control"], Checkbox
+        )
 
         parts: list[Any] = []
         if not skip_outer_label:
@@ -188,7 +198,7 @@ class FormField(Component[FormFieldProps]):
             )
         return html.div(*parts, class_="hedron-form-field")
 
-    def _apply_aria(self, node: Any, aria: dict[str, Any]) -> Any:
+    def _apply_aria(self, node: Any, aria: dict[str, Any], *, element_id: str | None = None) -> Any:
         from hedron_core.html import _NativeElement
 
         if not isinstance(node, _NativeElement):
@@ -196,6 +206,8 @@ class FormField(Component[FormFieldProps]):
 
         def merge_attrs(el: Any) -> Any:
             attrs = dict(el.attributes)
+            if element_id is not None:
+                attrs["id"] = element_id
             if aria.get("describedby"):
                 attrs["aria-describedby"] = aria["describedby"]
             if aria.get("invalid"):

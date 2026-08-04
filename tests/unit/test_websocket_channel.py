@@ -38,9 +38,20 @@ def test_page_session_channel_declared_regions() -> None:
 
 def test_origin_allowed_helper() -> None:
     class _WS:
-        def __init__(self, origin: str | None = "https://example.com") -> None:
+        def __init__(
+            self,
+            origin: str | None = "https://example.com",
+            *,
+            hostname: str = "example.com",
+            scheme: str = "wss",
+            port: int | None = None,
+        ) -> None:
             self.headers = {} if origin is None else {"origin": origin}
-            self.url = type("U", (), {"hostname": "example.com"})()
+            self.url = type(
+                "U",
+                (),
+                {"hostname": hostname, "scheme": scheme, "port": port},
+            )()
 
     ws = _WS()
     assert origin_allowed(ws) is True  # type: ignore[arg-type]
@@ -50,6 +61,21 @@ def test_origin_allowed_helper() -> None:
     assert (
         origin_allowed(_WS(origin=None), allowed_origins=frozenset({ALLOW_MISSING_ORIGIN})) is True  # type: ignore[arg-type]
     )
+    # Different ports are different origins.
+    assert (
+        origin_allowed(
+            _WS(origin="https://example.com:8443", scheme="wss", port=443)  # type: ignore[arg-type]
+        )
+        is False
+    )
+    assert (
+        origin_allowed(
+            _WS(origin="https://example.com:8443", scheme="wss", port=8443)  # type: ignore[arg-type]
+        )
+        is True
+    )
+    # Scheme mismatch (http Origin vs wss upgrade).
+    assert origin_allowed(_WS(origin="http://example.com", scheme="wss")) is False  # type: ignore[arg-type]
 
 
 def test_accept_replies_pong_and_runs_producer_concurrently() -> None:
@@ -60,7 +86,7 @@ def test_accept_replies_pong_and_runs_producer_concurrently() -> None:
     )
     websocket = MagicMock()
     websocket.headers = {"origin": "https://example.com"}
-    websocket.url = type("U", (), {"hostname": "example.com"})()
+    websocket.url = type("U", (), {"hostname": "example.com", "scheme": "wss", "port": None})()
     websocket.accept = AsyncMock()
     websocket.close = AsyncMock()
     websocket.send_text = AsyncMock()

@@ -37,6 +37,7 @@ class ChatInput(Component[ChatInputProps]):
         submit_label: str = "Send",
         name: str = "message",
         include_attachments: bool = False,
+        csrf_token: str | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -50,8 +51,11 @@ class ChatInput(Component[ChatInputProps]):
         self.swap = swap
         self.name = name
         self.include_attachments = include_attachments
+        self.csrf_token = csrf_token
 
     def render(self) -> NodeLike:
+        import json
+
         attrs: dict[str, Any] = {
             "class_": "hedron-chat-input",
             "method": "post",
@@ -63,7 +67,12 @@ class ChatInput(Component[ChatInputProps]):
         if self.target:
             attrs["hx-target"] = self.target
         attrs["hx-swap"] = self.swap
-        kids: list[Any] = [
+        if self.csrf_token:
+            attrs["hx-headers"] = json.dumps({"X-CSRF-Token": self.csrf_token})
+        kids: list[Any] = []
+        if self.csrf_token:
+            kids.append(html.input(type="hidden", name="csrf_token", value=self.csrf_token))
+        kids.append(
             html.label(
                 "Message",
                 html.textarea(
@@ -74,17 +83,16 @@ class ChatInput(Component[ChatInputProps]):
                     class_="hedron-chat-textarea",
                 ),
                 class_="hedron-chat-label",
-            ),
-            html.button(self.props.submit_label, type="submit", class_="hedron-chat-send"),
-        ]
+            )
+        )
         if self.include_attachments:
-            kids.insert(
-                1,
+            kids.append(
                 html.input(
                     type="file",
                     name="attachment",
                     class_="hedron-chat-attachment",
                     aria={"label": "Attachment"},
-                ),
+                )
             )
+        kids.append(html.button(self.props.submit_label, type="submit", class_="hedron-chat-send"))
         return html.form(*kids, **attrs)

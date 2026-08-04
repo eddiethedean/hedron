@@ -200,7 +200,7 @@ def test_strict_csrf_secure_flag_follows_scheme() -> None:
         response = client.get("/")
         assert "Secure" in (response.headers.get("set-cookie") or "")
 
-    # Direct helper: HTTP request should not force Secure when scheme is http.
+    # Strict always emits Secure cookies, even for plain HTTP requests.
     scope = {
         "type": "http",
         "method": "GET",
@@ -216,7 +216,7 @@ def test_strict_csrf_secure_flag_follows_scheme() -> None:
     ensure_csrf_cookie(response, policy, token="abc", request=request)
     header = response.headers.get("set-cookie") or ""
     assert "hedron_csrf=abc" in header
-    assert "Secure" not in header
+    assert "Secure" in header
 
 
 def test_asset_injection_not_duplicated(tmp_path: Path) -> None:

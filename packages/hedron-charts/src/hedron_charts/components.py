@@ -32,6 +32,7 @@ def _coerce_float(value: Any, *, default: float = 0.0) -> float:
     except (TypeError, ValueError):
         return default
 
+
 __all__ = ["AltairChart", "LineChart", "MatplotlibChart", "PlotlyChart"]
 
 

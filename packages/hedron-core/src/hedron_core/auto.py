@@ -378,10 +378,9 @@ class Auto(Component[AutoProps]):
         return self._resolved
 
     def render(self) -> Any:
-        node = self.resolve()
-        if hasattr(node, "render"):
-            return node.render()
-        return node
+        # Return the resolved Component/NodeLike so the renderer owns identity,
+        # cycle detection, and diagnostics (do not call child .render() here).
+        return self.resolve()
 
 
 _register_defaults()

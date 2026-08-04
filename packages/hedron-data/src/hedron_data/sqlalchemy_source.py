@@ -32,11 +32,31 @@ def require_sqlalchemy() -> Any:
     return sqlalchemy
 
 
+def _fetch_rows(result: Any) -> list[Any]:
+    """Return row objects without collapsing multi-column selects via scalars()."""
+    keys_fn = getattr(result, "keys", None)
+    raw_keys: Any = keys_fn() if callable(keys_fn) else ()
+    keys = list(raw_keys)
+    if len(keys) <= 1 and hasattr(result, "scalars"):
+        return list(result.scalars().all())
+    mappings = getattr(result, "mappings", None)
+    if callable(mappings):
+        mapped: Any = mappings()
+        all_fn = getattr(mapped, "all", None)
+        if callable(all_fn):
+            rows: Any = all_fn()
+            return list(rows)
+    return list(result.all())
+
+
 class SQLAlchemyDataSource(Generic[T]):
     """Explicit adapter: caller supplies session factory and row codecs.
 
     ``statement`` must be a SQLAlchemy 2.x ``Select``. Paging is applied with
     ``OFFSET``/``LIMIT`` in SQL — rows are not collected then sliced in Python.
+
+    ``sort`` / ``filters`` / ``search`` on :class:`DataQuery` are not translated
+    to SQL yet; non-empty values raise ``HED-DATA-0012``.
     """
 
     def __init__(
@@ -72,11 +92,24 @@ class SQLAlchemyDataSource(Generic[T]):
         from sqlalchemy import func, select
 
         q = query.validated()
+        if q.sort or q.filters or q.search:
+            raise error(
+                "HED-DATA-0012",
+                title="SQLAlchemyDataSource does not support sort/filters/search yet",
+                explanation=(
+                    "DataQuery.sort, filters, and search are ignored by the SQL adapter "
+                    "would silently return unfiltered pages; they are rejected instead."
+                ),
+                remediation=(
+                    "Apply sorting/filtering in the Select statement, or use "
+                    "InMemoryDataSource for client-side query features."
+                ),
+            )
         session = self._session_factory()
         try:
             paged = self._statement.offset(q.offset).limit(q.limit)
             result = session.execute(paged)
-            rows = list(result.scalars().all() if hasattr(result, "scalars") else result.all())
+            rows = _fetch_rows(result)
             mapped = [self._to_row(row) for row in rows]
             count_stmt = select(func.count()).select_from(self._statement.order_by(None).subquery())
             total = int(session.execute(count_stmt).scalar_one())
@@ -106,7 +139,20 @@ class SQLAlchemyDataSource(Generic[T]):
             )
         session = self._session_factory()
         try:
-            return self._apply_changes(session, changes)
+            result = self._apply_changes(session, changes)
+            commit = getattr(session, "commit", None)
+            rollback = getattr(session, "rollback", None)
+            if result.ok:
+                if callable(commit):
+                    commit()
+            elif callable(rollback):
+                rollback()
+            return result
+        except Exception:
+            rollback = getattr(session, "rollback", None)
+            if callable(rollback):
+                rollback()
+            raise
         finally:
             close = getattr(session, "close", None)
             if callable(close):

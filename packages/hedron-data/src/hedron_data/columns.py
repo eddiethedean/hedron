@@ -64,14 +64,16 @@ def columns_from_model(model: type[Model]) -> list[Column]:
         annotation = info.annotation
         editor = meta.get("editor") or _editor_for_annotation(annotation)
         choices = meta.get("choices")
+        origin = get_origin(annotation) or annotation
+        is_secret_ann = origin is Secret
         cols.append(
             Column(
                 name=name,
                 label=meta.get("label") or name.replace("_", " ").title(),
                 editor=editor,
-                read_only=bool(meta.get("read_only", False)),
+                read_only=bool(meta.get("read_only", False)) or is_secret_ann,
                 hidden=bool(meta.get("hidden", False)),
-                secret=bool(meta.get("secret", False)),
+                secret=bool(meta.get("secret", False)) or is_secret_ann,
                 sortable=bool(meta.get("sortable", False)),
                 filterable=bool(meta.get("filterable", False)),
                 choices=tuple(choices) if choices else None,

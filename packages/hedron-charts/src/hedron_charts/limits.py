@@ -172,53 +172,77 @@ def reject_active_svg(svg: str) -> None:
     import html as html_stdlib
     import re
 
-    # Decode entities so o&#110;error= / &lt;iframe patterns are visible to scans.
-    scanned = svg
+    def _scan(payload: str) -> None:
+        lowered = payload.lower()
+        if "<script" in lowered or "javascript:" in lowered:
+            raise error(
+                "HED-CHART-0006",
+                title="Active SVG content rejected",
+                explanation="Chart SVG must not contain script or javascript: URLs.",
+                remediation="Disable interactive matplotlib backends that emit scripts.",
+            )
+        banned_tags = (
+            "<foreignobject",
+            "<iframe",
+            "<object",
+            "<embed",
+        )
+        if any(token in lowered for token in banned_tags):
+            raise error(
+                "HED-CHART-0006",
+                title="Active SVG content rejected",
+                explanation="Chart SVG must not contain event handlers or remote hrefs.",
+                remediation="Sanitize SVG before rendering or use TrustedHtml.nh3(...).",
+            )
+        # Attribute patterns: require a preceding delimiter so escaped text like
+        # ``srcdoc=`` inside chart labels does not false-positive.
+        attr_banned = (
+            r"(?:^|[\s\"'/])onload\s*=",
+            r"(?:^|[\s\"'/])onerror\s*=",
+            r"(?:^|[\s\"'/])onclick\s*=",
+            r"(?:^|[\s\"'/])onmouseover\s*=",
+            r"(?:^|[\s\"'/])onfocus\s*=",
+            r"<use\s[^>]*(?:xlink:)?href\s*=\s*[\"']https?://",
+            r"(?:^|[\s\"'/])(?:xlink:)?href\s*=\s*[\"']https?://",
+        )
+        if any(re.search(pattern, lowered) for pattern in attr_banned):
+            raise error(
+                "HED-CHART-0006",
+                title="Active SVG content rejected",
+                explanation="Chart SVG must not contain event handlers or remote hrefs.",
+                remediation="Sanitize SVG before rendering or use TrustedHtml.nh3(...).",
+            )
+        if re.search(r"(?:^|[\s\"'/])on[a-z]+\s*=", lowered):
+            raise error(
+                "HED-CHART-0006",
+                title="Active SVG content rejected",
+                explanation="Chart SVG must not contain event handlers or remote hrefs.",
+                remediation="Sanitize SVG before rendering or use TrustedHtml.nh3(...).",
+            )
+
+    # Raw scan catches live markup.
+    _scan(svg)
+
+    # Decode entities so o&#110;error= / attribute breakouts are visible,
+    # but keep escaped tag delimiters escaped so benign chart labels like
+    # "&lt;script&gt;" do not become false-positive <script> matches.
+    protected = (
+        svg.replace("&lt;", "\0LT\0")
+        .replace("&gt;", "\0GT\0")
+        .replace("&#60;", "\0LT\0")
+        .replace("&#62;", "\0GT\0")
+        .replace("&#x3c;", "\0LT\0")
+        .replace("&#x3e;", "\0GT\0")
+        .replace("&#x3C;", "\0LT\0")
+        .replace("&#x3E;", "\0GT\0")
+    )
+    scanned = protected
     for _ in range(3):
         decoded = html_stdlib.unescape(scanned)
         if decoded == scanned:
             break
         scanned = decoded
-    lowered = scanned.lower()
-    if "<script" in lowered or "javascript:" in lowered:
-        raise error(
-            "HED-CHART-0006",
-            title="Active SVG content rejected",
-            explanation="Chart SVG must not contain script or javascript: URLs.",
-            remediation="Disable interactive matplotlib backends that emit scripts.",
-        )
-    banned = (
-        "onload=",
-        "onerror=",
-        "onclick=",
-        "onmouseover=",
-        "onfocus=",
-        "<foreignobject",
-        "<iframe",
-        "srcdoc=",
-        "<object",
-        "<embed",
-        "<use",
-        'xlink:href="http',
-        "xlink:href='http",
-        'href="http',
-        "href='http",
-    )
-    if any(token in lowered for token in banned):
-        raise error(
-            "HED-CHART-0006",
-            title="Active SVG content rejected",
-            explanation="Chart SVG must not contain event handlers or remote hrefs.",
-            remediation="Sanitize SVG before rendering or use TrustedHtml.nh3(...).",
-        )
-    # Catch on*= handlers that survive entity decoding with odd spacing.
-    if re.search(r"\bon[a-z]+\s*=", lowered):
-        raise error(
-            "HED-CHART-0006",
-            title="Active SVG content rejected",
-            explanation="Chart SVG must not contain event handlers or remote hrefs.",
-            remediation="Sanitize SVG before rendering or use TrustedHtml.nh3(...).",
-        )
+    _scan(scanned)
 
 
 def accessibility_or_raise(

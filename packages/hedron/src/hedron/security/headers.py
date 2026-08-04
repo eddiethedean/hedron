@@ -23,6 +23,10 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         authenticated = bool(getattr(request.state, "hedron_authenticated", False))
         for key, value in self.policy.response_headers(authenticated=authenticated).items():
-            if key not in response.headers:
+            # Authenticated responses must not remain publicly cacheable even if the
+            # app already set a weaker Cache-Control.
+            if (authenticated and key in {"Cache-Control", "Pragma"}) or (
+                key not in response.headers
+            ):
                 response.headers[key] = value
         return response

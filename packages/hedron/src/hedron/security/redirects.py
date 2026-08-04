@@ -8,8 +8,8 @@ from fastapi import HTTPException, status
 from fastapi.responses import RedirectResponse
 from starlette.responses import Response
 
-from hedron_core.htmx_contract import is_local_path
 from hedron.security.policy import SecurityPolicy
+from hedron_core.htmx_contract import is_local_path
 
 __all__ = ["redirect_external", "redirect_local"]
 

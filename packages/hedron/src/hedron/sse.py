@@ -107,6 +107,16 @@ def job_status_sse_response(
             # Resume: skip the snapshot already acknowledged by the client.
             if last_id is not None and event_id == last_id and last_emitted_key is None:
                 if status.state in _TERMINAL:
+                    # Re-emit terminal frames so reconnecting clients still close cleanly.
+                    for event in job_status_sse_events(
+                        job_id=status.job_id,
+                        state=status.state.value,
+                        message_html=_html(status),
+                        event_id=event_id,
+                        retry_ms=max(1000, int(status.retry_after) * 1000),
+                        terminal=True,
+                    ):
+                        yield encode_sse(event).encode("utf-8")
                     return
                 interval = (
                     poll_interval_seconds
