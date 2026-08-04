@@ -2,6 +2,11 @@
 
 ## [0.9.0] - 2026-08-04
 
+### Added
+
+- `RenderSession` for request-scoped rendering that shares deterministic identity,
+  diagnostics, cycle detection, and node/depth budgets across multiple component renders.
+
 ### Removed
 
 - The experimental HDN parser, evaluator, formatter, render program, discovery metadata, and

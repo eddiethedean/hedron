@@ -9,7 +9,8 @@ Framework-neutral typed rendering core for Hedron.
 
 Defines models, security boundary types, components, the HTML serializer,
 `Auto()` intelligent rendering, cache protocols, ColorMode, utility built-ins,
-and the public `render(...) -> RenderResult` API with **no** FastAPI, Flask,
+and the public `render(...) -> RenderResult` and request-scoped `RenderSession`
+APIs with **no** FastAPI, Flask,
 Django, ASGI, or WSGI dependency.
 
 ## Install
@@ -40,7 +41,7 @@ print(result.html)
 - `Model`, `Props`, `FormModel`, `EventPayload`, and `Field`
 - Trust boundary types: `Secret`, `TrustedHtml`, `SafeUrl`, `UrlPurpose`
 - Component protocol, registry, diagnostics (JSON/SARIF), and deterministic identity
-- Context-aware HTML serializer and `render(...) -> RenderResult`
+- Context-aware HTML serializer, `render(...) -> RenderResult`, and `RenderSession`
 - scoped CSS, themes, assets, and component discovery helpers
 - Built-ins for pages, forms, layout, landmarks, and content
 - Framework-neutral plugin metadata and Explorer panel registration helpers

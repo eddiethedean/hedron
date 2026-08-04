@@ -29,15 +29,17 @@ depth and bounded QuerySet work move to phase 0.11. Evidence is indexed by
   checking, source line preservation, and `.hdj`-only loader behavior have focused evidence.
   *(`JINJA-09-002`)*
 - [ ] Trusted literal HTML/CSS/JS/Web Component/Jinja/HTMX source remains standards-complete;
-  dynamic-value trust and SecurityPolicy/CSP capability checks stay separate. *(`JINJA-09-002`)*
-- [ ] Hedron component, route, form/CSRF, interaction, asset/style/theme, browser module,
-  data/chart, diagnostic, trace, and adapter features have HDJ parity fixtures. *(`JINJA-09-002`)*
-- [ ] The pinned HTMX attribute/header/event/extension surface has progressive enhancement,
-  history, OOB, forms, concurrency, lifecycle, accessibility, and policy evidence.
+  dynamic-value trust and the explicit format-v1 capability allowlist stay separate. Full
+  SecurityPolicy/CSP reconciliation is phase 0.11. *(`JINJA-09-002`)*
+- [ ] Shared component identity/node budgets, static dependency/kind composition, purpose-specific
+  dynamic sinks, static page assets, conditional fragment assets, and direct-render rejection have
+  focused evidence. *(`JINJA-09-002`)*
+- [ ] Locally provable HTMX/capability checks and policy separation have focused evidence without
+  claiming browser, route, or accessibility proof. *(`JINJA-09-002`)*
+- [ ] Every broader item is assigned in the detailed [HDJ ledger](JINJA.md): head/browser and
+  version-aware HTMX semantics to 0.10; dynamic/foreign/adapter/tooling depth to 0.11; data/charts
+  to 0.12; async I/O to 0.13; exact loop/macro/custom-extension/helper/context analysis to 0.14.
   *(`JINJA-09-002`)*
-- [ ] Static include/extends inventory, contextual URL-attribute validation, macro/loop/depth
-  budgets, application/package loader namespaces, and full build-manifest integration satisfy the
-  detailed [HDJ ledger](JINJA.md). *(`JINJA-09-002`)*
 
 ## Release proof
 

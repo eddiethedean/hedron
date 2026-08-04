@@ -14,7 +14,7 @@ status: shipped
 The public core rendering boundary is intentionally small:
 
 ```python
-from hedron_core import RenderContext, RenderMode, RenderResult, render
+from hedron_core import RenderContext, RenderMode, RenderResult, RenderSession, render
 
 context = RenderContext.standalone(locale="en", theme="default")
 result = render(component, context=context, mode=RenderMode.FRAGMENT)
@@ -28,8 +28,11 @@ html_text = result.html
 - `RenderMode`: `PAGE` or `FRAGMENT` in the phase 0.1 contract shipping in `v0.1.0`.
 - `RenderContext`: immutable framework-neutral rendering context. `RenderContext.standalone(*, locale="en", theme=None)` creates the supported direct-rendering context; framework adapters derive request contexts without storing a raw request, session, or dependency object in it.
 - `RenderResult`: immutable result with `html: str`, `mode: RenderMode`, `assets`, approved `headers`, `identity_map`, `diagnostics`, and an optional redacted `trace`. Collection fields are immutable snapshots.
+- `RenderSession`: request-scoped renderer that preserves identity allocation, diagnostics, cycle detection, and resource accounting across multiple `render(...)` calls. Each returned `RenderResult` contains only that call's identity and diagnostic deltas while its trace reports session totals.
 
 `render(value, *, context=None, mode=RenderMode.FRAGMENT) -> RenderResult` is the advanced framework-neutral entry point. Ordinary application code returns components and lets its framework adapter call `render`. Cycle detection tracks component instance identity, so nested same-type composition (for example `Stack(Stack(...))`) is valid while true self-recursion fails with `HED-RENDER-0012`.
+
+Integrations that render more than one component during a request must create one `RenderSession(context)` and reuse it. The top-level `render(...)` function remains a one-shot convenience wrapper around a fresh session.
 
 Passing `context=None` is equivalent to a default standalone context. Output is Unicode HTML; HTTP adapters alone perform the configured encoding. A result contains no raw secret, request, session, or dependency object. Header metadata is produced only by registered page/fragment policies and is revalidated by the framework adapter.
 

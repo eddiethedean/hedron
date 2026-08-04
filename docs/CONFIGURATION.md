@@ -57,31 +57,29 @@ strict_csp = true
 reject_inline_style = true
 ```
 
-## `[tool.hedron.jinja]` contract (phase 0.9)
+## HDJ runtime configuration (phase 0.9)
 
-RFC-0031 defines the following optional-package configuration. The keys belong to
-`hedron-jinja`, not `hedron-core`; application/tooling wiring is part of the remaining 0.9 work.
+Format v1 is configured directly on `HedronJinja(...)`. Phase 0.9 does not consume a
+`[tool.hedron.jinja]` table, so project-file keys cannot appear to work while being ignored.
 
 | Key | Type | Default | Description |
 |---|---|---:|---|
-| `application_roots` | `list[str]` | `["templates"]` | Canonical project-relative `.hdj` application roots |
-| `foreign_roots` | `dict[str, str]` | `{}` | Explicit namespaced roots for plain Jinja dependencies used with `jinja.foreign` |
 | `strict` | `bool` | `true` | Require strict undefined, autoescape, static contracts, and contextual checks for dynamic data; literal trusted source remains standards-complete |
-| `allow_dynamic_dependencies` | `bool` | `false` | Experimental opt-out from static include/extends inventory |
-| `allow_advanced_selectors` | `bool` | `false` | Permit HTMX selectors beyond the statically validated portable subset and report the capability |
-| `allow_unknown_htmx_attributes` | `bool` | `false` | Permit attributes unknown to the installed HTMX pin after emitting a versioned diagnostic |
-| `max_template_depth` | `int` | `32` | Maximum include/extends nesting |
-| `max_macro_depth` | `int` | `32` | Maximum macro recursion nesting |
-| `max_loop_iterations` | `int` | `10_000` | Maximum iterations for one loop |
-| `max_total_loop_iterations` | `int` | `50_000` | Maximum iterations across one render |
-| `max_async_operations` | `int` | `1_000` | Maximum declared async filter/global/include operations in one render |
+| `allowed_capabilities` | `Iterable[str]` | `()` | Exact format-v1 browser/network capability allowlist; declarations remain separate assertions |
+| `max_dependency_depth` | `int` | `32` | Maximum static include/extends/import nesting |
 | `max_component_invocations` | `int` | `10_000` | Maximum Hedron tags in one render |
 | `max_output_chars` | `int` | `10_000_000` | Maximum emitted Unicode characters |
 | `max_metadata_items` | `int` | `10_000` | Maximum accumulated metadata entries |
+| `url_builder` / `csrf_builder` | callback or `None` | `None` | Optional application-owned portable URL and CSRF bridges |
+
+Phase 0.10 owns version-aware HTMX selector/attribute options. Phase 0.11 owns application roots,
+finite dynamic/foreign manifests, native adapter context, SecurityPolicy/CSP reconciliation, and
+the real `[tool.hedron.jinja]`/build/Explorer wiring. Phase 0.13 owns async operation budgets; phase
+0.14 owns exact macro/loop budgets and broader analyzer/provider options.
 
 Runtime arguments may tighten these limits. A production override may not silently weaken build
-policy. Inline/eval/remote browser capabilities are checked against the application's normal
-SecurityPolicy and asset policy rather than duplicated here. Jinja loaders, bytecode caches,
+policy. Format-v1 inline/eval/remote browser capabilities are checked against
+`allowed_capabilities`; full SecurityPolicy and asset-policy reconciliation is phase 0.11. Jinja loaders, bytecode caches,
 extensions, filters, tests, globals, and i18n remain Python environment configuration, not
 serialized project objects.
 

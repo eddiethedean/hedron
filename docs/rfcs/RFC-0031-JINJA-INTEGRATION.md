@@ -34,7 +34,7 @@ Hedron features that disappear when a template engine returns only an opaque str
    HTMX eval, response script processing, remote origins, or an extension; HDJ reports those
    capabilities and the application security policy decides whether the response may ship.
 5. Hedron components available to a template come from an explicit immutable binding namespace.
-6. Every component invocation renders through `hedron_core.render()` and merges the complete
+6. Every component invocation renders through one request-local `hedron_core.RenderSession` and merges the complete
    `RenderResult`: HTML, assets, approved headers, identity, diagnostics, and trace data.
 7. HTMX is usable directly through its HTML attributes. HDJ adds validation and Hedron integration,
    not a second interaction DSL.
@@ -54,9 +54,10 @@ developer can paste normal markup into an HDJ template and progressively add Hed
 
 ### Small explicit bridges
 
-HDJ adds bridges only where a plain Jinja string would lose a Hedron guarantee: typed component
-calls, render metadata, registered assets, route reversal, CSRF, typed URLs, scoped-style symbols,
-HTMX request facts, and diagnostics.
+HDJ adds bridges only where a plain Jinja string would lose a Hedron guarantee. Format v1 ships
+typed component calls, render metadata, registered assets, typed URLs, and optional route/CSRF
+callbacks. Native adapter request facts arrive in phase 0.11; scoped-style and validated-attribute
+helpers require the broader provider/context contract in phase 0.14.
 
 ### Freedom at the source boundary
 
@@ -140,7 +141,10 @@ Optional keys:
 | `requires` | Deployment capabilities the author expects, such as inline style, inline script, HTMX eval, response scripts, or a remote origin. |
 | `assets` | Unconditional registered logical asset IDs, merged into `RenderResult.assets`. |
 | `regions` | Fragment-region IDs used or emitted by the template; selectors remain defined by the application route contract. |
-| `dynamic_dependencies` | Bounded loader namespaces allowed for dynamic include/import/extends expressions. |
+
+Format v1 accepts only static `.hdj` dependency names. Finite dynamic candidate manifests and the
+foreign-Jinja boundary are assigned to phase 0.11; accepting a namespace name alone would not make
+the graph finite, immutable, or capability-complete.
 
 Feature IDs use the `web.*`, `jinja.*`, `hedron.*`, `htmx.*`, and `browser.*` namespaces. Format v1
 defines these exact built-in profile expansions (`●` means included):
@@ -153,11 +157,10 @@ defines these exact built-in profile expansions (`●` means included):
 | `web.custom-elements` |  |  | ● | Custom-element markup and registered implementations |
 | `jinja.core` | ● | ● | ● | Expressions, escaping, conditions, loops, filters, tests, assignment |
 | `jinja.composition` |  | ● | ● | Extends, blocks, include/import, macros, `call`, and namespaces |
-| `jinja.i18n` |  |  | ● | Configured Jinja i18n extension |
-| `jinja.do` |  |  | ● | Configured expression-statement extension |
-| `jinja.loop-controls` |  |  | ● | Configured loop `break` and `continue` extension |
-| `jinja.async` |  |  | ● | Async filters/globals/includes/iterables through `render_async()` |
-| `jinja.dynamic-dependencies` |  |  | ● | Dynamic dependency expressions bounded by `dynamic_dependencies` |
+| `jinja.i18n` |  |  |  | Explicit configured Jinja i18n extension |
+| `jinja.do` |  |  |  | Explicit configured expression-statement extension |
+| `jinja.loop-controls` |  |  |  | Explicit configured loop `break` and `continue` extension |
+| `jinja.async` |  |  |  | Explicit async environment and `render_async()` |
 | `hedron.components` |  | ● | ● | Bound typed components, body, slots, identity, complete metadata |
 | `hedron.assets` |  | ● | ● | Prologue assets, `{% hedron_asset %}`, fingerprinting and graph merge |
 | `hedron.routes` |  | ● | ● | Reverse URLs and addressable route references without authorization changes |
@@ -174,27 +177,28 @@ defines these exact built-in profile expansions (`●` means included):
 | `browser.modules` |  | ● | ● | Registered lifecycle-aware ES modules |
 
 `custom` includes only the invariant source parser, autoescape/secret boundaries, loader isolation,
-metadata accumulator, and the IDs explicitly listed in `features`. These provider-bound IDs are
-always explicit and are never implied by `full`: `jinja.extension:<id>`, `jinja.foreign`,
-`hedron.data`, `hedron.charts`, and `htmx.extension:<id>`. Provider registration supplies the exact
-version, digest, dependencies, and capability metadata.
+metadata accumulator, and the IDs explicitly listed in `features`. Provider-bound IDs are always
+explicit and are never implied by `full`: `jinja.i18n`, `jinja.do`, `jinja.loop-controls`,
+`jinja.async`, `jinja.extension:<id>`, `hedron.data`, `hedron.charts`, and
+`htmx.extension:<id>`. Provider registration supplies version and availability metadata.
 
-A declared but unavailable feature is an error; an undeclared feature use is an error in
-checked/build mode; a declared but unused feature is a diagnostic. The feature graph for a root
-template is the union of its static dependencies, while every source retains its own declaration
-for editor feedback.
+Profiles are allowed authoring surfaces, not claims that every included feature is used. An
+explicit provider feature that is unavailable is an error; an undeclared observed use is an error
+in checked/build mode; only an explicitly added non-provider feature can produce an unused warning.
+The feature graph for a root template is the union of its static dependencies, while every source
+retains its own declaration for editor feedback.
 
 `requires` is an assertion, not permission. Format v1 defines `browser.inline-style`,
 `browser.inline-script`, `browser.head-mutation`, `htmx.eval`, `htmx.response-scripts`, and
-`network.origin:<scheme>://<authority>` capability IDs; registered providers may add namespaced
-IDs. The checker compares declarations to capabilities inferred from the source and dependencies:
+purpose-specific `network.<script|style|image|connect|frame|font|media>-origin:https://<authority>`
+capability IDs. The checker compares declarations to capabilities inferred from source and static
+dependencies:
 under-declaration is an error and harmless over-declaration is a warning. SecurityPolicy, CSP,
 CSRF, route authorization, asset-origin policy, and HTMX runtime configuration remain authoritative.
 
-HDJ loaders accept `.hdj` only. An application can still run an ordinary Jinja environment beside
-HDJ. Importing a third-party `.html`/`.jinja` template into an HDJ graph requires the explicit
-`jinja.foreign` feature and a namespaced foreign loader; foreign source cannot use Hedron tags and
-is capability-inventoried conservatively.
+HDJ loaders accept `.hdj` only. An application can run an ordinary Jinja environment beside HDJ,
+but format v1 rejects foreign and dynamic dependencies. Phase 0.11 owns a finite, fingerprinted
+foreign-template/candidate-manifest boundary; no 0.9 namespace escape hatch is accepted.
 
 ## Public API
 
@@ -233,8 +237,8 @@ Target fields are:
 - `view_type`: optional runtime view-model contract;
 - `mode`: optional assertion matching the source `kind`; a mismatch fails rather than overriding
   the `.hdj` prologue;
-- `source`: application or package namespace;
-- `logical_id`: stable diagnostic identity;
+- `source`: application namespace in 0.9; the package value is reserved for phase 0.11;
+- `logical_id`: stable application/inventory identity included in render traces;
 - `assets`: optional application-supplied additions to the source declarations;
 - `fragment_regions`: application-owned selector definitions for region IDs declared by source;
 - `strict`: application policy that may tighten dynamic-value and static-contract checking, default
@@ -260,7 +264,7 @@ templates.register_component(alias, factory)
 templates.register_asset(logical_id, asset)
 templates.freeze()
 templates.describe(spec_or_name) -> TemplateDeclaration
-templates.check(spec_or_name, *, view_type=None) -> tuple[Diagnostic, ...]
+templates.check(spec_or_name) -> tuple[Diagnostic, ...]
 templates.capabilities(spec_or_name) -> TemplateCapabilities
 templates.render(spec_or_name, view, *, context=None, mode=None) -> RenderResult
 await templates.render_async(spec_or_name, view, *, context=None, mode=None)
@@ -268,6 +272,8 @@ await templates.render_async(spec_or_name, view, *, context=None, mode=None)
 
 Registration is startup-only and freezes on first check or render. Component aliases are static,
 case-sensitive, application-local, duplicate-safe, and never discovered from a global registry.
+The optional `mode` operation argument is also an assertion; source kind remains authoritative.
+`library` sources can be checked and imported but cannot be render entry points.
 
 `TemplateDeclaration` is immutable and exposes `format_version`, `kind`, `profile`,
 `declared_features`, `effective_features`, `requires`, `assets`, `regions`, and bounded dynamic
@@ -284,17 +290,15 @@ leaking a raw framework request, session, container, environment, or registry:
 hdj.mode                 PAGE or FRAGMENT
 hdj.is_fragment          convenience boolean
 hdj.locale / hdj.theme   render-context values
-hdj.htmx                 read-only portable HTMX request facts
+hdj.htmx                 reserved immutable mapping (empty until native adapter work in 0.11)
 hdj.url(ref, **params)   framework-owned reverse URL as SafeUrl
 hdj.asset_url(id)        registered fingerprinted asset as SafeUrl
-hdj.styles(id)           typed scoped-style symbols
-hdj.attrs(value)         serialize only a validated attribute collection
-hdj.csrf_input()         framework-owned CSRF hidden control
+hdj.csrf_input()         framework-owned TrustedHtml hidden control; cross with |hedron_trusted
 ```
 
 The template also receives `view`. View fields are not flattened into globals. Applications may
-install ordinary Jinja globals, filters, and tests before binding; the checker inventories them and
-their trust/I/O declarations.
+install ordinary Jinja globals, filters, and tests before binding; format v1 fingerprints and seals
+that environment. I/O declarations are phase 0.13 and contracted provider evidence is phase 0.14.
 
 ## Template syntax
 
@@ -310,8 +314,8 @@ profile = "standard"
 regions = ["main"]
 ---
 <main id="main" hx-history-elt>
-  <a href="{{ view.urls.settings|hedron_url }}"
-     hx-get="{{ view.urls.settings|hedron_url }}"
+  <a href="{{ view.urls.settings|hedron_nav_url }}"
+     hx-get="{{ view.urls.settings|hedron_nav_url }}"
      hx-target="#main"
      hx-push-url="true">
     Settings
@@ -328,6 +332,10 @@ replace the browser platform with an allowlisted mini-HTML language.
 ```jinja
 {% hedron "StatusBadge" status=view.plan compact=true %}
 ```
+
+Dynamic URL sinks use purpose-specific filters: `hedron_nav_url` for navigation and safe GET/URL
+history sinks, `hedron_form_url` for form actions and unsafe HTMX verbs, and `hedron_asset_url` for
+asset sources. `hedron_trusted` is valid only in HTML body content.
 
 Props are named Jinja expressions. `key=` is reserved for Hedron identity. Aliases are static
 string literals in 0.9 so tooling can inventory calls. Positional props and spread mappings are not
@@ -346,7 +354,7 @@ part of the checked grammar.
 
 `with body` is deliberately explicit so the parser can distinguish inline and block calls without
 guessing. A body uses the component's `body` slot when declared and children otherwise. Named slots
-must be direct structural children of the component block; control flow belongs inside a slot.
+are collected while the component body executes, including through ordinary Jinja control flow.
 Slot names and cardinality are checked against the component contract.
 
 Body and slot markup is provenance-carrying internal output, not a public `TrustedHtml` shortcut.
@@ -354,16 +362,17 @@ Nested components retain their metadata.
 
 ### Conditional asset requirement
 
-Unconditional assets normally belong in the `.hdj` prologue. A branch-dependent registered asset
-uses:
+Unconditional page assets belong in the `.hdj` prologue. A branch-dependent registered asset is a
+fragment-only format-v1 operation:
 
 ```jinja
 {% hedron_asset "app:charts.mjs" %}
 ```
 
 The tag emits no markup. It adds the resolved, fingerprinted asset to `RenderResult.assets` in
-first-use order. Unknown IDs, kind conflicts, remote-policy violations, or use after the relevant
-document head has been sealed fail with a diagnostic. Authors may still write literal `<link>` and
+first-use order. A PAGE graph containing the tag fails before execution because vanilla Jinja has
+no reliable semantic “head sealed” event. Registered fragment head management is assigned to phase
+0.10. Unknown IDs, kind conflicts, or remote-policy violations fail. Authors may write literal `<link>` and
 `<script>` tags; doing so is ordinary HTML but opts that tag out of Hedron fingerprinting,
 deduplication, dependency graphs, and fragment-asset checks.
 
@@ -376,43 +385,43 @@ HDJ preserves Jinja semantics instead of offering lookalikes.
 | `extends`, blocks, `super()`, `self` | Supported; static dependencies inventoried in strict production builds. |
 | `include`, `import`, `from ... import` | Supported with normal context/cache semantics; static names preferred and inventoried. |
 | macros and `call`/`caller` | Supported; Hedron tags inside macros use the active render session and merge metadata. |
-| `if`, loops, recursive loops, loop variables | Supported over bounded materialized values; work counts toward render limits. |
-| filters, tests, globals | Standard Jinja and explicit application additions are supported; trust and I/O behavior is declared. |
+| `if`, loops, recursive loops, loop variables | Supported over bounded materialized values; resulting output, component calls, and Hedron nodes are bounded in 0.9. Exact loop work accounting is phase 0.14. |
+| filters, tests, globals | Standard Jinja and explicit application additions are supported and sealed before use. I/O behavior contracts are phase 0.13. |
 | `set`, block assignment, `namespace` | Supported; captured markup retains Jinja safety semantics but is not automatically `TrustedHtml`. |
 | whitespace control and comments | Supported exactly as Jinja defines them. |
 | i18n extension | Supported when installed/configured by the application; locale comes from `RenderContext`. |
-| `do` and loop controls | Supported when enabled before binding; checker and budgets understand them. |
-| async filters, globals, includes, iterables | Supported only through `render_async()` and explicitly declared application functions; awaited work is traced and deadline-aware. |
-| custom Jinja extensions | Supported when installed before HDJ binding and declared in build evidence; they cannot bypass render-session or trust boundaries. |
+| `do` and loop controls | Supported when enabled before binding and declared explicitly; exact loop budgets are phase 0.14. |
+| async filters, globals, includes, iterables | Core Jinja async execution is available only through `render_async()` and explicit `jinja.async`; I/O contracts, deadlines, cancellation, and operation traces are phase 0.13. |
+| custom Jinja extensions | Trusted application code installed before binding; 0.9 seals the environment but does not claim arbitrary extensions cannot produce `Markup` or bypass contextual lint. Contracted provider evidence is phase 0.14. |
 | bytecode cache / precompile | Supported as a local optimization; Python bytecode is not a portable Hedron artifact. |
-| dynamic include/inheritance | Available through the explicit dynamic-dependency escape hatch; production needs a bounded loader namespace or rejects it. |
+| dynamic include/inheritance | Rejected in format v1. Phase 0.11 requires an exact finite, fingerprinted candidate manifest rather than a namespace assertion. |
 | `TemplateStream` / incremental output | Not exposed in 0.9 because headers/assets/identity must be known before a response begins; a future two-phase API may add it. |
 | `NativeEnvironment` | Not a supported root environment because HDJ's result is HTML plus `RenderResult` metadata. |
 
-Jinja's meta API is used for undeclared-variable and referenced-template analysis. Environment
-mutation after template loading is rejected because Jinja itself does not define that behavior
-reliably. Extension state lives on the bound environment or render context, not on a reusable
-extension instance, so Jinja overlays cannot leak one application's bindings into another.
+Jinja's meta API is used for referenced-template analysis. Environment mutation after HDJ binding
+is rejected. Binding state is environment-keyed and runtime state is render-context-local rather
+than stored on a reusable extension instance, so overlays do not inherit an application's binding.
+Attribute-level static equivalence to Python typing is not a 0.9 guarantee.
 
 ## Hedron feature contract
 
 | Hedron capability | HDJ surface and guarantee |
 |---|---|
-| Typed models | `TemplateSpec.view_type`; runtime validation plus sound static `view.field` checks. |
+| Typed models | `TemplateSpec.view_type` runtime validation; attribute-level static typing is deferred. |
 | Components | Explicit aliases, props validation, slots, identity, render limits, and metadata parity. |
 | Native HTML | Written directly; dynamic values follow contextual trust rules. |
-| Routing/addressable actions | `hdj.url` returns purpose-aware `SafeUrl`; exposing a route/action remains framework-owned. |
-| Pages/fragments | `TemplateSpec.mode`, HTMX request facts, history-restore PAGE selection, and document-shape checks. |
-| Interaction results | Typed response headers, status policy, OOB authorization, cache variation, and fragment regions stay authoritative. |
-| Forms/validation/CSRF | Semantic HTML forms, typed view errors, `hdj.csrf_input`, same-origin unsafe actions, and HTMX/non-HTMX error parity. |
-| Assets | Template/component declarations merge into one fingerprinted, ordered, CSP-aware asset graph. |
-| Scoped styles/themes | `hdj.styles` exposes compiled symbols; theme variables and active theme come through normal render context. |
-| Browser modules/Web Components | Registered modules merge as assets; custom elements are ordinary HTML and initialize on the documented lifecycle. |
+| Routing/addressable actions | An optional application callback supplies purpose-aware `SafeUrl`; native framework reversal remains phase 0.11. |
+| Pages/fragments | Source kind controls render mode and document-shape checks. HTMX request/history selection is phase 0.11. |
+| Interaction results | Component headers and assets retain `RenderResult` metadata; adapter response/OOB/region integration is phase 0.11. |
+| Forms/validation/CSRF | Semantic HTML is direct; an optional CSRF callback exists, while native framework parity is phase 0.11. |
+| Assets | Registered template/component declarations merge into one ordered asset result with explicit capability policy. |
+| Scoped styles/themes | Active theme comes through `RenderContext`; a template scoped-symbol helper is phase 0.14. |
+| Browser modules/Web Components | Registered modules merge as assets and custom elements are ordinary HTML; browser lifecycle evidence is phase 0.10. |
 | Icons, data, charts, built-ins | Invoked as normal allowlisted Hedron components with identical output/metadata to Python composition. |
-| Security types | `Secret` never renders; `TrustedHtml` and `SafeUrl` require explicit context-appropriate filters. |
+| Security types | `Secret` never renders; `TrustedHtml` is HTML-body-only; `SafeUrl` requires a purpose-specific sink filter. |
 | State/cache/jobs | Prepared in Python; templates receive bounded presentation values and portable status facts, never live backends. |
-| Diagnostics/trace/Explorer | Template spans, include/macro stack, component path, capabilities, dependencies, and redacted timings share Hedron diagnostics. |
-| Accessibility | Component contracts remain intact; static template checks and browser evidence cover surrounding native markup. |
+| Diagnostics/trace/Explorer | Format/source spans, component diagnostics, capabilities, dependencies, and redacted component traces use Hedron records. CLI/Explorer inventory is phase 0.11. |
+| Accessibility | Component contracts remain intact; surrounding native-markup/browser evidence is phase 0.10 and broader static analysis phase 0.14. |
 
 ## HTML, CSS, and JavaScript freedom
 
@@ -426,18 +435,23 @@ HDJ treats these cases differently:
 <p>{{ view.user_supplied_text }}</p>
 ```
 
-The literal source is application code. The expression is data and is escaped. Strict mode:
+The literal source is application code. The expression is data. Strict mode enforces a deliberately
+finite sink matrix:
 
 - enables HTML autoescape and `StrictUndefined`;
 - rejects rendering `Secret`;
-- requires `TrustedHtml|hedron_trusted` for dynamic raw markup;
-- requires purpose-compatible `SafeUrl|hedron_url` for dynamic URL attributes;
+- requires `TrustedHtml|hedron_trusted` only for dynamic HTML body markup;
+- requires `SafeUrl|hedron_nav_url`, `|hedron_form_url`, or `|hedron_asset_url` at the
+  corresponding dynamic URL sink;
 - permits `tojson` for placing bounded data into a JavaScript expression or JSON script block;
-- rejects dynamic tag names, attribute names, event-handler bodies, CSS source, `srcdoc`, and
+- rejects unknown contexts, dynamic tag names, attribute names, event-handler bodies, CSS source, `srcdoc`, and
   executable script source unless a named advanced trust adapter is installed; and
 - rejects a generic `safe` escape as too context-blind in checked mode.
 
-An advanced application can disable individual static checks or strict mode for trusted source. It
+Jinja autoescaping alone is not described as contextual safety. The strict checker recognizes the
+documented finite contexts and fails when it cannot establish one; arbitrary Markup-producing
+filters and extensions are trusted application code outside that proof. An advanced application can
+disable strict mode for trusted source. It
 then owns those dynamic contexts exactly as it would in a conventional Jinja application. Secret
 redaction, response-header validation, component authorization, and loader isolation are not
 disabled by `strict=False`.
@@ -466,18 +480,17 @@ processed more than once.
 
 ### Capability report and CSP
 
-`templates.capabilities(spec)` reports at least:
+In format v1, `templates.capabilities(spec)` reports the locally inferable set:
 
 - inline script and inline style;
-- inline DOM/HTMX event code and HTMX trigger filters requiring eval;
+- inline DOM/HTMX event code and `js:` values requiring eval;
 - response script-tag processing;
-- remote asset origins and integrity metadata;
-- registered browser/HTMX extensions;
-- dynamic template dependencies;
-- raw/trusted dynamic markup contexts; and
+- literal and registered remote asset origins, separated by purpose; and
 - page-head mutation requirements for fragment renders.
 
-The selected `SecurityPolicy` compares this report with CSP and HTMX runtime configuration. HDJ
+The binding compares this report with its explicit application capability allowlist. Framework
+`SecurityPolicy`, CSP, integrity, and HTMX-runtime reconciliation is adapter/build work in phase
+0.11. HDJ
 does not inject `unsafe-inline`, `unsafe-eval`, remote origins, nonces, or `allowScriptTags=true`
 silently. Nonces are request values and never stored in templates or build manifests.
 
@@ -499,38 +512,31 @@ HDJ allows the pinned HTMX 2 attribute surface directly:
 | Extensions | `hx-ext` for registered, versioned extension assets |
 | Events | `hx-on:*` and the JavaScript event API when the application's eval/CSP policy permits them |
 
-Future static attributes in the pinned compatible HTMX line do not require an HDJ grammar release.
-The checker recognizes the installed HTMX version, validates known semantics, and reports an
-unknown `hx-*` attribute instead of stripping it.
+Future static attributes in the pinned compatible HTMX line do not require an HDJ grammar release:
+they remain ordinary trusted HTML. Version-aware attribute diagnostics and semantic/browser
+fixtures are phase 0.10.
 
 ### Checked HTMX semantics
 
-The checker/runtime enforce the Hedron integration boundary:
+Format v1 enforces only what is locally provable without route or browser state:
 
-- dynamic request/history URLs use purpose-compatible `SafeUrl`; static literals must be local
-  unless policy explicitly allows an origin;
-- unsafe verbs require the application CSRF contract and cannot become authorized merely because
-  a template writes `hx-post` or `hx-delete`;
-- targets, selectors, includes, indicators, and disabled-element selectors are checked against the
-  supported selector policy, with an explicit advanced escape hatch for full selectors;
-- `hx-vals` and `hx-headers` use JSON by default; `js:` values, event filters, and `hx-on:*` are
-  classified as executable/eval capabilities;
-- `hx-sync`, trigger queues, indicators, disabled controls, and `aria-busy` are checked together so
-  common request-race and double-submit mistakes produce useful diagnostics;
-- `hx-boost` and history-changing controls need a navigable `href`/`action`, and every pushed URL
-  must return a complete page on ordinary navigation/history cache miss;
-- `hx-history="false"` is required around sensitive material that must not enter browser snapshots;
-- fragment targets and OOB updates must match route/template-declared `FragmentRegion` contracts;
-- swaps preserve focus where possible, announce semantic status/error changes, and use stable IDs;
-  View Transitions and scroll/focus modifiers remain available;
-- file uploads use normal forms plus `multipart/form-data`/`hx-encoding`; upload progress belongs in
-  a browser module or documented HTMX event handler; and
-- attribute inheritance is surfaced in diagnostics so an inherited destructive verb, target,
-  header, or parameter policy is never invisible in Explorer.
+- dynamic request/history URL attributes use purpose-compatible `SafeUrl` filters;
+- `js:` values and `hx-on:*` are classified as eval capabilities;
+- literal remote request origins are classified separately from source/script/style origins; and
+- static feature use must be allowed by the selected profile.
+
+Version-aware attribute semantics, selectors, inheritance, race/double-submit diagnostics,
+navigation/history/OOB/focus/accessibility behavior, and browser fixtures are phase 0.10. Route
+authorization, CSRF, response contracts, and region reconciliation are phase 0.11.
+
+Format v1 keeps dynamic navigation/form `SafeUrl` values local because a filter alone cannot prove
+a runtime origin was declared. External registered asset URLs must come through `hdj.asset_url()`
+and the static graph. Native dynamic-origin reconciliation is phase 0.11.
 
 ### Response-side HTMX
 
-Request attributes belong in HTML. Response mechanics remain typed Python/Hedron values:
+Request attributes belong in HTML. Response mechanics remain typed Python/Hedron values. The
+following adapter integration is explicitly phase 0.11:
 
 - `HtmxRequestFacts` exposes `HX-Request`, target, trigger, current URL, boost, prompt, and history
   restore without exposing a raw request;
@@ -542,27 +548,27 @@ Request attributes belong in HTML. Response mechanics remain typed Python/Hedron
 - OOB markup written directly in a checked template is validated against the same declared region
   graph as `OobUpdate`.
 
-An adapter accepts an HDJ `RenderResult` wherever it accepts component render output. A typed
+That phase makes an adapter accept an HDJ `RenderResult` wherever it accepts component render output. A typed
 interaction envelope may wrap that result without re-rendering or converting it to an opaque
 string.
 
 ### Scripts in swapped content
 
-Hedron's managed HTMX configuration keeps `allowEval=false`, `allowScriptTags=false`,
+Hedron's managed HTMX configuration independently keeps `allowEval=false`, `allowScriptTags=false`,
 `historyRestoreAsHxRequest=false`, `includeIndicatorStyles=false`, native form validity enabled,
 and same-origin requests by default. This supports strong CSP and deterministic fragment behavior.
 
 Advanced applications may enable HTMX eval features or response script processing explicitly.
-The capability report then records the requirement and the application must supply compatible CSP.
+The format-v1 capability report records that requirement; full managed-runtime/CSP reconciliation
+is phase 0.11.
 Registered modules plus HTMX lifecycle events are preferred because a script tag returned in a
 fragment is not a reliable component lifecycle.
 
 ### HTMX extensions
 
-Core extensions such as head support, idiomorph, preload, response targets, SSE, and WebSocket are
-ordinary registered assets with exact versions, digests, CSP needs, load order, and conformance
-evidence. Community extensions are application-owned and must declare the same metadata. Merely
-writing `hx-ext` does not install or authorize an extension.
+Core extensions such as head support, idiomorph, preload, response targets, SSE, and WebSocket can
+be ordinary registered assets. Exact provider metadata and evidence are phase 0.14; merely writing
+`hx-ext` does not install or authorize an extension in format v1.
 
 SSE/WebSocket transport remains owned by phase 0.10. HDJ does not need new syntax when those
 extensions become Supported.
@@ -573,40 +579,46 @@ Each render creates an isolated session:
 
 1. Resolve the canonical `.hdj` source, parse its prologue, expand its profile, and reject
    unavailable or policy-denied declarations.
-2. Resolve the static/bounded dependency graph and aggregate declared features, requirements,
+2. Resolve the static `.hdj` dependency graph and aggregate declared features, requirements,
    assets, and regions.
 3. Validate the view and create `HdjContext` from the normal `RenderContext` and portable request
    facts.
 4. Seed unconditional template assets and an empty metadata/capability accumulator.
-5. Execute Jinja with `view`, `hdj`, and explicit application additions.
-6. Render every Hedron tag through the bound component contract and `hedron_core.render()`.
+5. Execute Jinja with `view`, `hdj`, and explicit application additions through a guarded,
+   chunk-consumed HDJ entry point.
+6. Render every Hedron tag through the bound component contract and one shared core render session.
 7. Merge HTML, assets, approved headers, identity, diagnostics, trace data, and conditional assets.
-8. Validate document/fragment shape, feature use, HTMX regions, declared/inferred capabilities,
-   SecurityPolicy compatibility, and
+8. Validate document/fragment shape, locally observable feature use, declared/inferred
+   capabilities, the application allowlist, and
    output/resource budgets.
 9. Return one immutable `RenderResult`.
 
-Direct `Template.render()` may render ordinary Jinja, but encountering a Hedron component/asset
-bridge outside this session fails closed because a string cannot retain metadata.
+Direct `Template.render()` always fails for `.hdj`, including pure HTML/Jinja templates, because it
+would bypass prologue assets, kind checks, capabilities, policy, manifests, and metadata. Ordinary
+Jinja remains available through a separate environment.
 
 Assets deduplicate by canonical identity in first-use order. Conflicting asset or header
 definitions and identity collisions fail. Diagnostics retain template source, include/macro stack,
 component path, and safe capability context. No secret or raw request value enters traces.
 
-PAGE mode emits one complete document. FRAGMENT mode rejects document-level elements in checked
-mode and applies fragment-asset/head policy. A fragment may require only assets already present on
-the page unless a registered, conformance-tested head-management path is active.
+PAGE mode emits one complete document and permits only prologue/application assets in 0.9.
+FRAGMENT mode rejects document-level elements and may use conditional registered assets when the
+declared `browser.head-mutation` capability and application policy allow them. A conformance-tested
+head-management path is assigned to phase 0.10.
 
 ## Loaders and production inventory
 
-Application and installed-package templates use explicit namespaces. Application overrides are
-declared; loader precedence never silently shadows a package template.
+Phase 0.9 accepts canonical application-loader names and rejects traversal, non-`.hdj` input, and
+post-bind loader mutation. Installed-package namespaces, declared overrides, and shadow prevention
+are phase 0.11 so they can share the finite foreign/candidate-manifest contract.
 
-Strict static dependencies use Jinja's referenced-template meta API. The build records:
+Format-v1 static dependencies use Jinja's referenced-template meta API. Dynamic or non-`.hdj`
+references fail. The 0.9 library exposes the facts needed for inventory. Phase 0.11
+build/Explorer wiring records:
 
 - source format version, kind, profile, declared/expanded/observed features, logical ID, canonical
   name, and digest;
-- extends/include/import dependencies and dynamic-dependency bounds;
+- static extends/include/import dependencies;
 - referenced components, assets, extensions, and their contract digests;
 - view contract, render mode, and fragment regions;
 - declared and inferred browser/security capabilities plus policy decision;
@@ -619,43 +631,53 @@ missing, undeclared, shadowed, or incompatible inputs.
 
 ## Resource and async policy
 
-HDJ shares Hedron render depth/node budgets and adds bounds for template dependency depth, macro
-recursion, per-loop and total loop work, component calls, async operations, output characters,
-metadata, and optional wall-clock deadlines.
+HDJ shares one Hedron identity/node/depth render session across component calls and adds bounds for
+static dependency depth, component calls, chunk-consumed output characters, and metadata. Exact
+Jinja loop/macro accounting requires compiler instrumentation and is assigned to phase 0.14; async
+operation deadlines/cancellation are phase 0.13.
 
 Models expose bounded materialized collections. Arbitrary generators, lazy database/query objects,
-live backends, and hidden unbounded iterators are rejected. Explicit async filters/globals may do
-I/O only when registered as such, invoked through `render_async()`, traced, cancellable where the
-adapter supports it, and covered by deadlines. Components themselves retain Hedron's no-hidden-I/O
-render contract.
+live backends, and hidden unbounded iterators are not valid presentation-model inputs. Components
+retain Hedron's no-hidden-I/O render contract.
 
-Limits fail atomically before a response begins. A wall-clock deadline supplements structural
-limits; it does not replace them.
+Limits fail atomically before a response begins. Output is consumed in bounded chunks into the
+atomic result rather than allocated without limit and measured only afterward.
 
 ## Diagnostics
 
-The `HED-JINJA-*` family covers names/loaders, bindings, props/slots, view contracts, raw/contextual
-trust, dependencies, capabilities/CSP, HTMX semantics, limits, metadata conflicts, environment/
-async mismatch, stale manifests, and page/fragment shape.
+The format-v1 `HED-JINJA-*` family covers names/loaders, bindings, props/slots, view contracts,
+raw/contextual trust, dependencies, capability declarations/policy, limits, metadata conflicts,
+environment/async mismatch, and page/fragment shape. Adapter HTMX semantics and stale production
+manifests join in phases 0.10 and 0.11.
 
-Every diagnostic includes the template logical ID, canonical source and span, include/macro stack,
-component or HTMX attribute when applicable, explanation, remediation, and redacted structured
-metadata. Text, JSON, SARIF, CLI, and Explorer use the same record.
+Every format-v1 diagnostic includes a stable code, explanation, remediation, and a source span when
+the checker has one. Rich include/macro stacks, attribute paths, and portable checker fixtures are
+phase 0.14; CLI and Explorer presentation is phase 0.11.
 
 ## Tooling and developer experience
 
-- `hedron check` checks Jinja dependencies, component/view contracts, HTML contexts, assets,
-  required capabilities, HTMX semantics, accessibility, and policy compatibility.
-- `hedron dev` watches templates/assets and invalidates affected graphs atomically.
-- `hedron build` records the production inventory and capability report.
-- Explorer shows source, inheritance/includes, macro/component calls, assets, HTMX request/swap
-  graph, fragment regions, policy findings, and redacted render traces.
+- `HedronJinja.check()` reports locally provable format/dependency/component/context/capability
+  errors in 0.9.
+- Phase 0.11 wires those facts into `hedron check`, `hedron dev`, `hedron build`, and Explorer,
+  alongside the finite production manifest and adapter context.
 - HDJ publishes the prologue TOML schema, format-v1 feature registry, and small Jinja extension
   grammar for existing editor tooling. It does not ship a competing expression language.
 - Diagnostics use terms an HTML/Jinja author recognizes and always suggest the smallest fix.
 
 Generated examples progress from plain HTML, to Jinja composition, to Hedron components, to HTMX,
 to browser modules. Advanced features are opt-in but never hidden.
+
+## Deferred capability ownership
+
+The 0.9 reductions are scheduled work, not an unowned backlog:
+
+| Capability | Phase | Required boundary |
+|---|---:|---|
+| Registered fragment head management, two-phase template streaming, version-aware HTMX semantics, and browser-backed navigation/history/OOB/lifecycle validation | 0.10 | Must preserve atomic metadata and ordinary HTTP fallbacks. |
+| Finite fingerprinted dynamic dependency manifests, foreign Jinja/package namespaces, adapter-specific route/CSRF/context/response depth, SecurityPolicy/CSP reconciliation, and CLI/build/Explorer production inventory | 0.11 | A namespace alone is never a dependency bound; foreign source cannot use Hedron tags. |
+| `hedron.data`/`hedron.charts` provider parity and high-volume template presentation evidence | 0.12 | Bounded data and accessible fallbacks remain authoritative. |
+| Async filter/global I/O declarations, deadlines, cancellation, operation budgets, and trace correlation | 0.13 | Async work remains explicit and render handoff deterministic. |
+| Optional Jinja compiler instrumentation for exact loop/macro budgets, contracted custom-extension evidence, scoped-style/validated-attribute helpers, broader contextual analysis, and portable checker fixtures | 0.14 | Public Jinja semantics and the pure-Python fallback remain authoritative. |
 
 ## Non-goals
 
@@ -675,24 +697,22 @@ to browser modules. Advanced features are opt-in but never hidden.
 
 Phase 0.9 is complete only when:
 
-- standard Jinja composition and the small Hedron grammar pass parser, inheritance, macro, async,
-  i18n, extension, metadata, and isolation fixtures;
+- standard static Jinja composition and the small Hedron grammar pass parser, inheritance, macros,
+  explicit provider availability, metadata, environment sealing, and overlay-isolation fixtures;
 - `.hdj` format-v1 prologues, exact profile expansion, declared/observed feature checks, capability
-  assertions, line preservation, loader isolation, and the foreign-Jinja boundary pass fixtures;
-- trusted literal HTML/CSS/JS remains available while dynamic-value escaping and explicit trust
-  crossings pass contextual security tests;
-- the complete pinned HTMX 2 attribute groups, response headers, lifecycle events, progressive
-  enhancement, history, OOB, forms, concurrency, accessibility, and extension contracts have
-  representative evidence;
-- Hedron component, routing, forms, CSRF, interaction, assets/styles/themes, browser modules,
-  security types, data/chart, diagnostic, trace, and adapter features have HDJ parity fixtures;
-- capability reporting and SecurityPolicy/CSP mismatch diagnostics prove that freedom never causes
-  silent policy weakening;
-- FastAPI, Flask, and Django consume the same HDJ `RenderResult` semantics;
-- check/dev/build/Explorer, manifests, package isolation, offline wheels, performance/resource
-  budgets, and Python/Jinja/MarkupSafe matrices pass;
-- three representative applications cover a semantic page, accessible form/error flow, repeated
-  data/status view, HTMX history/OOB interaction, custom CSS, and a browser module; and
+  assertions, line preservation, `.hdj`-only loading, and static dependency/kind fixtures;
+- direct rendering always fails, while guarded rendering preserves shared component identity,
+  node/depth budgets, metadata, chunked output limits, and atomic results;
+- trusted literal HTML/CSS/JS remains available while the documented finite dynamic sink matrix,
+  purpose-specific URL filters, and explicit HTML-body trust crossing pass adversarial tests;
+- page assets are static, conditional assets are fragment-only, and capability/policy mismatch
+  behavior is explicit;
+- locally provable HTMX syntax/capability checks do not claim route, accessibility, lifecycle, or
+  browser-behavior proof;
+- capability reporting and explicit application-policy mismatch diagnostics prove that freedom
+  never causes silent policy weakening; full SecurityPolicy/CSP reconciliation is phase 0.11;
+- clean package, supported Python/Jinja/MarkupSafe, static composition, and resource-limit evidence
+  passes; and
 - no first-party HDN runtime, discovery, artifact, public API, example, or test remains.
 
 ## References

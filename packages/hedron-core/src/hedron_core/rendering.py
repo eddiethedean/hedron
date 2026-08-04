@@ -27,6 +27,7 @@ __all__ = [
     "RenderContext",
     "RenderMode",
     "RenderResult",
+    "RenderSession",
     "render",
 ]
 
@@ -79,6 +80,79 @@ class _RenderState:
 
     def path(self) -> str:
         return " > ".join(self.stack_labels) if self.stack_labels else "<root>"
+
+
+class RenderSession:
+    """Render multiple values through one identity and resource-budget scope.
+
+    A session is intentionally request-local and is not thread safe. Integrations that
+    compose independently rendered fragments, such as HDJ, use it to preserve the same
+    identity collision checks and node limits as one ordinary component tree.
+    """
+
+    def __init__(self, context: RenderContext | None = None) -> None:
+        self.context = context if context is not None else RenderContext.standalone()
+        self._state = _RenderState(self.context)
+        self._render_count = 0
+
+    @property
+    def node_count(self) -> int:
+        return self._state.node_count
+
+    @property
+    def identity_map(self) -> Mapping[str, str]:
+        return MappingProxyType(dict(self._state.identity_map))
+
+    @property
+    def diagnostics(self) -> tuple[Diagnostic, ...]:
+        return tuple(self._state.diagnostics)
+
+    def render(
+        self,
+        value: NodeLike,
+        *,
+        mode: RenderMode = RenderMode.FRAGMENT,
+        base_depth: int = 0,
+    ) -> RenderResult:
+        """Render one value while retaining state for subsequent calls.
+
+        The returned identity map and diagnostics contain only additions made by this
+        call. ``identity_map`` on the session exposes the complete accumulated map.
+        ``base_depth`` lets a composition layer account for nesting outside the Python
+        component tree without exposing the internal render state.
+        """
+        if base_depth < 0:
+            raise ValueError("base_depth must be non-negative")
+        previous_identity_keys = set(self._state.identity_map)
+        previous_diagnostic_count = len(self._state.diagnostics)
+        previous_node_count = self._state.node_count
+        nodes = _normalize(value, self._state, depth=base_depth)
+        html_text = _serialize_result(value, nodes, self.context, mode)
+        self._render_count += 1
+        identity_delta = {
+            key: value
+            for key, value in self._state.identity_map.items()
+            if key not in previous_identity_keys
+        }
+        diagnostic_delta = tuple(self._state.diagnostics[previous_diagnostic_count:])
+        return RenderResult(
+            html=html_text,
+            mode=mode,
+            assets=(),
+            headers=MappingProxyType({}),
+            identity_map=MappingProxyType(identity_delta),
+            diagnostics=diagnostic_delta,
+            trace=MappingProxyType(
+                {
+                    "path": self._state.path(),
+                    "node_count": self._state.node_count - previous_node_count,
+                    "session_node_count": self._state.node_count,
+                    "render_ordinal": self._render_count,
+                    "locale": self.context.locale,
+                    "theme": self.context.theme,
+                }
+            ),
+        )
 
 
 def _reject_generator(value: Any) -> None:
@@ -231,10 +305,15 @@ def render(
     mode: RenderMode = RenderMode.FRAGMENT,
 ) -> RenderResult:
     """Framework-neutral entry point producing a ``RenderResult``."""
-    ctx = context if context is not None else RenderContext.standalone()
-    state = _RenderState(ctx)
-    nodes = _normalize(value, state, depth=0)
+    return RenderSession(context).render(value, mode=mode)
 
+
+def _serialize_result(
+    value: NodeLike,
+    nodes: tuple[Node, ...],
+    context: RenderContext,
+    mode: RenderMode,
+) -> str:
     if mode is RenderMode.PAGE:
         from hedron_core.builtins.document import Page
 
@@ -246,7 +325,7 @@ def render(
             body_html = serialize_tree(nodes)
             html_text = (
                 "<!DOCTYPE html>"
-                f'<html lang="{_escape_attr(ctx.locale)}">'
+                f'<html lang="{_escape_attr(context.locale)}">'
                 '<head><meta charset="utf-8">'
                 '<meta name="viewport" content="width=device-width, initial-scale=1">'
                 "</head>"
@@ -254,23 +333,7 @@ def render(
             )
     else:
         html_text = serialize_tree(nodes)
-
-    return RenderResult(
-        html=html_text,
-        mode=mode,
-        assets=(),
-        headers=MappingProxyType({}),
-        identity_map=MappingProxyType(dict(state.identity_map)),
-        diagnostics=tuple(state.diagnostics),
-        trace=MappingProxyType(
-            {
-                "path": state.path(),
-                "node_count": state.node_count,
-                "locale": ctx.locale,
-                "theme": ctx.theme,
-            }
-        ),
-    )
+    return html_text
 
 
 def _escape_attr(value: str) -> str:

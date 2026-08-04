@@ -383,16 +383,18 @@ compatibility subsystem.
 
 - Ship `hedron-jinja` and the `hedron[jinja]` extra without adding Jinja to `hedron-core` or the
   default installation.
-- Implement format-v1 `.hdj` prologue parsing, exact feature-profile expansion, declared/inferred
-  capability comparison, `.hdj` loader isolation, and the explicit foreign-Jinja boundary.
+- Implement format-v1 `.hdj` prologue parsing, exact allowance-profile expansion,
+  declared/inferred capability comparison, `.hdj` loader isolation, static dependency graphs, and
+  explicit page/fragment/library composition. Dynamic and foreign dependencies are not 0.9 inputs.
 - Implement `TemplateSpec`, `HedronJinja`, explicit inline/body component tags, named slots, typed
   view checks, strict escaping, trusted-content/URL filters, bounded render sessions, and complete
   `RenderResult` metadata merging.
-- Preserve standard Jinja composition and let trusted authors use native HTML, CSS, JavaScript,
+- Preserve static standard Jinja composition and let trusted authors use native HTML, CSS, JavaScript,
   Web Components, and the pinned HTMX attribute/event surface directly. Add typed Hedron bridges
   only for components, assets, routes/security values, metadata, and diagnostics.
-- Inventory browser capabilities and enforce SecurityPolicy/CSP compatibility without silently
-  banning author-written source or enabling inline/eval/remote behavior.
+- Inventory locally inferable browser capabilities and enforce an explicit application allowlist
+  without silently banning author-written source or enabling inline/eval/remote behavior. Full
+  SecurityPolicy/CSP reconciliation is phase 0.11.
 - Remove HDN source discovery, compiler/runtime/formatter code, format constants, registry fields,
   manifest entries, build output, public exports, CLI/Explorer surfaces, examples, and tests.
 - Bump the build-manifest format and coordinated package versions so 0.8 artifacts fail closed.
@@ -403,8 +405,9 @@ compatibility subsystem.
 - No first-party source or runtime package imports, discovers, compiles, loads, runs, or emits HDN.
 - `hedron-jinja` passes typed component, slot, escaping, trust-boundary, direct-render, resource,
   metadata, package-isolation, and page/fragment tests.
-- Representative HDJ applications prove Jinja inheritance/macros, Hedron feature parity, HTMX
-  progressive enhancement/history/OOB, custom CSS, and browser-module lifecycle.
+- Representative HDJ applications prove static Jinja inheritance/macros, component/metadata
+  parity, strict dynamic contexts, native markup, and bounded rendering. Browser-backed HTMX
+  history/OOB/lifecycle proof is the 0.10 gate.
 - Upgrade documentation states the intentional break and identifies 0.8 as the last HDN-capable line.
 
 ## 0.10 — Live interaction and navigation (`v0.10.0`)
@@ -422,6 +425,9 @@ measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
   into a streaming lifecycle.
 - Opt-in navigation preload for safe GET requests with cache correctness, bounded speculative
   traffic, privacy controls, cancellation, `HX-Preloaded` observability, and measurable benefit.
+- HDJ registered fragment head management, a two-phase template streaming experiment,
+  version-aware HTMX attribute/selector semantics, and browser-backed navigation/history/OOB/
+  lifecycle validation without weakening atomic `RenderResult` metadata.
 
 ### Exit gate
 
@@ -451,6 +457,10 @@ framework-neutral core ownership.
   transaction ownership, and query-count diagnostics.
 - Django-native form bridging where it reuses portable interaction and error contracts.
 - Optional Celery/RQ bridges implementing the existing `JobBackend` contract.
+- HDJ finite fingerprinted dynamic-dependency manifests, explicit foreign-Jinja/package namespaces,
+  native adapter route/CSRF/context/response facades, SecurityPolicy/CSP reconciliation, and
+  CLI/build/Explorer production inventory.
+  A loader namespace alone is never accepted as a dependency bound.
 
 ### Exit gate
 
@@ -470,6 +480,8 @@ visualization through bounded, inspectable adapters.
 - Dask/distributed data sources, explicit server transform plans, and advanced lazy-query pushdown.
 - ECharts, Datashader, MapLibre, Folium, Bokeh, HoloViews/hvPlot, Pygal, geospatial layers, Plotly
   resampling, and advanced Vega server transforms, introduced individually behind optional extras.
+- HDJ `hedron.data` and `hedron.charts` provider parity, including bounded high-volume presentation,
+  asset/capability manifests, and accessible fallback evidence.
 
 ### Exit gate
 
@@ -493,6 +505,8 @@ introducing a second hidden runtime or losing trace and cancellation semantics.
   creation.
 - First-party distributed tracing integrations with redaction, sampling, stable span ownership, and
   correlation across HTTP, cache, jobs, data sources, preparation, and rendering.
+- HDJ async filter/global I/O declarations, operation budgets, deadlines, cancellation, and trace
+  correlation while preserving deterministic final render handoff.
 
 ### Exit gate
 
@@ -514,6 +528,10 @@ without fragmenting the component, security, rendering, or artifact contracts.
 - Conformance code generation and experimental Java and Node runtimes.
 - Optional Rust acceleration for measured parser, serializer, style, or data hot paths, with pure
   Python retained as the semantic reference and supported fallback.
+- Optional HDJ Jinja-code-generator instrumentation for exact loop/macro budgets, contracted custom
+  extension evidence, scoped-style/validated-attribute helpers, broader contextual analysis, and
+  language-neutral checker fixtures. These additions must preserve public Jinja semantics and a
+  pure-Python fallback.
 
 ### Exit gate
 
@@ -556,12 +574,17 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 |---|---:|---|
 | Legacy HDN parser/evaluator/render-program prototype | 0.3; removed in 0.9 | No compatibility runtime or converter is shipped after 0.8. |
 | HDJ standards-first authoring | 0.9 | Separate `hedron-jinja` package; native HTML/CSS/JS/HTMX plus typed Hedron bridges; Python components remain canonical. |
+| HDJ fragment head management, two-phase streaming, HTMX semantic checks, and browser proof | 0.10 | Extends the static/atomic 0.9 contract without making streaming implicit. |
+| HDJ finite dynamic manifests, foreign/package namespaces, adapter context, and production inventory | 0.11 | Exact fingerprinted candidates; no namespace-only bound. |
+| HDJ data/chart provider parity | 0.12 | Bounded high-volume inputs, assets, capabilities, and accessible fallbacks. |
+| HDJ async I/O contracts, deadlines, cancellation, and traces | 0.13 | Explicit work with deterministic render handoff. |
+| HDJ exact loop/macro instrumentation, extension/helper contracts, contextual analyzer | 0.14 | Optional instrumentation and portable fixtures preserve standard Jinja and pure Python. |
 | `inspect` and `eject` customization workflow | 0.3 | Progressive control over built-ins. |
 | Scoped classes, keyframes, globals, variants, layers | 0.3 | AST-based deterministic CSS rewriting. |
 | Tokens, themes, light/dark token modes, override layers | 0.3 | Accessible CSS-custom-property architecture; system preference + `data-theme`. |
 | Light/dark styling toggle, ColorMode API, preference persistence | 0.5 | First-party UI and explicit override of system preference. |
 | Fingerprinted assets, CSS URL rewriting, CSP/offline manifests | 0.3 | Production performs no required runtime compilation. |
-| Component folders with code, CSS, examples, tests, docs, and browser modules | 0.3; revised 0.9 | Jinja templates live in explicit application/package loader namespaces. |
+| Component folders with code, CSS, examples, tests, docs, and browser modules | 0.3; HDJ package namespaces 0.11 | Phase 0.9 accepts application HDJ; finite package namespaces and overrides arrive with the 0.11 manifest boundary. |
 | Web Component registration, typed events, light/Shadow DOM policy | 0.3 | Browser-local interaction integrates safely with HTMX swaps. |
 | Component package authoring and browser-asset declarations | 0.4 | Public extension and audit contracts. |
 | `hedron-explorer` and official Explorer browser assets | 0.2 preview; 0.4 full | Optional development distribution with production opt-in controls. |

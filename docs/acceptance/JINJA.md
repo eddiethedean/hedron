@@ -2,6 +2,18 @@
 
 > **Target:** phase 0.9. `.hdj` is the optional, explicit, standards-first Jinja/HTML/HTMX format.
 
+## Deferred ownership
+
+Rows marked with a later phase are excluded from the 0.9 exit gate and owned here:
+
+| Later phase | Owned HDJ work |
+|---:|---|
+| 0.10 | Registered fragment head management, two-phase template streaming, version-aware HTMX semantics, and browser-backed navigation/history/OOB/lifecycle evidence. |
+| 0.11 | Finite fingerprinted dynamic dependency manifests, foreign Jinja/package namespaces, native route/CSRF/context/response facades, and CLI/build/Explorer production inventory. |
+| 0.12 | `hedron.data`/`hedron.charts` provider parity and bounded high-volume presentation evidence. |
+| 0.13 | Async filter/global I/O contracts, operation budgets, deadlines, cancellation, and tracing. |
+| 0.14 | Optional exact loop/macro instrumentation, contracted custom-extension/helper evidence, broader contextual analysis, and portable checker fixtures. |
+
 ## Packaging and identity
 
 - [x] `hedron-jinja` is a separate distribution importing as `hedron_jinja`.
@@ -26,14 +38,14 @@
   surfaces; unused declarations produce useful diagnostics rather than changing output.
 - [ ] Inferred browser/HTMX capabilities must be covered by `requires`; under-declaration fails,
   over-declaration warns, and neither form grants policy permission.
-- [ ] Prologue `assets`, `regions`, and bounded `dynamic_dependencies` merge deterministically with
-  application contracts and appear in build/Explorer inventory.
+- [ ] Prologue `assets` and `regions` merge deterministically with application contracts and appear
+  in build/Explorer inventory; format v1 rejects dynamic dependencies.
 - [ ] Public immutable `TemplateDeclaration`/`describe()` exposes format version, kind, profile,
   declared/effective features, requirements, assets, regions, and dependency bounds without render.
 - [ ] Source body line numbers survive prologue removal in Jinja exceptions, diagnostics, traces,
   SARIF, and Explorer.
-- [ ] Ordinary `.html`/`.jinja` sources stay outside the HDJ loader unless `jinja.foreign` and a
-  namespaced foreign loader are explicitly configured; foreign source cannot invoke Hedron tags.
+- [ ] Ordinary `.html`/`.jinja` sources stay outside the HDJ loader. **Phase 0.11:** add the finite,
+  fingerprinted foreign boundary; foreign source cannot invoke Hedron tags.
 
 ## Standards-first freedom
 
@@ -43,19 +55,19 @@
   HTML grammar or silently override deployment policy.
 - [ ] A minimal `.hdj` file needs only three concise prologue fields before ordinary HTML/Jinja and
   renders without component wrappers or semantic changes.
-- [ ] `strict=False` and named check exceptions provide conventional trusted-Jinja freedom while
+- [ ] `strict=False` provides conventional trusted-Jinja freedom while
   preserving secrets, loader isolation, authorization, and response-header boundaries.
 
 ## Jinja conformance
 
 - [ ] Inheritance, blocks, `super`, includes, imports, macros, `call`, filters, tests, `set`,
   namespaces, conditions, loops/recursive loops, whitespace control, and comments have fixtures.
-- [ ] i18n, `do`, loop-control, application extension, custom filter/test/global, bytecode-cache,
-  and precompile paths work when configured before binding.
-- [ ] Async filters/globals/includes/iterables work only through `render_async`, are declared and
-  traced, and obey cancellation/deadline policy.
-- [ ] Static referenced-template and undeclared-variable analysis uses Jinja's meta API; dynamic
-  dependencies require explicitly declared bounded loader namespaces.
+- [ ] Explicit i18n, `do`, loop-control, filter/test/global availability works when configured before
+  binding; arbitrary custom-extension evidence is **phase 0.14**.
+- [ ] Core async rendering requires explicit `jinja.async`. I/O declarations, operation tracing,
+  cancellation, and deadline policy are **phase 0.13**.
+- [ ] Static referenced-template analysis uses Jinja's meta API and dynamic dependencies fail.
+  Exact finite candidate manifests are **phase 0.11**; namespace-only bounds are never accepted.
 - [ ] HDJ extension state survives Jinja environment overlays without leaking bindings or sessions;
   no environment-specific state is stored unsafely on a reusable extension instance.
 - [ ] Unsupported `NativeEnvironment` and direct streaming paths fail with precise alternatives.
@@ -64,15 +76,16 @@
 
 - [x] Implemented `HedronJinja`, `HedronJinjaExtension`, `TemplateSpec`, and `TemplateSource` expose
   the core render path.
-- [ ] `TemplateSpec` binds view type, source namespace, strict policy, and stable identity while
+- [ ] `TemplateSpec` binds runtime view type, source namespace, strict policy, and stable identity while
   source kind/features/assets/region IDs come from the `.hdj` prologue without contradictory truth.
-- [ ] Immutable `HdjContext` exposes mode, fragment status, locale/theme, portable HTMX facts,
-  reverse URLs, asset URLs, scoped styles, validated attributes, and CSRF markup without raw
-  request/session/container/registry access.
+- [ ] Immutable `HdjContext` exposes mode, fragment status, locale/theme, immutable optional HTMX
+  facts, reverse URLs, asset URLs, and CSRF markup without raw request/session/container/registry
+  access. Native adapter facts are **phase 0.11**; scoped-style/validated-attribute helpers are
+  **phase 0.14**.
 - [ ] Registration is explicit, local, duplicate-safe, immutable after freeze, and rejects
   factories without inspectable contracts.
-- [ ] Canonical application/package loader namespaces reject traversal, shadowing, ambiguity, and
-  undeclared sources.
+- [ ] Canonical application names reject traversal and ambiguity. Installed-package namespace,
+  shadowing, and override policy are **phase 0.11**.
 
 ## Components and metadata
 
@@ -84,7 +97,7 @@
   optional/many slots match component contracts statically where sound and always at runtime.
 - [ ] Conflicting asset/header/identity metadata fails atomically with source/component context.
 - [ ] Direct Python rendering and HDJ invocation have equivalent observable component output and
-  metadata for built-ins, data, charts, forms, icons, and third-party components.
+  metadata for core built-ins. Data/chart provider parity is **phase 0.12**.
 
 ## Hedron feature parity
 
@@ -94,22 +107,22 @@
   work identically across FastAPI, Flask, and Django.
 - [ ] Form models, typed validation errors, CSRF controls, unsafe actions, file uploads, and
   HTMX/non-HTMX error parity have representative fixtures.
-- [ ] Template/component assets, scoped-style symbols, theme variables, browser modules, and Web
+- [ ] Static page and conditional fragment assets, scoped-style symbols, theme variables, browser modules, and Web
   Components merge into the normal fingerprinted asset and CSP pipeline.
-- [ ] Icons, content helpers, data tables/editors, charts, cache/job status, and utility components
-  retain their normal props, accessibility, asset, trace, and optional-dependency behavior.
+- [ ] Icons, content helpers, cache/job status, and utility components retain their contracts.
+  Data-table/editor/chart provider parity is **phase 0.12**.
 - [ ] Explorer displays template/Jinja/Hedron/HTMX graphs and redacted trace/policy information.
 
 ## CSS and JavaScript
 
 - [ ] Literal inline CSS/JS, ordinary links/scripts, registered local assets, permitted remote
   assets, ES modules, and custom elements are covered without weakening dynamic-value safety.
-- [ ] `TemplateSpec.assets` and conditional `{% hedron_asset %}` declarations deduplicate in
-  first-use order, fingerprint correctly, and fail on unknown/conflicting IDs.
-- [ ] Fragment asset policy proves preloaded assets, registered head management, and unsupported
-  late requirements fail predictably.
-- [ ] Browser modules initialize idempotently on HTMX load/swap, clean up before removal, and strip
-  transient third-party DOM mutations before history snapshots when required.
+- [ ] `TemplateSpec.assets`, prologue page assets, and conditional fragment `{% hedron_asset %}`
+  declarations deduplicate in first-use order and fail on unknown/conflicting IDs.
+- [ ] Format v1 rejects conditional page assets. Registered fragment head management and two-phase
+  head/stream behavior are **phase 0.10**.
+- [ ] **Phase 0.10:** browser modules initialize idempotently on HTMX load/swap, clean up before
+  removal, and strip transient third-party DOM mutations before history snapshots when required.
 - [ ] Dynamic JSON uses a correct `tojson` context; dynamic CSS/script/event/srcdoc/tag/attribute
   sources require explicit advanced trust or fail with remediation.
 
@@ -117,28 +130,26 @@
 
 - [ ] All pinned HTMX 2 request verbs and URL-bearing attributes accept static allowed URLs and
   purpose-compatible dynamic `SafeUrl` values.
-- [ ] Trigger events, polling, delay/throttle/queue/filter modifiers, and `hx-sync` strategies have
-  parser, race, cancellation, and bounded-work fixtures.
-- [ ] Targets, swaps/modifiers, selection, OOB, preserve, focus, scroll, View Transitions, and
-  stable-ID behavior pass browser tests.
-- [ ] Boost/history/push/replace/history-elt/history-sensitive-region behavior passes navigation,
-  cache-hit, cache-miss, copied-URL, and no-JavaScript tests.
-- [ ] Include/params/vals/headers/encoding/request/confirm/prompt/indicator/disabled/validation and
-  inheritance/disinheritance have representative forms and diagnostic coverage.
-- [ ] Unknown future `hx-*` attributes are reported against the installed HTMX version but are not
-  stripped or blocked as HDJ grammar errors.
+- [ ] Locally provable trigger/filter/eval capabilities have parser diagnostics. Browser race,
+  cancellation, and behavioral fixtures are **phase 0.10**.
+- [ ] **Phase 0.10:** targets, swaps/OOB, focus, View Transitions, stable IDs, boost/history,
+  cache-hit/miss, copied-URL, and no-JavaScript behavior pass browser tests.
+- [ ] **Phase 0.10:** include/params/vals/headers/encoding/request/confirm/prompt/indicator/disabled/
+  validation and inheritance/disinheritance have representative semantic diagnostic coverage.
+- [ ] **Phase 0.10:** unknown future `hx-*` attributes are reported against the installed HTMX
+  version but are not stripped or blocked as HDJ grammar errors.
 
 ## HTMX response and extension surface
 
-- [ ] Portable request facts include target, trigger/name, current URL, prompt, boost, and history
+- [ ] **Phase 0.11:** portable request facts include target, trigger/name, current URL, prompt, boost, and history
   restore without exposing a raw framework request.
-- [ ] `InteractionResult` accepts HDJ render output without re-rendering or metadata loss and covers
+- [ ] **Phase 0.11:** `InteractionResult` accepts HDJ render output without re-rendering or metadata loss and covers
   retarget/reselect/reswap, navigation, refresh, triggers, status, cache, OOB, and regions.
-- [ ] Approved response headers and direct template OOB markup share the same authorization and
+- [ ] **Phase 0.11:** approved response headers and direct template OOB markup share the same authorization and
   selector/URL validation path.
-- [ ] Managed HTMX configuration keeps eval/script processing/history/CSP defaults; explicit eval,
-  inline-event, response-script, and remote-extension capabilities are accurately reported.
-- [ ] Core and community extensions require registered version/digest/CSP/load-order metadata;
+- [ ] **Phase 0.11:** managed HTMX configuration reconciles eval/script processing/history/CSP
+  defaults with the format-v1 capability report.
+- [ ] **Phase 0.14:** core and community extensions require registered version/digest/CSP/load-order metadata;
   writing `hx-ext` alone never installs an extension.
 - [ ] SSE/WebSocket syntax composes without HDJ changes when phase 0.10 transport contracts ship.
 
@@ -146,32 +157,35 @@
 
 - [ ] Autoescape, `StrictUndefined`, `Secret`, `TrustedHtml`, `SafeUrl`, `tojson`, context checks,
   malicious Markup producers, and exception redaction pass adversarial tests.
-- [ ] Capability reports cover inline script/style, HTMX eval/event filters, response script tags,
-  remote origins/integrity, extensions, dynamic dependencies, raw contexts, and fragment head work.
-- [ ] SecurityPolicy/CSP mismatches fail with a precise source span and never inject nonces,
+- [ ] Format-v1 capability reports cover inline script/style, obvious HTMX eval, response script
+  tags, purpose-specific literal/registered remote origins, and fragment head work. Integrity,
+  extension, dynamic-dependency, and broader raw-context evidence belongs to **0.11/0.14**.
+- [ ] **Phase 0.11:** SecurityPolicy/CSP mismatches fail with a precise source span and never inject nonces,
   `unsafe-inline`, `unsafe-eval`, remote origins, or permissive HTMX settings silently.
-- [ ] CSRF, authorization, fragment-region, approved-header, cache, and route-exposure policies
+- [ ] **Phase 0.11:** CSRF, authorization, fragment-region, approved-header, cache, and route-exposure policies
   remain authoritative under strict and unchecked template modes.
 - [ ] Documentation states that templates are trusted application code and sandboxing is not a
   hostile-author product boundary.
 
 ## Limits, tooling, and operations
 
-- [ ] Include depth, macro recursion, loop work, async work, components, output, metadata, and shared
-  Hedron node/depth limits fail atomically with redacted diagnostics.
-- [ ] `hedron check`, `dev`, and `build` implement dependency/capability/HTMX checking, incremental
+- [ ] Static dependency depth, components, chunk-consumed output, metadata, and shared Hedron
+  node/depth limits fail atomically. Exact loop/macro accounting is **phase 0.14** and async
+  operation budgets are **phase 0.13**.
+- [ ] **Phase 0.11:** `hedron check`, `dev`, and `build` implement dependency/capability checking, incremental
   invalidation, and portable production inventory.
-- [ ] Production rejects missing/stale/shadowed/incompatible templates, bindings, assets,
+- [ ] **Phase 0.11:** production rejects missing/stale/shadowed/incompatible templates, bindings, assets,
   extensions, policies, and dynamic dependency bounds.
-- [ ] Diagnostics contain template span, include/macro stack, component/attribute path, capability,
-  explanation, and remediation in text, JSON, SARIF, and Explorer.
+- [ ] Format-v1 diagnostics contain stable codes, explanations, remediations, and available source
+  spans. Rich include/macro/attribute paths and portable formats are **phase 0.14**; Explorer wiring
+  is **phase 0.11**.
 - [ ] Warm render, component call, async work, cold start, memory, dependency graph, installed size,
   and resource-limit budgets have retained evidence.
 
 ## Accessibility and usability
 
-- [ ] Static checks cover the sound HTML/form/landmark/ID/ARIA/focus subset without claiming proof.
-- [ ] Page, accessible form/error, repeated data/status, history/OOB, custom CSS, and browser-module
+- [ ] **Phase 0.14:** static checks cover the sound HTML/form/landmark/ID/ARIA/focus subset without claiming proof.
+- [ ] **Phase 0.10:** page, accessible form/error, repeated data/status, history/OOB, custom CSS, and browser-module
   examples pass keyboard, focus, announcements, contrast, zoom/reflow, reduced motion, and
   no-JavaScript evidence.
 - [ ] Progressive examples teach plain HTML first, then Jinja, components, HTMX, and browser modules.

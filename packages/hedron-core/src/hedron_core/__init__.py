@@ -111,7 +111,14 @@ from hedron_core.registry import (
     reset_registry_for_tests,
     seal_registry,
 )
-from hedron_core.rendering import AssetRef, RenderContext, RenderMode, RenderResult, render
+from hedron_core.rendering import (
+    AssetRef,
+    RenderContext,
+    RenderMode,
+    RenderResult,
+    RenderSession,
+    render,
+)
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.theme import Theme, default_theme, emit_theme_css
@@ -186,6 +193,7 @@ __all__ = [
     "RenderContext",
     "RenderMode",
     "RenderResult",
+    "RenderSession",
     "RouteMeta",
     "SafeUrl",
     "Secret",
