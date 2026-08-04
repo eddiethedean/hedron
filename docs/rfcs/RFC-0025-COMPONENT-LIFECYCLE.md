@@ -25,3 +25,10 @@ Optional Jinja templates are checked through their application-owned loader.
 - Dependency cleanup occurs after rendering and after streaming iteration when applicable.
 - Development reload cannot leave duplicate registry entries or stale asset mappings.
 - Deterministic components can be rendered in tests without an HTTP request.
+
+## Phase 0.10 streaming and live producers
+
+Focused streams (`ChunkedList`, `StreamedDocument`, `TokenStream`) and page/session WebSocket
+producers cancel on disconnect, honor deadlines/budgets, and clean up dependencies after iteration
+([RFC-0032](RFC-0032-LIVE-TRANSPORT.md)). `Dialog` and chat components do not introduce hidden
+application-wide rerun scope. Ordinary `Component.render()` remains non-streaming (D-019).

@@ -58,6 +58,47 @@
       });
     }
 
+    const chatForm = demo.querySelector("[data-hdc-chat-form]");
+    chatForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (typeof chatForm.reportValidity === "function" && !chatForm.reportValidity()) return;
+      const field = chatForm.querySelector("textarea[name='message']");
+      const transcript = demo.querySelector("[data-hdc-transcript]");
+      const message = String(field?.value || "").trim();
+      if (!message || !transcript) return;
+
+      const userMessage = document.createElement("article");
+      userMessage.className = "hdc-chat-message hdc-chat-user";
+      const userLabel = document.createElement("strong");
+      userLabel.textContent = "You";
+      const userBody = document.createElement("p");
+      userBody.textContent = message;
+      userMessage.append(userLabel, userBody);
+      transcript.append(userMessage);
+      field.value = "";
+      status(demo, "Sending message…");
+      trace(demo, "POST", "/chat", "pending");
+
+      window.setTimeout(() => {
+        const reply = document.createElement("article");
+        reply.className = "hdc-chat-message hdc-chat-assistant";
+        const replyLabel = document.createElement("strong");
+        replyLabel.textContent = "Assistant";
+        const replyBody = document.createElement("p");
+        replyBody.textContent = "The simulated server received your message.";
+        reply.append(replyLabel, replyBody);
+        transcript.append(reply);
+        status(demo, "Message delivered.");
+        trace(demo, "POST", "/chat", "200 fragment");
+      }, 550);
+    });
+
+    const dialog = demo.querySelector("[data-hdc-dialog]");
+    dialog?.addEventListener("close", () => {
+      status(demo, "Dialog closed. Focus returned to the trigger.");
+      demo.querySelector('[data-hdc-action="open-dialog"]')?.focus();
+    });
+
     demo.querySelector("[data-hdc-file]")?.addEventListener("change", (event) => {
       const files = Array.from(event.currentTarget.files || []);
       status(demo, files.length ? `${files.map((file) => file.name).join(", ")} selected. Server validation would run on submit.` : "No file selected.");
@@ -182,6 +223,17 @@
           if (error) error.outerHTML = '<div class="hdc-result" role="status"><strong>Activity restored</strong><span>The retry returned a successful fragment.</span></div>';
           trace(demo, "GET", "/activity", "200 fragment");
         }, 550);
+      }
+      if (action === "open-dialog") {
+        const target = demo.querySelector("[data-hdc-dialog]");
+        if (typeof target?.showModal === "function") target.showModal();
+        else target?.setAttribute("open", "");
+        status(demo, "Dialog opened.");
+      }
+      if (action === "close-dialog") {
+        const target = demo.querySelector("[data-hdc-dialog]");
+        if (typeof target?.close === "function") target.close();
+        else target?.removeAttribute("open");
       }
       if (action === "save-editor") {
         button.disabled = true;

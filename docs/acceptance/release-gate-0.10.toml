@@ -1,0 +1,121 @@
+# Phase 0.10 live interaction evidence index.
+# Consumed by scripts/check_release_gate.py 0.10.0.
+
+[[evidence]]
+id = "LIVE-10-001"
+state = "Verified"
+command = "python -c \"from pathlib import Path; assert Path('docs/rfcs/RFC-0032-LIVE-TRANSPORT.md').is_file()\""
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "EXT-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_htmx_extensions.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "HDJ-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/jinja/test_live_head_stream_htmx.py -k head"
+ci_job = "test"
+owner = "hedron-jinja"
+
+[[evidence]]
+id = "HDJ-10-002"
+state = "Verified"
+command = "python -m pytest -q tests/jinja/test_live_head_stream_htmx.py -k stream"
+ci_job = "test"
+owner = "hedron-jinja"
+
+[[evidence]]
+id = "HDJ-10-003"
+state = "Verified"
+command = "python -m pytest -q tests/jinja/test_live_head_stream_htmx.py -k htmx"
+ci_job = "test"
+owner = "hedron-jinja"
+
+[[evidence]]
+id = "SSE-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_sse.py tests/conformance/test_job_sse.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "JOB-006"
+state = "Verified"
+command = "python -m pytest -q tests/conformance/test_job_sse.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "STREAM-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_streaming.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "WS-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_websocket_channel.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "UI-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_dialog.py tests/a11y/test_dialog_a11y.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "UI-10-002"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_chat.py tests/a11y/test_chat_a11y.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "MEDIA-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_media_session.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "PRELOAD-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_navigation_preload.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "BROWSER-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/browser"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "PERF-10-001"
+state = "Verified"
+command = "python -m pytest -q tests/performance/test_live_backpressure.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-10-001"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-10-001"
+state = "Verified"
+command = "python scripts/verify_pkg_10.py"
+ci_job = "release"
+owner = "hedron"

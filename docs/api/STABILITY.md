@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**Status:** Phase 0.9 authoring break
+**Status:** Phase 0.10 live interaction
 **Version:** `0.9.0`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0`. Levels apply to documented
@@ -87,10 +87,18 @@ hostile-template sandboxing is not a supported capability.
 | Item | Decision | Destination |
 |---|---|---|
 | Django QuerySet DataSource | D-036 / D-041 | 0.11 |
-| HTMX SSE live transport | D-037 / D-038 | 0.10 |
 | Flask Blueprint / `init_app` ergonomic layer | D-041 | 0.11 |
 | Django AppConfig convenience layer | D-041 | 0.11 |
-| Navigation preload | D-038 | 0.10 |
+| First-party camera/microphone/Audio/Video capture UI | D-045 | 0.15 |
+
+## Supported in 0.10 (live)
+
+| Item | Decision | Notes |
+|---|---|---|
+| HTMX SSE live observation | D-037 / D-044 | Polling remains Supported fallback |
+| Navigation preload | D-044 | Opt-in; disabled by default until policy enabled |
+| Focused streaming / page-session WebSocket | D-044 | FastAPI Supported host |
+| Dialog / ChatMessage / ChatInput | D-045 | History application-owned |
 
 ## Removed surfaces
 

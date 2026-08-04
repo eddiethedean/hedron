@@ -1,5 +1,10 @@
 # Changelog
 
+
+## [0.10.0] - 2026-08-04
+
+- Joined the coordinated 0.10 package train; FastAPI remains the Supported live host (D-044).
+
 ## [0.9.0] - 2026-08-04
 
 - Joined the coordinated 0.9 package train; native framework depth remains planned for 0.11.

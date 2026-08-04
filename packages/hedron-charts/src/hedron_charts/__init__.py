@@ -5,7 +5,7 @@ from __future__ import annotations
 from hedron_charts.adapters import AltairAdapter, MatplotlibAdapter, PlotlyAdapter, compile_figure
 from hedron_charts.components import AltairChart, LineChart, MatplotlibChart, PlotlyChart
 
-__version__ = "0.9.0"
+__version__ = "0.10.0"
 
 __all__ = [
     "AltairAdapter",

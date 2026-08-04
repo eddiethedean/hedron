@@ -1,5 +1,10 @@
 # Changelog
 
+
+## [0.10.0] - 2026-08-04
+
+- Joined the coordinated 0.10 package train.
+
 ## [0.9.0] - 2026-08-04
 
 - Removed the HDN template sample and retained the typed Python component implementation.

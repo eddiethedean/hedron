@@ -10,7 +10,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 HTMX_PATH = ROOT / "packages" / "hedron" / "src" / "hedron" / "static" / "htmx.min.js"
-# Exact pin for the 0.8 compatibility baseline (HTMX 2.0.10).
+EXT_DIR = ROOT / "packages" / "hedron" / "src" / "hedron" / "static" / "ext"
+# Exact pin for the compatibility baseline (HTMX 2.0.10).
 EXPECTED_VERSION = "2.0.10"
 EXPECTED_SHA256 = "71ea67185bfa8c98c39d31717c6fce5d852370fcdfd129db4543774d3145c0de"
 
@@ -28,21 +29,33 @@ def main() -> int:
         if digest != EXPECTED_SHA256:
             errors.append(f"HTMX digest mismatch: got {digest}, expected {EXPECTED_SHA256}")
 
-    # Extension contract importable and SSE deferred
     sys.path.insert(0, str(ROOT / "packages" / "hedron-core" / "src"))
     from hedron_core.htmx_extensions import SSE_EXTENSION_DEFERRED, known_extensions
 
-    if not SSE_EXTENSION_DEFERRED:
-        errors.append("SSE_EXTENSION_DEFERRED must remain True through 0.8")
+    if SSE_EXTENSION_DEFERRED:
+        errors.append("SSE_EXTENSION_DEFERRED must be False in 0.10+")
     exts = known_extensions()
     if not exts:
         errors.append("known_extensions() returned empty")
+
+    for ext in exts:
+        # path like /hedron-static/ext/sse.js -> packages/.../static/ext/sse.js
+        rel = ext.path.removeprefix("/hedron-static/")
+        asset = ROOT / "packages" / "hedron" / "src" / "hedron" / "static" / rel
+        if not asset.is_file():
+            errors.append(f"missing extension asset for {ext.name}: {asset}")
+            continue
+        got = f"sha256-{hashlib.sha256(asset.read_bytes()).hexdigest()}"
+        if got != ext.digest:
+            errors.append(f"{ext.name} digest mismatch: got {got}, expected {ext.digest}")
+        if ext.deferred:
+            errors.append(f"{ext.name} must not be deferred in 0.10+")
 
     report = {
         "htmx_version": EXPECTED_VERSION,
         "htmx_path": str(HTMX_PATH.relative_to(ROOT)),
         "htmx_sha256": EXPECTED_SHA256 if not errors else None,
-        "sse_deferred": True,
+        "sse_deferred": SSE_EXTENSION_DEFERRED,
         "extensions": [
             {"name": e.name, "version": e.version, "deferred": e.deferred, "digest": e.digest}
             for e in exts

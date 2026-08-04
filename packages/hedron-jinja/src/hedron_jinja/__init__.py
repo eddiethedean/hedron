@@ -10,9 +10,9 @@ from hedron_jinja.contracts import (
     TemplateSource,
     TemplateSpec,
 )
-from hedron_jinja.integration import HedronJinja, HedronJinjaExtension
+from hedron_jinja.integration import HedronJinja, HedronJinjaExtension, TwoPhaseStream
 
-__version__ = "0.9.0"
+__version__ = "0.10.0"
 
 __all__ = [
     "HedronJinja",
@@ -23,5 +23,6 @@ __all__ = [
     "TemplateKind",
     "TemplateSource",
     "TemplateSpec",
+    "TwoPhaseStream",
     "__version__",
 ]

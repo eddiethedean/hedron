@@ -11,9 +11,9 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Repository `main` is implementing phase **0.9** (`0.9.0` packages).
-> This is an intentional breaking authoring release: HDN has been removed and the new optional
-> `hedron-jinja` package is its replacement. The 0.8 line is the final HDN-capable line.
+> **Project status:** Repository `main` is implementing phase **0.10** (`0.10.0` packages).
+> Phase 0.9 introduced HDJ and removed HDN. Phase 0.10 adds live interaction (SSE, focused
+> streaming, WebSocket channels, Chat/Dialog, navigation preload) per RFC-0032.
 
 > **Authoring direction:** [RFC-0031](https://hedron.readthedocs.io/en/latest/rfcs/RFC-0031-JINJA-INTEGRATION/)
 > defines HDJ, the optional explicit `.hdj` format over Jinja/HTML/HTMX for trusted application

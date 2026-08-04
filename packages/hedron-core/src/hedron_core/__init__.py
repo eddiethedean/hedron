@@ -17,11 +17,13 @@ from hedron_core.builtins import (
     Badge,
     Button,
     Card,
+    ChatMessage,
     Checkbox,
     CodeBlock,
     CodeViewer,
     Container,
     DescriptionList,
+    Dialog,
     Divider,
     Expander,
     Footer,
@@ -70,6 +72,13 @@ from hedron_core.cache import (
     invalidate_tags,
     reset_cache_for_tests,
 )
+from hedron_core.channel import (
+    ChannelBudget,
+    ChannelMessage,
+    ClientStateRead,
+    PageSessionChannel,
+    RegionUpdate,
+)
 from hedron_core.color_mode import ColorMode, ColorModeToggle, color_mode_script, resolve_color_mode
 from hedron_core.component import Component, ComponentNode, NodeLike
 from hedron_core.css import compile_css, scoped_identifier
@@ -98,7 +107,20 @@ from hedron_core.interaction import (
     default_interaction_policy,
     interaction_headers,
 )
+from hedron_core.live import LiveObservation, SseEvent, encode_sse, job_status_sse_events
+from hedron_core.media_session import (
+    MediaChunk,
+    MediaSession,
+    MediaSessionBudget,
+    MediaSessionState,
+)
 from hedron_core.models import EventPayload, FormModel, Model, Props
+from hedron_core.preload import (
+    HX_PRELOADED,
+    NavigationPreloadPolicy,
+    PreloadDecision,
+    decide_preload,
+)
 from hedron_core.registry import (
     AddressableMeta,
     RouteMeta,
@@ -120,6 +142,7 @@ from hedron_core.rendering import (
     render,
 )
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
+from hedron_core.streaming import ChunkedList, StreamBudget, StreamedDocument, TokenStream
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.theme import Theme, default_theme, emit_theme_css
 from hedron_core.visualization import (
@@ -129,7 +152,7 @@ from hedron_core.visualization import (
     VisualizationLimits,
 )
 
-__version__ = "0.9.0"
+__version__ = "0.10.0"
 
 __all__ = [
     "AddressableDescriptor",
@@ -154,7 +177,12 @@ __all__ = [
     "Badge",
     "Button",
     "Card",
+    "ChannelBudget",
+    "ChannelMessage",
+    "ChatMessage",
     "Checkbox",
+    "ChunkedList",
+    "ClientStateRead",
     "CodeBlock",
     "Component",
     "ComponentNode",
@@ -162,6 +190,7 @@ __all__ = [
     "DescriptionList",
     "Diagnostic",
     "DiagnosticSeverity",
+    "Dialog",
     "Divider",
     "EventPayload",
     "Field",
@@ -172,6 +201,7 @@ __all__ = [
     "FormModel",
     "Fragment",
     "Grid",
+    "HX_PRELOADED",
     "Head",
     "Header",
     "Heading",
@@ -183,13 +213,22 @@ __all__ = [
     "Link",
     "LinkButton",
     "List",
+    "LiveObservation",
     "Main",
+    "MediaChunk",
+    "MediaSession",
+    "MediaSessionBudget",
+    "MediaSessionState",
     "Model",
     "Nav",
+    "NavigationPreloadPolicy",
     "NodeLike",
     "Page",
+    "PageSessionChannel",
+    "PreloadDecision",
     "Props",
     "RadioGroup",
+    "RegionUpdate",
     "RenderContext",
     "RenderMode",
     "RenderResult",
@@ -200,8 +239,11 @@ __all__ = [
     "Section",
     "Select",
     "Skeleton",
+    "SseEvent",
     "Stack",
     "SourceSpan",
+    "StreamBudget",
+    "StreamedDocument",
     "StyleSymbols",
     "SubmitButton",
     "Suppression",
@@ -211,6 +253,7 @@ __all__ = [
     "TextInput",
     "Theme",
     "Title",
+    "TokenStream",
     "TrustedHtml",
     "UrlPurpose",
     "Auto",
@@ -222,10 +265,13 @@ __all__ = [
     "ColorMode",
     "ColorModeToggle",
     "color_mode_script",
+    "decide_preload",
+    "encode_sse",
     "Expander",
     "IconEntry",
     "InMemoryCacheBackend",
     "JSONViewer",
+    "job_status_sse_events",
     "Metric",
     "Progress",
     "Sidebar",

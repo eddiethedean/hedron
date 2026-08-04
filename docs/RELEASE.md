@@ -134,6 +134,29 @@ git push origin v0.8.0
 7. Immediately verify public-index installation and hashes. If an artifact is wrong, yank it when
    appropriate, publish the disposition, and prepare the next valid patch release.
 
+## Build and cut `v0.10.0`
+
+1. Confirm phase 0.10 owning RFC-0032 and revised RFCs 0009/0013/0021/0025/0031 are accepted
+   before implementation is claimed complete.
+2. During development, validate the planned evidence shape with
+   `uv run python scripts/check_release_gate.py 0.10.0 --allow-planned` after synchronizing package
+   versions and changelogs on the release branch.
+3. Close [RELEASE_0_10.md](acceptance/RELEASE_0_10.md): SSE, focused streaming, WebSocket channels,
+   Chat/Dialog, media chunk transport, HDJ head/streaming, navigation preload, and three-engine
+   evidence.
+4. Replace every Planned row in
+   [release-gate-0.10.toml](acceptance/release-gate-0.10.toml) with `Verified` evidence or an
+   explicitly owned `Deferred` disposition. The strict gate must pass before publication:
+   `uv run python scripts/check_release_gate.py 0.10.0`.
+5. Build the coordinated artifacts once through the trusted workflow. From those artifacts, run
+   `scripts/rehearse_release.py`, browser/load matrices, documentation examples, and the
+   supply-chain bundle.
+6. Tag and publish `v0.10.0`; retain exact source tag, artifact hashes, commands, matrix dimensions,
+   logs, SBOM, licenses, provenance, migration proof, and owner approvals. Never retag or overwrite
+   a published artifact.
+7. Immediately verify public-index installation and hashes. If an artifact is wrong, yank it when
+   appropriate, publish the disposition, and prepare the next valid patch release.
+
 ## Cut `v0.6.0` (visualization and first-party integrations)
 
 > **Status:** Ready to cut. Do not retag after publish.

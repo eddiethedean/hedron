@@ -54,7 +54,7 @@ components.
 | Claim | Decision | Guidance |
 |---|---|---|
 | Django QuerySet DataSource | D-036 | Bridge QuerySets in application code; do not rely on a first-party portable contract. |
-| HTMX SSE live transport | D-037 | Use bounded polling for job status (`JobBackend` + 202 responses). |
+| HTMX SSE live transport | D-037 / D-044 | Official SSE is Supported in 0.10; bounded polling remains the Supported fallback. |
 
 ## Experimental surfaces
 
@@ -76,12 +76,22 @@ components.
    against critical flows when you consume HTMX history, OOB, or extensions.
 8. Read [STABILITY.md](../api/STABILITY.md) before depending on unmarked or private APIs.
 
-## Toward 0.9 and later phases
+## Toward 0.10 and later phases
 
-Phase 0.9 owns the HDJ replacement; phase 0.10 owns SSE, WebSocket, focused streaming, and
-navigation preload; native Flask/Django depth moves to 0.11. Each phase publishes its own
+Phase 0.10 adds SSE, focused streaming, WebSocket channels, Chat/Dialog, and opt-in navigation
+preload (RFC-0032). Native Flask/Django depth moves to 0.11. Each phase publishes its own
 upgrade notes and proves clean install, upgrade from supported prior trains, deployment, and
 rollback from built/published artifacts. See [RELEASE.md](../RELEASE.md) and the roadmap.
+
+### 0.9 → 0.10
+
+1. Upgrade to the coordinated `0.10.0` train.
+2. Keep polling job-status UIs; optionally mount SSE observation via `job_status_sse_response`
+   and include `/hedron-static/ext/sse.js` when using `hx-ext="sse"`.
+3. Use `Dialog` / `ChatMessage` / `ChatInput` for new interaction surfaces; do not treat live
+   transports as a correctness dependency.
+4. Enable navigation preload only through an explicit `NavigationPreloadPolicy(enabled=True)`.
+5. Prefer `HedronJinja.two_phase_stream()` over raw `Template.stream()` for HDJ streaming.
 
 ## Deprecation tooling
 

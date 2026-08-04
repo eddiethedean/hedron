@@ -51,9 +51,10 @@ configuration.
 
 All Hedron responses use contextual escaping, registered assets, declared headers, and framework-managed background tasks. Response helpers do not weaken cache, CSP, CSRF, or redirect policy. Adapter `extra_headers` are merged through the same validation path as `InteractionResult.headers` (no raw overwrite of approved `HX-*` URL/selector fields; no `Cache-Control: public`).
 
-General component streaming is assigned to phase 0.10. Until that gate passes, applications that
-need a streaming escape hatch use the framework's explicit `StreamingResponse`; Hedron does not
-expose a public `StreamingComponentResponse` in the current API.
+Focused streaming uses `StreamingComponentResponse` / `stream_chunked_list` /
+`stream_document` / `stream_tokens` (RFC-0032). Ordinary `Component.render()` remains
+non-streaming. Applications that need a lower-level escape hatch may still use the host
+framework's explicit `StreamingResponse`.
 
 ## `InteractionResult`
 

@@ -20,3 +20,12 @@ Inline event handlers and arbitrary executable callbacks are prohibited by defau
 - Repeated HTMX swaps initialize and dispose browser behavior without leaks or duplicate listeners.
 - Browser packages declare all JavaScript, CSS, fonts, workers, and remote resources for audit.
 
+## Phase 0.10 live lifecycle
+
+Registered browser modules and custom elements initialize idempotently on `htmx:load` / after-swap
+and clean up before swap-out or history restore. Official SSE and head-support extension assets
+follow the same pin/CSP/inventory rules. Dialog focus trap/restore and chat live-region status
+follow [RFC-0032](RFC-0032-LIVE-TRANSPORT.md) and [RFC-0023](RFC-0023-ACCESSIBILITY.md).
+Timed media chunk sessions declare permission, duration, teardown, and non-streaming fallback;
+capture UI remains phase 0.15.
+

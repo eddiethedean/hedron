@@ -29,11 +29,13 @@ status commentary, not a satisfied release gate.
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
 - [Performance](PERFORMANCE.md)
 - [`v0.9.0` HDJ replacement](RELEASE_0_9.md) — clean HDN removal, explicit `.hdj` format, standards-first authoring, release proof
+- [`v0.10.0` live interaction](RELEASE_0_10.md) — SSE, focused streaming, WebSocket channels, Chat/Dialog, preload
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),
   [release-gate-0.7.toml](release-gate-0.7.toml),
   [release-gate-0.8.toml](release-gate-0.8.toml),
-  [release-gate-0.9.toml](release-gate-0.9.toml)
+  [release-gate-0.9.toml](release-gate-0.9.toml),
+  [release-gate-0.10.toml](release-gate-0.10.toml)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.

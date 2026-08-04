@@ -1,5 +1,12 @@
 # Changelog
 
+
+## [0.10.0] - 2026-08-04
+
+### Added
+- Official SSE helpers (`SseResponse`, job status SSE), focused `StreamingComponentResponse`, WebSocket page/session channels, navigation preload, and `ChatInput`.
+- Bundled `/hedron-static/ext/sse.js` and `head-support.js`.
+
 ## [0.9.0] - 2026-08-04
 
 ### Added

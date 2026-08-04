@@ -816,6 +816,67 @@ COMPONENTS = (
         demo="error",
     ),
     ComponentDoc(
+        "Dialog",
+        "interaction",
+        "Present focused content in a native dialog with an explicit title and close path.",
+        "Dialog(title, *children, open=False, modal=True, element_id=None)",
+        "Dialog('Delete report', Text('This action cannot be undone.'), element_id='delete-report')",
+        (
+            p("title", "str", "Required dialog heading text."),
+            p("children", "NodeLike", "Dialog body content."),
+            p("open", "bool", "Render the native open attribute initially."),
+            p("modal", "bool", "Browser-module intent exposed as data-modal."),
+            p("element_id", "str | None", "Stable ID for a trigger and focus restoration."),
+        ),
+        "Dialog renders a native `<dialog>` with a level-two title, body region, built-in Close form using the browser's dialog submission method, and an optional actions slot. The browser module can read its modal intent and call `showModal()`; the component never treats confirmation as authorization.",
+        "Open it from a clearly labelled trigger, place initial focus deliberately, support Escape and the Close control, and restore focus to the trigger when it closes.",
+        "The `open` attribute alone does not create modal focus trapping or background inertness; use the supported browser module to call `showModal()`.",
+        demo="dialog",
+    ),
+    ComponentDoc(
+        "ChatMessage",
+        "interaction",
+        "Render one typed, escaped item in an application-owned chat transcript.",
+        "ChatMessage(content, *, role='assistant', message_id=None, status=None)",
+        "ChatMessage('Your deployment is ready.', role='assistant', message_id='message-42', status='Delivered')",
+        (
+            p("content", "str", "Escaped message text."),
+            p(
+                "role",
+                "user | assistant | system | tool | status",
+                "Typed speaker or message role.",
+            ),
+            p("message_id", "str | None", "Stable transcript item ID."),
+            p("status", "str | None", "Optional polite delivery or streaming status."),
+        ),
+        "ChatMessage emits an article with role-specific classes and data metadata. A `status` message role becomes a polite live region; the separate status field also renders politely. History, ordering, retention, model-provider state, and streaming boundaries remain application-owned.",
+        "Label the transcript itself, preserve meaningful DOM order, identify speakers with text rather than color alone, and avoid announcing the entire transcript when one status changes.",
+        "Do not render secrets, hidden model instructions, tool credentials, or unbounded token streams as message content.",
+        demo="chat-message",
+    ),
+    ComponentDoc(
+        "ChatInput",
+        "interaction",
+        "Submit an explicit chat message and optionally an attachment to a typed HTMX target.",
+        "ChatInput(*, ref=None, action=None, target=None, swap='beforeend', placeholder='Message', submit_label='Send', name='message', include_attachments=False)",
+        "ChatInput(action='/chat', target='#transcript', placeholder='Ask the assistant', submit_label='Send')",
+        (
+            p("ref", "ComponentRef | None", "Preferred typed POST endpoint."),
+            p("action", "str | None", "Fallback HTMX POST URL."),
+            p("target", "safe CSS selector | None", "Transcript receiving the response."),
+            p("swap", "str", "HTMX swap strategy; defaults to beforeend."),
+            p("placeholder", "str", "Textarea hint."),
+            p("submit_label", "str", "Visible send action."),
+            p("name", "str", "Submitted message field name."),
+            p("include_attachments", "bool", "Add a labelled file input."),
+        ),
+        "ChatInput renders a labelled, required textarea and submit button in a POST form. A typed ComponentRef or action supplies the HTMX request, the target selector is validated, and responses normally append to the transcript. The server owns authentication, CSRF, rate limits, attachment validation, persistence, and bounded streaming.",
+        "Keep the textarea label available, announce sending and failure states without repeating the transcript, and preserve the draft when a request fails.",
+        "Do not enable attachments without server-side filename, MIME, size, malware, authorization, storage, and retention controls.",
+        server="On submit",
+        demo="chat-input",
+    ),
+    ComponentDoc(
         "Auto",
         "data",
         "Choose an inspectable built-in renderer for a Python value.",
@@ -1162,6 +1223,10 @@ def demo_html(spec: ComponentDoc) -> str:
         body = '<div class="hdc-result" data-hdc-page-content><strong>Results 1–3</strong><span>Alpha · Bravo · Charlie</span></div><nav class="hdc-pages" aria-label="Demo pagination"><a href="?page=1" aria-current="page" data-hdc-page="1">1</a><a href="?page=2" data-hdc-page="2">2</a><a href="?page=3" data-hdc-page="3">3</a></nav>'
     elif kind == "error":
         body = '<div class="hdc-error" role="group" data-hdc-error><p role="alert">Activity could not be loaded.</p><button class="hdc-button" type="button" data-hdc-action="retry">Retry</button></div>'
+    elif kind == "dialog":
+        body = '<button class="hdc-button hdc-primary" type="button" data-hdc-action="open-dialog">Open confirmation</button><dialog class="hdc-dialog" data-hdc-dialog aria-labelledby="hdc-dialog-title"><header><h2 id="hdc-dialog-title">Delete report?</h2><form method="dialog"><button type="submit" class="hdc-dialog-close" aria-label="Close dialog">×</button></form></header><p>This removes the saved report. The source data is unchanged.</p><footer><button class="hdc-button" type="button" data-hdc-action="close-dialog">Cancel</button><button class="hdc-button hdc-primary" type="button" data-hdc-action="close-dialog">Delete report</button></footer></dialog><p role="status" data-hdc-status>Dialog closed.</p>'
+    elif kind == "chat-input":
+        body = '<section class="hdc-chat" aria-label="Assistant conversation"><div class="hdc-transcript" id="demo-transcript" role="log" aria-live="polite" data-hdc-transcript><article class="hdc-chat-message hdc-chat-assistant"><strong>Assistant</strong><p>How can I help with your deployment?</p></article></div><form class="hdc-chat-form" data-hdc-chat-form><label>Message<textarea name="message" rows="2" required placeholder="Ask the assistant"></textarea></label><button class="hdc-button hdc-primary" type="submit">Send</button></form><p role="status" data-hdc-status>Ready.</p></section>'
     elif kind == "file":
         body = '<label class="hdc-file">Upload evidence<input type="file" accept=".pdf,image/*" data-hdc-file></label><p role="status" data-hdc-status>No file selected.</p>'
     elif kind == "download":
@@ -1175,7 +1240,7 @@ def demo_html(spec: ComponentDoc) -> str:
     elif kind == "data-table":
         body = '<label class="hdc-filter">Filter employees<input type="search" data-hdc-filter></label><table><caption>Employees</caption><thead><tr><th>Name</th><th>Team</th><th>Status</th></tr></thead><tbody data-hdc-rows><tr><td>Ada</td><td>Platform</td><td>Active</td></tr><tr><td>Grace</td><td>Compiler</td><td>Active</td></tr><tr><td>Alan</td><td>Research</td><td>Leave</td></tr></tbody></table><p role="status" data-hdc-status>Showing 3 employees.</p>'
     elif kind == "data-editor":
-        body = '<table class="hdc-editor"><caption>Editable allocation</caption><thead><tr><th>Name</th><th>Allocation</th></tr></thead><tbody><tr><td>Ada</td><td><input type="number" min="0" max="100" value="80" data-hdc-dirty></td></tr><tr><td>Grace</td><td><input type="number" min="0" max="100" value="60" data-hdc-dirty></td></tr></tbody></table><button class="hdc-button hdc-primary" type="button" data-hdc-action="save-editor">Save changes</button><p role="status" data-hdc-status>No unsaved changes.</p>'
+        body = '<table class="hdc-editor"><caption>Editable allocation</caption><thead><tr><th>Name</th><th>Allocation</th></tr></thead><tbody><tr><td>Ada</td><td><input type="number" min="0" max="100" value="80" aria-label="Ada allocation" data-hdc-dirty></td></tr><tr><td>Grace</td><td><input type="number" min="0" max="100" value="60" aria-label="Grace allocation" data-hdc-dirty></td></tr></tbody></table><button class="hdc-button hdc-primary" type="button" data-hdc-action="save-editor">Save changes</button><p role="status" data-hdc-status>No unsaved changes.</p>'
     elif kind == "line-chart":
         body = '<figure class="hdc-chart"><figcaption><strong>Monthly revenue</strong><span>Revenue rose from January through June.</span></figcaption><svg viewBox="0 0 360 150" role="img" aria-label="Revenue climbs from 18 to 42 thousand dollars"><path d="M20 125 L82 111 L144 91 L206 99 L268 55 L340 24" fill="none" stroke="currentColor" stroke-width="4"/><g fill="currentColor"><circle cx="20" cy="125" r="4"/><circle cx="82" cy="111" r="4"/><circle cx="144" cy="91" r="4"/><circle cx="206" cy="99" r="4"/><circle cx="268" cy="55" r="4"/><circle cx="340" cy="24" r="4"/></g></svg></figure>'
     elif kind in {"bar-chart", "donut-chart", "scatter-chart"}:
@@ -1200,6 +1265,7 @@ def demo_html(spec: ComponentDoc) -> str:
         "error",
         "data-editor",
         "color-mode",
+        "chat-input",
     }
     note = (
         '<div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /fragment → 200</code></div>'
@@ -1298,6 +1364,8 @@ def static_demo(spec: ComponentDoc) -> str:
         return '<details class="hdc-expander"><summary>Advanced settings</summary><p>Configure retry and timeout behavior.</p></details>'
     if name == "Sidebar":
         return '<div class="hdc-shell"><aside aria-label="Workspace"><strong>Acme</strong><a href="#">Overview</a><a href="#">Settings</a></aside><main><h3>Overview</h3><p>Primary page content</p></main></div>'
+    if name == "ChatMessage":
+        return '<section class="hdc-chat" aria-label="Deployment conversation"><div class="hdc-transcript" role="log"><article class="hdc-chat-message hdc-chat-user"><strong>You</strong><p>Is the release ready?</p></article><article class="hdc-chat-message hdc-chat-assistant"><strong>Assistant</strong><p>Your deployment is ready.</p><small role="status" aria-live="polite">Delivered</small></article></div></section>'
     return f'<div class="hdc-result"><strong>{name}</strong><span>{spec.summary}</span></div>'
 
 
@@ -1318,6 +1386,7 @@ def page_text(spec: ComponentDoc) -> str:
         "error",
         "data-editor",
         "color-mode",
+        "chat-input",
     }
     known_imports = sorted(
         {
@@ -1516,6 +1585,7 @@ def discover_builtin_components() -> set[str]:
         "packages/hedron-core/src/hedron_core/auto.py",
         "packages/hedron-core/src/hedron_core/color_mode.py",
         "packages/hedron/src/hedron/builtins/files.py",
+        "packages/hedron/src/hedron/builtins/chat.py",
         "packages/hedron/src/hedron/content.py",
         "packages/hedron-data/src/hedron_data/table.py",
         "packages/hedron-data/src/hedron_data/editor.py",

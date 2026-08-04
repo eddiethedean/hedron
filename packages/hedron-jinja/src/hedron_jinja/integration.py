@@ -65,7 +65,7 @@ _CONDITIONAL_ASSET_RE = re.compile(r"{%[-+]?\s*hedron_asset\b")
 
 
 def _hdj_template_class(base: type[Any]) -> type[Any]:
-    """Reject public Jinja streaming while keeping buffered generate() for render."""
+    """Buffer ordinary stream(); expose explicit two-phase streaming for 0.10."""
 
     class HdjTemplate(base):  # type: ignore[valid-type,misc]
         def stream(self, *args: Any, **kwargs: Any) -> Any:
@@ -76,13 +76,27 @@ def _hdj_template_class(base: type[Any]) -> type[Any]:
                     "Template.stream() would emit HTML before RenderResult metadata is complete."
                 ),
                 remediation=(
-                    "Use HedronJinja.render() or render_async() for an atomic RenderResult."
+                    "Use HedronJinja.render() / render_async(), or "
+                    "HedronJinja.two_phase_stream() for the explicit 0.10 streaming API."
                 ),
             )
 
     HdjTemplate.__name__ = f"Hdj{base.__name__}"
     HdjTemplate.__qualname__ = f"Hdj{base.__qualname__}"
     return HdjTemplate
+
+
+@dataclass(frozen=True, slots=True)
+class TwoPhaseStream:
+    """Metadata-first HDJ stream: finalize RenderResult, then yield body chunks."""
+
+    result: RenderResult
+    body_chunks: tuple[str, ...]
+
+    def iter_phases(self) -> Any:
+        yield ("metadata", self.result)
+        for chunk in self.body_chunks:
+            yield ("body", chunk)
 
 
 @dataclass(slots=True)
@@ -580,6 +594,25 @@ class HedronJinja:
             _ACTIVE_SESSION.reset(token)
         return self._finish(session, "".join(chunks))
 
+    def two_phase_stream(
+        self,
+        spec_or_name: TemplateSpec[Any] | str,
+        view: Model | Mapping[str, Any],
+        *,
+        context: RenderContext | None = None,
+        mode: RenderMode | None = None,
+        body_chunk_size: int = 4096,
+    ) -> TwoPhaseStream:
+        """Render atomically, then expose body chunks for focused streaming (RFC-0032)."""
+        result = self.render(spec_or_name, view, context=context, mode=mode)
+        body = result.html
+        if body_chunk_size < 1:
+            raise ValueError("body_chunk_size must be >= 1")
+        chunks = tuple(
+            body[i : i + body_chunk_size] for i in range(0, len(body), body_chunk_size)
+        ) or ("",)
+        return TwoPhaseStream(result=result, body_chunks=chunks)
+
     async def render_async(
         self,
         spec_or_name: TemplateSpec[Any] | str,
@@ -832,7 +865,7 @@ class HedronJinja:
                     explanation="Page assets must be known before the document head is emitted.",
                     remediation=(
                         "Move the asset ID to a source prologue or render a fragment with "
-                        "registered head management."
+                        "registered head management (htmx-ext-head-support / RFC-0032)."
                     ),
                     span=SourceSpan(path=root.declaration.name, start_line=1),
                 )

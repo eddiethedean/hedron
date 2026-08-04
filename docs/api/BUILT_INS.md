@@ -64,6 +64,16 @@ Built-ins use native semantic HTML, expose documented slots and variants, and sa
 - Trust: `TrustedHtml.nh3`, trusted icon/SVG registry.
 - Interaction: `InteractionResult`, `HtmxRequest`, fragment regions, status policies.
 
+## Phase 0.10 live interaction additions (`v0.10.0`)
+
+- `Dialog`: native dialog structure with explicit close behavior and browser-module modal intent.
+- `ChatMessage`: typed transcript items for user, assistant, system, tool, and status roles.
+- `ChatInput`: labelled explicit-submit chat form with typed HTMX targeting and optional attachments.
+
+Applications remain responsible for dialog triggers and focus restoration, chat history and
+ordering, authentication, CSRF, rate limits, persistence, attachment validation, and bounded
+streaming. The hosted component pages simulate these browser and server boundaries locally.
+
 ## Naming rule
 
 Hedron component names use PascalCase. Native elements use lowercase `hedron.html` attributes and tags. Python keyword collisions use a trailing underscore such as `class_`; rendered HTML always uses the canonical attribute name.

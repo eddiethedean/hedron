@@ -34,7 +34,7 @@ Phase 0.9 keeps the numeric dependency floors above and adds the optional HDJ au
 | HDJ source format | UTF-8 `.hdj` with a mandatory format-v1 TOML prologue; ordinary `.html`/`.jinja` stay outside the HDJ loader. |
 | HDN | Removed. Version 0.8 is the final HDN-capable line; no converter or compatibility runtime ships. |
 | Native adapter depth | FastAPI remains the flagship depth; Flask/Django keep their 0.7/0.8 routing slices. Native route/CSRF/forms/CSP reconciliation for HDJ is phase 0.11. |
-| Live HTMX / streaming | Browser-backed HTMX lifecycle and HDJ fragment-head/streaming remain phase 0.10. |
+| Live HTMX / streaming | Official SSE and focused streaming are Supported in 0.10 (RFC-0032); polling remains the required fallback. |
 
 ## Phase 0.7 compatibility entry gate
 

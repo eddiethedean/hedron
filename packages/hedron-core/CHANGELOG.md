@@ -1,5 +1,12 @@
 # Changelog
 
+
+## [0.10.0] - 2026-08-04
+
+### Added
+- Live transport contracts: SSE framing, focused streaming, page/session channels, media sessions, navigation preload (RFC-0032).
+- `Dialog` and `ChatMessage` built-ins; pinned HTMX SSE and head-support extension digests.
+
 ## [0.9.0] - 2026-08-04
 
 ### Added

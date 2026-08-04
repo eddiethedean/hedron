@@ -33,3 +33,11 @@ Unsafe methods use CSRF protection under cookie authentication. GET never repres
 
 The phase 0.6+ adoption and extension gates are tracked in the
 [HTMX 2 integration audit](../HTMX_2_AUDIT.md).
+
+## Phase 0.10 live extensions
+
+Official `htmx-ext-sse` and `htmx-ext-head-support` are independently pinned local assets.
+SSE observation, focused streaming, page/session WebSocket channels, and opt-in navigation
+preload are governed by [RFC-0032](RFC-0032-LIVE-TRANSPORT.md). Polling and ordinary navigation
+remain Supported fallbacks. Removed HTMX 1 attributes remain rejected; unknown future `hx-*`
+attributes are reported against the installed HTMX pin.

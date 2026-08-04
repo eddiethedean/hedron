@@ -49,3 +49,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0029](RFC-0029-ROADMAP-TO-1.0.md) | Capability roadmap | Accepted |
 | [0030](RFC-0030-DECLARATIVE-AUTHORING-RESET.md) | Declarative authoring reset | Superseded |
 | [0031](RFC-0031-JINJA-INTEGRATION.md) | Explicit `.hdj` format, standards-first authoring, and immediate HDN replacement | Implementing |
+| [0032](RFC-0032-LIVE-TRANSPORT.md) | Live transport, focused streaming, and navigation preload | Accepted |

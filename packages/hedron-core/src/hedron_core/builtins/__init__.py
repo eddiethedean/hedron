@@ -28,6 +28,7 @@ from hedron_core.builtins.forms import (
 )
 from hedron_core.builtins.landmarks import Aside, Footer, Header, Main, Nav, Section
 from hedron_core.builtins.layout import Container, Divider, Grid, Inline, Stack
+from hedron_core.builtins.live_ui import ChatMessage, Dialog
 from hedron_core.builtins.surfaces import Alert, Badge, Card, Skeleton
 from hedron_core.builtins.utilities import (
     CodeViewer,
@@ -47,11 +48,13 @@ __all__ = [
     "Badge",
     "Button",
     "Card",
+    "ChatMessage",
     "Checkbox",
     "CodeBlock",
     "CodeViewer",
     "Container",
     "DescriptionList",
+    "Dialog",
     "Divider",
     "Expander",
     "Footer",

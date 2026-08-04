@@ -1,5 +1,11 @@
 # Changelog
 
+
+## [0.10.0] - 2026-08-04
+
+### Added
+- `two_phase_stream()` metadata-first streaming API; version-aware unknown `hx-*` diagnostics (HED-JINJA-0027); registered fragment head-management path for `htmx-ext-head-support`.
+
 ## [0.9.0] - 2026-08-04
 
 - Replace the removed HDN language with HDJ, an explicit standards-first `.hdj` format whose static

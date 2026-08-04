@@ -10,7 +10,7 @@ These requirements own roadmap gate 0.7E. Evidence follows
 | JOB-003 | Retry, terminal failure, retention/expiry, cleanup, and cancellation-request semantics are explicit. | State-machine and backend-degradation tests. | Verified |
 | JOB-004 | A 202 interaction returns an addressable status resource, `Retry-After`, and an accessible bounded-polling component with useful non-HTMX behavior. | HTTP/browser/a11y tests across supported adapters. | Verified |
 | JOB-005 | Small host-framework background work is visibly distinct from durable work and cannot be accidentally promoted to a durable guarantee. | API/diagnostic tests and documentation examples. | Verified |
-| JOB-006 | Optional SSE, if selected, preserves the same job contract and passes offline/CSP/auth/reconnect tests; otherwise polling remains sufficient. | Phase 0.10 transport decision and extension evidence, or an explicitly owned later deferment. | Deferred to 0.10 |
+| JOB-006 | Optional SSE, if selected, preserves the same job contract and passes offline/CSP/auth/reconnect tests; otherwise polling remains sufficient. | Phase 0.10 SSE evidence (`SSE-10-001` / `JOB-006`); polling remains Supported. | Verified |
 
 ## Exit
 

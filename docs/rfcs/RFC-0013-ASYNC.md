@@ -21,8 +21,10 @@ fallback, stale-cache, or partial-region policies. Detached request tasks are di
 
 Lazy addressable components are the default deferred UI. Small post-response work uses the host
 framework's bounded background mechanism where one exists; durable or CPU-heavy work uses an
-external job backend. The required 202 job interaction uses accessible bounded polling. SSE is an
-optional 0.7 decision, and general streamed documents and WebSockets remain deferred.
+external job backend. The required 202 job interaction uses accessible bounded polling.
+Phase 0.10 adds official SSE observation, focused streaming primitives, and accepted page/session
+WebSocket channels per [RFC-0032](RFC-0032-LIVE-TRANSPORT.md). General streamed HTML for every
+component remains forbidden (D-019); polling remains the Supported job-status fallback.
 
 `hedron.gather()` defines named results, sibling-failure and explicit partial-failure behavior, and
 request-scope ownership. `hedron.run_sync()` defines `ContextVar` propagation, a capacity limiter,

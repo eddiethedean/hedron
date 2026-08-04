@@ -1,4 +1,4 @@
-"""HTMX extension asset contract (phase 0.7F). SSE is assigned to phase 0.10."""
+"""HTMX extension asset contract (phase 0.10: SSE and head-support pinned)."""
 
 from __future__ import annotations
 
@@ -10,7 +10,8 @@ __all__ = [
     "known_extensions",
 ]
 
-SSE_EXTENSION_DEFERRED = True
+# Official SSE is Supported in 0.10; polling remains the required fallback (D-037/D-044).
+SSE_EXTENSION_DEFERRED = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -30,21 +31,21 @@ def known_extensions() -> tuple[ExtensionAsset, ...]:
         ExtensionAsset(
             name="htmx-ext-sse",
             version="2.2.2",
-            digest="sha256-deferred",
+            digest="sha256-83eca6fa0611fe2b0bf1700b424b88b5eced38ef448ef9760a2ea08fbc875611",
             path="/hedron-static/ext/sse.js",
             csp="script-src 'self'",
             load_order=50,
-            deferred=True,
-            notes="Official SSE extension evaluated; polling remains Supported (D-037).",
+            deferred=False,
+            notes="Official SSE extension; polling remains Supported fallback (D-044).",
         ),
         ExtensionAsset(
             name="htmx-ext-head-support",
             version="2.0.2",
-            digest="sha256-pending-pin",
+            digest="sha256-207f449ba70ad0d384b1734288ddae8493d26737bd74d8510829c0be5b737568",
             path="/hedron-static/ext/head-support.js",
             csp="script-src 'self'",
             load_order=10,
-            deferred=True,
-            notes="Optional; deferred until a first-party digest pin ships.",
+            deferred=False,
+            notes="Optional head merge for registered fragment assets (RFC-0032).",
         ),
     )

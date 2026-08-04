@@ -207,6 +207,6 @@ def test_data_editor_enhancement_hides_no_script_fallback() -> None:
         / "tabulator"
         / "editor.js"
     ).read_text(encoding="utf-8")
-    assert ':scope > .hedron-data-editor-fallback' in script
+    assert ":scope > .hedron-data-editor-fallback" in script
     assert "fallback.hidden = true" in script
     assert 'delBtn.className = "hedron-button hedron-button-danger"' in script

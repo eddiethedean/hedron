@@ -18,6 +18,7 @@ from hedron.builtins import (
     action_attrs,
     oob_swap,
 )
+from hedron.builtins.chat import ChatInput
 from hedron.builtins.files import DownloadButton, FileUpload, safe_download_response
 from hedron.cache import cache_component, cache_data
 from hedron.color_mode import (
@@ -36,6 +37,12 @@ from hedron.interaction import (
     form_sync_attrs,
     htmx_request,
 )
+from hedron.preload import (
+    HX_PRELOADED,
+    NavigationPreloadPolicy,
+    apply_preload_headers,
+    evaluate_preload_request,
+)
 from hedron.responses import (
     HTML,
     ComponentResponse,
@@ -52,7 +59,15 @@ from hedron.security import (
     redirect_external,
     redirect_local,
 )
+from hedron.sse import SseResponse, extension_script_tags, job_status_sse_response, sse_response
 from hedron.state import SessionState, session_state
+from hedron.streaming import (
+    StreamingComponentResponse,
+    stream_chunked_list,
+    stream_document,
+    stream_tokens,
+)
+from hedron.websocket_channel import accept_page_session_channel, origin_allowed
 
 # Re-export beginner core API.
 from hedron_core import (  # noqa: F401
@@ -62,6 +77,7 @@ from hedron_core import (  # noqa: F401
     Badge,
     Button,
     Card,
+    ChatMessage,
     Checkbox,
     CodeBlock,
     CodeViewer,
@@ -70,6 +86,7 @@ from hedron_core import (  # noqa: F401
     Component,
     Container,
     DescriptionList,
+    Dialog,
     Divider,
     Expander,
     Field,
@@ -211,7 +228,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.9.0"
+__version__ = "0.10.0"
 
 __all__ = [
     "Alert",
@@ -220,6 +237,8 @@ __all__ = [
     "Badge",
     "Button",
     "Card",
+    "ChatInput",
+    "ChatMessage",
     "Checkbox",
     "CodeBlock",
     "Component",
@@ -227,6 +246,7 @@ __all__ = [
     "ComponentResponse",
     "Container",
     "DescriptionList",
+    "Dialog",
     "Divider",
     "ErrorState",
     "Field",
@@ -240,6 +260,7 @@ __all__ = [
     "FragmentResponse",
     "Grid",
     "HTML",
+    "HX_PRELOADED",
     "Head",
     "Header",
     "Heading",
@@ -259,6 +280,7 @@ __all__ = [
     "Main",
     "Model",
     "Nav",
+    "NavigationPreloadPolicy",
     "Page",
     "PageResponse",
     "Pagination",
@@ -277,7 +299,9 @@ __all__ = [
     "Select",
     "SessionState",
     "Skeleton",
+    "SseResponse",
     "Stack",
+    "StreamingComponentResponse",
     "StyleSymbols",
     "SubmitButton",
     "Table",
@@ -288,6 +312,16 @@ __all__ = [
     "Title",
     "TrustedHtml",
     "UrlPurpose",
+    "accept_page_session_channel",
+    "apply_preload_headers",
+    "evaluate_preload_request",
+    "extension_script_tags",
+    "job_status_sse_response",
+    "origin_allowed",
+    "sse_response",
+    "stream_chunked_list",
+    "stream_document",
+    "stream_tokens",
     "Auto",
     "AltairChart",
     "CodeViewer",

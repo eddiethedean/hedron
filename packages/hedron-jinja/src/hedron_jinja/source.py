@@ -412,6 +412,44 @@ def observed_features(environment: Environment, parsed: ParsedHdjSource) -> froz
     return frozenset(observed)
 
 
+_HX_KNOWN_ATTRS_2_0 = frozenset(
+    {
+        "hx-boost",
+        "hx-get",
+        "hx-post",
+        "hx-put",
+        "hx-patch",
+        "hx-delete",
+        "hx-push-url",
+        "hx-replace-url",
+        "hx-select",
+        "hx-select-oob",
+        "hx-swap",
+        "hx-swap-oob",
+        "hx-target",
+        "hx-trigger",
+        "hx-vals",
+        "hx-headers",
+        "hx-vars",
+        "hx-confirm",
+        "hx-prompt",
+        "hx-include",
+        "hx-params",
+        "hx-encoding",
+        "hx-request",
+        "hx-indicator",
+        "hx-disabled-elt",
+        "hx-history",
+        "hx-history-elt",
+        "hx-preserve",
+        "hx-ext",
+        "hx-disinherit",
+        "hx-inherit",
+        "hx-sync",
+        "hx-validate",
+        "hx-on",
+    }
+)
 _HX_URL_ATTRS = frozenset(
     {
         "hx-get",
@@ -686,6 +724,28 @@ def _htmx_local_diagnostics(
         attribute = match.group(1).lower()
         value = match.group(3)
         offset = match.start(1)
+        base_attr = "hx-on" if attribute.startswith("hx-on") else attribute
+        if base_attr not in _HX_KNOWN_ATTRS_2_0 and not attribute.startswith("hx-on:"):
+            diagnostics.append(
+                make_diagnostic(
+                    "HED-JINJA-0027",
+                    severity=DiagnosticSeverity.WARNING,
+                    title="Unknown HTMX attribute for installed pin",
+                    explanation=(
+                        f"Attribute `{attribute}` is not in the HTMX 2.0.x known set; "
+                        "confirm it against the bundled HTMX version."
+                    ),
+                    remediation=(
+                        "Use a documented hx-* attribute for the installed HTMX pin, "
+                        "or isolate experimental attributes behind an explicit capability."
+                    ),
+                    span=SourceSpan(
+                        path=parsed.declaration.name,
+                        start_line=parsed.declaration.body_start_line
+                        + original_body.count("\n", 0, offset),
+                    ),
+                )
+            )
         if attribute in _HX_URL_ATTRS and "{{" in value and "}}" in value:
             # Dynamic URL sinks are already covered by the output-expression matrix.
             continue
@@ -697,7 +757,7 @@ def _htmx_local_diagnostics(
                     title="HTMX trigger filter is locally noted",
                     explanation=(
                         "Trigger filters are accepted as author-written HTMX syntax; "
-                        "browser race and cancellation proof is phase 0.10."
+                        "browser evidence is covered by the phase 0.10 live matrix."
                     ),
                     remediation=(
                         "Keep filters deterministic and declare any js: eval capability explicitly."

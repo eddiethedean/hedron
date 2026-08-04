@@ -199,6 +199,9 @@ nav:
       - Pagination: components/pagination.md
       - Loading: components/loading.md
       - ErrorState: components/error-state.md
+      - Dialog: components/dialog.md
+      - ChatMessage: components/chat-message.md
+      - ChatInput: components/chat-input.md
     - Data:
       - Overview: components/data.md
       - Auto: components/auto.md

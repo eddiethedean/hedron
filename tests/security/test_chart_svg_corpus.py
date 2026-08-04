@@ -45,8 +45,8 @@ def test_altair_schema_metadata_is_removed_from_local_payload() -> None:
     from hedron_charts import AltairAdapter
     from hedron_core.visualization import ChartAccessibility
 
-    chart = altair.Chart(altair.Data(values=[{"x": "A", "y": 1}])).mark_bar().encode(
-        x="x:N", y="y:Q"
+    chart = (
+        altair.Chart(altair.Data(values=[{"x": "A", "y": 1}])).mark_bar().encode(x="x:N", y="y:Q")
     )
     output = AltairAdapter().compile(
         chart,

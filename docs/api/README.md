@@ -23,8 +23,8 @@ from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
 ## Shipped through 0.9
 
-These surfaces are implemented on repository `main`'s **0.9.0** train (includes the 0.8
-compatibility baseline plus the intentional HDJ authoring replacement).
+These surfaces are implemented on repository `main`'s **0.10.0** train (includes the 0.9
+authoring break and 0.10 live interaction).compatibility baseline plus the intentional HDJ authoring replacement).
 
 ### Application
 

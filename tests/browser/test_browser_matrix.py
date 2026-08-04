@@ -193,3 +193,19 @@ def test_history_restore_header_returns_page(browser_app_url: str, engine: str) 
             assert "<html" in body.lower()
         finally:
             browser.close()
+
+
+def test_extension_assets_served(browser_app_url: str, engine: str) -> None:
+    """Pinned SSE and head-support assets are locally reachable."""
+    with sync_playwright() as pw:
+        browser = _launch(pw, engine)
+        page = browser.new_page()
+        try:
+            sse = page.request.get(browser_app_url + "/hedron-static/ext/sse.js")
+            head = page.request.get(browser_app_url + "/hedron-static/ext/head-support.js")
+            assert sse.status == 200
+            assert "Server Sent Events" in sse.text() or "sse" in sse.text().lower()
+            assert head.status == 200
+            assert "head-support" in head.text().lower() or "head" in head.text().lower()
+        finally:
+            browser.close()
