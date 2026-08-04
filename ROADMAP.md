@@ -470,6 +470,11 @@ framework-neutral core ownership.
 ### Scope
 
 - Flask Blueprint/application-factory integration and Django reusable-app integration.
+- A portable `hedron.testing` adapter harness with a common app-fixture protocol, route lookup,
+  session/cookie setup, and response/fragment assertions, implemented by thin FastAPI, Flask, and
+  Django adapters. It exposes only guarantees shared by the selected host; native test clients and
+  framework-specific assertions remain available rather than being hidden behind a lowest-common-
+  denominator facade.
 - A bounded Django QuerySet `DataSource` with ordering, filtering, projection, tenant/auth hooks,
   transaction ownership, and query-count diagnostics.
 - Django-native form bridging where it reuses portable interaction and error contracts.
@@ -484,6 +489,8 @@ framework-neutral core ownership.
 - Flask and Django conveniences remain thin native integrations rather than parallel runtimes.
 - QuerySet operations stay lazy and bounded and pass query-count, concurrency, transaction, and
   tenant-isolation evidence.
+- The same portable app-fixture scenarios pass against every claimed adapter, while adapter-native
+  tests prove host-specific CSRF, session, URL, error, and lifecycle behavior.
 
 ## 0.12 — Data and visualization scale (`v0.12.0`)
 
@@ -492,6 +499,11 @@ visualization through bounded, inspectable adapters.
 
 ### Scope
 
+- `hedron.testing.data` contract fixtures for bounded sources, transform plans, editable-grid
+  deltas, and chart-event payloads. Builders generate valid boundary cases and explicitly labeled
+  adversarial cases; assertions cover stable row/trace identity, authorization context, query and
+  payload budgets, cancellation, and accessible fallback metadata without embedding a dataframe
+  implementation in the testing package.
 - DataEditor formulas, merged cells, richer Excel-formatting compatibility, pivots, tree grids,
   collaborative editing, additional grid adapters, and spreadsheet import/export beyond CSV.
   Grid contracts include saved column/filter/sort/selection views, stable row identities, typed
@@ -528,6 +540,8 @@ visualization through bounded, inspectable adapters.
   provenance, and recovery suites.
 - Every visualization has accessible fallback/description behavior, local-asset/CSP evidence,
   payload limits, lifecycle cleanup, and an independently justified dependency cost.
+- Data/chart adapters run the shared contract fixtures with reproducible boundary and adversarial
+  cases; their tests assert semantic event results rather than browser-library internals.
 
 ## 0.13 — Advanced async and observability (`v0.13.0`)
 
@@ -536,6 +550,10 @@ introducing a second hidden runtime or losing trace and cancellation semantics.
 
 ### Scope
 
+- Deterministic async test controls for `prepare()` and jobs: a controllable clock, scripted
+  dependency outcomes, cancellation/disconnect triggers, and ordered task/trace assertions. These
+  utilities test declared lifecycle boundaries and must not replace the host event loop or claim to
+  reproduce arbitrary production scheduling.
 - Optional component-level async `prepare()` lifecycle with explicit ownership, deadlines,
   cancellation, partial failure, caching, and deterministic render handoff.
 - Adaptive concurrency controls driven by measured backend capacity rather than unbounded task
@@ -552,6 +570,8 @@ introducing a second hidden runtime or losing trace and cancellation semantics.
 - Concurrency/load evidence covers overload, degradation, shutdown, partial failure, and trace
   exporter failure across supported ASGI/WSGI capability boundaries.
 - Applications can disable adaptive behavior and tracing without changing component semantics.
+- Scenario tests can reproduce deadline, cancellation, partial-failure, overload, and exporter
+  failure outcomes without wall-clock sleeps; real-load evidence remains a separate release gate.
 
 ## 0.14 — Portable runtimes and acceleration (`v0.14.0`)
 
@@ -560,6 +580,10 @@ without fragmenting the component, security, rendering, or artifact contracts.
 
 ### Scope
 
+- A versioned, language-neutral conformance-test kit with machine-readable fixtures, golden
+  render/diagnostic artifacts, negative cases, and a runner that reports capability-level
+  differences. Fixture versioning and normalization rules are public so implementations cannot
+  pass merely by matching a particular Python runtime's incidental formatting.
 - A language-neutral component specification and conformance fixture format extracted only from
   proven Python contracts.
 - Conformance code generation and experimental Java and Node runtimes.
@@ -578,6 +602,9 @@ without fragmenting the component, security, rendering, or artifact contracts.
   memory-safety/fuzz evidence, and benchmarks showing material end-to-end benefit.
 - Runtime or accelerator absence never changes public semantics, security policy, or deterministic
   output.
+- Every experimental runtime and accelerator is tested through the published conformance kit in
+  addition to its native unit tests; failures identify the fixture, contract version, and violated
+  capability.
 
 ## 0.15 — Data-app surface completeness (`v0.15.0`)
 
@@ -595,6 +622,16 @@ adopting whole-script reruns or global mutable application state.
 
 ### Scope
 
+- A first-party `hedron.testing.app` scenario harness for high-value application flows: navigate
+  registered routes, retain cookies/session state, submit typed controls or declared actions,
+  request HTMX fragments, follow explicit redirects, and assert returned HTML, headers, component
+  identities, diagnostics, and response mode. Scenarios execute ordinary host HTTP requests and
+  use the production renderer; they do not simulate a Streamlit-style whole-script rerun or invent
+  browser state not represented by a request.
+- Scenario fixtures for authenticated principals, browser-context hints, browser-storage payloads,
+  uploads, media/permission outcomes, OIDC callback state, and named connections. Fixtures are
+  schema-checked, reset after each test, redact secrets in failures, and make spoofable client data
+  explicit to keep authorization tests honest.
 - Typed form/control families for number and range input, date/time/datetime input, multiselect,
   toggle/switch, segmented control and pills, color input, rating/feedback, select slider, and menu
   button behavior. Native HTML is the baseline; browser enhancement preserves submitted-value,
@@ -647,6 +684,10 @@ adopting whole-script reruns or global mutable application state.
 - A reference data/AI application demonstrates typed filters, rich tables, diagrams/maps, chat with
   streamed output, media capture/playback, OIDC identity, and a named data connection while all
   mutations remain explicit actions and ordinary HTTP fallbacks remain usable.
+- The scenario harness covers form validation/retention, session and authorization boundaries,
+  page-versus-fragment behavior, uploads, browser-context/storage policy, and redirect/error
+  contracts. Browser tests remain required for focus, device permission, playback, and enhanced
+  client behavior.
 
 ## 0.16 — Curated extras and interactive analysis tools (`v0.16.0`)
 
@@ -663,6 +704,10 @@ analysis workbenches without expanding the core runtime or adopting Streamlit-st
 
 ### Scope
 
+- Workbench-flow testing helpers that compose `AppScenario` requests with declared interaction
+  events and inspect the resulting transform plan, action request, export, and fragment output.
+  They provide deterministic fixtures for trees, JSON documents, image regions, and sandbox
+  budgets, but never evaluate arbitrary notebook or callable code as part of fixture generation.
 - An optional `hedron-extras` distribution with independently installable feature extras, lazy
   imports, pinned local browser assets, capability manifests, precise missing-dependency guidance,
   and conformance tests. It is a curated package over public Hedron contracts, not a privileged
@@ -702,6 +747,9 @@ analysis workbenches without expanding the core runtime or adopting Streamlit-st
   storage exhaustion, worker termination, and server/session isolation.
 - The reference application composes an analysis workbench from the optional package while the
   same domain actions and data sources remain usable through ordinary HTTP and core components.
+- Workbench flow tests prove that client selections yield bounded, authorized transform/action
+  requests and that each enhanced path retains an ordinary HTTP or static alternative where
+  promised.
 
 ## 0.17 — Reactive dashboards and agent interfaces (`v0.17.0`)
 
@@ -719,6 +767,11 @@ client callback runtime or weakening the request/action boundary.
 
 ### Scope
 
+- An interaction-graph test recorder and replay runner that captures declared trigger/action/
+  patch exchanges with correlation IDs, redacted payload snapshots, and ordering metadata.
+  Replays support explicit stale-result, duplicate-event, disconnect, and patch-conflict schedules
+  and assert final regions plus audit/trace output; recordings are contract fixtures, never a way
+  to replay privileged production traffic.
 - A finite, page-local `DashboardBinding` / `InteractionGraph` layer that declares trigger inputs,
   snapshot-only state, one or more target regions, initialization policy, and chained derived
   bindings. Registration performs missing-dependency, cycle, duplicate-writer, authorization,
@@ -776,6 +829,9 @@ client callback runtime or weakening the request/action boundary.
 - A reference analytical application demonstrates chart/grid cross-filtering, dynamic repeated
   panels, partial and full-region fallbacks, a cancellable background calculation, a notebook
   preview, and opt-in read-only plus mutating MCP tools over the same explicit domain actions.
+- Dashboard graph recordings replay deterministically across supported browsers and workers,
+  exercising races, patch conflicts, reconnects, dynamic collections, and authorization failures
+  without depending on timing-sensitive sleeps.
 
 ## 0.18 — Model demos and inference workflows (`v0.18.0`)
 
@@ -795,6 +851,10 @@ publishing arbitrary callables or adding a second application runtime.
 
 ### Scope
 
+- A `ModelDemoScenario` test kit layered on `AppScenario` for versioned examples, typed input and
+  artifact fixtures, queue/admission outcomes, streamed progress, cancellation, feedback consent,
+  and redaction/retention assertions. It supplies synthetic bounded files and model results only;
+  it never loads a real model or treats generated output as trustworthy test data by default.
 - An `InferenceInterface` / `ModelDemo` composition layer that builds a reviewable input/result
   surface only from an explicitly registered typed action or callable adapter. Multiple inputs and
   outputs, submit/clear/stop, declared safe live/debounced mode, preprocessing/postprocessing,
@@ -860,6 +920,9 @@ publishing arbitrary callables or adding a second application runtime.
 - A reference model application demonstrates examples and governed feedback, ranked/text/media
   outputs, batched streamed inference on a durable backend, a recorded public client call, a remote
   Gradio provider, and an editable-to-immutable published workflow over the same explicit actions.
+- Model-demo scenarios cover the corresponding HTTP and job contracts without using real models,
+  external credentials, or unbounded artifacts; browser tests remain responsible for enhanced
+  media and streaming presentation behavior.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
@@ -1021,6 +1084,14 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | CLI new/dev/build/check/inspect/eject/components/routes/graph/preview/audit | 0.4 | Stable text, JSON, and SARIF diagnostics. |
 | Development watching and atomic incremental rebuilds | 0.3–0.4 | CSS/registry/build remain supported; Jinja dependency watching belongs to `hedron-jinja`. |
 | Pytest helpers, async clients, snapshots, browser/a11y/visual hooks | 0.4 | Supports named examples and conformance. |
+| Portable adapter fixtures and native-host test-client parity | 0.11 | Shared scenarios expose only portable contracts; FastAPI, Flask, and Django retain native assertions. |
+| Data/chart contract fixtures and bounded adversarial generators | 0.12 | Tests source plans, edit/event payloads, limits, identities, authorization, and fallbacks without owning dataframe behavior. |
+| Deterministic async lifecycle scenarios | 0.13 | Controllable clock and scripted deadlines/cancellation complement—not replace—real-load evidence. |
+| Published cross-language conformance-test kit | 0.14 | Versioned fixtures, negative cases, artifacts, and capability-level failure reports. |
+| HTTP-faithful `AppScenario` application-flow harness | 0.15 | Route, session, typed control/action, fragment, redirect, and response assertions; explicitly no whole-script rerun simulation. |
+| Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
+| Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |
+| Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |
 | Plugin discovery, compatibility, capabilities, lifecycle, rollback | 0.4 | Plugins are executable packages, not sandboxed data. |
 | Curated optional `hedron-extras` package and per-feature capability manifests | 0.16 | Built only on public package/plugin contracts; no privileged runtime or eager dependency bundle. |
 | Dash migration inventory, notebook preview helper, and dashboard graph diagnostics | 0.17 | Migration is reviewable guidance, notebook previews are development-only, and Explorer shows graph timing/payload/failures. |
@@ -1146,7 +1217,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0016 OpenAPI | 0.2; Explorer/docs integration in 0.4; explicit MCP projection boundary in 0.17; interaction recorder and Gradio remote discovery in 0.18 |
 | 0017 CLI | 0.2 minimal; 0.3 compiler commands; 0.4 full |
 | 0018 Packaging | 0.0–0.8 |
-| 0019 Testing | 0.0–0.8; accessibility scenario/tree/AT evidence in 0.19 |
+| 0019 Testing | 0.0–0.8; adapter fixtures in 0.11, data contracts in 0.12, deterministic async scenarios in 0.13, portable conformance kit in 0.14, app scenarios in 0.15, workbench/dashboard/model scenarios in 0.16–0.18, and accessibility scenario/tree/AT evidence in 0.19 |
 | 0020 Performance | 0.1–0.8 |
 | 0021 Browser runtime | 0.3; rich widgets in 0.5–0.6; browser context/storage in 0.15; extras and isolated sandbox in 0.16; dashboard patches/collections in 0.17; workflow canvas in 0.18; accessibility evidence in 0.19 |
 | 0022 Theming | 0.3 |
