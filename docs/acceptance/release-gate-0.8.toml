@@ -73,10 +73,13 @@ owner = "hedron"
 
 [[evidence]]
 id = "HTMX-08-002"
-state = "Verified"
-command = "uv run pytest tests/browser/test_browser_matrix.py -q --collect-only"
-ci_job = "browser"
+state = "Deferred"
+command = ""
+ci_job = ""
 owner = "hedron"
+rationale = "Firefox/WebKit coverage is owned by the CI browser matrix job (matrix.browser), not a second local gate command. Chromium evidence is HTMX-08-001."
+destination = "CI browser matrix (firefox/webkit)"
+stability_impact = "Multi-engine HTMX claims rely on CI browser job artifacts rather than a duplicate local command."
 
 [[evidence]]
 id = "HTMX-08-003"
@@ -95,8 +98,8 @@ owner = "hedron"
 [[evidence]]
 id = "PKG-08-002"
 state = "Verified"
-command = "uv run python scripts/check_release_gate.py 0.8.0 --skip-evidence"
-ci_job = "evidence"
+command = "uv run pytest tests/unit/test_package_metadata.py -q"
+ci_job = "quality"
 owner = "hedron"
 
 [[evidence]]
@@ -124,42 +127,42 @@ owner = "hedron"
 id = "ADP-FLK-08-001"
 state = "Verified"
 command = "uv run pytest tests/adapters/flask -q"
-ci_job = "adapters"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "ADP-FLK-08-002"
 state = "Verified"
 command = "uv run pytest tests/adapters/flask/test_flask_hardening.py -q"
-ci_job = "adapters"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "ADP-FLK-08-003"
 state = "Verified"
 command = "uv run pytest tests/adapters/flask/test_packaging.py -q"
-ci_job = "adapters"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "ADP-DJG-08-001"
 state = "Verified"
 command = "uv run pytest tests/adapters/django -q"
-ci_job = "adapters"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "ADP-DJG-08-002"
 state = "Verified"
 command = "uv run pytest tests/adapters/django/test_django_hardening.py -q"
-ci_job = "adapters"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "ADP-DJG-08-003"
 state = "Verified"
 command = "uv run pytest tests/adapters/django/test_packaging.py -q"
-ci_job = "adapters"
+ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
@@ -171,6 +174,16 @@ owner = "hedron"
 rationale = "Django QuerySet as a first-party DataSource remains Deferred (D-036)."
 destination = "post-1.0 data-source expansion"
 stability_impact = "No Supported QuerySet paging/security claim through the 0.8 freeze."
+
+[[evidence]]
+id = "ADP-DJG-004"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron"
+rationale = "Hedron does not ship a verified Django forms subsystem; apps may use Django-native forms."
+destination = "post-1.0 Django forms bridge (if productized)"
+stability_impact = "django_forms capability remains unsupported in the capability matrix."
 
 [[evidence]]
 id = "JOB-006"

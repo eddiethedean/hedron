@@ -8,3 +8,5 @@ from pathlib import Path
 _ROOT = Path(__file__).resolve().parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
+
+from hedron_django_ref import asgi_application as application  # noqa: E402, F401

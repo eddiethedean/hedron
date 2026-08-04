@@ -144,10 +144,11 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 ## Current release
 
-Coordinated train **0.7.0** is cut-ready (`v0.7.0`). Install `pip install hedron`
-for the FastAPI flagship, `pip install hedron-flask` / `hedron-django` for Supported
-adapters, `pip install "hedron[data]"` / `"hedron[charts]"` for extras. Next
-implementation target after publish is phase 0.8 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
+Coordinated train **0.8.0** is cut-ready (feature-frozen API baseline; tag/publish when
+ready). Install `pip install hedron` for the FastAPI flagship, `pip install hedron-flask` /
+`hedron-django` for Supported adapters, `pip install "hedron[data]"` / `"hedron[charts]"`
+for extras. After the `v0.8.0` cut, published `1.0.0rcN` artifacts rehearse toward stable
+1.0 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing
 

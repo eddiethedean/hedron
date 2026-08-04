@@ -12,12 +12,14 @@ from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import InteractionResult
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
-from hedron_flask.csrf import csrf_token_for_request, ensure_csrf_cookie
+from hedron_flask.csrf import csrf_token_for_request, ensure_csrf_cookie, validate_csrf
 from hedron_flask.htmx import htmx_context, render_mode_for_request
 from hedron_flask.responses import component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser
 
 __all__ = ["HedronFlask"]
+
+_UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 
 
 class HedronFlask:
@@ -29,10 +31,12 @@ class HedronFlask:
         *,
         csrf_cookie_name: str = "hedron_csrf",
         auto_csrf_cookie: bool = True,
+        csrf_protect: bool = True,
         **kwargs: Any,
     ) -> None:
         self.flask = Flask(import_name, **kwargs)
         self.csrf_cookie_name = csrf_cookie_name
+        self.csrf_protect = csrf_protect
         self.url_reverser = FlaskUrlReverser(self.flask)
         if auto_csrf_cookie:
 
@@ -84,6 +88,8 @@ class HedronFlask:
         mode: RenderMode | None = None,
         extra_headers: Mapping[str, str] | None = None,
     ):
+        if self.csrf_protect and request.method.upper() in _UNSAFE_METHODS:
+            validate_csrf(request, cookie_name=self.csrf_cookie_name)
         if isinstance(value, InteractionResult):
             return interaction_response(
                 value,

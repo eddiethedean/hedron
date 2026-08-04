@@ -29,6 +29,7 @@ __all__ = [
     "form_sync_attrs",
     "interaction_headers",
     "materialize_interaction_nodes",
+    "merge_interaction_headers",
     "merge_route_regions",
     "oob_swap",
     "resolve_fragment_region",
@@ -208,7 +209,16 @@ def _validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
             else:
                 kwargs[arg] = value
             continue
-        if key in {"Cache-Control", "Vary"}:
+        if key == "Vary":
+            other[key] = value
+            continue
+        if key == "Cache-Control":
+            lowered = str(value).lower()
+            # Never accept cache directives that publish fragments to shared caches.
+            if "public" in lowered or "s-maxage" in lowered:
+                raise ValueError(
+                    "Cache-Control must not use public or s-maxage on InteractionResult headers"
+                )
             other[key] = value
             continue
         if key == "Retry-After":
@@ -223,6 +233,25 @@ def _validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
     out = approved_headers(**kwargs) if kwargs else {}
     out.update(other)
     return out
+
+
+def merge_interaction_headers(
+    result: InteractionResult,
+    extra_headers: Mapping[str, str] | None = None,
+) -> dict[str, str]:
+    """Build interaction headers and safely merge adapter extras."""
+    headers = interaction_headers(result)
+    if not extra_headers:
+        return headers
+    validated = _validated_extra_headers(extra_headers)
+    for key, value in validated.items():
+        if key == "Cache-Control" and result.cache in {"private", "no-store"}:
+            continue
+        # Typed interaction headers win for approved HX URL/selector fields.
+        if key in APPROVED_RESPONSE_HEADERS and key in headers:
+            continue
+        headers[key] = value
+    return headers
 
 
 def interaction_headers(result: InteractionResult) -> dict[str, str]:
@@ -259,7 +288,8 @@ def interaction_headers(result: InteractionResult) -> dict[str, str]:
         headers["Vary"] = ", ".join(sorted(parts))
     extras = _validated_extra_headers(result.headers)
     for key, value in extras.items():
-        if key == "Cache-Control" and result.cache in {"private", "no-store"}:
+        if key == "Cache-Control" and result.cache in {"private", "no-store", "vary-htmx"}:
+            # Typed cache policy owns Cache-Control; extras cannot weaken it.
             continue
         headers[key] = value
     return headers
@@ -295,6 +325,12 @@ def authorize_oob_update(
                 InteractionPolicy(declared_regions=regions),
                 update.select,
             )
+            # With declared regions, select must resolve to a concrete #id so
+            # materialize can bind the rendered OOB target to that id.
+            if update.element_id is None and not update.select.startswith("#"):
+                raise ValueError(
+                    "OOB select without element_id must be a #id when fragment regions are declared"
+                )
     if update.element_id is not None:
         if not update.element_id.replace("-", "").replace("_", "").isalnum():
             raise ValueError("Unsafe OOB element id")
@@ -303,6 +339,10 @@ def authorize_oob_update(
                 InteractionPolicy(declared_regions=regions),
                 f"#{update.element_id}",
             )
+        if update.select is not None and update.select.startswith("#"):
+            selected_id = update.select[1:]
+            if selected_id != update.element_id:
+                raise ValueError("OOB element_id must match authorized select #id")
 
 
 _STATUS_DEFAULTS: dict[int, StatusPolicy] = {
@@ -346,6 +386,18 @@ def oob_swap(element_id: str, content: NodeLike | Component[Any], *, swap: str =
     return html.div(content, id=element_id, **{"hx-swap-oob": swap})
 
 
+def _bound_oob_element_id(
+    update: OobUpdate,
+    *,
+    regions: tuple[FragmentRegion, ...],
+) -> str | None:
+    if update.element_id is not None:
+        return update.element_id
+    if regions and update.select and update.select.startswith("#"):
+        return update.select[1:]
+    return None
+
+
 def materialize_interaction_nodes(result: InteractionResult) -> Any | None:
     """Authorize OOB updates and return a renderable node tree (or None)."""
     from hedron_core.builtins import Fragment
@@ -358,9 +410,13 @@ def materialize_interaction_nodes(result: InteractionResult) -> Any | None:
         nodes.append(result.content)
     for update in result.oob:
         authorize_oob_update(update, regions=regions)
-        node: Any = update.content
-        if update.element_id is not None:
-            node = oob_swap(update.element_id, update.content, swap=update.swap)
+        bound_id = _bound_oob_element_id(update, regions=regions)
+        if bound_id is not None:
+            # Always wrap to the authorized id so caller content cannot emit a
+            # different hx-swap-oob target under declared regions.
+            node: Any = oob_swap(bound_id, update.content, swap=update.swap)
+        else:
+            node = update.content
         nodes.append(node)
     if not nodes:
         return None

@@ -60,8 +60,18 @@ class HedronDjango:
         mode: RenderMode | None = None,
         extra_headers: Mapping[str, str] | None = None,
     ) -> HttpResponse:
+        from hedron_django.csrf import seed_csrf_cookie
+
+        if (request.method or "GET").upper() in {"GET", "HEAD"}:
+            seed_csrf_cookie(request)
         if isinstance(value, InteractionResult):
-            return interaction_response(value, request=request, context=context, mode=mode)
+            return interaction_response(
+                value,
+                request=request,
+                context=context,
+                mode=mode,
+                extra_headers=extra_headers,
+            )
         return component_response(
             value,
             request=request,

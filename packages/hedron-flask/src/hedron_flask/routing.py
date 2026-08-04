@@ -5,13 +5,15 @@ from __future__ import annotations
 from collections.abc import Callable
 from functools import wraps
 from typing import Any, TypeVar
+from urllib.parse import urlsplit
 
-from flask import Flask, current_app, url_for
+from flask import Flask, current_app, request, url_for
 
 from hedron_core.adapter import UrlReverseRequest
 from hedron_core.component import Component
 from hedron_core.interaction import InteractionResult
 from hedron_core.rendering import RenderResult
+from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
 
 __all__ = [
@@ -20,6 +22,8 @@ __all__ = [
 ]
 
 F = TypeVar("F", bound=Callable[..., Any])
+
+_UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 
 
 class FlaskUrlReverser:
@@ -30,7 +34,19 @@ class FlaskUrlReverser:
 
     def reverse(self, request: UrlReverseRequest) -> str:
         with self._app.app_context():
-            path = url_for(request.name, *request.args, **dict(request.kwargs))
+            # Force path-only so SERVER_NAME never yields absolute URLs that then
+            # get prefixed into broken forms like ``/apphttp://…``.
+            path = url_for(
+                request.name,
+                *request.args,
+                _external=False,
+                **dict(request.kwargs),
+            )
+        parsed = urlsplit(path)
+        if parsed.scheme or parsed.netloc:
+            path = parsed.path or "/"
+            if parsed.query:
+                path = f"{path}?{parsed.query}"
         if request.script_name:
             prefix = request.script_name.rstrip("/")
             if not path.startswith(prefix):
@@ -48,6 +64,8 @@ def hedron_route(
     *,
     endpoint: str | None = None,
     methods: list[str] | None = None,
+    csrf_protect: bool = True,
+    csrf_cookie_name: str = DEFAULT_CSRF_COOKIE,
     **options: Any,
 ) -> Callable[[F], F]:
     """Register a view that may return a component, InteractionResult, or Response."""
@@ -56,6 +74,8 @@ def hedron_route(
         @app.route(rule, endpoint=endpoint, methods=methods, **options)
         @wraps(view)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
+            if csrf_protect and request.method.upper() in _UNSAFE_METHODS:
+                validate_csrf(request, cookie_name=csrf_cookie_name)
             value = current_app.ensure_sync(view)(*args, **kwargs)
             if isinstance(value, InteractionResult):
                 return interaction_response(value)

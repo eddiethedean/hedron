@@ -11,6 +11,10 @@ Phase 0.8 adds **no** new subsystems, adapters, or transports.
   frozen Supported matrix live in [COMPATIBILITY.md](../COMPATIBILITY.md).
 - **Django floor:** Supported Django is now `>=5.2,<6` (5.2 LTS). Projects on 5.0/5.1 must upgrade
   Django before claiming Supported adapter status.
+- **Django CSRF header:** for portable HTMX clients that send `X-CSRF-Token`, set
+  `CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"` in Django settings (reference app does this). Stock
+  Django's `X-CSRFToken` remains valid if you keep the default. Form posts may use
+  `csrfmiddlewaretoken` or Hedron's portable `csrf_token` field.
 - **Hardening evidence:** deeper Flask/Django tests, three-engine browser HTMX suite, performance
   budgets, threat model, SBOM / license / asset audits.
 - **HDN source extension:** preferred component template filename is `template.hdx` (JSX-familiar).

@@ -57,12 +57,58 @@ def test_attribute_escaping() -> None:
         "javascript%3Aalert(1)",
         "&#106;avascript:alert(1)",
         "java%09script:alert(1)",
+        "java\u200bscript:alert(1)",
+        "\ufeffjavascript:alert(1)",
+        "\u202ejavascript:alert(1)",
+        "java\u200cscript:alert(1)",
     ],
 )
 def test_dangerous_urls_rejected(url: str) -> None:
     with pytest.raises(HedronError) as exc:
         SafeUrl.parse(url, purpose=UrlPurpose.NAVIGATION)
     assert exc.value.diagnostic.code == "HED-SEC-0001"
+
+
+@pytest.mark.security
+def test_local_path_rejects_traversal() -> None:
+    from hedron_core.htmx_contract import is_local_path
+
+    assert is_local_path("/ok/path")
+    assert not is_local_path("/a/../..")
+    assert not is_local_path("/a/../b")
+    assert not is_local_path("/a/%2e%2e/b")
+    assert not is_local_path("/a/%2E%2E")
+
+
+@pytest.mark.security
+def test_safe_css_selector_rejects_combinators() -> None:
+    from hedron_core.htmx_contract import safe_css_selector
+
+    assert safe_css_selector("#main")
+    assert safe_css_selector(".panel")
+    assert safe_css_selector('[data-id="x"]')
+    assert not safe_css_selector("#a, #b")
+    assert not safe_css_selector("#a #b")
+    assert not safe_css_selector("*")
+    assert not safe_css_selector("div > #x")
+    assert not safe_css_selector("#x:hover")
+
+
+@pytest.mark.security
+def test_icon_rejects_scheme_smuggled_svg() -> None:
+    from hedron_core.icons import register_icon
+
+    with pytest.raises(HedronError) as exc:
+        register_icon(
+            "evil-zwsp",
+            (
+                '<svg xmlns="http://www.w3.org/2000/svg">'
+                '<a href="java\u200bscript:alert(1)">x</a></svg>'
+            ),
+            title="Evil",
+            source="unit-test",
+        )
+    assert exc.value.diagnostic.code == "HED-ICON-0003"
 
 
 @pytest.mark.security

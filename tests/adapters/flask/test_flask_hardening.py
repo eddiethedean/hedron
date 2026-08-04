@@ -59,6 +59,40 @@ def test_csrf_token_round_trip() -> None:
     assert any("hedron_csrf=" in c for c in response.headers.getlist("Set-Cookie"))
 
 
+def test_hedron_route_csrf_enforced_on_post() -> None:
+    hedron = HedronFlask(__name__)
+    hedron.flask.secret_key = "test"
+    app = hedron.flask
+
+    @hedron.flask.get("/seed")
+    def seed():
+        return "ok"
+
+    @hedron_route(app, "/post-route", endpoint="post_route", methods=["POST"])
+    def post_route():
+        return Text("posted")
+
+    client = app.test_client()
+    denied = client.post("/post-route", data={"x": "1"})
+    assert denied.status_code == 403
+
+    seeded_resp = client.get("/seed")
+    assert seeded_resp.status_code == 200
+    cookie = None
+    for item in seeded_resp.headers.getlist("Set-Cookie"):
+        if item.startswith("hedron_csrf="):
+            cookie = item.split(";", 1)[0].split("=", 1)[1]
+            break
+    assert cookie
+    ok = client.post(
+        "/post-route",
+        data={"x": "1"},
+        headers={"X-CSRF-Token": cookie},
+    )
+    assert ok.status_code == 200
+    assert "posted" in ok.get_data(as_text=True)
+
+
 def test_hedron_route_sync_component() -> None:
     hedron = HedronFlask(__name__)
     app = hedron.flask
@@ -75,6 +109,12 @@ def test_hedron_route_sync_component() -> None:
 
 def test_hedron_route_async_view_via_ensure_sync() -> None:
     pytest.importorskip("asgiref")
+    from importlib.util import find_spec
+
+    # Flask async views need the optional async extra (greenlet).
+    if find_spec("greenlet") is None:
+        pytest.skip("Flask async extra (greenlet) not installed — sync-only Supported surface")
+
     hedron = HedronFlask(__name__)
     app = hedron.flask
 
@@ -84,16 +124,7 @@ def test_hedron_route_async_view_via_ensure_sync() -> None:
         return Text("async-ok")
 
     client = app.test_client()
-    # Flask ensure_sync requires the async extra; without it this raises.
-    try:
-        response = client.get("/async-route")
-    except RuntimeError as exc:
-        assert (
-            "async" in str(exc).lower()
-            or "greenlet" in str(exc).lower()
-            or "await" in str(exc).lower()
-        )
-        return
+    response = client.get("/async-route")
     assert response.status_code == 200
     assert "async-ok" in response.get_data(as_text=True)
 
@@ -108,7 +139,11 @@ def test_url_reverser_with_app_context() -> None:
 
     reverser = FlaskUrlReverser(hedron.flask)
     path = reverser.reverse(UrlReverseRequest(name="named"))
-    assert path.endswith("/named")
+    assert path == "/named"
+
+    mounted = reverser.reverse(UrlReverseRequest(name="named", root_path="/app"))
+    assert mounted == "/app/named"
+    assert "http" not in mounted
 
 
 def test_interaction_status_and_existing_headers() -> None:
@@ -118,11 +153,23 @@ def test_interaction_status_and_existing_headers() -> None:
     with hedron.flask.test_request_context("/"):
         response = interaction_response(
             InteractionResult(content=Text("body"), status_code=202, explanation="accepted"),
-            extra_headers={"X-Custom": "1"},
+            extra_headers={"Retry-After": "5"},
         )
     assert response.status_code == 202
-    assert response.headers.get("X-Custom") == "1"
+    assert response.headers.get("Retry-After") == "5"
     assert "body" in response.get_data(as_text=True)
+
+
+def test_extra_headers_cannot_overwrite_hx_redirect() -> None:
+    from hedron_flask import interaction_response
+
+    hedron = HedronFlask(__name__)
+    with hedron.flask.test_request_context("/"):
+        response = interaction_response(
+            InteractionResult(content=Text("body"), redirect="/safe"),
+            extra_headers={"HX-Redirect": "/evil"},
+        )
+    assert response.headers.get("HX-Redirect") == "/safe"
 
 
 def test_flask_reference_import_boundary() -> None:

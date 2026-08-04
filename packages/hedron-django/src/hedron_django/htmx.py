@@ -15,7 +15,7 @@ __all__ = [
 
 
 def is_htmx_request(headers: Mapping[str, str]) -> bool:
-    return (headers.get("HX-Request") or "").lower() == "true"
+    return htmx_context_from_headers(dict(headers)).is_htmx
 
 
 def htmx_context(headers: Mapping[str, str]) -> HtmxContext:

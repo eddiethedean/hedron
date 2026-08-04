@@ -172,24 +172,41 @@ _DANGEROUS_SCHEMES = frozenset(
     }
 )
 _CONTROL_CHARS = re.compile(r"[\x00-\x1f\x7f]")
+# Unicode format/bidi/ZWSP/BOM and other Cf chars used to smuggle schemes.
+_FORMAT_CHARS = re.compile(
+    r"[\u200b-\u200f\u202a-\u202e\u2060-\u2064\u2066-\u2069\ufeff\u00ad\u180e]"
+)
 _SCHEME_PREFIX = re.compile(r"^([a-z][a-z0-9+.-]*):", re.IGNORECASE)
+
+
+def _strip_format_chars(value: str) -> str:
+    return _FORMAT_CHARS.sub("", value)
 
 
 def _normalize_for_scheme_scan(value: str) -> str:
     """HTML-unescape and percent-decode (bounded) to defeat scheme smuggling."""
-    current = value
+    current = _strip_format_chars(value)
     for _ in range(_DECODE_ROUNDS):
         unescaped = html_stdlib.unescape(current)
         try:
             decoded = unquote(unescaped, errors="strict")
         except Exception:
             decoded = unquote(unescaped)
-        # Collapse whitespace used to break scheme detection.
-        collapsed = re.sub(r"\s+", "", decoded)
+        # Collapse whitespace used to break scheme detection; drop format chars each round.
+        collapsed = _strip_format_chars(re.sub(r"\s+", "", decoded))
         if collapsed == current:
             break
         current = collapsed
     return current.lower()
+
+
+def contains_dangerous_scheme(value: str) -> bool:
+    """True when value smuggles a dangerous URL scheme (for SVG/icon scans)."""
+    scanned = _normalize_for_scheme_scan(value)
+    scheme = _extract_scheme(scanned)
+    if scheme in _DANGEROUS_SCHEMES:
+        return True
+    return any(f"{dangerous}:" in scanned for dangerous in _DANGEROUS_SCHEMES)
 
 
 def _extract_scheme(value: str) -> str:
@@ -294,9 +311,14 @@ class SafeUrl:
         if "\\" in raw or "\n" in raw or "\r" in raw or "\t" in raw:
             raise _url_error("URL contains disallowed characters", purpose)
 
+        if _FORMAT_CHARS.search(raw):
+            raise _url_error("URL contains disallowed Unicode format characters", purpose)
+
         scanned = _normalize_for_scheme_scan(raw)
         if _CONTROL_CHARS.search(scanned):
             raise _url_error("URL contains control characters after decoding", purpose)
+        if _FORMAT_CHARS.search(scanned):
+            raise _url_error("URL contains disallowed Unicode format characters", purpose)
 
         scanned_scheme = _extract_scheme(scanned)
         if scanned_scheme in _DANGEROUS_SCHEMES:
@@ -304,7 +326,7 @@ class SafeUrl:
 
         # Also reject dangerous scheme tokens at the start after decode.
         for scheme in _DANGEROUS_SCHEMES:
-            if scanned.startswith(f"{scheme}:"):
+            if scanned.startswith(f"{scheme}:") or f"{scheme}:" in scanned[:64]:
                 raise _url_error(f"Disallowed URL scheme for {purpose.value}", purpose)
 
         parts = urlsplit(raw)

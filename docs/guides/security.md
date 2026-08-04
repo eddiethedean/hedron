@@ -28,12 +28,20 @@ See [Security types](../api/SECURITY_TYPES.md) for boundary types (`SafeUrl`, â€
 
 ## CSRF
 
-When CSRF is enabled (all built-in profiles):
+When CSRF is enabled (all built-in FastAPI profiles):
 
 - Safe GET responses may set the CSRF cookie (`hedron_csrf` by default).
 - Unsafe methods on page/component/action routes (including `include_component` when POST
   is declared) require a matching `X-CSRF-Token` header or `csrf_token` form field.
 - On HTTPS, the CSRF cookie is marked `Secure`.
+
+Flask adapter: `hedron_route` and `HedronFlask.respond` validate the same double-submit cookie
+for unsafe methods (auto cookie issuance on safe GETs remains on by default).
+
+Django adapter: `CsrfViewMiddleware` remains authoritative. Safe GETs through
+`HedronDjango.respond` / `hedron_view` call `get_token` so the CSRF cookie is seeded. For
+portable clients that send `X-CSRF-Token`, set `CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"`.
+Form posts may use `csrfmiddlewaretoken` or `csrf_token`.
 
 Seed the cookie with a GET, then post with the header:
 

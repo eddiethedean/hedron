@@ -12,8 +12,8 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import (
     FragmentRegionError,
     InteractionResult,
-    interaction_headers,
     materialize_interaction_nodes,
+    merge_interaction_headers,
 )
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 from hedron_django.htmx import render_mode_for_request
@@ -111,9 +111,7 @@ def interaction_response(
             status=403,
             content_type="text/plain; charset=utf-8",
         )
-    headers = interaction_headers(result)
-    if extra_headers:
-        headers.update(dict(extra_headers))
+    headers = merge_interaction_headers(result, extra_headers)
     body = ""
     if node is not None:
         rendered = _render_body(

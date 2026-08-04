@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from threading import RLock
 
 from hedron_core.diagnostics import error
-from hedron_core.security import TrustedHtml
+from hedron_core.security import TrustedHtml, contains_dangerous_scheme
 
 __all__ = [
     "IconEntry",
@@ -53,7 +53,7 @@ def register_icon(
         )
     trusted = svg if isinstance(svg, TrustedHtml) else TrustedHtml.reviewed(svg, source=source)
     lowered = trusted.value.lower()
-    if "<script" in lowered or "javascript:" in lowered:
+    if "<script" in lowered or contains_dangerous_scheme(trusted.value):
         raise error(
             "HED-ICON-0003",
             title="Active script content rejected",

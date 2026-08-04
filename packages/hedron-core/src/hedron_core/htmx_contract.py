@@ -49,6 +49,10 @@ APPROVED_RESPONSE_HEADERS = frozenset(
 )
 
 _LOCAL_PATH = re.compile(r"^/[A-Za-z0-9._~!$&'()*+,;=:@%/\-]*$")
+_SIMPLE_SELECTOR = re.compile(
+    r"^(?:#[A-Za-z_][\w\-]*|\.[A-Za-z_][\w\-]*|\[[A-Za-z_][\w\-]*(?:=(?:"
+    r'"[^"]*"|\'[^\']*\'|[A-Za-z0-9_\-]+))?\])$'
+)
 
 
 def _empty_headers() -> dict[str, str]:
@@ -91,16 +95,27 @@ def is_local_path(url: str) -> bool:
     if decoded.startswith("//"):
         return False
     path = parsed.path or "/"
+    decoded_path = urlparse(decoded).path or "/"
+    # Reject path traversal segments that browsers would normalize away.
+    for candidate in (path, decoded_path, url, decoded):
+        parts = [p for p in candidate.split("/") if p not in {"", "."}]
+        if ".." in parts or "%2e%2e" in candidate.lower():
+            return False
     return (
-        _LOCAL_PATH.fullmatch(path) is not None
-        and _LOCAL_PATH.fullmatch(urlparse(decoded).path or "/") is not None
+        _LOCAL_PATH.fullmatch(path) is not None and _LOCAL_PATH.fullmatch(decoded_path) is not None
     )
 
 
 def safe_css_selector(selector: str) -> bool:
-    if not selector or any(ch in selector for ch in "<>\"'`);{}"):
+    """Allow only a single simple #id, .class, or [attr=value] selector."""
+    if not selector or any(ch in selector for ch in "<>`);{}\\"):
         return False
-    return selector.startswith("#") or selector.startswith(".") or selector.startswith("[")
+    text = selector.strip()
+    if not text or any(ch.isspace() for ch in text):
+        return False
+    if any(token in text for token in (",", "*", ">", "+", "~", "/", ":")):
+        return False
+    return _SIMPLE_SELECTOR.fullmatch(text) is not None
 
 
 def htmx_context_from_headers(headers: Mapping[str, str]) -> HtmxContext:

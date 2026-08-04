@@ -132,7 +132,16 @@ DJANGO_CAPABILITIES = CapabilityRecord(
         AdapterCapability("url_reverse", CapabilityClass.PORTABLE, True, "ADP-004"),
         AdapterCapability("asgi_mode", CapabilityClass.ASGI, True, "ADP-DJG-002"),
         AdapterCapability("wsgi_mode", CapabilityClass.WSGI, True, "ADP-DJG-002"),
-        AdapterCapability("django_forms", CapabilityClass.FRAMEWORK, True, "ADP-DJG-001"),
+        AdapterCapability(
+            "django_forms",
+            CapabilityClass.FRAMEWORK,
+            False,
+            "ADP-DJG-001",
+            notes=(
+                "Apps may use Django-native forms; Hedron does not ship a verified "
+                "forms subsystem (deferred/experimental)."
+            ),
+        ),
         AdapterCapability(
             "queryset_datasource",
             CapabilityClass.FRAMEWORK,

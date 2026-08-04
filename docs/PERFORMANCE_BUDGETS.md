@@ -36,5 +36,7 @@ are not marketing latency claims. Measure with `tests/performance/`.
 
 ## Enforcement
 
-`tests/performance/test_budgets.py` fails the suite when a budget is breached. Flaky hosts may
-retry once in CI; do not raise budgets without an owning decision and changelog note.
+`tests/performance/test_budgets.py` fails the suite when a budget is breached. Hosts that
+occasionally exceed soft ceilings should be investigated; do not silently raise budgets
+without an owning decision and changelog note. (There is no automatic CI retry for these
+tests.)

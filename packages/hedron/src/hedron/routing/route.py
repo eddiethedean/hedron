@@ -12,21 +12,19 @@ from fastapi.routing import APIRoute
 from starlette.responses import Response as StarletteResponse
 
 from hedron.async_utils import await_if_needed
-from hedron.builtins import oob_swap
 from hedron.context import render_context_from_request
 from hedron.interaction import (
     FragmentRegion,
     FragmentRegionError,
     InteractionResult,
-    authorize_oob_update,
     interaction_headers,
     resolve_fragment_region,
 )
 from hedron.responses import HTML, render_component_response
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
-from hedron_core.builtins import Fragment
 from hedron_core.component import Component
+from hedron_core.interaction import materialize_interaction_nodes
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
 
@@ -208,19 +206,10 @@ class HedronRoute(APIRoute):
 
         content: Any = result.content
         if result.oob:
-            nodes: list[Any] = []
-            if content is not None:
-                nodes.append(content)
-            for update in result.oob:
-                try:
-                    authorize_oob_update(update, regions=regions)
-                except (FragmentRegionError, ValueError) as exc:
-                    raise HTTPException(status_code=403, detail=str(exc)) from exc
-                node: Any = update.content
-                if update.element_id is not None:
-                    node = oob_swap(update.element_id, update.content, swap=update.swap)
-                nodes.append(node)
-            content = Fragment(*nodes)
+            try:
+                content = materialize_interaction_nodes(result)
+            except (FragmentRegionError, ValueError) as exc:
+                raise HTTPException(status_code=403, detail=str(exc)) from exc
 
         headers = interaction_headers(result, request=request)
         if region is not None and result.policy and result.policy.vary_on_target:

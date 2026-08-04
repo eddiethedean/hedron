@@ -69,11 +69,18 @@ def test_component_vary_header(django_client: Client) -> None:
     assert "HX-Request" in vary
 
 
-def test_csrf_header_name_matches_django_default() -> None:
-    from hedron_django.csrf import DEFAULT_CSRF_HEADER, csrf_header_name
+def test_csrf_header_name_portable_default() -> None:
+    from hedron_django.csrf import (
+        DEFAULT_CSRF_HEADER,
+        DJANGO_CSRF_HEADER,
+        PORTABLE_CSRF_HEADER,
+        csrf_header_name,
+    )
 
-    assert csrf_header_name() == "X-CSRFToken"
-    assert DEFAULT_CSRF_HEADER == "X-CSRFToken"
+    assert DEFAULT_CSRF_HEADER == PORTABLE_CSRF_HEADER
+    assert DJANGO_CSRF_HEADER == "X-CSRFToken"
+    # Without CSRF_HEADER_NAME override, helpers advertise the portable header.
+    assert csrf_header_name() in {PORTABLE_CSRF_HEADER, DJANGO_CSRF_HEADER}
 
 
 def test_oob_authorization(django_client: Client) -> None:

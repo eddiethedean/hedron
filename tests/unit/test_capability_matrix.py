@@ -15,6 +15,10 @@ def test_capability_matrix_labels_portable_and_host() -> None:
         assert row.stability == "supported"
         classes = {c.classification for c in row.capabilities}
         assert CapabilityClass.PORTABLE in classes
+    django = adapters["django"]
+    forms = next(c for c in django.capabilities if c.name == "django_forms")
+    assert forms.supported is False
+    assert "forms" in forms.notes.lower()
 
 
 def test_portable_interaction_headers_no_framework_types() -> None:

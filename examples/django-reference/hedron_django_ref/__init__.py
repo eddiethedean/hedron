@@ -23,6 +23,8 @@ if not settings.configured:
             "django.middleware.common.CommonMiddleware",
             "django.middleware.csrf.CsrfViewMiddleware",
         ],
+        # Accept Hedron portable X-CSRF-Token (see docs/guides/security.md / upgrade.md).
+        CSRF_HEADER_NAME="HTTP_X_CSRF_TOKEN",
         INSTALLED_APPS=[],
         USE_TZ=True,
     )

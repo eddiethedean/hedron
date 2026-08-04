@@ -42,6 +42,10 @@ class DjangoUrlReverser:
 
 
 def _convert(value: Any, request: HttpRequest) -> HttpResponse:
+    from hedron_django.csrf import seed_csrf_cookie
+
+    if (request.method or "GET").upper() in {"GET", "HEAD"}:
+        seed_csrf_cookie(request)
     if isinstance(value, InteractionResult):
         return interaction_response(value, request=request)
     if isinstance(value, RenderResult):

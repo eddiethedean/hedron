@@ -36,6 +36,7 @@ def django_setup() -> Client:
                 "django.middleware.csrf.CsrfViewMiddleware",
                 "django.contrib.auth.middleware.AuthenticationMiddleware",
             ],
+            CSRF_HEADER_NAME="HTTP_X_CSRF_TOKEN",
             INSTALLED_APPS=[
                 "django.contrib.contenttypes",
                 "django.contrib.auth",
@@ -98,6 +99,27 @@ def test_csrf_middleware_blocks_unsafe_without_token(django_setup: Client) -> No
     assert response.status_code in {403, 405}
 
 
+def test_csrf_cookie_seeded_on_respond_get(django_setup: Client) -> None:
+    del django_setup
+    from hedron_django.csrf import (
+        DJANGO_CSRF_HEADER,
+        PORTABLE_CSRF_HEADER,
+        csrf_header_name,
+        seed_csrf_cookie,
+    )
+
+    assert csrf_header_name() in {PORTABLE_CSRF_HEADER, DJANGO_CSRF_HEADER}
+    hedron = HedronDjango()
+    factory = RequestFactory()
+    request = factory.get("/seed/")
+    # Middleware normally wraps responses; seed marks the request for cookie issuance.
+    token = seed_csrf_cookie(request)
+    assert token
+    response = hedron.respond(Text("seeded"), request)
+    assert response.status_code == 200
+    assert b"seeded" in response.content
+
+
 def test_auth_signal_anonymous(django_setup: Client) -> None:
     del django_setup
     hedron = HedronDjango()
@@ -120,19 +142,21 @@ def test_django_floor_requires_5_2() -> None:
 
 
 def test_reference_exposes_wsgi_and_asgi() -> None:
-    import importlib.util
+    import importlib
+    import sys
 
-    path = ROOT / "examples" / "django-reference" / "hedron_django_ref" / "__init__.py"
-    spec = importlib.util.spec_from_file_location("hedron_django_ref", path)
-    assert spec and spec.loader
-    # Configuring Django twice is awkward; assert source contracts instead.
-    text = path.read_text(encoding="utf-8")
-    assert "get_wsgi_application" in text
-    assert "asgi_application" in text
-    wsgi_entry = ROOT / "examples" / "django-reference" / "wsgi.py"
-    asgi_entry = ROOT / "examples" / "django-reference" / "asgi.py"
-    assert asgi_entry.is_file()
-    assert wsgi_entry.is_file() or "application = get_wsgi_application()" in text
+    root = str(ROOT / "examples" / "django-reference")
+    if root not in sys.path:
+        sys.path.insert(0, root)
+    # Importing the package configures Django once for this process.
+    mod = importlib.import_module("hedron_django_ref")
+    assert callable(mod.application)
+    assert mod.asgi_application is not None
+    # Load asgi.py entry the same way a server would (module path on sys.path).
+    asgi_path = ROOT / "examples" / "django-reference" / "asgi.py"
+    text = asgi_path.read_text(encoding="utf-8")
+    assert "asgi_application as application" in text
+    assert mod.asgi_application is not None
 
 
 def test_interaction_status_code(django_setup: Client) -> None:

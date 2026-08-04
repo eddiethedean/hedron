@@ -18,8 +18,7 @@ def test_flask_url_reverse() -> None:
     rev = FlaskUrlReverser(app)
     with app.test_request_context("/"):
         url = rev.reverse(UrlReverseRequest(name="item", kwargs={"item_id": "1"}, root_path="/app"))
-    assert "/items/1" in url
-    assert url.startswith("/app")
+    assert url == "/app/items/1"
 
 
 def test_django_url_reverse() -> None:
@@ -44,4 +43,4 @@ def test_django_url_reverse() -> None:
 
     rev = DjangoUrlReverser()
     url = rev.reverse(UrlReverseRequest(name="home", root_path="/prefix"))
-    assert url.startswith("/prefix")
+    assert url == "/prefix/"

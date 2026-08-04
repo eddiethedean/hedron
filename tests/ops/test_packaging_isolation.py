@@ -37,3 +37,17 @@ def test_evidence_scripts_exist() -> None:
         "check_stability_inventory.py",
     ):
         assert (ROOT / "scripts" / script).is_file()
+
+
+def test_first_party_plugin_meta_matches_package_version() -> None:
+    plugins = {
+        "hedron-data": ("hedron_data", "plugin.py"),
+        "hedron-charts": ("hedron_charts", "plugin.py"),
+        "hedron-sample-kit": ("hedron_sample_kit", "plugin.py"),
+    }
+    for dist, (pkg, plugin_file) in plugins.items():
+        project = tomllib.loads(
+            (ROOT / "packages" / dist / "pyproject.toml").read_text(encoding="utf-8")
+        )["project"]
+        text = (ROOT / "packages" / dist / "src" / pkg / plugin_file).read_text(encoding="utf-8")
+        assert f'version="{project["version"]}"' in text, dist
