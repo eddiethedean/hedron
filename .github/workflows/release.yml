@@ -113,8 +113,9 @@ jobs:
       - name: Doc link smoke
         run: |
           uv run --python ${{ matrix.python-version }} python - <<'PY'
-          from pathlib import Path
           import re
+          from pathlib import Path
+
           roots = [Path("docs"), Path("README.md"), Path("ROADMAP.md")]
           missing = []
           files = []
@@ -124,10 +125,15 @@ jobs:
               else:
                   files.extend(root.rglob("*.md"))
           for path in files:
+              if path.is_symlink():
+                  continue
               text = path.read_text(encoding="utf-8")
-              for m in re.finditer(r"\]\(([^)#]+)(?:#[^)]*)?\)", text):
-                  target = m.group(1)
-                  if target.startswith(("http://", "https://", "mailto:")):
+              # Ignore fenced code so Python generics like TemplateSpec[T]( do not
+              # look like markdown links.
+              text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
+              for match in re.finditer(r"\]\(([^)#\n]+)(?:#[^)]*)?\)", text):
+                  target = match.group(1).strip()
+                  if not target or target.startswith(("http://", "https://", "mailto:")):
                       continue
                   resolved = (path.parent / target).resolve()
                   if not resolved.exists():
