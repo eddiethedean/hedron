@@ -78,7 +78,30 @@ or raises `FragmentRegionError` when the target is unauthorized.
 
 ## `InteractionResult`
 
-`InteractionResult` keeps fragment mechanics typed and inspectable:
+`InteractionResult` keeps fragment mechanics typed and inspectable.
+
+### Constructor fields
+
+| Field | Type (conceptual) | Meaning |
+|---|---|---|
+| `content` | `NodeLike \| None` | Primary fragment body |
+| `status_code` | `int` | HTTP status (default 200) |
+| `region_id` | `str \| None` | Declared destination region id |
+| `target` / `swap` / `retarget` / `reswap` / `reselect` | `str \| None` | Swap controls; selectors use Hedron's safe subset |
+| `trigger` / `trigger_after_swap` / `trigger_after_settle` | `str \| Mapping \| None` | Encoded as `HX-Trigger*` |
+| `redirect` / `location` / `push_url` / `replace_url` / `history` | local URL fields | URL-bearing headers require local paths |
+| `cache` | `private` \| `no-store` \| `vary-htmx` \| `None` | Cache / Vary policy |
+| `oob` | `tuple[OobUpdate, ...]` | Out-of-band updates |
+| `policy` | `InteractionPolicy \| None` | Sync/indicator/region defaults |
+| `explanation` | `str \| None` | Explorer/diagnostics only; not rendered |
+| `headers` | escape hatch | Approved `HX-*`, `Cache-Control`, `Vary` only |
+
+### Return / response behavior
+
+Handlers may return `InteractionResult`, a component/`NodeLike`, or (on some routes)
+ordinary FastAPI responses. When Hedron renders an `InteractionResult` as an HTMX
+fragment it emits HTML for `content`, applies validated `HX-*` headers, and enforces
+route `fragment_regions` (unauthorized `HX-Target` → `403`).
 
 | Area | Fields | Notes |
 |---|---|---|
@@ -92,6 +115,15 @@ or raises `FragmentRegionError` when the target is unauthorized.
 
 Prefer these fields over `headers`. If `headers` is needed, Hedron accepts only approved
 `HX-*`, `Cache-Control`, and `Vary` names and re-validates URL and selector values.
+
+### Errors
+
+| Situation | Behavior |
+|---|---|
+| `HX-Target` outside route `fragment_regions` | HTTP `403` |
+| Unsafe selector / external redirect in typed fields | Rejected before emit |
+| Unauthorized OOB `select` / `element_id` | Rejected when regions are declared |
+| `Cache-Control: public` via `headers` | Rejected — use typed `cache=` |
 
 ### Out-of-band updates
 

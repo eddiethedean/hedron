@@ -39,7 +39,7 @@ often returns built-ins (`Card`, `Text`, …) without naming `NodeLike` explicit
 - Children and named slots follow the component’s declared cardinality.
 - Components may declare examples, documentation, styles, and browser assets.
 
-Composition helpers accept components, native nodes, strings, supported sequences, and `None`; unsupported arbitrary values produce a type-aware error. `Auto()` inference is available on the 0.6 train — see [Auto](AUTO.md) (`pip install "hedron[data]"` for data-oriented renderers).
+Composition helpers accept components, native nodes, strings, supported sequences, and `None`; unsupported arbitrary values produce a type-aware error. `Auto()` inference ships in core `hedron` — see [Auto](AUTO.md). Install `hedron[data]` for DataTable/DataEditor.
 
 Component identity is deterministic for diagnostics and targets when requested. It excludes secret values and is never an authorization mechanism.
 

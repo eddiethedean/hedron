@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
 from typing import Any
@@ -14,6 +15,15 @@ __all__ = [
     "iter_sse_bytes",
     "job_status_sse_events",
 ]
+
+# SSE field values must be single-line; CR/LF would inject extra fields.
+_SSE_FIELD_UNSAFE = re.compile(r"[\r\n\x00-\x1f\x7f]")
+
+
+def _sanitize_sse_field(value: str, *, field: str) -> str:
+    if _SSE_FIELD_UNSAFE.search(value):
+        raise ValueError(f"SSE {field} must not contain control characters or newlines")
+    return value
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,9 +50,9 @@ class LiveObservation:
 def encode_sse(event: SseEvent) -> str:
     lines: list[str] = []
     if event.id is not None:
-        lines.append(f"id: {event.id}")
+        lines.append(f"id: {_sanitize_sse_field(event.id, field='id')}")
     if event.event is not None:
-        lines.append(f"event: {event.event}")
+        lines.append(f"event: {_sanitize_sse_field(event.event, field='event')}")
     if event.retry_ms is not None:
         lines.append(f"retry: {int(event.retry_ms)}")
     for part in event.data.splitlines() or [""]:

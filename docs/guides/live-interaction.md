@@ -2,31 +2,160 @@
 
 Phase **0.10** adds official live observation and navigation helpers on the FastAPI
 flagship: HTMX SSE, focused streaming, page/session WebSocket channels, Chat/Dialog
-components, and opt-in navigation preload. Polling and ordinary HTTP remain Supported
-fallbacks on every host.
+components, and opt-in navigation preload. **Polling and ordinary HTTP remain
+Supported fallbacks** on every host—and they are the right place to start.
 
 Flask and Django adapters do **not** ship these FastAPI helpers; use bounded polling
 there until later native depth (0.11).
+
+!!! note "First-party live demo app"
+
+    A dedicated live-transport sample app remains an owned Deferred item for 0.10.x
+    (`EXAMPLES-10-001` in [STATUS](../STATUS.md)). The copy-paste apps below are the
+    supported learning path until that example ships.
 
 See also: [SSE API](../api/SSE.md) · [Streaming](../api/STREAMING.md) ·
 [WebSocket channel](../api/WEBSOCKET_CHANNEL.md) · [Preload](../api/PRELOAD.md) ·
 [Upgrade](upgrade.md).
 
-## Job status over SSE
+## End-to-end: poll a clock (start here)
 
-Keep a polling UI for correctness. Optionally observe the same job with SSE:
+Polling works on FastAPI, Flask, and Django. Paste this into `app.py`:
+
+```python title="app.py"
+from datetime import UTC, datetime
+
+from hedron import (
+    ComponentRef,
+    FragmentRegion,
+    Hedron,
+    InteractionResult,
+    Page,
+    Poll,
+    Stack,
+    Text,
+)
+
+app = Hedron(title="Live clock", security="standard", session_secret="replace-me")
+
+CLOCK = FragmentRegion(
+    id="clock",
+    selector="#clock",
+    description="UTC clock panel",
+)
+CLOCK_REF = ComponentRef(
+    logical_id="clock",
+    path="/clock",
+    target="#clock",
+    swap="innerHTML",
+)
+
+
+def clock_text():
+    now = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return Text(now)
+
+
+@app.component("/clock", fragment_regions=(CLOCK,))
+def clock_fragment() -> InteractionResult:
+    return InteractionResult(
+        content=clock_text(),
+        region_id=CLOCK.id,
+        explanation="Refresh the UTC clock region",
+    )
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(
+        Stack(
+            Text("Server time (polls every 2s)"),
+            Poll(
+                ref=CLOCK_REF,
+                interval_ms=2000,
+                target_id=CLOCK.id,
+                content=clock_text(),
+            ),
+        ),
+        title="Live clock",
+    )
+```
+
+```bash
+uv run uvicorn app:app --reload
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The panel updates without a full
+page reload. Stop polling by returning markup without `Poll` once a terminal state is
+reached (job finished, error, etc.).
+
+## End-to-end: stream tokens into a region
+
+```python title="app.py"
+from hedron import (
+    FragmentRegion,
+    Hedron,
+    Page,
+    Stack,
+    Text,
+    html,
+    stream_tokens,
+)
+from hedron_core.streaming import TokenStream
+
+app = Hedron(title="Stream", security="standard", session_secret="replace-me")
+
+ANSWER = FragmentRegion(id="answer", selector="#answer", description="Streamed answer")
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(
+        Stack(
+            Text("Streamed answer"),
+            html.div(
+                Text("Waiting…"),
+                id=ANSWER.id,
+                **{"hx-get": "/stream/answer", "hx-trigger": "load", "hx-swap": "innerHTML"},
+            ),
+        ),
+        title="Stream",
+    )
+
+
+@app.get("/stream/answer")
+def stream_answer():
+    tokens = TokenStream(
+        region_id=ANSWER.id,
+        tokens=["Hello", ", ", "world", "!"],
+    )
+    return stream_tokens(tokens)
+```
+
+`StreamingComponentResponse` sets `X-Hedron-Stream-Region` and may prefix a fallback HTML
+chunk when `fallback_html=` is provided.
+
+## Job status over SSE (FastAPI)
+
+Keep a polling UI for correctness. Optionally observe the same job with SSE. The
+in-memory job backend is fine for local demos:
 
 ```python
 from fastapi import Request
 
 from hedron import Hedron, Page, Text, job_status_sse_response
+from hedron.jobs import enqueue_durable
 
 app = Hedron(title="Jobs", security="standard", session_secret="replace-me")
 
 
 @app.page("/")
 def home() -> Page:
-    return Page(Text("Submit work, then open /jobs/{id}/events"), title="Jobs")
+    job_id = enqueue_durable("demo", {"n": 1})
+    return Page(
+        Text(f"Observing job {job_id} — open /jobs/{job_id}/events"),
+        title="Jobs",
+    )
 
 
 @app.get("/jobs/{job_id}/events")
@@ -35,27 +164,8 @@ def job_events(job_id: str, request: Request):
 ```
 
 Include the pinned extension when using `hx-ext="sse"` (PAGE responses already inject
-known extensions when configured). Honor `Last-Event-ID` for reconnect. Stop treating the
-stream as the only correctness path—polling remains Supported.
-
-## Focused streaming
-
-Stream HTML into an addressable region without a full page rerun:
-
-```python
-from hedron import stream_tokens
-from hedron_core.streaming import TokenStream
-
-tokens = TokenStream(region_id="answer", tokens=["Hello", " ", "world"])
-
-
-@app.get("/stream/answer")
-def stream_answer():
-    return stream_tokens(tokens)
-```
-
-`StreamingComponentResponse` sets `X-Hedron-Stream-Region` and may prefix a fallback HTML
-chunk when `fallback_html=` is provided.
+known extensions when configured). Honor `Last-Event-ID` for reconnect. Treat the stream
+as observation—polling remains Supported.
 
 ## Page/session WebSocket channel
 
@@ -125,3 +235,4 @@ Do not enable speculative preload for authenticated mutation endpoints.
 | Explorer missing live traces | Explorer live traces remain owned Deferred for 0.10.x — use curl/TestClient |
 | Flask/Django looking for SSE helpers | Use polling; helpers are FastAPI-flagship only |
 | Preload rejected | Check `NavigationPreloadPolicy(enabled=True)` and same-origin rules |
+| No first-party live sample in `examples/` | Owned Deferred (`EXAMPLES-10-001`); use the poll/stream snippets above |

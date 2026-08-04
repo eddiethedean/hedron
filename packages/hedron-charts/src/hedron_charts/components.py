@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html as html_stdlib
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -23,6 +24,13 @@ from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.visualization import VisualizationLimits
+
+
+def _coerce_float(value: Any, *, default: float = 0.0) -> float:
+    try:
+        return float(value) if value is not None else default
+    except (TypeError, ValueError):
+        return default
 
 __all__ = ["AltairChart", "LineChart", "MatplotlibChart", "PlotlyChart"]
 
@@ -84,7 +92,7 @@ class LineChart(Component[_ChartProps]):
 
             fig, ax = plt.subplots()
             xs_raw = [row.get(self._x) for row in self._data]
-            ys = [float(row.get(self._y) or 0) for row in self._data]
+            ys = [_coerce_float(row.get(self._y)) for row in self._data]
             numeric_xs: list[float] = []
             categorical = False
             for raw in xs_raw:
@@ -109,7 +117,7 @@ class LineChart(Component[_ChartProps]):
         except ImportError:
             points = []
             if self._data:
-                ys = [float(row.get(self._y) or 0) for row in self._data]
+                ys = [_coerce_float(row.get(self._y)) for row in self._data]
                 max_y = max(ys) or 1.0
                 width = 320
                 height = 160
@@ -118,10 +126,12 @@ class LineChart(Component[_ChartProps]):
                     py = height - 10 - (y / max_y) * (height - 20)
                     points.append(f"{px:.1f},{py:.1f}")
                 poly = " ".join(points)
+                title_text = html_stdlib.escape(acc.title, quote=False)
+                label_text = html_stdlib.escape(acc.alt or acc.title, quote=True)
                 svg = (
                     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 160" '
-                    f'role="img" aria-label="{acc.alt or acc.title}">'
-                    f"<title>{acc.title}</title>"
+                    f'role="img" aria-label="{label_text}">'
+                    f"<title>{title_text}</title>"
                     f'<polyline fill="none" stroke="currentColor" '
                     f'stroke-width="2" points="{poly}"/>'
                     f"</svg>"

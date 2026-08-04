@@ -85,6 +85,25 @@ def _format_attr(name: str, value: Any) -> str | None:
             explanation=f"Boolean attribute {name!r} received {value!r}.",
             remediation="Pass True, False, or None.",
         )
+    if lower in {"hx-push-url", "hx-replace-url"}:
+        # HTMX accepts boolean true/false in addition to a URL for history control.
+        if isinstance(value, bool):
+            return f'{lower}="{"true" if value else "false"}"'
+        if isinstance(value, str) and value.lower() in {"true", "false"}:
+            return f'{lower}="{value.lower()}"'
+        if isinstance(value, SafeUrl):
+            check_url_purpose_for_attribute(value, lower)
+            return f'{lower}="{escape_attr(value.value)}"'
+        raise error(
+            "HED-SEC-0003",
+            title="URL attribute requires SafeUrl",
+            explanation=(
+                f"Attribute {name!r} must be a SafeUrl, bool, or 'true'/'false', "
+                f"not {type(value)!r}."
+            ),
+            remediation="Pass True/False or SafeUrl.parse(...).",
+        )
+
     if lower in URL_ATTRS or lower.endswith("href") or lower.endswith("src"):
         if lower == "srcset" and isinstance(value, str):
             # Construction already validates candidates; re-check schemes at serialize.

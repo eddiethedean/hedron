@@ -1,34 +1,65 @@
----
-status: shipped
----
-
 # `Auto`
-
 
 !!! note "Stability (0.8 compatibility baseline)"
 
-    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
+    Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` /
+    `internal` / `deferred`).
 
-**Status:** Accepted
+**Status:** Accepted · **Shipped** (core `hedron` — **no** `hedron[data]` extra)
 
-`Auto(value)` selects an appropriate component through the registered intelligent-rendering pipeline.
+`Auto(value)` selects an appropriate component through the registered intelligent-rendering
+pipeline.
 
 ```python
-Page(Auto(users_dataframe))
+from hedron import Auto, Hedron, Page
+
+app = Hedron(title="Auto", security="standard", session_secret="replace-me")
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(Auto({"name": "Ada", "role": "admin"}), title="Auto")
 ```
+
+## Constructor
+
+```python
+Auto(value=None, *, as_=None)
+```
+
+| Parameter | Type | Meaning |
+|---|---|---|
+| `value` | `Any` | Object to render |
+| `as_` | `str \| type \| None` | Force a registered renderer id/type when inference is ambiguous |
+
+## Returns
+
+A component node suitable for composition under `Page` / fragments. Selection is
+deterministic for a given registry and value shape.
 
 ## Baseline mappings
 
-- Hedron component → unchanged component.
-- Dataframe-like or rows → `DataTable` or policy-selected `DataEditor`.
-- Plotly, Altair, or Matplotlib object → corresponding chart adapter.
-- Markdown value → secure `Markdown` component.
-- PIL-like image → managed `Image` component.
-- Mapping → `DescriptionList` or JSON viewer under policy.
-- Sequence → list or table according to shape.
+- Hedron component → unchanged component
+- Mapping → `DescriptionList` (or JSON viewer under policy)
+- Sequence → list or table according to shape
+- Markdown-like string policy → secure `Markdown` when registered
+- Dataframe-like / tabular rows → may select `DataTable` **when** `hedron[data]` is installed
+- Plotly / Altair / Matplotlib → chart adapters **when** `hedron[charts]` (+ backend) is installed
+- PIL-like image → managed `Image` when helpers are available
 
-Selection is deterministic. Each renderer declares supported types, priority, cost, optional package, security implications, and explanation metadata. Ambiguous matches produce a documented winner or an actionable error; they never depend on import order.
+Ambiguous matches produce a documented winner or an actionable error; they never depend
+on import order. Expensive inspection is bounded.
 
-The Data Intelligence Layer may inspect schema, size, cardinality, datetime columns, and geographic fields to recommend presentation. Expensive inspection is bounded and cannot implicitly collect a lazy dataset. `as_=` and policy options provide explicit override.
+## Errors
 
-Explorer shows the selected renderer, candidates, rejected candidates, inspection evidence, and payload implications.
+| Situation | Behavior |
+|---|---|
+| No renderer for value | Diagnostic / render error with explanation metadata |
+| Optional package missing for chosen renderer | Import/extra error — install `hedron[data]` or `hedron[charts]` as needed |
+| Ambiguous match without `as_` | Documented winner or actionable error |
+
+## See also
+
+- [Component gallery — Auto](../components/auto.md)
+- [Data applications](../guides/data-apps.md) · [Data](DATA.md)

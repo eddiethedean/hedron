@@ -18,7 +18,7 @@ Create a compact native button with a required accessible label.
 
 <section class="hedron-component-demo" data-hedron-component-demo="IconButton"><div class="hdc-stage"><button class="hdc-icon-button" type="button" aria-label="Delete report" data-hdc-action="count"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 3.5h7M8 3.5V2h4v1.5M5 5.5h10l-.6 11H5.6L5 5.5Zm3 2v6m4-6v6"/></svg></button><p class="hdc-muted" data-hdc-status>Accessible name: Delete report</p></div></section>
 
-The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
+The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 
 ## Basic use
 
@@ -28,15 +28,13 @@ from hedron import IconButton
 component = IconButton('Delete report', icon='⌫')
 ```
 
-In a route, return the component inside a `Page`, or return it directly as a fragment through the framework adapter. Components are immutable descriptions of output: construct the complete state on the server and let the renderer serialize it.
+Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
 
 ## How it works
 
 The icon string is rendered inside an aria-hidden span while `label` supplies the button's accessible name. Both values are escaped; this component does not resolve registered SVG names automatically.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
-
-The component participates in Hedron's normal escaping, URL, and attribute validation. Values are data unless an API explicitly requires `SafeUrl` or reviewed `TrustedHtml`; do not pre-escape strings and do not concatenate HTML.
 
 ## Constructor and parameters
 
@@ -51,11 +49,11 @@ IconButton(label, *, icon, type='button', disabled=False)
 | `type` | `button | submit | reset` | Native behavior. |
 | `disabled` | `bool` | Prevent activation. |
 
-Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
-
 ## Composition and backend behavior
 
-Use `IconButton` at the smallest level that owns its semantics. Page routes normally compose it under `Page`, `Main`, and an explicit heading structure. HTMX fragment routes should return only the region being replaced and keep stable target IDs across success, validation, empty, loading, and error responses.
+Keep `IconButton` at the smallest semantic boundary. Fragment routes should return only
+the replaced region and preserve stable target IDs across success, validation, empty,
+loading, and error responses.
 
 This component is primarily presentational; keep any mutation on an explicit action or component route.
 
@@ -63,17 +61,15 @@ This component is primarily presentational; keep any mutation on an explicit act
 
 Make the hit target large enough and keep a tooltip supplementary—the label must exist without hover.
 
-Verify keyboard use, visible focus, zoom, and reduced motion for interactive states. Prefer native semantics and status/alert announcements over color-only cues.
+## Security
 
-## Security and validation
-
-Escape and trust-boundary types (`SafeUrl`, `TrustedHtml`) remain framework concerns; authorization and data exposure remain yours. Redact secrets before rendering.
+Escaping and `SafeUrl` / `TrustedHtml` are framework concerns; authorization and data
+exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
 - Do not pass SVG markup as the icon string; use the reviewed icon registry in a custom control when a trusted SVG is required.
-- Do not copy docs-preview JavaScript into an application server; demos simulate HTMX locally.
-- Choose components for semantics first, then theme them.
+- Do not copy docs-preview JavaScript into an application server.
 
 ## Testing
 
@@ -85,6 +81,4 @@ assert result.html
 assert not result.diagnostics
 ```
 
-For interactive flows, assert method, URL, headers, fragment body, and status with a framework test client. Add a browser test when keyboard or HTMX swap behavior is material.
-
-[All component demos](index.md) · [Built-in API baseline](../api/BUILT_INS.md) · [Testing UI](../guides/testing.md) · [Forms and actions](../guides/forms-and-actions.md)
+[All component demos](index.md) · [Built-in API](../api/BUILT_INS.md) · [Testing](../guides/testing.md)

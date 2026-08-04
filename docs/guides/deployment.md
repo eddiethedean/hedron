@@ -3,8 +3,8 @@
 ## Production checklist (FastAPI flagship)
 
 1. Set a strong `session_secret` (never the development default). Prefer `security="strict"` when CSP without inline styles is acceptable.
-2. Set `HEDRON_ENV=production` or `Hedron(production=True)`.
-3. Run `hedron build` (0.4+) and deploy the build directory with your app.
+2. Run `hedron build` and deploy the build directory with your app (**before** enabling production mode).
+3. Set `HEDRON_ENV=production` or `Hedron(production=True)`.
 4. Keep `explorer="off"` (or `secured` with real auth). Development Explorer is disabled in production.
 5. Serve behind HTTPS so CSRF cookies can be `Secure`.
 
@@ -35,21 +35,48 @@ HEDRON_ENV=production uv run uvicorn app:app --host 0.0.0.0 --port 8000
 Fingerprinted assets are served from `/hedron-assets/` (or your configured mount).
 Bundled HTMX remains under `/hedron-static/`.
 
-## Dockerfile (FastAPI sketch)
+## Dockerfile (FastAPI)
+
+Install the **application** dependencies (not only Hedron), build the manifest, then
+run under production mode:
+
+```dockerfile
+FROM python:3.12-slim AS build
+WORKDIR /app
+COPY pyproject.toml README.md ./
+COPY src ./src
+# If you use uv:
+# COPY uv.lock ./
+# RUN pip install --no-cache-dir uv && uv sync --frozen --no-dev
+RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir "uvicorn[standard]"
+RUN hedron build
+
+FROM python:3.12-slim
+WORKDIR /app
+COPY --from=build /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=build /usr/local/bin /usr/local/bin
+COPY --from=build /app /app
+ENV HEDRON_ENV=production
+EXPOSE 8000
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+Adjust module path (`app:app`), copy layout, and Python version to match your project.
+Keep `manifest.json` (from `hedron build`) in the runtime image. For a monorepo
+reference layout, see [`examples/reference-app/Dockerfile`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/Dockerfile).
+
+Single-stage sketch when you already vendor a lockfile:
 
 ```dockerfile
 FROM python:3.12-slim
 WORKDIR /app
-COPY pyproject.toml uv.lock ./
-RUN pip install --no-cache-dir "hedron>=0.10.0" "uvicorn[standard]"
 COPY . .
-RUN hedron build
+RUN pip install --no-cache-dir ".[standard]" "uvicorn[standard]" \
+ && hedron build
 ENV HEDRON_ENV=production
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
-
-Adjust copy/`WORKDIR` so `app:app` resolves. Multi-stage and lockfile installs are fine;
-keep the build manifest in the runtime image.
 
 ## Reverse proxy
 
@@ -103,5 +130,5 @@ local use only.
 
 ## See also
 
-- [Security](security.md) · [Cookbook](cookbook.md) · [Project workflow](project-workflow.md)
-- [What’s ready today](whats-ready.md) · [Compatibility](../COMPATIBILITY.md)
+- [Security](security.md) · [Cookbook](cookbook.md) · [Production readiness](production-readiness.md)
+- [Error codes](error-codes.md) · [Compatibility](../COMPATIBILITY.md)

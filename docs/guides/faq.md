@@ -8,10 +8,9 @@ pip install hedron
 uv add hedron
 ```
 
-That installs the latest published release from PyPI. The current train is **0.10.0** (live
-interaction on the 0.9 HDJ authoring line)—see [STATUS](../STATUS.md). For DataTable/DataEditor,
-install
-`hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
+That installs the latest published release from PyPI. The current train is **0.10.0**—see
+[STATUS](../STATUS.md). `Auto` is included. For DataTable/DataEditor, install `hedron[data]`.
+For charts, install `hedron[charts]`. For Flask/Django adapters:
 
 ```bash
 pip install hedron-flask
@@ -39,10 +38,11 @@ every capability Supported; Accepted design ≠ always fully shipped.
 
 ## Are Auto, DataTable, and charts available?
 
-Yes on the published PyPI train:
+Yes on the published PyPI train. `Auto` ships in core `hedron` (no extra). Tabular
+widgets and charts need extras:
 
 ```bash
-pip install "hedron[data]"     # Auto, DataTable, DataEditor
+pip install "hedron[data]"     # DataTable, DataEditor (Auto is already in hedron)
 pip install "hedron[charts]"   # LineChart and visualization adapters
 ```
 

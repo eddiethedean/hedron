@@ -44,9 +44,8 @@ No Node.js installation or frontend build tool is required.
 After the hello page, continue with:
 
 - [Learning path](learning-path.md) for a guided order
-- [Forms and actions](../guides/forms-and-actions.md) for AutoForm, CSRF, and validation
+- [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
+- [Minimal form POST](../guides/minimal-form.md) — CSRF-safe classic form
+- [Forms and actions](../guides/forms-and-actions.md) — validation fragments (deep dive)
 - [Flask adapter](flask.md) or [Django adapter](django.md) if you are not on FastAPI
-- [HTMX interactions](../guides/htmx-interactions.md)
-- [Live interaction](../guides/live-interaction.md) (0.10 FastAPI)
-- [Charts and HTMX](../guides/charts-and-htmx.md)
-- [Best practices](../guides/best-practices.md)
+- [Authentication](../guides/authentication.md) · [Deployment](../guides/deployment.md)

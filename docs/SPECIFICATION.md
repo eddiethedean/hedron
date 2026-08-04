@@ -1,13 +1,13 @@
 # Hedron specification
 
-This documentation set is the canonical specification for Hedron and provides a
-versioned, internally consistent baseline. It also powers the
+Maintainer-oriented authority index for RFCs, decisions, and implementation specs.
+Adopters should start with [Get started](getting-started/index.md) and
+[What's ready today](guides/whats-ready.md). This set also powers the
 [Hedron documentation](https://hedron.readthedocs.io/en/latest/).
 
 Hedron is a Python-first, FastAPI-native framework for building typed, server-rendered
-component applications with HTML, HTMX, scoped CSS, and optional Web Components. It aims
-for React-like composition and Streamlit-like ease without requiring Node.js, hydration,
-a virtual DOM, or a proprietary browser runtime.
+component applications with HTML, HTMX, scoped CSS, and optional Web Components—without
+requiring Node.js, hydration, a virtual DOM, or a proprietary browser runtime.
 
 ## Authority
 

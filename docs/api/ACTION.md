@@ -36,10 +36,19 @@ async def delete_user(user_id: int) -> Text:
 | `dependencies` | FastAPI dependencies (auth gates, etc.) |
 | Other kwargs | Passed to FastAPI `add_api_route` |
 
-Returns are rendered as fragments by default. Prefer `InteractionResult` when you need
-typed HTMX metadata. Note: `fragment_regions` is supported on `@component` / `@page`, not
-on `@action` today—use `@component(..., methods=["POST"], fragment_regions=...)` when you
-need an allowlisted HTMX target for a mutation ([forms guide](../guides/forms-and-actions.md)).
+Returns are rendered as fragments by default.
+
+| Return type | Behavior |
+|---|---|
+| `NodeLike` / built-in component | Fragment HTML |
+| `InteractionResult` | Fragment HTML + validated HTMX metadata |
+| `Page` | Page document when the route/render mode expects a page |
+| FastAPI `Response` | Passed through |
+
+Prefer `InteractionResult` when you need typed HTMX metadata. Note: `fragment_regions`
+is supported on `@component` / `@page`, not on `@action` today—use
+`@component(..., methods=["POST"], fragment_regions=...)` when you need an allowlisted
+HTMX target for a mutation ([forms guide](../guides/forms-and-actions.md)).
 
 ## Contract
 

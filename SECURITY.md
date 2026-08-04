@@ -1,44 +1,15 @@
 # Security policy
 
-## Supported versions
+The canonical security policy for GitHub and adopters is
+[docs/SECURITY.md](docs/SECURITY.md) (also published on Read the Docs).
 
-| Version | Supported |
-|---|---|
-| `0.10.x` | Yes |
-| `0.9.x` | Security fixes while 0.10 remains Beta; prefer upgrading |
-| `0.8.x` | Final HDN-capable line; critical issues may be noted only |
-| `< 0.8` | No |
+Summary:
 
-## Reporting a vulnerability
+- Supported lines: `0.10.x` (current); see the docs table for older trains
+- **Do not** open public issues for vulnerabilities — use GitHub
+  [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new)
+  or the maintainer contact on the owner’s GitHub profile
+- Guides: [Security](https://hedron.readthedocs.io/en/latest/guides/security/),
+  [Threat model](https://hedron.readthedocs.io/en/latest/guides/threat-model/)
 
-Please **do not** open a public GitHub issue for security vulnerabilities.
-
-Email the maintainer through the address listed on the
-[GitHub profile](https://github.com/eddiethedean) for the repository owner, or use
-GitHub's private [security advisory](https://github.com/eddiethedean/hedron/security/advisories/new)
-flow when available.
-
-Include:
-
-- Affected package(s) and versions
-- A minimal reproduction
-- Impact assessment (confidentiality, integrity, availability)
-- Whether a fix is already known
-
-You should receive an acknowledgment within a few business days. Coordinated disclosure
-is preferred; please allow reasonable time before public discussion.
-
-## Scope
-
-In scope: Hedron first-party packages (`hedron`, `hedron-core`, adapters, Explorer, data,
-charts, jinja) and their documented secure defaults (escaping, CSRF, redirects, trust
-types, asset URLs).
-
-Out of scope: application-authored HDJ/templates that embed untrusted content, third-party
-plugins, misconfigured deployments, and host-framework CVEs (report those upstream).
-
-## See also
-
-Published docs: [Security guide](https://hedron.readthedocs.io/en/latest/guides/security/),
-[Threat model](https://hedron.readthedocs.io/en/latest/guides/threat-model/),
-[Support](https://hedron.readthedocs.io/en/latest/guides/support/).
+Keep [docs/SECURITY.md](docs/SECURITY.md) as the detailed source of truth when editing.

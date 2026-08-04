@@ -43,10 +43,30 @@ def origin_allowed(
         return bool(allowed_origins is not None and ALLOW_MISSING_ORIGIN in allowed_origins)
     if allowed_origins is not None:
         return origin in allowed_origins
-    # Default: same-origin with the request URL host.
-    host = websocket.url.hostname
+    # Default: full same-origin (scheme + host + port) with the request URL.
     parsed = urlparse(origin)
-    return bool(host) and parsed.hostname == host
+    if not parsed.hostname or not parsed.scheme:
+        return False
+    req_scheme = websocket.url.scheme or "http"
+    # Browsers report Origin with http/https; WS upgrade uses ws/wss.
+    origin_scheme = parsed.scheme.lower()
+    if origin_scheme in {"http", "https"} and req_scheme in {"ws", "wss"}:
+        req_http = "https" if req_scheme == "wss" else "http"
+    else:
+        req_http = req_scheme
+    if origin_scheme != req_http:
+        return False
+    if parsed.hostname != websocket.url.hostname:
+        return False
+
+    def _effective_port(scheme: str, port: int | None) -> int:
+        if port is not None:
+            return port
+        return 443 if scheme in {"https", "wss"} else 80
+
+    origin_port = _effective_port(origin_scheme, parsed.port)
+    req_port = _effective_port(req_http, websocket.url.port)
+    return origin_port == req_port
 
 
 async def accept_page_session_channel(

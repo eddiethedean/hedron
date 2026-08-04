@@ -61,24 +61,18 @@ exclude_docs: |
   requirements-rtd.txt
   overrides/**
 
-# Linked from indexes / search but intentionally omitted from primary nav.
-not_in_nav: |
-  DJANGO_ADAPTER_RESEARCH.md
-  FLASK_ADAPTER_RESEARCH.md
-  acceptance/**
-  foundations/**
-  implementation/**
-  rfcs/**
+
 
 validation:
   nav:
-    omitted_files: info
+    omitted_files: warn
     not_found: warn
-    absolute_links: info
+    absolute_links: warn
   links:
     not_found: warn
-    absolute_links: info
-    unrecognized_links: info
+    absolute_links: warn
+    unrecognized_links: warn
+    anchors: warn
 
 markdown_extensions:
   - admonition
@@ -137,34 +131,40 @@ nav:
     - Django adapter: getting-started/django.md
   - Guides:
     - Overview: guides/index.md
-    - Why Hedron: guides/why-hedron.md
-    - What's ready today: guides/whats-ready.md
-    - Forms and actions: guides/forms-and-actions.md
     - HTMX interactions: guides/htmx-interactions.md
-    - Live interaction: guides/live-interaction.md
+    - Minimal form POST: guides/minimal-form.md
+    - Forms and actions: guides/forms-and-actions.md
     - Authentication: guides/authentication.md
+    - Live interaction: guides/live-interaction.md
     - Data applications: guides/data-apps.md
     - Charts and HTMX: guides/charts-and-htmx.md
     - Cookbook: guides/cookbook.md
     - Plain FastAPI: guides/plain-fastapi.md
     - Compose built-ins: guides/component-composition.md
     - Project workflow: guides/project-workflow.md
-    - Migrate from Streamlit: guides/streamlit-migration.md
-    - HDJ authoring: api/JINJA.md
-    - Best practices: guides/best-practices.md
-    - Test your UI: guides/testing.md
     - Security: guides/security.md
     - Threat model: guides/threat-model.md
     - Deployment: guides/deployment.md
+    - Performance: guides/performance.md
+    - Test your UI: guides/testing.md
+    - Best practices: guides/best-practices.md
     - Plugin authoring: guides/plugin-authoring.md
+    - Migrate from Streamlit: guides/streamlit-migration.md
+    - HDJ authoring: api/JINJA.md
+    - What's ready today: guides/whats-ready.md
+    - Production readiness: guides/production-readiness.md
+    - Public roadmap: guides/roadmap.md
+    - Why Hedron: guides/why-hedron.md
     - Upgrade (0.8 → 0.10): guides/upgrade.md
     - What's new in 0.10: guides/whats-new-0.10.md
     - Release notes: guides/release-notes.md
     - FAQ: guides/faq.md
     - Troubleshooting: guides/troubleshooting.md
+    - Error codes: guides/error-codes.md
   - Examples:
     - Overview: examples/index.md
     - Runnable examples: examples/runnable.md
+    - Single-file apps: examples/single-file.md
     - Reference app walkthrough: examples/reference-app.md
     - Component gallery: examples/gallery.md
   - Components:
@@ -268,71 +268,153 @@ nav:
     - Overview: api/README.md
     - Stability: api/STABILITY.md
     - Hedron: api/HEDRON.md
+    - Router: api/ROUTER.md
+    - Action: api/ACTION.md
+    - Addressable components: api/ADDRESSABLE.md
     - Interaction: api/INTERACTION.md
+    - Models and Props: api/MODELS.md
+    - Field: api/FIELD.md
+    - Component: api/COMPONENT.md
     - Responses: api/RESPONSES.md
+    - Security types: api/SECURITY_TYPES.md
+    - Page: api/PAGE.md
+    - State: api/STATE.md
     - SSE: api/SSE.md
     - Streaming: api/STREAMING.md
     - WebSocket channel: api/WEBSOCKET_CHANNEL.md
     - Navigation preload: api/PRELOAD.md
-    - Security types: api/SECURITY_TYPES.md
+    - Rendering: api/RENDERING.md
+    - Auto: api/AUTO.md
+    - Data: api/DATA.md
+    - Data sources: api/DATA_SOURCE.md
+    - Charts: api/CHART.md
+    - Content: api/CONTENT.md
+    - Built-ins: api/BUILT_INS.md
+    - Utility components: api/UTILITY_COMPONENTS.md
+    - Themes: api/THEME.md
+    - ColorMode: api/COLORMODE.md
+    - Cache: api/CACHE.md
+    - Jobs: api/JOBS.md
+    - Auth: api/AUTH.md
+    - Explorer: api/EXPLORER.md
+    - Plugins: api/PLUGINS.md
+    - Testing: api/TESTING.md
     - Framework adapters: api/ADAPTERS.md
     - CLI: api/CLI.md
-    - Performance budgets: PERFORMANCE_BUDGETS.md
-    - More API:
-      - Application:
-        - Router: api/ROUTER.md
-        - Page: api/PAGE.md
-        - State: api/STATE.md
-      - Components:
-        - Component: api/COMPONENT.md
-        - Built-ins: api/BUILT_INS.md
-        - Addressable components: api/ADDRESSABLE.md
-        - Action: api/ACTION.md
-        - Charts: api/CHART.md
-        - Content: api/CONTENT.md
-      - Data and models:
-        - Models and Props: api/MODELS.md
-        - Field: api/FIELD.md
-        - Auto: api/AUTO.md
-        - Utility components: api/UTILITY_COMPONENTS.md
-        - Data: api/DATA.md
-        - Data sources: api/DATA_SOURCE.md
-      - Platform:
-        - Rendering: api/RENDERING.md
-        - Themes: api/THEME.md
-        - ColorMode: api/COLORMODE.md
-        - Cache: api/CACHE.md
-        - Jobs: api/JOBS.md
-        - Auth: api/AUTH.md
-        - Explorer: api/EXPLORER.md
-        - Plugins: api/PLUGINS.md
-        - Testing: api/TESTING.md
-        - API diagnostics: api/DIAGNOSTICS.md
-      - Configuration: CONFIGURATION.md
-      - Glossary: GLOSSARY.md
+    - API diagnostics: api/DIAGNOSTICS.md
+    - Configuration: CONFIGURATION.md
+    - Glossary: GLOSSARY.md
   - Project:
     - What's ready today: guides/whats-ready.md
-    - Status (evidence): STATUS.md
+    - Production readiness: guides/production-readiness.md
+    - Public roadmap: guides/roadmap.md
     - Compatibility: COMPATIBILITY.md
-    - Roadmap: ROADMAP.md
     - Architecture: ARCHITECTURE.md
     - Contributing: CONTRIBUTING.md
     - Support: guides/support.md
     - Security disclosure: SECURITY.md
-    - Cutting a release: RELEASE.md
-    - Reference application: REFERENCE_APPLICATION.md
-  - Specification:
+  - Maintainers:
+    - Overview: guides/maintainers.md
     - Specification index: SPECIFICATION.md
+    - Status (evidence): STATUS.md
+    - Full roadmap: ROADMAP.md
     - Decisions: DECISIONS.md
+    - Cutting a release: RELEASE.md
     - Project layout: PROJECT_LAYOUT.md
     - Engineering baseline: ENGINEERING_BASELINE.md
     - Diagnostics format: DIAGNOSTICS.md
     - Identifiers: IDENTIFIERS.md
     - Traceability: TRACEABILITY.md
-    - Foundations: foundations/README.md
-    - RFC catalog: rfcs/README.md
-    - Implementation specifications: implementation/README.md
-    - Acceptance specifications: acceptance/README.md
+    - Performance budgets: PERFORMANCE_BUDGETS.md
+    - Reference application: REFERENCE_APPLICATION.md
+    - Foundations:
+      - Overview: foundations/README.md
+      - Vision: foundations/01_VISION.md
+      - Philosophy: foundations/02_PHILOSOPHY.md
+      - Design Principles: foundations/03_DESIGN_PRINCIPLES.md
+      - Non Goals: foundations/04_NON_GOALS.md
+    - RFCs:
+      - Catalog: rfcs/README.md
+      - RFC-0001 Vision: rfcs/RFC-0001-VISION.md
+      - RFC-0002 Core-Architecture: rfcs/RFC-0002-CORE-ARCHITECTURE.md
+      - RFC-0003 Component-Model: rfcs/RFC-0003-COMPONENT-MODEL.md
+      - RFC-0004 Fastapi-Integration: rfcs/RFC-0004-FASTAPI-INTEGRATION.md
+      - RFC-0005 Hdn-Language: rfcs/RFC-0005-HDN-LANGUAGE.md
+      - RFC-0006 Scoped-Styles: rfcs/RFC-0006-SCOPED-STYLES.md
+      - RFC-0007 Component-Explorer: rfcs/RFC-0007-COMPONENT-EXPLORER.md
+      - RFC-0008 Addressable-Components: rfcs/RFC-0008-ADDRESSABLE-COMPONENTS.md
+      - RFC-0009 Htmx-Integration: rfcs/RFC-0009-HTMX-INTEGRATION.md
+      - RFC-0010 Data-Components: rfcs/RFC-0010-DATA-COMPONENTS.md
+      - RFC-0011 Visualization: rfcs/RFC-0011-VISUALIZATION.md
+      - RFC-0012 Security: rfcs/RFC-0012-SECURITY.md
+      - RFC-0013 Async: rfcs/RFC-0013-ASYNC.md
+      - RFC-0014 Plugin-Architecture: rfcs/RFC-0014-PLUGIN-ARCHITECTURE.md
+      - RFC-0015 Routing: rfcs/RFC-0015-ROUTING.md
+      - RFC-0016 Openapi: rfcs/RFC-0016-OPENAPI.md
+      - RFC-0017 Cli: rfcs/RFC-0017-CLI.md
+      - RFC-0018 Packaging: rfcs/RFC-0018-PACKAGING.md
+      - RFC-0019 Testing: rfcs/RFC-0019-TESTING.md
+      - RFC-0020 Performance: rfcs/RFC-0020-PERFORMANCE.md
+      - RFC-0021 Browser-Runtime: rfcs/RFC-0021-BROWSER-RUNTIME.md
+      - RFC-0022 Theming: rfcs/RFC-0022-THEMING.md
+      - RFC-0023 Accessibility: rfcs/RFC-0023-ACCESSIBILITY.md
+      - RFC-0024 Developer-Experience: rfcs/RFC-0024-DEVELOPER-EXPERIENCE.md
+      - RFC-0025 Component-Lifecycle: rfcs/RFC-0025-COMPONENT-LIFECYCLE.md
+      - RFC-0026 State-Management: rfcs/RFC-0026-STATE-MANAGEMENT.md
+      - RFC-0027 Data-Sources: rfcs/RFC-0027-DATA-SOURCES.md
+      - RFC-0028 Deployment: rfcs/RFC-0028-DEPLOYMENT.md
+      - RFC-0029 Roadmap-To-1.0: rfcs/RFC-0029-ROADMAP-TO-1.0.md
+      - RFC-0030 Declarative-Authoring-Reset: rfcs/RFC-0030-DECLARATIVE-AUTHORING-RESET.md
+      - RFC-0031 Jinja-Integration: rfcs/RFC-0031-JINJA-INTEGRATION.md
+      - RFC-0032 Live-Transport: rfcs/RFC-0032-LIVE-TRANSPORT.md
+      - RFC template: rfcs/TEMPLATE.md
+    - Implementation:
+      - Overview: implementation/README.md
+      - Asset Pipeline: implementation/ASSET_PIPELINE.md
+      - Async Runtime: implementation/ASYNC_RUNTIME.md
+      - Build System: implementation/BUILD_SYSTEM.md
+      - Cache Layer: implementation/CACHE_LAYER.md
+      - Component Registry: implementation/COMPONENT_REGISTRY.md
+      - Css Compiler: implementation/CSS_COMPILER.md
+      - Explorer Backend: implementation/EXPLORER_BACKEND.md
+      - Explorer Frontend: implementation/EXPLORER_FRONTEND.md
+      - Framework Adapters: implementation/FRAMEWORK_ADAPTERS.md
+      - Html Serializer: implementation/HTML_SERIALIZER.md
+      - Job Runtime: implementation/JOB_RUNTIME.md
+      - Model System: implementation/MODEL_SYSTEM.md
+      - Observability: implementation/OBSERVABILITY.md
+      - Openapi Generator: implementation/OPENAPI_GENERATOR.md
+      - Operations: implementation/OPERATIONS.md
+      - Plugin Loader: implementation/PLUGIN_LOADER.md
+      - Rendering Engine: implementation/RENDERING_ENGINE.md
+      - Router Generator: implementation/ROUTER_GENERATOR.md
+      - Security Controls: implementation/SECURITY_CONTROLS.md
+    - Acceptance:
+      - Overview: acceptance/README.md
+      - Accessibility: acceptance/ACCESSIBILITY.md
+      - Adapters: acceptance/ADAPTERS.md
+      - Async: acceptance/ASYNC.md
+      - Caching Utilities: acceptance/CACHING_UTILITIES.md
+      - Cli: acceptance/CLI.md
+      - Component Model: acceptance/COMPONENT_MODEL.md
+      - Data Editor: acceptance/DATA_EDITOR.md
+      - Evidence: acceptance/EVIDENCE.md
+      - Explorer: acceptance/EXPLORER.md
+      - Fastapi Integration: acceptance/FASTAPI_INTEGRATION.md
+      - Htmx: acceptance/HTMX.md
+      - Jinja: acceptance/JINJA.md
+      - Jobs: acceptance/JOBS.md
+      - Observability: acceptance/OBSERVABILITY.md
+      - Operations: acceptance/OPERATIONS.md
+      - Packaging Deployment: acceptance/PACKAGING_DEPLOYMENT.md
+      - Performance: acceptance/PERFORMANCE.md
+      - Plugins: acceptance/PLUGINS.md
+      - Release 0.10: acceptance/RELEASE_0_10.md
+      - Release 0.9: acceptance/RELEASE_0_9.md
+      - Scoped Styles: acceptance/SCOPED_STYLES.md
+      - Security: acceptance/SECURITY.md
+      - Testing: acceptance/TESTING.md
+      - Visualization: acceptance/VISUALIZATION.md
     - Feature research:
       - Streamlit cross-check: STREAMLIT_FEATURE_CROSSCHECK.md
       - streamlit-extras cross-check: STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md
@@ -343,3 +425,5 @@ nav:
       - HTMX 2 extensions: HTMX_2_EXTENSIONS.md
       - Readiness report: READINESS_REPORT.md
       - Inference overrides: INFERENCE_OVERRIDES.md
+      - Flask adapter research: FLASK_ADAPTER_RESEARCH.md
+      - Django adapter research: DJANGO_ADAPTER_RESEARCH.md

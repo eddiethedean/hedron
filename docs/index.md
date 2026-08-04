@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · 0.10.0 live interaction</div>
+<div class="hedron-eyebrow">Python-first UI framework · v0.10.0</div>
 
 # Ship the interface.<br><span class="hedron-gradient-text">Keep the Python.</span>
 
@@ -52,7 +52,7 @@ to run a live Hedron server.
   </div>
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">◇</span>
-    <strong>Security by construction</strong>
+    <strong>Secure defaults</strong>
     <p>Contextual escaping, CSRF validation, safe URL types, and conservative cache behavior are framework boundaries.</p>
   </div>
 </div>
@@ -115,26 +115,27 @@ to run a live Hedron server.
 
 ## Choose your path
 
+After the hello page: [quickstart](getting-started/quickstart.md) →
+[HTMX interactions](guides/htmx-interactions.md) →
+[minimal form](guides/minimal-form.md) →
+[reference app](examples/reference-app.md).
+
 <div class="hedron-path">
-  <a href="getting-started/how-to-read/">
-    <strong>How to read the docs</strong>
-    Decode Beta, Supported, Accepted, and phase numbers.
-  </a>
   <a href="getting-started/installation/">
     <strong>Start fresh</strong>
     Prefer <code>hedron new</code>, then run the quickstart.
   </a>
-  <a href="guides/forms-and-actions/">
+  <a href="guides/htmx-interactions/">
+    <strong>Add an interaction</strong>
+    Refresh a declared region with HTMX.
+  </a>
+  <a href="guides/minimal-form/">
     <strong>Add a form</strong>
-    POST, CSRF, and validation fragments.
+    CSRF-safe POST in about forty lines.
   </a>
   <a href="getting-started/core-concepts/">
     <strong>Learn the model</strong>
     Apps, pages, components, rendering, and HTMX.
-  </a>
-  <a href="guides/why-hedron/">
-    <strong>Why Hedron</strong>
-    Compare with Streamlit, Dash, and Jinja+HTMX.
   </a>
   <a href="examples/runnable/">
     <strong>Runnable examples</strong>
@@ -148,14 +149,18 @@ to run a live Hedron server.
     <strong>What's ready</strong>
     Honest 0.10 snapshot for evaluators.
   </a>
+  <a href="guides/production-readiness/">
+    <strong>Production readiness</strong>
+    Pins, security, and support boundaries.
+  </a>
 </div>
 
 ## Designed for inspectability
 
 Hedron does not hide the web platform. It gives Python applications a typed component
-model while preserving ordinary HTML, CSS, HTTP, and FastAPI boundaries. Inference is
-explainable, resources are explicitly addressable, and production builds are sealed and
-reproducible.
+model while preserving ordinary HTML, CSS, HTTP, and FastAPI boundaries. Automatic
+choices (cache, Explorer, assets) are inspectable and overrideable; components become
+HTTP endpoints only when you address them explicitly.
 
-[Read the architecture](ARCHITECTURE.md) · [See project status](STATUS.md) ·
-[View the roadmap](ROADMAP.md)
+[Read the architecture](ARCHITECTURE.md) · [What's ready today](guides/whats-ready.md) ·
+[Public roadmap](guides/roadmap.md)

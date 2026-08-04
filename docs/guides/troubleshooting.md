@@ -61,12 +61,14 @@ setting production mode.
 
 ## Cannot import `Auto` / `DataTable` / chart helpers
 
-**Cause:** Missing optional extra, not a planned feature gap.
+**Cause:** `Auto` is core (`from hedron import Auto`). `DataTable` / `DataEditor` and
+charts need optional extras—not a planned feature gap.
 
 **Fix:**
 
 ```bash
-pip install "hedron[data]"      # Auto, DataTable, DataEditor
+# Auto needs no extra
+pip install "hedron[data]"      # DataTable, DataEditor
 pip install "hedron[charts]"    # LineChart / adapters
 pip install "hedron-charts[plotly]"   # example backend
 ```
@@ -103,5 +105,21 @@ job backend that needs it. See [CONFIGURATION](../CONFIGURATION.md).
 ## Still stuck?
 
 Open a GitHub issue with Hedron version, command/traceback, host framework (FastAPI /
-Flask / Django), and whether `HEDRON_ENV` is set. Check [FAQ](faq.md) and
-[Support](support.md) first. Report vulnerabilities privately via [SECURITY.md](../SECURITY.md).
+Flask / Django), and whether `HEDRON_ENV` is set. Check [FAQ](faq.md),
+[Error codes](error-codes.md), and [Support](support.md) first. Report vulnerabilities
+privately via [SECURITY.md](../SECURITY.md).
+
+## Auth 401 forever
+
+**Cause:** A `require_user` dependency reads `session["username"]`, but no login route
+ever sets it.
+
+**Fix:** Follow [Authentication](authentication.md) (login/logout with CSRF), or use the
+reference app’s HTTP Basic pattern.
+
+## HTMX form `type: ignore` / attrs typing
+
+**Cause:** Spreading HTMX attrs onto `Form(...)` may need a type ignore in strict checkers.
+
+**Fix:** Prefer the [minimal form](minimal-form.md) HTML form path first, or see the
+typed attrs pattern in [Forms and actions](forms-and-actions.md).

@@ -13,7 +13,8 @@ Deferred ownership, see [STATUS](../STATUS.md).
 | Live interaction: SSE, streaming, WebSocket channels, Chat/Dialog, opt-in preload | `hedron` (FastAPI flagship) |
 | Flask / Django adapters (Supported matrix) | `hedron-flask`, `hedron-django` |
 | Optional HDJ (`.hdj`) templates | `hedron[jinja]` |
-| DataTable / DataEditor / Auto | `hedron[data]` |
+| Auto (inspectable object rendering) | Core (`hedron`) — no extra |
+| DataTable / DataEditor | `hedron[data]` |
 | Component Explorer (dev) | `hedron[dev]` |
 
 Pin versions in production. Breaking changes may still land on `0.x` under the
@@ -26,6 +27,8 @@ Pin versions in production. Breaking changes may still land on `0.x` under the
 
 ## Deferred (do not market as Supported)
 
+- First-party dedicated live-transport sample app → owned `0.10.x` Deferred (`EXAMPLES-10-001`);
+  use the copy-paste apps in [live interaction](live-interaction.md) until it ships
 - Django QuerySet as a first-party DataSource → planned **0.11**
 - Hedron-owned Django forms depth → **0.11**
 - First-party camera/microphone capture UI → **0.15**

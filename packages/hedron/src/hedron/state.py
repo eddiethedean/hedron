@@ -21,11 +21,17 @@ class SessionState(Generic[T]):
         self._request = request
         self._key = key
         self._adapter: TypeAdapter[T] = TypeAdapter(annotation)
-        raw = request.session.get(key) if hasattr(request, "session") else None
+        raw = request.session.get(key) if self._has_session(request) else None
         if raw is None:
             self._value = self._default(annotation)
         else:
             self._value = self._adapter.validate_python(raw)
+
+    @staticmethod
+    def _has_session(request: Request) -> bool:
+        # Starlette always exposes ``request.session`` as a property; accessing it
+        # without SessionMiddleware raises AssertionError. Scope is the reliable gate.
+        return "session" in request.scope
 
     @property
     def value(self) -> T:
@@ -35,7 +41,7 @@ class SessionState(Generic[T]):
     def value(self, new_value: T) -> None:
         validated = self._adapter.validate_python(new_value)
         self._value = validated
-        if hasattr(self._request, "session"):
+        if self._has_session(self._request):
             if isinstance(validated, BaseModel):
                 self._request.session[self._key] = validated.model_dump(mode="json")
             else:
@@ -43,7 +49,7 @@ class SessionState(Generic[T]):
 
     def clear(self) -> None:
         self._value = self._default(self._adapter._type)  # type: ignore[attr-defined]
-        if hasattr(self._request, "session"):
+        if self._has_session(self._request):
             self._request.session.pop(self._key, None)
 
     @staticmethod

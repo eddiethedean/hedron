@@ -169,7 +169,17 @@ def _is_remote_url(value: str) -> bool:
 
 def reject_active_svg(svg: str) -> None:
     """Reject script tags and common SVG event/active-content patterns."""
-    lowered = svg.lower()
+    import html as html_stdlib
+    import re
+
+    # Decode entities so o&#110;error= / &lt;iframe patterns are visible to scans.
+    scanned = svg
+    for _ in range(3):
+        decoded = html_stdlib.unescape(scanned)
+        if decoded == scanned:
+            break
+        scanned = decoded
+    lowered = scanned.lower()
     if "<script" in lowered or "javascript:" in lowered:
         raise error(
             "HED-CHART-0006",
@@ -184,12 +194,25 @@ def reject_active_svg(svg: str) -> None:
         "onmouseover=",
         "onfocus=",
         "<foreignobject",
+        "<iframe",
+        "srcdoc=",
+        "<object",
+        "<embed",
+        "<use",
         'xlink:href="http',
         "xlink:href='http",
         'href="http',
         "href='http",
     )
     if any(token in lowered for token in banned):
+        raise error(
+            "HED-CHART-0006",
+            title="Active SVG content rejected",
+            explanation="Chart SVG must not contain event handlers or remote hrefs.",
+            remediation="Sanitize SVG before rendering or use TrustedHtml.nh3(...).",
+        )
+    # Catch on*= handlers that survive entity decoding with odd spacing.
+    if re.search(r"\bon[a-z]+\s*=", lowered):
         raise error(
             "HED-CHART-0006",
             title="Active SVG content rejected",

@@ -36,12 +36,25 @@ class CreateUser(FormModel):
 | `FormModel` | Client-submitted form or action input with field presentation metadata |
 | `EventPayload` | Typed custom-event data crossing a browser/server boundary |
 
+```python
+from hedron import Field
+from hedron_core import EventPayload
+
+
+class ItemSelected(EventPayload):
+    item_id: str = Field(min_length=1)
+```
+
+`EventPayload` is for structured browser→server (or server→browser event) payloads—not
+for form posts (`FormModel`) or component construction (`Props`).
+
 ## Supported field shapes
 
 Primitives, enums, literals, optionals, lists, string-keyed mappings, nested Hedron
 models, dates, `SafeUrl`, and component-node types where declared. Extra fields are
 forbidden by default. `Secret` and `TrustedHtml` follow
-[security types](SECURITY_TYPES.md).
+[security types](SECURITY_TYPES.md). Presentation metadata (`label`, widgets) is owned by
+[Field](FIELD.md).
 
 ## Errors
 

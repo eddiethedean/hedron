@@ -57,9 +57,11 @@ class ChunkedList:
             yield chunk
 
     def fallback(self) -> str:
-        return (
-            self.fallback_html or f'<div id="{self.region_id}" data-hedron-stream="fallback"></div>'
-        )
+        if self.fallback_html:
+            return self.fallback_html
+        from hedron_core._serializer import escape_attr
+
+        return f'<div id="{escape_attr(self.region_id)}" data-hedron-stream="fallback"></div>'
 
 
 @dataclass(slots=True)

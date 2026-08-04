@@ -290,22 +290,12 @@ class RedisJobBackend:
         if idempotency_key:
             existing = self._decode(self._client.get(self._idem_key(idempotency_key)))
             if existing is not None:
-                return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+                if self._load(existing) is not None:
+                    return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+                # Stale idempotency pointer: drop it so a fresh job can claim the key.
+                self._client.delete(self._idem_key(idempotency_key))
 
         job_id = secrets.token_urlsafe(16)
-        if idempotency_key:
-            # SET NX so concurrent workers share one job id.
-            created = self._client.set(
-                self._idem_key(idempotency_key),
-                job_id,
-                nx=True,
-                ex=self._ttl,
-            )
-            if not created:
-                existing = self._decode(self._client.get(self._idem_key(idempotency_key)))
-                if existing is not None:
-                    return JobHandle(job_id=existing, idempotency_key=idempotency_key)
-
         now = time.time()
         status = JobStatus(
             job_id=job_id,
@@ -319,7 +309,29 @@ class RedisJobBackend:
         data = _status_to_dict(status, payload=payload)
         if idempotency_key:
             data["idempotency_key"] = idempotency_key
+        # Persist the job body before claiming the idempotency key so losers never
+        # observe a key that points at a missing record.
         self._store(data)
+
+        if idempotency_key:
+            created = self._client.set(
+                self._idem_key(idempotency_key),
+                job_id,
+                nx=True,
+                ex=self._ttl,
+            )
+            if not created:
+                # Another worker won; drop our orphan and return their handle.
+                self._client.delete(self._key(job_id))
+                existing = self._decode(self._client.get(self._idem_key(idempotency_key)))
+                if existing is not None:
+                    for _ in range(5):
+                        if self._load(existing) is not None:
+                            return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+                        time.sleep(0.01)
+                    if self._load(existing) is not None:
+                        return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+
         return JobHandle(job_id=job_id, idempotency_key=idempotency_key)
 
     def get(self, job_id: str) -> JobStatus | None:

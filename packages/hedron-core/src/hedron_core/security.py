@@ -324,9 +324,10 @@ class SafeUrl:
         if scanned_scheme in _DANGEROUS_SCHEMES:
             raise _url_error(f"Disallowed URL scheme for {purpose.value}", purpose)
 
-        # Also reject dangerous scheme tokens at the start after decode.
+        # Reject dangerous schemes only when they appear as a leading scheme token
+        # (not as an incidental substring in paths like /api/data:export).
         for scheme in _DANGEROUS_SCHEMES:
-            if scanned.startswith(f"{scheme}:") or f"{scheme}:" in scanned[:64]:
+            if scanned.startswith(f"{scheme}:"):
                 raise _url_error(f"Disallowed URL scheme for {purpose.value}", purpose)
 
         parts = urlsplit(raw)

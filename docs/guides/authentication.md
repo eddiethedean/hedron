@@ -1,16 +1,21 @@
 # Authentication
 
 Gate Hedron pages and actions with ordinary FastAPI dependencies. Hedron does not
-invent a second auth system.
+invent a second auth system—you own login, password checks, and identity storage.
 
-## Pattern
+## Complete minimal loop
 
-```python
+Demo credentials below are for local learning only. Replace with your IdP or
+password store before production.
+
+```python title="app.py"
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Request, status
-from hedron import Hedron, Page, Text
-from hedron.security import SecurityPolicy, csrf_token_for_request
+from fastapi import Depends, Form, HTTPException, Request, status
+from fastapi.responses import RedirectResponse
+
+from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, html
+from hedron.security import csrf_token_for_request
 
 app = Hedron(
     title="Secure app",
@@ -18,12 +23,61 @@ app = Hedron(
     session_secret="replace-in-production",
 )
 
+# Demo only — never hard-code production passwords.
+USERS = {"ada": "correct-horse"}
+
 
 def require_user(request: Request) -> str:
     username = request.session.get("username")
     if not username:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign in required")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sign in required",
+        )
     return str(username)
+
+
+def _csrf(request: Request) -> str:
+    return csrf_token_for_request(request, request.app.state.hedron_security)
+
+
+@app.page("/login")
+def login_page(request: Request) -> Page:
+    if request.session.get("username"):
+        return Page(Text("Already signed in"), title="Login")
+    token = _csrf(request)
+    return Page(
+        Stack(
+            Text("Sign in"),
+            html.form(
+                html.input(type="hidden", name="csrf_token", value=token),
+                TextInput("username", value="", required=True),
+                TextInput("password", value="", type="password", required=True),
+                SubmitButton("Sign in"),
+                action="/login",
+                method="post",
+            ),
+        ),
+        title="Login",
+    )
+
+
+@app.action("/login", method="POST")
+def login(
+    request: Request,
+    username: str = Form(...),
+    password: str = Form(...),
+) -> RedirectResponse:
+    if USERS.get(username) != password:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    request.session["username"] = username
+    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.action("/logout", method="POST")
+def logout(request: Request) -> RedirectResponse:
+    request.session.clear()
+    return RedirectResponse("/login", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.page("/")
@@ -31,13 +85,32 @@ def home(
     request: Request,
     username: Annotated[str, Depends(require_user)],
 ) -> Page:
-    policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("standard"))
-    token = csrf_token_for_request(request, policy)
-    return Page(Text(f"Signed in as {username} (csrf ready)"), title="Home")
+    token = _csrf(request)
+    return Page(
+        Stack(
+            Text(f"Signed in as {username}"),
+            html.form(
+                html.input(type="hidden", name="csrf_token", value=token),
+                SubmitButton("Sign out"),
+                action="/logout",
+                method="post",
+            ),
+        ),
+        title="Home",
+    )
 ```
 
+Run `uv run uvicorn app:app --reload`, open `/login`, sign in as `ada` /
+`correct-horse`, then visit `/`. Logout POSTs with CSRF and clears the session.
+
 Apply the same `Depends(require_user)` to `@app.component` / `@app.action` routes,
-or attach dependencies on a `HedronRouter` so a whole prefix is protected.
+or attach dependencies on a `HedronRouter` so a whole prefix is protected:
+
+```python
+from hedron import HedronRouter
+
+users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
+```
 
 ## Sessions
 
@@ -45,15 +118,14 @@ or attach dependencies on a `HedronRouter` so a whole prefix is protected.
 using `session_secret`. Store only non-sensitive session markers you need for
 identity; keep credentials in your IdP or password store.
 
-Login/logout are application routes: set `request.session["username"] = ...` on
-successful authentication and `request.session.clear()` on logout. Prefer POST
-logout with CSRF.
+Prefer POST logout with CSRF (as above). Never put secrets in the signed cookie
+beyond an opaque user id or username.
 
 ## Optional Authlib helpers
 
 Install `hedron[auth]` when you want Authlib-oriented helpers. Authorization
 decisions (roles, object ACL) remain application code—never inferred from
-component props.
+component props. See [Auth API](../api/AUTH.md).
 
 ## Explorer
 
@@ -64,5 +136,5 @@ Explorer off in production.
 ## See also
 
 - [Security](security.md) · [Threat model](threat-model.md)
-- [Auth API](../api/AUTH.md) · [State](../api/STATE.md)
-- [Reference app walkthrough](../examples/reference-app.md)
+- [Minimal form POST](minimal-form.md) · [Auth API](../api/AUTH.md) · [State](../api/STATE.md)
+- [Reference app walkthrough](../examples/reference-app.md) (HTTP Basic demo credentials)

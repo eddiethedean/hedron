@@ -16,5 +16,6 @@ uv sync
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | See example README |
 | [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | HDJ | Prints HTML to stdout (not a web server) |
 
-Quickstarts without cloning: [FastAPI](../getting-started/quickstart.md) ·
+Quickstarts without cloning: [Single-file apps](single-file.md) ·
+[FastAPI](../getting-started/quickstart.md) ·
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).

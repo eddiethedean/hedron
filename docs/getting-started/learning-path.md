@@ -10,10 +10,11 @@ A suggested order from first page to production-minded apps.
 
 ## 2. Interact without a SPA (next hour)
 
-1. [Forms and actions](../guides/forms-and-actions.md) (AutoForm, CSRF, validation fragments)
-2. [HTMX interactions](../guides/htmx-interactions.md)
-3. [Security](../guides/security.md) (CSRF, profiles)
-4. Optional: open `/hedron-explorer/` with `hedron[dev]` and `explorer="development"`
+1. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
+2. [Minimal form POST](../guides/minimal-form.md) — CSRF-safe classic form (~40 lines)
+3. [Forms and actions](../guides/forms-and-actions.md) — validation fragments and HTMX POST
+4. [Security](../guides/security.md) — CSRF profiles and headers
+5. Optional: open `/hedron-explorer/` with `hedron[dev]` and `explorer="development"`
 
 ## 3. Pick your host
 
@@ -26,13 +27,13 @@ A suggested order from first page to production-minded apps.
 
 ## 4. Data, charts, and live updates
 
-1. [Charts and HTMX](../guides/charts-and-htmx.md) / `hedron[data]`
-2. [Live interaction](../guides/live-interaction.md) (0.10 FastAPI)
+1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
+2. [Live interaction](../guides/live-interaction.md) (0.10 FastAPI; polling elsewhere)
 3. [What's new in 0.10](../guides/whats-new-0.10.md)
 
 ## 5. Harden and deploy
 
-1. [Testing](../guides/testing.md)
+1. [Authentication](../guides/authentication.md) · [Testing](../guides/testing.md)
 2. [Deployment](../guides/deployment.md)
 3. [Best practices](../guides/best-practices.md)
 4. [Upgrade](../guides/upgrade.md) when changing trains
@@ -40,8 +41,8 @@ A suggested order from first page to production-minded apps.
 ## 6. Contribute or evaluate deeply
 
 - [What’s ready today](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md)
-- [Contributing](../CONTRIBUTING.md) · [Support](../guides/support.md) ·
-  [Architecture](../ARCHITECTURE.md) · [STATUS](../STATUS.md)
+- [Production readiness](../guides/production-readiness.md) · [Support](../guides/support.md)
+- [Contributing](../CONTRIBUTING.md) · [Architecture](../ARCHITECTURE.md)
 
 Stuck? [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md) ·
 [How to read these docs](how-to-read.md)

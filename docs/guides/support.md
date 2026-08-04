@@ -11,8 +11,9 @@ response time, or paid support contract.
 | [GitHub Discussions](https://github.com/eddiethedean/hedron/discussions) | Design questions (if enabled) |
 | Pull requests | Fixes and documentation improvements |
 
-Before filing an issue, check [FAQ](faq.md), [Troubleshooting](troubleshooting.md), and
-[STATUS](../STATUS.md) for known Deferred rows.
+Before filing an issue, check [FAQ](faq.md), [Troubleshooting](troubleshooting.md),
+[Error codes](error-codes.md), and [Production readiness](production-readiness.md).
+Known Deferred rows: [STATUS](../STATUS.md).
 
 ## Security
 
@@ -29,5 +30,6 @@ treat Alpha packages (`hedron-charts`, `hedron-sample-kit`) as more volatile.
 ## Maintainer expectations
 
 Issues without a minimal reproduction, version string (`hedron.__version__`), and expected
-vs actual behavior may be closed. Feature requests should map to the [roadmap](../ROADMAP.md)
-or an RFC discussion rather than informal “please add X” without context.
+vs actual behavior may be closed. Feature requests should map to the
+[public roadmap](roadmap.md) / [full roadmap](../ROADMAP.md) or an RFC discussion rather
+than informal “please add X” without context.

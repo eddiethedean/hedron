@@ -40,7 +40,8 @@ def home() -> Page:
 ```
 
 Docs: [quickstart](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) ·
-[forms & actions](https://hedron.readthedocs.io/en/latest/guides/forms-and-actions/) ·
+[HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) ·
+[minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) ·
 [why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
 
 ## Packages
@@ -59,9 +60,9 @@ Optional HDJ via `hedron[jinja]`. HDN was removed in 0.9 (stay on 0.8 if needed)
 
 ## Product direction
 
-React-like typed composition, Streamlit-like ease for common objects, FastAPI-native
-routing/DI/security, ordinary HTML/CSS/HTMX/Web Components, and no Node.js requirement.
-Audience: FastAPI CRUD, internal tools, dashboards, forms, admin, and data apps.
+FastAPI-native typed components, HTMX fragments, and secure HTML defaults—without a
+Node.js frontend stack. Optional `Auto` rendering and data/chart extras for common
+objects. Audience: FastAPI CRUD, internal tools, dashboards, forms, admin, and data apps.
 
 Architectural boundaries and non-goals:
 [docs architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/).
@@ -70,10 +71,11 @@ Architectural boundaries and non-goals:
 
 | | |
 |---|---|
-| **Current** | 0.10 — live interaction (SSE, streaming, WebSockets, Chat/Dialog, preload) |
+| **Current** | 0.10 — live interaction on FastAPI (SSE, streaming, WebSockets, Chat/Dialog, preload) |
 | **Next** | 0.11 — native Flask/Django depth and bounded QuerySet integration |
 
-Full phase table and gates: [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
+Public summary: [roadmap](https://hedron.readthedocs.io/en/latest/guides/roadmap/).
+Maintainer phase tables: [full roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Documentation
 

@@ -1,17 +1,9 @@
 # Data applications
 
-Install the data extra, render common Python objects with `Auto`, and mount a
-minimal `DataTable`.
+Render common Python objects with core `Auto`, then install the data extra for
+tabular `DataTable` / `DataEditor`.
 
-## Install
-
-```bash
-uv add "hedron[data]"
-# optional backends
-uv add "hedron-data[pandas]"
-```
-
-## Auto
+## Auto (core — no extra)
 
 ```python
 from hedron import Auto, Hedron, Page, Stack
@@ -33,7 +25,13 @@ def home() -> Page:
 `Auto` picks an inspectable renderer; override or register renderers when you need
 control ([Auto API](../api/AUTO.md)).
 
-## DataTable (minimal)
+## DataTable (requires `hedron[data]`)
+
+```bash
+uv add "hedron[data]"
+# optional backends
+uv add "hedron-data[pandas]"
+```
 
 ```python
 from hedron import Hedron, Page

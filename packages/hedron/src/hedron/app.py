@@ -130,7 +130,11 @@ class Hedron(FastAPI):
                     UserWarning,
                     stacklevel=2,
                 )
-            self.add_middleware(SessionMiddleware, secret_key=session_secret)
+            self.add_middleware(
+                SessionMiddleware,
+                secret_key=session_secret,
+                https_only=self.hedron_policy.profile is SecurityProfile.STRICT,
+            )
         self.add_middleware(SecurityHeadersMiddleware, policy=self.hedron_policy)
 
         mount_hedron_static(self)

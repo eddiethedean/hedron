@@ -89,12 +89,8 @@ prints the registered route metadata as JSON, which is useful both to humans and
 
 - Follow the [learning path](learning-path.md).
 - Build a targeted server update with [HTMX interactions](../guides/htmx-interactions.md).
-- Add live updates with [live interaction](../guides/live-interaction.md) (0.10 FastAPI).
-- Add charts and typed HTMX fragments with [Charts and HTMX](../guides/charts-and-htmx.md).
+- Submit a CSRF-safe form with [Minimal form POST](../guides/minimal-form.md).
+- Learn why pages and fragments are separate render modes in [core concepts](core-concepts.md).
 - Browse the [component gallery](../examples/gallery.md) (in-browser simulations) or clone the
   [reference app](../examples/reference-app.md).
-- With `hedron[dev]` and `explorer="development"`, open `/hedron-explorer/`.
-- Learn why pages and fragments are separate render modes in [core concepts](core-concepts.md).
-- Use the full CLI lifecycle in the [project workflow](../guides/project-workflow.md).
-- Add fast component tests with [testing helpers](../guides/testing.md).
 - Browse [shipped APIs](../api/README.md).
