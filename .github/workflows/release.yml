@@ -178,8 +178,8 @@ jobs:
     needs: [test, browser]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    # Allow time for PyPI new-project spacing (10m between first uploads).
-    timeout-minutes: 90
+    # PyPI caps new-project creates (~4/day). Retries wait up to ~6h on 429.
+    timeout-minutes: 420
     permissions:
       contents: write
       id-token: write
@@ -240,9 +240,12 @@ jobs:
             exit 1
           fi
 
-          # Classify against the PyPI simple index, then publish existing
-          # projects first so a new-project 429 cannot block them. New
-          # projects upload afterward with 10 minutes between creates.
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+
+          # Skip versions already on PyPI (idempotent retags). Classify the
+          # rest: existing projects first, then new creates. PyPI limits new
+          # project creation (~4/day); space creates and retry 429s.
           existing_names=()
           new_names=()
           for pyproject in packages/*/pyproject.toml; do
@@ -252,8 +255,17 @@ jobs:
           print(tomllib.loads(Path("${pyproject}").read_text())["project"]["name"])
           PY
           )"
-            # PEP 503 normalized name for the simple index.
+            # PEP 503 normalized name for JSON/simple indexes.
             normalized="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | tr '_.' '-')"
+            version_code="$(curl -sS -o /dev/null -w '%{http_code}' \
+              "https://pypi.org/pypi/${normalized}/${VERSION}/json")"
+            if [ "$version_code" = "200" ]; then
+              echo "Skipping ${name}==${VERSION} (already on PyPI)"
+              continue
+            elif [ "$version_code" != "404" ]; then
+              echo "Unexpected PyPI version status ${version_code} for ${name}==${VERSION}" >&2
+              exit 1
+            fi
             code="$(curl -sS -o /dev/null -w '%{http_code}' \
               -H 'Accept: application/vnd.pypi.simple.v1+json' \
               "https://pypi.org/simple/${normalized}/")"
@@ -267,8 +279,8 @@ jobs:
             fi
           done
 
-          echo "Existing PyPI projects (publish first): ${existing_names[*]:-none}"
-          echo "New PyPI projects (publish after): ${new_names[*]:-none}"
+          echo "Existing PyPI projects to publish: ${existing_names[*]:-none}"
+          echo "New PyPI projects to publish: ${new_names[*]:-none}"
 
           publish_one() {
             local name="$1"
@@ -282,8 +294,28 @@ jobs:
               echo "No dist artifacts for ${name} (stem=${stem})" >&2
               return 1
             fi
-            echo "Publishing ${kind} project ${name}: ${files[*]}"
-            uv publish --token "$UV_PUBLISH_TOKEN" "${files[@]}"
+            local attempt=1
+            local max_attempts=7
+            local out=""
+            while true; do
+              echo "Publishing ${kind} project ${name} (attempt ${attempt}/${max_attempts}): ${files[*]}"
+              set +e
+              out="$(uv publish --token "$UV_PUBLISH_TOKEN" "${files[@]}" 2>&1)"
+              local status=$?
+              set -e
+              printf '%s\n' "$out"
+              if [ "$status" -eq 0 ]; then
+                return 0
+              fi
+              if [ "$kind" = "NEW" ] && [ "$attempt" -lt "$max_attempts" ] \
+                && printf '%s' "$out" | grep -Eqi '429|Too many new projects'; then
+                echo "PyPI new-project rate limit; waiting 60 minutes before retry"
+                sleep 3600
+                attempt=$((attempt + 1))
+                continue
+              fi
+              return "$status"
+            done
           }
 
           for name in "${existing_names[@]}"; do
@@ -293,8 +325,8 @@ jobs:
           published_new=0
           for name in "${new_names[@]}"; do
             if [ "$published_new" -eq 1 ]; then
-              echo "Waiting 10 minutes before creating new PyPI project: ${name}"
-              sleep 600
+              echo "Waiting 15 minutes before creating new PyPI project: ${name}"
+              sleep 900
             fi
             publish_one "$name" "NEW"
             published_new=1
