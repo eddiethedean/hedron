@@ -11,12 +11,12 @@ Build and run a small Hedron application, then continue through HTMX and forms.
 5. [Learning path](learning-path.md) — continue toward data, auth, and deploy
 
 Then: [What’s ready](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md) ·
-[Evaluate Hedron](../guides/evaluate.md).
+[Evaluate Hedron](../guides/evaluate.md) (top-level **Evaluate** nav).
 
 Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
 
 Maturity labels (Beta / Supported / Deferred) are explained under
-[Evaluate → Understanding maturity labels](how-to-read.md) when you need them — you do not
+[Understanding maturity labels](how-to-read.md) when you need them — you do not
 need that vocabulary to install.
 
 <div class="hedron-grid">

@@ -23,5 +23,6 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))
-addresses `EXAMPLES-10-001` for the poll + stream learning path.
+addresses `EXAMPLES-10-001` with poll, token stream, SSE, Job SSE, WebSocket accept, and
+preload (FastAPI). Browser matrix and load/proxy evidence remain Deferred.
 Details: [What's ready today](whats-ready.md) · [Production readiness](production-readiness.md).

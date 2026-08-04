@@ -25,9 +25,9 @@ from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 
 PLUGIN_META = PluginMeta(
     name="sample_kit",
-    version="0.4.0",
+    version="0.10.1",
     distribution="hedron-sample-kit",
-    hedron_version=">=0.4,<0.5",
+    hedron_version=">=0.10,<0.11",
     capabilities=PluginCapabilities(python=True, styles=True, explorer_panels=True),
 )
 
@@ -69,5 +69,14 @@ register.PLUGIN_META = PLUGIN_META
 
 Failed compatibility or contribution validation rolls back the registry builder and
 Explorer panels. `start()` failures also roll back contributions.
+
+## Errors
+
+| Situation | Behavior |
+|---|---|
+| Missing named plugin in `[tool.hedron].plugins` | `HED-PLUGIN-MISSING` |
+| Incompatible `hedron_version` range | Load rejected; contributions rolled back |
+| Duplicate entry point / invalid contribution | Diagnostic + rollback of that plugin's contributions |
+| `start()` hook failure | Contributions rolled back |
 
 See `hedron-sample-kit` for a complete third-party-shaped example.

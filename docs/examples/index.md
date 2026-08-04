@@ -17,9 +17,10 @@ There is **no hosted try-it without cloning** (or Codespaces / Dev Container). U
 !!! note "Live interaction sample coverage"
 
     [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
-    demonstrates **poll + token stream + minimal SSE**. Job SSE, WebSocket channels, and
-    navigation preload are documented in the [live interaction guide](../guides/live-interaction.md)
-    (API Supported on FastAPI) but are not in that sample yet.
+    covers poll, token stream, SSE ping, Job SSE, page/session WebSocket accept, and
+    navigation preload (FastAPI). Polling remains the Supported multi-host fallback.
+    Full three-engine browser matrix and load/proxy backpressure evidence remain Deferred —
+    see [What's ready](../guides/whats-ready.md).
 
 Start with the [reference app walkthrough](reference-app.md) when you want CRUD,
 CSRF, and HTMX in one place. Replace demo credentials and secrets before any deploy.

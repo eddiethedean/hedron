@@ -418,7 +418,7 @@ compatibility subsystem.
 
 **Status:** Published. Owned Deferred follow-ups (`BROWSER-10-001`, `PERF-10-001`,
 `EXPLORER-10-001`) remain for `0.10.x`. `EXAMPLES-10-001` is Verified (poll + stream
-learning path in `examples/live-interaction`).
++ SSE + Job SSE + WS + preload in `examples/live-interaction`).
 **Outcome:** Hedron supports evidence-backed live updates, streaming where it materially helps, and
 measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
 

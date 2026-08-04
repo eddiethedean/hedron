@@ -27,6 +27,7 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 
 - Prefer `cache="private"` or `no-store` for authenticated fragments.
 - Use `vary-htmx` when responses differ by `HX-Request` / target.
+- Include tenant or user in cache keys when responses are tenant-scoped.
 
 ## Templates
 
@@ -41,6 +42,8 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 - Install `hedron-flask` / `hedron-django` separately; they never pull FastAPI.
 - Treat Deferred rows (QuerySet DataSource, Hedron Django forms, capture UI) as app-owned
   workarounds until their destination phase.
+- For mutations on Flask/Django today: host forms + CSRF + polling for job status; Hedron-owned
+  forms depth is **0.11**.
 
 ## Testing
 
@@ -48,5 +51,17 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 - Use TestClient / Flask/Django clients for CSRF and fragment headers.
 - Opt into browser suite (`HEDRON_BROWSER=1`) for critical HTMX flows.
 
+## Anti-patterns
+
+| Avoid | Prefer |
+|---|---|
+| Full-page HTMX swaps for every click | Declared `FragmentRegion` updates |
+| `Cache-Control: public` on authenticated HTML | `private` / `no-store` / `vary-htmx` |
+| Explorer (`development`) in production | `explorer="off"` or `secured` with real auth |
+| Unbounded `Auto` on huge objects | Bound depth / explicit tables |
+| Raw `HX-*` headers that bypass typed fields | `InteractionResult` typed fields |
+| Assuming SSE/WS survive every proxy | Polling fallback + proxy buffering off |
+| One in-memory job backend across workers | Sticky sessions or shared `JobBackend` |
+
 See also [Security](security.md), [HTMX interactions](htmx-interactions.md),
-[Deployment](deployment.md).
+[Deployment](deployment.md), [Enterprise diligence](enterprise-diligence.md).

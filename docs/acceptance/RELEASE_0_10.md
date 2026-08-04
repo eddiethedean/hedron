@@ -47,7 +47,7 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
   *(`BROWSER-10-001` → 0.10.x)*
 - [ ] Load/proxy backpressure beyond in-memory budgets — **Deferred** *(`PERF-10-001` → 0.10.x)*
 - [ ] Explorer live traces — **Deferred** *(`EXPLORER-10-001` → 0.10.x)*
-- [x] First-party live example app (poll + stream learning path) — *(`EXAMPLES-10-001`)*
+- [x] First-party live example app (poll + stream + SSE + Job SSE + WS + preload) — *(`EXAMPLES-10-001`)*
 - [x] Full regression suite. *(`REGRESS-10-001`)*
 - [x] Packaging rehearsal. *(`PKG-10-001`)*
 

@@ -5,9 +5,11 @@
 - CPython **3.11–3.14** (use a **clean virtual environment** for your first try)
 - A package manager (`pip` or [uv](https://docs.astral.sh/uv/))
 - No Node.js required
-- Flagship apps need **FastAPI `>=0.141.1,<0.142`** (resolved when you install `hedron`).
-  Shared environments with an older FastAPI pin often fail — see
-  [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install).
+
+**Dependency pins (resolved when you install `hedron`):** FastAPI
+`>=0.141.1,<0.142` and Pydantic `>=2.13.4,<2.14`. Prefer a **clean venv** for your first
+app so an older shared FastAPI/Pydantic pin does not block install. Existing apps: see
+[Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install).
 
 ## Recommended: CLI scaffold
 
@@ -45,9 +47,16 @@ scaffold’s **project dependency** so uvicorn uses the pinned version. See
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see the scaffold home page
 with text like **Hello from hedron new**.
 
-`hedron new` scaffolds `app.py` and `pyproject.toml`. It refuses to overwrite a non-empty
-destination unless you pass `--force`. Do **not** also run `uv init` into the same
-directory unless you intend to replace the scaffold.
+`hedron new` creates:
+
+| Path | Purpose |
+|---|---|
+| `app.py` | Scaffold home page (`Hello from hedron new`) |
+| `pyproject.toml` | Project deps (`hedron>=0.10.1`) and `[tool.hedron]` |
+| `components/` | Empty directory for your components (safe to leave empty) |
+
+It refuses to overwrite a non-empty destination unless you pass `--force`. Do **not**
+also run `uv init` into the same directory unless you intend to replace the scaffold.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** (same interpreter
 as `pip`) or see [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
@@ -108,8 +117,8 @@ pip install "hedron-charts[plotly]" # chart backend after charts extra
 
 | Package | Use when |
 |---|---|
-| `hedron-flask` | Flask |
-| `hedron-django` | Django `>=5.2,<6` |
+| `hedron-flask` | Flask — page + fragment routing/HTMX Supported; forms depth → **0.11** |
+| `hedron-django` | Django `>=5.2,<6` — same; QuerySet DataSource / Hedron forms → **0.11** |
 | `hedron-core` | Framework-neutral rendering only |
 
 Quickstarts: [Flask](flask.md) · [Django](django.md).
@@ -129,7 +138,7 @@ Use this only if you are **not** using `hedron new`.
     ```bash
     uv init my-hedron-app
     cd my-hedron-app
-    uv add hedron "uvicorn[standard]"
+    uv add "hedron>=0.10.1" "uvicorn[standard]"
     ```
 
 === "pip (macOS/Linux)"

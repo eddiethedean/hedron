@@ -29,7 +29,7 @@ SLA**.
 | Area | Status |
 |---|---|
 | `hedron-charts` | Alpha |
-| First-party live-transport sample app | Shipped learning path: [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) (poll + stream; advanced SSE/WS sections in the guide are API-oriented) |
+| First-party live-transport sample app | Shipped: [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) (poll + stream + SSE + Job SSE + WS + preload). Browser matrix / load-proxy evidence remain Deferred |
 | Django QuerySet DataSource / Hedron Django forms | Planned **0.11** |
 | Live browser matrix / proxy load evidence | Deferred on `0.10.x` |
 | Public API catalog level | `beta` (no scheduled `1.0`) |

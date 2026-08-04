@@ -41,8 +41,9 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
 2. [Live interaction](../guides/live-interaction.md) (0.10 FastAPI; polling elsewhere) —
-   the first-party sample covers poll + token stream; Job SSE / WebSocket / preload are
-   guide/API-oriented until you extend the sample
+   [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
+   covers poll, token stream, SSE ping, Job SSE, WebSocket accept, and preload; browser
+   matrix and load/proxy evidence remain Deferred (see [What's ready](../guides/whats-ready.md))
 3. [What's new in 0.10](../guides/whats-new-0.10.md)
 
 ## 6. Harden and deploy

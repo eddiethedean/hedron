@@ -11,17 +11,39 @@ status: shipped
 
 **Status:** Accepted
 
-These built-ins capture the low-friction Python workflows learned from Streamlit while preserving normal FastAPI and component architecture.
+These built-ins capture low-friction Python workflows while preserving FastAPI and
+component architecture. Gallery demos:
+[Components](../components/index.md).
 
-- `Metric(label, value, delta=...)`: semantic value and change, not color-only meaning.
-- `FileUpload(accept=..., maximum_size=...)`: typed upload integrated with forms, limits, CSRF, and application-owned storage. Enforce `maximum_size` in the route with `validate_upload_size` (markup alone is advisory).
-- `DownloadButton(href=..., filename=...)` (alias `source=`): link to an authorized download route; pair with `safe_download_response` for path/auth/filename policy.
-- `CodeViewer(code, language=...)`: escaped code with optional registered highlighting.
-- `JSONViewer(value)`: bounded, escaped structured data with secret redaction.
-- `Progress(value, maximum=...)` and `Status(...)`: accessible progress and state announcements.
-- `Toast(...)`: non-blocking status message with appropriate live-region behavior.
-- `Expander(...)` and `Tabs(...)`: semantic disclosure and tab patterns with keyboard behavior.
-- `Sidebar(...)`: explicit complementary/navigation region.
-- `Grid(columns=..., children=...)`: explicit responsive layout; it does not return positional mutable column handles.
+## Constructors (summary)
 
-All components have server-rendered useful fallbacks. Browser enhancement may preserve transient interaction state but cannot become an application-wide store. Uploads/downloads require explicit authorization and resource limits. Viewers never treat displayed content as executable.
+| Component | Key parameters | Returns / notes |
+|---|---|---|
+| `Metric(label, value, delta=...)` | label, value, optional delta | Semantic value + change (not color-only) |
+| `FileUpload(accept=..., maximum_size=...)` | accept, size hint | Markup is advisory — enforce with `validate_upload_size` in the route |
+| `DownloadButton(href=..., filename=...)` | `href` or `source=`, filename | Pair with `safe_download_response` for path/auth |
+| `CodeViewer(code, language=...)` | code, language | Escaped; optional highlighting extra |
+| `JSONViewer(value)` | structured value | Bounded, escaped; secrets redacted |
+| `Progress(value, maximum=...)` | value, maximum | Accessible progress |
+| `Status(...)` | state text | Live-region friendly status |
+| `Toast(...)` | message | Non-blocking announcement |
+| `Expander(...)` / `Tabs(...)` | children | Semantic disclosure / tabs + keyboard |
+| `Sidebar(...)` | children | Complementary / navigation region |
+| `Grid(columns=..., children=...)` | columns, children | Explicit layout (no mutable column handles) |
+
+## Errors / policy
+
+| Situation | Behavior |
+|---|---|
+| Upload over `maximum_size` (enforced in route) | Application returns 4xx via `validate_upload_size` |
+| Download path outside allowlist | `safe_download_response` refuses |
+| Untrusted HTML in viewers | Escaped / not executed |
+
+All components have server-rendered useful fallbacks. Browser enhancement may preserve
+transient interaction state but cannot become an application-wide store.
+Uploads/downloads require explicit authorization and resource limits.
+
+## See also
+
+[Built-ins](BUILT_INS.md) · [Forms and actions](../guides/forms-and-actions.md) ·
+[Component composition](../guides/component-composition.md)

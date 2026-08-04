@@ -5,6 +5,9 @@ Use `hedron-flask` when your app is Flask-native. Hedron does **not** ship
 The adapter renders the same `hedron-core` components and `InteractionResult` values as
 the FastAPI flagship—without installing FastAPI.
 
+Flask/Django: page + fragment routing and HTMX are Supported in 0.10.1. Native
+forms depth ships in **0.11** — use polling for job status today.
+
 ## Greenfield (empty folder → hello)
 
 ```bash
@@ -41,7 +44,8 @@ def fragment():
 ```
 
 ```bash
-uv run flask --app app:app run --debug
+flask --app app:app run --debug
+# uv users: uv run flask --app app:app run --debug
 ```
 
 ## CSRF
@@ -54,6 +58,7 @@ Safe GETs issue the `hedron_csrf` cookie. Unsafe methods on `hedron_route` and
 - Fastest full example: clone and run the
   [Flask reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference)
 - [Security](../guides/security.md) · [Deployment](../guides/deployment.md) · [Adapters API](../api/ADAPTERS.md)
-- Job status on Flask: use bounded polling (FastAPI SSE helpers are Supported on the flagship
+- Mutations today: use Flask-native forms + CSRF; Hedron-owned forms depth is **0.11**.
+  Job status: use bounded polling (FastAPI SSE helpers are Supported on the flagship
   in 0.10; see [live interaction](../guides/live-interaction.md))
 - FastAPI scaffold path: [Installation](installation.md) (`hedron new`)

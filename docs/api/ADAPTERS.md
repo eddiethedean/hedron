@@ -81,6 +81,16 @@ on the FastAPI flagship in **0.10** (see [live interaction](../guides/live-inter
 [STABILITY](STABILITY.md)). Flask and Django adapters keep **bounded polling** as the Supported
 live-status fallback; they do not ship the FastAPI SSE/WebSocket helpers.
 
+## Errors
+
+| Situation | Host | Behavior |
+|---|---|---|
+| CSRF missing/invalid on unsafe method | Flask `hedron_route` / `respond` | HTTP 403 |
+| CSRF missing/invalid | Django (middleware + portable header) | HTTP 403 (Django CSRF) |
+| Unauthorized fragment / OOB region | Flask / Django | HTTP 403 body |
+| Invalid approved HTMX header values | All adapters | Rejected at adapter boundary |
+| FastAPI SSE helpers imported on Flask/Django | N/A | Not shipped — use polling |
+
 ## Deferred (not Supported)
 
 | Claim | Notes |

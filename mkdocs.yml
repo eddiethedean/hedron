@@ -172,15 +172,16 @@ nav:
     - Other hosts:
       - Add Flask app: getting-started/flask.md
       - Add Django project: getting-started/django.md
-    - Evaluate:
-      - What's ready today: guides/whats-ready.md
-      - Why Hedron: guides/why-hedron.md
-      - Evaluate Hedron: guides/evaluate.md
-      - Production readiness: guides/production-readiness.md
-      - Architecture: ARCHITECTURE.md
-      - Understanding maturity labels: getting-started/how-to-read.md
-      - Support: guides/support.md
-      - Enterprise diligence: guides/enterprise-diligence.md
+  - Evaluate:
+    - What's ready today: guides/whats-ready.md
+    - Why Hedron: guides/why-hedron.md
+    - Evaluate Hedron: guides/evaluate.md
+    - Production readiness: guides/production-readiness.md
+    - Architecture: ARCHITECTURE.md
+    - Design principles: guides/design-principles.md
+    - Understanding maturity labels: getting-started/how-to-read.md
+    - Support: guides/support.md
+    - Enterprise diligence: guides/enterprise-diligence.md
   - Guides:
     - Overview: guides/index.md
     - Interact:

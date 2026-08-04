@@ -91,22 +91,26 @@ to return the same typed component tree.
 For a **browser click** that swaps a region, continue to
 [HTMX interactions](../guides/htmx-interactions.md).
 
-## 4. Check the project
+## 4. Optional: check the project
+
+After you have a working page, inspect the loaded app (advisory findings are normal on a
+hello-world scaffold — Django/Plotly notes apply only if you use those stacks):
 
 === "uv"
 
     ```bash
-    uv run hedron check
+    uv run hedron check --app app:app
     ```
 
 === "Activated virtualenv (pip)"
 
     ```bash
-    hedron check
-    # or: python -m hedron check
+    hedron check --app app:app
+    # or: python -m hedron check --app app:app
     ```
 
-`hedron check` reports registry and security findings for the loaded app.
+`hedron check` reports registry and security findings. Prefer `--app` so diagnostics load
+your module explicitly.
 
 ## What you learned
 

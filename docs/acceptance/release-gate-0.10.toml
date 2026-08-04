@@ -125,7 +125,7 @@ state = "Verified"
 command = "python -c \"from pathlib import Path; assert (Path('examples')/'live-interaction'/'app.py').is_file()\""
 ci_job = "test"
 owner = "hedron"
-rationale = "examples/live-interaction covers poll + stream learning path for 0.10."
+rationale = "examples/live-interaction covers poll + stream + SSE + Job SSE + WS + preload for 0.10."
 
 [[evidence]]
 id = "REGRESS-10-001"

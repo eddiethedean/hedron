@@ -33,7 +33,7 @@ Pin versions in production. Read [What’s ready today](whats-ready.md) and
 - HTMX fragment loops and `InteractionResult`
 - Live helpers on FastAPI (SSE, streaming, WebSocket channels, Chat/Dialog, preload) —
   **API Supported**; full live browser matrix and load/proxy evidence remain Deferred
-  (see [What’s ready](whats-ready.md) and [What's ready](whats-ready.md))
+  (see [What’s ready](whats-ready.md))
 - Flask / Django adapters on the Supported matrix
 - Optional `hedron[data]`, `hedron[jinja]`, `hedron[dev]`; charts are **Alpha**
 

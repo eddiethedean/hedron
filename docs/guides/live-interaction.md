@@ -253,4 +253,4 @@ Do not enable speculative preload for authenticated mutation endpoints.
 | Explorer missing live traces | Explorer live traces remain owned Deferred for 0.10.x — use curl/TestClient |
 | Flask/Django looking for SSE helpers | Use polling; helpers are FastAPI-flagship only |
 | Preload rejected | Check `NavigationPreloadPolicy(enabled=True)` and same-origin rules |
-| Want a clone-and-run live demo | Use [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) (poll + stream + `/sse/ping`) or the poll/stream snippets above |
+| Want a clone-and-run live demo | Use [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) (poll + stream + SSE + Job SSE + WS + preload) or the poll/stream snippets above |

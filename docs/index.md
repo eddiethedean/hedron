@@ -19,11 +19,11 @@ Escaping and CSRF profiles ship as Beta secure defaults — pin versions and rea
 <div class="hedron-actions" markdown>
 [Install Hedron](getting-started/installation.md){ .md-button .md-button--primary }
 [Build your first app](getting-started/quickstart.md){ .md-button }
-[Is Hedron for me?](guides/why-hedron.md){ .md-button }
+[Try in Codespaces](examples/try-it.md){ .md-button }
 </div>
 
 <p class="hedron-lede" markdown>Evaluating production use? See
-[What’s ready today](guides/whats-ready.md).</p>
+[What’s ready today](guides/whats-ready.md) · [Why Hedron](guides/why-hedron.md).</p>
 
 <div class="hedron-signal-row">
   <span>Python 3.11–3.14</span>
@@ -77,14 +77,12 @@ Prefer [uv](https://docs.astral.sh/uv/)? Full steps:
 
 ## Next steps
 
-1. [Installation](getting-started/installation.md)
-2. [Build your first app](getting-started/quickstart.md)
-3. [HTMX interactions](guides/htmx-interactions.md)
-4. [Minimal form](guides/minimal-form.md)
-5. [Learning path](getting-started/learning-path.md)
+1. [HTMX interactions](guides/htmx-interactions.md)
+2. [Minimal form](guides/minimal-form.md)
+3. [Learning path](getting-started/learning-path.md)
 
-Then: [runnable examples](examples/runnable.md) · [What's ready](guides/whats-ready.md) ·
-[Why Hedron](guides/why-hedron.md) · [Evaluate Hedron](guides/evaluate.md)
+Then: [Try with Codespaces](examples/try-it.md) · [runnable examples](examples/runnable.md) ·
+[What's ready](guides/whats-ready.md) · [Evaluate Hedron](guides/evaluate.md)
 
 ## Designed for inspectability
 

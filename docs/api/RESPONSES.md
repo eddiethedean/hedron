@@ -116,5 +116,15 @@ FastAPI request-validation failures use semantic **422** handling:
 # curl -H "Accept: application/json" without HX-Request → 422 application/json
 ```
 
+## Errors
+
+| Situation | Behavior |
+|---|---|
+| Unauthorized `HX-Target` / OOB region | HTTP `403` on fragment routes |
+| Unsafe selector or external redirect in typed fields | Rejected before headers emit |
+| `Cache-Control: public` via raw `headers` / `extra_headers` | Rejected |
+| Production without build manifest | Startup refuses (`HED-BUILD-0003`) |
+| HTMX request validation failure | HTTP `422` HTML fragment (not JSON) |
+
 Default status policies for 202, 204, 401, 403, 409, 422, 429, and 500 are available through
 `status_policy_for` — see [Interaction](INTERACTION.md).

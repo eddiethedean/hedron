@@ -91,18 +91,43 @@ under a subpath, configure ASGI `root_path` (uvicorn `--root-path`) or WSGI
 `SCRIPT_NAME`, and set `HEDRON_ROOT_PATH` when your deploy samples use it.
 
 Disable response buffering for `text/event-stream` if you use SSE
-([live interaction](live-interaction.md)). Example nginx location:
+([live interaction](live-interaction.md)). Prefer polling when you need a Supported
+fallback without load/proxy evidence ([What’s ready](whats-ready.md)).
+
+### nginx
 
 ```nginx
 location / {
     proxy_pass http://127.0.0.1:8000;
     proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header Connection "";
     proxy_buffering off;          # critical for SSE
     proxy_cache off;
     proxy_read_timeout 3600s;
 }
 ```
+
+### Caddy
+
+```caddy
+example.com {
+    reverse_proxy 127.0.0.1:8000 {
+        flush_interval -1
+        transport http {
+            read_timeout 3600s
+        }
+    }
+}
+```
+
+### AWS ALB
+
+- Idle timeout: raise above your longest SSE/WS session (default 60s is often too low).
+- Stickiness: enable target-group stickiness if workers hold in-memory session/channel state.
+- HTTP/2: ALB supports it to clients; ensure backends accept long-lived connections without
+  response buffering at an extra proxy layer.
 
 ### Kubernetes / Ingress notes
 

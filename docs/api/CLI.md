@@ -11,7 +11,10 @@ status: shipped
 
 **Status:** Accepted · **Shipped in 0.4**
 
-Entry point: `hedron` → `hedron.cli:main`.
+Entry points: console script `hedron` → `hedron.cli:main`, and
+**`python -m hedron`** (same CLI; PATH-independent).
+
+`hedron new` writes `app.py`, `pyproject.toml`, and an empty `components/` directory.
 
 Global option:
 
@@ -115,6 +118,16 @@ hedron eject UserCard --out ./ejected --force
 | `preview <logical_id>` | Inspect a route/component preview payload |
 | `inspect <component>` | Explain styles and dependencies |
 | `eject <component>` | Write an editable `styles.css` override (`--out`, `--force`) |
+
+## Errors / exit codes
+
+| Situation | Behavior |
+|---|---|
+| Success | Exit `0` |
+| Diagnostics at/above `--severity` on `check` | Non-zero exit |
+| `new` into non-empty dir without `--force` | Refuse; non-zero |
+| Missing `--app` when registry import required | Import/empty-registry failure or incomplete output |
+| Unknown command / bad args | argparse error; non-zero |
 
 ## See also
 

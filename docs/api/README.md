@@ -30,13 +30,12 @@ contracts match what you just used:
     API pages are hand-maintained contracts, with **mkdocstrings** signatures for critical
     surfaces on [Autodoc](AUTODOC.md) (live helpers, adapters, and core facades — still a
     subset of every `hedron.__all__` name). For a map of every export to a doc
-    page, see [Public API coverage map](COVERAGE.md). Adopter-critical narrative pages
-    ([Hedron](HEDRON.md), [Router](ROUTER.md), [Action](ACTION.md),
-    [Interaction](INTERACTION.md), [Models](MODELS.md), [Responses](RESPONSES.md),
-    [Security types](SECURITY_TYPES.md), [Auto](AUTO.md), [SSE](SSE.md),
-    [Streaming](STREAMING.md), [Component](COMPONENT.md), [Page](PAGE.md), [Field](FIELD.md))
-    include constructor / field tables, returns, errors, and examples. Prefer those plus
-    the guides when learning; use autodoc + source when verifying unmarked internals.
+    page, see [Public API coverage map](COVERAGE.md).     Flagship narrative pages ([Hedron](HEDRON.md), [Router](ROUTER.md),
+    [Action](ACTION.md), [Interaction](INTERACTION.md), [Page](PAGE.md), [SSE](SSE.md),
+    [Streaming](STREAMING.md), [Field](FIELD.md), and peers linked below) aim for
+    constructor / field tables, returns, errors, and examples. Some outline pages
+    (for example [Utility components](UTILITY_COMPONENTS.md), [ColorMode](COLORMODE.md))
+    are shorter summaries — prefer guides + Autodoc when a page lacks an Errors section.
     Human error index: [Error codes](../guides/error-codes.md).
 
 ## Shipped through 0.10

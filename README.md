@@ -35,11 +35,12 @@ Prefer [uv](https://docs.astral.sh/uv/)? Use `uv tool install "hedron>=0.10.1"`,
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 
-**Next:** [Installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/) →
-[Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
-[HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
+Prefer not to install locally? [Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/).
+
+**Next:** [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
+Evaluating? [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
 ## Packages
 
@@ -58,8 +59,10 @@ Full matrix and install extras: [installation](https://hedron.readthedocs.io/en/
 ## Product direction
 
 FastAPI-native typed components, HTMX fragments, and secure HTML defaults. Audience:
-CRUD, internal tools, dashboards, forms, admin, and data apps. Next release focus:
-Flask/Django depth (**0.11**).
+CRUD, internal tools, dashboards, forms, admin, and data apps.
+
+Flask/Django: page + fragment routing and HTMX are Supported in 0.10.1. Native
+forms/QuerySet depth ships in **0.11** — use polling for job status on those hosts today.
 
 Current train: [`v0.10.1`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
@@ -77,6 +80,7 @@ Existing apps on 0.8/0.9: [Upgrade](https://hedron.readthedocs.io/en/latest/guid
 Hosted docs: [hedron.readthedocs.io](https://hedron.readthedocs.io/en/latest/)
 
 - [Getting started](https://hedron.readthedocs.io/en/latest/getting-started/)
+- [Try with Codespaces](https://hedron.readthedocs.io/en/latest/examples/try-it/)
 - [What’s ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
 - [Guides](https://hedron.readthedocs.io/en/latest/guides/) · [API](https://hedron.readthedocs.io/en/latest/api/)
 - [Runnable examples](https://hedron.readthedocs.io/en/latest/examples/runnable/)

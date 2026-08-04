@@ -3,11 +3,31 @@
 Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
 The adapter does not install FastAPI. Hedron does **not** ship `hedron new --django` yet.
 
+Flask/Django: page + fragment routing and HTMX are Supported in 0.10.1. Native
+forms/QuerySet depth ships in **0.11** — use polling for job status today.
+
+## Fastest path: clone the reference
+
+```bash
+git clone https://github.com/eddiethedean/hedron.git
+cd hedron
+uv sync
+cd examples/django-reference
+uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
+```
+
+Open `http://127.0.0.1:8000/`. Source lives in
+[`hedron_django_ref`](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference/hedron_django_ref).
+ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
+
+This reference is manage-less (home + fragment). For a greenfield Django project with
+`manage.py`, use the next section.
+
 ## Greenfield (empty folder → hello)
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "django>=5.2,<6" "hedron-django>=0.10.1" waitress
+python -m pip install "django>=5.2,<6" "hedron-django>=0.10.1"
 django-admin startproject mysite .
 python manage.py startapp demo
 ```
@@ -45,7 +65,6 @@ Ensure `SessionMiddleware` and `CsrfViewMiddleware` remain in `MIDDLEWARE`, then
 
 ```bash
 python manage.py runserver
-# or: waitress-serve --listen=127.0.0.1:8000 mysite.wsgi:application
 ```
 
 Open `http://127.0.0.1:8000/`.
@@ -106,22 +125,6 @@ Stock Django's `X-CSRFToken` remains valid if you keep the default. Form posts m
 `csrfmiddlewaretoken` or `csrf_token`. Safe GETs through `HedronDjango.respond` /
 `hedron_view` call `get_token` so the CSRF cookie is seeded.
 
-## Optional: clone the monorepo reference
-
-For a manage-less slice that matches CI, clone the repository:
-
-```bash
-git clone https://github.com/eddiethedean/hedron.git
-cd hedron
-uv sync
-cd examples/django-reference
-uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
-```
-
-Open `http://127.0.0.1:8000/`. Source lives in
-[`hedron_django_ref`](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference/hedron_django_ref).
-ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
-
 ## Run your own project
 
 ```bash
@@ -138,4 +141,5 @@ uvicorn asgi:application --host 127.0.0.1 --port 8000
 
 - [Security](../guides/security.md) · [Upgrade](../guides/upgrade.md) · [Deployment](../guides/deployment.md)
 - Deferred (not Supported yet): QuerySet DataSource, Hedron-owned Django forms — apps may use
-  Django forms and QuerySets directly until phase 0.11
+  Django forms and QuerySets directly until phase 0.11. For HTMX mutations today, use Django
+  forms + CSRF middleware and [polling](../guides/live-interaction.md) for job status.
