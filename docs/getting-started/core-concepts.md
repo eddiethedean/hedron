@@ -85,9 +85,9 @@ policies, and authenticated fragments receive conservative cache behavior.
 
 Development can discover component folders, scoped CSS, and assets. A production build fingerprints
 those artifacts and seals the registry. Production does not silently compile mutable source at
-request time. Typed Python remains the canonical component model; phase 0.9 also provides the
-separate optional `hedron-jinja` HDJ surface for trusted authors who need native HTML/CSS/JS/Jinja/
-HTMX control plus typed Hedron bridges. HDN has been removed.
+request time. Typed Python remains the canonical component model. Optional HDJ (`.hdj`) templates
+via `hedron[jinja]` are available when you need native HTML/Jinja plus typed Hedron bridges — see
+[HDJ authoring](../guides/hdj-authoring.md).
 
 The [project workflow](../guides/project-workflow.md) shows the CLI commands for this
 lifecycle. For precise guarantees, use the [public API contracts](../api/README.md).

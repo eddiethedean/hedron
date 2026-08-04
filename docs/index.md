@@ -17,16 +17,9 @@ a JavaScript application stack.
 
 <div class="hedron-actions" markdown>
 [Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Runnable examples](examples/runnable.md){ .md-button }
+[What's ready](guides/whats-ready.md){ .md-button }
+[Why Hedron](guides/why-hedron.md){ .md-button }
 </div>
-
-<p class="hedron-lede" style="margin-top:0.5rem;font-size:0.95rem;opacity:0.85">
-Gallery demos are simulated in the docs browser. Prefer the
-<a href="examples/runnable/">runnable examples</a>
-or the
-<a href="examples/reference-app/">reference app walkthrough</a>
-to run a live Hedron server.
-</p>
 
 <div class="hedron-signal-row">
   <span>Python 3.11–3.14</span>
@@ -59,21 +52,25 @@ to run a live Hedron server.
 
 ## From zero to a rendered page
 
-=== "1 · Create a project"
+Pick **one** path — scaffold (recommended) or a hand-written `app.py`. Do not follow both.
+
+=== "Scaffold (recommended)"
 
     ```bash
     pip install "hedron>=0.10.0"
     hedron new my-hedron-app
     cd my-hedron-app
     pip install -e .   # or: uv sync
+    uvicorn app:app --reload
     ```
 
-    Prefer [uv](https://docs.astral.sh/uv/)? After installing Hedron globally (or in a
-    tool environment), the scaffold still works—then `uv sync` inside the project.
-    Or manually: `uv init my-hedron-app` then `uv add hedron "uvicorn[standard]"`.
+    Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The scaffold already
+    includes `app.py` — do not recreate it. Prefer [uv](https://docs.astral.sh/uv/)?
     See [installation](getting-started/installation.md).
 
-=== "2 · Create `app.py`"
+=== "Manual `app.py`"
+
+    Use this only if you are **not** using `hedron new`.
 
     ```python
     from hedron import Card, Heading, Hedron, Page, Stack, Text
@@ -96,67 +93,24 @@ to run a live Hedron server.
         )
     ```
 
-=== "3 · Run"
-
     ```bash
+    pip install "hedron>=0.10.0" "uvicorn[standard]"
     uvicorn app:app --reload
-    # or: uv run uvicorn app:app --reload
     ```
 
-    Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The same route can
-    return an HTMX fragment when the request asks for one.
+    Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-<div class="hedron-availability">
-  <p><strong>Ready to try it?</strong><br>
-  The flagship package includes pages, routing, security, state, CLI tooling,
-  plugins, testing helpers, and optional charts / content extras.</p>
-  <p><code>pip install "hedron&gt;=0.10.0"</code> ·
-  <code>hedron new my-app</code> ·
-  <a href="getting-started/installation/">Install options →</a> ·
-  <a href="examples/runnable/">Runnable examples →</a></p>
-</div>
+## Golden path (next)
 
-## Choose your path
+After the hello page, follow this order only:
 
-After the hello page: [quickstart](getting-started/quickstart.md) →
-[HTMX interactions](guides/htmx-interactions.md) →
-[minimal form](guides/minimal-form.md) →
-[reference app](examples/reference-app.md).
+1. [Installation](getting-started/installation.md) (if you still need extras or hosts)
+2. [Build your first app](getting-started/quickstart.md)
+3. [HTMX interactions](guides/htmx-interactions.md)
+4. [Minimal form](guides/minimal-form.md)
 
-<div class="hedron-path">
-  <a href="getting-started/installation/">
-    <strong>Start fresh</strong>
-    Prefer <code>hedron new</code>, then run the quickstart.
-  </a>
-  <a href="guides/htmx-interactions/">
-    <strong>Add an interaction</strong>
-    Refresh a declared region with HTMX.
-  </a>
-  <a href="guides/minimal-form/">
-    <strong>Add a form</strong>
-    CSRF-safe POST in about forty lines.
-  </a>
-  <a href="getting-started/core-concepts/">
-    <strong>Learn the model</strong>
-    Apps, pages, components, rendering, and HTMX.
-  </a>
-  <a href="examples/runnable/">
-    <strong>Runnable examples</strong>
-    Clone and run real FastAPI / Flask / Django apps.
-  </a>
-  <a href="guides/deployment/">
-    <strong>Deploy</strong>
-    Production secrets, build manifests, and runners.
-  </a>
-  <a href="guides/whats-ready/">
-    <strong>What's ready</strong>
-    Honest 0.10 snapshot for evaluators.
-  </a>
-  <a href="guides/production-readiness/">
-    <strong>Production readiness</strong>
-    Pins, security, and support boundaries.
-  </a>
-</div>
+Then: [runnable examples](examples/runnable.md) · [What's ready](guides/whats-ready.md) ·
+[Why Hedron](guides/why-hedron.md)
 
 ## Designed for inspectability
 

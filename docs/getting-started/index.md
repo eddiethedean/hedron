@@ -1,22 +1,25 @@
 # Get started
 
-Build and run a small Hedron application, then learn the few concepts that scale from a
-single page to a production UI.
+Build and run a small Hedron application in about five minutes, then follow one golden
+path through HTMX and forms. Maturity labels (Beta / Supported / Deferred) are explained
+in [How to read these docs](how-to-read.md) when you need them — you do not need that
+vocabulary to install.
 
-New to Beta / Supported / phase numbers?
-[How to read these docs](how-to-read.md).
+## Golden path
 
-## What you will build
+1. [Install](installation.md) — `pip install "hedron>=0.10.0"` (and uvicorn)
+2. [Build your first app](quickstart.md) — page, route, fragment check
+3. [HTMX interactions](../guides/htmx-interactions.md) — refresh a declared region
+4. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
 
-The quickstart creates a FastAPI-native application with a typed page, server-rendered
-components, Hedron's standard security profile, and a development server. It takes about
-five minutes if Python is already installed.
+Then: [learning path](learning-path.md) · [What’s ready](../guides/whats-ready.md) ·
+[Why Hedron](../guides/why-hedron.md).
 
 <div class="hedron-grid">
   <a class="hedron-card" href="installation/">
     <span class="hedron-card__icon" aria-hidden="true">01</span>
     <strong>1. Install</strong>
-    <p>Choose the flagship framework or rendering-core package and set up a project.</p>
+    <p>Minimum flagship install, then optional extras when you need them.</p>
   </a>
   <a class="hedron-card" href="quickstart/">
     <span class="hedron-card__icon" aria-hidden="true">02</span>
@@ -41,11 +44,8 @@ No Node.js installation or frontend build tool is required.
 
 [Install Hedron :material-arrow-right:](installation.md){ .md-button .md-button--primary }
 
-After the hello page, continue with:
+## Other hosts and next topics
 
-- [Learning path](learning-path.md) for a guided order
-- [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
-- [Minimal form POST](../guides/minimal-form.md) — CSRF-safe classic form
-- [Forms and actions](../guides/forms-and-actions.md) — validation fragments (deep dive)
 - [Flask adapter](flask.md) or [Django adapter](django.md) if you are not on FastAPI
+- [Forms and actions](../guides/forms-and-actions.md) — validation fragments (deep dive)
 - [Authentication](../guides/authentication.md) · [Deployment](../guides/deployment.md)

@@ -94,7 +94,7 @@
   const EXPLORER_COMPONENTS = {
     UserCard: {
       title: "UserCard",
-      stability: "Stable",
+      stability: "Beta",
       address: "localhost:8000/hedron-explorer/components/UserCard",
       path: "/components/user-card",
       mode: "FRAGMENT",
@@ -112,7 +112,7 @@
     },
     StatusBanner: {
       title: "StatusBanner",
-      stability: "Stable",
+      stability: "Beta",
       address: "localhost:8000/hedron-explorer/components/StatusBanner",
       path: "/components/status-banner",
       mode: "FRAGMENT",

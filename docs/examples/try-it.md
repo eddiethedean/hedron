@@ -1,4 +1,8 @@
-# Try Hedron in one command
+# Try Hedron with Codespaces / Dev Container
+
+There is no hosted “try it without cloning” sandbox yet. The Supported evaluator paths
+are **GitHub Codespaces**, a local **Dev Container**, or
+[`hedron new`](../getting-started/installation.md) on your machine.
 
 ## Dev Container / Codespaces
 
@@ -20,11 +24,20 @@ Live interaction sample:
 uv run uvicorn app:app --app-dir examples/live-interaction --host 0.0.0.0 --port 8000
 ```
 
-## Local one-liner (after clone)
+## Local after clone
 
 ```bash
 uv sync && uv run uvicorn app:app --app-dir examples/reference-app --reload
 ```
 
-No hosted “try it without cloning” sandbox is published yet—Codespaces or the Dev
-Container is the Supported evaluator path.
+## Prefer not to clone?
+
+```bash
+pip install "hedron>=0.10.0"
+hedron new my-hedron-app
+cd my-hedron-app && pip install -e .
+uvicorn app:app --reload
+```
+
+See [Installation](../getting-started/installation.md) and the
+[quickstart](../getting-started/quickstart.md).

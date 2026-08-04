@@ -12,6 +12,41 @@ the installed sources.
       show_bases: true
       heading_level: 3
 
+## `hedron.HedronRouter`
+
+::: hedron.routing.router.HedronRouter
+    options:
+      members:
+        - page
+        - component
+        - action
+        - include_component
+      heading_level: 3
+
+## Interaction
+
+::: hedron_core.interaction.InteractionResult
+    options:
+      heading_level: 3
+
+::: hedron_core.interaction.FragmentRegion
+    options:
+      heading_level: 3
+
+## Live helpers
+
+::: hedron.sse.sse_response
+    options:
+      heading_level: 3
+
+::: hedron.sse.job_status_sse_response
+    options:
+      heading_level: 3
+
+::: hedron.streaming.stream_tokens
+    options:
+      heading_level: 3
+
 ## `hedron_core.Field`
 
 ::: hedron_core.field.Field
@@ -27,6 +62,13 @@ the installed sources.
         - render
       heading_level: 3
 
+## `hedron_core.diagnostics.Diagnostic`
+
+::: hedron_core.diagnostics.Diagnostic
+    options:
+      heading_level: 3
+
 ## See also
 
-- [Hedron contract](HEDRON.md) · [Component](COMPONENT.md) · [Field](FIELD.md) · [Page](PAGE.md)
+- [Hedron contract](HEDRON.md) · [Router](ROUTER.md) · [Interaction](INTERACTION.md)
+- [Component](COMPONENT.md) · [Field](FIELD.md) · [SSE](SSE.md) · [Diagnostics](DIAGNOSTICS.md)

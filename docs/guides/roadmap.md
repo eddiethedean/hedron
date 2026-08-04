@@ -18,9 +18,10 @@ in the [maintainer roadmap](../ROADMAP.md).
 
 ## Honest gaps on 0.10
 
-- First-party dedicated live-transport sample app → owned Deferred (`EXAMPLES-10-001`)
 - Full multi-engine live browser matrix / some Explorer live traces → owned `0.10.x` Deferred
 - Django QuerySet DataSource and Hedron-owned Django forms → **0.11**
 
-Details: [What's ready today](whats-ready.md) · [Production readiness](production-readiness.md) ·
-[STATUS](../STATUS.md).
+The first-party live sample
+([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))
+addresses `EXAMPLES-10-001` for the poll + stream learning path.
+Details: [What's ready today](whats-ready.md) · [Production readiness](production-readiness.md).

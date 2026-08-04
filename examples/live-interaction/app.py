@@ -1,7 +1,7 @@
-"""First-party live interaction sample (poll clock + token stream).
+"""First-party live interaction sample (poll, token stream, SSE).
 
-Closes EXAMPLES-10-001 for the Supported learning path: polling works on every
-host; streaming is FastAPI-flagship. SSE/WebSocket helpers remain documented in
+Addresses EXAMPLES-10-001 for the Supported learning path: polling works on every
+host; streaming and SSE are FastAPI-flagship. WebSocket/preload helpers remain in
 the live-interaction guide for advanced use.
 """
 
@@ -19,8 +19,10 @@ from hedron import (
     Stack,
     Text,
     html,
+    sse_response,
     stream_tokens,
 )
+from hedron_core.live import SseEvent
 from hedron_core.streaming import TokenStream
 
 app = Hedron(
@@ -78,6 +80,8 @@ def home() -> Page:
                     "hx-swap": "innerHTML",
                 },
             ),
+            Text("SSE ping (open /sse/ping in another tab or EventSource)"),
+            html.code("/sse/ping"),
         ),
         title="Live interaction",
     )
@@ -90,3 +94,14 @@ def stream_answer():
         tokens=["Hello", ", ", "live", " ", "Hedron", "!"],
     )
     return stream_tokens(tokens)
+
+
+@app.get("/sse/ping")
+def sse_ping():
+    """Minimal official SSE response for learning / proxy buffering checks."""
+    return sse_response(
+        [
+            SseEvent(data="ping", event="message", id="1"),
+            SseEvent(data="done", event="message", id="2"),
+        ]
+    )

@@ -89,7 +89,37 @@ under a subpath, configure ASGI `root_path` (uvicorn `--root-path`) or WSGI
 `SCRIPT_NAME`, and set `HEDRON_ROOT_PATH` when your deploy samples use it.
 
 Disable response buffering for `text/event-stream` if you use SSE
-([live interaction](live-interaction.md)).
+([live interaction](live-interaction.md)). Example nginx location:
+
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:8000;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_buffering off;          # critical for SSE
+    proxy_cache off;
+    proxy_read_timeout 3600s;
+}
+```
+
+## Health and readiness
+
+Expose liveness/readiness on the same ASGI app (see [Observability](observability.md)):
+
+```python
+@app.get("/healthz")
+def healthz() -> dict[str, str]:
+    return {"status": "ok"}
+
+
+@app.get("/readyz")
+def readyz() -> dict[str, str]:
+    # Optionally assert build manifest / dependency reachability.
+    return {"status": "ready"}
+```
+
+Point your orchestrator probes at these paths. Hedron’s production start already fails
+closed without a build manifest (`HED-BUILD-0003`).
 
 ## Process model
 
@@ -103,6 +133,15 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --workers 2
 With multiple workers, use sticky sessions or an external session store. Do not assume
 in-process memory is shared. Redis is only required when you configure a job backend that
 needs `HEDRON_REDIS_URL`.
+
+Suggested uvicorn production shape:
+
+```bash
+uvicorn app:app --host 0.0.0.0 --port 8000 --workers 2 --proxy-headers --forwarded-allow-ips='*'
+```
+
+For SSE-heavy apps, prefer fewer long-lived workers (or a dedicated SSE service) and
+sticky sessions so reconnects land on a process that still holds channel state.
 
 ### Flask (WSGI)
 

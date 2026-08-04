@@ -3,47 +3,15 @@
 Use `hedron-django` when your app is Django-native. Requires **Django `>=5.2,<6`**.
 The adapter does not install FastAPI.
 
-## Fastest path: clone the reference
-
-The Supported Django path is the repository reference slice. Clone the monorepo (or
-copy that example from a checkout)—there is no separate PyPI “django starter” tarball.
+## Fastest path: existing Django project (PyPI)
 
 ```bash
-git clone https://github.com/eddiethedean/hedron.git
-cd hedron
-uv sync
-cd examples/django-reference
-uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
+pip install "hedron-django" "django>=5.2,<6"
+# or: uv add "hedron-django" "django>=5.2,<6"
 ```
-
-Open `http://127.0.0.1:8000/`. The slice is manage-less: settings, URLconf, and views live in
-[`hedron_django_ref`](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference/hedron_django_ref).
-ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
-
-Already using pip in an existing Django project? Skip the reference clone and follow
-**Wire into an existing Django project** below after
-`pip install "hedron-django" "django>=5.2,<6"`.
-
-## Portable CSRF header
-
-For HTMX clients that send Hedron's portable `X-CSRF-Token`, set in Django settings:
-
-```python
-CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"
-```
-
-Stock Django's `X-CSRFToken` remains valid if you keep the default. Form posts may use
-`csrfmiddlewaretoken` or `csrf_token`. Safe GETs through `HedronDjango.respond` /
-`hedron_view` call `get_token` so the CSRF cookie is seeded.
-
-## Wire into an existing Django project
 
 Assume you already have a Django project (`django-admin startproject …`) with
-`SessionMiddleware` and `CsrfViewMiddleware`. Add the packages, then register a view:
-
-```bash
-uv add "hedron-django" "django>=5.2,<6"
-```
+`SessionMiddleware` and `CsrfViewMiddleware`. Register a view:
 
 ```python
 # urls.py (or a urls module pointed at by ROOT_URLCONF)
@@ -79,7 +47,35 @@ MIDDLEWARE = [
 ]
 ```
 
-## Run
+## Portable CSRF header
+
+For HTMX clients that send Hedron's portable `X-CSRF-Token`, set in Django settings:
+
+```python
+CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"
+```
+
+Stock Django's `X-CSRFToken` remains valid if you keep the default. Form posts may use
+`csrfmiddlewaretoken` or `csrf_token`. Safe GETs through `HedronDjango.respond` /
+`hedron_view` call `get_token` so the CSRF cookie is seeded.
+
+## Optional: clone the monorepo reference
+
+For a manage-less slice that matches CI, clone the repository:
+
+```bash
+git clone https://github.com/eddiethedean/hedron.git
+cd hedron
+uv sync
+cd examples/django-reference
+uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
+```
+
+Open `http://127.0.0.1:8000/`. Source lives in
+[`hedron_django_ref`](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference/hedron_django_ref).
+ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
+
+## Run your own project
 
 ```bash
 # WSGI — install a server explicitly (Waitress is on the Supported matrix)

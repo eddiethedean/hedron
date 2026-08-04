@@ -1,8 +1,8 @@
-# Threat model (0.8 compatibility baseline)
+# Threat model (0.10 baseline)
 
-**Status:** Maintained from the phase 0.8 compatibility baseline onward
+**Status:** Maintained for the published **0.10** train (updated from the 0.8 compatibility baseline)
 **Owner:** hedron  
-**Evidence:** `SEC-08-001`
+**Evidence:** `SEC-08-001`, live-transport acceptance in RFC-0032 / RELEASE_0_10
 
 ## Assets
 
@@ -25,7 +25,7 @@
 | Plugins | Entry-point load; incompatible majors rejected; no implicit trust elevation |
 | Cache / intermediaries | Pages, fragments, and target variants must `Vary` correctly; private authenticated defaults |
 | History snapshots | Sensitive pages opt out; cached snapshots must not disclose private content |
-| Job backends | Authorization/tenant scope on submit and status; polling not SSE |
+| Job backends | Authorization/tenant scope on submit and status; SSE (`job_status_sse_response`) and polling are both Supported on FastAPI — authorize every status channel the same way |
 | HDJ source | Trusted application/package code; dynamic values remain contextual data; hostile authors unsupported |
 
 ## Adversaries and controls

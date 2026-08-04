@@ -1,7 +1,7 @@
 # What’s ready today
 
-Operator-facing snapshot of the published **0.10.0** train. For evidence rows and
-Deferred ownership, see [STATUS](../STATUS.md).
+Operator-facing snapshot of published **0.10.0**. Maintainer evidence tables live in
+the repository [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
 ## Supported capabilities (Beta packages)
 
@@ -23,6 +23,13 @@ occasional breaking changes on `0.x` under the
 | DataTable / DataEditor | `hedron[data]` |
 | Component Explorer (dev) | `hedron[dev]` |
 
+## Supported examples
+
+- Live interaction sample (poll + stream learning path):
+  [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
+  — see also the [live interaction guide](live-interaction.md)
+- FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
+
 ## Treat as Alpha / more volatile
 
 - `hedron-charts` and chart backends
@@ -30,9 +37,6 @@ occasional breaking changes on `0.x` under the
 
 ## Deferred (do not market as Supported)
 
-- First-party dedicated live-transport sample app →
-  [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
-  (closes `EXAMPLES-10-001`); start with the polling clock in [live interaction](live-interaction.md)
 - Django QuerySet as a first-party DataSource → planned **0.11**
 - Hedron-owned Django forms depth → **0.11**
 - First-party camera/microphone capture UI → **0.15**

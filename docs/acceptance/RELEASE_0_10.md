@@ -47,7 +47,7 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
   *(`BROWSER-10-001` → 0.10.x)*
 - [ ] Load/proxy backpressure beyond in-memory budgets — **Deferred** *(`PERF-10-001` → 0.10.x)*
 - [ ] Explorer live traces — **Deferred** *(`EXPLORER-10-001` → 0.10.x)*
-- [ ] First-party live example app — **Deferred** *(`EXAMPLES-10-001` → 0.10.x)*
+- [x] First-party live example app (poll + stream learning path) — *(`EXAMPLES-10-001`)*
 - [x] Full regression suite. *(`REGRESS-10-001`)*
 - [x] Packaging rehearsal. *(`PKG-10-001`)*
 
@@ -55,5 +55,5 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
 
 **Exit met / published** as coordinated `0.10.0` (`v0.10.0`). Live/preload behavior is not a hidden
 correctness dependency; polling and ordinary navigation remain valid. Every release-gate row is
-`Verified` or owned `Deferred`. Deferred browser/load/Explorer/example rows remain owned for
+`Verified` or owned `Deferred`. Deferred browser/load/Explorer rows remain owned for
 `0.10.x` follow-up; they do not reopen the 0.10 train.

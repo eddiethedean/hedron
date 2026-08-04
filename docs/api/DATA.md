@@ -15,39 +15,65 @@ pip install "hedron[data]"
 ```
 
 ```python
-from hedron_data import Column, DataTable, InMemoryDataSource
+from hedron_data import Column, DataTable
 
-source = InMemoryDataSource(
+DataTable(
     rows=({"id": "1", "name": "Ada"},),
     columns=(Column("id", label="ID"), Column("name", label="Name")),
+    caption="People",
 )
-DataTable(source=source)
 ```
-
-`on_save` on `DataEditor` is server-only factory configuration. It is never part of the
-serializable component props contract. Prefer an explicit `DataEditorSource` for large data.
 
 ## `DataTable`
 
-Presents normalized tabular data with declared columns, accessible headers, bounded
-pagination, sorting, filtering, empty state, and download policy. It does not make data
-editable.
+Read-only accessible table with paging metadata and optional CSV download.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `rows` | sequence / mappings | `None` | In-memory rows when `page` is omitted |
+| `row_model` | `type[Model] \| None` | `None` | Optional typed row model for column inference |
+| `columns` | sequence of `Column` | `None` | Explicit columns |
+| `page` | `DataPage \| None` | `None` | Pre-paged data from a source |
+| `query` | `DataQuery \| None` | `None` | Sort/filter/page query metadata |
+| `caption` | `str \| None` | `None` | Table caption |
+| `empty_message` | `str` | `"No rows"` | Empty state copy |
+| `page_size` | `int` | `25` | Default page size |
+| `allow_download` | `bool` | `False` | Enable CSV helper when true |
 
 ## `DataEditor`
 
-Adds a Web Component grid and typed save resources. `DataChanges[Row]` carries updates,
-inserts, deletes, and optional versions. `DataSaveResult[Row]` reports success,
-normalized values, validation errors, and optimistic-concurrency conflicts.
+Editable grid hosted by a Web Component. `on_save` is **server-only factory
+configuration** — never part of the serializable props contract. Prefer an explicit
+`DataEditorSource` for large data.
 
-Visible fields are not automatically writable. The server validates read-only and
-authorization rules on every change.
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `rows` | sequence / mappings | `None` | Initial rows when `page` / `source` omitted |
+| `key` | `str` | `"editor"` | Stable browser editor identity |
+| `row_model` | `type[Model] \| None` | `None` | Typed row model |
+| `columns` | sequence of `Column` | `None` | Explicit columns |
+| `key_field` | `str` | `"id"` | Stable row identity field |
+| `on_save` | callable \| `None` | `None` | Server-only save handler `(DataChanges) -> DataSaveResult` |
+| `source` | `DataEditorSource` \| async variant | `None` | Preferred for large data |
+| `page` | `DataPage \| None` | `None` | Pre-paged data |
+| `save_mode` | `"batch"` \| `"row"` \| `"cell"` | `"batch"` | Client save granularity |
+| `page_size` | `int` | `25` | Page size |
+| `caption` | `str \| None` | `None` | Caption |
+| `save_endpoint` | `str \| None` | `None` | Explicit save URL when not inferred |
+| `allow_deletes` | `bool` | `True` | Whether deletes are accepted |
+
+| Concept | Type | Description |
+|---|---|---|
+| `DataChanges[Row]` | model | Updates, inserts, deletes, optional versions |
+| `DataSaveResult[Row]` | model | Success, normalized values, field errors, concurrency conflicts |
+| Writable fields | server policy | Visible fields are not automatically writable; validate on every save |
 
 ## Errors
 
 | Situation | Behavior |
 |---|---|
 | Missing `hedron-data` | Import error — install `hedron[data]` |
-| Unauthorized / invalid save | Application/`DataSaveResult` field errors |
+| Unauthorized / invalid save | Application / `DataSaveResult` field errors |
 | Oversized client payload | Bounded serialization failure / diagnostic |
 
 ## See also

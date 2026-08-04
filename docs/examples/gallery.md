@@ -129,7 +129,7 @@ response. Switch between the preview, typed props, and request contract below.
       <button type="button" class="hedron-explorer-item" data-demo-component="TeamTable">TeamTable <span aria-hidden="true">›</span></button>
     </aside>
     <div class="hedron-explorer-main">
-      <div class="hedron-explorer-heading"><div><span class="hedron-app-kicker">hedron-reference</span><h2 data-demo-title>UserCard</h2></div><span class="hedron-stable-pill" data-demo-stability>Stable</span></div>
+      <div class="hedron-explorer-heading"><div><span class="hedron-app-kicker">hedron-reference</span><h2 data-demo-title>UserCard</h2></div><span class="hedron-stable-pill" data-demo-stability>Beta</span></div>
       <div class="hedron-demo-tabs" role="tablist" aria-label="Explorer panels">
         <button role="tab" aria-selected="true" aria-controls="explorer-preview" id="tab-preview" tabindex="0" data-demo-tab="preview">Preview</button>
         <button role="tab" aria-selected="false" aria-controls="explorer-props" id="tab-props" tabindex="-1" data-demo-tab="props">Props</button>

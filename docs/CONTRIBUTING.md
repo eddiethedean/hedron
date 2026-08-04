@@ -51,7 +51,7 @@ only when you alter shipped APIs, security behavior, or acceptance evidence.
 | `packages/hedron-jinja` | Optional HDJ templates |
 | `tests/` | Unit, integration, conformance, adapters |
 | `examples/reference-app` | FastAPI cumulative example |
-| `examples/live-interaction` | Poll + stream sample |
+| `examples/live-interaction` | Poll + stream + SSE sample |
 | `examples/flask-reference` | Flask slice |
 | `examples/django-reference` | Django slice |
 

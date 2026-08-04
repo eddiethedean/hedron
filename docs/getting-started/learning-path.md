@@ -12,9 +12,10 @@ A suggested order from first page to production-minded apps.
 
 1. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
 2. [Minimal form POST](../guides/minimal-form.md) — CSRF-safe classic form (~40 lines)
-3. [Forms and actions](../guides/forms-and-actions.md) — validation fragments and HTMX POST
-4. [Security](../guides/security.md) — CSRF profiles and headers
-5. Optional: open `/hedron-explorer/` with `hedron[dev]` and `explorer="development"`
+3. [Mutations](../guides/mutations.md) — `@action` vs `@component` POST
+4. [Forms and actions](../guides/forms-and-actions.md) — validation fragments and HTMX POST
+5. [Security](../guides/security.md) — CSRF profiles and headers
+6. Optional: open `/hedron-explorer/` with `hedron[dev]` and `explorer="development"`
 
 ## 3. Pick your host
 
@@ -22,8 +23,8 @@ A suggested order from first page to production-minded apps.
 |---|---|
 | Stay on FastAPI | Continue with guides below |
 | Use Flask | [Flask adapter](flask.md) |
-| Use Django | [Django adapter](django.md) (clone reference first) |
-| Prefer Jinja/HTML templates | [HDJ authoring](../api/JINJA.md) + `hedron[jinja]` |
+| Use Django | [Django adapter](django.md) (PyPI first; optional reference clone) |
+| Prefer Jinja/HTML templates | [HDJ authoring](../guides/hdj-authoring.md) + `hedron[jinja]` |
 
 ## 4. Data, charts, and live updates
 
@@ -42,7 +43,7 @@ A suggested order from first page to production-minded apps.
 
 - [What’s ready today](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md)
 - [Production readiness](../guides/production-readiness.md) · [Support](../guides/support.md)
-- [CRUD tutorial](../examples/crud-tutorial.md) · [Try in one command](../examples/try-it.md)
+- [CRUD tutorial](../examples/crud-tutorial.md) · [Try with Codespaces](../examples/try-it.md)
 - [Contributing](../CONTRIBUTING.md) · [Architecture](../ARCHITECTURE.md)
 
 Stuck? [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md) ·

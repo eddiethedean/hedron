@@ -23,6 +23,11 @@ Hedron is not:
 ## Explicitly deferred
 
 The following may become optional subsystems after the core is proven: Java and Node adapters, a
-portable language-neutral specification, native acceleration, SSE live regions, WebSocket
-components, streamed documents, route-level CSS splitting, collaborative DataEditor, visual
-builders, and evidence-backed declarative-authoring migration assistance.
+portable language-neutral specification, native acceleration, route-level CSS splitting,
+collaborative DataEditor, visual builders, and evidence-backed declarative-authoring migration
+assistance.
+
+Live transport on the FastAPI flagship (official HTMX SSE, focused streaming, page/session
+WebSocket channels, and related contracts) shipped in **0.10** — see
+[live interaction](../guides/live-interaction.md). Official HTMX SSE on Flask/Django remains
+Deferred (polling is the Supported fallback).

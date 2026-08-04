@@ -7,14 +7,14 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/v/release/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/releases/latest)
 
-Hedron is a Python-first framework for building typed, server-rendered component
-applications with FastAPI, HTML, and HTMX—without requiring Node.js.
+Typed, server-rendered Python UI for FastAPI + HTMX — without a Node.js frontend stack.
+Build dashboards, admin tools, forms, and CRUD apps from typed components.
 
-**Current train:** [`v0.10.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
-(live interaction on the FastAPI flagship). Next capability phase: **0.11**.
+**Current release:** [`v0.10.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
+(Beta). [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
+[Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
 [What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.10/) ·
-[Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/) ·
-[How to read the docs](https://hedron.readthedocs.io/en/latest/getting-started/how-to-read/).
+[Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 
 ## Five-minute start
 
@@ -26,12 +26,12 @@ pip install -e .          # or: uv sync
 uvicorn app:app --reload  # or: uv run uvicorn app:app --reload
 ```
 
-Or hand-write a page:
+Or hand-write a page (only if you are not using `hedron new`):
 
 ```python
 from hedron import Hedron, Page, Text
 
-app = Hedron(title="Demo", security="standard", session_secret="replace-me")
+app = Hedron(title="Demo", security="standard", session_secret="replace-in-production")
 
 
 @app.page("/")
@@ -41,41 +41,26 @@ def home() -> Page:
 
 Docs: [quickstart](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) ·
 [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) ·
-[minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) ·
-[why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
+[minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/).
 
 ## Packages
 
 | Package | Maturity | Role |
 |---|---|---|
 | [`hedron`](https://pypi.org/project/hedron/) | Beta | FastAPI flagship |
-| [`hedron-core`](https://pypi.org/project/hedron-core/) | Beta | Framework-neutral renderer |
-| [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Beta | Dev Component Explorer (`hedron[dev]`) |
-| [`hedron-data`](https://pypi.org/project/hedron-data/) | Beta | DataTable / DataEditor (`hedron[data]`) |
-| [`hedron-charts`](https://pypi.org/project/hedron-charts/) | Alpha | Charts (`hedron[charts]`) |
-| [`hedron-flask`](https://pypi.org/project/hedron-flask/) / [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Supported adapters |
-| [`hedron-jinja`](https://pypi.org/project/hedron-jinja/) | Beta | Optional HDJ (`.hdj`) templates |
+| [`hedron-flask`](https://pypi.org/project/hedron-flask/) / [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Host adapters |
+| [`hedron[data]`](https://pypi.org/project/hedron-data/) / [`hedron[charts]`](https://pypi.org/project/hedron-charts/) / [`hedron[jinja]`](https://pypi.org/project/hedron-jinja/) / [`hedron[dev]`](https://pypi.org/project/hedron-explorer/) | Beta / Alpha | Optional extras |
 
-Optional HDJ via `hedron[jinja]`. HDN was removed in 0.9 (stay on 0.8 if needed).
+Full matrix and install extras: [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 ## Product direction
 
-FastAPI-native typed components, HTMX fragments, and secure HTML defaults—without a
-Node.js frontend stack. Optional `Auto` rendering and data/chart extras for common
-objects. Audience: FastAPI CRUD, internal tools, dashboards, forms, admin, and data apps.
+FastAPI-native typed components, HTMX fragments, and secure HTML defaults. Audience:
+CRUD, internal tools, dashboards, forms, admin, and data apps. Next release focus:
+Flask/Django depth (**0.11**).
 
-Architectural boundaries and non-goals:
-[docs architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/).
-
-## Roadmap (summary)
-
-| | |
-|---|---|
-| **Current** | 0.10 — live interaction on FastAPI (SSE, streaming, WebSockets, Chat/Dialog, preload) |
-| **Next** | 0.11 — native Flask/Django depth and bounded QuerySet integration |
-
-Public summary: [roadmap](https://hedron.readthedocs.io/en/latest/guides/roadmap/).
-Maintainer phase tables: [full roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
+[Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/) ·
+[Public roadmap](https://hedron.readthedocs.io/en/latest/guides/roadmap/).
 
 ## Documentation
 

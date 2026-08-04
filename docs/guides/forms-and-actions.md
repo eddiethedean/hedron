@@ -4,7 +4,8 @@ Deep dive: typed form that POSTs with HTMX, validates CSRF, and returns either a
 validation fragment or a success update—without a client-side SPA.
 
 If you have not yet shipped a classic POST, start with
-[Minimal form POST](minimal-form.md). For GET-only fragment refresh, see
+[Minimal form POST](minimal-form.md). Decide between `@action` and `@component` POST in
+[Mutations](mutations.md). For GET-only fragment refresh, see
 [HTMX interactions](htmx-interactions.md).
 
 ## What you will build

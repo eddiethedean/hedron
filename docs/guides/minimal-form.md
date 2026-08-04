@@ -2,7 +2,9 @@
 
 Submit a classic HTML form with CSRF, without HTMX fragments or validation
 machinery. Use this after [HTMX interactions](htmx-interactions.md) (GET refresh)
-and before the full [Forms and actions](forms-and-actions.md) deep dive.
+and before choosing between `@action` and `@component` POST in
+[Mutations](mutations.md). The full [Forms and actions](forms-and-actions.md)
+deep dive covers validation fragments.
 
 ## What you will build
 

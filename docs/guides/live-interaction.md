@@ -11,10 +11,10 @@ there until later native depth (0.11).
 !!! note "First-party live demo app"
 
     Start with the polling clock below (Supported on every host). For a clone-and-run
-    FastAPI sample that also wires SSE observation, see
+    FastAPI sample (poll + token stream + `/sse/ping`), see
     [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
-    (`EXAMPLES-10-001`). Advanced SSE / WebSocket / preload helpers below are FastAPI-only
-    and assume you already have a working page.
+    (`EXAMPLES-10-001` Verified). Advanced WebSocket / preload / job-status SSE helpers
+    below are FastAPI-only and assume you already have a working page.
 
 See also: [SSE API](../api/SSE.md) · [Streaming](../api/STREAMING.md) ·
 [WebSocket channel](../api/WEBSOCKET_CHANNEL.md) · [Preload](../api/PRELOAD.md) ·

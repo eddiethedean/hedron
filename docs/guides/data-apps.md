@@ -35,22 +35,23 @@ uv add "hedron-data[pandas]"
 
 ```python
 from hedron import Hedron, Page
-from hedron_data import Column, DataTable, InMemoryDataSource
+from hedron_data import Column, DataTable
 
-source = InMemoryDataSource(
-    rows=(
-        {"id": "1", "name": "Ada"},
-        {"id": "2", "name": "Grace"},
-    ),
-    columns=(Column("id", label="ID"), Column("name", label="Name")),
-)
-
-app = Hedron(title="Table", security="standard", session_secret="replace-me")
+app = Hedron(title="Table", security="standard", session_secret="replace-in-production")
 
 
 @app.page("/")
 def home() -> Page:
-    return Page(DataTable(source=source), title="People")
+    return Page(
+        DataTable(
+            rows=(
+                {"id": "1", "name": "Ada"},
+                {"id": "2", "name": "Grace"},
+            ),
+            columns=(Column("id", label="ID"), Column("name", label="Name")),
+        ),
+        title="People",
+    )
 ```
 
 For editable grids, CSRF-backed saves, and query protocols, see

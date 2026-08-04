@@ -22,7 +22,7 @@ app = Hedron(
     title="Example",
     security="standard",
     explorer="off",
-    session_secret="replace-me",
+    session_secret="replace-in-production",
     theme="default",
     default_styles=True,
     build_dir=".hedron/build",
@@ -53,15 +53,33 @@ All other keyword arguments are passed to `FastAPI` (`title`, `lifespan`, …).
 
 ## Methods
 
+Decorator kwargs are the same as on `HedronRouter` (see [Router](ROUTER.md)). Common
+parameters:
+
+| Parameter | Applies to | Type | Default | Description |
+|---|---|---|---|---|
+| `path` | all | `str` | required | Route path (FastAPI pattern) |
+| `methods` | `page`, `component` | sequence of HTTP methods | `["GET"]` | Allowed verbs; unsafe methods enable CSRF when configured |
+| `method` | `action` only | `str` | `"POST"` | Primary verb when `methods` is omitted |
+| `name` | all | `str \| None` | function name | FastAPI route name |
+| `include_in_schema` | all | `bool` | `True` for page/action; `False` for component | OpenAPI inclusion |
+| `dependencies` | all | FastAPI `Depends` sequence | `None` | Route dependencies (auth gates, etc.) |
+| `tags` | all | list | `None` | OpenAPI tags |
+| `fragment_regions` | `page`, `component` | sequence of `FragmentRegion` | `None` | HTMX `HX-Target` allowlist for this route |
+| `**kwargs` | all | FastAPI route options | — | Passed through to `add_api_route` (for example `response_class`) |
+
 | Method | Description |
 |---|---|
-| `page(path, **kwargs)` | Register a PAGE route |
-| `component(path, **kwargs)` | Register a FRAGMENT/component route |
-| `action(path, **kwargs)` | Register an action route (unsafe methods get CSRF) |
+| `page(path, **kwargs)` | Register a PAGE route (navigation HTML; fragment when `HX-Request`) |
+| `component(path, **kwargs)` | Register a FRAGMENT route; use `methods=["POST"]` for HTMX form fragments with `fragment_regions` |
+| `action(path, **kwargs)` | Register an action route (CSRF on unsafe methods). Does **not** take `fragment_regions` — use `@component` when you need region allowlists |
 | `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
 | `include_router(...)` | Standard FastAPI router include |
 
 Also see module helpers `mount_hedron_static(app)` and `mount_build_assets(app, build_dir)`.
+
+Choosing between `@action` and `@component(..., methods=["POST"])`:
+see [Mutations](../guides/mutations.md).
 
 ## Contract
 

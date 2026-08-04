@@ -121,12 +121,11 @@ rationale = "Explorer live SSE/WS/stream/preload traces deferred; cache/chart pa
 
 [[evidence]]
 id = "EXAMPLES-10-001"
-state = "Deferred"
-destination = "0.10.x follow-up"
-command = "python -c \"print('First-party live example app deferred')\""
+state = "Verified"
+command = "python -c \"from pathlib import Path; assert (Path('examples')/'live-interaction'/'app.py').is_file()\""
 ci_job = "test"
 owner = "hedron"
-rationale = "No first-party examples/* live SSE/WS/chat app yet."
+rationale = "examples/live-interaction covers poll + stream learning path for 0.10."
 
 [[evidence]]
 id = "REGRESS-10-001"

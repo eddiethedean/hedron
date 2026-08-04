@@ -15,6 +15,7 @@ Hedron is a Python monorepo. Full contributor documentation lives in the docs si
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync
+uv run ruff format --check packages tests examples
 uv run ruff check packages tests examples
 uv run pyright
 uv run pytest -q
