@@ -107,7 +107,13 @@ result = InteractionResult(
 
 `element_id` asks Hedron to wrap the content with the corresponding `hx-swap-oob`
 element. When the route declares fragment regions, OOB `element_id` and `select` values
-must also resolve to authorized regions.
+must also resolve to authorized regions. With declared regions, materialization **binds**
+the rendered OOB target to the authorized `#id` (select-only `#id` is rewritten to that
+id); `element_id` must match an authorized `select="#…"` when both are set. Callers cannot
+use `select="#main"` to authorize content that swaps a different id.
+
+`Cache-Control: public` / `s-maxage` in `headers` extras is rejected. Typed `cache=`
+policy owns private/no-store behavior.
 
 ## `status_policy_for`
 

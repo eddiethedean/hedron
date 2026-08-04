@@ -75,6 +75,19 @@ may use `FastAPI` plus `HedronRouter` without this class.
 
 ## Errors
 
+| Situation | Behavior |
+|---|---|
+| Registry / plugin collision | Startup failure with subsystem + source |
+| Missing production manifest | `HED-BUILD-0003` (or related); refuse start |
+| Default `session_secret` under `strict` | Startup failure |
+| Invalid CSRF on unsafe action | HTTP 403 |
+| Unauthorized fragment region / OOB | HTTP 403 |
+
 Startup fails for registry collisions, incompatible plugins, invalid component routes,
 asset conflicts, compiler errors, missing production manifests, or a default session
 secret under `strict`. Errors identify the responsible subsystem and source.
+
+## See also
+
+- [Interaction](INTERACTION.md) · [Security types](SECURITY_TYPES.md) · [Adapters](ADAPTERS.md)
+- [Quickstart](../getting-started/quickstart.md)

@@ -38,6 +38,9 @@ No Node.js installation or frontend build tool is required.
 
 [Install Hedron :material-arrow-right:](installation.md){ .md-button .md-button--primary }
 
-After the hello page, build your first targeted server update in
-[HTMX interactions](../guides/htmx-interactions.md). Then continue with
-[Charts and HTMX](../guides/charts-and-htmx.md) for `LineChart` and Markdown.
+After the hello page, continue with:
+
+- [Flask adapter](flask.md) or [Django adapter](django.md) if you are not on FastAPI
+- [HTMX interactions](../guides/htmx-interactions.md)
+- [Charts and HTMX](../guides/charts-and-htmx.md)
+- [Best practices](../guides/best-practices.md)

@@ -8,9 +8,15 @@ pip install hedron
 uv add hedron
 ```
 
-That installs the current PyPI release on the **0.6** train (`0.6.0` and later patches).
-See [STATUS](../STATUS.md). For DataTable/DataEditor, install `hedron[data]`. For charts,
-install `hedron[charts]`.
+That installs the **latest published** release from PyPI (currently the **0.7.x** train,
+`0.7.0`). Repository `main` is **0.8.0 cut-ready** but not tagged as `v0.8.0` until
+maintainers publish—see [STATUS](../STATUS.md). For DataTable/DataEditor, install
+`hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
+
+```bash
+pip install hedron-flask
+pip install hedron-django   # requires Django >=5.2,<6
+```
 
 ## Do I need Node.js?
 
@@ -28,7 +34,7 @@ Either works. Prefer one path: `uv init` + hand-written `app.py` from the quicks
 
 ## Are Auto, DataTable, and charts available?
 
-Yes on the 0.6 train:
+Yes on the published PyPI train:
 
 ```bash
 pip install "hedron[data]"     # Auto, DataTable, DataEditor
@@ -38,11 +44,40 @@ pip install "hedron[charts]"   # LineChart and visualization adapters
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), and the
 [charts and HTMX guide](charts-and-htmx.md).
 
+## Are Flask and Django supported?
+
+Yes as **Beta Supported** adapters (`hedron-flask`, `hedron-django`). Install them
+separately; they do not pull in FastAPI. Django apps must use Django `>=5.2,<6`. Some
+rows remain Deferred (official HTMX SSE; Django QuerySet as a first-party DataSource;
+Hedron-owned Django forms). See [Compatibility](../COMPATIBILITY.md),
+[Flask quickstart](../getting-started/flask.md), and
+[Django quickstart](../getting-started/django.md).
+
+## What does “Supported” vs “Deferred” vs package Beta mean?
+
+- **Package maturity** (Beta/Alpha): how ready the *distribution* is for production judgment.
+- **API stability** (`beta` / `experimental` / `internal` / `deferred`): freeze catalog in
+  [STABILITY](../api/STABILITY.md).
+- **Adapter capability Supported/Deferred**: what we claim in acceptance evidence
+  ([ADAPTERS](../acceptance/ADAPTERS.md)). Deferred features are documented and must not
+  be marketed as Supported.
+
+## Preferred HDN template extension?
+
+Prefer `template.hdx` (JSX-familiar). Legacy `template.hdn` remains a discoverable
+fallback. See the [HDN tutorial](hdn-templates.md).
+
 ## Are the docs “interactive demos” a running Hedron server?
 
-No. They are in-browser simulations. The runnable backend is the
-[reference application](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)
-in the repo (`uv sync` after clone).
+No. They are in-browser simulations. Runnable backends live under
+[examples/](https://github.com/eddiethedean/hedron/tree/main/examples) in the repo
+(`uv sync` after clone)—FastAPI, Flask, and Django reference slices.
+
+## Multi-worker / production secrets?
+
+Use a real secret store for `session_secret` / Flask `SECRET_KEY` / Django `SECRET_KEY`.
+Do not share development secrets across environments. See [Deployment](deployment.md)
+and [Configuration](../CONFIGURATION.md).
 
 ## Where do I put configuration?
 

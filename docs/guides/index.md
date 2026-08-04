@@ -3,6 +3,21 @@
 Task-oriented guidance for moving from a working page to a maintainable Hedron project.
 
 <div class="hedron-grid">
+  <a class="hedron-card" href="best-practices/">
+    <span class="hedron-card__icon" aria-hidden="true">★</span>
+    <strong>Best practices</strong>
+    <p>Pages vs fragments, CSRF, SafeUrl, secrets, and OOB regions.</p>
+  </a>
+  <a class="hedron-card" href="hdn-templates/">
+    <span class="hedron-card__icon" aria-hidden="true">{ }</span>
+    <strong>HDN templates</strong>
+    <p>Prefer <code>.hdx</code>, discovery, and <code>hedron eject</code>.</p>
+  </a>
+  <a class="hedron-card" href="plugin-authoring/">
+    <span class="hedron-card__icon" aria-hidden="true">⬡</span>
+    <strong>Plugin authoring</strong>
+    <p>Entry points, PLUGIN_META, version gates, and testing.</p>
+  </a>
   <a class="hedron-card" href="project-workflow/">
     <span class="hedron-card__icon" aria-hidden="true">↗</span>
     <strong>Project workflow</strong>

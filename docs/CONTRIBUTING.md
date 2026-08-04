@@ -4,6 +4,8 @@
 
 ### Setup
 
+**Prerequisites:** CPython **3.11–3.14** and [uv](https://docs.astral.sh/uv/).
+
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
@@ -11,7 +13,7 @@ uv sync
 ```
 
 Workspace packages: `hedron-core`, `hedron`, `hedron-explorer`, `hedron-data`,
-`hedron-charts`, `hedron-sample-kit`.
+`hedron-charts`, `hedron-sample-kit`, `hedron-flask`, `hedron-django`.
 
 `uv sync` (dev group) already pulls chart/content test dependencies used by the
 workspace. Against a minimal consumer install, optional extras are
@@ -51,8 +53,12 @@ uv run --group docs mkdocs serve
 | `packages/hedron-data` | DataTable / DataEditor (`hedron[data]`) |
 | `packages/hedron-charts` | Visualization adapters (`hedron[charts]`) |
 | `packages/hedron-sample-kit` | Sample plugin |
-| `tests/` | Unit, integration, conformance |
-| `examples/reference-app` | Cumulative example application |
+| `packages/hedron-flask` | Flask adapter |
+| `packages/hedron-django` | Django adapter |
+| `tests/` | Unit, integration, conformance, adapters |
+| `examples/reference-app` | FastAPI cumulative example |
+| `examples/flask-reference` | Flask slice |
+| `examples/django-reference` | Django slice |
 
 Release cutting is documented in [RELEASE](RELEASE.md). Project status lives in
 [STATUS](STATUS.md).

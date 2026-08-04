@@ -109,16 +109,21 @@ nav:
     - Overview: getting-started/index.md
     - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
+    - Flask adapter: getting-started/flask.md
+    - Django adapter: getting-started/django.md
     - Core concepts: getting-started/core-concepts.md
   - Guides:
     - Overview: guides/index.md
     - Project workflow: guides/project-workflow.md
     - HTMX interactions: guides/htmx-interactions.md
+    - HDN templates: guides/hdn-templates.md
     - Charts and HTMX: guides/charts-and-htmx.md
+    - Best practices: guides/best-practices.md
     - Test your UI: guides/testing.md
     - Security: guides/security.md
     - Threat model: guides/threat-model.md
     - Deployment: guides/deployment.md
+    - Plugin authoring: guides/plugin-authoring.md
     - Upgrade (0.7 → 0.8): guides/upgrade.md
     - FAQ: guides/faq.md
     - Troubleshooting: guides/troubleshooting.md
@@ -127,14 +132,17 @@ nav:
   - Reference:
     - Overview: api/README.md
     - Stability: api/STABILITY.md
+    - Hedron: api/HEDRON.md
+    - Interaction: api/INTERACTION.md
+    - Responses: api/RESPONSES.md
+    - Security types: api/SECURITY_TYPES.md
+    - Framework adapters: api/ADAPTERS.md
+    - CLI: api/CLI.md
     - Performance budgets: PERFORMANCE_BUDGETS.md
-    - Shipped in 0.8:
+    - More API:
       - Application:
-        - Hedron: api/HEDRON.md
         - Router: api/ROUTER.md
         - Page: api/PAGE.md
-        - Responses: api/RESPONSES.md
-        - Interaction: api/INTERACTION.md
         - State: api/STATE.md
       - Components:
         - Component: api/COMPONENT.md
@@ -146,49 +154,44 @@ nav:
       - Data and models:
         - Models and Props: api/MODELS.md
         - Field: api/FIELD.md
+        - Auto: api/AUTO.md
+        - Utility components: api/UTILITY_COMPONENTS.md
+        - Data: api/DATA.md
+        - Data sources: api/DATA_SOURCE.md
       - Platform:
         - Rendering: api/RENDERING.md
         - Themes: api/THEME.md
         - ColorMode: api/COLORMODE.md
         - Cache: api/CACHE.md
-        - Framework adapters: api/ADAPTERS.md
         - Jobs: api/JOBS.md
-        - Security types: api/SECURITY_TYPES.md
         - Auth: api/AUTH.md
         - Explorer: api/EXPLORER.md
         - Plugins: api/PLUGINS.md
         - Testing: api/TESTING.md
         - API diagnostics: api/DIAGNOSTICS.md
-      - Data toolkit:
-        - Auto: api/AUTO.md
-        - Utility components: api/UTILITY_COMPONENTS.md
-        - Data: api/DATA.md
-        - Data sources: api/DATA_SOURCE.md
       - Configuration: CONFIGURATION.md
-      - CLI: api/CLI.md
       - Diagnostics: DIAGNOSTICS.md
-      - Compatibility: COMPATIBILITY.md
       - Glossary: GLOSSARY.md
   - Project:
     - Status: STATUS.md
+    - Compatibility: COMPATIBILITY.md
     - Roadmap: ROADMAP.md
-    - HTMX 2 audit: HTMX_2_AUDIT.md
-    - HTMX 2 extensions: HTMX_2_EXTENSIONS.md
     - Architecture: ARCHITECTURE.md
     - Cutting a release: RELEASE.md
     - Contributing: CONTRIBUTING.md
-    - Compatibility: COMPATIBILITY.md
     - Reference application: REFERENCE_APPLICATION.md
-    - Internals:
-      - Specification index: SPECIFICATION.md
-      - Decisions: DECISIONS.md
-      - Project layout: PROJECT_LAYOUT.md
-      - Engineering baseline: ENGINEERING_BASELINE.md
-      - Identifiers: IDENTIFIERS.md
-      - Traceability: TRACEABILITY.md
-      - Readiness report: READINESS_REPORT.md
-      - Inference overrides: INFERENCE_OVERRIDES.md
-      - Foundations: foundations/README.md
-      - RFC catalog: rfcs/README.md
-      - Implementation specifications: implementation/README.md
-      - Acceptance specifications: acceptance/README.md
+  - Internals:
+    - Specification index: SPECIFICATION.md
+    - Decisions: DECISIONS.md
+    - Project layout: PROJECT_LAYOUT.md
+    - Engineering baseline: ENGINEERING_BASELINE.md
+    - HTMX 2 audit: HTMX_2_AUDIT.md
+    - HTMX 2 extensions: HTMX_2_EXTENSIONS.md
+    - Identifiers: IDENTIFIERS.md
+    - Traceability: TRACEABILITY.md
+    - Readiness report: READINESS_REPORT.md
+    - Inference overrides: INFERENCE_OVERRIDES.md
+    - Foundations: foundations/README.md
+    - RFC catalog: rfcs/README.md
+    - Implementation specifications: implementation/README.md
+    - Acceptance specifications: acceptance/README.md

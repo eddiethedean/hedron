@@ -10,5 +10,7 @@ RUN pip install --no-cache-dir uv \
     && uv pip install --python .venv/bin/python -e packages/hedron-core -e packages/hedron
 
 ENV PATH="/app/.venv/bin:$PATH"
+WORKDIR /app/examples/reference-app
 EXPOSE 8000
-CMD ["uvicorn", "examples.reference_app.app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2", "--proxy-headers", "--forwarded-allow-ips", "*"]
+# Adopter-local path: app module lives in this directory after WORKDIR change.
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2", "--proxy-headers", "--forwarded-allow-ips", "*"]

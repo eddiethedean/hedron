@@ -13,10 +13,19 @@ your browser so they work on Read the Docs without an application server.
 
     Filtering, tabs, dialogs, and form updates below are real client-side interactions.
     Authentication, CSRF enforcement, persistence, HTMX requests, charts, and Markdown
-    require the
-    [runnable reference application](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)
-    (clone the repo and `uv sync`; not available from `pip install hedron` alone). That app's
-    phase-06 section covers `LineChart`, Markdown, and `/charts/*` interaction routes.
+    require a runnable example from the repository (clone and `uv sync`; not available from
+    `pip install hedron` alone).
+
+## Runnable reference apps
+
+| App | Framework | Run docs |
+|---|---|---|
+| [reference-app](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app) | FastAPI flagship | CRUD, CSRF, charts |
+| [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask adapter | Home + fragment |
+| [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django adapter | Home + fragment |
+
+Quickstarts: [FastAPI](../getting-started/quickstart.md) ·
+[Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).
 
 ## Team administration
 
@@ -126,18 +135,25 @@ Accept: text/html</code></pre>
   </div>
 </section>
 
-## Run the backend example
+## Run the backend examples
 
-Clone the repository and start the real authenticated application:
+Clone the repository and start a real application:
 
 ```bash
+# FastAPI reference (full demo)
 uv sync
 uv run uvicorn app:app --app-dir examples/reference-app
+
+# Flask slice
+uv run python examples/flask-reference/app.py
+
+# Django slice (ASGI)
+cd examples/django-reference && uv run uvicorn asgi:application --port 8000
 ```
 
-Sign in with the documented development credentials, `admin` / `secret`. The server
-version exercises strict security headers, CSRF-protected actions, lazy HTMX resources,
-HDN, scoped styles, and the sealed asset build.
+FastAPI reference credentials: `admin` / `secret`. That server exercises strict security
+headers, CSRF-protected actions, lazy HTMX resources, HDN/`.hdx`, scoped styles, and the
+sealed asset build.
 
 [Read the reference application contract](../REFERENCE_APPLICATION.md){ .md-button }
 [Build your first app](../getting-started/quickstart.md){ .md-button .md-button--primary }

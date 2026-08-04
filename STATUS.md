@@ -1,6 +1,8 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.8 **cut-ready** as `0.8.0` (API freeze and hardening)
+**Roadmap position:** phase 0.8 **cut-ready** as `0.8.0` on repository `main`
+(API freeze and hardening). **PyPI today** publishes the prior train (**0.7.x**) until
+`v0.8.0` is tagged.
 **Date:** 2026-08-03
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
 `hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` `0.8.0` (MIT licensed, D-033)

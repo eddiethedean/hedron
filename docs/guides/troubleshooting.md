@@ -2,19 +2,30 @@
 
 ## Wrong or unexpected version
 
-**Symptom:** Features in the docs are missing from your install.
+**Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U hedron` (or `uv add hedron@latest`). The current **published** train on
-PyPI is **0.6.0**. See [STATUS](../STATUS.md).
+`pip install -U hedron` (or `uv add hedron@latest`). **PyPI today** publishes the
+**0.7.x** train. Repository `main` may show **`0.8.0`** before `v0.8.0` is tagged—see
+[STATUS](../STATUS.md). If docs describe a feature from `main` that is missing on your
+PyPI install, either upgrade, install from a git checkout, or wait for the published cut.
 
-## CSRF 403 on POST
+## CSRF 403 on POST (FastAPI / Flask)
 
 **Cause:** Missing or mismatched CSRF token/cookie.
 
 **Fix:** Perform a safe GET first to receive `hedron_csrf`, then send `X-CSRF-Token`
 (or form field `csrf_token`) with the same value. On HTTPS, ensure the client stores
 `Secure` cookies. See [Security](security.md).
+
+## CSRF 403 on Django POST
+
+**Cause:** Django `CsrfViewMiddleware` rejected the token, or the header name does not match settings.
+
+**Fix:** Seed the cookie with a safe GET through `HedronDjango.respond` / `hedron_view`.
+Send Django's `X-CSRFToken` **or** set `CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"` and send
+Hedron's portable `X-CSRF-Token`. Form fields: `csrfmiddlewaretoken` or `csrf_token`.
+See [Django quickstart](../getting-started/django.md).
 
 ## Explorer 404 or missing in production
 
@@ -51,7 +62,27 @@ See [Installation](../getting-started/installation.md) and
 
 **Fix:** `from hedron_core import NodeLike` (or avoid naming it and return built-ins).
 
+## Mounted app / reverse proxy broken URLs
+
+**Cause:** ASGI `root_path` or WSGI `SCRIPT_NAME` not applied; absolute reverse URLs prefixed wrongly.
+
+**Fix:** Configure your proxy/`root_path` correctly. Flask reverse forces path-only URLs
+before applying prefixes—see adapter tests and [Architecture](../ARCHITECTURE.md).
+
+## Redis / jobs optional
+
+**Cause:** Compose examples set `HEDRON_REDIS_URL` for optional job backends.
+
+**Fix:** Redis is not required for basic pages. Omit the variable unless you configure a
+job backend that needs it. See [CONFIGURATION](../CONFIGURATION.md).
+
+## Flask async view RuntimeError
+
+**Cause:** Flask async views need the optional async extra (`greenlet`).
+
+**Fix:** Install Flask's async extra, or keep sync views (Supported sync-only path).
+
 ## Still stuck?
 
-Open a GitHub issue with Hedron version, command/traceback, and whether `HEDRON_ENV` is
-set. Check [FAQ](faq.md) first.
+Open a GitHub issue with Hedron version, command/traceback, host framework (FastAPI /
+Flask / Django), and whether `HEDRON_ENV` is set. Check [FAQ](faq.md) first.

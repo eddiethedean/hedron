@@ -64,6 +64,11 @@ reject_inline_style = true
 | `HEDRON_ENV` | `prod` / `production` selects production mode when `Hedron(production=None)` |
 | `HEDRON_BUILD_DIR` | Overrides build directory when not set on the constructor |
 | `HEDRON_THEME` | Overrides theme when not forced by constructor overrides |
+| `HEDRON_REDIS_URL` | Optional. Used by sample/compose job backends that speak Redis; omit for ordinary page apps |
+| `HEDRON_ROOT_PATH` | Optional. Sample deployments under a reverse-proxy prefix; not a substitute for correct ASGI `root_path` / WSGI `SCRIPT_NAME` |
+
+Adapter hosts also require framework secrets outside this table (Flask `SECRET_KEY`,
+Django `SECRET_KEY`, FastAPI `session_secret`).
 
 Secrets (session keys, credentials) belong in your secret manager or process environment,
 not in `[tool.hedron]`.

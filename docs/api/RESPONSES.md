@@ -49,7 +49,7 @@ misses; and enables native form-validity reporting. If the page already contains
 `<meta name="htmx-config">` element, Hedron leaves it untouched and the application owns the full
 configuration.
 
-All Hedron responses use contextual escaping, registered assets, declared headers, and framework-managed background tasks. Response helpers do not weaken cache, CSP, CSRF, or redirect policy.
+All Hedron responses use contextual escaping, registered assets, declared headers, and framework-managed background tasks. Response helpers do not weaken cache, CSP, CSRF, or redirect policy. Adapter `extra_headers` are merged through the same validation path as `InteractionResult.headers` (no raw overwrite of approved `HX-*` URL/selector fields; no `Cache-Control: public`).
 
 General component streaming is outside the 1.0 contract. Applications that need a streaming escape hatch use the framework's explicit `StreamingResponse`; Hedron does not expose a public `StreamingComponentResponse` in the 0.x–1.0 API.
 

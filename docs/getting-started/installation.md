@@ -43,6 +43,8 @@ Then follow the [quickstart](quickstart.md), or use the generated `app.py` from
 | Package | Use it when | Install |
 |---|---|---|
 | `hedron` | You are building a FastAPI web application | `uv add hedron` |
+| `hedron-flask` | You need Flask (Supported Beta adapter) | `uv add hedron-flask` |
+| `hedron-django` | You need Django `>=5.2,<6` (Supported Beta adapter) | `uv add hedron-django` |
 | `hedron-core` | You need framework-neutral component rendering | `uv add hedron-core` |
 | `hedron[data]` | You need DataTable / DataEditor / data sources | `uv add "hedron[data]"` |
 | `hedron[charts]` | You need LineChart and visualization adapters | `uv add "hedron[charts]"` |
@@ -72,11 +74,12 @@ Or install a backend through the flagship package once `hedron[charts]` is prese
 uv run python -c "import hedron; print(hedron.__version__)"
 ```
 
-The installed version should print `0.6.0` (or a later patch on the 0.6 train) without an
-import error. Data APIs require `hedron-data` (`pip install "hedron[data]"`). Charts
-require `hedron-charts` (`pip install "hedron[charts]"`). Hedron follows semantic
-versioning while it moves toward the public API freeze described in the
-[roadmap](../ROADMAP.md).
+The installed version should print without an import error. **PyPI today** publishes the
+**0.7.x** train (currently `0.7.0`). Repository `main` may report **`0.8.0`** before
+`v0.8.0` is tagged—see [STATUS](../STATUS.md). Data APIs require `hedron-data`
+(`pip install "hedron[data]"`). Charts require `hedron-charts`
+(`pip install "hedron[charts]"`). Hedron follows semantic versioning; see the
+[roadmap](../ROADMAP.md) and [compatibility policy](../COMPATIBILITY.md).
 
 ## Contributor checkout
 

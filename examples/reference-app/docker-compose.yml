@@ -1,14 +1,20 @@
+# Experimental compose for maintainers — not the adopter getting-started path.
+# Missing local assets (for example static-external/) will prevent `static` from starting.
+# Prefer: uv run uvicorn app:app --app-dir examples/reference-app
 services:
   redis:
     image: redis:7-alpine
+    profiles: ["full"]
   static:
     image: nginx:1.27-alpine
+    profiles: ["full"]
     volumes:
       - ./static-external:/usr/share/nginx/html:ro
     ports:
       - "8081:80"
   proxy:
     image: caddy:2.8-alpine
+    profiles: ["full"]
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
     ports:
@@ -22,6 +28,8 @@ services:
     environment:
       HEDRON_REDIS_URL: redis://redis:6379/0
       HEDRON_ROOT_PATH: /hedron
+    ports:
+      - "8000:8000"
+    profiles: ["full"]
     depends_on:
       - redis
-      - static

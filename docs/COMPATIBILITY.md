@@ -5,7 +5,7 @@
 
 ## Initial runtime ranges
 
-| Dependency | `v0.6.0` baseline | Policy |
+| Dependency | `v0.8.0` freeze matrix | Policy |
 |---|---|---|
 | Python | CPython 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.11,<3.15"`; 3.15 prereleases are not supported. |
 | FastAPI | `>=0.141.1,<0.142` | Required by `hedron`, not `hedron-core`; expand only after adapter conformance. |

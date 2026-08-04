@@ -11,10 +11,11 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase 0.8 is **cut-ready** as `0.8.0` (feature-frozen API baseline and
-> hardening). No new subsystems, adapters, or transports. SSE transport and Django QuerySet
-> DataSource remain Deferred. After the `v0.8.0` cut, final-version rehearsal uses published
-> `1.0.0rcN` artifacts.
+> **Project status:** Repository `main` is phase **0.8 cut-ready** (`0.8.0` packages:
+> feature-frozen API baseline and hardening). **PyPI today** still serves the latest
+> published train (**0.7.x** until `v0.8.0` is tagged). No new subsystems, adapters, or
+> transports on the freeze. SSE transport and Django QuerySet DataSource remain Deferred.
+> After the `v0.8.0` cut, final-version rehearsal uses published `1.0.0rcN` artifacts.
 
 **Package maturity:** `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, and `hedron-django` are Beta. `hedron-charts` and `hedron-sample-kit`
@@ -61,7 +62,7 @@ The initial audience is Python teams building FastAPI CRUD applications, interna
 See the hosted [quickstart](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) for a fuller walkthrough.
 
 ```bash
-uv add hedron
+uv add hedron "uvicorn[standard]"
 ```
 
 ```python
@@ -81,13 +82,7 @@ uv run uvicorn app:app --reload
 
 Open `/` for a full HTML page. Send `HX-Request: true` (or navigate with HTMX) to receive a fragment without the document shell. CSRF cookies are issued on safe GETs and reused; unsafe actions validate `X-CSRF-Token` or a `csrf_token` form field.
 
-## Quick start (`hedron-core` only)
-
-```bash
-uv sync
-uv run python -c "from hedron_core import Page, Text, RenderMode, render; print(render(Page(Text('Hello'), title='Hi'), mode=RenderMode.PAGE).html)"
-uv run pytest -q
-```
+Contributor checkout (monorepo only) is documented in [Contributing](https://hedron.readthedocs.io/en/latest/CONTRIBUTING/).
 
 ## Roadmap
 
@@ -131,7 +126,7 @@ uv run mkdocs serve
 The specification remains the authority for implementation:
 
 - [Specification index](https://hedron.readthedocs.io/en/latest/SPECIFICATION/)
-- [Current status](https://hedron.readthedocs.io/en/latest/STATUS/) and [pre-coding readiness report](https://hedron.readthedocs.io/en/latest/READINESS_REPORT/)
+- [Current status](https://hedron.readthedocs.io/en/latest/STATUS/)
 - [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/), [decisions](https://hedron.readthedocs.io/en/latest/DECISIONS/), and [project layout](https://hedron.readthedocs.io/en/latest/PROJECT_LAYOUT/)
 - [Foundations](https://hedron.readthedocs.io/en/latest/foundations/) and [RFC index](https://hedron.readthedocs.io/en/latest/rfcs/)
 - [Public API contracts](https://hedron.readthedocs.io/en/latest/api/)
@@ -144,11 +139,16 @@ Accepted RFC and API status means the design has been selected; it does not mean
 
 ## Current release
 
-Coordinated train **0.8.0** is cut-ready (feature-frozen API baseline; tag/publish when
-ready). Install `pip install hedron` for the FastAPI flagship, `pip install hedron-flask` /
-`hedron-django` for Supported adapters, `pip install "hedron[data]"` / `"hedron[charts]"`
-for extras. After the `v0.8.0` cut, published `1.0.0rcN` artifacts rehearse toward stable
-1.0 — see the [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
+**PyPI (install today):** latest published train is **0.7.x** (`pip install hedron`).
+
+**Repository `main`:** coordinated packages are **0.8.0 cut-ready** (feature-frozen API
+baseline); tag/publish `v0.8.0` when maintainers cut. Until then, `pip install hedron==0.8.0`
+will not resolve from PyPI.
+
+Install `hedron` for the FastAPI flagship, `hedron-flask` / `hedron-django` for Supported
+adapters, `"hedron[data]"` / `"hedron[charts]"` for extras. After the `v0.8.0` cut,
+published `1.0.0rcN` artifacts rehearse toward stable 1.0 — see the
+[roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Contributing
 

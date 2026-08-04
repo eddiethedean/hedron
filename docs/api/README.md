@@ -13,6 +13,14 @@ Hedron documentation separates **callable APIs that ship in this release** from
 (`beta` | `experimental` | `internal` | `deferred`). Package maturity (Beta/Alpha) is separate
 from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
+!!! note "Contracts vs full reference"
+
+    Many pages began as Accepted design contracts. Adopter-critical pages
+    ([Hedron](HEDRON.md), [Interaction](INTERACTION.md), [Responses](RESPONSES.md),
+    [Security types](SECURITY_TYPES.md), [Adapters](ADAPTERS.md)) include constructor /
+    field tables, errors, and examples. Prefer those plus the guides when learning;
+    read source only for unmarked internals.
+
 ## Shipped through 0.8
 
 These surfaces are implemented on the **0.8.0** freeze train (includes all 0.1–0.7

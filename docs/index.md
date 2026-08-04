@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.6</div>
+<div class="hedron-eyebrow">Python-first UI framework · PyPI 0.7.0 · main 0.8.0 cut-ready</div>
 
 # Ship the interface.<br><span class="hedron-gradient-text">Keep the Python.</span>
 
@@ -115,13 +115,29 @@ a JavaScript application stack.
     <strong>Learn the model</strong>
     See how apps, pages, components, rendering, and HTMX fit together.
   </a>
-  <a href="guides/project-workflow/">
-    <strong>Build with confidence</strong>
-    Scaffold, inspect, check, test, and package a real project.
+  <a href="getting-started/flask/">
+    <strong>Flask adapter</strong>
+    Render the same components on native Flask.
+  </a>
+  <a href="getting-started/django/">
+    <strong>Django adapter</strong>
+    Native Django URLconfs with CSRF alignment notes.
   </a>
   <a href="guides/htmx-interactions/">
     <strong>Add interaction</strong>
     Refresh declared regions with typed, validated HTMX responses.
+  </a>
+  <a href="guides/security/">
+    <strong>Secure defaults</strong>
+    CSRF, SafeUrl, Explorer, and host-framework notes.
+  </a>
+  <a href="guides/deployment/">
+    <strong>Deploy</strong>
+    Production secrets, ASGI/WSGI runners, and env vars.
+  </a>
+  <a href="guides/project-workflow/">
+    <strong>Build with confidence</strong>
+    Scaffold, inspect, check, test, and package a real project.
   </a>
 </div>
 

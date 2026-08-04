@@ -52,7 +52,9 @@ Coding may begin when:
 
 The phase 0.0 readiness sweep satisfied this gate for the phase 0.1 typed rendering core
 targeting `v0.1.0`. Phases 0.1 through 0.5 are published and MIT-licensed (D-033);
-phase 0.6 is cut-ready as `0.6.0`. See [RELEASE.md](RELEASE.md) and [STATUS.md](STATUS.md).
+phase 0.8 is **cut-ready** as `0.8.0` on repository `main` (PyPI may still serve the
+prior published train until `v0.8.0` is tagged). See [RELEASE.md](RELEASE.md) and
+[STATUS.md](STATUS.md).
 Later-phase work must still satisfy the owning release gate before implementation begins.
 
 Under D-035, phase 0.7 additionally requires the phase 0.6 behavioral closure gate, accepted
