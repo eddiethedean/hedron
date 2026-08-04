@@ -11,9 +11,12 @@ Minimal **native Flask** slice: home page + HTMX fragment route. Depends on
 Or in a fresh project:
 
 ```bash
-pip install hedron-flask "uvicorn[standard]"
-# For the built-in Flask server you only need hedron-flask
+pip install hedron-flask
+# Optional ASGI bridge only if you intentionally serve Flask via uvicorn:
+# pip install "uvicorn[standard]"
 ```
+
+For the built-in development server, `hedron-flask` is enough (`flask --app … run`).
 
 ## Run
 

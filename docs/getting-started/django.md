@@ -5,7 +5,8 @@ The adapter does not install FastAPI.
 
 ## Fastest path: clone the reference
 
-From a Hedron checkout (or after cloning the repo):
+The Supported Django path is the repository reference slice. Clone the monorepo (or
+copy that example from a checkout)—there is no separate PyPI “django starter” tarball.
 
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
@@ -19,13 +20,9 @@ Open `http://127.0.0.1:8000/`. The slice is manage-less: settings, URLconf, and 
 [`hedron_django_ref`](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference/hedron_django_ref).
 ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
 
-With pip instead of the monorepo:
-
-```bash
-pip install "hedron-django" "django>=5.2,<6" waitress
-# copy examples/django-reference into a working directory, then:
-waitress-serve --listen=127.0.0.1:8000 wsgi:application
-```
+Already using pip in an existing Django project? Skip the reference clone and follow
+**Wire into an existing Django project** below after
+`pip install "hedron-django" "django>=5.2,<6"`.
 
 ## Portable CSRF header
 

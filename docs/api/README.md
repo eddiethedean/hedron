@@ -15,13 +15,15 @@ from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
 !!! note "Contracts vs full reference"
 
-    API pages are hand-maintained contracts (not yet mkdocstrings autodoc). Adopter-critical
-    pages ([Hedron](HEDRON.md), [Router](ROUTER.md), [Action](ACTION.md),
+    API pages are hand-maintained contracts, with **mkdocstrings** signatures for critical
+    surfaces on [Autodoc](AUTODOC.md). Adopter-critical narrative pages
+    ([Hedron](HEDRON.md), [Router](ROUTER.md), [Action](ACTION.md),
     [Interaction](INTERACTION.md), [Models](MODELS.md), [Responses](RESPONSES.md),
     [Security types](SECURITY_TYPES.md), [Auto](AUTO.md), [SSE](SSE.md),
-    [Streaming](STREAMING.md)) include constructor / field tables, returns, errors, and
-    examples. Prefer those plus the guides when learning; read source for unmarked
-    internals. Human error index: [Error codes](../guides/error-codes.md).
+    [Streaming](STREAMING.md), [Component](COMPONENT.md), [Page](PAGE.md), [Field](FIELD.md))
+    include constructor / field tables, returns, errors, and examples. Prefer those plus
+    the guides when learning; use autodoc + source when verifying unmarked internals.
+    Human error index: [Error codes](../guides/error-codes.md).
 
 ## Shipped through 0.10
 

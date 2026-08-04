@@ -66,6 +66,14 @@ support reports. Full format: [Diagnostics](../DIAGNOSTICS.md).
 | `HED-PLUGIN-0004` | Duplicate plugin registration |
 | `HED-PLUGIN-0005` | Plugin `register()` failed |
 
+## Models / Field
+
+| Code | Meaning |
+|---|---|
+| `HED-MODEL-0001` | Contradictory field metadata |
+| `HED-MODEL-0002` | Unsupported `Field` option |
+| `HED-MODEL-0003`+ | Additional model diagnostics (see source / diagnostics payload) |
+
 ## Related HTTP statuses (not `HED-*`)
 
 | Status | Common cause |

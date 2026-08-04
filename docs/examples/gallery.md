@@ -51,7 +51,7 @@ The sections below are in-docs simulations for layout and interaction patterns.
   <div class="hedron-app-shell">
     <aside class="hedron-app-nav">
       <div class="hedron-app-brand">
-        <img src="../assets/hedron-mark.svg" alt="">
+        <img src="../../assets/hedron-mark.svg" alt="">
         <span>Acme Console</span>
       </div>
       <nav aria-label="Example application">
@@ -111,36 +111,47 @@ response. Switch between the preview, typed props, and request contract below.
 <section class="hedron-demo hedron-explorer-demo" data-hedron-demo="explorer" aria-label="Interactive Component Explorer example">
   <div class="hedron-demo__chrome" aria-hidden="true">
     <span></span><span></span><span></span>
-    <div class="hedron-demo__address">localhost:8000/hedron-explorer/components/UserCard</div>
+    <div class="hedron-demo__address" data-demo-address>localhost:8000/hedron-explorer/components/UserCard</div>
   </div>
   <div class="hedron-explorer-shell">
-    <aside class="hedron-explorer-nav">
-      <div class="hedron-app-brand"><img src="../assets/hedron-mark.svg" alt=""><span>Explorer</span></div>
+    <aside class="hedron-explorer-nav" aria-label="Registered components">
+      <div class="hedron-app-brand"><img src="../../assets/hedron-mark.svg" alt=""><span>Explorer</span></div>
+      <label class="hedron-explorer-mobile-select"><span class="sr-only">Component</span>
+        <select data-demo-component-select aria-label="Select component">
+          <option value="UserCard" selected>UserCard</option>
+          <option value="StatusBanner">StatusBanner</option>
+          <option value="TeamTable">TeamTable</option>
+        </select>
+      </label>
       <small>COMPONENTS</small>
-      <div class="hedron-explorer-item is-selected">UserCard <span>›</span></div>
-      <div class="hedron-explorer-item">StatusBanner <span>›</span></div>
-      <div class="hedron-explorer-item">TeamTable <span>›</span></div>
+      <button type="button" class="hedron-explorer-item is-selected" data-demo-component="UserCard" aria-current="true">UserCard <span aria-hidden="true">›</span></button>
+      <button type="button" class="hedron-explorer-item" data-demo-component="StatusBanner">StatusBanner <span aria-hidden="true">›</span></button>
+      <button type="button" class="hedron-explorer-item" data-demo-component="TeamTable">TeamTable <span aria-hidden="true">›</span></button>
     </aside>
     <div class="hedron-explorer-main">
-      <div class="hedron-explorer-heading"><div><span class="hedron-app-kicker">hedron-reference</span><h2>UserCard</h2></div><span class="hedron-stable-pill">Stable</span></div>
+      <div class="hedron-explorer-heading"><div><span class="hedron-app-kicker">hedron-reference</span><h2 data-demo-title>UserCard</h2></div><span class="hedron-stable-pill" data-demo-stability>Stable</span></div>
       <div class="hedron-demo-tabs" role="tablist" aria-label="Explorer panels">
         <button role="tab" aria-selected="true" aria-controls="explorer-preview" id="tab-preview" tabindex="0" data-demo-tab="preview">Preview</button>
         <button role="tab" aria-selected="false" aria-controls="explorer-props" id="tab-props" tabindex="-1" data-demo-tab="props">Props</button>
         <button role="tab" aria-selected="false" aria-controls="explorer-request" id="tab-request" tabindex="-1" data-demo-tab="request">Request</button>
       </div>
       <section class="hedron-explorer-panel" id="explorer-preview" role="tabpanel" aria-labelledby="tab-preview" data-demo-panel="preview">
-        <div class="hedron-preview-canvas"><article><span class="hedron-avatar hedron-avatar--violet">AL</span><div><strong>Ada Lovelace</strong><p>Platform administrator</p></div><span class="hedron-status">Active</span></article></div>
-        <div class="hedron-explorer-facts"><div><span>Render mode</span><strong>FRAGMENT</strong></div><div><span>HTML nodes</span><strong>6</strong></div><div><span>Diagnostics</span><strong class="is-clean">0</strong></div></div>
+        <div class="hedron-preview-canvas" data-demo-preview><article><span class="hedron-avatar hedron-avatar--violet">AL</span><div><strong>Ada Lovelace</strong><p>Platform administrator</p></div><span class="hedron-status">Active</span></article></div>
+        <div class="hedron-explorer-facts">
+          <div><span>Render mode</span><strong data-demo-fact-mode>FRAGMENT</strong></div>
+          <div><span>HTML nodes</span><strong data-demo-fact-nodes>6</strong></div>
+          <div><span>Diagnostics</span><strong class="is-clean" data-demo-fact-diagnostics>0</strong></div>
+        </div>
       </section>
       <section class="hedron-explorer-panel" id="explorer-props" role="tabpanel" aria-labelledby="tab-props" data-demo-panel="props" hidden>
-        <table><thead><tr><th>Prop</th><th>Type</th><th>Required</th></tr></thead><tbody><tr><td><code>name</code></td><td><code>str</code></td><td>Yes</td></tr><tr><td><code>role</code></td><td><code>str</code></td><td>Yes</td></tr><tr><td><code>active</code></td><td><code>bool</code></td><td>No</td></tr></tbody></table>
+        <table><thead><tr><th>Prop</th><th>Type</th><th>Required</th></tr></thead><tbody data-demo-props></tbody></table>
       </section>
       <section class="hedron-explorer-panel" id="explorer-request" role="tabpanel" aria-labelledby="tab-request" data-demo-panel="request" hidden>
-        <div class="hedron-request-line"><span class="hedron-method">GET</span><code>/components/user-card</code><span class="hedron-ok">200 OK</span></div>
-        <pre><code>HX-Request: true
+        <div class="hedron-request-line"><span class="hedron-method">GET</span><code data-demo-path>/components/user-card</code><span class="hedron-ok">200 OK</span></div>
+        <pre><code data-demo-headers>HX-Request: true
 HX-Target: #team-list
 Accept: text/html</code></pre>
-        <p>Returns a fragment, applies private caching, and exposes no source path.</p>
+        <p data-demo-request-note>Returns a fragment, applies private caching, and exposes no source path.</p>
       </section>
     </div>
   </div>

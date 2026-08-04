@@ -8,7 +8,7 @@ Summary:
 - Supported lines: `0.10.x` (current); see the docs table for older trains
 - **Do not** open public issues for vulnerabilities — use GitHub
   [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new)
-  or the maintainer contact on the owner’s GitHub profile
+  (dedicated disclosure channel) or **odosmatthews@gmail.com** (package author metadata)
 - Guides: [Security](https://hedron.readthedocs.io/en/latest/guides/security/),
   [Threat model](https://hedron.readthedocs.io/en/latest/guides/threat-model/)
 

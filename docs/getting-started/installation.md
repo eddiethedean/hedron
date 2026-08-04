@@ -1,22 +1,31 @@
 # Installation
 
 The recommended path for new applications is **`hedron new`**, which scaffolds `app.py`,
-`pyproject.toml`, and a component directory for the current train.
+`pyproject.toml`, and a component directory for the current train. Install Hedron first
+so the `hedron` CLI is on your `PATH`.
 
 ## Recommended: CLI scaffold
 
-```bash
-pip install "hedron>=0.10.0"
-hedron new my-hedron-app
-cd my-hedron-app
-```
+=== "pip"
 
-Then install deps (`uv sync` or `pip install -e .`) and run:
+    ```bash
+    pip install "hedron>=0.10.0"
+    hedron new my-hedron-app
+    cd my-hedron-app
+    pip install -e .
+    uvicorn app:app --reload
+    ```
 
-```bash
-uv run uvicorn app:app --reload
-# or: uvicorn app:app --reload
-```
+=== "uv"
+
+    ```bash
+    # Install the CLI once (tool or venv), then scaffold:
+    uv tool install "hedron>=0.10.0"   # or: pip install "hedron>=0.10.0"
+    hedron new my-hedron-app
+    cd my-hedron-app
+    uv sync
+    uv run uvicorn app:app --reload
+    ```
 
 `hedron new` depends on `hedron>=0.10.0` and `uvicorn[standard]`. It refuses to overwrite a
 non-empty destination unless you pass `--force`. Do **not** also run `uv init` into the same
@@ -60,23 +69,23 @@ Leave Explorer off in production.
 
 ## Choose a package
 
-| Package | Use it when | Install |
-|---|---|---|
-| `hedron` | You are building a FastAPI web application | `uv add hedron` |
-| `hedron-flask` | You need Flask (Supported Beta adapter) | `uv add hedron-flask` |
-| `hedron-django` | You need Django `>=5.2,<6` (Supported Beta adapter) | `uv add hedron-django` |
-| `hedron-core` | You need framework-neutral component rendering | `uv add hedron-core` |
-| `hedron[jinja]` / `hedron-jinja` | You need optional HDJ (`.hdj`) templates over Jinja/HTML/HTMX | `uv add "hedron[jinja]"` |
-| `hedron[data]` | You need DataTable / DataEditor / data sources | `uv add "hedron[data]"` |
-| `hedron[charts]` | You need LineChart and visualization adapters | `uv add "hedron[charts]"` |
-| `hedron[markdown]` | You need Markdown rendering | `uv add "hedron[markdown]"` |
-| `hedron[code]` | You need Pygments code highlighting | `uv add "hedron[code]"` |
-| `hedron[images]` | You need Pillow image helpers | `uv add "hedron[images]"` |
-| `hedron[email]` | You need email address validation helpers | `uv add "hedron[email]"` |
-| `hedron[sanitize]` | You need nh3 HTML sanitization (`TrustedHtml.nh3`) | `uv add "hedron[sanitize]"` |
-| `hedron[auth]` | You need Authlib helpers | `uv add "hedron[auth]"` |
-| `hedron[dev]` | You also want Component Explorer (`/hedron-explorer/`) | `uv add "hedron[dev]"` |
-| `hedron[browser]` | You need browser and accessibility test helpers | `uv add "hedron[browser]"` |
+| Package | Use it when | pip | uv |
+|---|---|---|---|
+| `hedron` | You are building a FastAPI web application | `pip install "hedron>=0.10.0"` | `uv add hedron` |
+| `hedron-flask` | You need Flask (Supported Beta adapter) | `pip install hedron-flask` | `uv add hedron-flask` |
+| `hedron-django` | You need Django `>=5.2,<6` (Supported Beta adapter) | `pip install hedron-django` | `uv add hedron-django` |
+| `hedron-core` | You need framework-neutral component rendering | `pip install hedron-core` | `uv add hedron-core` |
+| `hedron[jinja]` / `hedron-jinja` | You need optional HDJ (`.hdj`) templates over Jinja/HTML/HTMX | `pip install "hedron[jinja]"` | `uv add "hedron[jinja]"` |
+| `hedron[data]` | You need DataTable / DataEditor / data sources | `pip install "hedron[data]"` | `uv add "hedron[data]"` |
+| `hedron[charts]` | You need LineChart and visualization adapters | `pip install "hedron[charts]"` | `uv add "hedron[charts]"` |
+| `hedron[markdown]` | You need Markdown rendering | `pip install "hedron[markdown]"` | `uv add "hedron[markdown]"` |
+| `hedron[code]` | You need Pygments code highlighting | `pip install "hedron[code]"` | `uv add "hedron[code]"` |
+| `hedron[images]` | You need Pillow image helpers | `pip install "hedron[images]"` | `uv add "hedron[images]"` |
+| `hedron[email]` | You need email address validation helpers | `pip install "hedron[email]"` | `uv add "hedron[email]"` |
+| `hedron[sanitize]` | You need nh3 HTML sanitization (`TrustedHtml.nh3`) | `pip install "hedron[sanitize]"` | `uv add "hedron[sanitize]"` |
+| `hedron[auth]` | You need Authlib helpers | `pip install "hedron[auth]"` | `uv add "hedron[auth]"` |
+| `hedron[dev]` | You also want Component Explorer (`/hedron-explorer/`) | `pip install "hedron[dev]"` | `uv add "hedron[dev]"` |
+| `hedron[browser]` | You need browser and accessibility test helpers | `pip install "hedron[browser]"` | `uv add "hedron[browser]"` |
 
 Chart backends are optional on top of `hedron-charts`:
 
@@ -91,15 +100,23 @@ Or install a backend through the flagship package once `hedron[charts]` is prese
 
 ## Verify the installation
 
-```bash
-uv run python -c "import hedron; print(hedron.__version__)"
-```
+=== "pip"
+
+    ```bash
+    python -c "import hedron; print(hedron.__version__)"
+    ```
+
+=== "uv"
+
+    ```bash
+    uv run python -c "import hedron; print(hedron.__version__)"
+    ```
 
 The installed version should print without an import error. Expect **`0.10.0`** from PyPI for the
 current live-interaction train—see [What’s ready today](../guides/whats-ready.md). Data APIs require
 `hedron-data` (`pip install "hedron[data]"`). Charts require `hedron-charts`
 (`pip install "hedron[charts]"`). Hedron follows semantic versioning; see the
-[roadmap](../ROADMAP.md) and [compatibility policy](../COMPATIBILITY.md).
+[public roadmap](../guides/roadmap.md) and [compatibility policy](../COMPATIBILITY.md).
 
 ## Prerequisites
 

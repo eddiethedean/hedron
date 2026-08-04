@@ -65,9 +65,11 @@ to run a live Hedron server.
     pip install "hedron>=0.10.0"
     hedron new my-hedron-app
     cd my-hedron-app
-    uv sync   # or: pip install -e .
+    pip install -e .   # or: uv sync
     ```
 
+    Prefer [uv](https://docs.astral.sh/uv/)? After installing Hedron globally (or in a
+    tool environment), the scaffold still works—then `uv sync` inside the project.
     Or manually: `uv init my-hedron-app` then `uv add hedron "uvicorn[standard]"`.
     See [installation](getting-started/installation.md).
 
@@ -97,7 +99,8 @@ to run a live Hedron server.
 === "3 · Run"
 
     ```bash
-    uv run uvicorn app:app --reload
+    uvicorn app:app --reload
+    # or: uv run uvicorn app:app --reload
     ```
 
     Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The same route can
@@ -107,7 +110,7 @@ to run a live Hedron server.
   <p><strong>Ready to try it?</strong><br>
   The flagship package includes pages, routing, security, state, CLI tooling,
   plugins, testing helpers, and optional charts / content extras.</p>
-  <p><code>pip install hedron</code> ·
+  <p><code>pip install "hedron&gt;=0.10.0"</code> ·
   <code>hedron new my-app</code> ·
   <a href="getting-started/installation/">Install options →</a> ·
   <a href="examples/runnable/">Runnable examples →</a></p>

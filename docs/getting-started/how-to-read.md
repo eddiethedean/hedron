@@ -1,16 +1,17 @@
 # How to read Hedron docs
 
-Hedron uses a few maturity words that sound similar. This page is the decoder ring.
+Hedron uses a few maturity words. For day-to-day reading you only need three:
 
-## Package maturity vs API stability vs capability claims
+| Label | What it means for you |
+|---|---|
+| **Beta** (package) | The distribution is usable; **pin versions** in production. Alpha packages (`hedron-charts`, `hedron-sample-kit`) change faster. |
+| **Supported** (feature) | Hedron claims this capability works on that host today. |
+| **Deferred** (feature) | Documented and owned, but **not** ready—do not market or depend on it as Supported. |
 
-| Label | Where you see it | What it means for you |
-|---|---|---|
-| **Beta / Alpha** (package) | PyPI classifiers, README package table | How ready the *distribution* is. Beta packages are usable; pin versions. Alpha packages (`hedron-charts`, `hedron-sample-kit`) change faster. |
-| **API stability** (`beta`, `experimental`, `internal`, `deferred`) | [STABILITY](../api/STABILITY.md) | Compatibility promises for a callable surface inside a package. |
-| **Supported / Deferred** (capability) | Adapter docs, acceptance rows | Whether Hedron claims that *feature* works on that host today. Deferred is documented and must not be treated as Supported. |
-| **Accepted** (RFC / contract) | API pages, RFCs | The design is selected. It does **not** by itself mean every detail is implemented—check “Shipped” and the roadmap phase. |
-| **Shipped in 0.N** | API / guide banners | Implemented in the published train that maps to phase `0.N` (`v0.N.0`). |
+API compatibility levels (`stable` / `beta` / `experimental` / `internal` / `deferred`) live in
+the [STABILITY](../api/STABILITY.md) catalog for callable surfaces. RFC **Accepted** means the
+design is selected—not that every detail is implemented. Prefer [What’s ready today](../guides/whats-ready.md)
+when evaluating production use.
 
 ## Phases and versions
 
@@ -27,8 +28,8 @@ There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 ## What to read first
 
 1. [Installation](installation.md) → [Quickstart](quickstart.md)
-2. [Forms and actions](../guides/forms-and-actions.md) → [HTMX interactions](../guides/htmx-interactions.md)
+2. [HTMX interactions](../guides/htmx-interactions.md) → [Minimal form POST](../guides/minimal-form.md)
 3. [What’s ready today](../guides/whats-ready.md) when evaluating production use
-4. Specs, RFCs, and acceptance evidence under **Specification** when you need design authority
+4. Specs, RFCs, and acceptance evidence under the **Maintainers** tab when you need design authority
 
 Stuck on a term? See the [Glossary](../GLOSSARY.md).

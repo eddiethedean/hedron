@@ -72,12 +72,15 @@ Single-stage sketch when you already vendor a lockfile:
 FROM python:3.12-slim
 WORKDIR /app
 COPY . .
-RUN pip install --no-cache-dir ".[standard]" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=0.10.0" "uvicorn[standard]" \
  && hedron build
 ENV HEDRON_ENV=production
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
+If the image builds an application package instead of installing Hedron directly,
+use `pip install --no-cache-dir . "uvicorn[standard]"` and ensure `hedron` is a
+project dependency.
 ## Reverse proxy
 
 Terminate TLS at nginx, Caddy, or your cloud load balancer. Forward

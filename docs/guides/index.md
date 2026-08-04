@@ -80,3 +80,5 @@ Start here after the quickstart: [HTMX interactions](htmx-interactions.md) →
 
 Looking for callable APIs? Start with [Shipped through 0.10](../api/README.md).
 Maturity vocabulary: [How to read Hedron docs](../getting-started/how-to-read.md).
+Evaluator snapshot: [What's ready today](whats-ready.md) (Project tab).
+Support: [Support](support.md).

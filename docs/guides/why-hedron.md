@@ -18,6 +18,8 @@ appendices linked from the [maintainer docs](maintainers.md).
 | Plotly-centric reactive apps | Dash | Callback graph; different security/HTML story |
 | Model demos and ML UIs | Gradio | Different product shape; less CRUD/admin focus |
 | Full control with templates | Jinja + HTMX by hand | You assemble CSRF, fragments, and contracts yourself |
+| Event-loop UI widgets in pure Python | NiceGUI | Different interaction model; less HTMX/fragment-first |
+| Full-stack Python with a React compiler | Reflex | Generates a JS client stack; Hedron stays server-rendered HTML |
 | Typed components on FastAPI/HTMX | **Hedron** | Learning the component + fragment contracts |
 
 Hedron is **not** an ORM, identity provider, client SPA framework, or whole-script

@@ -12,9 +12,12 @@ uv sync
 | Example | Framework | Run |
 |---|---|---|
 | [reference-app](reference-app.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/reference-app --reload` |
+| [live-interaction](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) | FastAPI | `uv run uvicorn app:app --app-dir examples/live-interaction --reload` |
 | [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask | See example README |
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | See example README |
 | [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | HDJ | Prints HTML to stdout (not a web server) |
+
+Evaluator shortcuts: [CRUD tutorial](crud-tutorial.md) · [Try in one command](try-it.md).
 
 Quickstarts without cloning: [Single-file apps](single-file.md) ·
 [FastAPI](../getting-started/quickstart.md) ·

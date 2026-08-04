@@ -22,8 +22,8 @@ applications with FastAPI, HTML, and HTMX—without requiring Node.js.
 pip install "hedron>=0.10.0"
 hedron new my-hedron-app
 cd my-hedron-app
-uv sync   # or: pip install -e .
-uv run uvicorn app:app --reload
+pip install -e .          # or: uv sync
+uvicorn app:app --reload  # or: uv run uvicorn app:app --reload
 ```
 
 Or hand-write a page:

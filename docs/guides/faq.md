@@ -3,14 +3,14 @@
 ## Which version should I install?
 
 ```bash
-pip install hedron
+pip install "hedron>=0.10.0"
 # or
-uv add hedron
+uv add "hedron>=0.10.0"
 ```
 
-That installs the latest published release from PyPI. The current train is **0.10.0**—see
-[STATUS](../STATUS.md). `Auto` is included. For DataTable/DataEditor, install `hedron[data]`.
-For charts, install `hedron[charts]`. For Flask/Django adapters:
+That installs the current published train from PyPI (**0.10.0**)—see
+[What’s ready today](whats-ready.md). `Auto` is included. For DataTable/DataEditor, install
+`hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
 
 ```bash
 pip install hedron-flask
@@ -24,17 +24,23 @@ No. Hedron does not require npm or a JavaScript bundler for development or produ
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or use
-`hedron new my-app` after `pip install hedron`.
+`hedron new my-app` after `pip install "hedron>=0.10.0"`.
 
 ## Should I use `uv init` or `hedron new`?
 
-Prefer **`hedron new`** for a ready scaffold on the current train. `uv init` + a hand-written
-`app.py` from the quickstart also works. Do not nest both into the same directory by accident.
+Prefer **`hedron new`** for a ready scaffold on the current train (install Hedron first).
+`uv init` + a hand-written `app.py` from the quickstart also works. Do not nest both into
+the same directory by accident.
 
-## What do Beta, Supported, and Accepted mean?
+## What do Beta, Supported, and Deferred mean?
 
-See [How to read Hedron docs](../getting-started/how-to-read.md). Short version: package Beta ≠
-every capability Supported; Accepted design ≠ always fully shipped.
+See [How to read Hedron docs](../getting-started/how-to-read.md). Short version:
+
+- **Beta** — package maturity; pin versions.
+- **Supported** — claimed working capability on that host.
+- **Deferred** — documented, not ready; do not treat as Supported.
+
+Detailed API compatibility levels live in [STABILITY](../api/STABILITY.md).
 
 ## Are Auto, DataTable, and charts available?
 
@@ -51,22 +57,13 @@ See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), a
 
 ## Are Flask and Django supported?
 
-Yes as **Beta Supported** adapters (`hedron-flask`, `hedron-django`). Install them
-separately; they do not pull in FastAPI. Django apps must use Django `>=5.2,<6`. Some
-rows remain Deferred (Django QuerySet as a first-party DataSource; Hedron-owned Django forms).
+Yes as **Beta** packages with a **Supported** adapter matrix (`hedron-flask`, `hedron-django`).
+Install them separately; they do not pull in FastAPI. Django apps must use Django `>=5.2,<6`.
+Some rows remain Deferred (Django QuerySet as a first-party DataSource; Hedron-owned Django forms).
 Official HTMX SSE is Supported on the FastAPI flagship in 0.10; polling remains the Supported
 fallback on all hosts. See [Compatibility](../COMPATIBILITY.md),
 [Flask quickstart](../getting-started/flask.md), and
 [Django quickstart](../getting-started/django.md).
-
-## What does “Supported” vs “Deferred” vs package Beta mean?
-
-- **Package maturity** (Beta/Alpha): how ready the *distribution* is for production judgment.
-- **API stability** (`stable` / `beta` / `experimental` / `internal` / `deferred`): compatibility catalog in
-  [STABILITY](../api/STABILITY.md).
-- **Adapter capability Supported/Deferred**: what we claim in acceptance evidence
-  ([ADAPTERS](../acceptance/ADAPTERS.md)). Deferred features are documented and must not
-  be marketed as Supported.
 
 ## What replaced HDN?
 

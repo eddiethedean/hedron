@@ -117,9 +117,11 @@ ever sets it.
 **Fix:** Follow [Authentication](authentication.md) (login/logout with CSRF), or use the
 reference app’s HTTP Basic pattern.
 
-## HTMX form `type: ignore` / attrs typing
+## HTMX form attrs typing
 
-**Cause:** Spreading HTMX attrs onto `Form(...)` may need a type ignore in strict checkers.
+**Cause:** Hyphenated HTMX attribute names (`hx-post`, …) must be passed via a `dict`
+unpacked into `Form(...)`.
 
-**Fix:** Prefer the [minimal form](minimal-form.md) HTML form path first, or see the
-typed attrs pattern in [Forms and actions](forms-and-actions.md).
+**Fix:** Build a typed `dict[str, str]` (see [Forms and actions](forms-and-actions.md))
+or use `html.form(...)` as in [minimal form](minimal-form.md). A `# type: ignore` on the
+unpack is rarely needed when the dict is annotated.

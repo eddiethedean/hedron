@@ -13,10 +13,13 @@
 
 Please **do not** open a public GitHub issue for security vulnerabilities.
 
-Email the maintainer through the address listed on the
-[GitHub profile](https://github.com/eddiethedean) for the repository owner, or use
-GitHub's private [security advisory](https://github.com/eddiethedean/hedron/security/advisories/new)
-flow when available.
+**Preferred:** open a private GitHub
+[security advisory](https://github.com/eddiethedean/hedron/security/advisories/new)
+— this is the dedicated disclosure channel for Hedron.
+
+**Alternate:** email **odosmatthews@gmail.com** (package author / maintainer contact
+published in package metadata) with the same details. Do not open a public issue for
+vulnerabilities.
 
 Include:
 
@@ -37,7 +40,14 @@ types, asset URLs).
 Out of scope: application-authored HDJ/templates that embed untrusted content, third-party
 plugins, misconfigured deployments, and host-framework CVEs (report those upstream).
 
+## Supply chain / evidence
+
+Release evidence and dependency inventories are produced by maintainer scripts
+(`scripts/build_evidence_bundle.py`, `scripts/generate_sbom.py`,
+`scripts/license_inventory.py`). Published release notes and GitHub Releases attach or
+link evidence when a train is cut—see [RELEASE](RELEASE.md).
+
 ## See also
 
 [Security guide](guides/security.md) · [Threat model](guides/threat-model.md) ·
-[Support](guides/support.md)
+[Support](guides/support.md) · [Code of Conduct](CODE_OF_CONDUCT.md)

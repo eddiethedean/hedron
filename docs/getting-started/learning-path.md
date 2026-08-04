@@ -42,6 +42,7 @@ A suggested order from first page to production-minded apps.
 
 - [What’s ready today](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md)
 - [Production readiness](../guides/production-readiness.md) · [Support](../guides/support.md)
+- [CRUD tutorial](../examples/crud-tutorial.md) · [Try in one command](../examples/try-it.md)
 - [Contributing](../CONTRIBUTING.md) · [Architecture](../ARCHITECTURE.md)
 
 Stuck? [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md) ·

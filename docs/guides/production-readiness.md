@@ -19,7 +19,7 @@ Pin package versions. Breaking changes may still land on `0.x`.
 | Area | Status |
 |---|---|
 | `hedron-charts` | Alpha |
-| First-party live-transport sample app | Deferred (`EXAMPLES-10-001`) |
+| First-party live-transport sample app | Shipped learning path: [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) |
 | Django QuerySet DataSource / Hedron Django forms | Planned **0.11** |
 | Public API catalog level | `beta` (no scheduled `1.0`) |
 

@@ -3,7 +3,13 @@
 Operator-facing snapshot of the published **0.10.0** train. For evidence rows and
 Deferred ownership, see [STATUS](../STATUS.md).
 
-## Ship with confidence (Beta)
+## Supported capabilities (Beta packages)
+
+Hedron **0.10.0** packages are **Beta**. Capabilities listed as **Supported** below
+are intended for production use with pinned versions. **Deferred** items are
+documented and must not be treated as ready. There is no scheduled 1.0; expect
+occasional breaking changes on `0.x` under the
+[compatibility policy](../COMPATIBILITY.md).
 
 | Capability | Package / surface |
 |---|---|
@@ -17,9 +23,6 @@ Deferred ownership, see [STATUS](../STATUS.md).
 | DataTable / DataEditor | `hedron[data]` |
 | Component Explorer (dev) | `hedron[dev]` |
 
-Pin versions in production. Breaking changes may still land on `0.x` under the
-[compatibility policy](../COMPATIBILITY.md).
-
 ## Treat as Alpha / more volatile
 
 - `hedron-charts` and chart backends
@@ -27,8 +30,9 @@ Pin versions in production. Breaking changes may still land on `0.x` under the
 
 ## Deferred (do not market as Supported)
 
-- First-party dedicated live-transport sample app → owned `0.10.x` Deferred (`EXAMPLES-10-001`);
-  use the copy-paste apps in [live interaction](live-interaction.md) until it ships
+- First-party dedicated live-transport sample app →
+  [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
+  (closes `EXAMPLES-10-001`); start with the polling clock in [live interaction](live-interaction.md)
 - Django QuerySet as a first-party DataSource → planned **0.11**
 - Hedron-owned Django forms depth → **0.11**
 - First-party camera/microphone capture UI → **0.15**
@@ -39,8 +43,10 @@ Pin versions in production. Breaking changes may still land on `0.x` under the
 
 ```bash
 pip install "hedron>=0.10.0"
-# or
 hedron new my-app
+cd my-app
+pip install -e .   # or: uv sync
+uvicorn app:app --reload
 ```
 
 Extras: `"hedron[data]"`, `"hedron[charts]"`, `"hedron[jinja]"`, `"hedron[dev]"`.

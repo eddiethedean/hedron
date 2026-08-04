@@ -59,6 +59,7 @@ docs = [
     # Material 9.7.2+ prints a MkDocs 2.0 campaign banner on every build; stay below that.
     "mkdocs-material>=9.5,<9.7.2",
     "pymdown-extensions>=11.0,<12",
+    "mkdocstrings[python]>=0.27,<0.31",
 ]
 
 [tool.uv.sources]

@@ -52,6 +52,17 @@ theme:
 
 plugins:
   - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+            show_root_heading: true
+            members_order: source
+            docstring_style: google
+          paths:
+            - packages/hedron/src
+            - packages/hedron-core/src
 
 hooks:
   - docs/hooks.py
@@ -131,42 +142,47 @@ nav:
     - Django adapter: getting-started/django.md
   - Guides:
     - Overview: guides/index.md
-    - HTMX interactions: guides/htmx-interactions.md
-    - Minimal form POST: guides/minimal-form.md
-    - Forms and actions: guides/forms-and-actions.md
-    - Authentication: guides/authentication.md
-    - Live interaction: guides/live-interaction.md
-    - Data applications: guides/data-apps.md
-    - Charts and HTMX: guides/charts-and-htmx.md
-    - Cookbook: guides/cookbook.md
-    - Plain FastAPI: guides/plain-fastapi.md
-    - Compose built-ins: guides/component-composition.md
-    - Project workflow: guides/project-workflow.md
-    - Security: guides/security.md
-    - Threat model: guides/threat-model.md
-    - Deployment: guides/deployment.md
-    - Performance: guides/performance.md
-    - Test your UI: guides/testing.md
-    - Best practices: guides/best-practices.md
-    - Plugin authoring: guides/plugin-authoring.md
-    - Migrate from Streamlit: guides/streamlit-migration.md
-    - HDJ authoring: api/JINJA.md
-    - What's ready today: guides/whats-ready.md
-    - Production readiness: guides/production-readiness.md
-    - Public roadmap: guides/roadmap.md
-    - Why Hedron: guides/why-hedron.md
-    - Upgrade (0.8 → 0.10): guides/upgrade.md
-    - What's new in 0.10: guides/whats-new-0.10.md
-    - Release notes: guides/release-notes.md
-    - FAQ: guides/faq.md
-    - Troubleshooting: guides/troubleshooting.md
-    - Error codes: guides/error-codes.md
+    - Interact:
+      - HTMX interactions: guides/htmx-interactions.md
+      - Minimal form POST: guides/minimal-form.md
+      - Forms and actions: guides/forms-and-actions.md
+      - Authentication: guides/authentication.md
+      - Live interaction: guides/live-interaction.md
+      - Cookbook: guides/cookbook.md
+    - Data and visuals:
+      - Data applications: guides/data-apps.md
+      - Charts and HTMX: guides/charts-and-htmx.md
+      - Compose built-ins: guides/component-composition.md
+      - HDJ authoring: api/JINJA.md
+    - Security:
+      - Security: guides/security.md
+      - Threat model: guides/threat-model.md
+    - Ops:
+      - Deployment: guides/deployment.md
+      - Performance: guides/performance.md
+      - Test your UI: guides/testing.md
+      - Best practices: guides/best-practices.md
+      - Plugin authoring: guides/plugin-authoring.md
+      - Project workflow: guides/project-workflow.md
+      - Plain FastAPI: guides/plain-fastapi.md
+    - Meta:
+      - FAQ: guides/faq.md
+      - Troubleshooting: guides/troubleshooting.md
+      - Support: guides/support.md
+      - Error codes: guides/error-codes.md
+      - Why Hedron: guides/why-hedron.md
+      - Migrate from Streamlit: guides/streamlit-migration.md
+      - Upgrade (0.8 → 0.10): guides/upgrade.md
+      - What's new in 0.10: guides/whats-new-0.10.md
+      - Release notes: guides/release-notes.md
   - Examples:
     - Overview: examples/index.md
     - Runnable examples: examples/runnable.md
     - Single-file apps: examples/single-file.md
     - Reference app walkthrough: examples/reference-app.md
     - Component gallery: examples/gallery.md
+    - CRUD tutorial: examples/crud-tutorial.md
+    - Try in one command: examples/try-it.md
   - Components:
     - Overview: components/index.md
     - Document and composition:
@@ -267,6 +283,7 @@ nav:
   - API:
     - Overview: api/README.md
     - Stability: api/STABILITY.md
+    - Autodoc (Hedron): api/AUTODOC.md
     - Hedron: api/HEDRON.md
     - Router: api/ROUTER.md
     - Action: api/ACTION.md
@@ -311,7 +328,7 @@ nav:
     - Compatibility: COMPATIBILITY.md
     - Architecture: ARCHITECTURE.md
     - Contributing: CONTRIBUTING.md
-    - Support: guides/support.md
+    - Code of Conduct: CODE_OF_CONDUCT.md
     - Security disclosure: SECURITY.md
   - Maintainers:
     - Overview: guides/maintainers.md
@@ -339,7 +356,7 @@ nav:
       - RFC-0002 Core-Architecture: rfcs/RFC-0002-CORE-ARCHITECTURE.md
       - RFC-0003 Component-Model: rfcs/RFC-0003-COMPONENT-MODEL.md
       - RFC-0004 Fastapi-Integration: rfcs/RFC-0004-FASTAPI-INTEGRATION.md
-      - RFC-0005 Hdn-Language: rfcs/RFC-0005-HDN-LANGUAGE.md
+      - RFC-0005 HDN (historical, removed in 0.9): rfcs/RFC-0005-HDN-LANGUAGE.md
       - RFC-0006 Scoped-Styles: rfcs/RFC-0006-SCOPED-STYLES.md
       - RFC-0007 Component-Explorer: rfcs/RFC-0007-COMPONENT-EXPLORER.md
       - RFC-0008 Addressable-Components: rfcs/RFC-0008-ADDRESSABLE-COMPONENTS.md
@@ -416,6 +433,7 @@ nav:
       - Testing: acceptance/TESTING.md
       - Visualization: acceptance/VISUALIZATION.md
     - Feature research:
+      - Index: guides/feature-research.md
       - Streamlit cross-check: STREAMLIT_FEATURE_CROSSCHECK.md
       - streamlit-extras cross-check: STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md
       - Plotly Dash cross-check: PLOTLY_DASH_FEATURE_CROSSCHECK.md

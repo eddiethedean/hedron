@@ -76,6 +76,12 @@ def invite_form(
     errors: tuple[str, ...] = (),
 ):
     values = values or {}
+    htmx_attrs: dict[str, str] = {
+        "hx-post": "/invite",
+        "hx-target": RESULT_REGION.selector,
+        "hx-swap": "innerHTML",
+        "hx-headers": json.dumps({"X-CSRF-Token": csrf_token}),
+    }
     return Form(
         FormErrors(errors),
         html.input(type="hidden", name="csrf_token", value=csrf_token),
@@ -93,12 +99,7 @@ def invite_form(
         SubmitButton("Send invite"),
         action=SafeUrl.parse("/invite", purpose=UrlPurpose.FORM_ACTION),
         method="post",
-        **{  # type: ignore[arg-type]
-            "hx-post": "/invite",
-            "hx-target": RESULT_REGION.selector,
-            "hx-swap": "innerHTML",
-            "hx-headers": json.dumps({"X-CSRF-Token": csrf_token}),
-        },
+        **htmx_attrs,
     )
 
 

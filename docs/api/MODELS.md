@@ -4,7 +4,7 @@ status: shipped
 
 # `Model`, `Props`, `FormModel`, and `EventPayload`
 
-!!! note "Stability (0.8 compatibility baseline)"
+!!! note "Stability (0.10 train)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 

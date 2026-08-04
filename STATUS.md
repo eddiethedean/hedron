@@ -16,8 +16,11 @@ HDJ head/two-phase streaming, and opt-in navigation preload. Polling and ordinar
 Supported fallbacks. Native Flask/Django depth remains assigned to 0.11; capture UI to 0.15.
 
 **Honest Deferred (owned, post-release):** full three-engine live browser matrix beyond asset/HTMX
-smoke, load/proxy backpressure evidence, Explorer live traces, and a first-party live example app
-(`BROWSER-10-001`, `PERF-10-001`, `EXPLORER-10-001`, `EXAMPLES-10-001` → `0.10.x`).
+smoke, load/proxy backpressure evidence, and Explorer live traces
+(`BROWSER-10-001`, `PERF-10-001`, `EXPLORER-10-001` → `0.10.x`).
+First-party live sample:
+[`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
+(`EXAMPLES-10-001` addressed for poll + stream learning path).
 
 ## Phase 0.10 evidence
 
