@@ -41,12 +41,13 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Main(*children, class_=None, id=None)
+Main(*nodes, children=None, class_=None, id=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `children` | `NodeLike` | Content belonging to this semantic region. |
+| `nodes` | `NodeLike` | Positional content belonging to this semantic region. |
+| `children` | `NodeLike | sequence | None` | Keyword alternative; combines with positional nodes. |
 | `class_` | `str | None` | Optional authored class name. |
 | `id` | `str | None` | Stable fragment or target identifier. |
 

@@ -89,9 +89,16 @@ COMPONENTS = (
         "Fragment",
         "document",
         "Return several sibling nodes without adding a wrapper element.",
-        "Fragment(*children)",
+        "Fragment(*nodes, children=None)",
         "Fragment(Alert('Saved', tone='success'), Text('The record is current.'))",
-        (p("children", "NodeLike", "Any renderable sibling nodes."),),
+        (
+            p("nodes", "NodeLike", "Positional renderable sibling nodes."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword alternative; combines with positional nodes.",
+            ),
+        ),
         "A fragment flattens its children into the render stream. It is ideal for targeted HTMX responses because it does not change the target's surrounding layout or introduce an accidental DOM node.",
         "After a swap, focus and live-region behavior still belong to the response content; a wrapper-free result does not announce itself.",
         "Do not rely on a fragment to carry an `id`, class, or HTMX target—there is no wrapper on which to place attributes.",
@@ -102,9 +109,16 @@ COMPONENTS = (
         "Head",
         "document",
         "Compose explicit document-head children when building lower-level document output.",
-        "Head(*children)",
+        "Head(*nodes, children=None)",
         "Head(Title('Reports'), html.meta(name='description', content='Weekly reports'))",
-        (p("children", "NodeLike", "Head-safe nodes such as `Title` and `html.meta`."),),
+        (
+            p("nodes", "NodeLike", "Positional head-safe nodes such as `Title` and `html.meta`."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword alternative; combines with positional nodes.",
+            ),
+        ),
         "`Head` renders a semantic `<head>` node. Most applications should prefer `Page(title=..., head=...)`, while `Head` is useful to libraries and tests that need explicit document composition.",
         "Give every page a useful title; metadata has no visible fallback for assistive-technology users.",
         "Never place user-supplied raw markup in the head. Use validated native elements and `TrustedHtml` only at a reviewed trust boundary.",
@@ -128,10 +142,15 @@ COMPONENTS = (
             name,
             "landmarks",
             f"Render the semantic `{tag}` landmark for {purpose}.",
-            f"{name}(*children, class_=None, id=None)",
+            f"{name}(*nodes, children=None, class_=None, id=None)",
             f"{name}(Heading('{label}', level={level}), Text('{copy}'))",
             (
-                p("children", "NodeLike", "Content belonging to this semantic region."),
+                p("nodes", "NodeLike", "Positional content belonging to this semantic region."),
+                p(
+                    "children",
+                    "NodeLike | sequence | None",
+                    "Keyword alternative; combines with positional nodes.",
+                ),
                 p("class_", "str | None", "Optional authored class name."),
                 p("id", "str | None", "Stable fragment or target identifier."),
             ),
@@ -206,13 +225,23 @@ COMPONENTS = (
         "Container",
         "layout",
         "Constrain and center a readable block of page content.",
-        "Container(*children, class_=None)",
-        "Container(Heading('Profile', level=1), Text('Manage your public details.'))",
+        "Container(*nodes, children=None, id=None, class_=None)",
+        "Container(Heading('Profile', level=1), Text('Manage your public details.'), id='profile')",
         (
-            p("children", "NodeLike", "Content inside the width constraint."),
-            p("class_", "str | None", "Override the default `hedron-container` class."),
+            p("nodes", "NodeLike", "Positional content inside the width constraint."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword alternative for generated or declarative child lists; combines with positional nodes.",
+            ),
+            p("id", "str | None", "Stable DOM target for links, tests, and HTMX swaps."),
+            p(
+                "class_",
+                "str | None",
+                "Application class appended after `hedron-container`; the built-in theme hook is retained.",
+            ),
         ),
-        "The component emits a div using the default container class unless you supply `class_`. Width, gutters, and breakpoints remain theme CSS concerns.",
+        "The component emits an addressable div and always retains the `hedron-container` theme hook. Positional nodes and `children=` use the same normalization rules, and an application class augments rather than disables the built-in layout. Width, gutters, and breakpoints remain theme CSS concerns.",
         "A container has no semantics of its own, so keep headings and landmarks inside it.",
         "Do not use Container as a substitute for Main or Section.",
     ),
@@ -220,14 +249,20 @@ COMPONENTS = (
         "Stack",
         "layout",
         "Arrange children vertically with a validated, consistent gap.",
-        "Stack(*children, gap='1rem', class_=None)",
+        "Stack(*nodes, children=None, gap='1rem', id=None, class_=None)",
         "Stack(Heading('Settings', level=2), Text('Profile'), Button('Save'), gap='1.25rem')",
         (
-            p("children", "NodeLike", "Items in visual and DOM order."),
+            p("nodes", "NodeLike", "Positional items in visual and DOM order."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword child list; combines with positional nodes.",
+            ),
             p("gap", "CSS length", "Validated `rem`, `em`, `px`, or `%` spacing."),
-            p("class_", "str | None", "Optional class override."),
+            p("id", "str | None", "Stable DOM target for the stack region."),
+            p("class_", "str | None", "Optional class appended to `hedron-stack`."),
         ),
-        "`Stack` writes layout intent and the validated gap to data attributes consumed by the theme. DOM order is unchanged, so the visual sequence matches reading and keyboard order.",
+        "`Stack` writes layout intent and the validated gap to data attributes consumed by the theme; the shipped theme applies that exact gap without requiring an unsafe inline style. Its built-in class is retained when you add an application class. DOM order is unchanged, so the visual sequence matches reading and keyboard order.",
         "Keep DOM order meaningful and never use CSS reordering to change the task sequence.",
         "Values such as `calc(...)`, viewport units, and arbitrary CSS are rejected; use a supported length token.",
     ),
@@ -235,12 +270,18 @@ COMPONENTS = (
         "Inline",
         "layout",
         "Arrange related children in a wrapping horizontal row.",
-        "Inline(*children, gap='0.5rem', class_=None)",
+        "Inline(*nodes, children=None, gap='0.5rem', id=None, class_=None)",
         "Inline(Button('Save'), LinkButton('Cancel', '/account'), gap='0.75rem')",
         (
-            p("children", "NodeLike", "Inline items in DOM order."),
+            p("nodes", "NodeLike", "Positional inline items in DOM order."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword child list; combines with positional nodes.",
+            ),
             p("gap", "CSS length", "Validated spacing token."),
-            p("class_", "str | None", "Optional class override."),
+            p("id", "str | None", "Stable DOM target for the row."),
+            p("class_", "str | None", "Optional class appended to `hedron-inline`."),
         ),
         "`Inline` expresses one-dimensional horizontal composition while allowing the theme to wrap items at narrow widths. It emits data attributes rather than unsafe inline style.",
         "Ensure controls remain understandable when the row wraps and do not communicate meaning using position alone.",
@@ -250,13 +291,19 @@ COMPONENTS = (
         "Grid",
         "layout",
         "Lay out explicit child components in a responsive grid.",
-        "Grid(*children, columns=2, gap='1rem', class_=None)",
+        "Grid(*nodes, children=None, columns=2, gap='1rem', id=None, class_=None)",
         "Grid(Card(Text('Latency')), Card(Text('Errors')), Card(Text('Traffic')), columns=3)",
         (
-            p("children", "NodeLike", "Grid cells in reading order."),
+            p("nodes", "NodeLike", "Positional grid cells in reading order."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword child list; combines with positional nodes.",
+            ),
             p("columns", "int", "Requested column count; must be at least one."),
             p("gap", "CSS length", "Validated row and column gap."),
-            p("class_", "str | None", "Optional class override."),
+            p("id", "str | None", "Stable DOM target for the grid region."),
+            p("class_", "str | None", "Optional class appended to `hedron-grid`."),
         ),
         "Grid is declarative composition: it returns one component, not mutable positional column handles. The theme reads column and gap data attributes and may collapse columns responsively.",
         "Source order must remain the intended reading order at every breakpoint.",
@@ -406,10 +453,15 @@ COMPONENTS = (
         "Card",
         "surfaces",
         "Group a titled piece of related content in a styled surface.",
-        "Card(*children, title=None, header=None, footer=None)",
+        "Card(*nodes, children=None, title=None, header=None, footer=None, id=None, class_=None)",
         "Card(Text('Build completed in 42 seconds.'), title='Latest deployment', footer=Link('View logs', '/logs'))",
         (
-            p("children", "NodeLike", "Card body."),
+            p("nodes", "NodeLike", "Positional card body content."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword body content; combines with positional nodes.",
+            ),
             p(
                 "title",
                 "str | None",
@@ -417,8 +469,10 @@ COMPONENTS = (
             ),
             p("header", "NodeLike | None", "Custom header slot; takes precedence over title."),
             p("footer", "NodeLike | None", "Actions or supporting content."),
+            p("id", "str | None", "Stable ID when the complete card is a swap target."),
+            p("class_", "str | None", "Application class appended to `hedron-card`."),
         ),
-        "Card emits an article with distinct header, body, and optional footer wrappers. The convenience `title` becomes an h3; use the `header` slot when the surrounding document requires another heading level or richer content.",
+        "Card emits an addressable article with distinct header, body, and optional footer wrappers. The convenience `title` becomes an h3; use the `header` slot when the surrounding document requires another heading level or richer content. Its body accepts ordinary nested components, including layouts and forms, through the same renderer pipeline.",
         "Choose a custom Heading in `header` when an automatic h3 would skip or repeat levels.",
         "Do not make an entire complex card clickable when it contains other interactive controls.",
     ),
@@ -513,10 +567,15 @@ COMPONENTS = (
         "Form",
         "forms",
         "Compose a native GET or POST form with validated action URLs and optional HTMX attributes.",
-        "Form(*children, action=None, method='post', **native_or_hx_attrs)",
+        "Form(*nodes, children=None, action=None, method='post', **native_or_hx_attrs)",
         "Form(FormField(name='email', label='Email', control=TextInput('email', type='email')), SubmitButton('Subscribe'), action='/subscribe')",
         (
-            p("children", "NodeLike", "Labels, fields, errors, and controls."),
+            p("nodes", "NodeLike", "Positional labels, fields, errors, and controls."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword child list; combines with positional nodes.",
+            ),
             p("action", "SafeUrl | str | None", "Validated form endpoint."),
             p("method", "'get' | 'post'", "Native submission method."),
             p("**attrs", "Any", "Validated native or HTMX form attributes."),
@@ -531,17 +590,22 @@ COMPONENTS = (
         "FormField",
         "forms",
         "Bind a label, help text, required state, and field error to one control.",
-        "FormField(*, name, label, control, help=None, required=False, error=None)",
+        "FormField(*, name, label, control, id=None, help=None, required=False, error=None)",
         "FormField(name='email', label='Email address', control=TextInput('email', type='email'), help='We only use this for receipts.', required=True)",
         (
             p("name", "str", "Stable field key used to derive IDs."),
             p("label", "str", "Visible label."),
             p("control", "NodeLike", "Required control slot."),
+            p(
+                "id",
+                "str | None",
+                "Optional explicit control ID; otherwise a collision-free request-local ID is generated.",
+            ),
             p("help", "str | None", "Associated instructions."),
             p("required", "bool", "Required state propagated to compatible controls."),
             p("error", "str | None", "Associated inline error."),
         ),
-        "The component copies compatible controls before binding IDs and ARIA attributes, so shared component instances are not mutated. Help and error nodes receive stable IDs and are connected with `aria-describedby`.",
+        "The component copies compatible controls before binding IDs and ARIA attributes, so shared component instances are not mutated. The bound component remains in the normal renderer tree and therefore keeps validation, identity tracking, diagnostics, and nesting behavior. Help and error nodes receive collision-free IDs and are connected with `aria-describedby`; pass `id=` when tests or external markup require a fixed value.",
         "Write errors as actionable corrections and keep instructions available before an error occurs.",
         "Use the same `name` on the field and its control; avoid hand-authoring conflicting IDs.",
     ),
@@ -639,16 +703,21 @@ COMPONENTS = (
         "RadioGroup",
         "forms",
         "Choose exactly one option from a labelled set.",
-        "RadioGroup(name, legend, options, *, value=None, required=False)",
+        "RadioGroup(name, legend, options, *, id=None, value=None, required=False)",
         "RadioGroup('plan', 'Billing plan', [('free', 'Free'), ('pro', 'Pro')], value='free')",
         (
             p("name", "str", "Shared submitted field name."),
             p("legend", "str", "Group label."),
             p("options", "Sequence[tuple[str, str]]", "Value/label pairs."),
+            p(
+                "id",
+                "str | None",
+                "Optional option-ID prefix; generated collision-free by default.",
+            ),
             p("value", "str | None", "Selected option."),
             p("required", "bool", "Require one selection."),
         ),
-        "A native fieldset and legend name the group; every option gets a stable ID, shared name, value, and associated label.",
+        "A native fieldset and legend name the group; every option gets a collision-free ID, shared name, value, and associated label. Pass `id=` only when outside markup must use a predictable prefix.",
         "Keep option labels parallel and make the legend a complete question or category.",
         "Use Select when the option set is long or screen space is constrained.",
     ),
@@ -724,9 +793,13 @@ COMPONENTS = (
         (
             p("ref", "ComponentRef", "Typed fragment endpoint."),
             p("placeholder", "NodeLike | None", "Initial content; defaults to Loading."),
-            p("target_id", "str | None", "Stable self-target ID."),
+            p(
+                "target_id",
+                "str | None",
+                "Explicit self-target ID; generated collision-free by default.",
+            ),
         ),
-        "Lazy emits a load-triggered HTMX request that targets its own container and swaps the response inside it. The initial node is busy and polite; the server fragment should clear busy state by replacing the placeholder.",
+        "Lazy emits a load-triggered HTMX request that targets its own collision-free container and swaps the response inside it. Repeated instances can share one ComponentRef safely. The initial node is busy and polite; the server fragment should clear busy state by replacing the placeholder.",
         "Choose a placeholder that reserves approximately the final space and provide meaningful loading text for material waits.",
         "Do not lazy-load content needed to understand or operate the initial page without a robust failure state.",
         server="Immediately after load",
@@ -741,10 +814,14 @@ COMPONENTS = (
         (
             p("ref", "ComponentRef", "Typed polling endpoint."),
             p("interval_ms", "int", "Interval, clamped to at least 250 ms."),
-            p("target_id", "str | None", "Self-target ID."),
+            p(
+                "target_id",
+                "str | None",
+                "Explicit self-target ID; generated collision-free by default.",
+            ),
             p("content", "NodeLike | None", "Initial content."),
         ),
-        "HTMX's `every Nms` trigger refreshes the component into itself. Stop polling by returning replacement markup without the polling attributes once the terminal state is reached.",
+        "HTMX's `every Nms` trigger refreshes the component into its collision-free self-target. Repeated instances can share one ComponentRef safely. Stop polling by returning replacement markup without the polling attributes once the terminal state is reached.",
         "Announce only meaningful state transitions; announcing every timer tick overwhelms screen-reader users.",
         "Use conservative intervals, private caching where appropriate, and a terminal response that stops server load.",
         server="On every interval",
@@ -819,16 +896,21 @@ COMPONENTS = (
         "Dialog",
         "interaction",
         "Present focused content in a native dialog with an explicit title and close path.",
-        "Dialog(title, *children, open=False, modal=True, element_id=None)",
+        "Dialog(title, *nodes, children=None, open=False, modal=True, element_id=None)",
         "Dialog('Delete report', Text('This action cannot be undone.'), element_id='delete-report')",
         (
             p("title", "str", "Required dialog heading text."),
-            p("children", "NodeLike", "Dialog body content."),
+            p("nodes", "NodeLike", "Positional dialog body content."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword body content; combines with positional nodes.",
+            ),
             p("open", "bool", "Render the native open attribute initially."),
             p("modal", "bool", "Browser-module intent exposed as data-modal."),
             p("element_id", "str | None", "Stable ID for a trigger and focus restoration."),
         ),
-        "Dialog renders a native `<dialog>` with a level-two title, body region, built-in Close form using the browser's dialog submission method, and an optional actions slot. The browser module can read its modal intent and call `showModal()`; the component never treats confirmation as authorization.",
+        "Dialog renders a native `<dialog>` with a level-two title, body region, built-in Close form using the browser's dialog submission method, and an optional actions slot. A button whose `data-hedron-dialog-open` value is the dialog's `#element_id` opens it through the shipped browser module; modal dialogs use `showModal()`, while `modal=False` uses `show()`. The component never treats confirmation as authorization.",
         "Open it from a clearly labelled trigger, place initial focus deliberately, support Escape and the Close control, and restore focus to the trigger when it closes.",
         "The `open` attribute alone does not create modal focus trapping or background inertness; use the supported browser module to call `showModal()`.",
         demo="dialog",
@@ -1071,12 +1153,19 @@ COMPONENTS = (
         "Expander",
         "utilities",
         "Reveal optional content with native details/summary behavior.",
-        "Expander(title, *children, open=False)",
+        "Expander(title, *nodes, children=None, open=False, id=None, class_=None)",
         "Expander('Advanced settings', Text('Configure retry and timeout behavior.'))",
         (
             p("title", "str", "Visible summary label."),
-            p("children", "NodeLike", "Disclosure content."),
+            p("nodes", "NodeLike", "Positional disclosure content."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword disclosure content; combines with positional nodes.",
+            ),
             p("open", "bool", "Initial expanded state."),
+            p("id", "str | None", "Stable ID for links, tests, or replacement."),
+            p("class_", "str | None", "Application class appended to `hedron-expander`."),
         ),
         "The native details element supplies keyboard and disclosure state without custom JavaScript. Content remains in the document and participates in search.",
         "Use a summary that describes the hidden content, not a generic “More”.",
@@ -1086,26 +1175,44 @@ COMPONENTS = (
         "Tabs",
         "utilities",
         "Render a small ARIA tablist with one initially active labelled panel.",
-        "Tabs(*panels, active=None)",
+        "Tabs(*items, panels=None, active=None, id=None, class_=None)",
         "Tabs(('Overview', Text('Current health')), ('History', Table(['Run'], [['Today']])), active='Overview')",
         (
-            p("panels", "tuple[str, NodeLike]", "Positional tab label and panel-content pairs."),
+            p("items", "tuple[str, NodeLike]", "Positional tab label and panel-content pairs."),
+            p(
+                "panels",
+                "sequence[tuple[str, NodeLike]] | None",
+                "Keyword alternative for a generated panel list.",
+            ),
             p("active", "str | None", "Active panel label; defaults to the first label."),
+            p(
+                "id",
+                "str | None",
+                "Optional tab-set ID prefix; a collision-free request-local prefix is generated by default.",
+            ),
+            p("class_", "str | None", "Application class appended to `hedron-tabs`."),
         ),
-        "Tabs emits tab buttons with selected state, control relationships, roving-tabindex values, and corresponding tabpanels. Switching panels requires a browser enhancement; the docs JavaScript demonstrates click plus Left/Right/Home/End keyboard behavior.",
+        "Tabs validates unique labels and the requested active label, then emits tab buttons with selected state, collision-free control relationships, roving-tabindex values, and corresponding tabpanels. Multiple and nested tab sets can therefore share a page safely. Switching panels requires a browser enhancement; the docs JavaScript demonstrates click plus Left/Right/Home/End keyboard behavior.",
         "Ship equivalent click and arrow-key behavior in the application browser module, and retain correct focus and selected state after server swaps.",
-        "Do not pass a list as one argument or use `selected=`; pass each pair positionally and select by label with `active=`.",
+        "Do not repeat panel labels or use `selected=`; pass pairs positionally (or with `panels=`) and select by label with `active=`.",
         demo="tabs",
     ),
     ComponentDoc(
         "Sidebar",
         "utilities",
         "Render complementary page content with an accessible label.",
-        "Sidebar(*children, label='Sidebar')",
+        "Sidebar(*nodes, children=None, label='Sidebar', id=None, class_=None)",
         "Sidebar(Nav(Link('Overview', '/'), Link('Settings', '/settings')), label='Workspace')",
         (
-            p("children", "NodeLike", "Complementary content."),
+            p("nodes", "NodeLike", "Positional complementary content."),
+            p(
+                "children",
+                "NodeLike | sequence | None",
+                "Keyword content; combines with positional nodes.",
+            ),
             p("label", "str", "Accessible region name."),
+            p("id", "str | None", "Stable DOM target for the sidebar."),
+            p("class_", "str | None", "Application class appended to `hedron-sidebar`."),
         ),
         "Sidebar emits an aside landmark with its label, while positioning and responsive behavior belong to the surrounding Grid and theme.",
         "Use a distinct label when more than one aside exists and keep essential mobile actions available when the visual sidebar collapses.",
@@ -1115,15 +1222,16 @@ COMPONENTS = (
         "ColorModeToggle",
         "theme",
         "Let users choose light, dark, or system color preference.",
-        "ColorModeToggle(*, preference=ColorMode.SYSTEM, label='Color mode', action=None, csrf_token=None)",
+        "ColorModeToggle(*, preference=ColorMode.SYSTEM, label='Color mode', id=None, action=None, csrf_token=None)",
         "ColorModeToggle(preference=ColorMode.SYSTEM, action='/preferences/color', csrf_token=token)",
         (
             p("preference", "ColorMode | str", "Current light/dark/system selection."),
             p("label", "str", "Control label."),
+            p("id", "str | None", "Optional select ID; generated collision-free by default."),
             p("action", "str | None", "Persistence endpoint."),
             p("csrf_token", "str | None", "CSRF value for POST persistence."),
         ),
-        "The component renders a labelled native select and Apply button. The server can persist a cookie or session preference, while `color_mode_script()` resolves system preference early enough to avoid a flash.",
+        "The component renders a labelled native select and Apply button with a collision-free relationship, so more than one settings surface can contain a toggle safely. The server can persist a cookie or session preference, while `color_mode_script()` resolves system preference early enough to avoid a flash.",
         "Every theme must meet contrast and focus requirements in all three modes; system mode must respond to user-agent preference.",
         "Treat persistence as a state-changing POST and validate CSRF; do not hide the control based on JavaScript availability.",
         server="On Apply",
@@ -1224,13 +1332,13 @@ def demo_html(spec: ComponentDoc) -> str:
     elif kind == "error":
         body = '<div class="hdc-error" role="group" data-hdc-error><p role="alert">Activity could not be loaded.</p><button class="hdc-button" type="button" data-hdc-action="retry">Retry</button></div>'
     elif kind == "dialog":
-        body = '<button class="hdc-button hdc-primary" type="button" data-hdc-action="open-dialog">Open confirmation</button><dialog class="hdc-dialog" data-hdc-dialog aria-labelledby="hdc-dialog-title"><header><h2 id="hdc-dialog-title">Delete report?</h2><form method="dialog"><button type="submit" class="hdc-dialog-close" aria-label="Close dialog">×</button></form></header><p>This removes the saved report. The source data is unchanged.</p><footer><button class="hdc-button" type="button" data-hdc-action="close-dialog">Cancel</button><button class="hdc-button hdc-primary" type="button" data-hdc-action="close-dialog">Delete report</button></footer></dialog><p role="status" data-hdc-status>Dialog closed.</p>'
+        body = '<div class="hdc-dialog-launch"><span class="hdc-file-icon" aria-hidden="true">R</span><span><strong>Quarterly report</strong><small>Updated 2 minutes ago</small></span><button class="hdc-button" type="button" data-hdc-action="open-dialog">Delete…</button></div><dialog class="hdc-dialog" data-hdc-dialog aria-labelledby="hdc-dialog-title"><header><h2 id="hdc-dialog-title">Delete report?</h2><form method="dialog"><button type="submit" class="hdc-dialog-close" aria-label="Close dialog">×</button></form></header><p>This removes the saved report. The source data is unchanged.</p><footer><button class="hdc-button" type="button" data-hdc-action="close-dialog">Cancel</button><button class="hdc-button hdc-primary" type="button" data-hdc-action="close-dialog">Delete report</button></footer></dialog><p class="hdc-muted" role="status" data-hdc-status>Dialog closed.</p>'
     elif kind == "chat-input":
-        body = '<section class="hdc-chat" aria-label="Assistant conversation"><div class="hdc-transcript" id="demo-transcript" role="log" aria-live="polite" data-hdc-transcript><article class="hdc-chat-message hdc-chat-assistant"><strong>Assistant</strong><p>How can I help with your deployment?</p></article></div><form class="hdc-chat-form" data-hdc-chat-form><label>Message<textarea name="message" rows="2" required placeholder="Ask the assistant"></textarea></label><button class="hdc-button hdc-primary" type="submit">Send</button></form><p role="status" data-hdc-status>Ready.</p></section>'
+        body = '<section class="hdc-chat" aria-label="Deployment copilot conversation"><header class="hdc-chat-header"><span class="hdc-chat-avatar" aria-hidden="true">H</span><span><strong>Deployment copilot</strong><small><i aria-hidden="true"></i>Online · simulated assistant</small></span></header><div class="hdc-transcript" id="demo-transcript" role="log" aria-live="polite" data-hdc-transcript><span class="hdc-chat-day">Today</span><article class="hdc-chat-message hdc-chat-assistant"><span class="hdc-chat-avatar" aria-hidden="true">H</span><div><strong>Hedron</strong><p>Your production deployment is ready. Want me to summarize the six completed checks?</p><time datetime="14:32">2:32 PM</time></div></article></div><div class="hdc-chat-prompts" aria-label="Suggested prompts"><span>Try asking</span><button type="button" data-hdc-prompt="Summarize the deployment checks">Summarize checks</button><button type="button" data-hdc-prompt="Show me the rollout risks">Review rollout risks</button></div><form class="hdc-chat-form" data-hdc-chat-form><label class="hdc-visually-hidden" for="hdc-chat-message">Message</label><div class="hdc-chat-composer"><textarea id="hdc-chat-message" name="message" rows="1" required placeholder="Ask about this deployment…"></textarea><div><span class="hdc-chat-hint">Enter to send · Shift+Enter for a new line</span><button class="hdc-chat-send" type="submit"><span>Send</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m3 3 14 7-14 7 2.3-6L12 10 5.3 9 3 3Z"/></svg></button></div></div></form><p class="hdc-chat-status" role="status" data-hdc-status>Ready to send.</p></section>'
     elif kind == "file":
-        body = '<label class="hdc-file">Upload evidence<input type="file" accept=".pdf,image/*" data-hdc-file></label><p role="status" data-hdc-status>No file selected.</p>'
+        body = '<label class="hdc-file"><span class="hdc-file-icon" aria-hidden="true">↑</span><strong>Upload evidence</strong><small>PDF, PNG, or JPG · up to 10 MB</small><input type="file" accept=".pdf,image/*" data-hdc-file></label><p class="hdc-muted" role="status" data-hdc-status>No file selected.</p>'
     elif kind == "download":
-        body = '<a class="hdc-button hdc-primary" href="data:text/csv;charset=utf-8,service%2Cstatus%0Aapi%2Chealthy" download="service-health.csv">Download CSV</a><p class="hdc-muted">Demo file: service-health.csv · 27 bytes</p>'
+        body = '<div class="hdc-download"><span class="hdc-file-icon" aria-hidden="true">↓</span><span><strong>Service health export</strong><small>service-health.csv · 27 bytes</small></span><a class="hdc-button hdc-primary" href="data:text/csv;charset=utf-8,service%2Cstatus%0Aapi%2Chealthy" download="service-health.csv">Download CSV</a></div>'
     elif kind == "toast":
         body = '<button class="hdc-button" type="button" data-hdc-action="show-toast">Show toast</button><div class="hdc-toast" role="status" data-hdc-toast hidden><span>API key copied.</span></div>'
     elif kind == "tabs":
@@ -1238,7 +1346,7 @@ def demo_html(spec: ComponentDoc) -> str:
     elif kind == "color-mode":
         body = '<form class="hdc-form hdc-theme-control" data-hdc-theme-form><label>Color mode<select data-hdc-theme><option>Light</option><option>Dark</option><option>System</option></select></label><button class="hdc-button" type="submit">Apply</button></form><div class="hdc-theme-swatch" data-hdc-theme-swatch>Preview surface</div><p role="status" data-hdc-status>Light preview selected.</p>'
     elif kind == "data-table":
-        body = '<label class="hdc-filter">Filter employees<input type="search" data-hdc-filter></label><table><caption>Employees</caption><thead><tr><th>Name</th><th>Team</th><th>Status</th></tr></thead><tbody data-hdc-rows><tr><td>Ada</td><td>Platform</td><td>Active</td></tr><tr><td>Grace</td><td>Compiler</td><td>Active</td></tr><tr><td>Alan</td><td>Research</td><td>Leave</td></tr></tbody></table><p role="status" data-hdc-status>Showing 3 employees.</p>'
+        body = '<div class="hdc-table-toolbar"><span><strong>Team directory</strong><small>Current workspace members</small></span><label class="hdc-filter">Filter employees<input type="search" placeholder="Search by name or team" data-hdc-filter></label></div><table class="hdc-table"><caption class="hdc-visually-hidden">Employees</caption><thead><tr><th>Name</th><th>Team</th><th>Status</th></tr></thead><tbody data-hdc-rows><tr><td><strong>Ada</strong></td><td>Platform</td><td><span class="hdc-badge hdc-success">Active</span></td></tr><tr><td><strong>Grace</strong></td><td>Compiler</td><td><span class="hdc-badge hdc-success">Active</span></td></tr><tr><td><strong>Alan</strong></td><td>Research</td><td><span class="hdc-badge hdc-warning">Leave</span></td></tr></tbody></table><p class="hdc-muted" role="status" data-hdc-status>Showing 3 employees.</p>'
     elif kind == "data-editor":
         body = '<table class="hdc-editor"><caption>Editable allocation</caption><thead><tr><th>Name</th><th>Allocation</th></tr></thead><tbody><tr><td>Ada</td><td><input type="number" min="0" max="100" value="80" aria-label="Ada allocation" data-hdc-dirty></td></tr><tr><td>Grace</td><td><input type="number" min="0" max="100" value="60" aria-label="Grace allocation" data-hdc-dirty></td></tr></tbody></table><button class="hdc-button hdc-primary" type="button" data-hdc-action="save-editor">Save changes</button><p role="status" data-hdc-status>No unsaved changes.</p>'
     elif kind == "line-chart":
@@ -1249,7 +1357,7 @@ def demo_html(spec: ComponentDoc) -> str:
         ]
         body = f'<figure class="hdc-chart hdc-chart-{chart_class}"><figcaption><strong>{name} output</strong><span>Accessible static preview with a text conclusion.</span></figcaption><div class="hdc-chart-art" role="img" aria-label="Sample chart showing a clear upward pattern"><i></i><i></i><i></i><i></i><i></i></div></figure>'
     elif kind == "fragment":
-        body = '<div class="hdc-fragment"><span class="hdc-badge">Saved</span><p>The record is current.</p></div><p class="hdc-muted">Two sibling nodes; no wrapper is added by Fragment.</p>'
+        body = '<div class="hdc-fragment"><span class="hdc-badge">Saved</span><span><strong>Profile updated</strong><small>The record is current.</small></span></div><p class="hdc-muted">Two sibling nodes; no wrapper is added by Fragment.</p>'
     elif kind == "auto":
         body = '<dl class="hdc-description"><dt>Region</dt><dd>iad</dd><dt>Healthy</dt><dd><span class="hdc-badge">True</span></dd><dt>Replicas</dt><dd>3</dd></dl>'
     else:
@@ -1292,22 +1400,22 @@ def static_demo(spec: ComponentDoc) -> str:
     if name in {"Head", "Title"}:
         return '<div class="hdc-browser"><div><i></i><i></i><i></i><span>Billing · Acme</span></div><main><dl class="hdc-description"><dt>title</dt><dd>Billing · Acme</dd><dt>description</dt><dd>Manage billing</dd></dl></main></div>'
     if name == "Container":
-        return '<div class="hdc-container"><h3>Profile</h3><p>This readable block stays centered with a bounded width.</p></div>'
+        return '<div class="hdc-container"><span class="hdc-eyebrow">Account settings</span><h3>Profile</h3><p>This readable block stays centered with a bounded width.</p><a href="#component-demo-result">Edit profile →</a></div>'
     if name == "Stack":
-        return '<div class="hdc-stack"><span>First item</span><span>Second item</span><span>Third item</span></div>'
+        return '<div class="hdc-stack"><span><b>Build completed</b><small>42 seconds ago</small></span><span><b>Preview deployed</b><small>Environment ready</small></span><span><b>Review requested</b><small>2 teammates notified</small></span></div>'
     if name == "Inline":
         return '<div class="hdc-inline"><span class="hdc-chip">Python</span><span class="hdc-chip">HTMX</span><span class="hdc-chip">FastAPI</span></div>'
     if name == "Grid":
-        return '<div class="hdc-grid"><span>Latency</span><span>Errors</span><span>Traffic</span></div>'
+        return '<div class="hdc-grid"><span><small>Latency</small><strong>184 ms</strong><em>↓ 12%</em></span><span><small>Errors</small><strong>0.08%</strong><em>↓ 4%</em></span><span><small>Traffic</small><strong>28.4k</strong><em>↑ 9%</em></span></div>'
     if name == "Divider":
         return '<div class="hdc-divider-demo"><span>Overview</span><i role="separator" aria-orientation="vertical"></i><span>Activity</span></div>'
     if name == "Heading":
-        return '<div class="hdc-type"><h2>Deployment history</h2><p>Heading level two introduces this section.</p></div>'
+        return '<div class="hdc-type"><span class="hdc-eyebrow">Production</span><h2>Deployment history</h2><p>Heading level two introduces this section.</p></div>'
     if name == "Text":
-        return '<div class="hdc-type"><p>Changes saved. This text is a paragraph.</p><span>Updated just now (inline span)</span></div>'
+        return '<div class="hdc-type"><p><strong>Changes saved.</strong> This text is a paragraph that carries the primary message.</p><span class="hdc-muted">Updated just now · inline supporting text</span></div>'
     if name in {"Link", "LinkButton"}:
         cls = ' class="hdc-button hdc-primary"' if name == "LinkButton" else ""
-        return f'<a{cls} href="#component-demo-result" data-hdc-local-link>{"Create account" if name == "LinkButton" else "View audit log"}</a><p id="component-demo-result" class="hdc-muted">A real anchor preserves browser navigation behavior.</p>'
+        return f'<div class="hdc-link-demo"><span class="hdc-eyebrow">Navigation</span><a{cls} href="#component-demo-result" data-hdc-local-link>{"Create account →" if name == "LinkButton" else "View audit log →"}</a><p id="component-demo-result" class="hdc-muted">A real anchor preserves browser navigation behavior.</p></div>'
     if name == "Image":
         return '<figure class="hdc-image"><div role="img" aria-label="Abstract teal landscape used as a documentation placeholder"><span>Image preview</span></div><figcaption>Meaningful alternative: “The platform team at the meetup.”</figcaption></figure>'
     if name in {"CodeBlock", "CodeViewer"}:
@@ -1315,15 +1423,15 @@ def static_demo(spec: ComponentDoc) -> str:
     if name == "JSONViewer":
         return '<pre class="hdc-code"><code>{\n  "job": 42,\n  "status": "complete",\n  "token": "***"\n}</code></pre>'
     if name == "List":
-        return '<ol class="hdc-list"><li>Create a branch</li><li>Add the component</li><li>Run checks</li></ol>'
+        return '<ol class="hdc-list"><li><span>Create a branch</span><small>Keep the change isolated</small></li><li><span>Add the component</span><small>Compose native semantics</small></li><li><span>Run checks</span><small>Verify behavior and output</small></li></ol>'
     if name == "DescriptionList":
         return '<dl class="hdc-description"><dt>Region</dt><dd>us-east-1</dd><dt>Status</dt><dd><span class="hdc-badge">Healthy</span></dd></dl>'
     if name == "Table":
-        return "<table><caption>Service health</caption><thead><tr><th>Service</th><th>Status</th></tr></thead><tbody><tr><td>API</td><td>Healthy</td></tr><tr><td>Worker</td><td>Healthy</td></tr></tbody></table>"
+        return '<table class="hdc-table"><caption>Service health</caption><thead><tr><th>Service</th><th>Status</th></tr></thead><tbody><tr><td><strong>API</strong></td><td><span class="hdc-badge hdc-success">Healthy</span></td></tr><tr><td><strong>Worker</strong></td><td><span class="hdc-badge hdc-success">Healthy</span></td></tr></tbody></table>'
     if name == "Markdown":
         return '<article class="hdc-markdown"><h2>Release notes</h2><ul><li>Safer URLs</li><li>Faster rendering</li></ul><blockquote>Generated from Markdown source.</blockquote></article>'
     if name == "Card":
-        return '<article class="hdc-card"><header>Latest deployment</header><p>Build completed in 42 seconds.</p><footer><a href="#">View logs</a></footer></article>'
+        return '<article class="hdc-card"><header><span>Latest deployment</span><span class="hdc-badge hdc-success">Ready</span></header><p><strong>api-production</strong><br><span class="hdc-muted">Build completed in 42 seconds.</span></p><footer><a href="#">View deployment →</a></footer></article>'
     if name == "Badge":
         return '<div class="hdc-inline"><span class="hdc-badge">Beta</span><span class="hdc-badge hdc-success">Healthy</span><span class="hdc-badge hdc-warning">Review</span></div>'
     if name == "Alert":
@@ -1331,7 +1439,7 @@ def static_demo(spec: ComponentDoc) -> str:
     if name == "Skeleton":
         return '<div aria-label="Loading preview"><span class="hdc-skeleton"></span><span class="hdc-skeleton"></span><span class="hdc-skeleton hdc-short"></span></div>'
     if name == "IconButton":
-        return '<button class="hdc-icon-button" type="button" aria-label="Delete report" data-hdc-action="count">⌫</button><p class="hdc-muted" data-hdc-status>Accessible name: Delete report</p>'
+        return '<button class="hdc-icon-button" type="button" aria-label="Delete report" data-hdc-action="count"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 3.5h7M8 3.5V2h4v1.5M5 5.5h10l-.6 11H5.6L5 5.5Zm3 2v6m4-6v6"/></svg></button><p class="hdc-muted" data-hdc-status>Accessible name: Delete report</p>'
     if name == "FormField":
         return '<div class="hdc-form"><label for="demo-email">Email address <b>Required</b></label><input id="demo-email" type="email" aria-describedby="demo-email-help"><small id="demo-email-help">We only use this for receipts.</small></div>'
     if name == "Label":
@@ -1343,9 +1451,7 @@ def static_demo(spec: ComponentDoc) -> str:
     if name == "Select":
         return '<div class="hdc-form"><label for="demo-region">Region</label><select id="demo-region"><option>US East</option><option>Europe</option><option>Asia Pacific</option></select></div>'
     if name == "Checkbox":
-        return (
-            '<label class="hdc-choice"><input type="checkbox"> I agree to the service terms</label>'
-        )
+        return '<label class="hdc-choice hdc-choice-card"><input type="checkbox"><span><strong>Service terms</strong><small>I agree to the acceptable-use and data policies.</small></span></label>'
     if name == "RadioGroup":
         return '<fieldset class="hdc-choices"><legend>Billing plan</legend><label><input type="radio" name="demo-plan" checked> Free</label><label><input type="radio" name="demo-plan"> Pro</label></fieldset>'
     if name == "SubmitButton":
@@ -1365,7 +1471,7 @@ def static_demo(spec: ComponentDoc) -> str:
     if name == "Sidebar":
         return '<div class="hdc-shell"><aside aria-label="Workspace"><strong>Acme</strong><a href="#">Overview</a><a href="#">Settings</a></aside><main><h3>Overview</h3><p>Primary page content</p></main></div>'
     if name == "ChatMessage":
-        return '<section class="hdc-chat" aria-label="Deployment conversation"><div class="hdc-transcript" role="log"><article class="hdc-chat-message hdc-chat-user"><strong>You</strong><p>Is the release ready?</p></article><article class="hdc-chat-message hdc-chat-assistant"><strong>Assistant</strong><p>Your deployment is ready.</p><small role="status" aria-live="polite">Delivered</small></article></div></section>'
+        return '<section class="hdc-chat" aria-label="Deployment conversation"><header class="hdc-chat-header"><span class="hdc-chat-avatar" aria-hidden="true">H</span><span><strong>Release assistant</strong><small><i aria-hidden="true"></i>Online</small></span></header><div class="hdc-transcript" role="log"><span class="hdc-chat-day">Today</span><article class="hdc-chat-message hdc-chat-user"><span class="hdc-chat-avatar" aria-hidden="true">Y</span><div><strong>You</strong><p>Is the release ready?</p><time datetime="14:31">2:31 PM</time></div></article><article class="hdc-chat-message hdc-chat-assistant"><span class="hdc-chat-avatar" aria-hidden="true">H</span><div><strong>Hedron</strong><p>Your deployment is ready. All checks passed.</p><time datetime="14:32">2:32 PM · Delivered</time></div></article></div></section>'
     return f'<div class="hdc-result"><strong>{name}</strong><span>{spec.summary}</span></div>'
 
 

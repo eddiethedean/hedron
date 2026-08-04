@@ -16,7 +16,7 @@ Render ordered or unordered items from child values.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="List"><div class="hdc-stage"><ol class="hdc-list"><li>Create a branch</li><li>Add the component</li><li>Run checks</li></ol></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="List"><div class="hdc-stage"><ol class="hdc-list"><li><span>Create a branch</span><small>Keep the change isolated</small></li><li><span>Add the component</span><small>Compose native semantics</small></li><li><span>Run checks</span><small>Verify behavior and output</small></li></ol></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 

@@ -16,7 +16,7 @@ Navigate with an anchor styled as a prominent button.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="LinkButton"><div class="hdc-stage"><a class="hdc-button hdc-primary" href="#component-demo-result" data-hdc-local-link>Create account</a><p id="component-demo-result" class="hdc-muted">A real anchor preserves browser navigation behavior.</p></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="LinkButton"><div class="hdc-stage"><div class="hdc-link-demo"><span class="hdc-eyebrow">Navigation</span><a class="hdc-button hdc-primary" href="#component-demo-result" data-hdc-local-link>Create account →</a><p id="component-demo-result" class="hdc-muted">A real anchor preserves browser navigation behavior.</p></div></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 

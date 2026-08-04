@@ -459,6 +459,7 @@
     min-width: 0;
     flex-direction: column;
     gap: 1rem;
+    gap: attr(data-hedron-gap type(<length-percentage>), 1rem);
   }
 
   .hedron-inline {
@@ -466,13 +467,15 @@
     min-width: 0;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.65rem;
+    gap: 0.5rem;
+    gap: attr(data-hedron-gap type(<length-percentage>), 0.5rem);
   }
 
   .hedron-grid {
     display: grid;
     min-width: 0;
-    gap: 1.25rem;
+    gap: 1rem;
+    gap: attr(data-hedron-gap type(<length-percentage>), 1rem);
   }
 
   .hedron-grid[data-hedron-columns="1"] {
@@ -571,6 +574,10 @@
 
   .hedron-card-body {
     padding: 1.1rem;
+  }
+
+  .hedron-card-body > .hedron-card {
+    box-shadow: none;
   }
 
   .hedron-metric {
@@ -729,6 +736,7 @@
   .hedron-status,
   .hedron-toast {
     display: flex;
+    align-items: flex-start;
     gap: 0.65rem;
     padding: 0.85rem 1rem;
     border: 1px solid var(--hedron-default-border);
@@ -755,6 +763,11 @@
   .hedron-toast-danger {
     border-color: color-mix(in srgb, var(--hedron-color-danger, var(--hedron-default-danger)) 32%, transparent);
     background: var(--hedron-default-danger-soft);
+  }
+
+  .hedron-toast {
+    width: min(100%, 28rem);
+    box-shadow: var(--hedron-default-shadow-raised);
   }
 
   .hedron-badge {
@@ -821,6 +834,158 @@
 
   details > :not(summary) {
     margin-inline: 0.95rem;
+  }
+
+  details > :last-child:not(summary) {
+    margin-bottom: 0.95rem;
+  }
+
+  .hedron-dialog {
+    width: min(calc(100% - 2rem), 34rem);
+    max-height: min(46rem, calc(100dvh - 2rem));
+    padding: 0;
+    overflow: auto;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: var(--hedron-default-surface);
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    box-shadow: var(--hedron-default-shadow-raised);
+  }
+
+  .hedron-dialog::backdrop {
+    background: rgb(15 23 42 / 52%);
+    backdrop-filter: blur(3px);
+  }
+
+  .hedron-dialog-header,
+  .hedron-dialog-actions {
+    padding: 1rem 1.15rem;
+    background: var(--hedron-default-surface-muted);
+  }
+
+  .hedron-dialog-header {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    border-bottom: 1px solid var(--hedron-default-border);
+  }
+
+  .hedron-dialog-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .hedron-dialog-close {
+    display: block;
+  }
+
+  .hedron-dialog-close button {
+    min-height: 2.2rem;
+    padding: 0.45rem 0.7rem;
+    border-color: var(--hedron-default-border-strong);
+    background: var(--hedron-default-surface);
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    box-shadow: none;
+    font-size: 0.85rem;
+  }
+
+  .hedron-dialog-close button:hover {
+    background: var(--hedron-default-accent-soft);
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-dialog-body {
+    padding: 1.15rem;
+  }
+
+  .hedron-dialog-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  .hedron-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    border-top: 1px solid var(--hedron-default-border);
+  }
+
+  .hedron-chat-message {
+    width: fit-content;
+    max-width: min(82%, 44rem);
+    padding: 0.72rem 0.88rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius) var(--hedron-default-radius)
+      var(--hedron-default-radius) 0.3rem;
+    background: var(--hedron-default-surface);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 6%);
+  }
+
+  .hedron-chat-user {
+    margin-left: auto;
+    border-color: transparent;
+    border-radius: var(--hedron-default-radius) var(--hedron-default-radius) 0.3rem
+      var(--hedron-default-radius);
+    background: var(--hedron-color-accent, var(--hedron-default-accent));
+    color: #ffffff;
+  }
+
+  .hedron-chat-message.hedron-chat-system,
+  .hedron-chat-message.hedron-chat-tool,
+  .hedron-chat-message.hedron-chat-status {
+    max-width: 100%;
+    border-style: dashed;
+    background: var(--hedron-default-surface-muted);
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.9rem;
+  }
+
+  .hedron-chat-content {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .hedron-chat-status:not(article) {
+    margin-top: 0.35rem;
+    font-size: 0.76rem;
+    opacity: 0.78;
+  }
+
+  .hedron-chat-input {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 0.55rem;
+    padding: 0.65rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: var(--hedron-default-surface);
+    box-shadow: var(--hedron-default-shadow);
+  }
+
+  .hedron-chat-label {
+    display: grid;
+    min-width: 0;
+    gap: 0.3rem;
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.78rem;
+  }
+
+  .hedron-chat-textarea {
+    min-height: 3.1rem;
+    max-height: 12rem;
+    resize: vertical;
+  }
+
+  .hedron-chat-send {
+    min-width: 4.8rem;
+    min-height: 3.1rem;
+  }
+
+  .hedron-chat-attachment {
+    grid-column: 1 / -1;
+    max-width: 100%;
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.82rem;
   }
 
   .hedron-tablist {
@@ -950,6 +1115,19 @@
 
     .hedron-sidebar {
       position: static;
+    }
+
+    .hedron-chat-message {
+      max-width: 92%;
+    }
+
+    .hedron-chat-input {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hedron-chat-send {
+      width: 100%;
+      min-height: 2.65rem;
     }
 
     dl:not(.hedron-metric) {

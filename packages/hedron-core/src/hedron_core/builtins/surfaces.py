@@ -2,25 +2,15 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from typing import Any, Literal
 
+from hedron_core.builtins._base import ElementProps, class_names, collect_children
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
 
 
-def _kids(*children: Any) -> tuple[Any, ...]:
-    if (
-        len(children) == 1
-        and isinstance(children[0], Sequence)
-        and not isinstance(children[0], (str, bytes))
-    ):
-        return tuple(children[0])
-    return children
-
-
-class CardProps(Props):
+class CardProps(ElementProps):
     title: str | None = None
 
 
@@ -30,14 +20,17 @@ class Card(Component[CardProps]):
 
     def __init__(
         self,
-        *children: Any,
+        *nodes: Any,
+        children: Any = None,
         title: str | None = None,
         header: Any = None,
         footer: Any = None,
+        id: str | None = None,
+        class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(CardProps(title=title, **kwargs))
-        self._children = _kids(*children)
+        super().__init__(CardProps(title=title, id=id, class_=class_, **kwargs))
+        self._children = collect_children(*nodes, children=children)
         if header is not None:
             self._slot_values["header"] = header
         if footer is not None:
@@ -52,7 +45,11 @@ class Card(Component[CardProps]):
         parts.append(html.div(*self._children, class_="hedron-card-body"))
         if "footer" in self._slot_values:
             parts.append(html.div(self._slot_values["footer"], class_="hedron-card-footer"))
-        return html.article(*parts, class_="hedron-card")
+        return html.article(
+            *parts,
+            id=self.props.id,
+            class_=class_names("hedron-card", self.props.class_),
+        )
 
 
 class BadgeProps(Props):

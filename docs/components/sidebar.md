@@ -41,13 +41,16 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Sidebar(*children, label='Sidebar')
+Sidebar(*nodes, children=None, label='Sidebar', id=None, class_=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `children` | `NodeLike` | Complementary content. |
+| `nodes` | `NodeLike` | Positional complementary content. |
+| `children` | `NodeLike | sequence | None` | Keyword content; combines with positional nodes. |
 | `label` | `str` | Accessible region name. |
+| `id` | `str | None` | Stable DOM target for the sidebar. |
+| `class_` | `str | None` | Application class appended to `hedron-sidebar`. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

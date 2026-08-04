@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from typing import Any
 
+from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -21,22 +21,14 @@ def _landmark(tag: str):
 
         def __init__(
             self,
-            *children: Any,
+            *nodes: Any,
+            children: Any = None,
             class_: str | None = None,
             id: str | None = None,
             **kwargs: Any,
         ) -> None:
-            # Allow passing a sequence as the sole positional child list
-            if (
-                len(children) == 1
-                and isinstance(children[0], Sequence)
-                and not isinstance(children[0], (str, bytes))
-            ):
-                kids = tuple(children[0])
-            else:
-                kids = children
             super().__init__(_LandmarkProps(class_=class_, id=id, **kwargs))
-            self._children = kids
+            self._children = collect_children(*nodes, children=children)
             self._tag = tag
 
         def render(self) -> Any:

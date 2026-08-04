@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 import pytest
 
 from hedron_core import (
@@ -38,9 +40,12 @@ def test_form_field_label_association_and_aria() -> None:
         error="Required",
     )
     html = render(Form(field)).html
-    assert 'for="field-email"' in html
-    assert 'id="field-email"' in html
-    assert 'aria-describedby="field-email-help field-email-error"' in html
+    match = re.search(r'<label for="([^"]+)">Email</label>', html)
+    assert match is not None
+    field_id = match.group(1)
+    assert field_id.startswith("field-email-")
+    assert f'id="{field_id}"' in html
+    assert f'aria-describedby="{field_id}-help {field_id}-error"' in html
     assert 'aria-invalid="true"' in html
     assert 'aria-required="true"' in html
     assert "required" in html

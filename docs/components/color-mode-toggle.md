@@ -32,7 +32,7 @@ In a route, return the component inside a `Page`, or return it directly as a fra
 
 ## How it works
 
-The component renders a labelled native select and Apply button. The server can persist a cookie or session preference, while `color_mode_script()` resolves system preference early enough to avoid a flash.
+The component renders a labelled native select and Apply button with a collision-free relationship, so more than one settings surface can contain a toggle safely. The server can persist a cookie or session preference, while `color_mode_script()` resolves system preference early enough to avoid a flash.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
@@ -41,13 +41,14 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-ColorModeToggle(*, preference=ColorMode.SYSTEM, label='Color mode', action=None, csrf_token=None)
+ColorModeToggle(*, preference=ColorMode.SYSTEM, label='Color mode', id=None, action=None, csrf_token=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `preference` | `ColorMode | str` | Current light/dark/system selection. |
 | `label` | `str` | Control label. |
+| `id` | `str | None` | Optional select ID; generated collision-free by default. |
 | `action` | `str | None` | Persistence endpoint. |
 | `csrf_token` | `str | None` | CSRF value for POST persistence. |
 

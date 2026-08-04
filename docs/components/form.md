@@ -41,12 +41,13 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Form(*children, action=None, method='post', **native_or_hx_attrs)
+Form(*nodes, children=None, action=None, method='post', **native_or_hx_attrs)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `children` | `NodeLike` | Labels, fields, errors, and controls. |
+| `nodes` | `NodeLike` | Positional labels, fields, errors, and controls. |
+| `children` | `NodeLike | sequence | None` | Keyword child list; combines with positional nodes. |
 | `action` | `SafeUrl | str | None` | Validated form endpoint. |
 | `method` | `'get' | 'post'` | Native submission method. |
 | `**attrs` | `Any` | Validated native or HTMX form attributes. |

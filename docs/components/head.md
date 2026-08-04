@@ -41,12 +41,13 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Head(*children)
+Head(*nodes, children=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `children` | `NodeLike` | Head-safe nodes such as `Title` and `html.meta`. |
+| `nodes` | `NodeLike` | Positional head-safe nodes such as `Title` and `html.meta`. |
+| `children` | `NodeLike | sequence | None` | Keyword alternative; combines with positional nodes. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

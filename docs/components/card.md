@@ -16,7 +16,7 @@ Group a titled piece of related content in a styled surface.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Card"><div class="hdc-stage"><article class="hdc-card"><header>Latest deployment</header><p>Build completed in 42 seconds.</p><footer><a href="#">View logs</a></footer></article></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Card"><div class="hdc-stage"><article class="hdc-card"><header><span>Latest deployment</span><span class="hdc-badge hdc-success">Ready</span></header><p><strong>api-production</strong><br><span class="hdc-muted">Build completed in 42 seconds.</span></p><footer><a href="#">View deployment →</a></footer></article></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 
@@ -32,7 +32,7 @@ In a route, return the component inside a `Page`, or return it directly as a fra
 
 ## How it works
 
-Card emits an article with distinct header, body, and optional footer wrappers. The convenience `title` becomes an h3; use the `header` slot when the surrounding document requires another heading level or richer content.
+Card emits an addressable article with distinct header, body, and optional footer wrappers. The convenience `title` becomes an h3; use the `header` slot when the surrounding document requires another heading level or richer content. Its body accepts ordinary nested components, including layouts and forms, through the same renderer pipeline.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
@@ -41,15 +41,18 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Card(*children, title=None, header=None, footer=None)
+Card(*nodes, children=None, title=None, header=None, footer=None, id=None, class_=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `children` | `NodeLike` | Card body. |
+| `nodes` | `NodeLike` | Positional card body content. |
+| `children` | `NodeLike | sequence | None` | Keyword body content; combines with positional nodes. |
 | `title` | `str | None` | Convenience title rendered as an `h3` when no header slot is supplied. |
 | `header` | `NodeLike | None` | Custom header slot; takes precedence over title. |
 | `footer` | `NodeLike | None` | Actions or supporting content. |
+| `id` | `str | None` | Stable ID when the complete card is a swap target. |
+| `class_` | `str | None` | Application class appended to `hedron-card`. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

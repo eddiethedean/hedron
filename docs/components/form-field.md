@@ -32,7 +32,7 @@ In a route, return the component inside a `Page`, or return it directly as a fra
 
 ## How it works
 
-The component copies compatible controls before binding IDs and ARIA attributes, so shared component instances are not mutated. Help and error nodes receive stable IDs and are connected with `aria-describedby`.
+The component copies compatible controls before binding IDs and ARIA attributes, so shared component instances are not mutated. The bound component remains in the normal renderer tree and therefore keeps validation, identity tracking, diagnostics, and nesting behavior. Help and error nodes receive collision-free IDs and are connected with `aria-describedby`; pass `id=` when tests or external markup require a fixed value.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
@@ -41,7 +41,7 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-FormField(*, name, label, control, help=None, required=False, error=None)
+FormField(*, name, label, control, id=None, help=None, required=False, error=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -49,6 +49,7 @@ FormField(*, name, label, control, help=None, required=False, error=None)
 | `name` | `str` | Stable field key used to derive IDs. |
 | `label` | `str` | Visible label. |
 | `control` | `NodeLike` | Required control slot. |
+| `id` | `str | None` | Optional explicit control ID; otherwise a collision-free request-local ID is generated. |
 | `help` | `str | None` | Associated instructions. |
 | `required` | `bool` | Required state propagated to compatible controls. |
 | `error` | `str | None` | Associated inline error. |

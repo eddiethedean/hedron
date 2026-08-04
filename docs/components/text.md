@@ -16,7 +16,7 @@ Render escaped text with an explicit paragraph or inline text element.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Text"><div class="hdc-stage"><div class="hdc-type"><p>Changes saved. This text is a paragraph.</p><span>Updated just now (inline span)</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Text"><div class="hdc-stage"><div class="hdc-type"><p><strong>Changes saved.</strong> This text is a paragraph that carries the primary message.</p><span class="hdc-muted">Updated just now · inline supporting text</span></div></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 

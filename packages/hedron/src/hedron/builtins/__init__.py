@@ -103,11 +103,12 @@ class Lazy(Component[Props]):
         super().__init__(Props())
         self.ref = ref
         self.placeholder = placeholder
-        self.target_id = target_id or f"lazy-{ref.logical_id.split('.')[-1]}"
+        self.target_id = target_id
 
     def render(self) -> NodeLike:
+        target_id = self.target_id or f"lazy-{self.render_instance_id()}"
         attrs: dict[str, Any] = {
-            "id": self.target_id,
+            "id": target_id,
             "hx-trigger": "load",
             "hx-swap": "innerHTML",
             "aria-busy": "true",
@@ -115,7 +116,7 @@ class Lazy(Component[Props]):
         }
         attrs.update(self.ref.hx_attrs())
         # Lazy container loads into itself.
-        attrs["hx-target"] = f"#{self.target_id}"
+        attrs["hx-target"] = f"#{target_id}"
         body = self.placeholder if self.placeholder is not None else Loading("Loading…")
         return html.div(body, **attrs)
 
@@ -137,17 +138,18 @@ class Poll(Component[Props]):
         super().__init__(Props())
         self.ref = ref
         self.interval_ms = max(250, interval_ms)
-        self.target_id = target_id or f"poll-{ref.logical_id.split('.')[-1]}"
+        self.target_id = target_id
         self.content = content
 
     def render(self) -> NodeLike:
+        target_id = self.target_id or f"poll-{self.render_instance_id()}"
         attrs: dict[str, Any] = {
-            "id": self.target_id,
+            "id": target_id,
             "hx-trigger": f"every {self.interval_ms}ms",
             "hx-swap": "innerHTML",
         }
         attrs.update(self.ref.hx_attrs())
-        attrs["hx-target"] = f"#{self.target_id}"
+        attrs["hx-target"] = f"#{target_id}"
         body = self.content if self.content is not None else Loading("Polling…")
         return html.div(body, **attrs)
 

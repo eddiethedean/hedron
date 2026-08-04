@@ -3,25 +3,15 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Sequence
 from typing import Any, Literal
 
+from hedron_core.builtins._base import ElementProps, class_names, collect_children
 from hedron_core.component import Component
 from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Props
 
 _GAP_RE = re.compile(r"^\d+(\.\d+)?(rem|em|px|%)$")
-
-
-def _kids(*children: Any) -> tuple[Any, ...]:
-    if (
-        len(children) == 1
-        and isinstance(children[0], Sequence)
-        and not isinstance(children[0], (str, bytes))
-    ):
-        return tuple(children[0])
-    return children
 
 
 def _validated_gap(gap: str) -> str:
@@ -35,72 +25,91 @@ def _validated_gap(gap: str) -> str:
     return gap
 
 
-class ContainerProps(Props):
-    class_: str | None = None
+class ContainerProps(ElementProps):
+    pass
 
 
 class Container(Component[ContainerProps]):
     props_type = ContainerProps
 
-    def __init__(self, *children: Any, class_: str | None = None, **kwargs: Any) -> None:
-        super().__init__(ContainerProps(class_=class_, **kwargs))
-        self._children = _kids(*children)
+    def __init__(
+        self,
+        *nodes: Any,
+        children: Any = None,
+        id: str | None = None,
+        class_: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(ContainerProps(id=id, class_=class_, **kwargs))
+        self._children = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
-        attrs = {"class_": self.props.class_ or "hedron-container"}
+        attrs = {
+            "class_": class_names("hedron-container", self.props.class_),
+            "id": self.props.id,
+        }
         return html.div(*self._children, **attrs)
 
 
-class StackProps(Props):
+class StackProps(ElementProps):
     gap: str = "1rem"
-    class_: str | None = None
 
 
 class Stack(Component[StackProps]):
     props_type = StackProps
 
     def __init__(
-        self, *children: Any, gap: str = "1rem", class_: str | None = None, **kwargs: Any
+        self,
+        *nodes: Any,
+        children: Any = None,
+        gap: str = "1rem",
+        id: str | None = None,
+        class_: str | None = None,
+        **kwargs: Any,
     ) -> None:
-        super().__init__(StackProps(gap=_validated_gap(gap), class_=class_, **kwargs))
-        self._children = _kids(*children)
+        super().__init__(StackProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
+        self._children = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
-        cls = self.props.class_ or "hedron-stack"
         return html.div(
             *self._children,
-            class_=cls,
+            id=self.props.id,
+            class_=class_names("hedron-stack", self.props.class_),
             data={"hedron-layout": "stack", "hedron-gap": self.props.gap},
         )
 
 
-class InlineProps(Props):
+class InlineProps(ElementProps):
     gap: str = "0.5rem"
-    class_: str | None = None
 
 
 class Inline(Component[InlineProps]):
     props_type = InlineProps
 
     def __init__(
-        self, *children: Any, gap: str = "0.5rem", class_: str | None = None, **kwargs: Any
+        self,
+        *nodes: Any,
+        children: Any = None,
+        gap: str = "0.5rem",
+        id: str | None = None,
+        class_: str | None = None,
+        **kwargs: Any,
     ) -> None:
-        super().__init__(InlineProps(gap=_validated_gap(gap), class_=class_, **kwargs))
-        self._children = _kids(*children)
+        super().__init__(InlineProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
+        self._children = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
-        cls = self.props.class_ or "hedron-inline"
         return html.div(
             *self._children,
-            class_=cls,
+            id=self.props.id,
+            class_=class_names("hedron-inline", self.props.class_),
             data={"hedron-layout": "inline", "hedron-gap": self.props.gap},
         )
 
 
-class GridProps(Props):
+class GridProps(ElementProps):
     columns: int = 2
     gap: str = "1rem"
-    class_: str | None = None
 
 
 class Grid(Component[GridProps]):
@@ -110,9 +119,11 @@ class Grid(Component[GridProps]):
 
     def __init__(
         self,
-        *children: Any,
+        *nodes: Any,
+        children: Any = None,
         columns: int = 2,
         gap: str = "1rem",
+        id: str | None = None,
         class_: str | None = None,
         **kwargs: Any,
     ) -> None:
@@ -123,15 +134,21 @@ class Grid(Component[GridProps]):
                 explanation="columns must be >= 1.",
             )
         super().__init__(
-            GridProps(columns=columns, gap=_validated_gap(gap), class_=class_, **kwargs)
+            GridProps(
+                columns=columns,
+                gap=_validated_gap(gap),
+                id=id,
+                class_=class_,
+                **kwargs,
+            )
         )
-        self._children = _kids(*children)
+        self._children = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
-        cls = self.props.class_ or "hedron-grid"
         return html.div(
             *self._children,
-            class_=cls,
+            id=self.props.id,
+            class_=class_names("hedron-grid", self.props.class_),
             data={
                 "hedron-layout": "grid",
                 "hedron-gap": self.props.gap,

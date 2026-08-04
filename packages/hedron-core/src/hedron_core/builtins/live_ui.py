@@ -2,22 +2,12 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from typing import Any, Literal
 
+from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
-
-
-def _kids(*children: Any) -> tuple[Any, ...]:
-    if (
-        len(children) == 1
-        and isinstance(children[0], Sequence)
-        and not isinstance(children[0], (str, bytes))
-    ):
-        return tuple(children[0])
-    return children
 
 
 class DialogProps(Props):
@@ -37,7 +27,8 @@ class Dialog(Component[DialogProps]):
     def __init__(
         self,
         title: str,
-        *children: Any,
+        *nodes: Any,
+        children: Any = None,
         open: bool = False,
         modal: bool = True,
         element_id: str | None = None,
@@ -46,7 +37,7 @@ class Dialog(Component[DialogProps]):
         super().__init__(
             DialogProps(title=title, open=open, modal=modal, element_id=element_id, **kwargs)
         )
-        self._body = _kids(*children)
+        self._body = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
         body = self._slot_values.get("body", self._body)

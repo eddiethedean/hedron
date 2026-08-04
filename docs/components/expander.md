@@ -41,14 +41,17 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Expander(title, *children, open=False)
+Expander(title, *nodes, children=None, open=False, id=None, class_=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `title` | `str` | Visible summary label. |
-| `children` | `NodeLike` | Disclosure content. |
+| `nodes` | `NodeLike` | Positional disclosure content. |
+| `children` | `NodeLike | sequence | None` | Keyword disclosure content; combines with positional nodes. |
 | `open` | `bool` | Initial expanded state. |
+| `id` | `str | None` | Stable ID for links, tests, or replacement. |
+| `class_` | `str | None` | Application class appended to `hedron-expander`. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

@@ -35,11 +35,15 @@ def test_hedron_page_and_fragment() -> None:
     assert page.text.startswith("<!DOCTYPE html>")
     assert "hello" in page.text
     assert "htmx.min.js" in page.text
+    assert "hedron-ui.mjs" in page.text
     assert 'href="/hedron-static/hedron-default.css"' in page.text
     assert "X-Content-Type-Options" in page.headers
     stylesheet = client.get("/hedron-static/hedron-default.css")
     assert stylesheet.status_code == 200
     assert stylesheet.headers["content-type"].startswith("text/css")
+    ui_module = client.get("/hedron-static/hedron-ui.mjs")
+    assert ui_module.status_code == 200
+    assert "hedron:tab-change" in ui_module.text
 
     frag = client.get("/", headers={"HX-Request": "true"})
     assert frag.status_code == 200

@@ -16,7 +16,7 @@ Collect one boolean choice with its visible label.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Checkbox"><div class="hdc-stage"><label class="hdc-choice"><input type="checkbox"> I agree to the service terms</label></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Checkbox"><div class="hdc-stage"><label class="hdc-choice hdc-choice-card"><input type="checkbox"><span><strong>Service terms</strong><small>I agree to the acceptable-use and data policies.</small></span></label></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 

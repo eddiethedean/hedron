@@ -16,7 +16,7 @@ Choose one or more local files with advisory browser constraints.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="FileUpload"><div class="hdc-stage"><label class="hdc-file">Upload evidence<input type="file" accept=".pdf,image/*" data-hdc-file></label><p role="status" data-hdc-status>No file selected.</p></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="FileUpload"><div class="hdc-stage"><label class="hdc-file"><span class="hdc-file-icon" aria-hidden="true">↑</span><strong>Upload evidence</strong><small>PDF, PNG, or JPG · up to 10 MB</small><input type="file" accept=".pdf,image/*" data-hdc-file></label><p class="hdc-muted" role="status" data-hdc-status>No file selected.</p></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 

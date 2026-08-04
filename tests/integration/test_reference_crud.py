@@ -54,6 +54,7 @@ def test_dashboard_authenticated(hedron_client: TestClient) -> None:
     assert "/hedron-assets/" in response.text
     assert 'rel="stylesheet"' in response.text
     assert "hedron-disclose.mjs" in response.text
+    assert "hedron-ui.mjs" in response.text
     cookie = response.cookies.get("hedron_csrf")
     assert cookie
     import re

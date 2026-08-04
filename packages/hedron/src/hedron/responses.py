@@ -228,6 +228,8 @@ def _inject_build_assets(
     # Always offer bundled disclose module from package static for WC proof
     if "hedron-disclose.mjs" not in html_text:
         add('<script type="module" src="/hedron-static/hedron-disclose.mjs"></script>')
+    if "hedron-ui.mjs" not in html_text:
+        add('<script type="module" src="/hedron-static/hedron-ui.mjs"></script>')
     if not tags:
         return html_text
     injection = "\n".join(tags)

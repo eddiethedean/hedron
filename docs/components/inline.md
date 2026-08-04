@@ -41,14 +41,16 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Inline(*children, gap='0.5rem', class_=None)
+Inline(*nodes, children=None, gap='0.5rem', id=None, class_=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `children` | `NodeLike` | Inline items in DOM order. |
+| `nodes` | `NodeLike` | Positional inline items in DOM order. |
+| `children` | `NodeLike | sequence | None` | Keyword child list; combines with positional nodes. |
 | `gap` | `CSS length` | Validated spacing token. |
-| `class_` | `str | None` | Optional class override. |
+| `id` | `str | None` | Stable DOM target for the row. |
+| `class_` | `str | None` | Optional class appended to `hedron-inline`. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

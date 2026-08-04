@@ -32,7 +32,7 @@ In a route, return the component inside a `Page`, or return it directly as a fra
 
 ## How it works
 
-Lazy emits a load-triggered HTMX request that targets its own container and swaps the response inside it. The initial node is busy and polite; the server fragment should clear busy state by replacing the placeholder.
+Lazy emits a load-triggered HTMX request that targets its own collision-free container and swaps the response inside it. Repeated instances can share one ComponentRef safely. The initial node is busy and polite; the server fragment should clear busy state by replacing the placeholder.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
@@ -48,7 +48,7 @@ Lazy(*, ref, placeholder=None, target_id=None)
 |---|---|---|
 | `ref` | `ComponentRef` | Typed fragment endpoint. |
 | `placeholder` | `NodeLike | None` | Initial content; defaults to Loading. |
-| `target_id` | `str | None` | Stable self-target ID. |
+| `target_id` | `str | None` | Explicit self-target ID; generated collision-free by default. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

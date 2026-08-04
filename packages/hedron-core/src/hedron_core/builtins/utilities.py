@@ -6,20 +6,11 @@ import json
 from collections.abc import Sequence
 from typing import Any, Literal
 
+from hedron_core.builtins._base import ElementProps, class_names, collect_children
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import Secret
-
-
-def _kids(*children: Any) -> tuple[Any, ...]:
-    if (
-        len(children) == 1
-        and isinstance(children[0], Sequence)
-        and not isinstance(children[0], (str, bytes))
-    ):
-        return tuple(children[0])
-    return children
 
 
 class MetricProps(Props):
@@ -228,7 +219,7 @@ class Toast(Component[ToastProps]):
         )
 
 
-class ExpanderProps(Props):
+class ExpanderProps(ElementProps):
     title: str
     open: bool = False
 
@@ -238,12 +229,24 @@ class Expander(Component[ExpanderProps]):
     logical_name = "Expander"
     slots = {"body": "optional"}
 
-    def __init__(self, title: str, *children: Any, open: bool = False, **kwargs: Any) -> None:
-        super().__init__(ExpanderProps(title=title, open=open, **kwargs))
-        self._body = _kids(*children)
+    def __init__(
+        self,
+        title: str,
+        *nodes: Any,
+        children: Any = None,
+        open: bool = False,
+        id: str | None = None,
+        class_: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(ExpanderProps(title=title, open=open, id=id, class_=class_, **kwargs))
+        self._body = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
-        attrs: dict[str, Any] = {}
+        attrs: dict[str, Any] = {
+            "id": self.props.id,
+            "class_": class_names("hedron-expander", self.props.class_),
+        }
         if self.props.open:
             attrs["open"] = True
         body = self._slot_values.get("body", self._body)
@@ -252,7 +255,7 @@ class Expander(Component[ExpanderProps]):
         return html.details(html.summary(self.props.title), *body, **attrs)
 
 
-class TabsProps(Props):
+class TabsProps(ElementProps):
     active: str | None = None
 
 
@@ -262,22 +265,40 @@ class Tabs(Component[TabsProps]):
 
     def __init__(
         self,
-        *panels: tuple[str, Any],
+        *items: tuple[str, Any],
+        panels: Sequence[tuple[str, Any]] | None = None,
         active: str | None = None,
+        id: str | None = None,
+        class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(TabsProps(active=active, **kwargs))
-        self._panels = panels
+        super().__init__(TabsProps(active=active, id=id, class_=class_, **kwargs))
+        if panels is not None:
+            normalized = (*items, *panels)
+        elif len(items) == 1 and isinstance(items[0], list):
+            normalized = tuple(items[0])
+        else:
+            normalized = items
+        self._panels = tuple(normalized)
+        names = [name for name, _ in self._panels]
+        if len(names) != len(set(names)):
+            raise ValueError("Tabs panel labels must be unique")
+        if active is not None and active not in names:
+            raise ValueError(f"Unknown active tab {active!r}; expected one of {names!r}")
 
     def render(self) -> Any:
         if not self._panels:
-            return html.div(class_="hedron-tabs")
+            return html.div(
+                id=self.props.id,
+                class_=class_names("hedron-tabs", self.props.class_),
+            )
+        tabs_id = self.props.id or f"tabs-{self.render_instance_id()}"
         active = self.props.active or self._panels[0][0]
         tablist = []
         panels = []
         for idx, (name, content) in enumerate(self._panels):
-            tab_id = f"tab-{idx}"
-            panel_id = f"panel-{idx}"
+            tab_id = f"{tabs_id}-tab-{idx}"
+            panel_id = f"{tabs_id}-panel-{idx}"
             selected = name == active
             tablist.append(
                 html.button(
@@ -304,11 +325,12 @@ class Tabs(Component[TabsProps]):
         return html.div(
             html.div(*tablist, role="tablist", class_="hedron-tablist"),
             *panels,
-            class_="hedron-tabs",
+            id=tabs_id,
+            class_=class_names("hedron-tabs", self.props.class_),
         )
 
 
-class SidebarProps(Props):
+class SidebarProps(ElementProps):
     label: str = "Sidebar"
 
 
@@ -317,12 +339,25 @@ class Sidebar(Component[SidebarProps]):
     logical_name = "Sidebar"
     slots = {"body": "optional"}
 
-    def __init__(self, *children: Any, label: str = "Sidebar", **kwargs: Any) -> None:
-        super().__init__(SidebarProps(label=label, **kwargs))
-        self._body = _kids(*children)
+    def __init__(
+        self,
+        *nodes: Any,
+        children: Any = None,
+        label: str = "Sidebar",
+        id: str | None = None,
+        class_: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(SidebarProps(label=label, id=id, class_=class_, **kwargs))
+        self._body = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
         body = self._slot_values.get("body", self._body)
         if not isinstance(body, tuple):
             body = (body,)
-        return html.aside(*body, class_="hedron-sidebar", aria={"label": self.props.label})
+        return html.aside(
+            *body,
+            id=self.props.id,
+            class_=class_names("hedron-sidebar", self.props.class_),
+            aria={"label": self.props.label},
+        )

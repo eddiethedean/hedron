@@ -16,7 +16,13 @@ from hedron_core._nodes import (
     TextNode,
 )
 from hedron_core._serializer import serialize_tree
-from hedron_core.component import Component, ComponentNode, NodeLike
+from hedron_core.component import (
+    Component,
+    ComponentNode,
+    NodeLike,
+    _pop_render_identity,
+    _push_render_identity,
+)
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, error, make_diagnostic
 from hedron_core.html import _NativeElement, _TrustedRaw
 from hedron_core.security import Secret
@@ -283,8 +289,13 @@ def _render_component(
         map_key = f"{logical}#{identity.get('key', auto_key)}"
         state.identity_map[map_key] = instance
 
-        rendered = component.render()
-        children = _normalize(rendered, state, depth=depth + 1)
+        render_key = str(identity.get("key", auto_key))
+        token = _push_render_identity(instance, render_key)
+        try:
+            rendered = component.render()
+            children = _normalize(rendered, state, depth=depth + 1)
+        finally:
+            _pop_render_identity(token)
         return (
             ComponentBoundaryNode(
                 logical_id=logical,

@@ -16,7 +16,7 @@ Create a compact native button with a required accessible label.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="IconButton"><div class="hdc-stage"><button class="hdc-icon-button" type="button" aria-label="Delete report" data-hdc-action="count">⌫</button><p class="hdc-muted" data-hdc-status>Accessible name: Delete report</p></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="IconButton"><div class="hdc-stage"><button class="hdc-icon-button" type="button" aria-label="Delete report" data-hdc-action="count"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 3.5h7M8 3.5V2h4v1.5M5 5.5h10l-.6 11H5.6L5 5.5Zm3 2v6m4-6v6"/></svg></button><p class="hdc-muted" data-hdc-status>Accessible name: Delete report</p></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 

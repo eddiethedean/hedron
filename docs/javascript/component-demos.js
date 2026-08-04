@@ -59,35 +59,72 @@
     }
 
     const chatForm = demo.querySelector("[data-hdc-chat-form]");
+    const chatField = chatForm?.querySelector("textarea[name='message']");
+    for (const prompt of demo.querySelectorAll("[data-hdc-prompt]")) {
+      prompt.addEventListener("click", () => {
+        if (!chatField) return;
+        chatField.value = prompt.dataset.hdcPrompt || "";
+        chatField.dispatchEvent(new Event("input", { bubbles: true }));
+        chatField.focus();
+      });
+    }
+    chatField?.addEventListener("input", () => {
+      chatField.style.height = "auto";
+      chatField.style.height = `${Math.min(chatField.scrollHeight, 112)}px`;
+    });
+    chatField?.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" || event.shiftKey || event.isComposing) return;
+      event.preventDefault();
+      chatForm?.requestSubmit();
+    });
     chatForm?.addEventListener("submit", (event) => {
       event.preventDefault();
       if (typeof chatForm.reportValidity === "function" && !chatForm.reportValidity()) return;
-      const field = chatForm.querySelector("textarea[name='message']");
       const transcript = demo.querySelector("[data-hdc-transcript]");
-      const message = String(field?.value || "").trim();
+      const message = String(chatField?.value || "").trim();
       if (!message || !transcript) return;
 
+      const time = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(new Date());
       const userMessage = document.createElement("article");
       userMessage.className = "hdc-chat-message hdc-chat-user";
+      const userAvatar = document.createElement("span");
+      userAvatar.className = "hdc-chat-avatar";
+      userAvatar.setAttribute("aria-hidden", "true");
+      userAvatar.textContent = "Y";
+      const userContent = document.createElement("div");
       const userLabel = document.createElement("strong");
       userLabel.textContent = "You";
       const userBody = document.createElement("p");
       userBody.textContent = message;
-      userMessage.append(userLabel, userBody);
+      const userTime = document.createElement("time");
+      userTime.textContent = time;
+      userContent.append(userLabel, userBody, userTime);
+      userMessage.append(userAvatar, userContent);
       transcript.append(userMessage);
-      field.value = "";
+      chatField.value = "";
+      chatField.style.height = "auto";
+      transcript.scrollTop = transcript.scrollHeight;
       status(demo, "Sending message…");
       trace(demo, "POST", "/chat", "pending");
 
       window.setTimeout(() => {
         const reply = document.createElement("article");
         reply.className = "hdc-chat-message hdc-chat-assistant";
+        const replyAvatar = document.createElement("span");
+        replyAvatar.className = "hdc-chat-avatar";
+        replyAvatar.setAttribute("aria-hidden", "true");
+        replyAvatar.textContent = "H";
+        const replyContent = document.createElement("div");
         const replyLabel = document.createElement("strong");
-        replyLabel.textContent = "Assistant";
+        replyLabel.textContent = "Hedron";
         const replyBody = document.createElement("p");
-        replyBody.textContent = "The simulated server received your message.";
-        reply.append(replyLabel, replyBody);
+        replyBody.textContent = "All six deployment checks passed. The simulated rollout is healthy and ready to continue.";
+        const replyTime = document.createElement("time");
+        replyTime.textContent = time;
+        replyContent.append(replyLabel, replyBody, replyTime);
+        reply.append(replyAvatar, replyContent);
         transcript.append(reply);
+        transcript.scrollTop = transcript.scrollHeight;
         status(demo, "Message delivered.");
         trace(demo, "POST", "/chat", "200 fragment");
       }, 550);

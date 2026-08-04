@@ -16,7 +16,7 @@ Present focused content in a native dialog with an explicit title and close path
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Dialog"><div class="hdc-stage"><button class="hdc-button hdc-primary" type="button" data-hdc-action="open-dialog">Open confirmation</button><dialog class="hdc-dialog" data-hdc-dialog aria-labelledby="hdc-dialog-title"><header><h2 id="hdc-dialog-title">Delete report?</h2><form method="dialog"><button type="submit" class="hdc-dialog-close" aria-label="Close dialog">×</button></form></header><p>This removes the saved report. The source data is unchanged.</p><footer><button class="hdc-button" type="button" data-hdc-action="close-dialog">Cancel</button><button class="hdc-button hdc-primary" type="button" data-hdc-action="close-dialog">Delete report</button></footer></dialog><p role="status" data-hdc-status>Dialog closed.</p></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Dialog"><div class="hdc-stage"><div class="hdc-dialog-launch"><span class="hdc-file-icon" aria-hidden="true">R</span><span><strong>Quarterly report</strong><small>Updated 2 minutes ago</small></span><button class="hdc-button" type="button" data-hdc-action="open-dialog">Delete…</button></div><dialog class="hdc-dialog" data-hdc-dialog aria-labelledby="hdc-dialog-title"><header><h2 id="hdc-dialog-title">Delete report?</h2><form method="dialog"><button type="submit" class="hdc-dialog-close" aria-label="Close dialog">×</button></form></header><p>This removes the saved report. The source data is unchanged.</p><footer><button class="hdc-button" type="button" data-hdc-action="close-dialog">Cancel</button><button class="hdc-button hdc-primary" type="button" data-hdc-action="close-dialog">Delete report</button></footer></dialog><p class="hdc-muted" role="status" data-hdc-status>Dialog closed.</p></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 
@@ -32,7 +32,7 @@ In a route, return the component inside a `Page`, or return it directly as a fra
 
 ## How it works
 
-Dialog renders a native `<dialog>` with a level-two title, body region, built-in Close form using the browser's dialog submission method, and an optional actions slot. The browser module can read its modal intent and call `showModal()`; the component never treats confirmation as authorization.
+Dialog renders a native `<dialog>` with a level-two title, body region, built-in Close form using the browser's dialog submission method, and an optional actions slot. A button whose `data-hedron-dialog-open` value is the dialog's `#element_id` opens it through the shipped browser module; modal dialogs use `showModal()`, while `modal=False` uses `show()`. The component never treats confirmation as authorization.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
@@ -41,13 +41,14 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Dialog(title, *children, open=False, modal=True, element_id=None)
+Dialog(title, *nodes, children=None, open=False, modal=True, element_id=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
 | `title` | `str` | Required dialog heading text. |
-| `children` | `NodeLike` | Dialog body content. |
+| `nodes` | `NodeLike` | Positional dialog body content. |
+| `children` | `NodeLike | sequence | None` | Keyword body content; combines with positional nodes. |
 | `open` | `bool` | Render the native open attribute initially. |
 | `modal` | `bool` | Browser-module intent exposed as data-modal. |
 | `element_id` | `str | None` | Stable ID for a trigger and focus restoration. |

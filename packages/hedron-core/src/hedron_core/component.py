@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from contextvars import ContextVar, Token
 from typing import Any, ClassVar, Generic, Protocol, TypeAlias, TypeVar, runtime_checkable
 
 from pydantic import ValidationError
@@ -14,6 +15,18 @@ from hedron_core.models import Props
 from hedron_core.security import Secret
 
 PropsT = TypeVar("PropsT", bound=Props)
+
+_render_identity: ContextVar[tuple[str, str] | None] = ContextVar(
+    "hedron_render_identity", default=None
+)
+
+
+def _push_render_identity(instance: str, render_key: str) -> Token[tuple[str, str] | None]:
+    return _render_identity.set((instance, render_key))
+
+
+def _pop_render_identity(token: Token[tuple[str, str] | None]) -> None:
+    _render_identity.reset(token)
 
 
 @runtime_checkable
@@ -159,6 +172,22 @@ class Component(Generic[PropsT]):
                 "identity": identity,
             }
         )
+
+    def render_instance_id(self) -> str:
+        """Return this component's request-local ID while ``render()`` is running.
+
+        Built-ins use this value to generate collision-free DOM relationships. Custom
+        components may use it for the same purpose instead of inventing global IDs.
+        """
+        current = _render_identity.get()
+        if current is not None:
+            return current[0]
+        return self.compute_instance_id()
+
+    def render_key(self) -> str | None:
+        """Return the explicit or renderer-assigned key during ``render()``."""
+        current = _render_identity.get()
+        return current[1] if current is not None else self._key
 
     def render(self) -> Any:
         raise error(

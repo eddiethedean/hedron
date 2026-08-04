@@ -42,6 +42,7 @@ def resolve_color_mode(
 class ColorModeToggleProps(Props):
     preference: str = "system"
     label: str = "Color mode"
+    id: str | None = None
 
 
 class ColorModeToggle(Component[ColorModeToggleProps]):
@@ -55,16 +56,18 @@ class ColorModeToggle(Component[ColorModeToggleProps]):
         *,
         preference: ColorMode | str = ColorMode.SYSTEM,
         label: str = "Color mode",
+        id: str | None = None,
         action: str | None = None,
         csrf_token: str | None = None,
         **kwargs: Any,
     ) -> None:
         pref = preference.value if isinstance(preference, ColorMode) else str(preference)
-        super().__init__(ColorModeToggleProps(preference=pref, label=label, **kwargs))
+        super().__init__(ColorModeToggleProps(preference=pref, label=label, id=id, **kwargs))
         self._action = action
         self._csrf_token = csrf_token
 
     def render(self) -> Any:
+        control_id = self.props.id or f"hedron-color-mode-{self.render_instance_id()[2:10]}"
         options = []
         for mode in (ColorMode.LIGHT, ColorMode.DARK, ColorMode.SYSTEM):
             opts: dict[str, Any] = {"value": mode.value}
@@ -86,8 +89,8 @@ class ColorModeToggle(Component[ColorModeToggleProps]):
                 else SafeUrl.parse(str(self._action), purpose=UrlPurpose.FORM_ACTION)
             )
         fields: list[Any] = [
-            html.label(self.props.label, for_="hedron-color-mode"),
-            html.select(*options, id="hedron-color-mode", **select_attrs),
+            html.label(self.props.label, for_=control_id),
+            html.select(*options, id=control_id, **select_attrs),
         ]
         if self._csrf_token:
             fields.append(html.input(type="hidden", name="csrf_token", value=self._csrf_token))

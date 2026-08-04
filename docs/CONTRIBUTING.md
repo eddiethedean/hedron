@@ -45,6 +45,11 @@ For a new component:
    meaningful parameter, when to use it, what HTML or browser behavior it produces,
    its accessibility contract, and its most likely misuse. Examples must use public
    imports and safe values.
+   Before inventing constructor conventions, compare the component with its siblings:
+   container-like components accept positional nodes and `children=`, addressable
+   wrappers use `id`, and `class_` augments rather than removes the built-in theme hook.
+   Keep a nested child as a component in the render tree—never call its `render()` method
+   or splice serialized HTML inside another built-in.
 3. Give the component a useful preview in `demo_html()` or `static_demo()`. The preview
    must be semantic HTML that can be selected, focused, typed into, expanded, or
    otherwise inspected—not a screenshot. Verify it in both color schemes, at narrow
@@ -66,6 +71,12 @@ For a new component:
    uv run python scripts/generate_component_docs.py --check
    uv run --group docs mkdocs build --strict
    ```
+
+7. Add a composition test, not only an isolated render assertion. Nest the component in
+   its likely parent and place a likely child inside it. When it emits IDs, labels,
+   ARIA references, HTMX targets, or swap boundaries, render repeated and nested
+   instances and assert that IDs are unique and every relationship resolves. Also render
+   it with the shipped default stylesheet in the browser at desktop and narrow widths.
 
 The `--check` command compares the manifest with the implemented public built-ins,
 rejects missing, stale, duplicate, or hand-edited generated pages, and is exercised by

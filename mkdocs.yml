@@ -116,6 +116,7 @@ nav:
     - Core concepts: getting-started/core-concepts.md
   - Guides:
     - Overview: guides/index.md
+    - Compose built-ins: guides/component-composition.md
     - Project workflow: guides/project-workflow.md
     - Migrate from Streamlit: guides/streamlit-migration.md
     - HTMX interactions: guides/htmx-interactions.md

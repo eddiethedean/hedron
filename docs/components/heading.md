@@ -16,7 +16,7 @@ Create an explicit heading level without inferring document hierarchy.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Heading"><div class="hdc-stage"><div class="hdc-type"><h2>Deployment history</h2><p>Heading level two introduces this section.</p></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Heading"><div class="hdc-stage"><div class="hdc-type"><span class="hdc-eyebrow">Production</span><h2>Deployment history</h2><p>Heading level two introduces this section.</p></div></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 

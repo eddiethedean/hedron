@@ -16,7 +16,7 @@ Arrange children vertically with a validated, consistent gap.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Stack"><div class="hdc-stage"><div class="hdc-stack"><span>First item</span><span>Second item</span><span>Third item</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Stack"><div class="hdc-stage"><div class="hdc-stack"><span><b>Build completed</b><small>42 seconds ago</small></span><span><b>Preview deployed</b><small>Environment ready</small></span><span><b>Review requested</b><small>2 teammates notified</small></span></div></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 
@@ -32,7 +32,7 @@ In a route, return the component inside a `Page`, or return it directly as a fra
 
 ## How it works
 
-`Stack` writes layout intent and the validated gap to data attributes consumed by the theme. DOM order is unchanged, so the visual sequence matches reading and keyboard order.
+`Stack` writes layout intent and the validated gap to data attributes consumed by the theme; the shipped theme applies that exact gap without requiring an unsafe inline style. Its built-in class is retained when you add an application class. DOM order is unchanged, so the visual sequence matches reading and keyboard order.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
@@ -41,14 +41,16 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Stack(*children, gap='1rem', class_=None)
+Stack(*nodes, children=None, gap='1rem', id=None, class_=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `children` | `NodeLike` | Items in visual and DOM order. |
+| `nodes` | `NodeLike` | Positional items in visual and DOM order. |
+| `children` | `NodeLike | sequence | None` | Keyword child list; combines with positional nodes. |
 | `gap` | `CSS length` | Validated `rem`, `em`, `px`, or `%` spacing. |
-| `class_` | `str | None` | Optional class override. |
+| `id` | `str | None` | Stable DOM target for the stack region. |
+| `class_` | `str | None` | Optional class appended to `hedron-stack`. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

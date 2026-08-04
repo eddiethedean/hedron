@@ -16,7 +16,7 @@ Return several sibling nodes without adding a wrapper element.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Fragment"><div class="hdc-stage"><div class="hdc-fragment"><span class="hdc-badge">Saved</span><p>The record is current.</p></div><p class="hdc-muted">Two sibling nodes; no wrapper is added by Fragment.</p></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Fragment"><div class="hdc-stage"><div class="hdc-fragment"><span class="hdc-badge">Saved</span><span><strong>Profile updated</strong><small>The record is current.</small></span></div><p class="hdc-muted">Two sibling nodes; no wrapper is added by Fragment.</p></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 
@@ -41,12 +41,13 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Fragment(*children)
+Fragment(*nodes, children=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `children` | `NodeLike` | Any renderable sibling nodes. |
+| `nodes` | `NodeLike` | Positional renderable sibling nodes. |
+| `children` | `NodeLike | sequence | None` | Keyword alternative; combines with positional nodes. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

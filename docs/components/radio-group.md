@@ -32,7 +32,7 @@ In a route, return the component inside a `Page`, or return it directly as a fra
 
 ## How it works
 
-A native fieldset and legend name the group; every option gets a stable ID, shared name, value, and associated label.
+A native fieldset and legend name the group; every option gets a collision-free ID, shared name, value, and associated label. Pass `id=` only when outside markup must use a predictable prefix.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
@@ -41,7 +41,7 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-RadioGroup(name, legend, options, *, value=None, required=False)
+RadioGroup(name, legend, options, *, id=None, value=None, required=False)
 ```
 
 | Parameter | Type | Meaning |
@@ -49,6 +49,7 @@ RadioGroup(name, legend, options, *, value=None, required=False)
 | `name` | `str` | Shared submitted field name. |
 | `legend` | `str` | Group label. |
 | `options` | `Sequence[tuple[str, str]]` | Value/label pairs. |
+| `id` | `str | None` | Optional option-ID prefix; generated collision-free by default. |
 | `value` | `str | None` | Selected option. |
 | `required` | `bool` | Require one selection. |
 

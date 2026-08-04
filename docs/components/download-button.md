@@ -16,7 +16,7 @@ Download an authorized same-origin resource with a safe filename.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="DownloadButton"><div class="hdc-stage"><a class="hdc-button hdc-primary" href="data:text/csv;charset=utf-8,service%2Cstatus%0Aapi%2Chealthy" download="service-health.csv">Download CSV</a><p class="hdc-muted">Demo file: service-health.csv · 27 bytes</p></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="DownloadButton"><div class="hdc-stage"><div class="hdc-download"><span class="hdc-file-icon" aria-hidden="true">↓</span><span><strong>Service health export</strong><small>service-health.csv · 27 bytes</small></span><a class="hdc-button hdc-primary" href="data:text/csv;charset=utf-8,service%2Cstatus%0Aapi%2Chealthy" download="service-health.csv">Download CSV</a></div></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 

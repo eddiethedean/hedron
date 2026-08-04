@@ -32,7 +32,7 @@ In a route, return the component inside a `Page`, or return it directly as a fra
 
 ## How it works
 
-HTMX's `every Nms` trigger refreshes the component into itself. Stop polling by returning replacement markup without the polling attributes once the terminal state is reached.
+HTMX's `every Nms` trigger refreshes the component into its collision-free self-target. Repeated instances can share one ComponentRef safely. Stop polling by returning replacement markup without the polling attributes once the terminal state is reached.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
@@ -48,7 +48,7 @@ Poll(*, ref, interval_ms=5000, target_id=None, content=None)
 |---|---|---|
 | `ref` | `ComponentRef` | Typed polling endpoint. |
 | `interval_ms` | `int` | Interval, clamped to at least 250 ms. |
-| `target_id` | `str | None` | Self-target ID. |
+| `target_id` | `str | None` | Explicit self-target ID; generated collision-free by default. |
 | `content` | `NodeLike | None` | Initial content. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.

@@ -16,7 +16,7 @@ Render a small static data table with explicit headers.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Table"><div class="hdc-stage"><table><caption>Service health</caption><thead><tr><th>Service</th><th>Status</th></tr></thead><tbody><tr><td>API</td><td>Healthy</td></tr><tr><td>Worker</td><td>Healthy</td></tr></tbody></table></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Table"><div class="hdc-stage"><table class="hdc-table"><caption>Service health</caption><thead><tr><th>Service</th><th>Status</th></tr></thead><tbody><tr><td><strong>API</strong></td><td><span class="hdc-badge hdc-success">Healthy</span></td></tr><tr><td><strong>Worker</strong></td><td><span class="hdc-badge hdc-success">Healthy</span></td></tr></tbody></table></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 

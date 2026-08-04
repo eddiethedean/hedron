@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from typing import Any
 
+from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -33,13 +33,7 @@ class Page(Component[PageProps]):
         **kwargs: Any,
     ) -> None:
         super().__init__(PageProps(lang=lang, title=title, data_theme=data_theme, **kwargs))
-        nodes = list(body)
-        if children is not None:
-            if isinstance(children, Sequence) and not isinstance(children, (str, bytes)):
-                nodes.extend(children)
-            else:
-                nodes.append(children)
-        self._children = tuple(nodes)
+        self._children = collect_children(*body, children=children)
         if head is not None:
             self._slot_values["head"] = head
 
@@ -69,9 +63,9 @@ class FragmentProps(Props):
 class Fragment(Component[FragmentProps]):
     props_type = FragmentProps
 
-    def __init__(self, *children: Any, **kwargs: Any) -> None:
+    def __init__(self, *nodes: Any, children: Any = None, **kwargs: Any) -> None:
         super().__init__(FragmentProps(**kwargs))
-        self._children = children
+        self._children = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
         return list(self._children)
@@ -84,9 +78,9 @@ class HeadProps(Props):
 class Head(Component[HeadProps]):
     props_type = HeadProps
 
-    def __init__(self, *children: Any, **kwargs: Any) -> None:
+    def __init__(self, *nodes: Any, children: Any = None, **kwargs: Any) -> None:
         super().__init__(HeadProps(**kwargs))
-        self._children = children
+        self._children = collect_children(*nodes, children=children)
 
     def render(self) -> Any:
         return html.head(*self._children)

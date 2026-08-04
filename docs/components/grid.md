@@ -16,7 +16,7 @@ Lay out explicit child components in a responsive grid.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Grid"><div class="hdc-stage"><div class="hdc-grid"><span>Latency</span><span>Errors</span><span>Traffic</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Grid"><div class="hdc-stage"><div class="hdc-grid"><span><small>Latency</small><strong>184 ms</strong><em>↓ 12%</em></span><span><small>Errors</small><strong>0.08%</strong><em>↓ 4%</em></span><span><small>Traffic</small><strong>28.4k</strong><em>↑ 9%</em></span></div></div></section>
 
 The preview is intentionally small enough to inspect with a keyboard and screen reader. It demonstrates the component's semantic result, not a screenshot. If the example represents HTMX activity, the “Simulated HTMX” trace confirms that documentation JavaScript supplied the response locally.
 
@@ -41,15 +41,17 @@ The component participates in Hedron's normal escaping, URL, and attribute valid
 ## Constructor and parameters
 
 ```python
-Grid(*children, columns=2, gap='1rem', class_=None)
+Grid(*nodes, children=None, columns=2, gap='1rem', id=None, class_=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `children` | `NodeLike` | Grid cells in reading order. |
+| `nodes` | `NodeLike` | Positional grid cells in reading order. |
+| `children` | `NodeLike | sequence | None` | Keyword child list; combines with positional nodes. |
 | `columns` | `int` | Requested column count; must be at least one. |
 | `gap` | `CSS length` | Validated row and column gap. |
-| `class_` | `str | None` | Optional class override. |
+| `id` | `str | None` | Stable DOM target for the grid region. |
+| `class_` | `str | None` | Optional class appended to `hedron-grid`. |
 
 Keyword defaults are chosen for a safe, progressively enhanced baseline. Pass stable IDs when another component, a label, a URL fragment, a test, or an HTMX target must address the rendered node. Prefer typed component composition over hand-built HTML strings.
 

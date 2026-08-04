@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any, Literal
 
+from hedron_core.builtins._base import collect_children, dom_id_part
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -21,7 +22,8 @@ class Form(Component[FormProps]):
 
     def __init__(
         self,
-        *children: Any,
+        *nodes: Any,
+        children: Any = None,
         action: SafeUrl | str | None = None,
         method: Literal["get", "post"] = "post",
         **kwargs: Any,
@@ -37,7 +39,7 @@ class Form(Component[FormProps]):
         extras = {k: v for k, v in kwargs.items() if k not in FormProps.model_fields}
         props_kwargs = {k: v for k, v in kwargs.items() if k in FormProps.model_fields}
         super().__init__(FormProps(action=url, method=method, **props_kwargs))
-        self._children = children
+        self._children = collect_children(*nodes, children=children)
         self._html_attrs = extras
 
     def render(self) -> Any:
@@ -68,6 +70,7 @@ class Label(Component[LabelProps]):
 class FormFieldProps(Props):
     name: str
     label: str
+    id: str | None = None
     help: str | None = None
     required: bool = False
     error: str | None = None
@@ -83,6 +86,7 @@ class FormField(Component[FormFieldProps]):
         name: str,
         label: str,
         control: Any,
+        id: str | None = None,
         help: str | None = None,
         required: bool = False,
         error: str | None = None,
@@ -92,18 +96,17 @@ class FormField(Component[FormFieldProps]):
             FormFieldProps(
                 name=name,
                 label=label,
+                id=id,
                 help=help,
                 required=required,
                 error=error,
                 **kwargs,
             )
         )
-        self._field_id = f"field-{name}"
-        self._slot_values["control"] = self._bind_control(control)
+        self._slot_values["control"] = control
 
-    def _bind_control(self, control: Any) -> Any:
+    def _bind_control(self, control: Any, *, field_id: str) -> Any:
         """Bind control id / required via a copied control; never mutate shared props."""
-        field_id = self._field_id
         help_id = f"{field_id}-help" if self.props.help else None
         error_id = f"{field_id}-error" if self.props.error else None
         described_by = " ".join(x for x in (help_id, error_id) if x) or None
@@ -120,6 +123,13 @@ class FormField(Component[FormFieldProps]):
                 updates["id"] = field_id
             if self.props.required and hasattr(props, "required"):
                 updates["required"] = True
+            for name, value in (
+                ("aria_describedby", aria["describedby"]),
+                ("aria_invalid", aria["invalid"]),
+                ("aria_required", aria["required"]),
+            ):
+                if name in props.__class__.model_fields:
+                    updates[name] = value
             new_props = props.model_copy(update=updates) if updates else props
             # Reconstruct a shallow copy of the control with updated props.
             bound = control.__class__.__new__(control.__class__)
@@ -132,28 +142,25 @@ class FormField(Component[FormFieldProps]):
             bound._children = control._children
             bound._slot_values = dict(control._slot_values)
             bound._key = control._key
-            object.__setattr__(bound, "_hedron_aria", aria)
             return bound
-        return control
+        return self._apply_aria(control, aria)
 
     def render(self) -> Any:
-        help_id = f"{self._field_id}-help" if self.props.help else None
-        error_id = f"{self._field_id}-error" if self.props.error else None
-        control = self._slot_values["control"]
-        aria = getattr(control, "_hedron_aria", {}) or {}
+        field_id = self.props.id or (
+            f"field-{dom_id_part(self.props.name)}-{self.render_instance_id()[2:10]}"
+        )
+        help_id = f"{field_id}-help" if self.props.help else None
+        error_id = f"{field_id}-error" if self.props.error else None
+        control = self._bind_control(self._slot_values["control"], field_id=field_id)
 
         skip_outer_label = isinstance(control, Checkbox)
 
-        if isinstance(control, Component) and hasattr(control, "render"):
-            rendered = control.render()
-            control_node = self._apply_aria(rendered, aria)
-        else:
-            control_node = self._apply_aria(control, aria)
-
         parts: list[Any] = []
         if not skip_outer_label:
-            parts.append(Label(self.props.label, for_=self._field_id))
-        parts.append(control_node)
+            parts.append(Label(self.props.label, for_=field_id))
+        # Keep the bound component in the tree so it receives normal validation,
+        # identity tracking, cycle detection, and renderer diagnostics.
+        parts.append(control)
         if self.props.help:
             parts.append(html.p(self.props.help, id=help_id, class_="hedron-field-help"))
         if self.props.error:
@@ -213,6 +220,9 @@ class TextInputProps(Props):
     type: Literal["text", "email", "password", "search", "tel", "url"] = "text"
     autocomplete: str | None = None
     disabled: bool = False
+    aria_describedby: str | None = None
+    aria_invalid: str | None = None
+    aria_required: str | None = None
 
 
 class TextInput(Component[TextInputProps]):
@@ -229,18 +239,24 @@ class TextInput(Component[TextInputProps]):
         type: Literal["text", "email", "password", "search", "tel", "url"] = "text",
         autocomplete: str | None = None,
         disabled: bool = False,
+        aria_describedby: str | None = None,
+        aria_invalid: str | None = None,
+        aria_required: str | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(
             TextInputProps(
                 name=name,
-                id=id or f"field-{name}",
+                id=id or f"field-{dom_id_part(name)}",
                 value=value,
                 placeholder=placeholder,
                 required=required,
                 type=type,
                 autocomplete=autocomplete,
                 disabled=disabled,
+                aria_describedby=aria_describedby,
+                aria_invalid=aria_invalid,
+                aria_required=aria_required,
                 **kwargs,
             )
         )
@@ -260,6 +276,11 @@ class TextInput(Component[TextInputProps]):
             attrs["autocomplete"] = self.props.autocomplete
         if self.props.disabled:
             attrs["disabled"] = True
+        attrs["aria"] = {
+            "describedby": self.props.aria_describedby,
+            "invalid": self.props.aria_invalid,
+            "required": self.props.aria_required,
+        }
         return html.input(**attrs)
 
 
@@ -270,6 +291,9 @@ class TextAreaProps(Props):
     rows: int = 4
     required: bool = False
     placeholder: str | None = None
+    aria_describedby: str | None = None
+    aria_invalid: str | None = None
+    aria_required: str | None = None
 
 
 class TextArea(Component[TextAreaProps]):
@@ -284,16 +308,22 @@ class TextArea(Component[TextAreaProps]):
         rows: int = 4,
         required: bool = False,
         placeholder: str | None = None,
+        aria_describedby: str | None = None,
+        aria_invalid: str | None = None,
+        aria_required: str | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(
             TextAreaProps(
                 name=name,
-                id=id or f"field-{name}",
+                id=id or f"field-{dom_id_part(name)}",
                 value=value,
                 rows=rows,
                 required=required,
                 placeholder=placeholder,
+                aria_describedby=aria_describedby,
+                aria_invalid=aria_invalid,
+                aria_required=aria_required,
                 **kwargs,
             )
         )
@@ -308,6 +338,11 @@ class TextArea(Component[TextAreaProps]):
             attrs["required"] = True
         if self.props.placeholder:
             attrs["placeholder"] = self.props.placeholder
+        attrs["aria"] = {
+            "describedby": self.props.aria_describedby,
+            "invalid": self.props.aria_invalid,
+            "required": self.props.aria_required,
+        }
         return html.textarea(self.props.value, **attrs)
 
 
@@ -315,6 +350,9 @@ class SelectProps(Props):
     name: str
     id: str | None = None
     required: bool = False
+    aria_describedby: str | None = None
+    aria_invalid: str | None = None
+    aria_required: str | None = None
 
 
 class Select(Component[SelectProps]):
@@ -328,10 +366,21 @@ class Select(Component[SelectProps]):
         id: str | None = None,
         required: bool = False,
         value: str | None = None,
+        aria_describedby: str | None = None,
+        aria_invalid: str | None = None,
+        aria_required: str | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(
-            SelectProps(name=name, id=id or f"field-{name}", required=required, **kwargs)
+            SelectProps(
+                name=name,
+                id=id or f"field-{dom_id_part(name)}",
+                required=required,
+                aria_describedby=aria_describedby,
+                aria_invalid=aria_invalid,
+                aria_required=aria_required,
+                **kwargs,
+            )
         )
         self._options = tuple(options)
         self._value = value
@@ -349,6 +398,11 @@ class Select(Component[SelectProps]):
         }
         if self.props.required:
             attrs["required"] = True
+        attrs["aria"] = {
+            "describedby": self.props.aria_describedby,
+            "invalid": self.props.aria_invalid,
+            "required": self.props.aria_required,
+        }
         return html.select(*opts, **attrs)
 
 
@@ -358,6 +412,9 @@ class CheckboxProps(Props):
     id: str | None = None
     checked: bool = False
     required: bool = False
+    aria_describedby: str | None = None
+    aria_invalid: str | None = None
+    aria_required: str | None = None
 
 
 class Checkbox(Component[CheckboxProps]):
@@ -371,15 +428,21 @@ class Checkbox(Component[CheckboxProps]):
         id: str | None = None,
         checked: bool = False,
         required: bool = False,
+        aria_describedby: str | None = None,
+        aria_invalid: str | None = None,
+        aria_required: str | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(
             CheckboxProps(
                 name=name,
                 label=label,
-                id=id or f"field-{name}",
+                id=id or f"field-{dom_id_part(name)}",
                 checked=checked,
                 required=required,
+                aria_describedby=aria_describedby,
+                aria_invalid=aria_invalid,
+                aria_required=aria_required,
                 **kwargs,
             )
         )
@@ -394,6 +457,11 @@ class Checkbox(Component[CheckboxProps]):
             attrs["checked"] = True
         if self.props.required:
             attrs["required"] = True
+        attrs["aria"] = {
+            "describedby": self.props.aria_describedby,
+            "invalid": self.props.aria_invalid,
+            "required": self.props.aria_required,
+        }
         return html.div(
             html.input(**attrs),
             html.label(self.props.label, for_=self.props.id),
@@ -404,6 +472,7 @@ class Checkbox(Component[CheckboxProps]):
 class RadioGroupProps(Props):
     name: str
     legend: str
+    id: str | None = None
     required: bool = False
 
 
@@ -416,18 +485,24 @@ class RadioGroup(Component[RadioGroupProps]):
         legend: str,
         options: Sequence[tuple[str, str]],
         *,
+        id: str | None = None,
         value: str | None = None,
         required: bool = False,
         **kwargs: Any,
     ) -> None:
-        super().__init__(RadioGroupProps(name=name, legend=legend, required=required, **kwargs))
+        super().__init__(
+            RadioGroupProps(name=name, legend=legend, id=id, required=required, **kwargs)
+        )
         self._options = tuple(options)
         self._value = value
 
     def render(self) -> Any:
         inputs = []
-        for val, label in self._options:
-            fid = f"field-{self.props.name}-{val}"
+        group_id = self.props.id or (
+            f"field-{dom_id_part(self.props.name)}-{self.render_instance_id()[2:10]}"
+        )
+        for index, (val, label) in enumerate(self._options):
+            fid = f"{group_id}-{index}"
             attrs: dict[str, Any] = {
                 "type": "radio",
                 "name": self.props.name,
