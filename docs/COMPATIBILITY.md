@@ -31,11 +31,11 @@ supported until its native conformance slice is green.
 | Capability | Supported declaration |
 |---|---|
 | Flask | Flask `>=3.0,<4`; Werkzeug `>=3.0,<4`; reference WSGI server **Waitress** `>=3.0,<4`. Sessions use Flask signed cookies (`SECRET_KEY`); CSRF uses the double-submit cookie pattern via `hedron-flask` (same token semantics as FastAPI adapter). |
-| Django | Django `>=5.0,<6`; asgiref `>=3.8,<4`. Supported modes: **WSGI** (gunicorn sync workers) and **ASGI** (uvicorn/`Django` ASGI). Sessions and CSRF use Django middleware; forms/validation remain Django-native. QuerySet DataSource is **Deferred** (D-036). |
+| Django | Django `>=5.2,<6` (5.2 LTS line); asgiref `>=3.8,<4`. Supported modes: **WSGI** (gunicorn sync workers) and **ASGI** (uvicorn/`Django` ASGI). Sessions and CSRF use Django middleware; forms/validation remain Django-native. QuerySet DataSource is **Deferred** (D-036). Unsupported Django 5.0/5.1 are outside the Supported floor. |
 | FastAPI operations | Uvicorn `>=0.30,<1` with `--workers` ≥ 2; proxy-forwarding via explicit `ProxyHeadersMiddleware` / trusted hosts only (fail closed when misconfigured). `root_path` and `X-Forwarded-Prefix` must match the reverse-proxy mount. |
 | External cache | **Redis** `>=7.0` server; client `redis` `>=5,<6`. Serialization: JSON UTF-8 with key version prefix `h1:`; failures raise and surface via readiness without caching poisoned values. Conformance uses `fakeredis` in unit CI and Redis in ops topology. |
 | Durable jobs | `JobBackend` protocol with **in-memory** test double and **Redis** conformance backend. Polling status retention default 24h; `Retry-After` from backend capability. BackgroundTasks remain non-durable. |
-| Browsers (0.7 evidence) | Chromium (Playwright pinned channel) for interactive HTMX/job evidence. Firefox and WebKit channels are recorded for inventory; release-blocking three-engine suite is phase **0.8**. |
+| Browsers (0.8 freeze) | Chromium, Firefox, and WebKit (Playwright pinned channels) for release-blocking HTMX/history/focus/OOB/CSP/reduced-motion evidence. |
 
 ### Framework capability matrix (portable vs host)
 
@@ -61,10 +61,42 @@ Hedron uses documented public upstream APIs. Compatibility shims are isolated by
 
 ## Public stability
 
-- Pre-1.0 APIs may change through accepted RFC revisions and release notes.
-- 1.0 public contracts follow semantic versioning.
-- Deprecations include diagnostics, replacement guidance, and at least the documented support window.
-- Rendered markup, registry metadata, HDN compiled formats, CSS symbol manifests, and plugin protocols each declare whether they are public, versioned artifacts or private details.
+Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
+(`stable` | `beta` | `experimental` | `internal` | `deferred`).
+
+- Pre-1.0 (`0.x`) public APIs may change through accepted RFC revisions, changelog entries, and
+  diagnostics when a replacement exists.
+- After `v1.0.0`, public contracts follow semantic versioning:
+  - **MAJOR** — breaking changes to a `stable` Python API, CLI contract, config key meaning,
+    diagnostic code semantics, plugin protocol, or versioned manifest/HDN format.
+  - **MINOR** — additive APIs, new optional extras, new Supported capability rows, deprecations.
+  - **PATCH** — bug fixes, security fixes, dependency floor bumps within the declared range,
+    documentation.
+- Bundled browser-asset pin changes (exact HTMX version/digest) are at least a **MINOR** and require
+  the three-engine browser suite plus asset audit evidence.
+- Manifest / `HDN_FORMAT_VERSION` bumps that reject older artifacts are **MAJOR** after 1.0; during
+  0.8 RC they require migration notes in the upgrade guide.
+- Deprecations include a diagnostic code (when feasible), replacement guidance, and a numeric support
+  window of **at least one minor release** after `v1.0.0` before removal. Pre-1.0 removals still
+  require changelog + upgrade-guide coverage.
+- Rendered markup, registry metadata, HDN compiled formats, CSS symbol manifests, and plugin
+  protocols each declare whether they are public, versioned artifacts or private details
+  ([STABILITY.md](api/STABILITY.md)).
+
+## Phase 0.8 freeze matrix
+
+| Dimension | Freeze baseline |
+|---|---|
+| Python | CPython 3.11–3.14 |
+| FastAPI flagship | FastAPI `>=0.141.1,<0.142` + Uvicorn workers |
+| Flask adapter | Flask/Werkzeug `>=3,<4`; Waitress `>=3,<4` |
+| Django adapter | Django `>=5.2,<6`; asgiref `>=3.8,<4`; WSGI + ASGI |
+| Browsers | Chromium, Firefox, WebKit (Playwright) |
+| HTMX | Bundled 2.0.10; contract `>=2.0,<3.0` |
+| Deferred | SSE live transport; Django QuerySet DataSource |
+
+Changing a Supported row after the freeze requires an approved compatibility fix, migration
+analysis, and a complete rerun of affected `release-gate-0.8.toml` evidence.
 
 ## Cross-package compatibility
 

@@ -14,9 +14,9 @@ _MARK = _COMPONENT / "mark.txt"
 
 PLUGIN_META = PluginMeta(
     name="sample_kit",
-    version="0.7.0",
+    version="0.8.0",
     distribution="hedron-sample-kit",
-    hedron_version=">=0.7,<0.8",
+    hedron_version=">=0.8,<0.9",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -34,7 +34,7 @@ def register(ctx: PluginContext) -> None:
         module="hedron_sample_kit.components.Callout",
         distribution="hedron-sample-kit",
         props_model="CalloutProps",
-        hdn_source=str(folder / "template.hdn"),
+        hdn_source=str(folder / "template.hdx"),
         styles_path=str(folder / "styles.css"),
         folder_path=str(folder),
         asset_roots=(str(folder),),

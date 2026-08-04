@@ -152,6 +152,8 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      attestations: write
+      packages: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
@@ -175,10 +177,14 @@ jobs:
               ;;
           esac
           uv run --python 3.11 python scripts/check_release_gate.py "$VERSION"
+      - name: Build evidence bundle
+        run: |
+          uv run --python 3.11 python scripts/build_evidence_bundle.py
+          uv run --python 3.11 python scripts/dep_audit.py
       - name: Build all workspace packages
         run: |
           set -euo pipefail
-          rm -rf dist
+          rm -rf dist/*.whl dist/*.tar.gz
           mkdir -p dist
           for pyproject in packages/*/pyproject.toml; do
             pkg="$(basename "$(dirname "$pyproject")")"
@@ -186,6 +192,13 @@ jobs:
             uv build --package "$pkg"
           done
           ls -la dist
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/evidence-bundle/*
       - name: Publish to PyPI
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
@@ -263,6 +276,9 @@ jobs:
           TAG="${GITHUB_REF_NAME}"
           VERSION="${TAG#v}"
           NOTES="$(uv run --python 3.11 python scripts/release_notes.py "$VERSION" --package hedron)"
-          gh release create "$TAG" dist/* \
+          gh release create "$TAG" dist/*.whl dist/*.tar.gz \
             --title "Hedron ${VERSION}" \
             --notes "$NOTES"
+          if [ -d dist/evidence-bundle ]; then
+            gh release upload "$TAG" dist/evidence-bundle/* --clobber
+          fi

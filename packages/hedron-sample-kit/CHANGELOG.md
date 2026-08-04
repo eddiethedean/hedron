@@ -1,5 +1,20 @@
 # Changelog
 
+
+## [0.8.0] - 2026-08-03
+
+### Added
+
+- Public stability catalog, deprecation/semver policy, upgrade guide, and threat model.
+- Performance budgets with enforcement tests; three-engine browser HTMX matrix scaffolding.
+- SBOM, license inventory, browser-asset audit, and release evidence bundle scripts.
+- Flask/Django hardening suites and Django Supported floor `>=5.2,<6`.
+
+### Changed
+
+- Feature freeze: no new subsystems, adapters, or transports on the 0.8 train.
+- Sample Callout component template renamed to `template.hdx` (preferred HDN source extension).
+
 ## [0.7.0] — 2026-08-03
 
 - Phase 0.7 portable adapters, operations, and jobs train.

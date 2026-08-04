@@ -28,8 +28,12 @@
 - [x] Standard and strict profiles have documented headers and CSP behavior. *(phase 0.2+)*
 - [x] Strict profile requires an explicit `session_secret` (default development secret is rejected).
 - [x] CI can emit stable text, JSON, and SARIF diagnostics. *(phase 0.4 — `hedron check`)*
-- [ ] Dependency and component-package audits run in the release pipeline.
-- [ ] A maintained threat model records trust boundaries and residual risks.
+- [x] Dependency and component-package audits run in the release pipeline.
+  *(`SEC-08-002` / `scripts/dep_audit.py` + evidence bundle)*
+- [x] A maintained threat model records trust boundaries and residual risks.
+  *(`SEC-08-001` / [threat-model.md](../guides/threat-model.md))*
+- [x] Browser-asset pin and digest audit for bundled HTMX.
+  *(`SEC-08-003` / `scripts/asset_audit.py`)*
 
 ## Exit
 

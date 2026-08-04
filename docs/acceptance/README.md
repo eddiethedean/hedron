@@ -28,8 +28,11 @@ status commentary, not a satisfied release gate.
 - [Accessibility](ACCESSIBILITY.md)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
 - [Performance](PERFORMANCE.md)
-- [`v1.0.0` release](RELEASE_1_0.md)
+- [`v1.0.0` release](RELEASE_1_0.md) — rolls up 0.8 freeze evidence + RC rehearsal
 - [Release evidence policy](EVIDENCE.md)
+- Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),
+  [release-gate-0.7.toml](release-gate-0.7.toml),
+  [release-gate-0.8.toml](release-gate-0.8.toml)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.

@@ -1,28 +1,25 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.7 **cut-ready** as `0.7.0` (tag `v0.7.0` when cut)
+**Roadmap position:** phase 0.8 **cut-ready** as `0.8.0` (API freeze and hardening)
 **Date:** 2026-08-03
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
-`hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` `0.7.0` (MIT licensed, D-033)
+`hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` `0.8.0` (MIT licensed, D-033)
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`; Alpha — `hedron-charts`, `hedron-sample-kit`.
 
-Phase 0.7 delivers the portable adapter foundation in `hedron-core`, Supported FastAPI
-operations (gather/run_sync, Redis cache/jobs conformance, health/readiness, deploy topology),
-Supported `hedron-flask` and `hedron-django` native adapters, durable `JobBackend` with 202
-polling, and an HTMX extension asset contract. SSE live transport and Django QuerySet DataSource
-remain Deferred (D-036, D-037).
+**Feature freeze active:** phase 0.8 adds no new product subsystem, framework adapter, or
+transport. SSE live transport and Django QuerySet DataSource remain Deferred (D-036, D-037).
 
-## Phase 0.7 evidence
+## Phase 0.8 evidence
 
-- Acceptance: [ADAPTERS](acceptance/ADAPTERS.md), [OPERATIONS](acceptance/OPERATIONS.md),
-  [JOBS](acceptance/JOBS.md), [OBSERVABILITY](acceptance/OBSERVABILITY.md),
-  [ASYNC](acceptance/ASYNC.md), [PACKAGING_DEPLOYMENT](acceptance/PACKAGING_DEPLOYMENT.md).
-- Closure index: [release-gate-0.7.toml](acceptance/release-gate-0.7.toml)
+- Closure index: [release-gate-0.8.toml](docs/acceptance/release-gate-0.8.toml)
   (`Verified` or owned `Deferred`).
-- Compatibility: [COMPATIBILITY.md](COMPATIBILITY.md) Phase 0.7 entry gate (concrete ranges).
-- Reference: FastAPI `examples/reference-app` compose topology; `examples/flask-reference`;
-  `examples/django-reference`.
-- Cut procedure: [RELEASE.md](RELEASE.md) (`## Cut v0.7.0`).
-
-See the [roadmap](ROADMAP.md) for phase 0.8 API freeze entry.
+- Stability: [docs/api/STABILITY.md](docs/api/STABILITY.md).
+- Compatibility / deprecation: [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
+- Upgrade: [docs/guides/upgrade.md](docs/guides/upgrade.md).
+- Threat model: [docs/guides/threat-model.md](docs/guides/threat-model.md).
+- Performance budgets: [docs/PERFORMANCE_BUDGETS.md](docs/PERFORMANCE_BUDGETS.md).
+- Supply chain: `scripts/build_evidence_bundle.py` (SBOM, licenses, asset audit).
+- Cut procedure: [docs/RELEASE.md](docs/RELEASE.md) (`## Cut v0.8.0`).
+- After publish: rehearse `1.0.0rcN` via [RELEASE_1_0.md](docs/acceptance/RELEASE_1_0.md) and
+  `scripts/rehearse_rc.py`.

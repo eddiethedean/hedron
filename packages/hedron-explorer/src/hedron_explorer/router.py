@@ -245,7 +245,7 @@ def explorer_router() -> APIRouter:
             else (
                 "(template unavailable or outside allowlisted component roots)"
                 if meta.hdn_source
-                else "(no template.hdn)"
+                else "(no template.hdx)"
             )
         )
         styles_block = (

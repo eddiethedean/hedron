@@ -4,6 +4,11 @@ status: shipped
 
 # Content extras
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Status:** Shipped in `0.6.0`
 
 Optional content helpers live in `hedron.content` (lazy imports; missing extras raise

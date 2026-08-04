@@ -23,6 +23,9 @@ logger = logging.getLogger("hedron.discovery")
 
 __all__ = ["DiscoveredComponent", "discover_component_folders", "load_component_module"]
 
+_PREFERRED_TEMPLATE_NAME = "template.hdx"
+_LEGACY_TEMPLATE_NAME = "template.hdn"
+
 
 @dataclass(frozen=True, slots=True)
 class DiscoveredComponent:
@@ -45,7 +48,17 @@ def discover_component_folders(roots: Sequence[Path]) -> tuple[DiscoveredCompone
             if not child.is_dir() or child.name.startswith((".", "_")):
                 continue
             component_py = child / "component.py"
-            template_hdn = child / "template.hdn"
+            preferred_template = child / _PREFERRED_TEMPLATE_NAME
+            legacy_template = child / _LEGACY_TEMPLATE_NAME
+            template_hdn = preferred_template if preferred_template.is_file() else legacy_template
+            if preferred_template.is_file() and legacy_template.is_file():
+                logger.warning(
+                    "Both %s and legacy %s exist in %s; using %s",
+                    _PREFERRED_TEMPLATE_NAME,
+                    _LEGACY_TEMPLATE_NAME,
+                    child,
+                    _PREFERRED_TEMPLATE_NAME,
+                )
             styles_css = child / "styles.css"
             browser_mjs = child / "browser.mjs"
             examples_py = child / "examples.py"

@@ -4,6 +4,11 @@ status: shipped
 
 # `Action`
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Status:** Accepted
 
 An action is a typed server operation bound to UI controls and normal FastAPI request processing.

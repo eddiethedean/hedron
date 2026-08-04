@@ -13,11 +13,14 @@ Reference and sample packages exercise public helpers rather than private test u
 
 ## Phase 0.7+ evidence
 
-- [ ] Portable adapter semantics run through one shared suite and every capability claim has a native
-  framework/server test.
-- [ ] Flask and Django clean environments exclude FastAPI and exercise native reference slices.
-- [ ] Real browser jobs are active rather than permanently skipped for shipped browser assets.
-- [ ] Release-gate manifests map stable acceptance IDs to commands, CI jobs, matrix dimensions, and
+- [x] Portable adapter semantics run through one shared suite and every capability claim has a native
+  framework/server test. *(0.7 + `ADP-*-08-*`)*
+- [x] Flask and Django clean environments exclude FastAPI and exercise native reference slices.
+- [x] Real browser jobs are active rather than permanently skipped for shipped browser assets.
+  *(`HTMX-08-001` / CI three-engine matrix on main)*
+- [x] Release-gate manifests map stable acceptance IDs to commands, CI jobs, matrix dimensions, and
   retained artifacts under [EVIDENCE.md](EVIDENCE.md).
+  *([release-gate-0.8.toml](release-gate-0.8.toml))*
 - [ ] Published `1.0.0rcN` artifacts, not repository imports, pass clean install, upgrade,
   deployment, rollback, offline, and complete acceptance rehearsals.
+  *(local `scripts/rehearse_rc.py` proves the path; index publish is the cut step)*

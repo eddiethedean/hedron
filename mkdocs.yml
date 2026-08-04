@@ -92,7 +92,7 @@ extra:
   status:
     new: New
     stable: Stable
-    shipped: Shipped in 0.7
+    shipped: Shipped in 0.8
     planned: Planned
   social:
     - icon: fontawesome/brands/github
@@ -117,14 +117,18 @@ nav:
     - Charts and HTMX: guides/charts-and-htmx.md
     - Test your UI: guides/testing.md
     - Security: guides/security.md
+    - Threat model: guides/threat-model.md
     - Deployment: guides/deployment.md
+    - Upgrade (0.7 → 0.8): guides/upgrade.md
     - FAQ: guides/faq.md
     - Troubleshooting: guides/troubleshooting.md
   - Examples:
     - Interactive demos: examples/index.md
   - Reference:
     - Overview: api/README.md
-    - Shipped in 0.7:
+    - Stability: api/STABILITY.md
+    - Performance budgets: PERFORMANCE_BUDGETS.md
+    - Shipped in 0.8:
       - Application:
         - Hedron: api/HEDRON.md
         - Router: api/ROUTER.md

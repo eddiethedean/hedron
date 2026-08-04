@@ -4,6 +4,11 @@ status: implemented
 
 # Job interaction contracts
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Target:** phase 0.7E.
 
 `JobBackend` is a protocol over application-operated durable work. Hedron does not ship a queue,

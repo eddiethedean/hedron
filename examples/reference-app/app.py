@@ -444,7 +444,7 @@ def _status_banner_section(*, request: Request | None = None) -> Any:
     if program is None:
         assert_runtime_compile_allowed(production=in_production, what="HDN")
         program = compile_hdn(
-            (root / "template.hdn").read_text(encoding="utf-8"),
+            (root / "template.hdx").read_text(encoding="utf-8"),
             style_symbols=styles.as_dict(),
         ).program
 

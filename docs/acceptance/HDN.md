@@ -13,6 +13,8 @@
 - [x] Formatter is idempotent.
 - [x] Source maps identify original templates.
 - [x] `inspect` and `eject` preserve semantic contracts.
+- [x] Preferred source extension is `.hdx` (`template.hdx`); legacy `.hdn` remains discoverable.
+  `hedron eject` / `hedron dev` use `.hdx` (with `.hdn` still watched for compatibility).
 - [x] Production consumes versioned compiled artifacts without Node.js.
 - [x] Parser/compiler fuzz tests have bounded time (memory bound deferred).
 

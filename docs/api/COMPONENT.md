@@ -4,6 +4,11 @@ status: shipped
 
 # `Component`
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Status:** Accepted · **Shipped in 0.4**
 
 `Component` is the base protocol for reusable server-rendered UI.
@@ -39,3 +44,9 @@ Composition helpers accept components, native nodes, strings, supported sequence
 Component identity is deterministic for diagnostics and targets when requested. It excludes secret values and is never an authorization mechanism.
 
 Applications normally subclass `Component`, compose built-ins in functions, or author HDN-backed components. Internal node classes are not a stability promise unless listed in this API set.
+
+## Component folders
+
+Discovered component folders may include `component.py`, `template.hdx` (preferred HDN source;
+`template.hdn` remains a compatibility fallback), `styles.css`, `browser.mjs`, and `examples.py`.
+`hedron eject` writes `template.hdx` overrides.

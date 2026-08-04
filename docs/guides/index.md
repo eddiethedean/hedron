@@ -33,6 +33,11 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
     <strong>Deployment</strong>
     <p>Production env, build manifests, assets, and uvicorn.</p>
   </a>
+  <a class="hedron-card" href="upgrade/">
+    <span class="hedron-card__icon" aria-hidden="true">↑</span>
+    <strong>Upgrade</strong>
+    <p>0.7 → 0.8 freeze notes, Django floor, Deferred claims, and RC path.</p>
+  </a>
   <a class="hedron-card" href="faq/">
     <span class="hedron-card__icon" aria-hidden="true">?</span>
     <strong>FAQ</strong>
@@ -50,8 +55,8 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
   </a>
 </div>
 
-Looking for callable APIs in this release? Start with [Shipped in 0.6](../api/README.md).
+Looking for callable APIs in this release? Start with [Shipped through 0.8](../api/README.md).
 For your first server interaction, see [HTMX interactions](htmx-interactions.md); then add
 visualization with [Charts and HTMX](charts-and-htmx.md).
-Design contracts that are accepted but not implemented yet live under
-[Planned](../api/README.md#planned-contracts).
+Stability classifications live under [STABILITY.md](../api/STABILITY.md); Deferred contracts are
+listed there and in the [upgrade guide](upgrade.md).

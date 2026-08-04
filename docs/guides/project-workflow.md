@@ -19,8 +19,9 @@ files are protected unless you explicitly use `--force`.
 hedron dev
 ```
 
-The development command watches Python, HDN, scoped CSS, and registered assets, then
-rebuilds affected artifacts without exposing a partially compiled registry.
+The development command watches Python, HDN (`.hdx` preferred, `.hdn` compatibility), scoped CSS,
+and registered assets, then rebuilds affected artifacts without exposing a partially compiled
+registry.
 
 If you prefer your existing ASGI workflow, run `uvicorn app:app --reload`; Hedron remains
 a normal FastAPI application.

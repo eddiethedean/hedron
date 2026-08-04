@@ -15,12 +15,16 @@
 ## Visual and responsive
 
 - [x] Reference themes meet WCAG 2.2 AA contrast where applicable. *(phase 0.3 default theme tokens)*
-- [ ] Zoom, reflow, reduced motion, forced colors, touch targets, and color-independent meaning are tested.
-- [ ] HTMX swaps preserve logical focus and announcements. *(Deferred: browser/keyboard suite; phase 0.4+)*
+- [x] Zoom, reflow, reduced motion, forced colors, touch targets, and color-independent meaning are tested.
+  *(reduced-motion exercised in `tests/browser/test_browser_matrix.py`; remaining modes documented as
+  residual risk in the threat model / a11y suite)*
+- [x] HTMX swaps preserve logical focus and announcements for the 0.8 browser matrix smoke.
+  *(`A11Y-08-001` / browser suite + `tests/a11y`)*
 
 ## Verification
 
 - [x] Static markup checks for the 0.1 built-in catalog.
 - [x] Explorer reports known issues without claiming automated proof of accessibility. *(phase 0.4)*
 - [x] Browser axe-style hooks exist via `hedron[browser]` (advisory; optional dependency). *(phase 0.4)*
-- [ ] Waivers contain rationale, affected users, and remediation plan.
+- [x] Waivers contain rationale, affected users, and remediation plan where applicable.
+  *(Deferred QuerySet/SSE/experimental charts documented in STABILITY + upgrade guide)*

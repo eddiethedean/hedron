@@ -4,7 +4,7 @@
 
 ## Purpose
 
-HDN is an optional, JSX-inspired, HTML-first language for developers who need direct markup control. It is not required for onboarding and does not embed Python or JavaScript execution.
+HDN is an optional, JSX-inspired, HTML-first language for developers who need direct markup control. Source templates use the JSX-familiar `.hdx` extension (`template.hdx`). The legacy `.hdn` extension remains discoverable for compatibility. HDN is not required for onboarding and does not embed Python or JavaScript execution.
 
 ## Syntax and semantics
 
@@ -26,4 +26,3 @@ The compiler emits an AST, typed render program, dependency manifest, style-symb
 - The grammar, precedence, escaping contexts, slots, and diagnostics have fixtures.
 - Python and HDN versions of representative components produce equivalent results.
 - HDN compilation requires no Node.js runtime.
-

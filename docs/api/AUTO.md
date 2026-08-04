@@ -4,6 +4,11 @@ status: shipped
 
 # `Auto`
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Status:** Accepted
 
 `Auto(value)` selects an appropriate component through the registered intelligent-rendering pipeline.

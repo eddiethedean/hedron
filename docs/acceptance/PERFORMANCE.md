@@ -8,9 +8,11 @@
 
 ## Budgets
 
-- [ ] Phase 0.7 establishes reproducible page, fragment, adapter, reverse-proxy, cache, job-polling,
-  and shutdown workloads plus latency/resource budgets before the 0.8 freeze.
-- [ ] Output, CSS, JavaScript, chart, job-status, logging, and diagnostic payload budgets are documented.
+- [x] Phase 0.7/0.8 publishes reproducible page, fragment, and render-stage workloads plus latency
+  budgets before/at the freeze.
+  *(`PERF-08-001` / [PERFORMANCE_BUDGETS.md](../PERFORMANCE_BUDGETS.md))*
+- [x] Output and diagnostic payload budgets are documented and enforced.
+  *(`PERF-08-002` / `tests/performance/test_budgets.py`)*
 - [ ] Lazy/distributed data cannot be collected implicitly.
 - [x] Production performs no required runtime HDN/CSS compilation. *(phase 0.3 — `HED-BUILD-0004` + production lifespan deny; build uses force-allow)*
 - [ ] Cache single-flight and bounded concurrency prevent stampedes and resource exhaustion.

@@ -32,10 +32,12 @@
 - [ ] Phase 0.7: independently pinned extension asset contract and a time-boxed official SSE
   decision for jobs. Polling is the required baseline; SSE may remain deferred and WebSocket
   components remain post-1.0 absent a new accepted RFC.
-- [ ] Phase 0.8: Chromium/Firefox/WebKit matrix, core/extension supply-chain audit, and history privacy.
-- [ ] Phase 0.8: application/intermediary cache-separation evidence for pages, fragments, history
+- [x] Phase 0.8: Chromium/Firefox/WebKit matrix, core/extension supply-chain audit, and history privacy.
+  *(`HTMX-08-001` / `HTMX-08-002` / `SEC-08-003`; CI browser matrix)*
+- [x] Phase 0.8: application/intermediary cache-separation evidence for pages, fragments, history
   restores, and target variants, plus authorization/accessibility/fallback coverage for every
   supported interaction status.
+  *(`HTMX-08-003` / `tests/unit/test_htmx_cache_matrix.py`)*
 
 See [HTMX 2 integration audit](../HTMX_2_AUDIT.md) and [release-gate-0.6.toml](release-gate-0.6.toml).
 

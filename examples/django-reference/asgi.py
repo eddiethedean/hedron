@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
-from examples.django_reference.hedron_django_ref import asgi_application
+import sys
+from pathlib import Path
 
-application = asgi_application
+_ROOT = Path(__file__).resolve().parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))

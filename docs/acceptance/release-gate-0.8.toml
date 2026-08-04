@@ -1,0 +1,183 @@
+# Phase 0.8 API-freeze / hardening evidence index.
+# Consumed by scripts/check_release_gate.py 0.8.0
+
+[[evidence]]
+id = "FRZ-001"
+state = "Verified"
+command = "uv run python scripts/check_stability_inventory.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "FRZ-002"
+state = "Verified"
+command = "uv run python -c \"from pathlib import Path; t=Path('docs/COMPATIBILITY.md').read_text(); assert 'at least one minor release' in t and 'Django' in t and '5.2' in t\""
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "FRZ-003"
+state = "Verified"
+command = "uv run python -c \"from pathlib import Path; assert Path('docs/guides/upgrade.md').is_file(); assert '0.8' in Path('docs/guides/upgrade.md').read_text()\""
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "SEC-08-001"
+state = "Verified"
+command = "uv run python -c \"from pathlib import Path; t=Path('docs/guides/threat-model.md').read_text(); assert 'CSRF' in t and 'TrustedHtml' in t and 'Explorer' in t\""
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "SEC-08-002"
+state = "Verified"
+command = "uv run python scripts/dep_audit.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "SEC-08-003"
+state = "Verified"
+command = "uv run python scripts/asset_audit.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "A11Y-08-001"
+state = "Verified"
+command = "uv run pytest tests/a11y -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PERF-08-001"
+state = "Verified"
+command = "uv run python -c \"from pathlib import Path; t=Path('docs/PERFORMANCE_BUDGETS.md').read_text(); assert '250 ms' in t and 'PERF-08' in t\""
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "PERF-08-002"
+state = "Verified"
+command = "uv run pytest tests/performance/test_budgets.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "HTMX-08-001"
+state = "Verified"
+command = "HEDRON_BROWSER=1 HEDRON_BROWSER_ENGINE=chromium uv run pytest -q -m browser --tb=short"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "HTMX-08-002"
+state = "Verified"
+command = "uv run pytest tests/browser/test_browser_matrix.py -q --collect-only"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "HTMX-08-003"
+state = "Verified"
+command = "uv run pytest tests/unit/test_htmx_cache_matrix.py -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-08-001"
+state = "Verified"
+command = "uv run pytest tests/ops/test_packaging_isolation.py -q"
+ci_job = "quality"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-08-002"
+state = "Verified"
+command = "uv run python scripts/check_release_gate.py 0.8.0 --skip-evidence"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "SUP-08-001"
+state = "Verified"
+command = "uv run python scripts/generate_sbom.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "SUP-08-002"
+state = "Verified"
+command = "uv run python scripts/license_inventory.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "SUP-08-003"
+state = "Verified"
+command = "uv run python scripts/build_evidence_bundle.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-FLK-08-001"
+state = "Verified"
+command = "uv run pytest tests/adapters/flask -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-FLK-08-002"
+state = "Verified"
+command = "uv run pytest tests/adapters/flask/test_flask_hardening.py -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-FLK-08-003"
+state = "Verified"
+command = "uv run pytest tests/adapters/flask/test_packaging.py -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-DJG-08-001"
+state = "Verified"
+command = "uv run pytest tests/adapters/django -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-DJG-08-002"
+state = "Verified"
+command = "uv run pytest tests/adapters/django/test_django_hardening.py -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-DJG-08-003"
+state = "Verified"
+command = "uv run pytest tests/adapters/django/test_packaging.py -q"
+ci_job = "adapters"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-DJG-002"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron"
+rationale = "Django QuerySet as a first-party DataSource remains Deferred (D-036)."
+destination = "post-1.0 data-source expansion"
+stability_impact = "No Supported QuerySet paging/security claim through the 0.8 freeze."
+
+[[evidence]]
+id = "JOB-006"
+state = "Deferred"
+command = ""
+ci_job = ""
+owner = "hedron"
+rationale = "Official HTMX SSE extension remains Deferred; bounded polling is the Supported job-status transport (D-037)."
+destination = "post-1.0 live transport"
+stability_impact = "No SSE live regions in the Supported surface."

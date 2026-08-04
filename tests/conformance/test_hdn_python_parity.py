@@ -51,7 +51,7 @@ def test_python_and_hdn_status_banner_equivalent() -> None:
     hdn_html = render(
         run_program(
             compile_hdn(
-                (root / "template.hdn").read_text(encoding="utf-8"),
+                (root / "template.hdx").read_text(encoding="utf-8"),
                 style_symbols=css.manifest.symbols,
             ).program,
             {"label": "Ready", "tone": "info"},

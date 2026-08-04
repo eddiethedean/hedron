@@ -218,7 +218,7 @@ def _cmd_eject(args: argparse.Namespace) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
     if meta.hdn_source and Path(meta.hdn_source).is_file():
-        dest = out_dir / "template.hdn"
+        dest = out_dir / "template.hdx"
         if dest.exists() and not args.force:
             print(f"Refusing to overwrite {dest} (use --force)", file=sys.stderr)
             return 1
@@ -226,7 +226,7 @@ def _cmd_eject(args: argparse.Namespace) -> int:
         written.append(str(dest))
     elif meta.hdn_source is None:
         # Eject a starter HDN shell preserving semantic contract notes
-        dest = out_dir / "template.hdn"
+        dest = out_dir / "template.hdx"
         if not dest.exists() or args.force:
             dest.write_text(
                 f"<!-- Ejected template for {meta.logical_id}. -->\n"
@@ -382,7 +382,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
                 except HedronError as exc:
                     diags.extend(exc.diagnostics)
 
-    # Security / a11y informational findings (display only; excluded from exit code)
+    # Security / a11y / freeze-boundary informational findings (excluded from exit code)
     info_diags = [
         make_diagnostic(
             "HED-SEC-0001",
@@ -397,6 +397,45 @@ def _cmd_check(args: argparse.Namespace) -> int:
             title="Run axe for interactive surfaces",
             explanation="Static markup checks do not replace browser accessibility analysis.",
             remediation="Use hedron[browser] axe hooks for Explorer and forms.",
+        ),
+        make_diagnostic(
+            "HED-COMPAT-0001",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="0.8 feature freeze is active",
+            explanation=(
+                "Phase 0.8 freezes the public API baseline; no new subsystems, adapters, "
+                "or transports. SSE live transport and Django QuerySet DataSource remain Deferred."
+            ),
+            remediation="See docs/api/STABILITY.md and docs/guides/upgrade.md.",
+        ),
+        make_diagnostic(
+            "HED-COMPAT-0002",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="Django Supported floor is 5.2 LTS",
+            explanation="hedron-django requires Django >=5.2,<6 for Supported adapter claims.",
+            remediation="Upgrade Django to the 5.2 LTS line before production adapter use.",
+        ),
+        make_diagnostic(
+            "HED-COMPAT-0003",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="Interactive Plotly/Altair runtimes are experimental",
+            explanation=(
+                "Full Plotly/Vega interactive hosts remain experimental until offline pins and "
+                "browser evidence promote them; prefer Matplotlib static SVG for stable dashboards."
+            ),
+            remediation="See docs/api/STABILITY.md and docs/api/CHART.md.",
+        ),
+        make_diagnostic(
+            "HED-COMPAT-0004",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="Prefer template.hdx for HDN sources",
+            explanation=(
+                "Component discovery prefers template.hdx; template.hdn remains a compatibility "
+                "fallback. hedron eject writes .hdx."
+            ),
+            remediation=(
+                "Rename template.hdn to template.hdx when convenient; see docs/guides/upgrade.md."
+            ),
         ),
     ]
     all_diags = [*diags, *info_diags]
@@ -501,7 +540,18 @@ def _cmd_dev(args: argparse.Namespace) -> int:
     base = Path(args.project or Path.cwd()).resolve()
     settings = load_hedron_settings(base)
     roots = list(settings.resolved_roots(base=base))
-    watch_exts = {".hdn", ".css", ".mjs", ".js", ".png", ".svg", ".jpg", ".jpeg", ".webp"}
+    watch_exts = {
+        ".hdx",
+        ".hdn",
+        ".css",
+        ".mjs",
+        ".js",
+        ".png",
+        ".svg",
+        ".jpg",
+        ".jpeg",
+        ".webp",
+    }
     print(f"hedron dev watching {roots or [base]} (Ctrl+C to stop)", file=sys.stderr)
     result = run_build(project_dir=base, settings=settings, production=False)
     print(f"initial build → {result.build_dir}", file=sys.stderr)

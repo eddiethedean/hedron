@@ -4,6 +4,11 @@ status: shipped
 
 # Explorer API
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Status:** Accepted for phase 0.4
 
 `hedron-explorer` mounts under `/hedron-explorer` when `explorer` is `development` or `secured`.

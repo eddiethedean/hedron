@@ -23,7 +23,7 @@ def test_diagnostic_json_and_sarif_include_span() -> None:
         title="Bad template",
         explanation="Missing close tag",
         remediation="Close the element",
-        span=SourceSpan(path="template.hdn", start_line=3, start_column=2),
+        span=SourceSpan(path="template.hdx", start_line=3, start_column=2),
     )
     payload = diag.as_json()
     assert payload["code"] == "HED-HDN-0001"

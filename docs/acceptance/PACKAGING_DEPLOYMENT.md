@@ -11,24 +11,25 @@
 ## Packages
 
 - [x] `hedron-core` installs and imports without FastAPI, Flask, or Django.
-- [ ] `hedron-flask` and `hedron-django` do not install FastAPI, directly or through required
-  Explorer/development dependencies. *(phase 0.7C–0.7D; ADP-FLK-003 / ADP-DJG-003)*
-- [ ] Optional integrations import lazily and publish compatibility ranges. *(later phases — charts/Flask/Django)*
+- [x] `hedron-flask` and `hedron-django` do not install FastAPI, directly or through required
+  Explorer/development dependencies. *(ADP-FLK-003 / ADP-DJG-003 / PKG-08-001)*
+- [x] Optional integrations import lazily and publish compatibility ranges.
 - [x] Wheels and source distributions contain typing metadata, browser assets (HTMX / disclose), and licenses. *(Application HDN/CSS ship via project builds, not the framework wheel.)*
 - [x] Missing extras produce exact install instructions without breaking unrelated imports. *(`hedron[data]` / `hedron-data`; other adapters remain later)*
 
 ## Deployment
 
-- [ ] The reference FastAPI application runs with multiple workers, in a container, behind a
+- [x] The reference FastAPI application runs with multiple workers, in a container, behind a
   prefixed reverse proxy, with external static assets and executable cache/job conformance
   implementations. *(phase 0.7B; OPS-002 / OPS-003)*
 - [x] Production startup uses precompiled deterministic manifests and fails closed when missing/invalid (`HED-BUILD-0003`); runtime HDN/CSS compile is denied offline. *(phase 0.3)*
 - [x] Static assets work through `StaticFiles` (`/hedron-static`, `/hedron-assets`). *(External CDN host configuration remains later.)*
-- [ ] Lifespan, graceful shutdown, caches, background tasks, and external jobs are documented and
+- [x] Lifespan, graceful shutdown, caches, background tasks, and external jobs are documented and
   exercised under termination/degradation. *(phase 0.7B; OPS-004–OPS-007)*
 - [x] Explorer is absent from default production routes (`explorer="off"`; verified in FastAPI MVP tests).
-- [ ] Dependency, browser-asset, and component-package licenses and vulnerabilities are auditable;
+- [x] Dependency, browser-asset, and component-package licenses and vulnerabilities are auditable;
   phase 0.8 produces an SBOM, provenance, and retained release evidence bundle.
+  *(`SUP-08-*` / `scripts/build_evidence_bundle.py`)*
 
 ## Exit
 

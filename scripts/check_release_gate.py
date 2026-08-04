@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_BY_MAJOR_MINOR = {
     "0.6": ROOT / "docs" / "acceptance" / "release-gate-0.6.toml",
     "0.7": ROOT / "docs" / "acceptance" / "release-gate-0.7.toml",
+    "0.8": ROOT / "docs" / "acceptance" / "release-gate-0.8.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 

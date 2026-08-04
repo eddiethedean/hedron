@@ -9,10 +9,14 @@ Hedron documentation separates **callable APIs that ship in this release** from
     Advanced typing and rendering primitives such as `NodeLike`, `RenderMode`, and
     `get_registry` live in `hedron_core`. Prefer `hedron` re-exports when available.
 
-## Shipped in 0.6
+**Stability:** Phase 0.8 freezes public classifications in [STABILITY.md](STABILITY.md)
+(`beta` | `experimental` | `internal` | `deferred`). Package maturity (Beta/Alpha) is separate
+from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
-These surfaces are implemented on the **0.6.0** train (includes all 0.1–0.5
-surfaces plus visualization and first-party integrations).
+## Shipped through 0.8
+
+These surfaces are implemented on the **0.8.0** freeze train (includes all 0.1–0.7
+surfaces plus hardening and stability labels).
 
 ### Application
 
@@ -58,10 +62,15 @@ surfaces plus visualization and first-party integrations).
 Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTICS.md) ·
 [Compatibility](../COMPATIBILITY.md) · [Glossary](../GLOSSARY.md)
 
-## Planned contracts
+## Stability and adapters
 
-**Accepted ≠ shipped.** Future public APIs remain documented as design contracts until
-their owning phase lands.
+- [Stability classifications](STABILITY.md) — 0.8 freeze catalog
+- [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
+- [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling (SSE Deferred)
 
-- [Framework adapter contracts](ADAPTERS.md) — portable foundation in 0.7A
-- [Job interaction contracts](JOBS.md) — durable work interaction in 0.7E
+## Deferred contracts
+
+**Accepted ≠ Supported.** These remain Deferred through the freeze (D-036, D-037):
+
+- Django QuerySet as a first-party DataSource
+- Official HTMX SSE live transport

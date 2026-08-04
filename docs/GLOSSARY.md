@@ -20,7 +20,7 @@
 
 **Fragment** — HTML intended to replace or augment part of a document, normally in response to HTMX.
 
-**HDN** — Hedron’s optional JSX-inspired, HTML-first server template language.
+**HDN** — Hedron’s optional JSX-inspired, HTML-first server template language. Its source files use the `.hdx` extension; `.hdn` remains a compatibility alias.
 
 **HedronRoute** — The `APIRoute` subclass that recognizes component contracts and produces Hedron responses and metadata.
 

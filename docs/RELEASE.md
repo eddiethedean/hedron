@@ -85,35 +85,40 @@ Before any 0.7 adapter contract is implemented:
 
 ## Cut `v0.7.0` (portable adapters and operations)
 
-> **Status:** Ready to cut. Do not retag after publish.
-
-1. Confirm staged gates 0.7A–0.7F via `uv run python scripts/check_release_gate.py 0.7.0` and
-   [release-gate-0.7.toml](acceptance/release-gate-0.7.toml).
-2. Confirm adapters: FastAPI / Flask / Django = **supported**; SSE transport and Django QuerySet =
-   **deferred** (D-036, D-037).
-3. Confirm CI green on 3.11–3.14 including adapter/ops suites.
-4. Tag and push:
-
-```bash
-git tag -a v0.7.0 -m "Hedron 0.7.0"
-git push origin v0.7.0
-```
-
-5. After publish, update STATUS/README to record publication and point at phase 0.8.
+> **Status:** Published as `v0.7.0`. Do not retag.
 
 ## Cut `v0.8.0` (feature-freeze baseline)
 
-1. Reject net-new subsystems, adapters, or transports after the freeze.
-2. Freeze public API/artifact stability classifications and supported compatibility matrices.
-3. Produce the SBOM, vulnerability reports, browser-asset/license inventory, provenance, migration,
-   rollback, browser-matrix, performance, security, and accessibility evidence bundle.
+> **Status:** Ready to cut. Do not retag after publish.
 
-## Rehearse and cut `v1.0.0`
+1. Confirm feature freeze: no net-new subsystems, adapters, or transports.
+2. Confirm `uv run python scripts/check_release_gate.py 0.8.0` and
+   [release-gate-0.8.toml](acceptance/release-gate-0.8.toml) (`Verified` or owned `Deferred`).
+3. Confirm stability catalog ([api/STABILITY.md](api/STABILITY.md)), compatibility/deprecation
+   policy, upgrade guide, SBOM/license/asset audits, three-engine browser matrix, and performance
+   budget enforcement are green.
+4. Confirm CI green on Python 3.11–3.14 including adapter, ops, and browser (Chromium/Firefox/WebKit)
+   suites.
+5. Finalize per-package `CHANGELOG.md` `[0.8.0]` sections; sync versions/`__version__`.
+6. Tag and push:
+
+```bash
+git tag -a v0.8.0 -m "Hedron 0.8.0"
+git push origin v0.8.0
+```
+
+7. After publish, update STATUS/README to record publication and point at `1.0.0rcN` rehearsal.
+   Retain the evidence bundle (SBOM, licenses, asset audit, test summaries, lockfile digest).
+
+## Rehearse `1.0.0rcN` and cut `v1.0.0`
 
 1. Publish `1.0.0rc1` (and later `rcN` as required) through the same package pipeline as stable.
-2. From published RC artifacts, run clean install, upgrade, complete reference deployment, native
-   adapter slices, offline/no-Node, rollback, and acceptance-owner sign-off.
-3. Publish `v1.0.0` only when the final RC evidence is green and the stable artifact differs only by
+   Package metadata and tags use PEP 440 prerelease forms (`1.0.0rc1`, tag `v1.0.0rc1`).
+2. From **published** RC artifacts only (not the workspace): clean install, upgrade from `0.8.0`,
+   complete reference deployment, native Flask/Django slices, offline/no-Node, three-engine browser
+   matrix, rollback rehearsal, and [RELEASE_1_0.md](acceptance/RELEASE_1_0.md) owner sign-off.
+3. Iterate `rc2+` for fixes and documentation only.
+4. Publish `v1.0.0` only when the final RC evidence is green and the stable artifact differs only by
    approved version/release metadata.
 
 ## Cut `v0.6.0` (visualization and first-party integrations)

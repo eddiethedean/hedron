@@ -4,6 +4,11 @@ status: shipped
 
 # Interaction APIs
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Status:** Shipped in `0.6.0`
 
 Typed FastAPI/HTMX request and result contracts live in `hedron.interaction` and are

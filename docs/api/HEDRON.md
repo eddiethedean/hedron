@@ -4,6 +4,11 @@ status: shipped
 
 # `Hedron`
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Status:** Accepted · **Shipped in 0.4**
 
 `Hedron` is the batteries-included FastAPI application. It preserves normal FastAPI

@@ -200,9 +200,9 @@ def test_cli_new_check_graph_audit(tmp_path: Path, monkeypatch: pytest.MonkeyPat
         name="Pill",
         module="demo",
         distribution="app",
-        hdn_source=str(tmp_path / "t.hdn"),
+        hdn_source=str(tmp_path / "t.hdx"),
     )
-    (tmp_path / "t.hdn").write_text("<div>x</div>", encoding="utf-8")
+    (tmp_path / "t.hdx").write_text("<div>x</div>", encoding="utf-8")
     (tmp_path / "pyproject.toml").write_text("[tool.hedron]\n", encoding="utf-8")
 
     with pytest.raises(SystemExit) as graph_exc:
@@ -231,7 +231,7 @@ def test_explorer_blocks_path_outside_allowlist(tmp_path: Path) -> None:
     secret.write_text("TOP_SECRET", encoding="utf-8")
     folder = tmp_path / "components" / "Safe"
     folder.mkdir(parents=True)
-    (folder / "template.hdn").write_text("<div>ok</div>", encoding="utf-8")
+    (folder / "template.hdx").write_text("<div>ok</div>", encoding="utf-8")
     register_component(
         logical_id="app:safe.Safe",
         name="Safe",
@@ -263,7 +263,7 @@ def test_explorer_rejects_folder_path_as_root(tmp_path: Path) -> None:
     secret.write_text("TOP_SECRET", encoding="utf-8")
     folder = tmp_path / "components" / "Safe"
     folder.mkdir(parents=True)
-    (folder / "template.hdn").write_text("<div>ok</div>", encoding="utf-8")
+    (folder / "template.hdx").write_text("<div>ok</div>", encoding="utf-8")
     register_component(
         logical_id="app:safe.Safe",
         name="Safe",

@@ -11,11 +11,10 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase 0.7 is **cut-ready** as `0.7.0` (portable adapters,
-> FastAPI operations, Supported `hedron-flask` / `hedron-django`, durable jobs with
-> polling, HTMX extension asset contract). The project is MIT-licensed. SSE transport and
-> Django QuerySet DataSource remain Deferred. Next milestone after the `v0.7.0` cut: phase 0.8
-> (API freeze and hardening).
+> **Project status:** Phase 0.8 is **cut-ready** as `0.8.0` (feature-frozen API baseline and
+> hardening). No new subsystems, adapters, or transports. SSE transport and Django QuerySet
+> DataSource remain Deferred. After the `v0.8.0` cut, final-version rehearsal uses published
+> `1.0.0rcN` artifacts.
 
 **Package maturity:** `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, and `hedron-django` are Beta. `hedron-charts` and `hedron-sample-kit`
@@ -103,8 +102,8 @@ Phase 0.0 publishes no package. Each implementation phase maps to an initial rel
 | 0.4 | `v0.4.0` | Explorer, CLI, testing, plugins, and component-author platform (**published**) |
 | 0.5 | `v0.5.0` | Data applications, intelligent rendering, caching, and utility UI (**published**) |
 | 0.6 | `v0.6.0` | Visualization and first-party integrations (**published**) |
-| 0.7 | `v0.7.0` | Portable adapters, Flask/Django, jobs, and operations (**cut-ready**) |
-| 0.8 | `v0.8.0` | Feature-frozen public API baseline and hardening |
+| 0.7 | `v0.7.0` | Portable adapters, Flask/Django, jobs, and operations (**published**) |
+| 0.8 | `v0.8.0` | Feature-frozen public API baseline and hardening (**cut-ready**) |
 | 1.0 | `v1.0.0` | Stable supported Hedron release |
 
 See the complete [roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/) for scope, feature ownership, RFC assignments, and release gates.

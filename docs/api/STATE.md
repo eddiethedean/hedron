@@ -4,6 +4,11 @@ status: shipped
 
 # State APIs and boundaries
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Status:** Accepted
 
 `SessionState` is a typed adapter over the host framework’s configured session mechanism. It is not a global Hedron store.

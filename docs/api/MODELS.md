@@ -4,6 +4,11 @@ status: shipped
 
 # `Model`, `Props`, `FormModel`, and `EventPayload`
 
+
+!!! note "Stability (0.8 freeze)"
+
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+
 **Status:** Accepted
 
 Hedron exposes purpose-specific model bases backed initially by Pydantic.
