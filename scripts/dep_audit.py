@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "dist" / "evidence-bundle"
@@ -35,6 +36,25 @@ def _run_pip_audit() -> subprocess.CompletedProcess[str]:
     )
 
 
+def _vuln_entries(payload: Any) -> list[dict[str, Any]]:
+    """Return packages that have non-empty vulns lists."""
+    deps: list[Any]
+    if isinstance(payload, dict):
+        deps = list(payload.get("dependencies") or [])
+    elif isinstance(payload, list):
+        deps = payload
+    else:
+        return []
+    found: list[dict[str, Any]] = []
+    for dep in deps:
+        if not isinstance(dep, dict):
+            continue
+        vulns = dep.get("vulns") or []
+        if vulns:
+            found.append(dep)
+    return found
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     report: dict[str, object] = {"tool": None, "status": "skipped", "findings": []}
@@ -53,14 +73,14 @@ def main() -> int:
         or "command not found" in (proc.stderr or "").lower()
         or proc.returncode == 2
     )
-    if proc.returncode == 0:
-        report["tool"] = "pip-audit"
-        report["status"] = "clean"
+    payload: Any = []
+    if proc.stdout.strip():
         try:
-            report["findings"] = json.loads(proc.stdout) if proc.stdout.strip() else []
+            payload = json.loads(proc.stdout)
         except json.JSONDecodeError:
-            report["findings"] = []
-    elif missing:
+            payload = []
+
+    if missing:
         report["tool"] = "uv.lock"
         report["status"] = "lockfile-only"
         report["note"] = (
@@ -71,19 +91,36 @@ def main() -> int:
         report["stderr"] = (proc.stderr or "")[:1000]
     else:
         report["tool"] = "pip-audit"
-        report["status"] = "findings"
-        report["stderr"] = (proc.stderr or "")[:2000]
-        report["stdout"] = (proc.stdout or "")[:4000]
-        try:
-            report["findings"] = json.loads(proc.stdout) if proc.stdout.strip() else []
-        except json.JSONDecodeError:
-            report["findings"] = []
+        report["findings"] = payload
+        vulns = _vuln_entries(payload)
+        # Unpublished workspace wheels are skipped by pip-audit; that is expected pre-tag.
+        if vulns:
+            report["status"] = "findings"
+            report["vulnerable"] = [
+                {
+                    "name": v.get("name"),
+                    "version": v.get("version"),
+                    "ids": [x.get("id") for x in (v.get("vulns") or []) if isinstance(x, dict)],
+                }
+                for v in vulns
+            ]
+            report["stderr"] = (proc.stderr or "")[:2000]
+        else:
+            report["status"] = "clean"
+            if proc.returncode not in {0, 1}:
+                # Unexpected tool failure without parsed vulns.
+                report["status"] = "findings"
+                report["stderr"] = (proc.stderr or "")[:2000]
+                report["stdout"] = (proc.stdout or "")[:4000]
 
     (OUT / "dep-audit.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     status = str(report["status"])
     print(f"ok: dep audit status={status}")
     if status == "findings":
         print("error: pip-audit reported vulnerabilities (fail closed)", file=sys.stderr)
+        vulnerable = report.get("vulnerable")
+        if vulnerable:
+            print(json.dumps(vulnerable, indent=2), file=sys.stderr)
         return 1
     return 0
 

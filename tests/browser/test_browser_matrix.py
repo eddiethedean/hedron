@@ -37,6 +37,7 @@ def browser_app_url() -> Iterator[str]:
     from hedron import Hedron, InteractionResult, Page, Stack, Text
     from hedron.interaction import FragmentRegion, InteractionPolicy, OobUpdate
     from hedron_core.html import html
+    from hedron_core.security import SafeUrl, UrlPurpose
 
     app = Hedron(
         title="BrowserMatrix",
@@ -48,6 +49,7 @@ def browser_app_url() -> Iterator[str]:
         FragmentRegion(id="chart-region", selector="#chart-region"),
         FragmentRegion(id="oob-status", selector="#oob-status"),
     )
+    home_href = SafeUrl.parse("/", purpose=UrlPurpose.NAVIGATION)
 
     @app.page("/", fragment_regions=regions)
     def home() -> Page:
@@ -55,7 +57,7 @@ def browser_app_url() -> Iterator[str]:
             Stack(
                 html.div(Text("Primary panel"), id="chart-region"),
                 html.div(Text("OOB status idle"), id="oob-status"),
-                html.a("Boost link", href="/", id="boost-link"),
+                html.a("Boost link", href=home_href, id="boost-link"),
                 html.button(
                     "Refresh",
                     type="button",
