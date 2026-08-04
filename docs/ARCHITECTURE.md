@@ -29,9 +29,11 @@ rather than inventing a separate web runtime. Supported Beta adapters
 4. The same `hedron-core` renderer produces HTML.
 5. The host framework returns an HTTP response (WSGI or ASGI).
 
-Adapter **Supported** claims exclude documented Deferred rows (official HTMX SSE transport;
-Django QuerySet as a first-party DataSource; Hedron-owned Django forms). See
-[Compatibility](COMPATIBILITY.md) and [adapter acceptance](acceptance/ADAPTERS.md).
+Official HTMX SSE is **Supported** on the FastAPI flagship (0.10); Flask/Django Supported
+claims still use polling as the live fallback unless otherwise noted. Adapter **Supported**
+claims also exclude documented Deferred rows (Django QuerySet as a first-party DataSource;
+Hedron-owned Django forms). See [Compatibility](COMPATIBILITY.md) and
+[adapter acceptance](acceptance/ADAPTERS.md).
 
 ## Package boundaries
 

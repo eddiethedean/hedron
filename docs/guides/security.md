@@ -55,13 +55,35 @@ Django adapter: `CsrfViewMiddleware` remains authoritative. Safe GETs through
 portable clients that send `X-CSRF-Token`, set `CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"`.
 Form posts may use `csrfmiddlewaretoken` or `csrf_token`.
 
-Seed the cookie with a GET, then post with the header:
+Seed the cookie with a GET against a real page route, then POST an action or component
+route that requires CSRF. Example using the
+[HTMX interactions](htmx-interactions.md) sample (`/` seeds; `/status` is GET-only—add a
+POST action for writes):
+
+```python
+from hedron import Hedron, Page, Text
+
+app = Hedron(title="CSRF demo", security="standard", session_secret="replace-me")
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(Text("GET seeds hedron_csrf"), title="Home")
+
+
+@app.action("/do")
+def do_action() -> Page:
+    return Page(Text("POST ok"), title="Done")
+```
 
 ```bash
-curl -c jar -b jar http://127.0.0.1:8000/seed
+# Terminal: uv run uvicorn app:app --reload
+curl -c jar -b jar http://127.0.0.1:8000/
 TOKEN=$(grep hedron_csrf jar | awk '{print $NF}')
 curl -b jar -H "X-CSRF-Token: $TOKEN" -X POST http://127.0.0.1:8000/do
 ```
+
+Without the header, expect **403**. Safe GETs alone do not require the token.
 
 ## Redirects and HTMX headers
 
@@ -86,7 +108,7 @@ raw `HX-*` headers when a typed field exists. See the
 | `secured` | Mounted behind `explorer_dependencies` / auth gate |
 
 Prefer `explorer="off"` in scaffolds and production. Install `hedron[dev]` when you need
-Explorer.
+Explorer, then open **`/hedron-explorer/`** (trailing slash) on the running app.
 
 ## Markdown sanitize and chart callbacks
 

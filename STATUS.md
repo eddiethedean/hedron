@@ -1,3 +1,5 @@
+<!-- Generated from docs/STATUS.md — edit the docs/ copy, then run scripts/sync_status_roadmap.py -->
+
 # Specification and implementation status
 
 **Roadmap position:** phase 0.10 **published** as `v0.10.0` (packages `0.10.0`, 2026-08-04).
@@ -23,9 +25,9 @@ smoke, load/proxy backpressure evidence, Explorer live traces, and a first-party
   (`Verified` or owned `Deferred`).
 - Acceptance: [RELEASE_0_10.md](docs/acceptance/RELEASE_0_10.md) and
   [RFC-0032](docs/rfcs/RFC-0032-LIVE-TRANSPORT.md).
-- Stability: [docs/api/STABILITY.md](docs/api/STABILITY.md).
-- Compatibility / deprecation: [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
-- Upgrade: [docs/guides/upgrade.md](docs/guides/upgrade.md).
+- Stability: [api/STABILITY.md](docs/api/STABILITY.md).
+- Compatibility / deprecation: [COMPATIBILITY.md](docs/COMPATIBILITY.md).
+- Upgrade: [guides/upgrade.md](docs/guides/upgrade.md).
 - Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_10.py`.
-- Cut procedure: [docs/RELEASE.md](docs/RELEASE.md) (`## Build and cut v0.10.0`).
+- Cut procedure: [RELEASE.md](docs/RELEASE.md) (`## Build and cut v0.10.0`).
   Next capability phase packet: **0.11**.

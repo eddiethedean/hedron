@@ -17,8 +17,14 @@ a JavaScript application stack.
 
 <div class="hedron-actions" markdown>
 [Build your first app](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Explore interactive demos](examples/index.md){ .md-button }
+[Browse component gallery](examples/index.md){ .md-button }
 </div>
+
+<p class="hedron-lede" style="margin-top:0.5rem;font-size:0.95rem;opacity:0.85">
+Gallery demos are simulated in the docs browser. Clone the
+<a href="https://github.com/eddiethedean/hedron/tree/main/examples/reference-app">reference app</a>
+to run a live Hedron server.
+</p>
 
 <div class="hedron-signal-row">
   <span>Python 3.11–3.14</span>

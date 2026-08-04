@@ -10,4 +10,7 @@ QuerySet `DataSource` is explicitly deferred (D-036).
 pip install hedron-django
 ```
 
-Requires `hedron-core` and Django 5.x. Does not install FastAPI.
+Requires `hedron-core` and Django **`>=5.2,<6`**. Does not install FastAPI.
+
+Current coordinated train: **`0.10.0`**. See the
+[Django quickstart](https://hedron.readthedocs.io/en/latest/getting-started/django/).

@@ -40,7 +40,9 @@ No Node.js installation or frontend build tool is required.
 
 After the hello page, continue with:
 
+- [Learning path](learning-path.md) for a guided order
 - [Flask adapter](flask.md) or [Django adapter](django.md) if you are not on FastAPI
 - [HTMX interactions](../guides/htmx-interactions.md)
+- [Live interaction](../guides/live-interaction.md) (0.10 FastAPI)
 - [Charts and HTMX](../guides/charts-and-htmx.md)
 - [Best practices](../guides/best-practices.md)

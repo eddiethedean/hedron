@@ -61,6 +61,25 @@ exclude_docs: |
   requirements-rtd.txt
   overrides/**
 
+# Linked from indexes / search but intentionally omitted from primary nav.
+not_in_nav: |
+  DJANGO_ADAPTER_RESEARCH.md
+  FLASK_ADAPTER_RESEARCH.md
+  acceptance/**
+  foundations/**
+  implementation/**
+  rfcs/**
+
+validation:
+  nav:
+    omitted_files: info
+    not_found: warn
+    absolute_links: info
+  links:
+    not_found: warn
+    absolute_links: info
+    unrecognized_links: info
+
 markdown_extensions:
   - admonition
   - attr_list
@@ -94,7 +113,7 @@ extra:
   status:
     new: New
     stable: Stable
-    shipped: Shipped in 0.8
+    shipped: Shipped in 0.10
     planned: Planned
   social:
     - icon: fontawesome/brands/github
@@ -111,6 +130,7 @@ nav:
     - Overview: getting-started/index.md
     - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
+    - Learning path: getting-started/learning-path.md
     - Flask adapter: getting-started/flask.md
     - Django adapter: getting-started/django.md
     - Core concepts: getting-started/core-concepts.md
@@ -120,6 +140,7 @@ nav:
     - Project workflow: guides/project-workflow.md
     - Migrate from Streamlit: guides/streamlit-migration.md
     - HTMX interactions: guides/htmx-interactions.md
+    - Live interaction: guides/live-interaction.md
     - HDJ authoring: api/JINJA.md
     - Charts and HTMX: guides/charts-and-htmx.md
     - Best practices: guides/best-practices.md
@@ -128,11 +149,13 @@ nav:
     - Threat model: guides/threat-model.md
     - Deployment: guides/deployment.md
     - Plugin authoring: guides/plugin-authoring.md
-    - Upgrade (0.7 → 0.8): guides/upgrade.md
+    - Upgrade (0.8 → 0.10): guides/upgrade.md
+    - What's new in 0.10: guides/whats-new-0.10.md
+    - Support: guides/support.md
     - FAQ: guides/faq.md
     - Troubleshooting: guides/troubleshooting.md
   - Examples:
-    - Interactive demos: examples/index.md
+    - Component gallery: examples/index.md
   - Components:
     - Overview: components/index.md
     - Document and composition:
@@ -236,6 +259,10 @@ nav:
     - Hedron: api/HEDRON.md
     - Interaction: api/INTERACTION.md
     - Responses: api/RESPONSES.md
+    - SSE: api/SSE.md
+    - Streaming: api/STREAMING.md
+    - WebSocket channel: api/WEBSOCKET_CHANNEL.md
+    - Navigation preload: api/PRELOAD.md
     - Security types: api/SECURITY_TYPES.md
     - Framework adapters: api/ADAPTERS.md
     - CLI: api/CLI.md
@@ -271,33 +298,36 @@ nav:
         - Testing: api/TESTING.md
         - API diagnostics: api/DIAGNOSTICS.md
       - Configuration: CONFIGURATION.md
-      - Diagnostics: DIAGNOSTICS.md
       - Glossary: GLOSSARY.md
   - Project:
     - Status: STATUS.md
     - Compatibility: COMPATIBILITY.md
     - Roadmap: ROADMAP.md
-    - Streamlit feature cross-check: STREAMLIT_FEATURE_CROSSCHECK.md
-    - streamlit-extras feature cross-check: STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md
-    - Plotly Dash feature cross-check: PLOTLY_DASH_FEATURE_CROSSCHECK.md
-    - Gradio feature cross-check: GRADIO_FEATURE_CROSSCHECK.md
-    - Accessibility feature research: ACCESSIBILITY_FEATURE_RESEARCH.md
     - Architecture: ARCHITECTURE.md
-    - Cutting a release: RELEASE.md
     - Contributing: CONTRIBUTING.md
+    - Support: guides/support.md
+    - Security disclosure: SECURITY.md
+    - Cutting a release: RELEASE.md
     - Reference application: REFERENCE_APPLICATION.md
-  - Internals:
+  - Contributor / Spec:
     - Specification index: SPECIFICATION.md
     - Decisions: DECISIONS.md
     - Project layout: PROJECT_LAYOUT.md
     - Engineering baseline: ENGINEERING_BASELINE.md
-    - HTMX 2 audit: HTMX_2_AUDIT.md
-    - HTMX 2 extensions: HTMX_2_EXTENSIONS.md
+    - Diagnostics format: DIAGNOSTICS.md
     - Identifiers: IDENTIFIERS.md
     - Traceability: TRACEABILITY.md
-    - Readiness report: READINESS_REPORT.md
-    - Inference overrides: INFERENCE_OVERRIDES.md
     - Foundations: foundations/README.md
     - RFC catalog: rfcs/README.md
     - Implementation specifications: implementation/README.md
     - Acceptance specifications: acceptance/README.md
+    - Feature research:
+      - Streamlit cross-check: STREAMLIT_FEATURE_CROSSCHECK.md
+      - streamlit-extras cross-check: STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md
+      - Plotly Dash cross-check: PLOTLY_DASH_FEATURE_CROSSCHECK.md
+      - Gradio cross-check: GRADIO_FEATURE_CROSSCHECK.md
+      - Accessibility research: ACCESSIBILITY_FEATURE_RESEARCH.md
+      - HTMX 2 audit: HTMX_2_AUDIT.md
+      - HTMX 2 extensions: HTMX_2_EXTENSIONS.md
+      - Readiness report: READINESS_REPORT.md
+      - Inference overrides: INFERENCE_OVERRIDES.md

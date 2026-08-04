@@ -277,7 +277,10 @@ def _cmd_new(args: argparse.Namespace) -> int:
 name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["hedron>=0.4.0"]
+dependencies = [
+    "hedron>=0.10.0",
+    "uvicorn[standard]>=0.30",
+]
 
 [tool.hedron]
 component_roots = ["components"]

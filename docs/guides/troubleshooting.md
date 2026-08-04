@@ -31,14 +31,33 @@ See [Django quickstart](../getting-started/django.md).
 **Cause:** `explorer="off"`, missing `hedron[dev]`, or production forced development mode off.
 
 **Fix:** Install `hedron[dev]` for local Explorer; use `explorer="development"` only
-locally; use `secured` with auth in rare cases; keep production off.
+locally; open **`http://127.0.0.1:8000/hedron-explorer/`** (trailing slash); use `secured`
+with auth in rare cases; keep production off.
+
+## `hedron new` installs an old train
+
+**Cause:** Scaffold from a pre-0.10 CLI wrote `hedron>=0.4.0`.
+
+**Fix:** Edit `pyproject.toml` to `hedron>=0.10.0` and `uvicorn[standard]>=0.30`, then
+reinstall. Current `hedron new` scaffolds the 0.10 floor automatically.
+
+## SSE / WebSocket / preload not working
+
+**Cause:** Using Flask/Django expecting FastAPI live helpers; proxy buffering SSE; preload
+left disabled; Origin rejected.
+
+**Fix:** Live helpers (`job_status_sse_response`, `accept_page_session_channel`,
+`NavigationPreloadPolicy`) are FastAPI-flagship Supported surfaces—use polling on adapters.
+Disable response buffering for `text/event-stream`. Enable preload only with an explicit
+`NavigationPreloadPolicy(enabled=True)`. See [live interaction](live-interaction.md).
 
 ## Production startup: missing manifest (`HED-BUILD-0003`)
 
 **Cause:** `HEDRON_ENV=production` / `production=True` without `hedron build` output.
 
 **Fix:** Run `hedron build` and set `HEDRON_BUILD_DIR` if the manifest is not at
-`.hedron/build/manifest.json`.
+`.hedron/build/manifest.json`. Quickstarts do not create a production manifest—build before
+setting production mode.
 
 ## Cannot import `Auto` / `DataTable` / chart helpers
 
@@ -84,4 +103,5 @@ job backend that needs it. See [CONFIGURATION](../CONFIGURATION.md).
 ## Still stuck?
 
 Open a GitHub issue with Hedron version, command/traceback, host framework (FastAPI /
-Flask / Django), and whether `HEDRON_ENV` is set. Check [FAQ](faq.md) first.
+Flask / Django), and whether `HEDRON_ENV` is set. Check [FAQ](faq.md) and
+[Support](support.md) first. Report vulnerabilities privately via [SECURITY.md](../SECURITY.md).

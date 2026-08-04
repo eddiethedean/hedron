@@ -43,6 +43,16 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
     <strong>HTMX interactions</strong>
     <p>Refresh a declared region, return a typed fragment, inspect headers, and test the boundary.</p>
   </a>
+  <a class="hedron-card" href="live-interaction/">
+    <span class="hedron-card__icon" aria-hidden="true">◉</span>
+    <strong>Live interaction</strong>
+    <p>SSE, focused streaming, WebSocket channels, Chat/Dialog, and opt-in preload (0.10).</p>
+  </a>
+  <a class="hedron-card" href="whats-new-0.10/">
+    <span class="hedron-card__icon" aria-hidden="true">✦</span>
+    <strong>What's new in 0.10</strong>
+    <p>Release highlights, Deferred gaps, and upgrade path from 0.8/0.9.</p>
+  </a>
   <a class="hedron-card" href="testing/">
     <span class="hedron-card__icon" aria-hidden="true">✓</span>
     <strong>Test your UI</strong>
@@ -52,6 +62,11 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
     <span class="hedron-card__icon" aria-hidden="true">◇</span>
     <strong>Security</strong>
     <p>Profiles, CSRF, CSP, redirects, and Explorer modes.</p>
+  </a>
+  <a class="hedron-card" href="support/">
+    <span class="hedron-card__icon" aria-hidden="true">✉</span>
+    <strong>Support</strong>
+    <p>Where to ask, Beta expectations, and security disclosure.</p>
   </a>
   <a class="hedron-card" href="deployment/">
     <span class="hedron-card__icon" aria-hidden="true">⇪</span>
@@ -73,10 +88,10 @@ Task-oriented guidance for moving from a working page to a maintainable Hedron p
     <strong>Troubleshooting</strong>
     <p>Fix CSRF, Explorer, build, and import failures.</p>
   </a>
-  <a class="hedron-card" href="../REFERENCE_APPLICATION/">
+  <a class="hedron-card" href="https://github.com/eddiethedean/hedron/tree/main/examples/reference-app">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>
     <strong>Reference application</strong>
-    <p>Trace framework capabilities through the cumulative production-oriented example.</p>
+    <p>Clone and run the FastAPI reference app for a live, cumulative example.</p>
   </a>
 </div>
 

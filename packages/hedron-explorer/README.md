@@ -5,7 +5,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Development Component Explorer for Hedron (`0.6.0`).
+Development Component Explorer for Hedron (coordinated train **`0.10.0`**).
 
 Provides HTMX panels for components, routes, graph, security, accessibility,
 packages, settings, charts, and interaction simulation, plus sanitized JSON APIs
@@ -43,8 +43,9 @@ def home() -> Page:
     return Page(Text("Hello, Hedron"), title="Demo")
 ```
 
-Then open the Explorer route published by the app (see
-[Explorer acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/EXPLORER.md)).
+Then open **`/hedron-explorer/`** on the running app (requires `explorer="development"`
+or `secured`). Leave Explorer off in production. See the
+[Explorer API](https://hedron.readthedocs.io/en/latest/api/EXPLORER/).
 
 ## Links
 

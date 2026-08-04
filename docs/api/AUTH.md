@@ -5,11 +5,11 @@ status: shipped
 # Auth helpers
 
 
-!!! note "Stability (0.8 compatibility baseline)"
+!!! note "Stability"
 
-    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
-**Status:** Shipped in `0.6.0`
+**Status:** Shipped in `0.6.0` · optional `hedron[auth]`
 
 Hedron does **not** own identity, sessions, or claims. The `hedron[auth]` extra exposes
 thin Authlib conveniences for FastAPI/Starlette apps.
@@ -17,6 +17,13 @@ thin Authlib conveniences for FastAPI/Starlette apps.
 ```bash
 pip install "hedron[auth]"
 ```
+
+## Helpers
+
+| Symbol | Purpose |
+|---|---|
+| `create_oauth_client()` | Build an Authlib OAuth registry |
+| `OAuthHelper` | Thin register/authorize helpers around Authlib |
 
 ```python
 from hedron import OAuthHelper, create_oauth_client
@@ -35,7 +42,15 @@ helper.register(
 ```
 
 Applications remain responsible for login routes, session cookies, CSRF, and
-authorization decisions. Missing Authlib raises `HED-AUTH-0001` with
-`pip install "hedron[auth]"`.
+authorization decisions.
 
-For Hedron's own CSRF / security profiles, see [Security](../guides/security.md).
+## Errors
+
+| Code / condition | Behavior |
+|---|---|
+| Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]"` |
+| Provider misconfiguration | Authlib/provider errors bubble to the route |
+
+## See also
+
+[Security](../guides/security.md) · [Security types](SECURITY_TYPES.md)

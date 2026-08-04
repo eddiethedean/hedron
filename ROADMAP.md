@@ -1,3 +1,5 @@
+<!-- Generated from docs/ROADMAP.md — edit the docs/ copy, then run scripts/sync_status_roadmap.py -->
+
 # Capability roadmap
 
 Hedron advances through cumulative, capability-driven `0.x` phases. Phase 0.0 is the documentation

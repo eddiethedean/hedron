@@ -3,9 +3,10 @@
 [![PyPI](https://img.shields.io/pypi/v/hedron-sample-kit.svg)](https://pypi.org/project/hedron-sample-kit/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Third-party-shaped sample Hedron plugin package for the **0.4** developer
-platform. Demonstrates a component (`Callout`), styles, asset, named example,
-Explorer panel, and diagnostic owner via the `hedron.plugins` entry point.
+Third-party-shaped sample Hedron plugin package (Alpha; coordinated train **`0.10.0`**,
+first released with the 0.4 developer platform). Demonstrates a component (`Callout`),
+styles, asset, named example, Explorer panel, and diagnostic owner via the
+`hedron.plugins` entry point.
 
 ## Install
 

@@ -193,6 +193,10 @@ def test_cli_new_check_graph_audit(tmp_path: Path, monkeypatch: pytest.MonkeyPat
         main(["new", "demoapp", "--path", str(tmp_path / "demoapp")])
     assert new_exc.value.code == 0
     assert (tmp_path / "demoapp" / "app.py").is_file()
+    scaffold_toml = (tmp_path / "demoapp" / "pyproject.toml").read_text(encoding="utf-8")
+    assert 'hedron>=0.10.0' in scaffold_toml
+    assert "uvicorn[standard]" in scaffold_toml
+    assert "0.4.0" not in scaffold_toml
 
     reset_registry_for_tests()
     register_component(

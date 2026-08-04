@@ -31,12 +31,19 @@ state, CLI tooling, plugins, and testing helpers.
     cd my-hedron-app
     ```
 
-`hedron new` creates `app.py`, `pyproject.toml`, and a component directory. It refuses to
-overwrite a non-empty destination unless you pass `--force`. Do not run `uv init` and
-`hedron new` into the same directory unless you intend to replace the scaffold.
+`hedron new` creates `app.py`, `pyproject.toml`, and a component directory. The scaffold
+depends on `hedron>=0.10.0` and `uvicorn[standard]`. It refuses to overwrite a non-empty
+destination unless you pass `--force`. Do not run `uv init` and `hedron new` into the same
+directory unless you intend to replace the scaffold.
 
-Then follow the [quickstart](quickstart.md), or use the generated `app.py` from
-`hedron new`.
+Then install deps (`uv sync` or `pip install -e .`) and follow the [quickstart](quickstart.md),
+or use the generated `app.py` from `hedron new`.
+
+### Component Explorer
+
+With `hedron[dev]` installed and `explorer="development"` on `Hedron(...)`, open
+[`/hedron-explorer/`](http://127.0.0.1:8000/hedron-explorer/) while the app is running.
+Leave Explorer off in production.
 
 ## Choose a package
 
@@ -46,6 +53,7 @@ Then follow the [quickstart](quickstart.md), or use the generated `app.py` from
 | `hedron-flask` | You need Flask (Supported Beta adapter) | `uv add hedron-flask` |
 | `hedron-django` | You need Django `>=5.2,<6` (Supported Beta adapter) | `uv add hedron-django` |
 | `hedron-core` | You need framework-neutral component rendering | `uv add hedron-core` |
+| `hedron[jinja]` / `hedron-jinja` | You need optional HDJ (`.hdj`) templates over Jinja/HTML/HTMX | `uv add "hedron[jinja]"` |
 | `hedron[data]` | You need DataTable / DataEditor / data sources | `uv add "hedron[data]"` |
 | `hedron[charts]` | You need LineChart and visualization adapters | `uv add "hedron[charts]"` |
 | `hedron[markdown]` | You need Markdown rendering | `uv add "hedron[markdown]"` |
@@ -54,7 +62,7 @@ Then follow the [quickstart](quickstart.md), or use the generated `app.py` from
 | `hedron[email]` | You need email address validation helpers | `uv add "hedron[email]"` |
 | `hedron[sanitize]` | You need nh3 HTML sanitization (`TrustedHtml.nh3`) | `uv add "hedron[sanitize]"` |
 | `hedron[auth]` | You need Authlib helpers | `uv add "hedron[auth]"` |
-| `hedron[dev]` | You also want Component Explorer | `uv add "hedron[dev]"` |
+| `hedron[dev]` | You also want Component Explorer (`/hedron-explorer/`) | `uv add "hedron[dev]"` |
 | `hedron[browser]` | You need browser and accessibility test helpers | `uv add "hedron[browser]"` |
 
 Chart backends are optional on top of `hedron-charts`:

@@ -11,14 +11,15 @@ Hedron is a Python-first framework for building typed, server-rendered
 component applications with FastAPI, HTML, HTMX, scoped CSS, and optional Web
 Components—without requiring Node.js.
 
-> **Project status:** Phase **0.10** is published as **`v0.10.0`**. Live interaction (SSE, focused
-> streaming, WebSocket channels, Chat/Dialog, navigation preload) ships per RFC-0032. Phase 0.9
-> introduced HDJ and removed HDN. Next capability phase: **0.11**.
+> **Project status:** Phase **0.10** is published as **`v0.10.0`**. Live interaction (SSE,
+> focused streaming, WebSocket channels, Chat/Dialog, navigation preload) ships on the FastAPI
+> flagship. Phase 0.9 introduced HDJ and removed HDN. Next capability phase: **0.11**.
+> See [What's new in 0.10](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.10/) and
+> the [upgrade guide](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 
-> **Authoring direction:** [RFC-0031](https://hedron.readthedocs.io/en/latest/rfcs/RFC-0031-JINJA-INTEGRATION/)
-> defines HDJ, the optional explicit `.hdj` format over Jinja/HTML/HTMX for trusted application
-> authors. Native HTML, CSS, JavaScript, and Web Components remain available; Hedron adds typed
-> bridges without hiding the web platform. D-041 removes HDN with no compatibility layer.
+> **Authoring notes:** Optional [HDJ](https://hedron.readthedocs.io/en/latest/api/JINJA/)
+> (`.hdj` over Jinja/HTML/HTMX) is available via `hedron[jinja]`. Native HTML, CSS, JavaScript,
+> and Web Components remain first-class. HDN was removed in 0.9 with no compatibility layer.
 
 **Package maturity:** `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, and `hedron-jinja` are Beta. `hedron-charts` and
@@ -35,7 +36,7 @@ Components—without requiring Node.js.
 | [`hedron-charts`](https://pypi.org/project/hedron-charts/) | Alpha | Visualization adapters | `pip install "hedron[charts]"` or `hedron-charts` |
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Beta | Flask adapter (Supported) | `pip install hedron-flask` |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Django adapter (Supported) | `pip install hedron-django` |
-| `hedron-jinja` | Beta | HDJ: explicit advanced `.hdj` templates over Jinja/HTML/HTMX | `pip install hedron-jinja` |
+| [`hedron-jinja`](https://pypi.org/project/hedron-jinja/) | Beta | HDJ: explicit advanced `.hdj` templates over Jinja/HTML/HTMX | `pip install hedron-jinja` |
 | [`hedron-sample-kit`](https://pypi.org/project/hedron-sample-kit/) | Alpha | Sample third-party plugin package | `pip install hedron-sample-kit` |
 
 ## Product direction
@@ -140,7 +141,7 @@ Build locally:
 
 ```bash
 uv sync --group docs
-uv run mkdocs serve
+NO_MKDOCS_2_WARNING=1 uv run --group docs mkdocs serve
 ```
 
 The specification remains the authority for implementation:
@@ -177,6 +178,9 @@ Read [Contributing](https://hedron.readthedocs.io/en/latest/CONTRIBUTING/) for
 code setup (`uv sync`, tests, docs preview) and for specification/RFC process.
 Material public API changes still require an architectural decision and an RFC
 revision or superseding RFC.
+
+Security vulnerabilities: see [SECURITY.md](SECURITY.md). Support expectations:
+[Support](https://hedron.readthedocs.io/en/latest/guides/support/).
 
 ## License
 

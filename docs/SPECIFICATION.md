@@ -51,22 +51,22 @@ Coding may begin when:
 - open questions are either resolved or explicitly deferred without destabilizing the slice.
 
 The phase 0.0 readiness sweep satisfied this gate for the phase 0.1 typed rendering core
-targeting `v0.1.0`. Phases 0.1 through 0.5 are published and MIT-licensed (D-033);
-phase 0.9 is implementing the intentional HDJ authoring break. See [RELEASE.md](RELEASE.md) and
+targeting `v0.1.0`. Phases 0.1 through **0.10** are published and MIT-licensed (D-033);
+phase 0.10 ships live interaction (RFC-0032). See [RELEASE.md](RELEASE.md) and
 [STATUS.md](STATUS.md).
 Later-phase work must still satisfy the owning release gate before implementation begins.
 
 D-041/D-043 and RFC-0031 ship the versioned `.hdj` format through the separate optional
-`hedron-jinja` distribution in phase 0.9. Trusted authors retain native HTML, CSS, JavaScript, Web
-Components, Jinja, and HTMX after an explicit static feature/capability prologue;
-Hedron adds explicit typed/metadata/security bridges. Python components remain canonical. HDN was
-removed without a compatibility runtime, converter, or legacy package; 0.8 is the final capable
-line.
+`hedron-jinja` distribution (published in 0.9). Trusted authors retain native HTML, CSS,
+JavaScript, Web Components, Jinja, and HTMX after an explicit static feature/capability
+prologue; Hedron adds explicit typed/metadata/security bridges. Python components remain
+canonical. HDN was removed without a compatibility runtime, converter, or legacy package;
+0.8 is the final capable line.
 
 Under D-035, phase 0.7 additionally requires the phase 0.6 behavioral closure gate, accepted
 adapter-neutral ownership, resolved package dependency direction, concrete compatibility ranges,
-and evidence-backed adapter/operations/jobs/observability ledgers. Phase 0.9 replaces HDN with
-HDJ, live transports remain assigned to phase 0.10, and native Flask/Django depth moves to 0.11.
+and evidence-backed adapter/operations/jobs/observability ledgers. Phase 0.9 replaced HDN with
+HDJ; phase 0.10 delivers live transports; native Flask/Django depth moves to 0.11.
 Later work continues through capability-driven `0.x` phases; no 1.0
 freeze is scheduled.
 

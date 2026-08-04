@@ -17,9 +17,9 @@ from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
     Many pages began as Accepted design contracts. Adopter-critical pages
     ([Hedron](HEDRON.md), [Interaction](INTERACTION.md), [Responses](RESPONSES.md),
-    [Security types](SECURITY_TYPES.md), [Adapters](ADAPTERS.md)) include constructor /
-    field tables, errors, and examples. Prefer those plus the guides when learning;
-    read source only for unmarked internals.
+    [Security types](SECURITY_TYPES.md), [Adapters](ADAPTERS.md), [SSE](SSE.md),
+    [Streaming](STREAMING.md)) include constructor / field tables, errors, and examples.
+    Prefer those plus the guides when learning; read source only for unmarked internals.
 
 ## Shipped through 0.10
 
@@ -34,6 +34,7 @@ and 0.10 live interaction).
 - [Responses](RESPONSES.md)
 - [Interaction](INTERACTION.md)
 - [State](STATE.md)
+- [SSE](SSE.md) · [Streaming](STREAMING.md) · [WebSocket channel](WEBSOCKET_CHANNEL.md) · [Preload](PRELOAD.md)
 
 ### Components
 
@@ -66,9 +67,11 @@ and 0.10 live interaction).
 - [Testing](TESTING.md)
 - [API diagnostics](DIAGNOSTICS.md)
 - [CLI](CLI.md)
+- [Jobs](JOBS.md)
 
 Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](../DIAGNOSTICS.md) ·
-[Compatibility](../COMPATIBILITY.md) · [Glossary](../GLOSSARY.md)
+[Compatibility](../COMPATIBILITY.md) · [Glossary](../GLOSSARY.md) ·
+[Live interaction guide](../guides/live-interaction.md)
 
 ## Stability and adapters
 

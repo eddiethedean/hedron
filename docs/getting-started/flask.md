@@ -51,7 +51,8 @@ Safe GETs issue the `hedron_csrf` cookie. Unsafe methods on `hedron_route` and
 
 ## Next
 
-- [Flask reference example](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference)
+- Fastest full example: clone and run the
+  [Flask reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference)
 - [Security](../guides/security.md) · [Deployment](../guides/deployment.md) · [Adapters API](../api/ADAPTERS.md)
-- Deferred: Django QuerySet DataSource and Hedron-owned Django forms (use Django-native forms /
-  application bridges). Job status: prefer polling; FastAPI SSE helpers are Supported in 0.10.
+- Job status on Flask: use bounded polling (FastAPI SSE helpers are Supported on the flagship
+  in 0.10; see [live interaction](../guides/live-interaction.md))

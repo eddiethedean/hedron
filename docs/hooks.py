@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
+
+# Silence Material's MkDocs 2.0 advisory when this module is imported early enough.
+# CI/RTD also set NO_MKDOCS_2_WARNING; this covers `mkdocs serve` via hooks reload.
+os.environ.setdefault("NO_MKDOCS_2_WARNING", "1")
 
 
 def on_config(config):  # noqa: ANN001
@@ -14,6 +19,9 @@ def on_config(config):  # noqa: ANN001
     text = source.read_text(encoding="utf-8")
     # Root ROADMAP links like docs/acceptance/X.md become acceptance/X.md in docs/.
     text = text.replace("](docs/", "](")
+    # Strip the sync banner so MkDocs serves the roadmap body only.
+    if text.startswith("<!-- Generated from docs/"):
+        text = text.split("\n\n", 1)[-1]
     # Avoid retriggering MkDocs' file watcher when the committed copy is current.
     if not target.exists() or target.read_text(encoding="utf-8") != text:
         target.write_text(text, encoding="utf-8")

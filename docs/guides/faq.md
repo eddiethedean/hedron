@@ -70,11 +70,12 @@ Phase 0.9 removes HDN completely. Use typed Python components or install the opt
 compatibility mode, or converter. See the [Jinja API contract](../api/JINJA.md) and
 [0.9 upgrade guide](upgrade.md).
 
-## Are the docs “interactive demos” a running Hedron server?
+## Are the docs component gallery demos a running Hedron server?
 
-No. They are in-browser simulations. Runnable backends live under
-[examples/](https://github.com/eddiethedean/hedron/tree/main/examples) in the repo
-(`uv sync` after clone)—FastAPI, Flask, and Django reference slices.
+No. They are in-browser simulations. Clone and run a real app from
+[examples/](https://github.com/eddiethedean/hedron/tree/main/examples) (`uv sync` after
+clone)—FastAPI, Flask, and Django reference slices. See also
+[Support](support.md) and [SECURITY.md](../SECURITY.md).
 
 ## Multi-worker / production secrets?
 
@@ -88,7 +89,17 @@ Non-secret project settings go in `[tool.hedron]` (see
 [Configuration](../CONFIGURATION.md)). Secrets and deployment mode use environment
 variables / your secret store. Constructor args override both when explicit.
 
+## How do I install HDJ / Jinja templates?
+
+```bash
+pip install "hedron[jinja]"
+# or
+uv add "hedron[jinja]"
+```
+
+See [HDJ authoring](../api/JINJA.md) and [Installation](../getting-started/installation.md).
+
 ## How do I contribute code?
 
 See [Contributing](../CONTRIBUTING.md) for environment setup, tests, and the
-specification process.
+specification process. Support expectations: [Support](support.md).

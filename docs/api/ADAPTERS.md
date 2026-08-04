@@ -74,12 +74,18 @@ mappings cannot bypass redirect, selector, cache, or security policy.
 **Settings:** Prefer `CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"` for portable `X-CSRF-Token`.
 Django floor: `>=5.2,<6`.
 
+## Live transport (FastAPI vs adapters)
+
+Official HTMX SSE, focused streaming, and page/session WebSocket channels are **Supported**
+on the FastAPI flagship in **0.10** (see [live interaction](../guides/live-interaction.md) and
+[STABILITY](STABILITY.md)). Flask and Django adapters keep **bounded polling** as the Supported
+live-status fallback; they do not ship the FastAPI SSE/WebSocket helpers.
+
 ## Deferred (not Supported)
 
 | Claim | Notes |
 |---|---|
-| Official HTMX SSE live transport | Use bounded polling for jobs |
-| Django QuerySet DataSource | Bridge QuerySets in app code |
+| Django QuerySet DataSource | Bridge QuerySets in app code (assigned to 0.11) |
 | Hedron-owned Django forms subsystem | Apps may use Django-native forms |
 
 ## Capability matrix

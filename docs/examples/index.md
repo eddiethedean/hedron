@@ -3,7 +3,7 @@ hide:
   - toc
 ---
 
-# Interactive app demos
+# Component gallery
 
 Explore complete interface states directly in the documentation. These demos use the
 same semantic HTML patterns as Hedron's runnable examples; their interactions stay in
@@ -16,23 +16,29 @@ your browser so they work on Read the Docs without an application server.
     require a runnable example from the repository (clone and `uv sync`; not available from
     `pip install hedron` alone).
 
-## Runnable reference apps
+## Run a real app first
 
-| App | Framework | Run docs |
+```bash
+git clone https://github.com/eddiethedean/hedron.git
+cd hedron
+uv sync
+uv run uvicorn app:app --app-dir examples/reference-app --reload
+```
+
+| App | Framework | Notes |
 |---|---|---|
 | [reference-app](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app) | FastAPI flagship | CRUD, CSRF, charts |
 | [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask adapter | Home + fragment |
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django adapter | Home + fragment |
-| [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | Optional HDJ | Minimal → Jinja → components |
+| [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | Optional HDJ | Prints HTML to stdout (not a web server) |
 
 Quickstarts: [FastAPI](../getting-started/quickstart.md) ·
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) ·
-[HDJ API](../api/JINJA.md).
+[HDJ API](../api/JINJA.md) · [Live interaction](../guides/live-interaction.md).
 
-## Team administration
+## Simulated gallery
 
-This is the primary reference scenario: an authenticated FastAPI admin page with a lazy
-team table, typed form data, explicit roles, and targeted HTMX updates.
+The sections below are in-docs simulations for layout and interaction patterns.
 
 <section class="hedron-demo" data-hedron-demo="team-admin" aria-label="Interactive team administration example">
   <div class="hedron-demo__chrome" aria-hidden="true">
