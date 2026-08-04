@@ -1,5 +1,13 @@
 # Pinned for reproducible Read the Docs / local MkDocs builds.
+# Keep in sync with the [dependency-groups] docs entries in pyproject.toml.
 mkdocs>=1.6,<2
 # Material 9.7.2+ prints a MkDocs 2.0 campaign banner on every build; stay below that.
 mkdocs-material>=9.5,<9.7.2
-pymdown-extensions>=10.0,<11
+pymdown-extensions>=11.0,<12
+mkdocstrings[python]>=0.27,<0.31
+
+# Autodoc imports public APIs from this checkout (see mkdocs.yml mkdocstrings paths).
+-e packages/hedron-core
+-e packages/hedron
+-e packages/hedron-flask
+-e packages/hedron-django
