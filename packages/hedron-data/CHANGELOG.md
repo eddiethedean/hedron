@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [0.10.1] - 2026-08-04
+
+### Fixed
+- Fail closed on unsupported SQLAlchemy `DataQuery.projection`.
+
 ## [0.10.0] - 2026-08-04
 
 - Joined the coordinated 0.10 package train.

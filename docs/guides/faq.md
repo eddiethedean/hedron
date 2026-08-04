@@ -3,12 +3,12 @@
 ## Which version should I install?
 
 ```bash
-pip install "hedron>=0.10.0"
+pip install "hedron>=0.10.1"
 # or
-uv add "hedron>=0.10.0"
+uv add "hedron>=0.10.1"
 ```
 
-That installs the current published train from PyPI (**0.10.0**)—see
+That installs the current published train from PyPI (**0.10.1**)—see
 [What’s ready today](whats-ready.md). `Auto` is included. For DataTable/DataEditor, install
 `hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
 
@@ -24,7 +24,7 @@ No. Hedron does not require npm or a JavaScript bundler for development or produ
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or use
-`hedron new my-app` after `pip install "hedron>=0.10.0"`.
+`hedron new my-app` after `pip install "hedron>=0.10.1"`.
 
 ## Should I use `uv init` or `hedron new`?
 

@@ -5,7 +5,7 @@ in the [maintainer roadmap](../ROADMAP.md).
 
 | Phase | Theme | Status |
 |---|---|---|
-| **0.10** | Live interaction on FastAPI (SSE, streaming, WebSockets, Chat/Dialog, preload) | **Published** as `v0.10.0` |
+| **0.10** | Live interaction on FastAPI (SSE, streaming, WebSockets, Chat/Dialog, preload) | **Published**; current patch `v0.10.1` (initial cut `v0.10.0`) |
 | **0.11** | Native Flask/Django depth; bounded QuerySet integration | Next |
 | **0.12+** | Later capability phases — see maintainer roadmap | Planned |
 

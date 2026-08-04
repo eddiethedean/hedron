@@ -29,7 +29,7 @@ status commentary, not a satisfied release gate.
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
 - [Performance](PERFORMANCE.md)
 - [`v0.9.0` HDJ replacement](RELEASE_0_9.md) — published; clean HDN removal, explicit `.hdj` format, standards-first authoring
-- [`v0.10.0` live interaction](RELEASE_0_10.md) — published; SSE, focused streaming, WebSocket channels, Chat/Dialog, preload (owned Deferred follow-ups noted)
+- [`v0.10` live interaction](RELEASE_0_10.md) — published; SSE, focused streaming, WebSocket channels, Chat/Dialog, preload (owned Deferred follow-ups noted)
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),
   [release-gate-0.7.toml](release-gate-0.7.toml),

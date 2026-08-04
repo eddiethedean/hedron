@@ -5,8 +5,8 @@
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U "hedron>=0.10.0"` (or `uv add "hedron>=0.10.0"`). The published train is
-**0.10.0**—see [STATUS](../STATUS.md). If docs describe a feature from an unreleased next-phase
+`pip install -U "hedron>=0.10.1"` (or `uv add "hedron>=0.10.1"`). The published train is
+**0.10.1**—see [STATUS](../STATUS.md). If docs describe a feature from an unreleased next-phase
 checkout that is missing on your PyPI install, upgrade or use a git checkout of that work.
 
 ## CSRF 403 on POST (FastAPI / Flask)
@@ -38,7 +38,7 @@ with auth in rare cases; keep production off.
 
 **Cause:** Scaffold from a pre-0.10 CLI wrote `hedron>=0.4.0`.
 
-**Fix:** Edit `pyproject.toml` to `hedron>=0.10.0` and `uvicorn[standard]>=0.30`, then
+**Fix:** Edit `pyproject.toml` to `hedron>=0.10.1` and `uvicorn[standard]>=0.30`, then
 reinstall. Current `hedron new` scaffolds the 0.10 floor automatically.
 
 ## SSE / WebSocket / preload not working

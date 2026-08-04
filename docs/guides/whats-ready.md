@@ -1,11 +1,11 @@
 # What’s ready today
 
-Operator-facing snapshot of published **0.10.0**. Maintainer evidence tables live in
+Operator-facing snapshot of published **0.10.1**. Maintainer evidence tables live in
 the repository [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
 ## How to read this page
 
-Hedron **0.10.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
+Hedron **0.10.1** packages are **Beta**. There is no scheduled 1.0; expect occasional
 breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
 | Label | Meaning |
@@ -56,7 +56,7 @@ guaranteed multi-worker live-transport proof — see [STATUS](../STATUS.md) Defe
 ## Recommended install
 
 ```bash
-pip install "hedron>=0.10.0" "uvicorn[standard]"
+pip install "hedron>=0.10.1" "uvicorn[standard]"
 hedron new my-app
 cd my-app
 pip install -e .   # or: uv sync

@@ -13,7 +13,7 @@ reference application (auth, charts, extras), see the
 ## Scaffold
 
 ```bash
-pip install "hedron>=0.10.0"
+pip install "hedron>=0.10.1"
 hedron new crud-notes
 cd crud-notes
 pip install -e .

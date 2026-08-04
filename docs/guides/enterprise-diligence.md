@@ -9,7 +9,7 @@ fit: [Evaluate Hedron](evaluate.md) · readiness: [What’s ready](whats-ready.m
 | Item | Value |
 |---|---|
 | License | MIT |
-| Published train | **0.10.0** (Beta packages) |
+| Published train | **0.10.1** (Beta packages) |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner |

@@ -152,7 +152,7 @@ from hedron_core.visualization import (
     VisualizationLimits,
 )
 
-__version__ = "0.10.0"
+__version__ = "0.10.1"
 
 __all__ = [
     "AddressableDescriptor",

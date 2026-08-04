@@ -10,4 +10,4 @@ pip install hedron-data
 pip install "hedron-data[dataframes]"
 ```
 
-Requires `hedron-core`. Coordinated train: **`0.10.0`** (first released at `0.5.0`).
+Requires `hedron-core`. Coordinated train: **`0.10.1`** (first released at `0.5.0`).

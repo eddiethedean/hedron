@@ -6,7 +6,7 @@ from hedron_flask.app import HedronFlask
 from hedron_flask.responses import component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser, hedron_route
 
-__version__ = "0.10.0"
+__version__ = "0.10.1"
 
 __all__ = [
     "FlaskUrlReverser",

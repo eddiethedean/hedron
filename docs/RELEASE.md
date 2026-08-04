@@ -6,13 +6,68 @@
 (do not retag published versions).
 
 Hedron uses a coordinated release train. The Git tag includes a leading `v`
-(for example `v0.11.0`); Python package metadata omits it (`0.11.0`).
+(for example `v0.10.1`); Python package metadata omits it (`0.10.1`).
 
 ## Current published train
 
-**`v0.10.0`** (packages `0.10.0`) — see [STATUS.md](STATUS.md).
+**`v0.10.0`** is on PyPI. This tree is prepared for the **`v0.10.1`** patch cut
+(packages `0.10.1`) — see [STATUS.md](STATUS.md).
 
-## Next cut: `v0.11.0` (native Flask/Django depth)
+## Cut: `v0.10.1` (0.10 security/correctness patch)
+
+### Preconditions
+
+1. `main` is green on CI for Python 3.11–3.14 (including MkDocs `--strict`).
+2. Package version, `__version__`, inter-package pins, and changelog entries agree:
+   `uv run python scripts/check_release_gate.py 0.10.1` (no `--allow-planned`).
+3. Phase 0.10 gate file remains closed (`Verified` or owned `Deferred`):
+   `docs/acceptance/release-gate-0.10.toml`.
+4. **License (D-033):** root `LICENSE` and every publishable package declare license
+   metadata. The release workflow refuses to publish without this.
+5. Trusted publishing / `PYPI_API_TOKEN` is configured in GitHub Actions as required by
+   `.github/workflows/release.yml`.
+6. STATUS, STABILITY, upgrade notes, and adopter install pins describe `0.10.1`.
+
+### Cut steps
+
+1. Confirm the coordinated bump is committed on `main` (all package `pyproject.toml`,
+   `__version__`, CHANGELOG `[0.10.1]` sections, `uv.lock`, CI gate argument).
+2. Re-run locally:
+
+```bash
+uv run python scripts/check_release_gate.py 0.10.1
+uv run python scripts/verify_pkg_10.py
+uv run ruff format --check packages tests examples
+uv run ruff check packages tests examples
+uv run pyright
+uv run pytest -q
+uv run --group docs mkdocs build --strict
+```
+
+3. Optional rehearse against local wheels:
+
+```bash
+rm -rf dist && for p in packages/*/pyproject.toml; do uv build --package "$(basename "$(dirname "$p")")"; done
+uv run python scripts/rehearse_release.py
+```
+
+4. Tag and push (trusted workflow publishes):
+
+```bash
+git tag -a v0.10.1 -m "Hedron 0.10.1"
+git push origin v0.10.1
+```
+
+5. After publish: verify clean-venv `pip install hedron==0.10.1`, update any remaining
+   “current train” copy if needed, and never retag. Yank and ship `0.10.2` if a bad
+   artifact ships.
+
+### After publication
+
+- Smoke: install from PyPI, render a page, optionally `hedron build` on the reference app.
+- Keep root `STATUS.md` / `ROADMAP.md` mirrors synced from `docs/`.
+
+## Next phase cut: `v0.11.0` (native Flask/Django depth)
 
 ### Preconditions
 
@@ -24,7 +79,7 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
    see `docs/acceptance/` and [STATUS.md](STATUS.md).
 4. **License (D-033):** root `LICENSE` and every publishable package declare license
    metadata. The release workflow refuses to publish without this.
-5. `PYPI_API_TOKEN` is configured in GitHub Actions secrets.
+5. Trusted publishing / `PYPI_API_TOKEN` is configured in GitHub Actions secrets.
 6. Stability catalog, compatibility notes, upgrade guide, and adopter docs match the
    claimed surface (Supported vs Deferred language aligned).
 

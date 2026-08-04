@@ -43,7 +43,7 @@ _COMPONENT = _ROOT / "components" / "Callout"
 
 PLUGIN_META = PluginMeta(
     name="my_plugin",
-    version="0.10.0",  # keep aligned with your distribution version
+    version="0.10.1",  # keep aligned with your distribution version
     distribution="my-hedron-plugin",
     hedron_version=">=0.10,<0.11",
     capabilities=PluginCapabilities(python=True, styles=True, assets=True),

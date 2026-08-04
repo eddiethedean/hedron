@@ -1,10 +1,10 @@
 # Public stability classifications
 
-**Status:** Phase 0.10 live interaction (**published** `v0.10.0`)
-**Version:** `0.10.0`
+**Status:** Phase 0.10 live interaction (**published** `v0.10.1`)
+**Version:** `0.10.1`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the published
-`v0.10.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
+`v0.10.1` train. Levels apply to documented contracts; symbols not listed here are **internal**
 unless a later phase explicitly promotes them.
 
 ## Levels

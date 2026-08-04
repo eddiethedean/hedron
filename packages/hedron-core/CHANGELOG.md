@@ -1,6 +1,15 @@
 # Changelog
 
 
+## [0.10.1] - 2026-08-04
+
+### Fixed
+- Reject unsafe HTML attribute names and spaced `meta refresh` URL forms.
+- Scope job idempotency by tenant/auth; authorize cancel; harden Redis cancel/mark races.
+- Tighten SVG/icon active-markup scans (unquoted remote href, SMIL `on*` handlers).
+- Reject control characters in HTMX approved header values.
+- Always emit HTMX `Vary` for private/no-store interaction cache hints.
+
 ## [0.10.0] - 2026-08-04
 
 ### Added

@@ -1,7 +1,7 @@
 # Hedron reference application (FastAPI)
 
 Cumulative authenticated team-administration application for the FastAPI flagship.
-Tracks the published **0.10.0** train (live interaction on the 0.9 HDJ authoring line).
+Tracks the published **0.10.1** train (live interaction on the 0.9 HDJ authoring line).
 
 Demonstrates:
 

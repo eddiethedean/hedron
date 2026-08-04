@@ -15,7 +15,7 @@ scripts here when you add them.
 
 | Script | Role |
 |---|---|
-| `check_release_gate.py` | Gate TOML vs claimed version (`0.10.0`, `0.11.0`, …) |
+| `check_release_gate.py` | Gate TOML vs claimed version (`0.10.1`, `0.11.0`, …) |
 | `rehearse_release.py` | Clean install rehearsal before tagging |
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
 | `verify_pkg_10.py` / `verify_pkg_09.py` | Phase-tied package verify helpers (historical + current) |

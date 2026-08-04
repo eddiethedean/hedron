@@ -19,5 +19,5 @@ pip install "hedron-charts[altair]"
 pip install "hedron[charts]"
 ```
 
-Requires `hedron-core`. Coordinated train: **`0.10.0`** (first released at `0.6.0`).
+Requires `hedron-core`. Coordinated train: **`0.10.1`** (first released at `0.6.0`).
 Interactive Plotly/Altair full browser runtimes remain **experimental**.

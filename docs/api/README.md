@@ -39,7 +39,7 @@ from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
 
 ## Shipped through 0.10
 
-These surfaces are implemented in the published **0.10.0** train (includes the 0.9 authoring break
+These surfaces are implemented in the published **0.10.1** train (includes the 0.9 authoring break
 and 0.10 live interaction).
 
 ### Application

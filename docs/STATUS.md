@@ -1,9 +1,9 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.10 **published** as `v0.10.0` (packages `0.10.0`, 2026-08-04).
+**Roadmap position:** phase 0.10 **published**; current patch train `v0.10.1` (packages `0.10.1`, 2026-08-04). Initial phase cut was `v0.10.0`.
 **Date:** 2026-08-04
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
-`hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` / `hedron-jinja` `0.10.0`
+`hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` / `hedron-jinja` `0.10.1`
 (MIT licensed, D-033)
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`; Alpha — `hedron-charts`, `hedron-sample-kit`.

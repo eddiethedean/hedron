@@ -16,14 +16,14 @@ Scaffold with `hedron new`, then run. Do not also hand-write a second `app.py` o
 scaffold.
 
 ```bash
-pip install "hedron>=0.10.0" "uvicorn[standard]"
+pip install "hedron>=0.10.1" "uvicorn[standard]"
 hedron new my-hedron-app
 cd my-hedron-app
 pip install -e .
 uvicorn app:app --reload
 ```
 
-Prefer [uv](https://docs.astral.sh/uv/)? Use `uv tool install "hedron>=0.10.0"`, then
+Prefer [uv](https://docs.astral.sh/uv/)? Use `uv tool install "hedron>=0.10.1"`, then
 `hedron new`, `uv sync`, and `uv run uvicorn app:app --reload`. Full steps:
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
@@ -57,7 +57,7 @@ FastAPI-native typed components, HTMX fragments, and secure HTML defaults. Audie
 CRUD, internal tools, dashboards, forms, admin, and data apps. Next release focus:
 Flask/Django depth (**0.11**).
 
-Current train: [`v0.10.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
+Current train: [`v0.10.1`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·

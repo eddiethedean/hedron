@@ -6,7 +6,7 @@ from hedron_django.app import HedronDjango
 from hedron_django.responses import component_response, interaction_response
 from hedron_django.routing import DjangoUrlReverser, hedron_view
 
-__version__ = "0.10.0"
+__version__ = "0.10.1"
 
 __all__ = [
     "DjangoUrlReverser",

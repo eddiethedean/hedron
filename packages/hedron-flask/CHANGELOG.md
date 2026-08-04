@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [0.10.1] - 2026-08-04
+
+### Fixed
+- Set `Cache-Control: private, no-store` on authenticated component/interaction responses.
+
 ## [0.10.0] - 2026-08-04
 
 - Joined the coordinated 0.10 package train; FastAPI remains the Supported live host (D-044).

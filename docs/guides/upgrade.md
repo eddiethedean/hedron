@@ -2,7 +2,7 @@
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9** to the current **0.10.0** train for live interaction.
+upgrade through **0.9** to the current **0.10.1** train for live interaction.
 
 ## What changed in 0.8
 
@@ -88,7 +88,7 @@ rollback from built/published artifacts. See [RELEASE.md](../RELEASE.md) and the
 
 ### 0.9 → 0.10
 
-1. Upgrade to the coordinated `0.10.0` train.
+1. Upgrade to the coordinated `0.10.1` train.
 2. Keep polling job-status UIs; optionally mount SSE observation via `job_status_sse_response`
    and include `/hedron-static/ext/sse.js` when using `hx-ext="sse"`.
 3. Use `Dialog` / `ChatMessage` / `ChatInput` for new interaction surfaces; do not treat live

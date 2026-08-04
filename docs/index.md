@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.10.0</div>
+<div class="hedron-eyebrow">Python-first UI framework · v0.10.1</div>
 
 # Ship the interface.<br><span class="hedron-gradient-text">Keep the Python.</span>
 
@@ -57,7 +57,7 @@ Pick **one** path — scaffold (recommended) or a hand-written `app.py`. Do not 
 === "Scaffold (recommended)"
 
     ```bash
-    pip install "hedron>=0.10.0" "uvicorn[standard]"
+    pip install "hedron>=0.10.1" "uvicorn[standard]"
     hedron new my-hedron-app
     cd my-hedron-app
     pip install -e .   # or: uv sync
@@ -94,7 +94,7 @@ Pick **one** path — scaffold (recommended) or a hand-written `app.py`. Do not 
     ```
 
     ```bash
-    pip install "hedron>=0.10.0" "uvicorn[standard]"
+    pip install "hedron>=0.10.1" "uvicorn[standard]"
     uvicorn app:app --reload
     ```
 

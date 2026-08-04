@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [0.10.1] - 2026-08-04
+
+### Changed
+- Coordinated patch train with the 0.10.1 security and correctness fixes.
+
 ## [0.10.0] - 2026-08-04
 
 - Joined the coordinated 0.10 live-interaction package train.

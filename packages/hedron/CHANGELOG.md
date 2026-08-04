@@ -1,6 +1,15 @@
 # Changelog
 
 
+## [0.10.1] - 2026-08-04
+
+### Fixed
+- Require `vary_on` for default private `cache_data` scopes.
+- Reject credentialed URLs in `redirect_external`.
+- Validate SSE/stream/preload header names and values for control characters.
+- Job SSE returns HTTP 403/404 on authz/missing; sanitize bad `Last-Event-ID`.
+- Poll `job_status_response` enforces the same job authz contract as SSE.
+
 ## [0.10.0] - 2026-08-04
 
 ### Added

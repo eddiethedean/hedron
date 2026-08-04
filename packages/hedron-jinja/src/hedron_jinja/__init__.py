@@ -12,7 +12,7 @@ from hedron_jinja.contracts import (
 )
 from hedron_jinja.integration import HedronJinja, HedronJinjaExtension, TwoPhaseStream
 
-__version__ = "0.10.0"
+__version__ = "0.10.1"
 
 __all__ = [
     "HedronJinja",

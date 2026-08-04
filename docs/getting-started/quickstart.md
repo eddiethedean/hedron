@@ -17,7 +17,7 @@ Pick **one** path below. Do not scaffold with `hedron new` and then also paste a
 If you already ran:
 
 ```bash
-pip install "hedron>=0.10.0"
+pip install "hedron>=0.10.1"
 hedron new my-hedron-app
 cd my-hedron-app
 pip install -e .   # or: uv sync

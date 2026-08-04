@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [0.10.1] - 2026-08-04
+
+### Fixed
+- Reject generic `|safe` / `autoescape false` even when `strict=False`.
+
 ## [0.10.0] - 2026-08-04
 
 ### Added

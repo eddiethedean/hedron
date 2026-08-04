@@ -1,6 +1,6 @@
 # Production readiness
 
-One-page evaluator summary for the published **0.10.0** train. Details:
+One-page evaluator summary for the published **0.10.1** train. Details:
 [What's ready today](whats-ready.md) · [Compatibility](../COMPATIBILITY.md) ·
 [Support](support.md) · [STATUS](../STATUS.md).
 

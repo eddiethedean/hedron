@@ -18,7 +18,7 @@ _VEGA_HOST = _ROOT / "assets" / "vega" / "host.js"
 
 PLUGIN_META = PluginMeta(
     name="hedron_charts",
-    version="0.10.0",
+    version="0.10.1",
     distribution="hedron-charts",
     hedron_version=">=0.10,<0.11",
     capabilities=PluginCapabilities(

@@ -1,6 +1,12 @@
 # Changelog
 
 
+## [0.10.1] - 2026-08-04
+
+### Fixed
+- Re-validate Matplotlib `render_node` SVG/PNG bodies before trusted emission.
+- Treat chart `data:` URLs as disallowed remote assets.
+
 ## [0.10.0] - 2026-08-04
 
 - Joined the coordinated 0.10 package train.

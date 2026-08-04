@@ -1,4 +1,4 @@
-# Hedron `v0.10.0` live interaction acceptance
+# Hedron `v0.10` live interaction acceptance
 
 Phase 0.10 delivers evidence-backed live updates, focused streaming, page/session WebSocket
 channels, Chat/Dialog primitives, media chunk transport contracts, HDJ head/streaming, and
@@ -53,7 +53,7 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
 
 ## Exit
 
-**Exit met / published** as coordinated `0.10.0` (`v0.10.0`). Live/preload behavior is not a hidden
+**Exit met / published** as coordinated `0.10.x` (current `0.10.1`; initial cut `v0.10.0`). Live/preload behavior is not a hidden
 correctness dependency; polling and ordinary navigation remain valid. Every release-gate row is
 `Verified` or owned `Deferred`. Deferred browser/load/Explorer rows remain owned for
 `0.10.x` follow-up; they do not reopen the 0.10 train.

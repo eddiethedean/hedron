@@ -74,7 +74,7 @@ Single-stage sketch when you already vendor a lockfile:
 FROM python:3.12-slim
 WORKDIR /app
 COPY . .
-RUN pip install --no-cache-dir "hedron>=0.10.0" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=0.10.1" "uvicorn[standard]" \
  && hedron build
 ENV HEDRON_ENV=production
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

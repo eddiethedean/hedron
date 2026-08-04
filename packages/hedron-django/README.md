@@ -12,5 +12,5 @@ pip install hedron-django
 
 Requires `hedron-core` and Django **`>=5.2,<6`**. Does not install FastAPI.
 
-Current coordinated train: **`0.10.0`**. See the
+Current coordinated train: **`0.10.1`**. See the
 [Django quickstart](https://hedron.readthedocs.io/en/latest/getting-started/django/).

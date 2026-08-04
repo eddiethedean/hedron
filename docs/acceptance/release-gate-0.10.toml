@@ -1,5 +1,5 @@
 # Phase 0.10 live interaction evidence index.
-# Consumed by scripts/check_release_gate.py 0.10.0.
+# Consumed by scripts/check_release_gate.py 0.10.1.
 
 [[evidence]]
 id = "LIVE-10-001"
