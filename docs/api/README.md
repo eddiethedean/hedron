@@ -40,7 +40,7 @@ contracts match what you just used:
 
 ## Shipped through 0.10
 
-These surfaces are implemented in the published **0.10.1** train (includes the 0.9 authoring break
+These surfaces are implemented in the published **0.11.0** train (includes the 0.9 authoring break
 and 0.10 live interaction).
 
 ### Application
@@ -102,8 +102,8 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 - First-party camera/microphone capture UI (0.15)
 
-## Published after 0.10
+## Published in 0.11
 
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory —
-  phase **0.11** (`v0.11.0`, D-046)
-- Capture UI — phase 0.15
+  phase **0.11** (`0.11.0`, D-046)
+- Capture UI remains — phase 0.15

@@ -11,7 +11,7 @@ Django adapters). It is not a notebook-style rerun engine, SPA framework, ORM, o
 
 | Item | Value |
 |---|---|
-| Published train | **0.10.1** (Beta packages) |
+| Published train | **0.11.0** (Beta packages) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
@@ -39,8 +39,9 @@ Pin versions in production. Read [What’s ready today](whats-ready.md) and
 
 ## What not to depend on yet
 
-See Deferred rows in [What’s ready](whats-ready.md)—including Django QuerySet as a
-first-party DataSource and Hedron-owned Django forms (planned **0.11**).
+See Deferred rows in [What's ready](whats-ready.md)—for example full multi-engine live
+browser matrix / load-proxy evidence (`BROWSER-10-001`, `PERF-10-001`) and capture UI
+(**0.15**). Django QuerySet DataSource and forms bridge shipped in **0.11** (D-046).
 
 ## When Hedron is a poor fit
 

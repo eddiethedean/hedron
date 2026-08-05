@@ -1,6 +1,6 @@
 # Production readiness
 
-One-page evaluator summary for the published **0.10.1** train. Authoritative maturity
+One-page evaluator summary for the published **0.11.0** train. Authoritative maturity
 snapshot: [What's ready today](whats-ready.md). Also:
 [Compatibility](../COMPATIBILITY.md) · [Support](support.md).
 
@@ -13,7 +13,7 @@ SLA**.
 
 - Typed pages/fragments, FastAPI routing, CSRF profiles, CLI, testing helpers
 - HTMX fragment loops and `InteractionResult`
-- Flask / Django adapters on the Supported matrix (routing/HTMX; not full Django forms depth)
+- Flask / Django adapters on the Supported matrix (routing/HTMX, forms bridge, QuerySet DataSource)
 - Optional HDJ (`hedron[jinja]`), DataTable/DataEditor (`hedron[data]`), Explorer (`hedron[dev]`) for local diagnostics
 
 **API shipped — ops evidence incomplete (read Deferred rows on
@@ -30,8 +30,8 @@ SLA**.
 |---|---|
 | `hedron-charts` | Alpha |
 | First-party live-transport sample app | Shipped: [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) (poll + stream + SSE + Job SSE + WS + preload). Browser matrix / load-proxy evidence remain Deferred |
-| Django QuerySet DataSource / Hedron Django forms | Planned **0.11** |
-| Live browser matrix / proxy load evidence | Deferred on `0.10.x` |
+| Django QuerySet DataSource / Hedron Django forms | Supported in **0.11** (D-046) |
+| Live browser matrix / proxy load evidence | Deferred on `0.10.x` / `0.11.x` |
 | Public API catalog level | `beta` (no scheduled `1.0`) |
 
 ## Security posture

@@ -14,10 +14,12 @@ from hedron_core import (
     Checkbox,
     FormErrors,
     FormField,
+    RadioGroup,
     Select,
     Stack,
     TextArea,
     TextInput,
+    html,
 )
 from hedron_core.component import NodeLike
 from hedron_core.interaction import InteractionResult
@@ -52,9 +54,15 @@ def csrf_hidden_input(request: Any) -> TrustedHtml:
 def _widget_kind(bound: BoundField) -> str:
     widget = bound.field.widget
     input_type = getattr(widget, "input_type", None)
+    name = type(widget).__name__.lower()
+    if "radioselect" in name or "radio" in name:
+        return "radio"
+    if "clearablefile" in name or "file" in name or input_type == "file":
+        return "file"
+    if "number" in name or input_type == "number":
+        return "number"
     if isinstance(input_type, str) and input_type:
         return input_type
-    name = type(widget).__name__.lower()
     if "textarea" in name:
         return "textarea"
     if "select" in name:
@@ -98,12 +106,31 @@ def form_fields(form: BaseForm) -> list[NodeLike]:
         error = "; ".join(str(e) for e in bound.errors) or None
         kind = _widget_kind(bound)
         control: NodeLike
+        required = bool(getattr(bound.field, "required", False))
         if kind == "textarea":
             control = TextArea(name=name, value=str_value)
         elif kind == "select":
             control = Select(name=name, options=_choices(bound), value=str_value)
+        elif kind == "radio":
+            control = RadioGroup(
+                name=name,
+                legend=label,
+                options=_choices(bound),
+                value=str_value or None,
+                required=required,
+            )
         elif kind == "checkbox":
             control = Checkbox(name=name, label=label, checked=bool(value))
+        elif kind == "number":
+            control = html.input(
+                type="text",
+                inputmode="decimal",
+                name=name,
+                id=f"field-{name}",
+                value=str_value,
+            )
+        elif kind == "file":
+            control = html.input(type="file", name=name, id=f"field-{name}")
         else:
             control = TextInput(name=name, value=str_value, type=_text_type(kind))
         nodes.append(
@@ -112,7 +139,7 @@ def form_fields(form: BaseForm) -> list[NodeLike]:
                 label=label,
                 control=control,
                 error=error,
-                required=bool(getattr(bound.field, "required", False)),
+                required=required,
             )
         )
     return nodes

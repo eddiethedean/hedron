@@ -40,10 +40,10 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 ## Adapters
 
 - Install `hedron-flask` / `hedron-django` separately; they never pull FastAPI.
-- Treat Deferred rows (QuerySet DataSource, Hedron Django forms, capture UI) as app-owned
-  workarounds until their destination phase.
-- For mutations on Flask/Django today: host forms + CSRF + polling for job status; Hedron-owned
-  forms depth is **0.11**.
+- Prefer `hedron_django.forms` and `DjangoQuerySetDataSource` (D-046) over ad-hoc bridges;
+  capture UI remains Deferred (**0.15**).
+- For mutations on Flask/Django: CSRF + forms bridge (or host forms) and
+  [polling](live-interaction.md) for job status.
 
 ## Testing
 

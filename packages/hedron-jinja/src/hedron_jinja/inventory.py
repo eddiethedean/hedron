@@ -109,7 +109,10 @@ class DynamicDependencyManifest:
                     "HED-HDJ-0112",
                     title="Foreign namespace shadow rejected",
                     explanation=f"Namespace {name!r} would shadow {ns.root!r}.",
-                    remediation="Use a distinct namespace or set shadow_allowed with an explicit audit.",
+                    remediation=(
+                        "Use a distinct namespace or set shadow_allowed with an "
+                        "explicit audit."
+                    ),
                 )
 
 
@@ -127,15 +130,25 @@ def reconcile_csp(
     """
     mismatches: list[str] = []
     csp = (policy_csp or "").lower()
-    forbidden_injections = ("unsafe-inline", "unsafe-eval", "data:")
+    has_script_src = "script-src" in csp
     for capability in required_capabilities:
-        if capability == "browser.inline-script" and "script-src" in csp:
-            if "'unsafe-inline'" not in csp and "nonce-" not in csp and "'strict-dynamic'" not in csp:
+        if capability == "browser.inline-script":
+            authorized = (
+                has_script_src
+                and (
+                    "'unsafe-inline'" in csp
+                    or "nonce-" in csp
+                    or "'strict-dynamic'" in csp
+                )
+            )
+            if not authorized:
                 mismatches.append(
                     f"{source_name}:{line}: capability {capability!r} conflicts with CSP "
                     f"(missing explicit inline/nonce/strict-dynamic authorization)"
                 )
-        if capability == "htmx.eval" and "unsafe-eval" not in csp and "script-src" in csp:
+        if capability == "htmx.eval" and (
+            not has_script_src or "unsafe-eval" not in csp
+        ):
             mismatches.append(
                 f"{source_name}:{line}: capability {capability!r} requires explicit "
                 f"unsafe-eval authorization in SecurityPolicy CSP"
@@ -146,9 +159,6 @@ def reconcile_csp(
                 mismatches.append(
                     f"{source_name}:{line}: remote origin {origin!r} is not present in CSP"
                 )
-    for token in forbidden_injections:
-        # Detection only — never auto-inject these tokens.
-        del token
     return mismatches
 
 

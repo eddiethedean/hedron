@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Sequence
 from typing import Any
 
 from hedron_data.sources import (
     ColumnSchema,
-    Conflict,
     DataChanges,
     DataPage,
     DataQuery,
@@ -72,8 +71,13 @@ class DjangoQuerySetDataSource:
         self._base = base_queryset
         self._key_field = key_field
         self._schema = tuple(schema)
-        self._sort_allow = allowlisted_sort_fields
-        self._filter_allow = allowlisted_filter_fields
+        # Deny-by-default: omitted allowlists mean no client sort/filter refinements.
+        self._sort_allow = (
+            frozenset() if allowlisted_sort_fields is None else allowlisted_sort_fields
+        )
+        self._filter_allow = (
+            frozenset() if allowlisted_filter_fields is None else allowlisted_filter_fields
+        )
         self._search_fields = tuple(search_fields)
         self._max_page_size = max_page_size
         self._query_budget = query_budget
@@ -106,20 +110,18 @@ class DjangoQuerySetDataSource:
         return self._schema
 
     def fetch(self, query: DataQuery) -> DataPage[dict[str, Any]]:
-        q = query.validated(max_page_size=self._max_page_size)
-        if self._sort_allow is not None or self._filter_allow is not None:
-            q = DataQuery(
-                offset=q.offset,
-                limit=q.limit,
-                cursor=q.cursor,
-                sort=q.sort,
-                filters=q.filters,
-                projection=q.projection,
-                search=q.search,
-                locale=q.locale,
-                allowlisted_sort_fields=self._sort_allow,
-                allowlisted_filter_fields=self._filter_allow,
-            ).validated(max_page_size=self._max_page_size)
+        q = DataQuery(
+            offset=query.offset,
+            limit=query.limit,
+            cursor=query.cursor,
+            sort=query.sort,
+            filters=query.filters,
+            projection=query.projection,
+            search=query.search,
+            locale=query.locale,
+            allowlisted_sort_fields=self._sort_allow,
+            allowlisted_filter_fields=self._filter_allow,
+        ).validated(max_page_size=self._max_page_size)
 
         diag = QueryDiagnostics(budget=self._query_budget)
         self.last_diagnostics = diag

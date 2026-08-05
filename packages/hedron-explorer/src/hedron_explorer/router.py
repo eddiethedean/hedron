@@ -495,16 +495,65 @@ def explorer_router() -> APIRouter:
         )
 
     @router.get("/inventory", response_class=HTMLResponse, include_in_schema=False)
-    async def inventory_view() -> str:
+    async def inventory_view(request: Request) -> str:
         """Production / HDJ inventory panel (phase 0.11)."""
         try:
-            from hedron_jinja import build_production_inventory
+            from hedron_jinja import build_production_inventory, reconcile_csp
+            from hedron_jinja.source import inferred_capabilities, parse_hdj_source
 
+            reports: list[dict[str, Any]] = []
+            caps: set[str] = set()
+            mismatches: list[str] = []
+            project_root = getattr(request.app.state, "hedron_project_root", None)
+            roots = _project_component_roots(request)
+            search_roots = list(roots)
+            if project_root:
+                search_roots.append(Path(project_root))
+            seen: set[Path] = set()
+            for root in search_roots:
+                root = Path(root).resolve()
+                if root in seen or not root.exists():
+                    continue
+                seen.add(root)
+                for path in sorted(root.rglob("*.hdj")):
+                    if any(part.startswith(".") for part in path.parts):
+                        continue
+                    try:
+                        rel = str(path.relative_to(root))
+                        parsed = parse_hdj_source(rel, path.read_text(encoding="utf-8"))
+                        required = sorted(
+                            set(inferred_capabilities(parsed)) | set(parsed.declaration.requires)
+                        )
+                        caps.update(required)
+                        reports.append(
+                            {
+                                "name": rel,
+                                "kind": str(parsed.declaration.kind),
+                                "capabilities": required,
+                            }
+                        )
+                        mismatches.extend(
+                            reconcile_csp(
+                                None,
+                                required_capabilities=required,
+                                source_name=rel,
+                            )
+                        )
+                    except Exception as exc:  # noqa: BLE001
+                        reports.append({"name": str(path), "error": str(exc)})
             inv = build_production_inventory(
-                template_reports=(),
-                capabilities=("web.html", "jinja.core"),
+                template_reports=reports,
+                capabilities=sorted(caps) or ("web.html", "jinja.core"),
             )
-            payload = html_lib.escape(str(inv.as_dict()))
+            payload = html_lib.escape(
+                str(
+                    {
+                        **inv.as_dict(),
+                        "csp_mismatches": mismatches,
+                        "template_count": len(reports),
+                    }
+                )
+            )
         except Exception as exc:  # noqa: BLE001
             payload = html_lib.escape(f"Inventory unavailable: {exc}")
         body = f"<h2>Production inventory</h2><pre>{payload}</pre>"

@@ -29,4 +29,4 @@ def test_sse_and_poll() -> None:
 
 def test_stream_text() -> None:
     response = stream_text(["x", "y"])
-    assert b"xy" == b"".join(response.streaming_content)
+    assert b"".join(response.streaming_content) == b"xy"

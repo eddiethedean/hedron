@@ -17,3 +17,12 @@ def test_hedron_django_config_loads() -> None:
 def test_system_checks_run() -> None:
     out = StringIO()
     call_command("check", stdout=out, stderr=out)
+
+
+def test_register_checks_idempotent() -> None:
+    from hedron_django.apps import register_checks
+
+    register_checks()
+    register_checks()
+    out = StringIO()
+    call_command("check", stdout=out, stderr=out)

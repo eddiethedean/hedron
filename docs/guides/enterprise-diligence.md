@@ -9,7 +9,7 @@ fit: [Evaluate Hedron](evaluate.md) · readiness: [What’s ready](whats-ready.m
 | Item | Value |
 |---|---|
 | License | MIT |
-| Published train | **0.10.1** (Beta packages) |
+| Published train | **0.11.0** (Beta packages) |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner |
@@ -63,12 +63,12 @@ load/proxy backpressure rows remain **Deferred** in [What's ready](whats-ready.m
 
 ## Flask / Django Supported surface (summary)
 
-| Surface | 0.10 | Planned deeper work |
+| Surface | 0.11 | Notes |
 |---|---|---|
 | Portable components + HTMX fragment helpers | Supported matrix | — |
 | Official HTMX SSE helpers | FastAPI only | Adapters: polling |
-| Django QuerySet as first-party DataSource | Deferred | **0.11** |
-| Hedron-owned Django forms depth | Deferred | **0.11** |
+| Django QuerySet as first-party DataSource | Supported (D-046) | App-owned authorized base QS |
+| Django forms bridge | Supported (D-046) | Widgets / CSRF / errors |
 
 ## Accessibility posture
 

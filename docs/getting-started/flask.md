@@ -5,43 +5,53 @@ Use `hedron-flask` when your app is Flask-native. Hedron does **not** ship
 The adapter renders the same `hedron-core` components and `InteractionResult` values as
 the FastAPI flagship—without installing FastAPI.
 
-Flask/Django: page + fragment routing and HTMX are Supported in 0.10.1. Native
-forms depth ships in **0.11** — use polling for job status today.
+Flask/Django page + fragment routing and HTMX are Supported on **0.11.0**. Prefer
+`init_app` + `HedronBlueprint` for application factories; the constructor form remains
+supported. Use polling for job status on Flask (SSE helpers stay FastAPI-flagship).
 
 ## Greenfield (empty folder → hello)
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron-flask>=0.10.1"
-# or: uv init my-flask-app && cd my-flask-app && uv add "hedron-flask>=0.10.1"
+python -m pip install "hedron-flask>=0.11.0"
+# or: uv init my-flask-app && cd my-flask-app && uv add "hedron-flask>=0.11.0"
 ```
 
-Save as `app.py`:
+Save as `app.py` (application factory):
 
 ```python
-from flask import request
+from flask import Flask
 
 from hedron_core import Heading, Page, Text
 from hedron_core.interaction import InteractionResult
-from hedron_flask import HedronFlask, hedron_route
+from hedron_flask import HedronBlueprint, HedronFlask
 
-hedron = HedronFlask(__name__)
-app = hedron.flask
-app.secret_key = "replace-in-production"
+hedron = HedronFlask()
+ui = HedronBlueprint("ui", __name__)
 
 
-@hedron.route("/")
+@ui.page("/")
 def home():
-    return hedron.respond(
-        Page(Heading("Hello Flask", level=1), Text("Typed components on Flask."), title="Home"),
-        request,
-    )
+    return Page(Heading("Hello Flask", level=1), Text("Typed components on Flask."), title="Home")
 
 
-@hedron_route(app, "/fragment", methods=["GET"])
+@ui.component("/fragment")
 def fragment():
     return InteractionResult(content=Text("Fragment ok"), explanation="demo")
+
+
+def create_app() -> Flask:
+    app = Flask(__name__)
+    app.secret_key = "replace-in-production"
+    hedron.init_app(app)
+    app.register_blueprint(ui)
+    return app
+
+
+app = create_app()
 ```
+
+Constructor style (`HedronFlask(__name__)`) still works when you do not need a factory.
 
 ```bash
 flask --app app:app run --debug

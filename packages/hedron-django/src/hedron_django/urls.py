@@ -24,7 +24,7 @@ def component_path(
 
 
 def include_component_path(
-    descriptor: AddressableDescriptor[Any],
+    descriptor: AddressableDescriptor,
     *,
     route: str,
     name: str | None = None,

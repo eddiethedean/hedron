@@ -1,10 +1,10 @@
 # Public stability classifications
 
-**Status:** Phase 0.10 live interaction (**published** `v0.10.1`)
-**Version:** `0.10.1`
+**Status:** Phase 0.11 Flask/Django depth (**coordinated** `0.11.0`; tag optional)
+**Version:** `0.11.0`
 
-This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the published
-`v0.10.1` train. Levels apply to documented contracts; symbols not listed here are **internal**
+This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
+`0.11.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
 unless a later phase explicitly promotes them.
 
 ## Levels
@@ -15,7 +15,7 @@ unless a later phase explicitly promotes them.
 | `beta` | Intended for production use; may receive additive changes and documented minor-phase revisions with changelog, migration, diagnostic, and evidence obligations. |
 | `experimental` | May change or be removed without a major bump. Must be labeled in docs and Explorer. |
 | `internal` | Not a public promise. Private serializer nodes, private modules, and underscore-prefixed APIs. |
-| `deferred` | Accepted design not advertised as Supported until a later decision (for example QuerySet DataSource, capture UI). |
+| `deferred` | Accepted design not advertised as Supported until a later decision (for example capture UI). |
 
 Package maturity classifiers (Beta/Alpha on PyPI) describe distribution readiness; the levels above
 describe **API/artifact** promises.

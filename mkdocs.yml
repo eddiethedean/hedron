@@ -371,6 +371,7 @@ nav:
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - Upgrade (0.8 → 0.10): guides/upgrade.md
+    - What's new in 0.11: guides/whats-new-0.11.md
     - What's new in 0.10.1: guides/whats-new-0.10.1.md
     - What's new in 0.10: guides/whats-new-0.10.md
     - Release notes: guides/release-notes.md

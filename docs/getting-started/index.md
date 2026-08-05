@@ -4,7 +4,7 @@ Build and run a small Hedron application, then continue through HTMX and forms.
 
 ## Path
 
-1. [Install](installation.md) — clean venv, then `hedron>=0.10.1` (and uvicorn)
+1. [Install](installation.md) — clean venv, then `hedron>=0.11.0` (and uvicorn)
 2. [Build your first app](quickstart.md) — verify the scaffold, then run
 3. [HTMX interactions](../guides/htmx-interactions.md) — refresh a declared region in the browser
 4. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST

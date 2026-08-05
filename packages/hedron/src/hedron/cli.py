@@ -380,7 +380,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
             title="0.8 compatibility baseline is active",
             explanation=(
                 "Phase 0.8 classifies the public API and compatibility baseline. "
-                "Django QuerySet integration is assigned to 0.11; "
+                "Django QuerySet DataSource and forms shipped in 0.11; "
                 "live SSE transport shipped in 0.10."
             ),
             remediation="See docs/api/STABILITY.md and docs/guides/upgrade.md.",
@@ -403,17 +403,112 @@ def _cmd_check(args: argparse.Namespace) -> int:
             remediation="See docs/api/STABILITY.md and docs/api/CHART.md.",
         ),
     ]
+
+    inventory_summary: dict[str, Any] | None = None
+    hdj_reports: list[dict[str, Any]] = []
+
+    # Optional HDJ production inventory / CSP mismatch summary (hedron-jinja).
+    try:
+        from hedron_jinja import build_production_inventory, reconcile_csp
+        from hedron_jinja.source import inferred_capabilities, parse_hdj_source
+    except ImportError:
+        pass
+    else:
+        reports: list[dict[str, Any]] = []
+        caps: set[str] = set()
+        mismatches: list[str] = []
+        csp_policy: str | None = None
+        try:
+            from hedron.security.policy import SecurityPolicy
+
+            csp_policy = SecurityPolicy.from_name("standard").content_security_policy
+        except Exception:  # noqa: BLE001
+            csp_policy = None
+        for root in settings.resolved_roots(base=base) or [base]:
+            root = Path(root).resolve()
+            if not root.exists():
+                continue
+            for path in sorted(root.rglob("*.hdj")):
+                if any(
+                    part.startswith(".")
+                    or part in {"node_modules", ".venv", "dist", "site-packages"}
+                    for part in path.parts
+                ):
+                    continue
+                try:
+                    rel = str(path.relative_to(base if path.is_relative_to(base) else root))
+                    text = path.read_text(encoding="utf-8")
+                    parsed = parse_hdj_source(rel, text)
+                    inferred = set(inferred_capabilities(parsed))
+                    declared = set(parsed.declaration.requires)
+                    required = sorted(inferred | declared)
+                    caps.update(required)
+                    reports.append(
+                        {
+                            "name": rel,
+                            "kind": str(parsed.declaration.kind),
+                            "capabilities": required,
+                        }
+                    )
+                    mismatches.extend(
+                        reconcile_csp(
+                            csp_policy,
+                            required_capabilities=required,
+                            source_name=rel,
+                        )
+                    )
+                except Exception as exc:  # noqa: BLE001 — inventory is best-effort
+                    reports.append({"name": str(path), "error": str(exc)})
+        hdj_reports = reports
+        inv = build_production_inventory(
+            template_reports=reports,
+            capabilities=sorted(caps),
+        )
+        if mismatches:
+            diags.append(
+                make_diagnostic(
+                    "HED-HDJ-0110",
+                    severity=DiagnosticSeverity.WARNING,
+                    title="HDJ CSP capability mismatches",
+                    explanation="; ".join(mismatches[:5]),
+                    remediation="Align SecurityPolicy CSP with declared HDJ capabilities.",
+                )
+            )
+        elif reports:
+            info_diags.append(
+                make_diagnostic(
+                    "HED-HDJ-0100",
+                    severity=DiagnosticSeverity.INFORMATION,
+                    title="HDJ production inventory",
+                    explanation=(
+                        f"Scanned {len(reports)} template(s); "
+                        f"capabilities={sorted(caps) or ['(none)']}."
+                    ),
+                    remediation="See Explorer /inventory and docs/api for HDJ CSP reconciliation.",
+                )
+            )
+        inventory_summary = {
+            "templates": len(reports),
+            "capabilities": sorted(caps),
+            "csp_mismatches": mismatches,
+            "inventory": inv.as_dict(),
+        }
+
     all_diags = [*diags, *info_diags]
 
     threshold = DiagnosticSeverity(args.severity)
     fmt = args.format
     if fmt == "json":
         print(json.dumps(diagnostics_to_json(all_diags), indent=2))
+        if inventory_summary is not None:
+            print(json.dumps({"hdj_inventory": inventory_summary}, indent=2))
     elif fmt == "sarif":
         print(json.dumps(diagnostics_to_sarif(all_diags), indent=2))
     else:
         text = diagnostics_to_text(all_diags)
         print(text or "No diagnostics.")
+        if inventory_summary is not None and hdj_reports:
+            print(f"HDJ inventory: {json.dumps(inventory_summary, indent=2)}")
     # Exit on real findings only — evergreen INFORMATION never fails the gate.
     return 1 if meets_severity_threshold(diags, threshold) else 0
 

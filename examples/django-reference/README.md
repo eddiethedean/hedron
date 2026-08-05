@@ -52,5 +52,5 @@ CSRF cookie via Django's `get_token`. Form posts may use `csrfmiddlewaretoken` o
 
 ## Scope
 
-Home + fragment only. Deferred product claims (QuerySet DataSource, Hedron forms bridge)
-are intentionally out of scope—see [STATUS](../../docs/STATUS.md).
+Home + fragment only. Full QuerySet DataSource / forms bridge demos live in the package
+tests and docs (Supported in 0.11 / D-046)—see [STATUS](../../docs/STATUS.md).

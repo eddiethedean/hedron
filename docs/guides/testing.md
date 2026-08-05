@@ -39,6 +39,12 @@ def test_home_fragment(app) -> None:
 The fragment client supplies the relevant HTMX request context so the test verifies the
 fragment contract rather than an ordinary full-page response.
 
+## Portable adapter harness (0.11)
+
+For PAGE/FRAGMENT scenarios shared across FastAPI, Flask, and Django, use
+`hedron.testing.adapters` (`fastapi_fixture` / `flask_fixture` / `django_fixture` plus
+`assert_page_document` / `assert_fragment_body`). See [TESTING.md](../api/TESTING.md).
+
 ## Override FastAPI dependencies
 
 ```python

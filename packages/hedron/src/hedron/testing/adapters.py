@@ -133,9 +133,9 @@ def flask_fixture(app: Any) -> AdapterAppFixture:
     client = app.test_client()
 
     def get(path: str, headers: Mapping[str, str], cookies: Mapping[str, str]) -> AdapterResponse:
-        response = client.get(path, headers=dict(headers))
         for key, value in cookies.items():
             client.set_cookie(key, value)
+        response = client.get(path, headers=dict(headers))
         body = response.get_data(as_text=True)
         return AdapterResponse(response.status_code, body, dict(response.headers))
 

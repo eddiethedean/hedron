@@ -42,6 +42,15 @@ def test_reconcile_csp_fails_closed() -> None:
     assert "htmx.eval" in mismatches[0]
 
 
+def test_reconcile_csp_fails_closed_when_csp_missing() -> None:
+    mismatches = reconcile_csp(
+        None,
+        required_capabilities=["htmx.eval", "browser.inline-script"],
+        source_name="page.hdj",
+    )
+    assert len(mismatches) == 2
+
+
 def test_production_inventory() -> None:
     dep = DynamicDependency.from_bytes("app:a", "a.hdj", b"x")
     manifest = DynamicDependencyManifest(dependencies=(dep,))

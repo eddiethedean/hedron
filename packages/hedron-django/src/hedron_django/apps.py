@@ -7,6 +7,8 @@ from django.core.checks import CheckMessage, Error, Warning, register
 
 __all__ = ["HedronDjangoConfig", "register_checks"]
 
+_CHECKS_REGISTERED = False
+
 
 class HedronDjangoConfig(AppConfig):
     """Installable Django app for Hedron integration (idempotent, no I/O in ready)."""
@@ -22,6 +24,10 @@ class HedronDjangoConfig(AppConfig):
 
 def register_checks() -> None:
     """Register ``hedron.*`` system checks (safe to call multiple times)."""
+    global _CHECKS_REGISTERED
+    if _CHECKS_REGISTERED:
+        return
+    _CHECKS_REGISTERED = True
 
     @register(deploy=True)
     def hedron_django_version_check(app_configs, **kwargs):  # type: ignore[no-untyped-def]

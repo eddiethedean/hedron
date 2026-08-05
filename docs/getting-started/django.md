@@ -3,8 +3,9 @@
 Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
 The adapter does not install FastAPI. Hedron does **not** ship `hedron new --django` yet.
 
-Flask/Django: page + fragment routing and HTMX are Supported in 0.10.1. Native
-forms/QuerySet depth ships in **0.11** — use polling for job status today.
+Flask/Django page + fragment routing and HTMX are Supported on **0.11.0**. Django
+forms bridge and bounded QuerySet DataSource are Supported (D-046). Use polling for
+job status on Django (SSE helpers stay FastAPI-flagship).
 
 ## Fastest path: clone the reference
 
@@ -27,7 +28,7 @@ This reference is manage-less (home + fragment). For a greenfield Django project
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "django>=5.2,<6" "hedron-django>=0.10.1"
+python -m pip install "django>=5.2,<6" "hedron-django>=0.11.0"
 django-admin startproject mysite .
 python manage.py startapp demo
 ```
@@ -72,8 +73,8 @@ Open `http://127.0.0.1:8000/`.
 ## Fastest path: existing Django project (PyPI)
 
 ```bash
-pip install "hedron-django>=0.10.1" "django>=5.2,<6"
-# or: uv add "hedron-django>=0.10.1" "django>=5.2,<6"
+pip install "hedron-django>=0.11.0" "django>=5.2,<6"
+# or: uv add "hedron-django>=0.11.0" "django>=5.2,<6"
 ```
 
 Assume you already have a Django project with `SessionMiddleware` and
@@ -140,6 +141,7 @@ uvicorn asgi:application --host 127.0.0.1 --port 8000
 ## Next
 
 - [Security](../guides/security.md) · [Upgrade](../guides/upgrade.md) · [Deployment](../guides/deployment.md)
-- Deferred (not Supported yet): QuerySet DataSource, Hedron-owned Django forms — apps may use
-  Django forms and QuerySets directly until phase 0.11. For HTMX mutations today, use Django
-  forms + CSRF middleware and [polling](../guides/live-interaction.md) for job status.
+- Forms: `hedron_django.forms.form_to_nodes` / `validation_interaction` (CSRF helpers included).
+- QuerySets: `hedron_data.DjangoQuerySetDataSource` with an already-authorized base QS;
+  omit allowlists to deny client sort/filter. For job status use
+  [polling](../guides/live-interaction.md).

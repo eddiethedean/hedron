@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from hedron_flask.app import HedronFlask
-from hedron_flask.blueprint import HedronBlueprint
+from hedron_flask.blueprint import HedronBlueprint, wrap_hedron_view
 from hedron_flask.live import POLLING_FALLBACK_SUPPORTED, sse_response, stream_text
 from hedron_flask.responses import component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser, hedron_route
@@ -21,4 +21,5 @@ __all__ = [
     "interaction_response",
     "sse_response",
     "stream_text",
+    "wrap_hedron_view",
 ]

@@ -5,14 +5,15 @@ status: implemented
 # Framework adapter contracts
 
 
-!!! note "Stability (0.10 train)"
+!!! note "Stability (0.11 train)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
     Package maturity (Beta/Alpha) is separate from API level
     (`beta` / `experimental` / `internal` / `deferred`).
 
 **Status:** Beta Supported adapters shipped (`hedron-flask`, `hedron-django`).
-Portable contracts live in `hedron-core`.
+Portable contracts live in `hedron-core`. Flask `init_app` / `HedronBlueprint` and
+Django forms + QuerySet DataSource are Supported in **0.11** (D-046).
 
 ## Install
 
@@ -55,8 +56,10 @@ mappings cannot bypass redirect, selector, cache, or security policy.
 
 | Symbol | Role |
 |---|---|
-| `HedronFlask` | Thin wrapper; `respond`, `csrf_token`, optional auto CSRF cookie |
+| `HedronFlask` | Constructor or `init_app(app)` factory; `respond`, CSRF cookie |
+| `HedronBlueprint` | Blueprint with `page` / `component` / `action` / `include_component` |
 | `hedron_route` | Register views returning components / `InteractionResult` (CSRF on unsafe methods) |
+| `wrap_hedron_view` | Public CSRF + InteractionResult conversion wrapper |
 | `interaction_response` / `component_response` | Build Flask `Response` values |
 | `FlaskUrlReverser` | Path-only `url_for` with `root_path` / `script_name` |
 
@@ -67,7 +70,10 @@ mappings cannot bypass redirect, selector, cache, or security policy.
 | Symbol | Role |
 |---|---|
 | `HedronDjango` | `respond`, `csrf_token`, auth signal helpers |
+| `HedronDjangoConfig` | Installable AppConfig + `hedron.*` system checks |
 | `hedron_view` | Wrap sync/async views; seeds CSRF cookie on safe GETs |
+| `form_to_nodes` / `validation_interaction` | Django Form / ModelForm / formset bridge |
+| `DjangoQuerySetDataSource` (`hedron-data`) | Bounded QuerySet source (deny-by-default allowlists) |
 | `interaction_response` / `component_response` | Build `HttpResponse` values |
 | `DjangoUrlReverser` | `reverse` with mount prefixes |
 
@@ -95,8 +101,8 @@ live-status fallback; they do not ship the FastAPI SSE/WebSocket helpers.
 
 | Claim | Notes |
 |---|---|
-| Django QuerySet DataSource | Bridge QuerySets in app code (assigned to 0.11) |
-| Hedron-owned Django forms subsystem | Apps may use Django-native forms |
+| Capture UI (camera/mic) | Assigned to 0.15 (D-045) |
+| Full adapter live browser matrix | Owned Deferred `LIVE-011-BROWSER` → 0.11.x |
 
 ## Capability matrix
 

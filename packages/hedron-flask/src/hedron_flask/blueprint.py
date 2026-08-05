@@ -15,7 +15,7 @@ from hedron_core.rendering import RenderResult
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
 
-__all__ = ["HedronBlueprint", "convert_view_result"]
+__all__ = ["HedronBlueprint", "convert_view_result", "wrap_hedron_view"]
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -57,7 +57,7 @@ def _csrf_settings() -> tuple[bool, str]:
     )
 
 
-def _wrap_hedron_view(
+def wrap_hedron_view(
     view: F,
     *,
     require_csrf: bool,
@@ -71,6 +71,10 @@ def _wrap_hedron_view(
         return convert_view_result(value, authenticated=_authenticated())
 
     return wrapped  # type: ignore[return-value]
+
+
+# Backward-compatible alias for older internal imports.
+_wrap_hedron_view = wrap_hedron_view
 
 
 class HedronBlueprint(Blueprint):
@@ -88,8 +92,14 @@ class HedronBlueprint(Blueprint):
         require_csrf = any(m.upper() not in _SAFE_METHODS for m in method_list)
 
         def decorator(view: F) -> F:
-            wrapped = _wrap_hedron_view(view, require_csrf=require_csrf)
-            self.add_url_rule(rule, endpoint=endpoint, view_func=wrapped, methods=method_list, **options)
+            wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
+            self.add_url_rule(
+                rule,
+                endpoint=endpoint,
+                view_func=wrapped,
+                methods=method_list,
+                **options,
+            )
             return view
 
         return decorator
@@ -106,8 +116,14 @@ class HedronBlueprint(Blueprint):
         require_csrf = any(m.upper() not in _SAFE_METHODS for m in method_list)
 
         def decorator(view: F) -> F:
-            wrapped = _wrap_hedron_view(view, require_csrf=require_csrf)
-            self.add_url_rule(rule, endpoint=endpoint, view_func=wrapped, methods=method_list, **options)
+            wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
+            self.add_url_rule(
+                rule,
+                endpoint=endpoint,
+                view_func=wrapped,
+                methods=method_list,
+                **options,
+            )
             return view
 
         return decorator
@@ -123,15 +139,21 @@ class HedronBlueprint(Blueprint):
         method_list = list(methods or ("POST",))
 
         def decorator(view: F) -> F:
-            wrapped = _wrap_hedron_view(view, require_csrf=True)
-            self.add_url_rule(rule, endpoint=endpoint, view_func=wrapped, methods=method_list, **options)
+            wrapped = wrap_hedron_view(view, require_csrf=True)
+            self.add_url_rule(
+                rule,
+                endpoint=endpoint,
+                view_func=wrapped,
+                methods=method_list,
+                **options,
+            )
             return view
 
         return decorator
 
     def include_component(
         self,
-        descriptor: AddressableDescriptor[Any],
+        descriptor: AddressableDescriptor,
         *,
         path: str,
         endpoint: str | None = None,
@@ -141,12 +163,13 @@ class HedronBlueprint(Blueprint):
         """Expose an ``@addressable`` factory at ``path`` (GET by default)."""
 
         method_list = list(methods or ("GET",))
+        require_csrf = any(m.upper() not in _SAFE_METHODS for m in method_list)
         ep = endpoint or f"hedron_{descriptor.logical_id.replace(':', '_').replace('.', '_')}"
 
         def view(**kwargs: Any) -> Any:
             return descriptor.factory(**kwargs)
 
-        wrapped = _wrap_hedron_view(view, require_csrf=False)
+        wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
         self.add_url_rule(path, endpoint=ep, view_func=wrapped, methods=method_list, **options)
 
 

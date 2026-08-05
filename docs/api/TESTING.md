@@ -36,6 +36,20 @@ with fragment_client(app) as client:
 Optional browser extras live under `hedron.testing.browser` (`playwright()` context
 manager; `axe_scan`) and require `hedron[browser]`.
 
+## Portable adapter harness (0.11)
+
+Import from `hedron.testing.adapters` for PAGE/FRAGMENT scenarios shared across hosts:
+
+| Helper | Role |
+|---|---|
+| `fastapi_fixture` / `flask_fixture` / `django_fixture` | Wrap host test clients |
+| `assert_page_document` | Full HTML document (`<html>…</html>`) |
+| `assert_fragment_body` | Fragment body without document chrome |
+| `assert_htmx_trigger` | `HX-Trigger` presence |
+
+Cookies must be set **before** the request (Flask fixture fixed in 0.11). Host-native
+clients remain available for adapter-specific assertions.
+
 ## Errors
 
 | Condition | Behavior |

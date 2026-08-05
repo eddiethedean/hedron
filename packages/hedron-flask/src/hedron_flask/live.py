@@ -53,12 +53,16 @@ def sse_response(
     )
 
 
-def stream_text(chunks: Iterable[str], *, status: int = 200, mimetype: str = "text/plain") -> Response:
+def stream_text(
+    chunks: Iterable[str],
+    *,
+    status: int = 200,
+    mimetype: str = "text/plain",
+) -> Response:
     """Focused text streaming helper (not general HTML streaming)."""
 
     def generate() -> Iterator[str]:
-        for chunk in chunks:
-            yield chunk
+        yield from chunks
 
     try:
         from flask import has_request_context
@@ -71,5 +75,9 @@ def stream_text(chunks: Iterable[str], *, status: int = 200, mimetype: str = "te
         iterator,
         status=status,
         mimetype=mimetype,
-        headers={"Cache-Control": "no-store", "X-Hedron-Live": "stream", "X-Hedron-Fallback": "poll"},
+        headers={
+            "Cache-Control": "no-store",
+            "X-Hedron-Live": "stream",
+            "X-Hedron-Fallback": "poll",
+        },
     )

@@ -3,12 +3,12 @@
 ## Which version should I install?
 
 ```bash
-pip install "hedron>=0.10.1"
+pip install "hedron>=0.11.0"
 # or
-uv add "hedron>=0.10.1"
+uv add "hedron>=0.11.0"
 ```
 
-That installs the current published train from PyPI (**0.10.1**)—see
+That installs the current published train from PyPI (**0.11.0**)—see
 [What’s ready today](whats-ready.md). `Auto` is included. For DataTable/DataEditor, install
 `hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
 
@@ -29,7 +29,7 @@ with the same interpreter you used for `pip`.
 
 Other common fixes:
 
-1. Prefer **`uv tool install "hedron>=0.10.1"`** (or `pipx install`), then **re-open the shell**.
+1. Prefer **`uv tool install "hedron>=0.11.0"`** (or `pipx install`), then **re-open the shell**.
 2. After `hedron new` and `pip install -e .` / `uv sync`, run the CLI from the project
    environment: `uv run hedron …` (or activate the venv and run `hedron` / `python -m hedron`).
 3. On Windows, ensure the Python **Scripts** folder is on PATH (for example
@@ -54,7 +54,7 @@ declares—do not skip it.
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or use
-`hedron new my-app` after `pip install "hedron>=0.10.1"`.
+`hedron new my-app` after `pip install "hedron>=0.11.0"`.
 
 ## Should I use `uv init` or `hedron new`?
 
@@ -90,8 +90,8 @@ See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), a
 
 Yes as **Beta** packages with a **Supported** adapter matrix (`hedron-flask`, `hedron-django`).
 Install them separately; they do not pull in FastAPI. Django apps must use Django `>=5.2,<6`.
-Some rows remain Deferred (Django QuerySet as a first-party DataSource; Hedron-owned Django forms).
-Official HTMX SSE is Supported on the FastAPI flagship in 0.10; polling remains the Supported
+Django QuerySet DataSource and forms bridge are Supported in **0.11** (D-046). Official
+HTMX SSE is Supported on the FastAPI flagship in 0.10; polling remains the Supported
 fallback on all hosts. See [Compatibility](../COMPATIBILITY.md),
 [Flask — add to existing app](../getting-started/flask.md), and
 [Django — add to existing project](../getting-started/django.md).

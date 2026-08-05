@@ -103,3 +103,31 @@ def test_schema_without_evaluation() -> None:
     schema = (ColumnSchema(name="name", label="Name"),)
     source = DjangoQuerySetDataSource(base, schema=schema)
     assert source.describe_schema() == schema
+
+
+def test_deny_by_default_client_filters() -> None:
+    base = FakeQuerySet([FakeObj(1, "Ada", "t1"), FakeObj(2, "Grace", "t1")])
+    source = DjangoQuerySetDataSource(
+        base,
+        row_mapper=lambda o: {"pk": o.pk, "name": o.name},
+    )
+    try:
+        source.fetch(DataQuery(limit=10, filters={"name": "Ada"}))
+        raised = False
+    except ValueError:
+        raised = True
+    assert raised
+
+
+def test_deny_by_default_client_sort() -> None:
+    base = FakeQuerySet([FakeObj(1, "Ada", "t1")])
+    source = DjangoQuerySetDataSource(
+        base,
+        row_mapper=lambda o: {"pk": o.pk, "name": o.name},
+    )
+    try:
+        source.fetch(DataQuery(limit=10, sort=(("name", "asc"),)))
+        raised = False
+    except ValueError:
+        raised = True
+    assert raised

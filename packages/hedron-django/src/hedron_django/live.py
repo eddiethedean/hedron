@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Iterator
-from typing import Any
 
 from django.http import HttpResponse, StreamingHttpResponse
 
 from hedron_core.live import SseEvent, encode_sse
 
-__all__ = ["POLLING_FALLBACK_SUPPORTED", "sse_response", "stream_text"]
+__all__ = [
+    "POLLING_FALLBACK_SUPPORTED",
+    "poll_status_response",
+    "sse_response",
+    "stream_text",
+]
 
 POLLING_FALLBACK_SUPPORTED = True
 

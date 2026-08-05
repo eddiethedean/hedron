@@ -72,7 +72,7 @@ class HedronFlask:
 
     def page(self, rule: str, **options: Any):
         """Register a page view on the bound app (non-Blueprint convenience)."""
-        from hedron_flask.blueprint import _wrap_hedron_view
+        from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("GET",)))
         require_csrf = any(m.upper() not in {"GET", "HEAD", "OPTIONS", "TRACE"} for m in methods)
@@ -80,14 +80,14 @@ class HedronFlask:
         def decorator(view: Any) -> Any:
             if self.flask is None:
                 raise RuntimeError("HedronFlask.init_app(app) must be called before page()")
-            wrapped = _wrap_hedron_view(view, require_csrf=require_csrf)
+            wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
             self.flask.add_url_rule(rule, view_func=wrapped, methods=methods, **options)
             return view
 
         return decorator
 
     def component(self, rule: str, **options: Any):
-        from hedron_flask.blueprint import _wrap_hedron_view
+        from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("GET",)))
         require_csrf = any(m.upper() not in {"GET", "HEAD", "OPTIONS", "TRACE"} for m in methods)
@@ -95,21 +95,21 @@ class HedronFlask:
         def decorator(view: Any) -> Any:
             if self.flask is None:
                 raise RuntimeError("HedronFlask.init_app(app) must be called before component()")
-            wrapped = _wrap_hedron_view(view, require_csrf=require_csrf)
+            wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
             self.flask.add_url_rule(rule, view_func=wrapped, methods=methods, **options)
             return view
 
         return decorator
 
     def action(self, rule: str, **options: Any):
-        from hedron_flask.blueprint import _wrap_hedron_view
+        from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("POST",)))
 
         def decorator(view: Any) -> Any:
             if self.flask is None:
                 raise RuntimeError("HedronFlask.init_app(app) must be called before action()")
-            wrapped = _wrap_hedron_view(view, require_csrf=True)
+            wrapped = wrap_hedron_view(view, require_csrf=True)
             self.flask.add_url_rule(rule, view_func=wrapped, methods=methods, **options)
             return view
 
