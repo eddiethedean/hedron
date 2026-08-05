@@ -31,9 +31,14 @@ def app_url() -> Iterator[str]:
     uvicorn = pytest.importorskip("uvicorn")
     from hedron import Hedron, Page, Stack
     from hedron_charts import BarChart
+    from hedron_core import reset_registry_for_tests
     from hedron_core.html import html
     from hedron_data import DataTable
 
+    reset_registry_for_tests()
+    import hedron_core
+
+    hedron_core._register_builtins()  # type: ignore[attr-defined]
     app = Hedron(title="DataChartMatrix", security="standard", session_secret="s", explorer="off")
 
     @app.page("/")

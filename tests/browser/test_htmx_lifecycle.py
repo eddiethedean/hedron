@@ -34,8 +34,13 @@ def browser_app_url() -> Iterator[str]:
 
     from hedron import Hedron, InteractionResult, Page, Stack, Text
     from hedron.interaction import FragmentRegion, InteractionPolicy, OobUpdate
+    from hedron_core import reset_registry_for_tests
     from hedron_core.html import html
 
+    reset_registry_for_tests()
+    import hedron_core
+
+    hedron_core._register_builtins()  # type: ignore[attr-defined]
     app = Hedron(
         title="BrowserSmoke",
         security="standard",

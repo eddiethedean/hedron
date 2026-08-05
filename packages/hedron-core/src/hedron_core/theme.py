@@ -156,9 +156,16 @@ def register_theme_instance(theme: Theme) -> None:
 def ensure_default_theme_registered() -> Theme:
     theme = default_theme()
     registry = get_registry()
-    if registry.get_theme(theme.name) is None:
-        # Registry may be a snapshot; register on builder.
+    if registry.get_theme(theme.name) is not None:
+        return theme
+    try:
         register_theme_instance(theme)
+    except Exception as exc:
+        # Sealed builder after another app lifespan: if the active snapshot already
+        # has the default theme, succeed; otherwise re-raise.
+        if "sealed" in str(exc).lower() and get_registry().get_theme(theme.name) is not None:
+            return theme
+        raise
     return theme
 
 
