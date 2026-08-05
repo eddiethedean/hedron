@@ -317,8 +317,13 @@ jobs:
             done
           }
 
+          failed_names=()
+
           for name in "${existing_names[@]}"; do
-            publish_one "$name" "existing"
+            if ! publish_one "$name" "existing"; then
+              echo "WARN: publish failed for existing project ${name}; continuing with next package" >&2
+              failed_names+=("$name")
+            fi
           done
 
           published_new=0
@@ -327,9 +332,20 @@ jobs:
               echo "Waiting 15 minutes before creating new PyPI project: ${name}"
               sleep 900
             fi
-            publish_one "$name" "NEW"
-            published_new=1
+            if publish_one "$name" "NEW"; then
+              published_new=1
+            else
+              echo "WARN: publish failed for NEW project ${name}; continuing with next package" >&2
+              failed_names+=("$name")
+              # Count the attempt so subsequent new creates still respect spacing.
+              published_new=1
+            fi
           done
+
+          if ((${#failed_names[@]})); then
+            echo "One or more packages failed to publish: ${failed_names[*]}" >&2
+            exit 1
+          fi
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
