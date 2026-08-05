@@ -35,7 +35,7 @@ current_request: ContextVar[Request | None] = ContextVar("hedron_current_request
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
-def _logical_id(fn: Callable[..., Any], distribution: str = "hedron") -> str:
+def _logical_id(fn: Callable[..., object], distribution: str = "hedron") -> str:
     return component_type_id(distribution, fn.__module__, fn.__name__)
 
 
@@ -55,13 +55,13 @@ def _normalize_fragment_regions(
 
 
 def _wrap_endpoint(
-    fn: Callable[..., Any],
+    fn: Callable[..., object],
     *,
     kind: str,
     mode: RenderMode | None,
     require_csrf: bool,
     fragment_regions: tuple[FragmentRegion, ...] = (),
-) -> Callable[..., Any]:
+) -> Callable[..., Response]:
     import typing
 
     @functools.wraps(fn)
@@ -87,7 +87,7 @@ def _wrap_endpoint(
         result = await await_if_needed(result)
         return await HedronRoute.convert_endpoint_result(
             request,
-            result,
+            result,  # type: ignore[arg-type]
             mode=mode,
             kind=kind,
             fragment_regions=fragment_regions,
@@ -108,7 +108,7 @@ def _wrap_endpoint(
         return_annotation=hints.get("return", sig.return_annotation),
     )
     endpoint._hedron_fragment_regions = fragment_regions  # type: ignore[attr-defined]
-    return endpoint
+    return endpoint  # type: ignore[return-value]
 
 
 class HedronRouter(APIRouter):
@@ -313,7 +313,7 @@ class HedronRouter(APIRouter):
 
     def include_component(
         self,
-        descriptor: AddressableDescriptor[..., Any] | Callable[..., Any],
+        descriptor: AddressableDescriptor[P, R] | Callable[P, R],
         *,
         path: str,
         name: str | None = None,

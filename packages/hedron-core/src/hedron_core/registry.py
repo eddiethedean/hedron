@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.diagnostics import error
 from hedron_core.identifiers import registry_resource_id
@@ -513,19 +513,19 @@ def get_registry() -> Registry:
     )
 
 
-def snapshot_registry_builder() -> dict[str, dict[str, Any]]:
+def snapshot_registry_builder() -> dict[str, dict[str, object]]:
     """Capture mutable builder maps for plugin-load rollback."""
     return {
-        "components": dict(_builder._components),
-        "addressables": dict(_builder._addressables),
-        "routes": dict(_builder._routes),
-        "themes": dict(_builder._themes),
-        "assets": dict(_builder._assets),
-        "browser_modules": dict(_builder._browser_modules),
+        "components": cast(dict[str, object], dict(_builder._components)),
+        "addressables": cast(dict[str, object], dict(_builder._addressables)),
+        "routes": cast(dict[str, object], dict(_builder._routes)),
+        "themes": cast(dict[str, object], dict(_builder._themes)),
+        "assets": cast(dict[str, object], dict(_builder._assets)),
+        "browser_modules": cast(dict[str, object], dict(_builder._browser_modules)),
     }
 
 
-def restore_registry_builder(snapshot: dict[str, dict[str, Any]]) -> None:
+def restore_registry_builder(snapshot: dict[str, dict[str, object]]) -> None:
     """Restore builder maps from ``snapshot_registry_builder``."""
     if _builder._sealed:
         raise error(
@@ -534,12 +534,14 @@ def restore_registry_builder(snapshot: dict[str, dict[str, Any]]) -> None:
             explanation="Cannot restore builder state on a sealed registry.",
             remediation="Roll back plugins before seal_registry().",
         )
-    _builder._components = dict(snapshot["components"])
-    _builder._addressables = dict(snapshot["addressables"])
-    _builder._routes = dict(snapshot["routes"])
-    _builder._themes = dict(snapshot["themes"])
-    _builder._assets = dict(snapshot["assets"])
-    _builder._browser_modules = dict(snapshot["browser_modules"])
+    _builder._components = cast(dict[str, ComponentMeta], dict(snapshot["components"]))
+    _builder._addressables = cast(dict[str, AddressableMeta], dict(snapshot["addressables"]))
+    _builder._routes = cast(dict[str, RouteMeta], dict(snapshot["routes"]))
+    _builder._themes = cast(dict[str, ThemeMeta], dict(snapshot["themes"]))
+    _builder._assets = cast(dict[str, AssetMeta], dict(snapshot["assets"]))
+    _builder._browser_modules = cast(
+        dict[str, BrowserModuleMeta], dict(snapshot["browser_modules"])
+    )
 
 
 def reset_registry_for_tests() -> None:

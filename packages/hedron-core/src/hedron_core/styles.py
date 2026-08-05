@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.codes import HED_CSS_UNKNOWN_SYMBOL
 from hedron_core.diagnostics import error
+from hedron_core.typing_aliases import JsonValue
 
 __all__ = ["StyleSymbols", "styles_from_manifest"]
 
@@ -33,7 +34,10 @@ class StyleSymbols:
                 explanation=f"styles.{name} is not defined for this component.{hint}",
                 remediation="Define the class in styles.css or fix the symbol name.",
                 component_id=self._component_id or None,
-                context={"symbol": name, "known": suggestions},
+                context=cast(
+                    Mapping[str, JsonValue],
+                    {"symbol": name, "known": suggestions},
+                ),
             ) from exc
 
     def get(self, name: str, default: str | None = None) -> str | None:

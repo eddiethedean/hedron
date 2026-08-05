@@ -6,7 +6,7 @@ import functools
 import inspect
 import time
 from collections.abc import Callable, Mapping
-from typing import Any, ParamSpec, TypeVar, overload
+from typing import ParamSpec, TypeVar, overload
 
 from hedron_core.cache import (
     CacheEvent,
@@ -31,13 +31,13 @@ def htmx_vary_dimensions(*, vary_on_target: bool = False) -> tuple[str, ...]:
     return dims
 
 
-def _identity_for(fn: Callable[..., Any]) -> str:
+def _identity_for(fn: Callable[..., object]) -> str:
     return f"{fn.__module__}.{fn.__qualname__}"
 
 
 def _bound_arguments(
-    fn: Callable[..., Any], args: tuple[Any, ...], kwargs: Mapping[str, Any]
-) -> dict[str, Any]:
+    fn: Callable[..., object], args: tuple[object, ...], kwargs: Mapping[str, object]
+) -> dict[str, object]:
     try:
         bound = inspect.signature(fn).bind_partial(*args, **dict(kwargs))
         bound.apply_defaults()
@@ -46,7 +46,7 @@ def _bound_arguments(
         return dict(kwargs)
 
 
-def _vary_from_kwargs(kwargs: Mapping[str, Any], vary_on: tuple[str, ...]) -> dict[str, Any]:
+def _vary_from_kwargs(kwargs: Mapping[str, object], vary_on: tuple[str, ...]) -> dict[str, object]:
     missing = [k for k in vary_on if k not in kwargs]
     if missing:
         raise KeyError(f"missing vary_on keys: {', '.join(missing)}")
@@ -69,10 +69,10 @@ _PUBLIC_SENSITIVE_NAMES = frozenset(
 def _should_reject_cache(
     *,
     scope: str,
-    args: tuple[Any, ...],
-    kwargs: Mapping[str, Any],
+    args: tuple[object, ...],
+    kwargs: Mapping[str, object],
     vary_on: tuple[str, ...],
-    bound: Mapping[str, Any] | None = None,
+    bound: Mapping[str, object] | None = None,
 ) -> str | None:
     if scope in _SENSITIVE_SCOPES and not vary_on:
         return f"scope {scope!r} requires vary_on dimensions"
@@ -249,7 +249,7 @@ def cache_data(
     version: str = "1",
     tags: tuple[str, ...] = (),
     vary_on: tuple[str, ...] = (),
-) -> Any:
+) -> Callable[P, R] | Callable[[Callable[P, R]], Callable[P, R]]:
     def decorator(f: Callable[P, R]) -> Callable[P, R]:
         return _decorate(
             f,
@@ -293,7 +293,7 @@ def cache_component(
     version: str = "1",
     tags: tuple[str, ...] = (),
     vary_on: tuple[str, ...] = (),
-) -> Any:
+) -> Callable[P, R] | Callable[[Callable[P, R]], Callable[P, R]]:
     def decorator(f: Callable[P, R]) -> Callable[P, R]:
         return _decorate(
             f,

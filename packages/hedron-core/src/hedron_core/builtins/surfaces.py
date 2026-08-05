@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children
 from hedron_core.component import Component, NodeLike
@@ -27,7 +27,7 @@ class Card(Component[CardProps]):
         footer: NodeLike = None,
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(CardProps(title=title, id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
@@ -65,7 +65,7 @@ class Badge(Component[BadgeProps]):
         text: str,
         *,
         tone: Literal["neutral", "info", "success", "warning", "danger"] = "neutral",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(BadgeProps(text=text, tone=tone, **kwargs))
 
@@ -91,7 +91,7 @@ class Alert(Component[AlertProps]):
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
         title: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(AlertProps(message=message, tone=tone, title=title, **kwargs))
 
@@ -115,7 +115,7 @@ class SkeletonProps(Props):
 class Skeleton(Component[SkeletonProps]):
     props_type = SkeletonProps
 
-    def __init__(self, *, lines: int = 3, **kwargs: Any) -> None:
+    def __init__(self, *, lines: int = 3, **kwargs: object) -> None:
         super().__init__(SkeletonProps(lines=lines, **kwargs))
 
     def render(self) -> NodeLike:

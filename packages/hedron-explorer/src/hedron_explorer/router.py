@@ -6,7 +6,7 @@ import html as html_lib
 import time
 from collections import deque
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
@@ -14,12 +14,13 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from hedron_core.plugins import get_explorer_panels
 from hedron_core.registry import get_registry
 from hedron_core.rendering import RenderMode, render
+from hedron_core.typing_aliases import JsonObject, JsonValue
 
 __all__ = ["explorer_router"]
 
-_TRACE: deque[dict[str, Any]] = deque(maxlen=100)
+_TRACE: deque[JsonObject] = deque(maxlen=100)
 _RATE: dict[str, list[float]] = {}
-_AUDIT: deque[dict[str, Any]] = deque(maxlen=200)
+_AUDIT: deque[JsonObject] = deque(maxlen=200)
 _SIMULATE_KEYS = frozenset(
     {
         "route",
@@ -41,7 +42,7 @@ def _redact(value: str | None) -> str | None:
     return value
 
 
-def _audit(event: str, **payload: Any) -> None:
+def _audit(event: str, **payload: JsonValue) -> None:
     _AUDIT.appendleft({"event": event, **payload, "ts": time.time()})
 
 
@@ -75,7 +76,7 @@ def _project_component_roots(request: Request | None) -> list[Path]:
     return roots
 
 
-def _allowed_roots(meta: Any, request: Request | None = None) -> list[Path]:
+def _allowed_roots(meta: object, request: Request | None = None) -> list[Path]:
     """Allow reads under project component roots only.
 
     ``meta.folder_path`` is ignored as a root: registry metadata can be
@@ -85,7 +86,9 @@ def _allowed_roots(meta: Any, request: Request | None = None) -> list[Path]:
     return _project_component_roots(request)
 
 
-def _safe_read_text(path_str: str | None, meta: Any, request: Request | None = None) -> str | None:
+def _safe_read_text(
+    path_str: str | None, meta: object, request: Request | None = None
+) -> str | None:
     """Read a file only when it resolves under an allowlisted component root."""
     if not path_str:
         return None
@@ -337,12 +340,12 @@ def explorer_router() -> APIRouter:
         events = CacheTrace.recent(50)
         rows = "".join(
             "<tr>"
-            f"<td>{html_lib.escape(e['kind'])}</td>"
-            f"<td><code>{html_lib.escape(e['key_fingerprint'])}</code></td>"
-            f"<td>{html_lib.escape(e['scope'])}</td>"
+            f"<td>{html_lib.escape(str(e['kind']))}</td>"
+            f"<td><code>{html_lib.escape(str(e['key_fingerprint']))}</code></td>"
+            f"<td>{html_lib.escape(str(e['scope']))}</td>"
             f"<td>{html_lib.escape(str(e.get('age_ms')))}</td>"
             f"<td>{html_lib.escape(str(e.get('size')))}</td>"
-            f"<td>{html_lib.escape(e.get('detail') or '')}</td>"
+            f"<td>{html_lib.escape(str(e.get('detail') or ''))}</td>"
             "</tr>"
             for e in events
         )
@@ -501,7 +504,7 @@ def explorer_router() -> APIRouter:
             from hedron_jinja import build_production_inventory, reconcile_csp
             from hedron_jinja.source import inferred_capabilities, parse_hdj_source
 
-            reports: list[dict[str, Any]] = []
+            reports: list[JsonObject] = []
             caps: set[str] = set()
             mismatches: list[str] = []
             project_root = getattr(request.app.state, "hedron_project_root", None)
@@ -526,11 +529,14 @@ def explorer_router() -> APIRouter:
                         )
                         caps.update(required)
                         reports.append(
-                            {
-                                "name": rel,
-                                "kind": str(parsed.declaration.kind),
-                                "capabilities": required,
-                            }
+                            cast(
+                                JsonObject,
+                                {
+                                    "name": rel,
+                                    "kind": str(parsed.declaration.kind),
+                                    "capabilities": required,
+                                },
+                            )
                         )
                         mismatches.extend(
                             reconcile_csp(
@@ -715,30 +721,33 @@ def explorer_router() -> APIRouter:
             )
             if not region_ok:
                 region_error = f"HX-Target {target!r} is not an authorized fragment region"
-        return {
-            "ok": region_ok,
-            "route": name,
-            "mutations": False,
-            "mode": mode,
-            "boosted": bool(payload.get("boosted")),
-            "history_restore": bool(payload.get("history_restore")),
-            "status": status_code,
-            "target": target,
-            "primary": {
-                "kind": route.kind,
-                "path": route.path,
-                "swap": "innerHTML",
+        return cast(
+            JsonObject,
+            {
+                "ok": region_ok,
+                "route": name,
+                "mutations": False,
+                "mode": mode,
+                "boosted": bool(payload.get("boosted")),
+                "history_restore": bool(payload.get("history_restore")),
+                "status": status_code,
+                "target": target,
+                "primary": {
+                    "kind": route.kind,
+                    "path": route.path,
+                    "swap": "innerHTML",
+                },
+                "oob": [],
+                "event_timing": {"trigger": None, "after_swap": None, "after_settle": None},
+                "history": "push" if mode in {"boosted", "page"} else "none",
+                "assets": "predeclared-shell",
+                "cache_variation": ["HX-Request", "HX-History-Restore-Request"]
+                + (["HX-Target"] if inference.get("fragment_regions") else []),
+                "inference": inference,
+                "override_source": "route.htmx_inference",
+                "error": region_error,
             },
-            "oob": [],
-            "event_timing": {"trigger": None, "after_swap": None, "after_settle": None},
-            "history": "push" if mode in {"boosted", "page"} else "none",
-            "assets": "predeclared-shell",
-            "cache_variation": ["HX-Request", "HX-History-Restore-Request"]
-            + (["HX-Target"] if inference.get("fragment_regions") else []),
-            "inference": inference,
-            "override_source": "route.htmx_inference",
-            "error": region_error,
-        }
+        )
 
     return router
 

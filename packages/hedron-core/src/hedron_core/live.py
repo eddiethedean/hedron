@@ -6,7 +6,8 @@ import json
 import re
 from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
-from typing import Any
+
+from hedron_core.typing_aliases import JsonValue
 
 __all__ = [
     "LiveObservation",
@@ -92,5 +93,5 @@ def observation_to_sse(obs: LiveObservation) -> SseEvent:
     return SseEvent(data=obs.html, event=obs.event, id=obs.event_id)
 
 
-def client_state_payload(values: Mapping[str, Any]) -> str:
+def client_state_payload(values: Mapping[str, JsonValue]) -> str:
     return json.dumps(dict(values), separators=(",", ":"), default=str)

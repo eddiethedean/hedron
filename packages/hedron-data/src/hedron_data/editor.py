@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 import json
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
@@ -43,14 +43,14 @@ def _public_row(row: Mapping[str, object], columns: Sequence[Column]) -> dict[st
 
 
 def filter_writable_changes(
-    changes: DataChanges[Any],
+    changes: DataChanges[dict[str, JsonValue]],
     *,
     writable_fields: frozenset[str],
     read_only_fields: frozenset[str],
     hidden_fields: frozenset[str],
     allow_deletes: bool = True,
     key_field: str | None = None,
-) -> tuple[DataChanges[Any], tuple[FieldError, ...]]:
+) -> tuple[DataChanges[dict[str, JsonValue]], tuple[FieldError, ...]]:
     """Server-authoritative writable-field policy for forged client edits."""
     errors: list[FieldError] = []
     updates: list[CellUpdate] = []
@@ -69,7 +69,7 @@ def filter_writable_changes(
             )
             continue
         updates.append(upd)
-    inserts: list[Mapping[str, JsonValue]] = []
+    inserts: list[dict[str, JsonValue]] = []
     for row in changes.inserts:
         if not isinstance(row, Mapping):
             errors.append(
@@ -81,7 +81,7 @@ def filter_writable_changes(
             )
             continue
         cleaned: dict[str, JsonValue] = {
-            str(k): cast(JsonValue, v)
+            str(k): v
             for k, v in row.items()
             if (k == key_field or k in writable_fields)
             and k not in read_only_fields
@@ -94,7 +94,7 @@ def filter_writable_changes(
             and key_field not in hidden_fields
         ):
             # Identity key may be read-only but still required on insert.
-            cleaned[key_field] = cast(JsonValue, row[key_field])
+            cleaned[key_field] = row[key_field]
         inserts.append(cleaned)
     deletes: list[str] = []
     if changes.deletes:
@@ -109,15 +109,13 @@ def filter_writable_changes(
                 )
         else:
             deletes = list(changes.deletes)
-    return (
-        DataChanges(
-            updates=tuple(updates),
-            inserts=tuple(inserts),
-            deletes=tuple(deletes),
-            dataset_version=changes.dataset_version,
-        ),
-        tuple(errors),
+    filtered: DataChanges[dict[str, JsonValue]] = DataChanges(
+        updates=tuple(updates),
+        inserts=tuple(inserts),
+        deletes=tuple(deletes),
+        dataset_version=changes.dataset_version,
     )
+    return filtered, tuple(errors)
 
 
 class DataEditorProps(Props):
@@ -142,15 +140,18 @@ class DataEditor(Component[DataEditorProps]):
         row_model: type[Model] | None = None,
         columns: Sequence[Column] | None = None,
         key_field: str = "id",
-        on_save: Callable[[DataChanges[Any]], DataSaveResult[Any]] | None = None,
-        source: DataEditorSource[Any] | AsyncDataEditorSource[Any] | None = None,
-        page: DataPage[Any] | None = None,
+        on_save: Callable[[DataChanges[dict[str, JsonValue]]], DataSaveResult[dict[str, JsonValue]]]
+        | None = None,
+        source: DataEditorSource[dict[str, JsonValue]]
+        | AsyncDataEditorSource[dict[str, JsonValue]]
+        | None = None,
+        page: DataPage[dict[str, JsonValue]] | None = None,
         save_mode: SaveMode = "batch",
         page_size: int = 25,
         caption: str | None = None,
         save_endpoint: str | None = None,
         allow_deletes: bool = True,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             DataEditorProps(
@@ -222,11 +223,13 @@ class DataEditor(Component[DataEditorProps]):
         self._columns = resolve_columns(
             row_model=row_model,
             columns=columns,
-            rows=cast(Sequence[Mapping[str, Any]], self._rows),
+            rows=cast(Sequence[Mapping[str, JsonValue]], self._rows),
         )
 
     @property
-    def on_save(self) -> Callable[[DataChanges[Any]], DataSaveResult[Any]] | None:
+    def on_save(
+        self,
+    ) -> Callable[[DataChanges[dict[str, JsonValue]]], DataSaveResult[dict[str, JsonValue]]] | None:
         return self._on_save
 
     @property
@@ -239,8 +242,8 @@ class DataEditor(Component[DataEditorProps]):
         )
 
     def _policy_clean(
-        self, changes: DataChanges[Any]
-    ) -> tuple[DataChanges[Any], tuple[FieldError, ...]]:
+        self, changes: DataChanges[dict[str, JsonValue]]
+    ) -> tuple[DataChanges[dict[str, JsonValue]], tuple[FieldError, ...]]:
         return filter_writable_changes(
             changes,
             writable_fields=self.writable_fields(),
@@ -250,7 +253,9 @@ class DataEditor(Component[DataEditorProps]):
             key_field=self._key_field,
         )
 
-    def apply_changes(self, changes: DataChanges[Any]) -> DataSaveResult[Any]:
+    def apply_changes(
+        self, changes: DataChanges[dict[str, JsonValue]]
+    ) -> DataSaveResult[dict[str, JsonValue]]:
         cleaned, policy_errors = self._policy_clean(changes)
         if policy_errors:
             return DataSaveResult(ok=False, errors=policy_errors, version=self._version)
@@ -277,7 +282,9 @@ class DataEditor(Component[DataEditorProps]):
             )
         return DataSaveResult(ok=True, accepted=cleaned, version=self._version)
 
-    async def apply_changes_async(self, changes: DataChanges[Any]) -> DataSaveResult[Any]:
+    async def apply_changes_async(
+        self, changes: DataChanges[dict[str, JsonValue]]
+    ) -> DataSaveResult[dict[str, JsonValue]]:
         cleaned, policy_errors = self._policy_clean(changes)
         if policy_errors:
             return DataSaveResult(ok=False, errors=policy_errors, version=self._version)

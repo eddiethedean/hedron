@@ -7,7 +7,7 @@ import tomllib
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.codes import (
     HED_CONFIG_INVALID,
@@ -17,6 +17,7 @@ from hedron_core.codes import (
 from hedron_core.diagnostics import error
 from hedron_core.identifiers import content_digest
 from hedron_core.manifests import canonical_json
+from hedron_core.typing_aliases import JsonObject
 
 __all__ = [
     "CONFIG_FORMAT_VERSION",
@@ -83,22 +84,25 @@ class HedronSettings:
 
 
 def settings_digest(settings: HedronSettings) -> str:
-    payload = {
-        "format_version": settings.format_version,
-        "component_roots": list(settings.component_roots),
-        "build_dir": settings.build_dir,
-        "theme": settings.theme,
-        "asset_policy": {
-            "allow_remote": settings.asset_policy.allow_remote,
-            "strict_csp": settings.asset_policy.strict_csp,
-            "registered_roots": list(settings.asset_policy.registered_roots),
-            "reject_inline_style": settings.asset_policy.reject_inline_style,
+    payload = cast(
+        JsonObject,
+        {
+            "format_version": settings.format_version,
+            "component_roots": list(settings.component_roots),
+            "build_dir": settings.build_dir,
+            "theme": settings.theme,
+            "asset_policy": {
+                "allow_remote": settings.asset_policy.allow_remote,
+                "strict_csp": settings.asset_policy.strict_csp,
+                "registered_roots": list(settings.asset_policy.registered_roots),
+                "reject_inline_style": settings.asset_policy.reject_inline_style,
+            },
+            "plugins": None if settings.plugins is None else list(settings.plugins),
+            "explorer": settings.explorer,
+            "compiler_checks": settings.compiler_checks,
+            "diagnostic_severities": dict(sorted(settings.diagnostic_severities.items())),
         },
-        "plugins": None if settings.plugins is None else list(settings.plugins),
-        "explorer": settings.explorer,
-        "compiler_checks": settings.compiler_checks,
-        "diagnostic_severities": dict(sorted(settings.diagnostic_severities.items())),
-    }
+    )
     return content_digest(canonical_json(payload))
 
 

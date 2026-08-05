@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -26,7 +24,7 @@ def _landmark(tag: str):
             children: NodeLike = None,
             class_: str | None = None,
             id: str | None = None,
-            **kwargs: Any,
+            **kwargs: object,
         ) -> None:
             super().__init__(_LandmarkProps(class_=class_, id=id, **kwargs))
             self._children = collect_children(*nodes, children=children)

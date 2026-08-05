@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -35,7 +35,7 @@ class Text(Component[TextProps]):
         content: str = "",
         *,
         as_: Literal["p", "span", "strong", "em", "small"] = "p",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(TextProps(content=content, as_=as_, **kwargs))
 
@@ -52,7 +52,7 @@ class Heading(Component[HeadingProps]):
     props_type = HeadingProps
 
     def __init__(
-        self, content: str = "", *, level: Literal[1, 2, 3, 4, 5, 6] = 2, **kwargs: Any
+        self, content: str = "", *, level: Literal[1, 2, 3, 4, 5, 6] = 2, **kwargs: object
     ) -> None:
         super().__init__(HeadingProps(content=content, level=level, **kwargs))
 
@@ -75,7 +75,7 @@ class Link(Component[LinkProps]):
         href: SafeUrl | str,
         *,
         external: bool = False,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         url = (
             href
@@ -110,7 +110,7 @@ class Image(Component[ImageProps]):
         width: int | None = None,
         height: int | None = None,
         allow_external: bool = False,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         url = (
             src
@@ -136,7 +136,7 @@ class CodeBlockProps(Props):
 class CodeBlock(Component[CodeBlockProps]):
     props_type = CodeBlockProps
 
-    def __init__(self, code: str, *, language: str | None = None, **kwargs: Any) -> None:
+    def __init__(self, code: str, *, language: str | None = None, **kwargs: object) -> None:
         super().__init__(CodeBlockProps(code=code, language=language, **kwargs))
 
     def render(self) -> NodeLike:
@@ -153,7 +153,7 @@ class ListProps(Props):
 class List(Component[ListProps]):
     props_type = ListProps
 
-    def __init__(self, *items: NodeLike, ordered: bool = False, **kwargs: Any) -> None:
+    def __init__(self, *items: NodeLike, ordered: bool = False, **kwargs: object) -> None:
         super().__init__(ListProps(ordered=ordered, **kwargs))
         self._items = _kids(*items)
 
@@ -169,7 +169,7 @@ class DescriptionListProps(Props):
 class DescriptionList(Component[DescriptionListProps]):
     props_type = DescriptionListProps
 
-    def __init__(self, *pairs: tuple[NodeLike, NodeLike], **kwargs: Any) -> None:
+    def __init__(self, *pairs: tuple[NodeLike, NodeLike], **kwargs: object) -> None:
         super().__init__(DescriptionListProps(**kwargs))
         self._pairs = pairs
 
@@ -196,7 +196,7 @@ class Table(Component[TableProps]):
         rows: Sequence[Sequence[NodeLike]],
         *,
         caption: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(TableProps(caption=caption, **kwargs))
         self._headers = tuple(headers)

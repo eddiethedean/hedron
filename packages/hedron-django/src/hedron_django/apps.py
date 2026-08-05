@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import ClassVar
 
 from django.apps import AppConfig
 from django.core.checks import CheckMessage, Error, Warning, register
@@ -32,7 +32,7 @@ def register_checks() -> None:
     _checks_registered = True
 
     @register(deploy=True)  # type: ignore[misc,untyped-decorator]
-    def hedron_django_version_check(app_configs: Any, **kwargs: Any) -> list[CheckMessage]:
+    def hedron_django_version_check(app_configs: object, **kwargs: object) -> list[CheckMessage]:
         del app_configs, kwargs
         messages: list[CheckMessage] = []
         import django
@@ -48,7 +48,7 @@ def register_checks() -> None:
         return messages
 
     @register()  # type: ignore[misc,untyped-decorator]
-    def hedron_middleware_check(app_configs: Any, **kwargs: Any) -> list[CheckMessage]:
+    def hedron_middleware_check(app_configs: object, **kwargs: object) -> list[CheckMessage]:
         del app_configs, kwargs
         from django.conf import settings
 
@@ -71,7 +71,9 @@ def register_checks() -> None:
         return messages
 
     @register()  # type: ignore[misc,untyped-decorator]
-    def hedron_capability_honesty_check(app_configs: Any, **kwargs: Any) -> list[CheckMessage]:
+    def hedron_capability_honesty_check(
+        app_configs: object, **kwargs: object
+    ) -> list[CheckMessage]:
         del app_configs, kwargs
         from hedron_core.adapter import DJANGO_CAPABILITIES
 

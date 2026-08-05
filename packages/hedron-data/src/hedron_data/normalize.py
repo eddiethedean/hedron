@@ -3,25 +3,29 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import cast
 
 from hedron_core.diagnostics import error
 from hedron_core.models import Model
 from hedron_core.security import Secret
+from hedron_core.typing_aliases import JsonValue
 
 _MAX_INLINE_ROWS = 10_000
 
 
-def _row_to_mapping(row: Any) -> dict[str, Any]:
+def _row_to_mapping(row: object) -> dict[str, JsonValue]:
     if isinstance(row, Model):
         data = row.model_dump()
-        return {k: (v.reveal() if isinstance(v, Secret) else v) for k, v in data.items()}
+        return {
+            k: cast(JsonValue, v.reveal() if isinstance(v, Secret) else v) for k, v in data.items()
+        }
     if isinstance(row, Mapping):
-        return {str(k): v for k, v in row.items()}
-    if hasattr(row, "model_dump") and callable(row.model_dump):
-        data = row.model_dump()
+        return {str(k): cast(JsonValue, v) for k, v in row.items()}
+    model_dump = getattr(row, "model_dump", None)
+    if callable(model_dump):
+        data = model_dump()
         if isinstance(data, Mapping):
-            return {str(k): v for k, v in data.items()}
+            return {str(k): cast(JsonValue, v) for k, v in data.items()}
     raise error(
         "HED-DATA-0001",
         title="Unsupported row type",
@@ -30,7 +34,7 @@ def _row_to_mapping(row: Any) -> dict[str, Any]:
     )
 
 
-def _refuse_lazy(obj: Any) -> None:
+def _refuse_lazy(obj: object) -> None:
     # Generators / iterators that are not materialized sequences.
     if hasattr(obj, "__iter__") and not isinstance(obj, (Sequence, Mapping, str, bytes)):
         # exclude known dataframe types handled below
@@ -52,7 +56,7 @@ def _refuse_lazy(obj: Any) -> None:
             )
 
 
-def _from_narwhals(obj: Any) -> list[dict[str, Any]]:
+def _from_narwhals(obj: object) -> list[dict[str, JsonValue]]:
     try:
         import narwhals as nw  # type: ignore[import-not-found]
     except ImportError as exc:
@@ -62,7 +66,7 @@ def _from_narwhals(obj: Any) -> list[dict[str, Any]]:
             explanation="Narwhals is required to normalize Pandas/Polars/PyArrow inputs.",
             remediation='Install with: pip install "hedron-data[dataframes]"',
         ) from exc
-    frame = nw.from_native(obj)
+    frame = nw.from_native(obj)  # type: ignore[arg-type]  # type: ignore[arg-type]
     native = frame.to_dict(as_series=False)
     if not native:
         return []
@@ -75,11 +79,11 @@ def _from_narwhals(obj: Any) -> list[dict[str, Any]]:
             explanation=f"Refusing to inline {length} rows (max {_MAX_INLINE_ROWS}).",
             remediation="Use a paged DataEditorSource instead of passing the full frame.",
         )
-    return [{k: native[k][i] for k in keys} for i in range(length)]
+    return [{k: cast(JsonValue, native[k][i]) for k in keys} for i in range(length)]
 
 
-def normalize_rows(data: Any, *, max_rows: int = _MAX_INLINE_ROWS) -> list[dict[str, Any]]:
-    """Normalize supported tabular inputs into list[dict[str, Any]]."""
+def normalize_rows(data: object, *, max_rows: int = _MAX_INLINE_ROWS) -> list[dict[str, JsonValue]]:
+    """Normalize supported tabular inputs into list[dict[str, JsonValue]]."""
     if data is None:
         return []
     _refuse_lazy(data)
@@ -103,7 +107,7 @@ def normalize_rows(data: Any, *, max_rows: int = _MAX_INLINE_ROWS) -> list[dict[
                     explanation=f"Refusing to inline {length} rows (max {max_rows}).",
                     remediation="Use a paged DataEditorSource.",
                 )
-            return [{str(k): data[k][i] for k in keys} for i in range(length)]
+            return [{str(k): cast(JsonValue, data[k][i]) for k in keys} for i in range(length)]
         return [_row_to_mapping(data)]
     if isinstance(data, Sequence) and not isinstance(data, (str, bytes)):
         if len(data) > max_rows:

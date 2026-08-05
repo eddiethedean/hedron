@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any, ClassVar
+from typing import ClassVar
 
 from hedron.htmx import _safe_css_selector
 from hedron.routing.reverse import ComponentRef
@@ -12,6 +12,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import FormModel, Props
 from hedron_core.security import SafeUrl, UrlPurpose
+from hedron_core.typing_aliases import HtmlAttrMap, JsonValue
 
 __all__ = [
     "AutoForm",
@@ -39,7 +40,7 @@ def action_attrs(
     return attrs
 
 
-def oob_swap(element_id: str, content: NodeLike, *, swap: str = "true") -> Any:
+def oob_swap(element_id: str, content: NodeLike, *, swap: str = "true") -> NodeLike:
     """Mark a node for HTMX out-of-band swap via hx-swap-oob."""
     from hedron_core.interaction import oob_swap as core_oob_swap
 
@@ -75,7 +76,7 @@ class RefreshButton(Component[Props]):
         self.swap = swap
 
     def render(self) -> NodeLike:
-        attrs: dict[str, Any] = {"type": "button"}
+        attrs: HtmlAttrMap = {"type": "button"}
         if self.ref is not None:
             attrs.update(self.ref.hx_attrs())
             if self.target:
@@ -107,7 +108,7 @@ class Lazy(Component[Props]):
 
     def render(self) -> NodeLike:
         target_id = self.target_id or f"lazy-{self.render_instance_id()}"
-        attrs: dict[str, Any] = {
+        attrs: HtmlAttrMap = {
             "id": target_id,
             "hx-trigger": "load",
             "hx-swap": "innerHTML",
@@ -143,7 +144,7 @@ class Poll(Component[Props]):
 
     def render(self) -> NodeLike:
         target_id = self.target_id or f"poll-{self.render_instance_id()}"
-        attrs: dict[str, Any] = {
+        attrs: HtmlAttrMap = {
             "id": target_id,
             "hx-trigger": f"every {self.interval_ms}ms",
             "hx-swap": "innerHTML",
@@ -173,7 +174,7 @@ class InfiniteScroll(Component[Props]):
         self.swap = swap
 
     def render(self) -> NodeLike:
-        attrs: dict[str, Any] = {
+        attrs: HtmlAttrMap = {
             "hx-trigger": "revealed",
             "hx-swap": self.swap,
         }
@@ -223,7 +224,7 @@ class ErrorState(Component[Props]):
             html.p(self.message, role="alert"),
         ]
         if self.retry_href:
-            attrs: dict[str, Any] = {
+            attrs: HtmlAttrMap = {
                 "type": "button",
                 "hx-get": SafeUrl.parse(self.retry_href, purpose=UrlPurpose.NAVIGATION),
                 "hx-swap": "outerHTML",
@@ -261,7 +262,7 @@ class Pagination(Component[Props]):
             sep = "&" if "?" in self.base_path else "?"
             href_str = f"{self.base_path}{sep}page={number}"
             href = SafeUrl.parse(href_str, purpose=UrlPurpose.NAVIGATION)
-            attrs: dict[str, Any] = {"href": href}
+            attrs: HtmlAttrMap = {"href": href}
             if self.target:
                 attrs.update(
                     {
@@ -286,7 +287,7 @@ class AutoForm(Component[Props]):
         action: str | SafeUrl,
         method: str = "post",
         csrf_token: str | None = None,
-        values: Mapping[str, Any] | None = None,
+        values: Mapping[str, JsonValue] | None = None,
         errors: Sequence[str] = (),
         submit_label: str = "Submit",
         target: str | None = None,
@@ -333,16 +334,21 @@ class AutoForm(Component[Props]):
                 )
             )
         fields.append(SubmitButton(self.submit_label))
-        form_attrs: dict[str, Any] = {
-            "action": action_url,
-            "method": self.method,
-        }
+        method = "post" if self.method == "post" else "get"
+        htmx_attrs: HtmlAttrMap = {}
         if self.target:
-            form_attrs["hx-post" if self.method == "post" else "hx-get"] = action_url
-            form_attrs["hx-target"] = self.target
-            form_attrs["hx-swap"] = "innerHTML"
-            form_attrs["hx-sync"] = "closest form:drop"
-            form_attrs["aria-busy"] = "false"
+            htmx_attrs["hx-post" if method == "post" else "hx-get"] = action_url
+            htmx_attrs["hx-target"] = self.target
+            htmx_attrs["hx-swap"] = "innerHTML"
+            htmx_attrs["hx-sync"] = "closest form:drop"
+            htmx_attrs["aria-busy"] = "false"
+        from typing import Any, cast
+
         from hedron_core.builtins.forms import Form
 
-        return Form(*fields, **form_attrs)
+        return Form(
+            *fields,
+            action=action_url,
+            method=method,
+            **cast(Any, htmx_attrs),
+        )

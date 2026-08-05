@@ -14,6 +14,7 @@ from enum import StrEnum
 from typing import Any, ParamSpec, TypeVar
 
 from hedron_core.security import Secret
+from hedron_core.typing_aliases import CacheTraceDict
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -71,7 +72,7 @@ class CacheTrace:
     """Explorer-facing snapshot of recent cache activity."""
 
     @staticmethod
-    def recent(limit: int = 50) -> list[dict[str, Any]]:
+    def recent(limit: int = 50) -> list[CacheTraceDict]:
         events = list(_traces)[-limit:]
         return [
             {
@@ -117,11 +118,11 @@ def _normalize_arg(value: Any) -> Any:
 def build_cache_key(
     *,
     identity: str,
-    args: tuple[Any, ...] = (),
-    kwargs: Mapping[str, Any] | None = None,
+    args: tuple[object, ...] = (),
+    kwargs: Mapping[str, object] | None = None,
     version: str = "1",
     scope: str = CacheScope.PRIVATE.value,
-    vary: Mapping[str, Any] | None = None,
+    vary: Mapping[str, object] | None = None,
 ) -> str:
     payload = {
         "identity": identity,
@@ -167,7 +168,7 @@ class InMemoryCacheBackend(CacheBackend):
         self._store: dict[str, _Entry] = {}
         self._lock = threading.RLock()
         self._flights: dict[str, threading.Event] = {}
-        self._flight_results: dict[str, Any] = {}
+        self._flight_results: dict[str, object] = {}
         self._flight_errors: dict[str, BaseException] = {}
         self._flight_waiters: dict[str, int] = {}
         self._async_flights: dict[str, asyncio.Future[Any]] = {}

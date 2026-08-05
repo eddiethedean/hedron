@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import copy
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any
 
+from hedron_core.typing_aliases import JsonValue
 from hedron_data.sources import (
     CellUpdate,
     ColumnSchema,
@@ -18,7 +18,7 @@ from hedron_data.sources import (
 )
 
 
-def _row_key(row: Mapping[str, Any], key_field: str) -> str:
+def _row_key(row: Mapping[str, JsonValue], key_field: str) -> str:
     return str(row[key_field])
 
 
@@ -27,16 +27,18 @@ class InMemoryDataSource:
 
     def __init__(
         self,
-        rows: Sequence[Mapping[str, Any]],
+        rows: Sequence[Mapping[str, JsonValue]],
         *,
         key_field: str = "id",
         schema: Sequence[ColumnSchema] = (),
         writable_fields: frozenset[str] | None = None,
         version: str = "1",
-        audit_hook: Callable[[DataChanges[dict[str, Any]]], None] | None = None,
+        audit_hook: Callable[[DataChanges[dict[str, JsonValue]]], None] | None = None,
     ) -> None:
         self._key_field = key_field
-        self._rows: dict[str, dict[str, Any]] = {_row_key(r, key_field): dict(r) for r in rows}
+        self._rows: dict[str, dict[str, JsonValue]] = {
+            _row_key(r, key_field): {str(k): v for k, v in r.items()} for r in rows
+        }
         self._row_versions: dict[str, str] = {k: version for k in self._rows}
         self._schema = tuple(schema)
         # Deny-by-default: omitted writable_fields means no field is writable.
@@ -54,7 +56,7 @@ class InMemoryDataSource:
         self._dataset_version = str(self._version_counter)
         return self._dataset_version
 
-    def fetch(self, query: DataQuery) -> DataPage[dict[str, Any]]:
+    def fetch(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
         q = query.validated()
         items = list(self._rows.values())
         for field_name, expected in q.filters.items():
@@ -84,7 +86,9 @@ class InMemoryDataSource:
             version=self._dataset_version,
         )
 
-    def apply(self, changes: DataChanges[dict[str, Any]]) -> DataSaveResult[dict[str, Any]]:
+    def apply(
+        self, changes: DataChanges[dict[str, JsonValue]]
+    ) -> DataSaveResult[dict[str, JsonValue]]:
         if changes.dataset_version is not None and changes.dataset_version != self._dataset_version:
             return DataSaveResult(
                 ok=False,
@@ -115,7 +119,7 @@ class InMemoryDataSource:
         errors: list[FieldError] = []
         conflicts: list[Conflict] = []
         accepted_updates: list[CellUpdate] = []
-        accepted_inserts: list[dict[str, Any]] = []
+        accepted_inserts: list[dict[str, JsonValue]] = []
         accepted_deletes: list[str] = []
 
         for upd in changes.updates:
@@ -213,8 +217,10 @@ class AsyncInMemoryDataSource:
     def __init__(self, inner: InMemoryDataSource) -> None:
         self._inner = inner
 
-    async def fetch(self, query: DataQuery) -> DataPage[dict[str, Any]]:
+    async def fetch(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
         return self._inner.fetch(query)
 
-    async def apply(self, changes: DataChanges[dict[str, Any]]) -> DataSaveResult[dict[str, Any]]:
+    async def apply(
+        self, changes: DataChanges[dict[str, JsonValue]]
+    ) -> DataSaveResult[dict[str, JsonValue]]:
         return self._inner.apply(changes)

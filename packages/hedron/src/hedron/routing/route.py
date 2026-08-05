@@ -22,7 +22,7 @@ from hedron.interaction import (
 from hedron.responses import HTML, render_component_response
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import materialize_interaction_nodes
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
@@ -217,7 +217,7 @@ class HedronRoute(APIRoute):
         except FragmentRegionError as exc:
             raise HTTPException(status_code=403, detail=str(exc)) from exc
 
-        content: Any = result.content
+        content: NodeLike | None = result.content
         if result.oob:
             try:
                 content = materialize_interaction_nodes(result)

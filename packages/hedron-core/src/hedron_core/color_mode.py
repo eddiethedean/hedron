@@ -8,6 +8,7 @@ from typing import Any, Literal
 from hedron_core.component import Component
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.typing_aliases import HtmlAttrMap
 
 __all__ = [
     "ColorMode",
@@ -59,7 +60,7 @@ class ColorModeToggle(Component[ColorModeToggleProps]):
         id: str | None = None,
         action: str | None = None,
         csrf_token: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         pref = preference.value if isinstance(preference, ColorMode) else str(preference)
         super().__init__(ColorModeToggleProps(preference=pref, label=label, id=id, **kwargs))
@@ -70,16 +71,16 @@ class ColorModeToggle(Component[ColorModeToggleProps]):
         control_id = self.props.id or f"hedron-color-mode-{self.render_instance_id()[2:10]}"
         options = []
         for mode in (ColorMode.LIGHT, ColorMode.DARK, ColorMode.SYSTEM):
-            opts: dict[str, Any] = {"value": mode.value}
+            opts: HtmlAttrMap = {"value": mode.value}
             if self.props.preference == mode.value:
                 opts["selected"] = True
             options.append(html.option(mode.value.title(), **opts))
-        select_attrs: dict[str, Any] = {
+        select_attrs: HtmlAttrMap = {
             "name": "color_mode",
             "aria": {"label": self.props.label},
             "data": {"hedron-color-mode": "true"},
         }
-        form_attrs: dict[str, Any] = {"method": "post", "class_": "hedron-color-mode"}
+        form_attrs: HtmlAttrMap = {"method": "post", "class_": "hedron-color-mode"}
         if self._action:
             from hedron_core.security import SafeUrl, UrlPurpose
 

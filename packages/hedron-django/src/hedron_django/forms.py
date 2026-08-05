@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Literal
+from typing import Literal
 
 from django.forms import BaseForm, BaseFormSet, BoundField
 from django.http import HttpRequest
@@ -91,14 +91,14 @@ def _choices(bound: BoundField) -> tuple[tuple[str, str], ...]:
     return tuple((str(value), str(label)) for value, label in raw)
 
 
-def form_fields(form: BaseForm) -> list[Any]:
+def form_fields(form: BaseForm) -> list[NodeLike]:
     """Render visible bound fields as Hedron form controls."""
-    nodes: list[Any] = []
+    nodes: list[NodeLike] = []
     for bound in form:  # type: ignore[assignment]
         if not isinstance(bound, BoundField):
             continue
         if bound.is_hidden:
-            nodes.append(TrustedHtml.reviewed(str(bound), source="django.forms.hidden"))
+            nodes.append(html.raw(TrustedHtml.reviewed(str(bound), source="django.forms.hidden")))
             continue
         name = bound.html_name
         label = str(bound.label) if bound.label else bound.name
@@ -106,7 +106,7 @@ def form_fields(form: BaseForm) -> list[Any]:
         str_value = "" if value is None else str(value)
         error = "; ".join(str(e) for e in bound.errors) or None
         kind = _widget_kind(bound)
-        control: Any
+        control: NodeLike
         required = bool(getattr(bound.field, "required", False))
         if kind == "textarea":
             control = TextArea(name=name, value=str_value)
@@ -159,11 +159,11 @@ def form_to_nodes(
     *,
     request: HttpRequest | None = None,
     include_csrf: bool = True,
-) -> list[Any]:
+) -> list[NodeLike]:
     """Full form body: optional CSRF, non-field errors, then fields."""
-    nodes: list[Any] = []
+    nodes: list[NodeLike] = []
     if include_csrf and request is not None:
-        nodes.append(csrf_hidden_input(request))
+        nodes.append(html.raw(csrf_hidden_input(request)))
     err = form_errors_node(form)
     if err is not None:
         nodes.append(err)
@@ -176,12 +176,14 @@ def formset_to_nodes(
     *,
     request: HttpRequest | None = None,
     include_csrf: bool = True,
-) -> list[Any]:
+) -> list[NodeLike]:
     """Render a formset management form + each form's fields."""
-    nodes: list[Any] = []
+    nodes: list[NodeLike] = []
     if include_csrf and request is not None:
-        nodes.append(csrf_hidden_input(request))
-    nodes.append(TrustedHtml.reviewed(str(formset.management_form), source="django.forms.formset"))
+        nodes.append(html.raw(csrf_hidden_input(request)))
+    nodes.append(
+        html.raw(TrustedHtml.reviewed(str(formset.management_form), source="django.forms.formset"))
+    )
     non_form = formset.non_form_errors()
     if non_form:
         nodes.append(Alert("\n".join(str(e) for e in non_form), tone="danger"))

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -31,7 +29,7 @@ class Page(Component[PageProps]):
         head: NodeLike = None,
         children: NodeLike = None,
         data_theme: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(PageProps(lang=lang, title=title, data_theme=data_theme, **kwargs))
         self._children = collect_children(*body, children=children)
@@ -64,7 +62,7 @@ class FragmentProps(Props):
 class Fragment(Component[FragmentProps]):
     props_type = FragmentProps
 
-    def __init__(self, *nodes: NodeLike, children: NodeLike = None, **kwargs: Any) -> None:
+    def __init__(self, *nodes: NodeLike, children: NodeLike = None, **kwargs: object) -> None:
         super().__init__(FragmentProps(**kwargs))
         self._children = collect_children(*nodes, children=children)
 
@@ -79,7 +77,7 @@ class HeadProps(Props):
 class Head(Component[HeadProps]):
     props_type = HeadProps
 
-    def __init__(self, *nodes: NodeLike, children: NodeLike = None, **kwargs: Any) -> None:
+    def __init__(self, *nodes: NodeLike, children: NodeLike = None, **kwargs: object) -> None:
         super().__init__(HeadProps(**kwargs))
         self._children = collect_children(*nodes, children=children)
 
@@ -99,7 +97,7 @@ class Title(Component[TitleProps]):
         text: str | None = None,
         *,
         children: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         value = text if text is not None else (children or "")
         super().__init__(TitleProps(text=value, **kwargs))

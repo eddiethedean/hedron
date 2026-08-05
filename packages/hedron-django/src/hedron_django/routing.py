@@ -41,7 +41,7 @@ class DjangoUrlReverser:
         return path
 
 
-def _convert(value: Any, request: HttpRequest) -> HttpResponse:
+def _convert(value: object, request: HttpRequest) -> HttpResponse:
     from hedron_django.csrf import seed_csrf_cookie
 
     if (request.method or "GET").upper() in {"GET", "HEAD"}:
@@ -64,7 +64,9 @@ def hedron_view(view: F) -> F:
     if inspect.iscoroutinefunction(view):
 
         @wraps(view)
-        async def async_wrapped(request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        async def async_wrapped(
+            request: HttpRequest, *args: object, **kwargs: object
+        ) -> HttpResponse:
             value = await view(request, *args, **kwargs)
             return _convert(value, request)
 
@@ -72,7 +74,7 @@ def hedron_view(view: F) -> F:
         return async_wrapped  # type: ignore[return-value]
 
     @wraps(view)
-    def wrapped(request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def wrapped(request: HttpRequest, *args: object, **kwargs: object) -> HttpResponse:
         value = view(request, *args, **kwargs)
         return _convert(value, request)
 

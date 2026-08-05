@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from pydantic import Field as PydanticField
 from pydantic.fields import FieldInfo
 
 from hedron_core.diagnostics import error
+from hedron_core.typing_aliases import JsonObject
 
 
 def Field(  # noqa: N802 — public API matches specification
@@ -45,7 +46,7 @@ def Field(  # noqa: N802 — public API matches specification
     accessible_label: str | None = None,
     accessible_description: str | None = None,
     accessible_error: str | None = None,
-    **extra: Any,
+    **extra: object,
 ) -> Any:
     """Declare validation, presentation, access, data, and a11y metadata."""
     if read_only and writable_policy is not None:
@@ -88,7 +89,7 @@ def Field(  # noqa: N802 — public API matches specification
         "choices": list(choices) if choices is not None else None,
     }
 
-    pydantic_kwargs: dict[str, Any] = {}
+    pydantic_kwargs: dict[str, object] = {}
     if default_factory is not None:
         pydantic_kwargs["default_factory"] = default_factory
     elif default is not ...:
@@ -107,36 +108,39 @@ def Field(  # noqa: N802 — public API matches specification
         if pattern is not None:
             pydantic_kwargs["pattern"] = pattern
 
-    json_schema_extra = {
-        "hedron": {
-            "label": label,
-            "help": help,
-            "placeholder": placeholder,
-            "display": display,
-            "autocomplete": autocomplete,
-            "format": format,
-            "read_only": read_only,
-            "hidden": hidden,
-            "secret": secret,
-            "writable_policy": writable_policy,
-            "key": key,
-            "sortable": sortable,
-            "filterable": filterable,
-            "editor": editor,
-            "width": width,
-            "identity": identity,
-            "accessible_label": accessible_label,
-            "accessible_description": accessible_description,
-            "accessible_error": accessible_error,
-            "required": required,
-            **hedron_constraints,
-        }
-    }
+    json_schema_extra = cast(
+        JsonObject,
+        {
+            "hedron": {
+                "label": label,
+                "help": help,
+                "placeholder": placeholder,
+                "display": display,
+                "autocomplete": autocomplete,
+                "format": format,
+                "read_only": read_only,
+                "hidden": hidden,
+                "secret": secret,
+                "writable_policy": writable_policy,
+                "key": key,
+                "sortable": sortable,
+                "filterable": filterable,
+                "editor": editor,
+                "width": width,
+                "identity": identity,
+                "accessible_label": accessible_label,
+                "accessible_description": accessible_description,
+                "accessible_error": accessible_error,
+                "required": required,
+                **hedron_constraints,
+            }
+        },
+    )
     pydantic_kwargs["json_schema_extra"] = json_schema_extra
-    return PydanticField(**pydantic_kwargs)
+    return PydanticField(**cast(Any, pydantic_kwargs))
 
 
-def hedron_meta(info: FieldInfo) -> dict[str, Any]:
+def hedron_meta(info: FieldInfo) -> dict[str, object]:
     extra = info.json_schema_extra
     if isinstance(extra, dict):
         meta = extra.get("hedron")

@@ -32,7 +32,7 @@ class Metric(Component[MetricProps]):
         *,
         delta: Any = None,
         delta_tone: Literal["up", "down", "neutral"] = "neutral",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             MetricProps(
@@ -76,7 +76,7 @@ class CodeViewer(Component[CodeViewerProps]):
         *,
         language: str | None = None,
         max_chars: int = 100_000,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         clipped = code if len(code) <= max_chars else code[:max_chars] + "\n… [truncated]"
         super().__init__(
@@ -119,7 +119,7 @@ class JSONViewer(Component[JSONViewerProps]):
     props_type = JSONViewerProps
     logical_name = "JSONViewer"
 
-    def __init__(self, value: Any, *, max_chars: int = 100_000, **kwargs: Any) -> None:
+    def __init__(self, value: Any, *, max_chars: int = 100_000, **kwargs: object) -> None:
         redacted = _redact_json(value)
         text = json.dumps(redacted, indent=2, default=str)
         if len(text) > max_chars:
@@ -149,7 +149,7 @@ class Progress(Component[ProgressProps]):
         *,
         maximum: float = 100,
         label: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(ProgressProps(value=value, maximum=maximum, label=label, **kwargs))
 
@@ -179,7 +179,7 @@ class Status(Component[StatusProps]):
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
         live: bool = True,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(StatusProps(message=message, tone=tone, live=live, **kwargs))
 
@@ -207,7 +207,7 @@ class Toast(Component[ToastProps]):
         message: str,
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(ToastProps(message=message, tone=tone, **kwargs))
 
@@ -238,7 +238,7 @@ class Expander(Component[ExpanderProps]):
         open: bool = False,
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(ExpanderProps(title=title, open=open, id=id, class_=class_, **kwargs))
         self._body = collect_children(*nodes, children=children)
@@ -271,7 +271,7 @@ class Tabs(Component[TabsProps]):
         active: str | None = None,
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(TabsProps(active=active, id=id, class_=class_, **kwargs))
         if panels is not None:
@@ -350,7 +350,7 @@ class Sidebar(Component[SidebarProps]):
         label: str = "Sidebar",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(SidebarProps(label=label, id=id, class_=class_, **kwargs))
         self._body = collect_children(*nodes, children=children)

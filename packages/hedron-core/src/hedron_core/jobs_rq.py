@@ -9,6 +9,7 @@ from collections.abc import Callable, Mapping
 from typing import Any
 
 from hedron_core.jobs import JobHandle, JobState, JobStatus, job_authorized
+from hedron_core.typing_aliases import JsonValue
 
 __all__ = ["RQJobBackend"]
 
@@ -40,7 +41,7 @@ class RQJobBackend:
     def submit(
         self,
         job_type: str,
-        payload: Mapping[str, Any],
+        payload: Mapping[str, JsonValue],
         *,
         idempotency_key: str | None = None,
         tenant_id: str | None = None,

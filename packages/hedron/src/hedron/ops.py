@@ -5,10 +5,11 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any
+from typing import cast
 
 from hedron_core.adapter import LifecycleResource
 from hedron_core.csrf import redact_secret_like
+from hedron_core.typing_aliases import JsonObject, JsonValue
 
 __all__ = [
     "ShutdownRegistry",
@@ -27,7 +28,7 @@ def liveness() -> dict[str, str]:
 
 def readiness(
     checks: Mapping[str, Callable[[], bool]] | None = None,
-) -> tuple[int, dict[str, Any]]:
+) -> tuple[int, JsonObject]:
     """Return HTTP status and body; optional deps degrade without secret leakage."""
     results: dict[str, str] = {}
     ok = True
@@ -40,12 +41,14 @@ def readiness(
             results[name] = "error"
             ok = False
             logger.warning("readiness check %s failed: %s", name, type(exc).__name__)
-    body = {"status": "ready" if ok else "degraded", "checks": results}
+    body: JsonObject = cast(
+        JsonObject, {"status": "ready" if ok else "degraded", "checks": results}
+    )
     return (200 if ok else 503, body)
 
 
-def redacted_log_extra(payload: Mapping[str, Any]) -> dict[str, Any]:
-    return redact_secret_like(dict(payload))  # type: ignore[return-value]
+def redacted_log_extra(payload: Mapping[str, JsonValue]) -> JsonObject:
+    return cast(JsonObject, redact_secret_like(dict(payload)))
 
 
 def validate_proxy_trust(

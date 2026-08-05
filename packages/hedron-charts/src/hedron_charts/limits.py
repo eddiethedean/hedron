@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any
 
 from hedron_core.diagnostics import HedronError, error
+from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_core.visualization import (
     DEFAULT_MAX_CHART_ROWS,
     DEFAULT_MAX_PAYLOAD_BYTES,
@@ -37,7 +37,7 @@ def missing_extra(extra: str, *, package: str = "hedron-charts") -> HedronError:
 
 
 def ensure_limits(
-    rows: Sequence[Any] | None,
+    rows: Sequence[object] | None,
     payload: str | bytes | None,
     *,
     limits: VisualizationLimits | None = None,
@@ -70,20 +70,20 @@ def payload_size(payload: str | bytes) -> int:
     return len(payload.encode("utf-8"))
 
 
-def redact_rows(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
-    out: list[dict[str, Any]] = []
+def redact_rows(rows: Sequence[Mapping[str, JsonValue]]) -> list[JsonObject]:
+    out: list[JsonObject] = []
     for row in rows:
-        cleaned: dict[str, Any] = {}
+        cleaned: JsonObject = {}
         for key, value in row.items():
             if "secret" in str(key).lower() or "password" in str(key).lower():
                 cleaned[str(key)] = "***"
             else:
-                cleaned[str(key)] = value
+                cleaned[str(key)] = value  # JsonValue from input mapping
         out.append(cleaned)
     return out
 
 
-def reject_callbacks(obj: Any) -> None:
+def reject_callbacks(obj: object) -> None:
     if _walk_callbacks(obj):
         raise error(
             "HED-CHART-0004",
@@ -106,7 +106,7 @@ def reject_callbacks(obj: Any) -> None:
         )
 
 
-def _walk_callbacks(obj: Any) -> bool:
+def _walk_callbacks(obj: object) -> bool:
     if isinstance(obj, Mapping):
         for key, value in obj.items():
             key_l = str(key).lower()
@@ -124,7 +124,7 @@ def _walk_callbacks(obj: Any) -> bool:
     return False
 
 
-def reject_remote_urls(obj: Any) -> None:
+def reject_remote_urls(obj: object) -> None:
     if _walk_remote(obj):
         raise error(
             "HED-CHART-0005",
@@ -134,7 +134,7 @@ def reject_remote_urls(obj: Any) -> None:
         )
 
 
-def _walk_remote(obj: Any) -> bool:
+def _walk_remote(obj: object) -> bool:
     if isinstance(obj, Mapping):
         for key, value in obj.items():
             key_l = str(key).lower()
@@ -192,7 +192,7 @@ def accessibility_or_raise(
     description: str | None = None,
     alt: str | None = None,
     waiver: str | None = None,
-    tabular_fallback: Sequence[Mapping[str, Any]] | None = None,
+    tabular_fallback: Sequence[Mapping[str, JsonValue]] | None = None,
 ) -> ChartAccessibility:
     return ChartAccessibility(
         title=title,

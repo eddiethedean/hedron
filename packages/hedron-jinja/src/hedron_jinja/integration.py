@@ -8,13 +8,15 @@ from contextvars import ContextVar
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from types import MappingProxyType
-from typing import Any, NoReturn
+from typing import Any, NoReturn, Protocol
 from urllib.parse import urlsplit
 from weakref import ReferenceType, WeakKeyDictionary, ref
 
 from jinja2 import Environment, StrictUndefined, Template, TemplateError, TemplateSyntaxError, nodes
 from jinja2.ext import Extension
 from jinja2.nativetypes import NativeEnvironment
+from jinja2.parser import Parser
+from jinja2.runtime import Context
 from markupsafe import Markup
 
 from hedron_core import (
@@ -38,6 +40,7 @@ from hedron_core import (
 )
 from hedron_core.diagnostics import error, make_diagnostic
 from hedron_core.html import html
+from hedron_core.typing_aliases import RenderTrace
 from hedron_jinja.contracts import (
     HdjContext,
     TemplateCapabilities,
@@ -63,6 +66,12 @@ _ALIAS_RE = re.compile(r"^[A-Z][A-Za-z0-9_.-]*$")
 _LOGICAL_ID_RE = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._:/-]*$")
 _PAGE_DOCTYPE_RE = re.compile(r"^\s*<!doctype\s+html\b", re.IGNORECASE)
 _CONDITIONAL_ASSET_RE = re.compile(r"{%[-+]?\s*hedron_asset\b")
+
+
+class _JinjaCaller(Protocol):
+    """Jinja ``caller`` / CallBlock callback (untyped at attribute level; RFC-0031)."""
+
+    def __call__(self) -> object: ...
 
 
 def _hdj_template_class(base: type[Template]) -> type[Template]:
@@ -123,7 +132,7 @@ class _RenderSession:
     assets: dict[tuple[str, str], AssetRef] = field(default_factory=dict)
     headers: dict[str, str] = field(default_factory=dict)
     diagnostics: list[Diagnostic] = field(default_factory=list)
-    traces: list[Mapping[str, Any]] = field(default_factory=list)
+    traces: list[RenderTrace | Mapping[str, object]] = field(default_factory=list)
     slot_stack: list[_SlotCollector] = field(default_factory=list)
 
     def merge(self, result: RenderResult) -> None:
@@ -188,7 +197,7 @@ class HedronJinjaExtension(Extension):
 
     tags = {"hdj_guard", "hedron", "slot", "hedron_asset"}
 
-    def parse(self, parser: Any) -> nodes.Node:
+    def parse(self, parser: Parser) -> nodes.Node:
         token = next(parser.stream)
         if token.value == "hdj_guard":
             call = self.call_method("_guard", [nodes.ContextReference()])
@@ -199,7 +208,7 @@ class HedronJinjaExtension(Extension):
             return self._parse_asset(parser, token.lineno)
         return self._parse_component(parser, token.lineno)
 
-    def _parse_component(self, parser: Any, lineno: int) -> nodes.Node:
+    def _parse_component(self, parser: Parser, lineno: int) -> nodes.Node:
         alias = parser.parse_expression()
         if not isinstance(alias, nodes.Const) or not isinstance(alias.value, str):
             parser.fail("Hedron component aliases must be string literals", lineno)
@@ -227,7 +236,7 @@ class HedronJinjaExtension(Extension):
         body = parser.parse_statements(("name:endhedron",), drop_needle=True)
         return nodes.CallBlock(call, [], [], body).set_lineno(lineno)
 
-    def _parse_slot(self, parser: Any, lineno: int) -> nodes.Node:
+    def _parse_slot(self, parser: Parser, lineno: int) -> nodes.Node:
         name = parser.parse_expression()
         if not isinstance(name, nodes.Const) or not isinstance(name.value, str):
             parser.fail("Hedron slot names must be string literals", lineno)
@@ -235,30 +244,34 @@ class HedronJinjaExtension(Extension):
         call = self.call_method("_render_slot", [nodes.ContextReference(), name])
         return nodes.CallBlock(call, [], [], body).set_lineno(lineno)
 
-    def _parse_asset(self, parser: Any, lineno: int) -> nodes.Node:
+    def _parse_asset(self, parser: Parser, lineno: int) -> nodes.Node:
         logical_id = parser.parse_expression()
         if not isinstance(logical_id, nodes.Const) or not isinstance(logical_id.value, str):
             parser.fail("Hedron asset IDs must be string literals", lineno)
         call = self.call_method("_require_asset", [nodes.ContextReference(), logical_id])
         return nodes.Output([call]).set_lineno(lineno)
 
-    def _guard(self, context: Any) -> Markup:
+    def _guard(self, context: Context) -> Markup:
         _runtime_binding(context)
         return Markup("")
 
     def _render_component(
-        self, context: Any, alias: str, caller: Any = None, **props: Any
+        self,
+        context: Context,
+        alias: str,
+        caller: _JinjaCaller | None = None,
+        **props: object,
     ) -> Markup:
         return _runtime_binding(context)._render_component(alias, props, caller=caller)
 
-    def _render_slot(self, context: Any, name: str, caller: Any) -> Markup:
+    def _render_slot(self, context: Context, name: str, caller: _JinjaCaller) -> Markup:
         return _runtime_binding(context)._render_slot(name, caller)
 
-    def _require_asset(self, context: Any, logical_id: str) -> Markup:
+    def _require_asset(self, context: Context, logical_id: str) -> Markup:
         return _runtime_binding(context)._require_asset(logical_id)
 
 
-def _runtime_binding(context: Any) -> HedronJinja:
+def _runtime_binding(context: Context) -> HedronJinja:
     session = _ACTIVE_SESSION.get()
     if session is None or context.environment is not session.binding.environment:
         raise error(
@@ -361,7 +374,7 @@ class HedronJinja:
             environment.undefined = StrictUndefined
         previous_finalize = environment.finalize
 
-        def finalize(value: Any) -> Any:
+        def finalize(value: object) -> object:
             if isinstance(value, Secret):
                 raise error(
                     "HED-JINJA-0015",
@@ -568,7 +581,7 @@ class HedronJinja:
     def render(
         self,
         spec_or_name: TemplateSpec[Model] | str,
-        view: Model | Mapping[str, Any],
+        view: Model | Mapping[str, object],
         *,
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
@@ -599,7 +612,7 @@ class HedronJinja:
     def two_phase_stream(
         self,
         spec_or_name: TemplateSpec[Model] | str,
-        view: Model | Mapping[str, Any],
+        view: Model | Mapping[str, object],
         *,
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
@@ -618,7 +631,7 @@ class HedronJinja:
     async def render_async(
         self,
         spec_or_name: TemplateSpec[Model] | str,
-        view: Model | Mapping[str, Any],
+        view: Model | Mapping[str, object],
         *,
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
@@ -1062,7 +1075,9 @@ class HedronJinja:
             )
         return session
 
-    def _render_component(self, alias: str, props: dict[str, Any], *, caller: Any) -> Markup:
+    def _render_component(
+        self, alias: str, props: dict[str, object], *, caller: _JinjaCaller | None
+    ) -> Markup:
         session = self._session()
         session.component_invocations += 1
         if session.component_invocations > session.max_component_invocations:
@@ -1092,7 +1107,7 @@ class HedronJinja:
                 body = str(caller())
             finally:
                 session.slot_stack.pop()
-        component = factory(**props)
+        component = factory(**props)  # type: ignore[arg-type]
         if key is not None:
             component.key(str(key))
         if body.strip():
@@ -1137,7 +1152,7 @@ class HedronJinja:
         session.merge(result)
         return Markup(result.html)
 
-    def _render_slot(self, name: str, caller: Any) -> Markup:
+    def _render_slot(self, name: str, caller: _JinjaCaller) -> Markup:
         session = self._session()
         if not session.slot_stack:
             raise error(
@@ -1304,7 +1319,7 @@ class HedronJinja:
                 f"missing required props for {alias}: {', '.join(sorted(missing))}", lineno
             )
 
-    def _fingerprint_environment(self) -> tuple[Any, ...]:
+    def _fingerprint_environment(self) -> tuple[object, ...]:
         loader = self.environment.loader
         return (
             id(loader),
@@ -1351,7 +1366,7 @@ class HedronJinja:
             )
 
     @staticmethod
-    def _generic_safe_filter(value: Any) -> Markup:
+    def _generic_safe_filter(value: object) -> Markup:
         del value
         raise error(
             "HED-JINJA-0009",
@@ -1364,7 +1379,7 @@ class HedronJinja:
         )
 
     @staticmethod
-    def _trusted_filter(value: Any) -> Markup:
+    def _trusted_filter(value: object) -> Markup:
         if not isinstance(value, TrustedHtml):
             raise error(
                 "HED-JINJA-0009",
@@ -1375,7 +1390,7 @@ class HedronJinja:
         return Markup(value.value)
 
     @staticmethod
-    def _url_for_purpose(value: Any, purpose: UrlPurpose, filter_name: str) -> str:
+    def _url_for_purpose(value: object, purpose: UrlPurpose, filter_name: str) -> str:
         if not isinstance(value, SafeUrl) or value.purpose is not purpose:
             raise error(
                 "HED-JINJA-0010",
@@ -1385,17 +1400,17 @@ class HedronJinja:
             )
         return value.value
 
-    def _navigation_url_filter(self, value: Any) -> str:
+    def _navigation_url_filter(self, value: object) -> str:
         url = self._url_for_purpose(value, UrlPurpose.NAVIGATION, "hedron_nav_url")
         self._reject_external_dynamic_url(url, "hedron_nav_url")
         return url
 
-    def _form_url_filter(self, value: Any) -> str:
+    def _form_url_filter(self, value: object) -> str:
         url = self._url_for_purpose(value, UrlPurpose.FORM_ACTION, "hedron_form_url")
         self._reject_external_dynamic_url(url, "hedron_form_url")
         return url
 
-    def _asset_url_filter(self, value: Any) -> str:
+    def _asset_url_filter(self, value: object) -> str:
         url = self._url_for_purpose(value, UrlPurpose.ASSET, "hedron_asset_url")
         parts = urlsplit(url)
         if parts.scheme in {"http", "https"}:
@@ -1462,7 +1477,7 @@ def _document_tokens(rendered: str) -> tuple[str, ...]:
     return tuple(parser.tokens)
 
 
-def _fingerprint_policy(value: Any) -> Any:
+def _fingerprint_policy(value: object) -> object:
     if isinstance(value, Mapping):
         return tuple(sorted((str(key), _fingerprint_policy(item)) for key, item in value.items()))
     if isinstance(value, (list, tuple)):

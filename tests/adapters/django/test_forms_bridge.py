@@ -49,11 +49,22 @@ def test_form_to_nodes_includes_csrf_when_requested() -> None:
     request = RequestFactory().get("/")
     form = SampleForm()
     nodes = form_to_nodes(form, request=request, include_csrf=True)
-    assert any(
-        getattr(node, "source", None) == "django.middleware.csrf"
-        or (hasattr(node, "value") and "csrfmiddlewaretoken" in str(getattr(node, "value", "")))
-        for node in nodes
-    )
+
+    def _is_csrf(node: object) -> bool:
+        if getattr(node, "source", None) == "django.middleware.csrf":
+            return True
+        if hasattr(node, "value") and "csrfmiddlewaretoken" in str(getattr(node, "value", "")):
+            return True
+        trusted = getattr(node, "trusted", None)
+        if trusted is not None:
+            return getattr(trusted, "source", None) == "django.middleware.csrf" or (
+                "csrfmiddlewaretoken" in str(getattr(trusted, "value", ""))
+            )
+        return False
+
+    assert any(_is_csrf(node) for node in nodes)
+    html = render(nodes).html
+    assert "csrfmiddlewaretoken" in html
 
 
 def test_csrf_hidden_with_request() -> None:

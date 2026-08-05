@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Literal
+
+from hedron_core.typing_aliases import JsonValue
 
 __all__ = [
     "ChannelBudget",
@@ -42,7 +44,7 @@ class RegionUpdate:
 @dataclass(frozen=True, slots=True)
 class ChannelMessage:
     kind: Literal["region-update", "client-state-request", "ping", "close", "error"]
-    payload: Mapping[str, Any] = field(default_factory=dict)
+    payload: Mapping[str, JsonValue] = field(default_factory=dict)
 
 
 @dataclass(slots=True)

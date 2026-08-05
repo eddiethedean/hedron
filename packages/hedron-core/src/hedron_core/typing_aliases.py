@@ -7,23 +7,31 @@ from typing import NotRequired, TypeAlias, TypedDict
 from hedron_core.security import SafeUrl
 
 __all__ = [
+    "AssetEntryDict",
+    "CacheTraceDict",
+    "DiagnosticDict",
+    "HtmlAttrMap",
     "HtmlAttrValue",
     "HxLocation",
     "HxTriggerPayload",
     "InteractionTrace",
     "JobStatusDict",
+    "JsonObject",
     "JsonPrimitive",
     "JsonValue",
     "PluginMetaDict",
     "RenderTrace",
+    "SourceSpanDict",
 ]
 
 JsonPrimitive: TypeAlias = str | int | float | bool | None
 JsonValue: TypeAlias = JsonPrimitive | list["JsonValue"] | dict[str, "JsonValue"]
+JsonObject: TypeAlias = dict[str, JsonValue]
 
 HtmlAttrValue: TypeAlias = (
     str | bool | int | float | SafeUrl | None | dict[str, str | bool | int | float | None]
 )
+HtmlAttrMap: TypeAlias = dict[str, HtmlAttrValue]
 
 HxTriggerPayload: TypeAlias = str | dict[str, JsonValue]
 
@@ -80,3 +88,43 @@ class PluginMetaDict(TypedDict):
     hedron_version: str
     capabilities: dict[str, bool]
     depends_on: list[str]
+
+
+class SourceSpanDict(TypedDict):
+    path: str
+    start_line: int
+    start_column: int
+    end_line: int
+    end_column: int
+
+
+class DiagnosticDict(TypedDict):
+    code: str
+    severity: str
+    title: str
+    explanation: str
+    remediation: str
+    owner: str | None
+    component_id: str | None
+    context: dict[str, object]
+    docs_url: str | None
+    span: NotRequired[SourceSpanDict]
+
+
+class AssetEntryDict(TypedDict):
+    logical_id: str
+    kind: str
+    path: str
+    digest: str
+    content_type: str
+    attributes: dict[str, str]
+
+
+class CacheTraceDict(TypedDict):
+    kind: str
+    key_fingerprint: str
+    scope: str
+    age_ms: float | None
+    size: int | None
+    tags: list[str]
+    detail: str | None

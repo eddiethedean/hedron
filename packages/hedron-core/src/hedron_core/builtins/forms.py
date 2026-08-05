@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.builtins._base import collect_children, dom_id_part
 from hedron_core.component import Component, NodeLike
@@ -27,7 +27,7 @@ class Form(Component[FormProps]):
         children: NodeLike = None,
         action: SafeUrl | str | None = None,
         method: Literal["get", "post"] = "post",
-        **kwargs: Any,
+        **kwargs: HtmlAttrValue,
     ) -> None:
         url = None
         if action is not None:
@@ -58,7 +58,7 @@ class LabelProps(Props):
 class Label(Component[LabelProps]):
     props_type = LabelProps
 
-    def __init__(self, text: str, *, for_: str | None = None, **kwargs: Any) -> None:
+    def __init__(self, text: str, *, for_: str | None = None, **kwargs: object) -> None:
         super().__init__(LabelProps(text=text, for_=for_, **kwargs))
 
     def render(self) -> NodeLike:
@@ -91,7 +91,7 @@ class FormField(Component[FormFieldProps]):
         help: str | None = None,
         required: bool = False,
         error: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             FormFieldProps(
@@ -111,7 +111,7 @@ class FormField(Component[FormFieldProps]):
         help_id = f"{field_id}-help" if self.props.help else None
         error_id = f"{field_id}-error" if self.props.error else None
         described_by = " ".join(x for x in (help_id, error_id) if x) or None
-        aria = {
+        aria: dict[str, HtmlAttrValue] = {
             "describedby": described_by,
             "invalid": "true" if self.props.error else None,
             "required": "true" if self.props.required else None,
@@ -119,7 +119,7 @@ class FormField(Component[FormFieldProps]):
 
         if isinstance(control, Component):
             props = control.props
-            updates: dict[str, Any] = {}
+            updates: dict[str, object] = {}
             fields = props.__class__.model_fields
             # Always force the label's for= target onto the control when possible.
             if "id" in fields:
@@ -200,7 +200,7 @@ class FormField(Component[FormFieldProps]):
         return html.div(*parts, class_="hedron-form-field")
 
     def _apply_aria(
-        self, node: NodeLike, aria: dict[str, Any], *, element_id: str | None = None
+        self, node: NodeLike, aria: dict[str, HtmlAttrValue], *, element_id: str | None = None
     ) -> NodeLike:
         from hedron_core.html import _NativeElement
 
@@ -271,7 +271,7 @@ class TextInput(Component[TextInputProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             TextInputProps(
@@ -340,7 +340,7 @@ class TextArea(Component[TextAreaProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             TextAreaProps(
@@ -398,7 +398,7 @@ class Select(Component[SelectProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             SelectProps(
@@ -460,7 +460,7 @@ class Checkbox(Component[CheckboxProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             CheckboxProps(
@@ -517,7 +517,7 @@ class RadioGroup(Component[RadioGroupProps]):
         id: str | None = None,
         value: str | None = None,
         required: bool = False,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             RadioGroupProps(name=name, legend=legend, id=id, required=required, **kwargs)
@@ -564,7 +564,7 @@ class SubmitButtonProps(Props):
 class SubmitButton(Component[SubmitButtonProps]):
     props_type = SubmitButtonProps
 
-    def __init__(self, label: str = "Submit", *, disabled: bool = False, **kwargs: Any) -> None:
+    def __init__(self, label: str = "Submit", *, disabled: bool = False, **kwargs: object) -> None:
         super().__init__(SubmitButtonProps(label=label, disabled=disabled, **kwargs))
 
     def render(self) -> NodeLike:
@@ -583,7 +583,7 @@ class FormErrorsProps(Props):
 class FormErrors(Component[FormErrorsProps]):
     props_type = FormErrorsProps
 
-    def __init__(self, errors: Sequence[str], **kwargs: Any) -> None:
+    def __init__(self, errors: Sequence[str], **kwargs: object) -> None:
         super().__init__(FormErrorsProps(errors=tuple(errors), **kwargs))
 
     def render(self) -> NodeLike:

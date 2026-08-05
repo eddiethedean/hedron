@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Literal, ParamSpec, TypeVar
 
 from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.params import Depends as DependsParam
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.requests import Request
 
@@ -19,6 +20,7 @@ from hedron.routing.router import HedronRouter
 from hedron.security.headers import SecurityHeadersMiddleware
 from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
 from hedron.static_mount import mount_build_assets, mount_hedron_static
+from hedron_core.addressable import AddressableDescriptor
 from hedron_core.compile_gate import is_production_env
 from hedron_core.theme import ensure_default_theme_registered
 
@@ -64,7 +66,7 @@ class Hedron(FastAPI):
         explorer: ExplorerMode | str | None = None,
         session_secret: str = _DEFAULT_SESSION_SECRET,
         enable_sessions: bool = True,
-        explorer_dependencies: Sequence[Any] | None = None,
+        explorer_dependencies: Sequence[DependsParam] | None = None,
         theme: str | None = "default",
         default_styles: bool = True,
         build_dir: str | Path | None = None,
@@ -168,7 +170,7 @@ class Hedron(FastAPI):
         try:
             from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
 
-            async def _csrf_validate(request: Request, policy: Any) -> None:
+            async def _csrf_validate(request: Request, policy: SecurityPolicy) -> None:
                 await prepare_csrf_from_request(request, policy)
                 validate_csrf(request, policy)
 
@@ -187,7 +189,7 @@ class Hedron(FastAPI):
         except ImportError:
             logger.warning("hedron-explorer is not installed; Explorer was not mounted")
             return
-        deps: list[Any] = list(self._explorer_dependencies)
+        deps: list[DependsParam] = list(self._explorer_dependencies)
         if secured and not deps:
 
             async def _require_authenticated(request: Request) -> None:
@@ -258,7 +260,13 @@ class Hedron(FastAPI):
 
         return wrap
 
-    def include_component(self, descriptor: Any, *, path: str, **kwargs: Any) -> None:
+    def include_component(
+        self,
+        descriptor: AddressableDescriptor[P, R] | Callable[P, R],
+        *,
+        path: str,
+        **kwargs: Any,
+    ) -> None:
         self._root_router.include_component(descriptor, path=path, **kwargs)
         if self._root_router.routes:
             route = self._root_router.routes[-1]

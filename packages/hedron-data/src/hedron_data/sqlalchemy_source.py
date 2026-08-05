@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from typing import Any, Generic, TypeVar
+from typing import Generic, Protocol, TypeVar, cast
 
 from hedron_core.diagnostics import error
 from hedron_data.sources import (
+    ColumnSchema,
     DataChanges,
     DataPage,
     DataQuery,
@@ -19,7 +20,21 @@ T = TypeVar("T")
 __all__ = ["SQLAlchemyDataSource", "require_sqlalchemy"]
 
 
-def require_sqlalchemy() -> Any:
+class _SQLAlchemyModule(Protocol):
+    """Minimal surface used for optional-import presence checks."""
+
+
+class _SessionLike(Protocol):
+    def execute(self, statement: object) -> object: ...
+
+    def commit(self) -> None: ...
+
+    def rollback(self) -> None: ...
+
+    def close(self) -> None: ...
+
+
+def require_sqlalchemy() -> _SQLAlchemyModule:
     try:
         import sqlalchemy
     except ImportError as exc:
@@ -29,24 +44,30 @@ def require_sqlalchemy() -> Any:
             explanation="SQLAlchemy adapters require SQLAlchemy.",
             remediation='Install with: pip install "hedron-data[sqlalchemy]"',
         ) from exc
-    return sqlalchemy
+    return cast(_SQLAlchemyModule, sqlalchemy)
 
 
-def _fetch_rows(result: Any) -> list[Any]:
+def _fetch_rows(result: object) -> list[object]:
     """Return row objects without collapsing multi-column selects via scalars()."""
     keys_fn = getattr(result, "keys", None)
-    raw_keys: Any = keys_fn() if callable(keys_fn) else ()
-    keys = list(raw_keys)
+    raw_keys = keys_fn() if callable(keys_fn) else ()
+    try:
+        keys = list(raw_keys)  # type: ignore[arg-type]
+    except TypeError:
+        keys = []
     if len(keys) <= 1 and hasattr(result, "scalars"):
-        return list(result.scalars().all())
+        scalars = result.scalars()  # type: ignore[union-attr]
+        return list(scalars.all())  # type: ignore[arg-type,union-attr]
     mappings = getattr(result, "mappings", None)
     if callable(mappings):
-        mapped: Any = mappings()
+        mapped = mappings()
         all_fn = getattr(mapped, "all", None)
         if callable(all_fn):
-            rows: Any = all_fn()
-            return list(rows)
-    return list(result.all())
+            return list(all_fn())  # type: ignore[arg-type]
+    all_fn = getattr(result, "all", None)
+    if callable(all_fn):
+        return list(all_fn())  # type: ignore[arg-type]
+    return []
 
 
 class SQLAlchemyDataSource(Generic[T]):
@@ -62,12 +83,12 @@ class SQLAlchemyDataSource(Generic[T]):
     def __init__(
         self,
         *,
-        session_factory: Callable[[], Any],
-        statement: Any,
+        session_factory: Callable[[], _SessionLike],
+        statement: object,
         row_key: str = "id",
-        to_row: Callable[[Any], T] | None = None,
-        apply_changes: Callable[[Any, DataChanges[T]], DataSaveResult[T]] | None = None,
-        schema: Sequence[Any] = (),
+        to_row: Callable[[object], T] | None = None,
+        apply_changes: Callable[[_SessionLike, DataChanges[T]], DataSaveResult[T]] | None = None,
+        schema: Sequence[ColumnSchema] = (),
     ) -> None:
         require_sqlalchemy()
         from sqlalchemy.sql import Select
@@ -107,16 +128,16 @@ class SQLAlchemyDataSource(Generic[T]):
             )
         session = self._session_factory()
         try:
-            paged = self._statement.offset(q.offset).limit(q.limit)
+            paged = self._statement.offset(q.offset).limit(q.limit)  # type: ignore[union-attr]
             result = session.execute(paged)
             rows = _fetch_rows(result)
             mapped = [self._to_row(row) for row in rows]
-            count_stmt = select(func.count()).select_from(self._statement.order_by(None).subquery())
-            total = int(session.execute(count_stmt).scalar_one())
+            count_stmt = select(func.count()).select_from(self._statement.order_by(None).subquery())  # type: ignore[union-attr]
+            total = int(session.execute(count_stmt).scalar_one())  # type: ignore[union-attr]
             next_offset = q.offset + q.limit if q.offset + q.limit < total else None
             return DataPage(
                 rows=mapped,
-                schema=self._schema,  # type: ignore[arg-type]
+                schema=self._schema,
                 total=total,
                 next_offset=next_offset,
             )

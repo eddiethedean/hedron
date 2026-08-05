@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Any, Protocol, runtime_checkable
 
+from hedron_core.typing_aliases import JsonObject, JsonValue
+
 __all__ = [
     "AdapterCapability",
     "AuthSignal",
@@ -43,7 +45,7 @@ class CapabilityRecord:
     stability: str  # supported | experimental | deferred
     capabilities: tuple[AdapterCapability, ...]
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self) -> JsonObject:
         return {
             "adapter": self.adapter,
             "stability": self.stability,
@@ -74,7 +76,7 @@ class AuthSignal:
 class UrlReverseRequest:
     name: str
     args: tuple[Any, ...] = ()
-    kwargs: Mapping[str, Any] = field(default_factory=dict)
+    kwargs: Mapping[str, JsonValue] = field(default_factory=dict)
     root_path: str = ""
     script_name: str = ""
 

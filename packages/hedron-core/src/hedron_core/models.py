@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 import types
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sized
 from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
@@ -71,13 +71,13 @@ def _unwrap_for_constraints(value: Any) -> Any:
     return value
 
 
-def _apply_hedron_constraints(field_name: str, value: Any, meta: dict[str, Any]) -> None:
+def _apply_hedron_constraints(field_name: str, value: Any, meta: Mapping[str, object]) -> None:
     if value is None:
         return
     inner = _unwrap_for_constraints(value)
     secretish = isinstance(value, Secret) or meta.get("secret")
     choices = meta.get("choices")
-    if choices is not None and inner not in choices:
+    if choices is not None and isinstance(choices, (list, tuple)) and inner not in choices:
         raise error(
             "HED-MODEL-0005",
             title="Value not in choices",
@@ -89,7 +89,12 @@ def _apply_hedron_constraints(field_name: str, value: Any, meta: dict[str, Any])
             remediation="Pass one of the declared choices.",
         )
     min_length = meta.get("min_length")
-    if min_length is not None and hasattr(inner, "__len__") and len(inner) < int(min_length):
+    if (
+        min_length is not None
+        and isinstance(min_length, (int, float))
+        and isinstance(inner, Sized)
+        and len(inner) < int(min_length)
+    ):
         raise error(
             "HED-MODEL-0006",
             title="Value length below minimum",
@@ -97,7 +102,12 @@ def _apply_hedron_constraints(field_name: str, value: Any, meta: dict[str, Any])
             remediation="Provide a longer value.",
         )
     max_length = meta.get("max_length")
-    if max_length is not None and hasattr(inner, "__len__") and len(inner) > int(max_length):
+    if (
+        max_length is not None
+        and isinstance(max_length, (int, float))
+        and isinstance(inner, Sized)
+        and len(inner) > int(max_length)
+    ):
         raise error(
             "HED-MODEL-0006",
             title="Value length above maximum",
@@ -105,7 +115,12 @@ def _apply_hedron_constraints(field_name: str, value: Any, meta: dict[str, Any])
             remediation="Provide a shorter value.",
         )
     pattern = meta.get("pattern")
-    if pattern is not None and isinstance(inner, str) and re.search(str(pattern), inner) is None:
+    if (
+        pattern is not None
+        and isinstance(pattern, str)
+        and isinstance(inner, str)
+        and re.search(pattern, inner) is None
+    ):
         raise error(
             "HED-MODEL-0006",
             title="Value does not match pattern",
@@ -170,7 +185,7 @@ class Model(BaseModel):
         data = serializer(self)
         if not isinstance(data, dict):
             return data
-        result: dict[str, Any] = {}
+        result: dict[str, object] = {}
         for key, value in data.items():
             field_info: FieldInfo | None = self.__class__.model_fields.get(key)
             meta = hedron_meta(field_info) if field_info is not None else {}

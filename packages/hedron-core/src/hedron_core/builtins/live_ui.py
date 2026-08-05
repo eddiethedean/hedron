@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
@@ -34,7 +34,7 @@ class Dialog(Component[DialogProps]):
         modal: bool = True,
         id: str | None = None,
         element_id: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         # ``element_id`` remains accepted as a compatibility alias for ``id``.
         resolved_id = id if id is not None else element_id
@@ -90,7 +90,7 @@ class ChatMessage(Component[ChatMessageProps]):
         role: Literal["user", "assistant", "system", "tool", "status"] = "assistant",
         message_id: str | None = None,
         status: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             ChatMessageProps(

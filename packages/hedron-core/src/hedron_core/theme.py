@@ -4,10 +4,12 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
+from typing import cast
 
 from hedron_core.codes import HED_THEME_DUPLICATE, HED_THEME_INVALID, HED_THEME_MISSING_TOKEN
 from hedron_core.diagnostics import error
 from hedron_core.registry import ThemeMeta, get_registry, register_theme
+from hedron_core.typing_aliases import JsonValue
 
 __all__ = [
     "REQUIRED_A11Y_TOKENS",
@@ -61,7 +63,7 @@ def validate_theme_tokens(tokens: Mapping[str, str]) -> None:
             title="Theme missing required accessibility tokens",
             explanation=f"Missing tokens: {', '.join(missing)}.",
             remediation="Provide all required a11y tokens listed in Theme docs.",
-            context={"missing": missing},
+            context=cast(Mapping[str, JsonValue], {"missing": missing}),
         )
 
 

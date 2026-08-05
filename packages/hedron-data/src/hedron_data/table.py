@@ -5,18 +5,18 @@ from __future__ import annotations
 import csv
 import io
 from collections.abc import Mapping, Sequence
-from typing import Any
 
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Model, Props
 from hedron_core.security import Secret
+from hedron_core.typing_aliases import HtmlAttrMap, JsonValue
 from hedron_data.columns import Column, resolve_columns
 from hedron_data.normalize import normalize_rows
 from hedron_data.sources import DataPage, DataQuery
 
 
-def _cell_text(value: Any) -> str:
+def _cell_text(value: object) -> str:
     if isinstance(value, Secret):
         return "***"
     if value is None:
@@ -40,17 +40,17 @@ class DataTable(Component[DataTableProps]):
 
     def __init__(
         self,
-        rows: Any = None,
+        rows: object = None,
         *,
         row_model: type[Model] | None = None,
         columns: Sequence[Column] | None = None,
-        page: DataPage[Any] | None = None,
+        page: DataPage[dict[str, JsonValue]] | None = None,
         query: DataQuery | None = None,
         caption: str | None = None,
         empty_message: str = "No rows",
         page_size: int = 25,
         allow_download: bool = False,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             DataTableProps(
@@ -69,7 +69,7 @@ class DataTable(Component[DataTableProps]):
             raw_rows = normalize_rows(rows)
             self._total = len(raw_rows)
             self._version = None
-        built_rows: list[dict[str, Any]] = []
+        built_rows: list[dict[str, JsonValue]] = []
         for r in raw_rows:
             if isinstance(r, Mapping):
                 built_rows.append(dict(r))
@@ -84,7 +84,7 @@ class DataTable(Component[DataTableProps]):
         return list(self._columns)
 
     @property
-    def rows(self) -> list[dict[str, Any]]:
+    def rows(self) -> list[dict[str, JsonValue]]:
         return list(self._rows)
 
     def to_csv(self) -> str:
@@ -96,9 +96,9 @@ class DataTable(Component[DataTableProps]):
             writer.writerow([_cell_text(row.get(c.name)) for c in visible])
         return buf.getvalue()
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         visible = [c for c in self._columns if not c.hidden]
-        children: list[Any] = []
+        children: list[NodeLike] = []
         if self.props.caption:
             children.append(html.caption(self.props.caption))
         headers = [
@@ -120,7 +120,7 @@ class DataTable(Component[DataTableProps]):
                     cells.append(html.td(text))
                 body_rows.append(html.tr(*cells))
             children.append(html.tbody(*body_rows))
-        attrs: dict[str, Any] = {"role": "table", "class_": "hedron-data-table"}
+        attrs: HtmlAttrMap = {"role": "table", "class_": "hedron-data-table"}
         if self._total is not None:
             attrs["data-total"] = str(self._total)
         if self._version is not None:

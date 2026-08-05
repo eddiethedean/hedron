@@ -5,7 +5,6 @@ from __future__ import annotations
 import html as html_stdlib
 import re
 from collections.abc import Mapping
-from typing import Any
 
 from hedron_core._html_meta import (
     ATTR_ORDER,
@@ -27,6 +26,7 @@ from hedron_core._nodes import (
 )
 from hedron_core.diagnostics import error
 from hedron_core.security import SafeUrl, check_url_purpose_for_attribute
+from hedron_core.typing_aliases import HtmlAttrValue
 
 
 def escape_text(value: str) -> str:
@@ -58,7 +58,7 @@ def _attr_sort_key(name: str) -> tuple[int, str]:
         return (len(ATTR_ORDER), name)
 
 
-def _format_attr(name: str, value: Any) -> str | None:
+def _format_attr(name: str, value: HtmlAttrValue) -> str | None:
     if value is None:
         return None
     _require_safe_attr_name(name)
@@ -163,7 +163,7 @@ def _format_attr(name: str, value: Any) -> str | None:
     return f'{lower}="{escape_attr(text)}"'
 
 
-def serialize_attributes(attributes: Mapping[str, Any]) -> str:
+def serialize_attributes(attributes: Mapping[str, HtmlAttrValue]) -> str:
     parts: list[str] = []
     for name in sorted(attributes.keys(), key=_attr_sort_key):
         formatted = _format_attr(name, attributes[name])

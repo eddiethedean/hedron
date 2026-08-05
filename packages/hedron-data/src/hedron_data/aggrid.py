@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from hedron_core.diagnostics import error
 from hedron_core.identifiers import content_digest
 from hedron_core.registry import register_asset, register_browser_module
+from hedron_core.typing_aliases import JsonObject
 
 _ROOT = Path(__file__).resolve().parent
 _HOST = _ROOT / "assets" / "aggrid" / "host.js"
@@ -28,7 +28,7 @@ def require_aggrid_extra() -> None:
         )
 
 
-def ensure_aggrid_assets() -> dict[str, Any]:
+def ensure_aggrid_assets() -> JsonObject:
     """Register the AG Grid host module; does not change DataEditor's public API."""
     require_aggrid_extra()
     digest = content_digest(_HOST.read_bytes())

@@ -23,7 +23,7 @@ _UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
-def convert_view_result(value: Any, *, authenticated: bool = False) -> Any:
+def convert_view_result(value: object, *, authenticated: bool = False) -> Response | object:
     """Convert Hedron return types to Flask responses; pass through native Responses."""
     if isinstance(value, Response):
         return value
@@ -175,7 +175,7 @@ class HedronBlueprint(Blueprint):
 
 def attach_hedron_to_flask(
     app: Flask,
-    extension: Any,
+    extension: object,
     *,
     auto_csrf_cookie: bool = True,
 ) -> None:
@@ -193,8 +193,11 @@ def attach_hedron_to_flask(
 
             ensure_csrf_cookie(
                 response,
-                csrf_token_for_request(request, cookie_name=extension.csrf_cookie_name),
-                cookie_name=extension.csrf_cookie_name,
+                csrf_token_for_request(
+                    request,
+                    cookie_name=extension.csrf_cookie_name,  # type: ignore[attr-defined]
+                ),
+                cookie_name=extension.csrf_cookie_name,  # type: ignore[attr-defined]
                 secure=request.is_secure,
             )
         return response

@@ -6,7 +6,6 @@ import base64
 import hashlib
 import json
 from collections.abc import Mapping
-from typing import Any
 
 IDENTITY_FORMAT_VERSION = 1
 
@@ -21,7 +20,7 @@ def registry_resource_id(kind: str, logical_id: str) -> str:
     return f"{kind}:{logical_id}"
 
 
-def _canonical_json(value: Any) -> str:
+def _canonical_json(value: object) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), default=str)
 
 
@@ -30,7 +29,7 @@ def _base32_lower(digest: bytes, length: int = 20) -> str:
     return encoded[:length]
 
 
-def instance_id(identity_record: Mapping[str, Any]) -> str:
+def instance_id(identity_record: Mapping[str, object]) -> str:
     """Return ``h-`` plus first 20 lowercase base32 chars of SHA-256."""
     payload = {"v": IDENTITY_FORMAT_VERSION, **dict(identity_record)}
     digest = hashlib.sha256(_canonical_json(payload).encode("utf-8")).digest()

@@ -70,7 +70,7 @@ class Secret(Generic[T]):
     def __hash__(self) -> int:
         return hash(("Secret", self.reveal()))
 
-    def __getstate__(self) -> dict[str, Any]:
+    def __getstate__(self) -> dict[str, object]:
         return {"value": _REDACTED}
 
     def __setattr__(self, name: str, value: Any) -> None:

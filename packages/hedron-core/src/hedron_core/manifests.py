@@ -6,9 +6,10 @@ import json
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.identifiers import content_digest
+from hedron_core.typing_aliases import AssetEntryDict, JsonObject, JsonValue
 
 __all__ = [
     "ASSET_MANIFEST_FORMAT",
@@ -28,15 +29,21 @@ ASSET_MANIFEST_FORMAT = 1
 CSS_SYMBOL_MANIFEST_FORMAT = 1
 
 
-def canonical_json(value: Any) -> str:
+def _as_str_map(value: JsonValue | None) -> dict[str, str]:
+    if not isinstance(value, dict):
+        return {}
+    return {str(k): str(v) for k, v in value.items()}
+
+
+def canonical_json(value: JsonValue) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
-def load_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+def load_json(path: Path) -> JsonValue:
+    return cast(JsonValue, json.loads(path.read_text(encoding="utf-8")))
 
 
-def write_json_atomic(path: Path, value: Any) -> str:
+def write_json_atomic(path: Path, value: JsonValue) -> str:
     """Write deterministic JSON via a unique same-dir temp file and os.replace."""
     import os
     import tempfile
@@ -72,7 +79,7 @@ class AssetEntry:
     content_type: str
     attributes: Mapping[str, str] = field(default_factory=dict)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> AssetEntryDict:
         return {
             "logical_id": self.logical_id,
             "kind": self.kind,
@@ -83,14 +90,14 @@ class AssetEntry:
         }
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> AssetEntry:
+    def from_dict(cls, data: Mapping[str, JsonValue]) -> AssetEntry:
         return cls(
             logical_id=str(data["logical_id"]),
             kind=str(data["kind"]),
             path=str(data["path"]),
             digest=str(data["digest"]),
             content_type=str(data["content_type"]),
-            attributes=dict(data.get("attributes") or {}),
+            attributes=_as_str_map(data.get("attributes")),
         )
 
 
@@ -100,19 +107,25 @@ class AssetManifest:
     assets: tuple[AssetEntry, ...]
     digest: str = ""
 
-    def to_dict(self) -> dict[str, Any]:
-        payload = {
-            "format_version": self.format_version,
-            "assets": [a.to_dict() for a in sorted(self.assets, key=lambda x: x.logical_id)],
-        }
+    def to_dict(self) -> JsonObject:
+        payload = cast(
+            JsonObject,
+            {
+                "format_version": self.format_version,
+                "assets": [a.to_dict() for a in sorted(self.assets, key=lambda x: x.logical_id)],
+            },
+        )
         digest = self.digest or content_digest(canonical_json(payload))
         return {**payload, "digest": digest}
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> AssetManifest:
-        assets = tuple(AssetEntry.from_dict(item) for item in data.get("assets", ()))
+    def from_dict(cls, data: Mapping[str, JsonValue]) -> AssetManifest:
+        assets = tuple(
+            AssetEntry.from_dict(cast(Mapping[str, JsonValue], item))
+            for item in cast(Sequence[object], data.get("assets", ()))
+        )
         return cls(
-            format_version=int(data["format_version"]),
+            format_version=int(cast(int | str, data["format_version"])),
             assets=assets,
             digest=str(data.get("digest") or ""),
         )
@@ -140,23 +153,26 @@ class CssSymbolManifest:
     keyframes: Mapping[str, str]
     digest: str = ""
 
-    def to_dict(self) -> dict[str, Any]:
-        payload = {
-            "format_version": self.format_version,
-            "component_id": self.component_id,
-            "symbols": dict(sorted(self.symbols.items())),
-            "keyframes": dict(sorted(self.keyframes.items())),
-        }
+    def to_dict(self) -> JsonObject:
+        payload = cast(
+            JsonObject,
+            {
+                "format_version": self.format_version,
+                "component_id": self.component_id,
+                "symbols": dict(sorted(self.symbols.items())),
+                "keyframes": dict(sorted(self.keyframes.items())),
+            },
+        )
         digest = self.digest or content_digest(canonical_json(payload))
         return {**payload, "digest": digest}
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> CssSymbolManifest:
+    def from_dict(cls, data: Mapping[str, JsonValue]) -> CssSymbolManifest:
         return cls(
-            format_version=int(data["format_version"]),
+            format_version=int(cast(int | str, data["format_version"])),
             component_id=str(data["component_id"]),
-            symbols=dict(data.get("symbols") or {}),
-            keyframes=dict(data.get("keyframes") or {}),
+            symbols=_as_str_map(data.get("symbols")),
+            keyframes=_as_str_map(data.get("keyframes")),
             digest=str(data.get("digest") or ""),
         )
 
@@ -185,30 +201,34 @@ class BuildManifest:
     config_digest: str
     digest: str = ""
 
-    def to_dict(self) -> dict[str, Any]:
-        payload = {
-            "format_version": self.format_version,
-            "theme": self.theme,
-            "assets": self.assets.to_dict(),
-            "css_symbols": [
-                m.to_dict() for m in sorted(self.css_symbols, key=lambda m: m.component_id)
-            ],
-            "tool_versions": dict(sorted(self.tool_versions.items())),
-            "config_digest": self.config_digest,
-        }
+    def to_dict(self) -> JsonObject:
+        payload = cast(
+            JsonObject,
+            {
+                "format_version": self.format_version,
+                "theme": self.theme,
+                "assets": self.assets.to_dict(),
+                "css_symbols": [
+                    m.to_dict() for m in sorted(self.css_symbols, key=lambda m: m.component_id)
+                ],
+                "tool_versions": dict(sorted(self.tool_versions.items())),
+                "config_digest": self.config_digest,
+            },
+        )
         digest = self.digest or content_digest(canonical_json(payload))
         return {**payload, "digest": digest}
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> BuildManifest:
+    def from_dict(cls, data: Mapping[str, JsonValue]) -> BuildManifest:
         return cls(
-            format_version=int(data["format_version"]),
-            theme=data.get("theme"),
-            assets=AssetManifest.from_dict(data["assets"]),
+            format_version=int(cast(int | str, data["format_version"])),
+            theme=cast(str | None, data.get("theme")),
+            assets=AssetManifest.from_dict(cast(Mapping[str, JsonValue], data["assets"])),
             css_symbols=tuple(
-                CssSymbolManifest.from_dict(item) for item in data.get("css_symbols", ())
+                CssSymbolManifest.from_dict(cast(Mapping[str, JsonValue], item))
+                for item in cast(Sequence[object], data.get("css_symbols", ()))
             ),
-            tool_versions=dict(data.get("tool_versions") or {}),
+            tool_versions=_as_str_map(data.get("tool_versions")),
             config_digest=str(data.get("config_digest") or ""),
             digest=str(data.get("digest") or ""),
         )
@@ -231,10 +251,10 @@ class BuildManifest:
             sym.validate_format()
 
 
-def manifest_as_dict(obj: Any) -> dict[str, Any]:
+def manifest_as_dict(obj: object) -> JsonObject:
     if hasattr(obj, "to_dict"):
-        return obj.to_dict()  # type: ignore[no-any-return]
-    return asdict(obj)
+        return cast(JsonObject, obj.to_dict())  # type: ignore[no-any-return]
+    return cast(JsonObject, asdict(obj))  # type: ignore[arg-type]
 
 
 def ensure_sequence(items: Sequence[Any]) -> tuple[Any, ...]:

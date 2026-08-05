@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Iterator
-from typing import Any
 
 from flask import Response, stream_with_context
 
@@ -36,7 +35,9 @@ def sse_response(
     try:
         from flask import has_request_context
 
-        iterator: Any = stream_with_context(generate()) if has_request_context() else generate()
+        iterator: Iterable[str] = (
+            stream_with_context(generate()) if has_request_context() else generate()
+        )
     except Exception:  # noqa: BLE001
         iterator = generate()
 
@@ -67,7 +68,9 @@ def stream_text(
     try:
         from flask import has_request_context
 
-        iterator: Any = stream_with_context(generate()) if has_request_context() else generate()
+        iterator: Iterable[str] = (
+            stream_with_context(generate()) if has_request_context() else generate()
+        )
     except Exception:  # noqa: BLE001
         iterator = generate()
 

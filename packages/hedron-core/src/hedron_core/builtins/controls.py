@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -27,7 +27,7 @@ class Button(Component[ButtonProps]):
         type: Literal["button", "submit", "reset"] = "button",
         disabled: bool = False,
         variant: Literal["primary", "secondary", "danger"] = "primary",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             ButtonProps(label=label, type=type, disabled=disabled, variant=variant, **kwargs)
@@ -50,7 +50,7 @@ class LinkButtonProps(Props):
 class LinkButton(Component[LinkButtonProps]):
     props_type = LinkButtonProps
 
-    def __init__(self, label: str, href: SafeUrl | str, **kwargs: Any) -> None:
+    def __init__(self, label: str, href: SafeUrl | str, **kwargs: object) -> None:
         url = (
             href
             if isinstance(href, SafeUrl)
@@ -84,7 +84,7 @@ class IconButton(Component[IconButtonProps]):
         icon: str,
         type: Literal["button", "submit", "reset"] = "button",
         disabled: bool = False,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             IconButtonProps(label=label, icon=icon, type=type, disabled=disabled, **kwargs)

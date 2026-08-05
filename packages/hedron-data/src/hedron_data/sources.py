@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Generic, Protocol, TypeVar, runtime_checkable
+from typing import Generic, Protocol, TypeVar, runtime_checkable
+
+from hedron_core.typing_aliases import JsonValue
 
 T = TypeVar("T")
 
@@ -20,7 +22,7 @@ class DataQuery:
     limit: int = 25
     cursor: str | None = None
     sort: tuple[tuple[str, str], ...] = ()
-    filters: Mapping[str, Any] = field(default_factory=dict)
+    filters: Mapping[str, JsonValue] = field(default_factory=dict)
     projection: tuple[str, ...] | None = None
     search: str | None = None
     locale: str | None = None
@@ -70,7 +72,7 @@ class ColumnSchema:
     secret: bool = False
     sortable: bool = False
     filterable: bool = False
-    choices: tuple[Any, ...] | None = None
+    choices: tuple[JsonValue, ...] | None = None
     width: str | int | None = None
 
 
@@ -88,7 +90,7 @@ class DataPage(Generic[T]):
 class CellUpdate:
     row_key: str
     field: str
-    value: Any
+    value: JsonValue
     row_version: str | None = None
 
 
@@ -111,8 +113,8 @@ class FieldError:
 class Conflict:
     row_key: str
     field: str | None
-    server_value: Any
-    client_value: Any
+    server_value: JsonValue
+    client_value: JsonValue
     message: str = "Stale update"
 
 

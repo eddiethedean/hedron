@@ -6,7 +6,6 @@ import base64
 import io
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any
 
 from hedron_charts.limits import (
     accessibility_or_raise,
@@ -23,6 +22,7 @@ from hedron_core.builtins.utilities import JSONViewer
 from hedron_core.component import NodeLike
 from hedron_core.html import html
 from hedron_core.security import TrustedHtml
+from hedron_core.typing_aliases import JsonValue
 from hedron_core.visualization import (
     ChartAccessibility,
     ChartOutput,
@@ -266,7 +266,7 @@ class AltairAdapter:
         )
 
 
-def _fallback_table(rows: Sequence[Mapping[str, Any]] | None) -> NodeLike:
+def _fallback_table(rows: Sequence[Mapping[str, JsonValue]] | None) -> NodeLike:
     cleaned = redact_rows(list(rows or ()))
     if not cleaned:
         return Text("")
@@ -293,7 +293,7 @@ def compile_figure(
     description: str | None = None,
     alt: str | None = None,
     waiver: str | None = None,
-    tabular_fallback: Sequence[Mapping[str, Any]] | None = None,
+    tabular_fallback: Sequence[Mapping[str, JsonValue]] | None = None,
     limits: VisualizationLimits | None = None,
 ) -> tuple[MatplotlibAdapter | PlotlyAdapter | AltairAdapter, ChartOutput]:
     acc = accessibility_or_raise(

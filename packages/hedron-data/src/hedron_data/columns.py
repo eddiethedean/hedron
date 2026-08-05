@@ -4,11 +4,12 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, get_args, get_origin
+from typing import cast, get_args, get_origin
 
 from hedron_core.field import hedron_meta
 from hedron_core.models import Model
 from hedron_core.security import Secret
+from hedron_core.typing_aliases import JsonValue
 from hedron_data.sources import ColumnSchema
 
 
@@ -22,7 +23,7 @@ class Column:
     secret: bool = False
     sortable: bool = False
     filterable: bool = False
-    choices: tuple[Any, ...] | None = None
+    choices: tuple[JsonValue, ...] | None = None
     width: str | int | None = None
 
     def to_schema(self) -> ColumnSchema:
@@ -40,7 +41,7 @@ class Column:
         )
 
 
-def _editor_for_annotation(annotation: Any) -> str:
+def _editor_for_annotation(annotation: object) -> str:
     origin = get_origin(annotation) or annotation
     if origin is Secret:
         args = get_args(annotation)
@@ -66,18 +67,29 @@ def columns_from_model(model: type[Model]) -> list[Column]:
         choices = meta.get("choices")
         origin = get_origin(annotation) or annotation
         is_secret_ann = origin is Secret
+        label_raw = meta.get("label")
+        label = label_raw if isinstance(label_raw, str) else name.replace("_", " ").title()
+        editor_val = editor if isinstance(editor, str) else "text"
+        width_raw = meta.get("width")
+        width: str | int | None
+        if isinstance(width_raw, (str, int)) and not isinstance(width_raw, bool):
+            width = width_raw
+        else:
+            width = None
         cols.append(
             Column(
                 name=name,
-                label=meta.get("label") or name.replace("_", " ").title(),
-                editor=editor,
+                label=label,
+                editor=editor_val,
                 read_only=bool(meta.get("read_only", False)) or is_secret_ann,
                 hidden=bool(meta.get("hidden", False)),
                 secret=bool(meta.get("secret", False)) or is_secret_ann,
                 sortable=bool(meta.get("sortable", False)),
                 filterable=bool(meta.get("filterable", False)),
-                choices=tuple(choices) if choices else None,
-                width=meta.get("width"),
+                choices=tuple(cast(tuple[JsonValue, ...] | list[JsonValue], choices))
+                if choices
+                else None,
+                width=width,
             )
         )
     return cols
@@ -87,7 +99,7 @@ def resolve_columns(
     *,
     row_model: type[Model] | None = None,
     columns: Sequence[Column] | None = None,
-    rows: Sequence[Mapping[str, Any]] | None = None,
+    rows: Sequence[Mapping[str, JsonValue]] | None = None,
 ) -> list[Column]:
     if columns:
         return list(columns)

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import html as html_stdlib
 from collections.abc import Mapping, Sequence
-from typing import Any
 
 from hedron_charts.adapters import (
     AltairAdapter,
@@ -20,15 +19,24 @@ from hedron_charts.limits import (
     reject_active_svg,
 )
 from hedron_core.builtins.content import Text
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.typing_aliases import JsonValue
 from hedron_core.visualization import VisualizationLimits
 
 
-def _coerce_float(value: Any, *, default: float = 0.0) -> float:
+def _coerce_float(value: object, *, default: float = 0.0) -> float:
+    if value is None:
+        return default
     try:
-        return float(value) if value is not None else default
+        if isinstance(value, bool):
+            return float(value)
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            return float(value)
+        return float(str(value))
     except (TypeError, ValueError):
         return default
 
@@ -52,7 +60,7 @@ class LineChart(Component[_ChartProps]):
 
     def __init__(
         self,
-        data: Sequence[Mapping[str, Any]],
+        data: Sequence[Mapping[str, JsonValue]],
         *,
         x: str,
         y: str,
@@ -61,7 +69,7 @@ class LineChart(Component[_ChartProps]):
         alt: str | None = None,
         waiver: str | None = None,
         limits: VisualizationLimits | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             title=title,
@@ -75,7 +83,7 @@ class LineChart(Component[_ChartProps]):
         self._y = y
         self._limits = limits
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         acc = accessibility_or_raise(
             title=self.props.title,
             description=self.props.description,
@@ -157,14 +165,14 @@ class MatplotlibChart(Component[_ChartProps]):
 
     def __init__(
         self,
-        figure: Any,
+        figure: object,
         *,
         title: str | None = None,
         description: str | None = None,
         alt: str | None = None,
         waiver: str | None = None,
         fmt: str = "svg",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             title=title or "Chart",
@@ -176,7 +184,7 @@ class MatplotlibChart(Component[_ChartProps]):
         self._figure = figure
         self._fmt = fmt
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         adapter = MatplotlibAdapter()
         acc = accessibility_or_raise(
             title=self.props.title,
@@ -195,13 +203,13 @@ class PlotlyChart(Component[_ChartProps]):
 
     def __init__(
         self,
-        figure: Any,
+        figure: object,
         *,
         title: str | None = None,
         description: str | None = None,
         alt: str | None = None,
         waiver: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             title=title or "Chart",
@@ -212,7 +220,7 @@ class PlotlyChart(Component[_ChartProps]):
         )
         self._figure = figure
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         adapter, output = compile_figure(
             self._figure,
             title=self.props.title,
@@ -241,13 +249,13 @@ class AltairChart(Component[_ChartProps]):
 
     def __init__(
         self,
-        chart: Any,
+        chart: object,
         *,
         title: str | None = None,
         description: str | None = None,
         alt: str | None = None,
         waiver: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(
             title=title or "Chart",
@@ -258,7 +266,7 @@ class AltairChart(Component[_ChartProps]):
         )
         self._chart = chart
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         adapter = AltairAdapter()
         acc = accessibility_or_raise(
             title=self.props.title,

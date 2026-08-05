@@ -9,9 +9,11 @@ import shutil
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
-from hedron_core.registry import get_registry
+from hedron.config import HedronSettings
+from hedron_core.registry import ComponentMeta, get_registry
+from hedron_core.typing_aliases import JsonObject, PluginMetaDict
 
 __all__ = ["main"]
 
@@ -44,7 +46,7 @@ def _registry_empty_hint(*, app: str | None, what: str) -> None:
     )
 
 
-def _apply_project_discovery(base: Path | None = None) -> Any:
+def _apply_project_discovery(base: Path | None = None) -> HedronSettings:
     """Load settings, discover folders, and optionally load configured plugins."""
     from hedron.config import load_hedron_settings
     from hedron.plugins import load_plugins
@@ -87,7 +89,7 @@ def _cmd_routes(args: argparse.Namespace) -> int:
 def _cmd_components(args: argparse.Namespace) -> int:
     _load_app(args.app)
     registry = get_registry()
-    rows: list[dict[str, Any]] = [
+    rows: list[JsonObject] = [
         {
             "kind": "component",
             "logical_id": c.logical_id,
@@ -155,7 +157,7 @@ def _cmd_preview(args: argparse.Namespace) -> int:
     return 0
 
 
-def _find_component(name: str) -> Any:
+def _find_component(name: str) -> ComponentMeta | None:
     registry = get_registry()
     for c in registry.components():
         if c.logical_id == name or c.name == name or c.logical_id.endswith(f".{name}"):
@@ -177,7 +179,7 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
         _registry_empty_hint(app=args.app, what="components")
         print(f"Component {args.component!r} not found", file=sys.stderr)
         return 1
-    payload: dict[str, Any] = {
+    payload: JsonObject = {
         "logical_id": meta.logical_id,
         "name": meta.name,
         "module": meta.module,
@@ -404,8 +406,8 @@ def _cmd_check(args: argparse.Namespace) -> int:
         ),
     ]
 
-    inventory_summary: dict[str, Any] | None = None
-    hdj_reports: list[dict[str, Any]] = []
+    inventory_summary: JsonObject | None = None
+    hdj_reports: list[JsonObject] = []
 
     # Optional HDJ production inventory / CSP mismatch summary (hedron-jinja).
     try:
@@ -414,7 +416,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
     except ImportError:
         pass
     else:
-        reports: list[dict[str, Any]] = []
+        reports: list[JsonObject] = []
         caps: set[str] = set()
         mismatches: list[str] = []
         csp_policy: str | None = None
@@ -444,11 +446,14 @@ def _cmd_check(args: argparse.Namespace) -> int:
                     required = sorted(inferred | declared)
                     caps.update(required)
                     reports.append(
-                        {
-                            "name": rel,
-                            "kind": str(parsed.declaration.kind),
-                            "capabilities": required,
-                        }
+                        cast(
+                            JsonObject,
+                            {
+                                "name": rel,
+                                "kind": str(parsed.declaration.kind),
+                                "capabilities": required,
+                            },
+                        )
                     )
                     mismatches.extend(
                         reconcile_csp(
@@ -487,12 +492,15 @@ def _cmd_check(args: argparse.Namespace) -> int:
                     remediation="See Explorer /inventory and docs/api for HDJ CSP reconciliation.",
                 )
             )
-        inventory_summary = {
-            "templates": len(reports),
-            "capabilities": sorted(caps),
-            "csp_mismatches": mismatches,
-            "inventory": inv.as_dict(),
-        }
+        inventory_summary = cast(
+            JsonObject,
+            {
+                "templates": len(reports),
+                "capabilities": sorted(caps),
+                "csp_mismatches": mismatches,
+                "inventory": inv.as_dict(),
+            },
+        )
 
     all_diags = [*diags, *info_diags]
 
@@ -518,8 +526,8 @@ def _cmd_graph(args: argparse.Namespace) -> int:
     base = Path(getattr(args, "project", None) or Path.cwd()).resolve()
     _apply_project_discovery(base)
     registry = get_registry()
-    nodes = []
-    edges = []
+    nodes: list[JsonObject] = []
+    edges: list[JsonObject] = []
     for c in registry.components():
         nodes.append({"id": c.logical_id, "name": c.name, "kind": "component"})
         for dep in c.browser_modules:
@@ -529,7 +537,10 @@ def _cmd_graph(args: argparse.Namespace) -> int:
     inverse: dict[str, list[str]] = {}
     for edge in edges:
         inverse.setdefault(str(edge["to"]), []).append(str(edge["from"]))
-    payload = {"nodes": nodes, "edges": edges, "inverse_consumers": inverse}
+    payload: JsonObject = cast(
+        JsonObject,
+        {"nodes": nodes, "edges": edges, "inverse_consumers": inverse},
+    )
     print(json.dumps(payload, indent=2))
     return 0
 
@@ -541,7 +552,7 @@ def _cmd_audit_components(args: argparse.Namespace) -> int:
     from hedron_core.plugins import get_diagnostic_owners, get_explorer_panels
 
     registry = get_registry()
-    rows = []
+    rows: list[JsonObject] = []
     for c in registry.components():
         rows.append(
             {
@@ -556,7 +567,7 @@ def _cmd_audit_components(args: argparse.Namespace) -> int:
                 },
             }
         )
-    plugin_rows: list[dict[str, Any]] = []
+    plugin_rows: list[JsonObject] = []
     try:
         from importlib.metadata import entry_points
 
@@ -573,19 +584,22 @@ def _cmd_audit_components(args: argparse.Namespace) -> int:
                 target = ep.load()
                 meta = getattr(target, "PLUGIN_META", None)
                 if meta is not None:
-                    plugin_rows.append(meta.to_dict())
+                    plugin_rows.append(cast(JsonObject, cast(PluginMetaDict, meta.to_dict())))
                 else:
                     plugin_rows.append({"name": ep.name, "version": "unknown"})
             except Exception as exc:  # noqa: BLE001
                 plugin_rows.append({"name": ep.name, "error": str(exc)})
     except Exception:  # noqa: BLE001
         plugin_rows = []
-    payload = {
-        "components": rows,
-        "plugins": plugin_rows,
-        "explorer_panels": [p.to_dict() for p in get_explorer_panels()],
-        "diagnostic_owners": dict(get_diagnostic_owners()),
-    }
+    payload: JsonObject = cast(
+        JsonObject,
+        {
+            "components": rows,
+            "plugins": plugin_rows,
+            "explorer_panels": [p.to_dict() for p in get_explorer_panels()],
+            "diagnostic_owners": dict(get_diagnostic_owners()),
+        },
+    )
     print(json.dumps(payload, indent=2))
     return 0
 

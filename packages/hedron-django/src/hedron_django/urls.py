@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from typing import Any
 
 from django.urls import URLPattern, URLResolver, path
 
@@ -15,7 +14,7 @@ __all__ = ["component_path", "hedron_paths", "include_component_path"]
 
 def component_path(
     route: str,
-    view: Callable[..., Any],
+    view: Callable[..., object],
     *,
     name: str,
 ) -> URLPattern | URLResolver:
@@ -24,7 +23,7 @@ def component_path(
 
 
 def include_component_path(
-    descriptor: AddressableDescriptor[..., Any],
+    descriptor: AddressableDescriptor[..., object],
     *,
     route: str,
     name: str | None = None,
@@ -33,7 +32,7 @@ def include_component_path(
 
     ep = name or f"hedron_{descriptor.logical_id.replace(':', '_').replace('.', '_')}"
 
-    def view(request: Any, **kwargs: Any) -> Any:
+    def view(request: object, **kwargs: object) -> object:
         del request
         return descriptor.factory(**kwargs)
 

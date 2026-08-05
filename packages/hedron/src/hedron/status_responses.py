@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -15,6 +13,7 @@ from hedron.interaction import StatusPolicy, status_policy_for
 from hedron.responses import render_component_response
 from hedron_core.builtins.content import Text
 from hedron_core.builtins.surfaces import Alert
+from hedron_core.component import NodeLike
 from hedron_core.html import html
 
 __all__ = [
@@ -24,8 +23,8 @@ __all__ = [
 ]
 
 
-def validation_error_fragment(exc: RequestValidationError) -> Any:
-    items = []
+def validation_error_fragment(exc: RequestValidationError) -> NodeLike:
+    items: list[NodeLike] = []
     for err in exc.errors():
         loc = ".".join(str(p) for p in err.get("loc", ()) if p != "body")
         msg = err.get("msg", "Invalid value")
@@ -40,7 +39,7 @@ def validation_error_fragment(exc: RequestValidationError) -> Any:
     )
 
 
-def semantic_error_fragment(status_code: int, detail: Any = None) -> Any:
+def semantic_error_fragment(status_code: int, detail: object = None) -> NodeLike:
     policy = status_policy_for(status_code)
     message = policy.message
     if detail is not None:
@@ -57,14 +56,12 @@ def semantic_error_fragment(status_code: int, detail: Any = None) -> Any:
 def _policy_headers(policy: StatusPolicy) -> dict[str, str]:
     if policy.no_swap:
         return approved_headers(reswap="none")
-    kwargs: dict[str, Any] = {}
-    if policy.retarget:
-        kwargs["retarget"] = policy.retarget
-    if policy.reswap:
-        kwargs["reswap"] = policy.reswap
-    elif policy.swap:
-        kwargs["reswap"] = policy.swap
-    return approved_headers(**kwargs) if kwargs else {}
+    if policy.retarget or policy.reswap or policy.swap:
+        return approved_headers(
+            retarget=policy.retarget,
+            reswap=policy.reswap or policy.swap,
+        )
+    return {}
 
 
 def install_interaction_handlers(app: FastAPI) -> None:

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Literal
+from typing import Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children
 from hedron_core.component import Component, NodeLike
@@ -38,7 +38,7 @@ class Container(Component[ContainerProps]):
         children: NodeLike = None,
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(ContainerProps(id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
@@ -65,7 +65,7 @@ class Stack(Component[StackProps]):
         gap: str = "1rem",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(StackProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
@@ -94,7 +94,7 @@ class Inline(Component[InlineProps]):
         gap: str = "0.5rem",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         super().__init__(InlineProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
@@ -127,7 +127,7 @@ class Grid(Component[GridProps]):
         gap: str = "1rem",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         if columns < 1:
             raise error(
@@ -168,7 +168,7 @@ class Divider(Component[DividerProps]):
     props_type = DividerProps
 
     def __init__(
-        self, orientation: Literal["horizontal", "vertical"] = "horizontal", **kwargs: Any
+        self, orientation: Literal["horizontal", "vertical"] = "horizontal", **kwargs: object
     ) -> None:
         super().__init__(DividerProps(orientation=orientation, **kwargs))
 

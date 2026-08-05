@@ -7,9 +7,10 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
 from types import MappingProxyType
-from typing import Any, Generic, TypeVar
+from typing import Generic, TypeVar
 
 from hedron_core import Model, RenderMode, SafeUrl, TrustedHtml
+from hedron_core.typing_aliases import JsonValue
 
 ViewT = TypeVar("ViewT", bound=Model)
 _LOGICAL_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]*$")
@@ -132,7 +133,7 @@ class HdjContext:
     mode: RenderMode
     locale: str
     theme: str | None
-    htmx: Mapping[str, Any] = field(default_factory=lambda: MappingProxyType({}))
+    htmx: Mapping[str, JsonValue] = field(default_factory=lambda: MappingProxyType({}))
     _url_builder: Callable[..., SafeUrl] | None = field(default=None, repr=False, compare=False)
     _asset_builder: Callable[[str], SafeUrl] | None = field(default=None, repr=False, compare=False)
     _csrf_builder: Callable[[], TrustedHtml] | None = field(default=None, repr=False, compare=False)
@@ -144,7 +145,7 @@ class HdjContext:
     def is_fragment(self) -> bool:
         return self.mode is RenderMode.FRAGMENT
 
-    def url(self, ref: Any, **params: Any) -> SafeUrl:
+    def url(self, ref: object, **params: JsonValue) -> SafeUrl:
         if self._url_builder is None:
             raise RuntimeError("No framework URL builder is configured for this HDJ binding")
         return self._url_builder(ref, **params)

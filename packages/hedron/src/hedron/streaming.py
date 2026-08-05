@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import AsyncIterator, Iterator, Mapping
-from typing import Any
 
 from fastapi.responses import StreamingResponse
+from starlette.background import BackgroundTask
 
 from hedron_core.streaming import ChunkedList, StreamedDocument, TokenStream
 
@@ -55,7 +55,7 @@ class StreamingComponentResponse(StreamingResponse):
         region_id: str,
         status_code: int = 200,
         headers: Mapping[str, str] | None = None,
-        background: Any = None,
+        background: BackgroundTask | None = None,
         fallback_html: str | None = None,
     ) -> None:
         _reject_header_controls("region_id", region_id)

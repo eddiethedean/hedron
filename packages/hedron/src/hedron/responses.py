@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any
 
 from fastapi.responses import HTMLResponse
 from starlette.background import BackgroundTask
@@ -12,7 +11,7 @@ from starlette.requests import Request
 from hedron.htmx import approved_headers, render_mode_for_request
 from hedron.security.policy import SecurityPolicy
 from hedron_core.builtins.document import Page
-from hedron_core.component import Component, NodeLike
+from hedron_core.component import NodeLike
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 
 __all__ = [
@@ -22,6 +21,7 @@ __all__ = [
     "HTML",
     "PageResponse",
     "hedron_response",
+    "merge_htmx_headers",
     "render_component_response",
 ]
 
@@ -31,7 +31,7 @@ class HTML:
 
     __slots__ = ("value", "mode")
 
-    def __init__(self, value: NodeLike | Component[Any], *, mode: RenderMode | None = None) -> None:
+    def __init__(self, value: NodeLike, *, mode: RenderMode | None = None) -> None:
         self.value = value
         self.mode = mode
 
@@ -80,7 +80,7 @@ def _safe_content_disposition_filename(filename: str) -> str:
     return cleaned[:200]
 
 
-def hedron_response(component_type: type[Any] | None = None) -> dict[str, Any]:
+def hedron_response(component_type: type[object] | None = None) -> dict[str, object]:
     """OpenAPI metadata for plain FastAPI component routes."""
     description = "Hedron HTML response"
     if component_type is not None:
@@ -97,7 +97,7 @@ def hedron_response(component_type: type[Any] | None = None) -> dict[str, Any]:
     }
 
 
-def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[Any]:
+def _fragment_value(value: NodeLike) -> NodeLike:
     """Avoid duplicating the document shell for HTMX fragment navigation."""
     if isinstance(value, Page):
         children = list(value._children)
@@ -108,7 +108,7 @@ def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[An
 
 
 def render_component_response(
-    value: NodeLike | Component[Any] | HTML | RenderResult,
+    value: NodeLike | HTML | RenderResult,
     *,
     request: Request | None = None,
     context: RenderContext | None = None,
@@ -137,7 +137,7 @@ def render_component_response(
 
             render_context = render_context_from_request(request)
         render_context = render_context or RenderContext.standalone()
-        to_render: NodeLike | Component[Any] = value
+        to_render: NodeLike = value
         if selected_mode is RenderMode.FRAGMENT:
             to_render = _fragment_value(value)
         result = render(to_render, context=render_context, mode=selected_mode)
@@ -277,5 +277,4 @@ def _ensure_htmx_asset(html_text: str, mode: RenderMode) -> str:
     return html_text + tag
 
 
-def merge_htmx_headers(**kwargs: Any) -> dict[str, str]:
-    return approved_headers(**kwargs)
+merge_htmx_headers = approved_headers

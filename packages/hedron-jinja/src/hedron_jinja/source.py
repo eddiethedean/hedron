@@ -5,10 +5,10 @@ from __future__ import annotations
 import hashlib
 import re
 import tomllib
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from html.parser import HTMLParser
-from typing import Any
+from typing import cast
 from urllib.parse import urlsplit
 
 from jinja2 import BaseLoader, Environment, TemplateNotFound, nodes
@@ -20,6 +20,7 @@ from hedron_core import (
     SourceSpan,
 )
 from hedron_core.diagnostics import error, make_diagnostic
+from hedron_core.typing_aliases import JsonObject, JsonValue
 from hedron_jinja.contracts import TemplateDeclaration, TemplateKind, validate_template_name
 
 FORMAT_VERSION = 1
@@ -173,7 +174,7 @@ def parse_hdj_source(name: str, raw: str) -> ParsedHdjSource:
             "Reduce the static declaration size.",
         )
     try:
-        data = tomllib.loads(prologue_text)
+        data = cast(JsonObject, tomllib.loads(prologue_text))
     except tomllib.TOMLDecodeError as exc:
         raise _source_error(
             name,
@@ -276,7 +277,7 @@ def parse_hdj_source(name: str, raw: str) -> ParsedHdjSource:
     return ParsedHdjSource(declaration=declaration, raw=raw, body=body, compiled=compiled)
 
 
-def _string_tuple(name: str, data: dict[str, Any], key: str) -> tuple[str, ...]:
+def _string_tuple(name: str, data: dict[str, JsonValue], key: str) -> tuple[str, ...]:
     value = data.get(key, [])
     if not isinstance(value, list) or any(not isinstance(item, str) or not item for item in value):
         raise _source_error(
@@ -284,7 +285,7 @@ def _string_tuple(name: str, data: dict[str, Any], key: str) -> tuple[str, ...]:
         )
     if len(value) != len(set(value)):
         raise _source_error(name, 2, f"`{key}` contains duplicates.", "List each value once.")
-    return tuple(value)
+    return tuple(cast(list[str], value))
 
 
 def _valid_network_capability(capability: str) -> bool:
@@ -316,7 +317,9 @@ class HdjLoader(BaseLoader):
         raw, _filename, _uptodate = self.delegate.get_source(environment, template)
         return parse_hdj_source(template, raw)
 
-    def get_source(self, environment: Environment, template: str) -> tuple[str, str | None, Any]:
+    def get_source(
+        self, environment: Environment, template: str
+    ) -> tuple[str, str | None, Callable[[], bool] | None]:
         validate_template_name(template)
         if not template.endswith(".hdj"):
             raise TemplateNotFound(template, "HDJ loader accepts only .hdj sources")

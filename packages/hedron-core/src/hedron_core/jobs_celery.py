@@ -9,6 +9,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from hedron_core.jobs import JobHandle, JobState, JobStatus, job_authorized
+from hedron_core.typing_aliases import JsonValue
 
 __all__ = ["CeleryJobBackend"]
 
@@ -28,7 +29,7 @@ class CeleryJobBackend:
         self._app = celery_app
         self._prefix = key_prefix
         self._local: dict[str, JobStatus] = {}
-        self._payloads: dict[str, dict[str, Any]] = {}
+        self._payloads: dict[str, dict[str, JsonValue]] = {}
         self._idempotency: dict[str, str] = {}
 
     def _key(self, job_id: str) -> str:
@@ -37,7 +38,7 @@ class CeleryJobBackend:
     def submit(
         self,
         job_type: str,
-        payload: Mapping[str, Any],
+        payload: Mapping[str, JsonValue],
         *,
         idempotency_key: str | None = None,
         tenant_id: str | None = None,

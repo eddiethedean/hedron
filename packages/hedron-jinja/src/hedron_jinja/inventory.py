@@ -7,9 +7,10 @@ import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TypedDict, cast
 
 from hedron_core.diagnostics import error
+from hedron_core.typing_aliases import JsonObject, JsonValue
 
 __all__ = [
     "DynamicDependency",
@@ -18,6 +19,15 @@ __all__ = [
     "build_production_inventory",
     "reconcile_csp",
 ]
+
+
+class TemplateInventoryReport(TypedDict, total=False):
+    """JSON-shaped production inventory row for one HDJ template."""
+
+    name: str
+    kind: str
+    capabilities: list[str]
+    error: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -156,12 +166,12 @@ def reconcile_csp(
 
 @dataclass
 class ProductionInventory:
-    templates: list[dict[str, Any]] = field(default_factory=list)
+    templates: list[JsonObject] = field(default_factory=list)
     dynamic_manifest_fingerprint: str | None = None
     capabilities: list[str] = field(default_factory=list)
     foreign_namespaces: list[str] = field(default_factory=list)
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self) -> JsonObject:
         return {
             "templates": list(self.templates),
             "dynamic_manifest_fingerprint": self.dynamic_manifest_fingerprint,
@@ -172,12 +182,12 @@ class ProductionInventory:
 
 def build_production_inventory(
     *,
-    template_reports: Sequence[Mapping[str, Any]] = (),
+    template_reports: Sequence[Mapping[str, JsonValue] | TemplateInventoryReport] = (),
     manifest: DynamicDependencyManifest | None = None,
     capabilities: Sequence[str] = (),
 ) -> ProductionInventory:
     inv = ProductionInventory(
-        templates=[dict(t) for t in template_reports],
+        templates=[cast(JsonObject, dict(t)) for t in template_reports],
         capabilities=list(capabilities),
     )
     if manifest is not None:

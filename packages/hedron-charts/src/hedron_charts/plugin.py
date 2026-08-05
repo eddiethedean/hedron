@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from hedron_charts.adapters import AltairAdapter, MatplotlibAdapter, PlotlyAdapter
 from hedron_charts.components import AltairChart, LineChart, MatplotlibChart, PlotlyChart
 from hedron_core.auto import RendererSpec, register_renderer
+from hedron_core.component import NodeLike
 from hedron_core.identifiers import content_digest
 from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 from hedron_core.registry import register_asset, register_browser_module, register_component
@@ -31,15 +31,15 @@ PLUGIN_META = PluginMeta(
 )
 
 
-def _factory_matplotlib(value: Any) -> Any:
+def _factory_matplotlib(value: object) -> NodeLike:
     return MatplotlibChart(value, title="Chart", description="Auto-rendered Matplotlib figure")
 
 
-def _factory_plotly(value: Any) -> Any:
+def _factory_plotly(value: object) -> NodeLike:
     return PlotlyChart(value, description="Auto-rendered Plotly figure")
 
 
-def _factory_altair(value: Any) -> Any:
+def _factory_altair(value: object) -> NodeLike:
     return AltairChart(value, description="Auto-rendered Altair chart")
 
 

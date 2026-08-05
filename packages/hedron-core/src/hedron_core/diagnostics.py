@@ -6,7 +6,10 @@ from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from enum import StrEnum
 from pathlib import PurePath
-from typing import Any
+from typing import TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    from hedron_core.typing_aliases import DiagnosticDict, JsonObject, SourceSpanDict
 
 
 class DiagnosticSeverity(StrEnum):
@@ -48,7 +51,7 @@ class SourceSpan:
     end_line: int | None = None
     end_column: int | None = None
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> SourceSpanDict:
         return {
             "path": self.path,
             "start_line": self.start_line,
@@ -69,7 +72,7 @@ class Diagnostic:
     remediation: str = ""
     owner: str | None = None
     component_id: str | None = None
-    context: Mapping[str, Any] = field(default_factory=dict)
+    context: Mapping[str, object] = field(default_factory=dict)
     docs_url: str | None = None
     span: SourceSpan | None = None
 
@@ -89,8 +92,8 @@ class Diagnostic:
             )
         return "\n".join(parts)
 
-    def as_json(self) -> dict[str, Any]:
-        payload: dict[str, Any] = {
+    def as_json(self) -> DiagnosticDict:
+        payload: DiagnosticDict = {
             "code": self.code,
             "severity": self.severity.value,
             "title": self.title,
@@ -140,7 +143,7 @@ def make_diagnostic(
     remediation: str = "",
     owner: str | None = None,
     component_id: str | None = None,
-    context: Mapping[str, Any] | None = None,
+    context: Mapping[str, object] | None = None,
     span: SourceSpan | None = None,
 ) -> Diagnostic:
     return Diagnostic(
@@ -164,7 +167,7 @@ def error(
     remediation: str = "",
     owner: str | None = None,
     component_id: str | None = None,
-    context: Mapping[str, Any] | None = None,
+    context: Mapping[str, object] | None = None,
     span: SourceSpan | None = None,
 ) -> HedronError:
     return HedronError(
@@ -182,7 +185,7 @@ def error(
     )
 
 
-def diagnostics_to_json(diagnostics: Sequence[Diagnostic]) -> list[dict[str, Any]]:
+def diagnostics_to_json(diagnostics: Sequence[Diagnostic]) -> list[DiagnosticDict]:
     return [d.as_json() for d in diagnostics]
 
 
@@ -195,14 +198,14 @@ def diagnostics_to_sarif(
     *,
     tool_name: str = "hedron",
     tool_version: str | None = None,
-) -> dict[str, Any]:
+) -> JsonObject:
     """Emit SARIF 2.1.0 for a diagnostic collection."""
     if tool_version is None:
         from hedron_core import __version__ as package_version
 
         tool_version = package_version
-    results: list[dict[str, Any]] = []
-    rules: dict[str, dict[str, Any]] = {}
+    results: list[JsonObject] = []
+    rules: dict[str, JsonObject] = {}
     for diag in diagnostics:
         rules.setdefault(
             diag.code,
@@ -217,7 +220,7 @@ def diagnostics_to_sarif(
                 },
             },
         )
-        result: dict[str, Any] = {
+        result: JsonObject = {
             "ruleId": diag.code,
             "level": _sarif_level(diag.severity),
             "message": {"text": f"{diag.title}: {diag.explanation}"},
@@ -237,23 +240,26 @@ def diagnostics_to_sarif(
                 }
             ]
         results.append(result)
-    return {
-        "version": "2.1.0",
-        "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
-        "runs": [
-            {
-                "tool": {
-                    "driver": {
-                        "name": tool_name,
-                        "version": tool_version,
-                        "informationUri": "https://github.com/eddiethedean/hedron",
-                        "rules": list(rules.values()),
-                    }
-                },
-                "results": results,
-            }
-        ],
-    }
+    return cast(
+        "JsonObject",
+        {
+            "version": "2.1.0",
+            "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+            "runs": [
+                {
+                    "tool": {
+                        "driver": {
+                            "name": tool_name,
+                            "version": tool_version,
+                            "informationUri": "https://github.com/eddiethedean/hedron",
+                            "rules": list(rules.values()),
+                        }
+                    },
+                    "results": results,
+                }
+            ],
+        },
+    )
 
 
 def apply_suppressions(

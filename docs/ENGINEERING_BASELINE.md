@@ -45,6 +45,24 @@ CI. Free-threaded CPython and PyPy are informational until separately promoted.
 - A framework capability is advertised only when its native framework/server evidence is retained;
   portable conformance cannot manufacture ASGI, WSGI, or framework-specific guarantees.
 
+## Typing policy
+
+Pyright runs in `strict` mode on publishable package `src` trees. Shared aliases live in
+`hedron_core.typing_aliases` and are re-exported from `hedron_core` when they appear in
+public signatures (`JsonValue`, `HtmlAttrValue`, HTMX/job/plugin TypedDicts, and related
+shapes).
+
+- Prefer `JsonValue` / `JsonObject` / TypedDict / Protocol over `Any` for structured data.
+- Prefer `HtmlAttrValue` / `HtmlAttrMap` for HTML and HTMX attribute maps end-to-end.
+- Use `object` for truly unknown values that are immediately narrowed (for example `Auto`
+  inspection and job `result` payloads).
+- Keep `Any` only for host-framework passthrough (`**fastapi_kwargs`, Flask route
+  `options`) and intentionally dynamic cores (plugin entry callables, open decorator
+  wrappers). Remaining sites should be obviously boundary-shaped, not lazy bags.
+- Every `# type: ignore[...]` is coded and justified at the call site.
+- `reportUnknown*` stays at warning severity until a package subtree is driven near-zero;
+  do not promote those reports to errors without a measured ratchet.
+
 ## Licensing policy
 
 Hedron uses the MIT License (D-033). The repository root and each publishable distribution include `LICENSE`, and package metadata declares `license = "MIT"`. The release workflow refuses to publish when those artifacts are missing.

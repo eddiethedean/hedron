@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
+from hedron_core.typing_aliases import HtmlAttrValue
+
 
 @dataclass(frozen=True, slots=True)
 class TextNode:
@@ -35,7 +37,7 @@ class FragmentNode:
 @dataclass(frozen=True, slots=True)
 class ElementNode:
     tag: str
-    attributes: Mapping[str, object]
+    attributes: Mapping[str, HtmlAttrValue]
     children: tuple[Node, ...]
     void: bool = False
 
