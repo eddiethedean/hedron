@@ -20,10 +20,12 @@ contracts match what you just used:
     Advanced typing and rendering primitives such as `NodeLike`, `RenderMode`, and
     `get_registry` live in `hedron_core`. Prefer `hedron` re-exports when available.
 
-**Stability:** Phase 0.10 continues the public classifications in [STABILITY.md](STABILITY.md)
-(`beta` | `experimental` | `internal` | `deferred`). No public symbol is classified
-`stable` yet — that level is reserved for a future promotion decision. Package maturity
-(Beta/Alpha) is separate from API level. Upgrade notes: [upgrade guide](../guides/upgrade.md).
+**Stability:** API levels are defined in [STABILITY.md](STABILITY.md). A **minimal
+`stable` tier** (render/model/interaction/CSRF/router facades and portable adapter
+helpers) is compatibility-protected on the 0.x train. Everything else is `beta` or
+`experimental` unless listed. Package maturity remains **Beta** on PyPI — pin versions.
+Live transports stay **experimental**; prefer polling. Upgrade notes:
+[upgrade guide](../guides/upgrade.md).
 
 !!! note "Contracts vs full reference"
 
@@ -85,6 +87,7 @@ and 0.10 live interaction).
 - [API diagnostics](DIAGNOSTICS.md)
 - [CLI](CLI.md)
 - [Jobs](JOBS.md)
+- [Prepare lifecycle](PREPARE.md) · [Security audit sink](AUDIT.md) · [Tracing](TRACING.md)
 
 Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md) ·
 [Compatibility](../COMPATIBILITY.md) · [Glossary](../GLOSSARY.md) ·
@@ -92,7 +95,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — 0.8+ compatibility catalog (0.10 live surfaces)
+- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.13)
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
 - [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling Supported; SSE experimental
 
@@ -102,8 +105,10 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 - First-party camera/microphone capture UI (0.15)
 
-## Published in 0.11
+## Published trains (still Supported on 0.13)
 
-- Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory —
-  phase **0.11** (`v0.11.0`, D-046); still Supported on the current **0.13.0** train
+- Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
+  (introduced in 0.11; Supported on **0.13.0**)
+- Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
+  — **0.13.0**
 - Capture UI remains — phase 0.15

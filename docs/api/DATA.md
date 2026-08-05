@@ -4,7 +4,7 @@ status: shipped
 
 # `DataTable` and `DataEditor`
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 

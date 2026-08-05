@@ -8,29 +8,26 @@ Minimal **native Django** slice (manage-less): home + fragment. Depends on
 - Python 3.11–3.14
 - From a Hedron monorepo checkout: `uv sync`
 
-Or:
+Or (pip, outside the monorepo):
 
 ```bash
-pip install "hedron-django" "django>=5.2,<6" gunicorn uvicorn
+pip install "hedron-django" "django>=5.2,<6" "waitress>=3,<4"
 ```
+
+For ASGI locally you can use `uvicorn` instead of Waitress.
 
 ## Run (WSGI)
 
-From the repository root (so `examples/django-reference` is on `PYTHONPATH`):
+`wsgi.py` puts this directory on `sys.path`. From the repository root:
 
 ```bash
 cd examples/django-reference
-uv run python -c "from wsgi import application; print(application)"
-# Development with Waitress (Supported WSGI server for Flask/Django matrix):
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```
 
-Or with gunicorn:
-
-```bash
-cd examples/django-reference
-uv run gunicorn wsgi:application -b 127.0.0.1:8000
-```
+Waitress is the Supported reference WSGI server for the Flask/Django matrix. If you
+prefer gunicorn in your own deploy, install it yourself — it is **not** a workspace
+dependency of this monorepo.
 
 ## Run (ASGI)
 
@@ -53,4 +50,4 @@ CSRF cookie via Django's `get_token`. Form posts may use `csrfmiddlewaretoken` o
 ## Scope
 
 Home + fragment only. Full QuerySet DataSource / forms bridge demos live in the package
-tests and docs (Supported in 0.11 / D-046)—see [STATUS](../../docs/STATUS.md).
+tests and docs (Supported — see [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)).

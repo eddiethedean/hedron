@@ -28,6 +28,7 @@ class DataQuery:
     locale: str | None = None
     allowlisted_sort_fields: frozenset[str] | None = None
     allowlisted_filter_fields: frozenset[str] | None = None
+    allowlisted_projection_fields: frozenset[str] | None = None
 
     def validated(self, *, max_page_size: int = DEFAULT_MAX_PAGE_SIZE) -> DataQuery:
         if self.offset < 0:
@@ -48,17 +49,23 @@ class DataQuery:
             for name in filters:
                 if name not in self.allowlisted_filter_fields:
                     raise ValueError(f"Filter field {name!r} is not allowlisted")
+        projection = self.projection
+        if projection is not None and self.allowlisted_projection_fields is not None:
+            for name in projection:
+                if name not in self.allowlisted_projection_fields:
+                    raise ValueError(f"Projection field {name!r} is not allowlisted")
         return DataQuery(
             offset=self.offset,
             limit=capped,
             cursor=self.cursor,
             sort=sort,
             filters=filters,
-            projection=self.projection,
+            projection=projection,
             search=self.search,
             locale=self.locale,
             allowlisted_sort_fields=self.allowlisted_sort_fields,
             allowlisted_filter_fields=self.allowlisted_filter_fields,
+            allowlisted_projection_fields=self.allowlisted_projection_fields,
         )
 
 

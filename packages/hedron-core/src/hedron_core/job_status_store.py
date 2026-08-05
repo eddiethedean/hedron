@@ -22,6 +22,8 @@ from hedron_core.typing_aliases import JsonValue
 
 __all__ = ["RedisStatusStore", "require_redis_status_client"]
 
+_TERMINAL = frozenset({JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED})
+
 
 def require_redis_status_client(client: RedisClient | None) -> RedisClient:
     """Refuse process-local durability claims when Redis is missing."""
@@ -82,6 +84,19 @@ class RedisStatusStore:
             ex=self._ttl,
         )
 
+    def delete(self, job_id: str) -> None:
+        """Remove a job body and any idempotency pointer it owns."""
+        data = self._load(job_id)
+        self._client.delete(self._key(job_id))
+        if data is None:
+            return
+        scope = data.get("idempotency_scope_key")
+        if isinstance(scope, str) and scope:
+            idem_key = f"{self._prefix}idem:{scope}"
+            pointed = self._decode(self._client.get(idem_key))
+            if pointed == job_id:
+                self._client.delete(idem_key)
+
     def submit(
         self,
         job_type: str,
@@ -91,15 +106,19 @@ class RedisStatusStore:
         tenant_id: str | None = None,
         auth_subject: str | None = None,
     ) -> JobHandle:
+        idem_redis_key: str | None = None
         if idempotency_key:
-            idem_key = self._idem_key(
+            idem_redis_key = self._idem_key(
                 idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
             )
-            existing_raw = self._decode(self._client.get(idem_key))
+            existing_raw = self._decode(self._client.get(idem_redis_key))
             if existing_raw:
                 existing = self.get(existing_raw, auth_subject=auth_subject, tenant_id=tenant_id)
                 if existing is not None:
                     return JobHandle(job_id=existing.job_id, idempotency_key=idempotency_key)
+                # Stale or cross-scope pointer — drop and continue.
+                self._client.delete(idem_redis_key)
+
         job_id = secrets.token_urlsafe(12)
         now = time.time()
         status = JobStatus(
@@ -113,15 +132,36 @@ class RedisStatusStore:
         )
         data = _status_to_dict(status, payload=payload)
         if idempotency_key:
+            data["idempotency_key"] = idempotency_key
             data["idempotency_scope_key"] = _idempotency_scope_key(
                 idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
             )
-            self._client.set(
-                self._idem_key(idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject),
+        # Persist the job body before claiming the idempotency key so losers never
+        # observe a key that points at a missing record.
+        self._store(data)
+
+        if idem_redis_key is not None:
+            created = self._client.set(
+                idem_redis_key,
                 job_id,
+                nx=True,
                 ex=self._ttl,
             )
-        self._store(data)
+            if not created:
+                self._client.delete(self._key(job_id))
+                existing = self._decode(self._client.get(idem_redis_key))
+                if existing is not None:
+                    for _ in range(5):
+                        loaded = self._load(existing)
+                        if loaded is not None:
+                            return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+                        time.sleep(0.01)
+                    if self._load(existing) is not None:
+                        return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+                raise RuntimeError(
+                    "Idempotent job submit lost the race and the winner record is unavailable"
+                )
+
         return JobHandle(job_id=job_id, idempotency_key=idempotency_key)
 
     def get(
@@ -148,10 +188,14 @@ class RedisStatusStore:
         auth_subject: str | None = None,
         tenant_id: str | None = None,
     ) -> bool:
-        status = self.get(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
-        if status is None:
+        data = self._load(job_id)
+        if data is None:
             return False
-        if status.state in {JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED}:
+        status = _status_from_dict(data)
+        # Fail closed for scoped jobs when credentials are omitted (match RedisJobBackend).
+        if not job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
+            return False
+        if status.state in _TERMINAL:
             return False
         updated = JobStatus(
             job_id=status.job_id,
@@ -166,7 +210,6 @@ class RedisStatusStore:
             updated_at=time.time(),
             cancel_requested=True,
         )
-        data = self._load(job_id) or {}
         payload = data.get("payload")
         stored: dict[str, object] = dict(
             _status_to_dict(
@@ -179,6 +222,8 @@ class RedisStatusStore:
         scope = data.get("idempotency_scope_key")
         if isinstance(scope, str):
             stored["idempotency_scope_key"] = scope
+        if isinstance(data.get("idempotency_key"), str):
+            stored["idempotency_key"] = str(data["idempotency_key"])
         self._store(stored)
         return True
 
@@ -194,6 +239,18 @@ class RedisStatusStore:
         if data is None:
             return None
         status = _status_from_dict(data)
+        if status.state in _TERMINAL and state not in _TERMINAL:
+            return status
+        if (
+            status.state in _TERMINAL
+            and state in _TERMINAL
+            and state is not status.state
+            and not (status.cancel_requested and state is JobState.CANCELLED)
+        ):
+            return status
+        cancel_requested = status.cancel_requested
+        if cancel_requested and state == JobState.RUNNING:
+            state = JobState.CANCELLED
         updated = JobStatus(
             job_id=status.job_id,
             state=state,
@@ -205,7 +262,7 @@ class RedisStatusStore:
             retry_after=status.retry_after,
             created_at=status.created_at,
             updated_at=time.time(),
-            cancel_requested=status.cancel_requested,
+            cancel_requested=cancel_requested,
         )
         payload = data.get("payload")
         stored = dict(
@@ -219,6 +276,8 @@ class RedisStatusStore:
         scope = data.get("idempotency_scope_key")
         if isinstance(scope, str):
             stored["idempotency_scope_key"] = scope
+        if isinstance(data.get("idempotency_key"), str):
+            stored["idempotency_key"] = str(data["idempotency_key"])
         self._store(stored)
         return updated
 

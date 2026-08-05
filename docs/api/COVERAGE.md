@@ -70,15 +70,27 @@ SQLAlchemy adapter: `hedron_data.sqlalchemy_source.SQLAlchemyDataSource` — see
 
 | Export | Primary docs |
 |---|---|
-| `await_if_needed`, `gather`, `run_sync` | Autodoc / source; use for sync/async boundary in handlers |
+| `await_if_needed`, `gather`, `run_sync` | Autodoc; sync/async boundary in handlers |
 | `addressable`, `Field`, `Model`, `Props`, `FormModel`, `Component`, `render`, `RenderContext`, `RenderMode`, `RenderResult` | [COMPONENT.md](COMPONENT.md), [FIELD.md](FIELD.md), [MODELS.md](MODELS.md), [RENDERING.md](RENDERING.md) |
 | `html` | Tag helpers used in guides |
 | `Markdown`, `highlight_code`, `process_image`, `validate_email_address` | [CONTENT.md](CONTENT.md) |
 | `OAuthHelper`, `create_oauth_client` | [AUTH.md](AUTH.md) |
 | `__version__` | Package metadata |
 
+## Phase 0.13 surfaces (`hedron_core` / `hedron.tracing`)
+
+| Symbol | Primary docs |
+|---|---|
+| `PrepareContext`, `PartialFailurePolicy`, `prepare_tree` | [PREPARE.md](PREPARE.md) |
+| `SecurityAuditSink`, `set_security_audit_sink`, `emit_security_audit`, … | [AUDIT.md](AUDIT.md) |
+| `configure_tracing`, `span`, `TraceConfig` | [TRACING.md](TRACING.md) |
+
 ## Gaps policy
 
 If a symbol is in `__all__` but only listed here (no deep contract page), treat the
 component page or guide as normative for behavior, and open an issue when a signature
 or error matrix is missing. Prefer expanding Autodoc members over duplicating narrative.
+
+**Intentionally thin (Autodoc / guide only):** icon helpers (`get_icon`, `list_icons`,
+`register_icon`, `trusted_svg`), some response merge helpers, and FastAPI-only builtin
+wrappers already covered by [BUILT_INS.md](BUILT_INS.md) / component pages.

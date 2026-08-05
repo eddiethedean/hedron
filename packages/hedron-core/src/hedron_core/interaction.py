@@ -35,6 +35,7 @@ __all__ = [
     "merge_route_regions",
     "oob_swap",
     "resolve_fragment_region",
+    "select_htmx_auth_target",
     "status_policy_for",
 ]
 
@@ -195,6 +196,27 @@ def resolve_fragment_region(
     raise FragmentRegionError(
         f"HX-Target {target!r} is not an authorized fragment region for this route"
     )
+
+
+def select_htmx_auth_target(
+    *,
+    client_target: str | None,
+    region_id: str | None,
+) -> str | None:
+    """Choose the HTMX target used for authorization.
+
+    Prefer the client ``HX-Target`` when present. When both client target and
+    handler ``region_id`` are set but normalize to different ids, reject — the
+    browser swaps into ``HX-Target``, so authorizing ``region_id`` alone is
+    fail-open.
+    """
+    if client_target and region_id:
+        if client_target.lstrip("#") != region_id.lstrip("#"):
+            raise FragmentRegionError(
+                f"HX-Target {client_target!r} disagrees with region_id {region_id!r}"
+            )
+        return client_target
+    return client_target or region_id
 
 
 def authorize_htmx_target(

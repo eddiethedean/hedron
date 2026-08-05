@@ -47,6 +47,9 @@ class RQJobBackend:
         tenant_id: str | None = None,
         auth_subject: str | None = None,
     ) -> JobHandle:
+        fn = self._registry.get(job_type)
+        if fn is None:
+            raise KeyError(f"Unknown RQ job_type {job_type!r}")
         handle = self._store.submit(
             job_type,
             payload,
@@ -54,11 +57,16 @@ class RQJobBackend:
             tenant_id=tenant_id,
             auth_subject=auth_subject,
         )
-        fn = self._registry.get(job_type)
-        if fn is not None:
-            with contextlib.suppress(Exception):
-                rq_job = self._queue.enqueue(fn, dict(payload), job_id=handle.job_id)
-                self._rq_jobs[handle.job_id] = rq_job
+        try:
+            rq_job = self._queue.enqueue(fn, dict(payload), job_id=handle.job_id)
+            self._rq_jobs[handle.job_id] = rq_job
+        except Exception:
+            self._store.mark(
+                handle.job_id,
+                JobState.FAILED,
+                error="RQ enqueue failed",
+            )
+            raise
         return handle
 
     def get(
@@ -80,10 +88,25 @@ class RQJobBackend:
         ok = self._store.request_cancel(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
         if ok:
             rq_job = self._rq_jobs.get(job_id)
+            if rq_job is None:
+                rq_job = self._fetch_rq_job(job_id)
             if rq_job is not None:
                 with contextlib.suppress(Exception):
                     rq_job.cancel()
+                    self._rq_jobs[job_id] = rq_job
         return ok
+
+    def _fetch_rq_job(self, job_id: str) -> Any | None:
+        """Resolve an RQ job across workers via the shared connection."""
+        connection = getattr(self._queue, "connection", None)
+        if connection is None:
+            return None
+        try:
+            from rq.job import Job  # type: ignore[import-not-found]
+
+            return Job.fetch(job_id, connection=connection)
+        except Exception:
+            return None
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:
         return self._store.cleanup_expired(older_than_seconds=older_than_seconds)

@@ -5,7 +5,7 @@ status: shipped
 # SSE responses
 
 
-!!! note "Stability (0.13 train)"
+!!! note "Stability"
 
     Classifications live in [STABILITY.md](STABILITY.md). Official HTMX SSE observation is
     **experimental** (`hedron.experimental`) until Deferred ops gates

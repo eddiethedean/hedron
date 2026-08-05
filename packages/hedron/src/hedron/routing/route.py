@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import functools
 import inspect
 from collections.abc import Callable, Coroutine
@@ -86,8 +87,6 @@ class HedronRoute(APIRoute):
 
         wrapped._hedron_plain_wrapped = True  # type: ignore[attr-defined]
         # Preserve signature for FastAPI dependency injection.
-        import contextlib
-
         with contextlib.suppress(TypeError, ValueError):
             wrapped.__signature__ = inspect.signature(endpoint)  # type: ignore[attr-defined]
         return wrapped
@@ -148,6 +147,7 @@ class HedronRoute(APIRoute):
                 fragment_regions=fragment_regions,
             )
         if isinstance(result, HTML):
+            _authorize_component_fragment(request, fragment_regions)
             await _prepare_endpoint_value(result.value, request=request)
             response = render_component_response(
                 result,
@@ -166,6 +166,7 @@ class HedronRoute(APIRoute):
 
             return JSONResponse(jsonable_encoder(result))
         if isinstance(result, Component) or callable(getattr(result, "render", None)):
+            _authorize_component_fragment(request, fragment_regions)
             force = mode
             if kind == "component":
                 force = force or RenderMode.FRAGMENT
@@ -210,11 +211,12 @@ class HedronRoute(APIRoute):
         target = request.headers.get("HX-Target")
         is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
         try:
-            from hedron_core.interaction import authorize_htmx_target
+            from hedron_core.interaction import authorize_htmx_target, select_htmx_auth_target
 
+            auth_target = select_htmx_auth_target(client_target=target, region_id=result.region_id)
             region = authorize_htmx_target(
                 result.policy,
-                result.region_id or target,
+                auth_target,
                 is_htmx=is_htmx,
             )
         except FragmentRegionError as exc:
@@ -274,9 +276,59 @@ async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
         disconnect_capable=True,
         deadline=None,
     )
-    with span("hedron.prepare", route=str(request.url.path)):
-        await prepare_tree(
-            value,
-            context=ctx,
-            concurrency_limit=cfg.max_in_flight if cfg.enabled else None,
+
+    async def _watch_disconnect() -> None:
+        try:
+            while not disconnect.is_set():
+                if await request.is_disconnected():
+                    disconnect.set()
+                    return
+                await asyncio.sleep(0.05)
+        except Exception:
+            return
+
+    watcher = asyncio.create_task(_watch_disconnect())
+    try:
+        with span("hedron.prepare", route=str(request.url.path)):
+            await prepare_tree(
+                value,
+                context=ctx,
+                concurrency_limit=cfg.max_in_flight if cfg.enabled else None,
+            )
+    finally:
+        disconnect.set()
+        watcher.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await watcher
+
+
+def _authorize_component_fragment(
+    request: Request,
+    fragment_regions: tuple[FragmentRegion, ...],
+) -> None:
+    """Fail closed when HTMX targets an undeclared region for Component returns."""
+    if not fragment_regions:
+        return
+    from fastapi import HTTPException
+
+    from hedron_core.interaction import InteractionPolicy, authorize_htmx_target
+
+    target = request.headers.get("HX-Target")
+    is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
+    if not is_htmx:
+        return
+    try:
+        authorize_htmx_target(
+            InteractionPolicy(declared_regions=fragment_regions),
+            target,
+            is_htmx=True,
         )
+    except FragmentRegionError as exc:
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        emit_security_audit(
+            SecurityAuditEventType.HTMX_TARGET_REJECTED,
+            str(exc),
+            attributes={"path": str(request.url.path), "target": target},
+        )
+        raise HTTPException(status_code=403, detail=str(exc)) from exc

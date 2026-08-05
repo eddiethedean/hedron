@@ -68,7 +68,7 @@ Safe GETs issue the `hedron_csrf` cookie. Unsafe methods on `hedron_route` and
 - Fastest full example: clone and run the
   [Flask reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference)
 - [Security](../guides/security.md) · [Deployment](../guides/deployment.md) · [Adapters API](../api/ADAPTERS.md)
-- Mutations today: use Flask-native forms + CSRF; Hedron-owned forms depth is **0.11**.
-  Job status: use bounded polling (FastAPI SSE helpers are Supported on the flagship
-  in 0.10; see [live interaction](../guides/live-interaction.md))
+- Mutations: Flask-native forms + CSRF, or Hedron forms helpers where you choose them.
+  Job status: use bounded **polling** (FastAPI SSE helpers are **experimental** —
+  see [What’s ready](../guides/whats-ready.md) and [live interaction](../guides/live-interaction.md))
 - FastAPI scaffold path: [Installation](installation.md) (`hedron new`)

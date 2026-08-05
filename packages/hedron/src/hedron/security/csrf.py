@@ -52,10 +52,13 @@ def ensure_csrf_cookie(
     """Set the CSRF cookie once, reusing the request-scoped token when present."""
     if request is not None and getattr(request.state, "hedron_csrf_cookie_set", False):
         cached = getattr(request.state, "hedron_csrf_token", None)
-        if isinstance(cached, str):
+        if isinstance(cached, str) and cached:
             return cached
         existing = request.cookies.get(policy.csrf_cookie_name)
-        return existing or token or generate_csrf_token()
+        if isinstance(existing, str) and existing:
+            return existing
+        # Flag was set without a real token — clear and take the normal Set-Cookie path.
+        request.state.hedron_csrf_cookie_set = False
 
     if request is not None:
         value = token or csrf_token_for_request(request, policy)
@@ -124,8 +127,12 @@ def validate_csrf(request: Request, policy: SecurityPolicy) -> None:
         )
 
 
-def extract_csrf_from_form(data: Any) -> str | None:
+def extract_csrf_from_form(
+    data: Any,
+    *,
+    field_name: str = "csrf_token",
+) -> str | None:
     if isinstance(data, dict):
-        token = data.get("csrf_token")
+        token = data.get(field_name)
         return token if isinstance(token, str) else None
     return None

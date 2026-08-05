@@ -56,8 +56,10 @@ Full matrix and install extras: [installation](https://hedron.readthedocs.io/en/
 FastAPI-native typed components, HTMX fragments, and secure HTML defaults. Audience:
 CRUD, internal tools, dashboards, forms, admin, and data apps.
 
-Flask/Django adapters ship Blueprint/`init_app`, AppConfig, forms bridge, and bounded
-QuerySet DataSource in 0.11. Prefer polling for live updates behind buffering proxies.
+Flask/Django adapters (`hedron-flask`, `hedron-django`) are Supported on the current
+train: Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet DataSource.
+Live SSE/WebSocket helpers are **experimental** — prefer polling behind buffering proxies.
+See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
 Current train: [`v0.13.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·

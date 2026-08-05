@@ -4,11 +4,11 @@ status: shipped
 
 # `Field`
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
-**Status:** Accepted · **Shipped** (current train **0.11**)
+**Status:** Accepted · **Shipped** (current train **0.13.0**)
 
 `Field` declares validation, presentation, security, and data-editing metadata on
 `Model` / `FormModel` attributes. It returns a Pydantic `FieldInfo` with Hedron metadata.

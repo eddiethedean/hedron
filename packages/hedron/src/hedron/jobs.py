@@ -48,8 +48,9 @@ def job_status_response(
     auth_subject: str | None = None,
     tenant_id: str | None = None,
 ) -> HTMLResponse:
+    # Same status for missing and unauthorized to avoid job-id enumeration.
     if not job_authorized_http(job_status, auth_subject=auth_subject, tenant_id=tenant_id):
-        raise HTTPException(status_code=403, detail="Job access forbidden")
+        raise HTTPException(status_code=404, detail="Job not found")
     result = job_status_interaction(job_status)
     assert result.content is not None
     rendered = render(result.content, mode=RenderMode.FRAGMENT)

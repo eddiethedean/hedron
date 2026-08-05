@@ -27,8 +27,9 @@ uv run pytest -q
 Docs preview: `uv sync --group docs && uv run --group docs mkdocs serve`
 (or `./scripts/mkdocs.sh serve`). Strict builds: `uv run --group docs mkdocs build --strict`.
 
-Optional browser suite: install Playwright and set `HEDRON_BROWSER=1`
-(see CI `browser` job). Adapter packages (`hedron-flask`, `hedron-django`) are part of
+CI runs `test`, `quality`, **browser** (Chromium on PRs), and **evidence** on every
+pull request — see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md). Local Playwright is
+optional for docs-only work. Adapter packages (`hedron-flask`, `hedron-django`) are part of
 the workspace sync.
 
 Smoke the core renderer without the FastAPI flagship:

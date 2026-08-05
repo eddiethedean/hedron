@@ -33,10 +33,11 @@ def action_attrs(
     *,
     include_csrf: bool = False,
     csrf_token: str | None = None,
+    csrf_header_name: str = "X-CSRF-Token",
 ) -> dict[str, str]:
     attrs = ref.hx_attrs()
     if include_csrf and csrf_token:
-        attrs["hx-headers"] = json.dumps({"X-CSRF-Token": csrf_token})
+        attrs["hx-headers"] = json.dumps({csrf_header_name: csrf_token})
     return attrs
 
 
@@ -287,6 +288,7 @@ class AutoForm(Component[Props]):
         action: str | SafeUrl,
         method: str = "post",
         csrf_token: str | None = None,
+        csrf_form_field: str = "csrf_token",
         values: Mapping[str, JsonValue] | None = None,
         errors: Sequence[str] = (),
         submit_label: str = "Submit",
@@ -298,6 +300,7 @@ class AutoForm(Component[Props]):
         self.action = action
         self.method = method.lower()
         self.csrf_token = csrf_token
+        self.csrf_form_field = csrf_form_field
         self.values = dict(values or {})
         self.errors = tuple(errors)
         self.submit_label = submit_label
@@ -315,7 +318,13 @@ class AutoForm(Component[Props]):
         if self.errors:
             fields.append(FormErrors(self.errors))
         if self.csrf_token:
-            fields.append(html.input(type="hidden", name="csrf_token", value=self.csrf_token))
+            fields.append(
+                html.input(
+                    type="hidden",
+                    name=self.csrf_form_field,
+                    value=self.csrf_token,
+                )
+            )
         model_fields = getattr(self.model_type, "model_fields", {})
         for name, field_info in model_fields.items():
             if name.startswith("_"):

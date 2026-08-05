@@ -88,12 +88,19 @@ class DataTable(Component[DataTableProps]):
         return list(self._rows)
 
     def to_csv(self) -> str:
+        from hedron_data.spreadsheet import _reject_or_sanitize
+
         visible = [c for c in self._columns if not c.hidden and not c.secret]
         buf = io.StringIO()
         writer = csv.writer(buf)
         writer.writerow([c.label or c.name for c in visible])
         for row in self._rows:
-            writer.writerow([_cell_text(row.get(c.name)) for c in visible])
+            writer.writerow(
+                [
+                    _reject_or_sanitize(_cell_text(row.get(c.name)), formula_policy="sanitize")
+                    for c in visible
+                ]
+            )
         return buf.getvalue()
 
     def render(self) -> NodeLike:

@@ -1,7 +1,7 @@
 """First-party live interaction sample (poll, stream, SSE, jobs, WS, preload).
 
-Learning-path proof for phase 0.10 FastAPI live surfaces. Polling remains the
-Supported fallback on every host; SSE/WS/preload here are FastAPI-flagship demos.
+Polling remains the Supported production fallback on every host. SSE / streaming /
+WebSocket / preload demos import from ``hedron.experimental``.
 """
 
 from __future__ import annotations
@@ -19,20 +19,22 @@ from hedron import (
     Hedron,
     InteractionResult,
     Link,
-    NavigationPreloadPolicy,
     Page,
     Poll,
     Stack,
     Text,
+    html,
+)
+from hedron.experimental import (
+    NavigationPreloadPolicy,
+    accept_page_session_channel,
     apply_preload_headers,
     evaluate_preload_request,
-    html,
     job_status_sse_response,
     sse_response,
     stream_tokens,
 )
 from hedron.jobs import enqueue_durable
-from hedron.websocket_channel import accept_page_session_channel
 from hedron_core.channel import PageSessionChannel
 from hedron_core.component import Component
 from hedron_core.jobs import InMemoryJobBackend, JobState, set_job_backend

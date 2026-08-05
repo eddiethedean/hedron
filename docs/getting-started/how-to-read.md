@@ -30,7 +30,7 @@ There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 | Audience | Where |
 |---|---|
 | Adopters | **Learn**, **Adopt**, **Build**, **Examples**, **Reference** (Components + API), and **Project** — maturity snapshot: [What's ready today](../guides/whats-ready.md) |
-| Maintainers / RFC authors | GitHub-only trees (`docs/rfcs/`, `docs/acceptance/`, `docs/STATUS.md`, `docs/RELEASE.md`, …) linked from [For maintainers](../guides/maintainers.md) — excluded from the public MkDocs site |
+| Maintainers / RFC authors | [For maintainers](../guides/maintainers.md) + GitHub-only trees (`docs/rfcs/`, `docs/acceptance/`, `docs/STATUS.md`, `docs/RELEASE.md`, …) |
 
 ## Template history (upgrade only)
 

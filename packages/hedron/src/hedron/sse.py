@@ -99,15 +99,16 @@ def job_status_sse_response(
     ``state`` / ``updated_at`` change. Stops when the job is terminal or missing.
 
     When the stored job has ``auth_subject`` / ``tenant_id`` set, the matching kwargs
-    must be provided and equal or the helper raises 403. Unscoped jobs (no scope on
-    the record) are never readable over HTTP. Missing jobs raise 404.
+    must be provided and equal or the helper raises 404 (same as missing) to avoid
+    job-id enumeration. Unscoped jobs (no scope on the record) are never readable
+    over HTTP. Missing jobs raise 404.
     """
     store = backend or get_job_backend()
     initial = store.get(job_id)
-    if initial is None:
+    if initial is None or not job_authorized_http(
+        initial, auth_subject=auth_subject, tenant_id=tenant_id
+    ):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
-    if not job_authorized_http(initial, auth_subject=auth_subject, tenant_id=tenant_id):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Job access forbidden")
 
     def _html(status_obj: JobStatus) -> str:
         if html_message is not None:

@@ -22,12 +22,14 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Pin `hedron` (and extras) in production; `0.x` may still take breaking changes under the
   [compatibility policy](../COMPATIBILITY.md).
 - Package maturity is **Beta** for the flagship and most adapters; charts remain **Alpha**.
-- No `1.0` phase is scheduled (D-038). Public APIs are catalogued as `beta` until promoted.
+- No `1.0` phase is scheduled (D-038). A **minimal `stable` API tier** is catalogued in
+  [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or `experimental`.
 
-## Honest gaps on 0.11
+## Honest gaps on 0.13
 
 - Full multi-engine adapter live browser matrix → owned `0.11.x` Deferred (`LIVE-011-BROWSER`)
 - Full multi-engine FastAPI live browser matrix / some Explorer live traces → owned `0.10.x` Deferred
+- Live transports remain **experimental**; polling is Supported — [What’s ready](whats-ready.md)
 
 Tracked follow-ups for host security, adapter DX, session helpers, and claim honesty are owned by
 phases **0.13+** (see the [issue ownership table](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-github-issue-ownership-013)

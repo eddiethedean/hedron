@@ -143,7 +143,7 @@ def test_job_status_sse_rejects_unscoped_jobs() -> None:
         job_status_sse_response(handle.job_id, backend=backend, auth_subject="alice")
         raise AssertionError("expected HTTPException")
     except HTTPException as exc:
-        assert exc.status_code == 403
+        assert exc.status_code == 404
 
 
 def test_job_status_sse_not_found() -> None:

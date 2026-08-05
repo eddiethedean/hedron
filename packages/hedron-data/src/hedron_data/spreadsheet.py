@@ -81,7 +81,13 @@ def export_rows_xlsx(
 </workbook>
 """,
         )
-        sheet_rows = [names] + [[str(row.get(name, "")) for name in names] for row in rows]
+        sheet_rows = [names] + [
+            [
+                _reject_or_sanitize(str(row.get(name, "")), formula_policy="sanitize")
+                for name in names
+            ]
+            for row in rows
+        ]
         row_xml = []
         for r_idx, values in enumerate(sheet_rows, start=1):
             cells = []
@@ -163,7 +169,9 @@ def export_rows_ods(
     }
 
     def cell_xml(value: object) -> str:
-        text = str(value if value is not None else "")
+        text = _reject_or_sanitize(
+            str(value if value is not None else ""), formula_policy="sanitize"
+        )
         esc = (
             text.replace("&", "&amp;")
             .replace("<", "&lt;")

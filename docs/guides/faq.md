@@ -90,9 +90,10 @@ See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), a
 
 Yes as **Beta** packages with a **Supported** adapter matrix (`hedron-flask`, `hedron-django`).
 Install them separately; they do not pull in FastAPI. Django apps must use Django `>=5.2,<6`.
-Django QuerySet DataSource and forms bridge are Supported in **0.11**. Official
-HTMX SSE is Supported on the FastAPI flagship in 0.10; polling remains the Supported
-fallback on all hosts. See [Compatibility](../COMPATIBILITY.md),
+Django QuerySet DataSource and forms bridge are Supported. FastAPI ships SSE/WebSocket
+helpers as **experimental**; on every host — including FastAPI — **polling** is the
+Supported production fallback for live status. See [What’s ready](whats-ready.md),
+[Compatibility](../COMPATIBILITY.md),
 [Flask — add to existing app](../getting-started/flask.md), and
 [Django — add to existing project](../getting-started/django.md).
 

@@ -105,7 +105,8 @@ def home() -> Page:
     )
 ```
 
-Prefer polling on Flask/Django when SSE is not Supported ([live interaction](live-interaction.md)).
+Prefer polling on every host — SSE helpers are **experimental**
+([What’s ready](whats-ready.md), [live interaction](live-interaction.md)).
 
 ## File upload / download
 

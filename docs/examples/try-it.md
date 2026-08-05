@@ -1,9 +1,16 @@
 # Try Hedron with Codespaces / Dev Container
 
-There is no hosted “try it without cloning” sandbox and **no single-command try-it**.
-The Supported evaluator paths are **GitHub Codespaces**, a local **Dev Container**,
-[`hedron new`](../getting-started/installation.md) on your machine, or a
-[single-file app](single-file.md) via `pip install`.
+**Fastest no-local-Python path:** open this repo in GitHub Codespaces (or a Dev Container),
+run the reference app, and log in with the demo credentials below.
+
+Prefer a machine install instead?
+[Get started](../getting-started/quickstart.md) (`hedron new`) or a
+[single-file app](single-file.md).
+
+!!! note "What this is not"
+
+    There is no hosted multi-tenant sandbox and no one-liner “try Hedron” without a
+    container or local install. Codespaces / Dev Container is the Supported remote path.
 
 ## Dev Container / Codespaces
 
@@ -19,7 +26,7 @@ uv run uvicorn app:app --app-dir examples/reference-app --host 0.0.0.0 --port 80
 
 3. Forward port **8000** and open the URL. Demo login: `admin` / `secret`.
 
-Live interaction sample:
+Live interaction sample (polling Supported; SSE/WS **experimental**):
 
 ```bash
 uv run uvicorn app:app --app-dir examples/live-interaction --host 0.0.0.0 --port 8000
@@ -28,15 +35,20 @@ uv run uvicorn app:app --app-dir examples/live-interaction --host 0.0.0.0 --port
 ## Local after clone
 
 ```bash
-uv sync && uv run uvicorn app:app --app-dir examples/reference-app --reload
+git clone https://github.com/eddiethedean/hedron.git
+cd hedron
+uv sync
+uv run uvicorn app:app --app-dir examples/reference-app --reload
 ```
 
-## Prefer not to clone?
+## Local without clone
 
 ```bash
-pip install "hedron>=0.13.0"
-python -m hedron new my-hedron-app   # or: hedron new …
-cd my-hedron-app && pip install -e .
+python -m venv .venv && source .venv/bin/activate
+python -m pip install "hedron>=0.13.0" "uvicorn[standard]"
+python -m hedron new my-hedron-app
+cd my-hedron-app
+python -m pip install -e .
 uvicorn app:app --reload
 ```
 

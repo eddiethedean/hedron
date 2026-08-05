@@ -35,14 +35,14 @@ python manage.py startapp demo
 
 Wire a Hedron view (example `demo/views.py` + `mysite/urls.py`). For system checks on
 forms/QuerySet helpers, add `hedron_django.apps.HedronDjangoConfig` to `INSTALLED_APPS`
-(required for full 0.11 Django depth; optional for a hello page):
+(required for Django forms / DataSource depth; optional for a hello page):
 
 ```python
 # mysite/settings.py (excerpt)
 INSTALLED_APPS = [
     # … django.contrib.* …
     "demo",
-    "hedron_django.apps.HedronDjangoConfig",  # recommended for 0.11 forms / DataSource
+    "hedron_django.apps.HedronDjangoConfig",  # recommended for forms / DataSource
 ]
 ```
 

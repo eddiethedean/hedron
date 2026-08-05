@@ -38,6 +38,8 @@ class ChatInput(Component[ChatInputProps]):
         name: str = "message",
         include_attachments: bool = False,
         csrf_token: str | None = None,
+        csrf_form_field: str = "csrf_token",
+        csrf_header_name: str = "X-CSRF-Token",
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -52,6 +54,8 @@ class ChatInput(Component[ChatInputProps]):
         self.name = name
         self.include_attachments = include_attachments
         self.csrf_token = csrf_token
+        self.csrf_form_field = csrf_form_field
+        self.csrf_header_name = csrf_header_name
 
     def render(self) -> NodeLike:
         import json
@@ -68,10 +72,16 @@ class ChatInput(Component[ChatInputProps]):
             attrs["hx-target"] = self.target
         attrs["hx-swap"] = self.swap
         if self.csrf_token:
-            attrs["hx-headers"] = json.dumps({"X-CSRF-Token": self.csrf_token})
+            attrs["hx-headers"] = json.dumps({self.csrf_header_name: self.csrf_token})
         kids: list[Any] = []
         if self.csrf_token:
-            kids.append(html.input(type="hidden", name="csrf_token", value=self.csrf_token))
+            kids.append(
+                html.input(
+                    type="hidden",
+                    name=self.csrf_form_field,
+                    value=self.csrf_token,
+                )
+            )
         kids.append(
             html.label(
                 "Message",

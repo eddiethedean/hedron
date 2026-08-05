@@ -4,9 +4,9 @@ Build and run a small Hedron application, then continue through HTMX and forms.
 
 ## Path
 
-1. [Install](installation.md) — clean venv, then `hedron>=0.13.0` (and uvicorn)
-2. [Build your first app](quickstart.md) — edit the scaffold (Path A) or paste Path B
-3. [HTMX interactions](../guides/htmx-interactions.md) — refresh a declared region in the browser
+1. [Build your first app](quickstart.md) — install + scaffold (or manual page) → Hello
+2. [Installation](installation.md) — extras, Flask/Django, common install problems
+3. [HTMX interactions](../guides/htmx-interactions.md) — refresh a declared region
 4. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
 5. [Learning path](learning-path.md) — continue toward data, auth, and deploy
 
@@ -20,15 +20,15 @@ Maturity labels (Beta / Supported / Deferred) are explained under
 need that vocabulary to install.
 
 <div class="hedron-grid">
-  <a class="hedron-card" href="installation/">
-    <span class="hedron-card__icon" aria-hidden="true">01</span>
-    <strong>1. Install</strong>
-    <p>Minimum flagship install, then optional extras when you need them.</p>
-  </a>
   <a class="hedron-card" href="quickstart/">
+    <span class="hedron-card__icon" aria-hidden="true">01</span>
+    <strong>1. First app</strong>
+    <p>Install, run the scaffold, edit a string, open the browser.</p>
+  </a>
+  <a class="hedron-card" href="installation/">
     <span class="hedron-card__icon" aria-hidden="true">02</span>
-    <strong>2. First app</strong>
-    <p>Run the scaffold (or a manual page), open the browser, and verify fragment rendering.</p>
+    <strong>2. Install details</strong>
+    <p>Extras, other hosts, and common install problems.</p>
   </a>
   <a class="hedron-card" href="../guides/htmx-interactions/">
     <span class="hedron-card__icon" aria-hidden="true">03</span>
@@ -56,4 +56,4 @@ need that vocabulary to install.
 
 No Node.js installation or frontend build tool is required.
 
-[Install Hedron :material-arrow-right:](installation.md){ .md-button .md-button--primary }
+[Get started :material-arrow-right:](quickstart.md){ .md-button .md-button--primary }

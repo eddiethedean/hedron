@@ -158,7 +158,7 @@ def test_job_sse_authz_mismatch() -> None:
 
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.get("/sse")
-    assert response.status_code == 403
+    assert response.status_code == 404
     status = backend.get(handle.job_id)
     assert status is not None
     assert status.state is JobState.QUEUED

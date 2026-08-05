@@ -44,6 +44,9 @@ class DaskDataSource(Generic[T]):
         schema: Sequence[ColumnSchema] = (),
         to_row: Callable[[Mapping[str, object]], T] | None = None,
         max_compute_rows: int = 500,
+        allowlisted_sort_fields: frozenset[str] | None = None,
+        allowlisted_filter_fields: frozenset[str] | None = None,
+        allowlisted_projection_fields: frozenset[str] | None = None,
     ) -> None:
         require_dask()
         self._frame = frame
@@ -54,18 +57,54 @@ class DaskDataSource(Generic[T]):
 
         self._to_row = to_row or _default_row
         self._max_compute_rows = max_compute_rows
+        # Deny-by-default: omitted allowlists become empty frozensets.
+        self._sort_allow = (
+            frozenset() if allowlisted_sort_fields is None else frozenset(allowlisted_sort_fields)
+        )
+        self._filter_allow = (
+            frozenset()
+            if allowlisted_filter_fields is None
+            else frozenset(allowlisted_filter_fields)
+        )
+        self._projection_allow = (
+            frozenset()
+            if allowlisted_projection_fields is None
+            else frozenset(allowlisted_projection_fields)
+        )
 
     def plan_for(self, query: DataQuery) -> TransformPlan:
         return plan_from_query(query, max_rows=self._max_compute_rows)
 
     def fetch(self, query: DataQuery) -> DataPage[T]:
-        q = query.validated(max_page_size=self._max_compute_rows)
+        q = DataQuery(
+            offset=query.offset,
+            limit=query.limit,
+            cursor=query.cursor,
+            sort=query.sort,
+            filters=query.filters,
+            projection=query.projection,
+            search=query.search,
+            locale=query.locale,
+            allowlisted_sort_fields=self._sort_allow,
+            allowlisted_filter_fields=self._filter_allow,
+            allowlisted_projection_fields=self._projection_allow,
+        ).validated(max_page_size=self._max_compute_rows)
         if q.limit > self._max_compute_rows:
             raise error(
                 "HED-DATA-0051",
                 title="Dask page exceeds compute budget",
                 explanation=f"limit {q.limit} exceeds max_compute_rows {self._max_compute_rows}.",
                 remediation="Lower page size or raise an explicit budget.",
+            )
+        if q.offset + q.limit > self._max_compute_rows:
+            raise error(
+                "HED-DATA-0051",
+                title="Dask page exceeds compute budget",
+                explanation=(
+                    f"offset+limit {q.offset + q.limit} exceeds "
+                    f"max_compute_rows {self._max_compute_rows}."
+                ),
+                remediation="Lower offset/page size or raise an explicit budget.",
             )
         frame = self._frame
         if q.sort:

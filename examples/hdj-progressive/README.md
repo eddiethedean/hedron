@@ -1,9 +1,17 @@
 # Progressive HDJ examples
 
-Install `hedron-jinja` (or `hedron[jinja]`) and run:
+From a Hedron monorepo checkout:
 
 ```bash
+uv sync
 uv run python examples/hdj-progressive/app.py
+```
+
+Outside the monorepo:
+
+```bash
+pip install "hedron[jinja]>=0.13.0"
+# then run app.py from this directory with PYTHONPATH set appropriately
 ```
 
 | Template | Lesson |

@@ -1,8 +1,11 @@
 # Live interaction sample
 
-First-party FastAPI demo for **polling**, **token streaming**, **SSE**, **Job SSE**,
-**WebSocket page channel**, and **navigation preload** (phase 0.10). Companion to the
-[live interaction guide](https://hedron.readthedocs.io/en/latest/guides/live-interaction/).
+First-party FastAPI demo for **polling** (Supported) plus **experimental** token
+streaming, SSE, Job SSE, WebSocket page channel, and navigation preload. Companion to
+the [live interaction guide](https://hedron.readthedocs.io/en/latest/guides/live-interaction/)
+and [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
+
+Import experimental helpers from `hedron.experimental` (as this sample does).
 
 ## Run
 
@@ -19,14 +22,14 @@ region streams tokens on load. Follow the on-page links for `/sse/ping`, Job SSE
 
 ## Scope
 
-| Surface | In this sample |
-|---|---|
-| `Poll` + fragment refresh | Yes (Supported on all hosts) |
-| `stream_tokens` / `TokenStream` | Yes (FastAPI flagship) |
-| `sse_response` / `SseEvent` | Yes (`/sse/ping`) |
-| Job SSE (`job_status_sse_response` + `InMemoryJobBackend`) | Yes (`/jobs/{id}/events`) |
-| WebSocket page/session channel | Yes (`/ws/page` accept path) |
-| Navigation preload | Yes (`/next`) |
+| Surface | In this sample | Maturity |
+|---|---|---|
+| `Poll` + fragment refresh | Yes | **Supported** on all hosts |
+| `stream_tokens` / `TokenStream` | Yes | **Experimental** (FastAPI) |
+| `sse_response` / `SseEvent` | Yes (`/sse/ping`) | **Experimental** (FastAPI) |
+| Job SSE (`job_status_sse_response`) | Yes (`/jobs/{id}/events`) | **Experimental** (FastAPI) |
+| WebSocket page/session channel | Yes (`/ws/page`) | **Experimental** (FastAPI) |
+| Navigation preload | Yes (`/next`) | **Experimental** (FastAPI) |
 
-Use Flask/Django polling patterns from the guide when you are not on FastAPI. Prefer
-polling behind load balancers until your own ops evidence covers SSE/WS backpressure.
+Prefer polling behind load balancers until your own ops evidence covers SSE/WS
+backpressure.

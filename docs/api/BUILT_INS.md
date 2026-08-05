@@ -13,7 +13,7 @@ clearly labelled in-browser simulation; production authorization, validation, pe
 and fragment rendering remain server responsibilities.
 
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 

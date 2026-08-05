@@ -1,7 +1,8 @@
 # Public stability classifications
 
-**Status:** Phase 0.13 advanced async/observability (**published** as `v0.13.0`); readiness track toward a future
-stable tier (D-038: no calendar `1.0` scheduled).
+**Status:** Phase 0.13 advanced async/observability (**published** as `v0.13.0`); a **minimal
+`stable` tier** is already listed below (D-038: no calendar `1.0` scheduled; package maturity
+remains Beta).
 **Version:** `0.13.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
@@ -21,10 +22,12 @@ unless a later phase explicitly promotes them.
 Package maturity classifiers (Beta/Alpha on PyPI) describe distribution readiness; the levels above
 describe **API/artifact** promises.
 
-## Minimal `stable` tier (0.11.1 readiness)
+## Minimal `stable` tier
 
-The following contracts are promoted to **`stable`** (compatibility-protected on the 0.x train).
-Everything else remains `beta` / `experimental` unless listed below.
+The following contracts are **`stable`** (compatibility-protected on the 0.x train).
+Everything else remains `beta` / `experimental` unless listed below. Package maturity on
+PyPI remains **Beta** — pin versions. Maturity SSOT for product claims:
+[What’s ready](../guides/whats-ready.md).
 
 | Symbol / contract | Package |
 |---|---|

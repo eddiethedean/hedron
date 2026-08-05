@@ -27,10 +27,18 @@ Live transports (SSE, focused streaming, page/session WebSocket, preload) are
 Supported fallback on every host. Chat/Dialog are beta. Full ops/backpressure evidence
 for live transports is still incomplete — see [What's ready](guides/whats-ready.md).
 Flask/Django ship Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
-DataSource in **0.11** with capability-labeled live helpers.
+DataSource (Supported) with capability-labeled live helpers (**experimental**; prefer
+polling).
 
 Historical phase baselines (0.7–0.10) and deprecation rules are below. Prefer this section
-when evaluating a new install.
+when evaluating a new install. Maturity Supported vs Experimental claims:
+[What’s ready](guides/whats-ready.md) — not the historical tables.
+
+!!! tip "Historical sections"
+
+    Phase 0.7–0.10 baselines below describe what each phase **introduced**. They are not
+    the current maturity SSOT. Live transports introduced in 0.10 are **experimental**
+    on the 0.13 train.
 
 ## Dependency pin conflicts
 
@@ -90,17 +98,24 @@ dependency floors above.
 
 ## Phase 0.10 compatibility baseline (historical)
 
-Phase 0.10 kept the numeric dependency floors above, kept optional HDJ authoring, and added
-Supported live-transport surfaces (SSE, focused streaming, page/session WebSocket, Dialog/Chat,
-media chunk contracts, navigation preload). Polling and ordinary HTTP remain Supported fallbacks.
+!!! warning "Historical — not current maturity SSOT"
 
-| Capability | Supported declaration |
+    Phase 0.10 **introduced** official SSE, focused streaming, page/session WebSocket,
+    Dialog/Chat, media chunk contracts, and navigation preload APIs. As of the **0.13**
+    train those live-transport APIs are classified **experimental**
+    (`hedron.experimental`); polling and ordinary HTTP remain the Supported production
+    path. Use [What’s ready](guides/whats-ready.md) for current claims — not this section.
+
+Phase 0.10 kept the numeric dependency floors above, kept optional HDJ authoring, and added
+the live-transport APIs listed below. Polling and ordinary HTTP remain Supported fallbacks.
+
+| Capability | Historical declaration (0.10 introduction) |
 |---|---|
 | HDJ / Jinja | Optional `hedron-jinja` / `hedron[jinja]` with Jinja2 `>=3.1,<4` and MarkupSafe as resolved by Jinja. Not imported by `hedron-core` or a default `hedron` install. |
 | HDJ source format | UTF-8 `.hdj` with a mandatory format-v1 TOML prologue; ordinary `.html`/`.jinja` stay outside the HDJ loader. |
 | HDN | Removed. Version 0.8 is the final HDN-capable line; no converter or compatibility runtime ships. |
 | Native adapter depth (as of 0.10) | FastAPI remained the flagship depth; Flask/Django kept their 0.7/0.8 routing slices until 0.11. |
-| Live HTMX / streaming | Official SSE and focused streaming are Supported (RFC-0032); polling remains the required fallback. PAGE responses inject pinned `htmx-ext-sse` and `htmx-ext-head-support`. |
+| Live HTMX / streaming | Phase 0.10 introduced official SSE and focused streaming APIs (RFC-0032). **Current train:** those APIs are **experimental**; polling remains the required Supported fallback. PAGE responses inject pinned `htmx-ext-sse` and `htmx-ext-head-support`. |
 
 ## Phase 0.9 compatibility baseline (historical)
 

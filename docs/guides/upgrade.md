@@ -61,8 +61,10 @@ components.
 |---|---|---|
 | Camera / microphone capture UI | D-045 | Remains phase **0.15**. |
 
-Official HTMX SSE live observation is **Supported in 0.10** on FastAPI (D-044); bounded polling remains the
-Supported fallback. Flask/Django ship capability-labeled live helpers in 0.11.
+FastAPI SSE / streaming / WebSocket / preload APIs ship as **experimental**
+(`hedron.experimental`); **polling** remains the Supported production fallback on every
+host (see [What’s ready](whats-ready.md)). Flask/Django ship capability-labeled live helpers
+with the same experimental classification.
 
 ## Experimental surfaces
 

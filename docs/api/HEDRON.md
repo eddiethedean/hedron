@@ -5,11 +5,11 @@ status: shipped
 # `Hedron`
 
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.11**)
+**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.13.0**)
 
 `Hedron` is the batteries-included FastAPI application. It preserves normal FastAPI
 behavior while installing Hedron route classes, response handling, lifespan composition,

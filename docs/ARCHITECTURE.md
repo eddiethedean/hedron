@@ -38,7 +38,8 @@ sequenceDiagram
 
 Adapters (`hedron_route` / `hedron_view`, `respond`, `interaction_response`) authorize
 fragment/OOB policy and merge validated HTMX headers, then call the same renderer. Host
-middleware owns sessions/CSRF/auth. Official HTMX SSE helpers are FastAPI-only in 0.10.
+middleware owns sessions/CSRF/auth. Official HTMX SSE helpers are FastAPI-only and
+**experimental** (`hedron.experimental`); polling is the Supported fallback.
 
 ## PAGE vs FRAGMENT
 

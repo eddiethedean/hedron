@@ -5,9 +5,8 @@ A suggested order from first page to production-minded apps. Start with
 
 ## 1. Hello page (~10 minutes)
 
-1. [Installation](installation.md)
-2. [Build your first app](quickstart.md) — stop when the browser shows the scaffold
-   (or manual) home page
+1. [Build your first app](quickstart.md)
+2. [Installation](installation.md) (extras / troubleshooting)
 
 That is the first success. Extend the **same** app in the next section; do not start a
 second project.
@@ -46,7 +45,7 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
    covers poll, token stream, SSE ping, Job SSE, WebSocket accept, and preload. Prefer
    polling until you have your own ops proof for SSE/WebSocket behind proxies
    (see [What's ready](../guides/whats-ready.md))
-3. [What's new in 0.11](../guides/whats-new-0.11.md)
+3. [What's new in 0.13](../guides/whats-new-0.13.md)
 
 ## 6. Harden and deploy
 

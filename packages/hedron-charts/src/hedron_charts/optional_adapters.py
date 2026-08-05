@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import json
+import re
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -287,11 +288,13 @@ class GraphVizAdapter:
     optional_package = "graphviz"
 
     def supports(self, value: object) -> bool:
-        return (
-            isinstance(value, str)
-            and ("digraph" in value or "graph" in value)
-            or ("graphviz" in type(value).__module__)
-        )
+        if "graphviz" in type(value).__module__:
+            return True
+        if not isinstance(value, str):
+            return False
+        stripped = value.lstrip()
+        # Require DOT keyword at token start — avoid matching "graph" mid-sentence.
+        return bool(re.match(r"(?:strict\s+)?(?:di)?graph\b", stripped, flags=re.IGNORECASE))
 
     def compile(
         self,
@@ -300,6 +303,8 @@ class GraphVizAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
+        from hedron_core.diagnostics import HedronError
+
         source = value if isinstance(value, str) else str(getattr(value, "source", value))
         ensure_limits(None, source, limits=limits)
         svg: str | None = None
@@ -311,6 +316,8 @@ class GraphVizAdapter:
             reject_active_svg(svg)
         except ImportError:
             svg = None
+        except HedronError:
+            raise
         except Exception:
             svg = None
         if svg is not None:

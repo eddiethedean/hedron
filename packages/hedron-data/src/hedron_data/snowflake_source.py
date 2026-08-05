@@ -177,6 +177,18 @@ class SnowflakeDataSource(Generic[T]):
 
     def fetch(self, query: DataQuery) -> DataPage[T]:
         q = query.validated(max_page_size=self._max_page_size)
+        if q.sort or q.filters or q.search or q.projection:
+            raise error(
+                "HED-DATA-0061",
+                title="Snowflake query refinements not supported",
+                explanation=(
+                    "SnowflakeDataSource.fetch currently applies LIMIT/OFFSET only; "
+                    "sort/filters/search/projection would be silently dropped."
+                ),
+                remediation=(
+                    "Push refinements into the SELECT statement or wait for pushdown support."
+                ),
+            )
         sql = f"SELECT * FROM ({self._statement}) AS hedron_src LIMIT %s OFFSET %s"
         conn = self._connection_factory()
         try:

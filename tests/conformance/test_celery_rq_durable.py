@@ -96,12 +96,24 @@ def test_celery_idempotency_across_workers() -> None:
 
 def test_rq_status_shared_across_workers() -> None:
     shared: Any = _SharedRedis()
-    a = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry={})
-    b = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry={})
+
+    def _demo(payload: dict[str, object]) -> None:
+        del payload
+
+    registry = {"demo.task": _demo}
+    a = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry=registry)
+    b = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry=registry)
     handle = a.submit("demo.task", {"n": 1}, auth_subject="u1")
     status = b.get(handle.job_id, auth_subject="u1")
     assert status is not None
     assert status.state is JobState.QUEUED
+
+
+def test_rq_unknown_job_type_raises() -> None:
+    shared: Any = _SharedRedis()
+    backend = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry={})
+    with pytest.raises(KeyError, match="Unknown RQ"):
+        backend.submit("demo.task", {"n": 1})
 
 
 def test_rq_requires_redis() -> None:

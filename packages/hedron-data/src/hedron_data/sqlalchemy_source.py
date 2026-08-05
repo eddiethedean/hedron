@@ -146,17 +146,29 @@ class SQLAlchemyDataSource(Generic[T]):
                 )
             if (
                 q.projection
+                and q.allowlisted_projection_fields is None
                 and q.allowlisted_filter_fields is None
-                and q.allowlisted_sort_fields is None
             ):
                 raise error(
                     "HED-DATA-0012",
                     title="SQLAlchemy projection requires an allowlist",
                     explanation="Deny-by-default: projection fields must be allowlisted.",
                     remediation=(
-                        "Set DataQuery.allowlisted_filter_fields or allowlisted_sort_fields."
+                        "Set DataQuery.allowlisted_projection_fields or allowlisted_filter_fields."
                     ),
                 )
+            if q.projection:
+                allowed = (
+                    q.allowlisted_projection_fields or q.allowlisted_filter_fields or frozenset()
+                )
+                for name in q.projection:
+                    if name not in allowed:
+                        raise error(
+                            "HED-DATA-0012",
+                            title="SQLAlchemy projection field not allowlisted",
+                            explanation=f"Projection field {name!r} is not allowlisted.",
+                            remediation="Add the field to allowlisted_projection_fields.",
+                        )
             if q.search and q.allowlisted_filter_fields is None:
                 raise error(
                     "HED-DATA-0012",

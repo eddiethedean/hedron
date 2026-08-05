@@ -16,13 +16,17 @@ uv run pytest -q
 
 **Docs-only changes:** `uv sync --group docs && uv run --group docs mkdocs serve`
 (or `./scripts/mkdocs.sh serve`). Strict builds: `uv run --group docs mkdocs build --strict`.
-You do not need Playwright or the full browser suite for markdown/typo PRs.
 
-**Optional browser suite:** install Playwright Chromium, then:
+You do **not** need to install Playwright locally for markdown/typo PRs, but CI still runs
+the **browser** (Chromium) and **evidence** jobs on every pull request — see the CI map.
+If those jobs fail for reasons unrelated to your docs change, ask a maintainer; do not
+skip CI.
+
+**Local browser suite (optional):** install Playwright Chromium, then:
 
 ```bash
 uv run playwright install chromium
-HEDRON_BROWSER=1 uv run pytest tests/browser -q
+HEDRON_BROWSER=1 uv run pytest -q -m browser
 ```
 
 Smoke the core renderer without the FastAPI flagship:
@@ -45,6 +49,14 @@ uv run python -c "from hedron_core import Page, Text, RenderMode, render; print(
 
 Prefer the narrowest suite that covers your change before opening a PR.
 
+### Good first contributions
+
+- Docs clarity / typos / broken links (no RFC)
+- Example README fixes and runnable-command corrections
+- Tests that close an existing issue without changing public contracts
+
+Issue labels and bite-sized tasks vary; prefer small PRs over RFC-scale first patches.
+
 ## PR workflow
 
 1. Fork (or branch from `main`), keep the diff focused.
@@ -54,12 +66,16 @@ Prefer the narrowest suite that covers your change before opening a PR.
 
 ### CI map (`.github/workflows/ci.yml`)
 
-| Job | What it runs | Required for most PRs? |
+| Job | What it runs | On pull requests? |
 |---|---|---|
-| `test` | `pytest` on Python 3.11–3.14 | Yes |
-| `quality` | ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, relative doc links, `mkdocs build --strict` | Yes |
-| `browser` | Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / dispatch | Only when you change browser markup/assets/HTMX behavior |
-| `evidence` | Supply-chain evidence bundle scripts | Release cuts / maintainer pushes |
+| `test` | `pytest` on Python 3.11–3.14 | **Yes** (every PR) |
+| `quality` | ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, relative doc links, `mkdocs build --strict` | **Yes** (every PR) |
+| `browser` | Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` | **Yes** (every PR; Chromium) |
+| `evidence` | Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_13.py` | **Yes** (every PR / push) |
+| `release` | Packaging rehearsal (`verify_pkg_13`) | After `evidence` succeeds |
+
+Local Playwright is still optional for docs-only work; CI browser/evidence are not optional
+gates today (no path filters).
 
 ### Bugs vs RFCs vs decisions
 

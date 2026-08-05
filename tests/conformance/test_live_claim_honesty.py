@@ -7,6 +7,7 @@ from pathlib import Path
 from hedron.experimental import __all__ as experimental_all
 from hedron.live_claims import (
     EXPERIMENTAL_LIVE_SURFACES,
+    FORBIDDEN_LIVE_SUPPORTED_PHRASES,
     LIVE_CLAIM_DOC_GLOBS,
     SUPPORTED_PRODUCTION_FALLBACK,
 )
@@ -28,14 +29,14 @@ def test_experimental_module_covers_live_surfaces() -> None:
 
 
 def test_docs_do_not_call_sse_unqualified_supported() -> None:
-    forbidden = [
-        "Official HTMX SSE observation is\n    **Supported**",
-        "SSE observation is **Supported**",
-    ]
     for rel in LIVE_CLAIM_DOC_GLOBS:
-        text = (ROOT / rel).read_text(encoding="utf-8")
-        for needle in forbidden:
-            assert needle not in text, f"{rel} still claims SSE Supported unqualified"
+        path = ROOT / rel
+        assert path.is_file(), f"missing live-claim doc: {rel}"
+        text = path.read_text(encoding="utf-8")
+        for needle in FORBIDDEN_LIVE_SUPPORTED_PHRASES:
+            assert needle not in text, (
+                f"{rel} still claims SSE/live Supported unqualified: {needle!r}"
+            )
         if rel.endswith("whats-ready.md") or rel.endswith("STABILITY.md"):
             assert "experimental" in text.lower()
             assert SUPPORTED_PRODUCTION_FALLBACK in text.lower() or "polling" in text.lower()

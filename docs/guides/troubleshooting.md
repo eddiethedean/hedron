@@ -123,17 +123,18 @@ with auth in rare cases; keep production off.
 **Cause:** An old CLI wrote `hedron>=0.4.0` (or another pre-0.11 floor).
 
 **Fix:** Edit `pyproject.toml` to `hedron>=0.13.0` and `uvicorn[standard]>=0.30`, then
-reinstall. Current `hedron new` scaffolds the **0.11** floor automatically.
+reinstall. Current `hedron new` scaffolds `hedron>=0.13.0` automatically.
 
 ## SSE / WebSocket / preload not working
 
 **Cause:** Using Flask/Django expecting FastAPI live helpers; proxy buffering SSE; preload
-left disabled; Origin rejected.
+left disabled; Origin rejected; treating experimental live APIs as production-required.
 
 **Fix:** Live helpers (`job_status_sse_response`, `accept_page_session_channel`,
-`NavigationPreloadPolicy`) are FastAPI-flagship Supported surfaces—use polling on adapters.
-Disable response buffering for `text/event-stream`. Enable preload only with an explicit
-`NavigationPreloadPolicy(enabled=True)`. See [live interaction](live-interaction.md).
+`NavigationPreloadPolicy`) are FastAPI **experimental** surfaces
+(`hedron.experimental`) — prefer [polling](live-interaction.md) on every host, including
+FastAPI. Disable response buffering for `text/event-stream`. Enable preload only with an
+explicit `NavigationPreloadPolicy(enabled=True)`. Maturity SSOT: [What’s ready](whats-ready.md).
 
 ## Production startup: missing manifest (`HED-BUILD-0003`)
 

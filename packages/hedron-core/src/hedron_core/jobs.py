@@ -482,7 +482,10 @@ class RedisJobBackend:
             except Exception as exc:
                 if watch_error is not None and isinstance(exc, watch_error):
                     continue
-                # Client without proper WATCH support — fall back.
+                # Real Redis WATCH path: do not blind-overwrite on unexpected errors.
+                if watch_error is not None:
+                    raise
+                # Client without proper WATCH support — fall back once.
                 latest = self._load(str(data["job_id"]))
                 merged = dict(data)
                 if latest is not None and latest.get("cancel_requested"):
@@ -668,49 +671,31 @@ class RedisJobBackend:
         result: object = None,
         error: str | None = None,
     ) -> JobStatus | None:
-        data = self._load(job_id)
-        if data is None:
-            return None
-        status = _status_from_dict(data)
-        cancel_requested = status.cancel_requested
-        if cancel_requested and state == JobState.RUNNING:
-            state = JobState.CANCELLED
-        # Refuse to clear a cancel request via a non-cancel terminal overwrite from a
-        # stale worker snapshot — keep cancel_requested sticky.
-        updated = JobStatus(
-            job_id=status.job_id,
-            state=state,
-            job_type=status.job_type,
-            tenant_id=status.tenant_id,
-            auth_subject=status.auth_subject,
-            result=result if result is not None else status.result,
-            error=error if error is not None else status.error,
-            retry_after=status.retry_after,
-            created_at=status.created_at,
-            updated_at=time.time(),
-            cancel_requested=cancel_requested,
-        )
-        raw_payload = data.get("payload")
-        payload: dict[str, JsonValue] = (
-            cast(dict[str, JsonValue], raw_payload) if isinstance(raw_payload, dict) else {}
-        )
-        stored = _status_to_dict(updated, payload=payload)
-        if isinstance(data.get("idempotency_key"), str):
-            stored["idempotency_key"] = str(data["idempotency_key"])
-        if isinstance(data.get("idempotency_scope_key"), str):
-            stored["idempotency_scope_key"] = str(data["idempotency_scope_key"])
-        if not self._store_cas(stored, expected_updated_at=status.updated_at):
-            # Contended update — reload and retry once with merged cancel flag.
+        terminal = frozenset({JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED})
+        for _ in range(5):
             data = self._load(job_id)
             if data is None:
                 return None
             status = _status_from_dict(data)
-            cancel_requested = status.cancel_requested or cancel_requested
-            if cancel_requested and state == JobState.RUNNING:
-                state = JobState.CANCELLED
+            # Refuse transitions out of terminal states.
+            if status.state in terminal and state not in terminal:
+                return status
+            if (
+                status.state in terminal
+                and state in terminal
+                and state is not status.state
+                and not (status.cancel_requested and state is JobState.CANCELLED)
+            ):
+                return status
+            cancel_requested = status.cancel_requested
+            effective = state
+            if cancel_requested and effective == JobState.RUNNING:
+                effective = JobState.CANCELLED
+            # Refuse to clear a cancel request via a non-cancel terminal overwrite from a
+            # stale worker snapshot — keep cancel_requested sticky.
             updated = JobStatus(
                 job_id=status.job_id,
-                state=state,
+                state=effective,
                 job_type=status.job_type,
                 tenant_id=status.tenant_id,
                 auth_subject=status.auth_subject,
@@ -722,7 +707,7 @@ class RedisJobBackend:
                 cancel_requested=cancel_requested,
             )
             raw_payload = data.get("payload")
-            payload = (
+            payload: dict[str, JsonValue] = (
                 cast(dict[str, JsonValue], raw_payload) if isinstance(raw_payload, dict) else {}
             )
             stored = _status_to_dict(updated, payload=payload)
@@ -730,10 +715,12 @@ class RedisJobBackend:
                 stored["idempotency_key"] = str(data["idempotency_key"])
             if isinstance(data.get("idempotency_scope_key"), str):
                 stored["idempotency_scope_key"] = str(data["idempotency_scope_key"])
-            self._store(stored)
-            return _status_from_dict(stored)
-        final = self._load(job_id)
-        return _status_from_dict(final) if final is not None else updated
+            if self._store_cas(stored, expected_updated_at=status.updated_at):
+                final = self._load(job_id)
+                return _status_from_dict(final) if final is not None else updated
+        # Contended beyond retries — return latest known status without blind overwrite.
+        data = self._load(job_id)
+        return _status_from_dict(data) if data is not None else None
 
 
 _backend: JobBackend = InMemoryJobBackend()

@@ -5,7 +5,7 @@ status: implemented
 # Framework adapter contracts
 
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
     Package maturity (Beta/Alpha) is separate from API level
@@ -13,7 +13,7 @@ status: implemented
 
 **Status:** Beta Supported adapters shipped (`hedron-flask`, `hedron-django`).
 Portable contracts live in `hedron-core`. Flask `init_app` / `HedronBlueprint` and
-Django forms + QuerySet DataSource are Supported in **0.11** (D-046).
+Django forms + QuerySet DataSource are Supported (D-046; current train **0.13.0**).
 
 ## Install
 

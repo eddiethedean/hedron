@@ -51,8 +51,15 @@ class CeleryJobBackend:
             tenant_id=tenant_id,
             auth_subject=auth_subject,
         )
-        with contextlib.suppress(Exception):
+        try:
             self._app.send_task(job_type, args=[dict(payload)], task_id=handle.job_id)
+        except Exception:
+            self._store.mark(
+                handle.job_id,
+                JobState.FAILED,
+                error="Celery enqueue failed",
+            )
+            raise
         return handle
 
     def get(

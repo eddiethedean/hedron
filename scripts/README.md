@@ -26,6 +26,7 @@ scripts here when you add them.
 | `release_notes.py` | Release notes helper |
 | `check_stability_inventory.py` | Stability catalog checks |
 | `check_hdn_removed.py` | Guard against HDN resurfacing |
+| Live-claim honesty | `tests/conformance/test_live_claim_honesty.py` (phrases in `hedron.live_claims`) |
 
 Release-only scripts are **not** required for ordinary docs or bugfix PRs. See
 [RELEASE.md](../docs/RELEASE.md) and [CONTRIBUTING.md](../docs/CONTRIBUTING.md).

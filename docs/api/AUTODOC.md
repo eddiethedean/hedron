@@ -331,6 +331,54 @@ Signatures for `hedron-flask` and `hedron-django` public exports. Narrative matr
     options:
       heading_level: 3
 
+## Prepare lifecycle (0.13)
+
+::: hedron_core.prepare.PrepareContext
+    options:
+      heading_level: 3
+
+::: hedron_core.prepare.PartialFailurePolicy
+    options:
+      heading_level: 3
+
+## Security audit (0.13)
+
+::: hedron_core.audit.SecurityAuditEvent
+    options:
+      heading_level: 3
+
+::: hedron_core.audit.set_security_audit_sink
+    options:
+      heading_level: 3
+
+::: hedron_core.audit.emit_security_audit
+    options:
+      heading_level: 3
+
+## Tracing (0.13)
+
+::: hedron.tracing.configure_tracing
+    options:
+      heading_level: 3
+
+::: hedron.tracing.span
+    options:
+      heading_level: 3
+
+## Async helpers
+
+::: hedron.async_utils.await_if_needed
+    options:
+      heading_level: 3
+
+::: hedron.async_utils.gather
+    options:
+      heading_level: 3
+
+::: hedron.async_utils.run_sync
+    options:
+      heading_level: 3
+
 ## Diagnostics
 
 ::: hedron_core.diagnostics.Diagnostic
@@ -340,6 +388,7 @@ Signatures for `hedron-flask` and `hedron-django` public exports. Narrative matr
 ## See also
 
 - [Hedron contract](HEDRON.md) · [Router](ROUTER.md) · [Interaction](INTERACTION.md)
+- [Prepare](PREPARE.md) · [Audit](AUDIT.md) · [Tracing](TRACING.md)
 - [Component](COMPONENT.md) · [Field](FIELD.md) · [SSE](SSE.md) · [Diagnostics](DIAGNOSTICS.md)
 - [CLI](CLI.md) · [Page](PAGE.md) · [Adapters](ADAPTERS.md) · [Public API coverage map](COVERAGE.md)
 - Component catalog (props/examples): [Components](../components/index.md)

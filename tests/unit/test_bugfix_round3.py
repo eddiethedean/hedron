@@ -221,7 +221,7 @@ def test_job_sse_missing_and_forbidden_http_status() -> None:
 
     with TestClient(app, raise_server_exceptions=False) as client:
         assert client.get("/missing").status_code == 404
-        assert client.get("/forbidden").status_code == 403
+        assert client.get("/forbidden").status_code == 404
 
 
 def test_job_status_poll_requires_auth() -> None:
@@ -230,8 +230,9 @@ def test_job_status_poll_requires_auth() -> None:
     status = backend.get(handle.job_id)
     assert status is not None
     assert job_authorized(status, auth_subject="alice", tenant_id="t1")
-    with pytest.raises(HTTPException):
+    with pytest.raises(HTTPException) as denied:
         job_status_response(status, auth_subject="bob", tenant_id="t1")
+    assert denied.value.status_code == 404
     response = job_status_response(status, auth_subject="alice", tenant_id="t1")
     assert response.status_code == 202
 
@@ -243,7 +244,7 @@ def test_job_status_poll_rejects_unscoped_jobs() -> None:
     assert status is not None
     with pytest.raises(HTTPException) as exc:
         job_status_response(status, auth_subject="alice")
-    assert exc.value.status_code == 403
+    assert exc.value.status_code == 404
 
 
 def test_interaction_private_cache_emits_vary() -> None:

@@ -56,7 +56,8 @@ also run `uv init` into the same directory unless you intend to replace the scaf
 If `hedron` is not found after install, prefer **`python -m hedron …`** (same interpreter
 as `pip`) or see [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
 
-**Next:** [Build your first app](quickstart.md) — edit the scaffold (do not re-run install).
+**Next:** [Build your first app](quickstart.md) — same install commands plus edit the
+scaffold (or a manual `app.py`). This page stays the extras / troubleshooting hub.
 
 ## Verify
 
@@ -92,9 +93,11 @@ Full list: [Troubleshooting](../guides/troubleshooting.md) · [FAQ](../guides/fa
 
 !!! tip "If install fails on FastAPI/Pydantic"
 
-    Hedron pins FastAPI `>=0.141.1,<0.142` and Pydantic `>=2.13.4,<2.14`. Prefer a **clean
-    venv** for your first app. Existing apps: see
-    [Dependency pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts).
+    **Supported (CI-tested) matrix:** FastAPI `>=0.141.1,<0.142` and Pydantic
+    `>=2.13.4,<2.14`. Package metadata declares a **wider** range (FastAPI `<0.150`,
+    Pydantic `<2.15`) — versions outside the Supported column may install but are
+    unsupported until evidence is green. Prefer a **clean venv** for your first app.
+    Existing apps: [Dependency pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts).
 
 ## Optional extras
 

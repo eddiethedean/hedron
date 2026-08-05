@@ -561,10 +561,13 @@ def inferred_capabilities(parsed: ParsedHdjSource) -> frozenset[str]:
 
 
 def generic_safety_escape_diagnostics(parsed: ParsedHdjSource) -> tuple[Diagnostic, ...]:
-    """Reject ``|safe`` and ``{% autoescape false %}`` in every HDJ mode."""
+    """Reject ``|safe`` and ``{% autoescape false|off %}`` in every HDJ mode."""
     original_body = parsed.body
     body = _mask_raw_expressions(_mask_jinja_comments(original_body))
-    unsafe_escape = re.search(r"\|\s*safe\b|{%[-+]?\s*autoescape\s+false\b", body)
+    unsafe_escape = re.search(
+        r"\|\s*safe\b|{%[-+]?\s*autoescape\s+(?:false|off)\b",
+        body,
+    )
     if unsafe_escape is None:
         return ()
     return (

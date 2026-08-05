@@ -175,6 +175,18 @@ class HedronFlask:
     def auth_signal(self, request: Request | None = None) -> AuthSignal:
         del request  # Flask session is the request-local proxy.
         user_id = flask_session.get("user_id")
+        if user_id is None:
+            user_id = flask_session.get("_user_id")
+        if user_id is None:
+            try:
+                from flask_login import current_user  # type: ignore[import-not-found]
+
+                if getattr(current_user, "is_authenticated", False):
+                    user_id = getattr(current_user, "get_id", lambda: None)()
+                    if user_id is None:
+                        user_id = getattr(current_user, "id", True)
+            except Exception:
+                pass
         authenticated = bool(user_id)
         scopes_raw = flask_session.get("scopes", ())
         scopes = tuple(scopes_raw) if isinstance(scopes_raw, (list, tuple)) else ()

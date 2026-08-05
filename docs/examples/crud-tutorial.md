@@ -10,13 +10,16 @@ reference application (auth, charts, extras), see the
 - [Minimal form](../guides/minimal-form.md) (CSRF basics)
 - [Mutations](../guides/mutations.md) (`@component` POST vs `@action`)
 
-## Scaffold
+## Scaffold (intentional Path C)
+
+This tutorial **replaces** the generated `app.py` with a complete notes app. That is
+deliberate — not the golden-path “edit the Hello string” flow.
 
 ```bash
-pip install "hedron>=0.13.0"
-hedron new crud-notes
+python -m pip install "hedron>=0.13.0" "uvicorn[standard]"
+python -m hedron new crud-notes
 cd crud-notes
-pip install -e .
+python -m pip install -e .
 ```
 
 Replace the generated `app.py` with the complete example below.
@@ -42,7 +45,7 @@ from hedron import (
     TextInput,
     html,
 )
-from hedron.security import csrf_token_for_request
+from hedron import csrf_token_for_request
 
 app = Hedron(
     title="CRUD notes",

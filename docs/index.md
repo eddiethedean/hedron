@@ -18,8 +18,8 @@ Build dashboards, admin tools, forms, and CRUD apps without a frontend build cha
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
-[Install Hedron](getting-started/installation.md){ .md-button .md-button--primary }
-[Build your first app](getting-started/quickstart.md){ .md-button }
+[Get started](getting-started/quickstart.md){ .md-button .md-button--primary }
+[Install details](getting-started/installation.md){ .md-button }
 [Try in Codespaces](examples/try-it.md){ .md-button }
 </div>
 

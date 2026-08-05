@@ -10,8 +10,8 @@ Demonstrates:
 - Typed create/update/delete actions with CSRF validation
 - HTMX fragment swaps and bundled HTMX 2.0.10
 - DataEditor, Auto, cache helpers, and ColorMode
-- Charts (`LineChart`), Markdown, typed `InteractionResult`, declared fragment regions,
-  and `/charts/*` interaction routes
+- Charts (`LineChart` via **Alpha** `hedron[charts]`), Markdown, typed `InteractionResult`,
+  declared fragment regions, and `/charts/*` interaction routes
 - Offline static rendering helpers
 
 ## Run (local)

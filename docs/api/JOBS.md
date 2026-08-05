@@ -4,12 +4,13 @@ status: shipped
 
 # Job interaction contracts
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
-    Durable `JobBackend` shipped in 0.7; official SSE observation is Supported in **0.10**.
+    Durable `JobBackend` + **polling** are Supported. Job SSE helpers are **experimental**
+    (`hedron.experimental` / `job_status_sse_response`) — see [What’s ready](../guides/whats-ready.md).
 
-**Status:** Shipped (`JobBackend` + polling) · SSE observation Supported on FastAPI (0.10)
+**Status:** Shipped (`JobBackend` + polling) · Job SSE **experimental** on FastAPI
 
 `JobBackend` is a protocol over application-operated durable work. Hedron does not ship a
 queue, worker fleet, scheduler, result database, or retry service.

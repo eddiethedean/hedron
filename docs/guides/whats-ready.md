@@ -5,6 +5,15 @@ do not treat parallel summaries as a second source of truth. Maintainer evidence
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
+!!! tip "New here?"
+
+    For a FastAPI CRUD / admin spike: typed pages, HTMX fragments, CSRF profiles, and
+    polling are **Supported** on Beta packages — start with
+    [Installation](../getting-started/installation.md). SSE/WebSocket live updates are
+    **experimental**; prefer polling in production. Charts are **Alpha**. There is no
+    commercial SLA and no scheduled 1.0. Evaluators: skim the table below, then
+    [Evaluate Hedron](evaluate.md).
+
 ## How to read this page
 
 Hedron **0.13.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
@@ -22,6 +31,7 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
     SSE, focused streaming, WebSocket channels, and navigation preload are
     **experimental** (`hedron.experimental`). Prefer [polling](live-interaction.md) in
     production until ops gates (`PERF-10-001`, browser live matrices) close.
+    **This page is the only maturity SSOT** for Supported vs Experimental claims.
 
 ## Supported capabilities (Beta packages)
 
@@ -54,14 +64,15 @@ Pin package versions in production. “Supported” does not mean a commercial S
 guaranteed multi-worker live-transport proof — see
 [STATUS](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) Deferred rows.
 
-## Supported examples
+## Runnable examples
 
-- Live interaction sample (poll + token stream + SSE + Job SSE + WebSocket accept +
-  preload):
+- FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
+  (Supported host slices).
+- Live interaction sample (poll + **experimental** token stream / SSE / Job SSE /
+  WebSocket / preload demos):
   [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction).
   Prefer polling behind load balancers until your own ops evidence covers SSE/WS
   backpressure ([live interaction guide](live-interaction.md)).
-- FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
 
 ## Treat as Alpha / more volatile
 

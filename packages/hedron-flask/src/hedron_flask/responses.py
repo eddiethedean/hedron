@@ -16,6 +16,7 @@ from hedron_core.interaction import (
     authorize_htmx_target,
     materialize_interaction_nodes,
     merge_interaction_headers,
+    select_htmx_auth_target,
 )
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 from hedron_flask.htmx import render_mode_for_request
@@ -73,7 +74,8 @@ def _merge_vary(headers: dict[str, str]) -> None:
 
 def _apply_auth_cache_headers(headers: dict[str, str], *, authenticated: bool) -> None:
     if authenticated:
-        headers.setdefault("Cache-Control", "private, no-store")
+        # Force private caching; never leave a caller-supplied public/shared directive.
+        headers["Cache-Control"] = "private, no-store"
 
 
 def component_response(
@@ -92,6 +94,7 @@ def component_response(
     _apply_auth_cache_headers(headers, authenticated=authenticated)
     if extra_headers:
         headers.update(extra_headers)
+        _apply_auth_cache_headers(headers, authenticated=authenticated)
     return Response(result.html, status=status_code, mimetype="text/html", headers=headers)
 
 
@@ -108,8 +111,9 @@ def interaction_response(
         headers_map if headers_map is not None else dict(flask_request.headers)
     )
     is_htmx = (_header_value(hdrs, "HX-Request") or "").lower() == "true"
-    target = result.region_id or _header_value(hdrs, "HX-Target")
+    client_target = _header_value(hdrs, "HX-Target")
     try:
+        target = select_htmx_auth_target(client_target=client_target, region_id=result.region_id)
         authorize_htmx_target(result.policy, target, is_htmx=is_htmx)
         node = materialize_interaction_nodes(result)
     except (FragmentRegionError, ValueError) as exc:
