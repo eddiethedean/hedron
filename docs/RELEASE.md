@@ -9,10 +9,10 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**Current train:** `v0.10.1` (packages `0.10.1`) — see
+**Current train:** `v0.11.0` (packages `0.11.0`) — see
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [What’s ready](guides/whats-ready.md).
-**Next cut:** `v0.11.0` (capability phase) or `v0.10.2` (patch).
+**Next cut:** `v0.12.0` (capability phase) or `v0.11.x` (patch).
 
 Executed `v0.10.1` checklist:
 [`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md)
@@ -77,16 +77,19 @@ git push origin v0.10.2
 - Keep root `STATUS.md` / `ROADMAP.md` mirrors synced:
   `uv run python scripts/sync_status_roadmap.py`.
 
-## Next phase cut: `v0.11.0` (native Flask/Django depth)
+## Published phase cut: `v0.11.0` (native Flask/Django depth)
 
-### Preconditions
+Published train — do not retag. Preconditions and cut steps below are historical for the
+`v0.11.0` cut; **next capability cut is `v0.12.0`**.
+
+### Preconditions (historical)
 
 1. `main` is green on CI for Python 3.11–3.14 (including MkDocs `--strict`).
 2. Package version, `__version__`, and changelog entries agree:
    `uv run python scripts/check_release_gate.py 0.11.0` (use `--allow-planned` only
    during development).
 3. Phase acceptance / gate file for 0.11 is checked (`Verified` or owned `Deferred`):
-   see `docs/acceptance/` and
+   see `docs/acceptance/release-gate-0.11.toml` and
    [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 4. **License (D-033):** root `LICENSE` and every publishable package declare license
    metadata.
@@ -94,7 +97,7 @@ git push origin v0.10.2
 6. Stability catalog, compatibility notes, upgrade guide, and adopter docs match the
    claimed surface (Supported vs Deferred language aligned).
 
-### Cut steps
+### Cut steps (historical)
 
 1. Synchronize package versions and per-package `CHANGELOG.md` sections on the release
    branch; update the train [Release notes](guides/release-notes.md) page.
@@ -120,7 +123,12 @@ git push origin v0.11.0
 - Smoke: install from PyPI, render a page, optionally `hedron build` on the reference app.
 - Record any new Deferred rows honestly on [What’s ready](guides/whats-ready.md).
 
+## Next phase cut: `v0.12.0` (data and visualization scale)
+
+Follow the same coordinated-train procedure with `check_release_gate.py 0.12.0` once
+`docs/acceptance/release-gate-0.12.toml` exists.
+
 ## Scripts (maintainer)
 
 See [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md) for `check_release_gate.py`,
-`rehearse_release.py`, `verify_pkg_10.py`, and evidence helpers.
+`rehearse_release.py`, `verify_pkg_11.py`, and evidence helpers.

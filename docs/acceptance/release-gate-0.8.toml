@@ -172,7 +172,7 @@ command = ""
 ci_job = ""
 owner = "hedron"
 rationale = "Django QuerySet as a first-party DataSource remains Deferred (D-036)."
-destination = "phase 0.9 QuerySet data-source gate"
+destination = "phase 0.11 QuerySet data-source gate (D-046)"
 stability_impact = "No Supported QuerySet paging/security claim in the 0.8 baseline."
 
 [[evidence]]
@@ -182,7 +182,7 @@ command = ""
 ci_job = ""
 owner = "hedron"
 rationale = "Hedron does not ship a verified Django forms subsystem; apps may use Django-native forms."
-destination = "phase 0.9 Django forms bridge decision"
+destination = "phase 0.11 Django forms bridge (ADP-DJG-004)"
 stability_impact = "django_forms capability remains unsupported in the capability matrix."
 
 [[evidence]]

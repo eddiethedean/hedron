@@ -5,9 +5,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-import django
 import pytest
-from django.conf import settings
 from django.test import Client
 
 from hedron_core.rendering import RenderMode
@@ -17,27 +15,6 @@ from hedron_django.htmx import render_mode_for_request
 ROOT = Path(__file__).resolve().parents[3]
 DJANGO_SRC = ROOT / "packages" / "hedron-django" / "src" / "hedron_django"
 FORBIDDEN = frozenset({"fastapi", "starlette", "hedron"})
-
-
-@pytest.fixture(scope="module")
-def django_client() -> Client:
-    if not settings.configured:
-        settings.configure(
-            DEBUG=True,
-            SECRET_KEY="test-secret",
-            ROOT_URLCONF="tests.adapters.django.urls",
-            ALLOWED_HOSTS=["testserver"],
-            MIDDLEWARE=[
-                "django.middleware.security.SecurityMiddleware",
-                "django.contrib.sessions.middleware.SessionMiddleware",
-                "django.middleware.common.CommonMiddleware",
-                "django.middleware.csrf.CsrfViewMiddleware",
-            ],
-            INSTALLED_APPS=[],
-            USE_TZ=True,
-        )
-    django.setup()
-    return Client()
 
 
 def test_page_render(django_client: Client) -> None:
@@ -123,13 +100,15 @@ def test_render_mode_for_request() -> None:
     assert render_mode_for_request({"HX-Request": "true"}) is RenderMode.FRAGMENT
 
 
-def test_queryset_datasource_deferred() -> None:
+def test_queryset_datasource_supported() -> None:
     from hedron_django.app import QUERYSET_DATASOURCE_DEFERRED
 
-    assert QUERYSET_DATASOURCE_DEFERRED is True
+    assert QUERYSET_DATASOURCE_DEFERRED is False
     caps = HedronDjango().capabilities
     qs = next(c for c in caps.capabilities if c.name == "queryset_datasource")
-    assert qs.supported is False
+    assert qs.supported is True
+    forms = next(c for c in caps.capabilities if c.name == "django_forms")
+    assert forms.supported is True
 
 
 def test_no_fastapi_imports_in_source() -> None:

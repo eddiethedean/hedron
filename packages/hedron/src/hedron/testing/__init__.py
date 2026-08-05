@@ -19,7 +19,35 @@ __all__ = [
     "normalize_snapshot_html",
     "override_dependencies",
     "render_html",
+    # Portable adapter harness (0.11)
+    "AdapterAppFixture",
+    "AdapterResponse",
+    "assert_fragment_body",
+    "assert_html_contains",
+    "assert_htmx_trigger",
+    "assert_page_document",
+    "django_fixture",
+    "fastapi_fixture",
+    "flask_fixture",
 ]
+
+
+def __getattr__(name: str) -> Any:
+    if name in {
+        "AdapterAppFixture",
+        "AdapterResponse",
+        "assert_fragment_body",
+        "assert_html_contains",
+        "assert_htmx_trigger",
+        "assert_page_document",
+        "django_fixture",
+        "fastapi_fixture",
+        "flask_fixture",
+    }:
+        from hedron.testing import adapters as _adapters
+
+        return getattr(_adapters, name)
+    raise AttributeError(name)
 
 
 def render_html(node: Any, *, mode: RenderMode = RenderMode.FRAGMENT) -> str:

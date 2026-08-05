@@ -17,8 +17,11 @@ def test_capability_matrix_labels_portable_and_host() -> None:
         assert CapabilityClass.PORTABLE in classes
     django = adapters["django"]
     forms = next(c for c in django.capabilities if c.name == "django_forms")
-    assert forms.supported is False
-    assert "forms" in forms.notes.lower()
+    assert forms.supported is True
+    qs = next(c for c in django.capabilities if c.name == "queryset_datasource")
+    assert qs.supported is True
+    flask = adapters["flask"]
+    assert any(c.name == "blueprint_init_app" and c.supported for c in flask.capabilities)
 
 
 def test_portable_interaction_headers_no_framework_types() -> None:

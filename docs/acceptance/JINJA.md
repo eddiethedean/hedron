@@ -108,18 +108,18 @@ Rows marked with a later phase are excluded from the 0.9 exit gate and owned her
 
 ## Hedron feature parity
 
-- [ ] **Phase 0.11:** Route/addressable reversal returns purpose-aware `SafeUrl` and never exposes a
+- [x] **Phase 0.11:** Route/addressable reversal returns purpose-aware `SafeUrl` and never exposes a
   route merely by referencing it from a template (native FastAPI/Flask/Django facades).
-- [ ] **Phase 0.11:** PAGE/FRAGMENT selection, history restoration, layouts, fragment regions, and
+- [x] **Phase 0.11:** PAGE/FRAGMENT selection, history restoration, layouts, fragment regions, and
   response adapters work identically across FastAPI, Flask, and Django.
-- [ ] **Phase 0.11:** Form models, typed validation errors, CSRF controls, unsafe actions, file
+- [x] **Phase 0.11:** Form models, typed validation errors, CSRF controls, unsafe actions, file
   uploads, and HTMX/non-HTMX error parity have representative fixtures.
-- [ ] **Phase 0.11:** Static page and conditional fragment assets, scoped-style symbols, theme
+- [x] **Phase 0.11:** Static page and conditional fragment assets, scoped-style symbols, theme
   variables, browser modules, and Web Components merge into the normal fingerprinted asset and CSP
   pipeline.
 - [x] Icons, content helpers, cache/job status, and utility components retain their contracts when
   invoked from HDJ. Data-table/editor/chart provider parity is **phase 0.12**.
-- [ ] **Phase 0.11:** Explorer displays template/Jinja/Hedron/HTMX graphs and redacted
+- [x] **Phase 0.11:** Explorer displays template/Jinja/Hedron/HTMX graphs and redacted
   trace/policy information.
 
 ## CSS and JavaScript
@@ -150,13 +150,13 @@ Rows marked with a later phase are excluded from the 0.9 exit gate and owned her
 
 ## HTMX response and extension surface
 
-- [ ] **Phase 0.11:** portable request facts include target, trigger/name, current URL, prompt, boost, and history
+- [x] **Phase 0.11:** portable request facts include target, trigger/name, current URL, prompt, boost, and history
   restore without exposing a raw framework request.
-- [ ] **Phase 0.11:** `InteractionResult` accepts HDJ render output without re-rendering or metadata loss and covers
+- [x] **Phase 0.11:** `InteractionResult` accepts HDJ render output without re-rendering or metadata loss and covers
   retarget/reselect/reswap, navigation, refresh, triggers, status, cache, OOB, and regions.
-- [ ] **Phase 0.11:** approved response headers and direct template OOB markup share the same authorization and
+- [x] **Phase 0.11:** approved response headers and direct template OOB markup share the same authorization and
   selector/URL validation path.
-- [ ] **Phase 0.11:** managed HTMX configuration reconciles eval/script processing/history/CSP
+- [x] **Phase 0.11:** managed HTMX configuration reconciles eval/script processing/history/CSP
   defaults with the format-v1 capability report.
 - [ ] **Phase 0.14:** core and community extensions require registered version/digest/CSP/load-order metadata;
   writing `hx-ext` alone never installs an extension.
@@ -169,9 +169,9 @@ Rows marked with a later phase are excluded from the 0.9 exit gate and owned her
 - [x] Format-v1 capability reports cover inline script/style, obvious HTMX eval, response script
   tags, purpose-specific literal/registered remote origins, and fragment head work. Integrity,
   extension, dynamic-dependency, and broader raw-context evidence belongs to **0.11/0.14**.
-- [ ] **Phase 0.11:** SecurityPolicy/CSP mismatches fail with a precise source span and never inject nonces,
+- [x] **Phase 0.11:** SecurityPolicy/CSP mismatches fail with a precise source span and never inject nonces,
   `unsafe-inline`, `unsafe-eval`, remote origins, or permissive HTMX settings silently.
-- [ ] **Phase 0.11:** CSRF, authorization, fragment-region, approved-header, cache, and route-exposure policies
+- [x] **Phase 0.11:** CSRF, authorization, fragment-region, approved-header, cache, and route-exposure policies
   remain authoritative under strict and unchecked template modes.
 - [x] Documentation states that templates are trusted application code and sandboxing is not a
   hostile-author product boundary.
@@ -181,9 +181,9 @@ Rows marked with a later phase are excluded from the 0.9 exit gate and owned her
 - [x] Static dependency depth, components, chunk-consumed output, metadata, and shared Hedron
   node/depth limits fail atomically. Exact loop/macro accounting is **phase 0.14** and async
   operation budgets are **phase 0.13**.
-- [ ] **Phase 0.11:** `hedron check`, `dev`, and `build` implement dependency/capability checking, incremental
+- [x] **Phase 0.11:** `hedron check`, `dev`, and `build` implement dependency/capability checking, incremental
   invalidation, and portable production inventory.
-- [ ] **Phase 0.11:** production rejects missing/stale/shadowed/incompatible templates, bindings, assets,
+- [x] **Phase 0.11:** production rejects missing/stale/shadowed/incompatible templates, bindings, assets,
   extensions, policies, and dynamic dependency bounds.
 - [x] Format-v1 diagnostics contain stable codes, explanations, remediations, and available source
   spans. Rich include/macro/attribute paths and portable formats are **phase 0.14**; Explorer wiring

@@ -1,0 +1,174 @@
+"""Django Form / ModelForm / formset bridge to Hedron components."""
+
+from __future__ import annotations
+
+from collections.abc import Mapping
+from typing import Any, Literal
+
+from django.forms import BaseForm, BaseFormSet, BoundField
+from django.middleware.csrf import get_token
+from django.utils.html import format_html
+
+from hedron_core import (
+    Alert,
+    Checkbox,
+    FormErrors,
+    FormField,
+    Select,
+    Stack,
+    TextArea,
+    TextInput,
+)
+from hedron_core.component import NodeLike
+from hedron_core.interaction import InteractionResult
+from hedron_core.security import TrustedHtml
+
+__all__ = [
+    "csrf_hidden_input",
+    "form_errors_node",
+    "form_fields",
+    "form_to_nodes",
+    "formset_to_nodes",
+    "validation_interaction",
+]
+
+_TextType = Literal["text", "email", "password", "search", "tel", "url"]
+
+
+def csrf_hidden_input(request: Any) -> TrustedHtml:
+    """Return a Django CSRF hidden input as trusted HTML for forms."""
+    token = get_token(request)
+    return TrustedHtml.reviewed(
+        str(
+            format_html(
+                '<input type="hidden" name="csrfmiddlewaretoken" value="{}">',
+                token,
+            )
+        ),
+        source="django.middleware.csrf",
+    )
+
+
+def _widget_kind(bound: BoundField) -> str:
+    widget = bound.field.widget
+    input_type = getattr(widget, "input_type", None)
+    if isinstance(input_type, str) and input_type:
+        return input_type
+    name = type(widget).__name__.lower()
+    if "textarea" in name:
+        return "textarea"
+    if "select" in name:
+        return "select"
+    if "checkbox" in name:
+        return "checkbox"
+    if "password" in name:
+        return "password"
+    if "email" in name:
+        return "email"
+    return "text"
+
+
+def _text_type(kind: str) -> _TextType:
+    if kind in {"email", "password", "search", "tel", "url"}:
+        return kind  # type: ignore[return-value]
+    return "text"
+
+
+def _choices(bound: BoundField) -> tuple[tuple[str, str], ...]:
+    field = bound.field
+    raw = getattr(field, "choices", None)
+    if raw is None:
+        return ()
+    return tuple((str(value), str(label)) for value, label in raw)
+
+
+def form_fields(form: BaseForm) -> list[NodeLike]:
+    """Render visible bound fields as Hedron form controls."""
+    nodes: list[NodeLike] = []
+    for bound in form:  # type: ignore[assignment]
+        if not isinstance(bound, BoundField):
+            continue
+        if bound.is_hidden:
+            nodes.append(TrustedHtml.reviewed(str(bound), source="django.forms.hidden"))
+            continue
+        name = bound.html_name
+        label = str(bound.label) if bound.label else bound.name
+        value = bound.value()
+        str_value = "" if value is None else str(value)
+        error = "; ".join(str(e) for e in bound.errors) or None
+        kind = _widget_kind(bound)
+        control: NodeLike
+        if kind == "textarea":
+            control = TextArea(name=name, value=str_value)
+        elif kind == "select":
+            control = Select(name=name, options=_choices(bound), value=str_value)
+        elif kind == "checkbox":
+            control = Checkbox(name=name, label=label, checked=bool(value))
+        else:
+            control = TextInput(name=name, value=str_value, type=_text_type(kind))
+        nodes.append(
+            FormField(
+                name=name,
+                label=label,
+                control=control,
+                error=error,
+                required=bool(getattr(bound.field, "required", False)),
+            )
+        )
+    return nodes
+
+
+def form_errors_node(form: BaseForm) -> NodeLike | None:
+    """Non-field errors as an accessible alert / FormErrors node."""
+    non_field = [str(e) for e in form.non_field_errors()]
+    if not non_field:
+        return None
+    return Stack(Alert("\n".join(non_field), tone="danger"), FormErrors(non_field))
+
+
+def form_to_nodes(
+    form: BaseForm,
+    *,
+    request: Any | None = None,
+    include_csrf: bool = True,
+) -> list[NodeLike]:
+    """Full form body: optional CSRF, non-field errors, then fields."""
+    nodes: list[NodeLike] = []
+    if include_csrf and request is not None:
+        nodes.append(csrf_hidden_input(request))
+    err = form_errors_node(form)
+    if err is not None:
+        nodes.append(err)
+    nodes.extend(form_fields(form))
+    return nodes
+
+
+def formset_to_nodes(
+    formset: BaseFormSet,
+    *,
+    request: Any | None = None,
+    include_csrf: bool = True,
+) -> list[NodeLike]:
+    """Render a formset management form + each form's fields."""
+    nodes: list[NodeLike] = []
+    if include_csrf and request is not None:
+        nodes.append(csrf_hidden_input(request))
+    nodes.append(TrustedHtml.reviewed(str(formset.management_form), source="django.forms.formset"))
+    if formset.non_form_errors():
+        nodes.append(Alert("\n".join(str(e) for e in formset.non_form_errors()), tone="danger"))
+    for form in formset:
+        nodes.append(Stack(*form_to_nodes(form, request=None, include_csrf=False)))
+    return nodes
+
+
+def validation_interaction(
+    form: BaseForm,
+    *,
+    request: Any | None = None,
+    explanation: str = "django form validation",
+    extra: Mapping[str, Any] | None = None,
+) -> InteractionResult:
+    """Build an InteractionResult for invalid forms (HTMX and non-HTMX parity)."""
+    del extra
+    content = Stack(*form_to_nodes(form, request=request))
+    return InteractionResult(content=content, explanation=explanation)

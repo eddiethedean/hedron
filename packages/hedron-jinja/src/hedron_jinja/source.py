@@ -79,12 +79,16 @@ EXPLICIT_FEATURES = frozenset(
         "jinja.do",
         "jinja.loop-controls",
         "jinja.async",
+        "jinja.dynamic-dependencies",
+        "jinja.foreign",
         "hedron.data",
         "hedron.charts",
     }
 )
 KNOWN_FEATURES = frozenset().union(*PROFILE_FEATURES.values()) | EXPLICIT_FEATURES
-DEFERRED_V1_FEATURES = frozenset({"jinja.dynamic-dependencies", "jinja.foreign"})
+# jinja.dynamic-dependencies and jinja.foreign are Supported in phase 0.11 (D-046).
+DEFERRED_V1_FEATURES: frozenset[str] = frozenset()
+
 
 BUILTIN_CAPABILITIES = frozenset(
     {

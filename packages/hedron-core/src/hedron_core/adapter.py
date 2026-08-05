@@ -120,6 +120,20 @@ FLASK_CAPABILITIES = CapabilityRecord(
         AdapterCapability("lifespan", CapabilityClass.WSGI, False, "ADP-FLK-002"),
         AdapterCapability("url_for", CapabilityClass.FRAMEWORK, True, "ADP-FLK-001"),
         AdapterCapability("cookie_sessions", CapabilityClass.FRAMEWORK, True, "ADP-FLK-001"),
+        AdapterCapability(
+            "blueprint_init_app",
+            CapabilityClass.FRAMEWORK,
+            True,
+            "ADP-FLK-011",
+            notes="HedronBlueprint and HedronFlask.init_app.",
+        ),
+        AdapterCapability(
+            "live_sse",
+            CapabilityClass.WSGI,
+            True,
+            "LIVE-011",
+            notes="Streaming SSE helper; WSGI buffering limitations are documented.",
+        ),
     ),
 )
 
@@ -135,19 +149,30 @@ DJANGO_CAPABILITIES = CapabilityRecord(
         AdapterCapability(
             "django_forms",
             CapabilityClass.FRAMEWORK,
-            False,
-            "ADP-DJG-001",
-            notes=(
-                "Apps may use Django-native forms; Hedron does not ship a verified "
-                "forms subsystem (deferred/experimental)."
-            ),
+            True,
+            "ADP-DJG-004",
+            notes="First-party Django forms bridge (widgets, CSRF helpers, error rendering).",
         ),
         AdapterCapability(
             "queryset_datasource",
             CapabilityClass.FRAMEWORK,
-            False,
+            True,
             "ADP-DJG-002",
-            notes="Deferred (D-036)",
+            notes="Bounded DjangoQuerySetDataSource (D-046).",
+        ),
+        AdapterCapability(
+            "appconfig",
+            CapabilityClass.FRAMEWORK,
+            True,
+            "ADP-DJG-011",
+            notes="HedronDjangoConfig and system checks.",
+        ),
+        AdapterCapability(
+            "live_sse",
+            CapabilityClass.FRAMEWORK,
+            True,
+            "LIVE-011",
+            notes="Capability-labeled SSE helper; polling remains Supported fallback.",
         ),
     ),
 )

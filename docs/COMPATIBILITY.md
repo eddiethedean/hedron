@@ -1,11 +1,11 @@
 # Compatibility policy
 
-**Status:** Accepted for the published **0.10.1** train  
+**Status:** Accepted for the published **0.11.0** train  
 **Reviewed:** 2026-08-04
 
 ## Current train (read this first)
 
-| Dependency | `v0.10.1` baseline | Notes |
+| Dependency | `v0.11.0` baseline | Notes |
 |---|---|---|
 | Python | CPython 3.11–3.14 | `requires-python = ">=3.11,<3.15"` |
 | FastAPI | `>=0.141.1,<0.142` | Required by `hedron` (not `hedron-core`) |
@@ -25,7 +25,7 @@ when evaluating a new install.
 
 ## Initial runtime ranges
 
-| Dependency | `v0.10.1` compatibility baseline | Policy |
+| Dependency | `v0.11.0` compatibility baseline | Policy |
 |---|---|---|
 | Python | CPython 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.11,<3.15"`; 3.15 prereleases are not supported. |
 | FastAPI | `>=0.141.1,<0.142` | Required by `hedron`, not `hedron-core`; expand only after adapter conformance. |
@@ -70,7 +70,7 @@ supported until its native conformance slice is green.
 | Capability | Supported declaration |
 |---|---|
 | Flask | Flask `>=3.0,<4`; Werkzeug `>=3.0,<4`; reference WSGI server **Waitress** `>=3.0,<4`. Sessions use Flask signed cookies (`SECRET_KEY`); CSRF uses the double-submit cookie pattern via `hedron-flask` (same token semantics as FastAPI adapter). |
-| Django | Django `>=5.2,<6` (5.2 LTS line); asgiref `>=3.8,<4`. Supported modes: **WSGI** (gunicorn sync workers) and **ASGI** (uvicorn/`Django` ASGI). Sessions and CSRF use Django middleware; forms/validation remain Django-native. QuerySet DataSource is **Deferred** (D-036). Unsupported Django 5.0/5.1 are outside the Supported floor. |
+| Django | Django `>=5.2,<6` (5.2 LTS line); asgiref `>=3.8,<4`. Supported modes: **WSGI** (gunicorn sync workers) and **ASGI** (uvicorn/`Django` ASGI). Sessions and CSRF use Django middleware; first-party forms bridge and bounded QuerySet DataSource are Supported (D-046). Unsupported Django 5.0/5.1 are outside the Supported floor. |
 | FastAPI operations | Uvicorn `>=0.30,<1` with `--workers` ≥ 2; proxy-forwarding via explicit `ProxyHeadersMiddleware` / trusted hosts only (fail closed when misconfigured). `root_path` and `X-Forwarded-Prefix` must match the reverse-proxy mount. |
 | External cache | **Redis** `>=7.0` server; client `redis` `>=5,<6`. Serialization: JSON UTF-8 with key version prefix `h1:`; failures raise and surface via readiness without caching poisoned values. Conformance uses `fakeredis` in unit CI and Redis in ops topology. |
 | Durable jobs | `JobBackend` protocol with **in-memory** test double and **Redis** conformance backend. Polling status retention default 24h; `Retry-After` from backend capability. BackgroundTasks remain non-durable. |
@@ -142,7 +142,7 @@ Authoritative classifications live in [api/STABILITY.md](api/STABILITY.md)
 | Django adapter | Django `>=5.2,<6`; asgiref `>=3.8,<4`; WSGI + ASGI |
 | Browsers | Chromium, Firefox, WebKit (Playwright) |
 | HTMX | Bundled 2.0.10; contract `>=2.0,<3.0` |
-| Deferred (0.8 historical) | SSE live transport (promoted in 0.10); Django QuerySet DataSource (still Deferred → 0.11) |
+| Deferred (0.8 historical) | SSE live transport (promoted in 0.10); Django QuerySet DataSource (promoted in 0.11 / D-046) |
 
 Changing a Supported row in a later capability phase requires an accepted compatibility update,
 migration analysis, and a complete rerun of affected baseline plus owning-phase evidence.
@@ -164,7 +164,7 @@ CPython default builds are normative. Free-threaded CPython and PyPy are informa
 
 ## Release evidence
 
-Compatibility claims for the **0.10.1** train require clean-install, package, FastAPI
+Compatibility claims for the **0.11.0** train require clean-install, package, FastAPI
 adapter, OpenAPI, security corpus, reference-application, and owning-phase live-transport
 suites. Changing a Supported row requires compatibility evidence and an updated decision
 or RFC.

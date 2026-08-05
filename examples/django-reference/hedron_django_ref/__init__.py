@@ -25,7 +25,11 @@ if not settings.configured:
         ],
         # Accept Hedron portable X-CSRF-Token (see docs/guides/security.md / upgrade.md).
         CSRF_HEADER_NAME="HTTP_X_CSRF_TOKEN",
-        INSTALLED_APPS=[],
+        INSTALLED_APPS=[
+            "django.contrib.contenttypes",
+            "django.contrib.sessions",
+            "hedron_django.apps.HedronDjangoConfig",
+        ],
         USE_TZ=True,
     )
 

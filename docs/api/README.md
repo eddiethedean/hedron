@@ -98,12 +98,12 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Deferred contracts
 
-**Accepted ≠ Supported.** These remain Deferred (D-036 / D-041 / D-045):
+**Accepted ≠ Supported.** These remain Deferred (D-045):
 
-- Django QuerySet as a first-party DataSource (0.11)
 - First-party camera/microphone capture UI (0.15)
 
-## Planned after 0.10
+## Published after 0.10
 
-- Native Flask/Django depth and HDJ route/CSRF/forms reconciliation — phase 0.11
+- Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory —
+  phase **0.11** (`v0.11.0`, D-046)
 - Capture UI — phase 0.15

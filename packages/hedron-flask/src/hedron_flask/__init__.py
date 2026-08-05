@@ -3,16 +3,22 @@
 from __future__ import annotations
 
 from hedron_flask.app import HedronFlask
+from hedron_flask.blueprint import HedronBlueprint
+from hedron_flask.live import POLLING_FALLBACK_SUPPORTED, sse_response, stream_text
 from hedron_flask.responses import component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser, hedron_route
 
-__version__ = "0.10.1"
+__version__ = "0.11.0"
 
 __all__ = [
     "FlaskUrlReverser",
+    "HedronBlueprint",
     "HedronFlask",
+    "POLLING_FALLBACK_SUPPORTED",
     "__version__",
     "component_response",
     "hedron_route",
     "interaction_response",
+    "sse_response",
+    "stream_text",
 ]

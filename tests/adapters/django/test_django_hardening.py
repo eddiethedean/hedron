@@ -173,4 +173,4 @@ def test_interaction_status_code(django_setup: Client) -> None:
 def test_queryset_still_deferred() -> None:
     from hedron_django.app import QUERYSET_DATASOURCE_DEFERRED
 
-    assert QUERYSET_DATASOURCE_DEFERRED is True
+    assert QUERYSET_DATASOURCE_DEFERRED is False

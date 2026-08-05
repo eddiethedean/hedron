@@ -145,6 +145,7 @@ def _shell(title: str, body: str, *, active: str = "components") -> str:
         ("charts", "Charts", "/hedron-explorer/charts"),
         ("auto", "Auto", "/hedron-explorer/auto"),
         ("packages", "Packages", "/hedron-explorer/packages"),
+        ("inventory", "Inventory", "/hedron-explorer/inventory"),
         ("settings", "Settings", "/hedron-explorer/settings"),
     ]
     links = "".join(
@@ -492,6 +493,22 @@ def explorer_router() -> APIRouter:
             f"<h2>Packages / plugin panels</h2><ul>{items or '<li>No plugin panels</li>'}</ul>",
             active="packages",
         )
+
+    @router.get("/inventory", response_class=HTMLResponse, include_in_schema=False)
+    async def inventory_view() -> str:
+        """Production / HDJ inventory panel (phase 0.11)."""
+        try:
+            from hedron_jinja import build_production_inventory
+
+            inv = build_production_inventory(
+                template_reports=(),
+                capabilities=("web.html", "jinja.core"),
+            )
+            payload = html_lib.escape(str(inv.as_dict()))
+        except Exception as exc:  # noqa: BLE001
+            payload = html_lib.escape(f"Inventory unavailable: {exc}")
+        body = f"<h2>Production inventory</h2><pre>{payload}</pre>"
+        return _shell("Inventory", body, active="inventory")
 
     @router.get("/settings", response_class=HTMLResponse, include_in_schema=False)
     async def settings_view(request: Request) -> str:

@@ -278,7 +278,7 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron>=0.10.1",
+    "hedron>=0.11.0",
     "uvicorn[standard]>=0.30",
 ]
 

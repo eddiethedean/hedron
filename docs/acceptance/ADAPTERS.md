@@ -25,10 +25,10 @@ follows [the release evidence policy](EVIDENCE.md).
 
 | ID | Requirement | Required evidence | State |
 |---|---|---|---|
-| ADP-DJG-001 | URL configuration, middleware, errors, reverse URLs, sessions, CSRF, and static assets remain Django-native. Apps may use Django-native forms; Hedron does **not** claim a verified forms/validation subsystem. | Native Django reference slice and conformance report. | Verified (forms: Deferred) |
-| ADP-DJG-002 | ASGI and WSGI capability differences are explicit; QuerySet data-source support is implemented or formally deferred. | Mode-specific matrix and owning data-source decision/test. | Deferred |
+| ADP-DJG-001 | URL configuration, middleware, errors, reverse URLs, sessions, CSRF, and static assets remain Django-native. Apps may use Django-native forms; Hedron claims a verified forms bridge under ADP-DJG-004 (phase 0.11). | Native Django reference slice and conformance report. | Verified |
+| ADP-DJG-002 | ASGI and WSGI capability differences are explicit; bounded QuerySet DataSource is Supported under D-046. | Mode-specific matrix and QuerySet evidence (`release-gate-0.11.toml`). | Verified (0.11) |
 | ADP-DJG-003 | Wheel/sdist install without FastAPI and include typing, licenses, and required assets. | Clean-install packaging jobs across the supported Python/platform matrix. | Verified |
-| ADP-DJG-004 | First-party Django forms bridge (widgets, CSRF field helpers, error rendering) | Not implemented in 0.8; apps own Django forms. | Deferred |
+| ADP-DJG-004 | First-party Django forms bridge (widgets, CSRF field helpers, error rendering) | Forms bridge evidence in `release-gate-0.11.toml`. | Verified (0.11) |
 
 ## Exit
 

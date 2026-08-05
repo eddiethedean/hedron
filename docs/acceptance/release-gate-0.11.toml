@@ -1,0 +1,81 @@
+# Phase 0.11 native framework depth evidence index.
+# Consumed by scripts/check_release_gate.py 0.11.0.
+
+[[evidence]]
+id = "ADP-FLK-011"
+state = "Verified"
+command = "python -m pytest -q tests/adapters/flask/test_blueprint_factory.py"
+ci_job = "test"
+owner = "hedron-flask"
+
+[[evidence]]
+id = "ADP-DJG-011"
+state = "Verified"
+command = "python -m pytest -q tests/adapters/django/test_appconfig.py"
+ci_job = "test"
+owner = "hedron-django"
+
+[[evidence]]
+id = "TEST-011"
+state = "Verified"
+command = "python -m pytest -q tests/conformance/test_adapter_harness.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "ADP-DJG-004"
+state = "Verified"
+command = "python -m pytest -q tests/adapters/django/test_forms_bridge.py"
+ci_job = "test"
+owner = "hedron-django"
+
+[[evidence]]
+id = "ADP-DJG-002"
+state = "Verified"
+command = "python -m pytest -q tests/adapters/django/test_queryset_datasource.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "HDJ-DEF-011"
+state = "Verified"
+command = "python -m pytest -q tests/jinja/test_hdj_0_11.py"
+ci_job = "test"
+owner = "hedron-jinja"
+
+[[evidence]]
+id = "JOB-011"
+state = "Verified"
+command = "python -m pytest -q tests/conformance/test_job_backends_celery_rq.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "LIVE-011"
+state = "Verified"
+command = "python -m pytest -q tests/adapters/flask/test_live_helpers.py tests/adapters/django/test_live_helpers.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-011"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-011"
+state = "Verified"
+command = "python scripts/verify_pkg_11.py"
+ci_job = "release"
+owner = "hedron"
+
+[[evidence]]
+id = "LIVE-011-BROWSER"
+state = "Deferred"
+destination = "0.11.x follow-up"
+command = "python -m pytest -q tests/browser -k live_adapter"
+ci_job = "browser"
+owner = "hedron"
+rationale = "Flask/Django live helpers ship with unit/capability evidence; full multi-engine browser matrix for adapter SSE remains owned on the 0.11.x patch train."

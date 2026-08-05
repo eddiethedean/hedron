@@ -458,11 +458,14 @@ measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
 - Load/backpressure tests demonstrate bounded resources, and performance evidence justifies each
   enabled transport or preload policy.
 
-## 0.11 — Native framework depth (`v0.11.0`)
+## 0.11 — Native framework depth (`v0.11.0`) — **published**
 
 **Outcome:** Flask and Django integrations feel native beyond their initial routing slices, and the
 first-party data boundary supports Django QuerySets without compromising bounded execution or
 framework-neutral core ownership.
+
+**Status:** Published as `v0.11.0` (2026-08-04). See [STATUS.md](STATUS.md) and
+[acceptance/RELEASE_0_11.md](acceptance/RELEASE_0_11.md).
 
 ### Entry gate
 

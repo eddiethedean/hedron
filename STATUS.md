@@ -2,18 +2,19 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.10 **published**; current patch train `v0.10.1` (packages `0.10.1`, 2026-08-04). Initial phase cut was `v0.10.0`.
+**Roadmap position:** phase 0.11 **published**; current train `v0.11.0` (packages `0.11.0`, 2026-08-04).
 **Date:** 2026-08-04
 **Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
-`hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` / `hedron-jinja` `0.10.1`
+`hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` / `hedron-jinja` `0.11.0`
 (MIT licensed, D-033)
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`; Alpha — `hedron-charts`, `hedron-sample-kit`.
 
-**Phase focus:** live interaction and navigation (RFC-0032 / D-044 / D-045): official HTMX SSE,
-focused streaming, page/session WebSocket channels, Chat/Dialog, media chunk transport contracts,
-HDJ head/two-phase streaming, and opt-in navigation preload. Polling and ordinary HTTP remain
-Supported fallbacks. Native Flask/Django depth remains assigned to **0.11**; capture UI to 0.15.
+**Phase focus:** native Flask/Django depth (D-046 / D-044): Blueprint/`init_app`, Django
+`AppConfig`, forms bridge, bounded QuerySet DataSource, portable adapter test harness, HDJ
+dynamic manifests / foreign namespaces / SecurityPolicy–CSP reconciliation, Celery/RQ
+`JobBackend` bridges, and capability-labeled Flask/Django live helpers (polling Supported
+fallback). Capture UI remains **0.15**.
 
 ## Supported vs Deferred (operator view)
 
@@ -23,30 +24,31 @@ capability as unqualified **Supported** when its owning gate row is **Deferred**
 
 | ID | Topic | Disposition | Notes |
 |---|---|---|---|
-| — | Typed pages, HTMX fragments, CSRF profiles, CLI | Verified (0.10 gate) | FastAPI flagship |
-| — | Live transport **APIs** (SSE, stream, WS helpers) | Verified API surface | FastAPI only |
+| — | Typed pages, HTMX fragments, CSRF profiles, CLI | Verified | FastAPI flagship |
+| — | Flask Blueprint / `init_app` | Verified (0.11) | `ADP-FLK-011` |
+| — | Django AppConfig / forms / QuerySet DataSource | Verified (0.11) | D-046 |
+| — | Portable adapter test harness | Verified (0.11) | `TEST-011` |
+| — | HDJ manifests / CSP inventory | Verified (0.11) | `HDJ-DEF-011` |
+| — | Celery/RQ JobBackend bridges | Verified (0.11) | optional extras |
+| — | Flask/Django live helpers | Verified API + labels | Polling Supported fallback |
+| `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | |
 | `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Beyond asset/HTMX smoke |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | |
-| `EXAMPLES-10-001` | First-party live sample | Verified learning path | [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) (poll + stream + SSE + Job SSE + WS + preload) |
-| — | Flask/Django adapter matrix | Supported routing/HTMX | QuerySet DataSource + Hedron Django forms → **0.11** |
-| — | Official HTMX SSE on Flask/Django | Deferred | Use polling |
 
-## Phase 0.10 evidence
+## Phase 0.11 evidence
 
-- Closure index: [release-gate-0.10.toml](docs/acceptance/release-gate-0.10.toml)
+- Closure index: [release-gate-0.11.toml](docs/acceptance/release-gate-0.11.toml)
   (`Verified` or owned `Deferred`).
-- Acceptance: [RELEASE_0_10.md](docs/acceptance/RELEASE_0_10.md) and
-  [RFC-0032](docs/rfcs/RFC-0032-LIVE-TRANSPORT.md).
+- Acceptance: [RELEASE_0_11.md](docs/acceptance/RELEASE_0_11.md).
 - Stability: [api/STABILITY.md](docs/api/STABILITY.md).
 - Compatibility / deprecation: [COMPATIBILITY.md](docs/COMPATIBILITY.md).
 - Upgrade: [guides/upgrade.md](docs/guides/upgrade.md).
-- Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_10.py`.
-- Cut procedure: [RELEASE.md](docs/RELEASE.md) (next cut: **0.11**). Historical cuts:
-  [`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md).
+- Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_11.py`.
+- Cut procedure: [RELEASE.md](docs/RELEASE.md) (next cut: **0.12**).
 
 ## Next capability phase
 
-**0.11** — native Flask/Django depth (forms/QuerySet/CSP reconciliation as scoped in the
-roadmap). Track progress in [ROADMAP.md](docs/ROADMAP.md) and the public
+**0.12** — data and visualization scale (advanced editor, distributed sources, more chart
+adapters). Track progress in [ROADMAP.md](docs/ROADMAP.md) and the public
 [roadmap guide](docs/guides/roadmap.md).

@@ -1,11 +1,11 @@
 # What’s ready today
 
-Operator-facing snapshot of published **0.10.1**. Maintainer evidence tables live in
+Operator-facing snapshot of published **0.11.0**. Maintainer evidence tables live in
 the repository [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
 ## How to read this page
 
-Hedron **0.10.1** packages are **Beta**. There is no scheduled 1.0; expect occasional
+Hedron **0.11.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
 breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
 | Label | Meaning |
@@ -23,8 +23,11 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | FastAPI routing, CSRF profiles, CLI, testing helpers | `hedron` | Supported |
 | HTMX fragment loops, `InteractionResult` | `hedron` | Supported |
 | Live interaction: SSE, streaming, WebSocket channels, Chat/Dialog, opt-in preload | `hedron` (FastAPI flagship) | **API Supported**; full multi-engine live browser matrix and load/proxy backpressure evidence are **Deferred** (`BROWSER-10-001`, `PERF-10-001`). Prefer polling when ops proof is required before those rows are Verified. |
-| Flask / Django adapters (Supported matrix) | `hedron-flask`, `hedron-django` | Supported routing/HTMX matrix; QuerySet DataSource and Hedron-owned Django forms remain Deferred → **0.11** |
-| Optional HDJ (`.hdj`) templates | `hedron[jinja]` | Supported |
+| Flask Blueprint / `init_app` + live helpers | `hedron-flask` | Supported; WSGI buffering limits documented; polling Supported fallback |
+| Django AppConfig, forms bridge, QuerySet DataSource | `hedron-django` + `hedron-data` | Supported under D-046 |
+| Portable adapter test harness | `hedron.testing.adapters` | Supported |
+| Optional HDJ (`.hdj`) templates + dynamic manifests / CSP inventory | `hedron[jinja]` | Supported |
+| Celery / RQ `JobBackend` bridges | `hedron_core.jobs_celery` / `jobs_rq` | Supported optional bridges |
 | Auto (inspectable object rendering) | Core (`hedron`) — no extra | Supported |
 | DataTable / DataEditor | `hedron[data]` | Supported |
 | Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics; some live traces Deferred (`EXPLORER-10-001`) |
@@ -48,17 +51,15 @@ guaranteed multi-worker live-transport proof — see [STATUS](https://github.com
 
 ## Deferred (do not market as Supported)
 
-- Django QuerySet as a first-party DataSource → planned **0.11**
-- Hedron-owned Django forms depth → **0.11**
 - First-party camera/microphone capture UI → **0.15**
-- Official HTMX SSE on Flask/Django (use polling) → see live guide
-- Full multi-engine live browser matrix and some Explorer live traces → owned `0.10.x` Deferred rows in STATUS
+- Full multi-engine adapter live browser matrix → owned `0.11.x` Deferred (`LIVE-011-BROWSER`)
+- Full multi-engine FastAPI live browser matrix and some Explorer live traces → owned `0.10.x` Deferred rows in STATUS
 - Load/proxy backpressure evidence for live transports → `PERF-10-001`
 
 ## Recommended install
 
 ```bash
-pip install "hedron>=0.10.1" "uvicorn[standard]"
+pip install "hedron>=0.11.0" "uvicorn[standard]"
 hedron new my-app
 cd my-app
 pip install -e .   # or: uv sync
@@ -69,6 +70,4 @@ Extras: `"hedron[data]"`, `"hedron[charts]"` (Alpha), `"hedron[jinja]"`, `"hedro
 
 ## Next reading
 
-- [Evaluate Hedron](evaluate.md) · [How to read Hedron docs](../getting-started/how-to-read.md)
-- [What’s new in 0.10](whats-new-0.10.md) · [Upgrade](upgrade.md)
-- [Support](support.md) (no commercial SLA)
+- [Upgrade](upgrade.md) · [Evaluate](evaluate.md) · [Roadmap](roadmap.md) · [Live interaction](live-interaction.md)

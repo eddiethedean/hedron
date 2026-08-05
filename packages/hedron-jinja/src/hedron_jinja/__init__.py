@@ -11,13 +11,25 @@ from hedron_jinja.contracts import (
     TemplateSpec,
 )
 from hedron_jinja.integration import HedronJinja, HedronJinjaExtension, TwoPhaseStream
+from hedron_jinja.inventory import (
+    DynamicDependency,
+    DynamicDependencyManifest,
+    ForeignNamespace,
+    ProductionInventory,
+    build_production_inventory,
+    reconcile_csp,
+)
 
-__version__ = "0.10.1"
+__version__ = "0.11.0"
 
 __all__ = [
+    "DynamicDependency",
+    "DynamicDependencyManifest",
+    "ForeignNamespace",
     "HedronJinja",
     "HedronJinjaExtension",
     "HdjContext",
+    "ProductionInventory",
     "TemplateCapabilities",
     "TemplateDeclaration",
     "TemplateKind",
@@ -25,4 +37,6 @@ __all__ = [
     "TemplateSpec",
     "TwoPhaseStream",
     "__version__",
+    "build_production_inventory",
+    "reconcile_csp",
 ]

@@ -74,7 +74,7 @@ AG Grid backend helpers remain **beta** with the same security/CSP contracts as 
 ### `hedron-flask` / `hedron-django` (Beta) — `beta` Supported adapters
 
 Public constructors, response helpers, route/view wrappers, and URL reversers are **beta**.
-Capability rows marked Deferred (QuerySet DataSource) stay **deferred**.
+Capability rows marked Supported for QuerySet DataSource and Django forms (D-046 / phase 0.11).
 
 ### `hedron-explorer` (Beta) — `beta` for `explorer_router`; panel internals **internal**
 
@@ -90,9 +90,11 @@ hostile-template sandboxing is not a supported capability.
 
 | Item | Decision | Destination |
 |---|---|---|
-| Django QuerySet DataSource | D-036 / D-041 | 0.11 |
-| Flask Blueprint / `init_app` ergonomic layer | D-041 | 0.11 |
-| Django AppConfig convenience layer | D-041 | 0.11 |
+| Django QuerySet DataSource | D-046 | Supported in 0.11 |
+| Flask Blueprint / `init_app` ergonomic layer | D-041 / D-046 | Supported in 0.11 |
+| Django AppConfig convenience layer | D-041 / D-046 | Supported in 0.11 |
+| Celery / RQ `JobBackend` bridges | D-046 | Supported extras in 0.11 |
+| Flask / Django live helpers | D-044 / D-046 | Capability-labeled in 0.11; polling Supported |
 | First-party camera/microphone/Audio/Video capture UI | D-045 | 0.15 |
 
 ## Supported in 0.10 (live)

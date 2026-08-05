@@ -4,6 +4,11 @@ from __future__ import annotations
 
 from hedron_data.aggrid import AG_GRID_BACKEND, ensure_aggrid_assets
 from hedron_data.columns import Column, columns_from_model, resolve_columns
+from hedron_data.django_queryset import (
+    DjangoQuerySetDataSource,
+    QueryBudgetExceeded,
+    QueryDiagnostics,
+)
 from hedron_data.editor import DataEditor, conflict_actions, filter_writable_changes
 from hedron_data.memory import AsyncInMemoryDataSource, InMemoryDataSource
 from hedron_data.normalize import normalize_rows
@@ -28,7 +33,7 @@ from hedron_data.sources import (
 from hedron_data.sqlalchemy_source import SQLAlchemyDataSource
 from hedron_data.table import DataTable
 
-__version__ = "0.10.1"
+__version__ = "0.11.0"
 
 __all__ = [
     "AG_GRID_BACKEND",
@@ -50,8 +55,11 @@ __all__ = [
     "DataQuery",
     "DataSaveResult",
     "DataTable",
+    "DjangoQuerySetDataSource",
     "FieldError",
     "InMemoryDataSource",
+    "QueryBudgetExceeded",
+    "QueryDiagnostics",
     "SQLAlchemyDataSource",
     "VisualizationSource",
     "__version__",

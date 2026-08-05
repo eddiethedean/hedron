@@ -22,14 +22,14 @@ scaffold.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
-python -m pip install "hedron>=0.10.1" "uvicorn[standard]"
+python -m pip install "hedron>=0.11.0" "uvicorn[standard]"
 python -m hedron new my-hedron-app   # or: hedron new …
 cd my-hedron-app
 python -m pip install -e .
 uvicorn app:app --reload
 ```
 
-Prefer [uv](https://docs.astral.sh/uv/)? Use `uv tool install "hedron>=0.10.1"`, then
+Prefer [uv](https://docs.astral.sh/uv/)? Use `uv tool install "hedron>=0.11.0"`, then
 `hedron new`, `uv sync`, and `uv run uvicorn app:app --reload`. Full steps:
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
@@ -49,7 +49,7 @@ Evaluating? [What’s ready](https://hedron.readthedocs.io/en/latest/guides/what
 | [`hedron`](https://pypi.org/project/hedron/) | Beta | FastAPI flagship |
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Beta | Flask host adapter |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Django host adapter |
-| [`hedron[data]`](https://pypi.org/project/hedron-data/) → `hedron-data` | Beta | DataTable / DataEditor |
+| [`hedron[data]`](https://pypi.org/project/hedron-data/) → `hedron-data` | Beta | DataTable / DataEditor / QuerySet source |
 | [`hedron[jinja]`](https://pypi.org/project/hedron-jinja/) → `hedron-jinja` | Beta | Optional HDJ templates |
 | [`hedron[dev]`](https://pypi.org/project/hedron-explorer/) → `hedron-explorer` | Beta | Component Explorer (dev) |
 | [`hedron[charts]`](https://pypi.org/project/hedron-charts/) → `hedron-charts` | Alpha | Chart adapters (pin; expect churn) |
@@ -61,16 +61,16 @@ Full matrix and install extras: [installation](https://hedron.readthedocs.io/en/
 FastAPI-native typed components, HTMX fragments, and secure HTML defaults. Audience:
 CRUD, internal tools, dashboards, forms, admin, and data apps.
 
-Flask/Django: page + fragment routing and HTMX are Supported in 0.10.1. Native
-forms/QuerySet depth ships in **0.11** — use polling for job status on those hosts today.
+Flask/Django: Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet DataSource
+are Supported in 0.11. Live helpers are capability-labeled; prefer polling behind buffering proxies.
 
-Current train: [`v0.10.1`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
+Current train: [`v0.11.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
 [What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.10/).
 
-Existing apps on 0.8/0.9: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
+Existing apps on 0.8/0.9/0.10: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 
 [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/) ·
 [Public roadmap](https://hedron.readthedocs.io/en/latest/guides/roadmap/).

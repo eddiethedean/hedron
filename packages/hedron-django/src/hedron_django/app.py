@@ -19,8 +19,8 @@ from hedron_django.routing import DjangoUrlReverser
 __all__ = ["HedronDjango", "QUERYSET_DATASOURCE_DEFERRED"]
 
 
-# Explicit deferral per D-036 — QuerySet DataSource is not implemented in phase 0.7.
-QUERYSET_DATASOURCE_DEFERRED = True
+# Explicit deferral flipped by D-046 / phase 0.11 — QuerySet DataSource is Supported.
+QUERYSET_DATASOURCE_DEFERRED = False
 
 
 class HedronDjango:
