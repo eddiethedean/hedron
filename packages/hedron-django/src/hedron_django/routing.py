@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import inspect
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from functools import wraps
 from typing import Any, TypeVar
 
@@ -13,7 +13,7 @@ from django.urls import reverse
 
 from hedron_core.adapter import UrlReverseRequest
 from hedron_core.component import Component
-from hedron_core.interaction import InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderResult
 from hedron_django.responses import component_response, interaction_response
 
@@ -41,7 +41,13 @@ class DjangoUrlReverser:
         return path
 
 
-def _convert(value: object, request: HttpRequest) -> HttpResponse:
+def _convert(
+    value: object,
+    request: HttpRequest,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> HttpResponse:
     from hedron_django.csrf import seed_csrf_cookie
 
     if (request.method or "GET").upper() in {"GET", "HEAD"}:
@@ -50,32 +56,88 @@ def _convert(value: object, request: HttpRequest) -> HttpResponse:
     if isinstance(value, InteractionResult):
         return interaction_response(value, request=request, authenticated=authenticated)
     if isinstance(value, RenderResult):
-        return component_response(value, request=request, authenticated=authenticated)
+        return component_response(
+            value,
+            request=request,
+            authenticated=authenticated,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
     if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
-        return component_response(value, request=request, authenticated=authenticated)  # type: ignore[arg-type]
+        return component_response(
+            value,  # type: ignore[arg-type]
+            request=request,
+            authenticated=authenticated,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
     if isinstance(value, HttpResponse):
         return value
     raise TypeError(f"Unsupported Hedron view return type: {type(value)!r}")
 
 
-def hedron_view(view: F) -> F:
+async def _convert_async(
+    value: object,
+    request: HttpRequest,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> HttpResponse:
+    """ASGI path: await prepare_tree before converting to HttpResponse."""
+    from hedron_core.prepare import prepare_tree
+
+    if (
+        (isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"))
+        and not isinstance(value, RenderResult)
+        and not isinstance(value, InteractionResult)
+    ):
+        await prepare_tree(value)  # type: ignore[arg-type]
+    return _convert(
+        value,
+        request,
+        fragment_regions=fragment_regions,
+        allow_undeclared_targets=allow_undeclared_targets,
+    )
+
+
+def hedron_view(
+    view: F | None = None,
+    *,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> Any:
     """Wrap a view so components and InteractionResult values become HttpResponse."""
 
-    if inspect.iscoroutinefunction(view):
+    def decorator(fn: F) -> F:
+        if inspect.iscoroutinefunction(fn):
 
-        @wraps(view)
-        async def async_wrapped(
-            request: HttpRequest, *args: object, **kwargs: object
-        ) -> HttpResponse:
-            value = await view(request, *args, **kwargs)
-            return _convert(value, request)
+            @wraps(fn)
+            async def async_wrapped(
+                request: HttpRequest, *args: object, **kwargs: object
+            ) -> HttpResponse:
+                value = await fn(request, *args, **kwargs)
+                return await _convert_async(
+                    value,
+                    request,
+                    fragment_regions=fragment_regions,
+                    allow_undeclared_targets=allow_undeclared_targets,
+                )
 
-        markcoroutinefunction(async_wrapped)
-        return async_wrapped  # type: ignore[return-value]
+            markcoroutinefunction(async_wrapped)
+            return async_wrapped  # type: ignore[return-value]
 
-    @wraps(view)
-    def wrapped(request: HttpRequest, *args: object, **kwargs: object) -> HttpResponse:
-        value = view(request, *args, **kwargs)
-        return _convert(value, request)
+        @wraps(fn)
+        def wrapped(request: HttpRequest, *args: object, **kwargs: object) -> HttpResponse:
+            value = fn(request, *args, **kwargs)
+            return _convert(
+                value,
+                request,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
 
-    return wrapped  # type: ignore[return-value]
+        return wrapped  # type: ignore[return-value]
+
+    if view is not None:
+        return decorator(view)
+    return decorator

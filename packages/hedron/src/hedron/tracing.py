@@ -73,9 +73,13 @@ class _RecordingSpan:
                     logger.debug("trace attribute failed", exc_info=True)
         except Exception:
             # Exporter / SDK absence must not change component semantics.
+            # HED-TRACE-0001 marks exporter failure for catalog honesty.
             self._otel_span = None
             self._otel_entered = None
-            logger.debug("OpenTelemetry unavailable; continuing without spans", exc_info=True)
+            logger.debug(
+                "HED-TRACE-0001 OpenTelemetry unavailable; continuing without spans",
+                exc_info=True,
+            )
         return self
 
     def __exit__(self, *args: object) -> None:

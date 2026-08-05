@@ -34,7 +34,16 @@ def test_assert_durable_backends_raises_in_production(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("HEDRON_ENV", "production")
+    # Production refuses installing in-memory backends at set_* time.
+    with pytest.raises(RuntimeError, match="InMemoryJobBackend"):
+        set_job_backend(InMemoryJobBackend())
+    with pytest.raises(RuntimeError, match="InMemoryCacheBackend"):
+        set_cache_backend(InMemoryCacheBackend())
+    # Assert also fails when in-memory backends are already active (pre-set via
+    # reset helpers / non-production install, then env flipped).
+    monkeypatch.delenv("HEDRON_ENV", raising=False)
     set_job_backend(InMemoryJobBackend())
     set_cache_backend(InMemoryCacheBackend())
+    monkeypatch.setenv("HEDRON_ENV", "production")
     with pytest.raises(RuntimeError, match="InMemory"):
         assert_durable_backends(production=True, strict_profile=False)

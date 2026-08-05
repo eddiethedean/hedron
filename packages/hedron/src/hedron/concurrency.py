@@ -32,6 +32,7 @@ class ConcurrencyConfig:
     enabled: bool = True
     max_in_flight: int = 32
     degrade_at: int = 24
+    prepare_deadline_seconds: float | None = None
 
 
 class ConcurrencyLimiter:
@@ -54,8 +55,23 @@ class ConcurrencyLimiter:
         if not self.config.enabled:
             return await awaitable
         async with self._lock:
+            # Shed at degrade_at (not only at hard max_in_flight).
             if self._in_flight >= self.config.degrade_at:
                 self._overload_count += 1
+                close = getattr(awaitable, "close", None)
+                if callable(close):
+                    close()
+                raise error(
+                    "HED-CONC-0001",
+                    title="Concurrency capacity exceeded",
+                    explanation=(
+                        f"Adaptive concurrency shed work at degrade_at ({self.config.degrade_at})."
+                    ),
+                    remediation=(
+                        "Reduce parallel work, raise degrade_at/max_in_flight, "
+                        "or disable adaptive concurrency."
+                    ),
+                )
             if self._in_flight >= self.config.max_in_flight:
                 self._overload_count += 1
                 close = getattr(awaitable, "close", None)
@@ -96,9 +112,15 @@ def configure_concurrency(
     enabled: bool = True,
     max_in_flight: int = 32,
     degrade_at: int = 24,
+    prepare_deadline_seconds: float | None = None,
 ) -> ConcurrencyConfig:
     global _global, _limiter
-    cfg = ConcurrencyConfig(enabled=enabled, max_in_flight=max_in_flight, degrade_at=degrade_at)
+    cfg = ConcurrencyConfig(
+        enabled=enabled,
+        max_in_flight=max_in_flight,
+        degrade_at=degrade_at,
+        prepare_deadline_seconds=prepare_deadline_seconds,
+    )
     _global = cfg
     _limiter = ConcurrencyLimiter(cfg)
     return cfg

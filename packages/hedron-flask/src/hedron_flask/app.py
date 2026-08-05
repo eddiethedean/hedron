@@ -170,6 +170,7 @@ class HedronFlask:
             extra_headers=extra_headers,
             headers_map=dict(request.headers),
             authenticated=self.auth_signal(request).authenticated,
+            fragment_regions=None,
         )
 
     def auth_signal(self, request: Request | None = None) -> AuthSignal:
@@ -184,7 +185,7 @@ class HedronFlask:
                 if getattr(current_user, "is_authenticated", False):
                     user_id = getattr(current_user, "get_id", lambda: None)()
                     if user_id is None:
-                        user_id = getattr(current_user, "id", True)
+                        user_id = getattr(current_user, "id", None)
             except Exception:
                 pass
         authenticated = bool(user_id)

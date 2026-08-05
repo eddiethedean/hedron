@@ -63,13 +63,15 @@ class PrepareContext:
     timings: list[PrepareTiming] = field(default_factory=list)
     disconnect_capable: bool = False
     trace_span: Any | None = None
+    # Injectable clock for ControllableClock / scenario tests (ASYNC-TEST-013).
+    clock: Callable[[], float] = field(default_factory=lambda: time.monotonic)
     _cancelled: bool = field(default=False, init=False, repr=False)
 
     def remaining(self, *, now: float | None = None) -> float | None:
         if self.deadline is None:
             return None
-        clock = time.monotonic if now is None else (lambda: now)
-        return max(0.0, self.deadline - clock())
+        current = self.clock() if now is None else now
+        return max(0.0, self.deadline - current)
 
     def is_cancelled(self) -> bool:
         if self._cancelled:
@@ -151,10 +153,13 @@ async def prepare_tree(
     *,
     context: PrepareContext | None = None,
     concurrency_limit: int | None = None,
+    run: Callable[[Awaitable[Any]], Awaitable[Any]] | None = None,
 ) -> PrepareContext:
     """Run optional prepare() hooks before sync render.
 
     Rendering remains synchronous and deterministic after this handoff.
+    When ``run`` is provided (e.g. ``ConcurrencyLimiter.run``), each prepare
+    body is driven through that runner instead of a local semaphore.
     """
     ctx = context or PrepareContext()
     token = _active_prepare.set(ctx)
@@ -165,27 +170,51 @@ async def prepare_tree(
 
         semaphore = (
             asyncio.Semaphore(concurrency_limit)
-            if concurrency_limit is not None and concurrency_limit > 0
+            if run is None and concurrency_limit is not None and concurrency_limit > 0
             else None
         )
 
         async def _run_one(component: Component[Any]) -> None:
             logical = component.logical_id()
-            started = time.monotonic()
+            started = ctx.clock()
             cancelled = False
             err: str | None = None
             try:
                 ctx.check()
-                prepare = component.prepare
-                if semaphore is not None:
-                    async with semaphore:
-                        result = prepare(ctx)
-                        if inspect.isawaitable(result):
-                            await result
-                else:
+
+                async def _body() -> None:
+                    prepare = component.prepare
                     result = prepare(ctx)
                     if inspect.isawaitable(result):
                         await result
+
+                async def _with_deadline() -> None:
+                    remaining = ctx.remaining()
+                    if remaining is not None:
+                        try:
+                            await asyncio.wait_for(_body(), timeout=remaining)
+                        except TimeoutError as exc:
+                            ctx.cancel()
+                            raise error(
+                                "HED-PREPARE-0002",
+                                title="Prepare deadline exceeded",
+                                explanation=(
+                                    f"Prepare for {logical!r} exceeded the request deadline."
+                                ),
+                                remediation=(
+                                    "Shorten prepare work or raise prepare_deadline_seconds."
+                                ),
+                            ) from exc
+                    else:
+                        await _body()
+
+                if run is not None:
+                    await run(_with_deadline())
+                elif semaphore is not None:
+                    async with semaphore:
+                        await _with_deadline()
+                else:
+                    await _with_deadline()
             except asyncio.CancelledError:
                 cancelled = True
                 ctx.cancel()
@@ -199,7 +228,7 @@ async def prepare_tree(
                     PrepareTiming(
                         logical_id=logical,
                         started_at=started,
-                        finished_at=time.monotonic(),
+                        finished_at=ctx.clock(),
                         cancelled=cancelled or ctx.is_cancelled(),
                         error=err,
                     )

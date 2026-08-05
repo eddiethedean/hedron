@@ -10,7 +10,7 @@ from flask import Blueprint, Flask, Response, current_app, request
 
 from hedron_core.addressable import AddressableDescriptor
 from hedron_core.component import Component
-from hedron_core.interaction import InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderResult
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
@@ -23,16 +23,47 @@ _UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 
-def convert_view_result(value: object, *, authenticated: bool = False) -> Response | object:
+def _normalize_fragment_regions(
+    fragment_regions: Sequence[FragmentRegion | str] | None,
+) -> tuple[FragmentRegion, ...]:
+    if not fragment_regions:
+        return ()
+    out: list[FragmentRegion] = []
+    for region in fragment_regions:
+        if isinstance(region, FragmentRegion):
+            out.append(region)
+        else:
+            name = str(region).lstrip("#")
+            out.append(FragmentRegion(id=name, selector=f"#{name}"))
+    return tuple(out)
+
+
+def convert_view_result(
+    value: object,
+    *,
+    authenticated: bool = False,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
+) -> Response | object:
     """Convert Hedron return types to Flask responses; pass through native Responses."""
     if isinstance(value, Response):
         return value
     if isinstance(value, InteractionResult):
         return interaction_response(value, authenticated=authenticated)
     if isinstance(value, RenderResult):
-        return component_response(value, authenticated=authenticated)
+        return component_response(
+            value,
+            authenticated=authenticated,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
     if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
-        return component_response(value, authenticated=authenticated)  # type: ignore[arg-type]
+        return component_response(
+            value,  # type: ignore[arg-type]
+            authenticated=authenticated,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
     return value
 
 
@@ -61,14 +92,23 @@ def wrap_hedron_view(
     view: F,
     *,
     require_csrf: bool,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
 ) -> F:
+    regions = _normalize_fragment_regions(fragment_regions)
+
     @wraps(view)
     def wrapped(*args: Any, **kwargs: Any) -> Any:
         protect, cookie_name = _csrf_settings()
         if require_csrf and protect and request.method.upper() in _UNSAFE_METHODS:
             validate_csrf(request, cookie_name=cookie_name)
         value = current_app.ensure_sync(view)(*args, **kwargs)
-        return convert_view_result(value, authenticated=_authenticated())
+        return convert_view_result(
+            value,
+            authenticated=_authenticated(),
+            fragment_regions=regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
 
     return wrapped  # type: ignore[return-value]
 
@@ -86,13 +126,20 @@ class HedronBlueprint(Blueprint):
         *,
         endpoint: str | None = None,
         methods: Sequence[str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
         **options: Any,
     ) -> Callable[[F], F]:
         method_list = list(methods or ("GET",))
         require_csrf = any(m.upper() not in _SAFE_METHODS for m in method_list)
 
         def decorator(view: F) -> F:
-            wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
+            wrapped = wrap_hedron_view(
+                view,
+                require_csrf=require_csrf,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
             self.add_url_rule(
                 rule,
                 endpoint=endpoint,
@@ -110,13 +157,20 @@ class HedronBlueprint(Blueprint):
         *,
         endpoint: str | None = None,
         methods: Sequence[str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
         **options: Any,
     ) -> Callable[[F], F]:
         method_list = list(methods or ("GET",))
         require_csrf = any(m.upper() not in _SAFE_METHODS for m in method_list)
 
         def decorator(view: F) -> F:
-            wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
+            wrapped = wrap_hedron_view(
+                view,
+                require_csrf=require_csrf,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
             self.add_url_rule(
                 rule,
                 endpoint=endpoint,

@@ -17,8 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def test_experimental_module_covers_live_surfaces() -> None:
     missing = EXPERIMENTAL_LIVE_SURFACES - set(experimental_all)
-    # Allow subset: inventory may list helpers also re-exported elsewhere.
-    assert missing <= EXPERIMENTAL_LIVE_SURFACES
+    assert not missing, f"experimental exports missing live surfaces: {sorted(missing)}"
     for name in (
         "SseResponse",
         "sse_response",

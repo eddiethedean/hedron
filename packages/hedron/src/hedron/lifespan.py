@@ -123,6 +123,10 @@ def compose_lifespan(
                 raise
 
             seal_registry()
+            if is_production:
+                from hedron_core.production_gate import assert_durable_backends
+
+                assert_durable_backends(production=True)
             if user_lifespan is not None:
                 async with user_lifespan(app):
                     yield

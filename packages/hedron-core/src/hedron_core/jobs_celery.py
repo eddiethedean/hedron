@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import contextlib
+import logging
 from collections.abc import Mapping
 from typing import Any
 
@@ -11,6 +11,8 @@ from hedron_core.jobs import JobHandle, JobState, JobStatus, RedisClient
 from hedron_core.typing_aliases import JsonValue
 
 __all__ = ["CeleryJobBackend"]
+
+_logger = logging.getLogger("hedron.jobs.celery")
 
 
 class CeleryJobBackend:
@@ -78,11 +80,21 @@ class CeleryJobBackend:
         auth_subject: str | None = None,
         tenant_id: str | None = None,
     ) -> bool:
+        prior = self._store._load(job_id)
         ok = self._store.request_cancel(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
-        if ok:
-            with contextlib.suppress(Exception):
-                self._app.control.revoke(job_id, terminate=False)
-        return ok
+        if not ok:
+            return False
+        try:
+            self._app.control.revoke(job_id, terminate=False)
+        except Exception:
+            _logger.exception(
+                "HED-JOB-0001 Celery revoke failed for job_id=%s; restoring prior status",
+                job_id,
+            )
+            if prior is not None:
+                self._store.restore_snapshot(prior)
+            return False
+        return True
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:
         return self._store.cleanup_expired(older_than_seconds=older_than_seconds)

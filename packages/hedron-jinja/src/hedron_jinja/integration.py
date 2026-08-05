@@ -300,6 +300,7 @@ class HedronJinja:
         max_dependency_depth: int = 32,
         url_builder: Callable[..., SafeUrl] | None = None,
         csrf_builder: Callable[[], TrustedHtml] | None = None,
+        async_io_registry: Any | None = None,
     ) -> None:
         limits = {
             "max_component_invocations": max_component_invocations,
@@ -361,6 +362,7 @@ class HedronJinja:
         self.max_dependency_depth = max_dependency_depth
         self.url_builder = url_builder
         self.csrf_builder = csrf_builder
+        self.async_io_registry = async_io_registry
         self._components: dict[str, type[Component[Any]]] = {}
         self._assets: dict[str, AssetRef] = {}
         self._frozen = False
@@ -370,6 +372,10 @@ class HedronJinja:
         environment.add_extension(HedronJinjaExtension)
         # Always force autoescape; HDJ never renders with autoescape=False.
         environment.autoescape = True
+        if async_io_registry is not None:
+            bind = getattr(async_io_registry, "bind_filters", None)
+            if callable(bind):
+                bind(environment)
         if strict:
             environment.undefined = StrictUndefined
         previous_finalize = environment.finalize
@@ -658,14 +664,28 @@ class HedronJinja:
         token = _ACTIVE_SESSION.set(session)
         chunks: list[str] = []
         size = 0
+        from hedron_jinja.async_io import async_io_session
+
+        max_ops = 32
+        if self.async_io_registry is not None:
+            # Prefer the tightest declared budget as the render-wide cap.
+            budgets = [d.budget.max_operations for d in self.async_io_registry.items().values()]
+            if budgets:
+                max_ops = min(budgets)
         try:
-            async for chunk in self.environment.get_template(name).generate_async(
-                view=view, hdj=hdj
+            with async_io_session(
+                max_operations=max_ops,
+                correlation_id=getattr(context, "correlation_id", None)
+                if context is not None
+                else None,
             ):
-                size += len(chunk)
-                if size > session.max_output_chars:
-                    self._raise_output_limit(session)
-                chunks.append(chunk)
+                async for chunk in self.environment.get_template(name).generate_async(
+                    view=view, hdj=hdj
+                ):
+                    size += len(chunk)
+                    if size > session.max_output_chars:
+                        self._raise_output_limit(session)
+                    chunks.append(chunk)
         finally:
             _ACTIVE_SESSION.reset(token)
         return self._finish(session, "".join(chunks))

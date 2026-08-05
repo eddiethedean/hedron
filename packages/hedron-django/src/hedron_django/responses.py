@@ -2,15 +2,18 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 
+from hedron_core.audit import SecurityAuditEventType, emit_security_audit
 from hedron_core.builtins.document import Page
 from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import (
+    FragmentRegion,
     FragmentRegionError,
+    InteractionPolicy,
     InteractionResult,
     authorize_htmx_target,
     materialize_interaction_nodes,
@@ -63,6 +66,61 @@ def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[An
     return value
 
 
+def _normalize_regions(
+    fragment_regions: Sequence[FragmentRegion | str] | None,
+) -> tuple[FragmentRegion, ...]:
+    if not fragment_regions:
+        return ()
+    out: list[FragmentRegion] = []
+    for region in fragment_regions:
+        if isinstance(region, FragmentRegion):
+            out.append(region)
+        else:
+            name = str(region).lstrip("#")
+            out.append(FragmentRegion(id=name, selector=f"#{name}"))
+    return tuple(out)
+
+
+def _authorize_component_htmx(
+    *,
+    request: HttpRequest | None,
+    headers_map: Mapping[str, str],
+    fragment_regions: tuple[FragmentRegion, ...],
+    allow_undeclared_targets: bool = False,
+) -> None:
+    is_htmx = (_header_value(headers_map, "HX-Request") or "").lower() == "true"
+    if not is_htmx:
+        return
+    target = _header_value(headers_map, "HX-Target")
+    try:
+        authorize_htmx_target(
+            InteractionPolicy(
+                declared_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            ),
+            target,
+            is_htmx=True,
+        )
+    except FragmentRegionError as exc:
+        path = getattr(request, "path", "") if request is not None else ""
+        emit_security_audit(
+            SecurityAuditEventType.HTMX_TARGET_REJECTED,
+            str(exc),
+            attributes={"path": path, "target": target},
+        )
+        raise
+
+
+def _maybe_prepare(value: NodeLike | Component[Any] | RenderResult) -> None:
+    """Best-effort prepare_tree before sync render (WSGI / no running loop)."""
+    if isinstance(value, RenderResult):
+        return
+    from hedron_core.async_bridge import run_prepare
+    from hedron_core.prepare import prepare_tree
+
+    run_prepare(lambda: prepare_tree(value))
+
+
 def _render_body(
     value: NodeLike | Component[Any] | RenderResult,
     *,
@@ -72,6 +130,7 @@ def _render_body(
 ) -> RenderResult:
     if isinstance(value, RenderResult):
         return value
+    _maybe_prepare(value)
     hdrs = _headers_mapping(request)
     selected_mode = render_mode_for_request(hdrs, force=mode)
     render_context = context or RenderContext.standalone()
@@ -102,7 +161,23 @@ def component_response(
     mode: RenderMode | None = None,
     extra_headers: Mapping[str, str] | None = None,
     authenticated: bool = False,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
 ) -> HttpResponse:
+    hdrs = _headers_mapping(request)
+    try:
+        _authorize_component_htmx(
+            request=request,
+            headers_map=hdrs,
+            fragment_regions=_normalize_regions(fragment_regions),
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
+    except FragmentRegionError as exc:
+        return HttpResponse(
+            str(exc).encode("utf-8"),
+            status=403,
+            content_type="text/plain; charset=utf-8",
+        )
     result = _render_body(value, request=request, context=context, mode=mode)
     headers = dict(result.headers)
     _merge_vary(headers)
@@ -135,6 +210,12 @@ def interaction_response(
         authorize_htmx_target(result.policy, target, is_htmx=is_htmx)
         node = materialize_interaction_nodes(result)
     except (FragmentRegionError, ValueError) as exc:
+        path = getattr(request, "path", "") if request is not None else ""
+        emit_security_audit(
+            SecurityAuditEventType.HTMX_TARGET_REJECTED,
+            str(exc),
+            attributes={"path": path, "target": client_target},
+        )
         return HttpResponse(
             str(exc).encode("utf-8"),
             status=403,

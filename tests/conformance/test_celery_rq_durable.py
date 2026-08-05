@@ -109,6 +109,73 @@ def test_rq_status_shared_across_workers() -> None:
     assert status.state is JobState.QUEUED
 
 
+def test_rq_cancel_across_workers() -> None:
+    shared: Any = _SharedRedis()
+
+    def _demo(payload: dict[str, object]) -> None:
+        del payload
+
+    registry = {"demo.task": _demo}
+    a = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry=registry)
+    b = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry=registry)
+    handle = a.submit("demo.task", {"n": 1}, auth_subject="u1")
+    assert b.request_cancel(handle.job_id, auth_subject="u1") is True
+    status = a.get(handle.job_id, auth_subject="u1")
+    assert status is not None
+    assert status.cancel_requested is True
+    # Cross-worker mark SUCCEEDED while cancel sticky → CANCELLED
+    marked = a.mark(handle.job_id, JobState.SUCCEEDED)
+    assert marked is not None
+    assert marked.state is JobState.CANCELLED
+
+
+def test_rq_idempotency_across_workers() -> None:
+    shared: Any = _SharedRedis()
+
+    def _demo(payload: dict[str, object]) -> None:
+        del payload
+
+    registry = {"demo.task": _demo}
+    a = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry=registry)
+    b = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry=registry)
+    first = a.submit(
+        "demo.task",
+        {"n": 1},
+        idempotency_key="rq-k1",
+        auth_subject="u1",
+        tenant_id="t1",
+    )
+    second = b.submit(
+        "demo.task",
+        {"n": 2},
+        idempotency_key="rq-k1",
+        auth_subject="u1",
+        tenant_id="t1",
+    )
+    assert first.job_id == second.job_id
+
+
+def test_celery_revoke_failure_restores_status() -> None:
+    shared: Any = _SharedRedis()
+
+    class _FailRevoke:
+        def send_task(self, *args: Any, **kwargs: Any) -> None:
+            return None
+
+        class control:
+            @staticmethod
+            def revoke(*args: Any, **kwargs: Any) -> None:
+                raise RuntimeError("broker down")
+
+    backend = CeleryJobBackend(_FailRevoke(), redis_client=shared)
+    handle = backend.submit("demo.task", {"n": 1}, auth_subject="u1")
+    assert backend.request_cancel(handle.job_id, auth_subject="u1") is False
+    status = backend.get(handle.job_id, auth_subject="u1")
+    assert status is not None
+    assert status.state is JobState.QUEUED
+    assert status.cancel_requested is False
+
+
 def test_rq_unknown_job_type_raises() -> None:
     shared: Any = _SharedRedis()
     backend = RQJobBackend(_FakeQueue(), redis_client=shared, task_registry={})

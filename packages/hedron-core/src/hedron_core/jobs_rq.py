@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import contextlib
+import logging
 from collections.abc import Callable, Mapping
 from typing import Any
 
@@ -11,6 +11,8 @@ from hedron_core.jobs import JobHandle, JobState, JobStatus, RedisClient
 from hedron_core.typing_aliases import JsonValue
 
 __all__ = ["RQJobBackend"]
+
+_logger = logging.getLogger("hedron.jobs.rq")
 
 
 class RQJobBackend:
@@ -85,16 +87,28 @@ class RQJobBackend:
         auth_subject: str | None = None,
         tenant_id: str | None = None,
     ) -> bool:
+        prior = self._store._load(job_id)
         ok = self._store.request_cancel(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
-        if ok:
-            rq_job = self._rq_jobs.get(job_id)
-            if rq_job is None:
-                rq_job = self._fetch_rq_job(job_id)
-            if rq_job is not None:
-                with contextlib.suppress(Exception):
-                    rq_job.cancel()
-                    self._rq_jobs[job_id] = rq_job
-        return ok
+        if not ok:
+            return False
+        rq_job = self._rq_jobs.get(job_id)
+        if rq_job is None:
+            rq_job = self._fetch_rq_job(job_id)
+        if rq_job is None:
+            # Status cancelled; broker job already gone — treat as success.
+            return True
+        try:
+            rq_job.cancel()
+            self._rq_jobs[job_id] = rq_job
+        except Exception:
+            _logger.exception(
+                "HED-JOB-0001 RQ cancel failed for job_id=%s; restoring prior status",
+                job_id,
+            )
+            if prior is not None:
+                self._store.restore_snapshot(prior)
+            return False
+        return True
 
     def _fetch_rq_job(self, job_id: str) -> Any | None:
         """Resolve an RQ job across workers via the shared connection."""

@@ -364,16 +364,28 @@ class InMemoryJobBackend:
         result: object = None,
         error: str | None = None,
     ) -> JobStatus | None:
+        terminal = frozenset({JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED})
+        cancel_force = frozenset({JobState.RUNNING, JobState.SUCCEEDED, JobState.FAILED})
         with self._lock:
             rec = self._jobs.get(job_id)
             if rec is None:
                 return None
             st = rec.status
-            if st.cancel_requested and state == JobState.RUNNING:
-                state = JobState.CANCELLED
+            if st.state in terminal and state not in terminal:
+                return st
+            if (
+                st.state in terminal
+                and state in terminal
+                and state is not st.state
+                and not (st.cancel_requested and state is JobState.CANCELLED)
+            ):
+                return st
+            effective = state
+            if st.cancel_requested and effective in cancel_force:
+                effective = JobState.CANCELLED
             rec.status = JobStatus(
                 job_id=st.job_id,
-                state=state,
+                state=effective,
                 job_type=st.job_type,
                 tenant_id=st.tenant_id,
                 auth_subject=st.auth_subject,
@@ -443,8 +455,12 @@ class RedisJobBackend:
             merged = dict(data)
             if latest is not None and latest.get("cancel_requested"):
                 merged["cancel_requested"] = True
-                if merged.get("state") == JobState.RUNNING.value:
-                    merged["state"] = JobState.CANCELLED.value
+            if merged.get("cancel_requested") and merged.get("state") in {
+                JobState.RUNNING.value,
+                JobState.SUCCEEDED.value,
+                JobState.FAILED.value,
+            }:
+                merged["state"] = JobState.CANCELLED.value
             self._store(merged)
             return True
         pipe = cast(RedisPipeline, pipeline_factory())
@@ -469,8 +485,12 @@ class RedisJobBackend:
                 merged = dict(data)
                 if current.get("cancel_requested"):
                     merged["cancel_requested"] = True
-                    if merged.get("state") == JobState.RUNNING.value:
-                        merged["state"] = JobState.CANCELLED.value
+                if merged.get("cancel_requested") and merged.get("state") in {
+                    JobState.RUNNING.value,
+                    JobState.SUCCEEDED.value,
+                    JobState.FAILED.value,
+                }:
+                    merged["state"] = JobState.CANCELLED.value
                 pipe.multi()
                 pipe.set(
                     key,
@@ -490,8 +510,12 @@ class RedisJobBackend:
                 merged = dict(data)
                 if latest is not None and latest.get("cancel_requested"):
                     merged["cancel_requested"] = True
-                    if merged.get("state") == JobState.RUNNING.value:
-                        merged["state"] = JobState.CANCELLED.value
+                if merged.get("cancel_requested") and merged.get("state") in {
+                    JobState.RUNNING.value,
+                    JobState.SUCCEEDED.value,
+                    JobState.FAILED.value,
+                }:
+                    merged["state"] = JobState.CANCELLED.value
                 self._store(merged)
                 return True
         return False
@@ -689,7 +713,11 @@ class RedisJobBackend:
                 return status
             cancel_requested = status.cancel_requested
             effective = state
-            if cancel_requested and effective == JobState.RUNNING:
+            if cancel_requested and effective in {
+                JobState.RUNNING,
+                JobState.SUCCEEDED,
+                JobState.FAILED,
+            }:
                 effective = JobState.CANCELLED
             # Refuse to clear a cancel request via a non-cancel terminal overwrite from a
             # stale worker snapshot — keep cancel_requested sticky.
@@ -731,8 +759,27 @@ def get_job_backend() -> JobBackend:
 
 
 def set_job_backend(backend: JobBackend) -> None:
+    from hedron_core.compile_gate import is_production_env
+
+    if is_production_env() and isinstance(backend, InMemoryJobBackend):
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        emit_security_audit(
+            SecurityAuditEventType.PRODUCTION_GATE_FAILED,
+            "InMemoryJobBackend refused in production",
+            attributes={"backend": "InMemoryJobBackend", "via": "set_job_backend"},
+        )
+        raise RuntimeError(
+            "InMemoryJobBackend is not allowed under HEDRON_ENV=production. "
+            "Call set_job_backend(...) with Redis/Celery/RQ, or unset production "
+            "for local demos."
+        )
     global _backend
     _backend = backend
+    if is_production_env():
+        from hedron_core.production_gate import assert_durable_backends
+
+        assert_durable_backends(production=True)
 
 
 def reset_jobs_for_tests() -> None:

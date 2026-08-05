@@ -6,6 +6,7 @@ from hedron_jinja.async_io import (
     AsyncIoBudget,
     AsyncIoDeclaration,
     AsyncIoRegistry,
+    async_io_session,
     run_declared_async_io,
 )
 from hedron_jinja.contracts import (
@@ -53,6 +54,7 @@ __all__ = [
     "TemplateSpec",
     "TwoPhaseStream",
     "__version__",
+    "async_io_session",
     "build_production_inventory",
     "charts_provider_manifest",
     "data_provider_manifest",

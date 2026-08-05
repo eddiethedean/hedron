@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from hedron.tracing import (
+    _RecordingSpan,
     configure_tracing,
     reset_tracing_for_tests,
     span,
@@ -36,8 +37,24 @@ def test_tracing_enabled_without_otel_still_safe() -> None:
 
 def test_exporter_failure_does_not_change_semantics() -> None:
     configure_tracing(enabled=True)
-    # Even if OTel import fails, body runs.
+    # Even if OTel import fails, body runs (HED-TRACE-0001 logged on exporter miss).
     value = 0
     with span("hedron.cache"):
         value = 1
     assert value == 1
+
+
+def test_sample_rate_zero_is_noop() -> None:
+    configure_tracing(enabled=True, sample_rate=0.0)
+    with span("hedron.render", password="secret") as s:
+        assert type(s).__name__ == "TracingDisabled"
+        s.set_attribute("token", "x")
+
+
+def test_recording_span_redacts_secret_attributes() -> None:
+    configure_tracing(enabled=True, sample_rate=1.0)
+    recording = _RecordingSpan("hedron.render", {"password": "hunter2", "route": "/x"})
+    assert recording.attributes.get("password") == "[redacted]"
+    assert recording.attributes.get("route") == "/x"
+    recording.set_attribute("api_key", "abc")
+    assert recording.attributes.get("api_key") == "[redacted]"

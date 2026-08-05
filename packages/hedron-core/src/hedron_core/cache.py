@@ -306,8 +306,27 @@ def get_cache_backend() -> CacheBackend:
 
 
 def set_cache_backend(backend: CacheBackend) -> None:
+    from hedron_core.compile_gate import is_production_env
+
+    if is_production_env() and isinstance(backend, InMemoryCacheBackend):
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        emit_security_audit(
+            SecurityAuditEventType.PRODUCTION_GATE_FAILED,
+            "InMemoryCacheBackend refused in production",
+            attributes={"backend": "InMemoryCacheBackend", "via": "set_cache_backend"},
+        )
+        raise RuntimeError(
+            "InMemoryCacheBackend is not allowed under HEDRON_ENV=production. "
+            "Call set_cache_backend(...) with an external store, or unset production "
+            "for local demos."
+        )
     global _backend
     _backend = backend
+    if is_production_env():
+        from hedron_core.production_gate import assert_durable_backends
+
+        assert_durable_backends(production=True)
 
 
 def invalidate_tags(*tags: str) -> int:

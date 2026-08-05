@@ -13,6 +13,7 @@ from hedron_core.jobs import (
     JobState,
     JobStatus,
     RedisClient,
+    RedisPipeline,
     _idempotency_scope_key,
     _status_from_dict,
     _status_to_dict,
@@ -23,6 +24,7 @@ from hedron_core.typing_aliases import JsonValue
 __all__ = ["RedisStatusStore", "require_redis_status_client"]
 
 _TERMINAL = frozenset({JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED})
+_CANCEL_FORCE = frozenset({JobState.RUNNING, JobState.SUCCEEDED, JobState.FAILED})
 
 
 def require_redis_status_client(client: RedisClient | None) -> RedisClient:
@@ -33,6 +35,15 @@ def require_redis_status_client(client: RedisClient | None) -> RedisClient:
             "(pass redis_client=...). Process-local status is not multi-worker safe."
         )
     return client
+
+
+def _apply_cancel_sticky(merged: dict[str, object]) -> None:
+    """Keep cancel sticky and force CANCELLED for worker success/fail/running marks."""
+    if not merged.get("cancel_requested"):
+        return
+    state = str(merged.get("state", ""))
+    if state in {s.value for s in _CANCEL_FORCE}:
+        merged["state"] = JobState.CANCELLED.value
 
 
 class RedisStatusStore:
@@ -83,6 +94,67 @@ class RedisStatusStore:
             json.dumps(data, default=str, separators=(",", ":")),
             ex=self._ttl,
         )
+
+    def _store_cas(self, data: Mapping[str, object], *, expected_updated_at: float) -> bool:
+        """Compare-and-swap store when Redis WATCH/pipeline is available."""
+        key = self._key(str(data["job_id"]))
+        pipeline_factory = getattr(self._client, "pipeline", None)
+        if not callable(pipeline_factory):
+            latest = self._load(str(data["job_id"]))
+            merged = dict(data)
+            if latest is not None and latest.get("cancel_requested"):
+                merged["cancel_requested"] = True
+            _apply_cancel_sticky(merged)
+            self._store(merged)
+            return True
+        pipe = cast(RedisPipeline, pipeline_factory())
+        watch_error: type[BaseException] | None = None
+        try:
+            from redis.exceptions import WatchError as _WatchError  # type: ignore[import-not-found]
+
+            watch_error = _WatchError
+        except Exception:
+            watch_error = None
+        for _ in range(8):
+            try:
+                pipe.watch(key)
+                raw = self._decode(pipe.get(key) if hasattr(pipe, "get") else self._client.get(key))
+                if raw is None:
+                    pipe.unwatch()
+                    return False
+                current = json.loads(raw)
+                if float(current.get("updated_at", -1)) != float(expected_updated_at):
+                    pipe.unwatch()
+                    return False
+                merged = dict(data)
+                if current.get("cancel_requested"):
+                    merged["cancel_requested"] = True
+                _apply_cancel_sticky(merged)
+                pipe.multi()
+                pipe.set(
+                    key,
+                    json.dumps(merged, default=str, separators=(",", ":")),
+                    ex=self._ttl,
+                )
+                pipe.execute()
+                return True
+            except Exception as exc:
+                if watch_error is not None and isinstance(exc, watch_error):
+                    continue
+                if watch_error is not None:
+                    raise
+                latest = self._load(str(data["job_id"]))
+                merged = dict(data)
+                if latest is not None and latest.get("cancel_requested"):
+                    merged["cancel_requested"] = True
+                _apply_cancel_sticky(merged)
+                self._store(merged)
+                return True
+        return False
+
+    def restore_snapshot(self, data: Mapping[str, object]) -> None:
+        """Blind-write a prior snapshot (used when broker cancel fails after status update)."""
+        self._store(dict(data))
 
     def delete(self, job_id: str) -> None:
         """Remove a job body and any idempotency pointer it owns."""
@@ -188,44 +260,46 @@ class RedisStatusStore:
         auth_subject: str | None = None,
         tenant_id: str | None = None,
     ) -> bool:
-        data = self._load(job_id)
-        if data is None:
-            return False
-        status = _status_from_dict(data)
-        # Fail closed for scoped jobs when credentials are omitted (match RedisJobBackend).
-        if not job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
-            return False
-        if status.state in _TERMINAL:
-            return False
-        updated = JobStatus(
-            job_id=status.job_id,
-            state=JobState.CANCELLED if status.state is JobState.QUEUED else status.state,
-            job_type=status.job_type,
-            tenant_id=status.tenant_id,
-            auth_subject=status.auth_subject,
-            result=status.result,
-            error=status.error,
-            retry_after=status.retry_after,
-            created_at=status.created_at,
-            updated_at=time.time(),
-            cancel_requested=True,
-        )
-        payload = data.get("payload")
-        stored: dict[str, object] = dict(
-            _status_to_dict(
-                updated,
-                payload=cast(Mapping[str, JsonValue], payload)
-                if isinstance(payload, dict)
-                else None,
+        for _ in range(5):
+            data = self._load(job_id)
+            if data is None:
+                return False
+            status = _status_from_dict(data)
+            # Fail closed for scoped jobs when credentials are omitted (match RedisJobBackend).
+            if not job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
+                return False
+            if status.state in _TERMINAL:
+                return False
+            updated = JobStatus(
+                job_id=status.job_id,
+                state=JobState.CANCELLED if status.state is JobState.QUEUED else status.state,
+                job_type=status.job_type,
+                tenant_id=status.tenant_id,
+                auth_subject=status.auth_subject,
+                result=status.result,
+                error=status.error,
+                retry_after=status.retry_after,
+                created_at=status.created_at,
+                updated_at=time.time(),
+                cancel_requested=True,
             )
-        )
-        scope = data.get("idempotency_scope_key")
-        if isinstance(scope, str):
-            stored["idempotency_scope_key"] = scope
-        if isinstance(data.get("idempotency_key"), str):
-            stored["idempotency_key"] = str(data["idempotency_key"])
-        self._store(stored)
-        return True
+            payload = data.get("payload")
+            stored: dict[str, object] = dict(
+                _status_to_dict(
+                    updated,
+                    payload=cast(Mapping[str, JsonValue], payload)
+                    if isinstance(payload, dict)
+                    else None,
+                )
+            )
+            scope = data.get("idempotency_scope_key")
+            if isinstance(scope, str):
+                stored["idempotency_scope_key"] = scope
+            if isinstance(data.get("idempotency_key"), str):
+                stored["idempotency_key"] = str(data["idempotency_key"])
+            if self._store_cas(stored, expected_updated_at=status.updated_at):
+                return True
+        return False
 
     def mark(
         self,
@@ -235,51 +309,56 @@ class RedisStatusStore:
         result: Any = None,
         error: str | None = None,
     ) -> JobStatus | None:
-        data = self._load(job_id)
-        if data is None:
-            return None
-        status = _status_from_dict(data)
-        if status.state in _TERMINAL and state not in _TERMINAL:
-            return status
-        if (
-            status.state in _TERMINAL
-            and state in _TERMINAL
-            and state is not status.state
-            and not (status.cancel_requested and state is JobState.CANCELLED)
-        ):
-            return status
-        cancel_requested = status.cancel_requested
-        if cancel_requested and state == JobState.RUNNING:
-            state = JobState.CANCELLED
-        updated = JobStatus(
-            job_id=status.job_id,
-            state=state,
-            job_type=status.job_type,
-            tenant_id=status.tenant_id,
-            auth_subject=status.auth_subject,
-            result=result if result is not None else status.result,
-            error=error if error is not None else status.error,
-            retry_after=status.retry_after,
-            created_at=status.created_at,
-            updated_at=time.time(),
-            cancel_requested=cancel_requested,
-        )
-        payload = data.get("payload")
-        stored = dict(
-            _status_to_dict(
-                updated,
-                payload=cast(Mapping[str, JsonValue], payload)
-                if isinstance(payload, dict)
-                else None,
+        for _ in range(5):
+            data = self._load(job_id)
+            if data is None:
+                return None
+            status = _status_from_dict(data)
+            if status.state in _TERMINAL and state not in _TERMINAL:
+                return status
+            if (
+                status.state in _TERMINAL
+                and state in _TERMINAL
+                and state is not status.state
+                and not (status.cancel_requested and state is JobState.CANCELLED)
+            ):
+                return status
+            cancel_requested = status.cancel_requested
+            effective = state
+            if cancel_requested and effective in _CANCEL_FORCE:
+                effective = JobState.CANCELLED
+            updated = JobStatus(
+                job_id=status.job_id,
+                state=effective,
+                job_type=status.job_type,
+                tenant_id=status.tenant_id,
+                auth_subject=status.auth_subject,
+                result=result if result is not None else status.result,
+                error=error if error is not None else status.error,
+                retry_after=status.retry_after,
+                created_at=status.created_at,
+                updated_at=time.time(),
+                cancel_requested=cancel_requested,
             )
-        )
-        scope = data.get("idempotency_scope_key")
-        if isinstance(scope, str):
-            stored["idempotency_scope_key"] = scope
-        if isinstance(data.get("idempotency_key"), str):
-            stored["idempotency_key"] = str(data["idempotency_key"])
-        self._store(stored)
-        return updated
+            payload = data.get("payload")
+            stored = dict(
+                _status_to_dict(
+                    updated,
+                    payload=cast(Mapping[str, JsonValue], payload)
+                    if isinstance(payload, dict)
+                    else None,
+                )
+            )
+            scope = data.get("idempotency_scope_key")
+            if isinstance(scope, str):
+                stored["idempotency_scope_key"] = scope
+            if isinstance(data.get("idempotency_key"), str):
+                stored["idempotency_key"] = str(data["idempotency_key"])
+            if self._store_cas(stored, expected_updated_at=status.updated_at):
+                final = self._load(job_id)
+                return _status_from_dict(final) if final is not None else updated
+        data = self._load(job_id)
+        return _status_from_dict(data) if data is not None else None
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:
         keys_fn = getattr(self._client, "keys", None)
@@ -295,14 +374,18 @@ class RedisStatusStore:
             raw = self._decode(self._client.get(key_s))
             if raw is None:
                 continue
-            data = json.loads(raw)
-            updated_at = float(data.get("updated_at", 0))
+            data = cast(dict[str, object], json.loads(raw))
+            updated_at = float(cast(float | int | str, data.get("updated_at", 0)))
             state = str(data.get("state", ""))
             if updated_at < cutoff and state in {
                 JobState.SUCCEEDED.value,
                 JobState.FAILED.value,
                 JobState.CANCELLED.value,
             }:
-                self._client.delete(key_s)
+                job_id = str(data.get("job_id", ""))
+                if job_id:
+                    self.delete(job_id)
+                else:
+                    self._client.delete(key_s)
                 removed += 1
         return removed

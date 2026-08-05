@@ -73,9 +73,23 @@ def validate_csrf(
 ) -> None:
     cookie = request.cookies.get(cookie_name)
     if not cookie:
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        emit_security_audit(
+            SecurityAuditEventType.CSRF_REJECTED,
+            "Missing CSRF cookie",
+            attributes={"path": request.path, "method": request.method},
+        )
         raise Forbidden("Missing CSRF cookie")
     submitted = request.headers.get(header_name)
     if not submitted and request.form:
         submitted = extract_csrf_from_form(dict(request.form), field_name=form_field)
     if not submitted or not secrets.compare_digest(cookie, submitted):
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        emit_security_audit(
+            SecurityAuditEventType.CSRF_REJECTED,
+            "Invalid CSRF token",
+            attributes={"path": request.path, "method": request.method},
+        )
         raise Forbidden("Invalid CSRF token")

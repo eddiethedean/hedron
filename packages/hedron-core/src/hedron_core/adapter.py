@@ -132,9 +132,19 @@ FLASK_CAPABILITIES = CapabilityRecord(
         AdapterCapability(
             "live_sse",
             CapabilityClass.WSGI,
-            True,
+            False,
             "LIVE-011",
-            notes="Streaming SSE helper; WSGI buffering limitations are documented.",
+            notes=(
+                "Live SSE is experimental; polling remains Supported. "
+                "WSGI buffering may prevent true streaming."
+            ),
+        ),
+        AdapterCapability(
+            "prepare",
+            CapabilityClass.WSGI,
+            True,
+            "PREPARE-013",
+            notes="prepare_tree via run_coro before sync render (no disconnect cancel).",
         ),
     ),
 )
@@ -146,6 +156,7 @@ DJANGO_CAPABILITIES = CapabilityRecord(
         AdapterCapability("safe_html_render", CapabilityClass.PORTABLE, True, "ADP-002"),
         AdapterCapability("htmx_headers", CapabilityClass.PORTABLE, True, "ADP-002"),
         AdapterCapability("url_reverse", CapabilityClass.PORTABLE, True, "ADP-004"),
+        AdapterCapability("disconnect_cancellation", CapabilityClass.WSGI, False, "ADP-DJG-002"),
         AdapterCapability("asgi_mode", CapabilityClass.ASGI, True, "ADP-DJG-002"),
         AdapterCapability("wsgi_mode", CapabilityClass.WSGI, True, "ADP-DJG-002"),
         AdapterCapability(
@@ -172,9 +183,16 @@ DJANGO_CAPABILITIES = CapabilityRecord(
         AdapterCapability(
             "live_sse",
             CapabilityClass.FRAMEWORK,
-            True,
+            False,
             "LIVE-011",
-            notes="Capability-labeled SSE helper; polling remains Supported fallback.",
+            notes=("Live SSE is experimental; polling remains Supported production fallback."),
+        ),
+        AdapterCapability(
+            "prepare",
+            CapabilityClass.ASGI,
+            True,
+            "PREPARE-013",
+            notes="prepare_tree awaited on ASGI; run_coro on sync WSGI views.",
         ),
     ),
 )

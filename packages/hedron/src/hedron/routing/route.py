@@ -6,6 +6,7 @@ import asyncio
 import contextlib
 import functools
 import inspect
+import time
 from collections.abc import Callable, Coroutine
 from typing import Any, Protocol, TypeAlias, runtime_checkable
 
@@ -265,16 +266,28 @@ class HedronRoute(APIRoute):
 
 async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
     """Run optional prepare() hooks before sync render."""
-    from hedron.concurrency import get_concurrency_config
+    from hedron.concurrency import _get_limiter, get_concurrency_config
     from hedron.tracing import span
     from hedron_core.prepare import PrepareContext, prepare_tree
 
     disconnect = asyncio.Event()
     cfg = get_concurrency_config()
+    deadline: float | None = None
+    if cfg.prepare_deadline_seconds is not None and cfg.prepare_deadline_seconds > 0:
+        deadline = time.monotonic() + cfg.prepare_deadline_seconds
+    header_deadline = request.headers.get("X-Hedron-Prepare-Deadline")
+    if header_deadline:
+        try:
+            secs = float(header_deadline)
+            if secs > 0:
+                header_end = time.monotonic() + secs
+                deadline = header_end if deadline is None else min(deadline, header_end)
+        except ValueError:
+            pass
     ctx = PrepareContext(
         cancel_event=disconnect,
         disconnect_capable=True,
-        deadline=None,
+        deadline=deadline,
     )
 
     async def _watch_disconnect() -> None:
@@ -290,10 +303,12 @@ async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
     watcher = asyncio.create_task(_watch_disconnect())
     try:
         with span("hedron.prepare", route=str(request.url.path)):
+            limiter = _get_limiter()
             await prepare_tree(
                 value,
                 context=ctx,
-                concurrency_limit=cfg.max_in_flight if cfg.enabled else None,
+                run=limiter.run if cfg.enabled else None,
+                concurrency_limit=None if cfg.enabled else cfg.max_in_flight,
             )
     finally:
         disconnect.set()
@@ -307,8 +322,6 @@ def _authorize_component_fragment(
     fragment_regions: tuple[FragmentRegion, ...],
 ) -> None:
     """Fail closed when HTMX targets an undeclared region for Component returns."""
-    if not fragment_regions:
-        return
     from fastapi import HTTPException
 
     from hedron_core.interaction import InteractionPolicy, authorize_htmx_target
@@ -317,6 +330,8 @@ def _authorize_component_fragment(
     is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
     if not is_htmx:
         return
+    # Empty fragment_regions still fail closed when the client sends HX-Target
+    # (same contract as InteractionResult / authorize_htmx_target).
     try:
         authorize_htmx_target(
             InteractionPolicy(declared_regions=fragment_regions),

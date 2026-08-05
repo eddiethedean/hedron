@@ -85,13 +85,18 @@ def emit_security_audit(
         if isinstance(event_type, SecurityAuditEventType)
         else SecurityAuditEventType(event_type)
     )
+    # Redact before any sink so custom sinks cannot observe secrets.
+    safe_attrs = redact_secret_like(dict(attributes or {}))
+    if not isinstance(safe_attrs, dict):
+        safe_attrs = {}
     event = SecurityAuditEvent(
         event_type=typed,
         message=message,
-        attributes=dict(attributes or {}),
+        attributes=safe_attrs,
     )
     try:
         get_security_audit_sink().emit(event)
     except Exception:
         # Audit sinks must never break request handling.
-        logging.getLogger("hedron.audit").exception("SecurityAuditSink failed")
+        # HED-AUDIT-0001 marks sink failure for catalog honesty.
+        logging.getLogger("hedron.audit").exception("HED-AUDIT-0001 SecurityAuditSink failed")

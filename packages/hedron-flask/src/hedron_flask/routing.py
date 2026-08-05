@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from functools import wraps
 from typing import Any, TypeVar
 from urllib.parse import urlsplit
@@ -11,7 +11,7 @@ from flask import Flask, current_app, request, url_for
 
 from hedron_core.adapter import UrlReverseRequest
 from hedron_core.component import Component
-from hedron_core.interaction import InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderResult
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
@@ -66,6 +66,8 @@ def hedron_route(
     methods: list[str] | None = None,
     csrf_protect: bool = True,
     csrf_cookie_name: str = DEFAULT_CSRF_COOKIE,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
     **options: Any,
 ) -> Callable[[F], F]:
     """Register a view that may return a component, InteractionResult, or Response."""
@@ -85,9 +87,19 @@ def hedron_route(
             if isinstance(value, InteractionResult):
                 return interaction_response(value, authenticated=authenticated)
             if isinstance(value, RenderResult):
-                return component_response(value, authenticated=authenticated)
+                return component_response(
+                    value,
+                    authenticated=authenticated,
+                    fragment_regions=fragment_regions,
+                    allow_undeclared_targets=allow_undeclared_targets,
+                )
             if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
-                return component_response(value, authenticated=authenticated)  # type: ignore[arg-type]
+                return component_response(
+                    value,  # type: ignore[arg-type]
+                    authenticated=authenticated,
+                    fragment_regions=fragment_regions,
+                    allow_undeclared_targets=allow_undeclared_targets,
+                )
             return value
 
         return wrapped  # type: ignore[return-value]
