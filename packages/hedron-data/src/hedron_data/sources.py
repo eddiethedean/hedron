@@ -74,6 +74,9 @@ class ColumnSchema:
     filterable: bool = False
     choices: tuple[JsonValue, ...] | None = None
     width: str | int | None = None
+    display: str | None = None
+    writable: bool | None = None
+    format: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

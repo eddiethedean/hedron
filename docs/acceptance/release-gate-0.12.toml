@@ -1,0 +1,178 @@
+# Phase 0.12 data and visualization scale evidence index.
+# Consumed by scripts/check_release_gate.py 0.12.0.
+# Zero Deferred policy (D-047): every row must be Verified at cut.
+
+[[evidence]]
+id = "TEST-012"
+state = "Verified"
+command = "python -m pytest -q tests/conformance/test_data_chart_contracts.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "COL-012"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_column_catalog.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "EVT-012"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_grid_chart_events.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "VIEW-012"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_saved_views.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "PLAN-012"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_transform_plan.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "SRC-012"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_sqlalchemy_source.py tests/unit/test_transform_plan_pushdown.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "SRC-012-DASK"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_dask_source.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "SRC-012-SNOW"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_snowflake_source.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "EDIT-012"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_data_editor_advanced.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "EDIT-012-COLLAB"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_data_editor_collab.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "EDIT-012-XLSX"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_spreadsheet_io.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "GRID-012-AG"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_aggrid_row_models.py"
+ci_job = "test"
+owner = "hedron-data"
+
+[[evidence]]
+id = "CHART-012-BASIC"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_beginner_charts.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "CHART-012-EVT"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_chart_events.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "CHART-012-ANN"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_chart_annotations.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "CHART-012-VL"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_vega_adapters.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "CHART-012-MAP"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_map_adapters.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "CHART-012-DIAG"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_diagram_adapters.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "CHART-012-OPT"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_optional_chart_adapters.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "CHART-012-PIN"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_chart_runtime_pins.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "HDJ-DEF-012"
+state = "Verified"
+command = "python -m pytest -q tests/jinja/test_hdj_0_12.py"
+ci_job = "test"
+owner = "hedron-jinja"
+
+[[evidence]]
+id = "A11Y-012"
+state = "Verified"
+command = "python -m pytest -q tests/a11y/test_grid_chart_spatial.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "BROWSER-012"
+state = "Verified"
+command = "HEDRON_BROWSER=1 python -m pytest -q tests/browser/test_data_chart_matrix.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-012"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-012"
+state = "Verified"
+command = "python scripts/verify_pkg_12.py"
+ci_job = "release"
+owner = "hedron"

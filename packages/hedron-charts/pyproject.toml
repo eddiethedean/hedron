@@ -1,6 +1,6 @@
 [project]
 name = "hedron-charts"
-version = "0.1.0"
+version = "0.1.1"
 description = "Visualization adapters and chart components for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -36,15 +36,37 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.11.0,<0.12",
+    "hedron-core>=0.12.0,<0.13",
 ]
 
 [project.optional-dependencies]
 matplotlib = ["matplotlib>=3.8,<4"]
 plotly = ["plotly>=5.18,<7"]
 altair = ["altair>=6.0,<7", "vl-convert-python>=1.0"]
-all = ["matplotlib>=3.8,<4", "plotly>=5.18,<7", "altair>=6.0,<7", "vl-convert-python>=1.0"]
-
+pydeck = ["pydeck>=0.8"]
+folium = ["folium>=0.15"]
+graphviz = ["graphviz>=0.20"]
+great_tables = ["great_tables>=0.10"]
+networkx = ["networkx>=3.0"]
+bokeh = ["bokeh>=3.0"]
+holoviews = ["holoviews>=1.18"]
+pygal = ["pygal>=3.0"]
+datashader = ["datashader>=0.16"]
+all = [
+    "matplotlib>=3.8,<4",
+    "plotly>=5.18,<7",
+    "altair>=6.0,<7",
+    "vl-convert-python>=1.0",
+    "pydeck>=0.8",
+    "folium>=0.15",
+    "graphviz>=0.20",
+    "great_tables>=0.10",
+    "networkx>=3.0",
+    "bokeh>=3.0",
+    "holoviews>=1.18",
+    "pygal>=3.0",
+    "datashader>=0.16",
+]
 [project.entry-points."hedron.plugins"]
 hedron_charts = "hedron_charts.plugin:register"
 

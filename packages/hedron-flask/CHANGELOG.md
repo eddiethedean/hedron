@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.12.0] — 2026-08-05
+
+### Added
+
+- Phase 0.12 data and visualization scale contracts and adapters.
+
+
+
 ## [0.11.0] — 2026-08-04
 
 ### Added

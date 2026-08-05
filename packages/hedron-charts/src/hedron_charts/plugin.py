@@ -5,7 +5,16 @@ from __future__ import annotations
 from pathlib import Path
 
 from hedron_charts.adapters import AltairAdapter, MatplotlibAdapter, PlotlyAdapter
-from hedron_charts.components import AltairChart, LineChart, MatplotlibChart, PlotlyChart
+from hedron_charts.components import (
+    AltairChart,
+    AreaChart,
+    BarChart,
+    LineChart,
+    MatplotlibChart,
+    PlotlyChart,
+    ScatterChart,
+)
+from hedron_charts.pins import ensure_pin_stubs
 from hedron_core.auto import RendererSpec, register_renderer
 from hedron_core.component import NodeLike
 from hedron_core.identifiers import content_digest
@@ -18,9 +27,9 @@ _VEGA_HOST = _ROOT / "assets" / "vega" / "host.js"
 
 PLUGIN_META = PluginMeta(
     name="hedron_charts",
-    version="0.1.0",
+    version="0.1.1",
     distribution="hedron-charts",
-    hedron_version=">=0.11,<0.12",
+    hedron_version=">=0.12,<0.13",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -44,7 +53,16 @@ def _factory_altair(value: object) -> NodeLike:
 
 
 def register(ctx: PluginContext) -> None:
-    for cls in (LineChart, MatplotlibChart, PlotlyChart, AltairChart):
+    ensure_pin_stubs()
+    for cls in (
+        LineChart,
+        AreaChart,
+        BarChart,
+        ScatterChart,
+        MatplotlibChart,
+        PlotlyChart,
+        AltairChart,
+    ):
         logical = f"{cls.distribution}:{cls.__module__}.{cls.logical_name}"
         register_component(
             logical_id=logical,
@@ -71,13 +89,20 @@ def register(ctx: PluginContext) -> None:
                 content_type="text/javascript",
             )
 
+    _CHART_EVENTS = (
+        "hedron-chart-hover",
+        "hedron-chart-click",
+        "hedron-chart-select",
+        "hedron-chart-relayout",
+        "hedron-chart-restyle",
+    )
     if _PLOTLY_HOST.is_file():
         register_browser_module(
             logical_id="hedron-charts:plotly-host",
             tag_name="hedron-plotly-chart",
             module_path=str(_PLOTLY_HOST),
             observed_attributes=("data-hedron-payload",),
-            events=(),
+            events=_CHART_EVENTS,
             shadow_dom=False,
             htmx_lifecycle=True,
         )
@@ -87,7 +112,7 @@ def register(ctx: PluginContext) -> None:
             tag_name="hedron-vega-chart",
             module_path=str(_VEGA_HOST),
             observed_attributes=("data-hedron-payload",),
-            events=(),
+            events=_CHART_EVENTS,
             shadow_dom=False,
             htmx_lifecycle=True,
         )

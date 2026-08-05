@@ -960,6 +960,18 @@ class HedronJinja:
             missing.append("jinja.loop-controls")
         if "jinja.async" in features and not self.environment.is_async:
             missing.append("jinja.async")
+        from importlib import import_module
+
+        if "hedron.data" in features:
+            try:
+                import_module("hedron_data")
+            except ImportError:
+                missing.append("hedron.data")
+        if "hedron.charts" in features:
+            try:
+                import_module("hedron_charts")
+            except ImportError:
+                missing.append("hedron.charts")
         return [
             make_diagnostic(
                 "HED-JINJA-0023",

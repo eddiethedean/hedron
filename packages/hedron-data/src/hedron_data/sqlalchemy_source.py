@@ -6,6 +6,7 @@ from collections.abc import Callable, Sequence
 from typing import Generic, Protocol, TypeVar, cast
 
 from hedron_core.diagnostics import error
+from hedron_data.plans import TransformPlan, plan_from_query
 from hedron_data.sources import (
     ColumnSchema,
     DataChanges,
@@ -70,14 +71,26 @@ def _fetch_rows(result: object) -> list[object]:
     return []
 
 
+def _column_from_selectable(statement: object, name: str) -> object:
+    columns = getattr(statement, "selected_columns", None)
+    if columns is not None and name in columns:
+        return columns[name]
+    raise error(
+        "HED-DATA-0013",
+        title="SQLAlchemy column not on selectable",
+        explanation=f"Column {name!r} is not present on the Select statement.",
+        remediation="Include the column in the Select or remove it from the query allowlist.",
+    )
+
+
 class SQLAlchemyDataSource(Generic[T]):
     """Explicit adapter: caller supplies session factory and row codecs.
 
     ``statement`` must be a SQLAlchemy 2.x ``Select``. Paging is applied with
     ``OFFSET``/``LIMIT`` in SQL — rows are not collected then sliced in Python.
 
-    ``sort`` / ``filters`` / ``search`` on :class:`DataQuery` are not translated
-    to SQL yet; non-empty values raise ``HED-DATA-0012``.
+    Sort/filter/search/projection require deny-by-default allowlists and are
+    pushed down through an inspectable :class:`TransformPlan`.
     """
 
     def __init__(
@@ -109,30 +122,82 @@ class SQLAlchemyDataSource(Generic[T]):
         self._apply_changes = apply_changes
         self._schema = tuple(schema)
 
+    def plan_for(self, query: DataQuery) -> TransformPlan:
+        return plan_from_query(query)
+
+    def _apply_query(self, statement: object, query: DataQuery) -> object:
+        from sqlalchemy import asc, desc, or_
+
+        q = query.validated()
+        if q.sort or q.filters or q.search or q.projection:
+            if q.sort and q.allowlisted_sort_fields is None:
+                raise error(
+                    "HED-DATA-0012",
+                    title="SQLAlchemy sort requires an allowlist",
+                    explanation="Deny-by-default: sort fields must be allowlisted.",
+                    remediation="Set DataQuery.allowlisted_sort_fields.",
+                )
+            if q.filters and q.allowlisted_filter_fields is None:
+                raise error(
+                    "HED-DATA-0012",
+                    title="SQLAlchemy filters require an allowlist",
+                    explanation="Deny-by-default: filter fields must be allowlisted.",
+                    remediation="Set DataQuery.allowlisted_filter_fields.",
+                )
+            if (
+                q.projection
+                and q.allowlisted_filter_fields is None
+                and q.allowlisted_sort_fields is None
+            ):
+                raise error(
+                    "HED-DATA-0012",
+                    title="SQLAlchemy projection requires an allowlist",
+                    explanation="Deny-by-default: projection fields must be allowlisted.",
+                    remediation=(
+                        "Set DataQuery.allowlisted_filter_fields or allowlisted_sort_fields."
+                    ),
+                )
+            if q.search and q.allowlisted_filter_fields is None:
+                raise error(
+                    "HED-DATA-0012",
+                    title="SQLAlchemy search requires an allowlist",
+                    explanation="Deny-by-default: searchable fields must be allowlisted.",
+                    remediation="Set DataQuery.allowlisted_filter_fields.",
+                )
+        stmt = statement
+        for name, direction in q.sort:
+            col = _column_from_selectable(stmt, name)
+            stmt = stmt.order_by(desc(col) if direction == "desc" else asc(col))  # type: ignore[union-attr]
+        for name, value in q.filters.items():
+            col = _column_from_selectable(stmt, name)
+            stmt = stmt.where(col == value)  # type: ignore[union-attr]
+        if q.search:
+            clauses = []
+            fields = q.allowlisted_filter_fields or frozenset()
+            for name in fields:
+                col = _column_from_selectable(stmt, name)
+                clauses.append(col.ilike(f"%{q.search}%"))  # type: ignore[union-attr]
+            if clauses:
+                stmt = stmt.where(or_(*clauses))  # type: ignore[union-attr]
+        if q.projection:
+            cols = [_column_from_selectable(stmt, name) for name in q.projection]
+            stmt = stmt.with_only_columns(*cols)  # type: ignore[union-attr]
+        return stmt
+
     def fetch(self, query: DataQuery) -> DataPage[T]:
         from sqlalchemy import func, select
 
         q = query.validated()
-        if q.sort or q.filters or q.search or q.projection:
-            raise error(
-                "HED-DATA-0012",
-                title="SQLAlchemyDataSource does not support sort/filters/search/projection yet",
-                explanation=(
-                    "DataQuery.sort, filters, search, and projection would silently return "
-                    "unscoped pages; they are rejected instead."
-                ),
-                remediation=(
-                    "Apply sorting/filtering/projection in the Select statement, or use "
-                    "InMemoryDataSource for client-side query features."
-                ),
-            )
         session = self._session_factory()
         try:
-            paged = self._statement.offset(q.offset).limit(q.limit)  # type: ignore[union-attr]
+            shaped = self._apply_query(self._statement, q)
+            paged = shaped.offset(q.offset).limit(q.limit)  # type: ignore[union-attr]
             result = session.execute(paged)
             rows = _fetch_rows(result)
             mapped = [self._to_row(row) for row in rows]
-            count_stmt = select(func.count()).select_from(self._statement.order_by(None).subquery())  # type: ignore[union-attr]
+            count_stmt = select(func.count()).select_from(
+                self._apply_query(self._statement, q).order_by(None).subquery()  # type: ignore[union-attr]
+            )
             total = int(session.execute(count_stmt).scalar_one())  # type: ignore[union-attr]
             next_offset = q.offset + q.limit if q.offset + q.limit < total else None
             return DataPage(

@@ -12,6 +12,30 @@ from hedron_core.security import Secret
 from hedron_core.typing_aliases import JsonValue
 from hedron_data.sources import ColumnSchema
 
+__all__ = [
+    "COLUMN_DISPLAYS",
+    "Column",
+    "columns_from_model",
+    "display_for_editor",
+    "resolve_columns",
+    "write_policy",
+]
+
+COLUMN_DISPLAYS = frozenset(
+    {
+        "numeric",
+        "text",
+        "checkbox",
+        "select",
+        "date",
+        "datetime",
+        "link",
+        "image",
+        "progress",
+        "compact-chart",
+    }
+)
+
 
 @dataclass(frozen=True, slots=True)
 class Column:
@@ -25,8 +49,14 @@ class Column:
     filterable: bool = False
     choices: tuple[JsonValue, ...] | None = None
     width: str | int | None = None
+    display: str | None = None
+    writable: bool | None = None
+    format: str | None = None
 
     def to_schema(self) -> ColumnSchema:
+        display = self.display or display_for_editor(self.editor or "text")
+        if display not in COLUMN_DISPLAYS:
+            raise ValueError(f"Unknown column display {display!r}")
         return ColumnSchema(
             name=self.name,
             label=self.label or self.name.replace("_", " ").title(),
@@ -38,7 +68,38 @@ class Column:
             filterable=self.filterable,
             choices=self.choices,
             width=self.width,
+            display=display,
+            writable=self.writable,
+            format=self.format,
         )
+
+
+def display_for_editor(editor: str) -> str:
+    mapping = {
+        "number": "numeric",
+        "boolean": "checkbox",
+        "checkbox": "checkbox",
+        "select": "select",
+        "date": "date",
+        "datetime": "datetime",
+        "link": "link",
+        "image": "image",
+        "progress": "progress",
+        "compact-chart": "compact-chart",
+        "text": "text",
+    }
+    return mapping.get(editor, "text")
+
+
+def write_policy(column: Column | ColumnSchema) -> bool:
+    """Display never implies writable; secrets/hidden/read-only deny writes."""
+    if column.read_only or column.hidden or column.secret:
+        return False
+    if column.writable is False:
+        return False
+    if column.writable is True:
+        return True
+    return True
 
 
 def _editor_for_annotation(annotation: object) -> str:
@@ -76,6 +137,12 @@ def columns_from_model(model: type[Model]) -> list[Column]:
             width = width_raw
         else:
             width = None
+        display_raw = meta.get("display")
+        display = display_raw if isinstance(display_raw, str) else display_for_editor(editor_val)
+        writable_raw = meta.get("writable")
+        writable = writable_raw if isinstance(writable_raw, bool) else None
+        format_raw = meta.get("format")
+        fmt = format_raw if isinstance(format_raw, str) else None
         cols.append(
             Column(
                 name=name,
@@ -90,6 +157,9 @@ def columns_from_model(model: type[Model]) -> list[Column]:
                 if choices
                 else None,
                 width=width,
+                display=display,
+                writable=writable,
+                format=fmt,
             )
         )
     return cols

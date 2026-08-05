@@ -234,7 +234,7 @@ jobs:
         run: |
           uv run --python 3.12 python scripts/build_evidence_bundle.py
           uv run --python 3.12 --with pip-audit python scripts/dep_audit.py
-          uv run --python 3.12 python scripts/check_release_gate.py 0.11.0
+          uv run --python 3.12 python scripts/check_release_gate.py 0.12.0
       - name: Upload evidence bundle
         uses: actions/upload-artifact@v4
         with:

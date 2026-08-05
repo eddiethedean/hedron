@@ -1,53 +1,56 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.11 **published**; current train `v0.11.0` (Beta packages
-`0.11.0`, Alpha charts/sample-kit `0.1.x`, 2026-08-04).
-**Date:** 2026-08-04
+**Roadmap position:** phase 0.12 **published**; current train `v0.12.0` (Beta packages
+`0.12.0`, Alpha charts/sample-kit `0.1.x`, 2026-08-05).
+**Date:** 2026-08-05
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
-`hedron-flask` / `hedron-django` / `hedron-jinja` `0.11.0`; Alpha (independent) —
+`hedron-flask` / `hedron-django` / `hedron-jinja` `0.12.0`; Alpha (independent) —
 `hedron-charts` / `hedron-sample-kit` `0.1.x` (MIT licensed, D-033)
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`; Alpha — `hedron-charts`, `hedron-sample-kit`.
 
-**Phase focus:** native Flask/Django depth (D-046 / D-044): Blueprint/`init_app`, Django
-`AppConfig`, forms bridge, bounded QuerySet DataSource, portable adapter test harness, HDJ
-dynamic manifests / foreign namespaces / SecurityPolicy–CSP reconciliation, Celery/RQ
-`JobBackend` bridges, and capability-labeled Flask/Django live helpers (polling Supported
-fallback). Capture UI remains **0.15**.
+**Phase focus:** data and visualization scale (D-047): shared column catalog, typed
+grid/chart events, saved views, `TransformPlan`, advanced DataEditor (formulas, pivots,
+trees, collab, spreadsheet I/O), AG Grid Community client/infinite, Dask/Snowflake sources,
+beginner Area/Bar/Scatter charts, Plotly typed events, annotation overlays, optional chart
+adapters, offline runtime pins, HDJ `hedron.data`/`hedron.charts` provider parity, and
+three-engine browser/a11y matrices (zero Deferred). Capture UI remains **0.15**.
 
 ## Supported vs Deferred (operator view)
 
 Adopter summary: [What’s ready today](guides/whats-ready.md). Rule of thumb: do not market a
 capability as unqualified **Supported** when its owning gate row is **Deferred**. Live
-SSE/WS/streaming/preload are **experimental** (polling Supported) until ops gates close.
+SSE/WS/streaming/preload remain **experimental** (polling Supported) until earlier ops gates
+close. Phase 0.12 closed with **zero Deferred** rows.
 
 | ID | Topic | Disposition | Notes |
 |---|---|---|---|
 | — | Typed pages, HTMX fragments, CSRF profiles, CLI | Verified | FastAPI flagship |
-| — | Flask Blueprint / `init_app` | Verified (0.11) | `ADP-FLK-011` |
-| — | Django AppConfig / forms / QuerySet DataSource | Verified (0.11) | D-046 |
-| — | Portable adapter test harness | Verified (0.11) | `TEST-011` |
-| — | HDJ manifests / CSP inventory | Verified (0.11) | `HDJ-DEF-011` |
-| — | Celery/RQ JobBackend bridges | Verified (0.11) | optional extras |
-| — | Flask/Django live helpers | Experimental API | Polling Supported fallback |
-| `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | |
-| `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Beyond asset/HTMX smoke |
+| — | Flask/Django native depth | Verified (0.11) | D-046 |
+| — | Data/chart contract fixtures | Verified (0.12) | `TEST-012` |
+| — | Column catalog / events / views / plans | Verified (0.12) | `COL-012` / `EVT-012` / `VIEW-012` / `PLAN-012` |
+| — | Distributed/lazy sources | Verified (0.12) | `SRC-012*` |
+| — | Advanced DataEditor / AG Grid infinite | Verified (0.12) | `EDIT-012*` / `GRID-012-AG` |
+| — | Visualization scale + offline pins | Verified (0.12) | `CHART-012-*` |
+| — | HDJ data/charts provider parity | Verified (0.12) | `HDJ-DEF-012` |
+| — | Grid/chart spatial a11y + browser matrix | Verified (0.12) | `A11Y-012` / `BROWSER-012` |
+| `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | Prior-phase carryover |
+| `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Prior-phase carryover |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | |
 
-## Phase 0.11 evidence
+## Phase 0.12 evidence
 
-- Closure index: [release-gate-0.11.toml](acceptance/release-gate-0.11.toml)
-  (`Verified` or owned `Deferred`).
-- Acceptance: [RELEASE_0_11.md](acceptance/RELEASE_0_11.md).
+- Closure index: [release-gate-0.12.toml](acceptance/release-gate-0.12.toml)
+  (all `Verified`; D-047 zero-Deferred policy).
+- Acceptance: [RELEASE_0_12.md](acceptance/RELEASE_0_12.md).
 - Stability: [api/STABILITY.md](api/STABILITY.md).
 - Compatibility / deprecation: [COMPATIBILITY.md](COMPATIBILITY.md).
 - Upgrade: [guides/upgrade.md](guides/upgrade.md).
-- Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_11.py`.
-- Cut procedure: [RELEASE.md](RELEASE.md) (next cut: **0.12**).
+- Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_12.py`.
+- Cut procedure: [RELEASE.md](RELEASE.md) (next cut: **0.13**).
 
 ## Next capability phase
 
-**0.12** — data and visualization scale (advanced editor, distributed sources, more chart
-adapters). Track progress in [ROADMAP.md](ROADMAP.md) and the public
-[roadmap guide](guides/roadmap.md).
+**0.13** — advanced async and observability. Track progress in [ROADMAP.md](ROADMAP.md) and
+the public [roadmap guide](guides/roadmap.md).

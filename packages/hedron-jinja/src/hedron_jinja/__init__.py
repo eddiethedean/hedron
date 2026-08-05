@@ -20,7 +20,7 @@ from hedron_jinja.inventory import (
     reconcile_csp,
 )
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 
 __all__ = [
     "DynamicDependency",

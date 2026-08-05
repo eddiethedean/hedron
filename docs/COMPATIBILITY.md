@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the published **0.11.0** train  
+**Status:** Accepted for the published **0.12.0** train  
 **Reviewed:** 2026-08-04
 
 ## Current train (read this first)
@@ -20,7 +20,7 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`) stay on the `0.11.x`
 train. Alpha packages `hedron-charts` and `hedron-sample-kit` version independently
-(`0.1.x`) and declare `hedron-core>=0.11.0,<0.12`.
+(`0.1.x`) and declare `hedron-core>=0.12.0,<0.13`.
 
 Live transports (SSE, focused streaming, page/session WebSocket, preload) are
 **experimental** on the FastAPI flagship (`hedron.experimental`); polling remains the
@@ -56,7 +56,7 @@ See [Installation](getting-started/installation.md) and
 
 ## Initial runtime ranges
 
-| Dependency | `v0.11.0` compatibility baseline | Policy |
+| Dependency | `v0.12.0` compatibility baseline | Policy |
 |---|---|---|
 | Python | CPython 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.11,<3.15"`; 3.15 prereleases are not supported. |
 | FastAPI | Supported `>=0.141.1,<0.142`; declared `>=0.141.1,<0.150` | Required by `hedron`, not `hedron-core`; expand Supported only after adapter conformance. |
@@ -208,7 +208,7 @@ CPython default builds are normative. Free-threaded CPython and PyPy are informa
 
 ## Release evidence
 
-Compatibility claims for the **0.11.0** train require clean-install, package, FastAPI
+Compatibility claims for the **0.12.0** train require clean-install, package, FastAPI
 adapter, OpenAPI, security corpus, reference-application, and owning-phase live-transport
 suites. Changing a Supported row requires compatibility evidence and an updated decision
 or RFC.
