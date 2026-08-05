@@ -162,12 +162,17 @@ from hedron_core.typing_aliases import (
 )
 from hedron_core.visualization import (
     ChartAccessibility,
+    ChartAnnotation,
+    ChartEvent,
     ChartOutput,
     VisualizationAdapter,
     VisualizationLimits,
+    authorized_chart_event,
+    validate_annotation,
+    validate_chart_event,
 )
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 
 __all__ = [
     "AddressableDescriptor",
@@ -288,6 +293,8 @@ __all__ = [
     "CacheScope",
     "CacheTrace",
     "ChartAccessibility",
+    "ChartAnnotation",
+    "ChartEvent",
     "ChartOutput",
     "CodeViewer",
     "ColorMode",
@@ -308,6 +315,9 @@ __all__ = [
     "Toast",
     "VisualizationAdapter",
     "VisualizationLimits",
+    "authorized_chart_event",
+    "validate_annotation",
+    "validate_chart_event",
     "get_cache_traces",
     "get_icon",
     "inspect_data",

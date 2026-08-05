@@ -147,9 +147,12 @@ if TYPE_CHECKING:
     from hedron.content import process_image as process_image
     from hedron.content import validate_email_address as validate_email_address
     from hedron_charts import AltairChart as AltairChart
+    from hedron_charts import AreaChart as AreaChart
+    from hedron_charts import BarChart as BarChart
     from hedron_charts import LineChart as LineChart
     from hedron_charts import MatplotlibChart as MatplotlibChart
     from hedron_charts import PlotlyChart as PlotlyChart
+    from hedron_charts import ScatterChart as ScatterChart
 
 _DATA_EXPORTS = frozenset(
     {
@@ -165,9 +168,12 @@ _DATA_EXPORTS = frozenset(
 _CHART_EXPORTS = frozenset(
     {
         "AltairChart",
+        "AreaChart",
+        "BarChart",
         "LineChart",
         "MatplotlibChart",
         "PlotlyChart",
+        "ScatterChart",
     }
 )
 _EXPERIMENTAL_EXPORTS = frozenset(
@@ -230,7 +236,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth

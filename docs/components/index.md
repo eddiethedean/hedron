@@ -83,4 +83,4 @@ User-facing color-mode preference controls.
 
 Accessible visualization components and optional plotting adapters.
 
-[`LineChart`](line-chart.md) · [`MatplotlibChart`](matplotlib-chart.md) · [`PlotlyChart`](plotly-chart.md) · [`AltairChart`](altair-chart.md)
+[`LineChart`](line-chart.md) · [`AreaChart`](area-chart.md) · [`BarChart`](bar-chart.md) · [`ScatterChart`](scatter-chart.md) · [`MatplotlibChart`](matplotlib-chart.md) · [`PlotlyChart`](plotly-chart.md) · [`AltairChart`](altair-chart.md)

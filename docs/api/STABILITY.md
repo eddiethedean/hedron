@@ -1,11 +1,11 @@
 # Public stability classifications
 
-**Status:** Phase 0.11 Flask/Django depth (**published** `v0.11.0`); readiness track toward a future
+**Status:** Phase 0.12 data/visualization scale (**ready to cut** `v0.12.0`; not tagged until publish); readiness track toward a future
 stable tier (D-038: no calendar `1.0` scheduled).
-**Version:** `0.11.0` / catalog baseline `0.8`+`0.10`+`0.11`
+**Version:** `0.12.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`
 
-This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the published
-`v0.11.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
+This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
+`v0.12.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
 unless a later phase explicitly promotes them.
 
 ## Levels
@@ -84,11 +84,16 @@ stable via the root facade — import them from their packages.
 
 ### `hedron-data` (Beta) — `beta`
 
+- `DataTable` / `DataEditor`, column catalog, saved views, `TransformPlan`, typed grid events: **beta**
+- Dask/Snowflake sources, AG Grid Community host: **beta**
+- Spreadsheet I/O / collab helpers: **beta**
+
 ### `hedron-charts` (Alpha distribution, versioned independently as `0.1.x`)
 
 - `MatplotlibChart` / static SVG: **beta** API on Alpha distribution.
 - `PlotlyChart` / `AltairChart`: **experimental**.
-- `LineChart`: **beta**.
+- `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **beta**.
+- Optional adapters + offline runtime pins: **experimental** (Alpha distribution).
 
 ### `hedron-flask` / `hedron-django` (Beta) — `beta` Supported adapters
 

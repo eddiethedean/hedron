@@ -9,14 +9,16 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**Current train:** `v0.11.0` (packages `0.11.0`) — see
+**Last published train:** `v0.11.0` (packages `0.11.0`).
+**Next cut (ready):** `v0.12.0` (packages `0.12.0`) — implementation complete; do not claim
+published until the tag and PyPI upload land. See
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [What’s ready](guides/whats-ready.md).
-**Next cut:** `v0.12.0` (capability phase) or `v0.11.x` (patch).
+**Following cut:** `v0.13.0` (capability phase) or `v0.12.x` (patch).
 
-Executed `v0.11.0` checklist: this page (historical cut steps below) plus
-[`docs/acceptance/RELEASE_0_11.md`](acceptance/RELEASE_0_11.md). Earlier trains:
-[`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md).
+Pre-cut checklist for `v0.12.0`: this page plus
+[`docs/acceptance/RELEASE_0_12.md`](acceptance/RELEASE_0_12.md). Earlier trains include
+`v0.11.0` and [`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md).
 Do not re-run tag steps for a published version.
 
 ## Template: patch cut (`v0.10.x`)
@@ -124,12 +126,12 @@ git push origin v0.11.0
 - Smoke: install from PyPI, render a page, optionally `hedron build` on the reference app.
 - Record any new Deferred rows honestly on [What’s ready](guides/whats-ready.md).
 
-## Next phase cut: `v0.12.0` (data and visualization scale)
+## Next phase cut: `v0.13.0` (advanced async and observability)
 
-Follow the same coordinated-train procedure with `check_release_gate.py 0.12.0` once
-`docs/acceptance/release-gate-0.12.toml` exists.
+Follow the same coordinated-train procedure with `check_release_gate.py 0.13.0` once
+`docs/acceptance/release-gate-0.13.toml` exists.
 
 ## Scripts (maintainer)
 
 See [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md) for `check_release_gate.py`,
-`rehearse_release.py`, `verify_pkg_11.py`, and evidence helpers.
+`rehearse_release.py`, `verify_pkg_12.py`, and evidence helpers.

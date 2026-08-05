@@ -234,10 +234,32 @@ jobs:
         run: |
           uv run --python 3.12 python scripts/build_evidence_bundle.py
           uv run --python 3.12 --with pip-audit python scripts/dep_audit.py
-          uv run --python 3.12 python scripts/check_release_gate.py 0.11.0
+          uv run --python 3.12 python scripts/check_release_gate.py 0.12.0
+          uv run --python 3.12 python scripts/verify_pkg_12.py
       - name: Upload evidence bundle
         uses: actions/upload-artifact@v4
         with:
           name: hedron-evidence-bundle
           path: dist/evidence-bundle/
           if-no-files-found: error
+
+  release:
+    name: PKG-012 packaging rehearsal
+    needs: [evidence]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --locked --python 3.12
+      - name: Run verify_pkg_12
+        run: uv run --python 3.12 python scripts/verify_pkg_12.py

@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.1]
+
+- Offline fingerprinted Plotly/Vega/Chart.js runtimes, optional adapter hosts,
+  beginner Area/Bar/Scatter fixes, and D-047 CSP-safe map/chart contracts.
+ — 2026-08-05
+
+### Changed
+
+- Pin `hedron-core` to `>=0.12.0,<0.13` for the 0.12 train.
+
+
+
 ## [0.1.0] — 2026-08-05
 
 ### Changed

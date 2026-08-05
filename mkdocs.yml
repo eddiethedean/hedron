@@ -318,6 +318,9 @@ nav:
       - Charts:
         - Overview: components/charts.md
         - LineChart: components/line-chart.md
+        - AreaChart: components/area-chart.md
+        - BarChart: components/bar-chart.md
+        - ScatterChart: components/scatter-chart.md
         - MatplotlibChart: components/matplotlib-chart.md
         - PlotlyChart: components/plotly-chart.md
         - AltairChart: components/altair-chart.md
@@ -375,6 +378,7 @@ nav:
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - Upgrade (0.8 → 0.11): guides/upgrade.md
     - What's new: guides/release-notes.md
+    - What's new in 0.12: guides/whats-new-0.12.md
     - What's new in 0.11: guides/whats-new-0.11.md
     - Compatibility: COMPATIBILITY.md
     - Configuration: CONFIGURATION.md

@@ -18,27 +18,51 @@ from hedron.testing.adapters import (
     fastapi_fixture,
     flask_fixture,
 )
+from hedron.testing.data import (
+    AdversarialCase,
+    assert_accessible_fallback,
+    assert_budget,
+    assert_stable_row_identity,
+    assert_stable_trace_identity,
+    chart_event_fixture,
+    data_changes_fixture,
+    data_query_fixture,
+    grid_event_fixture,
+    labeled_adversarial_cases,
+    transform_plan_fixture,
+)
 from hedron_core.registry import get_registry
 from hedron_core.rendering import RenderMode, RenderResult, render
 
 __all__ = [
     "AdapterAppFixture",
     "AdapterResponse",
+    "AdversarialCase",
+    "assert_accessible_fallback",
+    "assert_budget",
     "assert_fragment_body",
     "assert_html_contains",
     "assert_htmx_trigger",
     "assert_page_document",
     "assert_render_result",
     "assert_renders",
+    "assert_stable_row_identity",
+    "assert_stable_trace_identity",
+    "chart_event_fixture",
+    "data_changes_fixture",
+    "data_query_fixture",
     "django_fixture",
     "fastapi_fixture",
     "flask_fixture",
     "fragment_client",
+    "grid_event_fixture",
     "iter_named_examples",
+    "labeled_adversarial_cases",
     "named_example",
     "normalize_snapshot_html",
     "override_dependencies",
     "render_html",
+    "transform_plan_fixture",
 ]
 
 

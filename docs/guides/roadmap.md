@@ -7,7 +7,15 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 |---|---|---|
 | **0.10** | Live interaction on FastAPI (SSE, streaming, WebSockets, Chat/Dialog, preload) | Published (`v0.10.x`) |
 | **0.11** | Native Flask/Django depth; bounded QuerySet integration | **Published** (`v0.11.0`) |
-| **0.12+** | Data/visualization scale and later phases — see maintainer roadmap | Planned |
+| **0.12** | Data and visualization scale | **Ready to cut** (`v0.12.0`; not tagged yet) |
+| **0.13** | Advanced async, observability, job durability, diagnostics | Planned |
+| **0.14** | Portable runtimes and acceleration | Planned |
+| **0.15** | Data-app surface; OIDC and session/identity helpers | Planned |
+| **0.16** | Curated extras and analysis workbenches | Planned |
+| **0.17** | Reactive dashboards and agent interfaces | Planned |
+| **0.18** | Model demos and inference workflows | Planned |
+| **0.19** | Accessibility engineering; progressive enhancement | Planned |
+| **0.20** | Production security floor and adapter parity | Planned (new) |
 
 ## What this means for you
 
@@ -20,6 +28,10 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 - Full multi-engine adapter live browser matrix → owned `0.11.x` Deferred (`LIVE-011-BROWSER`)
 - Full multi-engine FastAPI live browser matrix / some Explorer live traces → owned `0.10.x` Deferred
+
+Tracked follow-ups for host security, adapter DX, session helpers, and claim honesty are owned by
+phases **0.13+** (see the [issue ownership table](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-github-issue-ownership-013)
+in the maintainer roadmap).
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))

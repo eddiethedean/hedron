@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+## [0.12.0] — 2026-08-05
+
+### Added
+
+- Phase 0.12 data and visualization scale contracts and adapters.
+- `python -m hedron` entry via `__main__.py` (PATH-independent CLI fallback).
+
+
+
 ## [0.11.0] — 2026-08-04
 
 ### Added
@@ -11,11 +22,6 @@
 - Fail-closed QuerySet allowlists and HDJ CSP reconcile; full Celery/RQ `JobBackend` protocol.
 - CLI/Explorer HDJ inventory reporting; Django forms radio/number/file widget mapping.
 
-
-## [Unreleased]
-
-### Added
-- `python -m hedron` entry via `__main__.py` (PATH-independent CLI fallback).
 
 ## [0.10.1] - 2026-08-04
 

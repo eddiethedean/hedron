@@ -1,4 +1,4 @@
-"""Packaging metadata checks for the coordinated 0.11 train."""
+"""Packaging metadata checks for the coordinated 0.12 train."""
 
 from __future__ import annotations
 
@@ -25,9 +25,9 @@ def test_all_packages_declare_license_and_version() -> None:
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
         if name in _BETA_PACKAGES:
-            assert project["version"] == "0.11.0", pyproject
+            assert project["version"] == "0.12.0", pyproject
         elif name in _ALPHA_INDEPENDENT:
-            assert project["version"] == "0.1.0", pyproject
+            assert project["version"] == "0.1.1", pyproject
         else:
             raise AssertionError(f"unexpected package {name}")
         assert "license" in project or "license-files" in project, pyproject.name
