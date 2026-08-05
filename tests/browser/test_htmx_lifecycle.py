@@ -5,13 +5,14 @@ from __future__ import annotations
 import os
 import socket
 import threading
-import time
 from collections.abc import Iterator
 
 import pytest
 
 pytest.importorskip("playwright")
 from playwright.sync_api import sync_playwright
+
+from tests.browser._harness import reset_browser_plugin_state, wait_for_port
 
 pytestmark = [
     pytest.mark.browser,
@@ -34,13 +35,9 @@ def browser_app_url() -> Iterator[str]:
 
     from hedron import Hedron, InteractionResult, Page, Stack, Text
     from hedron.interaction import FragmentRegion, InteractionPolicy, OobUpdate
-    from hedron_core import reset_registry_for_tests
     from hedron_core.html import html
 
-    reset_registry_for_tests()
-    import hedron_core
-
-    hedron_core._register_builtins()  # type: ignore[attr-defined]
+    reset_browser_plugin_state()
     app = Hedron(
         title="BrowserSmoke",
         security="standard",
@@ -95,14 +92,7 @@ def browser_app_url() -> Iterator[str]:
     server = uvicorn.Server(config)
     thread = threading.Thread(target=server.run, daemon=True)
     thread.start()
-    deadline = time.time() + 10
-    while time.time() < deadline:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            if sock.connect_ex(("127.0.0.1", port)) == 0:
-                break
-        time.sleep(0.05)
-    else:
-        raise RuntimeError("uvicorn failed to start for browser tests")
+    wait_for_port(port)
     try:
         yield f"http://127.0.0.1:{port}"
     finally:

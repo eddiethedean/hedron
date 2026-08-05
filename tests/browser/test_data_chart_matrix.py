@@ -12,6 +12,8 @@ import pytest
 pytest.importorskip("playwright")
 from playwright.sync_api import sync_playwright
 
+from tests.browser._harness import reset_browser_plugin_state, wait_for_port
+
 pytestmark = [
     pytest.mark.browser,
     pytest.mark.skipif(os.environ.get("HEDRON_BROWSER") != "1", reason="Opt-in browser"),
@@ -31,14 +33,10 @@ def app_url() -> Iterator[str]:
     uvicorn = pytest.importorskip("uvicorn")
     from hedron import Hedron, Page, Stack
     from hedron_charts import BarChart
-    from hedron_core import reset_registry_for_tests
     from hedron_core.html import html
     from hedron_data import DataTable
 
-    reset_registry_for_tests()
-    import hedron_core
-
-    hedron_core._register_builtins()  # type: ignore[attr-defined]
+    reset_browser_plugin_state()
     app = Hedron(title="DataChartMatrix", security="standard", session_secret="s", explorer="off")
 
     @app.page("/")
@@ -67,6 +65,7 @@ def app_url() -> Iterator[str]:
     server = uvicorn.Server(config)
     thread = threading.Thread(target=server.run, daemon=True)
     thread.start()
+    wait_for_port(port)
     try:
         yield f"http://127.0.0.1:{port}/"
     finally:
