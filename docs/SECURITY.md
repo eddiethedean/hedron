@@ -4,8 +4,9 @@
 
 | Version | Supported |
 |---|---|
-| `0.10.x` | Yes |
-| `0.9.x` | Security fixes while 0.10 remains Beta; prefer upgrading |
+| `0.11.x` | Yes |
+| `0.10.x` | Security fixes while 0.11 remains Beta; prefer upgrading |
+| `0.9.x` | Prefer upgrading to the current train |
 | `0.8.x` | Final HDN-capable line; critical issues may be noted only |
 | `< 0.8` | No |
 

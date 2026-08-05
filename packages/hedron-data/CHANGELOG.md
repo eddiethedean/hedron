@@ -6,6 +6,8 @@
 - Phase 0.11 native framework depth (Flask Blueprint/`init_app`, Django AppConfig/forms/QuerySet,
   portable adapter harness, HDJ manifests/CSP inventory, Celery/RQ bridges, live helpers).
 
+### Fixed
+- `DjangoQuerySetDataSource` deny-by-default allowlists when sort/filter lists are omitted.
 
 
 ## [0.10.1] - 2026-08-04

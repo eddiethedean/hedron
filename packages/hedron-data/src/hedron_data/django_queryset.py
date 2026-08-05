@@ -33,9 +33,7 @@ class QueryDiagnostics:
     def record(self, n: int = 1) -> None:
         self.query_count += n
         if self.query_count > self.budget:
-            raise QueryBudgetExceeded(
-                f"Query budget exceeded: {self.query_count} > {self.budget}"
-            )
+            raise QueryBudgetExceeded(f"Query budget exceeded: {self.query_count} > {self.budget}")
 
 
 class DjangoQuerySetDataSource:

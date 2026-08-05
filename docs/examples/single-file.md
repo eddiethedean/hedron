@@ -6,7 +6,7 @@ Run these without cloning the monorepo. Requires Python 3.11+ and a working netw
 ## Hello page
 
 ```bash
-pip install "hedron>=0.10.1" "uvicorn[standard]"
+pip install "hedron>=0.11.0" "uvicorn[standard]"
 ```
 
 Save as `app.py`:

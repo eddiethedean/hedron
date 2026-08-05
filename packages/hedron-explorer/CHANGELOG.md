@@ -6,6 +6,8 @@
 - Phase 0.11 native framework depth (Flask Blueprint/`init_app`, Django AppConfig/forms/QuerySet,
   portable adapter harness, HDJ manifests/CSP inventory, Celery/RQ bridges, live helpers).
 
+### Fixed
+- `/inventory` loads project `.hdj` template reports when available (not an empty stub).
 
 
 ## [0.10.1] - 2026-08-04

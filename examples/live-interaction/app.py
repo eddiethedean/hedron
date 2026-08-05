@@ -166,5 +166,7 @@ async def page_socket(websocket: WebSocket):
 @app.page("/next")
 def next_page(request: Request):
     decision = evaluate_preload_request(request, _preload)
-    response = HTMLResponse("<!doctype html><title>Next</title><p>Next page (preload headers applied).</p>")
+    response = HTMLResponse(
+        "<!doctype html><title>Next</title><p>Next page (preload headers applied).</p>"
+    )
     return apply_preload_headers(response, decision)

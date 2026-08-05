@@ -1,10 +1,10 @@
 # Public stability classifications
 
-**Status:** Phase 0.11 Flask/Django depth (**coordinated** `0.11.0`; tag optional)
+**Status:** Phase 0.11 Flask/Django depth (**published** `v0.11.0`)
 **Version:** `0.11.0`
 
-This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`0.11.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
+This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the published
+`v0.11.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
 unless a later phase explicitly promotes them.
 
 ## Levels

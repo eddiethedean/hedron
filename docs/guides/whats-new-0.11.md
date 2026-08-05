@@ -1,7 +1,7 @@
 # What's new in 0.11
 
-The coordinated **`0.11.0`** train deepens Flask/Django integration and closes the
-QuerySet / forms deferrals from D-036 via **D-046**. Full detail:
+Published coordinated train **`0.11.0`** (`v0.11.0`, 2026-08-04). Deepens Flask/Django
+integration and closes the QuerySet / forms deferrals from D-036 via **D-046**. Full detail:
 [What's ready](whats-ready.md) · [Upgrade](upgrade.md) · [Adapters](../api/ADAPTERS.md).
 
 ## Highlights

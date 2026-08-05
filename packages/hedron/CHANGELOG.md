@@ -6,6 +6,10 @@
 - Phase 0.11 native framework depth (Flask Blueprint/`init_app`, Django AppConfig/forms/QuerySet,
   portable adapter harness, HDJ manifests/CSP inventory, Celery/RQ bridges, live helpers).
 
+### Fixed
+- Flask `include_component` CSRF on unsafe methods; portable harness cookie order.
+- Fail-closed QuerySet allowlists and HDJ CSP reconcile; full Celery/RQ `JobBackend` protocol.
+- CLI/Explorer HDJ inventory reporting; Django forms radio/number/file widget mapping.
 
 
 ## [Unreleased]

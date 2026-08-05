@@ -5,7 +5,7 @@
 (do not retag published versions).
 
 Hedron uses a coordinated release train. The Git tag includes a leading `v`
-(for example `v0.10.1`); Python package metadata omits it (`0.10.1`).
+(for example `v0.11.0`); Python package metadata omits it (`0.11.0`).
 
 ## Current published train
 
@@ -14,9 +14,10 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 [What’s ready](guides/whats-ready.md).
 **Next cut:** `v0.12.0` (capability phase) or `v0.11.x` (patch).
 
-Executed `v0.10.1` checklist:
-[`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md)
-(and the published Git tag). Do not re-run tag steps for a published version.
+Executed `v0.11.0` checklist: this page (historical cut steps below) plus
+[`docs/acceptance/RELEASE_0_11.md`](acceptance/RELEASE_0_11.md). Earlier trains:
+[`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md).
+Do not re-run tag steps for a published version.
 
 ## Template: patch cut (`v0.10.x`)
 

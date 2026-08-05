@@ -15,10 +15,11 @@ line. Full detail: [What's ready](whats-ready.md) · [Upgrade](upgrade.md) ·
 
 ## Still Deferred / honest gaps
 
-- Native Flask/Django live depth → **0.11**
 - Full three-engine live browser matrix, load/proxy backpressure evidence, Explorer live
   traces → owned `0.10.x` Deferred rows in STATUS
-- Django QuerySet DataSource and Hedron-owned Django forms → **0.11**
+
+Native Flask/Django depth, QuerySet DataSource, and Django forms shipped in **0.11** —
+see [What's new in 0.11](whats-new-0.11.md).
 
 ## Upgrade path
 

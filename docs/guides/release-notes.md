@@ -5,8 +5,9 @@ detailed record; this page is the adopter-facing index.
 
 ## Current train — 0.11.0 (2026-08-04)
 
-Native Flask/Django depth, bounded QuerySet DataSource, Django forms bridge, portable
-adapter harness, HDJ inventory/CSP, and Celery/RQ job bridges (D-046).
+**Published** coordinated train (`v0.11.0`). Native Flask/Django depth, bounded QuerySet
+DataSource, Django forms bridge, portable adapter harness, HDJ inventory/CSP, and Celery/RQ
+job bridges (D-046).
 
 **Highlights (all packages on `0.11.0`):**
 

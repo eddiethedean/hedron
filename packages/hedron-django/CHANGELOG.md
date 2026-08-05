@@ -6,6 +6,9 @@
 - Phase 0.11 native framework depth (Flask Blueprint/`init_app`, Django AppConfig/forms/QuerySet,
   portable adapter harness, HDJ manifests/CSP inventory, Celery/RQ bridges, live helpers).
 
+### Fixed
+- Forms bridge maps radio/number/file widgets; `register_checks` is idempotent;
+  `poll_status_response` exported from `live`.
 
 
 ## [0.10.1] - 2026-08-04

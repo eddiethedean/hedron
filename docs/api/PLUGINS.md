@@ -25,7 +25,7 @@ from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 
 PLUGIN_META = PluginMeta(
     name="sample_kit",
-    version="0.10.1",
+    version="0.11.0",
     distribution="hedron-sample-kit",
     hedron_version=">=0.10,<0.11",
     capabilities=PluginCapabilities(python=True, styles=True, explorer_panels=True),

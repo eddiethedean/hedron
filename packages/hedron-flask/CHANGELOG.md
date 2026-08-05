@@ -6,6 +6,9 @@
 - Phase 0.11 native framework depth (Flask Blueprint/`init_app`, Django AppConfig/forms/QuerySet,
   portable adapter harness, HDJ manifests/CSP inventory, Celery/RQ bridges, live helpers).
 
+### Fixed
+- `include_component` derives CSRF from methods (no longer hard-coded off on unsafe methods).
+- Public `wrap_hedron_view` export for factory apps.
 
 
 ## [0.10.1] - 2026-08-04

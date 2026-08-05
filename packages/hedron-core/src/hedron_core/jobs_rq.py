@@ -13,9 +13,7 @@ from hedron_core.jobs import JobHandle, JobState, JobStatus, job_authorized
 __all__ = ["RQJobBackend"]
 
 
-def _idempotency_scope_key(
-    key: str, *, tenant_id: str | None, auth_subject: str | None
-) -> str:
+def _idempotency_scope_key(key: str, *, tenant_id: str | None, auth_subject: str | None) -> str:
     return f"{tenant_id or ''}|{auth_subject or ''}|{key}"
 
 

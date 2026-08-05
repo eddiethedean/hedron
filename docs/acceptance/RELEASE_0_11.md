@@ -48,5 +48,5 @@ optional Celery/RQ `JobBackend` bridges, and capability-labeled Flask/Django liv
 - [x] Full regression suite. *(`REGRESS-011`)*
 - [x] Packaging rehearsal. *(`PKG-011`)*
 
-**Exit met** when every release-gate row is `Verified` or owned `Deferred` and the coordinated
-train is `0.11.0`.
+**Exit met / published** as coordinated `0.11.0` (`v0.11.0`). Owned Deferred:
+`LIVE-011-BROWSER` → `0.11.x`.

@@ -110,8 +110,7 @@ class DynamicDependencyManifest:
                     title="Foreign namespace shadow rejected",
                     explanation=f"Namespace {name!r} would shadow {ns.root!r}.",
                     remediation=(
-                        "Use a distinct namespace or set shadow_allowed with an "
-                        "explicit audit."
+                        "Use a distinct namespace or set shadow_allowed with an explicit audit."
                     ),
                 )
 
@@ -133,22 +132,15 @@ def reconcile_csp(
     has_script_src = "script-src" in csp
     for capability in required_capabilities:
         if capability == "browser.inline-script":
-            authorized = (
-                has_script_src
-                and (
-                    "'unsafe-inline'" in csp
-                    or "nonce-" in csp
-                    or "'strict-dynamic'" in csp
-                )
+            authorized = has_script_src and (
+                "'unsafe-inline'" in csp or "nonce-" in csp or "'strict-dynamic'" in csp
             )
             if not authorized:
                 mismatches.append(
                     f"{source_name}:{line}: capability {capability!r} conflicts with CSP "
                     f"(missing explicit inline/nonce/strict-dynamic authorization)"
                 )
-        if capability == "htmx.eval" and (
-            not has_script_src or "unsafe-eval" not in csp
-        ):
+        if capability == "htmx.eval" and (not has_script_src or "unsafe-eval" not in csp):
             mismatches.append(
                 f"{source_name}:{line}: capability {capability!r} requires explicit "
                 f"unsafe-eval authorization in SecurityPolicy CSP"

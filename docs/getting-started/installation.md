@@ -117,7 +117,7 @@ pip install "hedron-charts[plotly]" # chart backend after charts extra
 
 | Package | Use when |
 |---|---|
-| `hedron-flask` | Flask — page + fragment routing/HTMX Supported; forms depth → **0.11** |
+| `hedron-flask` | Flask — `init_app` / Blueprint, page + fragment routing/HTMX Supported |
 | `hedron-django` | Django `>=5.2,<6` — forms bridge + QuerySet DataSource Supported (D-046) |
 | `hedron-core` | Framework-neutral rendering only |
 
