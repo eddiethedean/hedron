@@ -1,0 +1,43 @@
+[project]
+name = "hedron-native"
+version = "0.1.0"
+description = "Optional Rust acceleration for Hedron HTML escaping (Alpha)"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+keywords = ["hedron", "native", "rust", "acceleration"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Rust",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/hedron"
+Repository = "https://github.com/eddiethedean/hedron"
+Documentation = "https://hedron.readthedocs.io/en/latest/"
+Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-native/CHANGELOG.md"
+
+[build-system]
+requires = ["maturin>=1.7,<2"]
+build-backend = "maturin"
+
+[tool.maturin]
+manifest-path = "Cargo.toml"
+python-source = "src"
+module-name = "hedron_native._native"
+features = ["pyo3/extension-module"]

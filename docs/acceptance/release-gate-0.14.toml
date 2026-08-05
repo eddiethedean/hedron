@@ -1,0 +1,66 @@
+# Phase 0.14 portable runtimes and acceleration evidence index.
+# Consumed by scripts/check_release_gate.py 0.14.0.
+# Zero Deferred policy for 0.14-owned rows: every row must be Verified at cut.
+
+[[evidence]]
+id = "CONFORM-014"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_conformance_kit.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "SPEC-014"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_conformance_spec.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "RUNTIME-NODE-014"
+state = "Verified"
+command = "node packages/hedron-runtime-node/bin/run-conformance.mjs"
+ci_job = "test"
+owner = "hedron-runtime-node"
+
+[[evidence]]
+id = "RUNTIME-JAVA-014"
+state = "Verified"
+command = "bash packages/hedron-runtime-java/scripts/run-conformance.sh"
+ci_job = "test"
+owner = "hedron-runtime-java"
+
+[[evidence]]
+id = "ACCEL-RUST-014"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_native_accel.py tests/performance/test_native_accel_bench.py"
+ci_job = "test"
+owner = "hedron-native"
+
+[[evidence]]
+id = "HDJ-DEF-014"
+state = "Verified"
+command = "python -m pytest -q tests/jinja/test_hdj_instrumentation.py"
+ci_job = "test"
+owner = "hedron-jinja"
+
+[[evidence]]
+id = "PARITY-014"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_native_parity.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "REGRESS-014"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-014"
+state = "Verified"
+command = "python scripts/verify_pkg_14.py"
+ci_job = "release"
+owner = "hedron"

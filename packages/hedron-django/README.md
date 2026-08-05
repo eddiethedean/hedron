@@ -9,11 +9,11 @@ First-party bounded QuerySet `DataSource` and Django forms bridge are **Supporte
 allowlists deny client refinements.
 
 ```bash
-pip install "hedron-django>=0.13.0"
+pip install "hedron-django>=0.14.0"
 ```
 
 Requires `hedron-core` and Django **`>=5.2,<6`**. Does not install FastAPI. Install
 `hedron_django.apps.HedronDjangoConfig` for system checks.
 
-Current coordinated train: **`0.13.0`** (Beta). See
+Current coordinated train: **`0.14.0`** (Beta). See
 [Add to an existing Django project](https://hedron.readthedocs.io/en/latest/getting-started/django/).

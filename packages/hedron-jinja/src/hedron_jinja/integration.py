@@ -8,7 +8,7 @@ from contextvars import ContextVar
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from types import MappingProxyType
-from typing import Any, NoReturn, Protocol
+from typing import Any, NoReturn, Protocol, cast
 from urllib.parse import urlsplit
 from weakref import ReferenceType, WeakKeyDictionary, ref
 
@@ -49,6 +49,15 @@ from hedron_jinja.contracts import (
     TemplateSource,
     TemplateSpec,
     validate_template_name,
+)
+from hedron_jinja.instrumentation import (
+    ExtensionRegistry,
+    LoopMacroBudget,
+    a11y_static_diagnostics,
+    extension_feature_diagnostics,
+    instrumentation_session,
+    record_loop_iteration,
+    record_macro_call,
 )
 from hedron_jinja.source import (
     EXPLICIT_FEATURES,
@@ -298,15 +307,20 @@ class HedronJinja:
         max_output_chars: int = 10_000_000,
         max_metadata_items: int = 10_000,
         max_dependency_depth: int = 32,
+        max_loop_iterations: int = 100_000,
+        max_macro_calls: int = 10_000,
         url_builder: Callable[..., SafeUrl] | None = None,
         csrf_builder: Callable[[], TrustedHtml] | None = None,
         async_io_registry: Any | None = None,
+        extension_registry: ExtensionRegistry | None = None,
     ) -> None:
         limits = {
             "max_component_invocations": max_component_invocations,
             "max_output_chars": max_output_chars,
             "max_metadata_items": max_metadata_items,
             "max_dependency_depth": max_dependency_depth,
+            "max_loop_iterations": max_loop_iterations,
+            "max_macro_calls": max_macro_calls,
         }
         invalid_limits = [
             name
@@ -360,12 +374,27 @@ class HedronJinja:
         self.max_output_chars = max_output_chars
         self.max_metadata_items = max_metadata_items
         self.max_dependency_depth = max_dependency_depth
+        self.max_loop_iterations = max_loop_iterations
+        self.max_macro_calls = max_macro_calls
+        self.loop_macro_budget = LoopMacroBudget(
+            max_loop_iterations=max_loop_iterations,
+            max_macro_calls=max_macro_calls,
+        )
         self.url_builder = url_builder
         self.csrf_builder = csrf_builder
         self.async_io_registry = async_io_registry
+        self.extension_registry = extension_registry or ExtensionRegistry()
         self._components: dict[str, type[Component[Any]]] = {}
         self._assets: dict[str, AssetRef] = {}
         self._frozen = False
+
+        # Optional Jinja globals for exact loop/macro instrumentation (pure-Python).
+        # Jinja's typed globals mapping is narrow; application callables are valid at runtime.
+        jinja_globals = cast(dict[str, Any], environment.globals)
+        if "hedron_record_loop" not in jinja_globals:
+            jinja_globals["hedron_record_loop"] = lambda n=1: record_loop_iteration(int(n))
+        if "hedron_record_macro" not in jinja_globals:
+            jinja_globals["hedron_record_macro"] = lambda n=1: record_macro_call(int(n))
 
         environment.loader = HdjLoader(environment.loader)
         environment.template_class = _hdj_template_class(environment.template_class)
@@ -606,11 +635,12 @@ class HedronJinja:
         chunks: list[str] = []
         size = 0
         try:
-            for chunk in self.environment.get_template(name).generate(view=view, hdj=hdj):
-                size += len(chunk)
-                if size > session.max_output_chars:
-                    self._raise_output_limit(session)
-                chunks.append(chunk)
+            with instrumentation_session(self.loop_macro_budget):
+                for chunk in self.environment.get_template(name).generate(view=view, hdj=hdj):
+                    size += len(chunk)
+                    if size > session.max_output_chars:
+                        self._raise_output_limit(session)
+                    chunks.append(chunk)
         finally:
             _ACTIVE_SESSION.reset(token)
         return self._finish(session, "".join(chunks))
@@ -673,11 +703,14 @@ class HedronJinja:
             if budgets:
                 max_ops = min(budgets)
         try:
-            with async_io_session(
-                max_operations=max_ops,
-                correlation_id=getattr(context, "correlation_id", None)
-                if context is not None
-                else None,
+            with (
+                async_io_session(
+                    max_operations=max_ops,
+                    correlation_id=getattr(context, "correlation_id", None)
+                    if context is not None
+                    else None,
+                ),
+                instrumentation_session(self.loop_macro_budget),
             ):
                 async for chunk in self.environment.get_template(name).generate_async(
                     view=view, hdj=hdj
@@ -876,6 +909,17 @@ class HedronJinja:
                         )
                     )
             diagnostics.extend(self._provider_feature_diagnostics(parsed))
+            diagnostics.extend(
+                extension_feature_diagnostics(
+                    declared_features=declaration.effective_features,
+                    registry=self.extension_registry,
+                    template_name=declaration.name,
+                    body=parsed.body,
+                )
+            )
+            diagnostics.extend(
+                a11y_static_diagnostics(template_name=declaration.name, body=parsed.body)
+            )
             if self.strict and spec.strict:
                 diagnostics.extend(contextual_diagnostics(parsed))
             else:

@@ -1,4 +1,4 @@
-"""Packaging metadata checks for the coordinated 0.13 train."""
+"""Packaging metadata checks for the coordinated 0.14 train."""
 
 from __future__ import annotations
 
@@ -16,8 +16,9 @@ _BETA_PACKAGES = {
     "hedron-django",
     "hedron-jinja",
     "hedron-explorer",
+    "hedron-conformance",
 }
-_ALPHA_INDEPENDENT = {"hedron-charts", "hedron-sample-kit"}
+_ALPHA_INDEPENDENT = {"hedron-charts", "hedron-sample-kit", "hedron-native"}
 
 
 def test_all_packages_declare_license_and_version() -> None:
@@ -25,9 +26,9 @@ def test_all_packages_declare_license_and_version() -> None:
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
         if name in _BETA_PACKAGES:
-            assert project["version"] == "0.13.0", pyproject
+            assert project["version"] == "0.14.0", pyproject
         elif name in _ALPHA_INDEPENDENT:
-            assert project["version"] == "0.1.1", pyproject
+            assert str(project["version"]).startswith("0.1."), pyproject
         else:
             raise AssertionError(f"unexpected package {name}")
         assert "license" in project or "license-files" in project, pyproject.name

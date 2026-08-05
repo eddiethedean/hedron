@@ -1,0 +1,15 @@
+[package]
+name = "hedron-native"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Optional Rust acceleration for Hedron HTML escaping"
+publish = false
+
+[lib]
+name = "_native"
+crate-type = ["cdylib"]
+path = "rust/src/lib.rs"
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }

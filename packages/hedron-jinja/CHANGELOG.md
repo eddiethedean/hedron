@@ -1,3 +1,10 @@
+## [0.14.0] — 2026-08-05
+
+### Added
+
+- Phase 0.14 portable runtimes and acceleration (conformance kit hooks, optional native
+  acceleration, HDJ instrumentation where applicable).
+
 ## [0.13.0] — 2026-08-05
 
 ### Added

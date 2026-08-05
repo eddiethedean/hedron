@@ -1,6 +1,6 @@
 # What’s ready today
 
-**Canonical maturity snapshot for 0.13.0 (published).** Other evaluator pages link here —
+**Canonical maturity snapshot for 0.14.0.** Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
@@ -10,13 +10,13 @@ live in the repository
     For a FastAPI CRUD / admin spike: typed pages, HTMX fragments, CSRF profiles, and
     polling are **Supported** on Beta packages — start with
     [Installation](../getting-started/installation.md). SSE/WebSocket live updates are
-    **experimental**; prefer polling in production. Charts are **Alpha**. There is no
-    commercial SLA and no scheduled 1.0. Evaluators: skim the table below, then
+    **experimental**; prefer polling in production. Charts and native accel are **Alpha**.
+    There is no commercial SLA and no scheduled 1.0. Evaluators: skim the table below, then
     [Evaluate Hedron](evaluate.md).
 
 ## How to read this page
 
-Hedron **0.13.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
+Hedron **0.14.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
 breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
 | Label | Meaning |
@@ -59,6 +59,10 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | Beginner Area/Bar/Scatter + Plotly events/annotations | `hedron[charts]` | Alpha charts package |
 | Optional viz adapters + offline runtime pins | `hedron[charts]` | Alpha; local-asset/CSP contracts |
 | Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics; some live traces incomplete |
+| Language-neutral conformance kit | `hedron[conformance]` / `hedron-conformance` | Supported (0.14) |
+| Experimental Java / Node conformance runtimes | `packages/hedron-runtime-*` | **Experimental** / Alpha (0.14) |
+| Optional Rust HTML escaping acceleration | `hedron[native]` / `hedron-native` | Alpha (0.14); pure-Python fallback Supported |
+| HDJ loop/macro budgets, extension evidence, a11y static checks | `hedron[jinja]` | Supported (0.14; `HDJ-DEF-014`) |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
 guaranteed multi-worker live-transport proof — see
@@ -89,7 +93,7 @@ guaranteed multi-worker live-transport proof — see
 ## Recommended install
 
 ```bash
-pip install "hedron>=0.13.0" "uvicorn[standard]"
+pip install "hedron>=0.14.0" "uvicorn[standard]"
 python -m hedron new my-app
 cd my-app
 pip install -e .   # or: uv sync

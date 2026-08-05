@@ -607,7 +607,7 @@ introducing a second hidden runtime or losing trace and cancellation semantics.
 - Security audit sinks receive expected event types on CSRF/HTMX/gate failures without leaking
   secrets; live-transport and diagnostic catalogs do not contradict What’s ready.
 
-## 0.14 — Portable runtimes and acceleration (`v0.14.0`)
+## 0.14 — Portable runtimes and acceleration (`v0.14.0`) — **published**
 
 **Outcome:** Profiling-backed acceleration and cross-language runtimes can participate in Hedron
 without fragmenting the component, security, rendering, or artifact contracts.

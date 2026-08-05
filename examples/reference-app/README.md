@@ -1,7 +1,8 @@
 # Hedron reference application (FastAPI)
 
 Cumulative authenticated team-administration application for the FastAPI flagship.
-Tracks the published **0.13.0** train (live interaction on the 0.9 HDJ authoring line).
+Tracks the **0.14.0** train (portable conformance / optional native accel on the 0.9 HDJ
+authoring line).
 
 Demonstrates:
 
@@ -13,6 +14,8 @@ Demonstrates:
 - Charts (`LineChart` via **Alpha** `hedron[charts]`), Markdown, typed `InteractionResult`,
   declared fragment regions, and `/charts/*` interaction routes
 - Offline static rendering helpers
+- Optional `hedron[native]` acceleration (off by default semantics; install to enable
+  Rust escaping with pure-Python fallback) and `hedron conformance` kit visibility
 
 ## Run (local)
 

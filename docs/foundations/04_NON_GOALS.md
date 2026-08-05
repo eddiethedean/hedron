@@ -15,17 +15,18 @@ Hedron is not:
 - a guarantee that arbitrary React applications can be transpiled to a Hedron declarative format;
 - ownership of a custom template language without demonstrated advantage over typed Python or an
   established optional engine;
-- a cross-language runtime before the Python contracts have stabilized;
-- a Rust project unless profiling establishes a concrete need;
+- a cross-language *application* runtime that replaces Python as the Supported flagship (experimental
+  Java/Node conformance runtimes may participate under D-048 without fragmenting contracts);
+- a Rust-first project; optional native acceleration requires profiling evidence (D-048);
 - a framework that silently exposes components, grants permissions, trusts markup, or persists data;
 - a wrapper that hides FastAPI, HTMX, HTML, CSS, or browser behavior from developers.
 
 ## Explicitly deferred
 
-The following may become optional subsystems after the core is proven: Java and Node adapters, a
-portable language-neutral specification, native acceleration, route-level CSS splitting,
-collaborative DataEditor, visual builders, and evidence-backed declarative-authoring migration
-assistance.
+The following remain optional or later-phase: route-level CSS splitting, collaborative DataEditor,
+visual builders, evidence-backed declarative-authoring migration assistance, and WASM/Pyodide
+sandbox work (phase 0.16). Language-neutral conformance, experimental Java/Node runtimes, and
+optional Rust acceleration shipped in **0.14** under D-048.
 
 Live transport on the FastAPI flagship (official HTMX SSE, focused streaming, page/session
 WebSocket channels, and related contracts) shipped in **0.10** — see

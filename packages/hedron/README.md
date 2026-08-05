@@ -17,9 +17,9 @@ plugin loader, and public `hedron.testing` helpers.
 ## Install
 
 ```bash
-pip install "hedron>=0.13.0"
+pip install "hedron>=0.14.0"
 # or
-uv add "hedron>=0.13.0"
+uv add "hedron>=0.14.0"
 ```
 
 Optional data and charts:
@@ -41,7 +41,7 @@ Optional browser testing extras:
 pip install "hedron[browser]"
 ```
 
-Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.13.0** (Beta).
+Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.14.0** (Beta).
 
 ## Quick start
 

@@ -679,7 +679,7 @@ The 0.9 reductions are scheduled work, not an unowned backlog:
 | Finite fingerprinted dynamic dependency manifests, foreign Jinja/package namespaces, adapter-specific route/CSRF/context/response depth, SecurityPolicy/CSP reconciliation, and CLI/build/Explorer production inventory | 0.11 | A namespace alone is never a dependency bound; foreign source cannot use Hedron tags. |
 | `hedron.data`/`hedron.charts` provider parity and high-volume template presentation evidence | 0.12 | Bounded data and accessible fallbacks remain authoritative. |
 | Async filter/global I/O declarations, deadlines, cancellation, operation budgets, and trace correlation | 0.13 | Async work remains explicit and render handoff deterministic. |
-| Optional Jinja compiler instrumentation for exact loop/macro budgets, contracted custom-extension evidence, scoped-style/validated-attribute helpers, broader contextual analysis, and portable checker fixtures | 0.14 | Public Jinja semantics and the pure-Python fallback remain authoritative. |
+| Optional Jinja compiler instrumentation for exact loop/macro budgets, contracted custom-extension evidence, scoped-style/validated-attribute helpers, broader contextual analysis, and portable checker fixtures | 0.14 | **Closed** in `v0.14.0` (`HDJ-DEF-014`); public Jinja semantics and the pure-Python fallback remain authoritative. |
 
 ## Non-goals
 

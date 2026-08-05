@@ -22,3 +22,12 @@ Snapshots normalize only documented nondeterminism. They must not hide ordering 
 - The reference application runs against released packages, not repository-only imports.
 - Tests cover sync/async parity, cancellation cleanup, security boundaries, and optional-dependency absence.
 - Accessibility checks combine static rules, axe-style browser analysis, and manual keyboard scenarios.
+
+## Phase 0.14 portable conformance kit
+
+Phase 0.14 publishes a language-neutral conformance-test kit (`hedron-conformance`) with
+versioned machine-readable fixtures, golden render/diagnostic artifacts, negative cases, and a
+capability-level runner. Fixture versioning and normalization rules are public so implementations
+cannot pass merely by matching incidental CPython formatting. Experimental Java and Node runtimes
+and optional native accelerators are tested through the published kit in addition to native unit
+tests; failures identify the fixture, contract version, and violated capability (D-048).

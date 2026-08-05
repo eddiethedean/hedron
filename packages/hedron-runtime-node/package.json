@@ -1,0 +1,14 @@
+{
+  "name": "hedron-runtime-node",
+  "version": "0.14.0",
+  "description": "Experimental Node.js Hedron conformance runtime (phase 0.14)",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "bin": {
+    "hedron-runtime-node": "./bin/run-conformance.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -17,12 +17,14 @@ resolution-markers = [
 members = [
     "hedron",
     "hedron-charts",
+    "hedron-conformance",
     "hedron-core",
     "hedron-data",
     "hedron-django",
     "hedron-explorer",
     "hedron-flask",
     "hedron-jinja",
+    "hedron-native",
     "hedron-sample-kit",
     "hedron-workspace",
 ]
@@ -912,7 +914,7 @@ wheels = [
 
 [[package]]
 name = "hedron"
-version = "0.13.0"
+version = "0.14.0"
 source = { editable = "packages/hedron" }
 dependencies = [
     { name = "fastapi" },
@@ -937,6 +939,9 @@ charts = [
 code = [
     { name = "pygments" },
 ]
+conformance = [
+    { name = "hedron-conformance" },
+]
 data = [
     { name = "hedron-data" },
 ]
@@ -956,6 +961,9 @@ markdown = [
     { name = "markdown" },
     { name = "nh3" },
 ]
+native = [
+    { name = "hedron-native" },
+]
 otel = [
     { name = "opentelemetry-api" },
 ]
@@ -969,10 +977,12 @@ requires-dist = [
     { name = "email-validator", marker = "extra == 'email'", specifier = ">=2.0" },
     { name = "fastapi", specifier = ">=0.141.1,<0.150" },
     { name = "hedron-charts", marker = "extra == 'charts'", editable = "packages/hedron-charts" },
+    { name = "hedron-conformance", marker = "extra == 'conformance'", editable = "packages/hedron-conformance" },
     { name = "hedron-core", editable = "packages/hedron-core" },
     { name = "hedron-data", marker = "extra == 'data'", editable = "packages/hedron-data" },
     { name = "hedron-explorer", marker = "extra == 'dev'", editable = "packages/hedron-explorer" },
     { name = "hedron-jinja", marker = "extra == 'jinja'", editable = "packages/hedron-jinja" },
+    { name = "hedron-native", marker = "extra == 'native'", editable = "packages/hedron-native" },
     { name = "httpx", marker = "extra == 'auth'", specifier = ">=0.28" },
     { name = "itsdangerous", specifier = ">=2.2" },
     { name = "markdown", marker = "extra == 'markdown'", specifier = ">=3.5" },
@@ -986,7 +996,7 @@ requires-dist = [
     { name = "pygments", marker = "extra == 'code'", specifier = ">=2.17" },
     { name = "python-multipart", specifier = ">=0.0.9" },
 ]
-provides-extras = ["dev", "data", "charts", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "jinja", "otel"]
+provides-extras = ["dev", "data", "charts", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "jinja", "native", "conformance", "otel"]
 
 [[package]]
 name = "hedron-charts"
@@ -1083,8 +1093,19 @@ requires-dist = [
 provides-extras = ["matplotlib", "plotly", "altair", "pydeck", "folium", "graphviz", "great-tables", "networkx", "bokeh", "holoviews", "pygal", "datashader", "all"]
 
 [[package]]
+name = "hedron-conformance"
+version = "0.14.0"
+source = { editable = "packages/hedron-conformance" }
+dependencies = [
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pydantic", specifier = ">=2.13.4,<2.15" }]
+
+[[package]]
 name = "hedron-core"
-version = "0.13.0"
+version = "0.14.0"
 source = { editable = "packages/hedron-core" }
 dependencies = [
     { name = "packaging" },
@@ -1099,7 +1120,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-data"
-version = "0.13.0"
+version = "0.14.0"
 source = { editable = "packages/hedron-data" }
 dependencies = [
     { name = "hedron-core" },
@@ -1161,7 +1182,7 @@ provides-extras = ["pandas", "polars", "pyarrow", "dataframes", "sqlalchemy", "s
 
 [[package]]
 name = "hedron-django"
-version = "0.13.0"
+version = "0.14.0"
 source = { editable = "packages/hedron-django" }
 dependencies = [
     { name = "asgiref" },
@@ -1178,7 +1199,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-explorer"
-version = "0.13.0"
+version = "0.14.0"
 source = { editable = "packages/hedron-explorer" }
 dependencies = [
     { name = "fastapi" },
@@ -1200,7 +1221,7 @@ provides-extras = ["fastapi"]
 
 [[package]]
 name = "hedron-flask"
-version = "0.13.0"
+version = "0.14.0"
 source = { editable = "packages/hedron-flask" }
 dependencies = [
     { name = "flask" },
@@ -1217,7 +1238,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-jinja"
-version = "0.13.0"
+version = "0.14.0"
 source = { editable = "packages/hedron-jinja" }
 dependencies = [
     { name = "hedron-core" },
@@ -1233,6 +1254,11 @@ requires-dist = [
 ]
 
 [[package]]
+name = "hedron-native"
+version = "0.1.0"
+source = { editable = "packages/hedron-native" }
+
+[[package]]
 name = "hedron-sample-kit"
 version = "0.1.1"
 source = { editable = "packages/hedron-sample-kit" }
@@ -1245,7 +1271,7 @@ requires-dist = [{ name = "hedron-core", editable = "packages/hedron-core" }]
 
 [[package]]
 name = "hedron-workspace"
-version = "0.13.0"
+version = "0.14.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -1258,12 +1284,14 @@ dev = [
     { name = "flask" },
     { name = "hedron" },
     { name = "hedron-charts" },
+    { name = "hedron-conformance" },
     { name = "hedron-core" },
     { name = "hedron-data" },
     { name = "hedron-django" },
     { name = "hedron-explorer" },
     { name = "hedron-flask" },
     { name = "hedron-jinja" },
+    { name = "hedron-native" },
     { name = "hedron-sample-kit" },
     { name = "httpx" },
     { name = "markdown" },
@@ -1301,12 +1329,14 @@ dev = [
     { name = "flask", specifier = ">=3,<4" },
     { name = "hedron", editable = "packages/hedron" },
     { name = "hedron-charts", editable = "packages/hedron-charts" },
+    { name = "hedron-conformance", editable = "packages/hedron-conformance" },
     { name = "hedron-core", editable = "packages/hedron-core" },
     { name = "hedron-data", editable = "packages/hedron-data" },
     { name = "hedron-django", editable = "packages/hedron-django" },
     { name = "hedron-explorer", editable = "packages/hedron-explorer" },
     { name = "hedron-flask", editable = "packages/hedron-flask" },
     { name = "hedron-jinja", editable = "packages/hedron-jinja" },
+    { name = "hedron-native", editable = "packages/hedron-native" },
     { name = "hedron-sample-kit", editable = "packages/hedron-sample-kit" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "markdown", specifier = ">=3.5" },

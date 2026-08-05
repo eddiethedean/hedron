@@ -59,6 +59,8 @@ jobs:
           cache-dependency-glob: uv.lock
       - name: Set up Python
         run: uv python install 3.12
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
       - name: Install all dependency groups
         run: uv sync --locked --all-groups --python 3.12
       - name: Check formatting
@@ -73,7 +75,8 @@ jobs:
           for pyproject in packages/*/pyproject.toml; do
             package="$(basename "$(dirname "$pyproject")")"
             echo "Building $package"
-            uv build --package "$package"
+            # Pin interpreter so maturin/native wheels match the 3.12 smoke venv.
+            UV_PYTHON=3.12 uv build --package "$package"
           done
       - name: Test clean wheel installation
         run: |
@@ -228,15 +231,26 @@ jobs:
           cache-dependency-glob: uv.lock
       - name: Set up Python
         run: uv python install 3.12
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
       - name: Install dependencies
         run: uv sync --locked --python 3.12
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
       - name: Build evidence bundle
         run: |
           uv run --python 3.12 python scripts/build_evidence_bundle.py
           uv run --python 3.12 --with pip-audit python scripts/dep_audit.py
-          uv run --python 3.12 python scripts/check_release_gate.py 0.13.0
+          uv run --python 3.12 python scripts/check_release_gate.py 0.14.0
           uv run --python 3.12 python scripts/check_hed_codes.py
-          uv run --python 3.12 python scripts/verify_pkg_13.py
+          uv run --python 3.12 python scripts/verify_pkg_14.py
       - name: Upload evidence bundle
         uses: actions/upload-artifact@v4
         with:
@@ -245,7 +259,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: PKG-013 packaging rehearsal
+    name: PKG-014 packaging rehearsal
     needs: [evidence]
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -260,7 +274,18 @@ jobs:
           cache-dependency-glob: uv.lock
       - name: Set up Python
         run: uv python install 3.12
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
       - name: Install dependencies
         run: uv sync --locked --python 3.12
-      - name: Run verify_pkg_13
-        run: uv run --python 3.12 python scripts/verify_pkg_13.py
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Run verify_pkg_14
+        run: uv run --python 3.12 python scripts/verify_pkg_14.py

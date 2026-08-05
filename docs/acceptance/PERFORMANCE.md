@@ -19,7 +19,8 @@
 
 ## Native decision gate
 
-- [ ] Any Rust proposal names a measured bottleneck, target improvement, benchmark corpus, parity suite, wheel plan, and fallback behavior.
+- [x] Any Rust proposal names a measured bottleneck, target improvement, benchmark corpus, parity suite, wheel plan, and fallback behavior.
+  *(phase 0.14 — RFC-0020 / D-048 / `ACCEL-RUST-014`: bulk HTML escaping via optional `hedron-native`)*
 
 ## Exit
 

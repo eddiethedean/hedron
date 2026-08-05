@@ -158,7 +158,7 @@ Rows marked with a later phase are excluded from the 0.9 exit gate and owned her
   selector/URL validation path.
 - [x] **Phase 0.11:** managed HTMX configuration reconciles eval/script processing/history/CSP
   defaults with the format-v1 capability report.
-- [ ] **Phase 0.14:** core and community extensions require registered version/digest/CSP/load-order metadata;
+- [x] **Phase 0.14:** core and community extensions require registered version/digest/CSP/load-order metadata;
   writing `hx-ext` alone never installs an extension.
 - [x] SSE/WebSocket syntax composes without HDJ changes when phase 0.10 transport contracts ship.
 
@@ -193,7 +193,7 @@ Rows marked with a later phase are excluded from the 0.9 exit gate and owned her
 
 ## Accessibility and usability
 
-- [ ] **Phase 0.14:** static checks cover the sound HTML/form/landmark/ID/ARIA/focus subset without claiming proof.
+- [x] **Phase 0.14:** static checks cover the sound HTML/form/landmark/ID/ARIA/focus subset without claiming proof.
 - [ ] **Phase 0.10:** page, accessible form/error, repeated data/status, history/OOB, custom CSS, and browser-module
   examples pass keyboard, focus, announcements, contrast, zoom/reflow, reduced motion, and
   no-JavaScript evidence.

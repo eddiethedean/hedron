@@ -29,12 +29,30 @@ from hedron_core.security import SafeUrl, check_url_purpose_for_attribute
 from hedron_core.typing_aliases import HtmlAttrValue
 
 
+def _load_escape() -> tuple[object, object]:
+    """Prefer optional hedron-native acceleration; fall back to pure Python."""
+    try:
+        from hedron_native import escape_attr as native_attr
+        from hedron_native import escape_text as native_text
+
+        return native_text, native_attr
+    except Exception:  # noqa: BLE001 — optional accel must never break import
+        return None, None
+
+
+_native_escape_text, _native_escape_attr = _load_escape()
+
+
 def escape_text(value: str) -> str:
     # Strip NUL so it cannot survive into HTML text nodes.
+    if _native_escape_text is not None:
+        return _native_escape_text(value)  # type: ignore[operator]
     return html_stdlib.escape(value.replace("\x00", ""), quote=False)
 
 
 def escape_attr(value: str) -> str:
+    if _native_escape_attr is not None:
+        return _native_escape_attr(value)  # type: ignore[operator]
     return html_stdlib.escape(value.replace("\x00", ""), quote=True)
 
 

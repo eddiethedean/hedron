@@ -33,6 +33,7 @@ status commentary, not a satisfied release gate.
 - [`v0.11` native Flask/Django depth](RELEASE_0_11.md) — published; Blueprint/`init_app`, Django forms/QuerySet, portable harness, HDJ inventory/CSP (owned Deferred follow-ups noted)
 - [`v0.12` data and visualization scale](RELEASE_0_12.md) — published
 - [`v0.13` advanced async and observability](RELEASE_0_13.md) — published; zero-Deferred for 0.13-owned rows
+- [`v0.14` portable runtimes and acceleration](RELEASE_0_14.md) — conformance kit, Java/Node runtimes, Rust accel, HDJ instrumentation
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),
   [release-gate-0.7.toml](release-gate-0.7.toml),
@@ -41,7 +42,8 @@ status commentary, not a satisfied release gate.
   [release-gate-0.10.toml](release-gate-0.10.toml),
   [release-gate-0.11.toml](release-gate-0.11.toml),
   [release-gate-0.12.toml](release-gate-0.12.toml),
-  [release-gate-0.13.toml](release-gate-0.13.toml)
+  [release-gate-0.13.toml](release-gate-0.13.toml),
+  [release-gate-0.14.toml](release-gate-0.14.toml)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.

@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workspace"
-version = "0.13.0"
+version = "0.14.0"
 description = "Hedron monorepo workspace"
 requires-python = ">=3.11,<3.15"
 readme = "README.md"
@@ -19,6 +19,8 @@ members = [
     "packages/hedron-flask",
     "packages/hedron-django",
     "packages/hedron-jinja",
+    "packages/hedron-conformance",
+    "packages/hedron-native",
 ]
 
 [dependency-groups]
@@ -32,6 +34,8 @@ dev = [
     "hedron-flask",
     "hedron-django",
     "hedron-jinja",
+    "hedron-conformance",
+    "hedron-native",
     "pytest>=8.3",
     "httpx>=0.28",
     "anyio>=4.8",
@@ -73,6 +77,8 @@ hedron-charts = { workspace = true }
 hedron-flask = { workspace = true }
 hedron-django = { workspace = true }
 hedron-jinja = { workspace = true }
+hedron-conformance = { workspace = true }
+hedron-native = { workspace = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]
@@ -86,7 +92,7 @@ markers = [
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "tests", "examples"]
+src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "tests", "examples"]
 extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
@@ -109,6 +115,8 @@ include = [
     "packages/hedron-flask/src",
     "packages/hedron-django/src",
     "packages/hedron-jinja/src",
+    "packages/hedron-conformance/src",
+    "packages/hedron-native/src",
 ]
 pythonVersion = "3.11"
 typeCheckingMode = "strict"

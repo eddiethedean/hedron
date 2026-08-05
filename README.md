@@ -12,7 +12,7 @@ on FastAPI + HTMX — without a Node.js frontend stack.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
-python -m pip install "hedron>=0.13.0" "uvicorn[standard]"
+python -m pip install "hedron>=0.14.0" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app
 python -m pip install -e .
@@ -26,7 +26,7 @@ Packages are **Beta**; pin versions for production. Details:
 If `hedron` is not on your PATH, use `python -m hedron`
 ([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).
 
-Prefer [uv](https://docs.astral.sh/uv/)? Use `uvx --from "hedron>=0.13.0" hedron new …`,
+Prefer [uv](https://docs.astral.sh/uv/)? Use `uvx --from "hedron>=0.14.0" hedron new …`,
 then `uv sync` and `uv run uvicorn app:app --reload`. Full steps:
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
@@ -61,11 +61,11 @@ train: Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet DataS
 Live SSE/WebSocket helpers are **experimental** — prefer polling behind buffering proxies.
 See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
-Current train: [`v0.13.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
+Current train: [`v0.14.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.13/).
+[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.14/).
 
 Existing apps on 0.8/0.9/0.10: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 

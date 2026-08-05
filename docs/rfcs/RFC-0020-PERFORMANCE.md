@@ -20,6 +20,19 @@ Measure endpoint dependency time, I/O preparation, component rendering, serializ
 
 Rust work requires a repeatable benchmark, a documented target improvement, representative production profiles, pure-Python semantic parity, wheel feasibility, and a fallback path.
 
+## Phase 0.14 native decision gate (D-048)
+
+| Field | `hedron-native` 0.14 proposal |
+|---|---|
+| Bottleneck | Bulk HTML text/attribute escaping during serialization (`escape_text` / `escape_attr`) |
+| Target improvement | ≥20% lower serialize-stage wall time on the published large-tree corpus vs pure Python |
+| Benchmark corpus | `tests/performance/test_native_accel_bench.py` (reference-app-scale element trees) |
+| Parity suite | Conformance escaping fixtures + `tests/unit/test_native_parity.py` |
+| Wheel plan | maturin/PyO3 optional wheel; source-build path; never a hard dependency of `hedron-core` |
+| Fallback | Automatic pure-Python path when the extension is absent or unloadable; semantics unchanged |
+
+FFI remains batch-oriented (escape helpers), never per-node tree walking in native code.
+
 ## Acceptance criteria
 
 - CI records baseline benchmarks without relying solely on brittle hard failures.

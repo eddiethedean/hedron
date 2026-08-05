@@ -1,4 +1,7 @@
-# Upgrade guide (0.8 → 0.13)
+# Upgrade
+
+Current train: **0.14.0**. From 0.13: optional `hedron[conformance]` / `hedron[native]`; HDJ loop/macro budgets and extension evidence (`HDJ-DEF-014`). See [What's new in 0.14](whats-new-0.14.md).
+
 
 Hedron publishes coordinated Beta trains. Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should
 upgrade through **0.9** / **0.10** / **0.11** / **0.12** to the **0.13.0** train (published) for
@@ -138,7 +141,7 @@ Plotly events/annotations, optional adapters with offline runtime pins, and HDJ
 
 1. Pin and upgrade to the coordinated `0.12.0` Beta train (`hedron`, adapters, extras together).
    Alpha packages `hedron-charts` / `hedron-sample-kit` remain on `0.1.x`.
-2. Prefer `hedron[dev]` / `hedron[jinja]` extras (now `>=0.13,<0.14`) with matching packages.
+2. Prefer `hedron[dev]` / `hedron[jinja]` extras (now `>=0.14,<0.15`) with matching packages.
 3. Adopt `TransformPlan` / saved views / column catalog APIs for new data surfaces; keep app-owned
    authz around Dask/Snowflake statements (SELECT/WITH only).
 4. Treat AG Grid as Community client + infinite only; Tabulator remains the default editor host.
@@ -154,7 +157,7 @@ status, live-transport claim honesty, and a complete `HED-*` catalog.
 ### Checklist: 0.12 → 0.13
 
 1. Pin and upgrade to the coordinated `0.13.0` Beta train (`hedron`, adapters, extras together).
-2. Prefer `hedron[dev]` / `hedron[jinja]` extras (now `>=0.13,<0.14`) with matching packages.
+2. Prefer `hedron[dev]` / `hedron[jinja]` extras (now `>=0.14,<0.15`) with matching packages.
 3. Optional: implement `async def prepare(self, ctx)` on components that need request-owned I/O
    before sync `render()`; keep constructors free of hidden I/O.
 4. Celery/RQ bridges now **require** `redis_client=` for durable multi-worker status — pass a shared

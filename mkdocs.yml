@@ -184,6 +184,7 @@ nav:
       - Why Hedron: guides/why-hedron.md
       - Production readiness: guides/production-readiness.md
       - Architecture: ARCHITECTURE.md
+      - Conformance kit: conformance/INDEX.md
       - Design principles: guides/design-principles.md
       - Understanding maturity labels: getting-started/how-to-read.md
       - Support: guides/support.md
@@ -376,12 +377,14 @@ nav:
         - CLI: api/CLI.md
         - API diagnostics: api/DIAGNOSTICS.md
         - HDJ (Jinja): api/JINJA.md
+        - Conformance kit: api/CONFORMANCE.md
   - Project:
     - Public roadmap: guides/roadmap.md
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - Upgrade (0.8 → 0.13): guides/upgrade.md
     - What's new: guides/release-notes.md
+    - What's new in 0.14: guides/whats-new-0.14.md
     - What's new in 0.13: guides/whats-new-0.13.md
     - What's new in 0.12: guides/whats-new-0.12.md
     - What's new in 0.11: guides/whats-new-0.11.md

@@ -545,6 +545,35 @@ def _cmd_graph(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_conformance(args: argparse.Namespace) -> int:
+    """Run the published language-neutral conformance kit (phase 0.14)."""
+    try:
+        from hedron_conformance.cli import main as conformance_main
+    except ImportError:
+        print(
+            "hedron-conformance is not installed. Install with: pip install 'hedron[conformance]'",
+            file=sys.stderr,
+        )
+        return 2
+    argv = ["run"]
+    if args.json:
+        argv.append("--json")
+    return int(conformance_main(argv))
+
+
+def _cmd_accel_status(args: argparse.Namespace) -> int:
+    """Report optional native acceleration status."""
+    try:
+        from hedron_native import __version__ as native_version
+        from hedron_native import native_available
+    except ImportError:
+        print("hedron-native: not installed (pure-Python serializer active)")
+        return 0
+    status = "loaded" if native_available() else "installed (fallback pure-Python)"
+    print(f"hedron-native {native_version}: {status}")
+    return 0
+
+
 def _cmd_audit_components(args: argparse.Namespace) -> int:
     _load_app(args.app)
     base = Path(getattr(args, "project", None) or Path.cwd()).resolve()
@@ -719,6 +748,19 @@ def main(argv: list[str] | None = None) -> None:
 
     audit_p = sub.add_parser("audit-components", help="Capability and package audit")
     audit_p.set_defaults(func=_cmd_audit_components)
+
+    conf_p = sub.add_parser(
+        "conformance",
+        help="Run the published language-neutral conformance kit (requires hedron[conformance])",
+    )
+    conf_p.add_argument("--json", action="store_true", help="Emit JSON report")
+    conf_p.set_defaults(func=_cmd_conformance)
+
+    accel_p = sub.add_parser(
+        "accel-status",
+        help="Report optional hedron-native acceleration status",
+    )
+    accel_p.set_defaults(func=_cmd_accel_status)
 
     dev_p = sub.add_parser("dev", help="Watch Python/Jinja/CSS/assets and rebuild atomically")
     dev_p.add_argument("--project", default=None)

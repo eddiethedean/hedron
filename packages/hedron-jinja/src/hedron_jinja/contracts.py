@@ -160,6 +160,51 @@ class HdjContext:
             raise RuntimeError("No framework CSRF builder is configured for this HDJ binding")
         return self._csrf_builder()
 
+    def scoped_style(self, declarations: str) -> str:
+        """Emit a scoped-style helper string for template use (phase 0.14).
+
+        Only layout custom properties are accepted (matching serializer policy).
+        """
+        text = declarations.strip().rstrip(";")
+        if not text:
+            return ""
+        # Allow ``--hedron-*`` custom properties only.
+        for part in text.split(";"):
+            part = part.strip()
+            if not part:
+                continue
+            if ":" not in part:
+                raise ValueError(f"invalid scoped style declaration: {part!r}")
+            name, _, value = part.partition(":")
+            name = name.strip()
+            if not name.startswith("--hedron-"):
+                raise ValueError(
+                    f"scoped_style only allows --hedron-* custom properties, got {name!r}"
+                )
+            if not value.strip():
+                raise ValueError(f"empty value for {name!r}")
+        return text
+
+    def validate_attr(self, name: str, value: object) -> str:
+        """Validate a static attribute name/value for template helpers (phase 0.14)."""
+        import re
+
+        if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z_][\w.-]*", name):
+            raise ValueError(f"unsafe attribute name: {name!r}")
+        lower = name.lower()
+        if lower.startswith("on") or lower in {"style", "srcdoc"}:
+            raise ValueError(f"forbidden attribute for validate_attr: {name!r}")
+        if value is None or value is False:
+            return ""
+        if value is True:
+            return lower
+        text = str(value)
+        if "\x00" in text:
+            raise ValueError("attribute value must not contain NUL")
+        from html import escape
+
+        return f'{lower}="{escape(text, quote=True)}"'
+
 
 def validate_template_name(name: str) -> None:
     if not name or "\x00" in name or "\\" in name or name.startswith("/"):

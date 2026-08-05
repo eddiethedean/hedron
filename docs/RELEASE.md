@@ -10,7 +10,9 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 ## Current published train
 
 **Last published train:** `v0.13.0` (packages `0.13.0`).
-**Next cut:** `v0.14.0` (capability phase) or `v0.13.x` (patch). See
+**Current cut target:** `v0.14.0` (portable runtimes and acceleration) — gate
+[`release-gate-0.14.toml`](acceptance/release-gate-0.14.toml) ready.
+**Next after 0.14:** `v0.15.0` (capability phase) or `v0.14.x` (patch). See
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [What’s ready](guides/whats-ready.md).
 
@@ -135,8 +137,17 @@ git push origin v0.13.0
 
 ## Next phase cut: `v0.14.0` (portable runtimes and acceleration)
 
-Follow the same coordinated-train procedure with `check_release_gate.py 0.14.0` once
-`docs/acceptance/release-gate-0.14.toml` exists.
+```bash
+uv run python scripts/check_release_gate.py 0.14.0
+uv run python scripts/verify_pkg_14.py
+git tag -a v0.14.0 -m "Hedron 0.14.0"
+git push origin v0.14.0
+```
+
+## Following phase cut: `v0.15.0` (data-app surface completeness)
+
+Follow the same coordinated-train procedure with `check_release_gate.py 0.15.0` once
+`docs/acceptance/release-gate-0.15.toml` exists.
 
 ## Scripts (maintainer)
 
