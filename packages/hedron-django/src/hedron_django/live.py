@@ -59,7 +59,11 @@ def stream_text(
 
 def poll_status_response(body: str, *, status: int = 200) -> HttpResponse:
     """Ordinary HTTP polling response — Supported fallback on all Django modes."""
-    response = HttpResponse(body, status=status, content_type="text/html; charset=utf-8")
+    response = HttpResponse(
+        content=body.encode("utf-8"),
+        status=status,
+        content_type="text/html; charset=utf-8",
+    )
     response["Cache-Control"] = "no-store"
     response["X-Hedron-Live"] = "poll"
     return response

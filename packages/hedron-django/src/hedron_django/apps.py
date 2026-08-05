@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from typing import Any, ClassVar
+
 from django.apps import AppConfig
 from django.core.checks import CheckMessage, Error, Warning, register
 
 __all__ = ["HedronDjangoConfig", "register_checks"]
 
-_CHECKS_REGISTERED = False
+_checks_registered = False
 
 
 class HedronDjangoConfig(AppConfig):
@@ -16,7 +18,7 @@ class HedronDjangoConfig(AppConfig):
     name = "hedron_django"
     label = "hedron_django"
     verbose_name = "Hedron Django"
-    default_auto_field = "django.db.models.AutoField"
+    default_auto_field: ClassVar[str] = "django.db.models.AutoField"
 
     def ready(self) -> None:
         register_checks()
@@ -24,13 +26,13 @@ class HedronDjangoConfig(AppConfig):
 
 def register_checks() -> None:
     """Register ``hedron.*`` system checks (safe to call multiple times)."""
-    global _CHECKS_REGISTERED
-    if _CHECKS_REGISTERED:
+    global _checks_registered
+    if _checks_registered:
         return
-    _CHECKS_REGISTERED = True
+    _checks_registered = True
 
-    @register(deploy=True)
-    def hedron_django_version_check(app_configs, **kwargs):  # type: ignore[no-untyped-def]
+    @register(deploy=True)  # type: ignore[misc,untyped-decorator]
+    def hedron_django_version_check(app_configs: Any, **kwargs: Any) -> list[CheckMessage]:
         del app_configs, kwargs
         messages: list[CheckMessage] = []
         import django
@@ -45,8 +47,8 @@ def register_checks() -> None:
             )
         return messages
 
-    @register()
-    def hedron_middleware_check(app_configs, **kwargs):  # type: ignore[no-untyped-def]
+    @register()  # type: ignore[misc,untyped-decorator]
+    def hedron_middleware_check(app_configs: Any, **kwargs: Any) -> list[CheckMessage]:
         del app_configs, kwargs
         from django.conf import settings
 
@@ -68,8 +70,8 @@ def register_checks() -> None:
             )
         return messages
 
-    @register()
-    def hedron_capability_honesty_check(app_configs, **kwargs):  # type: ignore[no-untyped-def]
+    @register()  # type: ignore[misc,untyped-decorator]
+    def hedron_capability_honesty_check(app_configs: Any, **kwargs: Any) -> list[CheckMessage]:
         del app_configs, kwargs
         from hedron_core.adapter import DJANGO_CAPABILITIES
         from hedron_django.app import QUERYSET_DATASOURCE_DEFERRED

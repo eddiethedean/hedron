@@ -90,9 +90,9 @@ def _choices(bound: BoundField) -> tuple[tuple[str, str], ...]:
     return tuple((str(value), str(label)) for value, label in raw)
 
 
-def form_fields(form: BaseForm) -> list[NodeLike]:
+def form_fields(form: BaseForm) -> list[Any]:
     """Render visible bound fields as Hedron form controls."""
-    nodes: list[NodeLike] = []
+    nodes: list[Any] = []
     for bound in form:  # type: ignore[assignment]
         if not isinstance(bound, BoundField):
             continue
@@ -105,7 +105,7 @@ def form_fields(form: BaseForm) -> list[NodeLike]:
         str_value = "" if value is None else str(value)
         error = "; ".join(str(e) for e in bound.errors) or None
         kind = _widget_kind(bound)
-        control: NodeLike
+        control: Any
         required = bool(getattr(bound.field, "required", False))
         if kind == "textarea":
             control = TextArea(name=name, value=str_value)
@@ -158,9 +158,9 @@ def form_to_nodes(
     *,
     request: Any | None = None,
     include_csrf: bool = True,
-) -> list[NodeLike]:
+) -> list[Any]:
     """Full form body: optional CSRF, non-field errors, then fields."""
-    nodes: list[NodeLike] = []
+    nodes: list[Any] = []
     if include_csrf and request is not None:
         nodes.append(csrf_hidden_input(request))
     err = form_errors_node(form)
@@ -175,14 +175,15 @@ def formset_to_nodes(
     *,
     request: Any | None = None,
     include_csrf: bool = True,
-) -> list[NodeLike]:
+) -> list[Any]:
     """Render a formset management form + each form's fields."""
-    nodes: list[NodeLike] = []
+    nodes: list[Any] = []
     if include_csrf and request is not None:
         nodes.append(csrf_hidden_input(request))
     nodes.append(TrustedHtml.reviewed(str(formset.management_form), source="django.forms.formset"))
-    if formset.non_form_errors():
-        nodes.append(Alert("\n".join(str(e) for e in formset.non_form_errors()), tone="danger"))
+    non_form = formset.non_form_errors()
+    if non_form:
+        nodes.append(Alert("\n".join(str(e) for e in non_form), tone="danger"))
     for form in formset:
         nodes.append(Stack(*form_to_nodes(form, request=None, include_csrf=False)))
     return nodes

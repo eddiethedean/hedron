@@ -7,47 +7,39 @@ from collections.abc import Generator, Iterator, Mapping
 from contextlib import contextmanager
 from typing import Any
 
+from hedron.testing.adapters import (
+    AdapterAppFixture,
+    AdapterResponse,
+    assert_fragment_body,
+    assert_html_contains,
+    assert_htmx_trigger,
+    assert_page_document,
+    django_fixture,
+    fastapi_fixture,
+    flask_fixture,
+)
 from hedron_core.registry import get_registry
 from hedron_core.rendering import RenderMode, RenderResult, render
 
 __all__ = [
-    "assert_render_result",
-    "assert_renders",
-    "fragment_client",
-    "iter_named_examples",
-    "named_example",
-    "normalize_snapshot_html",
-    "override_dependencies",
-    "render_html",
-    # Portable adapter harness (0.11)
     "AdapterAppFixture",
     "AdapterResponse",
     "assert_fragment_body",
     "assert_html_contains",
     "assert_htmx_trigger",
     "assert_page_document",
+    "assert_render_result",
+    "assert_renders",
     "django_fixture",
     "fastapi_fixture",
     "flask_fixture",
+    "fragment_client",
+    "iter_named_examples",
+    "named_example",
+    "normalize_snapshot_html",
+    "override_dependencies",
+    "render_html",
 ]
-
-
-def __getattr__(name: str) -> Any:
-    if name in {
-        "AdapterAppFixture",
-        "AdapterResponse",
-        "assert_fragment_body",
-        "assert_html_contains",
-        "assert_htmx_trigger",
-        "assert_page_document",
-        "django_fixture",
-        "fastapi_fixture",
-        "flask_fixture",
-    }:
-        from hedron.testing import adapters as _adapters
-
-        return getattr(_adapters, name)
-    raise AttributeError(name)
 
 
 def render_html(node: Any, *, mode: RenderMode = RenderMode.FRAGMENT) -> str:

@@ -98,7 +98,9 @@ class DjangoQuerySetDataSource:
 
                 data.update(model_to_dict(obj))
             except Exception:  # noqa: BLE001
-                for field in getattr(obj, "_meta", None).fields if hasattr(obj, "_meta") else ():
+                meta = getattr(obj, "_meta", None)
+                fields = getattr(meta, "fields", ()) if meta is not None else ()
+                for field in fields:
                     data[field.name] = getattr(obj, field.name, None)
         data.setdefault(self._key_field, getattr(obj, "pk", data.get(self._key_field)))
         return data
@@ -133,9 +135,10 @@ class DjangoQuerySetDataSource:
         if q.search and self._search_fields:
             from django.db.models import Q
 
-            clause = Q()
+            q_type: Any = Q
+            clause: Any = q_type()
             for field_name in self._search_fields:
-                clause |= Q(**{f"{field_name}__icontains": q.search})
+                clause = clause | q_type(**{f"{field_name}__icontains": q.search})
             qs = qs.filter(clause)
             diag.record()
 
@@ -170,7 +173,7 @@ class DjangoQuerySetDataSource:
         if self._apply_changes is None:
             return DataSaveResult(
                 ok=False,
-                field_errors=(
+                errors=(
                     FieldError(
                         row_key="*",
                         field=None,

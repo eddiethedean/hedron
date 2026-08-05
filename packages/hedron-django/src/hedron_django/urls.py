@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable, Sequence
 from typing import Any
 
-from django.urls import URLPattern, path
+from django.urls import URLPattern, URLResolver, path
 
 from hedron_core.addressable import AddressableDescriptor
 from hedron_django.routing import hedron_view
@@ -18,7 +18,7 @@ def component_path(
     view: Callable[..., Any],
     *,
     name: str,
-) -> URLPattern:
+) -> URLPattern | URLResolver:
     """Wrap ``view`` with :func:`hedron_view` and return a named ``path``."""
     return path(route, hedron_view(view), name=name)
 
@@ -28,7 +28,7 @@ def include_component_path(
     *,
     route: str,
     name: str | None = None,
-) -> URLPattern:
+) -> URLPattern | URLResolver:
     """Expose an ``@addressable`` factory under Django URL configuration."""
 
     ep = name or f"hedron_{descriptor.logical_id.replace(':', '_').replace('.', '_')}"
@@ -40,6 +40,6 @@ def include_component_path(
     return path(route, hedron_view(view), name=ep)
 
 
-def hedron_paths(patterns: Sequence[URLPattern]) -> list[URLPattern]:
+def hedron_paths(patterns: Sequence[URLPattern | URLResolver]) -> list[URLPattern | URLResolver]:
     """Identity helper documenting a reusable include()-able pattern list."""
     return list(patterns)
