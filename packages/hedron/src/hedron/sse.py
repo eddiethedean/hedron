@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 from collections.abc import AsyncIterator, Callable, Iterator, Mapping
-from typing import Any
 
 from fastapi import HTTPException, status
 from fastapi.responses import StreamingResponse
+from starlette.background import BackgroundTask
 from starlette.requests import Request
 
-from hedron_core.jobs import JobBackend, JobState, get_job_backend, job_authorized_http
+from hedron_core.jobs import JobBackend, JobState, JobStatus, get_job_backend, job_authorized_http
 from hedron_core.live import SseEvent, encode_sse, iter_sse_bytes, job_status_sse_events
 from hedron_core.rendering import render
 
@@ -38,7 +38,7 @@ class SseResponse(StreamingResponse):
         *,
         status_code: int = 200,
         headers: Mapping[str, str] | None = None,
-        background: Any = None,
+        background: BackgroundTask | None = None,
     ) -> None:
         hdrs = {
             "Cache-Control": "no-store",
@@ -88,7 +88,7 @@ def job_status_sse_response(
     *,
     backend: JobBackend | None = None,
     request: Request | None = None,
-    html_message: Callable[[Any], str] | None = None,
+    html_message: Callable[[JobStatus], str] | None = None,
     poll_interval_seconds: float | None = None,
     auth_subject: str | None = None,
     tenant_id: str | None = None,
@@ -109,7 +109,7 @@ def job_status_sse_response(
     if not job_authorized_http(initial, auth_subject=auth_subject, tenant_id=tenant_id):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Job access forbidden")
 
-    def _html(status_obj: Any) -> str:
+    def _html(status_obj: JobStatus) -> str:
         if html_message is not None:
             return html_message(status_obj)
         from hedron_core.builtins import Status

@@ -6,12 +6,13 @@ import logging
 import warnings
 from collections.abc import Callable, Sequence
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, ParamSpec, TypeVar
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.requests import Request
 
+from hedron.interaction import FragmentRegion
 from hedron.lifespan import compose_lifespan
 from hedron.openapi import install_openapi
 from hedron.routing.router import HedronRouter
@@ -22,6 +23,8 @@ from hedron_core.compile_gate import is_production_env
 from hedron_core.theme import ensure_default_theme_registered
 
 ExplorerMode = Literal["off", "development", "secured"]
+P = ParamSpec("P")
+R = TypeVar("R")
 
 _DEFAULT_SESSION_SECRET = "hedron-dev-secret-change-me"
 logger = logging.getLogger("hedron")
@@ -204,10 +207,16 @@ class Hedron(FastAPI):
     def include_router(self, router: Any, *args: Any, **kwargs: Any) -> None:  # type: ignore[override]
         super().include_router(router, *args, **kwargs)
 
-    def page(self, path: str, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-        decorator = self._root_router.page(path, **kwargs)
+    def page(
+        self,
+        path: str,
+        *,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        decorator = self._root_router.page(path, fragment_regions=fragment_regions, **kwargs)
 
-        def wrap(fn: Callable[..., Any]) -> Callable[..., Any]:
+        def wrap(fn: Callable[P, R]) -> Callable[P, R]:
             decorator(fn)
             if self._root_router.routes:
                 route = self._root_router.routes[-1]
@@ -218,11 +227,15 @@ class Hedron(FastAPI):
         return wrap
 
     def component(
-        self, path: str, **kwargs: Any
-    ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-        decorator = self._root_router.component(path, **kwargs)
+        self,
+        path: str,
+        *,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        decorator = self._root_router.component(path, fragment_regions=fragment_regions, **kwargs)
 
-        def wrap(fn: Callable[..., Any]) -> Callable[..., Any]:
+        def wrap(fn: Callable[P, R]) -> Callable[P, R]:
             decorator(fn)
             if self._root_router.routes:
                 route = self._root_router.routes[-1]
@@ -232,12 +245,10 @@ class Hedron(FastAPI):
 
         return wrap
 
-    def action(
-        self, path: str, **kwargs: Any
-    ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def action(self, path: str, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         decorator = self._root_router.action(path, **kwargs)
 
-        def wrap(fn: Callable[..., Any]) -> Callable[..., Any]:
+        def wrap(fn: Callable[P, R]) -> Callable[P, R]:
             decorator(fn)
             if self._root_router.routes:
                 route = self._root_router.routes[-1]

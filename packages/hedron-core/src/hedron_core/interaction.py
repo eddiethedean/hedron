@@ -6,13 +6,14 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal
 
-from hedron_core.component import Component, NodeLike
+from hedron_core.component import NodeLike
 from hedron_core.htmx_contract import (
     APPROVED_RESPONSE_HEADERS,
     HtmxContext,
     approved_headers,
     safe_css_selector,
 )
+from hedron_core.typing_aliases import HxLocation, InteractionTrace, JsonValue
 
 __all__ = [
     "CacheHint",
@@ -69,7 +70,7 @@ class FragmentRegion:
 
 @dataclass(frozen=True, slots=True)
 class OobUpdate:
-    content: NodeLike | Component[Any]
+    content: NodeLike
     swap: str = "true"
     select: str | None = None
     element_id: str | None = None
@@ -130,14 +131,14 @@ class HtmxRequestFacts:
 class InteractionResult:
     """Primary content plus validated HTMX mechanics (headers stay inspectable)."""
 
-    content: NodeLike | Component[Any] | None = None
+    content: NodeLike | None = None
     status_code: int = 200
     target: str | None = None
     swap: str | None = None
     oob: tuple[OobUpdate, ...] = ()
-    trigger: str | Mapping[str, Any] | None = None
-    trigger_after_swap: str | Mapping[str, Any] | None = None
-    trigger_after_settle: str | Mapping[str, Any] | None = None
+    trigger: str | Mapping[str, JsonValue] | None = None
+    trigger_after_swap: str | Mapping[str, JsonValue] | None = None
+    trigger_after_settle: str | Mapping[str, JsonValue] | None = None
     push_url: str | bool | None = None
     replace_url: str | bool | None = None
     redirect: str | None = None
@@ -145,7 +146,7 @@ class InteractionResult:
     retarget: str | None = None
     reswap: str | None = None
     reselect: str | None = None
-    location: str | Mapping[str, Any] | None = None
+    location: str | HxLocation | Mapping[str, JsonValue] | None = None
     history: HistoryMode = "none"
     cache: CacheHint | None = "vary-htmx"
     concurrency: str | None = None
@@ -323,7 +324,7 @@ def interaction_headers(result: InteractionResult) -> dict[str, str]:
     return headers
 
 
-def interaction_trace(result: InteractionResult) -> dict[str, Any]:
+def interaction_trace(result: InteractionResult) -> InteractionTrace:
     return {
         "status_code": result.status_code,
         "target": result.target or result.retarget,
@@ -405,7 +406,7 @@ def form_sync_attrs(policy: InteractionPolicy | None = None) -> dict[str, str]:
     return attrs
 
 
-def oob_swap(element_id: str, content: NodeLike | Component[Any], *, swap: str = "true") -> Any:
+def oob_swap(element_id: str, content: NodeLike, *, swap: str = "true") -> NodeLike:
     """Mark a node for HTMX out-of-band swap via hx-swap-oob (framework-neutral)."""
     if not element_id.replace("-", "").replace("_", "").isalnum():
         raise ValueError("Unsafe OOB element id")
@@ -426,14 +427,14 @@ def _bound_oob_element_id(
     return None
 
 
-def materialize_interaction_nodes(result: InteractionResult) -> Any | None:
+def materialize_interaction_nodes(result: InteractionResult) -> NodeLike | None:
     """Authorize OOB updates and return a renderable node tree (or None)."""
     from hedron_core.builtins import Fragment
 
     regions = result.policy.declared_regions if result.policy is not None else ()
     if not result.oob:
         return result.content
-    nodes: list[Any] = []
+    nodes: list[NodeLike] = []
     if result.content is not None:
         nodes.append(result.content)
     for update in result.oob:
@@ -442,7 +443,7 @@ def materialize_interaction_nodes(result: InteractionResult) -> Any | None:
         if bound_id is not None:
             # Always wrap to the authorized id so caller content cannot emit a
             # different hx-swap-oob target under declared regions.
-            node: Any = oob_swap(bound_id, update.content, swap=update.swap)
+            node: NodeLike = oob_swap(bound_id, update.content, swap=update.swap)
         else:
             node = update.content
         nodes.append(node)

@@ -5,13 +5,14 @@ from __future__ import annotations
 import inspect
 import json
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Model, Props
 from hedron_core.security import Secret
+from hedron_core.typing_aliases import JsonValue
 from hedron_data.columns import Column, resolve_columns
 from hedron_data.normalize import normalize_rows
 from hedron_data.sources import (
@@ -28,8 +29,8 @@ from hedron_data.sources import (
 SaveMode = Literal["batch", "row", "cell"]
 
 
-def _public_row(row: Mapping[str, Any], columns: Sequence[Column]) -> dict[str, Any]:
-    out: dict[str, Any] = {}
+def _public_row(row: Mapping[str, object], columns: Sequence[Column]) -> dict[str, JsonValue]:
+    out: dict[str, JsonValue] = {}
     for c in columns:
         if c.hidden:
             continue
@@ -37,7 +38,7 @@ def _public_row(row: Mapping[str, Any], columns: Sequence[Column]) -> dict[str, 
         if c.secret or isinstance(val, Secret):
             out[c.name] = "***"
         else:
-            out[c.name] = val
+            out[c.name] = cast(JsonValue, val)
     return out
 
 
@@ -68,7 +69,7 @@ def filter_writable_changes(
             )
             continue
         updates.append(upd)
-    inserts: list[Any] = []
+    inserts: list[Mapping[str, JsonValue]] = []
     for row in changes.inserts:
         if not isinstance(row, Mapping):
             errors.append(
@@ -79,8 +80,8 @@ def filter_writable_changes(
                 )
             )
             continue
-        cleaned = {
-            k: v
+        cleaned: dict[str, JsonValue] = {
+            str(k): cast(JsonValue, v)
             for k, v in row.items()
             if (k == key_field or k in writable_fields)
             and k not in read_only_fields
@@ -93,7 +94,7 @@ def filter_writable_changes(
             and key_field not in hidden_fields
         ):
             # Identity key may be read-only but still required on insert.
-            cleaned[key_field] = row[key_field]
+            cleaned[key_field] = cast(JsonValue, row[key_field])
         inserts.append(cleaned)
     deletes: list[str] = []
     if changes.deletes:
@@ -135,7 +136,7 @@ class DataEditor(Component[DataEditorProps]):
 
     def __init__(
         self,
-        rows: Any = None,
+        rows: object = None,
         *,
         key: str = "editor",
         row_model: type[Model] | None = None,
@@ -211,14 +212,18 @@ class DataEditor(Component[DataEditorProps]):
             self._version = None
             self._total = len(raw)
 
-        built_rows: list[dict[str, Any]] = []
+        built_rows: list[dict[str, object]] = []
         for r in raw:
             if isinstance(r, Mapping):
-                built_rows.append(dict(r))
+                built_rows.append({str(k): v for k, v in r.items()})
             else:
                 built_rows.append(dict(r.model_dump()))  # type: ignore[union-attr]
         self._rows = built_rows
-        self._columns = resolve_columns(row_model=row_model, columns=columns, rows=self._rows)
+        self._columns = resolve_columns(
+            row_model=row_model,
+            columns=columns,
+            rows=cast(Sequence[Mapping[str, Any]], self._rows),
+        )
 
     @property
     def on_save(self) -> Callable[[DataChanges[Any]], DataSaveResult[Any]] | None:
@@ -295,7 +300,7 @@ class DataEditor(Component[DataEditorProps]):
             )
         return DataSaveResult(ok=True, accepted=cleaned, version=self._version)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         col_meta = [
             {
                 "field": c.name,
@@ -340,15 +345,15 @@ class DataTableFallback:
     def __init__(
         self,
         columns: Sequence[Column],
-        rows: Sequence[Mapping[str, Any]],
+        rows: Sequence[Mapping[str, JsonValue]],
         caption: str | None,
     ) -> None:
         self._columns = [c for c in columns if not c.hidden and not c.secret]
         self._rows = rows
         self._caption = caption
 
-    def render(self) -> Any:
-        children: list[Any] = []
+    def render(self) -> NodeLike:
+        children: list[NodeLike] = []
         if self._caption:
             children.append(html.caption(self._caption))
         children.append(

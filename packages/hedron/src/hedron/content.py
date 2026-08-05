@@ -146,6 +146,6 @@ def register_content_renderers() -> None:
             predicate=lambda v: isinstance(v, str) and v.lstrip().startswith("#"),
             optional_package="hedron[markdown]",
             explanation="Markdown-looking strings → Markdown component",
-            factory=lambda v: Markdown(v),
+            factory=lambda v: Markdown(v if isinstance(v, str) else str(v)),
         )
     )

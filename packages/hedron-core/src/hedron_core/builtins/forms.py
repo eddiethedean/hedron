@@ -6,10 +6,11 @@ from collections.abc import Sequence
 from typing import Any, Literal
 
 from hedron_core.builtins._base import collect_children, dom_id_part
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
+from hedron_core.typing_aliases import HtmlAttrValue
 
 
 class FormProps(Props):
@@ -22,8 +23,8 @@ class Form(Component[FormProps]):
 
     def __init__(
         self,
-        *nodes: Any,
-        children: Any = None,
+        *nodes: NodeLike,
+        children: NodeLike = None,
         action: SafeUrl | str | None = None,
         method: Literal["get", "post"] = "post",
         **kwargs: Any,
@@ -42,8 +43,8 @@ class Form(Component[FormProps]):
         self._children = collect_children(*nodes, children=children)
         self._html_attrs = extras
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {"method": self.props.method, **self._html_attrs}
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {"method": self.props.method, **self._html_attrs}
         if self.props.action is not None:
             attrs["action"] = self.props.action
         return html.form(*self._children, **attrs)
@@ -60,8 +61,8 @@ class Label(Component[LabelProps]):
     def __init__(self, text: str, *, for_: str | None = None, **kwargs: Any) -> None:
         super().__init__(LabelProps(text=text, for_=for_, **kwargs))
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {}
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {}
         if self.props.for_:
             attrs["for_"] = self.props.for_
         return html.label(self.props.text, **attrs)
@@ -85,7 +86,7 @@ class FormField(Component[FormFieldProps]):
         *,
         name: str,
         label: str,
-        control: Any,
+        control: NodeLike,
         id: str | None = None,
         help: str | None = None,
         required: bool = False,
@@ -105,7 +106,7 @@ class FormField(Component[FormFieldProps]):
         )
         self._slot_values["control"] = control
 
-    def _bind_control(self, control: Any, *, field_id: str) -> Any:
+    def _bind_control(self, control: NodeLike, *, field_id: str) -> NodeLike:
         """Bind control id / required via a copied control; never mutate shared props."""
         help_id = f"{field_id}-help" if self.props.help else None
         error_id = f"{field_id}-error" if self.props.error else None
@@ -160,14 +161,14 @@ class FormField(Component[FormFieldProps]):
                 and any(aria.values())
             )
             if needs_html_merge and not applied_via_props:
-                node: Any = bound
+                node: NodeLike = bound
                 while isinstance(node, Component):
                     node = node.render()
                 return self._apply_aria(node, aria, element_id=field_id)
             return bound
         return self._apply_aria(control, aria, element_id=field_id)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         field_id = self.props.id or (
             f"field-{dom_id_part(self.props.name)}-{self.render_instance_id()[2:10]}"
         )
@@ -179,7 +180,7 @@ class FormField(Component[FormFieldProps]):
             self._slot_values["control"], Checkbox
         )
 
-        parts: list[Any] = []
+        parts: list[NodeLike] = []
         if not skip_outer_label:
             parts.append(Label(self.props.label, for_=field_id))
         # Keep the bound component in the tree so it receives normal validation,
@@ -198,13 +199,15 @@ class FormField(Component[FormFieldProps]):
             )
         return html.div(*parts, class_="hedron-form-field")
 
-    def _apply_aria(self, node: Any, aria: dict[str, Any], *, element_id: str | None = None) -> Any:
+    def _apply_aria(
+        self, node: NodeLike, aria: dict[str, Any], *, element_id: str | None = None
+    ) -> NodeLike:
         from hedron_core.html import _NativeElement
 
         if not isinstance(node, _NativeElement):
             return node
 
-        def merge_attrs(el: Any) -> Any:
+        def merge_attrs(el: _NativeElement) -> _NativeElement:
             attrs = dict(el.attributes)
             if element_id is not None:
                 attrs["id"] = element_id
@@ -287,8 +290,8 @@ class TextInput(Component[TextInputProps]):
             )
         )
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
             "type": self.props.type,
             "name": self.props.name,
             "id": self.props.id,
@@ -354,8 +357,8 @@ class TextArea(Component[TextAreaProps]):
             )
         )
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
             "name": self.props.name,
             "id": self.props.id,
             "rows": self.props.rows,
@@ -411,14 +414,14 @@ class Select(Component[SelectProps]):
         self._options = tuple(options)
         self._value = value
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         opts = []
         for val, label in self._options:
-            attrs: dict[str, Any] = {"value": val}
+            attrs: dict[str, HtmlAttrValue] = {"value": val}
             if self._value is not None and self._value == val:
                 attrs["selected"] = True
             opts.append(html.option(label, **attrs))
-        attrs: dict[str, Any] = {
+        attrs: dict[str, HtmlAttrValue] = {
             "name": self.props.name,
             "id": self.props.id,
         }
@@ -473,8 +476,8 @@ class Checkbox(Component[CheckboxProps]):
             )
         )
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
             "type": "checkbox",
             "name": self.props.name,
             "id": self.props.id,
@@ -522,14 +525,14 @@ class RadioGroup(Component[RadioGroupProps]):
         self._options = tuple(options)
         self._value = value
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         inputs = []
         group_id = self.props.id or (
             f"field-{dom_id_part(self.props.name)}-{self.render_instance_id()[2:10]}"
         )
         for index, (val, label) in enumerate(self._options):
             fid = f"{group_id}-{index}"
-            attrs: dict[str, Any] = {
+            attrs: dict[str, HtmlAttrValue] = {
                 "type": "radio",
                 "name": self.props.name,
                 "id": fid,
@@ -564,7 +567,7 @@ class SubmitButton(Component[SubmitButtonProps]):
     def __init__(self, label: str = "Submit", *, disabled: bool = False, **kwargs: Any) -> None:
         super().__init__(SubmitButtonProps(label=label, disabled=disabled, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.button(
             self.props.label,
             type="submit",
@@ -583,7 +586,7 @@ class FormErrors(Component[FormErrorsProps]):
     def __init__(self, errors: Sequence[str], **kwargs: Any) -> None:
         super().__init__(FormErrorsProps(errors=tuple(errors), **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         if not self.props.errors:
             return None
         return html.div(

@@ -6,7 +6,7 @@ import re
 from collections.abc import Sequence
 from typing import Any
 
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.models import Props
 
 
@@ -24,7 +24,7 @@ class ElementProps(Props):
 _DOM_ID_PART_RE = re.compile(r"[^A-Za-z0-9_-]+")
 
 
-def dom_id_part(value: Any, *, fallback: str = "item") -> str:
+def dom_id_part(value: object, *, fallback: str = "item") -> str:
     """Return a selector-friendly fragment for framework-generated DOM IDs."""
     normalized = _DOM_ID_PART_RE.sub("-", str(value)).strip("-")
     return normalized or fallback
@@ -35,13 +35,13 @@ def class_names(base: str, custom: str | None = None) -> str:
     return " ".join(part for part in (base, custom) if part)
 
 
-def collect_children(*nodes: Any, children: Any = None) -> tuple[Any, ...]:
+def collect_children(*nodes: NodeLike, children: NodeLike = None) -> tuple[NodeLike, ...]:
     """Normalize the two supported container-construction styles.
 
     Container-like built-ins accept either positional children or a ``children=``
     value. A sole positional sequence is flattened for parity with ``children=``.
     """
-    collected: list[Any] = []
+    collected: list[NodeLike] = []
     if (
         len(nodes) == 1
         and isinstance(nodes[0], Sequence)
@@ -58,7 +58,9 @@ def collect_children(*nodes: Any, children: Any = None) -> tuple[Any, ...]:
     return tuple(collected)
 
 
-def take_children(component: Component[Any], *nodes: Any, children: Any = None) -> tuple[Any, ...]:
+def take_children(
+    component: Component[Any], *nodes: NodeLike, children: NodeLike = None
+) -> tuple[NodeLike, ...]:
     """Backward-compatible helper that also includes fluent ``.children(...)`` values."""
     collected = list(collect_children(*nodes, children=children))
     if component._children:

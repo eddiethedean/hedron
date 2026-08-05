@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from typing import Any, Literal
 
 from django.forms import BaseForm, BaseFormSet, BoundField
+from django.http import HttpRequest
 from django.middleware.csrf import get_token
 from django.utils.html import format_html
 
@@ -37,7 +38,7 @@ __all__ = [
 _TextType = Literal["text", "email", "password", "search", "tel", "url"]
 
 
-def csrf_hidden_input(request: Any) -> TrustedHtml:
+def csrf_hidden_input(request: HttpRequest) -> TrustedHtml:
     """Return a Django CSRF hidden input as trusted HTML for forms."""
     token = get_token(request)
     return TrustedHtml.reviewed(
@@ -156,7 +157,7 @@ def form_errors_node(form: BaseForm) -> NodeLike | None:
 def form_to_nodes(
     form: BaseForm,
     *,
-    request: Any | None = None,
+    request: HttpRequest | None = None,
     include_csrf: bool = True,
 ) -> list[Any]:
     """Full form body: optional CSRF, non-field errors, then fields."""
@@ -173,7 +174,7 @@ def form_to_nodes(
 def formset_to_nodes(
     formset: BaseFormSet,
     *,
-    request: Any | None = None,
+    request: HttpRequest | None = None,
     include_csrf: bool = True,
 ) -> list[Any]:
     """Render a formset management form + each form's fields."""
@@ -192,9 +193,9 @@ def formset_to_nodes(
 def validation_interaction(
     form: BaseForm,
     *,
-    request: Any | None = None,
+    request: HttpRequest | None = None,
     explanation: str = "django form validation",
-    extra: Mapping[str, Any] | None = None,
+    extra: Mapping[str, object] | None = None,
 ) -> InteractionResult:
     """Build an InteractionResult for invalid forms (HTMX and non-HTMX parity)."""
     del extra

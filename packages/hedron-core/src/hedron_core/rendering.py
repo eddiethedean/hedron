@@ -6,7 +6,7 @@ from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import StrEnum
 from types import GeneratorType, MappingProxyType
-from typing import Any
+from typing import Any, cast
 
 from hedron_core._nodes import (
     ComponentBoundaryNode,
@@ -26,6 +26,7 @@ from hedron_core.component import (
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, error, make_diagnostic
 from hedron_core.html import _NativeElement, _TrustedRaw
 from hedron_core.security import Secret
+from hedron_core.typing_aliases import RenderTrace
 
 __all__ = [
     "AssetRef",
@@ -70,7 +71,7 @@ class RenderResult:
     headers: Mapping[str, str] = field(default_factory=lambda: MappingProxyType({}))
     identity_map: Mapping[str, str] = field(default_factory=lambda: MappingProxyType({}))
     diagnostics: tuple[Diagnostic, ...] = ()
-    trace: Mapping[str, Any] | None = None
+    trace: RenderTrace | Mapping[str, object] | None = None
 
 
 class _RenderState:
@@ -161,7 +162,7 @@ class RenderSession:
         )
 
 
-def _reject_generator(value: Any) -> None:
+def _reject_generator(value: object) -> None:
     if isinstance(value, GeneratorType) or (
         isinstance(value, Iterator) and not isinstance(value, (list, tuple, str, bytes))
     ):
@@ -177,7 +178,7 @@ def _reject_generator(value: Any) -> None:
 
 
 def _normalize(
-    value: Any,
+    value: NodeLike,
     state: _RenderState,
     *,
     depth: int,
@@ -228,16 +229,16 @@ def _normalize(
     # Honor public ComponentNode protocol / __hedron_node__ contract.
     hedron_node = getattr(value, "__hedron_node__", None)
     if callable(hedron_node) and not isinstance(value, type):
-        return _normalize(hedron_node(), state, depth=depth + 1)
+        return _normalize(cast(NodeLike, hedron_node()), state, depth=depth + 1)
     if isinstance(value, ComponentNode) and not isinstance(value, Component):
         node_fn = getattr(value, "__hedron_node__", None)
         if callable(node_fn):
-            return _normalize(node_fn(), state, depth=depth + 1)
+            return _normalize(cast(NodeLike, node_fn()), state, depth=depth + 1)
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
         _reject_generator(value)
         nodes: list[Node] = []
         for item in value:
-            nodes.extend(_normalize(item, state, depth=depth + 1))
+            nodes.extend(_normalize(cast(NodeLike, item), state, depth=depth + 1))
         return (FragmentNode(tuple(nodes)),)
 
     _reject_generator(value)

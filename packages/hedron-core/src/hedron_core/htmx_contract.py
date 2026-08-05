@@ -6,8 +6,9 @@ import json
 import re
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any
 from urllib.parse import urlparse
+
+from hedron_core.typing_aliases import HxLocation, HxTriggerPayload, JsonValue
 
 __all__ = [
     "APPROVED_REQUEST_HEADERS",
@@ -210,7 +211,9 @@ def _require_local_path(url: str, header_name: str) -> str:
     return url
 
 
-def _validate_location_mapping(location: Mapping[str, Any]) -> dict[str, Any]:
+def _validate_location_mapping(
+    location: Mapping[str, JsonValue] | HxLocation,
+) -> dict[str, JsonValue]:
     unknown = set(location) - _HX_LOCATION_KEYS
     if unknown:
         raise ValueError(f"Unapproved HX-Location keys: {sorted(unknown)}")
@@ -218,7 +221,7 @@ def _validate_location_mapping(location: Mapping[str, Any]) -> dict[str, Any]:
     if not isinstance(path, str):
         raise ValueError("HX-Location mapping requires a local path")
     _require_local_path(path, "HX-Location")
-    cleaned: dict[str, Any] = {"path": path}
+    cleaned: dict[str, JsonValue] = {"path": path}
     target = location.get("target")
     if target is not None:
         if not isinstance(target, str) or not safe_css_selector(target):
@@ -244,9 +247,9 @@ def _validate_location_mapping(location: Mapping[str, Any]) -> dict[str, Any]:
 
 def approved_headers(
     *,
-    trigger: str | Mapping[str, Any] | None = None,
-    trigger_after_swap: str | Mapping[str, Any] | None = None,
-    trigger_after_settle: str | Mapping[str, Any] | None = None,
+    trigger: HxTriggerPayload | Mapping[str, JsonValue] | None = None,
+    trigger_after_swap: HxTriggerPayload | Mapping[str, JsonValue] | None = None,
+    trigger_after_settle: HxTriggerPayload | Mapping[str, JsonValue] | None = None,
     redirect: str | None = None,
     push_url: str | bool | None = None,
     replace_url: str | bool | None = None,
@@ -254,7 +257,7 @@ def approved_headers(
     retarget: str | None = None,
     reswap: str | None = None,
     reselect: str | None = None,
-    location: str | Mapping[str, Any] | None = None,
+    location: str | HxLocation | Mapping[str, JsonValue] | None = None,
 ) -> dict[str, str]:
     headers: dict[str, str] = {}
     if trigger is not None:

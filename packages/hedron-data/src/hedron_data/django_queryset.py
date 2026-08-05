@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from typing import Any
+from typing import cast
 
+from hedron_core.typing_aliases import JsonValue
 from hedron_data.sources import (
     ColumnSchema,
     DataChanges,
@@ -46,7 +47,7 @@ class DjangoQuerySetDataSource:
 
     def __init__(
         self,
-        base_queryset: Any,
+        base_queryset: object,
         *,
         key_field: str = "pk",
         schema: Sequence[ColumnSchema] = (),
@@ -55,8 +56,10 @@ class DjangoQuerySetDataSource:
         search_fields: Sequence[str] = (),
         max_page_size: int = 100,
         query_budget: int = 25,
-        row_mapper: Callable[[Any], dict[str, Any]] | None = None,
-        apply_changes: Callable[[DataChanges[dict[str, Any]]], DataSaveResult[dict[str, Any]]]
+        row_mapper: Callable[[object], dict[str, JsonValue]] | None = None,
+        apply_changes: Callable[
+            [DataChanges[dict[str, JsonValue]]], DataSaveResult[dict[str, JsonValue]]
+        ]
         | None = None,
         transaction_owner: str = "application",
     ) -> None:
@@ -71,10 +74,10 @@ class DjangoQuerySetDataSource:
         self._schema = tuple(schema)
         # Deny-by-default: omitted allowlists mean no client sort/filter refinements.
         self._sort_allow = (
-            frozenset() if allowlisted_sort_fields is None else allowlisted_sort_fields
+            frozenset[str]() if allowlisted_sort_fields is None else allowlisted_sort_fields
         )
         self._filter_allow = (
-            frozenset() if allowlisted_filter_fields is None else allowlisted_filter_fields
+            frozenset[str]() if allowlisted_filter_fields is None else allowlisted_filter_fields
         )
         self._search_fields = tuple(search_fields)
         self._max_page_size = max_page_size
@@ -84,32 +87,37 @@ class DjangoQuerySetDataSource:
         self.transaction_owner = transaction_owner
         self.last_diagnostics = QueryDiagnostics(budget=query_budget)
 
-    def _default_mapper(self, obj: Any) -> dict[str, Any]:
-        data: dict[str, Any] = {}
+    def _default_mapper(self, obj: object) -> dict[str, JsonValue]:
+        data: dict[str, JsonValue] = {}
         if self._schema:
             for col in self._schema:
-                data[col.name] = getattr(obj, col.name, None)
+                data[col.name] = cast(JsonValue, getattr(obj, col.name, None))
         else:
-            data[self._key_field] = getattr(obj, self._key_field, getattr(obj, "pk", None))
+            data[self._key_field] = cast(
+                JsonValue, getattr(obj, self._key_field, getattr(obj, "pk", None))
+            )
             # Prefer model_to_dict when available without importing django at module import
             # for non-Django environments that only construct the class.
             try:
                 from django.forms.models import model_to_dict
 
-                data.update(model_to_dict(obj))
+                data.update(cast(dict[str, JsonValue], model_to_dict(obj)))
             except Exception:  # noqa: BLE001
                 meta = getattr(obj, "_meta", None)
                 fields = getattr(meta, "fields", ()) if meta is not None else ()
                 for field in fields:
-                    data[field.name] = getattr(obj, field.name, None)
-        data.setdefault(self._key_field, getattr(obj, "pk", data.get(self._key_field)))
+                    data[field.name] = cast(JsonValue, getattr(obj, field.name, None))
+        data.setdefault(
+            self._key_field,
+            cast(JsonValue, getattr(obj, "pk", data.get(self._key_field))),
+        )
         return data
 
     def describe_schema(self) -> tuple[ColumnSchema, ...]:
         """Return schema without evaluating the QuerySet."""
         return self._schema
 
-    def fetch(self, query: DataQuery) -> DataPage[dict[str, Any]]:
+    def fetch(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
         q = DataQuery(
             offset=query.offset,
             limit=query.limit,
@@ -129,33 +137,32 @@ class DjangoQuerySetDataSource:
         diag.record()  # base identity / clone
 
         for field_name, expected in q.filters.items():
-            qs = qs.filter(**{field_name: expected})
+            qs = qs.filter(**{field_name: expected})  # type: ignore[attr-defined]
             diag.record()
 
         if q.search and self._search_fields:
             from django.db.models import Q
 
-            q_type: Any = Q
-            clause: Any = q_type()
+            clause: object = Q()
             for field_name in self._search_fields:
-                clause = clause | q_type(**{f"{field_name}__icontains": q.search})
-            qs = qs.filter(clause)
+                clause = clause | Q(**{f"{field_name}__icontains": q.search})  # type: ignore[operator]
+            qs = qs.filter(clause)  # type: ignore[attr-defined]
             diag.record()
 
         order_by: list[str] = []
         for field_name, direction in q.sort:
             order_by.append(field_name if direction == "asc" else f"-{field_name}")
         if order_by:
-            qs = qs.order_by(*order_by)
+            qs = qs.order_by(*order_by)  # type: ignore[attr-defined]
             diag.record()
-        elif not qs.query.order_by:
+        elif not qs.query.order_by:  # type: ignore[attr-defined]
             # Deterministic pagination requires stable ordering.
-            qs = qs.order_by(self._key_field if self._key_field != "pk" else "pk")
+            qs = qs.order_by(self._key_field if self._key_field != "pk" else "pk")  # type: ignore[attr-defined]
             diag.record()
 
-        total = qs.count()
+        total = qs.count()  # type: ignore[attr-defined]
         diag.record()
-        page_qs = qs[q.offset : q.offset + q.limit]
+        page_qs = qs[q.offset : q.offset + q.limit]  # type: ignore[index]
         diag.record()
         rows = [self._row_mapper(obj) for obj in page_qs]
         if q.projection:
@@ -169,7 +176,9 @@ class DjangoQuerySetDataSource:
             version=None,
         )
 
-    def apply(self, changes: DataChanges[dict[str, Any]]) -> DataSaveResult[dict[str, Any]]:
+    def apply(
+        self, changes: DataChanges[dict[str, JsonValue]]
+    ) -> DataSaveResult[dict[str, JsonValue]]:
         if self._apply_changes is None:
             return DataSaveResult(
                 ok=False,

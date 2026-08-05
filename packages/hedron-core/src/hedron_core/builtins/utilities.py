@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import Secret
+from hedron_core.typing_aliases import HtmlAttrValue
 
 
 class MetricProps(Props):
@@ -43,8 +44,8 @@ class Metric(Component[MetricProps]):
             )
         )
 
-    def render(self) -> Any:
-        parts: list[Any] = [
+    def render(self) -> NodeLike:
+        parts: list[NodeLike] = [
             html.dt(self.props.label),
             html.dd(self.props.value, data={"metric-value": "true"}),
         ]
@@ -82,8 +83,8 @@ class CodeViewer(Component[CodeViewerProps]):
             CodeViewerProps(code=clipped, language=language, max_chars=max_chars, **kwargs)
         )
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {}
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {}
         if self.props.language:
             attrs["class_"] = f"language-{self.props.language}"
             attrs["data"] = {"language": self.props.language}
@@ -125,7 +126,7 @@ class JSONViewer(Component[JSONViewerProps]):
             text = text[:max_chars] + "\n… [truncated]"
         super().__init__(JSONViewerProps(text=text, max_chars=max_chars, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.pre(
             html.code(self.props.text, class_="language-json"),
             class_="hedron-json-viewer",
@@ -152,8 +153,8 @@ class Progress(Component[ProgressProps]):
     ) -> None:
         super().__init__(ProgressProps(value=value, maximum=maximum, label=label, **kwargs))
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
             "value": str(self.props.value),
             "max": str(self.props.maximum),
         }
@@ -182,8 +183,8 @@ class Status(Component[StatusProps]):
     ) -> None:
         super().__init__(StatusProps(message=message, tone=tone, live=live, **kwargs))
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
             "class_": f"hedron-status hedron-status-{self.props.tone}",
             "role": "status",
         }
@@ -210,7 +211,7 @@ class Toast(Component[ToastProps]):
     ) -> None:
         super().__init__(ToastProps(message=message, tone=tone, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.div(
             self.props.message,
             class_=f"hedron-toast hedron-toast-{self.props.tone}",
@@ -232,8 +233,8 @@ class Expander(Component[ExpanderProps]):
     def __init__(
         self,
         title: str,
-        *nodes: Any,
-        children: Any = None,
+        *nodes: NodeLike,
+        children: NodeLike = None,
         open: bool = False,
         id: str | None = None,
         class_: str | None = None,
@@ -242,8 +243,8 @@ class Expander(Component[ExpanderProps]):
         super().__init__(ExpanderProps(title=title, open=open, id=id, class_=class_, **kwargs))
         self._body = collect_children(*nodes, children=children)
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
             "id": self.props.id,
             "class_": class_names("hedron-expander", self.props.class_),
         }
@@ -265,8 +266,8 @@ class Tabs(Component[TabsProps]):
 
     def __init__(
         self,
-        *items: tuple[str, Any],
-        panels: Sequence[tuple[str, Any]] | None = None,
+        *items: tuple[str, NodeLike] | list[tuple[str, NodeLike]],
+        panels: Sequence[tuple[str, NodeLike]] | None = None,
         active: str | None = None,
         id: str | None = None,
         class_: str | None = None,
@@ -274,19 +275,22 @@ class Tabs(Component[TabsProps]):
     ) -> None:
         super().__init__(TabsProps(active=active, id=id, class_=class_, **kwargs))
         if panels is not None:
-            normalized = (*items, *panels)
+            normalized: tuple[tuple[str, NodeLike], ...] = (
+                *cast(tuple[tuple[str, NodeLike], ...], items),
+                *panels,
+            )
         elif len(items) == 1 and isinstance(items[0], list):
             normalized = tuple(items[0])
         else:
-            normalized = items
-        self._panels = tuple(normalized)
+            normalized = cast(tuple[tuple[str, NodeLike], ...], items)
+        self._panels = normalized
         names = [name for name, _ in self._panels]
         if len(names) != len(set(names)):
             raise ValueError("Tabs panel labels must be unique")
         if active is not None and active not in names:
             raise ValueError(f"Unknown active tab {active!r}; expected one of {names!r}")
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         if not self._panels:
             return html.div(
                 id=self.props.id,
@@ -341,8 +345,8 @@ class Sidebar(Component[SidebarProps]):
 
     def __init__(
         self,
-        *nodes: Any,
-        children: Any = None,
+        *nodes: NodeLike,
+        children: NodeLike = None,
         label: str = "Sidebar",
         id: str | None = None,
         class_: str | None = None,
@@ -351,7 +355,7 @@ class Sidebar(Component[SidebarProps]):
         super().__init__(SidebarProps(label=label, id=id, class_=class_, **kwargs))
         self._body = collect_children(*nodes, children=children)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         body = self._slot_values.get("body", self._body)
         if not isinstance(body, tuple):
             body = (body,)

@@ -26,18 +26,15 @@ __all__ = [
 ]
 
 
-def _header_value(headers: Mapping[str, str] | Any, name: str) -> str | None:
+def _header_value(headers: Mapping[str, str], name: str) -> str | None:
     """Read an HTTP header with case-insensitive fallback for plain dicts."""
-    getter = getattr(headers, "get", None)
-    if callable(getter):
-        value = getter(name)
-        if value is not None:
-            return str(value)
-    if isinstance(headers, Mapping):
-        lower = name.lower()
-        for key, val in headers.items():
-            if str(key).lower() == lower:
-                return str(val)
+    value = headers.get(name)
+    if value is not None:
+        return str(value)
+    lower = name.lower()
+    for key, val in headers.items():
+        if str(key).lower() == lower:
+            return str(val)
     return None
 
 
@@ -107,7 +104,9 @@ def interaction_response(
     headers_map: Mapping[str, str] | None = None,
     authenticated: bool = False,
 ) -> Response:
-    hdrs = headers_map if headers_map is not None else flask_request.headers
+    hdrs: Mapping[str, str] = (
+        headers_map if headers_map is not None else dict(flask_request.headers)
+    )
     is_htmx = (_header_value(hdrs, "HX-Request") or "").lower() == "true"
     target = result.region_id or _header_value(hdrs, "HX-Target")
     try:

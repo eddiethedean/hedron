@@ -15,6 +15,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from hedron.async_utils import await_if_needed
+from hedron.interaction import FragmentRegion
 from hedron.openapi import operation_id_for
 from hedron.routing.route import HedronRoute
 from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
@@ -42,9 +43,9 @@ def _requires_csrf(methods: Sequence[str]) -> bool:
     return any(m.upper() not in _SAFE_METHODS for m in methods)
 
 
-def _normalize_fragment_regions(fragment_regions: Sequence[Any] | None) -> tuple[Any, ...]:
-    from hedron.interaction import FragmentRegion
-
+def _normalize_fragment_regions(
+    fragment_regions: Sequence[FragmentRegion | str] | None,
+) -> tuple[FragmentRegion, ...]:
     if not fragment_regions:
         return ()
     return tuple(
@@ -59,7 +60,7 @@ def _wrap_endpoint(
     kind: str,
     mode: RenderMode | None,
     require_csrf: bool,
-    fragment_regions: tuple[Any, ...] = (),
+    fragment_regions: tuple[FragmentRegion, ...] = (),
 ) -> Callable[..., Any]:
     import typing
 
@@ -89,7 +90,7 @@ def _wrap_endpoint(
             result,
             mode=mode,
             kind=kind,
-            fragment_regions=fragment_regions,  # type: ignore[arg-type]
+            fragment_regions=fragment_regions,
         )
 
     # Resolve annotations in the original function's globals so Depends survives wrapping.
@@ -126,7 +127,7 @@ class HedronRouter(APIRouter):
         include_in_schema: bool = True,
         dependencies: Sequence[params.Depends] | None = None,
         tags: list[str | Enum] | None = None,
-        fragment_regions: Sequence[Any] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
@@ -191,7 +192,7 @@ class HedronRouter(APIRouter):
         include_in_schema: bool = False,
         dependencies: Sequence[params.Depends] | None = None,
         tags: list[str | Enum] | None = None,
-        fragment_regions: Sequence[Any] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
@@ -312,7 +313,7 @@ class HedronRouter(APIRouter):
 
     def include_component(
         self,
-        descriptor: AddressableDescriptor | Callable[..., Any],
+        descriptor: AddressableDescriptor[..., Any] | Callable[..., Any],
         *,
         path: str,
         name: str | None = None,

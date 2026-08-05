@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 
@@ -20,11 +20,11 @@ class Card(Component[CardProps]):
 
     def __init__(
         self,
-        *nodes: Any,
-        children: Any = None,
+        *nodes: NodeLike,
+        children: NodeLike = None,
         title: str | None = None,
-        header: Any = None,
-        footer: Any = None,
+        header: NodeLike = None,
+        footer: NodeLike = None,
         id: str | None = None,
         class_: str | None = None,
         **kwargs: Any,
@@ -36,8 +36,8 @@ class Card(Component[CardProps]):
         if footer is not None:
             self._slot_values["footer"] = footer
 
-    def render(self) -> Any:
-        parts: list[Any] = []
+    def render(self) -> NodeLike:
+        parts: list[NodeLike] = []
         if "header" in self._slot_values:
             parts.append(html.div(self._slot_values["header"], class_="hedron-card-header"))
         elif self.props.title:
@@ -69,7 +69,7 @@ class Badge(Component[BadgeProps]):
     ) -> None:
         super().__init__(BadgeProps(text=text, tone=tone, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.span(
             self.props.text,
             class_=f"hedron-badge hedron-badge-{self.props.tone}",
@@ -95,9 +95,9 @@ class Alert(Component[AlertProps]):
     ) -> None:
         super().__init__(AlertProps(message=message, tone=tone, title=title, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         role = "alert" if self.props.tone == "danger" else "status"
-        parts: list[Any] = []
+        parts: list[NodeLike] = []
         if self.props.title:
             parts.append(html.strong(self.props.title))
         parts.append(html.span(self.props.message))
@@ -118,7 +118,7 @@ class Skeleton(Component[SkeletonProps]):
     def __init__(self, *, lines: int = 3, **kwargs: Any) -> None:
         super().__init__(SkeletonProps(lines=lines, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.div(
             *[
                 html.div(class_="hedron-skeleton-line", aria={"hidden": "true"})

@@ -5,7 +5,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, ParamSpec, TypeVar, overload
+from typing import Generic, ParamSpec, TypeVar, overload
 
 from hedron_core.identifiers import component_type_id, registry_resource_id
 from hedron_core.registry import register_addressable
@@ -17,10 +17,10 @@ R = TypeVar("R")
 
 
 @dataclass(frozen=True, slots=True)
-class AddressableDescriptor:
+class AddressableDescriptor(Generic[P, R]):
     """Reusable typed resource descriptor; not HTTP-reachable until exposed."""
 
-    factory: Callable[..., Any]
+    factory: Callable[P, R]
     logical_id: str
     name: str
     module: str
@@ -30,13 +30,13 @@ class AddressableDescriptor:
     cache_private: bool = True
     tags: tuple[str, ...] = ()
     docs: str | None = None
-    extras: dict[str, Any] = field(default_factory=dict)
+    extras: dict[str, object] = field(default_factory=dict)
 
     @property
     def registry_key(self) -> str:
         return registry_resource_id("addressable", self.logical_id)
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> R:
         return self.factory(*args, **kwargs)
 
     @property
@@ -44,12 +44,12 @@ class AddressableDescriptor:
         return self.name
 
     @property
-    def __wrapped__(self) -> Callable[..., Any]:
+    def __wrapped__(self) -> Callable[P, R]:
         return self.factory
 
 
 @overload
-def addressable(factory: Callable[P, R], /) -> AddressableDescriptor: ...
+def addressable(factory: Callable[P, R], /) -> AddressableDescriptor[P, R]: ...
 
 
 @overload
@@ -62,7 +62,7 @@ def addressable(
     cache_private: bool = True,
     tags: tuple[str, ...] = (),
     docs: str | None = None,
-) -> Callable[[Callable[P, R]], AddressableDescriptor]: ...
+) -> Callable[[Callable[P, R]], AddressableDescriptor[P, R]]: ...
 
 
 def addressable(
@@ -76,10 +76,10 @@ def addressable(
     cache_private: bool = True,
     tags: tuple[str, ...] = (),
     docs: str | None = None,
-) -> AddressableDescriptor | Callable[[Callable[P, R]], AddressableDescriptor]:
+) -> AddressableDescriptor[P, R] | Callable[[Callable[P, R]], AddressableDescriptor[P, R]]:
     """Declare a reusable addressable factory without exposing an HTTP route."""
 
-    def decorate(fn: Callable[P, R]) -> AddressableDescriptor:
+    def decorate(fn: Callable[P, R]) -> AddressableDescriptor[P, R]:
         logical_name = name or fn.__name__
         module = fn.__module__
         logical_id = component_type_id(distribution, module, logical_name)

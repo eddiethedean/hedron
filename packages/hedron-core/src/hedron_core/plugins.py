@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Any
+
+from hedron_core.typing_aliases import PluginMetaDict
 
 __all__ = [
     "ExplorerPanelMeta",
@@ -48,7 +49,7 @@ class PluginMeta:
     capabilities: PluginCapabilities = field(default_factory=PluginCapabilities)
     depends_on: tuple[str, ...] = ()
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> PluginMetaDict:
         return {
             "name": self.name,
             "version": self.version,
@@ -130,27 +131,90 @@ class PluginContext:
 
     def __init__(self, meta: PluginMeta) -> None:
         self.meta = meta
-        self._startup: list[Callable[[], Any]] = []
-        self._shutdown: list[Callable[[], Any]] = []
+        self._startup: list[Callable[[], None]] = []
+        self._shutdown: list[Callable[[], None]] = []
 
-    def register_component(self, **kwargs: Any) -> None:
+    def register_component(
+        self,
+        *,
+        logical_id: str,
+        name: str,
+        module: str,
+        distribution: str = "hedron-core",
+        props_model: str | None = None,
+        slots: Mapping[str, str] | None = None,
+        examples: Iterable[str] = (),
+        docs: str | None = None,
+        accessibility_notes: str | None = None,
+        styles_path: str | None = None,
+        browser_modules: Iterable[str] = (),
+        asset_roots: Iterable[str] = (),
+        style_symbols: Mapping[str, str] | None = None,
+        folder_path: str | None = None,
+    ) -> None:
         from hedron_core.registry import register_component
 
-        register_component(**kwargs)
+        register_component(
+            logical_id=logical_id,
+            name=name,
+            module=module,
+            distribution=distribution,
+            props_model=props_model,
+            slots=slots,
+            examples=examples,
+            docs=docs,
+            accessibility_notes=accessibility_notes,
+            styles_path=styles_path,
+            browser_modules=browser_modules,
+            asset_roots=asset_roots,
+            style_symbols=style_symbols,
+            folder_path=folder_path,
+        )
 
-    def register_browser_module(self, **kwargs: Any) -> None:
+    def register_browser_module(
+        self,
+        *,
+        logical_id: str,
+        tag_name: str,
+        module_path: str,
+        observed_attributes: Iterable[str] = (),
+        events: Iterable[str] = (),
+        shadow_dom: bool = False,
+        htmx_lifecycle: bool = True,
+    ) -> None:
         from hedron_core.registry import register_browser_module
 
-        register_browser_module(**kwargs)
+        register_browser_module(
+            logical_id=logical_id,
+            tag_name=tag_name,
+            module_path=module_path,
+            observed_attributes=observed_attributes,
+            events=events,
+            shadow_dom=shadow_dom,
+            htmx_lifecycle=htmx_lifecycle,
+        )
 
-    def register_explorer_panel(self, **kwargs: Any) -> None:
-        register_explorer_panel(plugin=self.meta.name, **kwargs)
+    def register_explorer_panel(
+        self,
+        *,
+        panel_id: str,
+        title: str,
+        description: str = "",
+        path: str = "",
+    ) -> None:
+        register_explorer_panel(
+            panel_id=panel_id,
+            title=title,
+            plugin=self.meta.name,
+            description=description,
+            path=path,
+        )
 
     def register_diagnostic_owner(self, code_prefix: str) -> None:
         register_diagnostic_owner(code_prefix, self.meta.name)
 
-    def on_startup(self, hook: Callable[[], Any]) -> None:
+    def on_startup(self, hook: Callable[[], None]) -> None:
         self._startup.append(hook)
 
-    def on_shutdown(self, hook: Callable[[], Any]) -> None:
+    def on_shutdown(self, hook: Callable[[], None]) -> None:
         self._shutdown.append(hook)

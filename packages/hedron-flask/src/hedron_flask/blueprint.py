@@ -153,7 +153,7 @@ class HedronBlueprint(Blueprint):
 
     def include_component(
         self,
-        descriptor: AddressableDescriptor,
+        descriptor: AddressableDescriptor[..., Any],
         *,
         path: str,
         endpoint: str | None = None,

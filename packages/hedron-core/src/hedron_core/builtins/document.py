@@ -5,9 +5,10 @@ from __future__ import annotations
 from typing import Any
 
 from hedron_core.builtins._base import collect_children
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.typing_aliases import HtmlAttrValue
 
 
 class PageProps(Props):
@@ -24,11 +25,11 @@ class Page(Component[PageProps]):
 
     def __init__(
         self,
-        *body: Any,
+        *body: NodeLike,
         lang: str = "en",
         title: str | None = None,
-        head: Any = None,
-        children: Any = None,
+        head: NodeLike = None,
+        children: NodeLike = None,
         data_theme: str | None = None,
         **kwargs: Any,
     ) -> None:
@@ -37,8 +38,8 @@ class Page(Component[PageProps]):
         if head is not None:
             self._slot_values["head"] = head
 
-    def render(self) -> Any:
-        head_nodes: list[Any] = [
+    def render(self) -> NodeLike:
+        head_nodes: list[NodeLike] = [
             html.meta(charset="utf-8"),
             html.meta(name="viewport", content="width=device-width, initial-scale=1"),
         ]
@@ -46,7 +47,7 @@ class Page(Component[PageProps]):
             head_nodes.append(html.title(self.props.title))
         if "head" in self._slot_values:
             head_nodes.append(self._slot_values["head"])
-        html_attrs: dict[str, Any] = {"lang": self.props.lang}
+        html_attrs: dict[str, HtmlAttrValue] = {"lang": self.props.lang}
         if self.props.data_theme:
             html_attrs["data"] = {"theme": self.props.data_theme}
         return html.html(
@@ -63,11 +64,11 @@ class FragmentProps(Props):
 class Fragment(Component[FragmentProps]):
     props_type = FragmentProps
 
-    def __init__(self, *nodes: Any, children: Any = None, **kwargs: Any) -> None:
+    def __init__(self, *nodes: NodeLike, children: NodeLike = None, **kwargs: Any) -> None:
         super().__init__(FragmentProps(**kwargs))
         self._children = collect_children(*nodes, children=children)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return list(self._children)
 
 
@@ -78,11 +79,11 @@ class HeadProps(Props):
 class Head(Component[HeadProps]):
     props_type = HeadProps
 
-    def __init__(self, *nodes: Any, children: Any = None, **kwargs: Any) -> None:
+    def __init__(self, *nodes: NodeLike, children: NodeLike = None, **kwargs: Any) -> None:
         super().__init__(HeadProps(**kwargs))
         self._children = collect_children(*nodes, children=children)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.head(*self._children)
 
 
@@ -103,5 +104,5 @@ class Title(Component[TitleProps]):
         value = text if text is not None else (children or "")
         super().__init__(TitleProps(text=value, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.title(self.props.text)

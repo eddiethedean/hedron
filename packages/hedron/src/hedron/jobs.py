@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from typing import Any
 
 from fastapi import BackgroundTasks, HTTPException
@@ -10,6 +10,7 @@ from starlette.responses import HTMLResponse
 
 from hedron_core.jobs import JobStatus, get_job_backend, job_authorized_http, job_status_interaction
 from hedron_core.rendering import RenderMode, render
+from hedron_core.typing_aliases import JsonValue
 
 __all__ = [
     "enqueue_durable",
@@ -25,7 +26,7 @@ def schedule_post_response(tasks: BackgroundTasks, fn: Callable[..., Any], *args
 
 def enqueue_durable(
     job_type: str,
-    payload: dict[str, Any],
+    payload: Mapping[str, JsonValue],
     *,
     idempotency_key: str | None = None,
     tenant_id: str | None = None,

@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.builtins.content import DescriptionList, Text
 from hedron_core.builtins.content import List as HedronList
 from hedron_core.builtins.utilities import JSONViewer
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.models import Props
 
@@ -29,12 +29,12 @@ class RendererSpec:
     name: str
     priority: int
     types: tuple[type, ...] = ()
-    predicate: Callable[[Any], bool] | None = None
+    predicate: Callable[[object], bool] | None = None
     cost: int = 1
     optional_package: str | None = None
     security_notes: str = ""
     explanation: str = ""
-    factory: Callable[[Any], Any] | None = None
+    factory: Callable[[object], NodeLike] | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,7 +42,7 @@ class AutoDecision:
     selected: str
     candidates: tuple[str, ...]
     rejected: tuple[tuple[str, str], ...]
-    inspection: Mapping[str, Any] = field(default_factory=dict)
+    inspection: Mapping[str, object] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,10 +81,10 @@ def get_last_auto_decision() -> AutoDecision | None:
     return _last_decision
 
 
-def inspect_data(value: Any) -> DataIntelligenceReport:
+def inspect_data(value: object) -> DataIntelligenceReport:
     """Bounded schema/size/cardinality inspection; refuses unbounded lazy collect."""
     notes: list[str] = []
-    rows: list[Any] = []
+    rows: list[Mapping[str, object]] = []
     if isinstance(value, Mapping) and not hasattr(value, "model_dump"):
         # single mapping or column-oriented
         if value and all(
@@ -97,14 +97,14 @@ def inspect_data(value: Any) -> DataIntelligenceReport:
             n = min(length, _MAX_INSPECT_ROWS)
             rows = [{str(k): value[k][i] for k in keys} for i in range(n)]
         else:
-            rows = [value]  # type: ignore[list-item]
+            rows = [cast(Mapping[str, object], value)]
     elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
         if hasattr(value, "__len__") and len(value) > _MAX_INSPECT_ROWS:
             notes.append(f"truncated rows to {_MAX_INSPECT_ROWS}")
         sample = list(value[:_MAX_INSPECT_ROWS])
         for item in sample:
             if isinstance(item, Mapping):
-                rows.append(item)
+                rows.append(cast(Mapping[str, object], item))
             elif hasattr(item, "model_dump"):
                 rows.append(item.model_dump())
     elif hasattr(value, "__iter__") and not isinstance(value, (str, bytes, Mapping)):
@@ -122,7 +122,10 @@ def inspect_data(value: Any) -> DataIntelligenceReport:
             try:
                 from hedron_data.normalize import normalize_rows
 
-                rows = normalize_rows(value, max_rows=_MAX_INSPECT_ROWS)
+                rows = cast(
+                    list[Mapping[str, object]],
+                    normalize_rows(value, max_rows=_MAX_INSPECT_ROWS),
+                )
             except Exception as exc:  # noqa: BLE001
                 notes.append(f"dataframe inspect skipped: {exc}")
         else:
@@ -157,11 +160,11 @@ def inspect_data(value: Any) -> DataIntelligenceReport:
     )
 
 
-def _is_component(value: Any) -> bool:
+def _is_component(value: object) -> bool:
     return isinstance(value, Component) or hasattr(value, "__hedron_node__")
 
 
-def _is_tabular(value: Any) -> bool:
+def _is_tabular(value: object) -> bool:
     if isinstance(value, Sequence) and value and not isinstance(value, (str, bytes)):
         first = value[0]
         return isinstance(first, Mapping) or hasattr(first, "model_dump")
@@ -169,7 +172,7 @@ def _is_tabular(value: Any) -> bool:
     return type(value).__name__ == "DataFrame" and module in {"pandas", "polars"}
 
 
-def _is_chart_like(value: Any) -> bool:
+def _is_chart_like(value: object) -> bool:
     module = type(value).__module__
     name = type(value).__name__
     return (
@@ -179,11 +182,11 @@ def _is_chart_like(value: Any) -> bool:
     )
 
 
-def _factory_component(value: Any) -> Any:
-    return value
+def _factory_component(value: object) -> NodeLike:
+    return cast(NodeLike, value)
 
 
-def _factory_datatable(value: Any) -> Any:
+def _factory_datatable(value: object) -> NodeLike:
     try:
         from hedron_data import DataTable
 
@@ -197,22 +200,27 @@ def _factory_datatable(value: Any) -> Any:
         ) from exc
 
 
-def _factory_mapping(value: Any) -> Any:
-    if len(value) > 20:
-        return JSONViewer(value)
-    pairs = [(str(k), "***" if "secret" in str(k).lower() else v) for k, v in value.items()]
+def _factory_mapping(value: object) -> NodeLike:
+    mapping = cast(Mapping[object, object], value)
+    if len(mapping) > 20:
+        return JSONViewer(mapping)
+    pairs: list[tuple[NodeLike, NodeLike]] = [
+        (str(k), cast(NodeLike, "***" if "secret" in str(k).lower() else v))
+        for k, v in mapping.items()
+    ]
     return DescriptionList(*pairs)
 
 
-def _factory_sequence(value: Any) -> Any:
-    return HedronList(*[str(v) for v in value[:100]])
+def _factory_sequence(value: object) -> NodeLike:
+    seq = cast(Sequence[object], value)
+    return HedronList(*[str(v) for v in seq[:100]])
 
 
-def _factory_text(value: Any) -> Any:
+def _factory_text(value: object) -> NodeLike:
     return Text(str(value))
 
 
-def _factory_chart_reject(value: Any) -> Any:
+def _factory_chart_reject(value: object) -> NodeLike:
     raise error(
         "HED-AUTO-0004",
         title="Chart adapters require hedron-charts",
@@ -296,20 +304,20 @@ class Auto(Component[AutoProps]):
     props_type = AutoProps
     logical_name = "Auto"
 
-    def __init__(self, value: Any = None, *, as_: str | None = None, **kwargs: Any) -> None:
+    def __init__(self, value: object = None, *, as_: str | None = None, **kwargs: Any) -> None:
         super().__init__(AutoProps(as_=as_, **kwargs))
         self._value = value
-        self._resolved: Any | None = None
+        self._resolved: NodeLike | None = None
         self._decision: AutoDecision | None = None
 
     @property
     def decision(self) -> AutoDecision | None:
         return self._decision
 
-    def resolve(self) -> Any:
+    def resolve(self) -> NodeLike:
         global _last_decision
         value = self._value
-        inspection: dict[str, Any] = {}
+        inspection: dict[str, object] = {}
         if _is_tabular(value) or isinstance(value, Mapping):
             try:
                 report = inspect_data(value)
@@ -377,7 +385,7 @@ class Auto(Component[AutoProps]):
         self._resolved = selected_spec.factory(value)
         return self._resolved
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         # Return the resolved Component/NodeLike so the renderer owns identity,
         # cycle detection, and diagnostics (do not call child .render() here).
         return self.resolve()

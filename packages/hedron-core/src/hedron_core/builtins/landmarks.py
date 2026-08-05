@@ -5,9 +5,10 @@ from __future__ import annotations
 from typing import Any
 
 from hedron_core.builtins._base import collect_children
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.typing_aliases import HtmlAttrValue
 
 
 class _LandmarkProps(Props):
@@ -21,8 +22,8 @@ def _landmark(tag: str):
 
         def __init__(
             self,
-            *nodes: Any,
-            children: Any = None,
+            *nodes: NodeLike,
+            children: NodeLike = None,
             class_: str | None = None,
             id: str | None = None,
             **kwargs: Any,
@@ -31,8 +32,8 @@ def _landmark(tag: str):
             self._children = collect_children(*nodes, children=children)
             self._tag = tag
 
-        def render(self) -> Any:
-            attrs: dict[str, Any] = {}
+        def render(self) -> NodeLike:
+            attrs: dict[str, HtmlAttrValue] = {}
             if self.props.class_:
                 attrs["class_"] = self.props.class_
             if self.props.id:

@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Any
+from collections.abc import Callable, Mapping
+from typing import Any, ParamSpec, TypeVar, cast
 
 from flask import Flask, Request, Response
 from flask import session as flask_session
+from flask.typing import RouteCallable
 
 from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
@@ -21,6 +22,8 @@ from hedron_flask.routing import FlaskUrlReverser
 __all__ = ["HedronFlask"]
 
 _UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
+P = ParamSpec("P")
+R = TypeVar("R")
 
 
 class HedronFlask:
@@ -70,47 +73,53 @@ class HedronFlask:
             raise RuntimeError("HedronFlask.init_app(app) must be called before route()")
         return self.flask.route(rule, **options)
 
-    def page(self, rule: str, **options: Any):
+    def page(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Register a page view on the bound app (non-Blueprint convenience)."""
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("GET",)))
         require_csrf = any(m.upper() not in {"GET", "HEAD", "OPTIONS", "TRACE"} for m in methods)
 
-        def decorator(view: Any) -> Any:
+        def decorator(view: Callable[P, R]) -> Callable[P, R]:
             if self.flask is None:
                 raise RuntimeError("HedronFlask.init_app(app) must be called before page()")
             wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
-            self.flask.add_url_rule(rule, view_func=wrapped, methods=methods, **options)
+            self.flask.add_url_rule(
+                rule, view_func=cast(RouteCallable, wrapped), methods=methods, **options
+            )
             return view
 
         return decorator
 
-    def component(self, rule: str, **options: Any):
+    def component(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("GET",)))
         require_csrf = any(m.upper() not in {"GET", "HEAD", "OPTIONS", "TRACE"} for m in methods)
 
-        def decorator(view: Any) -> Any:
+        def decorator(view: Callable[P, R]) -> Callable[P, R]:
             if self.flask is None:
                 raise RuntimeError("HedronFlask.init_app(app) must be called before component()")
             wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
-            self.flask.add_url_rule(rule, view_func=wrapped, methods=methods, **options)
+            self.flask.add_url_rule(
+                rule, view_func=cast(RouteCallable, wrapped), methods=methods, **options
+            )
             return view
 
         return decorator
 
-    def action(self, rule: str, **options: Any):
+    def action(self, rule: str, **options: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("POST",)))
 
-        def decorator(view: Any) -> Any:
+        def decorator(view: Callable[P, R]) -> Callable[P, R]:
             if self.flask is None:
                 raise RuntimeError("HedronFlask.init_app(app) must be called before action()")
             wrapped = wrap_hedron_view(view, require_csrf=True)
-            self.flask.add_url_rule(rule, view_func=wrapped, methods=methods, **options)
+            self.flask.add_url_rule(
+                rule, view_func=cast(RouteCallable, wrapped), methods=methods, **options
+            )
             return view
 
         return decorator

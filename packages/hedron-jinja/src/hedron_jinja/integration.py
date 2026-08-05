@@ -3,16 +3,16 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from types import MappingProxyType
-from typing import Any
+from typing import Any, NoReturn
 from urllib.parse import urlsplit
 from weakref import ReferenceType, WeakKeyDictionary, ref
 
-from jinja2 import Environment, StrictUndefined, TemplateError, TemplateSyntaxError, nodes
+from jinja2 import Environment, StrictUndefined, Template, TemplateError, TemplateSyntaxError, nodes
 from jinja2.ext import Extension
 from jinja2.nativetypes import NativeEnvironment
 from markupsafe import Markup
@@ -65,11 +65,11 @@ _PAGE_DOCTYPE_RE = re.compile(r"^\s*<!doctype\s+html\b", re.IGNORECASE)
 _CONDITIONAL_ASSET_RE = re.compile(r"{%[-+]?\s*hedron_asset\b")
 
 
-def _hdj_template_class(base: type[Any]) -> type[Any]:
+def _hdj_template_class(base: type[Template]) -> type[Template]:
     """Buffer ordinary stream(); expose explicit two-phase streaming for 0.10."""
 
     class HdjTemplate(base):  # type: ignore[valid-type,misc]
-        def stream(self, *args: Any, **kwargs: Any) -> Any:
+        def stream(self, *args: object, **kwargs: object) -> NoReturn:
             raise error(
                 "HED-JINJA-0014",
                 title="Direct Jinja streaming is not supported",
@@ -94,7 +94,7 @@ class TwoPhaseStream:
     result: RenderResult
     body_chunks: tuple[str, ...]
 
-    def iter_phases(self) -> Any:
+    def iter_phases(self) -> Iterator[tuple[str, RenderResult | str]]:
         yield ("metadata", self.result)
         for chunk in self.body_chunks:
             yield ("body", chunk)
@@ -491,7 +491,7 @@ class HedronJinja:
         self._assert_environment_unchanged()
         self._frozen = True
 
-    def describe(self, spec_or_name: TemplateSpec[Any] | str) -> TemplateDeclaration:
+    def describe(self, spec_or_name: TemplateSpec[Model] | str) -> TemplateDeclaration:
         self.freeze()
         name, spec = self._resolve(spec_or_name)
         parsed = self._parsed(name)
@@ -500,7 +500,7 @@ class HedronJinja:
 
     def check(
         self,
-        spec_or_name: TemplateSpec[Any] | str,
+        spec_or_name: TemplateSpec[Model] | str,
     ) -> tuple[Diagnostic, ...]:
         self.freeze()
         try:
@@ -535,7 +535,7 @@ class HedronJinja:
             )
         return tuple(diagnostics)
 
-    def capabilities(self, spec_or_name: TemplateSpec[Any] | str) -> TemplateCapabilities:
+    def capabilities(self, spec_or_name: TemplateSpec[Model] | str) -> TemplateCapabilities:
         self.freeze()
         name, spec = self._resolve(spec_or_name)
         graph = self._dependency_graph(name)
@@ -567,7 +567,7 @@ class HedronJinja:
 
     def render(
         self,
-        spec_or_name: TemplateSpec[Any] | str,
+        spec_or_name: TemplateSpec[Model] | str,
         view: Model | Mapping[str, Any],
         *,
         context: RenderContext | None = None,
@@ -598,7 +598,7 @@ class HedronJinja:
 
     def two_phase_stream(
         self,
-        spec_or_name: TemplateSpec[Any] | str,
+        spec_or_name: TemplateSpec[Model] | str,
         view: Model | Mapping[str, Any],
         *,
         context: RenderContext | None = None,
@@ -617,7 +617,7 @@ class HedronJinja:
 
     async def render_async(
         self,
-        spec_or_name: TemplateSpec[Any] | str,
+        spec_or_name: TemplateSpec[Model] | str,
         view: Model | Mapping[str, Any],
         *,
         context: RenderContext | None = None,
@@ -659,11 +659,11 @@ class HedronJinja:
 
     def _prepare_render(
         self,
-        spec_or_name: TemplateSpec[Any] | str,
-        view: Any,
+        spec_or_name: TemplateSpec[Model] | str,
+        view: object,
         mode: RenderMode | None,
     ) -> tuple[
-        str, TemplateSpec[Any], tuple[ParsedHdjSource, ...], tuple[Diagnostic, ...], RenderMode
+        str, TemplateSpec[Model], tuple[ParsedHdjSource, ...], tuple[Diagnostic, ...], RenderMode
     ]:
         self.freeze()
         name, spec = self._resolve(spec_or_name)
@@ -692,7 +692,7 @@ class HedronJinja:
             raise HedronError(*diagnostics)
         return name, spec, graph, tuple(diagnostics), render_mode
 
-    def _resolve(self, spec_or_name: TemplateSpec[Any] | str) -> tuple[str, TemplateSpec[Any]]:
+    def _resolve(self, spec_or_name: TemplateSpec[Model] | str) -> tuple[str, TemplateSpec[Model]]:
         spec = (
             spec_or_name if isinstance(spec_or_name, TemplateSpec) else TemplateSpec(spec_or_name)
         )
@@ -803,7 +803,7 @@ class HedronJinja:
             )
 
     def _check_graph(
-        self, graph: tuple[ParsedHdjSource, ...], spec: TemplateSpec[Any]
+        self, graph: tuple[ParsedHdjSource, ...], spec: TemplateSpec[Model]
     ) -> list[Diagnostic]:
         root = graph[0]
         self._validate_spec_declaration(spec, root.declaration)
@@ -961,7 +961,7 @@ class HedronJinja:
 
     @staticmethod
     def _validate_spec_declaration(
-        spec: TemplateSpec[Any], declaration: TemplateDeclaration
+        spec: TemplateSpec[Model], declaration: TemplateDeclaration
     ) -> None:
         if spec.mode is not None and spec.mode is not declaration.kind.render_mode:
             raise error(
@@ -987,7 +987,7 @@ class HedronJinja:
                 )
 
     @staticmethod
-    def _validate_view(spec: TemplateSpec[Any], view: Any) -> None:
+    def _validate_view(spec: TemplateSpec[Model], view: object) -> None:
         if spec.view_type is not None and not isinstance(view, spec.view_type):
             raise error(
                 "HED-JINJA-0008",
@@ -1014,7 +1014,7 @@ class HedronJinja:
         context: RenderContext | None,
         mode: RenderMode,
         diagnostics: tuple[Diagnostic, ...],
-        spec: TemplateSpec[Any],
+        spec: TemplateSpec[Model],
     ) -> _RenderSession:
         render_context = context or RenderContext.standalone()
         session = _RenderSession(

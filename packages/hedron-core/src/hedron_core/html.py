@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-from typing import Any
 
 from hedron_core._html_meta import (
     ALLOWED_ATTRS,
@@ -14,9 +13,11 @@ from hedron_core._html_meta import (
     URL_ATTRS,
     VOID_TAGS,
 )
-from hedron_core._nodes import ElementNode, TrustedHtmlNode
+from hedron_core._nodes import ElementNode, Node, TrustedHtmlNode
+from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.security import SafeUrl, TrustedHtml, UrlPurpose, check_url_purpose_for_attribute
+from hedron_core.typing_aliases import HtmlAttrValue
 
 # Only layout CSS custom properties — never arbitrary author CSS.
 _SAFE_LAYOUT_STYLE = re.compile(r"^--hedron-gap:\s*\d+(\.\d+)?(rem|em|px|%);?$")
@@ -25,7 +26,7 @@ _SAFE_ATTR_NAME = re.compile(r"^[A-Za-z_][\w.-]*$")
 _META_REFRESH_URL = re.compile(r"url\s*=", re.IGNORECASE)
 
 
-def _is_safe_layout_style(value: Any) -> bool:
+def _is_safe_layout_style(value: object) -> bool:
     return isinstance(value, str) and bool(_SAFE_LAYOUT_STYLE.match(value.strip()))
 
 
@@ -47,7 +48,7 @@ def _is_allowed_attr(name: str) -> bool:
     return lower in ALLOWED_ATTRS
 
 
-def _normalize_srcset(value: Any) -> str:
+def _normalize_srcset(value: object) -> str:
     """Validate srcset candidates; each URL must be SafeUrl or a safe relative path."""
     if isinstance(value, SafeUrl):
         check_url_purpose_for_attribute(value, "srcset")
@@ -81,8 +82,8 @@ def _normalize_srcset(value: Any) -> str:
     return ", ".join(parts)
 
 
-def _normalize_attrs(attrs: dict[str, Any], *, tag: str) -> dict[str, Any]:
-    out: dict[str, Any] = {}
+def _normalize_attrs(attrs: dict[str, HtmlAttrValue], *, tag: str) -> dict[str, HtmlAttrValue]:
+    out: dict[str, HtmlAttrValue] = {}
     for key, value in attrs.items():
         if value is None:
             continue
@@ -208,7 +209,7 @@ class _HtmlTag:
     def __init__(self, tag: str) -> None:
         self._tag = tag
 
-    def __call__(self, *children: Any, **attrs: Any) -> _NativeElement:
+    def __call__(self, *children: NodeLike, **attrs: HtmlAttrValue) -> _NativeElement:
         return _NativeElement(self._tag, children, attrs)
 
 
@@ -217,7 +218,9 @@ class _NativeElement:
 
     __slots__ = ("tag", "children", "attributes")
 
-    def __init__(self, tag: str, children: tuple[Any, ...], attrs: dict[str, Any]) -> None:
+    def __init__(
+        self, tag: str, children: tuple[NodeLike, ...], attrs: dict[str, HtmlAttrValue]
+    ) -> None:
         tag_l = tag.lower()
         if tag_l in FORBIDDEN_TAGS:
             raise error(
@@ -250,7 +253,7 @@ class _NativeElement:
     def __hedron_node__(self) -> _NativeElement:
         return self
 
-    def to_element_node(self, child_nodes: tuple[Any, ...]) -> ElementNode:
+    def to_element_node(self, child_nodes: tuple[Node, ...]) -> ElementNode:
         return ElementNode(
             tag=self.tag,
             attributes=self.attributes,

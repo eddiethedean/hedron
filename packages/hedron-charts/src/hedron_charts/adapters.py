@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import io
 import json
+from collections.abc import Mapping, Sequence
 from typing import Any
 
 from hedron_charts.limits import (
@@ -41,14 +42,14 @@ class MatplotlibAdapter:
     name = "matplotlib"
     optional_package = "matplotlib"
 
-    def supports(self, value: Any) -> bool:
+    def supports(self, value: object) -> bool:
         mod = type(value).__module__
         name = type(value).__name__
         return "matplotlib" in mod and ("Figure" in name or hasattr(value, "savefig"))
 
     def compile(
         self,
-        value: Any,
+        value: object,
         *,
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
@@ -62,8 +63,11 @@ class MatplotlibAdapter:
             raise missing_extra("matplotlib") from exc
         acc = accessibility.validated()
         buf = io.BytesIO()
+        savefig = getattr(value, "savefig", None)
+        if not callable(savefig):
+            raise TypeError("matplotlib adapter requires a Figure-like object with savefig()")
         if fmt == "png":
-            value.savefig(buf, format="png", bbox_inches="tight")
+            savefig(buf, format="png", bbox_inches="tight")
             raw = buf.getvalue()
             ensure_limits(None, raw, limits=limits)
             encoded = base64.b64encode(raw).decode("ascii")
@@ -75,7 +79,7 @@ class MatplotlibAdapter:
                 payload_bytes=len(raw),
                 metadata={"format": "png"},
             )
-        value.savefig(buf, format="svg", bbox_inches="tight")
+        savefig(buf, format="svg", bbox_inches="tight")
         svg = buf.getvalue().decode("utf-8")
         ensure_limits(None, svg, limits=limits)
         reject_active_svg(svg)
@@ -92,7 +96,7 @@ class MatplotlibAdapter:
         from hedron_core.diagnostics import error
 
         acc = output.accessibility
-        children: list[Any] = [html.h2(acc.title)]
+        children: list[NodeLike] = [html.h2(acc.title)]
         if acc.description:
             children.append(html.p(acc.description))
         if output.kind == "svg":
@@ -133,12 +137,12 @@ class PlotlyAdapter:
     name = "plotly"
     optional_package = "plotly"
 
-    def supports(self, value: Any) -> bool:
+    def supports(self, value: object) -> bool:
         return type(value).__module__.startswith("plotly")
 
     def compile(
         self,
-        value: Any,
+        value: object,
         *,
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
@@ -150,7 +154,8 @@ class PlotlyAdapter:
         except ImportError as exc:
             raise missing_extra("plotly") from exc
         acc = accessibility.validated()
-        fig_dict = value.to_plotly_json() if hasattr(value, "to_plotly_json") else value
+        to_json = getattr(value, "to_plotly_json", None)
+        fig_dict = to_json() if callable(to_json) else value
         reject_callbacks(fig_dict)
         reject_remote_urls(fig_dict)
         body = json.dumps(fig_dict, separators=(",", ":"), default=str)
@@ -192,13 +197,13 @@ class AltairAdapter:
     name = "altair"
     optional_package = "altair"
 
-    def supports(self, value: Any) -> bool:
+    def supports(self, value: object) -> bool:
         mod = type(value).__module__
         return mod.startswith("altair") or "vega" in mod.lower()
 
     def compile(
         self,
-        value: Any,
+        value: object,
         *,
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
@@ -210,16 +215,19 @@ class AltairAdapter:
         except ImportError as exc:
             raise missing_extra("altair") from exc
         acc = accessibility.validated()
-        if hasattr(value, "to_dict"):
-            spec = value.to_dict()
+        to_dict = getattr(value, "to_dict", None)
+        if callable(to_dict):
+            raw_spec = to_dict()
+            if not isinstance(raw_spec, dict):
+                raise TypeError("Altair adapter expects to_dict() to return a mapping")
+            spec: dict[str, object] = dict(raw_spec)
         elif isinstance(value, dict):
-            spec = dict(value)
+            spec = {str(k): v for k, v in value.items()}
         else:
             raise TypeError("Altair adapter expects a Chart or Vega-Lite dict")
         # Altair emits a remote JSON-schema identifier as metadata. The browser
         # renderer does not fetch it, and removing it keeps otherwise local chart
         # payloads compatible with Hedron's remote-resource policy.
-        spec = dict(spec)
         spec.pop("$schema", None)
         reject_callbacks(spec)
         reject_remote_urls(spec)
@@ -258,8 +266,8 @@ class AltairAdapter:
         )
 
 
-def _fallback_table(rows: Any) -> NodeLike:
-    cleaned = redact_rows(list(rows))
+def _fallback_table(rows: Sequence[Mapping[str, Any]] | None) -> NodeLike:
+    cleaned = redact_rows(list(rows or ()))
     if not cleaned:
         return Text("")
     headers = list(cleaned[0].keys())
@@ -271,7 +279,7 @@ def _fallback_table(rows: Any) -> NodeLike:
 _ADAPTERS = (MatplotlibAdapter(), PlotlyAdapter(), AltairAdapter())
 
 
-def adapter_for(value: Any) -> MatplotlibAdapter | PlotlyAdapter | AltairAdapter:
+def adapter_for(value: object) -> MatplotlibAdapter | PlotlyAdapter | AltairAdapter:
     for adapter in _ADAPTERS:
         if adapter.supports(value):
             return adapter
@@ -279,15 +287,15 @@ def adapter_for(value: Any) -> MatplotlibAdapter | PlotlyAdapter | AltairAdapter
 
 
 def compile_figure(
-    value: Any,
+    value: object,
     *,
     title: str,
     description: str | None = None,
     alt: str | None = None,
     waiver: str | None = None,
-    tabular_fallback: Any = None,
+    tabular_fallback: Sequence[Mapping[str, Any]] | None = None,
     limits: VisualizationLimits | None = None,
-) -> tuple[Any, ChartOutput]:
+) -> tuple[MatplotlibAdapter | PlotlyAdapter | AltairAdapter, ChartOutput]:
     acc = accessibility_or_raise(
         title=title,
         description=description,

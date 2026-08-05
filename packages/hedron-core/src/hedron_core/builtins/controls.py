@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
@@ -33,7 +33,7 @@ class Button(Component[ButtonProps]):
             ButtonProps(label=label, type=type, disabled=disabled, variant=variant, **kwargs)
         )
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.button(
             self.props.label,
             type=self.props.type,
@@ -58,7 +58,7 @@ class LinkButton(Component[LinkButtonProps]):
         )
         super().__init__(LinkButtonProps(label=label, href=url, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.a(
             self.props.label,
             href=self.props.href,
@@ -90,7 +90,7 @@ class IconButton(Component[IconButtonProps]):
             IconButtonProps(label=label, icon=icon, type=type, disabled=disabled, **kwargs)
         )
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.button(
             html.span(self.props.icon, aria={"hidden": "true"}),
             type=self.props.type,

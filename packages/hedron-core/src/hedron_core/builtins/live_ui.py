@@ -5,9 +5,10 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from hedron_core.builtins._base import collect_children
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.typing_aliases import HtmlAttrValue
 
 
 class DialogProps(Props):
@@ -27,8 +28,8 @@ class Dialog(Component[DialogProps]):
     def __init__(
         self,
         title: str,
-        *nodes: Any,
-        children: Any = None,
+        *nodes: NodeLike,
+        children: NodeLike = None,
         open: bool = False,
         modal: bool = True,
         id: str | None = None,
@@ -40,14 +41,14 @@ class Dialog(Component[DialogProps]):
         super().__init__(DialogProps(title=title, open=open, modal=modal, id=resolved_id, **kwargs))
         self._body = collect_children(*nodes, children=children)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         body = self._slot_values.get("body", self._body)
         if not isinstance(body, tuple):
             body = (body,)
         actions = self._slot_values.get("actions", ())
         if not isinstance(actions, tuple):
             actions = (actions,)
-        attrs: dict[str, Any] = {
+        attrs: dict[str, HtmlAttrValue] = {
             "class_": "hedron-dialog",
             "data": {"hedron-dialog": "true", "modal": "true" if self.props.modal else "false"},
         }
@@ -60,7 +61,7 @@ class Dialog(Component[DialogProps]):
             method="dialog",
             class_="hedron-dialog-close",
         )
-        parts: list[Any] = [
+        parts: list[NodeLike] = [
             html.header(html.h2(self.props.title), close, class_="hedron-dialog-header"),
             html.div(*body, class_="hedron-dialog-body"),
         ]
@@ -101,8 +102,8 @@ class ChatMessage(Component[ChatMessageProps]):
             )
         )
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {
             "class_": f"hedron-chat-message hedron-chat-{self.props.role}",
             "data": {"role": self.props.role},
         }
@@ -111,7 +112,7 @@ class ChatMessage(Component[ChatMessageProps]):
         if self.props.role == "status":
             attrs["role"] = "status"
             attrs["aria"] = {"live": "polite"}
-        kids: list[Any] = [html.div(self.props.content, class_="hedron-chat-content")]
+        kids: list[NodeLike] = [html.div(self.props.content, class_="hedron-chat-content")]
         if self.props.status:
             kids.append(
                 html.div(

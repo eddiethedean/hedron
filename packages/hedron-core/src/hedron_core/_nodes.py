@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,7 +35,7 @@ class FragmentNode:
 @dataclass(frozen=True, slots=True)
 class ElementNode:
     tag: str
-    attributes: Mapping[str, Any]
+    attributes: Mapping[str, object]
     children: tuple[Node, ...]
     void: bool = False
 
@@ -46,7 +45,7 @@ class ComponentBoundaryNode:
     logical_id: str
     instance_id: str | None
     children: tuple[Node, ...]
-    props_summary: Mapping[str, Any] = field(default_factory=dict)
+    props_summary: Mapping[str, object] = field(default_factory=dict)
 
 
 Node = (

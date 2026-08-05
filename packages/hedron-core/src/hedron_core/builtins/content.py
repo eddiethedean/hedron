@@ -5,13 +5,14 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any, Literal
 
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
+from hedron_core.typing_aliases import HtmlAttrValue
 
 
-def _kids(*children: Any) -> tuple[Any, ...]:
+def _kids(*children: NodeLike) -> tuple[NodeLike, ...]:
     if (
         len(children) == 1
         and isinstance(children[0], Sequence)
@@ -38,7 +39,7 @@ class Text(Component[TextProps]):
     ) -> None:
         super().__init__(TextProps(content=content, as_=as_, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return getattr(html, self.props.as_)(self.props.content)
 
 
@@ -55,7 +56,7 @@ class Heading(Component[HeadingProps]):
     ) -> None:
         super().__init__(HeadingProps(content=content, level=level, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return getattr(html, f"h{self.props.level}")(self.props.content)
 
 
@@ -83,8 +84,8 @@ class Link(Component[LinkProps]):
         )
         super().__init__(LinkProps(href=url, label=label, external=external, **kwargs))
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {"href": self.props.href}
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {"href": self.props.href}
         if self.props.external:
             attrs["rel"] = "noopener noreferrer"
             attrs["target"] = "_blank"
@@ -118,8 +119,8 @@ class Image(Component[ImageProps]):
         )
         super().__init__(ImageProps(src=url, alt=alt, width=width, height=height, **kwargs))
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {"src": self.props.src, "alt": self.props.alt}
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {"src": self.props.src, "alt": self.props.alt}
         if self.props.width is not None:
             attrs["width"] = self.props.width
         if self.props.height is not None:
@@ -138,8 +139,8 @@ class CodeBlock(Component[CodeBlockProps]):
     def __init__(self, code: str, *, language: str | None = None, **kwargs: Any) -> None:
         super().__init__(CodeBlockProps(code=code, language=language, **kwargs))
 
-    def render(self) -> Any:
-        attrs: dict[str, Any] = {}
+    def render(self) -> NodeLike:
+        attrs: dict[str, HtmlAttrValue] = {}
         if self.props.language:
             attrs["class_"] = f"language-{self.props.language}"
         return html.pre(html.code(self.props.code, **attrs))
@@ -152,11 +153,11 @@ class ListProps(Props):
 class List(Component[ListProps]):
     props_type = ListProps
 
-    def __init__(self, *items: Any, ordered: bool = False, **kwargs: Any) -> None:
+    def __init__(self, *items: NodeLike, ordered: bool = False, **kwargs: Any) -> None:
         super().__init__(ListProps(ordered=ordered, **kwargs))
         self._items = _kids(*items)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         lis = [html.li(item) for item in self._items]
         return html.ol(*lis) if self.props.ordered else html.ul(*lis)
 
@@ -168,12 +169,12 @@ class DescriptionListProps(Props):
 class DescriptionList(Component[DescriptionListProps]):
     props_type = DescriptionListProps
 
-    def __init__(self, *pairs: tuple[Any, Any], **kwargs: Any) -> None:
+    def __init__(self, *pairs: tuple[NodeLike, NodeLike], **kwargs: Any) -> None:
         super().__init__(DescriptionListProps(**kwargs))
         self._pairs = pairs
 
-    def render(self) -> Any:
-        nodes: list[Any] = []
+    def render(self) -> NodeLike:
+        nodes: list[NodeLike] = []
         for term, desc in self._pairs:
             nodes.append(html.dt(term))
             nodes.append(html.dd(desc))
@@ -192,7 +193,7 @@ class Table(Component[TableProps]):
     def __init__(
         self,
         headers: Sequence[str],
-        rows: Sequence[Sequence[Any]],
+        rows: Sequence[Sequence[NodeLike]],
         *,
         caption: str | None = None,
         **kwargs: Any,
@@ -201,8 +202,8 @@ class Table(Component[TableProps]):
         self._headers = tuple(headers)
         self._rows = tuple(tuple(r) for r in rows)
 
-    def render(self) -> Any:
-        children: list[Any] = []
+    def render(self) -> NodeLike:
+        children: list[NodeLike] = []
         if self.props.caption:
             children.append(html.caption(self.props.caption))
         children.append(html.thead(html.tr(*[html.th(h, scope="col") for h in self._headers])))

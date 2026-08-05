@@ -33,7 +33,7 @@ def _pop_render_identity(token: Token[tuple[str, str] | None]) -> None:
 class ComponentNode(Protocol):
     """Opaque protocol implemented by components and native HTML nodes."""
 
-    def __hedron_node__(self) -> Any: ...
+    def __hedron_node__(self) -> NodeLike: ...
 
 
 class Component(Generic[PropsT]):
@@ -44,7 +44,7 @@ class Component(Generic[PropsT]):
     distribution: ClassVar[str] = "hedron-core"
     slots: ClassVar[dict[str, str]] = {}  # name -> cardinality: required|optional|many
 
-    def __init_subclass__(cls, **kwargs: Any) -> None:
+    def __init_subclass__(cls, **kwargs: object) -> None:
         super().__init_subclass__(**kwargs)
         if not hasattr(cls, "props_type") or cls.props_type is Component.__dict__.get(
             "props_type", None
@@ -89,8 +89,8 @@ class Component(Generic[PropsT]):
                 remediation="Correct the props to match the declared Props model.",
                 component_id=self.logical_id() if hasattr(self, "_props") else None,
             ) from exc
-        self._children: tuple[Any, ...] = ()
-        self._slot_values: dict[str, Any] = {}
+        self._children: tuple[NodeLike, ...] = ()
+        self._slot_values: dict[str, NodeLike | list[NodeLike]] = {}
         self._key: str | None = None
 
     @property
@@ -101,11 +101,11 @@ class Component(Generic[PropsT]):
         self._key = value
         return self
 
-    def children(self, *nodes: Any) -> Component[PropsT]:
+    def children(self, *nodes: NodeLike) -> Component[PropsT]:
         self._children = nodes
         return self
 
-    def slot(self, name: str, value: Any) -> Component[PropsT]:
+    def slot(self, name: str, value: NodeLike) -> Component[PropsT]:
         cardinality = self.slots.get(name)
         if cardinality is None and self.slots:
             raise error(
@@ -146,8 +146,8 @@ class Component(Generic[PropsT]):
         name = self.logical_name or self.__class__.__name__
         return component_type_id(self.distribution, module, name)
 
-    def identity_fields(self) -> dict[str, Any]:
-        result: dict[str, Any] = {}
+    def identity_fields(self) -> dict[str, object]:
+        result: dict[str, object] = {}
         for fname, finfo in self.props.__class__.model_fields.items():
             meta = hedron_meta(finfo)
             if not meta.get("identity"):
@@ -189,7 +189,7 @@ class Component(Generic[PropsT]):
         current = _render_identity.get()
         return current[1] if current is not None else self._key
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         raise error(
             "HED-RENDER-0005",
             title="render() not implemented",
@@ -197,7 +197,7 @@ class Component(Generic[PropsT]):
             component_id=self.logical_id(),
         )
 
-    def __hedron_node__(self) -> Component[Any]:
+    def __hedron_node__(self) -> Component[PropsT]:
         return self
 
 

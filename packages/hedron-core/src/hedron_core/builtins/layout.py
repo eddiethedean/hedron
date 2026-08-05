@@ -6,7 +6,7 @@ import re
 from typing import Any, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -34,8 +34,8 @@ class Container(Component[ContainerProps]):
 
     def __init__(
         self,
-        *nodes: Any,
-        children: Any = None,
+        *nodes: NodeLike,
+        children: NodeLike = None,
         id: str | None = None,
         class_: str | None = None,
         **kwargs: Any,
@@ -43,7 +43,7 @@ class Container(Component[ContainerProps]):
         super().__init__(ContainerProps(id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         attrs = {
             "class_": class_names("hedron-container", self.props.class_),
             "id": self.props.id,
@@ -60,8 +60,8 @@ class Stack(Component[StackProps]):
 
     def __init__(
         self,
-        *nodes: Any,
-        children: Any = None,
+        *nodes: NodeLike,
+        children: NodeLike = None,
         gap: str = "1rem",
         id: str | None = None,
         class_: str | None = None,
@@ -70,7 +70,7 @@ class Stack(Component[StackProps]):
         super().__init__(StackProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.div(
             *self._children,
             id=self.props.id,
@@ -89,8 +89,8 @@ class Inline(Component[InlineProps]):
 
     def __init__(
         self,
-        *nodes: Any,
-        children: Any = None,
+        *nodes: NodeLike,
+        children: NodeLike = None,
         gap: str = "0.5rem",
         id: str | None = None,
         class_: str | None = None,
@@ -99,7 +99,7 @@ class Inline(Component[InlineProps]):
         super().__init__(InlineProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.div(
             *self._children,
             id=self.props.id,
@@ -121,8 +121,8 @@ class Grid(Component[GridProps]):
 
     def __init__(
         self,
-        *nodes: Any,
-        children: Any = None,
+        *nodes: NodeLike,
+        children: NodeLike = None,
         columns: int = 2,
         gap: str = "1rem",
         id: str | None = None,
@@ -146,7 +146,7 @@ class Grid(Component[GridProps]):
         )
         self._children = collect_children(*nodes, children=children)
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         return html.div(
             *self._children,
             id=self.props.id,
@@ -172,7 +172,7 @@ class Divider(Component[DividerProps]):
     ) -> None:
         super().__init__(DividerProps(orientation=orientation, **kwargs))
 
-    def render(self) -> Any:
+    def render(self) -> NodeLike:
         if self.props.orientation == "vertical":
             return html.div(role="separator", aria={"orientation": "vertical"})
         return html.hr()

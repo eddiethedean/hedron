@@ -5,7 +5,7 @@ from __future__ import annotations
 import functools
 import inspect
 from collections.abc import Callable, Coroutine
-from typing import Any
+from typing import Any, Protocol, TypeAlias, runtime_checkable
 
 from fastapi import Request
 from fastapi.routing import APIRoute
@@ -30,7 +30,17 @@ from hedron_core.rendering import RenderMode
 __all__ = ["HedronRoute"]
 
 
-def _is_hedron_value(value: Any) -> bool:
+@runtime_checkable
+class _SupportsRender(Protocol):
+    def render(self, *args: Any, **kwargs: Any) -> object: ...
+
+
+HedronEndpointResult: TypeAlias = (
+    StarletteResponse | InteractionResult | HTML | Component[Any] | Model | _SupportsRender
+)
+
+
+def _is_hedron_value(value: object) -> bool:
     if isinstance(value, (HTML, Component, StarletteResponse, InteractionResult)):
         return True
     if isinstance(value, Model) and not isinstance(value, Component):
@@ -109,7 +119,7 @@ class HedronRoute(APIRoute):
     @staticmethod
     async def convert_endpoint_result(
         request: Request,
-        result: Any,
+        result: HedronEndpointResult,
         *,
         mode: RenderMode | None = None,
         kind: str = "page",
