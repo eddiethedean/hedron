@@ -38,6 +38,8 @@ jobs:
           cache-dependency-glob: uv.lock
       - name: Set up Python
         run: uv python install ${{ matrix.python-version }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
       - name: Install dependencies
         run: uv sync --locked --python ${{ matrix.python-version }}
       - name: Run tests
