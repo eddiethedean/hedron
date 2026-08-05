@@ -11,7 +11,6 @@ import pytest
 
 pytest.importorskip("playwright")
 from playwright.sync_api import sync_playwright
-
 from tests.browser._harness import reset_browser_plugin_state, wait_for_port
 
 pytestmark = [
