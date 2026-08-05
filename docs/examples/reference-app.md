@@ -2,7 +2,7 @@
 
 Annotated tour of
 [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)—
-the FastAPI flagship CRUD sample on the **0.11.0** train.
+the FastAPI flagship CRUD sample on the **0.13.0** train.
 
 ## Run
 

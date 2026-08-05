@@ -43,3 +43,6 @@ remain owned by `0.10.x` / `0.11.x` and stay experimental.
 
 - [x] Full regression suite. *(`REGRESS-013`)*
 - [x] Packaging rehearsal. *(`PKG-013`)*
+
+**Exit met / published** as coordinated `0.13.0` (`v0.13.0`). Prior-phase live ops Deferred
+rows remain owned by `0.10.x` / `0.11.x` and stay experimental until those gates close.

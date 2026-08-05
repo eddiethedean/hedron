@@ -1,9 +1,7 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.13 **implementation complete / ready to cut** (not published
-until `v0.13.0` tag). Workspace packages: Beta `0.13.0`, Alpha charts/sample-kit `0.1.x`
-(2026-08-05). Last published train remains `v0.12.0` until cut (or `v0.11.0` if 0.12 not
-yet tagged).
+**Roadmap position:** phase 0.13 **published** as `v0.13.0` (2026-08-05). Workspace
+packages: Beta `0.13.0`, Alpha charts/sample-kit `0.1.x`.
 **Date:** 2026-08-05
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` `0.13.0`; Alpha (independent) —
@@ -49,7 +47,7 @@ close. Phase 0.13 closed with **zero Deferred** rows for 0.13-owned work.
 - Compatibility / deprecation: [COMPATIBILITY.md](COMPATIBILITY.md).
 - Upgrade: [guides/upgrade.md](guides/upgrade.md).
 - Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_13.py`.
-- Cut procedure: [RELEASE.md](RELEASE.md) (next cut: **0.14**).
+- Cut procedure: [RELEASE.md](RELEASE.md) (next capability cut: **0.14**).
 
 ## Next capability phase
 

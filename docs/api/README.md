@@ -40,7 +40,7 @@ contracts match what you just used:
 
 ## Shipped through 0.10
 
-These surfaces are implemented in the published **0.11.0** train (includes the 0.9 authoring break
+These surfaces are implemented in the published **0.13.0** train (includes the 0.9 authoring break
 and 0.10 live interaction).
 
 ### Application
@@ -105,5 +105,5 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 ## Published in 0.11
 
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory —
-  phase **0.11** (`0.11.0`, D-046)
+  phase **0.11** (`v0.11.0`, D-046); still Supported on the current **0.13.0** train
 - Capture UI remains — phase 0.15

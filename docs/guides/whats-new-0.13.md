@@ -1,6 +1,6 @@
 # What's new in 0.13
 
-Phase **0.13** — advanced async and observability (`v0.13.0`, ready to cut).
+Phase **0.13** — advanced async and observability (`v0.13.0`, published).
 
 ## Highlights
 
@@ -16,3 +16,9 @@ Phase **0.13** — advanced async and observability (`v0.13.0`, ready to cut).
 ## Upgrade
 
 See [Upgrade](upgrade.md) §0.13 and [What's ready](whats-ready.md).
+
+## Install
+
+```bash
+pip install "hedron>=0.13.0" "uvicorn[standard]"
+```

@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.12.0** train (ready to cut) on `main`
+**Status:** Accepted; kept current with the **0.13.0** train (published) on `main`
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -55,22 +55,22 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.12.0`) |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.13.0`) |
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
 | `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Beta Supported) |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Beta Supported) |
-| `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.12.0` |
+| `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.13.0` |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
 `hedron-explorer` for development diagnostics; `hedron[jinja]` installs the separate integration.
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated train is **`0.12.0`** (`v0.12.0`, ready to cut) for data and
-visualization scale — see [STATUS](STATUS.md). Last published tag remains `v0.11.0` until cut.
+**Publish note:** the coordinated train is **`0.13.0`** (`v0.13.0`, published) for advanced
+async and observability — see [STATUS](STATUS.md).
 
 ## Dependency rules
 

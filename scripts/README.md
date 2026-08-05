@@ -18,7 +18,7 @@ scripts here when you add them.
 | `check_release_gate.py` | Gate TOML vs claimed version (`0.10.1`, `0.11.0`, …) |
 | `rehearse_release.py` | Clean install rehearsal before tagging |
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
-| `verify_pkg_12.py` / `verify_pkg_11.py` / `verify_pkg_10.py` / `verify_pkg_09.py` | Phase-tied package verify helpers |
+| `verify_pkg_13.py` / `verify_pkg_12.py` / `verify_pkg_11.py` / `verify_pkg_10.py` / `verify_pkg_09.py` | Phase-tied package verify helpers |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

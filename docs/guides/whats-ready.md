@@ -1,13 +1,13 @@
 # What’s ready today
 
-**Canonical maturity snapshot for 0.12.0 (ready to cut; not tagged until publish).** Other evaluator pages link here —
+**Canonical maturity snapshot for 0.13.0 (published).** Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
 ## How to read this page
 
-Hedron **0.12.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
+Hedron **0.13.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
 breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
 | Label | Meaning |
@@ -78,7 +78,7 @@ guaranteed multi-worker live-transport proof — see
 ## Recommended install
 
 ```bash
-pip install "hedron>=0.12.0" "uvicorn[standard]"
+pip install "hedron>=0.13.0" "uvicorn[standard]"
 python -m hedron new my-app
 cd my-app
 pip install -e .   # or: uv sync

@@ -1,12 +1,12 @@
 # Upgrade guide (0.8 → 0.13)
 
 Hedron publishes coordinated Beta trains. Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should
-upgrade through **0.9** / **0.10** / **0.11** / **0.12** to the **0.13.0** train (ready to cut) for
+upgrade through **0.9** / **0.10** / **0.11** / **0.12** to the **0.13.0** train (published) for
 advanced async preparation, observability, and durable Celery/RQ status.
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9** / **0.10** / **0.11** / **0.12** to the **0.13.0** train (ready to cut) for
+upgrade through **0.9** / **0.10** / **0.11** / **0.12** to the **0.13.0** train (published) for
 advanced async preparation, observability, and durable Celery/RQ status.
 
 ## What changed in 0.8
@@ -124,7 +124,7 @@ inventory, Celery/RQ `JobBackend` bridges, and capability-labeled Flask/Django l
 
 Narrative: [What's new in 0.11](whats-new-0.11.md).
 
-## 0.12 data and visualization scale (ready to cut)
+## 0.12 data and visualization scale (published)
 
 Phase 0.12 ships the shared column catalog, typed grid/chart events, saved views,
 `TransformPlan`, advanced DataEditor (formulas, pivots, trees, collab, spreadsheet I/O),
@@ -143,7 +143,7 @@ Plotly events/annotations, optional adapters with offline runtime pins, and HDJ
 5. Charts remain Alpha: pin `hedron-charts` and prefer offline pinned runtimes over CDNs.
 6. Re-read [What's ready](whats-ready.md) and [What's new in 0.12](whats-new-0.12.md).
 
-## 0.13 advanced async and observability (ready to cut)
+## 0.13 advanced async and observability (published)
 
 Phase 0.13 ships optional component `prepare()`, adaptive concurrency, optional OpenTelemetry
 tracing (`hedron[otel]`), HDJ async I/O budgets, `SecurityAuditSink`, Redis-durable Celery/RQ

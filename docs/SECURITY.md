@@ -4,8 +4,9 @@
 
 | Version | Supported |
 |---|---|
-| `0.12.x` | Yes (ready-to-cut / published train once tagged) |
-| `0.11.x` | Security fixes while 0.12 remains Beta; prefer upgrading |
+| `0.13.x` | Yes (current published train) |
+| `0.12.x` | Security fixes while 0.13 remains Beta; prefer upgrading |
+| `0.11.x` | Prefer upgrading to the current train |
 | `0.10.x` | Prefer upgrading to the current train |
 | `0.9.x` | Prefer upgrading to the current train |
 | `0.8.x` | Final HDN-capable line; critical issues may be noted only |

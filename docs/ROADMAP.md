@@ -552,10 +552,13 @@ visualization through bounded, inspectable adapters.
 - Data/chart adapters run the shared contract fixtures with reproducible boundary and adversarial
   cases; their tests assert semantic event results rather than browser-library internals.
 
-## 0.13 — Advanced async and observability (`v0.13.0`)
+## 0.13 — Advanced async and observability (`v0.13.0`) — **published**
 
 **Outcome:** Applications can prepare component data concurrently and adapt resource use without
 introducing a second hidden runtime or losing trace and cancellation semantics.
+
+**Status:** Published as `v0.13.0` (2026-08-05). See [STATUS.md](STATUS.md) and
+[release-gate-0.13.toml](acceptance/release-gate-0.13.toml) (zero Deferred for 0.13-owned rows).
 
 ### Scope
 

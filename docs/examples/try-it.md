@@ -34,7 +34,7 @@ uv sync && uv run uvicorn app:app --app-dir examples/reference-app --reload
 ## Prefer not to clone?
 
 ```bash
-pip install "hedron>=0.11.0"
+pip install "hedron>=0.13.0"
 python -m hedron new my-hedron-app   # or: hedron new …
 cd my-hedron-app && pip install -e .
 uvicorn app:app --reload

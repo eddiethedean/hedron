@@ -12,7 +12,7 @@ Django adapters). It is not a notebook-style rerun engine, SPA framework, ORM, o
 
 | Item | Value |
 |---|---|
-| Published train | **0.11.0** (Beta packages) |
+| Published train | **0.13.0** (Beta packages) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |

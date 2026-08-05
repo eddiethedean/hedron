@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.13.0** train (ready to cut; not published until tag)  
+**Status:** Accepted for the published **0.13.0** train  
 **Reviewed:** 2026-08-05
 
 ## Current train (read this first)
