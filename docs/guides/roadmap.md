@@ -10,7 +10,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.12** | Data and visualization scale | **Published** (`v0.12.0`) |
 | **0.13** | Advanced async, observability, job durability, diagnostics | **Published** (`v0.13.0`) |
 | **0.14** | Portable runtimes and acceleration | Planned |
-| **0.15** | Data-app surface; OIDC and session/identity helpers | Planned |
+| **0.15** | Data-app surface; OIDC and session/identity helpers; HTMX testing helpers | Planned |
 | **0.16** | Curated extras and analysis workbenches | Planned |
 | **0.17** | Reactive dashboards and agent interfaces | Planned |
 | **0.18** | Model demos and inference workflows | Planned |
