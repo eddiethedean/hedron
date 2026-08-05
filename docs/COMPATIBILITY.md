@@ -5,41 +5,49 @@
 
 ## Current train (read this first)
 
-| Dependency | `v0.11.0` baseline | Notes |
-|---|---|---|
-| Python | CPython 3.11–3.14 | `requires-python = ">=3.11,<3.15"` |
-| FastAPI | `>=0.141.1,<0.142` | Required by `hedron` (not `hedron-core`) |
-| Pydantic | `>=2.13.4,<2.14` | Required by `hedron-core` |
-| HTMX | Bundled 2.0.10; contract `>=2.0,<3.0` | Injected on PAGE responses |
-| Flask | `>=3.0,<4` via `hedron-flask` | Waitress `>=3,<4` reference WSGI |
-| Django | `>=5.2,<6` via `hedron-django` | WSGI + ASGI |
-| Jinja (optional HDJ) | `>=3.1,<4` via `hedron[jinja]` | Not a default install |
+| Dependency | Supported matrix (tested) | Declared range | Notes |
+|---|---|---|---|
+| Python | CPython 3.11–3.14 | `>=3.11,<3.15` | |
+| FastAPI | `>=0.141.1,<0.142` | `>=0.141.1,<0.150` (`hedron`) | Not required by `hedron-core` |
+| Pydantic | `>=2.13.4,<2.14` | `>=2.13.4,<2.15` | Required by `hedron-core` / `hedron` |
+| HTMX | Bundled 2.0.10; contract `>=2.0,<3.0` | same | Injected on PAGE responses |
+| Flask | `>=3.0,<4` via `hedron-flask` | same | Waitress `>=3,<4` reference WSGI |
+| Django | `>=5.2,<6` via `hedron-django` | same | WSGI + ASGI |
+| Jinja (optional HDJ) | `>=3.1,<4` via `hedron[jinja]` | same | Not a default install |
 
-Live transports (SSE, focused streaming, page/session WebSocket, Chat/Dialog, preload) are
-**API Supported** on the FastAPI flagship; polling remains the Supported fallback on every
-host. Full ops/backpressure evidence for live transports is still incomplete — see
-[What's ready](guides/whats-ready.md). Flask/Django ship Blueprint/`init_app`, AppConfig,
-forms bridge, and bounded QuerySet DataSource in **0.11** with capability-labeled live helpers.
+The **Supported matrix** is the CI-tested range. Package metadata may declare a **wider**
+compatible range; versions outside the Supported column are installable but unsupported
+until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
+`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`) stay on the `0.11.x`
+train. Alpha packages `hedron-charts` and `hedron-sample-kit` version independently
+(`0.1.x`) and declare `hedron-core>=0.11.0,<0.12`.
+
+Live transports (SSE, focused streaming, page/session WebSocket, preload) are
+**experimental** on the FastAPI flagship (`hedron.experimental`); polling remains the
+Supported fallback on every host. Chat/Dialog are beta. Full ops/backpressure evidence
+for live transports is still incomplete — see [What's ready](guides/whats-ready.md).
+Flask/Django ship Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
+DataSource in **0.11** with capability-labeled live helpers.
 
 Historical phase baselines (0.7–0.10) and deprecation rules are below. Prefer this section
 when evaluating a new install.
 
 ## Dependency pin conflicts
 
-Hedron pins FastAPI and Pydantic tightly so the Supported matrix matches CI:
+Hedron declares wider FastAPI/Pydantic ranges than the Supported matrix CI proves:
 
-| Package | Supported range |
-|---|---|
-| FastAPI | `>=0.141.1,<0.142` |
-| Pydantic | `>=2.13.4,<2.14` |
+| Package | Supported (tested) | Declared |
+|---|---|---|
+| FastAPI | `>=0.141.1,<0.142` | `>=0.141.1,<0.150` |
+| Pydantic | `>=2.13.4,<2.14` | `>=2.13.4,<2.15` |
 
 **First app:** use a clean virtualenv so an older shared pin does not block install.
 
-**Existing app:** if your lockfile cannot move into these ranges:
+**Existing app:** if your lockfile cannot move into the Supported ranges:
 
 1. Create an isolated env for Hedron evaluation, **or**
-2. Override at your own risk — versions outside the table are **unsupported** (may work;
-   no CI claim; upgrade risk is yours).
+2. Install within the declared range at your own risk — versions outside Supported are
+   **unsupported** (may work; no CI claim; upgrade risk is yours).
 3. Do not report out-of-range resolver failures as Hedron defects until you reproduce on
    a clean env within the Supported ranges.
 
@@ -51,8 +59,8 @@ See [Installation](getting-started/installation.md) and
 | Dependency | `v0.11.0` compatibility baseline | Policy |
 |---|---|---|
 | Python | CPython 3.11, 3.12, 3.13, and 3.14 | `requires-python = ">=3.11,<3.15"`; 3.15 prereleases are not supported. |
-| FastAPI | `>=0.141.1,<0.142` | Required by `hedron`, not `hedron-core`; expand only after adapter conformance. |
-| Pydantic | `>=2.13.4,<2.14` | Required by `hedron-core`; Hedron shields public contracts from Pydantic internals. |
+| FastAPI | Supported `>=0.141.1,<0.142`; declared `>=0.141.1,<0.150` | Required by `hedron`, not `hedron-core`; expand Supported only after adapter conformance. |
+| Pydantic | Supported `>=2.13.4,<2.14`; declared `>=2.13.4,<2.15` | Required by `hedron-core`; Hedron shields public contracts from Pydantic internals. |
 | Starlette | FastAPI-managed compatible version | No independent direct pin unless implementation use requires one; test the resolved FastAPI set. |
 | HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js`. |
 | Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Lazy optional; exact missing-extra guidance. |

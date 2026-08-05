@@ -1,4 +1,4 @@
-"""Portable adapter test harness — re-exported from hedron-core for compatibility."""
+"""Portable testing helpers for hedron-core."""
 
 from hedron_core.testing.adapters import (
     AdapterAppFixture,

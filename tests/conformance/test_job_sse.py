@@ -46,7 +46,7 @@ def test_job_status_sse_response_streams_terminal_and_keeps_poll_fallback() -> N
     """JOB-006: SSE observes until terminal; HTTP poll interaction remains Supported."""
     backend = InMemoryJobBackend()
     set_job_backend(backend)
-    handle = backend.submit("demo", {})
+    handle = backend.submit("demo", {}, auth_subject="alice")
     status = backend.get(handle.job_id)
     assert status is not None
     assert job_status_interaction(status).status_code == 202
@@ -56,7 +56,12 @@ def test_job_status_sse_response_streams_terminal_and_keeps_poll_fallback() -> N
 
     @app.get("/jobs/{job_id}")
     def _sse(job_id: str):
-        return job_status_sse_response(job_id, backend=backend, poll_interval_seconds=0.01)
+        return job_status_sse_response(
+            job_id,
+            backend=backend,
+            auth_subject="alice",
+            poll_interval_seconds=0.01,
+        )
 
     with TestClient(app) as client:
         body = client.get(f"/jobs/{handle.job_id}").content

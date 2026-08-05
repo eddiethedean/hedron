@@ -196,3 +196,14 @@ def test_interaction_status_code(django_setup: Client) -> None:
     )
     assert response.status_code == 202
     assert b"accepted" in response.content
+
+
+def test_undeclared_hx_target_is_forbidden(django_setup: Client) -> None:
+    del django_setup
+    from django.test import RequestFactory
+
+    from hedron_django import interaction_response
+
+    request = RequestFactory().get("/", HTTP_HX_REQUEST="true", HTTP_HX_TARGET="#panel")
+    response = interaction_response(InteractionResult(content=Text("body")), request=request)
+    assert response.status_code == 403

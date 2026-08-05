@@ -94,7 +94,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 - [Stability classifications](STABILITY.md) — 0.8+ compatibility catalog (0.10 live surfaces)
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
-- [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling; SSE Supported in 0.10
+- [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling Supported; SSE experimental
 
 ## Deferred contracts
 

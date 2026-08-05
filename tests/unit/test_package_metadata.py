@@ -25,20 +25,31 @@ def test_version_is_synchronized() -> None:
     assert project["version"] == __version__
     changelog = (PKG / "CHANGELOG.md").read_text(encoding="utf-8")
     assert f"[{__version__}]" in changelog
-    for name in (
+    beta_packages = (
         "hedron",
-        "hedron-explorer",
-        "hedron-sample-kit",
         "hedron-data",
-        "hedron-charts",
         "hedron-flask",
         "hedron-django",
         "hedron-jinja",
-    ):
+        "hedron-explorer",
+    )
+    for name in beta_packages:
         other = tomllib.loads(
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]
-        assert other["version"] == __version__
+        assert other["version"] == __version__, name
+    alpha_packages = ("hedron-charts", "hedron-sample-kit")
+    for name in alpha_packages:
+        other = tomllib.loads(
+            (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
+        )["project"]
+        development_status = [
+            classifier
+            for classifier in other["classifiers"]
+            if classifier.startswith("Development Status ::")
+        ]
+        assert development_status == ["Development Status :: 3 - Alpha"], name
+        # Alpha packages may version independently of the Beta train.
 
 
 def test_public_metadata_fields() -> None:
@@ -49,7 +60,8 @@ def test_public_metadata_fields() -> None:
     assert project["license-files"] == ["LICENSE"]
     dependencies = project["dependencies"]
     assert isinstance(dependencies, list)
-    assert "pydantic>=2.13.4,<2.14" in dependencies
+    assert "pydantic>=2.13.4,<2.15" in dependencies
+    assert "packaging>=24.0" in dependencies
     urls = project["urls"]
     assert isinstance(urls, dict)
     assert "Homepage" in urls
@@ -94,7 +106,8 @@ def test_flagship_declares_direct_pydantic_dependency() -> None:
     project = tomllib.loads(
         (ROOT / "packages" / "hedron" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
-    assert "pydantic>=2.13.4,<2.14" in project["dependencies"]
+    assert "pydantic>=2.13.4,<2.15" in project["dependencies"]
+    assert "fastapi>=0.141.1,<0.150" in project["dependencies"]
 
 
 def test_installed_distribution_metadata() -> None:

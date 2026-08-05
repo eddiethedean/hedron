@@ -13,15 +13,15 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | Label | Meaning |
 |---|---|
 | **Supported** | Capability claimed working with pinned versions for the stated host |
-| **API Supported / ops evidence incomplete** | Public API shipped; full browser/load/proxy proof still incomplete in STATUS |
+| **Experimental** | Public API shipped; may change; prefer documented fallbacks (e.g. polling) |
 | **Alpha** | Available on PyPI; pin and expect churn |
 | **Deferred** | Documented, not ready — do not treat as Supported |
 
 !!! warning "Live transports"
 
-    Do **not** treat SSE or WebSocket as unqualified production-ready behind a load
-    balancer. Prefer [polling](live-interaction.md) until you have your own ops proof for
-    buffering, timeouts, and backpressure.
+    SSE, focused streaming, WebSocket channels, and navigation preload are
+    **experimental** (`hedron.experimental`). Prefer [polling](live-interaction.md) in
+    production until ops gates (`PERF-10-001`, browser live matrices) close.
 
 ## Supported capabilities (Beta packages)
 
@@ -30,10 +30,11 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | Typed pages, fragments, built-ins | `hedron` + `hedron-core` | Supported |
 | FastAPI routing, CSRF profiles, CLI, testing helpers | `hedron` | Supported |
 | HTMX fragment loops, `InteractionResult` | `hedron` | Supported |
-| Live interaction: SSE, streaming, WebSocket channels, Chat/Dialog, opt-in preload | `hedron` (FastAPI flagship) | **API Supported / ops evidence incomplete** — prefer polling when ops proof is required |
-| Flask Blueprint / `init_app` + live helpers | `hedron-flask` | Supported; WSGI buffering limits documented; polling Supported fallback |
+| Live interaction: SSE, streaming, WebSocket, preload | `hedron.experimental` (FastAPI) | **Experimental** — polling Supported |
+| Chat/Dialog surfaces | `hedron` | Supported (beta); history application-owned |
+| Flask Blueprint / `init_app` + live helpers | `hedron-flask` | Supported host; live helpers experimental; polling Supported |
 | Django AppConfig, forms bridge, QuerySet DataSource | `hedron-django` + `hedron-data` | Supported |
-| Portable adapter test harness | `hedron.testing.adapters` | Supported |
+| Portable adapter test harness | `hedron_core.testing` / `hedron.testing.adapters` | Supported |
 | Optional HDJ (`.hdj`) templates + dynamic manifests / CSP inventory | `hedron[jinja]` | Supported |
 | Celery / RQ `JobBackend` bridges | `hedron_core.jobs_celery` / `jobs_rq` | Supported optional bridges |
 | Auto (inspectable object rendering) | Core (`hedron`) — no extra | Supported |

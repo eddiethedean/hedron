@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import time
 from collections.abc import AsyncIterator, Callable, Iterator, Mapping
 from typing import Any
 
@@ -10,7 +9,7 @@ from fastapi import HTTPException, status
 from fastapi.responses import StreamingResponse
 from starlette.requests import Request
 
-from hedron_core.jobs import JobBackend, JobState, get_job_backend, job_authorized
+from hedron_core.jobs import JobBackend, JobState, get_job_backend, job_authorized_http
 from hedron_core.live import SseEvent, encode_sse, iter_sse_bytes, job_status_sse_events
 from hedron_core.rendering import render
 
@@ -100,13 +99,14 @@ def job_status_sse_response(
     ``state`` / ``updated_at`` change. Stops when the job is terminal or missing.
 
     When the stored job has ``auth_subject`` / ``tenant_id`` set, the matching kwargs
-    must be provided and equal or the helper raises 403. Missing jobs raise 404.
+    must be provided and equal or the helper raises 403. Unscoped jobs (no scope on
+    the record) are never readable over HTTP. Missing jobs raise 404.
     """
     store = backend or get_job_backend()
     initial = store.get(job_id)
     if initial is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
-    if not job_authorized(initial, auth_subject=auth_subject, tenant_id=tenant_id):
+    if not job_authorized_http(initial, auth_subject=auth_subject, tenant_id=tenant_id):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Job access forbidden")
 
     def _html(status_obj: Any) -> str:
@@ -117,7 +117,9 @@ def job_status_sse_response(
         result = render(Status(f"Job {status_obj.job_id}: {status_obj.state.value}", live=True))
         return result.html
 
-    def _gen() -> Iterator[bytes]:
+    async def _gen() -> AsyncIterator[bytes]:
+        import asyncio
+
         last_id: str | None = None
         if request is not None:
             last_id = _safe_last_event_id(request.headers.get("last-event-id"))
@@ -134,7 +136,7 @@ def job_status_sse_response(
                     SseEvent(data="not-found", event="error", id=last_id or job_id)
                 ).encode("utf-8")
                 return
-            if not job_authorized(status_obj, auth_subject=auth_subject, tenant_id=tenant_id):
+            if not job_authorized_http(status_obj, auth_subject=auth_subject, tenant_id=tenant_id):
                 yield encode_sse(
                     SseEvent(data="forbidden", event="error", id=last_id or job_id)
                 ).encode("utf-8")
@@ -159,7 +161,7 @@ def job_status_sse_response(
                     if poll_interval_seconds is not None
                     else max(0.05, float(status_obj.retry_after))
                 )
-                time.sleep(interval)
+                await asyncio.sleep(interval)
                 last_id = None  # only skip the first matching snapshot
                 continue
             key = (status_obj.state.value, status_obj.updated_at)
@@ -171,7 +173,7 @@ def job_status_sse_response(
                     if poll_interval_seconds is not None
                     else max(0.05, float(status_obj.retry_after))
                 )
-                time.sleep(interval)
+                await asyncio.sleep(interval)
                 continue
             terminal = status_obj.state in _TERMINAL
             for event in job_status_sse_events(
@@ -192,6 +194,6 @@ def job_status_sse_response(
                 if poll_interval_seconds is not None
                 else max(0.05, float(status_obj.retry_after))
             )
-            time.sleep(interval)
+            await asyncio.sleep(interval)
 
     return SseResponse(_gen())

@@ -12,6 +12,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import (
     FragmentRegionError,
     InteractionResult,
+    authorize_htmx_target,
     materialize_interaction_nodes,
     merge_interaction_headers,
 )
@@ -38,6 +39,18 @@ def _headers_mapping(request: HttpRequest | None) -> dict[str, str]:
         except TypeError:
             return {}
     return {str(k): str(v) for k, v in raw_items}
+
+
+def _header_value(headers: Mapping[str, str], name: str) -> str | None:
+    """Read an HTTP header with case-insensitive fallback for plain dicts."""
+    value = headers.get(name)
+    if value is not None:
+        return str(value)
+    lower = name.lower()
+    for key, val in headers.items():
+        if str(key).lower() == lower:
+            return str(val)
+    return None
 
 
 def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[Any]:
@@ -111,7 +124,11 @@ def interaction_response(
     extra_headers: Mapping[str, str] | None = None,
     authenticated: bool = False,
 ) -> HttpResponse:
+    hdrs = _headers_mapping(request)
+    is_htmx = (_header_value(hdrs, "HX-Request") or "").lower() == "true"
+    target = result.region_id or _header_value(hdrs, "HX-Target")
     try:
+        authorize_htmx_target(result.policy, target, is_htmx=is_htmx)
         node = materialize_interaction_nodes(result)
     except (FragmentRegionError, ValueError) as exc:
         return HttpResponse(

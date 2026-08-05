@@ -16,11 +16,7 @@ from hedron_django.htmx import htmx_context, render_mode_for_request
 from hedron_django.responses import _headers_mapping, component_response, interaction_response
 from hedron_django.routing import DjangoUrlReverser
 
-__all__ = ["HedronDjango", "QUERYSET_DATASOURCE_DEFERRED"]
-
-
-# Explicit deferral flipped by D-046 / phase 0.11 — QuerySet DataSource is Supported.
-QUERYSET_DATASOURCE_DEFERRED = False
+__all__ = ["HedronDjango"]
 
 
 class HedronDjango:

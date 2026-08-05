@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from hedron import Hedron, InteractionResult, Text
 from hedron.interaction import (
     FragmentRegion,
+    InteractionPolicy,
     OobUpdate,
     interaction_headers,
 )
@@ -161,13 +162,31 @@ def test_oob_missing_target_with_declared_regions_rejected() -> None:
     assert response.status_code == 403
 
 
-def test_undeclared_fragment_regions_accept_any_hx_target() -> None:
-    """Document opt-in fragment auth: without fragment_regions, HX-Target is not gated."""
+def test_undeclared_fragment_regions_reject_hx_target() -> None:
+    """Fail closed: without fragment_regions, HX-Target is rejected."""
     app = Hedron(title="t", security="standard", session_secret="test-secret", explorer="off")
 
     @app.page("/panel")
     def panel() -> InteractionResult:
         return InteractionResult(content=Text("panel"))
+
+    client = TestClient(app)
+    response = client.get(
+        "/panel",
+        headers={"HX-Request": "true", "HX-Target": "#evil"},
+    )
+    assert response.status_code == 403
+
+
+def test_allow_undeclared_targets_opt_out() -> None:
+    app = Hedron(title="t", security="standard", session_secret="test-secret", explorer="off")
+
+    @app.page("/panel")
+    def panel() -> InteractionResult:
+        return InteractionResult(
+            content=Text("panel"),
+            policy=InteractionPolicy(allow_undeclared_targets=True),
+        )
 
     client = TestClient(app)
     response = client.get(

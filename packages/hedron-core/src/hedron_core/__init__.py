@@ -104,6 +104,8 @@ from hedron_core.interaction import (
     InteractionResult,
     OobUpdate,
     StatusPolicy,
+    authorize_htmx_target,
+    authorize_oob_update,
     default_interaction_policy,
     interaction_headers,
 )
@@ -169,6 +171,8 @@ __all__ = [
     "StatusPolicy",
     "UrlReverseRequest",
     "approved_headers",
+    "authorize_htmx_target",
+    "authorize_oob_update",
     "capability_matrix",
     "default_interaction_policy",
     "interaction_headers",

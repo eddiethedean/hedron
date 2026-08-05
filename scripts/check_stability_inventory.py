@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify public __all__ exports are covered by the 0.10 stability catalog."""
+"""Verify public package surfaces are covered by the stability catalog."""
 
 from __future__ import annotations
 
@@ -108,7 +108,9 @@ def main() -> int:
         "Levels",
         "Artifact classes",
         "Deferred destinations",
-        "Supported in 0.10",
+        "Minimal `stable` tier",
+        "experimental until ops gates",
+        "Supported in 0.11",
     ]
     for section in required_sections:
         if section not in text:
@@ -147,7 +149,7 @@ def main() -> int:
         errors.append(f"unexpectedly small public export surface: {total} names")
 
     # Plugin protocol and manifest version markers must be mentioned
-    for needle in ("PluginMeta", "HedronJinja", "experimental", "deferred", "beta"):
+    for needle in ("PluginMeta", "HedronJinja", "experimental", "deferred", "beta", "stable"):
         if needle not in text:
             errors.append(f"STABILITY.md missing required term: {needle}")
 

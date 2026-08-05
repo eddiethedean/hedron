@@ -754,7 +754,7 @@ sanitize = [
 requires-dist = [
     { name = "authlib", marker = "extra == 'auth'", specifier = ">=1.3" },
     { name = "email-validator", marker = "extra == 'email'", specifier = ">=2.0" },
-    { name = "fastapi", specifier = ">=0.141.1,<0.142" },
+    { name = "fastapi", specifier = ">=0.141.1,<0.150" },
     { name = "hedron-charts", marker = "extra == 'charts'", editable = "packages/hedron-charts" },
     { name = "hedron-core", editable = "packages/hedron-core" },
     { name = "hedron-data", marker = "extra == 'data'", editable = "packages/hedron-data" },
@@ -768,7 +768,7 @@ requires-dist = [
     { name = "packaging", specifier = ">=24.0" },
     { name = "pillow", marker = "extra == 'images'", specifier = ">=10.0" },
     { name = "playwright", marker = "extra == 'browser'", specifier = ">=1.40" },
-    { name = "pydantic", specifier = ">=2.13.4,<2.14" },
+    { name = "pydantic", specifier = ">=2.13.4,<2.15" },
     { name = "pygments", marker = "extra == 'code'", specifier = ">=2.17" },
     { name = "python-multipart", specifier = ">=0.0.9" },
 ]
@@ -776,7 +776,7 @@ provides-extras = ["dev", "data", "charts", "markdown", "code", "images", "email
 
 [[package]]
 name = "hedron-charts"
-version = "0.11.0"
+version = "0.1.0"
 source = { editable = "packages/hedron-charts" }
 dependencies = [
     { name = "hedron-core" },
@@ -819,11 +819,15 @@ name = "hedron-core"
 version = "0.11.0"
 source = { editable = "packages/hedron-core" }
 dependencies = [
+    { name = "packaging" },
     { name = "pydantic" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pydantic", specifier = ">=2.13.4,<2.14" }]
+requires-dist = [
+    { name = "packaging", specifier = ">=24.0" },
+    { name = "pydantic", specifier = ">=2.13.4,<2.15" },
+]
 
 [[package]]
 name = "hedron-data"
@@ -912,7 +916,7 @@ fastapi = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fastapi", specifier = ">=0.141.1,<0.142" },
+    { name = "fastapi", specifier = ">=0.141.1,<0.150" },
     { name = "fastapi", marker = "extra == 'fastapi'", specifier = ">=0.141.1,<0.142" },
     { name = "hedron-core", editable = "packages/hedron-core" },
 ]
@@ -954,7 +958,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-sample-kit"
-version = "0.11.0"
+version = "0.1.0"
 source = { editable = "packages/hedron-sample-kit" }
 dependencies = [
     { name = "hedron-core" },

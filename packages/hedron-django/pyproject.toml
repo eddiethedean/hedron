@@ -39,7 +39,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core==0.11.0",
+    "hedron-core>=0.11.0,<0.12",
     "django>=5.2,<6",
     "asgiref>=3.8,<4",
 ]

@@ -20,6 +20,7 @@ __all__ = [
     "RedisJobBackend",
     "get_job_backend",
     "job_authorized",
+    "job_authorized_http",
     "job_status_interaction",
     "reset_jobs_for_tests",
     "set_job_backend",
@@ -101,10 +102,32 @@ def job_authorized(
     auth_subject: str | None = None,
     tenant_id: str | None = None,
 ) -> bool:
-    """Return True when caller credentials satisfy the job's auth/tenant scope."""
+    """Return True when caller credentials satisfy the job's auth/tenant scope.
+
+    Unscoped jobs (no ``auth_subject`` / ``tenant_id`` on the job) authorize any
+    caller — use :func:`job_authorized_http` for HTTP observers.
+    """
     subject_ok = status.auth_subject is None or status.auth_subject == auth_subject
     tenant_ok = status.tenant_id is None or status.tenant_id == tenant_id
     return subject_ok and tenant_ok
+
+
+def job_authorized_http(
+    status: JobStatus,
+    *,
+    auth_subject: str | None = None,
+    tenant_id: str | None = None,
+) -> bool:
+    """Authorize job observation over HTTP (fail closed for unscoped jobs).
+
+    Jobs without stored scope are never readable via HTTP helpers. Callers must
+    also supply credentials that match the job's scope.
+    """
+    if status.auth_subject is None and status.tenant_id is None:
+        return False
+    if auth_subject is None and tenant_id is None:
+        return False
+    return job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id)
 
 
 def _idempotency_scope_key(

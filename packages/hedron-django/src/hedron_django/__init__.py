@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hedron_django.app import QUERYSET_DATASOURCE_DEFERRED, HedronDjango
+from hedron_django.app import HedronDjango
 from hedron_django.apps import HedronDjangoConfig
 from hedron_django.forms import (
     csrf_hidden_input,
@@ -27,7 +27,6 @@ __all__ = [
     "HedronDjango",
     "HedronDjangoConfig",
     "POLLING_FALLBACK_SUPPORTED",
-    "QUERYSET_DATASOURCE_DEFERRED",
     "__version__",
     "component_path",
     "component_response",

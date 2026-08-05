@@ -13,18 +13,20 @@ SLA**. Confirm your intended surfaces against [What's ready](whats-ready.md).
 
 !!! warning "SSE / WebSocket"
 
-    Do not use SSE or WebSocket behind a load balancer without your own buffering,
-    timeout, and backpressure proof. Prefer [polling](live-interaction.md) — it is the
-    Supported fallback on every host.
+    Live helpers are **experimental** (`hedron.experimental`). Do not use SSE or WebSocket
+    behind a load balancer without your own buffering, timeout, and backpressure proof.
+    Prefer [polling](live-interaction.md) — it is the Supported fallback on every host.
 
 ## Ops checklist
 
 1. Real `session_secret` (never the development default)
 2. `hedron build` then `HEDRON_ENV=production`
 3. `explorer="off"` in production
-4. HTTPS + sticky sessions or external session store for multi-worker
-5. For SSE/WebSocket: confirm reverse-proxy buffering and timeouts ([Performance](performance.md))
-6. Pin `hedron` and extras in your lockfile
+4. HTTPS + sticky sessions or external session/CSRF/job store for multi-worker
+5. Under `HEDRON_ENV=production`, configure durable `set_job_backend` / `set_cache_backend`
+   (in-memory backends are refused at app startup)
+6. For SSE/WebSocket: confirm reverse-proxy buffering and timeouts ([Performance](performance.md))
+7. Pin `hedron` and extras in your lockfile
 
 ## Security posture
 

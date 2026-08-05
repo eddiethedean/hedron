@@ -37,7 +37,8 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "pydantic>=2.13.4,<2.14",
+    "pydantic>=2.13.4,<2.15",
+    "packaging>=24.0",
 ]
 
 [project.urls]

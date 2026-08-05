@@ -8,7 +8,7 @@ from typing import Any
 from fastapi import BackgroundTasks, HTTPException
 from starlette.responses import HTMLResponse
 
-from hedron_core.jobs import JobStatus, get_job_backend, job_authorized, job_status_interaction
+from hedron_core.jobs import JobStatus, get_job_backend, job_authorized_http, job_status_interaction
 from hedron_core.rendering import RenderMode, render
 
 __all__ = [
@@ -47,7 +47,7 @@ def job_status_response(
     auth_subject: str | None = None,
     tenant_id: str | None = None,
 ) -> HTMLResponse:
-    if not job_authorized(job_status, auth_subject=auth_subject, tenant_id=tenant_id):
+    if not job_authorized_http(job_status, auth_subject=auth_subject, tenant_id=tenant_id):
         raise HTTPException(status_code=403, detail="Job access forbidden")
     result = job_status_interaction(job_status)
     assert result.content is not None

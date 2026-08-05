@@ -179,3 +179,15 @@ def test_flask_reference_import_boundary() -> None:
     assert "from hedron import" not in text
     assert "import hedron\n" not in text
     assert "from hedron_flask" in text
+
+
+def test_undeclared_hx_target_is_forbidden() -> None:
+    from hedron_flask import interaction_response
+
+    hedron = HedronFlask(__name__)
+    with hedron.flask.test_request_context(
+        "/",
+        headers={"HX-Request": "true", "HX-Target": "#panel"},
+    ):
+        response = interaction_response(InteractionResult(content=Text("body")))
+    assert response.status_code == 403

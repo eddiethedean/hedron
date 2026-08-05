@@ -15,7 +15,7 @@ Hedron's fragment asset/head policy:
 
 | Extension | Decision | Rationale |
 |---|---|---|
-| Official SSE (`htmx-ext-sse`) | **Supported (0.10)** | Pinned local asset; job/region observation with auth/reconnect; polling remains Supported fallback. |
+| Official SSE (`htmx-ext-sse`) | **Experimental (API); asset Supported** | Pinned local asset; job/region observation with auth/reconnect; polling remains Supported fallback until ops gates close. |
 | `head-support` | **Supported (optional)** | Locally served with digest/CSP/load order for registered fragment head merge. |
 | Idiomorph | **Deferred (opt-in later)** | Morphing helps preserve custom-element state, but form/focus/CE lifecycle harnesses are not yet green enough to ship a pinned default. |
 | `response-targets` | **Deferred** | Core `HX-Retarget` / `HX-Reselect` plus `InteractionResult` status policies cover declared error/validation targets without another extension. |

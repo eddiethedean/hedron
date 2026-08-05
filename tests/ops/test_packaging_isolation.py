@@ -8,10 +8,28 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 
+_BETA_PACKAGES = {
+    "hedron",
+    "hedron-core",
+    "hedron-data",
+    "hedron-flask",
+    "hedron-django",
+    "hedron-jinja",
+    "hedron-explorer",
+}
+_ALPHA_INDEPENDENT = {"hedron-charts", "hedron-sample-kit"}
+
+
 def test_all_packages_declare_license_and_version() -> None:
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
-        assert project["version"] == "0.11.0", pyproject
+        name = project["name"]
+        if name in _BETA_PACKAGES:
+            assert project["version"] == "0.11.0", pyproject
+        elif name in _ALPHA_INDEPENDENT:
+            assert project["version"] == "0.1.0", pyproject
+        else:
+            raise AssertionError(f"unexpected package {name}")
         assert "license" in project or "license-files" in project, pyproject.name
         assert (pyproject.parent / "LICENSE").is_file()
 

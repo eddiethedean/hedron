@@ -30,6 +30,13 @@ def evidence_manifest_for(version: str) -> Path:
     return DEFAULT_EVIDENCE
 
 
+def _is_alpha_package(project: dict[str, object]) -> bool:
+    classifiers = project.get("classifiers")
+    if not isinstance(classifiers, list):
+        return False
+    return any("Development Status :: 3 - Alpha" in str(c) for c in classifiers)
+
+
 def check_packages(tag_version: str) -> list[str]:
     errors: list[str] = []
     if not (ROOT / "LICENSE").is_file():
@@ -40,7 +47,10 @@ def check_packages(tag_version: str) -> list[str]:
         project = data["project"]
         name = str(project["name"])
         version = str(project["version"])
-        if version != tag_version:
+        alpha = _is_alpha_package(project)
+        # Alpha satellites version independently of the Beta flagship train.
+        expected = version if alpha else tag_version
+        if not alpha and version != tag_version:
             errors.append(f"{name}: package version {version!r} != tag {tag_version!r}")
         if "license" not in project and "license-files" not in project:
             errors.append(f"{name}: [project].license (or license-files) is required")
@@ -50,13 +60,13 @@ def check_packages(tag_version: str) -> list[str]:
         match = re.search(r'^__version__\s*=\s*["\']([^"\']+)["\']', init_text, re.M)
         if not match:
             errors.append(f"{name}: __version__ not found in {init}")
-        elif match.group(1) != tag_version:
-            errors.append(f"{name}: __version__ {match.group(1)!r} != tag {tag_version!r}")
+        elif match.group(1) != expected:
+            errors.append(f"{name}: __version__ {match.group(1)!r} != package {expected!r}")
         changelog = pkg_dir / "CHANGELOG.md"
         if not changelog.is_file():
             errors.append(f"{name}: missing CHANGELOG.md")
-        elif f"[{tag_version}]" not in changelog.read_text(encoding="utf-8"):
-            errors.append(f"{name}: CHANGELOG.md lacks [{tag_version}] section")
+        elif f"[{expected}]" not in changelog.read_text(encoding="utf-8"):
+            errors.append(f"{name}: CHANGELOG.md lacks [{expected}] section")
     return errors
 
 

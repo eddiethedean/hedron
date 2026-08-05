@@ -12,7 +12,8 @@ status: shipped
 **Status:** Accepted · **Shipped in 0.4**
 
 Plugins declare an entry point in group `hedron.plugins` pointing at a callable that
-receives a `PluginContext`.
+receives a `PluginContext`. Discovery and loading live in `hedron_core.plugin_loader`
+(`load_plugins`); the FastAPI package re-exports the same API as `hedron.plugins`.
 
 ```toml
 # pyproject.toml of the plugin distribution
@@ -25,9 +26,9 @@ from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 
 PLUGIN_META = PluginMeta(
     name="sample_kit",
-    version="0.11.0",
+    version="0.1.0",
     distribution="hedron-sample-kit",
-    hedron_version=">=0.10,<0.11",
+    hedron_version=">=0.11,<0.12",
     capabilities=PluginCapabilities(python=True, styles=True, explorer_panels=True),
 )
 

@@ -55,12 +55,17 @@ def test_sse_response_bytes() -> None:
 def test_job_status_sse_response_streams_until_terminal() -> None:
     backend = InMemoryJobBackend()
     set_job_backend(backend)
-    handle = backend.submit("demo", {"n": 1})
+    handle = backend.submit("demo", {"n": 1}, auth_subject="alice")
 
     # Mark succeeded before the client connects so the generator exits promptly.
     backend.mark(handle.job_id, JobState.SUCCEEDED, result={"ok": True})
     body = _read_sse_body(
-        lambda: job_status_sse_response(handle.job_id, backend=backend, poll_interval_seconds=0.01)
+        lambda: job_status_sse_response(
+            handle.job_id,
+            backend=backend,
+            auth_subject="alice",
+            poll_interval_seconds=0.01,
+        )
     )
     assert b"event: job-status" in body
     assert b"succeeded" in body
@@ -71,11 +76,11 @@ def test_job_status_sse_response_streams_until_terminal() -> None:
 def test_job_status_sse_response_polls_state_changes() -> None:
     backend = InMemoryJobBackend()
     set_job_backend(backend)
-    handle = backend.submit("demo", {"n": 1})
+    handle = backend.submit("demo", {"n": 1}, auth_subject="alice")
     gets = {"n": 0}
     real_get = backend.get
 
-    def _get(job_id: str):
+    def _get(job_id: str, **kwargs):
         status = real_get(job_id)
         gets["n"] += 1
         if gets["n"] == 2 and status is not None and status.state is JobState.QUEUED:
@@ -88,7 +93,12 @@ def test_job_status_sse_response_polls_state_changes() -> None:
 
     backend.get = _get  # type: ignore[method-assign]
     body = _read_sse_body(
-        lambda: job_status_sse_response(handle.job_id, backend=backend, poll_interval_seconds=0.01)
+        lambda: job_status_sse_response(
+            handle.job_id,
+            backend=backend,
+            auth_subject="alice",
+            poll_interval_seconds=0.01,
+        )
     )
     text = body.decode()
     assert "queued" in text or "running" in text
@@ -99,7 +109,7 @@ def test_job_status_sse_response_polls_state_changes() -> None:
 def test_job_status_sse_skips_last_event_id() -> None:
     backend = InMemoryJobBackend()
     set_job_backend(backend)
-    handle = backend.submit("demo", {})
+    handle = backend.submit("demo", {}, auth_subject="alice")
     status = backend.get(handle.job_id)
     assert status is not None
     event_id = f"{status.job_id}:{status.updated_at}"
@@ -113,6 +123,7 @@ def test_job_status_sse_skips_last_event_id() -> None:
             handle.job_id,
             backend=backend,
             request=request,
+            auth_subject="alice",
             poll_interval_seconds=0.01,
         )
 
@@ -121,6 +132,18 @@ def test_job_status_sse_skips_last_event_id() -> None:
         resumed = client.get("/sse", headers={"Last-Event-ID": event_id})
     assert b"succeeded" in resumed.content
     assert b"hedron-close" in resumed.content
+
+
+def test_job_status_sse_rejects_unscoped_jobs() -> None:
+    from fastapi import HTTPException
+
+    backend = InMemoryJobBackend()
+    handle = backend.submit("demo", {})
+    try:
+        job_status_sse_response(handle.job_id, backend=backend, auth_subject="alice")
+        raise AssertionError("expected HTTPException")
+    except HTTPException as exc:
+        assert exc.status_code == 403
 
 
 def test_job_status_sse_not_found() -> None:

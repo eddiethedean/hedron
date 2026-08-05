@@ -74,17 +74,16 @@ def register_checks() -> None:
     def hedron_capability_honesty_check(app_configs: Any, **kwargs: Any) -> list[CheckMessage]:
         del app_configs, kwargs
         from hedron_core.adapter import DJANGO_CAPABILITIES
-        from hedron_django.app import QUERYSET_DATASOURCE_DEFERRED
 
         messages: list[CheckMessage] = []
         qs_cap = next(
             (c for c in DJANGO_CAPABILITIES.capabilities if c.name == "queryset_datasource"),
             None,
         )
-        if qs_cap is not None and qs_cap.supported == QUERYSET_DATASOURCE_DEFERRED:
+        if qs_cap is not None and not qs_cap.supported:
             messages.append(
                 Error(
-                    "queryset_datasource capability and QUERYSET_DATASOURCE_DEFERRED disagree.",
+                    "queryset_datasource capability must be Supported (D-046).",
                     id="hedron.E002",
                 )
             )

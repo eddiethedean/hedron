@@ -185,13 +185,14 @@ def test_last_event_id_with_controls_does_not_crash() -> None:
     from unittest.mock import MagicMock
 
     backend = InMemoryJobBackend()
-    handle = backend.submit("t", {})
+    handle = backend.submit("t", {}, auth_subject="alice")
     request = MagicMock()
     request.headers.get.return_value = "a\nb"
     response = job_status_sse_response(
         handle.job_id,
         backend=backend,
         request=request,
+        auth_subject="alice",
         poll_interval_seconds=0.01,
     )
 
@@ -233,6 +234,16 @@ def test_job_status_poll_requires_auth() -> None:
         job_status_response(status, auth_subject="bob", tenant_id="t1")
     response = job_status_response(status, auth_subject="alice", tenant_id="t1")
     assert response.status_code == 202
+
+
+def test_job_status_poll_rejects_unscoped_jobs() -> None:
+    backend = InMemoryJobBackend()
+    handle = backend.submit("t", {})
+    status = backend.get(handle.job_id)
+    assert status is not None
+    with pytest.raises(HTTPException) as exc:
+        job_status_response(status, auth_subject="alice")
+    assert exc.value.status_code == 403
 
 
 def test_interaction_private_cache_emits_vary() -> None:

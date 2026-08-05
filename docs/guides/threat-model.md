@@ -45,7 +45,8 @@
 | Open redirects / HTMX URL headers | `SafeUrl` / local-path policy; approved header allowlist |
 | CSRF on unsafe methods | Double-submit cookie (FastAPI/Flask) or Django CSRF middleware; header or form field |
 | Cache poisoning / confusion | Cache policy + `Vary` on HTMX dimensions; private defaults when authenticated |
-| Unauthorized fragment/OOB | Region allowlist; 403 |
+| Unauthorized fragment/OOB | Fail-closed region allowlist (`authorize_htmx_target`); 403 unless opt-out |
+| Unscoped job HTTP status/SSE | Fail-closed (`job_authorized_http`); jobs must carry auth/tenant scope |
 | Cross-tenant data via cache/jobs/fragments | Application tenancy — see [multi-tenant](multi-tenant.md) |
 | Plugin / Explorer abuse | Prod Explorer off; capability/version checks; SARIF without secrets |
 | Supply-chain browser asset swap | Exact pin + SHA-256 digest audit (`scripts/asset_audit.py`) |

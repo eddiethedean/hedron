@@ -37,7 +37,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core==0.11.0",
+    "hedron-core>=0.11.0,<0.12",
     "flask>=3,<4",
     "werkzeug>=3,<4",
 ]

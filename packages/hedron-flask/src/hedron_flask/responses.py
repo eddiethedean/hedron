@@ -13,6 +13,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import (
     FragmentRegionError,
     InteractionResult,
+    authorize_htmx_target,
     materialize_interaction_nodes,
     merge_interaction_headers,
 )
@@ -23,6 +24,21 @@ __all__ = [
     "component_response",
     "interaction_response",
 ]
+
+
+def _header_value(headers: Mapping[str, str] | Any, name: str) -> str | None:
+    """Read an HTTP header with case-insensitive fallback for plain dicts."""
+    getter = getattr(headers, "get", None)
+    if callable(getter):
+        value = getter(name)
+        if value is not None:
+            return str(value)
+    if isinstance(headers, Mapping):
+        lower = name.lower()
+        for key, val in headers.items():
+            if str(key).lower() == lower:
+                return str(val)
+    return None
 
 
 def _fragment_value(value: NodeLike | Component[Any]) -> NodeLike | Component[Any]:
@@ -91,7 +107,11 @@ def interaction_response(
     headers_map: Mapping[str, str] | None = None,
     authenticated: bool = False,
 ) -> Response:
+    hdrs = headers_map if headers_map is not None else flask_request.headers
+    is_htmx = (_header_value(hdrs, "HX-Request") or "").lower() == "true"
+    target = result.region_id or _header_value(hdrs, "HX-Target")
     try:
+        authorize_htmx_target(result.policy, target, is_htmx=is_htmx)
         node = materialize_interaction_nodes(result)
     except (FragmentRegionError, ValueError) as exc:
         return Response(str(exc), status=403, mimetype="text/plain")

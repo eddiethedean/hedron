@@ -1,10 +1,10 @@
 # Changelog
 
-## [0.11.0] — 2026-08-04
+## [0.1.0] — 2026-08-05
 
-### Added
-- Phase 0.11 native framework depth (Flask Blueprint/`init_app`, Django AppConfig/forms/QuerySet,
-  portable adapter harness, HDJ manifests/CSP inventory, Celery/RQ bridges, live helpers).
+### Changed
+- Version independently as Alpha (`0.1.x`); no longer locked to the Beta package train.
+- Compatible with `hedron-core>=0.11.0,<0.12`.
 
 
 

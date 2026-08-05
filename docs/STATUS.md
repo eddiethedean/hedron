@@ -1,10 +1,11 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.11 **published**; current train `v0.11.0` (packages `0.11.0`, 2026-08-04).
+**Roadmap position:** phase 0.11 **published**; current train `v0.11.0` (Beta packages
+`0.11.0`, Alpha charts/sample-kit `0.1.x`, 2026-08-04).
 **Date:** 2026-08-04
-**Implementation:** `hedron` / `hedron-core` / `hedron-explorer` / `hedron-sample-kit` /
-`hedron-data` / `hedron-charts` / `hedron-flask` / `hedron-django` / `hedron-jinja` `0.11.0`
-(MIT licensed, D-033)
+**Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
+`hedron-flask` / `hedron-django` / `hedron-jinja` `0.11.0`; Alpha (independent) —
+`hedron-charts` / `hedron-sample-kit` `0.1.x` (MIT licensed, D-033)
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`; Alpha — `hedron-charts`, `hedron-sample-kit`.
 
@@ -17,8 +18,8 @@ fallback). Capture UI remains **0.15**.
 ## Supported vs Deferred (operator view)
 
 Adopter summary: [What’s ready today](guides/whats-ready.md). Rule of thumb: do not market a
-capability as unqualified **Supported** when its owning gate row is **Deferred** — say
-**API Supported / ops evidence incomplete** instead.
+capability as unqualified **Supported** when its owning gate row is **Deferred**. Live
+SSE/WS/streaming/preload are **experimental** (polling Supported) until ops gates close.
 
 | ID | Topic | Disposition | Notes |
 |---|---|---|---|
@@ -28,7 +29,7 @@ capability as unqualified **Supported** when its owning gate row is **Deferred**
 | — | Portable adapter test harness | Verified (0.11) | `TEST-011` |
 | — | HDJ manifests / CSP inventory | Verified (0.11) | `HDJ-DEF-011` |
 | — | Celery/RQ JobBackend bridges | Verified (0.11) | optional extras |
-| — | Flask/Django live helpers | Verified API + labels | Polling Supported fallback |
+| — | Flask/Django live helpers | Experimental API | Polling Supported fallback |
 | `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | |
 | `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Beyond asset/HTMX smoke |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof |

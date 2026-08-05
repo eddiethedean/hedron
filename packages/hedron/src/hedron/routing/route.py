@@ -18,7 +18,6 @@ from hedron.interaction import (
     FragmentRegionError,
     InteractionResult,
     interaction_headers,
-    resolve_fragment_region,
 )
 from hedron.responses import HTML, render_component_response
 from hedron.security.csrf import ensure_csrf_cookie
@@ -196,13 +195,17 @@ class HedronRoute(APIRoute):
             return Response(status_code=204, headers=headers)
 
         target = request.headers.get("HX-Target")
-        regions = result.policy.declared_regions if result.policy is not None else ()
-        region = None
-        if regions:
-            try:
-                region = resolve_fragment_region(result.policy, result.region_id or target)
-            except FragmentRegionError as exc:
-                raise HTTPException(status_code=403, detail=str(exc)) from exc
+        is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
+        try:
+            from hedron_core.interaction import authorize_htmx_target
+
+            region = authorize_htmx_target(
+                result.policy,
+                result.region_id or target,
+                is_htmx=is_htmx,
+            )
+        except FragmentRegionError as exc:
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
 
         content: Any = result.content
         if result.oob:

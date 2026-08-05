@@ -24,6 +24,7 @@ __all__ = [
     "InteractionResult",
     "OobUpdate",
     "StatusPolicy",
+    "authorize_htmx_target",
     "authorize_oob_update",
     "default_interaction_policy",
     "form_sync_attrs",
@@ -88,6 +89,8 @@ class InteractionPolicy:
     error_reswap: str | None = "innerHTML"
     vary_on_target: bool = False
     declared_regions: tuple[FragmentRegion, ...] = ()
+    # When False (default), HTMX HX-Target without declared regions is rejected.
+    allow_undeclared_targets: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -191,6 +194,29 @@ def resolve_fragment_region(
     raise FragmentRegionError(
         f"HX-Target {target!r} is not an authorized fragment region for this route"
     )
+
+
+def authorize_htmx_target(
+    policy: InteractionPolicy | None,
+    target: str | None,
+    *,
+    is_htmx: bool,
+) -> FragmentRegion | None:
+    """Authorize ``HX-Target`` for HTMX requests (fail closed by default).
+
+    When the client sends ``HX-Target`` and no ``declared_regions`` are present,
+    raise :class:`FragmentRegionError` unless ``allow_undeclared_targets`` is set.
+    """
+    regions = policy.declared_regions if policy is not None else ()
+    allow_open = bool(policy is not None and policy.allow_undeclared_targets)
+    if is_htmx and target and not regions and not allow_open:
+        raise FragmentRegionError(
+            "HX-Target requires declared fragment_regions on this route "
+            "(set InteractionPolicy.allow_undeclared_targets=True to opt out)"
+        )
+    if regions:
+        return resolve_fragment_region(policy, target)
+    return None
 
 
 def _validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:

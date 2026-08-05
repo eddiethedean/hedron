@@ -68,13 +68,15 @@ def panel() -> InteractionResult:
     return InteractionResult(content=Text("Updated"), region_id=MAIN.id)
 ```
 
-Route-declared regions are authoritative and are merged into the result policy. An HTMX
-request with an `HX-Target` outside that allowlist receives `403`. `page` and `component`
-routes accept `fragment_regions`; values may be `FragmentRegion` instances or IDs, which
-are normalized to `#id` selectors.
+Route-declared regions are authoritative and are merged into the result policy. HTMX
+requests that send `HX-Target` **require** declared regions by default (fail closed);
+undeclared targets or an empty allowlist receive `403`. Opt out only with
+`InteractionPolicy(allow_undeclared_targets=True)`. `page` and `component` routes accept
+`fragment_regions`; values may be `FragmentRegion` instances or IDs, which are normalized
+to `#id` selectors.
 
-For lower-level use, `resolve_fragment_region(policy, target)` returns the matching region
-or raises `FragmentRegionError` when the target is unauthorized.
+For lower-level use, `authorize_htmx_target(policy, target, is_htmx=...)` / 
+`resolve_fragment_region(policy, target)` raise `FragmentRegionError` when unauthorized.
 
 ## `InteractionResult`
 

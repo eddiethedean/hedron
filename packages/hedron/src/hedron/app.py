@@ -114,6 +114,13 @@ class Hedron(FastAPI):
 
         ensure_default_theme_registered()
 
+        from hedron_core.production_gate import assert_durable_backends
+
+        assert_durable_backends(
+            production=is_prod,
+            strict_profile=self.hedron_policy.profile is SecurityProfile.STRICT,
+        )
+
         if enable_sessions:
             if (
                 session_secret == _DEFAULT_SESSION_SECRET
