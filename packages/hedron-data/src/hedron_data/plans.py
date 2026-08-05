@@ -16,7 +16,7 @@ __all__ = [
     "plan_from_query",
 ]
 
-_ALLOWED_OPS = frozenset({"filter", "sort", "project", "aggregate", "sample", "search"})
+_ALLOWED_OPS = frozenset({"filter", "sort", "project", "aggregate", "sample", "search", "offset"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,6 +96,8 @@ def plan_from_query(query: DataQuery, *, max_rows: int = 10_000) -> TransformPla
     if q.projection:
         for name in q.projection:
             steps.append(TransformStep(op="project", field=name))
+    if q.offset:
+        steps.append(TransformStep(op="offset", value=q.offset))
     steps.append(TransformStep(op="sample", value=q.limit))
     return TransformPlan(steps=tuple(steps), max_rows=max_rows).validated()
 
@@ -123,6 +125,9 @@ def apply_plan_in_memory(
             )
         elif step.op == "project" and step.field is not None:
             project_fields.append(step.field)
+        elif step.op == "offset":
+            start = int(step.value) if isinstance(step.value, (int, float, str)) else 0
+            result = result[max(0, start) :]
         elif step.op == "sample":
             limit = int(step.value) if isinstance(step.value, (int, float, str)) else plan.max_rows
             result = result[: max(0, min(int(limit), plan.max_rows))]

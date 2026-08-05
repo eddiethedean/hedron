@@ -1,7 +1,7 @@
 # Compatibility policy
 
-**Status:** Accepted for the published **0.12.0** train  
-**Reviewed:** 2026-08-04
+**Status:** Accepted for the **0.12.0** train (ready to cut; not published until tag)  
+**Reviewed:** 2026-08-05
 
 ## Current train (read this first)
 
@@ -18,7 +18,7 @@
 The **Supported matrix** is the CI-tested range. Package metadata may declare a **wider**
 compatible range; versions outside the Supported column are installable but unsupported
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
-`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`) stay on the `0.11.x`
+`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`) stay on the `0.12.x`
 train. Alpha packages `hedron-charts` and `hedron-sample-kit` version independently
 (`0.1.x`) and declare `hedron-core>=0.12.0,<0.13`.
 

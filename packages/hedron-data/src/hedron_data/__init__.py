@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from hedron_data.a11y_spatial import SpatialAlternative, spatial_alternatives_for
 from hedron_data.advanced import (
     CellFormat,
     MergeRegion,
@@ -118,6 +119,7 @@ __all__ = [
     "SQLAlchemyDataSource",
     "SavedView",
     "SnowflakeDataSource",
+    "SpatialAlternative",
     "TransformPlan",
     "TransformStep",
     "TreeNode",
@@ -146,6 +148,7 @@ __all__ = [
     "require_snowflake",
     "resolve_columns",
     "rows_to_tree",
+    "spatial_alternatives_for",
     "validate_grid_event",
     "write_policy",
 ]

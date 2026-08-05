@@ -151,7 +151,15 @@ def evaluate_formula(
             remediation="Reject attribute access, calls, names, and imports.",
         )
 
-    return _eval(tree)
+    try:
+        return _eval(tree)
+    except (ZeroDivisionError, OverflowError, ValueError) as exc:
+        raise error(
+            "HED-DATA-0032",
+            title="Invalid formula evaluation",
+            explanation=str(exc),
+            remediation="Use only numeric literals, [column] refs, and + - * /.",
+        ) from exc
 
 
 def pivot_rows(
@@ -207,14 +215,35 @@ def rows_to_tree(
         else:
             nodes[str(parent)]["children"].append(key)
 
-    def build(key: str) -> TreeNode:
-        node = nodes[key]
-        return TreeNode(
-            key=key,
-            data=node["data"],
-            children=tuple(build(child) for child in node["children"]),
-        )
+    visiting: set[str] = set()
+    visited: set[str] = set()
 
+    def build(key: str) -> TreeNode:
+        if key in visiting:
+            raise error(
+                "HED-DATA-0033",
+                title="Tree cycle detected",
+                explanation=f"Parent/child cycle involving {key!r}.",
+                remediation="Ensure id/parent_id relationships form a forest.",
+            )
+        if key in visited:
+            node = nodes[key]
+            return TreeNode(key=key, data=node["data"], children=())
+        visiting.add(key)
+        node = nodes[key]
+        children = tuple(build(child) for child in node["children"])
+        visiting.remove(key)
+        visited.add(key)
+        return TreeNode(key=key, data=node["data"], children=children)
+
+    if nodes and not roots:
+        # Pure cycle (every node has a parent in the set) — fail closed.
+        raise error(
+            "HED-DATA-0033",
+            title="Tree cycle detected",
+            explanation="Parent/child relationships form a cycle with no roots.",
+            remediation="Ensure id/parent_id relationships form a forest.",
+        )
     return [build(key) for key in roots]
 
 

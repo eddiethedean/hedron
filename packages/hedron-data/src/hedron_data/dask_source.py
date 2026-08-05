@@ -77,8 +77,16 @@ class DaskDataSource(Generic[T]):
         if q.projection:
             frame = frame[list(q.projection)]  # type: ignore[index]
         total = int(frame.shape[0].compute())  # type: ignore[union-attr]
-        page = frame.loc[q.offset : q.offset + q.limit - 1]  # type: ignore[union-attr]
-        records = page.compute().to_dict(orient="records")  # type: ignore[union-attr]
+        # Dask DataFrame.iloc does not support positional row slices; take a bounded
+        # head window then slice in pandas (still capped by max_compute_rows).
+        window = min(q.offset + q.limit, self._max_compute_rows, total)
+        if window <= 0:
+            records: list[dict[str, object]] = []
+        else:
+            head = frame.head(window, npartitions=-1)  # type: ignore[union-attr]
+            if hasattr(head, "compute"):
+                head = head.compute()
+            records = head.iloc[q.offset : q.offset + q.limit].to_dict(orient="records")  # type: ignore[union-attr]
         if len(records) > self._max_compute_rows:
             raise error(
                 "HED-DATA-0051",
@@ -110,7 +118,19 @@ class DaskDataSource(Generic[T]):
         return self.fetch(query)
 
     def fetch_with_plan(self, plan: TransformPlan) -> list[dict[str, object]]:
-        """Apply an explicit plan against a bounded in-memory sample only."""
-        sample = self.fetch(DataQuery(limit=min(plan.max_rows, self._max_compute_rows)))
+        """Apply an explicit plan against a bounded in-memory window.
+
+        Fetches enough rows to honor offset+limit inside the plan without collecting
+        the full partition set beyond ``max_compute_rows``.
+        """
+        offset = 0
+        limit = plan.max_rows
+        for step in plan.steps:
+            if step.op == "offset" and isinstance(step.value, (int, float, str)):
+                offset = max(0, int(step.value))
+            elif step.op == "sample" and isinstance(step.value, (int, float, str)):
+                limit = max(1, int(step.value))
+        window = min(offset + limit, self._max_compute_rows)
+        sample = self.fetch(DataQuery(offset=0, limit=window))
         rows = [cast(Mapping[str, object], row) for row in sample.rows]
         return apply_plan_in_memory(rows, plan)  # type: ignore[arg-type]

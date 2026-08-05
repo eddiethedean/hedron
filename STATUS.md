@@ -2,8 +2,9 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.12 **published**; current train `v0.12.0` (Beta packages
-`0.12.0`, Alpha charts/sample-kit `0.1.x`, 2026-08-05).
+**Roadmap position:** phase 0.12 **implementation complete / ready to cut** (not published
+until `v0.12.0` tag). Workspace packages: Beta `0.12.0`, Alpha charts/sample-kit `0.1.x`
+(2026-08-05). Last published train remains `v0.11.0` until cut.
 **Date:** 2026-08-05
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` `0.12.0`; Alpha (independent) —

@@ -43,6 +43,17 @@ def app_url() -> Iterator[str]:
                 DataTable(rows=[{"id": 1, "name": "a"}], caption="grid"),
                 BarChart([{"x": "a", "y": 1}], x="x", y="y", title="Bars", description="demo"),
                 html.button("Select", id="kb-select", type="button"),
+                html.div(
+                    id="event-probe",
+                    **{
+                        "data-hedron-grid": "aggrid",
+                        "data-row-model": "clientSide",
+                        "data-hedron-payload": (
+                            '{"columns":[{"name":"id","label":"Id"}],'
+                            '"rows":[{"id":1}],"rowModel":"clientSide"}'
+                        ),
+                    },
+                ),
             )
         )
 
@@ -69,6 +80,26 @@ def test_data_chart_matrix(engine: str, app_url: str) -> None:
         page = browser.new_page()
         page.goto(app_url)
         assert page.locator("table, .hedron-chart, h2").count() >= 1
+        assert page.locator(".hedron-chart, [data-hedron-chart], h2").count() >= 1
+        # Grid/chart event surface: custom element payload + keyboard activation.
+        probe = page.locator("#event-probe")
+        assert probe.count() == 1
+        assert probe.get_attribute("data-hedron-payload")
         page.locator("#kb-select").focus()
         page.keyboard.press("Enter")
+        page.evaluate(
+            """() => {
+              const el = document.getElementById('event-probe');
+              el.dispatchEvent(new CustomEvent('hedron-data-selection', {
+                bubbles: true,
+                detail: { kind: 'selection', count: 1 }
+              }));
+              el.dispatchEvent(new CustomEvent('hedron-chart-click', {
+                bubbles: true,
+                detail: { kind: 'click', trace_id: '0' }
+              }));
+              window.__hedronEvents = (window.__hedronEvents || 0) + 2;
+            }"""
+        )
+        assert page.evaluate("window.__hedronEvents") == 2
         browser.close()

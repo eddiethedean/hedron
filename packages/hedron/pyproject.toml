@@ -47,7 +47,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "hedron-explorer>=0.11.0,<0.12",
+    "hedron-explorer>=0.12.0,<0.13",
 ]
 data = [
     "hedron-data>=0.12.0,<0.13",
@@ -79,7 +79,7 @@ browser = [
     "playwright>=1.40",
 ]
 jinja = [
-    "hedron-jinja>=0.11.0,<0.12",
+    "hedron-jinja>=0.12.0,<0.13",
 ]
 
 [project.scripts]

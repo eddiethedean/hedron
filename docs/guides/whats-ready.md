@@ -1,6 +1,6 @@
 # What’s ready today
 
-**Canonical maturity snapshot for published 0.12.0.** Other evaluator pages link here —
+**Canonical maturity snapshot for 0.12.0 (ready to cut; not tagged until publish).** Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
@@ -39,6 +39,12 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | Celery / RQ `JobBackend` bridges | `hedron_core.jobs_celery` / `jobs_rq` | Supported optional bridges |
 | Auto (inspectable object rendering) | Core (`hedron`) — no extra | Supported |
 | DataTable / DataEditor | `hedron[data]` | Supported |
+| Column catalog, saved views, TransformPlan, typed grid events | `hedron[data]` | Supported (0.12) |
+| Advanced DataEditor (formulas, pivots, trees, collab, spreadsheet I/O) | `hedron[data]` | Supported (0.12) |
+| AG Grid Community client + infinite row models | `hedron-data[aggrid]` | Supported (0.12); Enterprise out of scope |
+| Dask / Snowflake bounded sources | `hedron-data[dask]` / `[snowflake]` | Supported (0.12) |
+| Beginner Area/Bar/Scatter + Plotly events/annotations | `hedron[charts]` | Alpha charts package |
+| Optional viz adapters + offline runtime pins | `hedron[charts]` | Alpha; local-asset/CSP contracts |
 | Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics; some live traces incomplete |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or

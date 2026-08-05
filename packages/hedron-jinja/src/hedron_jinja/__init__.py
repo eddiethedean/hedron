@@ -19,6 +19,12 @@ from hedron_jinja.inventory import (
     build_production_inventory,
     reconcile_csp,
 )
+from hedron_jinja.providers import (
+    ProviderManifest,
+    charts_provider_manifest,
+    data_provider_manifest,
+    provider_available,
+)
 
 __version__ = "0.12.0"
 
@@ -30,6 +36,7 @@ __all__ = [
     "HedronJinjaExtension",
     "HdjContext",
     "ProductionInventory",
+    "ProviderManifest",
     "TemplateCapabilities",
     "TemplateDeclaration",
     "TemplateKind",
@@ -38,5 +45,8 @@ __all__ = [
     "TwoPhaseStream",
     "__version__",
     "build_production_inventory",
+    "charts_provider_manifest",
+    "data_provider_manifest",
+    "provider_available",
     "reconcile_csp",
 ]

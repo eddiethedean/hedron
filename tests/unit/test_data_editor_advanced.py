@@ -16,6 +16,8 @@ def test_formula_and_injection() -> None:
         evaluate_formula("=__import__('os').system('x')", {})
     with pytest.raises(HedronError):
         evaluate_formula("=[secret]", {"secret": 1}, allowed_names=frozenset({"price"}))
+    with pytest.raises(HedronError):
+        evaluate_formula("=1/0", {})
 
 
 def test_pivot_tree_merge() -> None:
@@ -29,3 +31,10 @@ def test_pivot_tree_merge() -> None:
     flat = flatten_tree(tree)
     assert flat[0]["_tree_depth"] == 0
     MergeRegion(0, 0, 1, 1).validated()
+    with pytest.raises(HedronError):
+        rows_to_tree(
+            [
+                {"id": "a", "parent_id": "b"},
+                {"id": "b", "parent_id": "a"},
+            ]
+        )

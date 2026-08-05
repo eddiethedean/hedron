@@ -1,4 +1,5 @@
 from hedron_data.plans import TransformPlan, TransformStep, apply_plan_in_memory, plan_from_query
+from hedron_data.plugin import PLUGIN_META
 from hedron_data.sources import DataQuery
 
 
@@ -23,3 +24,21 @@ def test_plan_from_query_and_apply() -> None:
         ),
     )
     assert rows[0]["value"] == 3
+
+
+def test_plan_encodes_offset_and_explorer_visibility() -> None:
+    plan = plan_from_query(DataQuery(offset=50, limit=10))
+    ops = [step.op for step in plan.steps]
+    assert "offset" in ops
+    assert "sample" in ops
+    rows = apply_plan_in_memory(
+        [{"id": i} for i in range(100)],
+        plan,
+    )
+    assert rows == [{"id": i} for i in range(50, 60)]
+    diag = plan.to_diagnostics()
+    assert diag["steps"]
+    assert "max_rows" in diag
+    # Explorer advertises a data panel for TransformPlan visibility.
+    assert PLUGIN_META.capabilities.explorer_panels is True
+    assert PLUGIN_META.name == "hedron_data"

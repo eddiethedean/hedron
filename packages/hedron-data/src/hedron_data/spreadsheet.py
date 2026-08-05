@@ -19,11 +19,16 @@ __all__ = [
     "export_rows_xlsx",
     "import_rows_ods",
     "import_rows_xlsx",
+    "excel_col",
 ]
 
 
 def _reject_or_sanitize(value: str, *, formula_policy: str) -> str:
-    if value.startswith("="):
+    # Classic spreadsheet/CSV injection prefixes.
+    dangerous = (
+        value[:1] in {"=", "+", "-", "@"} or value.startswith("\t") or value.startswith("\r")
+    )
+    if dangerous:
         if formula_policy == "reject":
             raise error(
                 "HED-DATA-0040",
@@ -32,9 +37,21 @@ def _reject_or_sanitize(value: str, *, formula_policy: str) -> str:
                 remediation="Strip formulas before import or use formula_policy='sanitize'.",
             )
         if formula_policy == "sanitize":
-            return value.lstrip("=")
+            return "'" + value.lstrip("\t\r")
         raise ValueError(f"Unknown formula_policy {formula_policy!r}")
     return value
+
+
+def excel_col(index: int) -> str:
+    """Convert 0-based column index to Excel letters (A, B, ... Z, AA, ...)."""
+    if index < 0:
+        raise ValueError("column index must be >= 0")
+    n = index + 1
+    letters: list[str] = []
+    while n:
+        n, rem = divmod(n - 1, 26)
+        letters.append(chr(ord("A") + rem))
+    return "".join(reversed(letters))
 
 
 def export_rows_xlsx(
@@ -69,7 +86,7 @@ def export_rows_xlsx(
         for r_idx, values in enumerate(sheet_rows, start=1):
             cells = []
             for c_idx, value in enumerate(values):
-                col = chr(ord("A") + c_idx)
+                col = excel_col(c_idx)
                 ref = f"{col}{r_idx}"
                 esc = value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
                 cells.append(f'<c r="{ref}" t="inlineStr"><is><t>{esc}</t></is></c>')
@@ -137,17 +154,45 @@ def export_rows_ods(
     rows: Sequence[Mapping[str, JsonValue]],
     columns: Sequence[ColumnSchema] | Sequence[str],
 ) -> bytes:
-    """Minimal ODS-compatible zip with a CSV content stream for portability."""
+    """Minimal OpenDocument Spreadsheet (content.xml + mimetype)."""
     names = [c.name if isinstance(c, ColumnSchema) else str(c) for c in columns]
-    text = io.StringIO()
-    writer = csv.writer(text)
-    writer.writerow(names)
+    ns = {
+        "office": "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
+        "table": "urn:oasis:names:tc:opendocument:xmlns:table:1.0",
+        "text": "urn:oasis:names:tc:opendocument:xmlns:text:1.0",
+    }
+
+    def cell_xml(value: object) -> str:
+        text = str(value if value is not None else "")
+        esc = (
+            text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+        )
+        return (
+            f'<table:table-cell office:value-type="string">'
+            f"<text:p>{esc}</text:p></table:table-cell>"
+        )
+
+    row_xml: list[str] = []
+    header = "".join(cell_xml(name) for name in names)
+    row_xml.append(f"<table:table-row>{header}</table:table-row>")
     for row in rows:
-        writer.writerow([row.get(name, "") for name in names])
+        body = "".join(cell_xml(row.get(name, "")) for name in names)
+        row_xml.append(f"<table:table-row>{body}</table:table-row>")
+    content = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        f'<office:document-content xmlns:office="{ns["office"]}" '
+        f'xmlns:table="{ns["table"]}" xmlns:text="{ns["text"]}">'
+        "<office:body><office:spreadsheet>"
+        f'<table:table table:name="Sheet1">{"".join(row_xml)}</table:table>'
+        "</office:spreadsheet></office:body></office:document-content>"
+    )
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("mimetype", "application/vnd.oasis.opendocument.spreadsheet")
-        zf.writestr("content.csv", text.getvalue())
+        zf.writestr("content.xml", content)
     return buf.getvalue()
 
 
@@ -157,6 +202,31 @@ def import_rows_ods(
     formula_policy: str = "reject",
 ) -> list[dict[str, JsonValue]]:
     with zipfile.ZipFile(io.BytesIO(data)) as zf:
+        names = set(zf.namelist())
+        if "content.xml" in names:
+            root = ET.fromstring(zf.read("content.xml"))
+            text_ns = "urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+            table_ns = "urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+            matrix: list[list[str]] = []
+            for row in root.findall(f".//{{{table_ns}}}table-row"):
+                values: list[str] = []
+                for cell in row.findall(f"{{{table_ns}}}table-cell"):
+                    p = cell.find(f"{{{text_ns}}}p")
+                    values.append(
+                        _reject_or_sanitize(
+                            p.text or "" if p is not None else "",
+                            formula_policy=formula_policy,
+                        )
+                    )
+                matrix.append(values)
+            if not matrix:
+                return []
+            headers = [h or f"col_{i}" for i, h in enumerate(matrix[0])]
+            return [
+                {headers[i]: (row[i] if i < len(row) else "") for i in range(len(headers))}
+                for row in matrix[1:]
+            ]
+        # Legacy hedron CSV-in-zip ODS from earlier 0.12 drafts.
         raw = zf.read("content.csv").decode("utf-8")
     reader = csv.DictReader(io.StringIO(raw))
     out: list[dict[str, JsonValue]] = []

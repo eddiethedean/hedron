@@ -82,22 +82,32 @@ def _xy_fallback_figure(
         xs_raw = [row.get(x) for row in data]
         ys = [_coerce_float(row.get(y)) for row in data]
         labels = [str(v) for v in xs_raw]
-        if kind == "bar":
-            ax.bar(range(len(ys)), ys)
-            ax.set_xticks(range(len(ys)))
+        numeric_xs: list[float] = []
+        categorical = False
+        for raw in xs_raw:
+            try:
+                numeric_xs.append(float(raw))  # type: ignore[arg-type]
+            except (TypeError, ValueError):
+                categorical = True
+                break
+        if kind == "bar" or categorical:
+            ax_x = list(range(len(ys)))
+            if kind == "bar":
+                ax.bar(ax_x, ys)
+            elif kind == "scatter":
+                ax.scatter(ax_x, ys)
+            elif kind == "area":
+                ax.fill_between(ax_x, ys)
+            else:
+                ax.plot(ax_x, ys)
+            ax.set_xticks(ax_x)
             ax.set_xticklabels(labels)
         elif kind == "scatter":
-            ax.scatter(list(range(len(ys))), ys)
-            ax.set_xticks(range(len(ys)))
-            ax.set_xticklabels(labels)
+            ax.scatter(numeric_xs, ys)
         elif kind == "area":
-            ax.fill_between(range(len(ys)), ys)
-            ax.set_xticks(range(len(ys)))
-            ax.set_xticklabels(labels)
+            ax.fill_between(numeric_xs, ys)
         else:
-            ax.plot(range(len(ys)), ys)
-            ax.set_xticks(range(len(ys)))
-            ax.set_xticklabels(labels)
+            ax.plot(numeric_xs, ys)
         ax.set_xlabel(x)
         ax.set_ylabel(y)
         ax.set_title(acc.title)
@@ -106,10 +116,33 @@ def _xy_fallback_figure(
         plt.close(fig)
         return adapter.render_node(output)
     except ImportError:
+        xs_raw = [row.get(x) for row in data]
         ys = [_coerce_float(row.get(y)) for row in data]
+        numeric_xs: list[float] = []
+        categorical = False
+        for raw in xs_raw:
+            try:
+                numeric_xs.append(float(raw))  # type: ignore[arg-type]
+            except (TypeError, ValueError):
+                categorical = True
+                break
         max_y = max(ys) or 1.0 if ys else 1.0
         width, height = 320, 160
         shapes: list[str] = []
+        use_index = kind == "bar" or categorical or not numeric_xs
+        if use_index:
+            xs_plot = list(range(len(ys)))
+            min_x, max_x = 0.0, float(max(len(ys) - 1, 1))
+        else:
+            xs_plot = numeric_xs
+            min_x = min(numeric_xs)
+            max_x = max(numeric_xs)
+            if max_x == min_x:
+                max_x = min_x + 1.0
+
+        def _px(xv: float) -> float:
+            return ((xv - min_x) / (max_x - min_x)) * (width - 20) + 10
+
         if kind == "bar":
             bar_w = (width - 20) / max(len(ys), 1)
             for i, yv in enumerate(ys):
@@ -119,21 +152,22 @@ def _xy_fallback_figure(
                     f'width="{max(bar_w - 2, 1):.1f}" height="{bh:.1f}" fill="currentColor"/>'
                 )
         elif kind == "scatter":
-            for i, yv in enumerate(ys):
-                px = (i / max(len(ys) - 1, 1)) * (width - 20) + 10 if len(ys) > 1 else width / 2
+            for xv, yv in zip(xs_plot, ys, strict=False):
+                px = _px(float(xv))
                 py = height - 10 - (yv / max_y) * (height - 20)
                 shapes.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="3" fill="currentColor"/>')
         else:
             points = []
-            for i, yv in enumerate(ys):
-                px = (i / max(len(ys) - 1, 1)) * (width - 20) + 10 if len(ys) > 1 else width / 2
+            for xv, yv in zip(xs_plot, ys, strict=False):
+                px = _px(float(xv))
                 py = height - 10 - (yv / max_y) * (height - 20)
                 points.append(f"{px:.1f},{py:.1f}")
             poly = " ".join(points)
             if kind == "area" and points:
                 shapes.append(
                     f'<polygon fill="currentColor" fill-opacity="0.3" '
-                    f'points="10,{height - 10} {poly} {width - 10},{height - 10}"/>'
+                    f'points="{_px(float(xs_plot[0])):.1f},{height - 10} {poly} '
+                    f'{_px(float(xs_plot[-1])):.1f},{height - 10}"/>'
                 )
             shapes.append(
                 f'<polyline fill="none" stroke="currentColor" stroke-width="2" points="{poly}"/>'

@@ -7,6 +7,11 @@ import json
 from collections.abc import Mapping, Sequence
 from typing import Any
 
+from hedron_charts.host_render import (
+    downsample_plotly_body,
+    extract_folium_payload,
+    render_host_figure,
+)
 from hedron_charts.limits import (
     ensure_limits,
     missing_extra,
@@ -69,6 +74,7 @@ def _json_output(
 
 
 def _render_json(output: ChartOutput) -> NodeLike:
+    """Legacy dump used only for static/debug adapters."""
     acc = output.accessibility
     return html.figure(
         html.h2(acc.title),
@@ -77,6 +83,10 @@ def _render_json(output: ChartOutput) -> NodeLike:
         class_=f"hedron-chart hedron-chart-{output.kind}",
         **{"role": "img", "aria-label": acc.alt or acc.title},
     )
+
+
+def _render_host(output: ChartOutput, host: str) -> NodeLike:
+    return render_host_figure(output, host=host)
 
 
 class VegaLiteAdapter:
@@ -106,7 +116,7 @@ class VegaLiteAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "vega-lite")
 
 
 class VegaTransformAdapter:
@@ -136,7 +146,7 @@ class VegaTransformAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "vega-lite")
 
 
 class PyDeckAdapter:
@@ -169,7 +179,7 @@ class PyDeckAdapter:
             else:
                 body = {"repr": str(value)}
         return _json_output(
-            kind="html",
+            kind="maplibre",
             body=body,
             accessibility=accessibility,
             limits=limits,
@@ -177,7 +187,7 @@ class PyDeckAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "maplibre")
 
 
 class MapLibreAdapter:
@@ -196,7 +206,7 @@ class MapLibreAdapter:
     ) -> ChartOutput:
         assert isinstance(value, Mapping)
         return _json_output(
-            kind="html",
+            kind="maplibre",
             body=dict(value),
             accessibility=accessibility,
             limits=limits,
@@ -204,7 +214,7 @@ class MapLibreAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "maplibre")
 
 
 class FoliumAdapter:
@@ -223,36 +233,22 @@ class FoliumAdapter:
         accessibility: ChartAccessibility,
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
-        if isinstance(value, Mapping):
-            html_body = str(value.get("html") or "")
-        else:
+        if not isinstance(value, Mapping):
             try:
                 importlib.import_module("folium")
             except ImportError as exc:
                 raise missing_extra("folium") from exc
-            repr_html = getattr(value, "_repr_html_", None)
-            rendered = repr_html() if callable(repr_html) else str(value)
-            html_body = rendered if isinstance(rendered, str) else str(rendered)
-        ensure_limits(None, html_body, limits=limits)
-        reject_active_svg(html_body)
-        return ChartOutput(
-            kind="html",
-            body=html_body,
-            accessibility=accessibility.validated(),
-            media_type="text/html",
-            payload_bytes=payload_size(html_body),
-            metadata={"adapter": self.name},
+        body = extract_folium_payload(value)
+        return _json_output(
+            kind="maplibre",
+            body=body,
+            accessibility=accessibility,
+            limits=limits,
+            metadata={"adapter": self.name, "source": "folium-extract"},
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        acc = output.accessibility
-        body = output.body if isinstance(output.body, str) else ""
-        return html.figure(
-            html.h2(acc.title),
-            html.p(acc.description or ""),
-            html.raw(TrustedHtml.reviewed(body, source="hedron-charts:folium")),
-            class_="hedron-chart hedron-chart-folium",
-        )
+        return _render_host(output, "maplibre")
 
 
 class GeospatialLayerAdapter:
@@ -275,15 +271,15 @@ class GeospatialLayerAdapter:
     ) -> ChartOutput:
         assert isinstance(value, Mapping)
         return _json_output(
-            kind="html",
-            body=dict(value),
+            kind="maplibre",
+            body={"geojson": dict(value)},
             accessibility=accessibility,
             limits=limits,
             metadata={"adapter": self.name},
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "maplibre")
 
 
 class GraphVizAdapter:
@@ -306,6 +302,26 @@ class GraphVizAdapter:
     ) -> ChartOutput:
         source = value if isinstance(value, str) else str(getattr(value, "source", value))
         ensure_limits(None, source, limits=limits)
+        svg: str | None = None
+        try:
+            graphviz = importlib.import_module("graphviz")
+            src = graphviz.Source(source)
+            rendered = src.pipe(format="svg")
+            svg = rendered.decode("utf-8") if isinstance(rendered, bytes) else str(rendered)
+            reject_active_svg(svg)
+        except ImportError:
+            svg = None
+        except Exception:
+            svg = None
+        if svg is not None:
+            return ChartOutput(
+                kind="svg",
+                body=svg,
+                accessibility=accessibility.validated(),
+                media_type="image/svg+xml",
+                payload_bytes=payload_size(svg),
+                metadata={"adapter": self.name, "format": "svg"},
+            )
         return ChartOutput(
             kind="html",
             body=source,
@@ -317,6 +333,13 @@ class GraphVizAdapter:
 
     def render_node(self, output: ChartOutput) -> NodeLike:
         acc = output.accessibility
+        if output.media_type == "image/svg+xml" and isinstance(output.body, str):
+            return html.figure(
+                html.h2(acc.title),
+                html.p(acc.description or ""),
+                html.raw(TrustedHtml.reviewed(output.body, source="hedron-charts:graphviz")),
+                class_="hedron-chart hedron-chart-graphviz",
+            )
         return html.figure(
             html.h2(acc.title),
             html.p(acc.description or ""),
@@ -343,26 +366,16 @@ class MermaidAdapter:
     ) -> ChartOutput:
         assert isinstance(value, str)
         ensure_limits(None, value, limits=limits)
-        return ChartOutput(
-            kind="html",
-            body=value,
-            accessibility=accessibility.validated(),
-            media_type="text/plain",
-            payload_bytes=payload_size(value),
+        return _json_output(
+            kind="mermaid",
+            body={"diagram": value},
+            accessibility=accessibility,
+            limits=limits,
             metadata={"adapter": self.name},
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        acc = output.accessibility
-        return html.figure(
-            html.h2(acc.title),
-            html.p(acc.description or ""),
-            html.pre(
-                str(output.body),
-                **{"data-hedron-mermaid": "1"},
-            ),
-            class_="hedron-chart hedron-chart-mermaid",
-        )
+        return _render_host(output, "mermaid")
 
 
 class ChartJsAdapter:
@@ -388,7 +401,7 @@ class ChartJsAdapter:
     ) -> ChartOutput:
         assert isinstance(value, Mapping)
         return _json_output(
-            kind="html",
+            kind="chartjs",
             body=dict(value),
             accessibility=accessibility,
             limits=limits,
@@ -396,7 +409,7 @@ class ChartJsAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "chartjs")
 
 
 class GreatTablesAdapter:
@@ -439,7 +452,27 @@ class GreatTablesAdapter:
 
     def render_node(self, output: ChartOutput) -> NodeLike:
         acc = output.accessibility
-        return html.figure(html.h2(acc.title), html.p(acc.description or ""), class_="hedron-chart")
+        body = output.body
+        rows: list[dict[str, object]] = []
+        if isinstance(body, str):
+            try:
+                parsed = json.loads(body)
+                if isinstance(parsed, list):
+                    rows = [dict(r) for r in parsed if isinstance(r, Mapping)]
+            except json.JSONDecodeError:
+                rows = []
+        table_children: list[NodeLike] = []
+        if rows:
+            headers = list(rows[0].keys())
+            head = html.tr(*[html.th(str(h)) for h in headers])
+            body_rows = [html.tr(*[html.td(str(row.get(h, ""))) for h in headers]) for row in rows]
+            table_children = [html.table(html.thead(head), html.tbody(*body_rows))]
+        return html.figure(
+            html.h2(acc.title),
+            html.p(acc.description or ""),
+            *table_children,
+            class_="hedron-chart hedron-chart-great-tables",
+        )
 
 
 class SigmaAdapter:
@@ -485,7 +518,7 @@ class SigmaAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "sigma")
 
 
 class ThreeJsAdapter:
@@ -523,7 +556,7 @@ class ThreeJsAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "threejs")
 
 
 class EChartsAdapter:
@@ -550,7 +583,7 @@ class EChartsAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "echarts")
 
 
 class DatashaderAdapter:
@@ -582,7 +615,7 @@ class DatashaderAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "static")
 
 
 class BokehAdapter:
@@ -616,7 +649,7 @@ class BokehAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "bokeh")
 
 
 class HoloViewsAdapter:
@@ -650,7 +683,7 @@ class HoloViewsAdapter:
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "holoviews")
 
 
 class PygalAdapter:
@@ -719,18 +752,22 @@ class PlotlyResamplingAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         assert isinstance(value, Mapping)
-        body = dict(value)
-        max_points = int(body.get("max_points") or 1000)
+        max_points = int(value.get("max_points") or 1000)
+        body = downsample_plotly_body(dict(value), max_points=max_points)
         return _json_output(
             kind="plotly-json",
             body=body,
             accessibility=accessibility,
             limits=limits,
-            metadata={"adapter": self.name, "max_points": max_points},
+            metadata={
+                "adapter": self.name,
+                "max_points": max_points,
+                "resampled": True,
+            },
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
-        return _render_json(output)
+        return _render_host(output, "plotly")
 
 
 def optional_adapters() -> list[object]:

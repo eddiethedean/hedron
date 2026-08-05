@@ -14,6 +14,7 @@ from hedron_data.sources import ColumnSchema, DataQuery
 
 _ROOT = Path(__file__).resolve().parent
 _HOST = _ROOT / "assets" / "aggrid" / "host.js"
+_COMMUNITY = _ROOT / "assets" / "aggrid" / "ag-grid-community.min.js"
 
 __all__ = [
     "AG_GRID_BACKEND",
@@ -29,13 +30,19 @@ AGGridRowModel = Literal["clientSide", "infinite"]
 
 
 def require_aggrid_extra() -> None:
-    # Community assets are vendored as a host shim; apps may supply ag-grid-community JS.
     if not _HOST.is_file():
         raise error(
             "HED-DATA-0020",
             title="AG Grid host asset missing",
             explanation="hedron-data[aggrid] host asset is not packaged.",
             remediation='Reinstall hedron-data or pip install "hedron-data[aggrid]"',
+        )
+    if not _COMMUNITY.is_file() or _COMMUNITY.stat().st_size < 50_000:
+        raise error(
+            "HED-DATA-0020",
+            title="AG Grid Community runtime missing",
+            explanation="Vendored ag-grid-community.min.js is missing or stubbed.",
+            remediation="Restore packages/hedron-data/.../assets/aggrid/ag-grid-community.min.js",
         )
 
 
@@ -83,6 +90,14 @@ def ensure_aggrid_assets(*, row_model: AGGridRowModel = "clientSide") -> JsonObj
     if row_model not in {"clientSide", "infinite"}:
         raise ValueError(f"Unsupported AG Grid row model {row_model!r}")
     require_aggrid_extra()
+    community_digest = content_digest(_COMMUNITY.read_bytes())
+    register_asset(
+        logical_id="hedron-data:aggrid.community.js",
+        kind="js",
+        path=str(_COMMUNITY),
+        digest=community_digest,
+        content_type="text/javascript",
+    )
     digest = content_digest(_HOST.read_bytes())
     register_asset(
         logical_id="hedron-data:aggrid.host.js",
@@ -106,9 +121,25 @@ def ensure_aggrid_assets(*, row_model: AGGridRowModel = "clientSide") -> JsonObj
         shadow_dom=False,
         htmx_lifecycle=True,
     )
+    host_src = _HOST.read_text(encoding="utf-8")
+    if "rowModelType" not in host_src or "hedron-data-selection" not in host_src:
+        raise error(
+            "HED-DATA-0020",
+            title="AG Grid host incomplete",
+            explanation="Host shim must support infinite rowModel and typed events.",
+            remediation="Update assets/aggrid/host.js for Community clientSide/infinite.",
+        )
     return {
         "backend": AG_GRID_BACKEND,
         "host": "hedron-data:aggrid.host.js",
+        "runtime": "hedron-data:aggrid.community.js",
         "rowModel": row_model,
+        "events": [
+            "hedron-data-conflict",
+            "hedron-data-selection",
+            "hedron-data-viewport",
+            "hedron-data-pagination",
+            "hedron-data-edit",
+        ],
         "note": "Application API remains DataEditor; Enterprise features are out of scope.",
     }

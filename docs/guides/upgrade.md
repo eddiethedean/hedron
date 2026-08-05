@@ -1,8 +1,9 @@
-# Upgrade guide (0.8 → 0.11)
+# Upgrade guide (0.8 → 0.12)
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9** / **0.10** to the current **0.11.0** train for native Flask/Django depth.
+upgrade through **0.9** / **0.10** / **0.11** to the **0.12.0** train (ready to cut) for data and
+visualization scale.
 
 ## What changed in 0.8
 
@@ -118,6 +119,25 @@ inventory, Celery/RQ `JobBackend` bridges, and capability-labeled Flask/Django l
    until you have your own SSE/WS ops proof).
 
 Narrative: [What's new in 0.11](whats-new-0.11.md).
+
+## 0.12 data and visualization scale (ready to cut)
+
+Phase 0.12 ships the shared column catalog, typed grid/chart events, saved views,
+`TransformPlan`, advanced DataEditor (formulas, pivots, trees, collab, spreadsheet I/O),
+AG Grid Community client/infinite, Dask/Snowflake sources, beginner Area/Bar/Scatter charts,
+Plotly events/annotations, optional adapters with offline runtime pins, and HDJ
+`hedron.data` / `hedron.charts` provider parity (D-047).
+
+### Checklist: 0.11 → 0.12
+
+1. Pin and upgrade to the coordinated `0.12.0` Beta train (`hedron`, adapters, extras together).
+   Alpha packages `hedron-charts` / `hedron-sample-kit` remain on `0.1.x`.
+2. Prefer `hedron[dev]` / `hedron[jinja]` extras (now `>=0.12,<0.13`) with matching packages.
+3. Adopt `TransformPlan` / saved views / column catalog APIs for new data surfaces; keep app-owned
+   authz around Dask/Snowflake statements (SELECT/WITH only).
+4. Treat AG Grid as Community client + infinite only; Tabulator remains the default editor host.
+5. Charts remain Alpha: pin `hedron-charts` and prefer offline pinned runtimes over CDNs.
+6. Re-read [What's ready](whats-ready.md) and [What's new in 0.12](whats-new-0.12.md).
 
 ## Deprecation tooling
 

@@ -14,7 +14,7 @@ from hedron_charts.components import (
     PlotlyChart,
     ScatterChart,
 )
-from hedron_charts.pins import ensure_pin_stubs
+from hedron_charts.pins import assert_pins_present
 from hedron_core.auto import RendererSpec, register_renderer
 from hedron_core.component import NodeLike
 from hedron_core.identifiers import content_digest
@@ -24,6 +24,22 @@ from hedron_core.registry import register_asset, register_browser_module, regist
 _ROOT = Path(__file__).resolve().parent
 _PLOTLY_HOST = _ROOT / "assets" / "plotly" / "host.js"
 _VEGA_HOST = _ROOT / "assets" / "vega" / "host.js"
+_OPTIONAL_HOSTS = (
+    (_ROOT / "assets" / "chartjs" / "host.js", "hedron-charts:chartjs.host.js", "chartjs"),
+    (_ROOT / "assets" / "echarts" / "host.js", "hedron-charts:echarts.host.js", "echarts"),
+    (_ROOT / "assets" / "mermaid" / "host.js", "hedron-charts:mermaid.host.js", "mermaid"),
+    (_ROOT / "assets" / "maplibre" / "host.js", "hedron-charts:maplibre.host.js", "maplibre"),
+    (_ROOT / "assets" / "static" / "host.js", "hedron-charts:static.host.js", "static"),
+)
+_OPTIONAL_RUNTIMES = (
+    (_ROOT / "assets" / "plotly" / "plotly.min.js", "hedron-charts:plotly.runtime.js"),
+    (_ROOT / "assets" / "vega" / "vega.min.js", "hedron-charts:vega.runtime.js"),
+    (_ROOT / "assets" / "vega" / "vega-embed.min.js", "hedron-charts:vega-embed.runtime.js"),
+    (_ROOT / "assets" / "chartjs" / "chart.umd.min.js", "hedron-charts:chartjs.runtime.js"),
+    (_ROOT / "assets" / "echarts" / "echarts.min.js", "hedron-charts:echarts.runtime.js"),
+    (_ROOT / "assets" / "mermaid" / "mermaid.min.js", "hedron-charts:mermaid.runtime.js"),
+    (_ROOT / "assets" / "maplibre" / "maplibre-gl.js", "hedron-charts:maplibre.runtime.js"),
+)
 
 PLUGIN_META = PluginMeta(
     name="hedron_charts",
@@ -53,7 +69,7 @@ def _factory_altair(value: object) -> NodeLike:
 
 
 def register(ctx: PluginContext) -> None:
-    ensure_pin_stubs()
+    assert_pins_present()
     for cls in (
         LineChart,
         AreaChart,
@@ -86,6 +102,24 @@ def register(ctx: PluginContext) -> None:
                 kind=kind,
                 path=str(path),
                 digest=digest,
+                content_type="text/javascript",
+            )
+    for path, logical_id, _host in _OPTIONAL_HOSTS:
+        if path.is_file():
+            register_asset(
+                logical_id=logical_id,
+                kind="js",
+                path=str(path),
+                digest=content_digest(path.read_bytes()),
+                content_type="text/javascript",
+            )
+    for path, logical_id in _OPTIONAL_RUNTIMES:
+        if path.is_file():
+            register_asset(
+                logical_id=logical_id,
+                kind="js",
+                path=str(path),
+                digest=content_digest(path.read_bytes()),
                 content_type="text/javascript",
             )
 

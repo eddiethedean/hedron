@@ -65,6 +65,7 @@ def merge_changes(
     remote_keys = {(u.row_key, u.field): u for u in remote.updates}
     accepted: list[CellUpdate] = []
     conflicts: list[CollaborativeConflict] = []
+    consumed_remote: set[tuple[object, object]] = set()
     for update in local.updates:
         key = (update.row_key, update.field)
         other = remote_keys.get(key)
@@ -82,10 +83,13 @@ def merge_changes(
             )
         else:
             accepted.append(update)
+            if other is not None:
+                consumed_remote.add(key)
     if conflicts:
         return DataSaveResult(ok=False, conflicts=tuple(conflicts), version=base_version)
+    remote_only = tuple(u for u in remote.updates if (u.row_key, u.field) not in consumed_remote)
     merged = DataChanges(
-        updates=tuple(accepted) + tuple(remote.updates),
+        updates=tuple(accepted) + remote_only,
         inserts=tuple(local.inserts) + tuple(remote.inserts),
         deletes=tuple(dict.fromkeys([*local.deletes, *remote.deletes])),
         dataset_version=base_version,

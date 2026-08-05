@@ -19,7 +19,125 @@ from hedron_data.sources import (
 
 T = TypeVar("T")
 
-__all__ = ["SnowflakeDataSource", "require_snowflake"]
+__all__ = ["SnowflakeDataSource", "require_snowflake", "assert_select_only"]
+
+
+def _strip_sql_comments(statement: str) -> str:
+    """Remove -- line and /* */ block comments without interpreting string contents deeply."""
+    out: list[str] = []
+    i = 0
+    n = len(statement)
+    in_single = False
+    in_double = False
+    while i < n:
+        ch = statement[i]
+        nxt = statement[i + 1] if i + 1 < n else ""
+        if in_single:
+            out.append(ch)
+            if ch == "'" and nxt == "'":
+                out.append(nxt)
+                i += 2
+                continue
+            if ch == "'":
+                in_single = False
+            i += 1
+            continue
+        if in_double:
+            out.append(ch)
+            if ch == '"' and nxt == '"':
+                out.append(nxt)
+                i += 2
+                continue
+            if ch == '"':
+                in_double = False
+            i += 1
+            continue
+        if ch == "'":
+            in_single = True
+            out.append(ch)
+            i += 1
+            continue
+        if ch == '"':
+            in_double = True
+            out.append(ch)
+            i += 1
+            continue
+        if ch == "-" and nxt == "-":
+            i += 2
+            while i < n and statement[i] not in "\r\n":
+                i += 1
+            continue
+        if ch == "/" and nxt == "*":
+            i += 2
+            while i + 1 < n and not (statement[i] == "*" and statement[i + 1] == "/"):
+                i += 1
+            i = min(i + 2, n)
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
+def assert_select_only(statement: str) -> str:
+    """Require a single SELECT/WITH statement; reject mutating or multi-statement SQL."""
+    cleaned = _strip_sql_comments(statement).strip().rstrip(";").strip()
+    if not cleaned:
+        raise error(
+            "HED-DATA-0061",
+            title="Snowflake statement must be a SELECT",
+            explanation="Empty SQL is not accepted through the data source.",
+            remediation="Pass a SELECT and apply mutations through an app-owned bridge.",
+        )
+    # Reject additional statements (semicolons outside strings already stripped of comments).
+    lowered = cleaned.lower()
+    # Rough multi-statement guard: semicolon remaining after strip of trailing.
+    if ";" in cleaned:
+        raise error(
+            "HED-DATA-0061",
+            title="Snowflake statement must be a SELECT",
+            explanation="Multi-statement SQL is not accepted through the data source.",
+            remediation="Pass a single SELECT/WITH statement.",
+        )
+    first = lowered.lstrip()
+    if not (first.startswith("select") or first.startswith("with")):
+        raise error(
+            "HED-DATA-0061",
+            title="Snowflake statement must be a SELECT",
+            explanation="Mutating SQL is not accepted through the data source.",
+            remediation="Pass a SELECT and apply mutations through an app-owned bridge.",
+        )
+    # Reject DML/DDL keywords that appear as statement prefixes after WITH/CTE separators.
+    forbidden_prefixes = (
+        "insert ",
+        "update ",
+        "delete ",
+        "merge ",
+        "drop ",
+        "alter ",
+        "create ",
+        "truncate ",
+        "call ",
+        "grant ",
+        "revoke ",
+        "copy ",
+        "put ",
+        "remove ",
+        "undrop ",
+    )
+    # If the whole statement is INSERT...SELECT etc., first token already failed above
+    # unless someone embeds mutating verbs after WITH ... ; we already reject ';'.
+    # Also reject leading mutating forms that start with WITH but contain ") insert".
+    compact = " ".join(lowered.split())
+    for bad in forbidden_prefixes:
+        needle = ") " + bad.strip()
+        if needle in compact or compact.startswith(bad):
+            raise error(
+                "HED-DATA-0061",
+                title="Snowflake statement must be a SELECT",
+                explanation="Mutating SQL is not accepted through the data source.",
+                remediation="Pass a SELECT and apply mutations through an app-owned bridge.",
+            )
+    return cleaned
 
 
 def require_snowflake() -> Any:
@@ -47,15 +165,8 @@ class SnowflakeDataSource(Generic[T]):
         max_page_size: int = 100,
         params: Sequence[Any] | None = None,
     ) -> None:
-        if "select" not in statement.lower():
-            raise error(
-                "HED-DATA-0061",
-                title="Snowflake statement must be a SELECT",
-                explanation="Mutating SQL is not accepted through the data source.",
-                remediation="Pass a SELECT and apply mutations through an app-owned bridge.",
-            )
+        self._statement = assert_select_only(statement)
         self._connection_factory = connection_factory
-        self._statement = statement
         self._schema = tuple(schema)
         self._to_row = to_row or (lambda r: r)  # type: ignore[assignment]
         self._max_page_size = max_page_size
