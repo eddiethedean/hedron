@@ -34,8 +34,11 @@ from hedron import (
 from hedron.jobs import enqueue_durable
 from hedron.websocket_channel import accept_page_session_channel
 from hedron_core.channel import PageSessionChannel
+from hedron_core.component import Component
 from hedron_core.jobs import InMemoryJobBackend, JobState, set_job_backend
 from hedron_core.live import SseEvent
+from hedron_core.models import Props
+from hedron_core.prepare import PrepareContext
 from hedron_core.streaming import TokenStream
 
 app = Hedron(
@@ -66,6 +69,26 @@ _channel = PageSessionChannel(
 _preload = NavigationPreloadPolicy(enabled=True, max_concurrent=2)
 
 
+class _BannerProps(Props):
+    pass
+
+
+class PreparedBanner(Component[_BannerProps]):
+    """Tiny 0.13 prepare() demo — loads before sync render."""
+
+    props_type = _BannerProps
+
+    def __init__(self) -> None:
+        super().__init__(_BannerProps())
+        self._message = "preparing…"
+
+    async def prepare(self, ctx: PrepareContext) -> None:
+        self._message = await ctx.cached("banner", lambda: "Prepared concurrently (0.13)")
+
+    def render(self) -> Text:
+        return Text(self._message)
+
+
 def clock_text() -> Text:
     now = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return Text(now)
@@ -94,6 +117,7 @@ def home() -> Page:
     threading.Thread(target=_complete_demo_job, args=(job_id,), daemon=True).start()
     return Page(
         Stack(
+            PreparedBanner(),
             Text("Server time (polls every 2s)"),
             Poll(
                 ref=CLOCK_REF,

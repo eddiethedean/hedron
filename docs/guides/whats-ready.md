@@ -36,7 +36,10 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | Django AppConfig, forms bridge, QuerySet DataSource | `hedron-django` + `hedron-data` | Supported |
 | Portable adapter test harness | `hedron_core.testing` / `hedron.testing.adapters` | Supported |
 | Optional HDJ (`.hdj`) templates + dynamic manifests / CSP inventory | `hedron[jinja]` | Supported |
-| Celery / RQ `JobBackend` bridges | `hedron_core.jobs_celery` / `jobs_rq` | Supported optional bridges |
+| Celery / RQ `JobBackend` bridges | `hedron_core.jobs_celery` / `jobs_rq` | Supported optional bridges; **require shared Redis** for durable multi-worker status (0.13) |
+| Component `prepare()` + adaptive concurrency | `hedron-core` / `hedron` | Supported (0.13); opt-out preserves semantics |
+| Optional distributed tracing | `hedron[otel]` / `hedron.tracing` | Supported optional (0.13); disable anytime |
+| Security audit sink | `hedron_core.audit` | Supported (0.13) |
 | Auto (inspectable object rendering) | Core (`hedron`) — no extra | Supported |
 | DataTable / DataEditor | `hedron[data]` | Supported |
 | Column catalog, saved views, TransformPlan, typed grid events | `hedron[data]` | Supported (0.12) |

@@ -5,10 +5,10 @@ status: shipped
 # Navigation preload
 
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability (0.13 train)"
 
     Classifications live in [STABILITY.md](STABILITY.md). Opt-in navigation preload is
-    Supported in 0.10; default remains off.
+    **experimental** (`hedron.experimental`) until Deferred ops gates close; default remains off.
 
 **Status:** Shipped in `0.10.0`
 

@@ -1,3 +1,9 @@
+## [0.13.0] — 2026-08-05
+
+### Added
+
+- Phase 0.13 advanced async and observability.
+
 # Changelog
 
 ## [0.12.0] — 2026-08-05

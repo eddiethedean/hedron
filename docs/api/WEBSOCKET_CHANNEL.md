@@ -5,10 +5,11 @@ status: shipped
 # Page/session WebSocket channel
 
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability (0.13 train)"
 
-    Classifications live in [STABILITY.md](STABILITY.md). Page/session channels are Supported
-    on the FastAPI flagship in 0.10.
+    Classifications live in [STABILITY.md](STABILITY.md). Page/session channels are
+    **experimental** (`hedron.experimental`) until Deferred ops gates close. Prefer polling
+    in production.
 
 **Status:** Shipped in `0.10.0`
 

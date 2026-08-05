@@ -111,6 +111,13 @@ def validate_csrf(request: Request, policy: SecurityPolicy) -> None:
     if provided is None and isinstance(form_token, str):
         provided = form_token
     if not cookie or not provided or not secrets.compare_digest(cookie, provided):
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        emit_security_audit(
+            SecurityAuditEventType.CSRF_REJECTED,
+            "CSRF validation failed",
+            attributes={"path": str(request.url.path), "method": request.method},
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="CSRF validation failed",

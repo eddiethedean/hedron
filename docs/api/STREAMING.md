@@ -5,10 +5,10 @@ status: shipped
 # Focused streaming
 
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability (0.13 train)"
 
-    Classifications live in [STABILITY.md](STABILITY.md). Focused streaming is Supported on
-    the FastAPI flagship in 0.10.
+    Classifications live in [STABILITY.md](STABILITY.md). Focused streaming is **experimental**
+    (`hedron.experimental`) until Deferred ops gates close. Prefer polling in production.
 
 **Status:** Shipped in `0.10.0`
 

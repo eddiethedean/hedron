@@ -33,16 +33,27 @@ from hedron.testing.data import (
 )
 from hedron_core.registry import get_registry
 from hedron_core.rendering import RenderMode, RenderResult, render
+from hedron_core.testing.async_scenario import (
+    AsyncScenario,
+    ControllableClock,
+    ScriptedDependency,
+    assert_ordered_events,
+    scripted_outcome,
+)
 
 __all__ = [
     "AdapterAppFixture",
     "AdapterResponse",
     "AdversarialCase",
+    "AsyncScenario",
+    "ControllableClock",
+    "ScriptedDependency",
     "assert_accessible_fallback",
     "assert_budget",
     "assert_fragment_body",
     "assert_html_contains",
     "assert_htmx_trigger",
+    "assert_ordered_events",
     "assert_page_document",
     "assert_render_result",
     "assert_renders",
@@ -62,6 +73,7 @@ __all__ = [
     "normalize_snapshot_html",
     "override_dependencies",
     "render_html",
+    "scripted_outcome",
     "transform_plan_fixture",
 ]
 

@@ -1,0 +1,94 @@
+# Phase 0.13 advanced async and observability evidence index.
+# Consumed by scripts/check_release_gate.py 0.13.0.
+# Zero Deferred policy for 0.13-owned rows: every row must be Verified at cut.
+
+[[evidence]]
+id = "PREP-013"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_prepare_lifecycle.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "ASYNC-TEST-013"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_async_scenario_harness.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "CONC-013"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_adaptive_concurrency.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "TRACE-013"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_distributed_tracing.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "HDJ-DEF-013"
+state = "Verified"
+command = "python -m pytest -q tests/jinja/test_hdj_async_io.py"
+ci_job = "test"
+owner = "hedron-jinja"
+
+[[evidence]]
+id = "AUDIT-013"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_security_audit_sink.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "JOB-013-CELERY"
+state = "Verified"
+command = "python -m pytest -q tests/conformance/test_celery_rq_durable.py -k celery"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "JOB-013-RQ"
+state = "Verified"
+command = "python -m pytest -q tests/conformance/test_celery_rq_durable.py -k rq"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "LIVE-CLAIM-013"
+state = "Verified"
+command = "python -m pytest -q tests/conformance/test_live_claim_honesty.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "HED-CAT-013"
+state = "Verified"
+command = "python scripts/check_hed_codes.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "PERF-013-SCENARIO"
+state = "Verified"
+command = "python -m pytest -q tests/performance/test_async_scenarios.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-013"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-013"
+state = "Verified"
+command = "python scripts/verify_pkg_13.py"
+ci_job = "release"
+owner = "hedron"

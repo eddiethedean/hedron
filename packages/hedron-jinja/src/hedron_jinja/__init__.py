@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+from hedron_jinja.async_io import (
+    AsyncIoBudget,
+    AsyncIoDeclaration,
+    AsyncIoRegistry,
+    run_declared_async_io,
+)
 from hedron_jinja.contracts import (
     HdjContext,
     TemplateCapabilities,
@@ -26,9 +32,12 @@ from hedron_jinja.providers import (
     provider_available,
 )
 
-__version__ = "0.12.0"
+__version__ = "0.13.0"
 
 __all__ = [
+    "AsyncIoBudget",
+    "AsyncIoDeclaration",
+    "AsyncIoRegistry",
     "DynamicDependency",
     "DynamicDependencyManifest",
     "ForeignNamespace",
@@ -49,4 +58,5 @@ __all__ = [
     "data_provider_manifest",
     "provider_available",
     "reconcile_csp",
+    "run_declared_async_io",
 ]

@@ -912,7 +912,7 @@ wheels = [
 
 [[package]]
 name = "hedron"
-version = "0.12.0"
+version = "0.13.0"
 source = { editable = "packages/hedron" }
 dependencies = [
     { name = "fastapi" },
@@ -956,6 +956,9 @@ markdown = [
     { name = "markdown" },
     { name = "nh3" },
 ]
+otel = [
+    { name = "opentelemetry-api" },
+]
 sanitize = [
     { name = "nh3" },
 ]
@@ -975,6 +978,7 @@ requires-dist = [
     { name = "markdown", marker = "extra == 'markdown'", specifier = ">=3.5" },
     { name = "nh3", marker = "extra == 'markdown'", specifier = ">=0.2" },
     { name = "nh3", marker = "extra == 'sanitize'", specifier = ">=0.2" },
+    { name = "opentelemetry-api", marker = "extra == 'otel'", specifier = ">=1.27,<2" },
     { name = "packaging", specifier = ">=24.0" },
     { name = "pillow", marker = "extra == 'images'", specifier = ">=10.0" },
     { name = "playwright", marker = "extra == 'browser'", specifier = ">=1.40" },
@@ -982,7 +986,7 @@ requires-dist = [
     { name = "pygments", marker = "extra == 'code'", specifier = ">=2.17" },
     { name = "python-multipart", specifier = ">=0.0.9" },
 ]
-provides-extras = ["dev", "data", "charts", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "jinja"]
+provides-extras = ["dev", "data", "charts", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "jinja", "otel"]
 
 [[package]]
 name = "hedron-charts"
@@ -1080,7 +1084,7 @@ provides-extras = ["matplotlib", "plotly", "altair", "pydeck", "folium", "graphv
 
 [[package]]
 name = "hedron-core"
-version = "0.12.0"
+version = "0.13.0"
 source = { editable = "packages/hedron-core" }
 dependencies = [
     { name = "packaging" },
@@ -1095,7 +1099,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-data"
-version = "0.12.0"
+version = "0.13.0"
 source = { editable = "packages/hedron-data" }
 dependencies = [
     { name = "hedron-core" },
@@ -1157,7 +1161,7 @@ provides-extras = ["pandas", "polars", "pyarrow", "dataframes", "sqlalchemy", "s
 
 [[package]]
 name = "hedron-django"
-version = "0.12.0"
+version = "0.13.0"
 source = { editable = "packages/hedron-django" }
 dependencies = [
     { name = "asgiref" },
@@ -1174,7 +1178,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-explorer"
-version = "0.12.0"
+version = "0.13.0"
 source = { editable = "packages/hedron-explorer" }
 dependencies = [
     { name = "fastapi" },
@@ -1196,7 +1200,7 @@ provides-extras = ["fastapi"]
 
 [[package]]
 name = "hedron-flask"
-version = "0.12.0"
+version = "0.13.0"
 source = { editable = "packages/hedron-flask" }
 dependencies = [
     { name = "flask" },
@@ -1213,7 +1217,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-jinja"
-version = "0.12.0"
+version = "0.13.0"
 source = { editable = "packages/hedron-jinja" }
 dependencies = [
     { name = "hedron-core" },
@@ -1241,7 +1245,7 @@ requires-dist = [{ name = "hedron-core", editable = "packages/hedron-core" }]
 
 [[package]]
 name = "hedron-workspace"
-version = "0.12.0"
+version = "0.13.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -2222,6 +2226,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/1a/9c/c531f2293b91265d8b48e9b329f54fdd7ffae73cb4134ea10cca4237e9cc/numpy-2.4.6-pp311-pypy311_pp73-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:5dbbdb29840ca3d91ee0fece42fc29278886d908280bfec0a5846c6f901a3eb0", size = 15798374, upload-time = "2026-05-18T23:37:02.674Z" },
     { url = "https://files.pythonhosted.org/packages/1a/b0/413077f6b1153ed3cba361401c6783bbad6114804a000cc22eb71c13e190/numpy-2.4.6-pp311-pypy311_pp73-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:8ad03c0965fb3c692200e74d458ca28c1dbb4ce96f9a479a8aa041ad5fabca02", size = 16747286, upload-time = "2026-05-18T23:37:06.327Z" },
     { url = "https://files.pythonhosted.org/packages/15/ce/e5ec180bc41812edcd8daeb8639d205622c0e8c02259d8ab25a0201b3c2a/numpy-2.4.6-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:2803abfebfc990042cd494d8ce2d5f82e9d847af6d35ec486923aa19dbad5e73", size = 12504263, upload-time = "2026-05-18T23:37:09.715Z" },
+]
+
+[[package]]
+name = "opentelemetry-api"
+version = "1.44.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ee/8b/aa9e2d8b8dfa7c946f7dec5d1f8f6ba8eca062f43509a06bdb5ce93d26c0/opentelemetry_api-1.44.0.tar.gz", hash = "sha256:67647e5e9566edcf421166fdf022b3537f818635daa852b289e34604dc6fb33a", size = 72406, upload-time = "2026-07-16T15:25:32.678Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ca/6f/a04e900f465ff3221ccc395522503e2d10e79fa21f2723c8e177aae1e0d1/opentelemetry_api-1.44.0-py3-none-any.whl", hash = "sha256:94b98c893a91b88657eaac1e3ba89618cdb85be6918196705354f34728b2cdef", size = 60018, upload-time = "2026-07-16T15:25:11.657Z" },
 ]
 
 [[package]]

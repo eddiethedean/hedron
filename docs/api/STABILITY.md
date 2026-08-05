@@ -1,8 +1,8 @@
 # Public stability classifications
 
-**Status:** Phase 0.12 data/visualization scale (**ready to cut** `v0.12.0`; not tagged until publish); readiness track toward a future
+**Status:** Phase 0.13 advanced async/observability (**ready to cut** `v0.13.0`; not tagged until publish); readiness track toward a future
 stable tier (D-038: no calendar `1.0` scheduled).
-**Version:** `0.12.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`
+**Version:** `0.13.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
 `v0.12.0` train. Levels apply to documented contracts; symbols not listed here are **internal**

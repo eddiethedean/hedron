@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import functools
 import inspect
 from collections.abc import Callable, Coroutine
@@ -147,6 +148,7 @@ class HedronRoute(APIRoute):
                 fragment_regions=fragment_regions,
             )
         if isinstance(result, HTML):
+            await _prepare_endpoint_value(result.value, request=request)
             response = render_component_response(
                 result,
                 request=request,
@@ -167,6 +169,7 @@ class HedronRoute(APIRoute):
             force = mode
             if kind == "component":
                 force = force or RenderMode.FRAGMENT
+            await _prepare_endpoint_value(result, request=request)  # type: ignore[arg-type]
             response = render_component_response(
                 result,  # type: ignore[arg-type]
                 request=request,
@@ -215,6 +218,13 @@ class HedronRoute(APIRoute):
                 is_htmx=is_htmx,
             )
         except FragmentRegionError as exc:
+            from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+            emit_security_audit(
+                SecurityAuditEventType.HTMX_TARGET_REJECTED,
+                str(exc),
+                attributes={"path": str(request.url.path), "target": target},
+            )
             raise HTTPException(status_code=403, detail=str(exc)) from exc
 
         content: NodeLike | None = result.content
@@ -235,6 +245,7 @@ class HedronRoute(APIRoute):
             force = force or RenderMode.FRAGMENT
         if content is None:
             return Response(status_code=result.status_code, headers=headers)
+        await _prepare_endpoint_value(content, request=request)
         response = render_component_response(
             content,
             request=request,
@@ -248,3 +259,24 @@ class HedronRoute(APIRoute):
         if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
             ensure_csrf_cookie(response, policy, request=request)
         return response
+
+
+async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
+    """Run optional prepare() hooks before sync render."""
+    from hedron.concurrency import get_concurrency_config
+    from hedron.tracing import span
+    from hedron_core.prepare import PrepareContext, prepare_tree
+
+    disconnect = asyncio.Event()
+    cfg = get_concurrency_config()
+    ctx = PrepareContext(
+        cancel_event=disconnect,
+        disconnect_capable=True,
+        deadline=None,
+    )
+    with span("hedron.prepare", route=str(request.url.path)):
+        await prepare_tree(
+            value,
+            context=ctx,
+            concurrency_limit=cfg.max_in_flight if cfg.enabled else None,
+        )

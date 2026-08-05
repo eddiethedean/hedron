@@ -11,8 +11,10 @@ These requirements own roadmap gate 0.7E. Evidence follows
 | JOB-004 | A 202 interaction returns an addressable status resource, `Retry-After`, and an accessible bounded-polling component with useful non-HTMX behavior. | HTTP/browser/a11y tests across supported adapters. | Verified |
 | JOB-005 | Small host-framework background work is visibly distinct from durable work and cannot be accidentally promoted to a durable guarantee. | API/diagnostic tests and documentation examples. | Verified |
 | JOB-006 | Optional SSE, if selected, preserves the same job contract and passes offline/CSP/auth/reconnect tests; otherwise polling remains sufficient. | Phase 0.10 SSE evidence (`SSE-10-001` / `JOB-006`); polling remains Supported. | Verified |
+| JOB-013 | Celery/RQ bridges store status and idempotency in shared Redis so multi-worker `get`/`cancel`/`mark` agree; construction refuses missing Redis. | Two-backend shared Redis conformance (`JOB-013-CELERY` / `JOB-013-RQ`). | Verified |
 
 ## Exit
 
 Jobs remain application-operated infrastructure with a stable Hedron interaction contract. Polling
-is the required baseline; no live transport is necessary to complete 0.7.
+is the required baseline; no live transport is necessary to complete 0.7. Celery/RQ durability
+requires a shared Redis status client as of 0.13.

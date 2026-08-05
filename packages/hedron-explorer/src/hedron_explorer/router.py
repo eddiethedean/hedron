@@ -127,6 +127,16 @@ async def explorer_guards(request: Request) -> None:
     if len(bucket) >= 120:
         _RATE[client] = bucket
         _audit("rate_limited", path=str(request.url.path))
+        try:
+            from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+            emit_security_audit(
+                SecurityAuditEventType.EXPLORER_DENIED,
+                "Explorer rate limit exceeded",
+                attributes={"path": str(request.url.path), "client": client},
+            )
+        except Exception:
+            pass
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Explorer rate limit exceeded",

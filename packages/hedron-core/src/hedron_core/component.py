@@ -197,6 +197,14 @@ class Component(Generic[PropsT]):
             component_id=self.logical_id(),
         )
 
+    async def prepare(self, ctx: Any) -> None:
+        """Optional async data preparation before sync ``render()``.
+
+        Override to load request-owned data. Constructors must not perform hidden I/O.
+        Default is a no-op so only explicit overrides participate in ``prepare_tree``.
+        """
+        del ctx
+
     def __hedron_node__(self) -> Component[PropsT]:
         return self
 

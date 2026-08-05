@@ -14,7 +14,7 @@ Rows marked with a later phase are excluded from the 0.9 exit gate and owned her
 | 0.10 (closed / follow-up) | Head management, two-phase streaming, and version-aware HTMX semantics are Verified on `v0.10.0`. Broader browser-backed navigation/history/OOB/lifecycle evidence remains Deferred with `BROWSER-10-001`. |
 | 0.11 | Finite fingerprinted dynamic dependency manifests, foreign Jinja/package namespaces, native route/CSRF/context/response facades, multi-framework PAGE/FRAGMENT/forms parity, asset/CSP pipeline reconciliation, and CLI/build/Explorer production inventory. |
 | 0.12 | `hedron.data`/`hedron.charts` provider parity and bounded high-volume presentation evidence. |
-| 0.13 | Async filter/global I/O contracts, operation budgets, deadlines, cancellation, and tracing. |
+| 0.13 | Async filter/global I/O contracts, operation budgets, deadlines, cancellation, and tracing. **Verified** (`HDJ-DEF-013`). |
 | 0.14 | Optional exact loop/macro instrumentation, contracted custom-extension/helper evidence, broader contextual analysis, and portable checker fixtures. |
 
 ## Packaging and identity

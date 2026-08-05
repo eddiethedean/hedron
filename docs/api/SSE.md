@@ -5,10 +5,12 @@ status: shipped
 # SSE responses
 
 
-!!! note "Stability (0.11 train)"
+!!! note "Stability (0.13 train)"
 
     Classifications live in [STABILITY.md](STABILITY.md). Official HTMX SSE observation is
-    **Supported** on the FastAPI flagship in 0.10; polling remains the required fallback.
+    **experimental** (`hedron.experimental`) until Deferred ops gates
+    (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) close. Polling remains the
+    Supported production fallback.
 
 **Status:** Shipped in `0.10.0`
 

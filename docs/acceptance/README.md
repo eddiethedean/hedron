@@ -31,7 +31,8 @@ status commentary, not a satisfied release gate.
 - [`v0.9.0` HDJ replacement](RELEASE_0_9.md) — published; clean HDN removal, explicit `.hdj` format, standards-first authoring
 - [`v0.10` live interaction](RELEASE_0_10.md) — published; SSE, focused streaming, WebSocket channels, Chat/Dialog, preload (owned Deferred follow-ups noted)
 - [`v0.11` native Flask/Django depth](RELEASE_0_11.md) — published; Blueprint/`init_app`, Django forms/QuerySet, portable harness, HDJ inventory/CSP (owned Deferred follow-ups noted)
-- [`v0.12` data and visualization scale](RELEASE_0_12.md) — ready to cut; D-047 zero-Deferred gate
+- [`v0.12` data and visualization scale](RELEASE_0_12.md) — ready to cut / cut train
+- [`v0.13` advanced async and observability](RELEASE_0_13.md) — ready to cut; zero-Deferred for 0.13-owned rows
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),
   [release-gate-0.7.toml](release-gate-0.7.toml),
@@ -39,7 +40,8 @@ status commentary, not a satisfied release gate.
   [release-gate-0.9.toml](release-gate-0.9.toml),
   [release-gate-0.10.toml](release-gate-0.10.toml),
   [release-gate-0.11.toml](release-gate-0.11.toml),
-  [release-gate-0.12.toml](release-gate-0.12.toml)
+  [release-gate-0.12.toml](release-gate-0.12.toml),
+  [release-gate-0.13.toml](release-gate-0.13.toml)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.

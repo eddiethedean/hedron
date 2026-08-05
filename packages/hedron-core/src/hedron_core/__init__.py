@@ -10,6 +10,15 @@ from hedron_core.adapter import (
     capability_matrix,
 )
 from hedron_core.addressable import AddressableDescriptor, addressable
+from hedron_core.audit import (
+    SecurityAuditEvent,
+    SecurityAuditEventType,
+    SecurityAuditSink,
+    StructuredLogAuditSink,
+    emit_security_audit,
+    get_security_audit_sink,
+    set_security_audit_sink,
+)
 from hedron_core.auto import Auto, inspect_data, register_renderer
 from hedron_core.builtins import (
     Alert,
@@ -123,6 +132,12 @@ from hedron_core.preload import (
     PreloadDecision,
     decide_preload,
 )
+from hedron_core.prepare import (
+    PartialFailurePolicy,
+    PrepareContext,
+    PrepareTiming,
+    prepare_tree,
+)
 from hedron_core.registry import (
     AddressableMeta,
     RouteMeta,
@@ -172,7 +187,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.12.0"
+__version__ = "0.13.0"
 
 __all__ = [
     "AddressableDescriptor",
@@ -186,14 +201,25 @@ __all__ = [
     "InteractionResult",
     "LifecycleResource",
     "OobUpdate",
+    "PartialFailurePolicy",
+    "PrepareContext",
+    "PrepareTiming",
+    "SecurityAuditEvent",
+    "SecurityAuditEventType",
+    "SecurityAuditSink",
     "StatusPolicy",
+    "StructuredLogAuditSink",
     "UrlReverseRequest",
     "approved_headers",
     "authorize_htmx_target",
     "authorize_oob_update",
     "capability_matrix",
     "default_interaction_policy",
+    "emit_security_audit",
+    "get_security_audit_sink",
     "interaction_headers",
+    "prepare_tree",
+    "set_security_audit_sink",
     "Aside",
     "AssetRef",
     "Badge",

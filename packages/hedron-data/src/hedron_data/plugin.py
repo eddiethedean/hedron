@@ -16,9 +16,9 @@ _CSS = _ROOT / "assets" / "tabulator" / "editor.css"
 
 PLUGIN_META = PluginMeta(
     name="hedron_data",
-    version="0.12.0",
+    version="0.13.0",
     distribution="hedron-data",
-    hedron_version=">=0.12,<0.13",
+    hedron_version=">=0.13,<0.14",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,

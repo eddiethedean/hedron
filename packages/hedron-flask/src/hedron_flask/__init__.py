@@ -8,7 +8,7 @@ from hedron_flask.live import POLLING_FALLBACK_SUPPORTED, sse_response, stream_t
 from hedron_flask.responses import component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser, hedron_route
 
-__version__ = "0.12.0"
+__version__ = "0.13.0"
 
 __all__ = [
     "FlaskUrlReverser",

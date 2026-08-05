@@ -32,11 +32,12 @@ substring-matching HTML bodies.
 
 ## Optional OpenTelemetry
 
-Hedron does not ship an OTel integration. If your platform already instruments FastAPI /
-Starlette, treat Hedron routes like any other HTML endpoint. Propagate the same
-`traceparent` / request id into application logs. Do not expect Hedron-specific metric
-names — define your own (`hedron_fragment_latency_ms`, `hedron_sse_open_connections`) in
-app middleware if needed.
+Install `hedron[otel]` and call `hedron.tracing.configure_tracing(enabled=True)` to emit
+optional first-party spans across HTTP, prepare, cache, jobs, and render. Sampling and
+exporter failure never change component semantics; disable anytime to return to stdlib-only
+logging. If your platform already instruments FastAPI / Starlette, propagate the same
+`traceparent` / request id into application logs. App-owned metrics remain application
+middleware (`hedron_fragment_latency_ms`, `hedron_sse_open_connections`, …).
 
 ## Jobs, SSE, and proxies
 

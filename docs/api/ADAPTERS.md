@@ -82,10 +82,11 @@ Django floor: `>=5.2,<6`.
 
 ## Live transport (FastAPI vs adapters)
 
-Official HTMX SSE, focused streaming, and page/session WebSocket channels are **Supported**
-on the FastAPI flagship in **0.10** (see [live interaction](../guides/live-interaction.md) and
-[STABILITY](STABILITY.md)). Flask and Django adapters keep **bounded polling** as the Supported
-live-status fallback; they do not ship the FastAPI SSE/WebSocket helpers.
+Official HTMX SSE, focused streaming, and page/session WebSocket channels are **experimental**
+(`hedron.experimental`) on the FastAPI flagship until Deferred ops gates close (see
+[live interaction](../guides/live-interaction.md) and [STABILITY](STABILITY.md)). Flask and
+Django adapters keep **bounded polling** as the Supported live-status fallback; they do not
+ship the FastAPI SSE/WebSocket helpers.
 
 ## Errors
 
