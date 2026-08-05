@@ -91,8 +91,13 @@ under a subpath, configure ASGI `root_path` (uvicorn `--root-path`) or WSGI
 `SCRIPT_NAME`, and set `HEDRON_ROOT_PATH` when your deploy samples use it.
 
 Disable response buffering for `text/event-stream` if you use SSE
-([live interaction](live-interaction.md)). Prefer polling when you need a Supported
-fallback without load/proxy evidence ([What’s ready](whats-ready.md)).
+([live interaction](live-interaction.md)).
+
+!!! warning "Do not rely on SSE/WebSocket without your own proof"
+
+    Prefer [polling](live-interaction.md) behind load balancers. Live transport APIs ship
+    on FastAPI, but full ops/backpressure evidence is incomplete — see
+    [What’s ready](whats-ready.md).
 
 ### nginx
 

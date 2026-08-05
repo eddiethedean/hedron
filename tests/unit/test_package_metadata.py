@@ -115,7 +115,9 @@ def test_built_wheel_contains_typed_marker_and_readme(tmp_path: Path) -> None:
     """
     wheels = sorted((ROOT / "dist").glob(f"hedron_core-{__version__}-*.whl"))
     if not wheels:
-        return
+        import pytest
+
+        pytest.skip("no hedron_core wheel in dist/; run after build")
     with zipfile.ZipFile(wheels[-1]) as archive:
         names = set(archive.namelist())
         assert "hedron_core/py.typed" in names

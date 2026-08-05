@@ -6,18 +6,10 @@
 - A package manager (`pip` or [uv](https://docs.astral.sh/uv/))
 - No Node.js required
 
-**Dependency pins (resolved when you install `hedron`):** FastAPI
-`>=0.141.1,<0.142` and Pydantic `>=2.13.4,<2.14`. Prefer a **clean venv** for your first
-app so an older shared FastAPI/Pydantic pin does not block install. Existing apps: see
-[Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install).
+Prefer **`python -m hedron`** so PATH never matters. Pick **pip** or **uv**, then stop—
+do not also hand-write a second `app.py` over the scaffold.
 
-## Recommended: CLI scaffold
-
-Pick **pip** or **uv**, then stop—do not also hand-write a second `app.py` over the scaffold.
-
-You install Hedron twice on purpose: once so the **CLI** is available, then again as the
-scaffold’s **project dependency** so uvicorn uses the pinned version. See
-[FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
+## Create your first app
 
 === "pip (venv — recommended)"
 
@@ -25,27 +17,30 @@ scaffold’s **project dependency** so uvicorn uses the pinned version. See
     python -m venv .venv
     source .venv/bin/activate   # Windows PowerShell: .\.venv\Scripts\Activate.ps1
     python -m pip install "hedron>=0.11.0" "uvicorn[standard]"
-    # Always-works if `hedron` is not on PATH:
-    #   python -m hedron new my-hedron-app
-    hedron new my-hedron-app
+    python -m hedron new my-hedron-app
     cd my-hedron-app
-    python -m pip install -e .
+    python -m pip install -e .   # project-local pinned hedron for uvicorn
     uvicorn app:app --reload
     ```
 
 === "uv (recommended CLI)"
 
     ```bash
-    uv tool install "hedron>=0.11.0"   # puts `hedron` on your PATH
-    # Always-works alternative: uvx --from "hedron>=0.11.0" hedron new my-hedron-app
-    hedron new my-hedron-app
+    uvx --from "hedron>=0.11.0" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
     ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see the scaffold home page
-with text like **Hello from hedron new**.
+    Or install the CLI once with `uv tool install "hedron>=0.11.0"`, then `hedron new …`.
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
+
+!!! note "Why a second install?"
+
+    The first install (or `uvx`) provides the **CLI**. `pip install -e .` / `uv sync`
+    installs the scaffold’s **project dependency** so uvicorn uses the pinned version.
+    See [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
 
 `hedron new` creates:
 
@@ -61,7 +56,7 @@ also run `uv init` into the same directory unless you intend to replace the scaf
 If `hedron` is not found after install, prefer **`python -m hedron …`** (same interpreter
 as `pip`) or see [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
 
-Then: [Build your first app](quickstart.md) (Path A — after scaffold).
+**Next:** [Build your first app](quickstart.md) — edit the scaffold (do not re-run install).
 
 ## Verify
 
@@ -83,9 +78,9 @@ Expect **`0.11.0`** (or newer patch) from PyPI.
 
 | Symptom | Fix |
 |---|---|
-| `hedron: command not found` | Use `python -m hedron …`, `uv tool install "hedron>=0.11.0"`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
+| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.11.0" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
 | `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
-| FastAPI / pip resolver conflict | Empty venv recommended; FastAPI must be `>=0.141.1,<0.142` — [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
+| FastAPI / pip resolver conflict | Empty venv recommended; see [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
 | Wrong / old version | `pip install -U "hedron>=0.11.0"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
@@ -94,6 +89,12 @@ Expect **`0.11.0`** (or newer patch) from PyPI.
 | Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
 
 Full list: [Troubleshooting](../guides/troubleshooting.md) · [FAQ](../guides/faq.md).
+
+!!! tip "If install fails on FastAPI/Pydantic"
+
+    Hedron pins FastAPI `>=0.141.1,<0.142` and Pydantic `>=2.13.4,<2.14`. Prefer a **clean
+    venv** for your first app. Existing apps: see
+    [Dependency pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts).
 
 ## Optional extras
 
@@ -118,7 +119,7 @@ pip install "hedron-charts[plotly]" # chart backend after charts extra
 | Package | Use when |
 |---|---|
 | `hedron-flask` | Flask — `init_app` / Blueprint, page + fragment routing/HTMX Supported |
-| `hedron-django` | Django `>=5.2,<6` — forms bridge + QuerySet DataSource Supported (D-046) |
+| `hedron-django` | Django `>=5.2,<6` — forms bridge + QuerySet DataSource Supported |
 | `hedron-core` | Framework-neutral rendering only |
 
 Quickstarts: [Flask](flask.md) · [Django](django.md).
@@ -163,14 +164,8 @@ Then create `app.py` from the [quickstart](quickstart.md) (Path B).
 
 ## Supported environments
 
-The flagship package depends on **FastAPI `>=0.141.1,<0.142`**. Let your package manager
-resolve it; if install fails on an older FastAPI pin in a shared environment, create a
-**clean virtualenv** and upgrade within that range. See the
-[compatibility policy](../COMPATIBILITY.md).
-
-When evaluating production use, see [What’s ready today](../guides/whats-ready.md) and
-[Evaluate Hedron](../guides/evaluate.md). Maturity vocabulary:
-[How to read Hedron docs](how-to-read.md).
+See the [compatibility policy](../COMPATIBILITY.md) for exact ranges. When evaluating
+production use, see [What’s ready today](../guides/whats-ready.md).
 
 ## Contributor checkout
 

@@ -93,14 +93,38 @@ def test_url_reverser_named_route(django_setup: Client) -> None:
 
 def test_csrf_middleware_blocks_unsafe_without_token(django_setup: Client) -> None:
     client = django_setup
-    # GET establishes CSRF cookie via middleware on pages that use the cookie.
-    client.get("/page/")
-    response = client.post("/page/", data={"x": "1"})
-    assert response.status_code in {403, 405}
+    # GET establishes CSRF cookie via hedron_view seeding.
+    seeded = client.get("/action/")
+    assert seeded.status_code == 200
+    assert "csrftoken" in seeded.cookies
+    denied = client.post("/action/", data={"x": "1"})
+    assert denied.status_code == 403
+
+
+def test_csrf_post_succeeds_with_form_token(django_setup: Client) -> None:
+    client = django_setup
+    get = client.get("/action/")
+    token = get.cookies["csrftoken"].value
+    ok = client.post("/action/", data={"csrfmiddlewaretoken": token, "name": "Ada"})
+    assert ok.status_code == 200
+    assert b"saved" in ok.content
+
+
+def test_csrf_post_succeeds_with_portable_header(django_setup: Client) -> None:
+    client = django_setup
+    get = client.get("/action/")
+    token = get.cookies["csrftoken"].value
+    ok = client.post(
+        "/action/",
+        data={"name": "Ada"},
+        HTTP_X_CSRF_TOKEN=token,
+    )
+    assert ok.status_code == 200
+    assert b"saved" in ok.content
 
 
 def test_csrf_cookie_seeded_on_respond_get(django_setup: Client) -> None:
-    del django_setup
+    client = django_setup
     from hedron_django.csrf import (
         DJANGO_CSRF_HEADER,
         PORTABLE_CSRF_HEADER,
@@ -109,15 +133,19 @@ def test_csrf_cookie_seeded_on_respond_get(django_setup: Client) -> None:
     )
 
     assert csrf_header_name() in {PORTABLE_CSRF_HEADER, DJANGO_CSRF_HEADER}
+    response = client.get("/page/")
+    assert response.status_code == 200
+    assert "csrftoken" in response.cookies
+
+    # Offline seed + respond path still returns a token for templates/helpers.
     hedron = HedronDjango()
     factory = RequestFactory()
     request = factory.get("/seed/")
-    # Middleware normally wraps responses; seed marks the request for cookie issuance.
     token = seed_csrf_cookie(request)
     assert token
-    response = hedron.respond(Text("seeded"), request)
-    assert response.status_code == 200
-    assert b"seeded" in response.content
+    offline = hedron.respond(Text("seeded"), request)
+    assert offline.status_code == 200
+    assert b"seeded" in offline.content
 
 
 def test_auth_signal_anonymous(django_setup: Client) -> None:
@@ -168,9 +196,3 @@ def test_interaction_status_code(django_setup: Client) -> None:
     )
     assert response.status_code == 202
     assert b"accepted" in response.content
-
-
-def test_queryset_still_deferred() -> None:
-    from hedron_django.app import QUERYSET_DATASOURCE_DEFERRED
-
-    assert QUERYSET_DATASOURCE_DEFERRED is False

@@ -4,7 +4,7 @@ status: shipped
 
 # Job interaction contracts
 
-!!! note "Stability"
+!!! note "Stability (0.11 train)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
     Durable `JobBackend` shipped in 0.7; official SSE observation is Supported in **0.10**.

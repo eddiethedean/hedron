@@ -5,14 +5,15 @@ status: shipped
 # Auth helpers
 
 
-!!! note "Stability"
+!!! note "Stability (0.11 train)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
 **Status:** Shipped in `0.6.0` · optional `hedron[auth]`
 
-Hedron does **not** own identity, sessions, or claims. The `hedron[auth]` extra exposes
-thin Authlib conveniences for FastAPI/Starlette apps. Prefer the session-login pattern in
+Hedron does **not** own identity, sessions, or claims. There is **no first-party
+OIDC/SSO product**. The `hedron[auth]` extra exposes thin Authlib conveniences for
+FastAPI/Starlette apps. Prefer the session-login pattern in
 [Authentication](../guides/authentication.md) unless you need an OAuth provider.
 
 ```bash

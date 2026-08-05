@@ -1,8 +1,11 @@
 # For maintainers
 
 Process docs for contributors cutting releases, editing RFCs, and reading acceptance
-evidence. **Adopters** should stay on [Get started](../getting-started/index.md) and
+evidence. **Adopters** should stay on [Learn](../getting-started/index.md) and
 [What's ready today](whats-ready.md) — this page is not part of the day-one product path.
+
+For the public MkDocs index of maintainer links, see
+[Maintainer handbook](maintainer-handbook.md).
 
 Maintainer corpus (RFCs, acceptance gates, STATUS, RELEASE, ROADMAP, decisions,
 specification, and engineering baselines) lives in the repository on **GitHub only**.

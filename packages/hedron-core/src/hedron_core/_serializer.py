@@ -30,11 +30,12 @@ from hedron_core.security import SafeUrl, check_url_purpose_for_attribute
 
 
 def escape_text(value: str) -> str:
-    return html_stdlib.escape(value, quote=False)
+    # Strip NUL so it cannot survive into HTML text nodes.
+    return html_stdlib.escape(value.replace("\x00", ""), quote=False)
 
 
 def escape_attr(value: str) -> str:
-    return html_stdlib.escape(value, quote=True)
+    return html_stdlib.escape(value.replace("\x00", ""), quote=True)
 
 
 _SAFE_ATTR_NAME = re.compile(r"^[A-Za-z_][\w.-]*$")

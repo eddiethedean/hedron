@@ -1,9 +1,17 @@
 # Authentication
 
-Gate Hedron pages and actions with ordinary FastAPI dependencies. Hedron does not
-invent a second auth system—you own login, password checks, and identity storage.
+Gate Hedron pages and actions with ordinary host-framework dependencies. Hedron does
+not invent a second auth system—**you own login, password checks, and identity storage**.
 
-## Complete minimal loop
+!!! important "No first-party IdP / OIDC product"
+
+    Hedron does **not** ship OIDC, SAML, SSO, or a managed identity provider. Optional
+    `hedron[auth]` Authlib helpers are convenience wrappers only. Plan IdP integration
+    with FastAPI/Django/Flask patterns (or your org’s gateway) before enterprise rollout.
+    OIDC-oriented helpers may appear on the roadmap later; they are not a substitute for
+    host identity today.
+
+## Complete minimal loop (session demo)
 
 Demo credentials below are for local learning only. Replace with your IdP or
 password store before production.
@@ -126,6 +134,17 @@ beyond an opaque user id or username.
 Install `hedron[auth]` when you want Authlib-oriented helpers. Authorization
 decisions (roles, object ACL) remain application code—never inferred from
 component props. See [Auth API](../api/AUTH.md).
+
+### Host IdP patterns (you own)
+
+| Host | Typical approach |
+|---|---|
+| FastAPI | Session cookie (this page) · OAuth/OIDC via Authlib or your API gateway · HTTP Basic only for demos |
+| Django | `django.contrib.auth` · django-allauth / mozilla-django-oidc · middleware + `login_required` |
+| Flask | Flask-Login · authlib Flask client · reverse-proxy SSO headers |
+
+Hedron routes remain ordinary view callables — wrap them with the same dependencies /
+decorators you use for JSON APIs.
 
 ## Explorer
 

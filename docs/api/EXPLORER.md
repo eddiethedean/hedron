@@ -5,7 +5,7 @@ status: shipped
 # Explorer API
 
 
-!!! note "Stability"
+!!! note "Stability (0.11 train)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 

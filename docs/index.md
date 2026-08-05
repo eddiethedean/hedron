@@ -8,12 +8,13 @@ hide:
 
 <div class="hedron-eyebrow">Python-first UI framework · v0.11.0</div>
 
-# Ship the interface.<br><span class="hedron-gradient-text">Keep the Python.</span>
+# Build web UIs in Python.<br><span class="hedron-gradient-text">No Node.js required.</span>
 
 Hedron turns typed Python components into server-rendered HTML with FastAPI and HTMX.
-Build dashboards, admin tools, and CRUD workflows without a Node.js frontend stack.
-Escaping and CSRF profiles ship as Beta secure defaults — pin versions and read
-[What’s ready](guides/whats-ready.md).
+Build dashboards, admin tools, forms, and CRUD apps without a frontend build chain.
+{ .hedron-lede }
+
+**~5 minutes:** install → `hedron new` → open localhost:8000 → **Hello from hedron new**.
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
@@ -22,7 +23,7 @@ Escaping and CSRF profiles ship as Beta secure defaults — pin versions and rea
 [Try in Codespaces](examples/try-it.md){ .md-button }
 </div>
 
-<p class="hedron-lede" markdown>Evaluating production use? See
+<p class="hedron-lede" markdown>Packages are Beta — pin versions for production.
 [What’s ready today](guides/whats-ready.md) · [Why Hedron](guides/why-hedron.md).</p>
 
 <div class="hedron-signal-row">

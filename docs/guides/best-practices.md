@@ -40,7 +40,7 @@ Practical defaults for production Hedron apps from the 0.8 compatibility baselin
 ## Adapters
 
 - Install `hedron-flask` / `hedron-django` separately; they never pull FastAPI.
-- Prefer `hedron_django.forms` and `DjangoQuerySetDataSource` (D-046) over ad-hoc bridges;
+- Prefer `hedron_django.forms` and `DjangoQuerySetDataSource` over ad-hoc bridges;
   capture UI remains Deferred (**0.15**).
 - For mutations on Flask/Django: CSRF + forms bridge (or host forms) and
   [polling](live-interaction.md) for job status.

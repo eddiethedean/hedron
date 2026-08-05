@@ -145,7 +145,17 @@ def test_csp_and_reduced_motion_meta(browser_app_url: str, engine: str) -> None:
             page.emulate_media(reduced_motion="reduce")
             response = page.goto(browser_app_url + "/")
             assert response is not None
-            # CSP may be header or meta depending on profile; page must load HTMX.
+            csp = response.headers.get("content-security-policy") or ""
+            if not csp:
+                # Some profiles emit CSP via meta; accept either form.
+                csp = (
+                    page.locator('meta[http-equiv="Content-Security-Policy"]').get_attribute(
+                        "content"
+                    )
+                    or ""
+                )
+            assert csp, "expected Content-Security-Policy header or meta"
+            assert "default-src" in csp or "script-src" in csp
             page.wait_for_function("() => typeof window.htmx !== 'undefined'", timeout=15_000)
             assert page.locator("#chart-region").count() == 1
         finally:

@@ -1,8 +1,5 @@
 # Build your first app
 
-Verify that the scaffold (or a minimal manual page) renders in the browser, then peek at
-how the same route responds to an HTMX fragment request.
-
 Complete [installation](installation.md) first so you have a project with `hedron` and
 `uvicorn` (prefer `hedron new`).
 
@@ -12,13 +9,30 @@ Complete [installation](installation.md) first so you have a project with `hedro
 Pick **one** path below. Do not scaffold with `hedron new` and then also paste a new
 `app.py` over it unless you intend to replace the scaffold.
 
-## Path A — Verify the scaffold (recommended)
+## Path A — Edit the scaffold (recommended)
 
-If you already ran the [installation](installation.md) scaffold steps, `app.py` exists.
-**Do not recreate it.** Skip to [Run it](#2-run-it).
+If you already finished [installation](installation.md), the app is running and you see
+**Hello from hedron new**. **Do not recreate `app.py` or re-run uvicorn as the main job
+of this page.**
 
-Open `app.py` only if you want to read or tweak the generated home page. The fragment
-check and CLI below work against that file as-is.
+**Do this instead (~2 minutes):**
+
+1. Open `app.py` and change the home `Text(...)` (or greeting string) to your name.
+2. Save — with `--reload`, the browser should update.
+3. Continue to [HTMX interactions](../guides/htmx-interactions.md) for a button that
+   updates one region without a full page reload.
+
+Optional checks (after the edit works):
+
+```bash
+curl -H 'HX-Request: true' http://127.0.0.1:8000/
+```
+
+```bash
+python -m hedron check --app app:app   # or: uv run hedron check --app app:app
+```
+
+Advisory findings on a hello-world scaffold are normal.
 
 ## Path B — Manual `app.py`
 
@@ -50,7 +64,7 @@ middleware, and JSON routes remain available. `@app.page` adds the contract that
 route returns a navigable HTML document. Always set an explicit `session_secret` before
 deployment.
 
-## 2. Run it
+### Run it (Path B only)
 
 === "uv"
 
@@ -66,57 +80,18 @@ deployment.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-**Success:** you see page text **Hello from hedron new** (scaffold) or your Path B
-heading/card content. If the page is blank, returns 404, or assets fail to load, see
-[Troubleshooting](../guides/troubleshooting.md).
+**Success:** you see your Path B heading/card content. If the page is blank, returns 404,
+or assets fail to load, see [Troubleshooting](../guides/troubleshooting.md).
 
 Hedron mounts its browser runtime, applies the standard security policy, and includes a
-responsive default stylesheet. Override its semantic CSS variables or add normal
-application CSS as your design evolves. For an unstyled canvas, create the app with
+responsive default stylesheet. For an unstyled canvas, create the app with
 `Hedron(default_styles=False)`.
-
-## 3. Optional: fragment response via curl
-
-Ask the same endpoint for an HTMX response (optional — a browser click is more satisfying
-in the next guide):
-
-```bash
-curl -H 'HX-Request: true' http://127.0.0.1:8000/
-```
-
-The response contains route content rather than a duplicate document shell. Hedron
-chooses page or fragment rendering from explicit request headers; your route continues
-to return the same typed component tree.
-
-For a **browser click** that swaps a region, continue to
-[HTMX interactions](../guides/htmx-interactions.md).
-
-## 4. Optional: check the project
-
-After you have a working page, inspect the loaded app (advisory findings are normal on a
-hello-world scaffold — Django/Plotly notes apply only if you use those stacks):
-
-=== "uv"
-
-    ```bash
-    uv run hedron check --app app:app
-    ```
-
-=== "Activated virtualenv (pip)"
-
-    ```bash
-    hedron check --app app:app
-    # or: python -m hedron check --app app:app
-    ```
-
-`hedron check` reports registry and security findings. Prefer `--app` so diagnostics load
-your module explicitly.
 
 ## What you learned
 
 - A typed `Page` renders as a full HTML document.
+- Editing Python components updates the UI (with reload).
 - The same route can return fragment HTML when HTMX headers are present.
-- The CLI can inspect the app without opening a browser.
 
 **Next:** [HTMX interactions](../guides/htmx-interactions.md) — click a refresh button in
 the browser.

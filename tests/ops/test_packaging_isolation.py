@@ -27,18 +27,6 @@ def test_django_and_flask_wheels_metadata_isolation() -> None:
         assert "hedron-core" in deps
 
 
-def test_evidence_scripts_exist() -> None:
-    for script in (
-        "generate_sbom.py",
-        "license_inventory.py",
-        "asset_audit.py",
-        "dep_audit.py",
-        "build_evidence_bundle.py",
-        "check_stability_inventory.py",
-    ):
-        assert (ROOT / "scripts" / script).is_file()
-
-
 def test_first_party_plugin_meta_matches_package_version() -> None:
     plugins = {
         "hedron-data": ("hedron_data", "plugin.py"),

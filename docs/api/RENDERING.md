@@ -5,11 +5,16 @@ status: shipped
 # Rendering API
 
 
-!!! note "Stability (0.10 train)"
+!!! note "Stability (0.11 train)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
 **Status:** Accepted
+
+!!! tip "Signatures"
+
+    Generated parameter lists: [Autodoc — Page, component, and rendering](AUTODOC.md#page-component-and-rendering).
+    This page is the how-to narrative for the framework-neutral render boundary.
 
 The public core rendering boundary is intentionally small:
 

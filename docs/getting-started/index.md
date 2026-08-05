@@ -1,17 +1,17 @@
-# Get started
+# Learn Hedron
 
 Build and run a small Hedron application, then continue through HTMX and forms.
 
 ## Path
 
 1. [Install](installation.md) — clean venv, then `hedron>=0.11.0` (and uvicorn)
-2. [Build your first app](quickstart.md) — verify the scaffold, then run
+2. [Build your first app](quickstart.md) — edit the scaffold (Path A) or paste Path B
 3. [HTMX interactions](../guides/htmx-interactions.md) — refresh a declared region in the browser
 4. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
 5. [Learning path](learning-path.md) — continue toward data, auth, and deploy
 
 Then: [What’s ready](../guides/whats-ready.md) · [Why Hedron](../guides/why-hedron.md) ·
-[Evaluate Hedron](../guides/evaluate.md) (top-level **Evaluate** nav).
+[Evaluate Hedron](../guides/evaluate.md) (**Adopt** nav).
 
 Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
 

@@ -5,7 +5,7 @@ status: shipped
 # Utility component contracts
 
 
-!!! note "Stability (0.10 train)"
+!!! note "Stability (0.11 train)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
@@ -13,7 +13,8 @@ status: shipped
 
 These built-ins capture low-friction Python workflows while preserving FastAPI and
 component architecture. Gallery demos:
-[Components](../components/index.md).
+[Components](../components/index.md). Generated signatures for related helpers live in
+[Autodoc](AUTODOC.md); per-component props are on the [component catalog](../components/index.md).
 
 ## Constructors (summary)
 

@@ -120,10 +120,10 @@ with auth in rare cases; keep production off.
 
 ## `hedron new` installs an old train
 
-**Cause:** Scaffold from a pre-0.10 CLI wrote `hedron>=0.4.0`.
+**Cause:** An old CLI wrote `hedron>=0.4.0` (or another pre-0.11 floor).
 
 **Fix:** Edit `pyproject.toml` to `hedron>=0.11.0` and `uvicorn[standard]>=0.30`, then
-reinstall. Current `hedron new` scaffolds the 0.10 floor automatically.
+reinstall. Current `hedron new` scaffolds the **0.11** floor automatically.
 
 ## SSE / WebSocket / preload not working
 

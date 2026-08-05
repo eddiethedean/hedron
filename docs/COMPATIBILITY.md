@@ -16,12 +16,35 @@
 | Jinja (optional HDJ) | `>=3.1,<4` via `hedron[jinja]` | Not a default install |
 
 Live transports (SSE, focused streaming, page/session WebSocket, Chat/Dialog, preload) are
-**API Supported** on the FastAPI flagship in 0.10; polling remains the Supported fallback on
-every host. Full ops/backpressure evidence for live transports is still Deferred — see
-[What's ready](guides/whats-ready.md).
+**API Supported** on the FastAPI flagship; polling remains the Supported fallback on every
+host. Full ops/backpressure evidence for live transports is still incomplete — see
+[What's ready](guides/whats-ready.md). Flask/Django ship Blueprint/`init_app`, AppConfig,
+forms bridge, and bounded QuerySet DataSource in **0.11** with capability-labeled live helpers.
 
-Historical phase baselines (0.7–0.9) and deprecation rules are below. Prefer this section
+Historical phase baselines (0.7–0.10) and deprecation rules are below. Prefer this section
 when evaluating a new install.
+
+## Dependency pin conflicts
+
+Hedron pins FastAPI and Pydantic tightly so the Supported matrix matches CI:
+
+| Package | Supported range |
+|---|---|
+| FastAPI | `>=0.141.1,<0.142` |
+| Pydantic | `>=2.13.4,<2.14` |
+
+**First app:** use a clean virtualenv so an older shared pin does not block install.
+
+**Existing app:** if your lockfile cannot move into these ranges:
+
+1. Create an isolated env for Hedron evaluation, **or**
+2. Override at your own risk — versions outside the table are **unsupported** (may work;
+   no CI claim; upgrade risk is yours).
+3. Do not report out-of-range resolver failures as Hedron defects until you reproduce on
+   a clean env within the Supported ranges.
+
+See [Installation](getting-started/installation.md) and
+[Troubleshooting](guides/troubleshooting.md#fastapi-version-conflict-on-install).
 
 ## Initial runtime ranges
 
@@ -44,9 +67,22 @@ when evaluating a new install.
 | Authlib | `>=1.3` via `hedron[auth]` | Convenience helpers only; no identity ownership. |
 | Jinja | `>=3.1,<4` via `hedron[jinja]` / `hedron-jinja` | Optional trusted-template integration; not imported by `hedron-core`. |
 
-## Phase 0.10 compatibility baseline
+## Phase 0.11 compatibility baseline
 
-Phase 0.10 keeps the numeric dependency floors above, keeps optional HDJ authoring, and adds
+Phase 0.11 adds native Flask/Django depth on top of the 0.10 live-transport surfaces and
+dependency floors above.
+
+| Capability | Supported declaration |
+|---|---|
+| Flask | Blueprint / `init_app`, CSRF/session helpers, capability-labeled live helpers; polling Supported fallback behind buffering proxies |
+| Django | AppConfig, forms bridge, bounded QuerySet DataSource (`hedron-data`), capability-labeled live helpers; polling Supported fallback |
+| Portable adapter harness | `hedron.testing.adapters` |
+| HDJ | Dynamic manifests / foreign namespaces / SecurityPolicy–CSP reconciliation |
+| Jobs | Optional Celery / RQ `JobBackend` bridges |
+
+## Phase 0.10 compatibility baseline (historical)
+
+Phase 0.10 kept the numeric dependency floors above, kept optional HDJ authoring, and added
 Supported live-transport surfaces (SSE, focused streaming, page/session WebSocket, Dialog/Chat,
 media chunk contracts, navigation preload). Polling and ordinary HTTP remain Supported fallbacks.
 
@@ -55,7 +91,7 @@ media chunk contracts, navigation preload). Polling and ordinary HTTP remain Sup
 | HDJ / Jinja | Optional `hedron-jinja` / `hedron[jinja]` with Jinja2 `>=3.1,<4` and MarkupSafe as resolved by Jinja. Not imported by `hedron-core` or a default `hedron` install. |
 | HDJ source format | UTF-8 `.hdj` with a mandatory format-v1 TOML prologue; ordinary `.html`/`.jinja` stay outside the HDJ loader. |
 | HDN | Removed. Version 0.8 is the final HDN-capable line; no converter or compatibility runtime ships. |
-| Native adapter depth | FastAPI remains the flagship depth; Flask/Django keep their 0.7/0.8 routing slices. Native route/CSRF/forms/CSP reconciliation for HDJ is phase 0.11. |
+| Native adapter depth (as of 0.10) | FastAPI remained the flagship depth; Flask/Django kept their 0.7/0.8 routing slices until 0.11. |
 | Live HTMX / streaming | Official SSE and focused streaming are Supported (RFC-0032); polling remains the required fallback. PAGE responses inject pinned `htmx-ext-sse` and `htmx-ext-head-support`. |
 
 ## Phase 0.9 compatibility baseline (historical)

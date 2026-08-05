@@ -121,6 +121,63 @@ def test_oob_update_with_element_id() -> None:
     assert "side" in response.text
 
 
+def test_oob_unauthorized_element_id_rejected() -> None:
+    app = Hedron(title="t", security="standard", session_secret="test-secret", explorer="off")
+    regions = (FragmentRegion(id="main", selector="#main"),)
+
+    @app.component("/oob", fragment_regions=regions)
+    def oob() -> InteractionResult:
+        return InteractionResult(
+            content=Text("primary"),
+            oob=(OobUpdate(content=Text("evil"), element_id="evil"),),
+        )
+
+    client = TestClient(app)
+    response = client.get("/oob", headers={"HX-Request": "true", "HX-Target": "#main"})
+    assert response.status_code == 403
+
+
+def test_oob_missing_target_with_declared_regions_rejected() -> None:
+    from hedron_core.interaction import authorize_oob_update
+
+    regions = (FragmentRegion(id="main", selector="#main"),)
+    with pytest.raises(ValueError, match="element_id or select"):
+        authorize_oob_update(OobUpdate(content=Text("x")), regions=regions)
+
+    app = Hedron(title="t", security="standard", session_secret="test-secret", explorer="off")
+
+    @app.component("/oob-missing", fragment_regions=regions)
+    def oob_missing() -> InteractionResult:
+        return InteractionResult(
+            content=Text("primary"),
+            oob=(OobUpdate(content=Text("side")),),
+        )
+
+    client = TestClient(app)
+    response = client.get(
+        "/oob-missing",
+        headers={"HX-Request": "true", "HX-Target": "#main"},
+    )
+    assert response.status_code == 403
+
+
+def test_undeclared_fragment_regions_accept_any_hx_target() -> None:
+    """Document opt-in fragment auth: without fragment_regions, HX-Target is not gated."""
+    app = Hedron(title="t", security="standard", session_secret="test-secret", explorer="off")
+
+    @app.page("/panel")
+    def panel() -> InteractionResult:
+        return InteractionResult(content=Text("panel"))
+
+    client = TestClient(app)
+    response = client.get(
+        "/panel",
+        headers={"HX-Request": "true", "HX-Target": "#evil"},
+    )
+    assert response.status_code == 200
+    assert "panel" in response.text
+
+
 def test_explorer_interaction_trace_populated() -> None:
     from starlette.requests import Request
 

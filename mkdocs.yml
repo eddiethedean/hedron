@@ -148,7 +148,7 @@ extra:
   status:
     new: New
     stable: Stable
-    shipped: Shipped in 0.10
+    shipped: Shipped in 0.11
     planned: Planned
   social:
     - icon: fontawesome/brands/github
@@ -161,7 +161,7 @@ copyright: Copyright &copy; 2026 Odos Matthews · Released under the MIT License
 
 nav:
   - Home: index.md
-  - Get started:
+  - Learn:
     - Overview: getting-started/index.md
     - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
@@ -172,7 +172,11 @@ nav:
     - Other hosts:
       - Add Flask app: getting-started/flask.md
       - Add Django project: getting-started/django.md
-  - Evaluate:
+    - Help:
+      - FAQ: guides/faq.md
+      - Troubleshooting: guides/troubleshooting.md
+      - Error codes: guides/error-codes.md
+  - Adopt:
     - What's ready today: guides/whats-ready.md
     - Why Hedron: guides/why-hedron.md
     - Evaluate Hedron: guides/evaluate.md
@@ -182,7 +186,8 @@ nav:
     - Understanding maturity labels: getting-started/how-to-read.md
     - Support: guides/support.md
     - Enterprise diligence: guides/enterprise-diligence.md
-  - Guides:
+    - Evidence pack: guides/evidence-pack.md
+  - Build:
     - Overview: guides/index.md
     - Interact:
       - Forms and actions: guides/forms-and-actions.md
@@ -190,6 +195,7 @@ nav:
       - Authentication: guides/authentication.md
       - Live interaction: guides/live-interaction.md
       - Cookbook: guides/cookbook.md
+      - Multi-tenant isolation: guides/multi-tenant.md
     - Data and visuals:
       - Data applications: guides/data-apps.md
       - Charts and HTMX: guides/charts-and-htmx.md
@@ -209,176 +215,171 @@ nav:
       - Plugin authoring: guides/plugin-authoring.md
       - Project workflow: guides/project-workflow.md
       - Plain FastAPI: guides/plain-fastapi.md
-    - Help:
-      - FAQ: guides/faq.md
-      - Troubleshooting: guides/troubleshooting.md
-      - Error codes: guides/error-codes.md
   - Examples:
     - Overview: examples/index.md
+    - Single-file apps: examples/single-file.md
     - Try with Codespaces / Dev Container: examples/try-it.md
     - Runnable examples: examples/runnable.md
-    - Single-file apps: examples/single-file.md
     - Reference app walkthrough: examples/reference-app.md
     - CRUD tutorial: examples/crud-tutorial.md
     - Simulated UI patterns (not a server): examples/gallery.md
-  - Components:
-    - Overview: components/index.md
-    - Document and composition:
-      - Overview: components/document.md
-      - Page: components/page.md
-      - Fragment: components/fragment.md
-      - Head: components/head.md
-      - Title: components/title.md
-    - Landmarks:
-      - Overview: components/landmarks.md
-      - Header: components/header.md
-      - Main: components/main.md
-      - Nav: components/nav.md
-      - Aside: components/aside.md
-      - Footer: components/footer.md
-      - Section: components/section.md
-    - Layout:
-      - Overview: components/layout.md
-      - Container: components/container.md
-      - Stack: components/stack.md
-      - Inline: components/inline.md
-      - Grid: components/grid.md
-      - Divider: components/divider.md
-    - Content:
-      - Overview: components/content.md
-      - Heading: components/heading.md
-      - Text: components/text.md
-      - Link: components/link.md
-      - Image: components/image.md
-      - CodeBlock: components/code-block.md
-      - List: components/list.md
-      - DescriptionList: components/description-list.md
-      - Table: components/table.md
-      - Markdown: components/markdown.md
-    - Surfaces and status:
-      - Overview: components/surfaces.md
-      - Card: components/card.md
-      - Badge: components/badge.md
-      - Alert: components/alert.md
-      - Skeleton: components/skeleton.md
-    - Controls:
-      - Overview: components/controls.md
-      - Button: components/button.md
-      - LinkButton: components/link-button.md
-      - IconButton: components/icon-button.md
-    - Forms:
-      - Overview: components/forms.md
-      - Form: components/form.md
-      - FormField: components/form-field.md
-      - Label: components/label.md
-      - TextInput: components/text-input.md
-      - TextArea: components/text-area.md
-      - Select: components/select.md
-      - Checkbox: components/checkbox.md
-      - RadioGroup: components/radio-group.md
-      - SubmitButton: components/submit-button.md
-      - FormErrors: components/form-errors.md
-      - AutoForm: components/auto-form.md
-    - Interaction:
-      - Overview: components/interaction.md
-      - RefreshButton: components/refresh-button.md
-      - Lazy: components/lazy.md
-      - Poll: components/poll.md
-      - InfiniteScroll: components/infinite-scroll.md
-      - Pagination: components/pagination.md
-      - Loading: components/loading.md
-      - ErrorState: components/error-state.md
-      - Dialog: components/dialog.md
-      - ChatMessage: components/chat-message.md
-      - ChatInput: components/chat-input.md
-    - Data:
-      - Overview: components/data.md
-      - Auto: components/auto.md
-      - DataTable: components/data-table.md
-      - DataEditor: components/data-editor.md
-    - Utilities:
-      - Overview: components/utilities.md
-      - Metric: components/metric.md
-      - FileUpload: components/file-upload.md
-      - DownloadButton: components/download-button.md
-      - CodeViewer: components/code-viewer.md
-      - JSONViewer: components/json-viewer.md
-      - Progress: components/progress.md
-      - Status: components/status.md
-      - Toast: components/toast.md
-      - Expander: components/expander.md
-      - Tabs: components/tabs.md
-      - Sidebar: components/sidebar.md
-    - Theme:
-      - Overview: components/theme.md
-      - ColorModeToggle: components/color-mode-toggle.md
-    - Charts:
-      - Overview: components/charts.md
-      - LineChart: components/line-chart.md
-      - MatplotlibChart: components/matplotlib-chart.md
-      - PlotlyChart: components/plotly-chart.md
-      - AltairChart: components/altair-chart.md
-  - API:
-    - Overview: api/README.md
-    - Meta:
-      - Autodoc (Hedron): api/AUTODOC.md
-      - Public API coverage map: api/COVERAGE.md
-      - Stability: api/STABILITY.md
-    - Application and routing:
-      - Hedron: api/HEDRON.md
-      - Router: api/ROUTER.md
-      - Page: api/PAGE.md
-      - Action: api/ACTION.md
-      - Addressable components: api/ADDRESSABLE.md
-      - Interaction: api/INTERACTION.md
-      - Responses: api/RESPONSES.md
-    - Models:
-      - Models and Props: api/MODELS.md
-      - Field: api/FIELD.md
-      - Component: api/COMPONENT.md
-      - Security types: api/SECURITY_TYPES.md
-    - Rendering and content:
-      - Rendering: api/RENDERING.md
-      - Auto: api/AUTO.md
-      - Content: api/CONTENT.md
-      - Built-ins: api/BUILT_INS.md
-      - Utility components: api/UTILITY_COMPONENTS.md
-      - Themes: api/THEME.md
-      - ColorMode: api/COLORMODE.md
-    - Data and charts:
-      - Data: api/DATA.md
-      - Data sources: api/DATA_SOURCE.md
-      - Charts: api/CHART.md
-    - Live:
-      - SSE: api/SSE.md
-      - Streaming: api/STREAMING.md
-      - WebSocket channel: api/WEBSOCKET_CHANNEL.md
-      - Navigation preload: api/PRELOAD.md
-      - Jobs: api/JOBS.md
-    - Cross-cutting:
-      - State: api/STATE.md
-      - Cache: api/CACHE.md
-      - Auth: api/AUTH.md
-      - Explorer: api/EXPLORER.md
-      - Plugins: api/PLUGINS.md
-      - Testing: api/TESTING.md
-      - Framework adapters: api/ADAPTERS.md
-      - CLI: api/CLI.md
-      - API diagnostics: api/DIAGNOSTICS.md
-      - HDJ (Jinja): api/JINJA.md
+  - Reference:
+    - Components:
+      - Overview: components/index.md
+      - Document and composition:
+        - Overview: components/document.md
+        - Page: components/page.md
+        - Fragment: components/fragment.md
+        - Head: components/head.md
+        - Title: components/title.md
+      - Landmarks:
+        - Overview: components/landmarks.md
+        - Header: components/header.md
+        - Main: components/main.md
+        - Nav: components/nav.md
+        - Aside: components/aside.md
+        - Footer: components/footer.md
+        - Section: components/section.md
+      - Layout:
+        - Overview: components/layout.md
+        - Container: components/container.md
+        - Stack: components/stack.md
+        - Inline: components/inline.md
+        - Grid: components/grid.md
+        - Divider: components/divider.md
+      - Content:
+        - Overview: components/content.md
+        - Heading: components/heading.md
+        - Text: components/text.md
+        - Link: components/link.md
+        - Image: components/image.md
+        - CodeBlock: components/code-block.md
+        - List: components/list.md
+        - DescriptionList: components/description-list.md
+        - Table: components/table.md
+        - Markdown: components/markdown.md
+      - Surfaces and status:
+        - Overview: components/surfaces.md
+        - Card: components/card.md
+        - Badge: components/badge.md
+        - Alert: components/alert.md
+        - Skeleton: components/skeleton.md
+      - Controls:
+        - Overview: components/controls.md
+        - Button: components/button.md
+        - LinkButton: components/link-button.md
+        - IconButton: components/icon-button.md
+      - Forms:
+        - Overview: components/forms.md
+        - Form: components/form.md
+        - FormField: components/form-field.md
+        - Label: components/label.md
+        - TextInput: components/text-input.md
+        - TextArea: components/text-area.md
+        - Select: components/select.md
+        - Checkbox: components/checkbox.md
+        - RadioGroup: components/radio-group.md
+        - SubmitButton: components/submit-button.md
+        - FormErrors: components/form-errors.md
+        - AutoForm: components/auto-form.md
+      - Interaction:
+        - Overview: components/interaction.md
+        - RefreshButton: components/refresh-button.md
+        - Lazy: components/lazy.md
+        - Poll: components/poll.md
+        - InfiniteScroll: components/infinite-scroll.md
+        - Pagination: components/pagination.md
+        - Loading: components/loading.md
+        - ErrorState: components/error-state.md
+        - Dialog: components/dialog.md
+        - ChatMessage: components/chat-message.md
+        - ChatInput: components/chat-input.md
+      - Data:
+        - Overview: components/data.md
+        - Auto: components/auto.md
+        - DataTable: components/data-table.md
+        - DataEditor: components/data-editor.md
+      - Utilities:
+        - Overview: components/utilities.md
+        - Metric: components/metric.md
+        - FileUpload: components/file-upload.md
+        - DownloadButton: components/download-button.md
+        - CodeViewer: components/code-viewer.md
+        - JSONViewer: components/json-viewer.md
+        - Progress: components/progress.md
+        - Status: components/status.md
+        - Toast: components/toast.md
+        - Expander: components/expander.md
+        - Tabs: components/tabs.md
+        - Sidebar: components/sidebar.md
+      - Theme:
+        - Overview: components/theme.md
+        - ColorModeToggle: components/color-mode-toggle.md
+      - Charts:
+        - Overview: components/charts.md
+        - LineChart: components/line-chart.md
+        - MatplotlibChart: components/matplotlib-chart.md
+        - PlotlyChart: components/plotly-chart.md
+        - AltairChart: components/altair-chart.md
+    - API:
+      - Overview: api/README.md
+      - Meta:
+        - Autodoc (public symbols): api/AUTODOC.md
+        - Public API coverage map: api/COVERAGE.md
+        - Stability: api/STABILITY.md
+      - Application and routing:
+        - Hedron: api/HEDRON.md
+        - Router: api/ROUTER.md
+        - Page: api/PAGE.md
+        - Action: api/ACTION.md
+        - Addressable components: api/ADDRESSABLE.md
+        - Interaction: api/INTERACTION.md
+        - Responses: api/RESPONSES.md
+      - Models:
+        - Models and Props: api/MODELS.md
+        - Field: api/FIELD.md
+        - Component: api/COMPONENT.md
+        - Security types: api/SECURITY_TYPES.md
+      - Rendering and content:
+        - Rendering: api/RENDERING.md
+        - Auto: api/AUTO.md
+        - Content: api/CONTENT.md
+        - Built-ins: api/BUILT_INS.md
+        - Utility components: api/UTILITY_COMPONENTS.md
+        - Themes: api/THEME.md
+        - ColorMode: api/COLORMODE.md
+      - Data and charts:
+        - Data: api/DATA.md
+        - Data sources: api/DATA_SOURCE.md
+        - Charts: api/CHART.md
+      - Live:
+        - SSE: api/SSE.md
+        - Streaming: api/STREAMING.md
+        - WebSocket channel: api/WEBSOCKET_CHANNEL.md
+        - Navigation preload: api/PRELOAD.md
+        - Jobs: api/JOBS.md
+      - Cross-cutting:
+        - State: api/STATE.md
+        - Cache: api/CACHE.md
+        - Auth: api/AUTH.md
+        - Explorer: api/EXPLORER.md
+        - Plugins: api/PLUGINS.md
+        - Testing: api/TESTING.md
+        - Framework adapters: api/ADAPTERS.md
+        - CLI: api/CLI.md
+        - API diagnostics: api/DIAGNOSTICS.md
+        - HDJ (Jinja): api/JINJA.md
   - Project:
     - Public roadmap: guides/roadmap.md
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
-    - Upgrade (0.8 → 0.10): guides/upgrade.md
+    - Upgrade (0.8 → 0.11): guides/upgrade.md
+    - What's new: guides/release-notes.md
     - What's new in 0.11: guides/whats-new-0.11.md
-    - What's new in 0.10.1: guides/whats-new-0.10.1.md
-    - What's new in 0.10: guides/whats-new-0.10.md
-    - Release notes: guides/release-notes.md
     - Compatibility: COMPATIBILITY.md
     - Configuration: CONFIGURATION.md
     - Glossary: GLOSSARY.md
     - Contributing: CONTRIBUTING.md
+    - Maintainer handbook: guides/maintainer-handbook.md
     - Code of Conduct: CODE_OF_CONDUCT.md
     - Security disclosure: SECURITY.md
-    - For maintainers: guides/maintainers.md

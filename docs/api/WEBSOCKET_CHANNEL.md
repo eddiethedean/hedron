@@ -5,7 +5,7 @@ status: shipped
 # Page/session WebSocket channel
 
 
-!!! note "Stability"
+!!! note "Stability (0.11 train)"
 
     Classifications live in [STABILITY.md](STABILITY.md). Page/session channels are Supported
     on the FastAPI flagship in 0.10.

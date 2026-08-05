@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from io import StringIO
-
 from django.apps import apps
-from django.core.management import call_command
+from django.core.checks import Error, run_checks
 
 
 def test_hedron_django_config_loads() -> None:
@@ -15,8 +13,17 @@ def test_hedron_django_config_loads() -> None:
 
 
 def test_system_checks_run() -> None:
-    out = StringIO()
-    call_command("check", stdout=out, stderr=out)
+    messages = run_checks()
+    errors = [
+        m for m in messages if isinstance(m, Error) or getattr(m, "id", "").startswith("hedron.E")
+    ]
+    assert errors == [], f"unexpected system check errors: {errors}"
+    ids = {getattr(m, "id", "") for m in messages}
+    # Middleware fixture installs CSRF + Session; capability honesty must agree.
+    assert "hedron.E001" not in ids
+    assert "hedron.E002" not in ids
+    assert "hedron.W001" not in ids
+    assert "hedron.W002" not in ids
 
 
 def test_register_checks_idempotent() -> None:
@@ -24,5 +31,6 @@ def test_register_checks_idempotent() -> None:
 
     register_checks()
     register_checks()
-    out = StringIO()
-    call_command("check", stdout=out, stderr=out)
+    messages = run_checks()
+    errors = [m for m in messages if getattr(m, "id", "").startswith("hedron.E")]
+    assert errors == []

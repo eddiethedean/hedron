@@ -1,12 +1,13 @@
 # Live interaction
 
-Phase **0.10** adds official live observation and navigation helpers on the FastAPI
-flagship: HTMX SSE, focused streaming, page/session WebSocket channels, Chat/Dialog
-components, and opt-in navigation preload. **Polling and ordinary HTTP remain
-Supported fallbacks** on every host—and they are the right place to start.
+The FastAPI flagship ships official live observation and navigation helpers: HTMX SSE,
+focused streaming, page/session WebSocket channels, Chat/Dialog components, and opt-in
+navigation preload. **Polling and ordinary HTTP remain Supported fallbacks** on every
+host—and they are the right place to start.
 
-Flask and Django adapters do **not** ship these FastAPI helpers; use bounded polling
-there until later native depth (0.11).
+Flask and Django adapters expose capability-labeled live helpers; **bounded polling is
+the Supported fallback** behind buffering proxies. Prefer polling until you have your own
+ops proof for SSE/WebSocket backpressure.
 
 !!! note "First-party live demo app"
 
@@ -22,7 +23,10 @@ See also: [SSE API](../api/SSE.md) · [Streaming](../api/STREAMING.md) ·
 
 ## End-to-end: poll a clock (start here)
 
-Polling works on FastAPI, Flask, and Django. Paste this into `app.py`:
+Polling works on FastAPI, Flask, and Django. Paste this into a FastAPI `app.py` first;
+for Flask/Django use the same `Poll` component with `hedron_route` /
+`hedron_view` + `interaction_response` (see [Flask](../getting-started/flask.md) /
+[Django](../getting-started/django.md)).
 
 ```python title="app.py"
 from datetime import UTC, datetime

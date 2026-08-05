@@ -31,7 +31,7 @@ SSE/poll authz. Narrative: [What's new in 0.10.1](whats-new-0.10.1.md).
 Official SSE helpers, focused streaming, WebSocket page/session channels, navigation
 preload, Chat/Dialog surfaces, and bundled HTMX SSE/head-support extensions.
 
-Narrative: [What's new in 0.10](whats-new-0.10.md) · [Upgrade (0.8 → 0.10)](upgrade.md).
+Narrative: [What's new in 0.10](whats-new-0.10.md) · [Upgrade (0.8 → 0.11)](upgrade.md).
 
 ## Package changelogs (GitHub)
 

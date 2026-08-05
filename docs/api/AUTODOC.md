@@ -1,10 +1,17 @@
-# Autodoc — `Hedron` and core symbols
+# Autodoc — public symbols
 
-Generated signatures via **mkdocstrings**. Prefer the hand-maintained contract pages for
-narrative, errors, and adopter guidance; use this page to verify parameter lists against
-the installed sources.
+Generated signatures via **mkdocstrings** for the primary public surface. Prefer the
+hand-maintained contract pages for narrative, errors, and adopter guidance; use this
+page to verify parameter lists against the installed sources.
 
-## `hedron.Hedron`
+Coverage goal: symbols listed in package `__all__` for `hedron`, `hedron_core` (via
+re-exports), and the Flask/Django adapter entry points. Optional extras (`hedron[data]`,
+`hedron[charts]`) are documented on their contract pages when installed.
+
+Narrative companions: [Coverage map](COVERAGE.md) · [Stability](STABILITY.md) ·
+[API overview](README.md).
+
+## Application and routing
 
 ::: hedron.app.Hedron
     options:
@@ -17,8 +24,6 @@ the installed sources.
       show_bases: true
       heading_level: 3
 
-## `hedron.HedronRouter`
-
 ::: hedron.routing.router.HedronRouter
     options:
       members:
@@ -26,6 +31,30 @@ the installed sources.
         - component
         - action
         - include_component
+      heading_level: 3
+
+::: hedron.app.mount_hedron_static
+    options:
+      heading_level: 3
+
+::: hedron.responses.HTML
+    options:
+      heading_level: 3
+
+::: hedron.responses.PageResponse
+    options:
+      heading_level: 3
+
+::: hedron.responses.FragmentResponse
+    options:
+      heading_level: 3
+
+::: hedron.responses.ComponentResponse
+    options:
+      heading_level: 3
+
+::: hedron.responses.hedron_response
+    options:
       heading_level: 3
 
 ## Interaction
@@ -42,13 +71,80 @@ the installed sources.
     options:
       heading_level: 3
 
-## Page and rendering
+::: hedron_core.interaction.OobUpdate
+    options:
+      heading_level: 3
+
+## Security
+
+::: hedron.security.policy.SecurityPolicy
+    options:
+      heading_level: 3
+
+::: hedron.security.policy.SecurityProfile
+    options:
+      heading_level: 3
+
+::: hedron.security.csrf.csrf_token_for_request
+    options:
+      heading_level: 3
+
+::: hedron_core.security.SafeUrl
+    options:
+      heading_level: 3
+
+::: hedron_core.security.TrustedHtml
+    options:
+      heading_level: 3
+
+::: hedron_core.security.Secret
+    options:
+      heading_level: 3
+
+## Page, component, and rendering
 
 ::: hedron_core.builtins.document.Page
     options:
       heading_level: 3
 
+::: hedron_core.component.Component
+    options:
+      members:
+        - render
+      heading_level: 3
+
+::: hedron_core.field.Field
+    options:
+      show_root_full_path: false
+      heading_level: 3
+
+::: hedron_core.rendering.render
+    options:
+      heading_level: 3
+
 ::: hedron_core.rendering.RenderMode
+    options:
+      heading_level: 3
+
+::: hedron_core.rendering.RenderResult
+    options:
+      heading_level: 3
+
+::: hedron_core.html.html
+    options:
+      heading_level: 3
+
+## State and cache
+
+::: hedron.state.SessionState
+    options:
+      heading_level: 3
+
+::: hedron.state.session_state
+    options:
+      heading_level: 3
+
+::: hedron_core.cache.invalidate_tags
     options:
       heading_level: 3
 
@@ -58,11 +154,61 @@ the installed sources.
     options:
       heading_level: 3
 
+::: hedron_core.builtins.content.Heading
+    options:
+      heading_level: 3
+
 ::: hedron_core.builtins.layout.Stack
     options:
       heading_level: 3
 
+::: hedron_core.builtins.surfaces.Card
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.Form
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.TextInput
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.SubmitButton
+    options:
+      heading_level: 3
+
 ::: hedron.builtins.RefreshButton
+    options:
+      heading_level: 3
+
+::: hedron.builtins.Poll
+    options:
+      heading_level: 3
+
+::: hedron.builtins.Lazy
+    options:
+      heading_level: 3
+
+::: hedron.builtins.AutoForm
+    options:
+      heading_level: 3
+
+## Color mode
+
+::: hedron_core.color_mode.ColorMode
+    options:
+      heading_level: 3
+
+::: hedron_core.color_mode.resolve_color_mode
+    options:
+      heading_level: 3
+
+::: hedron.color_mode.apply_color_mode_cookie
+    options:
+      heading_level: 3
+
+::: hedron.color_mode.read_color_mode_preference
     options:
       heading_level: 3
 
@@ -76,7 +222,9 @@ the installed sources.
     options:
       heading_level: 3
 
-## Jobs
+::: hedron.sse.SseResponse
+    options:
+      heading_level: 3
 
 ::: hedron.jobs.enqueue_durable
     options:
@@ -183,28 +331,7 @@ Signatures for `hedron-flask` and `hedron-django` public exports. Narrative matr
     options:
       heading_level: 3
 
-## CSRF helper
-
-::: hedron.security.csrf.csrf_token_for_request
-    options:
-      heading_level: 3
-
-## `hedron_core.Field`
-
-::: hedron_core.field.Field
-    options:
-      show_root_full_path: false
-      heading_level: 3
-
-## `hedron_core.component.Component`
-
-::: hedron_core.component.Component
-    options:
-      members:
-        - render
-      heading_level: 3
-
-## `hedron_core.diagnostics.Diagnostic`
+## Diagnostics
 
 ::: hedron_core.diagnostics.Diagnostic
     options:
@@ -215,3 +342,4 @@ Signatures for `hedron-flask` and `hedron-django` public exports. Narrative matr
 - [Hedron contract](HEDRON.md) · [Router](ROUTER.md) · [Interaction](INTERACTION.md)
 - [Component](COMPONENT.md) · [Field](FIELD.md) · [SSE](SSE.md) · [Diagnostics](DIAGNOSTICS.md)
 - [CLI](CLI.md) · [Page](PAGE.md) · [Adapters](ADAPTERS.md) · [Public API coverage map](COVERAGE.md)
+- Component catalog (props/examples): [Components](../components/index.md)

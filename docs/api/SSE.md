@@ -5,7 +5,7 @@ status: shipped
 # SSE responses
 
 
-!!! note "Stability"
+!!! note "Stability (0.11 train)"
 
     Classifications live in [STABILITY.md](STABILITY.md). Official HTMX SSE observation is
     **Supported** on the FastAPI flagship in 0.10; polling remains the required fallback.

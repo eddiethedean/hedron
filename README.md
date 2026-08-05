@@ -7,40 +7,35 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/v/release/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/releases/latest)
 
-Typed, server-rendered Python UI for FastAPI + HTMX — without a Node.js frontend stack.
-Build dashboards, admin tools, forms, and CRUD apps from typed components. Packages are
-**Beta** — pin versions and see [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
-
-If `hedron` is not on your PATH after install, see
-[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/)
-([FAQ: command not found](https://hedron.readthedocs.io/en/latest/guides/faq/#hedron-command-not-found)).
-
-## Quick start
-
-Scaffold with `hedron new`, then run. Do not also hand-write a second `app.py` over the
-scaffold.
+Hedron lets you build dashboards, admin tools, and CRUD apps as typed Python components
+on FastAPI + HTMX — without a Node.js frontend stack.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
 python -m pip install "hedron>=0.11.0" "uvicorn[standard]"
-python -m hedron new my-hedron-app   # or: hedron new …
+python -m hedron new my-hedron-app
 cd my-hedron-app
 python -m pip install -e .
 uvicorn app:app --reload
 ```
 
-Prefer [uv](https://docs.astral.sh/uv/)? Use `uv tool install "hedron>=0.11.0"`, then
-`hedron new`, `uv sync`, and `uv run uvicorn app:app --reload`. Full steps:
-[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
-
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 
-Prefer not to install locally? [Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/).
+Packages are **Beta**; pin versions for production. Details:
+[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
+If `hedron` is not on your PATH, use `python -m hedron`
+([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).
+
+Prefer [uv](https://docs.astral.sh/uv/)? Use `uvx --from "hedron>=0.11.0" hedron new …`,
+then `uv sync` and `uv run uvicorn app:app --reload`. Full steps:
+[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
+
+Prefer not to install locally?
+[Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/).
 
 **Next:** [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
-Evaluating? [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
 ## Packages
 
@@ -61,14 +56,14 @@ Full matrix and install extras: [installation](https://hedron.readthedocs.io/en/
 FastAPI-native typed components, HTMX fragments, and secure HTML defaults. Audience:
 CRUD, internal tools, dashboards, forms, admin, and data apps.
 
-Flask/Django: Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet DataSource
-are Supported in 0.11. Live helpers are capability-labeled; prefer polling behind buffering proxies.
+Flask/Django adapters ship Blueprint/`init_app`, AppConfig, forms bridge, and bounded
+QuerySet DataSource in 0.11. Prefer polling for live updates behind buffering proxies.
 
 Current train: [`v0.11.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.10/).
+[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.11/).
 
 Existing apps on 0.8/0.9/0.10: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 

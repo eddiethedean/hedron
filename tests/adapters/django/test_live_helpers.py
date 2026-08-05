@@ -3,20 +3,12 @@
 from __future__ import annotations
 
 from hedron_core.live import SseEvent
-from hedron_django.live import (
-    POLLING_FALLBACK_SUPPORTED,
-    poll_status_response,
-    sse_response,
-    stream_text,
-)
-
-
-def test_polling_fallback_flag() -> None:
-    assert POLLING_FALLBACK_SUPPORTED is True
+from hedron_django.live import poll_status_response, sse_response, stream_text
 
 
 def test_sse_and_poll() -> None:
     response = sse_response([SseEvent(data="ping", id="1")])
+    # Polling remains the Supported live fallback for Django hosts.
     assert response["X-Hedron-Fallback"] == "poll"
     assert response["Content-Type"].startswith("text/event-stream")
     chunks = b"".join(response.streaming_content)

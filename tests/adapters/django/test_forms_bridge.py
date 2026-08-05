@@ -40,7 +40,20 @@ def test_validation_interaction() -> None:
     assert not form.is_valid()
     result = validation_interaction(form)
     html = render(result.content).html
-    assert "name" in html.lower() or "error" in html.lower() or "required" in html.lower()
+    assert 'name="name"' in html
+    assert "required" in html.lower() or "error" in html.lower()
+    assert result.explanation == "django form validation"
+
+
+def test_form_to_nodes_includes_csrf_when_requested() -> None:
+    request = RequestFactory().get("/")
+    form = SampleForm()
+    nodes = form_to_nodes(form, request=request, include_csrf=True)
+    assert any(
+        getattr(node, "source", None) == "django.middleware.csrf"
+        or (hasattr(node, "value") and "csrfmiddlewaretoken" in str(getattr(node, "value", "")))
+        for node in nodes
+    )
 
 
 def test_csrf_hidden_with_request() -> None:

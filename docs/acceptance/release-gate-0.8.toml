@@ -140,7 +140,7 @@ owner = "hedron"
 [[evidence]]
 id = "ADP-FLK-08-003"
 state = "Verified"
-command = "uv run pytest tests/adapters/flask/test_packaging.py -q"
+command = "uv run pytest tests/ops/test_packaging_isolation.py -q"
 ci_job = "test"
 owner = "hedron"
 
@@ -161,7 +161,7 @@ owner = "hedron"
 [[evidence]]
 id = "ADP-DJG-08-003"
 state = "Verified"
-command = "uv run pytest tests/adapters/django/test_packaging.py -q"
+command = "uv run pytest tests/ops/test_packaging_isolation.py -q"
 ci_job = "test"
 owner = "hedron"
 

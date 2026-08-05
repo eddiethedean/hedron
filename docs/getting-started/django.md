@@ -4,7 +4,7 @@ Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
 The adapter does not install FastAPI. Hedron does **not** ship `hedron new --django` yet.
 
 Flask/Django page + fragment routing and HTMX are Supported on **0.11.0**. Django
-forms bridge and bounded QuerySet DataSource are Supported (D-046). Use polling for
+forms bridge and bounded QuerySet DataSource are Supported. Use polling for
 job status on Django (SSE helpers stay FastAPI-flagship).
 
 ## Fastest path: clone the reference
@@ -33,7 +33,18 @@ django-admin startproject mysite .
 python manage.py startapp demo
 ```
 
-Wire a Hedron view (example `demo/views.py` + `mysite/urls.py`):
+Wire a Hedron view (example `demo/views.py` + `mysite/urls.py`). For system checks on
+forms/QuerySet helpers, add `hedron_django.apps.HedronDjangoConfig` to `INSTALLED_APPS`
+(required for full 0.11 Django depth; optional for a hello page):
+
+```python
+# mysite/settings.py (excerpt)
+INSTALLED_APPS = [
+    # … django.contrib.* …
+    "demo",
+    "hedron_django.apps.HedronDjangoConfig",  # recommended for 0.11 forms / DataSource
+]
+```
 
 ```python
 # demo/views.py

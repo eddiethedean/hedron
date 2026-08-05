@@ -100,9 +100,6 @@ def test_render_mode_for_request() -> None:
 
 
 def test_queryset_datasource_supported() -> None:
-    from hedron_django.app import QUERYSET_DATASOURCE_DEFERRED
-
-    assert QUERYSET_DATASOURCE_DEFERRED is False
     caps = HedronDjango().capabilities
     qs = next(c for c in caps.capabilities if c.name == "queryset_datasource")
     assert qs.supported is True

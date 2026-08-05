@@ -17,7 +17,7 @@ uv sync
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | See example README |
 | [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | HDJ | Prints HTML to stdout (not a web server) |
 
-Evaluator shortcuts: [CRUD tutorial](crud-tutorial.md) · [Try in one command](try-it.md).
+Evaluator shortcuts: [CRUD tutorial](crud-tutorial.md) · [Try with Codespaces / Dev Container](try-it.md) · [Single-file apps](single-file.md).
 
 Quickstarts without cloning: [Single-file apps](single-file.md) ·
 [FastAPI](../getting-started/quickstart.md) ·

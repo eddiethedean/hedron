@@ -11,6 +11,7 @@ from flask import Flask, request
 from hedron import Heading, Hedron, Page, Text
 from hedron.testing.adapters import (
     assert_fragment_body,
+    assert_htmx_trigger,
     assert_page_document,
     django_fixture,
     fastapi_fixture,
@@ -35,6 +36,7 @@ def _ensure_django() -> None:
             "django.middleware.csrf.CsrfViewMiddleware",
             "django.contrib.auth.middleware.AuthenticationMiddleware",
         ],
+        CSRF_HEADER_NAME="HTTP_X_CSRF_TOKEN",
         INSTALLED_APPS=[
             "django.contrib.contenttypes",
             "django.contrib.auth",
@@ -48,7 +50,12 @@ def _ensure_django() -> None:
 
 
 def _fastapi_app() -> FastAPI:
-    app = Hedron(title="harness")
+    app = Hedron(
+        title="harness",
+        security="standard",
+        session_secret="harness-secret",
+        explorer="off",
+    )
 
     @app.page("/")
     def home() -> Page:
@@ -56,7 +63,19 @@ def _fastapi_app() -> FastAPI:
 
     @app.component("/fragment")
     def fragment() -> InteractionResult:
-        return InteractionResult(content=Text("FastAPI fragment"), explanation="harness")
+        return InteractionResult(
+            content=Text("FastAPI fragment"),
+            trigger="harness-refreshed",
+            explanation="harness",
+        )
+
+    @app.action("/act")
+    def act() -> InteractionResult:
+        return InteractionResult(
+            content=Text("FastAPI saved"),
+            trigger="harness-saved",
+            explanation="action",
+        )
 
     return app
 
@@ -71,7 +90,19 @@ def _flask_app() -> Flask:
 
     @ui.component("/fragment")
     def fragment():
-        return InteractionResult(content=Text("Flask fragment"), explanation="harness")
+        return InteractionResult(
+            content=Text("Flask fragment"),
+            trigger="harness-refreshed",
+            explanation="harness",
+        )
+
+    @ui.action("/act", methods=["POST"])
+    def act():
+        return InteractionResult(
+            content=Text("Flask saved"),
+            trigger="harness-saved",
+            explanation="action",
+        )
 
     @ui.page("/cookie-echo")
     def cookie_echo():
@@ -90,12 +121,30 @@ def test_portable_page_fastapi() -> None:
     response = fixture.get("/")
     assert_page_document(response)
     assert "FastAPI Home" in response.body
+    assert "hedron_csrf" in response.cookies
 
 
 def test_portable_fragment_fastapi() -> None:
     fixture = fastapi_fixture(_fastapi_app())
     response = fixture.get("/fragment", headers={"HX-Request": "true"})
     assert_fragment_body(response, contains="FastAPI fragment")
+    assert_htmx_trigger(response, "harness-refreshed")
+
+
+def test_portable_post_csrf_fastapi() -> None:
+    fixture = fastapi_fixture(_fastapi_app())
+    seeded = fixture.get("/")
+    token = seeded.cookies["hedron_csrf"]
+    denied = fixture.post("/act", data={"x": "1"}, cookies={"hedron_csrf": token})
+    assert denied.status_code == 403
+    ok = fixture.post(
+        "/act",
+        data={"csrf_token": token},
+        cookies={"hedron_csrf": token},
+    )
+    assert ok.status_code == 200
+    assert "FastAPI saved" in ok.body
+    assert_htmx_trigger(ok, "harness-saved")
 
 
 def test_portable_page_flask() -> None:
@@ -103,12 +152,30 @@ def test_portable_page_flask() -> None:
     response = fixture.get("/")
     assert_page_document(response)
     assert "Flask Home" in response.body
+    assert "hedron_csrf" in response.cookies
 
 
 def test_portable_fragment_flask() -> None:
     fixture = flask_fixture(_flask_app())
     response = fixture.get("/fragment", headers={"HX-Request": "true"})
     assert_fragment_body(response, contains="Flask fragment")
+    assert_htmx_trigger(response, "harness-refreshed")
+
+
+def test_portable_post_csrf_flask() -> None:
+    fixture = flask_fixture(_flask_app())
+    seeded = fixture.get("/")
+    token = seeded.cookies["hedron_csrf"]
+    denied = fixture.post("/act", cookies={"hedron_csrf": token})
+    assert denied.status_code == 403
+    ok = fixture.post(
+        "/act",
+        data={"csrf_token": token},
+        cookies={"hedron_csrf": token},
+    )
+    assert ok.status_code == 200
+    assert "Flask saved" in ok.body
+    assert_htmx_trigger(ok, "harness-saved")
 
 
 def test_flask_fixture_cookies_visible_on_request() -> None:
@@ -120,10 +187,11 @@ def test_flask_fixture_cookies_visible_on_request() -> None:
 
 def test_portable_page_django() -> None:
     _ensure_django()
-    fixture = django_fixture(Client())
+    fixture = django_fixture(Client(enforce_csrf_checks=True))
     response = fixture.get("/page/")
     assert_page_document(response)
     assert "Hello" in response.body
+    assert "csrftoken" in response.cookies
 
 
 def test_portable_fragment_django() -> None:
@@ -131,3 +199,35 @@ def test_portable_fragment_django() -> None:
     fixture = django_fixture(Client())
     response = fixture.get("/fragment/", headers={"HX-Request": "true"})
     assert_fragment_body(response, contains="Fragment body")
+
+
+def test_portable_htmx_trigger_django() -> None:
+    _ensure_django()
+    fixture = django_fixture(Client())
+    response = fixture.get("/interaction/", headers={"HX-Request": "true"})
+    assert_fragment_body(response, contains="Updated")
+    assert_htmx_trigger(response, "refreshed")
+
+
+def test_portable_post_csrf_django() -> None:
+    _ensure_django()
+    fixture = django_fixture(Client(enforce_csrf_checks=True))
+    seeded = fixture.get("/action/")
+    token = seeded.cookies["csrftoken"]
+    denied = fixture.post("/action/", data={"name": "Ada"}, cookies={"csrftoken": token})
+    assert denied.status_code == 403
+    ok_form = fixture.post(
+        "/action/",
+        data={"csrfmiddlewaretoken": token, "name": "Ada"},
+        cookies={"csrftoken": token},
+    )
+    assert ok_form.status_code == 200
+    assert "saved" in ok_form.body
+    ok_header = fixture.post(
+        "/action/",
+        data={"name": "Ada"},
+        headers={"X-CSRF-Token": token},
+        cookies={"csrftoken": token},
+    )
+    assert ok_header.status_code == 200
+    assert "saved" in ok_header.body

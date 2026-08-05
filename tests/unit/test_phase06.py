@@ -157,17 +157,31 @@ def test_aggrid_asset_registration() -> None:
     assert "hedron-data:aggrid.host.js" in assets
 
 
-def test_sqlalchemy_extra_guidance() -> None:
+def test_require_sqlalchemy_ok_when_installed() -> None:
+    pytest.importorskip("sqlalchemy")
+    from hedron_data.sqlalchemy_source import require_sqlalchemy
+
+    module = require_sqlalchemy()
+    assert module.__name__ == "sqlalchemy"
+
+
+def test_require_sqlalchemy_raises_when_missing(monkeypatch: pytest.MonkeyPatch) -> None:
+    import builtins
+
     from hedron_core.diagnostics import HedronError
     from hedron_data.sqlalchemy_source import require_sqlalchemy
 
-    try:
+    real_import = builtins.__import__
+
+    def _no_sqlalchemy(name: str, *args: object, **kwargs: object):  # noqa: ANN001
+        if name == "sqlalchemy" or name.startswith("sqlalchemy."):
+            raise ImportError("forced")
+        return real_import(name, *args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(builtins, "__import__", _no_sqlalchemy)
+    with pytest.raises(HedronError) as exc:
         require_sqlalchemy()
-    except HedronError as exc:
-        assert "sqlalchemy" in str(exc).lower() or "HED-DATA-0010" in str(exc)
-    except Exception:
-        # Installed in dev group — acceptable.
-        pass
+    assert exc.value.diagnostic.code == "HED-DATA-0010"
 
 
 def test_cache_hints_and_explorer_trace() -> None:

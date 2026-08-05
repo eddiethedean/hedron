@@ -1,8 +1,9 @@
 # Try Hedron with Codespaces / Dev Container
 
-There is no hosted “try it without cloning” sandbox yet. The Supported evaluator paths
-are **GitHub Codespaces**, a local **Dev Container**, or
-[`hedron new`](../getting-started/installation.md) on your machine.
+There is no hosted “try it without cloning” sandbox and **no single-command try-it**.
+The Supported evaluator paths are **GitHub Codespaces**, a local **Dev Container**,
+[`hedron new`](../getting-started/installation.md) on your machine, or a
+[single-file app](single-file.md) via `pip install`.
 
 ## Dev Container / Codespaces
 

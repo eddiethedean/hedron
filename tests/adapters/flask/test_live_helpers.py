@@ -5,11 +5,7 @@ from __future__ import annotations
 from flask import Flask
 
 from hedron_core.live import SseEvent
-from hedron_flask.live import POLLING_FALLBACK_SUPPORTED, sse_response, stream_text
-
-
-def test_polling_fallback_flag() -> None:
-    assert POLLING_FALLBACK_SUPPORTED is True
+from hedron_flask.live import sse_response, stream_text
 
 
 def test_sse_response_headers() -> None:
@@ -17,6 +13,7 @@ def test_sse_response_headers() -> None:
     with app.app_context():
         response = sse_response([SseEvent(data="hello", event="message", id="1")])
         assert response.mimetype == "text/event-stream"
+        # Polling remains the Supported live fallback for Flask hosts.
         assert response.headers.get("X-Hedron-Fallback") == "poll"
         assert b"data: hello" in response.get_data()
 

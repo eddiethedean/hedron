@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+import pytest
+
 from hedron_data import ColumnSchema, DataQuery, DjangoQuerySetDataSource, QueryBudgetExceeded
 
 
@@ -131,3 +133,95 @@ def test_deny_by_default_client_sort() -> None:
     except ValueError:
         raised = True
     assert raised
+
+
+@pytest.fixture
+def person_model():
+    """Real Django model + table for QuerySet DataSource evidence."""
+    from django.apps import apps
+    from django.db import connection, models
+
+    Person = None
+    for model in apps.get_models():
+        if getattr(model._meta, "db_table", None) == "hedron_test_person_qs":
+            Person = model
+            break
+    if Person is None:
+
+        class Person(models.Model):
+            name = models.CharField(max_length=64)
+            tenant_id = models.CharField(max_length=32)
+
+            class Meta:
+                app_label = "hedron_django"
+                db_table = "hedron_test_person_qs"
+
+        with connection.schema_editor() as schema_editor:
+            schema_editor.create_model(Person)
+
+    Person.objects.all().delete()
+    yield Person
+    Person.objects.all().delete()
+
+
+def test_orm_tenant_scope_cannot_widen(person_model) -> None:
+    Person = person_model
+    Person.objects.bulk_create(
+        [
+            Person(name="Ada", tenant_id="t1"),
+            Person(name="Grace", tenant_id="t1"),
+            Person(name="Alan", tenant_id="t2"),
+        ]
+    )
+    scoped = Person.objects.filter(tenant_id="t1")
+    source = DjangoQuerySetDataSource(
+        scoped,
+        key_field="pk",
+        schema=(
+            ColumnSchema(name="name", label="Name"),
+            ColumnSchema(name="tenant_id", label="Tenant"),
+        ),
+        allowlisted_filter_fields=frozenset({"name", "tenant_id"}),
+        allowlisted_sort_fields=frozenset({"name", "pk"}),
+        search_fields=("name",),
+    )
+    page = source.fetch(DataQuery(limit=10))
+    assert page.total == 2
+    assert all(r["tenant_id"] == "t1" for r in page.rows)
+
+    # Client filter on tenant_id can only narrow within the pre-scoped base.
+    narrowed = source.fetch(DataQuery(limit=10, filters={"tenant_id": "t2"}))
+    assert narrowed.total == 0
+    assert narrowed.rows == []
+
+    searched = source.fetch(DataQuery(limit=10, search="Ada"))
+    assert searched.total == 1
+    assert searched.rows[0]["name"] == "Ada"
+
+
+def test_orm_deny_unallowlisted_filter(person_model) -> None:
+    Person = person_model
+    Person.objects.create(name="Ada", tenant_id="t1")
+    source = DjangoQuerySetDataSource(
+        Person.objects.filter(tenant_id="t1"),
+        allowlisted_filter_fields=frozenset({"name"}),
+    )
+    with pytest.raises(ValueError):
+        source.fetch(DataQuery(limit=10, filters={"tenant_id": "t2"}))
+
+
+def test_orm_max_page_size_and_projection(person_model) -> None:
+    Person = person_model
+    Person.objects.bulk_create([Person(name=f"n{i}", tenant_id="t1") for i in range(5)])
+    source = DjangoQuerySetDataSource(
+        Person.objects.filter(tenant_id="t1"),
+        schema=(
+            ColumnSchema(name="name", label="Name"),
+            ColumnSchema(name="tenant_id", label="Tenant"),
+        ),
+        max_page_size=2,
+        allowlisted_sort_fields=frozenset({"name", "pk"}),
+    )
+    page = source.fetch(DataQuery(limit=100, projection=("name",)))
+    assert len(page.rows) == 2
+    assert all(set(r.keys()) == {"name"} for r in page.rows)

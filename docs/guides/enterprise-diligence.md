@@ -1,8 +1,9 @@
 # Enterprise diligence
 
-Short diligence sheet for security, procurement, and architecture reviewers. Product
-fit: [Evaluate Hedron](evaluate.md) · readiness: [What’s ready](whats-ready.md) ·
-[Production readiness](production-readiness.md) · [Design principles](design-principles.md).
+Short diligence sheet for security, procurement, and architecture reviewers.
+**Capability maturity:** [What’s ready](whats-ready.md) (sole SSOT).
+**Fit:** [Evaluate Hedron](evaluate.md) · **Ops:** [Production readiness](production-readiness.md) ·
+[Design principles](design-principles.md).
 
 ## Project facts
 
@@ -20,8 +21,11 @@ fit: [Evaluate Hedron](evaluate.md) · readiness: [What’s ready](whats-ready.m
 
 - Hedron provides secure HTML defaults (escaping, CSRF profiles, SafeUrl/TrustedHtml).
 - **You own** authentication, authorization, persistence, and **multi-tenant isolation**.
+- There is **no first-party OIDC/SSO/IdP product** — host frameworks own identity
+  ([Authentication](authentication.md)).
 - Tenant-scoped caches, jobs, and fragment allowlists are application responsibility —
-  see [Threat model](threat-model.md) and [Cache](../api/CACHE.md).
+  see [Threat model](threat-model.md), [Cache](../api/CACHE.md), and the
+  [multi-tenant cookbook](multi-tenant.md).
 - Third-party plugins are out of security scope until you review them
   ([Plugin authoring](plugin-authoring.md)).
 - Host-framework CVEs (FastAPI, Django, Flask) are reported upstream.
@@ -36,39 +40,21 @@ fit: [Evaluate Hedron](evaluate.md) · readiness: [What’s ready](whats-ready.m
 ## Dependency and pin policy
 
 - Coordinate on published trains; pin `hedron` and extras in your lockfile.
-- Runtime ranges: [COMPATIBILITY.md](../COMPATIBILITY.md) (FastAPI/Pydantic pins are intentionally tight).
+- Runtime ranges and conflict guidance: [COMPATIBILITY.md](../COMPATIBILITY.md)
+  (FastAPI/Pydantic pins are intentionally tight).
 - **Patch expectation:** community best-effort; critical security fixes are prioritized on
   the current train. There is **no contractual patch SLA**.
 
-## Supply-chain evidence (consume)
+## Supply-chain evidence
 
-Maintainer scripts produce SBOM / license inventory / evidence bundles at cut time:
-
-| Artifact | How to obtain |
-|---|---|
-| SBOM | [`scripts/generate_sbom.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/generate_sbom.py) / release evidence |
-| License inventory | [`scripts/license_inventory.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/license_inventory.py) |
-| Evidence bundle | [`scripts/build_evidence_bundle.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/build_evidence_bundle.py) |
-| Script index | [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md) |
-
-Consume from published GitHub Releases when attached; otherwise regenerate from a tagged
-checkout. Formats are maintainer-oriented (not a marketed SLSA attestation product).
+Consume published artifacts from GitHub Releases when attached. See the public
+[Evidence pack](evidence-pack.md) for SBOM / license / bundle links and verification steps.
 
 ## Evidence honesty
 
 Live SSE/WebSocket **APIs** ship on FastAPI; full multi-engine live browser matrix and
-load/proxy backpressure rows remain **Deferred** in [What's ready](whats-ready.md). Treat
-“Supported” in adopter docs as capability claims with the Deferred caveats on
-[What’s ready](whats-ready.md) — not as a warranty.
-
-## Flask / Django Supported surface (summary)
-
-| Surface | 0.11 | Notes |
-|---|---|---|
-| Portable components + HTMX fragment helpers | Supported matrix | — |
-| Official HTMX SSE helpers | FastAPI only | Adapters: polling |
-| Django QuerySet as first-party DataSource | Supported (D-046) | App-owned authorized base QS |
-| Django forms bridge | Supported (D-046) | Widgets / CSRF / errors |
+load/proxy backpressure rows remain incomplete — see [What's ready](whats-ready.md).
+Treat “Supported” as capability claims with those caveats, not as a warranty.
 
 ## Accessibility posture
 
@@ -78,5 +64,5 @@ application — you own audits and remediation.
 
 ## Bus factor
 
-Hedron is a small open-source project. Budget for community response times and pin
-versions accordingly. There is no paid support contract or succession SLA.
+Expect a small maintainer set. Diligence should assume community-paced response times and
+pin versions accordingly.

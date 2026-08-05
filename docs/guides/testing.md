@@ -41,9 +41,10 @@ fragment contract rather than an ordinary full-page response.
 
 ## Portable adapter harness (0.11)
 
-For PAGE/FRAGMENT scenarios shared across FastAPI, Flask, and Django, use
+For PAGE/FRAGMENT/POST+CSRF scenarios shared across FastAPI, Flask, and Django, use
 `hedron.testing.adapters` (`fastapi_fixture` / `flask_fixture` / `django_fixture` plus
-`assert_page_document` / `assert_fragment_body`). See [TESTING.md](../api/TESTING.md).
+`assert_page_document` / `assert_fragment_body` / `assert_htmx_trigger`). See
+[TESTING.md](../api/TESTING.md).
 
 ## Override FastAPI dependencies
 

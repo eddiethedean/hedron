@@ -1,20 +1,21 @@
-# Guides
+# Build guides
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-Complete [Get started](../getting-started/index.md) first (Install → First app → HTMX →
+Complete [Learn](../getting-started/index.md) first (Install → First app → HTMX →
 Minimal form). This section continues with forms depth, live transports, data, security,
 and ops.
 
 **Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md) · [Error codes](error-codes.md)
+(also under **Learn → Help**).
 
-Evaluating adoption? Use the top-level **Evaluate** nav
+Evaluating adoption? Use the top-level **Adopt** nav
 ([What’s ready](whats-ready.md) · [Design principles](design-principles.md)).
 
 <div class="hedron-grid">
   <a class="hedron-card" href="../getting-started/">
     <span class="hedron-card__icon" aria-hidden="true">→</span>
-    <strong>Golden path (Get started)</strong>
+    <strong>Golden path (Learn)</strong>
     <p>Install, first app, HTMX region refresh, and minimal form POST.</p>
   </a>
   <a class="hedron-card" href="faq/">
@@ -45,7 +46,7 @@ Evaluating adoption? Use the top-level **Evaluate** nav
   <a class="hedron-card" href="live-interaction/">
     <span class="hedron-card__icon" aria-hidden="true">◉</span>
     <strong>Live interaction</strong>
-    <p>SSE, streaming, WebSocket channels, Chat/Dialog, and preload (0.10).</p>
+    <p>SSE, streaming, WebSocket channels, Chat/Dialog, and preload (FastAPI; prefer polling).</p>
   </a>
   <a class="hedron-card" href="data-apps/">
     <span class="hedron-card__icon" aria-hidden="true">▦</span>

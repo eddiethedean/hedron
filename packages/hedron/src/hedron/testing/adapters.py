@@ -7,7 +7,7 @@ clients and assertions remain available beside these helpers.
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
 __all__ = [
@@ -28,6 +28,7 @@ class AdapterResponse:
     status_code: int
     body: str
     headers: Mapping[str, str]
+    cookies: Mapping[str, str] = field(default_factory=dict[str, str])
 
 
 @runtime_checkable
@@ -73,7 +74,31 @@ def assert_fragment_body(response: AdapterResponse, *, contains: str) -> None:
 
 def assert_htmx_trigger(response: AdapterResponse, event: str) -> None:
     trigger = response.headers.get("HX-Trigger") or response.headers.get("hx-trigger")
-    assert trigger is not None and event in trigger
+    assert trigger is not None and event in trigger, (
+        f"expected HX-Trigger containing {event!r}, got {trigger!r}"
+    )
+
+
+def _cookies_from_set_cookie(headers: Any) -> dict[str, str]:
+    values: list[str] = []
+    getlist = getattr(headers, "getlist", None)
+    if callable(getlist):
+        for name in ("Set-Cookie", "set-cookie"):
+            raw_list = getlist(name)
+            if isinstance(raw_list, (list, tuple)) and raw_list:
+                values.extend(str(v) for v in raw_list)
+                break
+    if not values:
+        raw = headers.get("Set-Cookie") or headers.get("set-cookie")
+        if raw:
+            values = [str(raw)]
+    out: dict[str, str] = {}
+    for item in values:
+        part = item.split(";", 1)[0]
+        if "=" in part:
+            key, value = part.split("=", 1)
+            out[key.strip()] = value.strip()
+    return out
 
 
 @dataclass
@@ -115,7 +140,9 @@ def fastapi_fixture(app: Any) -> AdapterAppFixture:
 
     def get(path: str, headers: Mapping[str, str], cookies: Mapping[str, str]) -> AdapterResponse:
         response = client.get(path, headers=_headers(headers, cookies))
-        return AdapterResponse(response.status_code, response.text, dict(response.headers))
+        jar = {str(k): str(v) for k, v in response.cookies.items()}
+        jar.update(_cookies_from_set_cookie(response.headers))
+        return AdapterResponse(response.status_code, response.text, dict(response.headers), jar)
 
     def post(
         path: str,
@@ -124,7 +151,9 @@ def fastapi_fixture(app: Any) -> AdapterAppFixture:
         cookies: Mapping[str, str],
     ) -> AdapterResponse:
         response = client.post(path, data=dict(data), headers=_headers(headers, cookies))
-        return AdapterResponse(response.status_code, response.text, dict(response.headers))
+        jar = {str(k): str(v) for k, v in response.cookies.items()}
+        jar.update(_cookies_from_set_cookie(response.headers))
+        return AdapterResponse(response.status_code, response.text, dict(response.headers), jar)
 
     return _ClientFixture("fastapi", get, post)
 
@@ -137,7 +166,12 @@ def flask_fixture(app: Any) -> AdapterAppFixture:
             client.set_cookie(key, value)
         response = client.get(path, headers=dict(headers))
         body = response.get_data(as_text=True)
-        return AdapterResponse(response.status_code, body, dict(response.headers))
+        return AdapterResponse(
+            response.status_code,
+            body,
+            dict(response.headers),
+            _cookies_from_set_cookie(response.headers),
+        )
 
     def post(
         path: str,
@@ -149,7 +183,12 @@ def flask_fixture(app: Any) -> AdapterAppFixture:
             client.set_cookie(key, value)
         response = client.post(path, data=dict(data), headers=dict(headers))
         body = response.get_data(as_text=True)
-        return AdapterResponse(response.status_code, body, dict(response.headers))
+        return AdapterResponse(
+            response.status_code,
+            body,
+            dict(response.headers),
+            _cookies_from_set_cookie(response.headers),
+        )
 
     return _ClientFixture("flask", get, post)
 
@@ -157,12 +196,28 @@ def flask_fixture(app: Any) -> AdapterAppFixture:
 def django_fixture(client: Any) -> AdapterAppFixture:
     """Wrap a Django test client."""
 
+    def _django_cookies() -> dict[str, str]:
+        jar = getattr(client, "cookies", None)
+        if jar is None:
+            return {}
+        out: dict[str, str] = {}
+        for key in jar:
+            morsel = jar.get(key)
+            value = getattr(morsel, "value", morsel)
+            out[str(key)] = str(value)
+        return out
+
     def get(path: str, headers: Mapping[str, str], cookies: Mapping[str, str]) -> AdapterResponse:
         for key, value in cookies.items():
             client.cookies[key] = value
         response = client.get(path, headers=dict(headers))
         body = response.content.decode("utf-8")
-        return AdapterResponse(response.status_code, body, dict(response.headers))
+        return AdapterResponse(
+            response.status_code,
+            body,
+            dict(response.headers),
+            _django_cookies(),
+        )
 
     def post(
         path: str,
@@ -172,8 +227,18 @@ def django_fixture(client: Any) -> AdapterAppFixture:
     ) -> AdapterResponse:
         for key, value in cookies.items():
             client.cookies[key] = value
-        response = client.post(path, data=dict(data), headers=dict(headers))
+        hdrs = dict(headers)
+        extra: dict[str, str] = {}
+        token = hdrs.pop("X-CSRF-Token", None) or hdrs.pop("X-CSRFToken", None)
+        if token is not None:
+            extra["HTTP_X_CSRF_TOKEN"] = token
+        response = client.post(path, data=dict(data), headers=hdrs, **extra)
         body = response.content.decode("utf-8")
-        return AdapterResponse(response.status_code, body, dict(response.headers))
+        return AdapterResponse(
+            response.status_code,
+            body,
+            dict(response.headers),
+            _django_cookies(),
+        )
 
     return _ClientFixture("django", get, post)

@@ -5,7 +5,7 @@ status: shipped
 # Testing API
 
 
-!!! note "Stability"
+!!! note "Stability (0.11 train)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
 
@@ -38,7 +38,7 @@ manager; `axe_scan`) and require `hedron[browser]`.
 
 ## Portable adapter harness (0.11)
 
-Import from `hedron.testing.adapters` for PAGE/FRAGMENT scenarios shared across hosts:
+Import from `hedron.testing.adapters` for PAGE/FRAGMENT/POST scenarios shared across hosts:
 
 | Helper | Role |
 |---|---|
@@ -47,8 +47,10 @@ Import from `hedron.testing.adapters` for PAGE/FRAGMENT scenarios shared across 
 | `assert_fragment_body` | Fragment body without document chrome |
 | `assert_htmx_trigger` | `HX-Trigger` presence |
 
-Cookies must be set **before** the request (Flask fixture fixed in 0.11). Host-native
-clients remain available for adapter-specific assertions.
+Shared scenarios cover CSRF-seeded GET cookies, POST deny/allow with host CSRF, and
+`HX-Trigger` on interaction responses. Cookies must be set **before** the request (Flask
+fixture fixed in 0.11); responses expose a portable `cookies` map. Host-native clients
+remain available for adapter-specific assertions.
 
 ## Errors
 

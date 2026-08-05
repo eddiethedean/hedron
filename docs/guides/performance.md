@@ -1,16 +1,17 @@
 # Performance
 
-Application-oriented guidance for the **0.10** train. CI soft ceilings live in
+Application-oriented guidance for the **0.11** train. CI soft ceilings live in
 [PERFORMANCE_BUDGETS.md](https://github.com/eddiethedean/hedron/blob/main/docs/PERFORMANCE_BUDGETS.md)
-(maintainer evidence), not as product SLOs. Load/proxy backpressure proof for SSE/WS
-(`PERF-10-001`) remains **Deferred** — prefer polling when that proof is required.
+(maintainer evidence), not as product SLOs. Full load/proxy backpressure proof for SSE/WS
+remains incomplete — prefer polling when that proof is required before you rely on live
+transports in production.
 
 ## Prefer fragments over full documents
 
 HTMX fragment routes should return only the replaced region. Full `Page` responses on
 every click inflate HTML, CSS, and HTMX processing cost.
 
-## Bound live traffic (0.10)
+## Bound live traffic
 
 | Guidance | Why |
 |---|---|
@@ -20,7 +21,7 @@ every click inflate HTML, CSS, and HTMX processing cost.
 | Configure reverse-proxy buffering/timeouts for `text/event-stream` | Nginx/`proxy_buffering off`; long `proxy_read_timeout` |
 | Cap concurrent EventSource / WS per user in the app | Hedron does not enforce a global connection budget |
 
-### Capacity heuristics (until PERF-10-001 closes)
+### Capacity heuristics (until you have your own SSE/WS ops proof)
 
 - Start with **one uvicorn worker** when debugging SSE/WS; then scale with sticky sessions.
 - Expect each open SSE/WS to hold a worker slot / file descriptor — size workers and

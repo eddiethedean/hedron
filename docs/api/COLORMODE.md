@@ -5,11 +5,16 @@ status: shipped
 # ColorMode
 
 
-!!! note "Stability (0.10 train)"
+!!! note "Stability (0.11 train)"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
 **Status:** Accepted
+
+!!! tip "Signatures"
+
+    Generated parameter lists: [Autodoc — Color mode](AUTODOC.md#color-mode).
+    This page is the how-to narrative.
 
 ```python
 from hedron import ColorMode, ColorModeToggle, resolve_color_mode

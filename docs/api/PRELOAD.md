@@ -5,7 +5,7 @@ status: shipped
 # Navigation preload
 
 
-!!! note "Stability"
+!!! note "Stability (0.11 train)"
 
     Classifications live in [STABILITY.md](STABILITY.md). Opt-in navigation preload is
     Supported in 0.10; default remains off.

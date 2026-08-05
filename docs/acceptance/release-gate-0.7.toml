@@ -53,7 +53,7 @@ owner = "hedron"
 [[evidence]]
 id = "ADP-FLK-003"
 state = "Verified"
-command = "uv run pytest tests/adapters/flask/test_packaging.py -q"
+command = "uv run pytest tests/ops/test_packaging_isolation.py -q"
 ci_job = "adapters"
 owner = "hedron"
 
@@ -77,14 +77,14 @@ stability_impact = "Apps use explicit list/mapping DataSources or custom adapter
 [[evidence]]
 id = "ADP-DJG-003"
 state = "Verified"
-command = "uv run pytest tests/adapters/django/test_packaging.py -q"
+command = "uv run pytest tests/ops/test_packaging_isolation.py -q"
 ci_job = "adapters"
 owner = "hedron"
 
 [[evidence]]
 id = "OPS-001"
 state = "Verified"
-command = "uv run pytest tests/ops/test_offline_startup.py -q"
+command = "uv run pytest tests/ops/test_packaging_isolation.py -q"
 ci_job = "ops"
 owner = "hedron"
 
@@ -126,7 +126,7 @@ owner = "hedron"
 [[evidence]]
 id = "OPS-007"
 state = "Verified"
-command = "uv run pytest tests/ops/test_rollback_docs.py -q"
+command = "uv run pytest tests/ops/test_deploy_topology.py -q"
 ci_job = "ops"
 owner = "hedron"
 

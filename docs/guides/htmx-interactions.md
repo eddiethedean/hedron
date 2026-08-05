@@ -13,8 +13,8 @@ client-side application code.
 3. The server returns **only the HTML for that region**, not a full document.
 4. HTMX replaces `#service-status` with the response body.
 
-You will build that loop next. Region allowlists and interaction policies come after the
-first click works.
+You will build that loop next. Copy the snippets as written—names like
+`FragmentRegion` and `InteractionResult` are explained **after** your first click works.
 
 ## What you will build
 
@@ -26,6 +26,12 @@ app and the scaffold `home` route. Add the imports and `/status` route below, th
 `home()` so it renders the status panel (do not create a second app file). If you are on
 Path B (manual `app.py`), create the file as shown in the complete listing at the end of
 this section.
+
+!!! tip "Goal: click first"
+
+    Get the timestamp updating in the browser before reading the contract table below.
+    A wrong `HX-Target` returns **403** by design (not a bug)—fix typos in `target=` /
+    `selector=` if that happens.
 
 ### 1. Add imports and a status panel
 
@@ -97,7 +103,7 @@ def refresh_status() -> InteractionResult:
 ```
 
 That is enough for the first click. Cache/vary and triggers are optional polish covered
-below under [Understand the contracts](#understand-the-contracts).
+below under [Understand the contracts](#understand-the-contracts-after-the-click).
 
 ### Complete file (Path B / reference)
 
@@ -181,11 +187,19 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000), then click **Refresh status
 The timestamp in the panel should update without a full page reload. That browser click is
 the first interactive win—prefer it over `curl` when learning.
 
-If you get **403**, the `HX-Target` did not match a declared region (often a typo in
-`target=` / `selector=`). See
+**Success?** Continue below to understand the names you pasted. Stuck with **403**? The
+`HX-Target` did not match a declared region (often a typo in `target=` / `selector=`). See
 [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request).
 
-## Understand the contracts
+## Flask / Django: same poll loop
+
+The clock example above uses portable components. On Flask/Django, wire the same
+`Poll` / `RefreshButton` pattern through `hedron_route` / `hedron_view` and
+`interaction_response` — see [Flask](../getting-started/flask.md) and
+[Django](../getting-started/django.md). Prefer polling for job status and live panels;
+FastAPI-only SSE/WebSocket helpers are covered later on this page.
+
+## Understand the contracts (after the click)
 
 | Contract | Responsibility |
 |---|---|

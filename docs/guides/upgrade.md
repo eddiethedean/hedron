@@ -1,4 +1,4 @@
-# Upgrade guide (0.8 → 0.9 authoring break; 0.10 live; 0.11 native depth)
+# Upgrade guide (0.8 → 0.11)
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
@@ -99,12 +99,12 @@ from supported prior trains, deployment, and rollback from built/published artif
 ## 0.11 native Flask/Django depth (published)
 
 Phase 0.11 ships Flask Blueprint/`init_app`, Django `AppConfig`, forms bridge, bounded
-`DjangoQuerySetDataSource` (D-046), portable adapter test harnesses, HDJ dynamic manifests/CSP
+`DjangoQuerySetDataSource`, portable adapter test harnesses, HDJ dynamic manifests/CSP
 inventory, Celery/RQ `JobBackend` bridges, and capability-labeled Flask/Django live helpers.
 
-### 0.10 → 0.11
+### Checklist: 0.10 → 0.11
 
-1. Upgrade to the coordinated `0.11.0` train.
+1. Pin and upgrade to the coordinated `0.11.0` train (`hedron`, adapters, extras together).
 2. Flask apps may adopt `HedronFlask().init_app(app)` and `HedronBlueprint` without changing the
    constructor-owned path.
 3. Add `hedron_django.apps.HedronDjangoConfig` to `INSTALLED_APPS` for system checks.
@@ -114,6 +114,10 @@ inventory, Celery/RQ `JobBackend` bridges, and capability-labeled Flask/Django l
    saving remains in the view.
 6. Optional: wire `CeleryJobBackend` / `RQJobBackend` for durable jobs; keep polling as the
    Supported status transport on buffering proxies.
+7. Re-read [What's ready](whats-ready.md) for live-transport caveats (unchanged: prefer polling
+   until you have your own SSE/WS ops proof).
+
+Narrative: [What's new in 0.11](whats-new-0.11.md).
 
 ## Deprecation tooling
 
