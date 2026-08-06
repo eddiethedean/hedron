@@ -224,8 +224,10 @@ def apply_property_patch(
             remediation="Correct the path/op or fall back to a full fragment.",
         ) from exc
 
-    result = {key: (copy.deepcopy(value) if key != patch.target_id else new_target)
-              for key, value in state.items()}
+    result = {
+        key: (copy.deepcopy(value) if key != patch.target_id else new_target)
+        for key, value in state.items()
+    }
     result[patch.target_id] = new_target
     return result
 

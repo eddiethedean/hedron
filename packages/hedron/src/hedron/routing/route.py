@@ -21,8 +21,12 @@ from hedron.interaction import (
     FragmentRegionError,
     InteractionResult,
 )
-from hedron.responses import HTML, render_component_response, render_interaction
-from hedron.responses import _fragment_region_http_detail
+from hedron.responses import (
+    HTML,
+    _fragment_region_http_detail,
+    render_component_response,
+    render_interaction,
+)
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
 from hedron_core.component import Component, NodeLike

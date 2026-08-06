@@ -19,7 +19,13 @@ _BETA_PACKAGES = {
     "hedron-conformance",
     "hedron-extras",
 }
-_ALPHA_INDEPENDENT = {"hedron-charts", "hedron-sample-kit", "hedron-native", "hedron-notebook", "hedron-mcp"}
+_ALPHA_INDEPENDENT = {
+    "hedron-charts",
+    "hedron-sample-kit",
+    "hedron-native",
+    "hedron-notebook",
+    "hedron-mcp",
+}
 
 
 def test_all_packages_declare_license_and_version() -> None:

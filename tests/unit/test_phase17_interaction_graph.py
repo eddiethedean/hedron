@@ -36,9 +36,7 @@ def test_register_success_and_topo_order() -> None:
     graph.register(
         _binding("b1", triggers=("filter",), targets=("chart",), action_id="filter_chart")
     )
-    graph.register(
-        _binding("b2", triggers=("chart",), targets=("table",), action_id="chart_table")
-    )
+    graph.register(_binding("b2", triggers=("chart",), targets=("table",), action_id="chart_table"))
 
     order = graph.topological_order()
     assert order == ["b1", "b2"]

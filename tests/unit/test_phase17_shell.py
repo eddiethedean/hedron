@@ -13,7 +13,6 @@ from hedron_core.interaction import (
     FragmentRegion,
     InteractionPolicy,
     InteractionResult,
-    OobUpdate,
 )
 
 

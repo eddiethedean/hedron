@@ -69,7 +69,9 @@ class CrossFilterBinding:
         return binding
 
 
-def triggers_from_chart_event(event: ChartEvent, *, fields: Sequence[str] | None = None) -> tuple[str, ...]:
+def triggers_from_chart_event(
+    event: ChartEvent, *, fields: Sequence[str] | None = None
+) -> tuple[str, ...]:
     """Return trigger ids for a chart event (default: ``chart.<kind>``)."""
     if fields is None:
         return (f"chart.{event.kind}",)

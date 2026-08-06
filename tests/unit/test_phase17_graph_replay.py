@@ -57,9 +57,7 @@ def test_record_exchange_redacts_secrets() -> None:
 
 def test_replay_applies_trigger_and_patch() -> None:
     graph = _graph_with_binding()
-    recording = GraphRecording(
-        initial_regions={"detail": {"_version": 1, "value": 0, "items": []}}
-    )
+    recording = GraphRecording(initial_regions={"detail": {"_version": 1, "value": 0, "items": []}})
     record_exchange(
         recording,
         correlation_id="c-1",
@@ -89,9 +87,7 @@ def test_replay_applies_trigger_and_patch() -> None:
 
 def test_replay_schedule_stale_duplicate_disconnect_conflict() -> None:
     graph = _graph_with_binding()
-    recording = GraphRecording(
-        initial_regions={"detail": {"_version": 1, "value": 1}}
-    )
+    recording = GraphRecording(initial_regions={"detail": {"_version": 1, "value": 1}})
     record_exchange(
         recording,
         correlation_id="c-1",
@@ -137,9 +133,7 @@ def test_replay_duplicate_correlation_skips_second_apply() -> None:
 
 def test_replay_patch_version_conflict_audits_fallback() -> None:
     graph = _graph_with_binding()
-    recording = GraphRecording(
-        initial_regions={"detail": {"_version": 5, "value": 1}}
-    )
+    recording = GraphRecording(initial_regions={"detail": {"_version": 5, "value": 1}})
     record_exchange(
         recording,
         correlation_id="c-bad",

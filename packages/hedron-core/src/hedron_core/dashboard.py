@@ -124,10 +124,7 @@ class InteractionGraph:
                 if len(owners) > 1:
                     raise self._fail(
                         HED_GRAPH_0003,
-                        (
-                            f"Duplicate writer for target {target!r}: "
-                            f"{', '.join(sorted(owners))}."
-                        ),
+                        (f"Duplicate writer for target {target!r}: {', '.join(sorted(owners))}."),
                         title="Duplicate target writer",
                         remediation=(
                             "Ensure each target is written by at most one binding, "
