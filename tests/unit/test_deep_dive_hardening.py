@@ -123,6 +123,16 @@ def test_production_lifespan_missing_manifest(tmp_path: Path) -> None:
     set_runtime_compile_allowed(True)
 
 
+def test_dev_lifespan_starts_without_build_manifest(tmp_path: Path) -> None:
+    """Non-production lifespan must not require hedron.build when no manifest exists (#32)."""
+    set_runtime_compile_allowed(True)
+    app = FastAPI(lifespan=compose_lifespan(production=False, build_dir=tmp_path / "no-build"))
+    with TestClient(app) as client:
+        assert client.app is app
+        assert getattr(app.state, "hedron_build_manifest", None) is None
+    set_runtime_compile_allowed(True)
+
+
 def test_production_lifespan_invalid_manifest(tmp_path: Path) -> None:
     build = tmp_path / "build"
     build.mkdir()

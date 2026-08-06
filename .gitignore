@@ -6,7 +6,11 @@ __pycache__/
 .eggs/
 dist/
 /build/
-**/build/
+# Artifact/output build trees only — never ignore package source such as
+# packages/hedron/src/hedron/build (Hatchling respects gitignore and would
+# omit it from sdists/wheels; see #32).
+**/.hedron/build/
+packages/hedron-runtime-java/build/
 target/
 .venv/
 venv/
