@@ -12,10 +12,16 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 **Last published train:** `v0.16.0` (packages `0.16.0` including first-party `hedron-extras`;
 Alpha charts/sample-kit/native `0.1.x`).
 **Prior published:** `v0.15.0` (data-app surface), `v0.14.0`, and earlier trains.
-**Current cut target:** `v0.16.x` patches or `v0.17.0` (reactive dashboards) — see
+**Current cut target:** `v0.16.x` patches or `v0.17.0` (reactive dashboards; phase packet
+refined — RFCs 0040–0044, [release-gate-0.17.toml](acceptance/release-gate-0.17.toml)) — see
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [What’s ready](guides/whats-ready.md).
-**Next capability phase:** `v0.17.0`.
+**Next capability phase:** `v0.17.0` — scaffold with
+`uv run python scripts/check_release_gate.py 0.17.0 --allow-planned` (package versions stay on
+`0.16.0` until the implementation cut bumps them; use
+`--evidence-manifest docs/acceptance/release-gate-0.17.toml` with the published train version to
+validate Planned rows only). Acceptance checklist:
+[RELEASE_0_17.md](acceptance/RELEASE_0_17.md).
 
 Published trains include `v0.16.0`, `v0.15.0`, `v0.14.0`, `v0.13.0`, `v0.12.0`, `v0.11.0`, and
 [`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md).

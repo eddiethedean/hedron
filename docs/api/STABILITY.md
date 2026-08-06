@@ -1,9 +1,10 @@
 # Public stability classifications
 
-**Status:** Phase 0.16 curated extras (**Published** as `v0.16.0`); a **minimal
-`stable` tier** is already listed below (D-038: no calendar `1.0` scheduled; package maturity
-remains Beta).
+**Status:** Phase 0.16 curated extras (**Published** as `v0.16.0`); phase **0.17** packet
+refined (RFCs 0040–0044; Planned gates). A **minimal `stable` tier** is already listed below
+(D-038: no calendar `1.0` scheduled; package maturity remains Beta).
 **Version:** `0.16.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`
+(+ planned 0.17 surfaces below)
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
 `v0.16.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
@@ -123,6 +124,28 @@ Optional curated toolkit (`hedron[extras]`). Composition UI, DataExplorer, JSONE
 image tools, calendar/signature/typeahead, display recipes, and browser-Python sandbox are **beta**.
 `TerminalView`, joystick, and device-bridge surfaces are **experimental** and fail closed without
 explicit policy (RFC-0038). Native desktop shell is packaging documentation only.
+
+### `hedron-notebook` (planned Alpha / experimental — phase 0.17)
+
+Optional server-side notebook preview helper ([RFC-0042](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0042-NOTEBOOK-PREVIEW.md)).
+Not published on the 0.16 train. Distinct from the 0.16 browser-Python sandbox. D-015 separate
+distribution; maturity Alpha / API `experimental` until `NOTEBOOK-017` is Verified.
+
+### `hedron-mcp` (planned Alpha / experimental — phase 0.17)
+
+Optional deny-by-default MCP Streamable HTTP projection
+([RFC-0043](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0043-MCP-PROJECTION.md)). Not published on the 0.16 train. D-015 separate
+distribution; maturity Alpha / API `experimental` until `MCP-017` is Verified. Disabled and empty
+by default.
+
+### Planned 0.17 surfaces on existing packages (not yet shipped)
+
+| Symbol / contract | Package | Level | RFC / gate |
+|---|---|---|---|
+| `DashboardBinding` / `InteractionGraph` / `TriggerContext` | `hedron-core` / `hedron` | `beta` (planned) | RFC-0040 / `GRAPH-017` |
+| `PropertyPatch` / `CollectionPatch` / collection selectors | `hedron-core` | `beta` (planned) | RFC-0041 / `PATCH-017` |
+| `HtmxLink` / `NavLink`, `OobHost` / `AttrHost`, `AppShell` / `MainPanel` | `hedron` | `beta` (planned) | RFC-0044 / `SHELL-017` |
+| Public `render_interaction` (InteractionResult → Response) | `hedron` | `beta` (planned) | RFC-0044 / `SHELL-017` |
 
 ### `hedron-native` (Alpha, versioned independently as `0.1.x`) — **experimental** accel
 

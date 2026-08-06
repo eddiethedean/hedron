@@ -1,11 +1,15 @@
 # NiceGUI feature cross-check
 
-**Audit date:** 2026-08-06 (refreshed for phase 0.16 entry/exit)<br>
+**Audit date:** 2026-08-06 (refreshed for phase 0.17 entry; prior 0.16 entry/exit refresh retained)<br>
 **NiceGUI baseline:** 3.15.0 (PyPI) and current documentation / element catalog<br>
 **Purpose:** identify useful capability gaps, not reproduce NiceGUI's Vue/Quasar client,
 WebSocket outbox, or imperative element-mutation runtime
 **0.16 disposition:** Accepted extras implemented in `hedron-extras` (RFC-0037/0038);
 specialty surfaces labeled Experimental.
+**0.17 disposition:** Binding/timer/refreshable ergonomics → `DashboardBinding` /
+`InteractionGraph` ([RFC-0040](rfcs/RFC-0040-INTERACTION-GRAPH.md), `GRAPH-017`); notebook
+preview ([RFC-0042](rfcs/RFC-0042-NOTEBOOK-PREVIEW.md), `NOTEBOOK-017`); migration notes
+(`MIGRATE-017`). Vue outbox, `run_javascript`, and SPA `sub_pages` remain deliberate non-parity.
 
 NiceGUI is a valuable comparison because it shares a FastAPI/Starlette host and optimizes for
 backend-first Python UIs aimed at dashboards, tools, robotics, and IoT. Hedron targets overlapping
@@ -47,7 +51,7 @@ first-party Hedron commitments.
 | Standard controls, layout, cards, dialogs, tabs, menus, notifications | Mostly covered; remaining typed controls and popover/docks owned by **0.15**. |
 | Media players, upload, capture, clipboard, geolocation | Covered/planned in **0.15** with stricter permission, range, retention, and trust contracts. |
 | Storage tiers (tab/client/user/browser/general) | Partially covered; **0.15** completes `BrowserStorage` and clarifies SessionState / named connections versus NiceGUI's file-backed tiers. |
-| Timer, binding, refreshable UI, high-frequency client updates | Useful outcome accepted as inspectable **0.17** bindings + Supported polling / experimental live transports — not Vue outbox mutation. |
+| Timer, binding, refreshable UI, high-frequency client updates | Useful outcome accepted as inspectable **0.17** bindings (`beta`, RFC-0040, `GRAPH-017`) + Supported polling / experimental live transports — not Vue outbox mutation. |
 | Tree, stepper, splitter, FAB, keyboard shortcuts, interactive image | Owned by **0.16** extras; NiceGUI validates demand. |
 | JSON editor, log console, 3D models, charts (Plotly/Matplotlib/ECharts/Altair) | Charts exist; editors/logs/3D owned by **0.12/0.16**. |
 | Leaflet / maps | Genuine gap; **expanded 0.15** as a policy-bounded Map/GeoJSON adapter (exit gate already cites maps). |
@@ -120,9 +124,9 @@ first-party Hedron commitments.
 | NiceGUI surface | Hedron disposition |
 |---|---|
 | `app.storage.tab/client/user/general/browser` | **Covered/planned 0.15:** SessionState, host sessions, `BrowserStorage`, named connections. NiceGUI's multi-tier glossary informs migration docs; file-backed global app storage is not reproduced as a framework singleton. |
-| Element binding / observables | **Deliberate non-parity** for implicit two-way binding. **0.17** `DashboardBinding` / `InteractionGraph` covers cohesive dashboards with inspectable edges. |
-| `ui.refreshable` | **Deliberate non-parity** for magic refresh scopes; addressable fragments + actions are the equivalent. |
-| `ui.timer` (including very short intervals) | **Covered with constraints:** polling helpers exist; Supported intervals remain conservative. Sub-100ms timers are not a Supported production promise. |
+| Element binding / observables | **Deliberate non-parity** for implicit two-way binding. **0.17** `DashboardBinding` / `InteractionGraph` (`beta`, RFC-0040, `GRAPH-017`) covers cohesive dashboards with inspectable edges. |
+| `ui.refreshable` | **Deliberate non-parity** for magic refresh scopes; addressable fragments + actions are the equivalent (`beta`, RFC-0040). |
+| `ui.timer` (including very short intervals) | **Covered with constraints:** polling helpers exist; Supported intervals remain conservative. Sub-100ms timers are not a Supported production promise. Dashboard bindings may declare debounce/coalesce (`GRAPH-017`). |
 | WebSocket outbox batching | **Deliberate non-parity** as the primary UI update path. Experimental SSE/WS remain optional; polling is Supported. |
 | Lifecycle `on_connect` / `on_disconnect` | **Covered equivalently** by host lifespan, session middleware, and live-transport lifecycle (0.10/0.13) without tying UI correctness to a single worker. |
 
@@ -134,7 +138,7 @@ first-party Hedron commitments.
 | Native desktop window | **Specialty recipe:** optional pywebview (or similar) shell over the ASGI app; not a second renderer. |
 | `ui.run_javascript`, client `query` mutation, computed client props | **Deliberate non-parity.** Registered browser modules, typed events, and `TrustedHtml` remain the escape hatches. |
 | Tailwind/Quasar `.classes` / `.props` fluency | **Covered differently:** themes, CSS contracts, and explicit class props; Quasar is not a core dependency. |
-| Jupyter / interactive mode hosting | **Covered/planned:** 0.16 browser-Python sandbox and 0.17 server-side notebook preview solve adjacent problems without NiceGUI's process model. |
+| Jupyter / interactive mode hosting | **Covered/planned:** 0.16 browser-Python sandbox and 0.17 server-side notebook preview (`experimental`, RFC-0042, `NOTEBOOK-017`) solve adjacent problems without NiceGUI's process model. |
 
 ## Testing and developer experience
 
@@ -199,9 +203,16 @@ typeahead, annotation overlays),
 
 ### Reinterpreted in 0.17
 
+Owning drafts: [RFC-0040](rfcs/RFC-0040-INTERACTION-GRAPH.md) (bindings/graph),
+[RFC-0042](rfcs/RFC-0042-NOTEBOOK-PREVIEW.md) (notebook preview); migration evidence
+`MIGRATE-017`.
+
 - NiceGUI binding/timer/refreshable ergonomics → finite `DashboardBinding` / `InteractionGraph`
-  with polling/SSE fallbacks and Explorer inspectability.
-- Maintained NiceGUI migration notes beside the Dash matrix (deliberate non-parity called out).
+  with polling/SSE fallbacks and Explorer inspectability (`GRAPH-017`, `REPLAY-017`).
+- Maintained NiceGUI migration notes beside the Dash matrix (deliberate non-parity called out)
+  (`MIGRATE-017`).
+- Server-side notebook preview helper distinct from the 0.16 browser-Python sandbox
+  (`NOTEBOOK-017`, experimental).
 
 ### DX anytime (no phase gate)
 
@@ -210,8 +221,9 @@ typeahead, annotation overlays),
 
 ## Maintenance rule
 
-Refresh this matrix before closing phases **0.15** and **0.16**, and whenever Hedron claims NiceGUI
-migration coverage. A newly documented NiceGUI API is classified as covered, equivalent, accepted
-gap, specialty extra, DX-only, or deliberate non-parity. Accepted gaps require a phase owner,
-security and accessibility boundaries, and an evidence-bearing exit gate before they appear as
-Supported.
+Refresh this matrix before closing phases **0.15**, **0.16**, and **0.17** (entry refresh for
+0.17 recorded 2026-08-06), and whenever Hedron claims NiceGUI migration coverage. A newly
+documented NiceGUI API is classified as covered, equivalent, accepted gap, specialty extra,
+DX-only, or deliberate non-parity. Accepted gaps require a phase owner, RFC where applicable,
+public stability label, security and accessibility boundaries, and an evidence-bearing exit gate
+before they appear as Supported.

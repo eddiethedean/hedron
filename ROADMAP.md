@@ -903,23 +903,35 @@ expanding the core runtime or adopting Streamlit-style rerun semantics or a Vue/
 
 ## 0.17 — Reactive dashboards and agent interfaces (`v0.17.0`)
 
+**Status:** Planned — phase packet refined (2026-08-06). Spec:
+[acceptance/RELEASE_0_17.md](docs/acceptance/RELEASE_0_17.md);
+evidence index [acceptance/release-gate-0.17.toml](docs/acceptance/release-gate-0.17.toml).
+Owning RFCs: [RFC-0040](docs/rfcs/RFC-0040-INTERACTION-GRAPH.md)–[RFC-0044](docs/rfcs/RFC-0044-SHELL-INTERACTION-RESULT.md).
+
 **Outcome:** Hedron supports cohesive cross-filter dashboards, bounded incremental updates,
 server-side notebook previews, and explicitly authorized agent access without adding a universal
-client callback runtime or weakening the request/action boundary.
+client callback runtime or weakening the request/action boundary. HTMX shell authoring primitives
+and leftover docs/assert completions ship in the same cut.
 
 ### Entry gate
 
-- The [Plotly Dash feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/PLOTLY_DASH_FEATURE_CROSSCHECK.md) is refreshed against
-  the audited Dash and Dash AG Grid versions, and every accepted gap has an owning RFC revision,
-  public stability label, and evidence plan.
-- The [NiceGUI feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/NICEGUI_FEATURE_CROSSCHECK.md) binding/timer/refreshable
-  rows are reconciled: accepted dashboard ergonomics map to `DashboardBinding` / polling-or-SSE
-  fallbacks; Vue outbox, implicit element binding, and `run_javascript` remain deliberate
-  non-parity with documented migration notes.
+- The [Plotly Dash feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/PLOTLY_DASH_FEATURE_CROSSCHECK.md)
+  is refreshed for phase 0.17 entry (Dash 4.4.1, Dash AG Grid 35.3.0); every accepted gap cites an
+  owning RFC, public stability label (`beta` / `experimental`), and evidence ID.
+- The [NiceGUI feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/NICEGUI_FEATURE_CROSSCHECK.md)
+  binding/timer/refreshable rows are reconciled: accepted dashboard ergonomics map to
+  `DashboardBinding` / polling-or-SSE fallbacks ([RFC-0040](docs/rfcs/RFC-0040-INTERACTION-GRAPH.md));
+  Vue outbox, implicit element binding, and `run_javascript` remain deliberate non-parity with
+  documented migration notes (`MIGRATE-017`).
+- RFCs 0040–0044 are Accepted; Zero Deferred for 0.17-owned evidence rows at cut
+  (`GRAPH-017`, `PATCH-017`, `XFILTER-017`, `REPLAY-017`, `NOTEBOOK-017`, `MCP-017`, `SHELL-017`,
+  `HEDDOC-017`, `ASSERT-017`, `MIGRATE-017`, `REGRESS-017`, `PKG-017`).
 - The 0.10 live-transport lifecycle, 0.12 chart/grid event contracts, 0.15 controls and browser
   storage, and 0.16 workbench composition are stable enough to be reused rather than forked.
 
 ### Scope
+
+#### Graph (`GRAPH-017`, `REPLAY-017`; [#41](https://github.com/eddiethedean/hedron/issues/41); RFC-0040)
 
 - An interaction-graph test recorder and replay runner that captures declared trigger/action/
   patch exchanges with correlation IDs, redacted payload snapshots, and ordering metadata.
@@ -936,6 +948,9 @@ client callback runtime or weakening the request/action boundary.
   disabled states, progress, cancellation, errors, redirects/history, debounce/coalescing, stale
   results, and final updates. Side effects, cache policy, and authorization remain declared by the
   underlying action.
+
+#### Patches and collections (`PATCH-017`; [#42](https://github.com/eddiethedean/hedron/issues/42); RFC-0041)
+
 - Versioned, bounded `PropertyPatch` and `CollectionPatch` operations for declared chart, table,
   store, and component state: assign/merge, append/prepend/extend/insert, remove/delete/clear,
   reorder/reverse, and explicitly typed numeric operations. Schema, operation count, payload size,
@@ -945,20 +960,37 @@ client callback runtime or weakening the request/action boundary.
   ordered-range selectors for repeated/dynamic components. Fragment insertion/removal updates the
   registry safely; selector resolution is inspectable and never substitutes for tenant or object
   authorization.
+
+#### Cross-filter (`XFILTER-017`; RFC-0040 + RFC-0041)
+
 - Cross-filter dashboard composition over Plotly and other 0.12 event adapters, grid selections,
-  form controls, URL/session/browser state, data-source transforms, jobs, and multi-region results.
-  Saved dashboard views are explicitly versioned and scoped, and Explorer shows the interaction
-  graph with trigger, target, timing, payload, cache, job, transport, and failure information.
-- A server-side `hedron-notebook` preview helper with inline iframe and external-link modes,
-  configurable dimensions, proxy/root-path detection, random port/session token, error forwarding,
-  clean shutdown, collision handling, and warnings for hosted or publicly reachable notebooks.
-  This is distinct from the isolated browser-Python/JupyterLite sandbox in 0.16.
-- An optional `hedron-mcp` distribution using Streamable HTTP. It is disabled and empty by default
-  and projects only explicitly opted-in page/component/data resources and typed action/function
-  tools. Authentication, authorization, tenant filtering, scopes, read-versus-mutate effects,
-  confirmation, schemas, limits, deadlines, cancellation, rate limits, audit/correlation,
+  form controls, URL/session/browser state, data-source transforms, jobs, multi-region results, and
+  throttled map viewport (pan/zoom/bounds) events as declared triggers
+  ([RFC-0033](docs/rfcs/RFC-0033-MAP-GEOJSON.md) deferred streaming → this composition, not continuous
+  pixel WebSocket). Saved dashboard views are explicitly versioned and scoped, and Explorer shows
+  the interaction graph with trigger, target, timing, payload, cache, job, transport, and failure
+  information.
+
+#### Notebook (`NOTEBOOK-017`; [#43](https://github.com/eddiethedean/hedron/issues/43); RFC-0042)
+
+- A server-side `hedron-notebook` preview helper (optional distribution, D-015) with inline iframe
+  and external-link modes, configurable dimensions, proxy/root-path detection, random port/session
+  token, error forwarding, clean shutdown, collision handling, and warnings for hosted or publicly
+  reachable notebooks. Experimental / Alpha until exit evidence. Distinct from the isolated
+  browser-Python/JupyterLite sandbox in 0.16.
+
+#### MCP (`MCP-017`; [#44](https://github.com/eddiethedean/hedron/issues/44); RFC-0043)
+
+- An optional `hedron-mcp` distribution (D-015) using Streamable HTTP. It is disabled and empty by
+  default and projects only explicitly opted-in page/component/data resources and typed
+  action/function tools. Authentication, authorization, tenant filtering, scopes, read-versus-mutate
+  effects, confirmation, schemas, limits, deadlines, cancellation, rate limits, audit/correlation,
   redaction, prompt-injection diagnostics, deployment prefixes, and disconnect behavior are part
-  of the contract; MCP never grants authority beyond the authenticated principal.
+  of the contract; MCP never grants authority beyond the authenticated principal. Experimental /
+  Alpha until exit evidence.
+
+#### Migration (`MIGRATE-017`; [#45](https://github.com/eddiethedean/hedron/issues/45))
+
 - Maintained Dash migration inventory, coexistence guidance for supported host/framework
   combinations, and diagnostics for layouts, component IDs, callback dependencies, clientside
   code, background work, grid licensing, and state ownership. Tools may generate a review plan but
@@ -966,6 +998,9 @@ client callback runtime or weakening the request/action boundary.
 - Maintained NiceGUI migration notes covering binding/timer/refreshable → `DashboardBinding` /
   fragment/poll equivalents, storage-tier glossary pointers to 0.15, and explicit non-parity for
   Vue/Quasar outbox, `run_javascript`, and SPA `sub_pages`.
+
+#### Shell DX (`SHELL-017`; RFC-0044)
+
 - Shell and interaction authoring primitives for HTMX in-shell apps: `HtmxLink` / `NavLink`
   ([#28](https://github.com/eddiethedean/hedron/issues/28)), `class_` / theme hooks on content
   builtins ([#29](https://github.com/eddiethedean/hedron/issues/29)), `OobHost` / `AttrHost`
@@ -974,35 +1009,44 @@ client callback runtime or weakening the request/action boundary.
   stable public `InteractionResult` → Response conversion API that replaces private
   `HedronRoute._convert_interaction_result` use
   ([#35](https://github.com/eddiethedean/hedron/issues/35)).
+
+#### Docs and asserts (`HEDDOC-017`, `ASSERT-017`; RFC-0044)
+
 - Complete the remaining `HED-*` docs half of the diagnostic catalog: expand `error-codes.md` (or
   split by domain) so public docs match `hedron_core.codes`, with CLI/Explorer/SARIF sharing the
   same list ([#15](https://github.com/eddiethedean/hedron/issues/15)).
-- Component-aware markup asserts for Dialog, Tabs, Pagination, and Lazy/Loading (completing the
-  Toast coverage already shipped in 0.15)
-  ([#24](https://github.com/eddiethedean/hedron/issues/24)).
+- Component-aware markup asserts for Dialog, Tabs, Pagination, and Lazy/Loading
+  ([#24](https://github.com/eddiethedean/hedron/issues/24)). Toast markup asserts shipped in 0.15
+  and are not re-owned by 0.17.
 
 ### Exit gate
 
 - Interaction graphs are finite, deterministic, inspectable, and race-tested. Cycles, absent
   required members, ambiguous writers, stale events, unauthorized targets, oversized state, and
   invalid patches fail closed, while ordinary full-fragment HTTP interactions remain functional.
+  Evidence: `GRAPH-017`, `PATCH-017`, `XFILTER-017`, `REPLAY-017`.
 - Chromium, Firefox, and WebKit pass cross-filter, focus, keyboard, screen-reader, zoom/reflow,
   reconnect, reduced-motion, history, backpressure, patch conflict, dynamic collection, and
   no-JavaScript fallback suites. Multi-worker and tenant tests prove that browser identity or state
   cannot bypass server authorization.
 - Notebook preview tests cover proxy prefixes, token leakage, hostile notebook HTML, port reuse,
   server failure, multiple previews, teardown, and hosted-environment warnings. No preview becomes
-  a supported production server accidentally.
+  a supported production server accidentally (`NOTEBOOK-017`).
 - MCP conformance covers discovery, schemas, authentication, authorization, tenant isolation,
   redaction, read/mutate classification, rate and payload limits, cancellation, disconnect,
   adversarial tool inputs, prompt-injection-bearing resources, audit records, and disabled/default-
-  empty behavior.
+  empty behavior (`MCP-017`).
+- Shell primitives and public `render_interaction` (or equivalent) land with tests (`SHELL-017`);
+  `error-codes.md` aligns with the registered catalog (`HEDDOC-017`); Dialog/Tabs/Pagination/Lazy
+  asserts land (`ASSERT-017`).
 - A reference analytical application demonstrates chart/grid cross-filtering, dynamic repeated
   panels, partial and full-region fallbacks, a cancellable background calculation, a notebook
   preview, and opt-in read-only plus mutating MCP tools over the same explicit domain actions.
 - Dashboard graph recordings replay deterministically across supported browsers and workers,
   exercising races, patch conflicts, reconnects, dynamic collections, and authorization failures
-  without depending on timing-sensitive sleeps.
+  without depending on timing-sensitive sleeps (`REPLAY-017`).
+- Migration inventories are published (`MIGRATE-017`); coordinated package verify (`PKG-017`) and
+  full regression (`REGRESS-017`) close the cut. Zero Deferred among 0.17-owned gate rows.
 
 ## 0.18 — Model demos and inference workflows (`v0.18.0`)
 
@@ -1512,6 +1556,11 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0037 CodeEditor and interactive extras | 0.16 |
 | 0038 Specialty extras | 0.16 |
 | 0039 Interaction authoring ergonomics | 0.15 |
+| 0040 Interaction graph / TriggerContext | 0.17 |
+| 0041 PropertyPatch / CollectionPatch / collections | 0.17 |
+| 0042 Notebook preview (`hedron-notebook`) | 0.17 |
+| 0043 MCP projection (`hedron-mcp`) | 0.17 |
+| 0044 Shell primitives / InteractionResult render API | 0.17 |
 
 ## Open GitHub issue ownership (0.13+)
 
@@ -1542,7 +1591,7 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#20](https://github.com/eddiethedean/hedron/issues/20) | Flask-Login AuthSignal bridge | 0.20 |
 | [#22](https://github.com/eddiethedean/hedron/issues/22) | Testing: InteractionResult / HTMX response asserts | 0.15 |
 | [#23](https://github.com/eddiethedean/hedron/issues/23) | Testing: fragment_client ergonomics / non-200 asserts | 0.15 |
-| [#24](https://github.com/eddiethedean/hedron/issues/24) | Testing: Dialog / Tabs / Pagination / Lazy / Toast asserts | 0.17 |
+| [#24](https://github.com/eddiethedean/hedron/issues/24) | Testing: Dialog / Tabs / Pagination / Lazy asserts (Toast done in 0.15) | 0.17 |
 | [#25](https://github.com/eddiethedean/hedron/issues/25) | Testing: FragmentRegion authorization helpers | 0.15 |
 | [#26](https://github.com/eddiethedean/hedron/issues/26) | Testing: shell panel-swap / PE asserts | 0.15 |
 | [#27](https://github.com/eddiethedean/hedron/issues/27) | Safe HTML attrs on landmarks / surfaces | 0.19 |
@@ -1557,6 +1606,11 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#38](https://github.com/eddiethedean/hedron/issues/38) | `CsrfField` + HTMX-aware `Form` kwargs | 0.20 |
 | [#39](https://github.com/eddiethedean/hedron/issues/39) | Allowlisted progressive-enhancement scripts on `Page` | 0.19 |
 | [#40](https://github.com/eddiethedean/hedron/issues/40) | `AppShell` / `MainPanel` HTMX shell primitives | 0.17 |
+| [#41](https://github.com/eddiethedean/hedron/issues/41) | `DashboardBinding` / `InteractionGraph` / `TriggerContext` | 0.17 |
+| [#42](https://github.com/eddiethedean/hedron/issues/42) | `PropertyPatch` / `CollectionPatch` / collections | 0.17 |
+| [#43](https://github.com/eddiethedean/hedron/issues/43) | `hedron-notebook` server-side preview | 0.17 |
+| [#44](https://github.com/eddiethedean/hedron/issues/44) | `hedron-mcp` deny-by-default projection | 0.17 |
+| [#45](https://github.com/eddiethedean/hedron/issues/45) | Dash / NiceGUI migration inventory | 0.17 |
 
 ## Later-phase policy
 

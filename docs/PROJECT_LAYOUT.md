@@ -36,6 +36,8 @@ hedron/
 │   ├── hedron-conformance/        # Language-neutral conformance kit (0.14)
 │   │   └── src/hedron_conformance/
 │   ├── hedron-extras/               # Curated extras / workbenches (0.16)
+│   ├── hedron-notebook/             # Planned 0.17 server-side notebook preview (RFC-0042)
+│   ├── hedron-mcp/                  # Planned 0.17 deny-by-default MCP projection (RFC-0043)
 │   │   └── src/hedron_extras/
 │   ├── hedron-native/             # Optional Rust acceleration (Alpha 0.1.x)
 │   │   └── src/hedron_native/
@@ -73,6 +75,8 @@ hedron/
 | `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.16.0` |
 | `hedron-conformance` | `hedron_conformance` | Fixture schema + runner (stdlib + pydantic) | `v0.16.0` |
 | `hedron-extras` | `hedron_extras` | Optional curated extras / workbenches; also `hedron[extras]` | `v0.16.0` |
+| `hedron-notebook` | `hedron_notebook` | Planned 0.17 optional notebook preview (experimental) | — |
+| `hedron-mcp` | `hedron_mcp` | Planned 0.17 optional MCP projection (experimental; deny-by-default) | — |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Alpha; independent of Beta train) |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs

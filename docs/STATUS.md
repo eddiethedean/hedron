@@ -11,10 +11,10 @@ Beta `0.16.0`, Alpha charts/sample-kit/native `0.1.x`.
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
 `hedron-charts`, `hedron-sample-kit`, `hedron-native`.
 
-**Phase focus:** curated extras and interactive analysis tools — optional `hedron-extras`,
-composition UI, DataExplorer/JSONEditor/CodeEditor workbenches, image tools, calendar/signature/
-typeahead, display recipes, browser-Python sandbox, and Experimental specialty extras
-(TerminalView, joystick/device bridges, native-shell packaging recipe).
+**Phase focus (published):** curated extras and interactive analysis tools — optional
+`hedron-extras`, composition UI, DataExplorer/JSONEditor/CodeEditor workbenches, image tools,
+calendar/signature/typeahead, display recipes, browser-Python sandbox, and Experimental specialty
+extras (TerminalView, joystick/device bridges, native-shell packaging recipe).
 
 ## Supported vs Deferred (operator view)
 
@@ -60,7 +60,29 @@ Phase 0.16 closed with **zero Deferred** among **0.16 gate IDs**
 
 ## Next capability phase
 
-**0.17** — reactive dashboards and agent interfaces (also shell NavLink/OobHost/`class_`
-primitives; landmark a11y attrs/types land in **0.19**). Track progress in [ROADMAP.md](ROADMAP.md)
-and the public [roadmap guide](guides/roadmap.md).
+**0.17** — reactive dashboards and agent interfaces (**Planned**; phase packet refined
+2026-08-06). Entry cross-checks refreshed; RFCs 0040–0044 Accepted; evidence scaffold
+[release-gate-0.17.toml](acceptance/release-gate-0.17.toml) /
+[RELEASE_0_17.md](acceptance/RELEASE_0_17.md).
+
+Workstreams / gate IDs (all **Planned** until implementation):
+
+| ID | Topic | Owner |
+|---|---|---|
+| `GRAPH-017` | InteractionGraph / TriggerContext | RFC-0040 / [#41](https://github.com/eddiethedean/hedron/issues/41) |
+| `PATCH-017` | PropertyPatch / CollectionPatch | RFC-0041 / [#42](https://github.com/eddiethedean/hedron/issues/42) |
+| `XFILTER-017` | Cross-filter composition | RFC-0040/0041 |
+| `REPLAY-017` | Graph recorder / replay | RFC-0040 |
+| `NOTEBOOK-017` | `hedron-notebook` (experimental) | RFC-0042 / [#43](https://github.com/eddiethedean/hedron/issues/43) |
+| `MCP-017` | `hedron-mcp` (experimental) | RFC-0043 / [#44](https://github.com/eddiethedean/hedron/issues/44) |
+| `SHELL-017` | NavLink / OobHost / AppShell / render_interaction | RFC-0044 / `#28`–`#30`, `#35`, `#40` |
+| `HEDDOC-017` | `error-codes.md` ↔ `HED-*` catalog | `#15` |
+| `ASSERT-017` | Dialog / Tabs / Pagination / Lazy asserts | `#24` |
+| `MIGRATE-017` | Dash / NiceGUI migration inventory | [#45](https://github.com/eddiethedean/hedron/issues/45) |
+| `REGRESS-017` / `PKG-017` | Full regression / package verify | cut |
+
+Also: shell NavLink/OobHost/`class_` primitives; landmark a11y attrs/types land in **0.19**.
+Track progress in [ROADMAP.md](ROADMAP.md) and the public [roadmap guide](guides/roadmap.md).
 Open-issue owners: [issue ownership table](ROADMAP.md#open-github-issue-ownership-013).
+Next step: implement against Verified promotion (`check_release_gate.py 0.17.0 --allow-planned`
+during development).

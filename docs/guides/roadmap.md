@@ -12,7 +12,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.14** | Portable runtimes and acceleration | **Published** (`v0.14.0`) |
 | **0.15** | Data-app surface completeness (OIDC/session helpers; HTMX testing; `region`/`swap`; maps/media) | **Published** (`v0.15.0`) |
 | **0.16** | Curated extras and analysis workbenches (incl. CodeEditor host stub and specialty NiceGUI-shaped extras) | **Published** (`v0.16.0`) |
-| **0.17** | Reactive dashboards and agent interfaces; shell/AppShell; InteractionResult→Response; `#15`/`#24` completions | Planned |
+| **0.17** | Reactive dashboards and agent interfaces; shell/AppShell; InteractionResult→Response; `#15`/`#24` completions (RFCs 0040–0044; gate packet refined) | Planned |
 | **0.18** | Model demos and inference workflows | Planned |
 | **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | Planned |
 | **0.20** | Production security floor and adapter parity; pluggable CSRF / composable headers / `CsrfField` | Planned |
@@ -37,7 +37,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 Tracked follow-ups for host security, adapter DX, shell authoring, and claim honesty are owned by
 phases **0.13+** (see the [issue ownership table](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-github-issue-ownership-013)
-in the maintainer roadmap).
+in the maintainer roadmap). Phase **0.17** is Planned with a refined packet (RFCs 0040–0044,
+[release-gate-0.17.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.17.toml)).
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))

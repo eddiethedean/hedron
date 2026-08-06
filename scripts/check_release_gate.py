@@ -22,6 +22,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.14": ROOT / "docs" / "acceptance" / "release-gate-0.14.toml",
     "0.15": ROOT / "docs" / "acceptance" / "release-gate-0.15.toml",
     "0.16": ROOT / "docs" / "acceptance" / "release-gate-0.16.toml",
+    "0.17": ROOT / "docs" / "acceptance" / "release-gate-0.17.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 

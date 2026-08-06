@@ -33,6 +33,7 @@ This matrix identifies the primary public, implementation, and acceptance owner 
 | Data-app surface NiceGUI expansions (0033–0036) | Maps, media download/Range, surface chrome, scenario marks | Implemented — phase 0.15 (Published) | 0.15 release gate |
 | Curated/specialty extras (0037–0038) | CodeEditor/interactive extras; terminal/robotics/native shell | Accepted — phase 0.16 implemented | [release-gate-0.16.toml](acceptance/release-gate-0.16.toml) |
 | Interaction authoring ergonomics (0039) | `region`/`@fragment`, `swap` builders, dev region diagnostics + Explorer click preview | Implemented — phase 0.15 DX (Published) | 0.15 release gate |
+| Reactive dashboards / agent interfaces (0040–0044) | InteractionGraph / patches / notebook / MCP / shell DX | Accepted — phase 0.17 Planned | [release-gate-0.17.toml](acceptance/release-gate-0.17.toml) |
 
 Every implementation pull request must name the owning RFC, public contract if any, implementation
 specification, and acceptance checks. Phase 0.6 closure and later work also names stable evidence IDs

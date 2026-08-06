@@ -71,8 +71,12 @@ New opt-in components/extra; no break to existing chart adapters. NiceGUI migrat
    `hedron-charts` MapLibre/Folium/PyDeck remain optional visualization adapters, not this contract.
 2. **Basemap day one:** allowlisted tile/script sources plus mandatory static/table fallback; OSM or
    other CDNs are Supported only when explicitly allowlisted by the app policy.
-3. **Viewport events:** continuous pan/zoom streaming is Deferred to 0.17; 0.15 ships marker/selection
-   as declared actions plus bounds props for initial view.
+3. **Viewport events:** continuous pan/zoom *streaming* is not a 0.15 Map transport. Phase **0.17**
+   owns throttled map viewport (pan/zoom/bounds) events as declared `TriggerContext` inputs into
+   `DashboardBinding` / cross-filter composition ([RFC-0040](RFC-0040-INTERACTION-GRAPH.md),
+   `GRAPH-017` / `XFILTER-017`) with coalesce/debounce and full-fragment fallback — not a
+   continuous WebSocket of every pixel. Marker/selection actions and initial bounds props remain
+   the 0.15 baseline.
 
 ## Acceptance criteria
 

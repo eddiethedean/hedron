@@ -1,11 +1,15 @@
 # Plotly Dash feature cross-check
 
-**Audit date:** 2026-08-04<br>
+**Audit date:** 2026-08-06 (refreshed for phase 0.17 entry)<br>
 **Dash baseline:** 4.4.1<br>
-**Dash AG Grid baseline:** 35.2.0, wrapping AG Grid 35.2.0<br>
+**Dash AG Grid baseline:** 35.3.0, wrapping AG Grid 35.3.0<br>
 **Scope:** Dash Open Source, Dash Core Components, Dash AG Grid, and the current official Dash
 documentation<br>
 **Purpose:** identify useful capability gaps, not reproduce Dash's React callback runtime
+**0.17 disposition:** Accepted reactive-dashboard and agent-interface gaps owned by
+[RFC-0040](rfcs/RFC-0040-INTERACTION-GRAPH.md)–[RFC-0043](rfcs/RFC-0043-MCP-PROJECTION.md);
+shell DX leftovers by [RFC-0044](rfcs/RFC-0044-SHELL-INTERACTION-RESULT.md). Evidence IDs:
+`GRAPH-017`, `PATCH-017`, `XFILTER-017`, `REPLAY-017`, `NOTEBOOK-017`, `MCP-017`, `MIGRATE-017`.
 
 Dash is a particularly useful comparison for Hedron because both projects target Python-authored
 data applications, but they make different runtime choices. Dash serializes a React component tree
@@ -29,8 +33,10 @@ The audit uses Plotly's first-party documentation and repositories:
 - [Dash Pages and URLs](https://dash.plotly.com/urls)
 - [Dash MCP](https://dash.plotly.com/dash-mcp)
 - [Dash AG Grid](https://dash.plotly.com/dash-ag-grid)
+- [Dash AG Grid 35.3.0 package](https://pypi.org/project/dash-ag-grid/35.3.0/)
 
-The baseline is the latest stable Dash release available on the audit date. Dash Enterprise,
+The baseline is the latest stable Dash release available on the audit date. Dash AG Grid patch
+35.3.0 wraps AG Grid 35.3.0; no new Hedron disposition changes versus the 35.2.0 audit. Dash Enterprise,
 Design Kit, Snapshot Engine, Dashboard Toolkit, Plotly Cloud hosting, and other commercial services
 are not portable framework features and are not parity targets. Open-source integration points
 that those products also use are still included.
@@ -54,16 +60,16 @@ that those products also use are still included.
 | HTML/component tree, styling, assets, metadata, multipage URLs | Covered by components, HDJ/native HTML, scoped assets/themes, `Page`, `Nav`, routes, and history policy. |
 | Core inputs, loading, uploads, downloads, browser state | Mostly covered; clipboard, confirmation, geolocation, tooltip, and folder-upload details are added to 0.15. |
 | Plotly figures and ordinary chart rendering | Covered in 0.6; the complete interaction-event bridge is made explicit in 0.12. |
-| Reactive callbacks and cross-filter dashboards | Useful outcome accepted for 0.17 as a typed, deterministic interaction graph over explicit actions and declared regions. |
-| Partial property updates and `set_props` | Accepted for 0.17 as bounded, schema-checked, versioned patches with full-fragment fallback. |
-| Pattern-matching dynamic component IDs | Accepted for 0.17 as structured collection identities and map/gather/broadcast selectors, not arbitrary DOM matching. |
-| Async, background, progress, cancel, errors, cache | Covered by async endpoints, `InteractionResult`, `JobBackend`, cache, status/progress, and 0.13 tracing; 0.17 unifies the dashboard-facing lifecycle. |
+| Reactive callbacks and cross-filter dashboards | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`/`XFILTER-017`): typed, deterministic interaction graph over explicit actions and declared regions. |
+| Partial property updates and `set_props` | **Planned 0.17** (`beta`, RFC-0041, `PATCH-017`): bounded, schema-checked, versioned patches with full-fragment fallback. |
+| Pattern-matching dynamic component IDs | **Planned 0.17** (`beta`, RFC-0041, `PATCH-017`): structured collection identities and map/gather/broadcast selectors, not arbitrary DOM matching. |
+| Async, background, progress, cancel, errors, cache | Covered by async endpoints, `InteractionResult`, `JobBackend`, cache, status/progress, and 0.13 tracing; 0.17 unifies the dashboard-facing lifecycle (`beta`, RFC-0040, `GRAPH-017`). |
 | WebSocket and persistent callbacks | 0.10 expanded with declared client-state reads, intermediate region updates, page-session lifecycle, and disconnect cleanup. |
 | DataTable and Dash AG Grid | Hedron tables/editors and AG Grid Community adapter cover the baseline; 0.12 now names saved grid state, events, and client/infinite row-model behavior. |
 | Custom React components, all-in-one components, and hooks | Covered by component packages, Web Components, plugins, browser modules, typed events, and Explorer extensions without requiring React. |
-| Dev tools and testing | Covered by Explorer graphs/traces, diagnostics, snapshots, Playwright/a11y/visual hooks, and pytest helpers; 0.17 adds the dashboard graph view. |
-| Jupyter display | Server-side notebook preview is a real gap and is assigned to 0.17; the 0.16 JupyterLite/Pyodide sandbox solves a different problem. |
-| MCP resources and tools | Accepted for an optional deny-by-default `hedron-mcp` projection in 0.17. |
+| Dev tools and testing | Covered by Explorer graphs/traces, diagnostics, snapshots, Playwright/a11y/visual hooks, and pytest helpers; 0.17 adds the dashboard graph view (`beta`, RFC-0040, `REPLAY-017`/`GRAPH-017`). |
+| Jupyter display | **Planned 0.17** (`experimental`, RFC-0042, `NOTEBOOK-017`): server-side notebook preview; the 0.16 JupyterLite/Pyodide sandbox solves a different problem. |
+| MCP resources and tools | **Planned 0.17** (`experimental`, RFC-0043, `MCP-017`): optional deny-by-default `hedron-mcp` projection. |
 
 ## Complete Dash Core Components cross-check
 
@@ -117,26 +123,26 @@ result before JavaScript enhancement.
 |---|---|
 | `Input`, `Output`, and `State` | **Covered/0.17 ergonomic layer:** request/action inputs and state dependencies are explicit today. 0.17 names trigger inputs versus snapshot-only state in dashboard bindings. |
 | Multiple inputs and outputs | **Covered:** actions can consume typed request/form/query data and return a primary region, out-of-band regions, events, redirects/history, and status. 0.17 adds declarative multi-region binding diagnostics. |
-| Chained callbacks and dependency ordering | **Planned 0.17:** finite page-local interaction graphs with cycle detection, stable topological ordering, authorization on every action edge, and no hidden application-wide execution. |
-| Initial callbacks / `prevent_initial_call` | **Planned 0.17 equivalent:** initialization is opt-in per binding or explicit lazy resource; ordinary page render remains authoritative. |
-| `State` without triggering | **Planned 0.17:** declared snapshot inputs are serialized only when their trigger fires. Sensitive or large state remains server-owned. |
-| Callback context and changed-input detection | **Planned 0.17:** typed `TriggerContext` contains binding, event, component identity, changed fields, request/session correlation, and declared input snapshots. |
+| Chained callbacks and dependency ordering | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): finite page-local interaction graphs with cycle detection, stable topological ordering, authorization on every action edge, and no hidden application-wide execution. |
+| Initial callbacks / `prevent_initial_call` | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): initialization is opt-in per binding or explicit lazy resource; ordinary page render remains authoritative. |
+| `State` without triggering | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): declared snapshot inputs are serialized only when their trigger fires. Sensitive or large state remains server-owned. |
+| Callback context and changed-input detection | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): typed `TriggerContext` contains binding, event, component identity, changed fields, request/session correlation, and declared input snapshots. |
 | Flexible positional, named, and grouped signatures | **Covered:** Pydantic/Hedron models and normal Python function signatures provide typed grouping; a special callback tuple grammar is unnecessary. |
-| `PreventUpdate` and `no_update` | **Planned 0.17 equivalents:** explicit no-change result for all or selected declared targets, distinct from an error or empty fragment. |
-| Optional inputs/outputs | **Planned 0.17:** explicit optional collection/member bindings with absent-state diagnostics. Missing required dependencies fail registration. |
+| `PreventUpdate` and `no_update` | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): explicit no-change result for all or selected declared targets, distinct from an error or empty fragment. |
+| Optional inputs/outputs | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): explicit optional collection/member bindings with absent-state diagnostics. Missing required dependencies fail registration. |
 | Duplicate callback outputs | **Deliberate constraint:** duplicate writers require an accepted deterministic arbitration policy. Unordered last-writer behavior is not supported. |
-| `ALL`, `MATCH`, and `ALLSMALLER` pattern IDs | **Planned 0.17:** stable structured collection identities and typed map/gather/broadcast/range selectors. Arbitrary dictionaries or DOM selectors do not become authorization boundaries. |
-| Dynamic component insertion/removal | **Covered/planned 0.17:** fragments already add/remove components; 0.17 validates collection registration, event teardown, focus, stale requests, and binding membership. |
-| `Patch` partial property updates | **Planned 0.17:** bounded `PropertyPatch`/`CollectionPatch` operations for declared targets with schema validation, version/precondition, operation and payload caps, authorization, conflict behavior, and full-fragment fallback. |
+| `ALL`, `MATCH`, and `ALLSMALLER` pattern IDs | **Planned 0.17** (`beta`, RFC-0041, `PATCH-017`): stable structured collection identities and typed map/gather/broadcast/range selectors. Arbitrary dictionaries or DOM selectors do not become authorization boundaries. |
+| Dynamic component insertion/removal | **Covered/planned 0.17** (`beta`, RFC-0041, `PATCH-017`): fragments already add/remove components; 0.17 validates collection registration, event teardown, focus, stale requests, and binding membership. |
+| `Patch` partial property updates | **Planned 0.17** (`beta`, RFC-0041, `PATCH-017`): bounded `PropertyPatch`/`CollectionPatch` operations for declared targets with schema validation, version/precondition, operation and payload caps, authorization, conflict behavior, and full-fragment fallback. |
 | `set_props` updates outside declared outputs | **Deliberate constraint:** intermediate updates are useful, but targets remain declared and inspectable. Arbitrary component mutation bypassing the interaction graph is not adopted. |
 | Server-side async callbacks | **Covered:** sync/async endpoints, dependencies, cancellation, timeouts, and phase 0.13 preparation/concurrency. |
 | Background callbacks | **Covered:** durable `JobBackend`, 202/status/polling, cancellation requests, progress/status UI, Celery/RQ bridges, retention, and cleanup. Dash's Diskcache development/Celery production split is an implementation choice, not a new public outcome. |
-| Running tuples, progress, cancel, and cache | **Covered/0.17 unified:** components and jobs exist; 0.17 defines one dashboard-facing lifecycle envelope for disabled/running/progress/cancel/error/no-change/final states. |
+| Running tuples, progress, cancel, and cache | **Covered/0.17 unified** (`beta`, RFC-0040, `GRAPH-017`): components and jobs exist; 0.17 defines one dashboard-facing lifecycle envelope for disabled/running/progress/cancel/error/no-change/final states. |
 | Global and per-callback error handlers | **Covered:** framework handlers, action error regions, diagnostics, logging/tracing, and plugin hooks. Errors may not leak sensitive tracebacks in production. |
 | No-input and no-output callbacks | **Covered equivalent:** explicit page lifecycle resources and side-effecting actions. Hidden page-load side effects are not inferred from layout. |
 | Callback API endpoints | **Covered with a stronger boundary:** explicit actions and OpenAPI routes already expose typed HTTP contracts. A callback is never remotely callable merely because it updates UI. |
 | Clientside callbacks, promises, and browser `fetch` | **Deliberate non-parity for arbitrary code:** use registered browser modules, Web Components, typed custom events, safe actions, and public web APIs under declared capabilities. Raw JavaScript callback strings and arbitrary eval remain prohibited. |
-| Callback graph visualization | **Covered/expanded 0.17:** Explorer already owns dependency/inverse-consumer graphs and render traces; dashboard bindings add timing, payload, trigger, target, cache, and job overlays. |
+| Callback graph visualization | **Covered/expanded 0.17** (`beta`, RFC-0040, `GRAPH-017`): Explorer already owns dependency/inverse-consumer graphs and render traces; dashboard bindings add timing, payload, trigger, target, cache, and job overlays. |
 
 ### WebSocket callbacks
 
@@ -229,7 +235,7 @@ Enterprise-only option becomes a portable Hedron guarantee.
 | Dash hooks/plugins | **Covered:** plugin discovery, capabilities, lifecycle, rollback, route/component/assets/diagnostic/Explorer extension points, and compatibility checks. Raw index-string mutation and automatic executable asset loading remain controlled trust boundaries. |
 | Dev Tools errors, validation, callback graph, timing, hot reload | **Covered:** typed model validation, diagnostics, Explorer graphs/traces, performance panels, in-app development errors under safe profiles, and reload. Production tracebacks remain secret. |
 | `dash.testing` browser fixtures | **Covered:** pytest helpers, async clients, snapshots, Playwright, browser/a11y/visual hooks, console checks, and named conformance suites. |
-| Jupyter inline/external/tab display | **Planned 0.17:** a server-side `hedron-notebook` preview helper with inline iframe/link modes, proxy/root-path detection, random port/token, dimensions, error forwarding, clean shutdown, and an explicit warning for hosted/public notebooks. |
+| Jupyter inline/external/tab display | **Planned 0.17** (`experimental`, RFC-0042, `NOTEBOOK-017`): a server-side `hedron-notebook` preview helper with inline iframe/link modes, proxy/root-path detection, random port/token, dimensions, error forwarding, clean shutdown, and an explicit warning for hosted/public notebooks. |
 | JupyterLab extension mode | **Recipe/plugin:** first-party inline/external display is enough initially; a dedicated JupyterLab extension requires independent demand. |
 
 The 0.16 JupyterLite/Pyodide bridge executes isolated Python in the browser. It does not replace the
@@ -281,14 +287,20 @@ not authorization, and enabling MCP does not implicitly expose every page or act
 
 ### New phase 0.17 — reactive dashboards and agent interfaces
 
-- Deterministic page-local dashboard interaction graphs.
-- Versioned, bounded property and collection patches.
-- Structured dynamic collection identities and selectors.
-- Unified trigger/action lifecycle and cross-filter composition.
-- Server-side Jupyter preview helper.
-- Optional deny-by-default MCP projection.
+Owning RFCs: [RFC-0040](rfcs/RFC-0040-INTERACTION-GRAPH.md),
+[RFC-0041](rfcs/RFC-0041-PROPERTY-COLLECTION-PATCH.md),
+[RFC-0042](rfcs/RFC-0042-NOTEBOOK-PREVIEW.md),
+[RFC-0043](rfcs/RFC-0043-MCP-PROJECTION.md);
+migration evidence `MIGRATE-017`.
+
+- Deterministic page-local dashboard interaction graphs (`GRAPH-017`, `REPLAY-017`).
+- Versioned, bounded property and collection patches (`PATCH-017`).
+- Structured dynamic collection identities and selectors (`PATCH-017`).
+- Unified trigger/action lifecycle and cross-filter composition (`XFILTER-017`).
+- Server-side Jupyter preview helper (`NOTEBOOK-017`, experimental).
+- Optional deny-by-default MCP projection (`MCP-017`, experimental).
 - Dash migration inventory, coexistence guidance, and diagnostics without automatic semantic
-  conversion.
+  conversion (`MIGRATE-017`).
 
 ## Deliberate non-parity
 
@@ -335,8 +347,9 @@ The following are not missing planned features:
 
 ## Maintenance rule
 
-Refresh this matrix before closing phases 0.10, 0.12, 0.15, and 0.17 and whenever Hedron claims
-Dash migration or reactive-dashboard coverage. A newly documented Dash or Dash AG Grid capability
-must be classified as covered, expanded existing phase, planned later phase, recipe/plugin, licensed
-integration, or deliberate non-parity. Accepted gaps require a phase owner, security and
-accessibility boundaries, and evidence-bearing exit gates before they appear as Supported.
+Refresh this matrix before closing phases 0.10, 0.12, 0.15, and 0.17 (entry refresh for 0.17
+recorded 2026-08-06) and whenever Hedron claims Dash migration or reactive-dashboard coverage. A
+newly documented Dash or Dash AG Grid capability must be classified as covered, expanded existing
+phase, planned later phase, recipe/plugin, licensed integration, or deliberate non-parity. Accepted
+gaps require a phase owner, RFC, public stability label, security and accessibility boundaries, and
+evidence-bearing exit gates before they appear as Supported.
