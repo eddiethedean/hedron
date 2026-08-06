@@ -12,11 +12,15 @@ from collections import defaultdict, deque
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from hedron_core.codes import HED_WORKFLOW_0001, HED_WORKFLOW_0002, HED_WORKFLOW_0003
 from hedron_core.diagnostics import HedronError, error
 from hedron_core.typing_aliases import JsonValue
+
+if TYPE_CHECKING:
+    from hedron_core.inference import InferencePolicy
+    from hedron_core.model_demo import ActionRegistry
 
 __all__ = [
     "InferenceWorkflow",
@@ -25,8 +29,10 @@ __all__ = [
     "WorkflowError",
     "WorkflowNode",
     "WorkflowNodeKind",
+    "WorkflowNodeResult",
     "WorkflowPermission",
     "WorkflowPort",
+    "WorkflowRunResult",
 ]
 
 
@@ -100,6 +106,28 @@ class WorkflowEditorView:
     rows: tuple[Mapping[str, Any], ...]
 
 
+@dataclass(frozen=True, slots=True)
+class WorkflowNodeResult:
+    """Per-node execution outcome with provenance (no host code from graph JSON)."""
+
+    node_id: str
+    status: str  # "ok" | "skipped" | "failed" | "cancelled"
+    output: Any = None
+    error: str | None = None
+    provenance: Mapping[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True, slots=True)
+class WorkflowRunResult:
+    """Aggregate workflow run with partial-failure semantics."""
+
+    workflow_id: str
+    status: str  # "completed" | "partial" | "cancelled" | "failed"
+    nodes: tuple[WorkflowNodeResult, ...]
+    outputs: Mapping[str, Any] = field(default_factory=dict)
+    request_id: str | None = None
+
+
 _FORBIDDEN_PARAM_KEYS = frozenset(
     {
         "python",
@@ -153,24 +181,7 @@ class InferenceWorkflow:
 
     def add_node(self, node: WorkflowNode, *, principal: str) -> None:
         self.assert_permission(principal, WorkflowPermission.EDIT)
-        self._reject_forbidden_parameters(node.parameters)
-        if node.node_id in self._nodes:
-            raise WorkflowError(
-                f"Duplicate node id: {node.node_id!r}",
-                code=HED_WORKFLOW_0001,
-            )
-        if node.kind in {WorkflowNodeKind.ACTION, WorkflowNodeKind.MODEL} and not node.action_id:
-            raise WorkflowError(
-                "Action/model nodes require action_id",
-                code=HED_WORKFLOW_0001,
-                diagnostic=error(
-                    HED_WORKFLOW_0001,
-                    title="Missing action binding",
-                    explanation="Operator nodes must map to an explicit registered action.",
-                    remediation="Set action_id to a registered action.",
-                ),
-            )
-        self._nodes[node.node_id] = node
+        self._insert_node(node)
         self._bump()
 
     def connect(
@@ -192,8 +203,13 @@ class InferenceWorkflow:
                 f"Port type mismatch: {src.type_name} -> {dst.type_name}",
                 code=HED_WORKFLOW_0001,
             )
-        self._edges.append((from_node, from_port, to_node, to_port))
-        self.validate()
+        edge = (from_node, from_port, to_node, to_port)
+        self._edges.append(edge)
+        try:
+            self.validate()
+        except WorkflowError:
+            self._edges.pop()
+            raise
         self._bump()
 
     def validate(self) -> None:
@@ -408,13 +424,13 @@ class InferenceWorkflow:
         if replace:
             self._nodes.clear()
             self._edges.clear()
+        pending_nodes: list[WorkflowNode] = []
         for node_data in raw.get("nodes", []):
             params = dict(node_data.get("parameters") or {})
-            self._reject_forbidden_parameters(params)
             node = WorkflowNode(
                 node_id=str(node_data["node_id"]),
                 kind=WorkflowNodeKind(str(node_data["kind"])),
-                label=str(node_data.get("label", "")),
+                label=str(node_data.get("label", node_data["node_id"])),
                 action_id=node_data.get("action_id"),
                 parameters=params,
                 secret_refs=tuple(node_data.get("secret_refs") or ()),
@@ -428,9 +444,12 @@ class InferenceWorkflow:
                     for p in node_data.get("ports") or ()
                 ),
             )
-            self._nodes[node.node_id] = node
+            # Validate before mutating so partial loads cannot leave invalid graphs.
+            self._validate_node(node, existing={n.node_id for n in pending_nodes})
+            pending_nodes.append(node)
+        pending_edges: list[tuple[str, str, str, str]] = []
         for edge in raw.get("edges", []):
-            self._edges.append(
+            pending_edges.append(
                 (
                     str(edge["from_node"]),
                     str(edge["from_port"]),
@@ -438,8 +457,165 @@ class InferenceWorkflow:
                     str(edge["to_port"]),
                 )
             )
-        self.validate()
+        for node in pending_nodes:
+            self._nodes[node.node_id] = node
+        self._edges.extend(pending_edges)
+        try:
+            self.validate()
+        except WorkflowError:
+            if replace:
+                self._nodes.clear()
+                self._edges.clear()
+            else:
+                for node in pending_nodes:
+                    self._nodes.pop(node.node_id, None)
+                del self._edges[-len(pending_edges) :]
+            raise
         self._bump()
+
+    def run(
+        self,
+        *,
+        principal: str,
+        registry: ActionRegistry,
+        inputs: Mapping[str, Any] | None = None,
+        policy: InferencePolicy | None = None,
+        request_id: str | None = None,
+    ) -> WorkflowRunResult:
+        """Execute ACTION/MODEL nodes via registered handlers (no graph-hosted code)."""
+        self.assert_permission(principal, WorkflowPermission.RUN)
+        order = self.topological_order()
+        node_outputs: dict[str, Any] = {}
+        results: list[WorkflowNodeResult] = []
+        cancelled = False
+        failed = False
+        seed = dict(inputs or {})
+
+        for node_id in order:
+            if policy is not None and request_id is not None and policy.is_cancelled(request_id):
+                cancelled = True
+                results.append(
+                    WorkflowNodeResult(
+                        node_id=node_id,
+                        status="cancelled",
+                        provenance={"reason": "policy_cancel"},
+                    )
+                )
+                for remaining in order[order.index(node_id) + 1 :]:
+                    results.append(
+                        WorkflowNodeResult(
+                            node_id=remaining,
+                            status="skipped",
+                            provenance={"reason": "upstream_cancel"},
+                        )
+                    )
+                break
+
+            node = self._nodes[node_id]
+            inbound = self._gather_inputs(node_id, node_outputs, seed)
+            if node.kind in {WorkflowNodeKind.INPUT, WorkflowNodeKind.REFERENCE}:
+                value = inbound if inbound else seed.get(node_id, seed)
+                node_outputs[node_id] = value
+                results.append(
+                    WorkflowNodeResult(
+                        node_id=node_id,
+                        status="ok",
+                        output=value,
+                        provenance={"kind": node.kind.value},
+                    )
+                )
+                continue
+            if node.kind in {
+                WorkflowNodeKind.OUTPUT,
+                WorkflowNodeKind.ARTIFACT,
+                WorkflowNodeKind.DATASET,
+                WorkflowNodeKind.REMOTE,
+            }:
+                node_outputs[node_id] = inbound
+                results.append(
+                    WorkflowNodeResult(
+                        node_id=node_id,
+                        status="ok",
+                        output=inbound,
+                        provenance={"kind": node.kind.value},
+                    )
+                )
+                continue
+            if node.kind in {WorkflowNodeKind.ACTION, WorkflowNodeKind.MODEL}:
+                action = registry.get_action(node.action_id or "")
+                if action is None or action.handler is None:
+                    failed = True
+                    results.append(
+                        WorkflowNodeResult(
+                            node_id=node_id,
+                            status="failed",
+                            error=f"Missing registered handler for action {node.action_id!r}",
+                            provenance={"action_id": node.action_id},
+                        )
+                    )
+                    for remaining in order[order.index(node_id) + 1 :]:
+                        results.append(
+                            WorkflowNodeResult(
+                                node_id=remaining,
+                                status="skipped",
+                                provenance={"reason": "upstream_failure"},
+                            )
+                        )
+                    break
+                try:
+                    payload = {**dict(node.parameters), **inbound}
+                    output = action.handler(**payload) if payload else action.handler()
+                    node_outputs[node_id] = output
+                    results.append(
+                        WorkflowNodeResult(
+                            node_id=node_id,
+                            status="ok",
+                            output=output,
+                            provenance={
+                                "action_id": node.action_id,
+                                "code_version": action.code_version,
+                                "model_version": action.model_version,
+                            },
+                        )
+                    )
+                except Exception as exc:  # noqa: BLE001 — partial failure boundary
+                    failed = True
+                    results.append(
+                        WorkflowNodeResult(
+                            node_id=node_id,
+                            status="failed",
+                            error=str(exc),
+                            provenance={"action_id": node.action_id},
+                        )
+                    )
+                    for remaining in order[order.index(node_id) + 1 :]:
+                        results.append(
+                            WorkflowNodeResult(
+                                node_id=remaining,
+                                status="skipped",
+                                provenance={"reason": "upstream_failure"},
+                            )
+                        )
+                    break
+
+        terminal = {
+            nid: node_outputs[nid]
+            for nid, n in self._nodes.items()
+            if n.kind == WorkflowNodeKind.OUTPUT and nid in node_outputs
+        }
+        if cancelled:
+            status = "cancelled"
+        elif failed:
+            status = "partial" if any(r.status == "ok" for r in results) else "failed"
+        else:
+            status = "completed"
+        return WorkflowRunResult(
+            workflow_id=self.workflow_id,
+            status=status,
+            nodes=tuple(results),
+            outputs=terminal,
+            request_id=request_id,
+        )
 
     def migrate_schema(self, target_version: str) -> None:
         # Identity migration for v1; future versions append transforms here.
@@ -466,6 +642,47 @@ class InferenceWorkflow:
             f"Missing {direction} port {port_id!r} on {node_id!r}",
             code=HED_WORKFLOW_0001,
         )
+
+    def _validate_node(self, node: WorkflowNode, *, existing: set[str] | None = None) -> None:
+        self._reject_forbidden_parameters(node.parameters)
+        known = set(self._nodes) if existing is None else (set(self._nodes) | existing)
+        if node.node_id in known:
+            raise WorkflowError(
+                f"Duplicate node id: {node.node_id!r}",
+                code=HED_WORKFLOW_0001,
+            )
+        if node.kind in {WorkflowNodeKind.ACTION, WorkflowNodeKind.MODEL} and not node.action_id:
+            raise WorkflowError(
+                "Action/model nodes require action_id",
+                code=HED_WORKFLOW_0001,
+                diagnostic=error(
+                    HED_WORKFLOW_0001,
+                    title="Missing action binding",
+                    explanation="Operator nodes must map to an explicit registered action.",
+                    remediation="Set action_id to a registered action.",
+                ),
+            )
+
+    def _insert_node(self, node: WorkflowNode) -> None:
+        self._validate_node(node)
+        self._nodes[node.node_id] = node
+
+    def _gather_inputs(
+        self,
+        node_id: str,
+        node_outputs: Mapping[str, Any],
+        seed: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        inbound: dict[str, Any] = {}
+        for frm, fp, to, tp in self._edges:
+            if to != node_id:
+                continue
+            upstream = node_outputs.get(frm, seed.get(frm))
+            if isinstance(upstream, Mapping) and fp in upstream:
+                inbound[tp] = upstream[fp]
+            else:
+                inbound[tp] = upstream
+        return inbound
 
     def _reject_forbidden_parameters(self, parameters: Mapping[str, JsonValue]) -> None:
         for key in parameters:

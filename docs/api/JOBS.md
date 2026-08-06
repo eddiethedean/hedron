@@ -37,6 +37,13 @@ Portable states: queued, running, succeeded, failed, cancellation-requested, can
 expired. Retry ownership, maximum attempts, result serialization, cleanup, and
 backend-unavailable behavior are explicit backend/application policies.
 
+## InferencePolicy cancel (0.18)
+
+`InferencePolicy.request_cancel(request_id, backend=...)` layers admission/queue cancel on top
+of this contract: queued requests are dropped locally; accepted requests map to a backend
+`job_id` and call `JobBackend.request_cancel`, releasing inflight concurrency capacity.
+See [Inference API](INFERENCE.md).
+
 ## HTTP and HTMX behavior
 
 Accepted work returns HTTP 202 with an addressable authorized status resource and

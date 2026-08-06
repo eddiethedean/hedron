@@ -1,18 +1,18 @@
 # Upgrade
 
-Current train: **0.17.0** (**Published**). From 0.16: reactive dashboards
-(`DashboardBinding` / `InteractionGraph`), bounded patches, HTMX shell primitives, public
-`render_interaction`, and optional Alpha `hedron-notebook` / `hedron-mcp`. See
-[What's ready](whats-ready.md) and [What's new in 0.17](whats-new-0.17.md).
+Current train: **0.18.0** (**Published**). From 0.17: model demos and inference workflows
+(`ModelDemo` / `InferenceInterface`, `InferencePolicy`, `InferenceWorkflow`, governed feedback,
+`InteractionRecorder`, optional Alpha `hedron-gradio`). See
+[What's ready](whats-ready.md) and [What's new in 0.18](whats-new-0.18.md).
 
 
 Hedron publishes coordinated Beta trains. Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should
 upgrade through **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** /
-**0.16** to the **0.17.0** train for reactive dashboards and agent interfaces.
+**0.16** / **0.17** to the **0.18.0** train for model demos and inference workflows.
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9**–**0.16** to the **0.17.0** train.
+upgrade through **0.9**–**0.17** to the **0.18.0** train.
 
 ## What changed in 0.8
 
@@ -243,6 +243,29 @@ notebook/MCP packages. Live transports remain **experimental**. Notebook preview
    `"hedron[mcp]"`. Keep MCP disabled/empty by default.
 6. Re-read [What's new in 0.17](whats-new-0.17.md), [Dash migration](dash-migration.md), and
    [NiceGUI migration](nicegui-migration.md).
+
+## 0.18 model demos and inference workflows (Published)
+
+Phase 0.18 adds fail-closed `ModelDemo` / `InferenceInterface`, `ExampleSet`, presentation
+builtins, governed `PredictionFeedback`, `InferencePolicy` over `JobBackend`,
+`InteractionRecorder`, versioned `InferenceWorkflow`, and optional Alpha `hedron-gradio`.
+Gradio interop is **Experimental** — pin Alpha and expect churn. Live transports remain
+**experimental**; prefer polling.
+
+### Checklist: 0.17 → 0.18
+
+1. Pin and upgrade to the coordinated `0.18.0` Beta train (`hedron`, adapters, extras).
+   Alpha packages remain on `0.1.x` with `hedron-core>=0.18.0,<0.19`.
+2. Build demos only from `ActionRegistry` / `RegisteredCallableAdapter` — bare callables fail closed.
+3. Wire `InferencePolicy` concurrency groups and cancel through durable `JobBackend`; do not use
+   `InProcessInferenceQueue` as a production durability promise.
+4. Enable `PredictionFeedback` only after explicit consent; pass `principal=` when
+   `authorization_required` is true; never treat feedback as ground truth.
+5. Use `InferenceWorkflow.run(..., registry=...)` for ACTION/MODEL execution; graph JSON cannot
+   host code or auto-publish HTTP/MCP endpoints.
+6. Optional: `pip install "hedron[gradio]"` for client discovery/jobs; keep adapters disabled by
+   default. See [Gradio migration](gradio-migration.md) and [Model demos](model-demos.md).
+7. Re-read [What's new in 0.18](whats-new-0.18.md) and [What's ready](whats-ready.md).
 
 ## Deprecation tooling
 

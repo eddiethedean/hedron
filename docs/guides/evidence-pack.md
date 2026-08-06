@@ -18,7 +18,7 @@ Script index: [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/
 
 ## How to verify (evaluator)
 
-1. Open the GitHub Release matching your pinned train (for example **`v0.17.0`**).
+1. Open the GitHub Release matching your pinned train (for example **`v0.18.0`**).
 2. Download SBOM / license / evidence-bundle assets when present.
 3. Confirm package versions on PyPI match the release tag (`hedron==0.17.0`, …).
 4. Optionally clone the tag and run `uv run python scripts/verify_pkg_15.py` (or the

@@ -82,6 +82,7 @@ hedron/
 | `hedron-extras` | `hedron_extras` | Optional curated extras / workbenches; also `hedron[extras]` | `v0.16.0` |
 | `hedron-notebook` | `hedron_notebook` | Optional notebook preview (experimental Alpha); also `hedron[notebook]` | `v0.1.0` |
 | `hedron-mcp` | `hedron_mcp` | Optional MCP projection (experimental Alpha; deny-by-default); also `hedron[mcp]` | `v0.1.0` |
+| `hedron-gradio` | `hedron_gradio` | Optional Gradio client interop (experimental Alpha); also `hedron[gradio]` | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Alpha; independent of Beta train) |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
@@ -90,7 +91,7 @@ The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
 **Publish note:** the coordinated train is **`0.18.0`** (`v0.18.0`) for model demos and
-agent interfaces — see [STATUS](STATUS.md). Experimental Java/Node runtimes live under
+inference workflows — see [STATUS](STATUS.md). Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
 
 ## Dependency rules

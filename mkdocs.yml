@@ -223,6 +223,8 @@ nav:
       - Plugin authoring: guides/plugin-authoring.md
       - Project workflow: guides/project-workflow.md
       - Plain FastAPI: guides/plain-fastapi.md
+    - Model demos and inference: guides/model-demos.md
+    - Gradio migration: guides/gradio-migration.md
   - Examples:
     - Overview: examples/index.md
     - Try with Codespaces / Dev Container: examples/try-it.md
@@ -420,6 +422,7 @@ nav:
         - WebSocket channel: api/WEBSOCKET_CHANNEL.md
         - Navigation preload: api/PRELOAD.md
         - Jobs: api/JOBS.md
+        - Inference / model demos: api/INFERENCE.md
       - Cross-cutting:
         - Prepare lifecycle: api/PREPARE.md
         - Security audit sink: api/AUDIT.md
@@ -443,7 +446,7 @@ nav:
     - Dash migration: guides/dash-migration.md
     - Gradio migration: guides/gradio-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
-    - Upgrade (0.8 → 0.16): guides/upgrade.md
+    - Upgrade (0.8 → 0.18): guides/upgrade.md
     - What's new: guides/release-notes.md
     - What's new in 0.18: guides/whats-new-0.18.md
     - What's new in 0.17: guides/whats-new-0.17.md

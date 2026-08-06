@@ -51,6 +51,8 @@ Prefer not to install locally?
 | [`hedron[native]`](https://pypi.org/project/hedron-native/) → `hedron-native` | Alpha | Optional Rust HTML-escape accel |
 | [`hedron[extras]`](https://pypi.org/project/hedron-extras/) → `hedron-extras` | Beta | Curated extras / workbenches (0.16) |
 | [`hedron[charts]`](https://pypi.org/project/hedron-charts/) → `hedron-charts` | Alpha | Chart adapters (pin; expect churn) |
+| [`hedron[notebook]`](https://pypi.org/project/hedron-notebook/) → `hedron-notebook` | Alpha | Server-side notebook preview (experimental) |
+| [`hedron[mcp]`](https://pypi.org/project/hedron-mcp/) → `hedron-mcp` | Alpha | Deny-by-default MCP projection (experimental) |
 | [`hedron[gradio]`](https://pypi.org/project/hedron-gradio/) → `hedron-gradio` | Alpha | Gradio client interop (experimental) |
 
 Full matrix and install extras: [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).

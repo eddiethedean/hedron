@@ -70,7 +70,7 @@ still assessed.
   explicit routes/actions, or a different framework mechanism.
 - **Expanded existing phase:** the audit found a concrete omission in a coherent phase already on
   the roadmap.
-- **Planned 0.18:** the capability belongs to the new model-demo and inference-workflow packet.
+- **Shipped 0.18:** the capability belongs to the new model-demo and inference-workflow packet.
 - **Recipe/plugin:** public Hedron composition or an optional vendor adapter can provide it without
   a first-party core runtime API.
 - **Deliberate non-parity:** the Gradio mechanism conflicts with Hedron's explicit exposure,
@@ -90,7 +90,7 @@ still assessed.
 | Camera/microphone input and chunked audio/video output | Capture is planned in 0.15; timed media input/output sessions and backpressure are made explicit in 0.10. |
 | Gallery, ranked prediction labels, parameter viewer, dialogue transcripts | Useful ML-demo presentation gaps; assigned to 0.18, with a general responsive media gallery added to 0.15. |
 | Python/JavaScript clients, API docs, OpenAPI, API recorder | FastAPI/OpenAPI already cover the protocol; 0.18 adds interaction recording and optional Gradio remote interoperability. |
-| `Server`, FastAPI mounting, authentication | Covered by Hedron's FastAPI/adapters and OIDC. Coexistence and migration guidance belong to 0.18. |
+| `Server`, FastAPI mounting, authentication | Covered by Hedron's FastAPI/adapters and OIDC. Coexistence and migration guidance ship in 0.18 ([Gradio migration](guides/gradio-migration.md)). |
 | MCP tools/resources/prompts | Already planned in 0.17 with a stronger disabled-and-empty, explicit-opt-in security boundary. |
 | `Workflow` visual AI pipeline builder | Genuine gap; accepted in 0.18 as a typed, versioned, permissioned inference DAG over explicit actions and adapters. |
 | Custom components | Covered by package/plugin/Web Component contracts; Gradio's Node/Svelte toolchain is not required by Hedron core. |
@@ -102,7 +102,7 @@ still assessed.
 
 | Gradio surface | Hedron disposition |
 |---|---|
-| `Interface(fn, inputs, outputs)` | **Planned 0.18:** `InferenceInterface` derives a reviewable form/result demo from an explicitly registered typed action or callable adapter. Input/output schemas, preprocessing, postprocessing, side effects, authorization, rate/resource policy, and HTTP/MCP exposure remain explicit. |
+| `Interface(fn, inputs, outputs)` | **Shipped 0.18:** `InferenceInterface` derives a reviewable form/result demo from an explicitly registered typed action or callable adapter. Input/output schemas, preprocessing, postprocessing, side effects, authorization, rate/resource policy, and HTTP/MCP exposure remain explicit. |
 | Live/reactive `Interface` | **Covered with constraints:** 0.17 bindings can debounce an idempotent declared action. Arbitrary execution on each keystroke is not inferred and must have rate, cancellation, stale-result, and resource policy. |
 | Multiple inputs and outputs | **Covered:** typed models, forms, actions, multi-region results, artifacts, and 0.17 bindings already provide this. |
 | `ChatInterface` | **Covered/0.18 composition:** 0.10 owns chat messages, attachments, streamed output, cancellation, and transport fallback. 0.18 adds examples, feedback, model metadata, and inference scheduling around the same components. |
@@ -111,7 +111,7 @@ still assessed.
 | `TabbedInterface` | **Covered:** accessible tabs, panels, pages, and composition. App-wide shared state is not inferred from tab membership. |
 | `Blocks` | **Covered by a different model:** typed components, slots/fragments, layout primitives, actions, browser components, HDJ, and plugins provide low-level composition without serializing a universal client callback tree. |
 | `@gr.render` dynamic layouts and keyed preservation | **Covered/0.17 equivalent:** explicit fragments, structured dynamic collections, stable identity, and declared preservation own the outcome. Hedron does not rerun a layout function as a hidden application scope. |
-| `Workflow` | **Planned 0.18:** an optional visual inference workflow composes typed action/model/remote/dataset nodes with versioned ports and graph artifacts. Published and editable graphs have separate authorization. |
+| `Workflow` | **Shipped 0.18:** an optional visual inference workflow composes typed action/model/remote/dataset nodes with versioned ports and graph artifacts. Published and editable graphs have separate authorization. |
 | `Server` | **Covered:** FastAPI endpoints, async/generators, OpenAPI, jobs, SSE, middleware, DI, and 0.17 MCP projection already provide the portable server outcome. |
 
 ## Complete component cross-check
@@ -132,9 +132,9 @@ assessed separately.
 | `Code` | **Covered:** escaped code viewer, highlighting adapter, copy, download, and bounded editing where explicitly enabled. |
 | `ColorPicker` | **Planned 0.15:** native color input with validation and fallback. |
 | `Dataframe` | **Covered:** `DataTable`/`DataEditor`, data-source adapters, typed columns, editing, selection, import/export, and bounds. |
-| `Dataset` | **Planned 0.18:** `ExampleSet` provides gallery/table samples, selection, pagination, partial inputs, and provenance. General datasets remain data sources, not UI-global mutable objects. |
+| `Dataset` | **Shipped 0.18:** `ExampleSet` provides gallery/table samples, selection, pagination, partial inputs, and provenance. General datasets remain data sources, not UI-global mutable objects. |
 | `DateTime` | **Planned 0.15:** typed date/time/datetime controls with locale and validation. |
-| `Dialogue` | **Planned 0.18:** editable/display-only multi-speaker transcript with typed speaker identity, tags, timestamps, diarization metadata, accessible color-independent labeling, and text export. |
+| `Dialogue` | **Shipped 0.18:** editable/display-only multi-speaker transcript with typed speaker identity, tags, timestamps, diarization metadata, accessible color-independent labeling, and text export. |
 | `DownloadButton` | **Covered:** authorized, typed download responses with content type, filename, streaming, and size policy. |
 | `Dropdown` | **Covered/0.15:** select, multiselect, search, clearability, typed options, and fallback. |
 | `DuplicateButton` | **Recipe/plugin:** duplicating a Hugging Face Space is a Hub operation, not a portable UI primitive. |
@@ -147,7 +147,7 @@ assessed separately.
 | `ImageEditor` | **Planned 0.16:** crop/selection tools; a full layer editor remains an optional specialized component with decode, memory, and export limits. |
 | `ImageSlider` | **Planned 0.16:** accessible before/after image comparison. |
 | `JSON` | **Covered/0.16:** bounded viewer plus schema-aware editor. |
-| `Label` | **Planned 0.18:** ranked prediction labels/scores with stable class identity, precision, threshold/calibration metadata, and an accessible table representation. |
+| `Label` | **Shipped 0.18:** ranked prediction labels/scores with stable class identity, precision, threshold/calibration metadata, and an accessible table representation. |
 | `LinePlot` | **Covered/planned 0.6/0.12:** visualization adapter and beginner charts. |
 | `LoginButton` | **Covered/recipe:** 0.15 OIDC helpers provide portable login/logout; a Hugging Face-specific button belongs in an optional provider package. |
 | `Markdown` | **Covered:** sanitized Markdown adapter with local assets and an explicit trust policy. |
@@ -155,7 +155,7 @@ assessed separately.
 | `MultimodalTextbox` | **Covered/planned 0.10/0.15:** chat input composes text and bounded attachments/capture. |
 | `Navbar` | **Covered:** `Page`, `Nav`, links, routes, responsive layout, and accessible disclosure patterns. |
 | `Number` | **Planned 0.15:** typed numeric input with bounds, step, validation, and native fallback. |
-| `ParamViewer` | **Planned 0.18:** model/action parameter documentation is generated from typed schemas with defaults, descriptions, anchors, secret redaction, and language-neutral examples. |
+| `ParamViewer` | **Shipped 0.18:** model/action parameter documentation is generated from typed schemas with defaults, descriptions, anchors, secret redaction, and language-neutral examples. |
 | `Plot` | **Covered:** visualization adapters for Matplotlib, Plotly, Altair, and later optional libraries. |
 | `Radio` | **Covered:** semantic radio group; richer card/segmented variants preserve submitted values. |
 | `ScatterPlot` | **Planned 0.12:** beginner chart with typed selection/event boundary. |
@@ -189,8 +189,8 @@ expand/collapse lifecycle, and chat feedback/edit/retry/undo events.
 | `.then()`, `.success()`, `.failure()` | **Covered/0.17:** explicit finite interaction graphs and success/error follow-up actions with cycle, side-effect, and duplicate-writer diagnostics. |
 | `trigger_mode` once/multiple/always-last | **Covered/0.17:** concurrency, debounce/coalescing, latest-wins, stale-result rejection, and cancellation policies are declared and traceable. |
 | `cancels`, time limits, progress target | **Covered:** cancellation/timeouts, jobs, progress/status, and target-specific loading regions. |
-| Preprocess/postprocess switches | **Planned 0.18:** typed media/model adapters declare transformations; raw transport bypasses require explicit trusted schemas and limits. |
-| `batch` and `max_batch_size` | **Planned 0.18:** inference batching uses bounded windows and resource-aware scheduling over durable job contracts. |
+| Preprocess/postprocess switches | **Shipped 0.18:** typed media/model adapters declare transformations; raw transport bypasses require explicit trusted schemas and limits. |
+| `batch` and `max_batch_size` | **Shipped 0.18:** inference batching uses bounded windows and resource-aware scheduling over durable job contracts. |
 | `concurrency_id` and limit | **Planned 0.18 equivalent:** named resource/concurrency groups are capacity-owned, observable, fair, and usable across workers. |
 | Property update return values | **Planned 0.17:** bounded, schema/version-checked patches for declared targets with full-fragment fallback. |
 | Event `api_name` and default public API visibility | **Deliberate difference:** a UI action is not remotely published by default. HTTP and MCP exposure are separately registered, authenticated, authorized, rate-limited, and documented. |

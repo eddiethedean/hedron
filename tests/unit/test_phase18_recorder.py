@@ -17,11 +17,21 @@ def test_recorder_public_only_and_redacts_secrets() -> None:
         )
         is None
     )
+    # public=True cannot force-record a non-allowlisted path.
+    assert (
+        rec.record(
+            method="POST",
+            path="/api/secret",
+            body={"text": "nope"},
+            public=True,
+        )
+        is None
+    )
     exchange = rec.record(
         method="POST",
         path="/api/predict",
         headers={"Authorization": "Bearer secret-token", "Content-Type": "application/json"},
-        body={"password": "x", "text": "hi"},
+        body={"password": "x", "text": "hi", "items": [{"password": "nested"}]},
         session_assumptions=("authenticated session cookie",),
         file_fixtures=("sample.png",),
     )
@@ -30,6 +40,7 @@ def test_recorder_public_only_and_redacts_secrets() -> None:
     assert exchange.body is not None
     assert exchange.body["password"] == "[redacted]"
     assert exchange.body["text"] == "hi"
+    assert exchange.body["items"][0]["password"] == "[redacted]"
 
     snippets = rec.snippets()
     assert any(s.language == "python" for s in snippets)

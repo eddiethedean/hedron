@@ -102,7 +102,8 @@ def test_batch_grouping_and_dev_queue() -> None:
 def test_cancel_stream() -> None:
     policy = InferencePolicy(groups={"g": ConcurrencyGroup(name="g", limit=2)})
     req = policy.admit(job_type="infer", payload={}, group="g")
-    policy.request_cancel(req.request_id)
+    assert policy.request_cancel(req.request_id) is True
+    assert policy.request_cancel("unknown-id") is False
 
     def gen():
         yield 1
@@ -111,3 +112,60 @@ def test_cancel_stream() -> None:
     with pytest.raises(InferenceError) as exc2:
         policy.stream_progress(gen(), request_id=req.request_id)
     assert exc2.value.code == HED_INFER_0003
+
+
+def test_cancel_releases_inflight_and_backend() -> None:
+    backend = InMemoryJobBackend()
+    set_job_backend(backend)
+    policy = InferencePolicy(groups={"g": ConcurrencyGroup(name="g", limit=1)})
+    req = policy.admit(job_type="infer", payload={}, group="g", backend=backend)
+    assert req.job_id is not None
+    assert policy._inflight["g"] == 1
+    assert policy.request_cancel(req.request_id, backend=backend) is True
+    assert policy._inflight["g"] == 0
+
+
+def test_fair_drain_and_batch_max_wait() -> None:
+    policy = InferencePolicy(
+        groups={"g": ConcurrencyGroup(name="g", limit=1, fair=True)},
+        max_queue=10,
+        batch=BatchWindow(max_size=4, max_wait_ms=10),
+    )
+    policy.admit(job_type="infer", payload={}, group="g", tenant_id="t1")
+    policy.admit(job_type="infer", payload={}, group="g", tenant_id="t2")
+    policy.admit(job_type="infer", payload={}, group="g", tenant_id="t1")
+    policy.release("g")
+    started = policy.drain_ready()
+    assert len(started) == 1
+    # Fairness should prefer alternating tenants (t2 before second t1).
+    assert started[0][0].tenant_id == "t2"
+
+    now = 100.0
+    items = [
+        QueuedInference(
+            request_id="a",
+            job_type="t",
+            payload={},
+            group="g",
+            shape_key="img",
+            enqueued_at=now - 1.0,
+        ),
+        QueuedInference(
+            request_id="b",
+            job_type="t",
+            payload={},
+            group="g",
+            shape_key="img",
+            enqueued_at=now - 0.9,
+        ),
+    ]
+    from hedron_core.inference import InferenceDiagnostics
+
+    for it in items:
+        policy._diagnostics[it.request_id] = InferenceDiagnostics(
+            request_id=it.request_id, group="g", queue_ms=0.0
+        )
+    batches = policy.form_batch(items, now=now)
+    # max_wait exceeded for oldest → flush before max_size
+    assert len(batches) == 2
+    assert all(len(chunk) == 1 for _, chunk in batches)

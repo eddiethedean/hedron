@@ -144,6 +144,9 @@ class InferencePolicy:
     _seq: Iterator[int] = field(default_factory=lambda: itertools.count(1), init=False, repr=False)
     _cancel: set[str] = field(default_factory=set, init=False)
     _diagnostics: dict[str, InferenceDiagnostics] = field(default_factory=dict, init=False)
+    _request_jobs: dict[str, str] = field(default_factory=dict, init=False)
+    _request_groups: dict[str, str] = field(default_factory=dict, init=False)
+    _fair_cursor: dict[str, int] = field(default_factory=lambda: defaultdict(int), init=False)
 
     def register_group(self, group: ConcurrencyGroup) -> None:
         if group.limit < 1:
@@ -203,6 +206,8 @@ class InferencePolicy:
             if self._inflight[group] < capacity:
                 handle = self._submit(item, backend=backend)
                 self._inflight[group] += 1
+                self._request_jobs[request_id] = handle.job_id
+                self._request_groups[request_id] = group
                 self._diagnostics[request_id] = InferenceDiagnostics(
                     request_id=request_id,
                     group=group,
@@ -254,8 +259,27 @@ class InferencePolicy:
 
     def request_cancel(self, request_id: str, *, backend: JobBackend | None = None) -> bool:
         with self._lock:
+            known = (
+                request_id in self._diagnostics
+                or any(q.request_id == request_id for q in self._queue)
+                or request_id in self._request_jobs
+            )
+            if not known and request_id not in self._cancel:
+                return False
+            was_queued = any(q.request_id == request_id for q in self._queue)
+            job_id = self._request_jobs.get(request_id)
+            group = self._request_groups.get(request_id)
             self._cancel.add(request_id)
             self._queue = [q for q in self._queue if q.request_id != request_id]
+            cancelled_backend = False
+            if job_id is not None:
+                job_backend = backend or get_job_backend()
+                cancelled_backend = bool(job_backend.request_cancel(job_id))
+                # Accepted work held a concurrency slot — free it on cancel.
+                if group is not None and request_id in self._request_groups:
+                    self._inflight[group] = max(0, self._inflight[group] - 1)
+                    self._request_groups.pop(request_id, None)
+                self._request_jobs.pop(request_id, None)
             diag = self._diagnostics.get(request_id)
             if diag is not None:
                 self._diagnostics[request_id] = InferenceDiagnostics(
@@ -268,7 +292,7 @@ class InferencePolicy:
                     cancelled=True,
                     overload=diag.overload,
                 )
-            return True
+            return was_queued or cancelled_backend or known
 
     def is_cancelled(self, request_id: str) -> bool:
         with self._lock:
@@ -280,56 +304,103 @@ class InferencePolicy:
         """Promote queued items into free concurrency slots (fair within group)."""
         started: list[tuple[QueuedInference, JobHandle]] = []
         with self._lock:
-            remaining: list[QueuedInference] = []
+            # Partition by group while preserving priority/enqueue order inside each group.
+            by_group: dict[str, list[QueuedInference]] = defaultdict(list)
             for item in self._queue:
                 if item.request_id in self._cancel:
                     continue
-                capacity = self.groups[item.group].limit
-                if self._inflight[item.group] >= capacity:
-                    remaining.append(item)
-                    continue
-                handle = self._submit(item, backend=backend)
-                self._inflight[item.group] += 1
-                queue_ms = (time.monotonic() - item.enqueued_at) * 1000.0
-                self._diagnostics[item.request_id] = InferenceDiagnostics(
-                    request_id=item.request_id,
-                    group=item.group,
-                    queue_ms=queue_ms,
-                )
-                started.append((item, handle))
+                by_group[item.group].append(item)
+
+            remaining: list[QueuedInference] = []
+            for group_name, items in by_group.items():
+                group = self.groups[group_name]
+                capacity = group.limit
+                if group.fair and len(items) > 1:
+                    # Round-robin from a per-group cursor across tenants/subjects.
+                    buckets: dict[str, deque[QueuedInference]] = defaultdict(deque)
+                    order_keys: list[str] = []
+                    for item in items:
+                        key = item.tenant_id or item.auth_subject or item.request_id
+                        if key not in buckets:
+                            order_keys.append(key)
+                        buckets[key].append(item)
+                    cursor = self._fair_cursor[group_name] % max(1, len(order_keys))
+                    fair_items: list[QueuedInference] = []
+                    while any(buckets.values()):
+                        key = order_keys[cursor % len(order_keys)]
+                        cursor += 1
+                        if buckets[key]:
+                            fair_items.append(buckets[key].popleft())
+                    self._fair_cursor[group_name] = cursor
+                    items = fair_items
+
+                for item in items:
+                    if self._inflight[group_name] >= capacity:
+                        remaining.append(item)
+                        continue
+                    handle = self._submit(item, backend=backend)
+                    self._inflight[group_name] += 1
+                    self._request_jobs[item.request_id] = handle.job_id
+                    self._request_groups[item.request_id] = group_name
+                    queue_ms = (time.monotonic() - item.enqueued_at) * 1000.0
+                    self._diagnostics[item.request_id] = InferenceDiagnostics(
+                        request_id=item.request_id,
+                        group=group_name,
+                        queue_ms=queue_ms,
+                    )
+                    started.append((item, handle))
             self._queue = remaining
         return started
 
     def form_batch(
-        self, items: Sequence[QueuedInference]
+        self, items: Sequence[QueuedInference], *, now: float | None = None
     ) -> list[tuple[str, list[QueuedInference]]]:
-        """Group compatible shapes within the configured batch window."""
+        """Group compatible shapes within the configured batch window.
+
+        Flushes when ``max_size`` is reached, when the oldest member has waited
+        at least ``max_wait_ms`` (only when ``enqueued_at`` is set), or when
+        flushing the trailing remainder of a one-shot call.
+        """
         if self.batch is None:
             return [(f"solo-{it.request_id}", [it]) for it in items]
+        clock = time.monotonic() if now is None else now
+        max_wait = self.batch.max_wait_ms / 1000.0
         buckets: dict[str, list[QueuedInference]] = defaultdict(list)
         for item in items:
             buckets[item.shape_key].append(item)
         batches: list[tuple[str, list[QueuedInference]]] = []
         batch_seq = 0
+
+        def _flush(shape: str, chunk: list[QueuedInference]) -> None:
+            nonlocal batch_seq
+            batch_seq += 1
+            batch_id = f"batch-{shape}-{batch_seq}"
+            for member in chunk:
+                diag = self._diagnostics.get(member.request_id)
+                if diag is not None:
+                    self._diagnostics[member.request_id] = InferenceDiagnostics(
+                        request_id=diag.request_id,
+                        group=diag.group,
+                        queue_ms=diag.queue_ms,
+                        execute_ms=diag.execute_ms,
+                        batch_id=batch_id,
+                        batch_size=len(chunk),
+                        cancelled=diag.cancelled,
+                        overload=diag.overload,
+                    )
+            batches.append((batch_id, chunk))
+
         for shape, group_items in buckets.items():
-            for i in range(0, len(group_items), self.batch.max_size):
-                chunk = list(group_items[i : i + self.batch.max_size])
-                batch_seq += 1
-                batch_id = f"batch-{shape}-{batch_seq}"
-                for member in chunk:
-                    diag = self._diagnostics.get(member.request_id)
-                    if diag is not None:
-                        self._diagnostics[member.request_id] = InferenceDiagnostics(
-                            request_id=diag.request_id,
-                            group=diag.group,
-                            queue_ms=diag.queue_ms,
-                            execute_ms=diag.execute_ms,
-                            batch_id=batch_id,
-                            batch_size=len(chunk),
-                            cancelled=diag.cancelled,
-                            overload=diag.overload,
-                        )
-                batches.append((batch_id, chunk))
+            pending: list[QueuedInference] = []
+            for item in group_items:
+                pending.append(item)
+                oldest = pending[0].enqueued_at
+                waited_out = oldest > 0.0 and (clock - oldest) >= max_wait
+                if len(pending) >= self.batch.max_size or waited_out:
+                    _flush(shape, pending)
+                    pending = []
+            if pending:
+                _flush(shape, pending)
         return batches
 
     def release(self, group: str, *, count: int = 1) -> None:

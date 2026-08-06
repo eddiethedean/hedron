@@ -56,15 +56,23 @@ def _is_sensitive_key(key: str) -> bool:
     return any(part in lowered for part in ("password", "secret", "token", "credential"))
 
 
+def _redact_value(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return _redact_mapping(value)
+    if isinstance(value, list):
+        return [_redact_value(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_redact_value(item) for item in value)
+    return value
+
+
 def _redact_mapping(data: Mapping[str, Any]) -> dict[str, Any]:
     out: dict[str, Any] = {}
     for key, value in data.items():
         if _is_sensitive_key(str(key)):
             out[str(key)] = _REDACTED
-        elif isinstance(value, Mapping):
-            out[str(key)] = _redact_mapping(value)
         else:
-            out[str(key)] = value
+            out[str(key)] = _redact_value(value)
     return out
 
 
@@ -113,8 +121,9 @@ class InteractionRecorder:
         file_fixtures: Sequence[str] = (),
         public: bool | None = None,
     ) -> RecordedExchange | None:
-        is_public = self._is_public(method, path) if public is None else public
-        if not is_public:
+        allowlisted = self._is_public(method, path)
+        # ``public=`` can only opt out of an allowlisted path; it cannot force-record.
+        if not allowlisted or public is False:
             return None
         redacted_headers = {
             k: (_REDACTED if _is_sensitive_key(k) else v) for k, v in dict(headers or {}).items()

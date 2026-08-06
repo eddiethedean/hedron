@@ -9,7 +9,45 @@ re-exports), and the Flask/Django adapter entry points. Optional extras (`hedron
 `hedron[charts]`) are documented on their contract pages when installed.
 
 Narrative companions: [Coverage map](COVERAGE.md) · [Stability](STABILITY.md) ·
-[API overview](README.md).
+[API overview](README.md) · [Inference](INFERENCE.md).
+
+## Inference and model demos (0.18)
+
+::: hedron_core.model_demo.ModelDemo
+    options:
+      members:
+        - build_from_action
+        - build_from_adapter
+        - build_from_callable
+      heading_level: 3
+
+::: hedron_core.inference.InferencePolicy
+    options:
+      members:
+        - admit
+        - request_cancel
+        - drain_ready
+        - form_batch
+        - release
+      heading_level: 3
+
+::: hedron_core.inference_workflow.InferenceWorkflow
+    options:
+      members:
+        - add_node
+        - connect
+        - run
+        - publish
+        - editor_view
+      heading_level: 3
+
+::: hedron.recorder.InteractionRecorder
+    options:
+      members:
+        - declare_public
+        - record
+        - snippets
+      heading_level: 3
 
 ## Application and routing
 

@@ -13,7 +13,6 @@ from hedron_core import (
     FeedbackPolicy,
     HtmxLink,
     InferencePolicy,
-    InferencePriority,
     InferenceWorkflow,
     InMemoryFeedbackSink,
     MainPanel,
@@ -61,8 +60,18 @@ FEEDBACK = PredictionFeedback(
         collection_notice="Ratings are optional and require consent.",
         tenant_id="demo",
         redaction_fields=("secret",),
+        allow_export=True,
     ),
     sink=InMemoryFeedbackSink(),
+)
+FEEDBACK.enable(consented=True)
+FEEDBACK.submit(
+    rating=5,
+    label="helpful",
+    reason="clear",
+    consented=True,
+    principal="demo",
+    payload={"secret": "x", "note": "ok"},
 )
 
 WORKFLOW = InferenceWorkflow(workflow_id="classify-flow", tenant_id="demo")
@@ -101,25 +110,34 @@ WORKFLOW.add_node(
 WORKFLOW.connect(from_node="in", from_port="out", to_node="model", to_port="in", principal="demo")
 WORKFLOW.connect(from_node="model", from_port="out", to_node="out", to_port="in", principal="demo")
 PUBLISHED = WORKFLOW.publish(principal="demo")
+RUN = WORKFLOW.run(
+    principal="demo",
+    registry=REGISTRY,
+    inputs={"in": {"out": "meow"}},
+)
 
 RECORDER = InteractionRecorder()
 RECORDER.declare_public("POST:/api/predict")
+RECORDER.record(
+    method="POST",
+    path="/api/predict",
+    body={"text": "meow", "password": "should-redact"},
+    session_assumptions=("optional demo session",),
+)
 
 
 @app.page("/")
 def home() -> AppShell:
-    queue = POLICY.admit(
-        job_type="classify",
-        payload={"text": "meow"},
-        group="gpu-demo",
-        priority=InferencePriority.NORMAL,
-    )
+    # Show policy groups without admitting on every GET (avoids slot leak).
+    groups = ", ".join(POLICY.groups)
+    feedback_count = len(FEEDBACK.export(principal="demo"))
     return AppShell(
         nav=(HtmxLink("Demo", "/", target="#main-panel", select="#main-panel", push_url=True),),
         body=MainPanel(
             Text("Model demo (0.18 reference)"),
             Text(f"Interface={INTERFACE.interface_id} source={INTERFACE.source_id}"),
-            Text(f"Admission={queue.admission.value} job={queue.job_id}"),
+            Text(f"Policy groups={groups}"),
+            Text(f"Workflow run={RUN.status} outputs={RUN.outputs}"),
             PredictionLabel(
                 [{"class_id": "cat", "score": 0.9, "calibrated": True}],
                 title="Synthetic scores",
@@ -129,8 +147,10 @@ def home() -> AppShell:
             ),
             Dialogue([{"speaker": "system", "text": "Synthetic only — no real model."}]),
             Text(f"Examples={EXAMPLES.size} cached={EXAMPLES.get_cached('e1') is not None}"),
+            Text(f"Feedback records={feedback_count}"),
             Text(f"Published revision={PUBLISHED.revision_id}"),
             Text(f"Editor rows={len(WORKFLOW.editor_view().rows)}"),
+            Text(f"Recorder snippets={len(RECORDER.snippets())}"),
         ),
     )
 

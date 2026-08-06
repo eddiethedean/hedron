@@ -5,5 +5,5 @@ full-fragment fallback. Optional notebook/MCP wiring is documented in the phase 
 this sample stays dependency-light.
 
 ```bash
-uv run uvicorn examples.dashboard-0.17.app:app --reload
+uv run uvicorn app:app --app-dir examples/dashboard-0.17 --reload
 ```

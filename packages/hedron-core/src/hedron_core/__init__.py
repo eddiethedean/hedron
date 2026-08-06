@@ -209,8 +209,10 @@ from hedron_core.inference_workflow import (
     WorkflowError,
     WorkflowNode,
     WorkflowNodeKind,
+    WorkflowNodeResult,
     WorkflowPermission,
     WorkflowPort,
+    WorkflowRunResult,
 )
 from hedron_core.interaction import (
     FragmentRegion,
@@ -375,8 +377,10 @@ __all__ = [
     "WorkflowError",
     "WorkflowNode",
     "WorkflowNodeKind",
+    "WorkflowNodeResult",
     "WorkflowPermission",
     "WorkflowPort",
+    "WorkflowRunResult",
     "approved_headers",
     "authorize_htmx_target",
     "authorize_oob_update",

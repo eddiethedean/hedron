@@ -80,17 +80,19 @@ Rendering a component never implies a public route — only `@page` / `@componen
 
 ```text
 hedron                         FastAPI flagship and beginner API
-├── hedron-core                models, components, renderer, registry protocols
+├── hedron-core                models, components, renderer, registry, inference demos/workflows
 ├── FastAPI / Starlette        routing, DI, security, ASGI, responses
-└── optional integrations      Explorer, data, charts, sample plugins
+└── optional integrations      Explorer, data, charts, extras, notebook, mcp, gradio, sample plugins
 
 hedron-flask ──> hedron-core   Flask adapter (Beta Supported; no FastAPI)
 hedron-django ─> hedron-core   Django adapter (Beta Supported; Django >=5.2,<6)
 hedron-jinja ──> hedron-core   optional .hdj format
+hedron-gradio ─> hedron-core   optional Gradio client (Experimental Alpha)
 ```
 
-`hedron-core` does not import application-framework or transport types. Distribution
-rules: [Project layout](https://github.com/eddiethedean/hedron/blob/main/docs/PROJECT_LAYOUT.md).
+`hedron-core` does not import application-framework or transport types. Inference scheduling
+(`InferencePolicy`) layers on durable `JobBackend` jobs; `ModelDemo` / `InferenceWorkflow` never
+auto-publish callables. Distribution rules: [Project layout](https://github.com/eddiethedean/hedron/blob/main/docs/PROJECT_LAYOUT.md).
 
 ## Shared registry
 

@@ -74,6 +74,17 @@ Applications remain responsible for dialog triggers and focus restoration, chat 
 ordering, authentication, CSRF, rate limits, persistence, attachment validation, and bounded
 streaming. The hosted component pages simulate these browser and server boundaries locally.
 
+## Phase 0.18 presentation (`v0.18.0`)
+
+Model-demo presentation builtins (see [Inference API](INFERENCE.md) and component pages):
+
+- `PredictionLabel` — ranked class scores with accessible table representation.
+- `ParameterViewer` — schema-aware parameter documentation with secret redaction.
+- `Dialogue` — multi-speaker transcript presentation with typed speaker identity.
+
+Non-UI contracts (`ModelDemo`, `ExampleSet`, `PredictionFeedback`, `InferenceWorkflow`) are
+documented on [INFERENCE.md](INFERENCE.md), not as components.
+
 ## Naming rule
 
 Hedron component names use PascalCase. Native elements use lowercase `hedron.html` attributes and tags. Python keyword collisions use a trailing underscore such as `class_`; rendered HTML always uses the canonical attribute name.

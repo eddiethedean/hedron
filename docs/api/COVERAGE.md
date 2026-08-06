@@ -14,6 +14,15 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `default_interaction_policy`, `form_sync_attrs`, `htmx_request`, `approved_headers`, `htmx_context` | [INTERACTION.md](INTERACTION.md), [htmx-interactions](../guides/htmx-interactions.md) |
 | `action_attrs`, `oob_swap` | [BUILT_INS.md](BUILT_INS.md), [INTERACTION.md](INTERACTION.md) |
 
+## Inference and model demos (0.18)
+
+| Export / package | Primary docs |
+|---|---|
+| `ModelDemo`, `InferenceInterface`, `ActionRegistry`, `RegisteredAction` | [INFERENCE.md](INFERENCE.md), [model demos](../guides/model-demos.md) |
+| `ExampleSet`, `PredictionFeedback`, `InferencePolicy`, `InferenceWorkflow` | [INFERENCE.md](INFERENCE.md) |
+| `InteractionRecorder` (`hedron`) | [INFERENCE.md](INFERENCE.md) |
+| `hedron_gradio.GradioClientAdapter` | [Gradio migration](../guides/gradio-migration.md) |
+
 ## Responses and live transport
 
 | Export | Primary docs |

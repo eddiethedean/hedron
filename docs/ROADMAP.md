@@ -640,7 +640,7 @@ without fragmenting the component, security, rendering, or artifact contracts.
   addition to its native unit tests; failures identify the fixture, contract version, and violated
   capability.
 
-## 0.15 — Data-app surface completeness (`v0.15.0`) — **implemented**
+## 0.15 — Data-app surface completeness (`v0.15.0`) — **Published as `v0.15.0`**
 
 **Outcome:** Hedron covers the remaining high-value Streamlit data-app surface — and accepted
 NiceGUI-adjacent controls, maps, media delivery, and layout patterns — with typed, request-oriented
@@ -1047,6 +1047,9 @@ and leftover docs/assert completions ship in the same cut.
   full regression (`REGRESS-017`) close the cut. Zero Deferred among 0.17-owned gate rows.
 
 ## 0.18 — Model demos and inference workflows (`v0.18.0`)
+
+**Status:** Published as `v0.18.0` (2026-08-06). See [STATUS](STATUS.md) and
+[release-gate-0.18.toml](acceptance/release-gate-0.18.toml).
 
 **Outcome:** Hedron can turn explicitly registered typed model actions into production-auditable
 demos, schedule inference workloads, collect governed evaluation feedback, interoperate with
@@ -1559,6 +1562,12 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0042 Notebook preview (`hedron-notebook`) | 0.17 |
 | 0043 MCP projection (`hedron-mcp`) | 0.17 |
 | 0044 Shell primitives / InteractionResult render API | 0.17 |
+| 0045 InferenceInterface / ModelDemo | 0.18 |
+| 0046 ExampleSet / presentation / PredictionFeedback | 0.18 |
+| 0047 InferencePolicy / ModelDemoScenario | 0.18 |
+| 0048 InteractionRecorder | 0.18 |
+| 0049 Gradio client adapter (`hedron-gradio`) | 0.18 |
+| 0050 InferenceWorkflow | 0.18 |
 
 ## Open GitHub issue ownership (0.13+)
 

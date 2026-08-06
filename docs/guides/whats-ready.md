@@ -100,6 +100,7 @@ guaranteed multi-worker live-transport proof — see
   (Supported host slices).
 - 0.18 model-demo / inference workflow demo:
   [`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18).
+  Guide: [Model demos](model-demos.md).
 - 0.17 dashboard / agent-interface demo:
   [`examples/dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17).
 - 0.15 data-app surface demo (`region` / `@fragment` / `swap`, controls, Map, media stubs):

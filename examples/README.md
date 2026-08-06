@@ -7,6 +7,9 @@ on a clean venv — that is the polished first-success path.
 | Example | Host | Start here? | Notes |
 |---|---|---|---|
 | [`reference-app/`](reference-app/) | FastAPI | Yes (full app) | Auth CRUD + DataEditor; charts are **Alpha** |
+| [`model-demo-0.18/`](model-demo-0.18/) | FastAPI | 0.18 inference start-here | ModelDemo, InferencePolicy, workflow run, feedback |
+| [`dashboard-0.17/`](dashboard-0.17/) | FastAPI | 0.17 dashboard demo | InteractionGraph / patches / AppShell |
+| [`data-app-0.16/`](data-app-0.16/) | FastAPI | 0.16 extras demo | Workbench-oriented sample |
 | [`data-app-0.15/`](data-app-0.15/) | FastAPI | 0.15 surface demo | region/fragment/swap, controls, Map, media stubs |
 | [`live-interaction/`](live-interaction/) | FastAPI | After polling guide | Polling **Supported**; SSE/WS/stream/preload **experimental** |
 | [`flask-reference/`](flask-reference/) | Flask | Adapter adopters | Home + fragment slice |

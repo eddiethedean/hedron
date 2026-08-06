@@ -4,7 +4,7 @@ Synthetic reference for phase 0.18: fail-closed `ModelDemo`, `ExampleSet`, prese
 builtins, `InferencePolicy`, governed feedback, `InferenceWorkflow`, and `InteractionRecorder`.
 
 ```bash
-uv run uvicorn examples.model-demo-0.18.app:app --reload
+uv run uvicorn app:app --app-dir examples/model-demo-0.18 --reload
 ```
 
 Open http://127.0.0.1:8000 — you should see synthetic scores and a published workflow revision.

@@ -1,6 +1,6 @@
 # Production readiness
 
-Ops-oriented checklist for the **0.17.0** train (**Published**). **Do not duplicate maturity claims
+Ops-oriented checklist for the **0.18.0** train (**Published**). **Do not duplicate maturity claims
 here** — the authoritative snapshot is [What's ready today](whats-ready.md).
 
 Also: [Compatibility](../COMPATIBILITY.md) · [Support](support.md) ·

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
 
 HuggingFaceKind = Literal["model", "dataset", "space", "oauth", "zerogpu"]
 
@@ -14,13 +14,31 @@ class HuggingFaceVendorNode:
     kind: HuggingFaceKind
     ref: str
 
-    def to_workflow_node(self) -> dict[str, str]:
+    def to_workflow_node(self) -> dict[str, Any]:
+        """Emit InferenceWorkflow-compatible node JSON (node_id/label/ports)."""
         workflow_kind = "dataset" if self.kind == "dataset" else "remote"
         action_id = f"hf:{self.kind}:{self.ref}"
         return {
-            "id": self.node_id,
+            "node_id": self.node_id,
             "kind": workflow_kind,
+            "label": f"HF {self.kind}: {self.ref}",
             "action_id": action_id,
+            "parameters": {"ref": self.ref},
+            "secret_refs": (),
+            "ports": (
+                {
+                    "port_id": "in",
+                    "name": "in",
+                    "type_name": "any",
+                    "direction": "in",
+                },
+                {
+                    "port_id": "out",
+                    "name": "out",
+                    "type_name": "any",
+                    "direction": "out",
+                },
+            ),
             "ref": self.ref,
         }
 

@@ -145,11 +145,13 @@ class GradioClientAdapter:
         yield {"endpoint": endpoint.name, "chunk": 1, "done": True}
 
     def upload_file(self, name: str, data: bytes) -> str:
+        self._require_enabled()
         file_id = f"{name}:{uuid.uuid4().hex}"
         self._files[file_id] = data
         return file_id
 
     def download_artifact(self, artifact_id: str) -> bytes:
+        self._require_enabled()
         try:
             return self._files[artifact_id]
         except KeyError as exc:
@@ -176,10 +178,94 @@ class GradioClientAdapter:
     def _discover_via_gradio_client(self) -> list[GradioEndpoint]:
         try:
             import gradio_client  # type: ignore[import-not-found]
+            from gradio_client import Client  # type: ignore[import-not-found]
         except ImportError as exc:
             raise GradioRemoteError(_GRADIO_CLIENT_IMPORT_ERROR) from exc
 
         version = getattr(gradio_client, "__version__", None)
         if isinstance(version, str):
             self.check_version_compat(version)
-        return []
+            self.gradio_version = version
+
+        try:
+            client_kwargs: dict[str, Any] = {}
+            if self.auth_token:
+                client_kwargs["hf_token"] = self.auth_token
+            client = Client(self.base_url, **client_kwargs)
+        except Exception as exc:  # noqa: BLE001 — remote boundary
+            raise GradioRemoteError(f"Failed to connect to Gradio app: {exc}") from exc
+
+        endpoints = self._endpoints_from_client(client)
+        if not endpoints:
+            raise GradioRemoteError(
+                "Gradio client connected but no discoverable endpoints were found"
+            )
+        self.endpoints = tuple(endpoints)
+        return endpoints
+
+    def _endpoints_from_client(self, client: Any) -> list[GradioEndpoint]:
+        """Best-effort endpoint discovery across gradio_client view_api shapes."""
+        info: Any = None
+        for attr in ("view_api", "endpoints_info", "api_info"):
+            candidate = getattr(client, attr, None)
+            if callable(candidate):
+                try:
+                    info = candidate(return_format="dict") if attr == "view_api" else candidate()
+                except TypeError:
+                    try:
+                        info = candidate()
+                    except Exception:  # noqa: BLE001
+                        continue
+                except Exception:  # noqa: BLE001
+                    continue
+                break
+            if candidate is not None and not callable(candidate):
+                info = candidate
+                break
+        if info is None:
+            config = getattr(client, "config", None)
+            if isinstance(config, Mapping):
+                info = config
+
+        named: dict[str, Any] = {}
+        if isinstance(info, Mapping):
+            for key in ("named_endpoints", "endpoints", "api"):
+                block = info.get(key)
+                if isinstance(block, Mapping):
+                    named.update(dict(block))
+            # Some clients nest under dependencies / fns
+            deps = info.get("dependencies")
+            if isinstance(deps, list):
+                for idx, dep in enumerate(deps):
+                    if not isinstance(dep, Mapping):
+                        continue
+                    api_name = str(dep.get("api_name") or dep.get("name") or f"/fn_{idx}")
+                    named[api_name] = dep
+        elif isinstance(info, list):
+            for idx, dep in enumerate(info):
+                if isinstance(dep, Mapping):
+                    api_name = str(dep.get("api_name") or dep.get("name") or f"/fn_{idx}")
+                    named[api_name] = dep
+
+        endpoints: list[GradioEndpoint] = []
+        for api_name, meta in named.items():
+            if not isinstance(meta, Mapping):
+                continue
+            name = str(meta.get("name") or api_name).lstrip("/")
+            params = meta.get("parameters") or meta.get("inputs") or {}
+            if not isinstance(params, Mapping):
+                params = {"items": params}
+            supports_stream = bool(
+                meta.get("supports_stream")
+                or meta.get("streaming")
+                or "stream" in str(meta.get("type", "")).lower()
+            )
+            endpoints.append(
+                GradioEndpoint(
+                    name=name or str(api_name).lstrip("/"),
+                    api_name=str(api_name),
+                    parameters=dict(params),
+                    supports_stream=supports_stream,
+                )
+            )
+        return endpoints

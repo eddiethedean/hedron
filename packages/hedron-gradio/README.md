@@ -15,6 +15,7 @@ pip install hedron-gradio
 Optional runtime dependency: install `gradio_client` when calling live Gradio
 endpoints. The package imports without `gradio` or `gradio_client` installed.
 
-See [Gradio feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/GRADIO_FEATURE_CROSSCHECK.md)
-and [RFC-0049](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0049-GRADIO-ADAPTER.md)
+See [Gradio feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/GRADIO_FEATURE_CROSSCHECK.md),
+[RFC-0049](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0049-GRADIO-ADAPTER.md),
+and the public [Gradio migration guide](https://hedron.readthedocs.io/en/latest/guides/gradio-migration/)
 for supported version range and deliberate non-parity.

@@ -76,12 +76,61 @@ def test_predict_job_stream_with_preloaded_endpoints() -> None:
 def test_hf_vendor_node_to_workflow_node() -> None:
     node = hf_space_node("demo-space", "org/demo")
     workflow = node.to_workflow_node()
+    assert workflow["node_id"] == "demo-space"
     assert workflow["kind"] == "remote"
     assert workflow["action_id"] == "hf:space:org/demo"
+    assert workflow["label"]
+    assert len(workflow["ports"]) == 2
 
     dataset = HuggingFaceVendorNode(node_id="ds", kind="dataset", ref="org/data")
     assert dataset.to_workflow_node()["kind"] == "dataset"
     assert dataset.to_workflow_node()["action_id"] == "hf:dataset:org/data"
+    assert dataset.to_workflow_node()["node_id"] == "ds"
+
+
+def test_disabled_file_apis_refuse() -> None:
+    adapter = GradioClientAdapter("http://127.0.0.1:7860", enabled=False)
+    with pytest.raises(GradioRemoteError, match="disabled"):
+        adapter.upload_file("x.txt", b"data")
+    with pytest.raises(GradioRemoteError, match="disabled"):
+        adapter.download_artifact("missing")
+
+
+def test_discover_via_transport_and_client_shape() -> None:
+    endpoints = (
+        GradioEndpoint(name="predict", api_name="/predict", parameters={"text": "string"}),
+    )
+
+    def transport(op: str, **_: object) -> object:
+        if op == "discover":
+            return list(endpoints)
+        raise AssertionError(op)
+
+    adapter = GradioClientAdapter(
+        "http://127.0.0.1:7860",
+        enabled=True,
+        _transport=transport,
+    )
+    assert [e.name for e in adapter.discover()] == ["predict"]
+
+    class _FakeClient:
+        def view_api(self, return_format: str = "dict") -> dict[str, object]:
+            assert return_format == "dict"
+            return {
+                "named_endpoints": {
+                    "/classify": {
+                        "name": "classify",
+                        "parameters": {"text": {"type": "string"}},
+                        "supports_stream": False,
+                    }
+                }
+            }
+
+    discovered = GradioClientAdapter("http://127.0.0.1:7860", enabled=True)._endpoints_from_client(
+        _FakeClient()
+    )
+    assert discovered[0].name == "classify"
+    assert discovered[0].api_name == "/classify"
 
 
 def test_migration_diagnose_mentions_share_links_and_raw_js() -> None:

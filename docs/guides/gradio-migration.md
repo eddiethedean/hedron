@@ -10,9 +10,14 @@ optional Alpha package only when needed:
 
 ```bash
 pip install "hedron[gradio]"
+# Live remote discovery/predict also needs:
+pip install gradio-client
 ```
 
 Absence of `hedron-gradio` adds no core dependency, route, asset, or startup cost.
+
+**Supported Gradio client range (checked):** major **6**, minor **17–22** (through **6.22.x**).
+Other majors/minors raise `GradioRemoteError`.
 
 ## Capability map
 
@@ -26,6 +31,53 @@ Absence of `hedron-gradio` adds no core dependency, route, asset, or startup cos
 | Remote Gradio apps | `hedron_gradio.GradioClientAdapter` | Experimental Alpha protocol client. |
 | `Workflow` canvas | `InferenceWorkflow` + structured editor | No canvas required; JSON cannot run host code. |
 | HF Space / OAuth / ZeroGPU | Vendor nodes in `hedron-gradio` | Not portable core contracts. |
+
+## FastAPI coexistence
+
+Mount or reverse-proxy a Gradio app **beside** Hedron; do not embed Gradio’s UI runtime in
+`hedron-core`. Typical pattern: Hedron owns HTML/HTMX routes; `GradioClientAdapter` calls a
+separate Gradio process/URL for remote predict/jobs. Auth tokens stay on the adapter
+(`auth_token=`) and are never inlined into workflow JSON. File upload/download require
+`enabled=True` and still refuse when the adapter is disabled.
+
+## Minimal adapter usage
+
+```python
+from hedron_gradio import GradioClientAdapter, GradioEndpoint
+
+# Preload endpoints for tests / offline; or enable live discover with gradio_client.
+adapter = GradioClientAdapter(
+    "http://127.0.0.1:7860",
+    enabled=True,
+    endpoints=(
+        GradioEndpoint(
+            name="predict",
+            api_name="/predict",
+            parameters={"text": {"type": "string"}},
+            supports_stream=False,
+        ),
+    ),
+)
+print(adapter.discover())
+print(adapter.predict("predict", {"text": "hello"}))
+job_id = adapter.submit_job("predict", {"text": "queued"})
+print(adapter.job_status(job_id))
+```
+
+Live discovery (no preloaded endpoints) uses `gradio_client.Client` view/API metadata after a
+version check. Keep adapters **disabled by default** in production until intentionally opened.
+
+HF vendor nodes emit InferenceWorkflow-compatible JSON (`node_id`, `label`, `ports`):
+
+```python
+from hedron_gradio import hf_space_node
+
+node = hf_space_node("demo-space", "org/demo").to_workflow_node()
+assert node["node_id"] == "demo-space"
+```
+
+See also [Model demos](model-demos.md) and
+[`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18).
 
 ## Deliberate non-parity (do not expect automatic conversion)
 

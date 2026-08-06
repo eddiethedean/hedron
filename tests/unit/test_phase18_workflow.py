@@ -5,7 +5,10 @@ from __future__ import annotations
 import pytest
 
 from hedron_core import (
+    ActionRegistry,
+    InferencePolicy,
     InferenceWorkflow,
+    RegisteredAction,
     WorkflowError,
     WorkflowNode,
     WorkflowNodeKind,
@@ -73,8 +76,6 @@ def test_workflow_validate_publish_rollback() -> None:
         principal="alice",
     )
     wf.rollback(rev.revision_id, principal="alice")
-    assert "extra" not in {n for n in wf.to_json()["nodes"] for n in [n["node_id"]]} or True
-    # After rollback, nodes restored from snapshot
     ids = {n["node_id"] for n in wf.to_json()["nodes"]}
     assert "extra" not in ids
     assert "model" in ids
@@ -105,6 +106,9 @@ def test_cycle_authz_and_adversarial() -> None:
     with pytest.raises(WorkflowError) as exc:
         wf.connect(from_node="b", from_port="out", to_node="a", to_port="in", principal="ed")
     assert exc.value.code == HED_WORKFLOW_0001
+    # Cyclic edge must not remain after rejection.
+    assert ("b", "out", "a", "in") not in wf._edges
+    assert len(wf._edges) == 1
 
     with pytest.raises(WorkflowError) as exc2:
         wf.publish(principal="ed")
@@ -135,3 +139,120 @@ def test_cycle_authz_and_adversarial() -> None:
     with pytest.raises(WorkflowError) as exc5:
         wf.optimistic_edit(principal="ed", expected_etag=etag - 1)
     assert exc5.value.code == HED_WORKFLOW_0002
+
+
+def test_from_json_rejects_model_without_action_id() -> None:
+    wf = InferenceWorkflow(workflow_id="import")
+    wf.grant("ed", WorkflowPermission.EDIT)
+    with pytest.raises(WorkflowError) as exc:
+        wf.from_json(
+            {
+                "nodes": [
+                    {
+                        "node_id": "m",
+                        "kind": "model",
+                        "label": "M",
+                        "action_id": None,
+                        "ports": [],
+                    }
+                ],
+                "edges": [],
+            },
+            principal="ed",
+            replace=True,
+        )
+    assert exc.value.code == HED_WORKFLOW_0001
+    assert wf.to_json()["nodes"] == []
+
+
+def test_workflow_run_executes_registered_action() -> None:
+    registry = ActionRegistry()
+    registry.register_action(
+        RegisteredAction(
+            action_id="classify",
+            input_schema={"text": "string"},
+            output_schema={"label": "string"},
+            resource_policy="gpu",
+            handler=lambda text: {"label": f"pred:{text}"},
+        )
+    )
+    wf = InferenceWorkflow(workflow_id="run-demo")
+    wf.grant("alice", WorkflowPermission.EDIT, WorkflowPermission.RUN)
+    wf.add_node(
+        WorkflowNode(
+            node_id="in",
+            kind=WorkflowNodeKind.INPUT,
+            label="Input",
+            ports=_ports(("out", "text", "out")),
+        ),
+        principal="alice",
+    )
+    wf.add_node(
+        WorkflowNode(
+            node_id="model",
+            kind=WorkflowNodeKind.MODEL,
+            label="Classify",
+            action_id="classify",
+            ports=_ports(("text", "text", "in"), ("out", "label", "out")),
+        ),
+        principal="alice",
+    )
+    wf.add_node(
+        WorkflowNode(
+            node_id="out",
+            kind=WorkflowNodeKind.OUTPUT,
+            label="Out",
+            ports=_ports(("in", "label", "in")),
+        ),
+        principal="alice",
+    )
+    wf.connect(from_node="in", from_port="out", to_node="model", to_port="text", principal="alice")
+    wf.connect(from_node="model", from_port="out", to_node="out", to_port="in", principal="alice")
+
+    result = wf.run(
+        principal="alice",
+        registry=registry,
+        inputs={"in": {"out": "meow"}},
+    )
+    assert result.status == "completed"
+    assert result.outputs["out"]["in"]["label"] == "pred:meow"
+
+    with pytest.raises(WorkflowError) as exc:
+        wf.run(principal="bob", registry=registry, inputs={})
+    assert exc.value.code == HED_WORKFLOW_0002
+
+
+def test_workflow_run_honors_cancel() -> None:
+    registry = ActionRegistry()
+    registry.register_action(
+        RegisteredAction(
+            action_id="slow",
+            input_schema={"x": "string"},
+            output_schema={"y": "string"},
+            resource_policy="gpu",
+            authorization_required=False,
+            handler=lambda **_: {"y": "done"},
+        )
+    )
+    policy = InferencePolicy()
+    policy._cancel.add("req-1")
+    wf = InferenceWorkflow(workflow_id="cancel-demo")
+    wf.grant("alice", WorkflowPermission.EDIT, WorkflowPermission.RUN)
+    wf.add_node(
+        WorkflowNode(
+            node_id="m",
+            kind=WorkflowNodeKind.ACTION,
+            label="A",
+            action_id="slow",
+            ports=(),
+        ),
+        principal="alice",
+    )
+    result = wf.run(
+        principal="alice",
+        registry=registry,
+        policy=policy,
+        request_id="req-1",
+    )
+    assert result.status == "cancelled"
+    assert result.nodes[0].status == "cancelled"

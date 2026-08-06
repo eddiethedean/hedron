@@ -5,15 +5,21 @@ Ways to try Hedron — prefer a **real server** before simulated docs demos.
 There is **no hosted playground**. Use Codespaces / Dev Container, a local clone, or
 `pip install` + a single-file `app.py`.
 
-1. **[Single-file apps](single-file.md)** — fastest local path: `pip install "hedron>=0.17.0"`
+1. **[Single-file apps](single-file.md)** — fastest local path: `pip install "hedron>=0.18.0"`
    and paste an `app.py` (no monorepo clone).
 2. **[Try with Codespaces / Dev Container](try-it.md)** — no local Python setup
    (not a single command; needs GitHub or VS Code / Cursor).
 3. **[Runnable examples](runnable.md)** — clone the repo for the reference app,
-   live interaction sample, Flask/Django adapters, and HDJ sample.
+   model-demo 0.18, live interaction sample, Flask/Django adapters, and HDJ sample.
 4. **[CRUD tutorial](crud-tutorial.md)** — guided path through the reference app.
 5. **[Simulated UI patterns](gallery.md)** — in-browser **simulations** on Read the Docs
    (not a live Hedron process). Prefer [runnable examples](runnable.md) for real HTMX/CSRF.
+
+!!! note "Model demo (0.18)"
+
+    [`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18)
+    demonstrates `ModelDemo`, `InferencePolicy`, governed feedback, workflow `run`, and
+    `InteractionRecorder`. Guide: [Model demos](../guides/model-demos.md).
 
 !!! note "Live interaction sample"
 
