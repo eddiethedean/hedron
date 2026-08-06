@@ -1,4 +1,4 @@
-"""Packaging metadata checks for the coordinated 0.15 train."""
+"""Packaging metadata checks for the coordinated 0.16 train."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ _BETA_PACKAGES = {
     "hedron-jinja",
     "hedron-explorer",
     "hedron-conformance",
+    "hedron-extras",
 }
 _ALPHA_INDEPENDENT = {"hedron-charts", "hedron-sample-kit", "hedron-native"}
 
@@ -26,7 +27,7 @@ def test_all_packages_declare_license_and_version() -> None:
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
         if name in _BETA_PACKAGES:
-            assert project["version"] == "0.15.0", pyproject
+            assert project["version"] == "0.16.0", pyproject
         elif name in _ALPHA_INDEPENDENT:
             assert str(project["version"]).startswith("0.1."), pyproject
         else:
@@ -51,6 +52,7 @@ def test_first_party_plugin_meta_matches_package_version() -> None:
         "hedron-data": ("hedron_data", "plugin.py"),
         "hedron-charts": ("hedron_charts", "plugin.py"),
         "hedron-sample-kit": ("hedron_sample_kit", "plugin.py"),
+        "hedron-extras": ("hedron_extras", "plugin.py"),
     }
     for dist, (pkg, plugin_file) in plugins.items():
         project = tomllib.loads(

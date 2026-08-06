@@ -198,7 +198,7 @@ controls without whole-script reruns or Vue/outbox mutation. See
 
 1. Pin and upgrade to the coordinated `0.15.0` Beta train (`hedron`, adapters, extras together).
    Alpha packages `hedron-charts` / `hedron-sample-kit` / `hedron-native` remain on `0.1.x`
-   (compatible with `hedron-core>=0.15.0,<0.16`).
+   (compatible with `hedron-core>=0.16.0,<0.17`).
 2. Prefer `region` / `@fragment` / `swap` for new HTMX authoring; fail-closed
    `fragment_regions` authorization is unchanged.
 3. Adopt typed controls (`DateInput`, `RangeInput`, …), surface chrome, `Map`, and media helpers

@@ -1,12 +1,12 @@
 # Public stability classifications
 
-**Status:** Phase 0.15 data-app surface completeness (**implemented** as `v0.15.0`, pending cut); a **minimal
+**Status:** Phase 0.16 curated extras (**implemented** as `v0.16.0`, pending cut); a **minimal
 `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled; package maturity
 remains Beta).
-**Version:** `0.15.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`
+**Version:** `0.16.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`v0.15.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
+`v0.16.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
 unless a later phase explicitly promotes them.
 
 ## Levels
@@ -43,7 +43,7 @@ PyPI remains **Beta** — pin versions. Maturity SSOT for product claims:
 | Adapter `respond` / `component_response` / `interaction_response` helpers | `hedron-flask`, `hedron-django` |
 | Portable harness: `fastapi_fixture`, `flask_fixture`, `django_fixture`, `assert_page_document`, `assert_fragment_body`, `assert_htmx_trigger` | `hedron_core.testing.adapters` (re-exported as `hedron.testing.adapters`) |
 
-Optional extras (`hedron[data]`, `hedron[charts]`, `hedron[auth]`, content helpers) are **not**
+Optional extras (`hedron[data]`, `hedron[charts]`, `hedron[extras]`, `hedron[auth]`, content helpers) are **not**
 stable via the root facade — import them from their packages.
 
 ## Artifact classes
@@ -116,6 +116,13 @@ Live helpers are **experimental** (polling remains Supported fallback).
 
 Language-neutral fixture kit and runner. Cross-language runtimes that consume the kit remain
 **experimental** until separately labeled Supported.
+
+### `hedron-extras` (Beta) — `beta` composition/workbenches; specialty **experimental**
+
+Optional curated toolkit (`hedron[extras]`). Composition UI, DataExplorer, JSONEditor, CodeEditor,
+image tools, calendar/signature/typeahead, display recipes, and browser-Python sandbox are **beta**.
+`TerminalView`, joystick, and device-bridge surfaces are **experimental** and fail closed without
+explicit policy (RFC-0038). Native desktop shell is packaging documentation only.
 
 ### `hedron-native` (Alpha, versioned independently as `0.1.x`) — **experimental** accel
 

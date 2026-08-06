@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0] — 2026-08-06
+
+### Added
+
+- Phase 0.16 curated extras and analysis workbenches train alignment.
+- FeatureManifest registration surface and workbench-flow testing helpers (where applicable).
+
 ## [0.15.0] — 2026-08-05
 
 ### Added

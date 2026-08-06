@@ -1,0 +1,81 @@
+# Phase 0.16 curated extras and analysis workbenches evidence index.
+# Consumed by scripts/check_release_gate.py 0.16.0.
+# Zero Deferred policy for 0.16-owned rows: every row must be Verified at cut.
+# Specialty extras ship as Experimental with Verified fail-closed evidence.
+
+[[evidence]]
+id = "EXTRAS-PKG-016"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase16_extras_pkg.py"
+ci_job = "test"
+owner = "hedron-extras"
+
+[[evidence]]
+id = "WORKBENCH-TEST-016"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase16_workbench_testing.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "COMPOSITION-016"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase16_composition.py"
+ci_job = "test"
+owner = "hedron-extras"
+
+[[evidence]]
+id = "WORKBENCH-016"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase16_workbench.py"
+ci_job = "test"
+owner = "hedron-extras"
+
+[[evidence]]
+id = "IMAGE-016"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase16_image_editors.py"
+ci_job = "test"
+owner = "hedron-extras"
+
+[[evidence]]
+id = "EDITOR-EXTRAS-016"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase16_image_editors.py"
+ci_job = "test"
+owner = "hedron-extras"
+
+[[evidence]]
+id = "DISPLAY-016"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase16_display.py"
+ci_job = "test"
+owner = "hedron-extras"
+
+[[evidence]]
+id = "SANDBOX-016"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase16_sandbox.py"
+ci_job = "test"
+owner = "hedron-extras"
+
+[[evidence]]
+id = "SPECIALTY-016"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase16_specialty.py"
+ci_job = "test"
+owner = "hedron-extras"
+
+[[evidence]]
+id = "REGRESS-016"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-016"
+state = "Verified"
+command = "python scripts/verify_pkg_16.py"
+ci_job = "release"
+owner = "hedron"

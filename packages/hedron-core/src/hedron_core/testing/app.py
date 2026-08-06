@@ -26,12 +26,19 @@ from hedron_core.testing.htmx_asserts import (
     assert_ui_targets_subset_of_regions,
     assert_undeclared_target_rejected,
 )
+from hedron_core.testing.workbench import (
+    assert_action_authorized,
+    assert_http_fallback_present,
+    assert_transform_plan_bounded,
+)
 
 __all__ = [
     "AppScenario",
     "MarkedElement",
+    "assert_action_authorized",
     "assert_fragment_body",
     "assert_html_contains",
+    "assert_http_fallback_present",
     "assert_htmx_trigger",
     "assert_hx_push_url",
     "assert_hx_redirect",
@@ -41,6 +48,7 @@ __all__ = [
     "assert_page_document",
     "assert_shell_dual_path",
     "assert_toast_markup",
+    "assert_transform_plan_bounded",
     "assert_ui_targets_subset_of_regions",
     "assert_undeclared_target_rejected",
     "find_all_marks",
@@ -332,6 +340,17 @@ class AppScenario:
             page_response,
             fragment_contains=fragment_contains,
         )
+
+    def assert_transform_plan_bounded(self, plan: object, *, max_rows: int) -> None:
+        assert_transform_plan_bounded(plan, max_rows=max_rows)
+
+    def assert_action_authorized(
+        self, action: Mapping[str, object], *, expect: bool = True
+    ) -> None:
+        assert_action_authorized(action, expect=expect)
+
+    def assert_http_fallback_present(self, token: str, *, html: str | None = None) -> None:
+        assert_http_fallback_present(self._html(html), token=token)
 
     def _require_response(self) -> AdapterResponse:
         assert self.last_response is not None, "no response recorded; make a request first"

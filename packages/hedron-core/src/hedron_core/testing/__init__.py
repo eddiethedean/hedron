@@ -45,6 +45,17 @@ from hedron_core.testing.htmx_asserts import (
     assert_ui_targets_subset_of_regions,
     assert_undeclared_target_rejected,
 )
+from hedron_core.testing.workbench import (
+    SandboxBudgetFixture,
+    assert_action_authorized,
+    assert_http_fallback_present,
+    assert_transform_plan_bounded,
+    image_region_fixture,
+    json_document_fixture,
+    sandbox_budget_fixture,
+    tree_document_fixture,
+    workbench_action_fixture,
+)
 
 __all__ = [
     "AdapterAppFixture",
@@ -57,11 +68,14 @@ __all__ = [
     "MarkedElement",
     "NamedConnectionFixture",
     "OidcCallbackStub",
+    "SandboxBudgetFixture",
     "ScriptedDependency",
     "StoragePayload",
     "UploadFixture",
+    "assert_action_authorized",
     "assert_fragment_body",
     "assert_html_contains",
+    "assert_http_fallback_present",
     "assert_htmx_trigger",
     "assert_hx_push_url",
     "assert_hx_redirect",
@@ -72,6 +86,7 @@ __all__ = [
     "assert_page_document",
     "assert_shell_dual_path",
     "assert_toast_markup",
+    "assert_transform_plan_bounded",
     "assert_ui_targets_subset_of_regions",
     "assert_undeclared_target_rejected",
     "django_fixture",
@@ -79,7 +94,12 @@ __all__ = [
     "find_all_marks",
     "find_mark",
     "flask_fixture",
+    "image_region_fixture",
+    "json_document_fixture",
     "redact_secrets_for_failure",
+    "sandbox_budget_fixture",
     "scripted_outcome",
+    "tree_document_fixture",
     "validate_fixture",
+    "workbench_action_fixture",
 ]

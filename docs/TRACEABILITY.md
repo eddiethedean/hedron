@@ -31,7 +31,7 @@ This matrix identifies the primary public, implementation, and acceptance owner 
 | HDJ authoring (0031) | Versioned `.hdj` prologue/profile, trusted Jinja body, Hedron bridges, full HTMX/HTML/CSS/JS surface, metadata, immediate replacement | `hedron-jinja` implementation | HDJ + HDN removal gates, phase 0.9 |
 | Live transport (0032) | Live SSE/WS/stream/preload contracts | `hedron` live helpers + core framing | release-gate-0.10 |
 | Data-app surface NiceGUI expansions (0033–0036) | Maps, media download/Range, surface chrome, scenario marks | Implemented — phase 0.15 (pending cut) | 0.15 release gate |
-| Curated/specialty extras (0037–0038) | CodeEditor/interactive extras; terminal/robotics/native shell | Draft — phase 0.16 | 0.16 release gate (planned) |
+| Curated/specialty extras (0037–0038) | CodeEditor/interactive extras; terminal/robotics/native shell | Accepted — phase 0.16 implemented | [release-gate-0.16.toml](acceptance/release-gate-0.16.toml) |
 | Interaction authoring ergonomics (0039) | `region`/`@fragment`, `swap` builders, dev region diagnostics + Explorer click preview | Implemented — phase 0.15 DX (pending cut) | 0.15 release gate |
 
 Every implementation pull request must name the owning RFC, public contract if any, implementation

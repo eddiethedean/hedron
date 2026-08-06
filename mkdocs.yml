@@ -434,12 +434,14 @@ nav:
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - Upgrade (0.8 → 0.15): guides/upgrade.md
     - What's new: guides/release-notes.md
+    - What's new in 0.16: guides/whats-new-0.16.md
     - What's new in 0.14: guides/whats-new-0.14.md
     - What's new in 0.13: guides/whats-new-0.13.md
     - What's new in 0.12: guides/whats-new-0.12.md
     - What's new in 0.11: guides/whats-new-0.11.md
     - What's new in 0.10.1: guides/whats-new-0.10.1.md
     - What's new in 0.10: guides/whats-new-0.10.md
+    - Native desktop shell recipe: guides/native-desktop-shell.md
     - Compatibility: COMPATIBILITY.md
     - Configuration: CONFIGURATION.md
     - Glossary: GLOSSARY.md

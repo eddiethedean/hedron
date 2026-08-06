@@ -1,9 +1,11 @@
 # NiceGUI feature cross-check
 
-**Audit date:** 2026-08-05<br>
+**Audit date:** 2026-08-06 (refreshed for phase 0.16 entry/exit)<br>
 **NiceGUI baseline:** 3.15.0 (PyPI) and current documentation / element catalog<br>
 **Purpose:** identify useful capability gaps, not reproduce NiceGUI's Vue/Quasar client,
 WebSocket outbox, or imperative element-mutation runtime
+**0.16 disposition:** Accepted extras implemented in `hedron-extras` (RFC-0037/0038);
+specialty surfaces labeled Experimental.
 
 NiceGUI is a valuable comparison because it shares a FastAPI/Starlette host and optimizes for
 backend-first Python UIs aimed at dashboards, tools, robotics, and IoT. Hedron targets overlapping

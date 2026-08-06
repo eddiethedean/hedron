@@ -1,0 +1,81 @@
+[project]
+name = "hedron-extras"
+version = "0.16.0"
+description = "Curated optional extras and analysis workbenches for Hedron"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+maintainers = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+keywords = [
+    "components",
+    "extras",
+    "hedron",
+    "workbench",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "hedron-core>=0.16.0,<0.17",
+]
+
+[project.optional-dependencies]
+code_editor = []
+json_editor = []
+data_explorer = ["hedron-data>=0.16.0,<0.17"]
+chart_workbench = ["hedron-data>=0.16.0,<0.17", "hedron-charts>=0.1.0,<0.2"]
+image_tools = []
+calendar = []
+signature = []
+typeahead = []
+sandbox = []
+terminal = []
+joystick = []
+all = [
+    "hedron-data>=0.16.0,<0.17",
+    "hedron-charts>=0.1.0,<0.2",
+]
+
+[project.entry-points."hedron.plugins"]
+hedron_extras = "hedron_extras.plugin:register"
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/hedron"
+Repository = "https://github.com/eddiethedean/hedron"
+Issues = "https://github.com/eddiethedean/hedron/issues"
+Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-extras/CHANGELOG.md"
+Documentation = "https://hedron.readthedocs.io/en/latest/"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hedron_extras"]
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "src/hedron_extras",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "pyproject.toml",
+]

@@ -115,6 +115,7 @@ def load_plugins(
     registry_snapshot = snapshot_registry_builder()
     panel_snapshot = dict(plugins_mod._panels)
     owner_snapshot = dict(plugins_mod._diagnostic_owners)
+    feature_snapshot = dict(plugins_mod._features)
 
     def _rollback() -> None:
         restore_registry_builder(registry_snapshot)
@@ -122,6 +123,8 @@ def load_plugins(
         plugins_mod._panels.update(panel_snapshot)
         plugins_mod._diagnostic_owners.clear()
         plugins_mod._diagnostic_owners.update(owner_snapshot)
+        plugins_mod._features.clear()
+        plugins_mod._features.update(feature_snapshot)
 
     discovered = list(entry_points) if entry_points is not None else _discover_entry_points()
     discovered_names: list[str] = []

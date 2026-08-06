@@ -1,9 +1,11 @@
 # streamlit-extras feature cross-check
 
-**Audit date:** 2026-08-04<br>
+**Audit date:** 2026-08-06 (refreshed for phase 0.16 entry/exit)<br>
 **streamlit-extras baseline:** 1.5.0 documentation and source catalog<br>
 **Inventory:** 51 active extras and 6 deprecated extras<br>
 **Purpose:** identify useful capability gaps, not reproduce Streamlit's widget or rerun runtime
+**0.16 disposition:** Planned 0.16 items implemented in `hedron-extras` (or documented recipes)
+with per-feature capability manifests.
 
 `streamlit-extras` is a useful demand signal because it collects small visual recipes, composite
 widgets, third-party renderers, browser bridges, and a few substantial analysis tools in one

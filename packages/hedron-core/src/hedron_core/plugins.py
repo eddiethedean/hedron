@@ -2,19 +2,26 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
+from typing import Literal
 
 from hedron_core.typing_aliases import PluginMetaDict
 
+StabilityLabel = Literal["stable", "beta", "experimental", "recipe"]
+
 __all__ = [
     "ExplorerPanelMeta",
+    "FeatureManifest",
     "PluginCapabilities",
     "PluginMeta",
     "PluginContext",
     "get_explorer_panels",
+    "get_feature_manifests",
     "register_explorer_panel",
+    "register_feature",
     "reset_explorer_panels_for_tests",
+    "reset_feature_manifests_for_tests",
 ]
 
 
@@ -45,7 +52,7 @@ class PluginMeta:
     name: str
     version: str
     distribution: str
-    hedron_version: str = ">=0.15,<0.16"
+    hedron_version: str = ">=0.16,<0.17"
     capabilities: PluginCapabilities = field(default_factory=PluginCapabilities)
     depends_on: tuple[str, ...] = ()
 
@@ -57,6 +64,34 @@ class PluginMeta:
             "hedron_version": self.hedron_version,
             "capabilities": self.capabilities.to_dict(),
             "depends_on": list(self.depends_on),
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class FeatureManifest:
+    """Per-feature capability manifest for curated extras (phase 0.16)."""
+
+    name: str
+    plugin: str
+    stability: StabilityLabel = "beta"
+    dependencies: tuple[str, ...] = ()
+    assets: tuple[str, ...] = ()
+    a11y_notes: str = ""
+    security_notes: str = ""
+    http_fallback: bool = True
+    description: str = ""
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "name": self.name,
+            "plugin": self.plugin,
+            "stability": self.stability,
+            "dependencies": list(self.dependencies),
+            "assets": list(self.assets),
+            "a11y_notes": self.a11y_notes,
+            "security_notes": self.security_notes,
+            "http_fallback": self.http_fallback,
+            "description": self.description,
         }
 
 
@@ -80,6 +115,24 @@ class ExplorerPanelMeta:
 
 _panels: dict[str, ExplorerPanelMeta] = {}
 _diagnostic_owners: dict[str, str] = {}
+_features: dict[str, FeatureManifest] = {}
+
+
+def register_feature(manifest: FeatureManifest) -> None:
+    key = f"{manifest.plugin}:{manifest.name}"
+    # Allow re-registration so nested FastAPI lifespans / test reloads can reload plugins.
+    _features[key] = manifest
+
+
+def get_feature_manifests(*, plugin: str | None = None) -> tuple[FeatureManifest, ...]:
+    items: Sequence[FeatureManifest] = tuple(_features.values())
+    if plugin is not None:
+        items = tuple(f for f in items if f.plugin == plugin)
+    return tuple(sorted(items, key=lambda f: (f.plugin, f.name)))
+
+
+def reset_feature_manifests_for_tests() -> None:
+    _features.clear()
 
 
 def register_explorer_panel(
@@ -124,6 +177,7 @@ def get_diagnostic_owners() -> Mapping[str, str]:
 def reset_explorer_panels_for_tests() -> None:
     _panels.clear()
     _diagnostic_owners.clear()
+    _features.clear()
 
 
 class PluginContext:
@@ -212,6 +266,32 @@ class PluginContext:
 
     def register_diagnostic_owner(self, code_prefix: str) -> None:
         register_diagnostic_owner(code_prefix, self.meta.name)
+
+    def register_feature(
+        self,
+        *,
+        name: str,
+        stability: StabilityLabel = "beta",
+        dependencies: Iterable[str] = (),
+        assets: Iterable[str] = (),
+        a11y_notes: str = "",
+        security_notes: str = "",
+        http_fallback: bool = True,
+        description: str = "",
+    ) -> None:
+        register_feature(
+            FeatureManifest(
+                name=name,
+                plugin=self.meta.name,
+                stability=stability,
+                dependencies=tuple(dependencies),
+                assets=tuple(assets),
+                a11y_notes=a11y_notes,
+                security_notes=security_notes,
+                http_fallback=http_fallback,
+                description=description,
+            )
+        )
 
     def on_startup(self, hook: Callable[[], None]) -> None:
         self._startup.append(hook)

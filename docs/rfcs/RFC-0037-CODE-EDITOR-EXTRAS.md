@@ -1,6 +1,6 @@
 # RFC-0037: CodeEditor and interactive extras
 
-**Status:** Draft
+**Status:** Accepted
 **Phase:** 0.16 (`v0.16.0`)
 **Related:** [NiceGUI feature cross-check](../NICEGUI_FEATURE_CROSSCHECK.md)
 (`ui.codemirror`, signature/calendar/typeahead examples, interactive image);
@@ -9,7 +9,7 @@ RFC-0014 (plugins), RFC-0010, RFC-0021, RFC-0023; roadmap `hedron-extras`
 ## Summary
 
 Define optional 0.16 extras for a CSP-safe `CodeEditor` (CodeMirror-class, distinct from
-`CodeBlock`/`JSONEditor`), plus calendar, signature-pad, and typeahead/combobox extras or recipes,
+`CodeBlock`/`JSONEditor`), plus calendar, signature-pad, and typeahead/combobox extras,
 and optional interactive-image annotation overlays beyond crop/region selection. These ship as
 curated extras with pinned assets — not Quasar/Vue ports.
 
@@ -24,9 +24,9 @@ image overlays) show demand for specialized editors. Hedron’s 0.16 workbench a
 - **`CodeEditor`:** language allowlist, read-only vs edit modes, size budgets, submit via form /
   explicit action (full text or patch); no `eval` of buffer contents; CSP-compatible asset pin;
   keyboard and screen-reader path documented (limitations honest if upstream editor is imperfect).
-- **Calendar / signature / typeahead:** independently installable extras or documented recipes over
+- **Calendar / signature / typeahead:** independently installable first-party extras over
   actions + fragments; capability manifests and missing-dependency guidance per RFC-0014.
-- **Annotation overlays:** optional layer on 0.16 interactive image tools — normalized regions,
+- **Annotation overlays:** same feature extra as crop/region tools — normalized regions,
   labels, export metadata; drag alternatives Required.
 - Absence of an extra adds no core import, asset, or startup cost.
 
@@ -60,14 +60,14 @@ appropriate to each extra; workbench flow tests compose with `AppScenario`.
 
 ## Compatibility and migration
 
-New optional distribution features under `hedron-extras` (or successor). NiceGUI maps
+New optional distribution features under `hedron-extras`. NiceGUI maps
 `ui.codemirror` → `CodeEditor`; examples → calendar/signature/typeahead extras.
 
-## Open questions
+## Resolved decisions
 
-1. CodeMirror vs alternative editor engine — pin choice at acceptance.
-2. First-party extras vs recipe-only for calendar/signature in v1?
-3. Annotation overlays same package as crop tools or separate extra?
+1. CodeMirror 6 pinned host (local assets; production may replace stub with offline CM6 bundle).
+2. Calendar/signature/typeahead are first-party extras in v1.
+3. Annotation overlays ship in the same `image_tools` feature as crop/region.
 
 ## Acceptance criteria
 

@@ -240,7 +240,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.15.0"
+__version__ = "0.16.0"
 
 __all__ = [
     "AddressableDescriptor",
