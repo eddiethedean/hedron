@@ -29,6 +29,10 @@ This matrix identifies the primary public, implementation, and acceptance owner 
 | Roadmap (0029) | All | All | Capability phases |
 | Declarative authoring reset (0030) | Component authoring alternatives and legacy audit | Superseded by RFC-0031 | Historical HDN reset gate |
 | HDJ authoring (0031) | Versioned `.hdj` prologue/profile, trusted Jinja body, Hedron bridges, full HTMX/HTML/CSS/JS surface, metadata, immediate replacement | `hedron-jinja` implementation | HDJ + HDN removal gates, phase 0.9 |
+| Live transport (0032) | Live SSE/WS/stream/preload contracts | `hedron` live helpers + core framing | release-gate-0.10 |
+| Data-app surface NiceGUI expansions (0033–0036) | Maps, media download/Range, surface chrome, scenario marks | Draft — phase 0.15 | 0.15 release gate (planned) |
+| Curated/specialty extras (0037–0038) | CodeEditor/interactive extras; terminal/robotics/native shell | Draft — phase 0.16 | 0.16 release gate (planned) |
+| Interaction authoring ergonomics (0039) | `region`/`@fragment`, `swap` builders, dev region diagnostics + Explorer click preview | Draft — phase 0.15 DX | 0.15 release gate (planned) |
 
 Every implementation pull request must name the owning RFC, public contract if any, implementation
 specification, and acceptance checks. Phase 0.6 closure and later work also names stable evidence IDs

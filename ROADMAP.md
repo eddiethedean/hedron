@@ -642,15 +642,28 @@ without fragmenting the component, security, rendering, or artifact contracts.
 
 ## 0.15 — Data-app surface completeness (`v0.15.0`)
 
-**Outcome:** Hedron covers the remaining high-value Streamlit data-app surface with typed,
-request-oriented controls, media, browser context, identity, and connection ergonomics without
-adopting whole-script reruns or global mutable application state.
+**Outcome:** Hedron covers the remaining high-value Streamlit data-app surface — and accepted
+NiceGUI-adjacent controls, maps, media delivery, and layout patterns — with typed, request-oriented
+controls, media, browser context, identity, and connection ergonomics without adopting whole-script
+reruns, Vue/WebSocket outbox mutation, or global mutable application state.
 
 ### Entry gate
 
 - The [Streamlit feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/STREAMLIT_FEATURE_CROSSCHECK.md) is refreshed against the
   audited Streamlit documentation version and every accepted gap has an owning RFC or an explicit
   revision to an existing RFC.
+- The [NiceGUI feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/NICEGUI_FEATURE_CROSSCHECK.md) is refreshed against the
+  audited NiceGUI documentation/element catalog and every 0.15-accepted gap has an owning RFC or an
+  explicit revision to an existing RFC ([RFC-0033](docs/rfcs/RFC-0033-MAP-GEOJSON.md),
+  [RFC-0034](docs/rfcs/RFC-0034-MEDIA-DOWNLOAD-RANGE.md),
+  [RFC-0035](docs/rfcs/RFC-0035-SURFACE-CHROME.md),
+  [RFC-0036](docs/rfcs/RFC-0036-SCENARIO-MARKS.md)). Vue/Quasar outbox, `run_javascript`, implicit
+  binding, and SPA `sub_pages` remain deliberate non-parity.
+- [RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md) (interaction authoring ergonomics) is
+  **Accepted**, or remains Draft only with every open question explicitly resolved or Deferred in
+  the RFC before implementation claims Supported ergonomics. Parent-region target inference and
+  broader brainstorm items (beginner barrels, `form.invalid` helpers, interaction stories) stay
+  out of 0.15 unless folded into a revised RFC-0039 acceptance.
 - The 0.10 interaction primitives and 0.12 adapter/column contracts are stable enough that this
   phase composes them instead of creating parallel widget, transport, or data runtimes.
 
@@ -679,21 +692,38 @@ adopting whole-script reruns or global mutable application state.
     full document / 303), complementary to the 0.19 progressive-enhancement contract
     ([#26](https://github.com/eddiethedean/hedron/issues/26),
     [#8](https://github.com/eddiethedean/hedron/issues/8)).
+- Interaction authoring ergonomics over existing HTMX contracts
+  ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)): `app.region` / `@app.fragment` one-liner
+  registration, `swap(...)` builders over `InteractionResult`, and dev-gated region-mismatch
+  diagnostics plus Explorer “what will this click do?” preview — without weakening fail-closed
+  targets, auto-exposing components, or adding implicit widget state.
 - Scenario fixtures for authenticated principals, browser-context hints, browser-storage payloads,
   uploads, media/permission outcomes, OIDC callback state, and named connections. Fixtures are
   schema-checked, reset after each test, redact secrets in failures, and make spoofable client data
   explicit to keep authorization tests honest.
 - Typed form/control families for number and range input, date/time/datetime input, multiselect,
-  toggle/switch, segmented control and pills, color input, rating/feedback, select slider, and menu
-  button behavior. Native HTML is the baseline; browser enhancement preserves submitted-value,
-  validation, keyboard, and no-JavaScript semantics.
-- `Audio`, `Video`, `PdfViewer`, a responsive image/video `Gallery`, and application-logo/page-icon
+  toggle/switch, segmented control and pills, color input, rating/feedback, select slider, chip/tag
+  input ([RFC-0035](docs/rfcs/RFC-0035-SURFACE-CHROME.md)), and menu button behavior. Native HTML is the
+  baseline; browser enhancement preserves submitted-value, validation, keyboard, and no-JavaScript
+  semantics.
+- `Audio`, `Video`, `PdfViewer`, a responsive image/video `Gallery`, `Carousel` and lightbox
+  selection patterns ([RFC-0035](docs/rfcs/RFC-0035-SURFACE-CHROME.md)), and application-logo/page-icon
   helpers plus microphone and camera capture inputs. Media URLs, uploads, ranges, preview,
   selection, authorized download/download-all, lazy loading, autoplay, device permission,
   retention, metadata, typed caption/subtitle and audio-description tracks, transcript/descriptive-
   transcript links, playback controls, live-caption provider hooks, and accessible alternatives
   remain explicit and policy bounded. Automatic captions or descriptions remain author-reviewed
   drafts, not accessibility evidence by themselves.
+- Typed download helpers and authorized Range/streaming media responses for players, PDF, and
+  file delivery (`Content-Disposition`, size/type limits, authz), complementary to gallery
+  download-all ([RFC-0034](docs/rfcs/RFC-0034-MEDIA-DOWNLOAD-RANGE.md)).
+- A policy-bounded `Map` / GeoJSON adapter with pinned local assets, CSP, attribution, tile/source
+  allowlists, marker/popup events as declared actions, and keyboard/static alternatives
+  ([RFC-0033](docs/rfcs/RFC-0033-MAP-GEOJSON.md)). It is not a general Leaflet/Vue runtime and must not
+  load arbitrary remote scripts by default.
+- Semantic `Timeline`, accessible `ContextMenu` (keyboard and non-pointer alternatives), and
+  Progress variants (including circular determinate/indeterminate) composing with existing
+  `Progress` / `Skeleton` / `Loading` ([RFC-0035](docs/rfcs/RFC-0035-SURFACE-CHROME.md)).
 - `Popover`, sticky/bottom action or chat docks, and semantic spacing primitives, implemented with
   native platform behavior where available and tested for focus order, zoom, reduced motion,
   virtual keyboards, safe-area insets, and fragment swaps.
@@ -701,6 +731,9 @@ adopting whole-script reruns or global mutable application state.
   tooltip/help, and directory upload. Clipboard reads remain excluded; confirmation is not
   authorization; geolocation is spoofable and never an authorization factor; directory paths,
   counts, per-file size, total size, and traversal are validated server-side.
+- Scenario mark/filter ergonomics for stable component identities (NiceGUI `ElementFilter` /
+  `.mark()`-inspired) that compose with `AppScenario` markup asserts without inventing a parallel
+  DOM simulator ([RFC-0036](docs/rfcs/RFC-0036-SCENARIO-MARKS.md)).
 - `Math` / LaTeX rendering, a bounded object/help inspector, and a sandboxed `IFrame` component with
   local/remote URL, CSP, permissions, referrer, sizing, and untrusted-content policies. Raw trusted
   HTML remains a separate, explicit trust boundary.
@@ -744,14 +777,17 @@ adopting whole-script reruns or global mutable application state.
 - A maintained Streamlit migration matrix and examples covering controls, media, chat, charts,
   state, authentication, connections, and deliberate non-parity, with diagnostics that point to
   the Hedron request/action equivalent rather than suggesting unsafe call-for-call translation.
+- A maintained NiceGUI migration glossary covering control families, storage-tier mapping,
+  media/download helpers, maps, and deliberate non-parity (Vue outbox, `run_javascript`, implicit
+  binding, SPA `sub_pages`), pointing to Hedron request/action equivalents.
 
 ### Exit gate
 
 - Every added control and container passes keyboard, screen-reader, zoom/reflow, forced-colors,
   reduced-motion, fragment-lifecycle, validation-retention, and no-JavaScript fallback suites.
-- Capture, media, iframe, OIDC, browser-context, and connection tests cover permission denial,
-  malicious payloads, cross-origin policy, proxy spoofing, secret/claim redaction, tenant isolation,
-  cancellation, cleanup, and bounded resource use.
+- Capture, media, map, download/Range, iframe, OIDC, browser-context, and connection tests cover
+  permission denial, malicious payloads, cross-origin policy, proxy spoofing, secret/claim
+  redaction, tenant isolation, cancellation, cleanup, and bounded resource use.
 - A reference data/AI application demonstrates typed filters, rich tables, diagrams/maps, chat with
   streamed output, media capture/playback, OIDC identity, and a named data connection while all
   mutations remain explicit actions and ordinary HTTP fallbacks remain usable.
@@ -762,21 +798,37 @@ adopting whole-script reruns or global mutable application state.
 - HTMX testing helpers cover InteractionResult headers/OOB/Toast, non-200 fragments, builtin
   markup asserts, FragmentRegion fail-closed checks, and shell panel-swap dual paths
   ([#22](https://github.com/eddiethedean/hedron/issues/22)–[#26](https://github.com/eddiethedean/hedron/issues/26)).
+- Interaction authoring ergonomics ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)):
+  getting-started guide and `hedron new` scaffold use `app.region` / `@app.fragment` (or the
+  documented equivalent) without triple-copying region ids; `swap(...)` is the documented default
+  fragment return with `InteractionResult` retained as the advanced envelope; production
+  undeclared-target requests remain fail-closed; dev/Explorer paths expose declared vs requested
+  targets via stable `HED-*` diagnostics; Explorer can preview method/path/target/swap for a stock
+  `RefreshButton.for_region` example; `hedron check` reports at least one target/region mismatch
+  class with remediation. No implicit widget state, auto-routed components, or client-callback
+  defaults.
 - Login CSRF, session timeout, rate-limit, trusted-header, and authenticated-cache helpers have
   tests and guide coverage; the hardened-sessions reference remains labeled application-owned.
 
 ## 0.16 — Curated extras and interactive analysis tools (`v0.16.0`)
 
 **Outcome:** Hedron offers a maintained optional toolkit for specialized data-app interactions and
-analysis workbenches without expanding the core runtime or adopting Streamlit-style rerun semantics.
+analysis workbenches — including accepted NiceGUI-adjacent editors and specialty extras — without
+expanding the core runtime or adopting Streamlit-style rerun semantics or a Vue/WebSocket client.
 
 ### Entry gate
 
 - The [streamlit-extras feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md) is
   refreshed against the audited catalog and every accepted extra has an owning RFC revision,
   dependency/asset owner, and explicit first-party-versus-recipe disposition.
+- The [NiceGUI feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/NICEGUI_FEATURE_CROSSCHECK.md) is refreshed against the
+  audited NiceGUI catalog and every 0.16-accepted extra (CodeEditor, calendar/signature/typeahead,
+  annotation overlays, optional TerminalView, specialty robotics/IoT) has an owning RFC revision,
+  dependency/asset owner, and explicit first-party-versus-recipe disposition
+  ([RFC-0037](docs/rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md),
+  [RFC-0038](docs/rfcs/RFC-0038-SPECIALTY-EXTRAS.md)).
 - The 0.4 plugin/package contracts, 0.12 visualization boundaries, 0.14 portable-runtime evidence,
-  and 0.15 control/media/browser contracts are stable enough to be reused rather than forked.
+  and 0.15 control/media/browser/map contracts are stable enough to be reused rather than forked.
 
 ### Scope
 
@@ -795,32 +847,49 @@ analysis workbenches without expanding the core runtime or adopting Streamlit-st
   All retain semantic controls, focus order, collision handling, non-drag keyboard/single-pointer
   alternatives, and non-JavaScript fallbacks.
 - Interactive analysis workbenches: a faceted `DataExplorer` that emits bounded source-transform
-  plans, an editable/schema-aware `JSONEditor`, a chart/data/export/explore workbench, and a typed
-  callable-to-action form adapter. Server authorization, validation, query bounds, side effects,
-  and export policy remain explicit.
+  plans, an editable/schema-aware `JSONEditor`, a syntax-aware `CodeEditor` (CodeMirror-class)
+  distinct from `CodeBlock`/`CodeViewer` with CSP, language allowlists, and no arbitrary eval
+  ([RFC-0037](docs/rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)), a chart/data/export/explore workbench, and a
+  typed callable-to-action form adapter. Server authorization, validation, query bounds, side
+  effects, and export policy remain explicit.
 - Interactive image tools for before/after comparison, normalized rectangular/circular crop bounds,
-  and box/lasso region selection. Inputs accept only declared URL/file/byte sources; orientation,
-  touch/keyboard operation, numeric/step/select-and-place alternatives to dragging, output
-  metadata, payload limits, image decoding, and accessible static alternatives are part of the
-  contracts.
+  box/lasso region selection, and optional annotation/overlay events (NiceGUI interactive-image
+  demand) ([RFC-0037](docs/rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)). Inputs accept only declared
+  URL/file/byte sources; orientation, touch/keyboard operation, numeric/step/select-and-place
+  alternatives to dragging, output metadata, payload limits, image decoding, and accessible static
+  alternatives are part of the contracts.
+- Optional calendar, signature-pad, and typeahead/combobox extras or recipes over declared actions
+  and fragments, with pinned assets, validation, and no-JavaScript fallbacks where promised
+  ([RFC-0037](docs/rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)).
 - Specialized display adapters and recipes for network graphs, 3D models, annotated/token-weighted
   text, architecture-diagram outputs, live job/log consoles, and common link/badge/metric/todo
   compositions. Adapters reuse 0.12 contracts; recipes do not create redundant primitives.
+- An optional bounded `TerminalView` / PTY extra only behind explicit command allowlists,
+  authentication/authorization, audit, output budgets, and accessibility policy
+  ([RFC-0038](docs/rfcs/RFC-0038-SPECIALTY-EXTRAS.md)). It is not a default install and must not imply
+  shell access from markup alone.
+- Specialty robotics/IoT extras (virtual joystick, deep 3D scene controls, serial/device bridges)
+  remain recipe-or-extra with explicit audience labeling ([RFC-0038](docs/rfcs/RFC-0038-SPECIALTY-EXTRAS.md));
+  they are not beachhead for CRUD/admin onboarding and must not require a Vue/WebSocket outbox.
 - An optional browser-Python/notebook sandbox bridge, such as a pinned JupyterLite/Pyodide runtime,
   isolated from the application origin and server state. Package/network allowlists, CSP, worker
   termination, CPU/memory/output budgets, persistence, accessibility, and offline behavior are
   explicit; arbitrary code never executes in the Hedron server process.
+- Optional native-desktop shell recipe (e.g. pywebview over the ASGI app) documented as packaging
+  guidance ([RFC-0038](docs/rfcs/RFC-0038-SPECIALTY-EXTRAS.md)), not a second UI runtime or Supported
+  multi-window application model.
 
 ### Exit gate
 
 - Each shipped extra can be installed and audited independently; absent extras add no core import,
   browser asset, startup, or transitive dependency cost.
-- Choice, tree, steps, split-pane, shortcut, editor, explorer, and image tools pass keyboard,
-  screen-reader, touch, zoom/reflow, forced-colors, reduced-motion, fragment-lifecycle, and
-  no-JavaScript fallback suites appropriate to the component.
-- Data, JSON, image, graph, model, log, and sandbox tests cover malicious payloads, unauthorized
-  actions, unbounded sources, decompression bombs, remote-origin policy, asset integrity, teardown,
-  storage exhaustion, worker termination, and server/session isolation.
+- Choice, tree, steps, split-pane, shortcut, editor (JSON/Code), explorer, calendar/signature/
+  typeahead, and image tools pass keyboard, screen-reader, touch, zoom/reflow, forced-colors,
+  reduced-motion, fragment-lifecycle, and no-JavaScript fallback suites appropriate to the
+  component.
+- Data, JSON, code-editor, image, graph, model, log, terminal, and sandbox tests cover malicious
+  payloads, unauthorized actions, unbounded sources, decompression bombs, remote-origin policy,
+  asset integrity, teardown, storage exhaustion, worker termination, and server/session isolation.
 - The reference application composes an analysis workbench from the optional package while the
   same domain actions and data sources remain usable through ordinary HTTP and core components.
 - Workbench flow tests prove that client selections yield bounded, authorized transform/action
@@ -838,6 +907,10 @@ client callback runtime or weakening the request/action boundary.
 - The [Plotly Dash feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/PLOTLY_DASH_FEATURE_CROSSCHECK.md) is refreshed against
   the audited Dash and Dash AG Grid versions, and every accepted gap has an owning RFC revision,
   public stability label, and evidence plan.
+- The [NiceGUI feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/NICEGUI_FEATURE_CROSSCHECK.md) binding/timer/refreshable
+  rows are reconciled: accepted dashboard ergonomics map to `DashboardBinding` / polling-or-SSE
+  fallbacks; Vue outbox, implicit element binding, and `run_javascript` remain deliberate
+  non-parity with documented migration notes.
 - The 0.10 live-transport lifecycle, 0.12 chart/grid event contracts, 0.15 controls and browser
   storage, and 0.16 workbench composition are stable enough to be reused rather than forked.
 
@@ -885,6 +958,9 @@ client callback runtime or weakening the request/action boundary.
   combinations, and diagnostics for layouts, component IDs, callback dependencies, clientside
   code, background work, grid licensing, and state ownership. Tools may generate a review plan but
   never claim automatic semantic conversion of arbitrary callbacks or JavaScript.
+- Maintained NiceGUI migration notes covering binding/timer/refreshable → `DashboardBinding` /
+  fragment/poll equivalents, storage-tier glossary pointers to 0.15, and explicit non-parity for
+  Vue/Quasar outbox, `run_javascript`, and SPA `sub_pages`.
 
 ### Exit gate
 
@@ -1235,6 +1311,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Published cross-language conformance-test kit | 0.14 | Versioned fixtures, negative cases, artifacts, and capability-level failure reports. |
 | HTTP-faithful `AppScenario` application-flow harness | 0.15 | Route, session, typed control/action, fragment, redirect, and response assertions; explicitly no whole-script rerun simulation. |
 | HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, builtin markup, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22)–[#26](https://github.com/eddiethedean/hedron/issues/26)). |
+| Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
 | Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |
 | Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |
@@ -1303,6 +1380,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Pre-auth CSRF, session idle/absolute timeouts, auth rate limits, trusted-header identity | 0.15 | Optional helpers and recipes; not an IdP ([#2](https://github.com/eddiethedean/hedron/issues/2), [#4](https://github.com/eddiethedean/hedron/issues/4), [#5](https://github.com/eddiethedean/hedron/issues/5), [#7](https://github.com/eddiethedean/hedron/issues/7)). |
 | Hardened rotating-refresh session reference and FastAPI authenticated-cache auto-wire | 0.15 | Application-owned identity recipe plus private/no-store parity with adapters ([#10](https://github.com/eddiethedean/hedron/issues/10), [#16](https://github.com/eddiethedean/hedron/issues/16)). |
 | HTMX InteractionResult, fragment, region, builtin, and shell-swap testing helpers | 0.15 | First-class asserts composing with `AppScenario` / adapter clients ([#22](https://github.com/eddiethedean/hedron/issues/22)–[#26](https://github.com/eddiethedean/hedron/issues/26)). |
+| `region` / `@fragment` / `swap` builders and Explorer click preview | 0.15 | Authoring ergonomics ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); production fail-closed region auth preserved. |
 | Named resource/connection registry and SQLAlchemy/Snowflake providers | 0.15 | Built on host DI/lifespan and external secret managers; no global service locator. |
 | Math/LaTeX, bounded help inspector, and sandboxed iframe | 0.15 | Executable content, remote URLs, and browser permissions remain explicit trust boundaries. |
 | Lazy imports, version gates, missing-extra guidance | 0.4–0.6 | Required for every optional integration. |
@@ -1360,9 +1438,9 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0004 FastAPI integration | 0.2 baseline; typed HTMX interaction contract in 0.6 |
 | 0005 HDN language (removed design) | 0.3; removed in 0.9 |
 | 0006 Scoped styles | 0.3 |
-| 0007 Component Explorer | 0.2 minimal; 0.4 full; extended through 0.7, dashboard graphs in 0.17, inference/workflow diagnostics in 0.18, and accessibility review workspace in 0.19 |
+| 0007 Component Explorer | 0.2 minimal; 0.4 full; extended through 0.7; interaction click-preview in 0.15 (RFC-0039); dashboard graphs in 0.17; inference/workflow diagnostics in 0.18; accessibility review workspace in 0.19 |
 | 0008 Addressable components | 0.2; structured collections and patches in 0.17 |
-| 0009 HTMX integration | 0.2 baseline; interaction/lifecycle hardening in 0.6–0.8; dashboard composition in 0.17 |
+| 0009 HTMX integration | 0.2 baseline; interaction/lifecycle hardening in 0.6–0.8; authoring ergonomics sugar in 0.15 (RFC-0039); dashboard composition in 0.17 |
 | 0010 Data components | 0.5; optional adapters in 0.6; interactive analysis tools in 0.16; dashboard/grid state in 0.17; examples and inference artifacts in 0.18 |
 | 0011 Visualization | 0.6; scale in 0.12; specialized optional adapters in 0.16; cross-filter composition in 0.17; model-demo outputs in 0.18 |
 | 0012 Security | 0.1–0.8; session/identity helpers in 0.15; host floor and adapter CSP in 0.20 |
@@ -1370,14 +1448,14 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0014 Plugin architecture | 0.4; integration packages through 0.7; curated extras in 0.16; optional MCP package in 0.17; Gradio/provider adapters in 0.18 |
 | 0015 Routing | 0.2 |
 | 0016 OpenAPI | 0.2; Explorer/docs integration in 0.4; explicit MCP projection boundary in 0.17; interaction recorder and Gradio remote discovery in 0.18 |
-| 0017 CLI | 0.2 minimal; 0.3 compiler commands; 0.4 full |
+| 0017 CLI | 0.2 minimal; 0.3 compiler commands; 0.4 full; region/target mismatch check in 0.15 (RFC-0039) |
 | 0018 Packaging | 0.0–0.8 |
 | 0019 Testing | 0.0–0.8; adapter fixtures in 0.11, data contracts in 0.12, deterministic async scenarios in 0.13, portable conformance kit in 0.14, app scenarios and HTMX InteractionResult/fragment/region/shell asserts in 0.15 (#22–#26), workbench/dashboard/model scenarios in 0.16–0.18, accessibility scenario/tree/AT evidence in 0.19, and adapter scaffold/wheel smoke in 0.20 |
 | 0020 Performance | 0.1–0.8 |
 | 0021 Browser runtime | 0.3; rich widgets in 0.5–0.6; browser context/storage in 0.15; extras and isolated sandbox in 0.16; dashboard patches/collections in 0.17; workflow canvas in 0.18; accessibility evidence in 0.19; HTMX hardening presets in 0.20 |
 | 0022 Theming | 0.3 |
 | 0023 Accessibility | 0.1–0.8 baseline; comprehensive contracts, authoring, testing, AT, governance, and progressive-enhancement contract in 0.19 |
-| 0024 Developer experience | 0.2–0.6; authoring assistance and accessibility diagnostics in 0.19; Flask/Django scaffolds in 0.20 |
+| 0024 Developer experience | 0.2–0.6; interaction authoring ergonomics in 0.15 (RFC-0039); authoring assistance and accessibility diagnostics in 0.19; Flask/Django scaffolds in 0.20 |
 | 0025 Component lifecycle | 0.1–0.3; dynamic accessibility-state evidence in 0.19 |
 | 0026 State management | 0.2 and 0.5; operations in 0.7; dashboard state and saved views in 0.17; versioned workflow/example state in 0.18 |
 | 0027 Data sources | 0.5–0.6 |
@@ -1385,6 +1463,14 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0029 Capability roadmap | 0.0 onward; Gradio-derived model-demo and inference-workflow packet in 0.18 |
 | 0030 Declarative authoring reset | Superseded by 0031 |
 | 0031 HDJ standards-first authoring | 0.9 |
+| 0032 Live transport | 0.10 |
+| 0033 Map / GeoJSON | 0.15 |
+| 0034 Media download / Range | 0.15 |
+| 0035 Surface chrome | 0.15 |
+| 0036 Scenario marks | 0.15 |
+| 0037 CodeEditor and interactive extras | 0.16 |
+| 0038 Specialty extras | 0.16 |
+| 0039 Interaction authoring ergonomics | 0.15 |
 
 ## Open GitHub issue ownership (0.13+)
 

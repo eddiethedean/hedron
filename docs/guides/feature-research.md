@@ -8,6 +8,7 @@ browse on GitHub. Start with [Why Hedron](why-hedron.md) for the buyer-facing co
 |---|---|
 | [Streamlit cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/STREAMLIT_FEATURE_CROSSCHECK.md) | Feature parity notes vs Streamlit |
 | [streamlit-extras cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/STREAMLIT_EXTRAS_FEATURE_CROSSCHECK.md) | Community extras mapping |
+| [NiceGUI cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/NICEGUI_FEATURE_CROSSCHECK.md) | FastAPI peer UI toolkit (HTMX-shaped gaps) |
 | [Plotly Dash cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/PLOTLY_DASH_FEATURE_CROSSCHECK.md) | Dash callbacks / layout |
 | [Gradio cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/GRADIO_FEATURE_CROSSCHECK.md) | ML demo surfaces |
 | [Accessibility research](https://github.com/eddiethedean/hedron/blob/main/docs/ACCESSIBILITY_FEATURE_RESEARCH.md) | A11y research backlog |
