@@ -962,6 +962,14 @@ client callback runtime or weakening the request/action boundary.
 - Maintained NiceGUI migration notes covering binding/timer/refreshable → `DashboardBinding` /
   fragment/poll equivalents, storage-tier glossary pointers to 0.15, and explicit non-parity for
   Vue/Quasar outbox, `run_javascript`, and SPA `sub_pages`.
+- Shell and interaction authoring primitives for HTMX in-shell apps: `HtmxLink` / `NavLink`
+  ([#28](https://github.com/eddiethedean/hedron/issues/28)), `class_` / theme hooks on content
+  builtins ([#29](https://github.com/eddiethedean/hedron/issues/29)), `OobHost` / `AttrHost`
+  ([#30](https://github.com/eddiethedean/hedron/issues/30)), `AppShell` / `MainPanel` with a
+  document-or-fragment view helper ([#40](https://github.com/eddiethedean/hedron/issues/40)), and a
+  stable public `InteractionResult` → Response conversion API that replaces private
+  `HedronRoute._convert_interaction_result` use
+  ([#35](https://github.com/eddiethedean/hedron/issues/35)).
 
 ### Exit gate
 
@@ -1156,6 +1164,13 @@ an arbitrary application.
   POST → full `Page` or redirect; HTMX path remains optional fragment / `InteractionResult`;
   built-ins that stay usable without HTMX are called out in Minimal form / Forms and actions
   ([#8](https://github.com/eddiethedean/hedron/issues/8)).
+- Safe HTML attrs on landmarks / surface components and export of landmark helpers as real types
+  (not factory variables)
+  ([#27](https://github.com/eddiethedean/hedron/issues/27),
+  [#31](https://github.com/eddiethedean/hedron/issues/31)).
+- Allowlisted progressive-enhancement scripts on `Page` (same-origin `SafeUrl` asset list; no
+  free-form `<script>` nodes in the component tree)
+  ([#39](https://github.com/eddiethedean/hedron/issues/39)).
 
 ### Exit gate
 
@@ -1228,6 +1243,16 @@ product-surface work.
 - Flask-Login / `current_user` `AuthSignal` bridge with optional detection, fallback to
   `session["user_id"]`, redaction rules preserved, and private-cache defaults following the signal
   ([#20](https://github.com/eddiethedean/hedron/issues/20)).
+- Pluggable CSRF strategies that do not require Starlette cookie sessions (DB-backed /
+  application-owned synchronizer tokens; distinct from pre-auth helpers)
+  ([#36](https://github.com/eddiethedean/hedron/issues/36)).
+- Composable `SecurityPolicy` security headers (merge/override per header rather than an
+  all-or-nothing `security_headers=False` off-switch); distinct from portable Flask/Django
+  application in #14
+  ([#37](https://github.com/eddiethedean/hedron/issues/37)).
+- `CsrfField` component wired to the active CSRF strategy, plus first-class HTMX kwargs on `Form`
+  so partials stop re-listing hidden tokens and stringly `hx-*` attributes
+  ([#38](https://github.com/eddiethedean/hedron/issues/38)).
 
 ### Exit gate
 
@@ -1422,11 +1447,14 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Streamlit migration matrix and parity diagnostics | 0.15 | Tracks feature families and preserves explicit non-parity with rerun/global-state semantics; HTMX testing helpers (#22–#26) ship with the AppScenario harness. |
 | streamlit-extras catalog matrix and curated extras toolkit | 0.16 | Tracks every active/deprecated extra as covered, planned, recipe/plugin, or deliberate non-parity. |
 | Plotly Dash matrix, reactive dashboard graph, notebook preview, and optional MCP projection | 0.17 | Adopts useful outcomes without a global callback runtime, arbitrary client JavaScript, or broad default tool exposure. |
+| HTMX shell primitives (`NavLink`, `OobHost`, `AppShell`/`MainPanel`) and public InteractionResult→Response API | 0.17 | In-shell navigation and stable conversion for apps that own CSRF/headers/region policy ([#28](https://github.com/eddiethedean/hedron/issues/28)–[#30](https://github.com/eddiethedean/hedron/issues/30), [#35](https://github.com/eddiethedean/hedron/issues/35), [#40](https://github.com/eddiethedean/hedron/issues/40)). |
 | Gradio matrix, model demos, inference scheduling, protocol adapter, and visual workflows | 0.18 | Adopts ML-demo outcomes while preserving explicit action, exposure, state, file, and authorization boundaries. |
 | Accessibility research, inclusive authoring, complex interaction alternatives, and evidence governance | 0.19 | Stable WCAG/ARIA baseline plus ATAG guidance; no automatic certification or legal/conformance claim. |
 | Progressive-enhancement contract for forms and mutations | 0.19 | No-JS POST path documented and tested alongside HTMX fragments ([#8](https://github.com/eddiethedean/hedron/issues/8)). |
+| Landmark attrs/types and allowlisted Page progressive-enhancement scripts | 0.19 | Safe attrs / real landmark types ([#27](https://github.com/eddiethedean/hedron/issues/27), [#31](https://github.com/eddiethedean/hedron/issues/31)); same-origin script allowlist ([#39](https://github.com/eddiethedean/hedron/issues/39)). |
 | HTMX browser hardening, proxy mount helpers, production security gates, `js:` hx-vals/headers reject | 0.20 | Host security floor; inspectable opt-outs ([#1](https://github.com/eddiethedean/hedron/issues/1), [#3](https://github.com/eddiethedean/hedron/issues/3), [#6](https://github.com/eddiethedean/hedron/issues/6), [#18](https://github.com/eddiethedean/hedron/issues/18)). |
 | Flask/Django fragment_regions, portable CSP headers, scaffolds, wheel smoke, Flask-Login AuthSignal | 0.20 | Adapter parity and DX after 0.11 foundations ([#12](https://github.com/eddiethedean/hedron/issues/12), [#14](https://github.com/eddiethedean/hedron/issues/14), [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19), [#20](https://github.com/eddiethedean/hedron/issues/20)). |
+| Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.20 | FastAPI composition for apps that own sessions/CSP ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 
 ## RFC-to-phase coverage
@@ -1511,6 +1539,12 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#30](https://github.com/eddiethedean/hedron/issues/30) | `OobHost` / `AttrHost` primitive | 0.17 |
 | [#31](https://github.com/eddiethedean/hedron/issues/31) | Export landmarks as real types | 0.19 |
 | [#32](https://github.com/eddiethedean/hedron/issues/32) | Lifespan missing `hedron.build` import | 0.16 (done) |
+| [#35](https://github.com/eddiethedean/hedron/issues/35) | Public `InteractionResult` → Response API | 0.17 |
+| [#36](https://github.com/eddiethedean/hedron/issues/36) | Pluggable CSRF strategies (no Starlette session required) | 0.20 |
+| [#37](https://github.com/eddiethedean/hedron/issues/37) | Composable `SecurityPolicy` headers | 0.20 |
+| [#38](https://github.com/eddiethedean/hedron/issues/38) | `CsrfField` + HTMX-aware `Form` kwargs | 0.20 |
+| [#39](https://github.com/eddiethedean/hedron/issues/39) | Allowlisted progressive-enhancement scripts on `Page` | 0.19 |
+| [#40](https://github.com/eddiethedean/hedron/issues/40) | `AppShell` / `MainPanel` HTMX shell primitives | 0.17 |
 
 ## Later-phase policy
 

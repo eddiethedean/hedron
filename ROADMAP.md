@@ -964,6 +964,14 @@ client callback runtime or weakening the request/action boundary.
 - Maintained NiceGUI migration notes covering binding/timer/refreshable → `DashboardBinding` /
   fragment/poll equivalents, storage-tier glossary pointers to 0.15, and explicit non-parity for
   Vue/Quasar outbox, `run_javascript`, and SPA `sub_pages`.
+- Shell and interaction authoring primitives for HTMX in-shell apps: `HtmxLink` / `NavLink`
+  ([#28](https://github.com/eddiethedean/hedron/issues/28)), `class_` / theme hooks on content
+  builtins ([#29](https://github.com/eddiethedean/hedron/issues/29)), `OobHost` / `AttrHost`
+  ([#30](https://github.com/eddiethedean/hedron/issues/30)), `AppShell` / `MainPanel` with a
+  document-or-fragment view helper ([#40](https://github.com/eddiethedean/hedron/issues/40)), and a
+  stable public `InteractionResult` → Response conversion API that replaces private
+  `HedronRoute._convert_interaction_result` use
+  ([#35](https://github.com/eddiethedean/hedron/issues/35)).
 
 ### Exit gate
 
@@ -1158,6 +1166,13 @@ an arbitrary application.
   POST → full `Page` or redirect; HTMX path remains optional fragment / `InteractionResult`;
   built-ins that stay usable without HTMX are called out in Minimal form / Forms and actions
   ([#8](https://github.com/eddiethedean/hedron/issues/8)).
+- Safe HTML attrs on landmarks / surface components and export of landmark helpers as real types
+  (not factory variables)
+  ([#27](https://github.com/eddiethedean/hedron/issues/27),
+  [#31](https://github.com/eddiethedean/hedron/issues/31)).
+- Allowlisted progressive-enhancement scripts on `Page` (same-origin `SafeUrl` asset list; no
+  free-form `<script>` nodes in the component tree)
+  ([#39](https://github.com/eddiethedean/hedron/issues/39)).
 
 ### Exit gate
 
@@ -1230,6 +1245,16 @@ product-surface work.
 - Flask-Login / `current_user` `AuthSignal` bridge with optional detection, fallback to
   `session["user_id"]`, redaction rules preserved, and private-cache defaults following the signal
   ([#20](https://github.com/eddiethedean/hedron/issues/20)).
+- Pluggable CSRF strategies that do not require Starlette cookie sessions (DB-backed /
+  application-owned synchronizer tokens; distinct from pre-auth helpers)
+  ([#36](https://github.com/eddiethedean/hedron/issues/36)).
+- Composable `SecurityPolicy` security headers (merge/override per header rather than an
+  all-or-nothing `security_headers=False` off-switch); distinct from portable Flask/Django
+  application in #14
+  ([#37](https://github.com/eddiethedean/hedron/issues/37)).
+- `CsrfField` component wired to the active CSRF strategy, plus first-class HTMX kwargs on `Form`
+  so partials stop re-listing hidden tokens and stringly `hx-*` attributes
+  ([#38](https://github.com/eddiethedean/hedron/issues/38)).
 
 ### Exit gate
 
