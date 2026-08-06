@@ -19,7 +19,7 @@ typeahead, display recipes, browser-Python sandbox, and Experimental specialty e
 
 ## Supported vs Deferred (operator view)
 
-Adopter summary: [What’s ready today](docs/guides/whats-ready.md). Rule of thumb: do not market a
+Adopter summary: [What’s ready today](guides/whats-ready.md). Rule of thumb: do not market a
 capability as unqualified **Supported** when its owning gate row is **Deferred**. Live
 SSE/WS/streaming/preload remain **experimental** (polling Supported) until earlier ops gates
 close. Specialty extras (TerminalView / joystick / device bridges) are **Experimental**.
@@ -50,16 +50,16 @@ verification via `check_release_gate.py 0.16.0`).
 
 ## Phase 0.16 evidence
 
-- Closure index: [release-gate-0.16.toml](docs/acceptance/release-gate-0.16.toml)
+- Closure index: [release-gate-0.16.toml](acceptance/release-gate-0.16.toml)
   (all `Verified`; zero-Deferred for 0.16-owned rows).
-- Acceptance: [RELEASE_0_16.md](docs/acceptance/RELEASE_0_16.md).
-- Stability: [api/STABILITY.md](docs/api/STABILITY.md).
-- Compatibility / deprecation: [COMPATIBILITY.md](docs/COMPATIBILITY.md).
-- Upgrade: [guides/upgrade.md](docs/guides/upgrade.md).
+- Acceptance: [RELEASE_0_16.md](acceptance/RELEASE_0_16.md).
+- Stability: [api/STABILITY.md](api/STABILITY.md).
+- Compatibility / deprecation: [COMPATIBILITY.md](COMPATIBILITY.md).
+- Upgrade: [guides/upgrade.md](guides/upgrade.md).
 - Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_16.py`.
-- Cut procedure: [RELEASE.md](docs/RELEASE.md) (current cut target: **0.16**; next capability: **0.17**).
+- Cut procedure: [RELEASE.md](RELEASE.md) (current cut target: **0.16**; next capability: **0.17**).
 
 ## Next capability phase
 
-**0.17** — reactive dashboards and agent interfaces. Track progress in [ROADMAP.md](docs/ROADMAP.md) and
-the public [roadmap guide](docs/guides/roadmap.md).
+**0.17** — reactive dashboards and agent interfaces. Track progress in [ROADMAP.md](ROADMAP.md) and
+the public [roadmap guide](guides/roadmap.md).
