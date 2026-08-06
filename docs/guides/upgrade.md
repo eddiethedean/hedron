@@ -1,18 +1,17 @@
 # Upgrade
 
-Current train: **0.15.0** (implemented pending cut). From 0.14: AppScenario / HTMX testing
-helpers, `region`/`@fragment`/`swap`, typed controls and surface chrome, media Range/downloads,
-Map/GeoJSON, BrowserContext/Storage, Math/IFrame, OIDC/session helpers, and the connection
-registry. See [What's ready](whats-ready.md).
+Current train: **0.16.0** (**Published**). From 0.15: optional `hedron-extras` workbenches and
+composition UI, CSP-safe CodeEditor host stub, image tools, editor extras, display recipes,
+browser-Python sandbox, and Experimental specialty extras. See [What's ready](whats-ready.md).
 
 
 Hedron publishes coordinated Beta trains. Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should
-upgrade through **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** to the **0.15.0** train for
-data-app surface completeness (plus prior portable conformance / optional native acceleration).
+upgrade through **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** to the
+**0.16.0** train for curated extras and analysis workbenches.
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** to the **0.15.0** train.
+upgrade through **0.9**–**0.15** to the **0.16.0** train.
 
 ## What changed in 0.8
 
@@ -64,7 +63,7 @@ components.
 
 | Claim | Decision | Guidance |
 |---|---|---|
-| Camera / microphone capture UI | D-045 | Remains phase **0.15**. |
+| Camera / microphone capture UI | D-045 | Shipped in **0.15** (Supported with policy limits). |
 
 FastAPI SSE / streaming / WebSocket / preload APIs ship as **experimental**
 (`hedron.experimental`); **polling** remains the Supported production fallback on every
@@ -187,7 +186,7 @@ instrumentation (`HDJ-DEF-014`) under D-048.
    (`HDJ-DEF-014`).
 5. Re-read [What's ready](whats-ready.md) and [What's new in 0.14](whats-new-0.14.md).
 
-## 0.15 data-app surface completeness (implemented pending cut)
+## 0.15 data-app surface completeness (Published)
 
 Phase 0.15 ships the remaining high-value Streamlit data-app surface and accepted NiceGUI-adjacent
 controls without whole-script reruns or Vue/outbox mutation. See
@@ -197,8 +196,7 @@ controls without whole-script reruns or Vue/outbox mutation. See
 ### Checklist: 0.14 → 0.15
 
 1. Pin and upgrade to the coordinated `0.15.0` Beta train (`hedron`, adapters, extras together).
-   Alpha packages `hedron-charts` / `hedron-sample-kit` / `hedron-native` remain on `0.1.x`
-   (compatible with `hedron-core>=0.16.0,<0.17`).
+   Alpha packages `hedron-charts` / `hedron-sample-kit` / `hedron-native` remain on `0.1.x`.
 2. Prefer `region` / `@fragment` / `swap` for new HTMX authoring; fail-closed
    `fragment_regions` authorization is unchanged.
 3. Adopt typed controls (`DateInput`, `RangeInput`, …), surface chrome, `Map`, and media helpers
@@ -208,6 +206,20 @@ controls without whole-script reruns or Vue/outbox mutation. See
 5. Prefer `AppScenario` and HTMX testing asserts (#22–#26) for application-flow coverage; they
    exercise ordinary HTTP, not Streamlit-style reruns.
 6. Re-read [What's ready](whats-ready.md) and the [upgrade](upgrade.md) Streamlit/NiceGUI guides.
+
+## 0.16 curated extras and analysis workbenches (Published)
+
+Phase 0.16 adds optional `hedron-extras` without expanding the core runtime. Specialty surfaces
+remain **Experimental**. CodeEditor is a CSP-safe host stub (no pinned CodeMirror 6 bundle).
+
+### Checklist: 0.15 → 0.16
+
+1. Pin and upgrade to the coordinated `0.16.0` Beta train (`hedron`, adapters, `hedron-extras`).
+   Alpha packages remain on `0.1.x` with `hedron-core>=0.16.0,<0.17`.
+2. Install extras only when needed: `pip install "hedron[extras]"`.
+3. Prefer workbench components that emit bounded plans/actions over implicit callables.
+4. Do not market TerminalView / joystick / device bridges as Supported beachhead features.
+5. Re-read [What's new in 0.16](whats-new-0.16.md) and [What's ready](whats-ready.md).
 
 ## Deprecation tooling
 

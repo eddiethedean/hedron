@@ -9,17 +9,15 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**Last published train:** `v0.14.0` (packages `0.14.0`; Alpha charts/sample-kit/native `0.1.x`).
-**Current cut target:** `v0.16.0` (curated extras / analysis workbenches) — **implemented pending
-cut**; see [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
-**Prior implemented pending cut:** `v0.15.0` (data-app surface) may be published as part of the
-0.16 train or as its own tag first — prefer publishing 0.15 then 0.16, or a single coordinated
-`v0.16.0` that supersedes. See
+**Last published train:** `v0.16.0` (packages `0.16.0` including first-party `hedron-extras`;
+Alpha charts/sample-kit/native `0.1.x`).
+**Prior published:** `v0.15.0` (data-app surface), `v0.14.0`, and earlier trains.
+**Current cut target:** `v0.16.x` patches or `v0.17.0` (reactive dashboards) — see
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [What’s ready](guides/whats-ready.md).
-**Next after 0.16 cut:** `v0.17.0` (capability phase) or `v0.16.x` (patch).
+**Next capability phase:** `v0.17.0`.
 
-Published trains include `v0.14.0`, `v0.13.0`, `v0.12.0`, `v0.11.0`, and
+Published trains include `v0.16.0`, `v0.15.0`, `v0.14.0`, `v0.13.0`, `v0.12.0`, `v0.11.0`, and
 [`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md).
 Do not re-run tag steps for a published version.
 
@@ -138,14 +136,11 @@ Published train — do not retag. See [`RELEASE_0_13.md`](acceptance/RELEASE_0_1
 Published train — do not retag. See [`RELEASE_0_14.md`](acceptance/RELEASE_0_14.md) and
 [`release-gate-0.14.toml`](acceptance/release-gate-0.14.toml).
 
-## Next phase cut: `v0.16.0` (curated extras and analysis workbenches)
+## Published phase cut: `v0.16.0` (curated extras and analysis workbenches)
 
-**Implemented pending cut.** Workspace packages are `0.16.0`; do not tag until
-`check_release_gate.py 0.16.0` is green without `--allow-planned` and the acceptance
-packet ([`RELEASE_0_16.md`](acceptance/RELEASE_0_16.md),
-[`release-gate-0.16.toml`](acceptance/release-gate-0.16.toml)) is closed. Follow the same
-coordinated-train procedure as prior phase cuts. Phase 0.15 acceptance remains available for
-an intermediate `v0.15.0` tag if operators prefer a stepped publish.
+Published train — do not retag. See [`RELEASE_0_16.md`](acceptance/RELEASE_0_16.md) and
+[`release-gate-0.16.toml`](acceptance/release-gate-0.16.toml). Phase 0.15 acceptance remains at
+[`RELEASE_0_15.md`](acceptance/RELEASE_0_15.md) for the prior `v0.15.0` tag.
 
 ## Scripts (maintainer)
 

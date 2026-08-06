@@ -78,7 +78,7 @@ first-party Hedron commitments.
 | NiceGUI surface | Hedron disposition |
 |---|---|
 | `ui.audio`, `ui.video`, image | **Planned 0.15** with captions, range requests, autoplay policy, and accessible alternatives. |
-| `ui.interactive_image` | **Planned 0.16** crop/region tools; **expanded 0.16** annotation/overlay events as optional extras when demand holds. |
+| `ui.interactive_image` | **Implemented 0.16** crop/region tools; **expanded 0.16** annotation/overlay events as optional extras when demand holds. |
 | Microphone / camera examples | **Planned 0.15** capture inputs with permission denial and retention policy. |
 | `ui.leaflet` | **Expanded 0.15:** first-party `Map` / GeoJSON adapter with pinned assets, CSP, attribution, tile/source policy, and keyboard/static alternatives. |
 | `app.add_media_files` ranged streaming | **Expanded 0.15:** authorized media/download responses with Range support for players and PDF. |
@@ -93,10 +93,10 @@ first-party Hedron commitments.
 | `ui.carousel`, lightbox-style galleries | **Expanded 0.15:** `Carousel` and lightbox selection beside responsive `Gallery`. |
 | `ui.timeline` | **Expanded 0.15:** semantic `Timeline` / timeline entry composition. |
 | `ui.context_menu` | **Expanded 0.15:** accessible context menu with keyboard and non-pointer alternatives. |
-| `ui.stepper` / steps | **Planned 0.16** `Steps`. |
-| `ui.splitter` | **Planned 0.16** split panes. |
-| `ui.tree` | **Planned 0.16** `TreeView`. |
-| `ui.fab` | **Planned 0.16** floating action placement. |
+| `ui.stepper` / steps | **Implemented 0.16** `Steps`. |
+| `ui.splitter` | **Implemented 0.16** split panes. |
+| `ui.tree` | **Implemented 0.16** `TreeView`. |
+| `ui.fab` | **Implemented 0.16** floating action placement. |
 | `ui.sub_pages` client routing | **Deliberate non-parity:** explicit routes + HTMX panel-swap / progressive enhancement (0.10/0.19). |
 | `ui.teleport` | **Covered equivalently** by OOB updates and addressable regions; no DOM teleport API. |
 | `ui.parallax` | **Recipe/plugin:** decorative; not a first-party accessibility obligation. |
@@ -108,10 +108,10 @@ first-party Hedron commitments.
 |---|---|
 | `ui.table`, AG Grid examples | **Covered** via `DataTable` / `DataEditor` and 0.12 scale work. |
 | Plotly, Matplotlib, Altair, ECharts, Highcharts, Mermaid | **Covered/partial:** first-party chart adapters exist; Highcharts remains third-party/recipe (licensing). |
-| `ui.json_editor` | **Planned 0.16** schema-aware `JSONEditor`. |
+| `ui.json_editor` | **Implemented 0.16** schema-aware `JSONEditor`. |
 | `ui.codemirror` / code editing | **Expanded 0.16:** `CodeEditor` distinct from `CodeBlock`/`CodeViewer`, with CSP, no eval, and language allowlists. |
-| `ui.log`, `ui.xterm` | **Planned 0.16** job/log consoles; **specialty extra** for full PTY/`TerminalView` with command-injection policy. |
-| `ui.scene` (Three.js) | **Planned 0.16** 3D model adapters; deep scene graphs remain specialty extras. |
+| `ui.log`, `ui.xterm` | **Implemented 0.16** job/log consoles; **specialty extra** for full PTY/`TerminalView` with command-injection policy. |
+| `ui.scene` (Three.js) | **Implemented 0.16** 3D model adapters; deep scene graphs remain specialty extras. |
 | `ui.joystick` | **Specialty extra / recipe** for robotics/IoT; not core beachhead. |
 | FullCalendar / signature pad / typeahead examples | **Expanded 0.16** as optional extras or documented recipes over actions + fragments. |
 
@@ -190,7 +190,7 @@ Owning drafts: [RFC-0037](rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md) (CodeEditor, cale
 typeahead, annotation overlays),
 [RFC-0038](rfcs/RFC-0038-SPECIALTY-EXTRAS.md) (TerminalView, robotics/IoT, native shell).
 
-- `CodeEditor` (CodeMirror-class) with CSP and no arbitrary eval.
+- `CodeEditor` host stub (CSP-safe; no pinned CodeMirror 6 bundle; no arbitrary eval).
 - Signature pad, calendar, and typeahead/combobox as extras or recipes.
 - Optional interactive-image annotation overlays beyond crop/region selection.
 - Optional `TerminalView` / PTY extra only behind explicit command, authz, audit, and a11y policy.

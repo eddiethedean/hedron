@@ -95,14 +95,23 @@ def compose_lifespan(
                 app.state.hedron_build_dir = str(resolved_build.resolve())
                 mount_build_assets(app, resolved_build)
             elif manifest_path.is_file():
-                from contextlib import suppress
+                from hedron.build import load_build_manifest
 
-                with suppress(Exception):
-                    from hedron.build import load_build_manifest
-
+                try:
                     app.state.hedron_build_manifest = load_build_manifest(resolved_build)
                     app.state.hedron_build_dir = str(resolved_build.resolve())
                     mount_build_assets(app, resolved_build)
+                except FileNotFoundError:
+                    # Race: manifest disappeared between exists check and load.
+                    pass
+                except Exception as exc:
+                    import logging
+
+                    logging.getLogger("hedron.lifespan").warning(
+                        "Ignoring corrupt non-production build manifest at %s: %s",
+                        manifest_path,
+                        exc,
+                    )
 
             from hedron.config import HedronSettings, load_hedron_settings
             from hedron.plugins import load_plugins

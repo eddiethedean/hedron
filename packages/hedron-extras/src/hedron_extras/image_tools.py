@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
 from typing import Any, Literal
 
@@ -118,6 +119,8 @@ class ImageCrop(Component[ImageCropProps]):
         for label, value in (("x", x), ("y", y), ("width", width), ("height", height)):
             if value < 0.0 or value > 1.0:
                 raise ValueError(f"ImageCrop {label} must be normalized 0..1")
+        if x + width > 1.0 or y + height > 1.0:
+            raise ValueError("ImageCrop rect must stay within the normalized unit square")
         super().__init__(
             ImageCropProps(
                 src=_asset_src(src),
@@ -240,10 +243,14 @@ class ImageRegionSelect(Component[ImageRegionSelectProps]):
         )
 
     def render(self) -> NodeLike:
+        payload = json.dumps(
+            [{"kind": r.kind, "points": r.points} for r in self.props.regions],
+            separators=(",", ":"),
+        )
         return html.div(
             html.img(src=self.props.src, alt="Region selection source"),
             html.textarea(
-                "",
+                payload,
                 name=self.props.name,
                 rows=3,
                 cols=40,

@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Pin `hedron-core` to `>=0.16.0,<0.17` for the 0.15 train.
+- Pin `hedron-core` to `>=0.16.0,<0.17` for the 0.16 train.
 
 ## [0.1.2] — 2026-08-05
 

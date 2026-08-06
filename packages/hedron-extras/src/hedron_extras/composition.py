@@ -2,14 +2,18 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from typing import Any, Literal
+
+from pydantic import field_validator
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.security import SafeUrl, UrlPurpose
+
+MappingLike = Mapping[str, Any]
 
 
 class ChoiceOption(Props):
@@ -90,9 +94,6 @@ class ChoiceCards(Component[ChoiceCardsProps]):
             data={**mark_data(self.props.mark), "hedron-choice": "cards"},
             role="group",
         )
-
-
-MappingLike = dict[str, Any]
 
 
 class TreeNodeProps(Props):
@@ -211,7 +212,11 @@ class Steps(Component[StepsProps]):
                 )
             )
         return html.nav(
-            html.ol(*items),
+            html.form(
+                html.ol(*items),
+                method="post",
+                class_="hedron-steps-form",
+            ),
             class_=class_names(
                 f"hedron-steps hedron-steps-{self.props.orientation}",
                 self.props.class_,
@@ -253,6 +258,10 @@ class SplitPane(Component[SplitPaneProps]):
         **kwargs: Any,
     ) -> None:
         ratio = max(min_ratio, min(max_ratio, primary_ratio))
+        if min_ratio > max_ratio:
+            raise ValueError("SplitPane min_ratio must be <= max_ratio")
+        if not 0.0 <= min_ratio <= 1.0 or not 0.0 <= max_ratio <= 1.0:
+            raise ValueError("SplitPane ratios must be between 0 and 1")
         super().__init__(
             SplitPaneProps(
                 primary_ratio=ratio,
@@ -352,12 +361,16 @@ class FloatingAction(Component[FloatingActionProps]):
                 class_="hedron-fab-control",
             )
         else:
-            control = html.button(
-                self.props.label,
-                type="submit",
-                name="hedron_fab",
-                value=self.props.action or "",
-                class_="hedron-fab-control",
+            control = html.form(
+                html.button(
+                    self.props.label,
+                    type="submit",
+                    name="hedron_fab",
+                    value=self.props.action or "",
+                    class_="hedron-fab-control",
+                ),
+                method="post",
+                class_="hedron-fab-form",
             )
         return html.div(
             control,
@@ -375,8 +388,15 @@ class FloatingAction(Component[FloatingActionProps]):
 class ShortcutBinding(Props):
     keys: str
     action: str
-    href: str | None = None
+    href: SafeUrl | None = None
     description: str = ""
+
+    @field_validator("href", mode="before")
+    @classmethod
+    def _coerce_href(cls, value: Any) -> Any:
+        if value is None or isinstance(value, SafeUrl):
+            return value
+        return SafeUrl.parse(str(value), purpose=UrlPurpose.NAVIGATION)
 
 
 class KeyboardShortcutsProps(ElementProps):
@@ -396,10 +416,20 @@ class KeyboardShortcuts(Component[KeyboardShortcutsProps]):
         enabled: bool = True,
         **kwargs: Any,
     ) -> None:
-        parsed = [
-            b if isinstance(b, ShortcutBinding) else ShortcutBinding.model_validate(b)
-            for b in bindings
-        ]
+        parsed: list[ShortcutBinding] = []
+        for raw in bindings:
+            binding = (
+                raw if isinstance(raw, ShortcutBinding) else ShortcutBinding.model_validate(raw)
+            )
+            # Re-parse to apply SafeUrl coercion when constructed with a raw str href.
+            if binding.href is not None and not isinstance(binding.href, SafeUrl):
+                binding = ShortcutBinding(
+                    keys=binding.keys,
+                    action=binding.action,
+                    href=binding.href,
+                    description=binding.description,
+                )
+            parsed.append(binding)
         # Conflict detection: duplicate key chords rejected.
         seen: set[str] = set()
         for b in parsed:
@@ -415,7 +445,11 @@ class KeyboardShortcuts(Component[KeyboardShortcutsProps]):
                 html.kbd(b.keys),
                 " ",
                 html.span(b.description or b.action),
-                data={"keys": b.keys, "action": b.action, "link": b.href},
+                data={
+                    "keys": b.keys,
+                    "action": b.action,
+                    "link": None if b.href is None else str(b.href),
+                },
             )
             for b in self.props.bindings
         ]

@@ -10,7 +10,7 @@ client. Evidence is indexed by [`release-gate-0.16.toml`](release-gate-0.16.toml
 ## Spec packet
 
 - [x] ROADMAP §0.16 scope accepted; Streamlit-extras and NiceGUI cross-checks refreshed.
-- [x] RFC-0037 and RFC-0038 Accepted with locked decisions (CM6; Experimental specialty).
+- [x] RFC-0037 and RFC-0038 Accepted/Implemented (CSP-safe CodeEditor host stub; Experimental specialty).
 - [x] Entry gate: 0.15 evidence remains closed; 0.16 gate TOML owns Verified rows only.
 
 ## Package and testing
@@ -38,5 +38,4 @@ client. Evidence is indexed by [`release-gate-0.16.toml`](release-gate-0.16.toml
 
 - [x] Full regression suite. *(`REGRESS-016`)*
 
-**Exit met** as coordinated `0.16.0` (`v0.16.0`) when every gate row is Verified and the
-release tag is cut (implemented pending cut).
+**Exit met** — coordinated `0.16.0` (**Published** as `v0.16.0`); every 0.16 gate row Verified.

@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from hedron.testing import assert_renders
+from hedron_core.diagnostics import HedronError
 from hedron_extras.composition import (
     ChoiceCards,
     ChoiceOption,
@@ -47,11 +48,16 @@ def test_choice_cards_and_tree() -> None:
 
 
 def test_steps_split_fab_shortcuts() -> None:
-    assert_renders(Steps(["One", "Two", "Three"], current=1), contains="hedron-steps")
+    steps = assert_renders(Steps(["One", "Two", "Three"], current=1), contains="hedron-steps")
+    assert 'method="post"' in steps
     assert_renders(
         SplitPane("left", "right", primary_ratio=0.4, persist_key="main"),
         contains="hedron-split-pane",
     )
+    with pytest.raises(ValueError):
+        SplitPane("a", "b", min_ratio=0.9, max_ratio=0.1)
+    fab = assert_renders(FloatingAction("New", action="create"), contains="hedron-floating-action")
+    assert 'method="post"' in fab
     assert_renders(FloatingAction("New", href="/new"), contains="hedron-floating-action")
     assert_renders(
         KeyboardShortcuts([ShortcutBinding(keys="g n", action="new", href="/new")]),
@@ -64,6 +70,8 @@ def test_steps_split_fab_shortcuts() -> None:
                 ShortcutBinding(keys="G N", action="b"),
             ]
         )
+    with pytest.raises(HedronError):
+        KeyboardShortcuts([{"keys": "x", "action": "x", "href": "javascript:alert(1)"}])
 
 
 def test_focus_scroll_rejects_selectors() -> None:

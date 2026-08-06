@@ -21,7 +21,7 @@ when evaluating production use.
 ## Phases and versions
 
 Capability phases are numbered `0.N`. The initial release for that phase is **`v0.N.0`**.
-Phase **0.15** maps to package train **`0.15.x`** (current **`0.15.0`**), not a patch of 0.1.
+Phase **0.16** maps to package train **`0.16.x`** (current **`0.16.0`**), not a patch of 0.1.
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 

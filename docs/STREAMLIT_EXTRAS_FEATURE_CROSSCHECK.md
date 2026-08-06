@@ -4,7 +4,7 @@
 **streamlit-extras baseline:** 1.5.0 documentation and source catalog<br>
 **Inventory:** 51 active extras and 6 deprecated extras<br>
 **Purpose:** identify useful capability gaps, not reproduce Streamlit's widget or rerun runtime
-**0.16 disposition:** Planned 0.16 items implemented in `hedron-extras` (or documented recipes)
+**0.16 disposition:** Implemented 0.16 items implemented in `hedron-extras` (or documented recipes)
 with per-feature capability manifests.
 
 `streamlit-extras` is a useful demand signal because it collects small visual recipes, composite
@@ -30,7 +30,7 @@ but not in the active or deprecated documentation navigation is not counted as a
 - **Covered/equivalent:** Hedron already supplies the user outcome, sometimes through explicit
   composition or normal HTTP/framework behavior rather than one helper call.
 - **Planned 0.12/0.15:** the extra exposed a gap in an existing coherent roadmap phase.
-- **Planned 0.16:** the feature is useful but specialized enough for the optional
+- **Implemented 0.16:** the feature is useful but specialized enough for the optional
   `hedron-extras` distribution rather than core.
 - **Recipe/plugin:** ordinary Hedron composition or third-party styling can supply it; first-party
   API and long-term compatibility cost are not justified.
@@ -43,25 +43,25 @@ but not in the active or deprecated documentation navigation is not counted as a
 
 | streamlit-extra | What it provides | Hedron disposition |
 |---|---|---|
-| Avatar | Circular image with label/caption and optional click | **Planned 0.16 recipe:** compose `Image`, text, and a safe link/action; a profile recipe may standardize sizing and accessible names. |
+| Avatar | Circular image with label/caption and optional click | **Implemented 0.16 recipe:** compose `Image`, text, and a safe link/action; a profile recipe may standardize sizing and accessible names. |
 | Badges | Social/project status badges | **Covered/equivalent:** `Badge`, `Image`, and safe links. Live remote badge services remain subject to image/CSP/privacy policy. |
 | Bottom Container | Sticky container at the viewport bottom | **Planned 0.15:** sticky/bottom action and chat docks already own focus, virtual-keyboard, and safe-area behavior. |
 | Buy Me a Coffee Button | Floating branded external link | **Covered/equivalent:** safe link/button plus 0.15/0.16 floating placement; provider branding belongs in a recipe. |
-| Card Selector | Rich card-based single or multiple choice | **Planned 0.16:** semantic card choices over radio/checkbox inputs with keyboard and no-JavaScript behavior. |
+| Card Selector | Rich card-based single or multiple choice | **Implemented 0.16:** semantic card choices over radio/checkbox inputs with keyboard and no-JavaScript behavior. |
 | Customize running | Restyles Streamlit's global running indicator | **Recipe/plugin:** Hedron already has explicit `Loading`, `Status`, and progress regions; global DOM/CSS monkey-patching is not an API. |
-| Directory Tree | Collapsible filesystem tree with optional path selection | **Planned 0.16:** generic selectable `TreeView`; filesystem enumeration and path authorization stay server-owned. |
-| Floating button | Fixed-position floating action button | **Planned 0.16:** floating action placement with safe-area, collision, focus, and semantic button/link rules. |
+| Directory Tree | Collapsible filesystem tree with optional path selection | **Implemented 0.16:** generic selectable `TreeView`; filesystem enumeration and path authorization stay server-owned. |
+| Floating button | Fixed-position floating action button | **Implemented 0.16:** floating action placement with safe-area, collision, focus, and semantic button/link rules. |
 | Grid Layout | Round-robin grid rows with relative widths and gaps | **Covered/equivalent:** `Grid`, `Inline`, responsive layout, and HDJ/native CSS Grid. |
 | Keyboard text | Keyboard-key visual styling | **Recipe/plugin:** semantic `<kbd>` markup and scoped styles; no dedicated runtime primitive. |
-| Keyboard to URL | Keyboard binding that opens a URL | **Planned 0.16:** declared shortcuts mapped to safe links/actions, with conflict, focus, user-activation, and popup-blocking policy. |
+| Keyboard to URL | Keyboard binding that opens a URL | **Implemented 0.16:** declared shortcuts mapped to safe links/actions, with conflict, focus, user-activation, and popup-blocking policy. |
 | Let emojis rain | Full-screen falling-emoji animation | **Deliberate non-parity:** decorative effect stays CSS/Web Component/plugin territory and must respect reduced motion. |
 | Mentions | Inline icon-and-label links | **Covered/equivalent:** safe links, icons, badges, text, and inline composition without raw HTML generation. |
 | Metric Cards | Global CSS restyling for metrics | **Covered/equivalent:** `Metric`, `Card`, scoped styles, variants, and theme tokens; no page-wide test-ID selector patch. |
 | Radial Menu | Circular icon choice menu | **Recipe/plugin:** unconventional navigation has substantial keyboard, touch, zoom, and discoverability cost; stable select/menu controls remain first-party. |
-| Resizable Columns | Drag-resizable columns with persisted ratios | **Planned 0.16:** resizable split panes with min/max constraints, persistence, keyboard resizing, and responsive fallback. |
-| Scroll to Element | Programmatic keyed-element scrolling | **Planned 0.16:** declared focus/scroll requests by stable component identity, not arbitrary DOM selectors. |
+| Resizable Columns | Drag-resizable columns with persisted ratios | **Implemented 0.16:** resizable split panes with min/max constraints, persistence, keyboard resizing, and responsive fallback. |
+| Scroll to Element | Programmatic keyed-element scrolling | **Implemented 0.16:** declared focus/scroll requests by stable component identity, not arbitrary DOM selectors. |
 | Skeleton Placeholder | Replaceable container with loading skeleton | **Covered:** `Skeleton`, addressable fragments, loading regions, and out-of-band replacement. |
-| Steps | Stateful horizontal/vertical multi-step indicator | **Planned 0.16:** `Steps` plus explicit next/previous/set actions, addressable URLs, and resumable workflow state. |
+| Steps | Stateful horizontal/vertical multi-step indicator | **Implemented 0.16:** `Steps` plus explicit next/previous/set actions, addressable URLs, and resumable workflow state. |
 | To-do items | Checkbox-plus-content composition | **Covered/equivalent:** checkbox, layout, submitted/action state, and ordinary component composition. |
 | Toggle button | `<details>` summary/content disclosure | **Covered:** `Expander` and native semantic disclosure. |
 
@@ -69,20 +69,20 @@ but not in the active or deprecated documentation navigation is not counted as a
 
 | streamlit-extra | What it provides | Hedron disposition |
 |---|---|---|
-| Capture | Redirects stdout, stderr, or logging output into Streamlit elements | **Planned 0.16 outcome:** bounded live job/log console. Process-global stream redirection remains non-parity; output must have explicit producer, scope, redaction, and backpressure. |
+| Capture | Redirects stdout, stderr, or logging output into Streamlit elements | **Implemented 0.16 outcome:** bounded live job/log console. Process-global stream redirection remains non-parity; output must have explicit producer, scope, redaction, and backpressure. |
 | Chart annotations | Adds annotation overlays to Altair time-series charts | **Planned 0.12:** backend-neutral typed chart annotation/overlay contract. |
-| Chart container | Chart/data tabs with CSV export and optional dataframe exploration | **Planned 0.16:** reusable chart/data/export/explore workbench over existing `Tabs`, charts, data tables, and downloads. |
+| Chart container | Chart/data tabs with CSV export and optional dataframe exploration | **Implemented 0.16:** reusable chart/data/export/explore workbench over existing `Tabs`, charts, data tables, and downloads. |
 | Chart.js Chart | Direct Chart.js specifications | **Planned 0.12:** optional adapter behind the standard asset, event, payload, CSP, and fallback contracts. |
-| Dataframe explorer UI | UI-authored column filters returning a filtered dataframe | **Planned 0.16:** faceted `DataExplorer` emits a bounded typed transform plan to a `DataSource`; it never silently collects distributed data. |
+| Dataframe explorer UI | UI-authored column filters returning a filtered dataframe | **Implemented 0.16:** faceted `DataExplorer` emits a bounded typed transform plan to a `DataSource`; it never silently collects distributed data. |
 | Diagrams | Renders Python `diagrams` architecture graphs | **Covered/planned 0.12:** GraphViz and Mermaid adapters plus safe image/SVG output cover the renderer; a `diagrams` convenience can be a recipe. |
 | Great Tables | Theme-aware rendering of Great Tables objects | **Planned 0.12:** optional adapter with accessible table fallback and explicit theme translation. |
-| Image Compare Slider | Before/after image overlay with draggable divider | **Planned 0.16:** interactive compare with horizontal/vertical operation, labels, position events, touch/keyboard access, and static fallback. |
-| Image Crop | Adjustable normalized crop bounds, aspect ratio, circular mask, guides | **Planned 0.16:** typed crop selection; server-side decoding and transformation remain explicit. |
-| Image Selector | Box or lasso region selection over an image | **Planned 0.16:** normalized image-region events with source, payload, keyboard/touch, and accessible-alternative policy. |
-| JSON Editor | Collapsible editable JSON tree | **Planned 0.16:** schema-aware `JSONEditor` with typed change events, validation, authorization, depth/size limits, and read-only mode. |
+| Image Compare Slider | Before/after image overlay with draggable divider | **Implemented 0.16:** interactive compare with horizontal/vertical operation, labels, position events, touch/keyboard access, and static fallback. |
+| Image Crop | Adjustable normalized crop bounds, aspect ratio, circular mask, guides | **Implemented 0.16:** typed crop selection; server-side decoding and transformation remain explicit. |
+| Image Selector | Box or lasso region selection over an image | **Implemented 0.16:** normalized image-region events with source, payload, keyboard/touch, and accessible-alternative policy. |
+| JSON Editor | Collapsible editable JSON tree | **Implemented 0.16:** schema-aware `JSONEditor` with typed change events, validation, authorization, depth/size limits, and read-only mode. |
 | Sigma Graph | WebGL network graph with NetworkX input, layouts, and selection | **Planned 0.12:** optional Sigma.js/NetworkX adapter using typed authorized selection events. |
 | Three.js 3D Viewer | Orbit viewer for GLTF/GLB, OBJ, STL, PLY, and FBX | **Planned 0.12:** optional model-viewer adapter with format/source allowlists, size budgets, teardown, and accessible description/fallback. |
-| Word importances | Colors tokens by signed importance score | **Planned 0.16 recipe/adapter:** semantic token-weight display with legend, non-color encoding, bounds validation, and no raw HTML. |
+| Word importances | Colors tokens by signed importance score | **Implemented 0.16 recipe/adapter:** semantic token-weight display with legend, non-color encoding, bounds validation, and no raw HTML. |
 
 ### Browser, execution, state, and workflow helpers
 
@@ -93,13 +93,13 @@ but not in the active or deprecated documentation navigation is not counted as a
 | Echo Expander | Executes a block and displays its source in an expander | **Covered by composition:** `CodeViewer` plus `Expander` and Explorer examples; execute-while-rendering magic is non-parity. |
 | Eval JavaScript | Evaluates arbitrary JavaScript and returns the result to Python | **Deliberate non-parity:** use typed Web Components/events and `BrowserContext`; arbitrary eval defeats CSP, capability inspection, and event validation. |
 | Exception Handler | Replaces Streamlit's internal uncaught exception handler | **Covered/equivalent:** framework exception handlers, typed error regions, logging, and diagnostics; no monkey-patch of private runtime internals. |
-| Function explorer | Generates a UI from a Python function's type hints | **Planned 0.16:** typed callable-to-action form adapter, limited to supported annotations and explicitly exposed authorized actions. |
-| Jupyterlite | Embeds the public JupyterLite demo in an iframe | **Planned 0.16:** optional pinned, locally auditable browser-Python/notebook sandbox bridge with explicit isolation and budgets. |
+| Function explorer | Generates a UI from a Python function's type hints | **Implemented 0.16:** typed callable-to-action form adapter, limited to supported annotations and explicitly exposed authorized actions. |
+| Jupyterlite | Embeds the public JupyterLite demo in an iframe | **Implemented 0.16:** optional pinned, locally auditable browser-Python/notebook sandbox bridge with explicit isolation and budgets. |
 | Local Storage Manager | Namespaced dict-like browser localStorage with JSON and expiry | **Planned 0.15:** typed `BrowserStorage` for non-secret preferences with quotas, consent, expiry, and unavailable-storage behavior. |
 | Mandatory Date Range Picker | Guarantees a complete start/end tuple | **Planned 0.15:** typed date-range control plus form/action validation; incomplete input returns a validation error rather than halting the app. |
 | Pagination | Numbered previous/next page selector | **Covered:** pagination helpers and bounded `DataSource` paging with accessible links/forms. |
 | Redirect | Validated internal/external same-tab or new-tab redirect | **Covered:** safe redirects, links, history policy, and typed interaction results. |
-| Stlite Sandbox | Executes untrusted Streamlit/Python code in the browser | **Planned 0.16 outcome:** isolated browser-Python sandbox, never server-side arbitrary execution; not a promise to embed Streamlit itself. |
+| Stlite Sandbox | Executes untrusted Streamlit/Python code in the browser | **Implemented 0.16 outcome:** isolated browser-Python sandbox, never server-side arbitrary execution; not a promise to embed Streamlit itself. |
 | Specialized Inputs | Phone, email, URL, money, search, and password fields | **Planned 0.15:** typed control families, validation, adornments/help/errors, debounce where enhanced, and native submitted-value fallback. |
 | Read-only Star Rating | Displays half-step ratings | **Planned 0.15:** rating/feedback controls include read-only presentation and non-color text equivalents. |
 | Stateful Button | Button persisted as a toggle | **Planned 0.15 equivalent:** explicit toggle/switch input and scoped form/URL/session state, not hidden rerun state. |

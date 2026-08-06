@@ -2,8 +2,9 @@
 
 ### Added
 
-- Phase 0.16 curated extras and analysis workbenches train alignment.
-- FeatureManifest registration surface and workbench-flow testing helpers (where applicable).
+- Workbench-flow testing helpers (`assert_transform_plan`, fixtures) for AppScenario.
+- FeatureManifest registration helpers for plugin packages (`PluginContext.register_feature`).
+- Coordinated Beta train with phase 0.16 curated extras.
 
 ## [0.15.0] — 2026-08-05
 

@@ -1,8 +1,7 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.16 **implemented** as `v0.16.0` (2026-08-06; **pending cut** —
-draft until the coordinated tag/publish). Workspace packages: Beta `0.16.0`, Alpha
-charts/sample-kit/native `0.1.x`.
+**Roadmap position:** phase 0.16 **Published** as `v0.16.0` (2026-08-06). Workspace packages:
+Beta `0.16.0`, Alpha charts/sample-kit/native `0.1.x`.
 **Date:** 2026-08-06
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
@@ -23,8 +22,8 @@ Adopter summary: [What’s ready today](guides/whats-ready.md). Rule of thumb: d
 capability as unqualified **Supported** when its owning gate row is **Deferred**. Live
 SSE/WS/streaming/preload remain **experimental** (polling Supported) until earlier ops gates
 close. Specialty extras (TerminalView / joystick / device bridges) are **Experimental**.
-Phase 0.16 closed with **zero Deferred** rows for 0.16-owned work (pending cut
-verification via `check_release_gate.py 0.16.0`).
+Phase 0.16 closed with **zero Deferred** among **0.16 gate IDs**
+(`check_release_gate.py 0.16.0`); prior-phase Deferred rows below remain owned elsewhere.
 
 | ID | Topic | Disposition | Notes |
 |---|---|---|---|
@@ -57,9 +56,11 @@ verification via `check_release_gate.py 0.16.0`).
 - Compatibility / deprecation: [COMPATIBILITY.md](COMPATIBILITY.md).
 - Upgrade: [guides/upgrade.md](guides/upgrade.md).
 - Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_16.py`.
-- Cut procedure: [RELEASE.md](RELEASE.md) (current cut target: **0.16**; next capability: **0.17**).
+- Cut procedure: [RELEASE.md](RELEASE.md) (last published: **0.16**; next capability: **0.17**).
 
 ## Next capability phase
 
-**0.17** — reactive dashboards and agent interfaces. Track progress in [ROADMAP.md](ROADMAP.md) and
-the public [roadmap guide](guides/roadmap.md).
+**0.17** — reactive dashboards and agent interfaces (also shell NavLink/OobHost/`class_`
+primitives; landmark a11y attrs/types land in **0.19**). Track progress in [ROADMAP.md](ROADMAP.md)
+and the public [roadmap guide](guides/roadmap.md).
+Open-issue owners: [issue ownership table](ROADMAP.md#open-github-issue-ownership-013).

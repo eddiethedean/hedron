@@ -3,16 +3,16 @@
 ## Which version should I install?
 
 ```bash
-pip install "hedron>=0.15.0"
+pip install "hedron>=0.16.0"
 # or
-uv add "hedron>=0.15.0"
+uv add "hedron>=0.16.0"
 ```
 
-That pins the current workspace train (**0.15.0**, implemented; publish with tag
-`v0.15.0`). Until that cut, PyPI’s latest published train remains **0.14.x**—see
-[What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md). `Auto` is
-included. For DataTable/DataEditor, install `hedron[data]`. For charts, install
-`hedron[charts]`. For Flask/Django adapters:
+That pins the current published train (**0.16.0** / **0.16.x**). See
+[What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md). For curated
+extras (`hedron-extras`), install `hedron[extras]`. `Auto` is included. For
+DataTable/DataEditor, install `hedron[data]`. For charts, install `hedron[charts]`.
+For Flask/Django adapters:
 
 ```bash
 pip install hedron-flask
@@ -31,7 +31,7 @@ with the same interpreter you used for `pip`.
 
 Other common fixes:
 
-1. Prefer **`uv tool install "hedron>=0.15.0"`** (or `pipx install`), then **re-open the shell**.
+1. Prefer **`uv tool install "hedron>=0.16.0"`** (or `pipx install`), then **re-open the shell**.
 2. After `hedron new` and `pip install -e .` / `uv sync`, run the CLI from the project
    environment: `uv run hedron …` (or activate the venv and run `hedron` / `python -m hedron`).
 3. On Windows, ensure the Python **Scripts** folder is on PATH (for example
@@ -56,7 +56,7 @@ declares—do not skip it.
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or use
-`hedron new my-app` after `pip install "hedron>=0.15.0"`.
+`hedron new my-app` after `pip install "hedron>=0.16.0"`.
 
 ## Should I use `uv init` or `hedron new`?
 

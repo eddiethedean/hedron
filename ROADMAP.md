@@ -812,6 +812,9 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
 
 ## 0.16 — Curated extras and interactive analysis tools (`v0.16.0`)
 
+**Status:** Published as `v0.16.0` (2026-08-06). See [STATUS.md](docs/STATUS.md) and
+[acceptance/RELEASE_0_16.md](docs/acceptance/RELEASE_0_16.md).
+
 **Outcome:** Hedron offers a maintained optional toolkit for specialized data-app interactions and
 analysis workbenches — including accepted NiceGUI-adjacent editors and specialty extras — without
 expanding the core runtime or adopting Streamlit-style rerun semantics or a Vue/WebSocket client.
@@ -847,7 +850,7 @@ expanding the core runtime or adopting Streamlit-style rerun semantics or a Vue/
   All retain semantic controls, focus order, collision handling, non-drag keyboard/single-pointer
   alternatives, and non-JavaScript fallbacks.
 - Interactive analysis workbenches: a faceted `DataExplorer` that emits bounded source-transform
-  plans, an editable/schema-aware `JSONEditor`, a syntax-aware `CodeEditor` (CodeMirror-class)
+  plans, an editable/schema-aware `JSONEditor`, a CSP-safe `CodeEditor` host stub (no pinned CodeMirror 6 bundle)
   distinct from `CodeBlock`/`CodeViewer` with CSP, language allowlists, and no arbitrary eval
   ([RFC-0037](docs/rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)), a chart/data/export/explore workbench, and a
   typed callable-to-action form adapter. Server authorization, validation, query bounds, side
@@ -1474,8 +1477,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 
 ## Open GitHub issue ownership (0.13+)
 
-Tracked issues filed 2026-08-05 are owned by capability phases as follows. Issue bodies remain
-normative for acceptance criteria; this table is the roadmap owner index.
+Tracked issues filed 2026-08-05 and 2026-08-06 are owned by capability phases as follows.
+Issue bodies remain normative for acceptance criteria; this table is the roadmap owner index.
 
 | Issue | Title | Owning phase |
 |---:|---|---:|
@@ -1504,6 +1507,12 @@ normative for acceptance criteria; this table is the roadmap owner index.
 | [#24](https://github.com/eddiethedean/hedron/issues/24) | Testing: Dialog / Tabs / Pagination / Lazy / Toast asserts | 0.15 |
 | [#25](https://github.com/eddiethedean/hedron/issues/25) | Testing: FragmentRegion authorization helpers | 0.15 |
 | [#26](https://github.com/eddiethedean/hedron/issues/26) | Testing: shell panel-swap / PE asserts | 0.15 |
+| [#27](https://github.com/eddiethedean/hedron/issues/27) | Safe HTML attrs on landmarks / surfaces | 0.19 |
+| [#28](https://github.com/eddiethedean/hedron/issues/28) | `HtmxLink` / `NavLink` builtin | 0.17 |
+| [#29](https://github.com/eddiethedean/hedron/issues/29) | `class_` / theme hooks on content builtins | 0.17 |
+| [#30](https://github.com/eddiethedean/hedron/issues/30) | `OobHost` / `AttrHost` primitive | 0.17 |
+| [#31](https://github.com/eddiethedean/hedron/issues/31) | Export landmarks as real types | 0.19 |
+| [#32](https://github.com/eddiethedean/hedron/issues/32) | Lifespan missing `hedron.build` import | 0.16 (done) |
 
 ## Later-phase policy
 

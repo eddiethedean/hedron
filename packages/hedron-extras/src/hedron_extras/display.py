@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Sequence
 from typing import Any
 
@@ -9,6 +10,14 @@ from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
+
+_SECRETISH = re.compile(
+    r"(?i)\b(password|passwd|token|secret|api[_-]?key|authorization)\b\s*[:=]\s*\S+"
+)
+
+
+def _redact_log_text(text: str) -> str:
+    return _SECRETISH.sub(lambda m: f"{m.group(1)}=***", text)
 
 
 class LogLine(Props):
@@ -61,13 +70,15 @@ class LogConsole(Component[LogConsoleProps]):
         )
 
     def render(self) -> NodeLike:
-        rows = [
-            html.li(
-                f"[{line.level}] {line.text}",
-                data={"level": line.level, "ts": line.ts},
+        rows = []
+        for line in self.props.lines:
+            text = _redact_log_text(line.text) if self.props.redact else line.text
+            rows.append(
+                html.li(
+                    f"[{line.level}] {text}",
+                    data={"level": line.level, "ts": line.ts},
+                )
             )
-            for line in self.props.lines
-        ]
         return html.div(
             html.ol(*rows),
             class_=class_names("hedron-log-console", self.props.class_),

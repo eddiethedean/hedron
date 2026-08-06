@@ -42,9 +42,8 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 
 ## Shipped through 0.10
 
-These surfaces are implemented on the **0.15.0** train (includes the 0.9 authoring break
-and 0.10 live interaction; **pending cut** of `v0.15.0`—last published train is
-**0.14.x**).
+These surfaces are implemented on the **0.16.0** train (includes the 0.9 authoring break
+and 0.10 live interaction; last published train **0.16.x**).
 
 ### Application
 
@@ -96,14 +95,17 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.15)
+- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.16)
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
 - [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling Supported; SSE experimental
 
 ## Current train notes
 
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.15.0**, pending cut)
+  (introduced in 0.11; Supported on **0.16.0**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — **0.15.0** (pending cut)
-- Capture UI ships in **0.15** (no longer deferred)
+  — Supported on **0.16.0**
+- Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
+- Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
+  narrative [What's new in 0.16](../guides/whats-new-0.16.md); package
+  [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-extras/CHANGELOG.md)
