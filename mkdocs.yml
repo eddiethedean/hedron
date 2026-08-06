@@ -149,7 +149,10 @@ extra:
   status:
     new: New
     stable: Stable
-    shipped: Shipped in 0.13
+    shipped: Shipped
+    experimental: Experimental
+    beta: Beta
+    deferred: Deferred
     planned: Planned
   social:
     - icon: fontawesome/brands/github
@@ -383,7 +386,7 @@ nav:
     - Public roadmap: guides/roadmap.md
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
-    - Upgrade (0.8 → 0.13): guides/upgrade.md
+    - Upgrade (0.8 → 0.14): guides/upgrade.md
     - What's new: guides/release-notes.md
     - What's new in 0.14: guides/whats-new-0.14.md
     - What's new in 0.13: guides/whats-new-0.13.md

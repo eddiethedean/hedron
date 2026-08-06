@@ -71,8 +71,8 @@ Issue labels and bite-sized tasks vary; prefer small PRs over RFC-scale first pa
 | `test` | `pytest` on Python 3.11–3.14 | **Yes** (every PR) |
 | `quality` | ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, relative doc links, `mkdocs build --strict` | **Yes** (every PR) |
 | `browser` | Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` | **Yes** (every PR; Chromium) |
-| `evidence` | Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_13.py` | **Yes** (every PR / push) |
-| `release` | Packaging rehearsal (`verify_pkg_13`) | After `evidence` succeeds |
+| `evidence` | Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_14.py` | **Yes** (every PR / push) |
+| `release` | Packaging rehearsal (`verify_pkg_14`) | After `evidence` succeeds |
 
 Local Playwright is still optional for docs-only work; CI browser/evidence are not optional
 gates today (no path filters).

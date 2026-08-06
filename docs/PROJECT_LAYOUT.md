@@ -35,7 +35,7 @@ hedron/
 │   │   └── src/hedron_django/
 │   ├── hedron-conformance/        # Language-neutral conformance kit (0.14)
 │   │   └── src/hedron_conformance/
-│   ├── hedron-native/             # Optional Rust acceleration (Alpha, 0.14)
+│   ├── hedron-native/             # Optional Rust acceleration (Alpha 0.1.x)
 │   │   └── src/hedron_native/
 │   ├── hedron-runtime-node/       # Experimental Node runtime (outside uv workspace)
 │   └── hedron-runtime-java/       # Experimental Java runtime (outside uv workspace)
@@ -70,7 +70,7 @@ hedron/
 | `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Beta Supported) |
 | `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.14.0` |
 | `hedron-conformance` | `hedron_conformance` | Fixture schema + runner (stdlib + pydantic) | `v0.14.0` |
-| `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `v0.14.0` (Alpha) |
+| `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Alpha; independent of Beta train) |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
 `hedron-explorer` for development diagnostics; `hedron[jinja]` installs the separate integration.

@@ -1,19 +1,19 @@
 ---
-status: shipped
+status: experimental
 ---
 
 # Focused streaming
 
 
-!!! note "Stability (0.13 train)"
+!!! note "Stability"
 
     Classifications live in [STABILITY.md](STABILITY.md). Focused streaming is **experimental**
     (`hedron.experimental`) until Deferred ops gates close. Prefer polling in production.
 
-**Status:** Shipped in `0.10.0`
+**Status:** Shipped in `0.10.0` (experimental)
 
 Helpers: `StreamingComponentResponse`, `stream_chunked_list`, `stream_document`,
-`stream_tokens`. Core stream models live in `hedron_core.streaming`.
+`stream_tokens` — import from `hedron.experimental` (root attribute access remains a compat shim). Core stream models live in `hedron_core.streaming`.
 
 ## `StreamingComponentResponse`
 
@@ -30,7 +30,7 @@ Helpers: `StreamingComponentResponse`, `stream_chunked_list`, `stream_document`,
 ## Helpers
 
 ```python
-from hedron import stream_chunked_list, stream_document, stream_tokens
+from hedron.experimental import stream_chunked_list, stream_document, stream_tokens
 from hedron_core.streaming import ChunkedList, StreamedDocument, TokenStream
 
 return stream_tokens(TokenStream(region_id="out", tokens=["a", "b"]))

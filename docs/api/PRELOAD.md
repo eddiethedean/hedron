@@ -1,20 +1,20 @@
 ---
-status: shipped
+status: experimental
 ---
 
 # Navigation preload
 
 
-!!! note "Stability (0.13 train)"
+!!! note "Stability"
 
     Classifications live in [STABILITY.md](STABILITY.md). Opt-in navigation preload is
     **experimental** (`hedron.experimental`) until Deferred ops gates close; default remains off.
 
-**Status:** Shipped in `0.10.0`
+**Status:** Shipped in `0.10.0` (experimental)
 
 Types: `NavigationPreloadPolicy`, `HX_PRELOADED` (header name). Helpers:
-`evaluate_preload_request`, `apply_preload_headers`. Decision logic lives in
-`hedron_core.preload`.
+`evaluate_preload_request`, `apply_preload_headers` — import from `hedron.experimental`.
+Decision logic lives in `hedron_core.preload`.
 
 ## `NavigationPreloadPolicy`
 

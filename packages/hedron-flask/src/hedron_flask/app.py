@@ -14,7 +14,12 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import InteractionResult
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_flask.blueprint import attach_hedron_to_flask
-from hedron_flask.csrf import csrf_token_for_request, ensure_csrf_cookie, validate_csrf
+from hedron_flask.csrf import (
+    csrf_cookie_should_be_secure,
+    csrf_token_for_request,
+    ensure_csrf_cookie,
+    validate_csrf,
+)
 from hedron_flask.htmx import htmx_context, render_mode_for_request
 from hedron_flask.responses import component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser
@@ -40,10 +45,14 @@ class HedronFlask:
         csrf_cookie_name: str = "hedron_csrf",
         auto_csrf_cookie: bool = True,
         csrf_protect: bool = True,
+        csrf_cookie_secure: bool | None = None,
         **kwargs: Any,
     ) -> None:
         self.csrf_cookie_name = csrf_cookie_name
         self.csrf_protect = csrf_protect
+        # True: always Secure (FastAPI STRICT parity). None: request.is_secure
+        # or FLASK_ENV/ENV=production. False: never Secure.
+        self.csrf_cookie_secure = csrf_cookie_secure
         self._auto_csrf_cookie = auto_csrf_cookie
         self.flask: Flask | None = None
         self.url_reverser: FlaskUrlReverser | None = None
@@ -210,7 +219,7 @@ class HedronFlask:
             response,
             value,
             cookie_name=self.csrf_cookie_name,
-            secure=request.is_secure,
+            secure=csrf_cookie_should_be_secure(request, force_secure=self.csrf_cookie_secure),
         )
         return value
 

@@ -9,14 +9,14 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**Last published train:** `v0.13.0` (packages `0.13.0`).
-**Current cut target:** `v0.14.0` (portable runtimes and acceleration) — gate
-[`release-gate-0.14.toml`](acceptance/release-gate-0.14.toml) ready.
+**Last published train:** `v0.14.0` (packages `0.14.0`; Alpha charts/sample-kit/native `0.1.x`).
+**Current cut target:** `v0.15.0` (data-app surface completeness) — see
+[STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 **Next after 0.14:** `v0.15.0` (capability phase) or `v0.14.x` (patch). See
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [What’s ready](guides/whats-ready.md).
 
-Published trains include `v0.13.0`, `v0.12.0`, `v0.11.0`, and
+Published trains include `v0.14.0`, `v0.13.0`, `v0.12.0`, `v0.11.0`, and
 [`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md).
 Do not re-run tag steps for a published version.
 
@@ -130,21 +130,12 @@ git push origin v0.11.0
 Published train — do not retag. See [`RELEASE_0_13.md`](acceptance/RELEASE_0_13.md) and
 [`release-gate-0.13.toml`](acceptance/release-gate-0.13.toml).
 
-```bash
-git tag -a v0.13.0 -m "Hedron 0.13.0"
-git push origin v0.13.0
-```
+## Published phase cut: `v0.14.0` (portable runtimes and acceleration)
 
-## Next phase cut: `v0.14.0` (portable runtimes and acceleration)
+Published train — do not retag. See [`RELEASE_0_14.md`](acceptance/RELEASE_0_14.md) and
+[`release-gate-0.14.toml`](acceptance/release-gate-0.14.toml).
 
-```bash
-uv run python scripts/check_release_gate.py 0.14.0
-uv run python scripts/verify_pkg_14.py
-git tag -a v0.14.0 -m "Hedron 0.14.0"
-git push origin v0.14.0
-```
-
-## Following phase cut: `v0.15.0` (data-app surface completeness)
+## Next phase cut: `v0.15.0` (data-app surface completeness)
 
 Follow the same coordinated-train procedure with `check_release_gate.py 0.15.0` once
 `docs/acceptance/release-gate-0.15.toml` exists.
@@ -152,4 +143,4 @@ Follow the same coordinated-train procedure with `check_release_gate.py 0.15.0` 
 ## Scripts (maintainer)
 
 See [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md) for `check_release_gate.py`,
-`rehearse_release.py`, `verify_pkg_13.py` / `verify_pkg_12.py`, and evidence helpers.
+`rehearse_release.py`, `verify_pkg_14.py` / `verify_pkg_13.py`, and evidence helpers.

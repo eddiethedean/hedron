@@ -25,7 +25,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - No `1.0` phase is scheduled (D-038). A **minimal `stable` API tier** is catalogued in
   [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or `experimental`.
 
-## Honest gaps on 0.13
+## Honest gaps on the current train (0.14)
 
 - Full multi-engine adapter live browser matrix → owned `0.11.x` Deferred (`LIVE-011-BROWSER`)
 - Full multi-engine FastAPI live browser matrix / some Explorer live traces → owned `0.10.x` Deferred

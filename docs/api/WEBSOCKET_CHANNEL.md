@@ -1,21 +1,21 @@
 ---
-status: shipped
+status: experimental
 ---
 
 # Page/session WebSocket channel
 
 
-!!! note "Stability (0.13 train)"
+!!! note "Stability"
 
     Classifications live in [STABILITY.md](STABILITY.md). Page/session channels are
     **experimental** (`hedron.experimental`) until Deferred ops gates close. Prefer polling
     in production.
 
-**Status:** Shipped in `0.10.0`
+**Status:** Shipped in `0.10.0` (experimental)
 
 Helpers: `accept_page_session_channel`, `send_region_update`, `origin_allowed`,
-`ALLOW_MISSING_ORIGIN`. Channel models live in `hedron_core.channel`
-(`PageSessionChannel`, `RegionUpdate`, `ChannelMessage`).
+`ALLOW_MISSING_ORIGIN` — import from `hedron.experimental`. Channel models live in
+`hedron_core.channel` (`PageSessionChannel`, `RegionUpdate`, `ChannelMessage`).
 
 ## `accept_page_session_channel`
 

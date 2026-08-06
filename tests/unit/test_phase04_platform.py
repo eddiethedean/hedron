@@ -194,7 +194,7 @@ def test_cli_new_check_graph_audit(tmp_path: Path, monkeypatch: pytest.MonkeyPat
     assert new_exc.value.code == 0
     assert (tmp_path / "demoapp" / "app.py").is_file()
     scaffold_toml = (tmp_path / "demoapp" / "pyproject.toml").read_text(encoding="utf-8")
-    assert "hedron>=0.13.0" in scaffold_toml
+    assert "hedron>=0.14.0" in scaffold_toml
     assert "uvicorn[standard]" in scaffold_toml
     assert "0.4.0" not in scaffold_toml
 
@@ -352,6 +352,23 @@ def test_explorer_panels_and_simulate() -> None:
             json={"route": "missing", "allow_mutations": False},
         )
         assert bare.status_code == 403
+
+
+def test_explorer_simulate_requires_csrf_policy() -> None:
+    """Simulate fails closed when hedron_security is missing (no CSRF skip)."""
+    from fastapi import FastAPI
+
+    from hedron_explorer import explorer_router
+
+    plain = FastAPI()
+    plain.include_router(explorer_router(), prefix="/hedron-explorer")
+    with TestClient(plain) as client:
+        denied = client.post(
+            "/hedron-explorer/api/simulate",
+            json={"route": "missing", "allow_mutations": False},
+        )
+        assert denied.status_code == 403
+        assert "CSRF policy" in denied.json()["detail"]
 
 
 def test_csrf_on_mixed_method_page_and_action() -> None:

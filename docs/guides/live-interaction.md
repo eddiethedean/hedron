@@ -106,8 +106,8 @@ from hedron import (
     Stack,
     Text,
     html,
-    stream_tokens,
 )
+from hedron.experimental import stream_tokens
 from hedron_core.streaming import TokenStream
 
 app = Hedron(title="Stream", security="standard", session_secret="replace-me")
@@ -155,7 +155,8 @@ import time
 
 from fastapi import Request
 
-from hedron import Hedron, Page, Text, job_status_sse_response
+from hedron import Hedron, Page, Text
+from hedron.experimental import job_status_sse_response
 from hedron.jobs import enqueue_durable
 from hedron_core.jobs import InMemoryJobBackend, JobState, set_job_backend
 
@@ -194,7 +195,7 @@ sample mounts `/ws/page`. Pair with your own page that opens the socket.
 ```python
 from fastapi import WebSocket
 
-from hedron import accept_page_session_channel
+from hedron.experimental import accept_page_session_channel
 from hedron_core.channel import PageSessionChannel
 
 channel = PageSessionChannel(
@@ -229,7 +230,7 @@ Preload is off until you enable an explicit policy. The live sample applies head
 ```python
 from fastapi.responses import HTMLResponse
 
-from hedron import NavigationPreloadPolicy, apply_preload_headers, evaluate_preload_request
+from hedron.experimental import NavigationPreloadPolicy, apply_preload_headers, evaluate_preload_request
 
 policy = NavigationPreloadPolicy(enabled=True, max_concurrent=2)
 

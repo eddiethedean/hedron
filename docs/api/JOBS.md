@@ -23,7 +23,7 @@ queue, worker fleet, scheduler, result database, or retry service.
 | `enqueue_durable` | `hedron.jobs` | Submit via the configured backend; returns `job_id` |
 | `job_status_response` | `hedron.jobs` | HTML 202 status fragment + `Retry-After` |
 | `schedule_post_response` | `hedron.jobs` | FastAPI `BackgroundTasks` only — **not** durable |
-| `job_status_sse_response` | `hedron` / `hedron.sse` | SSE observation until terminal |
+| `job_status_sse_response` | `hedron.experimental` | SSE observation until terminal (experimental) |
 
 ## Contract
 
@@ -59,7 +59,7 @@ import time
 
 from fastapi import Request
 
-from hedron import job_status_sse_response
+from hedron.experimental import job_status_sse_response
 from hedron.jobs import enqueue_durable
 from hedron_core.jobs import InMemoryJobBackend, JobState, set_job_backend
 

@@ -669,7 +669,13 @@ def explorer_router() -> APIRouter:
             )
 
         policy = getattr(request.app.state, "hedron_security", None)
-        if policy is not None and getattr(policy, "csrf_enabled", False):
+        if policy is None:
+            return JSONResponse(
+                {"detail": "CSRF policy required for simulate"},
+                status_code=403,
+            )
+        # Fail closed when csrf_enabled is omitted on duck-typed policies.
+        if getattr(policy, "csrf_enabled", True):
             from hedron_core.csrf import validate_double_submit
 
             csrf_name = getattr(policy, "csrf_cookie_name", "hedron_csrf")

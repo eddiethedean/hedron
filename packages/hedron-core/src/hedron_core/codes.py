@@ -1,4 +1,4 @@
-"""Stable diagnostic code catalog (complete through phase 0.13)."""
+"""Stable diagnostic code catalog (complete through phase 0.14)."""
 
 from __future__ import annotations
 

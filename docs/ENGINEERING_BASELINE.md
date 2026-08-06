@@ -1,6 +1,6 @@
 # Engineering baseline
 
-**Status:** Living contributor baseline (CI/toolchain contract for the published **0.13**
+**Status:** Living contributor baseline (CI/toolchain contract for the published **0.14**
 train). Detailed acceptance evidence maps live on GitHub under
 [`docs/acceptance/`](https://github.com/eddiethedean/hedron/tree/main/docs/acceptance).
 

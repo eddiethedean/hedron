@@ -42,7 +42,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 
 ## Shipped through 0.10
 
-These surfaces are implemented in the published **0.13.0** train (includes the 0.9 authoring break
+These surfaces are implemented in the published **0.14.0** train (includes the 0.9 authoring break
 and 0.10 live interaction).
 
 ### Application
@@ -95,7 +95,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.13)
+- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.14)
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
 - [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling Supported; SSE experimental
 
@@ -105,10 +105,10 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 - First-party camera/microphone capture UI (0.15)
 
-## Published trains (still Supported on 0.13)
+## Published trains (still Supported on 0.14)
 
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.13.0**)
+  (introduced in 0.11; Supported on **0.14.0**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — **0.13.0**
+  — **0.14.0**
 - Capture UI remains — phase 0.15

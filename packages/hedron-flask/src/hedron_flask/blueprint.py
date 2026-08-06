@@ -243,7 +243,11 @@ def attach_hedron_to_flask(
     @app.after_request
     def _attach_csrf(response: Response) -> Response:  # type: ignore[no-untyped-def]
         if request.method in {"GET", "HEAD"}:
-            from hedron_flask.csrf import csrf_token_for_request, ensure_csrf_cookie
+            from hedron_flask.csrf import (
+                csrf_cookie_should_be_secure,
+                csrf_token_for_request,
+                ensure_csrf_cookie,
+            )
 
             ensure_csrf_cookie(
                 response,
@@ -252,6 +256,9 @@ def attach_hedron_to_flask(
                     cookie_name=extension.csrf_cookie_name,  # type: ignore[attr-defined]
                 ),
                 cookie_name=extension.csrf_cookie_name,  # type: ignore[attr-defined]
-                secure=request.is_secure,
+                secure=csrf_cookie_should_be_secure(
+                    request,
+                    force_secure=getattr(extension, "csrf_cookie_secure", None),
+                ),
             )
         return response

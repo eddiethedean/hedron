@@ -47,6 +47,8 @@ Prefer not to install locally?
 | [`hedron[data]`](https://pypi.org/project/hedron-data/) → `hedron-data` | Beta | DataTable / DataEditor / QuerySet source |
 | [`hedron[jinja]`](https://pypi.org/project/hedron-jinja/) → `hedron-jinja` | Beta | Optional HDJ templates |
 | [`hedron[dev]`](https://pypi.org/project/hedron-explorer/) → `hedron-explorer` | Beta | Component Explorer (dev) |
+| [`hedron[conformance]`](https://pypi.org/project/hedron-conformance/) → `hedron-conformance` | Beta | Language-neutral conformance kit |
+| [`hedron[native]`](https://pypi.org/project/hedron-native/) → `hedron-native` | Alpha | Optional Rust HTML-escape accel |
 | [`hedron[charts]`](https://pypi.org/project/hedron-charts/) → `hedron-charts` | Alpha | Chart adapters (pin; expect churn) |
 
 Full matrix and install extras: [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).

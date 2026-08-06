@@ -1,5 +1,5 @@
 ---
-status: shipped
+status: experimental
 ---
 
 # SSE responses
@@ -12,10 +12,11 @@ status: shipped
     (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) close. Polling remains the
     Supported production fallback.
 
-**Status:** Shipped in `0.10.0`
+**Status:** Shipped in `0.10.0` (experimental)
 
-Helpers in `hedron`: `SseResponse`, `sse_response`, `job_status_sse_response`,
+Helpers in `hedron.experimental`: `SseResponse`, `sse_response`, `job_status_sse_response`,
 `extension_script_tags`. Framing primitives (`SseEvent`, `encode_sse`) live in `hedron_core.live`.
+Root `hedron` attribute access remains as a compat shim.
 
 ## `SseResponse`
 
@@ -32,7 +33,7 @@ Helpers in `hedron`: `SseResponse`, `sse_response`, `job_status_sse_response`,
 Wraps an iterator/list of `SseEvent` values and returns `SseResponse`.
 
 ```python
-from hedron import sse_response
+from hedron.experimental import sse_response
 from hedron_core.live import SseEvent
 
 return sse_response([SseEvent(data="ping", event="message", id="1")])

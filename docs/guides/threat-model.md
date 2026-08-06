@@ -1,6 +1,6 @@
 # Threat model (0.11+ baseline)
 
-**Status:** Maintained for the published **0.13** train (baseline established in 0.11)  
+**Status:** Maintained for the published **0.14** train (baseline established in 0.11)  
 **Owner:** hedron  
 **Evidence:** security acceptance on the current train; live-transport caveats on
 [What's ready](whats-ready.md)

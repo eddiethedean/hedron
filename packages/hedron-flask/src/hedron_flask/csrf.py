@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from flask import Request, Response
 
 __all__ = [
+    "csrf_cookie_should_be_secure",
     "csrf_token_for_request",
     "ensure_csrf_cookie",
     "extract_csrf_from_form",
@@ -40,6 +41,30 @@ def csrf_token_for_request(
     value = generate_csrf_token()
     request._hedron_csrf_token = value  # type: ignore[attr-defined]
     return value
+
+
+def csrf_cookie_should_be_secure(
+    request: Request,
+    *,
+    force_secure: bool | None = None,
+) -> bool:
+    """Resolve Secure flag for CSRF cookies.
+
+    ``force_secure=True`` matches FastAPI STRICT (always Secure, including plain
+    HTTP to the app behind a TLS-terminating proxy). ``None`` follows
+    ``request.is_secure``, or forces Secure when ``FLASK_ENV``/``ENV`` is
+    ``production``.
+    """
+    if force_secure is True:
+        return True
+    if force_secure is False:
+        return False
+    import os
+
+    env = (os.environ.get("FLASK_ENV") or os.environ.get("ENV") or "").lower()
+    if env == "production":
+        return True
+    return bool(request.is_secure)
 
 
 def ensure_csrf_cookie(

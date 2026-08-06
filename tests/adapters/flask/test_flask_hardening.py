@@ -191,3 +191,40 @@ def test_undeclared_hx_target_is_forbidden() -> None:
     ):
         response = interaction_response(InteractionResult(content=Text("body")))
     assert response.status_code == 403
+
+
+def test_csrf_cookie_secure_forced_under_strict_flag() -> None:
+    """csrf_cookie_secure=True matches FastAPI STRICT (Secure even on plain HTTP)."""
+    from werkzeug.test import Client
+
+    hedron = HedronFlask(__name__, csrf_cookie_secure=True)
+    assert hedron.flask is not None
+    hedron.flask.secret_key = "test"
+
+    @hedron.flask.route("/")
+    def home() -> str:
+        return "ok"
+
+    client = Client(hedron.flask)
+    response = client.get("/")
+    cookie = response.headers.get("Set-Cookie") or ""
+    assert "hedron_csrf=" in cookie
+    assert "Secure" in cookie
+
+
+def test_csrf_cookie_secure_defaults_to_request_is_secure() -> None:
+    from werkzeug.test import Client
+
+    hedron = HedronFlask(__name__, csrf_cookie_secure=None)
+    assert hedron.flask is not None
+    hedron.flask.secret_key = "test"
+
+    @hedron.flask.route("/")
+    def home() -> str:
+        return "ok"
+
+    client = Client(hedron.flask)
+    response = client.get("/")
+    cookie = response.headers.get("Set-Cookie") or ""
+    assert "hedron_csrf=" in cookie
+    assert "Secure" not in cookie

@@ -11,7 +11,7 @@ HED-<AREA>-<NNNN>
 Initial areas are `MODEL`, `RENDER`, `HTML`, `ROUTE`, `API`, `HTMX`, `JINJA`, `CSS`, `ASSET`,
 `PLUGIN`, `DATA`, `CHART`, `ASYNC`, `SEC`, `A11Y`, `PERF`, `BUILD`, and `CONFIG`.
 
-Examples: `HED-SEC-0001`, `HED-JINJA-0006`, `HED-ROUTE-0010`.
+Examples: `HED-SEC-0001`, `HED-JINJA-0006`, `HED-ROUTE-0001`.
 
 ## Diagnostic record
 

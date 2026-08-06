@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.2] — 2026-08-05
+
+### Changed
+
+- Pin `hedron-core` to `>=0.14.0,<0.15` for the 0.14 train.
+
 ## [0.1.1]
 
 - Offline fingerprinted Plotly/Vega/Chart.js runtimes, optional adapter hosts,

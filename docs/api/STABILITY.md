@@ -1,12 +1,12 @@
 # Public stability classifications
 
-**Status:** Phase 0.13 advanced async/observability (**published** as `v0.13.0`); a **minimal
+**Status:** Phase 0.14 portable runtimes and acceleration (**published** as `v0.14.0`); a **minimal
 `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled; package maturity
 remains Beta).
-**Version:** `0.13.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`
+**Version:** `0.14.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`v0.13.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
+`v0.14.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
 unless a later phase explicitly promotes them.
 
 ## Levels
@@ -107,6 +107,16 @@ Live helpers are **experimental** (polling remains Supported fallback).
 ### `hedron-sample-kit` (Alpha, versioned independently as `0.1.x`) — **experimental**
 
 ### `hedron-jinja` / HDJ (Beta) — `beta`; HDJ format v1 frozen
+
+### `hedron-conformance` (Beta) — `beta`
+
+Language-neutral fixture kit and runner. Cross-language runtimes that consume the kit remain
+**experimental** until separately labeled Supported.
+
+### `hedron-native` (Alpha, versioned independently as `0.1.x`) — **experimental** accel
+
+Optional Rust HTML-escape acceleration with pure-Python fallback. Absence never changes public
+semantics (D-048).
 
 ## Deferred destinations
 

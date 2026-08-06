@@ -8,10 +8,28 @@ from flask import Response, stream_with_context
 
 from hedron_core.live import SseEvent, encode_sse
 
-__all__ = ["POLLING_FALLBACK_SUPPORTED", "sse_response", "stream_text"]
+__all__ = [
+    "POLLING_FALLBACK_SUPPORTED",
+    "poll_status_response",
+    "sse_response",
+    "stream_text",
+]
 
 # Polling remains the Supported fallback on WSGI hosts (D-044 / D-046).
 POLLING_FALLBACK_SUPPORTED = True
+
+
+def poll_status_response(body: str, *, status: int = 200) -> Response:
+    """Ordinary HTTP polling response — Supported fallback on Flask hosts."""
+    return Response(
+        body,
+        status=status,
+        mimetype="text/html; charset=utf-8",
+        headers={
+            "Cache-Control": "no-store",
+            "X-Hedron-Live": "poll",
+        },
+    )
 
 
 def sse_response(
@@ -19,9 +37,10 @@ def sse_response(
     *,
     status: int = 200,
 ) -> Response:
-    """Return a text/event-stream response.
+    """Return a text/event-stream response (experimental).
 
     WSGI reverse proxies may buffer; applications must keep polling as a fallback.
+    Prefer importing from ``hedron_flask.experimental``.
     """
 
     def generate() -> Iterator[str]:
@@ -60,7 +79,7 @@ def stream_text(
     status: int = 200,
     mimetype: str = "text/plain",
 ) -> Response:
-    """Focused text streaming helper (not general HTML streaming)."""
+    """Focused text streaming helper (experimental; not general HTML streaming)."""
 
     def generate() -> Iterator[str]:
         yield from chunks
