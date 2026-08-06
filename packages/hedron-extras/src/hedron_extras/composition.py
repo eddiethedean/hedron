@@ -419,9 +419,7 @@ class KeyboardShortcuts(Component[KeyboardShortcutsProps]):
         parsed: list[ShortcutBinding] = []
         for raw in bindings:
             binding = (
-                raw
-                if isinstance(raw, ShortcutBinding)
-                else ShortcutBinding.model_validate(raw)
+                raw if isinstance(raw, ShortcutBinding) else ShortcutBinding.model_validate(raw)
             )
             # Re-parse to apply SafeUrl coercion when constructed with a raw str href.
             if binding.href is not None and not isinstance(binding.href, SafeUrl):
