@@ -12,8 +12,8 @@ dist/
 **/.hedron/build/
 packages/hedron-runtime-java/build/
 target/
-.venv/
-venv/
+.venv*/
+venv*/
 .env
 .coverage
 htmlcov/
@@ -30,3 +30,4 @@ examples/reference-app/.hedron/
 *.so
 *.dylib
 *.pyd
+.devcontainer/
