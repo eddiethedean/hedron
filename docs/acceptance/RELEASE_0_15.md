@@ -41,4 +41,4 @@ ops Deferred rows remain owned by `0.10.x` / `0.11.x`.
 - [x] Full regression suite. *(`REGRESS-015`)*
 
 **Exit met** as coordinated `0.15.0` (`v0.15.0`) when every gate row is Verified and the
-release tag is cut (implemented pending cut).
+release tag is cut (Published).

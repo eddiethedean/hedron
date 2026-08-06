@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**Status:** Phase 0.16 curated extras (**implemented** as `v0.16.0`, pending cut); a **minimal
+**Status:** Phase 0.16 curated extras (**Published** as `v0.16.0`); a **minimal
 `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled; package maturity
 remains Beta).
 **Version:** `0.16.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`

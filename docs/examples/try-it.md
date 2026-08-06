@@ -45,7 +45,7 @@ uv run uvicorn app:app --app-dir examples/reference-app --reload
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron>=0.15.0" "uvicorn[standard]"
+python -m pip install "hedron>=0.16.0" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app
 python -m pip install -e .

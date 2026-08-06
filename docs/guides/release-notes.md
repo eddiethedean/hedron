@@ -1,16 +1,31 @@
 # Release notes
 
-Train-level summary for the **0.15.x** line (implemented pending cut). Package changelogs remain the
+Train-level summary for the **0.16.x** line (**Published**). Package changelogs remain the
 detailed record; this page is the adopter-facing index.
 
-## Current train — 0.15.0 (2026-08-05)
+## Current train — 0.16.0 (2026-08-06)
 
-**Implemented pending cut** (`v0.15.0`). Data-app surface completeness: AppScenario / HTMX
-testing helpers (#22–#26), `region`/`@fragment`/`swap`, typed controls and surface chrome,
-media Range/downloads, Map/GeoJSON, BrowserContext/Storage, Math/IFrame, OIDC/session helpers,
-and the connection registry.
+**Published** (`v0.16.0`). Curated extras and analysis workbenches: optional `hedron-extras`
+with FeatureManifest discovery, composition UI, DataExplorer/JSONEditor/CodeEditor (CSP-safe
+host stub), ChartWorkbench, image tools, calendar/signature/typeahead, display recipes,
+browser-Python sandbox, and Experimental specialty extras (TerminalView / joystick / device).
 
-Install: `pip install -U "hedron>=0.15.0"` (or `uv add "hedron>=0.15.0"`).
+Narrative: [What's new in 0.16](whats-new-0.16.md) · maturity:
+[What's ready today](whats-ready.md) · upgrade: [Upgrade (→ 0.16)](upgrade.md).
+
+Install: `pip install -U "hedron>=0.16.0"` (or `uv add "hedron>=0.16.0"`).
+Optional: `pip install "hedron[extras]"`.
+
+Package changelogs: [hedron](https://github.com/eddiethedean/hedron/blob/main/packages/hedron/CHANGELOG.md) ·
+[hedron-extras](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-extras/CHANGELOG.md) ·
+[hedron-core](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-core/CHANGELOG.md).
+
+## 0.15.0 (2026-08-05)
+
+**Published** (`v0.15.0`). Data-app surface completeness: AppScenario / HTMX testing helpers
+(#22–#26), `region`/`@fragment`/`swap`, typed controls and surface chrome, media
+Range/downloads, Map/GeoJSON, BrowserContext/Storage, Math/IFrame, OIDC/session helpers, and
+the connection registry.
 
 ## 0.14.0 (2026-08-05)
 
@@ -49,27 +64,4 @@ Narrative: [What's new in 0.11](whats-new-0.11.md).
 
 ## 0.10.1 — security / correctness patch
 
-Fail-closed caching, safer redirects, hardened live-transport headers, shared job
-SSE/poll authz. Narrative: [What's new in 0.10.1](whats-new-0.10.1.md).
-
-## 0.10.0 — live interaction phase
-
-Official SSE helpers, focused streaming, WebSocket page/session channels, navigation
-preload, Chat/Dialog surfaces, and bundled HTMX SSE/head-support extensions.
-
-Narrative: [What's new in 0.10](whats-new-0.10.md) · [Upgrade (0.8 → 0.14)](upgrade.md).
-
-## Package changelogs (GitHub)
-
-- [hedron](https://github.com/eddiethedean/hedron/blob/main/packages/hedron/CHANGELOG.md)
-- [hedron-core](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-core/CHANGELOG.md)
-- [hedron-data](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-data/CHANGELOG.md)
-- [hedron-charts](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-charts/CHANGELOG.md)
-- [hedron-flask](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-flask/CHANGELOG.md)
-- [hedron-django](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-django/CHANGELOG.md)
-- [hedron-jinja](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-jinja/CHANGELOG.md)
-- [hedron-explorer](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-explorer/CHANGELOG.md)
-- [hedron-conformance](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-conformance/CHANGELOG.md)
-- [hedron-native](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-native/CHANGELOG.md)
-
-GitHub Releases: [eddiethedean/hedron/releases](https://github.com/eddiethedean/hedron/releases).
+See package changelogs and the archive for earlier trains.

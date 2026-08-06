@@ -10,6 +10,46 @@ from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 
+# Fail-closed shell metacharacters for allowlisted specialty commands.
+_UNSAFE_COMMAND_CHARS = frozenset(
+    {
+        ";",
+        "|",
+        "&",
+        "`",
+        "$",
+        "\n",
+        "\r",
+        "\t",
+        "\0",
+        ">",
+        "<",
+        '"',
+        "'",
+        "\\",
+        "(",
+        ")",
+        "{",
+        "}",
+        "[",
+        "]",
+        "*",
+        "?",
+        "~",
+        "!",
+        "#",
+    }
+)
+
+
+def _reject_unsafe_command(cmd: str, *, label: str = "command") -> None:
+    if not cmd or not cmd.strip():
+        raise ValueError(f"Unsafe {label} rejected: {cmd!r}")
+    if any(ch in cmd for ch in _UNSAFE_COMMAND_CHARS):
+        raise ValueError(f"Unsafe {label} rejected: {cmd!r}")
+    if ".." in cmd:
+        raise ValueError(f"Unsafe {label} rejected: {cmd!r}")
+
 
 @dataclass(frozen=True, slots=True)
 class TerminalPolicy:
@@ -26,8 +66,7 @@ class TerminalPolicy:
         if not self.allowlist:
             raise ValueError("TerminalPolicy requires a non-empty command allowlist")
         for cmd in self.allowlist:
-            if not cmd or any(ch in cmd for ch in (";", "|", "&", "`", "$", "\n")):
-                raise ValueError(f"Unsafe allowlist entry rejected: {cmd!r}")
+            _reject_unsafe_command(cmd, label="allowlist entry")
         if not (self.authenticated and self.authorized and self.audit):
             raise ValueError(
                 "TerminalView fails closed without authenticated+authorized+audit policy"
@@ -88,6 +127,7 @@ class TerminalView(Component[TerminalViewProps]):
             html.form(
                 html.input(type="text", name="command", autocomplete="off"),
                 html.button("Run", type="submit"),
+                method="post",
             ),
             class_=class_names("hedron-terminal-view", self.props.class_),
             id=self.props.id,
@@ -178,8 +218,7 @@ class DeviceBridge(Component[DeviceBridgeProps]):
         if not cmds:
             raise ValueError("DeviceBridge requires an explicit command allowlist")
         for cmd in cmds:
-            if any(ch in cmd for ch in (";", "|", "&", "`", "$")):
-                raise ValueError(f"Unsafe device command rejected: {cmd!r}")
+            _reject_unsafe_command(cmd, label="device command")
         super().__init__(DeviceBridgeProps(device=device, commands=cmds, name=name, **kwargs))
 
     def render(self) -> NodeLike:
@@ -195,6 +234,7 @@ class DeviceBridge(Component[DeviceBridgeProps]):
                 **mark_data(self.props.mark),
                 "hedron-specialty": "device-bridge",
                 "stability": "experimental",
-                "csrf-required": "true",
+                # Host must attach CSRF tokens for mutating posts; markup alone is not protection.
+                "csrf-required": "host",
             },
         )

@@ -11,8 +11,8 @@ Vue/WebSocket client.
 - **Composition UI:** `ChoiceCards`, `TreeView`, `Steps`, `SplitPane`, `FloatingAction`,
   `KeyboardShortcuts`, focus/scroll-by-id, and lightweight recipes.
 - **Workbenches:** faceted `DataExplorer` (emits bounded `TransformPlan`), schema-aware
-  `JSONEditor`, CSP-safe `CodeEditor` (CodeMirror-class host), `ChartWorkbench`, and
-  `CallableActionForm`.
+  `JSONEditor`, CSP-safe `CodeEditor` **host stub** (no pinned CodeMirror 6 bundle),
+  `ChartWorkbench`, and `CallableActionForm`.
 - **Image tools:** compare, crop, region selection, and annotation overlays with numeric/list
   alternatives to dragging.
 - **Editor extras:** `Calendar`, `SignaturePad`, `Typeahead`.

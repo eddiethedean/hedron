@@ -1,8 +1,15 @@
-"""Phase 0.16 analysis workbench sample."""
+"""Hedron 0.16 analysis workbench sample.
+
+Run from the monorepo root:
+
+    uv run uvicorn app:app --app-dir examples/data-app-0.16 --reload
+
+Explorer is off; session_secret is set for local use only.
+"""
 
 from __future__ import annotations
 
-from fastapi import FastAPI, Form, Request
+from fastapi import Form, Request
 from fastapi.responses import HTMLResponse
 
 from hedron import Hedron, Page, Text
@@ -19,8 +26,12 @@ from hedron_extras import (
     TreeView,
 )
 
-app = FastAPI(title="Hedron 0.16 workbench sample")
-hedron = Hedron(app)
+app = Hedron(
+    title="Hedron 0.16 workbench sample",
+    security="standard",
+    session_secret="data-app-0.16-dev-only",
+    explorer="off",
+)
 
 
 def _page(*body: object) -> str:
@@ -59,6 +70,7 @@ def home() -> str:
             "export_csv",
             [{"name": "limit", "label": "Limit", "kind": "int"}],
             title="Export",
+            form_action="/export",
         ),
     )
 

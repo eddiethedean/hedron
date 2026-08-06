@@ -41,20 +41,25 @@ def test_json_and_code_editors() -> None:
         CodeEditor("x", language="ruby")
     with pytest.raises(ValueError):
         CodeEditor("x" * 10, max_chars=5)
+    with pytest.raises(ValueError, match="not valid JSON"):
+        JSONEditor("{bad")
 
 
 def test_chart_workbench_and_callable_form() -> None:
-    assert_renders(
+    chart = assert_renders(
         ChartWorkbench(title="Demo", chart="chart", table="table"),
         contains="hedron-chart-workbench",
     )
+    assert 'method="post"' in chart
     html = assert_renders(
         CallableActionForm(
             "export_csv",
             [{"name": "limit", "label": "Limit", "kind": "int"}],
+            form_action="/export",
         ),
         contains="hedron-callable-action-form",
     )
     assert 'data-implicit-exec="never"' in html
+    assert 'action="/export"' in html
     with pytest.raises(ValueError):
         CallableActionForm("_private", [])

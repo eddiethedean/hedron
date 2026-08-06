@@ -12,8 +12,8 @@
 
 ### Added
 
-- Phase 0.16 curated extras and analysis workbenches train alignment.
-- FeatureManifest registration surface and workbench-flow testing helpers (where applicable).
+- Re-export workbench-flow testing helpers from `hedron-core`.
+- Coordinated Beta train with optional `hedron[extras]` / `hedron-extras`.
 
 ## [0.15.0] — 2026-08-05
 

@@ -18,6 +18,19 @@ def test_log_console_rejects_global_capture() -> None:
     assert 'data-backpressure="drop-oldest"' in html
 
 
+def test_log_console_redacts_secrets() -> None:
+    html = assert_renders(
+        LogConsole(
+            [{"text": "auth token=super-secret-value", "level": "info"}],
+            producer="job:demo",
+            redact=True,
+        ),
+        contains="hedron-log-console",
+    )
+    assert "super-secret-value" not in html
+    assert "token=***" in html
+
+
 def test_token_weighted_and_diagram() -> None:
     assert_renders(
         TokenWeightedText([{"text": "hi", "weight": 0.8}, {"text": " ", "weight": 0.0}]),

@@ -119,6 +119,11 @@ def assert_transform_plan_bounded(plan: Any, *, max_rows: int) -> None:
 
 
 def assert_action_authorized(action: Mapping[str, Any], *, expect: bool = True) -> None:
+    """Assert a *fixture* action mapping's ``authorized`` boolean.
+
+    This helper only checks the synthetic ``workbench_action_fixture`` field. It is
+    not application authorization evidence — use real HTTP/authz tests for that.
+    """
     authorized = bool(action.get("authorized"))
     if authorized != expect:
         raise AssertionError(f"Expected authorized={expect}, got {authorized}")

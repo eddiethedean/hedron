@@ -18,10 +18,13 @@ def test_image_compare_crop_region_annotations() -> None:
         ImageCrop("/a.png", shape="circle", width=0.5, height=0.5),
         contains="hedron-image-crop",
     )
-    assert_renders(
+    with pytest.raises(ValueError):
+        ImageCrop("/a.png", x=0.8, width=0.5)
+    region_html = assert_renders(
         ImageRegionSelect("/a.png", regions=[{"kind": "box", "points": [[0.1, 0.1], [0.2, 0.2]]}]),
         contains="hedron-image-region",
     )
+    assert "0.1" in region_html
     assert_renders(
         ImageAnnotations("/a.png", [{"label": "spot", "x": 0.2, "y": 0.3}]),
         contains="hedron-image-annotations",

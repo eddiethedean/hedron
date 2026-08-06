@@ -12,7 +12,7 @@ Django adapters). It is not a notebook-style rerun engine, SPA framework, ORM, o
 
 | Item | Value |
 |---|---|
-| Current train | **0.15.0** (Beta; implemented pending cut — last published **0.14.x**) |
+| Current train | **0.16.0** (Beta; **Published**) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
@@ -30,7 +30,8 @@ proof.
 ## What not to depend on yet
 
 See Deferred on [What’s ready](whats-ready.md) — for example full multi-engine live browser
-matrix, load/proxy evidence, and first-party capture UI.
+matrix and load/proxy evidence. Prefer Experimental specialty extras only with fail-closed
+policies; do not treat them as beachhead Supported UI.
 
 ## When Hedron is a poor fit
 

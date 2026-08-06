@@ -29,6 +29,14 @@ def test_terminal_requires_full_policy() -> None:
             authorized=True,
             audit=True,
         ).validated()
+    for bad in ("ls > out", "echo `id`", "ping\nreboot", "cat 'x'"):
+        with pytest.raises(ValueError):
+            TerminalPolicy(
+                allowlist=(bad,),
+                authenticated=True,
+                authorized=True,
+                audit=True,
+            ).validated()
     policy = TerminalPolicy(
         allowlist=("status", "logs"),
         authenticated=True,
@@ -47,6 +55,10 @@ def test_joystick_and_device_bridge() -> None:
         DeviceBridge("serial-1", ["ping", "reset"]),
         contains="hedron-device-bridge",
     )
-    assert 'data-csrf-required="true"' in html
+    assert 'data-csrf-required="host"' in html
     with pytest.raises(ValueError):
         DeviceBridge("dev", ["reboot; wipe"])
+    with pytest.raises(ValueError):
+        DeviceBridge("dev", ["ping\nreboot"])
+    with pytest.raises(ValueError):
+        DeviceBridge("dev", ["ls > /tmp/x"])

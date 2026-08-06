@@ -10,6 +10,7 @@ from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.security import SafeUrl, UrlPurpose
 
 _ALLOWED_CODE_LANGUAGES = frozenset(
     {"python", "javascript", "typescript", "json", "html", "css", "sql", "markdown", "text"}
@@ -128,7 +129,10 @@ class JSONEditor(Component[JSONEditorProps]):
             raise ValueError("JSONEditor schema exceeds max_chars")
         # Validate JSON parse when not read-only string of invalid content for security budgets.
         if text.strip():
-            json.loads(text)
+            try:
+                json.loads(text)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"JSONEditor value is not valid JSON: {exc.msg}") from exc
         super().__init__(
             JSONEditorProps(
                 value=text,
@@ -275,10 +279,11 @@ class ChartWorkbench(Component[ChartWorkbenchProps]):
             html.section(html.h3("Data"), self._table, data={"tab": "table"}),
             html.section(html.h3("Explore"), self._explorer, data={"tab": "explore"}),
         ]
-        return html.div(
+        return html.form(
             html.h2(self.props.title),
             *tabs,
             html.button("Export CSV", type="submit", name=self.props.export_name, value="csv"),
+            method="post",
             class_=class_names("hedron-chart-workbench", self.props.class_),
             id=self.props.id,
             data={
@@ -300,6 +305,7 @@ class CallableActionFormProps(ElementProps):
     action: str
     params: list[CallableParam]
     title: str = "Run"
+    form_action: SafeUrl | None = None
 
 
 class CallableActionForm(Component[CallableActionFormProps]):
@@ -315,6 +321,7 @@ class CallableActionForm(Component[CallableActionFormProps]):
         params: Sequence[CallableParam | Mapping[str, Any]],
         *,
         title: str = "Run",
+        form_action: str | SafeUrl | None = None,
         **kwargs: Any,
     ) -> None:
         if not action or "/" in action or action.startswith("_"):
@@ -322,8 +329,23 @@ class CallableActionForm(Component[CallableActionFormProps]):
         parsed = [
             p if isinstance(p, CallableParam) else CallableParam.model_validate(p) for p in params
         ]
+        post_to = (
+            None
+            if form_action is None
+            else (
+                form_action
+                if isinstance(form_action, SafeUrl)
+                else SafeUrl.parse(form_action, purpose=UrlPurpose.FORM_ACTION)
+            )
+        )
         super().__init__(
-            CallableActionFormProps(action=action, params=parsed, title=title, **kwargs)
+            CallableActionFormProps(
+                action=action,
+                params=parsed,
+                title=title,
+                form_action=post_to,
+                **kwargs,
+            )
         )
 
     def render(self) -> NodeLike:
@@ -353,6 +375,7 @@ class CallableActionForm(Component[CallableActionFormProps]):
             class_=class_names("hedron-callable-action-form", self.props.class_),
             id=self.props.id,
             method="post",
+            action=self.props.form_action,
             data={
                 **mark_data(self.props.mark),
                 "hedron-workbench": "callable-form",
