@@ -6,7 +6,7 @@ import json
 from collections.abc import Sequence
 from typing import Any, Literal, cast
 
-from hedron_core.builtins._base import ElementProps, class_names, collect_children
+from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -32,7 +32,7 @@ class Metric(Component[MetricProps]):
         *,
         delta: Any = None,
         delta_tone: Literal["up", "down", "neutral"] = "neutral",
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(
             MetricProps(
@@ -76,7 +76,7 @@ class CodeViewer(Component[CodeViewerProps]):
         *,
         language: str | None = None,
         max_chars: int = 100_000,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         clipped = code if len(code) <= max_chars else code[:max_chars] + "\n… [truncated]"
         super().__init__(
@@ -119,7 +119,7 @@ class JSONViewer(Component[JSONViewerProps]):
     props_type = JSONViewerProps
     logical_name = "JSONViewer"
 
-    def __init__(self, value: Any, *, max_chars: int = 100_000, **kwargs: object) -> None:
+    def __init__(self, value: Any, *, max_chars: int = 100_000, **kwargs: Any) -> None:
         redacted = _redact_json(value)
         text = json.dumps(redacted, indent=2, default=str)
         if len(text) > max_chars:
@@ -149,7 +149,7 @@ class Progress(Component[ProgressProps]):
         *,
         maximum: float = 100,
         label: str | None = None,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(ProgressProps(value=value, maximum=maximum, label=label, **kwargs))
 
@@ -161,6 +161,90 @@ class Progress(Component[ProgressProps]):
         if self.props.label:
             attrs["aria-label"] = self.props.label
         return html.progress(**attrs)
+
+
+class CircularProgressProps(ElementProps):
+    value: float | None = None
+    maximum: float = 100
+    label: str | None = None
+    indeterminate: bool = False
+
+
+class CircularProgress(Component[CircularProgressProps]):
+    """Circular progress with mandatory textual value / indeterminate status."""
+
+    props_type = CircularProgressProps
+    logical_name = "CircularProgress"
+
+    def __init__(
+        self,
+        value: float | None = None,
+        *,
+        maximum: float = 100,
+        label: str | None = None,
+        indeterminate: bool = False,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        if not indeterminate and value is None:
+            raise ValueError("CircularProgress requires value= unless indeterminate=True")
+        super().__init__(
+            CircularProgressProps(
+                value=value,
+                maximum=maximum,
+                label=label,
+                indeterminate=indeterminate,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+
+    def render(self) -> NodeLike:
+        if self.props.indeterminate or self.props.value is None:
+            status_text = self.props.label or "Loading"
+            aria: dict[str, str | bool | int | float | None] = {
+                "busy": "true",
+                "label": status_text,
+            }
+            meter = html.progress(
+                class_="hedron-circular-progress-meter",
+                aria={"label": status_text},
+            )
+            text = html.span(status_text, class_="hedron-circular-progress-value")
+        else:
+            pct = 0.0 if self.props.maximum == 0 else (self.props.value / self.props.maximum) * 100
+            status_text = self.props.label or f"{pct:.0f}%"
+            aria: dict[str, str | bool | int | float | None] = {
+                "valuemin": "0",
+                "valuemax": str(self.props.maximum),
+                "valuenow": str(self.props.value),
+                "valuetext": status_text,
+                "label": status_text,
+            }
+            meter = html.progress(
+                value=str(self.props.value),
+                max=str(self.props.maximum),
+                class_="hedron-circular-progress-meter",
+                aria={"label": status_text},
+            )
+            text = html.span(status_text, class_="hedron-circular-progress-value")
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-circular-progress": "true",
+            "indeterminate": "true" if self.props.indeterminate else "false",
+            **mark_data(self.props.mark),
+        }
+        attrs: dict[str, HtmlAttrValue] = {
+            "id": self.props.id,
+            "class_": class_names("hedron-circular-progress", self.props.class_),
+            "role": "status",
+            "aria": aria,
+            "data": data,
+        }
+        return html.div(meter, text, **attrs)
 
 
 class StatusProps(Props):
@@ -179,7 +263,7 @@ class Status(Component[StatusProps]):
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
         live: bool = True,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(StatusProps(message=message, tone=tone, live=live, **kwargs))
 
@@ -207,7 +291,7 @@ class Toast(Component[ToastProps]):
         message: str,
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(ToastProps(message=message, tone=tone, **kwargs))
 
@@ -238,7 +322,7 @@ class Expander(Component[ExpanderProps]):
         open: bool = False,
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(ExpanderProps(title=title, open=open, id=id, class_=class_, **kwargs))
         self._body = collect_children(*nodes, children=children)
@@ -271,7 +355,7 @@ class Tabs(Component[TabsProps]):
         active: str | None = None,
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(TabsProps(active=active, id=id, class_=class_, **kwargs))
         if panels is not None:
@@ -350,7 +434,7 @@ class Sidebar(Component[SidebarProps]):
         label: str = "Sidebar",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(SidebarProps(label=label, id=id, class_=class_, **kwargs))
         self._body = collect_children(*nodes, children=children)

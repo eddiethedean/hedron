@@ -1,12 +1,9 @@
 # RFC-0039: Interaction authoring ergonomics
 
-**Status:** Draft
+**Status:** Implemented
 **Phase:** 0.15 (`v0.15.0`) — additive DX over existing HTMX contracts
 **Roadmap:** named in phase 0.15 entry gate, scope, exit gate, capability inventory, and
-RFC-to-phase coverage; public summary in [guides/roadmap.md](../guides/roadmap.md)
 **Related:** RFC-0007 (Explorer), RFC-0008 (addressable), RFC-0009 (HTMX), RFC-0015 (routing),
-RFC-0017 (CLI), RFC-0019 / [RFC-0036](RFC-0036-SCENARIO-MARKS.md) (testing),
-[HTMX interactions guide](../guides/htmx-interactions.md)
 
 ## Summary
 
@@ -136,14 +133,14 @@ Additive. Existing `FragmentRegion` / `@component(..., fragment_regions=)` / raw
 `InteractionResult` remain Supported. Docs and scaffold migrate to the ergonomic path; no required
 app churn for 0.15.
 
-## Open questions
+## Accepted decisions (0.15)
 
-1. Is `@app.fragment` a distinct decorator or an alias of `@app.component` with
-   `mode="fragment"` defaults?
-2. Builder package surface: `hedron.swap` vs `hedron.interaction.swap` vs both?
-3. Should production JSON problem-details for region errors ever be opt-in for API clients, or
-   always compact?
-4. Infer default `hx-target` from parent region in v1 or explicitly defer to a follow-up?
+1. **`@app.fragment`:** thin alias of `@app.component` with fragment-oriented defaults (not a second
+   router).
+2. **Builder surface:** `hedron.interaction.swap` (and siblings) re-exported from `hedron`.
+3. **Production errors:** region mismatches stay compact/opaque; verbose declared-vs-requested
+   bodies are dev/Explorer gated only.
+4. **Parent-region target inference:** Deferred (not required for v1 acceptance).
 
 ## Acceptance criteria
 

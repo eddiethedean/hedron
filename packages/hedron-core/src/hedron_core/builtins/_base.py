@@ -19,6 +19,12 @@ class ElementProps(Props):
 
     id: str | None = None
     class_: str | None = None
+    mark: str | None = None
+
+
+def mark_data(mark: str | None) -> dict[str, str | bool | int | float | None]:
+    """Emit ``data-hedron-mark`` via ``html.*(data=...)`` when ``mark`` is set."""
+    return {"hedron-mark": mark} if mark else {}
 
 
 _DOM_ID_PART_RE = re.compile(r"[^A-Za-z0-9_-]+")

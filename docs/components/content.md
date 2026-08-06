@@ -11,3 +11,14 @@ Text, links, media, code, lists, tables, and Markdown.
 - [`DescriptionList`](description-list.md) — Present term/value pairs as a native description list.
 - [`Table`](table.md) — Render a small static data table with explicit headers.
 - [`Markdown`](markdown.md) — Render Markdown through the optional, escaped content pipeline.
+- [`Audio`](audio.md) — Accessible HTML audio player with SafeUrl source.
+- [`Gallery`](gallery.md) — Responsive image/video gallery with optional lightbox mode.
+- [`GeoJSONLayer`](geo-json-layer.md) — Sanitized GeoJSON layer for Map (or standalone alternative list).
+- [`GeolocationHint`](geolocation-hint.md) — Static reminder that geolocation is spoofable.
+- [`IFrame`](i-frame.md) — Policy-bounded sandboxed iframe with SafeUrl source.
+- [`Logo`](logo.md) — Application logo image with required alt text.
+- [`Map`](map.md) — Policy-bounded map with required table alternative.
+- [`Math`](math.md) — Escaped LaTeX/math presentation (enhancement optional).
+- [`PageIcon`](page-icon.md) — Favicon / page icon helper link or image.
+- [`PdfViewer`](pdf-viewer.md) — PDF embed/object viewer with SafeUrl source.
+- [`Video`](video.md) — Accessible HTML video player with SafeUrl source.

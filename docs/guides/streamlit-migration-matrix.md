@@ -1,0 +1,49 @@
+# Streamlit → Hedron 0.15 migration matrix
+
+Streamlit widgets and Hedron components solve overlapping UX jobs with different execution
+models. Streamlit reruns the script when a widget changes; Hedron handles an HTTP request,
+validates inputs, and returns typed server-rendered components (pages or HTMX fragments).
+Use this matrix for API-family mapping; for a full rewrite walkthrough see
+[Migrate a Streamlit app](streamlit-migration.md).
+
+**Deliberate non-parity:** `st.rerun`, `st.stop`, widget callbacks, and whole-script global
+mutable state have no Hedron equivalent by design. Prefer routes, `@action` / `@fragment`,
+and explicit session scopes.
+
+| Streamlit | Hedron 0.15 | Notes |
+|---|---|---|
+| `st.title` / `st.header` / `st.write` | `Heading`, `Text`, `Auto` | Explicit components; no magic write |
+| `st.sidebar` | `Sidebar` / layout landmarks | Compose layout; no implicit sidebar slot |
+| `st.button` / `st.form_submit_button` | `Button`, `SubmitButton`, `@action` | POST + CSRF; not a script rerun |
+| `st.text_input` / `st.text_area` | `TextInput`, `TextArea` | Native submitted values |
+| `st.number_input` / `st.slider` | `NumberInput`, `RangeInput`, `SelectSlider` | Typed controls (0.15) |
+| `st.selectbox` / `st.multiselect` | `Select`, `MultiSelect` | MultiSelect is 0.15 |
+| `st.checkbox` / `st.toggle` | `Checkbox`, `ToggleSwitch` | ToggleSwitch is 0.15 |
+| `st.radio` / segmented pills | `SegmentedControl`, `Pills` | 0.15 surface chrome |
+| `st.date_input` / `st.time_input` | `DateInput`, `TimeInput`, `DateTimeInput` | 0.15 |
+| `st.color_picker` | `ColorInput` | 0.15 |
+| `st.file_uploader` | `FileUpload`, `DirectoryUpload` | Directory upload is 0.15 |
+| `st.camera_input` / `st.audio_input` | `CameraCapture`, `MicrophoneCapture` | Permission/retention policy explicit |
+| `st.audio` / `st.video` / `st.image` | `Audio`, `Video`, `Image`, `Gallery` | SafeUrl + optional Range downloads |
+| `st.download_button` | `DownloadButton`, `media_file_response`, `download_all_zip` | RFC-0034 Range helpers |
+| `st.dataframe` / `st.data_editor` | `DataTable` / `DataEditor` (`hedron[data]`) | 0.12+ contracts |
+| `st.map` / `st.pydeck_chart` | `Map`, `GeoJSONLayer`, `MarkerSpec` | Table alternative required (RFC-0033) |
+| `st.metric` | `Metric` | Supported |
+| `st.progress` / spinners | `CircularProgress`, `Loading`, `Poll` | Prefer polling over experimental SSE |
+| `st.tabs` / `st.expander` | `Tabs`, `Expander`, `Carousel`, `Timeline` | Carousel/Timeline are 0.15 |
+| `st.popover` / menus | `Popover`, `MenuButton`, `ContextMenu`, docks | RFC-0035 |
+| `st.chat_input` / messages | `ChatInput`, `ChatMessage` | History is application-owned |
+| `st.login` / identity | OIDC / session helpers (`hedron.oidc`, session timeout/CSRF) | Host session authoritative; not an IdP |
+| `st.connection` / `st.cache_resource` | Connection registry + host DI/lifespan | No global service locator |
+| `st.session_state` | `SessionState` / cookies / `BrowserStorage` | Explicit scopes; storage non-secret |
+| `st.fragment` / partial updates | `app.region`, `@fragment`, `swap` | Fail-closed `HX-Target` auth |
+| `st.rerun` / callbacks | — | **Non-parity** — use HTTP actions/fragments |
+| Testing (`AppTest`) | `AppScenario`, HTMX asserts | Ordinary HTTP; no rerun simulation |
+
+## Suggested migration order
+
+1. Replace top-level layout and metrics with typed pages.
+2. Move filters/forms to query params or POST actions (not widget callbacks).
+3. Swap charts/tables to `hedron[data]` / `hedron[charts]` (charts remain Alpha).
+4. Adopt 0.15 controls, Map, and media helpers where custom HTML was used.
+5. Cover flows with `AppScenario` instead of Streamlit `AppTest` rerun semantics.

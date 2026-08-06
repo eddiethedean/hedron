@@ -59,6 +59,21 @@ _EXTRA_HEADER_KWARGS: dict[str, str] = {
 class FragmentRegionError(ValueError):
     """HX-Target is not an authorized declared fragment region."""
 
+    def __init__(
+        self,
+        message: str,
+        *,
+        requested: str | None = None,
+        declared: tuple[str, ...] = (),
+        code: str | None = None,
+    ) -> None:
+        super().__init__(message)
+        from hedron_core.codes import HED_HTMX_0001
+
+        self.requested = requested
+        self.declared = declared
+        self.code = code or HED_HTMX_0001
+
 
 @dataclass(frozen=True, slots=True)
 class FragmentRegion:
@@ -176,6 +191,10 @@ def merge_route_regions(
     return replace(result, policy=replace(policy, declared_regions=route_regions))
 
 
+def _declared_region_labels(regions: tuple[FragmentRegion, ...]) -> tuple[str, ...]:
+    return tuple(f"{region.id} ({region.selector})" for region in regions)
+
+
 def resolve_fragment_region(
     policy: InteractionPolicy | None,
     target: str | None,
@@ -193,8 +212,11 @@ def resolve_fragment_region(
             or region.id == needle
         ):
             return region
+    declared = _declared_region_labels(policy.declared_regions)
     raise FragmentRegionError(
-        f"HX-Target {target!r} is not an authorized fragment region for this route"
+        f"HX-Target {target!r} is not an authorized fragment region for this route",
+        requested=target,
+        declared=declared,
     )
 
 
@@ -213,7 +235,9 @@ def select_htmx_auth_target(
     if client_target and region_id:
         if client_target.lstrip("#") != region_id.lstrip("#"):
             raise FragmentRegionError(
-                f"HX-Target {client_target!r} disagrees with region_id {region_id!r}"
+                f"HX-Target {client_target!r} disagrees with region_id {region_id!r}",
+                requested=client_target,
+                declared=(region_id,),
             )
         return client_target
     return client_target or region_id
@@ -235,7 +259,9 @@ def authorize_htmx_target(
     if is_htmx and target and not regions and not allow_open:
         raise FragmentRegionError(
             "HX-Target requires declared fragment_regions on this route "
-            "(set InteractionPolicy.allow_undeclared_targets=True to opt out)"
+            "(set InteractionPolicy.allow_undeclared_targets=True to opt out)",
+            requested=target,
+            declared=(),
         )
     if regions:
         return resolve_fragment_region(policy, target)

@@ -1,6 +1,6 @@
 [project]
 name = "hedron"
-version = "0.14.0"
+version = "0.15.0"
 description = "FastAPI-native typed component framework for HTML and HTMX"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -37,7 +37,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.14.0,<0.15",
+    "hedron-core>=0.15.0,<0.16",
     "pydantic>=2.13.4,<2.15",
     "fastapi>=0.141.1,<0.150",
     "itsdangerous>=2.2",
@@ -47,10 +47,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "hedron-explorer>=0.14.0,<0.15",
+    "hedron-explorer>=0.15.0,<0.16",
 ]
 data = [
-    "hedron-data>=0.14.0,<0.15",
+    "hedron-data>=0.15.0,<0.16",
 ]
 charts = [
     "hedron-charts>=0.1.0,<0.2",
@@ -79,13 +79,13 @@ browser = [
     "playwright>=1.40",
 ]
 jinja = [
-    "hedron-jinja>=0.14.0,<0.15",
+    "hedron-jinja>=0.15.0,<0.16",
 ]
 native = [
     "hedron-native>=0.1.0,<0.2",
 ]
 conformance = [
-    "hedron-conformance>=0.14.0,<0.15",
+    "hedron-conformance>=0.15.0,<0.16",
 ]
 otel = [
     "opentelemetry-api>=1.27,<2",

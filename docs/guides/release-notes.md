@@ -1,9 +1,18 @@
 # Release notes
 
-Train-level summary for the published **0.14.x** line. Package changelogs remain the
+Train-level summary for the **0.15.x** line (implemented pending cut). Package changelogs remain the
 detailed record; this page is the adopter-facing index.
 
-## Current train — 0.14.0 (2026-08-05)
+## Current train — 0.15.0 (2026-08-05)
+
+**Implemented pending cut** (`v0.15.0`). Data-app surface completeness: AppScenario / HTMX
+testing helpers (#22–#26), `region`/`@fragment`/`swap`, typed controls and surface chrome,
+media Range/downloads, Map/GeoJSON, BrowserContext/Storage, Math/IFrame, OIDC/session helpers,
+and the connection registry.
+
+Install: `pip install -U "hedron>=0.15.0"` (or `uv add "hedron>=0.15.0"`).
+
+## 0.14.0 (2026-08-05)
 
 **Published** coordinated train (`v0.14.0`). Portable runtimes and acceleration (D-048):
 language-neutral `hedron-conformance` kit, experimental Java/Node runtimes, optional

@@ -1,6 +1,6 @@
 # What’s ready today
 
-**Canonical maturity snapshot for 0.14.0.** Other evaluator pages link here —
+**Canonical maturity snapshot for 0.15.0.** Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
@@ -16,7 +16,7 @@ live in the repository
 
 ## How to read this page
 
-Hedron **0.14.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
+Hedron **0.15.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
 breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
 | Label | Meaning |
@@ -63,6 +63,12 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | Experimental Java / Node conformance runtimes | `packages/hedron-runtime-*` | **Experimental** / Alpha (0.14) |
 | Optional Rust HTML escaping acceleration | `hedron[native]` / `hedron-native` | Alpha (0.14); pure-Python fallback Supported |
 | HDJ loop/macro budgets, extension evidence, a11y static checks | `hedron[jinja]` | Supported (0.14; `HDJ-DEF-014`) |
+| AppScenario + HTMX InteractionResult asserts | `hedron.testing` | Supported (0.15; #22–#26) |
+| `region` / `@fragment` / `swap` ergonomics | `hedron` | Supported (0.15; RFC-0039) |
+| Typed controls, surface chrome, Map, media Range | `hedron` / `hedron-core` | Supported (0.15) |
+| CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported (0.15; permission/retention policy explicit) |
+| BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported (0.15) |
+| OIDC / session helpers + connection registry | `hedron` | Supported helpers (0.15); host auth/DI authoritative |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
 guaranteed multi-worker live-transport proof — see
@@ -72,6 +78,8 @@ guaranteed multi-worker live-transport proof — see
 
 - FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
   (Supported host slices).
+- 0.15 data-app surface demo (`region` / `@fragment` / `swap`, controls, Map, media stubs):
+  [`examples/data-app-0.15`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.15).
 - Live interaction sample (poll + **experimental** token stream / SSE / Job SSE /
   WebSocket / preload demos):
   [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction).
@@ -85,7 +93,6 @@ guaranteed multi-worker live-transport proof — see
 
 ## Deferred (do not market as Supported)
 
-- First-party camera/microphone capture UI → planned later (**0.15**)
 - Full multi-engine live browser matrix for FastAPI and adapters
 - Load/proxy backpressure evidence for live transports
 - Some Explorer live traces
@@ -93,7 +100,7 @@ guaranteed multi-worker live-transport proof — see
 ## Recommended install
 
 ```bash
-pip install "hedron>=0.14.0" "uvicorn[standard]"
+pip install "hedron>=0.15.0" "uvicorn[standard]"
 python -m hedron new my-app
 cd my-app
 pip install -e .   # or: uv sync

@@ -123,7 +123,8 @@ Page(
 ```
 
 Validate size/type in the action handler. Prefer `safe_download_response` for downloads
-([utility components](../api/UTILITY_COMPONENTS.md)).
+([utility components](../api/UTILITY_COMPONENTS.md)). For ranged media / PDF players and
+download-all budgets, see [Media downloads](media-downloads.md).
 
 ## Charts as fragments
 

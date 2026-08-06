@@ -1,4 +1,4 @@
-"""Stable diagnostic code catalog (complete through phase 0.14)."""
+"""Stable diagnostic code catalog (complete through phase 0.15 map/ergonomics)."""
 
 from __future__ import annotations
 
@@ -188,6 +188,15 @@ HED_CONC_0001 = "HED-CONC-0001"
 HED_TRACE_0001 = "HED-TRACE-0001"
 HED_AUDIT_0001 = "HED-AUDIT-0001"
 HED_JOB_0001 = "HED-JOB-0001"
+
+# HTMX / fragment regions (0.15 ergonomics)
+HED_HTMX_0001 = "HED-HTMX-0001"
+
+# Map / GeoJSON (0.15 RFC-0033)
+HED_MAP_0001 = "HED-MAP-0001"
+HED_MAP_0002 = "HED-MAP-0002"
+HED_MAP_0003 = "HED-MAP-0003"
+HED_MAP_0004 = "HED-MAP-0004"
 
 
 def registered_codes() -> frozenset[str]:

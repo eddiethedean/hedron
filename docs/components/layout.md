@@ -7,3 +7,6 @@ Explicit containers and one-dimensional or grid composition.
 - [`Inline`](inline.md) — Arrange related children in a wrapping horizontal row.
 - [`Grid`](grid.md) — Lay out explicit child components in a responsive grid.
 - [`Divider`](divider.md) — Separate adjacent groups with a semantic horizontal or vertical rule.
+- [`ActionDock`](action-dock.md) — Sticky action dock for primary controls.
+- [`BottomDock`](bottom-dock.md) — Bottom sticky dock alias for chat or actions.
+- [`Spacer`](spacer.md) — Semantic spacing primitive.

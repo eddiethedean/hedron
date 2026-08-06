@@ -10,9 +10,9 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 ## Current published train
 
 **Last published train:** `v0.14.0` (packages `0.14.0`; Alpha charts/sample-kit/native `0.1.x`).
-**Current cut target:** `v0.15.0` (data-app surface completeness) — see
-[STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
-**Next after 0.14:** `v0.15.0` (capability phase) or `v0.14.x` (patch). See
+**Current cut target:** `v0.15.0` (data-app surface completeness) — **implemented pending
+cut**; see [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
+**Next after 0.15 cut:** `v0.16.0` (capability phase) or `v0.15.x` (patch). See
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [What’s ready](guides/whats-ready.md).
 
@@ -137,8 +137,11 @@ Published train — do not retag. See [`RELEASE_0_14.md`](acceptance/RELEASE_0_1
 
 ## Next phase cut: `v0.15.0` (data-app surface completeness)
 
-Follow the same coordinated-train procedure with `check_release_gate.py 0.15.0` once
-`docs/acceptance/release-gate-0.15.toml` exists.
+**Implemented pending cut.** Workspace packages are `0.15.0`; do not tag until
+`check_release_gate.py 0.15.0` is green without `--allow-planned` and the acceptance
+packet ([`RELEASE_0_15.md`](acceptance/RELEASE_0_15.md),
+[`release-gate-0.15.toml`](acceptance/release-gate-0.15.toml)) is closed. Follow the same
+coordinated-train procedure as prior phase cuts.
 
 ## Scripts (maintainer)
 

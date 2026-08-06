@@ -201,6 +201,7 @@ nav:
       - Authentication: guides/authentication.md
       - Live interaction: guides/live-interaction.md
       - Cookbook: guides/cookbook.md
+      - Media downloads: guides/media-downloads.md
       - Multi-tenant isolation: guides/multi-tenant.md
     - Data and visuals:
       - Data applications: guides/data-apps.md
@@ -209,6 +210,7 @@ nav:
       - HDJ authoring: guides/hdj-authoring.md
     - Security:
       - Security: guides/security.md
+      - Hardened sessions: guides/hardened-sessions.md
       - Threat model: guides/threat-model.md
       - Accessibility: guides/accessibility.md
     - Ops:
@@ -253,6 +255,9 @@ nav:
         - Inline: components/inline.md
         - Grid: components/grid.md
         - Divider: components/divider.md
+        - Spacer: components/spacer.md
+        - ActionDock: components/action-dock.md
+        - BottomDock: components/bottom-dock.md
       - Content:
         - Overview: components/content.md
         - Heading: components/heading.md
@@ -264,17 +269,37 @@ nav:
         - DescriptionList: components/description-list.md
         - Table: components/table.md
         - Markdown: components/markdown.md
+        - Audio: components/audio.md
+        - Video: components/video.md
+        - PdfViewer: components/pdf-viewer.md
+        - Gallery: components/gallery.md
+        - Logo: components/logo.md
+        - PageIcon: components/page-icon.md
+        - Map: components/map.md
+        - GeoJSONLayer: components/geo-json-layer.md
+        - Math: components/math.md
+        - IFrame: components/i-frame.md
+        - GeolocationHint: components/geolocation-hint.md
       - Surfaces and status:
         - Overview: components/surfaces.md
         - Card: components/card.md
         - Badge: components/badge.md
         - Alert: components/alert.md
         - Skeleton: components/skeleton.md
+        - Carousel: components/carousel.md
+        - Timeline: components/timeline.md
+        - ContextMenu: components/context-menu.md
+        - Popover: components/popover.md
+        - Tooltip: components/tooltip.md
+        - Help: components/help.md
       - Controls:
         - Overview: components/controls.md
         - Button: components/button.md
         - LinkButton: components/link-button.md
         - IconButton: components/icon-button.md
+        - MenuButton: components/menu-button.md
+        - ConfirmButton: components/confirm-button.md
+        - ClipboardCopy: components/clipboard-copy.md
       - Forms:
         - Overview: components/forms.md
         - Form: components/form.md
@@ -288,6 +313,23 @@ nav:
         - SubmitButton: components/submit-button.md
         - FormErrors: components/form-errors.md
         - AutoForm: components/auto-form.md
+        - NumberInput: components/number-input.md
+        - RangeInput: components/range-input.md
+        - DateInput: components/date-input.md
+        - TimeInput: components/time-input.md
+        - DateTimeInput: components/date-time-input.md
+        - MultiSelect: components/multi-select.md
+        - ToggleSwitch: components/toggle-switch.md
+        - SegmentedControl: components/segmented-control.md
+        - Pills: components/pills.md
+        - ColorInput: components/color-input.md
+        - RatingInput: components/rating-input.md
+        - ChipInput: components/chip-input.md
+        - SelectSlider: components/select-slider.md
+        - DirectoryUpload: components/directory-upload.md
+        - MicrophoneCapture: components/microphone-capture.md
+        - CameraCapture: components/camera-capture.md
+        - GeolocationButton: components/geolocation-button.md
       - Interaction:
         - Overview: components/interaction.md
         - RefreshButton: components/refresh-button.md
@@ -313,6 +355,8 @@ nav:
         - CodeViewer: components/code-viewer.md
         - JSONViewer: components/json-viewer.md
         - Progress: components/progress.md
+        - CircularProgress: components/circular-progress.md
+        - HelpInspector: components/help-inspector.md
         - Status: components/status.md
         - Toast: components/toast.md
         - Expander: components/expander.md
@@ -385,8 +429,10 @@ nav:
   - Project:
     - Public roadmap: guides/roadmap.md
     - Migrate from Streamlit: guides/streamlit-migration.md
+    - Streamlit migration matrix: guides/streamlit-migration-matrix.md
+    - NiceGUI migration: guides/nicegui-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
-    - Upgrade (0.8 → 0.14): guides/upgrade.md
+    - Upgrade (0.8 → 0.15): guides/upgrade.md
     - What's new: guides/release-notes.md
     - What's new in 0.14: guides/whats-new-0.14.md
     - What's new in 0.13: guides/whats-new-0.13.md

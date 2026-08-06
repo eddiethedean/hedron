@@ -11,17 +11,17 @@ over regenerating from an arbitrary checkout.
 | SBOM | GitHub Release assets for the train tag | [`scripts/generate_sbom.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/generate_sbom.py) |
 | License inventory | GitHub Release assets | [`scripts/license_inventory.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/license_inventory.py) |
 | Evidence bundle | GitHub Release assets / `dist/evidence-bundle` | [`scripts/build_evidence_bundle.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/build_evidence_bundle.py) |
-| Package verify (0.14) | CI / release checklist | [`scripts/verify_pkg_14.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/verify_pkg_14.py) |
+| Package verify (0.15) | CI / release checklist | [`scripts/verify_pkg_15.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/verify_pkg_15.py) |
 
 Releases: [eddiethedean/hedron/releases](https://github.com/eddiethedean/hedron/releases).
 Script index: [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md).
 
 ## How to verify (evaluator)
 
-1. Open the GitHub Release matching your pinned train (for example **`v0.14.0`**).
+1. Open the GitHub Release matching your pinned train (for example **`v0.15.0`**).
 2. Download SBOM / license / evidence-bundle assets when present.
-3. Confirm package versions on PyPI match the release tag (`hedron==0.14.0`, …).
-4. Optionally clone the tag and run `uv run python scripts/verify_pkg_14.py` (or the
+3. Confirm package versions on PyPI match the release tag (`hedron==0.15.0`, …).
+4. Optionally clone the tag and run `uv run python scripts/verify_pkg_15.py` (or the
    verify script named for that train) in a clean environment.
 
 Formats are maintainer-oriented evidence — **not** a marketed SLSA attestation product

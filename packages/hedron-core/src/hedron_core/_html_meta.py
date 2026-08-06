@@ -172,6 +172,7 @@ BOOLEAN_ATTRS = frozenset(
         "required",
         "reversed",
         "selected",
+        "webkitdirectory",
     }
 )
 
@@ -284,6 +285,13 @@ ALLOWED_ATTRS = (
             "popover",
             "popovertarget",
             "popovertargetaction",
+            "capture",
+            "kind",
+            "srclang",
+            "preload",
+            "playsinline",
+            "sandbox",
+            "allow",
             # HTMX non-URL attrs (URL ones are in URL_ATTRS)
             "hx-target",
             "hx-swap",

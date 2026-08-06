@@ -16,7 +16,13 @@ __all__ = [
     "assert_fragment_body",
     "assert_html_contains",
     "assert_htmx_trigger",
+    "assert_hx_push_url",
+    "assert_hx_redirect",
+    "assert_hx_reswap",
+    "assert_hx_retarget",
+    "assert_oob_present",
     "assert_page_document",
+    "assert_toast_markup",
     "django_fixture",
     "fastapi_fixture",
     "flask_fixture",
@@ -73,10 +79,56 @@ def assert_fragment_body(response: AdapterResponse, *, contains: str) -> None:
 
 
 def assert_htmx_trigger(response: AdapterResponse, event: str) -> None:
-    trigger = response.headers.get("HX-Trigger") or response.headers.get("hx-trigger")
+    trigger = _header(response, "HX-Trigger")
     assert trigger is not None and event in trigger, (
         f"expected HX-Trigger containing {event!r}, got {trigger!r}"
     )
+
+
+def _header(response: AdapterResponse, name: str) -> str | None:
+    """Look up an HTTP header case-insensitively."""
+    lower = name.lower()
+    for key, value in response.headers.items():
+        if key.lower() == lower:
+            return value
+    return None
+
+
+def assert_hx_redirect(response: AdapterResponse, url: str) -> None:
+    value = _header(response, "HX-Redirect")
+    assert value == url, f"expected HX-Redirect={url!r}, got {value!r}"
+
+
+def assert_hx_push_url(response: AdapterResponse, url: str) -> None:
+    value = _header(response, "HX-Push-Url")
+    assert value == url, f"expected HX-Push-Url={url!r}, got {value!r}"
+
+
+def assert_hx_retarget(response: AdapterResponse, selector: str) -> None:
+    value = _header(response, "HX-Retarget")
+    assert value == selector, f"expected HX-Retarget={selector!r}, got {value!r}"
+
+
+def assert_hx_reswap(response: AdapterResponse, swap: str) -> None:
+    value = _header(response, "HX-Reswap")
+    assert value == swap, f"expected HX-Reswap={swap!r}, got {value!r}"
+
+
+def assert_oob_present(response: AdapterResponse, *, contains: str | None = None) -> None:
+    lower = response.body.lower()
+    assert "hx-swap-oob" in lower, f"hx-swap-oob not found in {response.body!r}"
+    if contains is not None:
+        assert contains in response.body, f"{contains!r} not found in OOB body {response.body!r}"
+
+
+def assert_toast_markup(response: AdapterResponse, *, contains: str | None = None) -> None:
+    body = response.body
+    lower = body.lower()
+    has_class = "hedron-toast" in lower
+    has_data = "data-hedron-toast" in lower
+    assert has_class or has_data, f"toast markup not found in {body!r}"
+    if contains is not None:
+        assert contains in body, f"{contains!r} not found in toast markup {body!r}"
 
 
 def _cookies_from_set_cookie(headers: Any) -> dict[str, str]:

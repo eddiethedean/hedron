@@ -1,9 +1,8 @@
 # RFC-0033: Map and GeoJSON presentation
 
-**Status:** Draft
+**Status:** Implemented
 **Phase:** 0.15 (`v0.15.0`)
 **Related:** [NiceGUI feature cross-check](../NICEGUI_FEATURE_CROSSCHECK.md) (`ui.leaflet`);
-RFC-0011 (visualization), RFC-0012 (security), RFC-0021 (browser runtime), RFC-0023 (accessibility)
 
 ## Summary
 
@@ -66,11 +65,14 @@ alternative, marker select, zoom), adversarial (malicious GeoJSON, disallowed ti
 New opt-in components/extra; no break to existing chart adapters. NiceGUI migration glossary maps
 `ui.leaflet` → this RFC.
 
-## Open questions
+## Accepted decisions (0.15)
 
-1. Core vs `hedron-charts` / `hedron-extras` package ownership?
-2. Which basemap providers are Supported vs recipe-only on day one?
-3. Do viewport events ship in 0.15 or defer continuous pan/zoom streaming to 0.17 bindings?
+1. **Package ownership:** first-party `Map` / `GeoJSONLayer` live in `hedron-core` (presentation).
+   `hedron-charts` MapLibre/Folium/PyDeck remain optional visualization adapters, not this contract.
+2. **Basemap day one:** allowlisted tile/script sources plus mandatory static/table fallback; OSM or
+   other CDNs are Supported only when explicitly allowlisted by the app policy.
+3. **Viewport events:** continuous pan/zoom streaming is Deferred to 0.17; 0.15 ships marker/selection
+   as declared actions plus bounds props for initial view.
 
 ## Acceptance criteria
 

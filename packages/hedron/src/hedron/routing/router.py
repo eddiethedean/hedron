@@ -224,6 +224,7 @@ class HedronRouter(APIRouter):
                 response_model=None,
                 **kwargs,
             )
+            region_meta = {r.id: f"{r.selector}|{r.description}" for r in regions}
             register_route(
                 kind="component",
                 logical_id=logical_id,
@@ -239,7 +240,9 @@ class HedronRouter(APIRouter):
                 htmx_inference={
                     "default_mode": "fragment",
                     "target": "caller-provided hx-target",
-                    "swap": "innerHTML",
+                    "swap": "outerHTML",
+                    "fragment_regions": str(region_meta),
+                    "csrf_required": str(_requires_csrf(verb_list)).lower(),
                 },
             )
             return fn

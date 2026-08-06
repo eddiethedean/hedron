@@ -5,7 +5,7 @@ Ways to try Hedron — prefer a **real server** before simulated docs demos.
 There is **no hosted playground**. Use Codespaces / Dev Container, a local clone, or
 `pip install` + a single-file `app.py`.
 
-1. **[Single-file apps](single-file.md)** — fastest local path: `pip install "hedron>=0.14.0"`
+1. **[Single-file apps](single-file.md)** — fastest local path: `pip install "hedron>=0.15.0"`
    and paste an `app.py` (no monorepo clone).
 2. **[Try with Codespaces / Dev Container](try-it.md)** — no local Python setup
    (not a single command; needs GitHub or VS Code / Cursor).

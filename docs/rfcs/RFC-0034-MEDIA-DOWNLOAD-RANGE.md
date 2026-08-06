@@ -1,9 +1,8 @@
 # RFC-0034: Authenticated downloads and ranged media delivery
 
-**Status:** Draft
+**Status:** Implemented
 **Phase:** 0.15 (`v0.15.0`)
 **Related:** [NiceGUI feature cross-check](../NICEGUI_FEATURE_CROSSCHECK.md)
-(`ui.download`, `app.add_media_files`); RFC-0012, RFC-0021, RFC-0028; roadmap Audio/Video/PdfViewer
 
 ## Summary
 
@@ -64,11 +63,14 @@ for Flask/Django.
 Additive APIs. Existing `DownloadButton`/file responses gain documented composition paths; breaking
 changes require COMPATIBILITY entries.
 
-## Open questions
+## Accepted decisions (0.15)
 
-1. Should download-all archives be core or extras?
-2. Unified API across FastAPI/`hedron-flask`/`hedron-django` in 0.15 or FastAPI-first?
-3. Signed short-lived URLs vs session-cookie auth for media — which is Supported default?
+1. **Download-all archives:** optional, budgeted helpers in the same FastAPI response module (not a
+   separate extras package for v1).
+2. **Host adapters:** FastAPI is the Supported path in 0.15; Flask/Django receive documented
+   composition notes without requiring identical helper APIs on day one.
+3. **Auth default:** session-cookie + existing authz hooks; signed short-lived URLs remain an
+   application recipe, not the Supported default.
 
 ## Acceptance criteria
 

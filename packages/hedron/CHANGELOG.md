@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.15.0] — 2026-08-05
+
+### Added
+
+- Phase 0.15 data-app surface completeness:
+  - `AppScenario` / HTMX testing helpers (#22–#26)
+  - `region` / `@fragment` / `swap` interaction ergonomics (RFC-0039)
+  - typed controls and surface chrome (docks, popover, carousel, timeline, chips)
+  - media Range/download helpers (RFC-0034)
+  - Map/GeoJSON with table alternative (RFC-0033)
+  - `BrowserContext` / `BrowserStorage`, Math, IFrame
+  - OIDC / session hardening helpers
+  - named connection registry
+
 ## [0.14.0] — 2026-08-05
 
 ### Added

@@ -13,3 +13,5 @@ Metrics, viewers, progress, status, disclosure, tabs, and files.
 - [`Expander`](expander.md) — Reveal optional content with native details/summary behavior.
 - [`Tabs`](tabs.md) — Render a small ARIA tablist with one initially active labelled panel.
 - [`Sidebar`](sidebar.md) — Render complementary page content with an accessible label.
+- [`CircularProgress`](circular-progress.md) — Circular determinate/indeterminate progress with status text.
+- [`HelpInspector`](help-inspector.md) — Bounded details/summary object or help inspector.

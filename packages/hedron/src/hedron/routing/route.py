@@ -51,6 +51,40 @@ def _is_hedron_value(value: object) -> bool:
     return callable(getattr(value, "render", None))
 
 
+def _fragment_region_http_detail(
+    exc: FragmentRegionError, *, request: Request
+) -> str | dict[str, Any]:
+    """Production stays opaque; non-production includes HED-HTMX diagnostics."""
+    production = bool(getattr(request.app.state, "hedron_production", False))
+    if production:
+        return "HX-Target is not an authorized fragment region"
+    from hedron_core.codes import HED_HTMX_0001
+    from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
+
+    code = getattr(exc, "code", None) or HED_HTMX_0001
+    requested = getattr(exc, "requested", None)
+    declared = list(getattr(exc, "declared", ()) or ())
+    diagnostic = make_diagnostic(
+        code,
+        severity=DiagnosticSeverity.ERROR,
+        title="Unauthorized HTMX target",
+        explanation=str(exc),
+        remediation=(
+            "Declare the target via fragment_regions= / @app.fragment(region=...), "
+            "or fix the control's hx-target / RefreshButton.for_region(...)."
+        ),
+        context={"requested": requested, "declared": declared, "path": str(request.url.path)},
+    )
+    return {
+        "code": diagnostic.code,
+        "title": diagnostic.title,
+        "explanation": diagnostic.explanation,
+        "remediation": diagnostic.remediation,
+        "requested": requested,
+        "declared": declared,
+    }
+
+
 class HedronRoute(APIRoute):
     """APIRoute that converts component returns into HTML responses."""
 
@@ -228,13 +262,21 @@ class HedronRoute(APIRoute):
                 str(exc),
                 attributes={"path": str(request.url.path), "target": target},
             )
-            raise HTTPException(status_code=403, detail=str(exc)) from exc
+            raise HTTPException(
+                status_code=403,
+                detail=_fragment_region_http_detail(exc, request=request),
+            ) from exc
 
         content: NodeLike | None = result.content
         if result.oob:
             try:
                 content = materialize_interaction_nodes(result)
             except (FragmentRegionError, ValueError) as exc:
+                if isinstance(exc, FragmentRegionError):
+                    raise HTTPException(
+                        status_code=403,
+                        detail=_fragment_region_http_detail(exc, request=request),
+                    ) from exc
                 raise HTTPException(status_code=403, detail=str(exc)) from exc
 
         headers = interaction_headers(result, request=request)
@@ -346,4 +388,7 @@ def _authorize_component_fragment(
             str(exc),
             attributes={"path": str(request.url.path), "target": target},
         )
-        raise HTTPException(status_code=403, detail=str(exc)) from exc
+        raise HTTPException(
+            status_code=403,
+            detail=_fragment_region_http_detail(exc, request=request),
+        ) from exc

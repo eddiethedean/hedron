@@ -45,7 +45,7 @@ class PluginMeta:
     name: str
     version: str
     distribution: str
-    hedron_version: str = ">=0.14,<0.15"
+    hedron_version: str = ">=0.15,<0.16"
     capabilities: PluginCapabilities = field(default_factory=PluginCapabilities)
     depends_on: tuple[str, ...] = ()
 

@@ -1,9 +1,8 @@
 # RFC-0035: Surface chrome — carousel, timeline, context menu, chips, progress
 
-**Status:** Draft
+**Status:** Implemented
 **Phase:** 0.15 (`v0.15.0`)
 **Related:** [NiceGUI feature cross-check](../NICEGUI_FEATURE_CROSSCHECK.md);
-RFC-0003, RFC-0009, RFC-0023; roadmap Gallery/Popover/controls
 
 ## Summary
 
@@ -65,11 +64,12 @@ autoplay off, no-JS fallbacks (static list/gallery), validation retention for ch
 Additive components. NiceGUI glossary maps `ui.carousel`, `ui.timeline`, `ui.context_menu`,
 `ui.input_chips`, `ui.circular_progress` → these contracts.
 
-## Open questions
+## Accepted decisions (0.15)
 
-1. Is lightbox a `Gallery` mode or a separate component?
-2. Context menu: native `popover`/`menu` where available vs consistent custom pattern?
-3. Chip input: free-text tags vs closed vocabulary only in v1?
+1. **Lightbox:** a `Gallery` mode (not a separate component).
+2. **ContextMenu:** native `popover`/`menu` where available, plus a Required overflow-button
+   alternative for the same actions.
+3. **Chip input:** free-text tags with server-side validation in v1 (closed vocabulary is optional).
 
 ## Acceptance criteria
 

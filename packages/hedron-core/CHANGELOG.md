@@ -1,3 +1,11 @@
+## [0.15.0] — 2026-08-05
+
+### Added
+
+- Phase 0.15 data-app surface completeness: typed controls and surface chrome, Map/GeoJSON,
+  media Range/downloads, BrowserContext/Storage, Math/IFrame, scenario marks, and testing
+  helpers (`AppScenario`, HTMX asserts).
+
 ## [0.14.0] — 2026-08-05
 
 ### Added

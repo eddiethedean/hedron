@@ -29,31 +29,31 @@ Semantic regions that give a page its accessible structure.
 
 Explicit containers and one-dimensional or grid composition.
 
-[`Container`](container.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`Divider`](divider.md)
+[`Container`](container.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`Divider`](divider.md) · [`ActionDock`](action-dock.md) · [`BottomDock`](bottom-dock.md) · [`Spacer`](spacer.md)
 
 ## Content
 
 Text, links, media, code, lists, tables, and Markdown.
 
-[`Heading`](heading.md) · [`Text`](text.md) · [`Link`](link.md) · [`Image`](image.md) · [`CodeBlock`](code-block.md) · [`List`](list.md) · [`DescriptionList`](description-list.md) · [`Table`](table.md) · [`Markdown`](markdown.md)
+[`Heading`](heading.md) · [`Text`](text.md) · [`Link`](link.md) · [`Image`](image.md) · [`CodeBlock`](code-block.md) · [`List`](list.md) · [`DescriptionList`](description-list.md) · [`Table`](table.md) · [`Markdown`](markdown.md) · [`Audio`](audio.md) · [`Gallery`](gallery.md) · [`GeoJSONLayer`](geo-json-layer.md) · [`GeolocationHint`](geolocation-hint.md) · [`IFrame`](i-frame.md) · [`Logo`](logo.md) · [`Map`](map.md) · [`Math`](math.md) · [`PageIcon`](page-icon.md) · [`PdfViewer`](pdf-viewer.md) · [`Video`](video.md)
 
 ## Surfaces and status
 
 Cards, labels, alerts, and loading placeholders.
 
-[`Card`](card.md) · [`Badge`](badge.md) · [`Alert`](alert.md) · [`Skeleton`](skeleton.md)
+[`Card`](card.md) · [`Badge`](badge.md) · [`Alert`](alert.md) · [`Skeleton`](skeleton.md) · [`Carousel`](carousel.md) · [`ContextMenu`](context-menu.md) · [`Help`](help.md) · [`Popover`](popover.md) · [`Timeline`](timeline.md) · [`Tooltip`](tooltip.md)
 
 ## Controls
 
 Buttons and links for commands and navigation.
 
-[`Button`](button.md) · [`LinkButton`](link-button.md) · [`IconButton`](icon-button.md)
+[`Button`](button.md) · [`LinkButton`](link-button.md) · [`IconButton`](icon-button.md) · [`ClipboardCopy`](clipboard-copy.md) · [`ConfirmButton`](confirm-button.md) · [`MenuButton`](menu-button.md)
 
 ## Forms
 
 Typed, labelled controls and validation presentation.
 
-[`Form`](form.md) · [`FormField`](form-field.md) · [`Label`](label.md) · [`TextInput`](text-input.md) · [`TextArea`](text-area.md) · [`Select`](select.md) · [`Checkbox`](checkbox.md) · [`RadioGroup`](radio-group.md) · [`SubmitButton`](submit-button.md) · [`FormErrors`](form-errors.md) · [`AutoForm`](auto-form.md)
+[`Form`](form.md) · [`FormField`](form-field.md) · [`Label`](label.md) · [`TextInput`](text-input.md) · [`TextArea`](text-area.md) · [`Select`](select.md) · [`Checkbox`](checkbox.md) · [`RadioGroup`](radio-group.md) · [`SubmitButton`](submit-button.md) · [`FormErrors`](form-errors.md) · [`AutoForm`](auto-form.md) · [`CameraCapture`](camera-capture.md) · [`ChipInput`](chip-input.md) · [`ColorInput`](color-input.md) · [`DateInput`](date-input.md) · [`DateTimeInput`](date-time-input.md) · [`DirectoryUpload`](directory-upload.md) · [`GeolocationButton`](geolocation-button.md) · [`MicrophoneCapture`](microphone-capture.md) · [`MultiSelect`](multi-select.md) · [`NumberInput`](number-input.md) · [`Pills`](pills.md) · [`RangeInput`](range-input.md) · [`RatingInput`](rating-input.md) · [`SegmentedControl`](segmented-control.md) · [`SelectSlider`](select-slider.md) · [`TimeInput`](time-input.md) · [`ToggleSwitch`](toggle-switch.md)
 
 ## Interaction
 
@@ -71,7 +71,7 @@ Automatic rendering, tabular display, and editable data.
 
 Metrics, viewers, progress, status, disclosure, tabs, and files.
 
-[`Metric`](metric.md) · [`FileUpload`](file-upload.md) · [`DownloadButton`](download-button.md) · [`CodeViewer`](code-viewer.md) · [`JSONViewer`](json-viewer.md) · [`Progress`](progress.md) · [`Status`](status.md) · [`Toast`](toast.md) · [`Expander`](expander.md) · [`Tabs`](tabs.md) · [`Sidebar`](sidebar.md)
+[`Metric`](metric.md) · [`FileUpload`](file-upload.md) · [`DownloadButton`](download-button.md) · [`CodeViewer`](code-viewer.md) · [`JSONViewer`](json-viewer.md) · [`Progress`](progress.md) · [`Status`](status.md) · [`Toast`](toast.md) · [`Expander`](expander.md) · [`Tabs`](tabs.md) · [`Sidebar`](sidebar.md) · [`CircularProgress`](circular-progress.md) · [`HelpInspector`](help-inspector.md)
 
 ## Theme
 

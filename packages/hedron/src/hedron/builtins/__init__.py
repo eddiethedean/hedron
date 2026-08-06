@@ -10,6 +10,7 @@ from hedron.htmx import _safe_css_selector
 from hedron.routing.reverse import ComponentRef
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
+from hedron_core.interaction import FragmentRegion
 from hedron_core.models import FormModel, Props
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrMap, JsonValue
@@ -75,6 +76,20 @@ class RefreshButton(Component[Props]):
         self.href = href
         self.target = _safe_target(target)
         self.swap = swap
+
+    @classmethod
+    def for_region(
+        cls,
+        region: FragmentRegion | str,
+        *,
+        href: str | None = None,
+        label: str = "Refresh",
+        ref: ComponentRef | None = None,
+        swap: str = "outerHTML",
+    ) -> RefreshButton:
+        """Wire ``hx-target`` from a :class:`~hedron_core.interaction.FragmentRegion`."""
+        target = region.selector if isinstance(region, FragmentRegion) else str(region)
+        return cls(label, ref=ref, href=href, target=target, swap=swap)
 
     def render(self) -> NodeLike:
         attrs: HtmlAttrMap = {"type": "button"}

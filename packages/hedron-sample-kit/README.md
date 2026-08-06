@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
 Third-party-shaped sample Hedron plugin package (Alpha; independent **`0.1.x`**,
-compatible with `hedron-core>=0.14.0,<0.15`; first released with the 0.4 developer
+compatible with `hedron-core>=0.15.0,<0.15`; first released with the 0.4 developer
 platform). Demonstrates a component (`Callout`),
 styles, asset, named example, Explorer panel, and diagnostic owner via the
 `hedron.plugins` entry point.

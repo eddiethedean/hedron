@@ -1,12 +1,12 @@
 # Public stability classifications
 
-**Status:** Phase 0.14 portable runtimes and acceleration (**published** as `v0.14.0`); a **minimal
+**Status:** Phase 0.15 data-app surface completeness (**implemented** as `v0.15.0`, pending cut); a **minimal
 `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled; package maturity
 remains Beta).
-**Version:** `0.14.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`
+**Version:** `0.15.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`v0.14.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
+`v0.15.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
 unless a later phase explicitly promotes them.
 
 ## Levels

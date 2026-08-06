@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
-from hedron_core.builtins._base import ElementProps, class_names, collect_children
+from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.typing_aliases import HtmlAttrValue
 
 
 class CardProps(ElementProps):
@@ -27,9 +28,10 @@ class Card(Component[CardProps]):
         footer: NodeLike = None,
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: object,
+        mark: str | None = None,
+        **kwargs: Any,
     ) -> None:
-        super().__init__(CardProps(title=title, id=id, class_=class_, **kwargs))
+        super().__init__(CardProps(title=title, id=id, class_=class_, mark=mark, **kwargs))
         self._children = collect_children(*nodes, children=children)
         if header is not None:
             self._slot_values["header"] = header
@@ -45,11 +47,14 @@ class Card(Component[CardProps]):
         parts.append(html.div(*self._children, class_="hedron-card-body"))
         if "footer" in self._slot_values:
             parts.append(html.div(self._slot_values["footer"], class_="hedron-card-footer"))
-        return html.article(
-            *parts,
-            id=self.props.id,
-            class_=class_names("hedron-card", self.props.class_),
-        )
+        attrs: dict[str, HtmlAttrValue] = {
+            "id": self.props.id,
+            "class_": class_names("hedron-card", self.props.class_),
+        }
+        data = mark_data(self.props.mark)
+        if data:
+            attrs["data"] = data
+        return html.article(*parts, **attrs)
 
 
 class BadgeProps(Props):
@@ -65,7 +70,7 @@ class Badge(Component[BadgeProps]):
         text: str,
         *,
         tone: Literal["neutral", "info", "success", "warning", "danger"] = "neutral",
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(BadgeProps(text=text, tone=tone, **kwargs))
 
@@ -91,7 +96,7 @@ class Alert(Component[AlertProps]):
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
         title: str | None = None,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(AlertProps(message=message, tone=tone, title=title, **kwargs))
 
@@ -115,7 +120,7 @@ class SkeletonProps(Props):
 class Skeleton(Component[SkeletonProps]):
     props_type = SkeletonProps
 
-    def __init__(self, *, lines: int = 3, **kwargs: object) -> None:
+    def __init__(self, *, lines: int = 3, **kwargs: Any) -> None:
         super().__init__(SkeletonProps(lines=lines, **kwargs))
 
     def render(self) -> NodeLike:

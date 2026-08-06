@@ -640,7 +640,7 @@ without fragmenting the component, security, rendering, or artifact contracts.
   addition to its native unit tests; failures identify the fixture, contract version, and violated
   capability.
 
-## 0.15 — Data-app surface completeness (`v0.15.0`)
+## 0.15 — Data-app surface completeness (`v0.15.0`) — **implemented**
 
 **Outcome:** Hedron covers the remaining high-value Streamlit data-app surface — and accepted
 NiceGUI-adjacent controls, maps, media delivery, and layout patterns — with typed, request-oriented

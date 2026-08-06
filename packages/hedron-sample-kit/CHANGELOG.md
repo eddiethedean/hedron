@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.3] — 2026-08-05
+
+### Changed
+
+- Pin `hedron-core` to `>=0.15.0,<0.16` for the 0.15 train.
+
 ## [0.1.2] — 2026-08-05
 
 ### Changed

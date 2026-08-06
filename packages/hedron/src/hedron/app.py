@@ -247,6 +247,35 @@ class Hedron(FastAPI):
 
         return wrap
 
+    def region(
+        self,
+        id: str,
+        *,
+        selector: str | None = None,
+        description: str = "",
+    ) -> FragmentRegion:
+        """Declare a fragment region (default selector ``#{id}``)."""
+        return FragmentRegion(id=id, selector=selector or f"#{id}", description=description)
+
+    def fragment(
+        self,
+        path: str,
+        *,
+        region: FragmentRegion | str | None = None,
+        regions: Sequence[FragmentRegion | str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        **kwargs: Any,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        """Alias of :meth:`component` that merges ``region`` / ``regions`` into the allowlist."""
+        merged: list[FragmentRegion | str] = []
+        if region is not None:
+            merged.append(region)
+        if regions is not None:
+            merged.extend(regions)
+        if fragment_regions is not None:
+            merged.extend(fragment_regions)
+        return self.component(path, fragment_regions=merged or None, **kwargs)
+
     def action(self, path: str, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         decorator = self._root_router.action(path, **kwargs)
 

@@ -280,7 +280,7 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron>=0.14.0",
+    "hedron>=0.15.0",
     "uvicorn[standard]>=0.30",
 ]
 
@@ -292,7 +292,7 @@ explorer = "off"
         encoding="utf-8",
     )
     (dest / "app.py").write_text(
-        """from hedron import Hedron, Page, Text
+        """from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
 
 app = Hedron(
     title="Hedron App",
@@ -301,10 +301,33 @@ app = Hedron(
     session_secret="replace-in-production",
 )
 
+status = app.region("service-status", description="Live status panel")
+
+
+def status_panel():
+    return html.div(
+        Text("All systems operational"),
+        id=status.id,
+        role="status",
+        aria={"live": "polite"},
+    )
+
 
 @app.page("/")
 def home() -> Page:
-    return Page(Text("Hello from hedron new"), title="Home")
+    return Page(
+        Stack(
+            Text("Hello from hedron new"),
+            status_panel(),
+            RefreshButton.for_region(status, href="/status", label="Refresh status"),
+        ),
+        title="Home",
+    )
+
+
+@app.fragment("/status", region=status)
+def refresh_status():
+    return swap(status_panel())
 """,
         encoding="utf-8",
     )
@@ -314,6 +337,121 @@ def home() -> Page:
         )
     )
     return 0
+
+
+def _declared_selectors_for_routes() -> dict[str, set[str]]:
+    """Map route path → authorized selectors/ids from registry endpoints."""
+    declared: dict[str, set[str]] = {}
+    for route in get_registry().routes():
+        selectors: set[str] = set()
+        regions = getattr(route.endpoint, "_hedron_fragment_regions", None) or ()
+        for region in regions:
+            selectors.add(region.selector)
+            selectors.add(region.id)
+            selectors.add(f"#{region.id}")
+        inference = dict(getattr(route, "htmx_inference", {}) or {})
+        raw = inference.get("fragment_regions") or ""
+        if isinstance(raw, str) and raw.startswith("{"):
+            import ast
+
+            try:
+                parsed = ast.literal_eval(raw)
+            except (SyntaxError, ValueError):
+                parsed = {}
+            if isinstance(parsed, dict):
+                for rid, value in parsed.items():
+                    selector = str(value).split("|", 1)[0]
+                    selectors.add(selector)
+                    selectors.add(str(rid))
+                    selectors.add(f"#{rid}")
+        if selectors:
+            declared[route.path] = selectors
+    return declared
+
+
+def _scan_refresh_button_targets(base: Path) -> list[tuple[str, str | None, str | None, str]]:
+    """AST-light scan for RefreshButton(target=..., href=...) / for_region mismatches."""
+    import ast
+
+    findings: list[tuple[str, str | None, str | None, str]] = []
+    skip = {".venv", "node_modules", "dist", "site-packages", ".git"}
+    for path in sorted(base.rglob("*.py")):
+        if any(part in skip or part.startswith(".") for part in path.parts):
+            continue
+        try:
+            source = path.read_text(encoding="utf-8")
+            tree = ast.parse(source, filename=str(path))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            is_for_region = isinstance(func, ast.Attribute) and func.attr == "for_region"
+            is_refresh = isinstance(func, ast.Name) and func.id == "RefreshButton"
+            is_refresh_attr = (
+                isinstance(func, ast.Attribute)
+                and func.attr == "RefreshButton"
+                and not is_for_region
+            )
+            if not (is_for_region or is_refresh or is_refresh_attr):
+                continue
+            href: str | None = None
+            target: str | None = None
+            for kw in node.keywords:
+                if (
+                    kw.arg == "href"
+                    and isinstance(kw.value, ast.Constant)
+                    and isinstance(kw.value.value, str)
+                ):
+                    href = kw.value.value
+                if (
+                    kw.arg == "target"
+                    and isinstance(kw.value, ast.Constant)
+                    and isinstance(kw.value.value, str)
+                ):
+                    target = kw.value.value
+            # for_region(region, href=...) — region may be Name; record href only
+            findings.append(
+                (str(path), href, target, "for_region" if is_for_region else "RefreshButton")
+            )
+    return findings
+
+
+def _check_htmx_region_mismatches(base: Path) -> list[Any]:
+    """Detect RefreshButton hx-target that does not match declared route regions."""
+    from hedron_core import DiagnosticSeverity
+    from hedron_core.codes import HED_HTMX_0001
+    from hedron_core.diagnostics import make_diagnostic
+
+    declared = _declared_selectors_for_routes()
+    if not declared:
+        return []
+    diags = []
+    for file_path, href, target, kind in _scan_refresh_button_targets(base):
+        if not href or not target:
+            continue
+        allowed = declared.get(href)
+        if allowed is None:
+            continue
+        if target not in allowed and target.lstrip("#") not in allowed:
+            diags.append(
+                make_diagnostic(
+                    HED_HTMX_0001,
+                    severity=DiagnosticSeverity.WARNING,
+                    title="HX-Target / region mismatch",
+                    explanation=(
+                        f"{kind} in {file_path} targets {target!r} for {href!r}, "
+                        f"but declared regions are {sorted(allowed)}."
+                    ),
+                    remediation=(
+                        "Use RefreshButton.for_region(region, href=...) or align "
+                        "target= with @app.fragment(..., region=...) / fragment_regions=."
+                    ),
+                    context={"href": href, "target": target, "declared": sorted(allowed)},
+                )
+            )
+    return diags
 
 
 def _cmd_check(args: argparse.Namespace) -> int:
@@ -359,6 +497,8 @@ def _cmd_check(args: argparse.Namespace) -> int:
                     )
                 except HedronError as exc:
                     diags.extend(exc.diagnostics)
+
+    diags.extend(_check_htmx_region_mismatches(base))
 
     # Security / a11y / compatibility-boundary informational findings (excluded from exit code)
     info_diags = [

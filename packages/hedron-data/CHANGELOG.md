@@ -1,3 +1,9 @@
+## [0.15.0] — 2026-08-05
+
+### Added
+
+- Coordinated Beta train with phase 0.15 data-app surface completeness.
+
 ## [0.14.0] — 2026-08-05
 
 ### Added

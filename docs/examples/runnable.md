@@ -12,6 +12,7 @@ uv sync
 | Example | Framework | Run |
 |---|---|---|
 | [reference-app](reference-app.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/reference-app --reload` |
+| [data-app-0.15](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.15) | FastAPI | `uv run uvicorn app:app --app-dir examples/data-app-0.15 --reload` |
 | [live-interaction](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) | FastAPI | `uv run uvicorn app:app --app-dir examples/live-interaction --reload` |
 | [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask | See example README |
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | See example README |

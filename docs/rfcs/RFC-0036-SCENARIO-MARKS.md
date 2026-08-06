@@ -1,9 +1,8 @@
 # RFC-0036: AppScenario identity marks and filter asserts
 
-**Status:** Draft
+**Status:** Implemented
 **Phase:** 0.15 (`v0.15.0`)
 **Related:** [NiceGUI feature cross-check](../NICEGUI_FEATURE_CROSSCHECK.md)
-(`ElementFilter`, `.mark()`); RFC-0019 (testing); roadmap `hedron.testing.app`
 
 ## Summary
 
@@ -61,11 +60,12 @@ fragment-only responses still resolve marks.
 
 Additive. RFC-0019 remains the parent testing contract; this RFC is a 0.15 specialization.
 
-## Open questions
+## Accepted decisions (0.15)
 
-1. Strip marks in production builds vs allow always-on data attributes?
-2. Mark API on `Component` base vs opt-in mixin for builtins only?
-3. Syrupy snapshot integration for marked subtrees?
+1. **Production marks:** opt-in `mark=` emits `data-hedron-mark` and is never stripped (test-only
+   contract; not a styling API).
+2. **API surface:** `mark=` on `ElementProps` / selected builtins; filter helpers on `AppScenario`.
+3. **Syrupy:** not required; optional for adopters.
 
 ## Acceptance criteria
 

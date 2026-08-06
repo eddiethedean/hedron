@@ -1,0 +1,80 @@
+# Phase 0.15 data-app surface completeness evidence index.
+# Consumed by scripts/check_release_gate.py 0.15.0.
+# Zero Deferred policy for 0.15-owned rows: every row must be Verified at cut.
+
+[[evidence]]
+id = "TEST-APP-015"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase15_testing.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "HTMX-ASSERT-015"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase15_htmx_asserts.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "ERGONOMICS-015"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase15_ergonomics.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "CONTROLS-015"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase15_controls.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "MEDIA-015"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase15_media.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "MAP-015"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase15_map.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "BROWSER-015"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase15_browser.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "IDENTITY-015"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase15_identity.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "CONNECTIONS-015"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase15_connections.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-015"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-015"
+state = "Verified"
+command = "python scripts/verify_pkg_15.py"
+ci_job = "release"
+owner = "hedron"

@@ -737,6 +737,25 @@ def explorer_router() -> APIRouter:
             )
             if not region_ok:
                 region_error = f"HX-Target {target!r} is not an authorized fragment region"
+        methods = tuple(route.methods or ("GET",))
+        method = methods[0]
+        swap = str(inference.get("swap") or "outerHTML")
+        csrf_required = inference.get("csrf_required")
+        if csrf_required is None:
+            csrf_required = any(m.upper() not in {"GET", "HEAD", "OPTIONS"} for m in methods)
+        else:
+            csrf_required = str(csrf_required).lower() in {"1", "true", "yes"}
+        declared_regions = [
+            {"id": rid, "selector": value.split("|", 1)[0]} for rid, value in regions.items()
+        ]
+        click_preview = {
+            "method": method,
+            "path": route.path,
+            "target": target,
+            "swap": swap,
+            "csrf_required": bool(csrf_required),
+            "declared_regions": declared_regions,
+        }
         return cast(
             JsonObject,
             {
@@ -751,7 +770,7 @@ def explorer_router() -> APIRouter:
                 "primary": {
                     "kind": route.kind,
                     "path": route.path,
-                    "swap": "innerHTML",
+                    "swap": swap,
                 },
                 "oob": [],
                 "event_timing": {"trigger": None, "after_swap": None, "after_settle": None},
@@ -762,6 +781,55 @@ def explorer_router() -> APIRouter:
                 "inference": inference,
                 "override_source": "route.htmx_inference",
                 "error": region_error,
+                "click_preview": click_preview,
+            },
+        )
+
+    @router.get("/api/click-preview", include_in_schema=False)
+    async def api_click_preview(request: Request) -> Any:
+        """Explain method/path/target/swap for a registered route (Explorer preview)."""
+        name = request.query_params.get("route")
+        target = request.query_params.get("target")
+        if not name:
+            return JSONResponse({"detail": "route query parameter is required"}, status_code=400)
+        routes = {r.name: r for r in get_registry().routes()}
+        if name not in routes:
+            return JSONResponse({"detail": "Unregistered route identifier"}, status_code=400)
+        route = routes[name]
+        inference = dict(getattr(route, "htmx_inference", {}) or {})
+        regions_raw = inference.get("fragment_regions") or ""
+        regions: dict[str, str] = {}
+        if isinstance(regions_raw, dict):
+            regions = {str(k): str(v) for k, v in regions_raw.items()}
+        elif isinstance(regions_raw, str) and regions_raw.startswith("{"):
+            import ast
+
+            try:
+                parsed = ast.literal_eval(regions_raw)
+            except (SyntaxError, ValueError):
+                parsed = {}
+            if isinstance(parsed, dict):
+                regions = {str(k): str(v) for k, v in parsed.items()}
+        methods = tuple(route.methods or ("GET",))
+        csrf_required = inference.get("csrf_required")
+        if csrf_required is None:
+            csrf_required = any(m.upper() not in {"GET", "HEAD", "OPTIONS"} for m in methods)
+        else:
+            csrf_required = str(csrf_required).lower() in {"1", "true", "yes"}
+        return cast(
+            JsonObject,
+            {
+                "click_preview": {
+                    "method": methods[0],
+                    "path": route.path,
+                    "target": target,
+                    "swap": str(inference.get("swap") or "outerHTML"),
+                    "csrf_required": bool(csrf_required),
+                    "declared_regions": [
+                        {"id": rid, "selector": value.split("|", 1)[0]}
+                        for rid, value in regions.items()
+                    ],
+                }
             },
         )
 

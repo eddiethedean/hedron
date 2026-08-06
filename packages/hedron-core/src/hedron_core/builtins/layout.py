@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import re
-from typing import Literal
+from typing import Any, Literal
 
-from hedron_core.builtins._base import ElementProps, class_names, collect_children
+from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.typing_aliases import HtmlAttrValue
 
 _GAP_RE = re.compile(r"^\d+(\.\d+)?(rem|em|px|%)$")
 
@@ -38,7 +39,7 @@ class Container(Component[ContainerProps]):
         children: NodeLike = None,
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(ContainerProps(id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
@@ -65,7 +66,7 @@ class Stack(Component[StackProps]):
         gap: str = "1rem",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(StackProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
@@ -94,7 +95,7 @@ class Inline(Component[InlineProps]):
         gap: str = "0.5rem",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         super().__init__(InlineProps(gap=_validated_gap(gap), id=id, class_=class_, **kwargs))
         self._children = collect_children(*nodes, children=children)
@@ -127,7 +128,7 @@ class Grid(Component[GridProps]):
         gap: str = "1rem",
         id: str | None = None,
         class_: str | None = None,
-        **kwargs: object,
+        **kwargs: Any,
     ) -> None:
         if columns < 1:
             raise error(
@@ -168,7 +169,7 @@ class Divider(Component[DividerProps]):
     props_type = DividerProps
 
     def __init__(
-        self, orientation: Literal["horizontal", "vertical"] = "horizontal", **kwargs: object
+        self, orientation: Literal["horizontal", "vertical"] = "horizontal", **kwargs: Any
     ) -> None:
         super().__init__(DividerProps(orientation=orientation, **kwargs))
 
@@ -176,3 +177,52 @@ class Divider(Component[DividerProps]):
         if self.props.orientation == "vertical":
             return html.div(role="separator", aria={"orientation": "vertical"})
         return html.hr()
+
+
+class SpacerProps(ElementProps):
+    size: str = "1rem"
+    axis: Literal["block", "inline", "both"] = "block"
+
+
+class Spacer(Component[SpacerProps]):
+    """Semantic spacing primitive (gap via layout custom property)."""
+
+    props_type = SpacerProps
+    logical_name = "Spacer"
+
+    def __init__(
+        self,
+        *,
+        size: str = "1rem",
+        axis: Literal["block", "inline", "both"] = "block",
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            SpacerProps(
+                size=_validated_gap(size),
+                axis=axis,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
+
+    def render(self) -> NodeLike:
+        data: dict[str, str | bool | int | float | None] = {
+            "hedron-layout": "spacer",
+            "hedron-gap": self.props.size,
+            "hedron-spacer-axis": self.props.axis,
+            **mark_data(self.props.mark),
+        }
+        attrs: dict[str, HtmlAttrValue] = {
+            "id": self.props.id,
+            "class_": class_names("hedron-spacer", self.props.class_),
+            "style": f"--hedron-gap: {self.props.size}",
+            "aria": {"hidden": "true"},
+            "data": data,
+        }
+        return html.div(**attrs)

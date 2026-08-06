@@ -15,7 +15,7 @@ python -m hedron check
 **Other fixes:**
 
 1. Re-open the terminal after install (PATH updates often need a new shell).
-2. Prefer `uv tool install "hedron>=0.14.0"` (or `pipx install "hedron>=0.14.0"`) so the
+2. Prefer `uv tool install "hedron>=0.15.0"` (or `pipx install "hedron>=0.15.0"`) so the
    tool is on PATH, then run `hedron new …`.
 3. Inside a scaffolded project, use the project environment: `uv run hedron check` (or
    activate `.venv` and run `hedron` / `python -m hedron`).
@@ -74,8 +74,8 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U "hedron>=0.14.0"` (or `uv add "hedron>=0.14.0"`). The published train is
-**0.14.0**—see [What's ready](whats-ready.md). If docs describe a feature from a later
+`pip install -U "hedron>=0.15.0"` (or `uv add "hedron>=0.15.0"`). The published train is
+**0.15.0**—see [What's ready](whats-ready.md). If docs describe a feature from a later
 phase that is missing on your PyPI install, upgrade or use a git checkout of that work.
 
 ## CSRF 403 on POST (FastAPI / Flask)
@@ -122,8 +122,8 @@ with auth in rare cases; keep production off.
 
 **Cause:** An old CLI wrote `hedron>=0.4.0` (or another pre-0.11 floor).
 
-**Fix:** Edit `pyproject.toml` to `hedron>=0.14.0` and `uvicorn[standard]>=0.30`, then
-reinstall. Current `hedron new` scaffolds `hedron>=0.14.0` automatically.
+**Fix:** Edit `pyproject.toml` to `hedron>=0.15.0` and `uvicorn[standard]>=0.30`, then
+reinstall. Current `hedron new` scaffolds `hedron>=0.15.0` automatically.
 
 ## SSE / WebSocket / preload not working
 
