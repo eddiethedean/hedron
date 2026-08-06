@@ -17,7 +17,7 @@ one-line edit. Prefer **`python -m hedron`** so PATH never matters.
     ```bash
     python -m venv .venv
     source .venv/bin/activate   # Windows PowerShell: .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=0.16.0" "uvicorn[standard]"
+    python -m pip install "hedron>=0.17.0" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .   # project-local pinned hedron for uvicorn
@@ -27,7 +27,7 @@ one-line edit. Prefer **`python -m hedron`** so PATH never matters.
 === "uv (recommended CLI)"
 
     ```bash
-    uvx --from "hedron>=0.16.0" hedron new my-hedron-app
+    uvx --from "hedron>=0.17.0" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -59,7 +59,7 @@ Advisory findings on a hello-world scaffold are normal.
 ## Alternative — manual `app.py` (no scaffold)
 
 Use this only if you did **not** use `hedron new`. Create a project directory, install
-`hedron>=0.16.0` and `uvicorn[standard]`, then save:
+`hedron>=0.17.0` and `uvicorn[standard]`, then save:
 
 ```python title="app.py"
 from hedron import Card, Heading, Hedron, Page, Stack, Text

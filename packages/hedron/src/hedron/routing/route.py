@@ -20,13 +20,12 @@ from hedron.interaction import (
     FragmentRegion,
     FragmentRegionError,
     InteractionResult,
-    interaction_headers,
 )
-from hedron.responses import HTML, render_component_response
+from hedron.responses import HTML, render_component_response, render_interaction
+from hedron.responses import _fragment_region_http_detail
 from hedron.security.csrf import ensure_csrf_cookie
 from hedron.security.policy import SecurityPolicy
 from hedron_core.component import Component, NodeLike
-from hedron_core.interaction import materialize_interaction_nodes
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
 
@@ -49,40 +48,6 @@ def _is_hedron_value(value: object) -> bool:
     if isinstance(value, Model) and not isinstance(value, Component):
         return True
     return callable(getattr(value, "render", None))
-
-
-def _fragment_region_http_detail(
-    exc: FragmentRegionError, *, request: Request
-) -> str | dict[str, Any]:
-    """Production stays opaque; non-production includes HED-HTMX diagnostics."""
-    production = bool(getattr(request.app.state, "hedron_production", False))
-    if production:
-        return "HX-Target is not an authorized fragment region"
-    from hedron_core.codes import HED_HTMX_0001
-    from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
-
-    code = getattr(exc, "code", None) or HED_HTMX_0001
-    requested = getattr(exc, "requested", None)
-    declared = list(getattr(exc, "declared", ()) or ())
-    diagnostic = make_diagnostic(
-        code,
-        severity=DiagnosticSeverity.ERROR,
-        title="Unauthorized HTMX target",
-        explanation=str(exc),
-        remediation=(
-            "Declare the target via fragment_regions= / @app.fragment(region=...), "
-            "or fix the control's hx-target / RefreshButton.for_region(...)."
-        ),
-        context={"requested": requested, "declared": declared, "path": str(request.url.path)},
-    )
-    return {
-        "code": diagnostic.code,
-        "title": diagnostic.title,
-        "explanation": diagnostic.explanation,
-        "remediation": diagnostic.remediation,
-        "requested": requested,
-        "declared": declared,
-    }
 
 
 class HedronRoute(APIRoute):
@@ -231,79 +196,16 @@ class HedronRoute(APIRoute):
         authenticated: bool,
         fragment_regions: tuple[FragmentRegion, ...] = (),
     ) -> StarletteResponse:
-        from fastapi import HTTPException
-        from starlette.responses import Response
-
-        from hedron.interaction import merge_route_regions
-
-        if fragment_regions:
-            result = merge_route_regions(result, fragment_regions)
-
-        if result.status_code == 204 or result.content is None and result.status_code == 204:
-            headers = interaction_headers(result, request=request)
-            return Response(status_code=204, headers=headers)
-
-        target = request.headers.get("HX-Target")
-        is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
-        try:
-            from hedron_core.interaction import authorize_htmx_target, select_htmx_auth_target
-
-            auth_target = select_htmx_auth_target(client_target=target, region_id=result.region_id)
-            region = authorize_htmx_target(
-                result.policy,
-                auth_target,
-                is_htmx=is_htmx,
-            )
-        except FragmentRegionError as exc:
-            from hedron_core.audit import SecurityAuditEventType, emit_security_audit
-
-            emit_security_audit(
-                SecurityAuditEventType.HTMX_TARGET_REJECTED,
-                str(exc),
-                attributes={"path": str(request.url.path), "target": target},
-            )
-            raise HTTPException(
-                status_code=403,
-                detail=_fragment_region_http_detail(exc, request=request),
-            ) from exc
-
-        content: NodeLike | None = result.content
-        if result.oob:
-            try:
-                content = materialize_interaction_nodes(result)
-            except (FragmentRegionError, ValueError) as exc:
-                if isinstance(exc, FragmentRegionError):
-                    raise HTTPException(
-                        status_code=403,
-                        detail=_fragment_region_http_detail(exc, request=request),
-                    ) from exc
-                raise HTTPException(status_code=403, detail=str(exc)) from exc
-
-        headers = interaction_headers(result, request=request)
-        if region is not None and result.policy and result.policy.vary_on_target:
-            existing = {p.strip() for p in headers.get("Vary", "").split(",") if p.strip()}
-            existing.update({"HX-Request", "HX-History-Restore-Request", "HX-Target"})
-            headers["Vary"] = ", ".join(sorted(existing))
-
-        force = mode
-        if kind == "component":
-            force = force or RenderMode.FRAGMENT
-        if content is None:
-            return Response(status_code=result.status_code, headers=headers)
-        await _prepare_endpoint_value(content, request=request)
-        response = render_component_response(
-            content,
-            request=request,
-            context=render_context_from_request(request),
-            mode=force,
+        """Deprecated private alias — prefer :func:`hedron.responses.render_interaction`."""
+        return await render_interaction(
+            request,
+            result,
             policy=policy,
             authenticated=authenticated,
-            extra_headers=headers,
-            status_code=result.status_code,
+            fragment_regions=fragment_regions,
+            mode=mode,
+            kind=kind,
         )
-        if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
-            ensure_csrf_cookie(response, policy, request=request)
-        return response
 
 
 async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:

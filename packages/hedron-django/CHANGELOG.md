@@ -1,3 +1,11 @@
+# Changelog
+
+## [0.17.0] — 2026-08-06
+
+### Added
+
+- Phase 0.17 reactive dashboards and agent interfaces (see ROADMAP §0.17 / RFCs 0040–0044).
+
 ## [0.16.0] — 2026-08-06
 
 ### Added
@@ -24,6 +32,7 @@
 - Phase 0.13 advanced async and observability.
 
 # Changelog
+
 
 ## [0.12.0] — 2026-08-05
 

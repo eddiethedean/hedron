@@ -1,24 +1,33 @@
 # Release notes
 
-Train-level summary for the **0.16.x** line (**Published**). Package changelogs remain the
+Train-level summary for the **0.17.x** line (**Published**). Package changelogs remain the
 detailed record; this page is the adopter-facing index.
 
-## Current train — 0.16.0 (2026-08-06)
+## Current train — 0.17.0 (2026-08-06)
+
+**Published** (`v0.17.0`). Reactive dashboards and agent interfaces: `DashboardBinding` /
+`InteractionGraph` / `TriggerContext`, `PropertyPatch` / `CollectionPatch`, cross-filter and
+recorder/replay, HTMX shell primitives (`NavLink`, `OobHost`, `AppShell`), public
+`render_interaction`, Dialog/Tabs/Pagination/Lazy markup asserts, full `error-codes.md`
+alignment, and optional Alpha `hedron-notebook` / `hedron-mcp` (Experimental).
+
+Narrative: [What's new in 0.17](whats-new-0.17.md) · maturity:
+[What's ready today](whats-ready.md) · upgrade: [Upgrade (→ 0.17)](upgrade.md).
+
+Install: `pip install -U "hedron>=0.17.0"` (or `uv add "hedron>=0.17.0"`).
+Optional: `pip install "hedron[extras]"` · `"hedron[notebook]"` · `"hedron[mcp]"`.
+
+Package changelogs: [hedron](https://github.com/eddiethedean/hedron/blob/main/packages/hedron/CHANGELOG.md) ·
+[hedron-core](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-core/CHANGELOG.md) ·
+[hedron-notebook](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-notebook/CHANGELOG.md) ·
+[hedron-mcp](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-mcp/CHANGELOG.md).
+
+## 0.16.0 (2026-08-06)
 
 **Published** (`v0.16.0`). Curated extras and analysis workbenches: optional `hedron-extras`
 with FeatureManifest discovery, composition UI, DataExplorer/JSONEditor/CodeEditor (CSP-safe
 host stub), ChartWorkbench, image tools, calendar/signature/typeahead, display recipes,
 browser-Python sandbox, and Experimental specialty extras (TerminalView / joystick / device).
-
-Narrative: [What's new in 0.16](whats-new-0.16.md) · maturity:
-[What's ready today](whats-ready.md) · upgrade: [Upgrade (→ 0.16)](upgrade.md).
-
-Install: `pip install -U "hedron>=0.16.0"` (or `uv add "hedron>=0.16.0"`).
-Optional: `pip install "hedron[extras]"`.
-
-Package changelogs: [hedron](https://github.com/eddiethedean/hedron/blob/main/packages/hedron/CHANGELOG.md) ·
-[hedron-extras](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-extras/CHANGELOG.md) ·
-[hedron-core](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-core/CHANGELOG.md).
 
 ## 0.15.0 (2026-08-05)
 

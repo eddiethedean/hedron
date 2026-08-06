@@ -13,6 +13,7 @@ from typing import Any, Protocol, runtime_checkable
 __all__ = [
     "AdapterAppFixture",
     "AdapterResponse",
+    "assert_dialog_markup",
     "assert_fragment_body",
     "assert_html_contains",
     "assert_htmx_trigger",
@@ -20,8 +21,11 @@ __all__ = [
     "assert_hx_redirect",
     "assert_hx_reswap",
     "assert_hx_retarget",
+    "assert_lazy_markup",
     "assert_oob_present",
     "assert_page_document",
+    "assert_pagination_markup",
+    "assert_tabs_markup",
     "assert_toast_markup",
     "django_fixture",
     "fastapi_fixture",
@@ -129,6 +133,40 @@ def assert_toast_markup(response: AdapterResponse, *, contains: str | None = Non
     assert has_class or has_data, f"toast markup not found in {body!r}"
     if contains is not None:
         assert contains in body, f"{contains!r} not found in toast markup {body!r}"
+
+
+def assert_dialog_markup(response: AdapterResponse, *, contains: str | None = None) -> None:
+    body = response.body
+    lower = body.lower()
+    has_class = "hedron-dialog" in lower
+    has_data = "data-hedron-dialog" in lower
+    assert has_class or has_data, f"dialog markup not found in {body!r}"
+    if contains is not None:
+        assert contains in body, f"{contains!r} not found in dialog markup {body!r}"
+
+
+def assert_tabs_markup(response: AdapterResponse, *, contains: str | None = None) -> None:
+    body = response.body
+    lower = body.lower()
+    assert "hedron-tabs" in lower or "hedron-tablist" in lower, f"tabs markup not found in {body!r}"
+    if contains is not None:
+        assert contains in body, f"{contains!r} not found in tabs markup {body!r}"
+
+
+def assert_pagination_markup(response: AdapterResponse, *, contains: str | None = None) -> None:
+    body = response.body
+    lower = body.lower()
+    assert "hedron-pagination" in lower, f"pagination markup not found in {body!r}"
+    if contains is not None:
+        assert contains in body, f"{contains!r} not found in pagination markup {body!r}"
+
+
+def assert_lazy_markup(response: AdapterResponse, *, contains: str | None = None) -> None:
+    body = response.body
+    lower = body.lower()
+    assert "hx-trigger" in lower and "load" in lower, f"lazy load trigger not found in {body!r}"
+    if contains is not None:
+        assert contains in body, f"{contains!r} not found in lazy markup {body!r}"
 
 
 def _cookies_from_set_cookie(headers: Any) -> dict[str, str]:

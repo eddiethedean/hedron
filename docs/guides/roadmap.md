@@ -12,7 +12,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.14** | Portable runtimes and acceleration | **Published** (`v0.14.0`) |
 | **0.15** | Data-app surface completeness (OIDC/session helpers; HTMX testing; `region`/`swap`; maps/media) | **Published** (`v0.15.0`) |
 | **0.16** | Curated extras and analysis workbenches (incl. CodeEditor host stub and specialty NiceGUI-shaped extras) | **Published** (`v0.16.0`) |
-| **0.17** | Reactive dashboards and agent interfaces; shell/AppShell; InteractionResult→Response; `#15`/`#24` completions (RFCs 0040–0044; gate packet refined) | Planned |
+| **0.17** | Reactive dashboards and agent interfaces; shell/AppShell; InteractionResult→Response; `#15`/`#24` completions (RFCs 0040–0044) | **Published** (`v0.17.0`) |
 | **0.18** | Model demos and inference workflows | Planned |
 | **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | Planned |
 | **0.20** | Production security floor and adapter parity; pluggable CSRF / composable headers / `CsrfField` | Planned |
@@ -25,9 +25,10 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - No `1.0` phase is scheduled (D-038). A **minimal `stable` API tier** is catalogued in
   [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or `experimental`.
 
-## Honest gaps on the current train (0.16)
+## Honest gaps on the current train (0.17)
 
-- Last **published** PyPI train is **0.16.x** (`v0.16.0`)
+- Last **published** PyPI train is **0.17.x** (`v0.17.0`)
+- Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)
 - Identity helpers are **opt-in wiring** (not a managed IdP) — [Authentication](authentication.md)
@@ -35,10 +36,9 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Full multi-engine FastAPI live browser matrix / some Explorer live traces → owned `0.10.x` Deferred
 - Live transports remain **experimental**; polling is Supported — [What’s ready](whats-ready.md)
 
-Tracked follow-ups for host security, adapter DX, shell authoring, and claim honesty are owned by
+Tracked follow-ups for host security, adapter DX, and claim honesty are owned by
 phases **0.13+** (see the [issue ownership table](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-github-issue-ownership-013)
-in the maintainer roadmap). Phase **0.17** is Planned with a refined packet (RFCs 0040–0044,
-[release-gate-0.17.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.17.toml)).
+in the maintainer roadmap). Next capability phase is **0.18** (model demos).
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))

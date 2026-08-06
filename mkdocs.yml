@@ -258,6 +258,8 @@ nav:
         - Spacer: components/spacer.md
         - ActionDock: components/action-dock.md
         - BottomDock: components/bottom-dock.md
+        - MainPanel: components/main-panel.md
+        - AppShell: components/app-shell.md
       - Content:
         - Overview: components/content.md
         - Heading: components/heading.md
@@ -296,6 +298,8 @@ nav:
         - Overview: components/controls.md
         - Button: components/button.md
         - LinkButton: components/link-button.md
+        - HtmxLink: components/htmx-link.md
+        - NavLink: components/nav-link.md
         - IconButton: components/icon-button.md
         - MenuButton: components/menu-button.md
         - ConfirmButton: components/confirm-button.md
@@ -340,6 +344,8 @@ nav:
         - Loading: components/loading.md
         - ErrorState: components/error-state.md
         - Dialog: components/dialog.md
+        - OobHost: components/oob-host.md
+        - AttrHost: components/attr-host.md
         - ChatMessage: components/chat-message.md
         - ChatInput: components/chat-input.md
       - Data:
@@ -431,9 +437,11 @@ nav:
     - Migrate from Streamlit: guides/streamlit-migration.md
     - Streamlit migration matrix: guides/streamlit-migration-matrix.md
     - NiceGUI migration: guides/nicegui-migration.md
+    - Dash migration: guides/dash-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - Upgrade (0.8 → 0.16): guides/upgrade.md
     - What's new: guides/release-notes.md
+    - What's new in 0.17: guides/whats-new-0.17.md
     - What's new in 0.16: guides/whats-new-0.16.md
     - What's new in 0.14: guides/whats-new-0.14.md
     - What's new in 0.13: guides/whats-new-0.13.md

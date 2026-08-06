@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.16.0** published train
+**Status:** Accepted for the **0.17.0** published train
 **Reviewed:** 2026-08-06
 
 ## Current train (read this first)
@@ -20,9 +20,9 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`)
-stay on the `0.16.x` train (published as `v0.16.0`). Alpha packages `hedron-charts`,
-`hedron-sample-kit`, and `hedron-native`
-version independently (`0.1.x`) and declare `hedron-core>=0.16.0,<0.17`.
+stay on the `0.17.x` train (published as `v0.17.0`). Alpha packages `hedron-charts`,
+`hedron-sample-kit`, `hedron-native`, `hedron-notebook`, and `hedron-mcp`
+version independently (`0.1.x`) and declare `hedron-core>=0.17.0,<0.18`.
 
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
 acceleration is present or absent (D-001 / D-048).

@@ -23,33 +23,32 @@ Owning RFCs: [RFC-0040](../rfcs/RFC-0040-INTERACTION-GRAPH.md),
 
 ## Graph and patches
 
-- [ ] `DashboardBinding` / `InteractionGraph` / `TriggerContext` / lifecycle. *(`GRAPH-017`)*
-- [ ] `PropertyPatch` / `CollectionPatch` / structured collections. *(`PATCH-017`)*
-- [ ] Cross-filter composition (chart/grid/form/state/jobs/map viewport triggers). *(`XFILTER-017`)*
-- [ ] Interaction-graph recorder and deterministic replay. *(`REPLAY-017`)*
+- [x] `DashboardBinding` / `InteractionGraph` / `TriggerContext` / lifecycle. *(`GRAPH-017`)*
+- [x] `PropertyPatch` / `CollectionPatch` / structured collections. *(`PATCH-017`)*
+- [x] Cross-filter composition (chart/grid/form/state/jobs/map viewport triggers). *(`XFILTER-017`)*
+- [x] Interaction-graph recorder and deterministic replay. *(`REPLAY-017`)*
 
 ## Notebook and MCP
 
-- [ ] Optional `hedron-notebook` preview helper (experimental; localhost-oriented). *(`NOTEBOOK-017`)*
-- [ ] Optional `hedron-mcp` Streamable HTTP projection (experimental; deny-by-default empty).
+- [x] Optional `hedron-notebook` preview helper (experimental; localhost-oriented). *(`NOTEBOOK-017`)*
+- [x] Optional `hedron-mcp` Streamable HTTP projection (experimental; deny-by-default empty).
   *(`MCP-017`)*
 
 ## Shell, docs, asserts, migration
 
-- [ ] NavLink / `class_` / OobHost / AppShell / public InteractionResult→Response API.
+- [x] NavLink / `class_` / OobHost / AppShell / public InteractionResult→Response API.
   *(`SHELL-017`)*
-- [ ] `error-codes.md` aligned with registered `HED-*` catalog (`#15`). *(`HEDDOC-017`)*
-- [ ] Dialog / Tabs / Pagination / Lazy markup asserts (`#24`; Toast remains 0.15).
+- [x] `error-codes.md` aligned with registered `HED-*` catalog (`#15`). *(`HEDDOC-017`)*
+- [x] Dialog / Tabs / Pagination / Lazy markup asserts (`#24`; Toast remains 0.15).
   *(`ASSERT-017`)*
-- [ ] Dash / NiceGUI migration inventories without auto-conversion claims. *(`MIGRATE-017`)*
+- [x] Dash / NiceGUI migration inventories without auto-conversion claims. *(`MIGRATE-017`)*
 
 ## Packaging
 
-- [ ] Coordinated package verify (`scripts/verify_pkg_17.py` when packages exist). *(`PKG-017`)*
+- [x] Coordinated package verify (`scripts/verify_pkg_17.py` when packages exist). *(`PKG-017`)*
 
 ## Exit
 
-- [ ] Full regression suite. *(`REGRESS-017`)*
+- [x] Full regression suite. *(`REGRESS-017`)*
 
-**Exit pending** — promote every 0.17-owned row to Verified with Zero Deferred before publishing
-`v0.17.0`.
+**Exit met** — coordinated `0.17.0` (**Published** as `v0.17.0`); every 0.17 gate row Verified.

@@ -13,7 +13,7 @@ status: implemented
 
 **Status:** Beta Supported adapters shipped (`hedron-flask`, `hedron-django`).
 Portable contracts live in `hedron-core`. Flask `init_app` / `HedronBlueprint` and
-Django forms + QuerySet DataSource are Supported (D-046; current train **0.16.0**).
+Django forms + QuerySet DataSource are Supported (D-046; current train **0.17.0**).
 
 ## Install
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Literal
 
+from hedron_core.builtins._base import ElementProps
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
@@ -60,7 +61,7 @@ class Heading(Component[HeadingProps]):
         return getattr(html, f"h{self.props.level}")(self.props.content)
 
 
-class LinkProps(Props):
+class LinkProps(ElementProps):
     href: SafeUrl
     label: str
     external: bool = False
@@ -75,6 +76,9 @@ class Link(Component[LinkProps]):
         href: SafeUrl | str,
         *,
         external: bool = False,
+        id: str | None = None,
+        class_: str | None = None,
+        mark: str | None = None,
         **kwargs: object,
     ) -> None:
         url = (
@@ -82,13 +86,32 @@ class Link(Component[LinkProps]):
             if isinstance(href, SafeUrl)
             else SafeUrl.parse(href, purpose=UrlPurpose.NAVIGATION, allow_external=external)
         )
-        super().__init__(LinkProps(href=url, label=label, external=external, **kwargs))
+        super().__init__(
+            LinkProps(
+                href=url,
+                label=label,
+                external=external,
+                id=id,
+                class_=class_,
+                mark=mark,
+                **kwargs,
+            )
+        )
 
     def render(self) -> NodeLike:
+        from hedron_core.builtins._base import class_names, mark_data
+
         attrs: dict[str, HtmlAttrValue] = {"href": self.props.href}
         if self.props.external:
             attrs["rel"] = "noopener noreferrer"
             attrs["target"] = "_blank"
+        if self.props.id:
+            attrs["id"] = self.props.id
+        if self.props.class_:
+            attrs["class_"] = class_names("hedron-link", self.props.class_)
+        data = mark_data(self.props.mark)
+        if data:
+            attrs["data"] = data
         return html.a(self.props.label, **attrs)
 
 

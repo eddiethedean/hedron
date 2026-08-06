@@ -7,11 +7,21 @@ from collections.abc import Mapping
 from fastapi.responses import HTMLResponse
 from starlette.background import BackgroundTask
 from starlette.requests import Request
+from starlette.responses import Response as StarletteResponse
 
 from hedron.htmx import approved_headers, render_mode_for_request
 from hedron.security.policy import SecurityPolicy
 from hedron_core.builtins.document import Page
 from hedron_core.component import NodeLike
+from hedron_core.interaction import (
+    FragmentRegion,
+    FragmentRegionError,
+    InteractionResult,
+    authorize_htmx_target,
+    interaction_headers,
+    materialize_interaction_nodes,
+    select_htmx_auth_target,
+)
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 
 __all__ = [
@@ -23,6 +33,7 @@ __all__ = [
     "hedron_response",
     "merge_htmx_headers",
     "render_component_response",
+    "render_interaction",
 ]
 
 
@@ -278,3 +289,140 @@ def _ensure_htmx_asset(html_text: str, mode: RenderMode) -> str:
 
 
 merge_htmx_headers = approved_headers
+
+
+def _fragment_region_http_detail(
+    exc: FragmentRegionError, *, request: Request
+) -> str | dict[str, object]:
+    """Production stays opaque; non-production includes HED-HTMX diagnostics."""
+    app = request.scope.get("app")
+    production = bool(getattr(getattr(app, "state", None), "hedron_production", False))
+    if production:
+        return "HX-Target is not an authorized fragment region"
+    from hedron_core.codes import HED_HTMX_0001
+    from hedron_core.diagnostics import DiagnosticSeverity, make_diagnostic
+
+    code = getattr(exc, "code", None) or HED_HTMX_0001
+    requested = getattr(exc, "requested", None)
+    declared = list(getattr(exc, "declared", ()) or ())
+    diagnostic = make_diagnostic(
+        code,
+        severity=DiagnosticSeverity.ERROR,
+        title="Unauthorized HTMX target",
+        explanation=str(exc),
+        remediation=(
+            "Declare the target via fragment_regions= / @app.fragment(region=...), "
+            "or fix the control's hx-target / RefreshButton.for_region(...)."
+        ),
+        context={"requested": requested, "declared": declared, "path": str(request.url.path)},
+    )
+    return {
+        "code": diagnostic.code,
+        "title": diagnostic.title,
+        "explanation": diagnostic.explanation,
+        "remediation": diagnostic.remediation,
+        "requested": requested,
+        "declared": declared,
+    }
+
+
+async def render_interaction(
+    request: Request,
+    result: InteractionResult,
+    *,
+    policy: SecurityPolicy | None = None,
+    authenticated: bool | None = None,
+    fragment_regions: tuple[FragmentRegion, ...] = (),
+    mode: RenderMode | None = None,
+    kind: str = "page",
+) -> StarletteResponse:
+    """Public InteractionResult → Response conversion (RFC-0044 / #35).
+
+    Prefer this over ``HedronRoute._convert_interaction_result``. Honors caller-supplied
+    ``SecurityPolicy`` and the result's ``InteractionPolicy`` (including apps that disable
+    CSRF or own response headers).
+    """
+    from fastapi import HTTPException
+
+    from hedron.context import render_context_from_request
+    from hedron.interaction import merge_route_regions
+    from hedron.security.csrf import ensure_csrf_cookie
+
+    sec = policy
+    if sec is None:
+        sec = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("standard"))
+    auth = (
+        bool(getattr(request.state, "hedron_authenticated", False))
+        if authenticated is None
+        else authenticated
+    )
+
+    if fragment_regions:
+        result = merge_route_regions(result, fragment_regions)
+
+    if result.status_code == 204 or (result.content is None and result.status_code == 204):
+        headers = interaction_headers(result)
+        return StarletteResponse(status_code=204, headers=headers)
+
+    target = request.headers.get("HX-Target")
+    is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
+    try:
+        auth_target = select_htmx_auth_target(client_target=target, region_id=result.region_id)
+        region = authorize_htmx_target(
+            result.policy,
+            auth_target,
+            is_htmx=is_htmx,
+        )
+    except FragmentRegionError as exc:
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        emit_security_audit(
+            SecurityAuditEventType.HTMX_TARGET_REJECTED,
+            str(exc),
+            attributes={"path": str(request.url.path), "target": target},
+        )
+        raise HTTPException(
+            status_code=403,
+            detail=_fragment_region_http_detail(exc, request=request),
+        ) from exc
+
+    content: NodeLike | None = result.content
+    if result.oob:
+        try:
+            content = materialize_interaction_nodes(result)
+        except (FragmentRegionError, ValueError) as exc:
+            if isinstance(exc, FragmentRegionError):
+                raise HTTPException(
+                    status_code=403,
+                    detail=_fragment_region_http_detail(exc, request=request),
+                ) from exc
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
+
+    headers = interaction_headers(result)
+    if region is not None and result.policy and result.policy.vary_on_target:
+        existing = {p.strip() for p in headers.get("Vary", "").split(",") if p.strip()}
+        existing.update({"HX-Request", "HX-History-Restore-Request", "HX-Target"})
+        headers["Vary"] = ", ".join(sorted(existing))
+
+    force = mode
+    if kind == "component":
+        force = force or RenderMode.FRAGMENT
+    if content is None:
+        return StarletteResponse(status_code=result.status_code, headers=headers)
+
+    from hedron.routing.route import _prepare_endpoint_value
+
+    await _prepare_endpoint_value(content, request=request)
+    response = render_component_response(
+        content,
+        request=request,
+        context=render_context_from_request(request),
+        mode=force,
+        policy=sec,
+        authenticated=auth,
+        extra_headers=headers,
+        status_code=result.status_code,
+    )
+    if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
+        ensure_csrf_cookie(response, sec, request=request)
+    return response

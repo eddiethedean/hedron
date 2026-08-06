@@ -1,17 +1,18 @@
 # Upgrade
 
-Current train: **0.16.0** (**Published**). From 0.15: optional `hedron-extras` workbenches and
-composition UI, CSP-safe CodeEditor host stub, image tools, editor extras, display recipes,
-browser-Python sandbox, and Experimental specialty extras. See [What's ready](whats-ready.md).
+Current train: **0.17.0** (**Published**). From 0.16: reactive dashboards
+(`DashboardBinding` / `InteractionGraph`), bounded patches, HTMX shell primitives, public
+`render_interaction`, and optional Alpha `hedron-notebook` / `hedron-mcp`. See
+[What's ready](whats-ready.md) and [What's new in 0.17](whats-new-0.17.md).
 
 
 Hedron publishes coordinated Beta trains. Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should
-upgrade through **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** to the
-**0.16.0** train for curated extras and analysis workbenches.
+upgrade through **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** /
+**0.16** to the **0.17.0** train for reactive dashboards and agent interfaces.
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9**–**0.15** to the **0.16.0** train.
+upgrade through **0.9**–**0.16** to the **0.17.0** train.
 
 ## What changed in 0.8
 
@@ -220,6 +221,28 @@ remain **Experimental**. CodeEditor is a CSP-safe host stub (no pinned CodeMirro
 3. Prefer workbench components that emit bounded plans/actions over implicit callables.
 4. Do not market TerminalView / joystick / device bridges as Supported beachhead features.
 5. Re-read [What's new in 0.16](whats-new-0.16.md) and [What's ready](whats-ready.md).
+
+## 0.17 reactive dashboards and agent interfaces (Published)
+
+Phase 0.17 adds page-local interaction graphs, bounded patches with mandatory full-fragment
+fallback, cross-filter composition, HTMX shell authoring primitives, and optional Alpha
+notebook/MCP packages. Live transports remain **experimental**. Notebook preview and MCP are
+**Experimental** — not Supported production by default.
+
+### Checklist: 0.16 → 0.17
+
+1. Pin and upgrade to the coordinated `0.17.0` Beta train (`hedron`, adapters, extras).
+   Alpha packages remain on `0.1.x` with `hedron-core>=0.17.0,<0.18`.
+2. Prefer `DashboardBinding` / `InteractionGraph` over ad-hoc multi-region wiring; registration
+   fails closed on cycles and duplicate writers.
+3. Use `PropertyPatch` / `CollectionPatch` only with declared schemas; always keep a full-fragment
+   fallback path.
+4. Adopt shell primitives (`NavLink`, `OobHost`, `AppShell`/`MainPanel`) and public
+   `render_interaction` when converting `InteractionResult` outside route internals.
+5. Install Alpha extras only when needed: `pip install "hedron[notebook]"` /
+   `"hedron[mcp]"`. Keep MCP disabled/empty by default.
+6. Re-read [What's new in 0.17](whats-new-0.17.md), [Dash migration](dash-migration.md), and
+   [NiceGUI migration](nicegui-migration.md).
 
 ## Deprecation tooling
 

@@ -1,6 +1,6 @@
 # What’s ready today
 
-**Canonical maturity snapshot for 0.16.0.** Other evaluator pages link here —
+**Canonical maturity snapshot for 0.17.0.** Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
@@ -16,7 +16,7 @@ live in the repository
 
 ## How to read this page
 
-Hedron **0.16.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
+Hedron **0.17.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
 breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
 | Label | Meaning |
@@ -73,6 +73,14 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | TerminalView / joystick / device bridges | `hedron[extras]` | **Experimental** (0.16); fail-closed |
 | Browser-Python sandbox | `hedron[extras]` | Supported beta (0.16); origin-isolated |
 | Native desktop shell | docs recipe | **Experimental** packaging guidance only |
+| `DashboardBinding` / `InteractionGraph` / `TriggerContext` | `hedron-core` / `hedron` | Supported beta (0.17; RFC-0040) |
+| `PropertyPatch` / `CollectionPatch` | `hedron-core` | Supported beta (0.17; RFC-0041); full-fragment fallback mandatory |
+| Cross-filter composition + graph recorder/replay | `hedron` / `hedron-core` | Supported beta (0.17) |
+| `HtmxLink`/`NavLink`, `OobHost`/`AttrHost`, `AppShell`/`MainPanel` | `hedron` / `hedron-core` | Supported beta (0.17; RFC-0044) |
+| Public `render_interaction` | `hedron` | Supported beta (0.17) |
+| Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported (0.17; #24) |
+| Notebook preview helper | `hedron[notebook]` / `hedron-notebook` | **Experimental** / Alpha (0.17) |
+| MCP Streamable HTTP projection | `hedron[mcp]` / `hedron-mcp` | **Experimental** / Alpha (0.17); deny-by-default |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
 guaranteed multi-worker live-transport proof — see
@@ -82,6 +90,8 @@ guaranteed multi-worker live-transport proof — see
 
 - FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
   (Supported host slices).
+- 0.17 dashboard / agent-interface demo:
+  [`examples/dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17).
 - 0.15 data-app surface demo (`region` / `@fragment` / `swap`, controls, Map, media stubs):
   [`examples/data-app-0.15`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.15).
 - 0.16 analysis workbench demo (`hedron-extras`):
@@ -96,6 +106,8 @@ guaranteed multi-worker live-transport proof — see
 
 - `hedron-charts` and chart backends
 - `hedron-sample-kit` (plugin sample)
+- `hedron-notebook` (localhost-oriented preview; not Supported production)
+- `hedron-mcp` (deny-by-default; not Supported production tools by default)
 
 ## Deferred (do not market as Supported)
 
@@ -106,14 +118,15 @@ guaranteed multi-worker live-transport proof — see
 ## Recommended install
 
 ```bash
-pip install "hedron>=0.16.0" "uvicorn[standard]"
+pip install "hedron>=0.17.0" "uvicorn[standard]"
 python -m hedron new my-app
 cd my-app
 pip install -e .   # or: uv sync
 uvicorn app:app --reload
 ```
 
-Extras: `"hedron[data]"`, `"hedron[charts]"` (Alpha), `"hedron[extras]"`, `"hedron[jinja]"`, `"hedron[dev]"`.
+Extras: `"hedron[data]"`, `"hedron[charts]"` (Alpha), `"hedron[extras]"`, `"hedron[jinja]"`,
+`"hedron[dev]"`, `"hedron[notebook]"` (Alpha), `"hedron[mcp]"` (Alpha).
 
 ## Role-specific wrappers
 

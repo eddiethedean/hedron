@@ -29,7 +29,7 @@ Semantic regions that give a page its accessible structure.
 
 Explicit containers and one-dimensional or grid composition.
 
-[`Container`](container.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`Divider`](divider.md) · [`ActionDock`](action-dock.md) · [`BottomDock`](bottom-dock.md) · [`Spacer`](spacer.md)
+[`Container`](container.md) · [`Stack`](stack.md) · [`Inline`](inline.md) · [`Grid`](grid.md) · [`Divider`](divider.md) · [`MainPanel`](main-panel.md) · [`AppShell`](app-shell.md) · [`ActionDock`](action-dock.md) · [`BottomDock`](bottom-dock.md) · [`Spacer`](spacer.md)
 
 ## Content
 
@@ -47,7 +47,7 @@ Cards, labels, alerts, and loading placeholders.
 
 Buttons and links for commands and navigation.
 
-[`Button`](button.md) · [`LinkButton`](link-button.md) · [`IconButton`](icon-button.md) · [`ClipboardCopy`](clipboard-copy.md) · [`ConfirmButton`](confirm-button.md) · [`MenuButton`](menu-button.md)
+[`HtmxLink`](htmx-link.md) · [`NavLink`](nav-link.md) · [`Button`](button.md) · [`LinkButton`](link-button.md) · [`IconButton`](icon-button.md) · [`ClipboardCopy`](clipboard-copy.md) · [`ConfirmButton`](confirm-button.md) · [`MenuButton`](menu-button.md)
 
 ## Forms
 
@@ -59,7 +59,7 @@ Typed, labelled controls and validation presentation.
 
 FastAPI and HTMX-oriented request/response components.
 
-[`RefreshButton`](refresh-button.md) · [`Lazy`](lazy.md) · [`Poll`](poll.md) · [`InfiniteScroll`](infinite-scroll.md) · [`Pagination`](pagination.md) · [`Loading`](loading.md) · [`ErrorState`](error-state.md) · [`Dialog`](dialog.md) · [`ChatMessage`](chat-message.md) · [`ChatInput`](chat-input.md)
+[`OobHost`](oob-host.md) · [`AttrHost`](attr-host.md) · [`RefreshButton`](refresh-button.md) · [`Lazy`](lazy.md) · [`Poll`](poll.md) · [`InfiniteScroll`](infinite-scroll.md) · [`Pagination`](pagination.md) · [`Loading`](loading.md) · [`ErrorState`](error-state.md) · [`Dialog`](dialog.md) · [`ChatMessage`](chat-message.md) · [`ChatInput`](chat-input.md)
 
 ## Data
 

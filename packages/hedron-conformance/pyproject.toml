@@ -1,6 +1,6 @@
 [project]
 name = "hedron-conformance"
-version = "0.16.0"
+version = "0.17.0"
 description = "Language-neutral Hedron conformance-test kit and capability runner"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"

@@ -1,13 +1,12 @@
 # Public stability classifications
 
-**Status:** Phase 0.16 curated extras (**Published** as `v0.16.0`); phase **0.17** packet
-refined (RFCs 0040–0044; Planned gates). A **minimal `stable` tier** is already listed below
-(D-038: no calendar `1.0` scheduled; package maturity remains Beta).
-**Version:** `0.16.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`
-(+ planned 0.17 surfaces below)
+**Status:** Phase 0.17 reactive dashboards and agent interfaces (**Published** as `v0.17.0`).
+A **minimal `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled;
+package maturity remains Beta).
+**Version:** `0.17.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`v0.16.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
+`v0.17.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
 unless a later phase explicitly promotes them.
 
 ## Levels
@@ -71,10 +70,12 @@ stable via the root facade — import them from their packages.
 
 - **stable:** facade re-exports of the minimal stable tier above; `Hedron` / router / CSRF helpers.
 - **beta:** remaining built-ins, session state, cache decorators, testing helpers
-  (`AppScenario`, HTMX asserts #22–#26), CLI core commands, `region` / `@fragment` /
-  `swap` ergonomics, typed controls / surface chrome, media Range helpers, Map/GeoJSON,
-  `BrowserContext` / `BrowserStorage`, Math, IFrame, optional identity helpers
-  (`hedron.oidc`, session hardening), named connection registry, capture UI.
+  (`AppScenario`, HTMX asserts #22–#26, Dialog/Tabs/Pagination/Lazy #24), CLI core commands,
+  `region` / `@fragment` / `swap` ergonomics, typed controls / surface chrome, media Range
+  helpers, Map/GeoJSON, `BrowserContext` / `BrowserStorage`, Math, IFrame, optional identity
+  helpers (`hedron.oidc`, session hardening), named connection registry, capture UI, shell
+  primitives (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`, `AppShell`/`MainPanel`), public
+  `render_interaction`, and dashboard graph / patch facades re-exported from core.
 - **experimental:** live transports — import from `hedron.experimental`
   (`SseResponse`, `job_status_sse_response`, `sse_response`,
   `StreamingComponentResponse`, `stream_*`, `accept_page_session_channel`,
@@ -87,7 +88,9 @@ stable via the root facade — import them from their packages.
 
 - **stable:** symbols in the minimal stable tier.
 - **beta:** component catalog, themes, diagnostics, registry, jobs protocols, plugin loader,
-  portable adapter capability types.
+  portable adapter capability types, `DashboardBinding` / `InteractionGraph` / `TriggerContext`,
+  `PropertyPatch` / `CollectionPatch`, shell builtins (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`,
+  `AppShell`/`MainPanel`), and Dialog/Tabs/Pagination/Lazy markup asserts.
 - Concrete HTML serializer node classes remain **internal**.
 
 ### `hedron-data` (Beta) — `beta`
@@ -125,27 +128,28 @@ image tools, calendar/signature/typeahead, display recipes, and browser-Python s
 `TerminalView`, joystick, and device-bridge surfaces are **experimental** and fail closed without
 explicit policy (RFC-0038). Native desktop shell is packaging documentation only.
 
-### `hedron-notebook` (planned Alpha / experimental — phase 0.17)
+### `hedron-notebook` (Alpha / experimental — phase 0.17)
 
 Optional server-side notebook preview helper ([RFC-0042](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0042-NOTEBOOK-PREVIEW.md)).
-Not published on the 0.16 train. Distinct from the 0.16 browser-Python sandbox. D-015 separate
-distribution; maturity Alpha / API `experimental` until `NOTEBOOK-017` is Verified.
+Distinct from the 0.16 browser-Python sandbox. D-015 separate distribution; maturity Alpha /
+API `experimental`. Localhost-oriented; not Supported production.
 
-### `hedron-mcp` (planned Alpha / experimental — phase 0.17)
+### `hedron-mcp` (Alpha / experimental — phase 0.17)
 
 Optional deny-by-default MCP Streamable HTTP projection
-([RFC-0043](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0043-MCP-PROJECTION.md)). Not published on the 0.16 train. D-015 separate
-distribution; maturity Alpha / API `experimental` until `MCP-017` is Verified. Disabled and empty
-by default.
+([RFC-0043](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0043-MCP-PROJECTION.md)).
+D-015 separate distribution; maturity Alpha / API `experimental`. Disabled and empty by default;
+not Supported production tools.
 
-### Planned 0.17 surfaces on existing packages (not yet shipped)
+### Phase 0.17 surfaces on existing packages (shipped)
 
 | Symbol / contract | Package | Level | RFC / gate |
 |---|---|---|---|
-| `DashboardBinding` / `InteractionGraph` / `TriggerContext` | `hedron-core` / `hedron` | `beta` (planned) | RFC-0040 / `GRAPH-017` |
-| `PropertyPatch` / `CollectionPatch` / collection selectors | `hedron-core` | `beta` (planned) | RFC-0041 / `PATCH-017` |
-| `HtmxLink` / `NavLink`, `OobHost` / `AttrHost`, `AppShell` / `MainPanel` | `hedron` | `beta` (planned) | RFC-0044 / `SHELL-017` |
-| Public `render_interaction` (InteractionResult → Response) | `hedron` | `beta` (planned) | RFC-0044 / `SHELL-017` |
+| `DashboardBinding` / `InteractionGraph` / `TriggerContext` | `hedron-core` / `hedron` | `beta` | RFC-0040 / `GRAPH-017` |
+| `PropertyPatch` / `CollectionPatch` / collection selectors | `hedron-core` | `beta` | RFC-0041 / `PATCH-017` |
+| `HtmxLink` / `NavLink`, `OobHost` / `AttrHost`, `AppShell` / `MainPanel` | `hedron` / `hedron-core` | `beta` | RFC-0044 / `SHELL-017` |
+| Public `render_interaction` (InteractionResult → Response) | `hedron` | `beta` | RFC-0044 / `SHELL-017` |
+| Dialog / Tabs / Pagination / Lazy markup asserts | `hedron-core` / `hedron.testing` | `beta` | `ASSERT-017` / #24 |
 
 ### `hedron-native` (Alpha, versioned independently as `0.1.x`) — **experimental** accel
 

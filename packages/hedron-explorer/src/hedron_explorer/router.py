@@ -11,6 +11,7 @@ from typing import Any, cast
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 
+from hedron_core.dashboard import dashboard_graph_payload
 from hedron_core.plugins import get_explorer_panels
 from hedron_core.registry import get_registry
 from hedron_core.rendering import RenderMode, render
@@ -647,6 +648,14 @@ def explorer_router() -> APIRouter:
                     }
                 )
         return {"nodes": nodes, "edges": edges}
+
+    @router.get("/api/dashboard-graph", include_in_schema=False)
+    async def api_dashboard_graph() -> dict[str, Any]:
+        """Experimental InteractionGraph JSON shape for Explorer overlays."""
+        from hedron_core import InteractionGraph
+
+        payload = dashboard_graph_payload(InteractionGraph())
+        return {**payload, "stability": "experimental"}
 
     @router.post("/api/simulate", include_in_schema=False)
     async def api_simulate(request: Request) -> Any:

@@ -1,4 +1,4 @@
-"""Stable diagnostic code catalog (complete through phase 0.15 map/ergonomics)."""
+"""Stable diagnostic code catalog (complete through phase 0.17 graph/patches)."""
 
 from __future__ import annotations
 
@@ -197,6 +197,20 @@ HED_MAP_0001 = "HED-MAP-0001"
 HED_MAP_0002 = "HED-MAP-0002"
 HED_MAP_0003 = "HED-MAP-0003"
 HED_MAP_0004 = "HED-MAP-0004"
+
+# Interaction graph (0.17 RFC-0040)
+HED_GRAPH_0001 = "HED-GRAPH-0001"  # missing dependency
+HED_GRAPH_0002 = "HED-GRAPH-0002"  # cycle
+HED_GRAPH_0003 = "HED-GRAPH-0003"  # duplicate writer
+HED_GRAPH_0004 = "HED-GRAPH-0004"  # empty targets
+HED_GRAPH_0005 = "HED-GRAPH-0005"  # invalid / duplicate binding id
+HED_GRAPH_0006 = "HED-GRAPH-0006"  # replay disconnect / schedule interruption
+
+# Property / collection patches (0.17 RFC-0041)
+HED_PATCH_0001 = "HED-PATCH-0001"  # schema / op invalid
+HED_PATCH_0002 = "HED-PATCH-0002"  # version / precondition mismatch
+HED_PATCH_0003 = "HED-PATCH-0003"  # operation or payload cap exceeded
+HED_PATCH_0004 = "HED-PATCH-0004"  # conflict / apply failure
 
 
 def registered_codes() -> frozenset[str]:

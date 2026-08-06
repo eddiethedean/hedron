@@ -901,7 +901,7 @@ expanding the core runtime or adopting Streamlit-style rerun semantics or a Vue/
 
 ## 0.17 — Reactive dashboards and agent interfaces (`v0.17.0`)
 
-**Status:** Planned — phase packet refined (2026-08-06). Spec:
+**Status:** Published as `v0.17.0` (2026-08-06). Spec:
 [acceptance/RELEASE_0_17.md](acceptance/RELEASE_0_17.md);
 evidence index [acceptance/release-gate-0.17.toml](acceptance/release-gate-0.17.toml).
 Owning RFCs: [RFC-0040](rfcs/RFC-0040-INTERACTION-GRAPH.md)–[RFC-0044](rfcs/RFC-0044-SHELL-INTERACTION-RESULT.md).

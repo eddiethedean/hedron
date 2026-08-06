@@ -56,6 +56,8 @@ from hedron.responses import (
     PageResponse,
     hedron_response,
     merge_htmx_headers,
+    render_component_response,
+    render_interaction,
 )
 from hedron.routing import ComponentRef, HedronRoute, HedronRouter, resolve_route_path
 from hedron.security import (
@@ -128,6 +130,12 @@ from hedron_core import (  # noqa: F401
     JSONViewer,
     Label,
     Link,
+    HtmxLink,
+    NavLink,
+    OobHost,
+    AttrHost,
+    AppShell,
+    MainPanel,
     LinkButton,
     List,
     Logo,
@@ -298,7 +306,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.16.0"
+__version__ = "0.17.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -385,6 +393,12 @@ __all__ = [
     "Label",
     "Lazy",
     "Link",
+    "HtmxLink",
+    "NavLink",
+    "OobHost",
+    "AttrHost",
+    "AppShell",
+    "MainPanel",
     "LinkButton",
     "List",
     "Loading",

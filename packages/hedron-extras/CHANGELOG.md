@@ -1,3 +1,11 @@
+# Changelog
+
+## [0.17.0] — 2026-08-06
+
+### Changed
+
+- Coordinated Beta train with phase 0.17 (`hedron-core>=0.17.0,<0.18`).
+
 ## [0.16.0] — 2026-08-06
 
 ### Added

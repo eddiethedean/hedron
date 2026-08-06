@@ -3,83 +3,336 @@
 Stable `HED-*` diagnostics from `hedron_core.codes`. Prefer these codes in CI and
 support reports. Full format: [Diagnostics](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md).
 
-## Config
+This catalog is complete for the registered set enforced by
+`scripts/check_hed_codes.py --docs-align` (phase 0.17 / `#15` / `HEDDOC-017`).
 
-| Code | Meaning |
+## HED-ASSET
+
+| Code | Catalog symbol |
 |---|---|
-| `HED-CONFIG-0001` | Unknown configuration key |
-| `HED-CONFIG-0002` | Unsupported configuration version |
-| `HED-CONFIG-0003` | Invalid configuration value |
+| `HED-ASSET-0001` | `HED_ASSET_UNSUPPORTED_VERSION` |
+| `HED-ASSET-0002` | `HED_ASSET_TRAVERSAL` |
+| `HED-ASSET-0003` | `HED_ASSET_REMOTE` |
+| `HED-ASSET-0004` | `HED_ASSET_MISSING` |
+| `HED-ASSET-0005` | `HED_ASSET_COLLISION` |
+| `HED-ASSET-0006` | `HED_ASSET_SYMLINK` |
+| `HED-ASSET-0007` | `HED_ASSET_MIME` |
+| `HED-ASSET-0010` | `HED_BROWSER_DUPLICATE` |
+| `HED-ASSET-0011` | `HED_BROWSER_INVALID` |
 
-## Build / production gate
+## HED-AUDIT
 
-| Code | Meaning | Typical fix |
-|---|---|---|
-| `HED-BUILD-0001` | Unsupported build artifact version | Rebuild with matching Hedron |
-| `HED-BUILD-0002` | Build failed | Inspect CLI output; fix assets/CSS |
-| `HED-BUILD-0003` | Missing `manifest.json` in production | Run `hedron build` before `HEDRON_ENV=production` |
-| `HED-BUILD-0004` | Runtime CSS compile blocked in production | Use build-time CSS; do not compile at runtime |
-
-## Assets
-
-| Code | Meaning |
+| Code | Catalog symbol |
 |---|---|
-| `HED-ASSET-0001` | Unsupported asset manifest version |
-| `HED-ASSET-0002` | Path traversal rejected |
-| `HED-ASSET-0003` | Remote asset URL rejected by policy |
-| `HED-ASSET-0004` | Asset missing |
-| `HED-ASSET-0005` | Asset id collision |
-| `HED-ASSET-0006` | Symlink rejected |
-| `HED-ASSET-0007` | Disallowed MIME type |
-| `HED-ASSET-0010` | Duplicate browser / Web Component registration |
-| `HED-ASSET-0011` | Invalid browser asset registration |
+| `HED-AUDIT-0001` | `HED_AUDIT_0001` |
 
-## CSS
+## HED-AUTH
 
-| Code | Meaning |
+| Code | Catalog symbol |
 |---|---|
-| `HED-CSS-0001` | Unsupported CSS pipeline version |
-| `HED-CSS-0002` | CSS parse failure |
-| `HED-CSS-0003` | Unknown style symbol |
-| `HED-CSS-0004` | Unsafe global CSS rejected |
-| `HED-CSS-0005` | Remote CSS rejected |
-| `HED-CSS-0006` | Inline CSS rejected by policy |
-| `HED-CSS-0007` | Duplicate CSS registration |
-| `HED-CSS-0008` | Unused CSS warning / gate |
+| `HED-AUTH-0001` | `HED_AUTH_0001` |
 
-## Themes
+## HED-AUTO
 
-| Code | Meaning |
+| Code | Catalog symbol |
 |---|---|
-| `HED-THEME-0001` | Unknown theme |
-| `HED-THEME-0002` | Missing required theme token |
-| `HED-THEME-0003` | Invalid theme definition |
-| `HED-THEME-0004` | Duplicate theme registration |
+| `HED-AUTO-0001` | `HED_AUTO_0001` |
+| `HED-AUTO-0002` | `HED_AUTO_0002` |
+| `HED-AUTO-0003` | `HED_AUTO_0003` |
+| `HED-AUTO-0004` | `HED_AUTO_0004` |
 
-## Plugins
+## HED-BUILD
 
-| Code | Meaning |
+| Code | Catalog symbol |
 |---|---|
-| `HED-PLUGIN-0001` | Plugin missing / not found |
-| `HED-PLUGIN-0002` | Incompatible `hedron_version` |
-| `HED-PLUGIN-0003` | Plugin dependency cycle |
-| `HED-PLUGIN-0004` | Duplicate plugin registration |
-| `HED-PLUGIN-0005` | Plugin `register()` failed |
+| `HED-BUILD-0001` | `HED_BUILD_UNSUPPORTED_VERSION` |
+| `HED-BUILD-0002` | `HED_BUILD_FAILED` |
+| `HED-BUILD-0003` | `HED_BUILD_MISSING_MANIFEST` |
+| `HED-BUILD-0004` | `HED_BUILD_RUNTIME_COMPILE` |
 
-## Models / Field
+## HED-CHART
 
-| Code | Meaning |
+| Code | Catalog symbol |
 |---|---|
-| `HED-MODEL-0001` | Contradictory field metadata |
-| `HED-MODEL-0002` | Unsupported `Field` option |
-| `HED-MODEL-0003`+ | Additional model diagnostics (see source / diagnostics payload) |
+| `HED-CHART-0001` | `HED_CHART_0001` |
+| `HED-CHART-0002` | `HED_CHART_0002` |
+| `HED-CHART-0003` | `HED_CHART_0003` |
+| `HED-CHART-0004` | `HED_CHART_0004` |
+| `HED-CHART-0005` | `HED_CHART_0005` |
+| `HED-CHART-0006` | `HED_CHART_0006` |
+| `HED-CHART-0007` | `HED_CHART_0007` |
+| `HED-CHART-0010` | `HED_CHART_0010` |
+| `HED-CHART-0011` | `HED_CHART_0011` |
+| `HED-CHART-0012` | `HED_CHART_0012` |
+| `HED-CHART-0013` | `HED_CHART_0013` |
+| `HED-CHART-0014` | `HED_CHART_0014` |
+
+## HED-COMPAT
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-COMPAT-0001` | `HED_COMPAT_0001` |
+| `HED-COMPAT-0002` | `HED_COMPAT_0002` |
+| `HED-COMPAT-0003` | `HED_COMPAT_0003` |
+
+## HED-CONC
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-CONC-0001` | `HED_CONC_0001` |
+
+## HED-CONFIG
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-CONFIG-0001` | `HED_CONFIG_UNKNOWN_KEY` |
+| `HED-CONFIG-0002` | `HED_CONFIG_UNSUPPORTED_VERSION` |
+| `HED-CONFIG-0003` | `HED_CONFIG_INVALID` |
+
+## HED-CONTENT
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-CONTENT-0001` | `HED_CONTENT_0001` |
+| `HED-CONTENT-0002` | `HED_CONTENT_0002` |
+| `HED-CONTENT-0003` | `HED_CONTENT_0003` |
+| `HED-CONTENT-0004` | `HED_CONTENT_0004` |
+| `HED-CONTENT-0005` | `HED_CONTENT_0005` |
+
+## HED-CSS
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-CSS-0001` | `HED_CSS_UNSUPPORTED_VERSION` |
+| `HED-CSS-0002` | `HED_CSS_PARSE` |
+| `HED-CSS-0003` | `HED_CSS_UNKNOWN_SYMBOL` |
+| `HED-CSS-0004` | `HED_CSS_UNSAFE_GLOBAL` |
+| `HED-CSS-0005` | `HED_CSS_REMOTE` |
+| `HED-CSS-0006` | `HED_CSS_INLINE` |
+| `HED-CSS-0007` | `HED_CSS_DUPLICATE` |
+| `HED-CSS-0008` | `HED_CSS_UNUSED` |
+
+## HED-DATA
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-DATA-0001` | `HED_DATA_0001` |
+| `HED-DATA-0002` | `HED_DATA_0002` |
+| `HED-DATA-0003` | `HED_DATA_0003` |
+| `HED-DATA-0004` | `HED_DATA_0004` |
+| `HED-DATA-0005` | `HED_DATA_0005` |
+| `HED-DATA-0006` | `HED_DATA_0006` |
+| `HED-DATA-0010` | `HED_DATA_0010` |
+| `HED-DATA-0011` | `HED_DATA_0011` |
+| `HED-DATA-0012` | `HED_DATA_0012` |
+| `HED-DATA-0013` | `HED_DATA_0013` |
+| `HED-DATA-0020` | `HED_DATA_0020` |
+| `HED-DATA-0025` | `HED_DATA_0025` |
+| `HED-DATA-0026` | `HED_DATA_0026` |
+| `HED-DATA-0027` | `HED_DATA_0027` |
+| `HED-DATA-0030` | `HED_DATA_0030` |
+| `HED-DATA-0031` | `HED_DATA_0031` |
+| `HED-DATA-0032` | `HED_DATA_0032` |
+| `HED-DATA-0033` | `HED_DATA_0033` |
+| `HED-DATA-0040` | `HED_DATA_0040` |
+| `HED-DATA-0041` | `HED_DATA_0041` |
+| `HED-DATA-0050` | `HED_DATA_0050` |
+| `HED-DATA-0051` | `HED_DATA_0051` |
+| `HED-DATA-0060` | `HED_DATA_0060` |
+| `HED-DATA-0061` | `HED_DATA_0061` |
+
+## HED-GRAPH
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-GRAPH-0001` | `HED_GRAPH_0001` |
+| `HED-GRAPH-0002` | `HED_GRAPH_0002` |
+| `HED-GRAPH-0003` | `HED_GRAPH_0003` |
+| `HED-GRAPH-0004` | `HED_GRAPH_0004` |
+| `HED-GRAPH-0005` | `HED_GRAPH_0005` |
+| `HED-GRAPH-0006` | `HED_GRAPH_0006` |
+
+## HED-HDJ
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-HDJ-0100` | `HED_HDJ_0100` |
+| `HED-HDJ-0110` | `HED_HDJ_0110` |
+| `HED-HDJ-0111` | `HED_HDJ_0111` |
+| `HED-HDJ-0112` | `HED_HDJ_0112` |
+
+## HED-HTML
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-HTML-0001` | `HED_HTML_0001` |
+| `HED-HTML-0002` | `HED_HTML_0002` |
+| `HED-HTML-0003` | `HED_HTML_0003` |
+| `HED-HTML-0004` | `HED_HTML_0004` |
+| `HED-HTML-0005` | `HED_HTML_0005` |
+| `HED-HTML-0006` | `HED_HTML_0006` |
+
+## HED-HTMX
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-HTMX-0001` | `HED_HTMX_0001` |
+
+## HED-ICON
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-ICON-0001` | `HED_ICON_0001` |
+| `HED-ICON-0002` | `HED_ICON_0002` |
+| `HED-ICON-0003` | `HED_ICON_0003` |
+| `HED-ICON-0004` | `HED_ICON_0004` |
+
+## HED-JINJA
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-JINJA-0002` | `HED_JINJA_0002` |
+| `HED-JINJA-0003` | `HED_JINJA_0003` |
+| `HED-JINJA-0004` | `HED_JINJA_0004` |
+| `HED-JINJA-0005` | `HED_JINJA_0005` |
+| `HED-JINJA-0006` | `HED_JINJA_0006` |
+| `HED-JINJA-0007` | `HED_JINJA_0007` |
+| `HED-JINJA-0008` | `HED_JINJA_0008` |
+| `HED-JINJA-0009` | `HED_JINJA_0009` |
+| `HED-JINJA-0010` | `HED_JINJA_0010` |
+| `HED-JINJA-0012` | `HED_JINJA_0012` |
+| `HED-JINJA-0013` | `HED_JINJA_0013` |
+| `HED-JINJA-0014` | `HED_JINJA_0014` |
+| `HED-JINJA-0015` | `HED_JINJA_0015` |
+| `HED-JINJA-0017` | `HED_JINJA_0017` |
+| `HED-JINJA-0018` | `HED_JINJA_0018` |
+| `HED-JINJA-0019` | `HED_JINJA_0019` |
+| `HED-JINJA-0020` | `HED_JINJA_0020` |
+| `HED-JINJA-0021` | `HED_JINJA_0021` |
+| `HED-JINJA-0022` | `HED_JINJA_0022` |
+| `HED-JINJA-0023` | `HED_JINJA_0023` |
+| `HED-JINJA-0024` | `HED_JINJA_0024` |
+| `HED-JINJA-0025` | `HED_JINJA_0025` |
+| `HED-JINJA-0026` | `HED_JINJA_0026` |
+| `HED-JINJA-0027` | `HED_JINJA_0027` |
+| `HED-JINJA-0030` | `HED_JINJA_0030` |
+| `HED-JINJA-0031` | `HED_JINJA_0031` |
+| `HED-JINJA-0032` | `HED_JINJA_0032` |
+| `HED-JINJA-0033` | `HED_JINJA_0033` |
+
+## HED-JOB
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-JOB-0001` | `HED_JOB_0001` |
+
+## HED-MAP
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-MAP-0001` | `HED_MAP_0001` |
+| `HED-MAP-0002` | `HED_MAP_0002` |
+| `HED-MAP-0003` | `HED_MAP_0003` |
+| `HED-MAP-0004` | `HED_MAP_0004` |
+
+## HED-MODEL
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-MODEL-0001` | `HED_MODEL_0001` |
+| `HED-MODEL-0002` | `HED_MODEL_0002` |
+| `HED-MODEL-0003` | `HED_MODEL_0003` |
+| `HED-MODEL-0004` | `HED_MODEL_0004` |
+| `HED-MODEL-0005` | `HED_MODEL_0005` |
+| `HED-MODEL-0006` | `HED_MODEL_0006` |
+
+## HED-PATCH
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-PATCH-0001` | `HED_PATCH_0001` |
+| `HED-PATCH-0002` | `HED_PATCH_0002` |
+| `HED-PATCH-0003` | `HED_PATCH_0003` |
+| `HED-PATCH-0004` | `HED_PATCH_0004` |
+
+## HED-PLUGIN
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-PLUGIN-0001` | `HED_PLUGIN_MISSING` |
+| `HED-PLUGIN-0002` | `HED_PLUGIN_INCOMPATIBLE` |
+| `HED-PLUGIN-0003` | `HED_PLUGIN_CYCLE` |
+| `HED-PLUGIN-0004` | `HED_PLUGIN_DUPLICATE` |
+| `HED-PLUGIN-0005` | `HED_PLUGIN_FAILED` |
+
+## HED-PREPARE
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-PREPARE-0001` | `HED_PREPARE_0001` |
+| `HED-PREPARE-0002` | `HED_PREPARE_0002` |
+| `HED-PREPARE-0003` | `HED_PREPARE_0003` |
+
+## HED-RENDER
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-RENDER-0001` | `HED_RENDER_0001` |
+| `HED-RENDER-0002` | `HED_RENDER_0002` |
+| `HED-RENDER-0003` | `HED_RENDER_0003` |
+| `HED-RENDER-0004` | `HED_RENDER_0004` |
+| `HED-RENDER-0005` | `HED_RENDER_0005` |
+| `HED-RENDER-0006` | `HED_RENDER_0006` |
+| `HED-RENDER-0007` | `HED_RENDER_0007` |
+| `HED-RENDER-0008` | `HED_RENDER_0008` |
+| `HED-RENDER-0009` | `HED_RENDER_0009` |
+| `HED-RENDER-0010` | `HED_RENDER_0010` |
+| `HED-RENDER-0011` | `HED_RENDER_0011` |
+| `HED-RENDER-0012` | `HED_RENDER_0012` |
+| `HED-RENDER-0013` | `HED_RENDER_0013` |
+| `HED-RENDER-0014` | `HED_RENDER_0014` |
+
+## HED-ROUTE
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-ROUTE-0001` | `HED_ROUTE_0001` |
+
+## HED-SEC
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-SEC-0001` | `HED_SEC_0001` |
+| `HED-SEC-0002` | `HED_SEC_0002` |
+| `HED-SEC-0003` | `HED_SEC_0003` |
+| `HED-SEC-0004` | `HED_SEC_0004` |
+| `HED-SEC-0005` | `HED_SEC_0005` |
+| `HED-SEC-0006` | `HED_SEC_0006` |
+| `HED-SEC-0007` | `HED_SEC_0007` |
+| `HED-SEC-0008` | `HED_SEC_0008` |
+| `HED-SEC-0009` | `HED_SEC_0009` |
+| `HED-SEC-0010` | `HED_SEC_0010` |
+| `HED-SEC-0020` | `HED_SEC_0020` |
+
+## HED-THEME
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-THEME-0001` | `HED_THEME_UNKNOWN` |
+| `HED-THEME-0002` | `HED_THEME_MISSING_TOKEN` |
+| `HED-THEME-0003` | `HED_THEME_INVALID` |
+| `HED-THEME-0004` | `HED_THEME_DUPLICATE` |
+
+## HED-TRACE
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-TRACE-0001` | `HED_TRACE_0001` |
 
 ## Related HTTP statuses (not `HED-*`)
 
 | Status | Common cause |
 |---|---|
-| `403` | CSRF failure or HTMX target outside `fragment_regions` |
-| `401` | Application auth dependency rejected the request |
-| `422` | Validation failure on typed action/form input |
+| 403 | Undeclared HTMX target / region authz (`HED-HTMX-0001`) |
+| 422 | Validation failure |
 
-See [Troubleshooting](troubleshooting.md) · [Deployment](deployment.md).

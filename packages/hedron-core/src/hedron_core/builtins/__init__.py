@@ -12,6 +12,14 @@ from hedron_core.builtins.content import (
     Table,
     Text,
 )
+from hedron_core.builtins.shell import (
+    AppShell,
+    AttrHost,
+    HtmxLink,
+    MainPanel,
+    NavLink,
+    OobHost,
+)
 from hedron_core.builtins.content_extra import (
     GeolocationButton,
     GeolocationHint,
@@ -93,7 +101,9 @@ from hedron_core.builtins.utilities import (
 __all__ = [
     "ActionDock",
     "Alert",
+    "AppShell",
     "Aside",
+    "AttrHost",
     "Audio",
     "Badge",
     "BottomDock",
@@ -134,6 +144,7 @@ __all__ = [
     "Heading",
     "Help",
     "HelpInspector",
+    "HtmxLink",
     "IconButton",
     "IFrame",
     "Image",
@@ -145,6 +156,7 @@ __all__ = [
     "List",
     "Logo",
     "Main",
+    "MainPanel",
     "Map",
     "Math",
     "MenuButton",
@@ -152,7 +164,9 @@ __all__ = [
     "MicrophoneCapture",
     "MultiSelect",
     "Nav",
+    "NavLink",
     "NumberInput",
+    "OobHost",
     "Page",
     "PageIcon",
     "PdfViewer",

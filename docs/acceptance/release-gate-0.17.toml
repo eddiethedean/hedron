@@ -6,84 +6,84 @@
 
 [[evidence]]
 id = "GRAPH-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q tests/unit/test_phase17_interaction_graph.py"
 ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "PATCH-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q tests/unit/test_phase17_patches.py"
 ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "XFILTER-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q tests/unit/test_phase17_cross_filter.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "REPLAY-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q tests/unit/test_phase17_graph_replay.py"
 ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "NOTEBOOK-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q tests/unit/test_phase17_notebook.py"
 ci_job = "test"
 owner = "hedron-notebook"
 
 [[evidence]]
 id = "MCP-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q tests/unit/test_phase17_mcp.py"
 ci_job = "test"
 owner = "hedron-mcp"
 
 [[evidence]]
 id = "SHELL-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q tests/unit/test_phase17_shell.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "HEDDOC-017"
-state = "Planned"
-command = "python scripts/check_hed_codes.py"
+state = "Verified"
+command = "python scripts/check_hed_codes.py --docs-align"
 ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "ASSERT-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q tests/unit/test_phase17_markup_asserts.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "MIGRATE-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q tests/unit/test_phase17_migration_docs.py"
 ci_job = "test"
 owner = "docs"
 
 [[evidence]]
 id = "REGRESS-017"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-017"
-state = "Planned"
+state = "Verified"
 command = "python scripts/verify_pkg_17.py"
 ci_job = "release"
 owner = "hedron"

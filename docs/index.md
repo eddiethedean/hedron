@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.16.0</div>
+<div class="hedron-eyebrow">Python-first UI framework · v0.17.0</div>
 
 # Build web UIs in Python.<br><span class="hedron-gradient-text">No Node.js required.</span>
 
@@ -61,7 +61,7 @@ Build dashboards, admin tools, forms, and CRUD apps without a frontend build cha
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron>=0.16.0" "uvicorn[standard]"
+python -m pip install "hedron>=0.17.0" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app
 python -m pip install -e .
@@ -74,7 +74,7 @@ Prefer [uv](https://docs.astral.sh/uv/)? Full steps:
 
 **Manual single-file (not using `hedron new`):** create a project directory, save
 `app.py` from the [single-file examples](examples/single-file.md), install
-`hedron>=0.16.0` and `uvicorn[standard]`, then run `uvicorn app:app --reload`.
+`hedron>=0.17.0` and `uvicorn[standard]`, then run `uvicorn app:app --reload`.
 
 ## Next steps
 

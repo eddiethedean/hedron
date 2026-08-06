@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.17.0] — 2026-08-06
+
+### Added
+
+- Phase 0.17 reactive dashboards and agent interfaces (RFCs 0040–0044):
+  - Public `render_interaction` (InteractionResult → Response); private
+    `_convert_interaction_result` remains a thin delegate.
+  - Optional extras `hedron[notebook]` / `hedron[mcp]` (Alpha packages).
+  - Shell primitives re-exported from core (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`,
+    `AppShell`/`MainPanel`).
+  - Markup asserts for Dialog / Tabs / Pagination / Lazy.
+
 ## [0.16.0] — 2026-08-06
 
 ### Fixed

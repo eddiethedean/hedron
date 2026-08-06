@@ -10,6 +10,7 @@ from hedron_core.interaction import FragmentRegion
 from hedron_core.testing.adapters import (
     AdapterAppFixture,
     AdapterResponse,
+    assert_dialog_markup,
     assert_fragment_body,
     assert_html_contains,
     assert_htmx_trigger,
@@ -17,8 +18,11 @@ from hedron_core.testing.adapters import (
     assert_hx_redirect,
     assert_hx_reswap,
     assert_hx_retarget,
+    assert_lazy_markup,
     assert_oob_present,
     assert_page_document,
+    assert_pagination_markup,
+    assert_tabs_markup,
     assert_toast_markup,
 )
 from hedron_core.testing.htmx_asserts import (
@@ -36,6 +40,7 @@ __all__ = [
     "AppScenario",
     "MarkedElement",
     "assert_action_authorized",
+    "assert_dialog_markup",
     "assert_fragment_body",
     "assert_html_contains",
     "assert_http_fallback_present",
@@ -44,9 +49,12 @@ __all__ = [
     "assert_hx_redirect",
     "assert_hx_reswap",
     "assert_hx_retarget",
+    "assert_lazy_markup",
     "assert_oob_present",
     "assert_page_document",
+    "assert_pagination_markup",
     "assert_shell_dual_path",
+    "assert_tabs_markup",
     "assert_toast_markup",
     "assert_transform_plan_bounded",
     "assert_ui_targets_subset_of_regions",
@@ -316,6 +324,38 @@ class AppScenario:
         response: AdapterResponse | None = None,
     ) -> None:
         assert_toast_markup(response or self._require_response(), contains=contains)
+
+    def assert_dialog_markup(
+        self,
+        *,
+        contains: str | None = None,
+        response: AdapterResponse | None = None,
+    ) -> None:
+        assert_dialog_markup(response or self._require_response(), contains=contains)
+
+    def assert_tabs_markup(
+        self,
+        *,
+        contains: str | None = None,
+        response: AdapterResponse | None = None,
+    ) -> None:
+        assert_tabs_markup(response or self._require_response(), contains=contains)
+
+    def assert_pagination_markup(
+        self,
+        *,
+        contains: str | None = None,
+        response: AdapterResponse | None = None,
+    ) -> None:
+        assert_pagination_markup(response or self._require_response(), contains=contains)
+
+    def assert_lazy_markup(
+        self,
+        *,
+        contains: str | None = None,
+        response: AdapterResponse | None = None,
+    ) -> None:
+        assert_lazy_markup(response or self._require_response(), contains=contains)
 
     def assert_undeclared_target_rejected(self, response: AdapterResponse | None = None) -> None:
         assert_undeclared_target_rejected(response or self._require_response())

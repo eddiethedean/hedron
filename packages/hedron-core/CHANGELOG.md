@@ -1,3 +1,18 @@
+# Changelog
+
+## [0.17.0] — 2026-08-06
+
+### Added
+
+- Phase 0.17 reactive dashboards and agent interfaces (RFCs 0040–0044):
+  - `DashboardBinding` / `InteractionGraph` / `TriggerContext` and lifecycle envelope.
+  - `PropertyPatch` / `CollectionPatch` with collection selectors and full-fragment fallback.
+  - Shell builtins: `HtmxLink`/`NavLink`, `OobHost`/`AttrHost`, `AppShell`/`MainPanel`;
+    `class_` on content Link via ElementProps.
+  - Markup asserts: `assert_dialog_markup`, `assert_tabs_markup`, `assert_pagination_markup`,
+    `assert_lazy_markup`.
+  - Expanded `error-codes.md` alignment for registered `HED-*` codes.
+
 ## [0.16.0] — 2026-08-06
 
 ### Added
@@ -28,6 +43,7 @@
 - Phase 0.13 advanced async and observability.
 
 # Changelog
+
 
 ## [0.12.0] — 2026-08-05
 

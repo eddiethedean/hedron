@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.16.0** train on `main`
+**Status:** Accepted; kept current with the **0.17.0** train on `main`
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -36,9 +36,10 @@ hedron/
 │   ├── hedron-conformance/        # Language-neutral conformance kit (0.14)
 │   │   └── src/hedron_conformance/
 │   ├── hedron-extras/               # Curated extras / workbenches (0.16)
-│   ├── hedron-notebook/             # Planned 0.17 server-side notebook preview (RFC-0042)
-│   ├── hedron-mcp/                  # Planned 0.17 deny-by-default MCP projection (RFC-0043)
-│   │   └── src/hedron_extras/
+│   ├── hedron-notebook/             # Alpha 0.17 server-side notebook preview (RFC-0042)
+│   │   └── src/hedron_notebook/
+│   ├── hedron-mcp/                  # Alpha 0.17 deny-by-default MCP projection (RFC-0043)
+│   │   └── src/hedron_mcp/
 │   ├── hedron-native/             # Optional Rust acceleration (Alpha 0.1.x)
 │   │   └── src/hedron_native/
 │   ├── hedron-runtime-node/       # Experimental Node runtime (outside uv workspace)
@@ -52,6 +53,7 @@ hedron/
 │   └── performance/
 ├── examples/
 │   ├── reference-app/             # FastAPI reference
+│   ├── dashboard-0.17/            # Reactive dashboard / agent interface demo (0.17)
 │   ├── live-interaction/          # Poll / stream / SSE sample (0.10)
 │   ├── flask-reference/
 │   ├── django-reference/
@@ -65,18 +67,18 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.16.0`) |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.17.0`) |
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
 | `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Beta Supported) |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Beta Supported) |
-| `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.16.0` |
+| `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.17.0` |
 | `hedron-conformance` | `hedron_conformance` | Fixture schema + runner (stdlib + pydantic) | `v0.16.0` |
 | `hedron-extras` | `hedron_extras` | Optional curated extras / workbenches; also `hedron[extras]` | `v0.16.0` |
-| `hedron-notebook` | `hedron_notebook` | Planned 0.17 optional notebook preview (experimental) | — |
-| `hedron-mcp` | `hedron_mcp` | Planned 0.17 optional MCP projection (experimental; deny-by-default) | — |
+| `hedron-notebook` | `hedron_notebook` | Optional notebook preview (experimental Alpha); also `hedron[notebook]` | `v0.1.0` |
+| `hedron-mcp` | `hedron_mcp` | Optional MCP projection (experimental Alpha; deny-by-default); also `hedron[mcp]` | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Alpha; independent of Beta train) |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
@@ -84,8 +86,8 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated train is **`0.16.0`** (`v0.16.0`) for curated extras and analysis
-workbenches — see [STATUS](STATUS.md). Experimental Java/Node runtimes live under
+**Publish note:** the coordinated train is **`0.17.0`** (`v0.17.0`) for reactive dashboards and
+agent interfaces — see [STATUS](STATUS.md). Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
 
 ## Dependency rules

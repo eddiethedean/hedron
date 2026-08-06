@@ -1,7 +1,7 @@
 # Hedron reference application (FastAPI)
 
 Cumulative authenticated team-administration application for the FastAPI flagship.
-Tracks the **0.16.0** train (portable conformance / optional native accel on the 0.9 HDJ
+Tracks the **0.17.0** train (portable conformance / optional native accel on the 0.9 HDJ
 authoring line).
 
 Demonstrates:

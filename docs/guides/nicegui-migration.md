@@ -51,3 +51,13 @@ Do not expect first-party equivalents for:
 When NiceGUI relies on those mechanisms, redesign around typed routes, fragments, and
 explicit state scopes. See also [Streamlit migration matrix](streamlit-migration-matrix.md)
 for overlapping data-app control families.
+
+## Phase 0.17 — bindings and dashboards
+
+| NiceGUI surface | Hedron 0.17 |
+|---|---|
+| Element binding / `ui.refreshable` | `DashboardBinding` / `InteractionGraph` (RFC-0040); inspectable edges |
+| High-frequency timers | Polling + debounce/coalesce on bindings; sub-100ms not Supported |
+| Jupyter / interactive hosting | 0.16 browser-Python sandbox + optional `hedron-notebook` preview |
+
+Tools may emit a review plan; they must never claim automatic conversion (`MIGRATE-017`).
