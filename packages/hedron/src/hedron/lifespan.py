@@ -58,7 +58,6 @@ def compose_lifespan(
             or os.environ.get("HEDRON_BUILD_DIR", ".hedron/build")
         )
         manifest_path = resolved_build / "manifest.json"
-        from hedron.build import load_build_manifest
         from hedron.static_mount import mount_build_assets
 
         try:
@@ -77,6 +76,8 @@ def compose_lifespan(
                         remediation="Run `hedron build` and set HEDRON_BUILD_DIR if needed.",
                     )
                 try:
+                    from hedron.build import load_build_manifest
+
                     manifest = load_build_manifest(resolved_build)
                 except Exception as exc:
                     from hedron_core.codes import HED_BUILD_MISSING_MANIFEST
@@ -97,6 +98,8 @@ def compose_lifespan(
                 from contextlib import suppress
 
                 with suppress(Exception):
+                    from hedron.build import load_build_manifest
+
                     app.state.hedron_build_manifest = load_build_manifest(resolved_build)
                     app.state.hedron_build_dir = str(resolved_build.resolve())
                     mount_build_assets(app, resolved_build)

@@ -60,3 +60,34 @@ def test_first_party_plugin_meta_matches_package_version() -> None:
         )["project"]
         text = (ROOT / "packages" / dist / "src" / pkg / plugin_file).read_text(encoding="utf-8")
         assert f'version="{project["version"]}"' in text, dist
+
+
+def test_hedron_build_module_is_packaged(tmp_path: Path) -> None:
+    """Regression for #32: Hatchling must ship hedron.build despite build/ gitignore traps."""
+    import subprocess
+    import zipfile
+
+    build_src = ROOT / "packages" / "hedron" / "src" / "hedron" / "build" / "__init__.py"
+    assert build_src.is_file()
+
+    ignored = subprocess.run(
+        ["git", "check-ignore", "-v", str(build_src)],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert ignored.returncode == 1, ignored.stdout or ignored.stderr
+
+    out = tmp_path / "dist"
+    out.mkdir()
+    subprocess.check_call(
+        ["uv", "build", "--package", "hedron", "-o", str(out)],
+        cwd=ROOT,
+    )
+    wheels = sorted(out.glob("hedron-*.whl"))
+    assert wheels, "hedron wheel was not produced"
+    with zipfile.ZipFile(wheels[-1]) as archive:
+        names = set(archive.namelist())
+    assert "hedron/build/__init__.py" in names
+    assert "hedron/lifespan.py" in names

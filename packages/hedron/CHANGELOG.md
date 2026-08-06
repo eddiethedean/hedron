@@ -2,6 +2,14 @@
 
 ## [0.16.0] — 2026-08-06
 
+### Fixed
+
+- Ship `hedron.build` in the flagship wheel/sdist again. A broad `**/build/` gitignore
+  pattern caused Hatchling to omit the package from published artifacts, so
+  `compose_lifespan` raised `ModuleNotFoundError: No module named 'hedron.build'`
+  even when no manifest was required (#32). Lifespan now imports the loader only when
+  a manifest is present or production mode requires one.
+
 ### Added
 
 - Phase 0.16 curated extras and analysis workbenches train alignment.
