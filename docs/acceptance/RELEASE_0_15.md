@@ -32,6 +32,10 @@ ops Deferred rows remain owned by `0.10.x` / `0.11.x`.
 - [x] OIDC / session hardening helpers. *(`IDENTITY-015`)*
 - [x] Named connection registry. *(`CONNECTIONS-015`)*
 
+## Packaging
+
+- [x] Coordinated package verify (`scripts/verify_pkg_15.py`). *(`PKG-015`)*
+
 ## Exit
 
 - [x] Full regression suite. *(`REGRESS-015`)*

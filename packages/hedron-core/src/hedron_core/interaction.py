@@ -24,6 +24,7 @@ __all__ = [
     "InteractionPolicy",
     "InteractionResult",
     "OobUpdate",
+    "RESERVED_OOB_ELEMENT_IDS",
     "StatusPolicy",
     "authorize_htmx_target",
     "authorize_oob_update",
@@ -385,6 +386,21 @@ def interaction_trace(result: InteractionResult) -> InteractionTrace:
     }
 
 
+# Framework-owned OOB sinks that swap(toast=...) may target without declaring them on
+# every fragment route. Does not weaken HX-Target authorization for primary swaps.
+RESERVED_OOB_ELEMENT_IDS = frozenset({"hedron-toast"})
+
+
+def _is_reserved_oob_target(*, element_id: str | None, select: str | None) -> bool:
+    if element_id is not None and element_id in RESERVED_OOB_ELEMENT_IDS:
+        return True
+    if select is not None:
+        needle = select.lstrip("#")
+        if needle in RESERVED_OOB_ELEMENT_IDS and (select == f"#{needle}" or select == needle):
+            return True
+    return False
+
+
 def authorize_oob_update(
     update: OobUpdate,
     *,
@@ -394,10 +410,11 @@ def authorize_oob_update(
         raise ValueError(
             "OOB updates require element_id or select when fragment regions are declared"
         )
+    reserved = _is_reserved_oob_target(element_id=update.element_id, select=update.select)
     if update.select is not None:
         if not safe_css_selector(update.select):
             raise ValueError("Unsafe OOB select selector")
-        if regions:
+        if regions and not reserved:
             resolve_fragment_region(
                 InteractionPolicy(declared_regions=regions),
                 update.select,
@@ -411,7 +428,7 @@ def authorize_oob_update(
     if update.element_id is not None:
         if not update.element_id.replace("-", "").replace("_", "").isalnum():
             raise ValueError("Unsafe OOB element id")
-        if regions:
+        if regions and not reserved:
             resolve_fragment_region(
                 InteractionPolicy(declared_regions=regions),
                 f"#{update.element_id}",

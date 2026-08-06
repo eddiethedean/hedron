@@ -66,6 +66,32 @@ def test_map_rejects_disallowed_tile_prefix() -> None:
     assert 'data-tiles="/assets/tiles/{z}/{x}/{y}.png"' in html
 
 
+def test_map_rejects_empty_and_host_prefix_bypass_allowlist() -> None:
+    with pytest.raises(HedronError) as exc_empty:
+        Map(
+            center=(0.0, 0.0),
+            tiles="https://evil.example/tiles/{z}/{x}/{y}.png",
+            tile_allowlist=("",),
+        )
+    assert exc_empty.value.diagnostic.code == HED_MAP_0002
+
+    with pytest.raises(HedronError) as exc_bypass:
+        Map(
+            center=(0.0, 0.0),
+            tiles="https://tiles.example.evil.com/x/{z}/{x}/{y}.png",
+            tile_allowlist=("https://tiles.example",),
+        )
+    assert exc_bypass.value.diagnostic.code == HED_MAP_0002
+
+    ok = Map(
+        center=(0.0, 0.0),
+        tiles="https://tiles.example/x/{z}/{x}/{y}.png",
+        tile_allowlist=("https://tiles.example",),
+    )
+    html = render(ok, mode=RenderMode.FRAGMENT).html
+    assert "https://tiles.example/x/" in html
+
+
 def test_malicious_geojson_properties_do_not_become_script_tags() -> None:
     node = Map(
         center=(1.0, 2.0),

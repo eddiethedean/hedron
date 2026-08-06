@@ -146,4 +146,5 @@ coordinated-train procedure as prior phase cuts.
 ## Scripts (maintainer)
 
 See [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md) for `check_release_gate.py`,
-`rehearse_release.py`, `verify_pkg_14.py` / `verify_pkg_13.py`, and evidence helpers.
+`rehearse_release.py`, `verify_pkg_15.py` / `verify_pkg_14.py` / `verify_pkg_13.py`, and
+evidence helpers.

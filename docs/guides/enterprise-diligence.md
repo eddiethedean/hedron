@@ -10,7 +10,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Published train | **0.15.0** (Beta packages) |
+| Current train | **0.15.0** (Beta; implemented pending cut — last published **0.14.x**) |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner |
@@ -21,8 +21,10 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 
 - Hedron provides secure HTML defaults (escaping, CSRF profiles, SafeUrl/TrustedHtml).
 - **You own** authentication, authorization, persistence, and **multi-tenant isolation**.
-- There is **no first-party OIDC/SSO/IdP product** — host frameworks own identity
-  ([Authentication](authentication.md)).
+- There is **no first-party IdP / managed SSO product** — host frameworks own identity.
+  Optional FastAPI helpers (`hedron.oidc`, `hedron.security` login CSRF / session
+  stamps / auth rate limit / trusted headers) exist; apps must wire them
+  ([Authentication](authentication.md), [Hardened sessions](hardened-sessions.md)).
 - Tenant-scoped caches, jobs, and fragment allowlists are application responsibility —
   see [Threat model](threat-model.md), [Cache](../api/CACHE.md), and the
   [multi-tenant cookbook](multi-tenant.md).

@@ -52,6 +52,13 @@ Shared scenarios cover CSRF-seeded GET cookies, POST deny/allow with host CSRF, 
 fixture fixed in 0.11); responses expose a portable `cookies` map. Host-native clients
 remain available for adapter-specific assertions.
 
+## AppScenario and HTMX asserts (0.15)
+
+`AppScenario` (`hedron.testing`) wraps get/post fixtures for application-flow tests.
+HTMX helpers include asserts **#22–#26** such as `assert_undeclared_target_rejected`
+(403 + region signal), fragment/OOB body checks, and related InteractionResult helpers.
+See [Testing guide](../guides/testing.md).
+
 ## Errors
 
 | Condition | Behavior |

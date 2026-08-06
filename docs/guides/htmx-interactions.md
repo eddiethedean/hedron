@@ -1,39 +1,41 @@
 # Build an HTMX interaction
 
 HTMX swaps a page region when you click a link or button, without a full reload. Hedron
-keeps that boundary explicit: a control makes an ordinary HTTP request, the handler
-returns typed content, and HTMX swaps the resulting HTML into a declared region—without
+keeps that boundary explicit: declare one **region**, register a **fragment** route that
+returns `swap(...)`, and wire the control with `RefreshButton.for_region`—without
 client-side application code.
 
 ## 60-second HTMX primer
 
 1. The page includes a button with `hx-get="/status"`, `hx-target="#service-status"`,
-   and `hx-swap="outerHTML"` (Hedron’s `RefreshButton` emits these for you).
+   and `hx-swap="outerHTML"` (`RefreshButton.for_region` emits these for you).
 2. The browser requests `/status` with HTMX headers (`HX-Request`, `HX-Target`, …).
 3. The server returns **only the HTML for that region**, not a full document.
 4. HTMX replaces `#service-status` with the response body.
 
-You will build that loop next. Copy the snippets as written—names like
-`FragmentRegion` and `InteractionResult` are explained **after** your first click works.
+You will build that loop next. Copy the snippets as written—`app.region`,
+`@app.fragment`, `swap`, and `RefreshButton.for_region` share one region object so you
+do not triple-copy ids. The lower-level `FragmentRegion` / `InteractionResult` envelope
+is covered under [Advanced](#advanced-raw-region-and-interactionresult) after the click
+works.
 
 ## What you will build
 
 A status panel and a **Refresh status** button. Clicking the button replaces only the
 panel; direct navigation still returns a complete document.
 
-**If you used `hedron new`:** open the scaffold `app.py`. Keep the existing `Hedron(...)`
-app and the scaffold `home` route. Add the imports and `/status` route below, then **edit**
-`home()` so it renders the status panel (do not create a second app file). If you are on
-Path B (manual `app.py`), create the file as shown in the complete listing at the end of
-this section.
+**If you used `hedron new`:** open the scaffold `app.py`. It already follows this
+pattern—extend the timestamp (or keep the static panel) and run. If you are on Path B
+(manual `app.py`), create the file as shown in the complete listing at the end of this
+section.
 
 !!! tip "Goal: click first"
 
     Get the timestamp updating in the browser before reading the contract table below.
-    A wrong `HX-Target` returns **403** by design (not a bug)—fix typos in `target=` /
-    `selector=` if that happens.
+    A wrong `HX-Target` returns **403** by design (not a bug)—fix typos in the region
+    id / selector if that happens.
 
-### 1. Add imports and a status panel
+### 1. Add imports, a region, and a status panel
 
 At the top of `app.py`, extend the imports (keep your existing `Hedron` import and
 `app = Hedron(...)` block):
@@ -41,39 +43,30 @@ At the top of `app.py`, extend the imports (keep your existing `Hedron` import a
 ```python
 from datetime import UTC, datetime
 
-from hedron import (
-    FragmentRegion,
-    InteractionResult,
-    Page,
-    RefreshButton,
-    Stack,
-    Text,
-    html,
-)
+from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
 
 # Keep your existing app = Hedron(...) from the scaffold.
 
-STATUS_REGION = FragmentRegion(
-    id="service-status",
-    selector="#service-status",
-    description="Live service status panel",
-)
+status = app.region("service-status", description="Live status panel")
 
 
 def status_panel():
     checked_at = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · checked {checked_at}"),
-        id=STATUS_REGION.id,
+        id=status.id,
         role="status",
         aria={"live": "polite"},
     )
 ```
 
+One `status` object carries `id` and `selector` (`#service-status` by default). Pass it
+to the panel, the button, and the fragment route—do not retype the string three times.
+
 ### 2. Edit `home()` and add `/status`
 
 Replace only the body of the scaffold `home()` (or keep a greeting above the stack), then
-add the component route **below** it:
+add the fragment route **below** it:
 
 ```python
 @app.page("/")
@@ -82,24 +75,15 @@ def home() -> Page:
         Stack(
             Text("Hello from hedron new"),
             status_panel(),
-            RefreshButton(
-                "Refresh status",
-                href="/status",
-                target=STATUS_REGION.selector,
-                swap="outerHTML",
-            ),
+            RefreshButton.for_region(status, href="/status", label="Refresh status"),
         ),
         title="Home",
     )
 
 
-@app.component("/status", fragment_regions=(STATUS_REGION,))
-def refresh_status() -> InteractionResult:
-    return InteractionResult(
-        content=status_panel(),
-        region_id=STATUS_REGION.id,
-        explanation="Refresh the declared service status region",
-    )
+@app.fragment("/status", region=status)
+def refresh_status():
+    return swap(status_panel())
 ```
 
 That is enough for the first click. Cache/vary and triggers are optional polish covered
@@ -110,16 +94,7 @@ below under [Understand the contracts](#understand-the-contracts-after-the-click
 ```python title="app.py"
 from datetime import UTC, datetime
 
-from hedron import (
-    FragmentRegion,
-    Hedron,
-    InteractionResult,
-    Page,
-    RefreshButton,
-    Stack,
-    Text,
-    html,
-)
+from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
 
 app = Hedron(
     title="Service status",
@@ -127,18 +102,14 @@ app = Hedron(
     session_secret="replace-in-production",
 )
 
-STATUS_REGION = FragmentRegion(
-    id="service-status",
-    selector="#service-status",
-    description="Live service status panel",
-)
+status = app.region("service-status", description="Live status panel")
 
 
 def status_panel():
     checked_at = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
         Text(f"All systems operational · checked {checked_at}"),
-        id=STATUS_REGION.id,
+        id=status.id,
         role="status",
         aria={"live": "polite"},
     )
@@ -149,24 +120,15 @@ def home() -> Page:
     return Page(
         Stack(
             status_panel(),
-            RefreshButton(
-                "Refresh status",
-                href="/status",
-                target=STATUS_REGION.selector,
-                swap="outerHTML",
-            ),
+            RefreshButton.for_region(status, href="/status", label="Refresh status"),
         ),
         title="Service status",
     )
 
 
-@app.component("/status", fragment_regions=(STATUS_REGION,))
-def refresh_status() -> InteractionResult:
-    return InteractionResult(
-        content=status_panel(),
-        region_id=STATUS_REGION.id,
-        explanation="Refresh the declared service status region",
-    )
+@app.fragment("/status", region=status)
+def refresh_status():
+    return swap(status_panel())
 ```
 
 Run it:
@@ -188,7 +150,7 @@ The timestamp in the panel should update without a full page reload. That browse
 the first interactive win—prefer it over `curl` when learning.
 
 **Success?** Continue below to understand the names you pasted. Stuck with **403**? The
-`HX-Target` did not match a declared region (often a typo in `target=` / `selector=`). See
+`HX-Target` did not match a declared region (often a typo in the region id). See
 [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request).
 
 ## Flask / Django: same poll loop
@@ -203,27 +165,27 @@ FastAPI-only SSE/WebSocket helpers are covered later on this page.
 
 | Contract | Responsibility |
 |---|---|
-| `RefreshButton` | Describes the request URL, target, and swap behavior. |
-| `@app.component` | Registers a fragment endpoint. |
-| `FragmentRegion` | Names the selectors that the route is allowed to update. |
-| `InteractionResult` | Carries content plus validated status, history, cache, and HTMX response behavior. |
+| `app.region(...)` | Declares one fragment region (`id` + default `#id` selector). |
+| `RefreshButton.for_region` | Describes the request URL and wires `hx-target` from that region. |
+| `@app.fragment` | Registers a fragment endpoint and allowlists the region. |
+| `swap(...)` | Builds the typed fragment response (content plus optional OOB / headers). |
 | `InteractionPolicy` | Sets interaction defaults such as synchronization and target-aware cache variation. |
 
 Route-declared regions are authoritative. A request whose `HX-Target` is not in the
-route's `fragment_regions` allowlist receives `403`, even if a handler constructs a
-different policy. This keeps client-provided target selectors from widening the route's
-intended update surface.
+route's region allowlist receives `403`, even if a handler constructs a different policy.
+This keeps client-provided target selectors from widening the route's intended update
+surface.
 
 Optional polish on the same handler:
 
 ```python
-from hedron import InteractionPolicy
+from hedron import InteractionPolicy, InteractionResult
 
-@app.component("/status", fragment_regions=(STATUS_REGION,))
+@app.fragment("/status", region=status)
 def refresh_status() -> InteractionResult:
-    return InteractionResult(
-        content=status_panel(),
-        region_id=STATUS_REGION.id,
+    return swap(
+        status_panel(),
+        region_id=status.id,
         trigger={"statusRefreshed": True},
         cache="vary-htmx",
         policy=InteractionPolicy(vary_on_target=True),
@@ -234,9 +196,45 @@ def refresh_status() -> InteractionResult:
 !!! tip "Use the typed fields"
 
     Prefer `trigger=`, `redirect=`, `retarget=`, `history=`, and `cache=` on
-    `InteractionResult`. Hedron validates local URLs and safe selectors before emitting
-    the corresponding `HX-*` headers. The low-level `headers=` escape hatch accepts only
-    the documented response-header allowlist.
+    `swap(...)` / `InteractionResult`. Hedron validates local URLs and safe selectors
+    before emitting the corresponding `HX-*` headers. The low-level `headers=` escape
+    hatch accepts only the documented response-header allowlist.
+
+## Advanced: raw region and InteractionResult
+
+`app.region` returns a `FragmentRegion`. `@app.fragment` is an alias of `@app.component`
+that merges `region=` / `regions=` into `fragment_regions=`. `swap(...)` returns an
+`InteractionResult`. You can construct those pieces explicitly when you need to inspect
+or customize the envelope:
+
+```python
+from hedron import FragmentRegion, InteractionResult, RefreshButton
+
+STATUS_REGION = FragmentRegion(
+    id="service-status",
+    selector="#service-status",
+    description="Live service status panel",
+)
+
+RefreshButton(
+    "Refresh status",
+    href="/status",
+    target=STATUS_REGION.selector,
+    swap="outerHTML",
+)
+
+@app.component("/status", fragment_regions=(STATUS_REGION,))
+def refresh_status() -> InteractionResult:
+    return InteractionResult(
+        content=status_panel(),
+        region_id=STATUS_REGION.id,
+        explanation="Refresh the declared service status region",
+    )
+```
+
+Prefer the primary path (`app.region` + `@app.fragment` + `swap` +
+`RefreshButton.for_region`) unless you are debugging the allowlist or response fields
+directly.
 
 ## Inspect the response
 

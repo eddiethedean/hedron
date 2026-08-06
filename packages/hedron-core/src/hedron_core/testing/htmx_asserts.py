@@ -19,7 +19,7 @@ _TARGET_ATTR_RE = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 _FRAGMENT_REGION_HINT = re.compile(
-    r"FragmentRegionError|not an authorized|undeclared|HX-Target",
+    r"FragmentRegionError|HED-HTMX-0001|not an authorized|undeclared",
     re.IGNORECASE,
 )
 
@@ -35,13 +35,19 @@ def _region_selectors(regions: Sequence[FragmentRegion | str]) -> set[str]:
 
 
 def assert_undeclared_target_rejected(response: AdapterResponse) -> None:
-    """Assert fail-closed undeclared HX-Target handling (403 or FragmentRegionError)."""
-    if response.status_code == 403:
-        return
-    body = response.body
-    assert _FRAGMENT_REGION_HINT.search(body), (
-        f"expected 403 or FragmentRegionError pattern, got status={response.status_code} "
-        f"body={body!r}"
+    """Assert fail-closed undeclared HX-Target handling.
+
+    Requires HTTP 403 **and** a region-specific signal (``FragmentRegionError``,
+    ``HED-HTMX-0001``, or undeclared/not-authorized wording). Generic CSRF 403s and
+    200 bodies that merely mention ``HX-Target`` do not pass.
+    """
+    assert response.status_code == 403, (
+        f"expected 403 for undeclared HX-Target, got status={response.status_code} "
+        f"body={response.body!r}"
+    )
+    assert _FRAGMENT_REGION_HINT.search(response.body), (
+        f"expected FragmentRegionError / HED-HTMX-0001 detail in 403 body, "
+        f"got body={response.body!r}"
     )
 
 

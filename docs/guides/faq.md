@@ -8,9 +8,11 @@ pip install "hedron>=0.15.0"
 uv add "hedron>=0.15.0"
 ```
 
-That installs the current published train from PyPI (**0.15.0**)—see
-[What’s ready today](whats-ready.md). `Auto` is included. For DataTable/DataEditor, install
-`hedron[data]`. For charts, install `hedron[charts]`. For Flask/Django adapters:
+That pins the current workspace train (**0.15.0**, implemented; publish with tag
+`v0.15.0`). Until that cut, PyPI’s latest published train remains **0.14.x**—see
+[What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md). `Auto` is
+included. For DataTable/DataEditor, install `hedron[data]`. For charts, install
+`hedron[charts]`. For Flask/Django adapters:
 
 ```bash
 pip install hedron-flask

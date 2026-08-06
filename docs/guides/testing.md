@@ -46,6 +46,13 @@ For PAGE/FRAGMENT/POST+CSRF scenarios shared across FastAPI, Flask, and Django, 
 `assert_page_document` / `assert_fragment_body` / `assert_htmx_trigger`). See
 [TESTING.md](../api/TESTING.md).
 
+## AppScenario and HTMX asserts (0.15)
+
+Use `AppScenario` from `hedron.testing` for multi-step application flows, and the HTMX
+assert helpers (**#22–#26**) for InteractionResult / fragment / undeclared-target checks
+(for example `assert_undeclared_target_rejected` requires **403** plus a region-specific
+signal). See [TESTING.md](../api/TESTING.md).
+
 ## Override FastAPI dependencies
 
 ```python

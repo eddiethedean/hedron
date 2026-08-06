@@ -74,9 +74,12 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U "hedron>=0.15.0"` (or `uv add "hedron>=0.15.0"`). The published train is
-**0.15.0**—see [What's ready](whats-ready.md). If docs describe a feature from a later
-phase that is missing on your PyPI install, upgrade or use a git checkout of that work.
+`pip install -U "hedron>=0.15.0"` (or `uv add "hedron>=0.15.0"`). Workspace / pre-cut
+train is **0.15.0** (publish with `v0.15.0`); until then PyPI’s latest published train
+is **0.14.x**—see [What's ready](whats-ready.md) and the [public roadmap](roadmap.md).
+If docs
+describe a feature missing from your PyPI install, upgrade, wait for the cut, or use a
+git checkout of that work.
 
 ## CSRF 403 on POST (FastAPI / Flask)
 
@@ -88,10 +91,13 @@ phase that is missing on your PyPI install, upgrade or use a git checkout of tha
 
 ## HTMX 403 on fragment request
 
-**Cause:** The request’s `HX-Target` is not in the route’s declared `fragment_regions`
-allowlist (typo in `target=` / `selector=`, or wrong component route).
+**Cause:** The request’s `HX-Target` is not in the route’s declared region allowlist
+(typo in the region id / selector, or wrong fragment route).
 
-**Fix:** Ensure `RefreshButton(..., target=STATUS_REGION.selector)` matches
+**Fix:** Prefer one region object end-to-end: `status = app.region("service-status")`,
+`RefreshButton.for_region(status, href="/status", ...)`, and
+`@app.fragment("/status", region=status)`. If you use the lower-level path, ensure
+`RefreshButton(..., target=STATUS_REGION.selector)` matches
 `FragmentRegion(selector=...)`, and that `@app.component(..., fragment_regions=(...))`
 lists that region. Confirm with:
 

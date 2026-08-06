@@ -50,10 +50,10 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0030](RFC-0030-DECLARATIVE-AUTHORING-RESET.md) | Declarative authoring reset | Superseded |
 | [0031](RFC-0031-JINJA-INTEGRATION.md) | Explicit `.hdj` format, standards-first authoring, and immediate HDN replacement | Implementing |
 | [0032](RFC-0032-LIVE-TRANSPORT.md) | Live transport, focused streaming, and navigation preload | Accepted |
-| [0033](RFC-0033-MAP-GEOJSON.md) | Map and GeoJSON presentation | Accepted |
-| [0034](RFC-0034-MEDIA-DOWNLOAD-RANGE.md) | Authenticated downloads and ranged media delivery | Accepted |
-| [0035](RFC-0035-SURFACE-CHROME.md) | Surface chrome — carousel, timeline, context menu, chips, progress | Accepted |
-| [0036](RFC-0036-SCENARIO-MARKS.md) | AppScenario identity marks and filter asserts | Accepted |
+| [0033](RFC-0033-MAP-GEOJSON.md) | Map and GeoJSON presentation | Implemented |
+| [0034](RFC-0034-MEDIA-DOWNLOAD-RANGE.md) | Authenticated downloads and ranged media delivery | Implemented |
+| [0035](RFC-0035-SURFACE-CHROME.md) | Surface chrome — carousel, timeline, context menu, chips, progress | Implemented |
+| [0036](RFC-0036-SCENARIO-MARKS.md) | AppScenario identity marks and filter asserts | Implemented |
 | [0037](RFC-0037-CODE-EDITOR-EXTRAS.md) | CodeEditor and interactive extras | Draft |
 | [0038](RFC-0038-SPECIALTY-EXTRAS.md) | Specialty extras — terminal, robotics/IoT, native shell | Draft |
-| [0039](RFC-0039-INTERACTION-ERGONOMICS.md) | Interaction authoring ergonomics (`region`, `swap`, diagnostics) | Accepted |
+| [0039](RFC-0039-INTERACTION-ERGONOMICS.md) | Interaction authoring ergonomics (`region`, `swap`, diagnostics) | Implemented |

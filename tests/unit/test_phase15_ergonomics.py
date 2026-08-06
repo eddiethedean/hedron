@@ -83,6 +83,26 @@ def test_fragment_decorator_registers_regions() -> None:
     assert "ok" in ok.text
 
 
+def test_fragment_swap_toast_succeeds_without_declaring_toast_region() -> None:
+    """Reserved hedron-toast OOB must work under @fragment(region=panel)."""
+    app = Hedron(title="t", security="standard", session_secret="test", explorer="off")
+    status = app.region("service-status")
+
+    @app.fragment("/status", region=status)
+    def refresh() -> InteractionResult:
+        return swap(html.div(Text("ok"), id=status.id), toast="Saved")
+
+    client = TestClient(app)
+    ok = client.get(
+        "/status",
+        headers={"HX-Request": "true", "HX-Target": "#service-status"},
+    )
+    assert ok.status_code == 200, ok.text
+    assert "ok" in ok.text
+    assert "hedron-toast" in ok.text or "Saved" in ok.text
+    assert "hx-swap-oob" in ok.text.lower() or "Saved" in ok.text
+
+
 def test_undeclared_target_still_403() -> None:
     app = Hedron(title="t", security="standard", session_secret="test", explorer="off")
     status = app.region("service-status")

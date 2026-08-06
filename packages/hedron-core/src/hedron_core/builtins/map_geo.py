@@ -280,17 +280,45 @@ def sanitize_geojson(
     return collection, features
 
 
+def _tile_prefix_matches(tiles: str, prefix: str) -> bool:
+    """True when ``tiles`` is under ``prefix`` without host-prefix bypass.
+
+    After a successful ``startswith`` match, the next character must be end-of-string
+    or a URL boundary (``/``, ``?``, ``#``), unless the prefix already ends on a
+    boundary. This rejects ``https://tiles.example`` matching
+    ``https://tiles.example.evil.com/...``.
+    """
+    if not tiles.startswith(prefix):
+        return False
+    if prefix.endswith(("/", "?", "#")):
+        return True
+    rest = tiles[len(prefix) :]
+    return rest == "" or rest[0] in "/?#"
+
+
 def _ensure_tile_allowed(tiles: str | None, allowlist: Sequence[str]) -> str | None:
     if tiles is None:
         return None
-    prefixes = tuple(allowlist)
-    if not prefixes or not any(tiles.startswith(prefix) for prefix in prefixes):
+    prefixes: list[str] = []
+    for raw in allowlist:
+        prefix = str(raw).strip()
+        if not prefix:
+            raise error(
+                "HED-MAP-0002",
+                title="Disallowed map tile source",
+                explanation="tile_allowlist entries must be non-empty URL prefixes.",
+                remediation=(
+                    "Remove empty prefixes and list concrete allowlisted origins or "
+                    "path prefixes (prefer a trailing '/' for path prefixes)."
+                ),
+            )
+        prefixes.append(prefix)
+    if not prefixes or not any(_tile_prefix_matches(tiles, prefix) for prefix in prefixes):
         raise error(
             "HED-MAP-0002",
             title="Disallowed map tile source",
             explanation=(
-                f"Tile template {tiles!r} is not covered by tile_allowlist "
-                f"prefixes {list(prefixes)!r}."
+                f"Tile template {tiles!r} is not covered by tile_allowlist prefixes {prefixes!r}."
             ),
             remediation=(
                 "Pass an allowlisted tile URL prefix via tile_allowlist, or omit tiles "

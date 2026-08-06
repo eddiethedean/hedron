@@ -12,7 +12,7 @@ Django adapters). It is not a notebook-style rerun engine, SPA framework, ORM, o
 
 | Item | Value |
 |---|---|
-| Published train | **0.15.0** (Beta packages) |
+| Current train | **0.15.0** (Beta; implemented pending cut — last published **0.14.x**) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
@@ -37,7 +37,9 @@ matrix, load/proxy evidence, and first-party capture UI.
 - Pure client-rendered SPA with a separate JS build
 - “Every Streamlit widget on day one”
 - Requirement for a commercial SLA or guaranteed 1.0 stability date
-- Need for a first-party OIDC/SSO product (you own identity — see [Authentication](authentication.md))
+- Need for a first-party IdP / managed SSO product (optional `hedron.oidc` /
+  `hedron.security` helpers exist, but you still own identity — see
+  [Authentication](authentication.md))
 
 ## Try it
 

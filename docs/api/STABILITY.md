@@ -17,7 +17,7 @@ unless a later phase explicitly promotes them.
 | `beta` | Intended for production use; may receive additive changes and documented minor-phase revisions with changelog, migration, diagnostic, and evidence obligations. |
 | `experimental` | May change or be removed without a major bump. Must be labeled in docs and Explorer. Prefer polling over experimental live transports in production. |
 | `internal` | Not a public promise. Private serializer nodes, private modules, and underscore-prefixed APIs. |
-| `deferred` | Accepted design not advertised as Supported until a later decision (for example capture UI). |
+| `deferred` | Accepted design not advertised as Supported until a later decision. |
 
 Package maturity classifiers (Beta/Alpha on PyPI) describe distribution readiness; the levels above
 describe **API/artifact** promises.
@@ -69,7 +69,11 @@ stable via the root facade — import them from their packages.
 ### `hedron` (Beta distribution)
 
 - **stable:** facade re-exports of the minimal stable tier above; `Hedron` / router / CSRF helpers.
-- **beta:** remaining built-ins, session state, cache decorators, testing helpers, CLI core commands.
+- **beta:** remaining built-ins, session state, cache decorators, testing helpers
+  (`AppScenario`, HTMX asserts #22–#26), CLI core commands, `region` / `@fragment` /
+  `swap` ergonomics, typed controls / surface chrome, media Range helpers, Map/GeoJSON,
+  `BrowserContext` / `BrowserStorage`, Math, IFrame, optional identity helpers
+  (`hedron.oidc`, session hardening), named connection registry, capture UI.
 - **experimental:** live transports — import from `hedron.experimental`
   (`SseResponse`, `job_status_sse_response`, `sse_response`,
   `StreamingComponentResponse`, `stream_*`, `accept_page_session_channel`,
@@ -127,7 +131,8 @@ semantics (D-048).
 | Django AppConfig convenience layer | D-041 / D-046 | Supported in 0.11 |
 | Celery / RQ `JobBackend` bridges | D-046 | Supported extras in 0.11 |
 | Flask / Django live helpers | D-044 / D-046 | Experimental API; polling Supported |
-| First-party camera/microphone/Audio/Video capture UI | D-045 | 0.15 |
+
+Capture UI (D-045) ships on the **0.15** train (beta); it is no longer deferred.
 
 ## Live transports (0.10+) — experimental until ops gates close
 

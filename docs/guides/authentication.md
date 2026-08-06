@@ -3,13 +3,14 @@
 Gate Hedron pages and actions with ordinary host-framework dependencies. Hedron does
 not invent a second auth system—**you own login, password checks, and identity storage**.
 
-!!! important "No first-party IdP / OIDC product"
+!!! important "Not an IdP / managed SSO product"
 
-    Hedron does **not** ship OIDC, SAML, SSO, or a managed identity provider. Optional
-    `hedron[auth]` Authlib helpers are convenience wrappers only. Plan IdP integration
-    with FastAPI/Django/Flask patterns (or your org’s gateway) before enterprise rollout.
-    OIDC-oriented helpers may appear on the roadmap later; they are not a substitute for
-    host identity today.
+    Hedron is still **not** an identity provider or managed SSO product. Optional FastAPI
+    conveniences exist today—`hedron.oidc` (PKCE/state/nonce/URL builders, claim
+    redaction) and `hedron.security` (login CSRF, session timeout stamps, auth rate
+    limit, trusted-header identity) plus `mark_authenticated` /
+    `install_authenticated_from_session`—but **apps must wire them**; host sessions
+    remain authoritative. See [Hardened sessions](hardened-sessions.md).
 
 ## Complete minimal loop (session demo)
 
@@ -129,11 +130,39 @@ identity; keep credentials in your IdP or password store.
 Prefer POST logout with CSRF (as above). Never put secrets in the signed cookie
 beyond an opaque user id or username.
 
-## Optional Authlib helpers
+## Optional helpers (you wire)
 
-Install `hedron[auth]` when you want Authlib-oriented helpers. Authorization
-decisions (roles, object ACL) remain application code—never inferred from
-component props. See [Auth API](../api/AUTH.md).
+These are conveniences, not a product. Authorization decisions (roles, object ACL)
+remain application code—never inferred from component props.
+
+```python
+# OIDC handshake / URL builders / claim redaction (needs hedron[auth] for Authlib URLs)
+from hedron.oidc import (
+    generate_pkce,
+    generate_state,
+    generate_nonce,
+    login_url,
+    redact_claims,
+    store_oidc_handshake,
+)
+
+# Login CSRF, idle/absolute stamps, auth rate limit, proxy headers
+from hedron.security import (
+    issue_login_csrf,
+    validate_login_csrf,
+    touch_session,
+    check_session_timeout,
+    auth_rate_limit_dependency,
+    TrustedHeaderIdentity,
+)
+
+# Cache / Explorer parity with an existing host session key
+from hedron.auth import mark_authenticated, install_authenticated_from_session
+```
+
+Install `hedron[auth]` when you want Authlib-backed OIDC URL helpers. Full session
+hardening recipe: [Hardened sessions](hardened-sessions.md). API detail:
+[Auth API](../api/AUTH.md).
 
 ### Host IdP patterns (you own)
 
@@ -154,6 +183,6 @@ Explorer off in production.
 
 ## See also
 
-- [Security](security.md) · [Threat model](threat-model.md)
+- [Hardened sessions](hardened-sessions.md) · [Security](security.md) · [Threat model](threat-model.md)
 - [Minimal form POST](minimal-form.md) · [Auth API](../api/AUTH.md) · [State](../api/STATE.md)
 - [Reference app walkthrough](../examples/reference-app.md) (HTTP Basic demo credentials)

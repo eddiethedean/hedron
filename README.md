@@ -63,8 +63,9 @@ train: Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet DataS
 Live SSE/WebSocket helpers are **experimental** — prefer polling behind buffering proxies.
 See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
-Current train: [`v0.15.0`](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) (Beta).
-[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) ·
+Current train: **0.15.0** (Beta; implemented pending cut of `v0.15.0` — last published
+PyPI train is **0.14.x**). See
+[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/). ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
 [What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.14/).

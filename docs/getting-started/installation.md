@@ -73,7 +73,8 @@ scaffold (or a manual `app.py`). This page stays the extras / troubleshooting hu
     uv run python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.15.0`** (or newer patch) from PyPI.
+Expect **`0.15.0`** from a workspace / pre-cut install (or newer patch after
+`v0.15.0` publishes). Until the cut, PyPI’s latest published train is **0.14.x**.
 
 ## Common install problems
 

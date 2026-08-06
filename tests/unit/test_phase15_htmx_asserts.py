@@ -60,12 +60,20 @@ def test_assert_oob_and_toast() -> None:
 
 
 def test_assert_undeclared_target_rejected() -> None:
-    assert_undeclared_target_rejected(_resp(403, "Forbidden"))
     assert_undeclared_target_rejected(
-        _resp(400, "FragmentRegionError: HX-Target is not an authorized declared fragment region")
+        _resp(403, "FragmentRegionError: HX-Target is not an authorized declared fragment region")
+    )
+    assert_undeclared_target_rejected(
+        _resp(403, '{"code":"HED-HTMX-0001","title":"Unauthorized fragment target"}')
     )
     with pytest.raises(AssertionError):
+        # Generic CSRF-style 403 without region detail must not pass.
+        assert_undeclared_target_rejected(_resp(403, "Forbidden"))
+    with pytest.raises(AssertionError):
         assert_undeclared_target_rejected(_resp(200, "ok"))
+    with pytest.raises(AssertionError):
+        # 200 bodies that merely mention HX-Target must not pass.
+        assert_undeclared_target_rejected(_resp(200, "missing HX-Target header"))
 
 
 def test_assert_ui_targets_subset_of_regions() -> None:
