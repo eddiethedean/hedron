@@ -589,8 +589,9 @@ introducing a second hidden runtime or losing trace and cancellation semantics.
   ops gates (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) while polling remains the
   Supported production fallback
   ([#13](https://github.com/eddiethedean/hedron/issues/13)).
-- Expand the `HED-*` diagnostic catalog and `error-codes.md` to cover every code emitted under
-  `packages/`, with CI failing on unregistered codes and shared lists for CLI/Explorer/SARIF
+- Register every emitted `HED-*` code in `hedron_core.codes` with CI failing on unregistered
+  codes (`scripts/check_hed_codes.py`). Expanding `error-codes.md` to the full catalog remains
+  deferred to 0.17
   ([#15](https://github.com/eddiethedean/hedron/issues/15)).
 
 ### Exit gate
@@ -605,7 +606,8 @@ introducing a second hidden runtime or losing trace and cancellation semantics.
 - Multi-worker job status is readable across processes when backends claim durability; production
   gate and public maturity labels agree.
 - Security audit sinks receive expected event types on CSRF/HTMX/gate failures without leaking
-  secrets; live-transport and diagnostic catalogs do not contradict What’s ready.
+  secrets; live-transport labels do not contradict What’s ready. Full `error-codes.md` expansion
+  is owned by 0.17 (#15).
 
 ## 0.14 — Portable runtimes and acceleration (`v0.14.0`) — **published**
 
@@ -683,8 +685,8 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
   - fragment-client ergonomics (`as_adapter`, target-aware clients, non-200 fragment asserts for
     validation/error HTML)
     ([#23](https://github.com/eddiethedean/hedron/issues/23));
-  - component-aware markup asserts for Dialog, Tabs, Pagination, Lazy/Loading, and Toast
-    ([#24](https://github.com/eddiethedean/hedron/issues/24));
+  - Toast markup asserts (Dialog / Tabs / Pagination / Lazy helpers deferred to 0.17
+    ([#24](https://github.com/eddiethedean/hedron/issues/24)));
   - fail-closed `FragmentRegion` / `InteractionPolicy` authorization helpers (undeclared
     `HX-Target` rejection and UI-target ⊆ declared-regions coverage)
     ([#25](https://github.com/eddiethedean/hedron/issues/25));
@@ -972,6 +974,12 @@ client callback runtime or weakening the request/action boundary.
   stable public `InteractionResult` → Response conversion API that replaces private
   `HedronRoute._convert_interaction_result` use
   ([#35](https://github.com/eddiethedean/hedron/issues/35)).
+- Complete the remaining `HED-*` docs half of the diagnostic catalog: expand `error-codes.md` (or
+  split by domain) so public docs match `hedron_core.codes`, with CLI/Explorer/SARIF sharing the
+  same list ([#15](https://github.com/eddiethedean/hedron/issues/15)).
+- Component-aware markup asserts for Dialog, Tabs, Pagination, and Lazy/Loading (completing the
+  Toast coverage already shipped in 0.15)
+  ([#24](https://github.com/eddiethedean/hedron/issues/24)).
 
 ### Exit gate
 
@@ -1333,12 +1341,12 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Portable adapter fixtures and native-host test-client parity | 0.11 | Shared scenarios expose only portable contracts; FastAPI, Flask, and Django retain native assertions. |
 | Data/chart contract fixtures and bounded adversarial generators | 0.12 | Tests source plans, edit/event payloads, limits, identities, authorization, and fallbacks without owning dataframe behavior. |
 | Deterministic async lifecycle scenarios | 0.13 | Controllable clock and scripted deadlines/cancellation complement—not replace—real-load evidence. |
-| Framework security-audit sink and complete `HED-*` diagnostic catalog | 0.13 | Redacted boundary events; CI registers every emitted code ([#9](https://github.com/eddiethedean/hedron/issues/9), [#15](https://github.com/eddiethedean/hedron/issues/15)). |
+| Framework security-audit sink and registered `HED-*` catalog + CI | 0.13 | Redacted boundary events; CI registers every emitted code ([#9](https://github.com/eddiethedean/hedron/issues/9)). Full `error-codes.md` expansion deferred to 0.17 ([#15](https://github.com/eddiethedean/hedron/issues/15)). |
 | Durable Celery/RQ job status (or honest non-durable labeling) | 0.13 | Multi-worker status visibility matches production-gate claims ([#11](https://github.com/eddiethedean/hedron/issues/11)). |
 | Live-transport Supported vs experimental claim reconciliation | 0.13 | Aligns capability matrix and docs with deferred ops gates ([#13](https://github.com/eddiethedean/hedron/issues/13)). |
 | Published cross-language conformance-test kit | 0.14 | Versioned fixtures, negative cases, artifacts, and capability-level failure reports. |
 | HTTP-faithful `AppScenario` application-flow harness | 0.15 | Route, session, typed control/action, fragment, redirect, and response assertions; explicitly no whole-script rerun simulation. |
-| HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, builtin markup, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22)–[#26](https://github.com/eddiethedean/hedron/issues/26)). |
+| HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); Dialog/Tabs/Pagination/Lazy asserts deferred to 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
 | Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
 | Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |
@@ -1407,7 +1415,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | OIDC login/logout/user claims conveniences | 0.15 | Host sessions and application authorization remain authoritative. |
 | Pre-auth CSRF, session idle/absolute timeouts, auth rate limits, trusted-header identity | 0.15 | Optional helpers and recipes; not an IdP ([#2](https://github.com/eddiethedean/hedron/issues/2), [#4](https://github.com/eddiethedean/hedron/issues/4), [#5](https://github.com/eddiethedean/hedron/issues/5), [#7](https://github.com/eddiethedean/hedron/issues/7)). |
 | Hardened rotating-refresh session reference and FastAPI authenticated-cache auto-wire | 0.15 | Application-owned identity recipe plus private/no-store parity with adapters ([#10](https://github.com/eddiethedean/hedron/issues/10), [#16](https://github.com/eddiethedean/hedron/issues/16)). |
-| HTMX InteractionResult, fragment, region, builtin, and shell-swap testing helpers | 0.15 | First-class asserts composing with `AppScenario` / adapter clients ([#22](https://github.com/eddiethedean/hedron/issues/22)–[#26](https://github.com/eddiethedean/hedron/issues/26)). |
+| HTMX InteractionResult, fragment, region, and shell-swap testing helpers | 0.15 | First-class asserts composing with `AppScenario` / adapter clients ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); remaining builtin markup asserts in 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
 | `region` / `@fragment` / `swap` builders and Explorer click preview | 0.15 | Authoring ergonomics ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); production fail-closed region auth preserved. |
 | Named resource/connection registry and SQLAlchemy/Snowflake providers | 0.15 | Built on host DI/lifespan and external secret managers; no global service locator. |
 | Math/LaTeX, bounded help inspector, and sandboxed iframe | 0.15 | Executable content, remote URLs, and browser permissions remain explicit trust boundaries. |
@@ -1444,16 +1452,21 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | SSE, WebSocket, focused streaming, and navigation preload | 0.10 | Ordinary HTTP/polling/navigation fallbacks remain supported. |
 | HDJ authoring and HDN removal | 0.9 | Versioned `.hdj` profiles, trusted Jinja bodies, complete web-platform freedom, explicit Hedron bridges/capabilities, and no legacy runtime. |
 | Advanced DataEditor, distributed sources, and visualization adapters | 0.12 | Bounded, accessible, optional integrations. |
-| Component preparation, adaptive concurrency, distributed tracing | 0.13 | Explicit ownership, cancellation, and opt-out semantics; also job durability, audit sinks, live-claim honesty, and diagnostic catalog completeness. |
+| Component preparation, adaptive concurrency, distributed tracing | 0.13 | Explicit ownership, cancellation, and opt-out semantics; also job durability, audit sinks, and live-claim honesty. |
 | Language-neutral conformance, Java/Node runtimes, Rust acceleration | 0.14 | Python remains the semantic reference and fallback. |
-| Streamlit migration matrix and parity diagnostics | 0.15 | Tracks feature families and preserves explicit non-parity with rerun/global-state semantics; HTMX testing helpers (#22–#26) ship with the AppScenario harness. |
+| Streamlit migration matrix and parity diagnostics | 0.15 | Tracks feature families and preserves explicit non-parity with rerun/global-state semantics; HTMX testing helpers (#22–#23, #25–#26) ship with the AppScenario harness. |
 | streamlit-extras catalog matrix and curated extras toolkit | 0.16 | Tracks every active/deprecated extra as covered, planned, recipe/plugin, or deliberate non-parity. |
 | Plotly Dash matrix, reactive dashboard graph, notebook preview, and optional MCP projection | 0.17 | Adopts useful outcomes without a global callback runtime, arbitrary client JavaScript, or broad default tool exposure. |
+| HTMX shell primitives (`NavLink`, `OobHost`, `AppShell`/`MainPanel`) and public InteractionResult→Response API | 0.17 | In-shell navigation and stable conversion for apps that own CSRF/headers/region policy ([#28](https://github.com/eddiethedean/hedron/issues/28)–[#30](https://github.com/eddiethedean/hedron/issues/30), [#35](https://github.com/eddiethedean/hedron/issues/35), [#40](https://github.com/eddiethedean/hedron/issues/40)). |
+| Full `error-codes.md` / docs alignment for registered `HED-*` codes | 0.17 | Completes the docs half of [#15](https://github.com/eddiethedean/hedron/issues/15) after 0.13 catalog+CI registration. |
+| Dialog / Tabs / Pagination / Lazy markup testing asserts | 0.17 | Completes [#24](https://github.com/eddiethedean/hedron/issues/24) beyond Toast coverage shipped in 0.15. |
 | Gradio matrix, model demos, inference scheduling, protocol adapter, and visual workflows | 0.18 | Adopts ML-demo outcomes while preserving explicit action, exposure, state, file, and authorization boundaries. |
 | Accessibility research, inclusive authoring, complex interaction alternatives, and evidence governance | 0.19 | Stable WCAG/ARIA baseline plus ATAG guidance; no automatic certification or legal/conformance claim. |
 | Progressive-enhancement contract for forms and mutations | 0.19 | No-JS POST path documented and tested alongside HTMX fragments ([#8](https://github.com/eddiethedean/hedron/issues/8)). |
+| Landmark attrs/types and allowlisted Page progressive-enhancement scripts | 0.19 | Safe attrs / real landmark types ([#27](https://github.com/eddiethedean/hedron/issues/27), [#31](https://github.com/eddiethedean/hedron/issues/31)); same-origin script allowlist ([#39](https://github.com/eddiethedean/hedron/issues/39)). |
 | HTMX browser hardening, proxy mount helpers, production security gates, `js:` hx-vals/headers reject | 0.20 | Host security floor; inspectable opt-outs ([#1](https://github.com/eddiethedean/hedron/issues/1), [#3](https://github.com/eddiethedean/hedron/issues/3), [#6](https://github.com/eddiethedean/hedron/issues/6), [#18](https://github.com/eddiethedean/hedron/issues/18)). |
 | Flask/Django fragment_regions, portable CSP headers, scaffolds, wheel smoke, Flask-Login AuthSignal | 0.20 | Adapter parity and DX after 0.11 foundations ([#12](https://github.com/eddiethedean/hedron/issues/12), [#14](https://github.com/eddiethedean/hedron/issues/14), [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19), [#20](https://github.com/eddiethedean/hedron/issues/20)). |
+| Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.20 | FastAPI composition for apps that own sessions/CSP ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 
 ## RFC-to-phase coverage
@@ -1478,7 +1491,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0016 OpenAPI | 0.2; Explorer/docs integration in 0.4; explicit MCP projection boundary in 0.17; interaction recorder and Gradio remote discovery in 0.18 |
 | 0017 CLI | 0.2 minimal; 0.3 compiler commands; 0.4 full; region/target mismatch check in 0.15 (RFC-0039) |
 | 0018 Packaging | 0.0–0.8 |
-| 0019 Testing | 0.0–0.8; adapter fixtures in 0.11, data contracts in 0.12, deterministic async scenarios in 0.13, portable conformance kit in 0.14, app scenarios and HTMX InteractionResult/fragment/region/shell asserts in 0.15 (#22–#26), workbench/dashboard/model scenarios in 0.16–0.18, accessibility scenario/tree/AT evidence in 0.19, and adapter scaffold/wheel smoke in 0.20 |
+| 0019 Testing | 0.0–0.8; adapter fixtures in 0.11, data contracts in 0.12, deterministic async scenarios in 0.13, portable conformance kit in 0.14, app scenarios and HTMX InteractionResult/fragment/region/shell asserts in 0.15 (#22–#23, #25–#26; Toast), Dialog/Tabs/Pagination/Lazy asserts in 0.17 (#24), workbench/dashboard/model scenarios in 0.16–0.18, accessibility scenario/tree/AT evidence in 0.19, and adapter scaffold/wheel smoke in 0.20 |
 | 0020 Performance | 0.1–0.8 |
 | 0021 Browser runtime | 0.3; rich widgets in 0.5–0.6; browser context/storage in 0.15; extras and isolated sandbox in 0.16; dashboard patches/collections in 0.17; workflow canvas in 0.18; accessibility evidence in 0.19; HTMX hardening presets in 0.20 |
 | 0022 Theming | 0.3 |
@@ -1521,7 +1534,7 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#12](https://github.com/eddiethedean/hedron/issues/12) | Flask/Django `fragment_regions` parity | 0.20 |
 | [#13](https://github.com/eddiethedean/hedron/issues/13) | Live-transport Supported vs experimental | 0.13 |
 | [#14](https://github.com/eddiethedean/hedron/issues/14) | Portable SecurityPolicy/CSP for adapters | 0.20 |
-| [#15](https://github.com/eddiethedean/hedron/issues/15) | Expand `HED-*` diagnostic catalog | 0.13 |
+| [#15](https://github.com/eddiethedean/hedron/issues/15) | Expand `HED-*` diagnostic catalog | 0.17 |
 | [#16](https://github.com/eddiethedean/hedron/issues/16) | FastAPI authenticated-cache auto-wire | 0.15 |
 | [#17](https://github.com/eddiethedean/hedron/issues/17) | `hedron new --flask` / `--django` | 0.20 |
 | [#18](https://github.com/eddiethedean/hedron/issues/18) | Reject `hx-vals`/`hx-headers` `js:` eval | 0.20 |
@@ -1529,7 +1542,7 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#20](https://github.com/eddiethedean/hedron/issues/20) | Flask-Login AuthSignal bridge | 0.20 |
 | [#22](https://github.com/eddiethedean/hedron/issues/22) | Testing: InteractionResult / HTMX response asserts | 0.15 |
 | [#23](https://github.com/eddiethedean/hedron/issues/23) | Testing: fragment_client ergonomics / non-200 asserts | 0.15 |
-| [#24](https://github.com/eddiethedean/hedron/issues/24) | Testing: Dialog / Tabs / Pagination / Lazy / Toast asserts | 0.15 |
+| [#24](https://github.com/eddiethedean/hedron/issues/24) | Testing: Dialog / Tabs / Pagination / Lazy / Toast asserts | 0.17 |
 | [#25](https://github.com/eddiethedean/hedron/issues/25) | Testing: FragmentRegion authorization helpers | 0.15 |
 | [#26](https://github.com/eddiethedean/hedron/issues/26) | Testing: shell panel-swap / PE asserts | 0.15 |
 | [#27](https://github.com/eddiethedean/hedron/issues/27) | Safe HTML attrs on landmarks / surfaces | 0.19 |
@@ -1538,6 +1551,12 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#30](https://github.com/eddiethedean/hedron/issues/30) | `OobHost` / `AttrHost` primitive | 0.17 |
 | [#31](https://github.com/eddiethedean/hedron/issues/31) | Export landmarks as real types | 0.19 |
 | [#32](https://github.com/eddiethedean/hedron/issues/32) | Lifespan missing `hedron.build` import | 0.16 (done) |
+| [#35](https://github.com/eddiethedean/hedron/issues/35) | Public `InteractionResult` → Response API | 0.17 |
+| [#36](https://github.com/eddiethedean/hedron/issues/36) | Pluggable CSRF strategies (no Starlette session required) | 0.20 |
+| [#37](https://github.com/eddiethedean/hedron/issues/37) | Composable `SecurityPolicy` headers | 0.20 |
+| [#38](https://github.com/eddiethedean/hedron/issues/38) | `CsrfField` + HTMX-aware `Form` kwargs | 0.20 |
+| [#39](https://github.com/eddiethedean/hedron/issues/39) | Allowlisted progressive-enhancement scripts on `Page` | 0.19 |
+| [#40](https://github.com/eddiethedean/hedron/issues/40) | `AppShell` / `MainPanel` HTMX shell primitives | 0.17 |
 
 ## Later-phase policy
 

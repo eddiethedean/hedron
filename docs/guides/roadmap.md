@@ -12,7 +12,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.14** | Portable runtimes and acceleration | **Published** (`v0.14.0`) |
 | **0.15** | Data-app surface completeness (OIDC/session helpers; HTMX testing; `region`/`swap`; maps/media) | **Published** (`v0.15.0`) |
 | **0.16** | Curated extras and analysis workbenches (incl. CodeEditor host stub and specialty NiceGUI-shaped extras) | **Published** (`v0.16.0`) |
-| **0.17** | Reactive dashboards and agent interfaces; shell NavLink/OobHost/`AppShell`; public InteractionResult→Response | Planned |
+| **0.17** | Reactive dashboards and agent interfaces; shell/AppShell; InteractionResult→Response; `#15`/`#24` completions | Planned |
 | **0.18** | Model demos and inference workflows | Planned |
 | **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | Planned |
 | **0.20** | Production security floor and adapter parity; pluggable CSRF / composable headers / `CsrfField` | Planned |
