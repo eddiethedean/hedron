@@ -1,27 +1,29 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.17 **Published** as `v0.17.0` (2026-08-06). Workspace packages:
-Beta `0.17.0`, Alpha charts/sample-kit/native `0.1.x`, Alpha notebook/mcp `0.1.0`.
+**Roadmap position:** phase 0.18 **Published** as `v0.18.0` (2026-08-06). Workspace packages:
+Beta `0.18.0`, Alpha charts/sample-kit/native `0.1.x`, Alpha notebook/mcp/gradio `0.1.0`.
 **Date:** 2026-08-06
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.17.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` / `hedron-native` /
-`hedron-notebook` / `hedron-mcp` `0.1.x` (MIT, D-033)
+`0.18.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` / `hedron-native` /
+`hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.x` (MIT, D-033)
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
-`hedron-charts`, `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, `hedron-mcp`.
+`hedron-charts`, `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, `hedron-mcp`,
+`hedron-gradio`.
 
-**Phase focus:** reactive dashboards and agent interfaces — `DashboardBinding` /
-`InteractionGraph`, bounded patches, cross-filter/replay, HTMX shell primitives, optional
-`hedron-notebook` / `hedron-mcp` (Experimental), Dash/NiceGUI migration inventories.
+**Phase focus:** model demos and inference workflows — `InferenceInterface` / `ModelDemo`,
+`ExampleSet` / presentation / `PredictionFeedback`, `InferencePolicy`, `InteractionRecorder`,
+`InferenceWorkflow`, optional `hedron-gradio` (Experimental).
 
 ## Supported vs Deferred (operator view)
 
 Adopter summary: [What’s ready today](guides/whats-ready.md). Rule of thumb: do not market a
 capability as unqualified **Supported** when its owning gate row is **Deferred**. Live
-SSE/WS/streaming/preload remain **experimental** (polling Supported). Notebook preview and MCP
-are **Experimental** / Alpha. Phase 0.17 closed with **zero Deferred** among **0.17 gate IDs**
-(`check_release_gate.py 0.17.0`); prior-phase Deferred rows below remain owned elsewhere.
+SSE/WS/streaming/preload remain **experimental** (polling Supported). Notebook preview, MCP, and
+Gradio interop are **Experimental** / Alpha. Phase 0.18 closed with **zero Deferred** among
+**0.18 gate IDs** (`check_release_gate.py 0.18.0`); prior-phase Deferred rows below remain owned
+elsewhere.
 
 | ID | Topic | Disposition | Notes |
 |---|---|---|---|
@@ -32,34 +34,35 @@ are **Experimental** / Alpha. Phase 0.17 closed with **zero Deferred** among **0
 | — | Portable runtimes / acceleration | Verified (0.14) | |
 | — | Data-app surface completeness | Verified (0.15) | |
 | — | Curated extras / workbenches | Verified (0.16) | |
-| `GRAPH-017` | InteractionGraph / TriggerContext | Verified (0.17) | RFC-0040 |
-| `PATCH-017` | PropertyPatch / CollectionPatch | Verified (0.17) | RFC-0041 |
-| `XFILTER-017` | Cross-filter composition | Verified (0.17) | |
-| `REPLAY-017` | Graph recorder / replay | Verified (0.17) | |
-| `NOTEBOOK-017` | hedron-notebook preview | Verified (0.17) | Experimental |
-| `MCP-017` | hedron-mcp projection | Verified (0.17) | Experimental; deny-by-default |
-| `SHELL-017` | NavLink / AppShell / render_interaction | Verified (0.17) | RFC-0044 |
-| `HEDDOC-017` | error-codes.md ↔ HED-* catalog | Verified (0.17) | #15 |
-| `ASSERT-017` | Dialog/Tabs/Pagination/Lazy asserts | Verified (0.17) | #24 |
-| `MIGRATE-017` | Dash / NiceGUI migration inventory | Verified (0.17) | |
+| — | Reactive dashboards / agent interfaces | Verified (0.17) | |
+| `SCENARIO-018` | ModelDemoScenario | Verified (0.18) | RFC-0047 |
+| `DEMO-018` | InferenceInterface / ModelDemo | Verified (0.18) | RFC-0045 |
+| `EXAMPLE-018` | ExampleSet | Verified (0.18) | RFC-0046 |
+| `PRESENT-018` | PredictionLabel / ParameterViewer / Dialogue | Verified (0.18) | |
+| `FEEDBACK-018` | PredictionFeedback | Verified (0.18) | |
+| `INFER-018` | InferencePolicy | Verified (0.18) | RFC-0047 |
+| `RECORD-018` | InteractionRecorder | Verified (0.18) | RFC-0048 |
+| `WORKFLOW-018` | InferenceWorkflow | Verified (0.18) | RFC-0050 |
+| `GRADIO-018` | hedron-gradio adapter | Verified (0.18) | Experimental |
+| `MIGRATE-018` | Gradio migration inventory | Verified (0.18) | |
 | `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | Prior-phase carryover |
 | `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Prior-phase carryover |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | |
 
-## Phase 0.17 evidence
+## Phase 0.18 evidence
 
-- Closure index: [release-gate-0.17.toml](acceptance/release-gate-0.17.toml)
-  (all `Verified`; zero-Deferred for 0.17-owned rows).
-- Acceptance: [RELEASE_0_17.md](acceptance/RELEASE_0_17.md).
+- Closure index: [release-gate-0.18.toml](acceptance/release-gate-0.18.toml)
+  (all `Verified`; zero-Deferred for 0.18-owned rows).
+- Acceptance: [RELEASE_0_18.md](acceptance/RELEASE_0_18.md).
 - Stability: [api/STABILITY.md](api/STABILITY.md).
 - Compatibility / deprecation: [COMPATIBILITY.md](COMPATIBILITY.md).
 - Upgrade: [guides/upgrade.md](guides/upgrade.md).
-- Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_17.py`.
-- Cut procedure: [RELEASE.md](RELEASE.md) (last published: **0.17**; next capability: **0.18**).
+- Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_18.py`.
+- Cut procedure: [RELEASE.md](RELEASE.md) (last published: **0.18**; next capability: **0.19**).
 
 ## Next capability phase
 
-**0.18** — model demos and inference workflows. Track progress in [ROADMAP.md](ROADMAP.md)
-and the public [roadmap guide](guides/roadmap.md).
+**0.19** — accessibility engineering and inclusive authoring. Track progress in
+[ROADMAP.md](ROADMAP.md) and the public [roadmap guide](guides/roadmap.md).
 Open-issue owners: [issue ownership table](ROADMAP.md#open-github-issue-ownership-013).

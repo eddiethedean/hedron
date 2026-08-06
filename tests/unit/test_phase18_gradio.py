@@ -1,0 +1,113 @@
+"""Phase 0.18 Gradio client interop (GRADIO-018, MIGRATE-018)."""
+
+from __future__ import annotations
+
+import pytest
+
+from hedron_gradio import (
+    GradioClientAdapter,
+    GradioEndpoint,
+    GradioRemoteError,
+    HuggingFaceVendorNode,
+    __version__,
+    hf_space_node,
+)
+from hedron_gradio.migration import GRADIO_NON_PARITY, diagnose
+
+
+def test_package_version() -> None:
+    assert __version__ == "0.1.0"
+
+
+def test_disabled_adapter_discover_empty() -> None:
+    adapter = GradioClientAdapter("http://127.0.0.1:7860")
+    assert adapter.enabled is False
+    assert adapter.discover() == []
+
+
+def test_version_mismatch_error() -> None:
+    adapter = GradioClientAdapter(
+        "http://127.0.0.1:7860",
+        enabled=True,
+        gradio_version="6.22.0",
+    )
+    adapter.check_version_compat("6.22.0")
+    with pytest.raises(GradioRemoteError, match="outside supported range"):
+        adapter.check_version_compat("6.16.0")
+    with pytest.raises(GradioRemoteError, match="outside supported major"):
+        adapter.check_version_compat("5.0.0")
+
+
+def test_predict_job_stream_with_preloaded_endpoints() -> None:
+    endpoints = (
+        GradioEndpoint(
+            name="predict",
+            api_name="/predict",
+            parameters={"type": "object", "properties": {"text": {"type": "string"}}},
+            supports_stream=True,
+        ),
+    )
+    adapter = GradioClientAdapter(
+        "http://127.0.0.1:7860",
+        enabled=True,
+        endpoints=endpoints,
+        gradio_version="6.22.0",
+    )
+    assert [endpoint.name for endpoint in adapter.discover()] == ["predict"]
+
+    result = adapter.predict("predict", {"text": "hello"})
+    assert result["status"] == "ok"
+    assert result["payload"] == {"text": "hello"}
+
+    job_id = adapter.submit_job("predict", {"text": "queued"})
+    status = adapter.job_status(job_id)
+    assert status["status"] == "complete"
+    assert status["result"]["payload"] == {"text": "queued"}
+    assert adapter.cancel_job(job_id) is False
+
+    chunks = list(adapter.stream_results("predict", {"text": "stream"}))
+    assert len(chunks) == 2
+    assert chunks[-1]["done"] is True
+
+    file_id = adapter.upload_file("sample.txt", b"data")
+    assert adapter.download_artifact(file_id) == b"data"
+
+
+def test_hf_vendor_node_to_workflow_node() -> None:
+    node = hf_space_node("demo-space", "org/demo")
+    workflow = node.to_workflow_node()
+    assert workflow["kind"] == "remote"
+    assert workflow["action_id"] == "hf:space:org/demo"
+
+    dataset = HuggingFaceVendorNode(node_id="ds", kind="dataset", ref="org/data")
+    assert dataset.to_workflow_node()["kind"] == "dataset"
+    assert dataset.to_workflow_node()["action_id"] == "hf:dataset:org/data"
+
+
+def test_migration_diagnose_mentions_share_links_and_raw_js() -> None:
+    assert any("share link" in item for item in GRADIO_NON_PARITY)
+    assert any("raw" in item.lower() and "js" in item.lower() for item in GRADIO_NON_PARITY)
+
+    findings = diagnose(
+        {
+            "share_link": True,
+            "custom_js": "alert('x')",
+            "notes": "uses share link in dev",
+        }
+    )
+    joined = "\n".join(findings).lower()
+    assert "share link" in joined
+    assert "raw js" in joined
+
+
+def test_hedron_core_imports_without_hedron_gradio() -> None:
+    """Core must not require hedron-gradio; the adapter is an optional plugin."""
+    try:
+        import hedron_core
+    except Exception as exc:
+        pytest.skip(f"hedron_core import unavailable in this workspace: {exc}")
+    assert hasattr(hedron_core, "__version__")
+    try:
+        import hedron_gradio  # noqa: F401
+    except ImportError:
+        pytest.skip("hedron-gradio not installed in this environment")

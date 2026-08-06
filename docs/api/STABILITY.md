@@ -1,12 +1,12 @@
 # Public stability classifications
 
-**Status:** Phase 0.17 reactive dashboards and agent interfaces (**Published** as `v0.17.0`).
+**Status:** Phase 0.18 model demos and inference workflows (**Published** as `v0.18.0`).
 A **minimal `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled;
 package maturity remains Beta).
-**Version:** `0.17.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`
+**Version:** `0.18.0` / catalog baseline `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`v0.17.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
+`v0.18.0` train. Levels apply to documented contracts; symbols not listed here are **internal**
 unless a later phase explicitly promotes them.
 
 ## Levels
@@ -75,7 +75,8 @@ stable via the root facade — import them from their packages.
   helpers, Map/GeoJSON, `BrowserContext` / `BrowserStorage`, Math, IFrame, optional identity
   helpers (`hedron.oidc`, session hardening), named connection registry, capture UI, shell
   primitives (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`, `AppShell`/`MainPanel`), public
-  `render_interaction`, and dashboard graph / patch facades re-exported from core.
+  `render_interaction`, dashboard graph / patch facades, `InteractionRecorder`, and model-demo /
+  inference / workflow facades re-exported from core.
 - **experimental:** live transports — import from `hedron.experimental`
   (`SseResponse`, `job_status_sse_response`, `sse_response`,
   `StreamingComponentResponse`, `stream_*`, `accept_page_session_channel`,
@@ -90,7 +91,9 @@ stable via the root facade — import them from their packages.
 - **beta:** component catalog, themes, diagnostics, registry, jobs protocols, plugin loader,
   portable adapter capability types, `DashboardBinding` / `InteractionGraph` / `TriggerContext`,
   `PropertyPatch` / `CollectionPatch`, shell builtins (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`,
-  `AppShell`/`MainPanel`), and Dialog/Tabs/Pagination/Lazy markup asserts.
+  `AppShell`/`MainPanel`), Dialog/Tabs/Pagination/Lazy markup asserts, `InferenceInterface` /
+  `ModelDemo` / `ExampleSet` / `PredictionFeedback`, presentation builtins, `InferencePolicy`,
+  and `InferenceWorkflow`.
 - Concrete HTML serializer node classes remain **internal**.
 
 ### `hedron-data` (Beta) — `beta`
@@ -141,6 +144,13 @@ Optional deny-by-default MCP Streamable HTTP projection
 D-015 separate distribution; maturity Alpha / API `experimental`. Disabled and empty by default;
 not Supported production tools.
 
+### `hedron-gradio` (Alpha / experimental — phase 0.18)
+
+Optional Gradio client interoperability
+([RFC-0049](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0049-GRADIO-ADAPTER.md)).
+D-015 / D-049 separate distribution; maturity Alpha / API `experimental`. Discover is empty while
+disabled; absence adds no core cost. Not Supported production parity with Gradio's UI runtime.
+
 ### Phase 0.17 surfaces on existing packages (shipped)
 
 | Symbol / contract | Package | Level | RFC / gate |
@@ -150,6 +160,16 @@ not Supported production tools.
 | `HtmxLink` / `NavLink`, `OobHost` / `AttrHost`, `AppShell` / `MainPanel` | `hedron` / `hedron-core` | `beta` | RFC-0044 / `SHELL-017` |
 | Public `render_interaction` (InteractionResult → Response) | `hedron` | `beta` | RFC-0044 / `SHELL-017` |
 | Dialog / Tabs / Pagination / Lazy markup asserts | `hedron-core` / `hedron.testing` | `beta` | `ASSERT-017` / #24 |
+
+### Phase 0.18 surfaces on existing packages (shipped)
+
+| Symbol / contract | Package | Level | RFC / gate |
+|---|---|---|---|
+| `InferenceInterface` / `ModelDemo` / `ActionRegistry` | `hedron-core` / `hedron` | `beta` | RFC-0045 / `DEMO-018` |
+| `ExampleSet` / presentation builtins / `PredictionFeedback` | `hedron-core` | `beta` | RFC-0046 |
+| `InferencePolicy` / `ModelDemoScenario` | `hedron-core` | `beta` | RFC-0047 |
+| `InteractionRecorder` | `hedron` | `beta` | RFC-0048 / `RECORD-018` |
+| `InferenceWorkflow` + structured editor | `hedron-core` | `beta` | RFC-0050 / `WORKFLOW-018` |
 
 ### `hedron-native` (Alpha, versioned independently as `0.1.x`) — **experimental** accel
 

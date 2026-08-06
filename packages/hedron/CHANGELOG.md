@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.18.0] — 2026-08-06
+
+### Added
+
+- Phase 0.18 model demos and inference workflows (RFCs 0045–0050):
+  - `InteractionRecorder` for redacted public-endpoint Python/HTTP snippets.
+  - Re-exports of core model-demo / inference / workflow surfaces.
+  - Optional extra `hedron[gradio]` → Alpha `hedron-gradio`.
+
 ## [0.17.0] — 2026-08-06
 
 ### Added

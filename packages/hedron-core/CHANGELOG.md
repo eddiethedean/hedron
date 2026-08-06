@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.18.0] — 2026-08-06
+
+### Added
+
+- Phase 0.18 model demos and inference workflows (RFCs 0045–0050, D-049):
+  - `InferenceInterface` / `ModelDemo` / `ActionRegistry` (fail-closed registered actions only).
+  - `ExampleSet`, `PredictionFeedback`, presentation builtins (`PredictionLabel`,
+    `ParameterViewer`, `Dialogue`).
+  - `InferencePolicy` over `JobBackend` (admission, queues, concurrency groups, batching,
+    cancelable streaming); `ModelDemoScenario` synthetic kit.
+  - `InferenceWorkflow` with structured non-canvas editor, publish/rollback, adversarial
+    host-code/path rejection.
+  - Diagnostic codes `HED-DEMO-*`, `HED-INFER-*`, `HED-FEEDBACK-*`, `HED-WORKFLOW-*`.
+
 ## [0.17.0] — 2026-08-06
 
 ### Added

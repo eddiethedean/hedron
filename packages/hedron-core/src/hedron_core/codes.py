@@ -212,6 +212,18 @@ HED_PATCH_0002 = "HED-PATCH-0002"  # version / precondition mismatch
 HED_PATCH_0003 = "HED-PATCH-0003"  # operation or payload cap exceeded
 HED_PATCH_0004 = "HED-PATCH-0004"  # conflict / apply failure
 
+# Model demos / inference (0.18)
+HED_DEMO_0001 = "HED-DEMO-0001"  # unregistered callable / missing action
+HED_DEMO_0002 = "HED-DEMO-0002"  # ambiguous schema / undeclared side effects
+HED_DEMO_0003 = "HED-DEMO-0003"  # missing authorization / resource / exposure policy
+HED_INFER_0001 = "HED-INFER-0001"  # admission / capacity overload
+HED_INFER_0002 = "HED-INFER-0002"  # concurrency group / batch isolation failure
+HED_INFER_0003 = "HED-INFER-0003"  # cancel / timeout / disconnect
+HED_FEEDBACK_0001 = "HED-FEEDBACK-0001"  # missing consent / retention / tenant policy
+HED_WORKFLOW_0001 = "HED-WORKFLOW-0001"  # schema / cycle / type failure
+HED_WORKFLOW_0002 = "HED-WORKFLOW-0002"  # authorization / publish / conflict
+HED_WORKFLOW_0003 = "HED-WORKFLOW-0003"  # arbitrary code / host path / auto-exposure
+
 
 def registered_codes() -> frozenset[str]:
     """Return every ``HED-*`` code constant defined in this module."""

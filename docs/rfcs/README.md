@@ -57,3 +57,14 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0037](RFC-0037-CODE-EDITOR-EXTRAS.md) | CodeEditor and interactive extras | Implemented |
 | [0038](RFC-0038-SPECIALTY-EXTRAS.md) | Specialty extras — terminal, robotics/IoT, native shell | Implemented |
 | [0039](RFC-0039-INTERACTION-ERGONOMICS.md) | Interaction authoring ergonomics (`region`, `swap`, diagnostics) | Implemented |
+| [0040](RFC-0040-INTERACTION-GRAPH.md) | Dashboard interaction graph and TriggerContext | Implemented |
+| [0041](RFC-0041-PROPERTY-COLLECTION-PATCH.md) | PropertyPatch, CollectionPatch, and structured collections | Implemented |
+| [0042](RFC-0042-NOTEBOOK-PREVIEW.md) | Server-side notebook preview (`hedron-notebook`) | Implemented |
+| [0043](RFC-0043-MCP-PROJECTION.md) | Optional MCP projection (`hedron-mcp`) | Implemented |
+| [0044](RFC-0044-SHELL-INTERACTION-RESULT.md) | HTMX shell primitives and public InteractionResult rendering | Implemented |
+| [0045](RFC-0045-INFERENCE-INTERFACE.md) | InferenceInterface and ModelDemo | Accepted |
+| [0046](RFC-0046-MODEL-DEMO-PRESENTATION.md) | Model-demo presentation and PredictionFeedback | Accepted |
+| [0047](RFC-0047-INFERENCE-POLICY.md) | InferencePolicy over JobBackend | Accepted |
+| [0048](RFC-0048-INTERACTION-RECORDER.md) | Redacted interaction and API recorder | Accepted |
+| [0049](RFC-0049-GRADIO-ADAPTER.md) | Optional hedron-gradio protocol adapter | Accepted |
+| [0050](RFC-0050-INFERENCE-WORKFLOW.md) | Versioned permissioned inference workflows | Accepted |

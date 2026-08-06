@@ -1,0 +1,90 @@
+# Phase 0.18 model demos and inference workflows evidence index.
+# Consumed by scripts/check_release_gate.py 0.18.0 (--allow-planned until cut).
+# Zero Deferred policy for 0.18-owned rows: every row must be Verified at cut.
+# hedron-gradio ships as Experimental/Alpha with Verified deny-by-default /
+# absence-cost and protocol evidence before any Supported claim.
+# Synthetic fixtures only — no real models, Hub credentials, or unbounded artifacts in CI.
+
+[[evidence]]
+id = "SCENARIO-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_scenario.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "DEMO-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_demo.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "EXAMPLE-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_examples.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "PRESENT-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_presentation.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "FEEDBACK-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_feedback.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "INFER-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_inference.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "RECORD-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_recorder.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "WORKFLOW-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_workflow.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "GRADIO-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_gradio.py"
+ci_job = "test"
+owner = "hedron-gradio"
+
+[[evidence]]
+id = "MIGRATE-018"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase18_migration_docs.py"
+ci_job = "test"
+owner = "docs"
+
+[[evidence]]
+id = "REGRESS-018"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-018"
+state = "Verified"
+command = "python scripts/verify_pkg_18.py"
+ci_job = "release"
+owner = "hedron"

@@ -64,6 +64,11 @@ from hedron_core.builtins.media import (
     PdfViewer,
     Video,
 )
+from hedron_core.builtins.model_demo import (
+    Dialogue,
+    ParameterViewer,
+    PredictionLabel,
+)
 from hedron_core.builtins.shell import (
     AppShell,
     AttrHost,
@@ -126,6 +131,7 @@ __all__ = [
     "DateTimeInput",
     "DescriptionList",
     "Dialog",
+    "Dialogue",
     "DirectoryUpload",
     "Divider",
     "Expander",
@@ -169,9 +175,11 @@ __all__ = [
     "OobHost",
     "Page",
     "PageIcon",
+    "ParameterViewer",
     "PdfViewer",
     "Pills",
     "Popover",
+    "PredictionLabel",
     "Progress",
     "RadioGroup",
     "RangeInput",

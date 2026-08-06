@@ -1,6 +1,6 @@
 # What’s ready today
 
-**Canonical maturity snapshot for 0.17.0.** Other evaluator pages link here —
+**Canonical maturity snapshot for 0.18.0.** Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
@@ -10,13 +10,14 @@ live in the repository
     For a FastAPI CRUD / admin spike: typed pages, HTMX fragments, CSRF profiles, and
     polling are **Supported** on Beta packages — start with
     [Installation](../getting-started/installation.md). SSE/WebSocket live updates are
-    **experimental**; prefer polling in production. Charts and native accel are **Alpha**.
+    **experimental**; prefer polling in production. Charts, native accel, notebook, MCP, and
+    Gradio interop are **Alpha** / **Experimental**.
     There is no commercial SLA and no scheduled 1.0. Evaluators: skim the table below, then
     [Evaluate Hedron](evaluate.md).
 
 ## How to read this page
 
-Hedron **0.17.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
+Hedron **0.18.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
 breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
 | Label | Meaning |
@@ -81,6 +82,13 @@ breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 | Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported (0.17; #24) |
 | Notebook preview helper | `hedron[notebook]` / `hedron-notebook` | **Experimental** / Alpha (0.17) |
 | MCP Streamable HTTP projection | `hedron[mcp]` / `hedron-mcp` | **Experimental** / Alpha (0.17); deny-by-default |
+| `InferenceInterface` / `ModelDemo` / `ActionRegistry` | `hedron-core` / `hedron` | Supported beta (0.18; RFC-0045); fail-closed |
+| `ExampleSet` / `PredictionLabel` / `ParameterViewer` / `Dialogue` | `hedron-core` | Supported beta (0.18; RFC-0046) |
+| `PredictionFeedback` | `hedron-core` | Supported beta (0.18); consent mandatory; never ground truth |
+| `InferencePolicy` / `ModelDemoScenario` | `hedron-core` | Supported beta (0.18; RFC-0047); in-process queue is dev-only |
+| `InteractionRecorder` | `hedron` | Supported beta (0.18; RFC-0048); public endpoints only |
+| `InferenceWorkflow` + structured editor | `hedron-core` | Supported beta (0.18; RFC-0050); no host-code in JSON |
+| Gradio client interop | `hedron[gradio]` / `hedron-gradio` | **Experimental** / Alpha (0.18); deny-by-default discover |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
 guaranteed multi-worker live-transport proof — see
@@ -90,6 +98,8 @@ guaranteed multi-worker live-transport proof — see
 
 - FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
   (Supported host slices).
+- 0.18 model-demo / inference workflow demo:
+  [`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18).
 - 0.17 dashboard / agent-interface demo:
   [`examples/dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17).
 - 0.15 data-app surface demo (`region` / `@fragment` / `swap`, controls, Map, media stubs):
@@ -108,6 +118,7 @@ guaranteed multi-worker live-transport proof — see
 - `hedron-sample-kit` (plugin sample)
 - `hedron-notebook` (localhost-oriented preview; not Supported production)
 - `hedron-mcp` (deny-by-default; not Supported production tools by default)
+- `hedron-gradio` (Gradio client interop; deny-by-default discover)
 
 ## Deferred (do not market as Supported)
 
@@ -118,7 +129,7 @@ guaranteed multi-worker live-transport proof — see
 ## Recommended install
 
 ```bash
-pip install "hedron>=0.17.0" "uvicorn[standard]"
+pip install "hedron>=0.18.0" "uvicorn[standard]"
 python -m hedron new my-app
 cd my-app
 pip install -e .   # or: uv sync
@@ -126,7 +137,7 @@ uvicorn app:app --reload
 ```
 
 Extras: `"hedron[data]"`, `"hedron[charts]"` (Alpha), `"hedron[extras]"`, `"hedron[jinja]"`,
-`"hedron[dev]"`, `"hedron[notebook]"` (Alpha), `"hedron[mcp]"` (Alpha).
+`"hedron[dev]"`, `"hedron[notebook]"` (Alpha), `"hedron[mcp]"` (Alpha), `"hedron[gradio]"` (Alpha).
 
 ## Role-specific wrappers
 

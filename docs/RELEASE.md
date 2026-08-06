@@ -9,15 +9,15 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**Last published train:** `v0.17.0` (packages `0.17.0` including first-party `hedron-extras`;
-Alpha charts/sample-kit/native/notebook/mcp `0.1.x`).
-**Prior published:** `v0.16.0` (extras/workbenches), `v0.15.0`, and earlier trains.
-**Current cut target:** `v0.17.x` patches or `v0.18.0` (model demos) — see
+**Last published train:** `v0.18.0` (packages `0.18.0` including first-party `hedron-extras`;
+Alpha charts/sample-kit/native/notebook/mcp/gradio `0.1.x`).
+**Prior published:** `v0.17.0` (dashboards/agent interfaces), `v0.16.0`, `v0.15.0`, and earlier trains.
+**Current cut target:** `v0.18.x` patches or `v0.19.0` (accessibility) — see
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [What’s ready](guides/whats-ready.md).
-**Next capability phase:** `v0.18.0`.
+**Next capability phase:** `v0.19.0`.
 
-Published trains include `v0.17.0`, `v0.16.0`, `v0.15.0`, `v0.14.0`, `v0.13.0`, `v0.12.0`, `v0.11.0`, and
+Published trains include `v0.18.0`, `v0.17.0`, `v0.16.0`, `v0.15.0`, `v0.14.0`, `v0.13.0`, `v0.12.0`, `v0.11.0`, and
 [`docs/archive/RELEASE_HISTORY_0.1-0.10.md`](https://github.com/eddiethedean/hedron/blob/main/docs/archive/RELEASE_HISTORY_0.1-0.10.md).
 Do not re-run tag steps for a published version.
 

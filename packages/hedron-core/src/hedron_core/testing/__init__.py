@@ -20,6 +20,7 @@ from hedron_core.testing.adapters import (
 from hedron_core.testing.app import (
     AppScenario,
     MarkedElement,
+    ModelDemoScenario,
     find_all_marks,
     find_mark,
 )
@@ -66,6 +67,7 @@ __all__ = [
     "BrowserHintFixture",
     "ControllableClock",
     "MarkedElement",
+    "ModelDemoScenario",
     "NamedConnectionFixture",
     "OidcCallbackStub",
     "SandboxBudgetFixture",

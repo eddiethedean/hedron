@@ -275,6 +275,9 @@ nav:
         - Video: components/video.md
         - PdfViewer: components/pdf-viewer.md
         - Gallery: components/gallery.md
+        - PredictionLabel: components/prediction-label.md
+        - ParameterViewer: components/parameter-viewer.md
+        - Dialogue: components/dialogue.md
         - Logo: components/logo.md
         - PageIcon: components/page-icon.md
         - Map: components/map.md
@@ -438,9 +441,11 @@ nav:
     - Streamlit migration matrix: guides/streamlit-migration-matrix.md
     - NiceGUI migration: guides/nicegui-migration.md
     - Dash migration: guides/dash-migration.md
+    - Gradio migration: guides/gradio-migration.md
     - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - Upgrade (0.8 → 0.16): guides/upgrade.md
     - What's new: guides/release-notes.md
+    - What's new in 0.18: guides/whats-new-0.18.md
     - What's new in 0.17: guides/whats-new-0.17.md
     - What's new in 0.16: guides/whats-new-0.16.md
     - What's new in 0.14: guides/whats-new-0.14.md

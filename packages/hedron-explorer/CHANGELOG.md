@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0] — 2026-08-06
+
+### Changed
+
+- Coordinated Beta train with phase 0.18 model demos / inference workflows.
+
+
 ## [0.17.0] — 2026-08-06
 
 ### Added

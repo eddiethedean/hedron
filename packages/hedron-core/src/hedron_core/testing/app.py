@@ -38,6 +38,7 @@ from hedron_core.testing.workbench import (
 
 __all__ = [
     "AppScenario",
+    "ModelDemoScenario",
     "MarkedElement",
     "assert_action_authorized",
     "assert_dialog_markup",
@@ -395,3 +396,73 @@ class AppScenario:
     def _require_response(self) -> AdapterResponse:
         assert self.last_response is not None, "no response recorded; make a request first"
         return self.last_response
+
+
+@dataclass
+class ModelDemoScenario:
+    """Scenario kit for model demos (RFC-0047 / SCENARIO-018).
+
+    Supplies synthetic bounded files and model results only — never loads a real
+    model or treats generated output as trustworthy test data by default.
+    """
+
+    app: AppScenario
+    synthetic_files: dict[str, bytes] = field(default_factory=dict)
+    synthetic_results: dict[str, Mapping[str, object]] = field(default_factory=dict)
+    trust_generated_output: bool = False
+    max_file_bytes: int = 64_000
+    admissions: list[str] = field(default_factory=list)
+    progress_events: list[Mapping[str, object]] = field(default_factory=list)
+    cancellations: list[str] = field(default_factory=list)
+    consent_granted: bool = False
+    redacted_fields: list[str] = field(default_factory=list)
+    retained_record_ids: list[str] = field(default_factory=list)
+
+    def add_synthetic_file(self, name: str, content: bytes) -> None:
+        if len(content) > self.max_file_bytes:
+            raise AssertionError(
+                f"synthetic file {name!r} exceeds max_file_bytes={self.max_file_bytes}"
+            )
+        self.synthetic_files[name] = content
+
+    def add_synthetic_result(self, result_id: str, payload: Mapping[str, object]) -> None:
+        if self.trust_generated_output:
+            raise AssertionError(
+                "ModelDemoScenario refuses to treat generated output as trustworthy "
+                "test data by default; keep trust_generated_output=False"
+            )
+        self.synthetic_results[result_id] = dict(payload)
+
+    def record_admission(self, outcome: str) -> None:
+        self.admissions.append(outcome)
+
+    def record_progress(self, event: Mapping[str, object]) -> None:
+        self.progress_events.append(dict(event))
+
+    def record_cancellation(self, request_id: str) -> None:
+        self.cancellations.append(request_id)
+
+    def grant_consent(self) -> None:
+        self.consent_granted = True
+
+    def assert_consent_required(self) -> None:
+        assert self.consent_granted, "consent was not granted for feedback/demo scenario"
+
+    def assert_redaction(self, *fields: str) -> None:
+        missing = [f for f in fields if f not in self.redacted_fields]
+        assert not missing, f"expected redacted fields missing: {missing}"
+
+    def mark_redacted(self, *fields: str) -> None:
+        self.redacted_fields.extend(fields)
+
+    def retain(self, record_id: str) -> None:
+        self.retained_record_ids.append(record_id)
+
+    def assert_retention_deletable(self, record_id: str) -> None:
+        assert record_id in self.retained_record_ids
+        self.retained_record_ids.remove(record_id)
+
+    def assert_no_real_model_loaded(self) -> None:
+        # Synthetic kit never loads models; this documents the contract for suites.
+        assert self.trust_generated_output is False
+        assert all(isinstance(v, bytes) for v in self.synthetic_files.values())

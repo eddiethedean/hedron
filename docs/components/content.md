@@ -12,6 +12,9 @@ Text, links, media, code, lists, tables, and Markdown.
 - [`Table`](table.md) — Render a small static data table with explicit headers.
 - [`Markdown`](markdown.md) — Render Markdown through the optional, escaped content pipeline.
 - [`Audio`](audio.md) — Accessible HTML audio player with SafeUrl source.
+- [`PredictionLabel`](prediction-label.md) — Ranked prediction labels with class identity and an accessible table encoding.
+- [`ParameterViewer`](parameter-viewer.md) — Schema-oriented parameter documentation with secret redaction.
+- [`Dialogue`](dialogue.md) — Multi-speaker transcript with accessible speaker labels and timing metadata.
 - [`Gallery`](gallery.md) — Responsive image/video gallery with optional lightbox mode.
 - [`GeoJSONLayer`](geo-json-layer.md) — Sanitized GeoJSON layer for Map (or standalone alternative list).
 - [`GeolocationHint`](geolocation-hint.md) — Static reminder that geolocation is spoofable.

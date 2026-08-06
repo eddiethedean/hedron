@@ -1,11 +1,24 @@
 # Gradio feature cross-check
 
-**Audit date:** 2026-08-04<br>
-**Gradio baseline:** 6.22.0<br>
+**Audit date:** 2026-08-06<br>
+**Gradio baseline:** 6.22.0 (reconfirmed against PyPI; still current stable)<br>
 **Scope:** Gradio core, Python and JavaScript clients, Server mode, MCP support, Workflow,
 and the current official documentation<br>
 **Purpose:** identify useful capability gaps, not reproduce Gradio's component/event runtime or
 Hugging Face hosting services
+
+## Phase 0.18 RFC ownership
+
+Accepted gaps for phase 0.18 map to owning RFCs as follows:
+
+| Gradio / Hedron outcome | Owning RFC |
+|---|---|
+| `Interface` / callable-to-demo → `InferenceInterface` / `ModelDemo` | [RFC-0045](rfcs/RFC-0045-INFERENCE-INTERFACE.md) |
+| Examples, feedback, labels, parameter viewer, dialogue, galleries | [RFC-0046](rfcs/RFC-0046-MODEL-DEMO-PRESENTATION.md) |
+| Queue / admission / batch / concurrency → `InferencePolicy` over `JobBackend` | [RFC-0047](rfcs/RFC-0047-INFERENCE-POLICY.md) |
+| API / interaction recorder (redacted public endpoints) | [RFC-0048](rfcs/RFC-0048-INTERACTION-RECORDER.md) |
+| Gradio protocol adapter + migration inventory (`hedron-gradio`) | [RFC-0049](rfcs/RFC-0049-GRADIO-ADAPTER.md) |
+| `Workflow` → versioned permissioned inference workflow | [RFC-0050](rfcs/RFC-0050-INFERENCE-WORKFLOW.md) |
 
 Gradio is a valuable comparison for Hedron because it optimizes for turning a model or Python
 function into a shareable demo with very little code. Hedron is a general component and

@@ -48,6 +48,11 @@ from hedron.interaction import (
     swap,
     swap_oob,
 )
+from hedron.recorder import (
+    InteractionRecorder,
+    RecordedExchange,
+    RecordingSnippet,
+)
 from hedron.responses import (
     HTML,
     ComponentResponse,
@@ -72,6 +77,7 @@ from hedron.state import SessionState, session_state
 # Re-export beginner core API.
 from hedron_core import (  # noqa: F401
     ActionDock,
+    ActionRegistry,
     Alert,
     AppShell,
     Aside,
@@ -105,9 +111,14 @@ from hedron_core import (  # noqa: F401
     DateTimeInput,
     DescriptionList,
     Dialog,
+    Dialogue,
+    DialogueTurn,
     DirectoryUpload,
     Divider,
+    ExampleItem,
+    ExampleSet,
     Expander,
+    FeedbackPolicy,
     Field,
     Footer,
     Form,
@@ -129,6 +140,9 @@ from hedron_core import (  # noqa: F401
     IconButton,
     IFrame,
     Image,
+    InferenceInterface,
+    InferencePolicy,
+    InferenceWorkflow,
     Inline,
     JSONViewer,
     Label,
@@ -144,6 +158,7 @@ from hedron_core import (  # noqa: F401
     Metric,
     MicrophoneCapture,
     Model,
+    ModelDemo,
     MultiSelect,
     Nav,
     NavLink,
@@ -151,14 +166,19 @@ from hedron_core import (  # noqa: F401
     OobHost,
     Page,
     PageIcon,
+    ParameterViewer,
     PdfViewer,
     Pills,
     Popover,
+    PredictionFeedback,
+    PredictionLabel,
+    PredictionScore,
     Progress,
     Props,
     RadioGroup,
     RangeInput,
     RatingInput,
+    RegisteredAction,
     RenderContext,
     RenderMode,
     RenderResult,
@@ -306,7 +326,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.17.0"
+__version__ = "0.18.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -314,6 +334,21 @@ __version__ = "0.17.0"
 __all__ = [
     "ActionDock",
     "Alert",
+    "RegisteredAction",
+    "PredictionScore",
+    "PredictionLabel",
+    "PredictionFeedback",
+    "ParameterViewer",
+    "ModelDemo",
+    "InferenceWorkflow",
+    "InferencePolicy",
+    "InferenceInterface",
+    "FeedbackPolicy",
+    "ExampleSet",
+    "ExampleItem",
+    "DialogueTurn",
+    "Dialogue",
+    "ActionRegistry",
     "Aside",
     "Audio",
     "Auto",
@@ -502,6 +537,9 @@ __all__ = [
     "render",
     "render_component_response",
     "render_interaction",
+    "InteractionRecorder",
+    "RecordedExchange",
+    "RecordingSnippet",
     "resolve_color_mode",
     "resolve_route_path",
     "resolved_theme_from_request",

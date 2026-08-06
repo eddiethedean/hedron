@@ -56,6 +56,7 @@ from hedron_core.builtins import (
     DateTimeInput,
     DescriptionList,
     Dialog,
+    Dialogue,
     DirectoryUpload,
     Divider,
     Expander,
@@ -99,9 +100,11 @@ from hedron_core.builtins import (
     OobHost,
     Page,
     PageIcon,
+    ParameterViewer,
     PdfViewer,
     Pills,
     Popover,
+    PredictionLabel,
     Progress,
     RadioGroup,
     RangeInput,
@@ -132,6 +135,7 @@ from hedron_core.builtins import (
 from hedron_core.builtins.forms_extra import DirectoryUploadFile, validate_directory_upload
 from hedron_core.builtins.map_geo import MarkerSpec, sanitize_geojson
 from hedron_core.builtins.media import GalleryItem
+from hedron_core.builtins.model_demo import DialogueTurn, PredictionScore
 from hedron_core.cache import (
     CacheScope,
     CacheTrace,
@@ -186,6 +190,28 @@ from hedron_core.field import Field
 from hedron_core.html import html
 from hedron_core.htmx_contract import HtmxContext, approved_headers
 from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
+from hedron_core.inference import (
+    BatchWindow,
+    ConcurrencyGroup,
+    InferenceAdmission,
+    InferenceDiagnostics,
+    InferenceError,
+    InferencePolicy,
+    InferencePriority,
+    InferenceQueueStatus,
+    InProcessInferenceQueue,
+    QueuedInference,
+)
+from hedron_core.inference_workflow import (
+    InferenceWorkflow,
+    PublishedRevision,
+    WorkflowEditorView,
+    WorkflowError,
+    WorkflowNode,
+    WorkflowNodeKind,
+    WorkflowPermission,
+    WorkflowPort,
+)
 from hedron_core.interaction import (
     FragmentRegion,
     InteractionPolicy,
@@ -203,6 +229,21 @@ from hedron_core.media_session import (
     MediaSession,
     MediaSessionBudget,
     MediaSessionState,
+)
+from hedron_core.model_demo import (
+    ActionRegistry,
+    CachedExampleResult,
+    ExampleItem,
+    ExampleSet,
+    FeedbackPolicy,
+    FeedbackRecord,
+    InferenceInterface,
+    InMemoryFeedbackSink,
+    ModelDemo,
+    ModelDemoError,
+    PredictionFeedback,
+    RegisteredAction,
+    RegisteredCallableAdapter,
 )
 from hedron_core.models import EventPayload, FormModel, Model, Props
 from hedron_core.patches import (
@@ -276,30 +317,66 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.17.0"
+__version__ = "0.18.0"
 
 __all__ = [
+    "ActionRegistry",
     "AddressableDescriptor",
     "AddressableMeta",
     "Alert",
     "AppShell",
     "AuthSignal",
+    "BatchWindow",
+    "CachedExampleResult",
     "CapabilityRecord",
+    "ConcurrencyGroup",
+    "Dialogue",
+    "DialogueTurn",
+    "ExampleItem",
+    "ExampleSet",
+    "FeedbackPolicy",
+    "FeedbackRecord",
     "FragmentRegion",
     "HtmxContext",
+    "InMemoryFeedbackSink",
+    "InProcessInferenceQueue",
+    "InferenceAdmission",
+    "InferenceDiagnostics",
+    "InferenceError",
+    "InferenceInterface",
+    "InferencePolicy",
+    "InferencePriority",
+    "InferenceQueueStatus",
+    "InferenceWorkflow",
     "InteractionPolicy",
     "InteractionResult",
     "LifecycleResource",
+    "ModelDemo",
+    "ModelDemoError",
     "OobUpdate",
+    "ParameterViewer",
     "PartialFailurePolicy",
+    "PredictionFeedback",
+    "PredictionLabel",
+    "PredictionScore",
     "PrepareContext",
     "PrepareTiming",
+    "PublishedRevision",
+    "QueuedInference",
+    "RegisteredAction",
+    "RegisteredCallableAdapter",
     "SecurityAuditEvent",
     "SecurityAuditEventType",
     "SecurityAuditSink",
     "StatusPolicy",
     "StructuredLogAuditSink",
     "UrlReverseRequest",
+    "WorkflowEditorView",
+    "WorkflowError",
+    "WorkflowNode",
+    "WorkflowNodeKind",
+    "WorkflowPermission",
+    "WorkflowPort",
     "approved_headers",
     "authorize_htmx_target",
     "authorize_oob_update",
@@ -589,6 +666,9 @@ def _register_builtins() -> None:
         PageIcon,
         MicrophoneCapture,
         CameraCapture,
+        PredictionLabel,
+        ParameterViewer,
+        Dialogue,
         Metric,
         CodeViewer,
         JSONViewer,

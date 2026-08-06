@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workspace"
-version = "0.17.0"
+version = "0.18.0"
 description = "Hedron monorepo workspace"
 requires-python = ">=3.11,<3.15"
 readme = "README.md"
@@ -24,6 +24,7 @@ members = [
     "packages/hedron-extras",
     "packages/hedron-notebook",
     "packages/hedron-mcp",
+    "packages/hedron-gradio",
 ]
 
 [dependency-groups]
@@ -42,6 +43,7 @@ dev = [
     "hedron-extras",
     "hedron-notebook",
     "hedron-mcp",
+    "hedron-gradio",
     "pytest>=8.3",
     "httpx>=0.28",
     "anyio>=4.8",
@@ -90,6 +92,7 @@ hedron-native = { workspace = true }
 hedron-extras = { workspace = true }
 hedron-notebook = { workspace = true }
 hedron-mcp = { workspace = true }
+hedron-gradio = { workspace = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]
@@ -103,7 +106,7 @@ markers = [
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "tests", "examples"]
+src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "tests", "examples"]
 extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
@@ -131,6 +134,7 @@ include = [
     "packages/hedron-extras/src",
     "packages/hedron-notebook/src",
     "packages/hedron-mcp/src",
+    "packages/hedron-gradio/src",
 ]
 pythonVersion = "3.11"
 typeCheckingMode = "strict"

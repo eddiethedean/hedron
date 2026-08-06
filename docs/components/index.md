@@ -35,7 +35,7 @@ Explicit containers and one-dimensional or grid composition.
 
 Text, links, media, code, lists, tables, and Markdown.
 
-[`Heading`](heading.md) · [`Text`](text.md) · [`Link`](link.md) · [`Image`](image.md) · [`CodeBlock`](code-block.md) · [`List`](list.md) · [`DescriptionList`](description-list.md) · [`Table`](table.md) · [`Markdown`](markdown.md) · [`Audio`](audio.md) · [`Gallery`](gallery.md) · [`GeoJSONLayer`](geo-json-layer.md) · [`GeolocationHint`](geolocation-hint.md) · [`IFrame`](i-frame.md) · [`Logo`](logo.md) · [`Map`](map.md) · [`Math`](math.md) · [`PageIcon`](page-icon.md) · [`PdfViewer`](pdf-viewer.md) · [`Video`](video.md)
+[`Heading`](heading.md) · [`Text`](text.md) · [`Link`](link.md) · [`Image`](image.md) · [`CodeBlock`](code-block.md) · [`List`](list.md) · [`DescriptionList`](description-list.md) · [`Table`](table.md) · [`Markdown`](markdown.md) · [`Audio`](audio.md) · [`PredictionLabel`](prediction-label.md) · [`ParameterViewer`](parameter-viewer.md) · [`Dialogue`](dialogue.md) · [`Gallery`](gallery.md) · [`GeoJSONLayer`](geo-json-layer.md) · [`GeolocationHint`](geolocation-hint.md) · [`IFrame`](i-frame.md) · [`Logo`](logo.md) · [`Map`](map.md) · [`Math`](math.md) · [`PageIcon`](page-icon.md) · [`PdfViewer`](pdf-viewer.md) · [`Video`](video.md)
 
 ## Surfaces and status
 

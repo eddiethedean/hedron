@@ -252,9 +252,9 @@ jobs:
         run: |
           uv run --python 3.12 python scripts/build_evidence_bundle.py
           uv run --python 3.12 --with pip-audit python scripts/dep_audit.py
-          uv run --python 3.12 python scripts/check_release_gate.py 0.17.0
+          uv run --python 3.12 python scripts/check_release_gate.py 0.18.0
           uv run --python 3.12 python scripts/check_hed_codes.py
-          uv run --python 3.12 python scripts/verify_pkg_17.py
+          uv run --python 3.12 python scripts/verify_pkg_18.py
       - name: Upload evidence bundle
         uses: actions/upload-artifact@v4
         with:
@@ -263,7 +263,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: PKG-017 packaging rehearsal
+    name: PKG-018 packaging rehearsal
     needs: [evidence]
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -291,5 +291,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Run verify_pkg_17
-        run: uv run --python 3.12 python scripts/verify_pkg_17.py
+      - name: Run verify_pkg_18
+        run: uv run --python 3.12 python scripts/verify_pkg_18.py
