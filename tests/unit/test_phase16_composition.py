@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from hedron.testing import assert_renders
+from hedron_core.diagnostics import HedronError
 from hedron_extras.composition import (
     ChoiceCards,
     ChoiceOption,
@@ -69,7 +70,7 @@ def test_steps_split_fab_shortcuts() -> None:
                 ShortcutBinding(keys="G N", action="b"),
             ]
         )
-    with pytest.raises(Exception):
+    with pytest.raises(HedronError):
         KeyboardShortcuts([{"keys": "x", "action": "x", "href": "javascript:alert(1)"}])
 
 

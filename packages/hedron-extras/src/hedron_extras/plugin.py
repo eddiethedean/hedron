@@ -192,7 +192,9 @@ def register(ctx: PluginContext) -> None:
         {
             "name": "workbench",
             "stability": "beta",
-            "description": "DataExplorer, JSONEditor, CodeEditor, ChartWorkbench, CallableActionForm",
+            "description": (
+                "DataExplorer, JSONEditor, CodeEditor, ChartWorkbench, CallableActionForm"
+            ),
             "assets": (asset_logical_by_rel["assets/code_editor/editor.js"],),
             "http_fallback": True,
             "a11y_notes": "Textarea fallbacks for editors.",
