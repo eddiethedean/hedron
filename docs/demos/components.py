@@ -145,11 +145,17 @@ def build_poll() -> str:
     @app.page("/")
     def home() -> Page:
         return Page(
-            Poll(
-                ref=ref,
-                interval_ms=700,
-                target_id=box.id,
-                content=panel("Queued", "Waiting for a worker"),
+            Stack(
+                Poll(
+                    ref=ref,
+                    interval_ms=700,
+                    target_id=box.id,
+                    content=panel("Queued", "Waiting for a worker"),
+                ),
+                html.p(
+                    "Auto-polls up to four steps in this docs sim, then stops.",
+                    class_="hedron-sim-muted",
+                ),
             ),
             title="Poll",
         )
@@ -177,6 +183,11 @@ def build_infinite() -> str:
                     class_="hedron-sim-list",
                 ),
                 InfiniteScroll(ref=ref, target=feed.selector, swap="beforeend"),
+                html.p(
+                    "Docs sim: click Load more "
+                    "(real apps use hx-trigger=revealed; auto-reveal is not simulated).",
+                    class_="hedron-sim-muted",
+                ),
             ),
             title="InfiniteScroll",
         )

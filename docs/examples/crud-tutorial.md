@@ -14,7 +14,7 @@ reference application (auth, charts, extras), see the
 
 === "Demo"
 
-    Miniature list — add and delete notes with region swaps. Docs simulation.
+    Miniature list — type a note, add it, then delete it. Docs simulation.
 
     <!-- hedron-sim:crud-notes -->
 

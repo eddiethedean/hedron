@@ -289,6 +289,9 @@ def test_packaged_assets_include_theme_and_runtime_hooks() -> None:
     assert "data-hedron-sim-href" in js
     assert "data-hedron-sim-action" in js
     assert "neutralizeProgressiveAnchors" in js or "data-hedron-sim-href" in js
+    assert "enforceBootInvariants" in js
+    assert "hedronSimBlocked" in js or "hedron-sim-blocked" in js
+    assert "beginSimGuard" in js
     assert ", true" in js  # capture-phase listeners
     assert "<strong>HEDRON_SIM_UTC</strong>" in js  # legacy markdown-mangled token
 
@@ -441,3 +444,21 @@ def test_every_sim_demo_has_runnable_app_source() -> None:
         assert f"<!-- hedron-sim:{sim_id} -->" in tabs
         assert '=== "Code"' in tabs
         assert "```python" in tabs
+
+
+@pytest.mark.usefixtures("_docs_on_path")
+def test_every_sim_include_has_demo_contract() -> None:
+    from demos.contracts import CONTRACTS, contract_ids
+
+    includes = {path.stem for path in (DOCS / "includes" / "sim").glob("*.html")}
+    ids = contract_ids()
+    assert includes == ids, f"missing={sorted(includes - ids)} extra={sorted(ids - includes)}"
+    for contract in CONTRACTS:
+        html_out = contract.builder()
+        assert html_out.strip(), contract.id
+        if contract.mode_demo:
+            assert "data-hedron-sim-modes" in html_out, contract.id
+        else:
+            assert "data-hedron-sim=" in html_out, contract.id
+            assert "data-hedron-sim-routes" in html_out, contract.id
+        assert contract.steps, contract.id

@@ -48,10 +48,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from
 Click **Refresh status** — the page updates without a full reload. Hedron returns a small
 HTML fragment; [HTMX](https://htmx.org) swaps it into the declared region.
 
-### Try it
-
-Use **Demo** to click through the fragment swap, or **Code** for the real `app.py`
-`hedron new` writes.
+### Try it (simulated)
 
 === "Demo"
 

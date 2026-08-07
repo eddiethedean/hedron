@@ -43,15 +43,6 @@ def _expand_sim_markers(text: str) -> str:
     return _SIM_MARKER.sub(repl, text)
 
 
-def on_page_content(html: str, page: object, **kwargs: object) -> str:  # noqa: ARG001
-    """Expand sim islands after Markdown, then mark the homepage Demo|Code tabs."""
-    html = _expand_sim_markers(html)
-    meta = getattr(page, "file", None)
-    src = getattr(meta, "src_uri", "") if meta is not None else ""
-    if src in {"index.md", "index.html"}:
-        html = html.replace(
-            '<div class="tabbed-set tabbed-alternate" data-tabs="1:2">',
-            '<div class="tabbed-set tabbed-alternate hedron-try-it-tabs" data-tabs="1:2">',
-            1,
-        )
-    return html
+def on_page_content(html: str, **kwargs: object) -> str:  # noqa: ARG001
+    """Expand sim islands after Markdown so tokens are not mangled."""
+    return _expand_sim_markers(html)

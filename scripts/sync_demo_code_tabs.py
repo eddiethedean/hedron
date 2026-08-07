@@ -30,7 +30,7 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
     (
         "guides/live-interaction.md",
         "live-poll",
-        "Bounded poll cycle — docs simulation (no live server).",
+        "Bounded poll — each click advances one step (four steps, then wraps). Docs simulation.",
     ),
     (
         "guides/cookbook.md",
@@ -45,7 +45,7 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
     (
         "guides/charts-and-htmx.md",
         "charts-htmx",
-        "Refresh swaps a simple chart panel (not a charting library). Docs simulation.",
+        "Refresh advances a short chart sequence (then wraps). Docs simulation.",
     ),
     (
         "guides/mutations.md",
@@ -55,7 +55,7 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
     (
         "examples/crud-tutorial.md",
         "crud-notes",
-        "Miniature list — add and delete notes with region swaps. Docs simulation.",
+        "Miniature list — type a note, add it, then delete it. Docs simulation.",
     ),
     (
         "getting-started/core-concepts.md",

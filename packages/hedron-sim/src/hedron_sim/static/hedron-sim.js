@@ -265,6 +265,24 @@
     }, delayMs(280));
   }
 
+  function recordBlocked(root, reason) {
+    var prev = root.dataset.hedronSimBlocked || "";
+    var next = prev ? prev + "|" + reason : reason;
+    root.dataset.hedronSimBlocked = next;
+  }
+
+  var _guardingRoot = null;
+  var _guardClearTimer = null;
+
+  function beginSimGuard(root) {
+    _guardingRoot = root;
+    if (_guardClearTimer) window.clearTimeout(_guardClearTimer);
+    _guardClearTimer = window.setTimeout(function () {
+      _guardingRoot = null;
+      _guardClearTimer = null;
+    }, 800);
+  }
+
   function neutralizeProgressiveAnchors(root) {
     // Docs sims keep real hx-* behavior, but absolute/root hrefs like "/reports"
     // are same-origin on Read the Docs. Material instant navigation (or no-JS
@@ -281,15 +299,75 @@
       }
       anchor.setAttribute("href", "#");
     }
-    var forms = root.querySelectorAll("form[action]");
+    // Neutralize every form — missing action still POSTs the current docs URL
+    // on Read the Docs and trips Cloudflare WAF.
+    var forms = root.querySelectorAll("form");
     for (var f = 0; f < forms.length; f += 1) {
       var form = forms[f];
       var action = form.getAttribute("action");
-      if (!action || action === "#" || action.charAt(0) === "#") continue;
-      if (!form.hasAttribute("data-hedron-sim-action")) {
-        form.setAttribute("data-hedron-sim-action", action);
+      if (action && action !== "#" && action.charAt(0) !== "#") {
+        if (!form.hasAttribute("data-hedron-sim-action")) {
+          form.setAttribute("data-hedron-sim-action", action);
+        }
       }
       form.setAttribute("action", "#");
+    }
+  }
+
+  function enforceBootInvariants(root) {
+    // Repair anything that slipped past neutralize (or was injected later).
+    var badAnchors = root.querySelectorAll('a[href^="/"], a[href^="http"]');
+    for (var i = 0; i < badAnchors.length; i += 1) {
+      var anchor = badAnchors[i];
+      if (!anchor.hasAttribute("data-hedron-sim-href")) {
+        anchor.setAttribute("data-hedron-sim-href", anchor.getAttribute("href") || "");
+      }
+      anchor.setAttribute("href", "#");
+      recordBlocked(root, "href");
+    }
+    var forms = root.querySelectorAll("form");
+    for (var f = 0; f < forms.length; f += 1) {
+      var form = forms[f];
+      var action = form.getAttribute("action");
+      if (action !== "#") {
+        if (action && action !== "#" && !form.hasAttribute("data-hedron-sim-action")) {
+          form.setAttribute("data-hedron-sim-action", action);
+        }
+        form.setAttribute("action", "#");
+        recordBlocked(root, "form-action");
+      }
+    }
+  }
+
+  function installNetworkTripwire() {
+    // Only active while a sim click/submit is being handled — never blocks
+    // MkDocs / Read the Docs analytics outside that window.
+    if (window._hedronSimFetchPatched) return;
+    window._hedronSimFetchPatched = true;
+    if (typeof window.fetch === "function") {
+      var nativeFetch = window.fetch.bind(window);
+      window.fetch = function (input, init) {
+        if (_guardingRoot) {
+          recordBlocked(_guardingRoot, "fetch");
+          return Promise.reject(new Error("hedron-sim: blocked network fetch"));
+        }
+        return nativeFetch(input, init);
+      };
+    }
+    if (typeof window.XMLHttpRequest === "function") {
+      var NativeXHR = window.XMLHttpRequest;
+      window.XMLHttpRequest = function () {
+        var xhr = new NativeXHR();
+        var nativeOpen = xhr.open;
+        xhr.open = function () {
+          if (_guardingRoot) {
+            recordBlocked(_guardingRoot, "xhr");
+            throw new Error("hedron-sim: blocked XMLHttpRequest");
+          }
+          return nativeOpen.apply(xhr, arguments);
+        };
+        return xhr;
+      };
     }
   }
 
@@ -303,6 +381,8 @@
     var stage = root.querySelector("[data-hedron-sim-stage]") || root;
     stage.innerHTML = applyTokens(stage.innerHTML, null);
     neutralizeProgressiveAnchors(root);
+    enforceBootInvariants(root);
+    installNetworkTripwire();
 
     // Bounded auto-poll for hx-trigger="every Nms" (docs demos only).
     var polls = root.querySelectorAll("[hx-trigger]");
@@ -382,6 +462,7 @@
       if (!target || !target.closest) return;
       var root = target.closest("[data-hedron-sim]");
       if (!root || !ensureRoot(root)) return;
+      beginSimGuard(root);
       var control = findControl(target, root);
       if (control && control.tagName !== "FORM") {
         event.preventDefault();
@@ -402,6 +483,7 @@
           if (typeof event.stopImmediatePropagation === "function") {
             event.stopImmediatePropagation();
           }
+          recordBlocked(root, "nav");
         }
       }
     },
@@ -415,11 +497,17 @@
       if (!form || !form.closest) return;
       var root = form.closest("[data-hedron-sim]");
       if (!root) return;
-      if (!ensureRoot(root)) return;
+      // Always cancel native submit first — a real POST to the docs host is blocked
+      // by Cloudflare and looks like a broken demo.
       event.preventDefault();
       event.stopPropagation();
       if (typeof event.stopImmediatePropagation === "function") {
         event.stopImmediatePropagation();
+      }
+      beginSimGuard(root);
+      if (!ensureRoot(root)) {
+        recordBlocked(root, "submit");
+        return;
       }
       if (!form.hasAttribute("hx-post") && !form.hasAttribute("hx-get")) return;
       handleRequest(root, root._hedronSimTable, form, new FormData(form));
@@ -442,5 +530,6 @@
   window.HedronSim = {
     boot: boot,
     applyTokens: applyTokens,
+    beginSimGuard: beginSimGuard,
   };
 })();

@@ -33,7 +33,7 @@ for Flask/Django use the same `Poll` component with `hedron_route` /
 
 === "Demo"
 
-    Bounded poll cycle — docs simulation (no live server).
+    Bounded poll — each click advances one step (four steps, then wraps). Docs simulation.
 
     <!-- hedron-sim:live-poll -->
 

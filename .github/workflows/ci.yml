@@ -143,6 +143,8 @@ jobs:
           echo "ok: no Node package tooling in repo"
       - name: Check STATUS/ROADMAP root mirrors
         run: uv run --python 3.12 python scripts/sync_status_roadmap.py --check
+      - name: Check docs sim includes and Demo/Code tabs
+        run: uv run --python 3.12 python scripts/generate_sim_demos.py --check
       - name: Check docs current-train SSOT
         run: uv run --python 3.12 python scripts/check_docs_train_ssot.py
       - name: Check documentation links
@@ -204,7 +206,7 @@ jobs:
         run: uv python install 3.12
       - name: Install dependencies with browser extra
         run: |
-          uv sync --locked --python 3.12
+          uv sync --locked --python 3.12 --group docs
           uv pip install --python 3.12 "playwright>=1.40" "uvicorn[standard]>=0.30" "axe-playwright-python>=0.1.4"
           uv run --python 3.12 playwright install --with-deps ${{ matrix.browser }}
       - name: Run browser suite

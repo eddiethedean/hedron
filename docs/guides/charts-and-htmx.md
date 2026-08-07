@@ -67,7 +67,7 @@ Point an HTMX control at `/charts/refresh` with `HX-Request: true` to receive th
 
 === "Demo"
 
-    Refresh swaps a simple chart panel (not a charting library). Docs simulation.
+    Refresh advances a short chart sequence (then wraps). Docs simulation.
 
     <!-- hedron-sim:charts-htmx -->
 

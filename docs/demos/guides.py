@@ -59,8 +59,8 @@ def build_htmx_interactions_demo() -> str:
 
     def notes_panel():
         return html.div(
-            html.strong("Notes saved: 0"),
-            html.span("Allowlisted region #hx-guide-notes"),
+            html.strong("Sample notes region"),
+            html.span("Allowlisted #hx-guide-notes — count stays 0 in this sim"),
             id=notes.id,
             class_="hedron-sim-card",
             role="status",
@@ -84,7 +84,7 @@ def build_htmx_interactions_demo() -> str:
                 status_panel(),
                 RefreshButton.for_region(status, href="/status", label="Refresh status"),
                 notes_panel(),
-                RefreshButton.for_region(notes, href="/notes-count", label="Refresh notes count"),
+                RefreshButton.for_region(notes, href="/notes-count", label="Refresh sample region"),
                 html.div(
                     html.button(
                         "Correct target → 200",
@@ -249,7 +249,7 @@ def build_live_poll_demo() -> str:
                     **_hx(hx_get="/jobs/42", hx_target=job.selector, hx_swap="outerHTML"),
                 ),
                 html.p(
-                    "Polling is the Supported live path on every host.",
+                    "Each click advances one poll step (four steps, then wraps).",
                     class_="hedron-sim-muted",
                 ),
             ),
@@ -418,7 +418,7 @@ def build_charts_htmx_demo() -> str:
                     panel, href="/charts/refresh", label="Refresh chart panel"
                 ),
                 html.p(
-                    "The panel region swaps; no client charting stack required.",
+                    "Each click advances a short chart sequence (then wraps).",
                     class_="hedron-sim-muted",
                 ),
             ),
@@ -466,7 +466,8 @@ def build_crud_demo() -> str:
     def home() -> Page:
         return Page(
             Stack(
-                list_panel("Ship docs demos"),
+                # Start empty so add → delete → add stays coherent (no resurrected seed note).
+                list_panel(),
                 Form(
                     html.label(
                         "Note",
@@ -475,6 +476,7 @@ def build_crud_demo() -> str:
                             name="note",
                             type="text",
                             placeholder="New note",
+                            required=True,
                         ),
                     ),
                     SubmitButton("Add note"),
@@ -485,7 +487,8 @@ def build_crud_demo() -> str:
                     ),
                 ),
                 html.p(
-                    "List region updates via Simulated HTMX (no CSRF in the docs demo).",
+                    "Add a note, then delete it — the list region swaps in place "
+                    "(simulated HTMX; no CSRF in the docs demo).",
                     class_="hedron-sim-muted",
                 ),
             ),
@@ -494,7 +497,7 @@ def build_crud_demo() -> str:
 
     @app.action("/notes", region=listing)
     def add_note():
-        return swap(list_panel("Ship docs demos", sim_form("note")))
+        return swap(list_panel(sim_form("note")))
 
     @app.fragment("/notes/1", region=listing, method="DELETE")
     def delete_note():

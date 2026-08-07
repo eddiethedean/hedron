@@ -28,8 +28,8 @@ def status_panel():
 
 def notes_panel():
     return html.div(
-        Text("Notes saved: 0"),
-        html.span("Allowlisted region #hx-guide-notes"),
+        Text("Sample notes region"),
+        html.span("Allowlisted #hx-guide-notes — count stays 0 in this example"),
         id=notes.id,
         role="status",
         aria={"live": "polite"},
@@ -53,7 +53,7 @@ def home() -> Page:
             status_panel(),
             RefreshButton.for_region(status, href="/status", label="Refresh status"),
             notes_panel(),
-            RefreshButton.for_region(notes, href="/notes-count", label="Refresh notes count"),
+            RefreshButton.for_region(notes, href="/notes-count", label="Refresh sample region"),
             html.div(
                 html.button(
                     "Correct target → 200",

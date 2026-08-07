@@ -9,6 +9,14 @@
 - Neutralize *all* progressive `a[href]` / `form[action]` targets inside sim islands
   (not only `hx-*` anchors), and block leftover navigations/submits in capture phase
   so demo clicks cannot hit Read the Docs / Cloudflare WAF paths.
+- Force `action="#"` on every sim `<form>` (even when `action` was omitted) and always
+  `preventDefault` sim submits before route init, so `method="post"` forms cannot POST
+  the current docs URL.
+- Re-check boot invariants (no root/http `href`, forms `action="#"`) and record repairs
+  on `data-hedron-sim-blocked` for tests.
+- While a sim click/submit is in flight, reject `fetch` / `XMLHttpRequest` so a
+  regression cannot hit Read the Docs network paths (MkDocs/RTD traffic outside that
+  window is unaffected).
 - Accept legacy markdown-mangled `<strong>HEDRON_SIM_UTC</strong>` tokens in the JS shim.
 - Intercept demo `hx-*` clicks/submits in the capture phase so MkDocs Material
   instant navigation cannot follow progressive-enhancement `href`s out of the docs.
