@@ -33,8 +33,9 @@ def on_page_markdown(markdown: str, **kwargs: object) -> str:  # noqa: ARG001
         path = _SIM_INCLUDES / f"{name}.html"
         if not path.is_file():
             return (
-                f'<p class="hedron-sim-missing"><em>Missing sim demo '
-                f"<code>{name}</code> — run <code>uv run python scripts/generate_sim_demos.py</code>."
+                '<p class="hedron-sim-missing"><em>Missing sim demo '
+                f"<code>{name}</code> — run "
+                "<code>uv run python scripts/generate_sim_demos.py</code>."
                 "</em></p>"
             )
         return path.read_text(encoding="utf-8").strip()

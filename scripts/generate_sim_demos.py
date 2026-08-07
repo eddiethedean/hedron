@@ -25,7 +25,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     sys.path.insert(0, str(DOCS))
-    from demos.hello_refresh import build_hello_refresh_demo  # noqa: WPS433
+    from demos.hello_refresh import build_hello_refresh_demo
+
     from hedron_sim.assets import copy_assets
 
     copy_assets(DOCS / "javascript", DOCS / "stylesheets")
