@@ -1,0 +1,83 @@
+# Phase 0.20 production security floor and adapter parity evidence index.
+# Consumed by scripts/check_release_gate.py 0.20.0 (--allow-planned until cut).
+# Zero Deferred policy for 0.20-owned rows: every row must be Verified at cut.
+# Owning RFCs: RFC-0012, RFC-0021, RFC-0028. Decision: D-051.
+# Issues #1 / #3 / #6 / #12 / #14 / #17 / #18 / #19 / #20 remain normative.
+# CSRF composition (#36–#38) is owned by phase 0.22, not this manifest.
+
+[[evidence]]
+id = "HTMX-020"
+state = "Planned"
+command = "python -m pytest -q tests/integration/test_phase20_htmx_preset.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "EVAL-020"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase20_hx_eval_reject.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "MOUNT-020"
+state = "Planned"
+command = "python -m pytest -q tests/integration/test_phase20_mount_path.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PROD-020"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase20_production_gates.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "REGION-020"
+state = "Planned"
+command = "python -m pytest -q tests/adapters/test_phase20_fragment_regions.py"
+ci_job = "test"
+owner = "hedron-flask"
+
+[[evidence]]
+id = "CSP-020"
+state = "Planned"
+command = "python -m pytest -q tests/adapters/test_phase20_security_headers.py"
+ci_job = "test"
+owner = "hedron-flask"
+
+[[evidence]]
+id = "AUTH-020"
+state = "Planned"
+command = "python -m pytest -q tests/adapters/test_phase20_flask_login_auth.py"
+ci_job = "test"
+owner = "hedron-flask"
+
+[[evidence]]
+id = "SCAFFOLD-020"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase20_scaffolds.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "WHEEL-020"
+state = "Planned"
+command = "python scripts/verify_pkg_20.py --wheel-smoke-adapters"
+ci_job = "release"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-020"
+state = "Planned"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-020"
+state = "Planned"
+command = "python scripts/verify_pkg_20.py"
+ci_job = "release"
+owner = "hedron"

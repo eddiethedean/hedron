@@ -15,7 +15,9 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.17** | Reactive dashboards and agent interfaces; shell/AppShell; InteractionResult→Response; `#15`/`#24` completions (RFCs 0040–0044) | **Published** (`v0.17.0`) |
 | **0.18** | Model demos and inference workflows | **Published** (`v0.18.0`) |
 | **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | **Ready to cut / Implemented on `main`** (`0.19.0`; last published PyPI/git = `v0.18.0`; D-050) |
-| **0.20** | Production security floor and adapter parity; pluggable CSRF / composable headers / `CsrfField` | Planned |
+| **0.20** | Production security floor and adapter parity (HTMX/eval, mount/prod gates, Flask/Django regions/CSP/scaffolds) | Planned (D-051) |
+| **0.21** | Human assistive-technology / compensated evaluation (from D-050) | Planned |
+| **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | Planned (D-051 split) |
 
 ## What this means for you
 
@@ -37,10 +39,10 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Full multi-engine FastAPI live browser matrix / some Explorer live traces → owned `0.10.x` Deferred
 - Live transports remain **experimental**; polling is Supported — [What’s ready](whats-ready.md)
 
-Tracked follow-ups for host security, adapter DX, and claim honesty are owned by
-phases **0.13+** (see the [issue ownership table](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-github-issue-ownership-013)
-in the maintainer roadmap). Next capability phase is **0.20** (production security floor). Human
-AT evaluation follow-up remains **0.21** (D-050).
+Tracked follow-ups for host security and adapter DX are owned by phase **0.20** (D-051; see
+[issue ownership](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-github-issue-ownership-013)).
+CSRF / SecurityPolicy composition (#36–#38) is **0.22**. Human AT evaluation remains **0.21**
+(D-050). Earlier ops honesty items remain under phases **0.13+** as listed in the ownership table.
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))

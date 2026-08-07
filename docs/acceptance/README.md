@@ -39,6 +39,7 @@ status commentary, not a satisfied release gate.
 - [`v0.17` reactive dashboards](RELEASE_0_17.md) — published
 - [`v0.18` model demos and inference](RELEASE_0_18.md) — published; zero-Deferred for 0.18-owned rows
 - [`v0.19` accessibility engineering](RELEASE_0_19.md) — **Ready to cut / Implemented on `main`**; contracts, ATAG, Explorer, automated AT matrix, PE/landmarks/scripts
+- [`v0.20` production security floor and adapter parity](RELEASE_0_20.md) — **Planned** (D-051); CSRF composition split to 0.22
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),
   [release-gate-0.7.toml](release-gate-0.7.toml),
@@ -53,7 +54,8 @@ status commentary, not a satisfied release gate.
   [release-gate-0.16.toml](release-gate-0.16.toml),
   [release-gate-0.17.toml](release-gate-0.17.toml),
   [release-gate-0.18.toml](release-gate-0.18.toml),
-  [release-gate-0.19.toml](release-gate-0.19.toml)
+  [release-gate-0.19.toml](release-gate-0.19.toml),
+  [release-gate-0.20.toml](release-gate-0.20.toml)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.

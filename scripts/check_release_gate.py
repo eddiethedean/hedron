@@ -25,6 +25,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.17": ROOT / "docs" / "acceptance" / "release-gate-0.17.toml",
     "0.18": ROOT / "docs" / "acceptance" / "release-gate-0.18.toml",
     "0.19": ROOT / "docs" / "acceptance" / "release-gate-0.19.toml",
+    "0.20": ROOT / "docs" / "acceptance" / "release-gate-0.20.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 
@@ -140,7 +141,13 @@ def main() -> int:
         help="Skip evidence manifest checks (metadata-only)",
     )
     args = parser.parse_args()
-    errors = check_packages(args.version)
+    # Scaffold / in-progress gates may target a future train before package bumps.
+    if args.allow_planned:
+        errors: list[str] = []
+        if not (ROOT / "LICENSE").is_file():
+            errors.append("missing root LICENSE (required before public publication)")
+    else:
+        errors = check_packages(args.version)
     if not args.skip_evidence:
         manifest = args.evidence_manifest or evidence_manifest_for(args.version)
         if args.allow_planned:

@@ -70,11 +70,16 @@ below remain owned elsewhere.
 - Upgrade: [guides/upgrade.md](docs/guides/upgrade.md).
 - Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_19.py`.
 - Cut procedure: [RELEASE.md](docs/RELEASE.md) (last published: **0.18**; current cut target: **0.19**;
-  next capability: **0.20**).
+  next capability: **0.20** Planned per D-051).
 
 ## Next capability phase
 
-**0.20** — production security floor and adapter parity. Track progress in
-[ROADMAP.md](docs/ROADMAP.md) and the public [roadmap guide](docs/guides/roadmap.md).
-Open-issue owners: [issue ownership table](ROADMAP.md#open-github-issue-ownership-013).
-Human AT / compensated evaluation follow-up remains owned by **0.21** (D-050).
+**0.20** — production security floor and adapter parity (**Planned**, D-051). Gate map:
+`HTMX-020`, `EVAL-020`, `MOUNT-020`, `PROD-020`, `REGION-020`, `CSP-020`, `AUTH-020`,
+`SCAFFOLD-020`, `WHEEL-020`, `REGRESS-020`, `PKG-020`. Evidence placeholders:
+[release-gate-0.20.toml](docs/acceptance/release-gate-0.20.toml) and
+[RELEASE_0_20.md](docs/acceptance/RELEASE_0_20.md). Track progress in [ROADMAP.md](docs/ROADMAP.md) and the
+public [roadmap guide](docs/guides/roadmap.md). Open-issue owners:
+[issue ownership table](ROADMAP.md#open-github-issue-ownership-013).
+CSRF / SecurityPolicy composition (#36–#38) is split to **0.22** (D-051). Human AT / compensated
+evaluation follow-up remains owned by **0.21** (D-050).
