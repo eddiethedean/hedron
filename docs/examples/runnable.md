@@ -3,6 +3,9 @@
 Clone the repository to run real Hedron servers. The [simulated UI patterns](gallery.md)
 in these docs are a **browser simulation**—not a live Hedron process.
 
+Each recipe page below also has a **Try it (simulated)** Demo/Code tab so you can click
+through the interaction before starting uvicorn.
+
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
@@ -11,17 +14,17 @@ uv sync
 
 ## Recipes (prefer these)
 
-| Example | Framework | Run |
-|---|---|---|
-| [reference-app](reference-app.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/reference-app --reload` |
-| [notes-sqlalchemy](notes-sqlalchemy.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/notes-sqlalchemy --reload` |
-| [session-auth](session-auth.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/session-auth --reload` |
-| [file-upload](file-upload.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/file-upload --reload` |
-| [jobs-poll](jobs-poll.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/jobs-poll --reload` |
-| [live-interaction](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) | FastAPI | `uv run uvicorn app:app --app-dir examples/live-interaction --reload` |
-| [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask | See example README |
-| [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | See example README |
-| [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | HDJ | Prints HTML to stdout (not a web server) |
+| Example | Framework | Simulated demo | Run |
+|---|---|---|---|
+| [reference-app](reference-app.md) | FastAPI | [Try it](reference-app.md#auth-gate-simulated) | `uv run uvicorn app:app --app-dir examples/reference-app --reload` |
+| [notes-sqlalchemy](notes-sqlalchemy.md) | FastAPI | [Try it](notes-sqlalchemy.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/notes-sqlalchemy --reload` |
+| [session-auth](session-auth.md) | FastAPI | [Try it](session-auth.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/session-auth --reload` |
+| [file-upload](file-upload.md) | FastAPI | [Try it](file-upload.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/file-upload --reload` |
+| [jobs-poll](jobs-poll.md) | FastAPI | [Try it](jobs-poll.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/jobs-poll --reload` |
+| [live-interaction](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) | FastAPI | [Live poll](../guides/live-interaction.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/live-interaction --reload` |
+| [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask | — | See example README |
+| [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | — | See example README |
+| [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | HDJ | — | Prints HTML to stdout (not a web server) |
 
 ## Phase evidence (0.15–0.18)
 

@@ -26,6 +26,7 @@ __all__ = [
     "build_crud_demo",
     "build_csrf_guard_demo",
     "build_data_table_filter_demo",
+    "build_file_upload_demo",
     "build_forms_invite_demo",
     "build_htmx_interactions_demo",
     "build_jobs_poll_demo",
@@ -584,6 +585,108 @@ def build_jobs_poll_demo() -> str:
     return build_live_poll_demo(demo_id="jobs-poll")
 
 
+def build_file_upload_demo() -> str:
+    """CSRF-framed upload outcomes without a real multipart picker (docs sim)."""
+    app = SimApp(title="File upload", demo_id="file-upload")
+    stage = app.region("upload-stage", description="Upload result")
+
+    def upload_form():
+        return html.div(
+            Stack(
+                html.strong("Upload a .txt or .csv file (max 64 KiB)"),
+                html.p(
+                    "Docs simulation — choose a canned file (no real disk picker).",
+                    class_="hedron-sim-muted",
+                ),
+                html.button(
+                    "Upload roster.txt",
+                    type="button",
+                    class_="hedron-sim-btn hedron-sim-btn--primary",
+                    **_hx(
+                        hx_post="/upload-ok",
+                        hx_target=stage.selector,
+                        hx_swap="outerHTML",
+                    ),
+                ),
+                html.button(
+                    "Upload malware.exe",
+                    type="button",
+                    class_="hedron-sim-btn",
+                    **_hx(
+                        hx_post="/upload-bad",
+                        hx_target=stage.selector,
+                        hx_swap="outerHTML",
+                    ),
+                ),
+            ),
+            id=stage.id,
+        )
+
+    def accepted():
+        return html.div(
+            Stack(
+                html.strong("Received roster.txt (42 bytes)"),
+                html.span("name,role\nada,admin"),
+                html.button(
+                    "Upload another",
+                    type="button",
+                    class_="hedron-sim-btn",
+                    **_hx(
+                        hx_get="/reset",
+                        hx_target=stage.selector,
+                        hx_swap="outerHTML",
+                    ),
+                ),
+            ),
+            id=stage.id,
+            class_="hedron-sim-card",
+            role="status",
+        )
+
+    def rejected():
+        return html.div(
+            Stack(
+                html.strong("Rejected type: malware.exe"),
+                html.span("Only .txt and .csv are allowlisted in this demo."),
+                html.button(
+                    "Back to upload",
+                    type="button",
+                    class_="hedron-sim-btn",
+                    **_hx(
+                        hx_get="/reset",
+                        hx_target=stage.selector,
+                        hx_swap="outerHTML",
+                    ),
+                ),
+            ),
+            id=stage.id,
+            class_="hedron-sim-card",
+            role="status",
+        )
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(upload_form(), title="Upload")
+
+    @app.action("/upload-ok", region=stage)
+    def upload_ok():
+        return swap(accepted())
+
+    @app.action("/upload-bad", region=stage)
+    def upload_bad():
+        return InteractionResult(
+            content=rejected(),
+            status_code=422,
+            region_id=stage.id,
+        )
+
+    @app.fragment("/reset", region=stage)
+    def reset():
+        return swap(upload_form())
+
+    return embed_demo(app)
+
+
 def build_minimal_form_demo() -> str:
     app = SimApp(title="Minimal form", demo_id="minimal-form")
     stage = app.region("notes-stage", description="Notes page")
@@ -890,8 +993,7 @@ def build_data_table_filter_demo() -> str:
         filtered = [r for r in rows if filter_role is None or r[2] == filter_role]
         label = "All people" if filter_role is None else f"Role: {filter_role}"
         body_rows = [
-            html.tr(html.td(rid), html.td(name), html.td(role))
-            for rid, name, role in filtered
+            html.tr(html.td(rid), html.td(name), html.td(role)) for rid, name, role in filtered
         ]
         return html.div(
             html.strong(label),

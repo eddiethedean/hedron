@@ -4,8 +4,8 @@ Short, copy-pasteable **apps** for common workflows. Prefer these after
 [Build your first app](../../getting-started/quickstart.md) and before the kitchen-sink
 [reference app](../reference-app.md).
 
-Each recipe page leads with a **no-clone** pip install + copy `app.py` path, then the
-monorepo `uv sync` command.
+Each recipe page leads with a **Try it (simulated)** Demo/Code tab, then a **no-clone**
+pip install + copy `app.py` path, then the monorepo `uv sync` command.
 
 !!! tip "Recipes vs Cookbook"
 

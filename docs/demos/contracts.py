@@ -19,6 +19,7 @@ from demos.guides import (
     build_crud_demo,
     build_csrf_guard_demo,
     build_data_table_filter_demo,
+    build_file_upload_demo,
     build_forms_invite_demo,
     build_htmx_interactions_demo,
     build_jobs_poll_demo,
@@ -462,6 +463,39 @@ CONTRACTS: tuple[DemoContract, ...] = (
         ),
     ),
     DemoContract(
+        id="file-upload",
+        builder=build_file_upload_demo,
+        min_steps=4,
+        steps=(
+            Step(
+                click=_btn("Upload malware.exe"),
+                expect_text="#upload-stage",
+                contains="Rejected type",
+                expect_trace="422",
+            ),
+            Step(
+                click=_btn("Back to upload"),
+                expect_text="#upload-stage",
+                contains="Upload a .txt",
+                expect_trace="GET /reset → 200",
+            ),
+            Step(
+                click=_btn("Upload roster.txt"),
+                expect_text="#upload-stage",
+                contains="Received roster.txt",
+                contains_all=("name,role",),
+                expect_trace="POST /upload-ok → 200",
+            ),
+            Step(
+                click=_btn("Upload another"),
+                expect_text="#upload-stage",
+                contains="Upload malware.exe",
+                not_contains="Received roster.txt",
+                expect_trace="GET /reset → 200",
+            ),
+        ),
+    ),
+    DemoContract(
         id="tenant-deny",
         builder=build_tenant_deny_demo,
         min_steps=2,
@@ -798,5 +832,7 @@ CONTRACTS: tuple[DemoContract, ...] = (
         ),
     ),
 )
+
+
 def contract_ids() -> frozenset[str]:
     return frozenset(c.id for c in CONTRACTS)

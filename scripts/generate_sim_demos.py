@@ -35,6 +35,7 @@ def main(argv: list[str] | None = None) -> int:
         build_crud_demo,
         build_csrf_guard_demo,
         build_data_table_filter_demo,
+        build_file_upload_demo,
         build_forms_invite_demo,
         build_htmx_interactions_demo,
         build_jobs_poll_demo,
@@ -77,6 +78,7 @@ def main(argv: list[str] | None = None) -> int:
         "auth-login.html": build_auth_login_demo(),
         "csrf-guard.html": build_csrf_guard_demo(),
         "data-table-filter.html": build_data_table_filter_demo(),
+        "file-upload.html": build_file_upload_demo(),
         "pe-paths.html": build_pe_paths_demo(),
         "tenant-deny.html": build_tenant_deny_demo(),
     }

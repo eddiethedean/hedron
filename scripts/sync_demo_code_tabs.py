@@ -94,8 +94,65 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
     ),
     (
         "examples/crud-tutorial.md",
+        "minimal-form",
+        "Classic POST — confirmation replaces the notes region. Docs simulation.",
+    ),
+    (
+        "examples/crud-tutorial.md",
+        "mutations-htmx",
+        "HTMX fragment POST — submit swaps the declared result region. Docs simulation.",
+    ),
+    (
+        "examples/crud-tutorial.md",
         "crud-notes",
         "Miniature list — add multiple notes, then delete any row. Docs simulation.",
+    ),
+    (
+        "examples/notes-sqlalchemy.md",
+        "crud-notes",
+        "Same list pattern as the notes recipe — add and delete rows. Docs simulation "
+        "(in-memory; the real recipe uses SQLAlchemy + SQLite).",
+    ),
+    (
+        "examples/session-auth.md",
+        "auth-login",
+        "Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.",
+    ),
+    (
+        "examples/file-upload.md",
+        "file-upload",
+        "Allowlisted .txt succeeds; .exe is rejected. Docs simulation "
+        "(canned files, no disk picker).",
+    ),
+    (
+        "examples/jobs-poll.md",
+        "jobs-poll",
+        "Bounded job poll — each click advances one status step. Docs simulation.",
+    ),
+    (
+        "examples/reference-app.md",
+        "auth-login",
+        "Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.",
+    ),
+    (
+        "examples/reference-app.md",
+        "csrf-guard",
+        "POST with CSRF succeeds; missing token → 403. Docs simulation.",
+    ),
+    (
+        "examples/reference-app.md",
+        "crud-notes",
+        "Fragment list refresh pattern used throughout the reference app. Docs simulation.",
+    ),
+    (
+        "examples/reference-app.md",
+        "charts-htmx",
+        "Refresh advances a short chart sequence (then wraps). Docs simulation.",
+    ),
+    (
+        "examples/single-file.md",
+        "hello-refresh",
+        "Docs simulation — click Refresh status for an HTMX-style fragment swap (no server).",
     ),
     (
         "getting-started/core-concepts.md",

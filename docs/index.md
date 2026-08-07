@@ -8,7 +8,7 @@ hide:
 
 <div class="hedron-eyebrow">Python-first UI framework · v0.19.0</div>
 
-# Build web UIs in Python.<br><span class="hedron-gradient-text">No Node.js required.</span>
+# Build modern web UIs in Python.<br><span class="hedron-gradient-text">No Node.js required.</span>
 
 Hedron turns typed Python components into server-rendered HTML with FastAPI and HTMX.
 Build dashboards, admin tools, forms, and CRUD apps without a frontend build chain.

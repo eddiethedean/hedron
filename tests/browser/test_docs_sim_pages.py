@@ -41,9 +41,81 @@ _PAGES: tuple[tuple[str, str, str, str], ...] = (
     ),
     (
         "examples/crud-tutorial/index.html",
+        '[data-hedron-sim="minimal-form"]',
+        'button:has-text("Save")',
+        "POST /save → 200",
+    ),
+    (
+        "examples/crud-tutorial/index.html",
+        '[data-hedron-sim="mutations-htmx"]',
+        'button:has-text("Save")',
+        "POST /save → 200",
+    ),
+    (
+        "examples/crud-tutorial/index.html",
         '[data-hedron-sim="crud-notes"]',
         'button:has-text("Add note")',
         "POST /notes → 200",
+    ),
+    (
+        "examples/reference-app/index.html",
+        '[data-hedron-sim="auth-login"]',
+        'button:has-text("Sign in")',
+        "401",
+    ),
+    (
+        "examples/reference-app/index.html",
+        '[data-hedron-sim="csrf-guard"]',
+        'button:has-text("POST without CSRF")',
+        "403",
+    ),
+    (
+        "examples/reference-app/index.html",
+        '[data-hedron-sim="crud-notes"]',
+        'button:has-text("Add note")',
+        "POST /notes → 200",
+    ),
+    (
+        "examples/reference-app/index.html",
+        '[data-hedron-sim="charts-htmx"]',
+        'button:has-text("Refresh chart panel")',
+        "GET /charts/refresh → 200",
+    ),
+    (
+        "examples/session-auth/index.html",
+        '[data-hedron-sim="auth-login"]',
+        'button:has-text("Sign in")',
+        "401",
+    ),
+    (
+        "examples/notes-sqlalchemy/index.html",
+        '[data-hedron-sim="crud-notes"]',
+        'button:has-text("Add note")',
+        "POST /notes → 200",
+    ),
+    (
+        "examples/file-upload/index.html",
+        '[data-hedron-sim="file-upload"]',
+        'button:has-text("Upload roster.txt")',
+        "POST /upload-ok → 200",
+    ),
+    (
+        "examples/file-upload/index.html",
+        '[data-hedron-sim="file-upload"]',
+        'button:has-text("Upload malware.exe")',
+        "422",
+    ),
+    (
+        "examples/jobs-poll/index.html",
+        '[data-hedron-sim="jobs-poll"]',
+        'button:has-text("Start job poll")',
+        "GET /jobs/42 → 200",
+    ),
+    (
+        "examples/single-file/index.html",
+        '[data-hedron-sim^="hello-refresh"]',
+        'button:has-text("Refresh status")',
+        "GET /status → 200",
     ),
     (
         "guides/forms-and-actions/index.html",
@@ -147,10 +219,16 @@ def docs_server(docs_site: Path):
     httpd.shutdown()
 
 
+def _page_case_id(case: tuple[str, str, str, str]) -> str:
+    page_path, root_sel, click_sel, _expect = case
+    click_bit = click_sel.split("has-text(")[-1].rstrip(")'\"")
+    return f"{page_path}|{root_sel}|{click_bit}"
+
+
 @pytest.mark.parametrize(
     ("page_path", "root_sel", "click_sel", "expect"),
     _PAGES,
-    ids=[p[0] for p in _PAGES],
+    ids=[_page_case_id(p) for p in _PAGES],
 )
 def test_docs_sim_page_under_material(
     docs_server: str,
@@ -172,11 +250,21 @@ def test_docs_sim_page_under_material(
 
             page.on("request", on_request)
             page.goto(url, wait_until="networkidle", timeout=60000)
-            # Prefer Demo tab when Material tabbed content is present.
-            demo_label = page.locator('label[for^="__tabbed_"]', has_text="Demo").first
-            if demo_label.count():
-                demo_label.click()
             root = page.locator(root_sel).first
+            root.wait_for(state="attached", timeout=10000)
+            # Activate the Demo tab that owns this island (multi-sim pages have many).
+            page.evaluate(
+                """(sel) => {
+                  const el = document.querySelector(sel);
+                  if (!el) return;
+                  const set = el.closest('.tabbed-set');
+                  if (!set) return;
+                  const labels = [...set.querySelectorAll('label[for^="__tabbed_"]')];
+                  const demo = labels.find((l) => (l.textContent || '').trim() === 'Demo');
+                  if (demo) demo.click();
+                }""",
+                root_sel,
+            )
             root.wait_for(state="visible", timeout=10000)
             page.wait_for_function(
                 """(sel) => {
@@ -186,10 +274,14 @@ def test_docs_sim_page_under_material(
                 arg=root_sel,
             )
             if "crud-notes" in root_sel:
-                page.fill("#crud-note", "docs-smoke")
+                root.locator("#crud-note").fill("docs-smoke")
             if "forms-invite" in root_sel:
                 # Empty / short email → invalid variant (422).
-                page.fill("#invite-email", "x")
+                root.locator("#invite-email").fill("x")
+            if "mutations-htmx" in root_sel:
+                note = root.locator("#pe-note")
+                if note.count():
+                    note.fill("docs-smoke")
             root.locator(click_sel).first.click()
             page.wait_for_timeout(700)
             trace = root.locator("[data-hedron-sim-trace]").inner_text()
