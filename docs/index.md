@@ -14,26 +14,40 @@ Hedron turns typed Python components into server-rendered HTML with FastAPI and 
 Build dashboards, admin tools, forms, and CRUD apps without a frontend build chain.
 { .hedron-lede }
 
-**~5 minutes:** install → `hedron new` → open localhost:8000 → **Hello from hedron new**.
+**~5 minutes:** install → `hedron new` → open localhost:8000 → **Hello from hedron new** →
+click **Refresh status** (the time updates).
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
 [Get started](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Install details](getting-started/installation.md){ .md-button }
+[Installation](getting-started/installation.md){ .md-button }
 [Try in Codespaces](examples/try-it.md){ .md-button }
 </div>
-
-<p class="hedron-lede" markdown>Packages are Beta — pin versions for production.
-[What’s ready today](guides/whats-ready.md) · [Why Hedron](guides/why-hedron.md).</p>
 
 <div class="hedron-signal-row">
   <span>Python 3.11–3.14</span>
   <span>FastAPI native</span>
-  <span>Beta · pin versions</span>
   <span>No Node.js required</span>
 </div>
 
 </div>
+
+## From zero to a rendered page
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first if you do not
+have it (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux).
+
+```bash
+uvx --from "hedron>=0.18.0" hedron new my-hedron-app
+cd my-hedron-app
+uv sync
+uv run uvicorn app:app --reload
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
+Click **Refresh status** — the timestamp should change. That is an HTMX fragment swap.
+
+pip + venv alternate: [installation](getting-started/installation.md).
 
 ## A backend-native way to build UI
 
@@ -51,37 +65,25 @@ Build dashboards, admin tools, forms, and CRUD apps without a frontend build cha
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">◇</span>
     <strong>Secure-by-default boundaries</strong>
-    <p>Contextual escaping, CSRF validation, safe URL types, and conservative cache behavior — Beta package maturity; pin versions.</p>
+    <p>Contextual escaping, CSRF validation, safe URL types, and conservative cache behavior.</p>
   </div>
 </div>
 
-## From zero to a rendered page
-
-**Recommended:** `uvx` → `uv sync` → run. Do not also hand-write a second `app.py`.
-
-```bash
-uvx --from "hedron>=0.18.0" hedron new my-hedron-app
-cd my-hedron-app
-uv sync
-uv run uvicorn app:app --reload
-```
-
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
-pip + venv alternate: [installation](getting-started/installation.md).
-
-**Manual single-file (not using `hedron new`):** create a project directory, save
-`app.py` from the [single-file examples](examples/single-file.md), install
-`hedron>=0.18.0` and `uvicorn[standard]`, then run `uvicorn app:app --reload`.
-
 ## Next steps
 
-1. Open `app.py` and change the Hello text ([quickstart](getting-started/quickstart.md))
+1. [Build your first app](getting-started/quickstart.md) — celebrate Refresh, then edit Hello
 2. [HTMX interactions](guides/htmx-interactions.md)
 3. [Minimal form POST](guides/minimal-form.md)
 4. [Learning path](getting-started/learning-path.md)
 
-Then: [Try with Codespaces](examples/try-it.md) · [runnable examples](examples/runnable.md) ·
-[What's ready](guides/whats-ready.md) · [Evaluate Hedron](guides/evaluate.md)
+<details markdown>
+<summary>Package maturity and production pins</summary>
+
+Hedron **0.18** packages are **Beta** on PyPI — pin versions for production
+(`hedron>=0.18.0,<0.19`). Capability readiness (Supported vs Experimental):
+[What’s ready today](guides/whats-ready.md) · [Why Hedron](guides/why-hedron.md) ·
+[Evaluate Hedron](guides/evaluate.md).
+</details>
 
 ## Designed for inspectability
 
@@ -90,5 +92,5 @@ model while preserving ordinary HTML, CSS, HTTP, and FastAPI boundaries. Automat
 choices (cache, Explorer, assets) are inspectable and overrideable; components become
 HTTP endpoints only when you address them explicitly.
 
-[Read the architecture](ARCHITECTURE.md) · [What's ready today](guides/whats-ready.md) ·
+[Read the architecture](ARCHITECTURE.md) · [Runnable examples](examples/runnable.md) ·
 [Public roadmap](guides/roadmap.md)

@@ -81,7 +81,8 @@ Detailed API compatibility levels live in [STABILITY](../api/STABILITY.md).
 ## Are Auto, DataTable, and charts available?
 
 **Auto** (built-in inspectable object rendering — no extra) and **DataTable/DataEditor**
-are Supported on Beta packages (`hedron` / `hedron[data]`).
+are **Supported** capabilities (`hedron` / `hedron[data]`). Those packages are **Beta**
+on PyPI — pin versions.
 **Charts** (`hedron[charts]`) are **Alpha** — available on PyPI, pin versions, expect churn.
 See [What’s ready](whats-ready.md).
 
@@ -95,8 +96,9 @@ See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), a
 
 ## Are Flask and Django supported?
 
-Yes as **Beta** packages with a **Supported** adapter matrix (`hedron-flask`, `hedron-django`).
-Install them separately; they do not pull in FastAPI. Django apps must use Django `>=5.2,<6`.
+Yes. `hedron-flask` and `hedron-django` are **Beta** packages with a **Supported**
+adapter matrix. Install them separately; they do not pull in FastAPI. Django apps must
+use Django `>=5.2,<6`.
 Django QuerySet DataSource and forms bridge are Supported. FastAPI ships SSE/WebSocket
 helpers as **experimental**; on every host — including FastAPI — **polling** is the
 Supported production fallback for live status. See [What’s ready](whats-ready.md),

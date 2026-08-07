@@ -10,7 +10,7 @@ scripts here when you add them.
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
-| `check_docs_train_ssot.py` | Fail if adopter docs claim a stale current train (0.16/0.17). CI: quality job |
+| `check_docs_train_ssot.py` | Fail if adopter docs claim a stale current train (expects **0.18**). CI: quality job |
 
 ## Release / gate (maintainers)
 

@@ -25,9 +25,9 @@ A status panel and a **Refresh status** button. Clicking the button replaces onl
 panel; direct navigation still returns a complete document.
 
 **If you used `hedron new`:** open the scaffold `app.py`. It already follows this
-pattern—extend the timestamp (or keep the static panel) and run. If you are on Path B
-(manual `app.py`), create the file as shown in the complete listing at the end of this
-section.
+pattern with a **UTC timestamp** on each Refresh — click **Refresh status** first, then
+extend the panel as shown below. If you used the manual (no-scaffold) path, create the
+file as shown in the complete listing at the end of this section.
 
 !!! tip "Goal: click first"
 

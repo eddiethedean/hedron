@@ -57,7 +57,34 @@ def _settings_explorer_hint() -> str | None:
 
 
 class Hedron(FastAPI):
-    """Batteries-included FastAPI application with Hedron defaults."""
+    """Batteries-included FastAPI application with Hedron defaults.
+
+    Installs session middleware (when enabled), CSRF-aware security profiles,
+    security headers, bundled HTMX static assets, and a root ``HedronRouter`` for
+    ``@page`` / ``@component`` / ``@action`` routes.
+
+    Args:
+        security: Built-in profile name (``standard`` / ``strict`` / ``permissive``)
+            or a ``SecurityPolicy`` instance.
+        explorer: Component Explorer mode (``off``, ``development``, ``secured``).
+            ``None`` follows the security profile and optional ``[tool.hedron]`` settings.
+        session_secret: Secret for Starlette session cookies. Replace the development
+            default before production; ``strict`` requires an explicit value.
+        enable_sessions: When ``True`` (default), install ``SessionMiddleware``.
+        explorer_dependencies: FastAPI dependencies required for ``secured`` Explorer.
+        theme: Registered theme name (``default`` when unchanged).
+        default_styles: When ``True``, emit default theme styles on PAGE responses.
+        build_dir: Optional precompiled asset manifest directory for production.
+        production: Force production gate behavior; ``None`` follows ``HEDRON_ENV``.
+        *args: Forwarded to ``FastAPI``.
+        **kwargs: Forwarded to ``FastAPI`` (``lifespan`` is composed with Hedron gates).
+
+    Examples:
+        >>> app = Hedron(title="Demo", security="standard", session_secret="replace-me")
+        >>> @app.page("/")
+        ... def home() -> Page:  # doctest: +SKIP
+        ...     return Page(Text("Hello"), title="Home")
+    """
 
     def __init__(
         self,
@@ -216,6 +243,16 @@ class Hedron(FastAPI):
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        """Register a navigable PAGE route.
+
+        Args:
+            path: URL path (FastAPI path syntax).
+            fragment_regions: Declared HTMX fragment regions authorized for this route.
+            **kwargs: Forwarded to ``HedronRouter.page`` / FastAPI route options.
+
+        Returns:
+            Decorator that registers the handler and returns it unchanged.
+        """
         decorator = self._root_router.page(path, fragment_regions=fragment_regions, **kwargs)
 
         def wrap(fn: Callable[P, R]) -> Callable[P, R]:
@@ -235,6 +272,16 @@ class Hedron(FastAPI):
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        """Register an addressable component / fragment route.
+
+        Args:
+            path: URL path (FastAPI path syntax).
+            fragment_regions: Declared HTMX fragment regions authorized for this route.
+            **kwargs: Forwarded to ``HedronRouter.component`` / FastAPI route options.
+
+        Returns:
+            Decorator that registers the handler and returns it unchanged.
+        """
         decorator = self._root_router.component(path, fragment_regions=fragment_regions, **kwargs)
 
         def wrap(fn: Callable[P, R]) -> Callable[P, R]:
@@ -254,7 +301,16 @@ class Hedron(FastAPI):
         selector: str | None = None,
         description: str = "",
     ) -> FragmentRegion:
-        """Declare a fragment region (default selector ``#{id}``)."""
+        """Declare a fragment region (default selector ``#{id}``).
+
+        Args:
+            id: Stable region identifier used in markup and allowlists.
+            selector: CSS selector for the swap target; defaults to ``#{id}``.
+            description: Human-readable description for Explorer / diagnostics.
+
+        Returns:
+            A ``FragmentRegion`` value for ``RefreshButton.for_region`` / ``@fragment``.
+        """
         return FragmentRegion(id=id, selector=selector or f"#{id}", description=description)
 
     def fragment(
@@ -266,7 +322,18 @@ class Hedron(FastAPI):
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
-        """Alias of :meth:`component` that merges ``region`` / ``regions`` into the allowlist."""
+        """Alias of :meth:`component` that merges ``region`` / ``regions`` into the allowlist.
+
+        Args:
+            path: URL path (FastAPI path syntax).
+            region: Single authorized region.
+            regions: Additional authorized regions.
+            fragment_regions: Explicit allowlist merged with ``region`` / ``regions``.
+            **kwargs: Forwarded to :meth:`component`.
+
+        Returns:
+            Decorator that registers the fragment handler.
+        """
         merged: list[FragmentRegion | str] = []
         if region is not None:
             merged.append(region)
@@ -277,6 +344,15 @@ class Hedron(FastAPI):
         return self.component(path, fragment_regions=merged or None, **kwargs)
 
     def action(self, path: str, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        """Register a mutation endpoint (typically POST) with CSRF when profiles require it.
+
+        Args:
+            path: URL path (FastAPI path syntax).
+            **kwargs: Forwarded to ``HedronRouter.action`` (for example ``method=\"POST\"``).
+
+        Returns:
+            Decorator that registers the action handler.
+        """
         decorator = self._root_router.action(path, **kwargs)
 
         def wrap(fn: Callable[P, R]) -> Callable[P, R]:

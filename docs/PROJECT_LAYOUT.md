@@ -29,9 +29,9 @@ hedron/
 │   │   └── src/hedron_charts/
 │   ├── hedron-jinja/              # Optional .hdj format and Jinja/HTML/HTMX integration
 │   │   └── src/hedron_jinja/
-│   ├── hedron-flask/              # Beta Supported adapter
+│   ├── hedron-flask/              # Flask adapter (Supported capability; Beta package)
 │   │   └── src/hedron_flask/
-│   ├── hedron-django/             # Beta Supported adapter (Django >=5.2,<6)
+│   ├── hedron-django/             # Django adapter (Supported; Django >=5.2,<6)
 │   │   └── src/hedron_django/
 │   ├── hedron-conformance/        # Language-neutral conformance kit (0.14)
 │   │   └── src/hedron_conformance/
@@ -75,8 +75,8 @@ hedron/
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
 | `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` |
-| `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Beta Supported) |
-| `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Beta Supported) |
+| `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Supported capability; Beta package) |
+| `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Supported; Beta package) |
 | `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.18.0` |
 | `hedron-conformance` | `hedron_conformance` | Fixture schema + runner (stdlib + pydantic) | `v0.16.0` |
 | `hedron-extras` | `hedron_extras` | Optional curated extras / workbenches; also `hedron[extras]` | `v0.16.0` |

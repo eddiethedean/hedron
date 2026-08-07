@@ -292,7 +292,9 @@ explorer = "off"
         encoding="utf-8",
     )
     (dest / "app.py").write_text(
-        """from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+        """from datetime import UTC, datetime
+
+from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
 
 app = Hedron(
     title="Hedron App",
@@ -305,8 +307,9 @@ status = app.region("service-status", description="Live status panel")
 
 
 def status_panel():
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
     return html.div(
-        Text("All systems operational"),
+        Text(f"All systems operational · refreshed {stamp}"),
         id=status.id,
         role="status",
         aria={"live": "polite"},

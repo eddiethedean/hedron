@@ -11,31 +11,42 @@ Hedron lets you build dashboards, admin tools, and CRUD apps as typed Python com
 on FastAPI + HTMX — without a Node.js frontend stack.
 
 ```bash
-# Recommended (uv)
+# Need uv? https://docs.astral.sh/uv/getting-started/installation/
+# macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
+
 uvx --from "hedron>=0.18.0" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
+```
 
-# Alternate (pip + venv)
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
+Click **Refresh status**; the timestamp should update.
+
+Alternate (pip + venv):
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .venv\Scripts\Activate.ps1
 python -m pip install "hedron>=0.18.0" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
-
-**Hedron 0.18.0** — Beta on PyPI; pin versions for production.
-[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
-If `hedron` is not on your PATH, use `python -m hedron`
-([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).
-
 Prefer not to install locally?
 [Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/).
 
-**Next:** Open `app.py` and change the Hello text →
-[HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
+**Next:** [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
+[HTMX](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
+
+<details>
+<summary>Package maturity</summary>
+
+<strong>Hedron 0.18.0</strong> — Beta on PyPI; pin with <code>hedron&gt;=0.18.0,&lt;0.19</code> for
+production. Capability readiness:
+<a href="https://hedron.readthedocs.io/en/latest/guides/whats-ready/">What’s ready</a>.
+If <code>hedron</code> is not on your PATH, use <code>python -m hedron</code>
+(<a href="https://hedron.readthedocs.io/en/latest/getting-started/installation/">install notes</a>).
+</details>
 
 ## Packages
 
@@ -56,14 +67,16 @@ Optional extras (charts, conformance, extras, native accel, notebook, MCP, Gradi
 FastAPI-native typed components, HTMX fragments, and secure HTML defaults. Audience:
 CRUD, internal tools, dashboards, forms, admin, and data apps.
 
-Flask/Django adapters (`hedron-flask`, `hedron-django`) are Supported: Blueprint/`init_app`,
-AppConfig, forms bridge, and bounded QuerySet DataSource.
+Flask/Django adapters (`hedron-flask`, `hedron-django`) ship Blueprint/`init_app`,
+AppConfig, forms bridge, and bounded QuerySet DataSource on the Beta package train —
+capability readiness is **Supported** for those surfaces (pin versions).
 Live SSE/WebSocket helpers are **experimental** — prefer polling behind buffering proxies.
 See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.18/).
+[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.18/) ·
+[Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 

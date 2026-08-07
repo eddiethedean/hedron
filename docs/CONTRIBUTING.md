@@ -40,13 +40,16 @@ python scripts/check_docs_train_ssot.py
 ```
 
 You do **not** need Playwright or the full pytest suite locally for markdown/typo PRs.
-CI still runs **browser** (Chromium) and **evidence** jobs on every pull request (no path
-filters today) — see the CI map. If those jobs fail for reasons unrelated to your docs
-change, ask a maintainer; do not skip CI with `--no-verify`.
+**CI still runs `test`, `quality`, `browser` (Chromium), and `evidence` on every pull
+request** (no path filters today) — see the CI map. For docs-only PRs: run the local
+commands above before opening; if browser/evidence fail for reasons unrelated to your
+change, ask a maintainer rather than expanding the diff. Do not skip CI with
+`--no-verify`.
 
 When to leave Read the Docs for the GitHub corpus: RFCs, acceptance gates, STATUS/ROADMAP
 internals, ENGINEERING_BASELINE, and DECISIONS are **excluded from the public MkDocs site**
 — edit them on GitHub; adopters should stay on What’s ready / guides / API pages.
+Foundations non-goals and performance budgets **are** published on RTD under Adopt.
 
 **Local browser suite (optional):** install Playwright Chromium, then:
 
@@ -129,13 +132,22 @@ gates today (no path filters).
 | `packages/hedron` | FastAPI flagship |
 | `packages/hedron-explorer` | Dev Explorer (`hedron[dev]`) |
 | `packages/hedron-data` | DataTable / DataEditor (`hedron[data]`) |
-| `packages/hedron-charts` | Visualization adapters (`hedron[charts]`) |
-| `packages/hedron-sample-kit` | Sample plugin |
+| `packages/hedron-charts` | Visualization adapters (`hedron[charts]`, Alpha) |
+| `packages/hedron-sample-kit` | Sample plugin (Alpha) |
 | `packages/hedron-flask` | Flask adapter |
 | `packages/hedron-django` | Django adapter |
 | `packages/hedron-jinja` | Optional HDJ templates |
+| `packages/hedron-conformance` | Language-neutral conformance kit |
+| `packages/hedron-extras` | Curated extras / workbenches (`hedron[extras]`) |
+| `packages/hedron-native` | Optional Rust HTML-escape acceleration (Alpha) |
+| `packages/hedron-notebook` | Server-side notebook preview (Alpha) |
+| `packages/hedron-mcp` | Deny-by-default MCP projection (Alpha) |
+| `packages/hedron-gradio` | Gradio client interop (Alpha / Experimental) |
 | `tests/` | Unit, integration, conformance, adapters, security, browser |
 | `examples/reference-app` | FastAPI cumulative example |
+| `examples/notes-sqlalchemy` | SQLAlchemy notes recipe |
+| `examples/session-auth` | Session login recipe |
+| `examples/file-upload` | Multipart upload recipe |
 | `examples/live-interaction` | Poll + stream + SSE / Job SSE / WS / preload sample |
 | `examples/flask-reference` | Flask slice |
 | `examples/django-reference` | Django slice |

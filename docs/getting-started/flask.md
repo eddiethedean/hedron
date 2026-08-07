@@ -9,6 +9,12 @@ Flask/Django page + fragment routing and HTMX are Supported on **0.18.0**. Prefe
 `init_app` + `HedronBlueprint` for application factories; the constructor form remains
 supported. Use polling for job status on Flask (SSE helpers stay FastAPI-flagship).
 
+!!! tip "Try without local setup"
+
+    Open the monorepo in [Codespaces / Dev Container](../examples/try-it.md), then run the
+    Flask reference slice from `examples/flask-reference/README.md`. There is no
+    `hedron new --flask` yet — greenfield steps below create the app yourself.
+
 ## Greenfield (empty folder → hello)
 
 ```bash

@@ -1,16 +1,30 @@
 # Build your first app
 
-**~5–10 minutes** from a clean environment to **Hello from hedron new**, then a
-one-line edit. Prefer **`python -m hedron`** so PATH never matters.
+**~5–10 minutes** from a clean environment to **Hello from hedron new**, a working
+**Refresh** click, then a one-line edit. Prefer **`python -m hedron`** so PATH never
+matters.
 
-!!! note "Why install twice?"
+## Prerequisites
 
-    The first `pip install` / `uvx` provides the **CLI**. After `hedron new`,
-    `pip install -e .` / `uv sync` installs the scaffold’s **project dependency** so
-    uvicorn uses the pinned version. See
-    [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
+- CPython **3.11–3.14** (use a **clean virtual environment** for your first try)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
+- No Node.js required
 
-## 1. Install and run the scaffold
+=== "Install uv (recommended)"
+
+    ```bash
+    # macOS / Linux
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # Windows (PowerShell): irm https://astral.sh/uv/install.ps1 | iex
+    # Or: brew install uv / see https://docs.astral.sh/uv/getting-started/installation/
+    ```
+
+=== "pip only"
+
+    Use `python3` (macOS/Linux) or `py -3` (Windows) if `python` is missing or points at
+    the wrong interpreter. Create a venv before installing.
+
+## 1. Scaffold, sync, run
 
 === "uv (recommended)"
 
@@ -24,41 +38,93 @@ one-line edit. Prefer **`python -m hedron`** so PATH never matters.
 === "pip (venv)"
 
     ```bash
-    python -m venv .venv
-    source .venv/bin/activate   # Windows PowerShell: .\.venv\Scripts\Activate.ps1
+    python3 -m venv .venv          # Windows: py -3 -m venv .venv
+    source .venv/bin/activate      # Windows PowerShell: .\.venv\Scripts\Activate.ps1
     python -m pip install "hedron>=0.18.0" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
-    python -m pip install -e .   # project-local pinned hedron for uvicorn
+    python -m pip install -e .     # project-local pinned hedron for uvicorn
     uvicorn app:app --reload
     ```
 
+!!! tip "Why does pip install twice?"
+
+    The first install provides the **CLI**. After `hedron new`, `pip install -e .` /
+    `uv sync` installs the scaffold’s **project dependency** so uvicorn uses the pinned
+    version. See [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
+
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
+
+**Click Refresh status.** The panel text should update with a new UTC timestamp. That is
+a declared fragment region + HTMX swap — the interactive promise of the scaffold.
 
 Extras, Flask/Django, and troubleshooting: [Installation](installation.md).
 
-## 2. Edit the scaffold (~2 minutes)
+## 2. What the scaffold looks like
+
+`hedron new` writes roughly this `app.py` (timestamp line may vary):
+
+```python title="app.py"
+from datetime import UTC, datetime
+
+from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+
+app = Hedron(
+    title="Hedron App",
+    security="standard",
+    explorer="off",
+    session_secret="replace-in-production",
+)
+
+status = app.region("service-status", description="Live status panel")
+
+
+def status_panel():
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return html.div(
+        Text(f"All systems operational · refreshed {stamp}"),
+        id=status.id,
+        role="status",
+        aria={"live": "polite"},
+    )
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(
+        Stack(
+            Text("Hello from hedron new"),
+            status_panel(),
+            RefreshButton.for_region(status, href="/status", label="Refresh status"),
+        ),
+        title="Home",
+    )
+
+
+@app.fragment("/status", region=status)
+def refresh_status():
+    return swap(status_panel())
+```
+
+## 3. Edit the Hello text (~2 minutes)
 
 **Do not** re-run `hedron new` or paste a second `app.py` over the scaffold unless you
 intend to replace it.
 
-1. Open `app.py` and change the home `Text(...)` (or greeting string) to your name
-   (see before/after below).
+1. Change the home `Text("Hello from hedron new")` to your name.
 2. Save — with `--reload`, the browser should update.
-3. Add a region update without full reload: [HTMX interactions](../guides/htmx-interactions.md).
+3. Extend the same Refresh pattern: [HTMX interactions](../guides/htmx-interactions.md).
 4. Then add a small form: [Minimal form POST](../guides/minimal-form.md).
 
-### Before / after
-
 ```python
-# Before (scaffold greeting)
+# Before
 Text("Hello from hedron new")
 
 # After
 Text("Hello from Ada")
 ```
 
-Optional checks (after the HTMX guide — `HX-Request` fragments are covered there):
+Optional check:
 
 ```bash
 python -m hedron check --app app:app   # or: uv run hedron check --app app:app
@@ -104,6 +170,7 @@ available. Always set an explicit `session_secret` before deployment.
 ## What you learned
 
 - A typed `Page` renders as a full HTML document.
+- A declared `region` + `@app.fragment` updates part of the page without a full reload.
 - Editing Python components updates the UI (with reload).
 
 **Next:** [HTMX interactions](../guides/htmx-interactions.md) →

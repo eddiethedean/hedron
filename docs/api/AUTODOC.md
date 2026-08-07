@@ -276,6 +276,16 @@ Narrative companions: [Coverage map](COVERAGE.md) Â· [Stability](STABILITY.md) Â
     options:
       heading_level: 3
 
+::: hedron_core.jobs.JobBackend
+    options:
+      members:
+        - submit
+        - get
+        - request_cancel
+        - cleanup_expired
+        - mark
+      heading_level: 3
+
 ::: hedron_core.jobs.InMemoryJobBackend
     options:
       heading_level: 3

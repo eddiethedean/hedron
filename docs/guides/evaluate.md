@@ -25,7 +25,8 @@ Compare positioning: [Why Hedron](why-hedron.md).
   optional `hedron[data]` / `hedron[jinja]` / `hedron[dev]`, polling job status
 - **Prefer polling:** live SSE / WebSocket (`hedron.experimental`)
 - **Pin and expect churn:** `hedron[charts]` (Alpha), notebook / MCP / Gradio (Alpha / Experimental)
-- **Model demos:** Supported on Beta packages — [Model demos](model-demos.md)
+- **Model demos:** **Supported** capability (fail-closed) on the Beta package train —
+  [Model demos](model-demos.md)
 
 Full matrix: [What’s ready](whats-ready.md).
 

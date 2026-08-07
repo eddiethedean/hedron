@@ -48,16 +48,21 @@ See [Understanding maturity labels](../getting-started/how-to-read.md).
 
 | Job | Status | Start here |
 |---|---|---|
-| Ship CRUD / admin / forms | **Supported** (Beta packages) | [Installation](../getting-started/installation.md) → HTMX → Minimal form |
+| Ship CRUD / admin / forms | **Supported** | [Installation](../getting-started/installation.md) → HTMX → Minimal form |
 | Multi-worker durable jobs | **Supported** with shared Redis backend | [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
-| Flask / Django host | **Supported** adapters | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
+| Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
 | Charts | **Alpha** | Pin `hedron[charts]`; Matplotlib default |
-| Model demos / inference workflows | **Supported** (Beta API; fail-closed) | [Model demos](model-demos.md) |
+| Model demos / inference workflows | **Supported** (fail-closed) | [Model demos](model-demos.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
-## Supported capabilities (Beta packages)
+!!! note "Package train vs capability"
+
+    Flagship packages are **Beta** on PyPI — pin `>=0.18.0,<0.19`. The table above is
+    **capability readiness** (Supported / Experimental / Deferred), not package maturity.
+
+## Supported capabilities
 
 | Capability | Package / surface | Status |
 |---|---|---|

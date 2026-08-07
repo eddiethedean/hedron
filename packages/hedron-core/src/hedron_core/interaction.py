@@ -146,7 +146,46 @@ class HtmxRequestFacts:
 
 @dataclass(frozen=True, slots=True)
 class InteractionResult:
-    """Primary content plus validated HTMX mechanics (headers stay inspectable)."""
+    """Primary content plus validated HTMX mechanics (headers stay inspectable).
+
+    Prefer returning ``InteractionResult`` (or helpers such as ``swap(...)``) from
+    fragment and action handlers when you need explicit HTMX headers.
+
+    Args:
+        content: Node tree rendered for the response body (may be ``None`` for
+            header-only redirects / refreshes).
+        status_code: HTTP status for the response.
+        target: Optional ``HX-Retarget`` selector override.
+        swap: Optional ``HX-Reswap`` strategy override.
+        oob: Out-of-band updates applied alongside the primary swap.
+        trigger: ``HX-Trigger`` event name or JSON-compatible mapping.
+        trigger_after_swap: ``HX-Trigger-After-Swap`` payload.
+        trigger_after_settle: ``HX-Trigger-After-Settle`` payload.
+        push_url: ``HX-Push-Url`` value (``True`` uses the request URL).
+        replace_url: ``HX-Replace-Url`` value.
+        redirect: ``HX-Redirect`` or location redirect target when policy allows.
+        refresh: When ``True``, emit ``HX-Refresh``.
+        retarget: Alternate spelling forwarded as retarget header when set.
+        reswap: Alternate spelling forwarded as reswap header when set.
+        reselect: ``HX-Reselect`` selector.
+        location: ``HX-Location`` payload.
+        history: History mode for the interaction (``none`` by default).
+        cache: Cache hint for response headers (``vary-htmx`` by default).
+        concurrency: Optional concurrency token / key for adaptive controls.
+        region_id: Declared fragment region id this result targets.
+        policy: Interaction policy including declared regions and OOB rules.
+        headers: Extra response headers (must pass HTMX allowlist validation).
+        explanation: Optional human-readable note for diagnostics / Explorer.
+
+    Raises:
+        FragmentRegionError: When resolving a request target that is not an
+            authorized declared region (via ``resolve_fragment_region`` helpers).
+
+    Examples:
+        >>> from hedron_core.interaction import InteractionResult
+        >>> InteractionResult(content=None, status_code=200, refresh=True)
+        InteractionResult(...)
+    """
 
     content: NodeLike | None = None
     status_code: int = 200

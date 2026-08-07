@@ -76,7 +76,11 @@ exclude_docs: |
   archive/**
   rfcs/**
   acceptance/**
-  foundations/**
+  foundations/01_VISION.md
+  foundations/02_PHILOSOPHY.md
+  foundations/03_DESIGN_PRINCIPLES.md
+  foundations/05_GLOSSARY.md
+  foundations/README.md
   implementation/**
   /ROADMAP.md
   /STATUS.md
@@ -87,7 +91,6 @@ exclude_docs: |
   /PROJECT_LAYOUT.md
   /DIAGNOSTICS.md
   /IDENTIFIERS.md
-  /PERFORMANCE_BUDGETS.md
   /REFERENCE_APPLICATION.md
   /INFERENCE_OVERRIDES.md
   guides/feature-research.md
@@ -167,17 +170,17 @@ nav:
   - Home: index.md
   - Learn:
     - Overview: getting-started/index.md
-    - Build your first app: getting-started/quickstart.md
     - Installation: getting-started/installation.md
+    - Build your first app: getting-started/quickstart.md
     - HTMX interactions: guides/htmx-interactions.md
     - Minimal form POST: guides/minimal-form.md
     - Learning path: getting-started/learning-path.md
     - Core concepts: getting-started/core-concepts.md
+    - FAQ: guides/faq.md
     - Other hosts:
       - Add Flask app: getting-started/flask.md
       - Add Django project: getting-started/django.md
     - Help:
-      - FAQ: guides/faq.md
       - Troubleshooting: guides/troubleshooting.md
       - Error codes: guides/error-codes.md
   - Adopt:
@@ -188,6 +191,8 @@ nav:
     - More:
       - Production readiness: guides/production-readiness.md
       - Architecture: ARCHITECTURE.md
+      - Non-goals: foundations/04_NON_GOALS.md
+      - Performance budgets: PERFORMANCE_BUDGETS.md
       - Conformance kit: conformance/INDEX.md
       - Design principles: guides/design-principles.md
       - Understanding maturity labels: getting-started/how-to-read.md
@@ -231,8 +236,13 @@ nav:
     - Try with Codespaces / Dev Container: examples/try-it.md
     - Single-file apps: examples/single-file.md
     - CRUD tutorial: examples/crud-tutorial.md
+    - Recipes:
+      - Notes + SQLAlchemy: examples/notes-sqlalchemy.md
+      - Session auth: examples/session-auth.md
+      - File upload: examples/file-upload.md
     - Runnable examples: examples/runnable.md
     - Reference app walkthrough: examples/reference-app.md
+    - Phase evidence (0.15–0.18): examples/phase-evidence.md
     - Simulated UI patterns (not a server): examples/gallery.md
   - Reference:
     - Components:
@@ -442,29 +452,30 @@ nav:
   - Project:
     - Public roadmap: guides/roadmap.md
     - Upgrade (0.8 → 0.18): guides/upgrade.md
-    - Migrations:
-      - Streamlit: guides/streamlit-migration.md
-      - Streamlit matrix: guides/streamlit-migration-matrix.md
-      - NiceGUI: guides/nicegui-migration.md
-      - Dash: guides/dash-migration.md
-      - FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
+    - Changelog: guides/changelog.md
     - What's new: guides/release-notes.md
     - What's new in 0.18: guides/whats-new-0.18.md
     - Earlier what's-new (archive):
       - 0.17: guides/whats-new-0.17.md
       - 0.16: guides/whats-new-0.16.md
+      - 0.15: guides/whats-new-0.15.md
       - 0.14: guides/whats-new-0.14.md
       - 0.13: guides/whats-new-0.13.md
       - 0.12: guides/whats-new-0.12.md
       - 0.11: guides/whats-new-0.11.md
       - 0.10.1: guides/whats-new-0.10.1.md
       - 0.10: guides/whats-new-0.10.md
+    - Migrations:
+      - Streamlit: guides/streamlit-migration.md
+      - Streamlit matrix: guides/streamlit-migration-matrix.md
+      - NiceGUI: guides/nicegui-migration.md
+      - Dash: guides/dash-migration.md
+      - FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - Compatibility: COMPATIBILITY.md
     - Configuration: CONFIGURATION.md
     - Glossary: GLOSSARY.md
     - Native desktop shell recipe: guides/native-desktop-shell.md
     - Contributing: CONTRIBUTING.md
     - Maintainers: guides/maintainer-handbook.md
-    - Maintainer notes: guides/maintainers.md
     - Code of Conduct: CODE_OF_CONDUCT.md
     - Security disclosure: SECURITY.md

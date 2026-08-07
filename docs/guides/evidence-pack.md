@@ -13,7 +13,7 @@ these artifacts at cut time.
 | Package verify (0.18) | CI / release checklist | [`scripts/verify_pkg_18.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/verify_pkg_18.py) |
 
 **PyPI is authoritative for package versions.** Confirm `hedron==0.18.0` (and sibling
-Beta packages) on [PyPI](https://pypi.org/project/hedron/). Git tags such as `v0.18.0`
+packages on the Beta train) on [PyPI](https://pypi.org/project/hedron/). Git tags such as `v0.18.0`
 mark the cut; Release asset attachment may lag — if assets are missing, regenerate from
 the tagged checkout as below.
 

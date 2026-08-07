@@ -4,17 +4,29 @@ Runnable samples for the Hedron monorepo. Prefer these after
 [`hedron new`](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/)
 on a clean venv — that is the polished first-success path.
 
-| Example | Host | Start here? | Notes |
-|---|---|---|---|
-| [`reference-app/`](reference-app/) | FastAPI | Yes (full app) | Auth CRUD + DataEditor; charts are **Alpha** |
-| [`model-demo-0.18/`](model-demo-0.18/) | FastAPI | 0.18 inference start-here | ModelDemo, InferencePolicy, workflow run, feedback |
-| [`dashboard-0.17/`](dashboard-0.17/) | FastAPI | 0.17 dashboard demo | InteractionGraph / patches / AppShell |
-| [`data-app-0.16/`](data-app-0.16/) | FastAPI | 0.16 extras demo | Workbench-oriented sample |
-| [`data-app-0.15/`](data-app-0.15/) | FastAPI | 0.15 surface demo | region/fragment/swap, controls, Map, media stubs |
-| [`live-interaction/`](live-interaction/) | FastAPI | After polling guide | Polling **Supported**; SSE/WS/stream/preload **experimental** |
-| [`flask-reference/`](flask-reference/) | Flask | Adapter adopters | Home + fragment slice |
-| [`django-reference/`](django-reference/) | Django | Adapter adopters | Waitress WSGI or uvicorn ASGI |
-| [`hdj-progressive/`](hdj-progressive/) | CLI render | HDJ learners | Needs `hedron[jinja]` / workspace sync |
+## Recipes (prefer these)
+
+| Example | Host | Notes |
+|---|---|---|
+| [`reference-app/`](reference-app/) | FastAPI | Auth CRUD + DataEditor; charts are **Alpha** |
+| [`notes-sqlalchemy/`](notes-sqlalchemy/) | FastAPI | SQLite notes + CSRF |
+| [`session-auth/`](session-auth/) | FastAPI | Session login gate |
+| [`file-upload/`](file-upload/) | FastAPI | Multipart upload with size/type checks |
+| [`live-interaction/`](live-interaction/) | FastAPI | Polling **Supported**; SSE/WS **experimental** |
+| [`flask-reference/`](flask-reference/) | Flask | Home + fragment slice |
+| [`django-reference/`](django-reference/) | Django | Waitress WSGI or uvicorn ASGI |
+| [`hdj-progressive/`](hdj-progressive/) | CLI render | Needs `hedron[jinja]` / workspace sync |
+
+## Phase evidence (0.15–0.18)
+
+| Example | Phase | Notes |
+|---|---|---|
+| [`model-demo-0.18/`](model-demo-0.18/) | 0.18 | ModelDemo / InferencePolicy exit |
+| [`dashboard-0.17/`](dashboard-0.17/) | 0.17 | Dashboard / agent interface exit |
+| [`data-app-0.16/`](data-app-0.16/) | 0.16 | Extras / workbench exit |
+| [`data-app-0.15/`](data-app-0.15/) | 0.15 | Data-app surface exit |
+
+Docs: [phase evidence](https://hedron.readthedocs.io/en/latest/examples/phase-evidence/).
 
 ## Monorepo run pattern
 

@@ -3,9 +3,14 @@
 Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
 The adapter does not install FastAPI. Hedron does **not** ship `hedron new --django` yet.
 
-Flask/Django page + fragment routing and HTMX are Supported on **0.18.0**. Django
+Flask/Django page + fragment routing and HTMX are **Supported** on **0.18.0**. Django
 forms bridge and bounded QuerySet DataSource are Supported. Use polling for
 job status on Django (SSE helpers stay FastAPI-flagship).
+
+!!! tip "Try without local setup"
+
+    Open the monorepo in [Codespaces / Dev Container](../examples/try-it.md), then run the
+    Django reference slice below. There is no `hedron new --django` yet.
 
 ## Fastest path: clone the reference
 

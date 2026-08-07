@@ -6,9 +6,9 @@ status: shipped
 
 !!! note "Stability"
 
-    Classifications live in [STABILITY.md](STABILITY.md). The audit sink is **Supported**
-    (beta) on the 0.13 train. Sinks must never break request handling — emit failures
-    are swallowed and logged.
+    Classifications live in [STABILITY.md](STABILITY.md). The audit sink is a
+    **Supported** optional capability. Package maturity remains **Beta** — pin versions.
+    Sinks must never break request handling — emit failures are swallowed and logged.
 
 **Status:** Shipped in `0.13.0`
 

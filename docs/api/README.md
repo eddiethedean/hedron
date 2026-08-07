@@ -40,10 +40,10 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
     are shorter summaries — prefer guides + Autodoc when a page lacks an Errors section.
     Human error index: [Error codes](../guides/error-codes.md).
 
-## Shipped through 0.10
+## Shipped on the 0.18 train
 
-These surfaces are implemented on the **0.18.0** train (includes the 0.9 authoring break
-and 0.10 live interaction; last published train **0.18.x**).
+These surfaces are implemented on the **0.18.0** train (includes the 0.9 authoring break,
+0.10 live interaction, and later capability phases through 0.18).
 
 ### Application
 

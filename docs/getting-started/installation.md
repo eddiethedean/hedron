@@ -1,15 +1,29 @@
 # Installation
 
+This page is the **extras, hosts, and troubleshooting hub**. For the golden path
+(uv step 0 → scaffold → Hello → Refresh → edit), start with
+[Build your first app](quickstart.md).
+
 ## Prerequisites
 
 - CPython **3.11–3.14** (use a **clean virtual environment** for your first try)
-- A package manager (`pip` or [uv](https://docs.astral.sh/uv/))
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 
-Prefer **`python -m hedron`** so PATH never matters. Pick **pip** or **uv**, then stop—
-do not also hand-write a second `app.py` over the scaffold.
+=== "Install uv"
 
-## Create your first app
+    ```bash
+    # macOS / Linux
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # Windows (PowerShell): irm https://astral.sh/uv/install.ps1 | iex
+    ```
+
+=== "python vs python3"
+
+    Prefer `python3` on macOS/Linux and `py -3` on Windows when `python` is missing or
+    points at the wrong interpreter. Prefer **`python -m hedron`** so PATH never matters.
+
+## Create your first app (summary)
 
 === "uv (recommended)"
 
@@ -25,40 +39,38 @@ do not also hand-write a second `app.py` over the scaffold.
 === "pip (venv)"
 
     ```bash
-    python -m venv .venv
-    source .venv/bin/activate   # Windows PowerShell: .\.venv\Scripts\Activate.ps1
+    python3 -m venv .venv          # Windows: py -3 -m venv .venv
+    source .venv/bin/activate      # Windows PowerShell: .\.venv\Scripts\Activate.ps1
     python -m pip install "hedron>=0.18.0" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
-    python -m pip install -e .   # project-local pinned hedron for uvicorn
+    python -m pip install -e .     # project-local pinned hedron for uvicorn
     uvicorn app:app --reload
     ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
+Click **Refresh status** — the timestamp should update.
 
-!!! note "Why does the pip path install twice?"
+!!! tip "Why does the pip path install twice?"
 
     `uvx` / the first pip install provides the **CLI**. `uv sync` / `pip install -e .`
     installs the scaffold’s **project dependency** so uvicorn uses the pinned version.
-    The uv path is one mental model: scaffold → sync → run. See
-    [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
+    See [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
 
 `hedron new` creates:
 
 | Path | Purpose |
 |---|---|
-| `app.py` | Scaffold home page (`Hello from hedron new`) |
+| `app.py` | Scaffold home page + Refresh status panel |
 | `pyproject.toml` | Project deps (`hedron>=0.18.0`) and `[tool.hedron]` |
 | `components/` | Empty directory for your components (safe to leave empty) |
 
-It refuses to overwrite a non-empty destination unless you pass `--force`. Do **not**
-also run `uv init` into the same directory unless you intend to replace the scaffold.
+It refuses to overwrite a non-empty destination unless you pass `--force`.
 
-If `hedron` is not found after install, prefer **`python -m hedron …`** (same interpreter
-as `pip`) or see [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
+If `hedron` is not found after install, prefer **`python -m hedron …`** or see
+[Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found).
 
-**Next:** [Build your first app](quickstart.md) — same install commands plus edit the
-scaffold (or a manual `app.py`). This page stays the extras / troubleshooting hub.
+**Next:** [Build your first app](quickstart.md) for the full scaffold dump and edit steps.
 
 ## Verify
 
@@ -171,7 +183,7 @@ Use this only if you are **not** using `hedron new`.
     python -m pip install "hedron>=0.18.0" "uvicorn[standard]"
     ```
 
-Then create `app.py` from the [quickstart](quickstart.md) (Path B).
+Then create `app.py` from the [quickstart](quickstart.md) (manual / no-scaffold path).
 
 ## Supported environments
 

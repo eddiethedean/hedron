@@ -6,9 +6,10 @@ status: shipped
 
 !!! note "Stability"
 
-    Classifications live in [STABILITY.md](STABILITY.md). Optional tracing is
-    **Supported** (beta) on the 0.13 train via `hedron[otel]` / `hedron.tracing`.
-    Disabled by default; exporter absence must not change component semantics.
+    Classifications live in [STABILITY.md](STABILITY.md). Optional tracing is a
+    **Supported** optional capability via `hedron[otel]` / `hedron.tracing` on the
+    current train. Package maturity remains **Beta** — pin versions. Disabled by
+    default; exporter absence must not change component semantics.
 
 **Status:** Shipped in `0.13.0`
 

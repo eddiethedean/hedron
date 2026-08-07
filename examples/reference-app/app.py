@@ -1,4 +1,4 @@
-"""Authenticated team-admin CRUD reference application (phase 0.3)."""
+"""Authenticated team-admin CRUD reference application (0.18 train)."""
 
 from __future__ import annotations
 
@@ -431,10 +431,10 @@ def _status_banner_section(*, request: Request | None = None) -> Any:
     else:
         styles = module.load_styles()
 
-    python_banner = StatusBanner(label="Phase 0.3 ready", tone="info")
+    python_banner = StatusBanner(label="0.18 train ready", tone="info")
     disclose = _HtmlTag("hedron-disclose")(
         html.p("Web Component disclose survives HTMX swaps."),
-        **{"label": "About phase 0.3"},
+        **{"label": "About the reference app"},
     )
     return Stack(
         Heading("Typed component authoring", level=3),

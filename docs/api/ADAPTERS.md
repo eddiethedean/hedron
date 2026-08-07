@@ -11,7 +11,9 @@ status: implemented
     Package maturity (Beta/Alpha) is separate from API level
     (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Beta Supported adapters shipped (`hedron-flask`, `hedron-django`).
+**Status:** Adapters shipped (`hedron-flask`, `hedron-django`). Capability readiness:
+**Supported** for Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
+DataSource. Package train remains **Beta** on PyPI — pin versions.
 Portable contracts live in `hedron-core`. Flask `init_app` / `HedronBlueprint` and
 Django forms + QuerySet DataSource are Supported (D-046; current train **0.18.0**).
 

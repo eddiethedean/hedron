@@ -1,7 +1,8 @@
 # Release notes
 
 Train-level summary for the **0.18.x** line (**Published**). Package changelogs remain the
-detailed record; this page is the adopter-facing index.
+detailed record; this page is the adopter-facing index. Aggregated links:
+[Changelog](changelog.md).
 
 ## Current train — 0.18.0 (2026-08-06)
 

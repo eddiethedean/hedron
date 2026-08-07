@@ -1,10 +1,15 @@
-# Performance budgets (0.8 compatibility baseline)
+# Performance budgets
 
-**Status:** Published for phase 0.8 enforcement  
-**Evidence:** `PERF-08-001`, `PERF-08-002`
+**Status:** Published for the **0.18** train (budgets introduced in phase 0.8; still
+enforced)  
+**Evidence:** `PERF-08-001`, `PERF-08-002`, `tests/performance/`
 
-Budgets are soft CI ceilings sized for GitHub-hosted runners. They catch gross regressions; they
-are not marketing latency claims. Measure with `tests/performance/`.
+Budgets are soft CI ceilings sized for GitHub-hosted runners. They catch gross regressions;
+they are not marketing latency claims. Measure with `tests/performance/`.
+
+Load/proxy backpressure proof for live SSE/WebSocket remains **Deferred** — prefer
+polling in production until you have your own ops evidence. See
+[What’s ready](guides/whats-ready.md) and [Performance guide](guides/performance.md).
 
 ## Workloads
 

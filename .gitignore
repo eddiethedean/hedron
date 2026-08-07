@@ -31,3 +31,5 @@ examples/reference-app/.hedron/
 *.dylib
 *.pyd
 .devcontainer/
+# Local SQLite demos (e.g. examples/notes-sqlalchemy)
+*.db
