@@ -222,6 +222,8 @@ jobs:
             dist/*.tar.gz
             dist/evidence-bundle/*
       - name: Publish to PyPI
+        id: pypi
+        continue-on-error: true
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         run: |
@@ -247,7 +249,7 @@ jobs:
           )"
             # PEP 503 normalized name for JSON/simple indexes.
             normalized="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | tr '_.' '-')"
-            version_code="$(curl -sS -o /dev/null -w '%{http_code}' \
+            version_code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
               "https://pypi.org/pypi/${normalized}/${pkg_version}/json")"
             if [ "$version_code" = "200" ]; then
               echo "Skipping ${name}==${pkg_version} (already on PyPI)"
@@ -256,7 +258,7 @@ jobs:
               echo "Unexpected PyPI version status ${version_code} for ${name}==${pkg_version}" >&2
               exit 1
             fi
-            code="$(curl -sS -o /dev/null -w '%{http_code}' \
+            code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
               -H 'Accept: application/vnd.pypi.simple.v1+json' \
               "https://pypi.org/simple/${normalized}/")"
             if [ "$code" = "200" ]; then
@@ -268,6 +270,24 @@ jobs:
               exit 1
             fi
           done
+
+          # Publish pure-Python / non-native new projects first so a native
+          # manylinux/rate-limit issue does not block notebook/sim creates.
+          if ((${#new_names[@]})); then
+            ordered_new=()
+            for name in "${new_names[@]}"; do
+              case "$name" in
+                *-native|hedron-native) ;;
+                *) ordered_new+=("$name") ;;
+              esac
+            done
+            for name in "${new_names[@]}"; do
+              case "$name" in
+                *-native|hedron-native) ordered_new+=("$name") ;;
+              esac
+            done
+            new_names=("${ordered_new[@]}")
+          fi
 
           echo "Existing PyPI projects to publish: ${existing_names[*]:-none}"
           echo "New PyPI projects to publish: ${new_names[*]:-none}"
@@ -299,12 +319,13 @@ jobs:
               return 1
             fi
             local attempt=1
-            local max_attempts=7
+            local max_attempts=3
             local out=""
             while true; do
               echo "Publishing ${kind} project ${name} (attempt ${attempt}/${max_attempts}): ${filtered[*]}"
               set +e
-              out="$(uv publish --token "$UV_PUBLISH_TOKEN" "${filtered[@]}" 2>&1)"
+              # Avoid indefinite hangs on upload/auth stalls.
+              out="$(timeout 180 uv publish --token "$UV_PUBLISH_TOKEN" "${filtered[@]}" 2>&1)"
               local status=$?
               set -e
               printf '%s\n' "$out"
@@ -315,10 +336,13 @@ jobs:
                 echo "INFO: ${name} artifacts already on PyPI; treating as success"
                 return 0
               fi
+              if [ "$status" -eq 124 ]; then
+                echo "WARN: uv publish timed out after 180s for ${name}" >&2
+              fi
               if [ "$kind" = "NEW" ] && [ "$attempt" -lt "$max_attempts" ] \
                 && printf '%s' "$out" | grep -Eqi '429|Too many new projects'; then
-                echo "PyPI new-project rate limit; waiting 60 minutes before retry"
-                sleep 3600
+                echo "PyPI new-project rate limit; waiting 20 minutes before retry"
+                sleep 1200
                 attempt=$((attempt + 1))
                 continue
               fi
@@ -352,9 +376,12 @@ jobs:
 
           if ((${#failed_names[@]})); then
             echo "One or more packages failed to publish: ${failed_names[*]}" >&2
+            echo "publish_failed=1" >> "$GITHUB_OUTPUT"
             exit 1
           fi
+          echo "publish_failed=0" >> "$GITHUB_OUTPUT"
       - name: Create GitHub Release
+        if: ${{ always() && !cancelled() }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -364,12 +391,17 @@ jobs:
           NOTES="$(uv run --python 3.11 python scripts/release_notes.py "$VERSION" --package hedron)"
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists; uploading artifacts"
-            gh release upload "$TAG" dist/*.whl dist/*.tar.gz --clobber
+            gh release upload "$TAG" dist/*.whl dist/*.tar.gz --clobber || true
           else
             gh release create "$TAG" dist/*.whl dist/*.tar.gz \
               --title "Hedron ${VERSION}" \
               --notes "$NOTES"
           fi
           if [ -d dist/evidence-bundle ]; then
-            gh release upload "$TAG" dist/evidence-bundle/* --clobber
+            gh release upload "$TAG" dist/evidence-bundle/* --clobber || true
           fi
+      - name: Fail job if PyPI publish failed
+        if: ${{ always() && !cancelled() && steps.pypi.outputs.publish_failed == '1' }}
+        run: |
+          echo "PyPI publish reported failures; GitHub Release may still have been created." >&2
+          exit 1
