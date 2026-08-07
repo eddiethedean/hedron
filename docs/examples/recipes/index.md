@@ -4,6 +4,9 @@ Short, copy-pasteable apps for common workflows. Prefer these after
 [Build your first app](../../getting-started/quickstart.md) and before the kitchen-sink
 [reference app](../reference-app.md).
 
+Each recipe page leads with a **no-clone** pip install + copy `app.py` path, then the
+monorepo `uv sync` command.
+
 | Recipe | What it shows | Limits |
 |---|---|---|
 | [Notes + SQLAlchemy](../notes-sqlalchemy.md) | Persist notes with SQLAlchemy + SQLite | Create + list + delete (not a full admin) |

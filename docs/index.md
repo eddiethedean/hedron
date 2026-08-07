@@ -20,8 +20,8 @@ click **Refresh status** (the time updates).
 
 <div class="hedron-actions" markdown>
 [Get started](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Installation](getting-started/installation.md){ .md-button }
 [Try in Codespaces](examples/try-it.md){ .md-button }
+[Why Hedron](guides/why-hedron.md){ .md-button }
 </div>
 
 <div class="hedron-signal-row">
@@ -38,7 +38,7 @@ Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first if y
 have it (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux).
 
 ```bash
-uvx --from "hedron>=0.18.0" hedron new my-hedron-app
+uvx --from "hedron>=0.18.0,<0.19" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run uvicorn app:app --reload
@@ -47,7 +47,9 @@ uv run uvicorn app:app --reload
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 Click **Refresh status** — the timestamp should change. That is an HTMX fragment swap.
 
-pip + venv alternate: [installation](getting-started/installation.md).
+![Hello from hedron new with Refresh status control](assets/hello-refresh.jpg)
+
+Extras and troubleshooting: [installation](getting-started/installation.md).
 
 ## A backend-native way to build UI
 

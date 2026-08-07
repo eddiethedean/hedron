@@ -97,11 +97,20 @@ profile expansion, feature IDs, and prologue schema are defined by RFC-0031.
 | `HEDRON_REDIS_URL` | Optional. Used by sample/compose job backends that speak Redis; omit for ordinary page apps |
 | `HEDRON_ROOT_PATH` | Optional. Sample deployments under a reverse-proxy prefix; not a substitute for correct ASGI `root_path` / WSGI `SCRIPT_NAME` |
 
+### Session secrets (application-owned)
+
+`Hedron` takes `session_secret=` on the constructor. There is **no** built-in env var that
+sets it automatically. Adopter convention for Docker/K8s:
+
+| Variable | Effect |
+|---|---|
+| `HEDRON_SESSION_SECRET` | **Your** `app.py` should pass `session_secret=os.environ["HEDRON_SESSION_SECRET"]` (or your secret manager’s equivalent). Hedron does not read this name itself. |
+
 Adapter hosts also require framework secrets outside this table (Flask `SECRET_KEY`,
-Django `SECRET_KEY`, FastAPI `session_secret`).
+Django `SECRET_KEY`).
 
 Secrets (session keys, credentials) belong in your secret manager or process environment,
-not in `[tool.hedron]`.
+not in `[tool.hedron]`. See [Deployment](guides/deployment.md).
 
 ## Ownership
 

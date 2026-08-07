@@ -14,24 +14,28 @@ on FastAPI + HTMX — without a Node.js frontend stack.
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
 # macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
 
-uvx --from "hedron>=0.18.0" hedron new my-hedron-app
+uvx --from "hedron>=0.18.0,<0.19" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 Click **Refresh status**; the timestamp should update.
 
+![Hello from hedron new with Refresh status control](docs/assets/hello-refresh.jpg)
+
+[![Open in GitHub Codespaces](https://img.shields.io/badge/Codespaces-Open-blue?logo=github)](https://codespaces.new/eddiethedean/hedron)
+
+Prefer not to install locally?
+[Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/).
+
 Alternate (pip + venv):
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .venv\Scripts\Activate.ps1
-python -m pip install "hedron>=0.18.0" "uvicorn[standard]"
+python -m pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 ```
-
-Prefer not to install locally?
-[Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/).
 
 **Next:** [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
 [HTMX](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →

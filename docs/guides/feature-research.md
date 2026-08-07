@@ -19,4 +19,4 @@ browse on GitHub. Start with [Why Hedron](why-hedron.md) for the buyer-facing co
 | [Flask adapter research](https://github.com/eddiethedean/hedron/blob/main/docs/FLASK_ADAPTER_RESEARCH.md) | Flask host research |
 | [Django adapter research](https://github.com/eddiethedean/hedron/blob/main/docs/DJANGO_ADAPTER_RESEARCH.md) | Django host research |
 
-Return to [Maintainers](maintainers.md).
+Return to [Maintainer handbook](maintainer-handbook.md).

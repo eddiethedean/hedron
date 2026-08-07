@@ -280,7 +280,7 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron>=0.18.0",
+    "hedron>=0.18.0,<0.19",
     "uvicorn[standard]>=0.30",
 ]
 
@@ -292,7 +292,8 @@ explorer = "off"
         encoding="utf-8",
     )
     (dest / "app.py").write_text(
-        """from datetime import UTC, datetime
+        """import os
+from datetime import UTC, datetime
 
 from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
 
@@ -300,7 +301,9 @@ app = Hedron(
     title="Hedron App",
     security="standard",
     explorer="off",
-    session_secret="replace-in-production",
+    session_secret=os.environ.get(
+        "HEDRON_SESSION_SECRET", "replace-in-production"
+    ),
 )
 
 status = app.region("service-status", description="Live status panel")

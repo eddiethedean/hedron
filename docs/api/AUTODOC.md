@@ -115,6 +115,28 @@ Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
     options:
       heading_level: 3
 
+::: hedron.interaction.swap
+    options:
+      heading_level: 3
+
+::: hedron.interaction.swap_oob
+    options:
+      heading_level: 3
+
+::: hedron.interaction.retarget
+    options:
+      heading_level: 3
+
+::: hedron.interaction.redirect_htmx
+    options:
+      heading_level: 3
+
+::: hedron.builtins.RefreshButton
+    options:
+      members:
+        - for_region
+      heading_level: 3
+
 ## Security
 
 ::: hedron.security.policy.SecurityPolicy

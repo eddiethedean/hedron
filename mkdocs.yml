@@ -168,14 +168,14 @@ copyright: Copyright &copy; 2026 Odos Matthews · Released under the MIT License
 
 nav:
   - Home: index.md
-  - Learn:
+  - Start:
     - Overview: getting-started/index.md
     - Build your first app: getting-started/quickstart.md
     - HTMX interactions: guides/htmx-interactions.md
     - Minimal form POST: guides/minimal-form.md
-    - Installation: getting-started/installation.md
     - Learning path: getting-started/learning-path.md
-    - Core concepts: getting-started/core-concepts.md
+    - Core concepts (optional): getting-started/core-concepts.md
+    - Installation (extras & troubleshooting): getting-started/installation.md
     - FAQ: guides/faq.md
     - Other hosts:
       - Add Flask app: getting-started/flask.md
@@ -183,22 +183,7 @@ nav:
     - Help:
       - Troubleshooting: guides/troubleshooting.md
       - Error codes: guides/error-codes.md
-  - Adopt:
-    - Why Hedron: guides/why-hedron.md
-    - What's ready today: guides/whats-ready.md
-    - Evaluate Hedron: guides/evaluate.md
-    - Enterprise diligence: guides/enterprise-diligence.md
-    - More:
-      - Production readiness: guides/production-readiness.md
-      - Architecture: ARCHITECTURE.md
-      - Non-goals: foundations/04_NON_GOALS.md
-      - Performance budgets: PERFORMANCE_BUDGETS.md
-      - Conformance kit: conformance/INDEX.md
-      - Design principles: guides/design-principles.md
-      - Understanding maturity labels: getting-started/how-to-read.md
-      - Support: guides/support.md
-      - Evidence pack: guides/evidence-pack.md
-  - Build:
+  - Guides:
     - Overview: guides/index.md
     - Interact:
       - Forms and actions: guides/forms-and-actions.md
@@ -240,15 +225,20 @@ nav:
       - Session auth: examples/session-auth.md
       - File upload: examples/file-upload.md
       - Jobs poll: examples/jobs-poll.md
+    - Runnable examples: examples/runnable.md
     - Tutorials:
       - CRUD tutorial: examples/crud-tutorial.md
       - Reference app walkthrough: examples/reference-app.md
-    - Runnable examples: examples/runnable.md
     - Single-file apps (alternate): examples/single-file.md
     - Maintainers:
       - Phase evidence (0.15–0.18): examples/phase-evidence.md
-    - Simulated UI patterns (not a server): examples/gallery.md
+      - Simulated UI patterns (not a server): examples/gallery.md
   - Reference:
+    - Start here:
+      - Hedron app: api/HEDRON.md
+      - Page: components/page.md
+      - Interaction: api/INTERACTION.md
+      - Security types: api/SECURITY_TYPES.md
     - Components:
       - Overview: components/index.md
       - Document and composition:
@@ -432,10 +422,10 @@ nav:
         - Data sources: api/DATA_SOURCE.md
         - Charts: api/CHART.md
       - Live:
-        - SSE: api/SSE.md
-        - Streaming: api/STREAMING.md
-        - WebSocket channel: api/WEBSOCKET_CHANNEL.md
-        - Navigation preload: api/PRELOAD.md
+        - SSE (experimental): api/SSE.md
+        - Streaming (experimental): api/STREAMING.md
+        - WebSocket channel (experimental): api/WEBSOCKET_CHANNEL.md
+        - Navigation preload (experimental): api/PRELOAD.md
         - Jobs: api/JOBS.md
         - Inference / model demos: api/INFERENCE.md
       - Cross-cutting:
@@ -454,8 +444,22 @@ nav:
         - HDJ (Jinja): api/JINJA.md
         - Conformance kit: api/CONFORMANCE.md
   - Project:
+    - Evaluate:
+      - Why Hedron: guides/why-hedron.md
+      - What's ready today: guides/whats-ready.md
+      - Evaluate Hedron: guides/evaluate.md
+      - Enterprise diligence: guides/enterprise-diligence.md
+      - Production readiness: guides/production-readiness.md
+      - Architecture: ARCHITECTURE.md
+      - Understanding maturity labels: getting-started/how-to-read.md
+      - Design principles: guides/design-principles.md
+      - Non-goals: foundations/04_NON_GOALS.md
+      - Performance budgets: PERFORMANCE_BUDGETS.md
+      - Conformance kit: conformance/INDEX.md
+      - Support: guides/support.md
+      - Evidence pack: guides/evidence-pack.md
     - Public roadmap: guides/roadmap.md
-    - Upgrade (0.8 → 0.18): guides/upgrade.md
+    - Upgrade to 0.18: guides/upgrade.md
     - Release notes: guides/release-notes.md
     - What's new in 0.18: guides/whats-new-0.18.md
     - Package changelogs: guides/changelog.md
@@ -475,6 +479,7 @@ nav:
       - NiceGUI: guides/nicegui-migration.md
       - Dash: guides/dash-migration.md
       - FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
+      - Gradio: guides/gradio-migration.md
     - Compatibility: COMPATIBILITY.md
     - Configuration: CONFIGURATION.md
     - Glossary: GLOSSARY.md

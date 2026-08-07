@@ -1,22 +1,22 @@
-# Build guides
+# Guides
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-Complete [Learn](../getting-started/index.md) first (Install → First app → HTMX →
+Complete [Start](../getting-started/index.md) first (First app → HTMX →
 Minimal form). This section continues with forms depth, live transports, data, security,
 and ops.
 
 **Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md) · [Error codes](error-codes.md)
-(also under **Learn → Help**).
+(also under **Start → Help**).
 
-Evaluating adoption? Use the top-level **Adopt** nav
+Evaluating adoption? Use **Project → Evaluate**
 ([What’s ready](whats-ready.md) · [Design principles](design-principles.md)).
 
 <div class="hedron-grid">
   <a class="hedron-card" href="../getting-started/">
     <span class="hedron-card__icon" aria-hidden="true">→</span>
-    <strong>Golden path (Learn)</strong>
-    <p>Install, first app, HTMX region refresh, and minimal form POST.</p>
+    <strong>Golden path (Start)</strong>
+    <p>First app, HTMX region refresh, and minimal form POST.</p>
   </a>
   <a class="hedron-card" href="faq/">
     <span class="hedron-card__icon" aria-hidden="true">?</span>

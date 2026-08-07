@@ -3,6 +3,15 @@
 Minimal FastAPI + Hedron notes app with SQLite persistence and CSRF-safe POST.
 Supports **create, list, and delete** — not a full admin CRUD surface.
 
+## Run without cloning the monorepo
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
+pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]" "sqlalchemy>=2.0"
+# Copy https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/notes-sqlalchemy/app.py → app.py
+uvicorn app:app --reload
+```
+
 ## Run (monorepo)
 
 ```bash

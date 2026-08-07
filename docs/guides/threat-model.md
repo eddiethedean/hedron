@@ -1,6 +1,7 @@
-# Threat model (0.11+ baseline)
+# Threat model (0.18)
 
-**Status:** Maintained for the published **0.14** train (baseline established in 0.11)  
+**Status:** Maintained for the published **0.18** train (baseline established in 0.11;
+refreshed for 0.15–0.18 surfaces)  
 **Owner:** hedron  
 **Evidence:** security acceptance on the current train; live-transport caveats on
 [What's ready](whats-ready.md)
@@ -15,6 +16,9 @@
 - Bundled browser assets (HTMX, disclose)
 - Django forms bridge outputs and bounded QuerySet DataSource pages
 - Adapter live helpers (Flask/Django polling; FastAPI SSE/WS)
+- Model-demo / inference inputs, predictions, and feedback records
+- Optional MCP tool projections and Gradio client adapters (deny-by-default)
+- Optional notebook preview sessions (localhost-oriented)
 
 ## Trust boundaries
 
@@ -35,6 +39,12 @@
 | Adapter live helpers | Prefer polling; treat SSE/WS as FastAPI-flagship observation with incomplete ops proof |
 | HDJ source | Trusted application/package code; dynamic values remain contextual data; hostile authors unsupported |
 | Identity / IdP | Out of Hedron scope — host owns OIDC/SSO/sessions |
+| Inference / model demos | Fail-closed: explicit actions, exposure policy, and consent before feedback retention |
+| `InferencePolicy` queues | In-process queues are **dev-only**; production needs app-owned scheduling/backends |
+| `InteractionRecorder` | Records only endpoints declared public; redacts credentials; never expands authority |
+| MCP projection (`hedron[mcp]`) | Deny-by-default tool exposure; apps must opt in each capability |
+| Gradio adapter (`hedron[gradio]`) | Deny-by-default discover; client interop is Experimental / Alpha |
+| Notebook preview (`hedron[notebook]`) | Localhost-oriented; not a Supported production multi-tenant surface |
 
 ## Adversaries and controls
 
@@ -51,13 +61,23 @@
 | Plugin / Explorer abuse | Prod Explorer off; capability/version checks; SARIF without secrets |
 | Supply-chain browser asset swap | Exact pin + SHA-256 digest audit (`scripts/asset_audit.py`) |
 | Dependency CVE | Lockfile + `scripts/generate_sbom.py` + release vuln audit |
+| Inference data leakage / unauthorized demo actions | Explicit `ActionRegistry` / exposure; fail-closed `InferencePolicy`; no silent tool expansion |
+| Feedback without consent | `PredictionFeedback` requires documented consent before retention |
+| Recorder expanding endpoint authority | Public-endpoint allowlist + redaction (`InteractionRecorder`) |
+| MCP / Gradio accidental exposure | Deny-by-default extras; pin Alpha packages; keep off production defaults |
+| Notebook preview cross-user access | Treat as local/dev; do not expose without app authz |
 
 ## Out of scope (application-owned)
 
 Identity providers, ORM authorization, durable job workers beyond `JobBackend`, business
-validation, multi-tenant isolation, and containment of hostile template authors remain
-application responsibilities. Anyone able to change HDJ source has application-code
-authority.
+validation, multi-tenant isolation, model-weight / training-data governance, and
+containment of hostile template authors remain application responsibilities. Anyone able
+to change HDJ source has application-code authority.
+
+## Related
+
+- [Security guide](security.md) · [Enterprise diligence](enterprise-diligence.md)
+- [Model demos](model-demos.md) · [Jobs](../api/JOBS.md) · [What's ready](whats-ready.md)
 
 ## Review cadence
 

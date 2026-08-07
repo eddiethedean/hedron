@@ -31,25 +31,9 @@ No. Hedron does not require npm or a JavaScript bundler for development or produ
 
 ## `hedron: command not found`
 
-The `hedron` CLI is only on your shell PATH when the install environment’s scripts
-directory is active. **Always-works:** `python -m hedron new …` / `python -m hedron check`
-with the same interpreter you used for `pip`.
-
-Other common fixes:
-
-1. Prefer **`uv tool install "hedron>=0.18.0"`** (or `pipx install`), then **re-open the shell**.
-2. After `hedron new` and `pip install -e .` / `uv sync`, run the CLI from the project
-   environment: `uv run hedron …` (or activate the venv and run `hedron` / `python -m hedron`).
-3. On Windows, ensure the Python **Scripts** folder is on PATH (for example
-   `%APPDATA%\Python\Python3x\Scripts` after a user install).
-4. Confirm the library itself installed with the **same** interpreter you use for
-   `uvicorn`:
-
-   ```bash
-   python -c "import hedron; print(hedron.__version__)"
-   ```
-
-Full steps: [Troubleshooting](troubleshooting.md#hedron-command-not-found).
+Prefer **`python -m hedron …`** with the same interpreter you used for `pip` / `uv`.
+Full PATH fixes, Windows Scripts notes, and verification steps:
+[Troubleshooting](troubleshooting.md#hedron-command-not-found).
 
 ## Why install Hedron twice (CLI then project)?
 
@@ -125,8 +109,33 @@ clone)—FastAPI, Flask, and Django reference slices. See also
 ## Multi-worker / production secrets?
 
 Use a real secret store for `session_secret` / Flask `SECRET_KEY` / Django `SECRET_KEY`.
-Do not share development secrets across environments. See [Deployment](deployment.md)
-and [Configuration](../CONFIGURATION.md).
+Do not share development secrets across environments. Adopter convention:
+`HEDRON_SESSION_SECRET` in the process environment, read in `app.py` and passed to
+`Hedron(session_secret=...)`. See [Deployment](deployment.md) and
+[Configuration](../CONFIGURATION.md).
+
+## How do I test a Hedron app?
+
+See [Test your UI](testing.md) and [API: Testing](../api/TESTING.md)
+(`AppScenario`, HTMX asserts, portable adapter fixtures).
+
+## How do I run background jobs?
+
+In-process polling demo: [Jobs poll recipe](../examples/jobs-poll.md). Multi-worker:
+shared Redis + [Celery / RQ](jobs-celery-rq.md) · [Jobs API](../api/JOBS.md). Prefer
+polling over experimental SSE.
+
+## How do I talk to Postgres / SQLAlchemy?
+
+Start from the [Notes + SQLAlchemy recipe](../examples/notes-sqlalchemy.md) (SQLite locally;
+swap the SQLAlchemy URL for Postgres). Hedron is not an ORM — use SQLAlchemy/SQLModel as
+usual.
+
+## How do I add OAuth / OIDC?
+
+You own the IdP. Optional helpers: `hedron[auth]` / `hedron.oidc` — see
+[Authentication](authentication.md). Session cookie demo:
+[Session auth recipe](../examples/session-auth.md).
 
 ## Where do I put configuration?
 

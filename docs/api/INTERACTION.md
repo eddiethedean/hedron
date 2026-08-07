@@ -91,6 +91,74 @@ to `#id` selectors.
 For lower-level use, `authorize_htmx_target(policy, target, is_htmx=...)` / 
 `resolve_fragment_region(policy, target)` raise `FragmentRegionError` when unauthorized.
 
+## Day-1 ergonomics (`swap`, `retarget`, `redirect_htmx`, `RefreshButton`)
+
+These helpers are re-exported from `hedron` and are what the Quickstart / HTMX guides use.
+They return `InteractionResult` (except `RefreshButton`, which is a component).
+
+### `swap(content, *, toast=None, oob=(), **kwargs) -> InteractionResult`
+
+Primary fragment body with optional toast / OOB updates. Extra kwargs pass through to
+`InteractionResult` (`region_id`, `trigger`, `cache`, …).
+
+```python
+from hedron import swap
+
+@app.fragment("/status", region=status)
+def refresh_status():
+    return swap(status_panel())
+```
+
+| Parameter | Type | Meaning |
+|---|---|---|
+| `content` | `NodeLike \| None` | Primary swap body |
+| `toast` | `str \| NodeLike \| OobUpdate \| None` | Convenience OOB toast (`#hedron-toast`) |
+| `oob` | sequence of `OobUpdate \| NodeLike` | Additional out-of-band updates |
+| `**kwargs` | | Forwarded to `InteractionResult` |
+
+Related: `swap_oob(content, *oob, **kwargs)` — primary fragment plus one or more OOB
+updates as positional args.
+
+### `retarget(content, region, **kwargs) -> InteractionResult`
+
+Return content with an approved `HX-Retarget` selector. Pass a `FragmentRegion` or a
+selector string. When given a region, sets `region_id` if not already provided.
+
+```python
+from hedron import retarget
+
+return retarget(Text("Moved"), status)
+```
+
+### `redirect_htmx(url: str) -> InteractionResult`
+
+Issue an HTMX `HX-Redirect` for a **local** path (validated like other URL-bearing fields).
+
+```python
+from hedron import redirect_htmx
+
+return redirect_htmx("/login")
+```
+
+### `RefreshButton.for_region(region, *, href, label=...)`
+
+Component that issues a GET to `href` targeting the declared region (HTMX swap into
+`#region.id`). Pair with `@app.fragment(path, region=...)` returning `swap(...)`.
+
+```python
+from hedron import RefreshButton
+
+status = app.region("service-status", description="Live status panel")
+RefreshButton.for_region(status, href="/status", label="Refresh status")
+```
+
+| Situation | Result |
+|---|---|
+| Fragment `HX-Target` not on the route allowlist | HTTP **403** |
+| Redirect URL is not local | Rejected before emit |
+
+Walkthrough: [HTMX interactions](../guides/htmx-interactions.md).
+
 ## `InteractionResult`
 
 `InteractionResult` keeps fragment mechanics typed and inspectable.

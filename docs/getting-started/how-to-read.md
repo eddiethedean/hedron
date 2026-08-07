@@ -41,8 +41,8 @@ Pin production installs with `hedron>=0.18.0,<0.19`.
 
 | Audience | Where |
 |---|---|
-| Adopters | **Learn**, **Adopt**, **Build**, **Examples**, **Reference** (Components + API), and **Project** — maturity snapshot: [What's ready today](../guides/whats-ready.md) |
-| Maintainers / RFC authors | [For maintainers](../guides/maintainers.md) + GitHub-only trees (`docs/rfcs/`, `docs/acceptance/`, `docs/STATUS.md`, `docs/RELEASE.md`, …) |
+| Adopters | **Start**, **Guides**, **Examples**, **Reference** (Components + API), and **Project** (including **Evaluate**) — maturity snapshot: [What's ready today](../guides/whats-ready.md) |
+| Maintainers / RFC authors | [Maintainer handbook](../guides/maintainer-handbook.md) + GitHub-only trees (`docs/rfcs/`, `docs/acceptance/`, `docs/STATUS.md`, `docs/RELEASE.md`, …) |
 
 ## Template history (upgrade only)
 

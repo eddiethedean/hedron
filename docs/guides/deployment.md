@@ -17,6 +17,7 @@
 | `HEDRON_THEME` | Theme overlay |
 | `HEDRON_REDIS_URL` | Optional Redis URL for job backends that use it (not required for pages) |
 | `HEDRON_ROOT_PATH` | Optional reverse-proxy root path hint for reference/deploy samples |
+| `HEDRON_SESSION_SECRET` | **Adopter convention** — read in `app.py` and pass to `Hedron(session_secret=...)`; Hedron does not load it automatically |
 
 See the full [configuration reference](../CONFIGURATION.md).
 
@@ -42,6 +43,23 @@ Bundled HTMX remains under `/hedron-static/`.
 Minimal single-stage image for a scaffolded `hedron new` app (adjust paths as needed).
 This is an **adopter starting point** — not a maintained production image.
 
+Hedron does **not** read a session secret from the environment by itself. Pass it into
+`Hedron(session_secret=...)` from your process environment (convention below:
+`HEDRON_SESSION_SECRET`).
+
+```python title="app.py (secret from env)"
+import os
+
+from hedron import Hedron
+
+app = Hedron(
+    title="Hedron App",
+    security="standard",
+    explorer="off",
+    session_secret=os.environ["HEDRON_SESSION_SECRET"],
+)
+```
+
 ```dockerfile
 FROM python:3.12-slim
 WORKDIR /app
@@ -51,7 +69,8 @@ RUN pip install --no-cache-dir "hedron>=0.18.0,<0.19" "uvicorn[standard]" \
     && pip install --no-cache-dir -e . \
     && hedron build
 ENV HEDRON_ENV=production
-ENV SESSION_SECRET=replace-me
+# Read in app.py via Hedron(session_secret=os.environ["HEDRON_SESSION_SECRET"])
+ENV HEDRON_SESSION_SECRET=replace-me-at-deploy-time
 EXPOSE 8000
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```

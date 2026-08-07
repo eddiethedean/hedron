@@ -5,23 +5,28 @@ do not treat parallel summaries as a second source of truth. Maintainer evidence
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
+**Ship today** (pin `hedron>=0.18.0,<0.19`): typed pages, HTMX fragments, CSRF
+(`standard` / `strict`), Flask/Django adapters, polling job status.
+
+**Prefer polling** over SSE/WebSocket (`hedron.experimental`).
+
+**Pin and expect churn:** charts, notebook, MCP, Gradio.
+
+No commercial SLA and no scheduled 1.0. Start building:
+[First app](../getting-started/quickstart.md). Evaluators: [Evaluate Hedron](evaluate.md).
+Maturity vocabulary (optional):
+[How to read](../getting-started/how-to-read.md).
+
 !!! tip "Can I ship an internal admin app?"
 
-    **Yes, with pins:** typed pages, HTMX fragments, CSRF (`standard` / `strict`), and
-    **polling** job status on FastAPI (Flask/Django adapters Supported). Start with
+    **Yes, with pins** — see the summary above. Walkthrough:
     [Build your first app](../getting-started/quickstart.md) →
     [HTMX interactions](htmx-interactions.md) →
-    [Minimal form](minimal-form.md). Extras and troubleshooting:
+    [Minimal form](minimal-form.md). Extras:
     [Installation](../getting-started/installation.md).
 
-    **Not for production live push yet:** SSE / WebSocket (`hedron.experimental`) —
-    prefer [polling](live-interaction.md).
-
-    **Pin and expect churn:** charts, notebook, MCP, Gradio (Alpha / Experimental).
-
-    No commercial SLA and no scheduled 1.0. Evaluators: [Evaluate Hedron](evaluate.md).
-
-## How to read this page
+<details markdown>
+<summary>How to read labels on this page</summary>
 
 Hedron **0.18.0** packages are **Beta** on PyPI. Expect occasional breaking changes on
 `0.x` under the [compatibility policy](../COMPATIBILITY.md).
@@ -33,11 +38,11 @@ Hedron **0.18.0** packages are **Beta** on PyPI. Expect occasional breaking chan
 | **Alpha** | On PyPI; pin and expect churn |
 | **Deferred** | Documented, not ready — do not treat as Supported |
 
-Do not collapse axes into one vague “beta.” Package maturity is **Beta** or **Alpha**
-on PyPI; capability readiness is **Supported**, **Experimental**, or **Deferred**; API
-compatibility levels live in [STABILITY](../api/STABILITY.md). A Beta package can expose
-Supported capabilities whose API level is still `beta` — see
+Package maturity (Beta/Alpha) ≠ capability readiness (Supported/Experimental/Deferred) ≠
+API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 [Understanding maturity labels](../getting-started/how-to-read.md).
+
+</details>
 
 !!! warning "Live transports"
 
@@ -63,6 +68,9 @@ Supported capabilities whose API level is still `beta` — see
 
     Flagship packages are **Beta** on PyPI — pin `>=0.18.0,<0.19`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
+
+<details markdown>
+<summary>Full Supported / Experimental / Deferred matrices</summary>
 
 ## Supported capabilities
 
@@ -135,6 +143,8 @@ guaranteed multi-worker live-transport proof.
 
 Maintainer gate IDs and RFC evidence:
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
+
+</details>
 
 ## Runnable examples
 

@@ -68,11 +68,10 @@ Full list: [Troubleshooting](../guides/troubleshooting.md) ·
 
 !!! tip "If install fails on FastAPI/Pydantic"
 
-    **Supported (CI-tested) matrix:** FastAPI `>=0.141.1,<0.142` and Pydantic
-    `>=2.13.4,<2.14`. Package metadata declares a **wider** range (FastAPI `<0.150`,
-    Pydantic `<2.15`) — versions outside the Supported column may install but are
-    unsupported until evidence is green. Prefer a **clean venv** for your first app.
-    Existing apps: [Dependency pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts).
+    Prefer a **clean virtual environment** for your first app (do not reuse a shared env
+    that already pins an older FastAPI). Then see
+    [Dependency pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) for the
+    Supported vs declared FastAPI/Pydantic ranges.
 
 ## Optional extras
 
@@ -90,6 +89,7 @@ Install extras only when you need them:
 | `hedron[notebook]` | Alpha server-side notebook preview |
 | `hedron[mcp]` | Alpha deny-by-default MCP projection |
 | `hedron[gradio]` | Alpha Gradio client interop (experimental) |
+| `hedron[otel]` | Optional OpenTelemetry tracing helpers |
 | `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` / `[auth]` / `[browser]` | Content, Authlib, or test helpers |
 
 ```bash

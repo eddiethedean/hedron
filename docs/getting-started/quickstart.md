@@ -29,7 +29,7 @@ matters.
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.18.0" hedron new my-hedron-app
+    uvx --from "hedron>=0.18.0,<0.19" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -65,6 +65,7 @@ Extras, Flask/Django, and troubleshooting: [Installation](installation.md).
 `hedron new` writes roughly this `app.py` (timestamp line may vary):
 
 ```python title="app.py"
+import os
 from datetime import UTC, datetime
 
 from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
@@ -73,7 +74,9 @@ app = Hedron(
     title="Hedron App",
     security="standard",
     explorer="off",
-    session_secret="replace-in-production",
+    session_secret=os.environ.get(
+        "HEDRON_SESSION_SECRET", "replace-in-production"
+    ),
 )
 
 status = app.region("service-status", description="Live status panel")
@@ -127,7 +130,9 @@ Text("Hello from Ada")
 Optional check:
 
 ```bash
-python -m hedron check --app app:app   # or: uv run hedron check --app app:app
+# --app is a global flag (before the subcommand)
+python -m hedron --app app:app check
+# or: uv run hedron --app app:app check
 ```
 
 Advisory findings on a hello-world scaffold are normal.

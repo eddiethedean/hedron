@@ -1,24 +1,21 @@
 # Learn Hedron
 
-Build and run a small Hedron application, then continue through HTMX and forms.
+**Goal in 10 minutes:** Hello + click **Refresh status**. Ignore Beta/Supported labels
+until that works. Then: HTMX second region → `/notes` form → pick one recipe (auth or
+SQLite).
 
 ## Path
 
 1. [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
 2. [HTMX interactions](../guides/htmx-interactions.md) — extend the Refresh pattern
 3. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
-4. [Installation](installation.md) — extras, Flask/Django, common problems (as needed)
-5. [Learning path](learning-path.md) — continue toward data, auth, and deploy
+4. [Learning path](learning-path.md) — continue toward data, auth, and deploy
+5. [Installation](installation.md) — extras, Flask/Django, common problems (as needed)
 
 Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
 
-Then (when evaluating): [What’s ready](../guides/whats-ready.md) ·
-[Why Hedron](../guides/why-hedron.md) · [Evaluate Hedron](../guides/evaluate.md)
-(**Adopt** nav).
-
-Maturity labels (Beta / Supported / Deferred) are explained under
-[Understanding maturity labels](how-to-read.md) when you need them — you do not
-need that vocabulary to install.
+Evaluating production use later? [What’s ready](../guides/whats-ready.md) ·
+[Why Hedron](../guides/why-hedron.md) · [Evaluate Hedron](../guides/evaluate.md).
 
 <div class="hedron-grid">
   <a class="hedron-card" href="quickstart/">
@@ -36,10 +33,10 @@ need that vocabulary to install.
     <strong>3. Minimal form</strong>
     <p>CSRF-safe POST with a typed action.</p>
   </a>
-  <a class="hedron-card" href="installation/">
+  <a class="hedron-card" href="learning-path/">
     <span class="hedron-card__icon" aria-hidden="true">04</span>
-    <strong>4. Installation hub</strong>
-    <p>Extras, other hosts, and common install problems.</p>
+    <strong>4. Learning path</strong>
+    <p>Data, auth, deploy, and optional evaluator reading.</p>
   </a>
 </div>
 

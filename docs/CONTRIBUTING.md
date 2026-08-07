@@ -49,7 +49,8 @@ change, ask a maintainer rather than expanding the diff. Do not skip CI with
 When to leave Read the Docs for the GitHub corpus: RFCs, acceptance gates, STATUS/ROADMAP
 internals, ENGINEERING_BASELINE, and DECISIONS are **excluded from the public MkDocs site**
 — edit them on GitHub; adopters should stay on What’s ready / guides / API pages.
-Foundations non-goals and performance budgets **are** published on RTD under Adopt.
+Foundations non-goals and performance budgets **are** published on RTD under
+Project → Evaluate.
 
 **Local browser suite (optional):** install Playwright Chromium, then:
 
