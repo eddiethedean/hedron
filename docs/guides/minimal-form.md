@@ -11,6 +11,60 @@ deep dive covers validation fragments.
 A **notes** page with a note field. Submitting POSTs to an action and returns a
 confirmation page. The GET seeds the CSRF cookie; the form posts the matching token.
 
+### Try it (simulated)
+
+=== "Demo"
+
+    Classic POST — confirmation replaces the notes region. Docs simulation.
+
+    <!-- hedron-sim:minimal-form -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from fastapi import Form, Request
+
+    from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, csrf_token_for_request, html
+
+    app = Hedron(
+        title="Notes",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+
+    def _csrf(request: Request) -> str:
+        return csrf_token_for_request(request, request.app.state.hedron_security)
+
+
+    @app.page("/")
+    def notes(request: Request) -> Page:
+        token = _csrf(request)
+        return Page(
+            Stack(
+                Text("Leave a note"),
+                html.form(
+                    html.input(type="hidden", name="csrf_token", value=token),
+                    TextInput("note", value="Ship the docs demo", required=True),
+                    SubmitButton("Save"),
+                    action="/save",
+                    method="post",
+                ),
+            ),
+            title="Notes",
+        )
+
+
+    @app.action("/save", method="POST")
+    def save(note: str = Form(...)) -> Page:
+        return Page(Text(f"Saved: {note}"), title="Saved")
+    ```
+
 **If you used `hedron new` (or finished the HTMX guide):** keep the existing `Hedron(...)`
 app and your `/` home route. Add the imports below, then add `/notes` and `/save` **beside**
 the routes you already have. Do not create a second app file.

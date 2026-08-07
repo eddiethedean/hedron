@@ -28,6 +28,11 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
         "Invalid email → FormErrors fragment. Valid email → success region. Docs simulation.",
     ),
     (
+        "guides/forms-and-actions.md",
+        "pe-paths",
+        "HTMX fragment vs full-page confirmation path (PE-019). Docs simulation.",
+    ),
+    (
         "guides/live-interaction.md",
         "live-poll",
         "Bounded poll — each click advances one step (four steps, then wraps). Docs simulation.",
@@ -53,9 +58,44 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
         "HTMX fragment POST — submit swaps the declared result region. Docs simulation.",
     ),
     (
+        "guides/minimal-form.md",
+        "minimal-form",
+        "Classic POST — confirmation replaces the notes region. Docs simulation.",
+    ),
+    (
+        "guides/authentication.md",
+        "auth-login",
+        "Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.",
+    ),
+    (
+        "guides/security.md",
+        "csrf-guard",
+        "POST with CSRF succeeds; missing token → 403. Docs simulation.",
+    ),
+    (
+        "guides/data-apps.md",
+        "data-table-filter",
+        "Filter chips swap the declared table region. Docs simulation.",
+    ),
+    (
+        "guides/jobs-celery-rq.md",
+        "jobs-poll",
+        "Bounded job poll — each click advances one status step. Docs simulation.",
+    ),
+    (
+        "guides/multi-tenant.md",
+        "tenant-deny",
+        "Same-tenant poll succeeds; other tenant → 404 without leaking. Docs simulation.",
+    ),
+    (
+        "guides/accessibility.md",
+        "pe-paths",
+        "HTMX fragment vs full-page confirmation path (PE-019). Docs simulation.",
+    ),
+    (
         "examples/crud-tutorial.md",
         "crud-notes",
-        "Miniature list — type a note, add it, then delete it. Docs simulation.",
+        "Miniature list — add multiple notes, then delete any row. Docs simulation.",
     ),
     (
         "getting-started/core-concepts.md",
@@ -118,8 +158,25 @@ def _sync_file(
             match = candidate
             break
     if match is None:
-        # Insert tabs by replacing a bare marker (and optional preceding prose line).
-        print(f"no existing Demo/Code tabs for {path.relative_to(ROOT)}; skip auto-insert")
+        # Insert Demo/Code tabs immediately after a bare marker line.
+        bare = re.search(
+            rf"(^### Try it \(simulated\)\n\n)({re.escape(marker)}\n)",
+            text,
+            flags=re.M,
+        )
+        if bare is None:
+            bare = re.search(rf"(^{re.escape(marker)}\n)", text, flags=re.M)
+            if bare is None:
+                print(f"no existing Demo/Code tabs for {path.relative_to(ROOT)}; skip auto-insert")
+                return True
+            new_text = text[: bare.start()] + tabs + text[bare.end() :]
+        else:
+            new_text = text[: bare.start(2)] + tabs + text[bare.end(2) :]
+        if check:
+            print(f"out of date: {path.relative_to(ROOT)}")
+            return True
+        path.write_text(new_text, encoding="utf-8")
+        print(f"inserted tabs {path.relative_to(ROOT)}")
         return True
 
     new_text = text[: match.start()] + tabs + text[match.end() :]

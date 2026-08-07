@@ -206,6 +206,29 @@
   color: var(--hs-ok);
 }
 
+.hedron-oob-host {
+  align-items: center;
+  background: var(--hs-raised);
+  border: 1px solid var(--hs-line);
+  border-radius: 0.72rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.85rem;
+  margin: 0 0 0.75rem;
+  padding: 0.65rem 0.8rem;
+}
+
+.hedron-sim-oob-label {
+  display: grid;
+  gap: 0.12rem;
+  line-height: 1.25;
+}
+
+.hedron-sim-oob-label small {
+  color: var(--hs-muted);
+  font-size: 0.78rem;
+}
+
 .hedron-sim form {
   display: grid;
   gap: 0.65rem;

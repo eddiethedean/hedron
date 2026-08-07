@@ -478,7 +478,11 @@ def build_oob_host() -> str:
                 primary(draft=True),
                 OobHost(
                     html.span("OOB host", class_="hedron-sim-badge"),
-                    html.span(html.strong("#status"), html.small("Stable swap root")),
+                    html.span(
+                        html.strong("#status"),
+                        html.small("Stable swap root"),
+                        class_="hedron-sim-oob-label",
+                    ),
                     id=host.id,
                 ),
                 html.button(
@@ -499,7 +503,11 @@ def build_oob_host() -> str:
                 OobUpdate(
                     content=OobHost(
                         html.span("Saved", class_="hedron-sim-badge hedron-sim-badge--ok"),
-                        html.span(html.strong("#status"), html.small("Out-of-band update")),
+                        html.span(
+                            html.strong("#status"),
+                            html.small("Out-of-band update"),
+                            class_="hedron-sim-oob-label",
+                        ),
                         id=host.id,
                     ),
                     element_id=host.id,

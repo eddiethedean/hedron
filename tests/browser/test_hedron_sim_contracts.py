@@ -81,22 +81,68 @@ def _root_locator(page, mode_demo: bool):  # noqa: ANN001
     return page.locator("[data-hedron-sim]").first
 
 
+def _root_selector(mode_demo: bool) -> str:
+    return "[data-hedron-sim-modes]" if mode_demo else "[data-hedron-sim]"
+
+
+def _assert_boot_invariants(root, contract_id: str) -> None:  # noqa: ANN001
+    for handle in root.locator("form").all():
+        action = handle.get_attribute("action")
+        assert action in {None, "#", ""}, f"{contract_id} form action={action!r}"
+    for handle in root.locator("a[href]").all():
+        href = handle.get_attribute("href") or ""
+        assert href in {"", "#"} or href.startswith("#"), (
+            f"{contract_id} progressive href left as {href!r}"
+        )
+
+
+def _wait_for_trace(page, root_sel: str, needle: str, timeout_ms: int) -> None:  # noqa: ANN001
+    page.wait_for_function(
+        """([sel, needle]) => {
+          const root = document.querySelector(sel);
+          if (!root) return false;
+          const t = root.querySelector('[data-hedron-sim-trace]');
+          return t && !t.hidden && (t.textContent || '').includes(needle);
+        }""",
+        arg=[root_sel, needle],
+        timeout=timeout_ms,
+    )
+
+
+def _wait_for_contains(
+    page,  # noqa: ANN001
+    root_sel: str,
+    target_sel: str | None,
+    needles: tuple[str, ...],
+    timeout_ms: int,
+) -> None:
+    page.wait_for_function(
+        """([rootSel, targetSel, needles]) => {
+          const root = document.querySelector(rootSel);
+          if (!root) return false;
+          const el = targetSel ? root.querySelector(targetSel) : root;
+          if (!el) return false;
+          const text = el.innerText || '';
+          return needles.every((n) => text.includes(n));
+        }""",
+        arg=[root_sel, target_sel, list(needles)],
+        timeout=timeout_ms,
+    )
+
+
 def _run_contract(page, contract) -> None:  # noqa: ANN001
     from demos.contracts import Step
 
+    assert len(contract.steps) >= contract.min_steps, (
+        f"{contract.id}: expected >= {contract.min_steps} steps, got {len(contract.steps)}"
+    )
+
+    root_sel = _root_selector(contract.mode_demo)
     root = _root_locator(page, contract.mode_demo)
     root.wait_for(state="attached", timeout=5000)
     if not contract.mode_demo:
-        page.wait_for_function(
-            """() => {
-              const el = document.querySelector('[data-hedron-sim]');
-              return el && el.dataset.hedronSimReady === 'true';
-            }"""
-        )
-        # Forms must never keep a non-hash action after boot.
-        for handle in root.locator("form").all():
-            action = handle.get_attribute("action")
-            assert action in {None, "#", ""}, f"{contract.id} form action={action!r}"
+        page.wait_for_function(_SIM_READY_JS)
+        _assert_boot_invariants(root, contract.id)
 
     bad_requests: list[str] = []
 
@@ -104,33 +150,59 @@ def _run_contract(page, contract) -> None:  # noqa: ANN001
         url = req.url
         if url.startswith("file:") or url.startswith("data:"):
             return
-        # Allow nothing else from a file:// demo page.
         bad_requests.append(f"{req.method} {url}")
 
     page.on("request", on_request)
 
-    for step in contract.steps:
+    for index, step in enumerate(contract.steps):
         assert isinstance(step, Step)
+        label = f"{contract.id} step[{index}]"
         if step.confirm is not None:
             page.once(
                 "dialog",
                 lambda dialog, accept=step.confirm: dialog.accept() if accept else dialog.dismiss(),
             )
         for selector, value in step.fill.items():
-            root.locator(selector).fill(value)
+            field = root.locator(selector)
+            field.wait_for(state="visible", timeout=5000)
+            field.fill(value)
         if step.click:
-            root.locator(step.click).first.click(force=True)
-        page.wait_for_timeout(step.wait_ms)
-        if step.expect_trace:
-            trace = root.locator("[data-hedron-sim-trace]")
-            assert step.expect_trace in trace.inner_text(), (
-                f"{contract.id}: expected trace {step.expect_trace!r}, got {trace.inner_text()!r}"
+            control = root.locator(step.click).first
+            control.wait_for(state="visible", timeout=5000)
+            control.click(force=True)
+
+        timeout = max(step.wait_ms, 5000)
+        needles = tuple(n for n in (step.contains, *step.contains_all) if n)
+        # Prefer content waits for auto/boot demos — a bare "200" trace can match too early.
+        if step.auto and needles:
+            _wait_for_contains(page, root_sel, step.expect_text, needles, timeout)
+        elif step.expect_trace and not contract.mode_demo:
+            _wait_for_trace(page, root_sel, step.expect_trace, timeout)
+        else:
+            page.wait_for_timeout(step.wait_ms)
+
+        if step.expect_trace and not contract.mode_demo:
+            trace = root.locator("[data-hedron-sim-trace]").inner_text()
+            assert step.expect_trace in trace, (
+                f"{label}: expected trace {step.expect_trace!r}, got {trace!r}"
             )
-        if step.expect_text and step.contains:
-            text = root.locator(step.expect_text).inner_text()
-            assert step.contains in text, f"{contract.id}: expected {step.contains!r} in {text!r}"
+
+        # ``[data-hedron-sim]`` / modes root is the island itself — don't nest-query it.
+        if step.expect_text in {None, root_sel, "[data-hedron-sim]", "[data-hedron-sim-modes]"}:
+            target = root
+        else:
+            target = root.locator(step.expect_text)
+        if needles or step.not_contains:
+            text = target.inner_text()
+            for needle in needles:
+                assert needle in text, f"{label}: expected {needle!r} in {text!r}"
+            if step.not_contains:
+                assert step.not_contains not in text, (
+                    f"{label}: unexpected {step.not_contains!r} in {text!r}"
+                )
 
     assert not bad_requests, f"{contract.id} leaked network: {bad_requests}"
+    assert page.url.startswith("file:"), f"{contract.id} navigated away to {page.url!r}"
 
 
 def test_hedron_sim_form_post_never_leaves_page(tmp_path: Path) -> None:
@@ -191,7 +263,6 @@ def test_hedron_sim_form_post_never_leaves_page(tmp_path: Path) -> None:
             assert page.locator("#list").inner_text() == "added"
             assert page.url.startswith("file:")
             assert not any(r.startswith("POST ") for r in requests)
-            # Initial file navigation only.
             assert all(u.startswith("file:") for u in navigated)
         finally:
             browser.close()

@@ -4,6 +4,63 @@
   var UTC_TOKEN = "__HEDRON_SIM_UTC__";
   var LOCAL_TOKEN = "__HEDRON_SIM_LOCAL_TIME__";
   var FORM_TOKEN_RE = /__HEDRON_SIM_FORM:([A-Za-z0-9_-]+)__/g;
+  var LIST_INDEX_TOKEN = "__HEDRON_SIM_LIST_INDEX__";
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function listStore(root, selector) {
+    if (!root._hedronSimLists) root._hedronSimLists = {};
+    if (!root._hedronSimLists[selector]) root._hedronSimLists[selector] = [];
+    return root._hedronSimLists[selector];
+  }
+
+  function findAccumulateRoute(table) {
+    var routes = (table && table.routes) || {};
+    var keys = Object.keys(routes);
+    for (var i = 0; i < keys.length; i += 1) {
+      if (routes[keys[i]].accumulate) return routes[keys[i]];
+    }
+    return null;
+  }
+
+  function renderAccumulatedList(root, targetSel, accumulate, items) {
+    var regionId = String(targetSel || "").replace(/^#/, "");
+    if (!items.length) {
+      return accumulate.emptyHtml || '<div id="' + regionId + '"><p>No notes yet.</p></div>';
+    }
+    var field = accumulate.field || "note";
+    var rows = "";
+    for (var i = 0; i < items.length; i += 1) {
+      (function (text, idx) {
+        var fake = {
+          get: function (name) {
+            return name === field ? text : "";
+          },
+        };
+        var row = applyTokens(accumulate.itemHtml || "", fake);
+        row = row.split(LIST_INDEX_TOKEN).join(String(idx));
+        rows += row;
+      })(escapeHtml(items[i]), i);
+    }
+    // Item template is typically a bare <li>; wrap in the region container + ul.
+    if (rows.indexOf("<li") === 0 || rows.indexOf("<LI") === 0) {
+      return (
+        '<div id="' +
+        escapeHtml(regionId) +
+        '"><ul class="hedron-sim-list">' +
+        rows +
+        "</ul></div>"
+      );
+    }
+    return rows;
+  }
 
   function reducedMotion() {
     return (
@@ -131,11 +188,21 @@
     return stepIndex;
   }
 
+  function credentialsValid(formData) {
+    var user = formData ? String(formData.get("username") || "") : "";
+    var pass = formData ? String(formData.get("password") || "") : "";
+    return user === "ada" && pass === "correct-horse";
+  }
+
   function resolveRoutePayload(root, route, key, formData) {
     if (route.validate === "email" && route.variants) {
       var email = formData ? formData.get("email") : "";
       var variantKey = emailValid(email) ? "valid" : "invalid";
       return route.variants[variantKey] || route;
+    }
+    if (route.validate === "credentials" && route.variants) {
+      var credKey = credentialsValid(formData) ? "valid" : "invalid";
+      return route.variants[credKey] || route;
     }
     if (route.sequence && route.sequence.length) {
       var idx = nextSequenceIndex(root, key, route.sequence.length);
@@ -242,19 +309,43 @@
         return;
       }
 
-      var payload = resolveRoutePayload(root, route, key, formData);
       var target = resolveTarget(root, targetSel) || control;
-      var html = applyTokens(payload.html || "", formData);
-      var liveWrap = document.createElement("div");
-      liveWrap.innerHTML = html;
-      applyOob(root, liveWrap);
-      var primaryWrap = document.createElement("div");
-      primaryWrap.innerHTML = html;
-      var oobNodes = primaryWrap.querySelectorAll("[hx-swap-oob]");
-      for (var i = 0; i < oobNodes.length; i += 1) oobNodes[i].remove();
-      performSwap(target, primaryWrap.innerHTML, swap);
+      var html;
+      var status = route.status || 200;
 
-      var status = payload.status || route.status || 200;
+      if (route.accumulate) {
+        var store = listStore(root, targetSel || route.accumulate.field);
+        var field = route.accumulate.field || "note";
+        var value = formData ? String(formData.get(field) || "").trim() : "";
+        if (value) store.push(value);
+        html = renderAccumulatedList(root, targetSel, route.accumulate, store);
+      } else if (route.listRemove) {
+        var accRoute = findAccumulateRoute(table);
+        var list = listStore(root, targetSel || "#notes-list");
+        var idxAttr = control.getAttribute("data-hedron-sim-list-index");
+        var idx = idxAttr == null ? list.length - 1 : Number(idxAttr);
+        if (!Number.isNaN(idx) && idx >= 0 && idx < list.length) list.splice(idx, 1);
+        if (accRoute && accRoute.accumulate) {
+          html = renderAccumulatedList(root, targetSel, accRoute.accumulate, list);
+        } else {
+          html = applyTokens(route.html || "", formData);
+        }
+      } else {
+        var payload = resolveRoutePayload(root, route, key, formData);
+        status = payload.status || route.status || 200;
+        html = applyTokens(payload.html || "", formData);
+        var liveWrap = document.createElement("div");
+        liveWrap.innerHTML = html;
+        applyOob(root, liveWrap);
+        var primaryWrap = document.createElement("div");
+        primaryWrap.innerHTML = html;
+        var oobNodes = primaryWrap.querySelectorAll("[hx-swap-oob]");
+        for (var i = 0; i < oobNodes.length; i += 1) oobNodes[i].remove();
+        html = primaryWrap.innerHTML;
+      }
+
+      performSwap(target, html, swap);
+
       var label = status >= 400 ? true : false;
       setTrace(root, method + " " + path + " → " + status + " fragment", label);
       try {

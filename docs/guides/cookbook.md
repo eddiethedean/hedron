@@ -133,7 +133,11 @@ See [Interaction API](../api/INTERACTION.md).
     def oob_idle():
         return OobHost(
             html.span("Idle"),
-            html.span(html.strong("#toast-host"), html.small("Stable OOB swap root")),
+            html.span(
+                html.strong("#toast-host"),
+                html.small("Stable OOB swap root"),
+                class_="hedron-sim-oob-label",
+            ),
             id=host.id,
         )
 
@@ -141,7 +145,11 @@ See [Interaction API](../api/INTERACTION.md).
     def oob_saved():
         return OobHost(
             html.span("Saved"),
-            html.span(html.strong("#toast-host"), html.small("Out-of-band update")),
+            html.span(
+                html.strong("#toast-host"),
+                html.small("Out-of-band update"),
+                class_="hedron-sim-oob-label",
+            ),
             id=host.id,
         )
 

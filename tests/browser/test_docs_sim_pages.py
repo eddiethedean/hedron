@@ -51,6 +51,42 @@ _PAGES: tuple[tuple[str, str, str, str], ...] = (
         'button:has-text("Send invite")',
         "422",
     ),
+    (
+        "guides/minimal-form/index.html",
+        '[data-hedron-sim="minimal-form"]',
+        'button:has-text("Save")',
+        "POST /save → 200",
+    ),
+    (
+        "guides/authentication/index.html",
+        '[data-hedron-sim="auth-login"]',
+        'button:has-text("Open /home anonymously")',
+        "401",
+    ),
+    (
+        "guides/security/index.html",
+        '[data-hedron-sim="csrf-guard"]',
+        'button:has-text("POST without CSRF")',
+        "403",
+    ),
+    (
+        "guides/data-apps/index.html",
+        '[data-hedron-sim="data-table-filter"]',
+        'button:has-text("Admins")',
+        "GET /rows/admin → 200",
+    ),
+    (
+        "guides/jobs-celery-rq/index.html",
+        '[data-hedron-sim="jobs-poll"]',
+        'button:has-text("Start job poll")',
+        "GET /jobs/42 → 200",
+    ),
+    (
+        "guides/multi-tenant/index.html",
+        '[data-hedron-sim="tenant-deny"]',
+        'button:has-text("Poll (other tenant)")',
+        "404",
+    ),
 )
 
 

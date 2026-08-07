@@ -76,6 +76,18 @@ def route_table(app: SimApp) -> dict[str, Any]:
             }
         if route.sequence:
             entry["sequence"] = [_render_call(handler) for handler in route.sequence]
+        if route.accumulate:
+            if route.empty is not None:
+                empty_body = _render_call(route.empty)
+            else:
+                empty_body = {"html": "", "status": 200}
+            entry["accumulate"] = {
+                "field": route.accumulate,
+                "itemHtml": primary["html"],
+                "emptyHtml": empty_body["html"],
+            }
+        if route.list_remove:
+            entry["listRemove"] = True
         routes[key] = entry
     return {
         "demoId": app.demo_id or "hedron-sim",

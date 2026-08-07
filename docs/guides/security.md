@@ -60,6 +60,64 @@ route that requires CSRF. Example using the
 [HTMX interactions](htmx-interactions.md) sample (`/` seeds; `/status` is GET-only—add a
 POST action for writes):
 
+### Try it (simulated)
+
+=== "Demo"
+
+    POST with CSRF succeeds; missing token → 403. Docs simulation.
+
+    <!-- hedron-sim:csrf-guard -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from fastapi import Request
+
+    from hedron import Hedron, Page, Stack, Text, csrf_token_for_request, html
+
+    app = Hedron(
+        title="CSRF demo",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+
+    def _csrf(request: Request) -> str:
+        return csrf_token_for_request(request, request.app.state.hedron_security)
+
+
+    @app.page("/")
+    def home(request: Request) -> Page:
+        token = _csrf(request)
+        return Page(
+            Stack(
+                Text("GET seeds hedron_csrf"),
+                html.form(
+                    html.input(type="hidden", name="csrf_token", value=token),
+                    html.button("POST with CSRF", type="submit"),
+                    action="/do",
+                    method="post",
+                ),
+                html.form(
+                    html.button("POST without CSRF", type="submit"),
+                    action="/do",
+                    method="post",
+                ),
+            ),
+            title="CSRF",
+        )
+
+
+    @app.action("/do", method="POST")
+    def do_action() -> Page:
+        return Page(Text("POST ok"), title="Done")
+    ```
+
 ```python
 from hedron import Hedron, Page, Text
 

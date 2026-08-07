@@ -47,6 +47,12 @@ class SimRoute:
     validate: str | None = None
     variants: Mapping[str, Handler] | None = None
     sequence: tuple[Handler, ...] | None = None
+    accumulate: str | None = None
+    """Form field name — append values into a client-side list for this region."""
+    empty: Handler | None = None
+    """Handler that renders the empty list container (required with ``accumulate``)."""
+    list_remove: bool = False
+    """DELETE (or similar): remove one list item by ``data-hedron-sim-list-index``."""
 
     @property
     def key(self) -> str:
@@ -64,7 +70,10 @@ class SimApp:
     Optional route extras:
 
     - ``validate="email"`` + ``variants={"invalid": ..., "valid": ...}`` for form demos
+    - ``validate="credentials"`` + ``variants`` (demo user ``ada`` / ``correct-horse``)
     - ``sequence=(handler1, handler2, ...)`` for polling / multi-step GETs
+    - ``accumulate="field"`` + ``empty=...`` for append-only list demos (CRUD notes)
+    - ``list_remove=True`` on DELETE to drop one accumulated item by index
     """
 
     title: str = "Hedron sim"
@@ -109,10 +118,15 @@ class SimApp:
         validate: str | None = None,
         variants: Mapping[str, Handler] | None = None,
         sequence: Sequence[Handler] | None = None,
+        accumulate: str | None = None,
+        empty: Handler | None = None,
+        list_remove: bool = False,
     ) -> Callable[[F], F]:
         """Register a fragment endpoint with an optional region allowlist."""
 
         def wrap(fn: F) -> F:
+            if accumulate and empty is None:
+                raise ValueError("accumulate=... requires empty= handler for the empty list UI")
             route = SimRoute(
                 method=method.upper(),
                 path=path,
@@ -122,6 +136,9 @@ class SimApp:
                 validate=validate,
                 variants=dict(variants) if variants else None,
                 sequence=tuple(sequence) if sequence else None,
+                accumulate=accumulate,
+                empty=empty,
+                list_remove=list_remove,
             )
             self._routes[route.key] = route
             return fn
@@ -140,6 +157,9 @@ class SimApp:
         validate: str | None = None,
         variants: Mapping[str, Handler] | None = None,
         sequence: Sequence[Handler] | None = None,
+        accumulate: str | None = None,
+        empty: Handler | None = None,
+        list_remove: bool = False,
     ) -> Callable[[F], F]:
         """Register a mutation endpoint (default POST) for form demos."""
         return self.fragment(
@@ -152,6 +172,9 @@ class SimApp:
             validate=validate,
             variants=variants,
             sequence=sequence,
+            accumulate=accumulate,
+            empty=empty,
+            list_remove=list_remove,
         )
 
     @property

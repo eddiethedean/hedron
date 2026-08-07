@@ -275,6 +275,88 @@ def test_hedron_sim_js_form_variant_and_oob(tmp_path: Path) -> None:
             browser.close()
 
 
+def test_hedron_sim_js_credentials_validate(tmp_path: Path) -> None:
+    app = SimApp(demo_id="browser-creds")
+    panel = app.region("panel")
+
+    def form(*, err: str = ""):
+        kids = []
+        if err:
+            kids.append(html.p(err))
+        kids.extend(
+            [
+                html.input(name="username", id="user", value="ada"),
+                html.input(name="password", id="pass", type="password"),
+                html.button("Sign in", type="submit"),
+            ]
+        )
+        return html.div(
+            html.form(
+                *kids,
+                **{
+                    "hx-post": "/login",
+                    "hx-target": "#panel",
+                    "hx-swap": "outerHTML",
+                },
+            ),
+            id=panel.id,
+        )
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(form(), title="creds")
+
+    def invalid():
+        return InteractionResult(
+            content=form(err="bad credentials"),
+            status_code=401,
+            region_id=panel.id,
+        )
+
+    def valid():
+        return InteractionResult(
+            content=html.div("welcome ada", id=panel.id),
+            status_code=200,
+            region_id=panel.id,
+        )
+
+    @app.action(
+        "/login",
+        region=panel,
+        validate="credentials",
+        variants={"invalid": invalid, "valid": valid},
+    )
+    def login():
+        return invalid()
+
+    path = _write_demo(tmp_path, embed_demo(app))
+    with sync_playwright() as pw:
+        browser = _launch(pw)
+        page = browser.new_page()
+        try:
+            page.goto(path.as_uri())
+            page.fill("#pass", "wrong")
+            page.click("button[type=submit]")
+            page.wait_for_function(
+                """() => {
+                  const t = document.querySelector('[data-hedron-sim-trace]');
+                  return t && !t.hidden && t.textContent.includes('401');
+                }"""
+            )
+            assert "bad credentials" in page.locator("#panel").inner_text()
+            page.fill("#pass", "correct-horse")
+            page.click("button[type=submit]")
+            page.wait_for_function(
+                """() => {
+                  const t = document.querySelector('[data-hedron-sim-trace]');
+                  return t && !t.hidden && t.textContent.includes('200');
+                }"""
+            )
+            assert "welcome ada" in page.locator("#panel").inner_text()
+        finally:
+            browser.close()
+
+
 def test_component_demos_theme_sync_from_docs_scheme(tmp_path: Path) -> None:
     demos_js = (ROOT / "docs" / "javascript" / "component-demos.js").read_text(encoding="utf-8")
     demos_css = (ROOT / "docs" / "stylesheets" / "component-demos.css").read_text(encoding="utf-8")

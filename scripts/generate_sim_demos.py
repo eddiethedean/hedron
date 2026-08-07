@@ -29,13 +29,20 @@ def main(argv: list[str] | None = None) -> int:
     from demos.core_concepts import build_core_concepts_modes_demo
     from demos.guides import (
         build_allowlist_403_demo,
+        build_auth_login_demo,
         build_charts_htmx_demo,
         build_cookbook_oob_demo,
         build_crud_demo,
+        build_csrf_guard_demo,
+        build_data_table_filter_demo,
         build_forms_invite_demo,
         build_htmx_interactions_demo,
+        build_jobs_poll_demo,
         build_live_poll_demo,
+        build_minimal_form_demo,
         build_mutations_htmx_demo,
+        build_pe_paths_demo,
+        build_tenant_deny_demo,
     )
     from demos.hello_refresh import build_hello_refresh_demo
 
@@ -59,12 +66,19 @@ def main(argv: list[str] | None = None) -> int:
         "htmx-interactions.html": build_htmx_interactions_demo(),
         "forms-invite.html": build_forms_invite_demo(),
         "live-poll.html": build_live_poll_demo(),
+        "jobs-poll.html": build_jobs_poll_demo(),
         "cookbook-oob.html": build_cookbook_oob_demo(),
         "allowlist-403.html": build_allowlist_403_demo(),
         "charts-htmx.html": build_charts_htmx_demo(),
         "crud-notes.html": build_crud_demo(),
         "mutations-htmx.html": build_mutations_htmx_demo(),
         "core-concepts-modes.html": build_core_concepts_modes_demo(),
+        "minimal-form.html": build_minimal_form_demo(),
+        "auth-login.html": build_auth_login_demo(),
+        "csrf-guard.html": build_csrf_guard_demo(),
+        "data-table-filter.html": build_data_table_filter_demo(),
+        "pe-paths.html": build_pe_paths_demo(),
+        "tenant-deny.html": build_tenant_deny_demo(),
     }
     for name in sorted(COMPONENT_DEMO_BUILDERS):
         demos[f"{name}.html"] = build_component_demo(name)

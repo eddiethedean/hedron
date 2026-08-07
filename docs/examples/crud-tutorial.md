@@ -14,7 +14,7 @@ reference application (auth, charts, extras), see the
 
 === "Demo"
 
-    Miniature list — type a note, add it, then delete it. Docs simulation.
+    Miniature list — add multiple notes, then delete any row. Docs simulation.
 
     <!-- hedron-sim:crud-notes -->
 

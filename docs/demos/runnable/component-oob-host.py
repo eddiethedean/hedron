@@ -37,7 +37,11 @@ def home() -> Page:
             primary(draft=True),
             OobHost(
                 html.span("OOB host"),
-                html.span(html.strong("#status"), html.small("Stable swap root")),
+                html.span(
+                    html.strong("#status"),
+                    html.small("Stable swap root"),
+                    class_="hedron-sim-oob-label",
+                ),
                 id=host.id,
             ),
             html.button(
@@ -63,7 +67,11 @@ def save() -> InteractionResult:
             OobUpdate(
                 content=OobHost(
                     html.span("Saved"),
-                    html.span(html.strong("#status"), html.small("Out-of-band update")),
+                    html.span(
+                        html.strong("#status"),
+                        html.small("Out-of-band update"),
+                        class_="hedron-sim-oob-label",
+                    ),
                     id=host.id,
                 ),
                 element_id=host.id,

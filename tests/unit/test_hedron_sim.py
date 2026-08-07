@@ -136,6 +136,80 @@ def test_route_table_sequence_and_variants() -> None:
     assert "ok" in table["routes"]["POST /invite"]["variants"]["valid"]["html"]
 
 
+def test_route_table_credentials_validate() -> None:
+    app = SimApp(demo_id="auth")
+    region = app.region("panel")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(html.div(id=region.id), title="x")
+
+    @app.action(
+        "/login",
+        region=region,
+        validate="credentials",
+        variants={
+            "invalid": lambda: InteractionResult(
+                content=html.div("bad", id=region.id),
+                status_code=401,
+                region_id=region.id,
+            ),
+            "valid": lambda: swap(html.div("ok", id=region.id)),
+        },
+    )
+    def login():
+        return swap(html.div("bad", id=region.id))
+
+    table = route_table(app)
+    assert table["routes"]["POST /login"]["validate"] == "credentials"
+    assert table["routes"]["POST /login"]["variants"]["invalid"]["status"] == 401
+    assert "ok" in table["routes"]["POST /login"]["variants"]["valid"]["html"]
+
+
+def test_route_table_accumulate_and_list_remove() -> None:
+    app = SimApp(demo_id="list")
+    listing = app.region("notes")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(html.div(id=listing.id), title="x")
+
+    @app.action(
+        "/notes",
+        region=listing,
+        accumulate="note",
+        empty=lambda: swap(html.div(html.p("empty"), id=listing.id)),
+    )
+    def add():
+        return swap(html.li(sim_form("note")))
+
+    @app.fragment("/notes/item", region=listing, method="DELETE", list_remove=True)
+    def remove():
+        return swap(html.div(html.p("empty"), id=listing.id))
+
+    table = route_table(app)
+    acc = table["routes"]["POST /notes"]["accumulate"]
+    assert acc["field"] == "note"
+    assert "__HEDRON_SIM_FORM:note__" in acc["itemHtml"]
+    assert "empty" in acc["emptyHtml"]
+    assert table["routes"]["DELETE /notes/item"]["listRemove"] is True
+
+
+def test_accumulate_requires_empty_handler() -> None:
+    app = SimApp(demo_id="bad")
+    listing = app.region("notes")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(html.div(id=listing.id), title="x")
+
+    with pytest.raises(ValueError, match="empty"):
+
+        @app.action("/notes", region=listing, accumulate="note")
+        def add():
+            return swap(html.li(sim_form("note")))
+
+
 def test_embed_requires_page() -> None:
     app = SimApp(demo_id="empty")
     with pytest.raises(ValueError, match="page"):
@@ -292,6 +366,8 @@ def test_packaged_assets_include_theme_and_runtime_hooks() -> None:
     assert "enforceBootInvariants" in js
     assert "hedronSimBlocked" in js or "hedron-sim-blocked" in js
     assert "beginSimGuard" in js
+    assert "accumulate" in js or "renderAccumulatedList" in js
+    assert "listRemove" in js or "list_remove" in js or "listRemove" in js
     assert ", true" in js  # capture-phase listeners
     assert "<strong>HEDRON_SIM_UTC</strong>" in js  # legacy markdown-mangled token
 
@@ -365,33 +441,15 @@ def test_core_concepts_modes_demo_renders_both_modes() -> None:
 
 @pytest.mark.usefixtures("_docs_on_path")
 def test_guide_and_hello_demo_builders_embed() -> None:
-    from demos.guides import (
-        build_allowlist_403_demo,
-        build_charts_htmx_demo,
-        build_cookbook_oob_demo,
-        build_crud_demo,
-        build_forms_invite_demo,
-        build_htmx_interactions_demo,
-        build_live_poll_demo,
-        build_mutations_htmx_demo,
-    )
-    from demos.hello_refresh import build_hello_refresh_demo
+    from demos.contracts import CONTRACTS
 
-    builders = (
-        build_hello_refresh_demo,
-        build_htmx_interactions_demo,
-        build_forms_invite_demo,
-        build_live_poll_demo,
-        build_cookbook_oob_demo,
-        build_allowlist_403_demo,
-        build_charts_htmx_demo,
-        build_crud_demo,
-        build_mutations_htmx_demo,
-    )
-    for builder in builders:
-        html_out = builder()
-        assert "data-hedron-sim" in html_out, builder.__name__
-        assert "data-hedron-sim-routes" in html_out, builder.__name__
+    for contract in CONTRACTS:
+        if contract.mode_demo or contract.id.startswith("component-"):
+            continue
+        html_out = contract.builder()
+        assert "data-hedron-sim" in html_out, contract.id
+        if not contract.mode_demo:
+            assert "data-hedron-sim-routes" in html_out, contract.id
 
 
 @pytest.mark.usefixtures("_docs_on_path")
@@ -413,37 +471,12 @@ def test_allowlist_demo_registers_correct_and_wrong_targets() -> None:
 
 @pytest.mark.usefixtures("_docs_on_path")
 def test_every_sim_demo_has_runnable_app_source() -> None:
-    from demos.components import COMPONENT_DEMO_BUILDERS
-    from demos.runnable_code import runnable_path, runnable_source
-    from demos.tabs import format_demo_code_tabs
+    """Delegates to the catalog suite — keep a thin alias for discoverability."""
+    from demos.contracts import contract_ids
+    from demos.runnable_code import runnable_path
 
-    ids = set(COMPONENT_DEMO_BUILDERS) | {
-        "hello-refresh",
-        "hello-refresh-quickstart",
-        "htmx-interactions",
-        "forms-invite",
-        "live-poll",
-        "cookbook-oob",
-        "allowlist-403",
-        "charts-htmx",
-        "crud-notes",
-        "mutations-htmx",
-        "core-concepts-modes",
-    }
-    for sim_id in sorted(ids):
-        path = runnable_path(sim_id)
-        assert path.is_file(), sim_id
-        source = runnable_source(sim_id)
-        assert (
-            "from hedron" in source
-            or "import hedron" in source
-            or "Hedron" in source
-            or "render(" in source
-        ), sim_id
-        tabs = format_demo_code_tabs(sim_id)
-        assert f"<!-- hedron-sim:{sim_id} -->" in tabs
-        assert '=== "Code"' in tabs
-        assert "```python" in tabs
+    for sim_id in sorted(contract_ids()):
+        assert runnable_path(sim_id).is_file(), sim_id
 
 
 @pytest.mark.usefixtures("_docs_on_path")
@@ -454,11 +487,5 @@ def test_every_sim_include_has_demo_contract() -> None:
     ids = contract_ids()
     assert includes == ids, f"missing={sorted(includes - ids)} extra={sorted(ids - includes)}"
     for contract in CONTRACTS:
-        html_out = contract.builder()
-        assert html_out.strip(), contract.id
-        if contract.mode_demo:
-            assert "data-hedron-sim-modes" in html_out, contract.id
-        else:
-            assert "data-hedron-sim=" in html_out, contract.id
-            assert "data-hedron-sim-routes" in html_out, contract.id
         assert contract.steps, contract.id
+        assert len(contract.steps) >= contract.min_steps, contract.id

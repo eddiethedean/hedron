@@ -25,6 +25,11 @@
 
 ### Added
 
+- Route ``validate="credentials"`` + ``variants`` for docs auth demos (``ada`` /
+  ``correct-horse``).
+- Route extras ``accumulate="field"`` + ``empty=...`` and ``list_remove=True`` so list
+  demos (CRUD notes) append and delete items client-side instead of replacing one row.
+- Layout styles for ``OobHost`` rows so the host id and caption are not jammed together.
 - Docs theme tokens for Material `slate` / `default` schemes.
 - Bounded `hx-trigger="load"` and `hx-confirm` support in the JS shim.
 - PAGE / FRAGMENT mode-toggle helper for core-concepts demos.

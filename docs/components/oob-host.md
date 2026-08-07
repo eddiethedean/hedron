@@ -66,7 +66,11 @@ Stable out-of-band swap root with a reserved id.
                 primary(draft=True),
                 OobHost(
                     html.span("OOB host"),
-                    html.span(html.strong("#status"), html.small("Stable swap root")),
+                    html.span(
+                        html.strong("#status"),
+                        html.small("Stable swap root"),
+                        class_="hedron-sim-oob-label",
+                    ),
                     id=host.id,
                 ),
                 html.button(
@@ -92,7 +96,11 @@ Stable out-of-band swap root with a reserved id.
                 OobUpdate(
                     content=OobHost(
                         html.span("Saved"),
-                        html.span(html.strong("#status"), html.small("Out-of-band update")),
+                        html.span(
+                            html.strong("#status"),
+                            html.small("Out-of-band update"),
+                            class_="hedron-sim-oob-label",
+                        ),
                         id=host.id,
                     ),
                     element_id=host.id,
