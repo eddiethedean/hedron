@@ -292,6 +292,7 @@ def test_packaged_assets_include_theme_and_runtime_hooks() -> None:
     assert ", true" in js  # capture-phase listeners
     assert "<strong>HEDRON_SIM_UTC</strong>" in js  # legacy markdown-mangled token
 
+
 def test_copy_assets_writes_js_and_css(tmp_path: Path) -> None:
     js_dir = tmp_path / "javascript"
     css_dir = tmp_path / "stylesheets"
