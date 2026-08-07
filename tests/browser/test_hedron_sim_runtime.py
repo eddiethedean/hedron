@@ -413,3 +413,79 @@ def test_component_demos_theme_sync_from_docs_scheme(tmp_path: Path) -> None:
             assert page.locator("[data-hdc-theme]").input_value() == "System"
         finally:
             browser.close()
+
+
+def test_hedron_sim_routes_survive_material_script_stripping(tmp_path: Path) -> None:
+    """Material instant nav removes <script> from fetched HTML; templates must remain."""
+    app = SimApp(demo_id="instant-safe")
+    panel = app.region("panel")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            html.div("idle", id=panel.id),
+            html.button(
+                "Go",
+                type="button",
+                **{"hx-get": "/x", "hx-target": "#panel", "hx-swap": "innerHTML"},
+            ),
+            title="Home",
+        )
+
+    @app.fragment("/x", region=panel)
+    def refresh():
+        return swap(html.div("swapped", id=panel.id))
+
+    island = embed_demo(app)
+    assert "<template data-hedron-sim-routes>" in island
+    assert '<script type="application/json" data-hedron-sim-routes>' not in island
+
+    # Simulate Material: parse HTML and drop every <script>.
+    stripped_doc = f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><style>{css_text()}</style></head>
+<body>
+<div id="host">{island}</div>
+<script>
+(function () {{
+  var host = document.getElementById("host");
+  var parsed = new DOMParser().parseFromString(host.innerHTML, "text/html");
+  parsed.querySelectorAll("script").forEach(function (node) {{ node.remove(); }});
+  host.replaceChildren(...parsed.body.childNodes);
+}})();
+</script>
+<script>{javascript_text()}</script>
+</body></html>
+"""
+    path = tmp_path / "instant.html"
+    path.write_text(stripped_doc, encoding="utf-8")
+    with sync_playwright() as pw:
+        browser = _launch(pw)
+        page = browser.new_page()
+        try:
+            page.goto(path.as_uri())
+            state = page.evaluate(
+                """() => {
+                  const el = document.querySelector('[data-hedron-sim]');
+                  const node = el && el.querySelector('[data-hedron-sim-routes]');
+                  let raw = '';
+                  if (node && node.content) raw = node.content.textContent || '';
+                  if (!String(raw).trim() && node) raw = node.textContent || '';
+                  return {
+                    ready: el && el.dataset.hedronSimReady,
+                    routesLen: String(raw).trim().length,
+                    hasTable: !!(el && el._hedronSimTable),
+                    tag: node && node.tagName,
+                  };
+                }"""
+            )
+            assert state["routesLen"] > 0, state
+            assert state["ready"] == "true", state
+            assert state["hasTable"] is True, state
+            page.click('button:has-text("Go")')
+            page.wait_for_function(
+                """() => (document.querySelector('#panel') || {}).textContent === 'swapped'"""
+            )
+            trace = page.locator("[data-hedron-sim-trace]").inner_text()
+            assert "200" in trace
+        finally:
+            browser.close()

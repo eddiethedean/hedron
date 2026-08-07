@@ -73,17 +73,26 @@ def test_embed_demo_includes_real_hx_attrs_and_route_table() -> None:
     assert 'hx-target="#service-status"' in html_out
     assert "hx-swap" in html_out
     assert "data-hedron-sim-routes" in html_out
+    assert "<template data-hedron-sim-routes>" in html_out
+    assert '<script type="application/json" data-hedron-sim-routes>' not in html_out
     assert SIM_UTC in html_out
     assert "data-hedron-sim-trace" in html_out
     assert "data-hedron-sim-stage" in html_out
 
     match = re.search(
-        r'<script type="application/json" data-hedron-sim-routes>(.*?)</script>',
+        r"<(?:template|script)[^>]*data-hedron-sim-routes[^>]*>(.*?)</(?:template|script)>",
         html_out,
         flags=re.DOTALL,
     )
     assert match is not None
-    payload = json.loads(match.group(1))
+    raw = (
+        match.group(1)
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&amp;", "&")
+        .replace("\\u003c", "<")
+    )
+    payload = json.loads(raw)
     assert "GET /status" in payload["routes"]
     route = payload["routes"]["GET /status"]
     assert route["status"] == 200
@@ -231,14 +240,20 @@ def test_embed_escapes_script_breakouts_in_route_json() -> None:
     out = embed_demo(app)
     # Raw breakout must not appear as a live HTML end-tag inside the JSON script.
     assert "</script><img" not in out
-    assert "\\u003c" in out or "&lt;/script&gt;" in out
+    assert "&lt;" in out and "</script><img" not in out
     match = re.search(
-        r'<script type="application/json" data-hedron-sim-routes>(.*?)</script>',
+        r"<(?:template|script)[^>]*data-hedron-sim-routes[^>]*>(.*?)</(?:template|script)>",
         out,
         flags=re.DOTALL,
     )
     assert match is not None
-    payload = json.loads(match.group(1).replace("\\u003c", "<"))
+    payload = json.loads(
+        match.group(1)
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&amp;", "&")
+        .replace("\\u003c", "<")
+    )
     body = payload["routes"]["GET /evil"]["html"]
     assert "panel" in body
     assert "script" in body.lower()
@@ -418,12 +433,18 @@ def test_all_component_demo_builders_embed() -> None:
         assert "data-hedron-sim" in html_out, name
         assert "data-hedron-sim-routes" in html_out, name
         match = re.search(
-            r'<script type="application/json" data-hedron-sim-routes>(.*?)</script>',
+            r"<(?:template|script)[^>]*data-hedron-sim-routes[^>]*>(.*?)</(?:template|script)>",
             html_out,
             flags=re.DOTALL,
         )
         assert match is not None, name
-        payload = json.loads(match.group(1).replace("\\u003c", "<"))
+        payload = json.loads(
+            match.group(1)
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&amp;", "&")
+            .replace("\\u003c", "<")
+        )
         assert payload["routes"], name
 
 
@@ -459,12 +480,18 @@ def test_allowlist_demo_registers_correct_and_wrong_targets() -> None:
     html_out = build_allowlist_403_demo()
     assert 'hx-target="#panel"' in html_out or "hx-target='#panel'" in html_out
     match = re.search(
-        r'<script type="application/json" data-hedron-sim-routes>(.*?)</script>',
+        r"<(?:template|script)[^>]*data-hedron-sim-routes[^>]*>(.*?)</(?:template|script)>",
         html_out,
         flags=re.DOTALL,
     )
     assert match is not None
-    payload = json.loads(match.group(1).replace("\\u003c", "<"))
+    payload = json.loads(
+        match.group(1)
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&amp;", "&")
+        .replace("\\u003c", "<")
+    )
     # At least one route declares regions so the JS can enforce allowlists.
     assert any(route.get("regions") for route in payload["routes"].values())
 

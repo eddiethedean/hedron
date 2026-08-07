@@ -4,6 +4,12 @@
 
 ### Fixed
 
+- Store route tables in ``<template data-hedron-sim-routes>`` instead of
+  ``<script type="application/json">``. MkDocs Material ``navigation.instant``
+  strips ``<script>`` nodes from fetched pages, which left demo buttons dead until
+  a hard refresh.
+- Boot on ``DOMContentLoaded`` even when Material's ``document$`` is present, and
+  handle Text-node click targets / form-inherited ``hx-*`` on submit buttons.
 - Expand docs sim includes *after* Markdown so `__HEDRON_SIM_UTC__` tokens are not
   turned into `<strong>` (which broke timestamp swaps on Read the Docs).
 - Neutralize *all* progressive `a[href]` / `form[action]` targets inside sim islands

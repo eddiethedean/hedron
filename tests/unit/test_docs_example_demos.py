@@ -38,12 +38,13 @@ def _docs_on_path() -> None:
 
 def _route_payload(html_out: str) -> dict:
     match = re.search(
-        r'<script type="application/json" data-hedron-sim-routes>(.*?)</script>',
+        r"<(?:template|script)[^>]*data-hedron-sim-routes[^>]*>(.*?)</(?:template|script)>",
         html_out,
         flags=re.DOTALL,
     )
     assert match is not None, "missing route table JSON"
-    return json.loads(match.group(1).replace("\\u003c", "<"))
+    raw = match.group(1).replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
+    return json.loads(raw.replace("\\u003c", "<"))
 
 
 def _load_guide_tabs() -> tuple[tuple[str, str, str], ...]:

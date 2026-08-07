@@ -112,7 +112,17 @@
     var node = root.querySelector("[data-hedron-sim-routes]");
     if (!node) return null;
     try {
-      return JSON.parse(node.textContent || "{}");
+      // <template> stores children in `.content` (textContent on the host can be empty).
+      // Legacy <script type="application/json"> uses host textContent.
+      var raw = "";
+      if (node.content) {
+        raw = node.content.textContent || "";
+      }
+      if (!String(raw).trim()) {
+        raw = node.textContent || "";
+      }
+      if (!String(raw).trim()) return null;
+      return JSON.parse(raw);
     } catch (err) {
       console.warn("hedron-sim: invalid route table", err);
       return null;
@@ -550,12 +560,26 @@
     "click",
     function (event) {
       var target = event.target;
+      // Clicks on button label text can target a Text node (no .closest).
+      if (target && target.nodeType === 3) target = target.parentElement;
       if (!target || !target.closest) return;
       var root = target.closest("[data-hedron-sim]");
       if (!root || !ensureRoot(root)) return;
       beginSimGuard(root);
       var control = findControl(target, root);
-      if (control && control.tagName !== "FORM") {
+      // Submit controls inherit hx-* from the enclosing form — treat as form submit.
+      if (control && control.tagName === "FORM") {
+        var submitter = target.closest("button, input[type='submit']");
+        if (submitter && control.contains(submitter)) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (typeof event.stopImmediatePropagation === "function") {
+            event.stopImmediatePropagation();
+          }
+          handleRequest(root, root._hedronSimTable, control, new FormData(control));
+          return;
+        }
+      } else if (control) {
         event.preventDefault();
         event.stopPropagation();
         if (typeof event.stopImmediatePropagation === "function") {
@@ -606,16 +630,18 @@
     true
   );
 
-  // Always boot once now; also re-boot on Material instant navigation.
-  boot(document);
+  // Boot on first paint and again whenever Material swaps page content
+  // (navigation.instant). document$ may or may not emit synchronously on subscribe.
+  function scheduleBoot() {
+    boot(document);
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", scheduleBoot);
+  } else {
+    scheduleBoot();
+  }
   if (typeof document$ !== "undefined") {
-    document$.subscribe(function () {
-      boot(document);
-    });
-  } else if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
-      boot(document);
-    });
+    document$.subscribe(scheduleBoot);
   }
 
   window.HedronSim = {

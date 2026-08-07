@@ -124,8 +124,9 @@ def embed_demo(
         extra = " " + " ".join(parts)
 
     payload = json.dumps(table, ensure_ascii=False, separators=(",", ":"))
-    # Prevent accidental </script> breaks inside JSON strings.
-    payload = payload.replace("<", "\\u003c")
+    # Escape HTML specials so the payload is safe inside a normal element
+    # (Material instant navigation strips <script> nodes from fetched pages).
+    payload = payload.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
     trace_html = (
         '<p class="hedron-sim__trace" data-hedron-sim-trace aria-live="polite" hidden></p>'
@@ -136,7 +137,8 @@ def embed_demo(
         f'<section class="{classes}" data-hedron-sim="{demo_id}"{extra}>'
         f'<div class="hedron-sim__stage" data-hedron-sim-stage>{page_html}</div>'
         f"{trace_html}"
-        f'<script type="application/json" data-hedron-sim-routes>{payload}</script>'
+        # <template> survives MkDocs Material instant navigation; <script> does not.
+        f"<template data-hedron-sim-routes>{payload}</template>"
         "</section>"
     )
 
