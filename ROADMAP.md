@@ -1144,6 +1144,12 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
+**Status:** Planned. Evidence index: [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml)
+(`Planned` rows; `check_release_gate.py 0.19.0 --allow-planned` until cut). Decision: D-050.
+Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
+[RFC-0051](docs/rfcs/RFC-0051-ACCESSIBILITY-CONTRACT.md)–[RFC-0055](docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md)
+(Draft until Accepted before Verified cut).
+
 **Outcome:** Hedron makes accessibility obligations, authoring assistance, dynamic interaction
 evidence, assistive-technology support, and known limitations inspectable and release-governed
 across core and optional packages without claiming that automation or framework markup can certify
@@ -1152,105 +1158,123 @@ an arbitrary application.
 ### Entry gate
 
 - The [accessibility feature research](https://github.com/eddiethedean/hedron/blob/main/docs/ACCESSIBILITY_FEATURE_RESEARCH.md) is refreshed against
-  stable WCAG, HTML, WAI-ARIA, accessible-name, ACT, and ATAG sources. RFC-0023 and the acceptance
-  plan define the normative versions, draft/experimental policy, evidence matrix, severity policy,
-  waiver governance, and boundaries of any public claim.
+  stable WCAG, HTML, WAI-ARIA, accessible-name, ACT, and ATAG sources. RFC-0023 and RFCs 0051–0055
+  define the normative versions, draft/experimental policy, evidence matrix, severity policy,
+  waiver governance, and boundaries of any public claim; acceptance checklist
+  [RELEASE_0_19.md](docs/acceptance/RELEASE_0_19.md) owns the gate map.
 - The component catalog, HDJ authoring, Explorer/testing APIs, themes, data/visualization adapters,
   media/identity controls, extras, dashboards, and inference workflow surfaces through 0.18 are
   stable enough to receive one shared accessibility contract rather than package-specific checklists.
+- Gate checker recognizes `0.19` (`python scripts/check_release_gate.py 0.19.0 --allow-planned`).
 
 ### Scope
 
-- A versioned standards profile with WCAG 2.2 A/AA and WAI-ARIA 1.2 as the stable baseline, native
-  HTML as the first choice, APG as informative pattern guidance, and explicit ACT/engine/browser/AT
-  versions. WAI-ARIA 1.3, WCAG 3, and other drafts remain labeled experiments until an accepted
-  baseline revision and interoperability evidence promote them.
-- A machine-readable `AccessibilityContract` for every public component, variant, dynamic state,
-  package, and authoring surface. It records native/ARIA semantics, name/description sources,
-  labels and relationships, keyboard/focus behavior, pointer/touch/drag alternatives, target and
-  reflow assumptions, announcements, visual/motion/media/data alternatives, fallbacks, standard
-  mappings, manual checks, support evidence, known limitations, and waivers. Composition can add
-  unmet obligations; leaf contracts never imply whole-application conformance.
-- WCAG 2.2 interaction primitives and conformance cases for focus not obscured under sticky/
-  overlay/virtual-keyboard layouts, 24-by-24 CSS-pixel target or spacing policy, pointer
-  cancellation, label in name, non-drag single-pointer plus keyboard operation, consistent help,
-  redundant-entry support, retained/error/review/undo flows, timeout warning/extension, and
+Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
+
+- **`PROFILE-019`** — Versioned standards profile with WCAG 2.2 A/AA and WAI-ARIA 1.2 as the stable
+  baseline, native HTML as the first choice, APG as informative pattern guidance, and explicit
+  ACT/engine/browser/AT versions. WAI-ARIA 1.3, WCAG 3, and other drafts remain labeled experiments
+  until an accepted baseline revision and interoperability evidence promote them.
+- **`CONTRACT-019`** — Machine-readable `AccessibilityContract` for every public component, variant,
+  dynamic state, package, and authoring surface. It records native/ARIA semantics, name/description
+  sources, labels and relationships, keyboard/focus behavior, pointer/touch/drag alternatives,
+  target and reflow assumptions, announcements, visual/motion/media/data alternatives, fallbacks,
+  standard mappings, manual checks, support evidence, known limitations, and waivers. Composition
+  can add unmet obligations; leaf contracts never imply whole-application conformance.
+- **`INTERACT-019`** — WCAG 2.2 interaction primitives and conformance cases for focus not obscured
+  under sticky/overlay/virtual-keyboard layouts, 24-by-24 CSS-pixel target or spacing policy,
+  pointer cancellation, label in name, non-drag single-pointer plus keyboard operation, consistent
+  help, redundant-entry support, retained/error/review/undo flows, timeout warning/extension, and
   accessible authentication across login, MFA, recovery, and reauthentication.
-- ATAG-oriented authoring support across CLI, Explorer, previews, HDJ, inspect/eject, generators,
-  templates, examples, transformations, and the workflow editor. Accessibility properties are
-  available alongside ordinary properties; accessible choices are at least as prominent; metadata
-  survives generation/copy/conversion/optimization; checks locate source and explain manual
-  decisions; repair guidance is reversible and author-reviewed; accessibility features are on by
-  default and documented. An ATAG conformance claim requires a separate applicability report.
-- An expanded Explorer accessibility workspace with rendered accessibility tree and computed
-  role/name/description/value/state, source mapping, headings/landmarks/reading/tab/focus outlines,
-  keyboard map, live-region event log, and review modes for contrast/non-text contrast, target
-  spacing, focus obstruction, text spacing, zoom/reflow/orientation, reduced motion, forced colors,
-  media alternatives, and visualization fallbacks. Findings distinguish automatic,
-  semi-automatic, and manual status and never summarize an empty scan as "accessible."
-- Testing APIs for accessibility-tree snapshots and targeted assertions plus an
+- **`ATAG-019`** — ATAG-oriented authoring support across CLI, Explorer, previews, HDJ, inspect/eject,
+  generators, templates, examples, transformations, and the workflow editor. Accessibility
+  properties are available alongside ordinary properties; accessible choices are at least as
+  prominent; metadata survives generation/copy/conversion/optimization; checks locate source and
+  explain manual decisions; repair guidance is reversible and author-reviewed; accessibility
+  features are on by default and documented. An ATAG conformance claim requires a separate
+  applicability report.
+- **`EXPLORER-019`** — Expanded Explorer accessibility workspace with rendered accessibility tree
+  and computed role/name/description/value/state, source mapping, headings/landmarks/reading/tab/
+  focus outlines, keyboard map, live-region event log, and review modes for contrast/non-text
+  contrast, target spacing, focus obstruction, text spacing, zoom/reflow/orientation, reduced
+  motion, forced colors, media alternatives, and visualization fallbacks. Findings distinguish
+  automatic, semi-automatic, and manual status and never summarize an empty scan as "accessible."
+- **`TEST-019`** — Testing APIs for accessibility-tree snapshots and targeted assertions plus an
   `AccessibilityScenario` vocabulary covering keyboard, focus, state/value, announcements,
   pointer/touch alternatives, timeouts, fragments/history, loading/success/error/disconnect, and
   supported open-shadow/same-origin-frame states. Pinned semantic/ARIA validation and axe/ACT-
   aligned scans run after meaningful dynamic states and emit stable JSON/SARIF provenance;
   snapshot changes require review rather than bulk acceptance.
-- A scoped manual browser/assistive-technology evidence matrix including VoiceOver/Safari on macOS
-  and iOS, NVDA with Firefox and Chromium on Windows, TalkBack/Chromium on Android, keyboard-only,
-  voice/switch-compatible label behavior, browser zoom, platform high contrast/forced colors,
-  reduced motion, and user text-spacing/style overrides. Records include versions, settings,
-  representative task, expected behavior/announcement, result, known issue, owner, and retest date.
-- Media and complex-content conformance for caption/subtitle language tracks, transcripts and
-  descriptive transcripts, audio description, accessible player controls, reviewed live-caption
-  providers, tables/editors under virtualization, chart/map summaries and synchronized data
-  alternatives, non-color encodings, and structured non-spatial views for image/3D/dashboard/
+- **`AT-019`** — Scoped manual browser/assistive-technology evidence matrix including VoiceOver/
+  Safari on macOS and iOS, NVDA with Firefox and Chromium on Windows, TalkBack/Chromium on
+  Android, keyboard-only, voice/switch-compatible label behavior, browser zoom, platform high
+  contrast/forced colors, reduced motion, and user text-spacing/style overrides. Records include
+  versions, settings, representative task, expected behavior/announcement, result, known issue,
+  owner, and retest date. At least the data editor, media flow, authentication/recovery, live
+  update, dashboard, and inference workflow receive appropriately scoped evaluation with
+  compensated disabled participants; user testing complements rather than substitutes for WCAG
+  evaluation.
+- **`MEDIA-019`** — Media and complex-content conformance for caption/subtitle language tracks,
+  transcripts and descriptive transcripts, audio description, accessible player controls, reviewed
+  live-caption providers, tables/editors under virtualization, chart/map summaries and synchronized
+  data alternatives, non-color encodings, and structured non-spatial views for image/3D/dashboard/
   workflow interactions. Automated alternative content retains author review and provenance.
-- Cognitive and personalization helpers for clear visible labels/instructions, typed help and
-  glossary slots, consistent identification/navigation/help, task progress, review/undo/back,
-  reminders, user-controlled motion/auto-update/media/notification intensity, density and text
-  spacing, simplified presentation supplied by the application, and secure time-limit disclosure.
-  These assist authors but do not automatically judge prose clarity or user comprehension.
-- Language/direction and structural validation covering page and passage language, bidi isolation,
-  translated label-in-name behavior, localized errors, titles, heading hierarchy, landmarks, skip
-  links, reading order, and consistent full-page/fragment navigation. RTL and translated variants
-  receive the same reflow, truncation, focus, target, and assistive-technology evidence.
-- Evidence and governance outputs: rule/version inventory, test and manual results, known
-  limitations and alternatives, third-party boundaries, feedback route, waiver owner/rationale/
-  affected users/expiry/remediation, and accessibility-statement template data. Hedron never
-  automatically emits a WCAG conformance, legal-compliance, certification, or ACR/VPAT claim.
-- Documented and tested progressive-enhancement contract for forms and mutations: no-JS classic
-  POST → full `Page` or redirect; HTMX path remains optional fragment / `InteractionResult`;
-  built-ins that stay usable without HTMX are called out in Minimal form / Forms and actions
-  ([#8](https://github.com/eddiethedean/hedron/issues/8)).
-- Safe HTML attrs on landmarks / surface components and export of landmark helpers as real types
-  (not factory variables)
+- **`COG-019`** — Cognitive and personalization helpers for clear visible labels/instructions, typed
+  help and glossary slots, consistent identification/navigation/help, task progress, review/undo/
+  back, reminders, user-controlled motion/auto-update/media/notification intensity, density and
+  text spacing, simplified presentation supplied by the application, and secure time-limit
+  disclosure. These assist authors but do not automatically judge prose clarity or user
+  comprehension.
+- **`I18N-019`** — Language/direction and structural validation covering page and passage language,
+  bidi isolation, translated label-in-name behavior, localized errors, titles, heading hierarchy,
+  landmarks, skip links, reading order, and consistent full-page/fragment navigation. RTL and
+  translated variants receive the same reflow, truncation, focus, target, and assistive-technology
+  evidence.
+- **`GOVERN-019`** — Evidence and governance outputs: rule/version inventory, test and manual
+  results, known limitations and alternatives, third-party boundaries, feedback route, waiver
+  owner/rationale/affected users/expiry/remediation, and accessibility-statement template data.
+  Hedron never automatically emits a WCAG conformance, legal-compliance, certification, or
+  ACR/VPAT claim.
+- **`PE-019`** — Documented and tested progressive-enhancement contract for forms and mutations:
+  no-JS classic POST → full `Page` or redirect; HTMX path remains optional fragment /
+  `InteractionResult`; built-ins that stay usable without HTMX are called out in Minimal form /
+  Forms and actions ([#8](https://github.com/eddiethedean/hedron/issues/8)).
+- **`LANDMARK-019`** — Safe HTML attrs on landmarks / surface components and export of landmark
+  helpers as real types (not factory variables)
   ([#27](https://github.com/eddiethedean/hedron/issues/27),
   [#31](https://github.com/eddiethedean/hedron/issues/31)).
-- Allowlisted progressive-enhancement scripts on `Page` (same-origin `SafeUrl` asset list; no
-  free-form `<script>` nodes in the component tree)
+- **`SCRIPT-019`** — Allowlisted progressive-enhancement scripts on `Page` (same-origin `SafeUrl`
+  asset list; no free-form `<script>` nodes in the component tree)
   ([#39](https://github.com/eddiethedean/hedron/issues/39)).
+- **`REGRESS-019`** — Full regression suite at cut.
+- **`PKG-019`** — Coordinated package/docs verify (`scripts/verify_pkg_19.py` when implemented).
 
 ### Exit gate
 
 - Every public built-in, optional first-party component, authoring surface, example, and template
   has a reviewed `AccessibilityContract`, source-linked diagnostics, documented keyboard/fallback
-  behavior, and no unowned or expired waiver. Third-party boundaries and untested combinations are
-  visible rather than inherited as framework guarantees.
+  behavior, and no unowned or expired waiver (`CONTRACT-019`, `GOVERN-019`). Third-party boundaries
+  and untested combinations are visible rather than inherited as framework guarantees.
 - Chromium, Firefox, and WebKit automation passes semantic-tree, dynamic-state, focus-obscuration,
   target/drag/input, reflow/text-spacing/orientation, forced-color/motion, media, data, dashboard,
-  and workflow scenarios. Automatic and incomplete/manual findings retain upstream rule versions
-  and cannot be waived by blindly regenerating snapshots.
+  and workflow scenarios (`TEST-019`, `INTERACT-019`, `MEDIA-019`, `I18N-019`, `COG-019`). Automatic
+  and incomplete/manual findings retain upstream rule versions and cannot be waived by blindly
+  regenerating snapshots.
 - The published browser/AT matrix completes its representative task set with recorded versions and
-  known limitations. At least the data editor, media flow, authentication/recovery, live update,
-  dashboard, and inference workflow receive appropriately scoped evaluation with compensated
-  disabled participants; user testing complements rather than substitutes for WCAG evaluation.
+  known limitations (`AT-019`). User testing complements rather than substitutes for WCAG
+  evaluation.
 - Accessibility metadata survives full/fragment rendering, hydration/enhancement, OOB swaps,
   serialization, caching, inspect/eject, code generation, transformations, imports/exports, and
-  optimization. Failures preserve safe ordinary-HTML alternatives and do not trap input or focus.
+  optimization (`ATAG-019`, `EXPLORER-019`, `CONTRACT-019`). Failures preserve safe ordinary-HTML
+  alternatives and do not trap input or focus.
 - A reference application publishes an evidence inventory and human-approved accessibility
   statement with feedback route, tested environments, known limitations, alternatives, assessment
-  method, and date, while making no broader claim than the scoped evidence supports.
+  method, and date (`GOVERN-019`, `PROFILE-019`), while making no broader claim than the scoped
+  evidence supports.
 - No-`HX-Request` mutation POSTs succeed through the documented progressive-enhancement path;
-  HTMX fragment paths remain covered without making JavaScript mandatory for critical flows.
+  HTMX fragment paths remain covered without making JavaScript mandatory for critical flows
+  (`PE-019`, `LANDMARK-019`, `SCRIPT-019`).
+- Every 0.19-owned release-gate row is `Verified` (`REGRESS-019`, `PKG-019`).
 
 ## 0.20 — Production security floor and adapter parity (`v0.20.0`)
 
@@ -1508,9 +1532,9 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Full `error-codes.md` / docs alignment for registered `HED-*` codes | 0.17 | Completes the docs half of [#15](https://github.com/eddiethedean/hedron/issues/15) after 0.13 catalog+CI registration. |
 | Dialog / Tabs / Pagination / Lazy markup testing asserts | 0.17 | Completes [#24](https://github.com/eddiethedean/hedron/issues/24) beyond Toast coverage shipped in 0.15. |
 | Gradio matrix, model demos, inference scheduling, protocol adapter, and visual workflows | 0.18 | Adopts ML-demo outcomes while preserving explicit action, exposure, state, file, and authorization boundaries. |
-| Accessibility research, inclusive authoring, complex interaction alternatives, and evidence governance | 0.19 | Stable WCAG/ARIA baseline plus ATAG guidance; no automatic certification or legal/conformance claim. |
-| Progressive-enhancement contract for forms and mutations | 0.19 | No-JS POST path documented and tested alongside HTMX fragments ([#8](https://github.com/eddiethedean/hedron/issues/8)). |
-| Landmark attrs/types and allowlisted Page progressive-enhancement scripts | 0.19 | Safe attrs / real landmark types ([#27](https://github.com/eddiethedean/hedron/issues/27), [#31](https://github.com/eddiethedean/hedron/issues/31)); same-origin script allowlist ([#39](https://github.com/eddiethedean/hedron/issues/39)). |
+| Accessibility research, inclusive authoring, complex interaction alternatives, and evidence governance | 0.19 | Stable WCAG/ARIA baseline plus ATAG guidance; gates `PROFILE-019`–`GOVERN-019`; no automatic certification or legal/conformance claim. |
+| Progressive-enhancement contract for forms and mutations | 0.19 | No-JS POST path documented and tested alongside HTMX fragments (`PE-019`; [#8](https://github.com/eddiethedean/hedron/issues/8)). |
+| Landmark attrs/types and allowlisted Page progressive-enhancement scripts | 0.19 | Safe attrs / real landmark types (`LANDMARK-019`; [#27](https://github.com/eddiethedean/hedron/issues/27), [#31](https://github.com/eddiethedean/hedron/issues/31)); same-origin script allowlist (`SCRIPT-019`; [#39](https://github.com/eddiethedean/hedron/issues/39)). |
 | HTMX browser hardening, proxy mount helpers, production security gates, `js:` hx-vals/headers reject | 0.20 | Host security floor; inspectable opt-outs ([#1](https://github.com/eddiethedean/hedron/issues/1), [#3](https://github.com/eddiethedean/hedron/issues/3), [#6](https://github.com/eddiethedean/hedron/issues/6), [#18](https://github.com/eddiethedean/hedron/issues/18)). |
 | Flask/Django fragment_regions, portable CSP headers, scaffolds, wheel smoke, Flask-Login AuthSignal | 0.20 | Adapter parity and DX after 0.11 foundations ([#12](https://github.com/eddiethedean/hedron/issues/12), [#14](https://github.com/eddiethedean/hedron/issues/14), [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19), [#20](https://github.com/eddiethedean/hedron/issues/20)). |
 | Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.20 | FastAPI composition for apps that own sessions/CSP ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
@@ -1542,9 +1566,9 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0020 Performance | 0.1–0.8 |
 | 0021 Browser runtime | 0.3; rich widgets in 0.5–0.6; browser context/storage in 0.15; extras and isolated sandbox in 0.16; dashboard patches/collections in 0.17; workflow canvas in 0.18; accessibility evidence in 0.19; HTMX hardening presets in 0.20 |
 | 0022 Theming | 0.3 |
-| 0023 Accessibility | 0.1–0.8 baseline; comprehensive contracts, authoring, testing, AT, governance, and progressive-enhancement contract in 0.19 |
-| 0024 Developer experience | 0.2–0.6; interaction authoring ergonomics in 0.15 (RFC-0039); authoring assistance and accessibility diagnostics in 0.19; Flask/Django scaffolds in 0.20 |
-| 0025 Component lifecycle | 0.1–0.3; dynamic accessibility-state evidence in 0.19 |
+| 0023 Accessibility | 0.1–0.8 baseline; comprehensive umbrella for 0.19 (`PROFILE-019` / claim boundaries); RFCs 0051–0055 own contracts, Explorer/testing, PE/landmarks/scripts, ATAG, and governance |
+| 0024 Developer experience | 0.2–0.6; interaction authoring ergonomics in 0.15 (RFC-0039); authoring assistance and accessibility diagnostics in 0.19 (`ATAG-019`, `EXPLORER-019`); Flask/Django scaffolds in 0.20 |
+| 0025 Component lifecycle | 0.1–0.3; dynamic accessibility-state evidence in 0.19 (`CONTRACT-019`, `TEST-019`) |
 | 0026 State management | 0.2 and 0.5; operations in 0.7; dashboard state and saved views in 0.17; versioned workflow/example state in 0.18 |
 | 0027 Data sources | 0.5–0.6 |
 | 0028 Deployment | 0.7–0.8; trusted mount-path and production security gates in 0.20 |
@@ -1570,6 +1594,11 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0048 InteractionRecorder | 0.18 |
 | 0049 Gradio client adapter (`hedron-gradio`) | 0.18 |
 | 0050 InferenceWorkflow | 0.18 |
+| 0051 AccessibilityContract | 0.19 |
+| 0052 Explorer a11y workspace / AccessibilityScenario | 0.19 |
+| 0053 Progressive enhancement / landmarks / Page scripts | 0.19 |
+| 0054 ATAG authoring assistance | 0.19 |
+| 0055 A11y evidence governance / AT matrix / statement | 0.19 |
 
 ## Open GitHub issue ownership (0.13+)
 
@@ -1585,7 +1614,7 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#5](https://github.com/eddiethedean/hedron/issues/5) | Auth endpoint rate-limit helpers | 0.15 |
 | [#6](https://github.com/eddiethedean/hedron/issues/6) | Production startup security gates | 0.20 |
 | [#7](https://github.com/eddiethedean/hedron/issues/7) | Trusted-header identity adapter | 0.15 |
-| [#8](https://github.com/eddiethedean/hedron/issues/8) | Progressive-enhancement contract | 0.19 |
+| [#8](https://github.com/eddiethedean/hedron/issues/8) | Progressive-enhancement contract (`PE-019`) | 0.19 |
 | [#9](https://github.com/eddiethedean/hedron/issues/9) | Security-event audit hooks | 0.13 |
 | [#10](https://github.com/eddiethedean/hedron/issues/10) | Hardened sessions reference app | 0.15 |
 | [#11](https://github.com/eddiethedean/hedron/issues/11) | Celery/RQ JobBackend durability | 0.13 |
@@ -1603,17 +1632,17 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#24](https://github.com/eddiethedean/hedron/issues/24) | Testing: Dialog / Tabs / Pagination / Lazy asserts (Toast done in 0.15) | 0.17 |
 | [#25](https://github.com/eddiethedean/hedron/issues/25) | Testing: FragmentRegion authorization helpers | 0.15 |
 | [#26](https://github.com/eddiethedean/hedron/issues/26) | Testing: shell panel-swap / PE asserts | 0.15 |
-| [#27](https://github.com/eddiethedean/hedron/issues/27) | Safe HTML attrs on landmarks / surfaces | 0.19 |
+| [#27](https://github.com/eddiethedean/hedron/issues/27) | Safe HTML attrs on landmarks / surfaces (`LANDMARK-019`) | 0.19 |
 | [#28](https://github.com/eddiethedean/hedron/issues/28) | `HtmxLink` / `NavLink` builtin | 0.17 |
 | [#29](https://github.com/eddiethedean/hedron/issues/29) | `class_` / theme hooks on content builtins | 0.17 |
 | [#30](https://github.com/eddiethedean/hedron/issues/30) | `OobHost` / `AttrHost` primitive | 0.17 |
-| [#31](https://github.com/eddiethedean/hedron/issues/31) | Export landmarks as real types | 0.19 |
+| [#31](https://github.com/eddiethedean/hedron/issues/31) | Export landmarks as real types (`LANDMARK-019`) | 0.19 |
 | [#32](https://github.com/eddiethedean/hedron/issues/32) | Lifespan missing `hedron.build` import | 0.16 (done) |
 | [#35](https://github.com/eddiethedean/hedron/issues/35) | Public `InteractionResult` → Response API | 0.17 |
 | [#36](https://github.com/eddiethedean/hedron/issues/36) | Pluggable CSRF strategies (no Starlette session required) | 0.20 |
 | [#37](https://github.com/eddiethedean/hedron/issues/37) | Composable `SecurityPolicy` headers | 0.20 |
 | [#38](https://github.com/eddiethedean/hedron/issues/38) | `CsrfField` + HTMX-aware `Form` kwargs | 0.20 |
-| [#39](https://github.com/eddiethedean/hedron/issues/39) | Allowlisted progressive-enhancement scripts on `Page` | 0.19 |
+| [#39](https://github.com/eddiethedean/hedron/issues/39) | Allowlisted progressive-enhancement scripts on `Page` (`SCRIPT-019`) | 0.19 |
 | [#40](https://github.com/eddiethedean/hedron/issues/40) | `AppShell` / `MainPanel` HTMX shell primitives | 0.17 |
 | [#41](https://github.com/eddiethedean/hedron/issues/41) | `DashboardBinding` / `InteractionGraph` / `TriggerContext` | 0.17 |
 | [#42](https://github.com/eddiethedean/hedron/issues/42) | `PropertyPatch` / `CollectionPatch` / collections | 0.17 |

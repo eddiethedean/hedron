@@ -1,5 +1,9 @@
 # Accessibility acceptance
 
+Comprehensive phase **0.19** gates live in [RELEASE_0_19.md](RELEASE_0_19.md) and
+[release-gate-0.19.toml](release-gate-0.19.toml) (D-050; RFCs 0023 / 0051–0055). The checklist
+below records earlier-train baseline evidence and remains in force.
+
 ## Phase 0.1 (`v0.1.0`) built-in subset
 
 - [x] Native semantic elements are used before ARIA for landmarks and structure.

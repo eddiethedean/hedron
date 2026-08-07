@@ -16,7 +16,12 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 **Current cut target:** `v0.18.x` patches or `v0.19.0` — see
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
-[What’s ready](guides/whats-ready.md).
+[What’s ready](guides/whats-ready.md). Phase 0.19 evidence scaffold:
+[release-gate-0.19.toml](acceptance/release-gate-0.19.toml) /
+[RELEASE_0_19.md](acceptance/RELEASE_0_19.md)
+(`python scripts/check_release_gate.py 0.19.0 --allow-planned` after the package train bumps to
+`0.19.0`; until then validate the manifest with
+`python scripts/check_release_gate.py 0.18.0 --allow-planned --evidence-manifest docs/acceptance/release-gate-0.19.toml`).
 
 Do not re-run tag steps for a published version.
 

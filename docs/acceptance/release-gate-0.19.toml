@@ -1,0 +1,117 @@
+# Phase 0.19 accessibility engineering and inclusive authoring evidence index.
+# Consumed by scripts/check_release_gate.py 0.19.0 (--allow-planned until cut).
+# Zero Deferred policy for 0.19-owned rows: every row must be Verified at cut.
+# Owning RFCs: RFC-0023 (umbrella), RFC-0051–RFC-0055. Decision: D-050.
+# Issues #8 / #27 / #31 / #39 remain normative for PE-019 / LANDMARK-019 / SCRIPT-019.
+
+[[evidence]]
+id = "PROFILE-019"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase19_profile.py"
+ci_job = "test"
+owner = "docs"
+
+[[evidence]]
+id = "CONTRACT-019"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase19_contract.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "INTERACT-019"
+state = "Planned"
+command = "python -m pytest -q tests/a11y/test_phase19_interact.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "ATAG-019"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase19_atag.py"
+ci_job = "test"
+owner = "hedron-explorer"
+
+[[evidence]]
+id = "EXPLORER-019"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase19_explorer_a11y.py"
+ci_job = "test"
+owner = "hedron-explorer"
+
+[[evidence]]
+id = "TEST-019"
+state = "Planned"
+command = "python -m pytest -q tests/a11y/test_phase19_scenario.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "AT-019"
+state = "Planned"
+command = "python -m pytest -q tests/browser/test_phase19_at_matrix.py"
+ci_job = "browser"
+owner = "docs"
+
+[[evidence]]
+id = "MEDIA-019"
+state = "Planned"
+command = "python -m pytest -q tests/a11y/test_phase19_media.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "COG-019"
+state = "Planned"
+command = "python -m pytest -q tests/a11y/test_phase19_cognitive.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "I18N-019"
+state = "Planned"
+command = "python -m pytest -q tests/a11y/test_phase19_i18n.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "GOVERN-019"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase19_governance.py"
+ci_job = "test"
+owner = "docs"
+
+[[evidence]]
+id = "PE-019"
+state = "Planned"
+command = "python -m pytest -q tests/integration/test_phase19_progressive_enhancement.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "LANDMARK-019"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase19_landmarks.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "SCRIPT-019"
+state = "Planned"
+command = "python -m pytest -q tests/unit/test_phase19_page_scripts.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "REGRESS-019"
+state = "Planned"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-019"
+state = "Planned"
+command = "python scripts/verify_pkg_19.py"
+ci_job = "release"
+owner = "hedron"

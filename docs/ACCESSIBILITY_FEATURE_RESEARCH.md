@@ -1,16 +1,21 @@
 # Accessibility feature research
 
-**Research date:** 2026-08-04<br>
+**Research date:** 2026-08-07 (refreshed for phase 0.19 entry)<br>
 **Normative web-content baseline:** WCAG 2.2 Level A and AA<br>
 **Normative semantic baseline:** HTML and WAI-ARIA 1.2<br>
 **Authoring-tool reference:** ATAG 2.0<br>
+**ACT / engine note:** Pin ACT rules and axe (or successor) engine versions in the
+`PROFILE-019` / `GOVERN-019` evidence inventory at implementation; this ledger records the
+standards targets, not a frozen CI pin.<br>
+**Browser / AT matrix owners:** `AT-019` (see [RELEASE_0_19.md](acceptance/RELEASE_0_19.md))<br>
 **Scope:** Hedron components, generated output, authoring APIs, HDJ, Explorer, testing, optional
 packages, documentation, and release evidence
 
 This research identifies accessibility capabilities that Hedron can add to its roadmap. It does
 not certify the current framework or applications built with it. Framework-provided markup is only
 one part of an accessible application; application content, domain flows, integrations, browser and
-assistive-technology support, and human evaluation remain necessary.
+assistive-technology support, and human evaluation remain necessary. Phase **0.19** packages this
+ledger into release gates (D-050; RFCs 0023 / 0051–0055).
 
 ## Primary standards and guidance baseline
 
@@ -326,18 +331,19 @@ truncation, target, and assistive-technology evidence as the source locale.
 
 ## Phase assignments
 
-| Accepted capability | Owner |
-|---|---:|
-| Caption/transcript/audio-description media tracks and accessible player behavior | 0.15 expanded; 0.19 conformance depth |
-| WCAG 2.2 accessible-authentication ergonomics over host identity/OIDC | 0.15 expanded; 0.19 evidence |
-| Keyboard/single-pointer alternatives for editor, image, splitter, chart, dashboard, and workflow drag operations | 0.12/0.16/0.17/0.18 expanded; 0.19 conformance depth |
-| Structured non-spatial workflow canvas editor and result view | 0.18 expanded |
-| Versioned standards profile and `AccessibilityContract` catalog | 0.19 |
-| ATAG-oriented authoring assistance, preservation, checking, and repair guidance | 0.19 |
-| Accessibility tree, focus, live-region, visual-mode, and source-mapped Explorer workspace | 0.19 |
-| Accessibility scenario API, ACT/axe results, ARIA snapshots, and manual browser/AT matrix | 0.19 |
-| Cognitive/personalization helpers and internationalization/accessibility validation | 0.19 |
-| Evidence inventory, statement template, waiver governance, and disabled-user evaluation | 0.19 |
+| Accepted capability | Owner | Gate ID(s) |
+|---|---:|---|
+| Caption/transcript/audio-description media tracks and accessible player behavior | 0.15 expanded; 0.19 conformance depth | `MEDIA-019` |
+| WCAG 2.2 accessible-authentication ergonomics over host identity/OIDC | 0.15 expanded; 0.19 evidence | `INTERACT-019`, `AT-019` |
+| Keyboard/single-pointer alternatives for editor, image, splitter, chart, dashboard, and workflow drag operations | 0.12/0.16/0.17/0.18 expanded; 0.19 conformance depth | `INTERACT-019` |
+| Structured non-spatial workflow canvas editor and result view | 0.18 expanded | `MEDIA-019` (0.19 depth) |
+| Versioned standards profile and `AccessibilityContract` catalog | 0.19 | `PROFILE-019`, `CONTRACT-019` |
+| ATAG-oriented authoring assistance, preservation, checking, and repair guidance | 0.19 | `ATAG-019` |
+| Accessibility tree, focus, live-region, visual-mode, and source-mapped Explorer workspace | 0.19 | `EXPLORER-019` |
+| Accessibility scenario API, ACT/axe results, ARIA snapshots, and manual browser/AT matrix | 0.19 | `TEST-019`, `AT-019` |
+| Cognitive/personalization helpers and internationalization/accessibility validation | 0.19 | `COG-019`, `I18N-019` |
+| Evidence inventory, statement template, waiver governance, and disabled-user evaluation | 0.19 | `GOVERN-019`, `AT-019` |
+| Progressive-enhancement forms/mutations; landmark attrs/types; Page PE scripts | 0.19 | `PE-019`, `LANDMARK-019`, `SCRIPT-019` |
 
 ## Deliberate constraints
 
@@ -367,5 +373,7 @@ Hedron will not:
    evidence with recorded versions and scoped tasks.
 5. Review expired waivers, known limitations, third-party boundaries, accessibility feedback, and
    regression severity before a release claim.
-6. Update this research ledger, RFC-0023, acceptance criteria, both roadmap mirrors, README phase
+6. Update this research ledger, RFC-0023, RFCs 0051–0055, acceptance criteria
+   ([RELEASE_0_19.md](acceptance/RELEASE_0_19.md) /
+   [release-gate-0.19.toml](acceptance/release-gate-0.19.toml)), both roadmap mirrors, README phase
    summary, and documentation navigation together.

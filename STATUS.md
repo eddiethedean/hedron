@@ -65,6 +65,19 @@ elsewhere.
 
 ## Next capability phase
 
-**0.19** — accessibility engineering and inclusive authoring. Track progress in
-[ROADMAP.md](docs/ROADMAP.md) and the public [roadmap guide](docs/guides/roadmap.md).
+**0.19** — accessibility engineering and inclusive authoring (**Planned**; D-050). Evidence index:
+[release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml) (all `Planned`;
+`check_release_gate.py 0.19.0 --allow-planned` until cut; package versions remain `0.18.0` until
+the train bump). Acceptance: [RELEASE_0_19.md](docs/acceptance/RELEASE_0_19.md).
+
+Gate IDs: `PROFILE-019`, `CONTRACT-019`, `INTERACT-019`, `ATAG-019`, `EXPLORER-019`, `TEST-019`,
+`AT-019`, `MEDIA-019`, `COG-019`, `I18N-019`, `GOVERN-019`, `PE-019`, `LANDMARK-019`,
+`SCRIPT-019`, `REGRESS-019`, `PKG-019`.
+
+Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
+[RFC-0051](docs/rfcs/RFC-0051-ACCESSIBILITY-CONTRACT.md)–[RFC-0055](docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md)
+(Draft until Accepted before Verified cut). Issues #8 / #27 / #31 / #39 map to `PE-019` /
+`LANDMARK-019` / `SCRIPT-019`.
+
+Track progress in [ROADMAP.md](docs/ROADMAP.md) and the public [roadmap guide](docs/guides/roadmap.md).
 Open-issue owners: [issue ownership table](ROADMAP.md#open-github-issue-ownership-013).
