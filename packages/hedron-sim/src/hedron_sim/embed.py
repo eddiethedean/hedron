@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import html as html_lib
 import json
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from typing import Any
 
 from hedron_core.builtins import Fragment
@@ -43,6 +43,14 @@ def render_handler_html(value: Any, *, mode: RenderMode = RenderMode.FRAGMENT) -
     return render(value, mode=mode).html  # type: ignore[arg-type]
 
 
+def _render_call(handler: Callable[..., Any]) -> dict[str, Any]:
+    body = handler()
+    status = 200
+    if isinstance(body, InteractionResult):
+        status = int(body.status_code or 200)
+    return {"html": render_handler_html(body), "status": status}
+
+
 def _region_payload(route: SimRoute) -> list[dict[str, str]]:
     return [
         {"id": region.id, "selector": region.selector, "description": region.description}
@@ -54,17 +62,21 @@ def route_table(app: SimApp) -> dict[str, Any]:
     """Build the JSON payload consumed by ``hedron-sim.js``."""
     routes: dict[str, Any] = {}
     for key, route in app.routes.items():
-        body = route.handler()
-        html = render_handler_html(body)
-        status = 200
-        if isinstance(body, InteractionResult):
-            status = int(body.status_code or 200)
-        routes[key] = {
-            "html": html,
-            "status": status,
+        primary = _render_call(route.handler)
+        entry: dict[str, Any] = {
+            **primary,
             "regions": _region_payload(route),
             "explanation": route.explanation,
         }
+        if route.validate:
+            entry["validate"] = route.validate
+        if route.variants:
+            entry["variants"] = {
+                name: _render_call(handler) for name, handler in route.variants.items()
+            }
+        if route.sequence:
+            entry["sequence"] = [_render_call(handler) for handler in route.sequence]
+        routes[key] = entry
     return {
         "demoId": app.demo_id or "hedron-sim",
         "title": app.title,

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any, TypeVar
 
@@ -11,6 +11,7 @@ from hedron_core.interaction import FragmentRegion
 __all__ = ["SimApp", "SimRoute"]
 
 F = TypeVar("F", bound=Callable[..., Any])
+Handler = Callable[..., Any]
 
 
 def _as_regions(
@@ -40,9 +41,12 @@ class SimRoute:
 
     method: str
     path: str
-    handler: Callable[..., Any]
+    handler: Handler
     regions: tuple[FragmentRegion, ...] = ()
     explanation: str = ""
+    validate: str | None = None
+    variants: Mapping[str, Handler] | None = None
+    sequence: tuple[Handler, ...] | None = None
 
     @property
     def key(self) -> str:
@@ -56,12 +60,17 @@ class SimApp:
     Handlers use the same return types as a real Hedron app (``Page``, components,
     ``InteractionResult`` / ``swap(...)``). ``embed_demo`` pre-renders them into an
     HTML island plus a JSON route table consumed by ``hedron-sim.js``.
+
+    Optional route extras:
+
+    - ``validate="email"`` + ``variants={"invalid": ..., "valid": ...}`` for form demos
+    - ``sequence=(handler1, handler2, ...)`` for polling / multi-step GETs
     """
 
     title: str = "Hedron sim"
     demo_id: str | None = None
     _page_path: str = field(default="/", init=False, repr=False)
-    _page_handler: Callable[..., Any] | None = field(default=None, init=False, repr=False)
+    _page_handler: Handler | None = field(default=None, init=False, repr=False)
     _routes: dict[str, SimRoute] = field(
         default_factory=lambda: {},
         init=False,
@@ -97,6 +106,9 @@ class SimApp:
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         method: str = "GET",
         explanation: str = "",
+        validate: str | None = None,
+        variants: Mapping[str, Handler] | None = None,
+        sequence: Sequence[Handler] | None = None,
     ) -> Callable[[F], F]:
         """Register a fragment endpoint with an optional region allowlist."""
 
@@ -107,6 +119,9 @@ class SimApp:
                 handler=fn,
                 regions=_as_regions(region, regions, fragment_regions),
                 explanation=explanation,
+                validate=validate,
+                variants=dict(variants) if variants else None,
+                sequence=tuple(sequence) if sequence else None,
             )
             self._routes[route.key] = route
             return fn
@@ -122,6 +137,9 @@ class SimApp:
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         method: str = "POST",
         explanation: str = "",
+        validate: str | None = None,
+        variants: Mapping[str, Handler] | None = None,
+        sequence: Sequence[Handler] | None = None,
     ) -> Callable[[F], F]:
         """Register a mutation endpoint (default POST) for form demos."""
         return self.fragment(
@@ -131,10 +149,13 @@ class SimApp:
             fragment_regions=fragment_regions,
             method=method,
             explanation=explanation,
+            validate=validate,
+            variants=variants,
+            sequence=sequence,
         )
 
     @property
-    def page_handler(self) -> Callable[..., Any] | None:
+    def page_handler(self) -> Handler | None:
         return self._page_handler
 
     @property

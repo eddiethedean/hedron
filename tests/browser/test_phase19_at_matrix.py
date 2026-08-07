@@ -41,6 +41,7 @@ def _app() -> Hedron:
     def home() -> Page:
         return Page(
             Main(
+                html.h1("AT matrix"),
                 html.a(
                     "Skip to content",
                     href=SafeUrl.parse("#main", purpose=UrlPurpose.NAVIGATION),
@@ -158,8 +159,10 @@ def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
         # assert fragment route returns markup without serious axe issues when set as content.
         frag = client.get("/panel", headers={"HX-Request": "true"})
         assert frag.status_code == 200
+        # Document shell supplies title/h1; axe still scans the HTMX fragment body.
         page.set_content(
-            f"<!DOCTYPE html><html lang='en'><body><main id='main'>{frag.text}</main></body></html>"
+            "<!DOCTYPE html><html lang='en'><head><title>AT fragment</title></head>"
+            f"<body><main id='main'><h1>Panel</h1>{frag.text}</main></body></html>"
         )
         frag_report = axe_scan_report(page)
         assert frag_report["incomplete"] is False
