@@ -142,7 +142,6 @@ extra_javascript:
   - javascript/readthedocs.js
   - javascript/examples.js
   - javascript/component-demos.js
-  - javascript/hello-refresh.js
   - javascript/hedron-sim.js
 
 extra_css:

@@ -62,7 +62,11 @@ class SimApp:
     demo_id: str | None = None
     _page_path: str = field(default="/", init=False, repr=False)
     _page_handler: Callable[..., Any] | None = field(default=None, init=False, repr=False)
-    _routes: dict[str, SimRoute] = field(default_factory=dict, init=False, repr=False)
+    _routes: dict[str, SimRoute] = field(
+        default_factory=lambda: {},
+        init=False,
+        repr=False,
+    )
 
     def region(
         self,

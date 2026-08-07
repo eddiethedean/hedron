@@ -18,7 +18,8 @@ __all__ = ["embed_demo", "render_handler_html", "route_table", "wrap_browser_chr
 
 def _page_body(page: Page) -> Any:
     """Return the page body tree without the document chrome."""
-    children = tuple(getattr(page, "_children", ()))
+    raw = getattr(page, "_children", ())
+    children: tuple[Any, ...] = tuple(raw) if raw else ()
     if not children:
         return Fragment()
     if len(children) == 1:
