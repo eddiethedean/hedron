@@ -76,8 +76,8 @@ def _app() -> Hedron:
         )
 
     @app.fragment("/panel", region=panel)
-    def panel_frag() -> object:
-        return html.div(Text("panel updated"), id="panel-body")
+    def panel_frag() -> Text:
+        return Text("panel updated")
 
     return app
 
