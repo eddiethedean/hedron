@@ -4,10 +4,10 @@ Build and run a small Hedron application, then continue through HTMX and forms.
 
 ## Path
 
-1. [Installation](installation.md) — uv step 0, extras, Flask/Django, common problems
-2. [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
-3. [HTMX interactions](../guides/htmx-interactions.md) — extend the Refresh pattern
-4. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
+1. [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
+2. [HTMX interactions](../guides/htmx-interactions.md) — extend the Refresh pattern
+3. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
+4. [Installation](installation.md) — extras, Flask/Django, common problems (as needed)
 5. [Learning path](learning-path.md) — continue toward data, auth, and deploy
 
 Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
@@ -21,25 +21,25 @@ Maturity labels (Beta / Supported / Deferred) are explained under
 need that vocabulary to install.
 
 <div class="hedron-grid">
-  <a class="hedron-card" href="installation/">
-    <span class="hedron-card__icon" aria-hidden="true">01</span>
-    <strong>1. Installation</strong>
-    <p>uv step 0, extras, other hosts, and common install problems.</p>
-  </a>
   <a class="hedron-card" href="quickstart/">
-    <span class="hedron-card__icon" aria-hidden="true">02</span>
-    <strong>2. First app</strong>
+    <span class="hedron-card__icon" aria-hidden="true">01</span>
+    <strong>1. First app</strong>
     <p>Scaffold, Hello, Refresh click, then edit a string.</p>
   </a>
   <a class="hedron-card" href="../guides/htmx-interactions/">
-    <span class="hedron-card__icon" aria-hidden="true">03</span>
-    <strong>3. HTMX</strong>
+    <span class="hedron-card__icon" aria-hidden="true">02</span>
+    <strong>2. HTMX</strong>
     <p>Extend the scaffold Refresh pattern with more regions.</p>
   </a>
   <a class="hedron-card" href="../guides/minimal-form/">
-    <span class="hedron-card__icon" aria-hidden="true">04</span>
-    <strong>4. Minimal form</strong>
+    <span class="hedron-card__icon" aria-hidden="true">03</span>
+    <strong>3. Minimal form</strong>
     <p>CSRF-safe POST with a typed action.</p>
+  </a>
+  <a class="hedron-card" href="installation/">
+    <span class="hedron-card__icon" aria-hidden="true">04</span>
+    <strong>4. Installation hub</strong>
+    <p>Extras, other hosts, and common install problems.</p>
   </a>
 </div>
 

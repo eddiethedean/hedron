@@ -1,5 +1,15 @@
 # Troubleshooting
 
+## Failure gallery (top 5)
+
+| Symptom | Typical stderr / response | Fix |
+|---|---|---|
+| `hedron: command not found` | `zsh: command not found: hedron` | `python -m hedron …` or [below](#hedron-command-not-found) |
+| Wrong interpreter | `ModuleNotFoundError: No module named 'hedron'` | Activate venv; `pip install -e .` / `uv sync` |
+| Port busy | `ERROR: [Errno 48] Address already in use` | `--port 8001` or stop the other process |
+| CSRF 403 | HTTP **403** on POST | GET the form page first; include `csrf_token` |
+| HTMX 403 | HTTP **403** on fragment | Fix `HX-Target` to a declared region id/selector |
+
 ## `hedron: command not found`
 
 **Cause:** The `hedron` console script is not on your shell PATH, or you installed into a

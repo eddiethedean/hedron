@@ -9,13 +9,13 @@ uv sync
 uv run uvicorn app:app --app-dir examples/session-auth --reload
 ```
 
-Open [http://127.0.0.1:8000/login](http://127.0.0.1:8000/login). Sign in with
-`ada` / `correct-horse`, then visit `/`.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — unauthenticated visits **redirect to
+`/login`**. Sign in with `ada` / `correct-horse`.
 
 ## What it shows
 
 - Starlette session cookie via `Hedron(session_secret=...)`
-- `Depends(require_user)` on pages
+- Soft landing redirect (not a bare 401) when `/` is unauthenticated
 - CSRF-safe login and logout POSTs
 
 Source: [`examples/session-auth`](https://github.com/eddiethedean/hedron/tree/main/examples/session-auth).

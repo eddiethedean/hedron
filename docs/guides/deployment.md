@@ -37,12 +37,26 @@ HEDRON_ENV=production uv run uvicorn app:app --host 0.0.0.0 --port 8000
 Fingerprinted assets are served from `/hedron-assets/` (or your configured mount).
 Bundled HTMX remains under `/hedron-static/`.
 
-## Dockerfile (FastAPI)
+## Dockerfile (FastAPI adopter sketch)
 
-Install the **application** dependencies (not only Hedron), build the manifest, then
-run under production mode. Treat Dockerfiles under `examples/reference-app/` as
-**starting points** — compose there is maintainer-experimental; prefer local `uvicorn`
-for learning, and adapt the sample Dockerfile to your app layout before production.
+Minimal single-stage image for a scaffolded `hedron new` app (adjust paths as needed).
+This is an **adopter starting point** — not a maintained production image.
+
+```dockerfile
+FROM python:3.12-slim
+WORKDIR /app
+COPY pyproject.toml README.md app.py ./
+COPY components ./components
+RUN pip install --no-cache-dir "hedron>=0.18.0,<0.19" "uvicorn[standard]" \
+    && pip install --no-cache-dir -e . \
+    && hedron build
+ENV HEDRON_ENV=production
+ENV SESSION_SECRET=replace-me
+EXPOSE 8000
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+Multi-stage layout when you vendor a fuller `src/` tree:
 
 ```dockerfile
 FROM python:3.12-slim AS build
@@ -66,9 +80,10 @@ EXPOSE 8000
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-Adjust module path (`app:app`), copy layout, and Python version to match your project.
-Keep `manifest.json` (from `hedron build`) in the runtime image. For a monorepo
-reference layout, see [`examples/reference-app/Dockerfile`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/Dockerfile).
+Keep `manifest.json` (from `hedron build`) in the runtime image. Compose under
+`examples/reference-app/` is **maintainer-experimental** — prefer this sketch or local
+`uvicorn` for learning. Monorepo reference Dockerfile:
+[`examples/reference-app/Dockerfile`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/Dockerfile).
 
 Single-stage sketch when you already vendor a lockfile:
 

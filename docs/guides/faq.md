@@ -2,14 +2,16 @@
 
 ## Which version should I install?
 
+Pin the **0.18 train** for production (Beta on PyPI):
+
 ```bash
-pip install "hedron>=0.18.0"
+pip install "hedron>=0.18.0,<0.19"
 # or
-uv add "hedron>=0.18.0"
+uv add "hedron>=0.18.0,<0.19"
 ```
 
-That pins **Hedron 0.18.0** (Beta on PyPI). See
-[What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md).
+`>=0.18.0` alone allows a future `0.19` break. Use an upper bound when you need a stable
+train. See [What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
@@ -19,8 +21,8 @@ For DataTable/DataEditor, install `hedron[data]>=0.18.0`. For charts, install
 `hedron[charts]>=0.1.0` (Alpha). For Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=0.18.0"
-pip install "hedron-django>=0.18.0"   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.18.0,<0.19"
+pip install "hedron-django>=0.18.0,<0.19"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -72,11 +74,12 @@ the same directory by accident.
 
 See [How to read Hedron docs](../getting-started/how-to-read.md). Short version:
 
-- **Beta** — package maturity; pin versions.
-- **Supported** — claimed working capability on that host.
+- **Beta / Alpha** — **package** maturity on PyPI; pin versions (`>=0.18.0,<0.19`).
+- **Supported** — **capability** readiness on a host; ship with pins.
 - **Deferred** — documented, not ready; do not treat as Supported.
+- API levels (`stable` / `beta` / …) in [STABILITY](../api/STABILITY.md) are a third axis.
 
-Detailed API compatibility levels live in [STABILITY](../api/STABILITY.md).
+A Beta package can expose Supported capabilities whose API level is still `beta`.
 
 ## Are Auto, DataTable, and charts available?
 

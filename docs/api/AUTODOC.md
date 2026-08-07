@@ -1,15 +1,15 @@
-# Autodoc — public symbols
+# Autodoc — critical public symbols (subset)
 
-Generated signatures via **mkdocstrings** for the primary public surface. Prefer the
-hand-maintained contract pages for narrative, errors, and adopter guidance; use this
-page to verify parameter lists against the installed sources.
+Generated signatures via **mkdocstrings** for the **primary** public surface used in
+Learn / Adopt paths. This page is intentionally a **subset** of every name in
+`hedron.__all__` — prefer hand-maintained contract pages for narrative, errors, and
+adopter guidance; use Autodoc to verify parameter lists against installed sources.
 
-Coverage goal: symbols listed in package `__all__` for `hedron`, `hedron_core` (via
-re-exports), and the Flask/Django adapter entry points. Optional extras (`hedron[data]`,
-`hedron[charts]`) are documented on their contract pages when installed.
+Coverage map for the full export set: [Coverage map](COVERAGE.md). Stability levels:
+[Stability](STABILITY.md). Overview: [API overview](README.md).
 
-Narrative companions: [Coverage map](COVERAGE.md) · [Stability](STABILITY.md) ·
-[API overview](README.md) · [Inference](INFERENCE.md).
+Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
+[Interaction](INTERACTION.md).
 
 ## Inference and model demos (0.18)
 
@@ -57,6 +57,8 @@ Narrative companions: [Coverage map](COVERAGE.md) · [Stability](STABILITY.md) �
         - page
         - component
         - action
+        - region
+        - fragment
         - include_component
         - include_router
       show_bases: true

@@ -1,12 +1,12 @@
-# Changelog
+# Package changelogs
 
-Package changelogs are the source of truth for shipped commits. This page indexes them
-for the **0.18** train.
+Per-package CHANGELOG files are the source of truth for shipped commits. For the
+adopter-facing train summary, start with [Release notes](release-notes.md).
 
 ## Narrative “what’s new”
 
-- [What’s new in 0.18](whats-new-0.18.md) — model demos and inference workflows
-- [Release notes index](release-notes.md) — links to earlier trains
+- [Release notes](release-notes.md) — current train + earlier summary table
+- [What’s new in 0.18](whats-new-0.18.md) — 0.18 narrative deep-dive
 - [Upgrade guide](upgrade.md) — breaking changes across 0.8 → 0.18
 
 ## Package CHANGELOGs (GitHub)

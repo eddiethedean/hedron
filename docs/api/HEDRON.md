@@ -73,8 +73,14 @@ parameters:
 | `page(path, **kwargs)` | Register a PAGE route (navigation HTML; fragment when `HX-Request`) |
 | `component(path, **kwargs)` | Register a FRAGMENT route; use `methods=["POST"]` for HTMX form fragments with `fragment_regions` |
 | `action(path, **kwargs)` | Register an action route (CSRF on unsafe methods). Does **not** take `fragment_regions` — use `@component` when you need region allowlists |
+| `region(id, selector=None, description="")` | Declare a `FragmentRegion` (default selector `#{id}`) for `RefreshButton.for_region` / allowlists |
+| `fragment(path, region=..., regions=..., **kwargs)` | Alias of `component` that merges `region` / `regions` into the allowlist |
 | `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
 | `include_router(...)` | Standard FastAPI router include |
+
+Golden-path HTMX scaffolding uses `app.region(...)` plus `@app.fragment(...)` (see
+[HTMX interactions](../guides/htmx-interactions.md)). `fragment_regions` on `page` /
+`component` remains the lower-level allowlist API.
 
 Also see module helpers `mount_hedron_static(app)` and `mount_build_assets(app, build_dir)`.
 

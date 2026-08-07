@@ -47,6 +47,15 @@ set_security_audit_sink(StructuredLogAuditSink())
 Event types: `csrf_rejected`, `htmx_target_rejected`, `explorer_denied`,
 `production_gate_failed`. Attributes are secret-redacted before logging.
 
+## Errors / failure modes
+
+| Situation | Behavior |
+|---|---|
+| No sink configured | Emits are no-ops (safe default) |
+| Sink `emit` raises | Swallowed and logged — request handling continues |
+| Unknown event type | Application sinks should ignore or log; framework only emits known types |
+| Secrets in attributes | Redacted before structured logging |
+
 ## Related
 
 - [Threat model](../guides/threat-model.md) · [Security](../guides/security.md)

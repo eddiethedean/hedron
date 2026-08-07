@@ -1,4 +1,7 @@
-"""Notes list persisted with SQLAlchemy (SQLite). Local demo only."""
+"""Notes list persisted with SQLAlchemy (SQLite). Local demo only.
+
+Create / list / delete — not a full admin CRUD app.
+"""
 
 from __future__ import annotations
 
@@ -36,6 +39,7 @@ app = Hedron(
 
 
 def _csrf(request: Request) -> str:
+    """Hide the security-policy lookup behind a one-liner for forms."""
     return csrf_token_for_request(request, request.app.state.hedron_security)
 
 
@@ -44,10 +48,26 @@ def home(request: Request) -> Page:
     with Session(engine) as db:
         notes = list(db.scalars(select(Note).order_by(Note.id.desc())).all())
     token = _csrf(request)
-    items = [html.li(Text(str(n.body))) for n in notes] or [html.li(Text("No notes yet."))]
+    items = []
+    for n in notes:
+        items.append(
+            html.li(
+                Text(str(n.body)),
+                Form(
+                    html.input(type="hidden", name="csrf_token", value=token),
+                    html.input(type="hidden", name="note_id", value=str(n.id)),
+                    SubmitButton("Delete"),
+                    action="/delete",
+                    method="post",
+                    style="display:inline",
+                ),
+            )
+        )
+    if not items:
+        items = [html.li(Text("No notes yet."))]
     return Page(
         Stack(
-            Text("Notes (SQLAlchemy + SQLite)"),
+            Text("Notes (SQLAlchemy + SQLite) — create, list, delete"),
             Form(
                 html.input(type="hidden", name="csrf_token", value=token),
                 TextInput("body", value="", required=True, placeholder="Write a note"),
@@ -66,4 +86,14 @@ def save(body: str = FastAPIForm(...)) -> RedirectResponse:
     with SessionLocal() as db:
         db.add(Note(body=body.strip()[:500]))
         db.commit()
+    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.action("/delete", method="POST")
+def delete(note_id: str = FastAPIForm(...)) -> RedirectResponse:
+    with SessionLocal() as db:
+        note = db.get(Note, int(note_id))
+        if note is not None:
+            db.delete(note)
+            db.commit()
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)

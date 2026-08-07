@@ -64,7 +64,7 @@ class Hedron(FastAPI):
     ``@page`` / ``@component`` / ``@action`` routes.
 
     Args:
-        security: Built-in profile name (``standard`` / ``strict`` / ``permissive``)
+        security: Built-in profile name (``development`` / ``standard`` / ``strict``)
             or a ``SecurityPolicy`` instance.
         explorer: Component Explorer mode (``off``, ``development``, ``secured``).
             ``None`` follows the security profile and optional ``[tool.hedron]`` settings.

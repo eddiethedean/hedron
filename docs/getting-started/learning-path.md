@@ -1,7 +1,7 @@
 # Learning path
 
 A suggested order from first page to production-minded apps. Start with
-[Learn](index.md) if you have not installed yet.
+[Build your first app](quickstart.md) if you have not run Hello → Refresh yet.
 
 ## 1. Hello page (~10 minutes)
 
@@ -39,13 +39,15 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 ## 5. Data, charts, and live updates
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
-2. [Live interaction](../guides/live-interaction.md) (FastAPI live helpers; polling
+2. Recipes first: [Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) ·
+   [Session auth](../examples/session-auth.md) · [File upload](../examples/file-upload.md)
+3. [Live interaction](../guides/live-interaction.md) (FastAPI live helpers; polling
    Supported on every host) —
    [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
    covers poll, token stream, SSE ping, Job SSE, WebSocket accept, and preload. Prefer
    polling until you have your own ops proof for SSE/WebSocket behind proxies
    (see [What's ready](../guides/whats-ready.md))
-3. [What's new in 0.18](../guides/whats-new-0.18.md) · [Release notes](../guides/release-notes.md)
+4. [Release notes](../guides/release-notes.md) (current train)
 
 ## 6. Harden and deploy
 

@@ -33,21 +33,22 @@ Open the forwarded URL. You should see **Hello from hedron new**. Click **Refres
 uv run uvicorn app:app --app-dir examples/reference-app --host 0.0.0.0 --port 8000
 ```
 
-**Flask adapter slice:**
+**Flask adapter slice** (listens on **8000** in Codespaces):
 
 ```bash
 uv run python examples/flask-reference/app.py
-# or follow examples/flask-reference/README.md
+# or: uv run flask --app examples/flask-reference/app:create_app run --host 0.0.0.0 --port 8000 --debug
 ```
 
-**Django adapter slice:**
+**Django adapter slice** (manage-less — no `manage.py`):
 
 ```bash
 cd examples/django-reference
-uv run python manage.py runserver 0.0.0.0:8000
+uv run waitress-serve --listen=0.0.0.0:8000 wsgi:application
+# or: uv run uvicorn asgi:application --host 0.0.0.0 --port 8000
 ```
 
-3. Forward port **8000** and open the URL.
+3. Forward port **8000** for every option above and open the URL.
 
 !!! danger "Demo credentials are for local / Codespaces demos only"
 

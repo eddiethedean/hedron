@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated
-
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Request, status
 from fastapi import Form as FastAPIForm
 from fastapi.responses import RedirectResponse
 
@@ -22,24 +20,14 @@ app = Hedron(
 USERS = {"ada": "correct-horse"}
 
 
-def require_user(request: Request) -> str:
-    username = request.session.get("username")
-    if not username:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Sign in required",
-        )
-    return str(username)
-
-
 def _csrf(request: Request) -> str:
     return csrf_token_for_request(request, request.app.state.hedron_security)
 
 
 @app.page("/login")
-def login_page(request: Request) -> Page:
+def login_page(request: Request) -> Page | RedirectResponse:
     if request.session.get("username"):
-        return Page(Text("Already signed in"), title="Login")
+        return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
     token = _csrf(request)
     return Page(
         Stack(
@@ -64,16 +52,17 @@ def login(
     password: str = FastAPIForm(...),
 ) -> RedirectResponse:
     if USERS.get(username) != password:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Bad credentials")
+        return RedirectResponse("/login?error=1", status_code=status.HTTP_303_SEE_OTHER)
     request.session["username"] = username
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.page("/")
-def home(
-    request: Request,
-    username: Annotated[str, Depends(require_user)],
-) -> Page:
+def home(request: Request) -> Page | RedirectResponse:
+    username = request.session.get("username")
+    if not username:
+        # Soft landing — redirect to login instead of a bare 401.
+        return RedirectResponse("/login", status_code=status.HTTP_303_SEE_OTHER)
     token = _csrf(request)
     return Page(
         Stack(

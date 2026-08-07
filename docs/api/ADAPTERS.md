@@ -104,8 +104,11 @@ ship the FastAPI SSE/WebSocket helpers.
 
 | Claim | Notes |
 |---|---|
-| Capture UI (camera/mic) | Assigned to 0.15 (D-045) |
-| Full adapter live browser matrix | Owned Deferred `LIVE-011-BROWSER` → 0.11.x |
+| Full adapter live browser matrix | Carryover Deferred `LIVE-011-BROWSER` (ops evidence; not blocking Supported adapter depth on 0.18) |
+| Load/proxy backpressure proof for SSE/WS | Carryover Deferred `PERF-10-001` — prefer polling; live helpers remain Experimental |
+
+CameraCapture / MicrophoneCapture ship as **Supported** on the FastAPI flagship (with
+permission/retention policy) — see [What’s ready](../guides/whats-ready.md).
 
 ## Capability matrix
 

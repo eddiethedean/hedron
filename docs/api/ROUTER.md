@@ -63,6 +63,16 @@ conflicting `InteractionResult.policy.declared_regions` value.
 | `@router.component(path, **kwargs)` | Component / fragment | FRAGMENT mode; accepts `fragment_regions` |
 | `@router.action(path, method=..., **kwargs)` | Component or redirect | CSRF required for unsafe methods when enabled |
 
+On the flagship `Hedron` app (root router), prefer the golden-path helpers:
+
+| Helper | Notes |
+|---|---|
+| `app.region(id, selector=None, description="")` | Declares a `FragmentRegion` (default selector `#{id}`) |
+| `@app.fragment(path, region=..., regions=..., **kwargs)` | Alias of `component` that merges region allowlists |
+
+`HedronRouter` itself exposes `page` / `component` / `action` plus `fragment_regions=`;
+use `FragmentRegion(...)` explicitly on a sub-router. See [Hedron](HEDRON.md).
+
 Keyword arguments follow FastAPI route options (`name`, `dependencies`,
 `include_in_schema`, `methods`, `tags`, …).
 

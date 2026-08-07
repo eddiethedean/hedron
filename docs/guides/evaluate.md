@@ -47,9 +47,9 @@ Full matrix: [What’s ready](whats-ready.md).
 
 ## Try it
 
-1. [Installation](../getting-started/installation.md)
-2. [Quickstart](../getting-started/quickstart.md)
-3. [HTMX interactions](htmx-interactions.md) → [Minimal form](minimal-form.md)
+1. [Build your first app](../getting-started/quickstart.md) — Hello → Refresh
+2. [HTMX interactions](htmx-interactions.md) → [Minimal form](minimal-form.md)
+3. [Installation](../getting-started/installation.md) — extras / troubleshooting as needed
 4. [Runnable examples](../examples/runnable.md) / [Try with Codespaces](../examples/try-it.md)
 
 Then: [Why Hedron](why-hedron.md) · [Architecture](../ARCHITECTURE.md) ·

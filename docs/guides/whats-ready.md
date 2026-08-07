@@ -9,9 +9,10 @@ live in the repository
 
     **Yes, with pins:** typed pages, HTMX fragments, CSRF (`standard` / `strict`), and
     **polling** job status on FastAPI (Flask/Django adapters Supported). Start with
-    [Installation](../getting-started/installation.md) →
+    [Build your first app](../getting-started/quickstart.md) →
     [HTMX interactions](htmx-interactions.md) →
-    [Minimal form](minimal-form.md).
+    [Minimal form](minimal-form.md). Extras and troubleshooting:
+    [Installation](../getting-started/installation.md).
 
     **Not for production live push yet:** SSE / WebSocket (`hedron.experimental`) —
     prefer [polling](live-interaction.md).
@@ -32,10 +33,11 @@ Hedron **0.18.0** packages are **Beta** on PyPI. Expect occasional breaking chan
 | **Alpha** | On PyPI; pin and expect churn |
 | **Deferred** | Documented, not ready — do not treat as Supported |
 
-Do not combine labels (never pair Supported with a package Beta tag in one phrase).
-Package maturity is **Beta** or **Alpha** on PyPI; capability readiness is **Supported**,
-**Experimental**, or **Deferred**.
-See [Understanding maturity labels](../getting-started/how-to-read.md).
+Do not collapse axes into one vague “beta.” Package maturity is **Beta** or **Alpha**
+on PyPI; capability readiness is **Supported**, **Experimental**, or **Deferred**; API
+compatibility levels live in [STABILITY](../api/STABILITY.md). A Beta package can expose
+Supported capabilities whose API level is still `beta` — see
+[Understanding maturity labels](../getting-started/how-to-read.md).
 
 !!! warning "Live transports"
 
@@ -48,7 +50,7 @@ See [Understanding maturity labels](../getting-started/how-to-read.md).
 
 | Job | Status | Start here |
 |---|---|---|
-| Ship CRUD / admin / forms | **Supported** | [Installation](../getting-started/installation.md) → HTMX → Minimal form |
+| Ship CRUD / admin / forms | **Supported** | [First app](../getting-started/quickstart.md) → HTMX → Minimal form |
 | Multi-worker durable jobs | **Supported** with shared Redis backend | [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
@@ -153,7 +155,7 @@ Maintainer gate IDs and RFC evidence:
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.18.0" hedron new my-app
+    uvx --from "hedron>=0.18.0,<0.19" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -161,7 +163,7 @@ Maintainer gate IDs and RFC evidence:
 === "pip"
 
     ```bash
-    pip install "hedron>=0.18.0" "uvicorn[standard]"
+    pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload

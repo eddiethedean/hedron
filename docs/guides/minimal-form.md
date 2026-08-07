@@ -15,13 +15,12 @@ confirmation page. The GET seeds the CSRF cookie; the form posts the matching to
 app and your `/` home route. Add the imports below, then add `/notes` and `/save` **beside**
 the routes you already have. Do not create a second app file.
 
-### 1. Add imports
+### 1. Add a CSRF helper and imports
 
 ```python
 from fastapi import Form, Request
 
 from hedron import (
-    Hedron,
     Page,
     Stack,
     SubmitButton,
@@ -30,6 +29,11 @@ from hedron import (
     csrf_token_for_request,
     html,
 )
+
+
+def _csrf(request: Request) -> str:
+    """One-liner so forms never touch ``request.app.state`` inline."""
+    return csrf_token_for_request(request, request.app.state.hedron_security)
 ```
 
 (Merge with imports already present; you only need each name once.)
@@ -39,7 +43,7 @@ from hedron import (
 ```python
 @app.page("/notes")
 def notes(request: Request) -> Page:
-    token = csrf_token_for_request(request, request.app.state.hedron_security)
+    token = _csrf(request)
     return Page(
         Stack(
             Text("Leave a note"),
@@ -79,9 +83,13 @@ app = Hedron(
 )
 
 
+def _csrf(request: Request) -> str:
+    return csrf_token_for_request(request, request.app.state.hedron_security)
+
+
 @app.page("/")
 def home(request: Request) -> Page:
-    token = csrf_token_for_request(request, request.app.state.hedron_security)
+    token = _csrf(request)
     return Page(
         Stack(
             Text("Leave a note"),
@@ -123,6 +131,7 @@ Without a matching `csrf_token`, the POST returns `403`.
 
 | Piece | Role |
 |---|---|
+| `_csrf(request)` | Local helper — hides `request.app.state.hedron_security` |
 | GET page | Seeds the `hedron_csrf` cookie via the security profile |
 | Hidden `csrf_token` | Same value the cookie holds for this session |
 | `@app.action(..., method="POST")` | Mutation route; CSRF validated automatically under `security="standard"` |

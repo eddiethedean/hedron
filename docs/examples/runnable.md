@@ -17,6 +17,7 @@ uv sync
 | [notes-sqlalchemy](notes-sqlalchemy.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/notes-sqlalchemy --reload` |
 | [session-auth](session-auth.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/session-auth --reload` |
 | [file-upload](file-upload.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/file-upload --reload` |
+| [jobs-poll](jobs-poll.md) | FastAPI | `uv run uvicorn app:app --app-dir examples/jobs-poll --reload` |
 | [live-interaction](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction) | FastAPI | `uv run uvicorn app:app --app-dir examples/live-interaction --reload` |
 | [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask | See example README |
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django | See example README |

@@ -9,6 +9,7 @@ uv sync
 uv run uvicorn app:app --app-dir examples/session-auth --reload
 ```
 
-Open http://127.0.0.1:8000/login — sign in with `ada` / `correct-horse`.
+Open http://127.0.0.1:8000 — you are redirected to `/login`. Sign in with
+`ada` / `correct-horse`.
 
 Full guide narrative: [Authentication](https://hedron.readthedocs.io/en/latest/guides/authentication/).

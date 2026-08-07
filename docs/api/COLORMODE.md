@@ -41,3 +41,13 @@ and session as first-party helpers.
 - Toggle UI exposes an accessible label and native `<select>`/`<button>` controls.
 - Switching modes must preserve scoped style identifiers and contrast tokens.
 - Forced-colors and reduced-motion contracts from the theme remain in force.
+
+## Errors / failure modes
+
+| Situation | Behavior |
+|---|---|
+| Unknown preference string | Treat as `system` (or reject at typed boundary) |
+| Cookie write failure | Preference falls back to default / session when configured |
+| Missing toggle action route | Browser GET/POST fails normally — app-owned |
+
+See also: [Theme](THEME.md) · [Autodoc](AUTODOC.md#color-mode).

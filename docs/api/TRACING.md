@@ -42,6 +42,15 @@ with span("handler.render", route="/"):
 Attributes are secret-redacted. When OpenTelemetry is missing or fails, spans become
 no-ops.
 
+## Errors / failure modes
+
+| Situation | Behavior |
+|---|---|
+| `hedron[otel]` not installed | Spans are no-ops (`TracingDisabled`) |
+| `configure_tracing(enabled=False)` | Spans are no-ops |
+| Exporter / SDK failure | Fail soft — component semantics unchanged |
+| Secrets in span attributes | Redacted before export |
+
 ## Related
 
 - [What’s new in 0.13](../guides/whats-new-0.13.md)

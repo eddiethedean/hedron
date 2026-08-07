@@ -39,4 +39,5 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Port 8000 matches Codespaces / try-it forwarding and the FastAPI demos.
+    app.run(debug=True, host="127.0.0.1", port=8000)

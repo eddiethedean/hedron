@@ -1,29 +1,33 @@
 # How to read Hedron docs
 
 You do **not** need maturity vocabulary to install or complete the golden path
-(Install → First app → HTMX → Minimal form → Learning path). Use this page when evaluating
-production use or reading API/stability catalogs.
+(First app → HTMX → Minimal form → Installation hub as needed). Use this page when
+evaluating production use or reading API/stability catalogs.
 
-## Maturity words (when you need them)
+## Maturity cheat-sheet (three axes)
 
-| Label | What it means for you |
-|---|---|
-| **Beta** (package) | The PyPI distribution is usable; **pin versions** in production. |
-| **Alpha** (package) | On PyPI; pin and expect faster churn (`hedron-charts`, notebook, MCP, Gradio, …). |
-| **Supported** (capability) | Hedron claims this capability works on that host today — ship with pins. |
-| **Experimental** (capability) | Public API shipped; may change; prefer documented fallbacks (e.g. polling). |
-| **Deferred** (capability) | Documented and owned, but **not** ready — do not market or depend on it as Supported. |
+**Package** maturity (Beta / Alpha on PyPI) ≠ **capability** readiness (Supported /
+Experimental / Deferred) ≠ **API compatibility** level (`stable` / `beta` /
+`experimental` / `internal` / `deferred` in [STABILITY](../api/STABILITY.md)).
 
-Do **not** combine labels. Prefer “Supported” or “Beta package” — never pair Supported
-with a Beta tag in one phrase.
-Package maturity (Beta / Alpha) and capability readiness (Supported / Experimental / Deferred)
-are separate axes.
+A **Beta** package can expose **Supported** capabilities whose API level is still
+`beta`. That is normal on the `0.x` train — pin package versions and read the capability
+table on [What’s ready today](../guides/whats-ready.md) before shipping.
 
-API compatibility levels (`stable` / `beta` / `experimental` / `internal` / `deferred`) live in
-the [STABILITY](../api/STABILITY.md) catalog for callable surfaces. RFC **Accepted** means the
-design is selected—not that every detail is implemented. Prefer
-[What’s ready today](../guides/whats-ready.md) and [Evaluate Hedron](../guides/evaluate.md)
-when evaluating production use.
+| Label | Axis | What it means for you |
+|---|---|---|
+| **Beta** / **Alpha** | Package (PyPI) | Usable distribution; **pin versions**. Alpha expects faster churn. |
+| **Supported** | Capability | Works on that host today — ship with pins. |
+| **Experimental** | Capability | Public API shipped; may change; prefer documented fallbacks (e.g. polling). |
+| **Deferred** | Capability | Documented and owned, but **not** ready — do not depend on it as Supported. |
+| **`stable` / `beta` / …** | API level | Compatibility promise for a callable surface in STABILITY — not the same as capability readiness. |
+
+When writing docs, name the axis: “Beta **package**”, “Supported **capability**”,
+“API level `beta`”. Do not collapse them into one vague “beta” adjective.
+
+RFC **Accepted** means the design is selected—not that every detail is implemented.
+Prefer [What’s ready today](../guides/whats-ready.md) and
+[Evaluate Hedron](../guides/evaluate.md) when evaluating production use.
 
 ## Versions
 
@@ -31,6 +35,7 @@ Capability phases are numbered `0.N`. The initial release for that phase is **`v
 Phase **0.18** maps to packages **`0.18.x`** (current **`0.18.0`**), not a patch of 0.1.
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
+Pin production installs with `hedron>=0.18.0,<0.19`.
 
 ## Public docs vs maintainer corpus
 
@@ -47,8 +52,8 @@ are migrating from 0.8.
 
 ## What to read first
 
-1. [Installation](installation.md) → [Quickstart](quickstart.md)
-2. [HTMX interactions](../guides/htmx-interactions.md) → [Minimal form POST](../guides/minimal-form.md)
+1. [Build your first app](quickstart.md) → [HTMX interactions](../guides/htmx-interactions.md)
+2. [Minimal form POST](../guides/minimal-form.md) → [Installation](installation.md) as needed
 3. [What’s ready today](../guides/whats-ready.md) / [Evaluate Hedron](../guides/evaluate.md) when evaluating production use
 
 Stuck on a term? See the [Glossary](../GLOSSARY.md).
