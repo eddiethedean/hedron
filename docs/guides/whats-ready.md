@@ -1,13 +1,14 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.19.0.** Other evaluator pages link here —
+**Canonical maturity snapshot for Hedron 0.19.0** (Ready to cut on `main`; last published
+PyPI/git = `v0.18.0` until `v0.19.0` is tagged). Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-**Ship today** (pin `hedron>=0.19.0,<0.20`): typed pages, HTMX fragments, CSRF
-(`standard` / `strict`), Flask/Django adapters, polling job status, accessibility contracts /
-PE forms (0.19).
+**Ship today** (pin `hedron>=0.19.0,<0.20` after cut, or install from `main` now): typed pages,
+HTMX fragments, CSRF (`standard` / `strict`), Flask/Django adapters, polling job status,
+accessibility contracts / PE forms (0.19).
 
 !!! note "Supported ≠ API `stable`"
 
@@ -37,7 +38,8 @@ Maturity vocabulary:
 <details markdown>
 <summary>How to read labels on this page</summary>
 
-Hedron **0.19.0** packages are **Beta** on PyPI. Expect occasional breaking changes on
+Hedron **0.19.0** packages are **Beta** maturity (API `beta` unless noted in
+[STABILITY.md](../api/STABILITY.md)). Expect occasional breaking changes on
 `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
 | Label | Meaning |
@@ -75,7 +77,8 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** on PyPI — pin `>=0.19.0,<0.20`. The table above is
+    Flagship packages are **Beta** maturity — pin `>=0.19.0,<0.20` after `v0.19.0` is
+    tagged (or install from `main` now). The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
