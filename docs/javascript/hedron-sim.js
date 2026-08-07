@@ -259,31 +259,33 @@
     }, delayMs(280));
   }
 
+  function neutralizeProgressiveAnchors(root) {
+    // Docs sims keep real hx-* behavior, but absolute hrefs like "/reports" are
+    // same-origin on Read the Docs and get stolen by Material instant navigation.
+    var anchors = root.querySelectorAll(
+      "a[hx-get],a[hx-post],a[hx-put],a[hx-patch],a[hx-delete]"
+    );
+    for (var i = 0; i < anchors.length; i += 1) {
+      var anchor = anchors[i];
+      var href = anchor.getAttribute("href");
+      if (!href || href === "#" || href.indexOf("javascript:") === 0) continue;
+      if (!anchor.hasAttribute("data-hedron-sim-href")) {
+        anchor.setAttribute("data-hedron-sim-href", href);
+      }
+      anchor.setAttribute("href", "#");
+    }
+  }
+
   function initRoot(root) {
     if (root.dataset.hedronSimReady === "true") return;
-    root.dataset.hedronSimReady = "true";
     var table = parseRoutes(root);
     if (!table) return;
+    root.dataset.hedronSimReady = "true";
+    root._hedronSimTable = table;
 
     var stage = root.querySelector("[data-hedron-sim-stage]") || root;
     stage.innerHTML = applyTokens(stage.innerHTML, null);
-
-    root.addEventListener("click", function (event) {
-      var control = findControl(event.target, root);
-      if (!control) return;
-      if (control.tagName === "FORM") return;
-      event.preventDefault();
-      handleRequest(root, table, control, null);
-    });
-
-    root.addEventListener("submit", function (event) {
-      var form = event.target;
-      if (!form || !root.contains(form)) return;
-      if (!form.hasAttribute("hx-post") && !form.hasAttribute("hx-get")) return;
-      event.preventDefault();
-      var data = new FormData(form);
-      handleRequest(root, table, form, data);
-    });
+    neutralizeProgressiveAnchors(root);
 
     // Bounded auto-poll for hx-trigger="every Nms" (docs demos only).
     var polls = root.querySelectorAll("[hx-trigger]");
@@ -313,6 +315,12 @@
     }
   }
 
+  function ensureRoot(root) {
+    if (!root) return null;
+    if (root.dataset.hedronSimReady !== "true") initRoot(root);
+    return root.dataset.hedronSimReady === "true" ? root : null;
+  }
+
   function initModeDemo(root) {
     if (root.dataset.hedronSimReady === "true") return;
     root.dataset.hedronSimReady = "true";
@@ -335,6 +343,7 @@
     }
     for (var t = 0; t < toggles.length; t += 1) {
       toggles[t].addEventListener("click", function (event) {
+        event.preventDefault();
         select(event.currentTarget.getAttribute("data-sim-mode"));
       });
     }
@@ -347,6 +356,48 @@
     for (var m = 0; m < modes.length; m += 1) initModeDemo(modes[m]);
   }
 
+  // Capture-phase handlers beat MkDocs Material instant-navigation, which otherwise
+  // follows demo <a href="/…"> paths and leaves the docs page.
+  document.addEventListener(
+    "click",
+    function (event) {
+      var target = event.target;
+      if (!target || !target.closest) return;
+      var root = target.closest("[data-hedron-sim]");
+      if (!root || !ensureRoot(root)) return;
+      var control = findControl(target, root);
+      if (!control || control.tagName === "FORM") return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (typeof event.stopImmediatePropagation === "function") {
+        event.stopImmediatePropagation();
+      }
+      handleRequest(root, root._hedronSimTable, control, null);
+    },
+    true
+  );
+
+  document.addEventListener(
+    "submit",
+    function (event) {
+      var form = event.target;
+      if (!form || !form.closest) return;
+      var root = form.closest("[data-hedron-sim]");
+      if (!root) return;
+      if (!form.hasAttribute("hx-post") && !form.hasAttribute("hx-get")) return;
+      if (!ensureRoot(root)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (typeof event.stopImmediatePropagation === "function") {
+        event.stopImmediatePropagation();
+      }
+      handleRequest(root, root._hedronSimTable, form, new FormData(form));
+    },
+    true
+  );
+
+  // Always boot once now; also re-boot on Material instant navigation.
+  boot(document);
   if (typeof document$ !== "undefined") {
     document$.subscribe(function () {
       boot(document);
@@ -355,8 +406,6 @@
     document.addEventListener("DOMContentLoaded", function () {
       boot(document);
     });
-  } else {
-    boot(document);
   }
 
   window.HedronSim = {

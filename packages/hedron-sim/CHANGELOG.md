@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Intercept demo `hx-*` clicks/submits in the capture phase so MkDocs Material
+  instant navigation cannot follow progressive-enhancement `href`s out of the docs.
+- Rewrite demo anchor `href`s to `#` at boot (original kept in `data-hedron-sim-href`)
+  because Material registers its capture listener before extra scripts.
+
 ### Added
 
 - Docs theme tokens for Material `slate` / `default` schemes.

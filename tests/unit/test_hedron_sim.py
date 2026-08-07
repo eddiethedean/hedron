@@ -285,6 +285,10 @@ def test_packaged_assets_include_theme_and_runtime_hooks() -> None:
     assert "regionAllows" in js
     assert "applyTokens" in js
     assert "SIM_UTC" in js or "__HEDRON_SIM_UTC__" in js
+    assert "stopImmediatePropagation" in js
+    assert "data-hedron-sim-href" in js
+    assert "neutralizeProgressiveAnchors" in js or "data-hedron-sim-href" in js
+    assert ", true" in js  # capture-phase listeners
 
 
 def test_copy_assets_writes_js_and_css(tmp_path: Path) -> None:
