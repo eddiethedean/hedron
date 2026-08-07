@@ -1,6 +1,6 @@
 # Upgrade
 
-**Hedron 0.20.0** — Ready to cut on `main` (last published PyPI/git = `v0.18.0`). From 0.18/0.19:
+**Hedron 0.20.0** — Ready to cut on `main` (last published PyPI/git = `v0.19.0`). From 0.18/0.19:
 production security floor and adapter parity (HTMX/eval hardening, mount helpers, production
 gates, Flask/Django regions/CSP/AuthSignal, adapter scaffolds). See [What's ready](whats-ready.md)
 and [What's new in 0.20](whats-new-0.20.md). CSRF composition → 0.22; human AT → 0.21.

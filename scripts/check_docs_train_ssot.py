@@ -2,8 +2,7 @@
 """Fail if adopter-facing docs claim a stale published train or banned maturity jargon.
 
 The living line is 0.20.x on ``main`` (ready to cut). Last published PyPI/git is
-``v0.18.0`` until ``v0.20.0`` is tagged (0.19 was Ready-to-cut on main and superseded
-by 0.20 before a public 0.19 tag). Historical whats-new / acceptance /
+``v0.19.0`` until ``v0.20.0`` is tagged. Historical whats-new / acceptance /
 RFC phase labels are allowed. This check targets pages that assert "current"
 product maturity.
 
@@ -44,6 +43,7 @@ CHECKED = [
     ROOT / "docs" / "guides" / "upgrade.md",
     ROOT / "docs" / "guides" / "release-notes.md",
     ROOT / "docs" / "guides" / "whats-new-0.20.md",
+    ROOT / "docs" / "guides" / "roadmap.md",
     ROOT / "docs" / "api" / "ADAPTERS.md",
     ROOT / "docs" / "api" / "INTERACTION.md",
     ROOT / "README.md",
@@ -62,6 +62,7 @@ CHECKED = [
 STALE = [
     re.compile(r"current published train[^\n]*0\.16", re.I),
     re.compile(r"current published train[^\n]*0\.17", re.I),
+    re.compile(r"current published train[^\n]*0\.18", re.I),
     re.compile(r"train is \*\*0\.16\.x\*\*", re.I),
     re.compile(r"latest published train is \*\*0\.16", re.I),
     re.compile(r"Expect \*\*`0\.17\.0`\*\*", re.I),
@@ -76,6 +77,7 @@ STALE = [
     re.compile(r"hedron>=0\.19\.0,<0\.20", re.I),
     re.compile(r"capture UI remains Deferred", re.I),
     re.compile(r"Supported lines: \*\*`0\.16\.x`", re.I),
+    re.compile(r"Supported lines: \*\*`0\.18\.x`", re.I),
     re.compile(r"Current train — 0\.18", re.I),
     re.compile(r"Current train — 0\.19", re.I),
     re.compile(r"Current train: \*\*0\.18", re.I),
@@ -98,17 +100,24 @@ STALE = [
     re.compile(r"Hedron \*\*0\.19\*\* packages", re.I),
     re.compile(r"scaffold on \*\*0\.18\.x\*\*", re.I),
     re.compile(r"scaffold on \*\*0\.19\.x\*\*", re.I),
-    re.compile(r"Published for the \*\*0\.19\*\* train", re.I),
     re.compile(r"adapter depth on 0\.18\)", re.I),
     re.compile(r"InteractionResult` on \*\*0\.18\.x\*\*", re.I),
     re.compile(r"hedron-charts==0\.1\.0", re.I),
+    # Stale "last published is still 0.18" claims after v0.19.0 shipped.
+    re.compile(r"last published PyPI/git = `v0\.18\.0`", re.I),
+    re.compile(r"Last published: <strong>v0\.18\.0</strong>", re.I),
+    re.compile(r"PyPI(?:/git)? still serve[s]? \*\*`v0\.18\.0`\*\*", re.I),
+    re.compile(r"\*\*Last published train:\*\* `v0\.18\.0`", re.I),
+    re.compile(r"current published[^\n]*`v0\.18\.0`", re.I),
+    re.compile(r"Last \*\*published\*\* PyPI train is \*\*0\.18", re.I),
+    re.compile(r"0\.19\.x` \| Ready to cut / Implemented on `main` \(not yet published\)", re.I),
+    re.compile(r"superseded before a public `v0\.19\.0` tag", re.I),
+    re.compile(r"before a public `v0\.19\.0` tag", re.I),
     # Premature Published claims before the v0.20.0 tag exists.
     re.compile(r"Published\*\* as `v0\.20\.0`", re.I),
     re.compile(r"\*\*Published:\*\* `v0\.20\.0`", re.I),
     re.compile(r"Last published train:\*\* `v0\.20\.0`", re.I),
     re.compile(r"phase 0\.20 \*\*Published\*\*", re.I),
-    re.compile(r"Published\*\* as `v0\.19\.0`", re.I),
-    re.compile(r"\*\*Published:\*\* `v0\.19\.0`", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.
@@ -230,8 +239,8 @@ def main() -> int:
         print("\n".join(failures), file=sys.stderr)
         return 1
     print(
-        "ok: adopter docs assert 0.20 (ready-to-cut), upper-bound pins, and avoid "
-        "Supported beta / SSOT / beachhead jargon"
+        "ok: adopter docs assert 0.20 (ready-to-cut), last published v0.19.0, "
+        "upper-bound pins, and avoid Supported beta / SSOT / beachhead jargon"
     )
     return 0
 

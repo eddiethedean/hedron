@@ -45,7 +45,7 @@ After following [Build your first app](quickstart.md):
     ```
 
 Expect **`0.20.0`** (or a newer `0.20.x` patch) on this train / `main`. Last published
-PyPI/git is **`v0.18.0`** until `v0.20.0` is cut. Pin with `hedron>=0.20.0,<0.21` for
+PyPI/git is **`v0.19.0`** until `v0.20.0` is cut. Pin with `hedron>=0.20.0,<0.21` for
 production.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see

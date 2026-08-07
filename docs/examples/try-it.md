@@ -25,7 +25,7 @@ uv run uvicorn app:app --host 0.0.0.0 --port 8000
 
 !!! note "PyPI vs `main`"
 
-    Until `v0.20.0` is tagged, PyPI still serves **`v0.18.0`**. The Dev Container / Codespaces
+    Until `v0.20.0` is tagged, PyPI still serves **`v0.19.0`**. The Dev Container / Codespaces
     path uses this repo’s `main` workspace, so you get Ready-to-cut `0.20.0` without waiting
     for the tag.
 

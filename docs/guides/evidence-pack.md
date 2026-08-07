@@ -13,7 +13,7 @@ these artifacts at cut time.
 | Package verify (0.20) | CI / release checklist | [`scripts/verify_pkg_20.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/verify_pkg_20.py) |
 
 **PyPI is authoritative for published package versions.** Last published train is
-`hedron==0.18.0` (`v0.18.0`). Coordinated **`0.20.0`** is Ready to cut / Implemented on
+`hedron==0.19.0` (`v0.19.0`). Coordinated **`0.20.0`** is Ready to cut / Implemented on
 `main` — confirm on [PyPI](https://pypi.org/project/hedron/) after `v0.20.0` is tagged.
 Until then, regenerate evidence from `main` (or the future `v0.20.0` tag).
 
@@ -24,9 +24,9 @@ Script index: [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/
 ## How to verify (evaluator)
 
 1. Confirm package versions on PyPI match your pin (for example `hedron==0.20.0` after
-   cut; until then last published is `0.18.0`).
+   cut; until then last published is `0.19.0`).
 2. Prefer GitHub Release assets for **`v0.20.0`** when present (SBOM / license /
-   evidence-bundle); until cut, use **`v0.18.0`** assets or regenerate from `main`.
+   evidence-bundle); until cut, use **`v0.19.0`** assets or regenerate from `main`.
 3. If Release assets are absent, clone and regenerate:
 
 ```bash

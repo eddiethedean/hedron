@@ -36,7 +36,7 @@ Phase **0.20** maps to packages **`0.20.x`** (current **`0.20.0`** on `main`), n
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 Pin production installs with `hedron>=0.20.0,<0.21` after `v0.20.0` is tagged (last
-published PyPI/git is still `v0.18.0` until then — or install from `main` now).
+published PyPI/git is still `v0.19.0` until then — or install from `main` now).
 
 ## Public docs vs maintainer corpus
 

@@ -1,7 +1,7 @@
 # Compatibility policy
 
 **Status:** Accepted for the **0.20.0** train on `main` (Ready to cut; last published
-PyPI/git = `v0.18.0`)
+PyPI/git = `v0.19.0`)
 **Reviewed:** 2026-08-07
 
 ## Current train (read this first)

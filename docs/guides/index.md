@@ -2,7 +2,7 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.19 train** (ready to cut; last published **v0.18.0**): accessibility contracts,
+**0.19 train** (published as **v0.19.0**; living cut target **0.20**): accessibility contracts,
 Explorer `/a11y`, PE forms, landmarks, and automated AT evidence —
 [What’s new in 0.19](whats-new-0.19.md) · [Accessibility](accessibility.md) ·
 [A11Y API](../api/A11Y.md).

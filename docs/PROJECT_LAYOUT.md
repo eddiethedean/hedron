@@ -94,7 +94,7 @@ The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
 **Publish note:** the coordinated train on `main` is **`0.20.0`** (Ready to cut; last
-published PyPI/git = `v0.18.0`) for the production security floor — see [STATUS](STATUS.md).
+published PyPI/git = `v0.19.0`) for the production security floor — see [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
 

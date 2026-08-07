@@ -18,7 +18,7 @@ uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
-Until `v0.20.0` is tagged, PyPI still serves **`v0.18.0`** — install from `main` for
+Until `v0.20.0` is tagged, PyPI still serves **`v0.19.0`** — install from `main` for
 Ready-to-cut `0.20.0`, or wait for the cut.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
@@ -50,7 +50,7 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 <summary>Package maturity</summary>
 
 <strong>Hedron 0.20.0</strong> — Ready to cut on <code>main</code> (last published PyPI/git =
-<code>v0.18.0</code>); pin with <code>hedron&gt;=0.20.0,&lt;0.21</code> after
+<code>v0.19.0</code>); pin with <code>hedron&gt;=0.20.0,&lt;0.21</code> after
 <code>v0.20.0</code> is tagged. <strong>Supported</strong> means the capability works on the
 current train when pinned; most public APIs remain compatibility level <code>beta</code>
 until listed in the small <strong>stable</strong> table —
@@ -88,7 +88,7 @@ See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/
 
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.19/) ·
+[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.20/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).

@@ -3,7 +3,7 @@
 ## Which version should I install?
 
 Pin the **0.20 train** for production (Beta; Ready to cut on `main` — last published
-PyPI/git = `v0.18.0`):
+PyPI/git = `v0.19.0`):
 
 ```bash
 pip install "hedron>=0.20.0,<0.21"
@@ -158,7 +158,7 @@ See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/inst
 ## Where is the SBOM / evidence bundle?
 
 Prefer GitHub Release assets for the train tag (for example `v0.20.0` after cut; last
-published `v0.18.0`), or regenerate from the tagged checkout with
+published `v0.19.0`), or regenerate from the tagged checkout with
 `scripts/build_evidence_bundle.py`. Step-by-step:
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.
 

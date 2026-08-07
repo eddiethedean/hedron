@@ -2,7 +2,7 @@
 
 Per-package CHANGELOG files are the source of truth for shipped commits. For the
 adopter-facing train summary, start with [What’s new in 0.19](whats-new-0.19.md)
-(0.19 train — ready to cut; last published **v0.18.0**) and
+(0.19 train — ready to cut; last published **v0.19.0**) and
 [Release notes](release-notes.md).
 
 ## Narrative “what’s new”

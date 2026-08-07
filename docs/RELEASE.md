@@ -9,10 +9,10 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**Last published train:** `v0.18.0` (packages `0.18.0` including first-party
+**Last published train:** `v0.19.0` (packages `0.19.0` including first-party
 `hedron-extras`; Alpha charts/sample-kit/native/notebook/mcp/gradio `0.1.x`).
 
-**Prior published:** `v0.17.0`, `v0.16.0`, and earlier trains.
+**Prior published:** `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
 
 **Current cut target:** `v0.20.0` — Ready to cut / Implemented on `main` (packages
 `0.20.0`); see
@@ -82,16 +82,16 @@ After the `v0.20.0` Git tag exists and wheels are on PyPI — **not** before:
 
 1. Edit `docs/STATUS.md` and `docs/ROADMAP.md`: replace Ready-to-cut wording with the
    published-train status for tag `v0.20.0`; last published = that tag; cut target
-   advances to `0.19.x` patches / next capability `0.20`.
+   advances to `0.20.x` patches / next capability `0.21`.
 2. Run `uv run python scripts/sync_status_roadmap.py` (then `--check`).
-3. Update root + `docs/SECURITY.md` support window (`0.19.x` current published).
-4. Flip Ready-to-cut / last-published-0.18 wording in guides, acceptance, API status pages,
+3. Update root + `docs/SECURITY.md` support window (`0.20.x` current published).
+4. Flip Ready-to-cut / last-published-0.19 wording in guides, acceptance, API status pages,
    package READMEs, and install notes that claim PyPI availability.
 5. Invert `scripts/check_docs_train_ssot.py` patterns: ban leftover Ready-to-cut / last
-   published `v0.18.0`; allow the published-train wording for tag `v0.20.0`.
+   published `v0.19.0`; allow the published-train wording for tag `v0.20.0`.
 6. Re-run `uv run python scripts/check_docs_train_ssot.py` and commit the flip.
 
-## Template: 0.19.x patch cut
+## Template: 0.20.x patch cut
 
 Replace `0.20.1` with the next patch.
 

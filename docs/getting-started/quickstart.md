@@ -37,7 +37,7 @@ matters.
 
 !!! note "PyPI vs `main`"
 
-    Until `v0.20.0` is tagged, PyPI still serves **`v0.18.0`**. Install from `main` for
+    Until `v0.20.0` is tagged, PyPI still serves **`v0.19.0`**. Install from `main` for
     Ready-to-cut `0.20.0`, or wait for the cut and use the pin above.
 
 === "pip (venv)"

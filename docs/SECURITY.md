@@ -4,8 +4,9 @@
 
 | Version | Supported |
 |---|---|
-| `0.19.x` | Ready to cut / Implemented on `main` (not yet published) |
-| `0.18.x` | Yes (current published train — last published PyPI/git = `v0.18.0`) |
+| `0.20.x` | Ready to cut / Implemented on `main` (not yet published) |
+| `0.19.x` | Yes (current published train — last published PyPI/git = `v0.19.0`) |
+| `0.18.x` | Prefer upgrading to the current train |
 | `0.17.x` | Prefer upgrading to the current train |
 | `0.16.x` | Prefer upgrading to the current train |
 | `0.15.x` | Prefer upgrading to the current train |

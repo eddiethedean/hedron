@@ -9,7 +9,7 @@ the compatibility promise; everything else is `beta` / `experimental` and may ch
 <summary>Maintainer catalog metadata</summary>
 
 **Status:** Phase 0.20 production security floor (**Ready to cut / Implemented on `main`**
-as `0.20.0`; last published PyPI/git = `v0.18.0`).
+as `0.20.0`; last published PyPI/git = `v0.19.0`).
 A **minimal `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled).
 **Version:** `0.20.0` / catalog baseline
 `0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`

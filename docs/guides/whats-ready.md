@@ -1,7 +1,7 @@
 # What’s ready today
 
 **Canonical maturity snapshot for Hedron 0.20.0** (Ready to cut on `main`; last published
-PyPI/git = `v0.18.0` until `v0.20.0` is tagged). Other evaluator pages link here —
+PyPI/git = `v0.19.0` until `v0.20.0` is tagged). Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
@@ -196,7 +196,7 @@ Maintainer gate IDs and RFC evidence:
     uvicorn app:app --reload
     ```
 
-Until `v0.20.0` is tagged, PyPI still serves **`v0.18.0`** — install from `main` for
+Until `v0.20.0` is tagged, PyPI still serves **`v0.19.0`** — install from `main` for
 Ready-to-cut `0.20.0`, or wait for the cut and use the pin above.
 
 Extras: `"hedron[data]>=0.20.0,<0.21"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),

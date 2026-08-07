@@ -46,7 +46,7 @@ uv run uvicorn app:app --reload
 
 !!! note "PyPI vs `main`"
 
-    Until `v0.20.0` is tagged, PyPI still serves **`v0.18.0`**. Install from `main` for
+    Until `v0.20.0` is tagged, PyPI still serves **`v0.19.0`**. Install from `main` for
     Ready-to-cut `0.20.0`, or wait for the cut and use the pin above.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
@@ -141,7 +141,7 @@ Extras and troubleshooting: [installation](getting-started/installation.md).
 <summary>Package maturity and production pins</summary>
 
 Hedron **0.20** packages are **Beta** (Ready to cut on `main`; last published PyPI/git =
-`v0.18.0`) — pin with `hedron>=0.20.0,<0.21` after cut (or install from `main` now).
+`v0.19.0`) — pin with `hedron>=0.20.0,<0.21` after cut (or install from `main` now).
 **Supported** means the capability works on the current train when pinned; most public
 APIs remain compatibility level **`beta`** until listed in the small **stable** table —
 see [Understanding maturity labels](getting-started/how-to-read.md).
