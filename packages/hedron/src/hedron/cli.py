@@ -323,20 +323,41 @@ def _cmd_new(args: argparse.Namespace) -> int:
     if dest.exists() and any(dest.iterdir()) and not args.force:
         print(f"Refusing to overwrite non-empty {dest} (use --force)", file=sys.stderr)
         return 1
-    guarded = [dest / "app.py", dest / "pyproject.toml"]
+    framework = "fastapi"
+    if getattr(args, "flask", False):
+        framework = "flask"
+    if getattr(args, "django", False):
+        framework = "django"
+    if getattr(args, "flask", False) and getattr(args, "django", False):
+        print("Choose at most one of --flask / --django", file=sys.stderr)
+        return 1
+
+    if framework == "fastapi" or framework == "flask":
+        guarded = [dest / "app.py", dest / "pyproject.toml"]
+    else:
+        guarded = [dest / "manage.py", dest / "pyproject.toml", dest / "project"]
     if any(path.exists() for path in guarded) and not args.force:
         existing = ", ".join(str(p) for p in guarded if p.exists())
         print(f"Refusing to overwrite existing {existing} (use --force)", file=sys.stderr)
         return 1
     dest.mkdir(parents=True, exist_ok=True)
     (dest / "components").mkdir(exist_ok=True)
+
+    if framework == "fastapi":
+        return _scaffold_fastapi(args, dest)
+    if framework == "flask":
+        return _scaffold_flask(args, dest)
+    return _scaffold_django(args, dest)
+
+
+def _scaffold_fastapi(args: argparse.Namespace, dest: Path) -> int:
     (dest / "pyproject.toml").write_text(
         f'''[project]
 name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron>=0.19.0,<0.20",
+    "hedron>=0.20.0,<0.21",
     "uvicorn[standard]>=0.30",
 ]
 
@@ -395,7 +416,258 @@ def refresh_status():
     )
     print(
         json.dumps(
-            {"created": str(dest), "files": ["pyproject.toml", "app.py", "components/"]}, indent=2
+            {
+                "created": str(dest),
+                "framework": "fastapi",
+                "files": ["pyproject.toml", "app.py", "components/"],
+            },
+            indent=2,
+        )
+    )
+    return 0
+
+
+def _scaffold_flask(args: argparse.Namespace, dest: Path) -> int:
+    (dest / "pyproject.toml").write_text(
+        f'''[project]
+name = "{args.name}"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "hedron-flask>=0.20.0,<0.21",
+    "hedron-core>=0.20.0,<0.21",
+    "flask>=3,<4",
+]
+
+[tool.hedron]
+component_roots = ["components"]
+''',
+        encoding="utf-8",
+    )
+    (dest / "app.py").write_text(
+        """import os
+from datetime import UTC, datetime
+
+from hedron_core import FragmentRegion, InteractionResult, Page, Text, html
+from hedron_core.interaction import InteractionPolicy
+from hedron_flask import HedronFlask
+
+app = HedronFlask(__name__, security="standard")
+assert app.flask is not None
+app.flask.config["SECRET_KEY"] = os.environ.get(
+    "HEDRON_SESSION_SECRET", "replace-in-production"
+)
+
+PANEL = FragmentRegion(id="panel", selector="#panel")
+
+
+def panel_body() -> object:
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return html.div(Text(f"Flask status · {stamp}"), id="panel")
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(
+        html.div(
+            Text("Hello from hedron new --flask"),
+            panel_body(),
+            html.button(
+                Text("Refresh"),
+                **{
+                    "hx-get": "/status",
+                    "hx-target": "#panel",
+                    "hx-swap": "outerHTML",
+                },
+            ),
+        ),
+        title="Home",
+    )
+
+
+@app.component("/status", fragment_regions=(PANEL,))
+def status() -> InteractionResult:
+    return InteractionResult(
+        content=panel_body(),
+        region_id="panel",
+        policy=InteractionPolicy(declared_regions=(PANEL,)),
+    )
+
+
+# WSGI entry: `flask --app app run` uses module-level Flask app
+flask_app = app.flask
+""",
+        encoding="utf-8",
+    )
+    (dest / "README.md").write_text(
+        "# Hedron Flask app\n\n"
+        "Set `HEDRON_SESSION_SECRET` before production. "
+        "Under `HEDRON_ENV=production`, placeholder secrets are refused "
+        "unless listed in `HEDRON_SECURITY_RISK_ACCEPTANCE`.\n\n"
+        "```bash\nuv sync && uv run flask --app app run\n```\n",
+        encoding="utf-8",
+    )
+    print(
+        json.dumps(
+            {
+                "created": str(dest),
+                "framework": "flask",
+                "files": ["pyproject.toml", "app.py", "README.md", "components/"],
+            },
+            indent=2,
+        )
+    )
+    return 0
+
+
+def _scaffold_django(args: argparse.Namespace, dest: Path) -> int:
+    (dest / "pyproject.toml").write_text(
+        f'''[project]
+name = "{args.name}"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "hedron-django>=0.20.0,<0.21",
+    "hedron-core>=0.20.0,<0.21",
+    "django>=5.2,<6",
+    "waitress>=3,<4",
+]
+
+[tool.hedron]
+component_roots = ["components"]
+''',
+        encoding="utf-8",
+    )
+    project = dest / "project"
+    project.mkdir(exist_ok=True)
+    (project / "__init__.py").write_text("", encoding="utf-8")
+    (project / "settings.py").write_text(
+        """import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production")
+DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
+ALLOWED_HOSTS = ["*"]
+INSTALLED_APPS = [
+    "django.contrib.contenttypes",
+    "django.contrib.staticfiles",
+    "hedron_django",
+]
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "hedron_django.middleware.HedronSecurityHeadersMiddleware",
+]
+ROOT_URLCONF = "project.urls"
+TEMPLATES = []
+DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}}
+STATIC_URL = "static/"
+HEDRON_SECURITY_PROFILE = "standard"
+""",
+        encoding="utf-8",
+    )
+    (project / "urls.py").write_text(
+        """from datetime import UTC, datetime
+
+from django.urls import path
+from hedron_core import FragmentRegion, InteractionResult, Page, Text, html
+from hedron_core.interaction import InteractionPolicy
+from hedron_django import hedron_view
+
+PANEL = FragmentRegion(id="panel", selector="#panel")
+
+
+def panel_body():
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return html.div(Text(f"Django status · {stamp}"), id="panel")
+
+
+@hedron_view(fragment_regions=(PANEL,))
+def home(request):
+    return Page(
+        html.div(
+            Text("Hello from hedron new --django"),
+            panel_body(),
+            html.button(
+                Text("Refresh"),
+                **{
+                    "hx-get": "/status",
+                    "hx-target": "#panel",
+                    "hx-swap": "outerHTML",
+                },
+            ),
+        ),
+        title="Home",
+    )
+
+
+@hedron_view(fragment_regions=(PANEL,))
+def status(request):
+    return InteractionResult(
+        content=panel_body(),
+        region_id="panel",
+        policy=InteractionPolicy(declared_regions=(PANEL,)),
+    )
+
+
+urlpatterns = [
+    path("", home),
+    path("status", status),
+]
+""",
+        encoding="utf-8",
+    )
+    (dest / "manage.py").write_text(
+        """#!/usr/bin/env python
+import os
+import sys
+
+
+def main() -> None:
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
+    from django.core.management import execute_from_command_line
+
+    execute_from_command_line(sys.argv)
+
+
+if __name__ == "__main__":
+    main()
+""",
+        encoding="utf-8",
+    )
+    (dest / "wsgi.py").write_text(
+        """import os
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
+application = get_wsgi_application()
+""",
+        encoding="utf-8",
+    )
+    (dest / "README.md").write_text(
+        "# Hedron Django app\n\n"
+        "Set `HEDRON_SESSION_SECRET` before production. "
+        "Placeholder secrets are refused under `HEDRON_ENV=production` "
+        "unless accepted via `HEDRON_SECURITY_RISK_ACCEPTANCE`.\n\n"
+        "```bash\nuv sync && uv run waitress-serve --port=8000 wsgi:application\n```\n",
+        encoding="utf-8",
+    )
+    print(
+        json.dumps(
+            {
+                "created": str(dest),
+                "framework": "django",
+                "files": [
+                    "pyproject.toml",
+                    "manage.py",
+                    "wsgi.py",
+                    "project/",
+                    "README.md",
+                    "components/",
+                ],
+            },
+            indent=2,
         )
     )
     return 0
@@ -933,6 +1205,16 @@ def main(argv: list[str] | None = None) -> None:
     new_p.add_argument("name", help="Project name")
     new_p.add_argument("--path", default=None, help="Destination directory")
     new_p.add_argument("--force", action="store_true")
+    new_p.add_argument(
+        "--flask",
+        action="store_true",
+        help="Scaffold a Flask + hedron-flask app (no FastAPI dependency)",
+    )
+    new_p.add_argument(
+        "--django",
+        action="store_true",
+        help="Scaffold a Django + hedron-django app (no FastAPI dependency)",
+    )
     new_p.set_defaults(func=_cmd_new)
 
     check_p = sub.add_parser("check", help="Run project diagnostics")

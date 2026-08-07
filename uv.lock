@@ -931,7 +931,7 @@ wheels = [
 
 [[package]]
 name = "hedron"
-version = "0.19.0"
+version = "0.20.0"
 source = { editable = "packages/hedron" }
 dependencies = [
     { name = "fastapi" },
@@ -1129,7 +1129,7 @@ provides-extras = ["matplotlib", "plotly", "altair", "pydeck", "folium", "graphv
 
 [[package]]
 name = "hedron-conformance"
-version = "0.19.0"
+version = "0.20.0"
 source = { editable = "packages/hedron-conformance" }
 dependencies = [
     { name = "pydantic" },
@@ -1140,7 +1140,7 @@ requires-dist = [{ name = "pydantic", specifier = ">=2.13.4,<2.15" }]
 
 [[package]]
 name = "hedron-core"
-version = "0.19.0"
+version = "0.20.0"
 source = { editable = "packages/hedron-core" }
 dependencies = [
     { name = "packaging" },
@@ -1155,7 +1155,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-data"
-version = "0.19.0"
+version = "0.20.0"
 source = { editable = "packages/hedron-data" }
 dependencies = [
     { name = "hedron-core" },
@@ -1217,7 +1217,7 @@ provides-extras = ["pandas", "polars", "pyarrow", "dataframes", "sqlalchemy", "s
 
 [[package]]
 name = "hedron-django"
-version = "0.19.0"
+version = "0.20.0"
 source = { editable = "packages/hedron-django" }
 dependencies = [
     { name = "asgiref" },
@@ -1234,7 +1234,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-explorer"
-version = "0.19.0"
+version = "0.20.0"
 source = { editable = "packages/hedron-explorer" }
 dependencies = [
     { name = "fastapi" },
@@ -1256,7 +1256,7 @@ provides-extras = ["fastapi"]
 
 [[package]]
 name = "hedron-extras"
-version = "0.19.0"
+version = "0.20.0"
 source = { editable = "packages/hedron-extras" }
 dependencies = [
     { name = "hedron-core" },
@@ -1288,7 +1288,7 @@ provides-extras = ["code-editor", "json-editor", "data-explorer", "chart-workben
 
 [[package]]
 name = "hedron-flask"
-version = "0.19.0"
+version = "0.20.0"
 source = { editable = "packages/hedron-flask" }
 dependencies = [
     { name = "flask" },
@@ -1316,7 +1316,7 @@ requires-dist = [{ name = "hedron-core", editable = "packages/hedron-core" }]
 
 [[package]]
 name = "hedron-jinja"
-version = "0.19.0"
+version = "0.20.0"
 source = { editable = "packages/hedron-jinja" }
 dependencies = [
     { name = "hedron-core" },
@@ -1397,7 +1397,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-workspace"
-version = "0.19.0"
+version = "0.20.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]

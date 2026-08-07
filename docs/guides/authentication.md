@@ -255,6 +255,49 @@ hardening recipe: [Hardened sessions](hardened-sessions.md). API detail:
 Hedron routes remain ordinary view callables — wrap them with the same dependencies /
 decorators you use for JSON APIs.
 
+### Flask-Login → `AuthSignal` (optional)
+
+`hedron-flask` does **not** require Flask-Login. When `flask_login` is importable,
+`HedronFlask.auth_signal()` prefers an authenticated `current_user` (`get_id()` /
+`id`) so private-cache headers and Explorer/job signals follow the same identity.
+Otherwise it falls back to `session["user_id"]` or `session["_user_id"]` (plus optional
+`scopes` / `tenant_id` session keys).
+
+```python
+from flask import Flask
+from flask_login import LoginManager, UserMixin, login_user
+
+from hedron_flask import HedronFlask
+
+app = Flask(__name__)
+app.secret_key = "replace-in-production"
+hedron = HedronFlask()
+hedron.init_app(app)
+
+login_manager = LoginManager(app)
+
+
+class User(UserMixin):
+    def __init__(self, user_id: str) -> None:
+        self.id = user_id
+
+
+@login_manager.user_loader
+def load_user(user_id: str) -> User:
+    return User(user_id)
+
+
+@app.get("/login-demo")
+def login_demo():
+    login_user(User("ada"))
+    signal = hedron.auth_signal()
+    # signal.authenticated is True; subject_id == "ada"
+    return {"subject_id": signal.subject_id}
+```
+
+Apps that only set `session["user_id"]` without Flask-Login keep working. Redaction and
+`Cache-Control: private, no-store` for authenticated responses are unchanged.
+
 ## Explorer
 
 `explorer="development"` is for local use. For rare shared environments, use

@@ -13,7 +13,7 @@ This catalog is complete for the registered set enforced by
 | `HED-BUILD-0003` | Production mode without a build manifest | Run `hedron build`; set `HEDRON_BUILD_DIR` if needed — [Troubleshooting](troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
 | `HED-SEC-0001` | Dangerous or invalid URL | Use `SafeUrl.parse` with the right `UrlPurpose` |
 | `HED-SEC-0006` | URL purpose mismatch for an attribute | Match purpose to `href` / `src` / `action` / redirect context |
-| `HED-SEC-0020` | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.19.0,<0.20"` |
+| `HED-SEC-0020` | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.20.0,<0.21"` |
 | `HED-RENDER-0012` | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | CSRF **403** on POST | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
@@ -348,6 +348,7 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-SEC-0008` | `HED_SEC_0008` |
 | `HED-SEC-0009` | `HED_SEC_0009` |
 | `HED-SEC-0010` | `HED_SEC_0010` |
+| `HED-SEC-0011` | `HED_SEC_0011` |
 | `HED-SEC-0020` | `HED_SEC_0020` |
 
 ## HED-A11Y

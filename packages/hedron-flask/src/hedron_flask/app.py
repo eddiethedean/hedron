@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from typing import Any, ParamSpec, TypeVar, cast
 
 from flask import Flask, Request, Response
@@ -11,8 +11,9 @@ from flask.typing import RouteCallable
 
 from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
-from hedron_core.interaction import InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
+from hedron_core.security_policy import SecurityPolicy, SecurityProfileName
 from hedron_flask.blueprint import attach_hedron_to_flask
 from hedron_flask.csrf import (
     csrf_cookie_should_be_secure,
@@ -46,6 +47,7 @@ class HedronFlask:
         auto_csrf_cookie: bool = True,
         csrf_protect: bool = True,
         csrf_cookie_secure: bool | None = None,
+        security: SecurityProfileName | str | SecurityPolicy = "standard",
         **kwargs: Any,
     ) -> None:
         self.csrf_cookie_name = csrf_cookie_name
@@ -54,14 +56,22 @@ class HedronFlask:
         # or FLASK_ENV/ENV=production. False: never Secure.
         self.csrf_cookie_secure = csrf_cookie_secure
         self._auto_csrf_cookie = auto_csrf_cookie
+        self.security_policy = SecurityPolicy.from_name(security)
         self.flask: Flask | None = None
         self.url_reverser: FlaskUrlReverser | None = None
         if import_name is not None:
             app = Flask(import_name, **kwargs)
             self.init_app(app)
 
-    def init_app(self, app: Flask) -> Flask:
+    def init_app(
+        self,
+        app: Flask,
+        *,
+        security: SecurityProfileName | str | SecurityPolicy | None = None,
+    ) -> Flask:
         """Bind this extension to ``app`` (idempotent for the same app)."""
+        if security is not None:
+            self.security_policy = SecurityPolicy.from_name(security)
         existing = app.extensions.get("hedron")
         if existing is self:
             self.flask = app
@@ -70,7 +80,12 @@ class HedronFlask:
             return app
         self.flask = app
         self.url_reverser = FlaskUrlReverser(app)
-        attach_hedron_to_flask(app, self, auto_csrf_cookie=self._auto_csrf_cookie)
+        attach_hedron_to_flask(
+            app,
+            self,
+            auto_csrf_cookie=self._auto_csrf_cookie,
+            security=self.security_policy,
+        )
         return app
 
     @property
@@ -87,12 +102,19 @@ class HedronFlask:
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("GET",)))
+        fragment_regions = options.pop("fragment_regions", None)
+        allow_undeclared_targets = bool(options.pop("allow_undeclared_targets", False))
         require_csrf = any(m.upper() not in {"GET", "HEAD", "OPTIONS", "TRACE"} for m in methods)
 
         def decorator(view: Callable[P, R]) -> Callable[P, R]:
             if self.flask is None:
                 raise RuntimeError("HedronFlask.init_app(app) must be called before page()")
-            wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
+            wrapped = wrap_hedron_view(
+                view,
+                require_csrf=require_csrf,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
             self.flask.add_url_rule(
                 rule, view_func=cast(RouteCallable, wrapped), methods=methods, **options
             )
@@ -104,12 +126,19 @@ class HedronFlask:
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("GET",)))
+        fragment_regions = options.pop("fragment_regions", None)
+        allow_undeclared_targets = bool(options.pop("allow_undeclared_targets", False))
         require_csrf = any(m.upper() not in {"GET", "HEAD", "OPTIONS", "TRACE"} for m in methods)
 
         def decorator(view: Callable[P, R]) -> Callable[P, R]:
             if self.flask is None:
                 raise RuntimeError("HedronFlask.init_app(app) must be called before component()")
-            wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
+            wrapped = wrap_hedron_view(
+                view,
+                require_csrf=require_csrf,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
             self.flask.add_url_rule(
                 rule, view_func=cast(RouteCallable, wrapped), methods=methods, **options
             )
@@ -160,6 +189,7 @@ class HedronFlask:
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
         extra_headers: Mapping[str, str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
     ):
         if self.csrf_protect and request.method.upper() in _UNSAFE_METHODS:
             validate_csrf(request, cookie_name=self.csrf_cookie_name)
@@ -171,6 +201,7 @@ class HedronFlask:
                 extra_headers=extra_headers,
                 headers_map=dict(request.headers),
                 authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
             )
         return component_response(
             value,
@@ -179,24 +210,27 @@ class HedronFlask:
             extra_headers=extra_headers,
             headers_map=dict(request.headers),
             authenticated=self.auth_signal(request).authenticated,
-            fragment_regions=None,
+            fragment_regions=fragment_regions,
         )
 
     def auth_signal(self, request: Request | None = None) -> AuthSignal:
-        del request  # Flask session is the request-local proxy.
-        user_id = flask_session.get("user_id")
-        if user_id is None:
-            user_id = flask_session.get("_user_id")
-        if user_id is None:
-            try:
-                from flask_login import current_user  # type: ignore[import-not-found]
+        del request  # Flask session / flask_login proxies are request-local.
+        user_id = None
+        try:
+            from flask_login import current_user  # type: ignore[import-not-found]
 
-                if getattr(current_user, "is_authenticated", False):
-                    user_id = getattr(current_user, "get_id", lambda: None)()
-                    if user_id is None:
-                        user_id = getattr(current_user, "id", None)
-            except Exception:
-                pass
+            if getattr(current_user, "is_authenticated", False):
+                get_id = getattr(current_user, "get_id", None)
+                if callable(get_id):
+                    user_id = get_id()
+                if user_id is None:
+                    user_id = getattr(current_user, "id", None)
+        except Exception:
+            pass
+        if user_id is None:
+            user_id = flask_session.get("user_id")
+            if user_id is None:
+                user_id = flask_session.get("_user_id")
         authenticated = bool(user_id)
         scopes_raw = flask_session.get("scopes", ())
         scopes = tuple(scopes_raw) if isinstance(scopes_raw, (list, tuple)) else ()

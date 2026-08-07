@@ -47,7 +47,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 
 ## Shipped on the 0.19 train
 
-These surfaces are implemented on the **0.19.0** train (includes the 0.9 authoring break,
+These surfaces are implemented on the **0.20.0** train (includes the 0.9 authoring break,
 0.10 live interaction, and later capability phases through 0.19).
 
 ### Application
@@ -101,7 +101,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.19)
+- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.20)
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
 - [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling Supported; SSE experimental
 
@@ -112,9 +112,9 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
   last published **v0.18.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.19.0**)
+  (introduced in 0.11; Supported on **0.20.0**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.19.0**
+  — Supported on **0.20.0**
 - Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
 - Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
   narrative [What's new in 0.16](../guides/whats-new-0.16.md); package

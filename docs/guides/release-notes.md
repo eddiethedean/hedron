@@ -1,24 +1,24 @@
 # Release notes
 
-Adopter-facing summary for the **0.19.x** train. For per-package commit detail, use the
+Adopter-facing summary for the **0.20.x** train. For per-package commit detail, use the
 [package changelog index](changelog.md) or
 [GitHub Releases](https://github.com/eddiethedean/hedron/releases).
 
-## Current train — 0.19.0 (2026-08-07)
+## Current train — 0.20.0 (2026-08-07)
 
-**Ready to cut / Implemented on `main`** (`0.19.0`; last published PyPI/git = `v0.18.0`).
-Accessibility engineering and inclusive authoring: `AccessibilityContract` catalog,
-Explorer a11y workspace, ATAG assistance, progressive enhancement / landmarks / Page
-scripts, `AccessibilityScenario` / axe SARIF, automated AT matrix (`AT-019`; human AT →
-0.21 per D-050).
+**Ready to cut / Implemented on `main`** (`0.20.0`; last published PyPI/git = `v0.18.0`).
+Production security floor and adapter parity: HTMX browser presets, Python `js:` reject,
+mount-path helpers, production startup gates, Flask/Django fragment regions / CSP headers /
+Flask-Login AuthSignal, `hedron new --flask/--django`, adapter wheel smoke (D-051).
+CSRF composition → 0.22; human AT → 0.21.
 
-Narrative deep-dive: [What's new in 0.19](whats-new-0.19.md) · maturity:
+Narrative deep-dive: [What's new in 0.20](whats-new-0.20.md) · maturity:
 [What's ready today](whats-ready.md).
 
 ```bash
-pip install -U "hedron>=0.19.0,<0.20"
+pip install -U "hedron>=0.20.0,<0.21"
 # or
-uv add "hedron>=0.19.0,<0.20"
+uv add "hedron>=0.20.0,<0.21"
 ```
 
 Optional: `pip install "hedron[gradio]>=0.1.0,<0.2"` · `"hedron[notebook]>=0.1.0,<0.2"` · `"hedron[mcp]>=0.1.0,<0.2"`.

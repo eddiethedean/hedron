@@ -30,5 +30,5 @@ workflows, and optional Gradio interop. See
 
 ## Upgrade notes
 
-Pin `hedron>=0.19.0,<0.20`. Install `hedron[gradio]` only when needed.
+Pin `hedron>=0.20.0,<0.21`. Install `hedron[gradio]` only when needed.
 See [Gradio migration](gradio-migration.md).

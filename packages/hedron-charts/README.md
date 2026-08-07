@@ -1,25 +1,89 @@
 # hedron-charts
 
-Visualization adapters and chart components for Hedron: beginner `LineChart`,
-Matplotlib static SVG/PNG, Plotly interactive JSON, and Altair/Vega-Lite
-specifications.
+[![PyPI](https://img.shields.io/pypi/v/hedron-charts.svg)](https://pypi.org/project/hedron-charts/)
+[![Python](https://img.shields.io/pypi/pyversions/hedron-charts.svg)](https://pypi.org/project/hedron-charts/)
+[![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-**Maturity:** Alpha (`0.1.x`) — versions independently of the Beta train; pin versions and expect
-churn. Interactive Plotly/Vega **full browser runtimes** remain **experimental**:
-Hedron ships host shims that fail closed when `window.Plotly` / `window.vegaEmbed`
-are missing. Applications may supply pinned local runtimes; first-party offline
+Visualization adapters and chart components for Hedron.
+
+Beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart`, Matplotlib static
+SVG/PNG, Plotly interactive JSON, and Altair/Vega-Lite specifications. Versions
+independently of the Beta train. Install as `hedron-charts` or via `hedron[charts]`.
+
+**Package maturity:** Alpha (`0.1.x`) · pin `>=0.1.0,<0.2` and expect churn
+
+Interactive Plotly/Vega **full browser runtimes** remain **experimental**: Hedron
+ships host shims that fail closed when `window.Plotly` / `window.vegaEmbed` are
+missing. Applications may supply pinned local runtimes; first-party offline
 runtime fingerprinting is not Supported yet.
 
+## Install
+
 ```bash
-pip install "hedron-charts>=0.1.0,<0.2"   # tip: 0.1.5 on the Alpha line
-# Optional backends:
-pip install "hedron-charts[matplotlib]>=0.1.0,<0.2"
-pip install "hedron-charts[plotly]>=0.1.0,<0.2"
-pip install "hedron-charts[altair]>=0.1.0,<0.2"
-# Or via the flagship extra:
+pip install "hedron-charts>=0.1.0,<0.2"
+# or
+uv add "hedron-charts>=0.1.0,<0.2"
+# via flagship:
 pip install "hedron[charts]>=0.1.0,<0.2"
 ```
 
-Requires `hedron-core`. See
-[charts and HTMX](https://hedron.readthedocs.io/en/latest/guides/charts-and-htmx/)
-and [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
+Requires Python 3.11–3.14 and `hedron-core`. Tip on the Alpha line: **0.1.5**.
+
+### Optional backends
+
+| Extra | Backend |
+|---|---|
+| `matplotlib` | Matplotlib static SVG/PNG |
+| `plotly` | Plotly figure JSON |
+| `altair` | Altair / Vega-Lite (+ vl-convert) |
+| `pydeck` / `folium` | Map layers |
+| `graphviz` / `networkx` | Graph layouts |
+| `bokeh` / `holoviews` / `pygal` / `datashader` / `great_tables` | Additional adapters |
+| `all` | Union of the above |
+
+```bash
+pip install "hedron-charts[matplotlib]>=0.1.0,<0.2"
+pip install "hedron-charts[plotly]>=0.1.0,<0.2"
+pip install "hedron-charts[altair]>=0.1.0,<0.2"
+```
+
+## Quick start
+
+```python
+from hedron_charts import LineChart
+
+chart = LineChart(
+    [{"month": "Jan", "revenue": 10}, {"month": "Feb", "revenue": 14}],
+    x="month",
+    y="revenue",
+    title="Monthly revenue",
+    description="Revenue increased during the period.",
+)
+```
+
+`LineChart` falls back to SVG without Matplotlib. For an explicit Matplotlib figure:
+
+```python
+import matplotlib.pyplot as plt
+from hedron_charts import MatplotlibChart
+
+fig, ax = plt.subplots()
+ax.plot([1, 2, 3], [1, 4, 9])
+chart = MatplotlibChart(fig, alt="y = x squared", description="Quadratic growth")
+```
+
+## Links
+
+- [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-charts/)
+- [Charts and HTMX](https://hedron.readthedocs.io/en/latest/guides/charts-and-htmx/)
+- [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
+- [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-charts/CHANGELOG.md)
+- [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-charts)
+- [Issues](https://github.com/eddiethedean/hedron/issues)
+- [`hedron-core`](https://pypi.org/project/hedron-core/) ·
+  [`hedron`](https://pypi.org/project/hedron/)
+
+## License
+
+MIT. See [LICENSE](LICENSE).

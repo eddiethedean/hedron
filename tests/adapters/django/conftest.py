@@ -23,9 +23,11 @@ def _configure_django() -> None:
             "django.middleware.common.CommonMiddleware",
             "django.middleware.csrf.CsrfViewMiddleware",
             "django.contrib.auth.middleware.AuthenticationMiddleware",
+            "hedron_django.middleware.HedronSecurityHeadersMiddleware",
         ],
         # Accept Hedron portable X-CSRF-Token (matches reference app).
         CSRF_HEADER_NAME="HTTP_X_CSRF_TOKEN",
+        HEDRON_SECURITY_PROFILE="standard",
         INSTALLED_APPS=[
             "django.contrib.contenttypes",
             "django.contrib.auth",

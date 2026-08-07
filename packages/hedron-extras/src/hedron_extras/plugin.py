@@ -37,9 +37,9 @@ _ROOT = Path(__file__).resolve().parent
 
 PLUGIN_META = PluginMeta(
     name="hedron_extras",
-    version="0.19.0",
+    version="0.20.0",
     distribution="hedron-extras",
-    hedron_version=">=0.19,<0.20",
+    hedron_version=">=0.20,<0.21",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,

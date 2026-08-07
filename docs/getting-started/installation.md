@@ -44,8 +44,8 @@ After following [Build your first app](quickstart.md):
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.19.0`** (or a newer `0.19.x` patch) on this train / `main`. Last published
-PyPI/git is **`v0.18.0`** until `v0.19.0` is cut. Pin with `hedron>=0.19.0,<0.20` for
+Expect **`0.20.0`** (or a newer `0.20.x` patch) on this train / `main`. Last published
+PyPI/git is **`v0.18.0`** until `v0.20.0` is cut. Pin with `hedron>=0.20.0,<0.21` for
 production.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
@@ -55,11 +55,11 @@ If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 
 | Symptom | Fix |
 |---|---|
-| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.19.0,<0.20" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
+| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.20.0,<0.21" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
 | `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
 | FastAPI / pip resolver conflict | Empty venv recommended; see [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
-| Wrong / old version | `pip install -U "hedron>=0.19.0,<0.20"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
+| Wrong / old version | `pip install -U "hedron>=0.20.0,<0.21"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable / charts | Install extras — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
 | Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
@@ -80,23 +80,28 @@ Full list: [Troubleshooting](../guides/troubleshooting.md) ·
 
 Install extras only when you need them:
 
-| Extra | When you need it |
-|---|---|
-| `hedron[data]` | DataTable / DataEditor / data sources |
-| `hedron[charts]` | LineChart and visualization adapters |
-| `hedron[jinja]` | Optional HDJ (`.hdj`) templates |
-| `hedron[dev]` | Component Explorer (`/hedron-explorer/`) |
-| `hedron[conformance]` | Language-neutral conformance kit / CLI runner |
-| `hedron[native]` | Optional Rust HTML-escape acceleration (`hedron-native`) |
-| `hedron[extras]` | Curated extras / workbenches |
-| `hedron[notebook]` | Alpha server-side notebook preview |
-| `hedron[mcp]` | Alpha deny-by-default MCP projection |
-| `hedron[gradio]` | Alpha Gradio client interop (experimental) |
-| `hedron[otel]` | Optional OpenTelemetry tracing helpers |
-| `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` / `[auth]` / `[browser]` | Content, Authlib, or test helpers |
+| Extra | When you need it | Package docs |
+|---|---|---|
+| `hedron[data]` | DataTable / DataEditor / data sources | [hedron-data](../packages/hedron-data.md) |
+| `hedron[charts]` | LineChart and visualization adapters (Alpha) | [hedron-charts](../packages/hedron-charts.md) |
+| `hedron[jinja]` | Optional HDJ (`.hdj`) templates | [hedron-jinja](../packages/hedron-jinja.md) |
+| `hedron[dev]` | Component Explorer (`/hedron-explorer/`) | [hedron-explorer](../packages/hedron-explorer.md) |
+| `hedron[conformance]` | Language-neutral conformance kit / CLI runner | [hedron-conformance](../packages/hedron-conformance.md) |
+| `hedron[native]` | Optional Rust HTML-escape acceleration (Alpha) | [hedron-native](../packages/hedron-native.md) |
+| `hedron[extras]` | Curated extras / workbenches | [hedron-extras](../packages/hedron-extras.md) |
+| `hedron[notebook]` | Alpha server-side notebook preview | [hedron-notebook](../packages/hedron-notebook.md) |
+| `hedron[mcp]` | Alpha deny-by-default MCP projection | [hedron-mcp](../packages/hedron-mcp.md) |
+| `hedron[gradio]` | Alpha Gradio client interop (experimental) | [hedron-gradio](../packages/hedron-gradio.md) |
+| `hedron[otel]` | Optional OpenTelemetry tracing helpers | — |
+| `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` / `[auth]` / `[browser]` | Content, Authlib, or test helpers | — |
+
+Also install directly (no flagship extra):
+[hedron-sample-kit](../packages/hedron-sample-kit.md) ·
+[hedron-sim](../packages/hedron-sim.md).
+Full catalog: [Optional packages](../packages/index.md).
 
 ```bash
-pip install "hedron[data]>=0.19.0,<0.20"          # example
+pip install "hedron[data]>=0.20.0,<0.21"          # example
 pip install "hedron[charts]>=0.1.0,<0.2"         # Alpha — pin and expect churn
 pip install "hedron-charts[plotly]>=0.1.0,<0.2"  # chart backend after charts extra (tip: 0.1.5)
 ```
@@ -126,7 +131,7 @@ Use this only if you are **not** using `hedron new`.
     ```bash
     uv init my-hedron-app
     cd my-hedron-app
-    uv add "hedron>=0.19.0,<0.20" "uvicorn[standard]"
+    uv add "hedron>=0.20.0,<0.21" "uvicorn[standard]"
     ```
 
 === "pip (macOS/Linux)"
@@ -135,7 +140,7 @@ Use this only if you are **not** using `hedron new`.
     mkdir my-hedron-app && cd my-hedron-app
     python -m venv .venv
     source .venv/bin/activate
-    python -m pip install "hedron>=0.19.0,<0.20" "uvicorn[standard]"
+    python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
     ```
 
 === "pip (Windows PowerShell)"
@@ -144,7 +149,7 @@ Use this only if you are **not** using `hedron new`.
     mkdir my-hedron-app; cd my-hedron-app
     python -m venv .venv
     .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=0.19.0,<0.20" "uvicorn[standard]"
+    python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
     ```
 
 Then create `app.py` from the [quickstart](quickstart.md) (manual / no-scaffold path).

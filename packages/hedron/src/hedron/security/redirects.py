@@ -19,6 +19,7 @@ def redirect_local(
     *,
     status_code: int = 303,
     policy: SecurityPolicy | None = None,
+    mount: str | None = None,
 ) -> Response:
     del policy  # reserved for future host allowlists
     if not is_local_path(url):
@@ -26,7 +27,12 @@ def redirect_local(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="External redirect rejected; use redirect_external explicitly",
         )
-    return RedirectResponse(url=url, status_code=status_code)
+    target = url
+    if mount is not None:
+        from hedron.mount import prefix_local_path
+
+        target = prefix_local_path(url, mount)
+    return RedirectResponse(url=target, status_code=status_code)
 
 
 def redirect_external(

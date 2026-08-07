@@ -1,16 +1,17 @@
 # Django — greenfield or existing project
 
 Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
-The adapter does not install FastAPI. Hedron does **not** ship `hedron new --django` yet.
+The adapter does not install FastAPI. Prefer `hedron new my-app --django` for a secure
+scaffold (page + fragment regions + security headers middleware).
 
-Flask/Django page + fragment routing and HTMX are **Supported** on **0.19.0**. Django
+Flask/Django page + fragment routing and HTMX are **Supported**. Django
 forms bridge and bounded QuerySet DataSource are Supported. Use polling for
 job status on Django (SSE helpers stay FastAPI-flagship).
 
 !!! tip "Try without local setup"
 
     Open the monorepo in [Codespaces / Dev Container](../examples/try-it.md), then run the
-    Django reference slice below. There is no `hedron new --django` yet.
+    Django reference slice below, or scaffold with `hedron new my-app --django`.
 
 ## Fastest path: clone the reference
 
@@ -33,7 +34,7 @@ This reference is manage-less (home + fragment). For a greenfield Django project
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "django>=5.2,<6" "hedron-django>=0.19.0,<0.20"
+python -m pip install "django>=5.2,<6" "hedron-django>=0.20.0,<0.21"
 django-admin startproject mysite .
 python manage.py startapp demo
 ```
@@ -89,8 +90,8 @@ Open `http://127.0.0.1:8000/`.
 ## Fastest path: existing Django project (PyPI)
 
 ```bash
-pip install "hedron-django>=0.19.0,<0.20" "django>=5.2,<6"
-# or: uv add "hedron-django>=0.19.0,<0.20" "django>=5.2,<6"
+pip install "hedron-django>=0.20.0,<0.21" "django>=5.2,<6"
+# or: uv add "hedron-django>=0.20.0,<0.21" "django>=5.2,<6"
 ```
 
 Assume you already have a Django project with `SessionMiddleware` and

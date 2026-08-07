@@ -1,12 +1,12 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.19.0** (Ready to cut on `main`; last published
-PyPI/git = `v0.18.0` until `v0.19.0` is tagged). Other evaluator pages link here —
+**Canonical maturity snapshot for Hedron 0.20.0** (Ready to cut on `main`; last published
+PyPI/git = `v0.18.0` until `v0.20.0` is tagged). Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-**Ship today** (pin `hedron>=0.19.0,<0.20` after cut, or install from `main` now): typed pages,
+**Ship today** (pin `hedron>=0.20.0,<0.21` after cut, or install from `main` now): typed pages,
 HTMX fragments, CSRF (`standard` / `strict`), Flask/Django adapters, polling job status,
 accessibility contracts / PE forms (0.19).
 
@@ -38,7 +38,7 @@ Maturity vocabulary:
 <details markdown>
 <summary>How to read labels on this page</summary>
 
-Hedron **0.19.0** packages are **Beta** maturity (API `beta` unless noted in
+Hedron **0.20.0** packages are **Beta** maturity (API `beta` unless noted in
 [STABILITY.md](../api/STABILITY.md)). Expect occasional breaking changes on
 `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
@@ -77,7 +77,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `>=0.19.0,<0.20` after `v0.19.0` is
+    Flagship packages are **Beta** maturity — pin `>=0.20.0,<0.21` after `v0.20.0` is
     tagged (or install from `main` now). The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
@@ -182,7 +182,7 @@ Maintainer gate IDs and RFC evidence:
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.19.0,<0.20" hedron new my-app
+    uvx --from "hedron>=0.20.0,<0.21" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -190,17 +190,17 @@ Maintainer gate IDs and RFC evidence:
 === "pip"
 
     ```bash
-    pip install "hedron>=0.19.0,<0.20" "uvicorn[standard]"
+    pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Until `v0.19.0` is tagged, PyPI still serves **`v0.18.0`** — install from `main` for
-Ready-to-cut `0.19.0`, or wait for the cut and use the pin above.
+Until `v0.20.0` is tagged, PyPI still serves **`v0.18.0`** — install from `main` for
+Ready-to-cut `0.20.0`, or wait for the cut and use the pin above.
 
-Extras: `"hedron[data]>=0.19.0,<0.20"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
-`"hedron[extras]>=0.19.0,<0.20"`, `"hedron[jinja]>=0.19.0,<0.20"`, `"hedron[dev]>=0.19.0,<0.20"`,
+Extras: `"hedron[data]>=0.20.0,<0.21"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
+`"hedron[extras]>=0.20.0,<0.21"`, `"hedron[jinja]>=0.20.0,<0.21"`, `"hedron[dev]>=0.20.0,<0.21"`,
 `"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),
 `"hedron[gradio]>=0.1.0,<0.2"` (Alpha).
 

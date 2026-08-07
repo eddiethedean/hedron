@@ -18,6 +18,9 @@ Edit STATUS/ROADMAP under `docs/`, then run `uv run python scripts/sync_status_r
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync
+# Same suites as GitHub Actions (preferred):
+bash scripts/ci_checks.sh test --python 3.12
+# Or individual tools:
 uv run ruff format --check packages tests examples
 uv run ruff check packages tests examples
 uv run pyright
@@ -27,10 +30,10 @@ uv run pytest -q
 Docs preview: `uv sync --group docs && uv run --group docs mkdocs serve`
 (or `./scripts/mkdocs.sh serve`). Strict builds: `uv run --group docs mkdocs build --strict`.
 
-CI runs `test`, `quality`, **browser** (Chromium on PRs), and **evidence** on every
-pull request — see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md). Local Playwright is
-optional for docs-only work. Adapter packages (`hedron-flask`, `hedron-django`) are part of
-the workspace sync.
+CI (`ci.yml`) and release (`release.yml`) both run suites from `scripts/ci_checks.sh`
+(`test`, `quality`, `browser`, `evidence`) — see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+Local Playwright is optional for docs-only work. Adapter packages (`hedron-flask`,
+`hedron-django`) are part of the workspace sync.
 
 Smoke the core renderer without the FastAPI flagship:
 

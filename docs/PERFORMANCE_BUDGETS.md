@@ -1,6 +1,6 @@
 # Performance budgets
 
-**Status:** Ready to cut on the **0.19** train (budgets introduced in phase 0.8; still
+**Status:** Ready to cut on the **0.20** train (budgets introduced in phase 0.8; still
 enforced; last published PyPI/git = `v0.18.0`)  
 **Evidence:** `PERF-08-001`, `PERF-08-002`, `tests/performance/`
 

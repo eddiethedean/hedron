@@ -49,7 +49,11 @@ def convert_view_result(
     if isinstance(value, Response):
         return value
     if isinstance(value, InteractionResult):
-        return interaction_response(value, authenticated=authenticated)
+        return interaction_response(
+            value,
+            authenticated=authenticated,
+            fragment_regions=fragment_regions,
+        )
     if isinstance(value, RenderResult):
         return component_response(
             value,
@@ -232,17 +236,51 @@ def attach_hedron_to_flask(
     extension: object,
     *,
     auto_csrf_cookie: bool = True,
+    security: object | None = None,
 ) -> None:
-    """Store extension state and optionally seed CSRF cookies on safe responses."""
+    """Store extension state and apply security headers (and optional CSRF cookies)."""
+
+    import contextlib
+
+    from hedron_core.adapter import AuthSignal
+    from hedron_core.security_policy import SecurityPolicy
+
+    policy = (
+        SecurityPolicy.from_name(security)  # type: ignore[arg-type]
+        if security is not None
+        else getattr(extension, "security_policy", None)
+    )
+    if policy is None:
+        policy = SecurityPolicy.from_name("standard")
+    if not isinstance(policy, SecurityPolicy):
+        policy = SecurityPolicy.from_name(policy)
+    with contextlib.suppress(Exception):
+        extension.security_policy = policy  # type: ignore[attr-defined]
 
     app.extensions["hedron"] = extension
     app.auth_signal = extension.auth_signal  # type: ignore[attr-defined]
-    if not auto_csrf_cookie:
-        return
 
     @app.after_request
-    def _attach_csrf(response: Response) -> Response:  # type: ignore[no-untyped-def]
-        if request.method in {"GET", "HEAD"}:
+    def _hedron_after_request(response: Response) -> Response:  # type: ignore[no-untyped-def]
+        authenticated = False
+        auth_fn = getattr(extension, "auth_signal", None)
+        if callable(auth_fn):
+            try:
+                signal = auth_fn(request)
+                if isinstance(signal, AuthSignal):
+                    authenticated = bool(signal.authenticated)
+                else:
+                    authenticated = bool(getattr(signal, "authenticated", False))
+            except Exception:
+                authenticated = False
+        for key, value in policy.response_headers(authenticated=authenticated).items():
+            # Authenticated responses must not remain publicly cacheable even if the
+            # app already set a weaker Cache-Control.
+            if (authenticated and key in {"Cache-Control", "Pragma"}) or (
+                key not in response.headers
+            ):
+                response.headers[key] = value
+        if auto_csrf_cookie and request.method in {"GET", "HEAD"}:
             from hedron_flask.csrf import (
                 csrf_cookie_should_be_secure,
                 csrf_token_for_request,

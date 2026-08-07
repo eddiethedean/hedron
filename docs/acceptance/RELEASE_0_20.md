@@ -33,31 +33,32 @@ is owned by **0.22**, not this checklist.
 
 ## HTMX browser + attribute floor
 
-- [ ] Documented `standard` / `strict` HTMX browser preset with inspectable opt-out. *(`HTMX-020`)*
-- [ ] Reject `hx-vals` / `hx-headers` `js:` on Python `html.*` (HDJ parity). *(`EVAL-020`)*
+- [x] Documented `standard` / `strict` HTMX browser preset with inspectable opt-out. *(`HTMX-020`)*
+- [x] Reject `hx-vals` / `hx-headers` `js:` on Python `html.*` (HDJ parity). *(`EVAL-020`)*
 
 ## Production and deployment fail-closed
 
-- [ ] Trusted mount-path / cookie `Path=auto` / redirect prefix helpers. *(`MOUNT-020`)*
-- [ ] Fail-closed production startup gates under `HEDRON_ENV=production`. *(`PROD-020`)*
+- [x] Trusted mount-path / cookie `Path=auto` / redirect prefix helpers. *(`MOUNT-020`)*
+- [x] Fail-closed production startup gates under `HEDRON_ENV=production`. *(`PROD-020`)*
 
 ## Adapter parity
 
-- [ ] Flask/Django `fragment_regions` + starters/examples truth. *(`REGION-020`)*
-- [ ] Profile security headers applied on Flask/Django without FastAPI imports. *(`CSP-020`)*
-- [ ] Flask-Login `AuthSignal` bridge verified and documented. *(`AUTH-020`)*
+- [x] Flask/Django `fragment_regions` + starters/examples truth. *(`REGION-020`)*
+- [x] Profile security headers applied on Flask/Django without FastAPI imports. *(`CSP-020`)*
+- [x] Flask-Login `AuthSignal` bridge verified and documented. *(`AUTH-020`)*
 
 ## Adapter DX and CI
 
-- [ ] `hedron new --flask` / `--django` secure scaffolds. *(`SCAFFOLD-020`)*
-- [ ] CI clean-wheel smoke for `hedron_flask` / `hedron_django`. *(`WHEEL-020`)*
+- [x] `hedron new --flask` / `--django` secure scaffolds. *(`SCAFFOLD-020`)*
+- [x] CI clean-wheel smoke for `hedron_flask` / `hedron_django`. *(`WHEEL-020`)*
 
 ## Packaging
 
-- [ ] Coordinated package verify (`scripts/verify_pkg_20.py` when implemented). *(`PKG-020`)*
+- [x] Coordinated package verify (`scripts/verify_pkg_20.py`). *(`PKG-020`)*
 
 ## Exit
 
-- [ ] Full regression suite. *(`REGRESS-020`)*
+- [x] Full regression suite. *(`REGRESS-020`)*
 
-**Exit not met** — phase **Planned**; every 0.20 gate row must be Verified before `v0.20.0` cut.
+**Exit met** — coordinated `0.20.0` (**Ready to cut / Implemented on `main`**; last published
+PyPI/git = `v0.18.0`); every 0.20 gate row Verified.

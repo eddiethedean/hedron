@@ -68,6 +68,17 @@ def register_checks() -> None:
                     id="hedron.W002",
                 )
             )
+        security_mw = "hedron_django.middleware.HedronSecurityHeadersMiddleware"
+        if security_mw not in middleware:
+            messages.append(
+                Warning(
+                    "HedronSecurityHeadersMiddleware is not installed; "
+                    "CSP / X-Frame-Options from HEDRON_SECURITY_PROFILE will not apply.",
+                    hint=f"Add {security_mw!r} to MIDDLEWARE "
+                    f"(and optionally set HEDRON_SECURITY_PROFILE).",
+                    id="hedron.W003",
+                )
+            )
         return messages
 
     @register()  # type: ignore[misc,untyped-decorator]

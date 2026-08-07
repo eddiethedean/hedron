@@ -16,6 +16,7 @@ from hedron_core._html_meta import (
 from hedron_core._nodes import ElementNode, Node, TrustedHtmlNode
 from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
+from hedron_core.htmx_eval import reject_hx_eval_value
 from hedron_core.security import SafeUrl, TrustedHtml, UrlPurpose, check_url_purpose_for_attribute
 from hedron_core.typing_aliases import HtmlAttrValue
 
@@ -131,6 +132,7 @@ def _normalize_attrs(attrs: dict[str, HtmlAttrValue], *, tag: str) -> dict[str, 
                 explanation=f"Attribute {name!r} is not in the allowlist.",
                 remediation="Use documented attributes, data={...}, or aria={...}.",
             )
+        reject_hx_eval_value(lower, value)
         if lower in URL_ATTRS or lower.endswith("href") or lower.endswith("src"):
             if lower == "srcset":
                 out[lower] = _normalize_srcset(value)

@@ -1,6 +1,6 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.19.0** train on `main` (Ready to cut; last published
+**Status:** Accepted for the **0.20.0** train on `main` (Ready to cut; last published
 PyPI/git = `v0.18.0`)
 **Reviewed:** 2026-08-07
 
@@ -21,10 +21,10 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`)
-stay on the `0.19.x` train (Ready to cut on `main` as `0.19.0`; last published
+stay on the `0.20.x` train (Ready to cut on `main` as `0.20.0`; last published
 `v0.18.0`). Alpha packages `hedron-charts`, `hedron-gradio`,
 `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, and `hedron-mcp`
-version independently (`0.1.x`) and declare `hedron-core>=0.19.0,<0.20`.
+version independently (`0.1.x`) and declare `hedron-core>=0.20.0,<0.21`.
 
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
 acceleration is present or absent (D-001 / D-048).
@@ -45,7 +45,7 @@ when evaluating a new install. Maturity Supported vs Experimental claims:
 
     Phase 0.7–0.10 baselines below describe what each phase **introduced**. They are not
     the current maturity SSOT. Live transports introduced in 0.10 are **experimental**
-    on the 0.19 train.
+    on the 0.20 train.
 
 ## Dependency pin conflicts
 
@@ -230,7 +230,7 @@ CPython default builds are normative. Free-threaded CPython and PyPy are informa
 
 ## Release evidence
 
-Compatibility claims for the **0.19.0** train require clean-install, package, FastAPI
+Compatibility claims for the **0.20.0** train require clean-install, package, FastAPI
 adapter, OpenAPI, security corpus, reference-application, and owning-phase live-transport
 suites. Changing a Supported row requires compatibility evidence and an updated decision
 or RFC.

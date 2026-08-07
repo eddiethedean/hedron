@@ -14,6 +14,7 @@ SQLite).
 6. [Learning path](learning-path.md) — continue toward data, auth, and deploy
 
 Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
+Optional packages (data, charts, Explorer, …): [Package catalog](../packages/index.md).
 
 Evaluating production use later? [What’s ready](../guides/whats-ready.md) ·
 [Why Hedron](../guides/why-hedron.md) · [Evaluate Hedron](../guides/evaluate.md).

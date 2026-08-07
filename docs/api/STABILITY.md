@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.19.0,<0.20`. Treat the small **stable** table below as
+**For adopters:** Pin `hedron>=0.20.0,<0.21`. Treat the small **stable** table below as
 the compatibility promise; everything else is `beta` / `experimental` and may change on
 `0.x`. Capability readiness (Supported vs Experimental) lives on
 [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -8,14 +8,14 @@ the compatibility promise; everything else is `beta` / `experimental` and may ch
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Phase 0.19 accessibility engineering (**Ready to cut / Implemented on `main`**
-as `0.19.0`; last published PyPI/git = `v0.18.0`).
+**Status:** Phase 0.20 production security floor (**Ready to cut / Implemented on `main`**
+as `0.20.0`; last published PyPI/git = `v0.18.0`).
 A **minimal `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled).
-**Version:** `0.19.0` / catalog baseline
-`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`
+**Version:** `0.20.0` / catalog baseline
+`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`0.19.0` train on `main`. Levels apply to documented contracts; symbols not listed here are
+`0.20.0` train on `main`. Levels apply to documented contracts; symbols not listed here are
 **internal** unless a later phase explicitly promotes them.
 
 </details>

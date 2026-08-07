@@ -1,39 +1,45 @@
 # Flask — greenfield or existing app
 
-Use `hedron-flask` when your app is Flask-native. Hedron does **not** ship
-`hedron new --flask` yet — create the Flask app yourself (or extend an existing one).
-The adapter renders the same `hedron-core` components and `InteractionResult` values as
-the FastAPI flagship—without installing FastAPI.
+Use `hedron-flask` when your app is Flask-native. Prefer
+`hedron new my-app --flask` for a secure scaffold (page + fragment regions, no FastAPI),
+or create/extend a Flask app yourself. The adapter renders the same `hedron-core`
+components and `InteractionResult` values as the FastAPI flagship—without installing FastAPI.
 
-Flask/Django page + fragment routing and HTMX are Supported on **0.19.0**. Prefer
+Flask/Django page + fragment routing and HTMX are Supported. Prefer
 `init_app` + `HedronBlueprint` for application factories; the constructor form remains
 supported. Use polling for job status on Flask (SSE helpers stay FastAPI-flagship).
 
 !!! tip "Try without local setup"
 
     Open the monorepo in [Codespaces / Dev Container](../examples/try-it.md), then run the
-    Flask reference slice from `examples/flask-reference/README.md`. There is no
-    `hedron new --flask` yet — greenfield steps below create the app yourself.
+    Flask reference slice from `examples/flask-reference/README.md`, or scaffold with
+    `hedron new my-app --flask`.
 
 ## Greenfield (empty folder → hello)
 
 ```bash
+# Scaffold (recommended)
+uvx --from "hedron>=0.20.0,<0.21" hedron new my-flask-app --flask
+cd my-flask-app && uv sync && uv run flask --app app run
+
+# Or install the adapter only:
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron-flask>=0.19.0,<0.20"
-# or: uv init my-flask-app && cd my-flask-app && uv add "hedron-flask>=0.19.0,<0.20"
+python -m pip install "hedron-flask>=0.20.0,<0.21"
 ```
 
-Save as `app.py` (application factory):
+Save as `app.py` (application factory) if you are not using the scaffold:
 
 ```python
 from flask import Flask
 
 from hedron_core import Heading, Page, Text
-from hedron_core.interaction import InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_flask import HedronBlueprint, HedronFlask
 
 hedron = HedronFlask()
 ui = HedronBlueprint("ui", __name__)
+
+PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
 @ui.page("/")
@@ -41,7 +47,7 @@ def home():
     return Page(Heading("Hello Flask", level=1), Text("Typed components on Flask."), title="Home")
 
 
-@ui.component("/fragment")
+@ui.component("/fragment", fragment_regions=(PANEL,))
 def fragment():
     return InteractionResult(content=Text("Fragment ok"), explanation="demo")
 

@@ -169,7 +169,7 @@ def render_component_response(
     if request is not None:
         html_text = _inject_build_assets(html_text, selected_mode, request, result)
     else:
-        html_text = _ensure_htmx_asset(html_text, selected_mode)
+        html_text = _ensure_htmx_asset(html_text, selected_mode, policy=policy)
     return response_cls(
         content=html_text,
         status_code=status_code,
@@ -214,7 +214,10 @@ def _inject_build_assets(
 ) -> str:
     import html as html_lib
 
-    html_text = _ensure_htmx_asset(html_text, mode)
+    policy = getattr(request.app.state, "hedron_security", None)
+    if not isinstance(policy, SecurityPolicy):
+        policy = SecurityPolicy.from_name("standard")
+    html_text = _ensure_htmx_asset(html_text, mode, policy=policy)
     if mode is not RenderMode.PAGE:
         return html_text
     tags: list[str] = []
@@ -260,26 +263,23 @@ def _inject_build_assets(
     return html_text + injection
 
 
-def _ensure_htmx_asset(html_text: str, mode: RenderMode) -> str:
-    """Inject the bundled HTMX runtime and Hedron's secure v2 defaults."""
+def _ensure_htmx_asset(
+    html_text: str,
+    mode: RenderMode,
+    *,
+    policy: SecurityPolicy | None = None,
+) -> str:
+    """Inject the bundled HTMX runtime and profile-driven secure v2 defaults."""
     if mode is not RenderMode.PAGE:
         return html_text
-    config = (
-        '<meta name="htmx-config" '
-        "content='{"
-        '"allowEval":false,'
-        '"allowScriptTags":false,'
-        '"historyRestoreAsHxRequest":false,'
-        '"includeIndicatorStyles":false,'
-        '"reportValidityOfForms":true,'
-        '"selfRequestsOnly":true'
-        "}'>"
-    )
-    if 'name="htmx-config"' not in html_text and "name='htmx-config'" not in html_text:
-        if "</head>" in html_text:
-            html_text = html_text.replace("</head>", f"{config}</head>", 1)
-        else:
-            html_text = config + html_text
+    sec = policy or SecurityPolicy.from_name("standard")
+    if sec.htmx_browser_preset:
+        config = f"<meta name=\"htmx-config\" content='{sec.htmx_config_json()}'>"
+        if 'name="htmx-config"' not in html_text and "name='htmx-config'" not in html_text:
+            if "</head>" in html_text:
+                html_text = html_text.replace("</head>", f"{config}</head>", 1)
+            else:
+                html_text = config + html_text
     tag = '<script src="/hedron-static/htmx.min.js" defer></script>'
     if "htmx.min.js" in html_text:
         return html_text

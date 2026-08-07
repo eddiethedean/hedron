@@ -23,6 +23,10 @@
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync
+# Preferred: same suites as GitHub Actions (scripts/ci_checks.sh)
+bash scripts/ci_checks.sh test --python 3.12
+bash scripts/ci_checks.sh quality --python 3.12
+# Or the individual tools:
 uv run ruff format --check packages tests examples
 uv run ruff check packages tests examples
 uv run pyright
@@ -37,6 +41,8 @@ uv run --group docs mkdocs build --strict
 # or preview: uv run --group docs mkdocs serve
 # or: ./scripts/mkdocs.sh serve
 python scripts/check_docs_train_ssot.py
+# quality suite also covers docs checks after `uv sync --all-groups`:
+# bash scripts/ci_checks.sh quality --python 3.12
 ```
 
 You do **not** need Playwright or the full pytest suite locally for markdown/typo PRs.
@@ -101,15 +107,21 @@ Issue labels and bite-sized tasks vary; prefer small PRs over RFC-scale first pa
 3. Open a PR against `main`. Draft PRs are fine while CI is red; mark ready when green.
 4. Expect the CI jobs below. Fix failures before asking for review.
 
-### CI map (`.github/workflows/ci.yml`)
+### CI map (`.github/workflows/ci.yml` + `release.yml`)
 
-| Job | What it runs | On pull requests? |
+Check **commands** live in [`scripts/ci_checks.sh`](https://github.com/eddiethedean/hedron/blob/main/scripts/ci_checks.sh).
+Both commit CI and release CI call the same suites after checkout / sync / tool setup.
+
+| Job | Suite (`ci_checks.sh …`) | On pull requests? |
 |---|---|---|
-| `test` | `pytest` on Python 3.11–3.14 | **Yes** (every PR) |
-| `quality` | ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, relative doc links, `mkdocs build --strict` | **Yes** (every PR) |
-| `browser` | Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` | **Yes** (every PR; Chromium) |
-| `evidence` | Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_19.py` | **Yes** (every PR / push) |
-| `release` | Packaging rehearsal (`verify_pkg_19`) | After `evidence` succeeds |
+| `test` | `test` — `pytest` on Python 3.11–3.14 | **Yes** (every PR) |
+| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, relative doc links, `mkdocs build --strict` | **Yes** (every PR) |
+| `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | **Yes** (every PR; Chromium) |
+| `evidence` | `evidence` — Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_20.py` | **Yes** (every PR / push); also on release |
+| `release` (commit CI) | `packaging` — Packaging rehearsal (`verify_pkg_20`) | After `evidence` succeeds |
+
+Release workflow (`release.yml`) runs the same `test` / `quality` / `browser` / `evidence`
+suites before `publish` (tag pushes only).
 
 Local Playwright is still optional for docs-only work; CI browser/evidence are not optional
 gates today (no path filters).

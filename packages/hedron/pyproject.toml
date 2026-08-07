@@ -1,6 +1,6 @@
 [project]
 name = "hedron"
-version = "0.19.0"
+version = "0.20.0"
 description = "FastAPI-native typed component framework for HTML and HTMX"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -37,7 +37,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.19.0,<0.20",
+    "hedron-core>=0.20.0,<0.21",
     "pydantic>=2.13.4,<2.15",
     "fastapi>=0.141.1,<0.150",
     "itsdangerous>=2.2",
@@ -47,10 +47,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "hedron-explorer>=0.19.0,<0.20",
+    "hedron-explorer>=0.20.0,<0.21",
 ]
 data = [
-    "hedron-data>=0.19.0,<0.20",
+    "hedron-data>=0.20.0,<0.21",
 ]
 charts = [
     "hedron-charts>=0.1.0,<0.2",
@@ -80,16 +80,16 @@ browser = [
     "axe-playwright-python>=0.1.4",
 ]
 jinja = [
-    "hedron-jinja>=0.19.0,<0.20",
+    "hedron-jinja>=0.20.0,<0.21",
 ]
 native = [
     "hedron-native>=0.1.0,<0.2",
 ]
 conformance = [
-    "hedron-conformance>=0.19.0,<0.20",
+    "hedron-conformance>=0.20.0,<0.21",
 ]
 extras = [
-    "hedron-extras>=0.19.0,<0.20",
+    "hedron-extras>=0.20.0,<0.21",
 ]
 notebook = [
     "hedron-notebook>=0.1.0,<0.2",

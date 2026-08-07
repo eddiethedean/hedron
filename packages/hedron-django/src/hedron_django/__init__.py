@@ -16,16 +16,18 @@ from hedron_django.live import (
     sse_response,
     stream_text,
 )
+from hedron_django.middleware import HedronSecurityHeadersMiddleware
 from hedron_django.responses import component_response, interaction_response
 from hedron_django.routing import DjangoUrlReverser, hedron_view
 from hedron_django.urls import component_path, hedron_paths, include_component_path
 
-__version__ = "0.19.0"
+__version__ = "0.20.0"
 
 __all__ = [
     "DjangoUrlReverser",
     "HedronDjango",
     "HedronDjangoConfig",
+    "HedronSecurityHeadersMiddleware",
     "POLLING_FALLBACK_SUPPORTED",
     "__version__",
     "component_path",

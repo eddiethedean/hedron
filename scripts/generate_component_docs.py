@@ -42,7 +42,7 @@ def _format_sim_live_demo(sim_name: str) -> str:
 
 # Keep install snippets aligned with scripts/check_docs_train_ssot.py.
 _ALPHA_EXTRAS = frozenset({"charts", "notebook", "mcp", "gradio", "native"})
-_TRAIN_PIN = ">=0.19.0,<0.20"
+_TRAIN_PIN = ">=0.20.0,<0.21"
 _ALPHA_PIN = ">=0.1.0,<0.2"
 
 

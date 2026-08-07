@@ -5,24 +5,29 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Development Component Explorer for Hedron (coordinated train **`0.19.0`**; Ready to cut
-on `main`; last published PyPI/git = `v0.18.0`).
+Development Component Explorer for Hedron.
 
-Provides HTMX panels for components, routes, graph, security, accessibility,
-packages, settings, charts, and interaction simulation, plus sanitized JSON APIs
-with rate limiting and audit hooks. Installed through `hedron[dev]`; not required
+HTMX panels for components, routes, graph, security, accessibility, packages,
+settings, charts, and interaction simulation — plus sanitized JSON APIs with
+rate limiting and audit hooks. Installed through `hedron[dev]`; **not required**
 in production.
+
+**Package maturity:** Beta · **Train:** `0.20.0` · pin `>=0.20.0,<0.21`
 
 ## Install
 
 ```bash
-pip install "hedron[dev]>=0.19.0,<0.20"
+pip install "hedron[dev]>=0.20.0,<0.21"
+# or install the package directly:
+pip install "hedron-explorer>=0.20.0,<0.21"
 # or
-uv add "hedron[dev]>=0.19.0,<0.20"
+uv add "hedron[dev]>=0.20.0,<0.21"
 ```
 
-Requires Python 3.11, 3.12, 3.13, or 3.14. Depends on
-[`hedron`](https://pypi.org/project/hedron/).
+Requires Python 3.11–3.14 and [`hedron`](https://pypi.org/project/hedron/).
+
+Optional: `hedron-explorer[fastapi]` when you need an explicit FastAPI extra
+marker for tooling (the flagship `hedron` package already depends on FastAPI).
 
 ## Usage
 
@@ -44,15 +49,23 @@ def home() -> Page:
     return Page(Text("Hello, Hedron"), title="Demo")
 ```
 
-Then open **`/hedron-explorer/`** on the running app (requires `explorer="development"`
-or `secured`). Leave Explorer off in production. See the
-[Explorer API](https://hedron.readthedocs.io/en/latest/api/EXPLORER/).
+Open **`/hedron-explorer/`** on the running app (`explorer="development"` or
+`"secured"`). Leave Explorer **`off`** in production.
+
+## What this package includes
+
+- Interactive component / route / dependency graph panels
+- Security and accessibility inspection surfaces
+- Interaction simulation helpers
+- Sanitized JSON APIs with rate limiting and audit hooks
 
 ## Links
 
-- [Documentation](https://hedron.readthedocs.io/en/latest/)
+- [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-explorer/)
+- [Explorer API](https://hedron.readthedocs.io/en/latest/api/EXPLORER/)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-explorer/CHANGELOG.md)
-- [Source](https://github.com/eddiethedean/hedron)
+- [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-explorer)
+- [Issues](https://github.com/eddiethedean/hedron/issues)
 - [`hedron`](https://pypi.org/project/hedron/)
 
 ## License

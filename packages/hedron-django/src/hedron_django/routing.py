@@ -54,7 +54,12 @@ def _convert(
         seed_csrf_cookie(request)
     authenticated = bool(getattr(getattr(request, "user", None), "is_authenticated", False))
     if isinstance(value, InteractionResult):
-        return interaction_response(value, request=request, authenticated=authenticated)
+        return interaction_response(
+            value,
+            request=request,
+            authenticated=authenticated,
+            fragment_regions=fragment_regions,
+        )
     if isinstance(value, RenderResult):
         return component_response(
             value,

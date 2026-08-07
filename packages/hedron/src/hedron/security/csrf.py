@@ -69,13 +69,27 @@ def ensure_csrf_cookie(
     if policy.profile is SecurityProfile.STRICT:
         # Strict always emits Secure cookies (including over plain HTTP TestClient).
         secure = True
+    cookie_path = "/"
+    if request is not None:
+        # Prefer scope lookup: Request.app raises KeyError when ASGI scope lacks "app"
+        # (common in unit tests that build Request(scope) without an application).
+        scope = getattr(request, "scope", None)
+        app = scope.get("app") if isinstance(scope, dict) else None
+        state = getattr(app, "state", None) if app is not None else None
+        configured = getattr(state, "hedron_cookie_path", None) if state is not None else None
+        if isinstance(configured, str) and configured:
+            cookie_path = configured
+        else:
+            from hedron.mount import mount_from_request
+
+            cookie_path = mount_from_request(request).cookie_path
     response.set_cookie(
         key=policy.csrf_cookie_name,
         value=value,
         httponly=False,
         samesite="lax",
         secure=secure,
-        path="/",
+        path=cookie_path,
     )
     if request is not None:
         request.state.hedron_csrf_cookie_set = True

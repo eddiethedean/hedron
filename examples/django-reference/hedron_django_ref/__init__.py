@@ -8,7 +8,7 @@ from django.http import HttpRequest
 from django.urls import path
 
 from hedron_core import Heading, Page, Text
-from hedron_core.interaction import InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_django import HedronDjango, hedron_view
 
 if not settings.configured:
@@ -35,6 +35,8 @@ if not settings.configured:
 
 hedron = HedronDjango()
 
+PANEL = FragmentRegion(id="panel", selector="#panel")
+
 
 @hedron_view
 def home(request: HttpRequest):
@@ -48,7 +50,7 @@ def home(request: HttpRequest):
     )
 
 
-@hedron_view
+@hedron_view(fragment_regions=(PANEL,))
 def fragment(request: HttpRequest):
     return InteractionResult(content=Text("HTMX fragment refreshed"), explanation="demo fragment")
 

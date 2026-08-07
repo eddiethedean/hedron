@@ -25,7 +25,7 @@ python -m hedron check
 **Other fixes:**
 
 1. Re-open the terminal after install (PATH updates often need a new shell).
-2. Prefer `uv tool install "hedron>=0.19.0,<0.20"` (or `pipx install "hedron>=0.19.0,<0.20"`) so the
+2. Prefer `uv tool install "hedron>=0.20.0,<0.21"` (or `pipx install "hedron>=0.20.0,<0.21"`) so the
    tool is on PATH, then run `hedron new …`.
 3. Inside a scaffolded project, use the project environment: `uv run hedron check` (or
    activate `.venv` and run `hedron` / `python -m hedron`).
@@ -84,11 +84,11 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U "hedron>=0.19.0,<0.20"` (or `uv add "hedron>=0.19.0,<0.20"`). The current
-train is **0.19.x** (Ready to cut on `main`; last published PyPI/git = `v0.18.0`)—see
+`pip install -U "hedron>=0.20.0,<0.21"` (or `uv add "hedron>=0.20.0,<0.21"`). The current
+train is **0.20.x** (Ready to cut on `main`; last published PyPI/git = `v0.18.0`)—see
 [What's ready](whats-ready.md) and the [public roadmap](roadmap.md). If docs describe a
-feature missing from your install, upgrade to a matching `0.19.x` pin
-(`hedron>=0.19.0,<0.20`) or use a git checkout of that work.
+feature missing from your install, upgrade to a matching `0.20.x` pin
+(`hedron>=0.20.0,<0.21`) or use a git checkout of that work.
 
 ## CSRF 403 on POST (FastAPI / Flask)
 
@@ -206,8 +206,8 @@ with auth in rare cases; keep production off.
 
 **Cause:** An old CLI wrote `hedron>=0.4.0` (or another pre-0.11 floor).
 
-**Fix:** Edit `pyproject.toml` to `hedron>=0.19.0,<0.20` and `uvicorn[standard]>=0.30`, then
-reinstall. Current `hedron new` scaffolds `hedron>=0.19.0,<0.20` automatically.
+**Fix:** Edit `pyproject.toml` to `hedron>=0.20.0,<0.21` and `uvicorn[standard]>=0.30`, then
+reinstall. Current `hedron new` scaffolds `hedron>=0.20.0,<0.21` automatically.
 
 ## SSE / WebSocket / preload not working
 
@@ -237,7 +237,7 @@ charts need optional extras—not a planned feature gap.
 
 ```bash
 # Auto needs no extra
-pip install "hedron[data]>=0.19.0,<0.20"      # DataTable, DataEditor
+pip install "hedron[data]>=0.20.0,<0.21"      # DataTable, DataEditor
 pip install "hedron[charts]>=0.1.0,<0.2"    # LineChart / adapters
 pip install "hedron-charts[plotly]>=0.1.0,<0.2"   # example backend
 ```

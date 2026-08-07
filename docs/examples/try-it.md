@@ -18,15 +18,15 @@ This repository includes a [Dev Container](https://containers.dev/) definition a
 3. Run the Hello scaffold:
 
 ```bash
-uvx --from "hedron>=0.19.0,<0.20" hedron new /tmp/my-hedron-app
+uvx --from "hedron>=0.20.0,<0.21" hedron new /tmp/my-hedron-app
 cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
 !!! note "PyPI vs `main`"
 
-    Until `v0.19.0` is tagged, PyPI still serves **`v0.18.0`**. The Dev Container / Codespaces
-    path uses this repo’s `main` workspace, so you get Ready-to-cut `0.19.0` without waiting
+    Until `v0.20.0` is tagged, PyPI still serves **`v0.18.0`**. The Dev Container / Codespaces
+    path uses this repo’s `main` workspace, so you get Ready-to-cut `0.20.0` without waiting
     for the tag.
 
 4. Forward port **8000** and open the URL. You should see **Hello from hedron new**.
@@ -81,7 +81,7 @@ Prefer Hello first (same as recommended), then optional demos:
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync
-uvx --from "hedron>=0.19.0,<0.20" hedron new /tmp/my-hedron-app
+uvx --from "hedron>=0.20.0,<0.21" hedron new /tmp/my-hedron-app
 cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --reload
 ```

@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 
 from hedron_core.adapter import DJANGO_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
-from hedron_core.interaction import InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_django.csrf import csrf_token_for_request
 from hedron_django.htmx import htmx_context, render_mode_for_request
@@ -55,6 +55,7 @@ class HedronDjango:
         context: RenderContext | None = None,
         mode: RenderMode | None = None,
         extra_headers: Mapping[str, str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
     ) -> HttpResponse:
         from hedron_django.csrf import seed_csrf_cookie
 
@@ -68,6 +69,7 @@ class HedronDjango:
                 mode=mode,
                 extra_headers=extra_headers,
                 authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
             )
         return component_response(
             value,
@@ -76,6 +78,7 @@ class HedronDjango:
             mode=mode,
             extra_headers=extra_headers,
             authenticated=self.auth_signal(request).authenticated,
+            fragment_regions=fragment_regions,
         )
 
     def auth_signal(self, request: HttpRequest) -> AuthSignal:

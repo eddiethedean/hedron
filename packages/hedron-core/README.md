@@ -10,19 +10,25 @@ Framework-neutral typed rendering core for Hedron.
 Defines models, security boundary types, components, the HTML serializer,
 `Auto()` intelligent rendering, cache protocols, ColorMode, utility built-ins,
 and the public `render(...) -> RenderResult` and request-scoped `RenderSession`
-APIs with **no** FastAPI, Flask,
-Django, ASGI, or WSGI dependency.
+APIs — with **no** FastAPI, Flask, Django, ASGI, or WSGI dependency.
+
+Host adapters share this renderer:
+
+- FastAPI — [`hedron`](https://pypi.org/project/hedron/)
+- Flask — [`hedron-flask`](https://pypi.org/project/hedron-flask/)
+- Django — [`hedron-django`](https://pypi.org/project/hedron-django/)
+
+**Package maturity:** Beta · **Train:** `0.20.0` · pin `>=0.20.0,<0.21`
 
 ## Install
 
 ```bash
-pip install "hedron-core>=0.19.0,<0.20"
+pip install "hedron-core>=0.20.0,<0.21"
 # or
-uv add "hedron-core>=0.19.0,<0.20"
+uv add "hedron-core>=0.20.0,<0.21"
 ```
 
-Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.19.0** (Ready to cut on
-`main`; last published PyPI/git = `v0.18.0`).
+Requires Python 3.11–3.14.
 
 ## Quick start
 
@@ -43,24 +49,26 @@ print(result.html)
 - Trust boundary types: `Secret`, `TrustedHtml`, `SafeUrl`, `UrlPurpose`
 - Component protocol, registry, diagnostics (JSON/SARIF), and deterministic identity
 - Context-aware HTML serializer, `render(...) -> RenderResult`, and `RenderSession`
-- scoped CSS, themes, assets, and component discovery helpers
+- Scoped CSS, themes, assets, and component discovery helpers
 - Built-ins for pages, forms, layout, landmarks, and content
 - Framework-neutral plugin metadata and Explorer panel registration helpers
+- Portable adapter contracts (`AuthSignal`, capability matrix, URL reverse request)
 
 ## What it does not include
 
-- HTTP routing, FastAPI/Flask/Django adapters, HTMX request handling
+- HTTP routing or FastAPI / Flask / Django adapters
+- HTMX request handling and CSRF middleware (host packages)
 - CLI, Component Explorer UI, charts, or data grids
 
-Prefer the FastAPI package [`hedron`](https://pypi.org/project/hedron/) for
-application work. See the [project README](https://github.com/eddiethedean/hedron)
-and the public [roadmap guide](https://hedron.readthedocs.io/en/latest/guides/roadmap/).
+Prefer [`hedron`](https://pypi.org/project/hedron/) for application work on FastAPI.
 
 ## Links
 
 - [Documentation](https://hedron.readthedocs.io/en/latest/)
+- [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-core/CHANGELOG.md)
-- [Source](https://github.com/eddiethedean/hedron)
+- [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-core)
+- [Issues](https://github.com/eddiethedean/hedron/issues)
 - [`hedron`](https://pypi.org/project/hedron/)
 
 ## License

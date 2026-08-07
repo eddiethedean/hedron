@@ -100,15 +100,18 @@ class HedronRoute(APIRoute):
 
         async def handler(request: Request) -> StarletteResponse:
             from hedron.routing.router import current_request
+            from hedron_core.htmx_eval import reset_htmx_eval_allowed, set_htmx_eval_allowed
 
             policy: SecurityPolicy = getattr(
                 request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
             )
             token = current_request.set(request)
+            eval_token = set_htmx_eval_allowed(policy.allow_htmx_eval)
             try:
                 response = await original(request)
             finally:
                 current_request.reset(token)
+                reset_htmx_eval_allowed(eval_token)
 
             if not isinstance(response, StarletteResponse):
                 response = await self.convert_endpoint_result(

@@ -85,7 +85,11 @@ def hedron_route(
                 signal = auth_fn(request)
                 authenticated = bool(getattr(signal, "authenticated", False))
             if isinstance(value, InteractionResult):
-                return interaction_response(value, authenticated=authenticated)
+                return interaction_response(
+                    value,
+                    authenticated=authenticated,
+                    fragment_regions=fragment_regions,
+                )
             if isinstance(value, RenderResult):
                 return component_response(
                     value,

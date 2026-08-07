@@ -12,12 +12,14 @@ permissions:
 env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
+  # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
+  HEDRON_GATE_VERSION: "0.20.0"
 
 jobs:
   test:
-    name: Test and checks (Python ${{ matrix.python-version }})
+    name: Tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -32,121 +34,32 @@ jobs:
           cache-dependency-glob: uv.lock
       - name: Set up Python
         run: uv python install ${{ matrix.python-version }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
       - name: Sync
         run: uv sync --locked --python ${{ matrix.python-version }}
-      - name: Format check
-        run: uv run --python ${{ matrix.python-version }} ruff format --check packages tests examples
-      - name: Lint
-        run: uv run --python ${{ matrix.python-version }} ruff check packages tests examples
-      - name: Type check
-        run: uv run --python ${{ matrix.python-version }} pyright
-      - name: Tests
-        run: uv run --python ${{ matrix.python-version }} pytest -q
-      - name: Build all workspace packages
-        run: |
-          set -euo pipefail
-          for pyproject in packages/*/pyproject.toml; do
-            pkg="$(basename "$(dirname "$pyproject")")"
-            echo "Building $pkg"
-            uv build --package "$pkg"
-          done
-      - name: Clean-install smoke
-        run: |
-          set -euo pipefail
-          uv venv /tmp/hedron-smoke --python ${{ matrix.python-version }}
-          shopt -s nullglob
-          core_wheels=(dist/hedron_core-*.whl)
-          hedron_wheels=(dist/hedron-[0-9]*.whl)
-          if ((${#core_wheels[@]})); then
-            uv pip install --python /tmp/hedron-smoke "${core_wheels[@]}"
-            /tmp/hedron-smoke/bin/python - <<'PY'
-          from hedron_core import Page, Text, RenderMode, render
-          html = render(Page(Text("smoke"), title="Smoke"), mode=RenderMode.PAGE).html
-          assert html.startswith("<!DOCTYPE html>")
-          assert "smoke" in html
-          print("ok: clean-install hedron-core render")
-          PY
-          fi
-          if ((${#hedron_wheels[@]})); then
-            uv pip install --python /tmp/hedron-smoke "${hedron_wheels[@]}"
-            data_wheels=(dist/hedron_data-*.whl)
-            if ((${#data_wheels[@]})); then
-              uv pip install --python /tmp/hedron-smoke "${data_wheels[@]}"
-            fi
-            /tmp/hedron-smoke/bin/python - <<'PY'
-          from hedron import Hedron, Page, Text
-          from hedron_core import render
-          app = Hedron(title="smoke", security="standard", explorer="off", session_secret="smoke-secret")
-          @app.page("/")
-          def home():
-              return Page(Text("ok"), title="Ok")
-          try:
-              from hedron_data import DataTable
-              assert "Ada" in render(DataTable([{"id": "1", "name": "Ada"}])).html
-          except ImportError:
-              pass
-          print("ok: clean-install Hedron")
-          PY
-          fi
-      - name: Prove no web frameworks or Node tooling in core env
-        run: |
-          uv run --python ${{ matrix.python-version }} python - <<'PY'
-          import ast, tomllib
-          from pathlib import Path
-          forbidden = {"fastapi", "flask", "django", "starlette", "asgiref"}
-          project = tomllib.loads(Path("packages/hedron-core/pyproject.toml").read_text())["project"]
-          deps = " ".join(project.get("dependencies", [])).lower()
-          assert not any(name in deps for name in forbidden)
-          for path in Path("packages/hedron-core/src/hedron_core").rglob("*.py"):
-              tree = ast.parse(path.read_text(), filename=str(path))
-              for node in ast.walk(tree):
-                  if isinstance(node, ast.Import):
-                      for alias in node.names:
-                          assert alias.name.split(".", 1)[0] not in forbidden
-                  elif isinstance(node, ast.ImportFrom) and node.module:
-                      assert node.module.split(".", 1)[0] not in forbidden
-          print("ok: hedron-core remains framework-neutral")
-          PY
-          test ! -f package.json
-          test ! -d node_modules
-          echo "ok: no Node package tooling in repo"
-      - name: Doc link smoke
-        run: |
-          uv run --python ${{ matrix.python-version }} python - <<'PY'
-          import re
-          from pathlib import Path
+      - name: Run test suite
+        run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
 
-          roots = [Path("docs"), Path("README.md"), Path("ROADMAP.md")]
-          missing = []
-          files = []
-          for root in roots:
-              if root.is_file():
-                  files.append(root)
-              else:
-                  files.extend(root.rglob("*.md"))
-          for path in files:
-              if path.is_symlink():
-                  continue
-              text = path.read_text(encoding="utf-8")
-              # Ignore fenced code so Python generics like TemplateSpec[T]( do not
-              # look like markdown links.
-              text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
-              for match in re.finditer(r"\]\(([^)#\n]+)(?:#[^)]*)?\)", text):
-                  target = match.group(1).strip()
-                  if not target or target.startswith(("http://", "https://", "mailto:")):
-                      continue
-                  resolved = (path.parent / target).resolve()
-                  if not resolved.exists():
-                      missing.append(f"{path}: {target}")
-          if missing:
-              raise SystemExit("\n".join(missing[:50]))
-          print("ok: relative doc links resolve")
-          PY
-      - name: MkDocs build
-        if: matrix.python-version == '3.12'
-        run: |
-          uv sync --locked --group docs --python ${{ matrix.python-version }}
-          uv run --python ${{ matrix.python-version }} --group docs mkdocs build --strict
+  quality:
+    name: Quality, docs, and packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install all dependency groups
+        run: uv sync --locked --all-groups --python 3.12
+      - name: Run quality suite
+        run: bash scripts/ci_checks.sh quality --python 3.12
 
   browser:
     name: Browser HTMX (${{ matrix.browser }})
@@ -167,18 +80,58 @@ jobs:
         run: uv python install 3.12
       - name: Install dependencies with browser extra
         run: |
-          uv sync --locked --python 3.12
+          uv sync --locked --python 3.12 --group docs
           uv pip install --python 3.12 "playwright>=1.40" "uvicorn[standard]>=0.30" "axe-playwright-python>=0.1.4"
           uv run --python 3.12 playwright install --with-deps ${{ matrix.browser }}
       - name: Run browser suite
         env:
           HEDRON_BROWSER: "1"
           HEDRON_BROWSER_ENGINE: ${{ matrix.browser }}
-        run: uv run --python 3.12 pytest -q -m browser --tb=short
+        run: bash scripts/ci_checks.sh browser --python 3.12
+
+  evidence:
+    name: Supply-chain evidence bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install dependencies
+        run: uv sync --locked --python 3.12
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Resolve gate version
+        id: gate
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${HEDRON_GATE_VERSION}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run evidence suite
+        run: >
+          bash scripts/ci_checks.sh evidence --python 3.12
+          --gate-version ${{ steps.gate.outputs.version }}
 
   publish:
     name: Publish to PyPI
-    needs: [test, browser]
+    needs: [test, quality, browser, evidence]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     # PyPI caps new-project creates (~4/day). Retries wait up to ~6h on 429.

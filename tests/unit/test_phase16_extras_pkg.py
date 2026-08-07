@@ -28,7 +28,7 @@ def setup_function() -> None:
 def test_feature_manifest_registration() -> None:
     loader = load_plugins(
         enabled=["hedron_extras"],
-        hedron_version="0.19.0",
+        hedron_version="0.20.0",
         entry_points=[_EP()],
     )
     assert any(p.meta.name == "hedron_extras" for p in loader.loaded)
@@ -47,7 +47,7 @@ def test_feature_manifest_registration() -> None:
 def test_extras_components_registered() -> None:
     load_plugins(
         enabled=["hedron_extras"],
-        hedron_version="0.19.0",
+        hedron_version="0.20.0",
         entry_points=[_EP()],
     )
     registry = get_registry()

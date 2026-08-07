@@ -1,6 +1,6 @@
 # Production readiness
 
-Ops-oriented checklist for **Hedron 0.19.0** (Beta; Ready to cut on `main`; last published
+Ops-oriented checklist for **Hedron 0.20.0** (Beta; Ready to cut on `main`; last published
 PyPI/git = `v0.18.0`). **Do not duplicate maturity claims here** — the authoritative
 snapshot is [What's ready today](whats-ready.md).
 
@@ -26,8 +26,15 @@ SLA**. Confirm your intended surfaces against [What's ready](whats-ready.md).
 4. HTTPS + sticky sessions or external session/CSRF/job store for multi-worker
 5. Under `HEDRON_ENV=production`, configure durable `set_job_backend` / `set_cache_backend`
    (in-memory backends are refused at app startup)
-6. For SSE/WebSocket: confirm reverse-proxy buffering and timeouts ([Performance](performance.md))
-7. Pin `hedron` and extras in your lockfile
+6. Production also fail-closes on weak/`replace-in-production` secrets, `security="development"`,
+   Explorer development mode, open external redirects, and missing CSP unless you set
+   `HEDRON_SECURITY_RISK_ACCEPTANCE` to a comma-separated list of explicit risk codes
+   (`weak-session-secret`, `security-development`, `explorer-development`,
+   `external-redirects`, `missing-csp`)
+7. For SSE/WebSocket: confirm reverse-proxy buffering and timeouts ([Performance](performance.md))
+8. Pin `hedron` and extras in your lockfile
+9. Under a reverse-proxy subpath, set ASGI `root_path` and/or `HEDRON_ROOT_PATH` so session/CSRF
+   cookies use `Path=auto` ([Deployment](deployment.md); `resolve_mount_path`)
 
 ## Security posture
 

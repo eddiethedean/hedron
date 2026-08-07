@@ -16,7 +16,7 @@
 | `HEDRON_BUILD_DIR` | Build/manifest directory overlay |
 | `HEDRON_THEME` | Theme overlay |
 | `HEDRON_REDIS_URL` | Optional Redis URL for job backends that use it (not required for pages) |
-| `HEDRON_ROOT_PATH` | Optional reverse-proxy root path hint for reference/deploy samples |
+| `HEDRON_ROOT_PATH` | Optional reverse-proxy root path; scopes session/CSRF cookie `Path` and feeds `resolve_mount_path` |
 | `HEDRON_SESSION_SECRET` | **Adopter convention** — read in `app.py` and pass to `Hedron(session_secret=...)`; Hedron does not load it automatically |
 
 See the full [configuration reference](../CONFIGURATION.md).
@@ -69,7 +69,7 @@ A fresh scaffold is typically `pyproject.toml`, `README.md`, and `app.py` — no
 FROM python:3.12-slim
 WORKDIR /app
 COPY pyproject.toml README.md app.py ./
-RUN pip install --no-cache-dir "hedron>=0.19.0,<0.20" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=0.20.0,<0.21" "uvicorn[standard]" \
     && pip install --no-cache-dir -e . \
     && hedron build
 ENV HEDRON_ENV=production
@@ -119,7 +119,7 @@ Single-stage sketch when you already vendor a lockfile:
 FROM python:3.12-slim
 WORKDIR /app
 COPY . .
-RUN pip install --no-cache-dir "hedron>=0.19.0,<0.20" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=0.20.0,<0.21" "uvicorn[standard]" \
  && hedron build
 ENV HEDRON_ENV=production
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

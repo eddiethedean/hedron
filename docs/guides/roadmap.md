@@ -14,8 +14,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.16** | Curated extras and analysis workbenches (incl. CodeEditor host stub and specialty NiceGUI-shaped extras) | **Published** (`v0.16.0`) |
 | **0.17** | Reactive dashboards and agent interfaces; shell/AppShell; InteractionResult→Response; `#15`/`#24` completions (RFCs 0040–0044) | **Published** (`v0.17.0`) |
 | **0.18** | Model demos and inference workflows | **Published** (`v0.18.0`) |
-| **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | **Ready to cut / Implemented on `main`** (`0.19.0`; last published PyPI/git = `v0.18.0`; D-050) |
-| **0.20** | Production security floor and adapter parity (HTMX/eval, mount/prod gates, Flask/Django regions/CSP/scaffolds) | Planned (D-051) |
+| **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | Implemented on `main` (superseded by 0.20 Ready-to-cut before public 0.19 tag; D-050) |
+| **0.20** | Production security floor and adapter parity (HTMX/eval, mount/prod gates, Flask/Django regions/CSP/scaffolds) | **Ready to cut / Implemented on `main`** (`0.20.0`; last published PyPI/git = `v0.18.0`; D-051) |
 | **0.21** | Human assistive-technology / compensated evaluation (from D-050) | Planned |
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | Planned (D-051 split) |
 
@@ -27,9 +27,10 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - No `1.0` phase is scheduled (D-038). A **minimal `stable` API tier** is catalogued in
   [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or `experimental`.
 
-## Honest gaps on the current train (0.19)
+## Honest gaps on the current train (0.20)
 
-- Last **published** PyPI train is **0.18.x** (`v0.18.0`); **0.19.0** is Ready to cut on `main`
+- Last **published** PyPI train is **0.18.x** (`v0.18.0`); **0.20.0** is Ready to cut on `main`
+  (0.19 shipped on `main` but was superseded before a public `v0.19.0` tag)
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)
@@ -39,8 +40,6 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Full multi-engine FastAPI live browser matrix / some Explorer live traces → owned `0.10.x` Deferred
 - Live transports remain **experimental**; polling is Supported — [What’s ready](whats-ready.md)
 
-Tracked follow-ups for host security and adapter DX are owned by phase **0.20** (D-051; see
-[issue ownership](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-github-issue-ownership-013)).
 CSRF / SecurityPolicy composition (#36–#38) is **0.22**. Human AT evaluation remains **0.21**
 (D-050). Earlier ops honesty items remain under phases **0.13+** as listed in the ownership table.
 

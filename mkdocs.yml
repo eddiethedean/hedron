@@ -183,6 +183,20 @@ nav:
     - Other hosts:
       - Add Flask app: getting-started/flask.md
       - Add Django project: getting-started/django.md
+    - Optional packages:
+      - Overview: packages/index.md
+      - hedron-data: packages/hedron-data.md
+      - hedron-jinja: packages/hedron-jinja.md
+      - hedron-explorer: packages/hedron-explorer.md
+      - hedron-extras: packages/hedron-extras.md
+      - hedron-conformance: packages/hedron-conformance.md
+      - hedron-charts (Alpha): packages/hedron-charts.md
+      - hedron-native (Alpha): packages/hedron-native.md
+      - hedron-notebook (Alpha): packages/hedron-notebook.md
+      - hedron-mcp (Alpha): packages/hedron-mcp.md
+      - hedron-gradio (Alpha): packages/hedron-gradio.md
+      - hedron-sample-kit (Alpha): packages/hedron-sample-kit.md
+      - hedron-sim (Alpha): packages/hedron-sim.md
     - Help:
       - FAQ: guides/faq.md
       - Troubleshooting: guides/troubleshooting.md
@@ -465,11 +479,12 @@ nav:
       - Support: guides/support.md
       - Evidence pack: guides/evidence-pack.md
     - Public roadmap: guides/roadmap.md
-    - Upgrade to 0.19: guides/upgrade.md
+    - Upgrade to 0.20: guides/upgrade.md
     - Release notes: guides/release-notes.md
-    - What's new in 0.19: guides/whats-new-0.19.md
+    - What's new in 0.20: guides/whats-new-0.20.md
     - Package changelogs: guides/changelog.md
     - Earlier what's-new (archive):
+      - 0.19: guides/whats-new-0.19.md
       - 0.18: guides/whats-new-0.18.md
       - 0.17: guides/whats-new-0.17.md
       - 0.16: guides/whats-new-0.16.md

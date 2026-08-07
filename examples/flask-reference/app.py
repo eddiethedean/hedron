@@ -5,11 +5,13 @@ from __future__ import annotations
 from flask import Flask
 
 from hedron_core import Heading, Page, Text
-from hedron_core.interaction import InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_flask import HedronBlueprint, HedronFlask
 
 hedron = HedronFlask()
 ui = HedronBlueprint("ui", __name__)
+
+PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
 @ui.page("/")
@@ -21,7 +23,7 @@ def home():
     )
 
 
-@ui.component("/fragment")
+@ui.component("/fragment", fragment_regions=(PANEL,))
 def fragment():
     return InteractionResult(content=Text("HTMX fragment refreshed"), explanation="demo fragment")
 

@@ -48,6 +48,14 @@ from hedron.interaction import (
     swap,
     swap_oob,
 )
+from hedron.mount import (
+    MountPath,
+    cookie_path_for_mount,
+    mount_from_request,
+    normalize_mount_path,
+    prefix_local_path,
+    resolve_mount_path,
+)
 from hedron.recorder import (
     InteractionRecorder,
     RecordedExchange,
@@ -326,7 +334,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.19.0"
+__version__ = "0.20.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -475,6 +483,12 @@ __all__ = [
     "SegmentedControl",
     "Select",
     "SelectSlider",
+    "MountPath",
+    "cookie_path_for_mount",
+    "mount_from_request",
+    "normalize_mount_path",
+    "prefix_local_path",
+    "resolve_mount_path",
     "SessionState",
     "Sidebar",
     "Skeleton",

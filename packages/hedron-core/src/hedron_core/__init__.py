@@ -190,6 +190,7 @@ from hedron_core.diagnostics import (
 from hedron_core.field import Field
 from hedron_core.html import html
 from hedron_core.htmx_contract import HtmxContext, approved_headers
+from hedron_core.htmx_eval import allow_htmx_eval, htmx_eval_allowed
 from hedron_core.icons import IconEntry, get_icon, list_icons, register_icon, trusted_svg
 from hedron_core.inference import (
     BatchWindow,
@@ -292,6 +293,7 @@ from hedron_core.rendering import (
     render,
 )
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
+from hedron_core.security_policy import SecurityPolicy, SecurityProfile, SecurityProfileName
 from hedron_core.streaming import ChunkedList, StreamBudget, StreamedDocument, TokenStream
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.theme import Theme, default_theme, emit_theme_css
@@ -320,7 +322,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.19.0"
+__version__ = "0.20.0"
 
 __all__ = [
     "ActionRegistry",
@@ -371,6 +373,9 @@ __all__ = [
     "SecurityAuditEvent",
     "SecurityAuditEventType",
     "SecurityAuditSink",
+    "SecurityPolicy",
+    "SecurityProfile",
+    "SecurityProfileName",
     "StatusPolicy",
     "StructuredLogAuditSink",
     "UrlReverseRequest",
@@ -383,9 +388,11 @@ __all__ = [
     "WorkflowPort",
     "WorkflowRunResult",
     "approved_headers",
+    "allow_htmx_eval",
     "authorize_htmx_target",
     "authorize_oob_update",
     "capability_matrix",
+    "htmx_eval_allowed",
     "default_interaction_policy",
     "emit_security_audit",
     "get_security_audit_sink",

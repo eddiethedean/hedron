@@ -24,6 +24,7 @@ def test_system_checks_run() -> None:
     assert "hedron.E002" not in ids
     assert "hedron.W001" not in ids
     assert "hedron.W002" not in ids
+    assert "hedron.W003" not in ids
 
 
 def test_register_checks_idempotent() -> None:

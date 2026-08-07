@@ -1,21 +1,45 @@
 # hedron-jinja
 
-HDJ is Hedron's explicit, standards-first `.hdj` format over Jinja for advanced applications.
+[![PyPI](https://img.shields.io/pypi/v/hedron-jinja.svg)](https://pypi.org/project/hedron-jinja/)
+[![Python](https://img.shields.io/pypi/pyversions/hedron-jinja.svg)](https://pypi.org/project/hedron-jinja/)
+[![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
+
+Explicit standards-first `.hdj` templates over Jinja, HTML, and HTMX for Hedron.
+
+HDJ lets advanced applications write ordinary HTML, CSS, JavaScript, Web
+Components, Jinja, and HTMX directly while preserving typed Hedron components and
+render metadata. Install as `hedron-jinja` or via the flagship extra `hedron[jinja]`.
+
+**Package maturity:** Beta · **Train:** `0.20.0` · pin `>=0.20.0,<0.21`
+
+## Install
 
 ```bash
-pip install hedron-jinja
+pip install "hedron-jinja>=0.20.0,<0.21"
+# or
+uv add "hedron-jinja>=0.20.0,<0.21"
+# via flagship:
+pip install "hedron[jinja]>=0.20.0,<0.21"
 ```
+
+Requires Python 3.11–3.14, `hedron-core`, and Jinja2.
+
+## Quick start
 
 ```python
 from jinja2 import Environment, FileSystemLoader
 from hedron_jinja import HedronJinja, TemplateSpec
 
-templates = HedronJinja(
-    Environment(loader=FileSystemLoader("templates")),
-    components={"StatusBadge": StatusBadge},
+templates = HedronJinja(Environment(loader=FileSystemLoader("templates")))
+result = templates.render(
+    TemplateSpec("dashboard.hdj"),
+    {"heading": "Operations"},
 )
-result = templates.render(TemplateSpec("dashboard.hdj"), view)
+print(result.html)
 ```
+
+Example `templates/dashboard.hdj`:
 
 ```hdj
 ---hdj
@@ -27,9 +51,26 @@ regions = ["main"]
 <main id="main" hx-history-elt>{{ view.heading }}</main>
 ```
 
-Templates are trusted application code. Write ordinary HTML, CSS, JavaScript, Web Components,
-Jinja, and HTMX directly; HDJ adds typed components and preserves Hedron render metadata. Strict
-mode checks a finite dynamic sink matrix with purpose-specific URL filters. Deployment capability
-declarations and application policy remain separate and authoritative. Format v1 accepts static
-`.hdj` dependencies only and every source must render through `HedronJinja`. HDJ is not a sandbox
-for hostile template authors.
+## Trust model
+
+Templates are **trusted application code**, not a sandbox for hostile authors.
+Strict mode checks a finite dynamic sink matrix with purpose-specific URL
+filters. Deployment capability declarations and application policy remain
+separate and authoritative. Format v1 accepts static `.hdj` dependencies only;
+every source must render through `HedronJinja`.
+
+## Links
+
+- [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-jinja/)
+- [HDJ authoring guide](https://hedron.readthedocs.io/en/latest/guides/hdj-authoring/)
+- [Jinja / HDJ API](https://hedron.readthedocs.io/en/latest/api/JINJA/)
+- [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-jinja/CHANGELOG.md)
+- [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-jinja)
+- [Issues](https://github.com/eddiethedean/hedron/issues)
+- [HDJ progressive examples](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive)
+- [`hedron-core`](https://pypi.org/project/hedron-core/) ·
+  [`hedron`](https://pypi.org/project/hedron/)
+
+## License
+
+MIT. See [LICENSE](LICENSE).

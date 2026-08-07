@@ -7,54 +7,74 @@
 
 FastAPI-native typed component framework for HTML and HTMX.
 
-Builds on framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/)
-with pages, addressable components, typed actions, CSRF-aware forms, OpenAPI
-`text/html` metadata, interaction built-ins (`Lazy`, `Poll`, `Pagination`, …),
-caching (`cache_data` / `cache_component`), utility UI, ColorMode persistence,
-a thin `Hedron()` application facade, CLI (`new`/`check`/`graph`/`build`/…),
-plugin loader, and public `hedron.testing` helpers.
+Build dashboards, admin tools, and CRUD apps as typed Python components — without a
+Node.js frontend stack. Hedron extends FastAPI with pages, addressable components,
+typed actions, CSRF-aware forms, HTMX fragment/OOB policy, OpenAPI `text/html`
+metadata, interaction built-ins (`Lazy`, `Poll`, `Pagination`, …), caching
+(`cache_data` / `cache_component`), ColorMode persistence, a thin `Hedron()`
+application facade, CLI (`new` / `check` / `graph` / `build` / …), plugin loading,
+and public `hedron.testing` helpers.
+
+Built on framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/).
+Flask and Django hosts use [`hedron-flask`](https://pypi.org/project/hedron-flask/)
+and [`hedron-django`](https://pypi.org/project/hedron-django/).
+
+**Package maturity:** Beta · **Train:** `0.20.0` · pin `>=0.20.0,<0.21`
+
+Most public APIs remain compatibility level `beta` until listed in the small
+[stable](https://hedron.readthedocs.io/en/latest/api/STABILITY/) table.
+Capability readiness:
+[What’s ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
 ## Install
 
 ```bash
-pip install "hedron>=0.19.0,<0.20"
+pip install "hedron>=0.20.0,<0.21"
 # or
-uv add "hedron>=0.19.0,<0.20"
+uv add "hedron>=0.20.0,<0.21"
 ```
 
-Optional extras (pin the train):
+Requires Python 3.11–3.14.
+
+### Optional extras
+
+| Extra | Installs |
+|---|---|
+| `data` | [`hedron-data`](https://pypi.org/project/hedron-data/) (DataTable / DataEditor) |
+| `jinja` | [`hedron-jinja`](https://pypi.org/project/hedron-jinja/) (`.hdj` templates) |
+| `dev` | [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) (Component Explorer) |
+| `extras` | [`hedron-extras`](https://pypi.org/project/hedron-extras/) (workbenches) |
+| `conformance` | [`hedron-conformance`](https://pypi.org/project/hedron-conformance/) |
+| `charts` | [`hedron-charts`](https://pypi.org/project/hedron-charts/) (**Alpha** `0.1.x`) |
+| `native` | [`hedron-native`](https://pypi.org/project/hedron-native/) (**Alpha**) |
+| `notebook` / `mcp` / `gradio` | Experimental Alpha packages |
+| `markdown` / `code` / `images` / `email` / `sanitize` | Content helpers |
+| `auth` | Authlib OIDC helpers |
+| `browser` | Playwright + axe helpers |
+| `otel` | OpenTelemetry hooks |
 
 ```bash
-pip install "hedron[data]>=0.19.0,<0.20"
-pip install "hedron[charts]>=0.1.0,<0.2"   # Alpha
-pip install "hedron[dev]>=0.19.0,<0.20"
-pip install "hedron[gradio]>=0.1.0,<0.2"   # Alpha
-pip install "hedron[browser]>=0.19.0,<0.20"
+pip install "hedron[data,dev]>=0.20.0,<0.21"
+pip install "hedron[charts]>=0.1.0,<0.2"   # Alpha — pin and expect churn
 ```
-
-Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.19.0** (Beta; Ready to cut
-on `main`; last published PyPI/git = `v0.18.0`).
 
 ## Quick start
 
-Prefer the scaffold so you get **Hello from hedron new** and a working **Refresh status**
-click (HTMX swaps a small HTML fragment into a declared region):
+Scaffold an app with a working HTMX **Refresh status** control:
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.19.0,<0.20" hedron new my-hedron-app
+uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — click **Refresh status**; the
-timestamp should update.
+timestamp updates via an HTMX fragment swap.
 
-Full walkthrough: [Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/).
+Full walkthrough:
+[Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/).
 
-### Alternate — static Hello (no Refresh)
-
-This snippet is a **static** page only (no HTMX Refresh). Prefer the scaffold above for
-the interactive first-hour experience.
+### Minimal app
 
 ```python
 from hedron import Hedron, Page, Text
@@ -73,11 +93,11 @@ def home() -> Page:
 ```
 
 ```bash
-pip install "hedron>=0.19.0,<0.20" "uvicorn[standard]"
+pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
 uvicorn app:app --reload
 ```
 
-Plain FastAPI without the `Hedron` subclass:
+### Plain FastAPI
 
 ```python
 from fastapi import FastAPI
@@ -98,7 +118,7 @@ def card():
 app.include_router(router)
 ```
 
-CLI inspection (optionally load an app module first):
+### CLI
 
 ```bash
 hedron new demoapp
@@ -111,12 +131,19 @@ hedron graph
 hedron audit-components
 ```
 
+If `hedron` is not on your `PATH`, use `python -m hedron`.
+
 ## Links
 
 - [Documentation](https://hedron.readthedocs.io/en/latest/)
+- [Optional packages](https://hedron.readthedocs.io/en/latest/packages/)
+- [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron/CHANGELOG.md)
-- [Source](https://github.com/eddiethedean/hedron)
-- [`hedron-core`](https://pypi.org/project/hedron-core/) · [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) · [`hedron-sample-kit`](https://pypi.org/project/hedron-sample-kit/)
+- [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron)
+- [Issues](https://github.com/eddiethedean/hedron/issues)
+- [`hedron-core`](https://pypi.org/project/hedron-core/) ·
+  [`hedron-flask`](https://pypi.org/project/hedron-flask/) ·
+  [`hedron-django`](https://pypi.org/project/hedron-django/)
 
 ## License
 

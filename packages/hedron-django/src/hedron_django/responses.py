@@ -18,6 +18,7 @@ from hedron_core.interaction import (
     authorize_htmx_target,
     materialize_interaction_nodes,
     merge_interaction_headers,
+    merge_route_regions,
     select_htmx_auth_target,
 )
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
@@ -201,8 +202,12 @@ def interaction_response(
     mode: RenderMode | None = None,
     extra_headers: Mapping[str, str] | None = None,
     authenticated: bool = False,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
 ) -> HttpResponse:
     hdrs = _headers_mapping(request)
+    regions = _normalize_regions(fragment_regions)
+    if regions:
+        result = merge_route_regions(result, regions)
     is_htmx = (_header_value(hdrs, "HX-Request") or "").lower() == "true"
     client_target = _header_value(hdrs, "HX-Target")
     try:

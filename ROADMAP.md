@@ -1144,8 +1144,8 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Ready to cut / Implemented on `main` as `0.19.0` (2026-08-07); last published
-PyPI/git = `v0.18.0`. See [STATUS](docs/STATUS.md) and
+**Status:** Implemented on `main` as `0.19.0` (2026-08-07); superseded by **0.20 Ready-to-cut**
+before a public `v0.19.0` tag (last published PyPI/git = `v0.18.0`). See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
 [RFC-0051](docs/rfcs/RFC-0051-ACCESSIBILITY-CONTRACT.md)–[RFC-0055](docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md)
@@ -1275,7 +1275,8 @@ Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
 
 ## 0.20 — Production security floor and adapter parity (`v0.20.0`)
 
-**Status:** Planned. See [STATUS](docs/STATUS.md) and
+**Status:** Ready to cut / Implemented on `main` as `0.20.0` (2026-08-07); last published
+PyPI/git = `v0.18.0`. See [STATUS](docs/STATUS.md) and
 [release-gate-0.20.toml](docs/acceptance/release-gate-0.20.toml). Decision: D-051.
 Owning RFCs (Accepted baselines; phase deltas): [RFC-0012](docs/rfcs/RFC-0012-SECURITY.md),
 [RFC-0021](docs/rfcs/RFC-0021-BROWSER-RUNTIME.md), [RFC-0028](docs/rfcs/RFC-0028-DEPLOYMENT.md).

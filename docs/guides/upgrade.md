@@ -1,29 +1,33 @@
 # Upgrade
 
-**Hedron 0.19.0** — Ready to cut on `main` (last published PyPI/git = `v0.18.0`). From 0.18:
-accessibility contracts, Explorer a11y workspace, ATAG inspect/eject metadata, landmark
-attrs/types, allowlisted `Page` scripts, progressive-enhancement form paths, automated AT matrix
-(human AT → 0.21). See [What's ready](whats-ready.md) and [What's new in 0.19](whats-new-0.19.md).
-Until `v0.19.0` is tagged, install from `main` or wait for PyPI; pins below are for the cut train.
+**Hedron 0.20.0** — Ready to cut on `main` (last published PyPI/git = `v0.18.0`). From 0.18/0.19:
+production security floor and adapter parity (HTMX/eval hardening, mount helpers, production
+gates, Flask/Django regions/CSP/AuthSignal, adapter scaffolds). See [What's ready](whats-ready.md)
+and [What's new in 0.20](whats-new-0.20.md). CSRF composition → 0.22; human AT → 0.21.
+Until `v0.20.0` is tagged, install from `main` or wait for PyPI; pins below are for the cut train.
 
-## Upgrade from 0.18 → 0.19
+## Upgrade from 0.18 / 0.19 → 0.20
 
-If you are already on **0.18.x**, pin coordinated **0.19.0** packages:
+If you are already on **0.18.x** or Ready-to-cut **0.19** on `main`, pin coordinated **0.20.0** packages:
 
-1. Pin `hedron>=0.19.0,<0.20` (and matching `hedron-core` / adapters / extras).
-2. Prefer landmark component types (`Header`, `Main`, …) with allowlisted attrs.
-3. Attach same-origin PE scripts via `Page(scripts=[SafeUrl.parse(..., purpose=UrlPurpose.ASSET)])`
-   instead of post-render string injection.
-4. Keep critical form/mutation paths usable without HTMX (full page or redirect on non-`HX-Request`).
-5. Optional: consume `hedron_core.a11y` contracts / scenarios for Explorer and tests.
-6. Re-run your app suite; read [What's new in 0.19](whats-new-0.19.md).
+1. Pin `hedron>=0.20.0,<0.21` (and matching `hedron-core` / adapters / extras).
+2. Review production startup gates under `HEDRON_ENV=production` and document any accepted
+   risk codes via `HEDRON_SECURITY_RISK_ACCEPTANCE`.
+3. Prefer `standard`/`strict` HTMX browser presets; do not rely on `js:` in Python
+   `hx-vals` / `hx-headers` unless you explicitly opt in with `allow_htmx_eval`.
+4. If you reverse-proxy under a path prefix, set `HEDRON_ROOT_PATH` / ASGI `root_path` and
+   expect cookie `Path` + local redirects to follow the mount.
+5. Flask/Django: declare `fragment_regions` for fragment targets; expect portable
+   `SecurityPolicy` response headers; Flask-Login users prefer `current_user` for AuthSignal.
+6. Optional: `hedron new --flask` / `--django` for secure adapter scaffolds.
+7. Re-run your app suite; read [What's new in 0.20](whats-new-0.20.md).
 
 ## Upgrade from 0.17 → 0.18
 
 If you are already on **0.17.x**, pin coordinated **0.18.0** packages and adopt only what you need:
 
 1. Pin `hedron>=0.18.0,<0.19` (and matching `hedron-core` / adapters / extras), then continue to
-   0.19 with the steps above.
+   0.20 with the steps above.
 2. For model demos: follow [Model demos](model-demos.md) — `ModelDemo` / `InferenceInterface`
    never auto-publish callables as HTTP or MCP endpoints.
 3. Queue inference through `InferencePolicy` onto a durable `JobBackend` for multi-worker;
@@ -37,11 +41,11 @@ Skip the 0.8–0.16 archaeology below unless you are still on an older line.
 
 Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should upgrade through
 **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** /
-**0.16** / **0.17** / **0.18** to **0.19.0**.
+**0.16** / **0.17** / **0.18** to **0.20.0**.
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9**–**0.18** to **0.19.0**.
+upgrade through **0.9**–**0.18** to **0.20.0**.
 
 ## What changed in 0.8
 
@@ -68,7 +72,7 @@ upgrade through **0.9**–**0.18** to **0.19.0**.
 - Build-manifest format 2 rejects 0.8 build artifacts; rebuild after upgrading.
 - `hedron eject` emits CSS only.
 
-Install Jinja authoring explicitly with `pip install "hedron[jinja]>=0.19.0,<0.20"` or
+Install Jinja authoring explicitly with `pip install "hedron[jinja]>=0.20.0,<0.21"` or
 `pip install hedron-jinja`. The import namespace is `hedron_jinja`; `.hdj` is the canonical
 format-v1 template suffix. Each file begins with the static feature/capability prologue documented
 in the [HDJ API](../api/JINJA.md#hdj-format), followed by ordinary Jinja/HTML.
@@ -214,7 +218,7 @@ instrumentation (`HDJ-DEF-014`) under D-048.
 
 1. Pin and upgrade to the coordinated `0.14.0` Beta train (`hedron`, adapters, extras together).
    Alpha packages `hedron-charts` / `hedron-sample-kit` / `hedron-native` remain on `0.1.x`.
-2. Optional: `pip install "hedron[conformance]>=0.19.0,<0.20"` for the fixture kit / `hedron conformance` CLI.
+2. Optional: `pip install "hedron[conformance]>=0.20.0,<0.21"` for the fixture kit / `hedron conformance` CLI.
 3. Optional: `pip install "hedron[native]>=0.1.0,<0.2"` for Rust accel; absence must not change semantics
    (`hedron accel-status`).
 4. HDJ authors: review loop/macro budgets, contracted extensions, and portable checker fixtures
@@ -251,7 +255,7 @@ remain **Experimental**. CodeEditor is a CSP-safe host stub (no pinned CodeMirro
 
 1. Pin and upgrade to the coordinated `0.16.0` Beta train (`hedron`, adapters, `hedron-extras`).
    Alpha packages remain on `0.1.x` with `hedron-core>=0.16.0,<0.17`.
-2. Install extras only when needed: `pip install "hedron[extras]>=0.19.0,<0.20"`.
+2. Install extras only when needed: `pip install "hedron[extras]>=0.20.0,<0.21"`.
 3. Prefer workbench components that emit bounded plans/actions over implicit callables.
 4. Do not market TerminalView / joystick / device bridges as Supported production features.
 5. Re-read [What's new in 0.16](whats-new-0.16.md) and [What's ready](whats-ready.md).
@@ -290,7 +294,7 @@ Gradio interop is **Experimental** — pin Alpha and expect churn. Live transpor
 
 1. Pin and upgrade to the coordinated `0.18.0` Beta train (`hedron`, adapters, extras).
    Alpha packages remain on `0.1.x` with `hedron-core>=0.18.0,<0.19` for that train
-   (0.19 pins are `>=0.19.0,<0.20`).
+   (0.20 pins are `>=0.20.0,<0.21`).
 2. Build demos only from `ActionRegistry` / `RegisteredCallableAdapter` — bare callables fail closed.
 3. Wire `InferencePolicy` concurrency groups and cancel through durable `JobBackend`; do not use
    `InProcessInferenceQueue` as a production durability promise.

@@ -146,12 +146,36 @@ class Hedron(FastAPI):
 
         ensure_default_theme_registered()
 
-        from hedron_core.production_gate import assert_durable_backends
+        from hedron_core.production_gate import (
+            assert_durable_backends,
+            assert_production_security_config,
+        )
 
         assert_durable_backends(
             production=is_prod,
             strict_profile=self.hedron_policy.profile is SecurityProfile.STRICT,
         )
+        assert_production_security_config(
+            production=is_prod,
+            security_profile=self.hedron_policy.profile.value,
+            session_secret=session_secret if enable_sessions else None,
+            explorer_mode=self.hedron_explorer_mode,
+            allow_external_redirects=self.hedron_policy.allow_external_redirects,
+            content_security_policy=self.hedron_policy.content_security_policy,
+        )
+
+        mount_cookie_path = "/"
+        try:
+            from hedron.mount import resolve_mount_path_from_environ
+
+            env_mount = resolve_mount_path_from_environ()
+            if env_mount is not None:
+                mount_cookie_path = env_mount.cookie_path
+                self.state.hedron_mount_path = env_mount.path
+            else:
+                self.state.hedron_mount_path = ""
+        except Exception:  # noqa: BLE001
+            self.state.hedron_mount_path = ""
 
         if enable_sessions:
             if (
@@ -162,7 +186,7 @@ class Hedron(FastAPI):
                     "security='strict' requires an explicit session_secret "
                     "(do not use the development default)."
                 )
-            if session_secret == _DEFAULT_SESSION_SECRET:
+            if session_secret == _DEFAULT_SESSION_SECRET and not is_prod:
                 warnings.warn(
                     "Hedron is using the default development session_secret; "
                     "set session_secret explicitly before production deployment.",
@@ -173,7 +197,9 @@ class Hedron(FastAPI):
                 SessionMiddleware,
                 secret_key=session_secret,
                 https_only=self.hedron_policy.profile is SecurityProfile.STRICT,
+                path=mount_cookie_path,
             )
+        self.state.hedron_cookie_path = mount_cookie_path
         self.add_middleware(SecurityHeadersMiddleware, policy=self.hedron_policy)
 
         mount_hedron_static(self)

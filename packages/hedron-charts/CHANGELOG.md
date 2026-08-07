@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Pin `hedron-core` to `>=0.19.0,<0.20` for the 0.19 accessibility train.
+- Pin `hedron-core` to `>=0.20.0,<0.21` for the 0.19 accessibility train.
 
 ## [0.1.4] — 2026-08-06
 

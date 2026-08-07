@@ -25,6 +25,7 @@ from hedron_core._nodes import (
     TrustedHtmlNode,
 )
 from hedron_core.diagnostics import error
+from hedron_core.htmx_eval import reject_hx_eval_value
 from hedron_core.security import SafeUrl, check_url_purpose_for_attribute
 from hedron_core.typing_aliases import HtmlAttrValue
 
@@ -88,6 +89,7 @@ def _format_attr(name: str, value: HtmlAttrValue) -> str | None:
             remediation="Use HTMX attributes or registered Web Components instead.",
         )
     lower = name.lower()
+    reject_hx_eval_value(lower, value)
     if lower == "style":
         from hedron_core.html import _is_safe_layout_style
 

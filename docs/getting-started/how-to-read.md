@@ -32,10 +32,10 @@ Prefer [What’s ready today](../guides/whats-ready.md) and
 ## Versions
 
 Capability phases are numbered `0.N`. The initial release for that phase is **`v0.N.0`**.
-Phase **0.19** maps to packages **`0.19.x`** (current **`0.19.0`** on `main`), not a patch of 0.1.
+Phase **0.20** maps to packages **`0.20.x`** (current **`0.20.0`** on `main`), not a patch of 0.1.
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
-Pin production installs with `hedron>=0.19.0,<0.20` after `v0.19.0` is tagged (last
+Pin production installs with `hedron>=0.20.0,<0.21` after `v0.20.0` is tagged (last
 published PyPI/git is still `v0.18.0` until then — or install from `main` now).
 
 ## Public docs vs maintainer corpus

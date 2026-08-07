@@ -1,13 +1,82 @@
 # hedron-notebook
 
-Experimental Alpha server-side notebook preview helper for Hedron (RFC-0042).
-Runs a normal Hedron ASGI app from an authoring notebook with inline iframe and
-external-link modes. Distinct from the 0.16 browser-Python / JupyterLite sandbox.
+[![PyPI](https://img.shields.io/pypi/v/hedron-notebook.svg)](https://pypi.org/project/hedron-notebook/)
+[![Python](https://img.shields.io/pypi/pyversions/hedron-notebook.svg)](https://pypi.org/project/hedron-notebook/)
+[![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-```bash
-pip install hedron-notebook
-```
+Server-side notebook preview helper for Hedron.
 
-Default guidance is localhost-only development. Hosted or publicly reachable
+Run a normal Hedron ASGI app from an authoring notebook with inline iframe and
+external-link modes. Distinct from the browser-Python / JupyterLite sandbox in
+`hedron-extras`. Install as `hedron-notebook` or via `hedron[notebook]`.
+
+**Package maturity:** Experimental Alpha (`0.1.x`) · pin `>=0.1.0,<0.2` and expect churn
+
+Default guidance is **localhost-only** development. Hosted or publicly reachable
 hosts raise an explicit warning. This package is **not** a Supported production
 server.
+
+## Install
+
+```bash
+pip install "hedron-notebook>=0.1.0,<0.2"
+# or
+uv add "hedron-notebook>=0.1.0,<0.2"
+# via flagship:
+pip install "hedron[notebook]>=0.1.0,<0.2"
+```
+
+Requires Python 3.11–3.14.
+
+Optional server extra (uvicorn):
+
+```bash
+pip install "hedron-notebook[server]>=0.1.0,<0.2"
+```
+
+## Quick start
+
+```python
+from hedron import Hedron, Page, Text
+from hedron_notebook import start_preview
+
+app = Hedron(
+    title="Notebook demo",
+    security="standard",
+    session_secret="dev-only",
+    explorer="off",
+)
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(Text("Hello from a notebook preview"), title="Demo")
+
+
+preview = start_preview(app)
+print(preview.url)
+# In a Jupyter cell:
+# display HTML with preview.iframe_html()
+preview.shutdown()
+```
+
+## Public API
+
+| Symbol | Role |
+|---|---|
+| `start_preview(app)` | Start a local preview server for an ASGI app |
+| `NotebookPreview` | Handle with `.url`, `.iframe_html()`, `.shutdown()` |
+
+## Links
+
+- [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-notebook/)
+- [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
+- [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-notebook/CHANGELOG.md)
+- [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-notebook)
+- [Issues](https://github.com/eddiethedean/hedron/issues)
+- [`hedron`](https://pypi.org/project/hedron/)
+
+## License
+
+MIT. See [LICENSE](LICENSE).

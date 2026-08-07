@@ -9,9 +9,9 @@ Pass `security=` to `Hedron` (or build a `SecurityPolicy`):
 
 | Profile | CSRF | CSP (summary) | Explorer default | Notes |
 |---|---|---|---|---|
-| `development` | on | relaxed / unset | may mount | Local iteration only |
-| `standard` | on | self + limited inline styles | off | Default for apps |
-| `strict` | on | no `unsafe-inline` styles | off | Requires explicit `session_secret` |
+| `development` | on | relaxed / unset | may mount | Local iteration; HTMX history cache allowed |
+| `standard` | on | self + limited inline styles | off | Default; HTMX history cache disabled |
+| `strict` | on | no `unsafe-inline` styles | off | Requires explicit `session_secret`; same HTMX hardening |
 
 ```python
 from hedron import Hedron
@@ -23,6 +23,20 @@ app = Hedron(
     explorer="off",
 )
 ```
+
+### HTMX browser preset (`HTMX-020`)
+
+For `standard` / `strict`, PAGE responses inject `<meta name="htmx-config">` with
+`allowEval` / `allowScriptTags` false, `historyEnabled` false, and `historyCacheSize` 0 (plus
+existing restore/selfRequests defaults). `development` keeps eval/scripts disabled but does **not**
+wipe history cache. Opt out with `SecurityPolicy(..., htmx_browser_preset=False)` or own the full
+meta yourself. Inspect with `SecurityPolicy.htmx_config_json()`.
+
+### Python `hx-vals` / `hx-headers` `js:` (`EVAL-020`)
+
+`html.*` rejects `js:` expressions on `hx-vals` / `hx-headers` by default (`HED-SEC-0011`), matching
+HDJ `htmx.eval`. Opt in with `allow_htmx_eval()` or `SecurityPolicy(allow_htmx_eval=True)`. JSON
+object literals without `js:` remain allowed.
 
 See [Security types](../api/SECURITY_TYPES.md) for boundary types (`SafeUrl`, …).
 
