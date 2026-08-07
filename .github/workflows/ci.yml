@@ -205,7 +205,7 @@ jobs:
       - name: Install dependencies with browser extra
         run: |
           uv sync --locked --python 3.12
-          uv pip install --python 3.12 "playwright>=1.40" "uvicorn[standard]>=0.30"
+          uv pip install --python 3.12 "playwright>=1.40" "uvicorn[standard]>=0.30" "axe-playwright-python>=0.1.4"
           uv run --python 3.12 playwright install --with-deps ${{ matrix.browser }}
       - name: Run browser suite
         env:
@@ -254,9 +254,9 @@ jobs:
         run: |
           uv run --python 3.12 python scripts/build_evidence_bundle.py
           uv run --python 3.12 --with pip-audit python scripts/dep_audit.py
-          uv run --python 3.12 python scripts/check_release_gate.py 0.18.0
+          uv run --python 3.12 python scripts/check_release_gate.py 0.19.0
           uv run --python 3.12 python scripts/check_hed_codes.py
-          uv run --python 3.12 python scripts/verify_pkg_18.py
+          uv run --python 3.12 python scripts/verify_pkg_19.py
       - name: Upload evidence bundle
         uses: actions/upload-artifact@v4
         with:
@@ -265,7 +265,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: PKG-018 packaging rehearsal
+    name: PKG-019 packaging rehearsal
     needs: [evidence]
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -293,5 +293,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Run verify_pkg_18
-        run: uv run --python 3.12 python scripts/verify_pkg_18.py
+      - name: Run verify_pkg_19
+        run: uv run --python 3.12 python scripts/verify_pkg_19.py

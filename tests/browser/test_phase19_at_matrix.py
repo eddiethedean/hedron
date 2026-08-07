@@ -55,6 +55,9 @@ def _app() -> Hedron:
 def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
     if os.environ.get("HEDRON_BROWSER") != "1":
         pytest.skip("Set HEDRON_BROWSER=1 for live browser matrix")
+    wanted = os.environ.get("HEDRON_BROWSER_ENGINE")
+    if wanted and wanted != engine:
+        pytest.skip(f"HEDRON_BROWSER_ENGINE={wanted}")
     try:
         from hedron.testing.browser import axe_scan, playwright
     except ImportError:

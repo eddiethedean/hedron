@@ -186,10 +186,11 @@ disabled; absence adds no core cost. Not Supported production parity with Gradio
 Optional Rust HTML-escape acceleration with pure-Python fallback. Absence never changes public
 semantics (D-048).
 
-## Historical notes (resolved in 0.11+)
+## Deferred destinations
 
-These items were once deferred destinations; they are **Supported** (or Experimental for live
-helpers) on the current line. Kept here so older upgrade notes remain navigable.
+Historical notes (resolved in 0.11+): these items were once deferred destinations; they are
+**Supported in 0.11** (or Experimental for live helpers) on the current line. Kept here so
+older upgrade notes remain navigable.
 
 | Item | Decision | Status |
 |---|---|---|
