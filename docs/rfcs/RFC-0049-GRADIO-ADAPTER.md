@@ -34,7 +34,7 @@ absent.
   `hedron-core`.
 - Optional Hugging Face Space/OAuth/ZeroGPU vendor nodes as thin adapters over the portable
   workflow contract (RFC-0050) — not Hub hosting in core.
-- Flagship extra: `hedron[gradio]`; pin `hedron-core` on the 0.18 train.
+- Flagship extra: `hedron[gradio]`; pin `hedron-core` on the 0.19 train (`>=0.19.0,<0.20`).
 
 ### Migration inventory (`MIGRATE-018`)
 

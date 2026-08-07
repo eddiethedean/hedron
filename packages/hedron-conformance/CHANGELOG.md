@@ -2,13 +2,10 @@
 
 ## [0.19.0] — 2026-08-07
 
-### Added
+### Changed
 
-- Phase 0.19 accessibility engineering and inclusive authoring (RFCs 0023 / 0051–0055, D-050):
-  - `AccessibilityContract` catalog, standards profile, waiver/statement governance
-  - Landmark safe attrs / real types, allowlisted `Page` scripts, PE form paths
-  - Explorer accessibility review workspace, ATAG inspect/eject metadata
-  - `AccessibilityScenario`, tree snapshots, axe/SARIF helpers; automated AT matrix
+- Coordinated Beta train with phase 0.19 accessibility engineering (see `hedron-core` /
+  `hedron` / `hedron-explorer` changelogs for capability detail).
 
 
 ## [0.18.0] — 2026-08-06

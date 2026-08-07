@@ -169,6 +169,27 @@ def _find_component(name: str) -> ComponentMeta | None:
     return None
 
 
+def _accessibility_contract_for(meta: object) -> Any:
+    """Prefer curated reviewed contracts; fall back to an unreviewed stub."""
+    from hedron_core.a11y import (
+        AccessibilityContractCatalog,
+        default_contract,
+        seed_reviewed_contracts,
+    )
+
+    name = str(getattr(meta, "name", "") or "")
+    package = getattr(meta, "distribution", None)
+    pkg = package if isinstance(package, str) else "hedron-core"
+    notes = str(getattr(meta, "accessibility_notes", None) or "")
+    catalog = AccessibilityContractCatalog(package=pkg)
+    seed_reviewed_contracts(catalog, package=pkg)
+    catalog.ensure_registry(package=pkg)
+    existing = catalog.contracts.get(name)
+    if existing is not None:
+        return existing
+    return default_contract(name, package=pkg, notes=notes)
+
+
 def _cmd_inspect(args: argparse.Namespace) -> int:
     _load_app(args.app)
     from hedron.config import load_hedron_settings
@@ -183,13 +204,7 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
         _registry_empty_hint(app=args.app, what="components")
         print(f"Component {args.component!r} not found", file=sys.stderr)
         return 1
-    from hedron_core.a11y import default_contract
-
-    contract = default_contract(
-        meta.name,
-        package=meta.distribution,
-        notes=meta.accessibility_notes or "",
-    )
+    contract = _accessibility_contract_for(meta)
     payload: JsonObject = {
         "logical_id": meta.logical_id,
         "name": meta.name,
@@ -233,22 +248,13 @@ def _cmd_eject(args: argparse.Namespace) -> int:
     out_dir = Path(args.out or meta.folder_path or f"components/{meta.name}")
     out_dir.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
-    from hedron_core.a11y import default_contract
-
+    contract = _accessibility_contract_for(meta)
     contract_path = out_dir / "accessibility_contract.json"
     if contract_path.exists() and not args.force:
         print(f"Refusing to overwrite {contract_path} (use --force)", file=sys.stderr)
         return 1
     contract_path.write_text(
-        json.dumps(
-            default_contract(
-                meta.name,
-                package=meta.distribution,
-                notes=meta.accessibility_notes or "",
-            ).as_dict(),
-            indent=2,
-        )
-        + "\n",
+        json.dumps(contract.as_dict(), indent=2) + "\n",
         encoding="utf-8",
     )
     written.append(str(contract_path))
@@ -562,11 +568,10 @@ def _cmd_check(args: argparse.Namespace) -> int:
         make_diagnostic(
             "HED-COMPAT-0001",
             severity=DiagnosticSeverity.INFORMATION,
-            title="0.8 compatibility baseline is active",
+            title="0.19 compatibility baseline is active",
             explanation=(
-                "Phase 0.8 classifies the public API and compatibility baseline. "
-                "Django QuerySet DataSource and forms shipped in 0.11; "
-                "live SSE transport shipped in 0.10."
+                "Phase 0.19 classifies the public API and accessibility contracts. "
+                "See docs/api/STABILITY.md for Supported vs experimental surfaces."
             ),
             remediation="See docs/api/STABILITY.md and docs/guides/upgrade.md.",
         ),

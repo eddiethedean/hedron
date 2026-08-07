@@ -67,8 +67,6 @@
 
 - Phase 0.13 advanced async and observability.
 
-# Changelog
-
 
 ## [0.12.0] — 2026-08-05
 

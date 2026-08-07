@@ -43,7 +43,7 @@ Issue bodies for #8, #27, #31, and #39 remain normative for acceptance criteria.
 ### Page scripts (`SCRIPT-019`)
 
 - Public API to attach allowlisted external scripts to a page document via same-origin `SafeUrl`
-  assets (ASSET purpose), with defer/async policy.
+  assets (ASSET purpose), with mutually exclusive `script_defer` / `script_async` policy on `Page`.
 - Inline script content remains forbidden by default (or explicitly opt-in + documented danger).
 - CSP-friendly examples (`script-src 'self'`).
 - Free-form `<script>` nodes stay out of the component tree.

@@ -1,6 +1,6 @@
 [project]
 name = "hedron-sample-kit"
-version = "0.1.4"
+version = "0.1.5"
 description = "Third-party-shaped sample Hedron plugin package for phase 0.4"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"

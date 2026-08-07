@@ -332,25 +332,57 @@ def explorer_router() -> APIRouter:
 
     @router.get("/a11y", response_class=HTMLResponse, include_in_schema=False)
     async def a11y_view() -> str:
+        from hedron_core import Main, Page, Text, render
         from hedron_core.a11y import (
             ACCESSIBILITY_PROFILE,
             AccessibilityContractCatalog,
             AccessibilityScenario,
+            seed_reviewed_contracts,
+            validate_page_structure,
         )
+        from hedron_core.html import html as h
+        from hedron_core.security import SafeUrl, UrlPurpose
 
         catalog = AccessibilityContractCatalog()
+        seed_reviewed_contracts(catalog)
         catalog.ensure_registry()
         all_contracts = list(catalog.contracts.values())
+        reviewed_count = sum(1 for c in all_contracts if c.reviewed)
         total = len(all_contracts)
-        shown = all_contracts[:40]
+        # Prefer reviewed contracts first, then stubs.
+        ordered = sorted(all_contracts, key=lambda c: (not c.reviewed, c.component))
+        shown = ordered[:40]
         rows = "".join(
             "<tr>"
             f"<td>{html_lib.escape(c.component)}</td>"
+            f"<td>{'yes' if c.reviewed else 'stub'}</td>"
             f"<td>{html_lib.escape(c.native_semantics or '—')}</td>"
             f"<td>{html_lib.escape(c.keyboard or '—')}</td>"
             f"<td>{html_lib.escape(c.notes or '—')}</td>"
             "</tr>"
             for c in shown
+        )
+        sample = render(
+            Page(
+                h.a(
+                    "Skip to content",
+                    href=SafeUrl.parse("#main", purpose=UrlPurpose.NAVIGATION),
+                ),
+                Main(h.h1("Explorer sample"), Text("outline"), id="main"),
+                title="Explorer a11y sample",
+                lang="en",
+            )
+        ).html
+        structure = validate_page_structure(sample)
+        landmark_items = (
+            "".join(
+                f"<li><code>{html_lib.escape(name)}</code></li>" for name in structure.landmarks
+            )
+            or "<li>(none)</li>"
+        )
+        heading_items = (
+            "".join(f"<li><code>{html_lib.escape(name)}</code></li>" for name in structure.headings)
+            or "<li>(none)</li>"
         )
         profile = ACCESSIBILITY_PROFILE.as_dict()
         scenario = AccessibilityScenario(
@@ -385,20 +417,26 @@ def explorer_router() -> APIRouter:
           </dl>
         </section>
         <section aria-labelledby="a11y-tree">
-          <h3 id="a11y-tree">Accessibility tree / outlines</h3>
-          <p>Source-mapped role/name/description review uses component contracts below.
-          Keyboard map: Tab order follows DOM order in rendered previews; live-region log
-          is available when scenarios record announcements.</p>
+          <h3 id="a11y-tree">Structure outline</h3>
+          <p>Headings and landmarks from a sample Page render
+          (<code>validate_page_structure</code>). Browser accessibility trees and
+          live-region logs remain review-mode checklists / Playwright evidence,
+          not a live AT tree in Explorer.</p>
+          <h4>Landmarks</h4>
+          <ul>{landmark_items}</ul>
+          <h4>Headings</h4>
+          <ul>{heading_items}</ul>
           <h4>Review modes</h4>
           <ul>{mode_items}</ul>
         </section>
         <section aria-labelledby="a11y-contracts">
           <h3 id="a11y-contracts">Component contracts</h3>
           <p>Showing {len(shown)} of {total} contracts
-          (stubs from registry; curated reviewed contracts ship under CONTRACT-019).</p>
+          ({reviewed_count} reviewed; curated REQUIRED set plus registry stubs).</p>
           <table>
-            <thead><tr><th>Component</th><th>Semantics</th><th>Keyboard</th><th>Notes</th></tr></thead>
-            <tbody>{rows or "<tr><td colspan='4'>No contracts</td></tr>"}</tbody>
+            <thead><tr><th>Component</th><th>Reviewed</th><th>Semantics</th>
+            <th>Keyboard</th><th>Notes</th></tr></thead>
+            <tbody>{rows or "<tr><td colspan='5'>No contracts</td></tr>"}</tbody>
           </table>
         </section>
         <section aria-labelledby="a11y-atag">

@@ -39,16 +39,28 @@ def _nav_url(value: SafeUrl | str, *, allow_external: bool = False) -> SafeUrl:
 
 
 def _track_nodes(tracks: Sequence[Mapping[str, Any] | NodeLike]) -> list[NodeLike]:
+    from hedron_core.a11y.surfaces import MediaTrackContract
+
     nodes: list[NodeLike] = []
     for track in tracks:
         if isinstance(track, Mapping):
+            kind = str(track.get("kind", "captions"))
+            language = str(track.get("srclang") or track.get("language") or "")
+            src_raw = track.get("src")
+            src_str = None if src_raw is None else str(src_raw)
+            MediaTrackContract(
+                kind=kind,  # type: ignore[arg-type]
+                language=language,
+                src=src_str,
+                reviewed=bool(track.get("reviewed", False)),
+            ).validated()
             src = _asset_url(track["src"])  # type: ignore[index]
             attrs: dict[str, HtmlAttrValue] = {
                 "src": src,
-                "kind": str(track.get("kind", "captions")),
+                "kind": kind,
             }
-            if track.get("srclang"):
-                attrs["srclang"] = str(track["srclang"])
+            if language:
+                attrs["srclang"] = language
             if track.get("label"):
                 attrs["label"] = str(track["label"])
             if track.get("default"):

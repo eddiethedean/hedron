@@ -78,7 +78,15 @@ class StructureReport:
 _TITLE = re.compile(r"<title>([^<]*)</title>", re.I)
 _LANG = re.compile(r"<html[^>]*\blang=(['\"])(.*?)\1", re.I)
 _DIR = re.compile(r"<html[^>]*\bdir=(['\"])(.*?)\1", re.I)
-_LANDMARK = re.compile(r"<(header|main|nav|aside|footer|section)\b", re.I)
+_LANDMARK = re.compile(
+    r"<(header|main|nav|aside|footer)(\s|>)|"
+    r"<section\b([^>]*)>",
+    re.I,
+)
+_SECTION_NAMED = re.compile(
+    r"\b(aria-label|aria-labelledby|title)\s*=",
+    re.I,
+)
 _HEADING = re.compile(r"<h([1-6])\b", re.I)
 _SKIP = re.compile(r'href=["\']#[^"\']*["\'][^>]*>\s*skip', re.I)
 
@@ -91,7 +99,15 @@ def validate_page_structure(html: str) -> StructureReport:
     report.lang = lang_m.group(2) if lang_m else None
     dir_m = _DIR.search(html)
     report.dir = dir_m.group(2) if dir_m else None
-    report.landmarks = [m.group(1).lower() for m in _LANDMARK.finditer(html)]
+    landmarks: list[str] = []
+    for m in _LANDMARK.finditer(html):
+        if m.group(1):
+            landmarks.append(m.group(1).lower())
+            continue
+        section_attrs = m.group(3) or ""
+        if _SECTION_NAMED.search(section_attrs):
+            landmarks.append("section")
+    report.landmarks = landmarks
     report.headings = [f"h{m.group(1)}" for m in _HEADING.finditer(html)]
     report.has_skip_link = bool(_SKIP.search(html))
     if not report.title:
@@ -100,4 +116,6 @@ def validate_page_structure(html: str) -> StructureReport:
         report.issues.append("missing html lang")
     if "main" not in report.landmarks:
         report.issues.append("missing main landmark")
+    if not report.has_skip_link:
+        report.issues.append("missing skip link")
     return report

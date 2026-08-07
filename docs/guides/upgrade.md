@@ -1,9 +1,10 @@
 # Upgrade
 
-**Hedron 0.19.0** — Beta on PyPI. From 0.18: accessibility contracts, Explorer a11y workspace,
-ATAG inspect/eject metadata, landmark attrs/types, allowlisted `Page` scripts, progressive-
-enhancement form paths, automated AT matrix (human AT → 0.21). See
-[What's ready](whats-ready.md) and [What's new in 0.19](whats-new-0.19.md).
+**Hedron 0.19.0** — Ready to cut on `main` (last published PyPI/git = `v0.18.0`). From 0.18:
+accessibility contracts, Explorer a11y workspace, ATAG inspect/eject metadata, landmark
+attrs/types, allowlisted `Page` scripts, progressive-enhancement form paths, automated AT matrix
+(human AT → 0.21). See [What's ready](whats-ready.md) and [What's new in 0.19](whats-new-0.19.md).
+Until `v0.19.0` is tagged, install from `main` or wait for PyPI; pins below are for the cut train.
 
 ## Upgrade from 0.18 → 0.19
 
@@ -288,7 +289,8 @@ Gradio interop is **Experimental** — pin Alpha and expect churn. Live transpor
 ### Checklist: 0.17 → 0.18
 
 1. Pin and upgrade to the coordinated `0.18.0` Beta train (`hedron`, adapters, extras).
-   Alpha packages remain on `0.1.x` with `hedron-core>=0.19.0,<0.20`.
+   Alpha packages remain on `0.1.x` with `hedron-core>=0.18.0,<0.19` for that train
+   (0.19 pins are `>=0.19.0,<0.20`).
 2. Build demos only from `ActionRegistry` / `RegisteredCallableAdapter` — bare callables fail closed.
 3. Wire `InferencePolicy` concurrency groups and cancel through durable `JobBackend`; do not use
    `InProcessInferenceQueue` as a production durability promise.

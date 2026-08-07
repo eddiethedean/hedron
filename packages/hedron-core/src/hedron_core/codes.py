@@ -1,4 +1,4 @@
-"""Stable diagnostic code catalog (complete through phase 0.17 graph/patches)."""
+"""Stable diagnostic code catalog (complete through phase 0.19 accessibility)."""
 
 from __future__ import annotations
 
@@ -223,6 +223,12 @@ HED_FEEDBACK_0001 = "HED-FEEDBACK-0001"  # missing consent / retention / tenant 
 HED_WORKFLOW_0001 = "HED-WORKFLOW-0001"  # schema / cycle / type failure
 HED_WORKFLOW_0002 = "HED-WORKFLOW-0002"  # authorization / publish / conflict
 HED_WORKFLOW_0003 = "HED-WORKFLOW-0003"  # arbitrary code / host path / auto-exposure
+
+# Accessibility (0.19)
+HED_A11Y_0001 = "HED-A11Y-0001"  # run axe / browser a11y analysis reminder
+HED_A11Y_0010 = "HED-A11Y-0010"  # expired accessibility waiver
+HED_A11Y_0011 = "HED-A11Y-0011"  # automatic conformance claim refused
+HED_A11Y_0012 = "HED-A11Y-0012"  # statement export requires human approval
 
 
 def registered_codes() -> frozenset[str]:

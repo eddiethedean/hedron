@@ -149,9 +149,13 @@ jobs:
           uv run --python ${{ matrix.python-version }} --group docs mkdocs build --strict
 
   browser:
-    name: Browser HTMX (chromium)
+    name: Browser HTMX (${{ matrix.browser }})
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
@@ -164,12 +168,12 @@ jobs:
       - name: Install dependencies with browser extra
         run: |
           uv sync --locked --python 3.12
-          uv pip install --python 3.12 "playwright>=1.40" "uvicorn[standard]>=0.30"
-          uv run --python 3.12 playwright install --with-deps chromium
+          uv pip install --python 3.12 "playwright>=1.40" "uvicorn[standard]>=0.30" "axe-playwright-python>=0.1.4"
+          uv run --python 3.12 playwright install --with-deps ${{ matrix.browser }}
       - name: Run browser suite
         env:
           HEDRON_BROWSER: "1"
-          HEDRON_BROWSER_ENGINE: chromium
+          HEDRON_BROWSER_ENGINE: ${{ matrix.browser }}
         run: uv run --python 3.12 pytest -q -m browser --tb=short
 
   publish:

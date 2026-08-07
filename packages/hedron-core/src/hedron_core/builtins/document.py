@@ -3,15 +3,14 @@
 from __future__ import annotations
 
 import html as html_lib
-import posixpath
 from collections.abc import Sequence
 
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
-from hedron_core.diagnostics import error
+from hedron_core.diagnostics import HedronError, error
 from hedron_core.html import html
 from hedron_core.models import Props
-from hedron_core.security import SafeUrl, TrustedHtml, UrlPurpose
+from hedron_core.security import SafeUrl, TrustedHtml, UrlPurpose, reject_asset_path_traversal
 from hedron_core.typing_aliases import HtmlAttrValue
 
 __all__ = ["Fragment", "Head", "Page", "PageProps", "Title"]
@@ -41,23 +40,27 @@ def _validate_page_script(url: SafeUrl) -> SafeUrl:
             explanation=f"Rejected script src {raw!r}.",
             remediation="Use a root-relative asset path beginning with '/'.",
         )
-    path_only = raw.split("?", 1)[0].split("#", 1)[0]
-    normalized = posixpath.normpath(path_only)
-    if normalized != path_only or ".." in path_only.split("/"):
+    try:
+        reject_asset_path_traversal(raw, purpose=UrlPurpose.ASSET)
+    except HedronError:
         raise error(
             "HED-SEC-0001",
             title="Page script path must be normalized without '..'",
-            explanation=f"Rejected script src {raw!r} (normalized={normalized!r}).",
+            explanation=f"Rejected script src {raw!r}.",
             remediation="Use a clean root-relative asset path such as /assets/app.js.",
-        )
+        ) from None
     return url
 
 
-def _script_tag(url: SafeUrl, *, defer: bool) -> TrustedHtml:
+def _script_tag(url: SafeUrl, *, defer: bool = False, async_: bool = False) -> TrustedHtml:
     href = html_lib.escape(url.value, quote=True)
-    defer_attr = " defer" if defer else ""
+    attrs = ""
+    if async_:
+        attrs += " async"
+    elif defer:
+        attrs += " defer"
     return TrustedHtml.reviewed(
-        f'<script src="{href}"{defer_attr}></script>',
+        f'<script src="{href}"{attrs}></script>',
         source="hedron-core:Page.scripts",
     )
 
@@ -68,6 +71,7 @@ class PageProps(Props):
     data_theme: str | None = None
     dir: str | None = None
     script_defer: bool = True
+    script_async: bool = False
 
 
 class Page(Component[PageProps]):
@@ -87,8 +91,16 @@ class Page(Component[PageProps]):
         dir: str | None = None,
         scripts: Sequence[SafeUrl] | None = None,
         script_defer: bool = True,
+        script_async: bool = False,
         **kwargs: object,
     ) -> None:
+        if script_async and script_defer:
+            raise error(
+                "HED-SEC-0001",
+                title="Page scripts cannot be both async and defer",
+                explanation="script_async and script_defer are mutually exclusive.",
+                remediation="Pass script_async=True with script_defer=False, or use defer alone.",
+            )
         super().__init__(
             PageProps(
                 lang=lang,
@@ -96,6 +108,7 @@ class Page(Component[PageProps]):
                 data_theme=data_theme,
                 dir=dir,
                 script_defer=script_defer,
+                script_async=script_async,
                 **kwargs,
             )
         )
@@ -127,7 +140,15 @@ class Page(Component[PageProps]):
         # Allowlisted PE scripts are TrustedHtml escapes of SafeUrl ASSET paths only —
         # free-form <script> nodes remain forbidden in the component tree.
         for url in self._scripts:
-            body_nodes.append(html.raw(_script_tag(url, defer=self.props.script_defer)))
+            body_nodes.append(
+                html.raw(
+                    _script_tag(
+                        url,
+                        defer=self.props.script_defer and not self.props.script_async,
+                        async_=self.props.script_async,
+                    )
+                )
+            )
         return html.html(
             html.head(*head_nodes),
             html.body(*body_nodes),

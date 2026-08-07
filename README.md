@@ -46,7 +46,9 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 <details>
 <summary>Package maturity</summary>
 
-<strong>Hedron 0.19.0</strong> — Beta on PyPI; pin with <code>hedron&gt;=0.19.0,&lt;0.20</code> for
+<strong>Hedron 0.19.0</strong> — Ready to cut on <code>main</code> (last published PyPI/git =
+<code>v0.18.0</code>); pin with <code>hedron&gt;=0.19.0,&lt;0.20</code> after
+<code>v0.19.0</code> is tagged. <strong>Supported</strong> means the capability works on the current train when
 production. <strong>Supported</strong> means the capability works on the current train when
 pinned; most public APIs remain compatibility level <code>beta</code> until listed in the small
 <strong>stable</strong> table —

@@ -1035,7 +1035,7 @@ provides-extras = ["dev", "data", "charts", "markdown", "code", "images", "email
 
 [[package]]
 name = "hedron-charts"
-version = "0.1.4"
+version = "0.1.5"
 source = { editable = "packages/hedron-charts" }
 dependencies = [
     { name = "hedron-core" },
@@ -1371,7 +1371,7 @@ provides-extras = ["server"]
 
 [[package]]
 name = "hedron-sample-kit"
-version = "0.1.4"
+version = "0.1.5"
 source = { editable = "packages/hedron-sample-kit" }
 dependencies = [
     { name = "hedron-core" },

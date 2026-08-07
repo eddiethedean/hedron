@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html as html_stdlib
+import posixpath
 import re
 from enum import StrEnum
 from typing import Any, Generic, TypeVar, get_args, get_origin
@@ -209,6 +210,27 @@ def contains_dangerous_scheme(value: str) -> bool:
     return any(f"{dangerous}:" in scanned for dangerous in _DANGEROUS_SCHEMES)
 
 
+def reject_asset_path_traversal(raw: str, *, purpose: UrlPurpose = UrlPurpose.ASSET) -> None:
+    """Reject literal or percent-encoded ``..`` segments in root-relative asset paths."""
+    path_only = raw.split("?", 1)[0].split("#", 1)[0]
+    cleaned = path_only if path_only.startswith("/") else f"/{path_only.lstrip('/')}"
+    decoded = _normalize_for_scheme_scan(path_only)
+    decoded_path = decoded if decoded.startswith("/") else f"/{decoded.lstrip('/')}"
+    normalized = posixpath.normpath(decoded_path)
+    cleaned_norm = posixpath.normpath(cleaned)
+    segments = decoded_path.split("/")
+    if (
+        normalized != decoded_path
+        or cleaned_norm != cleaned
+        or any(seg == ".." or ".." in seg for seg in segments)
+        or any(seg == ".." or ".." in seg for seg in cleaned.split("/"))
+    ):
+        raise _url_error(
+            f"Asset path must be normalized without '..' (got {raw!r}, normalized={normalized!r})",
+            purpose,
+        )
+
+
 def _extract_scheme(value: str) -> str:
     match = _SCHEME_PREFIX.match(value)
     return match.group(1).lower() if match else ""
@@ -359,6 +381,10 @@ class SafeUrl:
 
         if parts.username is not None or parts.password is not None:
             raise _url_error("URLs must not contain credentials", purpose)
+
+        if purpose is UrlPurpose.ASSET and scheme == "" and not allow_external:
+            # Same-origin relative assets: reject encoded path traversal before emit.
+            reject_asset_path_traversal(raw, purpose=purpose)
 
         obj = object.__new__(cls)
         object.__setattr__(obj, "_value", raw)

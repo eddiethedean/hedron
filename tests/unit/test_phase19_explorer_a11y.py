@@ -32,6 +32,9 @@ def test_explorer_a11y_workspace_surface() -> None:
     assert "Accessibility review workspace" in text
     assert "Standards profile" in text
     assert "Component contracts" in text
+    assert "Structure outline" in text
+    assert "Reviewed" in text
     assert "Review modes" in text
     assert "ATAG authoring assistance" in text
     assert "empty scans never summarize as accessible" in text.lower() or "Empty scans" in text
+    assert ">yes<" in text  # curated reviewed contracts seeded

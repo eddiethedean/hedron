@@ -49,8 +49,52 @@ def test_page_scripts_require_safeurl() -> None:
 
 
 def test_page_scripts_reject_path_traversal() -> None:
-    with pytest.raises(HedronError, match="normalized|\\.\\."):
+    with pytest.raises(HedronError, match="normalized|\\.\\.|without"):
         Page(
             Text("x"),
             scripts=[SafeUrl.parse("/assets/../secret.js", purpose=UrlPurpose.ASSET)],
+        )
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/assets/%2e%2e/secret.js",
+        "/assets/%2E%2E/secret.js",
+        "/assets/app.js%2e%2e/x",
+        "/%2e%2e/secret.js",
+    ],
+)
+def test_page_scripts_reject_percent_encoded_traversal(path: str) -> None:
+    with pytest.raises(HedronError):
+        Page(
+            Text("x"),
+            scripts=[SafeUrl.parse(path, purpose=UrlPurpose.ASSET)],
+        )
+
+
+def test_safeurl_asset_rejects_percent_encoded_traversal() -> None:
+    with pytest.raises(HedronError):
+        SafeUrl.parse("/assets/%2e%2e/secret.js", purpose=UrlPurpose.ASSET)
+
+
+def test_page_scripts_async_emits_async_attr() -> None:
+    page = Page(
+        Text("hi"),
+        scripts=[SafeUrl.parse("/assets/app.js", purpose=UrlPurpose.ASSET)],
+        script_defer=False,
+        script_async=True,
+    )
+    html = render(page).html
+    assert '<script src="/assets/app.js" async></script>' in html
+    assert "defer" not in html.split("app.js")[1].split(">")[0]
+
+
+def test_page_scripts_reject_async_and_defer() -> None:
+    with pytest.raises(HedronError, match="async and defer"):
+        Page(
+            Text("x"),
+            scripts=[SafeUrl.parse("/assets/app.js", purpose=UrlPurpose.ASSET)],
+            script_defer=True,
+            script_async=True,
         )

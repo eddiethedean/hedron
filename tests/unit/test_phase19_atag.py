@@ -39,6 +39,7 @@ def test_inspect_includes_accessibility_contract(
     assert exc.value.code == 0
     data = json.loads(capsys.readouterr().out)
     assert data["accessibility_contract"]["component"] == "Button"
+    assert data["accessibility_contract"]["reviewed"] is True
     assert data["accessibility_props_alongside_ordinary"] is True
     assert data["repair_guidance"]["reversible"] is True
 
@@ -58,6 +59,7 @@ def test_eject_preserves_accessibility_contract(
     assert contract_file.is_file()
     data = json.loads(contract_file.read_text(encoding="utf-8"))
     assert data["component"] == "Button"
+    assert data["reviewed"] is True
     assert data["implies_application_conformance"] is False
     again = default_contract(data["component"], notes=data.get("notes") or "")
     assert again.component == "Button"

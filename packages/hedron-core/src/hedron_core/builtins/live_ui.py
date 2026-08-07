@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import itertools
 from typing import Literal
 
 from hedron_core.builtins._base import collect_children
@@ -9,6 +10,8 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrValue
+
+_DIALOG_ID_SEQ = itertools.count(1)
 
 
 class DialogProps(Props):
@@ -38,6 +41,8 @@ class Dialog(Component[DialogProps]):
     ) -> None:
         # ``element_id`` remains accepted as a compatibility alias for ``id``.
         resolved_id = id if id is not None else element_id
+        if resolved_id is None:
+            resolved_id = f"hedron-dialog-{next(_DIALOG_ID_SEQ)}"
         super().__init__(DialogProps(title=title, open=open, modal=modal, id=resolved_id, **kwargs))
         self._body = collect_children(*nodes, children=children)
 
@@ -48,8 +53,10 @@ class Dialog(Component[DialogProps]):
         actions = self._slot_values.get("actions", ())
         if not isinstance(actions, tuple):
             actions = (actions,)
-        title_id = f"{self.props.id}-title" if self.props.id else "hedron-dialog-title"
+        dialog_id = self.props.id or f"hedron-dialog-{next(_DIALOG_ID_SEQ)}"
+        title_id = f"{dialog_id}-title"
         attrs: dict[str, HtmlAttrValue] = {
+            "id": dialog_id,
             "class_": "hedron-dialog",
             "data": {"hedron-dialog": "true", "modal": "true" if self.props.modal else "false"},
             "aria": {
@@ -57,8 +64,6 @@ class Dialog(Component[DialogProps]):
                 "modal": "true" if self.props.modal else "false",
             },
         }
-        if self.props.id:
-            attrs["id"] = self.props.id
         if self.props.open:
             attrs["open"] = True
         close = html.form(

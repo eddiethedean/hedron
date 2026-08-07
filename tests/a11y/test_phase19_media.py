@@ -19,6 +19,19 @@ def test_media_track_contract_validation() -> None:
     assert transcript.src is None
 
 
+def test_audio_tracks_require_language_via_media_contract() -> None:
+    from hedron_core import Audio, render
+    from hedron_core.security import SafeUrl, UrlPurpose
+
+    src = SafeUrl.parse("/media/a.mp3", purpose=UrlPurpose.ASSET)
+    html = render(
+        Audio(src, tracks=[{"src": "/media/captions.vtt", "kind": "captions", "srclang": "en"}])
+    ).html
+    assert "<track" in html
+    with pytest.raises(ValueError, match="language|src"):
+        render(Audio(src, tracks=[{"src": "/media/captions.vtt", "kind": "captions"}]))
+
+
 def test_chart_accessibility_still_requires_alt_or_waiver() -> None:
     ChartAccessibility(title="Sales", alt="Bar chart of sales").validated()
     with pytest.raises(ValueError):

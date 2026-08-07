@@ -27,7 +27,8 @@ _LANDMARK_SAFE_KEYS = frozenset(
     }
 )
 
-# Roles that strip or override landmark semantics — rejected on landmark surfaces.
+# Roles that strip or override landmark semantics — reject any explicit role=
+# override; native landmark tags already imply the correct role.
 _LANDMARK_HOSTILE_ROLES = frozenset({"presentation", "none"})
 
 
@@ -56,8 +57,7 @@ def _landmark_attrs(props: LandmarkProps) -> dict[str, HtmlAttrValue]:
         attrs["lang"] = props.lang
     if props.dir:
         attrs["dir"] = props.dir
-    if props.role:
-        attrs["role"] = props.role
+    # Explicit role overrides are rejected in _filter_landmark_kwargs; never emit role=.
     if props.title:
         attrs["title"] = props.title
     if props.tabindex is not None:
@@ -79,10 +79,11 @@ def _filter_landmark_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
             f"Allowlisted: {sorted(_LANDMARK_SAFE_KEYS)}."
         )
     role = kwargs.get("role")
-    if isinstance(role, str) and role.lower() in _LANDMARK_HOSTILE_ROLES:
+    if isinstance(role, str) and role.strip():
         raise TypeError(
             f"Landmark-hostile role={role!r} is not allowed on landmark components "
-            f"(rejected: {sorted(_LANDMARK_HOSTILE_ROLES)})."
+            f"(native landmark tags already imply the correct role; "
+            f"rejected including: {sorted(_LANDMARK_HOSTILE_ROLES)})."
         )
     return {
         k: v

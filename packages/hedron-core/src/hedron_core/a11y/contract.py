@@ -264,12 +264,7 @@ def seed_reviewed_contracts(
     """Register reviewed contracts for the curated REQUIRED set (and optional extras)."""
     pkg = package or catalog.package
     target = names or REQUIRED_REVIEWED_CONTRACTS
-    registered = {meta.name for meta in get_registry().components()}
     for name in sorted(target):
-        if name not in registered and name not in catalog.contracts:
-            # Still seed so assert_complete can report missing registration separately.
-            catalog.register(_curated_for(name, package=pkg))
-            continue
         catalog.register(_curated_for(name, package=pkg))
 
 
@@ -313,6 +308,12 @@ class AccessibilityContractCatalog:
         if missing:
             raise AssertionError(f"Missing AccessibilityContract for: {missing[:20]}")
         need = REQUIRED_REVIEWED_CONTRACTS if require_reviewed is None else require_reviewed
+        registered = {meta.name for meta in get_registry().components()}
+        absent = sorted(name for name in need if name not in registered)
+        if absent:
+            raise AssertionError(
+                f"REQUIRED AccessibilityContract components missing from registry: {absent[:20]}"
+            )
         bad = self.unreviewed(need)
         if bad:
             raise AssertionError(f"Unreviewed AccessibilityContract for: {bad[:20]}")

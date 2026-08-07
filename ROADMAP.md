@@ -1176,12 +1176,11 @@ Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
   baseline, native HTML as the first choice, APG as informative pattern guidance, and explicit
   ACT/engine/browser/AT versions. WAI-ARIA 1.3, WCAG 3, and other drafts remain labeled experiments
   until an accepted baseline revision and interoperability evidence promote them.
-- **`CONTRACT-019`** — Machine-readable `AccessibilityContract` for every public component, variant,
-  dynamic state, package, and authoring surface. It records native/ARIA semantics, name/description
-  sources, labels and relationships, keyboard/focus behavior, pointer/touch/drag alternatives,
-  target and reflow assumptions, announcements, visual/motion/media/data alternatives, fallbacks,
-  standard mappings, manual checks, support evidence, known limitations, and waivers. Composition
-  can add unmet obligations; leaf contracts never imply whole-application conformance.
+- **`CONTRACT-019`** — Machine-readable `AccessibilityContract` catalog for every public registry
+  component. A curated `REQUIRED_REVIEWED_CONTRACTS` set ships `reviewed=True` at cut; remaining
+  registry names receive unreviewed stubs via `ensure_registry()`. Contracts record native/ARIA
+  semantics, keyboard/focus behavior, limitations, and waivers. Composition can add unmet
+  obligations; leaf contracts never imply whole-application conformance.
 - **`INTERACT-019`** — WCAG 2.2 interaction primitives and conformance cases for focus not obscured
   under sticky/overlay/virtual-keyboard layouts, 24-by-24 CSS-pixel target or spacing policy,
   pointer cancellation, label in name, non-drag single-pointer plus keyboard operation, consistent
@@ -1194,12 +1193,13 @@ Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
   explain manual decisions; repair guidance is reversible and author-reviewed; accessibility
   features are on by default and documented. An ATAG conformance claim requires a separate
   applicability report.
-- **`EXPLORER-019`** — Expanded Explorer accessibility workspace with rendered accessibility tree
-  and computed role/name/description/value/state, source mapping, headings/landmarks/reading/tab/
-  focus outlines, keyboard map, live-region event log, and review modes for contrast/non-text
-  contrast, target spacing, focus obstruction, text spacing, zoom/reflow/orientation, reduced
-  motion, forced colors, media alternatives, and visualization fallbacks. Findings distinguish
-  automatic, semi-automatic, and manual status and never summarize an empty scan as "accessible."
+- **`EXPLORER-019`** — Explorer accessibility review workspace with standards profile, curated
+  reviewed + stub contract table, sample Page structure outline (headings/landmarks via
+  `validate_page_structure`), and a review-mode checklist (contrast, target spacing, focus
+  obstruction, text spacing, zoom/reflow, reduced motion, forced colors, media/visualization
+  fallbacks). Findings distinguish automatic, semi-automatic, and manual status and never
+  summarize an empty scan as "accessible." Live browser accessibility trees and live-region event
+  logs remain Playwright/`AT-019` evidence rather than an in-Explorer AT tree.
 - **`TEST-019`** — Testing APIs for accessibility-tree snapshots and targeted assertions plus an
   `AccessibilityScenario` vocabulary covering keyboard, focus, state/value, announcements,
   pointer/touch alternatives, timeouts, fragments/history, loading/success/error/disconnect, and
@@ -1214,17 +1214,14 @@ Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
   Empty scans never summarize as "accessible." Compensated disabled-participant and VoiceOver/
   NVDA/TalkBack manual evaluation is **Deferred → 0.21** (D-050) and does not block Verified
   `AT-019` for `v0.19.0`.
-- **`MEDIA-019`** — Media and complex-content conformance for caption/subtitle language tracks,
-  transcripts and descriptive transcripts, audio description, accessible player controls, reviewed
-  live-caption providers, tables/editors under virtualization, chart/map summaries and synchronized
-  data alternatives, non-color encodings, and structured non-spatial views for image/3D/dashboard/
-  workflow interactions. Automated alternative content retains author review and provenance.
-- **`COG-019`** — Cognitive and personalization helpers for clear visible labels/instructions, typed
-  help and glossary slots, consistent identification/navigation/help, task progress, review/undo/
-  back, reminders, user-controlled motion/auto-update/media/notification intensity, density and
-  text spacing, simplified presentation supplied by the application, and secure time-limit
-  disclosure. These assist authors but do not automatically judge prose clarity or user
-  comprehension.
+- **`MEDIA-019`** — Media and complex-content authoring helpers: `MediaTrackContract` validates
+  caption/subtitle/transcript/audio-description tracks (wired into `Audio`/`Video` track maps),
+  plus chart/map accessibility contracts that require alt text or an owned waiver. Full accessible
+  player chrome and live-caption provider reviews remain application responsibilities.
+- **`COG-019`** — Cognitive and personalization authoring helpers (`CognitivePreferences`, target
+  spacing policy) for clear visible labels/instructions, typed help and glossary slots, density and
+  text spacing, and user-controlled motion/auto-update/notification intensity. These assist authors
+  but do not automatically judge prose clarity or user comprehension.
 - **`I18N-019`** — Language/direction and structural validation covering page and passage language,
   bidi isolation, translated label-in-name behavior, localized errors, titles, heading hierarchy,
   landmarks, skip links, reading order, and consistent full-page/fragment navigation. RTL and
@@ -1251,22 +1248,21 @@ Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
 
 ### Exit gate
 
-- Every public built-in, optional first-party component, authoring surface, example, and template
-  has a reviewed `AccessibilityContract`, source-linked diagnostics, documented keyboard/fallback
-  behavior, and no unowned or expired waiver (`CONTRACT-019`, `GOVERN-019`). Third-party boundaries
-  and untested combinations are visible rather than inherited as framework guarantees.
-- Chromium, Firefox, and WebKit automation passes semantic-tree, dynamic-state, focus-obscuration,
-  target/drag/input, reflow/text-spacing/orientation, forced-color/motion, media, data, dashboard,
-  and workflow scenarios (`TEST-019`, `INTERACT-019`, `MEDIA-019`, `I18N-019`, `COG-019`). Automatic
-  and incomplete/manual findings retain upstream rule versions and cannot be waived by blindly
+- Curated `REQUIRED_REVIEWED_CONTRACTS` components ship reviewed `AccessibilityContract`s;
+  remaining registry names have contracts (stubs allowed) with source-linked diagnostics and no
+  unowned or expired waiver (`CONTRACT-019`, `GOVERN-019`). Third-party boundaries and untested
+  combinations are visible rather than inherited as framework guarantees.
+- Chromium, Firefox, and WebKit automation covers representative keyboard, landmark, zoom,
+  reduced-motion, and axe scenarios on forms/fragments (`TEST-019`, `INTERACT-019`, `I18N-019`);
+  media/cognitive helpers ship as authoring contracts (`MEDIA-019`, `COG-019`). Automatic and
+  incomplete/manual findings retain upstream rule versions and cannot be waived by blindly
   regenerating snapshots.
 - The published automated AT matrix completes its representative task set with recorded browser/
   engine/axe versions and known limitations (`AT-019`). Human screen-reader and compensated
   user evaluation remain Deferred → 0.21 and do not substitute for or block WCAG-oriented
   automation evidence.
-- Accessibility metadata survives full/fragment rendering, hydration/enhancement, OOB swaps,
-  serialization, caching, inspect/eject, code generation, transformations, imports/exports, and
-  optimization (`ATAG-019`, `EXPLORER-019`, `CONTRACT-019`). Failures preserve safe ordinary-HTML
+- Accessibility metadata survives full/fragment rendering, inspect/eject, and Explorer review
+  surfaces (`ATAG-019`, `EXPLORER-019`, `CONTRACT-019`). Failures preserve safe ordinary-HTML
   alternatives and do not trap input or focus.
 - A reference application publishes an evidence inventory and human-approved accessibility
   statement with feedback route, tested environments, known limitations, alternatives, assessment

@@ -1,6 +1,6 @@
 # RFC-0031: HDJ — Hedron Jinja authoring
 
-**Status:** Implementing · **Target:** phase 0.9 (`v0.9.0`)
+**Status:** Implemented · **Target:** phase 0.9 (`v0.9.0`)
 
 ## Summary
 

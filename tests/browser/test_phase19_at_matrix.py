@@ -40,12 +40,12 @@ def _app() -> Hedron:
     @app.page("/")
     def home() -> Page:
         return Page(
+            html.a(
+                "Skip to content",
+                href=SafeUrl.parse("#main", purpose=UrlPurpose.NAVIGATION),
+            ),
             Main(
                 html.h1("AT matrix"),
-                html.a(
-                    "Skip to content",
-                    href=SafeUrl.parse("#main", purpose=UrlPurpose.NAVIGATION),
-                ),
                 Form(
                     FormField(
                         name="name",
@@ -118,10 +118,11 @@ def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
         page = browser.new_page()
         page.set_content(html_text)
         page.get_by_role("main").wait_for()
-        # Keyboard: tab reaches a focusable control.
+        # Keyboard: tab reaches a focusable control (skip link first — not BODY).
         page.keyboard.press("Tab")
         focused = page.evaluate("() => document.activeElement && document.activeElement.tagName")
-        assert focused in {"INPUT", "BUTTON", "A", "BODY"}
+        assert focused in {"INPUT", "BUTTON", "A"}
+        assert focused != "BODY"
         # Zoom / reflow: narrow viewport still exposes main landmark.
         page.set_viewport_size({"width": 320, "height": 640})
         assert page.get_by_role("main").count() >= 1

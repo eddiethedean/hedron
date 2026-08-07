@@ -350,6 +350,15 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-SEC-0010` | `HED_SEC_0010` |
 | `HED-SEC-0020` | `HED_SEC_0020` |
 
+## HED-A11Y
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-A11Y-0001` | `HED_A11Y_0001` |
+| `HED-A11Y-0010` | `HED_A11Y_0010` |
+| `HED-A11Y-0011` | `HED_A11Y_0011` |
+| `HED-A11Y-0012` | `HED_A11Y_0012` |
+
 ## HED-THEME
 
 | Code | Catalog symbol |

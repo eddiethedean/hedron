@@ -51,3 +51,5 @@ def test_landmark_rejects_hostile_roles() -> None:
         Main(Text("x"), role="presentation")
     with pytest.raises(TypeError, match="Landmark-hostile role"):
         Nav(Text("x"), role="none")
+    with pytest.raises(TypeError, match="Landmark-hostile role"):
+        Main(Text("x"), role="button")
