@@ -276,7 +276,8 @@
 .hdc-status { align-items: center; background: color-mix(in srgb, #15915e 6%, var(--hdc-panel)); border: 1px solid color-mix(in srgb, #15915e 28%, var(--hdc-line)); border-radius: .68rem; box-shadow: 0 8px 20px rgba(9,31,45,.06); display: flex; gap: .6rem; padding: .8rem; }
 .hdc-status i { background: #15915e; border-radius: 50%; height: .65rem; width: .65rem; }
 .hdc-theme-control { align-items: end; grid-template-columns: 1fr auto; }
-.hdc-theme-swatch { background: white; border: 1px solid #d7e1e6; border-radius: .5rem; color: #183144; margin-top: 1rem; padding: 1rem; }
+.hdc-theme-swatch { background: var(--hdc-raised); border: 1px solid var(--hdc-line); border-radius: .5rem; color: var(--hdc-text); margin-top: 1rem; padding: 1rem; }
+.hdc-theme-swatch[data-preview-theme="light"] { background: #fff; border-color: #d7e1e6; color: #183144; }
 .hdc-theme-swatch[data-preview-theme="dark"] { background: #142630; border-color: #29404d; color: #e8f2f6; }
 .hdc-theme-swatch[data-preview-theme="system"] { background: linear-gradient(110deg, #fff 50%, #142630 50%); color: #0d9488; }
 .hdc-chart { background: linear-gradient(155deg, var(--hdc-raised), color-mix(in srgb, var(--hdc-accent) 4%, var(--hdc-panel))); border: 1px solid var(--hdc-line); border-radius: .8rem; box-shadow: 0 13px 30px rgba(9,31,45,.09); margin: 0; padding: 1rem; }

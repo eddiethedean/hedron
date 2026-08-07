@@ -2033,22 +2033,35 @@ COMPONENTS = (
 def demo_html(spec: ComponentDoc) -> str:
     name = spec.name
     kind = spec.demo
+    sim_by_kind = {
+        "refresh": "component-refresh",
+        "lazy": "component-lazy",
+        "poll": "component-poll",
+        "infinite": "component-infinite",
+        "pagination": "component-pagination",
+        "error": "component-error",
+        "form": "component-form",
+        "auto-form": "component-auto-form",
+        "toast": "component-toast",
+        "fragment": "component-fragment",
+    }
+    sim_by_name = {
+        "AppShell": "component-app-shell",
+        "MainPanel": "component-main-panel",
+        "NavLink": "component-nav-link",
+        "HtmxLink": "component-htmx-link",
+        "OobHost": "component-oob-host",
+        "AttrHost": "component-attr-host",
+        "Loading": "component-loading",
+        "FormErrors": "component-form-errors",
+        "Skeleton": "component-skeleton",
+        "ConfirmButton": "component-confirm",
+    }
+    sim_name = sim_by_kind.get(kind) or sim_by_name.get(name)
+    if sim_name is not None:
+        return f"<!-- hedron-sim:{sim_name} -->"
     if kind == "button":
         body = '<button class="hdc-button hdc-primary" type="button" data-hdc-action="count">Archive project <span data-hdc-count>0</span></button><p role="status" data-hdc-status>Ready.</p>'
-    elif kind in {"form", "auto-form"}:
-        body = '<form class="hdc-form" data-hdc-form><label>Email address<input name="email" type="email" required placeholder="ada@example.com"></label><button class="hdc-button hdc-primary" type="submit">Submit</button></form><p role="status" aria-live="polite" data-hdc-status>Nothing submitted yet.</p>'
-    elif kind == "refresh":
-        body = '<div class="hdc-result" id="status-card" aria-live="polite"><strong>Service healthy</strong><span>Checked just now</span></div><button class="hdc-button" type="button" data-hdc-action="refresh">Refresh status</button>'
-    elif kind == "lazy":
-        body = '<div class="hdc-result" data-hdc-lazy aria-live="polite" aria-busy="true"><span class="hdc-skeleton"></span><span class="hdc-skeleton"></span><button class="hdc-button" type="button" data-hdc-action="lazy">Load activity</button></div>'
-    elif kind == "poll":
-        body = '<div class="hdc-result"><strong data-hdc-poll-state>Queued</strong><span data-hdc-poll-detail>Waiting for a worker</span></div><button class="hdc-button" type="button" data-hdc-action="poll">Start simulated polling</button>'
-    elif kind == "infinite":
-        body = '<ol class="hdc-feed" data-hdc-feed><li>Deployment completed</li><li>Review approved</li></ol><button class="hdc-button" type="button" data-hdc-action="more">Load more</button><p class="hdc-muted" role="status" data-hdc-status>Showing 2 events.</p>'
-    elif kind == "pagination":
-        body = '<div class="hdc-result" data-hdc-page-content><strong>Results 1–3</strong><span>Alpha · Bravo · Charlie</span></div><nav class="hdc-pages" aria-label="Demo pagination"><a href="?page=1" aria-current="page" data-hdc-page="1">1</a><a href="?page=2" data-hdc-page="2">2</a><a href="?page=3" data-hdc-page="3">3</a></nav>'
-    elif kind == "error":
-        body = '<div class="hdc-error" role="group" data-hdc-error><p role="alert">Activity could not be loaded.</p><button class="hdc-button" type="button" data-hdc-action="retry">Retry</button></div>'
     elif kind == "dialog":
         body = '<div class="hdc-dialog-launch"><span class="hdc-file-icon" aria-hidden="true">R</span><span><strong>Quarterly report</strong><small>Updated 2 minutes ago</small></span><button class="hdc-button" type="button" data-hdc-action="open-dialog">Delete…</button></div><dialog class="hdc-dialog" data-hdc-dialog aria-labelledby="hdc-dialog-title"><header><h2 id="hdc-dialog-title">Delete report?</h2><form method="dialog"><button type="submit" class="hdc-dialog-close" aria-label="Close dialog">×</button></form></header><p>This removes the saved report. The source data is unchanged.</p><footer><button class="hdc-button" type="button" data-hdc-action="close-dialog">Cancel</button><button class="hdc-button hdc-primary" type="button" data-hdc-action="close-dialog">Delete report</button></footer></dialog><p class="hdc-muted" role="status" data-hdc-status>Dialog closed.</p>'
     elif kind == "chat-input":
@@ -2057,8 +2070,6 @@ def demo_html(spec: ComponentDoc) -> str:
         body = '<label class="hdc-file"><span class="hdc-file-icon" aria-hidden="true">↑</span><strong>Upload evidence</strong><small>PDF, PNG, or JPG · up to 10 MB</small><input type="file" accept=".pdf,image/*" data-hdc-file></label><p class="hdc-muted" role="status" data-hdc-status>No file selected.</p>'
     elif kind == "download":
         body = '<div class="hdc-download"><span class="hdc-file-icon" aria-hidden="true">↓</span><span><strong>Service health export</strong><small>service-health.csv · 27 bytes</small></span><a class="hdc-button hdc-primary" href="data:text/csv;charset=utf-8,service%2Cstatus%0Aapi%2Chealthy" download="service-health.csv">Download CSV</a></div>'
-    elif kind == "toast":
-        body = '<button class="hdc-button" type="button" data-hdc-action="show-toast">Show toast</button><div class="hdc-toast" role="status" data-hdc-toast hidden><span>API key copied.</span></div>'
     elif kind == "tabs":
         body = '<div class="hdc-tabs" data-hdc-tabs><div role="tablist" aria-label="Account details"><button role="tab" aria-selected="true" data-hdc-tab="overview">Overview</button><button role="tab" aria-selected="false" tabindex="-1" data-hdc-tab="history">History</button></div><section role="tabpanel" data-hdc-panel="overview">Current plan: Pro</section><section role="tabpanel" data-hdc-panel="history" hidden>Upgraded on July 12</section></div>'
     elif kind == "color-mode":
@@ -2074,21 +2085,11 @@ def demo_html(spec: ComponentDoc) -> str:
             kind
         ]
         body = f'<figure class="hdc-chart hdc-chart-{chart_class}"><figcaption><strong>{name} output</strong><span>Accessible static preview with a text conclusion.</span></figcaption><div class="hdc-chart-art" role="img" aria-label="Sample chart showing a clear upward pattern"><i></i><i></i><i></i><i></i><i></i></div></figure>'
-    elif kind == "fragment":
-        body = '<div class="hdc-fragment"><span class="hdc-badge">Saved</span><span><strong>Profile updated</strong><small>The record is current.</small></span></div><p class="hdc-muted">Two sibling nodes; no wrapper is added by Fragment.</p>'
     elif kind == "auto":
         body = '<dl class="hdc-description"><dt>Region</dt><dd>iad</dd><dt>Healthy</dt><dd><span class="hdc-badge">True</span></dd><dt>Replicas</dt><dd>3</dd></dl>'
     else:
         body = static_demo(spec)
     simulated = kind in {
-        "form",
-        "auto-form",
-        "refresh",
-        "lazy",
-        "poll",
-        "infinite",
-        "pagination",
-        "error",
         "data-editor",
         "color-mode",
         "chat-input",
@@ -2436,9 +2437,22 @@ def page_text(spec: ComponentDoc) -> str:
         "infinite",
         "pagination",
         "error",
+        "toast",
+        "fragment",
         "data-editor",
         "color-mode",
         "chat-input",
+    } or spec.name in {
+        "AppShell",
+        "MainPanel",
+        "NavLink",
+        "HtmxLink",
+        "OobHost",
+        "AttrHost",
+        "Loading",
+        "FormErrors",
+        "Skeleton",
+        "ConfirmButton",
     }
     known_imports = sorted(
         {

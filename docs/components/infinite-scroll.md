@@ -16,7 +16,7 @@ Append the next fragment when a pagination sentinel is revealed.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="InfiniteScroll"><div class="hdc-stage"><ol class="hdc-feed" data-hdc-feed><li>Deployment completed</li><li>Review approved</li></ol><button class="hdc-button" type="button" data-hdc-action="more">Load more</button><p class="hdc-muted" role="status" data-hdc-status>Showing 2 events.</p></div><div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /fragment → 200</code></div></section>
+<!-- hedron-sim:component-infinite -->
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

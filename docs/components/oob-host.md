@@ -16,7 +16,7 @@ Stable out-of-band swap root with a reserved id.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="OobHost"><div class="hdc-stage"><div class="hdc-fragment" id="demo-oob-host"><span class="hdc-badge">OOB host</span><span><strong>#status</strong><small>Stable swap root for out-of-band updates.</small></span></div></div></section>
+<!-- hedron-sim:component-oob-host -->
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 
@@ -34,7 +34,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 OobHost reserves a predictable DOM root for `oob_swap` updates. Pair with authorize_oob_update and reserved-id rules so fragments cannot target arbitrary selectors.
 
-This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
+This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
 ## Constructor and parameters
 
@@ -54,7 +54,7 @@ Keep `OobHost` at the smallest semantic boundary. Fragment routes should return 
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-This component is primarily presentational; keep any mutation on an explicit action or component route.
+Mutating flows must use POST, validate CSRF, authorize on the server, re-validate typed input, and return a bounded fragment. GET remains safe and repeatable; native submit should still work without HTMX.
 
 ## Accessibility
 

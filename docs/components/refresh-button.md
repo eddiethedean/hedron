@@ -16,7 +16,7 @@ Refresh a target component through a typed reference or safe URL.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="RefreshButton"><div class="hdc-stage"><div class="hdc-result" id="status-card" aria-live="polite"><strong>Service healthy</strong><span>Checked just now</span></div><button class="hdc-button" type="button" data-hdc-action="refresh">Refresh status</button></div><div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /fragment → 200</code></div></section>
+<!-- hedron-sim:component-refresh -->
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

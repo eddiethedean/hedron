@@ -16,7 +16,7 @@ Render crawlable page links that optionally swap a target through HTMX.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Pagination"><div class="hdc-stage"><div class="hdc-result" data-hdc-page-content><strong>Results 1–3</strong><span>Alpha · Bravo · Charlie</span></div><nav class="hdc-pages" aria-label="Demo pagination"><a href="?page=1" aria-current="page" data-hdc-page="1">1</a><a href="?page=2" data-hdc-page="2">2</a><a href="?page=3" data-hdc-page="3">3</a></nav></div><div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /fragment → 200</code></div></section>
+<!-- hedron-sim:component-pagination -->
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

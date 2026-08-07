@@ -28,31 +28,10 @@ A wrong `HX-Target` returns **403** by design — fix typos in the region id / s
 
 ### Try it (simulated)
 
-Multi-region refresh plus an allowlist miss — local docs JS, not a running Hedron server.
+Multi-region refresh plus an allowlist miss — real Hedron components via `hedron-sim` (no live server).
 
-<section class="hedron-component-demo" data-hedron-component-demo="HtmxInteractionsGuide">
-  <div class="hdc-stage">
-    <div class="hdc-stack">
-      <div class="hdc-result" data-hdc-refresh-target id="hx-guide-status" aria-live="polite">
-        <strong>Service healthy</strong><span>Checked just now</span>
-      </div>
-      <button class="hdc-button hdc-primary" type="button" data-hdc-action="refresh" data-hdc-path="/status">Refresh status</button>
-      <div class="hdc-result" data-hdc-notes-count data-count="0" id="hx-guide-notes" aria-live="polite">
-        <strong>Notes saved: 0</strong><span>Allowlisted region #notes-count</span>
-      </div>
-      <button class="hdc-button" type="button" data-hdc-action="refresh-notes" data-hdc-path="/notes-count">Refresh notes count</button>
-      <div class="hdc-inline" role="group" aria-label="Allowlist demo">
-        <button class="hdc-button" type="button" data-hdc-action="allowlist-ok" data-hdc-path="/status">Correct target → 200</button>
-        <button class="hdc-button" type="button" data-hdc-action="allowlist-deny" data-hdc-path="/status">Wrong #panel → 403</button>
-      </div>
-      <div class="hdc-result" data-hdc-allowlist-target aria-live="polite">
-        <strong>Allowlist probe</strong><span>Try the correct vs wrong target buttons.</span>
-      </div>
-      <p class="hdc-muted" role="status" data-hdc-status>Click a control to simulate an HTMX fragment request.</p>
-    </div>
-  </div>
-  <div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /fragment → 200</code></div>
-</section>
+<!-- hedron-sim:htmx-interactions -->
+
 
 ## Delta: add a second region (notes count)
 

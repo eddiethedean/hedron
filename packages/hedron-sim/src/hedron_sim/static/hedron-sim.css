@@ -1,8 +1,38 @@
 .hedron-sim {
-  border: 1px solid var(--hedron-border, #d7e1e6);
+  --hs-bg: #f4f7f8;
+  --hs-panel: #fff;
+  --hs-raised: #fff;
+  --hs-text: #183144;
+  --hs-muted: #657986;
+  --hs-line: #d7e1e6;
+  --hs-accent: #0d9488;
+  --hs-accent-soft: rgba(13, 148, 136, 0.11);
+  --hs-danger: #d44e4e;
+  --hs-ok: #15865a;
+  --hs-ok-soft: rgba(21, 145, 94, 0.16);
+  background:
+    radial-gradient(circle at 92% 4%, var(--hs-accent-soft), transparent 34%),
+    linear-gradient(145deg, color-mix(in srgb, var(--hs-panel) 22%, transparent), transparent 52%),
+    var(--hs-bg);
+  border: 1px solid var(--hs-line);
   border-radius: 1rem;
+  color: var(--hs-text);
   margin: 1rem 0 1.4rem;
   overflow: hidden;
+}
+
+[data-md-color-scheme="slate"] .hedron-sim {
+  --hs-bg: #0d1922;
+  --hs-panel: #142630;
+  --hs-raised: #192d38;
+  --hs-text: #e8f2f6;
+  --hs-muted: #9cb0bc;
+  --hs-line: #29404d;
+  --hs-accent: #5eead4;
+  --hs-accent-soft: rgba(94, 234, 212, 0.09);
+  --hs-danger: #f07178;
+  --hs-ok: #5eead4;
+  --hs-ok-soft: rgba(94, 234, 212, 0.14);
 }
 
 .hedron-sim__stage {
@@ -10,8 +40,8 @@
 }
 
 .hedron-sim__trace {
-  border-top: 1px solid var(--hedron-border, #d7e1e6);
-  color: #0d9488;
+  border-top: 1px solid var(--hs-line);
+  color: var(--hs-accent);
   font-family: var(--md-code-font-family, ui-monospace, monospace);
   font-size: 0.72rem;
   margin: 0;
@@ -19,7 +49,7 @@
 }
 
 .hedron-sim__trace.is-deny {
-  color: #d44e4e;
+  color: var(--hs-danger);
 }
 
 .hedron-sim__trace[hidden] {
@@ -32,7 +62,7 @@
 
 @keyframes hedron-sim-flash {
   from {
-    background: color-mix(in srgb, #0d9488 18%, transparent);
+    background: color-mix(in srgb, var(--hs-accent) 18%, transparent);
   }
   to {
     background: transparent;
@@ -46,9 +76,11 @@
 }
 
 .hedron-sim--browser {
+  background: transparent;
   border: 0;
   border-radius: 0;
   box-shadow: none;
+  color: inherit;
   margin: 0;
 }
 
@@ -58,7 +90,7 @@
 
 .hedron-sim--browser .hedron-sim__trace {
   border-top: 0;
-  color: #0d9488;
+  color: var(--hs-accent, #0d9488);
   font-size: 0.72rem;
   margin: 0.35rem 0 0;
   min-height: 1.1rem;
@@ -69,4 +101,207 @@
 
 .hedron-sim--browser .hedron-sim__trace.is-visible {
   opacity: 1;
+}
+
+.hedron-sim-card {
+  background: var(--hs-raised);
+  border: 1px solid var(--hs-line);
+  border-radius: 0.72rem;
+  display: grid;
+  gap: 0.2rem;
+  margin: 0 0 0.75rem;
+  padding: 0.85rem 1rem;
+}
+
+.hedron-sim-card span {
+  color: var(--hs-muted);
+  font-size: 0.85em;
+}
+
+.hedron-sim-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.hedron-sim-btn,
+.hedron-sim button[hx-get],
+.hedron-sim button[hx-post],
+.hedron-sim button[hx-delete],
+.hedron-sim button[type="submit"] {
+  background: var(--hs-raised);
+  border: 1px solid var(--hs-line);
+  border-radius: 0.55rem;
+  color: var(--hs-text);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+  margin: 0.15rem 0.25rem 0.15rem 0;
+  min-height: 2.3rem;
+  padding: 0.45rem 0.8rem;
+}
+
+.hedron-sim-btn:hover,
+.hedron-sim button[hx-get]:hover,
+.hedron-sim button[hx-post]:hover,
+.hedron-sim button[hx-delete]:hover,
+.hedron-sim button[type="submit"]:hover {
+  border-color: var(--hs-accent);
+}
+
+.hedron-sim-btn--primary,
+.hedron-sim button.hedron-button-primary,
+.hedron-sim .hedron-button-primary {
+  background: #0d9488;
+  border-color: #0d9488;
+  color: #fff;
+}
+
+[data-md-color-scheme="slate"] .hedron-sim-btn--primary,
+[data-md-color-scheme="slate"] .hedron-sim button.hedron-button-primary,
+[data-md-color-scheme="slate"] .hedron-sim .hedron-button-primary {
+  background: #0f766e;
+  border-color: #14b8a6;
+  color: #ecfeff;
+}
+
+.hedron-sim-muted {
+  color: var(--hs-muted);
+  font-size: 0.85em;
+  margin: 0.5rem 0 0;
+}
+
+.hedron-sim-list {
+  display: grid;
+  gap: 0.45rem;
+  list-style: none;
+  margin: 0 0 0.8rem;
+  padding: 0;
+}
+
+.hedron-sim-list li {
+  align-items: center;
+  background: var(--hs-raised);
+  border: 1px solid var(--hs-line);
+  border-radius: 0.55rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding: 0.5rem 0.7rem;
+}
+
+.hedron-sim-badge {
+  background: var(--hs-accent-soft);
+  border-radius: 999px;
+  color: var(--hs-accent);
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 750;
+  padding: 0.2rem 0.55rem;
+}
+
+.hedron-sim-badge--ok {
+  background: var(--hs-ok-soft);
+  color: var(--hs-ok);
+}
+
+.hedron-sim form {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0 0 0.75rem;
+  max-width: 28rem;
+}
+
+.hedron-sim label {
+  display: grid;
+  font-size: 0.85rem;
+  font-weight: 650;
+  gap: 0.3rem;
+}
+
+.hedron-sim input {
+  background: var(--hs-panel);
+  border: 1px solid var(--hs-line);
+  border-radius: 0.5rem;
+  color: var(--hs-text);
+  font: inherit;
+  min-height: 2.3rem;
+  padding: 0.45rem 0.65rem;
+}
+
+.hedron-sim-mode-panes pre {
+  background: color-mix(in srgb, var(--hs-panel) 88%, #000);
+  border: 1px solid var(--hs-line);
+  border-radius: 0.65rem;
+  color: var(--hs-text);
+  font-size: 0.78rem;
+  margin: 0.75rem 0 0;
+  max-height: 22rem;
+  overflow: auto;
+  padding: 0.85rem 1rem;
+  white-space: pre-wrap;
+}
+
+.hedron-sim--modes .hedron-sim-row {
+  margin-bottom: 0.35rem;
+}
+
+/* Hedron component chrome rendered inside sims */
+.hedron-sim .hedron-app-shell {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: minmax(7rem, 9.5rem) 1fr;
+}
+
+.hedron-sim .hedron-app-shell-nav {
+  background: var(--hs-raised);
+  border: 1px solid var(--hs-line);
+  border-radius: 0.65rem;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.55rem;
+}
+
+.hedron-sim .hedron-app-shell-nav a {
+  border-radius: 0.45rem;
+  color: var(--hs-text);
+  padding: 0.4rem 0.55rem;
+  text-decoration: none;
+}
+
+.hedron-sim .hedron-app-shell-nav a[aria-current="page"] {
+  background: var(--hs-accent-soft);
+  color: var(--hs-accent);
+  font-weight: 750;
+}
+
+.hedron-sim .hedron-main-panel {
+  background: var(--hs-raised);
+  border: 1px solid var(--hs-line);
+  border-radius: 0.65rem;
+  padding: 0.85rem 1rem;
+}
+
+.hedron-sim .hedron-loading,
+.hedron-sim .hedron-skeleton,
+.hedron-sim .hedron-error,
+.hedron-sim .hedron-toast {
+  color: var(--hs-text);
+}
+
+.hedron-sim .hedron-error {
+  background: var(--hs-raised);
+  border: 1px solid var(--hs-line);
+  border-left: 4px solid var(--hs-danger);
+  border-radius: 0.65rem;
+  padding: 0.85rem 1rem;
+}
+
+.hedron-sim .hedron-toast {
+  background: var(--hs-raised);
+  border: 1px solid var(--hs-line);
+  border-radius: 0.55rem;
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.85rem;
 }

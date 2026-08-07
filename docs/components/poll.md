@@ -16,7 +16,7 @@ Refresh a fragment at a bounded interval while it remains in the DOM.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Poll"><div class="hdc-stage"><div class="hdc-result"><strong data-hdc-poll-state>Queued</strong><span data-hdc-poll-detail>Waiting for a worker</span></div><button class="hdc-button" type="button" data-hdc-action="poll">Start simulated polling</button></div><div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /fragment → 200</code></div></section>
+<!-- hedron-sim:component-poll -->
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

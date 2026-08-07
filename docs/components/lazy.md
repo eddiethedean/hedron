@@ -16,7 +16,7 @@ Load a component fragment when its placeholder enters the document.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Lazy"><div class="hdc-stage"><div class="hdc-result" data-hdc-lazy aria-live="polite" aria-busy="true"><span class="hdc-skeleton"></span><span class="hdc-skeleton"></span><button class="hdc-button" type="button" data-hdc-action="lazy">Load activity</button></div></div><div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /fragment → 200</code></div></section>
+<!-- hedron-sim:component-lazy -->
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

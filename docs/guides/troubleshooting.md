@@ -118,19 +118,8 @@ curl -H 'HX-Request: true' -H 'HX-Target: #service-status' http://127.0.0.1:8000
 
 Correct target swaps; wrong `#panel` returns 403 with no swap.
 
-<section class="hedron-component-demo" data-hedron-component-demo="Troubleshooting403">
-  <div class="hdc-stage">
-    <div class="hdc-result" data-hdc-allowlist-target aria-live="polite">
-      <strong>Allowlist probe</strong><span>Region #service-status is declared on the route.</span>
-    </div>
-    <div class="hdc-inline" role="group" aria-label="Allowlist">
-      <button class="hdc-button hdc-primary" type="button" data-hdc-action="allowlist-ok" data-hdc-path="/status">Correct #service-status → 200</button>
-      <button class="hdc-button" type="button" data-hdc-action="allowlist-deny" data-hdc-path="/status">Wrong #panel → 403</button>
-    </div>
-    <p class="hdc-muted" role="status" data-hdc-status>Fail-closed: undeclared HX-Target never swaps.</p>
-  </div>
-  <div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /status → 200</code></div>
-</section>
+<!-- hedron-sim:allowlist-403 -->
+
 
 See [HTMX interactions](htmx-interactions.md).
 

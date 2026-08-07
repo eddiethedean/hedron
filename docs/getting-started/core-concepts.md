@@ -70,31 +70,7 @@ assets and diagnostics. User components do not concatenate response strings them
 
 Toggle the response shape — docs simulation only.
 
-<section class="hedron-component-demo" data-hedron-component-demo="CoreConceptsModes">
-  <div class="hdc-stage">
-    <div class="hdc-inline" role="group" aria-label="Render mode">
-      <button class="hdc-button hdc-primary" type="button" data-hdc-mode-toggle="page" aria-pressed="true">PAGE</button>
-      <button class="hdc-button" type="button" data-hdc-mode-toggle="fragment" aria-pressed="false">FRAGMENT</button>
-    </div>
-    <div class="hdc-mode-panes">
-      <div data-hdc-mode-pane="page">
-        <pre>&lt;!doctype html&gt;
-&lt;html&gt;
-  &lt;head&gt;…&lt;/head&gt;
-  &lt;body&gt;
-    &lt;div id="service-status"&gt;All systems operational&lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;</pre>
-      </div>
-      <div data-hdc-mode-pane="fragment" hidden>
-        <pre>&lt;div id="service-status" role="status"&gt;
-  All systems operational · refreshed 14:02:11 UTC
-&lt;/div&gt;</pre>
-      </div>
-    </div>
-    <p class="hdc-muted" role="status" data-hdc-status>PAGE: full HTML document.</p>
-  </div>
-</section>
+<!-- hedron-sim:core-concepts-modes -->
 
 ## Interaction and security
 

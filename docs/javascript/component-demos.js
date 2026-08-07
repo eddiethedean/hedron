@@ -109,6 +109,57 @@
     }
   }
 
+  function docsColorPreference() {
+    const scheme =
+      document.documentElement.getAttribute("data-md-color-scheme") || "default";
+    return scheme === "slate" ? "Dark" : "Light";
+  }
+
+  function applyThemePreview(demo, selected) {
+    const select = demo.querySelector("[data-hdc-theme]");
+    const swatch = demo.querySelector("[data-hdc-theme-swatch]");
+    if (select && select.value !== selected) select.value = selected;
+    if (swatch) swatch.dataset.previewTheme = String(selected).toLowerCase();
+  }
+
+  function syncThemeDemosFromDocs() {
+    const selected = docsColorPreference();
+    for (const demo of document.querySelectorAll("[data-hedron-component-demo]")) {
+      if (!demo.querySelector("[data-hdc-theme-form]")) continue;
+      if (demo.dataset.hdcThemeLocal === "true") continue;
+      applyThemePreview(demo, selected);
+      status(demo, `${selected} preview selected (matches docs).`);
+    }
+  }
+
+  function watchDocsColorScheme() {
+    if (window.__hedronDocsSchemeWatch) return;
+    window.__hedronDocsSchemeWatch = true;
+    new MutationObserver(() => syncThemeDemosFromDocs()).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-md-color-scheme"],
+    });
+  }
+
+  function initThemeControl(demo) {
+    const form = demo.querySelector("[data-hdc-theme-form]");
+    if (!form) return;
+    const select = demo.querySelector("[data-hdc-theme]");
+    applyThemePreview(demo, docsColorPreference());
+    status(demo, `${docsColorPreference()} preview selected (matches docs).`);
+    select?.addEventListener("change", () => {
+      demo.dataset.hdcThemeLocal = "true";
+    });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      demo.dataset.hdcThemeLocal = "true";
+      const selected = select?.value || "Light";
+      applyThemePreview(demo, selected);
+      status(demo, `${selected} preview selected. A server would persist this preference.`);
+      trace(demo, "POST", "/preferences/color", "204");
+    });
+  }
+
   function initDemo(demo) {
     if (demo.dataset.hdcReady === "true") return;
     demo.dataset.hdcReady = "true";
@@ -116,6 +167,7 @@
     initTabs(demo);
     initModeToggle(demo);
     initPeToggle(demo);
+    initThemeControl(demo);
 
     for (const form of demo.querySelectorAll("[data-hdc-form]")) {
       form.addEventListener("submit", (event) => {
@@ -354,16 +406,6 @@
         content?.focus?.();
       });
     }
-
-    demo.querySelector("[data-hdc-theme-form]")?.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const select = demo.querySelector("[data-hdc-theme]");
-      const selected = select?.value || "Light";
-      const swatch = demo.querySelector("[data-hdc-theme-swatch]");
-      if (swatch) swatch.dataset.previewTheme = selected.toLocaleLowerCase();
-      status(demo, `${selected} preview selected. A server would persist this preference.`);
-      trace(demo, "POST", "/preferences/color", "204");
-    });
 
     demo.addEventListener("click", (event) => {
       const button = event.target.closest("[data-hdc-action]");
@@ -744,6 +786,7 @@
 
   function init(root) {
     for (const demo of root.querySelectorAll("[data-hedron-component-demo]")) initDemo(demo);
+    watchDocsColorScheme();
   }
 
   if (typeof document$ !== "undefined") document$.subscribe(() => init(document));

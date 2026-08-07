@@ -88,22 +88,8 @@ See [Interaction API](../api/INTERACTION.md).
 
 One click updates the primary region and an OOB host (badge/toast root).
 
-<section class="hedron-component-demo" data-hedron-component-demo="CookbookOobGuide">
-  <div class="hdc-stage">
-    <div class="hdc-stack">
-      <div class="hdc-result" data-hdc-oob-primary aria-live="polite">
-        <strong>Draft settings</strong><span>Primary region — not saved yet.</span>
-      </div>
-      <div class="hdc-fragment" data-hdc-oob-host id="cookbook-oob-host">
-        <span class="hdc-badge">Idle</span>
-        <span><strong>#toast-host</strong><small>Stable OOB swap root</small></span>
-      </div>
-      <button class="hdc-button hdc-primary" type="button" data-hdc-action="oob-save" data-hdc-path="/settings">Save settings</button>
-      <p class="hdc-muted" role="status" data-hdc-status>Primary swap + out-of-band host update in one response.</p>
-    </div>
-  </div>
-  <div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>POST /settings → 200</code></div>
-</section>
+<!-- hedron-sim:cookbook-oob -->
+
 
 ## Polling
 

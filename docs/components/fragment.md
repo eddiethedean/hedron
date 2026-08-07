@@ -16,7 +16,7 @@ Return several sibling nodes without adding a wrapper element.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Fragment"><div class="hdc-stage"><div class="hdc-fragment"><span class="hdc-badge">Saved</span><span><strong>Profile updated</strong><small>The record is current.</small></span></div><p class="hdc-muted">Two sibling nodes; no wrapper is added by Fragment.</p></div></section>
+<!-- hedron-sim:component-fragment -->
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 
@@ -34,7 +34,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 A fragment flattens its children into the render stream. It is ideal for targeted HTMX responses because it does not change the target's surrounding layout or introduce an accidental DOM node.
 
-This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
+This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
 ## Constructor and parameters
 

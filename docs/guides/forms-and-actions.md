@@ -15,24 +15,10 @@ with errors. A valid submit replaces a result region with a success message.
 
 ### Try it (simulated)
 
-Invalid email → `FormErrors` fragment. Valid email → success region. Docs simulation only.
+Invalid email → `FormErrors` fragment. Valid email → success region. Authored with Hedron components + `hedron-sim`.
 
-<section class="hedron-component-demo" data-hedron-component-demo="FormsAndActionsGuide">
-  <div class="hdc-stage">
-    <div class="hdc-stack">
-      <div data-hdc-form-region>
-        <form class="hdc-form" data-hdc-form="invite" data-hdc-path="/invite" novalidate>
-          <label for="invite-email">Work email<input id="invite-email" name="email" type="email" placeholder="ada@example.com" autocomplete="email"></label>
-          <div class="hdc-errors" role="alert" data-hdc-form-errors hidden></div>
-          <button class="hdc-button hdc-primary" type="submit">Send invite</button>
-        </form>
-      </div>
-      <div class="hdc-result" data-hdc-form-result hidden aria-live="polite"></div>
-      <p class="hdc-muted" role="status" data-hdc-status>Try an empty or short value, then a real-looking email.</p>
-    </div>
-  </div>
-  <div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>POST /invite → 200</code></div>
-</section>
+<!-- hedron-sim:forms-invite -->
+
 
 ```python title="app.py"
 from __future__ import annotations

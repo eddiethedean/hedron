@@ -16,7 +16,7 @@ Present a recoverable request failure and optional HTMX retry.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="ErrorState"><div class="hdc-stage"><div class="hdc-error" role="group" data-hdc-error><p role="alert">Activity could not be loaded.</p><button class="hdc-button" type="button" data-hdc-action="retry">Retry</button></div></div><div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /fragment → 200</code></div></section>
+<!-- hedron-sim:component-error -->
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

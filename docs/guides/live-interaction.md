@@ -33,17 +33,8 @@ for Flask/Django use the same `Poll` component with `hedron_route` /
 
 Supported polling path — Queued → Running → Complete with a Simulated HTMX trace.
 
-<section class="hedron-component-demo" data-hedron-component-demo="LiveInteractionGuide">
-  <div class="hdc-stage">
-    <div class="hdc-result" aria-live="polite">
-      <strong data-hdc-poll-state>Idle</strong>
-      <span data-hdc-poll-detail>Click to start a bounded poll cycle.</span>
-    </div>
-    <button class="hdc-button hdc-primary" type="button" data-hdc-action="poll">Start job poll</button>
-    <p class="hdc-muted" role="status" data-hdc-status>Polling is the Supported live path on every host.</p>
-  </div>
-  <div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /jobs/42 → 200</code></div>
-</section>
+<!-- hedron-sim:live-poll -->
+
 
 ```python title="app.py"
 from datetime import UTC, datetime
