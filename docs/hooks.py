@@ -1,7 +1,9 @@
 """MkDocs hooks for Read the Docs / local builds.
 
 - Sync ``hedron-sim`` JS/CSS into ``docs/javascript`` and ``docs/stylesheets``.
-- Expand ``<!-- hedron-sim:NAME -->`` markers from ``docs/includes/sim/``.
+- Expand ``<!-- hedron-sim:NAME -->`` markers from ``docs/includes/sim/`` *after*
+  Markdown runs, so tokens like ``__HEDRON_SIM_UTC__`` are not turned into
+  ``<strong>`` and so absolute demo ``href``s are not rewritten by the MD pipeline.
 - STATUS.md / ROADMAP.md stay canonical under ``docs/`` (synced to root separately).
 """
 
@@ -25,13 +27,7 @@ def on_config(config):  # noqa: ANN001
     return config
 
 
-def on_page_markdown(markdown: str, **kwargs: object) -> str:  # noqa: ARG001
-    """Replace ``<!-- hedron-sim:name -->`` with generated include HTML.
-
-    Preserves the marker line's indentation on every include line so Material
-    tabbed content stays inside the Demo tab.
-    """
-
+def _expand_sim_markers(text: str) -> str:
     def repl(match: re.Match[str]) -> str:
         name = match.group(1)
         path = _SIM_INCLUDES / f"{name}.html"
@@ -42,12 +38,20 @@ def on_page_markdown(markdown: str, **kwargs: object) -> str:  # noqa: ARG001
                 "<code>uv run python scripts/generate_sim_demos.py</code>."
                 "</em></p>"
             )
-        body = path.read_text(encoding="utf-8").strip()
-        line_start = markdown.rfind("\n", 0, match.start()) + 1
-        indent = markdown[line_start : match.start()]
-        if not indent or not body:
-            return body
-        lines = body.splitlines()
-        return lines[0] + "".join(f"\n{indent}{line}" for line in lines[1:])
+        return path.read_text(encoding="utf-8").strip()
 
-    return _SIM_MARKER.sub(repl, markdown)
+    return _SIM_MARKER.sub(repl, text)
+
+
+def on_page_content(html: str, page: object, **kwargs: object) -> str:  # noqa: ARG001
+    """Expand sim islands after Markdown, then mark the homepage Demo|Code tabs."""
+    html = _expand_sim_markers(html)
+    meta = getattr(page, "file", None)
+    src = getattr(meta, "src_uri", "") if meta is not None else ""
+    if src in {"index.md", "index.html"}:
+        html = html.replace(
+            '<div class="tabbed-set tabbed-alternate" data-tabs="1:2">',
+            '<div class="tabbed-set tabbed-alternate hedron-try-it-tabs" data-tabs="1:2">',
+            1,
+        )
+    return html

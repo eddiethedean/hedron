@@ -4,6 +4,12 @@
 
 ### Fixed
 
+- Expand docs sim includes *after* Markdown so `__HEDRON_SIM_UTC__` tokens are not
+  turned into `<strong>` (which broke timestamp swaps on Read the Docs).
+- Neutralize *all* progressive `a[href]` / `form[action]` targets inside sim islands
+  (not only `hx-*` anchors), and block leftover navigations/submits in capture phase
+  so demo clicks cannot hit Read the Docs / Cloudflare WAF paths.
+- Accept legacy markdown-mangled `<strong>HEDRON_SIM_UTC</strong>` tokens in the JS shim.
 - Intercept demo `hx-*` clicks/submits in the capture phase so MkDocs Material
   instant navigation cannot follow progressive-enhancement `href`s out of the docs.
 - Rewrite demo anchor `href`s to `#` at boot (original kept in `data-hedron-sim-href`)

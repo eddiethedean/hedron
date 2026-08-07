@@ -287,9 +287,10 @@ def test_packaged_assets_include_theme_and_runtime_hooks() -> None:
     assert "SIM_UTC" in js or "__HEDRON_SIM_UTC__" in js
     assert "stopImmediatePropagation" in js
     assert "data-hedron-sim-href" in js
+    assert "data-hedron-sim-action" in js
     assert "neutralizeProgressiveAnchors" in js or "data-hedron-sim-href" in js
     assert ", true" in js  # capture-phase listeners
-
+    assert "<strong>HEDRON_SIM_UTC</strong>" in js  # legacy markdown-mangled token
 
 def test_copy_assets_writes_js_and_css(tmp_path: Path) -> None:
     js_dir = tmp_path / "javascript"

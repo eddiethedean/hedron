@@ -38,6 +38,12 @@
       .join(utcStamp())
       .split(LOCAL_TOKEN)
       .join(localStamp());
+    // MkDocs historically mangled __token__ into <strong>token</strong>; accept both.
+    out = out
+      .split("<strong>HEDRON_SIM_UTC</strong>")
+      .join(utcStamp())
+      .split("<strong>HEDRON_SIM_LOCAL_TIME</strong>")
+      .join(localStamp());
     return out.replace(FORM_TOKEN_RE, function (_match, name) {
       if (!formData) return "";
       var value = formData.get(name);
@@ -260,19 +266,30 @@
   }
 
   function neutralizeProgressiveAnchors(root) {
-    // Docs sims keep real hx-* behavior, but absolute hrefs like "/reports" are
-    // same-origin on Read the Docs and get stolen by Material instant navigation.
-    var anchors = root.querySelectorAll(
-      "a[hx-get],a[hx-post],a[hx-put],a[hx-patch],a[hx-delete]"
-    );
+    // Docs sims keep real hx-* behavior, but absolute/root hrefs like "/reports"
+    // are same-origin on Read the Docs. Material instant navigation (or no-JS
+    // progressive enhancement) follows them and can trip Cloudflare WAF.
+    var anchors = root.querySelectorAll("a[href]");
     for (var i = 0; i < anchors.length; i += 1) {
       var anchor = anchors[i];
       var href = anchor.getAttribute("href");
-      if (!href || href === "#" || href.indexOf("javascript:") === 0) continue;
+      if (!href || href === "#" || href.charAt(0) === "#" || href.indexOf("javascript:") === 0) {
+        continue;
+      }
       if (!anchor.hasAttribute("data-hedron-sim-href")) {
         anchor.setAttribute("data-hedron-sim-href", href);
       }
       anchor.setAttribute("href", "#");
+    }
+    var forms = root.querySelectorAll("form[action]");
+    for (var f = 0; f < forms.length; f += 1) {
+      var form = forms[f];
+      var action = form.getAttribute("action");
+      if (!action || action === "#" || action.charAt(0) === "#") continue;
+      if (!form.hasAttribute("data-hedron-sim-action")) {
+        form.setAttribute("data-hedron-sim-action", action);
+      }
+      form.setAttribute("action", "#");
     }
   }
 
@@ -366,13 +383,27 @@
       var root = target.closest("[data-hedron-sim]");
       if (!root || !ensureRoot(root)) return;
       var control = findControl(target, root);
-      if (!control || control.tagName === "FORM") return;
-      event.preventDefault();
-      event.stopPropagation();
-      if (typeof event.stopImmediatePropagation === "function") {
-        event.stopImmediatePropagation();
+      if (control && control.tagName !== "FORM") {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === "function") {
+          event.stopImmediatePropagation();
+        }
+        handleRequest(root, root._hedronSimTable, control, null);
+        return;
       }
-      handleRequest(root, root._hedronSimTable, control, null);
+      // Block progressive-enhancement navigation even when hx-* is absent.
+      var anchor = target.closest("a[href]");
+      if (anchor && root.contains(anchor)) {
+        var href = anchor.getAttribute("href") || "";
+        if (href && href !== "#" && href.charAt(0) !== "#") {
+          event.preventDefault();
+          event.stopPropagation();
+          if (typeof event.stopImmediatePropagation === "function") {
+            event.stopImmediatePropagation();
+          }
+        }
+      }
     },
     true
   );
@@ -384,13 +415,13 @@
       if (!form || !form.closest) return;
       var root = form.closest("[data-hedron-sim]");
       if (!root) return;
-      if (!form.hasAttribute("hx-post") && !form.hasAttribute("hx-get")) return;
       if (!ensureRoot(root)) return;
       event.preventDefault();
       event.stopPropagation();
       if (typeof event.stopImmediatePropagation === "function") {
         event.stopImmediatePropagation();
       }
+      if (!form.hasAttribute("hx-post") && !form.hasAttribute("hx-get")) return;
       handleRequest(root, root._hedronSimTable, form, new FormData(form));
     },
     true
