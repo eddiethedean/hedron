@@ -48,7 +48,58 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from
 Click **Refresh status** — the page updates without a full reload. Hedron returns a small
 HTML fragment; [HTMX](https://htmx.org) swaps it into the declared region.
 
-<!-- hedron-sim:hello-refresh -->
+=== "Demo"
+
+    Docs simulation — no live server. Click **Refresh status** to swap the fragment.
+
+    <!-- hedron-sim:hello-refresh -->
+
+=== "Code"
+
+    What `hedron new` writes as `app.py` (the real app, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+    from datetime import UTC, datetime
+
+    from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+
+    app = Hedron(
+        title="Hedron App",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
+    )
+
+    status = app.region("service-status", description="Live status panel")
+
+
+    def status_panel():
+        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+        return html.div(
+            Text(f"All systems operational · refreshed {stamp}"),
+            id=status.id,
+            role="status",
+            aria={"live": "polite"},
+        )
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                Text("Hello from hedron new"),
+                status_panel(),
+                RefreshButton.for_region(status, href="/status", label="Refresh status"),
+            ),
+            title="Home",
+        )
+
+
+    @app.fragment("/status", region=status)
+    def refresh_status():
+        return swap(status_panel())
+    ```
 
 Extras and troubleshooting: [installation](getting-started/installation.md).
 

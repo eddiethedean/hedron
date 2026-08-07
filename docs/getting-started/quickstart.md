@@ -64,60 +64,65 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from
 returns a small HTML fragment; [HTMX](https://htmx.org) swaps it into the declared region
 — the interactive promise of the scaffold.
 
-Try the same fragment swap here (docs simulation — no server):
+=== "Demo"
 
-<!-- hedron-sim:hello-refresh-quickstart -->
+    Same fragment swap as the scaffold — docs simulation (no server).
+
+    <!-- hedron-sim:hello-refresh-quickstart -->
+
+=== "Code"
+
+    What `hedron new` writes as `app.py` (the real app, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+    from datetime import UTC, datetime
+
+    from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
+
+    app = Hedron(
+        title="Hedron App",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
+    )
+
+    status = app.region("service-status", description="Live status panel")
+
+
+    def status_panel():
+        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+        return html.div(
+            Text(f"All systems operational · refreshed {stamp}"),
+            id=status.id,
+            role="status",
+            aria={"live": "polite"},
+        )
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                Text("Hello from hedron new"),
+                status_panel(),
+                RefreshButton.for_region(status, href="/status", label="Refresh status"),
+            ),
+            title="Home",
+        )
+
+
+    @app.fragment("/status", region=status)
+    def refresh_status():
+        return swap(status_panel())
+    ```
 
 Extras, Flask/Django, and troubleshooting: [Installation](installation.md).
 
 ## 2. What the scaffold looks like
 
-`hedron new` writes roughly this `app.py` (timestamp line may vary):
-
-```python title="app.py"
-import os
-from datetime import UTC, datetime
-
-from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
-
-app = Hedron(
-    title="Hedron App",
-    security="standard",
-    explorer="off",
-    session_secret=os.environ.get(
-        "HEDRON_SESSION_SECRET", "replace-in-production"
-    ),
-)
-
-status = app.region("service-status", description="Live status panel")
-
-
-def status_panel():
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
-    return html.div(
-        Text(f"All systems operational · refreshed {stamp}"),
-        id=status.id,
-        role="status",
-        aria={"live": "polite"},
-    )
-
-
-@app.page("/")
-def home() -> Page:
-    return Page(
-        Stack(
-            Text("Hello from hedron new"),
-            status_panel(),
-            RefreshButton.for_region(status, href="/status", label="Refresh status"),
-        ),
-        title="Home",
-    )
-
-
-@app.fragment("/status", region=status)
-def refresh_status():
-    return swap(status_panel())
-```
+`hedron new` writes the `app.py` shown in the **Code** tab above (timestamp line may
+vary). Keep that file open while you edit — the Demo tab is only a docs simulation.
 
 ## 3. Edit the Hello text (~2 minutes)
 

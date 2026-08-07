@@ -9,6 +9,8 @@ scripts here when you add them.
 |---|---|
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
+| `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
+| `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
 | `check_docs_train_ssot.py` | Fail if adopter docs claim a stale current train (expects **0.19**). CI: quality job |
 

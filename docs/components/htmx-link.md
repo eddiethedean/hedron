@@ -16,9 +16,69 @@ Navigate with a SafeUrl href and typed HTMX attributes for in-shell swaps.
 
 ## Live demo
 
-<!-- hedron-sim:component-htmx-link -->
+=== "Demo"
 
-The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
+    Docs simulation — not a running Hedron server. Interactive demos show a “Simulated HTMX” trace when applicable.
+
+    <!-- hedron-sim:component-htmx-link -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from hedron import Fragment, Hedron, HtmxLink, MainPanel, Page, Stack, html, swap
+
+    app = Hedron(
+        title="HtmxLink demo",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+    panel = app.region("htmx-link-panel")
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                html.div(
+                    HtmxLink("Reports", "/reports", target=panel.selector, swap="innerHTML"),
+                    HtmxLink("Team", "/team", target=panel.selector, swap="innerHTML"),
+                ),
+                MainPanel(
+                    html.strong("Choose a link"),
+                    html.span("HtmxLink keeps href as the progressive-enhancement path."),
+                    id=panel.id,
+                ),
+            ),
+            title="HtmxLink",
+        )
+
+
+    @app.fragment("/reports", region=panel)
+    def reports():
+        return swap(
+            Fragment(
+                html.strong("Reports"),
+                html.span("In-shell navigation with SafeUrl href fallback."),
+            )
+        )
+
+
+    @app.fragment("/team", region=panel)
+    def team():
+        return swap(
+            Fragment(
+                html.strong("Team"),
+                html.span("Ordinary href still works without JavaScript."),
+            )
+        )
+    ```
+
 
 ## Basic use
 

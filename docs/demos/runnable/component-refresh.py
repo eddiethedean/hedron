@@ -1,0 +1,40 @@
+import os
+from datetime import UTC, datetime
+
+from hedron import Hedron, Page, RefreshButton, Stack, html, swap
+
+app = Hedron(
+    title="RefreshButton demo",
+    security="standard",
+    explorer="off",
+    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+)
+
+status = app.region("status-card")
+
+
+def panel():
+    stamp = datetime.now(UTC).strftime("%H:%M:%S")
+    return html.div(
+        html.strong("Service healthy"),
+        html.span(f"Checked at {stamp}"),
+        id=status.id,
+        role="status",
+        aria={"live": "polite"},
+    )
+
+
+@app.page("/")
+def home() -> Page:
+    return Page(
+        Stack(
+            panel(),
+            RefreshButton.for_region(status, href="/status", label="Refresh status"),
+        ),
+        title="RefreshButton",
+    )
+
+
+@app.fragment("/status", region=status)
+def refresh():
+    return swap(panel())

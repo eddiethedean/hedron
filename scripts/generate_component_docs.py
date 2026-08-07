@@ -20,6 +20,25 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs" / "components"
+DEMOS = ROOT / "docs"
+
+
+def _format_sim_live_demo(sim_name: str) -> str:
+    """Demo/Code tabs: simulated island + full runnable Hedron ``app.py``."""
+    import sys
+
+    if str(DEMOS) not in sys.path:
+        sys.path.insert(0, str(DEMOS))
+    from demos.tabs import format_demo_code_tabs
+
+    return format_demo_code_tabs(
+        sim_name,
+        demo_blurb=(
+            "Docs simulation — not a running Hedron server. Interactive demos show a "
+            "“Simulated HTMX” trace when applicable."
+        ),
+    )
+
 
 # Keep install snippets aligned with scripts/check_docs_train_ssot.py.
 _ALPHA_EXTRAS = frozenset({"charts", "notebook", "mcp", "gradio", "native"})
@@ -2059,7 +2078,7 @@ def demo_html(spec: ComponentDoc) -> str:
     }
     sim_name = sim_by_kind.get(kind) or sim_by_name.get(name)
     if sim_name is not None:
-        return f"<!-- hedron-sim:{sim_name} -->"
+        return f"__HEDRON_SIM_TABS__:{sim_name}"
     if kind == "button":
         body = '<button class="hdc-button hdc-primary" type="button" data-hdc-action="count">Archive project <span data-hdc-count>0</span></button><p role="status" data-hdc-status>Ready.</p>'
     elif kind == "dialog":
@@ -2100,6 +2119,19 @@ def demo_html(spec: ComponentDoc) -> str:
         else ""
     )
     return f'<section class="hedron-component-demo" data-hedron-component-demo="{name}"><div class="hdc-stage">{body}</div>{note}</section>'
+
+
+def _live_demo_section(spec: ComponentDoc) -> str:
+    """Render the Live demo block (tabs for sims, static HTML otherwise)."""
+    raw = demo_html(spec)
+    if raw.startswith("__HEDRON_SIM_TABS__:"):
+        sim_name = raw.split(":", 1)[1]
+        return _format_sim_live_demo(sim_name)
+    return (
+        f"{raw}\n\n"
+        "The preview is a local docs simulation (not a running Hedron server). "
+        "Interactive demos show a “Simulated HTMX” trace when applicable."
+    )
 
 
 def static_demo(spec: ComponentDoc) -> str:
@@ -2500,9 +2532,7 @@ description: {spec.summary}
 
 ## Live demo
 
-{demo_html(spec)}
-
-The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.{optional}
+{_live_demo_section(spec)}{optional}
 
 ## Basic use
 

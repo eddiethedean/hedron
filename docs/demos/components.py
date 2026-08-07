@@ -455,9 +455,7 @@ def build_oob_host() -> str:
     def primary(*, draft: bool = True):
         return html.div(
             html.strong("Draft profile" if draft else "Profile saved"),
-            html.span(
-                "Primary region waiting for save." if draft else "Primary region updated."
-            ),
+            html.span("Primary region waiting for save." if draft else "Primary region updated."),
             id=main.id,
             class_="hedron-sim-card",
         )
@@ -779,9 +777,7 @@ COMPONENT_DEMO_BUILDERS: dict[str, Callable[[], str]] = {
     "component-main-panel": lambda: build_shell_family(
         demo_id="component-main-panel", title="MainPanel"
     ),
-    "component-nav-link": lambda: build_shell_family(
-        demo_id="component-nav-link", title="NavLink"
-    ),
+    "component-nav-link": lambda: build_shell_family(demo_id="component-nav-link", title="NavLink"),
     "component-htmx-link": build_htmx_link,
     "component-oob-host": build_oob_host,
     "component-attr-host": build_attr_host,

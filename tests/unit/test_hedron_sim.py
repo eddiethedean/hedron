@@ -404,3 +404,38 @@ def test_allowlist_demo_registers_correct_and_wrong_targets() -> None:
     payload = json.loads(match.group(1).replace("\\u003c", "<"))
     # At least one route declares regions so the JS can enforce allowlists.
     assert any(route.get("regions") for route in payload["routes"].values())
+
+
+@pytest.mark.usefixtures("_docs_on_path")
+def test_every_sim_demo_has_runnable_app_source() -> None:
+    from demos.components import COMPONENT_DEMO_BUILDERS
+    from demos.runnable_code import runnable_path, runnable_source
+    from demos.tabs import format_demo_code_tabs
+
+    ids = set(COMPONENT_DEMO_BUILDERS) | {
+        "hello-refresh",
+        "hello-refresh-quickstart",
+        "htmx-interactions",
+        "forms-invite",
+        "live-poll",
+        "cookbook-oob",
+        "allowlist-403",
+        "charts-htmx",
+        "crud-notes",
+        "mutations-htmx",
+        "core-concepts-modes",
+    }
+    for sim_id in sorted(ids):
+        path = runnable_path(sim_id)
+        assert path.is_file(), sim_id
+        source = runnable_source(sim_id)
+        assert (
+            "from hedron" in source
+            or "import hedron" in source
+            or "Hedron" in source
+            or "render(" in source
+        ), sim_id
+        tabs = format_demo_code_tabs(sim_id)
+        assert f"<!-- hedron-sim:{sim_id} -->" in tabs
+        assert '=== "Code"' in tabs
+        assert "```python" in tabs

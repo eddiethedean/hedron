@@ -16,9 +16,64 @@ Stable element that can receive attribute-only OOB updates.
 
 ## Live demo
 
-<!-- hedron-sim:component-attr-host -->
+=== "Demo"
 
-The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
+    Docs simulation — not a running Hedron server. Interactive demos show a “Simulated HTMX” trace when applicable.
+
+    <!-- hedron-sim:component-attr-host -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from hedron import AttrHost, Hedron, Page, Stack, html, swap
+
+    app = Hedron(
+        title="AttrHost demo",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+    host = app.region("demo-attr-host")
+
+
+    def host_node(state: str):
+        return AttrHost(
+            html.strong("Attr host"),
+            html.small(f"data-state={state}"),
+            id=host.id,
+            attrs={"data-state": state},
+        )
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                host_node("idle"),
+                html.button(
+                    "Run attribute update",
+                    type="button",
+                    **{
+                        "hx-get": "/status-attrs",
+                        "hx-target": host.selector,
+                        "hx-swap": "outerHTML",
+                    },
+                ),
+            ),
+            title="AttrHost",
+        )
+
+
+    @app.fragment("/status-attrs", region=host)
+    def attrs():
+        return swap(host_node("ready"))
+    ```
+
 
 ## Basic use
 

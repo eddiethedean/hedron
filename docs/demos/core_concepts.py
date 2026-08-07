@@ -29,9 +29,7 @@ def build_core_concepts_modes_demo() -> str:
         escaped = html_lib.escape(source)
         hidden_attr = " hidden" if hidden else ""
         return (
-            f'<div data-sim-mode-pane="{mode}"{hidden_attr}>'
-            f"<pre><code>{escaped}</code></pre>"
-            "</div>"
+            f'<div data-sim-mode-pane="{mode}"{hidden_attr}><pre><code>{escaped}</code></pre></div>'
         )
 
     return (

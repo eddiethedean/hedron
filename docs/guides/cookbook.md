@@ -86,10 +86,96 @@ See [Interaction API](../api/INTERACTION.md).
 
 ### Try it (simulated)
 
-One click updates the primary region and an OOB host (badge/toast root).
+=== "Demo"
 
-<!-- hedron-sim:cookbook-oob -->
+    One click updates the primary region and an OOB host — docs simulation.
 
+    <!-- hedron-sim:cookbook-oob -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from hedron import (
+        Hedron,
+        InteractionResult,
+        OobHost,
+        OobUpdate,
+        Page,
+        Stack,
+        html,
+    )
+    from hedron_core.interaction import InteractionPolicy
+
+    app = Hedron(
+        title="OOB swap",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+    main = app.region("settings-main", description="Primary settings")
+    host = app.region("toast-host", description="OOB toast host")
+
+
+    def primary(draft: bool = True):
+        return html.div(
+            html.strong("Draft settings" if draft else "Settings saved"),
+            html.span("Primary region — not saved yet." if draft else "Primary region updated."),
+            id=main.id,
+            role="status",
+        )
+
+
+    def oob_idle():
+        return OobHost(
+            html.span("Idle"),
+            html.span(html.strong("#toast-host"), html.small("Stable OOB swap root")),
+            id=host.id,
+        )
+
+
+    def oob_saved():
+        return OobHost(
+            html.span("Saved"),
+            html.span(html.strong("#toast-host"), html.small("Out-of-band update")),
+            id=host.id,
+        )
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                primary(True),
+                oob_idle(),
+                html.button(
+                    "Save settings",
+                    type="button",
+                    **{
+                        "hx-post": "/settings",
+                        "hx-target": main.selector,
+                        "hx-swap": "outerHTML",
+                    },
+                ),
+            ),
+            title="OOB",
+        )
+
+
+    @app.component("/settings", methods=["POST"], fragment_regions=(main, host))
+    def save() -> InteractionResult:
+        return InteractionResult(
+            content=primary(False),
+            region_id=main.id,
+            oob=(OobUpdate(content=oob_saved(), element_id=host.id),),
+            policy=InteractionPolicy(declared_regions=(main, host)),
+            explanation="Update main and OOB host",
+        )
+    ```
 
 ## Polling
 

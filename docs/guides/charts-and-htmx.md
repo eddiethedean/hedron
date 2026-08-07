@@ -65,10 +65,69 @@ Point an HTMX control at `/charts/refresh` with `HX-Request: true` to receive th
 
 ### Try it (simulated)
 
-Refresh swaps a simple chart panel (not a charting library).
+=== "Demo"
 
-<!-- hedron-sim:charts-htmx -->
+    Refresh swaps a simple chart panel (not a charting library). Docs simulation.
 
+    <!-- hedron-sim:charts-htmx -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from hedron import Hedron, InteractionResult, Page, Stack, html
+
+    app = Hedron(
+        title="Charts HTMX",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+    panel = app.region("chart-panel", description="Chart panel")
+
+
+    def chart_panel(label: str):
+        return html.div(
+            html.strong(label),
+            html.span("Simple panel stand-in for a chart fragment."),
+            id=panel.id,
+            role="status",
+        )
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                chart_panel("Chart panel"),
+                html.button(
+                    "Refresh chart panel",
+                    type="button",
+                    **{
+                        "hx-get": "/charts/refresh",
+                        "hx-target": panel.selector,
+                        "hx-swap": "outerHTML",
+                    },
+                ),
+            ),
+            title="Charts",
+        )
+
+
+    @app.component("/charts/refresh", fragment_regions=(panel,))
+    def refresh() -> InteractionResult:
+        return InteractionResult(
+            content=chart_panel("Chart panel updated"),
+            region_id=panel.id,
+            trigger="chartRefreshed",
+            cache="vary-htmx",
+            explanation="Primary fragment refresh for chart panel",
+        )
+    ```
 
 See [Responses](../api/RESPONSES.md), [Interaction](../api/INTERACTION.md), and
 [Charts](../api/CHART.md). The [reference application](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)

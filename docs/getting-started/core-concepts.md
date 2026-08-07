@@ -68,9 +68,34 @@ assets and diagnostics. User components do not concatenate response strings them
 
 ### Try it (simulated)
 
-Toggle the response shape — docs simulation only.
+=== "Demo"
 
-<!-- hedron-sim:core-concepts-modes -->
+    Toggle the response shape — docs simulation only.
+
+    <!-- hedron-sim:core-concepts-modes -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    from hedron import Page, RenderMode, html, render
+
+    # PAGE: full HTML document for navigation / history restoration.
+    page = Page(html.div("All systems operational", id="service-status"), title="Status")
+    page_result = render(page, mode=RenderMode.PAGE)
+
+    # FRAGMENT: targeted content for an HTMX request.
+    fragment = html.div(
+        "All systems operational · refreshed 12:00:00 UTC",
+        id="service-status",
+        role="status",
+    )
+    fragment_result = render(fragment, mode=RenderMode.FRAGMENT)
+
+    assert "<html" in page_result.html.lower()
+    assert "<html" not in fragment_result.html.lower()
+    ```
 
 ## Interaction and security
 

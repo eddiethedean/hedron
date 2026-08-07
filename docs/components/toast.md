@@ -16,9 +16,55 @@ Render a polite, transient-looking status message.
 
 ## Live demo
 
-<!-- hedron-sim:component-toast -->
+=== "Demo"
 
-The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
+    Docs simulation — not a running Hedron server. Interactive demos show a “Simulated HTMX” trace when applicable.
+
+    <!-- hedron-sim:component-toast -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from hedron import Hedron, OobHost, Page, Stack, Toast, html, swap
+
+    app = Hedron(
+        title="Toast demo",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+    host = app.region("toast-host")
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                html.button(
+                    "Copy API key",
+                    type="button",
+                    **{
+                        "hx-post": "/copy-key",
+                        "hx-target": host.selector,
+                        "hx-swap": "innerHTML",
+                    },
+                ),
+                OobHost(id=host.id),
+            ),
+            title="Toast",
+        )
+
+
+    @app.component("/copy-key", methods=["POST"], fragment_regions=(host,))
+    def copy():
+        return swap(Toast("API key copied.", tone="success"))
+    ```
+
 
 ## Basic use
 

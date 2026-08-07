@@ -15,142 +15,117 @@ with errors. A valid submit replaces a result region with a success message.
 
 ### Try it (simulated)
 
-Invalid email → `FormErrors` fragment. Valid email → success region. Authored with Hedron components + `hedron-sim`.
+=== "Demo"
 
-<!-- hedron-sim:forms-invite -->
+    Invalid email → FormErrors fragment. Valid email → success region. Docs simulation.
 
+    <!-- hedron-sim:forms-invite -->
 
-```python title="app.py"
-from __future__ import annotations
+=== "Code"
 
-import json
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
 
-from fastapi import Request
-from pydantic import ValidationError
+    ```python title="app.py"
+    from __future__ import annotations
 
-from hedron import (
-    Field,
-    Form,
-    FormErrors,
-    FormField,
-    FormModel,
-    FragmentRegion,
-    Hedron,
-    InteractionResult,
-    Page,
-    SafeUrl,
-    Stack,
-    SubmitButton,
-    Text,
-    TextInput,
-    UrlPurpose,
-    html,
-)
-from hedron.security import SecurityPolicy, csrf_token_for_request
+    import json
+    import os
 
-app = Hedron(
-    title="Invite",
-    security="standard",
-    session_secret="replace-in-production",
-)
+    from fastapi import Request
+    from pydantic import ValidationError
 
-RESULT_REGION = FragmentRegion(
-    id="invite-result",
-    selector="#invite-result",
-    description="Invite form result",
-)
-
-
-class InviteMember(FormModel):
-    email: str = Field(min_length=3, label="Work email")
-
-
-def _policy(request: Request) -> SecurityPolicy:
-    return getattr(
-        request.app.state,
-        "hedron_security",
-        SecurityPolicy.from_name("standard"),
+    from hedron import (
+        Field,
+        Form,
+        FormErrors,
+        FormField,
+        FormModel,
+        Hedron,
+        InteractionResult,
+        Page,
+        Stack,
+        SubmitButton,
+        Text,
+        TextInput,
+        html,
     )
+    from hedron.security import csrf_token_for_request
 
-
-def _csrf(request: Request) -> str:
-    return csrf_token_for_request(request, _policy(request))
-
-
-def invite_form(
-    *,
-    csrf_token: str,
-    values: dict[str, str] | None = None,
-    errors: tuple[str, ...] = (),
-):
-    values = values or {}
-    htmx_attrs: dict[str, str] = {
-        "hx-post": "/invite",
-        "hx-target": RESULT_REGION.selector,
-        "hx-swap": "innerHTML",
-        "hx-headers": json.dumps({"X-CSRF-Token": csrf_token}),
-    }
-    return Form(
-        FormErrors(errors),
-        html.input(type="hidden", name="csrf_token", value=csrf_token),
-        FormField(
-            name="email",
-            label="Work email",
-            control=TextInput(
-                "email",
-                value=values.get("email", ""),
-                type="email",
-                required=True,
-            ),
-            required=True,
-        ),
-        SubmitButton("Send invite"),
-        action=SafeUrl.parse("/invite", purpose=UrlPurpose.FORM_ACTION),
-        method="post",
-        **htmx_attrs,
-    )
-
-
-@app.page("/")
-def home(request: Request) -> Page:
-    token = _csrf(request)
-    return Page(
-        Stack(
-            Text("Invite a teammate"),
-            html.div(invite_form(csrf_token=token), id=RESULT_REGION.id),
-        ),
+    app = Hedron(
         title="Invite",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
     )
 
+    form_region = app.region("invite-form", description="Invite form")
 
-@app.component("/invite", methods=["POST"], fragment_regions=(RESULT_REGION,))
-async def invite(request: Request) -> InteractionResult:
-    token = _csrf(request)
-    form = await request.form()
-    raw = {"email": str(form.get("email") or "")}
-    try:
-        data = InviteMember.model_validate(raw)
-    except ValidationError as exc:
-        messages = tuple(err["msg"] for err in exc.errors())
-        return InteractionResult(
-            content=html.div(
-                invite_form(csrf_token=token, values=raw, errors=messages),
-                id=RESULT_REGION.id,
+
+    class InviteMember(FormModel):
+        email: str = Field(min_length=3, label="Work email")
+
+
+    def _csrf(request: Request) -> str:
+        return csrf_token_for_request(request, request.app.state.hedron_security)
+
+
+    def invite_form(*, csrf_token: str, errors: tuple[str, ...] = ()):
+        return html.div(
+            Form(
+                FormErrors(errors),
+                html.input(type="hidden", name="csrf_token", value=csrf_token),
+                FormField(
+                    name="email",
+                    label="Work email",
+                    control=TextInput(name="email", placeholder="ada@example.com"),
+                ),
+                SubmitButton("Send invite"),
+                **{
+                    "hx-post": "/invite",
+                    "hx-target": form_region.selector,
+                    "hx-swap": "outerHTML",
+                    "hx-headers": json.dumps({"X-CSRF-Token": csrf_token}),
+                },
             ),
-            region_id=RESULT_REGION.id,
-            explanation="Redisplay invite form with validation errors",
+            id=form_region.id,
         )
 
-    return InteractionResult(
-        content=html.div(
-            Text(f"Invite queued for {data.email}"),
-            id=RESULT_REGION.id,
-            role="status",
-        ),
-        region_id=RESULT_REGION.id,
-        explanation="Confirm invite acceptance",
-    )
-```
+
+    @app.page("/")
+    def home(request: Request) -> Page:
+        return Page(
+            Stack(
+                invite_form(csrf_token=_csrf(request)),
+                Text("Try an empty value, then a real-looking email."),
+            ),
+            title="Invite",
+        )
+
+
+    @app.component("/invite", methods=["POST"], fragment_regions=(form_region,))
+    async def invite(request: Request) -> InteractionResult:
+        form = await request.form()
+        try:
+            data = InviteMember.model_validate({"email": form.get("email", "")})
+        except ValidationError:
+            return InteractionResult(
+                content=invite_form(
+                    csrf_token=_csrf(request),
+                    errors=("Enter a valid work email.",),
+                ),
+                status_code=422,
+                region_id=form_region.id,
+            )
+        return InteractionResult(
+            content=html.div(
+                html.strong("Invite sent"),
+                Text(f"Queued for {data.email}."),
+                id=form_region.id,
+                role="status",
+            ),
+            region_id=form_region.id,
+        )
+    ```
 
 Run it:
 

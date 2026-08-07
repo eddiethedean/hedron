@@ -16,9 +16,57 @@ Append the next fragment when a pagination sentinel is revealed.
 
 ## Live demo
 
-<!-- hedron-sim:component-infinite -->
+=== "Demo"
 
-The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
+    Docs simulation — not a running Hedron server. Interactive demos show a “Simulated HTMX” trace when applicable.
+
+    <!-- hedron-sim:component-infinite -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from hedron import ComponentRef, Fragment, Hedron, InfiniteScroll, Page, Stack, html, swap
+
+    app = Hedron(
+        title="InfiniteScroll demo",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+    feed = app.region("event-feed")
+    ref = ComponentRef(
+        logical_id="events",
+        path="/events",
+        target=feed.selector,
+        swap="beforeend",
+    )
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                html.ol(
+                    html.li("Deployment completed"),
+                    html.li("Review approved"),
+                    id=feed.id,
+                ),
+                InfiniteScroll(ref=ref, target=feed.selector, swap="beforeend"),
+            ),
+            title="InfiniteScroll",
+        )
+
+
+    @app.fragment("/events", region=feed)
+    def more():
+        return swap(Fragment(html.li("Tests passed"), html.li("Release published")))
+    ```
+
 
 ## Basic use
 

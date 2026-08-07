@@ -16,9 +16,92 @@ Stable out-of-band swap root with a reserved id.
 
 ## Live demo
 
-<!-- hedron-sim:component-oob-host -->
+=== "Demo"
 
-The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
+    Docs simulation — not a running Hedron server. Interactive demos show a “Simulated HTMX” trace when applicable.
+
+    <!-- hedron-sim:component-oob-host -->
+
+=== "Code"
+
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+
+    ```python title="app.py"
+    import os
+
+    from hedron import (
+        Hedron,
+        InteractionResult,
+        OobHost,
+        OobUpdate,
+        Page,
+        Stack,
+        html,
+    )
+    from hedron_core.interaction import InteractionPolicy
+
+    app = Hedron(
+        title="OobHost demo",
+        security="standard",
+        explorer="off",
+        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+    )
+
+    main = app.region("oob-primary")
+    host = app.region("demo-oob-host")
+
+
+    def primary(*, draft: bool = True):
+        return html.div(
+            html.strong("Draft profile" if draft else "Profile saved"),
+            html.span("Primary region waiting for save." if draft else "Primary region updated."),
+            id=main.id,
+        )
+
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(
+            Stack(
+                primary(draft=True),
+                OobHost(
+                    html.span("OOB host"),
+                    html.span(html.strong("#status"), html.small("Stable swap root")),
+                    id=host.id,
+                ),
+                html.button(
+                    "Save",
+                    type="button",
+                    **{
+                        "hx-post": "/profile",
+                        "hx-target": main.selector,
+                        "hx-swap": "outerHTML",
+                    },
+                ),
+            ),
+            title="OobHost",
+        )
+
+
+    @app.component("/profile", methods=["POST"], fragment_regions=(main, host))
+    def save() -> InteractionResult:
+        return InteractionResult(
+            content=primary(draft=False),
+            region_id=main.id,
+            oob=(
+                OobUpdate(
+                    content=OobHost(
+                        html.span("Saved"),
+                        html.span(html.strong("#status"), html.small("Out-of-band update")),
+                        id=host.id,
+                    ),
+                    element_id=host.id,
+                ),
+            ),
+            policy=InteractionPolicy(declared_regions=(main, host)),
+        )
+    ```
+
 
 ## Basic use
 

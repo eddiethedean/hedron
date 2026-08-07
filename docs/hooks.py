@@ -26,7 +26,11 @@ def on_config(config):  # noqa: ANN001
 
 
 def on_page_markdown(markdown: str, **kwargs: object) -> str:  # noqa: ARG001
-    """Replace ``<!-- hedron-sim:name -->`` with generated include HTML."""
+    """Replace ``<!-- hedron-sim:name -->`` with generated include HTML.
+
+    Preserves the marker line's indentation on every include line so Material
+    tabbed content stays inside the Demo tab.
+    """
 
     def repl(match: re.Match[str]) -> str:
         name = match.group(1)
@@ -38,6 +42,12 @@ def on_page_markdown(markdown: str, **kwargs: object) -> str:  # noqa: ARG001
                 "<code>uv run python scripts/generate_sim_demos.py</code>."
                 "</em></p>"
             )
-        return path.read_text(encoding="utf-8").strip()
+        body = path.read_text(encoding="utf-8").strip()
+        line_start = markdown.rfind("\n", 0, match.start()) + 1
+        indent = markdown[line_start : match.start()]
+        if not indent or not body:
+            return body
+        lines = body.splitlines()
+        return lines[0] + "".join(f"\n{indent}{line}" for line in lines[1:])
 
     return _SIM_MARKER.sub(repl, markdown)

@@ -69,6 +69,20 @@ def main(argv: list[str] | None = None) -> int:
     for name in sorted(COMPONENT_DEMO_BUILDERS):
         demos[f"{name}.html"] = build_component_demo(name)
 
+    from demos.runnable_code import runnable_path
+
+    missing_runnable = [
+        html_name.removesuffix(".html")
+        for html_name in demos
+        if not runnable_path(html_name.removesuffix(".html")).is_file()
+    ]
+    if missing_runnable:
+        print(
+            "missing runnable Demo/Code sources under docs/demos/runnable/: "
+            + ", ".join(sorted(missing_runnable))
+        )
+        return 1
+
     INCLUDES.mkdir(parents=True, exist_ok=True)
     dirty = False
     for name, html in demos.items():
@@ -83,10 +97,15 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(f"out of date: {path.relative_to(ROOT)}")
 
-    if args.check and dirty:
-        return 1
-    if args.check:
+    if args.check and not dirty:
         print("sim demos up to date")
+
+    # Keep guide / getting-started Demo/Code tabs aligned with runnable sources.
+    from sync_demo_code_tabs import main as sync_tabs
+
+    tab_rc = sync_tabs(["--check"] if args.check else [])
+    if args.check and (dirty or tab_rc != 0):
+        return 1
     return 0
 
 
