@@ -130,7 +130,7 @@ authorization decisions (`Depends`, Django/Flask auth, or your IdP).
 
 | Code / condition | Behavior |
 |---|---|
-| Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]"` |
+| Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]>=0.18.0,<0.19"` |
 | Invalid `OidcClientConfig` | `ValueError` on empty issuer / client_id / redirect_uri |
 | Provider misconfiguration | Authlib/provider errors bubble to the route |
 

@@ -123,6 +123,11 @@ Evaluating adoption? Use **Project → Evaluate**
     <strong>Best practices</strong>
     <p>Defaults and anti-patterns for production apps.</p>
   </a>
+  <a class="hedron-card" href="plugin-consumer/">
+    <span class="hedron-card__icon" aria-hidden="true">⬡</span>
+    <strong>Using plugins</strong>
+    <p>Install, enable, deny-by-default, and review third-party plugins.</p>
+  </a>
   <a class="hedron-card" href="plugin-authoring/">
     <span class="hedron-card__icon" aria-hidden="true">⬡</span>
     <strong>Plugin authoring</strong>
@@ -133,10 +138,15 @@ Evaluating adoption? Use **Project → Evaluate**
     <strong>Project workflow</strong>
     <p>Scaffold layout, build, check, and day-to-day CLI.</p>
   </a>
+  <a class="hedron-card" href="media-downloads/">
+    <span class="hedron-card__icon" aria-hidden="true">⬇</span>
+    <strong>Media downloads</strong>
+    <p>Safe download responses, zip, and Range requests.</p>
+  </a>
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>0.17 → 0.18 notes (and older trains).</p>
+    <p>0.17 → 0.18 notes (also under Project → Upgrade).</p>
   </a>
   <a class="hedron-card" href="openapi/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>

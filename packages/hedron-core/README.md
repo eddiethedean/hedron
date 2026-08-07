@@ -16,9 +16,9 @@ Django, ASGI, or WSGI dependency.
 ## Install
 
 ```bash
-pip install "hedron-core>=0.18.0"
+pip install "hedron-core>=0.18.0,<0.19"
 # or
-uv add "hedron-core>=0.18.0"
+uv add "hedron-core>=0.18.0,<0.19"
 ```
 
 Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.18.0**.

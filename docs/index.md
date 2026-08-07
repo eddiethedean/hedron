@@ -14,7 +14,7 @@ Hedron turns typed Python components into server-rendered HTML with FastAPI and 
 Build dashboards, admin tools, forms, and CRUD apps without a frontend build chain.
 { .hedron-lede }
 
-**~5 minutes:** install → `hedron new` → open localhost:8000 → **Hello from hedron new** →
+**~5–10 minutes:** install → `hedron new` → open localhost:8000 → **Hello from hedron new** →
 click **Refresh status** (the time updates).
 { .hedron-lede }
 

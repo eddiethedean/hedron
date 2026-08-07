@@ -5,6 +5,12 @@ Run these without cloning the monorepo. Requires Python 3.11+ and a working netw
 
 ## Hello page
 
+!!! warning "Static Hello only"
+
+    This sample has **no Refresh / HTMX**. Prefer
+    [Build your first app](../getting-started/quickstart.md) (`hedron new`) for the
+    interactive first-hour experience.
+
 ```bash
 pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"
 ```

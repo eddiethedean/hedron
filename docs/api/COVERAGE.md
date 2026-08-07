@@ -19,9 +19,10 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 
 | Export / package | Primary docs |
 |---|---|
-| `ModelDemo`, `InferenceInterface`, `ActionRegistry`, `RegisteredAction` | [INFERENCE.md](INFERENCE.md), [model demos](../guides/model-demos.md) |
-| `ExampleSet`, `PredictionFeedback`, `InferencePolicy`, `InferenceWorkflow` | [INFERENCE.md](INFERENCE.md) |
+| `ModelDemo`, `InferenceInterface`, `ActionRegistry`, `RegisteredAction` | [INFERENCE.md](INFERENCE.md), [model demos](../guides/model-demos.md), Autodoc |
+| `ExampleSet`, `PredictionFeedback`, `InferencePolicy`, `InferenceWorkflow` | [INFERENCE.md](INFERENCE.md), Autodoc |
 | `InteractionRecorder` (`hedron`) | [INFERENCE.md](INFERENCE.md) |
+| `DashboardBinding`, `InteractionGraph`, `TriggerContext` | [dashboards](../guides/dashboards.md), Autodoc |
 | `hedron_gradio.GradioClientAdapter` | [Gradio migration](../guides/gradio-migration.md) |
 
 ## Responses and live transport

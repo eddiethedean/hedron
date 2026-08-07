@@ -13,6 +13,19 @@ Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
 
 ## Inference and model demos (0.18)
 
+::: hedron_core.model_demo.ActionRegistry
+    options:
+      members:
+        - register_action
+        - register_adapter
+        - get_action
+        - get_adapter
+      heading_level: 3
+
+::: hedron_core.model_demo.InferenceInterface
+    options:
+      heading_level: 3
+
 ::: hedron_core.model_demo.ModelDemo
     options:
       members:
@@ -47,6 +60,25 @@ Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
         - declare_public
         - record
         - snippets
+      heading_level: 3
+
+## Dashboards (0.17)
+
+::: hedron_core.dashboard.DashboardBinding
+    options:
+      heading_level: 3
+
+::: hedron_core.dashboard.InteractionGraph
+    options:
+      members:
+        - declare_inputs
+        - register
+        - bindings
+        - topological_order
+      heading_level: 3
+
+::: hedron_core.dashboard.TriggerContext
+    options:
       heading_level: 3
 
 ## Application and routing

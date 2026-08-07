@@ -37,6 +37,11 @@ matters.
 
 === "pip (venv)"
 
+    Two installs — do both:
+
+    1. **CLI:** `pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"` (provides `hedron` / `python -m hedron`)
+    2. **Project:** after `hedron new`, `cd` into the app and `pip install -e .` (uvicorn uses the scaffold pin)
+
     ```bash
     python3 -m venv .venv          # Windows: py -3 -m venv .venv
     source .venv/bin/activate      # Windows PowerShell: .\.venv\Scripts\Activate.ps1
@@ -49,9 +54,9 @@ matters.
 
 !!! tip "Why does pip install twice?"
 
-    The first install provides the **CLI**. After `hedron new`, `pip install -e .` /
-    `uv sync` installs the scaffold’s **project dependency** so uvicorn uses the pinned
-    version. See [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
+    Step 1 provides the **CLI**. Step 2 installs the scaffold’s **project dependency** so
+    uvicorn uses the pinned version. See
+    [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 

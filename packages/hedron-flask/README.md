@@ -5,7 +5,7 @@ Flask adapter for Hedron: render `Page` / `Fragment` components, map portable
 cookies with Flask sessions.
 
 ```bash
-pip install "hedron-flask>=0.18.0"
+pip install "hedron-flask>=0.18.0,<0.19"
 ```
 
 Requires `hedron-core` and Flask 3.x. Does not install FastAPI. Current train:

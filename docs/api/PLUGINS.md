@@ -71,6 +71,9 @@ register.PLUGIN_META = PLUGIN_META
 Failed compatibility or contribution validation rolls back the registry builder and
 Explorer panels. `start()` failures also roll back contributions.
 
+Adopter walkthrough (install / review / deny-by-default):
+[Using plugins](../guides/plugin-consumer.md).
+
 ## Errors
 
 | Situation | Behavior |

@@ -96,5 +96,6 @@ Load the plugin in CI via the same entry-point path production uses.
 
 ## See also
 
-- [Plugins API](../api/PLUGINS.md) · [Error codes](error-codes.md) · [STABILITY](../api/STABILITY.md)
+- [Using plugins](plugin-consumer.md) (adopter enablement) · [Plugins API](../api/PLUGINS.md) ·
+  [Error codes](error-codes.md) · [STABILITY](../api/STABILITY.md)
 - Sample kit: `packages/hedron-sample-kit`

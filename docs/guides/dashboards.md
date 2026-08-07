@@ -12,6 +12,7 @@ compatibility remains **`beta`** — pin `hedron>=0.18.0,<0.19`.
 | Dash callback mapping | [Dash migration](dash-migration.md) |
 | NiceGUI refreshable mapping | [NiceGUI migration](nicegui-migration.md) |
 | Maintainer exit stub | [`examples/dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17) |
+| Generated signatures | [Autodoc — Dashboards](../api/AUTODOC.md#dashboards-017) |
 
 ## Mental model
 
@@ -24,10 +25,53 @@ compatibility remains **`beta`** — pin `hedron>=0.18.0,<0.19`.
 - Live SSE/WebSocket transports remain **experimental** — prefer HTMX **polling** /
   fragment refresh for Supported production paths ([live interaction](live-interaction.md)).
 
+## Minimal graph (runnable shape)
+
+Register inputs and bindings before serving. Empty targets, duplicate ids, missing
+dependencies, and cycles raise `DashboardGraphError` (`HED-GRAPH-0001` … `0005`).
+
 ```python
-# Conceptual shape — see what's-new-0.17 and the dashboard-0.17 stub for wiring.
-from hedron_core import DashboardBinding, InteractionGraph  # noqa: F401
+from hedron import Hedron, Text
+from hedron_core.dashboard import DashboardBinding, InteractionGraph
+
+app = Hedron(
+    title="Dashboard sketch",
+    security="standard",
+    explorer="off",
+    session_secret="replace-in-production",
+)
+
+graph = InteractionGraph()
+graph.declare_inputs("chart.select", "grid.select")
+graph.register(
+    DashboardBinding(
+        id="filter-panel",
+        triggers=("chart.select", "grid.select"),
+        snapshot_inputs=(),
+        targets=("main-panel",),
+        action_id="apply_filters",
+        debounce_ms=50,
+    )
+)
+
+
+@app.page("/")
+def home() -> Text:
+    order = ", ".join(graph.topological_order())
+    return Text(f"Bindings in order: {order}")
 ```
+
+Wire `action_id` to your own `@app.action` / fragment handlers and declared
+`FragmentRegion`s — see the [dashboard-0.17 stub](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17)
+for AppShell + `InteractionResult` wiring.
+
+## Errors
+
+| Condition | Behavior |
+|---|---|
+| Empty / duplicate binding id | `DashboardGraphError` (`HED-GRAPH-0005`) |
+| Empty `targets` | `HED-GRAPH-0004` |
+| Cycle / missing dependency / duplicate writers | Fail closed at `register` (`HED-GRAPH-0001`–`0003`) |
 
 ## Not Dash / Streamlit
 

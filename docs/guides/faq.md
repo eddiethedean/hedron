@@ -18,7 +18,7 @@ train. See [What’s ready today](whats-ready.md) and the [public roadmap](roadm
 For curated extras (`hedron-extras`), install `hedron[extras]>=0.18.0,<0.19`.
 **Auto** (inspectable object rendering built into `hedron` — no extra) is included.
 For DataTable/DataEditor, install `hedron[data]>=0.18.0,<0.19`. For charts, install
-`hedron[charts]>=0.1.0` (Alpha). For Flask/Django adapters:
+For charts, install `hedron[charts]>=0.1.0,<0.2` (Alpha). For Flask/Django adapters:
 
 ```bash
 pip install "hedron-flask>=0.18.0,<0.19"
@@ -45,7 +45,8 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 
 ## `uv add hedron` failed with “No pyproject.toml”
 
-Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or use
+Create a project first: `uv init my-app && cd my-app`, then
+`uv add "hedron>=0.18.0,<0.19"`. Or use
 `hedron new my-app` after `pip install "hedron>=0.18.0,<0.19"`.
 
 ## Should I use `uv init` or `hedron new`?
@@ -74,8 +75,8 @@ on PyPI — pin versions.
 See [What’s ready](whats-ready.md).
 
 ```bash
-pip install "hedron[data]"     # DataTable, DataEditor (Auto is already in hedron)
-pip install "hedron[charts]"   # Alpha: LineChart and visualization adapters
+pip install "hedron[data]>=0.18.0,<0.19"     # DataTable, DataEditor (Auto is already in hedron)
+pip install "hedron[charts]>=0.1.0,<0.2"   # Alpha: LineChart and visualization adapters
 ```
 
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), and the
@@ -146,9 +147,9 @@ variables / your secret store. Constructor args override both when explicit.
 ## How do I install HDJ / Jinja templates?
 
 ```bash
-pip install "hedron[jinja]"
+pip install "hedron[jinja]>=0.18.0,<0.19"
 # or
-uv add "hedron[jinja]"
+uv add "hedron[jinja]>=0.18.0,<0.19"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).

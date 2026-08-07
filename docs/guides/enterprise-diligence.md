@@ -29,7 +29,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
   see [Threat model](threat-model.md), [Cache](../api/CACHE.md), and the
   [multi-tenant cookbook](multi-tenant.md).
 - Third-party plugins are out of security scope until you review them
-  ([Plugin authoring](plugin-authoring.md)).
+  ([Using plugins](plugin-consumer.md) · [Plugin authoring](plugin-authoring.md)).
 - Host-framework CVEs (FastAPI, Django, Flask) are reported upstream.
 
 ## Multi-tenant checklist (you own)

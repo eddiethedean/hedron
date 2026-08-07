@@ -54,7 +54,7 @@ upgrade through **0.9**–**0.17** to **0.18.0**.
 - Build-manifest format 2 rejects 0.8 build artifacts; rebuild after upgrading.
 - `hedron eject` emits CSS only.
 
-Install Jinja authoring explicitly with `pip install "hedron[jinja]"` or
+Install Jinja authoring explicitly with `pip install "hedron[jinja]>=0.18.0,<0.19"` or
 `pip install hedron-jinja`. The import namespace is `hedron_jinja`; `.hdj` is the canonical
 format-v1 template suffix. Each file begins with the static feature/capability prologue documented
 in the [HDJ API](../api/JINJA.md#hdj-format), followed by ordinary Jinja/HTML.
@@ -200,8 +200,8 @@ instrumentation (`HDJ-DEF-014`) under D-048.
 
 1. Pin and upgrade to the coordinated `0.14.0` Beta train (`hedron`, adapters, extras together).
    Alpha packages `hedron-charts` / `hedron-sample-kit` / `hedron-native` remain on `0.1.x`.
-2. Optional: `pip install "hedron[conformance]"` for the fixture kit / `hedron conformance` CLI.
-3. Optional: `pip install "hedron[native]"` for Rust accel; absence must not change semantics
+2. Optional: `pip install "hedron[conformance]>=0.18.0,<0.19"` for the fixture kit / `hedron conformance` CLI.
+3. Optional: `pip install "hedron[native]>=0.1.0,<0.2"` for Rust accel; absence must not change semantics
    (`hedron accel-status`).
 4. HDJ authors: review loop/macro budgets, contracted extensions, and portable checker fixtures
    (`HDJ-DEF-014`).
@@ -237,7 +237,7 @@ remain **Experimental**. CodeEditor is a CSP-safe host stub (no pinned CodeMirro
 
 1. Pin and upgrade to the coordinated `0.16.0` Beta train (`hedron`, adapters, `hedron-extras`).
    Alpha packages remain on `0.1.x` with `hedron-core>=0.16.0,<0.17`.
-2. Install extras only when needed: `pip install "hedron[extras]"`.
+2. Install extras only when needed: `pip install "hedron[extras]>=0.18.0,<0.19"`.
 3. Prefer workbench components that emit bounded plans/actions over implicit callables.
 4. Do not market TerminalView / joystick / device bridges as Supported production features.
 5. Re-read [What's new in 0.16](whats-new-0.16.md) and [What's ready](whats-ready.md).
@@ -259,8 +259,8 @@ notebook/MCP packages. Live transports remain **experimental**. Notebook preview
    fallback path.
 4. Adopt shell primitives (`NavLink`, `OobHost`, `AppShell`/`MainPanel`) and public
    `render_interaction` when converting `InteractionResult` outside route internals.
-5. Install Alpha extras only when needed: `pip install "hedron[notebook]"` /
-   `"hedron[mcp]"`. Keep MCP disabled/empty by default.
+5. Install Alpha extras only when needed: `pip install "hedron[notebook]>=0.1.0,<0.2"` /
+   `"hedron[mcp]>=0.1.0,<0.2"`. Keep MCP disabled/empty by default.
 6. Re-read [What's new in 0.17](whats-new-0.17.md), [Dash migration](dash-migration.md), and
    [NiceGUI migration](nicegui-migration.md).
 
@@ -283,7 +283,7 @@ Gradio interop is **Experimental** — pin Alpha and expect churn. Live transpor
    `authorization_required` is true; never treat feedback as ground truth.
 5. Use `InferenceWorkflow.run(..., registry=...)` for ACTION/MODEL execution; graph JSON cannot
    host code or auto-publish HTTP/MCP endpoints.
-6. Optional: `pip install "hedron[gradio]"` for client discovery/jobs; keep adapters disabled by
+6. Optional: `pip install "hedron[gradio]>=0.1.0,<0.2"` for client discovery/jobs; keep adapters disabled by
    default. See [Gradio migration](gradio-migration.md) and [Model demos](model-demos.md).
 7. Re-read [What's new in 0.18](whats-new-0.18.md) and [What's ready](whats-ready.md).
 

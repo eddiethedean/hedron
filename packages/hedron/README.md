@@ -22,34 +22,38 @@ pip install "hedron>=0.18.0,<0.19"
 uv add "hedron>=0.18.0,<0.19"
 ```
 
-Optional data and charts:
+Optional extras (pin the train):
 
 ```bash
-pip install "hedron[data]"
-pip install "hedron[charts]"
-```
-
-Development Explorer:
-
-```bash
-pip install "hedron[dev]"
-```
-
-Optional Gradio interop (Alpha):
-
-```bash
-pip install "hedron[gradio]"
-```
-
-Optional browser testing extras:
-
-```bash
-pip install "hedron[browser]"
+pip install "hedron[data]>=0.18.0,<0.19"
+pip install "hedron[charts]>=0.1.0,<0.2"   # Alpha
+pip install "hedron[dev]>=0.18.0,<0.19"
+pip install "hedron[gradio]>=0.1.0,<0.2"   # Alpha
+pip install "hedron[browser]>=0.18.0,<0.19"
 ```
 
 Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.18.0** (Beta).
 
 ## Quick start
+
+Prefer the scaffold so you get **Hello from hedron new** and a working **Refresh status**
+click (HTMX swaps a small HTML fragment into a declared region):
+
+```bash
+# Need uv? https://docs.astral.sh/uv/getting-started/installation/
+uvx --from "hedron>=0.18.0,<0.19" hedron new my-hedron-app
+cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — click **Refresh status**; the
+timestamp should update.
+
+Full walkthrough: [Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/).
+
+### Alternate — static Hello (no Refresh)
+
+This snippet is a **static** page only (no HTMX Refresh). Prefer the scaffold above for
+the interactive first-hour experience.
 
 ```python
 from hedron import Hedron, Page, Text
@@ -65,6 +69,11 @@ app = Hedron(
 @app.page("/")
 def home() -> Page:
     return Page(Text("Hello, Hedron"), title="Demo")
+```
+
+```bash
+pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"
+uvicorn app:app --reload
 ```
 
 Plain FastAPI without the `Hedron` subclass:

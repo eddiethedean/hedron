@@ -110,7 +110,7 @@ assert result.status in {"completed", "partial", "failed", "cancelled"}
 ## Gradio (optional Alpha)
 
 ```bash
-pip install "hedron[gradio]"
+pip install "hedron[gradio]>=0.1.0,<0.2"
 # For live remote calls also install gradio_client
 ```
 

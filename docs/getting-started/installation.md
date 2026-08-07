@@ -2,9 +2,9 @@
 
 Prerequisites, extras, host adapters, and troubleshooting.
 
-**Next after prerequisites:** [Build your first app](quickstart.md) owns the golden-path
-copy-paste (`hedron new` → Hello → Refresh). Use this page for version checks, extras,
-Flask/Django adapters, and install failures.
+**Do not start here for Hello.** The golden-path copy-paste lives on
+[Build your first app](quickstart.md) (`hedron new` → Hello → Refresh). Use this page
+for version checks, optional extras, Flask/Django adapters, and install failures.
 
 Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
@@ -96,7 +96,7 @@ Install extras only when you need them:
 
 ```bash
 pip install "hedron[data]>=0.18.0,<0.19"          # example
-pip install "hedron[charts]>=0.1.0"         # Alpha — pin and expect churn
+pip install "hedron[charts]>=0.1.0,<0.2"         # Alpha — pin and expect churn
 pip install "hedron-charts[plotly]>=0.1.0"  # chart backend after charts extra
 ```
 

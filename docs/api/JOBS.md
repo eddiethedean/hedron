@@ -81,7 +81,12 @@ from hedron import ComponentRef, Hedron, Page, Poll, Status, Text
 from hedron.jobs import enqueue_durable, job_status_response
 from hedron_core.jobs import InMemoryJobBackend, JobState, set_job_backend
 
-app = Hedron()
+app = Hedron(
+    title="Jobs demo",
+    security="standard",
+    explorer="off",
+    session_secret="replace-in-production",
+)
 backend = InMemoryJobBackend()
 set_job_backend(backend)
 

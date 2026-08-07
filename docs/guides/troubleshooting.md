@@ -168,8 +168,8 @@ charts need optional extras—not a planned feature gap.
 
 ```bash
 # Auto needs no extra
-pip install "hedron[data]"      # DataTable, DataEditor
-pip install "hedron[charts]"    # LineChart / adapters
+pip install "hedron[data]>=0.18.0,<0.19"      # DataTable, DataEditor
+pip install "hedron[charts]>=0.1.0,<0.2"    # LineChart / adapters
 pip install "hedron-charts[plotly]"   # example backend
 ```
 

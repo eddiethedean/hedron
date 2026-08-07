@@ -47,7 +47,7 @@ that those products also use are still included.
   explicit routes/actions, or a different server framework mechanism.
 - **Expanded existing phase:** the Dash audit found a concrete omission in a coherent phase already
   on the roadmap.
-- **Planned 0.17:** the capability belongs to a new reactive-dashboard and agent-interface packet.
+- **Published 0.17:** the capability belongs to a new reactive-dashboard and agent-interface packet.
 - **Recipe/plugin:** public Hedron composition can provide it without a first-party runtime API.
 - **Deliberate non-parity:** the Dash mechanism conflicts with Hedron's explicit-request, security,
   determinism, accessibility, or no-arbitrary-JavaScript boundary. The useful outcome may still be
@@ -60,16 +60,16 @@ that those products also use are still included.
 | HTML/component tree, styling, assets, metadata, multipage URLs | Covered by components, HDJ/native HTML, scoped assets/themes, `Page`, `Nav`, routes, and history policy. |
 | Core inputs, loading, uploads, downloads, browser state | Mostly covered; clipboard, confirmation, geolocation, tooltip, and folder-upload details are added to 0.15. |
 | Plotly figures and ordinary chart rendering | Covered in 0.6; the complete interaction-event bridge is made explicit in 0.12. |
-| Reactive callbacks and cross-filter dashboards | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`/`XFILTER-017`): typed, deterministic interaction graph over explicit actions and declared regions. |
-| Partial property updates and `set_props` | **Planned 0.17** (`beta`, RFC-0041, `PATCH-017`): bounded, schema-checked, versioned patches with full-fragment fallback. |
-| Pattern-matching dynamic component IDs | **Planned 0.17** (`beta`, RFC-0041, `PATCH-017`): structured collection identities and map/gather/broadcast selectors, not arbitrary DOM matching. |
+| Reactive callbacks and cross-filter dashboards | **Published 0.17** (`beta`, RFC-0040, `GRAPH-017`/`XFILTER-017`): typed, deterministic interaction graph over explicit actions and declared regions. |
+| Partial property updates and `set_props` | **Published 0.17** (`beta`, RFC-0041, `PATCH-017`): bounded, schema-checked, versioned patches with full-fragment fallback. |
+| Pattern-matching dynamic component IDs | **Published 0.17** (`beta`, RFC-0041, `PATCH-017`): structured collection identities and map/gather/broadcast selectors, not arbitrary DOM matching. |
 | Async, background, progress, cancel, errors, cache | Covered by async endpoints, `InteractionResult`, `JobBackend`, cache, status/progress, and 0.13 tracing; 0.17 unifies the dashboard-facing lifecycle (`beta`, RFC-0040, `GRAPH-017`). |
 | WebSocket and persistent callbacks | 0.10 expanded with declared client-state reads, intermediate region updates, page-session lifecycle, and disconnect cleanup. |
 | DataTable and Dash AG Grid | Hedron tables/editors and AG Grid Community adapter cover the baseline; 0.12 now names saved grid state, events, and client/infinite row-model behavior. |
 | Custom React components, all-in-one components, and hooks | Covered by component packages, Web Components, plugins, browser modules, typed events, and Explorer extensions without requiring React. |
 | Dev tools and testing | Covered by Explorer graphs/traces, diagnostics, snapshots, Playwright/a11y/visual hooks, and pytest helpers; 0.17 adds the dashboard graph view (`beta`, RFC-0040, `REPLAY-017`/`GRAPH-017`). |
-| Jupyter display | **Planned 0.17** (`experimental`, RFC-0042, `NOTEBOOK-017`): server-side notebook preview; the 0.16 JupyterLite/Pyodide sandbox solves a different problem. |
-| MCP resources and tools | **Planned 0.17** (`experimental`, RFC-0043, `MCP-017`): optional deny-by-default `hedron-mcp` projection. |
+| Jupyter display | **Published 0.17** (`experimental`, RFC-0042, `NOTEBOOK-017`): server-side notebook preview; the 0.16 JupyterLite/Pyodide sandbox solves a different problem. |
+| MCP resources and tools | **Published 0.17** (`experimental`, RFC-0043, `MCP-017`): optional deny-by-default `hedron-mcp` projection. |
 
 ## Complete Dash Core Components cross-check
 
@@ -123,17 +123,17 @@ result before JavaScript enhancement.
 |---|---|
 | `Input`, `Output`, and `State` | **Covered/0.17 ergonomic layer:** request/action inputs and state dependencies are explicit today. 0.17 names trigger inputs versus snapshot-only state in dashboard bindings. |
 | Multiple inputs and outputs | **Covered:** actions can consume typed request/form/query data and return a primary region, out-of-band regions, events, redirects/history, and status. 0.17 adds declarative multi-region binding diagnostics. |
-| Chained callbacks and dependency ordering | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): finite page-local interaction graphs with cycle detection, stable topological ordering, authorization on every action edge, and no hidden application-wide execution. |
-| Initial callbacks / `prevent_initial_call` | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): initialization is opt-in per binding or explicit lazy resource; ordinary page render remains authoritative. |
-| `State` without triggering | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): declared snapshot inputs are serialized only when their trigger fires. Sensitive or large state remains server-owned. |
-| Callback context and changed-input detection | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): typed `TriggerContext` contains binding, event, component identity, changed fields, request/session correlation, and declared input snapshots. |
+| Chained callbacks and dependency ordering | **Published 0.17** (`beta`, RFC-0040, `GRAPH-017`): finite page-local interaction graphs with cycle detection, stable topological ordering, authorization on every action edge, and no hidden application-wide execution. |
+| Initial callbacks / `prevent_initial_call` | **Published 0.17** (`beta`, RFC-0040, `GRAPH-017`): initialization is opt-in per binding or explicit lazy resource; ordinary page render remains authoritative. |
+| `State` without triggering | **Published 0.17** (`beta`, RFC-0040, `GRAPH-017`): declared snapshot inputs are serialized only when their trigger fires. Sensitive or large state remains server-owned. |
+| Callback context and changed-input detection | **Published 0.17** (`beta`, RFC-0040, `GRAPH-017`): typed `TriggerContext` contains binding, event, component identity, changed fields, request/session correlation, and declared input snapshots. |
 | Flexible positional, named, and grouped signatures | **Covered:** Pydantic/Hedron models and normal Python function signatures provide typed grouping; a special callback tuple grammar is unnecessary. |
-| `PreventUpdate` and `no_update` | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): explicit no-change result for all or selected declared targets, distinct from an error or empty fragment. |
-| Optional inputs/outputs | **Planned 0.17** (`beta`, RFC-0040, `GRAPH-017`): explicit optional collection/member bindings with absent-state diagnostics. Missing required dependencies fail registration. |
+| `PreventUpdate` and `no_update` | **Published 0.17** (`beta`, RFC-0040, `GRAPH-017`): explicit no-change result for all or selected declared targets, distinct from an error or empty fragment. |
+| Optional inputs/outputs | **Published 0.17** (`beta`, RFC-0040, `GRAPH-017`): explicit optional collection/member bindings with absent-state diagnostics. Missing required dependencies fail registration. |
 | Duplicate callback outputs | **Deliberate constraint:** duplicate writers require an accepted deterministic arbitration policy. Unordered last-writer behavior is not supported. |
-| `ALL`, `MATCH`, and `ALLSMALLER` pattern IDs | **Planned 0.17** (`beta`, RFC-0041, `PATCH-017`): stable structured collection identities and typed map/gather/broadcast/range selectors. Arbitrary dictionaries or DOM selectors do not become authorization boundaries. |
+| `ALL`, `MATCH`, and `ALLSMALLER` pattern IDs | **Published 0.17** (`beta`, RFC-0041, `PATCH-017`): stable structured collection identities and typed map/gather/broadcast/range selectors. Arbitrary dictionaries or DOM selectors do not become authorization boundaries. |
 | Dynamic component insertion/removal | **Covered/planned 0.17** (`beta`, RFC-0041, `PATCH-017`): fragments already add/remove components; 0.17 validates collection registration, event teardown, focus, stale requests, and binding membership. |
-| `Patch` partial property updates | **Planned 0.17** (`beta`, RFC-0041, `PATCH-017`): bounded `PropertyPatch`/`CollectionPatch` operations for declared targets with schema validation, version/precondition, operation and payload caps, authorization, conflict behavior, and full-fragment fallback. |
+| `Patch` partial property updates | **Published 0.17** (`beta`, RFC-0041, `PATCH-017`): bounded `PropertyPatch`/`CollectionPatch` operations for declared targets with schema validation, version/precondition, operation and payload caps, authorization, conflict behavior, and full-fragment fallback. |
 | `set_props` updates outside declared outputs | **Deliberate constraint:** intermediate updates are useful, but targets remain declared and inspectable. Arbitrary component mutation bypassing the interaction graph is not adopted. |
 | Server-side async callbacks | **Covered:** sync/async endpoints, dependencies, cancellation, timeouts, and phase 0.13 preparation/concurrency. |
 | Background callbacks | **Covered:** durable `JobBackend`, 202/status/polling, cancellation requests, progress/status UI, Celery/RQ bridges, retention, and cleanup. Dash's Diskcache development/Celery production split is an implementation choice, not a new public outcome. |
@@ -235,7 +235,7 @@ Enterprise-only option becomes a portable Hedron guarantee.
 | Dash hooks/plugins | **Covered:** plugin discovery, capabilities, lifecycle, rollback, route/component/assets/diagnostic/Explorer extension points, and compatibility checks. Raw index-string mutation and automatic executable asset loading remain controlled trust boundaries. |
 | Dev Tools errors, validation, callback graph, timing, hot reload | **Covered:** typed model validation, diagnostics, Explorer graphs/traces, performance panels, in-app development errors under safe profiles, and reload. Production tracebacks remain secret. |
 | `dash.testing` browser fixtures | **Covered:** pytest helpers, async clients, snapshots, Playwright, browser/a11y/visual hooks, console checks, and named conformance suites. |
-| Jupyter inline/external/tab display | **Planned 0.17** (`experimental`, RFC-0042, `NOTEBOOK-017`): a server-side `hedron-notebook` preview helper with inline iframe/link modes, proxy/root-path detection, random port/token, dimensions, error forwarding, clean shutdown, and an explicit warning for hosted/public notebooks. |
+| Jupyter inline/external/tab display | **Published 0.17** (`experimental`, RFC-0042, `NOTEBOOK-017`): a server-side `hedron-notebook` preview helper with inline iframe/link modes, proxy/root-path detection, random port/token, dimensions, error forwarding, clean shutdown, and an explicit warning for hosted/public notebooks. |
 | JupyterLab extension mode | **Recipe/plugin:** first-party inline/external display is enough initially; a dedicated JupyterLab extension requires independent demand. |
 
 The 0.16 JupyterLite/Pyodide bridge executes isolated Python in the browser. It does not replace the

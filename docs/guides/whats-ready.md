@@ -187,10 +187,10 @@ Maintainer gate IDs and RFC evidence:
     uvicorn app:app --reload
     ```
 
-Extras: `"hedron[data]>=0.18.0,<0.19"`, `"hedron[charts]>=0.1.0"` (Alpha),
+Extras: `"hedron[data]>=0.18.0,<0.19"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
 `"hedron[extras]>=0.18.0,<0.19"`, `"hedron[jinja]>=0.18.0,<0.19"`, `"hedron[dev]>=0.18.0,<0.19"`,
-`"hedron[notebook]>=0.1.0"` (Alpha), `"hedron[mcp]>=0.1.0"` (Alpha),
-`"hedron[gradio]>=0.1.0"` (Alpha).
+`"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),
+`"hedron[gradio]>=0.1.0,<0.2"` (Alpha).
 
 ## Role-specific wrappers
 

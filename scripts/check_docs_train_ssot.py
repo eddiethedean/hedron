@@ -68,12 +68,22 @@ UNBOUNDED_PIN = re.compile(
     r"(?!,?\s*<0\.19)"
 )
 
+# Bare extras with no version at all: "hedron[data]", 'hedron[jinja]', hedron[charts]
+# (Alpha charts/notebook/mcp/gradio/native should use >=0.1.0,<0.2).
+BARE_EXTRA = re.compile(r"""["']hedron\[[^\]]+\]["'](?!\s*>=)""")
+
+# Alpha extras pinned without an upper bound: >=0.1.0 not followed by ,<0.2
+UNBOUNDED_ALPHA = re.compile(
+    r"hedron\[(?:charts|notebook|mcp|gradio|native)\]>=0\.1\.0(?!,?\s*<0\.2)"
+)
+
 # Paths scanned for unbounded pins (adopter-facing; exclude historical archives).
 PIN_SCAN_ROOTS = [
     ROOT / "docs" / "getting-started",
     ROOT / "docs" / "guides",
     ROOT / "docs" / "examples",
     ROOT / "docs" / "api",
+    ROOT / "docs" / "components",
     ROOT / "docs" / "index.md",
     ROOT / "README.md",
     ROOT / "packages" / "hedron" / "README.md",
@@ -119,6 +129,16 @@ def _check_unbounded_pins() -> list[str]:
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: unbounded 0.18 pin "
                     f"(use >=0.18.0,<0.19): {line.strip()[:120]}"
+                )
+            if BARE_EXTRA.search(line):
+                failures.append(
+                    f"{path.relative_to(ROOT)}:{lineno}: bare hedron[extra] "
+                    f"(add >=…,<… pin): {line.strip()[:120]}"
+                )
+            if UNBOUNDED_ALPHA.search(line):
+                failures.append(
+                    f"{path.relative_to(ROOT)}:{lineno}: unbounded Alpha pin "
+                    f"(use >=0.1.0,<0.2): {line.strip()[:120]}"
                 )
     return failures
 

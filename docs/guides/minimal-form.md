@@ -139,8 +139,8 @@ Without a matching `csrf_token`, the POST returns `403`.
 
 ## Next steps
 
-1. Continue the golden path: [Learning path](../getting-started/learning-path.md).
-2. Add HTMX targets, validation fragments, and `InteractionResult` in
-   [Forms and actions](forms-and-actions.md).
-3. Gate routes with sessions in [Authentication](authentication.md).
-4. CSRF profiles and headers: [Security](security.md).
+1. Pick a second-hour recipe: [Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) or
+   [Session auth](../examples/session-auth.md).
+2. Or continue the golden path: [Learning path](../getting-started/learning-path.md).
+3. Depth when you need it: [Forms and actions](forms-and-actions.md) ·
+   [Authentication](authentication.md) · [Security](security.md).

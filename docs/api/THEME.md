@@ -12,7 +12,14 @@ status: shipped
 **Status:** Accepted
 
 ```python
-app = Hedron(theme="default")
+from hedron import Hedron
+
+app = Hedron(
+    title="Themed app",
+    theme="default",
+    security="standard",
+    session_secret="replace-in-production",
+)
 
 return Article(
     class_=styles.root,
@@ -48,7 +55,12 @@ it without copying the stylesheet. To start with an entirely unstyled document, 
 it at the application boundary:
 
 ```python
-app = Hedron(default_styles=False)
+app = Hedron(
+    title="Unstyled shell",
+    default_styles=False,
+    security="standard",
+    session_secret="replace-in-production",
+)
 ```
 
 This switch disables only Hedron's baseline stylesheet. It does not remove application

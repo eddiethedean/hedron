@@ -20,7 +20,7 @@ pip install -U "hedron>=0.18.0,<0.19"
 uv add "hedron>=0.18.0,<0.19"
 ```
 
-Optional: `pip install "hedron[gradio]"` · `"hedron[notebook]"` · `"hedron[mcp]"`.
+Optional: `pip install "hedron[gradio]>=0.1.0,<0.2"` · `"hedron[notebook]>=0.1.0,<0.2"` · `"hedron[mcp]>=0.1.0,<0.2"`.
 
 ## Earlier trains
 

@@ -170,8 +170,8 @@ nav:
   - Home: index.md
   - Start:
     - Overview: getting-started/index.md
-    - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
+    - Installation (extras & troubleshooting): getting-started/installation.md
     - Core concepts (optional): getting-started/core-concepts.md
     - Understanding maturity labels: getting-started/how-to-read.md
     - HTMX interactions: guides/htmx-interactions.md
@@ -213,6 +213,7 @@ nav:
       - Performance: guides/performance.md
       - Test your UI: guides/testing.md
       - Best practices: guides/best-practices.md
+      - Using plugins: guides/plugin-consumer.md
       - Plugin authoring: guides/plugin-authoring.md
       - Project workflow: guides/project-workflow.md
       - Plain FastAPI: guides/plain-fastapi.md
