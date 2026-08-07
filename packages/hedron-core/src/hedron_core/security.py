@@ -270,7 +270,6 @@ def check_url_purpose_for_attribute(url: SafeUrl, attr: str) -> None:
         )
     if url.purpose is UrlPurpose.ASSET and expected not in {
         UrlPurpose.ASSET,
-        UrlPurpose.NAVIGATION,
     }:
         raise error(
             "HED-SEC-0006",
@@ -382,8 +381,9 @@ class SafeUrl:
         if parts.username is not None or parts.password is not None:
             raise _url_error("URLs must not contain credentials", purpose)
 
-        if purpose is UrlPurpose.ASSET and scheme == "" and not allow_external:
-            # Same-origin relative assets: reject encoded path traversal before emit.
+        if purpose is UrlPurpose.ASSET and scheme == "":
+            # Same-origin relative assets: always reject encoded path traversal.
+            # allow_external only gates absolute http(s), never traversal.
             reject_asset_path_traversal(raw, purpose=purpose)
 
         obj = object.__new__(cls)

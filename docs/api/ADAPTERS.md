@@ -104,7 +104,7 @@ ship the FastAPI SSE/WebSocket helpers.
 
 | Claim | Notes |
 |---|---|
-| Full adapter live browser matrix | Carryover Deferred `LIVE-011-BROWSER` (ops evidence; not blocking Supported adapter depth on 0.18) |
+| Full adapter live browser matrix | Carryover Deferred `LIVE-011-BROWSER` (ops evidence; not blocking Supported adapter depth on the Ready-to-cut 0.19 train) |
 | Load/proxy backpressure proof for SSE/WS | Carryover Deferred `PERF-10-001` — prefer polling; live helpers remain Experimental |
 
 CameraCapture / MicrophoneCapture ship as **Supported** on the FastAPI flagship (with

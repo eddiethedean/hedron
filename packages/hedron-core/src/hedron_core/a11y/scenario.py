@@ -75,12 +75,16 @@ class AccessibilityScenario:
         }
 
 
-_TAG_RE = re.compile(r"<([a-zA-Z0-9]+)([^>]*)>", re.M)
+_TAG_RE = re.compile(r"</?([a-zA-Z0-9]+)([^>]*)/?>", re.M)
 _ARIA_LABEL = re.compile(r'aria-label="([^"]*)"')
 _ROLE = re.compile(r'role="([^"]*)"')
 _ID = re.compile(r'\bid="([^"]*)"')
 _TYPE = re.compile(r'\btype="([^"]*)"', re.I)
 _HREF = re.compile(r"\bhref=", re.I)
+_VOID = frozenset(
+    {"br", "hr", "img", "input", "meta", "link", "source", "track", "area", "col", "wbr"}
+)
+_SECTIONING = frozenset({"main", "article", "section", "aside", "nav"})
 
 _INPUT_ROLES = {
     "text": "textbox",
@@ -115,15 +119,28 @@ def snapshot_accessibility_tree(html: str) -> list[AccessibilityTreeNode]:
     offline structural smoke checks only.
     """
     nodes: list[AccessibilityTreeNode] = []
+    sectioning_depth = 0
     for match in _TAG_RE.finditer(html):
+        raw = match.group(0)
         tag = match.group(1).lower()
-        attrs = match.group(2)
+        attrs = match.group(2) or ""
+        closing = raw.startswith("</")
+        if closing:
+            if tag in _SECTIONING and sectioning_depth > 0:
+                sectioning_depth -= 1
+            continue
         if tag in {"html", "head", "meta", "link", "script", "style", "br", "hr"}:
             continue
         role_m = _ROLE.search(attrs)
         label_m = _ARIA_LABEL.search(attrs)
         id_m = _ID.search(attrs)
-        role = role_m.group(1) if role_m else _implicit_role(tag, attrs)
+        role = (
+            role_m.group(1)
+            if role_m
+            else _implicit_role(tag, attrs, sectioning_depth=sectioning_depth)
+        )
+        if tag in _SECTIONING and tag not in _VOID and "/>" not in raw:
+            sectioning_depth += 1
         if role == "none":
             continue
         name = label_m.group(1) if label_m else (id_m.group(1) if id_m else "")
@@ -131,19 +148,22 @@ def snapshot_accessibility_tree(html: str) -> list[AccessibilityTreeNode]:
     return nodes
 
 
-def _implicit_role(tag: str, attrs: str = "") -> str:
+def _implicit_role(tag: str, attrs: str = "", *, sectioning_depth: int = 0) -> str:
     if tag == "input":
         type_m = _TYPE.search(attrs)
         input_type = (type_m.group(1) if type_m else "text").lower()
         return _INPUT_ROLES.get(input_type, "textbox")
     if tag == "a":
         return "link" if _HREF.search(attrs) else "generic"
+    if tag == "header":
+        # Nested headers inside sectioning content are not document banners.
+        return "generic" if sectioning_depth > 0 else "banner"
+    if tag == "footer":
+        return "generic" if sectioning_depth > 0 else "contentinfo"
     return {
         "button": "button",
         "nav": "navigation",
         "main": "main",
-        "header": "banner",
-        "footer": "contentinfo",
         "aside": "complementary",
         "form": "form",
         "img": "img",
@@ -192,20 +212,45 @@ def axe_to_sarif(
     tool_name: str = "axe-core",
     tool_version: str = "pinned",
 ) -> dict[str, Any]:
-    """Stable SARIF-ish provenance for axe findings (TEST-019)."""
+    """Stable SARIF 2.1.0 provenance for axe findings (TEST-019)."""
     results = []
+    rules: dict[str, dict[str, Any]] = {}
     for item in violations:
+        rule_id = str(item.get("id") or item.get("rule_id") or "unknown")
+        impact = str(item.get("impact") or "moderate").lower()
+        message = item.get("description") or item.get("help") or str(item)
+        rules.setdefault(
+            rule_id,
+            {
+                "id": rule_id,
+                "name": rule_id,
+                "shortDescription": {"text": str(message)},
+                "fullDescription": {"text": str(item.get("help") or message)},
+                "help": {"text": str(item.get("helpUrl") or item.get("help") or message)},
+                "defaultConfiguration": {"level": _SARIF_LEVELS.get(impact, "warning")},
+                "properties": {"axe_impact": impact},
+            },
+        )
         locations = []
         for node in (item.get("nodes") or [])[:5]:
-            uri = _node_location_uri(node)
-            if uri:
-                locations.append({"physicalLocation": {"artifactLocation": {"uri": uri}}})
-        impact = str(item.get("impact") or "moderate").lower()
+            selector = _node_location_uri(node)
+            if not selector:
+                continue
+            # CSS selectors are not file URIs — keep them as logical locations.
+            locations.append(
+                {
+                    "logicalLocations": [{"fullyQualifiedName": selector, "kind": "css-selector"}],
+                    "physicalLocation": {
+                        "artifactLocation": {"uri": "about:blank"},
+                        "region": {"snippet": {"text": selector}},
+                    },
+                }
+            )
         results.append(
             {
-                "ruleId": item.get("id") or item.get("rule_id") or "unknown",
+                "ruleId": rule_id,
                 "level": _SARIF_LEVELS.get(impact, "warning"),
-                "message": {"text": item.get("description") or item.get("help") or str(item)},
+                "message": {"text": str(message)},
                 "locations": locations,
                 "properties": {"axe_impact": impact},
             }
@@ -215,7 +260,13 @@ def axe_to_sarif(
         "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
         "runs": [
             {
-                "tool": {"driver": {"name": tool_name, "version": tool_version}},
+                "tool": {
+                    "driver": {
+                        "name": tool_name,
+                        "version": tool_version,
+                        "rules": list(rules.values()),
+                    }
+                },
                 "results": results,
                 "properties": {
                     "hedron_gate": "TEST-019",

@@ -11,13 +11,13 @@ are missing. Applications may supply pinned local runtimes; first-party offline
 runtime fingerprinting is not Supported yet.
 
 ```bash
-pip install "hedron-charts==0.1.0"
+pip install "hedron-charts>=0.1.0,<0.2"   # tip: 0.1.5 on the Alpha line
 # Optional backends:
-pip install "hedron-charts[matplotlib]"
-pip install "hedron-charts[plotly]"
-pip install "hedron-charts[altair]"
+pip install "hedron-charts[matplotlib]>=0.1.0,<0.2"
+pip install "hedron-charts[plotly]>=0.1.0,<0.2"
+pip install "hedron-charts[altair]>=0.1.0,<0.2"
 # Or via the flagship extra:
-pip install "hedron[charts]"
+pip install "hedron[charts]>=0.1.0,<0.2"
 ```
 
 Requires `hedron-core`. See

@@ -239,7 +239,7 @@ charts need optional extras—not a planned feature gap.
 # Auto needs no extra
 pip install "hedron[data]>=0.19.0,<0.20"      # DataTable, DataEditor
 pip install "hedron[charts]>=0.1.0,<0.2"    # LineChart / adapters
-pip install "hedron-charts[plotly]"   # example backend
+pip install "hedron-charts[plotly]>=0.1.0,<0.2"   # example backend
 ```
 
 See [Installation](../getting-started/installation.md) and

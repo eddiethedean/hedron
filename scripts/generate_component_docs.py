@@ -49,11 +49,13 @@ _ALPHA_PIN = ">=0.1.0,<0.2"
 def _install_requirement(package: str) -> str:
     """Return a pip requirement with the current train / Alpha upper bound."""
     match = re.fullmatch(r"hedron\[([^\]]+)\]", package)
-    if match is None:
-        return package
-    extra = match.group(1).split(",", 1)[0].strip()
-    pin = _ALPHA_PIN if extra in _ALPHA_EXTRAS else _TRAIN_PIN
-    return f"{package}{pin}"
+    if match is not None:
+        extra = match.group(1).split(",", 1)[0].strip()
+        pin = _ALPHA_PIN if extra in _ALPHA_EXTRAS else _TRAIN_PIN
+        return f"{package}{pin}"
+    if package == "hedron-charts" or package.startswith("hedron-charts["):
+        return f"{package}{_ALPHA_PIN}"
+    return package
 
 
 @dataclass(frozen=True)

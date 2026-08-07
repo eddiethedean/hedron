@@ -98,7 +98,7 @@ Install extras only when you need them:
 ```bash
 pip install "hedron[data]>=0.19.0,<0.20"          # example
 pip install "hedron[charts]>=0.1.0,<0.2"         # Alpha — pin and expect churn
-pip install "hedron-charts[plotly]>=0.1.0"  # chart backend after charts extra
+pip install "hedron-charts[plotly]>=0.1.0,<0.2"  # chart backend after charts extra (tip: 0.1.5)
 ```
 
 ### Other hosts

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import itertools
+import re
 from typing import Literal
 
 from hedron_core.builtins._base import collect_children
@@ -12,6 +13,7 @@ from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrValue
 
 _DIALOG_ID_SEQ = itertools.count(1)
+_DIALOG_ID_RE = re.compile(r"^[A-Za-z][\w:.-]*$")
 
 
 class DialogProps(Props):
@@ -41,8 +43,15 @@ class Dialog(Component[DialogProps]):
     ) -> None:
         # ``element_id`` remains accepted as a compatibility alias for ``id``.
         resolved_id = id if id is not None else element_id
+        if resolved_id is not None and not str(resolved_id).strip():
+            resolved_id = None
         if resolved_id is None:
             resolved_id = f"hedron-dialog-{next(_DIALOG_ID_SEQ)}"
+        elif not _DIALOG_ID_RE.fullmatch(str(resolved_id)):
+            raise ValueError(
+                f"Dialog id {resolved_id!r} must match /^[A-Za-z][\\w:.-]*$/ "
+                "(required by hedron-ui dialog openers)."
+            )
         super().__init__(DialogProps(title=title, open=open, modal=modal, id=resolved_id, **kwargs))
         self._body = collect_children(*nodes, children=children)
 

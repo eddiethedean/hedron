@@ -21,7 +21,8 @@ pip install "hedron-core>=0.19.0,<0.20"
 uv add "hedron-core>=0.19.0,<0.20"
 ```
 
-Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.19.0**.
+Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.19.0** (Ready to cut on
+`main`; last published PyPI/git = `v0.18.0`).
 
 ## Quick start
 

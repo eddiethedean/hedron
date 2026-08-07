@@ -1118,16 +1118,35 @@ def _as_upload_file(
 
 
 def _reject_traversal(path: str) -> None:
+    from urllib.parse import unquote
+
     raw = path.replace("\\", "/")
     if not raw or raw.strip() != raw:
         raise ValueError(f"Unsafe directory upload path: {path!r}")
     if raw.startswith("/") or (len(raw) > 1 and raw[1] == ":"):
         raise ValueError(f"Absolute directory upload paths are not allowed: {path!r}")
-    parts = PurePosixPath(raw).parts
-    if ".." in parts or any(part == "" for part in parts):
-        raise ValueError(f"Directory upload path traversal rejected: {path!r}")
-    if any(part in {".", ".."} for part in parts):
-        raise ValueError(f"Unsafe directory upload path segment: {path!r}")
+
+    decoded = raw
+    for _ in range(3):
+        next_decoded = unquote(decoded)
+        if next_decoded == decoded:
+            break
+        decoded = next_decoded
+        if "\\" in decoded or any(ord(ch) < 32 for ch in decoded):
+            raise ValueError(f"Unsafe directory upload path: {path!r}")
+        if decoded.startswith("/") or (len(decoded) > 1 and decoded[1] == ":"):
+            raise ValueError(f"Absolute directory upload paths are not allowed: {path!r}")
+
+    for candidate in (raw, decoded):
+        lowered = candidate.lower()
+        if "%2e%2e" in lowered or "%2e." in lowered or ".%2e" in lowered:
+            raise ValueError(f"Directory upload path traversal rejected: {path!r}")
+        normalized = candidate.replace(";", "/")
+        parts = [p for p in normalized.split("/") if p not in {"", "."}]
+        if any(part == ".." or part.startswith("..") for part in parts):
+            raise ValueError(f"Directory upload path traversal rejected: {path!r}")
+        if any(part == "" for part in PurePosixPath(candidate.replace(";", "/")).parts):
+            raise ValueError(f"Unsafe directory upload path: {path!r}")
 
 
 def validate_directory_upload(

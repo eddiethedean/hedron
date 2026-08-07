@@ -104,7 +104,7 @@
     return out.replace(FORM_TOKEN_RE, function (_match, name) {
       if (!formData) return "";
       var value = formData.get(name);
-      return value == null ? "" : String(value);
+      return value == null ? "" : escapeHtml(String(value));
     });
   }
 

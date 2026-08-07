@@ -35,6 +35,11 @@ matters.
     uv run uvicorn app:app --reload
     ```
 
+!!! note "PyPI vs `main`"
+
+    Until `v0.19.0` is tagged, PyPI still serves **`v0.18.0`**. Install from `main` for
+    Ready-to-cut `0.19.0`, or wait for the cut and use the pin above.
+
 === "pip (venv)"
 
     Two installs — do both:

@@ -942,7 +942,7 @@ def build_csrf_guard_demo() -> str:
                     aria={"label": "CSRF"},
                 ),
                 html.p(
-                    "Simulated fail-closed CSRF — missing token → 403, no success copy.",
+                    "Docs simulation — canned success vs 403 routes (not a live CSRF cookie check).",
                     class_="hedron-sim-muted",
                 ),
             ),
@@ -954,7 +954,7 @@ def build_csrf_guard_demo() -> str:
         return swap(
             html.div(
                 html.strong("POST ok"),
-                html.span("csrf_token matched the cookie."),
+                html.span("Simulated success path (token present in the demo)."),
                 id=result.id,
                 class_="hedron-sim-card",
                 role="status",
@@ -966,7 +966,7 @@ def build_csrf_guard_demo() -> str:
         return InteractionResult(
             content=html.div(
                 html.strong("403 CSRF failed"),
-                html.span("Missing or mismatched csrf_token — action rejected."),
+                html.span("Simulated reject path (token missing in the demo)."),
                 id=result.id,
                 class_="hedron-sim-card",
                 role="status",

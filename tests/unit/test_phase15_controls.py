@@ -231,6 +231,16 @@ def test_directory_upload_and_validation() -> None:
     with pytest.raises(ValueError, match="traversal|Absolute|Unsafe"):
         validate_directory_upload([("/etc/passwd", 1)], max_files=10, max_total_size=100)
 
+    for evil in (
+        "%2e%2e/x",
+        "..%2fsecret",
+        "foo/%2e%2e/bar",
+        "foo/..;/bar",
+        "%2E%2E%2Fetc%2Fpasswd",
+    ):
+        with pytest.raises(ValueError, match="traversal|Absolute|Unsafe"):
+            validate_directory_upload([(evil, 1)], max_files=10, max_total_size=100)
+
     with pytest.raises(ValueError, match="max_total_size"):
         validate_directory_upload([("big.bin", 50)], max_files=10, max_total_size=10)
 

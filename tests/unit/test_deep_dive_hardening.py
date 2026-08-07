@@ -319,6 +319,36 @@ def test_cli_empty_registry_hints(capsys: pytest.CaptureFixture[str]) -> None:
     assert "--app" in err
 
 
+def test_cli_eject_ignores_registry_folder_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """``meta.folder_path`` must not become the eject write root."""
+    from hedron.cli import main
+    from hedron_core.registry import register_component
+
+    reset_registry_for_tests()
+    (tmp_path / "pyproject.toml").write_text(
+        '[project]\nname = "eject-fixture"\nversion = "0.0.0"\n\n[tool.hedron]\n',
+        encoding="utf-8",
+    )
+    outside = tmp_path / "outside-root"
+    outside.mkdir()
+    register_component(
+        logical_id="app:demo.Empty",
+        name="Empty",
+        module="demo",
+        distribution="app",
+        folder_path=str(outside),
+    )
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(SystemExit) as exc:
+        main(["eject", "Empty", "--force"])
+    assert exc.value.code == 0
+    expected = tmp_path / "components" / "Empty"
+    assert (expected / "accessibility_contract.json").is_file()
+    assert not (outside / "accessibility_contract.json").exists()
+
+
 def test_cli_eject_nothing_written_exits_nonzero(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

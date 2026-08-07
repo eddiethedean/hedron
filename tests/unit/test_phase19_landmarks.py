@@ -47,9 +47,9 @@ def test_landmark_rejects_unknown_attrs() -> None:
 
 @pytest.mark.a11y
 def test_landmark_rejects_hostile_roles() -> None:
-    with pytest.raises(TypeError, match="Landmark-hostile role"):
+    with pytest.raises(TypeError, match=r"role='presentation' is not allowed on landmark"):
         Main(Text("x"), role="presentation")
-    with pytest.raises(TypeError, match="Landmark-hostile role"):
+    with pytest.raises(TypeError, match=r"role='none' is not allowed on landmark"):
         Nav(Text("x"), role="none")
-    with pytest.raises(TypeError, match="Landmark-hostile role"):
+    with pytest.raises(TypeError, match=r"role='button' is not allowed on landmark"):
         Main(Text("x"), role="button")

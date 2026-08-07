@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped (fragment regions + `InteractionResult` on **0.18.x**)
+**Status:** Shipped (fragment regions + `InteractionResult` on the **0.19** Ready-to-cut train; last published `v0.18.0`)
 
 Typed FastAPI/HTMX request and result contracts live in `hedron.interaction` and are
 re-exported from `hedron`.

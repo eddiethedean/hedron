@@ -24,6 +24,12 @@ class TargetSpacingPolicy:
     notes: str = "24x24 CSS px or equivalent spacing; document exceptions"
 
 
+_TRACK_KINDS = frozenset(
+    {"captions", "subtitles", "transcript", "audio_description", "descriptive_transcript"}
+)
+_TRACK_EMIT_KINDS = frozenset({"captions", "subtitles", "audio_description"})
+
+
 @dataclass(frozen=True, slots=True)
 class MediaTrackContract:
     """Caption / transcript / audio-description obligations for media."""
@@ -36,9 +42,11 @@ class MediaTrackContract:
     reviewed: bool = False
 
     def validated(self) -> MediaTrackContract:
+        if self.kind not in _TRACK_KINDS:
+            raise ValueError(f"Unsupported media track kind: {self.kind!r}")
         if not self.language.strip():
             raise ValueError("Media track requires language")
-        if self.kind in {"captions", "subtitles", "audio_description"} and not self.src:
+        if self.kind in _TRACK_EMIT_KINDS and not self.src:
             raise ValueError(f"{self.kind} requires src")
         return self
 
@@ -88,7 +96,16 @@ _SECTION_NAMED = re.compile(
     re.I,
 )
 _HEADING = re.compile(r"<h([1-6])\b", re.I)
-_SKIP = re.compile(r'href=["\']#[^"\']*["\'][^>]*>\s*skip', re.I)
+_SKIP = re.compile(
+    r"(?:"
+    r'href=["\']#[^"\']*["\'][^>]*>\s*skip(?:\s+to\b|\s+navigation\b|\s+main\b|\s+content\b)'
+    r"|"
+    r'aria-label=["\'][^"\']*skip(?:\s+to\b|\s+navigation\b|\s+main\b|\s+content\b)[^"\']*["\']'
+    r"|"
+    r'class=["\'][^"\']*\bskip-?link\b[^"\']*["\']'
+    r")",
+    re.I,
+)
 
 
 def validate_page_structure(html: str) -> StructureReport:

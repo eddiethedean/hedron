@@ -18,6 +18,9 @@ uvx --from "hedron>=0.19.0,<0.20" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
+Until `v0.19.0` is tagged, PyPI still serves **`v0.18.0`** — install from `main` for
+Ready-to-cut `0.19.0`, or wait for the cut.
+
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 Click **Refresh status**; the page updates without a full reload (HTMX swaps a small HTML
 fragment into the declared region).
@@ -48,10 +51,9 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 
 <strong>Hedron 0.19.0</strong> — Ready to cut on <code>main</code> (last published PyPI/git =
 <code>v0.18.0</code>); pin with <code>hedron&gt;=0.19.0,&lt;0.20</code> after
-<code>v0.19.0</code> is tagged. <strong>Supported</strong> means the capability works on the current train when
-production. <strong>Supported</strong> means the capability works on the current train when
-pinned; most public APIs remain compatibility level <code>beta</code> until listed in the small
-<strong>stable</strong> table —
+<code>v0.19.0</code> is tagged. <strong>Supported</strong> means the capability works on the
+current train when pinned; most public APIs remain compatibility level <code>beta</code>
+until listed in the small <strong>stable</strong> table —
 <a href="https://hedron.readthedocs.io/en/latest/getting-started/how-to-read/">maturity labels</a>.
 Capability readiness:
 <a href="https://hedron.readthedocs.io/en/latest/guides/whats-ready/">What’s ready</a>.

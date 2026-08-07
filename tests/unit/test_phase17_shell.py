@@ -64,6 +64,14 @@ def test_app_shell_and_main_panel() -> None:
     assert "hedron-app-shell-nav" not in frag
 
 
+def test_app_shell_does_not_nest_nav_landmark() -> None:
+    from hedron_core import Nav, NavLink
+
+    html = render(AppShell(nav=Nav(NavLink("Home", "/")), body="Body")).html
+    assert html.count("<nav") == 1
+    assert "hedron-app-shell-nav" in html
+
+
 def test_link_accepts_class_() -> None:
     from hedron_core import Link
 

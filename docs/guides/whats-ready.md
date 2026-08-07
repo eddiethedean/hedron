@@ -196,6 +196,9 @@ Maintainer gate IDs and RFC evidence:
     uvicorn app:app --reload
     ```
 
+Until `v0.19.0` is tagged, PyPI still serves **`v0.18.0`** — install from `main` for
+Ready-to-cut `0.19.0`, or wait for the cut and use the pin above.
+
 Extras: `"hedron[data]>=0.19.0,<0.20"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
 `"hedron[extras]>=0.19.0,<0.20"`, `"hedron[jinja]>=0.19.0,<0.20"`, `"hedron[dev]>=0.19.0,<0.20"`,
 `"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),

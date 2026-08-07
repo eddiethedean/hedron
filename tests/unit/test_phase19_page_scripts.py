@@ -78,6 +78,33 @@ def test_safeurl_asset_rejects_percent_encoded_traversal() -> None:
         SafeUrl.parse("/assets/%2e%2e/secret.js", purpose=UrlPurpose.ASSET)
 
 
+def test_safeurl_asset_rejects_traversal_even_with_allow_external() -> None:
+    with pytest.raises(HedronError, match="normalized|\\.\\.|without"):
+        SafeUrl.parse(
+            "/assets/../secret.js",
+            purpose=UrlPurpose.ASSET,
+            allow_external=True,
+        )
+
+
+def test_asset_purpose_rejected_on_href() -> None:
+    from hedron_core import html
+    from hedron_core.security import check_url_purpose_for_attribute
+
+    url = SafeUrl.parse("/assets/app.js", purpose=UrlPurpose.ASSET)
+    with pytest.raises(HedronError, match="purpose mismatch|not valid"):
+        check_url_purpose_for_attribute(url, "href")
+    with pytest.raises(HedronError):
+        render(html.a("x", href=url))
+
+
+def test_image_rejects_relative_traversal_with_allow_external() -> None:
+    from hedron_core.builtins.content import Image
+
+    with pytest.raises(HedronError):
+        Image(src="/static/../secret.png", alt="x", allow_external=True)
+
+
 def test_page_scripts_async_emits_async_attr() -> None:
     page = Page(
         Text("hi"),

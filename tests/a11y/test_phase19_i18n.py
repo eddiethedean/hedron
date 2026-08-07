@@ -36,11 +36,12 @@ def test_structure_flags_missing_title() -> None:
 def test_structure_accepts_single_quoted_lang_dir() -> None:
     report = validate_page_structure(
         "<html lang='fr' dir='ltr'><head><title>T</title></head>"
-        "<body><a href='#main'>Skip</a><main>x</main></body></html>"
+        "<body><a href='#main'>Skip to content</a><main>x</main></body></html>"
     )
     assert report.lang == "fr"
     assert report.dir == "ltr"
     assert report.ok
+    assert report.has_skip_link
 
 
 def test_structure_flags_missing_skip_link() -> None:
@@ -51,15 +52,25 @@ def test_structure_flags_missing_skip_link() -> None:
     assert not report.ok
 
 
+def test_structure_rejects_bare_skip_label() -> None:
+    """Bare 'Skip' without 'to …' is not treated as a skip link (false-positive guard)."""
+    report = validate_page_structure(
+        "<html lang='en'><head><title>T</title></head>"
+        "<body><a href='#main'>Skip</a><main>x</main></body></html>"
+    )
+    assert not report.has_skip_link
+    assert "missing skip link" in report.issues
+
+
 def test_section_landmark_requires_name() -> None:
     bare = validate_page_structure(
         "<html lang='en'><head><title>T</title></head>"
-        "<body><a href='#main'>Skip</a><main><section>x</section></main></body></html>"
+        "<body><a href='#main'>Skip to content</a><main><section>x</section></main></body></html>"
     )
     assert "section" not in bare.landmarks
     named = validate_page_structure(
         "<html lang='en'><head><title>T</title></head>"
-        "<body><a href='#main'>Skip</a><main>"
+        "<body><a href='#main'>Skip to content</a><main>"
         "<section aria-label='Intro'>x</section></main></body></html>"
     )
     assert "section" in named.landmarks

@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from typing import Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
+from hedron_core.builtins.landmarks import Nav
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
@@ -281,8 +282,30 @@ class AppShell(Component[AppShellProps]):
         self._body = () if body is None else _kids(body)  # type: ignore[arg-type]
 
     def render(self) -> NodeLike:
+        from hedron_core.builtins.landmarks import LandmarkProps, _landmark_attrs
+
         panel = MainPanel(*self._body, id=self.props.panel_id)
-        nav = html.nav(*self._nav, class_="hedron-app-shell-nav", data={"hedron-app-nav": "true"})
+        if len(self._nav) == 1 and isinstance(self._nav[0], Nav):
+            # Avoid nested <nav> landmarks when callers pass Nav(...).
+            child = self._nav[0]
+            data = dict(child.props.data) if isinstance(child.props.data, dict) else {}
+            data["hedron-app-nav"] = "true"
+            props = LandmarkProps(
+                class_=class_names("hedron-app-shell-nav", child.props.class_),
+                id=child.props.id,
+                lang=child.props.lang,
+                dir=child.props.dir,
+                title=child.props.title,
+                tabindex=child.props.tabindex,
+                aria=child.props.aria,
+                data=data,
+                hidden=child.props.hidden,
+            )
+            nav = html.nav(*child._children, **_landmark_attrs(props))
+        else:
+            nav = html.nav(
+                *self._nav, class_="hedron-app-shell-nav", data={"hedron-app-nav": "true"}
+            )
         attrs: dict[str, HtmlAttrValue] = {
             "class_": class_names("hedron-app-shell", self.props.class_),
             "data": {"hedron-app-shell": "true"},

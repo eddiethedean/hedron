@@ -42,9 +42,13 @@ def _track_nodes(tracks: Sequence[Mapping[str, Any] | NodeLike]) -> list[NodeLik
     from hedron_core.a11y.surfaces import MediaTrackContract
 
     nodes: list[NodeLike] = []
+    allowed = {"captions", "subtitles", "transcript", "audio_description", "descriptive_transcript"}
+    emit_kinds = {"captions", "subtitles", "audio_description"}
     for track in tracks:
         if isinstance(track, Mapping):
             kind = str(track.get("kind", "captions"))
+            if kind not in allowed:
+                raise ValueError(f"Unsupported media track kind: {kind!r}")
             language = str(track.get("srclang") or track.get("language") or "")
             src_raw = track.get("src")
             src_str = None if src_raw is None else str(src_raw)
@@ -54,7 +58,10 @@ def _track_nodes(tracks: Sequence[Mapping[str, Any] | NodeLike]) -> list[NodeLik
                 src=src_str,
                 reviewed=bool(track.get("reviewed", False)),
             ).validated()
-            src = _asset_url(track["src"])  # type: ignore[index]
+            # Transcript kinds are documented obligations, not <track> elements.
+            if kind not in emit_kinds or not src_str:
+                continue
+            src = _asset_url(src_str)
             attrs: dict[str, HtmlAttrValue] = {
                 "src": src,
                 "kind": kind,

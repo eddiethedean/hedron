@@ -5,7 +5,8 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Development Component Explorer for Hedron (coordinated train **`0.19.0`**).
+Development Component Explorer for Hedron (coordinated train **`0.19.0`**; Ready to cut
+on `main`; last published PyPI/git = `v0.18.0`).
 
 Provides HTMX panels for components, routes, graph, security, accessibility,
 packages, settings, charts, and interaction simulation, plus sanitized JSON APIs
@@ -15,9 +16,9 @@ in production.
 ## Install
 
 ```bash
-pip install "hedron[dev]"
+pip install "hedron[dev]>=0.19.0,<0.20"
 # or
-uv add hedron --extra dev
+uv add "hedron[dev]>=0.19.0,<0.20"
 ```
 
 Requires Python 3.11, 3.12, 3.13, or 3.14. Depends on

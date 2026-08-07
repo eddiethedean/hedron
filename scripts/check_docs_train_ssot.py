@@ -26,10 +26,16 @@ CHECKED = [
     ROOT / "docs" / "RELEASE.md",
     ROOT / "docs" / "index.md",
     ROOT / "docs" / "COMPATIBILITY.md",
+    ROOT / "docs" / "PERFORMANCE_BUDGETS.md",
+    ROOT / "docs" / "PROJECT_LAYOUT.md",
+    ROOT / "docs" / "overrides" / "main.html",
     ROOT / "docs" / "getting-started" / "installation.md",
+    ROOT / "docs" / "getting-started" / "quickstart.md",
+    ROOT / "docs" / "getting-started" / "how-to-read.md",
     ROOT / "docs" / "guides" / "troubleshooting.md",
     ROOT / "docs" / "guides" / "faq.md",
     ROOT / "docs" / "guides" / "evidence-pack.md",
+    ROOT / "docs" / "guides" / "production-readiness.md",
     ROOT / "docs" / "examples" / "try-it.md",
     ROOT / "docs" / "guides" / "best-practices.md",
     ROOT / "docs" / "guides" / "whats-ready.md",
@@ -37,7 +43,8 @@ CHECKED = [
     ROOT / "docs" / "guides" / "upgrade.md",
     ROOT / "docs" / "guides" / "release-notes.md",
     ROOT / "docs" / "guides" / "whats-new-0.19.md",
-    ROOT / "docs" / "getting-started" / "how-to-read.md",
+    ROOT / "docs" / "api" / "ADAPTERS.md",
+    ROOT / "docs" / "api" / "INTERACTION.md",
     ROOT / "README.md",
     ROOT / "packages" / "hedron" / "README.md",
     ROOT / "packages" / "hedron-core" / "README.md",
@@ -45,6 +52,8 @@ CHECKED = [
     ROOT / "packages" / "hedron-flask" / "README.md",
     ROOT / "packages" / "hedron-django" / "README.md",
     ROOT / "packages" / "hedron-explorer" / "README.md",
+    ROOT / "packages" / "hedron-extras" / "README.md",
+    ROOT / "packages" / "hedron-charts" / "README.md",
     ROOT / "scripts" / "README.md",
 ]
 
@@ -69,6 +78,13 @@ STALE = [
     re.compile(r"Python-first UI framework · v0\.18", re.I),
     re.compile(r"Pin the \*\*0\.18 train\*\*", re.I),
     re.compile(r"expects \*\*0\.18\*\*", re.I),
+    re.compile(r"Cut-ready:\s*<strong>Hedron 0\.6\.0</strong>", re.I),
+    re.compile(r"Hedron \*\*0\.18\*\* packages", re.I),
+    re.compile(r"scaffold on \*\*0\.18\.x\*\*", re.I),
+    re.compile(r"Published for the \*\*0\.19\*\* train", re.I),
+    re.compile(r"adapter depth on 0\.18\)", re.I),
+    re.compile(r"InteractionResult` on \*\*0\.18\.x\*\*", re.I),
+    re.compile(r"hedron-charts==0\.1\.0", re.I),
     # Premature Published claims before the v0.19.0 tag exists.
     re.compile(r"Published\*\* as `v0\.19\.0`", re.I),
     re.compile(r"\*\*Published:\*\* `v0\.19\.0`", re.I),
@@ -95,7 +111,15 @@ UNBOUNDED_PIN = re.compile(
 BARE_EXTRA = re.compile(r"""["']hedron\[[^\]]+\]["'](?!\s*>=)""")
 
 UNBOUNDED_ALPHA = re.compile(
-    r"hedron\[(?:charts|notebook|mcp|gradio|native)\]>=0\.1\.0(?!,?\s*<0\.2)"
+    r"hedron(?:-charts)?\[(?:charts|notebook|mcp|gradio|native|matplotlib|plotly|altair)\]"
+    r">=0\.1\.0(?!,?\s*<0\.2)"
+)
+UNBOUNDED_CHARTS_PKG = re.compile(
+    r"hedron-charts(?:\[[^\]]+\])?>=0\.1\.0(?!,?\s*<0\.2)"
+)
+# pip install "hedron-charts[…]" without a version pin (table mentions are allowed).
+UNBOUNDED_CHARTS_INSTALL = re.compile(
+    r"""pip\s+install\s+["']hedron-charts(?:\[[^\]]+\])?["'](?!\s*>=)"""
 )
 
 PIN_SCAN_ROOTS = [
@@ -155,9 +179,14 @@ def _check_unbounded_pins() -> list[str]:
                     f"{path.relative_to(ROOT)}:{lineno}: bare hedron[extra] "
                     f"(add >=…,<… pin): {line.strip()[:120]}"
                 )
-            if UNBOUNDED_ALPHA.search(line):
+            if UNBOUNDED_ALPHA.search(line) or UNBOUNDED_CHARTS_PKG.search(line):
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: unbounded Alpha pin "
+                    f"(use >=0.1.0,<0.2): {line.strip()[:120]}"
+                )
+            if UNBOUNDED_CHARTS_INSTALL.search(line):
+                failures.append(
+                    f"{path.relative_to(ROOT)}:{lineno}: unbounded hedron-charts install "
                     f"(use >=0.1.0,<0.2): {line.strip()[:120]}"
                 )
     return failures

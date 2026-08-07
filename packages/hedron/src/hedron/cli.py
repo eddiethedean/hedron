@@ -245,7 +245,20 @@ def _cmd_eject(args: argparse.Namespace) -> int:
         _registry_empty_hint(app=args.app, what="components")
         print(f"Component {args.component!r} not found", file=sys.stderr)
         return 1
-    out_dir = Path(args.out or meta.folder_path or f"components/{meta.name}")
+    # Never trust registry ``folder_path`` as a write root (same policy as Explorer reads).
+    cwd = Path.cwd().resolve()
+    if args.out:
+        out_dir = Path(args.out).expanduser().resolve()
+        try:
+            out_dir.relative_to(cwd)
+        except ValueError:
+            print(
+                f"Refusing to eject outside the project root: {out_dir}",
+                file=sys.stderr,
+            )
+            return 1
+    else:
+        out_dir = cwd / "components" / meta.name
     out_dir.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
     contract = _accessibility_contract_for(meta)

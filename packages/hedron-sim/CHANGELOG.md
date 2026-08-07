@@ -8,6 +8,8 @@
   ``<script type="application/json">``. MkDocs Material ``navigation.instant``
   strips ``<script>`` nodes from fetched pages, which left demo buttons dead until
   a hard refresh.
+- Escape ``__HEDRON_SIM_FORM:*__`` token substitutions with ``escapeHtml`` so invite
+  demos cannot inject markup via form fields.
 - Boot on ``DOMContentLoaded`` even when Material's ``document$`` is present, and
   handle Text-node click targets / form-inherited ``hx-*`` on submit buttons.
 - Expand docs sim includes *after* Markdown so `__HEDRON_SIM_UTC__` tokens are not

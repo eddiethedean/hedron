@@ -385,6 +385,13 @@ def test_packaged_assets_include_theme_and_runtime_hooks() -> None:
     assert "listRemove" in js or "list_remove" in js or "listRemove" in js
     assert ", true" in js  # capture-phase listeners
     assert "<strong>HEDRON_SIM_UTC</strong>" in js  # legacy markdown-mangled token
+    assert "escapeHtml(String(value))" in js  # form-token XSS guard
+
+
+def test_docs_sim_js_escapes_form_tokens() -> None:
+    docs_js = (DOCS / "javascript" / "hedron-sim.js").read_text(encoding="utf-8")
+    assert "escapeHtml(String(value))" in docs_js
+    assert docs_js == javascript_text()
 
 
 def test_copy_assets_writes_js_and_css(tmp_path: Path) -> None:

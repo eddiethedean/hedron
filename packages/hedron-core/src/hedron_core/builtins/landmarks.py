@@ -81,9 +81,9 @@ def _filter_landmark_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
     role = kwargs.get("role")
     if isinstance(role, str) and role.strip():
         raise TypeError(
-            f"Landmark-hostile role={role!r} is not allowed on landmark components "
-            f"(native landmark tags already imply the correct role; "
-            f"rejected including: {sorted(_LANDMARK_HOSTILE_ROLES)})."
+            f"role={role!r} is not allowed on landmark components "
+            "(native landmark tags already imply the correct role; "
+            "do not set role= on Header/Main/Nav/Aside/Footer)."
         )
     return {
         k: v

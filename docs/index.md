@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.19.0</div>
+<div class="hedron-eyebrow">Python-first UI framework · Ready to cut 0.19.0</div>
 
 # Build modern web UIs in Python.<br><span class="hedron-gradient-text">No Node.js required.</span>
 
@@ -43,6 +43,11 @@ cd my-hedron-app
 uv sync
 uv run uvicorn app:app --reload
 ```
+
+!!! note "PyPI vs `main`"
+
+    Until `v0.19.0` is tagged, PyPI still serves **`v0.18.0`**. Install from `main` for
+    Ready-to-cut `0.19.0`, or wait for the cut and use the pin above.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 Click **Refresh status** — the page updates without a full reload. Hedron returns a small
@@ -135,10 +140,11 @@ Extras and troubleshooting: [installation](getting-started/installation.md).
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron **0.18** packages are **Beta** on PyPI — pin versions for production
-(`hedron>=0.19.0,<0.20`). **Supported** means the capability works on the current train
-when pinned; most public APIs remain compatibility level **`beta`** until listed in the
-small **stable** table — see [Understanding maturity labels](getting-started/how-to-read.md).
+Hedron **0.19** packages are **Beta** (Ready to cut on `main`; last published PyPI/git =
+`v0.18.0`) — pin with `hedron>=0.19.0,<0.20` after cut (or install from `main` now).
+**Supported** means the capability works on the current train when pinned; most public
+APIs remain compatibility level **`beta`** until listed in the small **stable** table —
+see [Understanding maturity labels](getting-started/how-to-read.md).
 Capability readiness: [What’s ready today](guides/whats-ready.md) ·
 [Why Hedron](guides/why-hedron.md) · [Evaluate Hedron](guides/evaluate.md).
 </details>

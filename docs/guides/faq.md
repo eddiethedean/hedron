@@ -19,7 +19,7 @@ train. See [What’s ready today](whats-ready.md) and the [public roadmap](roadm
 For curated extras (`hedron-extras`), install `hedron[extras]>=0.19.0,<0.20`.
 **Auto** (inspectable object rendering built into `hedron` — no extra) is included.
 For DataTable/DataEditor, install `hedron[data]>=0.19.0,<0.20`. For charts, install
-For charts, install `hedron[charts]>=0.1.0,<0.2` (Alpha). For Flask/Django adapters:
+`hedron[charts]>=0.1.0,<0.2` (Alpha). For Flask/Django adapters:
 
 ```bash
 pip install "hedron-flask>=0.19.0,<0.20"
@@ -52,7 +52,7 @@ Create a project first: `uv init my-app && cd my-app`, then
 
 ## Should I use `uv init` or `hedron new`?
 
-Prefer **`hedron new`** for a ready scaffold on **0.18.x** (install Hedron first).
+Prefer **`hedron new`** for a ready scaffold on **0.19.x** (install Hedron first).
 `uv init` + a hand-written `app.py` from the quickstart also works. Do not nest both into
 the same directory by accident.
 

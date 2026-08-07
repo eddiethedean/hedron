@@ -16,9 +16,9 @@ status: shipped
 ```bash
 pip install "hedron[charts]>=0.1.0,<0.2"
 # backends (pick one or more):
-pip install "hedron-charts[matplotlib]"
-pip install "hedron-charts[plotly]"
-pip install "hedron-charts[altair]"
+pip install "hedron-charts[matplotlib]>=0.1.0,<0.2"
+pip install "hedron-charts[plotly]>=0.1.0,<0.2"
+pip install "hedron-charts[altair]>=0.1.0,<0.2"
 ```
 
 ## Beginner `LineChart`

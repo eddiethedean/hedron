@@ -41,11 +41,16 @@ def test_tree_snapshot_and_sarif_provenance() -> None:
     assert sarif["runs"][0]["results"][0]["ruleId"] == "label"
     assert sarif["runs"][0]["results"][0]["level"] == "error"
     assert sarif["runs"][0]["results"][0]["properties"]["axe_impact"] == "serious"
+    assert sarif["runs"][0]["tool"]["driver"]["rules"]
+    assert (
+        sarif["runs"][0]["results"][0]["locations"][0]["logicalLocations"][0]["fullyQualifiedName"]
+        == ".field"
+    )
     assert (
         sarif["runs"][0]["results"][0]["locations"][0]["physicalLocation"]["artifactLocation"][
             "uri"
         ]
-        == ".field"
+        == "about:blank"
     )
 
 
@@ -63,3 +68,11 @@ def test_implicit_roles_for_input_types_and_anchors() -> None:
     assert ("input", "button") in roles
     assert ("a", "generic") in roles
     assert ("a", "link") in roles
+
+
+def test_nested_header_is_not_banner() -> None:
+    tree = snapshot_accessibility_tree(
+        "<body><header>Top</header><main><header>Inner</header></main></body>"
+    )
+    roles = [n.role for n in tree if n.tag == "header"]
+    assert roles == ["banner", "generic"]
