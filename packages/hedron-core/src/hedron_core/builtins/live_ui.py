@@ -48,9 +48,14 @@ class Dialog(Component[DialogProps]):
         actions = self._slot_values.get("actions", ())
         if not isinstance(actions, tuple):
             actions = (actions,)
+        title_id = f"{self.props.id}-title" if self.props.id else "hedron-dialog-title"
         attrs: dict[str, HtmlAttrValue] = {
             "class_": "hedron-dialog",
             "data": {"hedron-dialog": "true", "modal": "true" if self.props.modal else "false"},
+            "aria": {
+                "labelledby": title_id,
+                "modal": "true" if self.props.modal else "false",
+            },
         }
         if self.props.id:
             attrs["id"] = self.props.id
@@ -62,7 +67,11 @@ class Dialog(Component[DialogProps]):
             class_="hedron-dialog-close",
         )
         parts: list[NodeLike] = [
-            html.header(html.h2(self.props.title), close, class_="hedron-dialog-header"),
+            html.header(
+                html.h2(self.props.title, id=title_id),
+                close,
+                class_="hedron-dialog-header",
+            ),
             html.div(*body, class_="hedron-dialog-body"),
         ]
         if actions:

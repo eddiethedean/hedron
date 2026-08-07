@@ -1142,7 +1142,8 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). See [STATUS](STATUS.md) and
+**Status:** Ready to cut / Implemented on `main` as `0.19.0` (2026-08-07); last published
+PyPI/git = `v0.18.0`. See [STATUS](STATUS.md) and
 [release-gate-0.19.toml](acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
 [RFC-0051](rfcs/RFC-0051-ACCESSIBILITY-CONTRACT.md)–[RFC-0055](rfcs/RFC-0055-A11Y-GOVERNANCE.md)

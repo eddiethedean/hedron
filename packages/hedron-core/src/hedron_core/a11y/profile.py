@@ -33,8 +33,8 @@ class AccessibilityProfile:
     apg_normative: bool = False
     experimental_drafts: tuple[str, ...] = ("WAI-ARIA 1.3", "WCAG 3")
     claim_boundaries: ClaimBoundary = field(default_factory=ClaimBoundary)
-    act_rules_pin: str = "act-rules:pinned-at-release"
-    axe_engine_pin: str = "axe-core:via-axe-playwright-python"
+    act_rules_pin: str = "act-rules:2024-06 (WCAG 2.2 A/AA subset; pin at release)"
+    axe_engine_pin: str = "axe-playwright-python>=0.1.4 (axe-core via package)"
 
     def as_dict(self) -> dict[str, object]:
         return {

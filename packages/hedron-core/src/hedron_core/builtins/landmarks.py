@@ -27,6 +27,9 @@ _LANDMARK_SAFE_KEYS = frozenset(
     }
 )
 
+# Roles that strip or override landmark semantics — rejected on landmark surfaces.
+_LANDMARK_HOSTILE_ROLES = frozenset({"presentation", "none"})
+
 
 class LandmarkProps(Props):
     """Shared props for semantic landmark surfaces."""
@@ -74,6 +77,12 @@ def _filter_landmark_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
         raise TypeError(
             f"Unsupported landmark attribute(s): {sorted(unknown)}. "
             f"Allowlisted: {sorted(_LANDMARK_SAFE_KEYS)}."
+        )
+    role = kwargs.get("role")
+    if isinstance(role, str) and role.lower() in _LANDMARK_HOSTILE_ROLES:
+        raise TypeError(
+            f"Landmark-hostile role={role!r} is not allowed on landmark components "
+            f"(rejected: {sorted(_LANDMARK_HOSTILE_ROLES)})."
         )
     return {
         k: v

@@ -14,7 +14,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.16** | Curated extras and analysis workbenches (incl. CodeEditor host stub and specialty NiceGUI-shaped extras) | **Published** (`v0.16.0`) |
 | **0.17** | Reactive dashboards and agent interfaces; shell/AppShell; InteractionResult→Response; `#15`/`#24` completions (RFCs 0040–0044) | **Published** (`v0.17.0`) |
 | **0.18** | Model demos and inference workflows | **Published** (`v0.18.0`) |
-| **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | **Published** (`v0.19.0`; D-050) |
+| **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | **Ready to cut / Implemented on `main`** (`0.19.0`; last published PyPI/git = `v0.18.0`; D-050) |
 | **0.20** | Production security floor and adapter parity; pluggable CSRF / composable headers / `CsrfField` | Planned |
 
 ## What this means for you
@@ -27,7 +27,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 ## Honest gaps on the current train (0.19)
 
-- Last **published** PyPI train is **0.19.x** (`v0.19.0`)
+- Last **published** PyPI train is **0.18.x** (`v0.18.0`); **0.19.0** is Ready to cut on `main`
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)

@@ -82,7 +82,11 @@ _ID = re.compile(r'\bid="([^"]*)"')
 
 
 def snapshot_accessibility_tree(html: str) -> list[AccessibilityTreeNode]:
-    """Best-effort semantic snapshot from rendered HTML (not a browser a11y tree)."""
+    """Markup heuristic from rendered HTML — **not** a browser accessibility tree.
+
+    Prefer Playwright ``get_by_role`` for AT-019 live evidence. This helper is for
+    offline structural smoke checks only.
+    """
     nodes: list[AccessibilityTreeNode] = []
     for match in _TAG_RE.finditer(html):
         tag = match.group(1).lower()
@@ -122,6 +126,25 @@ def _implicit_role(tag: str) -> str:
     }.get(tag, tag)
 
 
+def _node_location_uri(node: object) -> str | None:
+    if isinstance(node, str):
+        return node or None
+    if not isinstance(node, dict):
+        return None
+    target = node.get("target")
+    if isinstance(target, list) and target:
+        return str(target[0])
+    if isinstance(target, str) and target:
+        return target
+    html = node.get("html")
+    if isinstance(html, str) and html:
+        return html[:200]
+    summary = node.get("failureSummary")
+    if isinstance(summary, str) and summary:
+        return summary[:200]
+    return None
+
+
 def axe_to_sarif(
     violations: list[dict[str, Any]],
     *,
@@ -131,16 +154,17 @@ def axe_to_sarif(
     """Stable SARIF-ish provenance for axe findings (TEST-019)."""
     results = []
     for item in violations:
+        locations = []
+        for node in (item.get("nodes") or [])[:5]:
+            uri = _node_location_uri(node)
+            if uri:
+                locations.append({"physicalLocation": {"artifactLocation": {"uri": uri}}})
         results.append(
             {
                 "ruleId": item.get("id") or item.get("rule_id") or "unknown",
                 "level": item.get("impact") or "warning",
                 "message": {"text": item.get("description") or item.get("help") or str(item)},
-                "locations": [
-                    {"physicalLocation": {"artifactLocation": {"uri": n}}}
-                    for n in (item.get("nodes") or [])[:5]
-                    if isinstance(n, str)
-                ],
+                "locations": locations,
             }
         )
     return {

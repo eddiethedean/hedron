@@ -235,7 +235,7 @@ nav:
       - Reference app walkthrough: examples/reference-app.md
     - Single-file apps (alternate): examples/single-file.md
     - Maintainers:
-      - Phase evidence (0.15–0.18): examples/phase-evidence.md
+      - Phase evidence (0.15–0.19): examples/phase-evidence.md
       - Simulated UI patterns (not a server): examples/gallery.md
   - Reference:
     - Start here:
@@ -439,6 +439,7 @@ nav:
         - State: api/STATE.md
         - Cache: api/CACHE.md
         - Auth: api/AUTH.md
+        - Accessibility (`hedron_core.a11y`): api/A11Y.md
         - Explorer: api/EXPLORER.md
         - Plugins: api/PLUGINS.md
         - Testing: api/TESTING.md

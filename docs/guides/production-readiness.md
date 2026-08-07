@@ -1,7 +1,8 @@
 # Production readiness
 
-Ops-oriented checklist for **Hedron 0.18.0** (Beta on PyPI). **Do not duplicate maturity claims
-here** — the authoritative snapshot is [What's ready today](whats-ready.md).
+Ops-oriented checklist for **Hedron 0.19.0** (Beta; Ready to cut on `main`). **Do not
+duplicate maturity claims here** — the authoritative snapshot is
+[What's ready today](whats-ready.md).
 
 Also: [Compatibility](../COMPATIBILITY.md) · [Support](support.md) ·
 [Deployment](deployment.md).

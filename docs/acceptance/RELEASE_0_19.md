@@ -61,4 +61,5 @@ Issues [#8](https://github.com/eddiethedean/hedron/issues/8),
 
 - [x] Full regression suite. *(`REGRESS-019`)*
 
-**Exit met** — coordinated `0.19.0` (**Published** as `v0.19.0`); every 0.19 gate row Verified.
+**Exit met** — coordinated `0.19.0` (**Ready to cut / Implemented on `main`**; last published
+PyPI/git = `v0.18.0`); every 0.19 gate row Verified.

@@ -9,10 +9,18 @@
     return `${hh}:${mm}:${ss} UTC`;
   }
 
-  function statusMarkup(stamp) {
+  function statusSelector(root, button) {
+    return (
+      button?.getAttribute("hx-target") ||
+      root.dataset.hbsTarget ||
+      "#service-status"
+    );
+  }
+
+  function statusMarkup(stamp, id) {
     const wrap = document.createElement("div");
     wrap.className = "hedron-browser-sim__status";
-    wrap.id = "service-status";
+    wrap.id = id || "service-status";
     wrap.setAttribute("role", "status");
     wrap.setAttribute("aria-live", "polite");
     wrap.innerHTML =
@@ -34,10 +42,11 @@
     const button = root.querySelector("[data-hbs-refresh]");
     const hint = root.querySelector("[data-hbs-hint]");
     const trace = root.querySelector("[data-hbs-trace]");
+    const selector = statusSelector(root, button);
     let busy = false;
 
     // Seed an initial UTC stamp so the demo matches a live server.
-    const region = root.querySelector("#service-status");
+    const region = root.querySelector(selector);
     if (region) {
       const stampNode = region.querySelector("[data-hbs-stamp]");
       if (stampNode) {
@@ -51,7 +60,7 @@
       button.setAttribute("aria-busy", "true");
       button.disabled = true;
       if (trace) {
-        trace.textContent = "GET /status → fragment…";
+        trace.textContent = `GET /status → fragment…`;
         trace.classList.add("is-visible");
       }
 
@@ -60,7 +69,7 @@
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       await delay(reduced ? 40 : 280);
 
-      const current = root.querySelector("#service-status");
+      const current = root.querySelector(selector);
       if (!current || !current.parentNode) {
         busy = false;
         button.removeAttribute("aria-busy");
@@ -69,7 +78,7 @@
       }
 
       // HTMX outerHTML swap of the declared region (simulated).
-      const next = statusMarkup(utcStamp());
+      const next = statusMarkup(utcStamp(), current.id || selector.replace(/^#/, ""));
       current.replaceWith(next);
       if (!reduced) {
         void next.offsetWidth;
@@ -80,7 +89,8 @@
       // Fade hint in place — do not remove it from layout.
       hint?.classList.add("is-done");
       if (trace) {
-        trace.textContent = "GET /status → 200 fragment (#service-status)";
+        const id = next.id || "service-status";
+        trace.textContent = `GET /status → 200 fragment (#${id})`;
         trace.classList.add("is-visible");
       }
 

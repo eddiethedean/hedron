@@ -27,6 +27,18 @@ def test_tree_snapshot_and_sarif_provenance() -> None:
         AccessibilityFinding(rule_id="button-name", impact="critical", message="ok")
     )
     assert scenario.summarize()["finding_count"] == 1
-    sarif = axe_to_sarif([{"id": "label", "impact": "serious", "description": "missing"}])
+    sarif = axe_to_sarif(
+        [
+            {
+                "id": "label",
+                "impact": "serious",
+                "description": "missing",
+                "nodes": [{"target": [".field"], "html": "<input>", "failureSummary": "Fix"}],
+            }
+        ]
+    )
     assert sarif["runs"][0]["properties"]["empty_means_accessible"] is False
     assert sarif["runs"][0]["results"][0]["ruleId"] == "label"
+    assert sarif["runs"][0]["results"][0]["locations"][0]["physicalLocation"]["artifactLocation"][
+        "uri"
+    ] == ".field"

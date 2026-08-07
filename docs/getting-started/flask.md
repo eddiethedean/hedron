@@ -5,7 +5,7 @@ Use `hedron-flask` when your app is Flask-native. Hedron does **not** ship
 The adapter renders the same `hedron-core` components and `InteractionResult` values as
 the FastAPI flagship—without installing FastAPI.
 
-Flask/Django page + fragment routing and HTMX are Supported on **0.18.0**. Prefer
+Flask/Django page + fragment routing and HTMX are Supported on **0.19.0**. Prefer
 `init_app` + `HedronBlueprint` for application factories; the constructor form remains
 supported. Use polling for job status on Flask (SSE helpers stay FastAPI-flagship).
 

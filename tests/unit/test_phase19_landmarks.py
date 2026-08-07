@@ -43,3 +43,11 @@ def test_landmark_safe_attrs_render() -> None:
 def test_landmark_rejects_unknown_attrs() -> None:
     with pytest.raises(TypeError, match="Unsupported landmark"):
         Main(Text("x"), onclick="alert(1)")  # type: ignore[call-arg]
+
+
+@pytest.mark.a11y
+def test_landmark_rejects_hostile_roles() -> None:
+    with pytest.raises(TypeError, match="Landmark-hostile role"):
+        Main(Text("x"), role="presentation")
+    with pytest.raises(TypeError, match="Landmark-hostile role"):
+        Nav(Text("x"), role="none")

@@ -340,7 +340,9 @@ def explorer_router() -> APIRouter:
 
         catalog = AccessibilityContractCatalog()
         catalog.ensure_registry()
-        contracts = list(catalog.contracts.values())[:40]
+        all_contracts = list(catalog.contracts.values())
+        total = len(all_contracts)
+        shown = all_contracts[:40]
         rows = "".join(
             "<tr>"
             f"<td>{html_lib.escape(c.component)}</td>"
@@ -348,7 +350,7 @@ def explorer_router() -> APIRouter:
             f"<td>{html_lib.escape(c.keyboard or '—')}</td>"
             f"<td>{html_lib.escape(c.notes or '—')}</td>"
             "</tr>"
-            for c in contracts
+            for c in shown
         )
         profile = ACCESSIBILITY_PROFILE.as_dict()
         scenario = AccessibilityScenario(
@@ -392,6 +394,8 @@ def explorer_router() -> APIRouter:
         </section>
         <section aria-labelledby="a11y-contracts">
           <h3 id="a11y-contracts">Component contracts</h3>
+          <p>Showing {len(shown)} of {total} contracts
+          (stubs from registry; curated reviewed contracts ship under CONTRACT-019).</p>
           <table>
             <thead><tr><th>Component</th><th>Semantics</th><th>Keyboard</th><th>Notes</th></tr></thead>
             <tbody>{rows or "<tr><td colspan='4'>No contracts</td></tr>"}</tbody>

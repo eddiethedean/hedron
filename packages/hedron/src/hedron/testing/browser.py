@@ -28,13 +28,18 @@ def playwright_page(*args: Any, **kwargs: Any) -> Any:
 
 
 def axe_scan(page: Any) -> list[dict[str, Any]]:
-    """Run an axe-core scan when playwright + axe are available.
+    """Run an axe-core scan (requires ``hedron[browser]`` with axe-playwright-python).
 
-    Returns an empty list when axe is not installed. Callers must treat an empty
-    result as **incomplete**, never as proof the page is accessible (TEST-019 /
-    PROFILE-019 claim boundaries).
+    Raises ``ImportError`` when axe is not installed. Prefer :func:`axe_scan_report`
+    when callers need incomplete/provenance metadata. An empty violation list is
+    **never** proof the page is accessible (TEST-019 / PROFILE-019).
     """
     report = axe_scan_report(page)
+    if report.get("incomplete"):
+        raise ImportError(
+            report.get("message")
+            or "axe_playwright_python not installed; install hedron[browser]"
+        )
     return list(report.get("violations") or [])
 
 

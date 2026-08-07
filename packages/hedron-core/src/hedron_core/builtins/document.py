@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html as html_lib
+import posixpath
 from collections.abc import Sequence
 
 from hedron_core.builtins._base import collect_children
@@ -39,6 +40,15 @@ def _validate_page_script(url: SafeUrl) -> SafeUrl:
             title="Page scripts must be root-relative",
             explanation=f"Rejected script src {raw!r}.",
             remediation="Use a root-relative asset path beginning with '/'.",
+        )
+    path_only = raw.split("?", 1)[0].split("#", 1)[0]
+    normalized = posixpath.normpath(path_only)
+    if normalized != path_only or ".." in path_only.split("/"):
+        raise error(
+            "HED-SEC-0001",
+            title="Page script path must be normalized without '..'",
+            explanation=f"Rejected script src {raw!r} (normalized={normalized!r}).",
+            remediation="Use a clean root-relative asset path such as /assets/app.js.",
         )
     return url
 

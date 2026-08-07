@@ -1,13 +1,16 @@
 # Package changelogs
 
 Per-package CHANGELOG files are the source of truth for shipped commits. For the
-adopter-facing train summary, start with [Release notes](release-notes.md).
+adopter-facing train summary, start with [What’s new in 0.19](whats-new-0.19.md)
+(0.19 train — ready to cut; last published **v0.18.0**) and
+[Release notes](release-notes.md).
 
 ## Narrative “what’s new”
 
-- [Release notes](release-notes.md) — current train + earlier summary table
+- [What’s new in 0.19](whats-new-0.19.md) — accessibility engineering / inclusive authoring
+- [Release notes](release-notes.md) — published train summary + earlier table
 - [What’s new in 0.18](whats-new-0.18.md) — 0.18 narrative deep-dive
-- [Upgrade guide](upgrade.md) — breaking changes across 0.8 → 0.18
+- [Upgrade guide](upgrade.md) — breaking changes across 0.8 → 0.19
 
 ## Package CHANGELOGs (GitHub)
 

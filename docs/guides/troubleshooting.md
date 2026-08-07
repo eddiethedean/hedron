@@ -84,11 +84,11 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U "hedron>=0.19.0,<0.20"` (or `uv add "hedron>=0.19.0,<0.20"`). The current published
-train is **0.18.x**—see [What's ready](whats-ready.md) and the
-[public roadmap](roadmap.md). If docs describe a feature missing from your install,
-upgrade to a matching `0.18.x` pin (`hedron>=0.19.0,<0.20`) or use a git checkout of
-that work.
+`pip install -U "hedron>=0.19.0,<0.20"` (or `uv add "hedron>=0.19.0,<0.20"`). The current
+train is **0.19.x** (Ready to cut on `main`; last published PyPI/git = `v0.18.0`)—see
+[What's ready](whats-ready.md) and the [public roadmap](roadmap.md). If docs describe a
+feature missing from your install, upgrade to a matching `0.19.x` pin
+(`hedron>=0.19.0,<0.20`) or use a git checkout of that work.
 
 ## CSRF 403 on POST (FastAPI / Flask)
 
@@ -113,6 +113,24 @@ lists that region. Confirm with:
 ```bash
 curl -H 'HX-Request: true' -H 'HX-Target: #service-status' http://127.0.0.1:8000/status
 ```
+
+### Try it (simulated)
+
+Correct target swaps; wrong `#panel` returns 403 with no swap.
+
+<section class="hedron-component-demo" data-hedron-component-demo="Troubleshooting403">
+  <div class="hdc-stage">
+    <div class="hdc-result" data-hdc-allowlist-target aria-live="polite">
+      <strong>Allowlist probe</strong><span>Region #service-status is declared on the route.</span>
+    </div>
+    <div class="hdc-inline" role="group" aria-label="Allowlist">
+      <button class="hdc-button hdc-primary" type="button" data-hdc-action="allowlist-ok" data-hdc-path="/status">Correct #service-status → 200</button>
+      <button class="hdc-button" type="button" data-hdc-action="allowlist-deny" data-hdc-path="/status">Wrong #panel → 403</button>
+    </div>
+    <p class="hdc-muted" role="status" data-hdc-status>Fail-closed: undeclared HX-Target never swaps.</p>
+  </div>
+  <div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>GET /status → 200</code></div>
+</section>
 
 See [HTMX interactions](htmx-interactions.md).
 

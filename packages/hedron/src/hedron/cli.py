@@ -159,8 +159,12 @@ def _cmd_preview(args: argparse.Namespace) -> int:
 
 def _find_component(name: str) -> ComponentMeta | None:
     registry = get_registry()
+    aliases = {"NavLink": "HtmxLink"}
+    wanted = {name, aliases.get(name, name)}
     for c in registry.components():
-        if c.logical_id == name or c.name == name or c.logical_id.endswith(f".{name}"):
+        if c.logical_id == name or c.name in wanted or c.logical_id.endswith(f".{name}"):
+            return c
+        if any(c.logical_id.endswith(f".{alias}") for alias in wanted):
             return c
     return None
 
@@ -886,11 +890,17 @@ def main(argv: list[str] | None = None) -> None:
     preview_p.add_argument("logical_id", help="Route logical id or name")
     preview_p.set_defaults(func=_cmd_preview)
 
-    inspect_p = sub.add_parser("inspect", help="Explain a component's styles and dependencies")
+    inspect_p = sub.add_parser(
+        "inspect",
+        help="Explain a component's styles, dependencies, and accessibility contract",
+    )
     inspect_p.add_argument("component", help="Component name or logical id")
     inspect_p.set_defaults(func=_cmd_inspect)
 
-    eject_p = sub.add_parser("eject", help="Eject editable local CSS overrides")
+    eject_p = sub.add_parser(
+        "eject",
+        help="Eject accessibility_contract.json and editable local CSS overrides",
+    )
     eject_p.add_argument("component", help="Component name or logical id")
     eject_p.add_argument("--out", help="Output directory")
     eject_p.add_argument("--force", action="store_true")

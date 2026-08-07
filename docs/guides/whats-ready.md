@@ -119,6 +119,10 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | Example sets, prediction labels, feedback, workflows | `hedron-core` / `hedron` | Supported capability; API level `beta`; consent mandatory for feedback |
 | `InferencePolicy` / `ModelDemoScenario` | `hedron-core` | Supported capability; API level `beta`; in-process queue is dev-only |
 | `InteractionRecorder` | `hedron` | Supported capability; API level `beta`; public endpoints only |
+| Accessibility contracts / profile / claim boundaries | `hedron_core.a11y` | Supported capability; API `beta`; **no** auto WCAG/legal/VPAT claims — [A11Y](../api/A11Y.md) |
+| Progressive-enhancement forms / landmarks / `Page(scripts=)` | `hedron` / `hedron-core` | Supported (`PE-019` / `LANDMARK-019` / `SCRIPT-019`); HTMX optional |
+| Explorer accessibility workspace | `hedron[dev]` / `hedron-explorer` | Supported for local diagnostics (`/hedron-explorer/a11y`) |
+| Automated Playwright/axe AT matrix (`AT-019`) | `hedron[browser]` | Supported automation evidence; **≠** human AT |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
 guaranteed multi-worker live-transport proof.
@@ -149,6 +153,7 @@ guaranteed multi-worker live-transport proof.
 - Full multi-engine live browser matrix for FastAPI and adapters
 - Load/proxy backpressure evidence for live transports
 - Some Explorer live traces
+- Human screen-reader / compensated AT evaluation (**→ 0.21**; `AT-019` on 0.19 is automated Playwright/axe only)
 
 Maintainer gate IDs and RFC evidence:
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).

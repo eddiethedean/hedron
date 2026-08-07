@@ -60,7 +60,12 @@ class ComponentDoc:
 
 GROUPS = {
     "document": ("Document and composition", "Full pages, metadata, and fragment composition."),
-    "landmarks": ("Landmarks", "Semantic regions that give a page its accessible structure."),
+    "landmarks": (
+        "Landmarks",
+        "Semantic regions that give a page its accessible structure. "
+        "**LANDMARK-019:** real typed exports (`Header`, `Main`, `Nav`, `Aside`, `Footer`, "
+        "`Section`) with allowlisted safe HTML attrs — not factory variables.",
+    ),
     "layout": ("Layout", "Explicit containers and one-dimensional or grid composition."),
     "content": ("Content", "Text, links, media, code, lists, tables, and Markdown."),
     "surfaces": ("Surfaces and status", "Cards, labels, alerts, and loading placeholders."),
@@ -83,7 +88,7 @@ COMPONENTS = (
         "Page",
         "document",
         "Render a complete HTML document with safe head defaults and a body.",
-        "Page(*body, lang='en', title=None, head=None, children=None, data_theme=None)",
+        "Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, dir=None, scripts=None, script_defer=True)",
         "Page(Header(Heading('Account', level=1)), Main(Text('Signed in')), title='Account')",
         (
             p(
@@ -95,9 +100,20 @@ COMPONENTS = (
             p("title", "str | None", "Convenience document title."),
             p("head", "NodeLike | None", "Additional trusted head nodes."),
             p("data_theme", "str | None", "Initial `data-theme` value."),
+            p("dir", "str | None", "Optional `dir` on `<html>` (`ltr` / `rtl` / `auto`)."),
+            p(
+                "scripts",
+                "Sequence[SafeUrl] | None",
+                "Allowlisted same-origin `SafeUrl` ASSET scripts (`SCRIPT-019`); free-form `<script>` nodes stay out of the tree.",
+            ),
+            p(
+                "script_defer",
+                "bool",
+                "When true (default), emitted script tags use `defer`.",
+            ),
         ),
-        "`Page` owns the outer `html`, `head`, and `body` elements. It always emits UTF-8 and responsive viewport metadata, then adds the title and optional head slot before rendering body children.",
-        "Set `lang` to the language of the page and keep exactly one main landmark in the body.",
+        "`Page` owns the outer `html`, `head`, and `body` elements. It always emits UTF-8 and responsive viewport metadata, then adds the title and optional head slot before rendering body children. Optional `scripts=` emits allowlisted same-origin script tags after body children.",
+        "Set `lang` to the language of the page and keep exactly one main landmark in the body. Pass only `SafeUrl` ASSET paths in `scripts=` (root-relative, same-origin).",
         "Do not return `Page` for an HTMX fragment request; use `Fragment` and fragment render mode instead.",
         server="Page response",
     ),
@@ -158,7 +174,7 @@ COMPONENTS = (
             name,
             "landmarks",
             f"Render the semantic `{tag}` landmark for {purpose}.",
-            f"{name}(*nodes, children=None, class_=None, id=None)",
+            f"{name}(*nodes, children=None, class_=None, id=None, lang=None, dir=None, role=None, aria=None, data=None, ...)",
             f"{name}(Heading('{label}', level={level}), Text('{copy}'))",
             (
                 p("nodes", "NodeLike", "Positional content belonging to this semantic region."),
@@ -169,8 +185,13 @@ COMPONENTS = (
                 ),
                 p("class_", "str | None", "Optional authored class name."),
                 p("id", "str | None", "Stable fragment or target identifier."),
+                p(
+                    "lang / dir / role / title / tabindex / aria / data / hidden",
+                    "allowlisted",
+                    "Safe HTML attrs (`LANDMARK-019`); hostile roles like `presentation` / `none` are rejected.",
+                ),
             ),
-            f"`{name}` emits a native `<{tag}>`, preserving semantic navigation instead of using a generic div. Children may be passed individually or as one non-string sequence.",
+            f"`{name}` emits a native `<{tag}>`, preserving semantic navigation instead of using a generic div. Children may be passed individually or as one non-string sequence. Landmark helpers are real typed classes with an allowlisted attr set (`LANDMARK-019`).",
             a11y,
             pitfall,
         )

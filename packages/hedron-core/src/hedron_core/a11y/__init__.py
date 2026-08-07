@@ -5,8 +5,11 @@ from __future__ import annotations
 from hedron_core.a11y.contract import (
     AccessibilityContract,
     AccessibilityContractCatalog,
+    REQUIRED_REVIEWED_CONTRACTS,
     contract_for_registered,
     default_contract,
+    reviewed_contract,
+    seed_reviewed_contracts,
 )
 from hedron_core.a11y.governance import (
     AccessibilityStatement,
@@ -36,6 +39,7 @@ from hedron_core.a11y.surfaces import (
 
 __all__ = [
     "ACCESSIBILITY_PROFILE",
+    "REQUIRED_REVIEWED_CONTRACTS",
     "AccessibilityContract",
     "AccessibilityContractCatalog",
     "AccessibilityFinding",
@@ -54,6 +58,8 @@ __all__ = [
     "contract_for_registered",
     "default_contract",
     "refuse_auto_conformance_claim",
+    "reviewed_contract",
+    "seed_reviewed_contracts",
     "snapshot_accessibility_tree",
     "validate_page_structure",
 ]

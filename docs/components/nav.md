@@ -32,14 +32,14 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-`Nav` emits a native `<nav>`, preserving semantic navigation instead of using a generic div. Children may be passed individually or as one non-string sequence.
+`Nav` emits a native `<nav>`, preserving semantic navigation instead of using a generic div. Children may be passed individually or as one non-string sequence. Landmark helpers are real typed classes with an allowlisted attr set (`LANDMARK-019`).
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
 ## Constructor and parameters
 
 ```python
-Nav(*nodes, children=None, class_=None, id=None)
+Nav(*nodes, children=None, class_=None, id=None, lang=None, dir=None, role=None, aria=None, data=None, ...)
 ```
 
 | Parameter | Type | Meaning |
@@ -48,6 +48,7 @@ Nav(*nodes, children=None, class_=None, id=None)
 | `children` | `NodeLike | sequence | None` | Keyword alternative; combines with positional nodes. |
 | `class_` | `str | None` | Optional authored class name. |
 | `id` | `str | None` | Stable fragment or target identifier. |
+| `lang / dir / role / title / tabindex / aria / data / hidden` | `allowlisted` | Safe HTML attrs (`LANDMARK-019`); hostile roles like `presentation` / `none` are rejected. |
 
 ## Composition and backend behavior
 

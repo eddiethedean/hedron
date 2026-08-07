@@ -32,14 +32,14 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-`Page` owns the outer `html`, `head`, and `body` elements. It always emits UTF-8 and responsive viewport metadata, then adds the title and optional head slot before rendering body children.
+`Page` owns the outer `html`, `head`, and `body` elements. It always emits UTF-8 and responsive viewport metadata, then adds the title and optional head slot before rendering body children. Optional `scripts=` emits allowlisted same-origin script tags after body children.
 
 This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
 
 ## Constructor and parameters
 
 ```python
-Page(*body, lang='en', title=None, head=None, children=None, data_theme=None)
+Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, dir=None, scripts=None, script_defer=True)
 ```
 
 | Parameter | Type | Meaning |
@@ -49,6 +49,9 @@ Page(*body, lang='en', title=None, head=None, children=None, data_theme=None)
 | `title` | `str | None` | Convenience document title. |
 | `head` | `NodeLike | None` | Additional trusted head nodes. |
 | `data_theme` | `str | None` | Initial `data-theme` value. |
+| `dir` | `str | None` | Optional `dir` on `<html>` (`ltr` / `rtl` / `auto`). |
+| `scripts` | `Sequence[SafeUrl] | None` | Allowlisted same-origin `SafeUrl` ASSET scripts (`SCRIPT-019`); free-form `<script>` nodes stay out of the tree. |
+| `script_defer` | `bool` | When true (default), emitted script tags use `defer`. |
 
 ## Composition and backend behavior
 
@@ -60,7 +63,7 @@ This component is primarily presentational; keep any mutation on an explicit act
 
 ## Accessibility
 
-Set `lang` to the language of the page and keep exactly one main landmark in the body.
+Set `lang` to the language of the page and keep exactly one main landmark in the body. Pass only `SafeUrl` ASSET paths in `scripts=` (root-relative, same-origin).
 
 ## Security
 

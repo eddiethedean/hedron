@@ -1,6 +1,6 @@
 # Landmarks
 
-Semantic regions that give a page its accessible structure.
+Semantic regions that give a page its accessible structure. **LANDMARK-019:** real typed exports (`Header`, `Main`, `Nav`, `Aside`, `Footer`, `Section`) with allowlisted safe HTML attrs — not factory variables.
 
 - [`Header`](header.md) — Render the semantic `header` landmark for introductory content.
 - [`Main`](main.md) — Render the semantic `main` landmark for the page's primary content.

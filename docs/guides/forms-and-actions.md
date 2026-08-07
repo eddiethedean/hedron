@@ -13,6 +13,27 @@ If you have not yet shipped a classic POST, start with
 A page with an invite form. Submitting with invalid input redisplays the form
 with errors. A valid submit replaces a result region with a success message.
 
+### Try it (simulated)
+
+Invalid email → `FormErrors` fragment. Valid email → success region. Docs simulation only.
+
+<section class="hedron-component-demo" data-hedron-component-demo="FormsAndActionsGuide">
+  <div class="hdc-stage">
+    <div class="hdc-stack">
+      <div data-hdc-form-region>
+        <form class="hdc-form" data-hdc-form="invite" data-hdc-path="/invite" novalidate>
+          <label for="invite-email">Work email<input id="invite-email" name="email" type="email" placeholder="ada@example.com" autocomplete="email"></label>
+          <div class="hdc-errors" role="alert" data-hdc-form-errors hidden></div>
+          <button class="hdc-button hdc-primary" type="submit">Send invite</button>
+        </form>
+      </div>
+      <div class="hdc-result" data-hdc-form-result hidden aria-live="polite"></div>
+      <p class="hdc-muted" role="status" data-hdc-status>Try an empty or short value, then a real-looking email.</p>
+    </div>
+  </div>
+  <div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>POST /invite → 200</code></div>
+</section>
+
 ```python title="app.py"
 from __future__ import annotations
 
@@ -170,6 +191,36 @@ errors; submit a longer email to see the success region.
 Rendering a form never grants authorization. Persistence, permission checks, and
 rate limits remain application code on the handler.
 
+## Progressive enhancement (no-JS POST)
+
+HTMX is optional. Critical mutations must succeed when the browser posts a normal form
+**without** `HX-Request` (`PE-019`):
+
+1. Keep a classic `<form method="post" action="…">` (Hedron `Form` does this by default).
+2. On the POST handler, branch: if the request is HTMX, return an `InteractionResult`
+   fragment; otherwise return a full `Page` or a `RedirectResponse` (303) after success.
+3. CSRF still applies under `standard` / `strict` — seed the cookie on GET and include the
+   hidden `csrf_token` field even when JS is off.
+
+```python
+from fastapi import Form as FormFieldValue
+from fastapi.responses import RedirectResponse
+
+@app.component("/invite", methods=["POST"])
+def invite(
+    request: Request,
+    email: str = FormFieldValue(...),
+    csrf_token: str = FormFieldValue(""),
+):
+    # validate CSRF + FormModel …
+    if request.headers.get("HX-Request"):
+        return InteractionResult(...)  # fragment path
+    return RedirectResponse("/", status_code=303)  # no-JS success
+```
+
+See [Minimal form POST](minimal-form.md) and [Accessibility](accessibility.md)
+(`PE-019` / landmarks / `Page(scripts=)`).
+
 ## AutoForm shortcut
 
 For schema-driven fields without an HTMX `target`, `AutoForm` generates labelled
@@ -234,6 +285,7 @@ def test_invite_validation_and_success() -> None:
 ## Where to go next
 
 - [HTMX interactions](htmx-interactions.md) for GET refresh loops
+- [Accessibility](accessibility.md) for PE / landmarks / `Page(scripts=)` and claim boundaries
 - [Security](security.md) for CSRF profiles and redirects
 - [Authentication](authentication.md) to gate pages and actions
 - [Reference app walkthrough](../examples/reference-app.md) for a fuller CRUD slice

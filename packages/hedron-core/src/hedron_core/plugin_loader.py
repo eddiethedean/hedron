@@ -146,17 +146,17 @@ def load_plugins(
                 ) from exc
             meta = getattr(target, "PLUGIN_META", None)
             if not isinstance(meta, PluginMeta):
-                if not callable(target):
-                    raise error(
-                        HED_PLUGIN_FAILED,
-                        title="Invalid plugin entry point",
-                        explanation=f"Plugin {name!r} must be callable or expose PLUGIN_META.",
-                        remediation="Export a register(ctx) callable.",
-                    )
-                meta = PluginMeta(
-                    name=name,
-                    version="0.0.0",
-                    distribution=name,
+                raise error(
+                    HED_PLUGIN_FAILED,
+                    title="Plugin missing PLUGIN_META",
+                    explanation=(
+                        f"Plugin {name!r} must expose PLUGIN_META with an explicit "
+                        "hedron_version specifier."
+                    ),
+                    remediation=(
+                        "Attach PluginMeta(..., hedron_version='>=0.19,<0.20') to the "
+                        "register entry point."
+                    ),
                 )
             if not compatible_hedron_version(meta.hedron_version, version):
                 raise error(

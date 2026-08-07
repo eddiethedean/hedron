@@ -1,12 +1,14 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.19 **Published** as `v0.19.0` (2026-08-07). Workspace packages:
+**Roadmap position:** phase 0.19 **Ready to cut / Implemented on `main`** as `0.19.0`
+(2026-08-07); last published PyPI/git = `v0.18.0`. Workspace packages:
 Beta `0.19.0`, Alpha charts/sample-kit/native `0.1.x`, Alpha notebook/mcp/gradio `0.1.0`.
 **Date:** 2026-08-07
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.19.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` / `hedron-native` /
-`hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.x` (MIT, D-033)
+`0.19.0` on `main`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` /
+`hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.x` (MIT, D-033).
+PyPI/git still serve **`v0.18.0`** until `v0.19.0` is tagged and published.
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
 `hedron-charts`, `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, `hedron-mcp`,
@@ -65,7 +67,8 @@ below remain owned elsewhere.
 - Compatibility / deprecation: [COMPATIBILITY.md](COMPATIBILITY.md).
 - Upgrade: [guides/upgrade.md](guides/upgrade.md).
 - Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_19.py`.
-- Cut procedure: [RELEASE.md](RELEASE.md) (last published: **0.19**; next capability: **0.20**).
+- Cut procedure: [RELEASE.md](RELEASE.md) (last published: **0.18**; current cut target: **0.19**;
+  next capability: **0.20**).
 
 ## Next capability phase
 

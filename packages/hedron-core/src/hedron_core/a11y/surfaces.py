@@ -76,8 +76,8 @@ class StructureReport:
 
 
 _TITLE = re.compile(r"<title>([^<]*)</title>", re.I)
-_LANG = re.compile(r"<html[^>]*\blang=\"([^\"]+)\"", re.I)
-_DIR = re.compile(r"<html[^>]*\bdir=\"([^\"]+)\"", re.I)
+_LANG = re.compile(r"<html[^>]*\blang=(['\"])(.*?)\1", re.I)
+_DIR = re.compile(r"<html[^>]*\bdir=(['\"])(.*?)\1", re.I)
 _LANDMARK = re.compile(r"<(header|main|nav|aside|footer|section)\b", re.I)
 _HEADING = re.compile(r"<h([1-6])\b", re.I)
 _SKIP = re.compile(r'href=["\']#[^"\']*["\'][^>]*>\s*skip', re.I)
@@ -88,9 +88,9 @@ def validate_page_structure(html: str) -> StructureReport:
     title_m = _TITLE.search(html)
     report.title = title_m.group(1).strip() if title_m else None
     lang_m = _LANG.search(html)
-    report.lang = lang_m.group(1) if lang_m else None
+    report.lang = lang_m.group(2) if lang_m else None
     dir_m = _DIR.search(html)
-    report.dir = dir_m.group(1) if dir_m else None
+    report.dir = dir_m.group(2) if dir_m else None
     report.landmarks = [m.group(1).lower() for m in _LANDMARK.finditer(html)]
     report.headings = [f"h{m.group(1)}" for m in _HEADING.finditer(html)]
     report.has_skip_link = bool(_SKIP.search(html))

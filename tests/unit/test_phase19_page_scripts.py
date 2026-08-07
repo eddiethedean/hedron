@@ -46,3 +46,11 @@ def test_page_scripts_reject_external() -> None:
 def test_page_scripts_require_safeurl() -> None:
     with pytest.raises(TypeError, match="SafeUrl"):
         Page(Text("x"), scripts=["/assets/app.js"])  # type: ignore[list-item]
+
+
+def test_page_scripts_reject_path_traversal() -> None:
+    with pytest.raises(HedronError, match="normalized|\\.\\."):
+        Page(
+            Text("x"),
+            scripts=[SafeUrl.parse("/assets/../secret.js", purpose=UrlPurpose.ASSET)],
+        )

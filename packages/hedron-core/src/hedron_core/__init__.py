@@ -735,6 +735,8 @@ def _register_builtins() -> None:
         IFrame,
         GeolocationButton,
         GeolocationHint,
+        Dialog,
+        ChatMessage,
     ):
         logical = (
             f"{getattr(cls, 'distribution', 'hedron-core')}:"
@@ -749,6 +751,16 @@ def _register_builtins() -> None:
             slots=getattr(cls, "slots", {}),
             accessibility_notes="Uses native semantic HTML without JavaScript.",
         )
+    # Public alias discoverable via CLI inspect/eject.
+    register_component(
+        logical_id="hedron-core:hedron_core.builtins.shell.NavLink",
+        name="NavLink",
+        module="hedron_core.builtins.shell",
+        distribution="hedron-core",
+        props_model="HtmxLinkProps",
+        slots={},
+        accessibility_notes="Alias of HtmxLink for shell navigation.",
+    )
 
 
 _register_builtins()

@@ -1,6 +1,7 @@
 # What’s new in 0.19
 
-**Published:** `v0.19.0` (2026-08-07). Pin `hedron>=0.19.0,<0.20`.
+**Ready to cut / Implemented on `main`:** `0.19.0` (2026-08-07). Last published PyPI/git =
+`v0.18.0`. Pin `hedron>=0.19.0,<0.20`.
 
 Phase 0.19 delivers accessibility engineering and inclusive authoring without automatic
 WCAG / legal / VPAT claims (D-050).

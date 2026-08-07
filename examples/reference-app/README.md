@@ -1,8 +1,9 @@
 # Hedron reference application (FastAPI)
 
 Cumulative authenticated team-administration application for the FastAPI flagship.
-Tracks the **0.18.0** train (portable conformance / optional native accel on the 0.9 HDJ
-authoring line).
+Tracks the **0.19.0** train (portable conformance / optional native accel on the 0.9 HDJ
+authoring line). Includes a GOVERN-019 accessibility statement dry-run
+(`accessibility_statement.py`) that never auto-claims WCAG conformance.
 
 Demonstrates:
 

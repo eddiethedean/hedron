@@ -18,5 +18,7 @@ def test_interactive_controls_keyboard_names() -> None:
     field = FormField(name="email", label="Email", control=TextInput("email"), required=True)
     form_html = render(Form(field)).html
     assert "aria-required" in form_html or "required" in form_html
-    dlg = render(Dialog("Edit", Form(field))).html
-    assert "dialog" in dlg.lower() or "role=" in dlg
+    dlg = render(Dialog("Edit", Form(field), id="edit-dlg")).html
+    assert "<dialog" in dlg.lower()
+    assert 'aria-labelledby="edit-dlg-title"' in dlg or "aria-labelledby=" in dlg
+    assert "aria-modal" in dlg

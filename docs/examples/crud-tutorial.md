@@ -10,6 +10,24 @@ reference application (auth, charts, extras), see the
 - [Minimal form](../guides/minimal-form.md) (CSRF basics)
 - [Mutations](../guides/mutations.md) (`@component` POST vs `@action`)
 
+### Try it (simulated)
+
+Miniature list — add and delete notes with region swaps before pasting the full `app.py`.
+
+<section class="hedron-component-demo" data-hedron-component-demo="CrudTutorialGuide">
+  <div class="hdc-stage">
+    <ul class="hdc-crud-list" data-hdc-crud-list aria-live="polite">
+      <li><span>Ship docs demos</span><button class="hdc-button" type="button" data-hdc-action="crud-delete" data-hdc-path="/notes/1">Delete</button></li>
+    </ul>
+    <form class="hdc-form" data-hdc-form="crud-add" data-hdc-path="/notes">
+      <label for="crud-note">Note<input id="crud-note" name="note" type="text" placeholder="New note"></label>
+      <button class="hdc-button hdc-primary" type="submit">Add note</button>
+    </form>
+    <p class="hdc-muted" role="status" data-hdc-status>List region updates via Simulated HTMX (no CSRF in the docs demo).</p>
+  </div>
+  <div class="hdc-request" data-hdc-request hidden><span>Simulated HTMX</span><code>POST /notes → 200</code></div>
+</section>
+
 ## Scaffold (intentional Path C)
 
 This tutorial **replaces** the generated `app.py` with a complete notes app. That is

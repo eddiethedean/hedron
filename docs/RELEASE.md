@@ -9,19 +9,21 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**Last published train:** `v0.19.0` (packages `0.19.0` including first-party
+**Last published train:** `v0.18.0` (packages `0.18.0` including first-party
 `hedron-extras`; Alpha charts/sample-kit/native/notebook/mcp/gradio `0.1.x`).
 
-**Prior published:** `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
+**Prior published:** `v0.17.0`, `v0.16.0`, and earlier trains.
 
-**Current cut target:** `v0.19.x` patches or `v0.20.0` — see
+**Current cut target:** `v0.19.0` — Ready to cut / Implemented on `main` (packages
+`0.19.0`); see
 [STATUS.md](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) and
 [What’s ready](guides/whats-ready.md). Phase 0.19 evidence:
 [release-gate-0.19.toml](acceptance/release-gate-0.19.toml) /
 [RELEASE_0_19.md](acceptance/RELEASE_0_19.md)
 (`python scripts/check_release_gate.py 0.19.0`).
 
-Do not re-run tag steps for a published version.
+Do not re-run tag steps for a published version. Do **not** treat `0.19.0` as published
+until `v0.19.0` is tagged.
 
 ## Template: 0.19.x patch cut
 

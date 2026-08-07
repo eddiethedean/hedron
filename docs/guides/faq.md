@@ -2,7 +2,8 @@
 
 ## Which version should I install?
 
-Pin the **0.18 train** for production (Beta on PyPI):
+Pin the **0.19 train** for production (Beta; Ready to cut on `main` — last published
+PyPI/git = `v0.18.0`):
 
 ```bash
 pip install "hedron>=0.19.0,<0.20"
@@ -10,7 +11,7 @@ pip install "hedron>=0.19.0,<0.20"
 uv add "hedron>=0.19.0,<0.20"
 ```
 
-`>=0.18.0` alone allows a future `0.19` break. Use an upper bound when you need a stable
+`>=0.19.0` alone allows a future `0.20` break. Use an upper bound when you need a stable
 train. See [What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
@@ -156,8 +157,9 @@ See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/inst
 
 ## Where is the SBOM / evidence bundle?
 
-Prefer GitHub Release assets for the train tag (for example `v0.18.0`), or regenerate from
-the tagged checkout with `scripts/build_evidence_bundle.py`. Step-by-step:
+Prefer GitHub Release assets for the train tag (for example `v0.19.0` after cut; last
+published `v0.18.0`), or regenerate from the tagged checkout with
+`scripts/build_evidence_bundle.py`. Step-by-step:
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.
 
 ## Why might GitHub “Latest release” lag PyPI?

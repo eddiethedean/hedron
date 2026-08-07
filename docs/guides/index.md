@@ -2,6 +2,11 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
+**0.19 train** (ready to cut; last published **v0.18.0**): accessibility contracts,
+Explorer `/a11y`, PE forms, landmarks, and automated AT evidence —
+[What’s new in 0.19](whats-new-0.19.md) · [Accessibility](accessibility.md) ·
+[A11Y API](../api/A11Y.md).
+
 Complete [Start](../getting-started/index.md) first (First app → HTMX →
 Minimal form). This section continues with forms depth, live transports, data, security,
 and ops.
@@ -146,7 +151,7 @@ Evaluating adoption? Use **Project → Evaluate**
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>0.17 → 0.18 notes (also under Project → Upgrade).</p>
+    <p>0.18 → 0.19 notes (also under Project → Upgrade).</p>
   </a>
   <a class="hedron-card" href="openapi/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>
@@ -161,7 +166,7 @@ Evaluating adoption? Use **Project → Evaluate**
   <a class="hedron-card" href="accessibility/">
     <span class="hedron-card__icon" aria-hidden="true">♿</span>
     <strong>Accessibility</strong>
-    <p>Author checklist for semantic HTML and keyboard flows.</p>
+    <p>0.19 contracts, Explorer a11y, PE forms, AT matrix (human AT → 0.21).</p>
   </a>
   <a class="hedron-card" href="plain-fastapi/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>

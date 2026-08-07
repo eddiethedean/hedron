@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.18.0</div>
+<div class="hedron-eyebrow">Python-first UI framework · v0.19.0</div>
 
 # Build web UIs in Python.<br><span class="hedron-gradient-text">No Node.js required.</span>
 
