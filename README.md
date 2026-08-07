@@ -10,15 +10,20 @@
 Hedron lets you build dashboards, admin tools, and CRUD apps as typed Python components
 on FastAPI + HTMX — without a Node.js frontend stack.
 
+Unlike Streamlit’s script-rerun model, Hedron returns typed components from FastAPI routes
+and swaps HTML fragments with HTMX.
+
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
 # macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
+# Windows (PowerShell): irm https://astral.sh/uv/install.ps1 | iex
 
 uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
-Pin `hedron>=0.20.0,<0.21` for the current published train.
+Prefer a **clean virtualenv** (Hedron needs FastAPI `>=0.141.1,<0.142`). Pin production
+installs with `hedron>=0.20.0,<0.21`.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 Click **Refresh status**; the page updates without a full reload (HTMX swaps a small HTML
@@ -29,15 +34,28 @@ fragment into the declared region).
 [![Open in GitHub Codespaces](https://img.shields.io/badge/Codespaces-Open-blue?logo=github)](https://codespaces.new/eddiethedean/hedron)
 
 Prefer not to install locally?
-[Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/).
+[Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/)
+(still runs a real app in the cloud — not a hosted playground).
 
 Alternate (pip + venv):
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .venv\Scripts\Activate.ps1
+# macOS / Linux
+python3 -m venv .venv && source .venv/bin/activate
 python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
+```
+
+```powershell
+# Windows (PowerShell)
+py -3 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+python -m hedron new my-hedron-app
+cd my-hedron-app
+python -m pip install -e .
+uvicorn app:app --reload
 ```
 
 **Next:** [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
@@ -62,30 +80,31 @@ If <code>hedron</code> is not on your PATH, use <code>python -m hedron</code>
 
 ## Packages
 
-| Package | Maturity | Role |
-|---|---|---|
-| [`hedron`](https://pypi.org/project/hedron/) | Beta | FastAPI flagship |
-| [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Beta | Flask host adapter |
-| [`hedron-django`](https://pypi.org/project/hedron-django/) | Beta | Django host adapter |
-| [`hedron[data]`](https://pypi.org/project/hedron-data/) | Beta | DataTable / DataEditor |
-| [`hedron[jinja]`](https://pypi.org/project/hedron-jinja/) | Beta | Optional HDJ templates |
-| [`hedron[dev]`](https://pypi.org/project/hedron-explorer/) | Beta | Component Explorer (dev) |
+| Package | Role |
+|---|---|
+| [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship |
+| [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter |
+| [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter |
+| [`hedron[data]`](https://pypi.org/project/hedron-data/) | DataTable / DataEditor |
+| [`hedron[jinja]`](https://pypi.org/project/hedron-jinja/) | Optional HDJ templates |
+| [`hedron[dev]`](https://pypi.org/project/hedron-explorer/) | Component Explorer (dev) |
 
-Optional extras (charts, conformance, extras, native accel, notebook, MCP, Gradio):
+Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Optional extras
+(charts, conformance, extras, native accel, notebook, MCP, Gradio):
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
-## Product direction
+## Who it’s for
 
-FastAPI-native typed components, HTMX fragments, and secure HTML defaults. Audience:
-CRUD, internal tools, dashboards, forms, admin, and data apps.
+CRUD, admin, dashboards, and forms as typed Python on FastAPI — when you want HTMX fragments,
+CSRF defaults, and multi-worker jobs without a Node frontend.
 
-Flask/Django adapters (`hedron-flask`, `hedron-django`) ship Blueprint/`init_app`,
-AppConfig, forms bridge, and bounded QuerySet DataSource on the Beta package train —
-capability readiness is **Supported** for those surfaces (pin versions).
-Live SSE/WebSocket helpers are **experimental** — prefer polling behind buffering proxies.
+Prefer Streamlit for notebook-style rerun dashboards; prefer raw FastAPI+HTMX if you don’t want
+a component framework. Details: [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
+
+Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
+Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
 See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
-[Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.20/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).

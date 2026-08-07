@@ -1,12 +1,19 @@
 # Optional packages
 
-Hedron ships independently publishable **extension packages** beside the flagship
-[`hedron`](https://pypi.org/project/hedron/) FastAPI distribution and the
-framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/) renderer.
+Hedron ships independently publishable packages beside the flagship FastAPI distribution.
+Start with the flagship and adapters if you are new; use this catalog for **extras**.
 
-Most install as flagship extras (`hedron[data]`, `hedron[dev]`, …). A few
-(`hedron-sample-kit`, `hedron-sim`) install directly. **Flask / Django hosts** are
-[framework adapters](../getting-started/flask.md) — not extension packages.
+## Start here (flagship and hosts)
+
+| Package | Role | Docs |
+|---|---|---|
+| [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship | [First app](../getting-started/quickstart.md) · [Hedron API](../api/HEDRON.md) |
+| [`hedron-core`](https://pypi.org/project/hedron-core/) | Framework-neutral renderer | [Architecture](../ARCHITECTURE.md) |
+| [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter | [Flask](../getting-started/flask.md) · [Adapters](../api/ADAPTERS.md) |
+| [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter | [Django](../getting-started/django.md) · [Adapters](../api/ADAPTERS.md) |
+
+Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). A few
+(`hedron-sample-kit`, `hedron-sim`) install directly.
 
 !!! note "Maturity"
 
@@ -14,14 +21,14 @@ Most install as flagship extras (`hedron[data]`, `hedron[dev]`, …). A few
     See [How to read](../getting-started/how-to-read.md) and
     [What’s ready](../guides/whats-ready.md). Pin versions on `0.x`.
 
-## Beta train (`0.20.x`)
+## Beta extensions (`0.20.x`)
 
 | Package | Extra | Role |
 |---|---|---|
 | [hedron-data](hedron-data.md) | `hedron[data]` | DataTable, DataEditor, data sources |
 | [hedron-jinja](hedron-jinja.md) | `hedron[jinja]` | `.hdj` templates over Jinja / HTML / HTMX |
 | [hedron-explorer](hedron-explorer.md) | `hedron[dev]` | Development Component Explorer |
-| [hedron-extras](hedron-extras.md) | `hedron[extras]` | Curated workbenches and specialty UI |
+| [hedron-extras](hedron-extras.md) | `hedron[extras]` | Curated toolkit (specialty widgets may be Experimental/stub) |
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
 
 ```bash
@@ -48,15 +55,14 @@ pip install "hedron[charts]>=0.1.0,<0.2"
 pip install "hedron-sim>=0.1.0,<0.2"
 ```
 
-## Host adapters (not extensions)
+## Authoring an extension
 
-| Package | Start here |
-|---|---|
-| `hedron-flask` | [Add Flask app](../getting-started/flask.md) · [Adapters API](../api/ADAPTERS.md) |
-| `hedron-django` | [Add Django project](../getting-started/django.md) · [Adapters API](../api/ADAPTERS.md) |
+Core stays framework-neutral; extensions depend toward `hedron-core` (and optionally
+`hedron`). See [Plugin authoring](../guides/plugin-authoring.md) and
+[Project layout](https://github.com/eddiethedean/hedron/blob/main/docs/PROJECT_LAYOUT.md).
 
 ## See also
 
 - [Installation (extras)](../getting-started/installation.md)
-- [Public API](../api/README.md)
-- [Plugins](../api/PLUGINS.md) · [Plugin authoring](../guides/plugin-authoring.md)
+- [What’s ready](../guides/whats-ready.md)
+- [Adapters API](../api/ADAPTERS.md)

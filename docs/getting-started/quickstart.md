@@ -6,7 +6,9 @@ matters.
 
 ## Prerequisites
 
-- CPython **3.11–3.14** (use a **clean virtual environment** for your first try)
+- CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
+- Use a **clean virtual environment** for your first try (Hedron needs FastAPI
+  `>=0.141.1,<0.142`; shared envs often resolve the wrong FastAPI)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 
@@ -26,47 +28,78 @@ matters.
 
 ## 1. Scaffold, sync, run
 
+!!! tip "Pip needs two installs"
+
+    With **pip**, install Hedron once for the **CLI**, then again with `pip install -e .`
+    inside the scaffold so uvicorn uses the project pin. The **uv** path below does this
+    in one flow. See
+    [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
+
+Pin production installs with `hedron>=0.20.0,<0.21`.
+
 === "uv (recommended)"
 
     ```bash
+    # macOS / Linux
     uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
     ```
 
-!!! note "Install pin"
+    Windows (PowerShell), after installing uv:
 
-    Pin `hedron>=0.20.0,<0.21` for the current published train.
+    ```powershell
+    uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
+    cd my-hedron-app
+    uv sync
+    uv run uvicorn app:app --reload
+    ```
 
 === "pip (venv)"
-
-    Two installs — do both:
 
     1. **CLI:** `pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"` (provides `hedron` / `python -m hedron`)
     2. **Project:** after `hedron new`, `cd` into the app and `pip install -e .` (uvicorn uses the scaffold pin)
 
     ```bash
-    python3 -m venv .venv          # Windows: py -3 -m venv .venv
-    source .venv/bin/activate      # Windows PowerShell: .\.venv\Scripts\Activate.ps1
+    # macOS / Linux
+    python3 -m venv .venv
+    source .venv/bin/activate
     python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
-    python -m pip install -e .     # project-local pinned hedron for uvicorn
+    python -m pip install -e .
     uvicorn app:app --reload
     ```
 
-!!! tip "Why does pip install twice?"
-
-    Step 1 provides the **CLI**. Step 2 installs the scaffold’s **project dependency** so
-    uvicorn uses the pinned version. See
-    [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
+    ```powershell
+    # Windows (PowerShell)
+    py -3 -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+    python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+    python -m hedron new my-hedron-app
+    cd my-hedron-app
+    python -m pip install -e .
+    uvicorn app:app --reload
+    ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 
 **Click Refresh status.** The panel text should update with a new UTC timestamp. Hedron
 returns a small HTML fragment; [HTMX](https://htmx.org) swaps it into the declared region
 — the interactive promise of the scaffold.
+
+### If something fails
+
+| Symptom | Fix |
+|---|---|
+| `hedron: command not found` | Use `python -m hedron …` (or finish the pip CLI install) |
+| `ModuleNotFoundError: hedron` after `hedron new` | Run `pip install -e .` / `uv sync` **inside** the scaffold directory |
+| FastAPI / dependency resolver errors | Use a **clean** venv; Hedron needs FastAPI `>=0.141.1,<0.142` |
+| Port 8000 already in use | `uvicorn app:app --reload --port 8001` |
+| Page loads but Refresh does nothing | Confirm you used the scaffold (not the static manual path below); see [troubleshooting](../guides/troubleshooting.md) |
+
+More: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
 
 === "Demo"
 
@@ -156,9 +189,38 @@ python -m hedron --app app:app check
 
 Advisory findings on a hello-world scaffold are normal.
 
+## Alternative — add Hedron to an existing FastAPI app
+
+If you already have a FastAPI project, install `hedron>=0.20.0,<0.21` into that environment
+and mount a `Hedron` app (or include a `HedronRouter`). Minimal shape:
+
+```python
+from fastapi import FastAPI
+from hedron import Hedron, Page, Text
+
+api = FastAPI()
+ui = Hedron(
+    title="Acme",
+    security="standard",
+    explorer="off",
+    session_secret="replace-in-production",
+)
+
+
+@ui.page("/")
+def home() -> Page:
+    return Page(Text("Hello from Hedron"), title="Home")
+
+
+api.mount("/", ui)  # or include routes via HedronRouter — see API docs
+```
+
+Prefer `hedron new` for the first-hour Refresh demo. Existing-app depth:
+[Plain FastAPI](../guides/plain-fastapi.md) · [Hedron API](../api/HEDRON.md).
+
 ## Alternative — manual `app.py` (no scaffold)
 
-!!! warning "Static Hello only"
+!!! warning "Static Hello only — not the product demo"
 
     This path skips `hedron new` and does **not** include Refresh / HTMX. Prefer the
     scaffold above for the interactive first-hour experience. Continue to

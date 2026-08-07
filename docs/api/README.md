@@ -1,6 +1,6 @@
 # Public API
 
-Hand-maintained **contracts** for shipped surfaces on the **0.19** train, plus
+Hand-maintained **contracts** for shipped surfaces on the **0.20** train, plus
 [Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. This is **not** a complete
 generated reference of every `hedron.__all__` name — use the [coverage map](COVERAGE.md)
 and prefer Autodoc / source when an outline page lacks an Errors section.
@@ -45,7 +45,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
     are shorter summaries — prefer guides + Autodoc when a page lacks an Errors section.
     Human error index: [Error codes](../guides/error-codes.md).
 
-## Shipped on the 0.19 train
+## Shipped in 0.19 (still on the 0.20 train)
 
 These surfaces are implemented on the **0.20.0** train (includes the 0.9 authoring break,
 0.10 live interaction, and later capability phases through 0.19).

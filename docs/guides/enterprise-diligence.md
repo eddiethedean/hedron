@@ -47,10 +47,23 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 - **Patch expectation:** community best-effort; critical security fixes are prioritized on
   the current train. There is **no contractual patch SLA**.
 
+## Claims we never make
+
+Hedron documentation and marketing **do not** claim:
+
+- Commercial SLA, guaranteed patch cadence, or scheduled 1.0
+- WCAG / legal / VPAT / ACR certification for your application
+- Managed IdP / SSO product (optional helpers only — you own identity)
+- SLSA product attestation or commercial compliance certification
+- That every `hedron[extras]` widget is production-complete (CodeEditor is a host stub;
+  TerminalView / device bridges are Experimental)
+
 ## Supply-chain evidence
 
-Consume published artifacts from GitHub Releases when attached. See the public
-[Evidence pack](evidence-pack.md) for SBOM / license / bundle links and verification steps.
+Prefer GitHub Release assets for tag **`v0.20.0`** (SBOM / license / evidence-bundle) when
+attached. If assets are missing, regenerate from the tagged checkout — see
+[Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.
+Maintainers should attach evidence bundles on release day when publishing a train tag.
 
 ## Evidence honesty
 

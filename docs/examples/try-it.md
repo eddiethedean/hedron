@@ -1,12 +1,19 @@
 # Try Hedron with Codespaces / Dev Container
 
-**No local Python required** — open the repo in GitHub Codespaces or a Dev Container,
-then run a real Hedron server.
+**No local Python install required** — open this repository in GitHub Codespaces or a Dev
+Container, then run a **real** Hedron server (still not a hosted playground).
 
 !!! note "What this is not"
 
-    There is no hosted multi-tenant sandbox and no one-liner “try Hedron” without a
+    There is no multi-tenant hosted sandbox and no one-liner “try Hedron” without a
     container or local install. Codespaces / Dev Container is the remote path.
+
+## Why open the repo?
+
+The Dev Container installs tooling (`uv`, Python) from this monorepo. The Hello demo below
+still scaffolds a **published** `hedron` app under `/tmp` — you are not required to run
+in-tree examples first. Prefer [local quickstart](../getting-started/quickstart.md) if you
+already have Python and do not want to clone.
 
 ## Recommended — Hello scaffold
 
@@ -15,7 +22,7 @@ This repository includes a [Dev Container](https://containers.dev/) definition a
 
 1. Open the repo in GitHub Codespaces **or** VS Code / Cursor → “Reopen in Container”.
 2. Wait until the container finishes `uv sync` (terminal prompt returns; `uv` is on PATH).
-3. Run the Hello scaffold:
+3. Run the Hello scaffold (published pin — independent of editable workspace packages):
 
 ```bash
 uvx --from "hedron>=0.20.0,<0.21" hedron new /tmp/my-hedron-app
@@ -23,10 +30,7 @@ cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-!!! note "Install pin"
-
-    Pin `hedron>=0.20.0,<0.21` for the current published train. The Dev Container /
-    Codespaces path uses this repo’s `main` workspace and matches that train.
+Pin production installs with `hedron>=0.20.0,<0.21`.
 
 4. Forward port **8000** and open the URL. You should see **Hello from hedron new**.
    Click **Refresh status** — the page updates without a full reload (HTMX swaps a small
@@ -37,7 +41,7 @@ Hello has **no login**. Prefer this path for the first five minutes.
 ## More samples (stop Hello first)
 
 Only one process can bind port **8000**. Stop the Hello server (`Ctrl+C`) before starting
-another sample.
+another sample. These use the **cloned workspace** packages:
 
 ### Reference app (CRUD demo — has login)
 
@@ -70,11 +74,9 @@ uv run uvicorn app:app --app-dir examples/live-interaction --host 0.0.0.0 --port
 ## Option B — Local install (no container)
 
 See [Build your first app](../getting-started/quickstart.md) for uv → scaffold → Hello.
-That path does not require cloning this repository.
+That path does **not** require cloning this repository.
 
 ## Local after clone
-
-Prefer Hello first (same as recommended), then optional demos:
 
 ```bash
 git clone https://github.com/eddiethedean/hedron.git

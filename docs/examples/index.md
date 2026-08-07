@@ -15,8 +15,8 @@ There is **no hosted playground**. Use Codespaces / Dev Container, a local clone
 5. **[CRUD tutorial](crud-tutorial.md)** — guided path through the reference app.
 6. **[Single-file apps](single-file.md)** — alternate paste-an-`app.py` path (static Hello;
    no Refresh panel — use the scaffold when you want the interactive proof).
-7. **[Phase evidence](phase-evidence.md)** — maintainer exit scenarios (0.15–0.18), not
-   product recipes.
+7. **[Phase evidence](phase-evidence.md)** — maintainer exit stubs (not product recipes);
+   listed under **Maintainer evidence** in the nav.
 8. **[Simulated UI patterns](gallery.md)** — in-browser **simulations** on Read the Docs
    (not a live Hedron process). Prefer [runnable examples](runnable.md) for real HTMX/CSRF.
 

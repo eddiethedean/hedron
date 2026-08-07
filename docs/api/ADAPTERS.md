@@ -13,18 +13,18 @@ status: implemented
 
 **Status:** Adapters shipped (`hedron-flask`, `hedron-django`). Capability readiness:
 **Supported** for Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
-DataSource. Package train remains **Beta** on PyPI — pin versions.
-Portable contracts live in `hedron-core`. Flask `init_app` / `HedronBlueprint` and
-Django forms + QuerySet DataSource are Supported (D-046; current train **0.20.0**).
+DataSource. Package maturity remains **Beta** on PyPI — pin versions.
+Portable contracts live in `hedron-core`. Living train: **0.20.0** (**Published**).
+
+Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapters). Quickstarts:
+[Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).
 
 ## Install
 
 ```bash
-pip install hedron-flask
-pip install hedron-django   # Django >=5.2,<6
+pip install "hedron-flask>=0.20.0,<0.21"
+pip install "hedron-django>=0.20.0,<0.21"   # Django >=5.2,<6
 ```
-
-Quickstarts: [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).
 
 ## Portable baseline
 
@@ -54,11 +54,56 @@ mappings cannot bypass redirect, selector, cache, or security policy.
 | `interaction_headers` / `InteractionResult` | Typed HTMX responses |
 | CSRF cookie + `X-CSRF-Token` | Double-submit on unsafe methods |
 
-## Flask (`hedron_flask`)
+Full constructor contract: [Hedron](HEDRON.md).
+
+## Flask (`hedron_flask.HedronFlask`)
+
+Construct with an `import_name` to own a Flask app, or construct without an app and call
+`init_app` for application-factory composition.
+
+```python
+from flask import Flask
+from hedron_flask import HedronFlask
+from hedron_core import Page, Text
+
+hf = HedronFlask()
+app = Flask(__name__)
+hf.init_app(app, security="standard")
+
+
+@hf.page("/")
+def home():
+    return Page(Text("Hello"), title="Home")
+```
+
+### Constructor
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `import_name` | `str \| None` | `None` | When set, creates `Flask(import_name, **kwargs)` and calls `init_app` |
+| `csrf_cookie_name` | `str` | `"hedron_csrf"` | CSRF cookie name |
+| `auto_csrf_cookie` | `bool` | `True` | Seed CSRF cookie on safe responses |
+| `csrf_protect` | `bool` | `True` | Validate CSRF on unsafe methods in `respond` / wrapped views |
+| `csrf_cookie_secure` | `bool \| None` | `None` | `True` always Secure; `None` follows request/`FLASK_ENV`; `False` never |
+| `security` | profile name \| `SecurityPolicy` | `"standard"` | Portable security profile |
+| `**kwargs` | — | — | Passed to `Flask(...)` when `import_name` is set |
+
+### Methods
+
+| Method | Returns | Description |
+|---|---|---|
+| `init_app(app, *, security=None)` | `Flask` | Bind extension (idempotent for the same app) |
+| `page(rule, **options)` | decorator | Register a page view; supports `fragment_regions`, `methods` |
+| `respond(value, request, *, context=None, mode=None, extra_headers=None, fragment_regions=None)` | Flask `Response` | Render `NodeLike` / `InteractionResult`; CSRF on unsafe methods when enabled |
+| `auth_signal(request=None)` | `AuthSignal` | Flask-Login / session-derived auth signal (no session body to core) |
+| `csrf_token(request)` | `str` | Current CSRF token for forms / headers |
+| `attach_csrf_cookie(response, request, token=None)` | `str` | Set CSRF cookie on a response |
+
+Also: `HedronBlueprint`, `hedron_route`, `wrap_hedron_view`, `interaction_response`,
+`component_response`, `FlaskUrlReverser` — see role table below and Autodoc.
 
 | Symbol | Role |
 |---|---|
-| `HedronFlask` | Constructor or `init_app(app)` factory; `respond`, CSRF cookie |
 | `HedronBlueprint` | Blueprint with `page` / `component` / `action` / `include_component` |
 | `hedron_route` | Register views returning components / `InteractionResult` (CSRF on unsafe methods) |
 | `wrap_hedron_view` | Public CSRF + InteractionResult conversion wrapper |
@@ -66,12 +111,41 @@ mappings cannot bypass redirect, selector, cache, or security policy.
 | `FlaskUrlReverser` | Path-only `url_for` with `root_path` / `script_name` |
 
 **Raises / status:** CSRF failure → HTTP 403. Unauthorized OOB / fragment region → 403 body.
+Calling `page` / `route` before `init_app` → `RuntimeError`.
 
-## Django (`hedron_django`)
+## Django (`hedron_django.HedronDjango`)
+
+Thin helper for native Django views. Install AppConfig for system checks; wrap views with
+`hedron_view` or call `respond` from your own views.
+
+```python
+from hedron_django import HedronDjango
+from hedron_core import Page, Text
+
+hd = HedronDjango()
+
+
+def home(request):
+    return hd.respond(Page(Text("Hello"), title="Home"), request)
+```
+
+### Constructor
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| *(none)* | — | — | `HedronDjango()` takes no constructor args; create one helper per process |
+
+### Methods
+
+| Method | Returns | Description |
+|---|---|---|
+| `render(value, request, *, context=None, mode=None)` | `str` | HTML body only |
+| `respond(value, request, *, context=None, mode=None, extra_headers=None, fragment_regions=None)` | `HttpResponse` | Render component or `InteractionResult`; seeds CSRF cookie on safe GETs |
+| `auth_signal(request)` | `AuthSignal` | Django `request.user` / session tenant signal |
+| `csrf_token(request)` | `str` | Portable CSRF token for `X-CSRF-Token` |
 
 | Symbol | Role |
 |---|---|
-| `HedronDjango` | `respond`, `csrf_token`, auth signal helpers |
 | `HedronDjangoConfig` | Installable AppConfig + `hedron.*` system checks |
 | `hedron_view` | Wrap sync/async views; seeds CSRF cookie on safe GETs |
 | `form_to_nodes` / `validation_interaction` | Django Form / ModelForm / formset bridge |
@@ -99,12 +173,13 @@ ship the FastAPI SSE/WebSocket helpers.
 | Unauthorized fragment / OOB region | Flask / Django | HTTP 403 body |
 | Invalid approved HTMX header values | All adapters | Rejected at adapter boundary |
 | FastAPI SSE helpers imported on Flask/Django | N/A | Not shipped — use polling |
+| `page`/`route` before `init_app` | Flask | `RuntimeError` |
 
 ## Deferred (not Supported)
 
 | Claim | Notes |
 |---|---|
-| Full adapter live browser matrix | Carryover Deferred `LIVE-011-BROWSER` (ops evidence; not blocking Supported adapter depth on the Published 0.19 train) |
+| Full adapter live browser matrix | Carryover Deferred `LIVE-011-BROWSER` (ops evidence; not blocking Supported adapter depth on **0.20**) |
 | Load/proxy backpressure proof for SSE/WS | Carryover Deferred `PERF-10-001` — prefer polling; live helpers remain Experimental |
 
 CameraCapture / MicrophoneCapture ship as **Supported** on the FastAPI flagship (with

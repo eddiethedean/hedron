@@ -2,15 +2,16 @@
 
 Prerequisites, extras, host adapters, and troubleshooting.
 
-**Do not start here for Hello.** The golden-path copy-paste lives on
-[Build your first app](quickstart.md) (`hedron new` → Hello → Refresh). Use this page
+The golden-path Hello copy-paste lives on
+[Build your first app](quickstart.md) (`hedron new` → Hello → Refresh). Use **this** page
 for version checks, optional extras, Flask/Django adapters, and install failures.
 
 Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 
 ## Prerequisites
 
-- CPython **3.11–3.14** (use a **clean virtual environment** for your first try)
+- CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
+- Use a **clean virtual environment** (Hedron needs FastAPI `>=0.141.1,<0.142`)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 

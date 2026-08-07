@@ -60,5 +60,5 @@ is owned by **0.22**, not this checklist.
 
 - [x] Full regression suite. *(`REGRESS-020`)*
 
-**Exit met** — coordinated `0.20.0` (**Published**; last published
-PyPI/git = `v0.19.0`); every 0.20 gate row Verified.
+**Exit met** — coordinated `0.20.0` (**Published** as `v0.20.0`); every 0.20 gate row
+Verified.

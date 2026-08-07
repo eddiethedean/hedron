@@ -48,9 +48,8 @@ python scripts/check_docs_train_ssot.py
 You do **not** need Playwright or the full pytest suite locally for markdown/typo PRs.
 
 **CI still runs `test`, `quality`, `browser` (Chromium), and `evidence` on every pull
-request** (no path filters today) — see the CI map.
-
-For **docs-only PRs**:
+request** — there are **no path filters** today. Maintainers may re-run or waive unrelated
+`browser` / `evidence` flakes on clearly docs-only changes. Contributors should:
 
 1. Run the local docs verify commands above (including
    `python scripts/check_docs_train_ssot.py`).

@@ -71,13 +71,12 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
 | Charts | **Alpha** | Pin `hedron[charts]`; Matplotlib default |
-| Model demos / inference workflows | **Supported** (fail-closed; APIs still `beta`) | [Model demos](model-demos.md) · evidence example is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
+| Model demos / inference workflows | **Supported** (fail-closed; APIs still `beta`) | [Model demos](model-demos.md) (guide snippets). Maintainer evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) — not a product demo |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `>=0.20.0,<0.21` after `v0.20.0` is
-    tagged (or install from `main` now). The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.20.0,<0.21`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
@@ -112,8 +111,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported with permission/retention policy |
 | BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported |
 | OIDC / session helpers + connection registry | `hedron` | Supported **helpers** (API `beta`); host auth/DI authoritative — **not** an IdP product |
-| Curated extras / workbenches / editors | `hedron[extras]` | Supported; install-isolated |
-| Browser-Python sandbox | `hedron[extras]` | Supported; origin-isolated |
+| Curated extras toolkit (install-isolated) | `hedron[extras]` | Supported for the curated toolkit surface; **not** every specialty widget |
 | Dashboard bindings, patches, cross-filter, AppShell | `hedron` / `hedron-core` | Supported (API `beta`; see [what's new 0.17](whats-new-0.17.md)) |
 | Public `render_interaction` | `hedron` | Supported |
 | Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported |
@@ -134,6 +132,8 @@ guaranteed multi-worker live-transport proof.
 | Capability | Package / surface | Notes |
 |---|---|---|
 | Live interaction: SSE, streaming, WebSocket, preload | `hedron.experimental` (FastAPI) | Prefer [polling](live-interaction.md) |
+| CodeEditor | `hedron[extras]` | **Host stub** (CSP-safe shell; no pinned CodeMirror 6 bundle) — do not market as a full editor |
+| Browser-Python sandbox | `hedron[extras]` | Origin-isolated; Experimental until you accept the isolation model |
 | TerminalView / joystick / device bridges | `hedron[extras]` | Fail-closed |
 | Native desktop shell | docs recipe | Packaging guidance only |
 | Flask / Django live helpers | adapters | Prefer polling |

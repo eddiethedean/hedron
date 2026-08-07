@@ -1,4 +1,4 @@
-# Phase evidence (0.15–0.19)
+# Phase evidence apps (stubs)
 
 These directories are **capability-phase exit scenarios** for maintainers and evaluators.
 They are runnable stubs that prove a release gate — **not** polished product recipes.

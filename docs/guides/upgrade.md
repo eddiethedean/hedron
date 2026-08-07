@@ -8,7 +8,7 @@ Pin `hedron>=0.20.0,<0.21` for the current published train.
 
 ## Upgrade from 0.18 / 0.19 → 0.20
 
-If you are already on **0.18.x** or Published **0.19** on `main`, pin coordinated **0.20.0** packages:
+If you are already on **0.18.x** or **0.19.x**, pin coordinated **0.20.0** packages:
 
 1. Pin `hedron>=0.20.0,<0.21` (and matching `hedron-core` / adapters / extras).
 2. Review production startup gates under `HEDRON_ENV=production` and document any accepted
@@ -35,7 +35,9 @@ If you are already on **0.17.x**, pin coordinated **0.18.0** packages and adopt 
 4. Optional Gradio interop: `hedron[gradio]` is **Alpha / Experimental** — pin and deny-by-default.
 5. Re-run your app suite; read [What's new in 0.18](whats-new-0.18.md) for surface inventory.
 
-Skip the 0.8–0.16 archaeology below unless you are still on an older line.
+Skip older archaeology unless you are still on a pre-0.17 line. The sections below are
+kept for migrators from 0.8–0.16 (including HDN); current adopters can stop after the
+0.18 / 0.19 → 0.20 steps above.
 
 ---
 

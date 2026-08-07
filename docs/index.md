@@ -14,6 +14,10 @@ Hedron turns typed Python components into server-rendered HTML with FastAPI and 
 Build dashboards, admin tools, forms, and CRUD apps without a frontend build chain.
 { .hedron-lede }
 
+Unlike Streamlit’s script-rerun model, Hedron returns typed components from FastAPI routes
+and swaps HTML fragments with HTMX — no Node.js build step.
+{ .hedron-lede }
+
 **~5–10 minutes:** install → `hedron new` → open localhost:8000 → **Hello from hedron new** →
 click **Refresh status** (the time updates).
 { .hedron-lede }
@@ -46,7 +50,8 @@ uv run uvicorn app:app --reload
 
 !!! note "Install pin"
 
-    Pin `hedron>=0.20.0,<0.21` for the current published train.
+    Pin production installs with `hedron>=0.20.0,<0.21`. Prefer a clean virtualenv —
+    Hedron requires FastAPI `>=0.141.1,<0.142` (see [troubleshooting](guides/troubleshooting.md)).
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 Click **Refresh status** — the page updates without a full reload. Hedron returns a small
@@ -139,13 +144,12 @@ Extras and troubleshooting: [installation](getting-started/installation.md).
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron **0.20** packages are **Beta** (Published; last published PyPI/git =
-`v0.19.0`) — pin with `hedron>=0.20.0,<0.21` after cut (or install from `main` now).
-**Supported** means the capability works on the current train when pinned; most public
-APIs remain compatibility level **`beta`** until listed in the small **stable** table —
-see [Understanding maturity labels](getting-started/how-to-read.md).
-Capability readiness: [What’s ready today](guides/whats-ready.md) ·
-[Why Hedron](guides/why-hedron.md) · [Evaluate Hedron](guides/evaluate.md).
+Hedron **0.20.0** is **Published** on PyPI/git (`v0.20.0`).
+Pin production installs with `hedron>=0.20.0,<0.21`.
+Package maturity is **Beta**; **Supported** means the capability works on this train when pinned
+(not the same as API `stable`) — see [Understanding maturity labels](getting-started/how-to-read.md)
+and [What’s ready today](guides/whats-ready.md).
+Also: [Why Hedron](guides/why-hedron.md) · [Evaluate Hedron](guides/evaluate.md).
 </details>
 
 ## Designed for inspectability

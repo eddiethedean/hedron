@@ -23,7 +23,8 @@ Script index: [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/
 
 1. Confirm package versions on PyPI match your pin (for example `hedron==0.20.0`).
 2. Prefer GitHub Release assets for **`v0.20.0`** when present (SBOM / license /
-   evidence-bundle); otherwise regenerate from the tagged checkout.
+   evidence-bundle). Maintainers should attach these on release day; if absent,
+   regenerate from the tagged checkout.
 3. If Release assets are absent, clone and regenerate:
 
 ```bash

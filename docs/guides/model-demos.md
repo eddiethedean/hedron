@@ -1,19 +1,19 @@
 # Model demos and inference workflows
 
 Build reviewable model demos, schedule inference over durable jobs, collect governed
-feedback, and compose permissioned workflows on the **0.18** train.
+feedback, and compose permissioned workflows (introduced in **0.18**; living train **0.20**).
 
 Capability readiness is **Supported** (fail-closed); API compatibility remains **`beta`**.
 Pin `hedron>=0.20.0,<0.21`.
 
 API contract: [Inference](../api/INFERENCE.md)
 
-!!! warning "Evidence example is a stub"
+!!! warning "No Gradio-like sample app in-tree"
 
     [`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18)
-    is a **maintainer exit scenario** with a minimal HTTP surface (text dump / synthetic
-    scores) — not a Gradio-like interactive classify UI. Prefer the snippets below and
-    [recipes](../examples/recipes/index.md) when learning.
+    is a **maintainer exit scenario** (text dump / synthetic scores) — **not** a product UI
+    and **not** the learning path. Learn from the snippets below; for interactive UI patterns
+    start from [recipes](../examples/recipes/index.md) or [First app](../getting-started/quickstart.md).
 
 ## Minimal demo
 

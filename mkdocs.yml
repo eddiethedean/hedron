@@ -249,8 +249,8 @@ nav:
       - CRUD tutorial: examples/crud-tutorial.md
       - Reference app walkthrough: examples/reference-app.md
     - Single-file apps (alternate): examples/single-file.md
-    - Maintainers:
-      - Phase evidence (0.15–0.19): examples/phase-evidence.md
+    - Maintainer evidence:
+      - Phase evidence apps (stubs): examples/phase-evidence.md
       - Simulated UI patterns (not a server): examples/gallery.md
   - Reference:
     - Start here:
@@ -465,9 +465,9 @@ nav:
         - Conformance kit: api/CONFORMANCE.md
   - Project:
     - Evaluate:
+      - Overview: guides/evaluate.md
       - Why Hedron: guides/why-hedron.md
       - What's ready today: guides/whats-ready.md
-      - Evaluate Hedron: guides/evaluate.md
       - Enterprise diligence: guides/enterprise-diligence.md
       - Production readiness: guides/production-readiness.md
       - Architecture: ARCHITECTURE.md
