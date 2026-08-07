@@ -5,6 +5,15 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      publish_tag:
+        description: "Tag to publish (e.g. v0.20.0). Required when publish_only is true."
+        type: string
+        default: ""
+      publish_only:
+        description: "Skip test/quality/browser/evidence; only build, publish remaining packages, and create/update the GitHub Release."
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -18,6 +27,7 @@ env:
 jobs:
   test:
     name: Tests (Python ${{ matrix.python-version }})
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -43,6 +53,7 @@ jobs:
 
   quality:
     name: Quality, docs, and packages
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -63,6 +74,7 @@ jobs:
 
   browser:
     name: Browser HTMX (${{ matrix.browser }})
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
@@ -91,6 +103,7 @@ jobs:
 
   evidence:
     name: Supply-chain evidence bundle
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.publish_only) }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -132,7 +145,17 @@ jobs:
   publish:
     name: Publish to PyPI
     needs: [test, quality, browser, evidence]
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: |
+      always() &&
+      !cancelled() &&
+      (
+        startsWith(github.ref, 'refs/tags/v') ||
+        (github.event_name == 'workflow_dispatch' && inputs.publish_tag != '')
+      ) &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped') &&
+      (needs.quality.result == 'success' || needs.quality.result == 'skipped') &&
+      (needs.browser.result == 'success' || needs.browser.result == 'skipped') &&
+      (needs.evidence.result == 'success' || needs.evidence.result == 'skipped')
     runs-on: ubuntu-latest
     # PyPI caps new-project creates (~4/day). Retries wait up to ~6h on 429.
     timeout-minutes: 420
@@ -142,7 +165,27 @@ jobs:
       attestations: write
       packages: write
     steps:
+      - name: Resolve publish ref
+        id: ref
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.publish_tag }}" ]; then
+            TAG="${{ inputs.publish_tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          case "$TAG" in
+            v*) VERSION="${TAG#v}" ;;
+            *)
+              echo "Refusing to publish from non-version tag: $TAG" >&2
+              exit 1
+              ;;
+          esac
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.ref.outputs.tag }}
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: ${{ env.UV_VERSION }}
@@ -155,15 +198,7 @@ jobs:
       - name: Verify tag, versions, license, and changelog
         run: |
           set -euo pipefail
-          TAG="${GITHUB_REF_NAME}"
-          case "$TAG" in
-            v*) VERSION="${TAG#v}" ;;
-            *)
-              echo "Refusing to publish from non-version tag: $TAG" >&2
-              exit 1
-              ;;
-          esac
-          uv run --python 3.11 python scripts/check_release_gate.py "$VERSION"
+          uv run --python 3.11 python scripts/check_release_gate.py "${{ steps.ref.outputs.version }}"
       - name: Build evidence bundle
         run: |
           uv run --python 3.11 python scripts/build_evidence_bundle.py
@@ -196,30 +231,29 @@ jobs:
             exit 1
           fi
 
-          TAG="${GITHUB_REF_NAME}"
-          VERSION="${TAG#v}"
-
-          # Skip versions already on PyPI (idempotent retags). Classify the
-          # rest: existing projects first, then new creates. PyPI limits new
-          # project creation (~4/day); space creates and retry 429s.
+          # Skip each package's own version already on PyPI (Alpha packages do
+          # not share the train tag). Space NEW project creates; only wait after
+          # a successful create. Treat "File already exists" as idempotent OK.
+          # Drop non-manylinux linux_* wheels (PyPI rejects linux_x86_64).
           existing_names=()
           new_names=()
           for pyproject in packages/*/pyproject.toml; do
-            name="$(uv run --python 3.11 python - <<PY
+            read -r name pkg_version <<<"$(uv run --python 3.11 python - <<PY
           import tomllib
           from pathlib import Path
-          print(tomllib.loads(Path("${pyproject}").read_text())["project"]["name"])
+          data = tomllib.loads(Path("${pyproject}").read_text())["project"]
+          print(data["name"], data["version"])
           PY
           )"
             # PEP 503 normalized name for JSON/simple indexes.
             normalized="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | tr '_.' '-')"
             version_code="$(curl -sS -o /dev/null -w '%{http_code}' \
-              "https://pypi.org/pypi/${normalized}/${VERSION}/json")"
+              "https://pypi.org/pypi/${normalized}/${pkg_version}/json")"
             if [ "$version_code" = "200" ]; then
-              echo "Skipping ${name}==${VERSION} (already on PyPI)"
+              echo "Skipping ${name}==${pkg_version} (already on PyPI)"
               continue
             elif [ "$version_code" != "404" ]; then
-              echo "Unexpected PyPI version status ${version_code} for ${name}==${VERSION}" >&2
+              echo "Unexpected PyPI version status ${version_code} for ${name}==${pkg_version}" >&2
               exit 1
             fi
             code="$(curl -sS -o /dev/null -w '%{http_code}' \
@@ -243,24 +277,42 @@ jobs:
             local kind="$2"
             # Match hatchling artifacts: hyphens become underscores in filenames.
             local stem="${name//-/_}"
-            local -a files
+            local -a files filtered
             shopt -s nullglob
             files=(dist/"${stem}"-*.whl dist/"${stem}"-*.tar.gz)
-            if ((${#files[@]} == 0)); then
-              echo "No dist artifacts for ${name} (stem=${stem})" >&2
+            filtered=()
+            local f
+            for f in "${files[@]}"; do
+              case "$f" in
+                *-linux_*.whl|*-linux-*.whl)
+                  # PyPI rejects plain linux_* tags; keep manylinux/musllinux only.
+                  if [[ "$f" != *manylinux* && "$f" != *musllinux* ]]; then
+                    echo "WARN: omitting unsupported platform wheel for PyPI: $f" >&2
+                    continue
+                  fi
+                  ;;
+              esac
+              filtered+=("$f")
+            done
+            if ((${#filtered[@]} == 0)); then
+              echo "No publishable dist artifacts for ${name} (stem=${stem})" >&2
               return 1
             fi
             local attempt=1
             local max_attempts=7
             local out=""
             while true; do
-              echo "Publishing ${kind} project ${name} (attempt ${attempt}/${max_attempts}): ${files[*]}"
+              echo "Publishing ${kind} project ${name} (attempt ${attempt}/${max_attempts}): ${filtered[*]}"
               set +e
-              out="$(uv publish --token "$UV_PUBLISH_TOKEN" "${files[@]}" 2>&1)"
+              out="$(uv publish --token "$UV_PUBLISH_TOKEN" "${filtered[@]}" 2>&1)"
               local status=$?
               set -e
               printf '%s\n' "$out"
               if [ "$status" -eq 0 ]; then
+                return 0
+              fi
+              if printf '%s' "$out" | grep -Eqi 'File already exists|filename-reuse'; then
+                echo "INFO: ${name} artifacts already on PyPI; treating as success"
                 return 0
               fi
               if [ "$kind" = "NEW" ] && [ "$attempt" -lt "$max_attempts" ] \
@@ -294,8 +346,7 @@ jobs:
             else
               echo "WARN: publish failed for NEW project ${name}; continuing with next package" >&2
               failed_names+=("$name")
-              # Count the attempt so subsequent new creates still respect spacing.
-              published_new=1
+              # Do not set published_new — only successful creates consume the quota spacing.
             fi
           done
 
@@ -308,12 +359,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          TAG="${GITHUB_REF_NAME}"
-          VERSION="${TAG#v}"
+          TAG="${{ steps.ref.outputs.tag }}"
+          VERSION="${{ steps.ref.outputs.version }}"
           NOTES="$(uv run --python 3.11 python scripts/release_notes.py "$VERSION" --package hedron)"
-          gh release create "$TAG" dist/*.whl dist/*.tar.gz \
-            --title "Hedron ${VERSION}" \
-            --notes "$NOTES"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release ${TAG} already exists; uploading artifacts"
+            gh release upload "$TAG" dist/*.whl dist/*.tar.gz --clobber
+          else
+            gh release create "$TAG" dist/*.whl dist/*.tar.gz \
+              --title "Hedron ${VERSION}" \
+              --notes "$NOTES"
+          fi
           if [ -d dist/evidence-bundle ]; then
             gh release upload "$TAG" dist/evidence-bundle/* --clobber
           fi
