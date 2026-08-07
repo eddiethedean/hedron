@@ -1,0 +1,72 @@
+.hedron-sim {
+  border: 1px solid var(--hedron-border, #d7e1e6);
+  border-radius: 1rem;
+  margin: 1rem 0 1.4rem;
+  overflow: hidden;
+}
+
+.hedron-sim__stage {
+  padding: clamp(1rem, 3vw, 1.6rem);
+}
+
+.hedron-sim__trace {
+  border-top: 1px solid var(--hedron-border, #d7e1e6);
+  color: #0d9488;
+  font-family: var(--md-code-font-family, ui-monospace, monospace);
+  font-size: 0.72rem;
+  margin: 0;
+  padding: 0.55rem 1rem;
+}
+
+.hedron-sim__trace.is-deny {
+  color: #d44e4e;
+}
+
+.hedron-sim__trace[hidden] {
+  display: none !important;
+}
+
+.hedron-sim--swapping {
+  animation: hedron-sim-flash 0.45s ease;
+}
+
+@keyframes hedron-sim-flash {
+  from {
+    background: color-mix(in srgb, #0d9488 18%, transparent);
+  }
+  to {
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hedron-sim--swapping {
+    animation: none;
+  }
+}
+
+.hedron-sim--browser {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+}
+
+.hedron-sim--browser .hedron-sim__stage {
+  padding: 0;
+}
+
+.hedron-sim--browser .hedron-sim__trace {
+  border-top: 0;
+  color: #0d9488;
+  font-size: 0.72rem;
+  margin: 0.35rem 0 0;
+  min-height: 1.1rem;
+  opacity: 0;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.hedron-sim--browser .hedron-sim__trace.is-visible {
+  opacity: 1;
+}

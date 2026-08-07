@@ -134,9 +134,8 @@ def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
         assert report["incomplete"] is False, report.get("message")
         violations = list(report.get("violations") or [])
         blocked = _blocking_violations(violations)
-        assert not blocked, (
-            "AT-019 blocking axe findings: "
-            + ", ".join(f"{v.get('id')}({v.get('impact')})" for v in blocked[:10])
+        assert not blocked, "AT-019 blocking axe findings: " + ", ".join(
+            f"{v.get('id')}({v.get('impact')})" for v in blocked[:10]
         )
         scenario = AccessibilityScenario(
             name=f"at-{engine}",

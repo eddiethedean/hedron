@@ -241,7 +241,8 @@
   min-height: 2.4rem;
 }
 
-.hedron-browser-sim__refresh {
+.hedron-browser-sim__refresh,
+.hedron-browser-sim button[hx-get] {
   -webkit-appearance: none;
   appearance: none;
   background: #fff !important;
@@ -259,20 +260,24 @@
   transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
-.hedron-browser-sim__refresh:hover {
+.hedron-browser-sim__refresh:hover,
+.hedron-browser-sim button[hx-get]:hover {
   background: var(--hbs-mint) !important;
 }
 
-.hedron-browser-sim__refresh:active {
+.hedron-browser-sim__refresh:active,
+.hedron-browser-sim button[hx-get]:active {
   transform: translateY(1px);
 }
 
-.hedron-browser-sim__refresh:focus-visible {
+.hedron-browser-sim__refresh:focus-visible,
+.hedron-browser-sim button[hx-get]:focus-visible {
   outline: 2px solid var(--hbs-teal-mid);
   outline-offset: 2px;
 }
 
-.hedron-browser-sim__refresh[aria-busy="true"] {
+.hedron-browser-sim__refresh[aria-busy="true"],
+.hedron-browser-sim button[hx-get][aria-busy="true"] {
   cursor: progress;
   opacity: 0.7;
 }

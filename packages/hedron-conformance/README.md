@@ -10,9 +10,9 @@ reference without matching incidental CPython formatting.
 ## Install
 
 ```bash
-pip install "hedron-conformance>=0.18.0"
+pip install "hedron-conformance>=0.19.0,<0.20"
 # or
-uv add "hedron-conformance>=0.18.0"
+uv add "hedron-conformance>=0.19.0,<0.20"
 ```
 
 ## Runner

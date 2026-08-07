@@ -5,7 +5,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Development Component Explorer for Hedron (coordinated train **`0.18.0`**).
+Development Component Explorer for Hedron (coordinated train **`0.19.0`**).
 
 Provides HTMX panels for components, routes, graph, security, accessibility,
 packages, settings, charts, and interaction simulation, plus sanitized JSON APIs

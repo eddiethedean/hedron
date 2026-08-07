@@ -37,8 +37,7 @@ def axe_scan(page: Any) -> list[dict[str, Any]]:
     report = axe_scan_report(page)
     if report.get("incomplete"):
         raise ImportError(
-            report.get("message")
-            or "axe_playwright_python not installed; install hedron[browser]"
+            report.get("message") or "axe_playwright_python not installed; install hedron[browser]"
         )
     return list(report.get("violations") or [])
 

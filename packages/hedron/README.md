@@ -32,7 +32,8 @@ pip install "hedron[gradio]>=0.1.0,<0.2"   # Alpha
 pip install "hedron[browser]>=0.19.0,<0.20"
 ```
 
-Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.18.0** (Beta).
+Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.19.0** (Beta; Ready to cut
+on `main`; last published PyPI/git = `v0.18.0`).
 
 ## Quick start
 

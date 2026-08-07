@@ -1,0 +1,65 @@
+[project]
+name = "hedron-sim"
+version = "0.1.0"
+description = "Offline HTMX simulation for Hedron docs and demos — real components, no live server"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+maintainers = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+keywords = [
+    "components",
+    "docs",
+    "hedron",
+    "htmx",
+    "simulation",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
+]
+dependencies = [
+    "hedron-core>=0.19.0,<0.20",
+    "hedron>=0.19.0,<0.20",
+]
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/hedron"
+Repository = "https://github.com/eddiethedean/hedron"
+Issues = "https://github.com/eddiethedean/hedron/issues"
+Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-sim/CHANGELOG.md"
+Documentation = "https://hedron.readthedocs.io/en/latest/"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hedron_sim"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/hedron_sim/static/hedron-sim.js" = "hedron_sim/static/hedron-sim.js"
+"src/hedron_sim/static/hedron-sim.css" = "hedron_sim/static/hedron-sim.css"
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "src/hedron_sim",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "pyproject.toml",
+]

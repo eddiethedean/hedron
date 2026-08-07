@@ -10,4 +10,4 @@ pip install "hedron-data>=0.19.0,<0.20"
 pip install "hedron-data[dataframes]>=0.19.0,<0.20"
 ```
 
-Requires `hedron-core`. Coordinated train: **`0.18.0`** (Beta).
+Requires `hedron-core`. Coordinated train: **`0.19.0`** (Beta).

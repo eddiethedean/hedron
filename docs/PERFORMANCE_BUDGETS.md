@@ -1,6 +1,6 @@
 # Performance budgets
 
-**Status:** Published for the **0.18** train (budgets introduced in phase 0.8; still
+**Status:** Published for the **0.19** train (budgets introduced in phase 0.8; still
 enforced)  
 **Evidence:** `PERF-08-001`, `PERF-08-002`, `tests/performance/`
 

@@ -8,13 +8,14 @@ the compatibility promise; everything else is `beta` / `experimental` and may ch
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Phase 0.18 model demos and inference workflows (**Published** as `v0.18.0`).
+**Status:** Phase 0.19 accessibility engineering (**Ready to cut / Implemented on `main`**
+as `0.19.0`; last published PyPI/git = `v0.18.0`).
 A **minimal `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled).
-**Version:** `0.18.0` / catalog baseline
-`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`
+**Version:** `0.19.0` / catalog baseline
+`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`v0.18.0` train. Levels apply to documented contracts; symbols not listed here are
+`0.19.0` train on `main`. Levels apply to documented contracts; symbols not listed here are
 **internal** unless a later phase explicitly promotes them.
 
 </details>
@@ -103,7 +104,8 @@ stable via the root facade — import them from their packages.
   `PropertyPatch` / `CollectionPatch`, shell builtins (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`,
   `AppShell`/`MainPanel`), Dialog/Tabs/Pagination/Lazy markup asserts, `InferenceInterface` /
   `ModelDemo` / `ExampleSet` / `PredictionFeedback`, presentation builtins, `InferencePolicy`,
-  and `InferenceWorkflow`.
+  `InferenceWorkflow`, and `hedron_core.a11y` (`AccessibilityContract`, profile, scenarios,
+  governance helpers, surface validators).
 - Concrete HTML serializer node classes remain **internal**.
 
 ### `hedron-data` (Beta) — `beta`
@@ -180,6 +182,17 @@ disabled; absence adds no core cost. Not Supported production parity with Gradio
 | `InferencePolicy` / `ModelDemoScenario` | `hedron-core` | `beta` | RFC-0047 |
 | `InteractionRecorder` | `hedron` | `beta` | RFC-0048 / `RECORD-018` |
 | `InferenceWorkflow` + structured editor | `hedron-core` | `beta` | RFC-0050 / `WORKFLOW-018` |
+
+### Phase 0.19 surfaces on existing packages (shipped)
+
+| Symbol / contract | Package | Level | RFC / gate |
+|---|---|---|---|
+| `AccessibilityContract` / contract catalog | `hedron-core` (`hedron_core.a11y`) | `beta` | RFC-0051 / `CONTRACT-019` |
+| Standards profile / claim boundaries | `hedron-core` (`hedron_core.a11y`) | `beta` | RFC-0023 / `PROFILE-019` |
+| `AccessibilityScenario` / axe → SARIF helpers | `hedron-core` / `hedron.testing` | `beta` | RFC-0052 / `TEST-019` |
+| `LandmarkProps` / landmark builtins as real types | `hedron-core` | `beta` | `LANDMARK-019` |
+| `Page(scripts=[SafeUrl…])` allowlisted PE scripts | `hedron-core` | `beta` | `SCRIPT-019` |
+| Evidence inventory / statement / waiver governance | `hedron-core` (`hedron_core.a11y`) | `beta` | RFC-0055 / `GOVERN-019` |
 
 ### `hedron-native` (Alpha, versioned independently as `0.1.x`) — **experimental** accel
 

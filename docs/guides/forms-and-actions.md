@@ -203,16 +203,11 @@ HTMX is optional. Critical mutations must succeed when the browser posts a norma
    hidden `csrf_token` field even when JS is off.
 
 ```python
-from fastapi import Form as FormFieldValue
 from fastapi.responses import RedirectResponse
 
 @app.component("/invite", methods=["POST"])
-def invite(
-    request: Request,
-    email: str = FormFieldValue(...),
-    csrf_token: str = FormFieldValue(""),
-):
-    # validate CSRF + FormModel …
+async def invite(request: Request):
+    # parse form + validate CSRF / FormModel …
     if request.headers.get("HX-Request"):
         return InteractionResult(...)  # fragment path
     return RedirectResponse("/", status_code=303)  # no-JS success

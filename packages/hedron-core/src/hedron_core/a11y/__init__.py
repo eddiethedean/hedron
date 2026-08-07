@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from hedron_core.a11y.contract import (
+    REQUIRED_REVIEWED_CONTRACTS,
     AccessibilityContract,
     AccessibilityContractCatalog,
-    REQUIRED_REVIEWED_CONTRACTS,
     contract_for_registered,
     default_contract,
     reviewed_contract,

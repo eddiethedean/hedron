@@ -26,6 +26,7 @@ _ALPHA_INDEPENDENT = {
     "hedron-notebook",
     "hedron-mcp",
     "hedron-gradio",
+    "hedron-sim",
 }
 
 

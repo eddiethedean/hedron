@@ -143,11 +143,13 @@ extra_javascript:
   - javascript/examples.js
   - javascript/component-demos.js
   - javascript/hello-refresh.js
+  - javascript/hedron-sim.js
 
 extra_css:
   - stylesheets/extra.css
   - stylesheets/component-demos.css
   - stylesheets/hello-refresh.css
+  - stylesheets/hedron-sim.css
 
 extra:
   generator: false

@@ -36,11 +36,11 @@ Import from `hedron_core.a11y` (re-exported where noted). Full contract:
 | Surface helpers | Structure validation, media tracks, cognitive prefs, target spacing |
 
 ```python
-from hedron_core.a11y import ACCESSIBILITY_PROFILE, AccessibilityContractCatalog
+from hedron_core.a11y import ACCESSIBILITY_PROFILE, AccessibilityContractCatalog, seed_reviewed_contracts
 
 assert ACCESSIBILITY_PROFILE.claim_boundaries.forbids_auto_wcag_conformance
 catalog = AccessibilityContractCatalog()
-catalog.ensure_registry()
+seed_reviewed_contracts(catalog)
 ```
 
 ### Claim boundaries

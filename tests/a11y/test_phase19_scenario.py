@@ -39,6 +39,9 @@ def test_tree_snapshot_and_sarif_provenance() -> None:
     )
     assert sarif["runs"][0]["properties"]["empty_means_accessible"] is False
     assert sarif["runs"][0]["results"][0]["ruleId"] == "label"
-    assert sarif["runs"][0]["results"][0]["locations"][0]["physicalLocation"]["artifactLocation"][
-        "uri"
-    ] == ".field"
+    assert (
+        sarif["runs"][0]["results"][0]["locations"][0]["physicalLocation"]["artifactLocation"][
+            "uri"
+        ]
+        == ".field"
+    )

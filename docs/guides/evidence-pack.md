@@ -50,4 +50,4 @@ or commercial compliance certification.
 
 ## FAQ snippets
 
-See also [FAQ — SBOM / evidence](faq.md#where-is-the-sbom--evidence-bundle).
+See also [FAQ — SBOM / evidence](faq.md#where-is-the-sbom-evidence-bundle).

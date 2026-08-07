@@ -30,6 +30,7 @@ members = [
     "hedron-native",
     "hedron-notebook",
     "hedron-sample-kit",
+    "hedron-sim",
     "hedron-workspace",
 ]
 
@@ -1380,6 +1381,21 @@ dependencies = [
 requires-dist = [{ name = "hedron-core", editable = "packages/hedron-core" }]
 
 [[package]]
+name = "hedron-sim"
+version = "0.1.0"
+source = { editable = "packages/hedron-sim" }
+dependencies = [
+    { name = "hedron" },
+    { name = "hedron-core" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "hedron", editable = "packages/hedron" },
+    { name = "hedron-core", editable = "packages/hedron-core" },
+]
+
+[[package]]
 name = "hedron-workspace"
 version = "0.19.0"
 source = { virtual = "." }
@@ -1407,6 +1423,7 @@ dev = [
     { name = "hedron-native" },
     { name = "hedron-notebook" },
     { name = "hedron-sample-kit" },
+    { name = "hedron-sim" },
     { name = "httpx" },
     { name = "markdown" },
     { name = "matplotlib" },
@@ -1427,6 +1444,7 @@ dev = [
     { name = "waitress" },
 ]
 docs = [
+    { name = "hedron-sim" },
     { name = "mkdocs" },
     { name = "mkdocs-material" },
     { name = "mkdocstrings", extra = ["python"] },
@@ -1458,6 +1476,7 @@ dev = [
     { name = "hedron-native", editable = "packages/hedron-native" },
     { name = "hedron-notebook", editable = "packages/hedron-notebook" },
     { name = "hedron-sample-kit", editable = "packages/hedron-sample-kit" },
+    { name = "hedron-sim", editable = "packages/hedron-sim" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "markdown", specifier = ">=3.5" },
     { name = "matplotlib", specifier = ">=3.8,<4" },
@@ -1478,6 +1497,7 @@ dev = [
     { name = "waitress", specifier = ">=3,<4" },
 ]
 docs = [
+    { name = "hedron-sim", editable = "packages/hedron-sim" },
     { name = "mkdocs", specifier = ">=1.6,<2" },
     { name = "mkdocs-material", specifier = ">=9.5,<9.7.2" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.27,<0.31" },
