@@ -23,11 +23,10 @@ cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-!!! note "PyPI vs `main`"
+!!! note "Install pin"
 
-    Until `v0.20.0` is tagged, PyPI still serves **`v0.19.0`**. The Dev Container / Codespaces
-    path uses this repo’s `main` workspace, so you get Ready-to-cut `0.20.0` without waiting
-    for the tag.
+    Pin `hedron>=0.20.0,<0.21` for the current published train. The Dev Container /
+    Codespaces path uses this repo’s `main` workspace and matches that train.
 
 4. Forward port **8000** and open the URL. You should see **Hello from hedron new**.
    Click **Refresh status** — the page updates without a full reload (HTMX swaps a small

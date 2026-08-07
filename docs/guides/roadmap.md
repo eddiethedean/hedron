@@ -15,7 +15,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.17** | Reactive dashboards and agent interfaces; shell/AppShell; InteractionResult→Response; `#15`/`#24` completions (RFCs 0040–0044) | **Published** (`v0.17.0`) |
 | **0.18** | Model demos and inference workflows | **Published** (`v0.18.0`) |
 | **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | **Published** (`v0.19.0`; D-050) |
-| **0.20** | Production security floor and adapter parity (HTMX/eval, mount/prod gates, Flask/Django regions/CSP/scaffolds) | **Ready to cut / Implemented on `main`** (`0.20.0`; last published PyPI/git = `v0.19.0`; D-051) |
+| **0.20** | Production security floor and adapter parity (HTMX/eval, mount/prod gates, Flask/Django regions/CSP/scaffolds) | **Published** (`0.20.0`; last published PyPI/git = `v0.20.0`; D-051) |
 | **0.21** | Human assistive-technology / compensated evaluation (from D-050) | Planned |
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | Planned (D-051 split) |
 
@@ -29,7 +29,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 ## Honest gaps on the current train (0.20)
 
-- Last **published** PyPI train is **0.19.x** (`v0.19.0`); **0.20.0** is Ready to cut on `main`
+- Current **published** PyPI train is **0.20.x** (`v0.20.0`)
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)

@@ -1,7 +1,6 @@
 # What's new in 0.20
 
-**Ready to cut / Implemented on `main` as `0.20.0`.** Last published PyPI/git remains
-`v0.19.0` until `v0.20.0` is tagged. Pin `hedron>=0.20.0,<0.21`.
+**Published** as `v0.20.0`. Pin `hedron>=0.20.0,<0.21`.
 
 Phase 0.20 (D-051) is the production security floor and adapter-parity packet.
 

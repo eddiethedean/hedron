@@ -35,10 +35,9 @@ matters.
     uv run uvicorn app:app --reload
     ```
 
-!!! note "PyPI vs `main`"
+!!! note "Install pin"
 
-    Until `v0.20.0` is tagged, PyPI still serves **`v0.19.0`**. Install from `main` for
-    Ready-to-cut `0.20.0`, or wait for the cut and use the pin above.
+    Pin `hedron>=0.20.0,<0.21` for the current published train.
 
 === "pip (venv)"
 

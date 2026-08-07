@@ -2,15 +2,14 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.20 **Ready to cut / Implemented on `main`** as `0.20.0`
-(2026-08-07); last published PyPI/git = `v0.19.0`. Workspace packages:
-Beta `0.20.0`, Alpha charts/sample-kit/native `0.1.x`, Alpha notebook/mcp/gradio `0.1.0`.
+**Roadmap position:** phase 0.20 **Published** as `v0.20.0` (2026-08-07); last published
+PyPI/git = `v0.20.0`. Workspace packages: Beta `0.20.0`, Alpha charts/sample-kit/native
+`0.1.x`, Alpha notebook/mcp/gradio `0.1.0`.
 **Date:** 2026-08-07
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.20.0` on `main`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` /
+`0.20.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` /
 `hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.x` (MIT, D-033).
-PyPI/git still serve **`v0.19.0`** until `v0.20.0` is tagged and published.
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
 `hedron-charts`, `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, `hedron-mcp`,
@@ -19,7 +18,7 @@ PyPI/git still serve **`v0.19.0`** until `v0.20.0` is tagged and published.
 **Phase focus:** production security floor and adapter parity — HTMX/eval hardening, mount-path
 helpers, production startup gates, Flask/Django regions/CSP/AuthSignal, adapter scaffolds and
 wheel smoke (D-051). CSRF composition Deferred → **0.22**. Human AT Deferred → **0.21**
-(D-050).
+(D-050). Next capability phase: **0.21**.
 
 ## Supported vs Deferred (operator view)
 
@@ -66,8 +65,8 @@ Prior-phase Deferred rows below remain owned elsewhere.
 - Compatibility / deprecation: [COMPATIBILITY.md](docs/COMPATIBILITY.md).
 - Upgrade: [guides/upgrade.md](docs/guides/upgrade.md).
 - Supply chain: `scripts/build_evidence_bundle.py` and `scripts/verify_pkg_20.py`.
-- Cut procedure: [RELEASE.md](docs/RELEASE.md) (last published: **0.19**; current cut target: **0.20**;
-  next capability: **0.21** human AT / **0.22** CSRF composition).
+- Cut procedure: [RELEASE.md](docs/RELEASE.md) (last published: **0.20**; next capability: **0.21**
+  human AT / **0.22** CSRF composition).
 
 ## Next capability phases
 

@@ -1,7 +1,7 @@
 # Production readiness
 
-Ops-oriented checklist for **Hedron 0.20.0** (Beta; Ready to cut on `main`; last published
-PyPI/git = `v0.19.0`). **Do not duplicate maturity claims here** — the authoritative
+Ops-oriented checklist for **Hedron 0.20.0** (Beta; Published; last published
+PyPI/git = `v0.20.0`). **Do not duplicate maturity claims here** — the authoritative
 snapshot is [What's ready today](whats-ready.md).
 
 Also: [Compatibility](../COMPATIBILITY.md) · [Support](support.md) ·

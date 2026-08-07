@@ -38,7 +38,7 @@ status commentary, not a satisfied release gate.
 - [`v0.16` curated extras](RELEASE_0_16.md) — published
 - [`v0.17` reactive dashboards](RELEASE_0_17.md) — published
 - [`v0.18` model demos and inference](RELEASE_0_18.md) — published; zero-Deferred for 0.18-owned rows
-- [`v0.19` accessibility engineering](RELEASE_0_19.md) — **Ready to cut / Implemented on `main`**; contracts, ATAG, Explorer, automated AT matrix, PE/landmarks/scripts
+- [`v0.19` accessibility engineering](RELEASE_0_19.md) — **Published**; contracts, ATAG, Explorer, automated AT matrix, PE/landmarks/scripts
 - [`v0.20` production security floor and adapter parity](RELEASE_0_20.md) — **Planned** (D-051); CSRF composition split to 0.22
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),

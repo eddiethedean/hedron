@@ -1,12 +1,11 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.20.0** (Ready to cut on `main`; last published
-PyPI/git = `v0.19.0` until `v0.20.0` is tagged). Other evaluator pages link here —
+**Canonical maturity snapshot for Hedron 0.20.0** (**Published** as `v0.20.0` (last published PyPI/git = `v0.20.0`)). Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-**Ship today** (pin `hedron>=0.20.0,<0.21` after cut, or install from `main` now): typed pages,
+**Ship today** (pin `hedron>=0.20.0,<0.21`): typed pages,
 HTMX fragments, CSRF (`standard` / `strict`), Flask/Django adapters, polling job status,
 accessibility contracts / PE forms (0.19).
 
@@ -196,8 +195,7 @@ Maintainer gate IDs and RFC evidence:
     uvicorn app:app --reload
     ```
 
-Until `v0.20.0` is tagged, PyPI still serves **`v0.19.0`** — install from `main` for
-Ready-to-cut `0.20.0`, or wait for the cut and use the pin above.
+Pin `hedron>=0.20.0,<0.21` for the current published train.
 
 Extras: `"hedron[data]>=0.20.0,<0.21"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
 `"hedron[extras]>=0.20.0,<0.21"`, `"hedron[jinja]>=0.20.0,<0.21"`, `"hedron[dev]>=0.20.0,<0.21"`,

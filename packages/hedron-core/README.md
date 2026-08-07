@@ -18,7 +18,7 @@ Host adapters share this renderer:
 - Flask — [`hedron-flask`](https://pypi.org/project/hedron-flask/)
 - Django — [`hedron-django`](https://pypi.org/project/hedron-django/)
 
-**Package maturity:** Beta · **Train:** `0.20.0` · pin `>=0.20.0,<0.21`
+**Package maturity:** Beta · **Train:** `0.20.0` (Published) · pin `>=0.20.0,<0.21`
 
 ## Install
 

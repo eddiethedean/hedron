@@ -19,7 +19,7 @@ Built on framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/
 Flask and Django hosts use [`hedron-flask`](https://pypi.org/project/hedron-flask/)
 and [`hedron-django`](https://pypi.org/project/hedron-django/).
 
-**Package maturity:** Beta · **Train:** `0.20.0` · pin `>=0.20.0,<0.21`
+**Package maturity:** Beta · **Train:** `0.20.0` (Published) · pin `>=0.20.0,<0.21`
 
 Most public APIs remain compatibility level `beta` until listed in the small
 [stable](https://hedron.readthedocs.io/en/latest/api/STABILITY/) table.

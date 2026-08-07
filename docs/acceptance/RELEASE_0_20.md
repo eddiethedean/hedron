@@ -27,7 +27,7 @@ is owned by **0.22**, not this checklist.
 
 - [x] ROADMAP §0.20 scope accepted; D-051 recorded; §0.22 split named.
 - [x] RFC-0012 / RFC-0021 / RFC-0028 baselines current for host floor deltas (no new RFC numbers).
-- [x] Entry gate: 0.19 evidence remains closed or Ready to cut; 0.20 gate TOML owns
+- [x] Entry gate: 0.19 evidence remains closed (published); 0.20 gate TOML owns
   Planned→Verified rows only.
 - [x] Gate checker recognizes `0.20` (`python scripts/check_release_gate.py 0.20.0 --allow-planned`).
 
@@ -60,5 +60,5 @@ is owned by **0.22**, not this checklist.
 
 - [x] Full regression suite. *(`REGRESS-020`)*
 
-**Exit met** — coordinated `0.20.0` (**Ready to cut / Implemented on `main`**; last published
+**Exit met** — coordinated `0.20.0` (**Published**; last published
 PyPI/git = `v0.19.0`); every 0.20 gate row Verified.

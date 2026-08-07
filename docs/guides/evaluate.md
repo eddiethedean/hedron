@@ -13,7 +13,7 @@ Compare positioning: [Why Hedron](why-hedron.md).
 
 | Item | Value |
 |---|---|
-| Version | **0.20.0** (Beta; Ready to cut on `main` — pin for production; last published PyPI = `0.19.0`) |
+| Version | **0.20.0** (Beta; Published — pin for production; last published PyPI = `0.20.0`) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |

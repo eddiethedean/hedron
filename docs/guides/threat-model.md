@@ -1,7 +1,8 @@
 # Threat model (0.19)
 
-**Status:** Maintained for the **0.19** train on `main` (Ready to cut; last published
-PyPI/git = `v0.19.0`; baseline established in 0.11; refreshed for 0.15–0.19 surfaces)  
+**Status:** Maintained for the **0.20** train (**Published** as `v0.20.0`; last published
+PyPI/git = `v0.20.0`; baseline established in 0.11; refreshed for 0.15–0.20 surfaces)  
+
 **Owner:** hedron  
 **Evidence:** security acceptance on the current train; live-transport caveats on
 [What's ready](whats-ready.md)

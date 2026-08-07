@@ -87,7 +87,7 @@ These surfaces are implemented on the **0.20.0** train (includes the 0.9 authori
 - [Security types](SECURITY_TYPES.md)
 - [Auth](AUTH.md)
 - [Explorer](EXPLORER.md)
-- [Accessibility (`hedron_core.a11y`)](A11Y.md) — 0.19 train (published as v0.19.0; living train 0.20 Ready to cut)
+- [Accessibility (`hedron_core.a11y`)](A11Y.md) — 0.19 train (published as v0.19.0; living train 0.20 Published)
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
 - [API diagnostics](DIAGNOSTICS.md)
@@ -108,8 +108,8 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 ## Current train notes
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
-  `Page(scripts=)`, automated `AT-019`) on the **0.19** train (Ready to cut;
-  last published **v0.19.0**) — [A11Y API](A11Y.md),
+  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.20**
+  (**Published** as **v0.20.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
   (introduced in 0.11; Supported on **0.20.0**)

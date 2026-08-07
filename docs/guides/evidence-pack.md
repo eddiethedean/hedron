@@ -13,9 +13,7 @@ these artifacts at cut time.
 | Package verify (0.20) | CI / release checklist | [`scripts/verify_pkg_20.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/verify_pkg_20.py) |
 
 **PyPI is authoritative for published package versions.** Last published train is
-`hedron==0.19.0` (`v0.19.0`). Coordinated **`0.20.0`** is Ready to cut / Implemented on
-`main` — confirm on [PyPI](https://pypi.org/project/hedron/) after `v0.20.0` is tagged.
-Until then, regenerate evidence from `main` (or the future `v0.20.0` tag).
+`hedron==0.20.0` (`v0.20.0`). Confirm on [PyPI](https://pypi.org/project/hedron/).
 
 Releases: [eddiethedean/hedron/releases](https://github.com/eddiethedean/hedron/releases).
 Tags: [eddiethedean/hedron/tags](https://github.com/eddiethedean/hedron/tags).
@@ -23,17 +21,15 @@ Script index: [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/
 
 ## How to verify (evaluator)
 
-1. Confirm package versions on PyPI match your pin (for example `hedron==0.20.0` after
-   cut; until then last published is `0.19.0`).
+1. Confirm package versions on PyPI match your pin (for example `hedron==0.20.0`).
 2. Prefer GitHub Release assets for **`v0.20.0`** when present (SBOM / license /
-   evidence-bundle); until cut, use **`v0.19.0`** assets or regenerate from `main`.
+   evidence-bundle); otherwise regenerate from the tagged checkout.
 3. If Release assets are absent, clone and regenerate:
 
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
-# After cut: git checkout v0.20.0
-# Pre-cut: stay on main (0.20.0 Ready to cut)
+git checkout v0.20.0
 uv sync
 uv run python scripts/build_evidence_bundle.py
 uv run python scripts/verify_pkg_20.py

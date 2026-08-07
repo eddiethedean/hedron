@@ -1,14 +1,14 @@
 # Upgrade
 
-**Hedron 0.20.0** — Ready to cut on `main` (last published PyPI/git = `v0.19.0`). From 0.18/0.19:
+**Hedron 0.20.0** — **Published** as `v0.20.0`. From 0.18/0.19:
 production security floor and adapter parity (HTMX/eval hardening, mount helpers, production
 gates, Flask/Django regions/CSP/AuthSignal, adapter scaffolds). See [What's ready](whats-ready.md)
 and [What's new in 0.20](whats-new-0.20.md). CSRF composition → 0.22; human AT → 0.21.
-Until `v0.20.0` is tagged, install from `main` or wait for PyPI; pins below are for the cut train.
+Pin `hedron>=0.20.0,<0.21` for the current published train.
 
 ## Upgrade from 0.18 / 0.19 → 0.20
 
-If you are already on **0.18.x** or Ready-to-cut **0.19** on `main`, pin coordinated **0.20.0** packages:
+If you are already on **0.18.x** or Published **0.19** on `main`, pin coordinated **0.20.0** packages:
 
 1. Pin `hedron>=0.20.0,<0.21` (and matching `hedron-core` / adapters / extras).
 2. Review production startup gates under `HEDRON_ENV=production` and document any accepted

@@ -6,7 +6,7 @@ Adopter-facing summary for the **0.20.x** train. For per-package commit detail, 
 
 ## Current train — 0.20.0 (2026-08-07)
 
-**Ready to cut / Implemented on `main`** (`0.20.0`; last published PyPI/git = `v0.19.0`).
+**Published** (`0.20.0`; last published PyPI/git = `v0.20.0`).
 Production security floor and adapter parity: HTMX browser presets, Python `js:` reject,
 mount-path helpers, production startup gates, Flask/Django fragment regions / CSP headers /
 Flask-Login AuthSignal, `hedron new --flask/--django`, adapter wheel smoke (D-051).

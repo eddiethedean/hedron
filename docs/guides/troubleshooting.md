@@ -85,7 +85,7 @@ that port in the browser.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
 `pip install -U "hedron>=0.20.0,<0.21"` (or `uv add "hedron>=0.20.0,<0.21"`). The current
-train is **0.20.x** (Ready to cut on `main`; last published PyPI/git = `v0.19.0`)—see
+train is **0.20.x** (Published; last published PyPI/git = `v0.20.0`)—see
 [What's ready](whats-ready.md) and the [public roadmap](roadmap.md). If docs describe a
 feature missing from your install, upgrade to a matching `0.20.x` pin
 (`hedron>=0.20.0,<0.21`) or use a git checkout of that work.
