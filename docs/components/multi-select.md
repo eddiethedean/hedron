@@ -16,7 +16,7 @@ Native multi-select control.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="MultiSelect"><div class="hdc-stage"><div class="hdc-result"><strong>MultiSelect</strong><span>Native multi-select control.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="MultiSelect"><div class="hdc-stage"><div class="hdc-form"><label for="demo-multi">Teams</label><select id="demo-multi" multiple size="3"><option selected>Platform</option><option selected>Research</option><option>Design</option></select></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

@@ -4,7 +4,21 @@ Stable `HED-*` diagnostics from `hedron_core.codes`. Prefer these codes in CI an
 support reports. Full format: [Diagnostics](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md).
 
 This catalog is complete for the registered set enforced by
-`scripts/check_hed_codes.py --docs-align` (current train / `#15` / `HEDDOC-017`).
+`scripts/check_hed_codes.py --docs-align` (`HEDDOC-017`).
+
+## Common errors (what to do)
+
+| Code | Meaning | Fix |
+|---|---|---|
+| `HED-BUILD-0003` | Production mode without a build manifest | Run `hedron build`; set `HEDRON_BUILD_DIR` if needed — [Troubleshooting](troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
+| `HED-SEC-0001` | Dangerous or invalid URL | Use `SafeUrl.parse` with the right `UrlPurpose` |
+| `HED-SEC-0006` | URL purpose mismatch for an attribute | Match purpose to `href` / `src` / `action` / redirect context |
+| `HED-SEC-0020` | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.18.0"` |
+| `HED-RENDER-0012` | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
+| `HED-HTMX-*` / HTTP **403** on fragments | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
+| CSRF **403** on POST | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
+
+Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
 
 ## HED-ASSET
 
@@ -141,6 +155,20 @@ This catalog is complete for the registered set enforced by
 | `HED-DATA-0060` | `HED_DATA_0060` |
 | `HED-DATA-0061` | `HED_DATA_0061` |
 
+## HED-DEMO
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-DEMO-0001` | `HED_DEMO_0001` |
+| `HED-DEMO-0002` | `HED_DEMO_0002` |
+| `HED-DEMO-0003` | `HED_DEMO_0003` |
+
+## HED-FEEDBACK
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-FEEDBACK-0001` | `HED_FEEDBACK_0001` |
+
 ## HED-GRAPH
 
 | Code | Catalog symbol |
@@ -186,6 +214,14 @@ This catalog is complete for the registered set enforced by
 | `HED-ICON-0002` | `HED_ICON_0002` |
 | `HED-ICON-0003` | `HED_ICON_0003` |
 | `HED-ICON-0004` | `HED_ICON_0004` |
+
+## HED-INFER
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-INFER-0001` | `HED_INFER_0001` |
+| `HED-INFER-0002` | `HED_INFER_0002` |
+| `HED-INFER-0003` | `HED_INFER_0003` |
 
 ## HED-JINJA
 
@@ -328,6 +364,14 @@ This catalog is complete for the registered set enforced by
 | Code | Catalog symbol |
 |---|---|
 | `HED-TRACE-0001` | `HED_TRACE_0001` |
+
+## HED-WORKFLOW
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-WORKFLOW-0001` | `HED_WORKFLOW_0001` |
+| `HED-WORKFLOW-0002` | `HED_WORKFLOW_0002` |
+| `HED-WORKFLOW-0003` | `HED_WORKFLOW_0003` |
 
 ## Related HTTP statuses (not `HED-*`)
 

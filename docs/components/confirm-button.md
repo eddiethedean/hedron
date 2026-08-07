@@ -16,7 +16,7 @@ Button with explicit confirmation prompt (not authorization).
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="ConfirmButton"><div class="hdc-stage"><div class="hdc-result"><strong>ConfirmButton</strong><span>Button with explicit confirmation prompt (not authorization).</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="ConfirmButton"><div class="hdc-stage"><button class="hdc-button" type="button" data-hdc-action="confirm-delete">Delete item</button><p class="hdc-muted" role="status" data-hdc-status>Confirmation required before the action runs.</p></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

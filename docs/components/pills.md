@@ -16,7 +16,7 @@ Pill-styled segmented choice group.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Pills"><div class="hdc-stage"><div class="hdc-result"><strong>Pills</strong><span>Pill-styled segmented choice group.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Pills"><div class="hdc-stage"><div class="hdc-inline"><span class="hdc-chip">All</span><span class="hdc-chip">Active</span><span class="hdc-chip">Archived</span></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

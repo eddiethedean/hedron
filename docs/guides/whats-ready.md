@@ -1,125 +1,124 @@
 # What’s ready today
 
-**Canonical maturity snapshot for 0.18.0.** Other evaluator pages link here —
+**Canonical maturity snapshot for Hedron 0.18.0.** Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-!!! tip "New here?"
+!!! tip "Can I ship an internal admin app?"
 
-    For a FastAPI CRUD / admin spike: typed pages, HTMX fragments, CSRF profiles, and
-    polling are **Supported** on Beta packages — start with
-    [Installation](../getting-started/installation.md). SSE/WebSocket live updates are
-    **experimental**; prefer polling in production. Charts, native accel, notebook, MCP, and
-    Gradio interop are **Alpha** / **Experimental**.
-    There is no commercial SLA and no scheduled 1.0. Evaluators: skim the table below, then
-    [Evaluate Hedron](evaluate.md).
+    **Yes, with pins:** typed pages, HTMX fragments, CSRF (`standard` / `strict`), and
+    **polling** job status on FastAPI (Flask/Django adapters Supported). Start with
+    [Installation](../getting-started/installation.md) →
+    [HTMX interactions](htmx-interactions.md) →
+    [Minimal form](minimal-form.md).
+
+    **Not for production live push yet:** SSE / WebSocket (`hedron.experimental`) —
+    prefer [polling](live-interaction.md).
+
+    **Pin and expect churn:** charts, notebook, MCP, Gradio (Alpha / Experimental).
+
+    No commercial SLA and no scheduled 1.0. Evaluators: [Evaluate Hedron](evaluate.md).
 
 ## How to read this page
 
-Hedron **0.18.0** packages are **Beta**. There is no scheduled 1.0; expect occasional
-breaking changes on `0.x` under the [compatibility policy](../COMPATIBILITY.md).
+Hedron **0.18.0** packages are **Beta** on PyPI. Expect occasional breaking changes on
+`0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
 | Label | Meaning |
 |---|---|
-| **Supported** | Capability claimed working with pinned versions for the stated host |
+| **Supported** | Working with pinned versions for the stated host — ship with pins |
 | **Experimental** | Public API shipped; may change; prefer documented fallbacks (e.g. polling) |
-| **Alpha** | Available on PyPI; pin and expect churn |
+| **Alpha** | On PyPI; pin and expect churn |
 | **Deferred** | Documented, not ready — do not treat as Supported |
+
+Do not combine labels (never pair Supported with a package Beta tag in one phrase).
+Package maturity is **Beta** or **Alpha** on PyPI; capability readiness is **Supported**,
+**Experimental**, or **Deferred**.
+See [Understanding maturity labels](../getting-started/how-to-read.md).
 
 !!! warning "Live transports"
 
     SSE, focused streaming, WebSocket channels, and navigation preload are
     **experimental** (`hedron.experimental`). Prefer [polling](live-interaction.md) in
-    production until ops gates (`PERF-10-001`, browser live matrices) close.
-    **This page is the only maturity SSOT** for Supported vs Experimental claims.
+    production until your own load/proxy evidence covers backpressure.
+    **This page is the only maturity source of truth** for Supported vs Experimental claims.
+
+## Use today
+
+| Job | Status | Start here |
+|---|---|---|
+| Ship CRUD / admin / forms | **Supported** (Beta packages) | [Installation](../getting-started/installation.md) → HTMX → Minimal form |
+| Multi-worker durable jobs | **Supported** with shared Redis backend | [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md) |
+| DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
+| Flask / Django host | **Supported** adapters | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
+| Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
+| Charts | **Alpha** | Pin `hedron[charts]`; Matplotlib default |
+| Model demos / inference workflows | **Supported** (Beta API; fail-closed) | [Model demos](model-demos.md) |
+| Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
 ## Supported capabilities (Beta packages)
 
-| Capability | Package / surface | Evidence note |
+| Capability | Package / surface | Status |
 |---|---|---|
 | Typed pages, fragments, built-ins | `hedron` + `hedron-core` | Supported |
 | FastAPI routing, CSRF profiles, CLI, testing helpers | `hedron` | Supported |
 | HTMX fragment loops, `InteractionResult` | `hedron` | Supported |
-| Live interaction: SSE, streaming, WebSocket, preload | `hedron.experimental` (FastAPI) | **Experimental** — polling Supported |
-| Chat/Dialog surfaces | `hedron` | Supported (beta); history application-owned |
-| Flask Blueprint / `init_app` + live helpers | `hedron-flask` | Supported host; live helpers experimental; polling Supported |
+| Chat / Dialog surfaces | `hedron` | Supported; history application-owned |
+| Flask Blueprint / `init_app` | `hedron-flask` | Supported; live helpers Experimental (prefer polling) |
 | Django AppConfig, forms bridge, QuerySet DataSource | `hedron-django` + `hedron-data` | Supported |
 | Portable adapter test harness | `hedron_core.testing` / `hedron.testing.adapters` | Supported |
-| Optional HDJ (`.hdj`) templates + dynamic manifests / CSP inventory | `hedron[jinja]` | Supported |
-| Celery / RQ `JobBackend` bridges | `hedron_core.jobs_celery` / `jobs_rq` | Supported optional bridges; **require shared Redis** for durable multi-worker status (0.13) |
-| Component `prepare()` + adaptive concurrency | `hedron-core` / `hedron` | Supported (0.13); opt-out preserves semantics |
-| Optional distributed tracing | `hedron[otel]` / `hedron.tracing` | Supported optional (0.13); disable anytime |
-| Security audit sink | `hedron_core.audit` | Supported (0.13) |
-| Auto (inspectable object rendering) | Core (`hedron`) — no extra | Supported |
-| DataTable / DataEditor | `hedron[data]` | Supported |
-| Column catalog, saved views, TransformPlan, typed grid events | `hedron[data]` | Supported (0.12) |
-| Advanced DataEditor (formulas, pivots, trees, collab, spreadsheet I/O) | `hedron[data]` | Supported (0.12) |
-| AG Grid Community client + infinite row models | `hedron-data[aggrid]` | Supported (0.12); Enterprise out of scope |
-| Dask / Snowflake bounded sources | `hedron-data[dask]` / `[snowflake]` | Supported (0.12) |
-| Beginner Area/Bar/Scatter + Plotly events/annotations | `hedron[charts]` | Alpha charts package |
-| Optional viz adapters + offline runtime pins | `hedron[charts]` | Alpha; local-asset/CSP contracts |
-| Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics; some live traces incomplete |
-| Language-neutral conformance kit | `hedron[conformance]` / `hedron-conformance` | Supported (0.14) |
-| Experimental Java / Node conformance runtimes | `packages/hedron-runtime-*` | **Experimental** / Alpha (0.14) |
-| Optional Rust HTML escaping acceleration | `hedron[native]` / `hedron-native` | Alpha (0.14); pure-Python fallback Supported |
-| HDJ loop/macro budgets, extension evidence, a11y static checks | `hedron[jinja]` | Supported (0.14; `HDJ-DEF-014`) |
-| AppScenario + HTMX InteractionResult asserts | `hedron.testing` | Supported (0.15; #22–#26) |
-| `region` / `@fragment` / `swap` ergonomics | `hedron` | Supported (0.15; RFC-0039) |
-| Typed controls, surface chrome, Map, media Range | `hedron` / `hedron-core` | Supported (0.15) |
-| CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported (0.15; permission/retention policy explicit) |
-| BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported (0.15) |
-| OIDC / session helpers + connection registry | `hedron` | Supported helpers (0.15); host auth/DI authoritative |
-| Curated extras composition / workbenches / editors | `hedron[extras]` | Supported beta (0.16); install-isolated |
-| TerminalView / joystick / device bridges | `hedron[extras]` | **Experimental** (0.16); fail-closed |
-| Browser-Python sandbox | `hedron[extras]` | Supported beta (0.16); origin-isolated |
-| Native desktop shell | docs recipe | **Experimental** packaging guidance only |
-| `DashboardBinding` / `InteractionGraph` / `TriggerContext` | `hedron-core` / `hedron` | Supported beta (0.17; RFC-0040) |
-| `PropertyPatch` / `CollectionPatch` | `hedron-core` | Supported beta (0.17; RFC-0041); full-fragment fallback mandatory |
-| Cross-filter composition + graph recorder/replay | `hedron` / `hedron-core` | Supported beta (0.17) |
-| `HtmxLink`/`NavLink`, `OobHost`/`AttrHost`, `AppShell`/`MainPanel` | `hedron` / `hedron-core` | Supported beta (0.17; RFC-0044) |
-| Public `render_interaction` | `hedron` | Supported beta (0.17) |
-| Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported (0.17; #24) |
-| Notebook preview helper | `hedron[notebook]` / `hedron-notebook` | **Experimental** / Alpha (0.17) |
-| MCP Streamable HTTP projection | `hedron[mcp]` / `hedron-mcp` | **Experimental** / Alpha (0.17); deny-by-default |
-| `InferenceInterface` / `ModelDemo` / `ActionRegistry` | `hedron-core` / `hedron` | Supported beta (0.18; RFC-0045); fail-closed |
-| `ExampleSet` / `PredictionLabel` / `ParameterViewer` / `Dialogue` | `hedron-core` | Supported beta (0.18; RFC-0046) |
-| `PredictionFeedback` | `hedron-core` | Supported beta (0.18); consent mandatory; never ground truth |
-| `InferencePolicy` / `ModelDemoScenario` | `hedron-core` | Supported beta (0.18; RFC-0047); in-process queue is dev-only |
-| `InteractionRecorder` | `hedron` | Supported beta (0.18; RFC-0048); public endpoints only |
-| `InferenceWorkflow` + structured editor | `hedron-core` | Supported beta (0.18; RFC-0050); no host-code in JSON |
-| Gradio client interop | `hedron[gradio]` / `hedron-gradio` | **Experimental** / Alpha (0.18); deny-by-default discover |
+| Optional HDJ (`.hdj`) templates | `hedron[jinja]` | Supported |
+| Celery / RQ `JobBackend` bridges | `hedron_core.jobs_celery` / `jobs_rq` | Supported; **require shared Redis** for multi-worker status |
+| Component `prepare()` + adaptive concurrency | `hedron-core` / `hedron` | Supported |
+| Optional distributed tracing | `hedron[otel]` / `hedron.tracing` | Supported optional |
+| Security audit sink | `hedron_core.audit` | Supported |
+| Auto (inspectable object rendering) | `hedron` (no extra) | Supported |
+| DataTable / DataEditor + column catalog, views, TransformPlan | `hedron[data]` | Supported |
+| AG Grid Community client + infinite row models | `hedron-data[aggrid]` | Supported; Enterprise out of scope |
+| Dask / Snowflake bounded sources | `hedron-data[dask]` / `[snowflake]` | Supported |
+| Component Explorer (dev) | `hedron[dev]` | Supported for local diagnostics |
+| Language-neutral conformance kit | `hedron[conformance]` | Supported |
+| HDJ loop/macro budgets, a11y static checks | `hedron[jinja]` | Supported |
+| AppScenario + HTMX InteractionResult asserts | `hedron.testing` | Supported |
+| `region` / `@fragment` / `swap` ergonomics | `hedron` | Supported |
+| Typed controls, surface chrome, Map, media Range | `hedron` / `hedron-core` | Supported |
+| CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported with permission/retention policy |
+| BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported |
+| OIDC / session helpers + connection registry | `hedron` | Supported helpers; host auth/DI authoritative |
+| Curated extras / workbenches / editors | `hedron[extras]` | Supported; install-isolated |
+| Browser-Python sandbox | `hedron[extras]` | Supported; origin-isolated |
+| Dashboard bindings, patches, cross-filter, AppShell | `hedron` / `hedron-core` | Supported |
+| Public `render_interaction` | `hedron` | Supported |
+| Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported |
+| `InferenceInterface` / `ModelDemo` / `ActionRegistry` | `hedron-core` / `hedron` | Supported; fail-closed |
+| Example sets, prediction labels, feedback, workflows | `hedron-core` / `hedron` | Supported; consent mandatory for feedback |
+| `InferencePolicy` / `ModelDemoScenario` | `hedron-core` | Supported; in-process queue is dev-only |
+| `InteractionRecorder` | `hedron` | Supported; public endpoints only |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
-guaranteed multi-worker live-transport proof — see
-[STATUS](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) Deferred rows.
+guaranteed multi-worker live-transport proof.
 
-## Runnable examples
+## Experimental (prefer documented fallbacks)
 
-- FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
-  (Supported host slices).
-- 0.18 model-demo / inference workflow demo:
-  [`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18).
-  Guide: [Model demos](model-demos.md).
-- 0.17 dashboard / agent-interface demo:
-  [`examples/dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17).
-- 0.15 data-app surface demo (`region` / `@fragment` / `swap`, controls, Map, media stubs):
-  [`examples/data-app-0.15`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.15).
-- 0.16 analysis workbench demo (`hedron-extras`):
-  [`examples/data-app-0.16`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.16).
-- Live interaction sample (poll + **experimental** token stream / SSE / Job SSE /
-  WebSocket / preload demos):
-  [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction).
-  Prefer polling behind load balancers until your own ops evidence covers SSE/WS
-  backpressure ([live interaction guide](live-interaction.md)).
+| Capability | Package / surface | Notes |
+|---|---|---|
+| Live interaction: SSE, streaming, WebSocket, preload | `hedron.experimental` (FastAPI) | Prefer [polling](live-interaction.md) |
+| TerminalView / joystick / device bridges | `hedron[extras]` | Fail-closed |
+| Native desktop shell | docs recipe | Packaging guidance only |
+| Flask / Django live helpers | adapters | Prefer polling |
 
-## Treat as Alpha / more volatile
+## Alpha / more volatile
 
-- `hedron-charts` and chart backends
-- `hedron-sample-kit` (plugin sample)
-- `hedron-notebook` (localhost-oriented preview; not Supported production)
-- `hedron-mcp` (deny-by-default; not Supported production tools by default)
-- `hedron-gradio` (Gradio client interop; deny-by-default discover)
+| Package | Role |
+|---|---|
+| `hedron[charts]` / `hedron-charts` | Chart adapters — pin; Matplotlib is the conservative default |
+| `hedron[native]` / `hedron-native` | Optional Rust HTML-escape accel; pure-Python fallback Supported |
+| `hedron[notebook]` / `hedron-notebook` | Localhost-oriented preview; not Supported production |
+| `hedron[mcp]` / `hedron-mcp` | Deny-by-default MCP projection |
+| `hedron[gradio]` / `hedron-gradio` | Gradio client interop; deny-by-default discover |
+| `hedron-sample-kit` | Plugin sample |
+| `packages/hedron-runtime-*` | Experimental Java / Node conformance runtimes |
 
 ## Deferred (do not market as Supported)
 
@@ -127,18 +126,46 @@ guaranteed multi-worker live-transport proof — see
 - Load/proxy backpressure evidence for live transports
 - Some Explorer live traces
 
+Maintainer gate IDs and RFC evidence:
+[`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
+
+## Runnable examples
+
+- FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
+- Model-demo / inference workflow:
+  [`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18)
+  · [Model demos](model-demos.md)
+- Dashboard / agent-interface:
+  [`examples/dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17)
+- Data-app surfaces:
+  [`examples/data-app-0.15`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.15)
+  · [`examples/data-app-0.16`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.16)
+- Live interaction (poll + experimental demos):
+  [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
+
 ## Recommended install
 
-```bash
-pip install "hedron>=0.18.0" "uvicorn[standard]"
-python -m hedron new my-app
-cd my-app
-pip install -e .   # or: uv sync
-uvicorn app:app --reload
-```
+=== "uv (recommended)"
 
-Extras: `"hedron[data]"`, `"hedron[charts]"` (Alpha), `"hedron[extras]"`, `"hedron[jinja]"`,
-`"hedron[dev]"`, `"hedron[notebook]"` (Alpha), `"hedron[mcp]"` (Alpha), `"hedron[gradio]"` (Alpha).
+    ```bash
+    uvx --from "hedron>=0.18.0" hedron new my-app
+    cd my-app && uv sync
+    uv run uvicorn app:app --reload
+    ```
+
+=== "pip"
+
+    ```bash
+    pip install "hedron>=0.18.0" "uvicorn[standard]"
+    python -m hedron new my-app
+    cd my-app && pip install -e .
+    uvicorn app:app --reload
+    ```
+
+Extras: `"hedron[data]>=0.18.0"`, `"hedron[charts]>=0.1.0"` (Alpha),
+`"hedron[extras]>=0.18.0"`, `"hedron[jinja]>=0.18.0"`, `"hedron[dev]>=0.18.0"`,
+`"hedron[notebook]>=0.1.0"` (Alpha), `"hedron[mcp]>=0.1.0"` (Alpha),
+`"hedron[gradio]>=0.1.0"` (Alpha).
 
 ## Role-specific wrappers
 

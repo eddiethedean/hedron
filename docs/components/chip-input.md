@@ -16,7 +16,7 @@ Free-text chip/tag multivalue input.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="ChipInput"><div class="hdc-stage"><div class="hdc-result"><strong>ChipInput</strong><span>Free-text chip/tag multivalue input.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="ChipInput"><div class="hdc-stage"><div class="hdc-form"><label for="demo-chips">Tags</label><div class="hdc-inline"><span class="hdc-chip">python</span><span class="hdc-chip">htmx</span><input id="demo-chips" type="text" placeholder="Add tag…"></div></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

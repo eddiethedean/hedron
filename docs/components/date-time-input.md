@@ -16,7 +16,7 @@ Native datetime-local input.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="DateTimeInput"><div class="hdc-stage"><div class="hdc-result"><strong>DateTimeInput</strong><span>Native datetime-local input.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="DateTimeInput"><div class="hdc-stage"><div class="hdc-form"><label for="demo-datetime">Scheduled at</label><input id="demo-datetime" type="datetime-local" value="2026-08-05T14:30"></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

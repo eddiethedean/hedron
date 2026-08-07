@@ -16,7 +16,7 @@ Native date input.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="DateInput"><div class="hdc-stage"><div class="hdc-result"><strong>DateInput</strong><span>Native date input.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="DateInput"><div class="hdc-stage"><div class="hdc-form"><label for="demo-date">Due date</label><input id="demo-date" type="date" value="2026-08-05"></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

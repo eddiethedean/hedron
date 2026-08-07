@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Fail if adopter-facing docs claim a stale published train.
+"""Fail if adopter-facing docs claim a stale published train or banned maturity jargon.
 
-The living train is 0.18.x. Historical whats-new / acceptance / RFC phase labels
-are allowed. This check targets pages that assert "current published train".
+The living line is 0.18.x. Historical whats-new / acceptance / RFC phase labels
+are allowed. This check targets pages that assert "current" product maturity.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Paths that must not assert 0.16.x or 0.17.x as the *current* train.
+# Paths that must not assert 0.16.x or 0.17.x as the *current* line.
 CHECKED = [
     ROOT / "docs" / "SECURITY.md",
     ROOT / "SECURITY.md",
@@ -23,6 +23,11 @@ CHECKED = [
     ROOT / "docs" / "guides" / "evidence-pack.md",
     ROOT / "docs" / "examples" / "try-it.md",
     ROOT / "docs" / "guides" / "best-practices.md",
+    ROOT / "docs" / "guides" / "whats-ready.md",
+    ROOT / "docs" / "guides" / "evaluate.md",
+    ROOT / "docs" / "guides" / "upgrade.md",
+    ROOT / "docs" / "getting-started" / "how-to-read.md",
+    ROOT / "README.md",
 ]
 
 # Patterns that indicate stale "current train" claims (not historical mentions).
@@ -40,6 +45,16 @@ STALE = [
     re.compile(r"Supported lines: \*\*`0\.16\.x`", re.I),
 ]
 
+# Adopter-facing jargon / maturity collisions banned on checked entry pages.
+# Historical whats-new / RFCs are not in CHECKED.
+BANNED = [
+    re.compile(r"Supported beta", re.I),
+    re.compile(r"Maturity SSOT"),
+    re.compile(r"beachhead Supported", re.I),
+    re.compile(r"as Supported beachhead", re.I),
+    re.compile(r"Still Deferred \(after"),
+]
+
 
 def main() -> int:
     failures: list[str] = []
@@ -51,12 +66,17 @@ def main() -> int:
         for pattern in STALE:
             if pattern.search(text):
                 failures.append(f"{path.relative_to(ROOT)}: matches {pattern.pattern}")
+        for pattern in BANNED:
+            if pattern.search(text):
+                failures.append(f"{path.relative_to(ROOT)}: banned {pattern.pattern}")
     if failures:
-        print("stale current-train claims:", file=sys.stderr)
+        print("stale or banned adopter-doc claims:", file=sys.stderr)
         for item in failures:
             print(f"  {item}", file=sys.stderr)
         return 1
-    print("ok: adopter docs assert current train 0.18 (no stale 0.16/0.17 current claims)")
+    print(
+        "ok: adopter docs assert 0.18 and avoid Supported beta / SSOT / beachhead jargon"
+    )
     return 0
 
 

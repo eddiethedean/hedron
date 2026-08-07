@@ -29,17 +29,24 @@ uv run pyright
 uv run pytest -q
 ```
 
-**Docs-only changes:** `uv sync --group docs && uv run --group docs mkdocs serve`
-(or `./scripts/mkdocs.sh serve`). Strict builds: `uv run --group docs mkdocs build --strict`.
+**Docs-only changes (local verify):**
+
+```bash
+uv sync --group docs
+uv run --group docs mkdocs build --strict
+# or preview: uv run --group docs mkdocs serve
+# or: ./scripts/mkdocs.sh serve
+python scripts/check_docs_train_ssot.py
+```
+
+You do **not** need Playwright or the full pytest suite locally for markdown/typo PRs.
+CI still runs **browser** (Chromium) and **evidence** jobs on every pull request (no path
+filters today) — see the CI map. If those jobs fail for reasons unrelated to your docs
+change, ask a maintainer; do not skip CI with `--no-verify`.
 
 When to leave Read the Docs for the GitHub corpus: RFCs, acceptance gates, STATUS/ROADMAP
 internals, ENGINEERING_BASELINE, and DECISIONS are **excluded from the public MkDocs site**
 — edit them on GitHub; adopters should stay on What’s ready / guides / API pages.
-
-You do **not** need to install Playwright locally for markdown/typo PRs, but CI still runs
-the **browser** (Chromium) and **evidence** jobs on every pull request — see the CI map.
-If those jobs fail for reasons unrelated to your docs change, ask a maintainer; do not
-skip CI.
 
 **Local browser suite (optional):** install Playwright Chromium, then:
 

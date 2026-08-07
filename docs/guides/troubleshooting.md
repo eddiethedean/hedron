@@ -139,7 +139,7 @@ left disabled; Origin rejected; treating experimental live APIs as production-re
 `NavigationPreloadPolicy`) are FastAPI **experimental** surfaces
 (`hedron.experimental`) — prefer [polling](live-interaction.md) on every host, including
 FastAPI. Disable response buffering for `text/event-stream`. Enable preload only with an
-explicit `NavigationPreloadPolicy(enabled=True)`. Maturity SSOT: [What’s ready](whats-ready.md).
+explicit `NavigationPreloadPolicy(enabled=True)`. Maturity source of truth: [What’s ready](whats-ready.md).
 
 ## Production startup: missing manifest (`HED-BUILD-0003`)
 

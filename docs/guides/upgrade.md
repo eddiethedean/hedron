@@ -1,18 +1,33 @@
 # Upgrade
 
-Current train: **0.18.0** (**Published**). From 0.17: model demos and inference workflows
+**Hedron 0.18.0** — Beta on PyPI. From 0.17: model demos and inference workflows
 (`ModelDemo` / `InferenceInterface`, `InferencePolicy`, `InferenceWorkflow`, governed feedback,
 `InteractionRecorder`, optional Alpha `hedron-gradio`). See
 [What's ready](whats-ready.md) and [What's new in 0.18](whats-new-0.18.md).
 
+## Upgrade from 0.17 → 0.18
 
-Hedron publishes coordinated Beta trains. Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should
-upgrade through **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** /
-**0.16** / **0.17** to the **0.18.0** train for model demos and inference workflows.
+If you are already on **0.17.x**, pin coordinated **0.18.0** packages and adopt only what you need:
+
+1. Pin `hedron>=0.18.0,<0.19` (and matching `hedron-core` / adapters / extras).
+2. For model demos: follow [Model demos](model-demos.md) — `ModelDemo` / `InferenceInterface`
+   never auto-publish callables as HTTP or MCP endpoints.
+3. Queue inference through `InferencePolicy` onto a durable `JobBackend` for multi-worker;
+   in-process queues are **dev-only**.
+4. Optional Gradio interop: `hedron[gradio]` is **Alpha / Experimental** — pin and deny-by-default.
+5. Re-run your app suite; read [What's new in 0.18](whats-new-0.18.md) for surface inventory.
+
+Skip the 0.8–0.16 archaeology below unless you are still on an older line.
+
+---
+
+Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should upgrade through
+**0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** /
+**0.16** / **0.17** to **0.18.0**.
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9**–**0.17** to the **0.18.0** train.
+upgrade through **0.9**–**0.17** to **0.18.0**.
 
 ## What changed in 0.8
 
@@ -60,11 +75,15 @@ HDN helpers and arbitrary expressions should move into the typed Python view mod
 aliases are registered explicitly in `HedronJinja`; templates cannot import or enumerate Python
 components.
 
-## Still Deferred (after 0.11)
+## Historical notes (resolved after 0.11)
 
-| Claim | Decision | Guidance |
+| Claim | Decision | Status |
 |---|---|---|
-| Camera / microphone capture UI | D-045 | Shipped in **0.15** (Supported with policy limits). |
+| Camera / microphone capture UI | D-045 | Shipped in **0.15** (Supported with policy limits) |
+| Django QuerySet DataSource | D-046 | Shipped in **0.11** (Supported) |
+| Flask Blueprint / `init_app` | D-041 / D-046 | Shipped in **0.11** (Supported) |
+| Django AppConfig convenience | D-041 / D-046 | Shipped in **0.11** (Supported) |
+| Celery / RQ `JobBackend` bridges | D-046 | Shipped (Supported optional bridges; shared Redis for multi-worker) |
 
 FastAPI SSE / streaming / WebSocket / preload APIs ship as **experimental**
 (`hedron.experimental`); **polling** remains the Supported production fallback on every
@@ -77,12 +96,12 @@ with the same experimental classification.
   browser evidence promote them. Matplotlib static SVG remains the conservative default.
 - `hedron-sample-kit` remains an Alpha/experimental plugin sample.
 
-## Upgrade steps
+## Upgrade steps (from 0.8 HDN)
 
 1. On 0.8, inventory every `.hdn` file and direct HDN API use.
 2. Rewrite each template as typed Python or a Jinja template and add explicit component bindings.
 3. Delete `.hdn` source and any code reading HDN build artifacts.
-4. Pin the coordinated `0.9.0` train and add `hedron-jinja` only where templates are used.
+4. Pin coordinated `0.9.0` packages and add `hedron-jinja` only where templates are used.
 5. Delete old build output, rebuild format-2 manifests, and run the Jinja and application suites.
 6. Work through the progressive HDJ examples under
    [`examples/hdj-progressive`](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive)
@@ -90,12 +109,13 @@ with the same experimental classification.
 7. Re-run security, HTMX, and adapter suites; for production, exercise Chromium/Firefox/WebKit
    against critical flows when you consume HTMX history, OOB, or extensions.
 8. Read [STABILITY.md](../api/STABILITY.md) before depending on unmarked or private APIs.
+9. Continue through intermediate lines to **0.18.0** (see phase notes below).
 
 ## 0.10 live interaction (published)
 
 Phase 0.10 ships SSE, focused streaming, WebSocket channels, Chat/Dialog, and opt-in navigation
 preload (RFC-0032). Each phase publishes its own upgrade notes and proves clean install, upgrade
-from supported prior trains, deployment, and rollback from built/published artifacts. See
+from supported prior lines, deployment, and rollback from built/published artifacts. See
 [RELEASE.md](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md) and the roadmap.
 
 ### 0.9 → 0.10
@@ -219,7 +239,7 @@ remain **Experimental**. CodeEditor is a CSP-safe host stub (no pinned CodeMirro
    Alpha packages remain on `0.1.x` with `hedron-core>=0.16.0,<0.17`.
 2. Install extras only when needed: `pip install "hedron[extras]"`.
 3. Prefer workbench components that emit bounded plans/actions over implicit callables.
-4. Do not market TerminalView / joystick / device bridges as Supported beachhead features.
+4. Do not market TerminalView / joystick / device bridges as Supported production features.
 5. Re-read [What's new in 0.16](whats-new-0.16.md) and [What's ready](whats-ready.md).
 
 ## 0.17 reactive dashboards and agent interfaces (Published)

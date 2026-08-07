@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped in `0.6.0`
+**Status:** Shipped (fragment regions + `InteractionResult` on **0.18.x**)
 
 Typed FastAPI/HTMX request and result contracts live in `hedron.interaction` and are
 re-exported from `hedron`.
@@ -18,6 +18,19 @@ HDJ templates may use HTMX's native `hx-*` and `hx-on:*` attributes directly. Th
 remain the preferred server-side boundary for response headers, declared regions, OOB updates,
 cache policy, and diagnostics; they are not a reduced client-side HTMX dialect. See
 [HDJ authoring](JINJA.md#htmx).
+
+## Errors
+
+| Situation | Result | What to do |
+|---|---|---|
+| HTMX request with `HX-Target` but no route `fragment_regions` | HTTP **403** | Declare `FragmentRegion`s on `@app.component` / `@app.page`, or opt out only with `InteractionPolicy(allow_undeclared_targets=True)` |
+| `HX-Target` / `region_id` outside the declared allowlist | HTTP **403** / `FragmentRegionError` | Match `region_id` and HTMX target to a declared `FragmentRegion.id` / selector |
+| Unsafe selector or external redirect in typed fields | Rejected before emit | Use local paths and Hedron's safe selector subset |
+| Unauthorized OOB `select` / `element_id` when regions are declared | Rejected | Point OOB updates at authorized region ids |
+| `Cache-Control: public` (or `s-maxage`) via `headers` | Rejected | Use typed `cache=` (`private` / `no-store` / `vary-htmx`) |
+| CSRF failure on POST (host profile) | HTTP **403** | Seed CSRF on GET; include token on POST — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
+
+See also [HTMX interactions](../guides/htmx-interactions.md) and [Error codes](../guides/error-codes.md).
 
 ## `HtmxRequest`
 
@@ -117,15 +130,6 @@ route `fragment_regions` (unauthorized `HX-Target` → `403`).
 
 Prefer these fields over `headers`. If `headers` is needed, Hedron accepts only approved
 `HX-*`, `Cache-Control`, and `Vary` names and re-validates URL and selector values.
-
-### Errors
-
-| Situation | Behavior |
-|---|---|
-| `HX-Target` outside route `fragment_regions` | HTTP `403` |
-| Unsafe selector / external redirect in typed fields | Rejected before emit |
-| Unauthorized OOB `select` / `element_id` | Rejected when regions are declared |
-| `Cache-Control: public` via `headers` | Rejected — use typed `cache=` |
 
 ### Out-of-band updates
 

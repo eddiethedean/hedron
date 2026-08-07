@@ -46,3 +46,14 @@ Passing `context=None` is equivalent to a default standalone context. Output is 
 Concrete internal text, element, fragment, and boundary node classes are private in 0.x. Applications compose public components and `hedron.html` primitives rather than constructing serializer nodes directly. The HTML serializer is not a public independent API; it consumes normalized nodes through the rendering engine.
 
 Strings are text and are always escaped. Raw markup requires `TrustedHtml` and an explicit trusted-HTML primitive. Iterators with hidden I/O are not accepted as node sequences.
+
+## Errors
+
+| Situation | Code / behavior | What to do |
+|---|---|---|
+| Self-recursive component cycle | `HED-RENDER-0012` | Break the cycle; nested same-type composition (`Stack(Stack(...))`) is fine |
+| Raw HTML string without `TrustedHtml` | Rejected | Use `TrustedHtml.reviewed` / `.nh3` + `html.raw` |
+| Iterator / hidden I/O as children | Rejected | Pass concrete sequences of nodes |
+| Missing production build manifest | `HED-BUILD-0003` | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
+
+See [Error codes](../guides/error-codes.md).

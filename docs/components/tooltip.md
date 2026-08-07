@@ -16,7 +16,7 @@ Accessible tooltip / title help.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Tooltip"><div class="hdc-stage"><div class="hdc-result"><strong>Tooltip</strong><span>Accessible tooltip / title help.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Tooltip"><div class="hdc-stage"><p>Hover or focus <button class="hdc-button" type="button" title="More info about this control">Help</button> for the accessible title tip.</p></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

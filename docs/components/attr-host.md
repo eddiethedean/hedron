@@ -16,7 +16,7 @@ Stable element that can receive attribute-only OOB updates.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="AttrHost"><div class="hdc-stage"><div class="hdc-result"><strong>AttrHost</strong><span>Stable element that can receive attribute-only OOB updates.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="AttrHost"><div class="hdc-stage"><div class="hdc-fragment" id="demo-attr-host" data-state="idle"><strong>Attr host</strong><small>Receives attribute-only OOB patches.</small></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

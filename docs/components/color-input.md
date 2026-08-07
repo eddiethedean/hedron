@@ -16,7 +16,7 @@ Native color picker input.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="ColorInput"><div class="hdc-stage"><div class="hdc-result"><strong>ColorInput</strong><span>Native color picker input.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="ColorInput"><div class="hdc-stage"><div class="hdc-form"><label for="demo-color">Accent</label><input id="demo-color" type="color" value="#0f766e"></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

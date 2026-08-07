@@ -16,7 +16,7 @@ Accessible HTML video player with SafeUrl source.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Video"><div class="hdc-stage"><div class="hdc-result"><strong>Video</strong><span>Accessible HTML video player with SafeUrl source.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Video"><div class="hdc-stage"><div class="hdc-download"><span class="hdc-file-icon" aria-hidden="true">▶</span><span><strong>Video player</strong><small>Requires a SafeUrl source in the real component.</small></span></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

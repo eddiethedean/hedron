@@ -16,7 +16,7 @@ No-JS carousel as an ordered slide list with controls.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Carousel"><div class="hdc-stage"><div class="hdc-result"><strong>Carousel</strong><span>No-JS carousel as an ordered slide list with controls.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Carousel"><div class="hdc-stage"><div class="hdc-stack" role="region" aria-label="Demo carousel"><strong>Slide 1 · Overview</strong><p class="hdc-muted">Ordered slides with previous/next controls in the live component.</p></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

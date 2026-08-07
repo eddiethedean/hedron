@@ -66,12 +66,15 @@ token = csrf_token_for_request(request, request.app.state.hedron_security)
 
 These values are immutable and safe to compare, but their representations never expose secret content.
 
-| Situation | Code / behavior |
-|---|---|
-| Invalid / dangerous URL | `HED-SEC-0001` (and related) |
-| URL purpose mismatch for attribute | `HED-SEC-0006` |
-| Missing nh3 for `TrustedHtml.nh3` | `HED-SEC-0020` |
-| Secret leaked via str/repr | Redacted — use `reveal()` only in trusted app code |
+## Errors
+
+| Situation | Code / behavior | What to do |
+|---|---|---|
+| Invalid / dangerous URL | `HED-SEC-0001` (and related) | Use `SafeUrl.parse` with the correct `UrlPurpose`; avoid `javascript:` and credentialed URLs |
+| URL purpose mismatch for attribute | `HED-SEC-0006` | Match purpose to the attribute (`NAVIGATION`, `ASSET`, `FORM_ACTION`, `REDIRECT`) |
+| Missing nh3 for `TrustedHtml.nh3` | `HED-SEC-0020` | `pip install "hedron[sanitize]>=0.18.0"` (or `[markdown]`) |
+| Secret leaked via str/repr | Redacted | Call `reveal()` only in trusted application code |
+| `html.raw(...)` without `TrustedHtml` | Rejected | Wrap reviewed markup with `TrustedHtml.reviewed` / `.nh3` |
 
 Adding a URL purpose or trusted constructor is a public API change. See
-[Security guide](../guides/security.md).
+[Security guide](../guides/security.md) and [Error codes](../guides/error-codes.md).

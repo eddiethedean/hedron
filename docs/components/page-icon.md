@@ -16,7 +16,7 @@ Favicon / page icon helper link or image.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="PageIcon"><div class="hdc-stage"><div class="hdc-result"><strong>PageIcon</strong><span>Favicon / page icon helper link or image.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="PageIcon"><div class="hdc-stage"><div class="hdc-inline"><span class="hdc-file-icon" aria-hidden="true">★</span><span><strong>Favicon helper</strong><small>Emits link/image metadata for the document head.</small></span></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

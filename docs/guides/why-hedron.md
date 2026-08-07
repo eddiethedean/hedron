@@ -37,14 +37,15 @@ Streamlit re-runs the script; Hedron returns typed components from FastAPI route
 Hedron keeps FastAPI routing, dependency injection, OpenAPI, and HTMX fragments.
 Streamlit optimizes for the fastest notebook-style dashboard loop.
 
-Forms and CSRF are a short next step—see [Minimal form POST](minimal-form.md)—not the
-hello-world comparison.
+Forms and CSRF are a short next step after Hello — see
+[HTMX interactions](htmx-interactions.md) then [Minimal form POST](minimal-form.md).
 
 ## Compared to nearby tools
 
 | If you want… | Prefer | Tradeoff |
 |---|---|---|
 | Fastest notebook-style dashboards | Streamlit | Rerun model; less FastAPI-native routing/DI |
+| Minimal HTML/HTMX apps with little framework | FastHTML | Fewer typed-component / CSRF / fragment contracts out of the box |
 | Plotly-centric reactive apps | Dash | Callback graph; different security/HTML story |
 | Model demos and ML UIs | Gradio | Different product shape; less CRUD/admin focus |
 | Full control with templates | Jinja + HTMX by hand | You assemble CSRF, fragments, and contracts yourself |

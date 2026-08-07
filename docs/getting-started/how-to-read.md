@@ -8,9 +8,16 @@ production use or reading API/stability catalogs.
 
 | Label | What it means for you |
 |---|---|
-| **Beta** (package) | The distribution is usable; **pin versions** in production. Alpha packages (`hedron-charts`, `hedron-sample-kit`) change faster. |
-| **Supported** (feature) | Hedron claims this capability works on that host today. |
-| **Deferred** (feature) | Documented and owned, but **not** ready—do not market or depend on it as Supported. |
+| **Beta** (package) | The PyPI distribution is usable; **pin versions** in production. |
+| **Alpha** (package) | On PyPI; pin and expect faster churn (`hedron-charts`, notebook, MCP, Gradio, …). |
+| **Supported** (capability) | Hedron claims this capability works on that host today — ship with pins. |
+| **Experimental** (capability) | Public API shipped; may change; prefer documented fallbacks (e.g. polling). |
+| **Deferred** (capability) | Documented and owned, but **not** ready — do not market or depend on it as Supported. |
+
+Do **not** combine labels. Prefer “Supported” or “Beta package” — never pair Supported
+with a Beta tag in one phrase.
+Package maturity (Beta / Alpha) and capability readiness (Supported / Experimental / Deferred)
+are separate axes.
 
 API compatibility levels (`stable` / `beta` / `experimental` / `internal` / `deferred`) live in
 the [STABILITY](../api/STABILITY.md) catalog for callable surfaces. RFC **Accepted** means the
@@ -18,10 +25,10 @@ design is selected—not that every detail is implemented. Prefer
 [What’s ready today](../guides/whats-ready.md) and [Evaluate Hedron](../guides/evaluate.md)
 when evaluating production use.
 
-## Phases and versions
+## Versions
 
 Capability phases are numbered `0.N`. The initial release for that phase is **`v0.N.0`**.
-Phase **0.18** maps to package train **`0.18.x`** (current **`0.18.0`**), not a patch of 0.1.
+Phase **0.18** maps to packages **`0.18.x`** (current **`0.18.0`**), not a patch of 0.1.
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 

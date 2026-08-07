@@ -16,7 +16,7 @@ Accessible 1..n rating radios.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="RatingInput"><div class="hdc-stage"><div class="hdc-result"><strong>RatingInput</strong><span>Accessible 1..n rating radios.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="RatingInput"><div class="hdc-stage"><div class="hdc-form" role="group" aria-label="Rating"><span aria-hidden="true">★★★★☆</span><span class="hdc-muted">4 of 5</span></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

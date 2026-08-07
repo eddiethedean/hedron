@@ -16,7 +16,7 @@ Semantic ordered timeline of events.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Timeline"><div class="hdc-stage"><div class="hdc-result"><strong>Timeline</strong><span>Semantic ordered timeline of events.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Timeline"><div class="hdc-stage"><ol class="hdc-list"><li><span>Deploy started</span><small>14:01</small></li><li><span>Checks passed</span><small>14:04</small></li><li><span>Live</span><small>14:05</small></li></ol></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

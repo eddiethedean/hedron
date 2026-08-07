@@ -16,7 +16,7 @@ Camera capture file input (capture=environment).
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="CameraCapture"><div class="hdc-stage"><div class="hdc-result"><strong>CameraCapture</strong><span>Camera capture file input (capture=environment).</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="CameraCapture"><div class="hdc-stage"><label class="hdc-file"><span class="hdc-file-icon" aria-hidden="true">C</span><strong>Camera capture</strong><small>capture=environment · permission/retention policy required</small><input type="file" accept="image/*" capture="environment"></label></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

@@ -16,7 +16,7 @@ Native time input.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="TimeInput"><div class="hdc-stage"><div class="hdc-result"><strong>TimeInput</strong><span>Native time input.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="TimeInput"><div class="hdc-stage"><div class="hdc-form"><label for="demo-time">Start time</label><input id="demo-time" type="time" value="09:30"></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

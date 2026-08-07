@@ -2217,6 +2217,68 @@ def static_demo(spec: ComponentDoc) -> str:
         return '<div class="hdc-shell"><aside aria-label="Workspace"><strong>Acme</strong><a href="#">Overview</a><a href="#">Settings</a></aside><main><h3>Overview</h3><p>Primary page content</p></main></div>'
     if name == "ChatMessage":
         return '<section class="hdc-chat" aria-label="Deployment conversation"><header class="hdc-chat-header"><span class="hdc-chat-avatar" aria-hidden="true">H</span><span><strong>Release assistant</strong><small><i aria-hidden="true"></i>Online</small></span></header><div class="hdc-transcript" role="log"><span class="hdc-chat-day">Today</span><article class="hdc-chat-message hdc-chat-user"><span class="hdc-chat-avatar" aria-hidden="true">Y</span><div><strong>You</strong><p>Is the release ready?</p><time datetime="14:31">2:31 PM</time></div></article><article class="hdc-chat-message hdc-chat-assistant"><span class="hdc-chat-avatar" aria-hidden="true">H</span><div><strong>Hedron</strong><p>Your deployment is ready. All checks passed.</p><time datetime="14:32">2:32 PM · Delivered</time></div></article></div></section>'
+    if name == "ConfirmButton":
+        return '<button class="hdc-button" type="button" data-hdc-action="confirm-delete">Delete item</button><p class="hdc-muted" role="status" data-hdc-status>Confirmation required before the action runs.</p>'
+    if name == "DateInput":
+        return '<div class="hdc-form"><label for="demo-date">Due date</label><input id="demo-date" type="date" value="2026-08-05"></div>'
+    if name == "DateTimeInput":
+        return '<div class="hdc-form"><label for="demo-datetime">Scheduled at</label><input id="demo-datetime" type="datetime-local" value="2026-08-05T14:30"></div>'
+    if name == "TimeInput":
+        return '<div class="hdc-form"><label for="demo-time">Start time</label><input id="demo-time" type="time" value="09:30"></div>'
+    if name == "NumberInput":
+        return '<div class="hdc-form"><label for="demo-number">Replicas</label><input id="demo-number" type="number" min="1" max="20" value="3"></div>'
+    if name == "Tooltip":
+        return '<p>Hover or focus <button class="hdc-button" type="button" title="More info about this control">Help</button> for the accessible title tip.</p>'
+    if name == "CircularProgress":
+        return '<div class="hdc-progress" role="status" aria-label="Upload 50 percent"><svg viewBox="0 0 36 36" width="48" height="48" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-opacity="0.2" stroke-width="3"/><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="47 94" transform="rotate(-90 18 18)"/></svg><span>50%</span></div>'
+    if name == "MenuButton":
+        return '<div class="hdc-inline"><button class="hdc-button" type="button" aria-haspopup="menu" aria-expanded="false">More</button><span class="hdc-muted">Opens a menu of actions (Edit · Archive).</span></div>'
+    if name == "NavLink":
+        return '<nav class="hdc-inline" aria-label="Demo"><a class="hdc-chip" href="#component-demo-result" aria-current="page">Overview</a><a class="hdc-chip" href="#component-demo-result">Settings</a></nav>'
+    if name == "ToggleSwitch":
+        return '<label class="hdc-choice"><input type="checkbox" role="switch" checked><span><strong>Email digests</strong><small>Weekly summary</small></span></label>'
+    if name == "ChipInput":
+        return '<div class="hdc-form"><label for="demo-chips">Tags</label><div class="hdc-inline"><span class="hdc-chip">python</span><span class="hdc-chip">htmx</span><input id="demo-chips" type="text" placeholder="Add tag…"></div></div>'
+    if name == "RangeInput":
+        return '<div class="hdc-form"><label for="demo-range">Volume</label><input id="demo-range" type="range" min="0" max="100" value="40"></div>'
+    if name == "ColorInput":
+        return '<div class="hdc-form"><label for="demo-color">Accent</label><input id="demo-color" type="color" value="#0f766e"></div>'
+    if name == "MultiSelect":
+        return '<div class="hdc-form"><label for="demo-multi">Teams</label><select id="demo-multi" multiple size="3"><option selected>Platform</option><option selected>Research</option><option>Design</option></select></div>'
+    if name == "OobHost":
+        return '<div class="hdc-fragment" id="demo-oob-host"><span class="hdc-badge">OOB host</span><span><strong>#status</strong><small>Stable swap root for out-of-band updates.</small></span></div>'
+    if name == "AttrHost":
+        return '<div class="hdc-fragment" id="demo-attr-host" data-state="idle"><strong>Attr host</strong><small>Receives attribute-only OOB patches.</small></div>'
+    if name == "Carousel":
+        return '<div class="hdc-stack" role="region" aria-label="Demo carousel"><strong>Slide 1 · Overview</strong><p class="hdc-muted">Ordered slides with previous/next controls in the live component.</p></div>'
+    if name == "Timeline":
+        return '<ol class="hdc-list"><li><span>Deploy started</span><small>14:01</small></li><li><span>Checks passed</span><small>14:04</small></li><li><span>Live</span><small>14:05</small></li></ol>'
+    if name == "Audio":
+        return '<div class="hdc-download"><span class="hdc-file-icon" aria-hidden="true">♪</span><span><strong>Audio player</strong><small>Requires a SafeUrl source in the real component.</small></span></div>'
+    if name == "Video":
+        return '<div class="hdc-download"><span class="hdc-file-icon" aria-hidden="true">▶</span><span><strong>Video player</strong><small>Requires a SafeUrl source in the real component.</small></span></div>'
+    if name == "CameraCapture":
+        return '<label class="hdc-file"><span class="hdc-file-icon" aria-hidden="true">C</span><strong>Camera capture</strong><small>capture=environment · permission/retention policy required</small><input type="file" accept="image/*" capture="environment"></label>'
+    if name == "MicrophoneCapture":
+        return '<label class="hdc-file"><span class="hdc-file-icon" aria-hidden="true">M</span><strong>Microphone capture</strong><small>capture=user · permission/retention policy required</small><input type="file" accept="audio/*" capture="user"></label>'
+    if name == "GeolocationButton":
+        return '<button class="hdc-button" type="button">Share location</button><p class="hdc-muted">Spoofable form fields — not authorization.</p>'
+    if name == "PageIcon":
+        return '<div class="hdc-inline"><span class="hdc-file-icon" aria-hidden="true">★</span><span><strong>Favicon helper</strong><small>Emits link/image metadata for the document head.</small></span></div>'
+    if name == "Spacer":
+        return '<div class="hdc-stack"><span>Above</span><div style="height:1.5rem;border-left:2px dashed currentColor;opacity:0.35" aria-hidden="true"></div><span>Below</span></div>'
+    if name == "Pills":
+        return '<div class="hdc-inline"><span class="hdc-chip">All</span><span class="hdc-chip">Active</span><span class="hdc-chip">Archived</span></div>'
+    if name == "SegmentedControl":
+        return '<div class="hdc-inline" role="group" aria-label="View"><button class="hdc-button hdc-primary" type="button">List</button><button class="hdc-button" type="button">Board</button></div>'
+    if name == "RatingInput":
+        return '<div class="hdc-form" role="group" aria-label="Rating"><span aria-hidden="true">★★★★☆</span><span class="hdc-muted">4 of 5</span></div>'
+    if name == "Popover":
+        return '<button class="hdc-button" type="button" aria-expanded="false">Details</button><p class="hdc-muted">Popover content appears on activation in the live component.</p>'
+    if name == "Help":
+        return '<button class="hdc-icon-button" type="button" aria-label="Help" title="What does this field mean?">?</button>'
+    if name == "ClipboardCopy":
+        return '<button class="hdc-button" type="button" data-hdc-action="show-toast">Copy API key</button><p class="hdc-muted" role="status">Copies a provided string to the clipboard.</p>'
     return f'<div class="hdc-result"><strong>{name}</strong><span>{spec.summary}</span></div>'
 
 
@@ -2536,6 +2598,20 @@ Every public Hedron component has a dedicated, usable example and a detailed ope
 !!! info "What the simulation does"
 
     JavaScript supplies deterministic in-browser responses only inside these docs previews. Production examples keep authentication, authorization, CSRF, validation, persistence, caching, and fragment rendering on the Python server. Each interactive page explains that boundary.
+
+## Start with these 10
+
+| Component | Why |
+|---|---|
+| [`Page`](page.md) / [`Text`](text.md) | First full document |
+| [`Stack`](stack.md) / [`Card`](card.md) | Layout and surfaces |
+| [`Form`](form.md) / [`TextInput`](text-input.md) / [`SubmitButton`](submit-button.md) | Classic forms |
+| [`Button`](button.md) / [`RefreshButton`](refresh-button.md) | Commands and HTMX refresh |
+| [`DataTable`](data-table.md) | Tabular data (`hedron[data]`) |
+
+Then browse the groups below. Golden path:
+[HTMX interactions](../guides/htmx-interactions.md) →
+[Minimal form](../guides/minimal-form.md).
 
 Use the pages below to choose a component, inspect its output, understand its constructor, and test its accessibility and backend contract.
 

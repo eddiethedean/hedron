@@ -16,7 +16,7 @@ Native number input.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="NumberInput"><div class="hdc-stage"><div class="hdc-result"><strong>NumberInput</strong><span>Native number input.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="NumberInput"><div class="hdc-stage"><div class="hdc-form"><label for="demo-number">Replicas</label><input id="demo-number" type="number" min="1" max="20" value="3"></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

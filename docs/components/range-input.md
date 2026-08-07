@@ -16,7 +16,7 @@ Native range slider input.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="RangeInput"><div class="hdc-stage"><div class="hdc-result"><strong>RangeInput</strong><span>Native range slider input.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="RangeInput"><div class="hdc-stage"><div class="hdc-form"><label for="demo-range">Volume</label><input id="demo-range" type="range" min="0" max="100" value="40"></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

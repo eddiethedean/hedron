@@ -16,7 +16,7 @@ Stable out-of-band swap root with a reserved id.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="OobHost"><div class="hdc-stage"><div class="hdc-result"><strong>OobHost</strong><span>Stable out-of-band swap root with a reserved id.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="OobHost"><div class="hdc-stage"><div class="hdc-fragment" id="demo-oob-host"><span class="hdc-badge">OOB host</span><span><strong>#status</strong><small>Stable swap root for out-of-band updates.</small></span></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

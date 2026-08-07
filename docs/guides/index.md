@@ -111,7 +111,7 @@ Evaluating adoption? Use the top-level **Adopt** nav
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>0.8/0.9 → 0.10 migration notes.</p>
+    <p>0.17 → 0.18 notes (and older trains).</p>
   </a>
   <a class="hedron-card" href="openapi/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>

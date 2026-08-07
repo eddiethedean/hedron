@@ -26,7 +26,7 @@ describe **API/artifact** promises.
 
 The following contracts are **`stable`** (compatibility-protected on the 0.x train).
 Everything else remains `beta` / `experimental` unless listed below. Package maturity on
-PyPI remains **Beta** — pin versions. Maturity SSOT for product claims:
+PyPI remains **Beta** — pin versions. Maturity source of truth for product claims:
 [What’s ready](../guides/whats-ready.md).
 
 | Symbol / contract | Package |
@@ -176,17 +176,19 @@ disabled; absence adds no core cost. Not Supported production parity with Gradio
 Optional Rust HTML-escape acceleration with pure-Python fallback. Absence never changes public
 semantics (D-048).
 
-## Deferred destinations
+## Historical notes (resolved in 0.11+)
 
-| Item | Decision | Destination |
+These items were once deferred destinations; they are **Supported** (or Experimental for live
+helpers) on the current line. Kept here so older upgrade notes remain navigable.
+
+| Item | Decision | Status |
 |---|---|---|
-| Django QuerySet DataSource | D-046 | Supported in 0.11 |
-| Flask Blueprint / `init_app` ergonomic layer | D-041 / D-046 | Supported in 0.11 |
-| Django AppConfig convenience layer | D-041 / D-046 | Supported in 0.11 |
-| Celery / RQ `JobBackend` bridges | D-046 | Supported extras in 0.11 |
-| Flask / Django live helpers | D-044 / D-046 | Experimental API; polling Supported |
-
-Capture UI (D-045) ships on the **0.15** train (beta); it is no longer deferred.
+| Django QuerySet DataSource | D-046 | **Supported** since 0.11 |
+| Flask Blueprint / `init_app` ergonomic layer | D-041 / D-046 | **Supported** since 0.11 |
+| Django AppConfig convenience layer | D-041 / D-046 | **Supported** since 0.11 |
+| Celery / RQ `JobBackend` bridges | D-046 | **Supported** optional bridges (shared Redis for multi-worker) |
+| Flask / Django live helpers | D-044 / D-046 | **Experimental** API; polling **Supported** |
+| Camera / microphone capture UI | D-045 | **Supported** since 0.15 (with policy limits) |
 
 ## Live transports (0.10+) — experimental until ops gates close
 

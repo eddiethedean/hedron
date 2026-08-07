@@ -16,7 +16,7 @@ Circular determinate/indeterminate progress with status text.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="CircularProgress"><div class="hdc-stage"><div class="hdc-result"><strong>CircularProgress</strong><span>Circular determinate/indeterminate progress with status text.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="CircularProgress"><div class="hdc-stage"><div class="hdc-progress" role="status" aria-label="Upload 50 percent"><svg viewBox="0 0 36 36" width="48" height="48" aria-hidden="true"><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-opacity="0.2" stroke-width="3"/><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="47 94" transform="rotate(-90 18 18)"/></svg><span>50%</span></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

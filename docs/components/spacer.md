@@ -16,7 +16,7 @@ Semantic spacing primitive.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Spacer"><div class="hdc-stage"><div class="hdc-result"><strong>Spacer</strong><span>Semantic spacing primitive.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Spacer"><div class="hdc-stage"><div class="hdc-stack"><span>Above</span><div style="height:1.5rem;border-left:2px dashed currentColor;opacity:0.35" aria-hidden="true"></div><span>Below</span></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

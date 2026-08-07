@@ -11,6 +11,20 @@ Every public Hedron component has a dedicated, usable example and a detailed ope
 
     JavaScript supplies deterministic in-browser responses only inside these docs previews. Production examples keep authentication, authorization, CSRF, validation, persistence, caching, and fragment rendering on the Python server. Each interactive page explains that boundary.
 
+## Start with these 10
+
+| Component | Why |
+|---|---|
+| [`Page`](page.md) / [`Text`](text.md) | First full document |
+| [`Stack`](stack.md) / [`Card`](card.md) | Layout and surfaces |
+| [`Form`](form.md) / [`TextInput`](text-input.md) / [`SubmitButton`](submit-button.md) | Classic forms |
+| [`Button`](button.md) / [`RefreshButton`](refresh-button.md) | Commands and HTMX refresh |
+| [`DataTable`](data-table.md) | Tabular data (`hedron[data]`) |
+
+Then browse the groups below. Golden path:
+[HTMX interactions](../guides/htmx-interactions.md) →
+[Minimal form](../guides/minimal-form.md).
+
 Use the pages below to choose a component, inspect its output, understand its constructor, and test its accessibility and backend contract.
 
 ## Document and composition

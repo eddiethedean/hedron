@@ -16,7 +16,7 @@ Alias of HtmxLink for navigation lists and AppShell side nav.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="NavLink"><div class="hdc-stage"><div class="hdc-result"><strong>NavLink</strong><span>Alias of HtmxLink for navigation lists and AppShell side nav.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="NavLink"><div class="hdc-stage"><nav class="hdc-inline" aria-label="Demo"><a class="hdc-chip" href="#component-demo-result" aria-current="page">Overview</a><a class="hdc-chip" href="#component-demo-result">Settings</a></nav></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

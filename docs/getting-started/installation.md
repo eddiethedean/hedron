@@ -120,9 +120,9 @@ Install extras only when you need them:
 | `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` / `[auth]` / `[browser]` | Content, Authlib, or test helpers |
 
 ```bash
-pip install "hedron[data]"          # example
-pip install "hedron[charts]"
-pip install "hedron-charts[plotly]" # chart backend after charts extra
+pip install "hedron[data]>=0.18.0"          # example
+pip install "hedron[charts]>=0.1.0"         # Alpha — pin and expect churn
+pip install "hedron-charts[plotly]>=0.1.0"  # chart backend after charts extra
 ```
 
 ### Other hosts

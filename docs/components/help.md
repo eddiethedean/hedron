@@ -16,7 +16,7 @@ Accessible help text associated with a control.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="Help"><div class="hdc-stage"><div class="hdc-result"><strong>Help</strong><span>Accessible help text associated with a control.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="Help"><div class="hdc-stage"><button class="hdc-icon-button" type="button" aria-label="Help" title="What does this field mean?">?</button></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

@@ -1,37 +1,39 @@
 # Evaluate Hedron
 
 Short fit check for evaluators. **Capability truth lives only on
-[What’s ready today](whats-ready.md)** — use that page for Supported / Deferred detail.
+[What’s ready today](whats-ready.md)** — use that page for Supported / Experimental / Alpha detail.
 
 ## What it is
 
 Hedron is a typed, server-rendered Python UI layer for **FastAPI + HTMX** (with Flask and
 Django adapters). It is not a notebook-style rerun engine, SPA framework, ORM, or IdP.
+Compare positioning: [Why Hedron](why-hedron.md).
 
-## Current train
+## Version and support
 
 | Item | Value |
 |---|---|
-| Current train | **0.18.0** (Beta; **Published**) |
+| Version | **0.18.0** (Beta on PyPI — pin for production) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
 | Scheduled 1.0 | **None** — expect occasional breaking changes on `0.x` |
 
-Pin versions in production. Read [What’s ready](whats-ready.md) before shipping.
-
 ## What to use today
 
-See the Supported table on [What’s ready](whats-ready.md). In short: typed pages/fragments,
-CSRF profiles, HTMX loops, Flask/Django adapters, optional data/Jinja/dev extras. Charts
-are Alpha. Live SSE/WebSocket APIs ship on FastAPI but prefer polling until you have ops
-proof.
+- **Ship:** typed pages/fragments, CSRF profiles, HTMX loops, Flask/Django adapters,
+  optional `hedron[data]` / `hedron[jinja]` / `hedron[dev]`, polling job status
+- **Prefer polling:** live SSE / WebSocket (`hedron.experimental`)
+- **Pin and expect churn:** `hedron[charts]` (Alpha), notebook / MCP / Gradio (Alpha / Experimental)
+- **Model demos:** Supported on Beta packages — [Model demos](model-demos.md)
+
+Full matrix: [What’s ready](whats-ready.md).
 
 ## What not to depend on yet
 
-See Deferred on [What’s ready](whats-ready.md) — for example full multi-engine live browser
-matrix and load/proxy evidence. Prefer Experimental specialty extras only with fail-closed
-policies; do not treat them as beachhead Supported UI.
+- Full multi-engine live browser matrix and load/proxy backpressure proof for live transports
+- Specialty extras (TerminalView, joystick, device bridges) as production UI —
+  Experimental only with fail-closed policies
 
 ## When Hedron is a poor fit
 

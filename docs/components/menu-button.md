@@ -16,7 +16,7 @@ Button that reveals a menu of actions.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="MenuButton"><div class="hdc-stage"><div class="hdc-result"><strong>MenuButton</strong><span>Button that reveals a menu of actions.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="MenuButton"><div class="hdc-stage"><div class="hdc-inline"><button class="hdc-button" type="button" aria-haspopup="menu" aria-expanded="false">More</button><span class="hdc-muted">Opens a menu of actions (Edit · Archive).</span></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

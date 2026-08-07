@@ -16,7 +16,7 @@ Microphone capture file input (capture=user).
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="MicrophoneCapture"><div class="hdc-stage"><div class="hdc-result"><strong>MicrophoneCapture</strong><span>Microphone capture file input (capture=user).</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="MicrophoneCapture"><div class="hdc-stage"><label class="hdc-file"><span class="hdc-file-icon" aria-hidden="true">M</span><strong>Microphone capture</strong><small>capture=user · permission/retention policy required</small><input type="file" accept="audio/*" capture="user"></label></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

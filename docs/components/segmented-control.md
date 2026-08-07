@@ -16,7 +16,7 @@ Segmented radio control group.
 
 ## Live demo
 
-<section class="hedron-component-demo" data-hedron-component-demo="SegmentedControl"><div class="hdc-stage"><div class="hdc-result"><strong>SegmentedControl</strong><span>Segmented radio control group.</span></div></div></section>
+<section class="hedron-component-demo" data-hedron-component-demo="SegmentedControl"><div class="hdc-stage"><div class="hdc-inline" role="group" aria-label="View"><button class="hdc-button hdc-primary" type="button">List</button><button class="hdc-button" type="button">Board</button></div></div></section>
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 

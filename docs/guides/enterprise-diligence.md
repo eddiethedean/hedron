@@ -1,7 +1,7 @@
 # Enterprise diligence
 
 Short diligence sheet for security, procurement, and architecture reviewers.
-**Capability maturity:** [What’s ready](whats-ready.md) (sole SSOT).
+**Capability maturity:** [What’s ready](whats-ready.md) (sole source of truth).
 **Fit:** [Evaluate Hedron](evaluate.md) · **Ops:** [Production readiness](production-readiness.md) ·
 [Design principles](design-principles.md).
 
@@ -10,7 +10,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Current train | **0.18.0** (Beta; **Published**) |
+| Version | **0.18.0** (Beta on PyPI — pin for production) |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner |

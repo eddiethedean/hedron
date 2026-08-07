@@ -42,15 +42,25 @@ Extras, Flask/Django, and troubleshooting: [Installation](installation.md).
 **Do not** re-run `hedron new` or paste a second `app.py` over the scaffold unless you
 intend to replace it.
 
-1. Open `app.py` and change the home `Text(...)` (or greeting string) to your name.
+1. Open `app.py` and change the home `Text(...)` (or greeting string) to your name
+   (see before/after below).
 2. Save — with `--reload`, the browser should update.
-3. Add a small form next: [Minimal form POST](../guides/minimal-form.md).
-4. Then add a region update without full reload: [HTMX interactions](../guides/htmx-interactions.md).
+3. Add a region update without full reload: [HTMX interactions](../guides/htmx-interactions.md).
+4. Then add a small form: [Minimal form POST](../guides/minimal-form.md).
 
-Optional checks:
+### Before / after
+
+```python
+# Before (scaffold greeting)
+Text("Hello from hedron new")
+
+# After
+Text("Hello from Ada")
+```
+
+Optional checks (after the HTMX guide — `HX-Request` fragments are covered there):
 
 ```bash
-curl -H 'HX-Request: true' http://127.0.0.1:8000/
 python -m hedron check --app app:app   # or: uv run hedron check --app app:app
 ```
 
@@ -95,7 +105,6 @@ available. Always set an explicit `session_secret` before deployment.
 
 - A typed `Page` renders as a full HTML document.
 - Editing Python components updates the UI (with reload).
-- The same route can return fragment HTML when HTMX headers are present.
 
 **Next:** [HTMX interactions](../guides/htmx-interactions.md) →
-[Minimal form](../guides/minimal-form.md) → [Learning path](learning-path.md)
+[Minimal form POST](../guides/minimal-form.md) → [Learning path](learning-path.md)

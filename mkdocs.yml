@@ -181,11 +181,11 @@ nav:
       - Troubleshooting: guides/troubleshooting.md
       - Error codes: guides/error-codes.md
   - Adopt:
+    - Why Hedron: guides/why-hedron.md
     - What's ready today: guides/whats-ready.md
     - Evaluate Hedron: guides/evaluate.md
     - Enterprise diligence: guides/enterprise-diligence.md
     - More:
-      - Why Hedron: guides/why-hedron.md
       - Production readiness: guides/production-readiness.md
       - Architecture: ARCHITECTURE.md
       - Conformance kit: conformance/INDEX.md

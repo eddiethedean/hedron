@@ -76,8 +76,8 @@ pip + venv alternate: [installation](getting-started/installation.md).
 ## Next steps
 
 1. Open `app.py` and change the Hello text ([quickstart](getting-started/quickstart.md))
-2. [Minimal form POST](guides/minimal-form.md)
-3. [HTMX interactions](guides/htmx-interactions.md)
+2. [HTMX interactions](guides/htmx-interactions.md)
+3. [Minimal form POST](guides/minimal-form.md)
 4. [Learning path](getting-started/learning-path.md)
 
 Then: [Try with Codespaces](examples/try-it.md) · [runnable examples](examples/runnable.md) ·

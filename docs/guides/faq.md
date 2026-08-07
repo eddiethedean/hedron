@@ -8,15 +8,19 @@ pip install "hedron>=0.18.0"
 uv add "hedron>=0.18.0"
 ```
 
-That pins the current published train (**0.18.0**). See
-[What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md). For curated
-extras (`hedron-extras`), install `hedron[extras]`. `Auto` is included. For
-DataTable/DataEditor, install `hedron[data]`. For charts, install `hedron[charts]`.
-For Flask/Django adapters:
+That pins **Hedron 0.18.0** (Beta on PyPI). See
+[What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md).
+
+**How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
+
+For curated extras (`hedron-extras`), install `hedron[extras]>=0.18.0`.
+**Auto** (inspectable object rendering built into `hedron` — no extra) is included.
+For DataTable/DataEditor, install `hedron[data]>=0.18.0`. For charts, install
+`hedron[charts]>=0.1.0` (Alpha). For Flask/Django adapters:
 
 ```bash
-pip install hedron-flask
-pip install hedron-django   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.18.0"
+pip install "hedron-django>=0.18.0"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -60,7 +64,7 @@ Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or 
 
 ## Should I use `uv init` or `hedron new`?
 
-Prefer **`hedron new`** for a ready scaffold on the current train (install Hedron first).
+Prefer **`hedron new`** for a ready scaffold on **0.18.x** (install Hedron first).
 `uv init` + a hand-written `app.py` from the quickstart also works. Do not nest both into
 the same directory by accident.
 
@@ -76,7 +80,8 @@ Detailed API compatibility levels live in [STABILITY](../api/STABILITY.md).
 
 ## Are Auto, DataTable, and charts available?
 
-**Auto** and **DataTable/DataEditor** are Beta Supported (`hedron` / `hedron[data]`).
+**Auto** (built-in inspectable object rendering — no extra) and **DataTable/DataEditor**
+are Supported on Beta packages (`hedron` / `hedron[data]`).
 **Charts** (`hedron[charts]`) are **Alpha** — available on PyPI, pin versions, expect churn.
 See [What’s ready](whats-ready.md).
 
