@@ -8,6 +8,20 @@
 4. Keep `explorer="off"` (or `secured` with real auth). Development Explorer is disabled in production.
 5. Serve behind HTTPS so CSRF cookies can be `Secure`.
 
+## Flask / Django parity
+
+Adapter hosts follow the same secrets, HTTPS, and CSRF hygiene. Differences:
+
+| Concern | Flask (`hedron-flask`) | Django (`hedron-django`) |
+|---|---|---|
+| App factory | `HedronFlask` / `init_app` or `hedron new --flask` | AppConfig + views / `hedron new --django` |
+| CSRF | Hedron cookie + validate on unsafe `respond` / routes | Django CSRF middleware + portable `X-CSRF-Token` |
+| Production build gates | Use FastAPI flagship patterns when serving Hedron HTML from FastAPI; Flask/Django apps still need HTTPS + secrets | Same — Django `DEBUG=False`, `SECRET_KEY`, HTTPS |
+| Live updates | Prefer **polling** (SSE/WS helpers are FastAPI-experimental only) | Prefer **polling** |
+
+Quickstarts: [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) ·
+[Adapters API](../api/ADAPTERS.md).
+
 ## Environment
 
 | Variable | Role |

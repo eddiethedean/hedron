@@ -191,8 +191,15 @@ Advisory findings on a hello-world scaffold are normal.
 
 ## Alternative — add Hedron to an existing FastAPI app
 
-If you already have a FastAPI project, install `hedron>=0.20.0,<0.21` into that environment
-and mount a `Hedron` app (or include a `HedronRouter`). Minimal shape:
+!!! warning "FastAPI pin is a hard prerequisite"
+
+    Hedron requires FastAPI `>=0.141.1,<0.142`. Shared or older FastAPI environments will
+    fail to resolve. Use a **clean venv** (or upgrade FastAPI into that pin) before mounting.
+    See [troubleshooting](../guides/troubleshooting.md).
+
+If you already have a FastAPI project that satisfies the pin, install
+`hedron>=0.20.0,<0.21` into that environment and mount a `Hedron` app (or include a
+`HedronRouter`). Minimal shape:
 
 ```python
 from fastapi import FastAPI

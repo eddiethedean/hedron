@@ -1,5 +1,8 @@
 # Try Hedron with Codespaces / Dev Container
 
+**Fastest path if you already have Python:** skip this page and use
+[Build your first app](../getting-started/quickstart.md) (no clone required).
+
 **No local Python install required** — open this repository in GitHub Codespaces or a Dev
 Container, then run a **real** Hedron server (still not a hosted playground).
 

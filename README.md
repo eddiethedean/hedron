@@ -95,15 +95,17 @@ Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Op
 
 ## Who it’s for
 
-CRUD, admin, dashboards, and forms as typed Python on FastAPI — when you want HTMX fragments,
-CSRF defaults, and multi-worker jobs without a Node frontend.
-
-Prefer Streamlit for notebook-style rerun dashboards; prefer raw FastAPI+HTMX if you don’t want
-a component framework. Details: [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
+CRUD, admin, dashboards, and forms as typed Python on FastAPI — when you want HTMX fragment
+regions, CSRF defaults, and multi-worker job status **without** assembling a hand-rolled
+Jinja+HTMX stack.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
-See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
+See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
+[Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
+
+After you have Hello + Refresh working: prefer Streamlit for notebook-style rerun dashboards,
+or raw FastAPI+HTMX if you do not want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.20/) ·

@@ -1,5 +1,9 @@
 # What’s new in 0.18
 
+!!! note "Historical phase"
+
+    This page describes **0.18**. The living published train is **0.20** (`v0.20.0`).
+
 Phase **0.18** adds model demos and inference workflows — fail-closed demo composition,
 governed feedback, inference scheduling over `JobBackend`, an interaction recorder, typed
 workflows, and optional Gradio interop. See

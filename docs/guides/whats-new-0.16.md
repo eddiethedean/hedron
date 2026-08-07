@@ -1,5 +1,9 @@
 # What’s new in 0.16
 
+!!! note "Historical phase"
+
+    This page describes **0.16**. The living published train is **0.20** (`v0.20.0`).
+
 Phase **0.16** adds an optional `hedron-extras` toolkit for specialized data-app interactions and
 analysis workbenches — without expanding the core runtime or adopting Streamlit-style reruns or a
 Vue/WebSocket client.

@@ -15,8 +15,12 @@ browser context, and scenario testing — without Streamlit-style whole-script r
 
 ## Upgrade notes
 
-Pin `hedron>=0.15.0,<0.16` when staying on that train. Current published train is **0.18** —
-prefer [What’s new in 0.18](whats-new-0.18.md) and the [upgrade guide](upgrade.md) for new apps.
+!!! note "Historical phase"
+
+    This page describes **0.15**. The living published train is **0.20** (`v0.20.0`) —
+    see [What’s new in 0.20](whats-new-0.20.md) and the [upgrade guide](upgrade.md).
+
+Pin `hedron>=0.15.0,<0.16` when staying on the 0.15 line.
 
 Runnable phase exit sample:
 [`examples/data-app-0.15`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.15)

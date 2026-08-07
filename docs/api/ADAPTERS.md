@@ -148,13 +148,45 @@ def home(request):
 |---|---|
 | `HedronDjangoConfig` | Installable AppConfig + `hedron.*` system checks |
 | `hedron_view` | Wrap sync/async views; seeds CSRF cookie on safe GETs |
-| `form_to_nodes` / `validation_interaction` | Django Form / ModelForm / formset bridge |
-| `DjangoQuerySetDataSource` (`hedron-data`) | Bounded QuerySet source (deny-by-default allowlists) |
 | `interaction_response` / `component_response` | Build `HttpResponse` values |
 | `DjangoUrlReverser` | `reverse` with mount prefixes |
 
 **Settings:** Prefer `CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"` for portable `X-CSRF-Token`.
 Django floor: `>=5.2,<6`.
+
+### Django forms bridge (`hedron_django.forms`)
+
+| Function | Returns | Description |
+|---|---|---|
+| `form_to_nodes(form, *, request=None, include_csrf=True)` | `list[NodeLike]` | Optional CSRF hidden input, non-field errors, then field nodes |
+| `formset_to_nodes(formset, *, request=None, include_csrf=True)` | `list[NodeLike]` | Management form + each form’s fields |
+| `validation_interaction(form, *, request=None, explanation=...)` | `InteractionResult` | Invalid-form fragment for HTMX / non-HTMX parity |
+
+CSRF: pass `request` when `include_csrf=True` so the portable hidden field is included.
+Prefer Django’s CSRF middleware + portable `X-CSRF-Token` header for unsafe methods.
+
+### `DjangoQuerySetDataSource` (`hedron_data`)
+
+Bounded QuerySet `DataEditorSource`. **Deny-by-default:** omitted sort/filter allowlists
+mean no client refinements. The constructor never calls `.objects.all()` — you supply an
+already authorized/tenant-scoped QuerySet.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `base_queryset` | QuerySet | required | Application-scoped queryset (must be a `*QuerySet`) |
+| `key_field` | `str` | `"pk"` | Row key field |
+| `schema` | sequence of `ColumnSchema` | `()` | Column catalog |
+| `allowlisted_sort_fields` | `frozenset[str] \| None` | `None` → empty | Client sort allowlist |
+| `allowlisted_filter_fields` | `frozenset[str] \| None` | `None` → empty | Client filter allowlist |
+| `search_fields` | sequence of `str` | `()` | Search fields |
+| `max_page_size` | `int` | `100` | Page size ceiling |
+| `query_budget` | `int` | `25` | Max ORM queries per fetch (`QueryBudgetExceeded`) |
+| `row_mapper` | callable \| `None` | `None` | Map model → JSON row |
+| `apply_changes` | callable \| `None` | `None` | Persist editor changes |
+| `transaction_owner` | `str` | `"application"` | Who owns DB transactions |
+
+**Raises:** `TypeError` if `base_queryset` is not a QuerySet; `QueryBudgetExceeded` when
+the fetch exceeds `query_budget`.
 
 ## Live transport (FastAPI vs adapters)
 
@@ -168,6 +200,8 @@ ship the FastAPI SSE/WebSocket helpers.
 
 | Situation | Host | Behavior |
 |---|---|---|
+| Invalid QuerySet type for `DjangoQuerySetDataSource` | Django data | `TypeError` |
+| Query count over budget | Django data | `QueryBudgetExceeded` |
 | CSRF missing/invalid on unsafe method | Flask `hedron_route` / `respond` | HTTP 403 |
 | CSRF missing/invalid | Django (middleware + portable header) | HTTP 403 (Django CSRF) |
 | Unauthorized fragment / OOB region | Flask / Django | HTTP 403 body |

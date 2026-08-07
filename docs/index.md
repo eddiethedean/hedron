@@ -8,18 +8,18 @@ hide:
 
 <div class="hedron-eyebrow">Python-first UI framework · v0.20.0</div>
 
-# Build modern web UIs in Python.<br><span class="hedron-gradient-text">No Node.js required.</span>
+# Build typed FastAPI UIs in Python.<br><span class="hedron-gradient-text">HTMX fragments, no Node.</span>
 
-Hedron turns typed Python components into server-rendered HTML with FastAPI and HTMX.
-Build dashboards, admin tools, forms, and CRUD apps without a frontend build chain.
+Typed pages and HTMX fragment regions on FastAPI — CSRF profiles, DI, and multi-worker
+job status without assembling a hand-rolled Jinja+HTMX stack.
 { .hedron-lede }
 
-Unlike Streamlit’s script-rerun model, Hedron returns typed components from FastAPI routes
-and swaps HTML fragments with HTMX — no Node.js build step.
+Unlike Streamlit’s script-rerun model, Hedron returns components from FastAPI routes and
+swaps HTML fragments in place.
 { .hedron-lede }
 
-**~5–10 minutes:** install → `hedron new` → open localhost:8000 → **Hello from hedron new** →
-click **Refresh status** (the time updates).
+**Often ~5–10 minutes** after Python and uv/pip are ready: install → `hedron new` →
+open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
@@ -30,28 +30,44 @@ click **Refresh status** (the time updates).
 
 <div class="hedron-signal-row">
   <span>Python 3.11–3.14</span>
-  <span>FastAPI native</span>
-  <span>No Node.js required</span>
+  <span>FastAPI + HTMX</span>
+  <span>No Node build</span>
 </div>
 
 </div>
 
 ## From zero to a rendered page
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first if you do not
-have it (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux).
+Prefer a clean virtualenv (Hedron needs FastAPI `>=0.141.1,<0.142`). Pin production
+installs with `hedron>=0.20.0,<0.21`.
 
-```bash
-uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
-cd my-hedron-app
-uv sync
-uv run uvicorn app:app --reload
-```
+=== "uv (recommended)"
+
+    Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if needed
+    (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux).
+
+    ```bash
+    uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
+    cd my-hedron-app
+    uv sync
+    uv run uvicorn app:app --reload
+    ```
+
+=== "pip (venv)"
+
+    ```bash
+    python3 -m venv .venv && source .venv/bin/activate
+    python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+    python -m hedron new my-hedron-app
+    cd my-hedron-app && python -m pip install -e .
+    uvicorn app:app --reload
+    ```
 
 !!! note "Install pin"
 
-    Pin production installs with `hedron>=0.20.0,<0.21`. Prefer a clean virtualenv —
-    Hedron requires FastAPI `>=0.141.1,<0.142` (see [troubleshooting](guides/troubleshooting.md)).
+    Prefer a clean virtualenv — Hedron requires FastAPI `>=0.141.1,<0.142`
+    (see [troubleshooting](guides/troubleshooting.md)). Pip needs two installs (CLI, then
+    `pip install -e .` inside the scaffold) — [FAQ](guides/faq.md#why-install-hedron-twice-cli-then-project).
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 Click **Refresh status** — the page updates without a full reload. Hedron returns a small
@@ -111,6 +127,9 @@ HTML fragment; [HTMX](https://htmx.org) swaps it into the declared region.
     def refresh_status():
         return swap(status_panel())
     ```
+
+`session_secret` and `security="standard"` appear even in Hello because sessions and CSRF
+defaults are on by design — override via `HEDRON_SESSION_SECRET` in real apps.
 
 Extras and troubleshooting: [installation](getting-started/installation.md).
 

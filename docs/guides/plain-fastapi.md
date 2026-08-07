@@ -63,6 +63,15 @@ async def seed_csrf_cookie(request: Request, call_next):
 `app.state.hedron_security` is set. The middleware above seeds the cookie on safe GETs
 the way `Hedron()` does.
 
+## Errors you must handle yourself
+
+| Situation | Behavior on this path |
+|---|---|
+| CSRF missing/invalid on unsafe method | HTTP 403 from Hedron route CSRF when policy is set |
+| FastAPI outside `>=0.141.1,<0.142` | Install / resolver failure — clean venv or pin FastAPI |
+| Missing session middleware | Session/CSRF features break — install `SessionMiddleware` |
+| Production without build manifest | Prefer `Hedron(production=True)` path or run `hedron build` yourself |
+
 ## What you still configure
 
 | Concern | Responsibility |
@@ -73,6 +82,7 @@ the way `Hedron()` does.
 | CSRF cookie seeding | Safe-GET middleware or equivalent (see above) |
 | Static HTMX / assets | `mount_hedron_static` / build asset mounts |
 | Explorer | Mount `hedron-explorer` only if you need it |
+| Production build | `hedron build` + deploy `manifest.json` when using production gates |
 
 For most new apps, prefer `Hedron()` ([API](../api/HEDRON.md)). Use this path when
 integrating into an existing FastAPI service. The [reference app](../examples/reference-app.md)

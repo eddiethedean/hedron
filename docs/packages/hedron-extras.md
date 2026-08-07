@@ -27,7 +27,7 @@ cost.
 
 | Extra | Notes |
 |---|---|
-| `code_editor` / `json_editor` | Editor workbenches |
+| `code_editor` / `json_editor` | Editor surfaces — **`CodeEditor` is a CSP-safe host stub** (no pinned CodeMirror 6); `JSONEditor` is the fuller editor |
 | `data_explorer` | Pulls `hedron-data` |
 | `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Alpha) |
 | `image_tools` / `calendar` / `signature` / `typeahead` | UI tools |
@@ -37,10 +37,12 @@ cost.
 ## When to use
 
 - Specialized data-app interactions beyond core built-ins
-- Code / JSON editors, calendars, image tools, recipe cards
+- JSON editors, calendars, image tools, recipe cards
 
-Do **not** treat specialty bridges as Supported production defaults. Native desktop
-shell is a separate docs recipe — see
+Do **not** treat `CodeEditor` as a full IDE widget — it is a **host stub** (Experimental;
+see [What’s ready](../guides/whats-ready.md)). Do **not** treat specialty bridges
+(`TerminalView`, joystick, device, sandbox) as Supported production defaults. Native
+desktop shell is a separate docs recipe — see
 [Native desktop shell](../guides/native-desktop-shell.md).
 
 ## Quick start
@@ -57,7 +59,8 @@ Components register automatically when the package is installed.
 
 | Area | Components |
 |---|---|
-| Workbenches | `CodeEditor`, `JSONEditor`, `DataExplorer`, `ChartWorkbench`, `CallableActionForm` |
+| Workbenches | `JSONEditor`, `DataExplorer`, `ChartWorkbench`, `CallableActionForm` |
+| Editors (stub) | `CodeEditor` — **CSP-safe host stub** (no CodeMirror 6 bundle); Experimental |
 | Composition | `ChoiceCards`, `TreeView`, `Steps`, `SplitPane`, `FloatingAction`, `KeyboardShortcuts` |
 | Editors | `Calendar`, `SignaturePad`, `Typeahead` |
 | Image | `ImageCompare`, `ImageCrop`, `ImageRegionSelect`, `ImageAnnotations` |
@@ -69,6 +72,7 @@ Components register automatically when the package is installed.
 
 | Condition | Behavior |
 |---|---|
+| Expecting a full CodeMirror editor from `CodeEditor` | Out of scope — host stub only; see What’s ready |
 | Specialty surface without policy | Fail closed — no silent privilege |
 | Missing `data_explorer` / chart deps | Import / feature unavailable until extras installed |
 | Expecting a second runtime | Out of scope — extras are plugins on `hedron-core` |

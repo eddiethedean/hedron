@@ -1,8 +1,8 @@
 # Learn Hedron
 
-**Goal in ~5–10 minutes:** Hello + click **Refresh status**. Ignore Beta/Supported labels
-until that works. Then: HTMX second region → `/notes` form → pick one recipe (auth or
-SQLite).
+**Goal (often ~5–10 minutes after Python + uv/pip are ready):** Hello + click
+**Refresh status**. Ignore Beta/Supported labels until that works. Then: HTMX second
+region → `/notes` form → pick one recipe (auth or SQLite).
 
 ## Path
 
@@ -54,8 +54,9 @@ Evaluating production use later? [What’s ready](../guides/whats-ready.md) ·
 
 ## Other hosts
 
-- [Flask](flask.md) — `hedron-flask` (no FastAPI)
-- [Django](django.md) — `hedron-django` (Django `>=5.2,<6`)
+- [Flask](flask.md) — `hedron new --flask` then `hedron-flask` (no FastAPI)
+- [Django](django.md) — `hedron new --django` then `hedron-django` (Django `>=5.2,<6`)
+- [Plain FastAPI](../guides/plain-fastapi.md) — mount Hedron beside an existing FastAPI app
 
-There is no `hedron new --flask` / `--django` yet. Codespaces path:
+FastAPI remains the default `hedron new` path. Codespaces:
 [Try with Codespaces](../examples/try-it.md).

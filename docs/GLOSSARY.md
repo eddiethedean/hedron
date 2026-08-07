@@ -56,3 +56,26 @@ sandbox for hostile authors.
 **TrustedHtml** — An explicit trusted type accepted by raw HTML rendering. Ordinary strings never imply trust.
 
 **Web Component** — A standards-based custom element used for persistent browser-local behavior such as a data grid or chart runtime.
+
+## Maturity vocabulary
+
+**Train** — A coordinated package version line (for example `0.20.x` / tag `v0.20.0`) that
+adopters pin together. “Living train” means the current published line on PyPI/git.
+
+**Package maturity (Beta / Alpha)** — PyPI packaging readiness. **Beta** flagship packages
+are pin-for-production; **Alpha** packages expect more churn. Not the same as capability
+readiness or API `stable`.
+
+**Supported** — Capability readiness: works on the current train when pinned. **Not** a
+commercial SLA and **not** the same as API compatibility level `stable`.
+
+**Experimental** — Public API shipped; may change; prefer documented fallbacks (for example
+polling instead of SSE).
+
+**Deferred** — Documented but not ready; do not market as Supported.
+
+**API compatibility (`stable` / `beta` / …)** — Catalogued in [STABILITY.md](api/STABILITY.md).
+Most public symbols remain `beta` on `0.x`.
+
+Canonical snapshot: [What’s ready today](guides/whats-ready.md) · cheat-sheet:
+[How to read](getting-started/how-to-read.md).

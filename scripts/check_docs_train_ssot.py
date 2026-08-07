@@ -31,10 +31,14 @@ CHECKED = [
     ROOT / "docs" / "getting-started" / "installation.md",
     ROOT / "docs" / "getting-started" / "quickstart.md",
     ROOT / "docs" / "getting-started" / "how-to-read.md",
+    ROOT / "docs" / "getting-started" / "index.md",
     ROOT / "docs" / "guides" / "troubleshooting.md",
     ROOT / "docs" / "guides" / "faq.md",
     ROOT / "docs" / "guides" / "evidence-pack.md",
     ROOT / "docs" / "guides" / "production-readiness.md",
+    ROOT / "docs" / "guides" / "dashboards.md",
+    ROOT / "docs" / "guides" / "performance.md",
+    ROOT / "docs" / "guides" / "whats-new-0.15.md",
     ROOT / "docs" / "examples" / "try-it.md",
     ROOT / "docs" / "guides" / "best-practices.md",
     ROOT / "docs" / "guides" / "whats-ready.md",
@@ -54,6 +58,7 @@ CHECKED = [
     ROOT / "packages" / "hedron-explorer" / "README.md",
     ROOT / "packages" / "hedron-extras" / "README.md",
     ROOT / "packages" / "hedron-charts" / "README.md",
+    ROOT / "docs" / "packages" / "hedron-extras.md",
     ROOT / "scripts" / "README.md",
 ]
 
@@ -134,6 +139,11 @@ STALE = [
     re.compile(r"wait for the cut", re.I),
     re.compile(r"after `v0\.20\.0` is tagged", re.I),
     re.compile(r"after\s*\n?\s*`v0\.20\.0` is tagged", re.I),
+    # Stale "current train is still 0.15–0.19" claims after v0.20.0 shipped.
+    re.compile(r"Current published train is \*\*0\.(?:1[5-9]|18)\*\*", re.I),
+    re.compile(r"There is no `hedron new --flask`", re.I),
+    re.compile(r"Supported on the 0\.18 train", re.I),
+    re.compile(r"guidance for the \*\*0\.19\*\* train", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.

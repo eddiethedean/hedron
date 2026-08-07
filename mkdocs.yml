@@ -183,6 +183,7 @@ nav:
     - Other hosts:
       - Add Flask app: getting-started/flask.md
       - Add Django project: getting-started/django.md
+      - Plain FastAPI: guides/plain-fastapi.md
     - Optional packages:
       - Overview: packages/index.md
       - hedron-data: packages/hedron-data.md

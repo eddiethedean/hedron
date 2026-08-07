@@ -94,8 +94,26 @@ def test_registers() -> None:
 
 Load the plugin in CI via the same entry-point path production uses.
 
+## 7. Publish and version
+
+- Pin against `hedron-core` (and optionally `hedron`) with an upper bound matching the
+  adopter train (for example `>=0.20.0,<0.21`).
+- Declare license metadata; do not pull FastAPI/Flask/Django into a core-facing package.
+- Ship a CHANGELOG and document Experimental vs Supported claims honestly
+  ([What’s ready](whats-ready.md)).
+- Prefer extras so absent features add **no** import or asset cost.
+
+## 8. Security review checklist
+
+- No raw request/session/DB handles crossed into `hedron-core` types
+- Assets and HTML use SafeUrl / TrustedHtml where required
+- Explorer panels and diagnostics never leak secrets
+- Deny-by-default for specialty capabilities (see sample kit / extras specialty surfaces)
+- Document failure modes (missing extras, fail-closed policies)
+
 ## See also
 
 - [Using plugins](plugin-consumer.md) (adopter enablement) · [Plugins API](../api/PLUGINS.md) ·
   [Error codes](error-codes.md) · [STABILITY](../api/STABILITY.md)
 - Sample kit: `packages/hedron-sample-kit`
+- Layout rules: [PROJECT_LAYOUT](https://github.com/eddiethedean/hedron/blob/main/docs/PROJECT_LAYOUT.md)

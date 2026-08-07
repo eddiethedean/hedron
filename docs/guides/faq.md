@@ -2,17 +2,16 @@
 
 ## Which version should I install?
 
-Pin the **0.20 train** for production (Beta; Published — last published
-PyPI/git = `v0.20.0`):
-
 ```bash
 pip install "hedron>=0.20.0,<0.21"
 # or
 uv add "hedron>=0.20.0,<0.21"
 ```
 
-`>=0.20.0` alone allows a future `0.21` break. Use an upper bound when you need a stable
-train. See [What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md).
+That is the current published line (`v0.20.0`). Package maturity is **Beta** — see
+[How to read](../getting-started/how-to-read.md). `>=0.20.0` alone allows a future `0.21`
+break; keep the upper bound when you need a stable line.
+See [What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 

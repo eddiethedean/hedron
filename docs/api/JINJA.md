@@ -10,9 +10,10 @@ status: shipped
     `hedron_jinja`, and `.hdj` is the explicit, versioned template format. After a small static
     TOML prologue, the body is ordinary Jinja and HTML.
 
-    **Package maturity:** Beta on the **0.10** train. The phase 0.9 core authoring surface is
-    **shipped**. Remaining RFC-0031 capability edges continue to close without blocking basic
-    `.hdj` use—see [STABILITY](STABILITY.md) and [What’s ready](../guides/whats-ready.md).
+    **Package maturity:** Beta on the living **0.20** train (HDJ introduced earlier).
+    The phase 0.9 core authoring surface is **shipped**. Remaining RFC-0031 capability
+    edges continue to close without blocking basic `.hdj` use—see [STABILITY](STABILITY.md)
+    and [What’s ready](../guides/whats-ready.md).
 
 HDJ is the optional HTML-first authoring surface for advanced Hedron applications. It combines
 normal Jinja and HTMX with typed Hedron components and preserves `RenderResult` metadata.

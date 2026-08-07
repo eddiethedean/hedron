@@ -71,7 +71,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
 | Charts | **Alpha** | Pin `hedron[charts]`; Matplotlib default |
-| Model demos / inference workflows | **Supported** (fail-closed; APIs still `beta`) | [Model demos](model-demos.md) (guide snippets). Maintainer evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) — not a product demo |
+| Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
 !!! note "Package train vs capability"
