@@ -170,17 +170,18 @@ nav:
   - Home: index.md
   - Start:
     - Overview: getting-started/index.md
+    - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
+    - Core concepts (optional): getting-started/core-concepts.md
+    - Understanding maturity labels: getting-started/how-to-read.md
     - HTMX interactions: guides/htmx-interactions.md
     - Minimal form POST: guides/minimal-form.md
     - Learning path: getting-started/learning-path.md
-    - Core concepts (optional): getting-started/core-concepts.md
-    - Installation (extras & troubleshooting): getting-started/installation.md
-    - FAQ: guides/faq.md
     - Other hosts:
       - Add Flask app: getting-started/flask.md
       - Add Django project: getting-started/django.md
     - Help:
+      - FAQ: guides/faq.md
       - Troubleshooting: guides/troubleshooting.md
       - Error codes: guides/error-codes.md
   - Guides:
@@ -190,6 +191,7 @@ nav:
       - Mutations (@action vs @component): guides/mutations.md
       - Authentication: guides/authentication.md
       - Live interaction: guides/live-interaction.md
+      - Dashboards and interaction graphs: guides/dashboards.md
       - Cookbook: guides/cookbook.md
       - Media downloads: guides/media-downloads.md
       - Multi-tenant isolation: guides/multi-tenant.md
@@ -215,7 +217,6 @@ nav:
       - Project workflow: guides/project-workflow.md
       - Plain FastAPI: guides/plain-fastapi.md
     - Model demos and inference: guides/model-demos.md
-    - Gradio migration: guides/gradio-migration.md
   - Examples:
     - Overview: examples/index.md
     - Try with Codespaces / Dev Container: examples/try-it.md

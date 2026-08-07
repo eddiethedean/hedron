@@ -19,7 +19,8 @@ cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
-Click **Refresh status**; the timestamp should update.
+Click **Refresh status**; the page updates without a full reload (HTMX swaps a small HTML
+fragment into the declared region).
 
 ![Hello from hedron new with Refresh status control](docs/assets/hello-refresh.jpg)
 
@@ -46,7 +47,11 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 <summary>Package maturity</summary>
 
 <strong>Hedron 0.18.0</strong> — Beta on PyPI; pin with <code>hedron&gt;=0.18.0,&lt;0.19</code> for
-production. Capability readiness:
+production. <strong>Supported</strong> means the capability works on the current train when
+pinned; most public APIs remain compatibility level <code>beta</code> until listed in the small
+<strong>stable</strong> table —
+<a href="https://hedron.readthedocs.io/en/latest/getting-started/how-to-read/">maturity labels</a>.
+Capability readiness:
 <a href="https://hedron.readthedocs.io/en/latest/guides/whats-ready/">What’s ready</a>.
 If <code>hedron</code> is not on your PATH, use <code>python -m hedron</code>
 (<a href="https://hedron.readthedocs.io/en/latest/getting-started/installation/">install notes</a>).

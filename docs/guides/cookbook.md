@@ -1,6 +1,8 @@
 # Cookbook
 
-Short, pasteable recipes. Prefer the linked guides when you need full context.
+Short, pasteable **snippets** for an existing app. Prefer the linked guides when you need
+full context. For standalone mini-apps (pip + `app.py`), use
+[Examples → Recipes](../examples/recipes/index.md).
 
 ## CSRF-safe POST (classic form)
 

@@ -60,11 +60,15 @@ app = Hedron(
 )
 ```
 
+### Hello scaffold (`hedron new`)
+
+A fresh scaffold is typically `pyproject.toml`, `README.md`, and `app.py` — no
+`components/` tree required:
+
 ```dockerfile
 FROM python:3.12-slim
 WORKDIR /app
 COPY pyproject.toml README.md app.py ./
-COPY components ./components
 RUN pip install --no-cache-dir "hedron>=0.18.0,<0.19" "uvicorn[standard]" \
     && pip install --no-cache-dir -e . \
     && hedron build
@@ -74,6 +78,11 @@ ENV HEDRON_SESSION_SECRET=replace-me-at-deploy-time
 EXPOSE 8000
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
+
+If your app also vendors a `components/` package, add `COPY components ./components`
+before the `RUN` line.
+
+### Apps with a `src/` layout
 
 Multi-stage layout when you vendor a fuller `src/` tree:
 
@@ -110,7 +119,7 @@ Single-stage sketch when you already vendor a lockfile:
 FROM python:3.12-slim
 WORKDIR /app
 COPY . .
-RUN pip install --no-cache-dir "hedron>=0.18.0" "uvicorn[standard]" \
+RUN pip install --no-cache-dir "hedron>=0.18.0,<0.19" "uvicorn[standard]" \
  && hedron build
 ENV HEDRON_ENV=production
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
@@ -126,8 +135,10 @@ Terminate TLS at nginx, Caddy, or your cloud load balancer. Forward
 under a subpath, configure ASGI `root_path` (uvicorn `--root-path`) or WSGI
 `SCRIPT_NAME`, and set `HEDRON_ROOT_PATH` when your deploy samples use it.
 
-Disable response buffering for `text/event-stream` if you use SSE
-([live interaction](live-interaction.md)).
+Disable response buffering for `text/event-stream` **only if** you use experimental SSE
+([live interaction](live-interaction.md)). Prefer **polling** (`Poll` +
+`job_status_response`) for Supported multi-worker status UX — most reverse proxies need
+no special SSE configuration then.
 
 !!! warning "Do not rely on SSE/WebSocket without your own proof"
 

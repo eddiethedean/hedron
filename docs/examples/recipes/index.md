@@ -1,11 +1,17 @@
 # Recipes
 
-Short, copy-pasteable apps for common workflows. Prefer these after
+Short, copy-pasteable **apps** for common workflows. Prefer these after
 [Build your first app](../../getting-started/quickstart.md) and before the kitchen-sink
 [reference app](../reference-app.md).
 
 Each recipe page leads with a **no-clone** pip install + copy `app.py` path, then the
 monorepo `uv sync` command.
+
+!!! tip "Recipes vs Cookbook"
+
+    **Recipes** (this section) are full mini-apps you can run. The
+    [Cookbook](../../guides/cookbook.md) is short pasteable **snippets** inside an existing
+    app — not standalone servers.
 
 | Recipe | What it shows | Limits |
 |---|---|---|

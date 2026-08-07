@@ -17,9 +17,9 @@ plugin loader, and public `hedron.testing` helpers.
 ## Install
 
 ```bash
-pip install "hedron>=0.18.0"
+pip install "hedron>=0.18.0,<0.19"
 # or
-uv add "hedron>=0.18.0"
+uv add "hedron>=0.18.0,<0.19"
 ```
 
 Optional data and charts:

@@ -1,7 +1,12 @@
 # Public API
 
-Hedron documentation separates **callable APIs that ship in this release** from
-**Accepted design contracts** that are not importable yet.
+Hand-maintained **contracts** for shipped surfaces on the **0.18** train, plus
+[Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. This is **not** a complete
+generated reference of every `hedron.__all__` name — use the [coverage map](COVERAGE.md)
+and prefer Autodoc / source when an outline page lacks an Errors section.
+
+Accepted RFCs that are not yet importable live in the GitHub maintainer corpus (excluded
+from Read the Docs). Adopters should start from the golden-path contracts below.
 
 ## Start here (golden path)
 

@@ -11,10 +11,11 @@ status: shipped
 
 **Status:** Accepted
 
-These built-ins capture low-friction Python workflows while preserving FastAPI and
-component architecture. Gallery demos:
-[Components](../components/index.md). Generated signatures for related helpers live in
-[Autodoc](AUTODOC.md); per-component props are on the [component catalog](../components/index.md).
+!!! note "Summary page"
+
+    This page is a **short summary** of utility built-ins. Prefer the
+    [component catalog](../components/index.md) for props and [Autodoc](AUTODOC.md) for
+    generated signatures when you need a full parameter list.
 
 ## Constructors (summary)
 

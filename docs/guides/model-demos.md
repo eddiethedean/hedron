@@ -3,8 +3,17 @@
 Build reviewable model demos, schedule inference over durable jobs, collect governed
 feedback, and compose permissioned workflows on the **0.18** train.
 
-API contract: [Inference](../api/INFERENCE.md) · Reference example:
-[`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18)
+Capability readiness is **Supported** (fail-closed); API compatibility remains **`beta`**.
+Pin `hedron>=0.18.0,<0.19`.
+
+API contract: [Inference](../api/INFERENCE.md)
+
+!!! warning "Evidence example is a stub"
+
+    [`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18)
+    is a **maintainer exit scenario** with a minimal HTTP surface (text dump / synthetic
+    scores) — not a Gradio-like interactive classify UI. Prefer the snippets below and
+    [recipes](../examples/recipes/index.md) when learning.
 
 ## Minimal demo
 

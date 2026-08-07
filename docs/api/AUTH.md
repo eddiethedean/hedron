@@ -2,23 +2,71 @@
 status: shipped
 ---
 
-# Auth helpers
+# Auth and OIDC helpers
 
 
 !!! note "Stability"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
+    Package maturity (Beta) is separate from API level (`beta`).
 
-**Status:** Shipped in `0.6.0` · optional `hedron[auth]`
+**Status:** Shipped · optional `hedron[auth]` · **API level `beta`**
 
 Hedron does **not** own identity, sessions, or claims. There is **no first-party
-OIDC/SSO product**. The `hedron[auth]` extra exposes thin Authlib conveniences for
-FastAPI/Starlette apps. Prefer the session-login pattern in
-[Authentication](../guides/authentication.md) unless you need an OAuth provider.
+IdP / managed SSO product**. Host frameworks and your application own login cookies,
+authorization, and multi-tenant isolation.
+
+Two helper layers exist under `hedron[auth]` (Authlib):
+
+1. **OIDC conveniences** (`hedron.oidc`) — PKCE/state/nonce, claim normalization,
+   Explorer-safe redaction, Authlib-backed authorize/logout URL builders.
+2. **Generic OAuth registry** (`OAuthHelper` / `create_oauth_client`) — thin Authlib
+   Starlette `OAuth` wrappers for non-OIDC or custom providers.
+
+Prefer the session-login pattern in [Authentication](../guides/authentication.md)
+unless you need an external provider.
 
 ```bash
-pip install "hedron[auth]"
+pip install "hedron[auth]>=0.18.0,<0.19"
 ```
+
+## OIDC helpers (`hedron.oidc`)
+
+Import from `hedron.oidc` (not re-exported on `hedron.__all__`). These helpers never
+create a user table or infer authorization — they only assist handshake hygiene.
+
+| Symbol | Role |
+|---|---|
+| `OidcClientConfig` | Issuer, client id/secret, redirect URI, scopes, optional authorize/logout URLs |
+| `generate_state` / `generate_nonce` / `generate_pkce` | CSRF/replay-resistant handshake material |
+| `store_oidc_handshake` | Persist handshake secrets in the **host** session under a Hedron key |
+| `validate_callback_state` / `validate_callback_nonce` | Compare callback parameters to the stored handshake |
+| `normalize_claims` / `OidcUserClaims` | Map IdP claims to a small `sub` / `email` / `name` view |
+| `redact_claims` | Strip secret-like keys for Explorer / logs |
+| `login_url` / `logout_url` | Authlib-backed authorize / end-session URL builders |
+
+```python
+from hedron.oidc import (
+    OidcClientConfig,
+    generate_pkce,
+    generate_state,
+    login_url,
+    store_oidc_handshake,
+)
+
+config = OidcClientConfig(
+    issuer="https://idp.example/",
+    client_id="app",
+    redirect_uri="https://app.example/auth/callback",
+    client_secret="…",  # or None for public + PKCE
+)
+pkce = generate_pkce()
+state = generate_state()
+store_oidc_handshake(request.session, state=state, code_verifier=pkce.verifier)
+# Redirect the browser to login_url(config, state=state, code_challenge=pkce.challenge)
+```
+
+Full walkthrough: [Authentication](../guides/authentication.md).
 
 ## `create_oauth_client(**kwargs)`
 
@@ -83,9 +131,10 @@ authorization decisions (`Depends`, Django/Flask auth, or your IdP).
 | Code / condition | Behavior |
 |---|---|
 | Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]"` |
+| Invalid `OidcClientConfig` | `ValueError` on empty issuer / client_id / redirect_uri |
 | Provider misconfiguration | Authlib/provider errors bubble to the route |
 
 ## See also
 
 [Authentication guide](../guides/authentication.md) · [Security](../guides/security.md) ·
-[Security types](SECURITY_TYPES.md)
+[Security types / SecurityPolicy](SECURITY_TYPES.md) · Autodoc OIDC section

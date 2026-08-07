@@ -1,8 +1,8 @@
 # How to read Hedron docs
 
 You do **not** need maturity vocabulary to install or complete the golden path
-(First app → HTMX → Minimal form → Installation hub as needed). Use this page when
-evaluating production use or reading API/stability catalogs.
+(Installation → First app → HTMX → Minimal form). Use this page when evaluating
+production use or reading API/stability catalogs.
 
 ## Maturity cheat-sheet (three axes)
 
@@ -17,10 +17,10 @@ table on [What’s ready today](../guides/whats-ready.md) before shipping.
 | Label | Axis | What it means for you |
 |---|---|---|
 | **Beta** / **Alpha** | Package (PyPI) | Usable distribution; **pin versions**. Alpha expects faster churn. |
-| **Supported** | Capability | Works on that host today — ship with pins. |
+| **Supported** | Capability | Works on that host today **with pins** — not a warranty or SLA. Most callable APIs remain compatibility level `beta` unless listed in the small **stable** table. |
 | **Experimental** | Capability | Public API shipped; may change; prefer documented fallbacks (e.g. polling). |
 | **Deferred** | Capability | Documented and owned, but **not** ready — do not depend on it as Supported. |
-| **`stable` / `beta` / …** | API level | Compatibility promise for a callable surface in STABILITY — not the same as capability readiness. |
+| **`stable` / `beta` / …** | API level | Compatibility promise for a callable surface in STABILITY — **Supported ≠ `stable`**. |
 
 When writing docs, name the axis: “Beta **package**”, “Supported **capability**”,
 “API level `beta`”. Do not collapse them into one vague “beta” adjective.

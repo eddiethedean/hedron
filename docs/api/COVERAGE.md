@@ -39,10 +39,12 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 
 | Export | Primary docs |
 |---|---|
-| `SecurityPolicy`, `SecurityProfile` | [SECURITY_TYPES.md](SECURITY_TYPES.md), [security guide](../guides/security.md) |
+| `SecurityPolicy`, `SecurityProfile` | [SECURITY_TYPES.md](SECURITY_TYPES.md) (field + profile tables), [security guide](../guides/security.md), Autodoc |
 | `csrf_token_for_request` | Re-exported from `hedron`; [minimal form](../guides/minimal-form.md), [SECURITY_TYPES.md](SECURITY_TYPES.md) |
 | `SafeUrl`, `Secret`, `TrustedHtml`, `UrlPurpose` | [SECURITY_TYPES.md](SECURITY_TYPES.md) |
 | `redirect_local`, `redirect_external`, `redirect_htmx` | [SECURITY_TYPES.md](SECURITY_TYPES.md), Autodoc |
+| `hedron.oidc` (`OidcClientConfig`, PKCE/state/nonce, `login_url`, …) | [AUTH.md](AUTH.md), [authentication](../guides/authentication.md), Autodoc — **not** an IdP product |
+| `OAuthHelper`, `create_oauth_client` | [AUTH.md](AUTH.md) (`hedron[auth]`) |
 
 ## Media, browser, and downloads
 

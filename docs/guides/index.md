@@ -48,6 +48,31 @@ Evaluating adoption? Use **Project → Evaluate**
     <strong>Live interaction</strong>
     <p>SSE, streaming, WebSocket channels, Chat/Dialog, and preload (FastAPI; prefer polling).</p>
   </a>
+  <a class="hedron-card" href="dashboards/">
+    <span class="hedron-card__icon" aria-hidden="true">▦</span>
+    <strong>Dashboards</strong>
+    <p>InteractionGraph / DashboardBinding (0.17+) with polling-first honesty.</p>
+  </a>
+  <a class="hedron-card" href="model-demos/">
+    <span class="hedron-card__icon" aria-hidden="true">◇</span>
+    <strong>Model demos</strong>
+    <p>InferenceInterface, ModelDemo, InferencePolicy, and workflows (0.18).</p>
+  </a>
+  <a class="hedron-card" href="multi-tenant/">
+    <span class="hedron-card__icon" aria-hidden="true">☰</span>
+    <strong>Multi-tenant</strong>
+    <p>App-owned isolation checklist for caches, jobs, and fragments.</p>
+  </a>
+  <a class="hedron-card" href="jobs-celery-rq/">
+    <span class="hedron-card__icon" aria-hidden="true">⏳</span>
+    <strong>Durable jobs</strong>
+    <p>Celery / RQ + Redis backends for multi-worker status.</p>
+  </a>
+  <a class="hedron-card" href="hardened-sessions/">
+    <span class="hedron-card__icon" aria-hidden="true">⚿</span>
+    <strong>Hardened sessions</strong>
+    <p>Cookie flags, rotation, and production session secrets.</p>
+  </a>
   <a class="hedron-card" href="data-apps/">
     <span class="hedron-card__icon" aria-hidden="true">▦</span>
     <strong>Data applications</strong>

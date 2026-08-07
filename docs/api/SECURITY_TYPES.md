@@ -32,9 +32,9 @@ body = TrustedHtml.reviewed(sanitized_html, source="application-sanitizer:v1")
 `TrustedHtml.nh3(value, *, tags=None)` sanitizes HTML with [nh3](https://github.com/messense/nh3) and records `source` as `nh3:<version>`. Requires the optional dependency:
 
 ```bash
-pip install "hedron[sanitize]"
+pip install "hedron[sanitize]>=0.18.0,<0.19"
 # or
-pip install "hedron[markdown]"
+pip install "hedron[markdown]>=0.18.0,<0.19"
 ```
 
 Missing nh3 raises `HED-SEC-0020` with that remediation. Integrations with supported sanitizers may provide equivalent named constructors that record a policy/version.
@@ -48,6 +48,49 @@ Only the dedicated `hedron.html.raw(...)` primitive accepts `TrustedHtml`. Wrapp
 URL-bearing HTML attributes—including `href`, `src`, `action`, `srcset`, `ping`, and HTMX URL attrs such as `hx-get` / `hx-push-url` / `hx-replace-url`—require `SafeUrl` (or a validated `srcset` string whose candidates pass `SafeUrl` checks). Local HTMX path strings starting with `/` may be coerced at construction for HTMX attrs.
 
 A `SafeUrl` remains subject to the final rendering or redirect context policy. Application helpers `redirect_local` and `redirect_external` enforce the same local-vs-external split; `redirect_external` is disabled unless the security policy sets `allow_external_redirects=True`.
+
+## `SecurityPolicy` and `SecurityProfile`
+
+FastAPI apps select a named profile (`"development"` \| `"standard"` \| `"strict"`) or pass
+an explicit `SecurityPolicy` to `Hedron(security=...)`. Profiles are frozen dataclasses —
+mutate by constructing a new policy, not by assigning fields.
+
+| Field | Type | Default (standard) | Notes |
+|---|---|---|---|
+| `profile` | `SecurityProfile` | `STANDARD` | Named preset used to build the policy |
+| `version` | `int` | `1` | Policy schema version |
+| `csrf_enabled` | `bool` | `True` | Validate CSRF on unsafe methods |
+| `csrf_cookie_name` | `str` | `"hedron_csrf"` | Cookie set on safe GETs |
+| `csrf_header_name` | `str` | `"X-CSRF-Token"` | Preferred header for HTMX / fetch |
+| `csrf_form_field` | `str` | `"csrf_token"` | Hidden form field name |
+| `private_authenticated_cache` | `bool` | `True` | Adds `Cache-Control: private, no-store` when authenticated |
+| `security_headers` | `bool` | `True` | Emit XFO / CTO / Referrer-Policy / CSP when set |
+| `content_security_policy` | `str` \| `None` | standard CSP string | `None` in development; stricter in `strict` |
+| `frame_options` | `str` | `"DENY"` | `X-Frame-Options` |
+| `content_type_options` | `str` | `"nosniff"` | `X-Content-Type-Options` |
+| `referrer_policy` | `str` | `"no-referrer"` | `Referrer-Policy` |
+| `explorer_enabled` | `bool` | `False` | Development profile may enable Explorer |
+| `allow_external_redirects` | `bool` | `False` | Required for `redirect_external` |
+| `findings` | `tuple[str, …]` | profile notes | Advisory strings for diagnostics / check |
+
+| Profile | CSRF | CSP | Explorer | External redirects |
+|---|---|---|---|---|
+| `development` | on | none | may mount | off |
+| `standard` | on | default-src self (+ limited inline style) | off | off |
+| `strict` | on | tighter CSP, `frame-ancestors 'none'` | off | off |
+
+```python
+from hedron import Hedron
+from hedron.security.policy import SecurityPolicy
+
+app = Hedron(title="App", security="standard", session_secret="replace-in-production")
+# or:
+policy = SecurityPolicy.from_name("strict")
+app = Hedron(title="App", security=policy, session_secret="replace-in-production")
+```
+
+CSRF cookie/header/form field names on `SecurityPolicy` are in the small **stable** API
+tier — see [STABILITY.md](STABILITY.md). Full guide: [Security](../guides/security.md).
 
 ## `csrf_token_for_request`
 
@@ -72,9 +115,10 @@ These values are immutable and safe to compare, but their representations never 
 |---|---|---|
 | Invalid / dangerous URL | `HED-SEC-0001` (and related) | Use `SafeUrl.parse` with the correct `UrlPurpose`; avoid `javascript:` and credentialed URLs |
 | URL purpose mismatch for attribute | `HED-SEC-0006` | Match purpose to the attribute (`NAVIGATION`, `ASSET`, `FORM_ACTION`, `REDIRECT`) |
-| Missing nh3 for `TrustedHtml.nh3` | `HED-SEC-0020` | `pip install "hedron[sanitize]>=0.18.0"` (or `[markdown]`) |
+| Missing nh3 for `TrustedHtml.nh3` | `HED-SEC-0020` | `pip install "hedron[sanitize]>=0.18.0,<0.19"` (or `[markdown]`) |
 | Secret leaked via str/repr | Redacted | Call `reveal()` only in trusted application code |
 | `html.raw(...)` without `TrustedHtml` | Rejected | Wrap reviewed markup with `TrustedHtml.reviewed` / `.nh3` |
+| External redirect without policy | Rejected | Set `allow_external_redirects=True` on an explicit `SecurityPolicy` |
 
 Adding a URL purpose or trusted constructor is a public API change. See
 [Security guide](../guides/security.md) and [Error codes](../guides/error-codes.md).

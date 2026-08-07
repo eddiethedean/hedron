@@ -40,11 +40,18 @@ python scripts/check_docs_train_ssot.py
 ```
 
 You do **not** need Playwright or the full pytest suite locally for markdown/typo PRs.
+
 **CI still runs `test`, `quality`, `browser` (Chromium), and `evidence` on every pull
-request** (no path filters today) — see the CI map. For docs-only PRs: run the local
-commands above before opening; if browser/evidence fail for reasons unrelated to your
-change, ask a maintainer rather than expanding the diff. Do not skip CI with
-`--no-verify`.
+request** (no path filters today) — see the CI map.
+
+For **docs-only PRs**:
+
+1. Run the local docs verify commands above (including
+   `python scripts/check_docs_train_ssot.py`).
+2. Open the PR with a clear “docs-only” note in the description.
+3. If `browser` or `evidence` fails for reasons **unrelated** to your markdown change,
+   ask a maintainer to re-run or waive — **do not** expand the diff to chase unrelated
+   flakes, and do not skip hooks with `--no-verify`.
 
 When to leave Read the Docs for the GitHub corpus: RFCs, acceptance gates, STATUS/ROADMAP
 internals, ENGINEERING_BASELINE, and DECISIONS are **excluded from the public MkDocs site**

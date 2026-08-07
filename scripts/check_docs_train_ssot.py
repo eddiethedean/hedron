@@ -3,6 +3,9 @@
 
 The living line is 0.18.x. Historical whats-new / acceptance / RFC phase labels
 are allowed. This check targets pages that assert "current" product maturity.
+
+Also fails when adopter install snippets pin ``hedron>=0.18.0`` (or adapter
+packages) without an upper bound ``,<0.19``.
 """
 
 from __future__ import annotations
@@ -55,6 +58,70 @@ BANNED = [
     re.compile(r"Still Deferred \(after"),
 ]
 
+# Install pins that omit the 0.19 upper bound (allows a future breaking train).
+# Matches: "hedron>=0.18.0", hedron>=0.18.0, hedron[data]>=0.18.0, hedron-flask>=0.18.0
+# Does not match when immediately followed by ,<0.19 (quoted or unquoted).
+UNBOUNDED_PIN = re.compile(
+    r"(?:hedron(?:\[[^\]]+\])?|hedron-(?:flask|django|core|data|explorer|jinja|"
+    r"conformance|extras))"
+    r">=0\.18\.0"
+    r"(?!,?\s*<0\.19)"
+)
+
+# Paths scanned for unbounded pins (adopter-facing; exclude historical archives).
+PIN_SCAN_ROOTS = [
+    ROOT / "docs" / "getting-started",
+    ROOT / "docs" / "guides",
+    ROOT / "docs" / "examples",
+    ROOT / "docs" / "api",
+    ROOT / "docs" / "index.md",
+    ROOT / "README.md",
+    ROOT / "packages" / "hedron" / "README.md",
+]
+
+# Basename prefixes that may discuss historical trains without current install advice.
+PIN_SKIP_NAME_PREFIXES = (
+    "whats-new-0.",
+    "RELEASE_0_",
+)
+
+# Lines that *warn about* the unbounded form (not install advice).
+PIN_ALLOW_SUBSTRINGS = (
+    "alone allows a future",
+    "without an upper bound",
+)
+
+
+def _pin_scan_files() -> list[Path]:
+    files: list[Path] = []
+    for root in PIN_SCAN_ROOTS:
+        if root.is_file():
+            files.append(root)
+            continue
+        if not root.is_dir():
+            continue
+        for path in sorted(root.rglob("*.md")):
+            name = path.name
+            if any(name.startswith(prefix) for prefix in PIN_SKIP_NAME_PREFIXES):
+                continue
+            files.append(path)
+    return files
+
+
+def _check_unbounded_pins() -> list[str]:
+    failures: list[str] = []
+    for path in _pin_scan_files():
+        text = path.read_text(encoding="utf-8")
+        for lineno, line in enumerate(text.splitlines(), start=1):
+            if any(allow in line for allow in PIN_ALLOW_SUBSTRINGS):
+                continue
+            if UNBOUNDED_PIN.search(line):
+                failures.append(
+                    f"{path.relative_to(ROOT)}:{lineno}: unbounded 0.18 pin "
+                    f"(use >=0.18.0,<0.19): {line.strip()[:120]}"
+                )
+    return failures
+
 
 def main() -> int:
     failures: list[str] = []
@@ -69,13 +136,15 @@ def main() -> int:
         for pattern in BANNED:
             if pattern.search(text):
                 failures.append(f"{path.relative_to(ROOT)}: banned {pattern.pattern}")
+    failures.extend(_check_unbounded_pins())
     if failures:
-        print("stale or banned adopter-doc claims:", file=sys.stderr)
+        print("stale, banned, or unbounded adopter-doc claims:", file=sys.stderr)
         for item in failures:
             print(f"  {item}", file=sys.stderr)
         return 1
     print(
-        "ok: adopter docs assert 0.18 and avoid Supported beta / SSOT / beachhead jargon"
+        "ok: adopter docs assert 0.18, upper-bound pins, and avoid "
+        "Supported beta / SSOT / beachhead jargon"
     )
     return 0
 

@@ -1,12 +1,14 @@
 # Learning path
 
 A suggested order from first page to production-minded apps. Start with
+[Installation](installation.md) only if you need prerequisites; otherwise
 [Build your first app](quickstart.md) if you have not run Hello → Refresh yet.
 
 ## 1. Hello page (~10 minutes)
 
 1. [Build your first app](quickstart.md)
-2. [Installation](installation.md) (extras / troubleshooting)
+2. [Installation](installation.md) (extras / troubleshooting as needed)
+3. Optional: [Understanding maturity labels](how-to-read.md)
 
 That is the first success. Extend the **same** app in the next section; do not start a
 second project.
@@ -41,13 +43,15 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
 2. Recipes first: [Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) ·
    [Session auth](../examples/session-auth.md) · [File upload](../examples/file-upload.md)
-3. [Live interaction](../guides/live-interaction.md) (FastAPI live helpers; polling
+3. Optional: [Dashboards](../guides/dashboards.md) · [Model demos](../guides/model-demos.md) ·
+   [Jobs poll](../examples/jobs-poll.md) / [Celery / RQ](../guides/jobs-celery-rq.md)
+4. [Live interaction](../guides/live-interaction.md) (FastAPI live helpers; polling
    Supported on every host) —
    [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
    covers poll, token stream, SSE ping, Job SSE, WebSocket accept, and preload. Prefer
    polling until you have your own ops proof for SSE/WebSocket behind proxies
    (see [What's ready](../guides/whats-ready.md))
-4. [Release notes](../guides/release-notes.md) (current train)
+5. [Release notes](../guides/release-notes.md) (current train)
 
 ## 6. Harden and deploy
 

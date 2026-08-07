@@ -141,6 +141,9 @@ Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
 
 ::: hedron.security.policy.SecurityPolicy
     options:
+      members:
+        - from_name
+        - response_headers
       heading_level: 3
 
 ::: hedron.security.policy.SecurityProfile
@@ -160,6 +163,43 @@ Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
       heading_level: 3
 
 ::: hedron_core.security.Secret
+    options:
+      heading_level: 3
+
+## OIDC helpers (optional `hedron[auth]`)
+
+::: hedron.oidc.OidcClientConfig
+    options:
+      members:
+        - resolved_authorize_url
+        - resolved_end_session_url
+      heading_level: 3
+
+::: hedron.oidc.generate_pkce
+    options:
+      heading_level: 3
+
+::: hedron.oidc.generate_state
+    options:
+      heading_level: 3
+
+::: hedron.oidc.store_oidc_handshake
+    options:
+      heading_level: 3
+
+::: hedron.oidc.normalize_claims
+    options:
+      heading_level: 3
+
+::: hedron.oidc.redact_claims
+    options:
+      heading_level: 3
+
+::: hedron.oidc.login_url
+    options:
+      heading_level: 3
+
+::: hedron.oidc.logout_url
     options:
       heading_level: 3
 
@@ -207,6 +247,14 @@ Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
       heading_level: 3
 
 ::: hedron_core.cache.invalidate_tags
+    options:
+      heading_level: 3
+
+::: hedron.cache.cache_data
+    options:
+      heading_level: 3
+
+::: hedron.cache.cache_component
     options:
       heading_level: 3
 

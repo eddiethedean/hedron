@@ -15,9 +15,9 @@ train. See [What’s ready today](whats-ready.md) and the [public roadmap](roadm
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For curated extras (`hedron-extras`), install `hedron[extras]>=0.18.0`.
+For curated extras (`hedron-extras`), install `hedron[extras]>=0.18.0,<0.19`.
 **Auto** (inspectable object rendering built into `hedron` — no extra) is included.
-For DataTable/DataEditor, install `hedron[data]>=0.18.0`. For charts, install
+For DataTable/DataEditor, install `hedron[data]>=0.18.0,<0.19`. For charts, install
 `hedron[charts]>=0.1.0` (Alpha). For Flask/Django adapters:
 
 ```bash
@@ -46,7 +46,7 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then `uv add hedron`. Or use
-`hedron new my-app` after `pip install "hedron>=0.18.0"`.
+`hedron new my-app` after `pip install "hedron>=0.18.0,<0.19"`.
 
 ## Should I use `uv init` or `hedron new`?
 
@@ -59,7 +59,7 @@ the same directory by accident.
 See [How to read Hedron docs](../getting-started/how-to-read.md). Short version:
 
 - **Beta / Alpha** — **package** maturity on PyPI; pin versions (`>=0.18.0,<0.19`).
-- **Supported** — **capability** readiness on a host; ship with pins.
+- **Supported** — **capability** readiness on a host; ship with pins. **Not** the same as API level `stable`.
 - **Deferred** — documented, not ready; do not treat as Supported.
 - API levels (`stable` / `beta` / …) in [STABILITY](../api/STABILITY.md) are a third axis.
 

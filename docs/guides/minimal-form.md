@@ -139,7 +139,8 @@ Without a matching `csrf_token`, the POST returns `403`.
 
 ## Next steps
 
-- Add HTMX targets, validation fragments, and `InteractionResult` in
-  [Forms and actions](forms-and-actions.md).
-- Gate routes with sessions in [Authentication](authentication.md).
-- CSRF profiles and headers: [Security](security.md).
+1. Continue the golden path: [Learning path](../getting-started/learning-path.md).
+2. Add HTMX targets, validation fragments, and `InteractionResult` in
+   [Forms and actions](forms-and-actions.md).
+3. Gate routes with sessions in [Authentication](authentication.md).
+4. CSRF profiles and headers: [Security](security.md).

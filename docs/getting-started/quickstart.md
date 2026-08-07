@@ -40,7 +40,7 @@ matters.
     ```bash
     python3 -m venv .venv          # Windows: py -3 -m venv .venv
     source .venv/bin/activate      # Windows PowerShell: .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=0.18.0" "uvicorn[standard]"
+    python -m pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .     # project-local pinned hedron for uvicorn
@@ -55,8 +55,9 @@ matters.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 
-**Click Refresh status.** The panel text should update with a new UTC timestamp. That is
-a declared fragment region + HTMX swap — the interactive promise of the scaffold.
+**Click Refresh status.** The panel text should update with a new UTC timestamp. Hedron
+returns a small HTML fragment; [HTMX](https://htmx.org) swaps it into the declared region
+— the interactive promise of the scaffold.
 
 Extras, Flask/Django, and troubleshooting: [Installation](installation.md).
 
@@ -139,8 +140,15 @@ Advisory findings on a hello-world scaffold are normal.
 
 ## Alternative — manual `app.py` (no scaffold)
 
+!!! warning "Static Hello only"
+
+    This path skips `hedron new` and does **not** include Refresh / HTMX. Prefer the
+    scaffold above for the interactive first-hour experience. Continue to
+    [HTMX interactions](../guides/htmx-interactions.md) after you switch to a scaffolded
+    app (or add a region yourself).
+
 Use this only if you did **not** use `hedron new`. Create a project directory, install
-`hedron>=0.18.0` and `uvicorn[standard]`, then save:
+`hedron>=0.18.0,<0.19` and `uvicorn[standard]`, then save:
 
 ```python title="app.py"
 from hedron import Card, Heading, Hedron, Page, Stack, Text
@@ -167,7 +175,9 @@ def home() -> Page:
 uvicorn app:app --reload   # or: uv run uvicorn app:app --reload
 ```
 
-More pasteable variants: [single-file examples](../examples/single-file.md).
+Set `session_secret` from the environment in real apps — see
+[Configuration](../CONFIGURATION.md). More pasteable variants:
+[single-file examples](../examples/single-file.md).
 
 `Hedron` is a FastAPI application — DI, lifespan, middleware, and JSON routes remain
 available. Always set an explicit `session_secret` before deployment.

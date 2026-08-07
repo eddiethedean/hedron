@@ -45,7 +45,8 @@ uv run uvicorn app:app --reload
 ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
-Click **Refresh status** — the timestamp should change. That is an HTMX fragment swap.
+Click **Refresh status** — the page updates without a full reload. Hedron returns a small
+HTML fragment; [HTMX](https://htmx.org) swaps it into the declared region.
 
 ![Hello from hedron new with Refresh status control](assets/hello-refresh.jpg)
 
@@ -82,9 +83,11 @@ Extras and troubleshooting: [installation](getting-started/installation.md).
 <summary>Package maturity and production pins</summary>
 
 Hedron **0.18** packages are **Beta** on PyPI — pin versions for production
-(`hedron>=0.18.0,<0.19`). Capability readiness (Supported vs Experimental):
-[What’s ready today](guides/whats-ready.md) · [Why Hedron](guides/why-hedron.md) ·
-[Evaluate Hedron](guides/evaluate.md).
+(`hedron>=0.18.0,<0.19`). **Supported** means the capability works on the current train
+when pinned; most public APIs remain compatibility level **`beta`** until listed in the
+small **stable** table — see [Understanding maturity labels](getting-started/how-to-read.md).
+Capability readiness: [What’s ready today](guides/whats-ready.md) ·
+[Why Hedron](guides/why-hedron.md) · [Evaluate Hedron](guides/evaluate.md).
 </details>
 
 ## Designed for inspectability

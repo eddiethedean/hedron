@@ -8,13 +8,21 @@ live in the repository
 **Ship today** (pin `hedron>=0.18.0,<0.19`): typed pages, HTMX fragments, CSRF
 (`standard` / `strict`), Flask/Django adapters, polling job status.
 
+!!! note "Supported ≠ API `stable`"
+
+    **Supported** means the capability works on the current train when pinned. Most public
+    symbols remain API compatibility level **`beta`** (breaking changes can still land in a
+    future `0.19`). Only the small table in [STABILITY.md](../api/STABILITY.md) is
+    compatibility-protected. Package maturity remains **Beta** on PyPI — no scheduled 1.0,
+    no commercial SLA.
+
 **Prefer polling** over SSE/WebSocket (`hedron.experimental`).
 
 **Pin and expect churn:** charts, notebook, MCP, Gradio.
 
 No commercial SLA and no scheduled 1.0. Start building:
 [First app](../getting-started/quickstart.md). Evaluators: [Evaluate Hedron](evaluate.md).
-Maturity vocabulary (optional):
+Maturity vocabulary:
 [How to read](../getting-started/how-to-read.md).
 
 !!! tip "Can I ship an internal admin app?"
@@ -33,7 +41,7 @@ Hedron **0.18.0** packages are **Beta** on PyPI. Expect occasional breaking chan
 
 | Label | Meaning |
 |---|---|
-| **Supported** | Working with pinned versions for the stated host — ship with pins |
+| **Supported** | Working with pinned versions for the stated host — ship with pins; **≠** API `stable` |
 | **Experimental** | Public API shipped; may change; prefer documented fallbacks (e.g. polling) |
 | **Alpha** | On PyPI; pin and expect churn |
 | **Deferred** | Documented, not ready — do not treat as Supported |
@@ -61,7 +69,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
 | Charts | **Alpha** | Pin `hedron[charts]`; Matplotlib default |
-| Model demos / inference workflows | **Supported** (fail-closed) | [Model demos](model-demos.md) |
+| Model demos / inference workflows | **Supported** (fail-closed; APIs still `beta`) | [Model demos](model-demos.md) · evidence example is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
 !!! note "Package train vs capability"
@@ -100,16 +108,16 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | Typed controls, surface chrome, Map, media Range | `hedron` / `hedron-core` | Supported |
 | CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported with permission/retention policy |
 | BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported |
-| OIDC / session helpers + connection registry | `hedron` | Supported helpers; host auth/DI authoritative |
+| OIDC / session helpers + connection registry | `hedron` | Supported **helpers** (API `beta`); host auth/DI authoritative — **not** an IdP product |
 | Curated extras / workbenches / editors | `hedron[extras]` | Supported; install-isolated |
 | Browser-Python sandbox | `hedron[extras]` | Supported; origin-isolated |
-| Dashboard bindings, patches, cross-filter, AppShell | `hedron` / `hedron-core` | Supported |
+| Dashboard bindings, patches, cross-filter, AppShell | `hedron` / `hedron-core` | Supported (API `beta`; see [what's new 0.17](whats-new-0.17.md)) |
 | Public `render_interaction` | `hedron` | Supported |
 | Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported |
-| `InferenceInterface` / `ModelDemo` / `ActionRegistry` | `hedron-core` / `hedron` | Supported; fail-closed |
-| Example sets, prediction labels, feedback, workflows | `hedron-core` / `hedron` | Supported; consent mandatory for feedback |
-| `InferencePolicy` / `ModelDemoScenario` | `hedron-core` | Supported; in-process queue is dev-only |
-| `InteractionRecorder` | `hedron` | Supported; public endpoints only |
+| `InferenceInterface` / `ModelDemo` / `ActionRegistry` | `hedron-core` / `hedron` | Supported capability; API level `beta`; fail-closed |
+| Example sets, prediction labels, feedback, workflows | `hedron-core` / `hedron` | Supported capability; API level `beta`; consent mandatory for feedback |
+| `InferencePolicy` / `ModelDemoScenario` | `hedron-core` | Supported capability; API level `beta`; in-process queue is dev-only |
+| `InteractionRecorder` | `hedron` | Supported capability; API level `beta`; public endpoints only |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
 guaranteed multi-worker live-transport proof.
@@ -179,8 +187,8 @@ Maintainer gate IDs and RFC evidence:
     uvicorn app:app --reload
     ```
 
-Extras: `"hedron[data]>=0.18.0"`, `"hedron[charts]>=0.1.0"` (Alpha),
-`"hedron[extras]>=0.18.0"`, `"hedron[jinja]>=0.18.0"`, `"hedron[dev]>=0.18.0"`,
+Extras: `"hedron[data]>=0.18.0,<0.19"`, `"hedron[charts]>=0.1.0"` (Alpha),
+`"hedron[extras]>=0.18.0,<0.19"`, `"hedron[jinja]>=0.18.0,<0.19"`, `"hedron[dev]>=0.18.0,<0.19"`,
 `"hedron[notebook]>=0.1.0"` (Alpha), `"hedron[mcp]>=0.1.0"` (Alpha),
 `"hedron[gradio]>=0.1.0"` (Alpha).
 
