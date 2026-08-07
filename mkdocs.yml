@@ -142,10 +142,12 @@ extra_javascript:
   - javascript/readthedocs.js
   - javascript/examples.js
   - javascript/component-demos.js
+  - javascript/hello-refresh.js
 
 extra_css:
   - stylesheets/extra.css
   - stylesheets/component-demos.css
+  - stylesheets/hello-refresh.css
 
 extra:
   generator: false

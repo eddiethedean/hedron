@@ -48,7 +48,35 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from
 Click **Refresh status** — the page updates without a full reload. Hedron returns a small
 HTML fragment; [HTMX](https://htmx.org) swaps it into the declared region.
 
-![Hello from hedron new with Refresh status control](assets/hello-refresh.jpg)
+<figure class="hedron-browser-sim" data-hedron-hello-refresh>
+  <div class="hedron-browser-sim__chrome">
+    <div class="hedron-browser-sim__titlebar">
+      <div class="hedron-browser-sim__traffic" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="hedron-browser-sim__nav" aria-hidden="true">
+        <span class="hedron-browser-sim__nav-btn">←</span>
+        <span class="hedron-browser-sim__nav-btn">→</span>
+        <span class="hedron-browser-sim__nav-btn hedron-browser-sim__nav-btn--keep">↻</span>
+        <div class="hedron-browser-sim__url"><span>ⓘ</span><code>127.0.0.1:8000</code></div>
+      </div>
+    </div>
+    <div class="hedron-browser-sim__viewport">
+      <header class="hedron-browser-sim__brand">
+        <img class="hedron-browser-sim__logo" src="assets/hedron-mark.svg" alt="" width="28" height="28" decoding="async" />
+        <span class="hedron-browser-sim__wordmark">Hedron</span>
+      </header>
+      <div class="hedron-browser-sim__page">
+        <h2 class="hedron-browser-sim__heading">Hello from hedron new</h2>
+        <div class="hedron-browser-sim__status" id="service-status" role="status" aria-live="polite"><span class="hedron-browser-sim__status-icon" aria-hidden="true">✓</span><span data-hbs-stamp>All systems operational · refreshed --:--:-- UTC</span></div>
+        <div class="hedron-browser-sim__actions">
+          <button type="button" class="hedron-browser-sim__refresh" data-hbs-refresh hx-get="/status" hx-target="#service-status" hx-swap="outerHTML">Refresh status</button>
+          <span class="hedron-browser-sim__hint" data-hbs-hint><span class="hedron-browser-sim__hint-arrow" aria-hidden="true">→</span> Click — timestamp updates</span>
+        </div>
+        <p class="hedron-browser-sim__trace" data-hbs-trace aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+  <figcaption class="hedron-browser-sim__caption">Docs simulation of <code>127.0.0.1:8000</code> — click <strong>Refresh status</strong> for an HTMX-style fragment swap (no server).</figcaption>
+</figure>
 
 Extras and troubleshooting: [installation](getting-started/installation.md).
 

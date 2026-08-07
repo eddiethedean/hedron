@@ -21,6 +21,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs" / "components"
 
+# Keep install snippets aligned with scripts/check_docs_train_ssot.py.
+_ALPHA_EXTRAS = frozenset({"charts", "notebook", "mcp", "gradio", "native"})
+_TRAIN_PIN = ">=0.18.0,<0.19"
+_ALPHA_PIN = ">=0.1.0,<0.2"
+
+
+def _install_requirement(package: str) -> str:
+    """Return a pip requirement with the current train / Alpha upper bound."""
+    match = re.fullmatch(r"hedron\[([^\]]+)\]", package)
+    if match is None:
+        return package
+    extra = match.group(1).split(",", 1)[0].strip()
+    pin = _ALPHA_PIN if extra in _ALPHA_EXTRAS else _TRAIN_PIN
+    return f"{package}{pin}"
+
 
 @dataclass(frozen=True)
 class ComponentDoc:
@@ -2491,7 +2506,7 @@ def page_text(spec: ComponentDoc) -> str:
     )
     optional = (
         f"\n\nInstall the optional provider before importing this component:"
-        f'\n\n```bash\npip install "{spec.package}"\n```'
+        f'\n\n```bash\npip install "{_install_requirement(spec.package)}"\n```'
         if "[" in spec.package or spec.package.startswith("hedron-")
         else ""
     )

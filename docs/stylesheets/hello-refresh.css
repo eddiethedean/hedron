@@ -1,0 +1,377 @@
+/* Interactive Hello / Refresh browser simulation (docs homepage).
+   Always renders as a light browser window — matches the scaffold screenshot
+   and ignores the docs site color scheme so Material theme styles cannot
+   restyle the simulated page. */
+
+.hedron-browser-sim {
+  --hbs-teal: #0f766e;
+  --hbs-teal-mid: #0d9488;
+  --hbs-mint: #e8f6f3;
+  --hbs-mint-border: #9fd4cb;
+  --hbs-chrome: #ececef;
+  --hbs-chrome-border: #d5d5da;
+  --hbs-ink: #111827;
+  --hbs-muted: #6b7280;
+  --hbs-page: #ffffff;
+  color: var(--hbs-ink);
+  display: block;
+  margin: 1.75rem 0 2.25rem;
+  max-width: 44rem;
+}
+
+.hedron-browser-sim *,
+.hedron-browser-sim *::before,
+.hedron-browser-sim *::after {
+  box-sizing: border-box;
+}
+
+.hedron-browser-sim__chrome {
+  background: var(--hbs-chrome);
+  border: 1px solid var(--hbs-chrome-border);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 18px 40px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+.hedron-browser-sim__titlebar {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px 9px;
+}
+
+.hedron-browser-sim__traffic {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+  padding-left: 2px;
+}
+
+.hedron-browser-sim__traffic span {
+  border-radius: 50%;
+  display: block;
+  height: 11px;
+  width: 11px;
+}
+
+.hedron-browser-sim__traffic span:nth-child(1) {
+  background: #ff5f57;
+}
+.hedron-browser-sim__traffic span:nth-child(2) {
+  background: #febc2e;
+}
+.hedron-browser-sim__traffic span:nth-child(3) {
+  background: #28c840;
+}
+
+.hedron-browser-sim__nav {
+  align-items: center;
+  color: #8b8b93;
+  display: flex;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+
+.hedron-browser-sim__nav-btn {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 13px;
+  height: 22px;
+  justify-content: center;
+  line-height: 1;
+  opacity: 0.7;
+  padding: 0;
+  width: 22px;
+}
+
+.hedron-browser-sim__url {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #cacad1;
+  border-radius: 999px;
+  color: #374151;
+  display: flex;
+  flex: 1;
+  font-size: 12.5px;
+  gap: 6px;
+  min-width: 0;
+  padding: 5px 12px;
+}
+
+.hedron-browser-sim__url code,
+.hedron-browser-sim__caption code,
+.hedron-browser-sim__trace {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+  font-size: inherit !important;
+  padding: 0 !important;
+}
+
+.hedron-browser-sim__url code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hedron-browser-sim__viewport {
+  background: var(--hbs-page);
+  border-top: 1px solid var(--hbs-chrome-border);
+  color: var(--hbs-ink);
+  min-height: 17.5rem;
+  padding: 22px 28px 26px;
+  text-align: left;
+}
+
+/* Defeat Material .md-typeset img / strong / heading bleed. */
+.hedron-browser-sim__brand {
+  align-items: center;
+  border-bottom: 2px solid var(--hbs-teal-mid);
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 10px;
+  justify-content: flex-start !important;
+  margin: 0 0 22px;
+  padding: 0 0 12px;
+  width: 100%;
+}
+
+.hedron-browser-sim__brand img,
+.hedron-browser-sim__logo {
+  display: block !important;
+  flex: 0 0 auto;
+  height: 28px !important;
+  margin: 0 !important;
+  max-width: none !important;
+  width: 28px !important;
+}
+
+.hedron-browser-sim__brand strong,
+.hedron-browser-sim__wordmark {
+  color: var(--hbs-teal) !important;
+  display: inline !important;
+  flex: 0 0 auto;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 !important;
+}
+
+.hedron-browser-sim__page {
+  text-align: left;
+}
+
+.hedron-browser-sim__page h2,
+.hedron-browser-sim__heading,
+.hedron-browser-sim .md-typeset h2 {
+  border: 0 !important;
+  color: var(--hbs-ink) !important;
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0 0 16px !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+.hedron-browser-sim__status {
+  align-items: center;
+  background: var(--hbs-mint);
+  border: 1px solid var(--hbs-mint-border);
+  border-radius: 10px;
+  box-sizing: border-box;
+  color: #115e59;
+  display: flex !important;
+  font-size: 0.95rem;
+  font-weight: 500;
+  gap: 10px;
+  margin: 0 0 14px;
+  /* Fixed size so UTC stamp / swap highlight never resize the window. */
+  min-height: 3rem;
+  min-width: min(26rem, 100%);
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  padding: 12px 14px;
+  transition: outline-color 0.22s ease, background-color 0.22s ease;
+  width: min(26rem, 100%);
+}
+
+.hedron-browser-sim__status.is-swapping {
+  background: #d5f0ea;
+  outline-color: rgba(13, 148, 136, 0.28);
+}
+
+.hedron-browser-sim__status [data-hbs-stamp] {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hedron-browser-sim__status-icon {
+  align-items: center;
+  background: var(--hbs-teal);
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  height: 22px;
+  justify-content: center;
+  line-height: 1;
+  width: 22px;
+}
+
+.hedron-browser-sim__actions {
+  align-items: center;
+  display: flex !important;
+  flex-wrap: nowrap;
+  gap: 12px 14px;
+  justify-content: flex-start;
+  min-height: 2.4rem;
+}
+
+.hedron-browser-sim__refresh {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #fff !important;
+  border: 1.5px solid var(--hbs-teal) !important;
+  border-radius: 8px;
+  color: var(--hbs-teal) !important;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 650;
+  line-height: 1.2;
+  margin: 0;
+  padding: 8px 14px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.hedron-browser-sim__refresh:hover {
+  background: var(--hbs-mint) !important;
+}
+
+.hedron-browser-sim__refresh:active {
+  transform: translateY(1px);
+}
+
+.hedron-browser-sim__refresh:focus-visible {
+  outline: 2px solid var(--hbs-teal-mid);
+  outline-offset: 2px;
+}
+
+.hedron-browser-sim__refresh[aria-busy="true"] {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.hedron-browser-sim__hint {
+  align-items: center;
+  color: var(--hbs-teal-mid);
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.88rem;
+  font-weight: 650;
+  gap: 6px;
+  min-width: 11.5rem;
+  transition: opacity 0.25s ease;
+  user-select: none;
+}
+
+.hedron-browser-sim__hint.is-done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hedron-browser-sim__hint[hidden] {
+  display: none !important;
+}
+
+.hedron-browser-sim__hint-arrow {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.hedron-browser-sim__trace {
+  color: var(--hbs-muted) !important;
+  font-size: 0.7rem !important;
+  margin: 14px 0 0 !important;
+  max-height: 1.25em;
+  min-height: 1.25em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.hedron-browser-sim__trace.is-visible {
+  visibility: visible;
+}
+
+.hedron-browser-sim__caption {
+  color: var(--hedron-muted, #526579);
+  font-size: 0.8rem;
+  margin: 10px 0 0;
+}
+
+.hedron-browser-sim__caption code {
+  color: inherit !important;
+}
+
+/* Keep the simulated app light even when docs are in slate mode. */
+[data-md-color-scheme="slate"] .hedron-browser-sim__caption {
+  color: var(--hedron-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hedron-browser-sim__status,
+  .hedron-browser-sim__refresh {
+    transition: none;
+  }
+}
+
+@media screen and (max-width: 40em) {
+  .hedron-browser-sim {
+    max-width: none;
+  }
+
+  .hedron-browser-sim__viewport {
+    padding: 18px 16px 20px;
+  }
+
+  .hedron-browser-sim__page h2,
+  .hedron-browser-sim__heading,
+  .hedron-browser-sim .md-typeset h2 {
+    font-size: 1.4rem !important;
+  }
+
+  .hedron-browser-sim__status {
+    max-width: none;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .hedron-browser-sim__status [data-hbs-stamp] {
+    white-space: normal;
+  }
+
+  .hedron-browser-sim__actions {
+    flex-wrap: wrap;
+  }
+
+  .hedron-browser-sim__nav-btn:not(.hedron-browser-sim__nav-btn--keep) {
+    display: none;
+  }
+}
