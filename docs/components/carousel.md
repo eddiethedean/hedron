@@ -39,12 +39,16 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Carousel(slides, label='Gallery')
+Carousel(slides: 'Sequence[tuple[str, NodeLike] | NodeLike]', *, id: 'str | None' = None, label: 'str' = 'Carousel', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `slides` | `Sequence[tuple[str, NodeLike] | NodeLike]` | Ordered carousel slides (nodes or `(label, node)` pairs). |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `label` | `str` | Accessible label text shown to users. Default: `'Carousel'`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

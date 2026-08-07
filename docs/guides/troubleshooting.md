@@ -75,9 +75,10 @@ that port in the browser.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
 `pip install -U "hedron>=0.18.0"` (or `uv add "hedron>=0.18.0"`). The current published
-train is **0.16.x**—see [What's ready](whats-ready.md) and the
+train is **0.18.x**—see [What's ready](whats-ready.md) and the
 [public roadmap](roadmap.md). If docs describe a feature missing from your install,
-upgrade to a matching `0.16.x` pin or use a git checkout of that work.
+upgrade to a matching `0.18.x` pin (`hedron>=0.18.0,<0.19`) or use a git checkout of
+that work.
 
 ## CSRF 403 on POST (FastAPI / Flask)
 

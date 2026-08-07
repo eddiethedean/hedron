@@ -12,7 +12,16 @@ one-line edit. Prefer **`python -m hedron`** so PATH never matters.
 
 ## 1. Install and run the scaffold
 
-=== "pip (venv — recommended)"
+=== "uv (recommended)"
+
+    ```bash
+    uvx --from "hedron>=0.18.0" hedron new my-hedron-app
+    cd my-hedron-app
+    uv sync
+    uv run uvicorn app:app --reload
+    ```
+
+=== "pip (venv)"
 
     ```bash
     python -m venv .venv
@@ -22,15 +31,6 @@ one-line edit. Prefer **`python -m hedron`** so PATH never matters.
     cd my-hedron-app
     python -m pip install -e .   # project-local pinned hedron for uvicorn
     uvicorn app:app --reload
-    ```
-
-=== "uv (recommended CLI)"
-
-    ```bash
-    uvx --from "hedron>=0.18.0" hedron new my-hedron-app
-    cd my-hedron-app
-    uv sync
-    uv run uvicorn app:app --reload
     ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
@@ -44,8 +44,8 @@ intend to replace it.
 
 1. Open `app.py` and change the home `Text(...)` (or greeting string) to your name.
 2. Save — with `--reload`, the browser should update.
-3. Continue to [HTMX interactions](../guides/htmx-interactions.md) for a button that
-   updates one region without a full page reload.
+3. Add a small form next: [Minimal form POST](../guides/minimal-form.md).
+4. Then add a region update without full reload: [HTMX interactions](../guides/htmx-interactions.md).
 
 Optional checks:
 

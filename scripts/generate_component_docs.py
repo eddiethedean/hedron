@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import ast
 import difflib
+import inspect
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -2219,7 +2220,173 @@ def static_demo(spec: ComponentDoc) -> str:
     return f'<div class="hdc-result"><strong>{name}</strong><span>{spec.summary}</span></div>'
 
 
+_PARAM_MEANINGS: dict[str, str] = {
+    "*nodes": "Positional child nodes.",
+    "nodes": "Positional child nodes.",
+    "children": "Keyword alternative for child nodes; combines with positional children.",
+    "name": "Form control `name` submitted with the request.",
+    "label": "Accessible label text shown to users.",
+    "legend": "Accessible group legend for related controls.",
+    "id": "Optional DOM `id`.",
+    "class_": "Optional CSS class string (`class` in HTML).",
+    "mark": "Optional stable test mark (`data-hedron-mark`).",
+    "src": "Media or document URL (`SafeUrl` preferred for untrusted input).",
+    "href": "Optional navigation URL when the control is a link.",
+    "alt": "Required accessible alternative text for the image.",
+    "title": "Accessible title (document, iframe, dialog, or media).",
+    "text": "Plain text content.",
+    "body": "Body content node or string.",
+    "value": "Current control value.",
+    "values": "Selected or seeded multi-values.",
+    "options": "Choice list as `(value, label)` pairs (or plain strings where accepted).",
+    "placeholder": "Hint text shown when the control is empty.",
+    "required": "Whether the control must be filled before submit.",
+    "disabled": "Whether the control is non-interactive.",
+    "checked": "Whether a boolean control starts checked.",
+    "accept": "File `accept` filter (MIME / extension list).",
+    "capture": "Media capture facing mode (`user` or `environment`).",
+    "min": "Minimum allowed value.",
+    "max": "Maximum allowed value.",
+    "maximum": "Upper bound for progress or rating scales.",
+    "step": "Stepping interval for numeric / temporal inputs.",
+    "placement": "Layout placement for the dock.",
+    "slides": "Ordered carousel slides (nodes or `(label, node)` pairs).",
+    "entries": "Timeline entries as `(when, title, body)` or mapping records.",
+    "items": "Gallery items (`GalleryItem` or mapping records).",
+    "lightbox": "Whether clicking an item opens a lightbox details UI.",
+    "confirm": "Confirmation prompt text shown before the action runs.",
+    "type": "Native button `type` (`button`, `submit`, or `reset`).",
+    "variant": "Visual / semantic variant for the control.",
+    "mode": "Presentation mode for the disclosure surface.",
+    "open": "Whether the inspector starts expanded.",
+    "for_": "Optional `for` / control association id.",
+    "indeterminate": "Whether progress is indeterminate (ignores `value`).",
+    "controls": "Whether native media controls are shown.",
+    "autoplay": "Whether media attempts autoplay (browser-gated).",
+    "loop": "Whether media loops.",
+    "muted": "Whether media starts muted.",
+    "preload": "Native media `preload` hint.",
+    "poster": "Optional video poster image URL.",
+    "tracks": "Optional track elements or track mappings.",
+    "allow_external": "Allow non-same-origin / non-asset URLs when True.",
+    "allow_remote": "Allow remote iframe sources when True.",
+    "sandbox": "IFrame `sandbox` token string (empty = fully sandboxed).",
+    "allow": "Optional iframe `allow` feature policy string.",
+    "referrerpolicy": "IFrame referrer policy.",
+    "width": "Optional width hint (CSS length or pixels).",
+    "height": "Optional height hint (CSS length or pixels).",
+    "size": "Spacer size (CSS length).",
+    "axis": "Spacer axis (`block`, `inline`, or `both`).",
+    "center": "Map center as `(lat, lon)`.",
+    "zoom": "Initial map zoom level.",
+    "tiles": "Optional tile URL template (must pass allowlist checks).",
+    "tile_allowlist": "Allowed tile URL prefixes / hosts.",
+    "attribution": "Map attribution text.",
+    "markers": "Marker specs, mappings, or range tick markers.",
+    "geojson": "GeoJSON mapping or `GeoJSONLayer` (feature-capped).",
+    "max_features": "Maximum GeoJSON features rendered.",
+    "latex": "LaTeX source rendered safely as MathML/text fallback.",
+    "display": "Whether math uses display (block) mode.",
+    "lat_name": "Form field name for latitude.",
+    "lon_name": "Form field name for longitude.",
+    "accuracy_name": "Form field name for reported accuracy.",
+    "overflow_label": "Accessible label for overflow / more-actions control.",
+    "aria_describedby": "Optional `aria-describedby` id reference.",
+    "aria_invalid": "Optional `aria-invalid` value.",
+    "aria_required": "Optional `aria-required` value.",
+}
+
+
+def _params_are_stub(params: tuple[tuple[str, str, str], ...]) -> bool:
+    names = [name for name, _, _ in params]
+    return not names or names == ["mark"]
+
+
+def _annotation_text(annotation: object) -> str:
+    if annotation is inspect.Parameter.empty:
+        return "Any"
+    text = str(annotation)
+    text = text.replace("typing.", "")
+    for prefix in (
+        "hedron_core.nodes.",
+        "hedron_core.urls.",
+        "hedron.builtins.",
+        "hedron_core.",
+        "hedron.",
+    ):
+        text = text.replace(prefix, "")
+    return text.replace("NoneType", "None")
+
+
+def introspect_constructor(name: str) -> tuple[str, tuple[tuple[str, str, str], ...]] | None:
+    """Return live ``(signature, params)`` for a public component, or ``None``."""
+    try:
+        import hedron as hedron_pkg
+    except ImportError:
+        return None
+    cls = getattr(hedron_pkg, name, None)
+    if cls is None or not callable(getattr(cls, "__init__", None)):
+        return None
+    try:
+        sig = inspect.signature(cls.__init__)
+    except (TypeError, ValueError):
+        return None
+    rows: list[tuple[str, str, str]] = []
+    for pname, param in sig.parameters.items():
+        if pname == "self":
+            continue
+        if param.kind is inspect.Parameter.VAR_KEYWORD:
+            continue
+        if param.kind is inspect.Parameter.VAR_POSITIONAL:
+            key = f"*{pname}"
+            rows.append(
+                (
+                    key,
+                    _annotation_text(param.annotation),
+                    _PARAM_MEANINGS.get(key, _PARAM_MEANINGS.get(pname, "Positional child nodes.")),
+                )
+            )
+            continue
+        type_ = _annotation_text(param.annotation)
+        meaning = _PARAM_MEANINGS.get(pname, "Constructor parameter.")
+        if param.default is not inspect.Parameter.empty:
+            meaning = f"{meaning} Default: `{param.default!r}`."
+        rows.append((pname, type_, meaning))
+    if not rows:
+        return None
+    rendered = str(sig).replace("(self, ", "(").replace("(self)", "()")
+    if rendered.endswith(" -> None"):
+        rendered = rendered[: -len(" -> None")]
+    signature = f"{name}{rendered}"
+    return signature, tuple(rows)
+
+
+def resolve_spec(spec: ComponentDoc) -> ComponentDoc:
+    """Fill stub constructor tables from the live ``__init__`` signature."""
+    if not _params_are_stub(spec.params):
+        return spec
+    introspected = introspect_constructor(spec.name)
+    if introspected is None:
+        return spec
+    signature, params = introspected
+    return ComponentDoc(
+        name=spec.name,
+        group=spec.group,
+        summary=spec.summary,
+        signature=signature,
+        example=spec.example,
+        params=params,
+        detail=spec.detail,
+        a11y=spec.a11y,
+        pitfall=spec.pitfall,
+        package=spec.package,
+        server=spec.server,
+        demo=spec.demo,
+    )
+
+
 def page_text(spec: ComponentDoc) -> str:
+    spec = resolve_spec(spec)
     params = "\n".join(
         f"| `{name}` | `{type_}` | {meaning} |" for name, type_, meaning in spec.params
     )
@@ -2390,7 +2557,7 @@ def expected_files() -> dict[Path, str]:
     for key in GROUPS:
         files[DOCS / f"{key}.md"] = group_index_text(key)
     for spec in COMPONENTS:
-        files[DOCS / f"{spec.slug}.md"] = page_text(spec)
+        files[DOCS / f"{spec.slug}.md"] = page_text(resolve_spec(spec))
     return files
 
 
@@ -2455,6 +2622,15 @@ def check_inventory() -> list[str]:
         name for name in documented if sum(spec.name == name for spec in COMPONENTS) > 1
     ):
         failures.append(f"duplicate component doc entries: {', '.join(duplicates)}")
+    unresolved = sorted(
+        spec.name
+        for spec in COMPONENTS
+        if _params_are_stub(spec.params) and _params_are_stub(resolve_spec(spec).params)
+    )
+    if unresolved:
+        failures.append(
+            "stub constructor params could not be introspected: " + ", ".join(unresolved)
+        )
     return failures
 
 

@@ -39,12 +39,16 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Timeline()
+Timeline(entries: 'Sequence[tuple[str, str, NodeLike] | dict[str, object]]', *, id: 'str | None' = None, label: 'str' = 'Timeline', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `entries` | `Sequence[tuple[str, str, NodeLike] | dict[str, object]]` | Timeline entries as `(when, title, body)` or mapping records. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `label` | `str` | Accessible label text shown to users. Default: `'Timeline'`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

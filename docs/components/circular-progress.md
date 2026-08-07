@@ -39,12 +39,18 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-CircularProgress(value=50, maximum=100)
+CircularProgress(value: 'float | None' = None, *, maximum: 'float' = 100, label: 'str | None' = None, indeterminate: 'bool' = False, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `value` | `float | None` | Current control value. Default: `None`. |
+| `maximum` | `float` | Upper bound for progress or rating scales. Default: `100`. |
+| `label` | `str | None` | Accessible label text shown to users. Default: `None`. |
+| `indeterminate` | `bool` | Whether progress is indeterminate (ignores `value`). Default: `False`. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

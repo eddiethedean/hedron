@@ -8,7 +8,7 @@ pip install "hedron>=0.18.0"
 uv add "hedron>=0.18.0"
 ```
 
-That pins the current published train (**0.18.0** / **0.17.x**). See
+That pins the current published train (**0.18.0**). See
 [What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md). For curated
 extras (`hedron-extras`), install `hedron[extras]`. `Auto` is included. For
 DataTable/DataEditor, install `hedron[data]`. For charts, install `hedron[charts]`.
@@ -47,11 +47,11 @@ Full steps: [Troubleshooting](troubleshooting.md#hedron-command-not-found).
 
 ## Why install Hedron twice (CLI then project)?
 
-The recommended scaffold path installs Hedron once so the **`hedron` CLI** is available
-(`pip install` / `uv tool install`), then again as a **project dependency**
-(`pip install -e .` / `uv sync`) so `uvicorn app:app` imports the pinned version from
-the app’s environment. That second install is what the scaffold’s `pyproject.toml`
-declares—do not skip it.
+The **uv** path is one shot: `uvx … hedron new` scaffolds the app, then `uv sync`
+installs the project-local pin. The **pip** path installs Hedron once so the **`hedron`
+CLI** is available, then again as a **project dependency** (`pip install -e .`) so
+`uvicorn app:app` imports the pinned version from the app’s environment. That second
+install is what the scaffold’s `pyproject.toml` declares—do not skip it on pip.
 
 ## `uv add hedron` failed with “No pyproject.toml”
 
@@ -133,6 +133,24 @@ uv add "hedron[jinja]"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).
+
+## Where is the SBOM / evidence bundle?
+
+Prefer GitHub Release assets for the train tag (for example `v0.18.0`), or regenerate from
+the tagged checkout with `scripts/build_evidence_bundle.py`. Step-by-step:
+[Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.
+
+## Why might GitHub “Latest release” lag PyPI?
+
+Tags can land before Release objects/assets are attached. Trust **PyPI + the git tag** for
+version truth; regenerate evidence from the tag if assets are missing.
+
+## Supported vs Deferred (PERF / live browser)
+
+**Supported** means the capability is claimed on that host for the current train.
+**Deferred** rows (for example some load/proxy backpressure or live-browser evidence) mean
+you should not treat them as proven — prefer **polling** for jobs when those rows matter
+for your risk profile. See [What’s ready](whats-ready.md) and [Performance](performance.md).
 
 ## How do I contribute code?
 

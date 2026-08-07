@@ -39,12 +39,15 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-PageIcon(href)
+PageIcon(src: 'SafeUrl | str', *, alt: 'str' = 'Application icon', allow_external: 'bool' = False, class_: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `src` | `SafeUrl | str` | Media or document URL (`SafeUrl` preferred for untrusted input). |
+| `alt` | `str` | Required accessible alternative text for the image. Default: `'Application icon'`. |
+| `allow_external` | `bool` | Allow non-same-origin / non-asset URLs when True. Default: `False`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
 
 ## Composition and backend behavior
 

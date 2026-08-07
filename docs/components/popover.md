@@ -39,12 +39,18 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Popover(label, *children)
+Popover(*nodes: 'NodeLike', children: 'NodeLike' = None, label: 'str' = 'Open', mode: "Literal['popover', 'details']" = 'popover', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `*nodes` | `NodeLike` | Positional child nodes. |
+| `children` | `NodeLike` | Keyword alternative for child nodes; combines with positional children. Default: `None`. |
+| `label` | `str` | Accessible label text shown to users. Default: `'Open'`. |
+| `mode` | `Literal['popover', 'details']` | Presentation mode for the disclosure surface. Default: `'popover'`. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

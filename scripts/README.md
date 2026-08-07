@@ -10,6 +10,7 @@ scripts here when you add them.
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
+| `check_docs_train_ssot.py` | Fail if adopter docs claim a stale current train (0.16/0.17). CI: quality job |
 
 ## Release / gate (maintainers)
 
@@ -18,7 +19,7 @@ scripts here when you add them.
 | `check_release_gate.py` | Gate TOML vs claimed version (`0.10.1`, `0.11.0`, …) |
 | `rehearse_release.py` | Clean install rehearsal before tagging |
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
-| `verify_pkg_13.py` / `verify_pkg_12.py` / `verify_pkg_11.py` / `verify_pkg_10.py` / `verify_pkg_09.py` | Phase-tied package verify helpers |
+| `verify_pkg_18.py` / `verify_pkg_17.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (current: **`verify_pkg_18.py`**) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

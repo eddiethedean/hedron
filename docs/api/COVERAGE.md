@@ -41,7 +41,19 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `SecurityPolicy`, `SecurityProfile` | [SECURITY_TYPES.md](SECURITY_TYPES.md), [security guide](../guides/security.md) |
 | `csrf_token_for_request` | Re-exported from `hedron`; [minimal form](../guides/minimal-form.md), [SECURITY_TYPES.md](SECURITY_TYPES.md) |
 | `SafeUrl`, `Secret`, `TrustedHtml`, `UrlPurpose` | [SECURITY_TYPES.md](SECURITY_TYPES.md) |
-| `redirect_local`, `redirect_external` | [SECURITY_TYPES.md](SECURITY_TYPES.md) |
+| `redirect_local`, `redirect_external`, `redirect_htmx` | [SECURITY_TYPES.md](SECURITY_TYPES.md), Autodoc |
+
+## Media, browser, and downloads
+
+| Export | Primary docs |
+|---|---|
+| `Audio`, `Video`, `CameraCapture`, `MicrophoneCapture`, `IFrame`, `PdfViewer`, `Map`, `GeoJSONLayer`, `Gallery` | [Component pages](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `media_file_response`, `safe_download_response` | [Media downloads](../guides/media-downloads.md), Autodoc |
+| `BrowserContext`, `browser_context`, `browser_context_from_request` | Autodoc; request-scoped browser hints (not authorization) |
+| `BrowserStorage`, `BrowserStorageUnavailable` | Autodoc; client storage is spoofable — never authorize from it |
+| `GeolocationButton`, `GeolocationHint` | [Component pages](../components/geolocation-button.md); coordinates are client-reported |
+| `InteractionRecorder`, `RecordedExchange`, `RecordingSnippet` | [INFERENCE.md](INFERENCE.md) |
+| `render`, `render_component_response`, `render_interaction`, `RenderContext`, `RenderMode`, `RenderResult` | [RENDERING.md](RENDERING.md), [INTERACTION.md](INTERACTION.md) |
 
 ## Built-in UI components
 

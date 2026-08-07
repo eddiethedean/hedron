@@ -57,20 +57,17 @@ Build dashboards, admin tools, forms, and CRUD apps without a frontend build cha
 
 ## From zero to a rendered page
 
-**Recommended:** use the CLI scaffold. Do not also hand-write a second `app.py`.
+**Recommended:** `uvx` → `uv sync` → run. Do not also hand-write a second `app.py`.
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron>=0.18.0" "uvicorn[standard]"
-python -m hedron new my-hedron-app
+uvx --from "hedron>=0.18.0" hedron new my-hedron-app
 cd my-hedron-app
-python -m pip install -e .
-uvicorn app:app --reload
+uv sync
+uv run uvicorn app:app --reload
 ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
-Prefer [uv](https://docs.astral.sh/uv/)? Full steps:
-[installation](getting-started/installation.md).
+pip + venv alternate: [installation](getting-started/installation.md).
 
 **Manual single-file (not using `hedron new`):** create a project directory, save
 `app.py` from the [single-file examples](examples/single-file.md), install
@@ -78,9 +75,10 @@ Prefer [uv](https://docs.astral.sh/uv/)? Full steps:
 
 ## Next steps
 
-1. [HTMX interactions](guides/htmx-interactions.md)
-2. [Minimal form](guides/minimal-form.md)
-3. [Learning path](getting-started/learning-path.md)
+1. Open `app.py` and change the Hello text ([quickstart](getting-started/quickstart.md))
+2. [Minimal form POST](guides/minimal-form.md)
+3. [HTMX interactions](guides/htmx-interactions.md)
+4. [Learning path](getting-started/learning-path.md)
 
 Then: [Try with Codespaces](examples/try-it.md) · [runnable examples](examples/runnable.md) ·
 [What's ready](guides/whats-ready.md) · [Evaluate Hedron](guides/evaluate.md)

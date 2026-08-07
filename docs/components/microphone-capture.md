@@ -39,12 +39,16 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-MicrophoneCapture(name='audio')
+MicrophoneCapture(*, name: 'str' = 'microphone', label: 'str' = 'Record audio', accept: 'str' = 'audio/*', capture: "Literal['user', 'environment']" = 'user', class_: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `name` | `str` | Form control `name` submitted with the request. Default: `'microphone'`. |
+| `label` | `str` | Accessible label text shown to users. Default: `'Record audio'`. |
+| `accept` | `str` | File `accept` filter (MIME / extension list). Default: `'audio/*'`. |
+| `capture` | `Literal['user', 'environment']` | Media capture facing mode (`user` or `environment`). Default: `'user'`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
 
 ## Composition and backend behavior
 

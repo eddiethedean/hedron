@@ -5,9 +5,9 @@ The canonical security policy for GitHub and adopters is
 
 Summary:
 
-- Supported lines: **`0.16.x` (current)**. See [docs/SECURITY.md](docs/SECURITY.md) for
-  the full table (`0.15.x` security fixes while 0.16 remains Beta; older trains: prefer
-  upgrading)
+- Supported lines: **`0.18.x` (current)**. See [docs/SECURITY.md](docs/SECURITY.md) for
+  the full table (`0.17.x` critical fixes only until next train + 90 days; older trains:
+  prefer upgrading)
 - **Do not** open public issues for vulnerabilities — use GitHub
   [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new)
   (dedicated disclosure channel) or **odosmatthews@gmail.com** (package author metadata)

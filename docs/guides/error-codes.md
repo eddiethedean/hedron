@@ -4,7 +4,7 @@ Stable `HED-*` diagnostics from `hedron_core.codes`. Prefer these codes in CI an
 support reports. Full format: [Diagnostics](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md).
 
 This catalog is complete for the registered set enforced by
-`scripts/check_hed_codes.py --docs-align` (phase 0.17 / `#15` / `HEDDOC-017`).
+`scripts/check_hed_codes.py --docs-align` (current train / `#15` / `HEDDOC-017`).
 
 ## HED-ASSET
 

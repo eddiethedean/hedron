@@ -39,12 +39,18 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-DirectoryUpload(name='files')
+DirectoryUpload(*, name: 'str' = 'files', label: 'str' = 'Upload directory', accept: 'str | None' = None, id: 'str | None' = None, disabled: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `name` | `str` | Form control `name` submitted with the request. Default: `'files'`. |
+| `label` | `str` | Accessible label text shown to users. Default: `'Upload directory'`. |
+| `accept` | `str | None` | File `accept` filter (MIME / extension list). Default: `None`. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `disabled` | `bool` | Whether the control is non-interactive. Default: `False`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

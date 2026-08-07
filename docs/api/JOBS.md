@@ -1,7 +1,3 @@
----
-status: shipped
----
-
 # Job interaction contracts
 
 !!! note "Stability"
@@ -19,59 +15,77 @@ queue, worker fleet, scheduler, result database, or retry service.
 
 | Symbol | Import | Role |
 |---|---|---|
-| `InMemoryJobBackend` / `set_job_backend` / `get_job_backend` | `hedron_core.jobs` | Test/demo backend + process-local default |
+| `JobBackend` / `JobState` / `JobStatus` / `JobHandle` | `hedron_core.jobs` | Protocol + status types |
+| `InMemoryJobBackend` / `RedisJobBackend` | `hedron_core.jobs` | In-process (tests) and Redis-durable backends |
+| `CeleryJobBackend` | `hedron_core.jobs_celery` | Celery + Redis status bridge |
+| `RQJobBackend` | `hedron_core.jobs_rq` | RQ + Redis status bridge |
+| `set_job_backend` / `get_job_backend` | `hedron_core.jobs` | Process-local default backend |
 | `enqueue_durable` | `hedron.jobs` | Submit via the configured backend; returns `job_id` |
-| `job_status_response` | `hedron.jobs` | HTML 202 status fragment + `Retry-After` |
+| `job_status_response` | `hedron.jobs` | HTML **202** status fragment + `Retry-After` (Supported) |
 | `schedule_post_response` | `hedron.jobs` | FastAPI `BackgroundTasks` only — **not** durable |
-| `job_status_sse_response` | `hedron.experimental` | SSE observation until terminal (experimental) |
+| `job_status_sse_response` | `hedron.experimental` | SSE observation until terminal (**experimental**) |
 
-## Contract
+Production recipe: [Celery / RQ + Redis](../guides/jobs-celery-rq.md).
 
-A backend declares capabilities and supports explicit submission, status lookup,
-result/error metadata, retention/expiry, and cancellation requests where available.
-Submission carries an application-defined task description, authorization/tenant scope, and
-optional idempotency key. Job identifiers are opaque, bounded, and safe for addressable
-status URLs.
+## `JobBackend` protocol
 
-Portable states: queued, running, succeeded, failed, cancellation-requested, cancelled,
-expired. Retry ownership, maximum attempts, result serialization, cleanup, and
-backend-unavailable behavior are explicit backend/application policies.
+Implementations must provide:
+
+| Method | Contract |
+|---|---|
+| `submit(job_type, payload, *, idempotency_key=None, tenant_id=None, auth_subject=None) -> JobHandle` | Enqueue work; return an opaque `job_id`. Honor idempotency within auth/tenant scope when a key is supplied. |
+| `get(job_id, *, auth_subject=None, tenant_id=None) -> JobStatus \| None` | Lookup status; return `None` when missing or unauthorized for the caller scope. |
+| `request_cancel(job_id, *, auth_subject=None, tenant_id=None) -> bool` | Request cancellation; return whether the request was accepted. |
+| `cleanup_expired(*, older_than_seconds=86400) -> int` | Drop retained records older than the TTL window; return count removed. |
+| `mark(job_id, state, *, result=None, error=None) -> JobStatus \| None` | Worker/application transition helper (queued → running → terminal). |
+
+`JobState` values: `queued`, `running`, `succeeded`, `failed`, `cancelled`.
+`JobStatus.cancel_requested` records a cancel ask while work may still be finishing.
+Retry ownership, maximum attempts, result serialization, and backend-unavailable behavior
+remain application/backend policy.
+
+HTTP observers use `job_authorized_http`: unscoped jobs are **not** readable over HTTP
+helpers (fail closed). Pass matching `auth_subject` / `tenant_id` when enqueueing and when
+polling.
 
 ## InferencePolicy cancel (0.18)
 
-`InferencePolicy.request_cancel(request_id, backend=...)` layers admission/queue cancel on top
-of this contract: queued requests are dropped locally; accepted requests map to a backend
-`job_id` and call `JobBackend.request_cancel`, releasing inflight concurrency capacity.
-See [Inference API](INFERENCE.md).
+`InferencePolicy.request_cancel(request_id, backend=...)` layers admission/queue cancel on
+top of this contract: queued requests are dropped locally; accepted requests map to a
+backend `job_id` and call `JobBackend.request_cancel`, releasing inflight concurrency
+capacity. See [Inference API](INFERENCE.md).
 
-## HTTP and HTMX behavior
+## HTTP and HTMX behavior (Supported path)
 
-Accepted work returns HTTP 202 with an addressable authorized status resource and
-`Retry-After`. The default component uses **bounded polling**, accessible status
-announcements, terminal stop behavior, and an ordinary-HTML fallback.
+1. Submit with `enqueue_durable(...)` (or `backend.submit(...)`).
+2. Return an addressable status URL and a **`Poll`** (or ordinary refresh) against that URL.
+3. Serve status with `job_status_response(...)` → HTTP **202** + `Retry-After` + fragment HTML
+   until the job is terminal.
+4. Stop polling on success/failure/cancel; keep native HTML usable without HTMX.
 
-Optional **SSE** observation uses the same status contract via
-`job_status_sse_response` on the FastAPI flagship ([SSE](SSE.md),
-[live interaction](../guides/live-interaction.md)). Polling remains the required Supported
-baseline on every host, including Flask/Django.
+Optional **SSE** observation (`job_status_sse_response`) is experimental on FastAPI only.
+Polling remains the Supported baseline on every host, including Flask/Django.
 
-Host-framework background helpers are limited to small post-response work and do not
-implement the durable protocol.
+`schedule_post_response` / host `BackgroundTasks` are for small post-response work only —
+they do **not** implement the durable protocol.
 
-## End-to-end example (in-memory backend + SSE)
+## End-to-end example (polling — Supported)
 
 ```python
 import threading
 import time
 
-from fastapi import Request
+from fastapi import HTTPException
 
-from hedron.experimental import job_status_sse_response
-from hedron.jobs import enqueue_durable
+from hedron import ComponentRef, Hedron, Page, Poll, Status, Text
+from hedron.jobs import enqueue_durable, job_status_response
 from hedron_core.jobs import InMemoryJobBackend, JobState, set_job_backend
 
+app = Hedron()
 backend = InMemoryJobBackend()
 set_job_backend(backend)
+
+JOB_STATUS = "/jobs/{job_id}/status"
 
 
 def worker(job_id: str) -> None:
@@ -81,38 +95,71 @@ def worker(job_id: str) -> None:
 
 @app.page("/")
 def home():
-    job_id = enqueue_durable("demo", {"n": 1})
+    job_id = enqueue_durable(
+        "demo",
+        {"n": 1},
+        auth_subject="demo-user",
+        tenant_id="demo-tenant",
+    )
     threading.Thread(target=worker, args=(job_id,), daemon=True).start()
-    return f"Observe /jobs/{job_id}/events"
+    ref = ComponentRef(
+        logical_id="job-status",
+        path=JOB_STATUS.format(job_id=job_id),
+        method="GET",
+    )
+    return Page(
+        Text(f"Job {job_id}"),
+        Poll(ref=ref, interval_ms=2000, content=Status("Queued…")),
+    )
 
+
+@app.get("/jobs/{job_id}/status")
+def job_status(job_id: str):
+    status = backend.get(job_id)
+    if status is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return job_status_response(
+        status,
+        auth_subject="demo-user",
+        tenant_id="demo-tenant",
+    )
+```
+
+For multi-worker production, replace `InMemoryJobBackend` with
+[`RedisJobBackend`](../guides/jobs-celery-rq.md), `CeleryJobBackend`, or `RQJobBackend`.
+
+## Experimental SSE sample
+
+```python
+from fastapi import Request
+from hedron.experimental import job_status_sse_response
 
 @app.get("/jobs/{job_id}/events")
 def events(job_id: str, request: Request):
-    return job_status_sse_response(job_id, backend=backend, request=request)
+    return job_status_sse_response(
+        job_id,
+        backend=backend,
+        request=request,
+        auth_subject="demo-user",
+        tenant_id="demo-tenant",
+    )
 ```
 
-Runnable sample: [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction).
-
-## Parameters (`job_status_sse_response`)
-
-| Parameter | Type | Description |
-|---|---|---|
-| `job_id` | `str` | Opaque job identifier from `enqueue_durable` / `JobBackend.submit` |
-| `backend` | `JobBackend \| None` | Defaults to `get_job_backend()` |
-| `request` | `Request \| None` | Used for `Last-Event-ID` resume |
-| `html_message` | callable \| None | Custom HTML body for status events |
-| `poll_interval_seconds` | `float \| None` | Backend poll cadence while open |
-| `auth_subject` / `tenant_id` | `str \| None` | Required when the stored job scoped those fields |
+Runnable live sample (includes experimental SSE):
+[`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction).
 
 ## Errors
 
 | Condition | Behavior |
 |---|---|
-| Unknown job id | `404` from `job_status_sse_response` |
-| Auth/tenant mismatch | `403` |
+| Unknown / unauthorized job (HTTP poll) | `job_status_response` → **404** (same shape; no enumeration) |
+| Auth/tenant mismatch (SSE) | **403** / fail-closed per helper |
 | Backend unavailable | Application/backend-defined; do not cache failures as success |
-| Cancel unsupported | Backend reports capability; UI must degrade |
+| Cancel unsupported / revoke failed | Backend returns `False`; UI must degrade |
+| Production without durable backend | `production_gate` may refuse in-memory defaults |
 
 ## See also
 
-[SSE](SSE.md) · [Live interaction](../guides/live-interaction.md) · [STABILITY](STABILITY.md) · [Cache](CACHE.md)
+[Celery / RQ + Redis](../guides/jobs-celery-rq.md) · [SSE](SSE.md) ·
+[Live interaction](../guides/live-interaction.md) · [STABILITY](STABILITY.md) ·
+[Deployment](../guides/deployment.md)

@@ -39,12 +39,14 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-ClipboardCopy(text, label='Copy')
+ClipboardCopy(text: 'str', *, label: 'str' = 'Copy', mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `text` | `str` | Plain text content. |
+| `label` | `str` | Accessible label text shown to users. Default: `'Copy'`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

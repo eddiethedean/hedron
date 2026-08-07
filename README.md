@@ -11,12 +11,15 @@ Hedron lets you build dashboards, admin tools, and CRUD apps as typed Python com
 on FastAPI + HTMX — without a Node.js frontend stack.
 
 ```bash
+# Recommended (uv)
+uvx --from "hedron>=0.18.0" hedron new my-hedron-app
+cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
+
+# Alternate (pip + venv)
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
 python -m pip install "hedron>=0.18.0" "uvicorn[standard]"
 python -m hedron new my-hedron-app
-cd my-hedron-app
-python -m pip install -e .
-uvicorn app:app --reload
+cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 ```
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
@@ -26,15 +29,12 @@ Packages are **Beta**; pin versions for production. Details:
 If `hedron` is not on your PATH, use `python -m hedron`
 ([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).
 
-Prefer [uv](https://docs.astral.sh/uv/)? Use `uvx --from "hedron>=0.18.0" hedron new …`,
-then `uv sync` and `uv run uvicorn app:app --reload`. Full steps:
-[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
-
 Prefer not to install locally?
 [Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/).
 
-**Next:** [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
+**Next:** Open `app.py` and change the Hello text →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
+[HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
 
 ## Packages

@@ -39,12 +39,13 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-GeoJSONLayer(data, max_features=500)
+GeoJSONLayer(geojson: 'Mapping[str, Any] | None', *, max_features: 'int' = 500) -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `geojson` | `Mapping[str, Any] | None` | GeoJSON mapping or `GeoJSONLayer` (feature-capped). |
+| `max_features` | `int` | Maximum GeoJSON features rendered. Default: `500`. |
 
 ## Composition and backend behavior
 

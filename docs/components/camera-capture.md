@@ -39,12 +39,16 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-CameraCapture(name='photo')
+CameraCapture(*, name: 'str' = 'camera', label: 'str' = 'Capture media', accept: 'str' = 'video/*', capture: "Literal['user', 'environment']" = 'environment', class_: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `name` | `str` | Form control `name` submitted with the request. Default: `'camera'`. |
+| `label` | `str` | Accessible label text shown to users. Default: `'Capture media'`. |
+| `accept` | `str` | File `accept` filter (MIME / extension list). Default: `'video/*'`. |
+| `capture` | `Literal['user', 'environment']` | Media capture facing mode (`user` or `environment`). Default: `'environment'`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
 
 ## Composition and backend behavior
 

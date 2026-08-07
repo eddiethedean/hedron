@@ -4,8 +4,10 @@
 
 | Version | Supported |
 |---|---|
-| `0.16.x` | Yes (current published train) |
-| `0.15.x` | Security fixes while 0.16 remains Beta; prefer upgrading |
+| `0.18.x` | Yes (current published train) |
+| `0.17.x` | Critical fixes only until the next train + 90 days; prefer upgrading |
+| `0.16.x` | Prefer upgrading to the current train |
+| `0.15.x` | Prefer upgrading to the current train |
 | `0.14.x` | Prefer upgrading to the current train |
 | `0.13.x` | Prefer upgrading to the current train |
 | `0.12.x` | Prefer upgrading to the current train |
@@ -51,8 +53,8 @@ plugins, misconfigured deployments, and host-framework CVEs (report those upstre
 
 Release evidence and dependency inventories are produced by maintainer scripts
 (`scripts/build_evidence_bundle.py`, `scripts/generate_sbom.py`,
-`scripts/license_inventory.py`). Published release notes and GitHub Releases attach or
-link evidence when a train is cut—see [RELEASE](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
+`scripts/license_inventory.py`). See the [Evidence pack](guides/evidence-pack.md) for how
+evaluators obtain SBOM / license inventory for the current train.
 
 ## See also
 

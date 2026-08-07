@@ -11,7 +11,18 @@ do not also hand-write a second `app.py` over the scaffold.
 
 ## Create your first app
 
-=== "pip (venv — recommended)"
+=== "uv (recommended)"
+
+    ```bash
+    uvx --from "hedron>=0.18.0" hedron new my-hedron-app
+    cd my-hedron-app
+    uv sync
+    uv run uvicorn app:app --reload
+    ```
+
+    Or install the CLI once with `uv tool install "hedron>=0.18.0"`, then `hedron new …`.
+
+=== "pip (venv)"
 
     ```bash
     python -m venv .venv
@@ -23,24 +34,14 @@ do not also hand-write a second `app.py` over the scaffold.
     uvicorn app:app --reload
     ```
 
-=== "uv (recommended CLI)"
-
-    ```bash
-    uvx --from "hedron>=0.18.0" hedron new my-hedron-app
-    cd my-hedron-app
-    uv sync
-    uv run uvicorn app:app --reload
-    ```
-
-    Or install the CLI once with `uv tool install "hedron>=0.18.0"`, then `hedron new …`.
-
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 
-!!! note "Why a second install?"
+!!! note "Why does the pip path install twice?"
 
-    The first install (or `uvx`) provides the **CLI**. `pip install -e .` / `uv sync`
+    `uvx` / the first pip install provides the **CLI**. `uv sync` / `pip install -e .`
     installs the scaffold’s **project dependency** so uvicorn uses the pinned version.
-    See [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
+    The uv path is one mental model: scaffold → sync → run. See
+    [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
 
 `hedron new` creates:
 
@@ -61,20 +62,20 @@ scaffold (or a manual `app.py`). This page stays the extras / troubleshooting hu
 
 ## Verify
 
-=== "pip (activated venv)"
-
-    ```bash
-    python -c "import hedron; print(hedron.__version__)"
-    ```
-
 === "uv"
 
     ```bash
     uv run python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.17.0`** (or a newer `0.17.x` patch) from a matching install. On PyPI, the
-latest published train is **0.16.x**.
+=== "pip (activated venv)"
+
+    ```bash
+    python -c "import hedron; print(hedron.__version__)"
+    ```
+
+Expect **`0.18.0`** (or a newer `0.18.x` patch) from a matching install. The current
+published train on PyPI is **0.18.x**. Pin with `hedron>=0.18.0,<0.19` for production.
 
 ## Common install problems
 

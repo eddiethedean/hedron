@@ -39,12 +39,18 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-ChipInput(name, values=())
+ChipInput(name: 'str', *, values: 'Sequence[str] | None' = None, id: 'str | None' = None, placeholder: 'str | None' = None, disabled: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `name` | `str` | Form control `name` submitted with the request. |
+| `values` | `Sequence[str] | None` | Selected or seeded multi-values. Default: `None`. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `placeholder` | `str | None` | Hint text shown when the control is empty. Default: `None`. |
+| `disabled` | `bool` | Whether the control is non-interactive. Default: `False`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

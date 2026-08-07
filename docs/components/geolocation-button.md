@@ -39,12 +39,17 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-GeolocationButton(label='Share location')
+GeolocationButton(*, label: 'str' = 'Share location', lat_name: 'str' = 'lat', lon_name: 'str' = 'lon', accuracy_name: 'str' = 'accuracy', class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `label` | `str` | Accessible label text shown to users. Default: `'Share location'`. |
+| `lat_name` | `str` | Form field name for latitude. Default: `'lat'`. |
+| `lon_name` | `str` | Form field name for longitude. Default: `'lon'`. |
+| `accuracy_name` | `str` | Form field name for reported accuracy. Default: `'accuracy'`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

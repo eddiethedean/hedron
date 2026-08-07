@@ -39,12 +39,21 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-IFrame(src, title, allow_remote=False)
+IFrame(src: 'SafeUrl | str', *, title: 'str', sandbox: 'str' = '', allow: 'str | None' = None, referrerpolicy: 'str' = 'no-referrer', width: 'str | int | None' = None, height: 'str | int | None' = None, allow_remote: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `src` | `SafeUrl | str` | Media or document URL (`SafeUrl` preferred for untrusted input). |
+| `title` | `str` | Accessible title (document, iframe, dialog, or media). |
+| `sandbox` | `str` | IFrame `sandbox` token string (empty = fully sandboxed). Default: `''`. |
+| `allow` | `str | None` | Optional iframe `allow` feature policy string. Default: `None`. |
+| `referrerpolicy` | `str` | IFrame referrer policy. Default: `'no-referrer'`. |
+| `width` | `str | int | None` | Optional width hint (CSS length or pixels). Default: `None`. |
+| `height` | `str | int | None` | Optional height hint (CSS length or pixels). Default: `None`. |
+| `allow_remote` | `bool` | Allow remote iframe sources when True. Default: `False`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

@@ -39,12 +39,16 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-PdfViewer(src, title='PDF')
+PdfViewer(src: 'SafeUrl | str', *, title: 'str' = 'PDF document', allow_external: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `src` | `SafeUrl | str` | Media or document URL (`SafeUrl` preferred for untrusted input). |
+| `title` | `str` | Accessible title (document, iframe, dialog, or media). Default: `'PDF document'`. |
+| `allow_external` | `bool` | Allow non-same-origin / non-asset URLs when True. Default: `False`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

@@ -39,12 +39,14 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-GeolocationHint()
+GeolocationHint(text: 'str' = 'Browser geolocation is permission-gated, client-reported, and spoofable. Never use coordinates for authorization.', *, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `text` | `str` | Plain text content. Default: `'Browser geolocation is permission-gated, client-reported, and spoofable. Never use coordinates for authorization.'`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

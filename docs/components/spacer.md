@@ -39,12 +39,16 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Spacer(size='1rem')
+Spacer(*, size: 'str' = '1rem', axis: "Literal['block', 'inline', 'both']" = 'block', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `size` | `str` | Spacer size (CSS length). Default: `'1rem'`. |
+| `axis` | `Literal['block', 'inline', 'both']` | Spacer axis (`block`, `inline`, or `both`). Default: `'block'`. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

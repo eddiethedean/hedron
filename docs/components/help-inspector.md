@@ -39,12 +39,17 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-HelpInspector(title, body)
+HelpInspector(title: 'str', body: 'NodeLike | str', *, open: 'bool' = False, id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `title` | `str` | Accessible title (document, iframe, dialog, or media). |
+| `body` | `NodeLike | str` | Body content node or string. |
+| `open` | `bool` | Whether the inspector starts expanded. Default: `False`. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

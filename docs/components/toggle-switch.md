@@ -39,12 +39,21 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-ToggleSwitch(name, checked=False)
+ToggleSwitch(name: 'str', label: 'str', *, id: 'str | None' = None, checked: 'bool' = False, required: 'bool' = False, disabled: 'bool' = False, mark: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `name` | `str` | Form control `name` submitted with the request. |
+| `label` | `str` | Accessible label text shown to users. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `checked` | `bool` | Whether a boolean control starts checked. Default: `False`. |
+| `required` | `bool` | Whether the control must be filled before submit. Default: `False`. |
+| `disabled` | `bool` | Whether the control is non-interactive. Default: `False`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
+| `aria_describedby` | `str | None` | Optional `aria-describedby` id reference. Default: `None`. |
+| `aria_invalid` | `str | None` | Optional `aria-invalid` value. Default: `None`. |
+| `aria_required` | `str | None` | Optional `aria-required` value. Default: `None`. |
 
 ## Composition and backend behavior
 

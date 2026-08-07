@@ -39,12 +39,21 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-SelectSlider(name, options)
+SelectSlider(name: 'str', options: 'Sequence[str | tuple[str, str]]', *, id: 'str | None' = None, value: 'str | None' = None, required: 'bool' = False, disabled: 'bool' = False, mark: 'str | None' = None, aria_describedby: 'str | None' = None, aria_invalid: 'str | None' = None, aria_required: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `name` | `str` | Form control `name` submitted with the request. |
+| `options` | `Sequence[str | tuple[str, str]]` | Choice list as `(value, label)` pairs (or plain strings where accepted). |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `value` | `str | None` | Current control value. Default: `None`. |
+| `required` | `bool` | Whether the control must be filled before submit. Default: `False`. |
+| `disabled` | `bool` | Whether the control is non-interactive. Default: `False`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
+| `aria_describedby` | `str | None` | Optional `aria-describedby` id reference. Default: `None`. |
+| `aria_invalid` | `str | None` | Optional `aria-invalid` value. Default: `None`. |
+| `aria_required` | `str | None` | Optional `aria-required` value. Default: `None`. |
 
 ## Composition and backend behavior
 

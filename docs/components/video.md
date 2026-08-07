@@ -39,12 +39,22 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Video(src, controls=True)
+Video(src: 'SafeUrl | str', *, tracks: 'Sequence[Mapping[str, Any] | NodeLike]' = (), controls: 'bool' = True, autoplay: 'bool' = False, loop: 'bool' = False, muted: 'bool' = False, preload: 'str | None' = None, poster: 'SafeUrl | str | None' = None, allow_external: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `src` | `SafeUrl | str` | Media or document URL (`SafeUrl` preferred for untrusted input). |
+| `tracks` | `Sequence[Mapping[str, Any] | NodeLike]` | Optional track elements or track mappings. Default: `()`. |
+| `controls` | `bool` | Whether native media controls are shown. Default: `True`. |
+| `autoplay` | `bool` | Whether media attempts autoplay (browser-gated). Default: `False`. |
+| `loop` | `bool` | Whether media loops. Default: `False`. |
+| `muted` | `bool` | Whether media starts muted. Default: `False`. |
+| `preload` | `str | None` | Native media `preload` hint. Default: `None`. |
+| `poster` | `SafeUrl | str | None` | Optional video poster image URL. Default: `None`. |
+| `allow_external` | `bool` | Allow non-same-origin / non-asset URLs when True. Default: `False`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

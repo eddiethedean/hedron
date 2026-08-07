@@ -39,12 +39,15 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Gallery(items, lightbox=False)
+Gallery(items: 'Sequence[GalleryItem | Mapping[str, Any]]', *, lightbox: 'bool' = False, mark: 'str | None' = None, class_: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `items` | `Sequence[GalleryItem | Mapping[str, Any]]` | Gallery items (`GalleryItem` or mapping records). |
+| `lightbox` | `bool` | Whether clicking an item opens a lightbox details UI. Default: `False`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
 
 ## Composition and backend behavior
 

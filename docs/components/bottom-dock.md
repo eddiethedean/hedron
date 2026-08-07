@@ -39,12 +39,17 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-BottomDock(*children)
+BottomDock(*nodes: 'NodeLike', children: 'NodeLike' = None, label: 'str' = 'Actions', id: 'str | None' = None, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `*nodes` | `NodeLike` | Positional child nodes. |
+| `children` | `NodeLike` | Keyword alternative for child nodes; combines with positional children. Default: `None`. |
+| `label` | `str` | Accessible label text shown to users. Default: `'Actions'`. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

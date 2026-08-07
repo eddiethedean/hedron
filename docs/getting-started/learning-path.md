@@ -45,7 +45,7 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
    covers poll, token stream, SSE ping, Job SSE, WebSocket accept, and preload. Prefer
    polling until you have your own ops proof for SSE/WebSocket behind proxies
    (see [What's ready](../guides/whats-ready.md))
-3. [What's new in 0.14](../guides/whats-new-0.14.md)
+3. [What's new in 0.18](../guides/whats-new-0.18.md) · [Release notes](../guides/release-notes.md)
 
 ## 6. Harden and deploy
 

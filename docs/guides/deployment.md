@@ -20,6 +20,8 @@
 
 See the full [configuration reference](../CONFIGURATION.md).
 
+For durable multi-worker jobs, see [Celery / RQ + Redis](jobs-celery-rq.md).
+
 ## Build manifests
 
 In production, Hedron refuses to start without a valid `manifest.json` under the build

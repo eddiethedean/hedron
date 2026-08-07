@@ -39,12 +39,19 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Pills(name, options, value=None)
+Pills(name: 'str', legend: 'str', options: 'Sequence[tuple[str, str]]', *, id: 'str | None' = None, value: 'str | None' = None, required: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `name` | `str` | Form control `name` submitted with the request. |
+| `legend` | `str` | Accessible group legend for related controls. |
+| `options` | `Sequence[tuple[str, str]]` | Choice list as `(value, label)` pairs (or plain strings where accepted). |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `value` | `str | None` | Current control value. Default: `None`. |
+| `required` | `bool` | Whether the control must be filled before submit. Default: `False`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

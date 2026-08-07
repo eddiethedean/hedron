@@ -39,12 +39,19 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-RatingInput(name, maximum=5)
+RatingInput(name: 'str', legend: 'str', *, maximum: 'int' = 5, value: 'int | None' = None, id: 'str | None' = None, required: 'bool' = False, class_: 'str | None' = None, mark: 'str | None' = None, **kwargs: 'object') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `name` | `str` | Form control `name` submitted with the request. |
+| `legend` | `str` | Accessible group legend for related controls. |
+| `maximum` | `int` | Upper bound for progress or rating scales. Default: `5`. |
+| `value` | `int | None` | Current control value. Default: `None`. |
+| `id` | `str | None` | Optional DOM `id`. Default: `None`. |
+| `required` | `bool` | Whether the control must be filled before submit. Default: `False`. |
+| `class_` | `str | None` | Optional CSS class string (`class` in HTML). Default: `None`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

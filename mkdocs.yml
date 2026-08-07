@@ -107,7 +107,7 @@ exclude_docs: |
 
 validation:
   nav:
-    omitted_files: warn
+    omitted_files: ignore
     not_found: warn
     absolute_links: warn
   links:
@@ -215,6 +215,7 @@ nav:
       - Accessibility: guides/accessibility.md
     - Ops:
       - Deployment: guides/deployment.md
+      - Durable jobs (Celery / RQ): guides/jobs-celery-rq.md
       - OpenAPI and HTML routes: guides/openapi.md
       - Observability: guides/observability.md
       - Performance: guides/performance.md
@@ -440,29 +441,30 @@ nav:
         - Conformance kit: api/CONFORMANCE.md
   - Project:
     - Public roadmap: guides/roadmap.md
-    - Migrate from Streamlit: guides/streamlit-migration.md
-    - Streamlit migration matrix: guides/streamlit-migration-matrix.md
-    - NiceGUI migration: guides/nicegui-migration.md
-    - Dash migration: guides/dash-migration.md
-    - Gradio migration: guides/gradio-migration.md
-    - Migrate from FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - Upgrade (0.8 → 0.18): guides/upgrade.md
+    - Migrations:
+      - Streamlit: guides/streamlit-migration.md
+      - Streamlit matrix: guides/streamlit-migration-matrix.md
+      - NiceGUI: guides/nicegui-migration.md
+      - Dash: guides/dash-migration.md
+      - FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
     - What's new: guides/release-notes.md
     - What's new in 0.18: guides/whats-new-0.18.md
-    - What's new in 0.17: guides/whats-new-0.17.md
-    - What's new in 0.16: guides/whats-new-0.16.md
-    - What's new in 0.14: guides/whats-new-0.14.md
-    - What's new in 0.13: guides/whats-new-0.13.md
-    - What's new in 0.12: guides/whats-new-0.12.md
-    - What's new in 0.11: guides/whats-new-0.11.md
-    - What's new in 0.10.1: guides/whats-new-0.10.1.md
-    - What's new in 0.10: guides/whats-new-0.10.md
-    - Native desktop shell recipe: guides/native-desktop-shell.md
+    - Earlier what's-new (archive):
+      - 0.17: guides/whats-new-0.17.md
+      - 0.16: guides/whats-new-0.16.md
+      - 0.14: guides/whats-new-0.14.md
+      - 0.13: guides/whats-new-0.13.md
+      - 0.12: guides/whats-new-0.12.md
+      - 0.11: guides/whats-new-0.11.md
+      - 0.10.1: guides/whats-new-0.10.1.md
+      - 0.10: guides/whats-new-0.10.md
     - Compatibility: COMPATIBILITY.md
     - Configuration: CONFIGURATION.md
     - Glossary: GLOSSARY.md
+    - Native desktop shell recipe: guides/native-desktop-shell.md
     - Contributing: CONTRIBUTING.md
-    - Maintainer handbook: guides/maintainer-handbook.md
-    - For maintainers (detail): guides/maintainers.md
+    - Maintainers: guides/maintainer-handbook.md
+    - Maintainer notes: guides/maintainers.md
     - Code of Conduct: CODE_OF_CONDUCT.md
     - Security disclosure: SECURITY.md

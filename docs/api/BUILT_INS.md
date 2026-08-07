@@ -6,85 +6,107 @@ status: shipped
 
 [Browse all built-in component demos](../components/index.md){ .md-button .md-button--primary }
 
-Every public component listed below has a dedicated guide with a usable semantic preview,
-constructor and parameter reference, composition and backend behavior, accessibility and
-security guidance, common mistakes, and testing advice. HTMX-dependent previews use a
-clearly labelled in-browser simulation; production authorization, validation, persistence,
-and fragment rendering remain server responsibilities.
-
+This page is an **index** into dedicated [component pages](../components/index.md). Each
+component page is the constructor/parameter reference (generated from live signatures when
+the docs manifest is stubbed). Prefer those pages over treating this file as a full API
+manual.
 
 !!! note "Stability"
 
-    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package
+    maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` /
+    `deferred`).
 
-**Status:** Accepted
+**Status:** Accepted · current train **0.18**
 
-This is the minimum built-in set for phase 0.1 (`v0.1.0`) and the secure CRUD slice in phase 0.2 (`v0.2.0`). Later capability phases extend it through their own acceptance gates.
+## How to use this index
 
-## Phase 0.1 core (`v0.1.0`)
+1. Pick a component from the groups below (or search the [component catalog](../components/index.md)).
+2. Open its page for signature, parameters, accessibility, and testing notes.
+3. For HTMX interaction patterns, see [HTMX interactions](../guides/htmx-interactions.md).
+4. For inference presentation widgets, also see [Inference API](INFERENCE.md).
 
-- Document and composition: `Page`, `Fragment`, `Head`, `Title`.
-- Landmarks: `Header`, `Main`, `Nav`, `Aside`, `Footer`, `Section`.
-- Layout: `Container`, `Stack`, `Inline`, `Grid`, `Divider`.
-- Content: `Heading`, `Text`, `Link`, `Image`, `CodeBlock`, `List`, `DescriptionList`, static `Table`.
-- Surfaces and status: `Card`, `Badge`, `Alert`, `Skeleton`.
-- Controls: `Button`, `LinkButton`, `IconButton`.
-- Forms: `Form`, `FormField`, `Label`, `TextInput`, `TextArea`, `Select`, `Checkbox`, `RadioGroup`, `SubmitButton`, `FormErrors`.
-- Escape hatch: the `hedron.html` namespace for native HTML tags and validated native attributes.
+## Document and composition
 
-Built-ins use native semantic HTML, expose documented slots and variants, and satisfy their accessibility contract without JavaScript. `Grid` is explicit composition; it does not return mutable positional column handles.
+[`Page`](../components/page.md) · [`Fragment`](../components/fragment.md) ·
+[`Head`](../components/head.md) · [`Title`](../components/title.md)
 
-### Native HTML primitives
+## Landmarks and layout
 
-`html.<tag>(*children, **attributes) -> ComponentNode` exposes known lowercase HTML elements without exposing private serializer nodes. Python keyword aliases include `class_` and `for_`; `data={...}` and `aria={...}` are explicit mappings to normalized `data-*` and `aria-*` attributes. Boolean attributes accept booleans, absent values use `None`, event-handler attributes are rejected, and URL-bearing attributes (`href`, `src`, `action`, `srcset`, `ping`, HTMX URL attrs including `hx-push-url` / `hx-replace-url`, …) receive `SafeUrl` policy checks. Unknown tags or attributes fail with a diagnostic. Raw markup is available only as `html.raw(TrustedHtml)`.
+[`Header`](../components/header.md) · [`Main`](../components/main.md) ·
+[`Nav`](../components/nav.md) · [`Aside`](../components/aside.md) ·
+[`Footer`](../components/footer.md) · [`Section`](../components/section.md) ·
+[`Container`](../components/container.md) · [`Stack`](../components/stack.md) ·
+[`Inline`](../components/inline.md) · [`Grid`](../components/grid.md) ·
+[`Divider`](../components/divider.md) · [`Spacer`](../components/spacer.md)
 
-## Phase 0.2 FastAPI interaction additions (`v0.2.0`)
+## Content and media
 
-- `AutoForm`, `RefreshButton`, `Lazy`, `Poll`, `InfiniteScroll`, `Pagination`, `Loading`, and retryable `ErrorState`.
-- `action_attrs(ref, *, include_csrf=..., csrf_token=...)` and `oob_swap(id, content)` helpers.
-- Typed action bindings and validation-fragment helpers.
-- Page layout and HTMX navigation helpers (`approved_headers`, history-restore PAGE mode).
+[`Heading`](../components/heading.md) · [`Text`](../components/text.md) ·
+[`Link`](../components/link.md) · [`Image`](../components/image.md) ·
+[`Audio`](../components/audio.md) · [`Video`](../components/video.md) ·
+[`IFrame`](../components/i-frame.md) · [`PdfViewer`](../components/pdf-viewer.md) ·
+[`CodeBlock`](../components/code-block.md) · [`List`](../components/list.md) ·
+[`DescriptionList`](../components/description-list.md) · [`Table`](../components/table.md) ·
+[`Markdown`](../components/markdown.md) · [`Math`](../components/math.md) ·
+[`Map`](../components/map.md) · [`Gallery`](../components/gallery.md)
 
-`Lazy` and `Poll` honor `ComponentRef.hx_attrs()` (method and query params). `Pagination` emits `SafeUrl`-backed `href` / `hx-get` values. HTMX targets are validated against a safe CSS-selector subset.
+## Surfaces, controls, forms
 
-## Phase 0.5 data application toolkit (`v0.5.0`)
+[`Card`](../components/card.md) · [`Badge`](../components/badge.md) ·
+[`Alert`](../components/alert.md) · [`Skeleton`](../components/skeleton.md) ·
+[`Button`](../components/button.md) · [`ConfirmButton`](../components/confirm-button.md) ·
+[`Form`](../components/form.md) · [`TextInput`](../components/text-input.md) ·
+[`NumberInput`](../components/number-input.md) · [`DateInput`](../components/date-input.md) ·
+[`MultiSelect`](../components/multi-select.md) · [`ToggleSwitch`](../components/toggle-switch.md) ·
+[`CameraCapture`](../components/camera-capture.md) ·
+[`MicrophoneCapture`](../components/microphone-capture.md) ·
+[`DirectoryUpload`](../components/directory-upload.md) · …
+[full forms group](../components/forms.md)
 
-- Intelligent rendering: `Auto` with inspectable renderer registry and bounded Data Intelligence.
-- Data: `DataTable`, `DataEditor` (via `hedron-data`), typed change sets, data-source protocols.
-- Cache: `cache_data`, `cache_component` with scoped keys, single-flight, and Explorer traces.
-- Utilities: `Metric`, `FileUpload`, `DownloadButton`, `CodeViewer`, `JSONViewer`, `Progress`,
-  `Status`, `Toast`, `Expander`, `Tabs`, `Sidebar` (layout `Grid` remains from 0.1).
-- ColorMode: preference API, accessible toggle, cookie/session persistence.
+## Interaction (FastAPI / HTMX)
 
-## Phase 0.6 visualization and content (`v0.6.0`)
+[`AutoForm`](../components/auto-form.md) · [`RefreshButton`](../components/refresh-button.md) ·
+[`Lazy`](../components/lazy.md) · [`Poll`](../components/poll.md) ·
+[`InfiniteScroll`](../components/infinite-scroll.md) ·
+[`Pagination`](../components/pagination.md) · [`Loading`](../components/loading.md) ·
+[`ErrorState`](../components/error-state.md) · [`ChatInput`](../components/chat-input.md) ·
+[`ChatMessage`](../components/chat-message.md) · [`Dialog`](../components/dialog.md)
 
-- Charts: `LineChart` and Matplotlib/Plotly/Altair adapters via `hedron-charts`
-  (`pip install "hedron[charts]"`).
-- Content: `Markdown`, `highlight_code`, `process_image`, `validate_email_address`.
-- Trust: `TrustedHtml.nh3`, trusted icon/SVG registry.
-- Interaction: `InteractionResult`, `HtmxRequest`, fragment regions, status policies.
+Helpers: `action_attrs`, `oob_swap` — see [Interaction](INTERACTION.md).
 
-## Phase 0.10 live interaction additions (`v0.10.0`)
+## Data, charts, utilities
 
-- `Dialog`: native dialog structure with explicit close behavior and browser-module modal intent.
-- `ChatMessage`: typed transcript items for user, assistant, system, tool, and status roles.
-- `ChatInput`: labelled explicit-submit chat form with typed HTMX targeting and optional attachments.
+[`Auto`](../components/auto.md) · [`DataTable`](../components/data-table.md) ·
+[`DataEditor`](../components/data-editor.md) · charts via `hedron[charts]` —
+[Charts API](CHART.md) · [`Metric`](../components/metric.md) ·
+[`FileUpload`](../components/file-upload.md) ·
+[`DownloadButton`](../components/download-button.md) ·
+[`Progress`](../components/progress.md) · [`Toast`](../components/toast.md) ·
+[`ColorModeToggle`](../components/color-mode-toggle.md)
 
-Applications remain responsible for dialog triggers and focus restoration, chat history and
-ordering, authentication, CSRF, rate limits, persistence, attachment validation, and bounded
-streaming. The hosted component pages simulate these browser and server boundaries locally.
+## Inference presentation (0.18)
 
-## Phase 0.18 presentation (`v0.18.0`)
+[`PredictionLabel`](../components/prediction-label.md) ·
+[`ParameterViewer`](../components/parameter-viewer.md) ·
+[`Dialogue`](../components/dialogue.md)
 
-Model-demo presentation builtins (see [Inference API](INFERENCE.md) and component pages):
+Non-UI contracts (`ModelDemo`, `ExampleSet`, `PredictionFeedback`, `InferenceWorkflow`)
+are documented on [INFERENCE.md](INFERENCE.md), not as components.
 
-- `PredictionLabel` — ranked class scores with accessible table representation.
-- `ParameterViewer` — schema-aware parameter documentation with secret redaction.
-- `Dialogue` — multi-speaker transcript presentation with typed speaker identity.
+## Native HTML escape hatch
 
-Non-UI contracts (`ModelDemo`, `ExampleSet`, `PredictionFeedback`, `InferenceWorkflow`) are
-documented on [INFERENCE.md](INFERENCE.md), not as components.
+`html.<tag>(*children, **attributes)` — see any early component page or
+[SECURITY_TYPES](SECURITY_TYPES.md) for `SafeUrl` / `TrustedHtml` rules.
 
 ## Naming rule
 
-Hedron component names use PascalCase. Native elements use lowercase `hedron.html` attributes and tags. Python keyword collisions use a trailing underscore such as `class_`; rendered HTML always uses the canonical attribute name.
+Hedron component names use PascalCase. Native elements use lowercase `hedron.html`
+attributes and tags. Python keyword collisions use a trailing underscore such as
+`class_`; rendered HTML always uses the canonical attribute name.
+
+## Historical phase notes
+
+Phase 0.1–0.10 acceptance narratives remain in release notes / what’s-new pages. This
+index tracks the living **0.18** catalog — do not treat older phase lists as the complete
+API.

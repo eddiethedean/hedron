@@ -39,12 +39,17 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-ConfirmButton(label, confirm='Are you sure?')
+ConfirmButton(label: 'str', *, confirm: 'str', type: "Literal['button', 'submit', 'reset']" = 'button', disabled: 'bool' = False, variant: "Literal['primary', 'secondary', 'danger']" = 'danger', mark: 'str | None' = None, **kwargs: 'Any') -> 'None'
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). |
+| `label` | `str` | Accessible label text shown to users. |
+| `confirm` | `str` | Confirmation prompt text shown before the action runs. |
+| `type` | `Literal['button', 'submit', 'reset']` | Native button `type` (`button`, `submit`, or `reset`). Default: `'button'`. |
+| `disabled` | `bool` | Whether the control is non-interactive. Default: `False`. |
+| `variant` | `Literal['primary', 'secondary', 'danger']` | Visual / semantic variant for the control. Default: `'danger'`. |
+| `mark` | `str | None` | Optional stable test mark (`data-hedron-mark`). Default: `None`. |
 
 ## Composition and backend behavior
 

@@ -51,6 +51,29 @@ middleware owns sessions/CSRF/auth. Official HTMX SSE helpers are FastAPI-only a
 Rendering a component never implies a public route — only `@page` / `@component` /
 `@action` (or adapter equivalents) expose HTTP endpoints.
 
+## Multi-worker, jobs, and inference
+
+### Sessions and jobs across workers
+
+- In-memory session or job state does **not** span processes — use sticky sessions or an
+  external store (`RedisJobBackend`, `CeleryJobBackend`, or `RQJobBackend`).
+- Every web process must call `set_job_backend(...)` with the same Redis prefix/TTL.
+- Scope durable jobs with `auth_subject` / `tenant_id`; HTTP status helpers fail closed for
+  unscoped jobs. See [Jobs](api/JOBS.md) and [Celery / RQ + Redis](guides/jobs-celery-rq.md).
+
+### Supported status UX
+
+Accepted work returns HTTP **202** with `Retry-After`. Prefer **`Poll`** +
+`job_status_response` on every host. SSE / WebSocket helpers are FastAPI-flagship and
+**experimental** — configure reverse-proxy buffering/timeouts, and prefer polling when
+load/proxy backpressure proof is required ([What's ready](guides/whats-ready.md)).
+
+### Inference placement (0.18)
+
+`InferencePolicy` admits/queues work onto the same `JobBackend`. `ModelDemo` /
+`InferenceWorkflow` never auto-publish callables as HTTP/MCP endpoints. Cancel maps
+accepted requests to `JobBackend.request_cancel`. Details: [Inference](api/INFERENCE.md).
+
 ## Security placement
 
 - **Contextual escaping** is default in the renderer.
@@ -58,6 +81,7 @@ Rendering a component never implies a public route — only `@page` / `@componen
   Seed tokens with `csrf_token_for_request` (re-exported from `hedron`).
 - **`SafeUrl` / `TrustedHtml` / `Secret`** mark trust boundaries in types.
 - Application authz and persistence remain your responsibility.
+- Job observation over HTTP uses `job_authorized_http` (fail closed for unscoped jobs).
 
 ## Assets and builds
 
@@ -66,15 +90,6 @@ Rendering a component never implies a public route — only `@page` / `@componen
   manifests refuse to start (`HED-BUILD-0003`).
 - Fingerprinted app assets: `/hedron-assets/`. Bundled HTMX: `/hedron-static/`.
 - Application developers do not need Node.js.
-
-## Multi-worker and live transports
-
-- In-memory session/job state does not span workers — use sticky sessions or an
-  external store.
-- SSE/WebSocket: configure reverse-proxy buffering and timeouts. Full load/proxy
-  backpressure evidence is still Deferred in [What's ready](guides/whats-ready.md); prefer polling when
-  that proof is required. See [Deployment](guides/deployment.md) and
-  [Live interaction](guides/live-interaction.md).
 
 ## Package boundaries
 

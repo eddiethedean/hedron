@@ -4,6 +4,21 @@
 
 **Prerequisites:** CPython **3.11–3.14** and [uv](https://docs.astral.sh/uv/).
 
+| OS | Notes |
+|---|---|
+| macOS / Linux | Primary CI agents; use the commands below as-is |
+| Windows | Supported for unit/integration via the same `uv` workflow; prefer PowerShell or Git Bash. Playwright browser job is Linux CI — run Chromium locally only if you change browser tests |
+
+**Expected local times (approximate, warm cache):**
+
+| Suite | Typical time |
+|---|---|
+| `ruff` format + check | < 1 min |
+| `pyright` | 1–3 min |
+| `pytest -q` (default, no browser) | 2–5 min |
+| `mkdocs build --strict` | 1–2 min |
+| Playwright Chromium (`HEDRON_BROWSER=1`) | 5–15+ min |
+
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
@@ -16,6 +31,10 @@ uv run pytest -q
 
 **Docs-only changes:** `uv sync --group docs && uv run --group docs mkdocs serve`
 (or `./scripts/mkdocs.sh serve`). Strict builds: `uv run --group docs mkdocs build --strict`.
+
+When to leave Read the Docs for the GitHub corpus: RFCs, acceptance gates, STATUS/ROADMAP
+internals, ENGINEERING_BASELINE, and DECISIONS are **excluded from the public MkDocs site**
+— edit them on GitHub; adopters should stay on What’s ready / guides / API pages.
 
 You do **not** need to install Playwright locally for markdown/typo PRs, but CI still runs
 the **browser** (Chromium) and **evidence** jobs on every pull request — see the CI map.
@@ -69,7 +88,7 @@ Issue labels and bite-sized tasks vary; prefer small PRs over RFC-scale first pa
 | Job | What it runs | On pull requests? |
 |---|---|---|
 | `test` | `pytest` on Python 3.11–3.14 | **Yes** (every PR) |
-| `quality` | ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, relative doc links, `mkdocs build --strict` | **Yes** (every PR) |
+| `quality` | ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, relative doc links, `mkdocs build --strict` | **Yes** (every PR) |
 | `browser` | Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` | **Yes** (every PR; Chromium) |
 | `evidence` | Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_18.py` | **Yes** (every PR / push) |
 | `release` | Packaging rehearsal (`verify_pkg_18`) | After `evidence` succeeds |
