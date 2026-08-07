@@ -19,11 +19,20 @@ pytestmark = [
     pytest.mark.browser,
     pytest.mark.skipif(
         os.environ.get("HEDRON_BROWSER") != "1",
-        reason="Opt-in: set HEDRON_BROWSER=1 and install Playwright Chromium",
+        reason="Opt-in: set HEDRON_BROWSER=1 and install Playwright browsers",
     ),
 ]
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def _engine() -> str:
+    """Honor CI matrix engine; default to Chromium locally."""
+    return os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium"
+
+
+def _launch(pw: object):  # noqa: ANN001
+    return getattr(pw, _engine()).launch(headless=True)
 
 
 def _demo_document(island_html: str) -> str:
@@ -83,25 +92,27 @@ def test_hedron_sim_js_swaps_fragment_and_tokens(tmp_path: Path) -> None:
 
     path = _write_demo(tmp_path, embed_demo(app))
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = _launch(pw)
         page = browser.new_page()
-        page.goto(path.as_uri())
-        page.wait_for_function("() => window.HedronSim")
-        before = page.locator("#service-status span").inner_text()
-        assert "__HEDRON_SIM_UTC__" not in before
-        page.click("#refresh")
-        page.wait_for_function(
-            """() => {
-              const t = document.querySelector('[data-hedron-sim-trace]');
-              return t && !t.hidden && t.textContent.includes('200');
-            }"""
-        )
-        trace = page.locator("[data-hedron-sim-trace]").inner_text()
-        assert "GET /status → 200" in trace
-        after = page.locator("#service-status span").inner_text()
-        assert "__HEDRON_SIM_UTC__" not in after
-        assert "UTC" in after
-        browser.close()
+        try:
+            page.goto(path.as_uri())
+            page.wait_for_function("() => window.HedronSim")
+            before = page.locator("#service-status span").inner_text()
+            assert "__HEDRON_SIM_UTC__" not in before
+            page.click("#refresh")
+            page.wait_for_function(
+                """() => {
+                  const t = document.querySelector('[data-hedron-sim-trace]');
+                  return t && !t.hidden && t.textContent.includes('200');
+                }"""
+            )
+            trace = page.locator("[data-hedron-sim-trace]").inner_text()
+            assert "GET /status → 200" in trace
+            after = page.locator("#service-status span").inner_text()
+            assert "__HEDRON_SIM_UTC__" not in after
+            assert "UTC" in after
+        finally:
+            browser.close()
 
 
 def test_hedron_sim_js_allowlist_denies_wrong_target(tmp_path: Path) -> None:
@@ -127,18 +138,20 @@ def test_hedron_sim_js_allowlist_denies_wrong_target(tmp_path: Path) -> None:
 
     path = _write_demo(tmp_path, embed_demo(app))
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = _launch(pw)
         page = browser.new_page()
-        page.goto(path.as_uri())
-        page.click("#bad")
-        page.wait_for_function(
-            """() => {
-              const t = document.querySelector('[data-hedron-sim-trace]');
-              return t && !t.hidden && t.textContent.includes('403');
-            }"""
-        )
-        assert page.locator("#probe").inner_text() == "ok"
-        browser.close()
+        try:
+            page.goto(path.as_uri())
+            page.click("#bad")
+            page.wait_for_function(
+                """() => {
+                  const t = document.querySelector('[data-hedron-sim-trace]');
+                  return t && !t.hidden && t.textContent.includes('403');
+                }"""
+            )
+            assert page.locator("#probe").inner_text() == "ok"
+        finally:
+            browser.close()
 
 
 def test_hedron_sim_js_confirm_cancel_skips_swap(tmp_path: Path) -> None:
@@ -169,19 +182,21 @@ def test_hedron_sim_js_confirm_cancel_skips_swap(tmp_path: Path) -> None:
 
     path = _write_demo(tmp_path, embed_demo(app))
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = _launch(pw)
         page = browser.new_page()
-        page.goto(path.as_uri())
-        page.once("dialog", lambda dialog: dialog.dismiss())
-        page.click("#delete")
-        page.wait_for_function(
-            """() => {
-              const t = document.querySelector('[data-hedron-sim-trace]');
-              return t && !t.hidden && t.textContent.includes('cancelled');
-            }"""
-        )
-        assert page.locator("#row").inner_text() == "present"
-        browser.close()
+        try:
+            page.goto(path.as_uri())
+            page.once("dialog", lambda dialog: dialog.dismiss())
+            page.click("#delete")
+            page.wait_for_function(
+                """() => {
+                  const t = document.querySelector('[data-hedron-sim-trace]');
+                  return t && !t.hidden && t.textContent.includes('cancelled');
+                }"""
+            )
+            assert page.locator("#row").inner_text() == "present"
+        finally:
+            browser.close()
 
 
 def test_hedron_sim_js_form_variant_and_oob(tmp_path: Path) -> None:
@@ -240,22 +255,24 @@ def test_hedron_sim_js_form_variant_and_oob(tmp_path: Path) -> None:
 
     path = _write_demo(tmp_path, embed_demo(app))
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = _launch(pw)
         page = browser.new_page()
-        page.goto(path.as_uri())
-        page.fill("#email", "ada@example.com")
-        page.click("button[type=submit]")
-        page.wait_for_function(
-            """() => {
-              const t = document.querySelector('[data-hedron-sim-trace]');
-              return t && !t.hidden && t.textContent.includes('200');
-            }"""
-        )
-        assert "Queued" in page.locator("#form-region").inner_text()
-        assert "ada@example.com" in page.locator("#form-region").inner_text()
-        assert page.locator("#toast-host").count() == 1
-        assert "toast-ok" in page.locator("#toast-host").inner_text()
-        browser.close()
+        try:
+            page.goto(path.as_uri())
+            page.fill("#email", "ada@example.com")
+            page.click("button[type=submit]")
+            page.wait_for_function(
+                """() => {
+                  const t = document.querySelector('[data-hedron-sim-trace]');
+                  return t && !t.hidden && t.textContent.includes('200');
+                }"""
+            )
+            assert "Queued" in page.locator("#form-region").inner_text()
+            assert "ada@example.com" in page.locator("#form-region").inner_text()
+            assert page.locator("#toast-host").count() == 1
+            assert "toast-ok" in page.locator("#toast-host").inner_text()
+        finally:
+            browser.close()
 
 
 def test_component_demos_theme_sync_from_docs_scheme(tmp_path: Path) -> None:
@@ -288,25 +305,29 @@ def test_component_demos_theme_sync_from_docs_scheme(tmp_path: Path) -> None:
     path = tmp_path / "theme.html"
     path.write_text(html_doc, encoding="utf-8")
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = _launch(pw)
         page = browser.new_page()
-        page.goto(path.as_uri())
-        assert page.locator("[data-hdc-theme]").input_value() == "Light"
-        preview = page.locator("[data-hdc-theme-swatch]").get_attribute("data-preview-theme")
-        assert preview == "light"
-        page.evaluate('document.documentElement.setAttribute("data-md-color-scheme", "slate")')
-        page.wait_for_function(
-            """() => {
-              const select = document.querySelector('[data-hdc-theme]');
-              const swatch = document.querySelector('[data-hdc-theme-swatch]');
-              return select && select.value === 'Dark'
-                && swatch && swatch.dataset.previewTheme === 'dark';
-            }"""
-        )
-        page.select_option("[data-hdc-theme]", "System")
-        page.click("button[type=submit]")
-        page.evaluate('document.documentElement.setAttribute("data-md-color-scheme", "default")')
-        page.wait_for_timeout(80)
-        # Local override should stick after Apply.
-        assert page.locator("[data-hdc-theme]").input_value() == "System"
-        browser.close()
+        try:
+            page.goto(path.as_uri())
+            assert page.locator("[data-hdc-theme]").input_value() == "Light"
+            preview = page.locator("[data-hdc-theme-swatch]").get_attribute("data-preview-theme")
+            assert preview == "light"
+            page.evaluate('document.documentElement.setAttribute("data-md-color-scheme", "slate")')
+            page.wait_for_function(
+                """() => {
+                  const select = document.querySelector('[data-hdc-theme]');
+                  const swatch = document.querySelector('[data-hdc-theme-swatch]');
+                  return select && select.value === 'Dark'
+                    && swatch && swatch.dataset.previewTheme === 'dark';
+                }"""
+            )
+            page.select_option("[data-hdc-theme]", "System")
+            page.click("button[type=submit]")
+            page.evaluate(
+                'document.documentElement.setAttribute("data-md-color-scheme", "default")'
+            )
+            page.wait_for_timeout(80)
+            # Local override should stick after Apply.
+            assert page.locator("[data-hdc-theme]").input_value() == "System"
+        finally:
+            browser.close()
