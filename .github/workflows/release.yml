@@ -226,6 +226,7 @@ jobs:
         continue-on-error: true
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          PUBLISH_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_only }}
         run: |
           set -euo pipefail
           if [ -z "${UV_PUBLISH_TOKEN:-}" ]; then
@@ -319,7 +320,13 @@ jobs:
               return 1
             fi
             local attempt=1
+            # Tag cuts may wait through rate limits; publish_only recovery fails fast.
             local max_attempts=3
+            local rate_limit_sleep=1200
+            if [ "${PUBLISH_ONLY}" = "true" ]; then
+              max_attempts=1
+              rate_limit_sleep=0
+            fi
             local out=""
             while true; do
               echo "Publishing ${kind} project ${name} (attempt ${attempt}/${max_attempts}): ${filtered[*]}"
@@ -341,10 +348,14 @@ jobs:
               fi
               if [ "$kind" = "NEW" ] && [ "$attempt" -lt "$max_attempts" ] \
                 && printf '%s' "$out" | grep -Eqi '429|Too many new projects'; then
-                echo "PyPI new-project rate limit; waiting 20 minutes before retry"
-                sleep 1200
+                echo "PyPI new-project rate limit; waiting $((rate_limit_sleep / 60)) minutes before retry"
+                sleep "$rate_limit_sleep"
                 attempt=$((attempt + 1))
                 continue
+              fi
+              if [ "$kind" = "NEW" ] \
+                && printf '%s' "$out" | grep -Eqi '429|Too many new projects'; then
+                echo "WARN: PyPI new-project rate limit for ${name}; not waiting in this mode" >&2
               fi
               return "$status"
             done
@@ -362,8 +373,13 @@ jobs:
           published_new=0
           for name in "${new_names[@]}"; do
             if [ "$published_new" -eq 1 ]; then
-              echo "Waiting 15 minutes before creating new PyPI project: ${name}"
-              sleep 900
+              if [ "${PUBLISH_ONLY}" = "true" ]; then
+                echo "Waiting 2 minutes before creating new PyPI project: ${name}"
+                sleep 120
+              else
+                echo "Waiting 15 minutes before creating new PyPI project: ${name}"
+                sleep 900
+              fi
             fi
             if publish_one "$name" "NEW"; then
               published_new=1
@@ -371,11 +387,27 @@ jobs:
               echo "WARN: publish failed for NEW project ${name}; continuing with next package" >&2
               failed_names+=("$name")
               # Do not set published_new — only successful creates consume the quota spacing.
+              if [ "${PUBLISH_ONLY}" = "true" ] && [ "$published_new" -eq 0 ]; then
+                echo "WARN: aborting further NEW creates after early failure in publish_only" >&2
+                break
+              fi
             fi
           done
 
-          if ((${#failed_names[@]})); then
-            echo "One or more packages failed to publish: ${failed_names[*]}" >&2
+          # Any NEW name not yet on PyPI after the loop counts as remaining work.
+          still_missing=()
+          for name in "${new_names[@]}"; do
+            normalized="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | tr '_.' '-')"
+            code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
+              -H 'Accept: application/vnd.pypi.simple.v1+json' \
+              "https://pypi.org/simple/${normalized}/")"
+            if [ "$code" != "200" ]; then
+              still_missing+=("$name")
+            fi
+          done
+
+          if ((${#failed_names[@]})) || ((${#still_missing[@]})); then
+            echo "One or more packages failed to publish: failed=[${failed_names[*]:-}] missing=[${still_missing[*]:-}]" >&2
             echo "publish_failed=1" >> "$GITHUB_OUTPUT"
             exit 1
           fi
