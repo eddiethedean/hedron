@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.19.0] — 2026-08-07
+
+### Added
+
+- Phase 0.19 accessibility engineering and inclusive authoring (RFCs 0023 / 0051–0055, D-050):
+  - `AccessibilityContract` catalog, standards profile, waiver/statement governance
+  - Landmark safe attrs / real types, allowlisted `Page` scripts, PE form paths
+  - Explorer accessibility review workspace, ATAG inspect/eject metadata
+  - `AccessibilityScenario`, tree snapshots, axe/SARIF helpers; automated AT matrix
+
+
 ## [0.18.0] — 2026-08-06
 
 ### Added

@@ -332,17 +332,78 @@ def explorer_router() -> APIRouter:
 
     @router.get("/a11y", response_class=HTMLResponse, include_in_schema=False)
     async def a11y_view() -> str:
-        findings = [
-            "Skip link and main landmark present in Explorer shell",
-            "Tables use header cells; status is not color-only",
-            "Automated axe suites are advisory and do not claim full proof",
-        ]
-        items = "".join(f"<li>{html_lib.escape(f)}</li>" for f in findings)
-        return _shell(
-            "Accessibility",
-            f"<h2>Accessibility</h2><ul>{items}</ul>",
-            active="a11y",
+        from hedron_core.a11y import (
+            ACCESSIBILITY_PROFILE,
+            AccessibilityContractCatalog,
+            AccessibilityScenario,
         )
+
+        catalog = AccessibilityContractCatalog()
+        catalog.ensure_registry()
+        contracts = list(catalog.contracts.values())[:40]
+        rows = "".join(
+            "<tr>"
+            f"<td>{html_lib.escape(c.component)}</td>"
+            f"<td>{html_lib.escape(c.native_semantics or '—')}</td>"
+            f"<td>{html_lib.escape(c.keyboard or '—')}</td>"
+            f"<td>{html_lib.escape(c.notes or '—')}</td>"
+            "</tr>"
+            for c in contracts
+        )
+        profile = ACCESSIBILITY_PROFILE.as_dict()
+        scenario = AccessibilityScenario(
+            name="explorer-review",
+            covers=("keyboard", "focus", "announcements"),
+        )
+        summary = scenario.summarize()
+        modes = [
+            "contrast / non-text contrast",
+            "target spacing",
+            "focus obstruction",
+            "text spacing",
+            "zoom / reflow / orientation",
+            "reduced motion",
+            "forced colors",
+            "media alternatives",
+            "visualization fallbacks",
+        ]
+        mode_items = "".join(f"<li>{html_lib.escape(m)}</li>" for m in modes)
+        body = f"""
+        <h2>Accessibility review workspace</h2>
+        <p>Findings distinguish automatic, semi-automatic, and manual status.
+        Empty scans never summarize as accessible
+        (status: <code>{html_lib.escape(str(summary["status"]))}</code>).</p>
+        <section aria-labelledby="a11y-profile">
+          <h3 id="a11y-profile">Standards profile</h3>
+          <dl>
+            <dt>Profile</dt><dd><code>{html_lib.escape(str(profile["profile_id"]))}</code></dd>
+            <dt>WCAG</dt><dd>{html_lib.escape(str(profile["wcag_version"]))}
+              {"/".join(str(level) for level in cast(list[object], profile["wcag_levels"]))}</dd>
+            <dt>WAI-ARIA</dt><dd>{html_lib.escape(str(profile["wai_aria_version"]))}</dd>
+          </dl>
+        </section>
+        <section aria-labelledby="a11y-tree">
+          <h3 id="a11y-tree">Accessibility tree / outlines</h3>
+          <p>Source-mapped role/name/description review uses component contracts below.
+          Keyboard map: Tab order follows DOM order in rendered previews; live-region log
+          is available when scenarios record announcements.</p>
+          <h4>Review modes</h4>
+          <ul>{mode_items}</ul>
+        </section>
+        <section aria-labelledby="a11y-contracts">
+          <h3 id="a11y-contracts">Component contracts</h3>
+          <table>
+            <thead><tr><th>Component</th><th>Semantics</th><th>Keyboard</th><th>Notes</th></tr></thead>
+            <tbody>{rows or "<tr><td colspan='4'>No contracts</td></tr>"}</tbody>
+          </table>
+        </section>
+        <section aria-labelledby="a11y-atag">
+          <h3 id="a11y-atag">ATAG authoring assistance</h3>
+          <p>Accessibility properties are listed alongside ordinary props on component pages.
+          Repair guidance is reversible and author-reviewed; features default on.</p>
+        </section>
+        """
+        return _shell("Accessibility", body, active="a11y")
 
     @router.get("/cache", response_class=HTMLResponse, include_in_schema=False)
     async def cache_view() -> str:

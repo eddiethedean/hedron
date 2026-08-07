@@ -29,7 +29,7 @@ matters.
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.18.0,<0.19" hedron new my-hedron-app
+    uvx --from "hedron>=0.19.0,<0.20" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -39,13 +39,13 @@ matters.
 
     Two installs — do both:
 
-    1. **CLI:** `pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"` (provides `hedron` / `python -m hedron`)
+    1. **CLI:** `pip install "hedron>=0.19.0,<0.20" "uvicorn[standard]"` (provides `hedron` / `python -m hedron`)
     2. **Project:** after `hedron new`, `cd` into the app and `pip install -e .` (uvicorn uses the scaffold pin)
 
     ```bash
     python3 -m venv .venv          # Windows: py -3 -m venv .venv
     source .venv/bin/activate      # Windows PowerShell: .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"
+    python -m pip install "hedron>=0.19.0,<0.20" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .     # project-local pinned hedron for uvicorn
@@ -153,7 +153,7 @@ Advisory findings on a hello-world scaffold are normal.
     app (or add a region yourself).
 
 Use this only if you did **not** use `hedron new`. Create a project directory, install
-`hedron>=0.18.0,<0.19` and `uvicorn[standard]`, then save:
+`hedron>=0.19.0,<0.20` and `uvicorn[standard]`, then save:
 
 ```python title="app.py"
 from hedron import Card, Heading, Hedron, Page, Stack, Text

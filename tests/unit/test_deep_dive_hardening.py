@@ -333,6 +333,7 @@ def test_cli_eject_nothing_written_exits_nonzero(
     out = tmp_path / "ejected"
     out.mkdir()
     (out / "styles.css").write_text("y", encoding="utf-8")
+    (out / "accessibility_contract.json").write_text("{}", encoding="utf-8")
     register_component(
         logical_id="app:demo.Empty",
         name="Empty",
@@ -341,7 +342,7 @@ def test_cli_eject_nothing_written_exits_nonzero(
         folder_path=str(out),
     )
     monkeypatch.chdir(tmp_path)
-    # No source paths and starters already exist without --force → nothing written.
+    # Contract + starters already exist without --force → refuse overwrite.
     with pytest.raises(SystemExit) as exc:
         main(["eject", "Empty", "--out", str(out)])
     assert exc.value.code == 1

@@ -1,6 +1,6 @@
 # RFC-0053: Progressive enhancement, landmarks, and Page scripts
 
-**Status:** Draft
+**Status:** Accepted
 **Phase:** 0.19 (`v0.19.0`)
 **Stability:** `beta` (API)
 **Evidence:** `PE-019`, `LANDMARK-019`, `SCRIPT-019`

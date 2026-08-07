@@ -15,9 +15,9 @@ Narrative deep-dive: [What's new in 0.18](whats-new-0.18.md) · maturity:
 [What's ready today](whats-ready.md) · Gradio: [Gradio migration](gradio-migration.md).
 
 ```bash
-pip install -U "hedron>=0.18.0,<0.19"
+pip install -U "hedron>=0.19.0,<0.20"
 # or
-uv add "hedron>=0.18.0,<0.19"
+uv add "hedron>=0.19.0,<0.20"
 ```
 
 Optional: `pip install "hedron[gradio]>=0.1.0,<0.2"` · `"hedron[notebook]>=0.1.0,<0.2"` · `"hedron[mcp]>=0.1.0,<0.2"`.

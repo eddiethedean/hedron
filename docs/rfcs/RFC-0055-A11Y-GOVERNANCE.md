@@ -1,6 +1,6 @@
 # RFC-0055: Accessibility evidence governance and AT matrix
 
-**Status:** Draft
+**Status:** Accepted
 **Phase:** 0.19 (`v0.19.0`)
 **Stability:** `beta` (process/artifacts); statement content is human-approved
 **Evidence:** `AT-019`, `GOVERN-019`, `PROFILE-019`
@@ -10,46 +10,49 @@
 
 ## Summary
 
-Define the manual browser/assistive-technology evidence matrix, compensated disabled-participant
-evaluation scope, evidence inventory, accessibility-statement template, and waiver governance so
-releases can publish honest, scoped claims without automatic WCAG/legal/certification/VPAT output.
+Define automated browser accessibility evidence (`AT-019`), evidence inventory,
+accessibility-statement template, and waiver governance so releases can publish honest, scoped
+claims without automatic WCAG/legal/certification/VPAT output. Human screen-reader and compensated
+disabled-participant evaluation is Deferred to 0.21 (D-050).
 
 ## Motivation and background
 
-Automation and semantic-tree suites are necessary but insufficient. Hedron needs a governed place
-for AT evidence, known limitations, third-party boundaries, and human-approved statement data.
+Automation and semantic-tree suites are necessary release evidence. Hedron needs a governed place
+for AT automation artifacts, known limitations, third-party boundaries, and human-approved
+statement data. Compensated user evaluation remains valuable but is not a `v0.19.0` blocker.
 
 ## Proposed design
 
 ### Standards profile pointer (`PROFILE-019`)
 
 This RFC consumes the normative baseline and draft/experimental policy from RFC-0023. Evidence
-records must include pinned ACT/engine/browser/AT versions.
+records must include pinned ACT/engine/browser versions used by automation.
 
-### Manual AT matrix (`AT-019`)
+### Automated AT matrix (`AT-019`)
 
-Scoped matrix including at least:
+Normative for Verified cut (D-050):
 
-- VoiceOver/Safari on macOS and iOS;
-- NVDA with Firefox and Chromium on Windows;
-- TalkBack/Chromium on Android;
-- keyboard-only;
-- voice/switch-compatible label behavior;
+- Chromium, Firefox, and WebKit Playwright paths;
+- keyboard-only operation;
 - browser zoom;
-- platform high contrast/forced colors;
 - reduced motion;
-- user text-spacing/style overrides.
+- forced colors / high-contrast where automatable;
+- pinned axe/ACT-aligned scans after representative dynamic states;
+- representative surfaces: forms, data editor smoke, media, authentication/recovery smoke,
+  dashboard, inference workflow stubs.
 
-Each record includes versions, settings, representative task, expected behavior/announcement,
-result, known issue, owner, and retest date.
+Each record includes versions, settings, representative task, result, known issue, owner, and
+retest date. Empty or missing axe installs never summarize as "accessible."
 
-At least the data editor, media flow, authentication/recovery, live update, dashboard, and
-inference workflow receive appropriately scoped evaluation with compensated disabled participants.
-User testing complements rather than substitutes for WCAG evaluation.
+### Deferred human AT (→ 0.21)
+
+VoiceOver/Safari, NVDA, TalkBack, voice/switch lab sessions, and compensated disabled-participant
+evaluation remain in scope for a later owned packet. They complement rather than substitute for
+WCAG-oriented automation and do not block `AT-019` Verified for `v0.19.0`.
 
 ### Governance outputs (`GOVERN-019`)
 
-- Rule/version inventory, test and manual results.
+- Rule/version inventory, test and automation results.
 - Known limitations and alternatives.
 - Third-party boundaries and feedback route.
 - Waiver owner/rationale/affected users/expiry/remediation; expired/unowned waivers block cut.
@@ -67,30 +70,30 @@ authority and expiry, remediation ownership, and a public/security-sensitive rep
 
 ## Alternatives considered
 
-1. **Automation-only release gate.** Rejected — contradicts research and RFC-0023.
+1. **Require compensated user testing for `v0.19.0`.** Rejected for this cut (D-050 automation
+   proxy); retained as Deferred → 0.21.
 2. **Auto-generate VPAT/ACR from contracts.** Rejected — deliberate non-goal.
-3. **Defer all AT matrix work past 0.19.** Rejected — structure-only refinement keeps full
-   ambition in-phase (D-050).
+3. **Skip AT automation entirely.** Rejected — `AT-019` remains a Verified gate via Playwright/axe.
 
 ## Security implications
 
-Evidence artifacts may contain privacy-sensitive participant notes; store/redact per release
-policy. Feedback routes must not expose secrets. Waivers are auditable records.
+Evidence artifacts may contain privacy-sensitive notes when human AT arrives in 0.21; store/redact
+per release policy. Feedback routes must not expose secrets. Waivers are auditable records.
 
 ## Accessibility implications
 
-Statement and inventory content must themselves be publishable in an accessible format. Matrix
+Statement and inventory content must themselves be publishable in an accessible format. Automation
 tasks should exercise real user goals, not only component demos.
 
 ## Performance implications
 
-Manual AT evidence is not a CI runtime cost; automation remains the blocking CI path where
-applicable. Inventory generation should be reproducible from contracts + retained artifacts.
+Automated AT evidence runs under `HEDRON_BROWSER=1` / browser CI job. Inventory generation should
+be reproducible from contracts + retained artifacts.
 
 ## Testing strategy
 
 - Schema validation for matrix rows and waiver records.
-- Gate checker treats missing required AT rows / expired waivers as incomplete evidence.
+- Gate checker treats missing required AT automation rows / expired waivers as incomplete evidence.
 - Reference-app statement export dry-run in docs/acceptance artifacts.
 
 ## Compatibility and migration
@@ -100,12 +103,13 @@ required for governance templates alone.
 
 ## Open questions
 
-- Storage location for compensated-participant protocols and PII minimization.
+- Exact storage location for 0.21 compensated-participant protocols and PII minimization.
 - Whether statement template ships as a CLI export, docs page, or both.
 
 ## Acceptance criteria
 
-- Published AT matrix completes representative tasks with versions and known limitations
+- Published automated AT matrix completes representative tasks with versions and known limitations
   (`AT-019`).
 - Evidence inventory + human-approved statement template with feedback route (`GOVERN-019`).
 - Profile pins and claim boundaries enforced (`PROFILE-019`); no auto WCAG/legal/VPAT emission.
+- Human AT Deferred destination documented (0.21).

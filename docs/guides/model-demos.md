@@ -4,7 +4,7 @@ Build reviewable model demos, schedule inference over durable jobs, collect gove
 feedback, and compose permissioned workflows on the **0.18** train.
 
 Capability readiness is **Supported** (fail-closed); API compatibility remains **`beta`**.
-Pin `hedron>=0.18.0,<0.19`.
+Pin `hedron>=0.19.0,<0.20`.
 
 API contract: [Inference](../api/INFERENCE.md)
 

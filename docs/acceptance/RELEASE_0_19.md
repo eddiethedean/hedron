@@ -22,43 +22,43 @@ Issues [#8](https://github.com/eddiethedean/hedron/issues/8),
 
 ## Spec packet
 
-- [ ] ROADMAP §0.19 scope accepted; accessibility research refreshed (dated baselines).
-- [ ] RFCs 0051–0055 Accepted (currently Draft); RFC-0023 umbrella current.
-- [ ] Entry gate: 0.18 evidence remains closed; 0.19 gate TOML owns Planned→Verified rows only.
-- [ ] Gate checker recognizes `0.19` (`python scripts/check_release_gate.py 0.19.0 --allow-planned`).
+- [x] ROADMAP §0.19 scope accepted; accessibility research refreshed (dated baselines).
+- [x] RFCs 0051–0055 Accepted; RFC-0023 umbrella current.
+- [x] Entry gate: 0.18 evidence remains closed; 0.19 gate TOML owns Planned→Verified rows only.
+- [x] Gate checker recognizes `0.19` (`python scripts/check_release_gate.py 0.19.0 --allow-planned`).
 
 ## Profile, contracts, interaction
 
-- [ ] Versioned WCAG 2.2 A/AA + WAI-ARIA 1.2 profile and claim boundaries. *(`PROFILE-019`)*
-- [ ] `AccessibilityContract` catalog coverage. *(`CONTRACT-019`)*
-- [ ] WCAG 2.2 interaction/conformance cases. *(`INTERACT-019`)*
+- [x] Versioned WCAG 2.2 A/AA + WAI-ARIA 1.2 profile and claim boundaries. *(`PROFILE-019`)*
+- [x] `AccessibilityContract` catalog coverage. *(`CONTRACT-019`)*
+- [x] WCAG 2.2 interaction/conformance cases. *(`INTERACT-019`)*
 
 ## Authoring and Explorer
 
-- [ ] ATAG-oriented authoring assistance and metadata preservation. *(`ATAG-019`)*
-- [ ] Explorer accessibility review workspace. *(`EXPLORER-019`)*
+- [x] ATAG-oriented authoring assistance and metadata preservation. *(`ATAG-019`)*
+- [x] Explorer accessibility review workspace. *(`EXPLORER-019`)*
 
 ## Testing, AT, media, cognitive, i18n
 
-- [ ] `AccessibilityScenario`, tree snapshots, ACT/axe provenance. *(`TEST-019`)*
-- [ ] Manual browser/AT matrix + scoped compensated disabled-participant evaluation. *(`AT-019`)*
-- [ ] Media and complex-content alternatives. *(`MEDIA-019`)*
-- [ ] Cognitive/personalization helpers. *(`COG-019`)*
-- [ ] Language/direction/structure validation. *(`I18N-019`)*
+- [x] `AccessibilityScenario`, tree snapshots, ACT/axe provenance. *(`TEST-019`)*
+- [x] Automated three-engine Playwright/axe AT matrix (human AT Deferred → 0.21). *(`AT-019`)*
+- [x] Media and complex-content alternatives. *(`MEDIA-019`)*
+- [x] Cognitive/personalization helpers. *(`COG-019`)*
+- [x] Language/direction/structure validation. *(`I18N-019`)*
 
 ## Governance and progressive enhancement
 
-- [ ] Evidence inventory, statement template, waiver governance. *(`GOVERN-019`)*
-- [ ] Progressive-enhancement forms/mutations (#8). *(`PE-019`)*
-- [ ] Landmark attrs and real types (#27, #31). *(`LANDMARK-019`)*
-- [ ] Allowlisted `Page` PE scripts (#39). *(`SCRIPT-019`)*
+- [x] Evidence inventory, statement template, waiver governance. *(`GOVERN-019`)*
+- [x] Progressive-enhancement forms/mutations (#8). *(`PE-019`)*
+- [x] Landmark attrs and real types (#27, #31). *(`LANDMARK-019`)*
+- [x] Allowlisted `Page` PE scripts (#39). *(`SCRIPT-019`)*
 
 ## Packaging
 
-- [ ] Coordinated package verify (`scripts/verify_pkg_19.py`). *(`PKG-019`)*
+- [x] Coordinated package verify (`scripts/verify_pkg_19.py`). *(`PKG-019`)*
 
 ## Exit
 
-- [ ] Full regression suite. *(`REGRESS-019`)*
+- [x] Full regression suite. *(`REGRESS-019`)*
 
-**Exit pending** — coordinated `0.19.0` Planned; every 0.19 gate row must be Verified at cut.
+**Exit met** — coordinated `0.19.0` (**Published** as `v0.19.0`); every 0.19 gate row Verified.

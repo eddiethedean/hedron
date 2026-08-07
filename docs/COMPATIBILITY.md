@@ -22,7 +22,7 @@ until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-extras`)
 stay on the `0.18.x` train (published as `v0.18.0`). Alpha packages `hedron-charts`, `hedron-gradio`,
 `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, and `hedron-mcp`
-version independently (`0.1.x`) and declare `hedron-core>=0.18.0,<0.19`.
+version independently (`0.1.x`) and declare `hedron-core>=0.19.0,<0.20`.
 
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
 acceleration is present or absent (D-001 / D-048).

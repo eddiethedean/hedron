@@ -23,7 +23,7 @@ DOCS = ROOT / "docs" / "components"
 
 # Keep install snippets aligned with scripts/check_docs_train_ssot.py.
 _ALPHA_EXTRAS = frozenset({"charts", "notebook", "mcp", "gradio", "native"})
-_TRAIN_PIN = ">=0.18.0,<0.19"
+_TRAIN_PIN = ">=0.19.0,<0.20"
 _ALPHA_PIN = ">=0.1.0,<0.2"
 
 
@@ -388,7 +388,11 @@ COMPONENTS = (
         (
             p("label", "str", "Visible link text."),
             p("href", "SafeUrl | str", "Validated navigation URL (also the no-JS fallback)."),
-            p("hx_get / hx_post / …", "str | None", "Typed HTMX request attrs from the html.a allowlist."),
+            p(
+                "hx_get / hx_post / …",
+                "str | None",
+                "Typed HTMX request attrs from the html.a allowlist.",
+            ),
             p("hx_target / hx_swap", "str | None", "Approved swap target and strategy."),
             p("active", "bool", "Optional active styling hook for current location."),
             p("class_", "str | None", "Additional CSS classes."),
@@ -403,9 +407,7 @@ COMPONENTS = (
         "Alias of HtmxLink for navigation lists and AppShell side nav.",
         "NavLink(label, href, *, hx_get=None, hx_target=None, hx_swap=None, active=False, class_=None)",
         "NavLink('Home', '/', hx_get='/', hx_target='#main-panel', active=True)",
-        (
-            p("…", "same as HtmxLink", "NavLink is the same component class as HtmxLink."),
-        ),
+        (p("…", "same as HtmxLink", "NavLink is the same component class as HtmxLink."),),
         "NavLink is an intentional DX alias of HtmxLink so shell navigation reads clearly under Nav / AppShell. Behavior, allowlists, and SafeUrl policy are identical.",
         "Use NavLink in primary navigation; use Link for ordinary content links without HTMX shell targets.",
         "Do not register both names as separate plugins—only one component class exists.",
@@ -859,11 +861,19 @@ COMPONENTS = (
             p("model", "type[FormModel] | FormModel", "Field schema or populated instance."),
             p("action", "SafeUrl | str", "Validated endpoint."),
             p("method", "str", "GET or POST behavior."),
-            p("csrf_token", "str | None", "Hidden CSRF value from `csrf_token_for_request`; required for POST."),
+            p(
+                "csrf_token",
+                "str | None",
+                "Hidden CSRF value from `csrf_token_for_request`; required for POST.",
+            ),
             p("values", "Mapping", "Values restored after validation."),
             p("errors", "Sequence[str]", "Form-level errors."),
             p("submit_label", "str", "Primary action label."),
-            p("target", "safe CSS selector | None", "HTMX response target (prefer explicit Form composition when using hx-target)."),
+            p(
+                "target",
+                "safe CSS selector | None",
+                "HTMX response target (prefer explicit Form composition when using hx-target).",
+            ),
         ),
         "AutoForm derives field labels and required state from model metadata, adds error and CSRF nodes, and uses normal form submission as its baseline. Obtain `csrf_token` with `csrf_token_for_request(request, policy)` after a safe GET. For HTMX-targeted POSTs, prefer the explicit Form loop in the [forms and actions guide](../guides/forms-and-actions.md).",
         "Review generated labels and add model titles that make domain-specific fields understandable.",
@@ -1482,9 +1492,7 @@ COMPONENTS = (
         "Sticky action dock for primary controls.",
         "ActionDock(*children, position='bottom')",
         "ActionDock(Button('Save'))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1495,9 +1503,7 @@ COMPONENTS = (
         "Accessible HTML audio player with SafeUrl source.",
         "Audio(src, controls=True, autoplay=False)",
         "Audio('/media/clip.mp3')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1508,9 +1514,7 @@ COMPONENTS = (
         "Bottom sticky dock alias for chat or actions.",
         "BottomDock(*children)",
         "BottomDock(Text('Composer'))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1521,9 +1525,7 @@ COMPONENTS = (
         "Camera capture file input (capture=environment).",
         "CameraCapture(name='photo')",
         "CameraCapture(name='photo')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1534,9 +1536,7 @@ COMPONENTS = (
         "No-JS carousel as an ordered slide list with controls.",
         "Carousel(slides, label='Gallery')",
         "Carousel([Text('One'), Text('Two')])",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1547,9 +1547,7 @@ COMPONENTS = (
         "Free-text chip/tag multivalue input.",
         "ChipInput(name, values=())",
         "ChipInput('tags', values=('a',))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1560,9 +1558,7 @@ COMPONENTS = (
         "Circular determinate/indeterminate progress with status text.",
         "CircularProgress(value=50, maximum=100)",
         "CircularProgress(value=50)",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1573,9 +1569,7 @@ COMPONENTS = (
         "Copy-to-clipboard control (write-only; no clipboard read).",
         "ClipboardCopy(text, label='Copy')",
         "ClipboardCopy('secret-token')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1586,9 +1580,7 @@ COMPONENTS = (
         "Native color picker input.",
         "ColorInput(name, value='#000000')",
         "ColorInput('accent', value='#336699')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1599,9 +1591,7 @@ COMPONENTS = (
         "Button with explicit confirmation prompt (not authorization).",
         "ConfirmButton(label, confirm='Are you sure?')",
         "ConfirmButton('Delete', confirm='Delete item?')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1612,9 +1602,7 @@ COMPONENTS = (
         "Context menu with required overflow-button alternative.",
         "ContextMenu(label, *actions)",
         "ContextMenu('Row', LinkButton('Edit', '/edit'))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1625,9 +1613,7 @@ COMPONENTS = (
         "Native date input.",
         "DateInput(name, value='')",
         "DateInput('when', value='2026-08-05')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1638,9 +1624,7 @@ COMPONENTS = (
         "Native datetime-local input.",
         "DateTimeInput(name)",
         "DateTimeInput('starts')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1651,9 +1635,7 @@ COMPONENTS = (
         "Directory upload input with server-side validation helper.",
         "DirectoryUpload(name='files')",
         "DirectoryUpload(name='bundle')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1665,7 +1647,11 @@ COMPONENTS = (
         "PredictionLabel(scores, *, title='Predictions', threshold=None, class_=None, mark=None)",
         "PredictionLabel([{'class_id': 'cat', 'score': 0.9, 'calibrated': True}])",
         (
-            p("scores", "Sequence[PredictionScore | Mapping]", "Ranked class scores with optional precision/calibration."),
+            p(
+                "scores",
+                "Sequence[PredictionScore | Mapping]",
+                "Ranked class scores with optional precision/calibration.",
+            ),
             p("title", "str", "Accessible table caption."),
             p("threshold", "float | None", "Optional decision threshold shown in the caption."),
             p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
@@ -1681,7 +1667,11 @@ COMPONENTS = (
         "ParameterViewer(parameters, *, title='Parameters', secret_keys=(), class_=None, mark=None)",
         "ParameterViewer({'lr': 0.01, 'api_token': 'x'}, secret_keys=('api_token',))",
         (
-            p("parameters", "Mapping[str, Any]", "Parameter map rendered as definition list entries."),
+            p(
+                "parameters",
+                "Mapping[str, Any]",
+                "Parameter map rendered as definition list entries.",
+            ),
             p("secret_keys", "Sequence[str]", "Keys whose values are replaced with [redacted]."),
             p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
         ),
@@ -1696,7 +1686,11 @@ COMPONENTS = (
         "Dialogue(turns, *, title='Dialogue', class_=None, mark=None)",
         "Dialogue([{'speaker': 'A', 'text': 'Hello', 'start_ms': 0, 'end_ms': 500}])",
         (
-            p("turns", "Sequence[DialogueTurn | Mapping]", "Ordered speaker turns with optional timing/tags."),
+            p(
+                "turns",
+                "Sequence[DialogueTurn | Mapping]",
+                "Ordered speaker turns with optional timing/tags.",
+            ),
             p("title", "str", "Section label."),
             p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
         ),
@@ -1710,9 +1704,7 @@ COMPONENTS = (
         "Responsive image/video gallery with optional lightbox mode.",
         "Gallery(items, lightbox=False)",
         "Gallery([])",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1723,9 +1715,7 @@ COMPONENTS = (
         "Sanitized GeoJSON layer for Map (or standalone alternative list).",
         "GeoJSONLayer(data, max_features=500)",
         "GeoJSONLayer({'type':'FeatureCollection','features':[]})",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1736,9 +1726,7 @@ COMPONENTS = (
         "Spoofable geolocation form fields with progressive enhancement.",
         "GeolocationButton(label='Share location')",
         "GeolocationButton()",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1749,9 +1737,7 @@ COMPONENTS = (
         "Static reminder that geolocation is spoofable.",
         "GeolocationHint()",
         "GeolocationHint()",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1762,9 +1748,7 @@ COMPONENTS = (
         "Accessible help text associated with a control.",
         "Help(text, for_id=None)",
         "Help('Use YYYY-MM-DD')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1775,9 +1759,7 @@ COMPONENTS = (
         "Bounded details/summary object or help inspector.",
         "HelpInspector(title, body)",
         "HelpInspector('Props', Text('...'))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1788,9 +1770,7 @@ COMPONENTS = (
         "Policy-bounded sandboxed iframe with SafeUrl source.",
         "IFrame(src, title, allow_remote=False)",
         "IFrame('/embed', title='Embed')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1801,9 +1781,7 @@ COMPONENTS = (
         "Application logo image with required alt text.",
         "Logo(src, alt='App')",
         "Logo('/logo.svg', alt='Hedron')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1814,9 +1792,7 @@ COMPONENTS = (
         "Policy-bounded map with required table alternative.",
         "Map(center=(0,0), zoom=2, markers=())",
         "Map(center=(37.77,-122.42), zoom=10, markers=())",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1827,9 +1803,7 @@ COMPONENTS = (
         "Escaped LaTeX/math presentation (enhancement optional).",
         "Math(latex, display=False)",
         "Math(r'e^{i\\pi}+1=0', display=True)",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1840,9 +1814,7 @@ COMPONENTS = (
         "Button that reveals a menu of actions.",
         "MenuButton(label, *items)",
         "MenuButton('More', LinkButton('One', '/one'))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1853,9 +1825,7 @@ COMPONENTS = (
         "Microphone capture file input (capture=user).",
         "MicrophoneCapture(name='audio')",
         "MicrophoneCapture(name='clip')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1866,9 +1836,7 @@ COMPONENTS = (
         "Native multi-select control.",
         "MultiSelect(name, options, values=())",
         "MultiSelect('roles', options=(('a','A'),))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1879,9 +1847,7 @@ COMPONENTS = (
         "Native number input.",
         "NumberInput(name, value=None)",
         "NumberInput('qty', value=1)",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1892,9 +1858,7 @@ COMPONENTS = (
         "Favicon / page icon helper link or image.",
         "PageIcon(href)",
         "PageIcon('/favicon.ico')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1905,9 +1869,7 @@ COMPONENTS = (
         "PDF embed/object viewer with SafeUrl source.",
         "PdfViewer(src, title='PDF')",
         "PdfViewer('/doc.pdf', title='Report')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1918,9 +1880,7 @@ COMPONENTS = (
         "Pill-styled segmented choice group.",
         "Pills(name, options, value=None)",
         "Pills('tone', options=(('a','A'),))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1931,9 +1891,7 @@ COMPONENTS = (
         "Native popover or details/summary disclosure.",
         "Popover(label, *children)",
         "Popover('Info', Text('Details'))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1944,9 +1902,7 @@ COMPONENTS = (
         "Native range slider input.",
         "RangeInput(name, min=0, max=100)",
         "RangeInput('vol', value=50)",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1957,9 +1913,7 @@ COMPONENTS = (
         "Accessible 1..n rating radios.",
         "RatingInput(name, maximum=5)",
         "RatingInput('score', maximum=5)",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1970,9 +1924,7 @@ COMPONENTS = (
         "Segmented radio control group.",
         "SegmentedControl(name, options, value=None)",
         "SegmentedControl('mode', options=(('a','A'),))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1983,9 +1935,7 @@ COMPONENTS = (
         "Range input with optional datalist marks.",
         "SelectSlider(name, options)",
         "SelectSlider('size', options=(('s','S'),('l','L')))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -1996,9 +1946,7 @@ COMPONENTS = (
         "Semantic spacing primitive.",
         "Spacer(size='1rem')",
         "Spacer(size='2rem')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -2009,9 +1957,7 @@ COMPONENTS = (
         "Native time input.",
         "TimeInput(name)",
         "TimeInput('at')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -2022,9 +1968,7 @@ COMPONENTS = (
         "Semantic ordered timeline of events.",
         "Timeline()",
         "Timeline().entry('Now', 'Shipped', Text('0.15'))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -2035,9 +1979,7 @@ COMPONENTS = (
         "Switch-styled checkbox control.",
         "ToggleSwitch(name, checked=False)",
         "ToggleSwitch('notify', checked=True)",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -2048,9 +1990,7 @@ COMPONENTS = (
         "Accessible tooltip / title help.",
         "Tooltip(text, *children)",
         "Tooltip('More info', Text('Hover'))",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
@@ -2061,14 +2001,11 @@ COMPONENTS = (
         "Accessible HTML video player with SafeUrl source.",
         "Video(src, controls=True)",
         "Video('/media/clip.mp4')",
-        (
-            p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),
-        ),
+        (p("mark", "str | None", "Optional stable test mark (`data-hedron-mark`)."),),
         "Phase 0.15 surface. Prefer native HTML semantics and ordinary HTTP actions.",
         "Keyboard and screen-reader operable; no-JS fallback required where interactive.",
         "Do not treat client-only hints (geolocation, browser storage) as authorization.",
     ),
-
 )
 
 

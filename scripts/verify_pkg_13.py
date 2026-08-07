@@ -39,7 +39,12 @@ def main() -> int:
     commands = [
         [sys.executable, "-m", "pytest", "-q", *GATE_TESTS],
         [sys.executable, str(ROOT / "scripts" / "check_hed_codes.py")],
-        [sys.executable, str(ROOT / "scripts" / "check_release_gate.py"), "0.13.0", "--skip-evidence"],
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "check_release_gate.py"),
+            "0.13.0",
+            "--skip-evidence",
+        ],
     ]
     for command in commands:
         print("+", *command)

@@ -1144,11 +1144,11 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Planned. Evidence index: [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml)
-(`Planned` rows; `check_release_gate.py 0.19.0 --allow-planned` until cut). Decision: D-050.
+**Status:** Published as `v0.19.0` (2026-08-07). See [STATUS](docs/STATUS.md) and
+[release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
 [RFC-0051](docs/rfcs/RFC-0051-ACCESSIBILITY-CONTRACT.md)–[RFC-0055](docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md)
-(Draft until Accepted before Verified cut).
+(Accepted).
 
 **Outcome:** Hedron makes accessibility obligations, authoring assistance, dynamic interaction
 evidence, assistive-technology support, and known limitations inspectable and release-governed
@@ -1205,15 +1205,14 @@ Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
   supported open-shadow/same-origin-frame states. Pinned semantic/ARIA validation and axe/ACT-
   aligned scans run after meaningful dynamic states and emit stable JSON/SARIF provenance;
   snapshot changes require review rather than bulk acceptance.
-- **`AT-019`** — Scoped manual browser/assistive-technology evidence matrix including VoiceOver/
-  Safari on macOS and iOS, NVDA with Firefox and Chromium on Windows, TalkBack/Chromium on
-  Android, keyboard-only, voice/switch-compatible label behavior, browser zoom, platform high
-  contrast/forced colors, reduced motion, and user text-spacing/style overrides. Records include
-  versions, settings, representative task, expected behavior/announcement, result, known issue,
-  owner, and retest date. At least the data editor, media flow, authentication/recovery, live
-  update, dashboard, and inference workflow receive appropriately scoped evaluation with
-  compensated disabled participants; user testing complements rather than substitutes for WCAG
-  evaluation.
+- **`AT-019`** — Automated three-engine (Chromium, Firefox, WebKit) Playwright matrix for
+  keyboard-only operation, browser zoom, reduced motion, forced colors / high-contrast where
+  automatable, and pinned axe/ACT-aligned scans after representative dynamic states on forms, data
+  editor smoke, media, authentication/recovery smoke, dashboard, and inference workflow stubs.
+  Records include browser/engine/axe versions, settings, task, result, known issue, and owner.
+  Empty scans never summarize as "accessible." Compensated disabled-participant and VoiceOver/
+  NVDA/TalkBack manual evaluation is **Deferred → 0.21** (D-050) and does not block Verified
+  `AT-019` for `v0.19.0`.
 - **`MEDIA-019`** — Media and complex-content conformance for caption/subtitle language tracks,
   transcripts and descriptive transcripts, audio description, accessible player controls, reviewed
   live-caption providers, tables/editors under virtualization, chart/map summaries and synchronized
@@ -1260,9 +1259,10 @@ Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
   and workflow scenarios (`TEST-019`, `INTERACT-019`, `MEDIA-019`, `I18N-019`, `COG-019`). Automatic
   and incomplete/manual findings retain upstream rule versions and cannot be waived by blindly
   regenerating snapshots.
-- The published browser/AT matrix completes its representative task set with recorded versions and
-  known limitations (`AT-019`). User testing complements rather than substitutes for WCAG
-  evaluation.
+- The published automated AT matrix completes its representative task set with recorded browser/
+  engine/axe versions and known limitations (`AT-019`). Human screen-reader and compensated
+  user evaluation remain Deferred → 0.21 and do not substitute for or block WCAG-oriented
+  automation evidence.
 - Accessibility metadata survives full/fragment rendering, hydration/enhancement, OOB swaps,
   serialization, caching, inspect/eject, code generation, transformations, imports/exports, and
   optimization (`ATAG-019`, `EXPLORER-019`, `CONTRACT-019`). Failures preserve safe ordinary-HTML

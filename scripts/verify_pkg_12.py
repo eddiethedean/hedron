@@ -40,8 +40,8 @@ GATE_TESTS = [
 def _assert_extras_pins() -> None:
     text = (ROOT / "packages/hedron/pyproject.toml").read_text(encoding="utf-8")
     for extra, pattern in (
-        ("dev", r'hedron-explorer>=0\.12\.0,<0\.13'),
-        ("jinja", r'hedron-jinja>=0\.12\.0,<0\.13'),
+        ("dev", r"hedron-explorer>=0\.12\.0,<0\.13"),
+        ("jinja", r"hedron-jinja>=0\.12\.0,<0\.13"),
     ):
         if not re.search(pattern, text):
             raise SystemExit(f"hedron[{extra}] pin must match {pattern}")

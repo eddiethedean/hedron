@@ -2,17 +2,62 @@
 
 from __future__ import annotations
 
+import html as html_lib
+from collections.abc import Sequence
+
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
+from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.models import Props
+from hedron_core.security import SafeUrl, TrustedHtml, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
+
+__all__ = ["Fragment", "Head", "Page", "PageProps", "Title"]
+
+
+def _validate_page_script(url: SafeUrl) -> SafeUrl:
+    if url.purpose is not UrlPurpose.ASSET:
+        raise error(
+            "HED-SEC-0001",
+            title="Page script requires ASSET purpose",
+            explanation=f"Got purpose={url.purpose.value!r}.",
+            remediation="Use SafeUrl.parse(path, purpose=UrlPurpose.ASSET).",
+        )
+    raw = url.value
+    # Same-origin relative asset paths only (no scheme, no protocol-relative).
+    if raw.startswith("//") or "://" in raw:
+        raise error(
+            "HED-SEC-0001",
+            title="Page scripts must be same-origin relative assets",
+            explanation=f"Rejected script src {raw!r}.",
+            remediation="Use a path like /assets/app.js under script-src 'self'.",
+        )
+    if not raw.startswith("/"):
+        raise error(
+            "HED-SEC-0001",
+            title="Page scripts must be root-relative",
+            explanation=f"Rejected script src {raw!r}.",
+            remediation="Use a root-relative asset path beginning with '/'.",
+        )
+    return url
+
+
+def _script_tag(url: SafeUrl, *, defer: bool) -> TrustedHtml:
+    href = html_lib.escape(url.value, quote=True)
+    defer_attr = " defer" if defer else ""
+    return TrustedHtml.reviewed(
+        f'<script src="{href}"{defer_attr}></script>',
+        source="hedron-core:Page.scripts",
+    )
 
 
 class PageProps(Props):
     lang: str = "en"
     title: str | None = None
     data_theme: str | None = None
+    dir: str | None = None
+    script_defer: bool = True
 
 
 class Page(Component[PageProps]):
@@ -29,12 +74,30 @@ class Page(Component[PageProps]):
         head: NodeLike = None,
         children: NodeLike = None,
         data_theme: str | None = None,
+        dir: str | None = None,
+        scripts: Sequence[SafeUrl] | None = None,
+        script_defer: bool = True,
         **kwargs: object,
     ) -> None:
-        super().__init__(PageProps(lang=lang, title=title, data_theme=data_theme, **kwargs))
+        super().__init__(
+            PageProps(
+                lang=lang,
+                title=title,
+                data_theme=data_theme,
+                dir=dir,
+                script_defer=script_defer,
+                **kwargs,
+            )
+        )
         self._children = collect_children(*body, children=children)
         if head is not None:
             self._slot_values["head"] = head
+        validated: list[SafeUrl] = []
+        for item in scripts or ():
+            if not isinstance(item, SafeUrl):
+                raise TypeError("Page.scripts entries must be SafeUrl instances")
+            validated.append(_validate_page_script(item))
+        self._scripts = tuple(validated)
 
     def render(self) -> NodeLike:
         head_nodes: list[NodeLike] = [
@@ -46,11 +109,18 @@ class Page(Component[PageProps]):
         if "head" in self._slot_values:
             head_nodes.append(self._slot_values["head"])
         html_attrs: dict[str, HtmlAttrValue] = {"lang": self.props.lang}
+        if self.props.dir:
+            html_attrs["dir"] = self.props.dir
         if self.props.data_theme:
             html_attrs["data"] = {"theme": self.props.data_theme}
+        body_nodes: list[NodeLike] = list(self._children)
+        # Allowlisted PE scripts are TrustedHtml escapes of SafeUrl ASSET paths only —
+        # free-form <script> nodes remain forbidden in the component tree.
+        for url in self._scripts:
+            body_nodes.append(html.raw(_script_tag(url, defer=self.props.script_defer)))
         return html.html(
             html.head(*head_nodes),
-            html.body(*self._children),
+            html.body(*body_nodes),
             **html_attrs,
         )
 

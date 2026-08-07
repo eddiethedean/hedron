@@ -1,6 +1,6 @@
 # RFC-0052: Explorer accessibility workspace and AccessibilityScenario
 
-**Status:** Draft
+**Status:** Accepted
 **Phase:** 0.19 (`v0.19.0`)
 **Stability:** `beta` (API); Explorer UX remains development-oriented
 **Evidence:** `EXPLORER-019`, `TEST-019`

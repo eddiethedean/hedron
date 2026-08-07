@@ -14,7 +14,7 @@ on FastAPI + HTMX — without a Node.js frontend stack.
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
 # macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
 
-uvx --from "hedron>=0.18.0,<0.19" hedron new my-hedron-app
+uvx --from "hedron>=0.19.0,<0.20" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
@@ -33,7 +33,7 @@ Alternate (pip + venv):
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .venv\Scripts\Activate.ps1
-python -m pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"
+python -m pip install "hedron>=0.19.0,<0.20" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 ```
@@ -46,7 +46,7 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 <details>
 <summary>Package maturity</summary>
 
-<strong>Hedron 0.18.0</strong> — Beta on PyPI; pin with <code>hedron&gt;=0.18.0,&lt;0.19</code> for
+<strong>Hedron 0.19.0</strong> — Beta on PyPI; pin with <code>hedron&gt;=0.19.0,&lt;0.20</code> for
 production. <strong>Supported</strong> means the capability works on the current train when
 pinned; most public APIs remain compatibility level <code>beta</code> until listed in the small
 <strong>stable</strong> table —
@@ -84,7 +84,7 @@ See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/
 
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/) ·
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.18/) ·
+[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.19/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).

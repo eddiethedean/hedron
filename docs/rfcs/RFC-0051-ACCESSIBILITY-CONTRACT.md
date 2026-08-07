@@ -1,6 +1,6 @@
 # RFC-0051: AccessibilityContract
 
-**Status:** Draft
+**Status:** Accepted
 **Phase:** 0.19 (`v0.19.0`)
 **Stability:** `beta` (API)
 **Evidence:** `CONTRACT-019` (primary); contributes to `INTERACT-019`, `MEDIA-019`, `COG-019`,

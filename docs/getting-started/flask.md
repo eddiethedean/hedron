@@ -19,8 +19,8 @@ supported. Use polling for job status on Flask (SSE helpers stay FastAPI-flagshi
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron-flask>=0.18.0,<0.19"
-# or: uv init my-flask-app && cd my-flask-app && uv add "hedron-flask>=0.18.0,<0.19"
+python -m pip install "hedron-flask>=0.19.0,<0.20"
+# or: uv init my-flask-app && cd my-flask-app && uv add "hedron-flask>=0.19.0,<0.20"
 ```
 
 Save as `app.py` (application factory):

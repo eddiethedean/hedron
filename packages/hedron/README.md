@@ -17,19 +17,19 @@ plugin loader, and public `hedron.testing` helpers.
 ## Install
 
 ```bash
-pip install "hedron>=0.18.0,<0.19"
+pip install "hedron>=0.19.0,<0.20"
 # or
-uv add "hedron>=0.18.0,<0.19"
+uv add "hedron>=0.19.0,<0.20"
 ```
 
 Optional extras (pin the train):
 
 ```bash
-pip install "hedron[data]>=0.18.0,<0.19"
+pip install "hedron[data]>=0.19.0,<0.20"
 pip install "hedron[charts]>=0.1.0,<0.2"   # Alpha
-pip install "hedron[dev]>=0.18.0,<0.19"
+pip install "hedron[dev]>=0.19.0,<0.20"
 pip install "hedron[gradio]>=0.1.0,<0.2"   # Alpha
-pip install "hedron[browser]>=0.18.0,<0.19"
+pip install "hedron[browser]>=0.19.0,<0.20"
 ```
 
 Requires Python 3.11, 3.12, 3.13, or 3.14. Current train: **0.18.0** (Beta).
@@ -41,7 +41,7 @@ click (HTMX swaps a small HTML fragment into a declared region):
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.18.0,<0.19" hedron new my-hedron-app
+uvx --from "hedron>=0.19.0,<0.20" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
@@ -72,7 +72,7 @@ def home() -> Page:
 ```
 
 ```bash
-pip install "hedron>=0.18.0,<0.19" "uvicorn[standard]"
+pip install "hedron>=0.19.0,<0.20" "uvicorn[standard]"
 uvicorn app:app --reload
 ```
 

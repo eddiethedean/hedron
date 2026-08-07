@@ -68,8 +68,8 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0048](RFC-0048-INTERACTION-RECORDER.md) | Redacted interaction and API recorder | Accepted |
 | [0049](RFC-0049-GRADIO-ADAPTER.md) | Optional hedron-gradio protocol adapter | Accepted |
 | [0050](RFC-0050-INFERENCE-WORKFLOW.md) | Versioned permissioned inference workflows | Accepted |
-| [0051](RFC-0051-ACCESSIBILITY-CONTRACT.md) | AccessibilityContract schema and catalog | Draft |
-| [0052](RFC-0052-A11Y-EXPLORER-SCENARIO.md) | Explorer a11y workspace and AccessibilityScenario | Draft |
-| [0053](RFC-0053-PROGRESSIVE-ENHANCEMENT.md) | Progressive enhancement, landmarks, Page scripts | Draft |
-| [0054](RFC-0054-ATAG-AUTHORING.md) | ATAG-oriented authoring assistance | Draft |
-| [0055](RFC-0055-A11Y-GOVERNANCE.md) | A11y evidence governance and AT matrix | Draft |
+| [0051](RFC-0051-ACCESSIBILITY-CONTRACT.md) | AccessibilityContract schema and catalog | Accepted |
+| [0052](RFC-0052-A11Y-EXPLORER-SCENARIO.md) | Explorer a11y workspace and AccessibilityScenario | Accepted |
+| [0053](RFC-0053-PROGRESSIVE-ENHANCEMENT.md) | Progressive enhancement, landmarks, Page scripts | Accepted |
+| [0054](RFC-0054-ATAG-AUTHORING.md) | ATAG-oriented authoring assistance | Accepted |
+| [0055](RFC-0055-A11Y-GOVERNANCE.md) | A11y evidence governance and AT matrix | Accepted |

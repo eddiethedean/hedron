@@ -1,6 +1,6 @@
 # RFC-0054: ATAG-oriented authoring assistance
 
-**Status:** Draft
+**Status:** Accepted
 **Phase:** 0.19 (`v0.19.0`)
 **Stability:** `beta` (tooling)
 **Evidence:** `ATAG-019`

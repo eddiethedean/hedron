@@ -133,6 +133,7 @@ from hedron_core.builtins import (
     Video,
 )
 from hedron_core.builtins.forms_extra import DirectoryUploadFile, validate_directory_upload
+from hedron_core.builtins.landmarks import LandmarkProps
 from hedron_core.builtins.map_geo import MarkerSpec, sanitize_geojson
 from hedron_core.builtins.media import GalleryItem
 from hedron_core.builtins.model_demo import DialogueTurn, PredictionScore
@@ -319,7 +320,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.18.0"
+__version__ = "0.19.0"
 
 __all__ = [
     "ActionRegistry",
@@ -472,6 +473,7 @@ __all__ = [
     "JsonPrimitive",
     "JsonValue",
     "Label",
+    "LandmarkProps",
     "Link",
     "LinkButton",
     "List",

@@ -1,0 +1,61 @@
+"""Phase 0.19 GOVERN-019."""
+
+from __future__ import annotations
+
+from datetime import date, timedelta
+
+import pytest
+
+from hedron_core.a11y import (
+    AccessibilityStatement,
+    EvidenceInventory,
+    Waiver,
+    refuse_auto_conformance_claim,
+)
+from hedron_core.diagnostics import HedronError
+
+
+def test_waiver_requires_fields_and_blocks_expired() -> None:
+    w = Waiver(
+        id="W1",
+        owner="a11y-owners",
+        rationale="third-party chart",
+        affected_users="color-blind users for legend",
+        remediation="add tabular fallback",
+        expires=date.today() + timedelta(days=30),
+        component="Chart",
+    )
+    assert w.validated().id == "W1"
+    expired = Waiver(
+        id="W0",
+        owner="a11y-owners",
+        rationale="x",
+        affected_users="y",
+        remediation="z",
+        expires=date.today() - timedelta(days=1),
+    )
+    with pytest.raises(HedronError) as exc:
+        expired.validated()
+    assert exc.value.diagnostic.code == "HED-A11Y-0010"
+
+
+def test_refuse_auto_claims_and_statement_export() -> None:
+    with pytest.raises(HedronError) as exc:
+        refuse_auto_conformance_claim("wcag")
+    assert exc.value.diagnostic.code == "HED-A11Y-0011"
+    inv = EvidenceInventory(feedback_route="a11y@example.test")
+    inv.contracts.append("Button")
+    inv.known_limitations.append("Human AT deferred to 0.21")
+    assert inv.as_dict()["feedback_route"] == "a11y@example.test"
+    stmt = AccessibilityStatement(
+        scope="reference-app",
+        contact="a11y@example.test",
+        feedback_route="mailto:a11y@example.test",
+        tested_environments=["Playwright Chromium/Firefox/WebKit"],
+        approved_by="release-manager",
+    )
+    exported = stmt.export()
+    assert exported["conformance_claim"] is None
+    assert exported["vpat_acr"] is None
+    with pytest.raises(HedronError):
+        AccessibilityStatement(scope="x").export()

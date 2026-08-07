@@ -35,7 +35,7 @@ Capability phases are numbered `0.N`. The initial release for that phase is **`v
 Phase **0.18** maps to packages **`0.18.x`** (current **`0.18.0`**), not a patch of 0.1.
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
-Pin production installs with `hedron>=0.18.0,<0.19`.
+Pin production installs with `hedron>=0.19.0,<0.20`.
 
 ## Public docs vs maintainer corpus
 

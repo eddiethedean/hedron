@@ -179,6 +179,13 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
         _registry_empty_hint(app=args.app, what="components")
         print(f"Component {args.component!r} not found", file=sys.stderr)
         return 1
+    from hedron_core.a11y import default_contract
+
+    contract = default_contract(
+        meta.name,
+        package=meta.distribution,
+        notes=meta.accessibility_notes or "",
+    )
     payload: JsonObject = {
         "logical_id": meta.logical_id,
         "name": meta.name,
@@ -191,6 +198,13 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
         "browser_modules": list(meta.browser_modules),
         "folder_path": meta.folder_path,
         "accessibility_notes": meta.accessibility_notes,
+        "accessibility_contract": contract.as_dict(),
+        "accessibility_props_alongside_ordinary": True,
+        "repair_guidance": {
+            "reversible": True,
+            "author_reviewed": True,
+            "default_on": True,
+        },
     }
     if meta.styles_path and Path(meta.styles_path).is_file():
         payload["styles"] = Path(meta.styles_path).read_text(encoding="utf-8")
@@ -215,6 +229,25 @@ def _cmd_eject(args: argparse.Namespace) -> int:
     out_dir = Path(args.out or meta.folder_path or f"components/{meta.name}")
     out_dir.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
+    from hedron_core.a11y import default_contract
+
+    contract_path = out_dir / "accessibility_contract.json"
+    if contract_path.exists() and not args.force:
+        print(f"Refusing to overwrite {contract_path} (use --force)", file=sys.stderr)
+        return 1
+    contract_path.write_text(
+        json.dumps(
+            default_contract(
+                meta.name,
+                package=meta.distribution,
+                notes=meta.accessibility_notes or "",
+            ).as_dict(),
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    written.append(str(contract_path))
     if meta.styles_path and Path(meta.styles_path).is_file():
         dest = out_dir / "styles.css"
         if dest.exists() and not args.force:
@@ -280,7 +313,7 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron>=0.18.0,<0.19",
+    "hedron>=0.19.0,<0.20",
     "uvicorn[standard]>=0.30",
 ]
 

@@ -5,9 +5,9 @@ protocols, optional dataframe normalization, and a Tabulator-backed grid Web
 Component.
 
 ```bash
-pip install "hedron-data>=0.18.0,<0.19"
+pip install "hedron-data>=0.19.0,<0.20"
 # Optional dataframe extras:
-pip install "hedron-data[dataframes]>=0.18.0,<0.19"
+pip install "hedron-data[dataframes]>=0.19.0,<0.20"
 ```
 
 Requires `hedron-core`. Coordinated train: **`0.18.0`** (Beta).

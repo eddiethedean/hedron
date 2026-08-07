@@ -43,8 +43,8 @@ def _expected_root(name: str) -> str:
     src = DOCS / name
     body = src.read_text(encoding="utf-8")
     banner = (
-        "<!-- Generated from docs/%s — edit the docs/ copy, then run "
-        "scripts/sync_status_roadmap.py -->\n\n" % name
+        f"<!-- Generated from docs/{name} — edit the docs/ copy, then run "
+        "scripts/sync_status_roadmap.py -->\n\n"
     )
     if body.startswith("<!-- Generated from docs/"):
         body = body.split("\n\n", 1)[1]

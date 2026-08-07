@@ -38,7 +38,7 @@ Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first if y
 have it (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux).
 
 ```bash
-uvx --from "hedron>=0.18.0,<0.19" hedron new my-hedron-app
+uvx --from "hedron>=0.19.0,<0.20" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run uvicorn app:app --reload
@@ -111,7 +111,7 @@ Extras and troubleshooting: [installation](getting-started/installation.md).
 <summary>Package maturity and production pins</summary>
 
 Hedron **0.18** packages are **Beta** on PyPI — pin versions for production
-(`hedron>=0.18.0,<0.19`). **Supported** means the capability works on the current train
+(`hedron>=0.19.0,<0.20`). **Supported** means the capability works on the current train
 when pinned; most public APIs remain compatibility level **`beta`** until listed in the
 small **stable** table — see [Understanding maturity labels](getting-started/how-to-read.md).
 Capability readiness: [What’s ready today](guides/whats-ready.md) ·
