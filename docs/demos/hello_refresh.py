@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hedron import Page, RefreshButton, Text, html, swap
+from hedron import Page, RefreshButton, html, swap
 from hedron_sim import SimApp, embed_demo, sim_utc, wrap_browser_chrome
 
 __all__ = ["build_hello_refresh_demo", "hello_refresh_app"]
