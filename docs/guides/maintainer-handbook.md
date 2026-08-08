@@ -17,6 +17,7 @@ adopter-focused. The adopter maturity snapshot is **What's ready today** only.
 | Capability phases | [`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md) |
 | Decisions | [`docs/DECISIONS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) |
 | Cut procedure | [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md) (living); historical cuts in [`docs/archive/`](https://github.com/eddiethedean/hedron/tree/main/docs/archive) |
+| Production-quality program | [Production-quality maturity](production-quality.md) (D-053 / RFC-0056) |
 | Scripts index | [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md) |
 | RFC catalog | [`docs/rfcs/`](https://github.com/eddiethedean/hedron/tree/main/docs/rfcs) |
 | Foundations | [`docs/foundations/`](https://github.com/eddiethedean/hedron/tree/main/docs/foundations) |

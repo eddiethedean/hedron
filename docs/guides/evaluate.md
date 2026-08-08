@@ -7,6 +7,7 @@ Start here if you are deciding whether Hedron fits. Pick the page that matches y
 |---|---|
 | Product / eng fit | This page (below) · [Why Hedron](why-hedron.md) |
 | Capability maturity (SSOT) | [What’s ready today](whats-ready.md) |
+| Trust / maturity program | [Production-quality maturity](production-quality.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 | Ops / ship checklist | [Production readiness](production-readiness.md) |
 | Architecture | [Architecture](../ARCHITECTURE.md) |
@@ -41,10 +42,14 @@ Full matrix: [What’s ready](whats-ready.md).
 ## What not to depend on yet
 
 - Full multi-engine live browser matrix and load/proxy backpressure proof for live transports
+  (disposition owned by **0.24** / D-053)
 - Specialty extras (CodeEditor host stub, TerminalView, joystick, device bridges) as full
-  product UI — Experimental / stub only
+  product UI — Experimental / stub only (quarantine path **0.25**)
 - Human screen-reader / compensated AT evaluation (owned by **0.21**, D-052 engineering-complete /
   sessions outstanding)
+- Expanded compatibility-protected `stable` tier beyond the minimal table (owned by **0.23**)
+
+Trust-program overview: [Production-quality maturity](production-quality.md).
 
 ## When Hedron is a poor fit
 

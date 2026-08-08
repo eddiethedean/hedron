@@ -17,7 +17,9 @@ PyPI/git = `v0.20.0`. Workspace packages: Beta `0.20.0`, Alpha charts/sample-kit
 **0.21** human AT is **engineering-complete / sessions outstanding** (D-052): protocol
 Verified (`PROTOCOL-021`); reference-app task corpus + `verify_pkg_21` + CI packet checks
 landed; **`SR-021` / `PARTICIPANT-021` remain Planned** until real sessions. CSRF composition
-remains Deferred → **0.22**.
+remains Deferred → **0.22**. Production-quality maturity program (**D-053** / RFC-0056)
+assigns post-0.22 packets **0.23** (stable-tier), **0.24** (live disposition), **0.25**
+(archetype / landmines) — see [production-quality](guides/production-quality.md).
 
 ## Supported vs Deferred (operator view)
 
@@ -58,9 +60,9 @@ Prior-phase Deferred rows below remain owned elsewhere.
 | `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions |
 | `REGRESS-021` | Full suite at cut | **Planned** (0.21) | cut |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Planned** (0.21) | command ready; Verified at cut |
-| `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | Prior-phase carryover |
-| `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Prior-phase carryover |
-| `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof |
+| `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | Prior-phase carryover; disposition → **0.24** (D-053) |
+| `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Prior-phase carryover; disposition → **0.24** (D-053) |
+| `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof; disposition → **0.24** (D-053) |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | |
 
 ## Phase 0.20 evidence
@@ -92,5 +94,9 @@ Prior-phase Deferred rows below remain owned elsewhere.
 **0.21** — human assistive-technology / compensated evaluation (engineering prep complete;
 sessions outstanding; D-052).
 **0.22** — CSRF and SecurityPolicy composition (#36–#38; D-051 split).
+**0.23** — Stable-tier expansion for Supported CRUD/admin (D-053 / RFC-0056).
+**0.24** — Live-transport production disposition (prove ops **or** polling-only; D-053).
+**0.25** — Production archetype, load budgets, extras quarantine (D-053).
+Program summary: [production-quality guide](guides/production-quality.md).
 Track progress in [ROADMAP.md](ROADMAP.md) and the public [roadmap guide](guides/roadmap.md).
 Open-issue owners: [issue ownership table](ROADMAP.md#open-github-issue-ownership-013).

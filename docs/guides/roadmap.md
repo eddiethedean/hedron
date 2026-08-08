@@ -18,6 +18,9 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.20** | Production security floor and adapter parity (HTMX/eval, mount/prod gates, Flask/Django regions/CSP/scaffolds) | **Published** (`0.20.0`; last published PyPI/git = `v0.20.0`; D-051) |
 | **0.21** | Human assistive-technology / compensated evaluation (D-052) | **Engineering-complete / sessions outstanding** (PROTOCOL Verified; SR/PARTICIPANT Planned) |
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | Planned (D-051 split) |
+| **0.23** | Expand `stable` API tier for Supported CRUD/HTMX/jobs | Planned (D-053) |
+| **0.24** | Live-transport production disposition (prove ops or polling-only) | Planned (D-053) |
+| **0.25** | Production archetype, load budgets, extras quarantine | Planned (D-053) |
 
 ## What this means for you
 
@@ -26,6 +29,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Package maturity is **Beta** for the flagship and most adapters; charts remain **Alpha**.
 - No `1.0` phase is scheduled (D-038). A **minimal `stable` API tier** is catalogued in
   [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or `experimental`.
+- Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
+  [Production-quality maturity](production-quality.md).
 
 ## Honest gaps on the current train (0.20)
 
@@ -41,10 +46,13 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Live transports remain **experimental**; polling is Supported — [What’s ready](whats-ready.md)
 
 CSRF / SecurityPolicy composition (#36–#38) is **0.22**. Human AT evaluation is **0.21**
-(D-052). Earlier ops honesty items remain under phases **0.13+** as listed in the ownership table.
+(D-052). Stable-tier expansion, live-transport disposition, and production archetype work are
+**0.23–0.25** (D-053). Earlier ops honesty items remain under phases **0.13+** as listed in
+the ownership table until 0.24 re-homes them.
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))
 addresses FastAPI live learning paths. Flask/Django ship capability-labeled live helpers with
 polling as the Supported fallback.
-Details: [What's ready today](whats-ready.md) · [Production readiness](production-readiness.md).
+Details: [What's ready today](whats-ready.md) · [Production readiness](production-readiness.md) ·
+[Production-quality maturity](production-quality.md).

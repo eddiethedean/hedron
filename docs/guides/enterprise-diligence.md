@@ -58,6 +58,9 @@ Hedron documentation and marketing **do not** claim:
 - That every `hedron[extras]` widget is production-complete (CodeEditor is a host stub;
   TerminalView / device bridges are Experimental)
 
+Trust-program priorities that close diligence caveats without inventing those claims:
+[Production-quality maturity](production-quality.md) (D-053).
+
 ## Supply-chain evidence
 
 Prefer GitHub Release assets for tag **`v0.20.0`** (SBOM / license / evidence-bundle) when

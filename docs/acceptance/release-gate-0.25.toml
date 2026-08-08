@@ -1,0 +1,53 @@
+# Phase 0.25 production archetype and landmine quarantine evidence index.
+# Consumed by scripts/check_release_gate.py 0.25.0 (--allow-planned until full cut).
+# Zero Deferred policy for 0.25-owned rows: every row must be Verified at cut.
+# Owning decision: D-053. RFC: RFC-0056.
+
+[[evidence]]
+id = "ARCHETYPE-025"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.25.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "BUDGET-025"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.25.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "EXTRAS-025"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.25.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "CHARTS-025"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.25.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "SUPPLY-025"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.25.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-025"
+state = "Planned"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-025"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.25.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"

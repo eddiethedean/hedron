@@ -209,6 +209,7 @@ Extras: `"hedron[data]>=0.20.0,<0.21"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
 |---|---|
 | Quick fit check | [Evaluate Hedron](evaluate.md) |
 | Ops ship checklist | [Production readiness](production-readiness.md) |
+| Trust / maturity program | [Production-quality maturity](production-quality.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 
 Also: [Upgrade](upgrade.md) · [Roadmap](roadmap.md) · [Live interaction](live-interaction.md)

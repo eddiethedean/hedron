@@ -26,6 +26,11 @@ patches stay `0.20.x`. Phase 0.20 evidence:
 [RELEASE_0_20.md](acceptance/RELEASE_0_20.md)
 (`python scripts/check_release_gate.py 0.20.0`).
 
+Production-quality maturity program (**D-053** / RFC-0056): after 0.21/0.22, planned packets
+**0.23** (stable-tier), **0.24** (live disposition), **0.25** (archetype) —
+[production-quality guide](guides/production-quality.md);
+`python scripts/check_release_gate.py 0.23.0 --allow-planned` (and `0.24.0` / `0.25.0`).
+
 Do not re-run tag steps for a published version.
 
 ## Template: `v0.20.0` first cut

@@ -2,7 +2,8 @@
 
 Ops-oriented checklist for **Hedron 0.20.0** (Beta; Published; last published
 PyPI/git = `v0.20.0`). **Do not duplicate maturity claims here** — the authoritative
-snapshot is [What's ready today](whats-ready.md).
+snapshot is [What's ready today](whats-ready.md). Trust-program priorities (stable tier,
+live disposition, archetype): [Production-quality maturity](production-quality.md).
 
 Also: [Compatibility](../COMPATIBILITY.md) · [Support](support.md) ·
 [Deployment](deployment.md).
@@ -49,4 +50,5 @@ SLA**. Confirm your intended surfaces against [What's ready](whats-ready.md).
 - Supported version lines: see [SECURITY.md](../SECURITY.md)
 
 See [Error codes](error-codes.md) · [Public roadmap](roadmap.md) ·
+[Production-quality maturity](production-quality.md) ·
 [Enterprise diligence](enterprise-diligence.md).

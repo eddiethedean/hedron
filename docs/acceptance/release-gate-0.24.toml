@@ -1,0 +1,48 @@
+# Phase 0.24 live-transport production disposition evidence index.
+# Consumed by scripts/check_release_gate.py 0.24.0 (--allow-planned until full cut).
+# Zero Deferred policy for 0.24-owned rows: every row must be Verified at cut.
+# Owning decision: D-053. RFC: RFC-0056.
+# Disposition A = prove ops; Disposition B = polling-only production docs.
+# Exactly one disposition must be Accepted; do not Verified both half-done.
+
+[[evidence]]
+id = "DECIDE-024"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.24.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "BROWSER-024"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.24.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PERF-024"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.24.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "DOCS-024"
+state = "Planned"
+command = "python scripts/check_docs_train_ssot.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-024"
+state = "Planned"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-024"
+state = "Planned"
+command = "python scripts/check_release_gate.py 0.24.0 --allow-planned"
+ci_job = "test"
+owner = "hedron"

@@ -38,7 +38,8 @@ describe **API/artifact** promises.
 The following contracts are **`stable`** (compatibility-protected on the 0.x train).
 Everything else remains `beta` / `experimental` unless listed below. Package maturity on
 PyPI remains **Beta** — pin versions. Maturity source of truth for product claims:
-[What’s ready](../guides/whats-ready.md).
+[What’s ready](../guides/whats-ready.md). Expanding this tier for the Supported CRUD/admin
+happy path is owned by phase **0.23** (D-053 / RFC-0056).
 
 | Symbol / contract | Package |
 |---|---|
@@ -222,6 +223,10 @@ older upgrade notes remain navigable.
 | Navigation preload | D-044 | **experimental**; opt-in |
 | Focused streaming / page-session WebSocket | D-044 | **experimental** on FastAPI |
 | Dialog / ChatMessage / ChatInput | D-045 | **beta** (history application-owned) |
+
+Disposition of permanent experimental labeling is owned by phase **0.24** (D-053 /
+[RFC-0056](../rfcs/RFC-0056-PRODUCTION-QUALITY.md)): prove browser/load ops evidence **or**
+formally document polling-only for production. Until then, prefer polling in production.
 
 Exports: `SseResponse`, `job_status_sse_response`, `StreamingComponentResponse`,
 `accept_page_session_channel`, `send_region_update`, `Dialog`, `ChatMessage`, `ChatInput`.

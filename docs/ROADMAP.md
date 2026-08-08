@@ -1482,6 +1482,119 @@ HTMX kwargs on `Form` without stringly hidden tokens.
   so partials stop re-listing hidden tokens and stringly `hx-*` attributes
   ([#38](https://github.com/eddiethedean/hedron/issues/38)).
 
+## 0.23 — Stable-tier expansion for Supported CRUD/admin (`v0.23.0`)
+
+**Status:** Planned. Part of the production-quality maturity program (**D-053** /
+[RFC-0056](rfcs/RFC-0056-PRODUCTION-QUALITY.md)). Depends on 0.21/0.22 progressing far enough
+that promotions target contracts that remain Supported after those packets; may refine in
+parallel with 0.22 packet work but must not claim 0.21 human AT as API-stable evidence.
+
+**Outcome:** The compatibility-protected `stable` tier in
+[STABILITY.md](api/STABILITY.md) covers the Supported CRUD/admin happy path (beginner facade,
+regions/`swap`, Poll/job status helpers, security profile names, and related testing helpers)
+so Beta package maturity no longer implies unconstrained churn on the primary ship surface.
+
+### Scope
+
+Zero Deferred among 0.23-owned gate rows at cut. Gate IDs (packet refine may adjust commands):
+
+- **`STABLE-023`** — Expand the minimal `stable` table for Supported CRUD/HTMX/jobs symbols
+  already labeled Supported on [What’s ready](guides/whats-ready.md); document migration rules
+  for any boundary adjustments.
+- **`FACADE-023`** — Publish an explicit Beginner/Stable facade inventory; keep Alpha extras
+  off root `hedron` imports and out of the stable facade.
+- **`INVENTORY-023`** — `scripts/check_stability_inventory.py` and STABILITY catalog agree on
+  promotions (`FRZ-001` still green).
+- **`REGRESS-023`** — Full regression suite at cut.
+- **`PKG-023`** — Coordinated package/docs verify at cut.
+
+### Non-goals
+
+- Promoting Alpha charts/notebook/MCP/Gradio or experimental live transports to `stable`.
+- Declaring package maturity GA or scheduling `1.0` (D-038 / D-053 optional DoD only).
+- Absorbing CSRF composition (0.22) or live ops disposition (0.24).
+
+### Exit gate
+
+- Every 0.23-owned release-gate row is `Verified`
+  ([release-gate-0.23.toml](acceptance/release-gate-0.23.toml)).
+- Public docs (What’s ready, STABILITY, production-quality) agree on the expanded tier.
+
+## 0.24 — Live-transport production disposition (`v0.24.0`)
+
+**Status:** Planned. Part of D-053 / RFC-0056. Re-homes or closes prior Deferred ops rows
+`BROWSER-10-001`, `PERF-10-001`, and `LIVE-011-BROWSER` with an explicit production story.
+
+**Outcome:** End the permanent “experimental live transports” fog: either (A) close
+multi-engine browser + load/proxy backpressure evidence so SSE/WebSocket can graduate under
+documented ops constraints, **or** (B) formally document polling-only as the Supported
+production story and keep live helpers experimental without implying an imminent Supported
+claim.
+
+### Scope
+
+Exactly one disposition must be Accepted at cut (not both half-done):
+
+- **`DECIDE-024`** — Written disposition (prove-ops **or** polling-only production) recorded in
+  ROADMAP/STATUS/What’s ready/STABILITY with matching labels.
+- **`BROWSER-024`** — Close, re-home with owner/expiry, or explicitly waive into the chosen
+  disposition the FastAPI and adapter live browser matrix Deferred rows.
+- **`PERF-024`** — Close, re-home, or waive load/proxy backpressure evidence consistently with
+  `DECIDE-024`.
+- **`DOCS-024`** — Adopter docs never market live helpers as Supported unless disposition A is
+  Verified; polling remains Supported in either disposition.
+- **`REGRESS-024`** / **`PKG-024`** — Suite and package verify at cut.
+
+### Non-goals
+
+- Requiring Flask/Django official HTMX SSE parity as a cut blocker when disposition B is chosen.
+- Removing experimental APIs from the tree solely to look “done” without a disposition.
+
+### Exit gate
+
+- Every 0.24-owned row Verified
+  ([release-gate-0.24.toml](acceptance/release-gate-0.24.toml)).
+- Prior Deferred live-ops IDs have a terminal owner note (Verified, waived, or superseded).
+
+## 0.25 — Production archetype and landmine quarantine (`v0.25.0`)
+
+**Status:** Planned. Part of D-053 / RFC-0056. Product/ops track after trust and stability
+packets.
+
+**Outcome:** `examples/reference-app` (or a documented sibling recipe) is the canonical
+multi-worker production archetype; load/perf budgets have CI evidence for critical paths;
+specialty extras landmines are quarantined or finished; Matplotlib remains the conservative
+charts default with a written graduation path for Plotly/Altair.
+
+### Scope
+
+- **`ARCHETYPE-025`** — Documented deploy archetype: reverse-proxy subpath, Redis job/cache
+  backend, sticky sessions or external session store, CSP/`HEDRON_ENV=production`, Explorer off,
+  multi-worker notes (compose or equivalent).
+- **`BUDGET-025`** — Runnable evidence against [PERFORMANCE_BUDGETS.md](PERFORMANCE_BUDGETS.md)
+  for fragment latency, job poll fanout, and DataEditor row-model smoke (CI or immutable
+  artifact).
+- **`EXTRAS-025`** — CodeEditor host stub, TerminalView, joystick/device bridges: either reach
+  Supported with evidence **or** move behind a clearly named experimental extra so
+  `hedron[extras]` does not imply product UI.
+- **`CHARTS-025`** — Matplotlib-default Supported path documented; Plotly/Altair remain
+  experimental until pins + CSP + a11y evidence match the DataTable bar.
+- **`SUPPLY-025`** — RELEASE runbook requires SBOM/evidence-bundle attach on train tags
+  (process gate; regenerate instructions remain in Evidence pack).
+- **`REGRESS-025`** / **`PKG-025`** — Suite and package verify at cut.
+
+### Non-goals
+
+- Turning reference-app into a hosted SaaS or managed IdP.
+- SLSA commercial attestation claims.
+- Finishing every specialty widget in one cut when quarantine satisfies `EXTRAS-025`.
+
+### Exit gate
+
+- Every 0.25-owned row Verified
+  ([release-gate-0.25.toml](acceptance/release-gate-0.25.toml)).
+- Public production-quality and production-readiness guides link the archetype.
+
 ## Complete capability-to-release ledger
 
 This ledger is the coverage check for planned capabilities. The detailed phase sections above remain normative; the ledger prevents a subsystem or cross-cutting requirement from disappearing between plans.
@@ -1675,6 +1788,10 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | HTMX browser hardening, proxy mount helpers, production security gates, `js:` hx-vals/headers reject | 0.20 | Host security floor; inspectable opt-outs (`HTMX-020`, `MOUNT-020`, `PROD-020`, `EVAL-020`; [#1](https://github.com/eddiethedean/hedron/issues/1), [#3](https://github.com/eddiethedean/hedron/issues/3), [#6](https://github.com/eddiethedean/hedron/issues/6), [#18](https://github.com/eddiethedean/hedron/issues/18)). |
 | Flask/Django fragment_regions, portable CSP headers, scaffolds, wheel smoke, Flask-Login AuthSignal | 0.20 | Adapter parity and DX after 0.11 foundations (`REGION-020`, `CSP-020`, `SCAFFOLD-020`, `WHEEL-020`, `AUTH-020`; [#12](https://github.com/eddiethedean/hedron/issues/12), [#14](https://github.com/eddiethedean/hedron/issues/14), [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19), [#20](https://github.com/eddiethedean/hedron/issues/20)). |
 | Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.22 | FastAPI composition for apps that own sessions/CSP; depends on 0.20 `CSP-020` ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
+| Expand minimal `stable` API tier for Supported CRUD/HTMX/jobs + Beginner facade inventory | 0.23 | D-053 / RFC-0056; does not promote Alpha extras or live transports. |
+| Live-transport production disposition (prove browser/load ops **or** polling-only docs) | 0.24 | Re-homes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056). |
+| Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | D-053 / RFC-0056; SBOM/evidence attach on train tags. |
+| Optional written `1.0` DoD without a calendar date | D-053 | Not a roadmap phase; preserves D-038. |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 
 ## RFC-to-phase coverage
@@ -1797,4 +1914,8 @@ must always retain an owner, rationale, destination, and public stability impact
 owns the post-0.11 host-security and adapter-parity packet (D-051). Phase **0.22** owns the CSRF /
 SecurityPolicy composition split (#36–#38) so 0.20 stays cuttable without a new CSRF protocol.
 Phase **0.21** owns the human AT packet from D-050 / D-052 (engineering-complete /
-sessions outstanding). These additions do not renumber earlier phases.
+sessions outstanding). Phases **0.23–0.25** own the production-quality maturity program from
+D-053 / RFC-0056 (stable-tier expansion, live-transport disposition, production archetype /
+landmine quarantine). These additions do not renumber earlier phases. An optional `1.0`
+definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
+roadmap phase.

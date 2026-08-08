@@ -471,6 +471,7 @@ nav:
       - What's ready today: guides/whats-ready.md
       - Enterprise diligence: guides/enterprise-diligence.md
       - Production readiness: guides/production-readiness.md
+      - Production-quality maturity: guides/production-quality.md
       - Architecture: ARCHITECTURE.md
       - Understanding maturity labels: getting-started/how-to-read.md
       - Design principles: guides/design-principles.md

@@ -18,6 +18,9 @@ backlog to explicit capability phases 0.9–0.14.
 **Revision:** 2026-08-04 — D-041 moved the Jinja replacement and complete HDN removal to 0.9;
 native Flask/Django depth moved to 0.11.
 
+**Revision:** 2026-08-07 — D-053 / RFC-0056 add the production-quality maturity program
+(phases 0.23–0.25) without scheduling a calendar `1.0` (preserves D-038).
+
 ## Release strategy
 
 Hedron develops through cumulative, usable capability phases rather than toward a version-number

@@ -36,6 +36,7 @@ CHECKED = [
     ROOT / "docs" / "guides" / "faq.md",
     ROOT / "docs" / "guides" / "evidence-pack.md",
     ROOT / "docs" / "guides" / "production-readiness.md",
+    ROOT / "docs" / "guides" / "production-quality.md",
     ROOT / "docs" / "guides" / "dashboards.md",
     ROOT / "docs" / "guides" / "performance.md",
     ROOT / "docs" / "guides" / "whats-new-0.15.md",
