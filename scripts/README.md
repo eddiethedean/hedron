@@ -21,6 +21,7 @@ scripts here when you add them.
 | Script | Role |
 |---|---|
 | `check_release_gate.py` | Gate TOML vs claimed version (`0.10.1`, `0.11.0`, …) |
+| `check_human_at_packet.py` | Phase **0.21** human AT protocol/schema/ledger packet (D-052); `--require-sessions` at Verified cut |
 | `rehearse_release.py` | Clean install rehearsal before tagging |
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
 | `verify_pkg_20.py` / `verify_pkg_19.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (current: **`verify_pkg_20.py`**) |

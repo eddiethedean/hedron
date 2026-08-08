@@ -9,6 +9,7 @@ import pytest
 from hedron_core.a11y import (
     AccessibilityStatement,
     EvidenceInventory,
+    HumanAtRecord,
     Waiver,
     refuse_auto_conformance_claim,
 )
@@ -47,6 +48,7 @@ def test_refuse_auto_claims_and_statement_export() -> None:
     inv.contracts.append("Button")
     inv.known_limitations.append("Human AT deferred to 0.21")
     assert inv.as_dict()["feedback_route"] == "a11y@example.test"
+    assert inv.as_dict()["human_at_results"] == []
     stmt = AccessibilityStatement(
         scope="reference-app",
         contact="a11y@example.test",
@@ -59,3 +61,25 @@ def test_refuse_auto_claims_and_statement_export() -> None:
     assert exported["vpat_acr"] is None
     with pytest.raises(HedronError):
         AccessibilityStatement(scope="x").export()
+
+
+def test_human_at_record_round_trip_and_rejects_pii_flag() -> None:
+    payload = {
+        "record_id": "hat-test-0001",
+        "gate_ids": ["SR-021", "ARTIFACT-021"],
+        "combo_id": "vo-safari-macos",
+        "os": {"name": "macOS", "version": "15.0"},
+        "browser": {"name": "Safari", "version": "18.0"},
+        "at": {"name": "VoiceOver", "version": "bundled"},
+        "task_id": "login",
+        "result": "placeholder",
+        "owner": "hedron-maintainers",
+        "retest_date": "2099-01-01",
+        "redacted": True,
+    }
+    record = HumanAtRecord.from_dict(payload)
+    inv = EvidenceInventory()
+    inv.add_human_at(record)
+    assert inv.as_dict()["human_at_results"][0]["record_id"] == "hat-test-0001"
+    with pytest.raises(ValueError, match="redacted"):
+        HumanAtRecord.from_dict({**payload, "redacted": False})

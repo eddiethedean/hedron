@@ -1,0 +1,55 @@
+# Phase 0.21 human assistive-technology evidence index.
+# Consumed by scripts/check_release_gate.py 0.21.0 (--allow-planned until cut).
+# Zero Deferred policy for 0.21-owned rows: every row must be Verified at cut.
+# Owning decision: D-052. RFC baseline: RFC-0055 (amended).
+# Protocol packet: docs/acceptance/human-at/
+# Automated AT-019 remains on 0.19; human AT complements it.
+
+[[evidence]]
+id = "PROTOCOL-021"
+state = "Planned"
+command = "python scripts/check_human_at_packet.py --gate PROTOCOL-021"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "SR-021"
+state = "Planned"
+command = "python scripts/check_human_at_packet.py --gate SR-021"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PARTICIPANT-021"
+state = "Planned"
+command = "python scripts/check_human_at_packet.py --gate PARTICIPANT-021"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "ARTIFACT-021"
+state = "Planned"
+command = "python scripts/check_human_at_packet.py --gate ARTIFACT-021"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REMEDIATE-021"
+state = "Planned"
+command = "python scripts/check_human_at_packet.py --gate REMEDIATE-021"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-021"
+state = "Planned"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-021"
+state = "Planned"
+command = "python scripts/check_human_at_packet.py --gate PKG-021"
+ci_job = "release"
+owner = "hedron"

@@ -15,7 +15,12 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 **Prior published:** `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
 
 **Current train:** `0.20.x` — **Published** as `v0.20.0`. Next capability phase: **0.21**
-(human AT / D-050). Patch cuts use the template below (`v0.20.1`, …). Phase 0.20 evidence:
+(human AT / D-052 — **Refined / Planned**;
+[release-gate-0.21.toml](acceptance/release-gate-0.21.toml) /
+[RELEASE_0_21.md](acceptance/RELEASE_0_21.md) /
+[human-at protocol](acceptance/human-at/);
+`python scripts/check_release_gate.py 0.21.0 --allow-planned`). Patch cuts use the template
+below (`v0.20.1`, …). Phase 0.20 evidence:
 [release-gate-0.20.toml](acceptance/release-gate-0.20.toml) /
 [RELEASE_0_20.md](acceptance/RELEASE_0_20.md)
 (`python scripts/check_release_gate.py 0.20.0`).

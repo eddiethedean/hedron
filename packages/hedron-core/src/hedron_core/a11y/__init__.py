@@ -14,6 +14,7 @@ from hedron_core.a11y.contract import (
 from hedron_core.a11y.governance import (
     AccessibilityStatement,
     EvidenceInventory,
+    HumanAtRecord,
     Waiver,
     refuse_auto_conformance_claim,
 )
@@ -50,6 +51,7 @@ __all__ = [
     "ClaimBoundary",
     "CognitivePreferences",
     "EvidenceInventory",
+    "HumanAtRecord",
     "MediaTrackContract",
     "StructureReport",
     "TargetSpacingPolicy",

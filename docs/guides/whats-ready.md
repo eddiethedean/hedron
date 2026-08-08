@@ -155,7 +155,8 @@ guaranteed multi-worker live-transport proof.
 - Full multi-engine live browser matrix for FastAPI and adapters
 - Load/proxy backpressure evidence for live transports
 - Some Explorer live traces
-- Human screen-reader / compensated AT evaluation (**→ 0.21**; `AT-019` on 0.19 is automated Playwright/axe only)
+- Human screen-reader / compensated AT evaluation (**→ 0.21** D-052 **Refined / Planned**;
+  not Supported until Verified; `AT-019` on 0.19 is automated Playwright/axe only)
 
 Maintainer gate IDs and RFC evidence:
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).

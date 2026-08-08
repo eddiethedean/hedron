@@ -16,7 +16,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.18** | Model demos and inference workflows | **Published** (`v0.18.0`) |
 | **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | **Published** (`v0.19.0`; D-050) |
 | **0.20** | Production security floor and adapter parity (HTMX/eval, mount/prod gates, Flask/Django regions/CSP/scaffolds) | **Published** (`0.20.0`; last published PyPI/git = `v0.20.0`; D-051) |
-| **0.21** | Human assistive-technology / compensated evaluation (from D-050) | Planned |
+| **0.21** | Human assistive-technology / compensated evaluation (D-052) | **Refined / Planned** (packet ready; sessions outstanding) |
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | Planned (D-051 split) |
 
 ## What this means for you
@@ -34,13 +34,14 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)
 - Identity helpers are **opt-in wiring** (not a managed IdP) — [Authentication](authentication.md)
-- Human screen-reader / compensated AT evaluation → owned **0.21** (D-050); `AT-019` is automated
+- Human screen-reader / compensated AT evaluation → owned **0.21** (D-052; **Refined /
+  Planned** packet — not Supported until Verified / `v0.21.0`); `AT-019` is automated
 - Full multi-engine adapter live browser matrix → owned `0.11.x` Deferred (`LIVE-011-BROWSER`)
 - Full multi-engine FastAPI live browser matrix / some Explorer live traces → owned `0.10.x` Deferred
 - Live transports remain **experimental**; polling is Supported — [What’s ready](whats-ready.md)
 
-CSRF / SecurityPolicy composition (#36–#38) is **0.22**. Human AT evaluation remains **0.21**
-(D-050). Earlier ops honesty items remain under phases **0.13+** as listed in the ownership table.
+CSRF / SecurityPolicy composition (#36–#38) is **0.22**. Human AT evaluation is **0.21**
+(D-052). Earlier ops honesty items remain under phases **0.13+** as listed in the ownership table.
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))

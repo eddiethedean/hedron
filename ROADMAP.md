@@ -1385,12 +1385,79 @@ settlement. Gate IDs:
 - Cross-links from Security, Deployment, Authentication, and getting-started guides stay truthful.
 - Every 0.20-owned release-gate row is `Verified` (`REGRESS-020`, `PKG-020`).
 
-## 0.21 — Human assistive-technology evaluation (Deferred from 0.19)
+## 0.21 — Human assistive-technology evaluation (`v0.21.0`)
 
-**Status:** Planned (owned destination for D-050). Compensated disabled-participant and
-VoiceOver/NVDA/TalkBack manual evaluation deferred from `AT-019` / `v0.19.0`. Does not block the
-0.19 or 0.20 zero-Deferred cuts. Gate detail is owned when the packet is refined; this section
-reserves the phase number so host-security work does not renumber human AT.
+**Status:** Refined / Planned (owned destination for D-050; decision **D-052**). Compensated
+disabled-participant and VoiceOver/NVDA/TalkBack manual evaluation deferred from `AT-019` /
+`v0.19.0`. Does not block the 0.19 or 0.20 zero-Deferred cuts. Packet refined: gate IDs,
+protocol, and acceptance artifacts are owned here. Execution sessions and Verified flip remain
+follow-on cut work. Owning RFC baseline: [RFC-0055](docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md)
+(amended). Acceptance checklist: [RELEASE_0_21.md](docs/acceptance/RELEASE_0_21.md). Evidence:
+[release-gate-0.21.toml](docs/acceptance/release-gate-0.21.toml). Protocol:
+[acceptance/human-at/](docs/acceptance/human-at/).
+
+**Outcome:** Hedron publishes scoped human assistive-technology and compensated-participant
+evidence for the reference application’s critical flows, complements automated `AT-019`
+Playwright/axe results, remediates or waives blockers with owners/expiry, and updates the
+reference-app evidence inventory and human-approved accessibility statement — without claiming
+WCAG conformance, legal compliance, certification, or VPAT/ACR, and without treating one
+screen reader as proof for all users.
+
+### Entry gate
+
+- Phases 0.19 and 0.20 are Published (`v0.19.0`, `v0.20.0`); `AT-019` automation remains Verified.
+- D-052 Accepted; RFC-0055 human-AT section amended; protocol packet under
+  `docs/acceptance/human-at/` present.
+- Gate checker recognizes `0.21`
+  (`python scripts/check_release_gate.py 0.21.0 --allow-planned`).
+- Human-AT packet checker passes (`python scripts/check_human_at_packet.py`).
+
+### Scope
+
+Zero Deferred among 0.21-owned gate rows at cut. Gate IDs:
+
+- **`PROTOCOL-021`** — Written evaluation protocol covering recruitment/compensation, consent,
+  accommodations, retention, privacy (git vs private store), severity → waiver/fix path, and
+  retest policy ([PROTOCOL.md](docs/acceptance/human-at/PROTOCOL.md),
+  [PRIVACY.md](docs/acceptance/human-at/PRIVACY.md)).
+- **`SR-021`** — Manual screen-reader matrix on the Verified minimum combos: VoiceOver + Safari
+  (macOS); NVDA + Firefox (Windows); TalkBack + Chromium (Android). Each redacted ledger row
+  records OS/browser/AT versions, settings, task, result, known issue, owner, and retest date.
+- **`PARTICIPANT-021`** — ≥2 compensated disabled-participant sessions with ≥1 screen-reader
+  user and ≥1 other disability category (motor, low-vision, or cognitive), against the
+  reference-app task corpus
+  ([task-scripts.md](docs/acceptance/human-at/task-scripts.md)).
+- **`ARTIFACT-021`** — Redacted public evidence ledger validating against
+  `ledger.schema.json`; reference-app `EvidenceInventory` / `AccessibilityStatement` updated
+  after sessions; raw PII never committed.
+- **`REMEDIATE-021`** — Blocker findings fixed or owned `Waiver` with expiry/remediation; empty
+  or missing human AT never summarizes as "accessible."
+- **`REGRESS-021`** — Full regression suite at cut.
+- **`PKG-021`** — Coordinated package/docs verify (`scripts/verify_pkg_21.py` when implemented;
+  packet checker + changelog/version gates at cut).
+
+**Verified AT minimum (in scope).** Optional stretch (not gate rows): JAWS, iOS VoiceOver,
+NVDA+Chromium second pass, voice/switch lab — may appear as known limitations only.
+
+**Task corpus:** `examples/reference-app` — login, CRUD form (progressive-enhancement POST and
+HTMX fragment path), fragment status/refresh, DataEditor smoke.
+
+### Non-goals
+
+- Substituting human AT for `AT-019` automation, or marketing Playwright/axe as human AT sign-off.
+- Automatic WCAG / legal / certification / VPAT / ACR claims.
+- Expanding Verified matrix to JAWS / iOS VoiceOver / voice-switch as cut blockers.
+- CSRF / SecurityPolicy composition (owned by **0.22** / D-051).
+- Requiring participant scheduling or hardware procurement to mark the packet Refined / Planned.
+
+### Exit gate
+
+- Protocol packet complete and privacy rules followed (`PROTOCOL-021`).
+- Redacted ledger covers Verified SR combos and participant floor for the task corpus
+  (`SR-021`, `PARTICIPANT-021`, `ARTIFACT-021`).
+- Blockers remediated or waived with owners/expiry; statement and inventory make no broader
+  claim than scoped evidence (`REMEDIATE-021`, `GOVERN-019` reuse).
+- Every 0.21-owned release-gate row is `Verified` (`REGRESS-021`, `PKG-021`).
 
 ## 0.22 — CSRF and SecurityPolicy composition (`v0.22.0`)
 
@@ -1496,7 +1563,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Dash migration inventory, notebook preview helper, and dashboard graph diagnostics | 0.17 | Migration is reviewable guidance, notebook previews are development-only, and Explorer shows graph timing/payload/failures. |
 | Gradio interoperability, migration inventory, interaction recorder, and inference/workflow diagnostics | 0.18 | Optional protocol adapter and reviewable guidance; credentials and sensitive values are never recorded. |
 | ATAG-oriented authoring assistance and Explorer accessibility review workspace | 0.19 | Source-mapped checking/repair guidance, accessibility tree, focus/live-region traces, visual modes, and manual status. |
-| Accessibility scenarios, semantic-tree snapshots, ACT/axe provenance, and browser/AT evidence | 0.19 | Automation, expert/manual evaluation, and disabled-user testing are complementary scoped evidence. |
+| Accessibility scenarios, semantic-tree snapshots, ACT/axe provenance, and browser AT automation | 0.19 | `AT-019` Playwright/axe matrix; human SR / compensated evaluation owned by 0.21 (D-052). |
+| Human screen-reader matrix and compensated disabled-participant evaluation | 0.21 | VoiceOver/Safari, NVDA/Firefox, TalkBack; ≥2 compensated sessions; redacted ledger + remediations (D-052). |
 | Progressive-enhancement form/mutation contract (no-JS + HTMX) | 0.19 | Guide, recipe, and automated non-`HX-Request` success path ([#8](https://github.com/eddiethedean/hedron/issues/8)). |
 | `hedron new --flask` / `--django` and adapter clean-wheel CI smoke | 0.20 | Scaffold parity with FastAPI; import-smoke flask/django wheels (`SCAFFOLD-020` / `WHEEL-020`; [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19)). |
 | Project scaffolding, author docs, package conventions | 0.4 | Supports third-party component packages. |
@@ -1728,5 +1796,5 @@ Scope may move between future `0.x` phases through an accepted roadmap revision,
 must always retain an owner, rationale, destination, and public stability impact. Phase **0.20**
 owns the post-0.11 host-security and adapter-parity packet (D-051). Phase **0.22** owns the CSRF /
 SecurityPolicy composition split (#36–#38) so 0.20 stays cuttable without a new CSRF protocol.
-Phase **0.21** remains the human AT destination from D-050. These additions do not renumber
-earlier phases.
+Phase **0.21** owns the human AT packet from D-050 / D-052 (Refined / Planned). These additions
+do not renumber earlier phases.

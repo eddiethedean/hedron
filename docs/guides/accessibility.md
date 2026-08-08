@@ -164,8 +164,11 @@ Details: [Forms and actions](forms-and-actions.md) · [Page](../components/page.
 covering keyboard, zoom/reflow, reduced motion, forced colors, plus pinned axe/ACT
 provenance after representative dynamic states (`hedron[browser]`).
 
-**Deferred → 0.21:** compensated human screen-reader / disabled-participant evaluation.
-Do not market automated evidence as human AT sign-off.
+**0.21 Refined / Planned (D-052):** compensated human screen-reader / disabled-participant
+evaluation. Protocol, gate IDs, and redacted ledger schema live under
+[human-at acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/human-at/).
+Do not market automated evidence as human AT sign-off, and do not market human AT as Supported
+until `release-gate-0.21.toml` rows are Verified and `v0.21.0` is Published.
 
 ## Author checklist
 
@@ -176,7 +179,7 @@ Do not market automated evidence as human AT sign-off.
 5. Do not rely on color alone for state; pair with text or icons that have names.
 6. Prefer no-JS POST success for critical mutations; enhance with HTMX where useful.
 7. Test critical flows with keyboard-only navigation; plan a screen-reader pass (0.21 owns
-   compensated AT evidence).
+   compensated AT evidence — packet Refined / Planned under D-052).
 
 ## What Hedron does not claim
 

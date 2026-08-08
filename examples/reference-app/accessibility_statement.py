@@ -18,7 +18,8 @@ def build_evidence_inventory() -> EvidenceInventory:
         contracts=["Page", "Main", "Form", "DataTable", "DataEditor"],
         known_limitations=[
             "Charts and third-party embeds may require author-supplied text alternatives.",
-            "Human screen-reader evaluation is owned by Hedron 0.21 (D-050), not this dry-run.",
+            "Human screen-reader evaluation is owned by Hedron 0.21 (D-052); "
+            "protocol under docs/acceptance/human-at/ — sessions not yet Verified.",
         ],
         third_party_boundaries=["Plotly/Altair runtimes when hedron[charts] is installed"],
         feedback_route="mailto:security@example.invalid",
@@ -28,6 +29,7 @@ def build_evidence_inventory() -> EvidenceInventory:
                 "note": "Playwright/axe matrix in Hedron CI; empty scan is never 'accessible'",
             }
         ],
+        # human_at_results stays empty until SR-021 / PARTICIPANT-021 execute.
     )
     return inventory
 
@@ -40,14 +42,16 @@ def build_statement() -> AccessibilityStatement:
         feedback_route="https://github.com/eddiethedean/hedron/issues",
         known_limitations=[
             "Demo credentials and in-memory backends are not production-ready.",
-            "Automated axe scans are incomplete without human AT review (0.21).",
+            "Automated axe scans are incomplete without human AT review "
+            "(0.21 D-052 packet Refined / Planned; see docs/acceptance/human-at/).",
         ],
         alternatives=["Full-page no-JS form POST paths where forms are demonstrated"],
         tested_environments=[
             "Chromium / Firefox / WebKit via Hedron browser CI when HEDRON_BROWSER=1",
         ],
         assessment_approach=(
-            "Hedron AccessibilityContract + AT-019 automation; human SR deferred to 0.21"
+            "Hedron AccessibilityContract + AT-019 automation; human SR owned by 0.21 "
+            "(D-052) — not yet Verified"
         ),
     )
 

@@ -1,0 +1,29 @@
+{
+  "record_id": "hat-example-0001",
+  "gate_ids": ["PROTOCOL-021", "SR-021", "ARTIFACT-021"],
+  "combo_id": "vo-safari-macos",
+  "stretch": false,
+  "session_id": "sess-placeholder",
+  "participant_category": "maintainer_sr",
+  "os": {
+    "name": "macOS",
+    "version": "placeholder"
+  },
+  "browser": {
+    "name": "Safari",
+    "version": "placeholder"
+  },
+  "at": {
+    "name": "VoiceOver",
+    "version": "placeholder",
+    "settings": "Default verbosity; placeholder row only"
+  },
+  "task_id": "login",
+  "result": "placeholder",
+  "severity": "none",
+  "known_issue": "Example row for packet refine; not session evidence.",
+  "owner": "hedron-maintainers",
+  "retest_date": "2099-01-01",
+  "notes": "Replace with redacted real rows when SR-021 / PARTICIPANT-021 execute.",
+  "redacted": true
+}

@@ -1,11 +1,13 @@
 # RFC-0055: Accessibility evidence governance and AT matrix
 
 **Status:** Accepted
-**Phase:** 0.19 (`v0.19.0`)
+**Phase:** 0.19 (`v0.19.0`); human AT owned by 0.21 (`v0.21.0`, D-052)
 **Stability:** `beta` (process/artifacts); statement content is human-approved
-**Evidence:** `AT-019`, `GOVERN-019`, `PROFILE-019`
-**Related:** RFC-0023, RFC-0051, RFC-0052; D-050;
+**Evidence:** `AT-019`, `GOVERN-019`, `PROFILE-019`; human AT gates `PROTOCOL-021` /
+`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`
+**Related:** RFC-0023, RFC-0051, RFC-0052; D-050, D-052;
 [ACCESSIBILITY_FEATURE_RESEARCH.md](../ACCESSIBILITY_FEATURE_RESEARCH.md);
+[human-at protocol](../acceptance/human-at/PROTOCOL.md);
 [WCAG-EM](https://www.w3.org/WAI/test-evaluate/conformance/wcag-em/)
 
 ## Summary
@@ -13,7 +15,8 @@
 Define automated browser accessibility evidence (`AT-019`), evidence inventory,
 accessibility-statement template, and waiver governance so releases can publish honest, scoped
 claims without automatic WCAG/legal/certification/VPAT output. Human screen-reader and compensated
-disabled-participant evaluation is Deferred to 0.21 (D-050).
+disabled-participant evaluation is owned by phase **0.21** (D-052), complementing rather than
+replacing `AT-019`.
 
 ## Motivation and background
 
@@ -44,11 +47,36 @@ Normative for Verified cut (D-050):
 Each record includes versions, settings, representative task, result, known issue, owner, and
 retest date. Empty or missing axe installs never summarize as "accessible."
 
-### Deferred human AT (→ 0.21)
+### Human AT (→ 0.21 / D-052)
 
-VoiceOver/Safari, NVDA, TalkBack, voice/switch lab sessions, and compensated disabled-participant
-evaluation remain in scope for a later owned packet. They complement rather than substitute for
-WCAG-oriented automation and do not block `AT-019` Verified for `v0.19.0`.
+VoiceOver/Safari, NVDA, TalkBack, and compensated disabled-participant evaluation are owned by
+phase **0.21**. They complement rather than substitute for WCAG-oriented automation and do not
+block `AT-019` Verified for `v0.19.0`.
+
+**Verified AT minimum** (`SR-021`):
+
+- VoiceOver + Safari on macOS;
+- NVDA + Firefox on Windows;
+- TalkBack + Chromium on Android.
+
+JAWS, iOS VoiceOver, NVDA+Chromium second pass, and voice/switch lab sessions are optional stretch
+evidence (not Verified gate rows). Passing one screen reader is not generalized to all users.
+
+**Participant floor** (`PARTICIPANT-021`): ≥2 compensated sessions with ≥1 screen-reader user and
+≥1 other disability category (motor, low-vision, or cognitive). Task corpus:
+`examples/reference-app` critical flows (see
+[task-scripts.md](../acceptance/human-at/task-scripts.md)).
+
+**Artifacts** (`PROTOCOL-021`, `ARTIFACT-021`, `REMEDIATE-021`):
+
+- Written protocol under [`docs/acceptance/human-at/`](../acceptance/human-at/)
+  (`PROTOCOL.md`, `PRIVACY.md`, ledger schema, redacted example row).
+- Redacted public ledger rows may enter git; raw consent notes and participant identifiers never
+  do (private store outside the repository).
+- Blocker findings remediate or receive an owned `Waiver` with expiry; empty or missing human AT
+  never summarizes as "accessible."
+- Reference-app `EvidenceInventory` / human-approved `AccessibilityStatement` update after
+  sessions; no CLI-required statement path beyond existing Python export.
 
 ### Governance outputs (`GOVERN-019`)
 
@@ -67,44 +95,57 @@ no broader claim than scoped evidence supports.
 
 Release policy defines blocker severity, affected-user impact, regression policy, waiver
 authority and expiry, remediation ownership, and a public/security-sensitive reporting path.
+Human AT severity → waiver/fix path is documented in
+[PROTOCOL.md](../acceptance/human-at/PROTOCOL.md).
 
 ## Alternatives considered
 
 1. **Require compensated user testing for `v0.19.0`.** Rejected for this cut (D-050 automation
-   proxy); retained as Deferred → 0.21.
+   proxy); retained as owned destination → 0.21 (D-052).
 2. **Auto-generate VPAT/ACR from contracts.** Rejected — deliberate non-goal.
 3. **Skip AT automation entirely.** Rejected — `AT-019` remains a Verified gate via Playwright/axe.
+4. **Require JAWS / iOS VoiceOver / voice-switch for Verified `v0.21.0`.** Rejected — keeps the
+   cut cuttable; stretch evidence may still be recorded as known limitations.
 
 ## Security implications
 
-Evidence artifacts may contain privacy-sensitive notes when human AT arrives in 0.21; store/redact
-per release policy. Feedback routes must not expose secrets. Waivers are auditable records.
+Evidence artifacts may contain privacy-sensitive notes; store/redact per
+[PRIVACY.md](../acceptance/human-at/PRIVACY.md). Feedback routes must not expose secrets.
+Waivers are auditable records.
 
 ## Accessibility implications
 
 Statement and inventory content must themselves be publishable in an accessible format. Automation
-tasks should exercise real user goals, not only component demos.
+and human AT tasks should exercise real user goals, not only component demos.
 
 ## Performance implications
 
 Automated AT evidence runs under `HEDRON_BROWSER=1` / browser CI job. Inventory generation should
-be reproducible from contracts + retained artifacts.
+be reproducible from contracts + retained artifacts. Human AT sessions are offline evidence and
+do not run in CI.
 
 ## Testing strategy
 
 - Schema validation for matrix rows and waiver records.
 - Gate checker treats missing required AT automation rows / expired waivers as incomplete evidence.
 - Reference-app statement export dry-run in docs/acceptance artifacts.
+- `scripts/check_human_at_packet.py` validates protocol files, ledger schema, and redacted example
+  row for `PROTOCOL-021` / `ARTIFACT-021` while Planned.
 
 ## Compatibility and migration
 
 New acceptance artifacts under `docs/acceptance/` and evidence bundles. No breaking runtime API
-required for governance templates alone.
+required for governance templates alone. Optional typed `HumanAtRecord` helpers may ship on the
+0.21 train without changing claim boundaries.
 
-## Open questions
+## Resolved questions (was Open questions)
 
-- Exact storage location for 0.21 compensated-participant protocols and PII minimization.
-- Whether statement template ships as a CLI export, docs page, or both.
+- **Storage / PII:** Protocol and redacted ledger templates live under
+  `docs/acceptance/human-at/`. Raw session notes, consent forms, and participant identifiers stay
+  in a private store outside git (see [PRIVACY.md](../acceptance/human-at/PRIVACY.md)).
+- **Statement export:** Continues as human-approved `AccessibilityStatement.export()` (reference
+  app dry-run and docs). No separate CLI export is required for Verified 0.21; docs may embed
+  published statement fields after approval.
 
 ## Acceptance criteria
 
@@ -112,4 +153,4 @@ required for governance templates alone.
   (`AT-019`).
 - Evidence inventory + human-approved statement template with feedback route (`GOVERN-019`).
 - Profile pins and claim boundaries enforced (`PROFILE-019`); no auto WCAG/legal/VPAT emission.
-- Human AT Deferred destination documented (0.21).
+- Human AT owned by 0.21 with D-052 gate IDs, protocol packet, and zero-Deferred cut policy.
