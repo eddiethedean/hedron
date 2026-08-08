@@ -67,7 +67,7 @@ uvicorn app:app --reload
 <details>
 <summary>Package maturity</summary>
 
-Hedron 0.22.0 is published (Beta packages — pin <code>hedron&gt;=0.22.0,&lt;0.22</code>).
+Hedron 0.22.0 is published (Beta packages — pin <code>hedron&gt;=0.22.0,&lt;0.23</code>).
 Most APIs are compatibility level <code>beta</code>; see
 <a href="https://hedron.readthedocs.io/en/latest/guides/whats-ready/">What’s ready</a>
 for Supported vs Experimental. If <code>hedron</code> is not on your PATH, use
@@ -105,7 +105,7 @@ After you have Hello + Refresh working: prefer Streamlit for notebook-style reru
 or raw FastAPI+HTMX if you do not want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.21/) ·
+[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.22/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).

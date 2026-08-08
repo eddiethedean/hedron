@@ -4,7 +4,11 @@
 
 ### Added
 
-- Phase 0.22 CSRF / SecurityPolicy composition (`CSRF-022`, `HEADERS-022`, `FORM-022`).
+- FastAPI CSRF helpers dispatch through `SecurityPolicy.resolve_csrf_strategy()`.
+- Re-exports: `CsrfStrategy`, `DoubleSubmitCookieCsrf`, `SessionTokenCsrf`,
+  `SecurityHeadersPolicy`, `CsrfField`, `Hx`, `LoginCsrfField`, `unsign_login_csrf`.
+- RenderContext seeds CSRF tokens for bare `CsrfField()` on PAGE/FRAGMENT renders.
+- `hedron new` scaffolds pin `>=0.22.0,<0.23`.
 
 ## [0.21.0] — 2026-08-08
 

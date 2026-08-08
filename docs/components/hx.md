@@ -1,17 +1,17 @@
 ---
-title: Form
-description: Compose a native GET or POST form with validated action URLs and optional HTMX attributes.
+title: Hx
+description: First-class HTMX attribute bundle for Form (validated selectors and swap).
 ---
 
-# `Form`
+# `Hx`
 
-Compose a native GET or POST form with validated action URLs and optional HTMX attributes.
+First-class HTMX attribute bundle for Form (validated selectors and swap).
 
 | | |
 |---|---|
-| Import | `from hedron import Form` |
+| Import | `from hedron import Hx` |
 | Distribution | `hedron` |
-| Backend activity | On submit |
+| Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
 ## Live demo
@@ -126,37 +126,35 @@ Compose a native GET or POST form with validated action URLs and optional HTMX a
 ## Basic use
 
 ```python
-from hedron import Form, FormField, Hx, SubmitButton, TextInput
+from hedron import Form, Hx
 
-component = Form(FormField(name='email', label='Email', control=TextInput('email', type='email')), SubmitButton('Subscribe'), action='/subscribe', hx=Hx(target='#main'))
+component = Form(..., hx=Hx(target='#region', swap='outerHTML', indicator='#busy'))
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
 
 ## How it works
 
-Form is progressively enhanced: ordinary browser submission remains the baseline, while `hx-post`, targets, swaps, sync, and indicators can be added for fragment updates.
+Prefer `hx=Hx(...)` over raw `hx-*` kwargs so unsafe selectors cannot slip through.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
 ## Constructor and parameters
 
 ```python
-Form(*nodes, children=None, action=None, method='post', hx=None, **native_or_hx_attrs)
+Hx(*, target=None, swap='outerHTML', select=None, indicator=None, ...)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `nodes` | `NodeLike` | Positional labels, fields, errors, and controls. |
-| `children` | `NodeLike | sequence | None` | Keyword child list; combines with positional nodes. |
-| `action` | `SafeUrl | str | None` | Validated form endpoint. |
-| `method` | `'get' | 'post'` | Native submission method. |
-| `hx` | `Hx | None` | Validated first-class HTMX options (FORM-022). |
-| `**attrs` | `Any` | Validated native or HTMX form attributes. |
+| `target` | `str | None` | hx-target selector (must pass safe_css_selector). |
+| `swap` | `str` | hx-swap value (must pass safe_hx_swap). |
+| `select` | `str | None` | hx-select selector. |
+| `indicator` | `str | None` | hx-indicator selector. |
 
 ## Composition and backend behavior
 
-Keep `Form` at the smallest semantic boundary. Fragment routes should return only
+Keep `Hx` at the smallest semantic boundary. Fragment routes should return only
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
@@ -164,7 +162,7 @@ Mutating flows must use POST, validate CSRF, authorize on the server, re-validat
 
 ## Accessibility
 
-Every control needs a label, errors must be associated with controls, and successful submission should produce a perceivable status.
+Selector validation is the security boundary; do not bypass with stringly kwargs.
 
 ## Security
 
@@ -173,7 +171,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Server-side validation and CSRF checks remain mandatory even when the browser reports validity.
+- Raw kwargs that survive after Hx merge are still validated.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

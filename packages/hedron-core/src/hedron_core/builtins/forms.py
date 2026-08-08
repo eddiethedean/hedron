@@ -68,6 +68,22 @@ class Hx:
         return attrs
 
 
+_HX_SELECTOR_ATTRS = frozenset(
+    {"hx-target", "hx-select", "hx-select-oob", "hx-indicator", "hx-disabled-elt"}
+)
+
+
+def _validate_hx_attr_map(attrs: dict[str, HtmlAttrValue]) -> None:
+    """Reject unsafe HTMX selector/swap attrs whether they came from Hx or kwargs."""
+    for key, value in attrs.items():
+        if key in _HX_SELECTOR_ATTRS and isinstance(value, str) and value:
+            label = key.removeprefix("hx-")
+            if not safe_css_selector(value):
+                raise ValueError(f"Unsafe HTMX {label} selector: {value!r}")
+        if key == "hx-swap" and isinstance(value, str) and value and not safe_hx_swap(value):
+            raise ValueError(f"Unsafe HTMX swap value: {value!r}")
+
+
 class FormProps(Props):
     action: SafeUrl | None = None
     method: Literal["get", "post"] = "post"
@@ -95,7 +111,9 @@ class Form(Component[FormProps]):
         # Extra kwargs are native/HTMX attributes forwarded to the form element.
         extras = {k: v for k, v in kwargs.items() if k not in FormProps.model_fields}
         if hx is not None:
-            extras = {**hx.as_html_attrs(), **extras}
+            # Validated Hx attrs win over raw kwargs (cannot override with unsafe strings).
+            extras = {**extras, **hx.as_html_attrs()}
+        _validate_hx_attr_map(extras)
         props_kwargs = {k: v for k, v in kwargs.items() if k in FormProps.model_fields}
         super().__init__(FormProps(action=url, method=method, **props_kwargs))
         self._children = collect_children(*nodes, children=children)

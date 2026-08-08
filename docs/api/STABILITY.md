@@ -8,11 +8,11 @@ the compatibility promise; everything else is `beta` / `experimental` and may ch
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Phase 0.21 human AT engineering (**Published**
+**Status:** Phase 0.22 CSRF / SecurityPolicy composition (**Published**
 as `0.22.0`; last published PyPI/git = `v0.22.0`).
 A **minimal `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled).
 **Version:** `0.22.0` / catalog baseline
-`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`
+`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
 `0.22.0` train on `main`. Levels apply to documented contracts; symbols not listed here are

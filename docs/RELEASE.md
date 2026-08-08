@@ -12,7 +12,7 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 **Last published train:** `v0.22.0` (packages `0.22.0` including first-party
 `hedron-extras`; Alpha charts/sample-kit/native/notebook/mcp/gradio `0.1.x`).
 
-**Prior published:** `v0.21.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
+**Prior published:** `v0.22.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
 
 **Current train:** `0.22.x` — **Published** as `v0.22.0` (CSRF composition / D-051).
 Gate index:
@@ -35,11 +35,11 @@ Do not re-run tag steps for a published version.
 ## Template: `v0.22.0` first cut
 
 Use these commands for the initial `0.22.0` publish. For later patches, replace with
-`0.22.1` / `v0.21.1` (see patch template below). ### Preconditions
+`0.22.1` / `v0.22.1` (see patch template below). ### Preconditions
 
 1. `main` is green on CI for Python 3.11–3.14 (including MkDocs `--strict`).
 2. Package version, `__version__`, inter-package pins, and changelog entries agree:
-   `uv run python scripts/check_release_gate.py 0.21.0 `
+   `uv run python scripts/check_release_gate.py 0.22.0 `
 3. Phase 0.22 gate file: `docs/acceptance/release-gate-0.22.toml`
    (all Verified).
 4. **License (D-033):** root `LICENSE` and every publishable package declare license
@@ -62,7 +62,7 @@ Use these commands for the initial `0.22.0` publish. For later patches, replace 
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.21.0
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.22.0
 # optional: bash scripts/ci_checks.sh browser --python 3.12
 ```
 
@@ -78,7 +78,7 @@ uv run python scripts/rehearse_release.py
 4. Tag and push (trusted workflow publishes when configured):
 
 ```bash
-git tag -a v0.21.0 -m "Hedron 0.21.0"
+git tag -a v0.22.0 -m "Hedron 0.21.0"
 git push origin v0.21.0
 ```
 
@@ -99,7 +99,7 @@ Replace `0.22.1` with the next patch.
 
 1. `main` is green on CI for Python 3.11–3.14 (including MkDocs `--strict`).
 2. Package version, `__version__`, inter-package pins, and changelog entries agree:
-   `uv run python scripts/check_release_gate.py 0.21.1 --allow-planned` while session gates
+   `uv run python scripts/check_release_gate.py 0.22.1 --allow-planned` while session gates
    remain Planned.
 3. Phase 0.22 gate file: `docs/acceptance/release-gate-0.22.toml`.
 4. **License (D-033):** root `LICENSE` and every publishable package declare license
@@ -120,7 +120,7 @@ Replace `0.22.1` with the next patch.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.21.1
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.22.1
 # optional: bash scripts/ci_checks.sh browser --python 3.12
 ```
 
@@ -136,6 +136,6 @@ uv run python scripts/rehearse_release.py
 4. Tag and push (trusted workflow publishes when configured):
 
 ```bash
-git tag -a v0.21.1 -m "Hedron 0.21.1"
-git push origin v0.21.1
+git tag -a v0.22.1 -m "Hedron 0.22.1"
+git push origin v0.22.1
 ```

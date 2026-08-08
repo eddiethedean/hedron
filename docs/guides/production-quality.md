@@ -20,7 +20,7 @@ checklist in [Production readiness](production-readiness.md).
 Raise production-level quality as **trust in the Supported surface**:
 
 - Expand the compatibility-protected (`stable`) API tier for Supported CRUD/HTMX/jobs
-- Finish human AT (0.21) and CSRF composition (0.22)
+- Finish human AT sessions (0.21 remaining P0) — CSRF composition (0.22) is **Published**
 - Resolve live SSE/WebSocket: prove ops evidence **or** keep polling as the only production story
 - Harden a reference production archetype and quarantine Alpha/landmine extras
 

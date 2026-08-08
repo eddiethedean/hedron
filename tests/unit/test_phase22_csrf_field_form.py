@@ -52,6 +52,25 @@ def test_form_hx_rejects_unsafe_selector() -> None:
         assert "Unsafe HTMX" in str(exc)
 
 
+def test_form_kwargs_cannot_bypass_hx_validation() -> None:
+    try:
+        Form(Text("x"), **{"hx-target": "javascript:alert(1)"})
+        raise AssertionError("expected ValueError")
+    except ValueError as exc:
+        assert "Unsafe HTMX" in str(exc)
+
+
+def test_form_hx_wins_over_unsafe_kwargs() -> None:
+    node = Form(
+        Text("x"),
+        hx=Hx(target="#ok"),
+        **{"hx-target": "javascript:alert(1)"},
+    )
+    html = render(node, mode=RenderMode.FRAGMENT).html
+    assert 'hx-target="#ok"' in html
+    assert "javascript:" not in html
+
+
 def test_fastapi_form_csrf_field_roundtrip() -> None:
     app = Hedron(title="form-022", security="standard", explorer="off", session_secret="test")
 
@@ -85,3 +104,25 @@ def test_fastapi_form_csrf_field_roundtrip() -> None:
     ok = client.post("/save", headers={"X-CSRF-Token": cookie})
     assert ok.status_code == 200
     assert "saved" in ok.text
+
+
+def test_standard_csrf_secure_with_forwarded_proto() -> None:
+    from starlette.responses import Response
+
+    from hedron.security.csrf import ensure_csrf_cookie
+    from hedron.security.policy import SecurityPolicy
+
+    policy = SecurityPolicy.from_name("standard")
+    scope = {
+        "type": "http",
+        "method": "GET",
+        "path": "/",
+        "headers": [(b"x-forwarded-proto", b"https")],
+        "scheme": "http",
+        "server": ("testserver", 80),
+        "client": ("127.0.0.1", 123),
+    }
+    request = Request(scope)
+    response = Response("ok")
+    ensure_csrf_cookie(response, policy, token="abc", request=request)
+    assert "Secure" in (response.headers.get("set-cookie") or "")

@@ -141,9 +141,10 @@ def check_ledger_rows(
             ):
                 # Pass/fail session rows still need a known_issue note or linked issue for
                 # ARTIFACT-021 inventory completeness (even when severity is none).
-                if getattr(row, "severity", "none") != "none" or getattr(
-                    row, "result", ""
-                ) in {"fail", "blocker"}:
+                if getattr(row, "severity", "none") != "none" or getattr(row, "result", "") in {
+                    "fail",
+                    "blocker",
+                }:
                     errors.append(
                         f"ARTIFACT-021 {row.record_id}: fail/blocker rows need "  # type: ignore[attr-defined]
                         "known_issue or issue_url"

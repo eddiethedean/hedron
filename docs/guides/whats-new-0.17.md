@@ -2,7 +2,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.17**. The living published train is **0.21** (`v0.21.0`).
+    This page describes **0.17**. The living published train is **0.22** (`v0.22.0`).
 
 Phase **0.17** adds reactive dashboards and agent interfaces — finite interaction graphs,
 bounded patches, optional notebook preview and deny-by-default MCP — plus HTMX shell authoring

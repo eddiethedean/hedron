@@ -2,7 +2,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.16**. The living published train is **0.21** (`v0.21.0`).
+    This page describes **0.16**. The living published train is **0.22** (`v0.22.0`).
 
 Phase **0.16** adds an optional `hedron-extras` toolkit for specialized data-app interactions and
 analysis workbenches — without expanding the core runtime or adopting Streamlit-style reruns or a

@@ -30,6 +30,26 @@ def resolve_strategy(policy: SecurityPolicy) -> CsrfStrategy | None:
     return policy.resolve_csrf_strategy()
 
 
+def _forwarded_proto_https(request: Request) -> bool:
+    proto = request.headers.get("x-forwarded-proto", "")
+    first = proto.split(",")[0].strip().lower() if proto else ""
+    return first == "https"
+
+
+def _csrf_cookie_should_be_secure(request: Request | None, policy: SecurityPolicy) -> bool:
+    """Resolve Secure flag for CSRF cookies (Flask-parity + proxy awareness).
+
+    STRICT always emits Secure cookies. DEVELOPMENT/STANDARD follow ``is_secure``
+    or ``X-Forwarded-Proto: https`` so TLS-terminating proxies still get Secure
+    without breaking local HTTP TestClient flows.
+    """
+    if policy.profile is SecurityProfile.STRICT:
+        return True
+    if request is None:
+        return False
+    return bool(request.url.is_secure) or _forwarded_proto_https(request)
+
+
 def _strategy_names(strategy: CsrfStrategy) -> tuple[str, str, str | None]:
     form_field = strategy.form_field
     header_name = strategy.header_name
@@ -86,10 +106,7 @@ def ensure_csrf_cookie(
     else:
         value = token or generate_csrf_token()
 
-    secure = bool(request.url.is_secure) if request is not None else False
-    if policy.profile is SecurityProfile.STRICT:
-        # Strict always emits Secure cookies (including over plain HTTP TestClient).
-        secure = True
+    secure = _csrf_cookie_should_be_secure(request, policy)
     cookie_path = "/"
     if request is not None:
         # Prefer scope lookup: Request.app raises KeyError when ASGI scope lacks "app"

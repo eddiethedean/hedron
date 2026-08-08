@@ -2,11 +2,19 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from enum import StrEnum
-from typing import Literal
+from typing import Any, Literal
 
 from hedron_core.csrf_strategy import CsrfStrategy, DoubleSubmitCookieCsrf
+
+
+def _policy_field_values_without_csrf(policy: SecurityPolicy) -> tuple[Any, ...]:
+    """Field values for equality/hash excluding the ``csrf`` strategy object."""
+    return tuple(
+        (f.name, getattr(policy, f.name)) for f in fields(policy) if f.name != "csrf" and f.compare
+    )
+
 
 SecurityProfileName = Literal["development", "standard", "strict"]
 SecurityHeadersMode = bool | Literal["app"]
@@ -23,7 +31,7 @@ class SecurityHeadersPolicy:
     """Per-header overrides merged onto profile defaults (HEADERS-022).
 
     ``None`` on a field means unspecified — keep the profile/top-level default.
-    Pass an empty string for ``content_security_policy`` to omit CSP.
+    Pass an empty string to omit that header (including CSP, frame, CTO, referrer).
     """
 
     content_security_policy: str | None = None
@@ -43,7 +51,7 @@ class SecurityPolicy:
     csrf_cookie_name: str = "hedron_csrf"
     csrf_header_name: str = "X-CSRF-Token"
     csrf_form_field: str = "csrf_token"
-    # Strategies may hold callables (unhashable); exclude from policy equality/hash.
+    # Strategies may hold callables; equality uses _csrf_identity() below.
     csrf: CsrfStrategy | None = field(default=None, hash=False, compare=False)
     private_authenticated_cache: bool = True
     security_headers: SecurityHeadersMode | SecurityHeadersPolicy = True
@@ -58,6 +66,33 @@ class SecurityPolicy:
     # EVAL-020 / HDJ htmx.eval: allow js: on hx-vals / hx-headers (default deny).
     allow_htmx_eval: bool = False
     findings: tuple[str, ...] = field(default_factory=tuple)
+
+    @staticmethod
+    def _csrf_identity(strategy: CsrfStrategy | None) -> tuple[object, ...]:
+        """Stable identity so distinct strategies never compare equal."""
+        if strategy is None:
+            return ("none",)
+        form_field = getattr(strategy, "form_field", "")
+        header_name = getattr(strategy, "header_name", "")
+        cookie_name = getattr(strategy, "cookie_name", None)
+        get_expected = getattr(strategy, "get_expected", None)
+        return (
+            type(strategy).__name__,
+            form_field,
+            header_name,
+            cookie_name,
+            id(get_expected) if get_expected is not None else None,
+        )
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, SecurityPolicy):
+            return NotImplemented
+        if _policy_field_values_without_csrf(self) != _policy_field_values_without_csrf(other):
+            return False
+        return self._csrf_identity(self.csrf) == self._csrf_identity(other.csrf)
+
+    def __hash__(self) -> int:
+        return hash((_policy_field_values_without_csrf(self), self._csrf_identity(self.csrf)))
 
     def resolve_csrf_strategy(self) -> CsrfStrategy | None:
         """Return the active CSRF strategy, or None when CSRF is disabled."""
@@ -149,9 +184,10 @@ class SecurityPolicy:
     def response_headers(self, *, authenticated: bool = False) -> dict[str, str]:
         headers: dict[str, str] = {}
         mode = self.security_headers
+        # Host owns all headers — including authenticated cache — when False/"app".
         if mode is False or mode == "app":
-            pass
-        elif isinstance(mode, SecurityHeadersPolicy):
+            return headers
+        if isinstance(mode, SecurityHeadersPolicy):
             cto = (
                 mode.content_type_options
                 if mode.content_type_options is not None
@@ -166,17 +202,23 @@ class SecurityPolicy:
                 if mode.content_security_policy is not None
                 else self.content_security_policy
             )
-            headers["X-Content-Type-Options"] = cto
-            headers["X-Frame-Options"] = frame
-            headers["Referrer-Policy"] = referrer
+            if cto:
+                headers["X-Content-Type-Options"] = cto
+            if frame:
+                headers["X-Frame-Options"] = frame
+            if referrer:
+                headers["Referrer-Policy"] = referrer
             if csp:
                 headers["Content-Security-Policy"] = csp
             if mode.hsts_max_age is not None and mode.hsts_max_age >= 0:
                 headers["Strict-Transport-Security"] = f"max-age={mode.hsts_max_age}"
         else:
-            headers["X-Content-Type-Options"] = self.content_type_options
-            headers["X-Frame-Options"] = self.frame_options
-            headers["Referrer-Policy"] = self.referrer_policy
+            if self.content_type_options:
+                headers["X-Content-Type-Options"] = self.content_type_options
+            if self.frame_options:
+                headers["X-Frame-Options"] = self.frame_options
+            if self.referrer_policy:
+                headers["Referrer-Policy"] = self.referrer_policy
             if self.content_security_policy:
                 headers["Content-Security-Policy"] = self.content_security_policy
         if authenticated and self.private_authenticated_cache:

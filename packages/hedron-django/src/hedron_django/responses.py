@@ -122,6 +122,25 @@ def _maybe_prepare(value: NodeLike | Component[Any] | RenderResult) -> None:
     run_prepare(lambda: prepare_tree(value))
 
 
+def _default_render_context(request: HttpRequest | None) -> RenderContext:
+    """Populate Django CSRF token under ``csrfmiddlewaretoken`` for ``CsrfField``."""
+    if request is None:
+        return RenderContext.standalone()
+    csrf_token: str | None = None
+    try:
+        from django.middleware.csrf import get_token
+
+        token = get_token(request)
+        if isinstance(token, str) and token:
+            csrf_token = token
+    except Exception:
+        csrf_token = None
+    return RenderContext.standalone(
+        csrf_token=csrf_token,
+        csrf_form_field="csrfmiddlewaretoken",
+    )
+
+
 def _render_body(
     value: NodeLike | Component[Any] | RenderResult,
     *,
@@ -134,7 +153,7 @@ def _render_body(
     _maybe_prepare(value)
     hdrs = _headers_mapping(request)
     selected_mode = render_mode_for_request(hdrs, force=mode)
-    render_context = context or RenderContext.standalone()
+    render_context = context or _default_render_context(request)
     to_render: NodeLike | Component[Any] = value
     if selected_mode is RenderMode.FRAGMENT:
         to_render = _fragment_value(value)

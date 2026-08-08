@@ -258,7 +258,7 @@ nav:
       - Router: api/ROUTER.md
       - Interaction: api/INTERACTION.md
       - Security types: api/SECURITY_TYPES.md
-      - CSRF composition (0.22 Planned): api/CSRF_COMPOSITION.md
+      - CSRF composition (0.22): api/CSRF_COMPOSITION.md
       - Mount / path prefix: api/MOUNT.md
     - Components:
       - Overview: components/index.md
@@ -294,7 +294,7 @@ nav:
         - Field: api/FIELD.md
         - Component: api/COMPONENT.md
         - Security types: api/SECURITY_TYPES.md
-        - CSRF composition (0.22 Planned): api/CSRF_COMPOSITION.md
+        - CSRF composition (0.22): api/CSRF_COMPOSITION.md
       - Rendering and content:
         - Rendering: api/RENDERING.md
         - Auto: api/AUTO.md

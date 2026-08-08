@@ -19,6 +19,7 @@ from hedron.security.login_csrf import (
     LOGIN_CSRF_KEY,
     issue_login_csrf,
     sign_login_csrf,
+    unsign_login_csrf,
     validate_login_csrf,
 )
 from hedron.security.policy import (
@@ -71,6 +72,7 @@ __all__ = [
     "redirect_local",
     "sign_login_csrf",
     "touch_session",
+    "unsign_login_csrf",
     "validate_csrf",
     "validate_login_csrf",
 ]

@@ -135,7 +135,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-Use inside Form for POST/HTMX mutations. Prefer explicit token= in portable/offline renders.
+Use inside Form for POST/HTMX mutations. Prefer explicit token= in portable/offline renders. Not for login CSRF — use LoginCsrfField.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 

@@ -199,8 +199,16 @@ class HedronFlask:
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
     ):
-        if self.csrf_protect and request.method.upper() in _UNSAFE_METHODS:
-            validate_csrf(request, cookie_name=self.csrf_cookie_name)
+        if (
+            self.csrf_protect
+            and self.security_policy.csrf_enabled
+            and request.method.upper() in _UNSAFE_METHODS
+        ):
+            validate_csrf(
+                request,
+                cookie_name=self.csrf_cookie_name,
+                policy=self.security_policy,
+            )
         if isinstance(value, InteractionResult):
             return interaction_response(
                 value,
@@ -252,17 +260,26 @@ class HedronFlask:
         )
 
     def csrf_token(self, request: Request) -> str:
-        return csrf_token_for_request(request, cookie_name=self.csrf_cookie_name)
+        return csrf_token_for_request(
+            request,
+            cookie_name=self.csrf_cookie_name,
+            policy=self.security_policy,
+        )
 
     def attach_csrf_cookie(
         self, response: Response, request: Request, token: str | None = None
     ) -> str:
+        if not self.security_policy.csrf_enabled:
+            return ""
         value = token or self.csrf_token(request)
+        script_root = getattr(request, "script_root", "") or ""
+        cookie_path = script_root if isinstance(script_root, str) and script_root else "/"
         ensure_csrf_cookie(
             response,
             value,
             cookie_name=self.csrf_cookie_name,
             secure=csrf_cookie_should_be_secure(request, force_secure=self.csrf_cookie_secure),
+            path=cookie_path,
         )
         return value
 

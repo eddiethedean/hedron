@@ -110,6 +110,35 @@ def _maybe_prepare(value: NodeLike | Component[Any] | RenderResult) -> None:
     run_prepare(lambda: prepare_tree(value))
 
 
+def _default_render_context() -> RenderContext:
+    """Build RenderContext with CSRF material when a HedronFlask extension is bound."""
+    try:
+        from flask import current_app, has_request_context, request
+    except Exception:
+        return RenderContext.standalone()
+    if not has_request_context():
+        return RenderContext.standalone()
+    extension = current_app.extensions.get("hedron")
+    csrf_token: str | None = None
+    csrf_form_field = "csrf_token"
+    policy = getattr(extension, "security_policy", None) if extension is not None else None
+    from hedron_core.security_policy import SecurityPolicy
+
+    if isinstance(policy, SecurityPolicy) and policy.csrf_enabled:
+        strategy = policy.resolve_csrf_strategy()
+        if strategy is not None:
+            csrf_form_field = strategy.form_field
+            from hedron_flask.csrf import csrf_token_for_request
+
+            cookie_name = getattr(extension, "csrf_cookie_name", "hedron_csrf")
+            csrf_token = csrf_token_for_request(
+                request,
+                cookie_name=str(cookie_name),
+                policy=policy,
+            )
+    return RenderContext.standalone(csrf_token=csrf_token, csrf_form_field=csrf_form_field)
+
+
 def _render_body(
     value: NodeLike | Component[Any] | RenderResult,
     *,
@@ -122,7 +151,7 @@ def _render_body(
     _maybe_prepare(value)
     hdrs = dict(headers) if headers is not None else dict(flask_request.headers)
     selected_mode = render_mode_for_request(hdrs, force=mode)
-    render_context = context or RenderContext.standalone()
+    render_context = context or _default_render_context()
     to_render: NodeLike | Component[Any] = value
     if selected_mode is RenderMode.FRAGMENT:
         to_render = _fragment_value(value)

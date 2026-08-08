@@ -39,7 +39,7 @@ Maturity vocabulary:
 <details markdown>
 <summary>How to read labels on this page</summary>
 
-Hedron **0.21.0** packages are **Beta** maturity (API `beta` unless noted in
+Hedron **0.22.0** packages are **Beta** maturity (API `beta` unless noted in
 [STABILITY.md](../api/STABILITY.md)). Expect occasional breaking changes on
 `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 

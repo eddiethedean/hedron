@@ -12,7 +12,7 @@ from hedron_core.addressable import AddressableDescriptor
 from hedron_core.component import Component
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderResult
-from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, validate_csrf
+from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, assert_flask_csrf_strategy, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
 
 __all__ = ["HedronBlueprint", "convert_view_result", "wrap_hedron_view"]
@@ -83,13 +83,18 @@ def _authenticated() -> bool:
     return False
 
 
-def _csrf_settings() -> tuple[bool, str]:
+def _csrf_settings() -> tuple[bool, str, object | None]:
+    from hedron_core.security_policy import SecurityPolicy
+
     extension = current_app.extensions.get("hedron")
     if extension is None:
-        return True, DEFAULT_CSRF_COOKIE
-    return bool(getattr(extension, "csrf_protect", True)), str(
-        getattr(extension, "csrf_cookie_name", DEFAULT_CSRF_COOKIE)
-    )
+        return True, DEFAULT_CSRF_COOKIE, None
+    protect = bool(getattr(extension, "csrf_protect", True))
+    cookie_name = str(getattr(extension, "csrf_cookie_name", DEFAULT_CSRF_COOKIE))
+    policy = getattr(extension, "security_policy", None)
+    if isinstance(policy, SecurityPolicy) and not policy.csrf_enabled:
+        protect = False
+    return protect, cookie_name, policy if isinstance(policy, SecurityPolicy) else None
 
 
 def wrap_hedron_view(
@@ -103,9 +108,14 @@ def wrap_hedron_view(
 
     @wraps(view)
     def wrapped(*args: Any, **kwargs: Any) -> Any:
-        protect, cookie_name = _csrf_settings()
+        from hedron_core.security_policy import SecurityPolicy
+
+        protect, cookie_name, policy = _csrf_settings()
         if require_csrf and protect and request.method.upper() in _UNSAFE_METHODS:
-            validate_csrf(request, cookie_name=cookie_name)
+            if isinstance(policy, SecurityPolicy):
+                validate_csrf(request, cookie_name=cookie_name, policy=policy)
+            else:
+                validate_csrf(request, cookie_name=cookie_name)
         value = current_app.ensure_sync(view)(*args, **kwargs)
         return convert_view_result(
             value,
@@ -268,6 +278,7 @@ def attach_hedron_to_flask(
         policy = SecurityPolicy.from_name("standard")
     if not isinstance(policy, SecurityPolicy):
         policy = SecurityPolicy.from_name(policy)
+    assert_flask_csrf_strategy(policy)
     with contextlib.suppress(Exception):
         extension.security_policy = policy  # type: ignore[attr-defined]
 
@@ -294,23 +305,34 @@ def attach_hedron_to_flask(
                 key not in response.headers
             ):
                 response.headers[key] = value
-        if auto_csrf_cookie and request.method in {"GET", "HEAD"}:
-            from hedron_flask.csrf import (
-                csrf_cookie_should_be_secure,
-                csrf_token_for_request,
-                ensure_csrf_cookie,
-            )
+        seed_cookie = auto_csrf_cookie and request.method in {"GET", "HEAD"}
+        if seed_cookie and policy.csrf_enabled:
+            strategy = policy.resolve_csrf_strategy()
+            if strategy is not None and bool(getattr(strategy, "sets_cookie", True)):
+                from hedron_flask.csrf import (
+                    csrf_cookie_should_be_secure,
+                    csrf_token_for_request,
+                    ensure_csrf_cookie,
+                )
 
-            ensure_csrf_cookie(
-                response,
-                csrf_token_for_request(
-                    request,
-                    cookie_name=extension.csrf_cookie_name,  # type: ignore[attr-defined]
-                ),
-                cookie_name=extension.csrf_cookie_name,  # type: ignore[attr-defined]
-                secure=csrf_cookie_should_be_secure(
-                    request,
-                    force_secure=getattr(extension, "csrf_cookie_secure", None),
-                ),
-            )
+                cookie_name = getattr(extension, "csrf_cookie_name", DEFAULT_CSRF_COOKIE)
+                script_root = getattr(request, "script_root", "") or ""
+                cookie_path = script_root if isinstance(script_root, str) and script_root else "/"
+                configured = getattr(extension, "csrf_cookie_path", None)
+                if isinstance(configured, str) and configured:
+                    cookie_path = configured
+                ensure_csrf_cookie(
+                    response,
+                    csrf_token_for_request(
+                        request,
+                        cookie_name=cookie_name,  # type: ignore[arg-type]
+                        policy=policy,
+                    ),
+                    cookie_name=cookie_name,  # type: ignore[arg-type]
+                    secure=csrf_cookie_should_be_secure(
+                        request,
+                        force_secure=getattr(extension, "csrf_cookie_secure", None),
+                    ),
+                    path=cookie_path,
+                )
         return response

@@ -1,8 +1,7 @@
 # RFC-0056: Production-quality maturity program
 
 **Status:** Accepted
-**Phase:** Program umbrella for 0.21–0.25 (D-053); living published train remains 0.20 until
-later cuts
+**Phase:** Program umbrella for 0.21–0.25 (D-053); living published train is **0.22**
 **Stability:** `beta` (process / roadmap); does not by itself promote package maturity or
 API levels
 **Evidence:** Priority ownership in ROADMAP §0.21–§0.25; release gates
@@ -27,7 +26,7 @@ startup gates). Ecosystem trust gaps remain:
 
 - Most public APIs are compatibility `beta`; only a minimal `stable` tier exists.
 - Live SSE/WebSocket stay experimental pending deferred browser/load ops gates.
-- Human AT sessions (0.21) and CSRF composition (0.22) are still outstanding.
+- Human AT sessions (0.21) remain outstanding; CSRF composition (0.22) is **Published**.
 - Alpha extras and specialty stubs create over-install foot-guns.
 
 D-038 forbids using a version number as an arbitrary freeze terminus. This RFC attaches
@@ -54,7 +53,7 @@ Vocabulary remains: Supported ≠ API `stable` ≠ commercial warranty
 | Priority | Move | Owner |
 |---|---|---|
 | P0 | Finish 0.21 human AT sessions + remediate | D-052 / ROADMAP §0.21 |
-| P0 | Ship 0.22 CSRF / SecurityPolicy composition | D-051 / ROADMAP §0.22 (packet refined; gates Planned) |
+| P0 | Ship 0.22 CSRF / SecurityPolicy composition | D-051 / ROADMAP §0.22 (**Published** `v0.22.0`; gates Verified) |
 | P1 | Expand `stable` tier for Supported CRUD/HTMX/jobs core | ROADMAP §0.23 / D-053 |
 | P1 | Live transports: prove ops gates **or** formally polling-only for production docs | ROADMAP §0.24 / D-053 |
 | P2 | Reference-app production archetype + load budgets; extras quarantine; charts path | ROADMAP §0.25 / D-053 |

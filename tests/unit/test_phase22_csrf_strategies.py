@@ -90,3 +90,37 @@ def test_validate_csrf_skips_when_disabled() -> None:
     }
     request = Request(scope)
     validate_csrf(request, policy)  # does not raise
+
+
+def test_session_token_issue_missing_does_not_500_get() -> None:
+    policy = SecurityPolicy(
+        csrf_enabled=True,
+        csrf=SessionTokenCsrf(get_expected=lambda _r: None),
+    )
+    app = Hedron(title="csrf-issue", security=policy, explorer="off", session_secret="test")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(Text("ok"), title="home")
+
+    client = TestClient(app)
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "ok" in response.text
+
+
+def test_session_token_prefers_form_over_header() -> None:
+    strategy = SessionTokenCsrf(get_expected=lambda _r: "expected")
+    strategy.validate(object(), form_value="expected", header_value="wrong")
+    try:
+        strategy.validate(object(), form_value="wrong", header_value="expected")
+        raise AssertionError("expected CsrfValidationError")
+    except CsrfValidationError:
+        pass
+
+
+def test_security_policy_equality_includes_csrf_strategy() -> None:
+    a = SecurityPolicy(csrf=SessionTokenCsrf(get_expected=lambda _r: "a"))
+    b = SecurityPolicy(csrf=SessionTokenCsrf(get_expected=lambda _r: "b"))
+    assert a != b
+    assert len({a, b}) == 2

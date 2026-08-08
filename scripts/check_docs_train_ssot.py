@@ -68,6 +68,14 @@ CHECKED = [
     ROOT / "packages" / "hedron-explorer" / "README.md",
     ROOT / "packages" / "hedron-extras" / "README.md",
     ROOT / "packages" / "hedron-charts" / "README.md",
+    ROOT / "docs" / "packages" / "hedron-jinja.md",
+    ROOT / "docs" / "packages" / "hedron-data.md",
+    ROOT / "docs" / "packages" / "hedron-explorer.md",
+    ROOT / "docs" / "packages" / "hedron-conformance.md",
+    ROOT / "docs" / "api" / "CSRF_COMPOSITION.md",
+    ROOT / "mkdocs.yml",
+    ROOT / "packages" / "hedron-jinja" / "README.md",
+    ROOT / "packages" / "hedron-conformance" / "README.md",
     ROOT / "docs" / "packages" / "hedron-extras.md",
     ROOT / "scripts" / "README.md",
     ROOT / "docs" / "CONTRIBUTING.md",
@@ -224,6 +232,22 @@ STALE = [
     re.compile(r"Living published train remains \*\*0\.21\*\*", re.I),
     re.compile(r"living published train remains \*\*0\.21\*\*", re.I),
     re.compile(r"Living published train is \*\*0\.21\*\*", re.I),
+    re.compile(r"0\.22 Planned", re.I),
+    re.compile(r"CSRF composition \(0\.22 Planned\)", re.I),
+    re.compile(r"scaffold on \*\*0\.21\.x\*\*", re.I),
+    re.compile(r"Supported lines: \*\*`0\.21\.x`", re.I),
+    re.compile(
+        r"current published — `v0\.22\.0`\)\*\*\. See", re.I
+    ),  # hybrid 0.21+v0.22 in SECURITY
+    re.compile(r"`0\.21\.x` \(current published", re.I),
+    re.compile(r"matching `0\.21\.x` pin", re.I),
+    re.compile(r"current train is \*\*0\.21", re.I),
+    re.compile(r"Expect \*\*`0\.22\.0`\*\* \(or a newer `0\.21", re.I),
+    re.compile(r"uv run python scripts/verify_pkg_21\.py", re.I),
+    re.compile(r"Package verify \(0\.21\)", re.I),
+    re.compile(r"hedron&gt;=0\.22\.0,&lt;0\.22", re.I),
+    re.compile(r"hedron>=0\.22\.0,<0\.22(?!\d)", re.I),
+    re.compile(r"Next: <strong>0\.22</strong>", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.
@@ -248,9 +272,7 @@ UNBOUNDED_ALPHA = re.compile(
     r"hedron(?:-charts)?\[(?:charts|notebook|mcp|gradio|native|matplotlib|plotly|altair)\]"
     r">=0\.1\.0(?!,?\s*<0\.2)"
 )
-UNBOUNDED_CHARTS_PKG = re.compile(
-    r"hedron-charts(?:\[[^\]]+\])?>=0\.1\.0(?!,?\s*<0\.2)"
-)
+UNBOUNDED_CHARTS_PKG = re.compile(r"hedron-charts(?:\[[^\]]+\])?>=0\.1\.0(?!,?\s*<0\.2)")
 # pip install "hedron-charts[…]" without a version pin (table mentions are allowed).
 UNBOUNDED_CHARTS_INSTALL = re.compile(
     r"""pip\s+install\s+["']hedron-charts(?:\[[^\]]+\])?["'](?!\s*>=)"""
@@ -267,6 +289,9 @@ PIN_SCAN_ROOTS = [
     ROOT / "README.md",
     ROOT / "packages" / "hedron" / "README.md",
     ROOT / "packages" / "hedron-conformance" / "README.md",
+    ROOT / "docs" / "packages" / "hedron-extras.md",
+    ROOT / "scripts" / "README.md",
+    ROOT / "docs" / "CONTRIBUTING.md",
     ROOT / "examples" / "hdj-progressive" / "README.md",
 ]
 

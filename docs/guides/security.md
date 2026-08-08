@@ -67,7 +67,9 @@ for unsafe methods (auto cookie issuance on safe GETs remains on by default).
 Django adapter: `CsrfViewMiddleware` remains authoritative. Safe GETs through
 `HedronDjango.respond` / `hedron_view` call `get_token` so the CSRF cookie is seeded. For
 portable clients that send `X-CSRF-Token`, set `CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"`.
-Form posts may use `csrfmiddlewaretoken` or `csrf_token`.
+Form posts must use `csrfmiddlewaretoken` (Django middleware). Bare `CsrfField()` under
+the Django adapter emits that field name via RenderContext; the portable FastAPI/Flask
+default `csrf_token` is **not** accepted by `CsrfViewMiddleware`.
 
 !!! note "Phase 0.22 — CSRF composition"
 

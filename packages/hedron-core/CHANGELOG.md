@@ -4,7 +4,10 @@
 
 ### Added
 
-- Phase 0.22 CSRF / SecurityPolicy composition (`CSRF-022`, `HEADERS-022`, `FORM-022`).
+- `CsrfStrategy` protocol with `DoubleSubmitCookieCsrf` and `SessionTokenCsrf`.
+- `SecurityPolicy.csrf` / `resolve_csrf_strategy()` and `SecurityHeadersPolicy` merge in
+  `response_headers()` (`False` / `"app"` emit no Hedron security headers).
+- `CsrfField`, `Hx`, and `Form(..., hx=Hx(...))` for validated HTMX form attributes.
 
 ## [0.21.0] — 2026-08-08
 

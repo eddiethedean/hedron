@@ -7,10 +7,14 @@ from typing import TYPE_CHECKING
 
 from werkzeug.exceptions import Forbidden
 
+from hedron_core.csrf_strategy import DoubleSubmitCookieCsrf
+from hedron_core.security_policy import SecurityPolicy
+
 if TYPE_CHECKING:
     from flask import Request, Response
 
 __all__ = [
+    "assert_flask_csrf_strategy",
     "csrf_cookie_should_be_secure",
     "csrf_token_for_request",
     "ensure_csrf_cookie",
@@ -27,11 +31,38 @@ def generate_csrf_token() -> str:
     return secrets.token_urlsafe(32)
 
 
+def assert_flask_csrf_strategy(policy: SecurityPolicy) -> None:
+    """Flask only supports double-submit cookie CSRF (or CSRF disabled)."""
+    if not policy.csrf_enabled:
+        return
+    strategy = policy.resolve_csrf_strategy()
+    if strategy is None:
+        return
+    if isinstance(strategy, DoubleSubmitCookieCsrf):
+        return
+    # Default resolve without explicit csrf= is DoubleSubmitCookieCsrf.
+    if policy.csrf is None:
+        return
+    raise ValueError(
+        "Flask CSRF only supports DoubleSubmitCookieCsrf (or csrf_enabled=False); "
+        f"got {type(strategy).__name__}. Use the FastAPI host for SessionTokenCsrf."
+    )
+
+
 def csrf_token_for_request(
     request: Request,
     *,
     cookie_name: str = DEFAULT_CSRF_COOKIE,
+    policy: SecurityPolicy | None = None,
 ) -> str:
+    if policy is not None:
+        if not policy.csrf_enabled:
+            return ""
+        strategy = policy.resolve_csrf_strategy()
+        if strategy is None:
+            return ""
+        assert_flask_csrf_strategy(policy)
+        cookie_name = getattr(strategy, "cookie_name", cookie_name) or cookie_name
     existing = request.cookies.get(cookie_name)
     if isinstance(existing, str) and existing:
         return existing
@@ -73,6 +104,7 @@ def ensure_csrf_cookie(
     *,
     cookie_name: str = DEFAULT_CSRF_COOKIE,
     secure: bool = False,
+    path: str = "/",
 ) -> None:
     response.set_cookie(
         cookie_name,
@@ -80,7 +112,7 @@ def ensure_csrf_cookie(
         httponly=False,
         samesite="Lax",
         secure=secure,
-        path="/",
+        path=path or "/",
     )
 
 
@@ -95,7 +127,42 @@ def validate_csrf(
     cookie_name: str = DEFAULT_CSRF_COOKIE,
     header_name: str = DEFAULT_CSRF_HEADER,
     form_field: str = "csrf_token",
+    policy: SecurityPolicy | None = None,
 ) -> None:
+    if policy is not None:
+        if not policy.csrf_enabled:
+            return
+        strategy = policy.resolve_csrf_strategy()
+        if strategy is None:
+            return
+        assert_flask_csrf_strategy(policy)
+        form_value = None
+        if request.form:
+            form_value = extract_csrf_from_form(
+                dict(request.form),
+                field_name=strategy.form_field,
+            )
+        header_value = request.headers.get(strategy.header_name)
+        try:
+            strategy.validate(
+                request,
+                form_value=form_value,
+                header_value=header_value if isinstance(header_value, str) else None,
+            )
+        except Exception as exc:
+            from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+            from hedron_core.csrf_strategy import CsrfValidationError
+
+            if not isinstance(exc, CsrfValidationError):
+                raise
+            emit_security_audit(
+                SecurityAuditEventType.CSRF_REJECTED,
+                "Invalid CSRF token",
+                attributes={"path": request.path, "method": request.method},
+            )
+            raise Forbidden("Invalid CSRF token") from exc
+        return
+
     cookie = request.cookies.get(cookie_name)
     if not cookie:
         from hedron_core.audit import SecurityAuditEventType, emit_security_audit

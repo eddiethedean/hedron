@@ -1,6 +1,6 @@
 # Release notes
 
-Adopter-facing summary for the **0.21.x** train. For per-package commit detail, use the
+Adopter-facing summary for the **0.22.x** train. For per-package commit detail, use the
 [package changelog index](changelog.md) or
 [GitHub Releases](https://github.com/eddiethedean/hedron/releases).
 
@@ -11,7 +11,7 @@ Human AT engineering train (D-052): protocol packet Verified, PE corpus, fragmen
 parity, DataEditor Escape/403 hardening. **`SR-021` / `PARTICIPANT-021` remain Planned** —
 do not market human AT as Supported. CSRF composition → 0.22.
 
-Narrative deep-dive: [What's new in 0.21](whats-new-0.21.md) · maturity:
+Narrative deep-dive: [What's new in 0.22](whats-new-0.22.md) · maturity:
 [What's ready today](whats-ready.md).
 
 ```bash

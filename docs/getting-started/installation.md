@@ -45,7 +45,7 @@ After following [Build your first app](quickstart.md):
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.22.0`** (or a newer `0.21.x` patch) on this train. Last published
+Expect **`0.22.0`** (or a newer `0.22.x` patch) on this train. Last published
 PyPI/git is **`v0.22.0`**. Pin with `hedron>=0.22.0,<0.23` for
 production.
 

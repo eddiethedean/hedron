@@ -21,12 +21,49 @@ __all__ = [
     "InfiniteScroll",
     "Lazy",
     "Loading",
+    "LoginCsrfField",
     "Pagination",
     "Poll",
     "RefreshButton",
     "action_attrs",
     "oob_swap",
 ]
+
+
+class LoginCsrfField(Component[Props]):
+    """Hidden input for pre-auth login CSRF (not the post-auth ``CsrfField`` token).
+
+    Use with :func:`hedron.security.issue_login_csrf` / :func:`validate_login_csrf`.
+    Plain ``CsrfField`` embeds the active strategy / RenderContext token and will
+    not validate against the login CSRF store.
+    """
+
+    logical_name: ClassVar[str | None] = "LoginCsrfField"
+    distribution: ClassVar[str] = "hedron"
+
+    def __init__(
+        self,
+        *,
+        token: str | None = None,
+        session: Mapping[str, object] | None = None,
+        name: str | None = None,
+    ) -> None:
+        from hedron.security.login_csrf import LOGIN_CSRF_KEY, issue_login_csrf
+
+        super().__init__(Props())
+        if token is None:
+            # issue_login_csrf accepts MutableMapping; Mapping is enough when token given.
+            from collections.abc import MutableMapping
+
+            if session is not None and isinstance(session, MutableMapping):
+                token = issue_login_csrf(session)
+            else:
+                token = issue_login_csrf(None)
+        self._token = token
+        self._name = name or LOGIN_CSRF_KEY
+
+    def render(self) -> NodeLike:
+        return html.input(type="hidden", name=self._name, value=self._token)
 
 
 def action_attrs(
@@ -336,6 +373,15 @@ class AutoForm(Component[Props]):
             from hedron_core.builtins.forms import CsrfField
 
             fields.append(CsrfField(name=self.csrf_form_field, token=self.csrf_token))
+        elif self.method == "post":
+            # Prefer RenderContext token when callers omit csrf_token= (FORM-022).
+            from hedron_core.builtins.forms import CsrfField
+            from hedron_core.rendering import active_render_context
+
+            ctx = active_render_context()
+            if ctx is not None and ctx.csrf_token:
+                field_name = self.csrf_form_field or ctx.csrf_form_field or "csrf_token"
+                fields.append(CsrfField(name=field_name))
         model_fields = getattr(self.model_type, "model_fields", {})
         for name, field_info in model_fields.items():
             if name.startswith("_"):

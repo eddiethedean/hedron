@@ -1,15 +1,15 @@
 ---
-title: Form
-description: Compose a native GET or POST form with validated action URLs and optional HTMX attributes.
+title: LoginCsrfField
+description: Hidden input for pre-auth login CSRF (issue_login_csrf / validate_login_csrf).
 ---
 
-# `Form`
+# `LoginCsrfField`
 
-Compose a native GET or POST form with validated action URLs and optional HTMX attributes.
+Hidden input for pre-auth login CSRF (issue_login_csrf / validate_login_csrf).
 
 | | |
 |---|---|
-| Import | `from hedron import Form` |
+| Import | `from hedron import LoginCsrfField` |
 | Distribution | `hedron` |
 | Backend activity | On submit |
 | Normal render mode | `RenderMode.FRAGMENT` |
@@ -126,37 +126,34 @@ Compose a native GET or POST form with validated action URLs and optional HTMX a
 ## Basic use
 
 ```python
-from hedron import Form, FormField, Hx, SubmitButton, TextInput
+from hedron import LoginCsrfField
 
-component = Form(FormField(name='email', label='Email', control=TextInput('email', type='email')), SubmitButton('Subscribe'), action='/subscribe', hx=Hx(target='#main'))
+component = LoginCsrfField(session=request.session)
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
 
 ## How it works
 
-Form is progressively enhanced: ordinary browser submission remains the baseline, while `hx-post`, targets, swaps, sync, and indicators can be added for fragment updates.
+Use on login forms only. Plain CsrfField embeds the post-auth strategy token and will not validate against the login CSRF store.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
 ## Constructor and parameters
 
 ```python
-Form(*nodes, children=None, action=None, method='post', hx=None, **native_or_hx_attrs)
+LoginCsrfField(*, token=None, session=None, name=None)
 ```
 
 | Parameter | Type | Meaning |
 |---|---|---|
-| `nodes` | `NodeLike` | Positional labels, fields, errors, and controls. |
-| `children` | `NodeLike | sequence | None` | Keyword child list; combines with positional nodes. |
-| `action` | `SafeUrl | str | None` | Validated form endpoint. |
-| `method` | `'get' | 'post'` | Native submission method. |
-| `hx` | `Hx | None` | Validated first-class HTMX options (FORM-022). |
-| `**attrs` | `Any` | Validated native or HTMX form attributes. |
+| `token` | `str | None` | Explicit login CSRF token. |
+| `session` | `MutableMapping | None` | Optional session store for issue_login_csrf. |
+| `name` | `str | None` | Field name; defaults to hedron_login_csrf. |
 
 ## Composition and backend behavior
 
-Keep `Form` at the smallest semantic boundary. Fragment routes should return only
+Keep `LoginCsrfField` at the smallest semantic boundary. Fragment routes should return only
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
@@ -164,7 +161,7 @@ Mutating flows must use POST, validate CSRF, authorize on the server, re-validat
 
 ## Accessibility
 
-Every control needs a label, errors must be associated with controls, and successful submission should produce a perceivable status.
+Pair with validate_login_csrf on POST.
 
 ## Security
 
@@ -173,7 +170,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Server-side validation and CSRF checks remain mandatory even when the browser reports validity.
+- Do not reuse login tokens after authentication succeeds.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

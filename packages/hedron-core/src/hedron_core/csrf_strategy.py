@@ -115,11 +115,12 @@ class SessionTokenCsrf:
     sets_cookie: bool = False
 
     def issue(self, request: object) -> str:
+        # Missing tokens must not 500 safe GET/page renders; validate() rejects POSTs.
         expected = self.get_expected(request)
         if isinstance(expected, str) and expected:
             _state_set(request, "hedron_csrf_token", expected)
             return expected
-        raise CsrfValidationError("CSRF token is not available for this request")
+        return ""
 
     def validate(
         self,
@@ -129,7 +130,8 @@ class SessionTokenCsrf:
         header_value: str | None,
     ) -> None:
         expected = self.get_expected(request)
-        provided = header_value or form_value
+        # Match validate_double_submit precedence: form field, then header.
+        provided = form_value or header_value
         if not isinstance(expected, str) or not expected:
             raise CsrfValidationError("CSRF validation failed")
         if not isinstance(provided, str) or not tokens_match(expected, provided):

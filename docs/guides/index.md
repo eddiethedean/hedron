@@ -2,7 +2,7 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.22 train** (**Published** as **v0.22.0**): human AT protocol engineering — [What’s new in 0.21](whats-new-0.21.md) · [What’s ready](whats-ready.md).
+**0.22 train** (**Published** as **v0.22.0**): CSRF / SecurityPolicy composition — [What’s new in 0.22](whats-new-0.22.md) · [What’s ready](whats-ready.md).
 
 **0.20 train** (published as **v0.20.0**): production security floor and adapter parity — [What’s new in 0.20](whats-new-0.20.md).
 

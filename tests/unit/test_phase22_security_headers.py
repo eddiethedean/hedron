@@ -37,10 +37,24 @@ def test_security_headers_false_and_app_emit_no_security_headers() -> None:
             content_security_policy=base.content_security_policy,
         )
         headers = policy.response_headers()
-        assert "Content-Security-Policy" not in headers
-        assert "X-Frame-Options" not in headers
-        assert "X-Content-Type-Options" not in headers
-        assert "Referrer-Policy" not in headers
+        assert headers == {}
+        assert policy.response_headers(authenticated=True) == {}
+
+
+def test_empty_string_overrides_omit_headers() -> None:
+    policy = SecurityPolicy(
+        security_headers=SecurityHeadersPolicy(
+            frame_options="",
+            content_type_options="",
+            referrer_policy="",
+            content_security_policy="",
+        ),
+    )
+    headers = policy.response_headers()
+    assert "X-Frame-Options" not in headers
+    assert "X-Content-Type-Options" not in headers
+    assert "Referrer-Policy" not in headers
+    assert "Content-Security-Policy" not in headers
 
 
 def test_hsts_override_emitted() -> None:

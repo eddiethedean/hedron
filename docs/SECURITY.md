@@ -4,7 +4,8 @@
 
 | Version | Supported |
 |---|---|
-| `0.21.x` | Yes (current published train — last published PyPI/git = `v0.22.0`) |
+| `0.22.x` | Yes (current published train — pin `>=0.22.0,<0.23`; last published `v0.22.0`) |
+| `0.21.x` | Prefer upgrade to `0.22.x` |
 | `0.20.x` | Prefer upgrading to the current train |
 | `0.19.x` | Prefer upgrading to the current train |
 | `0.18.x` | Prefer upgrading to the current train |

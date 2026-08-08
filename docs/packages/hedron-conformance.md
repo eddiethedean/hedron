@@ -2,7 +2,7 @@
 
 Language-neutral Hedron conformance-test kit and capability runner.
 
-**Package maturity:** Beta · **Train:** `0.21.0` · pin `>=0.22.0,<0.23`  
+**Package maturity:** Beta · **Train:** `0.22.0` · pin `>=0.22.0,<0.23`  
 **Flagship extra:** `hedron[conformance]` · **Import:** `hedron_conformance`  
 **CLI:** `hedron-conformance` · depends on pydantic only (no `hedron-core`)
 

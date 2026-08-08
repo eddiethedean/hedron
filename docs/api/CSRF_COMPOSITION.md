@@ -12,7 +12,7 @@ status: shipped
     Acceptance: [RELEASE_0_22](../acceptance/RELEASE_0_22.md) ·
     [release-gate-0.22.toml](../acceptance/release-gate-0.22.toml).
 
-Owning decision: **D-051**. Linked issues:
+Owning decision: **D-051**. Closed issues (shipped in 0.22):
 [#36](https://github.com/eddiethedean/hedron/issues/36),
 [#37](https://github.com/eddiethedean/hedron/issues/37),
 [#38](https://github.com/eddiethedean/hedron/issues/38).
@@ -107,3 +107,12 @@ Form(
 | `HEADERS-022` | Merge/override on FastAPI (+ adapter applicator reuse) |
 | `FORM-022` | `CsrfField` + Form HTMX kwargs docs/tests |
 | `REGRESS-022` / `PKG-022` | Full suite and packet verify at cut |
+
+
+## Django form field
+
+Django's `CsrfViewMiddleware` accepts **`csrfmiddlewaretoken`**, not the portable FastAPI/Flask default `csrf_token`. The Django adapter seeds `RenderContext` with `csrf_form_field="csrfmiddlewaretoken"` so bare `CsrfField()` works.
+
+## Login CSRF
+
+Pre-auth login forms use `LoginCsrfField` / `issue_login_csrf` / `validate_login_csrf` — not plain `CsrfField()` (post-auth strategy token).

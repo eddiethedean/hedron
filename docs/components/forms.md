@@ -3,7 +3,9 @@
 Typed, labelled controls and validation presentation.
 
 - [`Form`](form.md) — Compose a native GET or POST form with validated action URLs and optional HTMX attributes.
+- [`Hx`](hx.md) — First-class HTMX attribute bundle for Form (validated selectors and swap).
 - [`CsrfField`](csrf-field.md) — Hidden CSRF input wired to the active strategy or an explicit token.
+- [`LoginCsrfField`](login-csrf-field.md) — Hidden input for pre-auth login CSRF (issue_login_csrf / validate_login_csrf).
 - [`FormField`](form-field.md) — Bind a label, help text, required state, and field error to one control.
 - [`Label`](label.md) — Associate visible text with a form control ID.
 - [`TextInput`](text-input.md) — Collect a single line of typed text using a constrained input type.
