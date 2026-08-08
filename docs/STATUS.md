@@ -14,8 +14,9 @@ PyPI/git = `v0.20.0`. Workspace packages: Beta `0.20.0`, Alpha charts/sample-kit
 `hedron-gradio`.
 
 **Phase focus:** Living published train remains **0.20** (D-051). Next capability packet
-**0.21** human AT is **Refined / Planned** (D-052): protocol, release-gate rows, and
-acceptance artifacts are owned; sessions and Verified flip are follow-on. CSRF composition
+**0.21** human AT is **engineering-complete / sessions outstanding** (D-052): protocol
+Verified (`PROTOCOL-021`); reference-app task corpus + `verify_pkg_21` + CI packet checks
+landed; **`SR-021` / `PARTICIPANT-021` remain Planned** until real sessions. CSRF composition
 remains Deferred → **0.22**.
 
 ## Supported vs Deferred (operator view)
@@ -25,9 +26,9 @@ capability as unqualified **Supported** when its owning gate row is **Deferred**
 **Planned**. Live SSE/WS/streaming/preload remain **experimental** (polling Supported).
 Notebook preview, MCP, and Gradio interop are **Experimental** / Alpha. Phase 0.20 closed with
 **zero Deferred** among **0.20 gate IDs** (`check_release_gate.py 0.20.0`). Human screen-reader /
-compensated user evaluation is owned by **0.21** (D-052; packet Refined / Planned — not yet
-Supported). CSRF / SecurityPolicy composition is owned by **0.22**. Prior-phase Deferred rows
-below remain owned elsewhere.
+compensated user evaluation is owned by **0.21** (D-052; engineering-complete — PROTOCOL Verified;
+sessions outstanding — not Supported). CSRF / SecurityPolicy composition is owned by **0.22**.
+Prior-phase Deferred rows below remain owned elsewhere.
 
 | ID | Topic | Disposition | Notes |
 |---|---|---|---|
@@ -50,11 +51,13 @@ below remain owned elsewhere.
 | `AUTH-020` | Flask-Login AuthSignal | Verified (0.20) | #20 |
 | `SCAFFOLD-020` | `hedron new --flask` / `--django` | Verified (0.20) | #17 |
 | `WHEEL-020` | Adapter clean-wheel CI smoke | Verified (0.20) | #19 |
-| `PROTOCOL-021` | Human AT protocol packet | **Planned** (0.21) | D-052 |
-| `SR-021` | VoiceOver / NVDA / TalkBack matrix | **Planned** (0.21) | D-052 |
-| `PARTICIPANT-021` | Compensated participant floor | **Planned** (0.21) | D-052 |
-| `ARTIFACT-021` | Redacted ledger + statement update | **Planned** (0.21) | D-052 |
-| `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | D-052 |
+| `PROTOCOL-021` | Human AT protocol packet | **Verified** (0.21) | D-052 engineering |
+| `SR-021` | VoiceOver / NVDA / TalkBack matrix | **Planned** (0.21) | sessions outstanding |
+| `PARTICIPANT-021` | Compensated participant floor | **Planned** (0.21) | sessions outstanding |
+| `ARTIFACT-021` | Redacted ledger + statement update | **Planned** (0.21) | after sessions |
+| `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions |
+| `REGRESS-021` | Full suite at cut | **Planned** (0.21) | cut |
+| `PKG-021` | `verify_pkg_21.py` packet evidence | **Planned** (0.21) | command ready; Verified at cut |
 | `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | Prior-phase carryover |
 | `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Prior-phase carryover |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof |
@@ -72,20 +75,22 @@ below remain owned elsewhere.
 - Cut procedure: [RELEASE.md](RELEASE.md) (last published: **0.20**; next capability: **0.21**
   human AT / **0.22** CSRF composition).
 
-## Phase 0.21 packet (Refined / Planned)
+## Phase 0.21 packet (engineering-complete / sessions outstanding)
 
 - Decision: D-052; RFC baseline [RFC-0055](rfcs/RFC-0055-A11Y-GOVERNANCE.md) (amended).
-- Gate index: [release-gate-0.21.toml](acceptance/release-gate-0.21.toml) (all `Planned`).
+- Gate index: [release-gate-0.21.toml](acceptance/release-gate-0.21.toml)
+  (`PROTOCOL-021` Verified; SR/PARTICIPANT/ARTIFACT/REMEDIATE/REGRESS/PKG Planned).
 - Acceptance: [RELEASE_0_21.md](acceptance/RELEASE_0_21.md).
 - Protocol: [acceptance/human-at/](acceptance/human-at/).
-- Checker: `python scripts/check_release_gate.py 0.21.0 --allow-planned` and
-  `python scripts/check_human_at_packet.py`.
-- Human AT is **not** Supported for adopter marketing until gates are Verified and `v0.21.0`
-  is Published.
+- Checker: `python scripts/check_release_gate.py 0.21.0 --allow-planned`,
+  `python scripts/check_human_at_packet.py`, `python scripts/verify_pkg_21.py`.
+- Human AT is **not** Supported for adopter marketing until remaining gates are Verified and
+  `v0.21.0` is Published. `--require-sessions` must still fail on placeholder-only ledger.
 
 ## Next capability phases
 
-**0.21** — human assistive-technology / compensated evaluation (**Refined / Planned**, D-052).
+**0.21** — human assistive-technology / compensated evaluation (engineering prep complete;
+sessions outstanding; D-052).
 **0.22** — CSRF and SecurityPolicy composition (#36–#38; D-051 split).
 Track progress in [ROADMAP.md](ROADMAP.md) and the public [roadmap guide](guides/roadmap.md).
 Open-issue owners: [issue ownership table](ROADMAP.md#open-github-issue-ownership-013).

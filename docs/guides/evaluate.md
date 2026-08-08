@@ -43,7 +43,8 @@ Full matrix: [What’s ready](whats-ready.md).
 - Full multi-engine live browser matrix and load/proxy backpressure proof for live transports
 - Specialty extras (CodeEditor host stub, TerminalView, joystick, device bridges) as full
   product UI — Experimental / stub only
-- Human screen-reader / compensated AT evaluation (owned by **0.21**, D-052 Refined / Planned)
+- Human screen-reader / compensated AT evaluation (owned by **0.21**, D-052 engineering-complete /
+  sessions outstanding)
 
 ## When Hedron is a poor fit
 

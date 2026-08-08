@@ -1,17 +1,21 @@
 # Hedron reference application (FastAPI)
 
 Cumulative authenticated team-administration application for the FastAPI flagship.
-Tracks the **0.19.0** train (portable conformance / optional native accel on the 0.9 HDJ
-authoring line). Includes a GOVERN-019 accessibility statement dry-run
-(`accessibility_statement.py`) that never auto-claims WCAG conformance.
+Tracks the living Published **0.20** train. Includes a GOVERN-019 accessibility statement
+dry-run (`accessibility_statement.py`) that never auto-claims WCAG conformance.
+
+**Human AT (0.21):** engineering prep for the task corpus is on this app; compensated /
+screen-reader sessions remain Planned until Verified. Facilitator scripts:
+[docs/acceptance/human-at/task-scripts.md](../../docs/acceptance/human-at/task-scripts.md).
 
 Demonstrates:
 
 - `Hedron()` and plain `FastAPI` + `HedronRouter` modes
 - Lazy addressable `UserTable` protected by router dependencies
 - Typed create/update/delete actions with CSRF validation
-- HTMX fragment swaps and bundled HTMX 2.0.10
-- DataEditor, Auto, cache helpers, and ColorMode
+- Progressive-enhancement create/edit (no-JS 303) plus HTMX `#user-table` swaps
+- Edit pages at `/users/{id}/edit` linked from the dashboard
+- DataEditor (Enter commit / Escape cancel), Auto, cache helpers, and ColorMode
 - Charts (`LineChart` via **Alpha** `hedron[charts]`), Markdown, typed `InteractionResult`,
   declared fragment regions, and `/charts/*` interaction routes
 - Offline static rendering helpers
@@ -44,7 +48,7 @@ usual pattern).
 ## Tests
 
 ```bash
-uv run pytest examples/reference-app tests/integration -q
+uv run pytest examples/reference-app tests/integration/test_reference_crud.py -q
 ```
 
 Optional extras (`charts`, `markdown`, sanitizer) are part of the workspace sync; when

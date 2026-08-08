@@ -26,7 +26,8 @@ status commentary, not a satisfied release gate.
 - [Jobs and asynchronous work](JOBS.md)
 - [Observability](OBSERVABILITY.md)
 - [Accessibility](ACCESSIBILITY.md)
-- [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; Refined / Planned)
+- [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
+  sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
 - [Performance](PERFORMANCE.md)
 - [`v0.9.0` HDJ replacement](RELEASE_0_9.md) — published; clean HDN removal, explicit `.hdj` format, standards-first authoring

@@ -210,8 +210,11 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/build_evidence_bundle.py
   run uv run --python "$PYTHON" --with pip-audit python scripts/dep_audit.py
   run uv run --python "$PYTHON" python scripts/check_release_gate.py "$GATE_VERSION"
+  run uv run --python "$PYTHON" python scripts/check_human_at_packet.py
+  run uv run --python "$PYTHON" python scripts/check_release_gate.py 0.21.0 --allow-planned
   run uv run --python "$PYTHON" python scripts/check_hed_codes.py
   run uv run --python "$PYTHON" python scripts/verify_pkg_20.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_21.py
 }
 
 cmd_packaging() {

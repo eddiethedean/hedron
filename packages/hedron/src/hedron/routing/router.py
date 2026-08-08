@@ -259,6 +259,7 @@ class HedronRouter(APIRouter):
         include_in_schema: bool = True,
         dependencies: Sequence[params.Depends] | None = None,
         tags: list[str | Enum] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         verb_list = list(methods or [method])
@@ -270,11 +271,14 @@ class HedronRouter(APIRouter):
             logical_id = _logical_id(fn)
             primary = verb_list[0].upper()
             op_id = operation_id_for("action", route_name, path, primary)
+            regions = _normalize_fragment_regions(fragment_regions)
+            fn._hedron_fragment_regions = regions  # type: ignore[attr-defined]
             wrapped = _wrap_endpoint(
                 fn,
                 kind="action",
                 mode=RenderMode.FRAGMENT,
                 require_csrf=_requires_csrf(verb_list),
+                fragment_regions=regions,
             )
             self.add_api_route(
                 path,
@@ -292,6 +296,7 @@ class HedronRouter(APIRouter):
             route = self.routes[-1]
             if isinstance(route, HedronRoute):
                 route.hedron_kind = "action"  # type: ignore[attr-defined]
+            region_meta = tuple({"id": r.id, "selector": r.selector} for r in regions)
             register_route(
                 kind="action",
                 logical_id=logical_id,
@@ -308,6 +313,7 @@ class HedronRouter(APIRouter):
                     "csrf": "required for unsafe cookie-authenticated methods",
                     "swap": "innerHTML",
                     "validation_fragment": "form error components",
+                    "fragment_regions": str(region_meta),
                 },
             )
             return fn

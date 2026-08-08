@@ -1,4 +1,4 @@
-"""Authenticated team-admin CRUD reference application (0.18 train)."""
+"""Authenticated team-admin CRUD reference application (0.20 train)."""
 
 from __future__ import annotations
 
@@ -47,6 +47,7 @@ from hedron.routing.reverse import ComponentRef
 from hedron.security.csrf import csrf_token_for_request, prepare_csrf_from_request, validate_csrf
 from hedron.security.policy import SecurityPolicy
 from hedron_core import ColorMode, Field, FormModel, Model, addressable, resolve_color_mode
+from hedron_core.interaction import FragmentRegion
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_data import (
     AsyncInMemoryDataSource,
@@ -60,6 +61,14 @@ from hedron_data import (
 )
 
 Role = Literal["admin", "member"]
+
+USER_TABLE_REGION = (
+    FragmentRegion(
+        id="user-table",
+        selector="#user-table",
+        description="Users table fragment",
+    ),
+)
 
 
 @dataclass
@@ -198,6 +207,18 @@ def users_table_component(store: Store) -> Table:
     return Table(headers=["ID", "Name", "Email", "Role"], rows=rows, caption="Team members")
 
 
+def _user_edit_nav(store: Store) -> Stack:
+    """Landmark list of edit pages for human AT / keyboard facilitators."""
+    links = [
+        html.a(
+            f"Edit {user.name}",
+            href=SafeUrl.parse(f"/users/{user.id}/edit", purpose=UrlPurpose.NAVIGATION),
+        )
+        for user in store.list_users()
+    ]
+    return Stack(Heading("Edit users", level=3), *links)
+
+
 @addressable(distribution="hedron-reference")
 async def user_table(store: Store = Depends(get_store)) -> Table:
     return users_table_component(store)
@@ -209,6 +230,8 @@ def dashboard_page(
     username: str,
     form_errors: tuple[str, ...] = (),
     request: Request | None = None,
+    store: Store | None = None,
+    flash: str | None = None,
 ) -> Page:
     table_ref = ComponentRef(
         logical_id="hedron-reference:examples.reference-app.app.user_table",
@@ -222,6 +245,40 @@ def dashboard_page(
         preference = read_color_mode_preference(request)
         if preference is not ColorMode.SYSTEM:
             data_theme = resolve_color_mode(preference)
+    if flash is None and request is not None:
+        flash = request.query_params.get("msg")
+    children: list[Any] = [
+        Heading("Users", level=2),
+        Lazy(ref=table_ref, target_id="user-table"),
+        RefreshButton(ref=table_ref, target="#user-table", label="Refresh users"),
+    ]
+    if flash:
+        children.append(Alert(flash, tone="success", title="Status"))
+    children.extend(
+        [
+            Card(
+                _create_form(csrf_token=csrf_token, form_errors=form_errors),
+                title="Create user",
+            ),
+        ]
+    )
+    if store is not None:
+        children.append(_user_edit_nav(store))
+    children.extend(
+        [
+            Alert(
+                "Authenticated CRUD with CSRF, lazy addressable table, and HTMX swaps.",
+                tone="info",
+                title="Phase 0.3",
+            ),
+            _phase05_section(
+                csrf_token=csrf_token,
+                preference=preference,
+            ),
+            _phase06_section(csrf_token=csrf_token),
+            _status_banner_section(request=request),
+        ]
+    )
     return Page(
         Header(
             Heading("Hedron Team Admin", level=1),
@@ -230,30 +287,7 @@ def dashboard_page(
                 Text(f"Signed in as {username}"),
             ),
         ),
-        Main(
-            Section(
-                Stack(
-                    Heading("Users", level=2),
-                    Lazy(ref=table_ref, target_id="user-table"),
-                    RefreshButton(ref=table_ref, target="#user-table", label="Refresh users"),
-                    Card(
-                        _create_form(csrf_token=csrf_token, form_errors=form_errors),
-                        title="Create user",
-                    ),
-                    Alert(
-                        "Authenticated CRUD with CSRF, lazy addressable table, and HTMX swaps.",
-                        tone="info",
-                        title="Phase 0.3",
-                    ),
-                    _phase05_section(
-                        csrf_token=csrf_token,
-                        preference=preference,
-                    ),
-                    _phase06_section(csrf_token=csrf_token),
-                    _status_banner_section(request=request),
-                )
-            )
-        ),
+        Main(Section(Stack(*children))),
         Footer(Text("© Hedron reference application")),
         title="Team Admin",
         lang="en",
@@ -488,6 +522,81 @@ def _create_form(*, csrf_token: str, form_errors: tuple[str, ...] = ()) -> Any:
     )
 
 
+def _edit_form(*, user: User, csrf_token: str, form_errors: tuple[str, ...] = ()) -> Any:
+    import json
+
+    from hedron import Form
+
+    action = f"/users/{user.id}"
+    return Form(
+        FormErrors(form_errors),
+        html.input(type="hidden", name="csrf_token", value=csrf_token),
+        FormField(
+            name="name",
+            label="Name",
+            control=TextInput("name", value=user.name, required=True),
+            required=True,
+        ),
+        FormField(
+            name="email",
+            label="Email",
+            control=TextInput("email", type="email", value=user.email, required=True),
+            required=True,
+        ),
+        FormField(
+            name="role",
+            label="Role",
+            control=Select(
+                "role",
+                options=[("member", "Member"), ("admin", "Admin")],
+                value=user.role,
+                required=True,
+            ),
+            required=True,
+        ),
+        SubmitButton("Save changes"),
+        action=SafeUrl.parse(action, purpose=UrlPurpose.FORM_ACTION),
+        method="post",
+        **{  # type: ignore[arg-type]
+            "hx-post": action,
+            "hx-target": "#user-table",
+            "hx-swap": "innerHTML",
+            "hx-headers": json.dumps({"X-CSRF-Token": csrf_token}),
+        },
+    )
+
+
+def edit_user_page(
+    *,
+    user: User,
+    csrf_token: str,
+    username: str,
+    form_errors: tuple[str, ...] = (),
+) -> Page:
+    return Page(
+        Header(
+            Heading(f"Edit {user.name}", level=1),
+            Nav(
+                html.a("Back to dashboard", href=SafeUrl.parse("/", purpose=UrlPurpose.NAVIGATION)),
+                Text(f"Signed in as {username}"),
+            ),
+        ),
+        Main(
+            Section(
+                Stack(
+                    Card(
+                        _edit_form(user=user, csrf_token=csrf_token, form_errors=form_errors),
+                        title="Update user",
+                    )
+                )
+            )
+        ),
+        Footer(Text("© Hedron reference application")),
+        title=f"Edit {user.name}",
+        lang="en",
+    )
+
+
 def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
     from pathlib import Path
 
@@ -535,45 +644,110 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
     users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
 
     @app.page("/")
-    def home(request: Request, username: Annotated[str, Depends(require_user)]) -> Page:
+    def home(
+        request: Request,
+        username: Annotated[str, Depends(require_user)],
+        store: Annotated[Store, Depends(get_store)],
+    ) -> Page:
         policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("strict"))
         token = csrf_token_for_request(request, policy)
-        return dashboard_page(csrf_token=token, username=username, request=request)
+        return dashboard_page(
+            csrf_token=token,
+            username=username,
+            request=request,
+            store=store,
+        )
 
-    @users.component("/table")
+    @users.component("/table", fragment_regions=USER_TABLE_REGION)
     async def table(store: Annotated[Store, Depends(get_store)]) -> Table:
         return users_table_component(store)
 
     users.include_component(user_table, path="/table-shared", dependencies=[Depends(require_user)])
 
-    @users.action("", method="POST")
+    @users.page("/{user_id}/edit")
+    def edit_user(
+        request: Request,
+        user_id: str,
+        username: Annotated[str, Depends(require_user)],
+        store: Annotated[Store, Depends(get_store)],
+    ) -> Page:
+        user = store.users.get(user_id)
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("strict"))
+        token = csrf_token_for_request(request, policy)
+        return edit_user_page(user=user, csrf_token=token, username=username)
+
+    @users.action("", method="POST", fragment_regions=USER_TABLE_REGION)
     async def create_user(
+        request: Request,
         name: Annotated[str, Form()],
         email: Annotated[str, Form()],
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
-        _: str = Depends(require_admin),
-    ) -> Table | ErrorState:
+        username: str = Depends(require_admin),
+    ) -> Table | ErrorState | Page | Any:
+        from hedron.htmx import is_htmx_request
+        from hedron.security.redirects import redirect_local
+
         try:
             UserForm(name=name, email=email, role=role)
         except Exception as exc:  # noqa: BLE001
-            return ErrorState(str(exc), retry_href="/users/table", target="#user-table")
+            if is_htmx_request(request):
+                return ErrorState(str(exc), retry_href="/users/table", target="#user-table")
+            policy = getattr(
+                request.app.state, "hedron_security", SecurityPolicy.from_name("strict")
+            )
+            token = csrf_token_for_request(request, policy)
+            return dashboard_page(
+                csrf_token=token,
+                username=username,
+                form_errors=(str(exc),),
+                request=request,
+                store=store,
+            )
         store.create(name=name, email=email, role=role)
-        return users_table_component(store)
+        if is_htmx_request(request):
+            return users_table_component(store)
+        return redirect_local("/?msg=User%20created")
 
-    @users.action("/{user_id}", method="POST")
+    @users.action("/{user_id}", method="POST", fragment_regions=USER_TABLE_REGION)
     async def update_user(
+        request: Request,
         user_id: str,
         name: Annotated[str, Form()],
         email: Annotated[str, Form()],
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
-        _: str = Depends(require_admin),
-    ) -> Table:
-        store.update(user_id, name=name, email=email, role=role)
-        return users_table_component(store)
+        username: str = Depends(require_admin),
+    ) -> Table | Page | Any:
+        from hedron.htmx import is_htmx_request
+        from hedron.security.redirects import redirect_local
 
-    @users.action("/{user_id}/delete", method="POST")
+        user = store.users.get(user_id)
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        try:
+            UserForm(name=name, email=email, role=role)
+        except Exception as exc:  # noqa: BLE001
+            if is_htmx_request(request):
+                return users_table_component(store)
+            policy = getattr(
+                request.app.state, "hedron_security", SecurityPolicy.from_name("strict")
+            )
+            token = csrf_token_for_request(request, policy)
+            return edit_user_page(
+                user=user,
+                csrf_token=token,
+                username=username,
+                form_errors=(str(exc),),
+            )
+        store.update(user_id, name=name, email=email, role=role)
+        if is_htmx_request(request):
+            return users_table_component(store)
+        return redirect_local("/?msg=User%20updated")
+
+    @users.action("/{user_id}/delete", method="POST", fragment_regions=USER_TABLE_REGION)
     async def delete_user(
         user_id: str,
         store: Store = Depends(get_store),
@@ -777,41 +951,96 @@ def build_plain_fastapi_app() -> FastAPI:
     router = HedronRouter(dependencies=[Depends(require_user)])
 
     @router.page("/")
-    def home(request: Request, username: Annotated[str, Depends(require_user)]) -> Page:
+    def home(
+        request: Request,
+        username: Annotated[str, Depends(require_user)],
+        store: Annotated[Store, Depends(get_store)],
+    ) -> Page:
         policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("standard"))
         token = csrf_token_for_request(request, policy)
-        return dashboard_page(csrf_token=token, username=username, request=request)
+        return dashboard_page(
+            csrf_token=token,
+            username=username,
+            request=request,
+            store=store,
+        )
 
     users = HedronRouter(prefix="/users", dependencies=[Depends(require_user)])
 
-    @users.component("/table")
+    @users.component("/table", fragment_regions=USER_TABLE_REGION)
     async def table(store: Annotated[Store, Depends(get_store)]) -> Table:
         return users_table_component(store)
 
-    @users.action("", method="POST")
+    @users.page("/{user_id}/edit")
+    def edit_user(
+        request: Request,
+        user_id: str,
+        username: Annotated[str, Depends(require_user)],
+        store: Annotated[Store, Depends(get_store)],
+    ) -> Page:
+        user = store.users.get(user_id)
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("standard"))
+        token = csrf_token_for_request(request, policy)
+        return edit_user_page(user=user, csrf_token=token, username=username)
+
+    @users.action("", method="POST", fragment_regions=USER_TABLE_REGION)
     async def create_user(
+        request: Request,
         name: Annotated[str, Form()],
         email: Annotated[str, Form()],
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
-        _: str = Depends(require_admin),
-    ) -> Table:
-        store.create(name=name, email=email, role=role)
-        return users_table_component(store)
+        username: str = Depends(require_admin),
+    ) -> Table | Page | Any:
+        from hedron.htmx import is_htmx_request
+        from hedron.security.redirects import redirect_local
 
-    @users.action("/{user_id}", method="POST")
+        try:
+            UserForm(name=name, email=email, role=role)
+        except Exception as exc:  # noqa: BLE001
+            if is_htmx_request(request):
+                return users_table_component(store)
+            policy = getattr(
+                request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
+            )
+            token = csrf_token_for_request(request, policy)
+            return dashboard_page(
+                csrf_token=token,
+                username=username,
+                form_errors=(str(exc),),
+                request=request,
+                store=store,
+            )
+        store.create(name=name, email=email, role=role)
+        if is_htmx_request(request):
+            return users_table_component(store)
+        return redirect_local("/?msg=User%20created")
+
+    @users.action("/{user_id}", method="POST", fragment_regions=USER_TABLE_REGION)
     async def update_user(
+        request: Request,
         user_id: str,
         name: Annotated[str, Form()],
         email: Annotated[str, Form()],
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
-        _: str = Depends(require_admin),
-    ) -> Table:
-        store.update(user_id, name=name, email=email, role=role)
-        return users_table_component(store)
+        username: str = Depends(require_admin),
+    ) -> Table | Page | Any:
+        from hedron.htmx import is_htmx_request
+        from hedron.security.redirects import redirect_local
 
-    @users.action("/{user_id}/delete", method="POST")
+        user = store.users.get(user_id)
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        store.update(user_id, name=name, email=email, role=role)
+        if is_htmx_request(request):
+            return users_table_component(store)
+        del username
+        return redirect_local("/?msg=User%20updated")
+
+    @users.action("/{user_id}/delete", method="POST", fragment_regions=USER_TABLE_REGION)
     async def delete_user(
         user_id: str,
         store: Store = Depends(get_store),

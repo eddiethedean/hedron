@@ -90,18 +90,20 @@ def test_create_user_csrf_and_admin(hedron_client: TestClient) -> None:
     )
     assert denied.status_code == 403
 
+    hx = {"HX-Request": "true", "HX-Target": "#user-table"}
     created = hedron_client.post(
         "/users",
-        headers={**_auth(), "X-CSRF-Token": token},
+        headers={**_auth(), "X-CSRF-Token": token, **hx},
         data={"name": "New User", "email": "new@example.com", "role": "member"},
     )
     assert created.status_code == 200
     assert "New User" in created.text
+    assert "<!DOCTYPE" not in created.text
 
-    # Form-field CSRF path (no header) must also succeed.
+    # Form-field CSRF path (no header) must also succeed on the HTMX fragment path.
     form_ok = hedron_client.post(
         "/users",
-        headers=_auth(),
+        headers={**_auth(), **hx},
         data={
             "name": "Form Token",
             "email": "form@example.com",
@@ -114,19 +116,67 @@ def test_create_user_csrf_and_admin(hedron_client: TestClient) -> None:
 
     member = hedron_client.post(
         "/users",
-        headers={**_auth("member"), "X-CSRF-Token": token},
+        headers={**_auth("member"), "X-CSRF-Token": token, **hx},
         data={"name": "Nope", "email": "nope@example.com", "role": "member"},
     )
     assert member.status_code == 403
+
+
+def test_create_user_progressive_enhancement_redirects(hedron_client: TestClient) -> None:
+    """No HX-Request → classic POST redirects to full Page (PE-019 / human AT corpus)."""
+    import re
+
+    seeded = hedron_client.get("/", headers=_auth())
+    hidden = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', seeded.text)
+    assert hidden
+    token = hidden.group(1)
+    created = hedron_client.post(
+        "/users",
+        headers={**_auth(), "X-CSRF-Token": token},
+        data={"name": "PE User", "email": "pe@example.com", "role": "member"},
+        follow_redirects=False,
+    )
+    assert created.status_code == 303
+    location = created.headers.get("location", "")
+    assert "msg=" in location
+    follow = hedron_client.get(location, headers=_auth())
+    assert follow.status_code == 200
+    assert "<!DOCTYPE html>" in follow.text or "<html" in follow.text.lower()
+    assert "PE User" in follow.text or "User created" in follow.text
+    assert "Edit users" in follow.text
+
+
+def test_edit_user_page_and_progressive_update(hedron_client: TestClient) -> None:
+    import re
+
+    seeded = hedron_client.get("/", headers=_auth())
+    assert "Edit Grace Hopper" in seeded.text
+    edit = hedron_client.get("/users/2/edit", headers=_auth())
+    assert edit.status_code == 200
+    assert "Update user" in edit.text
+    assert "Grace Hopper" in edit.text
+    hidden = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', edit.text)
+    assert hidden
+    token = hidden.group(1)
+    updated = hedron_client.post(
+        "/users/2",
+        headers={**_auth(), "X-CSRF-Token": token},
+        data={"name": "Grace PE", "email": "grace@example.com", "role": "member"},
+        follow_redirects=False,
+    )
+    assert updated.status_code == 303
+    follow = hedron_client.get(updated.headers["location"], headers=_auth())
+    assert "Grace PE" in follow.text or "User updated" in follow.text
 
 
 def test_update_and_delete_user(hedron_client: TestClient) -> None:
     seeded = hedron_client.get("/", headers=_auth())
     token = seeded.cookies.get("hedron_csrf")
     assert token
+    hx = {"HX-Request": "true", "HX-Target": "#user-table"}
     updated = hedron_client.post(
         "/users/2",
-        headers={**_auth(), "X-CSRF-Token": token},
+        headers={**_auth(), "X-CSRF-Token": token, **hx},
         data={"name": "Grace Updated", "email": "grace@example.com", "role": "member"},
     )
     assert updated.status_code == 200
@@ -134,7 +184,7 @@ def test_update_and_delete_user(hedron_client: TestClient) -> None:
 
     deleted = hedron_client.post(
         "/users/2/delete",
-        headers={**_auth(), "X-CSRF-Token": token},
+        headers={**_auth(), "X-CSRF-Token": token, **hx},
         data={},
     )
     assert deleted.status_code == 200

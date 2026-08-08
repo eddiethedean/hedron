@@ -208,6 +208,10 @@
                 ev.preventDefault();
                 td.blur();
                 if ((payload.saveMode || "batch") === "row") this._save();
+              } else if (ev.key === "Escape") {
+                ev.preventDefault();
+                td.textContent = td.dataset.original || "";
+                td.blur();
               }
             });
           }

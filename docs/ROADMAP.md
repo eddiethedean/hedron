@@ -1385,11 +1385,12 @@ settlement. Gate IDs:
 
 ## 0.21 — Human assistive-technology evaluation (`v0.21.0`)
 
-**Status:** Refined / Planned (owned destination for D-050; decision **D-052**). Compensated
-disabled-participant and VoiceOver/NVDA/TalkBack manual evaluation deferred from `AT-019` /
-`v0.19.0`. Does not block the 0.19 or 0.20 zero-Deferred cuts. Packet refined: gate IDs,
-protocol, and acceptance artifacts are owned here. Execution sessions and Verified flip remain
-follow-on cut work. Owning RFC baseline: [RFC-0055](rfcs/RFC-0055-A11Y-GOVERNANCE.md)
+**Status:** Engineering-complete / sessions outstanding (owned destination for D-050; decision
+**D-052**). Compensated disabled-participant and VoiceOver/NVDA/TalkBack manual evaluation
+deferred from `AT-019` / `v0.19.0`. Does not block the 0.19 or 0.20 zero-Deferred cuts. Protocol
+(`PROTOCOL-021`) is Verified; reference-app task corpus and `verify_pkg_21` landed on the 0.20
+train. **`SR-021` / `PARTICIPANT-021` remain Planned** until real sessions. Owning RFC baseline:
+[RFC-0055](rfcs/RFC-0055-A11Y-GOVERNANCE.md)
 (amended). Acceptance checklist: [RELEASE_0_21.md](acceptance/RELEASE_0_21.md). Evidence:
 [release-gate-0.21.toml](acceptance/release-gate-0.21.toml). Protocol:
 [acceptance/human-at/](acceptance/human-at/).
@@ -1446,7 +1447,8 @@ HTMX fragment path), fragment status/refresh, DataEditor smoke.
 - Automatic WCAG / legal / certification / VPAT / ACR claims.
 - Expanding Verified matrix to JAWS / iOS VoiceOver / voice-switch as cut blockers.
 - CSRF / SecurityPolicy composition (owned by **0.22** / D-051).
-- Requiring participant scheduling or hardware procurement to mark the packet Refined / Planned.
+- Requiring participant scheduling or hardware procurement to mark engineering prep complete
+  (sessions remain a separate Verified-cut step).
 
 ### Exit gate
 
@@ -1794,5 +1796,5 @@ Scope may move between future `0.x` phases through an accepted roadmap revision,
 must always retain an owner, rationale, destination, and public stability impact. Phase **0.20**
 owns the post-0.11 host-security and adapter-parity packet (D-051). Phase **0.22** owns the CSRF /
 SecurityPolicy composition split (#36–#38) so 0.20 stays cuttable without a new CSRF protocol.
-Phase **0.21** owns the human AT packet from D-050 / D-052 (Refined / Planned). These additions
-do not renumber earlier phases.
+Phase **0.21** owns the human AT packet from D-050 / D-052 (engineering-complete /
+sessions outstanding). These additions do not renumber earlier phases.

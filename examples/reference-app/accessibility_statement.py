@@ -18,8 +18,9 @@ def build_evidence_inventory() -> EvidenceInventory:
         contracts=["Page", "Main", "Form", "DataTable", "DataEditor"],
         known_limitations=[
             "Charts and third-party embeds may require author-supplied text alternatives.",
-            "Human screen-reader evaluation is owned by Hedron 0.21 (D-052); "
-            "protocol under docs/acceptance/human-at/ — sessions not yet Verified.",
+            "Human screen-reader / compensated evaluation is owned by Hedron 0.21 (D-052); "
+            "engineering prep (PE create/edit, Escape on DataEditor, task-scripts) is ready — "
+            "sessions not yet Verified (see docs/acceptance/human-at/).",
         ],
         third_party_boundaries=["Plotly/Altair runtimes when hedron[charts] is installed"],
         feedback_route="mailto:security@example.invalid",
@@ -43,7 +44,8 @@ def build_statement() -> AccessibilityStatement:
         known_limitations=[
             "Demo credentials and in-memory backends are not production-ready.",
             "Automated axe scans are incomplete without human AT review "
-            "(0.21 D-052 packet Refined / Planned; see docs/acceptance/human-at/).",
+            "(0.21 D-052 engineering-complete; sessions outstanding — "
+            "docs/acceptance/human-at/).",
         ],
         alternatives=["Full-page no-JS form POST paths where forms are demonstrated"],
         tested_environments=[
@@ -51,7 +53,7 @@ def build_statement() -> AccessibilityStatement:
         ],
         assessment_approach=(
             "Hedron AccessibilityContract + AT-019 automation; human SR owned by 0.21 "
-            "(D-052) — not yet Verified"
+            "(D-052) — PROTOCOL Verified; sessions not yet Verified"
         ),
     )
 
