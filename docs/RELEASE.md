@@ -12,7 +12,7 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 **Last published train:** `v0.22.0` (packages `0.22.0` including first-party
 `hedron-extras`; Alpha charts/sample-kit/native/notebook/mcp/gradio `0.1.x`).
 
-**Prior published:** `v0.22.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
+**Prior published:** `v0.21.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
 
 **Current train:** `0.22.x` — **Published** as `v0.22.0` (CSRF composition / D-051).
 Gate index:
@@ -32,10 +32,11 @@ Production-quality maturity program (**D-053** / RFC-0056): planned packets
 
 Do not re-run tag steps for a published version.
 
-## Template: `v0.22.0` first cut
+## Record: `v0.22.0` cut
 
-Use these commands for the initial `0.22.0` publish. For later patches, replace with
-`0.22.1` / `v0.22.1` (see patch template below). ### Preconditions
+Reference commands for the `0.22.0` publish. Do **not** re-run tag steps for a published
+version. For later patches, replace with `0.22.1` / `v0.22.1` (see patch template below).
+### Preconditions
 
 1. `main` is green on CI for Python 3.11–3.14 (including MkDocs `--strict`).
 2. Package version, `__version__`, inter-package pins, and changelog entries agree:
@@ -78,11 +79,11 @@ uv run python scripts/rehearse_release.py
 4. Tag and push (trusted workflow publishes when configured):
 
 ```bash
-git tag -a v0.22.0 -m "Hedron 0.21.0"
-git push origin v0.21.0
+git tag -a v0.22.0 -m "Hedron 0.22.0"
+git push origin v0.22.0
 ```
 
-### Post-tag docs flip (docs may already claim Published `v0.22.0`)
+### Post-tag docs flip
 
 After the Git tag exists and wheels are on PyPI — **not** before inventing session evidence:
 

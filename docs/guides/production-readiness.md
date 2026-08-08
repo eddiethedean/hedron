@@ -1,6 +1,6 @@
 # Production readiness
 
-Ops-oriented checklist for **Hedron 0.21.0** (Beta; Published; last published
+Ops-oriented checklist for **Hedron 0.22.0** (Beta; Published; last published
 PyPI/git = `v0.22.0`). **Do not duplicate maturity claims here** — the authoritative
 snapshot is [What's ready today](whats-ready.md). Trust-program priorities (stable tier,
 live disposition, archetype): [Production-quality maturity](production-quality.md).

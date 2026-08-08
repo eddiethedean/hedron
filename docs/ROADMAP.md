@@ -1515,8 +1515,8 @@ Zero Deferred among 0.22-owned gate rows at cut. Gate IDs:
 
 **Status:** Planned. Part of the production-quality maturity program (**D-053** /
 [RFC-0056](rfcs/RFC-0056-PRODUCTION-QUALITY.md)). Depends on 0.21/0.22 progressing far enough
-that promotions target contracts that remain Supported after those packets; may refine in
-parallel with 0.22 packet work but must not claim 0.21 human AT as API-stable evidence.
+that promotions target contracts that remain Supported after those packets; may refine after
+Published 0.22 but must not claim 0.21 human AT as API-stable evidence.
 
 **Outcome:** The compatibility-protected `stable` tier in
 [STABILITY.md](api/STABILITY.md) covers the Supported CRUD/admin happy path (beginner facade,

@@ -21,7 +21,7 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`)
-stay on the `0.22.x` train (Published as `0.21.0`; last published
+stay on the `0.22.x` train (Published as `0.22.0`; last published
 `v0.22.0`). Alpha packages `hedron-charts`, `hedron-gradio`,
 `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, and `hedron-mcp`
 version independently (`0.1.x`) and declare `hedron-core>=0.22.0,<0.23`.

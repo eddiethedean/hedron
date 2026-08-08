@@ -2,7 +2,7 @@
 
 Per-package CHANGELOG files are the source of truth for shipped commits. For the
 adopter-facing train summary, start with [What’s new in 0.22](whats-new-0.22.md)
-(0.21 train — **Published** as **v0.21.0**) and
+(0.22 train — **Published** as **v0.22.0**) and
 [Release notes](release-notes.md).
 
 ## Narrative “what’s new”
@@ -13,7 +13,7 @@ adopter-facing train summary, start with [What’s new in 0.22](whats-new-0.22.m
 - [What’s new in 0.19](whats-new-0.19.md) — accessibility engineering / inclusive authoring
 - [Release notes](release-notes.md) — published train summary + earlier table
 - [What’s new in 0.18](whats-new-0.18.md) — 0.18 narrative deep-dive
-- [Upgrade guide](upgrade.md) — breaking changes across 0.8 → 0.21
+- [Upgrade guide](upgrade.md) — breaking changes across 0.8 → 0.22
 
 ## Package CHANGELOGs (GitHub)
 

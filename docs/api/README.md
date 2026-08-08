@@ -1,6 +1,6 @@
 # Public API
 
-Hand-maintained **contracts** for shipped surfaces on the **0.21** train, plus
+Hand-maintained **contracts** for shipped surfaces on the **0.22** train, plus
 [Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. This is **not** a complete
 generated reference of every `hedron.__all__` name — use the [coverage map](COVERAGE.md)
 and prefer Autodoc / source when an outline page lacks an Errors section.

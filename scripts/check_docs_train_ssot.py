@@ -78,6 +78,13 @@ CHECKED = [
     ROOT / "packages" / "hedron-conformance" / "README.md",
     ROOT / "docs" / "packages" / "hedron-extras.md",
     ROOT / "scripts" / "README.md",
+    ROOT / "docs" / "guides" / "enterprise-diligence.md",
+    ROOT / "docs" / "guides" / "production-readiness.md",
+    ROOT / "docs" / "guides" / "performance.md",
+    ROOT / "docs" / "guides" / "dashboards.md",
+    ROOT / "docs" / "api" / "JINJA.md",
+    ROOT / "docs" / "api" / "MOUNT.md",
+    ROOT / "docs" / "GLOSSARY.md",
     ROOT / "docs" / "CONTRIBUTING.md",
 ]
 
@@ -248,6 +255,17 @@ STALE = [
     re.compile(r"hedron&gt;=0\.22\.0,&lt;0\.22", re.I),
     re.compile(r"hedron>=0\.22\.0,<0\.22(?!\d)", re.I),
     re.compile(r"Next: <strong>0\.22</strong>", re.I),
+    re.compile(r"living \*\*0\.21\*\* train", re.I),
+    re.compile(r"living \*\*0\.20\*\* train", re.I),
+    re.compile(r"on the \*\*0\.21\*\* train", re.I),
+    re.compile(r"Published as `0\.21\.0`", re.I),
+    re.compile(r"last published PyPI = `0\.21\.0`", re.I),
+    re.compile(r"Hedron \*\*0\.21\.0\*\*", re.I),
+    re.compile(r"\(0\.21 train — \*\*Published\*\*", re.I),
+    re.compile(r"git push origin v0\.21\.0", re.I),
+    re.compile(r'-m "Hedron 0\.21\.0"', re.I),
+    re.compile(r"CSRF composition → 0\.22", re.I),
+    re.compile(r"train is \*\*0\.21\.x\*\*", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.
