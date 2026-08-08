@@ -22,8 +22,9 @@ uvx --from "hedron>=0.21.0,<0.22" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
-Prefer a **clean virtualenv** (Hedron needs FastAPI `>=0.141.1,<0.142`). Pin production
-installs with `hedron>=0.21.0,<0.22`.
+Prefer a **clean virtualenv** (Hedron needs FastAPI `>=0.141.1,<0.142` — use a fresh
+env if your project already pins an older FastAPI). Pin production installs with
+`hedron>=0.21.0,<0.22`.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 Click **Refresh status**; the page updates without a full reload (HTMX swaps a small HTML
@@ -66,17 +67,11 @@ uvicorn app:app --reload
 <details>
 <summary>Package maturity</summary>
 
-<strong>Hedron 0.21.0</strong> — <strong>Published</strong> (last published PyPI/git =
-<code>v0.21.0</code>); pin with <code>hedron&gt;=0.21.0,&lt;0.22</code>.
-Human AT sessions remain <strong>Planned</strong> (not Supported); automated
-<code>AT-019</code> is Supported.
-<strong>Supported</strong> means the capability works on the current train when pinned;
-most public APIs remain compatibility level <code>beta</code> until listed in the small
-<strong>stable</strong> table —
-<a href="https://hedron.readthedocs.io/en/latest/getting-started/how-to-read/">maturity labels</a>.
-Capability readiness:
-<a href="https://hedron.readthedocs.io/en/latest/guides/whats-ready/">What’s ready</a>.
-If <code>hedron</code> is not on your PATH, use <code>python -m hedron</code>
+Hedron 0.21.0 is published (Beta packages — pin <code>hedron&gt;=0.21.0,&lt;0.22</code>).
+Most APIs are compatibility level <code>beta</code>; see
+<a href="https://hedron.readthedocs.io/en/latest/guides/whats-ready/">What’s ready</a>
+for Supported vs Experimental. If <code>hedron</code> is not on your PATH, use
+<code>python -m hedron</code>
 (<a href="https://hedron.readthedocs.io/en/latest/getting-started/installation/">install notes</a>).
 </details>
 

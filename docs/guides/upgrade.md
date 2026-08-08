@@ -1,10 +1,8 @@
 # Upgrade
 
-**Hedron 0.21.0** — **Published** as `v0.21.0`. From 0.20: human AT engineering train
-(protocol packet, PE corpus, fragment allowlist parity). Sessions (`SR-021` /
-`PARTICIPANT-021`) remain Planned — not Supported. See [What's ready](whats-ready.md)
-and [What's new in 0.21](whats-new-0.21.md). CSRF composition → 0.22.
-Pin `hedron>=0.21.0,<0.22` for the current published train.
+**Hedron 0.21.0** — pin `hedron>=0.21.0,<0.22`. From 0.20: human AT protocol engineering
+and PE/fragment parity. See [What's ready](whats-ready.md) and
+[What's new in 0.21](whats-new-0.21.md). CSRF composition lands in 0.22.
 
 ## Upgrade from 0.20 → 0.21
 
@@ -14,7 +12,8 @@ If you are already on **0.20.x**, pin coordinated **0.21.0** packages:
 2. Prefer `@action(..., fragment_regions=…)` (or `@component` POST) whenever HTMX sends
    `HX-Target` on mutations.
 3. Re-run your app suite; read [What's new in 0.21](whats-new-0.21.md).
-4. Do not treat human AT as Supported — automated `AT-019` remains the Supported AT evidence.
+4. Treat human screen-reader sessions as not yet Supported — automated AT evidence from
+   0.19 remains the Supported AT path (details on [What's ready](whats-ready.md)).
 
 ## Upgrade from 0.18 / 0.19 → 0.20
 

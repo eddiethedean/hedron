@@ -59,7 +59,7 @@ sandbox for hostile authors.
 
 ## Maturity vocabulary
 
-**Train** — A coordinated package version line (for example `0.20.x` / tag `v0.20.0`) that
+**Train** — A coordinated package version line (for example `0.21.x` / tag `v0.21.0`) that
 adopters pin together. “Living train” means the current published line on PyPI/git.
 
 **Package maturity (Beta / Alpha)** — PyPI packaging readiness. **Beta** flagship packages

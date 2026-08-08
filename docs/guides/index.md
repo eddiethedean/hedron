@@ -2,8 +2,9 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.20 train** (**Published** as **v0.20.0**): production security floor and adapter
-parity — [What’s new in 0.20](whats-new-0.20.md) · [What’s ready](whats-ready.md).
+**0.21 train** (**Published** as **v0.21.0**): human AT protocol engineering — [What’s new in 0.21](whats-new-0.21.md) · [What’s ready](whats-ready.md).
+
+**0.20 train** (published as **v0.20.0**): production security floor and adapter parity — [What’s new in 0.20](whats-new-0.20.md).
 
 **0.19 train** (published as **v0.19.0**): accessibility contracts,
 Explorer `/a11y`, PE forms, landmarks, and automated AT evidence —
@@ -15,7 +16,7 @@ Minimal form). This section continues with forms depth, live transports, data, s
 and ops.
 
 **Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md) · [Error codes](error-codes.md)
-(also under **Start → Help**).
+(under **Guides → Help**).
 
 Evaluating adoption? Use **Project → Evaluate**
 ([What’s ready](whats-ready.md) · [Design principles](design-principles.md)).

@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.20.0**)
+**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.21.0**)
 
 `Hedron` is the batteries-included FastAPI application. It preserves normal FastAPI
 behavior while installing Hedron route classes, response handling, lifespan composition,
@@ -65,14 +65,14 @@ parameters:
 | `include_in_schema` | all | `bool` | `True` for page/action; `False` for component | OpenAPI inclusion |
 | `dependencies` | all | FastAPI `Depends` sequence | `None` | Route dependencies (auth gates, etc.) |
 | `tags` | all | list | `None` | OpenAPI tags |
-| `fragment_regions` | `page`, `component` | sequence of `FragmentRegion` | `None` | HTMX `HX-Target` allowlist for this route |
+| `fragment_regions` | `page`, `component`, `action` | sequence of `FragmentRegion` | `None` | HTMX `HX-Target` allowlist for this route |
 | `**kwargs` | all | FastAPI route options | — | Passed through to `add_api_route` (for example `response_class`) |
 
 | Method | Description |
 |---|---|
 | `page(path, **kwargs)` | Register a PAGE route (navigation HTML; fragment when `HX-Request`) |
 | `component(path, **kwargs)` | Register a FRAGMENT route; use `methods=["POST"]` for HTMX form fragments with `fragment_regions` |
-| `action(path, **kwargs)` | Register an action route (CSRF on unsafe methods). Does **not** take `fragment_regions` — use `@component` when you need region allowlists |
+| `action(path, **kwargs)` | Register an action route (CSRF on unsafe methods). Accepts `fragment_regions` for HTMX target allowlists — same region policy as `page` / `component`. Prefer `@action` for CSRF-backed mutations that return `InteractionResult`; see [ACTION](ACTION.md) and [Mutations](../guides/mutations.md) |
 | `region(id, selector=None, description="")` | Declare a `FragmentRegion` (default selector `#{id}`) for `RefreshButton.for_region` / allowlists |
 | `fragment(path, region=..., regions=..., **kwargs)` | Alias of `component` that merges `region` / `regions` into the allowlist |
 | `include_component(descriptor, *, path, **kwargs)` | Expose an `@addressable` descriptor |
@@ -80,7 +80,7 @@ parameters:
 
 Golden-path HTMX scaffolding uses `app.region(...)` plus `@app.fragment(...)` (see
 [HTMX interactions](../guides/htmx-interactions.md)). `fragment_regions` on `page` /
-`component` remains the lower-level allowlist API.
+`component` / `action` remains the lower-level allowlist API.
 
 Also see module helpers `mount_hedron_static(app)` and `mount_build_assets(app, build_dir)`.
 

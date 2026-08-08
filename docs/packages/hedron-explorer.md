@@ -2,7 +2,7 @@
 
 Development Component Explorer for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.20.0` · pin `>=0.21.0,<0.22`  
+**Package maturity:** Beta · **Train:** `0.21.0` · pin `>=0.21.0,<0.22`  
 **Flagship extra:** `hedron[dev]` · **Import:** `hedron_explorer`  
 **Mount:** `/hedron-explorer/` when enabled · **not required in production**
 

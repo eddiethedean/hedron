@@ -167,17 +167,17 @@ Maintainer gate IDs and RFC evidence:
 
 ## Runnable examples
 
+Prefer adopter recipes first:
+
+- [Recipes](../examples/recipes/index.md) — Notes, session auth, uploads, jobs poll
+- [Flask Refresh](../examples/flask-recipe.md) · [Django Refresh](../examples/django-recipe.md)
 - FastAPI / Flask / Django reference apps — [runnable examples](../examples/runnable.md)
-- Model-demo / inference workflow:
-  [`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18)
-  · [Model demos](model-demos.md)
-- Dashboard / agent-interface:
-  [`examples/dashboard-0.17`](https://github.com/eddiethedean/hedron/tree/main/examples/dashboard-0.17)
-- Data-app surfaces:
-  [`examples/data-app-0.15`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.15)
-  · [`examples/data-app-0.16`](https://github.com/eddiethedean/hedron/tree/main/examples/data-app-0.16)
-- Live interaction (poll + experimental demos):
-  [`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
+
+Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …) are
+**maintainer evidence stubs**, not product tutorials — see
+[phase evidence](../examples/phase-evidence.md). Live interaction sample:
+[`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction)
+(polling Supported; SSE/WS experimental).
 
 ## Recommended install
 

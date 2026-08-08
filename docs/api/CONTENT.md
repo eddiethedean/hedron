@@ -7,7 +7,9 @@ status: shipped
 
 !!! note "Stability"
 
-    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
+    Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
+    Package maturity (Beta/Alpha) is separate from API level
+    (`beta` / `experimental` / `internal` / `deferred`).
 
 **Status:** Shipped in `0.6.0`
 
@@ -19,6 +21,11 @@ diagnostics with exact install commands).
 ```bash
 pip install "hedron[markdown]>=0.21.0,<0.22"
 ```
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| body (positional / children) | `str` | required | Markdown source |
+| (props) | — | — | See component page / Autodoc |
 
 ```python
 from hedron import Markdown
@@ -35,6 +42,13 @@ Rendered Markdown is sanitized through `TrustedHtml.nh3` before `html.raw`. Inst
 pip install "hedron[code]>=0.21.0,<0.22"
 ```
 
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `code` | `str` | required | Source text |
+| `lexer` | `str` | `"python"` | Pygments lexer name |
+
+**Returns:** `TrustedHtml` (sanitized highlighted markup).
+
 ```python
 from hedron import highlight_code
 from hedron_core.html import html
@@ -49,11 +63,18 @@ node = html.div(html.raw(trusted), class_="hedron-code")
 pip install "hedron[images]>=0.21.0,<0.22"
 ```
 
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `path_or_bytes` | `str \| bytes` | required | Filesystem path or raw image bytes |
+| `max_width` | `int` | `1600` | Downscale when wider |
+| `format` | `str` | `"PNG"` | Pillow output format (`PNG` → RGBA, else RGB) |
+
+**Returns:** `bytes` — encoded image bytes.
+
 ```python
 from hedron import process_image
 
-# Returns processed bytes / metadata under Pillow; see remediation if Pillow is missing.
-process_image(path_or_bytes, max_width=1200)
+png_bytes = process_image("photo.jpg", max_width=1200, format="PNG")
 ```
 
 ## `validate_email_address`
@@ -62,11 +83,27 @@ process_image(path_or_bytes, max_width=1200)
 pip install "hedron[email]>=0.21.0,<0.22"
 ```
 
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `value` | `str` | required | Address to validate |
+
+**Returns:** normalized email `str`.
+
 ```python
 from hedron import validate_email_address
 
-validate_email_address("user@example.com")  # normalized address or raises
+validate_email_address("user@example.com")
 ```
+
+## Errors
+
+| Situation | Code / behavior |
+|---|---|
+| Markdown / highlight without extra | Diagnostic with install remediation |
+| `process_image` without Pillow | `HED-CONTENT-0003` — install `hedron[images]` |
+| `validate_email_address` without email-validator | `HED-CONTENT-0004` — install `hedron[email]` |
+| Invalid email | `HED-CONTENT-0005` |
+| `TrustedHtml.nh3` without nh3 | `HED-SEC-0020` — install `hedron[sanitize]` |
 
 ## Install remediations
 

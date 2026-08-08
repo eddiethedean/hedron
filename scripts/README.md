@@ -25,7 +25,7 @@ scripts here when you add them.
 | `verify_pkg_21.py` | Phase **0.21** local packet + focused tests + `check_release_gate.py 0.21.0 --allow-planned` (no train bump) |
 | `rehearse_release.py` | Clean install rehearsal before tagging |
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
-| `verify_pkg_20.py` / `verify_pkg_19.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (current: **`verify_pkg_20.py`**) |
+| `verify_pkg_21.py` / `verify_pkg_20.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (current: **`verify_pkg_21.py`**) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

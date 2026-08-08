@@ -1,19 +1,33 @@
 # Django — greenfield or existing project
 
 Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
-The adapter does not install FastAPI. Prefer `hedron new my-app --django` for a secure
-scaffold (page + fragment regions + security headers middleware).
+The adapter does not install FastAPI.
 
-Flask/Django page + fragment routing and HTMX are **Supported**. Django
-forms bridge and bounded QuerySet DataSource are Supported. Use polling for
-job status on Django (SSE helpers stay FastAPI-flagship).
+## Golden path (scaffold + Refresh)
+
+Same success criteria as FastAPI: open the app, see Hello, click **Refresh**, watch
+the status region update without a full page reload.
+
+```bash
+# Need uv? https://docs.astral.sh/uv/getting-started/installation/
+uvx --from "hedron>=0.21.0,<0.22" hedron new my-django-app --django
+cd my-django-app && uv sync
+uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000/) — you should see
+**Hello from hedron new --django**. Click **Refresh**; the panel timestamp updates
+via HTMX into the declared `#panel` region.
+
+The scaffold includes page + fragment regions and security headers middleware.
+Set `HEDRON_SESSION_SECRET` before production.
 
 !!! tip "Try without local setup"
 
-    Open the monorepo in [Codespaces / Dev Container](../examples/try-it.md), then run the
-    Django reference slice below, or scaffold with `hedron new my-app --django`.
+    Open the monorepo in [Codespaces / Dev Container](../examples/try-it.md), then
+    scaffold with `hedron new my-app --django` or run the reference slice below.
 
-## Fastest path: clone the reference
+## Alternate: clone the reference
 
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
@@ -23,113 +37,75 @@ cd examples/django-reference
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```
 
-Open `http://127.0.0.1:8000/`. Source lives in
-[`hedron_django_ref`](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference/hedron_django_ref).
+Open `http://127.0.0.1:8000/`. Source:
+[`examples/django-reference`](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference).
 ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
 
-This reference is manage-less (home + fragment). For a greenfield Django project with
-`manage.py`, use the next section.
-
-## Greenfield (empty folder → hello)
-
-```bash
-python -m venv .venv && source .venv/bin/activate
-python -m pip install "django>=5.2,<6" "hedron-django>=0.21.0,<0.22"
-django-admin startproject mysite .
-python manage.py startapp demo
-```
-
-Wire a Hedron view (example `demo/views.py` + `mysite/urls.py`). For system checks on
-forms/QuerySet helpers, add `hedron_django.apps.HedronDjangoConfig` to `INSTALLED_APPS`
-(required for Django forms / DataSource depth; optional for a hello page):
-
-```python
-# mysite/settings.py (excerpt)
-INSTALLED_APPS = [
-    # … django.contrib.* …
-    "demo",
-    "hedron_django.apps.HedronDjangoConfig",  # recommended for forms / DataSource
-]
-```
-
-```python
-# demo/views.py
-from django.http import HttpRequest
-
-from hedron_core import Heading, Page, Text
-from hedron_django import HedronDjango, hedron_view
-
-hedron = HedronDjango()
-
-
-@hedron_view
-def home(request: HttpRequest):
-    return hedron.respond(
-        Page(Heading("Hello Django", level=1), Text("Typed components on Django."), title="Home"),
-        request,
-    )
-```
-
-```python
-# mysite/urls.py
-from django.urls import path
-
-from demo.views import home
-
-urlpatterns = [path("", home, name="home")]
-```
-
-Ensure `SessionMiddleware` and `CsrfViewMiddleware` remain in `MIDDLEWARE`, then:
-
-```bash
-python manage.py runserver
-```
-
-Open `http://127.0.0.1:8000/`.
-
-## Fastest path: existing Django project (PyPI)
+## Existing Django project (add a Refresh page)
 
 ```bash
 pip install "hedron-django>=0.21.0,<0.22" "django>=5.2,<6"
-# or: uv add "hedron-django>=0.21.0,<0.22" "django>=5.2,<6"
 ```
 
-Assume you already have a Django project with `SessionMiddleware` and
-`CsrfViewMiddleware`. Register a view:
+Add `hedron_django` to `INSTALLED_APPS` when you need forms/QuerySet helpers.
+Keep `SessionMiddleware` and `CsrfViewMiddleware` for production Django CSRF.
+
+Minimal Refresh-capable view:
 
 ```python
-# urls.py (or a urls module pointed at by ROOT_URLCONF)
+# demo/views.py
+from datetime import UTC, datetime
+
 from django.http import HttpRequest
 from django.urls import path
 
-from hedron_core import Heading, Page, Text
-from hedron_django import HedronDjango, hedron_view
+from hedron_core import FragmentRegion, InteractionResult, Page, Text, html
+from hedron_core.interaction import InteractionPolicy
+from hedron_django import hedron_view
 
-hedron = HedronDjango()
+PANEL = FragmentRegion(id="panel", selector="#panel")
+
+
+def panel_body() -> object:
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return html.div(Text(f"Django status · {stamp}"), id="panel")
 
 
 @hedron_view
 def home(request: HttpRequest):
-    return hedron.respond(
-        Page(Heading("Hello Django", level=1), Text("Typed components on Django."), title="Home"),
-        request,
+    return Page(
+        html.div(
+            Text("Hello Django"),
+            panel_body(),
+            html.button(
+                Text("Refresh"),
+                **{
+                    "hx-get": "/status",
+                    "hx-target": "#panel",
+                    "hx-swap": "outerHTML",
+                },
+            ),
+        ),
+        title="Home",
     )
 
 
-urlpatterns = [path("", home, name="home")]
-```
+@hedron_view(fragment_regions=(PANEL,))
+def status(request: HttpRequest):
+    return InteractionResult(
+        content=panel_body(),
+        region_id="panel",
+        policy=InteractionPolicy(declared_regions=(PANEL,)),
+    )
 
-Required middleware (order matters for CSRF/sessions):
 
-```python
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    # … auth and the rest of your stack
+urlpatterns = [
+    path("", home, name="home"),
+    path("status", status, name="status"),
 ]
 ```
+
+Wire `urlpatterns` into your `ROOT_URLCONF`, then `python manage.py runserver`.
 
 ## Portable CSRF header
 
@@ -140,25 +116,12 @@ CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"
 ```
 
 Stock Django's `X-CSRFToken` remains valid if you keep the default. Form posts may use
-`csrfmiddlewaretoken` or `csrf_token`. Safe GETs through `HedronDjango.respond` /
-`hedron_view` call `get_token` so the CSRF cookie is seeded.
-
-## Run your own project
-
-```bash
-# WSGI — install a server explicitly (Waitress is on the Supported matrix)
-pip install waitress
-waitress-serve --listen=127.0.0.1:8000 wsgi:application
-
-# ASGI
-pip install "uvicorn[standard]"
-uvicorn asgi:application --host 127.0.0.1 --port 8000
-```
+`csrfmiddlewaretoken` or `csrf_token`.
 
 ## Next
 
-- [Security](../guides/security.md) · [Upgrade](../guides/upgrade.md) · [Deployment](../guides/deployment.md)
-- Forms: `hedron_django.forms.form_to_nodes` / `validation_interaction` (CSRF helpers included).
-- QuerySets: `hedron_data.DjangoQuerySetDataSource` with an already-authorized base QS;
-  omit allowlists to deny client sort/filter. For job status use
-  [polling](../guides/live-interaction.md).
+- [HTMX interactions](../guides/htmx-interactions.md) · [Minimal form](../guides/minimal-form.md)
+- [Security](../guides/security.md) · [Ship to production](../guides/ship-to-production.md)
+- Forms: `hedron_django.forms.form_to_nodes` / `validation_interaction`
+- QuerySets: `hedron_data.DjangoQuerySetDataSource` with an already-authorized base QS
+- Job status: prefer [polling](../guides/live-interaction.md) on Django

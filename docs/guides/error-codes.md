@@ -8,15 +8,22 @@ This catalog is complete for the registered set enforced by
 
 ## Common errors (what to do)
 
-| Code | Meaning | Fix |
-|---|---|---|
-| `HED-BUILD-0003` | Production mode without a build manifest | Run `hedron build`; set `HEDRON_BUILD_DIR` if needed — [Troubleshooting](troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
-| `HED-SEC-0001` | Dangerous or invalid URL | Use `SafeUrl.parse` with the right `UrlPurpose` |
-| `HED-SEC-0006` | URL purpose mismatch for an attribute | Match purpose to `href` / `src` / `action` / redirect context |
-| `HED-SEC-0020` | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.21.0,<0.22"` |
-| `HED-RENDER-0012` | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
-| `HED-HTMX-*` / HTTP **403** on fragments | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
-| CSRF **403** on POST | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
+| Code | Severity | Meaning | Fix |
+|---|---|---|---|
+| `HED-BUILD-0003` | blocker | Production mode without a build manifest | Run `hedron build`; set `HEDRON_BUILD_DIR` if needed — [Troubleshooting](troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
+| `HED-BUILD-0004` | blocker | Runtime compile refused in production | Prebuild assets; do not rely on runtime CSS compile under `HEDRON_ENV=production` |
+| `HED-SEC-0001` | blocker | Dangerous or invalid URL | Use `SafeUrl.parse` with the right `UrlPurpose` |
+| `HED-SEC-0006` | blocker | URL purpose mismatch for an attribute | Match purpose to `href` / `src` / `action` / redirect context |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.21.0,<0.22"` |
+| `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
+| `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
+| CSRF **403** on POST | blocker | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
+| `HED-PLUGIN-0001` | blocker | Named plugin missing from entry points | Install the package or remove the name from `[tool.hedron].plugins` |
+| `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
+| `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
+| `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.21.0,<0.22"` |
+| Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
 

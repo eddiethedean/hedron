@@ -21,7 +21,7 @@ Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). A f
     See [How to read](../getting-started/how-to-read.md) and
     [What’s ready](../guides/whats-ready.md). Pin versions on `0.x`.
 
-## Beta extensions (`0.20.x`)
+## Beta extensions (`0.21.x`)
 
 | Package | Extra | Role |
 |---|---|---|

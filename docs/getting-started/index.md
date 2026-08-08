@@ -1,17 +1,17 @@
 # Learn Hedron
 
 **Goal (often ~5–10 minutes after Python + uv/pip are ready):** Hello + click
-**Refresh status**. Ignore Beta/Supported labels until that works. Then: HTMX second
-region → `/notes` form → pick one recipe (auth or SQLite).
+**Refresh status**. Then: HTMX second region → `/notes` form → pick one recipe
+(auth or SQLite).
 
 ## Path
 
 1. [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
 2. [Installation](installation.md) — extras, Flask/Django, common problems (as needed)
-3. [Core concepts](core-concepts.md) (optional) · [Maturity labels](how-to-read.md)
-4. [HTMX interactions](../guides/htmx-interactions.md) — extend the Refresh pattern
-5. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
-6. [Learning path](learning-path.md) — continue toward data, auth, and deploy
+3. [HTMX interactions](../guides/htmx-interactions.md) — extend the Refresh pattern
+4. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
+5. [Learning path](learning-path.md) — continue toward data, auth, and deploy
+6. [Core concepts](core-concepts.md) (optional after Hello works)
 
 Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
 Optional packages (data, charts, Explorer, …): [Package catalog](../packages/index.md).

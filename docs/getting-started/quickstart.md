@@ -97,7 +97,7 @@ returns a small HTML fragment; [HTMX](https://htmx.org) swaps it into the declar
 | `ModuleNotFoundError: hedron` after `hedron new` | Run `pip install -e .` / `uv sync` **inside** the scaffold directory |
 | FastAPI / dependency resolver errors | Use a **clean** venv; Hedron needs FastAPI `>=0.141.1,<0.142` |
 | Port 8000 already in use | `uvicorn app:app --reload --port 8001` |
-| Page loads but Refresh does nothing | Confirm you used the scaffold (not the static manual path below); see [troubleshooting](../guides/troubleshooting.md) |
+| Page loads but Refresh does nothing | Confirm HTMX static is mounted and the status region id matches; see [troubleshooting](../guides/troubleshooting.md) |
 
 More: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
 
@@ -227,40 +227,58 @@ Prefer `hedron new` for the first-hour Refresh demo. Existing-app depth:
 
 ## Alternative — manual `app.py` (no scaffold)
 
-!!! warning "Static Hello only — not the product demo"
-
-    This path skips `hedron new` and does **not** include Refresh / HTMX. Prefer the
-    scaffold above for the interactive first-hour experience. Continue to
-    [HTMX interactions](../guides/htmx-interactions.md) after you switch to a scaffolded
-    app (or add a region yourself).
-
-Use this only if you did **not** use `hedron new`. Create a project directory, install
-`hedron>=0.21.0,<0.22` and `uvicorn[standard]`, then save:
+Prefer `hedron new` when you can. This pasteable file still includes the **Refresh**
+demo so you see HTMX fragment swaps without the CLI scaffold.
 
 ```python title="app.py"
-from hedron import Card, Heading, Hedron, Page, Stack, Text
+import os
+from datetime import UTC, datetime
+
+from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
 
 app = Hedron(
     title="Acme Console",
     security="standard",
-    session_secret="replace-in-production",
+    explorer="off",
+    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
 )
+
+status = app.region("status", description="Status panel")
+
+
+def status_panel() -> object:
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return html.div(
+        Text(f"Status · {stamp}"),
+        id=status.id,
+        role="status",
+        aria={"live": "polite"},
+    )
 
 
 @app.page("/")
 def home() -> Page:
     return Page(
         Stack(
-            Heading("Acme Console", level=1),
-            Card(Text("Everything on this page came from Python components.")),
+            Text("Hello from Hedron"),
+            status_panel(),
+            RefreshButton.for_region(status, href="/status", label="Refresh status"),
         ),
         title="Home",
     )
+
+
+@app.fragment("/status", region=status)
+def status_fragment() -> object:
+    return swap(status_panel())
 ```
 
 ```bash
 uvicorn app:app --reload   # or: uv run uvicorn app:app --reload
 ```
+
+Open localhost, click **Refresh status**, and confirm the timestamp updates without a
+full reload.
 
 Set `session_secret` from the environment in real apps — see
 [Configuration](../CONFIGURATION.md). More pasteable variants:

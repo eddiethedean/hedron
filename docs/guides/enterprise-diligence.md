@@ -10,7 +10,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Version | **0.20.0** (Beta; Published — pin for production; last published PyPI = `0.20.0`) |
+| Version | **0.21.0** (Beta; Published — pin for production; last published PyPI = `0.21.0`) |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner |

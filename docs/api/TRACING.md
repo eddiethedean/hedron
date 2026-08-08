@@ -30,17 +30,34 @@ with span("handler.render", route="/"):
     ...
 ```
 
+### `configure_tracing`
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `enabled` | `bool` | `True` | Master switch |
+| `sample_rate` | `float` | `1.0` | Fraction of spans to record (`0.0`–`1.0`) |
+| `service_name` | `str` | `"hedron"` | Service name attribute |
+
+**Returns:** `TraceConfig` (also stored as process global).
+
+### `span` / `start_span`
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `name` | `str` | required | Span name |
+| `**attributes` | any | — | Span attributes (secret-redacted) |
+
+**Returns:** context manager (`span`) or span object (`start_span`). When disabled /
+unsampled, yields `TracingDisabled` (no-op).
+
 ## Public symbols
 
 | Symbol | Role |
 |---|---|
-| `configure_tracing` | Opt-in process config (`enabled`, `sample_rate`, `service_name`) |
+| `configure_tracing` | Opt-in process config |
 | `get_trace_config` | Read current config |
-| `span` / `start_span` | Redacted span context managers |
+| `span` / `start_span` | Redacted span helpers |
 | `TraceConfig` / `TracingDisabled` | Config + no-op span when off |
-
-Attributes are secret-redacted. When OpenTelemetry is missing or fails, spans become
-no-ops.
 
 ## Errors / failure modes
 
@@ -53,6 +70,6 @@ no-ops.
 
 ## Related
 
-- [What’s new in 0.13](../guides/whats-new-0.13.md)
+- [Observability](../guides/observability.md)
 - [What’s ready](../guides/whats-ready.md)
 - Autodoc members on [AUTODOC.md](AUTODOC.md)

@@ -1,6 +1,6 @@
 # Public API
 
-Hand-maintained **contracts** for shipped surfaces on the **0.20** train, plus
+Hand-maintained **contracts** for shipped surfaces on the **0.21** train, plus
 [Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. This is **not** a complete
 generated reference of every `hedron.__all__` name — use the [coverage map](COVERAGE.md)
 and prefer Autodoc / source when an outline page lacks an Errors section.
@@ -10,14 +10,15 @@ from Read the Docs). Adopters should start from the golden-path contracts below.
 
 ## Start here (golden path)
 
-After [Install → First app → HTMX → Minimal form](../getting-started/index.md), these five
+After [Install → First app → HTMX → Minimal form](../getting-started/index.md), these
 contracts match what you just used:
 
 1. [Hedron](HEDRON.md) — FastAPI application facade
 2. [Router](ROUTER.md) — `@page` / `@component` / `@action`
 3. [Page](PAGE.md) — navigable HTML documents
 4. [Interaction](INTERACTION.md) — `FragmentRegion`, `InteractionResult`
-5. [CLI](CLI.md) — `hedron check`, `routes`, `new`, `build`
+5. [Mount / path prefix](MOUNT.md) — reverse-proxy subpaths and cookie `Path`
+6. [CLI](CLI.md) — `hedron check`, `routes`, `new`, `build`
 
 !!! tip "`hedron` vs `hedron_core`"
 
@@ -47,7 +48,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 
 ## Shipped in 0.19 (still on the 0.20 train)
 
-These surfaces are implemented on the **0.20.0** train (includes the 0.9 authoring break,
+These surfaces are implemented on the **0.21.0** train (includes the 0.9 authoring break,
 0.10 live interaction, and later capability phases through 0.19).
 
 ### Application
@@ -87,7 +88,7 @@ These surfaces are implemented on the **0.20.0** train (includes the 0.9 authori
 - [Security types](SECURITY_TYPES.md)
 - [Auth](AUTH.md)
 - [Explorer](EXPLORER.md)
-- [Accessibility (`hedron_core.a11y`)](A11Y.md) — 0.19 train (published as v0.19.0; living train 0.20 Published)
+- [Accessibility (`hedron_core.a11y`)](A11Y.md) — 0.19 train (published as v0.19.0; living train 0.21 Published)
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
 - [API diagnostics](DIAGNOSTICS.md)
@@ -101,20 +102,20 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.20)
+- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.21)
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
 - [Job interaction contracts](JOBS.md) — durable `JobBackend` + polling Supported; SSE experimental
 
 ## Current train notes
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
-  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.20**
-  (**Published** as **v0.20.0**) — [A11Y API](A11Y.md),
+  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.21**
+  (**Published** as **v0.21.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.20.0**)
+  (introduced in 0.11; Supported on **0.21.0**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.20.0**
+  — Supported on **0.21.0**
 - Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
 - Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
   narrative [What's new in 0.16](../guides/whats-new-0.16.md); package

@@ -19,6 +19,8 @@ pip install + copy `app.py` path, then the monorepo `uv sync` command.
 | [Session auth](../session-auth.md) | Login / logout with Starlette sessions | Demo credentials only; `/` redirects to login |
 | [File upload](../file-upload.md) | CSRF-safe multipart upload | In-memory / local demo — no durable store |
 | [Jobs poll](../jobs-poll.md) | `Poll` + `job_status_response` | In-memory backend — single process only |
+| [Flask Refresh](../flask-recipe.md) | `hedron new --flask` + HTMX Refresh | Adapter host (no FastAPI) |
+| [Django Refresh](../django-recipe.md) | `hedron new --django` + HTMX Refresh | Django `>=5.2,<6` |
 
 Also useful:
 

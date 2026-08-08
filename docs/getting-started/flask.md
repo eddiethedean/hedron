@@ -1,39 +1,50 @@
 # Flask — greenfield or existing app
 
-Use `hedron-flask` when your app is Flask-native. Prefer
-`hedron new my-app --flask` for a secure scaffold (page + fragment regions, no FastAPI),
-or create/extend a Flask app yourself. The adapter renders the same `hedron-core`
-components and `InteractionResult` values as the FastAPI flagship—without installing FastAPI.
+Use `hedron-flask` when your app is Flask-native. The adapter renders the same
+`hedron-core` components and `InteractionResult` values as the FastAPI flagship—
+without installing FastAPI.
 
-Flask/Django page + fragment routing and HTMX are Supported. Prefer
-`init_app` + `HedronBlueprint` for application factories; the constructor form remains
-supported. Use polling for job status on Flask (SSE helpers stay FastAPI-flagship).
+## Golden path (scaffold + Refresh)
+
+Same success criteria as FastAPI: open the app, see Hello, click **Refresh**, watch
+the status region update without a full page reload.
+
+```bash
+# Need uv? https://docs.astral.sh/uv/getting-started/installation/
+uvx --from "hedron>=0.21.0,<0.22" hedron new my-flask-app --flask
+cd my-flask-app && uv sync && uv run flask --app app run
+```
+
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000/) — you should see
+**Hello from hedron new --flask**. Click **Refresh**; the panel timestamp updates
+via HTMX into the declared `#panel` region.
+
+The scaffold includes page + fragment regions under `security="standard"`.
+Set `HEDRON_SESSION_SECRET` before production.
 
 !!! tip "Try without local setup"
 
-    Open the monorepo in [Codespaces / Dev Container](../examples/try-it.md), then run the
-    Flask reference slice from `examples/flask-reference/README.md`, or scaffold with
-    `hedron new my-app --flask`.
+    Open the monorepo in [Codespaces / Dev Container](../examples/try-it.md), then
+    scaffold with `hedron new my-app --flask` or run
+    [`examples/flask-reference`](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference).
 
-## Greenfield (empty folder → hello)
+## Alternate: manual factory (with Refresh)
 
 ```bash
-# Scaffold (recommended)
-uvx --from "hedron>=0.21.0,<0.22" hedron new my-flask-app --flask
-cd my-flask-app && uv sync && uv run flask --app app run
-
-# Or install the adapter only:
 python -m venv .venv && source .venv/bin/activate
 python -m pip install "hedron-flask>=0.21.0,<0.22"
 ```
 
-Save as `app.py` (application factory) if you are not using the scaffold:
+Save as `app.py`:
 
 ```python
+import os
+from datetime import UTC, datetime
+
 from flask import Flask
 
-from hedron_core import Heading, Page, Text
-from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core import FragmentRegion, InteractionResult, Page, Text, html
+from hedron_core.interaction import InteractionPolicy
 from hedron_flask import HedronBlueprint, HedronFlask
 
 hedron = HedronFlask()
@@ -42,19 +53,42 @@ ui = HedronBlueprint("ui", __name__)
 PANEL = FragmentRegion(id="panel", selector="#panel")
 
 
+def panel_body() -> object:
+    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
+    return html.div(Text(f"Flask status · {stamp}"), id="panel")
+
+
 @ui.page("/")
-def home():
-    return Page(Heading("Hello Flask", level=1), Text("Typed components on Flask."), title="Home")
+def home() -> Page:
+    return Page(
+        html.div(
+            Text("Hello Flask"),
+            panel_body(),
+            html.button(
+                Text("Refresh"),
+                **{
+                    "hx-get": "/status",
+                    "hx-target": "#panel",
+                    "hx-swap": "outerHTML",
+                },
+            ),
+        ),
+        title="Home",
+    )
 
 
-@ui.component("/fragment", fragment_regions=(PANEL,))
-def fragment():
-    return InteractionResult(content=Text("Fragment ok"), explanation="demo")
+@ui.component("/status", fragment_regions=(PANEL,))
+def status() -> InteractionResult:
+    return InteractionResult(
+        content=panel_body(),
+        region_id="panel",
+        policy=InteractionPolicy(declared_regions=(PANEL,)),
+    )
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    app.secret_key = "replace-in-production"
+    app.secret_key = os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production")
     hedron.init_app(app)
     app.register_blueprint(ui)
     return app
@@ -63,12 +97,13 @@ def create_app() -> Flask:
 app = create_app()
 ```
 
-Constructor style (`HedronFlask(__name__)`) still works when you do not need a factory.
-
 ```bash
 flask --app app:app run --debug
 # uv users: uv run flask --app app:app run --debug
 ```
+
+Constructor style (`HedronFlask(__name__)`) still works when you do not need a factory
+(see the scaffold `app.py`).
 
 ## CSRF
 
@@ -77,10 +112,8 @@ Safe GETs issue the `hedron_csrf` cookie. Unsafe methods on `hedron_route` and
 
 ## Next
 
-- Fastest full example: clone and run the
-  [Flask reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference)
-- [Security](../guides/security.md) · [Deployment](../guides/deployment.md) · [Adapters API](../api/ADAPTERS.md)
-- Mutations: Flask-native forms + CSRF, or Hedron forms helpers where you choose them.
-  Job status: use bounded **polling** (FastAPI SSE helpers are **experimental** —
-  see [What’s ready](../guides/whats-ready.md) and [live interaction](../guides/live-interaction.md))
-- FastAPI scaffold path: [Installation](installation.md) (`hedron new`)
+- [HTMX interactions](../guides/htmx-interactions.md) · [Minimal form](../guides/minimal-form.md)
+- [Security](../guides/security.md) · [Ship to production](../guides/ship-to-production.md)
+- [Adapters API](../api/ADAPTERS.md)
+- Job status: prefer bounded **polling** (FastAPI SSE helpers are experimental —
+  see [What’s ready](../guides/whats-ready.md))

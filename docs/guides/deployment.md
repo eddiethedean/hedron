@@ -148,6 +148,8 @@ Terminate TLS at nginx, Caddy, or your cloud load balancer. Forward
 `X-Forwarded-Proto` so Secure cookies and redirects see HTTPS. When the app is mounted
 under a subpath, configure ASGI `root_path` (uvicorn `--root-path`) or WSGI
 `SCRIPT_NAME`, and set `HEDRON_ROOT_PATH` when your deploy samples use it.
+Contract details: [Mount / path prefix](../api/MOUNT.md). Adopter one-pager:
+[Ship to production](ship-to-production.md).
 
 Disable response buffering for `text/event-stream` **only if** you use experimental SSE
 ([live interaction](live-interaction.md)). Prefer **polling** (`Poll` +

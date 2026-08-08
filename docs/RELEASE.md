@@ -130,7 +130,7 @@ Replace `0.21.1` with the next patch.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.21.0
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.21.1
 # optional: bash scripts/ci_checks.sh browser --python 3.12
 ```
 

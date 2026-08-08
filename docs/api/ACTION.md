@@ -27,13 +27,14 @@ async def delete_user(user_id: int) -> Text:
 
 ## Decorator
 
-`@router.action(path, *, method="POST", methods=None, name=None, dependencies=None, tags=None, **fastapi_kwargs)`
+`@router.action(path, *, method="POST", methods=None, name=None, dependencies=None, tags=None, fragment_regions=None, **fastapi_kwargs)`
 
 | Parameter | Description |
 |---|---|
 | `path` | Route path relative to the router prefix |
 | `method` / `methods` | HTTP verbs; unsafe methods get CSRF when enabled |
 | `dependencies` | FastAPI dependencies (auth gates, etc.) |
+| `fragment_regions` | Optional HTMX `HX-Target` allowlist (`FragmentRegion` or region id strings) |
 | Other kwargs | Passed to FastAPI `add_api_route` |
 
 Returns are rendered as fragments by default.

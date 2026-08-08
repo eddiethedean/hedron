@@ -1,12 +1,12 @@
 # Production readiness
 
-Ops-oriented checklist for **Hedron 0.20.0** (Beta; Published; last published
-PyPI/git = `v0.20.0`). **Do not duplicate maturity claims here** — the authoritative
+Ops-oriented checklist for **Hedron 0.21.0** (Beta; Published; last published
+PyPI/git = `v0.21.0`). **Do not duplicate maturity claims here** — the authoritative
 snapshot is [What's ready today](whats-ready.md). Trust-program priorities (stable tier,
 live disposition, archetype): [Production-quality maturity](production-quality.md).
 
 Also: [Compatibility](../COMPATIBILITY.md) · [Support](support.md) ·
-[Deployment](deployment.md).
+[Ship to production](ship-to-production.md) · [Deployment](deployment.md).
 
 ## Before you ship
 
@@ -35,7 +35,7 @@ SLA**. Confirm your intended surfaces against [What's ready](whats-ready.md).
 7. For SSE/WebSocket: confirm reverse-proxy buffering and timeouts ([Performance](performance.md))
 8. Pin `hedron` and extras in your lockfile
 9. Under a reverse-proxy subpath, set ASGI `root_path` and/or `HEDRON_ROOT_PATH` so session/CSRF
-   cookies use `Path=auto` ([Deployment](deployment.md); `resolve_mount_path`)
+   cookies use the mount cookie path ([Mount API](../api/MOUNT.md); [Deployment](deployment.md))
 
 ## Security posture
 

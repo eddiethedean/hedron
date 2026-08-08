@@ -163,12 +163,10 @@ Extras and troubleshooting: [installation](getting-started/installation.md).
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron **0.21.0** is **Published** on PyPI/git (`v0.21.0`).
-Pin production installs with `hedron>=0.21.0,<0.22`.
-Package maturity is **Beta**; **Supported** means the capability works on this train when pinned
-(not the same as API `stable`) — see [Understanding maturity labels](getting-started/how-to-read.md)
-and [What’s ready today](guides/whats-ready.md).
-Also: [Why Hedron](guides/why-hedron.md) · [Evaluate Hedron](guides/evaluate.md).
+Hedron **0.21.0** is published (Beta packages — pin `hedron>=0.21.0,<0.22`).
+Most APIs are compatibility level `beta`; see [What’s ready](guides/whats-ready.md) for
+Supported vs Experimental. Also: [Why Hedron](guides/why-hedron.md) ·
+[Evaluate Hedron](guides/evaluate.md).
 </details>
 
 ## Designed for inspectability
