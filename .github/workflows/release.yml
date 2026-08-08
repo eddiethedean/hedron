@@ -198,7 +198,11 @@ jobs:
       - name: Verify tag, versions, license, and changelog
         run: |
           set -euo pipefail
-          uv run --python 3.11 python scripts/check_release_gate.py "${{ steps.ref.outputs.version }}"
+          # Engineering publish for 0.21 allows Planned human-AT session gates
+          # (SR/PARTICIPANT/ARTIFACT/REMEDIATE). Drop --allow-planned only when
+          # every 0.21 row is Verified (D-052 Verified human-AT cut).
+          uv run --python 3.11 python scripts/check_release_gate.py \
+            "${{ steps.ref.outputs.version }}" --allow-planned
       - name: Build evidence bundle
         run: |
           uv run --python 3.11 python scripts/build_evidence_bundle.py
@@ -421,11 +425,22 @@ jobs:
           TAG="${{ steps.ref.outputs.tag }}"
           VERSION="${{ steps.ref.outputs.version }}"
           NOTES="$(uv run --python 3.11 python scripts/release_notes.py "$VERSION" --package hedron)"
-          if gh release view "$TAG" >/dev/null 2>&1; then
+          shopt -s nullglob
+          artifacts=(dist/*.whl dist/*.tar.gz)
+          if ((${#artifacts[@]} == 0)); then
+            echo "No dist wheels/sdists to attach (earlier steps may have failed)." >&2
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              echo "Release ${TAG} already exists; skipping create"
+            else
+              gh release create "$TAG" \
+                --title "Hedron ${VERSION}" \
+                --notes "$NOTES"
+            fi
+          elif gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists; uploading artifacts"
-            gh release upload "$TAG" dist/*.whl dist/*.tar.gz --clobber || true
+            gh release upload "$TAG" "${artifacts[@]}" --clobber || true
           else
-            gh release create "$TAG" dist/*.whl dist/*.tar.gz \
+            gh release create "$TAG" "${artifacts[@]}" \
               --title "Hedron ${VERSION}" \
               --notes "$NOTES"
           fi
