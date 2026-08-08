@@ -1,11 +1,14 @@
 # Phase 0.21 human assistive-technology evidence index.
-# Consumed by scripts/check_release_gate.py 0.21.0 (--allow-planned until full cut).
-# Zero Deferred policy for 0.21-owned rows: every row must be Verified at cut.
+# Consumed by scripts/check_release_gate.py 0.21.0.
+# Engineering publish cut (v0.21.0): PROTOCOL + REGRESS + PKG Verified; session gates
+# (SR/PARTICIPANT/ARTIFACT/REMEDIATE) stay Planned until real sessions — use
+# --allow-planned for that cut. Full D-052 Verified human-AT cut requires every row
+# Verified (zero Deferred) and --require-sessions floors.
 # Owning decision: D-052. RFC baseline: RFC-0055 (amended).
 # Protocol packet: docs/acceptance/human-at/
 # Automated AT-019 remains on 0.19; human AT complements it.
-# Engineering-complete on the 0.20 train may Verified PROTOCOL-021 only; SR/PARTICIPANT
-# stay Planned until real sessions. Use --require-sessions at Verified cut.
+# CI runs: python scripts/check_human_at_packet.py (packet shape; no sessions).
+# Verified cut commands for SR/PARTICIPANT/ARTIFACT/REMEDIATE include --require-sessions.
 
 [[evidence]]
 id = "PROTOCOL-021"
@@ -17,41 +20,41 @@ owner = "hedron"
 [[evidence]]
 id = "SR-021"
 state = "Planned"
-command = "python scripts/check_human_at_packet.py --gate SR-021"
+command = "python scripts/check_human_at_packet.py --gate SR-021 --require-sessions"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PARTICIPANT-021"
 state = "Planned"
-command = "python scripts/check_human_at_packet.py --gate PARTICIPANT-021"
+command = "python scripts/check_human_at_packet.py --gate PARTICIPANT-021 --require-sessions"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "ARTIFACT-021"
 state = "Planned"
-command = "python scripts/check_human_at_packet.py --gate ARTIFACT-021"
+command = "python scripts/check_human_at_packet.py --gate ARTIFACT-021 --require-sessions"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "REMEDIATE-021"
 state = "Planned"
-command = "python scripts/check_human_at_packet.py --gate REMEDIATE-021"
+command = "python scripts/check_human_at_packet.py --gate REMEDIATE-021 --require-sessions"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "REGRESS-021"
-state = "Planned"
+state = "Verified"
 command = "python -m pytest -q"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-021"
-state = "Planned"
+state = "Verified"
 command = "python scripts/verify_pkg_21.py"
 ci_job = "release"
 owner = "hedron"

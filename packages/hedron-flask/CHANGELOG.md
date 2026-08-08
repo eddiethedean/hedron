@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.0] — 2026-08-08
+
+### Fixed
+
+- `@action` / `include_component` honor `fragment_regions` and `allow_undeclared_targets`.
+- `respond(..., allow_undeclared_targets=...)` plumbed to component responses.
+
 ## [0.20.0] — 2026-08-07
 
 - Production security floor and adapter parity (phase 0.20 / D-051).

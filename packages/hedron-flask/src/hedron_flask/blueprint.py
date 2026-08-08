@@ -192,12 +192,19 @@ class HedronBlueprint(Blueprint):
         *,
         endpoint: str | None = None,
         methods: Sequence[str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
         **options: Any,
     ) -> Callable[[F], F]:
         method_list = list(methods or ("POST",))
 
         def decorator(view: F) -> F:
-            wrapped = wrap_hedron_view(view, require_csrf=True)
+            wrapped = wrap_hedron_view(
+                view,
+                require_csrf=True,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
             self.add_url_rule(
                 rule,
                 endpoint=endpoint,
@@ -216,6 +223,8 @@ class HedronBlueprint(Blueprint):
         path: str,
         endpoint: str | None = None,
         methods: Sequence[str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
         **options: Any,
     ) -> None:
         """Expose an ``@addressable`` factory at ``path`` (GET by default)."""
@@ -227,7 +236,12 @@ class HedronBlueprint(Blueprint):
         def view(**kwargs: Any) -> Any:
             return descriptor.factory(**kwargs)
 
-        wrapped = wrap_hedron_view(view, require_csrf=require_csrf)
+        wrapped = wrap_hedron_view(
+            view,
+            require_csrf=require_csrf,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        )
         self.add_url_rule(path, endpoint=ep, view_func=wrapped, methods=method_list, **options)
 
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Fail if adopter-facing docs claim a stale published train or banned maturity jargon.
 
-The living published line is 0.20.x (``v0.20.0``). Historical whats-new / acceptance /
+The living published line is 0.21.x (``v0.21.0``). Historical whats-new / acceptance /
 RFC phase labels are allowed. This check targets pages that assert "current"
 product maturity.
 
-Also fails when adopter install snippets pin ``hedron>=0.20.0`` (or adapter
-packages) without an upper bound ``,<0.21``.
+Also fails when adopter install snippets pin ``hedron>=0.21.0`` (or adapter
+packages) without an upper bound ``,<0.22``.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Paths that must not assert a stale *current* line or leftover Ready-to-cut 0.20.
+# Paths that must not assert a stale *current* line or leftover Ready-to-cut 0.21.
 CHECKED = [
     ROOT / "docs" / "SECURITY.md",
     ROOT / "SECURITY.md",
@@ -46,7 +46,7 @@ CHECKED = [
     ROOT / "docs" / "guides" / "evaluate.md",
     ROOT / "docs" / "guides" / "upgrade.md",
     ROOT / "docs" / "guides" / "release-notes.md",
-    ROOT / "docs" / "guides" / "whats-new-0.20.md",
+    ROOT / "docs" / "guides" / "whats-new-0.21.md",
     ROOT / "docs" / "guides" / "roadmap.md",
     ROOT / "docs" / "api" / "ADAPTERS.md",
     ROOT / "docs" / "api" / "INTERACTION.md",
@@ -69,82 +69,114 @@ STALE = [
     re.compile(r"current published train[^\n]*0\.17", re.I),
     re.compile(r"current published train[^\n]*0\.18", re.I),
     re.compile(r"current published train[^\n]*0\.19", re.I),
+    re.compile(r"current published train[^\n]*0\.20", re.I),
     re.compile(r"train is \*\*0\.16\.x\*\*", re.I),
     re.compile(r"latest published train is \*\*0\.16", re.I),
     re.compile(r"Expect \*\*`0\.17\.0`\*\*", re.I),
     re.compile(r"Expect \*\*`0\.18\.0`\*\*", re.I),
     re.compile(r"Expect \*\*`0\.19\.0`\*\*", re.I),
+    re.compile(r"Expect \*\*`0\.20\.0`\*\*", re.I),
     re.compile(r"matching `0\.16\.x` pin", re.I),
     re.compile(r"matching `0\.18\.x` pin", re.I),
     re.compile(r"matching `0\.19\.x` pin", re.I),
+    re.compile(r"matching `0\.20\.x` pin", re.I),
     re.compile(r"hedron==0\.17\.0", re.I),
     re.compile(r"verify_pkg_15\.py", re.I),
     re.compile(r"hedron>=0\.17\.0", re.I),
     re.compile(r"hedron>=0\.19\.0,<0\.20", re.I),
+    re.compile(r"hedron>=0\.20\.0,<0\.21", re.I),
     re.compile(r"capture UI remains Deferred", re.I),
     re.compile(r"Supported lines: \*\*`0\.16\.x`", re.I),
     re.compile(r"Supported lines: \*\*`0\.18\.x`", re.I),
     re.compile(r"Supported lines: \*\*`0\.19\.x`", re.I),
+    re.compile(r"Supported lines: \*\*`0\.20\.x`", re.I),
     re.compile(r"Current train — 0\.18", re.I),
     re.compile(r"Current train — 0\.19", re.I),
+    re.compile(r"Current train — 0\.20", re.I),
     re.compile(r"Current train: \*\*0\.18", re.I),
     re.compile(r"Current train: \*\*0\.19", re.I),
+    re.compile(r"Current train: \*\*0\.20", re.I),
     re.compile(r"Coordinated train: \*\*`0\.18", re.I),
     re.compile(r"Coordinated train: \*\*`0\.19", re.I),
+    re.compile(r"Coordinated train: \*\*`0\.20", re.I),
     re.compile(r"Python-first UI framework · v0\.18", re.I),
     re.compile(r"Python-first UI framework · v0\.19", re.I),
+    re.compile(r"Python-first UI framework · v0\.20", re.I),
     re.compile(r"Python-first UI framework · Ready to cut 0\.19", re.I),
     re.compile(r"Python-first UI framework · Ready to cut 0\.20", re.I),
+    re.compile(r"Python-first UI framework · Ready to cut 0\.21", re.I),
     re.compile(r"Ready to cut: <strong>Hedron 0\.19\.0</strong>", re.I),
     re.compile(r"Ready to cut: <strong>Hedron 0\.20\.0</strong>", re.I),
+    re.compile(r"Ready to cut: <strong>Hedron 0\.21\.0</strong>", re.I),
     re.compile(r"current train \(0\.19\)", re.I),
+    re.compile(r"current train \(0\.20\)", re.I),
     re.compile(r"Until `v0\.19\.0` is tagged", re.I),
     re.compile(r"Until `v0\.20\.0` is tagged", re.I),
+    re.compile(r"Until `v0\.21\.0` is tagged", re.I),
     re.compile(r"Ready to cut on `main` as `0\.19\.0`", re.I),
     re.compile(r"Ready to cut on `main` as `0\.20\.0`", re.I),
+    re.compile(r"Ready to cut on `main` as `0\.21\.0`", re.I),
     re.compile(r"Ready to cut on `main`", re.I),
     re.compile(r"Ready-to-cut", re.I),
     re.compile(r"Ready to cut / Implemented", re.I),
     re.compile(r"expects \*\*0\.19\*\*", re.I),
+    re.compile(r"expects \*\*0\.20\*\*", re.I),
     re.compile(r"Pin the \*\*0\.18 train\*\*", re.I),
     re.compile(r"Pin the \*\*0\.19 train\*\*", re.I),
+    re.compile(r"Pin the \*\*0\.20 train\*\*", re.I),
     re.compile(r"expects \*\*0\.18\*\*", re.I),
     re.compile(r"Cut-ready:\s*<strong>Hedron 0\.6\.0</strong>", re.I),
     re.compile(r"Hedron \*\*0\.18\*\* packages", re.I),
     re.compile(r"Hedron \*\*0\.19\*\* packages", re.I),
+    re.compile(r"Hedron \*\*0\.20\*\* packages", re.I),
     re.compile(r"scaffold on \*\*0\.18\.x\*\*", re.I),
     re.compile(r"scaffold on \*\*0\.19\.x\*\*", re.I),
+    re.compile(r"scaffold on \*\*0\.20\.x\*\*", re.I),
     re.compile(r"adapter depth on 0\.18\)", re.I),
     re.compile(r"InteractionResult` on \*\*0\.18\.x\*\*", re.I),
     re.compile(r"hedron-charts==0\.1\.0", re.I),
-    # Stale "last published is still 0.18/0.19" claims after v0.20.0 shipped.
+    # Stale "last published is still 0.18/0.19/0.20" claims after v0.21.0 docs flip.
     re.compile(r"last published PyPI/git = `v0\.18\.0`", re.I),
     re.compile(r"last published PyPI/git = `v0\.19\.0`", re.I),
+    re.compile(r"last published PyPI/git = `v0\.20\.0`", re.I),
     re.compile(r"Last published: <strong>v0\.18\.0</strong>", re.I),
     re.compile(r"Last published: <strong>v0\.19\.0</strong>", re.I),
+    re.compile(r"Last published: <strong>v0\.20\.0</strong>", re.I),
     re.compile(r"PyPI(?:/git)? still serve[s]? \*\*`v0\.18\.0`\*\*", re.I),
     re.compile(r"PyPI(?:/git)? still serve[s]? \*\*`v0\.19\.0`\*\*", re.I),
+    re.compile(r"PyPI(?:/git)? still serve[s]? \*\*`v0\.20\.0`\*\*", re.I),
     re.compile(r"\*\*Last published train:\*\* `v0\.18\.0`", re.I),
     re.compile(r"\*\*Last published train:\*\* `v0\.19\.0`", re.I),
+    re.compile(r"\*\*Last published train:\*\* `v0\.20\.0`", re.I),
     re.compile(r"current published[^\n]*`v0\.18\.0`", re.I),
     re.compile(r"current published[^\n]*`v0\.19\.0`", re.I),
+    re.compile(r"current published[^\n]*`v0\.20\.0`", re.I),
     re.compile(r"Last \*\*published\*\* PyPI train is \*\*0\.18", re.I),
     re.compile(r"Last \*\*published\*\* PyPI train is \*\*0\.19", re.I),
+    re.compile(r"Last \*\*published\*\* PyPI train is \*\*0\.20", re.I),
     re.compile(r"0\.19\.x` \| Ready to cut / Implemented on `main` \(not yet published\)", re.I),
     re.compile(r"0\.20\.x` \| Ready to cut / Implemented on `main` \(not yet published\)", re.I),
+    re.compile(r"0\.21\.x` \| Ready to cut / Implemented on `main` \(not yet published\)", re.I),
     re.compile(r"superseded before a public `v0\.19\.0` tag", re.I),
     re.compile(r"before a public `v0\.19\.0` tag", re.I),
     re.compile(r"before a public `v0\.20\.0` tag", re.I),
+    re.compile(r"before a public `v0\.21\.0` tag", re.I),
     re.compile(r"do \*\*not\*\* treat `0\.20\.0` as published", re.I),
     re.compile(r"Do not treat `0\.20\.0` as published", re.I),
+    re.compile(r"do \*\*not\*\* treat `0\.21\.0` as published", re.I),
+    re.compile(r"Do not treat `0\.21\.0` as published", re.I),
     re.compile(r"wait for the cut", re.I),
     re.compile(r"after `v0\.20\.0` is tagged", re.I),
     re.compile(r"after\s*\n?\s*`v0\.20\.0` is tagged", re.I),
-    # Stale "current train is still 0.15–0.19" claims after v0.20.0 shipped.
-    re.compile(r"Current published train is \*\*0\.(?:1[5-9]|18)\*\*", re.I),
+    re.compile(r"after `v0\.21\.0` is tagged", re.I),
+    re.compile(r"Living published train remains \*\*0\.20\*\*", re.I),
+    re.compile(r"living published train remains \*\*0\.20\*\*", re.I),
+    # Stale "current train is still 0.15–0.20" claims after v0.21.0 docs flip.
+    re.compile(r"Current published train is \*\*0\.(?:1[5-9]|20)\*\*", re.I),
     re.compile(r"There is no `hedron new --flask`", re.I),
     re.compile(r"Supported on the 0\.18 train", re.I),
     re.compile(r"guidance for the \*\*0\.19\*\* train", re.I),
+    re.compile(r"guidance for the \*\*0\.20\*\* train", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.
@@ -159,8 +191,8 @@ BANNED = [
 UNBOUNDED_PIN = re.compile(
     r"(?:hedron(?:\[[^\]]+\])?|hedron-(?:flask|django|core|data|explorer|jinja|"
     r"conformance|extras))"
-    r">=0\.20\.0"
-    r"(?!,?\s*<0\.21)"
+    r">=0\.21\.0"
+    r"(?!,?\s*<0\.22)"
 )
 
 BARE_EXTRA = re.compile(r"""["']hedron\[[^\]]+\]["'](?!\s*>=)""")
@@ -227,8 +259,8 @@ def _check_unbounded_pins() -> list[str]:
                 continue
             if UNBOUNDED_PIN.search(line):
                 failures.append(
-                    f"{path.relative_to(ROOT)}:{lineno}: unbounded 0.20 pin "
-                    f"(use >=0.20.0,<0.21): {line.strip()[:120]}"
+                    f"{path.relative_to(ROOT)}:{lineno}: unbounded 0.21 pin "
+                    f"(use >=0.21.0,<0.22): {line.strip()[:120]}"
                 )
             if BARE_EXTRA.search(line):
                 failures.append(
@@ -266,8 +298,8 @@ def main() -> int:
         print("\n".join(failures), file=sys.stderr)
         return 1
     print(
-        "ok: adopter docs assert Published 0.20 (v0.20.0), "
-        "upper-bound pins, and avoid Supported beta / SSOT / beachhead jargon"
+        "ok: adopter docs assert Published 0.21 (v0.21.0), "
+        "upper-bound pins, honest human-AT gap, and avoid Supported beta / SSOT / beachhead jargon"
     )
     return 0
 

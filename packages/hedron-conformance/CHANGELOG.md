@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.0] — 2026-08-08
+
+### Changed
+
+- Coordinated Beta train with phase 0.21 human AT engineering (see `hedron-core` /
+  `hedron` changelogs). Sessions (SR/PARTICIPANT) remain Planned / not Supported.
+
 ## [0.20.0] — 2026-08-07
 
 - Production security floor and adapter parity (phase 0.20 / D-051).

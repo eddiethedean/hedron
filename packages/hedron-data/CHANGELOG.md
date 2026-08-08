@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.0] — 2026-08-08
+
+### Fixed
+
+- DataEditor Escape cancels edit without queuing/saving; 403 responses skip `res.json()`.
+
 ## [0.20.0] — 2026-08-07
 
 - Production security floor and adapter parity (phase 0.20 / D-051).

@@ -1,4 +1,4 @@
-"""Authenticated team-admin CRUD reference application (0.20 train)."""
+"""Authenticated team-admin CRUD reference application (0.21 train)."""
 
 from __future__ import annotations
 
@@ -207,6 +207,18 @@ def users_table_component(store: Store) -> Table:
     return Table(headers=["ID", "Name", "Email", "Role"], rows=rows, caption="Team members")
 
 
+def _parse_user_form(name: str, email: str, role: Role) -> UserForm | str:
+    """Validate create/update fields; return ``UserForm`` or an error string."""
+    try:
+        return UserForm(name=name, email=email, role=role)
+    except Exception as exc:  # noqa: BLE001
+        return str(exc)
+
+
+def _htmx_user_form_error(message: str) -> ErrorState:
+    return ErrorState(message, retry_href="/users/table", target="#user-table")
+
+
 def _user_edit_nav(store: Store) -> Stack:
     """Landmark list of edit pages for human AT / keyboard facilitators."""
     links = [
@@ -387,8 +399,10 @@ def _phase06_section(*, csrf_token: str) -> Any:
             RefreshButton(
                 "Refresh chart fragment",
                 href="/charts/fragment",
-                target="#chart-region",
+                target="#chart-panel",
+                swap="innerHTML",
             ),
+            html.div(id="chart-panel"),
             id="chart-region",
         ),
         html.div(Text("OOB status idle"), id="oob-status"),
@@ -401,7 +415,7 @@ def _phase06_section(*, csrf_token: str) -> Any:
             method="post",
             **{
                 "hx-post": "/charts/search",
-                "hx-target": "#chart-region",
+                "hx-target": "#chart-panel",
                 "hx-sync": "closest form:drop",
             },
         ),
@@ -690,11 +704,10 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 
-        try:
-            UserForm(name=name, email=email, role=role)
-        except Exception as exc:  # noqa: BLE001
+        parsed = _parse_user_form(name, email, role)
+        if isinstance(parsed, str):
             if is_htmx_request(request):
-                return ErrorState(str(exc), retry_href="/users/table", target="#user-table")
+                return _htmx_user_form_error(parsed)
             policy = getattr(
                 request.app.state, "hedron_security", SecurityPolicy.from_name("strict")
             )
@@ -702,11 +715,11 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
             return dashboard_page(
                 csrf_token=token,
                 username=username,
-                form_errors=(str(exc),),
+                form_errors=(parsed,),
                 request=request,
                 store=store,
             )
-        store.create(name=name, email=email, role=role)
+        store.create(name=parsed.name, email=parsed.email, role=parsed.role)
         if is_htmx_request(request):
             return users_table_component(store)
         return redirect_local("/?msg=User%20created")
@@ -720,18 +733,17 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
         username: str = Depends(require_admin),
-    ) -> Table | Page | Any:
+    ) -> Table | ErrorState | Page | Any:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 
         user = store.users.get(user_id)
         if user is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-        try:
-            UserForm(name=name, email=email, role=role)
-        except Exception as exc:  # noqa: BLE001
+        parsed = _parse_user_form(name, email, role)
+        if isinstance(parsed, str):
             if is_htmx_request(request):
-                return users_table_component(store)
+                return _htmx_user_form_error(parsed)
             policy = getattr(
                 request.app.state, "hedron_security", SecurityPolicy.from_name("strict")
             )
@@ -740,21 +752,27 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
                 user=user,
                 csrf_token=token,
                 username=username,
-                form_errors=(str(exc),),
+                form_errors=(parsed,),
             )
-        store.update(user_id, name=name, email=email, role=role)
+        store.update(user_id, name=parsed.name, email=parsed.email, role=parsed.role)
         if is_htmx_request(request):
             return users_table_component(store)
         return redirect_local("/?msg=User%20updated")
 
     @users.action("/{user_id}/delete", method="POST", fragment_regions=USER_TABLE_REGION)
     async def delete_user(
+        request: Request,
         user_id: str,
         store: Store = Depends(get_store),
         _: str = Depends(require_admin),
-    ) -> Table:
+    ) -> Table | Any:
+        from hedron.htmx import is_htmx_request
+        from hedron.security.redirects import redirect_local
+
         store.delete(user_id)
-        return users_table_component(store)
+        if is_htmx_request(request):
+            return users_table_component(store)
+        return redirect_local("/?msg=User%20deleted")
 
     mount_phase05_routes(app)
     mount_phase06_routes(app)
@@ -768,7 +786,8 @@ def mount_phase06_routes(app: FastAPI) -> None:
     from hedron_charts import LineChart
 
     regions = (
-        FragmentRegion(id="chart-region", selector="#chart-region", description="Chart panel"),
+        FragmentRegion(id="chart-region", selector="#chart-region", description="Chart shell"),
+        FragmentRegion(id="chart-panel", selector="#chart-panel", description="Chart panel"),
         FragmentRegion(id="oob-status", selector="#oob-status", description="OOB status"),
     )
     router = HedronRouter(prefix="/charts", dependencies=[Depends(require_user)])
@@ -786,16 +805,16 @@ def mount_phase06_routes(app: FastAPI) -> None:
             title="Monthly revenue",
             description="Updated fragment chart.",
         )
-        oob = html.div(Text("OOB status refreshed"), id="oob-status", **{"hx-swap-oob": "true"})
         return InteractionResult(
             content=chart,
-            oob=(OobUpdate(content=oob),),
+            region_id="chart-panel",
+            oob=(OobUpdate(content=Text("OOB status refreshed"), element_id="oob-status"),),
             policy=InteractionPolicy(declared_regions=regions, vary_on_target=True),
             cache="vary-htmx",
-            explanation="Declared chart region with OOB status update",
+            explanation="Declared chart panel with OOB status update",
         )
 
-    @router.action("/search", method="POST")
+    @router.action("/search", method="POST", fragment_regions=regions)
     async def chart_search(
         request: Request,
         query: Annotated[str, Form()] = "",
@@ -813,6 +832,7 @@ def mount_phase06_routes(app: FastAPI) -> None:
                 title="Search results",
                 description=f"Filtered by {query or 'all'}.",
             ),
+            region_id="chart-panel",
             policy=InteractionPolicy(declared_regions=regions, hx_sync="drop"),
             explanation="Synchronized search form submission",
         )
@@ -993,15 +1013,14 @@ def build_plain_fastapi_app() -> FastAPI:
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
         username: str = Depends(require_admin),
-    ) -> Table | Page | Any:
+    ) -> Table | ErrorState | Page | Any:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 
-        try:
-            UserForm(name=name, email=email, role=role)
-        except Exception as exc:  # noqa: BLE001
+        parsed = _parse_user_form(name, email, role)
+        if isinstance(parsed, str):
             if is_htmx_request(request):
-                return users_table_component(store)
+                return _htmx_user_form_error(parsed)
             policy = getattr(
                 request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
             )
@@ -1009,11 +1028,11 @@ def build_plain_fastapi_app() -> FastAPI:
             return dashboard_page(
                 csrf_token=token,
                 username=username,
-                form_errors=(str(exc),),
+                form_errors=(parsed,),
                 request=request,
                 store=store,
             )
-        store.create(name=name, email=email, role=role)
+        store.create(name=parsed.name, email=parsed.email, role=parsed.role)
         if is_htmx_request(request):
             return users_table_component(store)
         return redirect_local("/?msg=User%20created")
@@ -1027,14 +1046,28 @@ def build_plain_fastapi_app() -> FastAPI:
         role: Annotated[Role, Form()] = "member",
         store: Store = Depends(get_store),
         username: str = Depends(require_admin),
-    ) -> Table | Page | Any:
+    ) -> Table | ErrorState | Page | Any:
         from hedron.htmx import is_htmx_request
         from hedron.security.redirects import redirect_local
 
         user = store.users.get(user_id)
         if user is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-        store.update(user_id, name=name, email=email, role=role)
+        parsed = _parse_user_form(name, email, role)
+        if isinstance(parsed, str):
+            if is_htmx_request(request):
+                return _htmx_user_form_error(parsed)
+            policy = getattr(
+                request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
+            )
+            token = csrf_token_for_request(request, policy)
+            return edit_user_page(
+                user=user,
+                csrf_token=token,
+                username=username,
+                form_errors=(parsed,),
+            )
+        store.update(user_id, name=parsed.name, email=parsed.email, role=parsed.role)
         if is_htmx_request(request):
             return users_table_component(store)
         del username
@@ -1042,12 +1075,18 @@ def build_plain_fastapi_app() -> FastAPI:
 
     @users.action("/{user_id}/delete", method="POST", fragment_regions=USER_TABLE_REGION)
     async def delete_user(
+        request: Request,
         user_id: str,
         store: Store = Depends(get_store),
         _: str = Depends(require_admin),
-    ) -> Table:
+    ) -> Table | Any:
+        from hedron.htmx import is_htmx_request
+        from hedron.security.redirects import redirect_local
+
         store.delete(user_id)
-        return users_table_component(store)
+        if is_htmx_request(request):
+            return users_table_component(store)
+        return redirect_local("/?msg=User%20deleted")
 
     mount_phase05_routes(app)
     mount_phase06_routes(app)

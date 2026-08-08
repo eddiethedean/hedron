@@ -35,7 +35,7 @@ Capability phases are numbered `0.N`. The initial release for that phase is **`v
 Phase **0.20** maps to packages **`0.20.x`** (current **`0.20.0`** on `main`), not a patch of 0.1.
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
-Pin production installs with `hedron>=0.20.0,<0.21` on the current train (last
+Pin production installs with `hedron>=0.21.0,<0.22` on the current train (last
 published PyPI/git is `v0.20.0`).
 
 ## Public docs vs maintainer corpus

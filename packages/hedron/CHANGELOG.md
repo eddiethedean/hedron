@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.21.0] — 2026-08-08
+
+### Added
+
+- `@action` / `include_component` / page+component accept `fragment_regions` and
+  `allow_undeclared_targets` (parity with Flask/Django).
+- Human AT engineering prep on the reference app (PE create/update/delete, ErrorState).
+
+### Fixed
+
+- Chart OOB / fragment host layout; HTMX mutation validation ErrorState parity.
+- Docs: `@action` + `fragment_regions` contract aligned with code.
+
 ## [0.20.0] — 2026-08-07
 
 - Production security floor and adapter parity (phase 0.20 / D-051).

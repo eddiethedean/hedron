@@ -481,11 +481,12 @@ nav:
       - Support: guides/support.md
       - Evidence pack: guides/evidence-pack.md
     - Public roadmap: guides/roadmap.md
-    - Upgrade to 0.20: guides/upgrade.md
+    - Upgrade to 0.21: guides/upgrade.md
     - Release notes: guides/release-notes.md
-    - What's new in 0.20: guides/whats-new-0.20.md
+    - What's new in 0.21: guides/whats-new-0.21.md
     - Package changelogs: guides/changelog.md
     - Earlier what's-new (archive):
+      - 0.20: guides/whats-new-0.20.md
       - 0.19: guides/whats-new-0.19.md
       - 0.18: guides/whats-new-0.18.md
       - 0.17: guides/whats-new-0.17.md

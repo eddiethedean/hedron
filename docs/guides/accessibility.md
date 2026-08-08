@@ -5,7 +5,7 @@ certification. Authors remain responsible for labels, focus, and interaction pat
 
 **0.19** ships accessibility engineering APIs (`hedron_core.a11y`), Explorer review,
 progressive-enhancement forms, landmarks, and automated Playwright/axe evidence.
-Human screen-reader evaluation is **Deferred → 0.21**.
+Human screen-reader evaluation is **Planned** on 0.21 (sessions outstanding; not Supported).
 
 Narrative: [What's new in 0.19](whats-new-0.19.md) · API: [A11Y](../api/A11Y.md).
 
@@ -164,12 +164,11 @@ Details: [Forms and actions](forms-and-actions.md) · [Page](../components/page.
 covering keyboard, zoom/reflow, reduced motion, forced colors, plus pinned axe/ACT
 provenance after representative dynamic states (`hedron[browser]`).
 
-**0.21 engineering-complete / sessions outstanding (D-052):** compensated human screen-reader /
+**0.21 Published engineering / sessions Planned (D-052):** compensated human screen-reader /
 disabled-participant evaluation. Protocol, gate IDs, and redacted ledger schema live under
 [human-at acceptance](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/human-at/).
 `PROTOCOL-021` is Verified; SR/PARTICIPANT remain Planned. Do not market automated evidence as
-human AT sign-off, and do not market human AT as Supported until `release-gate-0.21.toml` rows
-are Verified and `v0.21.0` is Published.
+human AT sign-off, and do not market human AT as Supported until session gates are Verified.
 
 ## Author checklist
 
@@ -180,7 +179,7 @@ are Verified and `v0.21.0` is Published.
 5. Do not rely on color alone for state; pair with text or icons that have names.
 6. Prefer no-JS POST success for critical mutations; enhance with HTMX where useful.
 7. Test critical flows with keyboard-only navigation; plan a screen-reader pass (0.21 owns
-   compensated AT evidence — engineering-complete under D-052; sessions outstanding).
+   compensated AT evidence — protocol Verified; sessions Planned / not Supported).
 
 ## What Hedron does not claim
 

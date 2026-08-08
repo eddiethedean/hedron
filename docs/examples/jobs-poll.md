@@ -79,7 +79,7 @@ Experimental — prefer this recipe.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"
 # Copy https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/jobs-poll/app.py → app.py
 uvicorn app:app --reload
 ```

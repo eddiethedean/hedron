@@ -145,19 +145,17 @@ def main() -> int:
         help="Skip evidence manifest checks (metadata-only)",
     )
     args = parser.parse_args()
-    # Scaffold / in-progress gates may target a future train before package bumps.
-    if args.allow_planned:
-        errors: list[str] = []
-        if not (ROOT / "LICENSE").is_file():
-            errors.append("missing root LICENSE (required before public publication)")
-    else:
-        errors = check_packages(args.version)
+    # Always verify package metadata matches the requested train version.
+    # --allow-planned only relaxes evidence closure (Planned/Implemented rows OK).
+    errors = check_packages(args.version)
     if not args.skip_evidence:
         manifest = args.evidence_manifest or evidence_manifest_for(args.version)
         if args.allow_planned:
             errors.extend(check_evidence_manifest_lenient(manifest))
         else:
             errors.extend(check_evidence_manifest(manifest))
+    if not (ROOT / "LICENSE").is_file():
+        errors.append("missing root LICENSE (required before public publication)")
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1

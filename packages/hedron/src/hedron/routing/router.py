@@ -61,6 +61,7 @@ def _wrap_endpoint(
     mode: RenderMode | None,
     require_csrf: bool,
     fragment_regions: tuple[FragmentRegion, ...] = (),
+    allow_undeclared_targets: bool = False,
 ) -> Callable[..., Response]:
     import typing
 
@@ -91,6 +92,7 @@ def _wrap_endpoint(
             mode=mode,
             kind=kind,
             fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
         )
 
     # Resolve annotations in the original function's globals so Depends survives wrapping.
@@ -128,6 +130,7 @@ class HedronRouter(APIRouter):
         dependencies: Sequence[params.Depends] | None = None,
         tags: list[str | Enum] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
@@ -145,6 +148,7 @@ class HedronRouter(APIRouter):
                 mode=None,
                 require_csrf=_requires_csrf(verb_list),
                 fragment_regions=regions,
+                allow_undeclared_targets=allow_undeclared_targets,
             )
             self.add_api_route(
                 path,
@@ -193,6 +197,7 @@ class HedronRouter(APIRouter):
         dependencies: Sequence[params.Depends] | None = None,
         tags: list[str | Enum] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def decorator(fn: Callable[P, R]) -> Callable[P, R]:
@@ -210,6 +215,7 @@ class HedronRouter(APIRouter):
                 mode=RenderMode.FRAGMENT,
                 require_csrf=_requires_csrf(verb_list),
                 fragment_regions=regions,
+                allow_undeclared_targets=allow_undeclared_targets,
             )
             self.add_api_route(
                 path,
@@ -260,6 +266,7 @@ class HedronRouter(APIRouter):
         dependencies: Sequence[params.Depends] | None = None,
         tags: list[str | Enum] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
         **kwargs: Any,
     ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         verb_list = list(methods or [method])
@@ -279,6 +286,7 @@ class HedronRouter(APIRouter):
                 mode=RenderMode.FRAGMENT,
                 require_csrf=_requires_csrf(verb_list),
                 fragment_regions=regions,
+                allow_undeclared_targets=allow_undeclared_targets,
             )
             self.add_api_route(
                 path,
@@ -330,6 +338,8 @@ class HedronRouter(APIRouter):
         include_in_schema: bool | None = None,
         methods: Sequence[str] | None = None,
         tags: list[str | Enum] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
         **kwargs: Any,
     ) -> None:
         from hedron.responses import FragmentResponse
@@ -351,12 +361,16 @@ class HedronRouter(APIRouter):
             schema = False if include_in_schema is None else include_in_schema
             tag_list = list(tags or [])
 
+        regions = _normalize_fragment_regions(fragment_regions)
+        factory._hedron_fragment_regions = regions  # type: ignore[attr-defined]
         op_id = operation_id_for("component", route_name, path, verb_list[0])
         wrapped = _wrap_endpoint(
             factory,
             kind="component",
             mode=RenderMode.FRAGMENT,
             require_csrf=_requires_csrf(verb_list),
+            fragment_regions=regions,
+            allow_undeclared_targets=allow_undeclared_targets,
         )
         self.add_api_route(
             path,
@@ -371,6 +385,7 @@ class HedronRouter(APIRouter):
             response_model=None,
             **kwargs,
         )
+        region_meta = {r.id: f"{r.selector}|{r.description}" for r in regions}
         register_route(
             kind="component",
             logical_id=logical_id,
@@ -386,5 +401,6 @@ class HedronRouter(APIRouter):
             htmx_inference={
                 "default_mode": "fragment",
                 "exposure": "include_component",
+                "fragment_regions": str(region_meta),
             },
         )

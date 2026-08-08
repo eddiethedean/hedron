@@ -22,7 +22,7 @@ Compare positioning: [Why Hedron](why-hedron.md).
 
 | Item | Value |
 |---|---|
-| Version | **0.20.0** (Beta; **Published** — pin `hedron>=0.20.0,<0.21`) |
+| Version | **0.21.0** (Beta; **Published** — pin `hedron>=0.21.0,<0.22`) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
@@ -45,8 +45,8 @@ Full matrix: [What’s ready](whats-ready.md).
   (disposition owned by **0.24** / D-053)
 - Specialty extras (CodeEditor host stub, TerminalView, joystick, device bridges) as full
   product UI — Experimental / stub only (quarantine path **0.25**)
-- Human screen-reader / compensated AT evaluation (owned by **0.21**, D-052 engineering-complete /
-  sessions outstanding)
+- Human screen-reader / compensated AT evaluation (owned by **0.21**, D-052: protocol Verified;
+  sessions Planned — not Supported)
 - Expanded compatibility-protected `stable` tier beyond the minimal table (owned by **0.23**)
 
 Trust-program overview: [Production-quality maturity](production-quality.md).

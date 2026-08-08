@@ -7,7 +7,7 @@ import pytest
 from django.conf import settings
 from flask import Flask
 
-from hedron_core import Text
+from hedron_core import Page, Text
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_flask import HedronBlueprint, HedronFlask
 
@@ -59,6 +59,69 @@ def _flask_app(*, declare: bool) -> Flask:
     hedron.init_app(app)
     app.register_blueprint(ui)
     return app
+
+
+def test_flask_action_declared_fragment_regions_allow_hx_target() -> None:
+    hedron = HedronFlask()
+    ui = HedronBlueprint("ui_action_ok", __name__)
+
+    @ui.page("/")
+    def home():
+        return Page(Text("home"), title="Home")
+
+    @ui.action("/save", fragment_regions=(PANEL,))
+    def save():
+        return Text("saved")
+
+    app = Flask(__name__)
+    app.secret_key = "test"
+    hedron.init_app(app)
+    app.register_blueprint(ui)
+    client = app.test_client()
+    seeded = client.get("/")
+    set_cookie = seeded.headers.get("Set-Cookie", "")
+    assert "hedron_csrf=" in set_cookie
+    token = set_cookie.split("hedron_csrf=")[1].split(";")[0]
+    response = client.post(
+        "/save",
+        headers={
+            "HX-Request": "true",
+            "HX-Target": "#panel",
+            "X-CSRF-Token": token,
+        },
+    )
+    assert response.status_code == 200
+    assert "saved" in response.get_data(as_text=True)
+
+
+def test_flask_action_undeclared_hx_target_is_forbidden() -> None:
+    hedron = HedronFlask()
+    ui = HedronBlueprint("ui_action_deny", __name__)
+
+    @ui.page("/")
+    def home():
+        return Page(Text("home"), title="Home")
+
+    @ui.action("/save")
+    def save():
+        return Text("saved")
+
+    app = Flask(__name__)
+    app.secret_key = "test"
+    hedron.init_app(app)
+    app.register_blueprint(ui)
+    client = app.test_client()
+    seeded = client.get("/")
+    token = seeded.headers.get("Set-Cookie", "").split("hedron_csrf=")[1].split(";")[0]
+    response = client.post(
+        "/save",
+        headers={
+            "HX-Request": "true",
+            "HX-Target": "#panel",
+            "X-CSRF-Token": token,
+        },
+    )
+    assert response.status_code == 403
 
 
 def test_flask_declared_fragment_regions_allow_hx_target() -> None:

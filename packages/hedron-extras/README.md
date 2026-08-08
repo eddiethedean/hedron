@@ -12,7 +12,7 @@ a second component runtime. Install as `hedron-extras` or via `hedron[extras]`.
 Absent extras add no core import, browser asset, startup, or transitive
 dependency cost.
 
-**Package maturity:** Beta · **Train:** `0.20.0` (Published) · pin `>=0.20.0,<0.21`
+**Package maturity:** Beta · **Train:** `0.21.0` (Published) · pin `>=0.21.0,<0.22`
 
 Specialty surfaces (`TerminalView`, joystick/device bridges, browser-Python
 sandbox) are **Experimental** and fail closed without explicit policy — see
@@ -21,11 +21,11 @@ sandbox) are **Experimental** and fail closed without explicit policy — see
 ## Install
 
 ```bash
-pip install "hedron[extras]>=0.20.0,<0.21"
+pip install "hedron[extras]>=0.21.0,<0.22"
 # or
-pip install "hedron-extras>=0.20.0,<0.21"
+pip install "hedron-extras>=0.21.0,<0.22"
 # feature-scoped:
-pip install "hedron-extras[code_editor,data_explorer]>=0.20.0,<0.21"
+pip install "hedron-extras[code_editor,data_explorer]>=0.21.0,<0.22"
 ```
 
 Requires Python 3.11–3.14 and `hedron-core`.

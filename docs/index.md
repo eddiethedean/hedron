@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.20.0</div>
+<div class="hedron-eyebrow">Python-first UI framework · v0.21.0</div>
 
 # Build typed FastAPI UIs in Python.<br><span class="hedron-gradient-text">HTMX fragments, no Node.</span>
 
@@ -39,7 +39,7 @@ open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
 ## From zero to a rendered page
 
 Prefer a clean virtualenv (Hedron needs FastAPI `>=0.141.1,<0.142`). Pin production
-installs with `hedron>=0.20.0,<0.21`.
+installs with `hedron>=0.21.0,<0.22`.
 
 === "uv (recommended)"
 
@@ -47,7 +47,7 @@ installs with `hedron>=0.20.0,<0.21`.
     (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux).
 
     ```bash
-    uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
+    uvx --from "hedron>=0.21.0,<0.22" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -57,7 +57,7 @@ installs with `hedron>=0.20.0,<0.21`.
 
     ```bash
     python3 -m venv .venv && source .venv/bin/activate
-    python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+    python -m pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app && python -m pip install -e .
     uvicorn app:app --reload
@@ -163,8 +163,8 @@ Extras and troubleshooting: [installation](getting-started/installation.md).
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron **0.20.0** is **Published** on PyPI/git (`v0.20.0`).
-Pin production installs with `hedron>=0.20.0,<0.21`.
+Hedron **0.21.0** is **Published** on PyPI/git (`v0.21.0`).
+Pin production installs with `hedron>=0.21.0,<0.22`.
 Package maturity is **Beta**; **Supported** means the capability works on this train when pinned
 (not the same as API `stable`) — see [Understanding maturity labels](getting-started/how-to-read.md)
 and [What’s ready today](guides/whats-ready.md).

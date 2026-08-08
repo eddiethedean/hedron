@@ -131,6 +131,7 @@ class HedronRoute(APIRoute):
         mode: RenderMode | None = None,
         kind: str = "page",
         fragment_regions: tuple[FragmentRegion, ...] = (),
+        allow_undeclared_targets: bool = False,
     ) -> StarletteResponse:
         policy: SecurityPolicy = getattr(
             request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
@@ -154,7 +155,11 @@ class HedronRoute(APIRoute):
                 fragment_regions=fragment_regions,
             )
         if isinstance(result, HTML):
-            _authorize_component_fragment(request, fragment_regions)
+            _authorize_component_fragment(
+                request,
+                fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
             await _prepare_endpoint_value(result.value, request=request)
             response = render_component_response(
                 result,
@@ -173,7 +178,11 @@ class HedronRoute(APIRoute):
 
             return JSONResponse(jsonable_encoder(result))
         if isinstance(result, Component) or callable(getattr(result, "render", None)):
-            _authorize_component_fragment(request, fragment_regions)
+            _authorize_component_fragment(
+                request,
+                fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
             force = mode
             if kind == "component":
                 force = force or RenderMode.FRAGMENT
@@ -271,6 +280,8 @@ async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
 def _authorize_component_fragment(
     request: Request,
     fragment_regions: tuple[FragmentRegion, ...],
+    *,
+    allow_undeclared_targets: bool = False,
 ) -> None:
     """Fail closed when HTMX targets an undeclared region for Component returns."""
     from fastapi import HTTPException
@@ -285,7 +296,10 @@ def _authorize_component_fragment(
     # (same contract as InteractionResult / authorize_htmx_target).
     try:
         authorize_htmx_target(
-            InteractionPolicy(declared_regions=fragment_regions),
+            InteractionPolicy(
+                declared_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            ),
             target,
             is_htmx=True,
         )

@@ -214,3 +214,12 @@ def test_data_editor_enhancement_hides_no_script_fallback() -> None:
     assert ":scope > .hedron-data-editor-fallback" in script
     assert "fallback.hidden = true" in script
     assert 'delBtn.className = "hedron-button hedron-button-danger"' in script
+    assert 'ev.key === "Escape"' in script
+    assert 'td.dataset.editCancel = "1"' in script
+    assert 'if (td.dataset.editCancel === "1")' in script
+    assert "res.status === 403" in script
+    assert "await res.json()" in script
+    # 403 path must not call res.json() before the status check.
+    forbidden_idx = script.index("res.status === 403")
+    json_idx = script.index("await res.json()", forbidden_idx)
+    assert forbidden_idx < json_idx

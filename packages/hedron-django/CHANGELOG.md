@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.0] — 2026-08-08
+
+### Fixed
+
+- `respond(..., allow_undeclared_targets=...)` plumbed to component responses.
+
 ## [0.20.0] — 2026-08-07
 
 - Production security floor and adapter parity (phase 0.20 / D-051).

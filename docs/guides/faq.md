@@ -3,26 +3,26 @@
 ## Which version should I install?
 
 ```bash
-pip install "hedron>=0.20.0,<0.21"
+pip install "hedron>=0.21.0,<0.22"
 # or
-uv add "hedron>=0.20.0,<0.21"
+uv add "hedron>=0.21.0,<0.22"
 ```
 
-That is the current published line (`v0.20.0`). Package maturity is **Beta** — see
-[How to read](../getting-started/how-to-read.md). `>=0.20.0` alone allows a future `0.21`
+That is the current published line (`v0.21.0`). Package maturity is **Beta** — see
+[How to read](../getting-started/how-to-read.md). `>=0.21.0` alone allows a future `0.22`
 break; keep the upper bound when you need a stable line.
 See [What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For curated extras (`hedron-extras`), install `hedron[extras]>=0.20.0,<0.21`.
+For curated extras (`hedron-extras`), install `hedron[extras]>=0.21.0,<0.22`.
 **Auto** (inspectable object rendering built into `hedron` — no extra) is included.
-For DataTable/DataEditor, install `hedron[data]>=0.20.0,<0.21`. For charts, install
+For DataTable/DataEditor, install `hedron[data]>=0.21.0,<0.22`. For charts, install
 `hedron[charts]>=0.1.0,<0.2` (Alpha). For Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=0.20.0,<0.21"
-pip install "hedron-django>=0.20.0,<0.21"   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.21.0,<0.22"
+pip install "hedron-django>=0.21.0,<0.22"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -46,12 +46,12 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then
-`uv add "hedron>=0.20.0,<0.21"`. Or use
-`hedron new my-app` after `pip install "hedron>=0.20.0,<0.21"`.
+`uv add "hedron>=0.21.0,<0.22"`. Or use
+`hedron new my-app` after `pip install "hedron>=0.21.0,<0.22"`.
 
 ## Should I use `uv init` or `hedron new`?
 
-Prefer **`hedron new`** for a ready scaffold on **0.20.x** (install Hedron first).
+Prefer **`hedron new`** for a ready scaffold on **0.21.x** (install Hedron first).
 `uv init` + a hand-written `app.py` from the quickstart also works. Do not nest both into
 the same directory by accident.
 
@@ -59,7 +59,7 @@ the same directory by accident.
 
 See [How to read Hedron docs](../getting-started/how-to-read.md). Short version:
 
-- **Beta / Alpha** — **package** maturity on PyPI; pin versions (`>=0.20.0,<0.21`).
+- **Beta / Alpha** — **package** maturity on PyPI; pin versions (`>=0.21.0,<0.22`).
 - **Supported** — **capability** readiness on a host; ship with pins. **Not** the same as API level `stable`.
 - **Deferred** — documented, not ready; do not treat as Supported.
 - API levels (`stable` / `beta` / …) in [STABILITY](../api/STABILITY.md) are a third axis.
@@ -75,7 +75,7 @@ on PyPI — pin versions.
 See [What’s ready](whats-ready.md).
 
 ```bash
-pip install "hedron[data]>=0.20.0,<0.21"     # DataTable, DataEditor (Auto is already in hedron)
+pip install "hedron[data]>=0.21.0,<0.22"     # DataTable, DataEditor (Auto is already in hedron)
 pip install "hedron[charts]>=0.1.0,<0.2"   # Alpha: LineChart and visualization adapters
 ```
 
@@ -147,16 +147,16 @@ variables / your secret store. Constructor args override both when explicit.
 ## How do I install HDJ / Jinja templates?
 
 ```bash
-pip install "hedron[jinja]>=0.20.0,<0.21"
+pip install "hedron[jinja]>=0.21.0,<0.22"
 # or
-uv add "hedron[jinja]>=0.20.0,<0.21"
+uv add "hedron[jinja]>=0.21.0,<0.22"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).
 
 ## Where is the SBOM / evidence bundle?
 
-Prefer GitHub Release assets for the train tag (`v0.20.0`), or regenerate from the
+Prefer GitHub Release assets for the train tag (`v0.21.0`), or regenerate from the
 tagged checkout with
 `scripts/build_evidence_bundle.py`. Step-by-step:
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.

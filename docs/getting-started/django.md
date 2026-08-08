@@ -34,7 +34,7 @@ This reference is manage-less (home + fragment). For a greenfield Django project
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "django>=5.2,<6" "hedron-django>=0.20.0,<0.21"
+python -m pip install "django>=5.2,<6" "hedron-django>=0.21.0,<0.22"
 django-admin startproject mysite .
 python manage.py startapp demo
 ```
@@ -90,8 +90,8 @@ Open `http://127.0.0.1:8000/`.
 ## Fastest path: existing Django project (PyPI)
 
 ```bash
-pip install "hedron-django>=0.20.0,<0.21" "django>=5.2,<6"
-# or: uv add "hedron-django>=0.20.0,<0.21" "django>=5.2,<6"
+pip install "hedron-django>=0.21.0,<0.22" "django>=5.2,<6"
+# or: uv add "hedron-django>=0.21.0,<0.22" "django>=5.2,<6"
 ```
 
 Assume you already have a Django project with `SessionMiddleware` and

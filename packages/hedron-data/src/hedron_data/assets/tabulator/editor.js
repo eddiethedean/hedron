@@ -198,8 +198,13 @@
             td.contentEditable = "true";
             td.addEventListener("focus", () => {
               td.dataset.original = td.textContent || "";
+              td.dataset.editCancel = "0";
             });
             td.addEventListener("blur", () => {
+              if (td.dataset.editCancel === "1") {
+                td.dataset.editCancel = "0";
+                return;
+              }
               this._queueUpdate(key, col.field, td.textContent, td.dataset.original || "");
               if ((payload.saveMode || "batch") === "cell") this._save();
             });
@@ -210,6 +215,7 @@
                 if ((payload.saveMode || "batch") === "row") this._save();
               } else if (ev.key === "Escape") {
                 ev.preventDefault();
+                td.dataset.editCancel = "1";
                 td.textContent = td.dataset.original || "";
                 td.blur();
               }
@@ -380,7 +386,17 @@
           credentials: "same-origin",
           body: JSON.stringify(body),
         });
-        const data = await res.json();
+        if (res.status === 403) {
+          this._announce("Save forbidden (CSRF or authorization)");
+          return;
+        }
+        let data;
+        try {
+          data = await res.json();
+        } catch (parseErr) {
+          this._announce("Save failed");
+          return;
+        }
         const bar = this.querySelector("[data-conflict-bar]");
         if (data.ok) {
           this._pending = [];
@@ -406,8 +422,8 @@
               '"]'
           );
           if (cell) cell.focus();
-        } else if (res.status === 403) {
-          this._announce("Save forbidden (CSRF or authorization)");
+        } else {
+          this._announce("Save failed");
         }
       } catch (err) {
         this._announce("Save failed");

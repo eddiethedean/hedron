@@ -8,12 +8,12 @@ difference.
 
 | You need… | Use | Why |
 |---|---|---|
-| Classic form POST that returns a **full page** (redirect or confirmation `Page`) | `@app.action("/…")` | Simplest CSRF-safe mutation; no fragment allowlist |
-| HTMX POST that swaps a **declared region** / returns `InteractionResult` | `@app.component("/…", methods=["POST"], fragment_regions=(…,))` | Region allowlists live on `page`/`component`, not `action` |
-| DELETE/PUT with CSRF and a fragment body | `@app.action(..., method="DELETE")` **or** `@component(..., methods=["DELETE"])` | Prefer `component` when you need `fragment_regions` |
+| Classic form POST that returns a **full page** (redirect or confirmation `Page`) | `@app.action("/…")` | Simplest CSRF-safe mutation; optional `fragment_regions` if HTMX also targets a region |
+| HTMX POST that swaps a **declared region** / returns `InteractionResult` | `@app.action("/…", fragment_regions=(…,))` **or** `@app.component("/…", methods=["POST"], fragment_regions=(…,))` | Both accept region allowlists; prefer `action` for mutations |
+| DELETE/PUT with CSRF and a fragment body | `@app.action(..., method="DELETE", fragment_regions=…)` **or** `@component(..., methods=["DELETE"], fragment_regions=…)` | Same allowlist contract |
 
-`@action` does **not** accept `fragment_regions`. If HTMX sends `HX-Target` and you need
-an allowlist, use `@component`.
+`@action` **does** accept `fragment_regions`. Declare the swap host so HTMX `HX-Target`
+is authorized (fail-closed 403 otherwise).
 
 ### Try it (simulated)
 

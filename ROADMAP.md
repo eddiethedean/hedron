@@ -1144,7 +1144,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.20** (`v0.20.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.21** (`v0.21.0`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -1387,15 +1387,18 @@ settlement. Gate IDs:
 
 ## 0.21 — Human assistive-technology evaluation (`v0.21.0`)
 
-**Status:** Engineering-complete / sessions outstanding (owned destination for D-050; decision
-**D-052**). Compensated disabled-participant and VoiceOver/NVDA/TalkBack manual evaluation
-deferred from `AT-019` / `v0.19.0`. Does not block the 0.19 or 0.20 zero-Deferred cuts. Protocol
-(`PROTOCOL-021`) is Verified; reference-app task corpus and `verify_pkg_21` landed on the 0.20
-train. **`SR-021` / `PARTICIPANT-021` remain Planned** until real sessions. Owning RFC baseline:
+**Status:** **Published** as `v0.21.0` (engineering release; owning destination for D-050;
+decision **D-052**). Compensated disabled-participant and VoiceOver/NVDA/TalkBack manual
+evaluation deferred from `AT-019` / `v0.19.0`. Protocol (`PROTOCOL-021`), regression
+(`REGRESS-021`), and packaging (`PKG-021`) are Verified; reference-app task corpus and
+`verify_pkg_21` landed. **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`
+remain Planned** until real sessions — **not Supported**. Engineering publish uses
+`check_release_gate.py 0.21.0 --allow-planned`. Owning RFC baseline:
 [RFC-0055](docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md)
 (amended). Acceptance checklist: [RELEASE_0_21.md](docs/acceptance/RELEASE_0_21.md). Evidence:
 [release-gate-0.21.toml](docs/acceptance/release-gate-0.21.toml). Protocol:
-[acceptance/human-at/](docs/acceptance/human-at/).
+[acceptance/human-at/](docs/acceptance/human-at/). What’s new:
+[guides/whats-new-0.21.md](docs/guides/whats-new-0.21.md).
 
 **Outcome:** Hedron publishes scoped human assistive-technology and compensated-participant
 evidence for the reference application’s critical flows, complements automated `AT-019`

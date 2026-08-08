@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Verify phase 0.21 packaging / packet evidence that can run without human AT sessions.
 
-Does **not** bump package pins to 0.21 and does **not** require ``--require-sessions``.
-Living Published train remains 0.20 until a real Verified human AT cut.
+Does **not** require ``--require-sessions`` and does **not** publish or tag. Package
+metadata and adopter docs may already claim the 0.21 train; human AT SR/PARTICIPANT
+remain Planned until real sessions.
 """
 
 from __future__ import annotations
@@ -18,6 +19,9 @@ FOCUSED_TESTS = [
     "tests/unit/test_phase19_governance.py",
     "tests/integration/test_reference_crud.py",
     "tests/unit/test_human_at_packet.py",
+    "tests/unit/test_theme_assets_build.py::test_data_editor_enhancement_hides_no_script_fallback",
+    "tests/adapters/test_phase20_fragment_regions.py::test_flask_action_declared_fragment_regions_allow_hx_target",
+    "tests/adapters/test_phase20_fragment_regions.py::test_flask_action_undeclared_hx_target_is_forbidden",
 ]
 
 

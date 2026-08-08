@@ -1,21 +1,25 @@
 # Hedron `v0.21` human assistive-technology acceptance
 
-Phase 0.21 delivers compensated disabled-participant evaluation and the Verified
-screen-reader matrix (VoiceOver/Safari macOS, NVDA/Firefox Windows, TalkBack/Chromium
-Android) against `examples/reference-app` critical flows — complementing automated
-`AT-019` Playwright/axe evidence without substituting for it or emitting automatic
-WCAG/legal/certification/VPAT claims.
+Phase 0.21 delivers the human AT **engineering train** (protocol packet, PE corpus, fragment
+parity) and indexes compensated screen-reader / participant evaluation against
+`examples/reference-app`. Automated `AT-019` Playwright/axe evidence remains complementary —
+not a substitute — and Hedron never emits automatic WCAG/legal/certification/VPAT claims.
 Evidence is indexed by [`release-gate-0.21.toml`](release-gate-0.21.toml).
-**Zero Deferred:** every 0.21-owned gate row must be Verified at cut.
 
 Owning decision: [D-052](../DECISIONS.md). RFC baseline:
 [RFC-0055](../rfcs/RFC-0055-A11Y-GOVERNANCE.md) (amended).
 Protocol packet: [`human-at/`](human-at/).
 
-**Engineering-complete ≠ Published / Supported.** Prep may land on `main` while the living
-train remains **0.20**. Do not market human AT as Supported until every 0.21 gate row is
-Verified and `v0.21.0` is Published. Use
-`python scripts/check_human_at_packet.py --require-sessions` only at the Verified cut.
+## Engineering release vs Verified human-AT cut
+
+| Track | Meaning |
+|---|---|
+| **Published `v0.21.0` train** | Package metadata / adopter pins `>=0.21.0,<0.22`; engineering gates + docs honesty |
+| **Verified human AT** | `SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021` flipped after real sessions |
+
+**Do not market human AT as Supported** until the Verified human-AT cut. Use
+`python scripts/check_human_at_packet.py --require-sessions` only when flipping those gates.
+`PROTOCOL-021` stays Verified without session evidence.
 
 ## Spec packet
 
@@ -24,9 +28,11 @@ Verified and `v0.21.0` is Published. Use
 - [x] Entry gate: 0.19 / 0.20 Published; protocol under `docs/acceptance/human-at/`.
 - [x] Gate checker recognizes `0.21`
   (`python scripts/check_release_gate.py 0.21.0 --allow-planned`).
-- [x] Reference-app PE create/edit, edit pages, DataEditor Escape, facilitator task-scripts.
+- [x] Reference-app PE create/edit/delete, edit pages, DataEditor Escape, facilitator task-scripts.
 - [x] `scripts/verify_pkg_21.py` + CI evidence wiring (packet + `0.21.0 --allow-planned`).
-- [ ] Human AT sessions executed; remaining gates flipped Planned → Verified.
+- [x] Adopter docs / SSOT claim Published `v0.21.0` with honest AT gap.
+- [x] `REGRESS-021` / `PKG-021` Verified for engineering publish.
+- [ ] Human AT sessions executed; SR/PARTICIPANT/ARTIFACT/REMEDIATE flipped Planned → Verified.
 
 ## Protocol and privacy
 
@@ -52,12 +58,12 @@ Verified and `v0.21.0` is Published. Use
 
 ## Packaging
 
-- [x] `verify_pkg_21.py` available for local packet evidence. *(`PKG-021` command retargeted;
-  gate remains Planned until cut)*
+- [x] `verify_pkg_21.py` available for local packet evidence. *(`PKG-021` — Verified)*
 
 ## Exit
 
-- [ ] Full regression suite. *(`REGRESS-021` — Planned)*
+- [x] Full regression suite. *(`REGRESS-021` — Verified)*
 
-**Exit not met for Published `v0.21.0`.** Engineering prep is complete; sessions and Verified
-flip remain outstanding.
+**Engineering Published train is `v0.21.0`** (PROTOCOL / REGRESS / PKG Verified). Verified
+human-AT exit remains outstanding (sessions + SR/PARTICIPANT/ARTIFACT/REMEDIATE). Tagging
+uses `check_release_gate.py 0.21.0 --allow-planned` until session gates close.

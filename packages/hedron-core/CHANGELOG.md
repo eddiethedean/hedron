@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.21.0] — 2026-08-08
+
+### Added
+
+- Phase 0.21 human AT packet types (`HumanAtRecord`, evidence inventory hook) and
+  engineering prep for D-052 / RFC-0055 (sessions remain Planned).
+
+### Fixed
+
+- Coordinated Beta train with FastAPI/Flask/Django fragment allowlist parity and
+  DataEditor Escape/403 JSON hardening (see `hedron` / `hedron-data` / adapters).
+
 ## [0.20.0] — 2026-08-07
 
 - Production security floor and adapter parity (phase 0.20 / D-051).

@@ -18,12 +18,12 @@ and swaps HTML fragments with HTMX.
 # macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
 # Windows (PowerShell): irm https://astral.sh/uv/install.ps1 | iex
 
-uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
+uvx --from "hedron>=0.21.0,<0.22" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
 Prefer a **clean virtualenv** (Hedron needs FastAPI `>=0.141.1,<0.142`). Pin production
-installs with `hedron>=0.20.0,<0.21`.
+installs with `hedron>=0.21.0,<0.22`.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 Click **Refresh status**; the page updates without a full reload (HTMX swaps a small HTML
@@ -42,7 +42,7 @@ Alternate (pip + venv):
 ```bash
 # macOS / Linux
 python3 -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+python -m pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 ```
@@ -51,7 +51,7 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 # Windows (PowerShell)
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+python -m pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app
 python -m pip install -e .
@@ -66,8 +66,10 @@ uvicorn app:app --reload
 <details>
 <summary>Package maturity</summary>
 
-<strong>Hedron 0.20.0</strong> — <strong>Published</strong> (last published PyPI/git =
-<code>v0.20.0</code>); pin with <code>hedron&gt;=0.20.0,&lt;0.21</code>.
+<strong>Hedron 0.21.0</strong> — <strong>Published</strong> (last published PyPI/git =
+<code>v0.21.0</code>); pin with <code>hedron&gt;=0.21.0,&lt;0.22</code>.
+Human AT sessions remain <strong>Planned</strong> (not Supported); automated
+<code>AT-019</code> is Supported.
 <strong>Supported</strong> means the capability works on the current train when pinned;
 most public APIs remain compatibility level <code>beta</code> until listed in the small
 <strong>stable</strong> table —
@@ -108,7 +110,7 @@ After you have Hello + Refresh working: prefer Streamlit for notebook-style reru
 or raw FastAPI+HTMX if you do not want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.20/) ·
+[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.21/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).

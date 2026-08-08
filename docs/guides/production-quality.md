@@ -3,7 +3,7 @@
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
 checklist in [Production readiness](production-readiness.md).
 
-**Living published train:** pin `hedron>=0.20.0,<0.21`. Capability maturity SSOT:
+**Living published train:** pin `hedron>=0.21.0,<0.22`. Capability maturity SSOT:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 (maintainer corpus on GitHub).

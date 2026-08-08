@@ -1,7 +1,7 @@
 # Performance budgets
 
 **Status:** Published on the **0.20** train (budgets introduced in phase 0.8; still
-enforced; last published PyPI/git = `v0.20.0`)  
+enforced; last published PyPI/git = `v0.21.0`)
 
 **Evidence:** `PERF-08-001`, `PERF-08-002`, `tests/performance/`
 

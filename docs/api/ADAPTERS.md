@@ -22,8 +22,8 @@ Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapte
 ## Install
 
 ```bash
-pip install "hedron-flask>=0.20.0,<0.21"
-pip install "hedron-django>=0.20.0,<0.21"   # Django >=5.2,<6
+pip install "hedron-flask>=0.21.0,<0.22"
+pip install "hedron-django>=0.21.0,<0.22"   # Django >=5.2,<6
 ```
 
 ## Portable baseline
@@ -94,7 +94,7 @@ def home():
 |---|---|---|
 | `init_app(app, *, security=None)` | `Flask` | Bind extension (idempotent for the same app) |
 | `page(rule, **options)` | decorator | Register a page view; supports `fragment_regions`, `methods` |
-| `respond(value, request, *, context=None, mode=None, extra_headers=None, fragment_regions=None)` | Flask `Response` | Render `NodeLike` / `InteractionResult`; CSRF on unsafe methods when enabled |
+| `respond(value, request, *, context=None, mode=None, extra_headers=None, fragment_regions=None, allow_undeclared_targets=False)` | Flask `Response` | Render `NodeLike` / `InteractionResult`; CSRF on unsafe methods when enabled |
 | `auth_signal(request=None)` | `AuthSignal` | Flask-Login / session-derived auth signal (no session body to core) |
 | `csrf_token(request)` | `str` | Current CSRF token for forms / headers |
 | `attach_csrf_cookie(response, request, token=None)` | `str` | Set CSRF cookie on a response |
@@ -140,7 +140,7 @@ def home(request):
 | Method | Returns | Description |
 |---|---|---|
 | `render(value, request, *, context=None, mode=None)` | `str` | HTML body only |
-| `respond(value, request, *, context=None, mode=None, extra_headers=None, fragment_regions=None)` | `HttpResponse` | Render component or `InteractionResult`; seeds CSRF cookie on safe GETs |
+| `respond(value, request, *, context=None, mode=None, extra_headers=None, fragment_regions=None, allow_undeclared_targets=False)` | `HttpResponse` | Render component or `InteractionResult`; seeds CSRF cookie on safe GETs |
 | `auth_signal(request)` | `AuthSignal` | Django `request.user` / session tenant signal |
 | `csrf_token(request)` | `str` | Portable CSRF token for `X-CSRF-Token` |
 

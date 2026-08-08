@@ -191,6 +191,63 @@ def test_update_and_delete_user(hedron_client: TestClient) -> None:
     assert "Grace Updated" not in deleted.text
 
 
+def test_delete_user_progressive_enhancement_redirects(hedron_client: TestClient) -> None:
+    seeded = hedron_client.get("/", headers=_auth())
+    token = seeded.cookies.get("hedron_csrf")
+    assert token
+    deleted = hedron_client.post(
+        "/users/3/delete",
+        headers={**_auth(), "X-CSRF-Token": token},
+        data={},
+        follow_redirects=False,
+    )
+    assert deleted.status_code == 303
+    location = deleted.headers.get("location", "")
+    assert "msg=" in location
+    follow = hedron_client.get(location, headers=_auth())
+    assert follow.status_code == 200
+    assert "User deleted" in follow.text or "alan@example.com" not in follow.text
+    table = hedron_client.get("/users/table", headers=_auth())
+    assert "alan@example.com" not in table.text
+
+
+def test_htmx_update_validation_returns_error_state(hedron_client: TestClient) -> None:
+    seeded = hedron_client.get("/", headers=_auth())
+    token = seeded.cookies.get("hedron_csrf")
+    assert token
+    hx = {"HX-Request": "true", "HX-Target": "#user-table"}
+    bad = hedron_client.post(
+        "/users/2",
+        headers={**_auth(), "X-CSRF-Token": token, **hx},
+        data={"name": "ok", "email": "ab", "role": "member"},
+    )
+    assert bad.status_code == 200
+    assert "error" in bad.text.lower() or "invalid" in bad.text.lower() or "min" in bad.text.lower()
+
+
+def test_plain_update_validates_user_form(plain_client: TestClient) -> None:
+    seeded = plain_client.get("/", headers=_auth())
+    token = seeded.cookies.get("hedron_csrf")
+    assert token
+    hx = {"HX-Request": "true", "HX-Target": "#user-table"}
+    bad = plain_client.post(
+        "/users/2",
+        headers={**_auth(), "X-CSRF-Token": token, **hx},
+        data={"name": "ok", "email": "ab", "role": "member"},
+    )
+    assert bad.status_code == 200
+    assert "error" in bad.text.lower() or "invalid" in bad.text.lower() or "min" in bad.text.lower()
+
+
+def test_chart_fragment_oob_authorized(hedron_client: TestClient) -> None:
+    response = hedron_client.get(
+        "/charts/fragment",
+        headers={**_auth(), "HX-Request": "true", "HX-Target": "#chart-panel"},
+    )
+    assert response.status_code == 200
+    assert "OOB status refreshed" in response.text or "hx-swap-oob" in response.text.lower()
+
+
 def test_plain_fastapi_mode(plain_client: TestClient) -> None:
     response = plain_client.get("/", headers=_auth())
     assert response.status_code == 200

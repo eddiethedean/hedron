@@ -1,19 +1,20 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.20.0** (**Published** as `v0.20.0` (last published PyPI/git = `v0.20.0`)). Other evaluator pages link here —
+**Canonical maturity snapshot for Hedron 0.21.0** (**Published** as `v0.21.0` (last published PyPI/git = `v0.21.0`)). Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-**Ship today** (pin `hedron>=0.20.0,<0.21`): typed pages,
+**Ship today** (pin `hedron>=0.21.0,<0.22`): typed pages,
 HTMX fragments, CSRF (`standard` / `strict`), Flask/Django adapters, polling job status,
-accessibility contracts / PE forms (0.19).
+accessibility contracts / PE forms (0.19), production security floor (0.20). Human AT
+protocol engineering is on this train; **sessions are Planned / not Supported**.
 
 !!! note "Supported ≠ API `stable`"
 
     **Supported** means the capability works on the current train when pinned. Most public
     symbols remain API compatibility level **`beta`** (breaking changes can still land in a
-    future `0.20`). Only the small table in [STABILITY.md](../api/STABILITY.md) is
+    future `0.22`). Only the small table in [STABILITY.md](../api/STABILITY.md) is
     compatibility-protected. Package maturity remains **Beta** on PyPI — no scheduled 1.0,
     no commercial SLA.
 
@@ -37,7 +38,7 @@ Maturity vocabulary:
 <details markdown>
 <summary>How to read labels on this page</summary>
 
-Hedron **0.20.0** packages are **Beta** maturity (API `beta` unless noted in
+Hedron **0.21.0** packages are **Beta** maturity (API `beta` unless noted in
 [STABILITY.md](../api/STABILITY.md)). Expect occasional breaking changes on
 `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
@@ -76,7 +77,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `hedron>=0.20.0,<0.21`. The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.21.0,<0.22`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
@@ -155,8 +156,9 @@ guaranteed multi-worker live-transport proof.
 - Full multi-engine live browser matrix for FastAPI and adapters
 - Load/proxy backpressure evidence for live transports
 - Some Explorer live traces
-- Human screen-reader / compensated AT evaluation (**→ 0.21** D-052 engineering-complete /
-  sessions outstanding; not Supported until Verified; `AT-019` on 0.19 is automated Playwright/axe only)
+- Human screen-reader / compensated AT evaluation (**0.21** D-052: protocol Verified;
+  `SR-021` / `PARTICIPANT-021` Planned — not Supported; `AT-019` on 0.19 is automated
+  Playwright/axe only)
 
 Maintainer gate IDs and RFC evidence:
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
@@ -182,7 +184,7 @@ Maintainer gate IDs and RFC evidence:
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.20.0,<0.21" hedron new my-app
+    uvx --from "hedron>=0.21.0,<0.22" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -190,16 +192,16 @@ Maintainer gate IDs and RFC evidence:
 === "pip"
 
     ```bash
-    pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+    pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.20.0,<0.21` for the current published train.
+Pin `hedron>=0.21.0,<0.22` for the current published train.
 
-Extras: `"hedron[data]>=0.20.0,<0.21"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
-`"hedron[extras]>=0.20.0,<0.21"`, `"hedron[jinja]>=0.20.0,<0.21"`, `"hedron[dev]>=0.20.0,<0.21"`,
+Extras: `"hedron[data]>=0.21.0,<0.22"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
+`"hedron[extras]>=0.21.0,<0.22"`, `"hedron[jinja]>=0.21.0,<0.22"`, `"hedron[dev]>=0.21.0,<0.22"`,
 `"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),
 `"hedron[gradio]>=0.1.0,<0.2"` (Alpha).
 

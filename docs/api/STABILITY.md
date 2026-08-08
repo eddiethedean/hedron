@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.20.0,<0.21`. Treat the small **stable** table below as
+**For adopters:** Pin `hedron>=0.21.0,<0.22`. Treat the small **stable** table below as
 the compatibility promise; everything else is `beta` / `experimental` and may change on
 `0.x`. Capability readiness (Supported vs Experimental) lives on
 [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.

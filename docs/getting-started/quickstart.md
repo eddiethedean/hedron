@@ -35,13 +35,13 @@ matters.
     in one flow. See
     [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
 
-Pin production installs with `hedron>=0.20.0,<0.21`.
+Pin production installs with `hedron>=0.21.0,<0.22`.
 
 === "uv (recommended)"
 
     ```bash
     # macOS / Linux
-    uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
+    uvx --from "hedron>=0.21.0,<0.22" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -50,7 +50,7 @@ Pin production installs with `hedron>=0.20.0,<0.21`.
     Windows (PowerShell), after installing uv:
 
     ```powershell
-    uvx --from "hedron>=0.20.0,<0.21" hedron new my-hedron-app
+    uvx --from "hedron>=0.21.0,<0.22" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -58,14 +58,14 @@ Pin production installs with `hedron>=0.20.0,<0.21`.
 
 === "pip (venv)"
 
-    1. **CLI:** `pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"` (provides `hedron` / `python -m hedron`)
+    1. **CLI:** `pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"` (provides `hedron` / `python -m hedron`)
     2. **Project:** after `hedron new`, `cd` into the app and `pip install -e .` (uvicorn uses the scaffold pin)
 
     ```bash
     # macOS / Linux
     python3 -m venv .venv
     source .venv/bin/activate
-    python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+    python -m pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .
@@ -76,7 +76,7 @@ Pin production installs with `hedron>=0.20.0,<0.21`.
     # Windows (PowerShell)
     py -3 -m venv .venv
     .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=0.20.0,<0.21" "uvicorn[standard]"
+    python -m pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .
@@ -198,7 +198,7 @@ Advisory findings on a hello-world scaffold are normal.
     See [troubleshooting](../guides/troubleshooting.md).
 
 If you already have a FastAPI project that satisfies the pin, install
-`hedron>=0.20.0,<0.21` into that environment and mount a `Hedron` app (or include a
+`hedron>=0.21.0,<0.22` into that environment and mount a `Hedron` app (or include a
 `HedronRouter`). Minimal shape:
 
 ```python
@@ -235,7 +235,7 @@ Prefer `hedron new` for the first-hour Refresh demo. Existing-app depth:
     app (or add a region yourself).
 
 Use this only if you did **not** use `hedron new`. Create a project directory, install
-`hedron>=0.20.0,<0.21` and `uvicorn[standard]`, then save:
+`hedron>=0.21.0,<0.22` and `uvicorn[standard]`, then save:
 
 ```python title="app.py"
 from hedron import Card, Heading, Hedron, Page, Stack, Text

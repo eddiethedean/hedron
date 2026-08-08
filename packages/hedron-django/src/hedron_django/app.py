@@ -56,6 +56,7 @@ class HedronDjango:
         mode: RenderMode | None = None,
         extra_headers: Mapping[str, str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
     ) -> HttpResponse:
         from hedron_django.csrf import seed_csrf_cookie
 
@@ -79,6 +80,7 @@ class HedronDjango:
             extra_headers=extra_headers,
             authenticated=self.auth_signal(request).authenticated,
             fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
         )
 
     def auth_signal(self, request: HttpRequest) -> AuthSignal:

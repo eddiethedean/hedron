@@ -45,10 +45,10 @@ Returns are rendered as fragments by default.
 | `Page` | Page document when the route/render mode expects a page |
 | FastAPI `Response` | Passed through |
 
-Prefer `InteractionResult` when you need typed HTMX metadata. Note: `fragment_regions`
-is supported on `@component` / `@page`, not on `@action` today—use
-`@component(..., methods=["POST"], fragment_regions=...)` when you need an allowlisted
-HTMX target for a mutation ([forms guide](../guides/forms-and-actions.md)).
+Prefer `InteractionResult` when you need typed HTMX metadata. `@action`, `@component`,
+and `@page` all accept `fragment_regions=` so HTMX `HX-Target` allowlists work on
+mutation routes ([forms guide](../guides/forms-and-actions.md),
+[Mutations](../guides/mutations.md)).
 
 ## Contract
 

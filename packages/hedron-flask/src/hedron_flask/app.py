@@ -150,11 +150,18 @@ class HedronFlask:
         from hedron_flask.blueprint import wrap_hedron_view
 
         methods = list(options.pop("methods", ("POST",)))
+        fragment_regions = options.pop("fragment_regions", None)
+        allow_undeclared_targets = bool(options.pop("allow_undeclared_targets", False))
 
         def decorator(view: Callable[P, R]) -> Callable[P, R]:
             if self.flask is None:
                 raise RuntimeError("HedronFlask.init_app(app) must be called before action()")
-            wrapped = wrap_hedron_view(view, require_csrf=True)
+            wrapped = wrap_hedron_view(
+                view,
+                require_csrf=True,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
             self.flask.add_url_rule(
                 rule, view_func=cast(RouteCallable, wrapped), methods=methods, **options
             )
@@ -190,6 +197,7 @@ class HedronFlask:
         mode: RenderMode | None = None,
         extra_headers: Mapping[str, str] | None = None,
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
     ):
         if self.csrf_protect and request.method.upper() in _UNSAFE_METHODS:
             validate_csrf(request, cookie_name=self.csrf_cookie_name)
@@ -211,6 +219,7 @@ class HedronFlask:
             headers_map=dict(request.headers),
             authenticated=self.auth_signal(request).authenticated,
             fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
         )
 
     def auth_signal(self, request: Request | None = None) -> AuthSignal:
