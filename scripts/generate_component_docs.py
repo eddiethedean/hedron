@@ -42,7 +42,7 @@ def _format_sim_live_demo(sim_name: str) -> str:
 
 # Keep install snippets aligned with scripts/check_docs_train_ssot.py.
 _ALPHA_EXTRAS = frozenset({"charts", "notebook", "mcp", "gradio", "native"})
-_TRAIN_PIN = ">=0.21.0,<0.22"
+_TRAIN_PIN = ">=0.22.0,<0.23"
 _ALPHA_PIN = ">=0.1.0,<0.2"
 
 
@@ -733,6 +733,26 @@ COMPONENTS = (
         "Form is progressively enhanced: ordinary browser submission remains the baseline, while `hx-post`, targets, swaps, sync, and indicators can be added for fragment updates.",
         "Every control needs a label, errors must be associated with controls, and successful submission should produce a perceivable status.",
         "Server-side validation and CSRF checks remain mandatory even when the browser reports validity.",
+        server="On submit",
+        demo="form",
+    ),
+    ComponentDoc(
+        "CsrfField",
+        "forms",
+        "Hidden CSRF input wired to the active strategy or an explicit token.",
+        "CsrfField(*, name=None, token=None)",
+        "CsrfField(token=csrf_token_for_request(request, policy))",
+        (
+            p("name", "str | None", "Form field name; defaults to the strategy / RenderContext field."),
+            p(
+                "token",
+                "str | None",
+                "Token value; when omitted, uses RenderContext.csrf_token on FastAPI pages.",
+            ),
+        ),
+        "Use inside Form for POST/HTMX mutations. Prefer explicit token= in portable/offline renders.",
+        "The field is aria-hidden by nature as a hidden input; pair with visible validation feedback on failure.",
+        "Never log or display the token value in diagnostics.",
         server="On submit",
         demo="form",
     ),

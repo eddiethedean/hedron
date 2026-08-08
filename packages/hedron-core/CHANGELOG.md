@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.22.0] — 2026-08-08
+
+### Added
+
+- Phase 0.22 CSRF / SecurityPolicy composition (`CSRF-022`, `HEADERS-022`, `FORM-022`).
+
 ## [0.21.0] — 2026-08-08
 
 ### Added

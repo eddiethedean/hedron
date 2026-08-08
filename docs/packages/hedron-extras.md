@@ -2,7 +2,7 @@
 
 Curated optional extras and analysis workbenches for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.21.0` · pin `>=0.21.0,<0.22`  
+**Package maturity:** Beta · **Train:** `0.22.0` · pin `>=0.22.0,<0.23`  
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`  
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 
@@ -13,11 +13,11 @@ closed without explicit policy.
 ## Install
 
 ```bash
-pip install "hedron[extras]>=0.21.0,<0.22"
+pip install "hedron[extras]>=0.22.0,<0.23"
 # or
-pip install "hedron-extras>=0.21.0,<0.22"
+pip install "hedron-extras>=0.22.0,<0.23"
 # feature-scoped:
-pip install "hedron-extras[code_editor,data_explorer]>=0.21.0,<0.22"
+pip install "hedron-extras[code_editor,data_explorer]>=0.22.0,<0.23"
 ```
 
 Absent extras add **no** core import, browser asset, startup, or transitive dependency

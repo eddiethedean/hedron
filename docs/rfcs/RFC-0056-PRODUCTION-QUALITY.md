@@ -54,7 +54,7 @@ Vocabulary remains: Supported ≠ API `stable` ≠ commercial warranty
 | Priority | Move | Owner |
 |---|---|---|
 | P0 | Finish 0.21 human AT sessions + remediate | D-052 / ROADMAP §0.21 |
-| P0 | Ship 0.22 CSRF / SecurityPolicy composition | D-051 / ROADMAP §0.22 |
+| P0 | Ship 0.22 CSRF / SecurityPolicy composition | D-051 / ROADMAP §0.22 (packet refined; gates Planned) |
 | P1 | Expand `stable` tier for Supported CRUD/HTMX/jobs core | ROADMAP §0.23 / D-053 |
 | P1 | Live transports: prove ops gates **or** formally polling-only for production docs | ROADMAP §0.24 / D-053 |
 | P2 | Reference-app production archetype + load budgets; extras quarantine; charts path | ROADMAP §0.25 / D-053 |

@@ -17,7 +17,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.19** | Accessibility engineering; progressive enhancement; landmark attrs/types; Page PE scripts | **Published** (`v0.19.0`; D-050) |
 | **0.20** | Production security floor and adapter parity (HTMX/eval, mount/prod gates, Flask/Django regions/CSP/scaffolds) | **Published** (`v0.20.0`; D-051) |
 | **0.21** | Human assistive-technology / compensated evaluation (D-052) | **Published** (`v0.21.0` engineering; PROTOCOL Verified; SR/PARTICIPANT Planned — not Supported) |
-| **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | Planned (D-051 split) |
+| **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | **Published** (`v0.22.0`; D-051) |
 | **0.23** | Expand `stable` API tier for Supported CRUD/HTMX/jobs | Planned (D-053) |
 | **0.24** | Live-transport production disposition (prove ops or polling-only) | Planned (D-053) |
 | **0.25** | Production archetype, load budgets, extras quarantine | Planned (D-053) |
@@ -32,9 +32,9 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
 
-## Honest gaps on the current train (0.21)
+## Honest gaps on the current train (0.22)
 
-- Current **published** PyPI train is **0.21.x** (`v0.21.0`)
+- Current **published** PyPI train is **0.22.x** (`v0.22.0`)
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)
@@ -45,7 +45,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Full multi-engine FastAPI live browser matrix / some Explorer live traces → owned `0.10.x` Deferred
 - Live transports remain **experimental**; polling is Supported — [What’s ready](whats-ready.md)
 
-CSRF / SecurityPolicy composition (#36–#38) is **0.22**. Human AT evaluation engineering is
+CSRF / SecurityPolicy composition (#36–#38) shipped in **0.22**
+([RELEASE_0_22](../acceptance/RELEASE_0_22.md)). Human AT evaluation engineering is
 **0.21** (D-052; sessions outstanding). Stable-tier expansion, live-transport disposition, and
 production archetype work are **0.23–0.25** (D-053). Earlier ops honesty items remain under
 phases **0.13+** as listed in

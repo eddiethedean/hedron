@@ -22,7 +22,7 @@ Compare positioning: [Why Hedron](why-hedron.md).
 
 | Item | Value |
 |---|---|
-| Version | **0.21.0** (Beta; **Published** — pin `hedron>=0.21.0,<0.22`) |
+| Version | **0.22.0** (Beta; **Published** — pin `hedron>=0.22.0,<0.23`) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |

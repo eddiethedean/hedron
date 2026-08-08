@@ -5,7 +5,7 @@ The canonical security policy for GitHub and adopters is
 
 Summary:
 
-- Supported lines: **`0.21.x` (current published — `v0.21.0`)**. See
+- Supported lines: **`0.21.x` (current published — `v0.22.0`)**. See
   [docs/SECURITY.md](docs/SECURITY.md) for the full table (older trains: prefer upgrading)
 - **Do not** open public issues for vulnerabilities — use GitHub
   [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new)

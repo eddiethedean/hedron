@@ -74,6 +74,7 @@ from hedron.responses import (
 )
 from hedron.routing import ComponentRef, HedronRoute, HedronRouter, resolve_route_path
 from hedron.security import (
+    SecurityHeadersPolicy,
     SecurityPolicy,
     SecurityProfile,
     csrf_token_for_request,
@@ -115,6 +116,9 @@ from hedron_core import (  # noqa: F401
     ConfirmButton,
     Container,
     ContextMenu,
+    CsrfField,
+    CsrfStrategy,
+    CsrfValidationError,
     DateInput,
     DateTimeInput,
     DescriptionList,
@@ -123,6 +127,7 @@ from hedron_core import (  # noqa: F401
     DialogueTurn,
     DirectoryUpload,
     Divider,
+    DoubleSubmitCookieCsrf,
     ExampleItem,
     ExampleSet,
     Expander,
@@ -145,6 +150,7 @@ from hedron_core import (  # noqa: F401
     Help,
     HelpInspector,
     HtmxLink,
+    Hx,
     IconButton,
     IFrame,
     Image,
@@ -196,6 +202,7 @@ from hedron_core import (  # noqa: F401
     SegmentedControl,
     Select,
     SelectSlider,
+    SessionTokenCsrf,
     Sidebar,
     Skeleton,
     Spacer,
@@ -334,7 +341,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.21.0"
+__version__ = "0.22.0"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
@@ -403,6 +410,8 @@ __all__ = [
     "FileUpload",
     "Footer",
     "Form",
+    "CsrfField",
+    "Hx",
     "FormErrors",
     "FormField",
     "FormModel",
@@ -479,6 +488,7 @@ __all__ = [
     "Secret",
     "Section",
     "SecurityPolicy",
+    "SecurityHeadersPolicy",
     "SecurityProfile",
     "SegmentedControl",
     "Select",
@@ -525,6 +535,11 @@ __all__ = [
     "cache_component",
     "cache_data",
     "compile_css",
+    "CsrfField",
+    "CsrfStrategy",
+    "CsrfValidationError",
+    "DoubleSubmitCookieCsrf",
+    "SessionTokenCsrf",
     "csrf_token_for_request",
     "default_interaction_policy",
     "download_all_zip",

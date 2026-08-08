@@ -43,7 +43,7 @@ status commentary, not a satisfied release gate.
 - [`v0.19` accessibility engineering](RELEASE_0_19.md) — **Published**; contracts, ATAG, Explorer, automated AT matrix, PE/landmarks/scripts
 - [`v0.20` production security floor and adapter parity](RELEASE_0_20.md) — **Published** (D-051); CSRF composition split to 0.22
 - [`v0.21` human AT](RELEASE_0_21.md) — engineering-complete / sessions outstanding (D-052)
-- [`v0.22`](../ROADMAP.md#022--csrf-and-securitypolicy-composition-v0220) — CSRF composition Planned (D-051); gate packet refine pending
+- [`v0.22` CSRF and SecurityPolicy composition](RELEASE_0_22.md) — **Published** (D-051)
 - [`v0.23` stable-tier expansion](RELEASE_0_23.md) — Planned (D-053 / RFC-0056)
 - [`v0.24` live-transport disposition](RELEASE_0_24.md) — Planned (D-053 / RFC-0056)
 - [`v0.25` production archetype](RELEASE_0_25.md) — Planned (D-053 / RFC-0056)
@@ -64,6 +64,7 @@ status commentary, not a satisfied release gate.
   [release-gate-0.19.toml](release-gate-0.19.toml),
   [release-gate-0.20.toml](release-gate-0.20.toml),
   [release-gate-0.21.toml](release-gate-0.21.toml),
+  [release-gate-0.22.toml](release-gate-0.22.toml),
   [release-gate-0.23.toml](release-gate-0.23.toml),
   [release-gate-0.24.toml](release-gate-0.24.toml),
   [release-gate-0.25.toml](release-gate-0.25.toml)

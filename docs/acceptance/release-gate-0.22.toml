@@ -1,0 +1,40 @@
+# Phase 0.22 CSRF and SecurityPolicy composition evidence index.
+# Consumed by scripts/check_release_gate.py 0.22.0 (--allow-planned until full cut).
+# Zero Deferred policy for 0.22-owned rows: every row must be Verified at cut.
+# Owning decision: D-051. RFC baselines: RFC-0012, RFC-0019, RFC-0024.
+# Issues #36–#38 remain linked; in-repo gates / RELEASE_0_22.md are normative.
+
+[[evidence]]
+id = "CSRF-022"
+state = "Verified"
+command = "python -m pytest -q tests/security/test_csrf.py tests/unit/test_phase22_csrf_strategies.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "HEADERS-022"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase22_security_headers.py tests/adapters/test_phase20_security_headers.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "FORM-022"
+state = "Verified"
+command = "python -m pytest -q tests/unit/test_phase22_csrf_field_form.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-022"
+state = "Verified"
+command = "python -m pytest -q"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-022"
+state = "Verified"
+command = "python scripts/verify_pkg_22.py"
+ci_job = "test"
+owner = "hedron"

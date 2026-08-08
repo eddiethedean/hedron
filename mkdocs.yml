@@ -258,6 +258,7 @@ nav:
       - Router: api/ROUTER.md
       - Interaction: api/INTERACTION.md
       - Security types: api/SECURITY_TYPES.md
+      - CSRF composition (0.22 Planned): api/CSRF_COMPOSITION.md
       - Mount / path prefix: api/MOUNT.md
     - Components:
       - Overview: components/index.md
@@ -293,6 +294,7 @@ nav:
         - Field: api/FIELD.md
         - Component: api/COMPONENT.md
         - Security types: api/SECURITY_TYPES.md
+        - CSRF composition (0.22 Planned): api/CSRF_COMPOSITION.md
       - Rendering and content:
         - Rendering: api/RENDERING.md
         - Auto: api/AUTO.md
@@ -341,8 +343,9 @@ nav:
     - Security disclosure: SECURITY.md
     - Evidence pack: guides/evidence-pack.md
     - Public roadmap: guides/roadmap.md
-    - Upgrade to 0.21: guides/upgrade.md
+    - Upgrade to 0.22: guides/upgrade.md
     - Release notes: guides/release-notes.md
+    - What's new in 0.22: guides/whats-new-0.22.md
     - What's new in 0.21: guides/whats-new-0.21.md
     - Package changelogs: guides/changelog.md
     - Earlier what's-new (archive):

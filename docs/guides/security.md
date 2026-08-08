@@ -69,6 +69,15 @@ Django adapter: `CsrfViewMiddleware` remains authoritative. Safe GETs through
 portable clients that send `X-CSRF-Token`, set `CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"`.
 Form posts may use `csrfmiddlewaretoken` or `csrf_token`.
 
+!!! note "Phase 0.22 — CSRF composition"
+
+    Pluggable CSRF strategies (`SessionTokenCsrf`, `DoubleSubmitCookieCsrf`), composable
+    `SecurityHeadersPolicy` merge/override, and `CsrfField` / `Form(hx=Hx(...))` ship on
+    **0.22**. See [CSRF composition](../api/CSRF_COMPOSITION.md) and
+    [RELEASE_0_22](../acceptance/RELEASE_0_22.md). Named profiles keep Compatible
+    double-submit defaults; seed tokens with `csrf_token_for_request` or use `CsrfField`
+    as below.
+
 Seed the cookie with a GET against a real page route, then POST an action or component
 route that requires CSRF. Example using the
 [HTMX interactions](htmx-interactions.md) sample (`/` seeds; `/status` is GET-only—add a
@@ -91,7 +100,17 @@ POST action for writes):
 
     from fastapi import Request
 
-    from hedron import Hedron, Page, Stack, Text, csrf_token_for_request, html
+    from hedron import (
+        CsrfField,
+        Form,
+        Hedron,
+        Hx,
+        Page,
+        Stack,
+        SubmitButton,
+        Text,
+        csrf_token_for_request,
+    )
 
     app = Hedron(
         title="CSRF demo",
@@ -111,14 +130,15 @@ POST action for writes):
         return Page(
             Stack(
                 Text("GET seeds hedron_csrf"),
-                html.form(
-                    html.input(type="hidden", name="csrf_token", value=token),
-                    html.button("POST with CSRF", type="submit"),
+                Form(
+                    CsrfField(token=token),
+                    SubmitButton("POST with CSRF"),
                     action="/do",
                     method="post",
+                    hx=Hx(target="body", swap="outerHTML"),
                 ),
-                html.form(
-                    html.button("POST without CSRF", type="submit"),
+                Form(
+                    SubmitButton("POST without CSRF"),
                     action="/do",
                     method="post",
                 ),

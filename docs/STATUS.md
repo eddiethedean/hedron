@@ -1,26 +1,25 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.21 **Published** as `v0.21.0` (2026-08-08); last published
-PyPI/git = `v0.21.0`. Workspace packages: Beta `0.21.0`, Alpha charts/sample-kit/native
+**Roadmap position:** phase 0.22 **Published** as `v0.22.0` (2026-08-08); last published
+PyPI/git = `v0.22.0`. Workspace packages: Beta `0.22.0`, Alpha charts/sample-kit/native
 `0.1.x`, Alpha notebook/mcp/gradio `0.1.0`.
 **Date:** 2026-08-08
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.21.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` /
+`0.22.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` /
 `hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.x` (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
 `hedron-charts`, `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, `hedron-mcp`,
 `hedron-gradio`.
 
-**Phase focus:** Living published train is **0.21** (D-052 engineering release). Human AT
-protocol is **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` /
-`REMEDIATE-021` remain Planned** until real sessions — **do not market human AT as
-Supported**. Automated AT (`AT-019`, phase 0.19) remains Supported and is not a substitute
-for human AT. CSRF composition remains Deferred → **0.22**. Production-quality maturity
-program (**D-053** / RFC-0056) assigns post-0.22 packets **0.23** (stable-tier), **0.24**
-(live disposition), **0.25** (archetype / landmines) — see
-[production-quality](guides/production-quality.md).
+**Phase focus:** Living published train is **0.22** (D-051 CSRF / SecurityPolicy composition).
+Human AT protocol remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` /
+`ARTIFACT-021` / `REMEDIATE-021` remain Planned** until real sessions — **do not market human
+AT as Supported**. Automated AT (`AT-019`, phase 0.19) remains Supported and is not a
+substitute for human AT. Production-quality maturity program (**D-053** / RFC-0056) assigns
+post-0.22 packets **0.23** (stable-tier), **0.24** (live disposition), **0.25**
+(archetype / landmines) — see [production-quality](guides/production-quality.md).
 
 ## Supported vs Deferred (operator view)
 
@@ -29,9 +28,9 @@ capability as unqualified **Supported** when its owning gate row is **Deferred**
 **Planned**. Live SSE/WS/streaming/preload remain **experimental** (polling Supported).
 Notebook preview, MCP, and Gradio interop are **Experimental** / Alpha. Phase 0.20 closed with
 **zero Deferred** among **0.20 gate IDs**. Phase 0.21 ships the engineering train with an
-honest human-AT gap: protocol Verified; sessions Planned / not Supported. CSRF /
-SecurityPolicy composition is owned by **0.22**. Prior-phase Deferred rows below remain owned
-elsewhere.
+honest human-AT gap: protocol Verified; sessions Planned / not Supported. Phase **0.22**
+ships CSRF / SecurityPolicy composition with **zero Deferred** among 0.22-owned rows.
+Prior-phase Deferred rows below remain owned elsewhere.
 
 | ID | Topic | Disposition | Notes |
 |---|---|---|---|
@@ -53,12 +52,27 @@ elsewhere.
 | `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
+| `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |
+| `HEADERS-022` | Composable SecurityPolicy headers | **Verified** (0.22) | D-051; [#37](https://github.com/eddiethedean/hedron/issues/37) |
+| `FORM-022` | `CsrfField` + Form HTMX kwargs | **Verified** (0.22) | D-051; [#38](https://github.com/eddiethedean/hedron/issues/38) |
+| `REGRESS-022` | Full suite at 0.22 cut | **Verified** (0.22) | |
+| `PKG-022` | `verify_pkg_22.py` packet evidence | **Verified** (0.22) | |
 | `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | Prior-phase carryover; disposition → **0.24** (D-053) |
 | `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Prior-phase carryover; disposition → **0.24** (D-053) |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof; disposition → **0.24** (D-053) |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | |
 
-## Phase 0.21 evidence
+## Phase 0.22 evidence
+
+- Gate index: [release-gate-0.22.toml](acceptance/release-gate-0.22.toml)
+  (all `Verified`; zero-Deferred for 0.22-owned rows).
+- Acceptance: [RELEASE_0_22.md](acceptance/RELEASE_0_22.md).
+- Contract: [api/CSRF_COMPOSITION.md](api/CSRF_COMPOSITION.md).
+- What’s new: [guides/whats-new-0.22.md](guides/whats-new-0.22.md).
+- Checker: `python scripts/check_release_gate.py 0.22.0`,
+  `python scripts/verify_pkg_22.py`.
+
+## Phase 0.21 evidence (prior)
 
 - Gate index: [release-gate-0.21.toml](acceptance/release-gate-0.21.toml)
   (`PROTOCOL-021` / `REGRESS-021` / `PKG-021` Verified; SR/PARTICIPANT/ARTIFACT/REMEDIATE Planned).
@@ -81,7 +95,6 @@ elsewhere.
 
 ## Next capability phases
 
-**0.22** — CSRF and SecurityPolicy composition (#36–#38; D-051 split).
 **0.23** — Stable-tier expansion for Supported CRUD/admin (D-053 / RFC-0056).
 **0.24** — Live-transport production disposition (prove ops **or** polling-only; D-053).
 **0.25** — Production archetype, load budgets, extras quarantine (D-053).

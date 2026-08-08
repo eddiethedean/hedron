@@ -4,7 +4,7 @@ Adopter recipe for Django + Hedron HTMX Refresh. Full guide:
 [Django getting started](../getting-started/django.md).
 
 ```bash
-uvx --from "hedron>=0.21.0,<0.22" hedron new my-django-app --django
+uvx --from "hedron>=0.22.0,<0.23" hedron new my-django-app --django
 cd my-django-app && uv sync
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```

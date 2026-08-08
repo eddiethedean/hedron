@@ -27,6 +27,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.19": ROOT / "docs" / "acceptance" / "release-gate-0.19.toml",
     "0.20": ROOT / "docs" / "acceptance" / "release-gate-0.20.toml",
     "0.21": ROOT / "docs" / "acceptance" / "release-gate-0.21.toml",
+    "0.22": ROOT / "docs" / "acceptance" / "release-gate-0.22.toml",
     "0.23": ROOT / "docs" / "acceptance" / "release-gate-0.23.toml",
     "0.24": ROOT / "docs" / "acceptance" / "release-gate-0.24.toml",
     "0.25": ROOT / "docs" / "acceptance" / "release-gate-0.25.toml",

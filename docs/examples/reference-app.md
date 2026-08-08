@@ -108,7 +108,17 @@ Unsafe POSTs require a CSRF token. Missing token → 403:
 
     from fastapi import Request
 
-    from hedron import Hedron, Page, Stack, Text, csrf_token_for_request, html
+    from hedron import (
+        CsrfField,
+        Form,
+        Hedron,
+        Hx,
+        Page,
+        Stack,
+        SubmitButton,
+        Text,
+        csrf_token_for_request,
+    )
 
     app = Hedron(
         title="CSRF demo",
@@ -128,14 +138,15 @@ Unsafe POSTs require a CSRF token. Missing token → 403:
         return Page(
             Stack(
                 Text("GET seeds hedron_csrf"),
-                html.form(
-                    html.input(type="hidden", name="csrf_token", value=token),
-                    html.button("POST with CSRF", type="submit"),
+                Form(
+                    CsrfField(token=token),
+                    SubmitButton("POST with CSRF"),
                     action="/do",
                     method="post",
+                    hx=Hx(target="body", swap="outerHTML"),
                 ),
-                html.form(
-                    html.button("POST without CSRF", type="submit"),
+                Form(
+                    SubmitButton("POST without CSRF"),
                     action="/do",
                     method="post",
                 ),

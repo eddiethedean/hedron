@@ -52,6 +52,7 @@ from hedron_core.builtins import (
     ConfirmButton,
     Container,
     ContextMenu,
+    CsrfField,
     DateInput,
     DateTimeInput,
     DescriptionList,
@@ -132,6 +133,7 @@ from hedron_core.builtins import (
     Tooltip,
     Video,
 )
+from hedron_core.builtins.forms import Hx
 from hedron_core.builtins.forms_extra import DirectoryUploadFile, validate_directory_upload
 from hedron_core.builtins.landmarks import LandmarkProps
 from hedron_core.builtins.map_geo import MarkerSpec, sanitize_geojson
@@ -160,6 +162,12 @@ from hedron_core.cross_filter import (
     compose_cross_filter,
     triggers_from_chart_event,
     triggers_from_grid_selection,
+)
+from hedron_core.csrf_strategy import (
+    CsrfStrategy,
+    CsrfValidationError,
+    DoubleSubmitCookieCsrf,
+    SessionTokenCsrf,
 )
 from hedron_core.css import compile_css, scoped_identifier
 from hedron_core.dashboard import (
@@ -293,7 +301,12 @@ from hedron_core.rendering import (
     render,
 )
 from hedron_core.security import SafeUrl, Secret, TrustedHtml, UrlPurpose
-from hedron_core.security_policy import SecurityPolicy, SecurityProfile, SecurityProfileName
+from hedron_core.security_policy import (
+    SecurityHeadersPolicy,
+    SecurityPolicy,
+    SecurityProfile,
+    SecurityProfileName,
+)
 from hedron_core.streaming import ChunkedList, StreamBudget, StreamedDocument, TokenStream
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.theme import Theme, default_theme, emit_theme_css
@@ -322,7 +335,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.21.0"
+__version__ = "0.22.0"
 
 __all__ = [
     "ActionRegistry",
@@ -374,8 +387,13 @@ __all__ = [
     "SecurityAuditEventType",
     "SecurityAuditSink",
     "SecurityPolicy",
+    "SecurityHeadersPolicy",
     "SecurityProfile",
     "SecurityProfileName",
+    "CsrfStrategy",
+    "CsrfValidationError",
+    "DoubleSubmitCookieCsrf",
+    "SessionTokenCsrf",
     "StatusPolicy",
     "StructuredLogAuditSink",
     "UrlReverseRequest",
@@ -445,6 +463,8 @@ __all__ = [
     "Field",
     "Footer",
     "Form",
+    "CsrfField",
+    "Hx",
     "FormErrors",
     "FormField",
     "FormModel",
@@ -703,6 +723,8 @@ def _register_builtins() -> None:
         LinkButton,
         IconButton,
         Form,
+        CsrfField,
+        Hx,
         FormField,
         Label,
         TextInput,

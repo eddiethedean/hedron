@@ -21,7 +21,12 @@ from hedron.security.login_csrf import (
     sign_login_csrf,
     validate_login_csrf,
 )
-from hedron.security.policy import SecurityPolicy, SecurityProfile, SecurityProfileName
+from hedron.security.policy import (
+    SecurityHeadersPolicy,
+    SecurityPolicy,
+    SecurityProfile,
+    SecurityProfileName,
+)
 from hedron.security.redirects import redirect_external, redirect_local
 from hedron.security.session_timeout import (
     SESSION_CREATED_KEY,
@@ -31,17 +36,28 @@ from hedron.security.session_timeout import (
     touch_session,
 )
 from hedron.security.trusted_header import TrustedHeaderIdentity
+from hedron_core.csrf_strategy import (
+    CsrfStrategy,
+    CsrfValidationError,
+    DoubleSubmitCookieCsrf,
+    SessionTokenCsrf,
+)
 
 __all__ = [
     "LOGIN_CSRF_KEY",
     "SESSION_CREATED_KEY",
     "SESSION_LAST_SEEN_KEY",
     "AuthRateLimiter",
+    "CsrfStrategy",
+    "CsrfValidationError",
+    "DoubleSubmitCookieCsrf",
     "SecurityHeadersMiddleware",
+    "SecurityHeadersPolicy",
     "SecurityPolicy",
     "SecurityProfile",
     "SecurityProfileName",
     "SessionTimeoutError",
+    "SessionTokenCsrf",
     "TrustedHeaderIdentity",
     "auth_rate_limit_dependency",
     "auth_rate_limit_exception",

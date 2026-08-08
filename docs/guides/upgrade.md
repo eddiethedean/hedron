@@ -1,14 +1,26 @@
 # Upgrade
 
-**Hedron 0.21.0** — pin `hedron>=0.21.0,<0.22`. From 0.20: human AT protocol engineering
-and PE/fragment parity. See [What's ready](whats-ready.md) and
-[What's new in 0.21](whats-new-0.21.md). CSRF composition lands in 0.22.
+**Hedron 0.22.0** — pin `hedron>=0.22.0,<0.23`. From 0.21: CSRF / SecurityPolicy
+composition (`CsrfField`, pluggable strategies, header merge). See
+[What's ready](whats-ready.md) and [What's new in 0.22](whats-new-0.22.md).
+
+## Upgrade from 0.21 → 0.22
+
+If you are already on **0.21.x**, pin coordinated **0.22.0** packages:
+
+1. Pin `hedron>=0.22.0,<0.23` (and matching `hedron-core` / adapters / extras).
+2. Prefer `CsrfField` / `Form(hx=Hx(...))` over manual hidden inputs and stringly `hx-*`
+   attrs where practical ([CSRF composition](../api/CSRF_COMPOSITION.md)).
+3. Apps that own sessions/CSP can pass `SecurityPolicy(csrf=SessionTokenCsrf(...))` or
+   `security_headers=SecurityHeadersPolicy(...)` instead of disabling Hedron CSRF/headers.
+4. Re-run your app suite; read [What's new in 0.22](whats-new-0.22.md).
+5. Human screen-reader sessions remain Planned / not Supported (carryover from 0.21).
 
 ## Upgrade from 0.20 → 0.21
 
-If you are already on **0.20.x**, pin coordinated **0.21.0** packages:
+If you are already on **0.20.x**, pin coordinated **0.21.0** packages, then continue to 0.22:
 
-1. Pin `hedron>=0.21.0,<0.22` (and matching `hedron-core` / adapters / extras).
+1. Pin `hedron>=0.21.0,<0.22` first (or jump directly to `>=0.22.0,<0.23`).
 2. Prefer `@action(..., fragment_regions=…)` (or `@component` POST) whenever HTMX sends
    `HX-Target` on mutations.
 3. Re-run your app suite; read [What's new in 0.21](whats-new-0.21.md).

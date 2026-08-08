@@ -3,14 +3,69 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from dataclasses import dataclass
 from typing import Literal
 
 from hedron_core.builtins._base import collect_children, dom_id_part
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
+from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.models import Props
+from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
+
+
+def _safe_optional_selector(value: str | None, *, label: str) -> str | None:
+    if value is None or value == "":
+        return None
+    if not safe_css_selector(value):
+        raise ValueError(f"Unsafe HTMX {label} selector: {value!r}")
+    return value
+
+
+@dataclass(frozen=True, slots=True)
+class Hx:
+    """First-class HTMX options for ``Form`` (FORM-022)."""
+
+    target: str | None = None
+    swap: str = "outerHTML"
+    select: str | None = None
+    select_oob: str | None = None
+    push_url: bool | str = False
+    disabled_elt: str | None = None
+    indicator: str | None = None
+    method: Literal["get", "post", "put", "patch", "delete"] | None = None
+    url: str | None = None
+
+    def as_html_attrs(self) -> dict[str, HtmlAttrValue]:
+        target = _safe_optional_selector(self.target, label="target")
+        select = _safe_optional_selector(self.select, label="select")
+        select_oob = _safe_optional_selector(self.select_oob, label="select-oob")
+        disabled_elt = _safe_optional_selector(self.disabled_elt, label="disabled-elt")
+        indicator = _safe_optional_selector(self.indicator, label="indicator")
+        if not safe_hx_swap(self.swap):
+            raise ValueError(f"Unsafe HTMX swap value: {self.swap!r}")
+        attrs: dict[str, HtmlAttrValue] = {}
+        if self.method and self.url:
+            attrs[f"hx-{self.method.lower()}"] = self.url
+        if target:
+            attrs["hx-target"] = target
+        if self.swap:
+            attrs["hx-swap"] = self.swap
+        if select:
+            attrs["hx-select"] = select
+        if select_oob:
+            attrs["hx-select-oob"] = select_oob
+        if self.push_url is True:
+            attrs["hx-push-url"] = "true"
+        elif isinstance(self.push_url, str) and self.push_url:
+            attrs["hx-push-url"] = self.push_url
+        if disabled_elt:
+            attrs["hx-disabled-elt"] = disabled_elt
+        if indicator:
+            attrs["hx-indicator"] = indicator
+        return attrs
 
 
 class FormProps(Props):
@@ -27,6 +82,7 @@ class Form(Component[FormProps]):
         children: NodeLike = None,
         action: SafeUrl | str | None = None,
         method: Literal["get", "post"] = "post",
+        hx: Hx | None = None,
         **kwargs: HtmlAttrValue,
     ) -> None:
         url = None
@@ -38,6 +94,8 @@ class Form(Component[FormProps]):
             )
         # Extra kwargs are native/HTMX attributes forwarded to the form element.
         extras = {k: v for k, v in kwargs.items() if k not in FormProps.model_fields}
+        if hx is not None:
+            extras = {**hx.as_html_attrs(), **extras}
         props_kwargs = {k: v for k, v in kwargs.items() if k in FormProps.model_fields}
         super().__init__(FormProps(action=url, method=method, **props_kwargs))
         self._children = collect_children(*nodes, children=children)
@@ -48,6 +106,42 @@ class Form(Component[FormProps]):
         if self.props.action is not None:
             attrs["action"] = self.props.action
         return html.form(*self._children, **attrs)
+
+
+class CsrfFieldProps(Props):
+    name: str | None = None
+    token: str | None = None
+
+
+class CsrfField(Component[CsrfFieldProps]):
+    """Hidden CSRF input wired to the active strategy / render context (FORM-022)."""
+
+    props_type = CsrfFieldProps
+    logical_name = "CsrfField"
+
+    def __init__(
+        self,
+        *,
+        name: str | None = None,
+        token: str | None = None,
+        **kwargs: object,
+    ) -> None:
+        super().__init__(CsrfFieldProps(name=name, token=token, **kwargs))
+
+    def render(self) -> NodeLike:
+        ctx = active_render_context()
+        token = self.props.token
+        name = self.props.name
+        if token is None and ctx is not None:
+            token = ctx.csrf_token
+        if name is None:
+            name = ctx.csrf_form_field if ctx is not None else "csrf_token"
+        if not token:
+            raise ValueError(
+                "CsrfField requires token= or a RenderContext with csrf_token "
+                "(FastAPI pages populate this automatically when CSRF is enabled)"
+            )
+        return html.input(type="hidden", name=name, value=token)
 
 
 class LabelProps(Props):

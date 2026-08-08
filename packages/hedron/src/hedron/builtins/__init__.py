@@ -333,13 +333,9 @@ class AutoForm(Component[Props]):
         if self.errors:
             fields.append(FormErrors(self.errors))
         if self.csrf_token:
-            fields.append(
-                html.input(
-                    type="hidden",
-                    name=self.csrf_form_field,
-                    value=self.csrf_token,
-                )
-            )
+            from hedron_core.builtins.forms import CsrfField
+
+            fields.append(CsrfField(name=self.csrf_form_field, token=self.csrf_token))
         model_fields = getattr(self.model_type, "model_fields", {})
         for name, field_info in model_fields.items():
             if name.startswith("_"):

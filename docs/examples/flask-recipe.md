@@ -4,7 +4,7 @@ Adopter recipe for Flask + Hedron HTMX Refresh. Full guide:
 [Flask getting started](../getting-started/flask.md).
 
 ```bash
-uvx --from "hedron>=0.21.0,<0.22" hedron new my-flask-app --flask
+uvx --from "hedron>=0.22.0,<0.23" hedron new my-flask-app --flask
 cd my-flask-app && uv sync && uv run flask --app app run
 ```
 

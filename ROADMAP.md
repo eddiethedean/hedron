@@ -1466,26 +1466,52 @@ HTMX fragment path), fragment status/refresh, DataEditor smoke.
 
 ## 0.22 — CSRF and SecurityPolicy composition (`v0.22.0`)
 
-**Status:** Planned. Depends on 0.20 `CSP-020` / production security profiles shipping so
-composition builds on applied adapter headers rather than inventing a parallel header path.
-Decision: D-051 (split from 0.20). Issue bodies remain normative for acceptance criteria.
+**Status:** **Published** as `v0.22.0`. Depends on 0.20 `CSP-020` / production security profiles
+so composition builds on applied adapter headers rather than inventing a parallel header path.
+Decision: D-051 (split from 0.20). Issues
+[#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)
+remain linked for history; **in-repo gates and
+[RELEASE_0_22.md](docs/acceptance/RELEASE_0_22.md) are normative.** Contract:
+[api/CSRF_COMPOSITION.md](docs/api/CSRF_COMPOSITION.md).
 
 **Outcome:** Apps that own sessions and CSP can plug CSRF strategies without requiring Starlette
 cookie sessions, merge/override security headers per name, and use `CsrfField` plus first-class
 HTMX kwargs on `Form` without stringly hidden tokens.
 
-### Scope (issue-owned; gate IDs deferred until packet refine)
+### Scope
 
-- Pluggable CSRF strategies that do not require Starlette cookie sessions (DB-backed /
-  application-owned synchronizer tokens; distinct from pre-auth helpers)
+Zero Deferred among 0.22-owned gate rows at cut. Gate IDs:
+
+- **`CSRF-022`** — Pluggable CSRF strategy protocol in `hedron-core` (validate + optional
+  issue/token helpers); default double-submit cookie wrapped as a built-in strategy so named
+  profiles stay Compatible; at least one non-Starlette-session strategy for FastAPI; form field
+  **or** header accepted; missing/invalid → 403
   ([#36](https://github.com/eddiethedean/hedron/issues/36)).
-- Composable `SecurityPolicy` security headers (merge/override per header rather than an
-  all-or-nothing `security_headers=False` off-switch); distinct from portable Flask/Django
-  profile application in 0.20 `CSP-020`
+- **`HEADERS-022`** — Composable `SecurityPolicy` security headers (merge/override per header
+  rather than an all-or-nothing `security_headers=False` off-switch); unspecified fields keep
+  profile defaults; escape hatch when the host owns all headers; builds on 0.20 `CSP-020`
+  applicators (no parallel header path)
   ([#37](https://github.com/eddiethedean/hedron/issues/37)).
-- `CsrfField` component wired to the active CSRF strategy, plus first-class HTMX kwargs on `Form`
-  so partials stop re-listing hidden tokens and stringly `hx-*` attributes
+- **`FORM-022`** — `CsrfField` wired to the active CSRF strategy, plus first-class HTMX kwargs
+  on `Form` so partials stop re-listing hidden tokens and stringly `hx-*` attributes
   ([#38](https://github.com/eddiethedean/hedron/issues/38)).
+- **`REGRESS-022`** — Full regression suite at cut.
+- **`PKG-022`** — Coordinated package/docs verify at cut (`verify_pkg_22.py`).
+
+### Non-goals
+
+- Absorbing 0.21 human-AT session work (`SR-021` / `PARTICIPANT-021` / …).
+- Promoting Alpha charts/notebook/MCP/Gradio or experimental live transports.
+- Replacing Django `CsrfViewMiddleware` with Hedron strategies (Django remains host-authoritative
+  for validation; `CsrfField` may still render the host token).
+- Requiring Flask constructor CSRF kwargs to fully collapse into `SecurityPolicy` (follow-up polish).
+- Absorbing themed `Button` (#29) or stable-tier expansion (0.23).
+
+### Exit gate
+
+- Every 0.22-owned release-gate row is `Verified`
+  ([release-gate-0.22.toml](docs/acceptance/release-gate-0.22.toml)).
+- Security guide, CSRF composition contract, and What’s ready agree on Supported vs Planned claims.
 
 ## 0.23 — Stable-tier expansion for Supported CRUD/admin (`v0.23.0`)
 
@@ -1792,7 +1818,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Landmark attrs/types and allowlisted Page progressive-enhancement scripts | 0.19 | Safe attrs / real landmark types (`LANDMARK-019`; [#27](https://github.com/eddiethedean/hedron/issues/27), [#31](https://github.com/eddiethedean/hedron/issues/31)); same-origin script allowlist (`SCRIPT-019`; [#39](https://github.com/eddiethedean/hedron/issues/39)). |
 | HTMX browser hardening, proxy mount helpers, production security gates, `js:` hx-vals/headers reject | 0.20 | Host security floor; inspectable opt-outs (`HTMX-020`, `MOUNT-020`, `PROD-020`, `EVAL-020`; [#1](https://github.com/eddiethedean/hedron/issues/1), [#3](https://github.com/eddiethedean/hedron/issues/3), [#6](https://github.com/eddiethedean/hedron/issues/6), [#18](https://github.com/eddiethedean/hedron/issues/18)). |
 | Flask/Django fragment_regions, portable CSP headers, scaffolds, wheel smoke, Flask-Login AuthSignal | 0.20 | Adapter parity and DX after 0.11 foundations (`REGION-020`, `CSP-020`, `SCAFFOLD-020`, `WHEEL-020`, `AUTH-020`; [#12](https://github.com/eddiethedean/hedron/issues/12), [#14](https://github.com/eddiethedean/hedron/issues/14), [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19), [#20](https://github.com/eddiethedean/hedron/issues/20)). |
-| Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.22 | FastAPI composition for apps that own sessions/CSP; depends on 0.20 `CSP-020` ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
+| Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.22 | Packet refined (`CSRF-022` / `HEADERS-022` / `FORM-022`); FastAPI composition for apps that own sessions/CSP; depends on 0.20 `CSP-020` ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
 | Expand minimal `stable` API tier for Supported CRUD/HTMX/jobs + Beginner facade inventory | 0.23 | D-053 / RFC-0056; does not promote Alpha extras or live transports. |
 | Live-transport production disposition (prove browser/load ops **or** polling-only docs) | 0.24 | Re-homes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056). |
 | Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | D-053 / RFC-0056; SBOM/evidence attach on train tags. |

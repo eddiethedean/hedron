@@ -18,13 +18,13 @@ and swaps HTML fragments with HTMX.
 # macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
 # Windows (PowerShell): irm https://astral.sh/uv/install.ps1 | iex
 
-uvx --from "hedron>=0.21.0,<0.22" hedron new my-hedron-app
+uvx --from "hedron>=0.22.0,<0.23" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
 Prefer a **clean virtualenv** (Hedron needs FastAPI `>=0.141.1,<0.142` — use a fresh
 env if your project already pins an older FastAPI). Pin production installs with
-`hedron>=0.21.0,<0.22`.
+`hedron>=0.22.0,<0.23`.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 Click **Refresh status**; the page updates without a full reload (HTMX swaps a small HTML
@@ -43,7 +43,7 @@ Alternate (pip + venv):
 ```bash
 # macOS / Linux
 python3 -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"
+python -m pip install "hedron>=0.22.0,<0.23" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 ```
@@ -52,7 +52,7 @@ cd my-hedron-app && python -m pip install -e . && uvicorn app:app --reload
 # Windows (PowerShell)
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install "hedron>=0.21.0,<0.22" "uvicorn[standard]"
+python -m pip install "hedron>=0.22.0,<0.23" "uvicorn[standard]"
 python -m hedron new my-hedron-app
 cd my-hedron-app
 python -m pip install -e .
@@ -67,7 +67,7 @@ uvicorn app:app --reload
 <details>
 <summary>Package maturity</summary>
 
-Hedron 0.21.0 is published (Beta packages — pin <code>hedron&gt;=0.21.0,&lt;0.22</code>).
+Hedron 0.22.0 is published (Beta packages — pin <code>hedron&gt;=0.22.0,&lt;0.22</code>).
 Most APIs are compatibility level <code>beta</code>; see
 <a href="https://hedron.readthedocs.io/en/latest/guides/whats-ready/">What’s ready</a>
 for Supported vs Experimental. If <code>hedron</code> is not on your PATH, use

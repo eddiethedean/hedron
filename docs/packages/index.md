@@ -32,7 +32,7 @@ Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). A f
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
 
 ```bash
-pip install "hedron[data,dev]>=0.21.0,<0.22"
+pip install "hedron[data,dev]>=0.22.0,<0.23"
 ```
 
 ## Alpha lines (`0.1.x`)

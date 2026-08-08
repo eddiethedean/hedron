@@ -58,7 +58,7 @@ changes, Streamlit reruns the file and reconstructs the page.
 Install Hedron with its data and chart packages, plus an ASGI server:
 
 ```bash
-uv add "hedron[data]>=0.21.0,<0.22" "hedron[charts]>=0.1.0,<0.2" "uvicorn[standard]"
+uv add "hedron[data]>=0.22.0,<0.23" "hedron[charts]>=0.1.0,<0.2" "uvicorn[standard]"
 ```
 
 Create `app.py`:

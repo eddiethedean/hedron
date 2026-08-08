@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator, Mapping, Sequence
+from contextvars import ContextVar, Token
 from dataclasses import dataclass, field
 from enum import StrEnum
 from types import GeneratorType, MappingProxyType
@@ -35,8 +36,18 @@ __all__ = [
     "RenderMode",
     "RenderResult",
     "RenderSession",
+    "active_render_context",
     "render",
 ]
+
+_active_render_context: ContextVar[RenderContext | None] = ContextVar(
+    "hedron_active_render_context", default=None
+)
+
+
+def active_render_context() -> RenderContext | None:
+    """Return the RenderContext for the in-progress ``render()`` call, if any."""
+    return _active_render_context.get()
 
 
 class RenderMode(StrEnum):
@@ -50,10 +61,24 @@ class RenderContext:
     theme: str | None = None
     max_depth: int = 100
     max_nodes: int = 50_000
+    csrf_token: str | None = None
+    csrf_form_field: str = "csrf_token"
 
     @classmethod
-    def standalone(cls, *, locale: str = "en", theme: str | None = None) -> RenderContext:
-        return cls(locale=locale, theme=theme)
+    def standalone(
+        cls,
+        *,
+        locale: str = "en",
+        theme: str | None = None,
+        csrf_token: str | None = None,
+        csrf_form_field: str = "csrf_token",
+    ) -> RenderContext:
+        return cls(
+            locale=locale,
+            theme=theme,
+            csrf_token=csrf_token,
+            csrf_form_field=csrf_form_field,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -133,8 +158,12 @@ class RenderSession:
         previous_identity_keys = set(self._state.identity_map)
         previous_diagnostic_count = len(self._state.diagnostics)
         previous_node_count = self._state.node_count
-        nodes = _normalize(value, self._state, depth=base_depth)
-        html_text = _serialize_result(value, nodes, self.context, mode)
+        ctx_token: Token[RenderContext | None] = _active_render_context.set(self.context)
+        try:
+            nodes = _normalize(value, self._state, depth=base_depth)
+            html_text = _serialize_result(value, nodes, self.context, mode)
+        finally:
+            _active_render_context.reset(ctx_token)
         self._render_count += 1
         identity_delta = {
             key: value

@@ -13,7 +13,7 @@ scripts here when you add them.
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
-| `check_docs_train_ssot.py` | Fail if adopter docs claim a stale current train (expects **0.21**). CI: quality job |
+| `check_docs_train_ssot.py` | Fail if adopter docs claim a stale current train (expects **0.22**). CI: quality job |
 
 
 ## Release / gate (maintainers)
@@ -22,10 +22,11 @@ scripts here when you add them.
 |---|---|
 | `check_release_gate.py` | Gate TOML vs claimed version (`0.10.1`, `0.11.0`, …) |
 | `check_human_at_packet.py` | Phase **0.21** human AT protocol/schema/ledger packet (D-052). Without flags: engineering packet OK. Pass `--require-sessions` only when flipping SR/PARTICIPANT/ARTIFACT/REMEDIATE to Verified after real sessions. |
-| `verify_pkg_21.py` | Phase **0.21** local packet + focused tests + `check_release_gate.py 0.21.0 --allow-planned` (no train bump) |
+| `verify_pkg_21.py` | Phase **0.21** historical packet verify (human AT engineering cut) |
+| `verify_pkg_22.py` | Phase **0.22** living-train packet + focused CSRF/security tests (`check_release_gate.py 0.22.0`) |
 | `rehearse_release.py` | Clean install rehearsal before tagging |
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
-| `verify_pkg_21.py` / `verify_pkg_20.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (current: **`verify_pkg_21.py`**) |
+| `verify_pkg_22.py` / `verify_pkg_21.py` / `verify_pkg_20.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_22.py`**) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

@@ -5,7 +5,7 @@ A short path from install → chart → Markdown → typed fragment response.
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.1.0,<0.2" "hedron[markdown]>=0.21.0,<0.22"
+pip install "hedron[charts]>=0.1.0,<0.2" "hedron[markdown]>=0.22.0,<0.23"
 # optional backends:
 pip install "hedron-charts[matplotlib]>=0.1.0,<0.2"   # or plotly / altair
 ```
