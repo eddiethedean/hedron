@@ -9,8 +9,8 @@ Plot one x/y series from row mappings with an accessible fallback.
 
 | | |
 |---|---|
-| Import | `from hedron import LineChart` |
-| Distribution | `hedron[charts]` |
+| Import | `from hedron_charts import LineChart` |
+| Distribution | `hedron[charts]` (workspace-only on 0.25 — not PyPI) |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -28,7 +28,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 # workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
-from hedron import LineChart
+from hedron_charts import LineChart
 
 component = LineChart(rows, x='month', y='revenue', title='Monthly revenue', description='Revenue rose from January through June.')
 ```

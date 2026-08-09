@@ -12,6 +12,7 @@ One landing page for production shipping on the living **0.25** train. Capabilit
 | Kitchen-sink sample | [Reference app](../examples/reference-app.md) |
 | Support / SLA honesty | [Support](support.md) |
 | Enterprise diligence | [Enterprise diligence](enterprise-diligence.md) |
+| Evaluate fit first | [Evaluate Hedron](evaluate.md) · [What’s ready](whats-ready.md) |
 
 Maintainer trust-program depth (not required to ship an app):
 
@@ -20,3 +21,6 @@ Maintainer trust-program depth (not required to ship an app):
 - [Production archetype API](../api/PRODUCTION_ARCHETYPE.md)
 
 **Pin:** `hedron>=0.25.0,<0.26` (and matching adapters/extras) in your lockfile.
+
+This page is the single Ship hub (Guides → Ops). Evaluate links here; it does not
+re-home the checklist.

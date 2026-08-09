@@ -26,7 +26,10 @@ def home() -> Page:
 `Auto` picks an inspectable renderer; override or register renderers when you need
 control ([Auto API](../api/AUTO.md)).
 
-## In-memory DataTable (requires `hedron[data]`)
+## HTMX filter demo (html.table — no `hedron[data]` required)
+
+Simulates swapping a region with filter chips. For the real `DataTable` component, install
+`hedron[data]` and use the section below.
 
 ### Try it (simulated)
 
@@ -114,6 +117,8 @@ control ([Auto API](../api/AUTO.md)).
     def member_rows():
         return swap(table_panel("member"))
     ```
+
+## In-memory DataTable (requires `hedron[data]`)
 
 ```bash
 pip install "hedron[data]>=0.25.0,<0.26"

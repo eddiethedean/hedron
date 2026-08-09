@@ -19,8 +19,10 @@ not implied by `hedron[extras]`. Polling remains the Supported live-status story
 - **Extras quarantine** — `CodeEditor` / `TerminalView` / joystick / device move behind
   `hedron[experimental-ui]` (and `hedron_extras.experimental`). Plain `hedron[extras]` no
   longer registers those experimental widgets as product UI.
-- **Charts default** — Matplotlib remains the conservative Supported charts default; Plotly /
-  Altair stay experimental.
+- **Charts on 0.25** — `hedron-charts` remains **source-only / Deferred for PyPI** on this
+  train — do not install `hedron[charts]` with Hedron 0.25. Matplotlib remains the intended
+  default backend when charts ship on a compatible train; Plotly / Altair stay experimental.
+  See [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 - **Supply-chain evidence** — Train tags attach SBOM / evidence bundles in release CI.
 
 ## Upgrade notes

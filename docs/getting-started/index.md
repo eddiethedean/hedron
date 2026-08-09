@@ -1,14 +1,14 @@
 # Learn Hedron
 
 **Goal (often ~5–10 minutes after Python + uv/pip are ready):** Hello + click
-**Refresh status**. Then: HTMX second region → form that increments the notes count →
-pick one recipe (auth or SQLite).
+**Refresh status**. Then: understand HTMX → second region → form that increments the
+notes count → pick one recipe (auth or SQLite).
 
 ## Path
 
-1. [What is HTMX?](what-is-htmx.md) — the browser, fragment, region, and swap mental model
-2. [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
-3. [Installation](installation.md) — extras, Flask/Django, common problems (as needed)
+1. [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
+2. [Installation](installation.md) — extras, Flask/Django, common problems (as needed)
+3. [What is HTMX?](what-is-htmx.md) — the browser, fragment, region, and swap mental model
 4. [HTMX interactions](../guides/htmx-interactions.md) — extend the Refresh pattern
 5. [Minimal form](../guides/minimal-form.md) — `CsrfField` POST that updates the count
 6. [Learning path](learning-path.md) — continue toward data, auth, and deploy
@@ -21,20 +21,20 @@ Evaluating production use later? [What’s ready](../guides/whats-ready.md) ·
 [Why Hedron](../guides/why-hedron.md) · [Evaluate Hedron](../guides/evaluate.md).
 
 <div class="hedron-grid">
-  <a class="hedron-card" href="what-is-htmx/">
-    <span class="hedron-card__icon" aria-hidden="true">01</span>
-    <strong>1. Understand HTMX</strong>
-    <p>Learn how browser events become HTTP requests and targeted HTML swaps.</p>
-  </a>
   <a class="hedron-card" href="quickstart/">
-    <span class="hedron-card__icon" aria-hidden="true">02</span>
-    <strong>2. First app</strong>
+    <span class="hedron-card__icon" aria-hidden="true">01</span>
+    <strong>1. First app</strong>
     <p>Scaffold, Hello, Refresh click, then edit a string.</p>
   </a>
   <a class="hedron-card" href="installation/">
-    <span class="hedron-card__icon" aria-hidden="true">03</span>
-    <strong>3. Installation</strong>
+    <span class="hedron-card__icon" aria-hidden="true">02</span>
+    <strong>2. Installation</strong>
     <p>Extras, adapters, and troubleshooting after Hello.</p>
+  </a>
+  <a class="hedron-card" href="what-is-htmx/">
+    <span class="hedron-card__icon" aria-hidden="true">03</span>
+    <strong>3. Understand HTMX</strong>
+    <p>Learn how browser events become HTTP requests and targeted HTML swaps.</p>
   </a>
   <a class="hedron-card" href="../guides/htmx-interactions/">
     <span class="hedron-card__icon" aria-hidden="true">04</span>

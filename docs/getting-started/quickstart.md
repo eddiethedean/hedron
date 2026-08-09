@@ -5,8 +5,10 @@ a working **Refresh** click, then a one-line edit. Prefer **`python -m hedron`**
 never matters. Cold machines (install Python/uv first) or Codespaces first boot often take
 longer — see [Try with Codespaces](../examples/try-it.md).
 
-New to HTMX? Read [What is HTMX?](what-is-htmx.md) first for the five-minute mental
-model behind the Refresh interaction.
+This page is the golden path only (`hedron new` → Refresh → edit). After Hello works,
+read [What is HTMX?](what-is-htmx.md). Adding Hedron to an existing FastAPI app:
+[Existing / plain FastAPI](../guides/plain-fastapi.md). Pasteable variants without the
+CLI: [single-file examples](../examples/single-file.md).
 
 ## Prerequisites
 
@@ -33,11 +35,11 @@ model behind the Refresh interaction.
 
 ## 1. Scaffold, sync, run
 
-!!! tip "Pip needs two installs"
+!!! warning "Pip needs two installs — skip the second and imports fail"
 
     With **pip**, install Hedron once for the **CLI**, then again with `pip install -e .`
-    inside the scaffold so uvicorn uses the project pin. The **uv** path below does this
-    in one flow. See
+    inside the scaffold so uvicorn uses the project pin. Forgetting the second step causes
+    `ModuleNotFoundError: hedron`. The **uv** path below does this in one flow. See
     [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
 
 Pin production installs with `hedron>=0.25.0,<0.26`.
@@ -165,6 +167,8 @@ Extras, Flask/Django, and troubleshooting: [Installation](installation.md).
 
 `hedron new` writes the `app.py` shown in the **Code** tab above (timestamp line may
 vary). Keep that file open while you edit — the Demo tab is only a docs simulation.
+`security="standard"` and `session_secret` are scaffold defaults so CSRF-safe forms work
+later; replace the secret before any deploy ([Configuration](../CONFIGURATION.md)).
 
 ## 3. Edit the Hello text (~2 minutes)
 
@@ -173,7 +177,8 @@ intend to replace it.
 
 1. Change the home `Text("Hello from hedron new")` to your name.
 2. Save — with `--reload`, the browser should update.
-3. Extend the same Refresh pattern: [HTMX interactions](../guides/htmx-interactions.md).
+3. Optionally skim [What is HTMX?](what-is-htmx.md), then extend the same Refresh pattern:
+   [HTMX interactions](../guides/htmx-interactions.md).
 4. Then add a small form: [Minimal form POST](../guides/minimal-form.md).
 
 ```python
@@ -194,105 +199,13 @@ python -m hedron --app app:app check
 
 Advisory findings on a hello-world scaffold are normal.
 
-## Alternative — add Hedron to an existing FastAPI app
+## Other paths (not the golden path)
 
-!!! warning "FastAPI pin — Supported vs declared"
-
-    For a known-good first mount, use FastAPI `>=0.141.1,<0.142` (CI-supported). Declared
-    metadata allows up to `<0.150`, but versions outside Supported are not CI-proven.
-    Shared or older FastAPI environments often fail to resolve — use a **clean venv**.
-    See [troubleshooting](../guides/troubleshooting.md) and
-    [Compatibility](../COMPATIBILITY.md).
-
-If you already have a FastAPI project that satisfies the pin, install
-`hedron>=0.25.0,<0.26` and **include a `HedronRouter`** (recommended). You own
-session/security middleware — see the full listing in
-[Plain FastAPI](../guides/plain-fastapi.md).
-
-```python
-from fastapi import FastAPI
-from hedron import HedronRouter, Page, Text, mount_hedron_static
-
-api = FastAPI()
-mount_hedron_static(api)
-ui = HedronRouter(prefix="/ui")
-
-
-@ui.page("/")
-def home() -> Page:
-    return Page(Text("Hello from Hedron"), title="Home")
-
-
-api.include_router(ui)
-```
-
-Alternate: mount a full `Hedron()` sub-app with `api.mount("/", ui)` when you want the
-facade’s middleware — [Hedron API](../api/HEDRON.md) · [Mount](../api/MOUNT.md).
-
-Prefer `hedron new` for the first-hour Refresh demo. Existing-app depth:
-[Plain FastAPI](../guides/plain-fastapi.md).
-
-## Alternative — manual `app.py` (no scaffold)
-
-Prefer `hedron new` when you can. This pasteable file still includes the **Refresh**
-demo so you see HTMX fragment swaps without the CLI scaffold.
-
-```python title="app.py"
-import os
-from datetime import UTC, datetime
-
-from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
-
-app = Hedron(
-    title="Acme Console",
-    security="standard",
-    explorer="off",
-    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
-)
-
-status = app.region("status", description="Status panel")
-
-
-def status_panel() -> object:
-    stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
-    return html.div(
-        Text(f"Status · {stamp}"),
-        id=status.id,
-        role="status",
-        aria={"live": "polite"},
-    )
-
-
-@app.page("/")
-def home() -> Page:
-    return Page(
-        Stack(
-            Text("Hello from Hedron"),
-            status_panel(),
-            RefreshButton.for_region(status, href="/status", label="Refresh status"),
-        ),
-        title="Home",
-    )
-
-
-@app.fragment("/status", region=status)
-def status_fragment() -> object:
-    return swap(status_panel())
-```
-
-```bash
-uvicorn app:app --reload   # or: uv run uvicorn app:app --reload
-```
-
-Open localhost, click **Refresh status**, and confirm the timestamp updates without a
-full reload.
-
-Set `session_secret` from the environment in real apps — see
-[Configuration](../CONFIGURATION.md). More pasteable variants:
-[single-file examples](../examples/single-file.md).
-
-`Hedron` is a FastAPI application — DI, lifespan, middleware, and JSON routes remain
-available. Always set an explicit `session_secret` before deployment.
+| If you… | Go here |
+|---|---|
+| Already have a FastAPI app | [Existing / plain FastAPI](../guides/plain-fastapi.md) |
+| Want a pasteable file without `hedron new` | [Single-file examples](../examples/single-file.md) |
+| Need extras / adapters / install troubleshooting | [Installation](installation.md) |
 
 ## What you learned
 
@@ -300,5 +213,6 @@ available. Always set an explicit `session_secret` before deployment.
 - A declared `region` + `@app.fragment` updates part of the page without a full reload.
 - Editing Python components updates the UI (with reload).
 
-**Next:** [HTMX interactions](../guides/htmx-interactions.md) →
+**Next:** [What is HTMX?](what-is-htmx.md) →
+[HTMX interactions](../guides/htmx-interactions.md) →
 [Minimal form POST](../guides/minimal-form.md) → [Learning path](learning-path.md)

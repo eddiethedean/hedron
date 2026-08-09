@@ -6,11 +6,12 @@ Thin on-ramp for first contributions. Full detail:
 ## Docs-only PR
 
 **Local work (~15 minutes):** edit markdown and build docs. **CI:** PRs that touch only
-docs paths (`docs/**`, root README/SECURITY stubs, `mkdocs.yml`, and the docs sync/generate
-scripts listed in `.github/workflows/ci.yml`) skip `test` / `browser` / `evidence` /
-packaging rehearsal and still run **quality** (mkdocs + train SSOT + package checks).
-If your PR also changes `packages/`, `examples/`, `tests/`, or CI itself, the full matrix
-runs.
+allowlisted docs paths skip `test` / `browser` / `evidence` / packaging rehearsal and still
+run **quality** (mkdocs + train SSOT + recipe/sim checks + package wheels). Allowlist:
+[CI path filters](../CONTRIBUTING.md#ci-path-filters).
+
+If your PR also changes `packages/`, `examples/`, `tests/`, root `STATUS.md` /
+`ROADMAP.md`, `scripts/sync_status_roadmap.py`, or CI itself, the **full** matrix runs.
 
 1. Clone and sync docs deps:
 
@@ -22,25 +23,43 @@ runs.
 
 2. Edit markdown under `docs/` (or root README stubs that point at docs).
 
-3. Verify locally:
+3. Verify locally (matches what `quality` expects for docs):
 
    ```bash
    uv run --group docs mkdocs build --strict
-   python scripts/check_docs_train_ssot.py
+   uv run python scripts/check_docs_train_ssot.py
+   uv run python scripts/check_recipe_code_sync.py
+   uv run python scripts/generate_sim_demos.py --check
    ```
+
+   If you edit generated component pages, also run
+   `uv run python scripts/generate_component_docs.py` (then commit the regenerated files).
 
 4. Open a PR with **“docs-only”** in the title or first line of the description.
 
-You do **not** need Playwright, RFCs, or acceptance gates locally for typos and guide
-fixes. Do not use `--no-verify`. For quality-suite work beyond docs, use
-`uv sync --all-groups` before `bash scripts/ci_checks.sh quality --python 3.12`.
+You do **not** need Playwright, Rust, RFCs, or acceptance gates locally for typos and
+guide fixes. This repository has no `.pre-commit-config.yaml` — ignore generic
+`--no-verify` advice from other projects.
+
+For quality-suite work beyond docs, use `uv sync --all-groups` (and install a
+[Rust toolchain](https://rustup.rs/) if `hedron-native` wheel builds fail) before
+`bash scripts/ci_checks.sh quality --python 3.12`.
+
+### STATUS / ROADMAP footgun
+
+Canonical STATUS/ROADMAP live under `docs/`. Root `STATUS.md` / `ROADMAP.md` are
+generated mirrors. Running `uv run python scripts/sync_status_roadmap.py` updates the
+root mirrors, which are **not** on the docs-only allowlist — that PR will run full CI.
+Prefer docs-only edits that leave root mirrors untouched unless a maintainer asked for a
+STATUS sync.
 
 ## Good first issues
 
 Browse GitHub issues labeled
 [`good first issue`](https://github.com/eddiethedean/hedron/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-when present. If the label is empty, prefer docs clarity, FAQ/Troubleshooting, or a small
-failing test for a bug you hit — see below.
+when the queue has open items. **If the label is empty**, prefer docs clarity,
+FAQ/Troubleshooting, or a small failing test for a bug you hit — see below. Do not wait
+for a labeled issue to open a small PR.
 
 ## Bug-fix PR
 
@@ -48,7 +67,8 @@ failing test for a bug you hit — see below.
    possible).
 2. Prefer a failing test first, then the fix.
 3. Run `bash scripts/ci_checks.sh test --python 3.12` and
-   `bash scripts/ci_checks.sh quality --python 3.12` before pushing when you can.
+   `bash scripts/ci_checks.sh quality --python 3.12` before pushing when you can
+   (Rust may be required for native wheel smoke in `quality`).
 
 Skip RFC / decision vocabulary unless your change alters a public contract — see
 [Bugs vs RFCs vs decisions](../CONTRIBUTING.md#bugs-vs-rfcs-vs-decisions) in the full guide.
@@ -61,3 +81,11 @@ Skip RFC / decision vocabulary unless your change alters a public contract — s
 
 Avoid starting with release-gate TOMLs, STATUS ledgers, or phase packets unless a
 maintainer asked you to.
+
+## Plugins and RFCs (second contribution)
+
+- Plugin sample / authoring: [Plugin authoring](plugin-authoring.md) ·
+  [Using plugins](plugin-consumer.md) (sample-kit is **source-only** on 0.25 — see
+  Compatibility).
+- Public contract changes: [Changing public contracts](../CONTRIBUTING.md#changing-public-contracts)
+  (RFC intake steps).

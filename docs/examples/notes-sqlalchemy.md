@@ -13,89 +13,101 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
 
 === "Code"
 
-    In-memory listing that reproduces the demo. The runnable recipe downloaded below replaces the list with SQLAlchemy + SQLite persistence:
+    Real recipe listing with SQLAlchemy + SQLite and Post-Redirect-Get. The Demo tab is a simplified in-memory HTMX list view:
 
     ```python title="app.py"
+    """Notes list persisted with SQLAlchemy (SQLite). Local demo only.
+
+    Create / list / delete — not a full admin CRUD app.
+    """
+
     from __future__ import annotations
 
-    import os
-    from typing import Annotated
-    from uuid import uuid4
+    from fastapi import Form as FastAPIForm
+    from fastapi import Request, status
+    from fastapi.responses import RedirectResponse
+    from sqlalchemy import Column, Integer, String, create_engine, select
+    from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
-    from fastapi import Form, Request
+    from hedron import CsrfField, Form, Hedron, Page, Stack, SubmitButton, Text, TextInput, html
 
-    from hedron import CsrfField, Hedron, Page, Stack, SubmitButton, Text, TextInput, html
+    engine = create_engine("sqlite:///./notes.db", connect_args={"check_same_thread": False})
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
+
+    class Base(DeclarativeBase):
+        pass
+
+
+    class Note(Base):
+        __tablename__ = "notes"
+        id = Column(Integer, primary_key=True)
+        body = Column(String(500), nullable=False)
+
+
+    Base.metadata.create_all(bind=engine)
 
     app = Hedron(
-        title="CRUD notes",
+        title="Notes",
         security="standard",
         explorer="off",
-        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
+        session_secret="replace-in-production",
     )
-
-    NOTES: dict[str, str] = {}
-    listing = app.region("notes-list", description="Notes list")
-
-
-    def render_list(request: Request):
-        del request  # request kept for signature parity with fragment handlers
-        if not NOTES:
-            return html.div(Text("No notes yet."), id=listing.id)
-        items = []
-        for note_id, body in NOTES.items():
-            items.append(
-                html.li(
-                    Text(body),
-                    " ",
-                    html.form(
-                        CsrfField(),
-                        html.input(type="hidden", name="note_id", value=note_id),
-                        SubmitButton("Delete"),
-                        method="post",
-                        **{
-                            "hx-post": "/notes/delete",
-                            "hx-target": listing.selector,
-                            "hx-swap": "outerHTML",
-                        },
-                    ),
-                )
-            )
-        return html.div(html.ul(*items), id=listing.id)
 
 
     @app.page("/")
     def home(request: Request) -> Page:
+        with Session(engine) as db:
+            notes = list(db.scalars(select(Note).order_by(Note.id.desc())).all())
+        items = []
+        for n in notes:
+            items.append(
+                html.li(
+                    Text(str(n.body)),
+                    Form(
+                        CsrfField(),
+                        html.input(type="hidden", name="note_id", value=str(n.id)),
+                        SubmitButton("Delete"),
+                        action="/delete",
+                        method="post",
+                        style="display:inline",
+                    ),
+                )
+            )
+        if not items:
+            items = [html.li(Text("No notes yet."))]
         return Page(
             Stack(
-                render_list(request),
-                html.form(
+                Text("Notes (SQLAlchemy + SQLite) — create, list, delete"),
+                Form(
                     CsrfField(),
-                    TextInput(name="note", placeholder="New note"),
-                    SubmitButton("Add note"),
+                    TextInput("body", value="", required=True, placeholder="Write a note"),
+                    SubmitButton("Save"),
+                    action="/save",
                     method="post",
-                    **{
-                        "hx-post": "/notes",
-                        "hx-target": listing.selector,
-                        "hx-swap": "outerHTML",
-                    },
                 ),
+                html.ul(*items),
             ),
-            title="CRUD",
+            title="Notes",
         )
 
 
-    @app.component("/notes", methods=["POST"], fragment_regions=(listing,))
-    def add_note(request: Request, note: Annotated[str, Form()] = "") -> object:
-        text = note.strip()
-        if text:
-            NOTES[str(uuid4())] = text
-        return render_list(request)
+    @app.action("/save", method="POST")
+    def save(body: str = FastAPIForm(...)) -> RedirectResponse:
+        with SessionLocal() as db:
+            db.add(Note(body=body.strip()[:500]))
+            db.commit()
+        return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
-    @app.component("/notes/delete", methods=["POST"], fragment_regions=(listing,))
-    def delete_note(request: Request, note_id: Annotated[str, Form()] = "") -> object:
-        NOTES.pop(note_id, None)
-        return render_list(request)
+    @app.action("/delete", method="POST")
+    def delete(note_id: str = FastAPIForm(...)) -> RedirectResponse:
+        with SessionLocal() as db:
+            note = db.get(Note, int(note_id))
+            if note is not None:
+                db.delete(note)
+                db.commit()
+        return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
     ```
 
 ## Run without cloning the monorepo
@@ -119,10 +131,10 @@ process working directory (gitignored).
 
 ## What it shows
 
-- `@app.page` + `@app.component` (POST) with a small `_csrf(request)` helper
-- SQLAlchemy ORM + SQLite
-- Post-Redirect-Get after save / delete
+- `@app.page` + `@app.action` (POST) with CSRF fields and full-page Post-Redirect-Get
+- SQLAlchemy ORM + SQLite (`notes.db` in the process working directory)
+- Create / list / delete — not HTMX fragment swaps (the Demo tab is a simplified list UX)
 
 Source: [`examples/notes-sqlalchemy`](https://github.com/eddiethedean/hedron/tree/main/examples/notes-sqlalchemy).
 Related: [Minimal form](../guides/minimal-form.md) · [Data apps](../guides/data-apps.md) ·
-[Recipes](recipes/index.md).
+[Recipes](recipes/index.md) · [CRUD tutorial](crud-tutorial.md) (in-memory HTMX fragments).

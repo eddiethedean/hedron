@@ -1,4 +1,4 @@
-# Streamlit → Hedron 0.15 migration matrix
+# Streamlit → Hedron 0.25 migration matrix
 
 Streamlit widgets and Hedron components solve overlapping UX jobs with different execution
 models. Streamlit reruns the script when a widget changes; Hedron handles an HTTP request,
@@ -10,23 +10,27 @@ Use this matrix for API-family mapping; for a full rewrite walkthrough see
 mutable state have no Hedron equivalent by design. Prefer routes, `@action` / `@fragment`,
 and explicit session scopes.
 
-| Streamlit | Hedron 0.15 | Notes |
+**Charts on 0.25:** `hedron-charts` is **source-only / Deferred for PyPI** — do not install
+`hedron[charts]` with Hedron 0.25. See
+[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+
+| Streamlit | Hedron 0.25 | Notes |
 |---|---|---|
 | `st.title` / `st.header` / `st.write` | `Heading`, `Text`, `Auto` | Explicit components; no magic write |
 | `st.sidebar` | `Sidebar` / layout landmarks | Compose layout; no implicit sidebar slot |
 | `st.button` / `st.form_submit_button` | `Button`, `SubmitButton`, `@action` | POST + CSRF; not a script rerun |
 | `st.text_input` / `st.text_area` | `TextInput`, `TextArea` | Native submitted values |
-| `st.number_input` / `st.slider` | `NumberInput`, `RangeInput`, `SelectSlider` | Typed controls (0.15) |
-| `st.selectbox` / `st.multiselect` | `Select`, `MultiSelect` | MultiSelect is 0.15 |
-| `st.checkbox` / `st.toggle` | `Checkbox`, `ToggleSwitch` | ToggleSwitch is 0.15 |
-| `st.radio` / segmented pills | `SegmentedControl`, `Pills` | 0.15 surface chrome |
-| `st.date_input` / `st.time_input` | `DateInput`, `TimeInput`, `DateTimeInput` | 0.15 |
-| `st.color_picker` | `ColorInput` | 0.15 |
-| `st.file_uploader` | `FileUpload`, `DirectoryUpload` | Directory upload is 0.15 |
+| `st.number_input` / `st.slider` | `NumberInput`, `RangeInput`, `SelectSlider` | Typed controls |
+| `st.selectbox` / `st.multiselect` | `Select`, `MultiSelect` | |
+| `st.checkbox` / `st.toggle` | `Checkbox`, `ToggleSwitch` | |
+| `st.radio` / segmented pills | `SegmentedControl`, `Pills` | |
+| `st.date_input` / `st.time_input` | `DateInput`, `TimeInput`, `DateTimeInput` | |
+| `st.color_picker` | `ColorInput` | |
+| `st.file_uploader` | `FileUpload`, `DirectoryUpload` | |
 | `st.camera_input` / `st.audio_input` | `CameraCapture`, `MicrophoneCapture` | Permission/retention policy explicit |
 | `st.audio` / `st.video` / `st.image` | `Audio`, `Video`, `Image`, `Gallery` | SafeUrl + optional Range downloads |
 | `st.download_button` | `DownloadButton`, `media_file_response`, `download_all_zip` | RFC-0034 Range helpers |
-| `st.dataframe` / `st.data_editor` | `DataTable` / `DataEditor` (`hedron[data]`) | 0.12+ contracts |
+| `st.dataframe` / `st.data_editor` | `DataTable` / `DataEditor` (`hedron[data]`) | |
 | `st.map` / `st.pydeck_chart` | `Map`, `GeoJSONLayer`, `MarkerSpec` | Table alternative required (RFC-0033) |
 | `st.metric` | `Metric` | Supported |
 | `st.progress` / spinners | `CircularProgress`, `Loading`, `Poll` | Prefer polling over experimental SSE |
@@ -46,5 +50,5 @@ and explicit session scopes.
 2. Move filters/forms to query params or POST actions (not widget callbacks).
 3. Swap tables to `hedron[data]`. Charts are source-only on 0.25 — use `Table` /
    `Metric` from PyPI, or workspace `hedron-charts` (do not install from PyPI).
-4. Adopt 0.15 controls, Map, and media helpers where custom HTML was used.
+4. Adopt Map, media helpers, and remaining controls where custom HTML was used.
 5. Cover flows with `AppScenario` instead of Streamlit `AppTest` rerun semantics.

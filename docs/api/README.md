@@ -11,7 +11,7 @@ from Read the Docs). Adopters should start from the golden-path contracts below.
 
 ## Start here (golden path)
 
-After [Install → First app → HTMX → Minimal form](../getting-started/index.md), these
+After [First app → What is HTMX → HTMX interactions → Minimal form](../getting-started/index.md), these
 contracts match what you just used:
 
 1. [Hedron](HEDRON.md) — FastAPI application facade

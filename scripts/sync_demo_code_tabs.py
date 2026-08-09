@@ -131,11 +131,6 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
     ),
     (
         "examples/reference-app.md",
-        "auth-login",
-        "Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.",
-    ),
-    (
-        "examples/reference-app.md",
         "csrf-guard",
         "POST with CSRF succeeds; missing token → 403. Docs simulation.",
     ),
@@ -188,8 +183,8 @@ _CODE_BLURBS: dict[tuple[str, str], str] = {
         "examples/notes-sqlalchemy.md",
         "crud-notes",
     ): (
-        "In-memory listing that reproduces the demo. The runnable recipe downloaded "
-        "below replaces the list with SQLAlchemy + SQLite persistence:"
+        "Real recipe listing with SQLAlchemy + SQLite and Post-Redirect-Get. "
+        "The Demo tab is a simplified in-memory HTMX list view:"
     ),
     (
         "examples/session-auth.md",
@@ -211,6 +206,7 @@ _CODE_SOURCES: dict[str, Path] = {
     "guides/authentication.md": ROOT / "examples" / "session-auth" / "app.py",
     "examples/session-auth.md": ROOT / "examples" / "session-auth" / "app.py",
     "examples/jobs-poll.md": ROOT / "examples" / "jobs-poll" / "app.py",
+    "examples/notes-sqlalchemy.md": ROOT / "examples" / "notes-sqlalchemy" / "app.py",
 }
 
 

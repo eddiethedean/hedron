@@ -59,13 +59,13 @@ python -m pip install -e .
 uvicorn app:app --reload
 ```
 
-**Next:** [What is HTMX?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-htmx/) →
-[First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
+**Next:** [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
+[What is HTMX?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-htmx/) →
 [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
 
-Hedron **0.25.0** is published (Beta — pin as above). Maturity labels:
+Hedron **0.25.0** is published (Beta — pin as above). Before production, read
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 If `hedron` is not on your PATH, use `python -m hedron`
 ([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).

@@ -9,8 +9,8 @@ Plot categorical bars from row mappings with an accessible fallback.
 
 | | |
 |---|---|
-| Import | `from hedron import BarChart` |
-| Distribution | `hedron[charts]` |
+| Import | `from hedron_charts import BarChart` |
+| Distribution | `hedron[charts]` (workspace-only on 0.25 — not PyPI) |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -28,7 +28,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 # workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
-from hedron import BarChart
+from hedron_charts import BarChart
 
 component = BarChart(rows, x='region', y='requests', title='Requests by region', description='US East handles the largest share.')
 ```

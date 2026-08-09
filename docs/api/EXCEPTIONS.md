@@ -1,16 +1,30 @@
-# Public exceptions
+# Public exceptions and failure types
 
 !!! note "Stability"
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
     Package maturity (Beta/Alpha) is separate from API level.
 
-Public exception and failure types re-exported from `hedron` (and related helpers that
-raise ordinary `ValueError`). Prefer catching these by type when writing host adapters
-or shared libraries. HTTP mapping for CSRF failures remains **403** on built-in
-profiles — see [CSRF composition](CSRF_COMPOSITION.md).
+This page catalogs **public exception classes** and a few related **failure types**
+re-exported from `hedron` (plus helpers that raise ordinary `ValueError`). It is not a
+full HTTP error catalog — see [Error codes](../guides/error-codes.md) for diagnostic
+codes.
 
-## `CsrfValidationError`
+| Type | Typical HTTP | Role |
+|---|---|---|
+| `CsrfValidationError` | **403** | CSRF strategy validation failed |
+| `FragmentRegionError` | **403** | Unauthorized HTMX target / region |
+| `ByteRangeNotSatisfiable` | **416** | Media byte-range cannot be satisfied |
+| `StorageQuotaExceeded` | app-owned | Browser storage quota |
+| `BrowserStorageUnavailable` | app-owned | Client storage API missing |
+
+Prefer catching these by type when writing host adapters or shared libraries. HTTP
+mapping for CSRF failures remains **403** on built-in profiles — see
+[CSRF composition](CSRF_COMPOSITION.md).
+
+## Exceptions
+
+### `CsrfValidationError`
 
 Raised by pluggable CSRF strategies (`DoubleSubmitCookieCsrf`, `SessionTokenCsrf`) when
 `validate(...)` fails. Host adapters map this to HTTP **403**.
@@ -31,7 +45,7 @@ Typical message: `"CSRF validation failed"`.
     options:
       heading_level: 3
 
-## `FragmentRegionError`
+### `FragmentRegionError`
 
 Raised when an HTMX `HX-Target` (or resolved `region_id`) is not an authorized
 `FragmentRegion`. Subclass of `ValueError` with `.requested`, `.declared`, and `.code`
@@ -56,7 +70,7 @@ See [Interaction](INTERACTION.md) and [HTMX interactions](../guides/htmx-interac
     options:
       heading_level: 3
 
-## `ByteRangeNotSatisfiable`
+### `ByteRangeNotSatisfiable`
 
 Raised when a media byte-range request cannot be satisfied. Subclass of `ValueError`
 with a `.size` attribute. Media helpers map this to HTTP **416** and
@@ -68,7 +82,7 @@ See [Media downloads](../guides/media-downloads.md).
     options:
       heading_level: 3
 
-## `StorageQuotaExceeded`
+### `StorageQuotaExceeded`
 
 Raised by `BrowserStorage.set` when a namespace exceeds `max_entries` or `max_bytes`.
 Subclass of `RuntimeError`. This is a **quota** failure, not an authorization decision —
@@ -80,7 +94,12 @@ Related: `BrowserStorageUnavailable` when the client storage API is unavailable.
     options:
       heading_level: 3
 
-## Directory upload validation
+## Related helpers (not exception classes)
+
+The following public helpers appear on this page historically; they are **not** raised
+exception types. Prefer their component/API pages for day-to-day use.
+
+### Directory upload validation
 
 `validate_directory_upload(...)` and `DirectoryUploadFile` support
 [`DirectoryUpload`](../components/directory-upload.md). Validation failures raise
@@ -95,7 +114,7 @@ class.
     options:
       heading_level: 3
 
-## Browser helpers
+### Browser helpers
 
 `ViewportHint` and `redact_cookie_value` are public browser-context helpers. Cookie
 redaction is for logs/diagnostics — never treat client hints as authorization.
@@ -108,7 +127,7 @@ redaction is for logs/diagnostics — never treat client hints as authorization.
     options:
       heading_level: 3
 
-## Inference presentation types
+### Inference presentation types
 
 Typed rows used by inference UI components (not raised errors):
 

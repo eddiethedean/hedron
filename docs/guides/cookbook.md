@@ -39,31 +39,35 @@ Full walkthrough: [Minimal form POST](minimal-form.md).
 
 ## Refresh a region (GET)
 
+Preferred Path-A helpers (`app.region`, `@app.fragment`, `RefreshButton.for_region`,
+`swap`). Older `FragmentRegion` + `@app.component` + `InteractionResult` still work —
+see [Interaction API](../api/INTERACTION.md).
+
 ```python
-from hedron import FragmentRegion, Hedron, InteractionResult, Page, RefreshButton, Text, html
+from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
 
 app = Hedron(title="Status", security="standard", session_secret="replace-me")
-REGION = FragmentRegion(id="panel", selector="#panel", description="Status panel")
+panel = app.region("panel", description="Status panel")
 
 
-def panel():
-    return html.div(Text("ok"), id=REGION.id)
+def panel_view():
+    return html.div(Text("ok"), id=panel.id)
 
 
 @app.page("/")
 def home() -> Page:
     return Page(
-        html.div(
-            panel(),
-            RefreshButton("Refresh", href="/panel", target=REGION.selector, swap="outerHTML"),
+        Stack(
+            panel_view(),
+            RefreshButton.for_region(panel, href="/panel", label="Refresh"),
         ),
         title="Status",
     )
 
 
-@app.component("/panel", fragment_regions=(REGION,))
-def refresh() -> InteractionResult:
-    return InteractionResult(content=panel(), region_id=REGION.id, explanation="Refresh panel")
+@app.fragment("/panel", region=panel)
+def refresh():
+    return swap(panel_view())
 ```
 
 Full walkthrough: [HTMX interactions](htmx-interactions.md).
@@ -188,22 +192,22 @@ See [Interaction API](../api/INTERACTION.md).
 ## Polling
 
 ```python
-from hedron import ComponentRef, FragmentRegion, Hedron, InteractionResult, Page, Poll, Text
+from hedron import ComponentRef, Hedron, Page, Poll, Text, swap
 
 app = Hedron(title="Poll", security="standard", session_secret="replace-me")
-REGION = FragmentRegion(id="tick", selector="#tick", description="Ticker")
+tick = app.region("tick", description="Ticker")
 REF = ComponentRef(logical_id="tick", path="/tick", target="#tick")
 
 
-@app.component("/tick", fragment_regions=(REGION,))
-def tick() -> InteractionResult:
-    return InteractionResult(content=Text("tick"), region_id=REGION.id, explanation="Tick")
+@app.fragment("/tick", region=tick)
+def tick_fragment():
+    return swap(Text("tick", id=tick.id))
 
 
 @app.page("/")
 def home() -> Page:
     return Page(
-        Poll(ref=REF, interval_ms=2000, target_id=REGION.id, content=Text("…")),
+        Poll(ref=REF, interval_ms=2000, target_id=tick.id, content=Text("…", id=tick.id)),
         title="Poll",
     )
 ```

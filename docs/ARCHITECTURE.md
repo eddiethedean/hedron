@@ -4,6 +4,9 @@ Hedron is typed, server-rendered UI for Python web apps. The flagship `hedron` p
 extends FastAPI; `hedron-core` renders portable components; Flask/Django adapters share
 the same renderer without FastAPI.
 
+**Diligence entry:** [Enterprise diligence](guides/enterprise-diligence.md) · maturity:
+[What’s ready](guides/whats-ready.md). This page is the system overview.
+
 ## Request lifecycle (FastAPI)
 
 ```mermaid
@@ -41,15 +44,53 @@ fragment/OOB policy and merge validated HTMX headers, then call the same rendere
 middleware owns sessions/CSRF/auth. Official HTMX SSE helpers are FastAPI-only and
 **experimental** (`hedron.experimental`); polling is the Supported fallback.
 
+## Trust boundaries
+
+```mermaid
+flowchart LR
+  browser[Browser]
+  proxy[Reverse_proxy]
+  app[Hedron_or_adapter]
+  render[hedron_core_renderer]
+  store[External_store]
+  browser -->|"HTML_HTMX_cookies"| proxy
+  proxy --> app
+  app -->|"escaped_HTML_assets"| render
+  app -->|"sessions_jobs_cache"| store
+  render -->|"no_hidden_IO"| app
+```
+
+| Boundary | Hedron owns | You own |
+|---|---|---|
+| HTML escaping / `SafeUrl` / `TrustedHtml` / `Secret` | Contextual escaping and typed trust markers | What you mark trusted; authz of data |
+| CSRF (built-in profiles) | Validate unsafe methods when enabled | Session secret, cookie hygiene, HTTPS |
+| Fragment / OOB targets | Fail-closed allowlists | Declaring regions correctly |
+| Authn / authz / tenancy | No IdP; job helpers fail closed when unscoped | Identity, roles, `auth_subject` / `tenant_id` |
+| Persistence | Nothing | Databases, object storage, backups |
+| Live SSE/WS | Experimental helpers only | Proxy buffering, backpressure — prefer polling |
+
+Secrets must not enter public metadata, identities, caches, or diagnostics.
+
 ## PAGE vs FRAGMENT
 
 | Mode | When | Typical return |
 |---|---|---|
 | PAGE | Navigation / full document | `Page(...)` |
-| FRAGMENT | `HX-Request` targeting a declared region | `InteractionResult(content=..., region_id=...)` |
+| FRAGMENT | `HX-Request` targeting a declared region | `InteractionResult(content=..., region_id=...)` or Path-A `swap(...)` |
 
 Rendering a component never implies a public route — only `@page` / `@component` /
-`@action` (or adapter equivalents) expose HTTP endpoints.
+`@action` / `@fragment` (or adapter equivalents) expose HTTP endpoints.
+
+## Failure domains
+
+| Domain | Symptom | Mitigation |
+|---|---|---|
+| Missing production build manifest | Refuse start (`HED-BUILD-0003`) | `hedron build` + `HEDRON_ENV=production` |
+| In-memory jobs/sessions + multiple workers | Lost status / sticky bugs | Redis / Celery / RQ + shared prefix |
+| Unscoped job HTTP status | Fail closed | Pass `auth_subject` / `tenant_id` |
+| Wrong `HX-Target` | HTTP **403** | Declare `FragmentRegion` / `app.region` |
+| CSRF missing on POST | HTTP **403** | Seed token on GET; include field/header |
+| Charts from PyPI on 0.25 | Resolver downgrade | Omit `hedron[charts]` — source-only |
 
 ## Multi-worker, jobs, and inference
 
@@ -112,6 +153,24 @@ Hedron does not invent tenancy. Scope durable jobs and caches with `auth_subject
 workers — wrong scoping is an application bug, not a framework isolation guarantee.
 Guide: [Multi-tenant isolation](guides/multi-tenant.md).
 
+### Stable facade vs Beta APIs
+
+A small **stable** facade is compatibility-protected on `0.x`
+([STABLE_FACADE](api/STABLE_FACADE.md)). Most callable APIs remain compatibility level
+`beta` even when the capability is **Supported**. Package maturity (Beta on PyPI) is a
+third axis — pin versions.
+
+## Adapter portability
+
+| Surface | FastAPI (`hedron`) | Flask / Django adapters |
+|---|---|---|
+| Core render / built-ins | Yes | Same `hedron-core` renderer |
+| `@page` / fragment policy | Yes | Adapter route helpers |
+| Built-in CSRF profiles | Yes (facade) | Host CSRF + portable token patterns |
+| Jobs / Poll | Yes | Yes (shared backends) |
+| SSE / WS / focused streaming | Experimental flagship | Prefer polling — no official live helpers |
+| Explorer / OpenAPI HTML | FastAPI-oriented | Limited / host-specific |
+
 ## Assets and builds
 
 - Development may compile scoped CSS and serve package static assets.
@@ -155,4 +214,6 @@ and diagnostics. Subsystems do not independently rediscover components.
 ## See also
 
 [What’s ready](guides/whats-ready.md) · [Compatibility](COMPATIBILITY.md) ·
-[Public API coverage](api/COVERAGE.md) · [Configuration](CONFIGURATION.md)
+[Enterprise diligence](guides/enterprise-diligence.md) ·
+[Ship hub](guides/ship.md) · [Public API coverage](api/COVERAGE.md) ·
+[Configuration](CONFIGURATION.md)

@@ -4,24 +4,21 @@ status: experimental
 
 # Focused streaming
 
+!!! danger "Experimental — prefer polling in production"
 
-!!! note "Stability"
+    Focused streaming is **experimental** (`hedron.experimental`) under Accepted 0.24
+    **`polling_only`** ([LIVE_DISPOSITION](LIVE_DISPOSITION.md)). Classifications:
+    [STABILITY.md](STABILITY.md). For Supported live status UX, use
+    [Poll](../components/poll.md) + [Jobs](JOBS.md) /
+    [Live interaction](../guides/live-interaction.md).
 
-    Classifications live in [STABILITY.md](STABILITY.md). Focused streaming is **experimental**
-    (`hedron.experimental`) under Accepted 0.24 **`polling_only`**
-    ([LIVE_DISPOSITION](LIVE_DISPOSITION.md)). Prefer polling in production.
-
-**Status:** Shipped in `0.10.0` (experimental)
-
-!!! note "Outline page"
-
-    This page summarizes experimental streaming helpers. Prefer
-    [Autodoc](AUTODOC.md) / `hedron.experimental` signatures and
-    [Live interaction](../guides/live-interaction.md) for production guidance
-    (**polling** remains Supported).
+**Shipped (experimental) since** `0.10.0`. This page is a **contract outline**, not a
+full production API. Prefer [Autodoc](AUTODOC.md) / `hedron.experimental` signatures for
+exact types.
 
 Helpers: `StreamingComponentResponse`, `stream_chunked_list`, `stream_document`,
-`stream_tokens` — import from `hedron.experimental` (root attribute access remains a compat shim). Core stream models live in `hedron_core.streaming`.
+`stream_tokens` — import from `hedron.experimental` (root attribute access remains a
+compat shim). Core stream models live in `hedron_core.streaming`.
 
 ## `StreamingComponentResponse`
 
@@ -33,9 +30,16 @@ Helpers: `StreamingComponentResponse`, `stream_chunked_list`, `stream_document`,
 | `headers` | mapping | `None` | Extra headers |
 | `fallback_html` | `str \| None` | `None` | When set, prefixes the body and sets `X-Hedron-Stream-Fallback: 1` |
 
-`media_type` is `text/html`. Default `Cache-Control` is `no-store`.
+**Returns:** a streaming HTTP response (`media_type` `text/html`). Default
+`Cache-Control` is `no-store`.
 
 ## Helpers
+
+| Helper | Input model | Role |
+|---|---|---|
+| `stream_tokens` | `TokenStream` | Token / LLM-style chunk stream into a region |
+| `stream_chunked_list` | `ChunkedList` | Incremental list item HTML |
+| `stream_document` | `StreamedDocument` | Chunked document HTML |
 
 ```python
 from hedron.experimental import stream_chunked_list, stream_document, stream_tokens
@@ -48,12 +52,16 @@ return stream_chunked_list(
 return stream_document(StreamedDocument(chunks=["<p>…</p>"], region_id="doc"))
 ```
 
-## Errors
+## Errors and failure modes
 
-- Empty or incomplete streams still return `200` with whatever chunks were produced; clients
-  should keep ordinary HTTP fallbacks.
-- Invalid region ids are application-owned; Hedron does not invent fragment allowlists here.
+| Condition | Behavior |
+|---|---|
+| Empty or incomplete iterator | Still HTTP `200` with whatever chunks were produced — clients need ordinary HTTP fallbacks |
+| Invalid / unauthorized region | Application-owned; declare regions the same way as fragment routes — streaming does not invent allowlists |
+| Proxy buffering / timeouts | Common failure in production — why **polling** remains the Supported path |
+| Import from root `hedron` | Compat shim only; prefer `hedron.experimental` |
 
 ## See also
 
-[Live interaction guide](../guides/live-interaction.md) · [Responses](RESPONSES.md)
+[Live interaction guide](../guides/live-interaction.md) · [Responses](RESPONSES.md) ·
+[What’s ready](../guides/whats-ready.md)

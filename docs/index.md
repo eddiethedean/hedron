@@ -6,20 +6,17 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.25.0</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · v0.25.0</div>
 
-# Build typed FastAPI UIs in Python.<br><span class="hedron-gradient-text">HTMX fragments, no Node.</span>
+# Build dashboards and admin UIs in typed Python.<br><span class="hedron-gradient-text">HTMX fragments, no Node.</span>
 
-Typed pages and HTMX fragment regions on FastAPI — CSRF profiles, DI, and multi-worker
-job status without assembling a hand-rolled Jinja+HTMX stack.
+Routes return components; HTMX updates the page without a Node frontend or full-script
+rerun — unlike Streamlit’s script-rerun model.
 { .hedron-lede }
 
-Unlike Streamlit’s script-rerun model, Hedron returns components from FastAPI routes and
-swaps HTML fragments in place.
-{ .hedron-lede }
-
-**~5–10 minutes after Python 3.11+ and uv/pip are ready:** install → `hedron new` →
-open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
+**In about 10 minutes:** install → `hedron new` → open localhost:8000 → click
+**Refresh status**. Pin `hedron>=0.25.0,<0.26`. Before production, see
+[What’s ready](guides/whats-ready.md).
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
@@ -43,7 +40,8 @@ open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
 === "uv (recommended)"
 
     Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if needed
-    (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux).
+    (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux;
+    `irm https://astral.sh/uv/install.ps1 | iex` on Windows PowerShell).
 
     ```bash
     uvx --from "hedron>=0.25.0,<0.26" hedron new my-hedron-app
@@ -52,7 +50,7 @@ open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
     uv run uvicorn app:app --reload
     ```
 
-=== "pip (venv)"
+=== "pip (macOS / Linux)"
 
     ```bash
     python3 -m venv .venv && source .venv/bin/activate
@@ -62,11 +60,24 @@ open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
     uvicorn app:app --reload
     ```
 
-!!! note "Pip installs twice"
+=== "pip (Windows PowerShell)"
 
-    Pip needs two installs (CLI, then `pip install -e .` inside the scaffold) —
-    [FAQ](guides/faq.md#why-install-hedron-twice-cli-then-project). Prefer a clean
-    virtualenv for first apps. Version bands:
+    ```powershell
+    py -3 -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+    python -m pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
+    python -m hedron new my-hedron-app
+    cd my-hedron-app
+    python -m pip install -e .
+    uvicorn app:app --reload
+    ```
+
+!!! warning "Pip installs twice — skip the second and imports fail"
+
+    Pip needs two installs (CLI, then `pip install -e .` inside the scaffold). Forgetting
+    the second step causes `ModuleNotFoundError: hedron`. Prefer the **uv** tab for a
+    single flow. Details:
+    [FAQ](guides/faq.md#why-install-hedron-twice-cli-then-project). Version bands:
     [Compatibility](COMPATIBILITY.md).
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
@@ -163,8 +174,8 @@ After [HTMX interactions](guides/htmx-interactions.md) and
 
 ## Next steps
 
-1. [What is HTMX?](getting-started/what-is-htmx.md) — understand regions and HTML swaps
-2. [Build your first app](getting-started/quickstart.md) — celebrate Refresh, then edit Hello
+1. [Build your first app](getting-started/quickstart.md) — celebrate Refresh, then edit Hello
+2. [What is HTMX?](getting-started/what-is-htmx.md) — understand regions and HTML swaps
 3. [HTMX interactions](guides/htmx-interactions.md) — add a second region
 4. [Minimal form POST](guides/minimal-form.md) — form updates the notes counter
 5. [Learning path](getting-started/learning-path.md)
@@ -177,6 +188,12 @@ Most APIs are compatibility level `beta`; see [What’s ready](guides/whats-read
 Supported vs Experimental. Also: [Why Hedron](guides/why-hedron.md) ·
 [Evaluate Hedron](guides/evaluate.md).
 </details>
+
+## What you get (after Hello)
+
+Typed pages and HTMX fragment regions on FastAPI, with CSRF profiles, dependency
+injection, and multi-worker job status — without assembling a hand-rolled Jinja+HTMX
+stack. See [Architecture](ARCHITECTURE.md).
 
 ## Designed for inspectability
 

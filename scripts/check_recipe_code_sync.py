@@ -45,7 +45,12 @@ def main() -> int:
         (
             ROOT / "docs/examples/notes-sqlalchemy.md",
             [
+                "create_engine",
+                "sqlalchemy",
+                '@app.action("/save"',
+                "RedirectResponse(",
                 "curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/notes-sqlalchemy/app.py",
+                "Real recipe",
             ],
         ),
         (

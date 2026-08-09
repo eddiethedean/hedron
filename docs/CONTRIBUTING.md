@@ -3,8 +3,9 @@
 ## First contribution
 
 **New here?** Start with the thin on-ramp:
-[Contributor day-one](guides/contributor-day-one.md) (local docs verify ~15 minutes;
-CI still runs the full matrix — often tens of minutes — see below). The rest of this
+[Contributor day-one](guides/contributor-day-one.md) (local docs verify ~15 minutes).
+Docs-only PRs still run the `quality` job; `test` / `browser` / `evidence` skip when every
+changed path is allowlisted (see [CI path filters](#ci-path-filters) below). The rest of this
 page is the full contributor guide.
 
 **Prerequisites:** CPython **3.11–3.14** and [uv](https://docs.astral.sh/uv/).
@@ -48,25 +49,42 @@ uv sync --group docs
 uv run --group docs mkdocs build --strict
 # or preview: uv run --group docs mkdocs serve
 # or: ./scripts/mkdocs.sh serve
-python scripts/check_docs_train_ssot.py
+uv run python scripts/check_docs_train_ssot.py
+uv run python scripts/check_recipe_code_sync.py
+uv run python scripts/generate_sim_demos.py --check
 # quality suite also covers docs checks after `uv sync --all-groups`:
 # bash scripts/ci_checks.sh quality --python 3.12
 ```
 
 You do **not** need Playwright or the full pytest suite locally for markdown/typo PRs.
 
-**CI still runs `test`, `quality`, `browser` (Chromium), and `evidence` on every pull
-request** — there are **no path filters** today. Maintainers may re-run or waive unrelated
-`browser` / `evidence` flakes on clearly docs-only changes. Contributors should:
+### CI path filters
 
-1. Run the local docs verify commands above (including
-   `python scripts/check_docs_train_ssot.py` and
-   `python scripts/check_recipe_code_sync.py` when you touch recipes/auth examples).
-2. Open the PR with a clear “docs-only” note in the description.
-3. If `browser` or `evidence` fails for reasons **unrelated** to your markdown change,
-   ask a maintainer to re-run or waive — **do not** expand the diff to chase unrelated
-   flakes, and do not skip hooks with `--no-verify`.
+Docs-only PRs (allowlisted paths in `.github/workflows/ci.yml`) still run **`quality`**
+(lint, types, wheels, docs strict, train SSOT, recipe/sim checks) but **skip** `test`,
+`browser`, and `evidence`. Allowlisted paths today:
 
+- `docs/*`, `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `mkdocs.yml`
+- `scripts/sync_demo_code_tabs.py`, `scripts/generate_component_docs.py`,
+  `scripts/generate_sim_demos.py`, `scripts/check_docs_train_ssot.py`,
+  `scripts/check_recipe_code_sync.py`, `scripts/README.md`
+
+**Not docs-only** (triggers the full matrix): root `STATUS.md` / `ROADMAP.md` mirrors,
+`scripts/sync_status_roadmap.py`, package/source changes, or any other non-allowlisted path.
+Edit STATUS/ROADMAP under `docs/`, then run `uv run python scripts/sync_status_roadmap.py`
+only when you intend a full CI run.
+
+Contributors should:
+
+1. Run the local docs verify commands above (including train SSOT, recipe sync, and
+   `generate_sim_demos.py --check` when you touch demos/recipes).
+2. Open the PR with a clear “docs-only” note in the description when the diff stays on
+   the allowlist.
+3. If a non-docs job fails for reasons **unrelated** to your change, ask a maintainer to
+   re-run or waive — **do not** expand the diff to chase unrelated flakes.
+
+**Hooks:** this repository does not ship a `.pre-commit-config.yaml`; ignore generic
+`--no-verify` advice from other projects.
 When to leave Read the Docs for the GitHub corpus: RFCs, acceptance gates, STATUS/ROADMAP
 internals, ENGINEERING_BASELINE, and DECISIONS are **excluded from the public MkDocs site**
 — edit them on GitHub; adopters should stay on What’s ready / guides / API pages.
@@ -122,17 +140,22 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 
 | Job | Suite (`ci_checks.sh …`) | On pull requests? |
 |---|---|---|
-| `test` | `test` — `pytest` on Python 3.11–3.14 | **Yes** (every PR) |
-| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, relative doc links, `mkdocs build --strict` | **Yes** (every PR) |
-| `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | **Yes** (every PR; Chromium) |
-| `evidence` | `evidence` — Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_25.py` | **Yes** (every PR / push); also on release |
-| `release` (commit CI) | `packaging` — Packaging rehearsal (`verify_pkg_25`) | After `evidence` succeeds |
+| `test` | `test` — `pytest` on Python 3.11–3.14 | Yes, unless **docs-only** |
+| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, recipe/sim checks, relative doc links, `mkdocs build --strict` | **Always** |
+| `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
+| `evidence` | `evidence` — Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_25.py` | Yes, unless **docs-only**; also on release |
+| `release` (commit CI) | `packaging` — Packaging rehearsal (`verify_pkg_25`) | After `evidence` succeeds (skipped when docs-only) |
 
 Release workflow (`release.yml`) runs the same `test` / `quality` / `browser` / `evidence`
 suites before `publish` (tag pushes only).
 
-Local Playwright is still optional for docs-only work; CI browser/evidence are not optional
-gates today (no path filters).
+Local Playwright is still optional for docs-only work. On docs-only PRs, CI skips
+`browser` / `evidence` / `test`; `quality` remains required (see [CI path filters](#ci-path-filters)).
+
+**Rust:** the `quality` and `test` jobs install a Rust toolchain so `hedron-native` wheels
+can build. Docs-only contributors do not need Rust locally for markdown verify; full
+`bash scripts/ci_checks.sh quality` on a cold machine may require Rust if the native
+package builds.
 
 ### Bugs vs RFCs vs decisions
 
@@ -206,12 +229,26 @@ Identify the owning foundation and RFC. If behavior is absent or contradictory, 
 the specification before code. Public behavior additionally requires an API contract; a
 subsystem requires an implementation specification and acceptance coverage.
 
+### RFC intake (short)
+
+1. Skim [docs/rfcs/README.md](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/README.md)
+   and pick the next free RFC number.
+2. Copy [TEMPLATE.md](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/TEMPLATE.md)
+   into `docs/rfcs/RFC-00NN-….md` and open a **Draft** PR early for feedback.
+3. Discuss alternatives and open questions in the PR; maintainers may request a
+   decision entry in `docs/DECISIONS.md` before Accept.
+4. Accepted RFCs change public behavior only through an explicit decision + RFC revision
+   (or a superseding RFC). Timeline is not calendar-guaranteed on the `0.x` train.
+
 ### RFC changes
 
 Material proposals use the [RFC template](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/TEMPLATE.md). Discuss alternatives and
 include security, accessibility, performance, testing, compatibility, migration, and open
 questions. Accepted behavior is changed through an explicit decision entry and RFC
 revision or superseding RFC.
+
+Plugin authors: start from [Plugin authoring](guides/plugin-authoring.md) and the
+sample kit (source-only on 0.25 — see Compatibility).
 
 ### Implementation changes
 

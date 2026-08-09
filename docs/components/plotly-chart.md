@@ -9,8 +9,8 @@ Render a Plotly figure through Hedron's bounded adapter pipeline.
 
 | | |
 |---|---|
-| Import | `from hedron import PlotlyChart` |
-| Distribution | `hedron-charts[plotly]` |
+| Import | `from hedron_charts import PlotlyChart` |
+| Distribution | `hedron-charts[plotly]` (workspace-only on 0.25 — not PyPI) |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -28,7 +28,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 # workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
-from hedron import PlotlyChart
+from hedron_charts import PlotlyChart
 
 component = PlotlyChart(fig, title='Requests by region', description='US East handles the largest share.')
 ```

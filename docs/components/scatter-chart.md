@@ -9,8 +9,8 @@ Plot an x/y scatter series from row mappings with an accessible fallback.
 
 | | |
 |---|---|
-| Import | `from hedron import ScatterChart` |
-| Distribution | `hedron[charts]` |
+| Import | `from hedron_charts import ScatterChart` |
+| Distribution | `hedron[charts]` (workspace-only on 0.25 — not PyPI) |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -28,7 +28,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 # workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
-from hedron import ScatterChart
+from hedron_charts import ScatterChart
 
 component = ScatterChart(rows, x='latency', y='errors', title='Latency vs errors', description='Higher latency correlates with elevated error rates.')
 ```

@@ -2609,10 +2609,17 @@ def page_text(spec: ComponentDoc) -> str:
         if "[" in spec.package or spec.package.startswith("hedron-")
         else ""
     )
+    is_charts = "charts" in spec.package
     workspace_only = (
         "# workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace\n"
-        if "charts" in spec.package
+        if is_charts
         else ""
+    )
+    import_module = "hedron_charts" if is_charts else "hedron"
+    distribution = (
+        f"`{spec.package}` (workspace-only on 0.25 — not PyPI)"
+        if is_charts
+        else f"`{spec.package}`"
     )
     return f"""---
 title: {spec.name}
@@ -2625,8 +2632,8 @@ description: {spec.summary}
 
 | | |
 |---|---|
-| Import | `from hedron import {spec.name}` |
-| Distribution | `{spec.package}` |
+| Import | `from {import_module} import {spec.name}` |
+| Distribution | {distribution} |
 | Backend activity | {spec.server} |
 | Normal render mode | {mode} |
 
@@ -2637,7 +2644,7 @@ description: {spec.summary}
 ## Basic use
 
 ```python
-{workspace_only}from hedron import {imports}
+{workspace_only}from {import_module} import {imports}
 
 component = {spec.example}
 ```

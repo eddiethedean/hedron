@@ -1,6 +1,6 @@
 # Engineering baseline
 
-**Status:** Living contributor baseline (CI/toolchain contract for the published **0.14**
+**Status:** Living contributor baseline (CI/toolchain contract for the published **0.25**
 train). Detailed acceptance evidence maps live on GitHub under
 [`docs/acceptance/`](https://github.com/eddiethedean/hedron/tree/main/docs/acceptance).
 
@@ -13,19 +13,23 @@ train). Detailed acceptance evidence maps live on GitHub under
 - pytest, httpx, and optional Playwright browser tooling implement the test layers.
 - Relative documentation links and `mkdocs build --strict` run in CI.
 - Root `STATUS.md` / `ROADMAP.md` mirrors must match `docs/` (`scripts/sync_status_roadmap.py --check`).
+- A Rust toolchain is required in CI (and for local `quality` / native wheel smoke) because
+  `hedron-native` builds via maturin.
 
 These are contributor tools, not runtime dependencies. Application users may install Hedron with any standards-compliant Python package installer.
 
 ## CI gates (actual jobs)
 
-Every pull request runs (see `.github/workflows/ci.yml`):
+Pull requests always run `quality`. `test`, `browser`, and `evidence` run unless the PR is
+classified **docs-only** by the allowlist in `.github/workflows/ci.yml` (see
+[Contributing → CI path filters](CONTRIBUTING.md#ci-path-filters)).
 
 | Job | Coverage |
 |---|---|
-| `test` | `pytest` on Ubuntu for Python **3.11, 3.12, 3.13, 3.14** |
-| `quality` | ruff format + check, pyright, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, relative markdown link check, `mkdocs build --strict` |
-| `browser` | Playwright HTMX suite — **Chromium on PRs**; Chromium + Firefox + WebKit on `main` / workflow_dispatch |
-| `evidence` | Supply-chain evidence bundle scripts |
+| `quality` | ruff format + check, pyright, wheel build + clean-install smoke, STATUS/ROADMAP mirror check, docs train SSOT / recipe / sim checks, relative markdown link check, `mkdocs build --strict` |
+| `test` | `pytest` on Ubuntu for Python **3.11, 3.12, 3.13, 3.14** (skipped when docs-only) |
+| `browser` | Playwright HTMX suite — **Chromium on PRs**; Chromium + Firefox + WebKit on `main` / workflow_dispatch (skipped when docs-only) |
+| `evidence` | Supply-chain evidence bundle scripts (skipped when docs-only) |
 
 Beginning with phase 0.6, CI green is necessary but not sufficient for a **release** claim.
 Stable evidence IDs map requirements to commands and owners under

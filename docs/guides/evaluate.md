@@ -8,7 +8,7 @@ Start here if you are deciding whether Hedron fits. Pick the page that matches y
 | Product / eng fit | This page (below) · [Why Hedron](why-hedron.md) |
 | Capability maturity (authoritative page) | [What’s ready today](whats-ready.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
-| Ops / ship checklist | [Ship to production](ship-to-production.md) |
+| Ops / ship checklist | [Ship hub](ship.md) · [Ship to production](ship-to-production.md) |
 | Architecture | [Architecture](../ARCHITECTURE.md) |
 | Support / disclosure | [Support](support.md) · [SECURITY](../SECURITY.md) |
 

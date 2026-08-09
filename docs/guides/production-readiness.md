@@ -1,12 +1,17 @@
 # Production readiness
 
-Ops-oriented narrative for **Hedron 0.25.0**. **Canonical ship checklist:**
-[Ship to production](ship-to-production.md). **Do not duplicate maturity claims here** —
-the authoritative snapshot is [What's ready today](whats-ready.md). Trust-program
-priorities: [Production-quality maturity](production-quality.md).
+Ops-oriented narrative for **Hedron 0.25.0**. **Do not start here for the checklist.**
 
-Also: [Compatibility](../COMPATIBILITY.md) · [Support](support.md) ·
-[Deployment](deployment.md).
+| Need | Canonical page |
+|---|---|
+| Adopter ship checklist | [Ship to production](ship-to-production.md) |
+| Ship landing / links | [Ship hub](ship.md) |
+| Docker / proxy / env deep dive | [Deployment](deployment.md) |
+| Capability maturity | [What's ready today](whats-ready.md) |
+| Trust-program priorities | [Production-quality maturity](production-quality.md) |
+| Kitchen-sink archetype | [Reference app](../examples/reference-app.md) · [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) |
+
+Also: [Compatibility](../COMPATIBILITY.md) · [Support](support.md).
 
 **Canonical production archetype:** [reference-app example](../examples/reference-app.md)
 ([PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) — `ARCHETYPE-025`: reverse-proxy

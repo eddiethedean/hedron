@@ -1,7 +1,38 @@
-# Plain FastAPI + HedronRouter
+# Existing / plain FastAPI + HedronRouter
 
 Use Hedron’s routing and HTML responses without the `Hedron()` facade when you
 already own a `FastAPI` app. You must install session and security middleware yourself.
+
+Prefer [`hedron new`](../getting-started/quickstart.md) for the first-hour Refresh demo.
+This page is the **existing-app** path.
+
+!!! warning "FastAPI pin — Supported vs declared"
+
+    For a known-good first mount, use FastAPI `>=0.141.1,<0.142` (CI-supported). Declared
+    metadata allows up to `<0.150`, but versions outside Supported are not CI-proven.
+    Shared or older FastAPI environments often fail to resolve — use a **clean venv**.
+    See [troubleshooting](troubleshooting.md) and [Compatibility](../COMPATIBILITY.md).
+
+Minimal include:
+
+```python
+from fastapi import FastAPI
+from hedron import HedronRouter, Page, Text, mount_hedron_static
+
+api = FastAPI()
+mount_hedron_static(api)
+ui = HedronRouter(prefix="/ui")
+
+
+@ui.page("/")
+def home() -> Page:
+    return Page(Text("Hello from Hedron"), title="Home")
+
+
+api.include_router(ui)
+```
+
+Full listing with CSRF and sessions:
 
 ```python title="app.py"
 from fastapi import FastAPI, Form, Request

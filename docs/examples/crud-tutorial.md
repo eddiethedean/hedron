@@ -2,7 +2,7 @@
 
 Build a small in-memory notes list with CSRF and HTMX fragment updates. Paste this into
 a new project after the [quickstart](../getting-started/quickstart.md). For the larger
-reference application (auth, charts, extras), see the
+reference application (auth, sessions, extras), see the
 [reference app walkthrough](reference-app.md).
 
 ## Prerequisites
@@ -408,5 +408,5 @@ uvicorn app:app --reload
 
 - Persist rows (SQLAlchemy / your ORM) instead of the module-level `NOTES` dict
 - Gate routes with [Authentication](../guides/authentication.md)
-- Study the full [reference app](reference-app.md) for sessions, charts, and packaging
+- Study the full [reference app](reference-app.md) for sessions, multi-worker jobs, and packaging
 - [Live interaction](../guides/live-interaction.md) for poll / stream / SSE

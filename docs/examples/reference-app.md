@@ -10,14 +10,14 @@ when you want the full archetype in one tree.
 Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README:
 [`examples/reference-app/README.md`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/README.md).
 
-Click through the pattern demos below (docs simulations — not the same login as the
-runnable app), then run the full app locally or via production compose.
+Click through the pattern demos below (docs simulations for CSRF, fragments, and charts —
+not a live login), then run the full app locally or via production compose.
 
 !!! warning "Credentials for this app"
 
     The runnable reference app uses **HTTP Basic** `admin` / `secret`.
-    Demo tabs that show `ada` / `correct-horse` are a **session-auth simulation** of the
-    auth *pattern* — not how this app authenticates.
+    Session-form demos with `ada` / `correct-horse` live only on
+    [session auth](session-auth.md) — they will not work against this app.
 
 ## Ingredient checklist (production archetype)
 
@@ -31,81 +31,12 @@ runnable app), then run the full app locally or via production compose.
 | Explorer off | `explorer="off"` when `HEDRON_ENV=production` |
 | multi-worker | uvicorn `--workers 2` + Redis-backed job/cache |
 
-## Auth gate (simulated pattern)
+## Auth gate
 
-The runnable app uses **HTTP Basic** (`admin` / `secret`). The Demo/Code below is a
-**session-form** pattern for learning CSRF + redirects — run
-[session-auth](session-auth.md) for that recipe, not these credentials against
-`examples/reference-app`.
-
-=== "Demo"
-
-    Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.
-
-    <!-- hedron-sim:auth-login -->
-
-=== "Code"
-
-    Focused runnable listing for this pattern—not the full reference app. Use the run instructions below for the production archetype:
-
-    ```python title="app.py"
-    import os
-
-    from fastapi import Form, Request, status
-    from fastapi.responses import RedirectResponse
-
-    from hedron import CsrfField, Form as HedronForm, Hedron, Page, Stack, SubmitButton, Text, TextInput
-
-    app = Hedron(
-        title="Secure app",
-        security="standard",
-        explorer="off",
-        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
-    )
-
-    USERS = {"ada": "correct-horse"}
-
-
-    @app.page("/")
-    def login_page(request: Request) -> Page | RedirectResponse:
-        if request.session.get("username"):
-            return RedirectResponse("/home", status_code=status.HTTP_303_SEE_OTHER)
-        return Page(
-            Stack(
-                Text("Sign in"),
-                HedronForm(
-                    CsrfField(),
-                    TextInput("username", value="ada", required=True),
-                    TextInput("password", value="", type="password", required=True),
-                    SubmitButton("Sign in"),
-                    action="/login",
-                    method="post",
-                ),
-                Text("Demo only: ada / correct-horse"),
-            ),
-            title="Login",
-        )
-
-
-    @app.action("/login", method="POST")
-    def login(
-        request: Request,
-        username: str = Form(...),
-        password: str = Form(...),
-    ) -> RedirectResponse:
-        if USERS.get(username) != password:
-            return RedirectResponse("/?error=1", status_code=status.HTTP_303_SEE_OTHER)
-        request.session["username"] = username
-        return RedirectResponse("/home", status_code=status.HTTP_303_SEE_OTHER)
-
-
-    @app.page("/home")
-    def home(request: Request) -> Page | RedirectResponse:
-        username = request.session.get("username")
-        if not username:
-            return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
-        return Page(Text(f"Signed in as {username}"), title="Home")
-    ```
+The runnable reference app uses **HTTP Basic** (`admin` / `secret`) — not a session
+login form. For a CSRF-safe session sign-in recipe (demo credentials `ada` /
+`correct-horse`), use [session auth](session-auth.md) instead; do not try those
+credentials against `examples/reference-app`.
 
 ## CSRF on forms (simulated)
 

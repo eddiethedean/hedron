@@ -9,8 +9,8 @@ Render an Altair chart through the declarative visualization adapter.
 
 | | |
 |---|---|
-| Import | `from hedron import AltairChart` |
-| Distribution | `hedron-charts[altair]` |
+| Import | `from hedron_charts import AltairChart` |
+| Distribution | `hedron-charts[altair]` (workspace-only on 0.25 — not PyPI) |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -28,7 +28,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 # workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
-from hedron import AltairChart
+from hedron_charts import AltairChart
 
 component = AltairChart(chart, title='Deployments per week', description='Deployments peaked in week four.')
 ```

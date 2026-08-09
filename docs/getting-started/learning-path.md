@@ -1,19 +1,19 @@
 # Learning path
 
-A suggested order from first page to production-minded apps. Start with the short
-[What is HTMX?](what-is-htmx.md) introduction, then
-[Build your first app](quickstart.md). Use [Installation](installation.md) when you need
-prerequisites, adapter choices, or troubleshooting.
+A suggested order from first page to production-minded apps. Start with
+[Build your first app](quickstart.md), then [What is HTMX?](what-is-htmx.md). Use
+[Installation](installation.md) when you need prerequisites, adapter choices, or
+troubleshooting.
 
 **Skills assumed:** Python 3.11+, basic FastAPI (routes / `Form`), and HTML forms.
 No SPA or prior HTMX background is required.
 
 ## 1. Hello page (~10 minutes)
 
-1. [What is HTMX?](what-is-htmx.md) — browser / fragment / region / swap mental model
-2. [Build your first app](quickstart.md)
-3. [Installation](installation.md) (extras / troubleshooting as needed)
-4. Optional: [Understanding maturity labels](how-to-read.md)
+1. [Build your first app](quickstart.md)
+2. [Installation](installation.md) (extras / troubleshooting as needed)
+3. [What is HTMX?](what-is-htmx.md) — browser / fragment / region / swap mental model
+4. Optional: [Understanding maturity labels](how-to-read.md) (after Hello works)
 
 That is the first success. Extend the **same** app in the next section; do not start a
 second project.

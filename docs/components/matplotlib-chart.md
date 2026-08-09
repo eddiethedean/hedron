@@ -9,8 +9,8 @@ Render a Matplotlib figure as reviewed static SVG or image output.
 
 | | |
 |---|---|
-| Import | `from hedron import MatplotlibChart` |
-| Distribution | `hedron-charts[matplotlib]` |
+| Import | `from hedron_charts import MatplotlibChart` |
+| Distribution | `hedron-charts[matplotlib]` (workspace-only on 0.25 — not PyPI) |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -28,7 +28,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 ```python
 # workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
-from hedron import MatplotlibChart
+from hedron_charts import MatplotlibChart
 
 component = MatplotlibChart(fig, title='Latency distribution', description='Most requests complete below 200 ms.')
 ```

@@ -1,7 +1,7 @@
 # How to read Hedron docs
 
 You do **not** need maturity vocabulary to install or complete the golden path
-(Installation → First app → HTMX → Minimal form). Use this page when evaluating
+(First app → What is HTMX → HTMX interactions → Minimal form). Use this page when evaluating
 production use or reading API/stability catalogs.
 
 ## Maturity cheat-sheet (three axes)
@@ -51,7 +51,8 @@ are migrating from 0.8.
 
 ## What to read first
 
-1. [Build your first app](quickstart.md) → [HTMX interactions](../guides/htmx-interactions.md)
+1. [Build your first app](quickstart.md) → [What is HTMX?](what-is-htmx.md) →
+   [HTMX interactions](../guides/htmx-interactions.md)
 2. [Minimal form POST](../guides/minimal-form.md) → [Installation](installation.md) as needed
 3. [What’s ready today](../guides/whats-ready.md) / [Evaluate Hedron](../guides/evaluate.md) when evaluating production use
 
