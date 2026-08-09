@@ -75,7 +75,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Alpha** | Pin `hedron[charts]`; Matplotlib default |
+| Charts | **Alpha** | Pin `hedron[charts]`; **Matplotlib** is the conservative Supported default path; **Plotly** / **Altair** remain experimental until pins + CSP + a11y match DataTable ([CHARTS-025](../api/PRODUCTION_ARCHETYPE.md#charts-graduation-path-charts-025)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
@@ -157,12 +157,19 @@ guaranteed multi-worker live-transport proof.
 
 ## Deferred (do not market as Supported)
 
-- Full multi-engine live browser matrix for FastAPI and adapters
-- Load/proxy backpressure evidence for live transports
-- Some Explorer live traces
+- Explorer live traces (`EXPLORER-10-001` on `0.10.x`)
 - Human screen-reader / compensated AT evaluation (**0.21** D-052: protocol Verified;
   `SR-021` / `PARTICIPANT-021` Planned — not Supported; `AT-019` on 0.19 is automated
   Playwright/axe only)
+
+### Superseded in 0.24 (not Supported live)
+
+- Full multi-engine live browser matrix for FastAPI and adapters (`BROWSER-10-001` /
+  `LIVE-011-BROWSER`) — closed via `polling_only` / `BROWSER-024`
+- Load/proxy backpressure evidence for live transports (`PERF-10-001`) — closed via
+  `polling_only` / `PERF-024`
+
+Prefer [polling](live-interaction.md). Live SSE/WS helpers remain **experimental**.
 
 Maintainer gate IDs and RFC evidence:
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).

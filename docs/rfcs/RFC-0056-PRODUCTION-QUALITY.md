@@ -1,7 +1,8 @@
 # RFC-0056: Production-quality maturity program
 
 **Status:** Accepted
-**Phase:** Program umbrella for 0.21–0.25 (D-053); living published train is **0.23**
+**Phase:** Program umbrella for 0.21–0.25 (D-053); living published train is **0.24**
+(`v0.24.0`; prior packet **0.23** stable-tier)
 **Stability:** `beta` (process / roadmap); does not by itself promote package maturity or
 API levels
 **Evidence:** Priority ownership in ROADMAP §0.21–§0.25; release gates
@@ -55,8 +56,8 @@ Vocabulary remains: Supported ≠ API `stable` ≠ commercial warranty
 | P0 | Finish 0.21 human AT sessions + remediate | D-052 / ROADMAP §0.21 |
 | P0 | Ship 0.22 CSRF / SecurityPolicy composition | D-051 / ROADMAP §0.22 (**Published** `v0.22.0`; gates Verified) |
 | P1 | Expand `stable` tier for Supported CRUD/HTMX/jobs core | ROADMAP §0.23 / D-053 (**Published** `v0.23.0`; gates Verified) |
-| P1 | Live transports: prove ops gates **or** formally polling-only for production docs | ROADMAP §0.24 / D-053 |
-| P2 | Reference-app production archetype + load budgets; extras quarantine; charts path | ROADMAP §0.25 / D-053 |
+| P1 | Live transports: prove ops gates **or** formally polling-only for production docs | ROADMAP §0.24 / D-053 (**Published** `v0.24.0`; disposition `polling_only`) |
+| P2 | Reference-app production archetype + load budgets; extras quarantine; charts path | ROADMAP §0.25 / D-053 (**packet refine complete**; gates Planned) |
 | P3 | External security review + SBOM/evidence on every train tag | Process (RELEASE + diligence) |
 | P3 | Optional written `1.0` DoD **without a date** | D-053 appendix; does not schedule a phase |
 
@@ -110,4 +111,11 @@ IDs superseded via waive ledgers; gates Verified via
 `check_perf_024.py` / `check_docs_024.py` / `ci_checks.sh test` / `verify_pkg_24.py`
 (see `release-gate-0.24.toml`).
 
-Packet refine for **0.25** may still add gate command detail for that phase.
+**0.25 packet refine complete (Planned):** locked Verified criteria + distinct gate
+commands in ROADMAP §0.25 + [PRODUCTION_ARCHETYPE.md](../api/PRODUCTION_ARCHETYPE.md);
+extras XOR twin [`extras-quarantine-025.toml`](../acceptance/extras-quarantine-025.toml)
+(`undecided` until cut); checkers
+`check_archetype_025.py` / `check_budget_025.py` / `check_extras_025.py` /
+`check_charts_025.py` / `check_supply_025.py` / `ci_checks.sh test` / `verify_pkg_25.py`
+(see `release-gate-0.25.toml`). Cut still Planned — do not market the archetype as
+Supported until Verified.

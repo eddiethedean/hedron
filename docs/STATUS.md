@@ -20,7 +20,9 @@ remain **experimental** (`hedron.experimental`). Human AT protocol remains **Ver
 Planned** until real sessions — **do not market human AT as Supported**. Automated AT
 (`AT-019`, phase 0.19) remains Supported and is not a substitute for human AT.
 Production-quality maturity program (**D-053** / RFC-0056) next packet: **0.25**
-(archetype / landmines) — see [production-quality](guides/production-quality.md).
+(archetype / landmines) — **packet refine complete** (gates Planned; cut still open) —
+see [production-quality](guides/production-quality.md) ·
+[PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md).
 
 ## Supported vs Deferred (operator view)
 
@@ -71,6 +73,13 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `DOCS-024` | Docs train SSOT + live-claim honesty | **Verified** (0.24) | |
 | `REGRESS-024` | Full suite at 0.24 cut | **Verified** (0.24) | |
 | `PKG-024` | `verify_pkg_24.py` packet evidence | **Verified** (0.24) | |
+| `ARCHETYPE-025` | Reference-app production archetype | **Planned** (0.25) | packet refine complete |
+| `BUDGET-025` | Critical-path load budgets | **Planned** (0.25) | `W-025-*` |
+| `EXTRAS-025` | Extras landmine quarantine XOR | **Planned** (0.25) | `undecided` until cut |
+| `CHARTS-025` | Matplotlib-default / Plotly–Altair path | **Planned** (0.25) | |
+| `SUPPLY-025` | SBOM/evidence attach on train tags | **Planned** (0.25) | process |
+| `REGRESS-025` | Full suite at 0.25 cut | **Planned** (0.25) | |
+| `PKG-025` | `verify_pkg_25.py` packet evidence | **Planned** (0.25) | |
 | `LIVE-011-BROWSER` | Full adapter live browser matrix | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `BROWSER-024` |
 | `BROWSER-10-001` | Full three-engine live browser matrix | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `BROWSER-024` |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `PERF-024` |
@@ -133,6 +142,11 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 ## Next capability phases
 
 **0.25** — Production archetype, load budgets, extras quarantine (D-053).
+**Packet refine complete** — locked gate commands; all `*-025` rows still **Planned**.
+SSOT: [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md) ·
+[RELEASE_0_25](acceptance/RELEASE_0_25.md) ·
+[release-gate-0.25.toml](acceptance/release-gate-0.25.toml).
+Refine smoke: `python scripts/verify_pkg_25.py --allow-planned`.
 Program summary: [production-quality guide](guides/production-quality.md).
 
 Optional later: external security review + SBOM attach on every train tag; undated written

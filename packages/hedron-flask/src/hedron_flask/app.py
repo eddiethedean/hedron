@@ -16,6 +16,7 @@ from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfileName
 from hedron_flask.blueprint import attach_hedron_to_flask
 from hedron_flask.csrf import (
+    csrf_cookie_force_secure,
     csrf_cookie_should_be_secure,
     csrf_token_for_request,
     ensure_csrf_cookie,
@@ -278,7 +279,12 @@ class HedronFlask:
             response,
             value,
             cookie_name=self.csrf_cookie_name,
-            secure=csrf_cookie_should_be_secure(request, force_secure=self.csrf_cookie_secure),
+            secure=csrf_cookie_should_be_secure(
+                request,
+                force_secure=csrf_cookie_force_secure(
+                    self.csrf_cookie_secure, self.security_policy
+                ),
+            ),
             path=cookie_path,
         )
         return value

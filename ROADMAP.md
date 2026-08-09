@@ -418,8 +418,9 @@ compatibility subsystem.
 
 ## 0.10 — Live interaction and navigation (`v0.10.0`)
 
-**Status:** Published. Owned Deferred follow-ups (`BROWSER-10-001`, `PERF-10-001`,
-`EXPLORER-10-001`) remain for `0.10.x`. `EXAMPLES-10-001` is Verified (poll + stream
+**Status:** Published. Owned Deferred follow-up `EXPLORER-10-001` remains for `0.10.x`.
+`BROWSER-10-001` / `PERF-10-001` were **Superseded** in **0.24** under `polling_only`
+([LIVE_DISPOSITION](docs/api/LIVE_DISPOSITION.md)). `EXAMPLES-10-001` is Verified (poll + stream
 + SSE + Job SSE + WS + preload in `examples/live-interaction`).
 **Outcome:** Hedron supports evidence-backed live updates, streaming where it materially helps, and
 measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
@@ -585,9 +586,9 @@ introducing a second hidden runtime or losing trace and cancellation semantics.
   What’s ready / Jobs docs to match
   ([#11](https://github.com/eddiethedean/hedron/issues/11)).
 - Reconcile live-transport Supported vs experimental labeling: single source of truth in What’s
-  ready + STABILITY; `capability_matrix()` and FAQ/upgrade/ADAPTERS/JOBS language match deferred
-  ops gates (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) while polling remains the
-  Supported production fallback
+  ready + STABILITY; `capability_matrix()` and FAQ/upgrade/ADAPTERS/JOBS language match Accepted
+  0.24 **`polling_only`** (prior ops IDs `BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`
+  **Superseded**) while polling remains the Supported production fallback
   ([#13](https://github.com/eddiethedean/hedron/issues/13)).
 - Register every emitted `HED-*` code in `hedron_core.codes` with CI failing on unregistered
   codes (`scripts/check_hed_codes.py`). Expanding `error-codes.md` to the full catalog remains
@@ -1665,35 +1666,80 @@ Zero Deferred among 0.24-owned gate rows at cut. Gate IDs and commands (packet r
 ## 0.25 — Production archetype and landmine quarantine (`v0.25.0`)
 
 **Status:** Planned. Part of D-053 / RFC-0056. Product/ops track after trust and stability
-packets.
+packets. **Packet refine complete** — locked Verified criteria and distinct gate commands;
+cut still Planned until every 0.25-owned row is Verified.
 
-**Outcome:** `examples/reference-app` (or a documented sibling recipe) is the canonical
-multi-worker production archetype; load/perf budgets have CI evidence for critical paths;
-specialty extras landmines are quarantined or finished; Matplotlib remains the conservative
-charts default with a written graduation path for Plotly/Altair.
+**Outcome:** `examples/reference-app` is the canonical multi-worker production archetype;
+load/perf budgets have CI (or immutable artifact) evidence for critical paths; specialty
+extras landmines are quarantined or finished; Matplotlib remains the conservative charts
+default with a written graduation path for Plotly/Altair; RELEASE requires SBOM/evidence
+attach on train tags.
 
-### Scope
+Packet SSOT: [PRODUCTION_ARCHETYPE.md](docs/api/PRODUCTION_ARCHETYPE.md) ·
+[extras-quarantine-025.toml](docs/acceptance/extras-quarantine-025.toml) ·
+[PERFORMANCE_BUDGETS.md](docs/PERFORMANCE_BUDGETS.md) (§0.25 workloads).
 
-- **`ARCHETYPE-025`** — Documented deploy archetype: reverse-proxy subpath, Redis job/cache
-  backend, sticky sessions or external session store, CSP/`HEDRON_ENV=production`, Explorer off,
-  multi-worker notes (compose or equivalent).
-- **`BUDGET-025`** — Runnable evidence against [PERFORMANCE_BUDGETS.md](docs/PERFORMANCE_BUDGETS.md)
-  for fragment latency, job poll fanout, and DataEditor row-model smoke (CI or immutable
-  artifact).
-- **`EXTRAS-025`** — CodeEditor host stub, TerminalView, joystick/device bridges: either reach
-  Supported with evidence **or** move behind a clearly named experimental extra so
-  `hedron[extras]` does not imply product UI.
-- **`CHARTS-025`** — Matplotlib-default Supported path documented; Plotly/Altair remain
-  experimental until pins + CSP + a11y evidence match the DataTable bar.
-- **`SUPPLY-025`** — RELEASE runbook requires SBOM/evidence-bundle attach on train tags
-  (process gate; regenerate instructions remain in Evidence pack).
-- **`REGRESS-025`** / **`PKG-025`** — Suite and package verify at cut.
+### Extras quarantine XOR (`EXTRAS-025`)
+
+Machine value in `docs/acceptance/extras-quarantine-025.toml`:
+
+| Value | Meaning |
+|---|---|
+| `undecided` | Packet refine / pre-cut only (allowed with `--allow-undecided`) |
+| `quarantine` | Move CodeEditor / TerminalView / joystick+device behind a clearly named experimental extra so `hedron[extras]` does not imply product UI |
+| `finish_supported` | Reach Supported with evidence for those landmines |
+
+Cut requires exactly one of `quarantine` | `finish_supported`. Do not half-verify both paths.
+Packet refine leaves the value `undecided`.
+
+### Locked Verified criteria (per gate)
+
+| Gate | Verified means |
+|---|---|
+| `ARCHETYPE-025` | `examples/reference-app` documented as canonical deploy archetype covering reverse-proxy subpath, Redis job/cache, sticky sessions **or** external session store, `HEDRON_ENV=production` + CSP, Explorer off, multi-worker notes; production-quality and production-readiness guides link it |
+| `BUDGET-025` | Runnable evidence (CI or immutable artifact) against [PERFORMANCE_BUDGETS.md](docs/PERFORMANCE_BUDGETS.md) for `W-025-FRAGMENT`, `W-025-JOB-POLL`, and `W-025-DATAEDITOR` |
+| `EXTRAS-025` | Quarantine TOML is `quarantine` **or** `finish_supported`; SSOT + What’s ready agree; `hedron[extras]` honesty matches the chosen path |
+| `CHARTS-025` | Matplotlib-default Supported path documented; Plotly/Altair remain experimental until pins + CSP + a11y match the DataTable bar (graduation checklist present; full Plotly graduation not required) |
+| `SUPPLY-025` | [RELEASE.md](docs/RELEASE.md) requires SBOM/evidence-bundle attach on train tags; regenerate instructions remain in the Evidence pack |
+| `REGRESS-025` / `PKG-025` | Full suite + `verify_pkg_25.py` at cut |
+
+### Scope (locked gate commands)
+
+Zero Deferred among 0.25-owned gate rows at cut. Gate IDs and commands (packet refine locked):
+
+- **`ARCHETYPE-025`** — `python scripts/check_archetype_025.py` — SSOT + ingredient checklist;
+  refine uses `--allow-draft`; cut omits the flag when docs and guide links are complete.
+- **`BUDGET-025`** — `python scripts/check_budget_025.py` — three §0.25 workloads named;
+  refine uses `--allow-planned`; cut requires CI or immutable evidence paths.
+- **`EXTRAS-025`** — `python scripts/check_extras_025.py` — schema + XOR; refine uses
+  `--allow-undecided`; cut requires `quarantine` or `finish_supported` and SSOT agreement.
+- **`CHARTS-025`** — `python scripts/check_charts_025.py` — Matplotlib-default + Plotly/Altair
+  experimental honesty + graduation checklist.
+- **`SUPPLY-025`** — `python scripts/check_supply_025.py` — RELEASE runbook SBOM/evidence
+  attach requirement.
+- **`REGRESS-025`** — `bash scripts/ci_checks.sh test --python 3.12` at cut.
+- **`PKG-025`** — `python scripts/verify_pkg_25.py` (gate checker without `--allow-planned` at
+  cut; living train for refine is `0.24.0`).
+
+### Out of 0.25
+
+| Surface | Why |
+|---|---|
+| Hosted SaaS or managed IdP built on reference-app | Non-goal |
+| SLSA commercial attestation claims | Non-goal |
+| Finishing every specialty widget when quarantine wins | Quarantine satisfies `EXTRAS-025` |
+| External security review + undated `1.0` DoD | D-053 **P3** process / optional; not a 0.25 gate |
+| Human AT sessions (`SR-021` / `PARTICIPANT-021` / …) | Remain 0.21 P0 |
+| Alpha notebook / MCP / Gradio / `hedron-native` maturity | Non-goal for this packet |
+| Re-litigating live SSE/WS Supported claim | Closed in **0.24** as `polling_only` |
 
 ### Non-goals
 
 - Turning reference-app into a hosted SaaS or managed IdP.
 - SLSA commercial attestation claims.
 - Finishing every specialty widget in one cut when quarantine satisfies `EXTRAS-025`.
+- Choosing `quarantine` vs `finish_supported` during packet refine (cut decides).
+- Promoting Plotly/Altair to Supported without DataTable-bar evidence.
 
 ### Exit gate
 
@@ -1895,8 +1941,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Flask/Django fragment_regions, portable CSP headers, scaffolds, wheel smoke, Flask-Login AuthSignal | 0.20 | Adapter parity and DX after 0.11 foundations (`REGION-020`, `CSP-020`, `SCAFFOLD-020`, `WHEEL-020`, `AUTH-020`; [#12](https://github.com/eddiethedean/hedron/issues/12), [#14](https://github.com/eddiethedean/hedron/issues/14), [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19), [#20](https://github.com/eddiethedean/hedron/issues/20)). |
 | Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.22 | Packet refined (`CSRF-022` / `HEADERS-022` / `FORM-022`); FastAPI composition for apps that own sessions/CSP; depends on 0.20 `CSP-020` ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
 | Expand minimal `stable` API tier for Supported CRUD/HTMX/jobs + Beginner facade inventory | 0.23 | D-053 / RFC-0056; does not promote Alpha extras or live transports. |
-| Live-transport production disposition (prove browser/load ops **or** polling-only docs) | 0.24 | Re-homes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056); packet refine complete — [LIVE_DISPOSITION](docs/api/LIVE_DISPOSITION.md). |
-| Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | D-053 / RFC-0056; SBOM/evidence attach on train tags. |
+| Live-transport production disposition (`polling_only` Accepted) | 0.24 | **Published** `v0.24.0`; supersedes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056) — [LIVE_DISPOSITION](docs/api/LIVE_DISPOSITION.md). |
+| Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | D-053 / RFC-0056; **packet refine complete**; SBOM/evidence attach on train tags. |
 | Optional written `1.0` DoD without a calendar date | D-053 | Not a roadmap phase; preserves D-038. |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 

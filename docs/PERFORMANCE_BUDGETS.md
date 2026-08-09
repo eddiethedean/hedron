@@ -1,16 +1,21 @@
 # Performance budgets
 
-**Status:** Published on the **0.24** train (budgets introduced in phase 0.8; still
-enforced; last published PyPI/git = `v0.24.0`)
+**Status:** Published soft render budgets on the **0.24** train (introduced in phase 0.8;
+still enforced; last published PyPI/git = `v0.24.0`). Phase **0.25** adds critical-path
+workloads (`BUDGET-025`) that are named here; runnable CI/artifact evidence remains
+**Planned** until cut.
 
-**Evidence:** `PERF-08-001`, `PERF-08-002`, `tests/performance/`
+**Evidence:** `PERF-08-001`, `PERF-08-002`, `tests/performance/`; `BUDGET-025` /
+`W-025-*` (packet refine complete; evidence Pending).
 
 Budgets are soft CI ceilings sized for GitHub-hosted runners. They catch gross regressions;
 they are not marketing latency claims. Measure with `tests/performance/`.
 
-Load/proxy backpressure proof for live SSE/WebSocket remains **Deferred** — prefer
-polling in production until you have your own ops evidence. See
-[What’s ready](guides/whats-ready.md) and [Performance guide](guides/performance.md).
+Live SSE/WebSocket load/proxy backpressure IDs (`PERF-10-001` and related) were
+**Superseded** in **0.24** under disposition `polling_only` — prefer
+[polling](guides/live-interaction.md) in production. See
+[What’s ready](guides/whats-ready.md), [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md), and
+[Performance guide](guides/performance.md).
 
 ## Workloads
 
@@ -20,6 +25,19 @@ polling in production until you have your own ops evidence. See
 | W-PAGE | Full `RenderMode.PAGE` for a small Page | same |
 | W-FRAGMENT | Fragment render for a small tree | same |
 | W-PAYLOAD | HTML payload size for 200-node stack | same |
+
+## Phase 0.25 critical-path workloads (`BUDGET-025`)
+
+Packet refine locked these IDs. Evidence may be **CI** or an **immutable artifact** at cut.
+Until cut, `evidence_path` rows may be placeholders (`pending`).
+
+| ID | Workload | evidence_path |
+|---|---|---|
+| W-025-FRAGMENT | Fragment latency under representative HTMX swap load | pending |
+| W-025-JOB-POLL | Job status poll fanout | pending |
+| W-025-DATAEDITOR | DataEditor row-model smoke | pending |
+
+Checker: `python scripts/check_budget_025.py` (refine: `--allow-planned`).
 
 ## Budgets (CPython 3.12, ubuntu-latest)
 

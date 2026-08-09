@@ -31,8 +31,8 @@ optional Rust acceleration shipped in **0.14** under D-048.
 Live transport on the FastAPI flagship (official HTMX SSE, focused streaming, page/session
 WebSocket channels, and related contracts) shipped in **0.10** — see
 [live interaction](../guides/live-interaction.md). Official HTMX SSE on Flask/Django remains
-Deferred (polling is the Supported fallback). Production disposition of experimental live
-helpers (prove ops evidence **or** polling-only docs) is owned by phase **0.24** (D-053).
+unsupported as a production claim (polling is the Supported fallback). Production disposition
+of experimental live helpers was Accepted in **0.24** as **`polling_only`** (D-053).
 
 Maturity-program non-goals (no calendar `1.0`, no SLA/WCAG product claims, no SPA/Streamlit
 parity chase) are recorded in D-053 /

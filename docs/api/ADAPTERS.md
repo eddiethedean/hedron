@@ -191,10 +191,12 @@ the fetch exceeds `query_budget`.
 ## Live transport (FastAPI vs adapters)
 
 Official HTMX SSE, focused streaming, and page/session WebSocket channels are **experimental**
-(`hedron.experimental`) on the FastAPI flagship until Deferred ops gates close (see
-[live interaction](../guides/live-interaction.md) and [STABILITY](STABILITY.md)). Flask and
+(`hedron.experimental`) on the FastAPI flagship under Accepted 0.24 **`polling_only`** (see
+[LIVE_DISPOSITION](LIVE_DISPOSITION.md), [live interaction](../guides/live-interaction.md), and
+[STABILITY](STABILITY.md)). Flask and
 Django adapters keep **bounded polling** as the Supported live-status fallback; they do not
-ship the FastAPI SSE/WebSocket helpers.
+ship the FastAPI SSE/WebSocket helpers (import adapter live helpers from
+`hedron_flask.experimental` / `hedron_django.experimental` when needed).
 
 ## Errors
 
@@ -209,12 +211,13 @@ ship the FastAPI SSE/WebSocket helpers.
 | FastAPI SSE helpers imported on Flask/Django | N/A | Not shipped — use polling |
 | `page`/`route` before `init_app` | Flask | `RuntimeError` |
 
-## Deferred (not Supported)
+## Not Supported (superseded or Deferred)
 
 | Claim | Notes |
 |---|---|
-| Full adapter live browser matrix | Carryover Deferred `LIVE-011-BROWSER` (ops evidence; not blocking Supported adapter depth on **0.20**) |
-| Load/proxy backpressure proof for SSE/WS | Carryover Deferred `PERF-10-001` — prefer polling; live helpers remain Experimental |
+| Full adapter live browser matrix | **Superseded** in 0.24 (`LIVE-011-BROWSER` / `BROWSER-024`); polling Supported; live helpers remain Experimental |
+| Load/proxy backpressure proof for SSE/WS | **Superseded** in 0.24 (`PERF-10-001` / `PERF-024`); prefer polling |
+| Explorer live traces | Deferred `EXPLORER-10-001` on `0.10.x` (not re-homed to 0.24) |
 
 CameraCapture / MicrophoneCapture ship as **Supported** on the FastAPI flagship (with
 permission/retention policy) — see [What’s ready](../guides/whats-ready.md).

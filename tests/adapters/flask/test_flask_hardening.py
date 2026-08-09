@@ -212,6 +212,26 @@ def test_csrf_cookie_secure_forced_under_strict_flag() -> None:
     assert "Secure" in cookie
 
 
+def test_csrf_cookie_secure_from_security_strict_alone() -> None:
+    """HedronFlask(..., security='strict') forces Secure without csrf_cookie_secure=True."""
+    from werkzeug.test import Client
+
+    hedron = HedronFlask(__name__, security="strict")
+    assert hedron.flask is not None
+    assert hedron.csrf_cookie_secure is None
+    hedron.flask.secret_key = "test"
+
+    @hedron.flask.route("/")
+    def home() -> str:
+        return "ok"
+
+    client = Client(hedron.flask)
+    response = client.get("/")
+    cookie = response.headers.get("Set-Cookie") or ""
+    assert "hedron_csrf=" in cookie
+    assert "Secure" in cookie
+
+
 def test_csrf_cookie_secure_defaults_to_request_is_secure() -> None:
     from werkzeug.test import Client
 
@@ -225,6 +245,49 @@ def test_csrf_cookie_secure_defaults_to_request_is_secure() -> None:
 
     client = Client(hedron.flask)
     response = client.get("/")
+    cookie = response.headers.get("Set-Cookie") or ""
+    assert "hedron_csrf=" in cookie
+    assert "Secure" not in cookie
+
+
+def test_csrf_cookie_secure_from_trusted_forwarded_proto(monkeypatch) -> None:
+    """Trusted peer + X-Forwarded-Proto: https sets Secure under STANDARD."""
+    from werkzeug.test import Client
+
+    monkeypatch.setenv("HEDRON_TRUSTED_PROXIES", "127.0.0.1")
+    hedron = HedronFlask(__name__, security="standard")
+    assert hedron.flask is not None
+    hedron.flask.secret_key = "test"
+
+    @hedron.flask.route("/")
+    def home() -> str:
+        return "ok"
+
+    client = Client(hedron.flask)
+    response = client.get(
+        "/",
+        headers={"X-Forwarded-Proto": "https"},
+        environ_base={"REMOTE_ADDR": "127.0.0.1"},
+    )
+    cookie = response.headers.get("Set-Cookie") or ""
+    assert "hedron_csrf=" in cookie
+    assert "Secure" in cookie
+
+
+def test_csrf_cookie_secure_ignores_untrusted_forwarded_proto() -> None:
+    """Arbitrary X-Forwarded-Proto must not force Secure without a peer allowlist."""
+    from werkzeug.test import Client
+
+    hedron = HedronFlask(__name__, security="standard")
+    assert hedron.flask is not None
+    hedron.flask.secret_key = "test"
+
+    @hedron.flask.route("/")
+    def home() -> str:
+        return "ok"
+
+    client = Client(hedron.flask)
+    response = client.get("/", headers={"X-Forwarded-Proto": "https"})
     cookie = response.headers.get("Set-Cookie") or ""
     assert "hedron_csrf=" in cookie
     assert "Secure" not in cookie

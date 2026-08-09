@@ -274,6 +274,7 @@ nav:
         - Stability: api/STABILITY.md
         - Beginner / stable facade (0.23): api/STABLE_FACADE.md
         - Live-transport disposition (0.24): api/LIVE_DISPOSITION.md
+        - Production archetype (0.25): api/PRODUCTION_ARCHETYPE.md
       - Application and routing:
         - Hedron: api/HEDRON.md
         - Router: api/ROUTER.md

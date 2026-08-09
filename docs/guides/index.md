@@ -2,7 +2,7 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.24 train** (**Published** as **v0.24.0**): stable-tier CRUD/admin facade — [What’s new in 0.23](whats-new-0.23.md) · [What’s ready](whats-ready.md).
+**0.24 train** (**Published** as **v0.24.0**): live-transport disposition `polling_only` — [What’s new in 0.24](whats-new-0.24.md) · [What’s ready](whats-ready.md).
 
 **0.20 train** (published as **v0.20.0**): production security floor and adapter parity — [What’s new in 0.20](whats-new-0.20.md).
 

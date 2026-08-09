@@ -310,6 +310,7 @@ def attach_hedron_to_flask(
             strategy = policy.resolve_csrf_strategy()
             if strategy is not None and bool(getattr(strategy, "sets_cookie", True)):
                 from hedron_flask.csrf import (
+                    csrf_cookie_force_secure,
                     csrf_cookie_should_be_secure,
                     csrf_token_for_request,
                     ensure_csrf_cookie,
@@ -321,6 +322,10 @@ def attach_hedron_to_flask(
                 configured = getattr(extension, "csrf_cookie_path", None)
                 if isinstance(configured, str) and configured:
                     cookie_path = configured
+                force = csrf_cookie_force_secure(
+                    getattr(extension, "csrf_cookie_secure", None),
+                    policy,
+                )
                 ensure_csrf_cookie(
                     response,
                     csrf_token_for_request(
@@ -331,7 +336,7 @@ def attach_hedron_to_flask(
                     cookie_name=cookie_name,  # type: ignore[arg-type]
                     secure=csrf_cookie_should_be_secure(
                         request,
-                        force_secure=getattr(extension, "csrf_cookie_secure", None),
+                        force_secure=force,
                     ),
                     path=cookie_path,
                 )

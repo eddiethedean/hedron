@@ -8,9 +8,10 @@ status: experimental
 !!! note "Stability"
 
     Classifications live in [STABILITY.md](STABILITY.md). Official HTMX SSE observation is
-    **experimental** (`hedron.experimental`) until Deferred ops gates
-    (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) close. Polling remains the
-    Supported production fallback.
+    **experimental** (`hedron.experimental`) under Accepted 0.24 disposition
+    **`polling_only`** ([LIVE_DISPOSITION](LIVE_DISPOSITION.md)). Prior Deferred ops IDs
+    (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) are **Superseded** — helpers do
+    not become Supported. Polling remains the Supported production fallback.
 
 **Status:** Shipped in `0.10.0` (experimental)
 

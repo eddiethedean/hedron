@@ -8,13 +8,14 @@ from typing import TYPE_CHECKING
 from werkzeug.exceptions import Forbidden
 
 from hedron_core.csrf_strategy import DoubleSubmitCookieCsrf
-from hedron_core.security_policy import SecurityPolicy
+from hedron_core.security_policy import SecurityPolicy, SecurityProfile
 
 if TYPE_CHECKING:
     from flask import Request, Response
 
 __all__ = [
     "assert_flask_csrf_strategy",
+    "csrf_cookie_force_secure",
     "csrf_cookie_should_be_secure",
     "csrf_token_for_request",
     "ensure_csrf_cookie",
@@ -74,6 +75,62 @@ def csrf_token_for_request(
     return value
 
 
+def _forwarded_proto_https(request: Request) -> bool:
+    proto = request.headers.get("X-Forwarded-Proto", "")
+    first = proto.split(",")[0].strip().lower() if proto else ""
+    return first == "https"
+
+
+def _trusted_proxy_peers(request: Request) -> set[str]:
+    """Peers allowed to supply ``X-Forwarded-*`` (same allowlist model as FastAPI)."""
+    import os
+
+    peers: set[str] = set()
+    raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
+    peers.update(part.strip() for part in raw_env.split(",") if part.strip())
+    app = getattr(request, "app", None)
+    if app is not None:
+        configured = app.config.get("HEDRON_TRUSTED_PROXIES") if hasattr(app, "config") else None
+        if isinstance(configured, str):
+            peers.update(part.strip() for part in configured.split(",") if part.strip())
+        elif isinstance(configured, (list, tuple, set, frozenset)):
+            peers.update(str(item).strip() for item in configured if str(item).strip())
+        extension = app.extensions.get("hedron") if hasattr(app, "extensions") else None
+        ext_peers = getattr(extension, "trusted_peers", None) if extension is not None else None
+        if isinstance(ext_peers, (list, tuple, set, frozenset)):
+            peers.update(str(item).strip() for item in ext_peers if str(item).strip())
+    return peers
+
+
+def _forwarded_proto_https_trusted(request: Request) -> bool:
+    """Honor ``X-Forwarded-Proto: https`` only from allowlisted proxy peers."""
+    if not _forwarded_proto_https(request):
+        return False
+    peers = _trusted_proxy_peers(request)
+    if not peers:
+        return False
+    # Werkzeug exposes remote_addr; environ REMOTE_ADDR is the TCP peer.
+    peer = getattr(request, "remote_addr", None) or request.environ.get("REMOTE_ADDR")
+    return peer is not None and peer in peers
+
+
+def csrf_cookie_force_secure(
+    force_secure: bool | None,
+    policy: SecurityPolicy | None = None,
+) -> bool | None:
+    """Resolve the force-Secure override for CSRF cookies.
+
+    Explicit ``True``/``False`` wins. When unset, STRICT profiles force Secure
+    (FastAPI STRICT parity) so ``HedronFlask(..., security="strict")`` alone
+    emits Secure cookies on plain HTTP.
+    """
+    if force_secure is True or force_secure is False:
+        return force_secure
+    if policy is not None and policy.profile is SecurityProfile.STRICT:
+        return True
+    return None
+
+
 def csrf_cookie_should_be_secure(
     request: Request,
     *,
@@ -83,8 +140,8 @@ def csrf_cookie_should_be_secure(
 
     ``force_secure=True`` matches FastAPI STRICT (always Secure, including plain
     HTTP to the app behind a TLS-terminating proxy). ``None`` follows
-    ``request.is_secure``, or forces Secure when ``FLASK_ENV``/``ENV`` is
-    ``production``.
+    ``request.is_secure``, trusted-peer ``X-Forwarded-Proto: https``, or forces
+    Secure when ``FLASK_ENV``/``ENV`` is ``production``.
     """
     if force_secure is True:
         return True
@@ -94,6 +151,8 @@ def csrf_cookie_should_be_secure(
 
     env = (os.environ.get("FLASK_ENV") or os.environ.get("ENV") or "").lower()
     if env == "production":
+        return True
+    if _forwarded_proto_https_trusted(request):
         return True
     return bool(request.is_secure)
 

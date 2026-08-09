@@ -19,14 +19,14 @@ Disposition SSOT: [LIVE_DISPOSITION.md](../api/LIVE_DISPOSITION.md) ·
 - [x] Packet refine: locked dual-path Verified criteria; XOR disposition contract;
   distinct gate commands.
 - [x] Gate checker recognizes `0.24` evidence manifest against the living train:
-  `python scripts/check_release_gate.py 0.23.0 --evidence-manifest docs/acceptance/release-gate-0.24.toml --allow-planned`
-  (or `python scripts/verify_pkg_24.py --allow-planned`).
+  `python scripts/check_release_gate.py 0.24.0 --evidence-manifest docs/acceptance/release-gate-0.24.toml`
+  (or `python scripts/verify_pkg_24.py`).
 - [x] Disposition + waive ledger templates + checkers:
-  `python scripts/check_live_disposition_024.py --allow-undecided`,
-  `python scripts/check_browser_024.py --allow-undecided`,
-  `python scripts/check_perf_024.py --allow-undecided`,
+  `python scripts/check_live_disposition_024.py`,
+  `python scripts/check_browser_024.py`,
+  `python scripts/check_perf_024.py`,
   `python scripts/check_docs_024.py`,
-  `python scripts/verify_pkg_24.py --allow-planned`.
+  `python scripts/verify_pkg_24.py`.
 - [x] `DECIDE-024` disposition written (`polling_only`) and mirrored in
   What’s ready / STABILITY / LIVE_DISPOSITION.
 - [x] `BROWSER-024` / `PERF-024` / `DOCS-024` Verified for `polling_only`

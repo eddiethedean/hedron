@@ -43,10 +43,12 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
 
 - [x] Opt-in navigation preload with `HX-Preloaded` and private-cache / cancel policy fields.
   *(`PRELOAD-10-001`)*
-- [ ] Chromium/Firefox/WebKit full live matrix (reconnect/CSP/proxy/offline) — **Deferred**
-  *(`BROWSER-10-001` → 0.10.x)*
-- [ ] Load/proxy backpressure beyond in-memory budgets — **Deferred** *(`PERF-10-001` → 0.10.x)*
-- [ ] Explorer live traces — **Deferred** *(`EXPLORER-10-001` → 0.10.x)*
+- [ ] Chromium/Firefox/WebKit full live matrix (reconnect/CSP/proxy/offline) — **Deferred at
+  0.10 cut**; **Superseded** in **0.24** under `polling_only` / `BROWSER-024`
+  *(`BROWSER-10-001`)*
+- [ ] Load/proxy backpressure beyond in-memory budgets — **Deferred at 0.10 cut**;
+  **Superseded** in **0.24** under `polling_only` / `PERF-024` *(`PERF-10-001`)*
+- [ ] Explorer live traces — **Deferred** *(`EXPLORER-10-001` → `0.10.x`; not re-homed)*
 - [x] First-party live example app (poll + stream + SSE + Job SSE + WS + preload) — *(`EXAMPLES-10-001`)*
 - [x] Full regression suite. *(`REGRESS-10-001`)*
 - [x] Packaging rehearsal. *(`PKG-10-001`)*
@@ -55,5 +57,6 @@ Evidence is indexed by [`release-gate-0.10.toml`](release-gate-0.10.toml).
 
 **Exit met / published** as coordinated `0.10.x` (current `0.10.1`; initial cut `v0.10.0`). Live/preload behavior is not a hidden
 correctness dependency; polling and ordinary navigation remain valid. Every release-gate row is
-`Verified` or owned `Deferred`. Deferred browser/load/Explorer rows remain owned for
-`0.10.x` follow-up; they do not reopen the 0.10 train.
+`Verified` or owned `Deferred`. `EXPLORER-10-001` remains Deferred on `0.10.x`.
+`BROWSER-10-001` / `PERF-10-001` were later **Superseded** in **0.24** (`polling_only`);
+they do not reopen the 0.10 train.

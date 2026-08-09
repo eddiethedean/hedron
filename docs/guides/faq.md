@@ -224,9 +224,10 @@ version truth; regenerate evidence from the tag if assets are missing.
 ## Supported vs Deferred (PERF / live browser)
 
 **Supported** means the capability is claimed on that host for the current train.
-**Deferred** rows (for example some load/proxy backpressure or live-browser evidence) mean
-you should not treat them as proven — prefer **polling** for jobs when those rows matter
-for your risk profile. See [What’s ready](whats-ready.md) and [Performance](performance.md).
+Prior live-ops Deferred rows (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) are
+**Superseded** under 0.24 **`polling_only`** — prefer **polling** for jobs; live helpers
+remain **experimental**, not Supported. See [What’s ready](whats-ready.md),
+[LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md), and [Performance](performance.md).
 
 ## How do I contribute code?
 

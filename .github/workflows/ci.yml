@@ -150,7 +150,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: PKG-020 packaging rehearsal
+    name: PKG-024 packaging rehearsal
     needs: [evidence]
     runs-on: ubuntu-latest
     timeout-minutes: 20

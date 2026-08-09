@@ -3,7 +3,7 @@
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
 checklist in [Production readiness](production-readiness.md).
 
-**Living published train:** pin `hedron>=0.24.0,<0.25`. Capability maturity SSOT:
+**Living published train:** pin `hedron>=0.24.0,<0.25`. Capability maturity snapshot:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 (maintainer corpus on GitHub).
@@ -28,6 +28,8 @@ Raise production-level quality as **trust in the Supported surface**:
   production story; live helpers remain experimental
   ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md))
 - Harden a reference production archetype and quarantine Alpha/landmine extras
+  ([PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) — packet refine complete;
+  archetype not Supported until `ARCHETYPE-025` Verified)
 
 Explicitly **not** the goal: calendar `1.0`, commercial SLA, WCAG/VPAT product claims, or
 promoting every Alpha extra.
@@ -40,7 +42,7 @@ promoting every Alpha extra.
 | P0 | Ship **0.22** CSRF / SecurityPolicy composition | **Published** (`v0.22.0`) |
 | P1 | Expand `stable` API tier (**0.23**) | **Published** (`v0.23.0`; D-053) — locked allowlist in ROADMAP §0.23 / [STABLE_FACADE](../api/STABLE_FACADE.md) |
 | P1 | Live-transport disposition (**0.24**) — `polling_only` | **Published** (`v0.24.0`; D-053) — [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md) |
-| P2 | Production archetype + load budgets + extras quarantine (**0.25**) | Planned (D-053) |
+| P2 | Production archetype + load budgets + extras quarantine (**0.25**) | Planned — **packet refine complete** (D-053); [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) |
 | P3 | External security review + SBOM/evidence on every train tag | Process |
 | P3 | Optional written `1.0` DoD **without a date** | Documented in D-053; no phase scheduled |
 

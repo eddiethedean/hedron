@@ -44,8 +44,8 @@ when evaluating a new install. Maturity Supported vs Experimental claims:
 !!! tip "Historical sections"
 
     Phase 0.7–0.10 baselines below describe what each phase **introduced**. They are not
-    the current maturity SSOT. Live transports introduced in 0.10 are **experimental**
-    on the 0.23 train.
+    the current maturity snapshot. Live transports introduced in 0.10 are **experimental**
+    on the 0.24 train (Accepted disposition `polling_only`).
 
 ## Dependency pin conflicts
 
@@ -105,7 +105,7 @@ dependency floors above.
 
 ## Phase 0.10 compatibility baseline (historical)
 
-!!! warning "Historical — not current maturity SSOT"
+!!! warning "Historical — not current maturity snapshot"
 
     Phase 0.10 **introduced** official SSE, focused streaming, page/session WebSocket,
     Dialog/Chat, media chunk contracts, and navigation preload APIs. As of the **0.13**

@@ -41,12 +41,15 @@ optional Celery/RQ `JobBackend` bridges, and capability-labeled Flask/Django liv
 - [x] Celery/RQ `JobBackend` bridges. *(`JOB-011`)*
 - [x] Flask/Django live helpers with honest capability labels; polling remains Supported.
   *(`LIVE-011`)*
-- [ ] Full multi-engine adapter live browser matrix — **Deferred** *(`LIVE-011-BROWSER` → 0.11.x)*
+- [ ] Full multi-engine adapter live browser matrix — **Deferred at 0.11 cut**;
+  **Superseded** in **0.24** under `polling_only` / `BROWSER-024`
+  *(`LIVE-011-BROWSER`)*
 
 ## Exit
 
 - [x] Full regression suite. *(`REGRESS-011`)*
 - [x] Packaging rehearsal. *(`PKG-011`)*
 
-**Exit met / published** as coordinated `0.11.0` (`v0.11.0`). Owned Deferred:
-`LIVE-011-BROWSER` → `0.11.x`.
+**Exit met / published** as coordinated `0.11.0` (`v0.11.0`).
+`LIVE-011-BROWSER` was later **Superseded** in **0.24** (`polling_only`); it does not
+reopen the 0.11 train.

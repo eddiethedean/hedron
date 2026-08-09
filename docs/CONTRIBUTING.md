@@ -116,8 +116,8 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 | `test` | `test` — `pytest` on Python 3.11–3.14 | **Yes** (every PR) |
 | `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, relative doc links, `mkdocs build --strict` | **Yes** (every PR) |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | **Yes** (every PR; Chromium) |
-| `evidence` | `evidence` — Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_23.py` | **Yes** (every PR / push); also on release |
-| `release` (commit CI) | `packaging` — Packaging rehearsal (`verify_pkg_23`) | After `evidence` succeeds |
+| `evidence` | `evidence` — Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_24.py` | **Yes** (every PR / push); also on release |
+| `release` (commit CI) | `packaging` — Packaging rehearsal (`verify_pkg_24`) | After `evidence` succeeds |
 
 Release workflow (`release.yml`) runs the same `test` / `quality` / `browser` / `evidence`
 suites before `publish` (tag pushes only).

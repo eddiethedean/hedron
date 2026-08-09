@@ -6,6 +6,8 @@
 
 - Coordinated Beta train bump with `hedron` 0.24.0.
 - Live-transport disposition `polling_only` (D-053): polling Supported; live helpers remain experimental.
+- `sse_response` / `stream_text` moved off the package root to `hedron_django.experimental`
+  (Flask parity). Prefer `poll_status_response` in production.
 
 ## [0.23.0] — 2026-08-08
 

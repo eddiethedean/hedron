@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-# Surfaces that must remain experimental until Deferred ops gates close.
+# Surfaces that must remain experimental under Accepted 0.24 ``polling_only``.
 EXPERIMENTAL_LIVE_SURFACES: frozenset[str] = frozenset(
     {
         "SseResponse",

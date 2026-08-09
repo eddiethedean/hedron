@@ -11,9 +11,9 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 | Published | **v0.24.0** (`hedron` / Beta packages `0.24.0`) |
 | Pin | `hedron>=0.24.0,<0.25` |
 | Gate checker | `python scripts/check_release_gate.py 0.24.0` |
-| Packet verify | `python scripts/verify_pkg_23.py` |
+| Packet verify | `python scripts/verify_pkg_24.py` |
 
-Adopter-facing notes: [What’s new in 0.23](whats-new-0.23.md) ·
+Adopter-facing notes: [What’s new in 0.24](whats-new-0.24.md) ·
 [Release notes](release-notes.md) · [Upgrade](upgrade.md) ·
 [What’s ready](whats-ready.md).
 

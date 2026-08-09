@@ -23,7 +23,11 @@ def sse_response(
     *,
     status: int = 200,
 ) -> StreamingHttpResponse:
-    """Return a text/event-stream StreamingHttpResponse (ASGI preferred)."""
+    """Return a text/event-stream StreamingHttpResponse (ASGI preferred).
+
+    **Experimental** — prefer :func:`poll_status_response` in production. Import
+    from ``hedron_django.experimental`` rather than the package root.
+    """
 
     def generate() -> Iterator[bytes]:
         for item in events:
@@ -46,6 +50,11 @@ def stream_text(
     status: int = 200,
     content_type: str = "text/plain",
 ) -> StreamingHttpResponse:
+    """Stream plain text chunks (experimental).
+
+    Prefer polling in production. Import from ``hedron_django.experimental``.
+    """
+
     def generate() -> Iterator[bytes]:
         for chunk in chunks:
             yield chunk.encode("utf-8")

@@ -7,6 +7,13 @@
 - Coordinated Beta train bump with `hedron` 0.24.0.
 - Live-transport disposition `polling_only` (D-053): polling Supported; live helpers remain experimental.
 
+### Security
+
+- `security="strict"` forces Secure CSRF cookies (FastAPI STRICT parity) without requiring
+  `csrf_cookie_secure=True`.
+- CSRF `Secure` honors `X-Forwarded-Proto: https` only from `HEDRON_TRUSTED_PROXIES` /
+  Flask `HEDRON_TRUSTED_PROXIES` config / extension `trusted_peers`.
+
 ## [0.23.0] — 2026-08-08
 
 ### Changed

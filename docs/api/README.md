@@ -1,6 +1,6 @@
 # Public API
 
-Hand-maintained **contracts** for shipped surfaces on the **0.23** train, plus
+Hand-maintained **contracts** for shipped surfaces on the **0.24** train, plus
 [Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. This is **not** a complete
 generated reference of every `hedron.__all__` name — use the [coverage map](COVERAGE.md)
 and prefer Autodoc / source when an outline page lacks an Errors section.
@@ -60,7 +60,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 
 These surfaces first shipped in the 0.19 phase and remain on the living **0.24.0**
 train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
-phases through 0.23).
+phases through 0.24).
 
 ### Application
 
@@ -99,7 +99,7 @@ phases through 0.23).
 - [Security types](SECURITY_TYPES.md)
 - [Auth](AUTH.md)
 - [Explorer](EXPLORER.md)
-- [Accessibility (`hedron_core.a11y`)](A11Y.md) — 0.19 train (published as v0.19.0; living train 0.23 Published)
+- [Accessibility (`hedron_core.a11y`)](A11Y.md) — 0.19 train (published as v0.19.0; living train 0.24 Published)
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
 - [API diagnostics](DIAGNOSTICS.md)
@@ -113,7 +113,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.23)
+- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.24)
 - [Security types](SECURITY_TYPES.md) — `Secret` / `TrustedHtml` / `SafeUrl` / `SecurityPolicy`
 - [CSRF composition (0.22)](CSRF_COMPOSITION.md) — strategies, header merge, `CsrfField`
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django

@@ -26,9 +26,23 @@ Human AT **sessions** (`SR-021` / `PARTICIPANT-021`) remain **Planned** — not 
 [RELEASE_0_23.md](acceptance/RELEASE_0_23.md).
 
 Production-quality maturity program (**D-053** / RFC-0056): next packet
-**0.25** (archetype) —
+**0.25** (archetype) — **packet refine complete**;
+[PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md) ·
 [production-quality guide](guides/production-quality.md);
-`python scripts/verify_pkg_25.py --allow-planned` when refined.
+`python scripts/verify_pkg_25.py --allow-planned`.
+
+### Supply chain attach (`SUPPLY-025`)
+
+Train tags **require SBOM and evidence-bundle attach** on every train tag (`SUPPLY-025`).
+Regenerate with:
+
+```bash
+uv run python scripts/build_evidence_bundle.py
+uv run python scripts/generate_sbom.py
+```
+
+Attach the resulting artifacts to the GitHub Release for the train tag. Instructions for
+the Evidence pack remain in [acceptance/EVIDENCE.md](acceptance/EVIDENCE.md).
 
 Do not re-run tag steps for a published version.
 

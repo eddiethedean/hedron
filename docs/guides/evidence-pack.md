@@ -10,7 +10,7 @@ these artifacts at cut time.
 | SBOM | GitHub Release assets for the train tag (when attached), or regenerate | [`scripts/generate_sbom.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/generate_sbom.py) |
 | License inventory | GitHub Release assets (when attached), or regenerate | [`scripts/license_inventory.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/license_inventory.py) |
 | Evidence bundle | GitHub Release / `dist/evidence-bundle` after `build_evidence_bundle.py` | [`scripts/build_evidence_bundle.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/build_evidence_bundle.py) |
-| Package verify (0.24) | CI / release checklist | [`scripts/verify_pkg_23.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/verify_pkg_23.py) |
+| Package verify (0.24) | CI / release checklist | [`scripts/verify_pkg_24.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/verify_pkg_24.py) |
 
 **PyPI is authoritative for published package versions.** Last published train is
 `hedron==0.24.0` (`v0.24.0`). Confirm on [PyPI](https://pypi.org/project/hedron/).

@@ -66,13 +66,16 @@ Full matrix: [What’s ready](whats-ready.md).
 ## What not to depend on yet
 
 - Full multi-engine live browser matrix and load/proxy backpressure proof for live transports
-  (disposition owned by **0.24** / D-053)
+  (0.24 Accepted **`polling_only`** — those ops IDs are **Superseded**; live helpers stay
+  experimental — D-053)
 - Specialty extras (CodeEditor host stub, TerminalView, joystick, device bridges) as full
-  product UI — Experimental / stub only (quarantine path **0.25**)
+  product UI — Experimental / stub only (quarantine XOR path **0.25**, packet refine
+  complete — [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md))
 - Human screen-reader / compensated AT evaluation (owned by **0.21**, D-052: protocol Verified;
   sessions Planned — not Supported)
 - Broader compatibility-protected `stable` surface beyond the 0.23 CRUD/admin facade
-  ([STABLE_FACADE](../api/STABLE_FACADE.md) is Published; live transports remain **0.24**)
+  ([STABLE_FACADE](../api/STABLE_FACADE.md) is Published; live transports remain experimental
+  under 0.24 `polling_only`)
 
 ## When Hedron is a poor fit
 
