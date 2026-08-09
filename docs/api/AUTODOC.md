@@ -6,6 +6,11 @@ every name in `hedron.__all__` — prefer hand-maintained contract pages for nar
 errors, and adopter guidance; use Autodoc to verify parameter lists against installed
 sources.
 
+**Coverage (honest):** Autodoc covers an expanded golden-path + CSRF subset (on the order
+of dozens of symbols). The root `hedron` export set is much larger (~230 names in
+`__all__`). Map of exports → pages: [Coverage map](COVERAGE.md). Live SSE / streaming /
+WebSocket helpers are **not** in `__all__` — import from `hedron.experimental`.
+
 **Page template for hand contracts:** Example → Signature/members → Parameters →
 Returns → Errors → See also ([Field](FIELD.md) is the gold standard).
 

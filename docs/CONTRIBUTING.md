@@ -2,6 +2,10 @@
 
 ## First contribution
 
+**New here?** Start with the thin on-ramp:
+[Contributor day-one](guides/contributor-day-one.md) (docs PR in ~15 minutes, or a
+small bug fix). The rest of this page is the full contributor guide.
+
 **Prerequisites:** CPython **3.11–3.14** and [uv](https://docs.astral.sh/uv/).
 
 | OS | Notes |

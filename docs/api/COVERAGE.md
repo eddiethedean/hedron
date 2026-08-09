@@ -23,7 +23,7 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `ModelDemo`, `InferenceInterface`, `ActionRegistry`, `RegisteredAction` | [INFERENCE.md](INFERENCE.md), [model demos](../guides/model-demos.md), Autodoc |
 | `ExampleSet`, `PredictionFeedback`, `InferencePolicy`, `InferenceWorkflow` | [INFERENCE.md](INFERENCE.md), Autodoc |
 | `InteractionRecorder` (`hedron`) | [INFERENCE.md](INFERENCE.md) |
-| `DashboardBinding`, `InteractionGraph`, `TriggerContext` | [dashboards](../guides/dashboards.md), Autodoc |
+| `DashboardBinding`, `InteractionGraph`, `TriggerContext` | Import from **`hedron_core`** (not root `hedron.__all__`) — [dashboards](../guides/dashboards.md), Autodoc |
 | `hedron_gradio.GradioClientAdapter` | [Gradio migration](../guides/gradio-migration.md) |
 
 ## Responses and live transport
@@ -32,6 +32,16 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 |---|---|
 | `HTML`, `ComponentResponse`, `PageResponse`, `FragmentResponse`, `FileComponentResponse` | [RESPONSES.md](RESPONSES.md) |
 | `hedron_response`, `merge_htmx_headers` | [RESPONSES.md](RESPONSES.md) |
+
+!!! warning "Live helpers are experimental — not in `hedron.__all__`"
+
+    Import SSE / streaming / WebSocket / preload helpers from **`hedron.experimental`**
+    (a root `hedron.*` compat shim exists via `__getattr__`). Prefer
+    [polling](../guides/live-interaction.md) in production. See
+    [LIVE_DISPOSITION](LIVE_DISPOSITION.md).
+
+| Symbol (via `hedron.experimental`) | Primary docs |
+|---|---|
 | `SseResponse`, `sse_response`, `job_status_sse_response`, `extension_script_tags` | [SSE.md](SSE.md), Autodoc |
 | `StreamingComponentResponse`, `stream_tokens`, `stream_document`, `stream_chunked_list` | [STREAMING.md](STREAMING.md) |
 | `accept_page_session_channel`, `send_region_update`, `origin_allowed`, `ALLOW_MISSING_ORIGIN` | [WEBSOCKET_CHANNEL.md](WEBSOCKET_CHANNEL.md) |

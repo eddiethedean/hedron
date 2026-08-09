@@ -1,12 +1,19 @@
 # Deployment
 
+Adopter ship checklist (canonical): [Ship to production](ship-to-production.md).
+This page is the **deep dive** for environment variables, Docker/proxy sketches, and
+host parity.
+
 ## Production checklist (FastAPI flagship)
+
+Same items as [Ship to production](ship-to-production.md) — summarized:
 
 1. Set a strong `session_secret` (never the development default). Prefer `security="strict"` when CSP without inline styles is acceptable.
 2. Run `hedron build` and deploy the build directory with your app (**before** enabling production mode).
 3. Set `HEDRON_ENV=production` or `Hedron(production=True)`.
 4. Keep `explorer="off"` (or `secured` with real auth). Development Explorer is disabled in production.
 5. Serve behind HTTPS so CSRF cookies can be `Secure`.
+6. Multi-worker: sticky sessions or shared session store; shared `JobBackend`; prefer polling — [HA notes](ship-to-production.md#high-availability-multi-replica).
 
 ## Flask / Django parity
 
@@ -16,8 +23,18 @@ Adapter hosts follow the same secrets, HTTPS, and CSRF hygiene. Differences:
 |---|---|---|
 | App factory | `HedronFlask` / `init_app` or `hedron new --flask` | AppConfig + views / `hedron new --django` |
 | CSRF | Hedron cookie + validate on unsafe `respond` / routes | Django CSRF middleware + portable `X-CSRF-Token` |
+| Static assets | Mount / serve Hedron static the scaffold configures | Same — keep `/hedron-static/` reachable behind the proxy |
 | Production build gates | Use FastAPI flagship patterns when serving Hedron HTML from FastAPI; Flask/Django apps still need HTTPS + secrets | Same — Django `DEBUG=False`, `SECRET_KEY`, HTTPS |
 | Live updates | Prefer **polling** (SSE/WS helpers are FastAPI-experimental only) | Prefer **polling** |
+| Multi-worker | Sticky sessions or shared session store; shared Redis job backend when using jobs | Same |
+
+### Flask / Django production cookbook (short)
+
+1. Replace scaffold secrets (`HEDRON_SESSION_SECRET` / Django `SECRET_KEY` / Flask `secret_key`).
+2. Terminate TLS at the proxy; forward the app path and static mounts unchanged.
+3. Keep CSRF enabled; seed tokens on GET; send `X-CSRF-Token` or form fields on POST.
+4. Prefer `Poll` + job status HTML over experimental FastAPI-only SSE helpers.
+5. Smoke Hello + Refresh (or your primary fragment) and one CSRF POST behind the real proxy.
 
 Quickstarts: [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) ·
 [Adapters API](../api/ADAPTERS.md).

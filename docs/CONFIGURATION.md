@@ -57,10 +57,11 @@ strict_csp = true
 reject_inline_style = true
 ```
 
-## HDJ runtime configuration (phase 0.9)
+## HDJ runtime configuration
 
-Format v1 is configured directly on `HedronJinja(...)`. Phase 0.9 does not consume a
-`[tool.hedron.jinja]` table, so project-file keys cannot appear to work while being ignored.
+Format v1 is configured directly on `HedronJinja(...)`. Hedron does not consume a
+`[tool.hedron.jinja]` table for these runtime knobs, so project-file keys cannot appear to
+work while being ignored.
 
 | Key | Type | Default | Description |
 |---|---|---:|---|
@@ -72,14 +73,13 @@ Format v1 is configured directly on `HedronJinja(...)`. Phase 0.9 does not consu
 | `max_metadata_items` | `int` | `10_000` | Maximum accumulated metadata entries |
 | `url_builder` / `csrf_builder` | callback or `None` | `None` | Optional application-owned portable URL and CSRF bridges |
 
-Phase 0.10 owns version-aware HTMX selector/attribute options. Phase 0.11 owns application roots,
-finite dynamic/foreign manifests, native adapter context, SecurityPolicy/CSP reconciliation, and
-the real `[tool.hedron.jinja]`/build/Explorer wiring. Phase 0.13 owns async operation budgets; phase
-0.14 owns exact macro/loop budgets and broader analyzer/provider options.
+HTMX selector/attribute options, application roots, SecurityPolicy/CSP reconciliation,
+async/macro/loop budgets, and richer analyzer options are documented with the HDJ /
+Jinja surfaces — see [HDJ API](api/JINJA.md) and [COMPATIBILITY](COMPATIBILITY.md).
 
 Runtime arguments may tighten these limits. A production override may not silently weaken build
 policy. Format-v1 inline/eval/remote browser capabilities are checked against
-`allowed_capabilities`; full SecurityPolicy and asset-policy reconciliation is phase 0.11. Jinja loaders, bytecode caches,
+`allowed_capabilities`. Jinja loaders, bytecode caches,
 extensions, filters, tests, globals, and i18n remain Python environment configuration, not
 serialized project objects.
 

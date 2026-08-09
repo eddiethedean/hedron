@@ -16,14 +16,29 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 
+### Installing Python 3.11+
+
+If `python3 --version` is missing or older than 3.11:
+
+| Platform | Suggestion |
+|---|---|
+| macOS | [python.org](https://www.python.org/downloads/) installer, Homebrew `brew install python@3.12`, or [uv python install 3.12](https://docs.astral.sh/uv/guides/install-python/) |
+| Linux | Distro packages (`python3.12`) or `uv python install 3.12` |
+| Windows | [python.org](https://www.python.org/downloads/) or `py -3.12`; enable “Add python.exe to PATH” |
+
+After installing, reopen the terminal. Prefer `python3 -m venv .venv` (or `uv venv`) so
+system Python is never mixed with the app env. Multiple Pythons: always call the same
+interpreter for `pip` / `uv` / `uvicorn` (`which python3`, `py -0p` on Windows).
+
 !!! note "Corporate proxy / air-gapped installs"
 
     Point `pip` / `uv` at your internal index (`PIP_INDEX_URL`, `UV_INDEX_URL`, or
     `--index-url`). Mirror **PyPI** wheels for `hedron`, `hedron-core`, and matching
     extras onto that index; pin `hedron>=0.24.0,<0.25`. Offline: download wheels on a
     connected host (`pip download "hedron>=0.24.0,<0.25"`) and `pip install --no-index
-    --find-links=...`. Codespaces still needs a GitHub account and billed minutes — it
-    is not an offline playground.
+    --find-links=...`. TLS / corporate MITM: install your org’s CA into the env
+    (`REQUESTS_CA_BUNDLE` / `SSL_CERT_FILE`, or `pip`/`uv` trust-store docs). Codespaces
+    still needs a GitHub account and billed minutes — it is not an offline playground.
 
 === "Install uv"
 
@@ -55,7 +70,7 @@ After following [Build your first app](quickstart.md):
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.24.0`** (or a newer `0.23.x` patch) on this train. Last published
+Expect **`0.24.0`** or a newer **`0.24.x`** patch on this train. Last published
 PyPI/git is **`v0.24.0`**. Pin with `hedron>=0.24.0,<0.25` for
 production.
 

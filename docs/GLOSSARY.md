@@ -79,3 +79,16 @@ Most public symbols remain `beta` on `0.x`.
 
 Canonical snapshot: [What’s ready today](guides/whats-ready.md) · cheat-sheet:
 [How to read](getting-started/how-to-read.md).
+
+## Maintainer jargon (rare on adopter pages)
+
+**Disposition** — Locked choice for a release packet (for example live-transport
+`polling_only`). Adopters can ignore the word; read [What’s ready](guides/whats-ready.md).
+
+**Gate ID** — Maintainer evidence label such as `DECIDE-024` or `ARCHETYPE-025` in
+STATUS / acceptance corpora (GitHub). Not required to use Hedron.
+
+**Packet refine** — Maintainer step that freezes Verified criteria before a cut.
+
+**Waive ledger** — Recorded exception for a browser/perf gate with rationale (acceptance
+TOMLs on GitHub).

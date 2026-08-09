@@ -102,6 +102,21 @@ CSRF applies when any declared method is unsafe.
 returns before FastAPI serializes them, and issues CSRF cookies once per safe GET when
 CSRF is enabled.
 
+## Parameters
+
+Decorator kwargs match FastAPI route options plus Hedron allowlists. See the parameter
+table on [Hedron](HEDRON.md#methods) (`path`, `methods` / `method`, `name`,
+`dependencies`, `tags`, `fragment_regions`, `include_in_schema`, …).
+
+## Returns
+
+| API | Returns |
+|---|---|
+| `@router.page` / `@router.component` / `@router.action` | The decorated callable (route registered) |
+| Handler body | `Page`, component tree, `InteractionResult`, model JSON, or explicit `Response` |
+| `include_component(descriptor, path=...)` | Registered routes for the addressable descriptor |
+| Rendered HTMX/HTML | Hedron HTML response classes unless an explicit `Response` is returned |
+
 ## Errors
 
 | Situation | Behavior |
@@ -113,3 +128,8 @@ CSRF is enabled.
 
 Plain FastAPI apps should call `mount_hedron_static(app)` so PAGE responses that inject
 `/hedron-static/htmx.min.js` resolve. See [Plain FastAPI](../guides/plain-fastapi.md).
+
+## See also
+
+- [Hedron](HEDRON.md) · [Interaction](INTERACTION.md) · [Addressable](ADDRESSABLE.md)
+- Autodoc: [AUTODOC.md](AUTODOC.md)

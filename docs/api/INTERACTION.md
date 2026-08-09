@@ -91,6 +91,17 @@ to `#id` selectors.
 For lower-level use, `authorize_htmx_target(policy, target, is_htmx=...)` / 
 `resolve_fragment_region(policy, target)` raise `FragmentRegionError` when unauthorized.
 
+## Returns
+
+| Symbol | Returns |
+|---|---|
+| `FragmentRegion(...)` | Frozen region descriptor (`id`, `selector`, `description`) |
+| `InteractionPolicy(...)` | Frozen HTMX/cache/aria policy for a result |
+| `InteractionResult(...)` | Typed fragment result consumed by `HedronRoute` / adapters |
+| `htmx_request(request)` | `HtmxRequest` view over HTMX headers |
+| `swap` / `swap_oob` / `retarget` / `redirect_htmx` | `InteractionResult` (or redirect response for `redirect_htmx`) |
+| `authorize_htmx_target` / `resolve_fragment_region` | Authorization / region lookup; raises `FragmentRegionError` when denied |
+
 ## Day-1 ergonomics (`swap`, `retarget`, `redirect_htmx`, `RefreshButton`)
 
 These helpers are re-exported from `hedron` and are what the Quickstart / HTMX guides use.

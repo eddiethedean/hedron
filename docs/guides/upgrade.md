@@ -1,9 +1,19 @@
 # Upgrade
 
-**Hedron 0.24.0** — pin `hedron>=0.24.0,<0.25`. Accepts live-transport disposition
-**`polling_only`**: polling is the Supported production story; SSE/WebSocket/streaming/preload
-remain experimental. See [What's ready](whats-ready.md) and
-[What's new in 0.24](whats-new-0.24.md).
+**Hedron 0.24.0** — pin `hedron>=0.24.0,<0.25`. Polling is the Supported production story
+for live status; SSE/WebSocket/streaming/preload remain experimental. See
+[What's ready](whats-ready.md) and [What's new in 0.24](whats-new-0.24.md).
+
+## Breaking changes digest (0.23 → 0.24)
+
+| Change | Action |
+|---|---|
+| Live-transport production story locked to **polling** | Keep / adopt `Poll` + `job_status_response`; do not treat `hedron.experimental` SSE/WS as Supported |
+| Docs and What’s ready label live helpers **experimental** | Update internal runbooks that assumed Supported SSE |
+| No removals from the published Beginner/CRUD `stable` facade | Re-read [STABLE_FACADE](../api/STABLE_FACADE.md) only if you relied on undocumented imports |
+
+Full step list: [Upgrade from 0.23 → 0.24](#upgrade-from-023--024) below. Older trains:
+walk the sections in order, or jump to your starting minor.
 
 ## Upgrade from 0.23 → 0.24
 

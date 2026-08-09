@@ -64,7 +64,7 @@ mutate by constructing a new policy, not by assigning fields.
 | `csrf_header_name` | `str` | `"X-CSRF-Token"` | Preferred header for HTMX / fetch |
 | `csrf_form_field` | `str` | `"csrf_token"` | Hidden form field name |
 | `private_authenticated_cache` | `bool` | `True` | Adds `Cache-Control: private, no-store` when authenticated |
-| `security_headers` | `bool` | `True` | Emit XFO / CTO / Referrer-Policy / CSP when set |
+| `security_headers` | `SecurityHeadersPolicy` \| `bool` \| `Literal["app"]` | `True` | `True` emits profile headers (XFO / CTO / Referrer-Policy / CSP). Pass `SecurityHeadersPolicy(...)` to merge/override per header. `False` or `"app"` skips Hedron headers (host owns them). See [CSRF composition](CSRF_COMPOSITION.md). |
 | `content_security_policy` | `str` \| `None` | standard CSP string | `None` in development; stricter in `strict` |
 | `frame_options` | `str` | `"DENY"` | `X-Frame-Options` |
 | `content_type_options` | `str` | `"nosniff"` | `X-Content-Type-Options` |

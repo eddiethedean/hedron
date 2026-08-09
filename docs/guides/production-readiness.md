@@ -1,12 +1,12 @@
 # Production readiness
 
-Ops-oriented checklist for **Hedron 0.24.0** (Beta; Published; last published
-PyPI/git = `v0.24.0`). **Do not duplicate maturity claims here** — the authoritative
-snapshot is [What's ready today](whats-ready.md). Trust-program priorities (stable tier,
-live disposition, archetype): [Production-quality maturity](production-quality.md).
+Ops-oriented narrative for **Hedron 0.24.0**. **Canonical ship checklist:**
+[Ship to production](ship-to-production.md). **Do not duplicate maturity claims here** —
+the authoritative snapshot is [What's ready today](whats-ready.md). Trust-program
+priorities: [Production-quality maturity](production-quality.md).
 
 Also: [Compatibility](../COMPATIBILITY.md) · [Support](support.md) ·
-[Ship to production](ship-to-production.md) · [Deployment](deployment.md).
+[Deployment](deployment.md).
 
 ## Before you ship
 

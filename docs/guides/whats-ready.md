@@ -1,22 +1,25 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.24.0** (**Published** as `v0.24.0` (last published PyPI/git = `v0.24.0`)). Other evaluator pages link here —
-do not treat parallel summaries as a second source of truth. Maintainer evidence tables
-live in the repository
+**Canonical maturity snapshot for Hedron 0.24.0** (Published as `v0.24.0`). Other
+evaluator pages link here — do not treat parallel summaries as a second source of truth.
+Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-**Ship today** (pin `hedron>=0.24.0,<0.25`): typed pages,
-HTMX fragments, CSRF (`standard` / `strict`), pluggable CSRF strategies / header merge /
-`CsrfField` (0.22), Flask/Django adapters, polling job status,
-accessibility contracts / PE forms (0.19), production security floor (0.20). Human AT
-protocol engineering remains on the train; **sessions are Planned / not Supported**.
+**Ship today** (pin `hedron>=0.24.0,<0.25`): typed pages, HTMX fragments, CSRF profiles
+(`standard` / `strict`), pluggable CSRF strategies / header merge / `CsrfField`,
+Flask/Django adapters, polling job status, accessibility contracts / PE forms, and the
+production security floor. Prefer **polling** for live status. Charts, notebook, MCP, and
+Gradio are experimental / Alpha — expect churn. No commercial SLA and no scheduled 1.0.
+
+Human accessibility testing protocol engineering is on the train; **compensated screen-reader
+sessions are not Supported yet** — do not market human AT as done.
 
 !!! note "Supported ≠ API `stable`"
 
     **Supported** means the capability works on the current train when pinned. Most public
     symbols remain API compatibility level **`beta`**. The
     [minimal](../api/STABILITY.md#minimal-stable-tier) and
-    [expanded 0.23](../api/STABILITY.md#expanded-stable-tier-023) stable tables are
+    [expanded](../api/STABILITY.md#expanded-stable-tier-023) stable tables are
     compatibility-protected today (narrow Beginner/CRUD facade —
     [STABLE_FACADE](../api/STABLE_FACADE.md)) — not every Supported row on this page.
     Package maturity remains **Beta** on PyPI — no scheduled 1.0, no commercial SLA.
@@ -25,9 +28,8 @@ protocol engineering remains on the train; **sessions are Planned / not Supporte
 
 **Pin and expect churn:** charts, notebook, MCP, Gradio.
 
-No commercial SLA and no scheduled 1.0. Start building:
-[First app](../getting-started/quickstart.md). Evaluators: [Evaluate Hedron](evaluate.md).
-Maturity vocabulary:
+Start building: [First app](../getting-started/quickstart.md). Evaluators:
+[Evaluate Hedron](evaluate.md). Maturity vocabulary:
 [How to read](../getting-started/how-to-read.md).
 
 !!! tip "Can I ship an internal admin app?"
@@ -62,8 +64,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 
     SSE, focused streaming, WebSocket channels, and navigation preload are
     **experimental** (`hedron.experimental`). Prefer [polling](live-interaction.md) in
-    production — phase **0.24** Accepted disposition **`polling_only`**
-    ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md)).
+    production — see [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md).
     **This page is the only maturity source of truth** for Supported vs Experimental claims.
 
 ## Use today

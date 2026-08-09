@@ -65,17 +65,16 @@ Full matrix: [What’s ready](whats-ready.md).
 
 ## What not to depend on yet
 
-- Full multi-engine live browser matrix and load/proxy backpressure proof for live transports
-  (0.24 Accepted **`polling_only`** — those ops IDs are **Superseded**; live helpers stay
-  experimental — D-053)
+- Live SSE / WebSocket / streaming as a Supported production default — prefer
+  [polling](live-interaction.md); helpers stay under `hedron.experimental`
+  ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md))
 - Specialty extras (CodeEditor host stub, TerminalView, joystick, device bridges) as full
-  product UI — Experimental / stub only (quarantine XOR path **0.25**, packet refine
-  complete — [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md))
-- Human screen-reader / compensated AT evaluation (owned by **0.21**, D-052: protocol Verified;
-  sessions Planned — not Supported)
-- Broader compatibility-protected `stable` surface beyond the 0.23 CRUD/admin facade
-  ([STABLE_FACADE](../api/STABLE_FACADE.md) is Published; live transports remain experimental
-  under 0.24 `polling_only`)
+  product UI — Experimental / stub only (next-train quarantine path —
+  [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md))
+- Human screen-reader / compensated AT evaluation as Supported (protocol engineering is on
+  the train; sessions are not done yet)
+- Broader compatibility-protected `stable` surface beyond the published CRUD/admin facade
+  ([STABLE_FACADE](../api/STABLE_FACADE.md); live transports remain experimental)
 
 ## When Hedron is a poor fit
 

@@ -27,6 +27,10 @@ may still land on the `0.x` line under the [compatibility policy](../COMPATIBILI
 Pin versions in production, read [upgrade](upgrade.md) notes before bumping trains, and
 treat Alpha packages (`hedron-charts`, `hedron-sample-kit`) as more volatile.
 
+**Support window:** security fixes target the current published train (`0.24.x`). There is
+no multi-year LTS — see [SECURITY.md](../SECURITY.md). Community GitHub support only;
+[Ship to production](ship-to-production.md) for ops.
+
 ## Maintainer expectations
 
 Issues without a minimal reproduction, version string (`hedron.__version__`), and expected

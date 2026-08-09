@@ -27,6 +27,18 @@ queue, worker fleet, scheduler, result database, or retry service.
 
 Production recipe: [Celery / RQ + Redis](../guides/jobs-celery-rq.md).
 
+## Returns
+
+| Helper | Returns | Errors / notes |
+|---|---|---|
+| `enqueue_durable(...)` | `str` job id | Backend/auth failures raise or return host errors per backend |
+| `job_status_response(...)` | HTML response **202** + `Retry-After` + status fragment | Missing/unauthorized job → fail closed (typically **404** / **403**) |
+| `set_job_backend` / `get_job_backend` | `None` / current `JobBackend` | Process-local; set on every worker |
+| `schedule_post_response` | `None` | FastAPI `BackgroundTasks` only — not durable |
+| `JobBackend.submit` | `JobHandle` | See protocol table |
+| `JobBackend.get` | `JobStatus \| None` | `None` when missing or unauthorized |
+| `job_status_sse_response` | SSE response (**experimental**) | Prefer polling in production |
+
 ## `JobBackend` protocol
 
 Implementations must provide:

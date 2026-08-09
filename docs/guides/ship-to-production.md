@@ -1,10 +1,19 @@
 # Ship to production
 
-One-page adopter checklist for shipping a Hedron app. Capability maturity lives on
-[What’s ready](whats-ready.md). Detailed ops notes:
-[Deployment](deployment.md) · [Production readiness](production-readiness.md).
+**Canonical adopter checklist** for shipping a Hedron app on the living **0.24** train.
+Capability maturity lives on [What’s ready](whats-ready.md).
 
 Pin `hedron>=0.24.0,<0.25` (and matching adapters/extras) in your lockfile.
+
+Deep dives (do not treat as alternate checklists):
+
+| Topic | Page |
+|---|---|
+| Environment, Dockerfile, proxy sketches | [Deployment](deployment.md) |
+| Security defaults, CSRF, headers | [Security](security.md) |
+| Maintainer trust program / next cut | [Production-quality maturity](production-quality.md) |
+| Detailed ops narrative | [Production readiness](production-readiness.md) |
+| Planned 0.25 archetype packet | [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) |
 
 ## Checklist
 
@@ -21,22 +30,31 @@ Pin `hedron>=0.24.0,<0.25` (and matching adapters/extras) in your lockfile.
    `X-CSRF-Token` or form fields on unsafe methods.
 7. **Path prefix** — If the app is under a reverse-proxy subpath, set
    `HEDRON_ROOT_PATH` and/or ASGI `root_path` — [Mount API](../api/MOUNT.md).
-8. **Multi-worker** — In-memory sessions and job state do **not** span processes. Use sticky
-   sessions **or** an external session store; call `set_job_backend(...)` (and cache
-   backends) on every worker with the same Redis/Celery/RQ config. Prefer **polling** for
-   job status (SSE/WebSocket helpers are experimental).
+8. **Multi-worker / HA** — See [High availability](#high-availability-multi-replica) below.
 9. **Hosts** — Flask/Django: same secrets/HTTPS/CSRF hygiene; prefer polling for jobs —
-   [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).
+   [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) ·
+   [Deployment host parity](deployment.md#flask--django-parity).
 10. **Smoke** — Hit Hello + Refresh (or your primary fragment) and one CSRF form POST behind
     the real proxy.
 
-## Multi-worker sessions (short note)
+## High availability (multi-replica)
 
-Starlette/Flask cookie sessions are signed but **not** shared across processes unless you
-add a shared session backend (or stickiness). Hedron does not ship a first-party Redis
-session store — configure your host stack (or a session middleware backed by Redis) when
-you run more than one worker without sticky sessions. Durable **jobs** use
-`set_job_backend` ([Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md)).
+Hedron does **not** ship a first-party shared session store. When you run more than one
+worker or replica:
+
+- **Cookie sessions** — Signed cookies work across workers if every process shares the same
+  `session_secret`. Sticky sessions still help when you keep in-process state.
+- **Shared session backend** — Configure your host stack (Starlette/Flask/Django session
+  middleware backed by Redis, or equivalent) when stickiness is unavailable.
+- **Durable jobs** — Call `set_job_backend(...)` on **every** worker with the same
+  Redis/Celery/RQ config — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
+- **Live status UX** — Prefer **polling** (`Poll` + `job_status_response`). SSE/WebSocket
+  helpers are experimental and sensitive to proxy buffering.
+- **Reverse proxy** — Forward `/hedron-static/` and `/hedron-assets/` unchanged; set
+  `HEDRON_ROOT_PATH` for subpath mounts; disable response buffering for SSE only if you
+  intentionally use experimental live helpers.
+- **CSRF cookies** — Cookie `Path` follows the mount — keep proxy prefixes aligned with
+  [Mount](../api/MOUNT.md).
 
 ## CI smoke (adopter)
 

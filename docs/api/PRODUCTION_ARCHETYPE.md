@@ -4,19 +4,27 @@ status: draft
 
 # Production archetype and landmine quarantine (0.25)
 
-!!! note "Packet refine complete — cut still Planned"
+!!! warning "Planned for phase 0.25 — not the 0.24 ship guide"
 
-    Phase **0.25** packet refine has locked Verified criteria and distinct gate commands.
-    Status remains **Planned** until every 0.25-owned gate row is Verified. Do not market the
-    archetype as Supported until `ARCHETYPE-025` flips. Living published train remains
-    **0.24** — pin `hedron>=0.24.0,<0.25`.
+    This page describes the **next** production-quality cut (packet refine complete; gates
+    still **Planned**). Do **not** treat it as Supported until the cut verifies. Living
+    published train remains **0.24** — pin `hedron>=0.24.0,<0.25`.
 
-**Owning gates:** `ARCHETYPE-025`, `BUDGET-025`, `EXTRAS-025`, `CHARTS-025`, `SUPPLY-025`,
-`REGRESS-025`, `PKG-025`. Decision: **D-053** /
-[RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md).
-Machine twin (extras XOR):
-[`extras-quarantine-025.toml`](../acceptance/extras-quarantine-025.toml).
-Budgets: [PERFORMANCE_BUDGETS.md](../PERFORMANCE_BUDGETS.md) (§0.25 workloads).
+    **Ship today:** [Ship to production](../guides/ship-to-production.md) ·
+    [What’s ready](../guides/whats-ready.md).
+
+**Program context:** [Production-quality maturity](../guides/production-quality.md) ·
+[RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
+· maintainer decision D-053 (GitHub
+[DECISIONS](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md)).
+
+**Owning gates (maintainer evidence IDs):** `ARCHETYPE-025`, `BUDGET-025`, `EXTRAS-025`,
+`CHARTS-025`, `SUPPLY-025`, `REGRESS-025`, `PKG-025`.
+
+Machine twin (extras quarantine):
+[extras-quarantine-025.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/extras-quarantine-025.toml)
+(GitHub-only). Budgets:
+[PERFORMANCE_BUDGETS.md](../PERFORMANCE_BUDGETS.md) (§0.25 workloads).
 
 ## Canonical archetype (`ARCHETYPE-025`)
 
@@ -60,7 +68,7 @@ Evidence may be **CI** or an **immutable artifact**. Checker:
 ## Extras quarantine XOR (`EXTRAS-025`)
 
 Landmines in scope: **CodeEditor** host stub, **TerminalView**, **joystick** + **device**
-bridges. Cut chooses exactly one path:
+bridges. Cut chooses exactly one path for `hedron[extras]`:
 
 | Value | Cut meaning |
 |---|---|
@@ -68,8 +76,9 @@ bridges. Cut chooses exactly one path:
 | `quarantine` | Move landmines behind a clearly named experimental extra so `hedron[extras]` does not imply product UI |
 | `finish_supported` | Reach Supported with evidence for those surfaces |
 
-Do not half-verify both. Normative criteria: [ROADMAP §0.25](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
-Checker: `python scripts/check_extras_025.py`.
+Do not half-verify both. Normative criteria:
+[ROADMAP §0.25](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md)
+(GitHub-only). Checker: `python scripts/check_extras_025.py`.
 
 ## Charts graduation path (`CHARTS-025`)
 
@@ -79,7 +88,7 @@ DataTable bar.
 
 ### Graduation checklist (Plotly / Altair)
 
-Full graduation is **not** required for 0.25 cut. The checklist must remain visible:
+Full graduation is **not** required for the 0.25 cut. The checklist must remain visible:
 
 ```text
 pinned dependency versions
@@ -91,9 +100,11 @@ Checker: `python scripts/check_charts_025.py`.
 
 ## Supply process (`SUPPLY-025`)
 
-[RELEASE.md](../RELEASE.md) requires **SBOM** and **evidence-bundle** attach on train tags.
-Regenerate instructions remain in the Evidence pack (`scripts/build_evidence_bundle.py`,
-`scripts/generate_sbom.py`).
+The maintainer
+[RELEASE](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md)
+runbook requires **SBOM** and **evidence-bundle** attach on train tags.
+Regenerate instructions remain in the [Evidence pack](../guides/evidence-pack.md)
+(`scripts/build_evidence_bundle.py`, `scripts/generate_sbom.py`).
 
 Checker: `python scripts/check_supply_025.py`.
 
@@ -109,4 +120,5 @@ Checker: `python scripts/check_supply_025.py`.
 | `REGRESS-025` | `bash scripts/ci_checks.sh test --python 3.12` |
 | `PKG-025` | `python scripts/verify_pkg_25.py` |
 
-Evidence index: [`release-gate-0.25.toml`](../acceptance/release-gate-0.25.toml).
+Evidence index (GitHub-only):
+[release-gate-0.25.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.25.toml).

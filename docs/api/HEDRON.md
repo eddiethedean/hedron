@@ -87,6 +87,20 @@ Also see module helpers `mount_hedron_static(app)` and `mount_build_assets(app, 
 Choosing between `@action` and `@component(..., methods=["POST"])`:
 see [Mutations](../guides/mutations.md).
 
+## Returns
+
+| Method / helper | Returns | Notes |
+|---|---|---|
+| `@app.page` / `@app.component` / `@app.action` decorators | The decorated callable (registered on the app) | Handler return values are rendered by `HedronRoute` |
+| Page handler | `Page`, `InteractionResult`, model, or Starlette `Response` | PAGE HTML for navigation; FRAGMENT when `HX-Request` + authorized target |
+| Component / fragment handler | Component tree, `InteractionResult`, or `Response` | FRAGMENT mode by default |
+| Action handler | Component, `InteractionResult`, redirect helper, or `Response` | CSRF on unsafe methods when the profile enables it |
+| `app.region(...)` | `FragmentRegion` | Default selector `#{id}` |
+| `mount_hedron_static(app)` / `mount_build_assets(...)` | `None` | Mutates the ASGI app mounts |
+
+Rendered HTML responses use Hedron response classes (`PageResponse` / `FragmentResponse`)
+unless the handler returns an explicit Starlette/FastAPI `Response`.
+
 ## Contract
 
 - Uses `HedronRoute` / `HedronRouter` semantics for component returns.
@@ -119,3 +133,4 @@ secret under `strict`. Errors identify the responsible subsystem and source.
 
 - [Interaction](INTERACTION.md) · [Security types](SECURITY_TYPES.md) · [Adapters](ADAPTERS.md)
 - [Quickstart](../getting-started/quickstart.md)
+- Autodoc: [AUTODOC.md](AUTODOC.md)

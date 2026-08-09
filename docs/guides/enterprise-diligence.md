@@ -59,7 +59,20 @@ Hedron documentation and marketing **do not** claim:
   TerminalView / device bridges are Experimental)
 
 Trust-program priorities that close diligence caveats without inventing those claims:
-[Production-quality maturity](production-quality.md) (D-053).
+[Production-quality maturity](production-quality.md).
+
+## Compliance positioning (not certification)
+
+Hedron is a library, not a hosted service. For GDPR / SOC 2 / HIPAA-style programs:
+
+| Hedron provides | You own |
+|---|---|
+| Escaping defaults, CSRF profiles, SafeUrl / TrustedHtml | AuthN/AuthZ, retention, DPIAs, BAAs |
+| Secure-defaults docs + optional evidence pack / SBOM scripts | Lockfiles, deploy controls, access reviews |
+| Honest maturity labels (Beta, experimental live) | Choosing Supported surfaces and pins |
+
+Hedron is **not** SOC 2 / ISO / HIPAA certified. Slot it into *your* control framework as
+third-party open-source software with pinned versions and your own threat model review.
 
 ## Supply-chain evidence
 

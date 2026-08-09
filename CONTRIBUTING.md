@@ -2,6 +2,7 @@
 
 Hedron is a Python monorepo. Full contributor documentation lives in the docs site:
 
+- **Day-one (docs PR / small bug):** [docs/guides/contributor-day-one.md](docs/guides/contributor-day-one.md)
 - **Setup, checks, PRs:** [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
 - **Code of Conduct:** [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - **Status / freeze:** [docs/STATUS.md](docs/STATUS.md) (canonical; root `STATUS.md` is a mirror)

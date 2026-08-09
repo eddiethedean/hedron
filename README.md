@@ -85,9 +85,9 @@ for Supported vs Experimental. If <code>hedron</code> is not on your PATH, use
 | [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship |
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter |
-| [`hedron[data]`](https://pypi.org/project/hedron-data/) | DataTable / DataEditor |
-| [`hedron[jinja]`](https://pypi.org/project/hedron-jinja/) | Optional HDJ templates |
-| [`hedron[dev]`](https://pypi.org/project/hedron-explorer/) | Component Explorer (dev) |
+| [`hedron-data`](https://pypi.org/project/hedron-data/) | DataTable / DataEditor (also `pip install "hedron[data]>=0.24.0,<0.25"`) |
+| [`hedron-jinja`](https://pypi.org/project/hedron-jinja/) | Optional HDJ templates (also `hedron[jinja]`) |
+| [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Component Explorer (also `hedron[dev]`) |
 
 Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Optional extras
 (charts, conformance, extras, native accel, notebook, MCP, Gradio):

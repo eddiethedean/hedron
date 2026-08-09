@@ -22,6 +22,11 @@ via HTMX into the declared `#panel` region.
 The scaffold includes page + fragment regions and security headers middleware.
 Set `HEDRON_SESSION_SECRET` before production.
 
+!!! note "RefreshButton vs raw `hx-*`"
+
+    FastAPI scaffolds often use `RefreshButton`. Django getting-started samples may show
+    raw `hx-get` / `hx-target` attributes — both are valid across adapters.
+
 !!! tip "Try without local setup"
 
     Open the monorepo in [Codespaces / Dev Container](../examples/try-it.md), then
