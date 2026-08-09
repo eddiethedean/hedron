@@ -7,10 +7,11 @@ status: shipped
 !!! note "Shipped — phase 0.22"
 
     Pluggable CSRF strategies, composable security headers, and `CsrfField` /
-    `Form(hx=...)` are available on the **0.22** train. Living CSRF overview:
-    [Security types](SECURITY_TYPES.md) and [Security guide](../guides/security.md).
-    Acceptance: [RELEASE_0_22](../acceptance/RELEASE_0_22.md) ·
-    [release-gate-0.22.toml](../acceptance/release-gate-0.22.toml).
+    `Form(hx=...)` shipped in **0.22** and remain available on the **0.23** train.
+    Living CSRF overview: [Security types](SECURITY_TYPES.md) and
+    [Security guide](../guides/security.md). Acceptance (GitHub):
+    [RELEASE_0_22](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_22.md) ·
+    [release-gate-0.22.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.22.toml).
 
 Owning decision: **D-051**. Closed issues (shipped in 0.22):
 [#36](https://github.com/eddiethedean/hedron/issues/36),

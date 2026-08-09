@@ -27,7 +27,7 @@ scripts here when you add them.
 | `verify_pkg_23.py` | Phase **0.23** living-train packet + facade/tier checks (`check_release_gate.py 0.23.0`) |
 | `rehearse_release.py` | Clean install rehearsal before tagging |
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
-| `verify_pkg_22.py` / `verify_pkg_21.py` / `verify_pkg_20.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_22.py`**) |
+| `verify_pkg_22.py` / `verify_pkg_21.py` / `verify_pkg_20.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_23.py`**) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

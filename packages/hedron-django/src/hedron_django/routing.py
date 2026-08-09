@@ -48,10 +48,16 @@ def _convert(
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
 ) -> HttpResponse:
-    from hedron_django.csrf import seed_csrf_cookie
+    from hedron_django.csrf import DjangoCsrfError, seed_csrf_cookie, validate_csrf
 
-    if (request.method or "GET").upper() in {"GET", "HEAD"}:
+    method = (request.method or "GET").upper()
+    if method in {"GET", "HEAD"}:
         seed_csrf_cookie(request)
+    else:
+        try:
+            validate_csrf(request)
+        except DjangoCsrfError as exc:
+            return HttpResponse(str(exc).encode("utf-8"), status=403, content_type="text/plain")
     authenticated = bool(getattr(getattr(request, "user", None), "is_authenticated", False))
     if isinstance(value, InteractionResult):
         return interaction_response(

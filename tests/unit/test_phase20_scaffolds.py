@@ -43,9 +43,13 @@ def test_scaffold_django(tmp_path: Path) -> None:
     assert (dest / "project" / "settings.py").is_file()
     urls = (dest / "project" / "urls.py").read_text(encoding="utf-8")
     assert "fragment_regions" in urls
-    assert "HedronSecurityHeadersMiddleware" in (dest / "project" / "settings.py").read_text(
-        encoding="utf-8"
-    )
+    settings = (dest / "project" / "settings.py").read_text(encoding="utf-8")
+    assert "HedronSecurityHeadersMiddleware" in settings
+    assert "django.middleware.csrf.CsrfViewMiddleware" in settings
+    assert "django.contrib.sessions.middleware.SessionMiddleware" in settings
+    assert 'os.environ.get("DJANGO_DEBUG", "0")' in settings
+    assert "ALLOWED_HOSTS = [" in settings
+    assert '["*"]' not in settings
 
 
 def test_scaffold_fastapi_default(tmp_path: Path) -> None:

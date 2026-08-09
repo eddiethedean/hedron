@@ -843,10 +843,7 @@ def explorer_router() -> APIRouter:
         region_ok = True
         region_error = None
         if target and regions:
-            region_ok = any(
-                target == value.split("|", 1)[0] or target.lstrip("#") == rid
-                for rid, value in regions.items()
-            )
+            region_ok = any(target == value.split("|", 1)[0] for _rid, value in regions.items())
             if not region_ok:
                 region_error = f"HX-Target {target!r} is not an authorized fragment region"
         methods = tuple(route.methods or ("GET",))

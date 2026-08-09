@@ -12,7 +12,8 @@ status: shipped
     `hedron>=0.23.0,<0.24`.
 
 **Owning gates:** `FACADE-023` (`python scripts/check_stable_facade.py`),
-`STABLE-023`, `INVENTORY-023`. Decision: **D-053** / [RFC-0056](../rfcs/RFC-0056-PRODUCTION-QUALITY.md).
+`STABLE-023`, `INVENTORY-023`. Decision: **D-053** /
+[RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md).
 
 ## Rules
 

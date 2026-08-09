@@ -146,6 +146,9 @@ class InferencePolicy:
     _diagnostics: dict[str, InferenceDiagnostics] = field(default_factory=dict, init=False)
     _request_jobs: dict[str, str] = field(default_factory=dict, init=False)
     _request_groups: dict[str, str] = field(default_factory=dict, init=False)
+    _request_auth: dict[str, tuple[str | None, str | None]] = field(
+        default_factory=dict, init=False
+    )
     _fair_cursor: dict[str, int] = field(default_factory=lambda: defaultdict(int), init=False)
 
     def register_group(self, group: ConcurrencyGroup) -> None:
@@ -208,6 +211,7 @@ class InferencePolicy:
                 self._inflight[group] += 1
                 self._request_jobs[request_id] = handle.job_id
                 self._request_groups[request_id] = group
+                self._request_auth[request_id] = (auth_subject, tenant_id)
                 self._diagnostics[request_id] = InferenceDiagnostics(
                     request_id=request_id,
                     group=group,
@@ -240,6 +244,7 @@ class InferencePolicy:
                     ),
                 )
             self._queue.append(item)
+            self._request_auth[request_id] = (auth_subject, tenant_id)
             self._queue.sort(key=lambda q: (_PRIORITY_RANK[q.priority], q.enqueued_at))
             position = next(i for i, q in enumerate(self._queue) if q.request_id == request_id)
             eta = (position + 1) * self.default_eta_per_item
@@ -269,30 +274,59 @@ class InferencePolicy:
             was_queued = any(q.request_id == request_id for q in self._queue)
             job_id = self._request_jobs.get(request_id)
             group = self._request_groups.get(request_id)
-            self._cancel.add(request_id)
-            self._queue = [q for q in self._queue if q.request_id != request_id]
-            cancelled_backend = False
+            auth_subject, tenant_id = self._request_auth.get(request_id, (None, None))
+            for queued in self._queue:
+                if queued.request_id == request_id:
+                    auth_subject = queued.auth_subject
+                    tenant_id = queued.tenant_id
+                    break
+
+            def _mark_cancelled() -> None:
+                diag = self._diagnostics.get(request_id)
+                if diag is not None:
+                    self._diagnostics[request_id] = InferenceDiagnostics(
+                        request_id=diag.request_id,
+                        group=diag.group,
+                        queue_ms=diag.queue_ms,
+                        execute_ms=diag.execute_ms,
+                        batch_id=diag.batch_id,
+                        batch_size=diag.batch_size,
+                        cancelled=True,
+                        overload=diag.overload,
+                    )
+
+            if was_queued:
+                self._cancel.add(request_id)
+                self._queue = [q for q in self._queue if q.request_id != request_id]
+                self._request_auth.pop(request_id, None)
+                _mark_cancelled()
+                return True
+
             if job_id is not None:
                 job_backend = backend or get_job_backend()
-                cancelled_backend = bool(job_backend.request_cancel(job_id))
-                # Accepted work held a concurrency slot — free it on cancel.
+                cancelled_backend = bool(
+                    job_backend.request_cancel(
+                        job_id,
+                        auth_subject=auth_subject,
+                        tenant_id=tenant_id,
+                    )
+                )
+                if not cancelled_backend:
+                    # Do not free the concurrency slot or claim cancel while the
+                    # durable job remains running (scoped authz denial / race).
+                    return False
+                self._cancel.add(request_id)
                 if group is not None and request_id in self._request_groups:
                     self._inflight[group] = max(0, self._inflight[group] - 1)
                     self._request_groups.pop(request_id, None)
                 self._request_jobs.pop(request_id, None)
-            diag = self._diagnostics.get(request_id)
-            if diag is not None:
-                self._diagnostics[request_id] = InferenceDiagnostics(
-                    request_id=diag.request_id,
-                    group=diag.group,
-                    queue_ms=diag.queue_ms,
-                    execute_ms=diag.execute_ms,
-                    batch_id=diag.batch_id,
-                    batch_size=diag.batch_size,
-                    cancelled=True,
-                    overload=diag.overload,
-                )
-            return was_queued or cancelled_backend or known
+                self._request_auth.pop(request_id, None)
+                _mark_cancelled()
+                return True
+
+            self._cancel.add(request_id)
+            _mark_cancelled()
+            return known
 
     def is_cancelled(self, request_id: str) -> bool:
         with self._lock:
@@ -342,6 +376,7 @@ class InferencePolicy:
                     self._inflight[group_name] += 1
                     self._request_jobs[item.request_id] = handle.job_id
                     self._request_groups[item.request_id] = group_name
+                    self._request_auth[item.request_id] = (item.auth_subject, item.tenant_id)
                     queue_ms = (time.monotonic() - item.enqueued_at) * 1000.0
                     self._diagnostics[item.request_id] = InferenceDiagnostics(
                         request_id=item.request_id,

@@ -31,6 +31,10 @@ def test_normalize_and_cookie_path() -> None:
     assert normalize_mount_path("/app/") == "/app"
     assert cookie_path_for_mount("") == "/"
     assert cookie_path_for_mount("/app") == "/app/"
+    # Protocol-relative / absolute URL mounts must not authorize open redirects.
+    assert normalize_mount_path("//evil.example") == ""
+    assert normalize_mount_path("https://evil.example/app") == ""
+    assert prefix_local_path("/login", "//evil.example") == "/login"
 
 
 def test_prefix_local_path_once() -> None:

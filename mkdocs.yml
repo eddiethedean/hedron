@@ -79,7 +79,6 @@ exclude_docs: |
   foundations/01_VISION.md
   foundations/02_PHILOSOPHY.md
   foundations/03_DESIGN_PRINCIPLES.md
-  foundations/05_GLOSSARY.md
   foundations/README.md
   implementation/**
   /ROADMAP.md

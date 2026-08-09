@@ -112,7 +112,7 @@ def test_celery_enqueue_failure_marks_failed() -> None:
     assert status.state is JobState.FAILED
 
 
-def test_rq_unknown_type_and_cancel_via_public_api() -> None:
+def test_rq_unknown_type_and_cross_worker_cancel() -> None:
     queue = MagicMock()
     queue.connection = object()
     backend = RQJobBackend(queue, redis_client=_FakeRedis(), task_registry={})  # type: ignore[arg-type]
@@ -128,7 +128,14 @@ def test_rq_unknown_type_and_cancel_via_public_api() -> None:
         task_registry={"demo": _task},
     )
     handle = backend.submit("demo", {})
-    assert backend.request_cancel(handle.job_id) is True
+    # Simulate another worker: local RQ job map empty; fetch via shared connection.
+    backend._rq_jobs.clear()
+    fetched = MagicMock()
+    fake_job = MagicMock()
+    fake_job.fetch.return_value = fetched
+    with patch.dict("sys.modules", {"rq": MagicMock(), "rq.job": MagicMock(Job=fake_job)}):
+        assert backend.request_cancel(handle.job_id) is True
+    fetched.cancel.assert_called_once()
     status = backend.get(handle.job_id)
     assert status is not None
     assert status.cancel_requested is True
@@ -136,7 +143,7 @@ def test_rq_unknown_type_and_cancel_via_public_api() -> None:
 
 def test_select_htmx_auth_target_prefers_client_and_rejects_mismatch() -> None:
     assert select_htmx_auth_target(client_target="#main", region_id=None) == "#main"
-    assert select_htmx_auth_target(client_target=None, region_id="main") == "main"
+    assert select_htmx_auth_target(client_target=None, region_id="main") == "#main"
     assert select_htmx_auth_target(client_target="#main", region_id="main") == "#main"
     with pytest.raises(FragmentRegionError):
         select_htmx_auth_target(client_target="#evil", region_id="main")

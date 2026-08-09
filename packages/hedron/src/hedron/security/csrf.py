@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from typing import Any
 
 from fastapi import HTTPException, Request, status
@@ -36,18 +37,44 @@ def _forwarded_proto_https(request: Request) -> bool:
     return first == "https"
 
 
+def _trusted_proxy_peers(request: Request) -> set[str]:
+    """Peers allowed to supply ``X-Forwarded-*`` (same allowlist model as mount)."""
+    peers: set[str] = set()
+    raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
+    peers.update(part.strip() for part in raw_env.split(",") if part.strip())
+    scope = getattr(request, "scope", None)
+    app = scope.get("app") if isinstance(scope, dict) else None
+    state = getattr(app, "state", None) if app is not None else None
+    configured = getattr(state, "hedron_trusted_peers", None) if state is not None else None
+    if isinstance(configured, (list, tuple, set, frozenset)):
+        peers.update(str(item).strip() for item in configured if str(item).strip())
+    return peers
+
+
+def _forwarded_proto_https_trusted(request: Request) -> bool:
+    """Honor ``X-Forwarded-Proto: https`` only from allowlisted proxy peers."""
+    if not _forwarded_proto_https(request):
+        return False
+    peers = _trusted_proxy_peers(request)
+    if not peers:
+        return False
+    client = request.scope.get("client") if isinstance(request.scope, dict) else None
+    peer = client[0] if isinstance(client, (list, tuple)) and client else None
+    return peer is not None and peer in peers
+
+
 def _csrf_cookie_should_be_secure(request: Request | None, policy: SecurityPolicy) -> bool:
     """Resolve Secure flag for CSRF cookies (Flask-parity + proxy awareness).
 
     STRICT always emits Secure cookies. DEVELOPMENT/STANDARD follow ``is_secure``
-    or ``X-Forwarded-Proto: https`` so TLS-terminating proxies still get Secure
-    without breaking local HTTP TestClient flows.
+    or trusted-peer ``X-Forwarded-Proto: https`` so TLS-terminating proxies still
+    get Secure without letting arbitrary clients force the flag over plain HTTP.
     """
     if policy.profile is SecurityProfile.STRICT:
         return True
     if request is None:
         return False
-    return bool(request.url.is_secure) or _forwarded_proto_https(request)
+    return bool(request.url.is_secure) or _forwarded_proto_https_trusted(request)
 
 
 def _strategy_names(strategy: CsrfStrategy) -> tuple[str, str, str | None]:

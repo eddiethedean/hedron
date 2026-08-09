@@ -311,7 +311,7 @@ def test_component_fragment_regions_allowed() -> None:
 
     resp = component_response(
         Box(),
-        headers_map={"HX-Request": "true", "HX-Target": "main"},
+        headers_map={"HX-Request": "true", "HX-Target": "#main"},
         fragment_regions=(FragmentRegion(id="main", selector="#main"),),
     )
     assert resp.status_code == 200

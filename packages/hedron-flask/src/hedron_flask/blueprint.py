@@ -33,7 +33,7 @@ def _normalize_fragment_regions(
         if isinstance(region, FragmentRegion):
             out.append(region)
         else:
-            name = str(region).lstrip("#")
+            name = str(region).removeprefix("#")
             out.append(FragmentRegion(id=name, selector=f"#{name}"))
     return tuple(out)
 

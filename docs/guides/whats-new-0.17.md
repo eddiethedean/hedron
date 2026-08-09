@@ -2,7 +2,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.17**. The living published train is **0.22** (`v0.22.0`).
+    This page describes **0.17**. The living published train is **0.23** (`v0.23.0`).
 
 Phase **0.17** adds reactive dashboards and agent interfaces — finite interaction graphs,
 bounded patches, optional notebook preview and deny-by-default MCP — plus HTMX shell authoring
@@ -34,4 +34,5 @@ primitives. See [release gate](https://github.com/eddiethedean/hedron/blob/main/
 
 ## Upgrade notes
 
-Pin `hedron>=0.17.0,<0.18`. Install `hedron[notebook]` / `hedron[mcp]` only when needed.
+Stay on the 0.17 line with an upper-bound pin when you need this phase.
+Install `hedron[notebook]` / `hedron[mcp]` only when needed.

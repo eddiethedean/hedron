@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from fastapi.testclient import TestClient
 from starlette.requests import Request
 
@@ -106,12 +107,15 @@ def test_fastapi_form_csrf_field_roundtrip() -> None:
     assert "saved" in ok.text
 
 
-def test_standard_csrf_secure_with_forwarded_proto() -> None:
+def test_standard_csrf_secure_with_forwarded_proto(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     from starlette.responses import Response
 
     from hedron.security.csrf import ensure_csrf_cookie
     from hedron.security.policy import SecurityPolicy
 
+    monkeypatch.setenv("HEDRON_TRUSTED_PROXIES", "127.0.0.1")
     policy = SecurityPolicy.from_name("standard")
     scope = {
         "type": "http",
@@ -126,3 +130,28 @@ def test_standard_csrf_secure_with_forwarded_proto() -> None:
     response = Response("ok")
     ensure_csrf_cookie(response, policy, token="abc", request=request)
     assert "Secure" in (response.headers.get("set-cookie") or "")
+
+
+def test_standard_csrf_ignores_untrusted_forwarded_proto(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from starlette.responses import Response
+
+    from hedron.security.csrf import ensure_csrf_cookie
+    from hedron.security.policy import SecurityPolicy
+
+    monkeypatch.delenv("HEDRON_TRUSTED_PROXIES", raising=False)
+    policy = SecurityPolicy.from_name("standard")
+    scope = {
+        "type": "http",
+        "method": "GET",
+        "path": "/",
+        "headers": [(b"x-forwarded-proto", b"https")],
+        "scheme": "http",
+        "server": ("testserver", 80),
+        "client": ("10.0.0.9", 123),
+    }
+    request = Request(scope)
+    response = Response("ok")
+    ensure_csrf_cookie(response, policy, token="abc", request=request)
+    assert "Secure" not in (response.headers.get("set-cookie") or "")

@@ -1417,6 +1417,7 @@ source = { virtual = "." }
 dev = [
     { name = "anyio" },
     { name = "authlib" },
+    { name = "axe-playwright-python" },
     { name = "dask", extra = ["dataframe"] },
     { name = "django" },
     { name = "email-validator" },
@@ -1471,6 +1472,7 @@ docs = [
 dev = [
     { name = "anyio", specifier = ">=4.8" },
     { name = "authlib", specifier = ">=1.3" },
+    { name = "axe-playwright-python", specifier = ">=0.1.8" },
     { name = "dask", extras = ["dataframe"], specifier = ">=2024.1" },
     { name = "django", specifier = ">=5.2,<6" },
     { name = "email-validator", specifier = ">=2.0" },

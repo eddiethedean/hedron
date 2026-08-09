@@ -53,9 +53,7 @@ def aggrid_column_defs(schema: Sequence[ColumnSchema]) -> list[dict[str, JsonVal
             {
                 "field": col.name,
                 "headerName": col.label,
-                "editable": bool(
-                    col.writable is not False and not col.read_only and not col.secret
-                ),
+                "editable": bool(col.writable is True and not col.read_only and not col.secret),
                 "hide": col.hidden,
                 "sortable": col.sortable,
                 "filter": col.filterable,

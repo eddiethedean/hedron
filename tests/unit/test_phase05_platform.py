@@ -274,7 +274,7 @@ def test_async_dataeditor_requires_page() -> None:
     editor = DataEditor(
         source=async_src,
         page=page,
-        columns=[Column(name="id", read_only=True), Column(name="name")],
+        columns=[Column(name="id", read_only=True), Column(name="name", writable=True)],
         key_field="id",
     )
     with pytest.raises(HedronError) as apply_exc:

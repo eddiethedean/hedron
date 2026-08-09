@@ -1,6 +1,6 @@
 # Earlier what’s-new (archive)
 
-Living train notes: [What’s new in 0.22](whats-new-0.22.md) ·
+Living train notes: [What’s new in 0.23](whats-new-0.23.md) ·
 [What’s new in 0.21](whats-new-0.21.md) · [Release notes](release-notes.md) ·
 [Changelog](changelog.md).
 
@@ -21,4 +21,4 @@ Historical phase notes (read only if you are upgrading from that line):
 | 0.10.1 | [whats-new-0.10.1](whats-new-0.10.1.md) |
 | 0.10 | [whats-new-0.10](whats-new-0.10.md) |
 
-Upgrade path: [Upgrade to 0.22](upgrade.md).
+Upgrade path: [Upgrade to 0.23](upgrade.md).

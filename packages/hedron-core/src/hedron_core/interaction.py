@@ -38,6 +38,7 @@ __all__ = [
     "resolve_fragment_region",
     "select_htmx_auth_target",
     "status_policy_for",
+    "validated_extra_headers",
 ]
 
 CacheHint = Literal["private", "no-store", "vary-htmx"]
@@ -235,21 +236,48 @@ def _declared_region_labels(regions: tuple[FragmentRegion, ...]) -> tuple[str, .
     return tuple(f"{region.id} ({region.selector})" for region in regions)
 
 
+def _single_hash_id(value: str) -> str | None:
+    """Return the id after at most one leading ``#``, or None if malformed.
+
+    Rejects ``##panel`` / ``###panel`` (``str.lstrip('#')`` would collapse them).
+    """
+    if value.startswith("##"):
+        return None
+    return value.removeprefix("#")
+
+
 def resolve_fragment_region(
     policy: InteractionPolicy | None,
     target: str | None,
 ) -> FragmentRegion | None:
+    """Resolve ``target`` against declared regions by ``selector`` match.
+
+    Authorization is selector-based (``FragmentRegion.id`` is bookkeeping only).
+    Accepts either the exact declared selector (``#panel``) or HTMX's common bare-id
+    header form (``panel``) when the selector is a single ``#id``. Rejects
+    ``##…`` collapsing and matching on ``region.id`` when it differs from the
+    selector id.
+    """
     if policy is None or not policy.declared_regions:
         return None
     if target is None:
         return policy.declared_regions[0] if policy.declared_regions else None
-    needle = target.lstrip("#")
+    if target.startswith("##"):
+        declared = _declared_region_labels(policy.declared_regions)
+        raise FragmentRegionError(
+            f"HX-Target {target!r} is not an authorized fragment region for this route",
+            requested=target,
+            declared=declared,
+        )
     for region in policy.declared_regions:
+        if region.selector == target:
+            return region
+        # HTMX frequently sends HX-Target without the leading '#' for #id selectors.
         if (
-            region.selector == target
-            or region.id == target
-            or region.selector == f"#{needle}"
-            or region.id == needle
+            region.selector.startswith("#")
+            and not region.selector.startswith("##")
+            and "#" not in region.selector[1:]
+            and target == region.selector[1:]
         ):
             return region
     declared = _declared_region_labels(policy.declared_regions)
@@ -268,19 +296,41 @@ def select_htmx_auth_target(
     """Choose the HTMX target used for authorization.
 
     Prefer the client ``HX-Target`` when present. When both client target and
-    handler ``region_id`` are set but normalize to different ids, reject — the
+    handler ``region_id`` are set but refer to different ids, reject — the
     browser swaps into ``HX-Target``, so authorizing ``region_id`` alone is
-    fail-open.
+    fail-open. ``region_id`` is compared with a single leading ``#`` stripped
+    (never ``lstrip``), and multi-hash targets are rejected.
     """
+    if client_target and client_target.startswith("##"):
+        raise FragmentRegionError(
+            f"HX-Target {client_target!r} is not a valid fragment selector",
+            requested=client_target,
+            declared=(region_id,) if region_id else (),
+        )
     if client_target and region_id:
-        if client_target.lstrip("#") != region_id.lstrip("#"):
+        client_id = _single_hash_id(client_target)
+        handler_id = _single_hash_id(region_id)
+        if client_id is None or handler_id is None or client_id != handler_id:
             raise FragmentRegionError(
                 f"HX-Target {client_target!r} disagrees with region_id {region_id!r}",
                 requested=client_target,
                 declared=(region_id,),
             )
         return client_target
-    return client_target or region_id
+    if client_target:
+        return client_target
+    if region_id is None:
+        return None
+    # Server bookkeeping ids are not CSS selectors; normalize to #id so
+    # resolve_fragment_region can exact-match the common selector=f"#{id}" form
+    # without accepting bare client HX-Target values.
+    if region_id.startswith("##"):
+        raise FragmentRegionError(
+            f"region_id {region_id!r} is not a valid fragment selector",
+            requested=region_id,
+            declared=(region_id,),
+        )
+    return region_id if region_id.startswith("#") else f"#{region_id}"
 
 
 def authorize_htmx_target(
@@ -306,6 +356,11 @@ def authorize_htmx_target(
     if regions:
         return resolve_fragment_region(policy, target)
     return None
+
+
+def validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
+    """Validate adapter/caller ``extra_headers`` against the approved HTMX allowlist."""
+    return _validated_extra_headers(extra)
 
 
 def _validated_extra_headers(extra: Mapping[str, str]) -> dict[str, str]:
@@ -434,8 +489,8 @@ def _is_reserved_oob_target(*, element_id: str | None, select: str | None) -> bo
     if element_id is not None and element_id in RESERVED_OOB_ELEMENT_IDS:
         return True
     if select is not None:
-        needle = select.lstrip("#")
-        if needle in RESERVED_OOB_ELEMENT_IDS and (select == f"#{needle}" or select == needle):
+        needle = _single_hash_id(select)
+        if needle is not None and needle in RESERVED_OOB_ELEMENT_IDS and select == f"#{needle}":
             return True
     return False
 

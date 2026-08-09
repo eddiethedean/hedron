@@ -2,7 +2,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.16**. The living published train is **0.22** (`v0.22.0`).
+    This page describes **0.16**. The living published train is **0.23** (`v0.23.0`).
 
 Phase **0.16** adds an optional `hedron-extras` toolkit for specialized data-app interactions and
 analysis workbenches — without expanding the core runtime or adopting Streamlit-style reruns or a
@@ -34,4 +34,4 @@ sandbox budgets).
 ## Upgrade notes
 
 Pin `hedron>=0.16.0,<0.17` and install `hedron[extras]` only when needed. Specialty surfaces remain
-Experimental — do not market them as Supported beachhead for CRUD/admin onboarding.
+Experimental — do not market them as unqualified Supported for CRUD/admin onboarding.

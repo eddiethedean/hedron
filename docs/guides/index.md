@@ -2,7 +2,7 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.22 train** (**Published** as **v0.22.0**): CSRF / SecurityPolicy composition — [What’s new in 0.22](whats-new-0.22.md) · [What’s ready](whats-ready.md).
+**0.23 train** (**Published** as **v0.23.0**): stable-tier CRUD/admin facade — [What’s new in 0.23](whats-new-0.23.md) · [What’s ready](whats-ready.md).
 
 **0.20 train** (published as **v0.20.0**): production security floor and adapter parity — [What’s new in 0.20](whats-new-0.20.md).
 
@@ -155,7 +155,7 @@ Evaluating adoption? Use **Project → Evaluate**
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>0.18 → 0.19 notes (also under Project → Upgrade).</p>
+    <p>0.22 → 0.23 notes (also under Project → Upgrade).</p>
   </a>
   <a class="hedron-card" href="openapi/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>

@@ -196,7 +196,10 @@ class Hedron(FastAPI):
             self.add_middleware(
                 SessionMiddleware,
                 secret_key=session_secret,
-                https_only=self.hedron_policy.profile is SecurityProfile.STRICT,
+                https_only=(
+                    self.hedron_policy.profile is SecurityProfile.STRICT
+                    or (is_prod and self.hedron_policy.profile is SecurityProfile.STANDARD)
+                ),
                 path=mount_cookie_path,
             )
         self.state.hedron_cookie_path = mount_cookie_path

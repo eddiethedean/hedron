@@ -5,20 +5,18 @@ from __future__ import annotations
 from hedron.responses import FileComponentResponse, _safe_content_disposition_filename
 
 
-def test_safe_filename_strips_crlf_quotes_and_backslashes() -> None:
-    cleaned = _safe_content_disposition_filename('evil\r\nSet-Cookie: a=b";x\\y.txt')
-    assert "\r" not in cleaned
-    assert "\n" not in cleaned
-    assert '"' not in cleaned
-    assert "\\" not in cleaned
-    # CRLF removal prevents header injection; remaining text is a single filename token.
-    assert cleaned == "evilSet-Cookie: a=b;xy.txt"
+def test_safe_filename_rejects_path_and_header_injection() -> None:
+    # Backslashes / path segments fail closed to a generic download name.
+    assert _safe_content_disposition_filename('evil\r\nSet-Cookie: a=b";x\\y.txt') == "download"
+    assert _safe_content_disposition_filename("../secret.txt") == "download"
+    assert _safe_content_disposition_filename("/etc/passwd") == "download"
 
 
 def test_safe_filename_empty_becomes_download() -> None:
     assert _safe_content_disposition_filename("") == "download"
-    assert _safe_content_disposition_filename("   ") == "download"
-    assert _safe_content_disposition_filename('\r\n"') == "download"
+    # Whitespace / punctuation-only names collapse via upload sanitizer.
+    assert _safe_content_disposition_filename("   ") == "_"
+    assert _safe_content_disposition_filename('\r\n"') == "_"
 
 
 def test_safe_filename_truncates_at_200() -> None:
@@ -36,4 +34,4 @@ def test_file_component_response_sets_sanitized_disposition() -> None:
     assert "attachment;" in cd
     # Exactly one quoted filename= value — no quote breakout.
     assert cd.count('"') == 2
-    assert 'filename="reportX: 1.csv"' in cd
+    assert 'filename="report_X_1_.csv"' in cd

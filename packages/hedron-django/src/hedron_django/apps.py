@@ -56,9 +56,10 @@ def register_checks() -> None:
         middleware = list(getattr(settings, "MIDDLEWARE", []))
         if "django.middleware.csrf.CsrfViewMiddleware" not in middleware:
             messages.append(
-                Warning(
-                    "CsrfViewMiddleware is not installed; Hedron Django CSRF helpers expect it.",
-                    id="hedron.W001",
+                Error(
+                    "CsrfViewMiddleware is not installed; Hedron Django CSRF helpers require it.",
+                    hint="Add 'django.middleware.csrf.CsrfViewMiddleware' to MIDDLEWARE.",
+                    id="hedron.E003",
                 )
             )
         if "django.contrib.sessions.middleware.SessionMiddleware" not in middleware:

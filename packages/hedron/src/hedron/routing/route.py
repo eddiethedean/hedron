@@ -224,6 +224,25 @@ class HedronRoute(APIRoute):
         )
 
 
+def _prepare_deadline_header_trusted(request: Request) -> bool:
+    """Return True when ``X-Hedron-Prepare-Deadline`` may shorten prepare deadlines."""
+    import os
+
+    peers: set[str] = set()
+    raw_env = os.environ.get("HEDRON_TRUSTED_PROXIES", "")
+    peers.update(part.strip() for part in raw_env.split(",") if part.strip())
+    app = request.scope.get("app") if isinstance(request.scope, dict) else None
+    state = getattr(app, "state", None) if app is not None else None
+    configured = getattr(state, "hedron_trusted_peers", None) if state is not None else None
+    if isinstance(configured, (list, tuple, set, frozenset)):
+        peers.update(str(item).strip() for item in configured if str(item).strip())
+    if not peers:
+        return False
+    client = request.scope.get("client") if isinstance(request.scope, dict) else None
+    peer = client[0] if isinstance(client, (list, tuple)) and client else None
+    return peer is not None and peer in peers
+
+
 async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
     """Run optional prepare() hooks before sync render."""
     from hedron.concurrency import _get_limiter, get_concurrency_config
@@ -235,8 +254,10 @@ async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
     deadline: float | None = None
     if cfg.prepare_deadline_seconds is not None and cfg.prepare_deadline_seconds > 0:
         deadline = time.monotonic() + cfg.prepare_deadline_seconds
+    # Client deadlines are ignored unless the peer is an allowlisted proxy
+    # (same trust model as mount / CSRF X-Forwarded-Proto).
     header_deadline = request.headers.get("X-Hedron-Prepare-Deadline")
-    if header_deadline:
+    if header_deadline and _prepare_deadline_header_trusted(request):
         try:
             secs = float(header_deadline)
             if secs > 0:

@@ -21,6 +21,7 @@ from hedron_core.interaction import (
     interaction_headers,
     materialize_interaction_nodes,
     select_htmx_auth_target,
+    validated_extra_headers,
 )
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 
@@ -86,9 +87,12 @@ class FileComponentResponse(ComponentResponse):
 
 
 def _safe_content_disposition_filename(filename: str) -> str:
-    cleaned = filename.replace("\r", "").replace("\n", "").replace('"', "").replace("\\", "")
-    cleaned = cleaned.strip() or "download"
-    return cleaned[:200]
+    from hedron.builtins.files import validate_upload_filename
+
+    try:
+        return validate_upload_filename(filename)[:200]
+    except ValueError:
+        return "download"
 
 
 def hedron_response(component_type: type[object] | None = None) -> dict[str, object]:
@@ -160,7 +164,7 @@ def render_component_response(
     if policy is not None:
         headers.update(policy.response_headers(authenticated=authenticated))
     if extra_headers:
-        headers.update(extra_headers)
+        headers.update(validated_extra_headers(extra_headers))
 
     response_cls: type[ComponentResponse] = (
         FragmentResponse if selected_mode is RenderMode.FRAGMENT else PageResponse
@@ -206,6 +210,19 @@ def _attach_manifest_assets(result: RenderResult, request: Request) -> RenderRes
     return replace(result, assets=tuple(attached))
 
 
+def _mounted_static_href(path: str, request: Request | None) -> str:
+    """Prefix a local static path with the app mount when configured."""
+    href = path if path.startswith("/") else f"/{path}"
+    if request is None:
+        return href
+    from hedron.mount import mount_from_request, prefix_local_path
+
+    mount = getattr(request.app.state, "hedron_mount_path", None)
+    if not isinstance(mount, str):
+        mount = mount_from_request(request).path
+    return prefix_local_path(href, mount)
+
+
 def _inject_build_assets(
     html_text: str,
     mode: RenderMode,
@@ -217,7 +234,7 @@ def _inject_build_assets(
     policy = getattr(request.app.state, "hedron_security", None)
     if not isinstance(policy, SecurityPolicy):
         policy = SecurityPolicy.from_name("standard")
-    html_text = _ensure_htmx_asset(html_text, mode, policy=policy)
+    html_text = _ensure_htmx_asset(html_text, mode, policy=policy, request=request)
     if mode is not RenderMode.PAGE:
         return html_text
     tags: list[str] = []
@@ -230,7 +247,8 @@ def _inject_build_assets(
         tags.append(tag)
 
     if getattr(request.app.state, "hedron_default_styles", True):
-        add('<link rel="stylesheet" href="/hedron-static/hedron-default.css">')
+        css = _mounted_static_href("/hedron-static/hedron-default.css", request)
+        add(f'<link rel="stylesheet" href="{css}">')
 
     for asset in result.assets:
         href = html_lib.escape(asset.href, quote=True)
@@ -241,18 +259,21 @@ def _inject_build_assets(
             add(f'<script{typ} src="{href}"></script>')
     # Always offer bundled disclose module from package static for WC proof
     if "hedron-disclose.mjs" not in html_text:
-        add('<script type="module" src="/hedron-static/hedron-disclose.mjs"></script>')
+        disclose = _mounted_static_href("/hedron-static/hedron-disclose.mjs", request)
+        add(f'<script type="module" src="{disclose}"></script>')
     if "hedron-ui.mjs" not in html_text:
-        add('<script type="module" src="/hedron-static/hedron-ui.mjs"></script>')
+        ui = _mounted_static_href("/hedron-static/hedron-ui.mjs", request)
+        add(f'<script type="module" src="{ui}"></script>')
     # Pin non-deferred HTMX extensions after the core runtime (RFC-0032).
     from hedron_core.htmx_extensions import known_extensions
 
     for ext in sorted(known_extensions(), key=lambda e: e.load_order):
         if ext.deferred:
             continue
-        if ext.path in html_text:
+        ext_path = _mounted_static_href(ext.path, request)
+        if ext.path in html_text or ext_path in html_text:
             continue
-        add(f'<script src="{ext.path}" defer></script>')
+        add(f'<script src="{ext_path}" defer></script>')
     if not tags:
         return html_text
     injection = "\n".join(tags)
@@ -268,6 +289,7 @@ def _ensure_htmx_asset(
     mode: RenderMode,
     *,
     policy: SecurityPolicy | None = None,
+    request: Request | None = None,
 ) -> str:
     """Inject the bundled HTMX runtime and profile-driven secure v2 defaults."""
     if mode is not RenderMode.PAGE:
@@ -280,7 +302,8 @@ def _ensure_htmx_asset(
                 html_text = html_text.replace("</head>", f"{config}</head>", 1)
             else:
                 html_text = config + html_text
-    tag = '<script src="/hedron-static/htmx.min.js" defer></script>'
+    htmx_src = _mounted_static_href("/hedron-static/htmx.min.js", request)
+    tag = f'<script src="{htmx_src}" defer></script>'
     if "htmx.min.js" in html_text:
         return html_text
     if "</body>" in html_text:
@@ -360,13 +383,6 @@ async def render_interaction(
     if fragment_regions:
         result = merge_route_regions(result, fragment_regions)
 
-    if result.status_code == 204 or (result.content is None and result.status_code == 204):
-        try:
-            headers = interaction_headers(result)
-        except ValueError as exc:
-            raise HTTPException(status_code=403, detail=str(exc)) from exc
-        return StarletteResponse(status_code=204, headers=headers)
-
     target = request.headers.get("HX-Target")
     is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
     try:
@@ -388,6 +404,12 @@ async def render_interaction(
             status_code=403,
             detail=_fragment_region_http_detail(exc, request=request),
         ) from exc
+
+    if result.status_code == 204 and result.oob:
+        raise HTTPException(
+            status_code=403,
+            detail="OOB updates are not allowed on 204 InteractionResult responses",
+        )
 
     content: NodeLike | None = result.content
     if result.oob:
@@ -413,6 +435,9 @@ async def render_interaction(
     force = mode
     if kind == "component":
         force = force or RenderMode.FRAGMENT
+    if result.status_code == 204 or (result.content is None and result.status_code == 204):
+        # Auth already ran; 204 has no primary body.
+        return StarletteResponse(status_code=204, headers=headers)
     if content is None:
         return StarletteResponse(status_code=result.status_code, headers=headers)
 

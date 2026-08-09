@@ -92,14 +92,14 @@ def display_for_editor(editor: str) -> str:
 
 
 def write_policy(column: Column | ColumnSchema) -> bool:
-    """Display never implies writable; secrets/hidden/read-only deny writes."""
+    """Display never implies writable; unset ``writable`` denies writes.
+
+    Secrets, hidden, and read-only columns always deny. Explicit ``writable=True``
+    is required (deny-by-default), matching InMemoryDataSource field allowlists.
+    """
     if column.read_only or column.hidden or column.secret:
         return False
-    if column.writable is False:
-        return False
-    if column.writable is True:
-        return True
-    return True
+    return column.writable is True
 
 
 def _editor_for_annotation(annotation: object) -> str:

@@ -237,9 +237,9 @@ class DataEditor(Component[DataEditorProps]):
         return list(self._columns)
 
     def writable_fields(self) -> frozenset[str]:
-        return frozenset(
-            c.name for c in self._columns if not c.read_only and not c.hidden and not c.secret
-        )
+        from hedron_data.columns import write_policy
+
+        return frozenset(c.name for c in self._columns if write_policy(c))
 
     def _policy_clean(
         self, changes: DataChanges[dict[str, JsonValue]]
@@ -308,11 +308,13 @@ class DataEditor(Component[DataEditorProps]):
         return DataSaveResult(ok=True, accepted=cleaned, version=self._version)
 
     def render(self) -> NodeLike:
+        from hedron_data.columns import write_policy
+
         col_meta = [
             {
                 "field": c.name,
                 "title": c.label or c.name,
-                "editor": False if c.read_only or c.hidden else (c.editor or "input"),
+                "editor": (c.editor or "input") if write_policy(c) else False,
                 "visible": not c.hidden,
                 "headerSort": c.sortable,
                 "width": c.width,

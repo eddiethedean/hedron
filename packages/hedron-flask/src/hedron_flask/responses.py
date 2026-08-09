@@ -21,6 +21,7 @@ from hedron_core.interaction import (
     merge_interaction_headers,
     merge_route_regions,
     select_htmx_auth_target,
+    validated_extra_headers,
 )
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 from hedron_flask.htmx import render_mode_for_request
@@ -62,7 +63,7 @@ def _normalize_regions(
         if isinstance(region, FragmentRegion):
             out.append(region)
         else:
-            name = str(region).lstrip("#")
+            name = str(region).removeprefix("#")
             out.append(FragmentRegion(id=name, selector=f"#{name}"))
     return tuple(out)
 
@@ -198,7 +199,10 @@ def component_response(
     _merge_vary(headers)
     _apply_auth_cache_headers(headers, authenticated=authenticated)
     if extra_headers:
-        headers.update(extra_headers)
+        try:
+            headers.update(validated_extra_headers(extra_headers))
+        except ValueError as exc:
+            return Response(str(exc), status=403, mimetype="text/plain")
         _apply_auth_cache_headers(headers, authenticated=authenticated)
     return Response(result.html, status=status_code, mimetype="text/html", headers=headers)
 
@@ -225,6 +229,7 @@ def interaction_response(
         target = select_htmx_auth_target(client_target=client_target, region_id=result.region_id)
         authorize_htmx_target(result.policy, target, is_htmx=is_htmx)
         node = materialize_interaction_nodes(result)
+        headers = merge_interaction_headers(result, extra_headers)
     except (FragmentRegionError, ValueError) as exc:
         path = ""
         try:
@@ -240,7 +245,6 @@ def interaction_response(
             },
         )
         return Response(str(exc), status=403, mimetype="text/plain")
-    headers = merge_interaction_headers(result, extra_headers)
     _apply_auth_cache_headers(headers, authenticated=authenticated)
     body = ""
     if node is not None:

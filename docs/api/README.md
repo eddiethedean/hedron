@@ -56,7 +56,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
     may stay shorter — prefer guides + Autodoc when Errors is missing.
     Human error index: [Error codes](../guides/error-codes.md).
 
-## Surfaces introduced in 0.19 (available on the 0.22 train)
+## Surfaces introduced in 0.19 (available on the 0.23 train)
 
 These surfaces first shipped in the 0.19 phase and remain on the living **0.23.0**
 train (includes the 0.9 authoring break, 0.10 live interaction, and later capability

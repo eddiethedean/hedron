@@ -5,6 +5,7 @@
 ### Changed
 
 - Promotes locked CRUD/admin facade to API `stable`.
+- `hedron new` scaffolds pin `hedron` / adapters at `>=0.23.0,<0.24`.
 
 ## [0.22.0] — 2026-08-08
 

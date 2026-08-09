@@ -547,16 +547,24 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production")
-DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
-ALLOWED_HOSTS = ["*"]
+# Default off; set DJANGO_DEBUG=1 for local development.
+DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    if host.strip()
+]
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
+    "django.contrib.sessions",
     "django.contrib.staticfiles",
     "hedron_django",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
     "hedron_django.middleware.HedronSecurityHeadersMiddleware",
 ]
 ROOT_URLCONF = "project.urls"
@@ -681,8 +689,6 @@ def _declared_selectors_for_routes() -> dict[str, set[str]]:
         regions = getattr(route.endpoint, "_hedron_fragment_regions", None) or ()
         for region in regions:
             selectors.add(region.selector)
-            selectors.add(region.id)
-            selectors.add(f"#{region.id}")
         inference = dict(getattr(route, "htmx_inference", {}) or {})
         raw = inference.get("fragment_regions") or ""
         if isinstance(raw, str) and raw.startswith("{"):
@@ -693,11 +699,9 @@ def _declared_selectors_for_routes() -> dict[str, set[str]]:
             except (SyntaxError, ValueError):
                 parsed = {}
             if isinstance(parsed, dict):
-                for rid, value in parsed.items():
+                for _rid, value in parsed.items():
                     selector = str(value).split("|", 1)[0]
                     selectors.add(selector)
-                    selectors.add(str(rid))
-                    selectors.add(f"#{rid}")
         if selectors:
             declared[route.path] = selectors
     return declared
@@ -768,7 +772,7 @@ def _check_htmx_region_mismatches(base: Path) -> list[Any]:
         allowed = declared.get(href)
         if allowed is None:
             continue
-        if target not in allowed and target.lstrip("#") not in allowed:
+        if target not in allowed:
             diags.append(
                 make_diagnostic(
                     HED_HTMX_0001,

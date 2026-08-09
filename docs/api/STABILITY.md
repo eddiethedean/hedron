@@ -187,8 +187,10 @@ Language-neutral fixture kit and runner. Cross-language runtimes that consume th
 
 ### `hedron-extras` (Beta) — `beta` composition/workbenches; specialty **experimental**
 
-Optional curated toolkit (`hedron[extras]`). Composition UI, DataExplorer, JSONEditor, CodeEditor,
-image tools, calendar/signature/typeahead, display recipes, and browser-Python sandbox are **beta**.
+Optional curated toolkit (`hedron[extras]`). Composition UI, DataExplorer, JSONEditor,
+image tools, calendar/signature/typeahead, and display recipes are **beta**.
+CodeEditor and the browser-Python sandbox are **experimental** (align with
+[What’s ready](../guides/whats-ready.md) and the extras package page).
 `TerminalView`, joystick, and device-bridge surfaces are **experimental** and fail closed without
 explicit policy (RFC-0038). Native desktop shell is packaging documentation only.
 
@@ -273,7 +275,7 @@ older upgrade notes remain navigable.
 | Dialog / ChatMessage / ChatInput | D-045 | **beta** (history application-owned) |
 
 Disposition of permanent experimental labeling is owned by phase **0.24** (D-053 /
-[RFC-0056](../rfcs/RFC-0056-PRODUCTION-QUALITY.md)): prove browser/load ops evidence **or**
+[RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)): prove browser/load ops evidence **or**
 formally document polling-only for production. Until then, prefer polling in production.
 
 Exports: `SseResponse`, `job_status_sse_response`, `StreamingComponentResponse`,

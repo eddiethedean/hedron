@@ -107,7 +107,7 @@ def _request(*, path: str = "/", headers: dict[str, str] | None = None) -> Reque
 
 @pytest.mark.anyio
 async def test_render_interaction_public_api() -> None:
-    request = _request(headers={"HX-Request": "true", "HX-Target": "main-panel"})
+    request = _request(headers={"HX-Request": "true", "HX-Target": "#main-panel"})
     request.app.state.hedron_security = SecurityPolicy.from_name("standard")  # type: ignore[attr-defined]
     result = InteractionResult(
         content=MainPanel("ok"),

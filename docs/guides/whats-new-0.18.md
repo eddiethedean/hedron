@@ -2,7 +2,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.18**. The living published train is **0.22** (`v0.22.0`).
+    This page describes **0.18**. The living published train is **0.23** (`v0.23.0`).
 
 Phase **0.18** adds model demos and inference workflows — fail-closed demo composition,
 governed feedback, inference scheduling over `JobBackend`, an interaction recorder, typed
@@ -34,5 +34,6 @@ workflows, and optional Gradio interop. See
 
 ## Upgrade notes
 
-Pin `hedron>=0.20.0,<0.21`. Install `hedron[gradio]` only when needed.
+Prefer the living 0.23 train for new apps; stay on a historical upper-bound pin
+only when you must freeze this phase. Install `hedron[gradio]` only when needed.
 See [Gradio migration](gradio-migration.md).

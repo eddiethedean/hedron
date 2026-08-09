@@ -22,7 +22,7 @@ def test_system_checks_run() -> None:
     # Middleware fixture installs CSRF + Session; capability honesty must agree.
     assert "hedron.E001" not in ids
     assert "hedron.E002" not in ids
-    assert "hedron.W001" not in ids
+    assert "hedron.E003" not in ids
     assert "hedron.W002" not in ids
     assert "hedron.W003" not in ids
 

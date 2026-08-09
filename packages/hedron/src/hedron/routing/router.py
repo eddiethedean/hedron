@@ -48,10 +48,14 @@ def _normalize_fragment_regions(
 ) -> tuple[FragmentRegion, ...]:
     if not fragment_regions:
         return ()
-    return tuple(
-        r if isinstance(r, FragmentRegion) else FragmentRegion(id=str(r), selector=f"#{r}")
-        for r in fragment_regions
-    )
+    out: list[FragmentRegion] = []
+    for r in fragment_regions:
+        if isinstance(r, FragmentRegion):
+            out.append(r)
+            continue
+        name = str(r).removeprefix("#")
+        out.append(FragmentRegion(id=name, selector=f"#{name}"))
+    return tuple(out)
 
 
 def _wrap_endpoint(

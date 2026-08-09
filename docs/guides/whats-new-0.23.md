@@ -17,7 +17,7 @@ packaging only.
 
 Contract: [STABILITY.md](../api/STABILITY.md#expanded-stable-tier-023) ·
 [STABLE_FACADE.md](../api/STABLE_FACADE.md). Acceptance:
-[RELEASE_0_23](../acceptance/RELEASE_0_23.md).
+[RELEASE_0_23](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_23.md).
 
 Gates: `STABLE-023`, `FACADE-023`, `INVENTORY-023`, `REGRESS-023`, `PKG-023` (all Verified).
 

@@ -27,7 +27,10 @@ __all__ = [
     "csrf_token_for_request",
     "extract_csrf_from_post",
     "seed_csrf_cookie",
+    "validate_csrf",
 ]
+
+_SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
 
 # Stock Django header / WSGI mapping.
 DJANGO_CSRF_HEADER = "X-CSRFToken"
@@ -76,3 +79,56 @@ def extract_csrf_from_post(
         if isinstance(value, str) and value:
             return value
     return None
+
+
+class DjangoCsrfError(PermissionError):
+    """Raised when Hedron Django CSRF validation fails closed."""
+
+
+def validate_csrf(request: HttpRequest) -> None:
+    """Fail closed on unsafe methods using Django's CSRF machinery.
+
+    Bridges portable ``csrf_token`` form fields into ``csrfmiddlewaretoken`` before
+    ``CsrfViewMiddleware.process_view``. Safe methods are no-ops. When Django CSRF
+    middleware is disabled in settings this still rejects missing/invalid tokens so
+    ``hedron_view`` / ``HedronDjango.respond`` do not silently skip protection.
+    """
+    method = (request.method or "GET").upper()
+    if method in _SAFE_METHODS:
+        return
+
+    # Bridge Hedron portable form field into Django's expected name.
+    if not request.POST.get("csrfmiddlewaretoken"):
+        portable = extract_csrf_from_post(request, field_name="csrf_token")
+        if portable:
+            try:
+                mutable = request.POST.copy()
+            except Exception:  # noqa: BLE001
+                mutable = None
+            if mutable is not None:
+                mutable["csrfmiddlewaretoken"] = portable
+                request.POST = mutable
+
+    from django.http import HttpRequest as DjangoHttpRequest
+    from django.http import HttpResponse, HttpResponseForbidden
+    from django.middleware.csrf import CsrfViewMiddleware
+
+    def _forbidden(_req: DjangoHttpRequest) -> HttpResponse:
+        return HttpResponseForbidden(b"CSRF")
+
+    def _noop_view(
+        _req: DjangoHttpRequest, *_args: object, **_kwargs: object
+    ) -> HttpResponse | None:
+        return None
+
+    middleware = CsrfViewMiddleware(_forbidden)
+    rejected = middleware.process_view(request, _noop_view, (), {})
+    if rejected is not None:
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        emit_security_audit(
+            SecurityAuditEventType.CSRF_REJECTED,
+            "Django CSRF validation failed",
+            attributes={"path": getattr(request, "path", "")},
+        )
+        raise DjangoCsrfError("CSRF validation failed")

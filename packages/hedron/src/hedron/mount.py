@@ -31,15 +31,25 @@ class MountPath:
 
 
 def normalize_mount_path(value: str | None) -> str:
-    """Normalize a mount path to ``''`` (site root) or ``/prefix`` (no trailing slash)."""
+    """Normalize a mount path to ``''`` (site root) or ``/prefix`` (no trailing slash).
+
+    Protocol-relative (``//host``) and absolute URL mounts are rejected as empty so
+    they cannot become scheme-relative open redirects via ``prefix_local_path``.
+    """
     if value is None:
         return ""
     text = str(value).strip()
     if not text or text == "/":
         return ""
+    # Fail closed: never accept scheme-relative or absolute URL mounts.
+    if text.startswith("//") or "://" in text or "\\" in text or any(ch.isspace() for ch in text):
+        return ""
     if not text.startswith("/"):
         text = "/" + text
-    return text.rstrip("/") or ""
+    normalized = text.rstrip("/") or ""
+    if "//" in normalized:
+        return ""
+    return normalized
 
 
 def cookie_path_for_mount(mount: str) -> str:
@@ -54,6 +64,9 @@ def prefix_local_path(url: str, mount: str) -> str:
     if not normalized:
         return url
     if not url.startswith("/") or url.startswith("//"):
+        return url
+    # Defense in depth if a caller bypassed normalize_mount_path.
+    if normalized.startswith("//") or "://" in normalized:
         return url
     if url == normalized or url.startswith(normalized + "/"):
         return url
