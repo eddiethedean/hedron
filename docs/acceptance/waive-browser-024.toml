@@ -1,0 +1,18 @@
+# BROWSER-024 waive / supersede ledger (Disposition B / polling_only).
+# Under prove_ops, leave rows empty and attach evidence via evidence_path instead.
+# Under undecided (packet refine), empty rows are OK with --allow-undecided.
+# Under polling_only at cut, every owned prior_id must appear with terminal =
+# "waived" | "superseded" | "verified".
+
+disposition_gate = "BROWSER-024"
+owned_prior_ids = ["BROWSER-10-001", "LIVE-011-BROWSER"]
+# Relative to repo root; used when disposition = prove_ops.
+evidence_path = ""
+rows = []
+
+# Example row at cut for polling_only:
+# [[rows]]
+# id = "BROWSER-10-001"
+# terminal = "superseded"
+# note = "Superseded by DECIDE-024 polling_only; multi-engine live browser matrix not Required for Supported production."
+# owner = "hedron"

@@ -19,7 +19,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.21** | Human assistive-technology / compensated evaluation (D-052) | **Published** (`v0.21.0` engineering; PROTOCOL Verified; SR/PARTICIPANT Planned — not Supported) |
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | **Published** (`v0.22.0`; D-051) |
 | **0.23** | Expand `stable` API tier for narrow CRUD/admin facade (regions/`swap`, Poll/jobs, `CsrfField`/`Form`, beginner chrome, AppScenario asserts) | **Published** (`v0.23.0`; D-053) |
-| **0.24** | Live-transport production disposition (prove ops or polling-only) | Planned (D-053) |
+| **0.24** | Live-transport production disposition (prove ops or polling-only) | Planned (D-053) — packet refine complete |
 | **0.25** | Production archetype, load budgets, extras quarantine | Planned (D-053) |
 
 ## What this means for you
@@ -32,7 +32,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   `experimental`.
 - **0.23** (**Published**) expanded that tier for a locked Beginner/CRUD facade only —
   [STABLE_FACADE](../api/STABLE_FACADE.md) — not every What’s ready Supported row; live
-  transports stay for **0.24**.
+  transports stay for **0.24** ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md); packet
+  refine complete, disposition undecided until cut).
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
 
@@ -45,9 +46,13 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Identity helpers are **opt-in wiring** (not a managed IdP) — [Authentication](authentication.md)
 - Human screen-reader / compensated AT evaluation — protocol Verified; sessions Planned
   (not Supported); `AT-019` is automated Playwright/axe only
-- Full multi-engine adapter live browser matrix → owned `0.11.x` Deferred (`LIVE-011-BROWSER`)
-- Full multi-engine FastAPI live browser matrix / some Explorer live traces → owned `0.10.x` Deferred
+- Full multi-engine adapter live browser matrix → owned `0.11.x` Deferred (`LIVE-011-BROWSER`);
+  disposition → **0.24**
+- Full multi-engine FastAPI live browser matrix → owned `0.10.x` Deferred (`BROWSER-10-001`);
+  disposition → **0.24**
+- Explorer live traces → owned `0.10.x` Deferred (`EXPLORER-10-001`; **not** re-homed to 0.24)
 - Live transports remain **experimental**; polling is Supported — [What’s ready](whats-ready.md)
+  · [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md)
 
 CSRF / SecurityPolicy composition (#36–#38) shipped in **0.22**
 ([RELEASE_0_22](../acceptance/RELEASE_0_22.md)). Human AT evaluation engineering is

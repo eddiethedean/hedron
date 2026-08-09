@@ -26,9 +26,11 @@ Human AT **sessions** (`SR-021` / `PARTICIPANT-021`) remain **Planned** — not 
 [RELEASE_0_22.md](acceptance/RELEASE_0_22.md).
 
 Production-quality maturity program (**D-053** / RFC-0056): next packets
-**0.24** (live disposition), **0.25** (archetype) —
+**0.24** (live disposition — packet refine complete), **0.25** (archetype) —
 [production-quality guide](guides/production-quality.md);
-`python scripts/check_release_gate.py 0.24.0 --allow-planned` (and `0.25.0`).
+`python scripts/verify_pkg_24.py --allow-planned` (living train `0.23.0` +
+`release-gate-0.24.toml`); same pattern for `0.25` when refined.
+At the 0.24 cut: `python scripts/check_release_gate.py 0.24.0` after packages bump.
 
 Do not re-run tag steps for a published version.
 

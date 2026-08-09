@@ -18,7 +18,8 @@ narrow CRUD/admin facade). Human AT protocol remains **Verified** (`PROTOCOL-021
 **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021` remain Planned** until
 real sessions — **do not market human AT as Supported**. Automated AT (`AT-019`, phase 0.19)
 remains Supported and is not a substitute for human AT. Production-quality maturity program
-(**D-053** / RFC-0056) next packets: **0.24** (live disposition), **0.25**
+(**D-053** / RFC-0056) next packets: **0.24** (live disposition — **packet refine
+complete**; cut still undecided), **0.25**
 (archetype / landmines) — see [production-quality](guides/production-quality.md).
 
 ## Supported vs Deferred (operator view)
@@ -63,10 +64,10 @@ Prior-phase Deferred rows below remain owned elsewhere.
 | `INVENTORY-023` | Stability inventory checker | **Verified** (0.23) | |
 | `REGRESS-023` | Full suite at 0.23 cut | **Verified** (0.23) | |
 | `PKG-023` | `verify_pkg_23.py` packet evidence | **Verified** (0.23) | |
-| `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | Prior-phase carryover; disposition → **0.24** (D-053) |
-| `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Prior-phase carryover; disposition → **0.24** (D-053) |
-| `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof; disposition → **0.24** (D-053) |
-| `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | |
+| `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | Prior-phase carryover; disposition → **0.24** (D-053; packet refine complete) |
+| `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Prior-phase carryover; disposition → **0.24** (D-053; packet refine complete) |
+| `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof; disposition → **0.24** (D-053; packet refine complete) |
+| `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | **Not** re-homed to 0.24; stays on `0.10.x` |
 
 ## Phase 0.23 evidence
 
@@ -112,6 +113,8 @@ Prior-phase Deferred rows below remain owned elsewhere.
 ## Next capability phases
 
 **0.24** — Live-transport production disposition (prove ops **or** polling-only; D-053).
+**Packet refine complete** — locked dual-path criteria + gate commands; disposition still
+`undecided` until cut ([LIVE_DISPOSITION](api/LIVE_DISPOSITION.md)).
 **0.25** — Production archetype, load budgets, extras quarantine (D-053).
 Program summary: [production-quality guide](guides/production-quality.md).
 

@@ -1,48 +1,50 @@
 # Phase 0.24 live-transport production disposition evidence index.
-# Consumed by scripts/check_release_gate.py 0.24.0 (--allow-planned until full cut).
+# Consumed by scripts/check_release_gate.py (cut: 0.24.0; refine:
+# 0.23.0 --evidence-manifest this file --allow-planned via verify_pkg_24.py).
 # Zero Deferred policy for 0.24-owned rows: every row must be Verified at cut.
 # Owning decision: D-053. RFC: RFC-0056.
-# Disposition A = prove ops; Disposition B = polling-only production docs.
+# Disposition A = prove_ops; Disposition B = polling_only.
 # Exactly one disposition must be Accepted; do not Verified both half-done.
+# Packet refine locked commands below; states remain Planned until cut.
 
 [[evidence]]
 id = "DECIDE-024"
 state = "Planned"
-command = "python scripts/check_release_gate.py 0.24.0 --allow-planned"
+command = "python scripts/check_live_disposition_024.py --allow-undecided"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "BROWSER-024"
 state = "Planned"
-command = "python scripts/check_release_gate.py 0.24.0 --allow-planned"
+command = "python scripts/check_browser_024.py --allow-undecided"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PERF-024"
 state = "Planned"
-command = "python scripts/check_release_gate.py 0.24.0 --allow-planned"
+command = "python scripts/check_perf_024.py --allow-undecided"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "DOCS-024"
 state = "Planned"
-command = "python scripts/check_docs_train_ssot.py"
+command = "python scripts/check_docs_024.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "REGRESS-024"
 state = "Planned"
-command = "python -m pytest -q"
+command = "bash scripts/ci_checks.sh test --python 3.12"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-024"
 state = "Planned"
-command = "python scripts/check_release_gate.py 0.24.0 --allow-planned"
+command = "python scripts/verify_pkg_24.py --allow-planned"
 ci_job = "test"
 owner = "hedron"

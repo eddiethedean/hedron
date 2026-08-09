@@ -1585,8 +1585,10 @@ Zero Deferred among 0.23-owned gate rows at cut. Gate IDs and commands (packet r
 
 ## 0.24 — Live-transport production disposition (`v0.24.0`)
 
-**Status:** Planned. Part of D-053 / RFC-0056. Re-homes or closes prior Deferred ops rows
-`BROWSER-10-001`, `PERF-10-001`, and `LIVE-011-BROWSER` with an explicit production story.
+**Status:** Planned. Part of D-053 / RFC-0056. Packet refine **complete** — locked dual-path
+Verified criteria and distinct gate commands below; cut still picks exactly one disposition.
+Re-homes or closes prior Deferred ops rows `BROWSER-10-001`, `PERF-10-001`, and
+`LIVE-011-BROWSER` with an explicit production story.
 
 **Outcome:** End the permanent “experimental live transports” fog: either (A) close
 multi-engine browser + load/proxy backpressure evidence so SSE/WebSocket can graduate under
@@ -1594,30 +1596,69 @@ documented ops constraints, **or** (B) formally document polling-only as the Sup
 production story and keep live helpers experimental without implying an imminent Supported
 claim.
 
-### Scope
+Disposition SSOT: [LIVE_DISPOSITION.md](api/LIVE_DISPOSITION.md) ·
+[live-disposition-024.toml](acceptance/live-disposition-024.toml).
 
-Exactly one disposition must be Accepted at cut (not both half-done):
+### Disposition XOR contract (`DECIDE-024`)
 
-- **`DECIDE-024`** — Written disposition (prove-ops **or** polling-only production) recorded in
-  ROADMAP/STATUS/What’s ready/STABILITY with matching labels.
-- **`BROWSER-024`** — Close, re-home with owner/expiry, or explicitly waive into the chosen
-  disposition the FastAPI and adapter live browser matrix Deferred rows.
-- **`PERF-024`** — Close, re-home, or waive load/proxy backpressure evidence consistently with
-  `DECIDE-024`.
-- **`DOCS-024`** — Adopter docs never market live helpers as Supported unless disposition A is
-  Verified; polling remains Supported in either disposition.
-- **`REGRESS-024`** / **`PKG-024`** — Suite and package verify at cut.
+Machine value in `docs/acceptance/live-disposition-024.toml`:
+
+| Value | Meaning |
+|---|---|
+| `undecided` | Packet refine / pre-cut only (allowed with `--allow-undecided`) |
+| `prove_ops` | Disposition **A** — ops evidence closes prior Deferred live-ops IDs |
+| `polling_only` | Disposition **B** — polling is the Supported production story |
+
+Cut requires exactly one of `prove_ops` | `polling_only`. Do not half-verify both paths.
+
+### Locked Verified criteria (per gate)
+
+| Gate | Verified under A (`prove_ops`) | Verified under B (`polling_only`) |
+|---|---|---|
+| `DECIDE-024` | Disposition TOML is `prove_ops`; What’s ready / STABILITY / LIVE_DISPOSITION label live helpers Supported-with-ops-constraints | Disposition TOML is `polling_only`; live helpers remain experimental; polling Supported |
+| `BROWSER-024` | Multi-engine FastAPI (+ agreed adapter depth) live browser evidence closes or supersedes `BROWSER-10-001` / `LIVE-011-BROWSER` | Formal waive/supersede ledger for those IDs pointing at polling-only + terminal owner notes |
+| `PERF-024` | Load/proxy backpressure evidence closes `PERF-10-001` | Waive/supersede ledger consistent with `DECIDE-024` |
+| `DOCS-024` | Adopter docs + `live_claims` agree with Supported live (forbidden-phrase set updated) | Adopter docs + existing claim honesty keep forbidding unqualified Supported live |
+| `REGRESS-024` / `PKG-024` | Full suite + `verify_pkg_24.py` | Same |
+
+### Scope (locked gate commands)
+
+Zero Deferred among 0.24-owned gate rows at cut. Gate IDs and commands (packet refine locked):
+
+- **`DECIDE-024`** — `python scripts/check_live_disposition_024.py` — schema + XOR; refine uses
+  `--allow-undecided`; cut requires `prove_ops` or `polling_only` and SSOT label agreement.
+- **`BROWSER-024`** — `python scripts/check_browser_024.py` — evidence path **or**
+  [waive-browser-024.toml](acceptance/waive-browser-024.toml) consistent with disposition.
+- **`PERF-024`** — `python scripts/check_perf_024.py` — evidence path **or**
+  [waive-perf-024.toml](acceptance/waive-perf-024.toml) consistent with disposition.
+- **`DOCS-024`** — `python scripts/check_docs_024.py` — train-pin SSOT + live-claim honesty.
+- **`REGRESS-024`** — `bash scripts/ci_checks.sh test --python 3.12` at cut.
+- **`PKG-024`** — `python scripts/verify_pkg_24.py` (gate checker without `--allow-planned` at cut;
+  living train remains `0.23.0` under `--allow-planned`).
+
+### Out of 0.24
+
+| Surface | Why |
+|---|---|
+| Production archetype / load budgets / extras quarantine / charts graduation | Owned by **0.25** |
+| Alpha charts / notebook / MCP / Gradio / `hedron-native` | Non-goal |
+| Human AT sessions (`SR-021` / `PARTICIPANT-021` / …) | Remain 0.21 P0; not live-transport disposition |
+| `EXPLORER-10-001` (Explorer live traces) | Stays Deferred on **`0.10.x`** — not re-homed to 0.24 |
+| Deleting experimental APIs solely to look “done” | Requires a disposition first |
 
 ### Non-goals
 
 - Requiring Flask/Django official HTMX SSE parity as a cut blocker when disposition B is chosen.
 - Removing experimental APIs from the tree solely to look “done” without a disposition.
+- Absorbing `EXPLORER-10-001` or 0.25 archetype/landmine work.
+- Choosing `prove_ops` vs `polling_only` during packet refine (cut decides).
 
 ### Exit gate
 
 - Every 0.24-owned row Verified
   ([release-gate-0.24.toml](acceptance/release-gate-0.24.toml)).
-- Prior Deferred live-ops IDs have a terminal owner note (Verified, waived, or superseded).
+- Prior Deferred live-ops IDs (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) have a
+  terminal owner note (Verified, waived, or superseded).
 
 ## 0.25 — Production archetype and landmine quarantine (`v0.25.0`)
 
@@ -1852,7 +1893,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Flask/Django fragment_regions, portable CSP headers, scaffolds, wheel smoke, Flask-Login AuthSignal | 0.20 | Adapter parity and DX after 0.11 foundations (`REGION-020`, `CSP-020`, `SCAFFOLD-020`, `WHEEL-020`, `AUTH-020`; [#12](https://github.com/eddiethedean/hedron/issues/12), [#14](https://github.com/eddiethedean/hedron/issues/14), [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19), [#20](https://github.com/eddiethedean/hedron/issues/20)). |
 | Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.22 | Packet refined (`CSRF-022` / `HEADERS-022` / `FORM-022`); FastAPI composition for apps that own sessions/CSP; depends on 0.20 `CSP-020` ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
 | Expand minimal `stable` API tier for Supported CRUD/HTMX/jobs + Beginner facade inventory | 0.23 | D-053 / RFC-0056; does not promote Alpha extras or live transports. |
-| Live-transport production disposition (prove browser/load ops **or** polling-only docs) | 0.24 | Re-homes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056). |
+| Live-transport production disposition (prove browser/load ops **or** polling-only docs) | 0.24 | Re-homes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056); packet refine complete — [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md). |
 | Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | D-053 / RFC-0056; SBOM/evidence attach on train tags. |
 | Optional written `1.0` DoD without a calendar date | D-053 | Not a roadmap phase; preserves D-038. |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |

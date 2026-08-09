@@ -44,8 +44,8 @@ status commentary, not a satisfied release gate.
 - [`v0.20` production security floor and adapter parity](RELEASE_0_20.md) — **Published** (D-051); CSRF composition split to 0.22
 - [`v0.21` human AT](RELEASE_0_21.md) — engineering-complete / sessions outstanding (D-052)
 - [`v0.22` CSRF and SecurityPolicy composition](RELEASE_0_22.md) — **Published** (D-051)
-- [`v0.23` stable-tier expansion](RELEASE_0_23.md) — Planned (D-053 / RFC-0056)
-- [`v0.24` live-transport disposition](RELEASE_0_24.md) — Planned (D-053 / RFC-0056)
+- [`v0.23` stable-tier expansion](RELEASE_0_23.md) — **Published** (D-053 / RFC-0056)
+- [`v0.24` live-transport disposition](RELEASE_0_24.md) — Planned; packet refine complete (D-053 / RFC-0056)
 - [`v0.25` production archetype](RELEASE_0_25.md) — Planned (D-053 / RFC-0056)
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),

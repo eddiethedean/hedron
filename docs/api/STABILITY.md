@@ -275,8 +275,11 @@ older upgrade notes remain navigable.
 | Dialog / ChatMessage / ChatInput | D-045 | **beta** (history application-owned) |
 
 Disposition of permanent experimental labeling is owned by phase **0.24** (D-053 /
-[RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)): prove browser/load ops evidence **or**
-formally document polling-only for production. Until then, prefer polling in production.
+[RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)):
+prove browser/load ops evidence **or** formally document polling-only for production.
+Packet refine is **complete** — dual-path criteria and gate commands are locked in
+[LIVE_DISPOSITION.md](LIVE_DISPOSITION.md); cut still chooses `prove_ops` or
+`polling_only`. Until then, prefer polling in production.
 
 Exports: `SseResponse`, `job_status_sse_response`, `StreamingComponentResponse`,
 `accept_page_session_channel`, `send_region_update`, `Dialog`, `ChatMessage`, `ChatInput`.

@@ -1,0 +1,9 @@
+# Phase 0.24 live-transport disposition SSOT (machine-checked).
+# Consumed by scripts/check_live_disposition_024.py / check_browser_024.py / check_perf_024.py.
+# Refine default is undecided; cut must set exactly one of prove_ops | polling_only.
+# Owning decision: D-053. RFC: RFC-0056. Normative prose: docs/api/LIVE_DISPOSITION.md
+
+disposition = "undecided" # prove_ops | polling_only at cut
+prior_ids = ["BROWSER-10-001", "PERF-10-001", "LIVE-011-BROWSER"]
+supported_production_fallback = "polling"
+experimental_module = "hedron.experimental"

@@ -63,6 +63,8 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
     SSE, focused streaming, WebSocket channels, and navigation preload are
     **experimental** (`hedron.experimental`). Prefer [polling](live-interaction.md) in
     production until your own load/proxy evidence covers backpressure.
+    Phase **0.24** will choose prove-ops **or** polling-only
+    ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md); packet refine complete, cut undecided).
     **This page is the only maturity source of truth** for Supported vs Experimental claims.
 
 ## Use today

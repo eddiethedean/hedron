@@ -103,4 +103,10 @@ ROADMAP §0.23 + [STABLE_FACADE.md](../api/STABLE_FACADE.md); gates Verified via
 `check_stable_tier_023.py` / `check_stable_facade.py` / `check_stability_inventory.py` /
 `ci_checks.sh test` / `verify_pkg_23.py` (see `release-gate-0.23.toml`).
 
-Packet refine for **0.24–0.25** may still add gate command detail for those phases.
+**0.24 packet refine complete:** locked dual-path Verified criteria + XOR disposition
+(`prove_ops` | `polling_only`) in ROADMAP §0.24 + [LIVE_DISPOSITION.md](../api/LIVE_DISPOSITION.md);
+gate commands via `check_live_disposition_024.py` / `check_browser_024.py` /
+`check_perf_024.py` / `check_docs_024.py` / `ci_checks.sh test` / `verify_pkg_24.py`
+(see `release-gate-0.24.toml`). Cut still chooses disposition.
+
+Packet refine for **0.25** may still add gate command detail for that phase.
