@@ -31,5 +31,6 @@ region streams tokens on load. Follow the on-page links for `/sse/ping`, Job SSE
 | WebSocket page/session channel | Yes (`/ws/page`) | **Experimental** (FastAPI) |
 | Navigation preload | Yes (`/next`) | **Experimental** (FastAPI) |
 
-Prefer polling behind load balancers until your own ops evidence covers SSE/WS
-backpressure.
+Prefer polling behind load balancers. Phase **0.24** Accepted **`polling_only`**:
+live SSE/WS helpers remain **experimental**; polling is the Supported production story
+([LIVE_DISPOSITION](https://hedron.readthedocs.io/en/latest/api/LIVE_DISPOSITION/)).

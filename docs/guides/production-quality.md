@@ -3,7 +3,7 @@
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
 checklist in [Production readiness](production-readiness.md).
 
-**Living published train:** pin `hedron>=0.23.0,<0.24`. Capability maturity SSOT:
+**Living published train:** pin `hedron>=0.24.0,<0.25`. Capability maturity SSOT:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 (maintainer corpus on GitHub).
@@ -24,8 +24,9 @@ Raise production-level quality as **trust in the Supported surface**:
   [STABILITY expanded tier](../api/STABILITY.md#expanded-stable-tier-023)) — not every
   Supported row
 - Finish human AT sessions (0.21 remaining P0) — CSRF composition (0.22) is **Published**
-- Resolve live SSE/WebSocket: prove ops evidence **or** keep polling as the only production story
-  ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md); disposition undecided until 0.24 cut)
+- Resolve live SSE/WebSocket: **0.24 Accepted `polling_only`** — polling is the Supported
+  production story; live helpers remain experimental
+  ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md))
 - Harden a reference production archetype and quarantine Alpha/landmine extras
 
 Explicitly **not** the goal: calendar `1.0`, commercial SLA, WCAG/VPAT product claims, or
@@ -38,7 +39,7 @@ promoting every Alpha extra.
 | P0 | Complete **0.21** human AT sessions + remediate | Engineering-complete / sessions outstanding |
 | P0 | Ship **0.22** CSRF / SecurityPolicy composition | **Published** (`v0.22.0`) |
 | P1 | Expand `stable` API tier (**0.23**) | **Published** (`v0.23.0`; D-053) — locked allowlist in ROADMAP §0.23 / [STABLE_FACADE](../api/STABLE_FACADE.md) |
-| P1 | Live-transport disposition (**0.24**) — prove gates or polling-only docs | Planned (D-053) — **packet refine complete**; [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md) |
+| P1 | Live-transport disposition (**0.24**) — `polling_only` | **Published** (`v0.24.0`; D-053) — [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md) |
 | P2 | Production archetype + load budgets + extras quarantine (**0.25**) | Planned (D-053) |
 | P3 | External security review + SBOM/evidence on every train tag | Process |
 | P3 | Optional written `1.0` DoD **without a date** | Documented in D-053; no phase scheduled |

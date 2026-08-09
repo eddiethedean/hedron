@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Fail if adopter-facing docs claim a stale published train or banned maturity jargon.
 
-The living published line is 0.23.x (``v0.23.0``). Historical whats-new / acceptance /
+The living published line is 0.24.x (``v0.24.0``). Historical whats-new / acceptance /
 RFC phase labels are allowed. This check targets pages that assert "current"
 product maturity.
 
-Also fails when adopter install snippets pin ``hedron>=0.23.0`` (or adapter
-packages) without an upper bound ``,<0.24``.
+Also fails when adopter install snippets pin ``hedron>=0.24.0`` (or adapter
+packages) without an upper bound ``,<0.25``.
 """
 
 from __future__ import annotations
@@ -61,6 +61,7 @@ CHECKED = [
     ROOT / "docs" / "guides" / "whats-new-0.21.md",
     ROOT / "docs" / "guides" / "whats-new-0.22.md",
     ROOT / "docs" / "guides" / "whats-new-0.23.md",
+    ROOT / "docs" / "guides" / "whats-new-0.24.md",
     ROOT / "docs" / "guides" / "roadmap.md",
     ROOT / "docs" / "api" / "STABLE_FACADE.md",
     ROOT / "docs" / "api" / "ADAPTERS.md",
@@ -343,6 +344,71 @@ STALE = [
     re.compile(r"train tag \(`v0\.22\.0`\)", re.I),
     re.compile(r"available on the 0\.22 train", re.I),
     re.compile(r"Published on the \*\*0\.22\*\* train", re.I),
+
+    # Stale "current train is still 0.23" claims after v0.24.0 docs flip.
+    # Keep patterns specific to *current* claims so historical whats-new-0.23 stays valid.
+    re.compile(r"last published PyPI/git = `v0\.23\.0`", re.I),
+    re.compile(r"last published PyPI/git is `v0\.23\.0`", re.I),
+    re.compile(r"last published PyPI/git is \*\*`v0\.23\.0`\*\*", re.I),
+    re.compile(r"Living train: \*\*0\.23\.0\*\*", re.I),
+    re.compile(r"living train \*\*0\.23\*\*", re.I),
+    re.compile(r"current train \*\*0\.23\.0\*\*", re.I),
+    re.compile(r"current train \*\*0\.23\*\*", re.I),
+    re.compile(r"kept current with the \*\*0\.23\.0\*\* train", re.I),
+    re.compile(r"\*\*Train:\*\* `0\.23\.0` \(Published\)", re.I),
+    re.compile(r"Last published: <strong>v0\.23\.0</strong>", re.I),
+    re.compile(r"PyPI(?:/git)? still serve[s]? \*\*`v0\.23\.0`\*\*", re.I),
+    re.compile(r"\*\*Last published train:\*\* `v0\.23\.0`", re.I),
+    re.compile(r"current published[^\n]*`v0\.23\.0`", re.I),
+    re.compile(r"Last \*\*published\*\* PyPI train is \*\*0\.23", re.I),
+    re.compile(r"Current published train is \*\*0\.23\*\*", re.I),
+    re.compile(r"Living published train remains \*\*0\.23\*\*", re.I),
+    re.compile(r"living published train remains \*\*0\.23\*\*", re.I),
+    re.compile(r"Living published train is \*\*0\.23\*\*", re.I),
+    re.compile(r"Living published train is \*\*0\.23\.0\*\*", re.I),
+    re.compile(r"0\.24 Planned", re.I),
+    re.compile(r"live disposition — packet refine complete", re.I),
+    re.compile(r"cut undecided", re.I),
+    re.compile(r"disposition undecided", re.I),
+    re.compile(r"scaffold on \*\*0\.23\.x\*\*", re.I),
+    re.compile(r"Supported lines: \*\*`0\.23\.x`", re.I),
+    re.compile(r"`0\.23\.x` \(current published", re.I),
+    re.compile(r"matching `0\.23\.x` pin", re.I),
+    re.compile(r"current train is \*\*0\.23", re.I),
+    re.compile(r"Expect \*\*`0\.23\.0`\*\*", re.I),
+    re.compile(r"hedron&gt;=0\.24\.0,&lt;0\.24", re.I),
+    re.compile(r"hedron>=0\.24\.0,<0\.24(?!\d)", re.I),
+    re.compile(r"Next: <strong>0\.24</strong>", re.I),
+    re.compile(r"living \*\*0\.23\*\* train", re.I),
+    re.compile(r"living Published \*\*0\.23\*\*", re.I),
+    re.compile(r"train is \*\*0\.23\.x\*\*", re.I),
+    re.compile(r"Python-first UI framework · v0\.23", re.I),
+    re.compile(r"Living published train:\s*pin `hedron>=0\.23\.0,<0\.24`", re.I),
+    re.compile(r"Canonical maturity snapshot for Hedron 0\.23\.0", re.I),
+    re.compile(r"Coordinated train: \*\*`0\.23", re.I),
+    re.compile(r"Current train — 0\.23", re.I),
+    re.compile(r"Current train: \*\*0\.23", re.I),
+    re.compile(r"phase 0\.23 \*\*Published\*\* as `v0\.23\.0`", re.I),
+    re.compile(r"Workspace packages: Beta `0\.23\.0`", re.I),
+    re.compile(r"That is the current published line \(`v0\.23\.0`\)", re.I),
+    re.compile(r"current published line \(`v0\.23\.0`\)", re.I),
+    re.compile(r"published \(Beta packages — pin `hedron>=0\.23\.0,<0\.24`\)", re.I),
+    re.compile(r"hedron==0\.23\.0", re.I),
+    re.compile(r"Hedron 0\.23\.0", re.I),
+    re.compile(r"\*\*0\.23 train\*\* \(\*\*Published\*\*", re.I),
+    re.compile(r"Package verify \(0\.23\)", re.I),
+    re.compile(r"uv run python scripts/verify_pkg_23\.py", re.I),
+    re.compile(r"living train: \*\*`verify_pkg_23\.py`\*\*", re.I),
+    re.compile(r"current train `0\.23\.0`", re.I),
+    re.compile(r"the coordinated train is \*\*`0\.23\.0`\*\*", re.I),
+    re.compile(r"last published PyPI = `0\.23\.0`", re.I),
+    re.compile(r"git checkout v0\.23\.0", re.I),
+    re.compile(r"train tag \(`v0\.23\.0`\)", re.I),
+    re.compile(r"available on the 0\.23 train", re.I),
+    re.compile(r"Published on the \*\*0\.23\*\* train", re.I),
+    re.compile(r"Honest gaps on the current train \(0\.23\)", re.I),
+    re.compile(r"Living runbook for the current train \(`0\.23`\)", re.I),
+    re.compile(r"Current train:\s*`0\.23\.x`", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.
@@ -357,8 +423,8 @@ BANNED = [
 UNBOUNDED_PIN = re.compile(
     r"(?:hedron(?:\[[^\]]+\])?|hedron-(?:flask|django|core|data|explorer|jinja|"
     r"conformance|extras))"
-    r">=0\.23\.0"
-    r"(?!,?\s*<0\.24)"
+    r">=0\.24\.0"
+    r"(?!,?\s*<0\.25)"
 )
 
 BARE_EXTRA = re.compile(r"""["']hedron\[[^\]]+\]["'](?!\s*>=)""")
@@ -426,8 +492,8 @@ def _check_unbounded_pins() -> list[str]:
                 continue
             if UNBOUNDED_PIN.search(line):
                 failures.append(
-                    f"{path.relative_to(ROOT)}:{lineno}: unbounded 0.23 pin "
-                    f"(use >=0.23.0,<0.24): {line.strip()[:120]}"
+                    f"{path.relative_to(ROOT)}:{lineno}: unbounded 0.24 pin "
+                    f"(use >=0.24.0,<0.25): {line.strip()[:120]}"
                 )
             if BARE_EXTRA.search(line):
                 failures.append(
@@ -465,7 +531,7 @@ def main() -> int:
         print("\n".join(failures), file=sys.stderr)
         return 1
     print(
-        "ok: adopter docs assert Published 0.23 (v0.23.0), "
+        "ok: adopter docs assert Published 0.24 (v0.24.0), "
         "upper-bound pins, and avoid Supported beta / SSOT / beachhead jargon"
     )
     return 0

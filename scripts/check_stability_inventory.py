@@ -109,7 +109,7 @@ def main() -> int:
         "Artifact classes",
         "Deferred destinations",
         "Minimal `stable` tier",
-        "experimental until ops gates",
+        "polling_only",
         "Supported in 0.11",
     ]
     for section in required_sections:

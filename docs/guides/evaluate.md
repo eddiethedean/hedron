@@ -29,7 +29,7 @@ HTML forms. HTMX is introduced in
 
 | Item | Value |
 |---|---|
-| Version | **0.23.0** (Beta; **Published** — pin `hedron>=0.23.0,<0.24`) |
+| Version | **0.24.0** (Beta; **Published** — pin `hedron>=0.24.0,<0.25`) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |

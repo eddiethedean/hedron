@@ -1,38 +1,39 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.23 **Published** as `v0.23.0` (2026-08-08); last published
-PyPI/git = `v0.23.0`. Workspace packages: Beta `0.23.0`, Alpha charts/sample-kit/native
+**Roadmap position:** phase 0.24 **Published** as `v0.24.0` (2026-08-09); last published
+PyPI/git = `v0.24.0`. Workspace packages: Beta `0.24.0`, Alpha charts/sample-kit/native
 `0.1.x`, Alpha notebook/mcp/gradio `0.1.0`.
-**Date:** 2026-08-08
+**Date:** 2026-08-09
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.23.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` /
+`0.24.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` /
 `hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.x` (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
 `hedron-charts`, `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, `hedron-mcp`,
 `hedron-gradio`.
 
-**Phase focus:** Living published train is **0.23** (D-053 stable-tier expansion for the
-narrow CRUD/admin facade). Human AT protocol remains **Verified** (`PROTOCOL-021`);
-**`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021` remain Planned** until
-real sessions — **do not market human AT as Supported**. Automated AT (`AT-019`, phase 0.19)
-remains Supported and is not a substitute for human AT. Production-quality maturity program
-(**D-053** / RFC-0056) next packets: **0.24** (live disposition — **packet refine
-complete**; cut still undecided), **0.25**
+**Phase focus:** Living published train is **0.24** (D-053 live-transport disposition
+**`polling_only`**). Polling is the Supported production story; live SSE/WS/streaming/preload
+remain **experimental** (`hedron.experimental`). Human AT protocol remains **Verified**
+(`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021` remain
+Planned** until real sessions — **do not market human AT as Supported**. Automated AT
+(`AT-019`, phase 0.19) remains Supported and is not a substitute for human AT.
+Production-quality maturity program (**D-053** / RFC-0056) next packet: **0.25**
 (archetype / landmines) — see [production-quality](guides/production-quality.md).
 
 ## Supported vs Deferred (operator view)
 
 Adopter summary: [What’s ready today](guides/whats-ready.md). Rule of thumb: do not market a
 capability as unqualified **Supported** when its owning gate row is **Deferred** or still
-**Planned**. Live SSE/WS/streaming/preload remain **experimental** (polling Supported).
-Notebook preview, MCP, and Gradio interop are **Experimental** / Alpha. Phase 0.20 closed with
-**zero Deferred** among **0.20 gate IDs**. Phase 0.21 ships the engineering train with an
-honest human-AT gap: protocol Verified; sessions Planned / not Supported. Phase **0.22**
-ships CSRF / SecurityPolicy composition with **zero Deferred** among 0.22-owned rows.
-Phase **0.23** ships stable-tier expansion with **zero Deferred** among 0.23-owned rows.
-Prior-phase Deferred rows below remain owned elsewhere.
+**Planned**. Live SSE/WS/streaming/preload remain **experimental** (polling Supported —
+`polling_only` Accepted in 0.24). Notebook preview, MCP, and Gradio interop are
+**Experimental** / Alpha. Phase 0.20 closed with **zero Deferred** among **0.20 gate IDs**.
+Phase 0.21 ships the engineering train with an honest human-AT gap: protocol Verified;
+sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy composition with
+**zero Deferred** among 0.22-owned rows. Phase **0.23** ships stable-tier expansion with
+**zero Deferred** among 0.23-owned rows. Phase **0.24** ships live-transport disposition
+`polling_only` with **zero Deferred** among 0.24-owned rows.
 
 | ID | Topic | Disposition | Notes |
 |---|---|---|---|
@@ -64,12 +65,31 @@ Prior-phase Deferred rows below remain owned elsewhere.
 | `INVENTORY-023` | Stability inventory checker | **Verified** (0.23) | |
 | `REGRESS-023` | Full suite at 0.23 cut | **Verified** (0.23) | |
 | `PKG-023` | `verify_pkg_23.py` packet evidence | **Verified** (0.23) | |
-| `LIVE-011-BROWSER` | Full adapter live browser matrix | **Deferred** → `0.11.x` | Prior-phase carryover; disposition → **0.24** (D-053; packet refine complete) |
-| `BROWSER-10-001` | Full three-engine live browser matrix | **Deferred** → `0.10.x` | Prior-phase carryover; disposition → **0.24** (D-053; packet refine complete) |
-| `PERF-10-001` | Load/proxy backpressure evidence | **Deferred** → `0.10.x` | SSE/WS ops proof; disposition → **0.24** (D-053; packet refine complete) |
+| `DECIDE-024` | Live disposition XOR (`polling_only`) | **Verified** (0.24) | D-053 / RFC-0056 |
+| `BROWSER-024` | Browser waive ledger for prior live IDs | **Verified** (0.24) | [waive-browser-024.toml](acceptance/waive-browser-024.toml) |
+| `PERF-024` | Perf waive ledger for `PERF-10-001` | **Verified** (0.24) | [waive-perf-024.toml](acceptance/waive-perf-024.toml) |
+| `DOCS-024` | Docs train SSOT + live-claim honesty | **Verified** (0.24) | |
+| `REGRESS-024` | Full suite at 0.24 cut | **Verified** (0.24) | |
+| `PKG-024` | `verify_pkg_24.py` packet evidence | **Verified** (0.24) | |
+| `LIVE-011-BROWSER` | Full adapter live browser matrix | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `BROWSER-024` |
+| `BROWSER-10-001` | Full three-engine live browser matrix | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `BROWSER-024` |
+| `PERF-10-001` | Load/proxy backpressure evidence | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `PERF-024` |
 | `EXPLORER-10-001` | Explorer live traces | **Deferred** → `0.10.x` | **Not** re-homed to 0.24; stays on `0.10.x` |
 
-## Phase 0.23 evidence
+## Phase 0.24 evidence
+
+- Gate index: [release-gate-0.24.toml](acceptance/release-gate-0.24.toml)
+  (all `Verified`; zero-Deferred for 0.24-owned rows).
+- Acceptance: [RELEASE_0_24.md](acceptance/RELEASE_0_24.md).
+- Disposition: [api/LIVE_DISPOSITION.md](api/LIVE_DISPOSITION.md) ·
+  [live-disposition-024.toml](acceptance/live-disposition-024.toml) (`polling_only`).
+- Waive ledgers: [waive-browser-024.toml](acceptance/waive-browser-024.toml) ·
+  [waive-perf-024.toml](acceptance/waive-perf-024.toml).
+- What’s new: [guides/whats-new-0.24.md](guides/whats-new-0.24.md).
+- Checker: `python scripts/check_release_gate.py 0.24.0`,
+  `python scripts/verify_pkg_24.py`.
+
+## Phase 0.23 evidence (prior)
 
 - Gate index: [release-gate-0.23.toml](acceptance/release-gate-0.23.toml)
   (all `Verified`; zero-Deferred for 0.23-owned rows).
@@ -112,10 +132,8 @@ Prior-phase Deferred rows below remain owned elsewhere.
 
 ## Next capability phases
 
-**0.24** — Live-transport production disposition (prove ops **or** polling-only; D-053).
-**Packet refine complete** — locked dual-path criteria + gate commands; disposition still
-`undecided` until cut ([LIVE_DISPOSITION](api/LIVE_DISPOSITION.md)).
 **0.25** — Production archetype, load budgets, extras quarantine (D-053).
 Program summary: [production-quality guide](guides/production-quality.md).
 
-Cut procedure: [RELEASE.md](RELEASE.md).
+Optional later: external security review + SBOM attach on every train tag; undated written
+`1.0` definition of done (D-053 P3) — no scheduled calendar `1.0`.

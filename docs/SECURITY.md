@@ -4,9 +4,10 @@
 
 | Version | Supported |
 |---|---|
-| `0.23.x` | Yes (current published train — pin `>=0.23.0,<0.24`; last published `v0.23.0`) |
-| `0.22.x` | Prefer upgrade to `0.23.x` |
-| `0.21.x` | Prefer upgrade to `0.23.x` |
+| `0.24.x` | Yes (current published train — pin `>=0.24.0,<0.25`; last published `v0.24.0`) |
+| `0.23.x` | Prefer upgrade to `0.24.x` |
+| `0.22.x` | Prefer upgrade to `0.24.x` |
+| `0.21.x` | Prefer upgrade to `0.24.x` |
 | `0.20.x` | Prefer upgrading to the current train |
 | `0.19.x` | Prefer upgrading to the current train |
 | `0.18.x` | Prefer upgrading to the current train |

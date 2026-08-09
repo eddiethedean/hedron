@@ -19,7 +19,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.21** | Human assistive-technology / compensated evaluation (D-052) | **Published** (`v0.21.0` engineering; PROTOCOL Verified; SR/PARTICIPANT Planned — not Supported) |
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | **Published** (`v0.22.0`; D-051) |
 | **0.23** | Expand `stable` API tier for narrow CRUD/admin facade (regions/`swap`, Poll/jobs, `CsrfField`/`Form`, beginner chrome, AppScenario asserts) | **Published** (`v0.23.0`; D-053) |
-| **0.24** | Live-transport production disposition (prove ops or polling-only) | Planned (D-053) — packet refine complete |
+| **0.24** | Live-transport production disposition (`polling_only`) | **Published** (`v0.24.0`; D-053) |
 | **0.25** | Production archetype, load budgets, extras quarantine | Planned (D-053) |
 
 ## What this means for you
@@ -31,35 +31,33 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   catalogued in [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or
   `experimental`.
 - **0.23** (**Published**) expanded that tier for a locked Beginner/CRUD facade only —
-  [STABLE_FACADE](../api/STABLE_FACADE.md) — not every What’s ready Supported row; live
-  transports stay for **0.24** ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md); packet
-  refine complete, disposition undecided until cut).
+  [STABLE_FACADE](../api/STABLE_FACADE.md) — not every What’s ready Supported row.
+- **0.24** (**Published**) Accepted **`polling_only`**: live transports stay
+  **experimental**; polling is the Supported production story —
+  [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md).
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
 
-## Honest gaps on the current train (0.23)
+## Honest gaps on the current train (0.24)
 
-- Current **published** PyPI train is **0.23.x** (`v0.23.0`)
+- Current **published** PyPI train is **0.24.x** (`v0.24.0`)
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)
 - Identity helpers are **opt-in wiring** (not a managed IdP) — [Authentication](authentication.md)
 - Human screen-reader / compensated AT evaluation — protocol Verified; sessions Planned
   (not Supported); `AT-019` is automated Playwright/axe only
-- Full multi-engine adapter live browser matrix → owned `0.11.x` Deferred (`LIVE-011-BROWSER`);
-  disposition → **0.24**
-- Full multi-engine FastAPI live browser matrix → owned `0.10.x` Deferred (`BROWSER-10-001`);
-  disposition → **0.24**
+- Prior live-browser / load Deferred IDs (`LIVE-011-BROWSER`, `BROWSER-10-001`,
+  `PERF-10-001`) are **Superseded** by `DECIDE-024` `polling_only`
 - Explorer live traces → owned `0.10.x` Deferred (`EXPLORER-10-001`; **not** re-homed to 0.24)
 - Live transports remain **experimental**; polling is Supported — [What’s ready](whats-ready.md)
   · [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md)
 
 CSRF / SecurityPolicy composition (#36–#38) shipped in **0.22**
 ([RELEASE_0_22](../acceptance/RELEASE_0_22.md)). Human AT evaluation engineering is
-**0.21** (D-052; sessions outstanding). Stable-tier expansion, live-transport disposition, and
-production archetype work are **0.23–0.25** (D-053). Earlier ops honesty items remain under
-phases **0.13+** as listed in
-the ownership table until 0.24 re-homes them.
+**0.21** (D-052; sessions outstanding). Stable-tier expansion shipped in **0.23**;
+live-transport disposition shipped in **0.24**; production archetype work is **0.25**
+(D-053).
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))

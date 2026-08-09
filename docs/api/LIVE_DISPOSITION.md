@@ -1,15 +1,16 @@
 ---
-status: draft
+status: accepted
 ---
 
 # Live-transport disposition (0.24)
 
-!!! note "Packet refine complete — disposition undecided until cut"
+!!! note "Accepted: `polling_only`"
 
-    Phase **0.24** locks dual-path Verified criteria for live SSE / WebSocket / streaming /
-    preload helpers. Cut chooses exactly one of **`prove_ops`** or **`polling_only`**.
-    Living published train remains **0.23** — pin `hedron>=0.23.0,<0.24`. Prefer
-    [polling](../guides/live-interaction.md) in production until cut.
+    Phase **0.24** Accepted disposition **`polling_only`** (Disposition B). Polling is the
+    Supported production story. Live SSE / WebSocket / streaming / preload helpers remain
+    **experimental** (`hedron.experimental`). Prefer
+    [polling](../guides/live-interaction.md) in production.
+    Pin the living train: see [What’s ready](../guides/whats-ready.md).
 
 **Owning gates:** `DECIDE-024`, `BROWSER-024`, `PERF-024`, `DOCS-024`, `REGRESS-024`,
 `PKG-024`. Decision: **D-053** /
@@ -20,11 +21,12 @@ Machine twin: [`live-disposition-024.toml`](../acceptance/live-disposition-024.t
 
 | Value | Cut meaning |
 |---|---|
-| `undecided` | Refine / pre-cut only (`--allow-undecided`) |
-| `prove_ops` | Disposition **A** — close browser + load/proxy Deferred ops with evidence |
-| `polling_only` | Disposition **B** — polling is the Supported production story |
+| `undecided` | Refine / pre-cut only (`--allow-undecided`) — not used after cut |
+| `prove_ops` | Disposition **A** — close browser + load/proxy Deferred ops with evidence (not chosen) |
+| `polling_only` | Disposition **B** — **Accepted** — polling is the Supported production story |
 
-Exactly one of `prove_ops` | `polling_only` may be Accepted at cut. Do not half-verify both.
+Exactly one of `prove_ops` | `polling_only` may be Accepted at cut. Cut chose **`polling_only`**.
+Do not half-verify both.
 
 Normative per-gate criteria: [ROADMAP §0.24](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
@@ -32,15 +34,15 @@ Normative per-gate criteria: [ROADMAP §0.24](https://github.com/eddiethedean/he
 
 | ID | Historical home | 0.24 handling |
 |---|---|---|
-| `BROWSER-10-001` | `0.10.x` | Close under A or waive/supersede under B (`BROWSER-024`) |
-| `PERF-10-001` | `0.10.x` | Close under A or waive/supersede under B (`PERF-024`) |
-| `LIVE-011-BROWSER` | `0.11.x` | Close under A or waive/supersede under B (`BROWSER-024`) |
+| `BROWSER-10-001` | `0.10.x` | **Superseded** under B (`BROWSER-024` waive ledger) |
+| `PERF-10-001` | `0.10.x` | **Superseded** under B (`PERF-024` waive ledger) |
+| `LIVE-011-BROWSER` | `0.11.x` | **Superseded** under B (`BROWSER-024` waive ledger) |
 
 **Not in scope:** `EXPLORER-10-001` remains Deferred on **`0.10.x`** (Explorer live traces).
 
 ## Experimental live surfaces
 
-Until disposition A is Verified and claim phrases are updated, these remain
+Because disposition **`polling_only`** was Accepted (not `prove_ops`), these remain
 **experimental** (see `hedron.live_claims.EXPERIMENTAL_LIVE_SURFACES`):
 
 ```text
@@ -63,15 +65,15 @@ Import path: `hedron.experimental`. Supported production fallback:
 ## Doc honesty
 
 Adopter-facing pages listed in `LIVE_CLAIM_DOC_GLOBS` must not call experimental live
-transports unqualified **Supported** while disposition is `undecided` or `polling_only`.
+transports unqualified **Supported** while disposition is `polling_only`.
 Checker: `python scripts/check_docs_024.py` (train SSOT + live-claim honesty).
 
 ## Ledgers and evidence
 
 | Gate | Artifact |
 |---|---|
-| Browser | [`waive-browser-024.toml`](../acceptance/waive-browser-024.toml) and/or `evidence_path` |
-| Perf | [`waive-perf-024.toml`](../acceptance/waive-perf-024.toml) and/or `evidence_path` |
+| Browser | [`waive-browser-024.toml`](../acceptance/waive-browser-024.toml) |
+| Perf | [`waive-perf-024.toml`](../acceptance/waive-perf-024.toml) |
 
 ## Locked gate commands
 

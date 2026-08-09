@@ -27,10 +27,11 @@ Disposition SSOT: [LIVE_DISPOSITION.md](../api/LIVE_DISPOSITION.md) ·
   `python scripts/check_perf_024.py --allow-undecided`,
   `python scripts/check_docs_024.py`,
   `python scripts/verify_pkg_24.py --allow-planned`.
-- [ ] `DECIDE-024` disposition written (`prove_ops` or `polling_only`) and mirrored in
+- [x] `DECIDE-024` disposition written (`polling_only`) and mirrored in
   What’s ready / STABILITY / LIVE_DISPOSITION.
-- [ ] `BROWSER-024` / `PERF-024` / `DOCS-024` Verified for the chosen disposition.
-- [ ] `REGRESS-024` / `PKG-024` at cut
+- [x] `BROWSER-024` / `PERF-024` / `DOCS-024` Verified for `polling_only`
+  (waive ledgers + claim honesty).
+- [x] `REGRESS-024` / `PKG-024` at cut
   (`bash scripts/ci_checks.sh test --python 3.12`,
   `python scripts/verify_pkg_24.py`).
 
@@ -38,11 +39,11 @@ Disposition SSOT: [LIVE_DISPOSITION.md](../api/LIVE_DISPOSITION.md) ·
 
 - Production archetype / load budgets / extras quarantine / charts path → **0.25**
 - Alpha charts / notebook / MCP / Gradio / `hedron-native`
-- Human AT sessions (`SR-021` / …) — remain 0.21 P0
-- `EXPLORER-10-001` (Explorer live traces) — stays Deferred on **`0.10.x`**
-- Deleting experimental APIs without a disposition
+- Human AT sessions (`SR-021` / …) remain Planned
+- `EXPLORER-10-001` stays Deferred on `0.10.x`
 
 ## Exit
 
-- [ ] Every 0.24-owned release-gate row is `Verified`.
-- [ ] Prior Deferred live-ops IDs have a terminal owner note.
+- [x] Every 0.24-owned row `Verified` in `release-gate-0.24.toml`
+- [x] Prior Deferred live-ops IDs have terminal owner notes
+  (`superseded` via waive ledgers under `polling_only`)

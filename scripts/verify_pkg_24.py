@@ -5,8 +5,8 @@ Does **not** publish or tag.
 
 * Default (omit ``--allow-planned``): require every evidence row ``Verified``, then
   execute Verified SSOT ``check_*.py`` commands from the manifest (cut path).
-* ``--allow-planned`` remains for lenient gate shape checks against the living
-  train metadata (still ``0.23.0`` until the 0.24 cut).
+* ``--allow-planned`` remains for lenient gate shape checks against living
+  train metadata (``0.24.0``).
 """
 
 from __future__ import annotations
@@ -18,8 +18,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.24.toml"
-# Living published train while 0.24 gates remain Planned.
-LIVING_TRAIN = "0.23.0"
+# Living published train (also used with --allow-planned post-cut).
+LIVING_TRAIN = "0.24.0"
 
 
 def main(argv: list[str] | None = None) -> int:

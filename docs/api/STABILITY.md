@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.23.0,<0.24`. Treat the **stable** tables below (minimal +
+**For adopters:** Pin `hedron>=0.24.0,<0.25`. Treat the **stable** tables below (minimal +
 expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
 `experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
 lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -8,15 +8,15 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Phase 0.23 stable-tier expansion (**Published** as `0.23.0`; last published
-PyPI/git = `v0.23.0`). Prior train: 0.22 CSRF / SecurityPolicy composition.
+**Status:** Living train **0.24** (**Published** as `0.24.0`; last published
+PyPI/git = `v0.24.0`). Prior: 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
 (D-038: no calendar `1.0` scheduled; D-053 / RFC-0056).
-**Version:** `0.23.0` / catalog baseline
-`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`
+**Version:** `0.24.0` / catalog baseline
+`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`+`0.24`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`0.23.0` train on `main`. Levels apply to documented contracts; symbols not listed here are
+`0.24.0` train on `main`. Levels apply to documented contracts; symbols not listed here are
 **internal** unless a later phase explicitly promotes them.
 
 </details>
@@ -62,9 +62,9 @@ stable via the root facade — import them from their packages.
 
 ## Expanded stable tier (0.23)
 
-!!! note "Published on the 0.23 train"
+!!! note "Expanded stable tier from 0.23"
 
-    These contracts are **`stable`** on **`v0.23.0`** (D-053 / RFC-0056) — the narrow
+    These contracts are **`stable`** since **`v0.23.0`** (D-053 / RFC-0056) — the narrow
     Supported CRUD/admin happy path. Beginner import inventory:
     [STABLE_FACADE.md](STABLE_FACADE.md).
     Migration: additive promotions only — no removal from the minimal tier; any later
@@ -93,7 +93,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 
 | Surface | Disposition |
 |---|---|
-| `job_status_sse_response` and other `hedron.experimental` live helpers | Remain **experimental**; disposition **0.24** |
+| `job_status_sse_response` and other `hedron.experimental` live helpers | Remain **experimental**; 0.24 Accepted `polling_only` |
 | Alpha charts / notebook / MCP / Gradio / native | Not promoted |
 | `hedron[data]` / DataEditor, extras, OIDC product surface | Stay `beta` (Supported capability OK) |
 | Dialog / Tabs / Pagination / Lazy, Map / media / capture, dashboards, inference | Stay `beta` |
@@ -138,7 +138,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
   (`SseResponse`, `job_status_sse_response`, `sse_response`,
   `StreamingComponentResponse`, `stream_*`, `accept_page_session_channel`,
   `send_region_update`, `ALLOW_MISSING_ORIGIN`, navigation preload helpers).
-  Prefer polling until ops gates close. Root attribute access remains as a compat shim.
+  Prefer polling (0.24 Accepted `polling_only`). Root attribute access remains as a compat shim.
 - Lazy optional surfaces (`hedron[data]`, `hedron[charts]`, `hedron[auth]`, content helpers) inherit
   the optional package level and are **not** part of the root stable facade.
 
@@ -265,7 +265,7 @@ older upgrade notes remain navigable.
 | Flask / Django live helpers | D-044 / D-046 | **Experimental** API; polling **Supported** |
 | Camera / microphone capture UI | D-045 | **Supported** since 0.15 (with policy limits) |
 
-## Live transports (0.10+) — experimental until ops gates close
+## Live transports (0.10+) — experimental; polling Supported (`polling_only`)
 
 | Item | Decision | Notes |
 |---|---|---|
@@ -274,12 +274,11 @@ older upgrade notes remain navigable.
 | Focused streaming / page-session WebSocket | D-044 | **experimental** on FastAPI |
 | Dialog / ChatMessage / ChatInput | D-045 | **beta** (history application-owned) |
 
-Disposition of permanent experimental labeling is owned by phase **0.24** (D-053 /
+Phase **0.24** Accepted disposition **`polling_only`** (D-053 /
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)):
-prove browser/load ops evidence **or** formally document polling-only for production.
-Packet refine is **complete** — dual-path criteria and gate commands are locked in
-[LIVE_DISPOSITION.md](LIVE_DISPOSITION.md); cut still chooses `prove_ops` or
-`polling_only`. Until then, prefer polling in production.
+polling is the Supported production story; live helpers remain experimental.
+`prove_ops` was not chosen. Contract: [LIVE_DISPOSITION.md](LIVE_DISPOSITION.md).
+Prefer polling in production.
 
 Exports: `SseResponse`, `job_status_sse_response`, `StreamingComponentResponse`,
 `accept_page_session_channel`, `send_region_update`, `Dialog`, `ChatMessage`, `ChatInput`.

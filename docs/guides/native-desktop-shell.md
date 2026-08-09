@@ -7,7 +7,7 @@ pywebview (or similar) embeds the local origin.
 ## Minimal recipe
 
 ```bash
-pip install "hedron[extras]>=0.23.0,<0.24" "uvicorn[standard]" pywebview
+pip install "hedron[extras]>=0.24.0,<0.25" "uvicorn[standard]" pywebview
 ```
 
 ```python

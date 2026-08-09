@@ -4,7 +4,7 @@ One-page adopter checklist for shipping a Hedron app. Capability maturity lives 
 [What’s ready](whats-ready.md). Detailed ops notes:
 [Deployment](deployment.md) · [Production readiness](production-readiness.md).
 
-Pin `hedron>=0.23.0,<0.24` (and matching adapters/extras) in your lockfile.
+Pin `hedron>=0.24.0,<0.25` (and matching adapters/extras) in your lockfile.
 
 ## Checklist
 

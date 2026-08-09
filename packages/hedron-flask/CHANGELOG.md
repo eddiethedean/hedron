@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.0] — 2026-08-09
+
+### Changed
+
+- Coordinated Beta train bump with `hedron` 0.24.0.
+- Live-transport disposition `polling_only` (D-053): polling Supported; live helpers remain experimental.
+
 ## [0.23.0] — 2026-08-08
 
 ### Changed

@@ -56,9 +56,9 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
     may stay shorter — prefer guides + Autodoc when Errors is missing.
     Human error index: [Error codes](../guides/error-codes.md).
 
-## Surfaces introduced in 0.19 (available on the 0.23 train)
+## Surfaces introduced in 0.19 (available on the 0.24 train)
 
-These surfaces first shipped in the 0.19 phase and remain on the living **0.23.0**
+These surfaces first shipped in the 0.19 phase and remain on the living **0.24.0**
 train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
 phases through 0.23).
 
@@ -122,13 +122,13 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 ## Current train notes
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
-  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.23**
-  (**Published** as **v0.23.0**) — [A11Y API](A11Y.md),
+  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.24**
+  (**Published** as **v0.24.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.23.0**)
+  (introduced in 0.11; Supported on **0.24.0**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.23.0**
+  — Supported on **0.24.0**
 - Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
 - Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
   narrative [What's new in 0.16](../guides/whats-new-0.16.md); package

@@ -1142,7 +1142,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.23** (`v0.23.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.24** (`v0.24.0`).
 See [STATUS](STATUS.md) and
 [release-gate-0.19.toml](acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -1585,16 +1585,16 @@ Zero Deferred among 0.23-owned gate rows at cut. Gate IDs and commands (packet r
 
 ## 0.24 — Live-transport production disposition (`v0.24.0`)
 
-**Status:** Planned. Part of D-053 / RFC-0056. Packet refine **complete** — locked dual-path
-Verified criteria and distinct gate commands below; cut still picks exactly one disposition.
-Re-homes or closes prior Deferred ops rows `BROWSER-10-001`, `PERF-10-001`, and
-`LIVE-011-BROWSER` with an explicit production story.
+**Status:** **Published** as `v0.24.0`. Part of D-053 / RFC-0056. Disposition Accepted:
+**`polling_only`** (Disposition B). Packet refine locked dual-path Verified criteria;
+cut chose polling as the Supported production story and superseded prior Deferred ops
+rows `BROWSER-10-001`, `PERF-10-001`, and `LIVE-011-BROWSER`.
 
 **Outcome:** End the permanent “experimental live transports” fog: either (A) close
 multi-engine browser + load/proxy backpressure evidence so SSE/WebSocket can graduate under
 documented ops constraints, **or** (B) formally document polling-only as the Supported
 production story and keep live helpers experimental without implying an imminent Supported
-claim.
+claim. **Cut Accepted (B).**
 
 Disposition SSOT: [LIVE_DISPOSITION.md](api/LIVE_DISPOSITION.md) ·
 [live-disposition-024.toml](acceptance/live-disposition-024.toml).
@@ -1634,7 +1634,7 @@ Zero Deferred among 0.24-owned gate rows at cut. Gate IDs and commands (packet r
 - **`DOCS-024`** — `python scripts/check_docs_024.py` — train-pin SSOT + live-claim honesty.
 - **`REGRESS-024`** — `bash scripts/ci_checks.sh test --python 3.12` at cut.
 - **`PKG-024`** — `python scripts/verify_pkg_24.py` (gate checker without `--allow-planned` at cut;
-  living train remains `0.23.0` under `--allow-planned`).
+  living train is `0.24.0`).
 
 ### Out of 0.24
 

@@ -116,7 +116,7 @@ control ([Auto API](../api/AUTO.md)).
     ```
 
 ```bash
-pip install "hedron[data]>=0.23.0,<0.24"
+pip install "hedron[data]>=0.24.0,<0.25"
 # optional backends
 pip install "hedron-data[pandas]"
 ```

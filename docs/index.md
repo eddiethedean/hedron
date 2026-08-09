@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python-first UI framework · v0.23.0</div>
+<div class="hedron-eyebrow">Python-first UI framework · v0.24.0</div>
 
 # Build typed FastAPI UIs in Python.<br><span class="hedron-gradient-text">HTMX fragments, no Node.</span>
 
@@ -39,7 +39,7 @@ open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
 ## From zero to a rendered page
 
 Prefer a clean virtualenv (Supported pins: FastAPI `>=0.141.1,<0.142`, Pydantic
-`>=2.13.4,<2.14`). Pin production installs with `hedron>=0.23.0,<0.24`.
+`>=2.13.4,<2.14`). Pin production installs with `hedron>=0.24.0,<0.25`.
 
 === "uv (recommended)"
 
@@ -47,7 +47,7 @@ Prefer a clean virtualenv (Supported pins: FastAPI `>=0.141.1,<0.142`, Pydantic
     (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux).
 
     ```bash
-    uvx --from "hedron>=0.23.0,<0.24" hedron new my-hedron-app
+    uvx --from "hedron>=0.24.0,<0.25" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -57,7 +57,7 @@ Prefer a clean virtualenv (Supported pins: FastAPI `>=0.141.1,<0.142`, Pydantic
 
     ```bash
     python3 -m venv .venv && source .venv/bin/activate
-    python -m pip install "hedron>=0.23.0,<0.24" "uvicorn[standard]"
+    python -m pip install "hedron>=0.24.0,<0.25" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app && python -m pip install -e .
     uvicorn app:app --reload
@@ -171,7 +171,7 @@ After [HTMX interactions](guides/htmx-interactions.md) and
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron **0.23.0** is published (Beta packages — pin `hedron>=0.23.0,<0.24`).
+Hedron **0.24.0** is published (Beta packages — pin `hedron>=0.24.0,<0.25`).
 Most APIs are compatibility level `beta`; see [What’s ready](guides/whats-ready.md) for
 Supported vs Experimental. Also: [Why Hedron](guides/why-hedron.md) ·
 [Evaluate Hedron](guides/evaluate.md).
