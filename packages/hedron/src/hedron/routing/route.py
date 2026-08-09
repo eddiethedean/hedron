@@ -313,6 +313,7 @@ def _authorize_component_fragment(
     is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
     if not is_htmx:
         return
+    history_restore = (request.headers.get("HX-History-Restore-Request") or "").lower() == "true"
     # Empty fragment_regions still fail closed when the client sends HX-Target
     # (same contract as InteractionResult / authorize_htmx_target).
     try:
@@ -323,6 +324,7 @@ def _authorize_component_fragment(
             ),
             target,
             is_htmx=True,
+            history_restore=history_restore,
         )
     except FragmentRegionError as exc:
         from hedron_core.audit import SecurityAuditEventType, emit_security_audit

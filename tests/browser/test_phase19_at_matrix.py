@@ -158,7 +158,7 @@ def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
         assert sarif["runs"][0]["properties"]["hedron_gate"] == "TEST-019"
         # HTMX fragment path: drive swap via page.request against TestClient HTML is limited;
         # assert fragment route returns markup without serious axe issues when set as content.
-        frag = client.get("/panel", headers={"HX-Request": "true"})
+        frag = client.get("/panel", headers={"HX-Request": "true", "HX-Target": "#panel"})
         assert frag.status_code == 200
         # Document shell supplies title/h1; axe still scans the HTMX fragment body.
         page.set_content(

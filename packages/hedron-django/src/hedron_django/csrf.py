@@ -117,9 +117,7 @@ def validate_csrf(request: HttpRequest) -> None:
             if mutable is not None:
                 mutable["csrfmiddlewaretoken"] = portable
                 request.POST = mutable
-            elif not (
-                request.META.get(django_hdr) or request.META.get(portable_hdr)
-            ):
+            elif not (request.META.get(django_hdr) or request.META.get(portable_hdr)):
                 raise DjangoCsrfError(
                     "CSRF validation failed: could not read csrf_token from the POST "
                     "body; send X-CSRFToken or X-CSRF-Token instead"

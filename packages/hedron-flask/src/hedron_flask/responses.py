@@ -78,6 +78,9 @@ def _authorize_component_htmx(
     if not is_htmx:
         return
     target = _header_value(headers_map, "HX-Target")
+    history_restore = (
+        _header_value(headers_map, "HX-History-Restore-Request") or ""
+    ).lower() == "true"
     try:
         authorize_htmx_target(
             InteractionPolicy(
@@ -86,6 +89,7 @@ def _authorize_component_htmx(
             ),
             target,
             is_htmx=True,
+            history_restore=history_restore,
         )
     except FragmentRegionError as exc:
         path = ""
@@ -235,11 +239,17 @@ def interaction_response(
         result = merge_route_regions(result, regions)
     is_htmx = (_header_value(hdrs, "HX-Request") or "").lower() == "true"
     client_target = _header_value(hdrs, "HX-Target")
+    history_restore = (_header_value(hdrs, "HX-History-Restore-Request") or "").lower() == "true"
     try:
         if result.status_code == 204 and result.oob:
             raise ValueError("OOB updates are not allowed on 204 InteractionResult responses")
         target = select_htmx_auth_target(client_target=client_target, region_id=result.region_id)
-        authorize_htmx_target(result.policy, target, is_htmx=is_htmx)
+        authorize_htmx_target(
+            result.policy,
+            target,
+            is_htmx=is_htmx,
+            history_restore=history_restore,
+        )
         node = materialize_interaction_nodes(result)
         headers = merge_interaction_headers(result, extra_headers)
     except (FragmentRegionError, ValueError) as exc:

@@ -385,12 +385,14 @@ async def render_interaction(
 
     target = request.headers.get("HX-Target")
     is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
+    history_restore = (request.headers.get("HX-History-Restore-Request") or "").lower() == "true"
     try:
         auth_target = select_htmx_auth_target(client_target=target, region_id=result.region_id)
         region = authorize_htmx_target(
             result.policy,
             auth_target,
             is_htmx=is_htmx,
+            history_restore=history_restore,
         )
     except FragmentRegionError as exc:
         from hedron_core.audit import SecurityAuditEventType, emit_security_audit

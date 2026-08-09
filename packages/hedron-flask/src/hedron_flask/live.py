@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Iterator
 import warnings
+from collections.abc import Iterable, Iterator
 
 from flask import Response, stream_with_context
 

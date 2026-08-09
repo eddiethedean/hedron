@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import os
-
 import pytest
 from fastapi.testclient import TestClient
 from flask import Flask
 
 from hedron import Hedron, InteractionResult, OobUpdate, Text
+from hedron.security.csrf import _csrf_cookie_should_be_secure
 from hedron_core.interaction import (
     FragmentRegion,
     FragmentRegionError,
@@ -17,8 +16,7 @@ from hedron_core.interaction import (
     authorize_oob_update,
 )
 from hedron_core.jobs import InMemoryJobBackend, job_authorized, job_authorized_http
-from hedron_core.security_policy import SecurityPolicy, SecurityProfile
-from hedron.security.csrf import _csrf_cookie_should_be_secure
+from hedron_core.security_policy import SecurityPolicy
 from hedron_flask.csrf import csrf_cookie_should_be_secure
 from hedron_flask.responses import interaction_response as flask_interaction_response
 
@@ -36,6 +34,17 @@ def test_htmx_missing_target_with_declared_regions_fails_closed() -> None:
     policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
     with pytest.raises(FragmentRegionError, match="require HX-Target"):
         authorize_htmx_target(policy, None, is_htmx=True)
+
+
+def test_htmx_history_restore_allows_missing_target() -> None:
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
+    assert authorize_htmx_target(policy, None, is_htmx=True, history_restore=True) is None
+
+
+def test_htmx_history_restore_still_rejects_undeclared_target() -> None:
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
+    with pytest.raises(FragmentRegionError):
+        authorize_htmx_target(policy, "#evil", is_htmx=True, history_restore=True)
 
 
 def test_job_tenant_only_does_not_authorize_arbitrary_subject() -> None:
