@@ -22,6 +22,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     ) -> Response:
         response = await call_next(request)
         authenticated = bool(getattr(request.state, "hedron_authenticated", False))
+        is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
         for key, value in self.policy.response_headers(authenticated=authenticated).items():
             # Authenticated responses must not remain publicly cacheable even if the
             # app already set a weaker Cache-Control.
@@ -29,4 +30,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 key not in response.headers
             ):
                 response.headers[key] = value
+        # HTMX / fragment responses must not stay Cache-Control: public.
+        if is_htmx:
+            existing = response.headers.get("Cache-Control", "")
+            if "public" in existing.lower() or not existing:
+                response.headers["Cache-Control"] = "private, no-store"
         return response

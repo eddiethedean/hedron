@@ -8,6 +8,15 @@
 - Live-transport disposition `polling_only` (D-053): polling Supported; live helpers remain experimental.
 - `sse_response` / `stream_text` moved off the package root to `hedron_django.experimental`
   (Flask parity). Prefer `poll_status_response` in production.
+- `hedron_django.live.__all__` exports polling only; SSE/stream warn on use.
+- `respond(..., allow_undeclared_targets=True)` applies to `InteractionResult` paths.
+- Fragment responses default toward `Cache-Control: private, no-store` and align `Vary`.
+
+### Security
+
+- `validate_csrf` accepts both `X-CSRFToken` and `X-CSRF-Token`; clearer errors when the
+  portable form field cannot be bridged.
+- `InteractionResult` with `status_code=204` and OOB updates returns HTTP 403 (FastAPI parity).
 
 ## [0.23.0] — 2026-08-08
 

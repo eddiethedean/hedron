@@ -12,7 +12,7 @@ for live status; SSE/WebSocket/streaming/preload remain experimental. See
 | Docs and What’s ready label live helpers **experimental** | Update internal runbooks that assumed Supported SSE |
 | No removals from the published Beginner/CRUD `stable` facade | Re-read [STABLE_FACADE](../api/STABLE_FACADE.md) only if you relied on undocumented imports |
 
-Full step list: [Upgrade from 0.23 → 0.24](#upgrade-from-023--024) below. Older trains:
+Full step list: [Upgrade from 0.23 → 0.24](#upgrade-from-023-024) below. Older trains:
 walk the sections in order, or jump to your starting minor.
 
 ## Upgrade from 0.23 → 0.24
@@ -26,7 +26,7 @@ If you are already on **0.23.x**, pin coordinated **0.24.0** packages:
 3. Re-run your app suite; read [What's new in 0.24](whats-new-0.24.md).
 4. Human screen-reader sessions remain Planned / not Supported (carryover from 0.21).
 
-## Upgrade from 0.22 → 0.23
+## Upgrade from 0.22 → living 0.24
 
 If you are already on **0.22.x**, pin coordinated **0.24.0** packages (living train includes
 0.23 stable-tier expansion):
@@ -40,7 +40,7 @@ If you are already on **0.22.x**, pin coordinated **0.24.0** packages (living tr
    [What's new in 0.24](whats-new-0.24.md).
 5. Human screen-reader sessions remain Planned / not Supported (carryover from 0.21).
 
-## Upgrade from 0.21 → 0.22
+## Upgrade from 0.21 → living 0.24
 
 If you are already on **0.21.x**, pin coordinated **0.24.0** packages, then continue:
 

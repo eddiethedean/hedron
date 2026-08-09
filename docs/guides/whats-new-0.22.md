@@ -12,7 +12,7 @@ Phase **0.22** ships CSRF and SecurityPolicy composition (D-051):
 - **`CsrfField` + `Form(hx=Hx(...))`** — first-class CSRF field and HTMX kwargs (`FORM-022`).
 
 Contract: [CSRF composition](../api/CSRF_COMPOSITION.md). Acceptance:
-[RELEASE_0_22](../acceptance/RELEASE_0_22.md).
+[RELEASE_0_22](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_22.md).
 
 Human AT sessions (`SR-021` / …) remain Planned / not Supported. Next: stable-tier expansion
 (**0.23**).

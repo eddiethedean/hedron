@@ -23,4 +23,4 @@ WCAG / legal / VPAT claims (D-050).
 ## See also
 
 [Upgrade](upgrade.md) · [What’s ready](whats-ready.md) · [What’s new in 0.20](whats-new-0.20.md) ·
-[STATUS](../STATUS.md)
+[STATUS](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md)

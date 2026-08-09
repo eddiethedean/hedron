@@ -191,7 +191,7 @@ def test_srcset_ping_and_hx_push_url_require_safe_urls() -> None:
             alt="x",
             srcset="javascript:alert(1) 1x",
         )
-    assert exc.value.diagnostic.code == "HED-SEC-0003"
+    assert exc.value.diagnostic.code == "HED-SEC-0001"
 
     with pytest.raises(HedronError):
         html.a(

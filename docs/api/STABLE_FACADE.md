@@ -4,11 +4,11 @@ status: shipped
 
 # Beginner / stable facade inventory (0.23)
 
-!!! note "Published on the 0.23 train"
+!!! note "Facade inventory from 0.23; living train is 0.24"
 
     This inventory is the **FACADE-023** artifact. Symbols listed under
-    [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) are
-    compatibility-protected **`stable`** on **`v0.23.0`**. Pin
+    [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) remain
+    compatibility-protected **`stable`** on the living **0.24** train. Pin
     `hedron>=0.24.0,<0.25`.
 
 **Owning gates:** `FACADE-023` (`python scripts/check_stable_facade.py`),

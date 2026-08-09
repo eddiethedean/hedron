@@ -24,9 +24,11 @@ cache policy, and diagnostics; they are not a reduced client-side HTMX dialect. 
 | Situation | Result | What to do |
 |---|---|---|
 | HTMX request with `HX-Target` but no route `fragment_regions` | HTTP **403** | Declare `FragmentRegion`s on `@app.component` / `@app.page`, or opt out only with `InteractionPolicy(allow_undeclared_targets=True)` |
+| HTMX request with declared regions but missing `HX-Target` | HTTP **403** / `FragmentRegionError` | Send a matching `HX-Target` (no implicit first-region authorization) |
 | `HX-Target` / `region_id` outside the declared allowlist | HTTP **403** / `FragmentRegionError` | Match `region_id` and HTMX target to a declared `FragmentRegion.id` / selector |
 | Unsafe selector or external redirect in typed fields | Rejected before emit | Use local paths and Hedron's safe selector subset |
-| Unauthorized OOB `select` / `element_id` when regions are declared | Rejected | Point OOB updates at authorized region ids |
+| Unauthorized OOB `select` / `element_id` | Rejected | Point OOB at declared region ids, or use reserved `hedron-toast` |
+| OOB updates on HTTP **204** | HTTP **403** (all hosts) | Do not combine `status_code=204` with `oob=` |
 | `Cache-Control: public` (or `s-maxage`) via `headers` | Rejected | Use typed `cache=` (`private` / `no-store` / `vary-htmx`) |
 | CSRF failure on POST (host profile) | HTTP **403** | Seed CSRF on GET; include token on POST — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 
@@ -263,7 +265,7 @@ attrs = form_sync_attrs(default_interaction_policy(indicator="#spinner"))
 
 | Hint | Response behavior |
 |---|---|
-| `vary-htmx` | Adds `Vary: HX-Request, HX-History-Restore-Request`; also `HX-Target` with `vary_on_target=True`. |
+| `vary-htmx` | Emits `Cache-Control: private, no-store` plus `Vary: HX-Request, HX-History-Restore-Request`; also `HX-Target` when `vary_on_target=True` or more than one declared region. |
 | `private` | Adds `Cache-Control: private`. |
 | `no-store` | Adds `Cache-Control: private, no-store`. |
 | `None` | Adds no interaction-specific cache header. |

@@ -161,9 +161,11 @@ def _render_body(
     return render(to_render, context=render_context, mode=selected_mode)
 
 
-def _merge_vary(headers: dict[str, str]) -> None:
+def _merge_vary(headers: dict[str, str], *, include_target: bool = False) -> None:
     existing = {p.strip() for p in headers.get("Vary", "").split(",") if p.strip()}
     existing.update({"HX-Request", "HX-History-Restore-Request"})
+    if include_target or "HX-Target" in existing:
+        existing.add("HX-Target")
     headers["Vary"] = ", ".join(sorted(existing))
 
 
@@ -171,6 +173,11 @@ def _apply_auth_cache_headers(headers: dict[str, str], *, authenticated: bool) -
     if authenticated:
         # Force private caching; never leave a caller-supplied public/shared directive.
         headers["Cache-Control"] = "private, no-store"
+    else:
+        existing = headers.get("Cache-Control", "")
+        lowered = existing.lower()
+        if "public" in lowered or not existing:
+            headers["Cache-Control"] = "private, no-store"
 
 
 def component_response(
@@ -238,6 +245,8 @@ def interaction_response(
     is_htmx = (_header_value(hdrs, "HX-Request") or "").lower() == "true"
     client_target = _header_value(hdrs, "HX-Target")
     try:
+        if result.status_code == 204 and result.oob:
+            raise ValueError("OOB updates are not allowed on 204 InteractionResult responses")
         target = select_htmx_auth_target(client_target=client_target, region_id=result.region_id)
         authorize_htmx_target(result.policy, target, is_htmx=is_htmx)
         node = materialize_interaction_nodes(result)
@@ -254,6 +263,9 @@ def interaction_response(
             status=403,
             content_type="text/plain; charset=utf-8",
         )
+    multi = bool(result.policy and len(result.policy.declared_regions) > 1)
+    vary_target = bool(result.policy and (result.policy.vary_on_target or multi))
+    _merge_vary(headers, include_target=vary_target)
     _apply_auth_cache_headers(headers, authenticated=authenticated)
     body = ""
     if node is not None:

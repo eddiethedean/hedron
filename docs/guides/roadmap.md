@@ -54,7 +54,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   · [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md)
 
 CSRF / SecurityPolicy composition (#36–#38) shipped in **0.22**
-([RELEASE_0_22](../acceptance/RELEASE_0_22.md)). Human AT evaluation engineering is
+([RELEASE_0_22](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_22.md)). Human AT evaluation engineering is
 **0.21** (D-052; sessions outstanding). Stable-tier expansion shipped in **0.23**;
 live-transport disposition shipped in **0.24**; production archetype work is **0.25**
 (D-053; **packet refine complete** — [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md)).

@@ -9,6 +9,14 @@
 - `hedron new` scaffolds pin `hedron` / adapters at `>=0.24.0,<0.25`.
 - Supersedes prior Deferred live-ops IDs `BROWSER-10-001`, `PERF-10-001`, and
   `LIVE-011-BROWSER` via waive ledgers.
+- Root `hedron.<live>` attribute access emits `DeprecationWarning` (import
+  `hedron.experimental`).
+
+### Security
+
+- CSRF cookies are Secure under `HEDRON_ENV=production` / `prod` (STANDARD profile).
+- HTMX responses strip/override `Cache-Control: public` toward `private, no-store`.
+- Deduplicated `CsrfField` / `LoginCsrfField` in `hedron.__all__`.
 
 ## [0.23.0] — 2026-08-08
 

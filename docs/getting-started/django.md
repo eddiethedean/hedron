@@ -114,12 +114,15 @@ Wire `urlpatterns` into your `ROOT_URLCONF`, then `python manage.py runserver`.
 
 ## Portable CSRF header
 
-For HTMX clients that send Hedron's portable `X-CSRF-Token`, set in Django settings:
+`HedronDjango.validate_csrf` accepts both Django's `X-CSRFToken` and Hedron's portable
+`X-CSRF-Token`. For stock Django middleware alone, HTMX clients that send only the portable
+header should set::
 
 ```python
 CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"
 ```
 
+in Django settings (as the reference app does).
 Stock Django's `X-CSRFToken` remains valid if you keep the default. Form posts may use
 `csrfmiddlewaretoken` or `csrf_token`.
 

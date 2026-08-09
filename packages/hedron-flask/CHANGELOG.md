@@ -6,6 +6,10 @@
 
 - Coordinated Beta train bump with `hedron` 0.24.0.
 - Live-transport disposition `polling_only` (D-053): polling Supported; live helpers remain experimental.
+- `hedron_flask.live.__all__` exports polling only; SSE/stream warn and belong in
+  `hedron_flask.experimental`.
+- `respond(..., allow_undeclared_targets=True)` applies to `InteractionResult` paths.
+- Fragment responses default toward `Cache-Control: private, no-store` and align `Vary`.
 
 ### Security
 
@@ -13,6 +17,8 @@
   `csrf_cookie_secure=True`.
 - CSRF `Secure` honors `X-Forwarded-Proto: https` only from `HEDRON_TRUSTED_PROXIES` /
   Flask `HEDRON_TRUSTED_PROXIES` config / extension `trusted_peers`.
+- CSRF `Secure` also forces under `HEDRON_ENV=production` / `prod`.
+- `InteractionResult` with `status_code=204` and OOB updates returns HTTP 403 (FastAPI parity).
 
 ## [0.23.0] — 2026-08-08
 

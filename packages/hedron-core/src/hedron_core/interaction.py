@@ -212,6 +212,20 @@ class InteractionResult:
     headers: Mapping[str, str] = field(default_factory=dict)
     explanation: str = ""
 
+    def __post_init__(self) -> None:
+        code = self.status_code
+        # Reject bool (subclass of int) and non-int; coerce int-like strings.
+        if type(code) is bool:
+            raise TypeError("status_code must be int, not bool")
+        if type(code) is not int:
+            try:
+                code = int(code)  # type: ignore[arg-type]
+            except (TypeError, ValueError) as exc:
+                raise TypeError(
+                    f"status_code must be int, got {type(self.status_code).__name__}"
+                ) from exc
+            object.__setattr__(self, "status_code", code)
+
 
 def default_interaction_policy(**overrides: Any) -> InteractionPolicy:
     base = InteractionPolicy()
@@ -343,6 +357,8 @@ def authorize_htmx_target(
 
     When the client sends ``HX-Target`` and no ``declared_regions`` are present,
     raise :class:`FragmentRegionError` unless ``allow_undeclared_targets`` is set.
+    HTMX requests with declared regions but a missing ``HX-Target`` also fail closed
+    (do not implicitly authorize the first region).
     """
     regions = policy.declared_regions if policy is not None else ()
     allow_open = bool(policy is not None and policy.allow_undeclared_targets)
@@ -352,6 +368,12 @@ def authorize_htmx_target(
             "(set InteractionPolicy.allow_undeclared_targets=True to opt out)",
             requested=target,
             declared=(),
+        )
+    if is_htmx and regions and not target and not allow_open:
+        raise FragmentRegionError(
+            "HTMX requests with declared fragment_regions require HX-Target",
+            requested=None,
+            declared=_declared_region_labels(regions),
         )
     if regions:
         return resolve_fragment_region(policy, target)
@@ -447,12 +469,16 @@ def interaction_headers(result: InteractionResult) -> dict[str, str]:
         headers["Cache-Control"] = "private"
     elif result.cache == "no-store":
         headers["Cache-Control"] = "private, no-store"
+    elif result.cache == "vary-htmx":
+        # Default fragment policy: never leave bodies publicly cacheable.
+        headers["Cache-Control"] = "private, no-store"
     # Always emit HTMX Vary so shared caches cannot mix page/fragment bodies,
     # including when Cache-Control is private / no-store.
     if result.cache in {"private", "no-store", "vary-htmx", None}:
         vary = {"HX-Request", "HX-History-Restore-Request"}
         policy = result.policy
-        if policy and policy.vary_on_target:
+        multi_region = bool(policy and len(policy.declared_regions) > 1)
+        if policy and (policy.vary_on_target or multi_region):
             vary.add("HX-Target")
         existing = headers.get("Vary", "")
         parts = {p.strip() for p in existing.split(",") if p.strip()}
@@ -500,11 +526,15 @@ def authorize_oob_update(
     *,
     regions: tuple[FragmentRegion, ...] = (),
 ) -> None:
-    if regions and update.select is None and update.element_id is None:
-        raise ValueError(
-            "OOB updates require element_id or select when fragment regions are declared"
-        )
+    if update.select is None and update.element_id is None:
+        raise ValueError("OOB updates require element_id or select")
     reserved = _is_reserved_oob_target(element_id=update.element_id, select=update.select)
+    # Fail closed: without declared regions, only reserved toast/chrome ids are allowed.
+    if not regions and not reserved:
+        raise ValueError(
+            "OOB updates require declared fragment regions (or a reserved element id "
+            f"such as {sorted(RESERVED_OOB_ELEMENT_IDS)})"
+        )
     if update.select is not None:
         if not safe_css_selector(update.select):
             raise ValueError("Unsafe OOB select selector")

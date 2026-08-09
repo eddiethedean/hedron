@@ -42,7 +42,7 @@ unrelated flakes, and do not use `--no-verify`.
    `bash scripts/ci_checks.sh quality --python 3.12` before pushing when you can.
 
 Skip RFC / decision vocabulary unless your change alters a public contract — see
-[When to open an RFC](../CONTRIBUTING.md#when-to-open-an-rfc) in the full guide.
+[Bugs vs RFCs vs decisions](../CONTRIBUTING.md#bugs-vs-rfcs-vs-decisions) in the full guide.
 
 ## Good first contributions
 

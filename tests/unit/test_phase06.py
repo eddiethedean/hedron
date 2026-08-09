@@ -134,7 +134,7 @@ def test_interaction_result_endpoint() -> None:
     def frag() -> InteractionResult:
         return InteractionResult(
             content=Text("primary"),
-            oob=(OobUpdate(content=Text("side")),),
+            oob=(OobUpdate(content=Text("side"), element_id="hedron-toast"),),
             trigger={"done": True},
         )
 

@@ -6,6 +6,17 @@
 
 - Coordinated Beta train bump with `hedron` 0.24.0.
 - Live-transport disposition `polling_only` (D-053): polling Supported; live helpers remain experimental.
+- Default `vary-htmx` InteractionResult cache emits `Cache-Control: private, no-store`.
+- Multi-region policies add `HX-Target` to `Vary` automatically.
+- `InMemoryJobBackend` logs a multi-worker warning on `set_job_backend` (still refused in production).
+
+### Security
+
+- OOB updates without declared fragment regions are rejected unless the target is a
+  reserved id (`hedron-toast`).
+- HTMX requests with declared regions require `HX-Target` (no implicit first-region auth).
+- Job auth scopes use exact match (tenant-only jobs do not authorize arbitrary subjects).
+- `InteractionResult.status_code` must be an `int` (bool rejected; int-like strings coerced).
 
 ## [0.23.0] — 2026-08-08
 

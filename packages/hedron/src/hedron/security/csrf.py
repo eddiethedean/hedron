@@ -66,11 +66,17 @@ def _forwarded_proto_https_trusted(request: Request) -> bool:
 def _csrf_cookie_should_be_secure(request: Request | None, policy: SecurityPolicy) -> bool:
     """Resolve Secure flag for CSRF cookies (Flask-parity + proxy awareness).
 
-    STRICT always emits Secure cookies. DEVELOPMENT/STANDARD follow ``is_secure``
-    or trusted-peer ``X-Forwarded-Proto: https`` so TLS-terminating proxies still
-    get Secure without letting arbitrary clients force the flag over plain HTTP.
+    STRICT always emits Secure cookies. ``HEDRON_ENV=production`` / ``prod`` also
+    forces Secure (TLS is assumed at the edge). Otherwise DEVELOPMENT/STANDARD follow
+    ``is_secure`` or trusted-peer ``X-Forwarded-Proto: https`` so TLS-terminating
+    proxies still get Secure without letting arbitrary clients force the flag over
+    plain HTTP.
     """
     if policy.profile is SecurityProfile.STRICT:
+        return True
+    from hedron_core.compile_gate import is_production_env
+
+    if is_production_env():
         return True
     if request is None:
         return False

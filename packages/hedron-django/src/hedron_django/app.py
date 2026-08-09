@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from dataclasses import replace
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 
 from hedron_core.adapter import DJANGO_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
-from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionPolicy, InteractionResult
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_django.csrf import csrf_token_for_request
 from hedron_django.htmx import htmx_context, render_mode_for_request
@@ -73,6 +74,13 @@ class HedronDjango:
                     content_type="text/plain; charset=utf-8",
                 )
         if isinstance(value, InteractionResult):
+            if allow_undeclared_targets:
+                policy = value.policy or InteractionPolicy()
+                if not policy.allow_undeclared_targets:
+                    value = replace(
+                        value,
+                        policy=replace(policy, allow_undeclared_targets=True),
+                    )
             return interaction_response(
                 value,
                 request=request,

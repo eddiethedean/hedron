@@ -89,13 +89,22 @@ def validate_csrf(request: HttpRequest) -> None:
     """Fail closed on unsafe methods using Django's CSRF machinery.
 
     Bridges portable ``csrf_token`` form fields into ``csrfmiddlewaretoken`` before
-    ``CsrfViewMiddleware.process_view``. Safe methods are no-ops. When Django CSRF
+    ``CsrfViewMiddleware.process_view``. Also accepts both ``X-CSRFToken`` and
+    ``X-CSRF-Token`` request headers. Safe methods are no-ops. When Django CSRF
     middleware is disabled in settings this still rejects missing/invalid tokens so
     ``hedron_view`` / ``HedronDjango.respond`` do not silently skip protection.
     """
     method = (request.method or "GET").upper()
     if method in _SAFE_METHODS:
         return
+
+    # Accept Hedron portable header alongside Django's default header name.
+    django_hdr = "HTTP_X_CSRFTOKEN"
+    portable_hdr = "HTTP_X_CSRF_TOKEN"
+    if django_hdr not in request.META and request.META.get(portable_hdr):
+        request.META = {**request.META, django_hdr: request.META[portable_hdr]}
+    if portable_hdr not in request.META and request.META.get(django_hdr):
+        request.META = {**request.META, portable_hdr: request.META[django_hdr]}
 
     # Bridge Hedron portable form field into Django's expected name.
     if not request.POST.get("csrfmiddlewaretoken"):
@@ -108,6 +117,13 @@ def validate_csrf(request: HttpRequest) -> None:
             if mutable is not None:
                 mutable["csrfmiddlewaretoken"] = portable
                 request.POST = mutable
+            elif not (
+                request.META.get(django_hdr) or request.META.get(portable_hdr)
+            ):
+                raise DjangoCsrfError(
+                    "CSRF validation failed: could not read csrf_token from the POST "
+                    "body; send X-CSRFToken or X-CSRF-Token instead"
+                )
 
     from django.http import HttpRequest as DjangoHttpRequest
     from django.http import HttpResponse, HttpResponseForbidden
@@ -131,4 +147,7 @@ def validate_csrf(request: HttpRequest) -> None:
             "Django CSRF validation failed",
             attributes={"path": getattr(request, "path", "")},
         )
-        raise DjangoCsrfError("CSRF validation failed")
+        raise DjangoCsrfError(
+            "CSRF validation failed; send csrfmiddlewaretoken / csrf_token form field "
+            "or X-CSRFToken / X-CSRF-Token header"
+        )

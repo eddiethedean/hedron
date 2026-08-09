@@ -141,7 +141,8 @@ def csrf_cookie_should_be_secure(
     ``force_secure=True`` matches FastAPI STRICT (always Secure, including plain
     HTTP to the app behind a TLS-terminating proxy). ``None`` follows
     ``request.is_secure``, trusted-peer ``X-Forwarded-Proto: https``, or forces
-    Secure when ``FLASK_ENV``/``ENV`` is ``production``.
+    Secure when ``HEDRON_ENV`` / ``FLASK_ENV`` / ``ENV`` is ``production`` (or
+    ``HEDRON_ENV=prod``).
     """
     if force_secure is True:
         return True
@@ -149,6 +150,10 @@ def csrf_cookie_should_be_secure(
         return False
     import os
 
+    from hedron_core.compile_gate import is_production_env
+
+    if is_production_env():
+        return True
     env = (os.environ.get("FLASK_ENV") or os.environ.get("ENV") or "").lower()
     if env == "production":
         return True

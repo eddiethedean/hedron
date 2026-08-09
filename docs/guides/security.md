@@ -59,7 +59,9 @@ When CSRF is enabled (all built-in FastAPI profiles):
 - Safe GET responses may set the CSRF cookie (`hedron_csrf` by default).
 - Unsafe methods on page/component/action routes (including `include_component` when POST
   is declared) require a matching `X-CSRF-Token` header or `csrf_token` form field.
-- On HTTPS, the CSRF cookie is marked `Secure`.
+- On HTTPS, the CSRF cookie is marked `Secure`. Under `HEDRON_ENV=production` / `prod`
+  (and Flask `FLASK_ENV`/`ENV=production`), Secure is forced even when the app sees plain
+  HTTP behind a TLS terminator.
 
 Flask adapter: `hedron_route` and `HedronFlask.respond` validate the same double-submit cookie
 for unsafe methods (auto cookie issuance on safe GETs remains on by default).
@@ -76,7 +78,7 @@ default `csrf_token` is **not** accepted by `CsrfViewMiddleware`.
     Pluggable CSRF strategies (`SessionTokenCsrf`, `DoubleSubmitCookieCsrf`), composable
     `SecurityHeadersPolicy` merge/override, and `CsrfField` / `Form(hx=Hx(...))` ship on
     **0.22**. See [CSRF composition](../api/CSRF_COMPOSITION.md) and
-    [RELEASE_0_22](../acceptance/RELEASE_0_22.md). Named profiles keep Compatible
+    [RELEASE_0_22](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_22.md). Named profiles keep Compatible
     double-submit defaults; seed tokens with `csrf_token_for_request` or use `CsrfField`
     as below.
 

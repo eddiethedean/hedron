@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
+from dataclasses import replace
 from typing import Any, ParamSpec, TypeVar, cast
 
 from flask import Flask, Request, Response
@@ -11,7 +12,7 @@ from flask.typing import RouteCallable
 
 from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
-from hedron_core.interaction import FragmentRegion, InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionPolicy, InteractionResult
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfileName
 from hedron_flask.blueprint import attach_hedron_to_flask
@@ -211,6 +212,13 @@ class HedronFlask:
                 policy=self.security_policy,
             )
         if isinstance(value, InteractionResult):
+            if allow_undeclared_targets:
+                policy = value.policy or InteractionPolicy()
+                if not policy.allow_undeclared_targets:
+                    value = replace(
+                        value,
+                        policy=replace(policy, allow_undeclared_targets=True),
+                    )
             return interaction_response(
                 value,
                 context=context,

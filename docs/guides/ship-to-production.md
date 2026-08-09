@@ -33,7 +33,7 @@ Deep dives (do not treat as alternate checklists):
 8. **Multi-worker / HA** — See [High availability](#high-availability-multi-replica) below.
 9. **Hosts** — Flask/Django: same secrets/HTTPS/CSRF hygiene; prefer polling for jobs —
    [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) ·
-   [Deployment host parity](deployment.md#flask--django-parity).
+   [Deployment host parity](deployment.md#flask-django-parity).
 10. **Smoke** — Hit Hello + Refresh (or your primary fragment) and one CSRF form POST behind
     the real proxy.
 

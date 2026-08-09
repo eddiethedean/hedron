@@ -57,8 +57,12 @@ Retry ownership, maximum attempts, result serialization, and backend-unavailable
 remain application/backend policy.
 
 HTTP observers use `job_authorized_http`: unscoped jobs are **not** readable over HTTP
-helpers (fail closed). Pass matching `auth_subject` / `tenant_id` when enqueueing and when
-polling.
+helpers (fail closed). Pass credentials that **exactly** match every scope dimension on
+the job (including `None` on unset dimensions). A tenant-only job does **not** authorize
+an arbitrary `auth_subject` in that tenant — pass `auth_subject=None` with the matching
+`tenant_id`, or scope jobs with both subject and tenant at enqueue time. Prefer
+`backend.get(job_id, **scope)` plus `job_status_response(status, **scope)` rather than
+unrestricted `get` + hardcoded auth kwargs.
 
 ## InferencePolicy cancel (0.18)
 

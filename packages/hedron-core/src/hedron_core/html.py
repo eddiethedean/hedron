@@ -69,15 +69,7 @@ def _normalize_srcset(value: object) -> str:
         tokens = piece.split()
         url_token = tokens[0]
         rest = " ".join(tokens[1:])
-        # Reject javascript: and other dangerous schemes in raw srcset strings.
-        lowered = url_token.lower()
-        if "javascript:" in lowered or lowered.startswith("data:text/html"):
-            raise error(
-                "HED-SEC-0003",
-                title="URL attribute requires SafeUrl",
-                explanation=f"srcset candidate {url_token!r} is not a safe URL.",
-                remediation="Pass SafeUrl-backed asset URLs only.",
-            )
+        # All candidates go through SafeUrl (fail closed on dangerous schemes).
         SafeUrl.parse(url_token, purpose=UrlPurpose.ASSET)
         parts.append(f"{url_token} {rest}".strip())
     return ", ".join(parts)

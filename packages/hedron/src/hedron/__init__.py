@@ -306,8 +306,16 @@ _EXPERIMENTAL_EXPORTS = frozenset(
 
 def __getattr__(name: str) -> object:
     if name in _EXPERIMENTAL_EXPORTS:
+        import warnings
+
         import hedron.experimental as _experimental
 
+        warnings.warn(
+            f"hedron.{name} is experimental; import from hedron.experimental "
+            "(polling remains the Supported production fallback).",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return getattr(_experimental, name)
     if name in _DATA_EXPORTS:
         try:
@@ -537,8 +545,6 @@ __all__ = [
     "cache_component",
     "cache_data",
     "compile_css",
-    "CsrfField",
-    "LoginCsrfField",
     "CsrfStrategy",
     "CsrfValidationError",
     "DoubleSubmitCookieCsrf",

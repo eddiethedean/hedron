@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Iterator
+import warnings
 
 from flask import Response, stream_with_context
 
@@ -11,8 +12,6 @@ from hedron_core.live import SseEvent, encode_sse
 __all__ = [
     "POLLING_FALLBACK_SUPPORTED",
     "poll_status_response",
-    "sse_response",
-    "stream_text",
 ]
 
 # Polling remains the Supported fallback on WSGI hosts (D-044 / D-046).
@@ -39,9 +38,14 @@ def sse_response(
 ) -> Response:
     """Return a text/event-stream response (experimental).
 
-    WSGI reverse proxies may buffer; applications must keep polling as a fallback.
-    Prefer importing from ``hedron_flask.experimental``.
+    Prefer ``hedron_flask.experimental.sse_response``. Polling is the Supported fallback.
     """
+    warnings.warn(
+        "hedron_flask.live.sse_response is experimental; import from "
+        "hedron_flask.experimental (prefer polling in production).",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
     def generate() -> Iterator[str]:
         for item in events:
@@ -80,6 +84,12 @@ def stream_text(
     mimetype: str = "text/plain",
 ) -> Response:
     """Focused text streaming helper (experimental; not general HTML streaming)."""
+    warnings.warn(
+        "hedron_flask.live.stream_text is experimental; import from "
+        "hedron_flask.experimental (prefer polling in production).",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
     def generate() -> Iterator[str]:
         yield from chunks

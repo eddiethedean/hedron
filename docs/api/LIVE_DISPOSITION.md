@@ -15,7 +15,7 @@ status: accepted
 **Owning gates:** `DECIDE-024`, `BROWSER-024`, `PERF-024`, `DOCS-024`, `REGRESS-024`,
 `PKG-024`. Decision: **D-053** /
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md).
-Machine twin: [`live-disposition-024.toml`](../acceptance/live-disposition-024.toml).
+Machine twin: [`live-disposition-024.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/live-disposition-024.toml).
 
 ## XOR contract
 
@@ -72,8 +72,8 @@ Checker: `python scripts/check_docs_024.py` (train SSOT + live-claim honesty).
 
 | Gate | Artifact |
 |---|---|
-| Browser | [`waive-browser-024.toml`](../acceptance/waive-browser-024.toml) |
-| Perf | [`waive-perf-024.toml`](../acceptance/waive-perf-024.toml) |
+| Browser | [`waive-browser-024.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/waive-browser-024.toml) |
+| Perf | [`waive-perf-024.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/waive-perf-024.toml) |
 
 ## Locked gate commands
 
@@ -86,4 +86,4 @@ Checker: `python scripts/check_docs_024.py` (train SSOT + live-claim honesty).
 | `REGRESS-024` | `bash scripts/ci_checks.sh test --python 3.12` |
 | `PKG-024` | `python scripts/verify_pkg_24.py` |
 
-Evidence index: [`release-gate-0.24.toml`](../acceptance/release-gate-0.24.toml).
+Evidence index: [`release-gate-0.24.toml`](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.24.toml).

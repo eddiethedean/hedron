@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Iterable, Iterator
 
 from django.http import HttpResponse, StreamingHttpResponse
@@ -11,8 +12,6 @@ from hedron_core.live import SseEvent, encode_sse
 __all__ = [
     "POLLING_FALLBACK_SUPPORTED",
     "poll_status_response",
-    "sse_response",
-    "stream_text",
 ]
 
 POLLING_FALLBACK_SUPPORTED = True
@@ -28,6 +27,12 @@ def sse_response(
     **Experimental** — prefer :func:`poll_status_response` in production. Import
     from ``hedron_django.experimental`` rather than the package root.
     """
+    warnings.warn(
+        "hedron_django.live.sse_response is experimental; import from "
+        "hedron_django.experimental (prefer polling in production).",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
     def generate() -> Iterator[bytes]:
         for item in events:
@@ -54,6 +59,12 @@ def stream_text(
 
     Prefer polling in production. Import from ``hedron_django.experimental``.
     """
+    warnings.warn(
+        "hedron_django.live.stream_text is experimental; import from "
+        "hedron_django.experimental (prefer polling in production).",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
     def generate() -> Iterator[bytes]:
         for chunk in chunks:

@@ -217,14 +217,15 @@ def job_authorized(
     auth_subject: str | None = None,
     tenant_id: str | None = None,
 ) -> bool:
-    """Return True when caller credentials satisfy the job's auth/tenant scope.
+    """Return True when caller credentials exactly match the job's auth/tenant scope.
 
-    Unscoped jobs (no ``auth_subject`` / ``tenant_id`` on the job) authorize any
-    caller — use :func:`job_authorized_http` for HTTP observers.
+    Each dimension is compared for equality (including ``None``). A tenant-only job
+    (``auth_subject=None``) does **not** authorize an arbitrary subject in that tenant —
+    the caller must also pass ``auth_subject=None``. Unscoped jobs authorize only when
+    the caller likewise omits both scopes — use :func:`job_authorized_http` for HTTP
+    observers (unscoped jobs are never HTTP-readable).
     """
-    subject_ok = status.auth_subject is None or status.auth_subject == auth_subject
-    tenant_ok = status.tenant_id is None or status.tenant_id == tenant_id
-    return subject_ok and tenant_ok
+    return status.auth_subject == auth_subject and status.tenant_id == tenant_id
 
 
 def job_authorized_http(
@@ -236,7 +237,8 @@ def job_authorized_http(
     """Authorize job observation over HTTP (fail closed for unscoped jobs).
 
     Jobs without stored scope are never readable via HTTP helpers. Callers must
-    also supply credentials that match the job's scope.
+    supply credentials that **exactly** match every scope dimension on the job
+    (including ``None`` on unset dimensions).
     """
     if status.auth_subject is None and status.tenant_id is None:
         return False
@@ -829,6 +831,8 @@ def get_job_backend() -> JobBackend:
 
 
 def set_job_backend(backend: JobBackend) -> None:
+    import logging
+
     from hedron_core.compile_gate import is_production_env
 
     if is_production_env() and isinstance(backend, InMemoryJobBackend):
@@ -846,6 +850,12 @@ def set_job_backend(backend: JobBackend) -> None:
         )
     global _backend
     _backend = backend
+    if isinstance(backend, InMemoryJobBackend) and not is_production_env():
+        logging.getLogger("hedron.jobs").warning(
+            "InMemoryJobBackend does not span processes; use Redis/Celery/RQ "
+            "(set_job_backend) for multi-worker deployments. Refused automatically "
+            "under HEDRON_ENV=production."
+        )
     if is_production_env():
         from hedron_core.production_gate import assert_durable_backends
 
