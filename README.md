@@ -7,13 +7,12 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/v/release/eddiethedean/hedron.svg)](https://github.com/eddiethedean/hedron/releases/latest)
 
-Hedron lets you build dashboards, admin tools, and CRUD apps as typed Python components
-on FastAPI + HTMX — without a Node.js frontend stack.
-
-Unlike Streamlit’s script-rerun model, Hedron returns typed components from FastAPI routes
-and swaps HTML fragments with HTMX.
+Build admin tools, CRUD apps, and dashboards in Python on FastAPI.
+Routes return typed UI components; HTMX swaps HTML fragments — no Node frontend,
+and no Streamlit-style full-script rerun.
 
 **Requires Python 3.11+.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
+**You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
 ```bash
 # Need uv? macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -29,14 +28,8 @@ fragment into the declared region).
 
 ![Hello from hedron new with Refresh status control](docs/assets/hello-refresh.jpg)
 
-Pin installs with `hedron>=0.25.0,<0.26`. FastAPI/Pydantic ranges and CI-supported pins:
-[Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/).
-
-[![Open in GitHub Codespaces](https://img.shields.io/badge/Codespaces-~10%2B%20min%20first%20boot-blue?logo=github)](https://codespaces.new/eddiethedean/hedron)
-
-Prefer not to install locally?
-[Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/)
-(real app in the cloud — **not** a hosted playground; first boot often **5–15 minutes**).
+Pin installs with `hedron>=0.25.0,<0.26`. Full walkthrough:
+[First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/).
 
 Alternate (pip + venv):
 
@@ -59,36 +52,14 @@ python -m pip install -e .
 uvicorn app:app --reload
 ```
 
+If `hedron` is not on your PATH, use `python -m hedron`
+([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).
+
 **Next:** [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
 [What is HTMX?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-htmx/) →
 [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
-
-Hedron **0.25.0** is published (Beta — pin as above). Before production, read
-[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
-If `hedron` is not on your PATH, use `python -m hedron`
-([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).
-
-## Packages
-
-| Package | Role |
-|---|---|
-| [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship |
-| [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter |
-| [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter |
-| [`hedron-data`](https://pypi.org/project/hedron-data/) | DataTable / DataEditor (also `pip install "hedron[data]>=0.25.0,<0.26"`) |
-| [`hedron-jinja`](https://pypi.org/project/hedron-jinja/) | Optional HDJ templates (also `hedron[jinja]`) |
-| [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Component Explorer (also `hedron[dev]`) |
-
-Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Optional extras
-(charts, conformance, extras, native accel, notebook, MCP, Gradio):
-[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
-
-> **Packaging notice:** the 0.25-compatible `hedron-charts` and `hedron-sample-kit`
-> sources are currently repository-only; their published PyPI releases require older
-> `hedron-core` versions. Do not install `hedron[charts]` or `hedron-sample-kit` with
-> Hedron 0.25. See [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## Who it’s for
 
@@ -98,7 +69,8 @@ Jinja+HTMX stack.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
-See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
+Hedron **0.25.0** is published (Beta packages — pin as above). Before production, read
+[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
 
 ### When not to choose Hedron
@@ -114,6 +86,31 @@ Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/
 
 [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/) ·
 [Public roadmap](https://hedron.readthedocs.io/en/latest/guides/roadmap/).
+
+## Packages
+
+| Package | Role |
+|---|---|
+| [`hedron`](https://pypi.org/project/hedron/) | FastAPI flagship |
+| [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter |
+| [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter |
+| [`hedron-data`](https://pypi.org/project/hedron-data/) | DataTable / DataEditor (also `pip install "hedron[data]>=0.25.0,<0.26"`) |
+| [`hedron-jinja`](https://pypi.org/project/hedron-jinja/) | Optional HDJ templates (also `hedron[jinja]`) |
+| [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Component Explorer (also `hedron[dev]`) |
+
+Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Optional extras
+(data, jinja, conformance, extras, native accel, notebook, MCP, Gradio):
+[installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
+
+> **Packaging notice:** the 0.25-compatible `hedron-charts` and `hedron-sample-kit`
+> sources are currently repository-only; their published PyPI releases require older
+> `hedron-core` versions. Do not install `hedron[charts]` or `hedron-sample-kit` with
+> Hedron 0.25. See [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#current-025-packaging-limitation-charts-and-sample-kit).
+
+Prefer not to install locally? Use a **full cloud environment** (not a hosted playground) —
+[Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/)
+(first boot often **5–15 minutes**, then run the same scaffold commands).
+[![Open in GitHub Codespaces](https://img.shields.io/badge/Codespaces-~10%2B%20min%20first%20boot-blue?logo=github)](https://codespaces.new/eddiethedean/hedron)
 
 ## What you get
 

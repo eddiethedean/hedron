@@ -2,7 +2,7 @@
 status: shipped
 ---
 
-# Data-source protocols
+# Data-source protocols (outline)
 
 
 !!! note "Stability"
@@ -13,9 +13,9 @@ status: shipped
 
 !!! note "Outline page"
 
-    Protocol summary for data sources. Prefer [Data](DATA.md),
-    [Data applications](../guides/data-apps.md), and [Autodoc](AUTODOC.md) for full
-    constructor / error tables.
+    Protocol summary for data sources — not a full Parameters/Returns contract page.
+    Prefer [Data](DATA.md), [Data applications](../guides/data-apps.md), and
+    [Autodoc](AUTODOC.md) for constructor / error tables.
 
 ```python
 class UsersSource(DataEditorSource[UserRow]):

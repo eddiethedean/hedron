@@ -27,7 +27,7 @@ uv add "hedron>=0.25.0,<0.26"
 | Adopter highlights | [What’s new in 0.25](whats-new-0.25.md) |
 | Capability maturity | [What’s ready](whats-ready.md) |
 | Upgrade from 0.24 | [Upgrade](upgrade.md) |
-| Ship checklist | [Ship to production](ship-to-production.md) |
+| Ship checklist | [Ship a Hedron app](ship.md) |
 | Per-package CHANGELOG | [Package changelogs](changelog.md) |
 
 No commercial SLA and no scheduled 1.0 — pin upper bounds on `0.x`.

@@ -1,6 +1,6 @@
 # Deployment
 
-Adopter ship checklist (canonical): [Ship to production](ship-to-production.md).
+Adopter ship checklist (canonical): [Ship a Hedron app](ship.md).
 This page is the **deep dive** for environment variables, Docker/proxy sketches, and
 host parity — not a second checklist.
 
@@ -155,7 +155,7 @@ Terminate TLS at nginx, Caddy, or your cloud load balancer. Forward
 under a subpath, configure ASGI `root_path` (uvicorn `--root-path`) or WSGI
 `SCRIPT_NAME`, and set `HEDRON_ROOT_PATH` when your deploy samples use it.
 Contract details: [Mount / path prefix](../api/MOUNT.md). Adopter one-pager:
-[Ship to production](ship-to-production.md).
+[Ship a Hedron app](ship.md).
 
 Disable response buffering for `text/event-stream` **only if** you use experimental SSE
 ([live interaction](live-interaction.md)). Prefer **polling** (`Poll` +

@@ -16,7 +16,7 @@ Supported.
 
 Narrative: [What's new in 0.25](whats-new-0.25.md) · maturity:
 [What's ready today](whats-ready.md) · ship checklist:
-[Ship to production](ship-to-production.md) · pin / Release assets:
+[Ship a Hedron app](ship.md) · pin / Release assets:
 [Release summary (adopters)](release-adopters.md).
 
 ```bash

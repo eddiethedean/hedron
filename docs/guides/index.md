@@ -1,22 +1,15 @@
-# Guides
+# How-to guides
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
 **0.25 train** (**Published** as **v0.25.0**): production archetype + extras quarantine — [What’s new in 0.25](whats-new-0.25.md) · [What’s ready](whats-ready.md).
 
-**0.20 train** (published as **v0.20.0**): production security floor and adapter parity — [What’s new in 0.20](whats-new-0.20.md).
+Complete **Learn** first ([Learning path](../getting-started/learning-path.md):
+First app → HTMX → Minimal form). HTMX and minimal form live under **Learn** — this
+section continues with forms depth, polling / experimental live transports, data,
+security, and ops.
 
-**0.19 train** (published as **v0.19.0**): accessibility contracts,
-Explorer `/a11y`, PE forms, landmarks, and automated AT evidence —
-[What’s new in 0.19](whats-new-0.19.md) · [Accessibility](accessibility.md) ·
-[A11Y API](../api/A11Y.md).
-
-Complete [Start](../getting-started/index.md) first (First app → HTMX →
-Minimal form). HTMX and minimal form live under **Start** only — this section continues
-with forms depth, polling / experimental live transports, data, security, and ops.
-
-**Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md) · [Error codes](error-codes.md)
-(under **Guides → Help**).
+**Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md) · [Error codes](error-codes.md).
 
 Evaluating adoption? Use the **Evaluate** tab
 ([What’s ready](whats-ready.md) · [Evaluate Hedron](evaluate.md)).
@@ -24,7 +17,7 @@ Evaluating adoption? Use the **Evaluate** tab
 <div class="hedron-grid">
   <a class="hedron-card" href="../getting-started/">
     <span class="hedron-card__icon" aria-hidden="true">→</span>
-    <strong>Golden path (Start)</strong>
+    <strong>Golden path (Learn)</strong>
     <p>First app, HTMX region refresh, and minimal form POST.</p>
   </a>
   <a class="hedron-card" href="faq/">

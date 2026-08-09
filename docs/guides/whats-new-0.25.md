@@ -14,7 +14,7 @@ not implied by `hedron[extras]`. Polling remains the Supported live-status story
   CSP, Explorer off, and multi-worker. Prefer [session auth](../examples/session-auth.md) +
   [notes](../examples/notes-sqlalchemy.md) for a shorter path; use the reference app when you
   want the full checklist in one tree.
-- **Ship checklist** — Follow [Ship to production](ship-to-production.md); maturity claims
+- **Ship checklist** — Follow [Ship a Hedron app](ship.md); maturity claims
   stay on [What’s ready](whats-ready.md).
 - **Extras quarantine** — `CodeEditor` / `TerminalView` / joystick / device move behind
   `hedron[experimental-ui]` (and `hedron_extras.experimental`). Plain `hedron[extras]` no

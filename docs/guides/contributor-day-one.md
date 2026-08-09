@@ -1,13 +1,17 @@
 # Contributor day-one
 
-Thin on-ramp for first contributions. Full detail:
-[Contributing](../CONTRIBUTING.md).
+**Canonical first-contribution page.** The repository root `CONTRIBUTING.md` stub
+points here. Full detail: [Contributing](../CONTRIBUTING.md).
 
 ## Docs-only PR
 
-**Local work (~15 minutes):** edit markdown and build docs. **CI:** PRs that touch only
-allowlisted docs paths skip `test` / `browser` / `evidence` / packaging rehearsal and still
-run **quality** (mkdocs + train SSOT + recipe/sim checks + package wheels). Allowlist:
+**Local work (~15 minutes):** edit markdown and build docs — **no Rust, no Playwright**.
+
+**CI (important):** PRs that touch only allowlisted docs paths skip `test` / `browser` /
+`evidence` / packaging rehearsal, but **still run `quality`**. That job includes mkdocs +
+train SSOT + recipe/sim checks **and package wheel builds** (CI installs a Rust toolchain
+for `hedron-native`). A docs typo PR therefore waits on wheels in GitHub Actions even when
+your laptop never builds them. Allowlist:
 [CI path filters](../CONTRIBUTING.md#ci-path-filters).
 
 If your PR also changes `packages/`, `examples/`, `tests/`, root `STATUS.md` /
@@ -23,7 +27,7 @@ If your PR also changes `packages/`, `examples/`, `tests/`, root `STATUS.md` /
 
 2. Edit markdown under `docs/` (or root README stubs that point at docs).
 
-3. Verify locally (matches what `quality` expects for docs):
+3. Verify locally (matches the docs portion of `quality`):
 
    ```bash
    uv run --group docs mkdocs build --strict
@@ -37,9 +41,8 @@ If your PR also changes `packages/`, `examples/`, `tests/`, root `STATUS.md` /
 
 4. Open a PR with **“docs-only”** in the title or first line of the description.
 
-You do **not** need Playwright, Rust, RFCs, or acceptance gates locally for typos and
-guide fixes. This repository has no `.pre-commit-config.yaml` — ignore generic
-`--no-verify` advice from other projects.
+This repository has no `.pre-commit-config.yaml` — ignore generic `--no-verify` advice
+from other projects.
 
 For quality-suite work beyond docs, use `uv sync --all-groups` (and install a
 [Rust toolchain](https://rustup.rs/) if `hedron-native` wheel builds fail) before

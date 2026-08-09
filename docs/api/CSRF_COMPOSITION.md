@@ -106,17 +106,21 @@ Strategies implement `CsrfStrategy.validate(...)`. On failure they raise
 [`CsrfValidationError`](EXCEPTIONS.md) (message typically `"CSRF validation failed"`).
 Built-in FastAPI / Flask / Django hosts map that exception to HTTP **403**.
 
-## Parameters / returns (strategy validate)
+## Parameters
 
 | Input | Role |
 |---|---|
 | Cookie / form / header token fields | Compared per strategy (`DoubleSubmitCookieCsrf`, `SessionTokenCsrf`) |
 | `get_expected` (session strategy) | Returns the expected token or fail-closed |
+| `CsrfField` / `Form(hx=…)` | See FORM-022 section above |
+
+## Returns
 
 | Return | Behavior |
 |---|---|
-| Success | Returns normally (no value required) |
-| Failure | Raises `CsrfValidationError` → host HTTP **403** |
+| Strategy `validate` success | Returns normally (no value required) |
+| Strategy `validate` failure | Raises `CsrfValidationError` → host HTTP **403** |
+| `CsrfField()` render | Hidden input node with the seeded token |
 
 ## Errors
 

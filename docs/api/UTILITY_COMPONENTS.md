@@ -2,7 +2,7 @@
 status: shipped
 ---
 
-# Utility component contracts
+# Utility component contracts (outline)
 
 
 !!! note "Stability"
@@ -11,11 +11,11 @@ status: shipped
 
 **Status:** Accepted
 
-!!! note "Summary page"
+!!! note "Outline page"
 
-    This page is a **short summary** of utility built-ins. Prefer the
-    [component catalog](../components/index.md) for props and [Autodoc](AUTODOC.md) for
-    generated signatures when you need a full parameter list.
+    Short summary of utility built-ins — not a full Parameters/Returns contract for each
+    symbol. Prefer the [component catalog](../components/index.md) for props and
+    [Autodoc](AUTODOC.md) for generated signatures.
 
 ## Constructors (summary)
 

@@ -108,9 +108,23 @@ returns a small HTML fragment; [HTMX](https://htmx.org) swaps it into the declar
 
 More: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
 
+Extras, Flask/Django, and troubleshooting: [Installation](installation.md).
+
+## 2. What the scaffold looks like
+
+`hedron new` writes `app.py` (timestamp line may vary). Keep that file open while you
+edit. `security="standard"` and `session_secret` are scaffold defaults so CSRF-safe forms
+work later; replace the secret before any deploy ([Configuration](../CONFIGURATION.md)).
+
+### Preview (no server)
+
+Optional docs simulation of the same fragment swap — **not** a substitute for running
+uvicorn above. Use it only after you have seen Hello on localhost, or if you are
+browsing docs offline. The **Code** tab is the scaffold listing.
+
 === "Demo"
 
-    Same fragment swap as the scaffold — docs simulation (no server).
+    Optional preview — docs simulation (no server). Run uvicorn above first.
 
     <!-- hedron-sim:hello-refresh-quickstart -->
 
@@ -161,14 +175,6 @@ More: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md)
         return swap(status_panel())
     ```
 
-Extras, Flask/Django, and troubleshooting: [Installation](installation.md).
-
-## 2. What the scaffold looks like
-
-`hedron new` writes the `app.py` shown in the **Code** tab above (timestamp line may
-vary). Keep that file open while you edit — the Demo tab is only a docs simulation.
-`security="standard"` and `session_secret` are scaffold defaults so CSRF-safe forms work
-later; replace the secret before any deploy ([Configuration](../CONFIGURATION.md)).
 
 ## 3. Edit the Hello text (~2 minutes)
 

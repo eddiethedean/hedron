@@ -157,12 +157,7 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
     (
         "getting-started/quickstart.md",
         "hello-refresh-quickstart",
-        "Same fragment swap as the scaffold — docs simulation (no server).",
-    ),
-    (
-        "index.md",
-        "hello-refresh",
-        "Docs simulation — no live server. Click **Refresh status** to swap the fragment.",
+        "Optional preview — docs simulation (no server). Run uvicorn above first.",
     ),
 )
 

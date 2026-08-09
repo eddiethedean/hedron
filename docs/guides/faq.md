@@ -48,11 +48,15 @@ Details: [Compatibility](../COMPATIBILITY.md).
 
 ## Refresh status clicked but nothing changed
 
-Confirm you are on the **running app** (`uvicorn`, usually
-[http://127.0.0.1:8000](http://127.0.0.1:8000)), not only a docs Demo tab (those are
-simulations). Check the browser network tab: fragment requests need `HX-Request` and a
-matching `HX-Target`. A wrong target returns **403**. See
-[Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) and
+1. Confirm you are on the **running app** (`uvicorn`, usually
+   [http://127.0.0.1:8000](http://127.0.0.1:8000)), not a docs **Preview (no server)** /
+   Demo simulation.
+2. Hard-refresh the browser; with `--reload`, wait for the server to finish restarting.
+3. Open the network tab: the Refresh click should request `/status` (or your fragment
+   path) with `HX-Request: true` and an `HX-Target` that matches a declared region id.
+4. A wrong or undeclared target returns **403** (fail closed) — not a silent no-op.
+
+See [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) and
 [HTMX interactions](htmx-interactions.md).
 
 ## First POST returns 403
@@ -116,31 +120,42 @@ the same directory by accident.
 
 ## What do Beta, Supported, and Deferred mean?
 
-See [How to read Hedron docs](../getting-started/how-to-read.md). Short version:
+Short version for builders: **pin `hedron>=0.25.0,<0.26`**. Packages are Beta; that does
+not mean “do not use” — it means expect occasional `0.x` churn and pin upper bounds.
 
-- **Beta / Alpha** — **package** maturity on PyPI; pin versions (`>=0.25.0,<0.26`).
+Evaluators (three axes — skip if you are just building):
+
+- **Beta / Alpha** — **package** maturity on PyPI; pin versions.
 - **Supported** — **capability** readiness on a host; ship with pins. **Not** the same as API level `stable`.
 - **Deferred** — documented, not ready; do not treat as Supported.
 - API levels (`stable` / `beta` / …) in [STABILITY](../api/STABILITY.md) are a third axis.
 
-A Beta package can expose Supported capabilities whose API level is still `beta`.
+Full cheat-sheet: [Maturity labels (evaluators)](../getting-started/how-to-read.md).
+Snapshot: [What’s ready today](whats-ready.md).
+
+## Why pin with an upper bound (`<0.26`)?
+
+A lower bound without an upper bound alone allows a future **0.26+** breaking train.
+Use `hedron>=0.25.0,<0.26` (and matching adapters/extras) in lockfiles. See
+[Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
 
-**Auto** (built-in inspectable object rendering — no extra) and **DataTable/DataEditor**
-are **Supported** capabilities (`hedron` / `hedron[data]`). Those packages are **Beta**
-on PyPI — pin versions.
-**Charts** are Alpha source in the repository, but **not currently installable from PyPI
-with Hedron 0.25** because published chart releases require older `hedron-core` versions.
-See [What’s ready](whats-ready.md).
+**Auto** (built-in — no extra) and **DataTable/DataEditor** (`hedron[data]`) are
+**Supported**. Those packages are **Beta** on PyPI — pin versions.
+
+**Charts and sample-kit are Deferred from PyPI on 0.25.** Do not install the charts
+extra or `hedron-sample-kit` from PyPI with this train — published wheels require older
+`hedron-core` and typically downgrade or fail. Repository source only. See
+[What’s ready](whats-ready.md) and
+[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ```bash
 pip install "hedron[data]>=0.25.0,<0.26"     # DataTable, DataEditor (Auto is already in hedron)
 ```
 
-See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), and the
-[charts and HTMX guide](charts-and-htmx.md). Packaging details:
-[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+See [Auto](../api/AUTO.md), [Data](../api/DATA.md), and the
+[charts and HTMX guide](charts-and-htmx.md) (source-only path).
 
 ## Are Flask and Django supported?
 

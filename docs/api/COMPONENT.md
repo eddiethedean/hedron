@@ -35,7 +35,9 @@ class UserCard(Component[UserCardProps]):
 `NodeLike` is exported from **`hedron_core`**, not `hedron`. Day-to-day composition
 often returns built-ins (`Card`, `Text`, …) without naming `NodeLike` explicitly.
 
-## Constructor / subclass surface
+## Parameters
+
+Subclass and constructor surface (concrete components declare their own props kwargs):
 
 | Member | Type | Description |
 |---|---|---|
@@ -43,6 +45,8 @@ often returns built-ins (`Card`, `Text`, …) without naming `NodeLike` explicit
 | `__init__(props)` / typed kwargs | — | Validates props via the declared model |
 | `props` | `Props` | Immutable validated props for this instance |
 | `render()` | `-> NodeLike` | Pure render; **no hidden I/O** |
+
+Built-in constructor tables: [Components](../components/index.md).
 
 ## Returns
 

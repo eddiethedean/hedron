@@ -1,10 +1,15 @@
-# How to read Hedron docs
+# Maturity labels (evaluators)
 
-You do **not** need maturity vocabulary to install or complete the golden path
-(First app → What is HTMX → HTMX interactions → Minimal form). Use this page when evaluating
-production use or reading API/stability catalogs.
+You do **not** need this page to install or complete the golden path
+([First app](quickstart.md) → [What is HTMX?](what-is-htmx.md) →
+[HTMX interactions](../guides/htmx-interactions.md) →
+[Minimal form](../guides/minimal-form.md)).
 
-## Maturity cheat-sheet (three axes)
+Use this cheat-sheet when evaluating production use, reading API/stability catalogs, or
+writing docs that mention maturity. Adopter snapshot:
+[What’s ready today](../guides/whats-ready.md).
+
+## Three axes
 
 **Package** maturity (Beta / Alpha on PyPI) ≠ **capability** readiness (Supported /
 Experimental / Deferred) ≠ **API compatibility** level (`stable` / `beta` /
@@ -40,7 +45,7 @@ There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 
 | Audience | Where |
 |---|---|
-| Adopters | **Start**, **Guides**, **Examples**, **Reference** (Components + API), and **Evaluate** — maturity snapshot: [What's ready today](../guides/whats-ready.md) |
+| Adopters | **Learn**, **How-to**, **Examples**, **Reference** (Components + API), and **Evaluate** — maturity snapshot: [What's ready today](../guides/whats-ready.md) |
 | Maintainers / RFC authors | [Maintainer handbook](../guides/maintainer-handbook.md) + GitHub-only trees (`docs/rfcs/`, `docs/acceptance/`, `docs/STATUS.md`, `docs/RELEASE.md`, …) |
 
 ## Template history (upgrade only)
@@ -48,12 +53,5 @@ There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 Optional Jinja/HDJ templates use `hedron[jinja]`. An earlier experimental template prototype
 (**HDN**) was removed in **0.9**—see the [upgrade guide](../guides/upgrade.md) only if you
 are migrating from 0.8.
-
-## What to read first
-
-1. [Build your first app](quickstart.md) → [What is HTMX?](what-is-htmx.md) →
-   [HTMX interactions](../guides/htmx-interactions.md)
-2. [Minimal form POST](../guides/minimal-form.md) → [Installation](installation.md) as needed
-3. [What’s ready today](../guides/whats-ready.md) / [Evaluate Hedron](../guides/evaluate.md) when evaluating production use
 
 Stuck on a term? See the [Glossary](../GLOSSARY.md).

@@ -10,7 +10,7 @@ cd my-flask-app && uv sync && uv run flask --app app run --port 8000
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000/), click **Refresh**, and confirm the
 `#panel` timestamp updates without a full reload. Next: [HTMX interactions](../guides/htmx-interactions.md) ·
-[Ship to production](../guides/ship-to-production.md).
+[Ship a Hedron app](../guides/ship.md).
 
 Monorepo reference (maintainers / evaluators):
 [`examples/flask-reference`](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference).

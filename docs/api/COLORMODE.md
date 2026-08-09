@@ -2,7 +2,7 @@
 status: shipped
 ---
 
-# ColorMode
+# ColorMode (outline)
 
 
 !!! note "Stability"
@@ -11,10 +11,11 @@ status: shipped
 
 **Status:** Accepted
 
-!!! tip "Signatures"
+!!! note "Outline page"
 
-    Generated parameter lists: [Autodoc — Color mode](AUTODOC.md#color-mode).
-    This page is the how-to narrative.
+    Narrative + Autodoc signatures. Full Parameters/Returns/Errors tables live in
+    [Autodoc — Color mode](AUTODOC.md#color-mode) and
+    [`ColorModeToggle`](../components/color-mode-toggle.md).
 
 ```python
 from hedron import ColorMode, ColorModeToggle, resolve_color_mode

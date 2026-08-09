@@ -1,26 +1,24 @@
 # Autodoc — public symbols (expanded subset)
 
 Generated signatures via **mkdocstrings** for the public surface used in Learn / Adopt
-paths **and** the 0.22 CSRF / form composition APIs. This page is still a **subset** of
-every name in `hedron.__all__` — prefer hand-maintained contract pages for narrative,
-errors, and adopter guidance; use Autodoc to verify parameter lists against installed
-sources.
+paths, mount helpers, HTMX helpers, models, CSRF / form composition, and
+`hedron.experimental` live APIs.
 
-**Coverage (honest):** Autodoc covers an expanded golden-path + CSRF + exceptions +
-`hedron.experimental` live subset (still dozens of symbols, not every name). The root
-`hedron` export set is ~230 names in `__all__`. **Complete name → page map:**
-[Coverage map](COVERAGE.md). Component constructor tables:
-[Components](../components/index.md). Live SSE / streaming / WebSocket helpers are
+**Coverage (honest):** This page documents a large **subset** of `hedron.__all__`
+(~230 names), not every built-in component constructor. Prefer hand-maintained contract
+pages for narrative and errors; use Autodoc to verify parameter lists against installed
+sources. **Every export → page map:** [Coverage map](COVERAGE.md). Component constructor
+tables: [Components](../components/index.md). Live SSE / streaming / WebSocket helpers are
 **not** in `__all__` — import from `hedron.experimental` (Autodoc below uses that path).
 
 **Page template for hand contracts:** Example → Signature/members → Parameters →
-Returns → Errors → See also ([Field](FIELD.md) is the gold standard).
+Returns → Errors → See also ([Field](FIELD.md) is the gold standard). Outline pages
+(`ColorMode`, `Utility components`, `Data sources`) defer full tables here or to
+Components.
 
-Coverage map for the full export set: [Coverage map](COVERAGE.md). Stability levels:
-[Stability](STABILITY.md). Overview: [API overview](README.md).
-
-Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
-[Interaction](INTERACTION.md) · [CSRF composition](CSRF_COMPOSITION.md).
+Stability: [Stability](STABILITY.md). Overview: [API overview](README.md).
+Narrative: [Hedron](HEDRON.md) · [Interaction](INTERACTION.md) ·
+[CSRF composition](CSRF_COMPOSITION.md) · [Inference](INFERENCE.md).
 
 ## Inference and model demos (0.18)
 
@@ -648,6 +646,217 @@ Narrative: [EXCEPTIONS.md](EXCEPTIONS.md).
       heading_level: 3
 
 ::: hedron.builtins.media.parse_byte_range
+    options:
+      heading_level: 3
+
+## Models, mount, and HTMX helpers
+
+::: hedron_core.models.Props
+    options:
+      heading_level: 3
+
+::: hedron_core.models.FormModel
+    options:
+      heading_level: 3
+
+::: hedron_core.security.UrlPurpose
+    options:
+      heading_level: 3
+
+::: hedron.mount.MountPath
+    options:
+      heading_level: 3
+
+::: hedron.mount.resolve_mount_path
+    options:
+      heading_level: 3
+
+::: hedron.mount.normalize_mount_path
+    options:
+      heading_level: 3
+
+::: hedron.mount.cookie_path_for_mount
+    options:
+      heading_level: 3
+
+::: hedron.mount.mount_from_request
+    options:
+      heading_level: 3
+
+::: hedron.mount.prefix_local_path
+    options:
+      heading_level: 3
+
+::: hedron.interaction.HtmxRequest
+    options:
+      heading_level: 3
+
+::: hedron_core.interaction.default_interaction_policy
+    options:
+      heading_level: 3
+
+::: hedron_core.interaction.form_sync_attrs
+    options:
+      heading_level: 3
+
+::: hedron.interaction.htmx_request
+    options:
+      heading_level: 3
+
+::: hedron.htmx.htmx_context
+    options:
+      heading_level: 3
+
+::: hedron.htmx.approved_headers
+    options:
+      heading_level: 3
+
+::: hedron.builtins.action_attrs
+    options:
+      heading_level: 3
+
+::: hedron.builtins.oob_swap
+    options:
+      heading_level: 3
+
+::: hedron.responses.FileComponentResponse
+    options:
+      heading_level: 3
+
+::: hedron.responses.merge_htmx_headers
+    options:
+      heading_level: 3
+
+::: hedron.responses.render_interaction
+    options:
+      heading_level: 3
+
+::: hedron.responses.render_component_response
+    options:
+      heading_level: 3
+
+::: hedron_core.addressable.addressable
+    options:
+      heading_level: 3
+
+::: hedron.routing.reverse.ComponentRef
+    options:
+      heading_level: 3
+
+::: hedron.routing.reverse.resolve_route_path
+    options:
+      heading_level: 3
+
+::: hedron.security.redirects.redirect_external
+    options:
+      heading_level: 3
+
+::: hedron_core.theme.Theme
+    options:
+      heading_level: 3
+
+::: hedron_core.browser.BrowserContext
+    options:
+      heading_level: 3
+
+## Built-in components (Autodoc sample)
+
+Full constructor tables remain on [Components](../components/index.md). Autodoc below
+covers additional frequently used exports from `hedron.__all__`.
+
+::: hedron_core.builtins.shell.AppShell
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.surfaces.Alert
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.surfaces.Badge
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.Checkbox
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.Select
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.TextArea
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.FormField
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.FormErrors
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.Label
+    options:
+      heading_level: 3
+
+::: hedron.builtins.ErrorState
+    options:
+      heading_level: 3
+
+::: hedron.builtins.Loading
+    options:
+      heading_level: 3
+
+::: hedron.builtins.Lazy
+    options:
+      heading_level: 3
+
+::: hedron.builtins.Pagination
+    options:
+      heading_level: 3
+
+::: hedron.builtins.InfiniteScroll
+    options:
+      heading_level: 3
+
+::: hedron.builtins.files.FileUpload
+    options:
+      heading_level: 3
+
+::: hedron.builtins.files.DownloadButton
+    options:
+      heading_level: 3
+
+::: hedron.builtins.files.safe_download_response
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.content.CodeBlock
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.content.Table
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.utilities.Tabs
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.content.Link
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.landmarks.Nav
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.shell.HtmxLink
+    options:
+      heading_level: 3
+
+::: hedron_core.auto.Auto
     options:
       heading_level: 3
 

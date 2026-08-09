@@ -13,7 +13,7 @@ No SPA or prior HTMX background is required.
 1. [Build your first app](quickstart.md)
 2. [Installation](installation.md) (extras / troubleshooting as needed)
 3. [What is HTMX?](what-is-htmx.md) — browser / fragment / region / swap mental model
-4. Optional: [Understanding maturity labels](how-to-read.md) (after Hello works)
+4. Optional later (evaluators only): [Maturity labels](how-to-read.md)
 
 That is the first success. Extend the **same** app in the next section; do not start a
 second project.
@@ -48,7 +48,7 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 
 **Recommended second hour:** [Session auth](../examples/session-auth.md) →
 [Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) →
-[Ship to production](../guides/ship-to-production.md). The
+[Ship a Hedron app](../guides/ship.md). The
 [reference app](../examples/reference-app.md) is an optional kitchen sink after that.
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
@@ -67,7 +67,7 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 
 ## 6. Harden and deploy
 
-1. [Ship to production](../guides/ship-to-production.md) — adopter checklist
+1. [Ship a Hedron app](../guides/ship.md) — adopter checklist
 2. [Deployment](../guides/deployment.md) — env / Docker / proxy deep dive
 3. [Testing](../guides/testing.md) · [Troubleshooting](../guides/troubleshooting.md)
 
@@ -81,4 +81,4 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 [Contributing](../CONTRIBUTING.md) · [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/main/scripts/README.md)
 
 Stuck? [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md) ·
-[How to read these docs](how-to-read.md)
+[Maturity labels (evaluators)](how-to-read.md)

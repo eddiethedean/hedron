@@ -30,7 +30,7 @@ until compatible distributions are published — see [Compatibility](../COMPATIB
 
 **Support window:** security fixes target the current published train (`0.25.x`). There is
 no multi-year LTS — see [SECURITY.md](../SECURITY.md). Community GitHub support only;
-[Ship to production](ship-to-production.md) for ops.
+[Ship a Hedron app](ship.md) for ops.
 
 ## Maintainer expectations
 

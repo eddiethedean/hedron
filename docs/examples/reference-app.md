@@ -10,8 +10,17 @@ when you want the full archetype in one tree.
 Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README:
 [`examples/reference-app/README.md`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/README.md).
 
-Click through the pattern demos below (docs simulations for CSRF, fragments, and charts —
-not a live login), then run the full app locally or via production compose.
+Click through the pattern demos below (docs simulations for CSRF, fragments, and chart
+**panel** refresh — not a live login and not a PyPI charts install), then run the full app
+locally or via production compose.
+
+!!! danger "Charts require the monorepo on 0.25"
+
+    The reference app’s chart routes use workspace `hedron-charts` (Docker/compose installs
+    from this repository). **Do not** `pip install "hedron[charts]"` from PyPI with Hedron
+    0.25 — see
+    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+    PyPI adopters can still run CRUD, DataEditor, and auth without charts.
 
 !!! warning "Credentials for this app"
 
@@ -301,7 +310,7 @@ Compose requires `HEDRON_SESSION_SECRET` (production gate refuses secrets contai
 uvicorn are installed in the image; for non-Docker prod installs use
 [`requirements-prod.txt`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/requirements-prod.txt).
 Prefer this path when validating production posture —
-[Ship to production](../guides/ship-to-production.md) ·
+[Ship a Hedron app](../guides/ship.md) ·
 [Deployment](../guides/deployment.md).
 
 ## What the app demonstrates
@@ -313,7 +322,7 @@ Prefer this path when validating production posture —
 | CSRF on forms | `csrf_token_for_request` + hidden field / `hx-headers` in `_create_form` | CSRF on forms |
 | Create user POST | `@users.action("", method="POST")` | Fragment list refresh |
 | Fragment table refresh | `@users.component("/table")`, addressable `user_table` | Fragment list refresh |
-| DataEditor / Auto / charts | dashboard sections and `/charts/*` routes | Chart panel refresh |
+| DataEditor / Auto / charts (workspace) | dashboard + `/charts/*` (monorepo/`hedron-charts` source — not PyPI on 0.25) | Chart panel refresh (sim) |
 | Color mode | `ColorModeToggle` + preference cookie helpers | — |
 | Production archetype | compose + `requirements-prod.txt` + README ingredient table | — |
 

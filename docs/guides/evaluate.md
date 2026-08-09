@@ -8,13 +8,14 @@ Start here if you are deciding whether Hedron fits. Pick the page that matches y
 | Product / eng fit | This page (below) · [Why Hedron](why-hedron.md) |
 | Capability maturity (authoritative page) | [What’s ready today](whats-ready.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
-| Ops / ship checklist | [Ship hub](ship.md) · [Ship to production](ship-to-production.md) |
+| Ops / ship checklist | [Ship a Hedron app](ship.md) |
+| Maturity vocabulary | [Maturity labels](../getting-started/how-to-read.md) |
 | Architecture | [Architecture](../ARCHITECTURE.md) |
 | Support / disclosure | [Support](support.md) · [SECURITY](../SECURITY.md) |
 
 **Second-hour path (internal admin):** [Session auth](../examples/session-auth.md) →
 [Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) →
-[Ship to production](ship-to-production.md). Treat the
+[Ship a Hedron app](ship.md). Treat the
 [reference app](../examples/reference-app.md) as an optional kitchen sink.
 
 Maintainer trust-program depth (not required for a PoC):
@@ -99,5 +100,5 @@ Full matrix: [What’s ready](whats-ready.md).
 4. [Try with Codespaces](../examples/try-it.md) (real server in a container — not a playground)
 5. [Runnable examples](../examples/runnable.md)
 
-Then: [Ship to production](ship-to-production.md) · [Evidence pack](evidence-pack.md) ·
+Then: [Ship a Hedron app](ship.md) · [Evidence pack](evidence-pack.md) ·
 [Support](support.md).

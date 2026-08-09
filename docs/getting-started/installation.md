@@ -88,7 +88,8 @@ If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
 | Wrong / old version | `pip install -U "hedron>=0.25.0,<0.26"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
-| Cannot import DataTable / charts | Install extras — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
+| Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
+| Need charts on 0.25 | Not on PyPI — [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit) |
 | Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
 | Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
 
@@ -105,12 +106,12 @@ Full list: [Troubleshooting](../guides/troubleshooting.md) ·
 
 ## Optional extras
 
-Install extras only when you need them:
+**You only need `hedron` (+ uvicorn) for Hello and most CRUD/admin apps.** Install
+extras only when you need them:
 
 | Extra | When you need it | Package docs |
 |---|---|---|
 | `hedron[data]` | DataTable / DataEditor / data sources | [hedron-data](../packages/hedron-data.md) |
-| `hedron[charts]` | **Unavailable from PyPI on 0.25**; repository chart source only | [hedron-charts](../packages/hedron-charts.md) |
 | `hedron[jinja]` | Optional HDJ (`.hdj`) templates | [hedron-jinja](../packages/hedron-jinja.md) |
 | `hedron[dev]` | Component Explorer (`/hedron-explorer/`) | [hedron-explorer](../packages/hedron-explorer.md) |
 | `hedron[conformance]` | Language-neutral conformance kit / CLI runner | [hedron-conformance](../packages/hedron-conformance.md) |
@@ -123,19 +124,21 @@ Install extras only when you need them:
 | `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` / `[auth]` / `[browser]` | Content, Authlib, or test helpers | — |
 
 Also install directly (no flagship extra): [hedron-sim](../packages/hedron-sim.md).
-The [sample kit](../packages/hedron-sample-kit.md) is source-only on 0.25 because its
-published releases require older `hedron-core` versions.
 Full catalog: [Optional packages](../packages/index.md).
 
 ```bash
 pip install "hedron[data]>=0.25.0,<0.26"          # example
 ```
 
-!!! danger "Do not install charts or sample kit with Hedron 0.25"
+!!! danger "Charts and sample-kit are Deferred from PyPI on 0.25"
 
-    No compatible PyPI distributions are currently published. See the exact resolver
-    conflict and source-only status in
-    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+    Do **not** run `pip install "hedron[charts]"` or install `hedron-sample-kit` from
+    PyPI with Hedron 0.25 — published wheels require older `hedron-core` and typically
+    downgrade or fail the resolver. Compatible sources live in this repository only.
+    Details:
+    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit)
+    · [hedron-charts](../packages/hedron-charts.md) ·
+    [Charts and HTMX](../guides/charts-and-htmx.md).
 
 !!! note "`hedron[browser]` needs Playwright browsers"
 

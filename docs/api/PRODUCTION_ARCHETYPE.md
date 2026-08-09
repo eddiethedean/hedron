@@ -9,7 +9,7 @@ status: published
     Canonical production archetype packet (`ARCHETYPE-025` … `PKG-025`) is **Verified**.
     Pin `hedron>=0.25.0,<0.26`.
 
-    **Ship today:** [Ship to production](../guides/ship-to-production.md) ·
+    **Ship today:** [Ship a Hedron app](../guides/ship.md) ·
     [What’s ready](../guides/whats-ready.md) ·
     [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app).
 

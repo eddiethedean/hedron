@@ -5,35 +5,17 @@ evaluator pages link here — do not treat parallel summaries as a second source
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-**Supported for pinned CRUD/admin on 0.25.x** (Beta packages — pin `hedron>=0.25.0,<0.26`):
-typed pages, HTMX fragments, CSRF profiles (`standard` / `strict`), pluggable CSRF
-strategies / header merge / `CsrfField`, Flask/Django adapters, polling job status,
-accessibility contracts / PE forms, and the production security floor. Prefer **polling**
-for live status. Charts are source-only on 0.25 until a compatible distribution is
-published; notebook, MCP, and Gradio are experimental / Alpha. “Supported” is a
-capability gate, not an API `stable` promise and not a commercial SLA.
+For a pinned internal admin/CRUD app on 0.25.x (`hedron>=0.25.0,<0.26`), you can use:
+typed pages, HTMX fragments, CSRF (`standard`/`strict`), Flask/Django adapters,
+and polling for job status.
 
-Human accessibility testing protocol engineering is on the train; **compensated screen-reader
-sessions are not Supported yet** — do not market human AT as done.
+Pin versions. Packages are Beta (no 1.0, no SLA). Prefer polling over SSE/WebSocket.
 
-!!! note "Supported ≠ API `stable`"
+**Not ready from PyPI on 0.25:** charts and sample-kit (use repo source only if you must).
+**Experimental:** notebook, MCP, Gradio, live SSE/WS.
 
-    **Supported** means the capability works on the current train when pinned. Most public
-    symbols remain API compatibility level **`beta`**. The
-    [minimal](../api/STABILITY.md#minimal-stable-tier) and
-    [expanded](../api/STABILITY.md#expanded-stable-tier-023) stable tables are
-    compatibility-protected today (narrow Beginner/CRUD facade —
-    [STABLE_FACADE](../api/STABLE_FACADE.md)) — not every Supported row on this page.
-    Package maturity remains **Beta** on PyPI — no scheduled 1.0, no commercial SLA.
-
-**Prefer polling** over SSE/WebSocket (`hedron.experimental`).
-
-**Source-only on 0.25:** charts and sample kit. **Pin and expect churn:** notebook, MCP,
-and Gradio.
-
-Start building: [First app](../getting-started/quickstart.md). Evaluators:
-[Evaluate Hedron](evaluate.md). Maturity vocabulary:
-[How to read](../getting-started/how-to-read.md).
+Need procurement detail (API stability tiers, a11y sessions, evidence)? See
+[How labels work](#how-labels-work) below — skip it if you are just building.
 
 !!! tip "Can I ship an internal admin app?"
 
@@ -41,14 +23,24 @@ Start building: [First app](../getting-started/quickstart.md). Evaluators:
     [Build your first app](../getting-started/quickstart.md) →
     [HTMX interactions](htmx-interactions.md) →
     [Minimal form](minimal-form.md). Extras:
-    [Installation](../getting-started/installation.md).
+    [Installation](../getting-started/installation.md). Ship checklist:
+    [Ship a Hedron app](ship.md).
+
+Start building: [First app](../getting-started/quickstart.md). Evaluators:
+[Evaluate Hedron](evaluate.md).
+
+## How labels work
 
 <details markdown>
-<summary>How to read labels on this page</summary>
+<summary>Package Beta ≠ capability Supported ≠ API <code>stable</code> (evaluators)</summary>
 
-Hedron **0.25.0** packages are **Beta** maturity (API `beta` unless noted in
-[STABILITY.md](../api/STABILITY.md)). Expect occasional breaking changes on
-`0.x` under the [compatibility policy](../COMPATIBILITY.md).
+**Supported** means the capability works on the current train when pinned. Most public
+symbols remain API compatibility level **`beta`**. The
+[minimal](../api/STABILITY.md#minimal-stable-tier) and
+[expanded](../api/STABILITY.md#expanded-stable-tier-023) stable tables are
+compatibility-protected today (narrow Beginner/CRUD facade —
+[STABLE_FACADE](../api/STABLE_FACADE.md)) — not every Supported row on this page.
+Package maturity remains **Beta** on PyPI — no scheduled 1.0, no commercial SLA.
 
 | Label | Meaning |
 |---|---|
@@ -59,7 +51,10 @@ Hedron **0.25.0** packages are **Beta** maturity (API `beta` unless noted in
 
 Package maturity (Beta/Alpha) ≠ capability readiness (Supported/Experimental/Deferred) ≠
 API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
-[Understanding maturity labels](../getting-started/how-to-read.md).
+[Maturity labels (evaluators)](../getting-started/how-to-read.md).
+
+Human accessibility testing protocol engineering is on the train; **compensated screen-reader
+sessions are not Supported yet** — do not market human AT as done.
 
 </details>
 
@@ -228,7 +223,7 @@ Charts and sample kit are intentionally absent from this install list; see the
 | Audience | Page |
 |---|---|
 | Quick fit check | [Evaluate Hedron](evaluate.md) |
-| Ops ship checklist | [Ship to production](ship-to-production.md) · [Deployment](deployment.md) |
+| Ops ship checklist | [Ship a Hedron app](ship.md) · [Deployment](deployment.md) |
 | Trust / maturity program | [Production-quality maturity](production-quality.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 

@@ -33,124 +33,17 @@ rerun — unlike Streamlit’s script-rerun model.
 
 </div>
 
-## From zero to a rendered page
+## Start here
 
-**Requires Python 3.11+.** Pin installs with `hedron>=0.25.0,<0.26`.
+[Build your first app (~10 minutes)](getting-started/quickstart.md) — the only full
+Hello walkthrough (scaffold, Refresh, edit).
 
-=== "uv (recommended)"
+Hedron is for FastAPI teams who want typed components and HTMX fragment regions
+without assembling a hand-rolled Jinja stack. Prefer Streamlit for notebook-style
+rerun dashboards.
 
-    Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if needed
-    (`curl -LsSf https://astral.sh/uv/install.sh | sh` on macOS/Linux;
-    `irm https://astral.sh/uv/install.ps1 | iex` on Windows PowerShell).
-
-    ```bash
-    uvx --from "hedron>=0.25.0,<0.26" hedron new my-hedron-app
-    cd my-hedron-app
-    uv sync
-    uv run uvicorn app:app --reload
-    ```
-
-=== "pip (macOS / Linux)"
-
-    ```bash
-    python3 -m venv .venv && source .venv/bin/activate
-    python -m pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
-    python -m hedron new my-hedron-app
-    cd my-hedron-app && python -m pip install -e .
-    uvicorn app:app --reload
-    ```
-
-=== "pip (Windows PowerShell)"
-
-    ```powershell
-    py -3 -m venv .venv
-    .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
-    python -m hedron new my-hedron-app
-    cd my-hedron-app
-    python -m pip install -e .
-    uvicorn app:app --reload
-    ```
-
-!!! warning "Pip installs twice — skip the second and imports fail"
-
-    Pip needs two installs (CLI, then `pip install -e .` inside the scaffold). Forgetting
-    the second step causes `ModuleNotFoundError: hedron`. Prefer the **uv** tab for a
-    single flow. Details:
-    [FAQ](guides/faq.md#why-install-hedron-twice-cli-then-project). Version bands:
-    [Compatibility](COMPATIBILITY.md).
-
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
-Click **Refresh status** — the page updates without a full reload. Hedron returns a small
-HTML fragment; [HTMX](https://htmx.org) swaps it into the declared region.
-
-### Try it (simulated)
-
-=== "Demo"
-
-    Docs simulation — no live server. Click **Refresh status** to swap the fragment.
-
-    <!-- hedron-sim:hello-refresh -->
-
-=== "Code"
-
-    What `hedron new` writes as `app.py` (the real app, not the docs simulator):
-
-    ```python title="app.py"
-    import os
-    from datetime import UTC, datetime
-
-    from hedron import Hedron, Page, RefreshButton, Stack, Text, html, swap
-
-    app = Hedron(
-        title="Hedron App",
-        security="standard",
-        explorer="off",
-        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "replace-in-production"),
-    )
-
-    status = app.region("service-status", description="Live status panel")
-
-
-    def status_panel():
-        stamp = datetime.now(UTC).strftime("%H:%M:%S UTC")
-        return html.div(
-            Text(f"All systems operational · refreshed {stamp}"),
-            id=status.id,
-            role="status",
-            aria={"live": "polite"},
-        )
-
-
-    @app.page("/")
-    def home() -> Page:
-        return Page(
-            Stack(
-                Text("Hello from hedron new"),
-                status_panel(),
-                RefreshButton.for_region(status, href="/status", label="Refresh status"),
-            ),
-            title="Home",
-        )
-
-
-    @app.fragment("/status", region=status)
-    def refresh_status():
-        return swap(status_panel())
-    ```
-
-`session_secret` and `security="standard"` appear even in Hello because sessions and CSRF
-defaults are on by design — override via `HEDRON_SESSION_SECRET` in real apps.
-
-Extras and troubleshooting: [installation](getting-started/installation.md).
-
-## Beyond Hello — notes form
-
-After [HTMX interactions](guides/htmx-interactions.md) and
-[Minimal form](guides/minimal-form.md), the same scaffold posts a note with
-`CsrfField()` and increments **Notes saved: N**:
-
-![Notes form with CSRF and notes-saved counter](assets/notes-form.jpg)
+**You only need the `hedron` package** (+ uvicorn). Optional adapters and extras:
+[Installation](getting-started/installation.md).
 
 ## A backend-native way to build UI
 

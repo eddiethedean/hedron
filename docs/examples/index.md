@@ -12,7 +12,8 @@ There is **no hosted playground**. Use Codespaces / Dev Container, a local clone
 3. **[Recipes](recipes/index.md)** — notes + SQLAlchemy, session auth, file upload, jobs poll.
 4. **[Runnable examples](runnable.md)** — clone the repo for the reference app, live
    interaction sample, Flask/Django adapters, and HDJ sample.
-5. **[CRUD tutorial](crud-tutorial.md)** — guided path through the reference app.
+5. **[Notes list tutorial](crud-tutorial.md)** — in-memory create/list/delete (+ optional update);
+   for full admin CRUD see the [reference app](reference-app.md).
 6. **[Single-file apps](single-file.md)** — alternate paste-an-`app.py` path with Hello +
    Refresh. Prefer `hedron new` when you want the scaffold and learning-path deltas.
 7. **[Phase evidence](phase-evidence.md)** — maintainer exit stubs (not product recipes);

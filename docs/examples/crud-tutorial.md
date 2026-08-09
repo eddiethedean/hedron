@@ -1,9 +1,10 @@
-# CRUD tutorial
+# Notes list tutorial (create, list, delete)
 
-Build a small in-memory notes list with CSRF and HTMX fragment updates. Paste this into
-a new project after the [quickstart](../getting-started/quickstart.md). For the larger
-reference application (auth, sessions, extras), see the
-[reference app walkthrough](reference-app.md).
+Build a small in-memory notes list with CSRF and HTMX fragment updates. This tutorial
+covers **create, list, and delete** — add [update](#add-update) below, or use the
+[reference app](reference-app.md) for authenticated create/**update**/delete admin.
+
+Paste into a new project after the [quickstart](../getting-started/quickstart.md).
 
 ## Prerequisites
 
@@ -394,6 +395,45 @@ uvicorn app:app --reload
 1. Open <http://127.0.0.1:8000/>
 2. Add a note — `#notes-list` swaps without a full navigation
 3. Delete a note — the same region updates
+4. (Optional) Follow [Add update](#add-update) and edit a note in place
+
+## Add update
+
+Extend `render_list` so each row can POST a new body, then add a handler:
+
+```python
+# Inside the per-note <li>, after the body Text(...):
+html.form(
+    html.input(type="hidden", name="csrf_token", value=token),
+    html.input(type="hidden", name="note_id", value=note_id),
+    TextInput("body", value=body, required=True),
+    SubmitButton("Save"),
+    method="post",
+    **{
+        "hx-post": "/notes/update",
+        "hx-target": LIST.selector,
+        "hx-swap": "innerHTML",
+    },
+),
+
+@app.component("/notes/update", methods=["POST"], fragment_regions=(LIST,))
+def update_note(
+    request: Request,
+    note_id: Annotated[str, Form()],
+    body: Annotated[str, Form()],
+) -> InteractionResult:
+    text = body.strip()
+    if note_id in NOTES and text:
+        NOTES[note_id] = text
+    return InteractionResult(
+        content=render_list(request),
+        region_id=LIST.id,
+        explanation="Update a note and refresh the list",
+    )
+```
+
+For a fuller admin surface (auth + create/update/delete on users), see the
+[reference app walkthrough](reference-app.md).
 
 ## What you practiced
 
@@ -402,11 +442,12 @@ uvicorn app:app --reload
 | CSRF cookie + form field | `_csrf` / hidden `csrf_token` |
 | Fragment allowlist | `fragment_regions=(LIST,)` |
 | Mutation decorator | `@component(..., methods=["POST"])` — see [Mutations](../guides/mutations.md) |
-| `InteractionResult` | Create/delete handlers |
+| `InteractionResult` | Create/delete (and optional update) handlers |
 
 ## Next
 
-- Persist rows (SQLAlchemy / your ORM) instead of the module-level `NOTES` dict
+- Persist rows (SQLAlchemy / your ORM) instead of the module-level `NOTES` dict —
+  [Notes + SQLAlchemy](notes-sqlalchemy.md) (create/list/delete)
 - Gate routes with [Authentication](../guides/authentication.md)
 - Study the full [reference app](reference-app.md) for sessions, multi-worker jobs, and packaging
 - [Live interaction](../guides/live-interaction.md) for poll / stream / SSE

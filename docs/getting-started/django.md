@@ -129,7 +129,7 @@ Stock Django's `X-CSRFToken` remains valid if you keep the default. Form posts m
 ## Next
 
 - [HTMX interactions](../guides/htmx-interactions.md) · [Minimal form](../guides/minimal-form.md)
-- [Security](../guides/security.md) · [Ship to production](../guides/ship-to-production.md)
+- [Security](../guides/security.md) · [Ship a Hedron app](../guides/ship.md)
 - Forms: `hedron_django.forms.form_to_nodes` / `validation_interaction`
 - QuerySets: `hedron_data.DjangoQuerySetDataSource` with an already-authorized base QS
 - Job status: prefer [polling](../guides/live-interaction.md) on Django

@@ -20,7 +20,7 @@ These helpers resolve that mount and keep cookie paths consistent.
 3. Confirm CSRF cookies use `Path=/apps/hedron/` (not `/` alone) and that Refresh /
    form posts still hit the app.
 
-See [Deployment](../guides/deployment.md) · [Ship to production](../guides/ship-to-production.md) ·
+See [Deployment](../guides/deployment.md) · [Ship a Hedron app](../guides/ship.md) ·
 [Troubleshooting](../guides/troubleshooting.md).
 
 ## Trust order

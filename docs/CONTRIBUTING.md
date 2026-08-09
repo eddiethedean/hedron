@@ -3,10 +3,14 @@
 ## First contribution
 
 **New here?** Start with the thin on-ramp:
-[Contributor day-one](guides/contributor-day-one.md) (local docs verify ~15 minutes).
-Docs-only PRs still run the `quality` job; `test` / `browser` / `evidence` skip when every
-changed path is allowlisted (see [CI path filters](#ci-path-filters) below). The rest of this
-page is the full contributor guide.
+[Contributor day-one](guides/contributor-day-one.md) (local docs verify ~15 minutes;
+**canonical first-contribution page** — root `CONTRIBUTING.md` points there).
+
+Docs-only PRs still run the **`quality`** job (including **package wheel builds** —
+Rust toolchain in CI, not required on your laptop for typos). `test` / `browser` /
+`evidence` skip when every changed path is allowlisted (see
+[CI path filters](#ci-path-filters) below). The rest of this page is the full contributor
+guide.
 
 **Prerequisites:** CPython **3.11–3.14** and [uv](https://docs.astral.sh/uv/).
 

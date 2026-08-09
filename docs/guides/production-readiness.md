@@ -4,8 +4,8 @@ Ops-oriented narrative for **Hedron 0.25.0**. **Do not start here for the checkl
 
 | Need | Canonical page |
 |---|---|
-| Adopter ship checklist | [Ship to production](ship-to-production.md) |
-| Ship landing / links | [Ship hub](ship.md) |
+| Adopter ship checklist | [Ship a Hedron app](ship.md) |
+| Ship landing / links | [Ship a Hedron app](ship.md) |
 | Docker / proxy / env deep dive | [Deployment](deployment.md) |
 | Capability maturity | [What's ready today](whats-ready.md) |
 | Trust-program priorities | [Production-quality maturity](production-quality.md) |

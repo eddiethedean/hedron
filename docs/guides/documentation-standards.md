@@ -59,7 +59,7 @@ and regenerate them; do not hand-edit output that the next generator run will ov
 - Before calling a distribution "published" or documenting an extra, verify the live
   registry version and `Requires-Dist` metadata—not only the local `pyproject.toml`.
 - Keep package maturity, capability readiness, and API stability separate. See
-  [Understanding maturity labels](../getting-started/how-to-read.md).
+  [Maturity labels (evaluators)](../getting-started/how-to-read.md).
 - Use **Supported**, **Experimental**, **Alpha**, and **Deferred** only with the meanings
   on [What's ready today](whats-ready.md).
 - State ownership explicitly: Hedron does not supply application authorization,

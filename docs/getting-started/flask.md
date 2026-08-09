@@ -125,7 +125,7 @@ Safe GETs issue the `hedron_csrf` cookie. Unsafe methods on `hedron_route` and
 ## Next
 
 - [HTMX interactions](../guides/htmx-interactions.md) · [Minimal form](../guides/minimal-form.md)
-- [Security](../guides/security.md) · [Ship to production](../guides/ship-to-production.md)
+- [Security](../guides/security.md) · [Ship a Hedron app](../guides/ship.md)
 - [Adapters API](../api/ADAPTERS.md)
 - Job status: prefer bounded **polling** (FastAPI SSE helpers are experimental —
   see [What’s ready](../guides/whats-ready.md))

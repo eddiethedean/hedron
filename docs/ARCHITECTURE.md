@@ -215,5 +215,5 @@ and diagnostics. Subsystems do not independently rediscover components.
 
 [What’s ready](guides/whats-ready.md) · [Compatibility](COMPATIBILITY.md) ·
 [Enterprise diligence](guides/enterprise-diligence.md) ·
-[Ship hub](guides/ship.md) · [Public API coverage](api/COVERAGE.md) ·
+[Ship a Hedron app](guides/ship.md) · [Public API coverage](api/COVERAGE.md) ·
 [Configuration](CONFIGURATION.md)

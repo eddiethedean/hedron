@@ -1,8 +1,9 @@
 # Hedron reference application (FastAPI)
 
 Multi-worker production kitchen-sink sample for the living Hedron train (**0.25**).
-Authenticated team-administration demo with CRUD, DataEditor, charts, and the
-production-archetype checklist (reverse-proxy subpath, Redis, CSP, Explorer off).
+Authenticated team-administration demo with CRUD, DataEditor, optional charts (workspace
+`hedron-charts` on 0.25 — not PyPI), and the production-archetype checklist
+(reverse-proxy subpath, Redis, CSP, Explorer off).
 
 Contract: [PRODUCTION_ARCHETYPE.md](../../docs/api/PRODUCTION_ARCHETYPE.md).
 
@@ -39,8 +40,10 @@ Local/demo mode keeps Explorer in `development` and uses an in-memory demo secre
 Default credentials: `admin` / `secret` (HTTP Basic). **Replace before any shared or
 production deploy.**
 
-Open the home page for CRUD + DataEditor + charts/Markdown. Chart interaction endpoints
-live under `/charts/*` (for example `/charts/fragment`, `/charts/search`).
+Open the home page for CRUD + DataEditor (+ charts/Markdown when workspace charts are
+available). Chart interaction endpoints live under `/charts/*` (for example
+`/charts/fragment`, `/charts/search`). **PyPI note:** do not install `hedron[charts]` with
+Hedron 0.25 — use this monorepo (or omit charts).
 
 ## Production compose (canonical archetype)
 
@@ -65,7 +68,8 @@ production posture. Generic packaging notes:
 - Lazy addressable `UserTable` protected by router dependencies
 - Typed create/update/delete actions with CSRF validation
 - Progressive-enhancement create/edit (no-JS 303) plus HTMX `#user-table` swaps
-- DataEditor, Auto, cache helpers, ColorMode, charts (Alpha `hedron[charts]`)
+- DataEditor, Auto, cache helpers, ColorMode
+- Charts via workspace `hedron-charts` (Deferred from PyPI on 0.25 — not `hedron[charts]`)
 - Optional `hedron[native]` acceleration
 
 ## Tests
