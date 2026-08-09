@@ -1,15 +1,19 @@
-# Autodoc — critical public symbols (subset)
+# Autodoc — public symbols (expanded subset)
 
-Generated signatures via **mkdocstrings** for the **primary** public surface used in
-Learn / Adopt paths. This page is intentionally a **subset** of every name in
-`hedron.__all__` — prefer hand-maintained contract pages for narrative, errors, and
-adopter guidance; use Autodoc to verify parameter lists against installed sources.
+Generated signatures via **mkdocstrings** for the public surface used in Learn / Adopt
+paths **and** the 0.22 CSRF / form composition APIs. This page is still a **subset** of
+every name in `hedron.__all__` — prefer hand-maintained contract pages for narrative,
+errors, and adopter guidance; use Autodoc to verify parameter lists against installed
+sources.
+
+**Page template for hand contracts:** Example → Signature/members → Parameters →
+Returns → Errors → See also ([Field](FIELD.md) is the gold standard).
 
 Coverage map for the full export set: [Coverage map](COVERAGE.md). Stability levels:
 [Stability](STABILITY.md). Overview: [API overview](README.md).
 
 Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
-[Interaction](INTERACTION.md).
+[Interaction](INTERACTION.md) · [CSRF composition](CSRF_COMPOSITION.md).
 
 ## Inference and model demos (0.18)
 
@@ -176,13 +180,42 @@ Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
       members:
         - from_name
         - response_headers
+        - resolve_csrf_strategy
       heading_level: 3
 
 ::: hedron.security.policy.SecurityProfile
     options:
       heading_level: 3
 
+::: hedron_core.security_policy.SecurityHeadersPolicy
+    options:
+      heading_level: 3
+
 ::: hedron.security.csrf.csrf_token_for_request
+    options:
+      heading_level: 3
+
+::: hedron_core.csrf_strategy.DoubleSubmitCookieCsrf
+    options:
+      heading_level: 3
+
+::: hedron_core.csrf_strategy.SessionTokenCsrf
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.CsrfField
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.Form
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms.Hx
+    options:
+      heading_level: 3
+
+::: hedron.security.redirects.redirect_local
     options:
       heading_level: 3
 

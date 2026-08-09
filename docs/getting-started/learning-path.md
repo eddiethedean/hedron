@@ -4,6 +4,9 @@ A suggested order from first page to production-minded apps. Start with
 [Installation](installation.md) only if you need prerequisites; otherwise
 [Build your first app](quickstart.md) if you have not run Hello → Refresh yet.
 
+**Skills assumed:** Python 3.11+, basic FastAPI (routes / `Form`), and HTML forms.
+HTMX is introduced in [What is HTMX](what-is-htmx.md) — no SPA background required.
+
 ## 1. Hello page (~10 minutes)
 
 1. [Build your first app](quickstart.md)
@@ -15,9 +18,11 @@ second project.
 
 ## 2. First interaction (~20–30 minutes)
 
-1. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
+1. Optional: [What is HTMX](what-is-htmx.md) — fragment / region mental model
+2. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
    (edit the scaffold; browser click)
-2. [Minimal form POST](../guides/minimal-form.md) — CSRF-safe classic form on `/notes`
+3. [Minimal form POST](../guides/minimal-form.md) — `CsrfField` form that increments
+   the notes counter (same scaffold)
 
 Then read [Core concepts](core-concepts.md) if you want the page/fragment model explained
 (optional — skip until after a working form if you prefer).

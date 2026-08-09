@@ -22,15 +22,17 @@ uvx --from "hedron>=0.22.0,<0.23" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
-Prefer a **clean virtualenv** (Hedron needs FastAPI `>=0.141.1,<0.142` — use a fresh
-env if your project already pins an older FastAPI). Pin production installs with
-`hedron>=0.22.0,<0.23`.
+Prefer a **clean virtualenv** (Supported pins: FastAPI `>=0.141.1,<0.142`, Pydantic
+`>=2.13.4,<2.14` — use a fresh env if your project already pins older versions). Pin
+production installs with `hedron>=0.22.0,<0.23`.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 Click **Refresh status**; the page updates without a full reload (HTMX swaps a small HTML
 fragment into the declared region).
 
 ![Hello from hedron new with Refresh status control](docs/assets/hello-refresh.jpg)
+
+![Notes form with CSRF and notes-saved counter](docs/assets/notes-form.jpg)
 
 [![Open in GitHub Codespaces](https://img.shields.io/badge/Codespaces-Open-blue?logo=github)](https://codespaces.new/eddiethedean/hedron)
 
@@ -60,7 +62,8 @@ uvicorn app:app --reload
 ```
 
 **Next:** [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
-[HTMX](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
+[What is HTMX](https://hedron.readthedocs.io/en/latest/getting-started/what-is-htmx/) →
+[HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
 
@@ -101,8 +104,10 @@ Live SSE/WebSocket helpers are experimental — prefer polling behind buffering 
 See [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
 
-After you have Hello + Refresh working: prefer Streamlit for notebook-style rerun dashboards,
-or raw FastAPI+HTMX if you do not want a component framework.
+### When not to choose Hedron
+
+Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you do not
+want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
 [What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.22/) ·

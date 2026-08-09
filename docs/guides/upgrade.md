@@ -59,18 +59,19 @@ If you are already on **0.17.x**, pin coordinated **0.18.0** packages and adopt 
 5. Re-run your app suite; read [What's new in 0.18](whats-new-0.18.md) for surface inventory.
 
 Skip older archaeology unless you are still on a pre-0.17 line. The sections below are
-kept for migrators from 0.8–0.16 (including HDN); current adopters can stop after the
-0.18 / 0.19 → 0.20 → 0.21 steps above.
+kept for migrators from 0.8–0.16 (including HDN); current adopters can stop after
+upgrading through **0.21 → 0.22** (`hedron>=0.22.0,<0.23`).
 
 ---
 
 Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should upgrade through
 **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** /
-**0.16** / **0.17** / **0.18** / **0.19** / **0.20** to **0.21.0**.
+**0.16** / **0.17** / **0.18** / **0.19** / **0.20** / **0.21** to **0.22.0**
+(`hedron>=0.22.0,<0.23`).
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9**–**0.20** to **0.21.0**.
+upgrade through **0.9**–**0.21** to **0.22.0**.
 
 ## What changed in 0.8
 

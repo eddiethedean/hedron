@@ -175,6 +175,7 @@ nav:
     - Overview: getting-started/index.md
     - Installation: getting-started/installation.md
     - Build your first app: getting-started/quickstart.md
+    - What is HTMX: getting-started/what-is-htmx.md
     - HTMX interactions: guides/htmx-interactions.md
     - Minimal form POST: guides/minimal-form.md
     - Learning path: getting-started/learning-path.md
@@ -220,7 +221,6 @@ nav:
       - Using plugins: guides/plugin-consumer.md
       - Plugin authoring: guides/plugin-authoring.md
       - Project workflow: guides/project-workflow.md
-      - Plain FastAPI: guides/plain-fastapi.md
     - Model demos and inference: guides/model-demos.md
   - Examples:
     - Overview: examples/index.md
@@ -253,13 +253,7 @@ nav:
     - hedron-sample-kit (Alpha): packages/hedron-sample-kit.md
     - hedron-sim (Alpha): packages/hedron-sim.md
   - Reference:
-    - Start here:
-      - Hedron app: api/HEDRON.md
-      - Router: api/ROUTER.md
-      - Interaction: api/INTERACTION.md
-      - Security types: api/SECURITY_TYPES.md
-      - CSRF composition (0.22): api/CSRF_COMPOSITION.md
-      - Mount / path prefix: api/MOUNT.md
+    - API overview: api/README.md
     - Components:
       - Overview: components/index.md
       - Document and composition: components/document.md
@@ -275,9 +269,8 @@ nav:
       - Theme: components/theme.md
       - Charts: components/charts.md
     - API:
-      - Overview: api/README.md
       - Meta:
-        - Autodoc (critical subset): api/AUTODOC.md
+        - Autodoc (expanded subset): api/AUTODOC.md
         - Public API coverage map: api/COVERAGE.md
         - Stability: api/STABILITY.md
       - Application and routing:
@@ -336,7 +329,6 @@ nav:
       - Why Hedron: guides/why-hedron.md
       - What's ready today: guides/whats-ready.md
       - Enterprise diligence: guides/enterprise-diligence.md
-      - Ship to production: guides/ship-to-production.md
       - Architecture: ARCHITECTURE.md
     - Understanding maturity labels: getting-started/how-to-read.md
     - Support: guides/support.md
@@ -348,19 +340,7 @@ nav:
     - What's new in 0.22: guides/whats-new-0.22.md
     - What's new in 0.21: guides/whats-new-0.21.md
     - Package changelogs: guides/changelog.md
-    - Earlier what's-new (archive):
-      - 0.20: guides/whats-new-0.20.md
-      - 0.19: guides/whats-new-0.19.md
-      - 0.18: guides/whats-new-0.18.md
-      - 0.17: guides/whats-new-0.17.md
-      - 0.16: guides/whats-new-0.16.md
-      - 0.15: guides/whats-new-0.15.md
-      - 0.14: guides/whats-new-0.14.md
-      - 0.13: guides/whats-new-0.13.md
-      - 0.12: guides/whats-new-0.12.md
-      - 0.11: guides/whats-new-0.11.md
-      - 0.10.1: guides/whats-new-0.10.1.md
-      - 0.10: guides/whats-new-0.10.md
+    - Earlier what's-new (archive): guides/whats-new-archive.md
     - Migrations:
       - Streamlit: guides/streamlit-migration.md
       - Streamlit matrix: guides/streamlit-migration-matrix.md
@@ -375,6 +355,8 @@ nav:
     - Contributing: CONTRIBUTING.md
     - Maintainers:
       - Handbook: guides/maintainer-handbook.md
+      - Decisions index: guides/decisions-index.md
+      - Release summary: guides/release-summary.md
       - Phase evidence apps (stubs): examples/phase-evidence.md
       - Simulated UI patterns: examples/gallery.md
       - Production-quality maturity: guides/production-quality.md

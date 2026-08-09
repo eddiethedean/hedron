@@ -99,6 +99,18 @@ Form(
 
 `Form(**{"hx-post": ...})` stringly attrs remain supported as an escape hatch.
 
+## Errors
+
+| Condition | Behavior |
+|---|---|
+| Missing / invalid CSRF on unsafe method | HTTP **403** (built-in profiles with CSRF enabled) |
+| `CsrfField()` without token and without page `RenderContext.csrf_token` | `ValueError` at render time |
+| `security_headers=False` / `"app"` | Hedron skips applying profile headers — host owns them |
+| Strategy `get_expected` returns no match | Validation fails closed (403) |
+
+Human index: [Error codes](../guides/error-codes.md). First-hour form:
+[Minimal form POST](../guides/minimal-form.md).
+
 ## Evidence
 
 | Gate | Intent |

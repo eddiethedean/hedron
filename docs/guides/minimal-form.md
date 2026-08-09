@@ -1,34 +1,51 @@
 # Minimal form POST
 
-Submit a classic HTML form with CSRF, without HTMX fragments or validation
-machinery. Use this after [HTMX interactions](htmx-interactions.md) (GET refresh)
-and before choosing between `@action` and `@component` POST in
-[Mutations](mutations.md). The full [Forms and actions](forms-and-actions.md)
-deep dive covers validation fragments.
+Add a CSRF-safe note form to the **same** scaffold from
+[HTMX interactions](htmx-interactions.md). Submitting appends to `_NOTES` and
+redirects home so **Notes saved: N** updates. Use this before choosing between
+`@action` and `@component` POST in [Mutations](mutations.md). The full
+[Forms and actions](forms-and-actions.md) deep dive covers validation fragments.
 
 ## What you will build
 
-A **notes** page with a note field. Submitting POSTs to an action and returns a
-confirmation page. The GET seeds the CSRF cookie; the form posts the matching token.
+A note field on the home page (next to the notes counter). POST `/save` appends the
+note, then `redirect_local("/")` reloads the page so the count increments. CSRF uses
+`CsrfField()` (0.22) — FastAPI page renders seed the token automatically.
 
 ### Try it (simulated)
 
 === "Demo"
 
-    Classic POST — confirmation replaces the notes region. Docs simulation.
+    Classic POST — save increments the notes count, then returns you to the form.
+    Docs simulation.
 
     <!-- hedron-sim:minimal-form -->
 
 === "Code"
 
-    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+    Standalone runnable `app.py` (real Hedron, not the docs simulator). Prefer the
+    scaffold delta below if you already ran `hedron new` + the HTMX guide — do **not**
+    paste this file over that app without merging regions.
 
     ```python title="app.py"
     import os
 
-    from fastapi import Form, Request
+    from fastapi import Form as FastAPIForm
 
-    from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, csrf_token_for_request, html
+    from hedron import (
+        CsrfField,
+        Form,
+        Hedron,
+        Page,
+        RefreshButton,
+        Stack,
+        SubmitButton,
+        Text,
+        TextInput,
+        html,
+        redirect_local,
+        swap,
+    )
 
     app = Hedron(
         title="Notes",
@@ -37,19 +54,30 @@ confirmation page. The GET seeds the CSRF cookie; the form posts the matching to
         session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
     )
 
+    notes_region = app.region("notes-count", description="Notes counter")
+    _NOTES: list[str] = []
 
-    def _csrf(request: Request) -> str:
-        return csrf_token_for_request(request, request.app.state.hedron_security)
+
+    def notes_panel():
+        return html.div(
+            Text(f"Notes saved: {len(_NOTES)}"),
+            id=notes_region.id,
+            role="status",
+            aria={"live": "polite"},
+        )
 
 
     @app.page("/")
-    def notes(request: Request) -> Page:
-        token = _csrf(request)
+    def home() -> Page:
         return Page(
             Stack(
+                notes_panel(),
+                RefreshButton.for_region(
+                    notes_region, href="/notes-count", label="Refresh notes count"
+                ),
                 Text("Leave a note"),
-                html.form(
-                    html.input(type="hidden", name="csrf_token", value=token),
+                Form(
+                    CsrfField(),
                     TextInput("note", value="Ship the docs demo", required=True),
                     SubmitButton("Save"),
                     action="/save",
@@ -60,75 +88,112 @@ confirmation page. The GET seeds the CSRF cookie; the form posts the matching to
         )
 
 
+    @app.fragment("/notes-count", region=notes_region)
+    def refresh_notes_count():
+        return swap(notes_panel())
+
+
     @app.action("/save", method="POST")
-    def save(note: str = Form(...)) -> Page:
-        return Page(Text(f"Saved: {note}"), title="Saved")
+    def save(note: str = FastAPIForm(...)):
+        text = note.strip()
+        if text:
+            _NOTES.append(text)
+        return redirect_local("/")
     ```
 
 **If you used `hedron new` (or finished the HTMX guide):** keep the existing `Hedron(...)`
-app and your `/` home route. Add the imports below, then add `/notes` and `/save` **beside**
-the routes you already have. Do not create a second app file.
+app, `notes_region`, `_NOTES`, and `notes_panel()`. Add the imports and routes below
+**beside** what you already have. Do not create a second app file.
 
-### 1. Add a CSRF helper and imports
+### 1. Add form imports
 
 ```python
-from fastapi import Form, Request
+from fastapi import Form as FastAPIForm
 
 from hedron import (
+    CsrfField,
+    Form,
     Page,
     Stack,
     SubmitButton,
     Text,
     TextInput,
-    csrf_token_for_request,
     html,
+    redirect_local,
 )
-
-
-def _csrf(request: Request) -> str:
-    """One-liner so forms never touch ``request.app.state`` inline."""
-    return csrf_token_for_request(request, request.app.state.hedron_security)
 ```
 
-(Merge with imports already present; you only need each name once.)
+(Merge with imports already present; you only need each name once. Alias FastAPI’s
+`Form` so it does not clash with Hedron’s `Form` component.)
 
-### 2. Add `/notes` and `/save` below your existing routes
+### 2. Put the form on `home()` and add `/save`
+
+Replace your `home()` from the HTMX guide with this (keep `status_panel` /
+`RefreshButton` / `notes_panel` as you already have them):
 
 ```python
-@app.page("/notes")
-def notes(request: Request) -> Page:
-    token = _csrf(request)
+@app.page("/")
+def home() -> Page:
     return Page(
         Stack(
+            Text("Hello from hedron new"),
+            status_panel(),
+            RefreshButton.for_region(status, href="/status", label="Refresh status"),
+            notes_panel(),
+            RefreshButton.for_region(
+                notes_region, href="/notes-count", label="Refresh notes count"
+            ),
             Text("Leave a note"),
-            html.form(
-                html.input(type="hidden", name="csrf_token", value=token),
+            Form(
+                CsrfField(),
                 TextInput("note", value="", required=True),
                 SubmitButton("Save"),
                 action="/save",
                 method="post",
             ),
         ),
-        title="Notes",
+        title="Home",
     )
 
 
 @app.action("/save", method="POST")
-def save(note: str = Form(...)) -> Page:
-    return Page(Text(f"Saved: {note}"), title="Saved")
+def save(note: str = FastAPIForm(...)):
+    text = note.strip()
+    if text:
+        _NOTES.append(text)
+    return redirect_local("/")
 ```
 
-Your scaffold `/` home (and any HTMX routes) keep working. Open
-[http://127.0.0.1:8000/notes](http://127.0.0.1:8000/notes) for this lesson.
+`CsrfField()` reads the token from the page `RenderContext` (seeded when
+`security="standard"`). No manual `csrf_token_for_request` helper is required for this
+path.
+
+Reload, type a note, click **Save**. You return to `/` with **Notes saved: 1** (then 2,
+…). Click **Refresh notes count** anytime — the fragment shows the same length.
+
+Without a matching CSRF token, the POST returns `403`.
 
 ### Complete file (Path B / reference)
 
 Use this only if you are starting a fresh manual `app.py` (not extending a scaffold):
 
 ```python title="app.py"
-from fastapi import Form, Request
+from fastapi import Form as FastAPIForm
 
-from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, csrf_token_for_request, html
+from hedron import (
+    CsrfField,
+    Form,
+    Hedron,
+    Page,
+    RefreshButton,
+    Stack,
+    SubmitButton,
+    Text,
+    TextInput,
+    html,
+    redirect_local,
+    swap,
+)
 
 app = Hedron(
     title="Notes",
@@ -136,19 +201,30 @@ app = Hedron(
     session_secret="replace-in-production",
 )
 
+notes_region = app.region("notes-count", description="Notes counter")
+_NOTES: list[str] = []
 
-def _csrf(request: Request) -> str:
-    return csrf_token_for_request(request, request.app.state.hedron_security)
+
+def notes_panel():
+    return html.div(
+        Text(f"Notes saved: {len(_NOTES)}"),
+        id=notes_region.id,
+        role="status",
+        aria={"live": "polite"},
+    )
 
 
 @app.page("/")
-def home(request: Request) -> Page:
-    token = _csrf(request)
+def home() -> Page:
     return Page(
         Stack(
+            notes_panel(),
+            RefreshButton.for_region(
+                notes_region, href="/notes-count", label="Refresh notes count"
+            ),
             Text("Leave a note"),
-            html.form(
-                html.input(type="hidden", name="csrf_token", value=token),
+            Form(
+                CsrfField(),
                 TextInput("note", value="", required=True),
                 SubmitButton("Save"),
                 action="/save",
@@ -159,9 +235,17 @@ def home(request: Request) -> Page:
     )
 
 
+@app.fragment("/notes-count", region=notes_region)
+def refresh_notes_count():
+    return swap(notes_panel())
+
+
 @app.action("/save", method="POST")
-def save(note: str = Form(...)) -> Page:
-    return Page(Text(f"Saved: {note}"), title="Saved")
+def save(note: str = FastAPIForm(...)):
+    text = note.strip()
+    if text:
+        _NOTES.append(text)
+    return redirect_local("/")
 ```
 
 Run it:
@@ -178,18 +262,47 @@ Run it:
     uvicorn app:app --reload
     ```
 
-Open the notes URL above (or `/` on Path B), type a note, and submit.
-Without a matching `csrf_token`, the POST returns `403`.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000), submit a note, and confirm the
+count increments.
+
+## Advanced: manual token seeding
+
+Prefer `CsrfField()` on FastAPI pages. If you are porting an existing app that already
+calls `csrf_token_for_request`, you can still pass an explicit token:
+
+```python
+from fastapi import Request
+
+from hedron import CsrfField, csrf_token_for_request
+
+def notes(request: Request) -> Page:
+    token = csrf_token_for_request(request, request.app.state.hedron_security)
+    return Page(
+        Form(
+            CsrfField(token=token),
+            TextInput("note", value="", required=True),
+            SubmitButton("Save"),
+            action="/save",
+            method="post",
+        ),
+        title="Notes",
+    )
+```
+
+Raw `html.input(type="hidden", name="csrf_token", value=token)` remains valid but is
+no longer the recommended golden-path pattern — see
+[CSRF composition](../api/CSRF_COMPOSITION.md).
 
 ## What this teaches
 
 | Piece | Role |
 |---|---|
-| `_csrf(request)` | Local helper — hides `request.app.state.hedron_security` |
-| GET page | Seeds the `hedron_csrf` cookie via the security profile |
-| Hidden `csrf_token` | Same value the cookie holds for this session |
-| `@app.action(..., method="POST")` | Mutation route; CSRF validated automatically under `security="standard"` |
-| FastAPI `Form(...)` | Ordinary request parsing—no Hedron-specific body type required |
+| `CsrfField()` | Hidden CSRF input from page `RenderContext` (0.22) |
+| GET page | Seeds the CSRF cookie / context via the security profile |
+| `@app.action(..., method="POST")` | Mutation route; CSRF validated under `security="standard"` |
+| `_NOTES.append(...)` | Same in-memory list the HTMX notes region reads |
+| `redirect_local("/")` | Safe local redirect so the full page (and count) refresh |
+| FastAPI `Form(...)` (aliased) | Ordinary request parsing — no Hedron-specific body type |
 
 ## Next steps
 
@@ -197,4 +310,5 @@ Without a matching `csrf_token`, the POST returns `403`.
    [Session auth](../examples/session-auth.md).
 2. Or continue the golden path: [Learning path](../getting-started/learning-path.md).
 3. Depth when you need it: [Forms and actions](forms-and-actions.md) ·
-   [Authentication](authentication.md) · [Security](security.md).
+   [Mutations](mutations.md) · [Authentication](authentication.md) ·
+   [Security](security.md) · [CSRF composition](../api/CSRF_COMPOSITION.md).

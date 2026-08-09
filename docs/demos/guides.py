@@ -690,10 +690,24 @@ def build_file_upload_demo() -> str:
 def build_minimal_form_demo() -> str:
     app = SimApp(title="Minimal form", demo_id="minimal-form")
     stage = app.region("notes-stage", description="Notes page")
+    notes = app.region("notes-count", description="Notes counter")
+    # Docs sim has no durable process state; show count=1 after a successful save.
+    saved_once = {"value": False}
+
+    def notes_panel():
+        count = 1 if saved_once["value"] else 0
+        return html.div(
+            html.strong(f"Notes saved: {count}"),
+            id=notes.id,
+            class_="hedron-sim-card",
+            role="status",
+            aria={"live": "polite"},
+        )
 
     def notes_page():
         return html.div(
             Stack(
+                notes_panel(),
                 html.strong("Leave a note"),
                 Form(
                     html.input(type="hidden", name="csrf_token", value="sim-csrf"),
@@ -715,32 +729,11 @@ def build_minimal_form_demo() -> str:
                     ),
                 ),
                 html.p(
-                    "Classic POST — confirmation replaces the page region (docs sim).",
+                    "Classic POST — save increments the notes count (docs sim).",
                     class_="hedron-sim-muted",
                 ),
             ),
             id=stage.id,
-        )
-
-    def saved_page():
-        return html.div(
-            Stack(
-                html.strong("Saved"),
-                html.span(sim_form("note")),
-                html.button(
-                    "Leave another note",
-                    type="button",
-                    class_="hedron-sim-btn",
-                    **_hx(
-                        hx_get="/notes",
-                        hx_target=stage.selector,
-                        hx_swap="outerHTML",
-                    ),
-                ),
-            ),
-            id=stage.id,
-            class_="hedron-sim-card",
-            role="status",
         )
 
     @app.page("/")
@@ -749,10 +742,7 @@ def build_minimal_form_demo() -> str:
 
     @app.action("/save", region=stage)
     def save():
-        return swap(saved_page())
-
-    @app.fragment("/notes", region=stage)
-    def notes():
+        saved_once["value"] = True
         return swap(notes_page())
 
     return embed_demo(app)

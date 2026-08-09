@@ -84,8 +84,10 @@ the way `Hedron()` does.
 | Explorer | Mount `hedron-explorer` only if you need it |
 | Production build | `hedron build` + deploy `manifest.json` when using production gates |
 
-For most new apps, prefer `Hedron()` ([API](../api/HEDRON.md)). Use this path when
-integrating into an existing FastAPI service. The [reference app](../examples/reference-app.md)
+For most new apps, prefer `Hedron()` ([API](../api/HEDRON.md)). Use **this
+`HedronRouter` + `include_router` path** when integrating into an existing FastAPI
+service. Mounting a full `Hedron()` sub-app with `api.mount(...)` is an alternate —
+see [Mount](../api/MOUNT.md). The [reference app](../examples/reference-app.md)
 demonstrates both styles.
 
 ## See also

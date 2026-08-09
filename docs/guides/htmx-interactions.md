@@ -36,6 +36,12 @@ A wrong `HX-Target` returns **403** by design — fix typos in the region id / s
 
 === "Code"
 
+    !!! warning "Standalone demo — do not paste over the scaffold"
+
+        Region ids here are `hx-guide-*` for the docs simulator. Your `hedron new`
+        app uses `service-status` / `notes-count` (delta below). Copy patterns, not
+        this whole file, onto an existing scaffold.
+
     Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
 
     ```python title="app.py"
@@ -185,8 +191,9 @@ def refresh_notes_count():
 ```
 
 Reload the app, click **Refresh notes count**. The count stays at `0` until you add a
-form in [Minimal form POST](minimal-form.md) — the point of this delta is a second
-allowlisted region, not persistence yet.
+form in [Minimal form POST](minimal-form.md) that appends to `_NOTES` and refreshes
+`#notes-count` (same scaffold). The point of this delta is a second allowlisted
+region; the form lesson wires the mutation.
 
 **Stuck with 403?** The `HX-Target` did not match a declared region. See
 [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request).
@@ -274,7 +281,8 @@ def test_status_rejects_an_unknown_target() -> None:
 Use `@app.action(..., method="POST")` for a mutation. Built-in security profiles validate
 CSRF on unsafe methods automatically after a safe GET seeds the cookie.
 
-**Next:** [Minimal form POST](minimal-form.md) — CSRF-safe create on `/notes` (same app).
+**Next:** [Minimal form POST](minimal-form.md) — add a POST that appends to `_NOTES`
+and refreshes `#notes-count` (same scaffold).
 
 Also: [Security](security.md) · [Test your UI](testing.md) ·
 [Interaction API](../api/INTERACTION.md) · [Hedron API](../api/HEDRON.md)

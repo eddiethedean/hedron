@@ -11,9 +11,19 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 ## Prerequisites
 
 - CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
-- Use a **clean virtual environment** (Hedron needs FastAPI `>=0.141.1,<0.142`)
+- Use a **clean virtual environment**. Supported pins: FastAPI `>=0.141.1,<0.142`,
+  Pydantic `>=2.13.4,<2.14` (see [Compatibility](../COMPATIBILITY.md))
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
+
+!!! note "Corporate proxy / air-gapped installs"
+
+    Point `pip` / `uv` at your internal index (`PIP_INDEX_URL`, `UV_INDEX_URL`, or
+    `--index-url`). Mirror **PyPI** wheels for `hedron`, `hedron-core`, and matching
+    extras onto that index; pin `hedron>=0.22.0,<0.23`. Offline: download wheels on a
+    connected host (`pip download "hedron>=0.22.0,<0.23"`) and `pip install --no-index
+    --find-links=...`. Codespaces still needs a GitHub account and billed minutes — it
+    is not an offline playground.
 
 === "Install uv"
 

@@ -7,8 +7,10 @@ matters.
 ## Prerequisites
 
 - CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
-- Use a **clean virtual environment** for your first try (Hedron needs FastAPI
-  `>=0.141.1,<0.142`; shared envs often resolve the wrong FastAPI)
+- Use a **clean virtual environment** for your first try. Supported pins (CI-proven):
+  FastAPI `>=0.141.1,<0.142`, Pydantic `>=2.13.4,<2.14` (declared Pydantic range is
+  wider — see [Compatibility](../COMPATIBILITY.md)). Shared envs often resolve the wrong
+  FastAPI/Pydantic.
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 
@@ -198,20 +200,17 @@ Advisory findings on a hello-world scaffold are normal.
     See [troubleshooting](../guides/troubleshooting.md).
 
 If you already have a FastAPI project that satisfies the pin, install
-`hedron>=0.22.0,<0.23` into that environment and mount a `Hedron` app (or include a
-`HedronRouter`). Minimal shape:
+`hedron>=0.22.0,<0.23` and **include a `HedronRouter`** (recommended). You own
+session/security middleware — see the full listing in
+[Plain FastAPI](../guides/plain-fastapi.md).
 
 ```python
 from fastapi import FastAPI
-from hedron import Hedron, Page, Text
+from hedron import HedronRouter, Page, Text, mount_hedron_static
 
 api = FastAPI()
-ui = Hedron(
-    title="Acme",
-    security="standard",
-    explorer="off",
-    session_secret="replace-in-production",
-)
+mount_hedron_static(api)
+ui = HedronRouter(prefix="/ui")
 
 
 @ui.page("/")
@@ -219,11 +218,14 @@ def home() -> Page:
     return Page(Text("Hello from Hedron"), title="Home")
 
 
-api.mount("/", ui)  # or include routes via HedronRouter — see API docs
+api.include_router(ui)
 ```
 
+Alternate: mount a full `Hedron()` sub-app with `api.mount("/", ui)` when you want the
+facade’s middleware — [Hedron API](../api/HEDRON.md) · [Mount](../api/MOUNT.md).
+
 Prefer `hedron new` for the first-hour Refresh demo. Existing-app depth:
-[Plain FastAPI](../guides/plain-fastapi.md) · [Hedron API](../api/HEDRON.md).
+[Plain FastAPI](../guides/plain-fastapi.md).
 
 ## Alternative — manual `app.py` (no scaffold)
 

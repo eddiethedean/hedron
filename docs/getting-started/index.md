@@ -1,17 +1,18 @@
 # Learn Hedron
 
 **Goal (often ~5–10 minutes after Python + uv/pip are ready):** Hello + click
-**Refresh status**. Then: HTMX second region → `/notes` form → pick one recipe
-(auth or SQLite).
+**Refresh status**. Then: HTMX second region → form that increments the notes count →
+pick one recipe (auth or SQLite).
 
 ## Path
 
 1. [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
 2. [Installation](installation.md) — extras, Flask/Django, common problems (as needed)
-3. [HTMX interactions](../guides/htmx-interactions.md) — extend the Refresh pattern
-4. [Minimal form](../guides/minimal-form.md) — CSRF-safe POST
-5. [Learning path](learning-path.md) — continue toward data, auth, and deploy
-6. [Core concepts](core-concepts.md) (optional after Hello works)
+3. Optional: [What is HTMX](what-is-htmx.md) — one-screen mental model
+4. [HTMX interactions](../guides/htmx-interactions.md) — extend the Refresh pattern
+5. [Minimal form](../guides/minimal-form.md) — `CsrfField` POST that updates the count
+6. [Learning path](learning-path.md) — continue toward data, auth, and deploy
+7. [Core concepts](core-concepts.md) (optional after Hello works)
 
 Help: [FAQ](../guides/faq.md) · [Troubleshooting](../guides/troubleshooting.md).
 Optional packages (data, charts, Explorer, …): [Package catalog](../packages/index.md).
@@ -38,7 +39,7 @@ Evaluating production use later? [What’s ready](../guides/whats-ready.md) ·
   <a class="hedron-card" href="../guides/minimal-form/">
     <span class="hedron-card__icon" aria-hidden="true">04</span>
     <strong>4. Minimal form</strong>
-    <p>CSRF-safe POST with a typed action.</p>
+    <p><code>CsrfField</code> POST that increments the notes counter.</p>
   </a>
   <a class="hedron-card" href="learning-path/">
     <span class="hedron-card__icon" aria-hidden="true">05</span>

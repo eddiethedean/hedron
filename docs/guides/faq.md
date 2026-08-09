@@ -9,9 +9,10 @@ uv add "hedron>=0.22.0,<0.23"
 ```
 
 That is the current published line (`v0.22.0`). Package maturity is **Beta** — see
-[How to read](../getting-started/how-to-read.md). `>=0.22.0` alone allows a future `0.22`
-break; keep the upper bound when you need a stable line.
-See [What’s ready today](whats-ready.md) and the [public roadmap](roadmap.md).
+[How to read](../getting-started/how-to-read.md). Pin with an upper bound:
+`hedron>=0.22.0,<0.23`. Using `>=0.22.0` alone can resolve a future **0.23+**
+breaking train. See [What’s ready today](whats-ready.md) and the
+[public roadmap](roadmap.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
@@ -28,6 +29,60 @@ pip install "hedron-django>=0.22.0,<0.23"   # requires Django >=5.2,<6
 ## Do I need Node.js?
 
 No. Hedron does not require npm or a JavaScript bundler for development or production.
+
+## What is HTMX?
+
+A small browser library that swaps server HTML into page regions using attributes like
+`hx-get` / `hx-target`. Hedron uses it for fragment updates — see
+[What is HTMX (for Hedron)](../getting-started/what-is-htmx.md).
+
+## Why is FastAPI pinned so tightly?
+
+Hedron’s Supported matrix tests FastAPI `>=0.141.1,<0.142` (and Pydantic Supported
+`>=2.13.4,<2.14`; declared wider). Shared data-science envs with older FastAPI often
+fail to resolve — use a **clean venv**. Details: [Compatibility](../COMPATIBILITY.md).
+
+## Refresh status clicked but nothing changed
+
+Confirm you are on the **running app** (`uvicorn`, usually
+[http://127.0.0.1:8000](http://127.0.0.1:8000)), not only a docs Demo tab (those are
+simulations). Check the browser network tab: fragment requests need `HX-Request` and a
+matching `HX-Target`. A wrong target returns **403**. See
+[Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) and
+[HTMX interactions](htmx-interactions.md).
+
+## First POST returns 403
+
+Built-in `security="standard"` validates CSRF on unsafe methods. Load a GET page first
+so the cookie/context is seeded, and include `CsrfField()` (or a matching
+`csrf_token`) in the form. See [Minimal form POST](minimal-form.md) and
+[Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask).
+
+## `api.mount` or `HedronRouter`?
+
+For an **existing** FastAPI app, prefer `HedronRouter` + `api.include_router(ui)` and
+`mount_hedron_static` — [Plain FastAPI](plain-fastapi.md). Mounting a full `Hedron()`
+sub-app with `api.mount(...)` is an alternate when you want the facade’s middleware
+([Mount](../api/MOUNT.md)). New apps should start with `hedron new` / `Hedron()`.
+
+## Do I need Redis?
+
+Not for Hello, HTMX refresh, or a single-process notes demo. Use a shared
+`JobBackend` (Redis / Celery / RQ) when **multiple workers** must see the same job
+status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
+
+## Is Hedron production-ready for internal admin?
+
+For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
+with eyes open: packages are **Beta**, pin `>=0.22.0,<0.23`, prefer polling for live
+status, and read [What’s ready](whats-ready.md). There is no vendor SLA or scheduled
+1.0. Use the [PoC checklist](evaluate.md#poc-checklist) on [Evaluate](evaluate.md).
+
+## How did CSRF forms change in 0.22?
+
+Prefer `CsrfField()` / `Form(hx=Hx(...))` on FastAPI pages. Manual
+`csrf_token_for_request` + hidden inputs still work for existing apps. See
+[CSRF composition](../api/CSRF_COMPOSITION.md) and [Minimal form](minimal-form.md).
 
 ## `hedron: command not found`
 

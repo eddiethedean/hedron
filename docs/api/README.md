@@ -35,21 +35,32 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 
 !!! note "Contracts vs full reference"
 
-    API pages are hand-maintained contracts, with **mkdocstrings** signatures for critical
-    surfaces on [Autodoc](AUTODOC.md) (live helpers, adapters, and core facades — still a
-    subset of every `hedron.__all__` name). For a map of every export to a doc
-    page, see [Public API coverage map](COVERAGE.md).     Flagship narrative pages ([Hedron](HEDRON.md), [Router](ROUTER.md),
-    [Action](ACTION.md), [Interaction](INTERACTION.md), [Page](PAGE.md), [SSE](SSE.md),
-    [Streaming](STREAMING.md), [Field](FIELD.md), and peers linked below) aim for
-    constructor / field tables, returns, errors, and examples. Some outline pages
+    API pages are hand-maintained contracts, with **mkdocstrings** signatures on
+    [Autodoc](AUTODOC.md) (still a subset of every `hedron.__all__` name). Map of
+    exports → pages: [Public API coverage map](COVERAGE.md).
+
+    **Contract page template** (required for new/edited flagship pages):
+
+    1. Short example
+    2. Signature / members
+    3. Parameters
+    4. Returns
+    5. Errors (HTTP status and/or `HED-*` codes)
+    6. See also
+
+    Gold standard: [Field](FIELD.md). Flagship pages ([Hedron](HEDRON.md),
+    [Router](ROUTER.md), [Action](ACTION.md), [Interaction](INTERACTION.md),
+    [Page](PAGE.md), [CSRF composition](CSRF_COMPOSITION.md), [Jobs](JOBS.md), …)
+    should follow that shape. Outline pages
     (for example [Utility components](UTILITY_COMPONENTS.md), [ColorMode](COLORMODE.md))
-    are shorter summaries — prefer guides + Autodoc when a page lacks an Errors section.
+    may stay shorter — prefer guides + Autodoc when Errors is missing.
     Human error index: [Error codes](../guides/error-codes.md).
 
-## Shipped in 0.19 (still on the 0.20 train)
+## Surfaces introduced in 0.19 (available on the 0.22 train)
 
-These surfaces are implemented on the **0.22.0** train (includes the 0.9 authoring break,
-0.10 live interaction, and later capability phases through 0.19).
+These surfaces first shipped in the 0.19 phase and remain on the living **0.22.0**
+train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
+phases through 0.22).
 
 ### Application
 

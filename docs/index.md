@@ -38,8 +38,8 @@ open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
 
 ## From zero to a rendered page
 
-Prefer a clean virtualenv (Hedron needs FastAPI `>=0.141.1,<0.142`). Pin production
-installs with `hedron>=0.22.0,<0.23`.
+Prefer a clean virtualenv (Supported pins: FastAPI `>=0.141.1,<0.142`, Pydantic
+`>=2.13.4,<2.14`). Pin production installs with `hedron>=0.22.0,<0.23`.
 
 === "uv (recommended)"
 
@@ -133,6 +133,14 @@ defaults are on by design — override via `HEDRON_SESSION_SECRET` in real apps.
 
 Extras and troubleshooting: [installation](getting-started/installation.md).
 
+## Beyond Hello — notes form
+
+After [HTMX interactions](guides/htmx-interactions.md) and
+[Minimal form](guides/minimal-form.md), the same scaffold posts a note with
+`CsrfField()` and increments **Notes saved: N**:
+
+![Notes form with CSRF and notes-saved counter](assets/notes-form.jpg)
+
 ## A backend-native way to build UI
 
 <div class="hedron-grid">
@@ -156,8 +164,8 @@ Extras and troubleshooting: [installation](getting-started/installation.md).
 ## Next steps
 
 1. [Build your first app](getting-started/quickstart.md) — celebrate Refresh, then edit Hello
-2. [HTMX interactions](guides/htmx-interactions.md)
-3. [Minimal form POST](guides/minimal-form.md)
+2. [What is HTMX](getting-started/what-is-htmx.md) → [HTMX interactions](guides/htmx-interactions.md)
+3. [Minimal form POST](guides/minimal-form.md) — form updates the notes counter
 4. [Learning path](getting-started/learning-path.md)
 
 <details markdown>
