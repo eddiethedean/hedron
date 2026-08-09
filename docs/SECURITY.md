@@ -2,17 +2,17 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.24.x`). Older `0.x` lines should
+Security fixes land on the **current published train** (`0.25.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.23.x`) may continue for about **90 days** after a new train publishes — after that,
+minor (`0.24.x`) may continue for about **90 days** after a new train publishes — after that,
 upgrade is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.24.x` | Yes (current published train — pin `>=0.24.0,<0.25`; last published `v0.24.0`) |
-| `0.23.x` | Prefer upgrade to `0.24.x` (best-effort security triage ~90 days after 0.24 publish) |
-| `0.22.x` | Prefer upgrade to `0.24.x` |
-| `0.21.x` | Prefer upgrade to `0.24.x` |
+| `0.25.x` | Yes (current published train — pin `>=0.25.0,<0.26`; last published `v0.25.0`) |
+| `0.24.x` | Prefer upgrade to `0.25.x` (best-effort security triage ~90 days after 0.25 publish) |
+| `0.23.x` | Prefer upgrade to `0.25.x` |
+| `0.22.x` | Prefer upgrade to `0.25.x` |
 | `0.20.x` | Prefer upgrading to the current train |
 | `0.19.x` | Prefer upgrading to the current train |
 | `0.18.x` | Prefer upgrading to the current train |

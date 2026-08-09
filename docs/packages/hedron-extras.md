@@ -2,22 +2,26 @@
 
 Curated optional extras and analysis workbenches for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.24.0` · pin `>=0.24.0,<0.25`  
+**Package maturity:** Beta · **Train:** `0.24.0` · pin `>=0.25.0,<0.26`  
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`  
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 
-Composition / workbench surfaces are Beta. Specialty surfaces (`TerminalView`,
-joystick / device bridges, browser-Python sandbox) are **Experimental** and fail
-closed without explicit policy.
+Composition / workbench surfaces are Beta. Specialty sandbox remains Experimental.
+**EXTRAS-025 quarantine:** `CodeEditor`, `TerminalView`, joystick, and device bridges live
+behind **`hedron[experimental-ui]`** (import `hedron_extras.experimental`) — they are **not**
+part of the curated `hedron[extras]` product UI.
 
 ## Install
 
 ```bash
-pip install "hedron[extras]>=0.24.0,<0.25"
+pip install "hedron[extras]>=0.25.0,<0.26"
 # or
-pip install "hedron-extras>=0.24.0,<0.25"
+pip install "hedron-extras>=0.25.0,<0.26"
 # feature-scoped:
-pip install "hedron-extras[code_editor,data_explorer]>=0.24.0,<0.25"
+pip install "hedron-extras[data_explorer]>=0.25.0,<0.26"
+# experimental landmines (EXTRAS-025):
+pip install "hedron[experimental-ui]>=0.25.0,<0.26"
+# then set HEDRON_EXPERIMENTAL_UI=1 or enable plugin hedron_extras_experimental
 ```
 
 Absent extras add **no** core import, browser asset, startup, or transitive dependency
@@ -27,11 +31,11 @@ cost.
 
 | Extra | Notes |
 |---|---|
-| `code_editor` / `json_editor` | Editor surfaces — **`CodeEditor` is a CSP-safe host stub** (no pinned CodeMirror 6); `JSONEditor` is the fuller editor |
-| `data_explorer` | Pulls `hedron-data` |
+| `json_editor` / `data_explorer` | Editor / explorer surfaces |
 | `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Alpha) |
 | `image_tools` / `calendar` / `signature` / `typeahead` | UI tools |
-| `sandbox` / `terminal` / `joystick` | Experimental specialty surfaces |
+| `sandbox` | Experimental browser-Python sandbox |
+| `experimental-ui` | Quarantined landmines: CodeEditor / TerminalView / joystick / device |
 | `all` | `hedron-data` + `hedron-charts` |
 
 ## When to use
@@ -39,11 +43,9 @@ cost.
 - Specialized data-app interactions beyond core built-ins
 - JSON editors, calendars, image tools, recipe cards
 
-Do **not** treat `CodeEditor` as a full IDE widget — it is a **host stub** (Experimental;
-see [What’s ready](../guides/whats-ready.md)). Do **not** treat specialty bridges
-(`TerminalView`, joystick, device, sandbox) as Supported production defaults. Native
-desktop shell is a separate docs recipe — see
-[Native desktop shell](../guides/native-desktop-shell.md).
+Do **not** install `hedron[extras]` expecting CodeEditor / TerminalView / joystick / device —
+those require **`hedron[experimental-ui]`** and remain Experimental. Native desktop shell is a
+separate docs recipe — see [Native desktop shell](../guides/native-desktop-shell.md).
 
 ## Quick start
 
@@ -55,23 +57,29 @@ card = MetricCard(label="Active users", value="1,284", hint="+12% WoW")
 
 Components register automatically when the package is installed.
 
+```python
+# Experimental landmines (requires hedron[experimental-ui] + plugin enable / env):
+from hedron_extras.experimental import CodeEditor, TerminalView
+```
+
 ## Surfaces
 
 | Area | Components |
 |---|---|
 | Workbenches | `JSONEditor`, `DataExplorer`, `ChartWorkbench`, `CallableActionForm` |
-| Editors (stub) | `CodeEditor` — **CSP-safe host stub** (no CodeMirror 6 bundle); Experimental |
 | Composition | `ChoiceCards`, `TreeView`, `Steps`, `SplitPane`, `FloatingAction`, `KeyboardShortcuts` |
 | Editors | `Calendar`, `SignaturePad`, `Typeahead` |
 | Image | `ImageCompare`, `ImageCrop`, `ImageRegionSelect`, `ImageAnnotations` |
 | Recipes | `AvatarProfile`, `BadgeLink`, `MetricCard`, `TodoList` |
 | Display | `LogConsole`, `TokenWeightedText`, `DiagramOutput` |
-| Specialty (Experimental) | `TerminalView`, `Joystick`, `DeviceBridge`, `BrowserPythonSandbox` |
+| Sandbox (Experimental) | `BrowserPythonSandbox` |
+| Quarantined (`hedron[experimental-ui]`) | `CodeEditor`, `TerminalView`, `Joystick`, `DeviceBridge` |
 
 ## Errors and failure modes
 
 | Condition | Behavior |
 |---|---|
+| Expecting landmines from `hedron[extras]` | Out of scope — use `hedron[experimental-ui]` |
 | Expecting a full CodeMirror editor from `CodeEditor` | Out of scope — host stub only; see What’s ready |
 | Specialty surface without policy | Fail closed — no silent privilege |
 | Missing `data_explorer` / chart deps | Import / feature unavailable until extras installed |
@@ -80,6 +88,7 @@ Components register automatically when the package is installed.
 ## Related docs
 
 - [What’s ready](../guides/whats-ready.md)
+- [Production archetype](../api/PRODUCTION_ARCHETYPE.md) (`EXTRAS-025`)
 - [Plugins API](../api/PLUGINS.md)
 - [Native desktop shell recipe](../guides/native-desktop-shell.md) (not this package’s runtime)
 

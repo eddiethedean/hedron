@@ -1,7 +1,7 @@
 # Hedron `v0.25` production archetype and landmine quarantine acceptance
 
 Phase 0.25 hardens a reference production archetype, adds load/perf budget evidence for
-critical paths, quarantines or finishes specialty extras landmines, documents the
+critical paths, quarantines specialty extras landmines, documents the
 Matplotlib charts default / Plotly–Altair graduation path, and requires SBOM/evidence
 attach on train tags. Evidence is indexed by
 [`release-gate-0.25.toml`](release-gate-0.25.toml).
@@ -18,17 +18,17 @@ Packet SSOT: [PRODUCTION_ARCHETYPE.md](../api/PRODUCTION_ARCHETYPE.md) ·
 - [x] ROADMAP §0.25 scope accepted; D-053 / RFC-0056 recorded.
 - [x] Packet refine: locked Verified criteria; extras XOR contract; distinct gate commands.
 - [x] Gate checker recognizes `0.25` evidence manifest against the living train:
-  `python scripts/check_release_gate.py 0.24.0 --evidence-manifest docs/acceptance/release-gate-0.25.toml --allow-planned`
-  (or `python scripts/verify_pkg_25.py --allow-planned`).
-- [x] Per-gate checkers (refine flags):
-  `python scripts/check_archetype_025.py --allow-draft`,
-  `python scripts/check_budget_025.py --allow-planned`,
-  `python scripts/check_extras_025.py --allow-undecided`,
+  `python scripts/check_release_gate.py 0.25.0`
+  (or `python scripts/verify_pkg_25.py`).
+- [x] Per-gate checkers (cut):
+  `python scripts/check_archetype_025.py`,
+  `python scripts/check_budget_025.py`,
+  `python scripts/check_extras_025.py`,
   `python scripts/check_charts_025.py`,
   `python scripts/check_supply_025.py`,
-  `python scripts/verify_pkg_25.py --allow-planned`.
-- [ ] `ARCHETYPE-025` / `BUDGET-025` / `EXTRAS-025` / `CHARTS-025` / `SUPPLY-025` Verified.
-- [ ] `REGRESS-025` / `PKG-025` at cut
+  `python scripts/verify_pkg_25.py`.
+- [x] `ARCHETYPE-025` / `BUDGET-025` / `EXTRAS-025` / `CHARTS-025` / `SUPPLY-025` Verified.
+- [x] `REGRESS-025` / `PKG-025` at cut
   (`bash scripts/ci_checks.sh test --python 3.12`,
   `python scripts/verify_pkg_25.py`).
 
@@ -43,6 +43,6 @@ Packet SSOT: [PRODUCTION_ARCHETYPE.md](../api/PRODUCTION_ARCHETYPE.md) ·
 
 ## Exit
 
-- [ ] Every 0.25-owned release-gate row is `Verified`.
-- [ ] Production-quality and production-readiness guides link the archetype.
-- [ ] Extras XOR is `quarantine` or `finish_supported` (not `undecided`).
+- [x] Every 0.25-owned release-gate row is `Verified`.
+- [x] Production-quality and production-readiness guides link the archetype.
+- [x] Extras XOR is `quarantine` (not `undecided`).

@@ -38,9 +38,9 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
 
-## Honest gaps on the current train (0.24)
+## Honest gaps on the current train (0.25)
 
-- Current **published** PyPI train is **0.24.x** (`v0.24.0`)
+- Current **published** PyPI train is **0.25.x** (`v0.24.0`)
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)

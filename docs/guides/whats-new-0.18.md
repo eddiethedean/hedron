@@ -2,7 +2,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.18**. The living published train is **0.24** (`v0.24.0`).
+    This page describes **0.18**. The living published train is **0.25** (`v0.24.0`).
 
 Phase **0.18** adds model demos and inference workflows — fail-closed demo composition,
 governed feedback, inference scheduling over `JobBackend`, an interaction recorder, typed

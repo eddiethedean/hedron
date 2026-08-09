@@ -1,7 +1,7 @@
 # Package changelogs
 
 Per-package CHANGELOG files are the source of truth for shipped commits. For the
-adopter-facing train summary, start with [What’s new in 0.24](whats-new-0.24.md)
+adopter-facing train summary, start with [What’s new in 0.25](whats-new-0.24.md)
 (0.24 train — **Published** as **v0.24.0**) and
 [Release notes](release-notes.md).
 

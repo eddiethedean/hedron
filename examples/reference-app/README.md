@@ -1,56 +1,65 @@
-# Hedron reference application (FastAPI)
+# Hedron reference application (FastAPI) — production archetype (`ARCHETYPE-025`)
 
-Cumulative authenticated team-administration application for the FastAPI flagship.
-Tracks the living Published **0.20** train. Includes a GOVERN-019 accessibility statement
-dry-run (`accessibility_statement.py`) that never auto-claims WCAG conformance.
+Canonical multi-worker production archetype for the living Hedron train. Also used
+as the authenticated team-administration demo and GOVERN-019 accessibility statement
+dry-run (`accessibility_statement.py` — never auto-claims WCAG conformance).
+
+Packet SSOT: [PRODUCTION_ARCHETYPE.md](../../docs/api/PRODUCTION_ARCHETYPE.md).
 
 **Human AT (0.21):** engineering prep for the task corpus is on this app; compensated /
 screen-reader sessions remain Planned until Verified. Facilitator scripts:
 [docs/acceptance/human-at/task-scripts.md](../../docs/acceptance/human-at/task-scripts.md).
 
-Demonstrates:
+## Ingredient checklist (ARCHETYPE-025)
 
-- `Hedron()` and plain `FastAPI` + `HedronRouter` modes
-- Lazy addressable `UserTable` protected by router dependencies
-- Typed create/update/delete actions with CSRF validation
-- Progressive-enhancement create/edit (no-JS 303) plus HTMX `#user-table` swaps
-- Edit pages at `/users/{id}/edit` linked from the dashboard
-- DataEditor (Enter commit / Escape cancel), Auto, cache helpers, and ColorMode
-- Charts (`LineChart` via **Alpha** `hedron[charts]`), Markdown, typed `InteractionResult`,
-  declared fragment regions, and `/charts/*` interaction routes
-- Offline static rendering helpers
-- Optional `hedron[native]` acceleration (off by default semantics; install to enable
-  Rust escaping with pure-Python fallback) and `hedron conformance` kit visibility
+| Ingredient | How this app covers it |
+|---|---|
+| reverse-proxy subpath | Caddy `handle_path /hedron/*` + `HEDRON_ROOT_PATH=/hedron` |
+| Redis job/cache | `HEDRON_REDIS_URL` wires `RedisJobBackend` + `RedisCacheBackend` |
+| sticky sessions or external session store | Signed cookie sessions/CSRF (default external path); optional Caddy sticky noted in `Caddyfile` |
+| `HEDRON_ENV=production` | Set in compose + Dockerfile; refuses placeholder secrets |
+| CSP | `security="strict"` + `[tool.hedron.asset_policy] strict_csp = true` |
+| Explorer off | `explorer="off"` when `HEDRON_ENV=production` |
+| multi-worker | uvicorn `--workers 2` + Redis-backed job/cache |
 
-## Run (local)
+## Run (local demo)
 
 ```bash
 uv sync
 uv run uvicorn app:app --app-dir examples/reference-app
 ```
 
+Local/demo mode keeps Explorer in `development` and uses an in-memory demo secret.
 Default credentials: `admin` / `secret` (HTTP Basic). **Replace before any shared or
 production deploy.**
 
 Open the home page for CRUD + DataEditor + charts/Markdown. Chart interaction endpoints
 live under `/charts/*` (for example `/charts/fragment`, `/charts/search`).
 
-## Docker
+## Production compose (canonical archetype)
 
-Compose under this directory is **maintainer experimental** and may require local static
-assets / proxy config that are not part of the default clone. Prefer the `uvicorn`
-command above for adopters. Production packaging guidance (generic Dockerfile pattern):
-[Deployment](https://hedron.readthedocs.io/en/latest/guides/deployment/). If you need
-containers from this tree, start from [`Dockerfile`](Dockerfile) and fix the module path
-to match how you copy the app (`app:app` with `WORKDIR` set to the app directory is the
-usual pattern).
+```bash
+export HEDRON_SESSION_SECRET='a-long-random-secret'
+docker compose --profile full up --build
+# App via proxy: http://localhost:8080/hedron/
+```
+
+Compose sets `HEDRON_ENV=production`, Redis, subpath, and multi-worker. Prefer this path
+when validating production posture. Generic packaging notes:
+[Deployment](https://hedron.readthedocs.io/en/latest/guides/deployment/) ·
+[Production readiness](https://hedron.readthedocs.io/en/latest/guides/production-readiness/).
+
+## Demonstrates
+
+- `Hedron()` and plain `FastAPI` + `HedronRouter` modes
+- Lazy addressable `UserTable` protected by router dependencies
+- Typed create/update/delete actions with CSRF validation
+- Progressive-enhancement create/edit (no-JS 303) plus HTMX `#user-table` swaps
+- DataEditor, Auto, cache helpers, ColorMode, charts (Alpha `hedron[charts]`)
+- Optional `hedron[native]` acceleration
 
 ## Tests
 
 ```bash
 uv run pytest examples/reference-app tests/integration/test_reference_crud.py -q
 ```
-
-Optional extras (`charts`, `markdown`, sanitizer) are part of the workspace sync; when
-developing against a minimal install, add `hedron[charts]`, `hedron[markdown]`, and a
-chart backend such as `hedron-charts[matplotlib]`.

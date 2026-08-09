@@ -1,3 +1,8 @@
+# ARCHETYPE-025: reverse-proxy subpath mount for the production archetype.
+# Signed cookie sessions (session/CSRF) are the default external session path and
+# do not require sticky sessions. Optional sticky cookie (uncomment) if you keep
+# process-local state behind multiple upstreams:
+#   lb_policy cookie hedron_sticky
 :8080 {
   handle_path /hedron/* {
     reverse_proxy app:8000

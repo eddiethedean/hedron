@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.25.0] — 2026-08-09
+
+### Changed
+
+- Coordinated Beta train bump with `hedron` 0.25.0.
+- **EXTRAS-025 quarantine:** `CodeEditor`, `TerminalView`, `Joystick`, and `DeviceBridge`
+  move behind `hedron[experimental-ui]` / `hedron_extras.experimental`. Curated
+  `hedron[extras]` no longer registers or re-exports those landmines.
+
 ## [0.24.0] — 2026-08-09
 
 ### Changed

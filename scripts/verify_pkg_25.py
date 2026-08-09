@@ -18,8 +18,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.25.toml"
-# Living published train (also used with --allow-planned post-cut until 0.25 publishes).
-LIVING_TRAIN = "0.24.0"
+# Living published train (also used with --allow-planned post-cut until next publishes).
+LIVING_TRAIN = "0.25.0"
 
 
 def main(argv: list[str] | None = None) -> int:

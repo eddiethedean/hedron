@@ -1,4 +1,8 @@
-"""Register hedron-extras components, assets, and feature manifests."""
+"""Register hedron-extras components, assets, and feature manifests.
+
+EXTRAS-025 landmines (CodeEditor, TerminalView, Joystick, DeviceBridge) register
+via ``hedron_extras.experimental`` / ``hedron[experimental-ui]`` — not this plugin.
+"""
 
 from __future__ import annotations
 
@@ -24,11 +28,9 @@ from hedron_extras.editors import Calendar, SignaturePad, Typeahead
 from hedron_extras.image_tools import ImageAnnotations, ImageCompare, ImageCrop, ImageRegionSelect
 from hedron_extras.recipes import AvatarProfile, BadgeLink, MetricCard, TodoList
 from hedron_extras.sandbox import BrowserPythonSandbox
-from hedron_extras.specialty import DeviceBridge, Joystick, TerminalView
 from hedron_extras.workbench import (
     CallableActionForm,
     ChartWorkbench,
-    CodeEditor,
     DataExplorer,
     JSONEditor,
 )
@@ -37,9 +39,9 @@ _ROOT = Path(__file__).resolve().parent
 
 PLUGIN_META = PluginMeta(
     name="hedron_extras",
-    version="0.24.0",
+    version="0.25.0",
     distribution="hedron-extras",
-    hedron_version=">=0.24,<0.25",
+    hedron_version=">=0.25,<0.26",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -52,22 +54,10 @@ PLUGIN_META = PluginMeta(
 # relative path → (browser module logical id, custom element tag, component classes)
 _BROWSER_HOSTS: tuple[tuple[str, str, str, tuple[type[Any], ...]], ...] = (
     (
-        "assets/code_editor/editor.js",
-        "hedron-extras:code-editor",
-        "hedron-extras-code-editor",
-        (CodeEditor,),
-    ),
-    (
         "assets/sandbox/bridge.js",
         "hedron-extras:sandbox-bridge",
         "hedron-extras-sandbox",
         (BrowserPythonSandbox,),
-    ),
-    (
-        "assets/terminal/terminal.js",
-        "hedron-extras:terminal",
-        "hedron-extras-terminal",
-        (TerminalView,),
     ),
     (
         "assets/image_tools/image.js",
@@ -114,8 +104,6 @@ _STATIC_COMPONENTS: tuple[type[Any], ...] = (
     LogConsole,
     TokenWeightedText,
     DiagramOutput,
-    Joystick,
-    DeviceBridge,
 )
 
 
@@ -192,14 +180,12 @@ def register(ctx: PluginContext) -> None:
         {
             "name": "workbench",
             "stability": "beta",
-            "description": (
-                "DataExplorer, JSONEditor, CodeEditor, ChartWorkbench, CallableActionForm"
-            ),
-            "assets": (asset_logical_by_rel["assets/code_editor/editor.js"],),
+            "description": "DataExplorer, JSONEditor, ChartWorkbench, CallableActionForm",
             "http_fallback": True,
             "a11y_notes": "Textarea fallbacks for editors.",
             "security_notes": (
-                "CodeEditor never evaluates buffers; DataExplorer emits TransformPlan only."
+                "DataExplorer emits TransformPlan only. CodeEditor is quarantined under "
+                "hedron[experimental-ui] (EXTRAS-025)."
             ),
         },
         {
@@ -250,27 +236,6 @@ def register(ctx: PluginContext) -> None:
             "http_fallback": False,
             "security_notes": "Origin isolation; no server/session; network deny.",
             "a11y_notes": "Budget and teardown documented; limited AT surface.",
-        },
-        {
-            "name": "terminal",
-            "stability": "experimental",
-            "assets": (asset_logical_by_rel["assets/terminal/terminal.js"],),
-            "http_fallback": False,
-            "security_notes": "Fail-closed without allowlist+authz+audit.",
-            "a11y_notes": "Limited; command form is the accessible path.",
-        },
-        {
-            "name": "joystick",
-            "stability": "experimental",
-            "http_fallback": True,
-            "a11y_notes": "Range input alternative.",
-            "security_notes": "Bounded event rate.",
-        },
-        {
-            "name": "device_bridge",
-            "stability": "experimental",
-            "http_fallback": True,
-            "security_notes": "Command allowlist; host must enforce CSRF on mutating posts.",
         },
     )
 

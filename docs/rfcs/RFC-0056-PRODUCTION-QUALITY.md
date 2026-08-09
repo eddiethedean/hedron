@@ -1,7 +1,7 @@
 # RFC-0056: Production-quality maturity program
 
 **Status:** Accepted
-**Phase:** Program umbrella for 0.21–0.25 (D-053); living published train is **0.24**
+**Phase:** Program umbrella for 0.21–0.25 (D-053); living published train is **0.25**
 (`v0.24.0`; prior packet **0.23** stable-tier)
 **Stability:** `beta` (process / roadmap); does not by itself promote package maturity or
 API levels

@@ -1,4 +1,4 @@
-"""Authenticated team-admin CRUD reference application (0.21 train)."""
+"""Authenticated team-admin CRUD reference application (ARCHETYPE-025 production archetype)."""
 
 from __future__ import annotations
 
@@ -611,13 +611,38 @@ def edit_user_page(
     )
 
 
+def _configure_redis_backends() -> None:
+    """Wire Redis job/cache backends when ``HEDRON_REDIS_URL`` is set (ARCHETYPE-025)."""
+    import os
+
+    redis_url = os.environ.get("HEDRON_REDIS_URL", "").strip()
+    if not redis_url:
+        return
+    try:
+        import redis
+    except ImportError as exc:  # pragma: no cover - optional runtime dep
+        raise RuntimeError(
+            "HEDRON_REDIS_URL is set but the redis package is not installed. "
+            "Install redis (e.g. `uv pip install redis`) for the production archetype."
+        ) from exc
+    from hedron_core.cache import set_cache_backend
+    from hedron_core.jobs import RedisJobBackend, set_job_backend
+    from hedron_core.redis_cache import RedisCacheBackend
+
+    client = redis.Redis.from_url(redis_url, decode_responses=True)
+    set_job_backend(RedisJobBackend(client))
+    set_cache_backend(RedisCacheBackend(client))
+
+
 def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
+    import os
     from pathlib import Path
 
     import hedron_core
     from hedron.build import run_build
     from hedron.config import HedronSettings
     from hedron_core import reset_registry_for_tests
+    from hedron_core.compile_gate import is_production_env
 
     reset_registry_for_tests()
     hedron_core._register_builtins()  # type: ignore[attr-defined]
@@ -637,6 +662,8 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         factory=user_table.factory,
     )
 
+    _configure_redis_backends()
+
     ref_root = Path(__file__).resolve().parent
     build_dir = ref_root / ".hedron" / "build"
     if ensure_build:
@@ -647,11 +674,23 @@ def build_hedron_app(*, ensure_build: bool = True) -> Hedron:
         )
         run_build(project_dir=ref_root, settings=settings, production=True)
 
+    production = is_production_env()
+    # Production archetype: Explorer off. Local/integration demos keep development Explorer.
+    explorer_mode = "off" if production else "development"
+    session_secret = os.environ.get("HEDRON_SESSION_SECRET", "").strip()
+    if not session_secret:
+        if production:
+            raise RuntimeError(
+                "HEDRON_SESSION_SECRET is required under HEDRON_ENV=production "
+                "(ARCHETYPE-025). Do not use placeholder secrets."
+            )
+        session_secret = "reference-app-secret"
+
     app = Hedron(
         title="Hedron Team Admin",
         security="strict",
-        explorer="development",
-        session_secret="reference-app-secret",
+        explorer=explorer_mode,
+        session_secret=session_secret,
         theme="default",
         build_dir=build_dir,
     )

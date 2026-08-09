@@ -22,7 +22,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "0.24.0"
+  HEDRON_GATE_VERSION: "0.25.0"
 
 jobs:
   test:
@@ -438,15 +438,23 @@ jobs:
             fi
           elif gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists; uploading artifacts"
-            gh release upload "$TAG" "${artifacts[@]}" --clobber || true
+            gh release upload "$TAG" "${artifacts[@]}" --clobber
           else
             gh release create "$TAG" "${artifacts[@]}" \
               --title "Hedron ${VERSION}" \
               --notes "$NOTES"
           fi
-          if [ -d dist/evidence-bundle ]; then
-            gh release upload "$TAG" dist/evidence-bundle/* --clobber || true
+          # SUPPLY-025: fail closed — SBOM/evidence-bundle attach is required on train tags.
+          if [ ! -d dist/evidence-bundle ]; then
+            echo "SUPPLY-025: missing dist/evidence-bundle (required on train tags)" >&2
+            exit 1
           fi
+          mapfile -t evidence_artifacts < <(find dist/evidence-bundle -type f | sort)
+          if ((${#evidence_artifacts[@]} == 0)); then
+            echo "SUPPLY-025: dist/evidence-bundle has no files to attach" >&2
+            exit 1
+          fi
+          gh release upload "$TAG" "${evidence_artifacts[@]}" --clobber
       - name: Fail job if PyPI publish failed
         if: ${{ always() && !cancelled() && steps.pypi.outputs.publish_failed == '1' }}
         run: |

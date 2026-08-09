@@ -1,17 +1,17 @@
 ---
-status: draft
+status: published
 ---
 
 # Production archetype and landmine quarantine (0.25)
 
-!!! warning "Planned for phase 0.25 — not the 0.24 ship guide"
+!!! tip "Verified on the 0.25 train"
 
-    This page describes the **next** production-quality cut (packet refine complete; gates
-    still **Planned**). Do **not** treat it as Supported until the cut verifies. Living
-    published train remains **0.24** — pin `hedron>=0.24.0,<0.25`.
+    Canonical production archetype packet (`ARCHETYPE-025` … `PKG-025`) is **Verified**.
+    Pin `hedron>=0.25.0,<0.26`.
 
     **Ship today:** [Ship to production](../guides/ship-to-production.md) ·
-    [What’s ready](../guides/whats-ready.md).
+    [What’s ready](../guides/whats-ready.md) ·
+    [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app).
 
 **Program context:** [Production-quality maturity](../guides/production-quality.md) ·
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
@@ -19,7 +19,7 @@ status: draft
 [DECISIONS](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md)).
 
 **Owning gates (maintainer evidence IDs):** `ARCHETYPE-025`, `BUDGET-025`, `EXTRAS-025`,
-`CHARTS-025`, `SUPPLY-025`, `REGRESS-025`, `PKG-025`.
+`CHARTS-025`, `SUPPLY-025`, `REGRESS-025`, `PKG-025` (all **Verified**).
 
 Machine twin (extras quarantine):
 [extras-quarantine-025.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/extras-quarantine-025.toml)
@@ -50,7 +50,7 @@ Public guides that must link the archetype at cut:
 - [Production-quality maturity](../guides/production-quality.md)
 - [Production readiness](../guides/production-readiness.md)
 
-Checker: `python scripts/check_archetype_025.py` (refine: `--allow-draft`).
+Checker: `python scripts/check_archetype_025.py`.
 
 ## Load budgets (`BUDGET-025`)
 
@@ -63,12 +63,12 @@ Three named workloads (see [PERFORMANCE_BUDGETS.md](../PERFORMANCE_BUDGETS.md)):
 | `W-025-DATAEDITOR` | DataEditor row-model smoke |
 
 Evidence may be **CI** or an **immutable artifact**. Checker:
-`python scripts/check_budget_025.py` (refine: `--allow-planned`).
+`python scripts/check_budget_025.py`.
 
 ## Extras quarantine XOR (`EXTRAS-025`)
 
 Landmines in scope: **CodeEditor** host stub, **TerminalView**, **joystick** + **device**
-bridges. Cut chooses exactly one path for `hedron[extras]`:
+bridges. Cut disposition: **`quarantine`**.
 
 | Value | Cut meaning |
 |---|---|
@@ -76,9 +76,15 @@ bridges. Cut chooses exactly one path for `hedron[extras]`:
 | `quarantine` | Move landmines behind a clearly named experimental extra so `hedron[extras]` does not imply product UI |
 | `finish_supported` | Reach Supported with evidence for those surfaces |
 
+**Chosen path:** `quarantine` via **`hedron[experimental-ui]`**. Install that extra and either set
+`HEDRON_EXPERIMENTAL_UI=1` or enable the `hedron_extras_experimental` plugin. Import landmines from
+`hedron_extras.experimental`. Curated **`hedron[extras]`** remains the product toolkit and does
+**not** register or re-export those surfaces.
+
 Do not half-verify both. Normative criteria:
 [ROADMAP §0.25](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md)
 (GitHub-only). Checker: `python scripts/check_extras_025.py`.
+Machine twin: [extras-quarantine-025.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/extras-quarantine-025.toml).
 
 ## Charts graduation path (`CHARTS-025`)
 
@@ -119,6 +125,3 @@ Checker: `python scripts/check_supply_025.py`.
 | `SUPPLY-025` | `python scripts/check_supply_025.py` |
 | `REGRESS-025` | `bash scripts/ci_checks.sh test --python 3.12` |
 | `PKG-025` | `python scripts/verify_pkg_25.py` |
-
-Evidence index (GitHub-only):
-[release-gate-0.25.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.25.toml).

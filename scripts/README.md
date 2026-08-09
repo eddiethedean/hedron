@@ -13,7 +13,7 @@ scripts here when you add them.
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
-| `check_docs_train_ssot.py` | Fail if adopter docs claim a stale current train (expects **0.24**). CI: quality job |
+| `check_docs_train_ssot.py` | Fail if adopter docs claim a stale current train (expects **0.25**). CI: quality job |
 
 
 ## Release / gate (maintainers)
@@ -25,16 +25,16 @@ scripts here when you add them.
 | `verify_pkg_21.py` | Phase **0.21** historical packet verify (human AT engineering cut) |
 | `verify_pkg_22.py` | Phase **0.22** CSRF packet + focused security tests (`check_release_gate.py 0.22.0`) |
 | `verify_pkg_23.py` | Phase **0.23** historical packet + facade/tier checks (`check_release_gate.py 0.23.0`) |
-| `verify_pkg_24.py` | Phase **0.24** living-train packet + live disposition (`check_release_gate.py 0.24.0`) |
-| `verify_pkg_25.py` | Phase **0.25** packet refine / cut (`--allow-planned` against living **0.24.0**; omit at cut) |
-| `check_archetype_025.py` | `ARCHETYPE-025` production archetype SSOT (refine: `--allow-draft`) |
-| `check_budget_025.py` | `BUDGET-025` critical-path workloads (refine: `--allow-planned`) |
-| `check_extras_025.py` | `EXTRAS-025` quarantine XOR (refine: `--allow-undecided`) |
+| `verify_pkg_24.py` | Phase **0.24** historical packet + live disposition (`check_release_gate.py 0.24.0`) |
+| `verify_pkg_25.py` | Phase **0.25** living-train packet + archetype / landmines (`check_release_gate.py 0.25.0`) |
+| `check_archetype_025.py` | `ARCHETYPE-025` production archetype SSOT |
+| `check_budget_025.py` | `BUDGET-025` critical-path workloads |
+| `check_extras_025.py` | `EXTRAS-025` quarantine XOR |
 | `check_charts_025.py` | `CHARTS-025` Matplotlib-default + Plotly/Altair honesty |
 | `check_supply_025.py` | `SUPPLY-025` RELEASE SBOM/evidence-bundle attach requirement |
 | `rehearse_release.py` | Clean install rehearsal before tagging |
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
-| `verify_pkg_24.py` / `verify_pkg_23.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_24.py`**; next: `verify_pkg_25.py`) |
+| `verify_pkg_25.py` / `verify_pkg_24.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_25.py`**) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

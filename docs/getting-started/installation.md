@@ -34,8 +34,8 @@ interpreter for `pip` / `uv` / `uvicorn` (`which python3`, `py -0p` on Windows).
 
     Point `pip` / `uv` at your internal index (`PIP_INDEX_URL`, `UV_INDEX_URL`, or
     `--index-url`). Mirror **PyPI** wheels for `hedron`, `hedron-core`, and matching
-    extras onto that index; pin `hedron>=0.24.0,<0.25`. Offline: download wheels on a
-    connected host (`pip download "hedron>=0.24.0,<0.25"`) and `pip install --no-index
+    extras onto that index; pin `hedron>=0.25.0,<0.26`. Offline: download wheels on a
+    connected host (`pip download "hedron>=0.25.0,<0.26"`) and `pip install --no-index
     --find-links=...`. TLS / corporate MITM: install your org’s CA into the env
     (`REQUESTS_CA_BUNDLE` / `SSL_CERT_FILE`, or `pip`/`uv` trust-store docs). Codespaces
     still needs a GitHub account and billed minutes — it is not an offline playground.
@@ -70,8 +70,8 @@ After following [Build your first app](quickstart.md):
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.24.0`** or a newer **`0.24.x`** patch on this train. Last published
-PyPI/git is **`v0.24.0`**. Pin with `hedron>=0.24.0,<0.25` for
+Expect **`0.25.0`** or a newer **`0.25.x`** patch on this train. Last published
+PyPI/git is **`v0.25.0`**. Pin with `hedron>=0.25.0,<0.26` for
 production.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
@@ -81,11 +81,11 @@ If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 
 | Symptom | Fix |
 |---|---|
-| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.24.0,<0.25" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
+| `hedron: command not found` | Use `python -m hedron …`, `uvx --from "hedron>=0.25.0,<0.26" …`, or see [FAQ](../guides/faq.md#hedron-command-not-found) / [Troubleshooting](../guides/troubleshooting.md#hedron-command-not-found) |
 | `ModuleNotFoundError: hedron` | Same interpreter as uvicorn; activate the venv, then `pip install -e .` / `uv sync` — [Troubleshooting](../guides/troubleshooting.md#wrong-interpreter-or-modulenotfounderror-for-hedron) |
 | FastAPI / pip resolver conflict | Empty venv recommended; see [pin conflicts](../COMPATIBILITY.md#dependency-pin-conflicts) and [Troubleshooting](../guides/troubleshooting.md#fastapi-version-conflict-on-install) |
 | `uv add` / “No pyproject.toml” | Create a project first, or use `hedron new` ([FAQ](../guides/faq.md#uv-add-hedron-failed-with-no-pyprojecttoml)) |
-| Wrong / old version | `pip install -U "hedron>=0.24.0,<0.25"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
+| Wrong / old version | `pip install -U "hedron>=0.25.0,<0.26"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable / charts | Install extras — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
 | Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
@@ -127,7 +127,7 @@ Also install directly (no flagship extra):
 Full catalog: [Optional packages](../packages/index.md).
 
 ```bash
-pip install "hedron[data]>=0.24.0,<0.25"          # example
+pip install "hedron[data]>=0.25.0,<0.26"          # example
 pip install "hedron[charts]>=0.1.0,<0.2"         # Alpha — pin and expect churn
 pip install "hedron-charts[plotly]>=0.1.0,<0.2"  # chart backend after charts extra (tip: 0.1.5)
 ```
@@ -157,7 +157,7 @@ Use this only if you are **not** using `hedron new`.
     ```bash
     uv init my-hedron-app
     cd my-hedron-app
-    uv add "hedron>=0.24.0,<0.25" "uvicorn[standard]"
+    uv add "hedron>=0.25.0,<0.26" "uvicorn[standard]"
     ```
 
 === "pip (macOS/Linux)"
@@ -166,7 +166,7 @@ Use this only if you are **not** using `hedron new`.
     mkdir my-hedron-app && cd my-hedron-app
     python -m venv .venv
     source .venv/bin/activate
-    python -m pip install "hedron>=0.24.0,<0.25" "uvicorn[standard]"
+    python -m pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
     ```
 
 === "pip (Windows PowerShell)"
@@ -175,7 +175,7 @@ Use this only if you are **not** using `hedron new`.
     mkdir my-hedron-app; cd my-hedron-app
     python -m venv .venv
     .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=0.24.0,<0.25" "uvicorn[standard]"
+    python -m pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
     ```
 
 Then create `app.py` from the [quickstart](quickstart.md) (manual / no-scaffold path).

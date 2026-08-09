@@ -45,7 +45,7 @@ PLUGIN_META = PluginMeta(
     name="my_plugin",
     version="0.1.0",  # keep aligned with your distribution version
     distribution="my-hedron-plugin",
-    hedron_version=">=0.24,<0.25",
+    hedron_version=">=0.25,<0.26",
     capabilities=PluginCapabilities(python=True, styles=True, assets=True),
 )
 
@@ -97,7 +97,7 @@ Load the plugin in CI via the same entry-point path production uses.
 ## 7. Publish and version
 
 - Pin against `hedron-core` (and optionally `hedron`) with an upper bound matching the
-  adopter train (for example `>=0.24.0,<0.25`).
+  adopter train (for example `>=0.25.0,<0.26`).
 - Declare license metadata; do not pull FastAPI/Flask/Django into a core-facing package.
 - Ship a CHANGELOG and document Experimental vs Supported claims honestly
   ([What’s ready](whats-ready.md)).

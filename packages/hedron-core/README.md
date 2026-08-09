@@ -18,14 +18,14 @@ Host adapters share this renderer:
 - Flask — [`hedron-flask`](https://pypi.org/project/hedron-flask/)
 - Django — [`hedron-django`](https://pypi.org/project/hedron-django/)
 
-**Package maturity:** Beta · **Train:** `0.24.0` (Published) · pin `>=0.24.0,<0.25`
+**Package maturity:** Beta · **Train:** `0.25.0` (Published) · pin `>=0.25.0,<0.26`
 
 ## Install
 
 ```bash
-pip install "hedron-core>=0.24.0,<0.25"
+pip install "hedron-core>=0.25.0,<0.26"
 # or
-uv add "hedron-core>=0.24.0,<0.25"
+uv add "hedron-core>=0.25.0,<0.26"
 ```
 
 Requires Python 3.11–3.14.

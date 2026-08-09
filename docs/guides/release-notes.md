@@ -1,12 +1,12 @@
 # Release notes
 
-Adopter-facing summary for the **0.24.x** train. For per-package commit detail, use the
+Adopter-facing summary for the **0.25.x** train. For per-package commit detail, use the
 [package changelog index](changelog.md) or
 [GitHub Releases](https://github.com/eddiethedean/hedron/releases).
 
-## Current train — 0.24.0 (2026-08-09)
+## Current train — 0.25.0 (2026-08-09)
 
-**Published** (`0.24.0`; last published PyPI/git = `v0.24.0`).
+**Published** (`0.25.0`; last published PyPI/git = `v0.25.0`).
 Live-transport disposition **`polling_only`** (D-053 / RFC-0056): polling is the Supported
 production story; SSE / WebSocket / streaming / preload helpers remain **experimental**
 (`hedron.experimental`). Prior Deferred live-ops IDs (`BROWSER-10-001`, `PERF-10-001`,
@@ -14,13 +14,13 @@ production story; SSE / WebSocket / streaming / preload helpers remain **experim
 `PARTICIPANT-021`) remain **Planned** — do not market human AT as Supported (carryover
 from 0.21).
 
-Narrative deep-dive: [What's new in 0.24](whats-new-0.24.md) · maturity:
+Narrative deep-dive: [What's new in 0.25](whats-new-0.25.md) · maturity:
 [What's ready today](whats-ready.md).
 
 ```bash
-pip install -U "hedron>=0.24.0,<0.25"
+pip install -U "hedron>=0.25.0,<0.26"
 # or
-uv add "hedron>=0.24.0,<0.25"
+uv add "hedron>=0.25.0,<0.26"
 ```
 
 Optional: `pip install "hedron[gradio]>=0.1.0,<0.2"` · `"hedron[notebook]>=0.1.0,<0.2"` · `"hedron[mcp]>=0.1.0,<0.2"`.

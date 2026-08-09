@@ -1,6 +1,6 @@
 # Public API
 
-Hand-maintained **contracts** for shipped surfaces on the **0.24** train, plus
+Hand-maintained **contracts** for shipped surfaces on the **0.25** train, plus
 [Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. This is **not** a complete
 generated reference of every `hedron.__all__` name (~230 exports) — Autodoc covers an
 expanded golden-path subset. Use the [coverage map](COVERAGE.md) and prefer Autodoc /
@@ -57,7 +57,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
     may stay shorter — prefer guides + Autodoc when Errors is missing.
     Human error index: [Error codes](../guides/error-codes.md).
 
-## Surfaces introduced in 0.19 (available on the 0.24 train)
+## Surfaces introduced in 0.19 (available on the 0.25 train)
 
 These surfaces first shipped in the 0.19 phase and remain on the living **0.24.0**
 train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
@@ -114,7 +114,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.24)
+- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.25)
 - [Security types](SECURITY_TYPES.md) — `Secret` / `TrustedHtml` / `SafeUrl` / `SecurityPolicy`
 - [CSRF composition (0.22)](CSRF_COMPOSITION.md) — strategies, header merge, `CsrfField`
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
@@ -123,7 +123,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 ## Current train notes
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
-  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.24**
+  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.25**
   (**Published** as **v0.24.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory

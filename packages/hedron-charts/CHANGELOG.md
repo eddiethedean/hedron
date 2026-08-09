@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Pin `hedron-core` to `>=0.24.0,<0.25` for the living Beta train (workspace pin;
+- Pin `hedron-core` to `>=0.25.0,<0.26` for the living Beta train (workspace pin;
   earlier notes targeting `0.20` / `0.19` are superseded).
 
 ## [0.1.4] — 2026-08-06

@@ -1,10 +1,10 @@
 # Model demos and inference workflows
 
 Build reviewable model demos, schedule inference over durable jobs, collect governed
-feedback, and compose permissioned workflows (introduced in **0.18**; living train **0.24**).
+feedback, and compose permissioned workflows (introduced in **0.18**; living train **0.25**).
 
 Capability readiness is **Supported** (fail-closed); API compatibility remains **`beta`**.
-Pin `hedron>=0.24.0,<0.25`.
+Pin `hedron>=0.25.0,<0.26`.
 
 API contract: [Inference](../api/INFERENCE.md)
 

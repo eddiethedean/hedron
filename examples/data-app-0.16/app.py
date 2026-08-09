@@ -19,12 +19,12 @@ from hedron_extras import (
     CallableActionForm,
     ChoiceCards,
     ChoiceOption,
-    CodeEditor,
     DataExplorer,
     JSONEditor,
     Steps,
     TreeView,
 )
+from hedron_extras.experimental import CodeEditor
 
 app = Hedron(
     title="Hedron 0.16 workbench sample",

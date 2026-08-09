@@ -1,54 +1,53 @@
 # Phase 0.25 production archetype and landmine quarantine evidence index.
-# Consumed by scripts/check_release_gate.py 0.25.0 (--allow-planned until full cut).
+# Consumed by scripts/check_release_gate.py 0.25.0 (--execute-verified at cut).
 # Zero Deferred policy for 0.25-owned rows: every row must be Verified at cut.
 # Owning decision: D-053. RFC: RFC-0056.
-# Packet refine locked distinct gate commands (not self-referential placeholders).
 
 [[evidence]]
 id = "ARCHETYPE-025"
-state = "Planned"
-command = "python scripts/check_archetype_025.py --allow-draft"
+state = "Verified"
+command = "python scripts/check_archetype_025.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "BUDGET-025"
-state = "Planned"
-command = "python scripts/check_budget_025.py --allow-planned"
+state = "Verified"
+command = "python scripts/check_budget_025.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "EXTRAS-025"
-state = "Planned"
-command = "python scripts/check_extras_025.py --allow-undecided"
+state = "Verified"
+command = "python scripts/check_extras_025.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "CHARTS-025"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_charts_025.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "SUPPLY-025"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_supply_025.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "REGRESS-025"
-state = "Planned"
+state = "Verified"
 command = "bash scripts/ci_checks.sh test --python 3.12"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-025"
-state = "Planned"
-command = "python scripts/verify_pkg_25.py --allow-planned"
+state = "Verified"
+command = "python scripts/verify_pkg_25.py"
 ci_job = "test"
 owner = "hedron"

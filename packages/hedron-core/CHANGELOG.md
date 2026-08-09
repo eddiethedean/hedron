@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.0] — 2026-08-09
+
+### Changed
+
+- Coordinated Beta train bump with `hedron` 0.25.0.
+
 ## [0.24.0] — 2026-08-09
 
 ### Changed

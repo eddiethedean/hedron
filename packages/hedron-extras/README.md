@@ -12,20 +12,21 @@ a second component runtime. Install as `hedron-extras` or via `hedron[extras]`.
 Absent extras add no core import, browser asset, startup, or transitive
 dependency cost.
 
-**Package maturity:** Beta · **Train:** `0.24.0` (Published) · pin `>=0.24.0,<0.25`
+**Package maturity:** Beta · **Train:** `0.25.0` (Published) · pin `>=0.25.0,<0.26`
 
-Specialty surfaces (`TerminalView`, joystick/device bridges, browser-Python
-sandbox) are **Experimental** and fail closed without explicit policy — see
+**EXTRAS-025:** `CodeEditor`, `TerminalView`, joystick/device bridges are quarantined
+behind **`hedron[experimental-ui]`** (import `hedron_extras.experimental`) — not product
+UI under `hedron[extras]`. See
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
 ## Install
 
 ```bash
-pip install "hedron[extras]>=0.24.0,<0.25"
+pip install "hedron[extras]>=0.25.0,<0.26"
 # or
-pip install "hedron-extras>=0.24.0,<0.25"
-# feature-scoped:
-pip install "hedron-extras[code_editor,data_explorer]>=0.24.0,<0.25"
+pip install "hedron-extras>=0.25.0,<0.26"
+# experimental landmines:
+pip install "hedron[experimental-ui]>=0.25.0,<0.26"
 ```
 
 Requires Python 3.11–3.14 and `hedron-core`.
@@ -34,11 +35,11 @@ Requires Python 3.11–3.14 and `hedron-core`.
 
 | Extra | Notes |
 |---|---|
-| `code_editor` / `json_editor` | Editor workbenches |
-| `data_explorer` | Pulls `hedron-data` |
+| `json_editor` / `data_explorer` | Editor / explorer workbenches |
 | `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Alpha) |
 | `image_tools` / `calendar` / `signature` / `typeahead` | UI tools |
-| `sandbox` / `terminal` / `joystick` | Experimental specialty surfaces |
+| `sandbox` | Experimental browser-Python sandbox |
+| `experimental-ui` | Quarantined CodeEditor / TerminalView / joystick / device |
 | `all` | `hedron-data` + `hedron-charts` |
 
 ## Quick start
@@ -56,12 +57,12 @@ package is installed.
 
 | Area | Components |
 |---|---|
-| Workbenches | `CodeEditor`, `JSONEditor`, `DataExplorer`, `ChartWorkbench` |
+| Workbenches | `JSONEditor`, `DataExplorer`, `ChartWorkbench` |
 | Composition | `ChoiceCards`, `TreeView`, `Steps`, `SplitPane`, `FloatingAction` |
 | Editors | `Calendar`, `SignaturePad`, `Typeahead` |
 | Image | `ImageCompare`, `ImageCrop`, `ImageRegionSelect`, `ImageAnnotations` |
 | Recipes | `AvatarProfile`, `BadgeLink`, `MetricCard`, `TodoList` |
-| Specialty | `TerminalView`, `Joystick`, `DeviceBridge`, `BrowserPythonSandbox` |
+| Quarantined (`hedron[experimental-ui]`) | `CodeEditor`, `TerminalView`, `Joystick`, `DeviceBridge` |
 
 ## Links
 

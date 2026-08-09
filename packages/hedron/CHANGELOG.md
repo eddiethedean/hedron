@@ -1,12 +1,18 @@
 # Changelog
 
+## [0.25.0] — 2026-08-09
+
+### Changed
+
+- Coordinated Beta train bump with `hedron` 0.25.0.
+
 ## [0.24.0] — 2026-08-09
 
 ### Changed
 
 - Accepts live-transport disposition `polling_only` (D-053 / RFC-0056): polling is the
   Supported production story; SSE/WebSocket/streaming/preload remain experimental.
-- `hedron new` scaffolds pin `hedron` / adapters at `>=0.24.0,<0.25`.
+- `hedron new` scaffolds pin `hedron` / adapters at `>=0.25.0,<0.26`.
 - Supersedes prior Deferred live-ops IDs `BROWSER-10-001`, `PERF-10-001`, and
   `LIVE-011-BROWSER` via waive ledgers.
 - Root `hedron.<live>` attribute access emits `DeprecationWarning` (import

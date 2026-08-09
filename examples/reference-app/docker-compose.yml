@@ -1,6 +1,9 @@
-# Experimental compose for maintainers — not the adopter getting-started path.
-# Missing local assets (for example static-external/) will prevent `static` from starting.
-# Prefer: uv run uvicorn app:app --app-dir examples/reference-app
+# Canonical production archetype compose (ARCHETYPE-025).
+# Local adopter path without containers:
+#   uv run uvicorn app:app --app-dir examples/reference-app
+#
+# Full stack (reverse-proxy subpath + Redis + multi-worker):
+#   docker compose --profile full up --build
 services:
   redis:
     image: redis:7-alpine
@@ -26,8 +29,11 @@ services:
       context: ../..
       dockerfile: examples/reference-app/Dockerfile
     environment:
+      HEDRON_ENV: production
       HEDRON_REDIS_URL: redis://redis:6379/0
       HEDRON_ROOT_PATH: /hedron
+      # Replace before any shared deploy — refuse weak/placeholder secrets in production.
+      HEDRON_SESSION_SECRET: ${HEDRON_SESSION_SECRET:-change-me-reference-app-production-secret}
     ports:
       - "8000:8000"
     profiles: ["full"]

@@ -1,11 +1,11 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.24.0** (Published as `v0.24.0`). Other
+**Canonical maturity snapshot for Hedron 0.25.0** (Published as `v0.25.0`). Other
 evaluator pages link here — do not treat parallel summaries as a second source of truth.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-**Ship today** (pin `hedron>=0.24.0,<0.25`): typed pages, HTMX fragments, CSRF profiles
+**Ship today** (pin `hedron>=0.25.0,<0.26`): typed pages, HTMX fragments, CSRF profiles
 (`standard` / `strict`), pluggable CSRF strategies / header merge / `CsrfField`,
 Flask/Django adapters, polling job status, accessibility contracts / PE forms, and the
 production security floor. Prefer **polling** for live status. Charts, notebook, MCP, and
@@ -43,7 +43,7 @@ Start building: [First app](../getting-started/quickstart.md). Evaluators:
 <details markdown>
 <summary>How to read labels on this page</summary>
 
-Hedron **0.24.0** packages are **Beta** maturity (API `beta` unless noted in
+Hedron **0.25.0** packages are **Beta** maturity (API `beta` unless noted in
 [STABILITY.md](../api/STABILITY.md)). Expect occasional breaking changes on
 `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
@@ -76,13 +76,13 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Alpha** | Pin `hedron[charts]`; **Matplotlib** is the conservative Supported default path; **Plotly** / **Altair** remain experimental until pins + CSP + a11y match DataTable ([CHARTS-025](../api/PRODUCTION_ARCHETYPE.md#charts-graduation-path-charts-025)) |
+| Charts | **Alpha** package (`hedron[charts]`) | Pin `hedron[charts]`; **Matplotlib** adapter path is the conservative **Supported** charts default; **Plotly** / **Altair** remain **experimental** (package Alpha ≠ Plotly Supported) until pins + CSP + a11y match DataTable ([CHARTS-025](../api/PRODUCTION_ARCHETYPE.md#charts-graduation-path-charts-025)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `hedron>=0.24.0,<0.25`. The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.25.0,<0.26`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
@@ -117,7 +117,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported with permission/retention policy |
 | BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported |
 | OIDC / session helpers + connection registry | `hedron` | Supported **helpers** (API `beta`); host auth/DI authoritative — **not** an IdP product |
-| Curated extras toolkit (install-isolated) | `hedron[extras]` | Supported for the curated toolkit surface; **not** every specialty widget |
+| Curated extras toolkit (install-isolated) | `hedron[extras]` | Supported for the curated toolkit surface; **not** CodeEditor / TerminalView / joystick / device (quarantined to `hedron[experimental-ui]`, EXTRAS-025) |
 | Dashboard bindings, patches, cross-filter, AppShell | `hedron` / `hedron-core` | Supported (API `beta`; see [what's new 0.17](whats-new-0.17.md)) |
 | Public `render_interaction` | `hedron` | Supported |
 | Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported |
@@ -138,9 +138,9 @@ guaranteed multi-worker live-transport proof.
 | Capability | Package / surface | Notes |
 |---|---|---|
 | Live interaction: SSE, streaming, WebSocket, preload | `hedron.experimental` (FastAPI) | Prefer [polling](live-interaction.md) |
-| CodeEditor | `hedron[extras]` | **Host stub** (CSP-safe shell; no pinned CodeMirror 6 bundle) — do not market as a full editor |
+| CodeEditor | `hedron[experimental-ui]` | **Host stub** (CSP-safe shell; no pinned CodeMirror 6 bundle) — experimental landmine; not part of `hedron[extras]` product UI |
 | Browser-Python sandbox | `hedron[extras]` | Origin-isolated; Experimental until you accept the isolation model |
-| TerminalView / joystick / device bridges | `hedron[extras]` | Fail-closed |
+| TerminalView / joystick / device bridges | `hedron[experimental-ui]` | Fail-closed experimental landmines (EXTRAS-025 quarantine) |
 | Native desktop shell | docs recipe | Packaging guidance only |
 | Flask / Django live helpers | adapters | Prefer polling |
 
@@ -196,7 +196,7 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.24.0,<0.25" hedron new my-app
+    uvx --from "hedron>=0.25.0,<0.26" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -204,16 +204,16 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "pip"
 
     ```bash
-    pip install "hedron>=0.24.0,<0.25" "uvicorn[standard]"
+    pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.24.0,<0.25` for the current published train.
+Pin `hedron>=0.25.0,<0.26` for the current published train.
 
-Extras: `"hedron[data]>=0.24.0,<0.25"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
-`"hedron[extras]>=0.24.0,<0.25"`, `"hedron[jinja]>=0.24.0,<0.25"`, `"hedron[dev]>=0.24.0,<0.25"`,
+Extras: `"hedron[data]>=0.25.0,<0.26"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
+`"hedron[extras]>=0.25.0,<0.26"`, `"hedron[jinja]>=0.25.0,<0.26"`, `"hedron[dev]>=0.25.0,<0.26"`,
 `"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),
 `"hedron[gradio]>=0.1.0,<0.2"` (Alpha).
 

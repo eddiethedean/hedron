@@ -1,4 +1,9 @@
-"""Curated optional extras and analysis workbenches for Hedron."""
+"""Curated optional extras and analysis workbenches for Hedron.
+
+EXTRAS-025 landmines (CodeEditor, TerminalView, Joystick, DeviceBridge) are not
+exported here — import from ``hedron_extras.experimental`` and install
+``hedron[experimental-ui]``.
+"""
 
 from __future__ import annotations
 
@@ -19,16 +24,14 @@ from hedron_extras.editors import Calendar, SignaturePad, Typeahead
 from hedron_extras.image_tools import ImageAnnotations, ImageCompare, ImageCrop, ImageRegionSelect
 from hedron_extras.recipes import AvatarProfile, BadgeLink, MetricCard, TodoList
 from hedron_extras.sandbox import BrowserPythonSandbox, SandboxBudget
-from hedron_extras.specialty import DeviceBridge, Joystick, TerminalPolicy, TerminalView
 from hedron_extras.workbench import (
     CallableActionForm,
     ChartWorkbench,
-    CodeEditor,
     DataExplorer,
     JSONEditor,
 )
 
-__version__ = "0.24.0"
+__version__ = "0.25.0"
 
 __all__ = [
     "AvatarProfile",
@@ -39,9 +42,7 @@ __all__ = [
     "ChartWorkbench",
     "ChoiceCards",
     "ChoiceOption",
-    "CodeEditor",
     "DataExplorer",
-    "DeviceBridge",
     "DiagramOutput",
     "FloatingAction",
     "FocusScrollRequest",
@@ -50,7 +51,6 @@ __all__ = [
     "ImageCrop",
     "ImageRegionSelect",
     "JSONEditor",
-    "Joystick",
     "KeyboardShortcuts",
     "LogConsole",
     "MetricCard",
@@ -59,8 +59,6 @@ __all__ = [
     "SignaturePad",
     "SplitPane",
     "Steps",
-    "TerminalPolicy",
-    "TerminalView",
     "TodoList",
     "TokenWeightedText",
     "TreeNodeProps",

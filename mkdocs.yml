@@ -273,7 +273,7 @@ nav:
         - Public API coverage map: api/COVERAGE.md
         - Stability: api/STABILITY.md
         - Beginner / stable facade (0.23): api/STABLE_FACADE.md
-        - Live-transport disposition (0.24): api/LIVE_DISPOSITION.md
+        - Production archetype (0.25): api/LIVE_DISPOSITION.md
       - Application and routing:
         - Hedron: api/HEDRON.md
         - Router: api/ROUTER.md
@@ -336,8 +336,9 @@ nav:
     - Security disclosure: SECURITY.md
     - Evidence pack: guides/evidence-pack.md
     - Public roadmap: guides/roadmap.md
-    - Upgrade to 0.24: guides/upgrade.md
+    - Upgrade to 0.25: guides/upgrade.md
     - Release notes: guides/release-notes.md
+    - What's new in 0.25: guides/whats-new-0.25.md
     - What's new in 0.24: guides/whats-new-0.24.md
     - What's new in 0.23: guides/whats-new-0.23.md
     - What's new in 0.22: guides/whats-new-0.22.md
@@ -364,7 +365,7 @@ nav:
       - Phase evidence apps (stubs): examples/phase-evidence.md
       - Simulated UI patterns: examples/gallery.md
       - Production-quality maturity: guides/production-quality.md
-      - Production archetype (0.25 Planned): api/PRODUCTION_ARCHETYPE.md
+      - Production archetype (0.25 Published): api/PRODUCTION_ARCHETYPE.md
       - Production readiness (detailed): guides/production-readiness.md
       - Design principles: guides/design-principles.md
       - Non-goals: foundations/04_NON_GOALS.md

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import Callable, Iterable, Sequence
 from contextlib import suppress
 from dataclasses import dataclass, field
@@ -102,7 +103,8 @@ def load_plugins(
     """Discover and activate plugins into a temporary contribution pass.
 
     ``enabled`` semantics:
-    - ``None``: load every discovered entry point
+    - ``None``: load every discovered entry point except ``*_experimental``
+      (unless ``HEDRON_EXPERIMENTAL_UI`` is truthy — EXTRAS-025 quarantine)
     - empty sequence: load none
     - non-empty: load only named entry points; missing names raise ``HED-PLUGIN-MISSING``
 
@@ -116,6 +118,12 @@ def load_plugins(
     panel_snapshot = dict(plugins_mod._panels)
     owner_snapshot = dict(plugins_mod._diagnostic_owners)
     feature_snapshot = dict(plugins_mod._features)
+    experimental_env = os.environ.get("HEDRON_EXPERIMENTAL_UI", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
 
     def _rollback() -> None:
         restore_registry_builder(registry_snapshot)
@@ -134,6 +142,8 @@ def load_plugins(
             name = getattr(ep, "name", None) or str(ep)
             discovered_names.append(name)
             if enabled is not None and name not in enabled:
+                continue
+            if enabled is None and not experimental_env and str(name).endswith("_experimental"):
                 continue
             try:
                 target = ep.load() if hasattr(ep, "load") else ep
@@ -154,7 +164,7 @@ def load_plugins(
                         "hedron_version specifier."
                     ),
                     remediation=(
-                        "Attach PluginMeta(..., hedron_version='>=0.24,<0.25') to the "
+                        "Attach PluginMeta(..., hedron_version='>=0.25,<0.26') to the "
                         "register entry point."
                     ),
                 )

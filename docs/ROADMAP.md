@@ -1663,9 +1663,8 @@ Zero Deferred among 0.24-owned gate rows at cut. Gate IDs and commands (packet r
 
 ## 0.25 — Production archetype and landmine quarantine (`v0.25.0`)
 
-**Status:** Planned. Part of D-053 / RFC-0056. Product/ops track after trust and stability
-packets. **Packet refine complete** — locked Verified criteria and distinct gate commands;
-cut still Planned until every 0.25-owned row is Verified.
+**Status:** Published as `v0.25.0`. Part of D-053 / RFC-0056. Product/ops track after trust and
+stability packets. **Packet refine complete**; every 0.25-owned row is **Verified**.
 
 **Outcome:** `examples/reference-app` is the canonical multi-worker production archetype;
 load/perf budgets have CI (or immutable artifact) evidence for critical paths; specialty

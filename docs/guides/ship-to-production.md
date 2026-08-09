@@ -1,9 +1,9 @@
 # Ship to production
 
-**Canonical adopter checklist** for shipping a Hedron app on the living **0.24** train.
+**Canonical adopter checklist** for shipping a Hedron app on the living **0.25** train.
 Capability maturity lives on [What’s ready](whats-ready.md).
 
-Pin `hedron>=0.24.0,<0.25` (and matching adapters/extras) in your lockfile.
+Pin `hedron>=0.25.0,<0.26` (and matching adapters/extras) in your lockfile.
 
 Deep dives (do not treat as alternate checklists):
 
