@@ -6,7 +6,7 @@ Does **not** publish or tag.
 * Default (omit ``--allow-planned``): require every evidence row ``Verified``, then
   execute Verified SSOT ``check_*.py`` commands from the manifest (cut path).
 * ``--allow-planned`` remains for lenient gate shape checks against living
-  train metadata (``0.24.0``).
+  train metadata (``0.25.0``).
 """
 
 from __future__ import annotations

@@ -20,7 +20,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | **Published** (`v0.22.0`; D-051) |
 | **0.23** | Expand `stable` API tier for narrow CRUD/admin facade (regions/`swap`, Poll/jobs, `CsrfField`/`Form`, beginner chrome, AppScenario asserts) | **Published** (`v0.23.0`; D-053) |
 | **0.24** | Live-transport production disposition (`polling_only`) | **Published** (`v0.24.0`; D-053) |
-| **0.25** | Production archetype, load budgets, extras quarantine | Planned — packet refine complete (D-053) |
+| **0.25** | Production archetype, load budgets, extras quarantine | **Published** (`v0.25.0`; D-053) |
 
 ## What this means for you
 
@@ -40,9 +40,10 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 ## Honest gaps on the current train (0.25)
 
-- Current **published** PyPI train is **0.25.x** (`v0.24.0`)
+- Current **published** PyPI train is **0.25.x** (`v0.25.0`)
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
-- Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
+- Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
+  `hedron[experimental-ui]` (quarantined from `hedron[extras]`)
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)
 - Identity helpers are **opt-in wiring** (not a managed IdP) — [Authentication](authentication.md)
 - Human screen-reader / compensated AT evaluation — protocol Verified; sessions Planned
@@ -56,8 +57,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 CSRF / SecurityPolicy composition (#36–#38) shipped in **0.22**
 ([RELEASE_0_22](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_22.md)). Human AT evaluation engineering is
 **0.21** (D-052; sessions outstanding). Stable-tier expansion shipped in **0.23**;
-live-transport disposition shipped in **0.24**; production archetype work is **0.25**
-(D-053; **packet refine complete** — [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md)).
+live-transport disposition shipped in **0.24**; production archetype shipped in **0.25**
+(D-053; **Published** `v0.25.0` — [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md)).
 
 The first-party live sample
 ([`examples/live-interaction`](https://github.com/eddiethedean/hedron/tree/main/examples/live-interaction))

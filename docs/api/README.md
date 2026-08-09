@@ -59,9 +59,9 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 
 ## Surfaces introduced in 0.19 (available on the 0.25 train)
 
-These surfaces first shipped in the 0.19 phase and remain on the living **0.24.0**
+These surfaces first shipped in the 0.19 phase and remain on the living **0.25.0**
 train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
-phases through 0.24).
+phases through 0.25).
 
 ### Application
 
@@ -100,7 +100,7 @@ phases through 0.24).
 - [Security types](SECURITY_TYPES.md)
 - [Auth](AUTH.md)
 - [Explorer](EXPLORER.md)
-- [Accessibility (`hedron_core.a11y`)](A11Y.md) — 0.19 train (published as v0.19.0; living train 0.24 Published)
+- [Accessibility (`hedron_core.a11y`)](A11Y.md) — 0.19 train (published as v0.19.0; living train 0.25 Published)
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
 - [API diagnostics](DIAGNOSTICS.md)
@@ -124,12 +124,12 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
   `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.25**
-  (**Published** as **v0.24.0**) — [A11Y API](A11Y.md),
+  (**Published** as **v0.25.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.24.0**)
+  (introduced in 0.11; Supported on **0.25.0**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.24.0**
+  — Supported on **0.25.0**
 - Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
 - Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
   narrative [What's new in 0.16](../guides/whats-new-0.16.md); package

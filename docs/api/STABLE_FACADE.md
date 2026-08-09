@@ -4,7 +4,7 @@ status: shipped
 
 # Beginner / stable facade inventory (0.23)
 
-!!! note "Facade inventory from 0.23; living train is 0.24"
+!!! note "Facade inventory from 0.23; living train is 0.25"
 
     This inventory is the **FACADE-023** artifact. Symbols listed under
     [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) remain

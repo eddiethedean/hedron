@@ -24,6 +24,8 @@ from hedron_extras import (
     Steps,
     TreeView,
 )
+
+# Import OK; browser assets still need experimental plugin enable (EXTRAS-025).
 from hedron_extras.experimental import CodeEditor
 
 app = Hedron(

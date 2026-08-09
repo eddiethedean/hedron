@@ -45,7 +45,7 @@ when evaluating a new install. Maturity Supported vs Experimental claims:
 
     Phase 0.7–0.10 baselines below describe what each phase **introduced**. They are not
     the current maturity snapshot. Live transports introduced in 0.10 are **experimental**
-    on the 0.24 train (Accepted disposition `polling_only`).
+    on the 0.25 train (Accepted disposition `polling_only`).
 
 ## Dependency pin conflicts
 

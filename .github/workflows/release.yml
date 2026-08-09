@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_tag:
-        description: "Tag to publish (e.g. v0.24.0). Required when publish_only is true."
+        description: "Tag to publish (e.g. v0.25.0). Required when publish_only is true."
         type: string
         default: ""
       publish_only:
@@ -418,6 +418,7 @@ jobs:
           echo "publish_failed=0" >> "$GITHUB_OUTPUT"
       - name: Create GitHub Release
         if: ${{ always() && !cancelled() }}
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -427,24 +428,13 @@ jobs:
           NOTES="$(uv run --python 3.11 python scripts/release_notes.py "$VERSION" --package hedron)"
           shopt -s nullglob
           artifacts=(dist/*.whl dist/*.tar.gz)
+
+          # SUPPLY-025: require wheels + SBOM/evidence before any GitHub Release create/upload
+          # so a failed evidence step never leaves an orphan tag release without SBOM.
           if ((${#artifacts[@]} == 0)); then
-            echo "No dist wheels/sdists to attach (earlier steps may have failed)." >&2
-            if gh release view "$TAG" >/dev/null 2>&1; then
-              echo "Release ${TAG} already exists; skipping create"
-            else
-              gh release create "$TAG" \
-                --title "Hedron ${VERSION}" \
-                --notes "$NOTES"
-            fi
-          elif gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release ${TAG} already exists; uploading artifacts"
-            gh release upload "$TAG" "${artifacts[@]}" --clobber
-          else
-            gh release create "$TAG" "${artifacts[@]}" \
-              --title "Hedron ${VERSION}" \
-              --notes "$NOTES"
+            echo "SUPPLY-025: no dist wheels/sdists to attach (earlier steps may have failed)" >&2
+            exit 1
           fi
-          # SUPPLY-025: fail closed — SBOM/evidence-bundle attach is required on train tags.
           if [ ! -d dist/evidence-bundle ]; then
             echo "SUPPLY-025: missing dist/evidence-bundle (required on train tags)" >&2
             exit 1
@@ -454,7 +444,16 @@ jobs:
             echo "SUPPLY-025: dist/evidence-bundle has no files to attach" >&2
             exit 1
           fi
-          gh release upload "$TAG" "${evidence_artifacts[@]}" --clobber
+
+          attach=("${artifacts[@]}" "${evidence_artifacts[@]}")
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release ${TAG} already exists; uploading wheels + evidence"
+            gh release upload "$TAG" "${attach[@]}" --clobber
+          else
+            gh release create "$TAG" "${attach[@]}" \
+              --title "Hedron ${VERSION}" \
+              --notes "$NOTES"
+          fi
       - name: Fail job if PyPI publish failed
         if: ${{ always() && !cancelled() && steps.pypi.outputs.publish_failed == '1' }}
         run: |

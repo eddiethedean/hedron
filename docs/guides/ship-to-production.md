@@ -13,7 +13,7 @@ Deep dives (do not treat as alternate checklists):
 | Security defaults, CSRF, headers | [Security](security.md) |
 | Maintainer trust program / next cut | [Production-quality maturity](production-quality.md) |
 | Detailed ops narrative | [Production readiness](production-readiness.md) |
-| Planned 0.25 archetype packet | [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) |
+| Production archetype (0.25) | [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) |
 
 ## Checklist
 

@@ -29,7 +29,7 @@ HTML forms. HTMX is introduced in
 
 | Item | Value |
 |---|---|
-| Version | **0.24.0** (Beta; **Published** — pin `hedron>=0.25.0,<0.26`) |
+| Version | **0.25.0** (Beta; **Published** — pin `hedron>=0.25.0,<0.26`) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
@@ -69,7 +69,7 @@ Full matrix: [What’s ready](whats-ready.md).
   [polling](live-interaction.md); helpers stay under `hedron.experimental`
   ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md))
 - Specialty extras (CodeEditor host stub, TerminalView, joystick, device bridges) as full
-  product UI — Experimental / stub only (next-train quarantine path —
+  product UI — Experimental / stub only (`hedron[experimental-ui]` —
   [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md))
 - Human screen-reader / compensated AT evaluation as Supported (protocol engineering is on
   the train; sessions are not done yet)

@@ -1,6 +1,6 @@
 # Phase 0.25 extras landmine quarantine XOR (machine-checked).
 # Consumed by scripts/check_extras_025.py.
-# Packet refine: undecided. Cut requires quarantine | finish_supported.
+# Cut Accepted: quarantine (landmines behind hedron[experimental-ui]).
 # Owning decision: D-053. RFC: RFC-0056.
 # Normative prose: docs/api/PRODUCTION_ARCHETYPE.md
 

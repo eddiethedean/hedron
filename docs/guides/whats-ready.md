@@ -117,7 +117,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported with permission/retention policy |
 | BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported |
 | OIDC / session helpers + connection registry | `hedron` | Supported **helpers** (API `beta`); host auth/DI authoritative — **not** an IdP product |
-| Curated extras toolkit (install-isolated) | `hedron[extras]` | Supported for the curated toolkit surface; **not** CodeEditor / TerminalView / joystick / device (quarantined to `hedron[experimental-ui]`, EXTRAS-025) |
+| Curated extras toolkit (install-isolated) | `hedron[extras]` | Supported for the curated toolkit surface; **not** CodeEditor / TerminalView / joystick / device (EXTRAS-025: registration quarantine via `hedron[experimental-ui]` + `HEDRON_EXPERIMENTAL_UI` / explicit plugin enable — landmines remain importable from `hedron_extras.experimental`) |
 | Dashboard bindings, patches, cross-filter, AppShell | `hedron` / `hedron-core` | Supported (API `beta`; see [what's new 0.17](whats-new-0.17.md)) |
 | Public `render_interaction` | `hedron` | Supported |
 | Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported |
@@ -138,9 +138,9 @@ guaranteed multi-worker live-transport proof.
 | Capability | Package / surface | Notes |
 |---|---|---|
 | Live interaction: SSE, streaming, WebSocket, preload | `hedron.experimental` (FastAPI) | Prefer [polling](live-interaction.md) |
-| CodeEditor | `hedron[experimental-ui]` | **Host stub** (CSP-safe shell; no pinned CodeMirror 6 bundle) — experimental landmine; not part of `hedron[extras]` product UI |
+| CodeEditor | `hedron[experimental-ui]` | **Host stub** (CSP-safe shell; no pinned CodeMirror 6 bundle) — experimental landmine; importable from `hedron_extras.experimental`, but default plugin registration is gated (EXTRAS-025) |
 | Browser-Python sandbox | `hedron[extras]` | Origin-isolated; Experimental until you accept the isolation model |
-| TerminalView / joystick / device bridges | `hedron[experimental-ui]` | Fail-closed experimental landmines (EXTRAS-025 quarantine) |
+| TerminalView / joystick / device bridges | `hedron[experimental-ui]` | Fail-closed experimental landmines (EXTRAS-025 registration quarantine; not import-blocked) |
 | Native desktop shell | docs recipe | Packaging guidance only |
 | Flask / Django live helpers | adapters | Prefer polling |
 

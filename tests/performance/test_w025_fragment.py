@@ -1,4 +1,8 @@
-"""BUDGET-025 / W-025-FRAGMENT — fragment latency under HTMX-sized swap load."""
+"""BUDGET-025 / W-025-FRAGMENT — fragment latency under HTMX-sized swap load.
+
+Soft CI regression ceiling only — not a published latency SLA. See
+``docs/PERFORMANCE_BUDGETS.md`` for normative wording.
+"""
 
 from __future__ import annotations
 

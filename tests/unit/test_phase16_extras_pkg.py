@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from hedron_core.plugin_loader import load_plugins
 from hedron_core.plugins import (
     get_explorer_panels,
@@ -101,6 +103,23 @@ def test_experimental_skipped_on_default_discovery() -> None:
     names = {meta.name for meta in get_registry().components()}
     assert "TreeView" in names
     assert "CodeEditor" not in names
+
+
+def test_experimental_loads_when_env_enabled(monkeypatch: pytest.MonkeyPatch) -> None:
+    """HEDRON_EXPERIMENTAL_UI=1 opts default discovery into *_experimental plugins."""
+    monkeypatch.setenv("HEDRON_EXPERIMENTAL_UI", "1")
+    load_plugins(
+        enabled=None,
+        hedron_version="0.25.0",
+        entry_points=[
+            _EP("hedron_extras", extras_register),
+            _EP("hedron_extras_experimental", experimental_register),
+        ],
+    )
+    names = {meta.name for meta in get_registry().components()}
+    assert "TreeView" in names
+    assert "CodeEditor" in names
+    assert "TerminalView" in names
 
 
 def test_core_import_isolation_without_extras_assets() -> None:

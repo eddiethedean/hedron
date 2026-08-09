@@ -10,7 +10,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Version | **0.24.0** (Beta; Published — pin for production; last published PyPI = `0.25.0`) |
+| Version | **0.25.0** (Beta; Published — pin for production) |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner |
@@ -76,7 +76,7 @@ third-party open-source software with pinned versions and your own threat model 
 
 ## Supply-chain evidence
 
-Prefer GitHub Release assets for tag **`v0.24.0`** (SBOM / license / evidence-bundle) when
+Prefer GitHub Release assets for tag **`v0.25.0`** (SBOM / license / evidence-bundle) when
 attached. If assets are missing, regenerate from the tagged checkout — see
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.
 Maintainers should attach evidence bundles on release day when publishing a train tag.

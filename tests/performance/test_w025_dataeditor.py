@@ -16,6 +16,7 @@ _EDITOR_MS = 1000
 
 
 def test_w025_dataeditor_row_model_smoke() -> None:
+    """Soft CI ceiling for rendering an 80-row DataEditor page (not a published SLA)."""
     rows = [{"id": str(i), "name": f"user-{i}", "role": "member"} for i in range(_ROWS)]
     source = InMemoryDataSource(
         rows,
@@ -35,6 +36,7 @@ def test_w025_dataeditor_row_model_smoke() -> None:
             Column(name="role"),
         ],
         key_field="id",
+        page_size=_ROWS,
     )
 
     t0 = time.perf_counter()
@@ -44,5 +46,8 @@ def test_w025_dataeditor_row_model_smoke() -> None:
 
     assert elapsed_ms <= _EDITOR_MS
     assert page.total == _ROWS
+    assert len(page.rows) == _ROWS
     assert "hedron-data-editor" in html
-    assert "user-0" in html
+    # page_size covers the full budgeted row set so render measures the claimed workload.
+    for i in range(_ROWS):
+        assert f"user-{i}" in html

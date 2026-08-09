@@ -3,7 +3,7 @@
 **App:** [`examples/reference-app`](../../../examples/reference-app/)
 **Default credentials:** `admin` / `secret` (HTTP Basic) — local demo only; replace before any
 shared deploy.
-**Train:** living Published **0.24** (human AT sessions still Planned — see [PROTOCOL.md](PROTOCOL.md)).
+**Train:** living Published **0.25** (human AT sessions still Planned — see [PROTOCOL.md](PROTOCOL.md)).
 
 ## Run
 

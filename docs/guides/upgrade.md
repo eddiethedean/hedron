@@ -40,19 +40,22 @@ Full step list: [Upgrade from 0.23 → 0.24](#upgrade-from-023-024) below.
 
 ## Upgrade from 0.23 → 0.24
 
-If you are already on **0.23.x**, pin coordinated **0.24.0** packages:
+If you are already on **0.23.x**, pin coordinated **0.24.0** packages (or jump to living
+**0.25.0**):
 
-1. Pin `hedron>=0.25.0,<0.26` (and matching `hedron-core` / adapters / extras).
+1. Pin `hedron>=0.24.0,<0.25` for a 0.24 freeze, or `hedron>=0.25.0,<0.26` for the living train
+   (and matching `hedron-core` / adapters / extras).
 2. Keep preferring [polling](live-interaction.md) for production live UX; do not treat
    `hedron.experimental` SSE/WS helpers as Supported
    ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md)).
-3. Re-run your app suite; read [What's new in 0.24](whats-new-0.24.md).
+3. Re-run your app suite; read [What's new in 0.24](whats-new-0.24.md) (and
+   [What's new in 0.25](whats-new-0.25.md) if jumping to 0.25).
 4. Human screen-reader sessions remain Planned / not Supported (carryover from 0.21).
 
-## Upgrade from 0.22 → living 0.24
+## Upgrade from 0.22 → living 0.25
 
-If you are already on **0.22.x**, pin coordinated **0.24.0** packages (living train includes
-0.23 stable-tier expansion):
+If you are already on **0.22.x**, pin coordinated **0.25.0** packages (living train includes
+0.23 stable-tier expansion and 0.24 polling disposition):
 
 1. Pin `hedron>=0.25.0,<0.26` (and matching `hedron-core` / adapters / extras).
 2. Treat the locked Beginner/CRUD facade as compatibility-protected `stable`
@@ -63,9 +66,9 @@ If you are already on **0.22.x**, pin coordinated **0.24.0** packages (living tr
    [What's new in 0.24](whats-new-0.24.md).
 5. Human screen-reader sessions remain Planned / not Supported (carryover from 0.21).
 
-## Upgrade from 0.21 → living 0.24
+## Upgrade from 0.21 → living 0.25
 
-If you are already on **0.21.x**, pin coordinated **0.24.0** packages, then continue:
+If you are already on **0.21.x**, pin coordinated **0.25.0** packages, then continue:
 
 1. Pin `hedron>=0.25.0,<0.26` (and matching `hedron-core` / adapters / extras).
 2. Prefer `CsrfField` / `Form(hx=Hx(...))` over manual hidden inputs and stringly `hx-*`
@@ -78,7 +81,7 @@ If you are already on **0.21.x**, pin coordinated **0.24.0** packages, then cont
 
 ## Upgrade from 0.20 → 0.21
 
-If you are already on **0.20.x**, pin coordinated **0.24.0** packages, then continue:
+If you are already on **0.20.x**, pin coordinated **0.25.0** packages, then continue:
 
 1. Pin `hedron>=0.25.0,<0.26` first (or jump directly to `>=0.25.0,<0.26`).
 2. Prefer `@action(..., fragment_regions=…)` (or `@component` POST) whenever HTMX sends
@@ -89,7 +92,7 @@ If you are already on **0.20.x**, pin coordinated **0.24.0** packages, then cont
 
 ## Upgrade from 0.18 / 0.19 → 0.20
 
-If you are already on **0.18.x** or **0.19.x**, pin coordinated **0.24.0** packages, then
+If you are already on **0.18.x** or **0.19.x**, pin coordinated **0.25.0** packages, then
 continue:
 
 1. Pin `hedron>=0.25.0,<0.26` (and matching `hedron-core` / adapters / extras).
@@ -120,18 +123,19 @@ If you are already on **0.17.x**, pin coordinated **0.18.0** packages and adopt 
 
 Skip older archaeology unless you are still on a pre-0.17 line. The sections below are
 kept for migrators from 0.8–0.16 (including HDN); current adopters can stop after
-upgrading through **0.23 → 0.24** (`hedron>=0.25.0,<0.26`).
+upgrading through **0.24 → 0.25** (`hedron>=0.25.0,<0.26`).
 
 ---
 
 Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should upgrade through
 **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** /
-**0.16** / **0.17** / **0.18** / **0.19** / **0.20** / **0.21** / **0.22** / **0.23** to **0.24.0**
+**0.16** / **0.17** / **0.18** / **0.19** / **0.20** / **0.21** / **0.22** / **0.23** /
+**0.24** to **0.25.0**
 (`hedron>=0.25.0,<0.26`).
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9**–**0.23** to **0.24.0**.
+upgrade through **0.9**–**0.24** to **0.25.0**.
 
 ## What changed in 0.8
 

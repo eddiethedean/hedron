@@ -3,7 +3,11 @@
 #   uv run uvicorn app:app --app-dir examples/reference-app
 #
 # Full stack (reverse-proxy subpath + Redis + multi-worker):
+#   export HEDRON_SESSION_SECRET="$(openssl rand -hex 32)"
+#   export HEDRON_ALLOW_DEMO_AUTH=1   # sample Basic auth only — replace before shared deploy
 #   docker compose --profile full up --build
+#
+# HEDRON_SESSION_SECRET is required (no weak default — production_gate refuses "change-me").
 services:
   redis:
     image: redis:7-alpine
@@ -32,8 +36,11 @@ services:
       HEDRON_ENV: production
       HEDRON_REDIS_URL: redis://redis:6379/0
       HEDRON_ROOT_PATH: /hedron
-      # Replace before any shared deploy — refuse weak/placeholder secrets in production.
-      HEDRON_SESSION_SECRET: ${HEDRON_SESSION_SECRET:-change-me-reference-app-production-secret}
+      FORWARDED_ALLOW_IPS: proxy
+      # Required — must not contain "change-me" / "replace-in-production".
+      HEDRON_SESSION_SECRET: ${HEDRON_SESSION_SECRET:?Set HEDRON_SESSION_SECRET to a strong secret}
+      # Sample HTTP Basic (admin/secret) — set only for this demo stack; remove for real deploys.
+      HEDRON_ALLOW_DEMO_AUTH: ${HEDRON_ALLOW_DEMO_AUTH:-1}
     ports:
       - "8000:8000"
     profiles: ["full"]

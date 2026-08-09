@@ -11,7 +11,7 @@ Budgets are soft CI ceilings sized for GitHub-hosted runners. They catch gross r
 they are not marketing latency claims. Measure with `tests/performance/`.
 
 Live SSE/WebSocket load/proxy backpressure IDs (`PERF-10-001` and related) were
-**Superseded** in **0.25** under disposition `polling_only` — prefer
+**Superseded** in **0.24** under disposition `polling_only` — prefer
 [polling](guides/live-interaction.md) in production. See
 [What’s ready](guides/whats-ready.md), [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md), and
 [Performance guide](guides/performance.md).

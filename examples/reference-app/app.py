@@ -186,6 +186,25 @@ def require_user(
     request: Request,
     credentials: Annotated[HTTPBasicCredentials | None, Depends(security)],
 ) -> str:
+    import os
+
+    from hedron_core.compile_gate import is_production_env
+
+    # Demo HTTP Basic (admin/secret) is for local/tests. Production compose must set
+    # HEDRON_ALLOW_DEMO_AUTH=1 explicitly; shared deploys should replace this auth.
+    if is_production_env() and os.environ.get("HEDRON_ALLOW_DEMO_AUTH", "").strip() not in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=(
+                "Demo HTTP Basic auth is disabled under HEDRON_ENV=production. "
+                "Set HEDRON_ALLOW_DEMO_AUTH=1 only for the sample stack, or replace auth."
+            ),
+        )
     if credentials is None or USERS.get(credentials.username) != credentials.password:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -985,7 +1004,13 @@ def mount_phase05_routes(app: FastAPI) -> None:
 
 
 def build_plain_fastapi_app() -> FastAPI:
-    """Plain FastAPI + HedronRouter mode (no Hedron subclass)."""
+    """Plain FastAPI + HedronRouter mode (no Hedron subclass).
+
+    Honors the same ARCHETYPE-025 production posture as ``build_hedron_app`` when
+    ``HEDRON_ENV=production`` (Redis backends, strong session secret, strict CSP).
+    """
+    import os
+
     from starlette.middleware.sessions import SessionMiddleware
 
     import hedron_core
@@ -995,14 +1020,36 @@ def build_plain_fastapi_app() -> FastAPI:
     from hedron.security.headers import SecurityHeadersMiddleware
     from hedron.security.policy import SecurityPolicy
     from hedron_core import reset_registry_for_tests
+    from hedron_core.compile_gate import is_production_env
+    from hedron_core.production_gate import assert_production_security_config
 
     reset_registry_for_tests()
     hedron_core._register_builtins()  # type: ignore[attr-defined]
+    _configure_redis_backends()
 
-    policy = SecurityPolicy.from_name("standard")
+    production = is_production_env()
+    session_secret = os.environ.get("HEDRON_SESSION_SECRET", "").strip()
+    if not session_secret:
+        if production:
+            raise RuntimeError(
+                "HEDRON_SESSION_SECRET is required under HEDRON_ENV=production "
+                "(ARCHETYPE-025). Do not use placeholder secrets."
+            )
+        session_secret = "reference-app-secret"
+
+    policy = SecurityPolicy.from_name("strict" if production else "standard")
+    if production:
+        assert_production_security_config(
+            session_secret=session_secret,
+            security_profile=policy.profile.value,
+            explorer_mode="off",
+            allow_external_redirects=policy.allow_external_redirects,
+            content_security_policy=policy.content_security_policy,
+        )
+
     app = FastAPI(title="Hedron Team Admin (plain)", lifespan=compose_lifespan())
     app.state.hedron_security = policy
-    app.add_middleware(SessionMiddleware, secret_key="reference-app-secret")
+    app.add_middleware(SessionMiddleware, secret_key=session_secret)
     app.add_middleware(SecurityHeadersMiddleware, policy=policy)
     install_openapi(app)
     mount_hedron_static(app)
@@ -1015,8 +1062,8 @@ def build_plain_fastapi_app() -> FastAPI:
         username: Annotated[str, Depends(require_user)],
         store: Annotated[Store, Depends(get_store)],
     ) -> Page:
-        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("standard"))
-        token = csrf_token_for_request(request, policy)
+        active = getattr(request.app.state, "hedron_security", policy)
+        token = csrf_token_for_request(request, active)
         return dashboard_page(
             csrf_token=token,
             username=username,
@@ -1040,8 +1087,8 @@ def build_plain_fastapi_app() -> FastAPI:
         user = store.users.get(user_id)
         if user is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-        policy = getattr(request.app.state, "hedron_security", SecurityPolicy.from_name("standard"))
-        token = csrf_token_for_request(request, policy)
+        active = getattr(request.app.state, "hedron_security", policy)
+        token = csrf_token_for_request(request, active)
         return edit_user_page(user=user, csrf_token=token, username=username)
 
     @users.action("", method="POST", fragment_regions=USER_TABLE_REGION)
@@ -1060,10 +1107,8 @@ def build_plain_fastapi_app() -> FastAPI:
         if isinstance(parsed, str):
             if is_htmx_request(request):
                 return _htmx_user_form_error(parsed)
-            policy = getattr(
-                request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
-            )
-            token = csrf_token_for_request(request, policy)
+            active = getattr(request.app.state, "hedron_security", policy)
+            token = csrf_token_for_request(request, active)
             return dashboard_page(
                 csrf_token=token,
                 username=username,
@@ -1096,10 +1141,8 @@ def build_plain_fastapi_app() -> FastAPI:
         if isinstance(parsed, str):
             if is_htmx_request(request):
                 return _htmx_user_form_error(parsed)
-            policy = getattr(
-                request.app.state, "hedron_security", SecurityPolicy.from_name("standard")
-            )
-            token = csrf_token_for_request(request, policy)
+            active = getattr(request.app.state, "hedron_security", policy)
+            token = csrf_token_for_request(request, active)
             return edit_user_page(
                 user=user,
                 csrf_token=token,

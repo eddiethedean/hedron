@@ -2,14 +2,18 @@
 
 Curated optional extras and analysis workbenches for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.24.0` · pin `>=0.25.0,<0.26`  
+**Package maturity:** Beta · **Train:** `0.25.0` · pin `>=0.25.0,<0.26`  
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`  
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 
 Composition / workbench surfaces are Beta. Specialty sandbox remains Experimental.
-**EXTRAS-025 quarantine:** `CodeEditor`, `TerminalView`, joystick, and device bridges live
-behind **`hedron[experimental-ui]`** (import `hedron_extras.experimental`) — they are **not**
-part of the curated `hedron[extras]` product UI.
+**EXTRAS-025 quarantine** is **registration/discovery gated**, not import-gated:
+`CodeEditor`, `TerminalView`, joystick, and device bridges remain importable from
+`hedron_extras.experimental` (and older `workbench` / `specialty` paths where present), but
+**default plugin registration** skips `hedron_extras_experimental` unless you install
+**`hedron[experimental-ui]`** (honesty/pin signal — the extra itself does not block imports)
+and set ``HEDRON_EXPERIMENTAL_UI=1`` or explicitly enable the experimental plugin. They are
+**not** part of the curated `hedron[extras]` product UI.
 
 ## Install
 
@@ -35,7 +39,7 @@ cost.
 | `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Alpha) |
 | `image_tools` / `calendar` / `signature` / `typeahead` | UI tools |
 | `sandbox` | Experimental browser-Python sandbox |
-| `experimental-ui` | Quarantined landmines: CodeEditor / TerminalView / joystick / device |
+| `experimental-ui` | Honesty/pin signal for quarantined landmines (CodeEditor / TerminalView / joystick / device). Real gates: env + plugin enable; does **not** block Python imports. |
 | `all` | `hedron-data` + `hedron-charts` |
 
 ## When to use

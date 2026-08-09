@@ -141,15 +141,28 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 - Compatibility / deprecation: [COMPATIBILITY.md](docs/COMPATIBILITY.md).
 - Upgrade: [guides/upgrade.md](docs/guides/upgrade.md).
 
-## Next capability phases
+## Phase 0.25 evidence
 
-**0.25** — Production archetype, load budgets, extras quarantine (D-053) — **Published**.
-**Packet refine complete** — locked gate commands; all `*-025` rows still **Planned**.
+All `*-025` capability gates are **Verified** on the Published `v0.25.0` train:
+
+| Gate | Disposition |
+|---|---|
+| `ARCHETYPE-025` | Verified — `examples/reference-app` production archetype |
+| `BUDGET-025` | Verified — `W-025-*` soft CI budgets |
+| `EXTRAS-025` | Verified — quarantine via `hedron[experimental-ui]` + discovery gates |
+| `CHARTS-025` | Verified — Matplotlib Supported default; Plotly/Altair path documented |
+| `SUPPLY-025` | Verified — atomic SBOM/evidence attach on train tags |
+| `REGRESS-025` / `PKG-025` | Verified — suite + `verify_pkg_25.py` |
+
 SSOT: [PRODUCTION_ARCHETYPE](docs/api/PRODUCTION_ARCHETYPE.md) ·
 [RELEASE_0_25](docs/acceptance/RELEASE_0_25.md) ·
 [release-gate-0.25.toml](docs/acceptance/release-gate-0.25.toml).
 Cut verify: `python scripts/verify_pkg_25.py`.
 Program summary: [production-quality guide](docs/guides/production-quality.md).
 
-Optional later: external security review + SBOM attach on every train tag; undated written
-`1.0` definition of done (D-053 P3) — no scheduled calendar `1.0`.
+## Next capability phases
+
+Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
+**Planned** until compensated screen-reader evidence lands. Optional later (D-053 P3):
+external security review cadence; undated written `1.0` definition of done — no scheduled
+calendar `1.0`.

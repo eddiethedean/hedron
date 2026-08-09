@@ -1143,7 +1143,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.24** (`v0.24.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.25** (`v0.25.0`).
 See [STATUS](STATUS.md) and
 [release-gate-0.19.toml](acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -1663,14 +1663,15 @@ Zero Deferred among 0.24-owned gate rows at cut. Gate IDs and commands (packet r
 
 ## 0.25 — Production archetype and landmine quarantine (`v0.25.0`)
 
-**Status:** Published as `v0.25.0`. Part of D-053 / RFC-0056. Product/ops track after trust and
-stability packets. **Packet refine complete**; every 0.25-owned row is **Verified**.
+**Status:** **Published** as `v0.25.0`. Part of D-053 / RFC-0056. Product/ops track after trust and
+stability packets. Cut Accepted extras disposition **`quarantine`**; every 0.25-owned row is
+**Verified**.
 
 **Outcome:** `examples/reference-app` is the canonical multi-worker production archetype;
 load/perf budgets have CI (or immutable artifact) evidence for critical paths; specialty
-extras landmines are quarantined or finished; Matplotlib remains the conservative charts
-default with a written graduation path for Plotly/Altair; RELEASE requires SBOM/evidence
-attach on train tags.
+extras landmines are quarantined behind `hedron[experimental-ui]`; Matplotlib remains the
+conservative charts default with a written graduation path for Plotly/Altair; RELEASE requires
+SBOM/evidence attach on train tags.
 
 Packet SSOT: [PRODUCTION_ARCHETYPE.md](api/PRODUCTION_ARCHETYPE.md) ·
 [extras-quarantine-025.toml](acceptance/extras-quarantine-025.toml) ·
@@ -1687,7 +1688,7 @@ Machine value in `docs/acceptance/extras-quarantine-025.toml`:
 | `finish_supported` | Reach Supported with evidence for those landmines |
 
 Cut requires exactly one of `quarantine` | `finish_supported`. Do not half-verify both paths.
-Packet refine leaves the value `undecided`.
+**Cut Accepted `quarantine`.**
 
 ### Locked Verified criteria (per gate)
 
@@ -1702,21 +1703,21 @@ Packet refine leaves the value `undecided`.
 
 ### Scope (locked gate commands)
 
-Zero Deferred among 0.25-owned gate rows at cut. Gate IDs and commands (packet refine locked):
+Zero Deferred among 0.25-owned gate rows at cut. Gate IDs and commands (cut Verified):
 
 - **`ARCHETYPE-025`** — `python scripts/check_archetype_025.py` — SSOT + ingredient checklist;
-  refine uses `--allow-draft`; cut omits the flag when docs and guide links are complete.
+  cut omits `--allow-draft` when docs and guide links are complete.
 - **`BUDGET-025`** — `python scripts/check_budget_025.py` — three §0.25 workloads named;
-  refine uses `--allow-planned`; cut requires CI or immutable evidence paths.
-- **`EXTRAS-025`** — `python scripts/check_extras_025.py` — schema + XOR; refine uses
-  `--allow-undecided`; cut requires `quarantine` or `finish_supported` and SSOT agreement.
+  cut requires CI or immutable evidence paths.
+- **`EXTRAS-025`** — `python scripts/check_extras_025.py` — schema + XOR; cut requires
+  `quarantine` or `finish_supported` and SSOT agreement (**Accepted `quarantine`**).
 - **`CHARTS-025`** — `python scripts/check_charts_025.py` — Matplotlib-default + Plotly/Altair
   experimental honesty + graduation checklist.
 - **`SUPPLY-025`** — `python scripts/check_supply_025.py` — RELEASE runbook SBOM/evidence
   attach requirement.
 - **`REGRESS-025`** — `bash scripts/ci_checks.sh test --python 3.12` at cut.
 - **`PKG-025`** — `python scripts/verify_pkg_25.py` (gate checker without `--allow-planned` at
-  cut; living train for refine is `0.24.0`).
+  cut; living train is `0.25.0`).
 
 ### Out of 0.25
 
@@ -1735,7 +1736,7 @@ Zero Deferred among 0.25-owned gate rows at cut. Gate IDs and commands (packet r
 - Turning reference-app into a hosted SaaS or managed IdP.
 - SLSA commercial attestation claims.
 - Finishing every specialty widget in one cut when quarantine satisfies `EXTRAS-025`.
-- Choosing `quarantine` vs `finish_supported` during packet refine (cut decides).
+- Re-opening the `quarantine` vs `finish_supported` XOR after cut Accepted `quarantine`.
 - Promoting Plotly/Altair to Supported without DataTable-bar evidence.
 
 ### Exit gate
@@ -1939,7 +1940,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.22 | Packet refined (`CSRF-022` / `HEADERS-022` / `FORM-022`); FastAPI composition for apps that own sessions/CSP; depends on 0.20 `CSP-020` ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
 | Expand minimal `stable` API tier for Supported CRUD/HTMX/jobs + Beginner facade inventory | 0.23 | D-053 / RFC-0056; does not promote Alpha extras or live transports. |
 | Live-transport production disposition (`polling_only` Accepted) | 0.24 | **Published** `v0.24.0`; supersedes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056) — [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md). |
-| Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | D-053 / RFC-0056; **packet refine complete**; SBOM/evidence attach on train tags. |
+| Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | **Published** `v0.25.0`; D-053 / RFC-0056; SBOM/evidence attach on train tags — [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). |
 | Optional written `1.0` DoD without a calendar date | D-053 | Not a roadmap phase; preserves D-038. |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 

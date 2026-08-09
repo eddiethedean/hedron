@@ -2,10 +2,26 @@
 
 Annotated tour of
 [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)—
-the FastAPI flagship CRUD sample on the **0.24.0** train.
+the FastAPI flagship CRUD sample and canonical multi-worker production archetype
+(`ARCHETYPE-025`) on the living **0.25** train (**Published** `v0.25.0`).
+
+Packet SSOT: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README:
+[`examples/reference-app/README.md`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/README.md).
 
 Click through the core patterns below (docs simulations — no live server), then run the
-full app locally.
+full app locally or via production compose.
+
+## Ingredient checklist (ARCHETYPE-025)
+
+| Ingredient | How this app covers it |
+|---|---|
+| reverse-proxy subpath | Caddy `handle_path /hedron/*` + `HEDRON_ROOT_PATH=/hedron` |
+| Redis job/cache | `HEDRON_REDIS_URL` wires `RedisJobBackend` + `RedisCacheBackend` (requires the `redis` package — see `requirements-prod.txt`) |
+| sticky sessions or external session store | Signed cookie sessions/CSRF (default external path); optional Caddy sticky noted in `Caddyfile` |
+| `HEDRON_ENV=production` | Set in compose + Dockerfile; refuses placeholder / `change-me` secrets |
+| CSP | `security="strict"` + `[tool.hedron.asset_policy] strict_csp = true` |
+| Explorer off | `explorer="off"` when `HEDRON_ENV=production` |
+| multi-worker | uvicorn `--workers 2` + Redis-backed job/cache |
 
 ## Auth gate (simulated)
 
@@ -332,7 +348,7 @@ Dashboard chart routes return `InteractionResult` fragments:
         )
     ```
 
-## Run
+## Run (local demo)
 
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
@@ -341,7 +357,25 @@ uv sync
 uv run uvicorn app:app --app-dir examples/reference-app --reload
 ```
 
-Sign in with HTTP Basic: **`admin` / `secret`**.
+Sign in with HTTP Basic: **`admin` / `secret`**. Local/demo mode keeps Explorer in
+`development` and uses an in-memory demo secret — replace before any shared deploy.
+
+## Production compose (canonical archetype)
+
+```bash
+export HEDRON_SESSION_SECRET="$(openssl rand -hex 32)"   # required — no weak default
+export HEDRON_ALLOW_DEMO_AUTH=1                          # sample Basic auth only
+docker compose --profile full up --build
+# App via proxy: http://localhost:8080/hedron/
+```
+
+Compose requires `HEDRON_SESSION_SECRET` (production gate refuses secrets containing
+`change-me`). Demo HTTP Basic is gated behind `HEDRON_ALLOW_DEMO_AUTH=1`. Redis client +
+uvicorn are installed in the image; for non-Docker prod installs use
+[`requirements-prod.txt`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/requirements-prod.txt).
+Prefer this path when validating production posture —
+[Ship to production](../guides/ship-to-production.md) ·
+[Deployment](../guides/deployment.md).
 
 ## What the app demonstrates
 
@@ -354,6 +388,7 @@ Sign in with HTTP Basic: **`admin` / `secret`**.
 | Fragment table refresh | `@users.component("/table")`, addressable `user_table` | Fragment list refresh |
 | DataEditor / Auto / charts | dashboard sections and `/charts/*` routes | Chart panel refresh |
 | Color mode | `ColorModeToggle` + preference cookie helpers | — |
+| Production archetype | compose + `requirements-prod.txt` + README ingredient table | — |
 
 ## Suggested reading order in the code
 
@@ -370,3 +405,4 @@ Sign in with HTTP Basic: **`admin` / `secret`**.
 - [HTMX interactions](../guides/htmx-interactions.md)
 - [Charts and HTMX](../guides/charts-and-htmx.md)
 - [Plain FastAPI + HedronRouter](../guides/plain-fastapi.md)
+- [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md)

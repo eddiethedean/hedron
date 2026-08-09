@@ -76,10 +76,14 @@ bridges. Cut disposition: **`quarantine`**.
 | `quarantine` | Move landmines behind a clearly named experimental extra so `hedron[extras]` does not imply product UI |
 | `finish_supported` | Reach Supported with evidence for those surfaces |
 
-**Chosen path:** `quarantine` via **`hedron[experimental-ui]`**. Install that extra and either set
-`HEDRON_EXPERIMENTAL_UI=1` or enable the `hedron_extras_experimental` plugin. Import landmines from
-`hedron_extras.experimental`. Curated **`hedron[extras]`** remains the product toolkit and does
-**not** register or re-export those surfaces.
+**Chosen path:** `quarantine` via **`hedron[experimental-ui]`**. Quarantine is
+**registration/discovery gated**, not import-gated: landmines remain importable from
+`hedron_extras.experimental` (and related workbench/specialty modules), but **default plugin
+registration** skips `*_experimental` entry points unless you set `HEDRON_EXPERIMENTAL_UI=1`
+or explicitly enable `hedron_extras_experimental`. The named extra is an honesty/pin signal
+(install footprint for adopters who opt in); it does not enforce import blocking. Curated
+**`hedron[extras]`** remains the product toolkit and does **not** register or re-export those
+surfaces.
 
 Do not half-verify both. Normative criteria:
 [ROADMAP §0.25](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md)

@@ -1,0 +1,5 @@
+# Production archetype runtime extras (ARCHETYPE-025).
+# Install when deploying with HEDRON_REDIS_URL / multi-worker compose:
+#   uv pip install -r examples/reference-app/requirements-prod.txt
+redis>=5,<6
+uvicorn>=0.30
