@@ -1516,40 +1516,77 @@ Zero Deferred among 0.22-owned gate rows at cut. Gate IDs:
 ## 0.23 — Stable-tier expansion for Supported CRUD/admin (`v0.23.0`)
 
 **Status:** Planned. Part of the production-quality maturity program (**D-053** /
-[RFC-0056](docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)). Depends on 0.21/0.22 progressing far enough
-that promotions target contracts that remain Supported after those packets; may refine after
-Published 0.22 but must not claim 0.21 human AT as API-stable evidence.
+[RFC-0056](docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)). Depends on Published **0.22**; must not
+claim 0.21 human AT as API-stable evidence. **Packet refine complete** (locked allowlist +
+distinct gate commands below) — implementation cut still Planned until every gate is
+`Verified`.
 
 **Outcome:** The compatibility-protected `stable` tier in
-[STABILITY.md](docs/api/STABILITY.md) covers the Supported CRUD/admin happy path (beginner facade,
-regions/`swap`, Poll/job status helpers, security profile names, and related testing helpers)
-so Beta package maturity no longer implies unconstrained churn on the primary ship surface.
+[STABILITY.md](docs/api/STABILITY.md) covers a **narrow curated** Supported CRUD/admin happy path
+(beginner facade, regions/`swap`, Poll/job status helpers, security profile ergonomics /
+`CsrfField`+`Form`+`Hx`, and related testing helpers) so Beta package maturity no longer
+implies unconstrained churn on that primary ship surface. This is **API compatibility
+protection**, not a new feature phase and not “every What’s ready Supported row.”
+
+Inventory / facade SSOT for Beginner imports: [STABLE_FACADE.md](docs/api/STABLE_FACADE.md).
+Expanded tier draft: [STABILITY.md](docs/api/STABILITY.md#expanded-stable-tier-023).
+
+### Locked promotion catalog (`STABLE-023`)
+
+Promote **additively** into the stable table (keep the existing minimal tier). Symbols are
+capability-Supported today; 0.23 makes them compatibility-protected.
+
+| Bucket | Symbols / contracts | Package / import |
+|---|---|---|
+| HTMX / regions | `Hedron.region`, `Hedron.fragment`; `FragmentRegion` + router `fragment_regions=`; `swap`, `swap_oob`, `retarget`, `redirect_htmx` | `hedron` |
+| Jobs (polling only) | `Poll`; `enqueue_durable`, `job_status_response`; `JobBackend`, `JobStatus`, `JobHandle`, `JobState`, `set_job_backend`, `get_job_backend` | `hedron` / `hedron.jobs` / `hedron_core.jobs` |
+| Security / forms | `SecurityPolicy`, `SecurityPolicy.from_name`, profile names `development` / `standard` / `strict`; `SecurityHeadersPolicy`; `CsrfField`, `Form`, `Hx`; `DoubleSubmitCookieCsrf`, `SessionTokenCsrf`, `CsrfStrategy` | `hedron` / `hedron-core` |
+| Beginner built-ins | `Stack`, `TextInput`, `TextArea`, `SubmitButton`, `RefreshButton`, `FormErrors`, `FormField`, `Label` | `hedron` |
+| Testing | `AppScenario`; `assert_page_document`, `assert_fragment_body`, `assert_htmx_trigger`, `assert_hx_retarget`, `assert_oob_present`, `assert_hx_push_url`, `assert_hx_redirect`, `assert_hx_reswap` | `hedron.testing` |
+
+Already-stable CSRF token helpers, interaction types, `Hedron` / routers, adapter respond
+helpers, and portable adapter fixtures remain stable (no change).
+
+### Out of 0.23 (stay `beta` / `experimental`)
+
+| Surface | Why |
+|---|---|
+| `hedron.experimental` live helpers (`job_status_sse_response`, SSE/WS/stream/preload) | Owned by **0.24** |
+| Alpha charts / notebook / MCP / Gradio / `hedron-native` | Non-goal; not root-stable |
+| `hedron[data]` / DataEditor, extras toolkit, OIDC product surface | Supported capability OK; not CRUD facade-stable in 0.23 |
+| Dialog / Tabs / Pagination / Lazy, Map / media / capture, BrowserStorage | Broader Supported chrome — remain `beta` |
+| Dashboard / inference / workflows / InteractionRecorder | Supported capability; API stays `beta` |
+| HDJ / Explorer / conformance kit | Optional / dev surfaces |
 
 ### Scope
 
-Zero Deferred among 0.23-owned gate rows at cut. Gate IDs (packet refine may adjust commands):
+Zero Deferred among 0.23-owned gate rows at cut. Gate IDs and commands (packet refine locked):
 
-- **`STABLE-023`** — Expand the minimal `stable` table for Supported CRUD/HTMX/jobs symbols
-  already labeled Supported on [What’s ready](docs/guides/whats-ready.md); document migration rules
-  for any boundary adjustments.
-- **`FACADE-023`** — Publish an explicit Beginner/Stable facade inventory; keep Alpha extras
-  off root `hedron` imports and out of the stable facade.
-- **`INVENTORY-023`** — `scripts/check_stability_inventory.py` and STABILITY catalog agree on
-  promotions (`FRZ-001` still green).
-- **`REGRESS-023`** — Full regression suite at cut.
-- **`PKG-023`** — Coordinated package/docs verify at cut.
+- **`STABLE-023`** — `python scripts/check_stable_tier_023.py` — STABILITY expanded-tier
+  section matches the locked allowlist; migration notes for boundary adjustments.
+- **`FACADE-023`** — `python scripts/check_stable_facade.py` — [STABLE_FACADE.md](docs/api/STABLE_FACADE.md)
+  Beginner inventory importable; Alpha / experimental names denied.
+- **`INVENTORY-023`** — `python scripts/check_stability_inventory.py` (`FRZ-001` still green).
+- **`REGRESS-023`** — `bash scripts/ci_checks.sh test --python 3.12` at cut.
+- **`PKG-023`** — `python scripts/verify_pkg_23.py` at cut (packages at `0.23.0`,
+  gate checker without `--allow-planned`, focused facade/tier checks). Until cut:
+  `python scripts/verify_pkg_23.py --allow-planned` (living-train metadata + lenient
+  0.23 evidence).
 
 ### Non-goals
 
 - Promoting Alpha charts/notebook/MCP/Gradio or experimental live transports to `stable`.
 - Declaring package maturity GA or scheduling `1.0` (D-038 / D-053 optional DoD only).
-- Absorbing CSRF composition (0.22) or live ops disposition (0.24).
+- Re-implementing CSRF composition (0.22) — **promote** selected symbols only.
+- Absorbing live ops disposition (0.24) or archetype/landmines (0.25).
+- Promoting every What’s ready Supported row into `stable`.
 
 ### Exit gate
 
 - Every 0.23-owned release-gate row is `Verified`
   ([release-gate-0.23.toml](docs/acceptance/release-gate-0.23.toml)).
-- Public docs (What’s ready, STABILITY, production-quality) agree on the expanded tier.
+- Public docs (What’s ready, STABILITY, STABLE_FACADE, production-quality) agree on the
+  expanded tier.
 
 ## 0.24 — Live-transport production disposition (`v0.24.0`)
 

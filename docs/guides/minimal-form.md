@@ -16,16 +16,13 @@ note, then `redirect_local("/")` reloads the page so the count increments. CSRF 
 
 === "Demo"
 
-    Classic POST — save increments the notes count, then returns you to the form.
-    Docs simulation.
+    Classic POST — confirmation replaces the notes region. Docs simulation.
 
     <!-- hedron-sim:minimal-form -->
 
 === "Code"
 
-    Standalone runnable `app.py` (real Hedron, not the docs simulator). Prefer the
-    scaffold delta below if you already ran `hedron new` + the HTMX guide — do **not**
-    paste this file over that app without merging regions.
+    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
 
     ```python title="app.py"
     import os

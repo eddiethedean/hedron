@@ -71,7 +71,8 @@ Full matrix: [What’s ready](whats-ready.md).
   product UI — Experimental / stub only (quarantine path **0.25**)
 - Human screen-reader / compensated AT evaluation (owned by **0.21**, D-052: protocol Verified;
   sessions Planned — not Supported)
-- Expanded compatibility-protected `stable` tier beyond the minimal table (owned by **0.23**)
+- Expanded compatibility-protected `stable` tier beyond the minimal table (owned by
+  **0.23**; packet refine locked a narrow CRUD facade — [STABLE_FACADE](../api/STABLE_FACADE.md))
 
 ## When Hedron is a poor fit
 

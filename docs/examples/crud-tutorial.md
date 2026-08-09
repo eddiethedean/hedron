@@ -27,9 +27,22 @@ Warm up with the two prerequisite patterns (docs simulations — no server):
     ```python title="app.py"
     import os
 
-    from fastapi import Form, Request
+    from fastapi import Form as FastAPIForm
 
-    from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, csrf_token_for_request, html
+    from hedron import (
+        CsrfField,
+        Form,
+        Hedron,
+        Page,
+        RefreshButton,
+        Stack,
+        SubmitButton,
+        Text,
+        TextInput,
+        html,
+        redirect_local,
+        swap,
+    )
 
     app = Hedron(
         title="Notes",
@@ -38,19 +51,30 @@ Warm up with the two prerequisite patterns (docs simulations — no server):
         session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
     )
 
+    notes_region = app.region("notes-count", description="Notes counter")
+    _NOTES: list[str] = []
 
-    def _csrf(request: Request) -> str:
-        return csrf_token_for_request(request, request.app.state.hedron_security)
+
+    def notes_panel():
+        return html.div(
+            Text(f"Notes saved: {len(_NOTES)}"),
+            id=notes_region.id,
+            role="status",
+            aria={"live": "polite"},
+        )
 
 
     @app.page("/")
-    def notes(request: Request) -> Page:
-        token = _csrf(request)
+    def home() -> Page:
         return Page(
             Stack(
+                notes_panel(),
+                RefreshButton.for_region(
+                    notes_region, href="/notes-count", label="Refresh notes count"
+                ),
                 Text("Leave a note"),
-                html.form(
-                    html.input(type="hidden", name="csrf_token", value=token),
+                Form(
+                    CsrfField(),
                     TextInput("note", value="Ship the docs demo", required=True),
                     SubmitButton("Save"),
                     action="/save",
@@ -61,9 +85,17 @@ Warm up with the two prerequisite patterns (docs simulations — no server):
         )
 
 
+    @app.fragment("/notes-count", region=notes_region)
+    def refresh_notes_count():
+        return swap(notes_panel())
+
+
     @app.action("/save", method="POST")
-    def save(note: str = Form(...)) -> Page:
-        return Page(Text(f"Saved: {note}"), title="Saved")
+    def save(note: str = FastAPIForm(...)):
+        text = note.strip()
+        if text:
+            _NOTES.append(text)
+        return redirect_local("/")
     ```
 
 ### Try HTMX mutation (simulated)

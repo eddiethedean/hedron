@@ -19,7 +19,10 @@ checklist in [Production readiness](production-readiness.md).
 
 Raise production-level quality as **trust in the Supported surface**:
 
-- Expand the compatibility-protected (`stable`) API tier for Supported CRUD/HTMX/jobs
+- Expand the compatibility-protected (`stable`) API tier for a **narrow curated**
+  Supported CRUD/HTMX/jobs facade ([STABLE_FACADE](../api/STABLE_FACADE.md) /
+  [STABILITY expanded tier](../api/STABILITY.md#expanded-stable-tier-023)) — not every
+  Supported row
 - Finish human AT sessions (0.21 remaining P0) — CSRF composition (0.22) is **Published**
 - Resolve live SSE/WebSocket: prove ops evidence **or** keep polling as the only production story
 - Harden a reference production archetype and quarantine Alpha/landmine extras
@@ -33,7 +36,7 @@ promoting every Alpha extra.
 |---|---|---|
 | P0 | Complete **0.21** human AT sessions + remediate | Engineering-complete / sessions outstanding |
 | P0 | Ship **0.22** CSRF / SecurityPolicy composition | **Published** (`v0.22.0`) |
-| P1 | Expand `stable` API tier (**0.23**) | Planned (D-053) |
+| P1 | Expand `stable` API tier (**0.23**) | Planned (D-053); **packet refine complete** — locked allowlist in ROADMAP §0.23 / [STABLE_FACADE](../api/STABLE_FACADE.md); gates Planned until cut |
 | P1 | Live-transport disposition (**0.24**) — prove gates or polling-only docs | Planned (D-053) |
 | P2 | Production archetype + load budgets + extras quarantine (**0.25**) | Planned (D-053) |
 | P3 | External security review + SBOM/evidence on every train tag | Process |

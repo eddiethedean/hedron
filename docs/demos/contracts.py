@@ -301,20 +301,14 @@ CONTRACTS: tuple[DemoContract, ...] = (
     DemoContract(
         id="minimal-form",
         builder=build_minimal_form_demo,
-        min_steps=2,
+        min_steps=1,
         steps=(
             Step(
                 click=_btn("Save"),
                 expect_text="#notes-stage",
-                contains="Saved",
-                contains_all=("Ship the docs demo",),
+                contains="Notes saved: 1",
+                contains_all=("Leave a note",),
                 expect_trace="POST /save → 200",
-            ),
-            Step(
-                click=_btn("Leave another note"),
-                expect_text="#notes-stage",
-                contains="Leave a note",
-                expect_trace="GET /notes → 200",
             ),
         ),
     ),

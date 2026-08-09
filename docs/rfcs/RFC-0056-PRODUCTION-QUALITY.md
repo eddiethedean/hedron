@@ -96,5 +96,12 @@ intervening-minor rules in [COMPATIBILITY.md](../COMPATIBILITY.md) and STABILITY
 
 ## Open questions
 
-None for program acceptance. Packet refine for 0.23–0.25 may add gate command detail without
-changing the priority stack or north star.
+None for program acceptance.
+
+**0.23 packet refine (complete):** locked narrow CRUD/admin promotion allowlist in
+ROADMAP §0.23 + [STABLE_FACADE.md](../api/STABLE_FACADE.md); distinct gate commands
+`check_stable_tier_023.py` / `check_stable_facade.py` / `check_stability_inventory.py` /
+`ci_checks.sh test` / `verify_pkg_23.py` (see `release-gate-0.23.toml`). Does not change
+the priority stack or north star.
+
+Packet refine for **0.24–0.25** may still add gate command detail for those phases.

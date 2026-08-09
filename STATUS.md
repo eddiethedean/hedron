@@ -98,6 +98,9 @@ Prior-phase Deferred rows below remain owned elsewhere.
 ## Next capability phases
 
 **0.23** — Stable-tier expansion for Supported CRUD/admin (D-053 / RFC-0056).
+**Packet refine complete:** locked narrow promotion allowlist + distinct gate commands
+([ROADMAP §0.23](docs/ROADMAP.md), [STABLE_FACADE](docs/api/STABLE_FACADE.md)); gates remain
+**Planned** until cut (`STABLE-023` … `PKG-023`).
 **0.24** — Live-transport production disposition (prove ops **or** polling-only; D-053).
 **0.25** — Production archetype, load budgets, extras quarantine (D-053).
 Program summary: [production-quality guide](docs/guides/production-quality.md).

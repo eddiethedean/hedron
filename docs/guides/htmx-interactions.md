@@ -36,12 +36,6 @@ A wrong `HX-Target` returns **403** by design — fix typos in the region id / s
 
 === "Code"
 
-    !!! warning "Standalone demo — do not paste over the scaffold"
-
-        Region ids here are `hx-guide-*` for the docs simulator. Your `hedron new`
-        app uses `service-status` / `notes-count` (delta below). Copy patterns, not
-        this whole file, onto an existing scaffold.
-
     Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
 
     ```python title="app.py"

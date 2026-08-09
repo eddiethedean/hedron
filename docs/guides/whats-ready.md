@@ -14,10 +14,11 @@ protocol engineering remains on the train; **sessions are Planned / not Supporte
 !!! note "Supported ≠ API `stable`"
 
     **Supported** means the capability works on the current train when pinned. Most public
-    symbols remain API compatibility level **`beta`** (breaking changes can still land in a
-    future `0.23`). Only the small table in [STABILITY.md](../api/STABILITY.md) is
-    compatibility-protected. Package maturity remains **Beta** on PyPI — no scheduled 1.0,
-    no commercial SLA.
+    symbols remain API compatibility level **`beta`**. Only the
+    [minimal stable table](../api/STABILITY.md#minimal-stable-tier) is compatibility-protected
+    today. Phase **0.23** (Planned) expands that table for a **narrow** Beginner/CRUD facade
+    ([STABLE_FACADE](../api/STABLE_FACADE.md)) — not every Supported row on this page.
+    Package maturity remains **Beta** on PyPI — no scheduled 1.0, no commercial SLA.
 
 **Prefer polling** over SSE/WebSocket (`hedron.experimental`).
 

@@ -273,6 +273,7 @@ nav:
         - Autodoc (expanded subset): api/AUTODOC.md
         - Public API coverage map: api/COVERAGE.md
         - Stability: api/STABILITY.md
+        - Beginner / stable facade (0.23): api/STABLE_FACADE.md
       - Application and routing:
         - Hedron: api/HEDRON.md
         - Router: api/ROUTER.md

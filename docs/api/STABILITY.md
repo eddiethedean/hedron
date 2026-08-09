@@ -58,6 +58,45 @@ happy path is owned by phase **0.23** (D-053 / RFC-0056).
 Optional extras (`hedron[data]`, `hedron[charts]`, `hedron[extras]`, `hedron[auth]`, content helpers) are **not**
 stable via the root facade — import them from their packages.
 
+## Expanded stable tier (0.23)
+
+!!! note "Planned until cut"
+
+    Packet refine is complete (locked allowlist). These contracts become `stable` when
+    every 0.23 gate is `Verified` at `v0.23.0`. Until cut they remain capability
+    **Supported** with API level **`beta`** unless already listed in the minimal tier
+    above. Beginner import inventory: [STABLE_FACADE.md](STABLE_FACADE.md).
+    Migration: additive promotions only — no removal from the minimal tier; any later
+    boundary shrink requires an accepted decision and an intervening minor phase
+    (same rule as other `stable` contracts).
+
+Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
+`HedronRouter`, `Page`, `Text`, `html`.
+
+| Symbol / contract | Package / module |
+|---|---|
+| `Hedron.region`, `Hedron.fragment`; `FragmentRegion` (router `fragment_regions=`) | `hedron` |
+| `swap`, `swap_oob`, `retarget`, `redirect_htmx` | `hedron` |
+| `Poll` | `hedron` |
+| `enqueue_durable`, `job_status_response` | `hedron.jobs` |
+| `JobBackend`, `JobStatus`, `JobHandle`, `JobState`, `set_job_backend`, `get_job_backend` | `hedron_core.jobs` |
+| `SecurityPolicy`, `SecurityPolicy.from_name`, profiles `development` / `standard` / `strict` | `hedron` |
+| `SecurityHeadersPolicy` | `hedron` |
+| `CsrfField`, `Form`, `Hx` | `hedron` |
+| `DoubleSubmitCookieCsrf`, `SessionTokenCsrf`, `CsrfStrategy` | `hedron` |
+| `Stack`, `TextInput`, `TextArea`, `SubmitButton`, `RefreshButton`, `FormErrors`, `FormField`, `Label` | `hedron` |
+| `AppScenario` | `hedron.testing` |
+| `assert_page_document`, `assert_fragment_body`, `assert_htmx_trigger`, `assert_hx_retarget`, `assert_oob_present`, `assert_hx_push_url`, `assert_hx_redirect`, `assert_hx_reswap` | `hedron.testing` |
+
+### Out of 0.23
+
+| Surface | Disposition |
+|---|---|
+| `job_status_sse_response` and other `hedron.experimental` live helpers | Remain **experimental**; disposition **0.24** |
+| Alpha charts / notebook / MCP / Gradio / native | Not promoted |
+| `hedron[data]` / DataEditor, extras, OIDC product surface | Stay `beta` (Supported capability OK) |
+| Dialog / Tabs / Pagination / Lazy, Map / media / capture, dashboards, inference | Stay `beta` |
+
 ## Artifact classes
 
 | Class | Public promise | Format / pin |
@@ -81,9 +120,13 @@ stable via the root facade — import them from their packages.
 ### `hedron` (Beta distribution)
 
 - **stable:** facade re-exports of the minimal stable tier above; `Hedron` / router / CSRF helpers.
-- **beta:** remaining built-ins, session state, cache decorators, testing helpers
-  (`AppScenario`, HTMX asserts #22–#26, Dialog/Tabs/Pagination/Lazy #24), CLI core commands,
-  `region` / `@fragment` / `swap` ergonomics, typed controls / surface chrome, media Range
+- **stable (0.23 Planned until cut):** `region` / `fragment` / `swap` / `swap_oob` /
+  `retarget` / `redirect_htmx` / `Poll` / `CsrfField` / `Form` / `Hx` /
+  `SecurityPolicy` / `SecurityHeadersPolicy` / CSRF strategy types / beginner form chrome
+  (`Stack`, `TextInput`, …) — see [Expanded stable tier (0.23)](#expanded-stable-tier-023).
+- **beta:** remaining built-ins, session state, cache decorators, testing helpers not in the
+  0.23 allowlist (Dialog/Tabs/Pagination/Lazy #24 markup asserts stay beta), CLI core commands,
+  typed controls / surface chrome beyond the beginner set, media Range
   helpers, Map/GeoJSON, `BrowserContext` / `BrowserStorage`, Math, IFrame, optional identity
   helpers (`hedron.oidc`, session hardening), named connection registry, capture UI, shell
   primitives (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`, `AppShell`/`MainPanel`), public
