@@ -15,6 +15,11 @@ Evaluating adoption? Use the **Evaluate** tab
 ([What’s ready](whats-ready.md) · [Evaluate Hedron](evaluate.md)).
 
 <div class="hedron-grid">
+  <a class="hedron-card" href="streamlit-migration/">
+    <span class="hedron-card__icon" aria-hidden="true">→</span>
+    <strong>Coming from Streamlit</strong>
+    <p>Fit check, worked conversion, execution/state guide, API matrix, and production cutover.</p>
+  </a>
   <a class="hedron-card" href="../getting-started/">
     <span class="hedron-card__icon" aria-hidden="true">→</span>
     <strong>Golden path (Learn)</strong>

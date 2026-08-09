@@ -186,6 +186,11 @@ nav:
       - Existing / plain FastAPI: guides/plain-fastapi.md
   - How-to:
     - Overview: guides/index.md
+    - Coming from Streamlit:
+      - Migration home: guides/streamlit-migration.md
+      - Execution and state: guides/streamlit-execution-state.md
+      - Component matrix: guides/streamlit-migration-matrix.md
+      - Production cutover: guides/streamlit-cutover.md
     - Help:
       - FAQ: guides/faq.md
       - Error codes: guides/error-codes.md
@@ -516,8 +521,6 @@ nav:
       - What's new in 0.10: guides/whats-new-0.10.md
     - Package changelogs: guides/changelog.md
     - Migrations:
-      - Streamlit: guides/streamlit-migration.md
-      - Streamlit matrix: guides/streamlit-migration-matrix.md
       - NiceGUI: guides/nicegui-migration.md
       - Dash: guides/dash-migration.md
       - FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md

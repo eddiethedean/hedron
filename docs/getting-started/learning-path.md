@@ -8,6 +8,10 @@ troubleshooting.
 **Skills assumed:** Python 3.11+, basic FastAPI (routes / `Form`), and HTML forms.
 No SPA or prior HTMX background is required.
 
+Coming from Streamlit? Keep this foundation, then use the
+[Streamlit migration center](../guides/streamlit-migration.md) to translate reruns,
+Session State, caching, components, tests, and deployment.
+
 ## 1. Hello page (~10 minutes)
 
 1. [Build your first app](quickstart.md)

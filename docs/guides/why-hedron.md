@@ -11,8 +11,10 @@ Short positioning for evaluators.
 
 ## Concrete contrast: Streamlit vs Hedron
 
-Streamlit re-runs the script on interaction. Hedron keeps FastAPI routing and swaps a
-**typed HTML fragment** into a declared region (the Hello “Refresh status” demo).
+By default, Streamlit reruns the script on widget interaction; forms batch inputs and
+`st.fragment` can rerun a portion. Hedron keeps FastAPI routing: each interaction is an
+explicit HTTP request, and it may swap a **typed HTML fragment** into a declared region
+(the Hello “Refresh status” demo).
 
 === "Streamlit"
 
@@ -57,6 +59,7 @@ Streamlit optimizes for the fastest notebook-style dashboard loop.
 
 Forms and CSRF are a short next step after Hello — see
 [HTMX interactions](htmx-interactions.md) then [Minimal form POST](minimal-form.md).
+Streamlit users should start with the [migration center](streamlit-migration.md).
 
 ## Compared to nearby tools
 
@@ -90,4 +93,5 @@ rerun engine. `Auto` and data extras cover common object display, not every Stre
 ## Next
 
 [Evaluate Hedron](evaluate.md) · [What’s ready today](whats-ready.md) ·
-[Quickstart](../getting-started/quickstart.md) · [Architecture](../ARCHITECTURE.md)
+[Streamlit migration](streamlit-migration.md) · [Quickstart](../getting-started/quickstart.md) ·
+[Architecture](../ARCHITECTURE.md)

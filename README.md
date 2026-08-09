@@ -31,6 +31,11 @@ fragment into the declared region).
 Pin installs with `hedron>=0.25.0,<0.26`. Full walkthrough:
 [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/).
 
+**Coming from Streamlit?** Start with the
+[Streamlit migration center](https://hedron.readthedocs.io/en/latest/guides/streamlit-migration/):
+fit guidance, a worked dashboard conversion, rerun/session-state mappings, a component
+matrix, and a production cutover checklist.
+
 Alternate (pip + venv):
 
 ```bash

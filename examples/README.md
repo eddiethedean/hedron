@@ -8,6 +8,7 @@ on a clean venv — that is the polished first-success path.
 
 | Example | Host | Notes |
 |---|---|---|
+| [`streamlit-migration/`](streamlit-migration/) | FastAPI | Runnable sales-dashboard migration with typed GET filters |
 | [`notes-sqlalchemy/`](notes-sqlalchemy/) | FastAPI | SQLite create / list / delete + CSRF |
 | [`session-auth/`](session-auth/) | FastAPI | Session login; `/` redirects to `/login` |
 | [`file-upload/`](file-upload/) | FastAPI | Multipart upload with size/type checks |

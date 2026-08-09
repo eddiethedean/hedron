@@ -38,6 +38,10 @@ rerun — unlike Streamlit’s script-rerun model.
 [Build your first app (~10 minutes)](getting-started/quickstart.md) — the only full
 Hello walkthrough (scaffold, Refresh, edit).
 
+**Coming from Streamlit?** Use the
+[Streamlit migration center](guides/streamlit-migration.md) for fit guidance, a worked
+dashboard conversion, rerun/session-state mappings, an API matrix, and production cutover.
+
 Hedron is for FastAPI teams who want typed components and HTMX fragment regions
 without assembling a hand-rolled Jinja stack. Prefer Streamlit for notebook-style
 rerun dashboards.
@@ -48,6 +52,11 @@ rerun dashboards.
 ## A backend-native way to build UI
 
 <div class="hedron-grid">
+  <a class="hedron-card" href="guides/streamlit-migration/">
+    <span class="hedron-card__icon" aria-hidden="true">→</span>
+    <strong>Migrate from Streamlit</strong>
+    <p>Convert one workflow, redesign state safely, map components, test, and cut over.</p>
+  </a>
   <div class="hedron-card">
     <span class="hedron-card__icon" aria-hidden="true">⌁</span>
     <strong>Typed composition</strong>

@@ -1,10 +1,114 @@
 # Migrate a Streamlit app
 
-Streamlit and Hedron can both turn Python data into an interactive dashboard, but they
-use different execution models. Streamlit reruns the application script when a widget
-changes. Hedron handles an HTTP request, validates its inputs with FastAPI, and returns
-typed server-rendered components. Migrate the user workflow first; do not translate each
-call in isolation.
+If you know Streamlit, start here. You can keep your Python data, models, SQL, and domain
+logic. The part you will redesign is the interface boundary: Streamlit widgets participate
+in script execution; Hedron controls submit HTTP requests to explicit page, fragment, and
+action routes.
+
+!!! info "Modern Streamlit has more than full-script reruns"
+
+    By default, Streamlit reruns the script when a user changes a widget. Streamlit forms
+    batch changes into one rerun, and `st.fragment` can rerun only a portion. Hedron still
+    uses a different model: every interaction is an ordinary HTTP request with typed
+    inputs and an explicit response. See Streamlit's official
+    [execution-flow](https://docs.streamlit.io/develop/api-reference/execution-flow),
+    [forms](https://docs.streamlit.io/develop/concepts/architecture/forms), and
+    [fragments](https://docs.streamlit.io/develop/concepts/architecture/fragments)
+    documentation.
+
+## Choose your path
+
+| Your question | Start here |
+|---|---|
+| Is Hedron a good fit for this app? | [Should you migrate?](#should-you-migrate) |
+| Can I convert one small app end to end? | [Worked migration: sales dashboard](#worked-migration-sales-dashboard) |
+| What replaces reruns, callbacks, and `st.session_state`? | [Execution and state](streamlit-execution-state.md) |
+| What replaces a specific `st.*` API? | [Component migration matrix](streamlit-migration-matrix.md) |
+| How do I test, deploy, and cut over safely? | [Production cutover](streamlit-cutover.md) |
+| Can I run a finished migration? | [`examples/streamlit-migration`](https://github.com/eddiethedean/hedron/tree/main/examples/streamlit-migration) |
+
+## Should you migrate?
+
+Hedron is a strong candidate when the app is becoming a maintained web application:
+
+- filters should have shareable, bookmarkable URLs;
+- writes need explicit authorization, validation, CSRF protection, and audit boundaries;
+- the team wants FastAPI dependencies, middleware, JSON routes, or OpenAPI beside the UI;
+- multiple developers need reusable typed components and ordinary pytest coverage;
+- deployment must fit an existing ASGI, container, proxy, or enterprise platform;
+- whole-script work is becoming slow, hard to reason about, or difficult to isolate.
+
+Staying on Streamlit is often the better choice when the app is a short-lived analysis,
+the notebook-style top-to-bottom loop is the main benefit, Streamlit Community Cloud is
+an essential managed dependency, or the app relies heavily on Streamlit-only components
+that have no acceptable Hedron replacement. Hedron is not a drop-in compatibility layer.
+
+## A low-risk migration plan
+
+Do not begin by translating every `st.*` call. Migrate one user workflow:
+
+1. **Record current behavior.** List pages, inputs, outputs, callbacks, session keys,
+   cache entries, secrets, data writes, and external components. Add a small Streamlit
+   `AppTest` suite around the critical workflow before changing it.
+2. **Extract framework-free logic.** Move data loading, filtering, calculations, and
+   writes into ordinary functions or services with no `streamlit` imports.
+3. **Port the read-only result.** Return a Hedron `Page` containing headings, metrics,
+   tables, and layout components.
+4. **Port filters as a GET form.** Use typed query parameters first. The result works
+   without JavaScript and the URL becomes shareable.
+5. **Port writes as actions.** Turn `if st.button(...):` side effects into explicit POST
+   actions with validation, authorization, and CSRF.
+6. **Assign every piece of state an owner.** Choose URL, request/form, session, database,
+   cache, or browser preference deliberately; do not copy `st.session_state` wholesale.
+7. **Add fragments only where useful.** Once the full-page flow works, use HTMX to update
+   expensive or frequently changing regions independently.
+8. **Run both apps during acceptance.** Compare the same fixtures and user outcomes,
+   then follow the [production cutover checklist](streamlit-cutover.md).
+
+## Can I migrate incrementally?
+
+Yes—at the workflow or URL level, not by mixing the two rendering runtimes inside one page.
+The safest arrangement is:
+
+```text
+shared Python package
+  ├─ data access, calculations, models, and business rules
+  ├─ current Streamlit entrypoint
+  └─ new Hedron ASGI app
+```
+
+Run Streamlit and Hedron as separate processes during acceptance. Put the Hedron candidate
+on a staging hostname or route traffic to migrated paths at the reverse proxy. This keeps
+rollback simple and lets both interfaces call the same framework-free services.
+
+Do not try to import a Streamlit page and render it as a Hedron component. Do not let both
+applications perform the same production write unless you have deliberately designed and
+tested dual-write reconciliation.
+
+## What carries over
+
+Your pandas/Polars transformations, Pydantic models, SQLAlchemy repositories, API clients,
+plotting inputs, and business rules can usually stay. The easiest migrations first isolate
+these functions from `st.*` calls, then invoke them from Hedron routes. Rewriting working
+domain logic and the UI at the same time creates unnecessary risk.
+
+## What will feel different
+
+| Streamlit habit | Hedron habit |
+|---|---|
+| Read a value from a widget call | Receive a typed value in a route/action parameter |
+| Let an interaction rerun code | Send a GET or POST to the route that owns the operation |
+| Emit UI as the script executes | Return an explicit component tree |
+| Keep unrelated values in Session State | Give URL, request, session, database, cache, and browser state separate owners |
+| Put logic beneath `if st.button(...)` | Put the mutation in an authorized POST action |
+| Cache a resource globally | Create it in FastAPI lifespan and inject it |
+| Deploy an entrypoint to Community Cloud | Build and run a portable ASGI application |
+
+This is more architecture than a small Streamlit script needs. It becomes valuable when
+the app needs stable URLs, explicit security boundaries, integration with existing backend
+services, multiple contributors, or conventional production operations.
+
+## Worked migration: sales dashboard
 
 This guide rewrites a small sales dashboard with filters, metrics, and a table. On Hedron
 **0.25**, published chart wheels are unavailable — use `Metric` + `DataTable` (or `Table`)
@@ -262,3 +366,36 @@ The largest migration decision is where code runs:
 This separation makes filters addressable, mutations auditable, and components testable
 without a browser. Continue with [Test your UI](testing.md), [Security](security.md), and
 [Data applications](data-apps.md).
+
+## Common migration surprises
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| A filter does nothing until **Apply** is selected | Hedron controls submit; they do not return live Python values | Keep the deliberate form submit, or add a GET fragment for justified immediate updates |
+| Fragment request returns 403 | `HX-Target` does not match the route's declared region | Use `app.region(...)` and region-aware controls; check the id/selector |
+| POST returns a CSRF error | The form did not carry the token seeded by the page GET | Start with [Minimal form POST](minimal-form.md); do not disable CSRF to imitate a callback |
+| Query returns 422 | FastAPI rejected an invalid typed value or bound | Correct the form value and render friendly validation guidance for the workflow |
+| `DataTable` cannot be imported | The data extra is not installed | Install `hedron[data]` at the same 0.25 version as `hedron` |
+| A private cache never hits | Sensitive scopes require concrete `vary_on` dimensions | Pass the user/tenant/session key as a function argument and include its name in `vary_on` |
+| Chart installation resolves an older core | The published 0.25-compatible chart wheel does not exist | Remove the chart extra; use metrics/tables or the documented workspace-only source path |
+| State disappears after deployment/restart | Process/session memory was treated as durable storage | Move durable state to a database or shared service and review the multi-worker model |
+
+## Migration checkpoint
+
+Before converting another screen, verify that this first workflow has preserved the user
+outcome rather than the original implementation:
+
+- the default dashboard totals match the Streamlit app;
+- each filter produces the same rows and totals;
+- filter values survive refresh because they are present in the URL;
+- an empty result is understandable and accessible;
+- invalid query values receive a clear validation response;
+- the route can be tested with FastAPI `TestClient` without a browser;
+- no user-specific data is stored in a public cache entry.
+
+Then choose the next topic by migration pressure:
+
+- callbacks, fragments, or state: [Execution and state](streamlit-execution-state.md);
+- API lookup: [Streamlit → Hedron matrix](streamlit-migration-matrix.md);
+- mutations: [Forms and actions](forms-and-actions.md);
+- deployment and rollback: [Production cutover](streamlit-cutover.md).
