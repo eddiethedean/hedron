@@ -361,7 +361,10 @@ async def render_interaction(
         result = merge_route_regions(result, fragment_regions)
 
     if result.status_code == 204 or (result.content is None and result.status_code == 204):
-        headers = interaction_headers(result)
+        try:
+            headers = interaction_headers(result)
+        except ValueError as exc:
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
         return StarletteResponse(status_code=204, headers=headers)
 
     target = request.headers.get("HX-Target")
@@ -398,7 +401,10 @@ async def render_interaction(
                 ) from exc
             raise HTTPException(status_code=403, detail=str(exc)) from exc
 
-    headers = interaction_headers(result)
+    try:
+        headers = interaction_headers(result)
+    except ValueError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     if region is not None and result.policy and result.policy.vary_on_target:
         existing = {p.strip() for p in headers.get("Vary", "").split(",") if p.strip()}
         existing.update({"HX-Request", "HX-History-Restore-Request", "HX-Target"})

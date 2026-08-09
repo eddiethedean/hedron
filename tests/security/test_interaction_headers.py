@@ -97,7 +97,9 @@ def test_interaction_result_endpoint_rejects_evil_headers() -> None:
 
     client = TestClient(app, raise_server_exceptions=False)
     response = client.get("/frag", headers={"HX-Request": "true"})
-    assert response.status_code >= 400
+    assert response.status_code == 403
+    assert "HX-Redirect" not in response.headers
+    assert "evil.example" not in response.text
     assert "evil.example" not in response.headers.get("HX-Redirect", "")
 
 

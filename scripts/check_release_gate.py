@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import re
+import shlex
+import subprocess
 import sys
 import tomllib
 from pathlib import Path
@@ -33,6 +35,32 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.25": ROOT / "docs" / "acceptance" / "release-gate-0.25.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
+# Includes historical ``release`` attestation used by older gate manifests.
+KNOWN_CI_JOBS = frozenset(
+    {"test", "quality", "browser", "evidence", "packaging", "release"}
+)
+# Commands that must not be re-entered from --execute-verified.
+_RECURSIVE_SCRIPT_NAMES = frozenset(
+    {
+        "check_release_gate.py",
+        "verify_pkg_09.py",
+        "verify_pkg_10.py",
+        "verify_pkg_11.py",
+        "verify_pkg_12.py",
+        "verify_pkg_13.py",
+        "verify_pkg_14.py",
+        "verify_pkg_15.py",
+        "verify_pkg_16.py",
+        "verify_pkg_17.py",
+        "verify_pkg_18.py",
+        "verify_pkg_19.py",
+        "verify_pkg_20.py",
+        "verify_pkg_21.py",
+        "verify_pkg_22.py",
+        "verify_pkg_23.py",
+        "ci_checks.sh",
+    }
+)
 
 
 def evidence_manifest_for(version: str) -> Path:
@@ -84,6 +112,89 @@ def check_packages(tag_version: str) -> list[str]:
     return errors
 
 
+def _command_tokens(command: str) -> list[str]:
+    try:
+        return shlex.split(command)
+    except ValueError:
+        return command.split()
+
+
+def _referenced_repo_paths(command: str) -> list[str]:
+    """Return scripts/ or tests/ path tokens that should exist on disk."""
+    paths: list[str] = []
+    for token in _command_tokens(command):
+        if token.startswith("scripts/") or token.startswith("tests/"):
+            paths.append(token)
+    return paths
+
+
+def _is_suite_command(command: str) -> bool:
+    tokens = _command_tokens(command)
+    if not tokens:
+        return False
+    joined = " ".join(tokens)
+    if "ci_checks.sh" in joined:
+        return True
+    if tokens[0] in {"pytest", "bash"}:
+        return True
+    if len(tokens) >= 2 and tokens[0] == "python" and tokens[1] == "-m" and "pytest" in tokens:
+        return True
+    return any(t.startswith("verify_pkg_") and t.endswith(".py") for t in tokens)
+
+
+def _is_executable_ssot_command(command: str) -> bool:
+    """True for ``python scripts/check_*.py`` style commands safe to run inline."""
+    tokens = _command_tokens(command)
+    if len(tokens) < 2 or tokens[0] != "python":
+        return False
+    script = tokens[1]
+    if not script.startswith("scripts/") or not script.endswith(".py"):
+        return False
+    name = Path(script).name
+    if name in _RECURSIVE_SCRIPT_NAMES:
+        return False
+    return name.startswith("check_")
+
+
+def _validate_verified_command(eid: str, command: str, ci_job: str) -> list[str]:
+    errors: list[str] = []
+    if not command:
+        errors.append(f"{eid}: Verified entries require a named command")
+        return errors
+    if not ci_job:
+        errors.append(f"{eid}: Verified entries require ci_job (CI attestation)")
+    elif ci_job not in KNOWN_CI_JOBS:
+        errors.append(
+            f"{eid}: unknown ci_job {ci_job!r} (expected one of {sorted(KNOWN_CI_JOBS)})"
+        )
+
+    for rel in _referenced_repo_paths(command):
+        target = ROOT / rel
+        if not target.exists():
+            errors.append(f"{eid}: command references missing path {rel}")
+
+    if _is_suite_command(command):
+        checks = (ROOT / "scripts" / "ci_checks.sh").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+        release_wf = ROOT / ".github" / "workflows" / "release.yml"
+        attested = False
+        if ci_job:
+            if f"cmd_{ci_job}" in checks or f"ci_checks.sh {ci_job}" in workflow:
+                attested = True
+            if ci_job == "release" and release_wf.is_file():
+                attested = True
+        if ci_job and not attested:
+            errors.append(
+                f"{eid}: suite command ci_job={ci_job!r} is not attested in "
+                "scripts/ci_checks.sh, .github/workflows/ci.yml, or release.yml"
+            )
+        # pytest-only suite commands must be owned by the test job.
+        tokens = _command_tokens(command)
+        if "pytest" in tokens and ci_job and ci_job != "test":
+            errors.append(f"{eid}: pytest suite commands require ci_job=test")
+    return errors
+
+
 def check_evidence_manifest(path: Path) -> list[str]:
     errors: list[str] = []
     if not path.is_file():
@@ -101,6 +212,7 @@ def check_evidence_manifest(path: Path) -> list[str]:
         state = str(row.get("state", "")).strip()
         command = str(row.get("command", "")).strip()
         owner = str(row.get("owner", "")).strip()
+        ci_job = str(row.get("ci_job", "")).strip()
         if not eid:
             errors.append(f"{path}: evidence id is required")
             continue
@@ -111,8 +223,8 @@ def check_evidence_manifest(path: Path) -> list[str]:
             errors.append(f"{eid}: invalid state {state!r}")
         if not owner:
             errors.append(f"{eid}: owner is required")
-        if state == "Verified" and not command:
-            errors.append(f"{eid}: Verified entries require a named command")
+        if state == "Verified":
+            errors.extend(_validate_verified_command(eid, command, ci_job))
         if state == "Deferred":
             if not str(row.get("rationale", "")).strip():
                 errors.append(f"{eid}: Deferred entries require rationale")
@@ -123,6 +235,85 @@ def check_evidence_manifest(path: Path) -> list[str]:
                 f"{eid}: state {state!r} does not close the release gate "
                 "(use Verified or Deferred with ownership)"
             )
+    return errors
+
+
+def execute_verified_ssot_commands(path: Path) -> list[str]:
+    """Run Verified ``python scripts/check_*.py`` commands from the manifest.
+
+    Suite commands (pytest / ci_checks / verify_pkg) are attested via ``ci_job``
+    and path checks — not re-executed here (avoids recursion and hour-long nests).
+    """
+    errors: list[str] = []
+    if not path.is_file():
+        return [f"missing evidence manifest: {path}"]
+    data = tomllib.loads(path.read_text(encoding="utf-8"))
+    rows = data.get("evidence")
+    if not isinstance(rows, list):
+        return [f"{path}: [[evidence]] entries required"]
+    executed = 0
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("state", "")).strip() != "Verified":
+            continue
+        eid = str(row.get("id", "")).strip()
+        command = str(row.get("command", "")).strip()
+        if not _is_executable_ssot_command(command):
+            continue
+        tokens = _command_tokens(command)
+        # Prefer the active interpreter for portability inside uv/venv.
+        argv = [sys.executable, *tokens[1:]]
+        print("+", *argv)
+        try:
+            subprocess.check_call(argv, cwd=ROOT)
+        except subprocess.CalledProcessError as exc:
+            errors.append(f"{eid}: command failed ({exc.returncode}): {command}")
+        else:
+            executed += 1
+    if executed == 0:
+        # Not fatal for older manifests with only suite commands — path/ci_job
+        # validation still applies. Warn for visibility.
+        print("note: no executable SSOT Verified commands in manifest", file=sys.stderr)
+    return errors
+
+
+def check_evidence_manifest_lenient(path: Path) -> list[str]:
+    """Validate shape without requiring Verified/Deferred closure."""
+    errors: list[str] = []
+    if not path.is_file():
+        return [f"missing evidence manifest: {path}"]
+    data = tomllib.loads(path.read_text(encoding="utf-8"))
+    rows = data.get("evidence")
+    if not isinstance(rows, list) or not rows:
+        return [f"{path}: [[evidence]] entries required"]
+    seen: set[str] = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            errors.append(f"{path}: evidence row must be a table")
+            continue
+        eid = str(row.get("id", "")).strip()
+        state = str(row.get("state", "")).strip()
+        owner = str(row.get("owner", "")).strip()
+        command = str(row.get("command", "")).strip()
+        ci_job = str(row.get("ci_job", "")).strip()
+        if not eid:
+            errors.append(f"{path}: evidence id is required")
+            continue
+        if eid in seen:
+            errors.append(f"{path}: duplicate evidence id {eid}")
+        seen.add(eid)
+        if state not in {"Planned", "Implemented", "Verified", "Deferred", "Blocked"}:
+            errors.append(f"{eid}: invalid state {state!r}")
+        if not owner:
+            errors.append(f"{eid}: owner is required")
+        if state == "Verified":
+            errors.extend(_validate_verified_command(eid, command, ci_job))
+        if state == "Deferred":
+            if not str(row.get("rationale", "")).strip():
+                errors.append(f"{eid}: Deferred entries require rationale")
+            if not str(row.get("destination", "")).strip():
+                errors.append(f"{eid}: Deferred entries require destination")
     return errors
 
 
@@ -145,6 +336,14 @@ def main() -> int:
         action="store_true",
         help="Skip evidence manifest checks (metadata-only)",
     )
+    parser.add_argument(
+        "--execute-verified",
+        action="store_true",
+        help=(
+            "Execute Verified python scripts/check_*.py commands from the manifest "
+            "(suite/verify_pkg commands are attested via ci_job, not re-run)"
+        ),
+    )
     args = parser.parse_args()
     # Always verify package metadata matches the requested train version.
     # --allow-planned only relaxes evidence closure (Planned/Implemented rows OK).
@@ -155,6 +354,8 @@ def main() -> int:
             errors.extend(check_evidence_manifest_lenient(manifest))
         else:
             errors.extend(check_evidence_manifest(manifest))
+        if args.execute_verified and not errors:
+            errors.extend(execute_verified_ssot_commands(manifest))
     if not (ROOT / "LICENSE").is_file():
         errors.append("missing root LICENSE (required before public publication)")
     if errors:
@@ -162,43 +363,6 @@ def main() -> int:
         return 1
     print(f"ok: release gate for {args.version}")
     return 0
-
-
-def check_evidence_manifest_lenient(path: Path) -> list[str]:
-    """Validate shape without requiring Verified/Deferred closure."""
-    errors: list[str] = []
-    if not path.is_file():
-        return [f"missing evidence manifest: {path}"]
-    data = tomllib.loads(path.read_text(encoding="utf-8"))
-    rows = data.get("evidence")
-    if not isinstance(rows, list) or not rows:
-        return [f"{path}: [[evidence]] entries required"]
-    seen: set[str] = set()
-    for row in rows:
-        if not isinstance(row, dict):
-            errors.append(f"{path}: evidence row must be a table")
-            continue
-        eid = str(row.get("id", "")).strip()
-        state = str(row.get("state", "")).strip()
-        owner = str(row.get("owner", "")).strip()
-        if not eid:
-            errors.append(f"{path}: evidence id is required")
-            continue
-        if eid in seen:
-            errors.append(f"{path}: duplicate evidence id {eid}")
-        seen.add(eid)
-        if state not in {"Planned", "Implemented", "Verified", "Deferred", "Blocked"}:
-            errors.append(f"{eid}: invalid state {state!r}")
-        if not owner:
-            errors.append(f"{eid}: owner is required")
-        if state == "Verified" and not str(row.get("command", "")).strip():
-            errors.append(f"{eid}: Verified entries require a named command")
-        if state == "Deferred":
-            if not str(row.get("rationale", "")).strip():
-                errors.append(f"{eid}: Deferred entries require rationale")
-            if not str(row.get("destination", "")).strip():
-                errors.append(f"{eid}: Deferred entries require destination")
-    return errors
 
 
 if __name__ == "__main__":

@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-import os
-
-import pytest
-
 from hedron_core import (
     DashboardBinding,
     GraphRecording,
@@ -162,22 +158,3 @@ def test_replay_has_no_sleep_dependency() -> None:
     source = Path(mod.__file__).read_text(encoding="utf-8")
     assert "time.sleep" not in source
     assert "sleep(" not in source
-
-
-@pytest.mark.browser
-@pytest.mark.skipif(
-    os.environ.get("HEDRON_BROWSER") != "1",
-    reason="Opt-in: set HEDRON_BROWSER=1 for Playwright smoke",
-)
-def test_graph_replay_browser_smoke_placeholder() -> None:
-    graph = _graph_with_binding()
-    recording = GraphRecording(initial_regions={"detail": {"value": 0}})
-    record_exchange(
-        recording,
-        correlation_id="c-1",
-        binding_id="xf",
-        kind="trigger",
-        payload={"regions": {"detail": {"value": 1}}},
-    )
-    regions, _audit = replay(graph, recording)
-    assert regions["detail"]["value"] == 1

@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-import os
-
-import pytest
-
 from hedron_core import (
     MAP_VIEWPORT_TRIGGER,
     ChartEvent,
@@ -105,20 +101,3 @@ def test_dashboard_graph_payload_has_nodes_and_edges() -> None:
     assert "detail" in node_ids
     assert any(e["kind"] == "trigger" for e in payload["edges"])  # type: ignore[index]
     assert any(e["kind"] == "target" for e in payload["edges"])  # type: ignore[index]
-
-
-@pytest.mark.browser
-@pytest.mark.skipif(
-    os.environ.get("HEDRON_BROWSER") != "1",
-    reason="Opt-in: set HEDRON_BROWSER=1 for Playwright smoke",
-)
-def test_cross_filter_browser_smoke_placeholder() -> None:
-    """Optional browser marker; unit graph composition is the Verified gate path."""
-    graph = InteractionGraph()
-    compose_cross_filter(
-        graph,
-        chart_trigger="chart.click",
-        grid_trigger="grid.selection",
-        targets=("detail",),
-    )
-    assert graph.bindings()

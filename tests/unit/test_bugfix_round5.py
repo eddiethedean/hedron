@@ -83,11 +83,18 @@ def test_authorize_htmx_empty_regions_fail_closed() -> None:
 
 
 def test_authorize_htmx_allow_undeclared_opt_out() -> None:
-    authorize_htmx_target(
+    allowed = authorize_htmx_target(
         InteractionPolicy(declared_regions=(), allow_undeclared_targets=True),
         "#main",
         is_htmx=True,
     )
+    assert allowed is None
+    with pytest.raises(FragmentRegionError):
+        authorize_htmx_target(
+            InteractionPolicy(declared_regions=(), allow_undeclared_targets=False),
+            "#main",
+            is_htmx=True,
+        )
 
 
 def test_audit_redacts_before_custom_sink() -> None:

@@ -112,7 +112,7 @@ def test_celery_enqueue_failure_marks_failed() -> None:
     assert status.state is JobState.FAILED
 
 
-def test_rq_unknown_type_and_cross_worker_cancel() -> None:
+def test_rq_unknown_type_and_cancel_via_public_api() -> None:
     queue = MagicMock()
     queue.connection = object()
     backend = RQJobBackend(queue, redis_client=_FakeRedis(), task_registry={})  # type: ignore[arg-type]
@@ -128,13 +128,10 @@ def test_rq_unknown_type_and_cross_worker_cancel() -> None:
         task_registry={"demo": _task},
     )
     handle = backend.submit("demo", {})
-    backend._rq_jobs.clear()
-    fetched = MagicMock()
-    fake_job = MagicMock()
-    fake_job.fetch.return_value = fetched
-    with patch.dict("sys.modules", {"rq": MagicMock(), "rq.job": MagicMock(Job=fake_job)}):
-        assert backend.request_cancel(handle.job_id) is True
-    fetched.cancel.assert_called_once()
+    assert backend.request_cancel(handle.job_id) is True
+    status = backend.get(handle.job_id)
+    assert status is not None
+    assert status.cancel_requested is True
 
 
 def test_select_htmx_auth_target_prefers_client_and_rejects_mismatch() -> None:

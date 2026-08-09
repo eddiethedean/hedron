@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ast
-import shutil
 import tomllib
 from pathlib import Path
 
@@ -42,8 +41,8 @@ def test_no_package_json_in_repo() -> None:
 
 
 def test_node_not_required_for_core() -> None:
-    assert shutil.which("npm") is None or True
     assert not (ROOT / "node_modules").exists()
+    assert not (ROOT / "package.json").exists()
 
 
 def test_adapter_packages_do_not_depend_on_fastapi() -> None:

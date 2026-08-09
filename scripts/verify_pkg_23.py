@@ -4,7 +4,8 @@
 Does **not** publish or tag.
 
 * Default (omit ``--allow-planned``): require Beta packages at ``0.23.0`` and
-  every evidence row ``Verified``.
+  every evidence row ``Verified``, then execute Verified SSOT ``check_*.py``
+  commands from the manifest.
 * ``--allow-planned`` remains for lenient gate shape checks against the living
   train metadata.
 """
@@ -41,21 +42,17 @@ def main(argv: list[str] | None = None) -> int:
             "--allow-planned",
         ]
     else:
+        # Execute Verified SSOT check_* commands from the evidence manifest
+        # (not merely assert that command strings are non-empty).
         gate_cmd = [
             sys.executable,
             str(ROOT / "scripts" / "check_release_gate.py"),
             "0.23.0",
+            "--execute-verified",
         ]
 
-    commands = [
-        gate_cmd,
-        [sys.executable, str(ROOT / "scripts" / "check_stable_tier_023.py")],
-        [sys.executable, str(ROOT / "scripts" / "check_stable_facade.py")],
-        [sys.executable, str(ROOT / "scripts" / "check_stability_inventory.py")],
-    ]
-    for command in commands:
-        print("+", *command)
-        subprocess.check_call(command, cwd=ROOT)
+    print("+", *gate_cmd)
+    subprocess.check_call(gate_cmd, cwd=ROOT)
     print("ok: PKG-023 packaging / packet evidence")
     return 0
 

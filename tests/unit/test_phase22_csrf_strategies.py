@@ -80,6 +80,8 @@ def test_fastapi_session_token_strategy_accepts_header() -> None:
 
 
 def test_validate_csrf_skips_when_disabled() -> None:
+    from fastapi import HTTPException
+
     policy = SecurityPolicy(csrf_enabled=False)
     scope = {
         "type": "http",
@@ -89,7 +91,11 @@ def test_validate_csrf_skips_when_disabled() -> None:
         "query_string": b"",
     }
     request = Request(scope)
-    validate_csrf(request, policy)  # does not raise
+    # Disabled policy must accept missing tokens (no HTTPException).
+    try:
+        validate_csrf(request, policy)
+    except HTTPException as exc:  # pragma: no cover - failure path
+        raise AssertionError(f"disabled CSRF must not reject: {exc}") from exc
 
 
 def test_session_token_issue_missing_does_not_500_get() -> None:

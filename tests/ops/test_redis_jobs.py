@@ -1,4 +1,7 @@
-"""Redis job backend multi-worker durability."""
+"""Redis job backend shared-client protocol (in-process stub).
+
+Not a multi-process / real-Redis worker proof — see opt-in redis markers for that.
+"""
 
 from __future__ import annotations
 
@@ -45,7 +48,8 @@ class _SharedRedis:
         return set(self._sets.get(key, set()))
 
 
-def test_redis_jobs_shared_across_workers() -> None:
+def test_redis_job_backend_shares_state_via_client_protocol() -> None:
+    """Stub client only — not a multi-process worker proof."""
     shared: Any = _SharedRedis()
     a = RedisJobBackend(shared)
     b = RedisJobBackend(shared)

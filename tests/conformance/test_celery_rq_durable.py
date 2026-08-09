@@ -1,4 +1,7 @@
-"""Celery/RQ Redis-durable status (JOB-013-*)."""
+"""Celery/RQ Redis-durable status via shared client stubs (JOB-013-*).
+
+These tests use an in-process fake Redis client — not multi-process workers.
+"""
 
 from __future__ import annotations
 
@@ -59,7 +62,8 @@ def test_celery_requires_redis() -> None:
         CeleryJobBackend(_FakeCelery())
 
 
-def test_celery_status_shared_across_workers() -> None:
+def test_celery_status_shared_via_client_protocol() -> None:
+    """Stub client only — not a multi-process worker proof."""
     shared: Any = _SharedRedis()
     a = CeleryJobBackend(_FakeCelery(), redis_client=shared)
     b = CeleryJobBackend(_FakeCelery(), redis_client=shared)
@@ -73,7 +77,8 @@ def test_celery_status_shared_across_workers() -> None:
     assert marked is not None and marked.state is JobState.CANCELLED
 
 
-def test_celery_idempotency_across_workers() -> None:
+def test_celery_idempotency_shared_via_client_protocol() -> None:
+    """Stub client only — not a multi-process worker proof."""
     shared: Any = _SharedRedis()
     a = CeleryJobBackend(_FakeCelery(), redis_client=shared)
     b = CeleryJobBackend(_FakeCelery(), redis_client=shared)
@@ -94,7 +99,8 @@ def test_celery_idempotency_across_workers() -> None:
     assert first.job_id == second.job_id
 
 
-def test_rq_status_shared_across_workers() -> None:
+def test_rq_status_shared_via_client_protocol() -> None:
+    """Stub client only — not a multi-process worker proof."""
     shared: Any = _SharedRedis()
 
     def _demo(payload: dict[str, object]) -> None:
@@ -109,7 +115,8 @@ def test_rq_status_shared_across_workers() -> None:
     assert status.state is JobState.QUEUED
 
 
-def test_rq_cancel_across_workers() -> None:
+def test_rq_cancel_shared_via_client_protocol() -> None:
+    """Stub client only — not a multi-process worker proof."""
     shared: Any = _SharedRedis()
 
     def _demo(payload: dict[str, object]) -> None:
@@ -123,13 +130,14 @@ def test_rq_cancel_across_workers() -> None:
     status = a.get(handle.job_id, auth_subject="u1")
     assert status is not None
     assert status.cancel_requested is True
-    # Cross-worker mark SUCCEEDED while cancel sticky → CANCELLED
+    # Shared-store mark SUCCEEDED while cancel sticky → CANCELLED
     marked = a.mark(handle.job_id, JobState.SUCCEEDED)
     assert marked is not None
     assert marked.state is JobState.CANCELLED
 
 
-def test_rq_idempotency_across_workers() -> None:
+def test_rq_idempotency_shared_via_client_protocol() -> None:
+    """Stub client only — not a multi-process worker proof."""
     shared: Any = _SharedRedis()
 
     def _demo(payload: dict[str, object]) -> None:
