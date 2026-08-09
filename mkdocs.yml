@@ -178,6 +178,7 @@ nav:
     - HTMX interactions: guides/htmx-interactions.md
     - Minimal form POST: guides/minimal-form.md
     - Learning path: getting-started/learning-path.md
+    - Understanding maturity labels: getting-started/how-to-read.md
     - Core concepts: getting-started/core-concepts.md
     - Other hosts:
       - Flask: getting-started/flask.md
@@ -190,9 +191,12 @@ nav:
       - Troubleshooting: guides/troubleshooting.md
       - Error codes: guides/error-codes.md
     - Interact:
+      - HTMX interactions: guides/htmx-interactions.md
+      - Minimal form POST: guides/minimal-form.md
       - Forms and actions: guides/forms-and-actions.md
       - Mutations (@action vs @component): guides/mutations.md
       - Authentication: guides/authentication.md
+      - OIDC helpers: guides/oidc.md
       - Live interaction: guides/live-interaction.md
       - Dashboards and interaction graphs: guides/dashboards.md
       - Cookbook: guides/cookbook.md
@@ -255,6 +259,17 @@ nav:
     - API overview: api/README.md
     - Components:
       - Overview: components/index.md
+      - Start with these:
+        - Page: components/page.md
+        - Text: components/text.md
+        - Stack: components/stack.md
+        - Form: components/form.md
+        - TextInput: components/text-input.md
+        - SubmitButton: components/submit-button.md
+        - Button: components/button.md
+        - RefreshButton: components/refresh-button.md
+        - DataTable: components/data-table.md
+        - Poll: components/poll.md
       - Document and composition: components/document.md
       - Landmarks: components/landmarks.md
       - Layout: components/layout.md
@@ -271,9 +286,11 @@ nav:
       - Meta:
         - Autodoc (expanded subset): api/AUTODOC.md
         - Public API coverage map: api/COVERAGE.md
+        - Public exceptions: api/EXCEPTIONS.md
         - Stability: api/STABILITY.md
-        - Beginner / stable facade (0.23): api/STABLE_FACADE.md
-        - Production archetype (0.25): api/LIVE_DISPOSITION.md
+        - Beginner / stable facade: api/STABLE_FACADE.md
+        - Production archetype (0.25): api/PRODUCTION_ARCHETYPE.md
+        - Live disposition (0.24): api/LIVE_DISPOSITION.md
       - Application and routing:
         - Hedron: api/HEDRON.md
         - Router: api/ROUTER.md
@@ -324,27 +341,29 @@ nav:
         - API diagnostics: api/DIAGNOSTICS.md
         - HDJ (Jinja): api/JINJA.md
         - Conformance kit: api/CONFORMANCE.md
-  - Project:
-    - Evaluate:
-      - Overview: guides/evaluate.md
-      - Why Hedron: guides/why-hedron.md
-      - What's ready today: guides/whats-ready.md
-      - Enterprise diligence: guides/enterprise-diligence.md
-      - Architecture: ARCHITECTURE.md
-    - Understanding maturity labels: getting-started/how-to-read.md
+  - Evaluate:
+    - Overview: guides/evaluate.md
+    - Why Hedron: guides/why-hedron.md
+    - What's ready today: guides/whats-ready.md
+    - Enterprise diligence: guides/enterprise-diligence.md
+    - Architecture: ARCHITECTURE.md
+    - Ship to production: guides/ship-to-production.md
     - Support: guides/support.md
     - Security disclosure: SECURITY.md
+  - Project:
     - Evidence pack: guides/evidence-pack.md
     - Public roadmap: guides/roadmap.md
     - Upgrade to 0.25: guides/upgrade.md
     - Release notes: guides/release-notes.md
+    - Release summary (adopters): guides/release-adopters.md
     - What's new in 0.25: guides/whats-new-0.25.md
-    - What's new in 0.24: guides/whats-new-0.24.md
-    - What's new in 0.23: guides/whats-new-0.23.md
-    - What's new in 0.22: guides/whats-new-0.22.md
-    - What's new in 0.21: guides/whats-new-0.21.md
+    - Earlier trains:
+      - What's new in 0.24: guides/whats-new-0.24.md
+      - What's new in 0.23: guides/whats-new-0.23.md
+      - What's new in 0.22: guides/whats-new-0.22.md
+      - What's new in 0.21: guides/whats-new-0.21.md
+      - Archive index: guides/whats-new-archive.md
     - Package changelogs: guides/changelog.md
-    - Earlier what's-new (archive): guides/whats-new-archive.md
     - Migrations:
       - Streamlit: guides/streamlit-migration.md
       - Streamlit matrix: guides/streamlit-migration-matrix.md

@@ -100,16 +100,35 @@ Form(
 
 `Form(**{"hx-post": ...})` stringly attrs remain supported as an escape hatch.
 
+## Signature (`CsrfStrategy.validate`)
+
+Strategies implement `CsrfStrategy.validate(...)`. On failure they raise
+[`CsrfValidationError`](EXCEPTIONS.md) (message typically `"CSRF validation failed"`).
+Built-in FastAPI / Flask / Django hosts map that exception to HTTP **403**.
+
+## Parameters / returns (strategy validate)
+
+| Input | Role |
+|---|---|
+| Cookie / form / header token fields | Compared per strategy (`DoubleSubmitCookieCsrf`, `SessionTokenCsrf`) |
+| `get_expected` (session strategy) | Returns the expected token or fail-closed |
+
+| Return | Behavior |
+|---|---|
+| Success | Returns normally (no value required) |
+| Failure | Raises `CsrfValidationError` → host HTTP **403** |
+
 ## Errors
 
 | Condition | Behavior |
 |---|---|
-| Missing / invalid CSRF on unsafe method | HTTP **403** (built-in profiles with CSRF enabled) |
+| Missing / invalid CSRF on unsafe method | `CsrfValidationError` → HTTP **403** (built-in profiles with CSRF enabled) |
 | `CsrfField()` without token and without page `RenderContext.csrf_token` | `ValueError` at render time |
 | `security_headers=False` / `"app"` | Hedron skips applying profile headers — host owns them |
-| Strategy `get_expected` returns no match | Validation fails closed (403) |
+| Strategy `get_expected` returns no match | Validation fails closed (`CsrfValidationError` / 403) |
 
-Human index: [Error codes](../guides/error-codes.md). First-hour form:
+Exception type: [Public exceptions](EXCEPTIONS.md). Human index:
+[Error codes](../guides/error-codes.md). First-hour form:
 [Minimal form POST](../guides/minimal-form.md).
 
 ## Evidence

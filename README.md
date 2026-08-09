@@ -13,18 +13,15 @@ on FastAPI + HTMX — without a Node.js frontend stack.
 Unlike Streamlit’s script-rerun model, Hedron returns typed components from FastAPI routes
 and swaps HTML fragments with HTMX.
 
+**Requires Python 3.11+.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
+
 ```bash
-# Need uv? https://docs.astral.sh/uv/getting-started/installation/
-# macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
+# Need uv? macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh
 # Windows (PowerShell): irm https://astral.sh/uv/install.ps1 | iex
 
 uvx --from "hedron>=0.25.0,<0.26" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
-
-Prefer a **clean virtualenv** (Supported pins: FastAPI `>=0.141.1,<0.142`, Pydantic
-`>=2.13.4,<2.14` — use a fresh env if your project already pins older versions). Pin
-production installs with `hedron>=0.25.0,<0.26`.
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) — you should see **Hello from hedron new**.
 Click **Refresh status**; the page updates without a full reload (HTMX swaps a small HTML
@@ -32,7 +29,18 @@ fragment into the declared region).
 
 ![Hello from hedron new with Refresh status control](docs/assets/hello-refresh.jpg)
 
-![Notes form with CSRF and notes-saved counter](docs/assets/notes-form.jpg)
+<details>
+<summary>Dependency pins (first apps)</summary>
+
+Pin production installs with <code>hedron&gt;=0.25.0,&lt;0.26</code>.
+<strong>CI-supported</strong> (known-good): FastAPI <code>&gt;=0.141.1,&lt;0.142</code>,
+Pydantic <code>&gt;=2.13.4,&lt;2.14</code>.
+<strong>Declared</strong> install ranges are wider (FastAPI <code>&lt;0.150</code>,
+Pydantic <code>&lt;2.15</code>) — versions outside Supported are installable but not
+CI-proven. Use a clean venv if your project already pins older FastAPI/Pydantic.
+See <a href="https://hedron.readthedocs.io/en/latest/COMPATIBILITY/">Compatibility</a>.
+
+</details>
 
 [![Open in GitHub Codespaces](https://img.shields.io/badge/Codespaces-Open-blue?logo=github)](https://codespaces.new/eddiethedean/hedron)
 

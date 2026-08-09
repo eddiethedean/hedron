@@ -1,6 +1,11 @@
 # What's new in 0.21
 
-**Published** as `v0.21.0`. Pin `hedron>=0.21.0,<0.22`.
+!!! warning "Living train is 0.25"
+
+    Pin `hedron>=0.25.0,<0.26`. The pin below is historical for the 0.21 train only.
+    See [What’s new in 0.25](whats-new-0.25.md).
+
+**Published** as `v0.21.0`. Historical pin: `hedron>=0.21.0,<0.22`.
 
 Phase 0.21 (D-052) is the human assistive-technology **engineering** train: protocol packet,
 reference-app progressive-enhancement corpus, fragment allowlist parity, and release-gate

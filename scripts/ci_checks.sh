@@ -165,6 +165,7 @@ PY
   run uv run --python "$PYTHON" python scripts/sync_status_roadmap.py --check
   run uv run --python "$PYTHON" python scripts/generate_sim_demos.py --check
   run uv run --python "$PYTHON" python scripts/check_docs_train_ssot.py
+  run uv run --python "$PYTHON" python scripts/check_recipe_code_sync.py
 
   uv run --python "$PYTHON" python - <<'PY'
 import re

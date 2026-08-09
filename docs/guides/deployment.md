@@ -2,18 +2,7 @@
 
 Adopter ship checklist (canonical): [Ship to production](ship-to-production.md).
 This page is the **deep dive** for environment variables, Docker/proxy sketches, and
-host parity.
-
-## Production checklist (FastAPI flagship)
-
-Same items as [Ship to production](ship-to-production.md) — summarized:
-
-1. Set a strong `session_secret` (never the development default). Prefer `security="strict"` when CSP without inline styles is acceptable.
-2. Run `hedron build` and deploy the build directory with your app (**before** enabling production mode).
-3. Set `HEDRON_ENV=production` or `Hedron(production=True)`.
-4. Keep `explorer="off"` (or `secured` with real auth). Development Explorer is disabled in production.
-5. Serve behind HTTPS so CSRF cookies can be `Secure`.
-6. Multi-worker: sticky sessions or shared session store; shared `JobBackend`; prefer polling — [HA notes](ship-to-production.md#high-availability-multi-replica).
+host parity — not a second checklist.
 
 ## Flask / Django parity
 

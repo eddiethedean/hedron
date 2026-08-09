@@ -71,16 +71,56 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `InteractionRecorder`, `RecordedExchange`, `RecordingSnippet` | [INFERENCE.md](INFERENCE.md) |
 | `render`, `render_component_response`, `render_interaction`, `RenderContext`, `RenderMode`, `RenderResult` | [RENDERING.md](RENDERING.md), [INTERACTION.md](INTERACTION.md) |
 
-## Built-in UI components
+## Previously unmapped helpers and types
 
-Documented primarily on [component pages](../components/index.md) and
-[BUILT_INS.md](BUILT_INS.md). Includes layout (`Page`, `Stack`, `Grid`, …), forms
-(`Form`, `TextInput`, …), interaction (`RefreshButton`, `Poll`, `Lazy`, …), and
-utilities (`Metric`, `Toast`, …).
+| Export | Primary docs |
+|---|---|
+| `ByteRangeNotSatisfiable` | [EXCEPTIONS.md](EXCEPTIONS.md), [media-downloads](../guides/media-downloads.md) |
+| `CsrfStrategy` | [CSRF_COMPOSITION.md](CSRF_COMPOSITION.md), [EXCEPTIONS.md](EXCEPTIONS.md) |
+| `CsrfValidationError` | [EXCEPTIONS.md](EXCEPTIONS.md), [CSRF_COMPOSITION.md](CSRF_COMPOSITION.md) |
+| `Dialogue` | [Dialogue](../components/dialogue.md) |
+| `DialogueTurn` | [EXCEPTIONS.md](EXCEPTIONS.md), [INFERENCE.md](INFERENCE.md) |
+| `DirectoryUpload` | [DirectoryUpload](../components/directory-upload.md) |
+| `DirectoryUploadFile` | [EXCEPTIONS.md](EXCEPTIONS.md), [DirectoryUpload](../components/directory-upload.md) |
+| `ExampleItem` | [INFERENCE.md](INFERENCE.md) |
+| `FeedbackPolicy` | [INFERENCE.md](INFERENCE.md) |
+| `GalleryItem` | [EXCEPTIONS.md](EXCEPTIONS.md), [Gallery](../components/gallery.md) |
+| `LoginCsrfField` | [CSRF_COMPOSITION.md](CSRF_COMPOSITION.md) |
+| `ParameterViewer` | [ParameterViewer](../components/parameter-viewer.md) |
+| `PredictionLabel` | [PredictionLabel](../components/prediction-label.md) |
+| `PredictionScore` | [EXCEPTIONS.md](EXCEPTIONS.md), [INFERENCE.md](INFERENCE.md) |
+| `StorageQuotaExceeded` | [EXCEPTIONS.md](EXCEPTIONS.md) |
+| `ViewportHint` | [EXCEPTIONS.md](EXCEPTIONS.md) |
+| `download_all_zip` | [media-downloads](../guides/media-downloads.md) |
+| `parse_byte_range` | [media-downloads](../guides/media-downloads.md) |
+| `redact_cookie_value` | [EXCEPTIONS.md](EXCEPTIONS.md) |
+| `validate_directory_upload` | [EXCEPTIONS.md](EXCEPTIONS.md) |
 
-FastAPI-only builtins also listed under Autodoc / built-ins:
+## Built-in UI components (complete `__all__` inventory)
+
+Constructor/props live on the [component catalog](../components/index.md). Index:
+[BUILT_INS.md](BUILT_INS.md). FastAPI-only builtins also under Autodoc:
 `AutoForm`, `ErrorState`, `InfiniteScroll`, `Loading`, `Pagination`, `ChatInput`,
-`DownloadButton`, `FileUpload`, `safe_download_response`.
+`DownloadButton`, `FileUpload`, `safe_download_response`, plus layout helpers such as
+`Page`, `Stack`, `Grid`, `Form`, `TextInput`, `RefreshButton`, `Poll`, `Lazy`,
+`Metric`, `Toast` (covered in sections above / component pages).
+
+| Export | Primary docs |
+|---|---|
+| `ActionDock`, `Alert`, `AppShell`, `Aside`, `AttrHost`, `Badge` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `BottomDock`, `Button`, `Card`, `Carousel`, `ChatMessage`, `Checkbox` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `ChipInput`, `CircularProgress`, `ClipboardCopy`, `CodeBlock`, `CodeViewer`, `ColorInput` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `ConfirmButton`, `Container`, `ContextMenu`, `DateInput`, `DateTimeInput`, `DescriptionList` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `Dialog`, `Divider`, `Expander`, `Footer`, `FormErrors`, `FormField` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `Fragment`, `Head`, `Header`, `Heading`, `Help`, `HelpInspector` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `HtmxLink`, `IconButton`, `Image`, `Inline`, `JSONViewer`, `Label` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `Link`, `LinkButton`, `List`, `Logo`, `Main`, `MainPanel` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `MarkerSpec`, `Math`, `MenuButton`, `MultiSelect`, `Nav`, `NavLink` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `NumberInput`, `OobHost`, `PageIcon`, `Pills`, `Popover`, `Progress` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `RadioGroup`, `RangeInput`, `RatingInput`, `Section`, `SegmentedControl`, `Select` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `SelectSlider`, `Sidebar`, `Skeleton`, `Spacer`, `Status`, `SubmitButton` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `Table`, `Tabs`, `Text`, `TextArea`, `Theme`, `TimeInput` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
+| `Timeline`, `Title`, `ToggleSwitch`, `Tooltip` | [Components](../components/index.md), [BUILT_INS.md](BUILT_INS.md) |
 
 ## Data and charts (extras)
 
@@ -124,10 +164,12 @@ SQLAlchemy adapter: `hedron_data.sqlalchemy_source.SQLAlchemyDataSource` — see
 
 ## Gaps policy
 
-If a symbol is in `__all__` but only listed here (no deep contract page), treat the
-component page or guide as normative for behavior, and open an issue when a signature
-or error matrix is missing. Prefer expanding Autodoc members over duplicating narrative.
+Every name in `hedron.__all__` should appear in a table on this page. If a symbol has
+no deep contract page, treat the component page, guide, or
+[EXCEPTIONS.md](EXCEPTIONS.md) as normative, and open an issue when a signature or
+error matrix is missing. Prefer expanding Autodoc members over duplicating narrative.
 
-**Intentionally thin (Autodoc / guide only):** icon helpers (`get_icon`, `list_icons`,
-`register_icon`, `trusted_svg`), some response merge helpers, and FastAPI-only builtin
-wrappers already covered by [BUILT_INS.md](BUILT_INS.md) / component pages.
+**Intentionally thin (Autodoc / guide / component page only):** icon helpers
+(`get_icon`, `list_icons`, `register_icon`, `trusted_svg`), most UI component props
+(component pages), and FastAPI-only builtin wrappers covered by
+[BUILT_INS.md](BUILT_INS.md).

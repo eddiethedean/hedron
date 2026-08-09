@@ -24,7 +24,7 @@ def home() -> Page:
     )
 ```
 
-## Constructor
+## Parameters
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|

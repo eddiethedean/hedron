@@ -27,6 +27,15 @@ queue, worker fleet, scheduler, result database, or retry service.
 
 Production recipe: [Celery / RQ + Redis](../guides/jobs-celery-rq.md).
 
+## Parameters
+
+| Helper | Key parameters |
+|---|---|
+| `enqueue_durable(job_type, payload, *, auth_subject=…, tenant_id=…, idempotency_key=…)` | Job type + JSON-ish payload; scope with subject/tenant for HTTP observation |
+| `job_status_response(status, *, auth_subject=…, tenant_id=…)` | `JobStatus` from backend `get`; same scope as enqueue |
+| `set_job_backend(backend)` | Process-local `JobBackend` (set on every worker) |
+| `JobBackend.submit` / `get` / `request_cancel` | See protocol table below |
+
 ## Returns
 
 | Helper | Returns | Errors / notes |

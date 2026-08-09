@@ -1,6 +1,11 @@
 # What’s new in Hedron 0.22
 
-**Published** as `v0.22.0`. Pin `hedron>=0.22.0,<0.23`.
+!!! warning "Living train is 0.25"
+
+    Pin `hedron>=0.25.0,<0.26`. The pin below is historical for the 0.22 train only.
+    See [What’s new in 0.25](whats-new-0.25.md).
+
+**Published** as `v0.22.0`. Historical pin: `hedron>=0.22.0,<0.23`.
 
 Phase **0.22** ships CSRF and SecurityPolicy composition (D-051):
 

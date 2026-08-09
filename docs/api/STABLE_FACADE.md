@@ -2,7 +2,7 @@
 status: shipped
 ---
 
-# Beginner / stable facade inventory (0.23)
+# Beginner / stable facade inventory
 
 !!! note "Facade inventory from 0.23; living train is 0.25"
 

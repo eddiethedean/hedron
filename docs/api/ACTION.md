@@ -25,9 +25,11 @@ async def delete_user(user_id: int) -> Text:
     return Text("deleted")
 ```
 
-## Decorator
+## Signature
 
 `@router.action(path, *, method="POST", methods=None, name=None, dependencies=None, tags=None, fragment_regions=None, **fastapi_kwargs)`
+
+## Parameters
 
 | Parameter | Description |
 |---|---|
@@ -36,6 +38,8 @@ async def delete_user(user_id: int) -> Text:
 | `dependencies` | FastAPI dependencies (auth gates, etc.) |
 | `fragment_regions` | Optional HTMX `HX-Target` allowlist (`FragmentRegion` or region id strings) |
 | Other kwargs | Passed to FastAPI `add_api_route` |
+
+## Returns
 
 Returns are rendered as fragments by default.
 
@@ -63,7 +67,8 @@ mutation routes ([forms guide](../guides/forms-and-actions.md),
 
 | Situation | Behavior |
 |---|---|
-| Missing/invalid CSRF | HTTP 403 |
+| Missing/invalid CSRF | [`CsrfValidationError`](EXCEPTIONS.md) → HTTP **403** |
+| Unauthorized `HX-Target` (when `fragment_regions` set) | HTTP **403** |
 | Unauthorized application dependency | Your dependency’s HTTP error |
 | Invalid local redirect | Rejected by security policy |
 

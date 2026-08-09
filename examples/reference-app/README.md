@@ -1,17 +1,22 @@
-# Hedron reference application (FastAPI) — production archetype (`ARCHETYPE-025`)
+# Hedron reference application (FastAPI)
 
-Canonical multi-worker production archetype for the living Hedron train (**0.25** /
-Published `v0.25.0`). Also used as the authenticated team-administration demo and
-GOVERN-019 accessibility statement dry-run (`accessibility_statement.py` — never
-auto-claims WCAG conformance).
+Multi-worker production kitchen-sink sample for the living Hedron train (**0.25**).
+Authenticated team-administration demo with CRUD, DataEditor, charts, and the
+production-archetype checklist (reverse-proxy subpath, Redis, CSP, Explorer off).
 
-Packet SSOT: [PRODUCTION_ARCHETYPE.md](../../docs/api/PRODUCTION_ARCHETYPE.md).
+Contract: [PRODUCTION_ARCHETYPE.md](../../docs/api/PRODUCTION_ARCHETYPE.md).
 
-**Human AT (0.21):** engineering prep for the task corpus is on this app; compensated /
+Prefer [session-auth](../session-auth/) and [notes-sqlalchemy](../notes-sqlalchemy/) for a
+shorter second-hour path. This app is the full kitchen sink.
+
+**Credentials:** HTTP Basic `admin` / `secret` (local demo only). Not the same as the
+session-auth recipe (`ada` / `correct-horse`).
+
+**Human AT:** engineering prep for the task corpus is on this app; compensated /
 screen-reader sessions remain Planned until Verified. Facilitator scripts:
 [docs/acceptance/human-at/task-scripts.md](../../docs/acceptance/human-at/task-scripts.md).
 
-## Ingredient checklist (ARCHETYPE-025)
+## Ingredient checklist (production archetype)
 
 | Ingredient | How this app covers it |
 |---|---|

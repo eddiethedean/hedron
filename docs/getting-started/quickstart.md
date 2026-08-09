@@ -1,15 +1,16 @@
 # Build your first app
 
-**~5–10 minutes** from a clean environment to **Hello from hedron new**, a working
-**Refresh** click, then a one-line edit. Prefer **`python -m hedron`** so PATH never
-matters.
+**~5–10 minutes after Python 3.11+ and uv/pip are ready** to **Hello from hedron new**,
+a working **Refresh** click, then a one-line edit. Prefer **`python -m hedron`** so PATH
+never matters. Cold machines (install Python/uv first) or Codespaces first boot often take
+longer — see [Try with Codespaces](../examples/try-it.md).
 
 ## Prerequisites
 
 - CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
-- Use a **clean virtual environment** for your first try. Supported pins (CI-proven):
-  FastAPI `>=0.141.1,<0.142`, Pydantic `>=2.13.4,<2.14` (declared Pydantic range is
-  wider — see [Compatibility](../COMPATIBILITY.md)). Shared envs often resolve the wrong
+- Use a **clean virtual environment** for your first try. Prefer **CI-supported** pins:
+  FastAPI `>=0.141.1,<0.142`, Pydantic `>=2.13.4,<2.14`. Declared install ranges are
+  wider — see [Compatibility](../COMPATIBILITY.md). Shared envs often resolve the wrong
   FastAPI/Pydantic.
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
@@ -97,7 +98,7 @@ returns a small HTML fragment; [HTMX](https://htmx.org) swaps it into the declar
 |---|---|
 | `hedron: command not found` | Use `python -m hedron …` (or finish the pip CLI install) |
 | `ModuleNotFoundError: hedron` after `hedron new` | Run `pip install -e .` / `uv sync` **inside** the scaffold directory |
-| FastAPI / dependency resolver errors | Use a **clean** venv; Hedron needs FastAPI `>=0.141.1,<0.142` |
+| FastAPI / dependency resolver errors | Use a **clean** venv; prefer Supported FastAPI `>=0.141.1,<0.142` ([Compatibility](../COMPATIBILITY.md)) |
 | Port 8000 already in use | `uvicorn app:app --reload --port 8001` |
 | Page loads but Refresh does nothing | Confirm HTMX static is mounted and the status region id matches; see [troubleshooting](../guides/troubleshooting.md) |
 
@@ -193,11 +194,13 @@ Advisory findings on a hello-world scaffold are normal.
 
 ## Alternative — add Hedron to an existing FastAPI app
 
-!!! warning "FastAPI pin is a hard prerequisite"
+!!! warning "FastAPI pin — Supported vs declared"
 
-    Hedron requires FastAPI `>=0.141.1,<0.142`. Shared or older FastAPI environments will
-    fail to resolve. Use a **clean venv** (or upgrade FastAPI into that pin) before mounting.
-    See [troubleshooting](../guides/troubleshooting.md).
+    For a known-good first mount, use FastAPI `>=0.141.1,<0.142` (CI-supported). Declared
+    metadata allows up to `<0.150`, but versions outside Supported are not CI-proven.
+    Shared or older FastAPI environments often fail to resolve — use a **clean venv**.
+    See [troubleshooting](../guides/troubleshooting.md) and
+    [Compatibility](../COMPATIBILITY.md).
 
 If you already have a FastAPI project that satisfies the pin, install
 `hedron>=0.25.0,<0.26` and **include a `HedronRouter`** (recommended). You own

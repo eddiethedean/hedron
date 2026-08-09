@@ -7,72 +7,87 @@ Experimental — prefer this recipe.
 
 === "Demo"
 
-    Bounded job poll — each click advances one status step. Docs simulation.
+    Click-through status steps only — **not** the real `Poll` recipe. Docs simulation.
 
     <!-- hedron-sim:jobs-poll -->
 
 === "Code"
 
-    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+    Real recipe (`Poll` + `job_status_response`) — same as the curl download below.
+    The Demo tab is a simplified click-through simulation only.
 
     ```python title="app.py"
-    import os
+    """Polling job status (Supported path). In-memory backend — local demo only."""
 
-    from hedron import Hedron, Page, Stack, html, swap
+    from __future__ import annotations
+
+    import threading
+    import time
+
+    from fastapi import HTTPException, Request
+
+    from hedron import ComponentRef, Hedron, Page, Poll, Status, Text
+    from hedron.jobs import enqueue_durable, job_status_response
+    from hedron_core.jobs import InMemoryJobBackend, JobState, set_job_backend
 
     app = Hedron(
-        title="Job poll",
+        title="Jobs poll demo",
         security="standard",
         explorer="off",
-        session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
+        session_secret="replace-in-production",
     )
 
-    job = app.region("job-panel", description="Job status")
+    backend = InMemoryJobBackend()
+    set_job_backend(backend)
 
-    _STEPS = [
-        ("Queued", "Waiting for worker"),
-        ("Running", "Step 1 of 2"),
-        ("Running", "Step 2 of 2"),
-        ("Complete", "84 records imported; polling stopped"),
-    ]
-    _tick = 0
+    JOB_STATUS = "/jobs/{job_id}/status"
+    DEMO_SUBJECT = "demo-user"
+    DEMO_TENANT = "demo-tenant"
 
 
-    def panel(state: str, detail: str):
-        return html.div(
-            html.strong(state),
-            html.span(detail),
-            id=job.id,
-            role="status",
-            aria={"live": "polite"},
-        )
+    def _demo_scope(request: Request) -> dict[str, str]:
+        """Session-backed demo identity (replace with real auth in production)."""
+        session = request.session
+        subject = session.get("auth_subject")
+        tenant = session.get("tenant_id")
+        if not isinstance(subject, str) or not subject:
+            subject = DEMO_SUBJECT
+            session["auth_subject"] = subject
+        if not isinstance(tenant, str) or not tenant:
+            tenant = DEMO_TENANT
+            session["tenant_id"] = tenant
+        return {"auth_subject": subject, "tenant_id": tenant}
+
+
+    def worker(job_id: str) -> None:
+        time.sleep(1.0)
+        backend.mark(job_id, JobState.SUCCEEDED, result={"ok": True})
 
 
     @app.page("/")
-    def home() -> Page:
+    def home(request: Request) -> Page:
+        scope = _demo_scope(request)
+        job_id = enqueue_durable("demo", {"n": 1}, **scope)
+        threading.Thread(target=worker, args=(job_id,), daemon=True).start()
+        ref = ComponentRef(
+            logical_id="job-status",
+            path=JOB_STATUS.format(job_id=job_id),
+            method="GET",
+        )
         return Page(
-            Stack(
-                panel("Idle", "Click to start a bounded poll cycle."),
-                html.button(
-                    "Start job poll",
-                    type="button",
-                    **{
-                        "hx-get": "/jobs/42",
-                        "hx-target": job.selector,
-                        "hx-swap": "outerHTML",
-                    },
-                ),
-            ),
-            title="Poll",
+            Text(f"Job {job_id} (poll every 2s — Supported path)"),
+            Poll(ref=ref, interval_ms=2000, content=Status("Queued…")),
+            title="Jobs poll",
         )
 
 
-    @app.fragment("/jobs/42", region=job)
-    def job_tick():
-        global _tick
-        state, detail = _STEPS[min(_tick, len(_STEPS) - 1)]
-        _tick = min(_tick + 1, len(_STEPS) - 1)
-        return swap(panel(state, detail))
+    @app.get("/jobs/{job_id}/status")
+    def job_status(job_id: str, request: Request):
+        scope = _demo_scope(request)
+        status = backend.get(job_id, **scope)
+        if status is None:
+            raise HTTPException(status_code=404, detail="Job not found")
+        return job_status_response(status, **scope)
     ```
 
 ## Run without cloning the monorepo
@@ -80,7 +95,7 @@ Experimental — prefer this recipe.
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
 pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
-# Copy https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/jobs-poll/app.py → app.py
+curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/jobs-poll/app.py -o app.py
 uvicorn app:app --reload
 ```
 

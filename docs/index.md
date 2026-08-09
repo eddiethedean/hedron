@@ -18,14 +18,14 @@ Unlike Streamlit’s script-rerun model, Hedron returns components from FastAPI 
 swaps HTML fragments in place.
 { .hedron-lede }
 
-**Often ~5–10 minutes** after Python and uv/pip are ready: install → `hedron new` →
+**~5–10 minutes after Python 3.11+ and uv/pip are ready:** install → `hedron new` →
 open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
 { .hedron-lede }
 
 <div class="hedron-actions" markdown>
 [Get started](getting-started/quickstart.md){ .md-button .md-button--primary }
-[Try in Codespaces](examples/try-it.md){ .md-button }
 [Why Hedron](guides/why-hedron.md){ .md-button }
+[Evaluate](guides/evaluate.md){ .md-button }
 </div>
 
 <div class="hedron-signal-row">
@@ -38,8 +38,7 @@ open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
 
 ## From zero to a rendered page
 
-Prefer a clean virtualenv (Supported pins: FastAPI `>=0.141.1,<0.142`, Pydantic
-`>=2.13.4,<2.14`). Pin production installs with `hedron>=0.25.0,<0.26`.
+**Requires Python 3.11+.** Pin installs with `hedron>=0.25.0,<0.26`.
 
 === "uv (recommended)"
 
@@ -63,11 +62,13 @@ Prefer a clean virtualenv (Supported pins: FastAPI `>=0.141.1,<0.142`, Pydantic
     uvicorn app:app --reload
     ```
 
-!!! note "Install pin"
+!!! note "Pip installs twice; pins are two bands"
 
-    Prefer a clean virtualenv — Hedron requires FastAPI `>=0.141.1,<0.142`
-    (see [troubleshooting](guides/troubleshooting.md)). Pip needs two installs (CLI, then
-    `pip install -e .` inside the scaffold) — [FAQ](guides/faq.md#why-install-hedron-twice-cli-then-project).
+    Pip needs two installs (CLI, then `pip install -e .` inside the scaffold) —
+    [FAQ](guides/faq.md#why-install-hedron-twice-cli-then-project). Prefer a clean
+    virtualenv for first apps. **CI-supported** FastAPI/Pydantic bands are tighter than
+    **declared** install ranges — see [Compatibility](COMPATIBILITY.md) and
+    [troubleshooting](guides/troubleshooting.md).
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 Click **Refresh status** — the page updates without a full reload. Hedron returns a small

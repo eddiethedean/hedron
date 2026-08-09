@@ -11,6 +11,17 @@ status: shipped
 
 **Status:** Shipped in `0.6.0`
 
+## Parameters (`HTML`)
+
+| Parameter | Description |
+|---|---|
+| `component` | Component / node tree to render as `text/html` |
+
+## Returns (`HTML`)
+
+A response wrapper consumed by `HedronRoute` / `hedron_response()` before FastAPI
+serializes the endpoint result.
+
 ## `HTML(component)`
 
 Wraps a component return when using ordinary `FastAPI` / `HedronRouter` routing. On `HedronRoute`, `HTML(...)` and component returns are converted before FastAPI serializes the endpoint result.
@@ -125,6 +136,9 @@ FastAPI request-validation failures use semantic **422** handling:
 | `Cache-Control: public` via raw `headers` / `extra_headers` | Rejected |
 | Production without build manifest | Startup refuses (`HED-BUILD-0003`) |
 | HTMX request validation failure | HTTP `422` HTML fragment (not JSON) |
+| Unsatisfiable media byte range | [`ByteRangeNotSatisfiable`](EXCEPTIONS.md) → HTTP **416** |
+
+Public exception types: [EXCEPTIONS.md](EXCEPTIONS.md).
 
 Default status policies for 202, 204, 401, 403, 409, 422, 429, and 500 are available through
 `status_policy_for` — see [Interaction](INTERACTION.md).

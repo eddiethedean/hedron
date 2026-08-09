@@ -38,9 +38,11 @@ A small browser library that swaps server HTML into page regions using attribute
 
 ## Why is FastAPI pinned so tightly?
 
-Hedron’s Supported matrix tests FastAPI `>=0.141.1,<0.142` (and Pydantic Supported
-`>=2.13.4,<2.14`; declared wider). Shared data-science envs with older FastAPI often
-fail to resolve — use a **clean venv**. Details: [Compatibility](../COMPATIBILITY.md).
+Two bands: **declared** install metadata allows FastAPI `>=0.141.1,<0.150` and Pydantic
+`>=2.13.4,<2.15`; the **CI-supported** matrix tests the tighter bands FastAPI
+`>=0.141.1,<0.142` and Pydantic `>=2.13.4,<2.14`. Prefer Supported for first apps.
+Shared data-science envs with older FastAPI often fail to resolve — use a **clean venv**.
+Details: [Compatibility](../COMPATIBILITY.md).
 
 ## Refresh status clicked but nothing changed
 

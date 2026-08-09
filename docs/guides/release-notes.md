@@ -7,15 +7,17 @@ Adopter-facing summary for the **0.25.x** train. For per-package commit detail, 
 ## Current train — 0.25.0 (2026-08-09)
 
 **Published** (`0.25.0`; last published PyPI/git = `v0.25.0`).
-Live-transport disposition **`polling_only`** (D-053 / RFC-0056): polling is the Supported
-production story; SSE / WebSocket / streaming / preload helpers remain **experimental**
-(`hedron.experimental`). Prior Deferred live-ops IDs (`BROWSER-10-001`, `PERF-10-001`,
-`LIVE-011-BROWSER`) are **Superseded**. Human AT **sessions** (`SR-021` /
-`PARTICIPANT-021`) remain **Planned** — do not market human AT as Supported (carryover
-from 0.21).
 
-Narrative deep-dive: [What's new in 0.25](whats-new-0.25.md) · maturity:
-[What's ready today](whats-ready.md).
+**Adopter highlights:** production kitchen-sink reference app, CI critical-path budgets,
+extras landmine quarantine (`hedron[experimental-ui]`), Matplotlib-default charts path,
+SBOM/evidence attach on train tags. Polling remains the Supported live-status story
+(from 0.24). Human AT **sessions** remain **Planned** — do not market human AT as
+Supported.
+
+Narrative: [What's new in 0.25](whats-new-0.25.md) · maturity:
+[What's ready today](whats-ready.md) · ship checklist:
+[Ship to production](ship-to-production.md) · pin / Release assets:
+[Release summary (adopters)](release-adopters.md).
 
 ```bash
 pip install -U "hedron>=0.25.0,<0.26"
@@ -24,6 +26,14 @@ uv add "hedron>=0.25.0,<0.26"
 ```
 
 Optional: `pip install "hedron[gradio]>=0.1.0,<0.2"` · `"hedron[notebook]>=0.1.0,<0.2"` · `"hedron[mcp]>=0.1.0,<0.2"`.
+
+## Prior — 0.24.0
+
+Live-transport disposition **`polling_only`**: polling is the Supported production story;
+SSE / WebSocket / streaming / preload helpers remain **experimental**
+(`hedron.experimental`). Prior Deferred live-ops IDs (`BROWSER-10-001`, `PERF-10-001`,
+`LIVE-011-BROWSER`) are **Superseded**. Narrative:
+[What's new in 0.24](whats-new-0.24.md).
 
 ## Prior — 0.23.0
 
@@ -36,3 +46,9 @@ CSRF-proxy / mount hardening. Narrative: [What's new in 0.23](whats-new-0.23.md)
 CSRF / SecurityPolicy composition (D-051): pluggable CSRF strategies, composable
 `SecurityHeadersPolicy`, and `CsrfField` / `Form(hx=Hx(...))`. Narrative:
 [What's new in 0.22](whats-new-0.22.md).
+
+## Prior — 0.21.0
+
+Human AT protocol engineering on the train; compensated screen-reader sessions remain
+Planned. `@action` / component fragment-region parity. Narrative:
+[What's new in 0.21](whats-new-0.21.md).

@@ -2,7 +2,7 @@
 
 Short diligence sheet for security, procurement, and architecture reviewers.
 **Capability maturity:** [What’s ready](whats-ready.md) (sole source of truth).
-**Fit:** [Evaluate Hedron](evaluate.md) · **Ops:** [Production readiness](production-readiness.md) ·
+**Fit:** [Evaluate Hedron](evaluate.md) · **Ops:** [Ship to production](ship-to-production.md) ·
 [Design principles](design-principles.md).
 
 ## Project facts

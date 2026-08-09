@@ -6,10 +6,12 @@ every name in `hedron.__all__` — prefer hand-maintained contract pages for nar
 errors, and adopter guidance; use Autodoc to verify parameter lists against installed
 sources.
 
-**Coverage (honest):** Autodoc covers an expanded golden-path + CSRF subset (on the order
-of dozens of symbols). The root `hedron` export set is much larger (~230 names in
-`__all__`). Map of exports → pages: [Coverage map](COVERAGE.md). Live SSE / streaming /
-WebSocket helpers are **not** in `__all__` — import from `hedron.experimental`.
+**Coverage (honest):** Autodoc covers an expanded golden-path + CSRF + exceptions +
+`hedron.experimental` live subset (still dozens of symbols, not every name). The root
+`hedron` export set is ~230 names in `__all__`. **Complete name → page map:**
+[Coverage map](COVERAGE.md). Component constructor tables:
+[Components](../components/index.md). Live SSE / streaming / WebSocket helpers are
+**not** in `__all__` — import from `hedron.experimental` (Autodoc below uses that path).
 
 **Page template for hand contracts:** Example → Signature/members → Parameters →
 Returns → Errors → See also ([Field](FIELD.md) is the gold standard).
@@ -392,17 +394,21 @@ Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
     options:
       heading_level: 3
 
-## Live helpers
+## Live helpers (canonical: `hedron.experimental`)
 
-::: hedron.sse.sse_response
+Import SSE / streaming / WebSocket helpers from **`hedron.experimental`** (polling remains
+Supported). Compat shims under `hedron.sse` / `hedron.streaming` / `hedron.websocket_channel`
+exist but are not the Autodoc path below.
+
+::: hedron.experimental.sse_response
     options:
       heading_level: 3
 
-::: hedron.sse.job_status_sse_response
+::: hedron.experimental.job_status_sse_response
     options:
       heading_level: 3
 
-::: hedron.sse.SseResponse
+::: hedron.experimental.SseResponse
     options:
       heading_level: 3
 
@@ -436,27 +442,27 @@ Narrative companions: [Inference](INFERENCE.md) · [Hedron](HEDRON.md) ·
     options:
       heading_level: 3
 
-::: hedron.streaming.StreamingComponentResponse
+::: hedron.experimental.StreamingComponentResponse
     options:
       heading_level: 3
 
-::: hedron.streaming.stream_tokens
+::: hedron.experimental.stream_tokens
     options:
       heading_level: 3
 
-::: hedron.streaming.stream_chunked_list
+::: hedron.experimental.stream_chunked_list
     options:
       heading_level: 3
 
-::: hedron.streaming.stream_document
+::: hedron.experimental.stream_document
     options:
       heading_level: 3
 
-::: hedron.websocket_channel.accept_page_session_channel
+::: hedron.experimental.accept_page_session_channel
     options:
       heading_level: 3
 
-::: hedron.websocket_channel.send_region_update
+::: hedron.experimental.send_region_update
     options:
       heading_level: 3
 
@@ -575,10 +581,81 @@ Signatures for `hedron-flask` and `hedron-django` public exports. Narrative matr
     options:
       heading_level: 3
 
+## Interaction day-1 helpers
+
+::: hedron_core.interaction.FragmentRegion
+    options:
+      heading_level: 3
+
+::: hedron_core.interaction.InteractionResult
+    options:
+      heading_level: 3
+
+::: hedron.interaction.swap
+    options:
+      heading_level: 3
+
+::: hedron.builtins.Poll
+    options:
+      heading_level: 3
+
+## Public exceptions and helpers
+
+Narrative: [EXCEPTIONS.md](EXCEPTIONS.md).
+
+::: hedron_core.csrf_strategy.CsrfValidationError
+    options:
+      heading_level: 3
+
+::: hedron_core.csrf_strategy.CsrfStrategy
+    options:
+      heading_level: 3
+
+::: hedron.builtins.media.ByteRangeNotSatisfiable
+    options:
+      heading_level: 3
+
+::: hedron_core.browser.StorageQuotaExceeded
+    options:
+      heading_level: 3
+
+::: hedron_core.browser.ViewportHint
+    options:
+      heading_level: 3
+
+::: hedron_core.browser.redact_cookie_value
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms_extra.DirectoryUploadFile
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.forms_extra.validate_directory_upload
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.model_demo.PredictionScore
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.model_demo.DialogueTurn
+    options:
+      heading_level: 3
+
+::: hedron_core.builtins.media.GalleryItem
+    options:
+      heading_level: 3
+
+::: hedron.builtins.media.parse_byte_range
+    options:
+      heading_level: 3
+
 ## See also
 
 - [Hedron contract](HEDRON.md) · [Router](ROUTER.md) · [Interaction](INTERACTION.md)
 - [Prepare](PREPARE.md) · [Audit](AUDIT.md) · [Tracing](TRACING.md)
 - [Component](COMPONENT.md) · [Field](FIELD.md) · [SSE](SSE.md) · [Diagnostics](DIAGNOSTICS.md)
-- [CLI](CLI.md) · [Page](PAGE.md) · [Adapters](ADAPTERS.md) · [Public API coverage map](COVERAGE.md)
+- [Exceptions](EXCEPTIONS.md) · [CLI](CLI.md) · [Page](PAGE.md) · [Adapters](ADAPTERS.md)
+- [Public API coverage map](COVERAGE.md)
 - Component catalog (props/examples): [Components](../components/index.md)

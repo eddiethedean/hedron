@@ -3,8 +3,9 @@
 ## First contribution
 
 **New here?** Start with the thin on-ramp:
-[Contributor day-one](guides/contributor-day-one.md) (docs PR in ~15 minutes, or a
-small bug fix). The rest of this page is the full contributor guide.
+[Contributor day-one](guides/contributor-day-one.md) (local docs verify ~15 minutes;
+CI still runs the full matrix — often tens of minutes — see below). The rest of this
+page is the full contributor guide.
 
 **Prerequisites:** CPython **3.11–3.14** and [uv](https://docs.astral.sh/uv/).
 
@@ -56,7 +57,8 @@ request** — there are **no path filters** today. Maintainers may re-run or wai
 `browser` / `evidence` flakes on clearly docs-only changes. Contributors should:
 
 1. Run the local docs verify commands above (including
-   `python scripts/check_docs_train_ssot.py`).
+   `python scripts/check_docs_train_ssot.py` and
+   `python scripts/check_recipe_code_sync.py` when you touch recipes/auth examples).
 2. Open the PR with a clear “docs-only” note in the description.
 3. If `browser` or `evidence` fails for reasons **unrelated** to your markdown change,
    ask a maintainer to re-run or waive — **do not** expand the diff to chase unrelated
@@ -66,7 +68,7 @@ When to leave Read the Docs for the GitHub corpus: RFCs, acceptance gates, STATU
 internals, ENGINEERING_BASELINE, and DECISIONS are **excluded from the public MkDocs site**
 — edit them on GitHub; adopters should stay on What’s ready / guides / API pages.
 Foundations non-goals and performance budgets **are** published on RTD under
-Project → Evaluate.
+**Evaluate** / **Project → Maintainers** (not the adopter golden path).
 
 **Local browser suite (optional):** install Playwright Chromium, then:
 

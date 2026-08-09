@@ -18,8 +18,8 @@ and ops.
 **Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md) · [Error codes](error-codes.md)
 (under **Guides → Help**).
 
-Evaluating adoption? Use **Project → Evaluate**
-([What’s ready](whats-ready.md) · [Design principles](design-principles.md)).
+Evaluating adoption? Use the **Evaluate** tab
+([What’s ready](whats-ready.md) · [Evaluate Hedron](evaluate.md)).
 
 <div class="hedron-grid">
   <a class="hedron-card" href="../getting-started/">
@@ -155,7 +155,7 @@ Evaluating adoption? Use **Project → Evaluate**
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>0.22 → 0.23 notes (also under Project → Upgrade).</p>
+    <p>Upgrade to the living 0.25 train (also under Project → Upgrade).</p>
   </a>
   <a class="hedron-card" href="openapi/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>

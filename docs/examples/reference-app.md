@@ -2,16 +2,24 @@
 
 Annotated tour of
 [`examples/reference-app`](https://github.com/eddiethedean/hedron/tree/main/examples/reference-app)—
-the FastAPI flagship CRUD sample and canonical multi-worker production archetype
-(`ARCHETYPE-025`) on the living **0.25** train (**Published** `v0.25.0`).
+the FastAPI flagship CRUD sample and multi-worker production kitchen sink on the living
+**0.25** train. Prefer [session auth](session-auth.md) and
+[notes + SQLAlchemy](notes-sqlalchemy.md) for a shorter second-hour path; use this app
+when you want the full archetype in one tree.
 
-Packet SSOT: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README:
+Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README:
 [`examples/reference-app/README.md`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/README.md).
 
-Click through the core patterns below (docs simulations — no live server), then run the
-full app locally or via production compose.
+Click through the pattern demos below (docs simulations — not the same login as the
+runnable app), then run the full app locally or via production compose.
 
-## Ingredient checklist (ARCHETYPE-025)
+!!! warning "Credentials for this app"
+
+    The runnable reference app uses **HTTP Basic** `admin` / `secret`.
+    Demo tabs that show `ada` / `correct-horse` are a **session-auth simulation** of the
+    auth *pattern* — not how this app authenticates.
+
+## Ingredient checklist (production archetype)
 
 | Ingredient | How this app covers it |
 |---|---|
@@ -23,19 +31,23 @@ full app locally or via production compose.
 | Explorer off | `explorer="off"` when `HEDRON_ENV=production` |
 | multi-worker | uvicorn `--workers 2` + Redis-backed job/cache |
 
-## Auth gate (simulated)
+## Auth gate (simulated pattern)
 
-The reference app gates the dashboard behind identity. Sign-in simulation:
+The runnable app uses **HTTP Basic** (`admin` / `secret`). The Demo/Code below is a
+**session-form** pattern for learning CSRF + redirects — run
+[session-auth](session-auth.md) for that recipe, not these credentials against
+`examples/reference-app`.
 
 === "Demo"
 
-    Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.
+    Wrong password → 401. ada / correct-horse → signed-in panel. Session-auth
+    simulation (not the reference app).
 
     <!-- hedron-sim:auth-login -->
 
 === "Code"
 
-    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+    Minimal session-form sample (not `examples/reference-app` — that app uses HTTP Basic):
 
     ```python title="app.py"
     import os

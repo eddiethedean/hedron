@@ -10,6 +10,12 @@ Start here if you are deciding whether Hedron fits. Pick the page that matches y
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 | Ops / ship checklist | [Ship to production](ship-to-production.md) |
 | Architecture | [Architecture](../ARCHITECTURE.md) |
+| Support / disclosure | [Support](support.md) · [SECURITY](../SECURITY.md) |
+
+**Second-hour path (internal admin):** [Session auth](../examples/session-auth.md) →
+[Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) →
+[Ship to production](ship-to-production.md). Treat the
+[reference app](../examples/reference-app.md) as an optional kitchen sink.
 
 Maintainer trust-program depth (not required for a PoC):
 [Production-quality maturity](production-quality.md) ·

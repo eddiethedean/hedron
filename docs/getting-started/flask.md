@@ -12,12 +12,18 @@ the status region update without a full page reload.
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
 uvx --from "hedron>=0.25.0,<0.26" hedron new my-flask-app --flask
-cd my-flask-app && uv sync && uv run flask --app app run
+cd my-flask-app && uv sync && uv run flask --app app run --port 8000
 ```
 
-Open [http://127.0.0.1:5000](http://127.0.0.1:5000/) — you should see
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000/) — you should see
 **Hello from hedron new --flask**. Click **Refresh**; the panel timestamp updates
 via HTMX into the declared `#panel` region.
+
+!!! note "Port 8000"
+
+    Hedron Flask samples and docs use port **8000** (same as FastAPI) so you can switch
+    examples without changing the browser URL. Plain `flask run` defaults to 5000 if you
+    omit `--port`.
 
 The scaffold includes page + fragment regions under `security="standard"`.
 Set `HEDRON_SESSION_SECRET` before production.
@@ -104,8 +110,8 @@ app = create_app()
 ```
 
 ```bash
-flask --app app:app run --debug
-# uv users: uv run flask --app app:app run --debug
+flask --app app:app run --debug --port 8000
+# uv users: uv run flask --app app:app run --debug --port 8000
 ```
 
 Constructor style (`HedronFlask(__name__)`) still works when you do not need a factory

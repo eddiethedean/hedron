@@ -35,6 +35,16 @@ See [Deployment](../guides/deployment.md) · [Ship to production](../guides/ship
 
 Untrusted forwarded headers are ignored by default (fail closed for spoofed prefixes).
 
+## Parameters / Returns
+
+| Helper | Parameters (summary) | Returns |
+|---|---|---|
+| `normalize_mount_path(value)` | raw mount string | `str` (`""` or `/prefix`) |
+| `cookie_path_for_mount(mount)` | normalized mount | cookie `Path` string |
+| `prefix_local_path(url, mount)` | local URL + mount | prefixed local path |
+| `resolve_mount_path(...)` | `root_path`, `headers`, `peer`, `trusted_peers`, … | `MountPath` |
+| `mount_from_request(request, …)` | Starlette/FastAPI request | `MountPath` |
+
 ## API
 
 ### `MountPath`
@@ -106,13 +116,14 @@ def home(request):
     ...
 ```
 
-## Errors / failure modes
+## Errors
 
 | Situation | Behavior |
 |---|---|
 | Missing mount config under a subpath | Cookies/redirects use site root — Refresh/CSRF appear broken behind the proxy |
 | Spoofed `X-Forwarded-Prefix` from untrusted peer | Ignored; mount falls back to env / ASGI / root |
 | Double-prefixed local paths | `prefix_local_path` avoids re-prefixing when already under the mount |
+| Protocol-relative / absolute URL / backslash mount values | Rejected at normalize / resolve (fail closed) |
 
 ## See also
 

@@ -1,9 +1,12 @@
 # Single-file apps (pip evaluators)
 
 Run these without cloning the monorepo. Requires Python 3.11+ and a working network for
-`pip install`.
+`pip install`. Prefer [Build your first app](../getting-started/quickstart.md)
+(`hedron new`) for the interactive Hello + Refresh first-hour path.
 
-### Try it (simulated)
+## Hello + Refresh (recommended)
+
+Same scaffold as `hedron new` — includes HTMX Refresh.
 
 === "Demo"
 
@@ -58,13 +61,15 @@ Run these without cloning the monorepo. Requires Python 3.11+ and a working netw
         return swap(status_panel())
     ```
 
-## Hello page
+```bash
+pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
+# paste the Code tab into app.py, then:
+uvicorn app:app --reload
+```
 
-!!! warning "Static Hello only"
+## Static Hello only (no Refresh)
 
-    This sample has **no Refresh / HTMX**. Prefer
-    [Build your first app](../getting-started/quickstart.md) (`hedron new`) for the
-    interactive first-hour experience.
+Minimal page with **no** HTMX Refresh — use only if you want the smallest possible file.
 
 ```bash
 pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"

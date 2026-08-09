@@ -13,7 +13,8 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
 
 === "Code"
 
-    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+    Minimal **in-memory** variant (real Hedron). The SQLAlchemy recipe below differs —
+    download `examples/notes-sqlalchemy/app.py` for persistence:
 
     ```python title="app.py"
     from __future__ import annotations
@@ -109,7 +110,7 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
 pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]" "sqlalchemy>=2.0"
-# Copy https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/notes-sqlalchemy/app.py → app.py
+curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/notes-sqlalchemy/app.py -o app.py
 uvicorn app:app --reload
 ```
 
@@ -125,7 +126,7 @@ process working directory (gitignored).
 
 ## What it shows
 
-- `@app.page` + `@app.action` with a small `_csrf(request)` helper
+- `@app.page` + `@app.component` (POST) with a small `_csrf(request)` helper
 - SQLAlchemy ORM + SQLite
 - Post-Redirect-Get after save / delete
 

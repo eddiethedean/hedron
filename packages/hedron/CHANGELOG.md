@@ -2,9 +2,21 @@
 
 ## [0.25.0] — 2026-08-09
 
+### Added
+
+- Production archetype packet for `examples/reference-app` (multi-worker, Redis,
+  reverse-proxy subpath, `HEDRON_ENV=production`, CSP, Explorer off).
+- CI critical-path budgets `W-025-FRAGMENT`, `W-025-JOB-POLL`, `W-025-DATAEDITOR`.
+- Release CI attaches SBOM / evidence bundles on train tags (`SUPPLY-025`).
+
 ### Changed
 
-- Coordinated Beta train bump with `hedron` 0.25.0.
+- Coordinated Beta train bump with workspace packages at `0.25.0`.
+- `hedron[extras]` no longer registers specialty landmine UI
+  (`CodeEditor` / `TerminalView` / joystick / device); use `hedron[experimental-ui]` and
+  `hedron_extras.experimental`.
+- Matplotlib remains the Supported charts default; Plotly / Altair stay experimental.
+- `hedron new` scaffolds continue to pin `hedron` / adapters at `>=0.25.0,<0.26`.
 
 ## [0.24.0] — 2026-08-09
 

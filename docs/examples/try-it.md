@@ -25,6 +25,8 @@ This repository includes a [Dev Container](https://containers.dev/) definition a
 
 1. Open the repo in GitHub Codespaces **or** VS Code / Cursor → “Reopen in Container”.
 2. Wait until the container finishes `uv sync` (terminal prompt returns; `uv` is on PATH).
+   First boot often takes **5–15 minutes** because the Dev Container syncs the full
+   monorepo (including the docs dependency group) — not a 60-second sandbox.
 3. Run the Hello scaffold (published pin — independent of editable workspace packages):
 
 ```bash

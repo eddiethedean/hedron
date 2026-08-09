@@ -5,11 +5,11 @@ Adopter recipe for Flask + Hedron HTMX Refresh. Full guide:
 
 ```bash
 uvx --from "hedron>=0.25.0,<0.26" hedron new my-flask-app --flask
-cd my-flask-app && uv sync && uv run flask --app app run
+cd my-flask-app && uv sync && uv run flask --app app run --port 8000
 ```
 
-Open the app, click **Refresh**, and confirm the `#panel` timestamp updates without a
-full reload. Next: [HTMX interactions](../guides/htmx-interactions.md) ·
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000/), click **Refresh**, and confirm the
+`#panel` timestamp updates without a full reload. Next: [HTMX interactions](../guides/htmx-interactions.md) ·
 [Ship to production](../guides/ship-to-production.md).
 
 Monorepo reference (maintainers / evaluators):

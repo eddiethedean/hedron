@@ -10,6 +10,8 @@ Historical phase notes (read only if you are upgrading from that line):
 |---|---|
 | 0.24 | [whats-new-0.24](whats-new-0.24.md) |
 | 0.23 | [whats-new-0.23](whats-new-0.23.md) |
+| 0.22 | [whats-new-0.22](whats-new-0.22.md) |
+| 0.21 | [whats-new-0.21](whats-new-0.21.md) |
 | 0.20 | [whats-new-0.20](whats-new-0.20.md) |
 | 0.19 | [whats-new-0.19](whats-new-0.19.md) |
 | 0.18 | [whats-new-0.18](whats-new-0.18.md) |

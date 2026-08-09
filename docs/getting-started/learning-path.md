@@ -43,11 +43,16 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 | Use Django | [Add to an existing Django project](django.md) |
 | Prefer Jinja/HTML templates | [HDJ authoring](../guides/hdj-authoring.md) + `hedron[jinja]` |
 
-## 5. Data, charts, and live updates
+## 5. Internal admin path, then data / live updates
+
+**Recommended second hour:** [Session auth](../examples/session-auth.md) →
+[Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) →
+[Ship to production](../guides/ship-to-production.md). The
+[reference app](../examples/reference-app.md) is an optional kitchen sink after that.
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
-2. Recipes first: [Notes + SQLAlchemy](../examples/notes-sqlalchemy.md) ·
-   [Session auth](../examples/session-auth.md) · [File upload](../examples/file-upload.md)
+2. More recipes: [File upload](../examples/file-upload.md) ·
+   [Jobs poll](../examples/jobs-poll.md)
 3. Optional: [Dashboards](../guides/dashboards.md) · [Model demos](../guides/model-demos.md) ·
    [Jobs poll](../examples/jobs-poll.md) / [Celery / RQ](../guides/jobs-celery-rq.md)
 4. [Live interaction](../guides/live-interaction.md) (FastAPI live helpers; polling
@@ -60,8 +65,8 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 
 ## 6. Harden and deploy
 
-1. [Deployment](../guides/deployment.md)
-2. [Production readiness](../guides/production-readiness.md)
+1. [Ship to production](../guides/ship-to-production.md) — adopter checklist
+2. [Deployment](../guides/deployment.md) — env / Docker / proxy deep dive
 3. [Testing](../guides/testing.md) · [Troubleshooting](../guides/troubleshooting.md)
 
 ## 7. Evaluate (optional)

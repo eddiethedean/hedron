@@ -4,6 +4,12 @@
 are Verified; polling remains the Supported live-status story. See
 [What's ready](whats-ready.md) and [What's new in 0.25](whats-new-0.25.md).
 
+!!! tip "Jump to your train"
+
+    - **New install?** Use [Build your first app](../getting-started/quickstart.md) — not this page.
+    - **Already on 0.24?** Start at [0.24 → 0.25](#upgrade-from-024-025).
+    - **Older than 0.22?** Walk the sections below in order, or jump to your starting minor.
+
 ## Breaking changes digest (0.24 → 0.25)
 
 | Change | Action |

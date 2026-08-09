@@ -1,10 +1,10 @@
 # Public API
 
 Hand-maintained **contracts** for shipped surfaces on the **0.25** train, plus
-[Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. This is **not** a complete
-generated reference of every `hedron.__all__` name (~230 exports) — Autodoc covers an
-expanded golden-path subset. Use the [coverage map](COVERAGE.md) and prefer Autodoc /
-source when an outline page lacks an Errors section.
+[Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. Autodoc is still a
+**subset** of every `hedron.__all__` name (~230 exports). The [coverage map](COVERAGE.md)
+lists **every** root export → docs page. Public exception types:
+[EXCEPTIONS.md](EXCEPTIONS.md).
 
 Accepted RFCs that are not yet importable live in the GitHub maintainer corpus (excluded
 from Read the Docs). Adopters should start from the golden-path contracts below.

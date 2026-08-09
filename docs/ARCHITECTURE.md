@@ -83,6 +83,35 @@ accepted requests to `JobBackend.request_cancel`. Details: [Inference](api/INFER
 - Application authz and persistence remain your responsibility.
 - Job observation over HTTP uses `job_authorized_http` (fail closed for unscoped jobs).
 
+### Middleware and CSRF order (FastAPI)
+
+Typical stack (outer → inner): host middleware (CORS, your auth) → session middleware →
+Hedron CSRF validation on unsafe methods (when a built-in profile enables it) →
+`HedronRoute` handler → renderer. CSRF strategies raise
+[`CsrfValidationError`](api/EXCEPTIONS.md); hosts map that to HTTP **403**.
+Pluggable strategies: [CSRF composition](api/CSRF_COMPOSITION.md).
+
+### Fragment authorization (fail closed)
+
+Declared `FragmentRegion` / `fragment_regions` allowlists authorize `HX-Target` (and OOB
+updates). Wrong or missing targets fail closed with HTTP **403** — rendering a component
+never implies a public fragment endpoint. Details: [Interaction](api/INTERACTION.md).
+
+### Plugins and extras quarantine
+
+Plugins register into the sealed registry before first render. Specialty UI landmines
+(`CodeEditor` / `TerminalView` / joystick / device) require `hedron[experimental-ui]` and
+do not register via plain `hedron[extras]` — see
+[PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). Data/charts extras participate in the
+same render pipeline once imported; they do not bypass CSRF or fragment policy.
+
+### Multi-tenant caution
+
+Hedron does not invent tenancy. Scope durable jobs and caches with `auth_subject` /
+`tenant_id` (or your store’s equivalent). In-memory session/job state does not span
+workers — wrong scoping is an application bug, not a framework isolation guarantee.
+Guide: [Multi-tenant isolation](guides/multi-tenant.md).
+
 ## Assets and builds
 
 - Development may compile scoped CSS and serve package static assets.

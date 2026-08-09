@@ -5,7 +5,12 @@ hide:
 
 # Component demos
 
-Every public Hedron component has a dedicated, usable example and a detailed operating guide. Static components use real semantic HTML. Features that normally call an HTMX endpoint use a clearly labelled JavaScript simulation so loading, replacement, retry, paging, polling, editing, and validation remain usable on the hosted documentation site.
+Every public Hedron component has a dedicated page (searchable; linked from the category
+pages below). The left nav lists **categories**, not every component — start with the
+table of ten, then open a group. Static components use real semantic HTML. Features that
+normally call an HTMX endpoint use a clearly labelled JavaScript simulation so loading,
+replacement, retry, paging, polling, editing, and validation remain usable on the hosted
+documentation site.
 
 !!! info "What the simulation does"
 
@@ -35,7 +40,9 @@ Full pages, metadata, and fragment composition.
 
 ## Landmarks
 
-Semantic regions that give a page its accessible structure. **LANDMARK-019:** real typed exports (`Header`, `Main`, `Nav`, `Aside`, `Footer`, `Section`) with allowlisted safe HTML attrs — not factory variables.
+Semantic regions that give a page its accessible structure. Real typed exports
+(`Header`, `Main`, `Nav`, `Aside`, `Footer`, `Section`) with allowlisted safe HTML
+attrs — not factory variables.
 
 [`Header`](header.md) · [`Main`](main.md) · [`Nav`](nav.md) · [`Aside`](aside.md) · [`Footer`](footer.md) · [`Section`](section.md)
 

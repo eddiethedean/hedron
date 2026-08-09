@@ -1,19 +1,21 @@
 # Ship to production
 
 **Canonical adopter checklist** for shipping a Hedron app on the living **0.25** train.
-Capability maturity lives on [What’s ready](whats-ready.md).
+Capability maturity lives only on [What’s ready](whats-ready.md). Evaluators:
+[Evaluate Hedron](evaluate.md).
 
 Pin `hedron>=0.25.0,<0.26` (and matching adapters/extras) in your lockfile.
 
-Deep dives (do not treat as alternate checklists):
-
-| Topic | Page |
+| Role | Page |
 |---|---|
-| Environment, Dockerfile, proxy sketches | [Deployment](deployment.md) |
+| **This checklist** | Adopter ship gate (use this) |
+| Environment / Dockerfile / proxy | [Deployment](deployment.md) (deep dive, not a second checklist) |
 | Security defaults, CSRF, headers | [Security](security.md) |
-| Maintainer trust program / next cut | [Production-quality maturity](production-quality.md) |
-| Detailed ops narrative | [Production readiness](production-readiness.md) |
-| Production archetype (0.25) | [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) |
+| Kitchen-sink sample | [Reference app](../examples/reference-app.md) · [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) |
+
+Maintainer trust-program depth (not required to ship): 
+[Production-quality maturity](production-quality.md) ·
+[Production readiness](production-readiness.md).
 
 ## Checklist
 

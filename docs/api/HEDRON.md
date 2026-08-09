@@ -35,7 +35,7 @@ def home() -> Page:
     return Page(Text("ok"), title="Home")
 ```
 
-## Constructor
+## Parameters
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|

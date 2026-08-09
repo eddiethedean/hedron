@@ -3,7 +3,12 @@
 Thin on-ramp for first contributions. Full detail:
 [Contributing](../CONTRIBUTING.md).
 
-## Docs-only PR (about 15 minutes)
+## Docs-only PR
+
+**Local work (~15 minutes):** edit markdown and build docs. **CI wall-clock is longer:**
+every PR still runs the full `test` / `quality` / `browser` / `evidence` matrix (no path
+filters today) — often **tens of minutes**, not 15. Plan for that; maintainers can waive
+unrelated `browser` / `evidence` flakes on clearly docs-only PRs.
 
 1. Clone and sync docs deps:
 
@@ -24,14 +29,14 @@ Thin on-ramp for first contributions. Full detail:
 
 4. Open a PR with **“docs-only”** in the title or first line of the description.
 
-You do **not** need Playwright, RFCs, or acceptance gates for typos and guide fixes.
+You do **not** need Playwright, RFCs, or acceptance gates locally for typos and guide
+fixes. Do not use `--no-verify`. If CI `browser` / `evidence` fails for reasons
+**unrelated** to your markdown change, ask a maintainer to re-run or waive — do not
+expand the diff to chase unrelated flakes.
 
-### CI note
-
-GitHub Actions still runs `test`, `quality`, `browser`, and `evidence` on every PR (no
-path filters today). If `browser` or `evidence` fails for reasons **unrelated** to your
-markdown change, ask a maintainer to re-run or waive — do not expand the diff to chase
-unrelated flakes, and do not use `--no-verify`.
+**Maintainer waive protocol:** comment that the PR is docs-only, link the unrelated
+failure, and request a waive/re-run. Path filters for docs-only CI remain a tracked
+infra improvement — not available yet.
 
 ## Bug-fix PR
 

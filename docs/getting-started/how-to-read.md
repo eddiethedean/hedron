@@ -40,7 +40,7 @@ There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 
 | Audience | Where |
 |---|---|
-| Adopters | **Start**, **Guides**, **Examples**, **Reference** (Components + API), and **Project** (including **Evaluate**) — maturity snapshot: [What's ready today](../guides/whats-ready.md) |
+| Adopters | **Start**, **Guides**, **Examples**, **Reference** (Components + API), and **Evaluate** — maturity snapshot: [What's ready today](../guides/whats-ready.md) |
 | Maintainers / RFC authors | [Maintainer handbook](../guides/maintainer-handbook.md) + GitHub-only trees (`docs/rfcs/`, `docs/acceptance/`, `docs/STATUS.md`, `docs/RELEASE.md`, …) |
 
 ## Template history (upgrade only)

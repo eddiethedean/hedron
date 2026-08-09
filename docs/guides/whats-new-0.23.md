@@ -1,6 +1,11 @@
 # What’s new in Hedron 0.23
 
-**Published** as `v0.23.0`. Pin `hedron>=0.23.0,<0.24`.
+!!! warning "Living train is 0.25"
+
+    Pin `hedron>=0.25.0,<0.26`. The pin below is historical for the 0.23 train only.
+    See [What’s new in 0.25](whats-new-0.25.md).
+
+**Published** as `v0.23.0`. Historical pin: `hedron>=0.23.0,<0.24`.
 
 Phase **0.23** expands the compatibility-protected **`stable`** API tier for a narrow
 Supported CRUD/admin happy path (D-053 / RFC-0056). Catalog and packaging first; the

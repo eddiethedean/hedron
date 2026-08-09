@@ -19,6 +19,18 @@ remain the preferred server-side boundary for response headers, declared regions
 cache policy, and diagnostics; they are not a reduced client-side HTMX dialect. See
 [HDJ authoring](JINJA.md#htmx).
 
+## Parameters (core types)
+
+| Symbol | Key inputs | Role |
+|---|---|---|
+| `FragmentRegion` | `id`, `selector`, `description` | Declared HTMX target allowlist entry |
+| `InteractionPolicy` | `declared_regions`, `allow_undeclared_targets`, `hx_sync`, `vary_on_target`, … | Route/fragment authorization + sync policy |
+| `InteractionResult` | `content`, `region_id`, `oob`, `status_code`, `cache`, HTMX overrides | Typed fragment response + headers |
+| `htmx_request(request)` | Starlette/FastAPI `Request` | Read HTMX request context |
+| `swap` / `retarget` / `redirect_htmx` | content / target / local URL | Day-1 ergonomics over `InteractionResult` |
+
+Field-level detail for `InteractionResult` is below. Autodoc signatures: [AUTODOC.md](AUTODOC.md).
+
 ## Errors
 
 | Situation | Result | What to do |

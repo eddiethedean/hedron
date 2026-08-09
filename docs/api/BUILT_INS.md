@@ -91,8 +91,25 @@ Helpers: `action_attrs`, `oob_swap` — see [Interaction](INTERACTION.md).
 [`ParameterViewer`](../components/parameter-viewer.md) ·
 [`Dialogue`](../components/dialogue.md)
 
+Supporting public types (not components): `PredictionScore`, `DialogueTurn`,
+`GalleryItem`, `ExampleItem`, `FeedbackPolicy` — see [EXCEPTIONS.md](EXCEPTIONS.md)
+(types section) and [INFERENCE.md](INFERENCE.md).
+
 Non-UI contracts (`ModelDemo`, `ExampleSet`, `PredictionFeedback`, `InferenceWorkflow`)
 are documented on [INFERENCE.md](INFERENCE.md), not as components.
+
+## Upload / media helpers
+
+| Export | Docs |
+|---|---|
+| `DirectoryUploadFile`, `validate_directory_upload` | [EXCEPTIONS.md](EXCEPTIONS.md), [`DirectoryUpload`](../components/directory-upload.md) |
+| `parse_byte_range`, `download_all_zip`, `ByteRangeNotSatisfiable` | [Media downloads](../guides/media-downloads.md), [EXCEPTIONS.md](EXCEPTIONS.md) |
+
+## Errors
+
+This index does not define HTTP errors. Component render failures, CSRF, and fragment
+authorization are documented on [CSRF composition](CSRF_COMPOSITION.md),
+[Responses](RESPONSES.md), and [Public exceptions](EXCEPTIONS.md).
 
 ## Native HTML escape hatch
 
@@ -108,5 +125,5 @@ attributes and tags. Python keyword collisions use a trailing underscore such as
 ## Historical phase notes
 
 Phase 0.1–0.10 acceptance narratives remain in release notes / what’s-new pages. This
-index tracks the living **0.18** catalog — do not treat older phase lists as the complete
-API.
+index tracks the living **0.25** built-in catalog — do not treat older phase lists as the
+complete API.

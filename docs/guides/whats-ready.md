@@ -222,7 +222,7 @@ Extras: `"hedron[data]>=0.25.0,<0.26"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
 | Audience | Page |
 |---|---|
 | Quick fit check | [Evaluate Hedron](evaluate.md) |
-| Ops ship checklist | [Production readiness](production-readiness.md) |
+| Ops ship checklist | [Ship to production](ship-to-production.md) · [Deployment](deployment.md) |
 | Trust / maturity program | [Production-quality maturity](production-quality.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 

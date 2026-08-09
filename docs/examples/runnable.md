@@ -16,7 +16,7 @@ uv sync
 
 | Example | Framework | Simulated demo | Run |
 |---|---|---|---|
-| [reference-app](reference-app.md) | FastAPI | [Try it](reference-app.md#auth-gate-simulated) | `uv run uvicorn app:app --app-dir examples/reference-app --reload` |
+| [reference-app](reference-app.md) | FastAPI | [Try it](reference-app.md#auth-gate-simulated-pattern) | `uv run uvicorn app:app --app-dir examples/reference-app --reload` |
 | [notes-sqlalchemy](notes-sqlalchemy.md) | FastAPI | [Try it](notes-sqlalchemy.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/notes-sqlalchemy --reload` |
 | [session-auth](session-auth.md) | FastAPI | [Try it](session-auth.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/session-auth --reload` |
 | [file-upload](file-upload.md) | FastAPI | [Try it](file-upload.md#try-it-simulated) | `uv run uvicorn app:app --app-dir examples/file-upload --reload` |

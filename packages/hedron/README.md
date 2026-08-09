@@ -5,26 +5,10 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-FastAPI-native typed component framework for HTML and HTMX.
-
-Build dashboards, admin tools, and CRUD apps as typed Python components — without a
-Node.js frontend stack. Hedron extends FastAPI with pages, addressable components,
-typed actions, CSRF-aware forms, HTMX fragment/OOB policy, OpenAPI `text/html`
-metadata, interaction built-ins (`Lazy`, `Poll`, `Pagination`, …), caching
-(`cache_data` / `cache_component`), ColorMode persistence, a thin `Hedron()`
-application facade, CLI (`new` / `check` / `graph` / `build` / …), plugin loading,
-and public `hedron.testing` helpers.
-
-Built on framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/).
-Flask and Django hosts use [`hedron-flask`](https://pypi.org/project/hedron-flask/)
-and [`hedron-django`](https://pypi.org/project/hedron-django/).
+FastAPI-native typed component framework for HTML and HTMX — dashboards, admin tools,
+and CRUD without a Node.js frontend stack.
 
 **Package maturity:** Beta · **Train:** `0.25.0` (Published) · pin `>=0.25.0,<0.26`
-
-Most public APIs remain compatibility level `beta` until listed in the small
-[stable](https://hedron.readthedocs.io/en/latest/api/STABILITY/) table.
-Capability readiness:
-[What’s ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
 ## Install
 
@@ -74,28 +58,11 @@ timestamp updates via an HTMX fragment swap.
 Full walkthrough:
 [Build your first app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/).
 
-### Minimal app
-
-```python
-from hedron import Hedron, Page, Text
-
-app = Hedron(
-    title="Demo",
-    security="standard",
-    session_secret="replace-in-production",
-    explorer="off",
-)
-
-
-@app.page("/")
-def home() -> Page:
-    return Page(Text("Hello, Hedron"), title="Demo")
-```
-
-```bash
-pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
-uvicorn app:app --reload
-```
+Built on [`hedron-core`](https://pypi.org/project/hedron-core/). Flask/Django:
+[`hedron-flask`](https://pypi.org/project/hedron-flask/) /
+[`hedron-django`](https://pypi.org/project/hedron-django/). Capability readiness:
+[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/). Auth
+(OIDC helpers): [OIDC](https://hedron.readthedocs.io/en/latest/guides/oidc/).
 
 ### Plain FastAPI
 
@@ -121,14 +88,14 @@ app.include_router(router)
 ### CLI
 
 ```bash
-hedron new demoapp
-cd demoapp
-hedron --app app:app routes
-hedron --app app:app components
-hedron --app app:app preview home
-hedron check --format json --severity error
-hedron graph
-hedron audit-components
+uvx --from "hedron>=0.25.0,<0.26" hedron new demoapp
+cd demoapp && uv sync
+uv run hedron --app app:app routes
+uv run hedron --app app:app components
+uv run hedron --app app:app preview home
+uv run hedron check --format json --severity error
+uv run hedron --app app:app graph
+uv run hedron --app app:app audit-components
 ```
 
 If `hedron` is not on your `PATH`, use `python -m hedron`.

@@ -11,8 +11,9 @@ Session secrets and `[tool.hedron]` keys: [Configuration](../CONFIGURATION.md).
 ## Prerequisites
 
 - CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
-- Use a **clean virtual environment**. Supported pins: FastAPI `>=0.141.1,<0.142`,
-  Pydantic `>=2.13.4,<2.14` (see [Compatibility](../COMPATIBILITY.md))
+- Use a **clean virtual environment**. Prefer **CI-supported** pins for first apps:
+  FastAPI `>=0.141.1,<0.142`, Pydantic `>=2.13.4,<2.14`. Declared install ranges are
+  wider (FastAPI `<0.150`, Pydantic `<2.15`) — see [Compatibility](../COMPATIBILITY.md)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 
@@ -131,6 +132,20 @@ pip install "hedron[data]>=0.25.0,<0.26"          # example
 pip install "hedron[charts]>=0.1.0,<0.2"         # Alpha — pin and expect churn
 pip install "hedron-charts[plotly]>=0.1.0,<0.2"  # chart backend after charts extra (tip: 0.1.5)
 ```
+
+!!! note "`hedron[browser]` needs Playwright browsers"
+
+    The `[browser]` extra installs the Playwright **Python** package. You must also
+    download browser binaries once per environment:
+
+    ```bash
+    pip install "hedron[browser]>=0.25.0,<0.26"
+    playwright install chromium
+    ```
+
+    Without `playwright install`, browser tests fail with missing-browser errors. Adopter
+    apps do **not** need `[browser]` — it is for testing helpers. Contributors: see
+    [Contributing](../CONTRIBUTING.md).
 
 ### Other hosts
 

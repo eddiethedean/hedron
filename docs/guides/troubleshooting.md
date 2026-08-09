@@ -42,14 +42,19 @@ python -m hedron check
 
 ## FastAPI version conflict on install
 
-**Symptom:** `pip` / `uv` reports a resolver error, `ResolutionImpossible`, or refuses to
-install because another package pins FastAPI outside Hedron’s range
-(`>=0.141.1,<0.142`).
+**Symptom:** `pip` / `uv` reports a resolver error, `ResolutionImpossible`, or an unexpected
+FastAPI/Pydantic version after install.
+
+**Cause:** Another package pins FastAPI/Pydantic outside Hedron’s **declared** range
+(`fastapi>=0.141.1,<0.150`, `pydantic>=2.13.4,<2.15`), or you need the **CI-supported**
+band for a known-good first app (`fastapi>=0.141.1,<0.142`, `pydantic>=2.13.4,<2.14`).
+Declared ranges are wider than Supported — versions outside Supported can still install
+but are not CI-proven.
 
 **Fix:** Create a **clean virtual environment** for the Hedron app (do not reuse a shared
-env that already pins an older FastAPI). Install only Hedron + uvicorn first, then add
-other dependencies. If you must share an environment, upgrade FastAPI into
-`>=0.141.1,<0.142`. See [Compatibility](../COMPATIBILITY.md).
+env that already pins an older FastAPI). Install only Hedron + uvicorn first
+(`hedron>=0.25.0,<0.26`), then add other dependencies. For first apps, prefer staying
+inside the Supported band. See [Compatibility](../COMPATIBILITY.md).
 
 ## Wrong interpreter or ModuleNotFoundError for hedron
 

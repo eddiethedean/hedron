@@ -7,7 +7,16 @@ Minimal FastAPI + Hedron demo: enqueue work, poll status with `Poll` +
 production, use Redis / Celery / RQ — see
 [Celery / RQ + Redis](https://hedron.readthedocs.io/en/latest/guides/jobs-celery-rq/).
 
-## Run
+## Run without cloning
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
+pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
+curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/jobs-poll/app.py -o app.py
+uvicorn app:app --reload
+```
+
+## Run (monorepo)
 
 ```bash
 uv sync
