@@ -14,7 +14,8 @@
 
 - OOB updates without declared fragment regions are rejected unless the target is a
   reserved id (`hedron-toast`).
-- HTMX requests with declared regions require `HX-Target` (no implicit first-region auth).
+- HTMX requests with declared regions require `HX-Target` (no implicit first-region auth);
+  `HX-History-Restore-Request` may omit `HX-Target` for full-page restore.
 - Job auth scopes use exact match (tenant-only jobs do not authorize arbitrary subjects).
 - `InteractionResult.status_code` must be an `int` (bool rejected; int-like strings coerced).
 

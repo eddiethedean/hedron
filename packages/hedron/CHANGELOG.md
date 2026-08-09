@@ -17,6 +17,7 @@
 - CSRF cookies are Secure under `HEDRON_ENV=production` / `prod` (STANDARD profile).
 - HTMX responses strip/override `Cache-Control: public` toward `private, no-store`.
 - Deduplicated `CsrfField` / `LoginCsrfField` in `hedron.__all__`.
+- History-restore HTMX requests may omit `HX-Target` when fragment regions are declared.
 
 ## [0.23.0] — 2026-08-08
 

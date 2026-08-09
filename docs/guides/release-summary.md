@@ -22,7 +22,7 @@ Adopter-facing notes: [What’s new in 0.24](whats-new-0.24.md) ·
 1. Sync STATUS/ROADMAP under `docs/`, then `uv run python scripts/sync_status_roadmap.py`
 2. Pass `bash scripts/ci_checks.sh` suites required by the train
 3. Verify release-gate TOML + `verify_pkg_N.py` for the cut
-4. Tag `v0.N.0`, publish wheels, attach evidence assets
+4. Tag `v0.N.0` **only if that tag is missing**, publish wheels, attach evidence assets
 
-Do **not** retag a published version. Full steps and patch template: GitHub
-[RELEASE.md](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).
+Do **not** retag or overwrite an existing published tag. Full steps and patch template:
+GitHub [RELEASE.md](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md).

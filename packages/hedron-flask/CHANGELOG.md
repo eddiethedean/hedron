@@ -19,6 +19,7 @@
   Flask `HEDRON_TRUSTED_PROXIES` config / extension `trusted_peers`.
 - CSRF `Secure` also forces under `HEDRON_ENV=production` / `prod`.
 - `InteractionResult` with `status_code=204` and OOB updates returns HTTP 403 (FastAPI parity).
+- History-restore HTMX requests may omit `HX-Target` when fragment regions are declared.
 
 ## [0.23.0] — 2026-08-08
 

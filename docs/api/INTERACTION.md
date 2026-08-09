@@ -24,7 +24,7 @@ cache policy, and diagnostics; they are not a reduced client-side HTMX dialect. 
 | Situation | Result | What to do |
 |---|---|---|
 | HTMX request with `HX-Target` but no route `fragment_regions` | HTTP **403** | Declare `FragmentRegion`s on `@app.component` / `@app.page`, or opt out only with `InteractionPolicy(allow_undeclared_targets=True)` |
-| HTMX request with declared regions but missing `HX-Target` | HTTP **403** / `FragmentRegionError` | Send a matching `HX-Target` (no implicit first-region authorization) |
+| HTMX request with declared regions but missing `HX-Target` | HTTP **403** / `FragmentRegionError` | Send a matching `HX-Target` (no implicit first-region authorization). Exception: `HX-History-Restore-Request` may omit `HX-Target` (full-page restore). |
 | `HX-Target` / `region_id` outside the declared allowlist | HTTP **403** / `FragmentRegionError` | Match `region_id` and HTMX target to a declared `FragmentRegion.id` / selector |
 | Unsafe selector or external redirect in typed fields | Rejected before emit | Use local paths and Hedron's safe selector subset |
 | Unauthorized OOB `select` / `element_id` | Rejected | Point OOB at declared region ids, or use reserved `hedron-toast` |

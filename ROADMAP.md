@@ -1654,7 +1654,7 @@ Zero Deferred among 0.24-owned gate rows at cut. Gate IDs and commands (packet r
 - Requiring Flask/Django official HTMX SSE parity as a cut blocker when disposition B is chosen.
 - Removing experimental APIs from the tree solely to look “done” without a disposition.
 - Absorbing `EXPLORER-10-001` or 0.25 archetype/landmine work.
-- Choosing `prove_ops` vs `polling_only` during packet refine (cut decides).
+- Re-opening the `prove_ops` vs `polling_only` XOR after cut Accepted `polling_only`.
 
 ### Exit gate
 

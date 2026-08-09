@@ -17,6 +17,7 @@
 - `validate_csrf` accepts both `X-CSRFToken` and `X-CSRF-Token`; clearer errors when the
   portable form field cannot be bridged.
 - `InteractionResult` with `status_code=204` and OOB updates returns HTTP 403 (FastAPI parity).
+- History-restore HTMX requests may omit `HX-Target` when fragment regions are declared.
 
 ## [0.23.0] — 2026-08-08
 
