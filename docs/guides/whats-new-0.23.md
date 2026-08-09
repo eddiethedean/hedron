@@ -3,14 +3,17 @@
 **Published** as `v0.23.0`. Pin `hedron>=0.23.0,<0.24`.
 
 Phase **0.23** expands the compatibility-protected **`stable`** API tier for a narrow
-Supported CRUD/admin happy path (D-053 / RFC-0056). No new product features — catalog and
-packaging only.
+Supported CRUD/admin happy path (D-053 / RFC-0056). Catalog and packaging first; the
+published cut also includes fail-closed HTMX/CSRF/proxy/mount hardening on the Beta train.
 
 - **Expanded stable tier** — beginner facade chrome, HTMX regions/`swap` helpers, Poll +
   durable job status helpers (polling), SecurityPolicy profiles / `CsrfField`+`Form`+`Hx`,
   and selected `AppScenario` asserts become API `stable`.
 - **Beginner inventory** — machine-checked import list in
   [STABLE_FACADE.md](../api/STABLE_FACADE.md) (`FACADE-023`).
+- **Hardening in the cut** — selector-based HTMX region auth (HTMX bare-id form allowed),
+  trusted-proxy CSRF Secure / prepare-deadline gates, mount open-redirect rejection,
+  adapter header allowlists, Django CSRF validate, deny-by-default column writes.
 - **Still not stable** — `hedron.experimental` live helpers, Alpha packages, `hedron[data]`,
   dashboards/inference, Dialog/Tabs/Pagination/Lazy, and other Supported chrome remain
   `beta` / `experimental`.

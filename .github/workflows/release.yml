@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_tag:
-        description: "Tag to publish (e.g. v0.22.0). Required when publish_only is true."
+        description: "Tag to publish (e.g. v0.23.0). Required when publish_only is true."
         type: string
         default: ""
       publish_only:

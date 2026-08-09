@@ -6,6 +6,12 @@
 
 - Promotes locked CRUD/admin facade to API `stable`.
 
+### Security
+
+- `extra_headers` and evil `InteractionResult` headers fail closed via
+  `validated_extra_headers` (HTTP 403).
+- Fragment region string normalization uses a single `#` strip (`removeprefix`).
+
 ## [0.22.0] — 2026-08-08
 
 ### Added

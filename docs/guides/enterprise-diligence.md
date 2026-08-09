@@ -63,7 +63,7 @@ Trust-program priorities that close diligence caveats without inventing those cl
 
 ## Supply-chain evidence
 
-Prefer GitHub Release assets for tag **`v0.20.0`** (SBOM / license / evidence-bundle) when
+Prefer GitHub Release assets for tag **`v0.23.0`** (SBOM / license / evidence-bundle) when
 attached. If assets are missing, regenerate from the tagged checkout — see
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.
 Maintainers should attach evidence bundles on release day when publishing a train tag.

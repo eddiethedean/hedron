@@ -6,6 +6,21 @@
 
 - Promotes locked CRUD/admin facade to API `stable`.
 - `hedron new` scaffolds pin `hedron` / adapters at `>=0.23.0,<0.24`.
+- Django scaffold defaults: CSRF + sessions middleware, `DJANGO_DEBUG` off by default,
+  tightened `ALLOWED_HOSTS`.
+- Production `STANDARD` sessions use `https_only` cookies.
+
+### Security
+
+- CSRF `Secure` honors `X-Forwarded-Proto: https` only from `HEDRON_TRUSTED_PROXIES` /
+  `app.state.hedron_trusted_peers` (not arbitrary clients).
+- `X-Hedron-Prepare-Deadline` is ignored unless the peer is on the same trusted-proxy
+  allowlist.
+- Mount paths reject protocol-relative (`//…`), absolute URL, and backslash values.
+- Bundled `/hedron-static/…` asset hrefs respect the app mount prefix.
+- Unapproved / evil `InteractionResult` and `extra_headers` fail closed (HTTP 403).
+- `FileComponentResponse` filenames use upload sanitization (no path segments / CRLF).
+- `render_interaction` authorizes HTMX targets (and rejects OOB) on 204 responses.
 
 ## [0.22.0] — 2026-08-08
 

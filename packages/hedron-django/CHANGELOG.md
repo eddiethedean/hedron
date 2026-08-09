@@ -5,6 +5,15 @@
 ### Changed
 
 - Promotes locked CRUD/admin facade to API `stable`.
+- Missing `CsrfViewMiddleware` is a deploy `Error` (`hedron.E003`).
+
+### Security
+
+- Fail-closed `validate_csrf()` on unsafe methods in `hedron_view` /
+  `HedronDjango.respond` (bridges portable `csrf_token` → `csrfmiddlewaretoken`).
+- `extra_headers` and evil `InteractionResult` headers fail closed via
+  `validated_extra_headers` (HTTP 403).
+- Fragment region string normalization uses a single `#` strip (`removeprefix`).
 
 ## [0.22.0] — 2026-08-08
 

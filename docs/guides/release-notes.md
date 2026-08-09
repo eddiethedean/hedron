@@ -8,8 +8,9 @@ Adopter-facing summary for the **0.23.x** train. For per-package commit detail, 
 
 **Published** (`0.23.0`; last published PyPI/git = `v0.23.0`).
 Stable-tier expansion (D-053): narrow CRUD/admin Beginner facade promoted to API
-`stable` ([STABLE_FACADE](../api/STABLE_FACADE.md)). No new product features. Human AT
-**sessions** (`SR-021` / `PARTICIPANT-021`) remain **Planned** — do not market human AT as
+`stable` ([STABLE_FACADE](../api/STABLE_FACADE.md)), plus fail-closed HTMX region /
+CSRF-proxy / mount hardening on the Beta packages. Human AT **sessions**
+(`SR-021` / `PARTICIPANT-021`) remain **Planned** — do not market human AT as
 Supported (carryover from 0.21).
 
 Narrative deep-dive: [What's new in 0.23](whats-new-0.23.md) · maturity:

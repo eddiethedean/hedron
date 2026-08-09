@@ -5,6 +5,8 @@
 ### Changed
 
 - Promotes locked CRUD/admin facade to API `stable`.
+- Column write policy is deny-by-default: `writable` must be explicitly `True`
+  (DataEditor writable set + AG Grid `editable`).
 
 ## [0.22.0] — 2026-08-08
 

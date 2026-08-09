@@ -314,6 +314,7 @@ STALE = [
     re.compile(r"hedron>=0\.23\.0,<0\.23(?!\d)", re.I),
     re.compile(r"Next: <strong>0\.23</strong>", re.I),
     re.compile(r"living \*\*0\.22\*\* train", re.I),
+    re.compile(r"living Published \*\*0\.22\*\*", re.I),
     re.compile(r"train is \*\*0\.22\.x\*\*", re.I),
     re.compile(r"Python-first UI framework · v0\.22", re.I),
     re.compile(r"Living published train:\s*pin `hedron>=0\.22\.0,<0\.23`", re.I),

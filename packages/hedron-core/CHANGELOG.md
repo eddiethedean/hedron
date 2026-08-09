@@ -6,6 +6,14 @@
 
 - Promotes locked CRUD/admin facade to API `stable`.
 
+### Security
+
+- HTMX fragment region auth is selector-based: exact `#id` selector or HTMX bare-id
+  header form; rejects `##…` collapsing and divergent `region.id` matching.
+- Public `validated_extra_headers()` allowlists approved HTMX / cache response headers.
+- Inference cancel passes scoped `auth_subject` / `tenant_id` to the job backend and does
+  not free concurrency or claim cancel on authz denial.
+
 ## [0.22.0] — 2026-08-08
 
 ### Added
