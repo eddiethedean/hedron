@@ -13,6 +13,13 @@ status: experimental
 
 **Status:** Shipped in `0.10.0` (experimental)
 
+!!! note "Outline page"
+
+    This page summarizes experimental streaming helpers. Prefer
+    [Autodoc](AUTODOC.md) / `hedron.experimental` signatures and
+    [Live interaction](../guides/live-interaction.md) for production guidance
+    (**polling** remains Supported).
+
 Helpers: `StreamingComponentResponse`, `stream_chunked_list`, `stream_document`,
 `stream_tokens` — import from `hedron.experimental` (root attribute access remains a compat shim). Core stream models live in `hedron_core.streaming`.
 

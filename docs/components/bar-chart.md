@@ -22,11 +22,12 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 
 !!! danger "Source-only on Hedron 0.25"
 
-    No published `hedron-charts` release accepts `hedron-core 0.25.x`. This page documents the in-repository workspace package; do not install an older chart release into a 0.25 application. See [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+    No published `hedron-charts` release accepts `hedron-core 0.25.x`. This page documents the in-repository workspace package; do not `pip install "hedron[charts]"` or `hedron-charts` from PyPI into a 0.25 application. Examples below are **workspace-only**. See [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## Basic use
 
 ```python
+# workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
 from hedron import BarChart
 
 component = BarChart(rows, x='region', y='requests', title='Requests by region', description='US East handles the largest share.')
@@ -61,7 +62,7 @@ Keep `BarChart` at the smallest semantic boundary. Fragment routes should return
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-This component is primarily presentational; keep any mutation on an explicit action or component route.
+`BarChart` renders data the server already prepared. Keep queries, authorization, and redaction on the route or data source — do not treat the component as a place for side effects.
 
 ## Accessibility
 

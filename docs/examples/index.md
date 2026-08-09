@@ -13,8 +13,8 @@ There is **no hosted playground**. Use Codespaces / Dev Container, a local clone
 4. **[Runnable examples](runnable.md)** — clone the repo for the reference app, live
    interaction sample, Flask/Django adapters, and HDJ sample.
 5. **[CRUD tutorial](crud-tutorial.md)** — guided path through the reference app.
-6. **[Single-file apps](single-file.md)** — alternate paste-an-`app.py` path (static Hello;
-   no Refresh panel — use the scaffold when you want the interactive proof).
+6. **[Single-file apps](single-file.md)** — alternate paste-an-`app.py` path with Hello +
+   Refresh. Prefer `hedron new` when you want the scaffold and learning-path deltas.
 7. **[Phase evidence](phase-evidence.md)** — maintainer exit stubs (not product recipes);
    listed under **Maintainer evidence** in the nav.
 8. **[Simulated UI patterns](gallery.md)** — in-browser **simulations** on Read the Docs

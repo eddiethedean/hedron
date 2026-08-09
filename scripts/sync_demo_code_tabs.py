@@ -65,7 +65,7 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
     (
         "guides/authentication.md",
         "auth-login",
-        "Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.",
+        "Wrong password → soft redirect to /login?error=1. ada / correct-horse → signed-in panel. Docs simulation.",
     ),
     (
         "guides/security.md",
@@ -116,7 +116,7 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
     (
         "examples/session-auth.md",
         "auth-login",
-        "Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.",
+        "Wrong password → soft redirect to /login?error=1. ada / correct-horse → signed-in panel. Docs simulation.",
     ),
     (
         "examples/file-upload.md",

@@ -10,7 +10,8 @@ Summary:
   [docs/SECURITY.md](docs/SECURITY.md) for the full table
 - **Do not** open public issues for vulnerabilities — use GitHub
   [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new)
-  (dedicated disclosure channel) or **odosmatthews@gmail.com** (package author metadata)
+  (required disclosure channel). Personal maintainer email is best-effort alternate only
+  — see [docs/SECURITY.md](docs/SECURITY.md)
 - Guides: [Security](https://hedron.readthedocs.io/en/latest/guides/security/),
   [Threat model](https://hedron.readthedocs.io/en/latest/guides/threat-model/)
 

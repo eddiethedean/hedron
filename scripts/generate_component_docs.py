@@ -64,8 +64,9 @@ def _optional_install_text(package: str) -> str:
         return (
             '\n\n!!! danger "Source-only on Hedron 0.25"\n\n'
             "    No published `hedron-charts` release accepts `hedron-core 0.25.x`. "
-            "This page documents the in-repository workspace package; do not install "
-            "an older chart release into a 0.25 application. See "
+            "This page documents the in-repository workspace package; do not "
+            '`pip install "hedron[charts]"` or `hedron-charts` from PyPI into a 0.25 '
+            "application. Examples below are **workspace-only**. See "
             "[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit)."
         )
     return (
@@ -2581,14 +2582,36 @@ def page_text(spec: ComponentDoc) -> str:
         if simulated
         else "This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform."
     )
-    mutation_note = (
-        "Mutating flows must use POST, validate CSRF, authorize on the server, re-validate typed input, and return a bounded fragment. GET remains safe and repeatable; native submit should still work without HTMX."
-        if simulated or spec.server not in {"No", "Page response"}
-        else "This component is primarily presentational; keep any mutation on an explicit action or component route."
-    )
+    if simulated or spec.server not in {"No", "Page response"}:
+        mutation_note = (
+            "Mutating flows must use POST, validate CSRF, authorize on the server, "
+            "re-validate typed input, and return a bounded fragment. GET remains safe "
+            "and repeatable; native submit should still work without HTMX."
+        )
+    elif spec.group in {"charts", "data"} or "charts" in spec.package or "data" in spec.package:
+        mutation_note = (
+            f"`{spec.name}` renders data the server already prepared. Keep queries, "
+            "authorization, and redaction on the route or data source — do not treat "
+            "the component as a place for side effects."
+        )
+    elif spec.group in {"forms", "controls", "interaction"}:
+        mutation_note = (
+            f"`{spec.name}` participates in interaction markup. Pair it with an explicit "
+            "`@action` / `@component` POST (and CSRF) when the control mutates state."
+        )
+    else:
+        mutation_note = (
+            f"`{spec.name}` is primarily presentational; keep any mutation on an explicit "
+            "action or component route."
+        )
     optional = (
         _optional_install_text(spec.package)
         if "[" in spec.package or spec.package.startswith("hedron-")
+        else ""
+    )
+    workspace_only = (
+        "# workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace\n"
+        if "charts" in spec.package
         else ""
     )
     return f"""---
@@ -2614,7 +2637,7 @@ description: {spec.summary}
 ## Basic use
 
 ```python
-from hedron import {imports}
+{workspace_only}from hedron import {imports}
 
 component = {spec.example}
 ```

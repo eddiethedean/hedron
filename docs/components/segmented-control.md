@@ -60,7 +60,7 @@ Keep `SegmentedControl` at the smallest semantic boundary. Fragment routes shoul
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-This component is primarily presentational; keep any mutation on an explicit action or component route.
+`SegmentedControl` participates in interaction markup. Pair it with an explicit `@action` / `@component` POST (and CSRF) when the control mutates state.
 
 ## Accessibility
 

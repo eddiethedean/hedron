@@ -51,11 +51,10 @@ The runnable app uses **HTTP Basic** (`admin` / `secret`). The Demo/Code below i
     ```python title="app.py"
     import os
 
-    from fastapi import Form, HTTPException, Request, status
+    from fastapi import Form, Request, status
     from fastapi.responses import RedirectResponse
 
-    from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, html
-    from hedron.security import csrf_token_for_request
+    from hedron import CsrfField, Form as HedronForm, Hedron, Page, Stack, SubmitButton, Text, TextInput
 
     app = Hedron(
         title="Secure app",
@@ -67,25 +66,15 @@ The runnable app uses **HTTP Basic** (`admin` / `secret`). The Demo/Code below i
     USERS = {"ada": "correct-horse"}
 
 
-    def _csrf(request: Request) -> str:
-        return csrf_token_for_request(request, request.app.state.hedron_security)
-
-
-    def require_user(request: Request) -> str:
-        username = request.session.get("username")
-        if not username:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign in required")
-        return str(username)
-
-
     @app.page("/")
-    def login_page(request: Request) -> Page:
-        token = _csrf(request)
+    def login_page(request: Request) -> Page | RedirectResponse:
+        if request.session.get("username"):
+            return RedirectResponse("/home", status_code=status.HTTP_303_SEE_OTHER)
         return Page(
             Stack(
                 Text("Sign in"),
-                html.form(
-                    html.input(type="hidden", name="csrf_token", value=token),
+                HedronForm(
+                    CsrfField(),
                     TextInput("username", value="ada", required=True),
                     TextInput("password", value="", type="password", required=True),
                     SubmitButton("Sign in"),
@@ -105,15 +94,17 @@ The runnable app uses **HTTP Basic** (`admin` / `secret`). The Demo/Code below i
         password: str = Form(...),
     ) -> RedirectResponse:
         if USERS.get(username) != password:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+            return RedirectResponse("/?error=1", status_code=status.HTTP_303_SEE_OTHER)
         request.session["username"] = username
-        return RedirectResponse("/home", status_code=303)
+        return RedirectResponse("/home", status_code=status.HTTP_303_SEE_OTHER)
 
 
     @app.page("/home")
-    def home(request: Request) -> Page:
-        user = require_user(request)
-        return Page(Text(f"Signed in as {user}"), title="Home")
+    def home(request: Request) -> Page | RedirectResponse:
+        username = request.session.get("username")
+        if not username:
+            return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+        return Page(Text(f"Signed in as {username}"), title="Home")
     ```
 
 ## CSRF on forms (simulated)
@@ -211,8 +202,7 @@ user table on the dashboard:
 
     from fastapi import Form, Request
 
-    from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, html
-    from hedron.security import csrf_token_for_request
+    from hedron import CsrfField, Hedron, Page, Stack, SubmitButton, Text, TextInput, html
 
     app = Hedron(
         title="CRUD notes",
@@ -225,12 +215,8 @@ user table on the dashboard:
     listing = app.region("notes-list", description="Notes list")
 
 
-    def _csrf(request: Request) -> str:
-        return csrf_token_for_request(request, request.app.state.hedron_security)
-
-
     def render_list(request: Request):
-        token = _csrf(request)
+        del request  # request kept for signature parity with fragment handlers
         if not NOTES:
             return html.div(Text("No notes yet."), id=listing.id)
         items = []
@@ -240,7 +226,7 @@ user table on the dashboard:
                     Text(body),
                     " ",
                     html.form(
-                        html.input(type="hidden", name="csrf_token", value=token),
+                        CsrfField(),
                         html.input(type="hidden", name="note_id", value=note_id),
                         SubmitButton("Delete"),
                         method="post",
@@ -257,12 +243,11 @@ user table on the dashboard:
 
     @app.page("/")
     def home(request: Request) -> Page:
-        token = _csrf(request)
         return Page(
             Stack(
                 render_list(request),
                 html.form(
-                    html.input(type="hidden", name="csrf_token", value=token),
+                    CsrfField(),
                     TextInput(name="note", placeholder="New note"),
                     SubmitButton("Add note"),
                     method="post",

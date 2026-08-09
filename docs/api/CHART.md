@@ -1,5 +1,5 @@
 ---
-status: shipped
+status: deferred
 ---
 
 # Chart APIs
@@ -20,9 +20,13 @@ status: shipped
     compatible release is published. See
     [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
-## Beginner `LineChart`
+    Do **not** run `pip install "hedron[charts]"` or `pip install hedron-charts` into a
+    0.25 application. Examples below are **workspace-only**.
+
+## Beginner `LineChart` (workspace-only)
 
 ```python
+# workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
 from hedron import Hedron, Page
 from hedron_charts import LineChart
 
@@ -49,9 +53,10 @@ def home() -> Page:
     )
 ```
 
-## Familiar-library adapters
+## Familiar-library adapters (workspace-only)
 
 ```python
+# workspace-only
 from hedron_charts import AltairChart, MatplotlibChart, PlotlyChart
 
 PlotlyChart(figure, description="Revenue by region")
@@ -68,6 +73,6 @@ Every chart declares title, description or alt text, output mode, data policy, a
     missing. Supply a local runtime yourself, or use Matplotlib / `LineChart`
     for supported static charts.
 
-Adapters implement a public `VisualizationAdapter` capability contract but may keep backend compilation types internal. Missing optional dependencies produce a precise installation command. Payload limits and server-transform policies are explicit and visible in Explorer.
+Adapters implement a public `VisualizationAdapter` capability contract but may keep backend compilation types internal. Missing optional backend extras produce a precise installation command for the **workspace** package — not a PyPI `hedron[charts]` pin on 0.25. Payload limits and server-transform policies are explicit and visible in Explorer.
 
-Walkthrough: [Charts and HTMX](../guides/charts-and-htmx.md).
+Walkthrough: [Charts and HTMX](../guides/charts-and-htmx.md). For PyPI dashboards without charts, see [Streamlit migration](../guides/streamlit-migration.md).

@@ -1,27 +1,28 @@
 # Learning path
 
-A suggested order from first page to production-minded apps. Start with
-[Installation](installation.md) only if you need prerequisites; otherwise
-[Build your first app](quickstart.md) if you have not run Hello → Refresh yet.
+A suggested order from first page to production-minded apps. Start with the short
+[What is HTMX?](what-is-htmx.md) introduction, then
+[Build your first app](quickstart.md). Use [Installation](installation.md) when you need
+prerequisites, adapter choices, or troubleshooting.
 
 **Skills assumed:** Python 3.11+, basic FastAPI (routes / `Form`), and HTML forms.
-HTMX is introduced in [What is HTMX](what-is-htmx.md) — no SPA background required.
+No SPA or prior HTMX background is required.
 
 ## 1. Hello page (~10 minutes)
 
-1. [Build your first app](quickstart.md)
-2. [Installation](installation.md) (extras / troubleshooting as needed)
-3. Optional: [Understanding maturity labels](how-to-read.md)
+1. [What is HTMX?](what-is-htmx.md) — browser / fragment / region / swap mental model
+2. [Build your first app](quickstart.md)
+3. [Installation](installation.md) (extras / troubleshooting as needed)
+4. Optional: [Understanding maturity labels](how-to-read.md)
 
 That is the first success. Extend the **same** app in the next section; do not start a
 second project.
 
 ## 2. First interaction (~20–30 minutes)
 
-1. Optional: [What is HTMX](what-is-htmx.md) — fragment / region mental model
-2. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
+1. [HTMX interactions](../guides/htmx-interactions.md) — GET refresh into a region
    (edit the scaffold; browser click)
-3. [Minimal form POST](../guides/minimal-form.md) — `CsrfField` form that increments
+2. [Minimal form POST](../guides/minimal-form.md) — `CsrfField` form that increments
    the notes counter (same scaffold)
 
 Then read [Core concepts](core-concepts.md) if you want the page/fragment model explained

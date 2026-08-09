@@ -37,6 +37,7 @@ from hedron.color_mode import (
 from hedron.htmx import approved_headers, htmx_context
 from hedron.interaction import (
     FragmentRegion,
+    FragmentRegionError,
     HtmxRequest,
     InteractionPolicy,
     InteractionResult,
@@ -332,7 +333,10 @@ def __getattr__(name: str) -> object:
         except ImportError as exc:  # pragma: no cover
             raise ImportError(
                 f"{name} requires the hedron-charts package. "
-                'Install with: pip install "hedron[charts]" or pip install hedron-charts'
+                "On Hedron 0.25, charts are source-only in the monorepo workspace "
+                "(packages/hedron-charts) — do not pip install hedron[charts] / "
+                "hedron-charts from PyPI (those releases require older hedron-core). "
+                "See https://hedron.readthedocs.io/en/latest/COMPATIBILITY/"
             ) from exc
         return getattr(_hedron_charts, name)
     if name == "Markdown":
@@ -427,6 +431,7 @@ __all__ = [
     "FormModel",
     "Fragment",
     "FragmentRegion",
+    "FragmentRegionError",
     "FragmentResponse",
     "Gallery",
     "GalleryItem",

@@ -12,8 +12,8 @@ Explorer `/a11y`, PE forms, landmarks, and automated AT evidence —
 [A11Y API](../api/A11Y.md).
 
 Complete [Start](../getting-started/index.md) first (First app → HTMX →
-Minimal form). This section continues with forms depth, live transports, data, security,
-and ops.
+Minimal form). HTMX and minimal form live under **Start** only — this section continues
+with forms depth, polling / experimental live transports, data, security, and ops.
 
 **Help:** [FAQ](faq.md) · [Troubleshooting](troubleshooting.md) · [Error codes](error-codes.md)
 (under **Guides → Help**).
@@ -54,8 +54,8 @@ Evaluating adoption? Use the **Evaluate** tab
   </a>
   <a class="hedron-card" href="live-interaction/">
     <span class="hedron-card__icon" aria-hidden="true">◉</span>
-    <strong>Live interaction</strong>
-    <p>SSE, streaming, WebSocket channels, Chat/Dialog, and preload (FastAPI; prefer polling).</p>
+    <strong>Polling (and experimental live)</strong>
+    <p>Prefer Poll for job status. SSE, streaming, WebSocket, and preload stay experimental on FastAPI.</p>
   </a>
   <a class="hedron-card" href="dashboards/">
     <span class="hedron-card__icon" aria-hidden="true">▦</span>

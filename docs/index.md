@@ -62,13 +62,12 @@ open localhost:8000 → **Hello from hedron new** → click **Refresh status**.
     uvicorn app:app --reload
     ```
 
-!!! note "Pip installs twice; pins are two bands"
+!!! note "Pip installs twice"
 
     Pip needs two installs (CLI, then `pip install -e .` inside the scaffold) —
     [FAQ](guides/faq.md#why-install-hedron-twice-cli-then-project). Prefer a clean
-    virtualenv for first apps. **CI-supported** FastAPI/Pydantic bands are tighter than
-    **declared** install ranges — see [Compatibility](COMPATIBILITY.md) and
-    [troubleshooting](guides/troubleshooting.md).
+    virtualenv for first apps. Version bands:
+    [Compatibility](COMPATIBILITY.md).
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). You should see **Hello from hedron new**.
 Click **Refresh status** — the page updates without a full reload. Hedron returns a small
@@ -164,10 +163,11 @@ After [HTMX interactions](guides/htmx-interactions.md) and
 
 ## Next steps
 
-1. [Build your first app](getting-started/quickstart.md) — celebrate Refresh, then edit Hello
-2. [What is HTMX](getting-started/what-is-htmx.md) → [HTMX interactions](guides/htmx-interactions.md)
-3. [Minimal form POST](guides/minimal-form.md) — form updates the notes counter
-4. [Learning path](getting-started/learning-path.md)
+1. [What is HTMX?](getting-started/what-is-htmx.md) — understand regions and HTML swaps
+2. [Build your first app](getting-started/quickstart.md) — celebrate Refresh, then edit Hello
+3. [HTMX interactions](guides/htmx-interactions.md) — add a second region
+4. [Minimal form POST](guides/minimal-form.md) — form updates the notes counter
+5. [Learning path](getting-started/learning-path.md)
 
 <details markdown>
 <summary>Package maturity and production pins</summary>

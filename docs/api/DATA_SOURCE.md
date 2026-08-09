@@ -11,6 +11,12 @@ status: shipped
 
 **Status:** Accepted
 
+!!! note "Outline page"
+
+    Protocol summary for data sources. Prefer [Data](DATA.md),
+    [Data applications](../guides/data-apps.md), and [Autodoc](AUTODOC.md) for full
+    constructor / error tables.
+
 ```python
 class UsersSource(DataEditorSource[UserRow]):
     def fetch(self, query: DataQuery) -> DataPage[UserRow]: ...

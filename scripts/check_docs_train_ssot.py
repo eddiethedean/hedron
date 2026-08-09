@@ -599,6 +599,14 @@ def _pin_scan_files() -> list[Path]:
     return files
 
 
+_FORBID_INSTALL = re.compile(
+    r"\b(?:do\s+not|don't|never|not)\b.*\b(?:pip\s+install|uv\s+add|install)\b"
+    r"|\b(?:pip\s+install|uv\s+add|install)\b.*\b(?:do\s+not|don't|never)\b"
+    r"|\b(?:unavailable|source-only|incompatible|forbidden|deferred)\b",
+    re.I,
+)
+
+
 def _check_unbounded_pins() -> list[str]:
     failures: list[str] = []
     for path in _pin_scan_files():
@@ -606,12 +614,13 @@ def _check_unbounded_pins() -> list[str]:
         for lineno, line in enumerate(text.splitlines(), start=1):
             if any(allow in line for allow in PIN_ALLOW_SUBSTRINGS):
                 continue
+            forbid = bool(_FORBID_INSTALL.search(line))
             if UNBOUNDED_PIN.search(line):
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: unbounded 0.25 pin "
                     f"(use >=0.25.0,<0.26): {line.strip()[:120]}"
                 )
-            if BARE_EXTRA.search(line):
+            if BARE_EXTRA.search(line) and not forbid:
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: bare hedron[extra] "
                     f"(add >=…,<… pin): {line.strip()[:120]}"
@@ -621,12 +630,12 @@ def _check_unbounded_pins() -> list[str]:
                     f"{path.relative_to(ROOT)}:{lineno}: unbounded Alpha pin "
                     f"(use >=0.1.0,<0.2): {line.strip()[:120]}"
                 )
-            if UNBOUNDED_CHARTS_INSTALL.search(line):
+            if UNBOUNDED_CHARTS_INSTALL.search(line) and not forbid:
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: unbounded hedron-charts install "
                     f"(use >=0.1.0,<0.2): {line.strip()[:120]}"
                 )
-            if BROKEN_025_ALPHA_INSTALL.search(line):
+            if BROKEN_025_ALPHA_INSTALL.search(line) and not forbid:
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: charts/sample-kit PyPI install is "
                     f"incompatible with Hedron 0.25; link the compatibility notice instead: "

@@ -1,4 +1,4 @@
-# Threat model (0.20)
+# Threat model
 
 **Status:** Maintained for the **0.25** train (**Published** as `v0.25.0`; last published
 PyPI/git = `v0.25.0`; baseline established in 0.11; refreshed for 0.15–0.25 surfaces)  

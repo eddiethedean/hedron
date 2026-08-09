@@ -51,9 +51,10 @@ A wrong `HX-Target` returns **403** by design — fix typos in the region id / s
         session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
     )
 
-    status = app.region("hx-guide-status", description="Status panel")
-    notes = app.region("hx-guide-notes", description="Notes counter")
-    probe = app.region("hx-guide-probe", description="Allowlist probe")
+    # Path B standalone IDs match the hedron new scaffold (Path A) where possible.
+    status = app.region("service-status", description="Status panel")
+    notes = app.region("notes-count", description="Notes counter")
+    probe = app.region("allowlist-probe", description="Allowlist probe")
 
 
     def status_panel():
@@ -70,7 +71,7 @@ A wrong `HX-Target` returns **403** by design — fix typos in the region id / s
     def notes_panel():
         return html.div(
             Text("Sample notes region"),
-            html.span("Allowlisted #hx-guide-notes — count stays 0 in this example"),
+            html.span("Allowlisted #notes-count — count stays 0 in this example"),
             id=notes.id,
             role="status",
             aria={"live": "polite"},
@@ -221,12 +222,13 @@ def refresh_status() -> InteractionResult:
     )
 ```
 
-## Path B only — no scaffold yet
+## Path B — standalone paste (no scaffold yet)
 
-If you skipped `hedron new`, copy the complete listing from
-[Build your first app](../getting-started/quickstart.md) first, confirm Refresh works,
-then return here for the notes-count delta. A full-file dump on this page would fight the
-scaffold you already have.
+Prefer **Path A** above (extend `hedron new`). If you skipped the scaffold, the **Code**
+tab is a standalone app that uses the same region ids (`service-status`, `notes-count`)
+so you can later merge with the learning-path deltas. Alternatively, copy Hello + Refresh
+from [Build your first app](../getting-started/quickstart.md) first, confirm Refresh works,
+then return for the notes-count delta — do not paste Path B over an existing scaffold.
 
 ## Flask / Django
 

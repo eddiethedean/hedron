@@ -24,12 +24,17 @@ Full key table: [Configuration](../CONFIGURATION.md).
 ## Install a plugin distribution
 
 1. Add the reviewed package to your environment (same train pin as Hedron when possible).
-   The sample kit is currently a **source reference only** on Hedron 0.25; its published
-   releases require older `hedron-core` versions:
+   The sample kit is **source-only on Hedron 0.25** — do not install it from PyPI:
 
    ```bash
-   # For a real plugin, use its reviewed distribution and compatible version pin.
+   # Real third-party plugin (example shape — use the vendor's pin):
+   # uv add "vendor-hedron-plugin>=1.0,<2"
+
+   # Study sample-kit from this monorepo instead of PyPI:
+   # uv sync   # from a hedron checkout (workspace includes hedron-sample-kit)
    ```
+
+   Workspace details: [Plugin authoring](plugin-authoring.md#workspace-recipe-study-sample-kit-on-025).
 
 2. Enable it by **name** (the entry-point key, not the PyPI distribution name):
 
@@ -59,7 +64,7 @@ Checklist:
 | Symptom | Fix |
 |---|---|
 | Plugin components missing | Confirm install + `plugins` allowlist name matches the entry point |
-| `HED-PLUGIN-MISSING` | Name in `plugins = [...]` not discovered — install package or fix spelling |
+| `HED-PLUGIN-MISSING` / `HED-PLUGIN-0001` | Name in `plugins = [...]` not discovered — install package or fix spelling (same code; constant alias) |
 | Load rejected / rolled back | Check `hedron_version` compatibility and contribution validation errors |
 | Unexpected panels in Explorer | You are loading all entry points — set an explicit allowlist or `[]` |
 

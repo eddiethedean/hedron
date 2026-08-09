@@ -66,7 +66,7 @@ Keep `DataTable` at the smallest semantic boundary. Fragment routes should retur
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-This component is primarily presentational; keep any mutation on an explicit action or component route.
+`DataTable` renders data the server already prepared. Keep queries, authorization, and redaction on the route or data source — do not treat the component as a place for side effects.
 
 ## Accessibility
 

@@ -31,7 +31,7 @@ Auto(value=None, *, as_=None)
 | Parameter | Type | Meaning |
 |---|---|---|
 | `value` | `Any` | Object to render |
-| `as_` | `str \| type \| None` | Force a registered renderer id/type when inference is ambiguous |
+| `as_` | `str \| None` | Force a registered renderer **name** when inference is ambiguous or you need an explicit winner |
 
 ## Returns
 
@@ -56,11 +56,13 @@ on import order. Expensive inspection is bounded.
 
 | Situation | Behavior |
 |---|---|
-| No renderer for value | Diagnostic / render error with explanation metadata |
+| No renderer matched the value | Raises with code **`HED-AUTO-0001`** (“No Auto renderer matched…”) |
+| Unknown `as_` renderer name | Raises with code **`HED-AUTO-0001`** (unknown forced renderer) |
 | Optional package missing for chosen renderer | Install `hedron[data]` for data; charts are source-only on 0.25 until a compatible distribution is published |
-| Ambiguous match without `as_` | Documented winner or actionable error |
+| Ambiguous match without `as_` | Documented winner when the registry can pick one; otherwise **`HED-AUTO-0001`** |
 
 ## See also
 
 - [Component gallery — Auto](../components/auto.md)
 - [Data applications](../guides/data-apps.md) · [Data](DATA.md)
+- [Error codes](../guides/error-codes.md)

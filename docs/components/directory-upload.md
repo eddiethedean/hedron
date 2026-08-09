@@ -58,7 +58,7 @@ Keep `DirectoryUpload` at the smallest semantic boundary. Fragment routes should
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-This component is primarily presentational; keep any mutation on an explicit action or component route.
+`DirectoryUpload` participates in interaction markup. Pair it with an explicit `@action` / `@component` POST (and CSRF) when the control mutates state.
 
 ## Accessibility
 

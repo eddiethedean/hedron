@@ -20,8 +20,55 @@ env:
   HEDRON_GATE_VERSION: "0.25.0"
 
 jobs:
+  changes:
+    name: Detect docs-only PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      docs_only: ${{ steps.filter.outputs.docs_only }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Classify changed paths
+        id: filter
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+            echo "Not a pull_request — full CI."
+            exit 0
+          fi
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          mapfile -t files < <(git diff --name-only "$BASE"..."$HEAD")
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+            echo "No changed files — full CI."
+            exit 0
+          fi
+          docs_only=true
+          for f in "${files[@]}"; do
+            case "$f" in
+              docs/*|README.md|CONTRIBUTING.md|SECURITY.md|CODE_OF_CONDUCT.md|mkdocs.yml|\
+              scripts/sync_demo_code_tabs.py|scripts/generate_component_docs.py|\
+              scripts/generate_sim_demos.py|scripts/check_docs_train_ssot.py|\
+              scripts/check_recipe_code_sync.py|scripts/README.md)
+                ;;
+              *)
+                docs_only=false
+                break
+                ;;
+            esac
+          done
+          echo "docs_only=${docs_only}" >> "$GITHUB_OUTPUT"
+          echo "docs_only=${docs_only} (${#files[@]} files)"
+
   test:
     name: Tests (Python ${{ matrix.python-version }})
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -49,6 +96,7 @@ jobs:
 
   quality:
     name: Quality, docs, and packages
+    needs: changes
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -72,10 +120,14 @@ jobs:
 
   browser:
     name: Browser HTMX (${{ matrix.browser }})
+    needs: changes
     runs-on: ubuntu-latest
     timeout-minutes: 25
     # PRs: Chromium only. Main/dispatch: Chromium + Firefox + WebKit.
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+    # Docs-only PRs skip the browser matrix (quality still runs mkdocs + train SSOT).
+    if: >
+      needs.changes.outputs.docs_only != 'true' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
     strategy:
       fail-fast: false
       matrix:
@@ -114,6 +166,8 @@ jobs:
 
   evidence:
     name: Supply-chain evidence bundle
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -151,7 +205,8 @@ jobs:
 
   release:
     name: PKG-024 packaging rehearsal
-    needs: [evidence]
+    needs: [changes, evidence]
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

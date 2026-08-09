@@ -36,7 +36,7 @@ No. Hedron does not require npm or a JavaScript bundler for development or produ
 
 A small browser library that swaps server HTML into page regions using attributes like
 `hx-get` / `hx-target`. Hedron uses it for fragment updates — see
-[What is HTMX (for Hedron)](../getting-started/what-is-htmx.md).
+[What is HTMX?](../getting-started/what-is-htmx.md).
 
 ## Why is FastAPI pinned so tightly?
 

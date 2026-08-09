@@ -59,7 +59,7 @@ Keep `RatingInput` at the smallest semantic boundary. Fragment routes should ret
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-This component is primarily presentational; keep any mutation on an explicit action or component route.
+`RatingInput` participates in interaction markup. Pair it with an explicit `@action` / `@component` POST (and CSRF) when the control mutates state.
 
 ## Accessibility
 

@@ -29,24 +29,14 @@ fragment into the declared region).
 
 ![Hello from hedron new with Refresh status control](docs/assets/hello-refresh.jpg)
 
-<details>
-<summary>Dependency pins (first apps)</summary>
+Pin installs with `hedron>=0.25.0,<0.26`. FastAPI/Pydantic ranges and CI-supported pins:
+[Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/).
 
-Pin production installs with <code>hedron&gt;=0.25.0,&lt;0.26</code>.
-<strong>CI-supported</strong> (known-good): FastAPI <code>&gt;=0.141.1,&lt;0.142</code>,
-Pydantic <code>&gt;=2.13.4,&lt;2.14</code>.
-<strong>Declared</strong> install ranges are wider (FastAPI <code>&lt;0.150</code>,
-Pydantic <code>&lt;2.15</code>) — versions outside Supported are installable but not
-CI-proven. Use a clean venv if your project already pins older FastAPI/Pydantic.
-See <a href="https://hedron.readthedocs.io/en/latest/COMPATIBILITY/">Compatibility</a>.
-
-</details>
-
-[![Open in GitHub Codespaces](https://img.shields.io/badge/Codespaces-Open-blue?logo=github)](https://codespaces.new/eddiethedean/hedron)
+[![Open in GitHub Codespaces](https://img.shields.io/badge/Codespaces-~10%2B%20min%20first%20boot-blue?logo=github)](https://codespaces.new/eddiethedean/hedron)
 
 Prefer not to install locally?
 [Try with Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/)
-(still runs a real app in the cloud — not a hosted playground).
+(real app in the cloud — **not** a hosted playground; first boot often **5–15 minutes**).
 
 Alternate (pip + venv):
 
@@ -69,22 +59,16 @@ python -m pip install -e .
 uvicorn app:app --reload
 ```
 
-**Next:** [First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
-[What is HTMX](https://hedron.readthedocs.io/en/latest/getting-started/what-is-htmx/) →
+**Next:** [What is HTMX?](https://hedron.readthedocs.io/en/latest/getting-started/what-is-htmx/) →
+[First app](https://hedron.readthedocs.io/en/latest/getting-started/quickstart/) →
 [HTMX interactions](https://hedron.readthedocs.io/en/latest/guides/htmx-interactions/) →
 [Minimal form](https://hedron.readthedocs.io/en/latest/guides/minimal-form/) →
 [Learning path](https://hedron.readthedocs.io/en/latest/getting-started/learning-path/).
 
-<details>
-<summary>Package maturity</summary>
-
-Hedron 0.25.0 is published (Beta packages — pin <code>hedron&gt;=0.25.0,&lt;0.26</code>).
-Most APIs are compatibility level <code>beta</code>; see
-<a href="https://hedron.readthedocs.io/en/latest/guides/whats-ready/">What’s ready</a>
-for Supported vs Experimental. If <code>hedron</code> is not on your PATH, use
-<code>python -m hedron</code>
-(<a href="https://hedron.readthedocs.io/en/latest/getting-started/installation/">install notes</a>).
-</details>
+Hedron **0.25.0** is published (Beta — pin as above). Maturity labels:
+[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
+If `hedron` is not on your PATH, use `python -m hedron`
+([install notes](https://hedron.readthedocs.io/en/latest/getting-started/installation/)).
 
 ## Packages
 

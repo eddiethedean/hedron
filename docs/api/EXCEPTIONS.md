@@ -31,6 +31,31 @@ Typical message: `"CSRF validation failed"`.
     options:
       heading_level: 3
 
+## `FragmentRegionError`
+
+Raised when an HTMX `HX-Target` (or resolved `region_id`) is not an authorized
+`FragmentRegion`. Subclass of `ValueError` with `.requested`, `.declared`, and `.code`
+(default `HED-HTMX-0001`). FastAPI/`HedronRoute` and the Flask/Django adapters map this
+to HTTP **403**.
+
+```python
+from hedron import FragmentRegionError, InteractionPolicy
+from hedron_core.interaction import authorize_htmx_target
+
+policy = InteractionPolicy(declared_regions=())
+try:
+    authorize_htmx_target(policy, "#main", is_htmx=True)
+except FragmentRegionError as exc:
+    assert exc.code == "HED-HTMX-0001"
+    ...  # typically → HTTP 403
+```
+
+See [Interaction](INTERACTION.md) and [HTMX interactions](../guides/htmx-interactions.md).
+
+::: hedron_core.interaction.FragmentRegionError
+    options:
+      heading_level: 3
+
 ## `ByteRangeNotSatisfiable`
 
 Raised when a media byte-range request cannot be satisfied. Subclass of `ValueError`
@@ -109,6 +134,6 @@ See [Inference](INFERENCE.md) and [BUILT_INS](BUILT_INS.md).
 
 ## See also
 
-- [CSRF composition](CSRF_COMPOSITION.md) · [Error codes](../guides/error-codes.md)
-- [Troubleshooting](../guides/troubleshooting.md) · [Coverage map](COVERAGE.md)
-- Autodoc subset: [AUTODOC.md](AUTODOC.md)
+- [CSRF composition](CSRF_COMPOSITION.md) · [Interaction](INTERACTION.md)
+- [Error codes](../guides/error-codes.md) · [Troubleshooting](../guides/troubleshooting.md)
+- [Coverage map](COVERAGE.md) · Autodoc subset: [AUTODOC.md](AUTODOC.md)

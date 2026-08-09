@@ -5,12 +5,13 @@ evaluator pages link here — do not treat parallel summaries as a second source
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-**Ship today** (pin `hedron>=0.25.0,<0.26`): typed pages, HTMX fragments, CSRF profiles
-(`standard` / `strict`), pluggable CSRF strategies / header merge / `CsrfField`,
-Flask/Django adapters, polling job status, accessibility contracts / PE forms, and the
-production security floor. Prefer **polling** for live status. Charts are source-only on
-0.25 until a compatible distribution is published; notebook, MCP, and Gradio are
-experimental / Alpha. No commercial SLA and no scheduled 1.0.
+**Supported for pinned CRUD/admin on 0.25.x** (Beta packages — pin `hedron>=0.25.0,<0.26`):
+typed pages, HTMX fragments, CSRF profiles (`standard` / `strict`), pluggable CSRF
+strategies / header merge / `CsrfField`, Flask/Django adapters, polling job status,
+accessibility contracts / PE forms, and the production security floor. Prefer **polling**
+for live status. Charts are source-only on 0.25 until a compatible distribution is
+published; notebook, MCP, and Gradio are experimental / Alpha. “Supported” is a
+capability gate, not an API `stable` promise and not a commercial SLA.
 
 Human accessibility testing protocol engineering is on the train; **compensated screen-reader
 sessions are not Supported yet** — do not market human AT as done.

@@ -44,6 +44,7 @@ and explicit session scopes.
 
 1. Replace top-level layout and metrics with typed pages.
 2. Move filters/forms to query params or POST actions (not widget callbacks).
-3. Swap charts/tables to `hedron[data]` / `hedron[charts]` (charts remain Alpha).
+3. Swap tables to `hedron[data]`. Charts are source-only on 0.25 — use `Table` /
+   `Metric` from PyPI, or workspace `hedron-charts` (do not install from PyPI).
 4. Adopt 0.15 controls, Map, and media helpers where custom HTML was used.
 5. Cover flows with `AppScenario` instead of Streamlit `AppTest` rerun semantics.

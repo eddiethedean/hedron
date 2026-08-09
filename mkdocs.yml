@@ -172,9 +172,9 @@ nav:
   - Home: index.md
   - Start:
     - Overview: getting-started/index.md
+    - What is HTMX?: getting-started/what-is-htmx.md
     - Build your first app: getting-started/quickstart.md
     - Installation: getting-started/installation.md
-    - What is HTMX: getting-started/what-is-htmx.md
     - HTMX interactions: guides/htmx-interactions.md
     - Minimal form POST: guides/minimal-form.md
     - Learning path: getting-started/learning-path.md
@@ -191,20 +191,18 @@ nav:
       - Troubleshooting: guides/troubleshooting.md
       - Error codes: guides/error-codes.md
     - Interact:
-      - HTMX interactions: guides/htmx-interactions.md
-      - Minimal form POST: guides/minimal-form.md
       - Forms and actions: guides/forms-and-actions.md
       - Mutations (@action vs @component): guides/mutations.md
       - Authentication: guides/authentication.md
       - OIDC helpers: guides/oidc.md
-      - Live interaction: guides/live-interaction.md
+      - Polling (experimental live): guides/live-interaction.md
       - Dashboards and interaction graphs: guides/dashboards.md
       - Cookbook: guides/cookbook.md
       - Media downloads: guides/media-downloads.md
       - Multi-tenant isolation: guides/multi-tenant.md
     - Data and visuals:
       - Data applications: guides/data-apps.md
-      - Charts and HTMX: guides/charts-and-htmx.md
+      - Charts and HTMX (source-only on 0.25): guides/charts-and-htmx.md
       - Compose built-ins: guides/component-composition.md
       - HDJ authoring: guides/hdj-authoring.md
     - Security:
@@ -213,6 +211,7 @@ nav:
       - Threat model: guides/threat-model.md
       - Accessibility: guides/accessibility.md
     - Ops:
+      - Ship hub: guides/ship.md
       - Ship to production: guides/ship-to-production.md
       - Deployment: guides/deployment.md
       - Durable jobs (Celery / RQ): guides/jobs-celery-rq.md
@@ -281,13 +280,13 @@ nav:
       - Data: components/data.md
       - Utilities: components/utilities.md
       - Theme: components/theme.md
-      - Charts: components/charts.md
+      - Charts (source-only on 0.25): components/charts.md
     - API:
       - Meta:
         - Autodoc (expanded subset): api/AUTODOC.md
         - Public API coverage map: api/COVERAGE.md
         - Public exceptions: api/EXCEPTIONS.md
-        - Stability: api/STABILITY.md
+        - Stability (adopter summary + catalog): api/STABILITY.md
         - Beginner / stable facade: api/STABLE_FACADE.md
         - Production archetype (0.25): api/PRODUCTION_ARCHETYPE.md
         - Live disposition (0.24): api/LIVE_DISPOSITION.md
@@ -317,13 +316,13 @@ nav:
       - Data and charts:
         - Data: api/DATA.md
         - Data sources: api/DATA_SOURCE.md
-        - Charts: api/CHART.md
+        - Charts (source-only on 0.25): api/CHART.md
       - Live:
+        - Jobs (polling): api/JOBS.md
         - SSE (experimental): api/SSE.md
         - Streaming (experimental): api/STREAMING.md
         - WebSocket channel (experimental): api/WEBSOCKET_CHANNEL.md
         - Navigation preload (experimental): api/PRELOAD.md
-        - Jobs: api/JOBS.md
         - Inference / model demos: api/INFERENCE.md
       - Cross-cutting:
         - Prepare lifecycle: api/PREPARE.md
@@ -347,7 +346,9 @@ nav:
     - What's ready today: guides/whats-ready.md
     - Enterprise diligence: guides/enterprise-diligence.md
     - Architecture: ARCHITECTURE.md
+    - Ship: guides/ship.md
     - Ship to production: guides/ship-to-production.md
+    - Compatibility: COMPATIBILITY.md
     - Support: guides/support.md
     - Security disclosure: SECURITY.md
   - Project:
@@ -371,7 +372,6 @@ nav:
       - Dash: guides/dash-migration.md
       - FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
       - Gradio: guides/gradio-migration.md
-    - Compatibility: COMPATIBILITY.md
     - Configuration: CONFIGURATION.md
     - Glossary: GLOSSARY.md
     - Native desktop shell recipe: guides/native-desktop-shell.md

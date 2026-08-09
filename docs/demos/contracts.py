@@ -116,19 +116,19 @@ CONTRACTS: tuple[DemoContract, ...] = (
             Step(
                 click=_btn("Refresh status"),
                 expect_trace="GET /status → 200",
-                expect_text="#hx-guide-status",
+                expect_text="#service-status",
                 contains="Service healthy",
             ),
             Step(
                 click=_btn("Correct target → 200"),
                 expect_trace="GET /probe → 200",
-                expect_text="#hx-guide-probe",
+                expect_text="#allowlist-probe",
                 contains="Allowlisted swap",
             ),
             Step(
                 click=_btn("Wrong #panel → 403"),
                 expect_trace="403",
-                expect_text="#hx-guide-probe",
+                expect_text="#allowlist-probe",
                 contains="Allowlisted swap",
             ),
         ),
@@ -322,7 +322,7 @@ CONTRACTS: tuple[DemoContract, ...] = (
                 click=_btn("Sign in"),
                 expect_text="#auth-panel",
                 contains="Invalid username or password",
-                expect_trace="401",
+                expect_trace="200",
             ),
             Step(
                 fill={"#auth-password": "correct-horse"},
@@ -340,8 +340,8 @@ CONTRACTS: tuple[DemoContract, ...] = (
             Step(
                 click=_btn("Open /home anonymously"),
                 expect_text="#auth-panel",
-                contains="401",
-                expect_trace="401",
+                contains="Redirected to /login",
+                expect_trace="200",
             ),
         ),
     ),

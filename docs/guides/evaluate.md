@@ -93,11 +93,11 @@ Full matrix: [What’s ready](whats-ready.md).
 
 ## Try it
 
-1. [Build your first app](../getting-started/quickstart.md) — Hello → Refresh
-2. [What is HTMX](../getting-started/what-is-htmx.md) → [HTMX interactions](htmx-interactions.md)
-   → [Minimal form](minimal-form.md)
-3. [Try with Codespaces](../examples/try-it.md) (real server in a container — not a playground)
-4. [Runnable examples](../examples/runnable.md)
+1. [What is HTMX?](../getting-started/what-is-htmx.md) — browser / fragment / region mental model
+2. [Build your first app](../getting-started/quickstart.md) — Hello → Refresh
+3. [HTMX interactions](htmx-interactions.md) → [Minimal form](minimal-form.md)
+4. [Try with Codespaces](../examples/try-it.md) (real server in a container — not a playground)
+5. [Runnable examples](../examples/runnable.md)
 
 Then: [Ship to production](ship-to-production.md) · [Evidence pack](evidence-pack.md) ·
 [Support](support.md).

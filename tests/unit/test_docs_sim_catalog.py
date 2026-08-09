@@ -159,7 +159,8 @@ def test_credentials_validate_route_variants_render() -> None:
     payload = _route_payload(build_auth_login_demo())
     route = payload["routes"]["POST /login"]
     assert route["validate"] == "credentials"
-    assert route["variants"]["invalid"]["status"] == 401
+    # Soft landing matches the session-auth recipe (303 → /login?error=1), not bare 401.
+    assert route["variants"]["invalid"]["status"] == 200
     assert route["variants"]["valid"]["status"] == 200
     assert "Signed in as ada" in route["variants"]["valid"]["html"]
     assert "Invalid username or password" in route["variants"]["invalid"]["html"]

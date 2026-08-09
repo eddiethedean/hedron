@@ -22,7 +22,7 @@ password store before production.
 
 === "Demo"
 
-    Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.
+    Wrong password → soft redirect to /login?error=1. ada / correct-horse → signed-in panel. Docs simulation.
 
     <!-- hedron-sim:auth-login -->
 
@@ -39,8 +39,7 @@ password store before production.
     from fastapi import Request, status
     from fastapi.responses import RedirectResponse
 
-    from hedron import Form, Hedron, Page, Stack, SubmitButton, Text, TextInput, html
-    from hedron.security import csrf_token_for_request
+    from hedron import CsrfField, Form, Hedron, Page, Stack, SubmitButton, Text, TextInput
 
     app = Hedron(
         title="Session auth demo",
@@ -53,20 +52,15 @@ password store before production.
     USERS = {"ada": "correct-horse"}
 
 
-    def _csrf(request: Request) -> str:
-        return csrf_token_for_request(request, request.app.state.hedron_security)
-
-
     @app.page("/login")
     def login_page(request: Request) -> Page | RedirectResponse:
         if request.session.get("username"):
             return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
-        token = _csrf(request)
         return Page(
             Stack(
                 Text("Sign in (demo: ada / correct-horse)"),
                 Form(
-                    html.input(type="hidden", name="csrf_token", value=token),
+                    CsrfField(),
                     TextInput("username", value="", required=True),
                     TextInput("password", value="", type="password", required=True),
                     SubmitButton("Sign in"),
@@ -96,12 +90,11 @@ password store before production.
         if not username:
             # Soft landing — redirect to login instead of a bare 401.
             return RedirectResponse("/login", status_code=status.HTTP_303_SEE_OTHER)
-        token = _csrf(request)
         return Page(
             Stack(
                 Text(f"Signed in as {username}"),
                 Form(
-                    html.input(type="hidden", name="csrf_token", value=token),
+                    CsrfField(),
                     SubmitButton("Sign out"),
                     action="/logout",
                     method="post",

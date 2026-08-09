@@ -39,7 +39,8 @@ cache keys — see [Threat model](threat-model.md).
 
 ## Data and charts
 
-- Install extras only when needed (`hedron[data]`, `hedron[charts]`)
+- Install `hedron[data]` only when needed. Do **not** install `hedron[charts]` on 0.25
+  from PyPI (source-only — see [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit))
 - Bound `Auto` inspection; do not feed unbounded lazy queries into inference
 - Paginate DataTable sources; avoid shipping entire datasets to the browser
 

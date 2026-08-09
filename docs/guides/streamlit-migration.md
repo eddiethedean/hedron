@@ -6,7 +6,9 @@ changes. Hedron handles an HTTP request, validates its inputs with FastAPI, and 
 typed server-rendered components. Migrate the user workflow first; do not translate each
 call in isolation.
 
-This guide rewrites a small sales dashboard with filters, metrics, a chart, and a table.
+This guide rewrites a small sales dashboard with filters, metrics, and a table. On Hedron
+**0.25**, published chart wheels are unavailable — use `Metric` + `DataTable` (or `Table`)
+from PyPI, then add charts from the workspace when you need them.
 
 ## The Streamlit version
 
@@ -55,11 +57,19 @@ changes, Streamlit reruns the file and reconstructs the page.
 
 ## Rewrite it in Hedron
 
-Install Hedron with its data and chart packages, plus an ASGI server:
+Install Hedron with the data extra, plus an ASGI server:
 
 ```bash
 uv add "hedron[data]>=0.25.0,<0.26" "uvicorn[standard]"
 ```
+
+!!! danger "Do not install charts from PyPI with Hedron 0.25"
+
+    Do not install the charts extra or `hedron-charts` from PyPI — those releases require
+    older `hedron-core` and will break a 0.25 environment. See
+    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+    For a PyPI-installable dashboard, use metrics and tables (below). Workspace clones can
+    follow the [workspace-only charts](#workspace-only-charts-on-025) section.
 
 Create `app.py`:
 
@@ -80,10 +90,10 @@ from hedron import (
     Sidebar,
     Stack,
     SubmitButton,
+    Table,
     cache_data,
     html,
 )
-from hedron_charts import LineChart
 from hedron_data import DataTable
 
 Region = Literal["All", "North", "South"]
@@ -125,7 +135,10 @@ def dashboard(
         for row in load_sales()
         if (region == "All" or row.region == region) and row.revenue >= minimum
     ]
-    chart_rows = [row.model_dump() for row in filtered]
+    by_month: dict[str, int] = {}
+    for row in filtered:
+        by_month[row.month] = by_month.get(row.month, 0) + row.revenue
+    month_rows = [[month, f"${total:,}"] for month, total in by_month.items()]
 
     filters = Sidebar(
         Heading("Filters", level=2),
@@ -165,12 +178,11 @@ def dashboard(
             Metric("Orders", sum(row.orders for row in filtered)),
             columns=2,
         ),
-        LineChart(
-            chart_rows,
-            x="month",
-            y="revenue",
-            title="Revenue by month",
-            description="Monthly revenue for the selected region and minimum.",
+        Heading("Revenue by month", level=2),
+        Table(
+            ["Month", "Revenue"],
+            month_rows or [["—", "No rows"]],
+            caption="Monthly revenue for the selected region and minimum.",
         ),
         DataTable(
             filtered,
@@ -195,6 +207,27 @@ query parameters, and the route returns a new component tree. A production appli
 should load `session_secret` from its environment rather than using the development
 literal shown above.
 
+### Workspace-only charts on 0.25
+
+When you develop against this monorepo (or an editable checkout that includes
+`packages/hedron-charts`), you can restore a `LineChart` in place of the month `Table`:
+
+```python
+# workspace-only — requires packages/hedron-charts on PYTHONPATH / uv workspace
+from hedron_charts import LineChart
+
+LineChart(
+    [row.model_dump() for row in filtered],
+    x="month",
+    y="revenue",
+    title="Revenue by month",
+    description="Monthly revenue for the selected region and minimum.",
+)
+```
+
+Do not `pip install hedron-charts` from PyPI into a 0.25 app. Details:
+[Charts and HTMX](charts-and-htmx.md).
+
 ## How the concepts map
 
 | Streamlit | Hedron | Migration note |
@@ -205,8 +238,8 @@ literal shown above.
 | `st.columns` | `Grid` or `Inline` | Compose child components explicitly. |
 | `st.metric` | `Metric` | Pass the label, formatted value, and optional delta. |
 | `st.dataframe` | `DataTable` | Declare a `Model` when stable column types matter. Use `DataEditor` for edits. |
-| `st.line_chart` | `LineChart` | Source-only on 0.25 until a compatible chart wheel is published; provide a title and accessible description. |
-| `st.plotly_chart` | `PlotlyChart` | Hedron compiles the supported figure through its chart adapter. |
+| `st.line_chart` | `Table` / `Metric` on PyPI 0.25; `LineChart` workspace-only | Source-only charts until a compatible wheel is published; provide a title and accessible description when charts return. |
+| `st.plotly_chart` | `PlotlyChart` (workspace-only on 0.25) | Hedron compiles the supported figure through its chart adapter. |
 | `st.cache_data` | `cache_data` | Choose a TTL and a cache scope; include user or tenant dimensions for private data. |
 | `st.session_state` | Query parameters, your database, or `SessionState` | Prefer addressable URL state for filters and durable application storage for domain data. |
 | `st.file_uploader` | `FileUpload` | Process uploads in an explicit server action with size and content policies. |
@@ -228,4 +261,4 @@ The largest migration decision is where code runs:
 
 This separation makes filters addressable, mutations auditable, and components testable
 without a browser. Continue with [Test your UI](testing.md), [Security](security.md), and
-[Charts and HTMX](charts-and-htmx.md).
+[Data applications](data-apps.md).

@@ -53,7 +53,7 @@ Keep `Auto` at the smallest semantic boundary. Fragment routes should return onl
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-This component is primarily presentational; keep any mutation on an explicit action or component route.
+`Auto` renders data the server already prepared. Keep queries, authorization, and redaction on the route or data source — do not treat the component as a place for side effects.
 
 ## Accessibility
 

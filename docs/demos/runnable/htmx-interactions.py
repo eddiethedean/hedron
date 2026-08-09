@@ -10,9 +10,10 @@ app = Hedron(
     session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
 )
 
-status = app.region("hx-guide-status", description="Status panel")
-notes = app.region("hx-guide-notes", description="Notes counter")
-probe = app.region("hx-guide-probe", description="Allowlist probe")
+# Path B standalone IDs match the hedron new scaffold (Path A) where possible.
+status = app.region("service-status", description="Status panel")
+notes = app.region("notes-count", description="Notes counter")
+probe = app.region("allowlist-probe", description="Allowlist probe")
 
 
 def status_panel():
@@ -29,7 +30,7 @@ def status_panel():
 def notes_panel():
     return html.div(
         Text("Sample notes region"),
-        html.span("Allowlisted #hx-guide-notes — count stays 0 in this example"),
+        html.span("Allowlisted #notes-count — count stays 0 in this example"),
         id=notes.id,
         role="status",
         aria={"live": "polite"},

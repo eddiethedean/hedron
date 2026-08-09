@@ -231,7 +231,10 @@ download-all budgets, see [Media downloads](media-downloads.md).
 
 ## Charts as fragments
 
-Install `hedron[charts]` (+ backend extra). Follow [Charts and HTMX](charts-and-htmx.md).
+Charts are **source-only on Hedron 0.25** — do not `pip install "hedron[charts]"`. For PyPI
+apps, return `Metric` / `Table` / `DataTable` fragments. Workspace clones: see
+[Charts and HTMX](charts-and-htmx.md) and
+[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## Turn Explorer off in production
 

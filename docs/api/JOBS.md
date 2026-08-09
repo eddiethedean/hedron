@@ -145,7 +145,11 @@ def home():
 
 @app.get("/jobs/{job_id}/status")
 def job_status(job_id: str):
-    status = backend.get(job_id)
+    status = backend.get(
+        job_id,
+        auth_subject="demo-user",
+        tenant_id="demo-tenant",
+    )
     if status is None:
         raise HTTPException(status_code=404, detail="Job not found")
     return job_status_response(
@@ -154,6 +158,10 @@ def job_status(job_id: str):
         tenant_id="demo-tenant",
     )
 ```
+
+Use the same `auth_subject` / `tenant_id` on `get` and `job_status_response` as on
+`enqueue_durable`. Unscoped `backend.get(job_id)` is for worker/internal paths only —
+do not copy that pattern into HTTP poll handlers.
 
 For multi-worker production, replace `InMemoryJobBackend` with
 [`RedisJobBackend`](../guides/jobs-celery-rq.md), `CeleryJobBackend`, or `RQJobBackend`.

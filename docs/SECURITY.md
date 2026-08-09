@@ -32,13 +32,27 @@ upgrade is required. There is **no contractual patch SLA**.
 
 Please **do not** open a public GitHub issue for security vulnerabilities.
 
-**Preferred:** open a private GitHub
-[security advisory](https://github.com/eddiethedean/hedron/security/advisories/new)
-— this is the dedicated disclosure channel for Hedron.
+### Disclosure channel (required)
 
-**Alternate:** email **odosmatthews@gmail.com** (package author / maintainer contact
-published in package metadata) with the same details. Do not open a public issue for
-vulnerabilities.
+Open a private GitHub
+[security advisory](https://github.com/eddiethedean/hedron/security/advisories/new).
+This is the **dedicated** disclosure channel for Hedron — use it even if you also email
+the maintainer. Advisories give a private thread, artifact tracking, and coordinated
+publication.
+
+### Process (best-effort)
+
+1. File the private advisory with the details below.
+2. Expect acknowledgment within a few business days (**no contractual security SLA**).
+3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
+4. Fixes land on the current published train (`0.25.x`); see Supported versions above.
+
+### Alternate contact
+
+If GitHub advisories are unavailable to you, email **odosmatthews@gmail.com** (package
+author / maintainer contact in package metadata) with the same details and note that you
+could not open an advisory. Prefer the advisory form whenever possible — a personal inbox
+is not a dedicated security mailbox and is best-effort only.
 
 Include:
 
@@ -46,10 +60,6 @@ Include:
 - A minimal reproduction
 - Impact assessment (confidentiality, integrity, availability)
 - Whether a fix is already known
-
-You should receive an acknowledgment within a few business days (best-effort; there is
-**no contractual security SLA**). Coordinated disclosure is preferred; please allow
-reasonable time before public discussion.
 
 **Severity classes (best-effort):**
 

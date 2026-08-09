@@ -6,9 +6,9 @@ pick one recipe (auth or SQLite).
 
 ## Path
 
-1. [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
-2. [Installation](installation.md) — extras, Flask/Django, common problems (as needed)
-3. Optional: [What is HTMX](what-is-htmx.md) — one-screen mental model
+1. [What is HTMX?](what-is-htmx.md) — the browser, fragment, region, and swap mental model
+2. [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
+3. [Installation](installation.md) — extras, Flask/Django, common problems (as needed)
 4. [HTMX interactions](../guides/htmx-interactions.md) — extend the Refresh pattern
 5. [Minimal form](../guides/minimal-form.md) — `CsrfField` POST that updates the count
 6. [Learning path](learning-path.md) — continue toward data, auth, and deploy
@@ -21,33 +21,38 @@ Evaluating production use later? [What’s ready](../guides/whats-ready.md) ·
 [Why Hedron](../guides/why-hedron.md) · [Evaluate Hedron](../guides/evaluate.md).
 
 <div class="hedron-grid">
-  <a class="hedron-card" href="quickstart/">
+  <a class="hedron-card" href="what-is-htmx/">
     <span class="hedron-card__icon" aria-hidden="true">01</span>
-    <strong>1. First app</strong>
+    <strong>1. Understand HTMX</strong>
+    <p>Learn how browser events become HTTP requests and targeted HTML swaps.</p>
+  </a>
+  <a class="hedron-card" href="quickstart/">
+    <span class="hedron-card__icon" aria-hidden="true">02</span>
+    <strong>2. First app</strong>
     <p>Scaffold, Hello, Refresh click, then edit a string.</p>
   </a>
   <a class="hedron-card" href="installation/">
-    <span class="hedron-card__icon" aria-hidden="true">02</span>
-    <strong>2. Installation</strong>
+    <span class="hedron-card__icon" aria-hidden="true">03</span>
+    <strong>3. Installation</strong>
     <p>Extras, adapters, and troubleshooting after Hello.</p>
   </a>
   <a class="hedron-card" href="../guides/htmx-interactions/">
-    <span class="hedron-card__icon" aria-hidden="true">03</span>
-    <strong>3. HTMX</strong>
+    <span class="hedron-card__icon" aria-hidden="true">04</span>
+    <strong>4. HTMX interactions</strong>
     <p>Extend the scaffold Refresh pattern with more regions.</p>
   </a>
   <a class="hedron-card" href="../guides/minimal-form/">
-    <span class="hedron-card__icon" aria-hidden="true">04</span>
-    <strong>4. Minimal form</strong>
+    <span class="hedron-card__icon" aria-hidden="true">05</span>
+    <strong>5. Minimal form</strong>
     <p><code>CsrfField</code> POST that increments the notes counter.</p>
   </a>
   <a class="hedron-card" href="learning-path/">
-    <span class="hedron-card__icon" aria-hidden="true">05</span>
-    <strong>5. Learning path</strong>
+    <span class="hedron-card__icon" aria-hidden="true">06</span>
+    <strong>6. Learning path</strong>
     <p>Data, auth, deploy, and optional evaluator reading.</p>
   </a>
   <a class="hedron-card" href="../examples/recipes/">
-    <span class="hedron-card__icon" aria-hidden="true">06</span>
+    <span class="hedron-card__icon" aria-hidden="true">07</span>
     <strong>Second hour — recipes</strong>
     <p>Notes + SQLAlchemy, session auth, upload, jobs poll.</p>
   </a>

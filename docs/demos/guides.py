@@ -51,9 +51,9 @@ def _hx(**attrs: str) -> dict[str, str]:
 
 def build_htmx_interactions_demo() -> str:
     app = SimApp(title="HTMX interactions", demo_id="htmx-interactions")
-    status = app.region("hx-guide-status", description="Status panel")
-    notes = app.region("hx-guide-notes", description="Notes counter")
-    probe = app.region("hx-guide-probe", description="Allowlist probe")
+    status = app.region("service-status", description="Status panel")
+    notes = app.region("notes-count", description="Notes counter")
+    probe = app.region("allowlist-probe", description="Allowlist probe")
 
     def status_panel():
         return html.div(
@@ -68,7 +68,7 @@ def build_htmx_interactions_demo() -> str:
     def notes_panel():
         return html.div(
             html.strong("Sample notes region"),
-            html.span("Allowlisted #hx-guide-notes — count stays 0 in this sim"),
+            html.span("Allowlisted #notes-count — count stays 0 in this sim"),
             id=notes.id,
             class_="hedron-sim-card",
             role="status",
@@ -829,8 +829,8 @@ def build_auth_login_demo() -> str:
 
     def denied():
         return html.div(
-            html.strong("401 Sign in required"),
-            html.span("Gated /home refused the anonymous request."),
+            html.strong("Redirected to /login"),
+            html.span("Soft landing — anonymous /home is not a bare 401."),
             html.button(
                 "Back to login",
                 type="button",
@@ -852,9 +852,12 @@ def build_auth_login_demo() -> str:
 
     def invalid():
         return InteractionResult(
-            content=login_form(errors=("Invalid username or password.",)),
-            status_code=401,
+            content=login_form(
+                errors=("Invalid username or password — redirect to /login?error=1.",)
+            ),
+            status_code=200,
             region_id=panel.id,
+            explanation="Soft landing: recipe uses 303 → /login?error=1",
         )
 
     def valid():
@@ -877,8 +880,9 @@ def build_auth_login_demo() -> str:
     def gated_home():
         return InteractionResult(
             content=denied(),
-            status_code=401,
+            status_code=200,
             region_id=panel.id,
+            explanation="Soft landing: recipe uses 303 → /login",
         )
 
     @app.fragment("/login-form", region=panel)

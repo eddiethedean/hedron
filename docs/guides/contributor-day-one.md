@@ -5,10 +5,12 @@ Thin on-ramp for first contributions. Full detail:
 
 ## Docs-only PR
 
-**Local work (~15 minutes):** edit markdown and build docs. **CI wall-clock is longer:**
-every PR still runs the full `test` / `quality` / `browser` / `evidence` matrix (no path
-filters today) — often **tens of minutes**, not 15. Plan for that; maintainers can waive
-unrelated `browser` / `evidence` flakes on clearly docs-only PRs.
+**Local work (~15 minutes):** edit markdown and build docs. **CI:** PRs that touch only
+docs paths (`docs/**`, root README/SECURITY stubs, `mkdocs.yml`, and the docs sync/generate
+scripts listed in `.github/workflows/ci.yml`) skip `test` / `browser` / `evidence` /
+packaging rehearsal and still run **quality** (mkdocs + train SSOT + package checks).
+If your PR also changes `packages/`, `examples/`, `tests/`, or CI itself, the full matrix
+runs.
 
 1. Clone and sync docs deps:
 
@@ -30,13 +32,15 @@ unrelated `browser` / `evidence` flakes on clearly docs-only PRs.
 4. Open a PR with **“docs-only”** in the title or first line of the description.
 
 You do **not** need Playwright, RFCs, or acceptance gates locally for typos and guide
-fixes. Do not use `--no-verify`. If CI `browser` / `evidence` fails for reasons
-**unrelated** to your markdown change, ask a maintainer to re-run or waive — do not
-expand the diff to chase unrelated flakes.
+fixes. Do not use `--no-verify`. For quality-suite work beyond docs, use
+`uv sync --all-groups` before `bash scripts/ci_checks.sh quality --python 3.12`.
 
-**Maintainer waive protocol:** comment that the PR is docs-only, link the unrelated
-failure, and request a waive/re-run. Path filters for docs-only CI remain a tracked
-infra improvement — not available yet.
+## Good first issues
+
+Browse GitHub issues labeled
+[`good first issue`](https://github.com/eddiethedean/hedron/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+when present. If the label is empty, prefer docs clarity, FAQ/Troubleshooting, or a small
+failing test for a bug you hit — see below.
 
 ## Bug-fix PR
 

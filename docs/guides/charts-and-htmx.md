@@ -11,9 +11,10 @@ A short path from install → chart → Markdown → typed fragment response.
     use; do not copy an old PyPI chart install into a 0.25 application. See
     [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
-## LineChart on a page
+## LineChart on a page (workspace-only)
 
 ```python
+# workspace-only — do not pip install hedron-charts into a PyPI 0.25 app
 from hedron import Hedron, Page, Text
 from hedron_charts import LineChart
 

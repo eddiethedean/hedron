@@ -40,6 +40,11 @@ version independently.
     adopters** until a new distribution version is published and this notice is removed.
     Other Alpha packages listed above have compatible published `0.1.x` wheels.
 
+    **What happens if you install anyway:** resolvers typically pull
+    `hedron-charts==0.1.x` with `hedron-core<0.20` (or the older `0.11.0` pin), then either
+    fail to satisfy `hedron-core==0.25.x` or downgrade the flagship stack. Prefer a clean
+    venv and omit charts until a compatible release is published.
+
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
 acceleration is present or absent (D-001 / D-048).
 

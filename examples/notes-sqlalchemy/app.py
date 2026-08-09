@@ -11,8 +11,7 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy import Column, Integer, String, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
-from hedron import Form, Hedron, Page, Stack, SubmitButton, Text, TextInput, html
-from hedron.security import csrf_token_for_request
+from hedron import CsrfField, Form, Hedron, Page, Stack, SubmitButton, Text, TextInput, html
 
 engine = create_engine("sqlite:///./notes.db", connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
@@ -38,23 +37,17 @@ app = Hedron(
 )
 
 
-def _csrf(request: Request) -> str:
-    """Hide the security-policy lookup behind a one-liner for forms."""
-    return csrf_token_for_request(request, request.app.state.hedron_security)
-
-
 @app.page("/")
 def home(request: Request) -> Page:
     with Session(engine) as db:
         notes = list(db.scalars(select(Note).order_by(Note.id.desc())).all())
-    token = _csrf(request)
     items = []
     for n in notes:
         items.append(
             html.li(
                 Text(str(n.body)),
                 Form(
-                    html.input(type="hidden", name="csrf_token", value=token),
+                    CsrfField(),
                     html.input(type="hidden", name="note_id", value=str(n.id)),
                     SubmitButton("Delete"),
                     action="/delete",
@@ -69,7 +62,7 @@ def home(request: Request) -> Page:
         Stack(
             Text("Notes (SQLAlchemy + SQLite) — create, list, delete"),
             Form(
-                html.input(type="hidden", name="csrf_token", value=token),
+                CsrfField(),
                 TextInput("body", value="", required=True, placeholder="Write a note"),
                 SubmitButton("Save"),
                 action="/save",

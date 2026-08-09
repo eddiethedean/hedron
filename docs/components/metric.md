@@ -55,7 +55,7 @@ Keep `Metric` at the smallest semantic boundary. Fragment routes should return o
 the replaced region and preserve stable target IDs across success, validation, empty,
 loading, and error responses.
 
-This component is primarily presentational; keep any mutation on an explicit action or component route.
+`Metric` is primarily presentational; keep any mutation on an explicit action or component route.
 
 ## Accessibility
 

@@ -24,8 +24,8 @@ cache policy, and diagnostics; they are not a reduced client-side HTMX dialect. 
 | Symbol | Key inputs | Role |
 |---|---|---|
 | `FragmentRegion` | `id`, `selector`, `description` | Declared HTMX target allowlist entry |
-| `InteractionPolicy` | `declared_regions`, `allow_undeclared_targets`, `hx_sync`, `vary_on_target`, … | Route/fragment authorization + sync policy |
-| `InteractionResult` | `content`, `region_id`, `oob`, `status_code`, `cache`, HTMX overrides | Typed fragment response + headers |
+| `InteractionPolicy` | `declared_regions`, `allow_undeclared_targets`, `hx_sync`, `vary_on_target`, `embed_csrf`, `indicator`, … | Route/fragment authorization + sync policy |
+| `InteractionResult` | `content`, `region_id`, `oob`, `status_code`, `cache`, `refresh`, `concurrency`, HTMX overrides | Typed fragment response + headers |
 | `htmx_request(request)` | Starlette/FastAPI `Request` | Read HTMX request context |
 | `swap` / `retarget` / `redirect_htmx` | content / target / local URL | Day-1 ergonomics over `InteractionResult` |
 
@@ -61,6 +61,22 @@ def handler(request: Request):
 ```
 
 ## `InteractionPolicy` and fragment regions
+
+### `InteractionPolicy` fields
+
+| Field | Type | Default | Meaning |
+|---|---|---|---|
+| `hx_sync` | `str \| None` | `"drop"` | HTMX sync strategy hint for competing requests |
+| `indicator` | `str \| None` | `None` | Selector for a busy indicator |
+| `aria_busy` | `bool` | `True` | Whether to advertise busy state |
+| `embed_csrf` | `bool` | `True` | Prefer embedding CSRF tokens in forms/responses when the host profile requires them |
+| `restore_focus` | `bool` | `True` | Prefer restoring focus after swap when supported |
+| `idempotent_get` | `bool` | `True` | Treat GET fragment refreshes as safe/repeatable |
+| `error_retarget` | `str \| None` | `None` | Optional retarget selector for error responses |
+| `error_reswap` | `str \| None` | `"innerHTML"` | Reswap strategy for error responses |
+| `vary_on_target` | `bool` | `False` | Include target in cache Vary behavior when enabled |
+| `declared_regions` | `tuple[FragmentRegion, ...]` | `()` | Allowlisted HTMX targets for this result/route |
+| `allow_undeclared_targets` | `bool` | `False` | Opt out of fail-closed target authorization (avoid in production) |
 
 ```python
 from hedron import FragmentRegion, InteractionPolicy, InteractionResult, Text
@@ -190,19 +206,21 @@ Walkthrough: [HTMX interactions](../guides/htmx-interactions.md).
 
 ### Constructor fields
 
-| Field | Type (conceptual) | Meaning |
-|---|---|---|
-| `content` | `NodeLike \| None` | Primary fragment body |
-| `status_code` | `int` | HTTP status (default 200) |
-| `region_id` | `str \| None` | Declared destination region id |
-| `target` / `swap` / `retarget` / `reswap` / `reselect` | `str \| None` | Swap controls; selectors use Hedron's safe subset |
-| `trigger` / `trigger_after_swap` / `trigger_after_settle` | `str \| Mapping \| None` | Encoded as `HX-Trigger*` |
-| `redirect` / `location` / `push_url` / `replace_url` / `history` | local URL fields | URL-bearing headers require local paths |
-| `cache` | `private` \| `no-store` \| `vary-htmx` \| `None` | Cache / Vary policy |
-| `oob` | `tuple[OobUpdate, ...]` | Out-of-band updates |
-| `policy` | `InteractionPolicy \| None` | Sync/indicator/region defaults |
-| `explanation` | `str \| None` | Explorer/diagnostics only; not rendered |
-| `headers` | escape hatch | Approved `HX-*`, `Cache-Control`, `Vary` only |
+| Field | Type (conceptual) | Default | Meaning |
+|---|---|---|---|
+| `content` | `NodeLike \| None` | `None` | Primary fragment body |
+| `status_code` | `int` | `200` | HTTP status |
+| `region_id` | `str \| None` | `None` | Declared destination region id |
+| `target` / `swap` / `retarget` / `reswap` / `reselect` | `str \| None` | `None` | Swap controls; selectors use Hedron's safe subset |
+| `trigger` / `trigger_after_swap` / `trigger_after_settle` | `str \| Mapping \| None` | `None` | Encoded as `HX-Trigger*` |
+| `redirect` / `location` / `push_url` / `replace_url` / `history` | local URL fields | `None` / `"none"` | URL-bearing headers require local paths; `history` defaults to `"none"` |
+| `refresh` | `bool` | `False` | When `True`, emit `HX-Refresh` |
+| `cache` | `private` \| `no-store` \| `vary-htmx` \| `None` | `"vary-htmx"` | Cache / Vary policy |
+| `concurrency` | `str \| None` | `None` | Optional concurrency token / key for adaptive controls |
+| `oob` | `tuple[OobUpdate, ...]` | `()` | Out-of-band updates |
+| `policy` | `InteractionPolicy \| None` | `None` | Sync/indicator/region defaults |
+| `explanation` | `str` | `""` | Explorer/diagnostics only; not rendered |
+| `headers` | mapping escape hatch | `{}` | Approved `HX-*`, `Cache-Control`, `Vary` only |
 
 ### Return / response behavior
 
@@ -216,8 +234,8 @@ route `fragment_regions` (unauthorized `HX-Target` → `403`).
 | Content | `content`, `status_code`, `region_id` | Primary body, HTTP status, and declared destination. |
 | Swap | `target`, `swap`, `retarget`, `reswap`, `reselect` | Selectors are checked against Hedron's safe subset. |
 | Events | `trigger`, `trigger_after_swap`, `trigger_after_settle` | Strings or mappings encoded as `HX-Trigger*`. |
-| Navigation | `redirect`, `location`, `push_url`, `replace_url`, `history` | URL-bearing headers require local paths. |
-| Cache | `cache` | `private`, `no-store`, `vary-htmx`, or `None`. |
+| Navigation | `redirect`, `location`, `push_url`, `replace_url`, `history`, `refresh` | URL-bearing headers require local paths; `refresh=True` emits `HX-Refresh`. |
+| Cache / concurrency | `cache`, `concurrency` | `cache` defaults to `vary-htmx`; `concurrency` is optional. |
 | Additional updates | `oob` | A tuple of `OobUpdate` values. |
 | Diagnostics | `explanation` | Visible to Explorer traces; it is not rendered. |
 

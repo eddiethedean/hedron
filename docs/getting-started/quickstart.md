@@ -5,13 +5,15 @@ a working **Refresh** click, then a one-line edit. Prefer **`python -m hedron`**
 never matters. Cold machines (install Python/uv first) or Codespaces first boot often take
 longer — see [Try with Codespaces](../examples/try-it.md).
 
+New to HTMX? Read [What is HTMX?](what-is-htmx.md) first for the five-minute mental
+model behind the Refresh interaction.
+
 ## Prerequisites
 
 - CPython **3.11–3.14** — verify with `python3 --version` (Windows: `py -3 --version`)
-- Use a **clean virtual environment** for your first try. Prefer **CI-supported** pins:
-  FastAPI `>=0.141.1,<0.142`, Pydantic `>=2.13.4,<2.14`. Declared install ranges are
-  wider — see [Compatibility](../COMPATIBILITY.md). Shared envs often resolve the wrong
-  FastAPI/Pydantic.
+- Use a **clean virtual environment** for your first try (shared envs often resolve the
+  wrong FastAPI/Pydantic). Exact Supported vs declared ranges:
+  [Compatibility](../COMPATIBILITY.md).
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or `pip`
 - No Node.js required
 

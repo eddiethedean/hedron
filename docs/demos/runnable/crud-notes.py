@@ -6,8 +6,7 @@ from uuid import uuid4
 
 from fastapi import Form, Request
 
-from hedron import Hedron, Page, Stack, SubmitButton, Text, TextInput, html
-from hedron.security import csrf_token_for_request
+from hedron import CsrfField, Hedron, Page, Stack, SubmitButton, Text, TextInput, html
 
 app = Hedron(
     title="CRUD notes",
@@ -20,12 +19,8 @@ NOTES: dict[str, str] = {}
 listing = app.region("notes-list", description="Notes list")
 
 
-def _csrf(request: Request) -> str:
-    return csrf_token_for_request(request, request.app.state.hedron_security)
-
-
 def render_list(request: Request):
-    token = _csrf(request)
+    del request  # request kept for signature parity with fragment handlers
     if not NOTES:
         return html.div(Text("No notes yet."), id=listing.id)
     items = []
@@ -35,7 +30,7 @@ def render_list(request: Request):
                 Text(body),
                 " ",
                 html.form(
-                    html.input(type="hidden", name="csrf_token", value=token),
+                    CsrfField(),
                     html.input(type="hidden", name="note_id", value=note_id),
                     SubmitButton("Delete"),
                     method="post",
@@ -52,12 +47,11 @@ def render_list(request: Request):
 
 @app.page("/")
 def home(request: Request) -> Page:
-    token = _csrf(request)
     return Page(
         Stack(
             render_list(request),
             html.form(
-                html.input(type="hidden", name="csrf_token", value=token),
+                CsrfField(),
                 TextInput(name="note", placeholder="New note"),
                 SubmitButton("Add note"),
                 method="post",

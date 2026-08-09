@@ -13,6 +13,13 @@ status: experimental
 
 **Status:** Shipped in `0.10.0` (experimental)
 
+!!! note "Outline page"
+
+    This page summarizes experimental navigation preload. Prefer
+    [Autodoc](AUTODOC.md) / `hedron.experimental` and
+    [Live interaction](../guides/live-interaction.md); default remains off under
+    Accepted **`polling_only`**.
+
 Types: `NavigationPreloadPolicy`, `HX_PRELOADED` (header name). Helpers:
 `evaluate_preload_request`, `apply_preload_headers` — import from `hedron.experimental`.
 Decision logic lives in `hedron_core.preload`.

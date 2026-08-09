@@ -4,12 +4,14 @@
 [Build your first app](../getting-started/quickstart.md) (no clone required).
 
 **No local Python install required** — open this repository in GitHub Codespaces or a Dev
-Container, then run a **real** Hedron server (still not a hosted playground).
+Container, then run a **real** Hedron server (still not a hosted playground). Plan on
+**~10+ minutes** for the first Codespaces / Dev Container boot.
 
 !!! note "What this is not"
 
     There is no multi-tenant hosted sandbox and no one-liner “try Hedron” without a
-    container or local install. Codespaces / Dev Container is the remote path.
+    container or local install. Codespaces / Dev Container is the remote path — first
+    sync often takes **5–15 minutes**.
 
 ## Why open the repo?
 
