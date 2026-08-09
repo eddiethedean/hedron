@@ -1,21 +1,22 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.22.0,<0.23`. Treat the small **stable** table below as
-the compatibility promise; everything else is `beta` / `experimental` and may change on
-`0.x`. Capability readiness (Supported vs Experimental) lives on
-[What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
+**For adopters:** Pin `hedron>=0.23.0,<0.24`. Treat the **stable** tables below (minimal +
+expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
+`experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
+lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
 
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Phase 0.22 CSRF / SecurityPolicy composition (**Published**
-as `0.22.0`; last published PyPI/git = `v0.22.0`).
-A **minimal `stable` tier** is already listed below (D-038: no calendar `1.0` scheduled).
-**Version:** `0.22.0` / catalog baseline
-`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`
+**Status:** Phase 0.23 stable-tier expansion (**Published** as `0.23.0`; last published
+PyPI/git = `v0.23.0`). Prior train: 0.22 CSRF / SecurityPolicy composition.
+A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
+(D-038: no calendar `1.0` scheduled; D-053 / RFC-0056).
+**Version:** `0.23.0` / catalog baseline
+`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`0.22.0` train on `main`. Levels apply to documented contracts; symbols not listed here are
+`0.23.0` train on `main`. Levels apply to documented contracts; symbols not listed here are
 **internal** unless a later phase explicitly promotes them.
 
 </details>
@@ -36,10 +37,11 @@ describe **API/artifact** promises.
 ## Minimal `stable` tier
 
 The following contracts are **`stable`** (compatibility-protected on the 0.x train).
-Everything else remains `beta` / `experimental` unless listed below. Package maturity on
-PyPI remains **Beta** — pin versions. Maturity source of truth for product claims:
-[What’s ready](../guides/whats-ready.md). Expanding this tier for the Supported CRUD/admin
-happy path is owned by phase **0.23** (D-053 / RFC-0056).
+Everything else remains `beta` / `experimental` unless listed in the
+[expanded 0.23 tier](#expanded-stable-tier-023) below. Package maturity on PyPI remains
+**Beta** — pin versions. Maturity source of truth for product claims:
+[What’s ready](../guides/whats-ready.md). Beginner import inventory:
+[STABLE_FACADE.md](STABLE_FACADE.md).
 
 | Symbol / contract | Package |
 |---|---|
@@ -60,12 +62,11 @@ stable via the root facade — import them from their packages.
 
 ## Expanded stable tier (0.23)
 
-!!! note "Planned until cut"
+!!! note "Published on the 0.23 train"
 
-    Packet refine is complete (locked allowlist). These contracts become `stable` when
-    every 0.23 gate is `Verified` at `v0.23.0`. Until cut they remain capability
-    **Supported** with API level **`beta`** unless already listed in the minimal tier
-    above. Beginner import inventory: [STABLE_FACADE.md](STABLE_FACADE.md).
+    These contracts are **`stable`** on **`v0.23.0`** (D-053 / RFC-0056) — the narrow
+    Supported CRUD/admin happy path. Beginner import inventory:
+    [STABLE_FACADE.md](STABLE_FACADE.md).
     Migration: additive promotions only — no removal from the minimal tier; any later
     boundary shrink requires an accepted decision and an intervening minor phase
     (same rule as other `stable` contracts).
@@ -119,11 +120,12 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 
 ### `hedron` (Beta distribution)
 
-- **stable:** facade re-exports of the minimal stable tier above; `Hedron` / router / CSRF helpers.
-- **stable (0.23 Planned until cut):** `region` / `fragment` / `swap` / `swap_oob` /
-  `retarget` / `redirect_htmx` / `Poll` / `CsrfField` / `Form` / `Hx` /
+- **stable:** facade re-exports of the minimal stable tier above; `Hedron` / router / CSRF helpers;
+  plus the [expanded 0.23 tier](#expanded-stable-tier-023): `region` / `fragment` / `swap` /
+  `swap_oob` / `retarget` / `redirect_htmx` / `Poll` / `CsrfField` / `Form` / `Hx` /
   `SecurityPolicy` / `SecurityHeadersPolicy` / CSRF strategy types / beginner form chrome
-  (`Stack`, `TextInput`, …) — see [Expanded stable tier (0.23)](#expanded-stable-tier-023).
+  (`Stack`, `TextInput`, …); `hedron.jobs` helpers `enqueue_durable` / `job_status_response`;
+  `hedron.testing` `AppScenario` + listed HTMX asserts.
 - **beta:** remaining built-ins, session state, cache decorators, testing helpers not in the
   0.23 allowlist (Dialog/Tabs/Pagination/Lazy #24 markup asserts stay beta), CLI core commands,
   typed controls / surface chrome beyond the beginner set, media Range
@@ -142,8 +144,11 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 
 ### `hedron-core` (Beta)
 
-- **stable:** symbols in the minimal stable tier.
-- **beta:** component catalog, themes, diagnostics, registry, jobs protocols, plugin loader,
+- **stable:** symbols in the minimal stable tier; plus `JobBackend` / `JobStatus` /
+  `JobHandle` / `JobState` / `set_job_backend` / `get_job_backend` (`hedron_core.jobs`);
+  form/security types re-exported into the expanded 0.23 facade (`CsrfField`, `Form`, `Hx`,
+  `SecurityPolicy`, strategies, beginner chrome as applicable).
+- **beta:** component catalog, themes, diagnostics, registry, Celery/RQ job bridges, plugin loader,
   portable adapter capability types, `DashboardBinding` / `InteractionGraph` / `TriggerContext`,
   `PropertyPatch` / `CollectionPatch`, shell builtins (`HtmxLink`/`NavLink`, `OobHost`/`AttrHost`,
   `AppShell`/`MainPanel`), Dialog/Tabs/Pagination/Lazy markup asserts, `InferenceInterface` /

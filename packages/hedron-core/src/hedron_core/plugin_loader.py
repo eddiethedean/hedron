@@ -154,7 +154,7 @@ def load_plugins(
                         "hedron_version specifier."
                     ),
                     remediation=(
-                        "Attach PluginMeta(..., hedron_version='>=0.22,<0.23') to the "
+                        "Attach PluginMeta(..., hedron_version='>=0.23,<0.24') to the "
                         "register entry point."
                     ),
                 )

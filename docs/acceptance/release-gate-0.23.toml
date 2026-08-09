@@ -1,40 +1,40 @@
 # Phase 0.23 stable-tier expansion evidence index.
-# Consumed by scripts/check_release_gate.py 0.23.0 (--allow-planned until full cut).
+# Consumed by scripts/check_release_gate.py 0.23.0.
 # Zero Deferred policy for 0.23-owned rows: every row must be Verified at cut.
 # Owning decision: D-053. RFC: RFC-0056.
-# Packet refine: locked allowlist in docs/ROADMAP.md §0.23 + docs/api/STABLE_FACADE.md.
+# Locked allowlist: docs/ROADMAP.md §0.23 + docs/api/STABLE_FACADE.md.
 
 [[evidence]]
 id = "STABLE-023"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_stable_tier_023.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "FACADE-023"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_stable_facade.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "INVENTORY-023"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_stability_inventory.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "REGRESS-023"
-state = "Planned"
+state = "Verified"
 command = "bash scripts/ci_checks.sh test --python 3.12"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-023"
-state = "Planned"
-command = "python scripts/verify_pkg_23.py --allow-planned"
+state = "Verified"
+command = "python scripts/verify_pkg_23.py"
 ci_job = "test"
 owner = "hedron"

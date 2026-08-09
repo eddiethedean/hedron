@@ -18,7 +18,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.20** | Production security floor and adapter parity (HTMX/eval, mount/prod gates, Flask/Django regions/CSP/scaffolds) | **Published** (`v0.20.0`; D-051) |
 | **0.21** | Human assistive-technology / compensated evaluation (D-052) | **Published** (`v0.21.0` engineering; PROTOCOL Verified; SR/PARTICIPANT Planned — not Supported) |
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | **Published** (`v0.22.0`; D-051) |
-| **0.23** | Expand `stable` API tier for narrow CRUD/admin facade (regions/`swap`, Poll/jobs, `CsrfField`/`Form`, beginner chrome, AppScenario asserts) | Planned (D-053; packet refine complete) |
+| **0.23** | Expand `stable` API tier for narrow CRUD/admin facade (regions/`swap`, Poll/jobs, `CsrfField`/`Form`, beginner chrome, AppScenario asserts) | **Published** (`v0.23.0`; D-053) |
 | **0.24** | Live-transport production disposition (prove ops or polling-only) | Planned (D-053) |
 | **0.25** | Production archetype, load budgets, extras quarantine | Planned (D-053) |
 
@@ -27,17 +27,18 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Pin `hedron` (and extras) in production; `0.x` may still take breaking changes under the
   [compatibility policy](../COMPATIBILITY.md).
 - Package maturity is **Beta** for the flagship and most adapters; charts remain **Alpha**.
-- No `1.0` phase is scheduled (D-038). A **minimal `stable` API tier** is catalogued in
-  [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or `experimental`.
-- **0.23** (Planned) expands that tier for a locked Beginner/CRUD facade only —
+- No `1.0` phase is scheduled (D-038). A **minimal + expanded (0.23) `stable` API tier** is
+  catalogued in [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or
+  `experimental`.
+- **0.23** (**Published**) expanded that tier for a locked Beginner/CRUD facade only —
   [STABLE_FACADE](../api/STABLE_FACADE.md) — not every What’s ready Supported row; live
   transports stay for **0.24**.
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
 
-## Honest gaps on the current train (0.22)
+## Honest gaps on the current train (0.23)
 
-- Current **published** PyPI train is **0.22.x** (`v0.22.0`)
+- Current **published** PyPI train is **0.23.x** (`v0.23.0`)
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — fail-closed
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)

@@ -1,26 +1,38 @@
 # Upgrade
 
-**Hedron 0.22.0** — pin `hedron>=0.22.0,<0.23`. From 0.21: CSRF / SecurityPolicy
-composition (`CsrfField`, pluggable strategies, header merge). See
-[What's ready](whats-ready.md) and [What's new in 0.22](whats-new-0.22.md).
+**Hedron 0.23.0** — pin `hedron>=0.23.0,<0.24`. From 0.22: expands the API `stable` tier
+for a narrow CRUD/admin facade (no feature migration). See
+[What's ready](whats-ready.md) and [What's new in 0.23](whats-new-0.23.md).
+
+## Upgrade from 0.22 → 0.23
+
+If you are already on **0.22.x**, pin coordinated **0.23.0** packages:
+
+1. Pin `hedron>=0.23.0,<0.24` (and matching `hedron-core` / adapters / extras).
+2. Treat the locked Beginner/CRUD facade as compatibility-protected `stable`
+   ([STABILITY expanded tier](../api/STABILITY.md#expanded-stable-tier-023) ·
+   [STABLE_FACADE](../api/STABLE_FACADE.md)). No API removals from the minimal tier.
+3. Re-run your app suite; read [What's new in 0.23](whats-new-0.23.md).
+4. Human screen-reader sessions remain Planned / not Supported (carryover from 0.21).
 
 ## Upgrade from 0.21 → 0.22
 
-If you are already on **0.21.x**, pin coordinated **0.22.0** packages:
+If you are already on **0.21.x**, pin coordinated **0.22.0** packages, then continue to 0.23:
 
-1. Pin `hedron>=0.22.0,<0.23` (and matching `hedron-core` / adapters / extras).
+1. Pin `hedron>=0.23.0,<0.24` (and matching `hedron-core` / adapters / extras).
 2. Prefer `CsrfField` / `Form(hx=Hx(...))` over manual hidden inputs and stringly `hx-*`
    attrs where practical ([CSRF composition](../api/CSRF_COMPOSITION.md)).
 3. Apps that own sessions/CSP can pass `SecurityPolicy(csrf=SessionTokenCsrf(...))` or
    `security_headers=SecurityHeadersPolicy(...)` instead of disabling Hedron CSRF/headers.
-4. Re-run your app suite; read [What's new in 0.22](whats-new-0.22.md).
+4. Re-run your app suite; read [What's new in 0.22](whats-new-0.22.md), then apply the
+   0.22 → 0.23 steps above.
 5. Human screen-reader sessions remain Planned / not Supported (carryover from 0.21).
 
 ## Upgrade from 0.20 → 0.21
 
 If you are already on **0.20.x**, pin coordinated **0.21.0** packages, then continue to 0.22:
 
-1. Pin `hedron>=0.22.0,<0.23` first (or jump directly to `>=0.22.0,<0.23`).
+1. Pin `hedron>=0.23.0,<0.24` first (or jump directly to `>=0.23.0,<0.24`).
 2. Prefer `@action(..., fragment_regions=…)` (or `@component` POST) whenever HTMX sends
    `HX-Target` on mutations.
 3. Re-run your app suite; read [What's new in 0.21](whats-new-0.21.md).
@@ -32,7 +44,7 @@ If you are already on **0.20.x**, pin coordinated **0.21.0** packages, then cont
 If you are already on **0.18.x** or **0.19.x**, pin coordinated **0.20.0** packages, then
 continue to 0.21:
 
-1. Pin `hedron>=0.22.0,<0.23` (and matching `hedron-core` / adapters / extras).
+1. Pin `hedron>=0.23.0,<0.24` (and matching `hedron-core` / adapters / extras).
 2. Review production startup gates under `HEDRON_ENV=production` and document any accepted
    risk codes via `HEDRON_SECURITY_RISK_ACCEPTANCE`.
 3. Prefer `standard`/`strict` HTMX browser presets; do not rely on `js:` in Python
@@ -60,18 +72,18 @@ If you are already on **0.17.x**, pin coordinated **0.18.0** packages and adopt 
 
 Skip older archaeology unless you are still on a pre-0.17 line. The sections below are
 kept for migrators from 0.8–0.16 (including HDN); current adopters can stop after
-upgrading through **0.21 → 0.22** (`hedron>=0.22.0,<0.23`).
+upgrading through **0.22 → 0.23** (`hedron>=0.23.0,<0.24`).
 
 ---
 
 Existing apps on **0.8.x** / **0.9.x** / **0.10.x** should upgrade through
 **0.9** / **0.10** / **0.11** / **0.12** / **0.13** / **0.14** / **0.15** /
-**0.16** / **0.17** / **0.18** / **0.19** / **0.20** / **0.21** to **0.22.0**
-(`hedron>=0.22.0,<0.23`).
+**0.16** / **0.17** / **0.18** / **0.19** / **0.20** / **0.21** / **0.22** to **0.23.0**
+(`hedron>=0.23.0,<0.24`).
 
 Version 0.9 intentionally removes HDN and adds optional `hedron-jinja`. There is no compatibility
 mode or automatic converter. Stay on 0.8 until every HDN template has been manually rewritten, then
-upgrade through **0.9**–**0.21** to **0.22.0**.
+upgrade through **0.9**–**0.22** to **0.23.0**.
 
 ## What changed in 0.8
 
@@ -98,7 +110,7 @@ upgrade through **0.9**–**0.21** to **0.22.0**.
 - Build-manifest format 2 rejects 0.8 build artifacts; rebuild after upgrading.
 - `hedron eject` emits CSS only.
 
-Install Jinja authoring explicitly with `pip install "hedron[jinja]>=0.22.0,<0.23"` or
+Install Jinja authoring explicitly with `pip install "hedron[jinja]>=0.23.0,<0.24"` or
 `pip install hedron-jinja`. The import namespace is `hedron_jinja`; `.hdj` is the canonical
 format-v1 template suffix. Each file begins with the static feature/capability prologue documented
 in the [HDJ API](../api/JINJA.md#hdj-format), followed by ordinary Jinja/HTML.
@@ -244,7 +256,7 @@ instrumentation (`HDJ-DEF-014`) under D-048.
 
 1. Pin and upgrade to the coordinated `0.14.0` Beta train (`hedron`, adapters, extras together).
    Alpha packages `hedron-charts` / `hedron-sample-kit` / `hedron-native` remain on `0.1.x`.
-2. Optional: `pip install "hedron[conformance]>=0.22.0,<0.23"` for the fixture kit / `hedron conformance` CLI.
+2. Optional: `pip install "hedron[conformance]>=0.23.0,<0.24"` for the fixture kit / `hedron conformance` CLI.
 3. Optional: `pip install "hedron[native]>=0.1.0,<0.2"` for Rust accel; absence must not change semantics
    (`hedron accel-status`).
 4. HDJ authors: review loop/macro budgets, contracted extensions, and portable checker fixtures
@@ -281,7 +293,7 @@ remain **Experimental**. CodeEditor is a CSP-safe host stub (no pinned CodeMirro
 
 1. Pin and upgrade to the coordinated `0.16.0` Beta train (`hedron`, adapters, `hedron-extras`).
    Alpha packages remain on `0.1.x` with `hedron-core>=0.16.0,<0.17`.
-2. Install extras only when needed: `pip install "hedron[extras]>=0.22.0,<0.23"`.
+2. Install extras only when needed: `pip install "hedron[extras]>=0.23.0,<0.24"`.
 3. Prefer workbench components that emit bounded plans/actions over implicit callables.
 4. Do not market TerminalView / joystick / device bridges as Supported production features.
 5. Re-read [What's new in 0.16](whats-new-0.16.md) and [What's ready](whats-ready.md).
@@ -320,7 +332,7 @@ Gradio interop is **Experimental** — pin Alpha and expect churn. Live transpor
 
 1. Pin and upgrade to the coordinated `0.18.0` Beta train (`hedron`, adapters, extras).
    Alpha packages remain on `0.1.x` with `hedron-core>=0.18.0,<0.19` for that train
-   (0.20 pins are `>=0.20.0,<0.21`; living train pins are `>=0.22.0,<0.23`).
+   (0.20 pins are `>=0.20.0,<0.21`; living train pins are `>=0.23.0,<0.24`).
 2. Build demos only from `ActionRegistry` / `RegisteredCallableAdapter` — bare callables fail closed.
 3. Wire `InferencePolicy` concurrency groups and cancel through durable `JobBackend`; do not use
    `InProcessInferenceQueue` as a production durability promise.

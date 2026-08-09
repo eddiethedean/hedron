@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.0] — 2026-08-08
+
+### Changed
+
+- Promotes locked CRUD/admin facade to API `stable`.
+
 ## [0.22.0] — 2026-08-08
 
 ### Added

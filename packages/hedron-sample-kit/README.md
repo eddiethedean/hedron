@@ -11,7 +11,7 @@ Demonstrates a component (`Callout`), styles, asset, named example, Explorer
 panel, and diagnostic owner via the `hedron.plugins` entry point. Use it as a
 reference when authoring your own plugin distribution.
 
-**Package maturity:** Alpha (`0.1.x`) · compatible with `hedron-core>=0.22.0,<0.23` ·
+**Package maturity:** Alpha (`0.1.x`) · compatible with `hedron-core>=0.23.0,<0.24` ·
 pin and expect churn
 
 ## Install

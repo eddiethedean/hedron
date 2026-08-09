@@ -3,7 +3,7 @@
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
 checklist in [Production readiness](production-readiness.md).
 
-**Living published train:** pin `hedron>=0.22.0,<0.23`. Capability maturity SSOT:
+**Living published train:** pin `hedron>=0.23.0,<0.24`. Capability maturity SSOT:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 (maintainer corpus on GitHub).
@@ -36,7 +36,7 @@ promoting every Alpha extra.
 |---|---|---|
 | P0 | Complete **0.21** human AT sessions + remediate | Engineering-complete / sessions outstanding |
 | P0 | Ship **0.22** CSRF / SecurityPolicy composition | **Published** (`v0.22.0`) |
-| P1 | Expand `stable` API tier (**0.23**) | Planned (D-053); **packet refine complete** — locked allowlist in ROADMAP §0.23 / [STABLE_FACADE](../api/STABLE_FACADE.md); gates Planned until cut |
+| P1 | Expand `stable` API tier (**0.23**) | **Published** (`v0.23.0`; D-053) — locked allowlist in ROADMAP §0.23 / [STABLE_FACADE](../api/STABLE_FACADE.md) |
 | P1 | Live-transport disposition (**0.24**) — prove gates or polling-only docs | Planned (D-053) |
 | P2 | Production archetype + load budgets + extras quarantine (**0.25**) | Planned (D-053) |
 | P3 | External security review + SBOM/evidence on every train tag | Process |

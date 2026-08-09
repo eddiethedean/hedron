@@ -29,7 +29,7 @@ HTML forms. HTMX is introduced in
 
 | Item | Value |
 |---|---|
-| Version | **0.22.0** (Beta; **Published** — pin `hedron>=0.22.0,<0.23`) |
+| Version | **0.23.0** (Beta; **Published** — pin `hedron>=0.23.0,<0.24`) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
@@ -71,8 +71,8 @@ Full matrix: [What’s ready](whats-ready.md).
   product UI — Experimental / stub only (quarantine path **0.25**)
 - Human screen-reader / compensated AT evaluation (owned by **0.21**, D-052: protocol Verified;
   sessions Planned — not Supported)
-- Expanded compatibility-protected `stable` tier beyond the minimal table (owned by
-  **0.23**; packet refine locked a narrow CRUD facade — [STABLE_FACADE](../api/STABLE_FACADE.md))
+- Broader compatibility-protected `stable` surface beyond the 0.23 CRUD/admin facade
+  ([STABLE_FACADE](../api/STABLE_FACADE.md) is Published; live transports remain **0.24**)
 
 ## When Hedron is a poor fit
 

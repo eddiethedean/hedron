@@ -21,7 +21,7 @@ INVENTORY_HEADING = "## Inventory (machine-checked)"
 FENCE_RE = re.compile(r"```text\n(.*?)```", re.S)
 
 REQUIRED_PHRASES = (
-    "Planned until cut",
+    "Published on the 0.23 train",
     "Out of 0.23",
     "job_status_sse_response",  # must be called out as excluded
     "STABLE_FACADE",

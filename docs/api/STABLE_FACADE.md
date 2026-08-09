@@ -1,16 +1,15 @@
 ---
-status: planned
+status: shipped
 ---
 
 # Beginner / stable facade inventory (0.23)
 
-!!! note "Phase 0.23 — Planned until cut"
+!!! note "Published on the 0.23 train"
 
     This inventory is the **FACADE-023** artifact. Symbols listed under
-    [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) become
-    compatibility-protected `stable` at the `v0.23.0` cut. Until then, treat them as
-    the locked promotion target (Supported capability, API level still `beta` unless
-    already in the [minimal stable tier](STABILITY.md#minimal-stable-tier)).
+    [Expanded stable tier (0.23)](STABILITY.md#expanded-stable-tier-023) are
+    compatibility-protected **`stable`** on **`v0.23.0`**. Pin
+    `hedron>=0.23.0,<0.24`.
 
 **Owning gates:** `FACADE-023` (`python scripts/check_stable_facade.py`),
 `STABLE-023`, `INVENTORY-023`. Decision: **D-053** / [RFC-0056](../rfcs/RFC-0056-PRODUCTION-QUALITY.md).
@@ -32,7 +31,7 @@ status: planned
 |---|---|
 | `from hedron import Hedron, HedronRouter, Page, Text, html` | App + document (already minimal-stable) |
 | `from hedron import Stack, TextInput, TextArea, SubmitButton, RefreshButton` | CRUD chrome |
-| `from hedron import Form, CsrfField, Hx, FormField, FormErrors, Label` | Forms / CSRF (0.22 promote) |
+| `from hedron import Form, CsrfField, Hx, FormField, FormErrors, Label` | Forms / CSRF |
 | `from hedron import SecurityPolicy, SecurityHeadersPolicy` | Profiles / headers |
 | `from hedron import DoubleSubmitCookieCsrf, SessionTokenCsrf, CsrfStrategy` | CSRF strategies |
 | `from hedron import swap, swap_oob, retarget, redirect_htmx, Poll` | Fragments / polling UI |
@@ -104,6 +103,6 @@ hedron.testing:assert_hx_reswap
 ## See also
 
 - [STABILITY.md](STABILITY.md) — levels and expanded tier
-- [What’s ready](../guides/whats-ready.md) — capability maturity (Supported ≠ stable)
-- [ROADMAP §0.23](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md)
+- [What’s ready](../guides/whats-ready.md) — capability maturity (Supported ≠ whole matrix is stable)
+- [What’s new in 0.23](../guides/whats-new-0.23.md)
 - [Minimal form](../guides/minimal-form.md) · [HTMX interactions](../guides/htmx-interactions.md)

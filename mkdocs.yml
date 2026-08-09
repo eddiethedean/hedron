@@ -336,8 +336,9 @@ nav:
     - Security disclosure: SECURITY.md
     - Evidence pack: guides/evidence-pack.md
     - Public roadmap: guides/roadmap.md
-    - Upgrade to 0.22: guides/upgrade.md
+    - Upgrade to 0.23: guides/upgrade.md
     - Release notes: guides/release-notes.md
+    - What's new in 0.23: guides/whats-new-0.23.md
     - What's new in 0.22: guides/whats-new-0.22.md
     - What's new in 0.21: guides/whats-new-0.21.md
     - Package changelogs: guides/changelog.md

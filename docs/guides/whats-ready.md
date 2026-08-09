@@ -1,11 +1,11 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.22.0** (**Published** as `v0.22.0` (last published PyPI/git = `v0.22.0`)). Other evaluator pages link here —
+**Canonical maturity snapshot for Hedron 0.23.0** (**Published** as `v0.23.0` (last published PyPI/git = `v0.23.0`)). Other evaluator pages link here —
 do not treat parallel summaries as a second source of truth. Maintainer evidence tables
 live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-**Ship today** (pin `hedron>=0.22.0,<0.23`): typed pages,
+**Ship today** (pin `hedron>=0.23.0,<0.24`): typed pages,
 HTMX fragments, CSRF (`standard` / `strict`), pluggable CSRF strategies / header merge /
 `CsrfField` (0.22), Flask/Django adapters, polling job status,
 accessibility contracts / PE forms (0.19), production security floor (0.20). Human AT
@@ -14,10 +14,11 @@ protocol engineering remains on the train; **sessions are Planned / not Supporte
 !!! note "Supported ≠ API `stable`"
 
     **Supported** means the capability works on the current train when pinned. Most public
-    symbols remain API compatibility level **`beta`**. Only the
-    [minimal stable table](../api/STABILITY.md#minimal-stable-tier) is compatibility-protected
-    today. Phase **0.23** (Planned) expands that table for a **narrow** Beginner/CRUD facade
-    ([STABLE_FACADE](../api/STABLE_FACADE.md)) — not every Supported row on this page.
+    symbols remain API compatibility level **`beta`**. The
+    [minimal](../api/STABILITY.md#minimal-stable-tier) and
+    [expanded 0.23](../api/STABILITY.md#expanded-stable-tier-023) stable tables are
+    compatibility-protected today (narrow Beginner/CRUD facade —
+    [STABLE_FACADE](../api/STABLE_FACADE.md)) — not every Supported row on this page.
     Package maturity remains **Beta** on PyPI — no scheduled 1.0, no commercial SLA.
 
 **Prefer polling** over SSE/WebSocket (`hedron.experimental`).
@@ -40,7 +41,7 @@ Maturity vocabulary:
 <details markdown>
 <summary>How to read labels on this page</summary>
 
-Hedron **0.22.0** packages are **Beta** maturity (API `beta` unless noted in
+Hedron **0.23.0** packages are **Beta** maturity (API `beta` unless noted in
 [STABILITY.md](../api/STABILITY.md)). Expect occasional breaking changes on
 `0.x` under the [compatibility policy](../COMPATIBILITY.md).
 
@@ -79,7 +80,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `hedron>=0.22.0,<0.23`. The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.23.0,<0.24`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
@@ -186,7 +187,7 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.22.0,<0.23" hedron new my-app
+    uvx --from "hedron>=0.23.0,<0.24" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -194,16 +195,16 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "pip"
 
     ```bash
-    pip install "hedron>=0.22.0,<0.23" "uvicorn[standard]"
+    pip install "hedron>=0.23.0,<0.24" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.22.0,<0.23` for the current published train.
+Pin `hedron>=0.23.0,<0.24` for the current published train.
 
-Extras: `"hedron[data]>=0.22.0,<0.23"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
-`"hedron[extras]>=0.22.0,<0.23"`, `"hedron[jinja]>=0.22.0,<0.23"`, `"hedron[dev]>=0.22.0,<0.23"`,
+Extras: `"hedron[data]>=0.23.0,<0.24"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
+`"hedron[extras]>=0.23.0,<0.24"`, `"hedron[jinja]>=0.23.0,<0.24"`, `"hedron[dev]>=0.23.0,<0.24"`,
 `"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),
 `"hedron[gradio]>=0.1.0,<0.2"` (Alpha).
 

@@ -19,7 +19,7 @@ Built on framework-neutral [`hedron-core`](https://pypi.org/project/hedron-core/
 Flask and Django hosts use [`hedron-flask`](https://pypi.org/project/hedron-flask/)
 and [`hedron-django`](https://pypi.org/project/hedron-django/).
 
-**Package maturity:** Beta · **Train:** `0.22.0` (Published) · pin `>=0.22.0,<0.23`
+**Package maturity:** Beta · **Train:** `0.23.0` (Published) · pin `>=0.23.0,<0.24`
 
 Most public APIs remain compatibility level `beta` until listed in the small
 [stable](https://hedron.readthedocs.io/en/latest/api/STABILITY/) table.
@@ -29,9 +29,9 @@ Capability readiness:
 ## Install
 
 ```bash
-pip install "hedron>=0.22.0,<0.23"
+pip install "hedron>=0.23.0,<0.24"
 # or
-uv add "hedron>=0.22.0,<0.23"
+uv add "hedron>=0.23.0,<0.24"
 ```
 
 Requires Python 3.11–3.14.
@@ -54,7 +54,7 @@ Requires Python 3.11–3.14.
 | `otel` | OpenTelemetry hooks |
 
 ```bash
-pip install "hedron[data,dev]>=0.22.0,<0.23"
+pip install "hedron[data,dev]>=0.23.0,<0.24"
 pip install "hedron[charts]>=0.1.0,<0.2"   # Alpha — pin and expect churn
 ```
 
@@ -64,7 +64,7 @@ Scaffold an app with a working HTMX **Refresh status** control:
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.22.0,<0.23" hedron new my-hedron-app
+uvx --from "hedron>=0.23.0,<0.24" hedron new my-hedron-app
 cd my-hedron-app && uv sync && uv run uvicorn app:app --reload
 ```
 
@@ -93,7 +93,7 @@ def home() -> Page:
 ```
 
 ```bash
-pip install "hedron>=0.22.0,<0.23" "uvicorn[standard]"
+pip install "hedron>=0.23.0,<0.24" "uvicorn[standard]"
 uvicorn app:app --reload
 ```
 

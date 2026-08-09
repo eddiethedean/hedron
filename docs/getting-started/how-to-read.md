@@ -31,8 +31,8 @@ Prefer [What’s ready today](../guides/whats-ready.md) and
 
 ## Versions
 
-Capability phases are numbered `0.N`. The living published train is **0.22**
-(`v0.22.0`). Pin production installs with `hedron>=0.22.0,<0.23`.
+Capability phases are numbered `0.N`. The living published train is **0.23**
+(`v0.23.0`). Pin production installs with `hedron>=0.23.0,<0.24`.
 
 There is no scheduled `1.0`. Patch releases stay inside their owning phase.
 

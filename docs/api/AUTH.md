@@ -27,7 +27,7 @@ Prefer the session-login pattern in [Authentication](../guides/authentication.md
 unless you need an external provider.
 
 ```bash
-pip install "hedron[auth]>=0.22.0,<0.23"
+pip install "hedron[auth]>=0.23.0,<0.24"
 ```
 
 ## OIDC helpers (`hedron.oidc`)
@@ -130,7 +130,7 @@ authorization decisions (`Depends`, Django/Flask auth, or your IdP).
 
 | Code / condition | Behavior |
 |---|---|
-| Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]>=0.22.0,<0.23"` |
+| Missing Authlib | Raises `HED-AUTH-0001` with install hint `pip install "hedron[auth]>=0.23.0,<0.24"` |
 | Invalid `OidcClientConfig` | `ValueError` on empty issuer / client_id / redirect_uri |
 | Provider misconfiguration | Authlib/provider errors bubble to the route |
 

@@ -3,11 +3,10 @@
 
 Does **not** publish or tag.
 
-* Pre-cut / packet refine (``--allow-planned``): validate
-  ``release-gate-0.23.toml`` shape leniently while package metadata stays on the
-  living train (currently ``0.22.0``), plus focused facade/tier checkers.
-* At ``v0.23.0`` cut (omit ``--allow-planned``): require Beta packages at
-  ``0.23.0`` and every evidence row ``Verified``.
+* Default (omit ``--allow-planned``): require Beta packages at ``0.23.0`` and
+  every evidence row ``Verified``.
+* ``--allow-planned`` remains for lenient gate shape checks against the living
+  train metadata.
 """
 
 from __future__ import annotations
@@ -20,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.23.toml"
 # Living published train while 0.23 gates remain Planned.
-LIVING_TRAIN = "0.22.0"
+LIVING_TRAIN = "0.23.0"
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -1142,7 +1142,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.22** (`v0.22.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.23** (`v0.23.0`).
 See [STATUS](STATUS.md) and
 [release-gate-0.19.toml](acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -1513,11 +1513,10 @@ Zero Deferred among 0.22-owned gate rows at cut. Gate IDs:
 
 ## 0.23 — Stable-tier expansion for Supported CRUD/admin (`v0.23.0`)
 
-**Status:** Planned. Part of the production-quality maturity program (**D-053** /
-[RFC-0056](rfcs/RFC-0056-PRODUCTION-QUALITY.md)). Depends on Published **0.22**; must not
-claim 0.21 human AT as API-stable evidence. **Packet refine complete** (locked allowlist +
-distinct gate commands below) — implementation cut still Planned until every gate is
-`Verified`.
+**Status:** **Published** as `v0.23.0`. Part of the production-quality maturity program
+(**D-053** / [RFC-0056](rfcs/RFC-0056-PRODUCTION-QUALITY.md)). Depends on Published **0.22**;
+must not claim 0.21 human AT as API-stable evidence. Locked allowlist + distinct gate
+commands below — every 0.23-owned gate is `Verified`.
 
 **Outcome:** The compatibility-protected `stable` tier in
 [STABILITY.md](api/STABILITY.md) covers a **narrow curated** Supported CRUD/admin happy path
@@ -1527,7 +1526,7 @@ implies unconstrained churn on that primary ship surface. This is **API compatib
 protection**, not a new feature phase and not “every What’s ready Supported row.”
 
 Inventory / facade SSOT for Beginner imports: [STABLE_FACADE.md](api/STABLE_FACADE.md).
-Expanded tier draft: [STABILITY.md](api/STABILITY.md#expanded-stable-tier-023).
+Expanded tier: [STABILITY.md](api/STABILITY.md#expanded-stable-tier-023).
 
 ### Locked promotion catalog (`STABLE-023`)
 
@@ -1566,10 +1565,8 @@ Zero Deferred among 0.23-owned gate rows at cut. Gate IDs and commands (packet r
   Beginner inventory importable; Alpha / experimental names denied.
 - **`INVENTORY-023`** — `python scripts/check_stability_inventory.py` (`FRZ-001` still green).
 - **`REGRESS-023`** — `bash scripts/ci_checks.sh test --python 3.12` at cut.
-- **`PKG-023`** — `python scripts/verify_pkg_23.py` at cut (packages at `0.23.0`,
-  gate checker without `--allow-planned`, focused facade/tier checks). Until cut:
-  `python scripts/verify_pkg_23.py --allow-planned` (living-train metadata + lenient
-  0.23 evidence).
+- **`PKG-023`** — `python scripts/verify_pkg_23.py` (packages at `0.23.0`,
+  gate checker without `--allow-planned`, focused facade/tier checks).
 
 ### Non-goals
 

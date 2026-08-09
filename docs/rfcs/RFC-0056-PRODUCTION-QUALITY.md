@@ -1,7 +1,7 @@
 # RFC-0056: Production-quality maturity program
 
 **Status:** Accepted
-**Phase:** Program umbrella for 0.21–0.25 (D-053); living published train is **0.22**
+**Phase:** Program umbrella for 0.21–0.25 (D-053); living published train is **0.23**
 **Stability:** `beta` (process / roadmap); does not by itself promote package maturity or
 API levels
 **Evidence:** Priority ownership in ROADMAP §0.21–§0.25; release gates
@@ -54,7 +54,7 @@ Vocabulary remains: Supported ≠ API `stable` ≠ commercial warranty
 |---|---|---|
 | P0 | Finish 0.21 human AT sessions + remediate | D-052 / ROADMAP §0.21 |
 | P0 | Ship 0.22 CSRF / SecurityPolicy composition | D-051 / ROADMAP §0.22 (**Published** `v0.22.0`; gates Verified) |
-| P1 | Expand `stable` tier for Supported CRUD/HTMX/jobs core | ROADMAP §0.23 / D-053 |
+| P1 | Expand `stable` tier for Supported CRUD/HTMX/jobs core | ROADMAP §0.23 / D-053 (**Published** `v0.23.0`; gates Verified) |
 | P1 | Live transports: prove ops gates **or** formally polling-only for production docs | ROADMAP §0.24 / D-053 |
 | P2 | Reference-app production archetype + load budgets; extras quarantine; charts path | ROADMAP §0.25 / D-053 |
 | P3 | External security review + SBOM/evidence on every train tag | Process (RELEASE + diligence) |
@@ -98,10 +98,9 @@ intervening-minor rules in [COMPATIBILITY.md](../COMPATIBILITY.md) and STABILITY
 
 None for program acceptance.
 
-**0.23 packet refine (complete):** locked narrow CRUD/admin promotion allowlist in
-ROADMAP §0.23 + [STABLE_FACADE.md](../api/STABLE_FACADE.md); distinct gate commands
+**0.23 Published (`v0.23.0`):** locked narrow CRUD/admin promotion allowlist in
+ROADMAP §0.23 + [STABLE_FACADE.md](../api/STABLE_FACADE.md); gates Verified via
 `check_stable_tier_023.py` / `check_stable_facade.py` / `check_stability_inventory.py` /
-`ci_checks.sh test` / `verify_pkg_23.py` (see `release-gate-0.23.toml`). Does not change
-the priority stack or north star.
+`ci_checks.sh test` / `verify_pkg_23.py` (see `release-gate-0.23.toml`).
 
 Packet refine for **0.24–0.25** may still add gate command detail for those phases.
