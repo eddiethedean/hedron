@@ -8,8 +8,9 @@ Maintainer evidence tables live in the repository
 **Ship today** (pin `hedron>=0.25.0,<0.26`): typed pages, HTMX fragments, CSRF profiles
 (`standard` / `strict`), pluggable CSRF strategies / header merge / `CsrfField`,
 Flask/Django adapters, polling job status, accessibility contracts / PE forms, and the
-production security floor. Prefer **polling** for live status. Charts, notebook, MCP, and
-Gradio are experimental / Alpha — expect churn. No commercial SLA and no scheduled 1.0.
+production security floor. Prefer **polling** for live status. Charts are source-only on
+0.25 until a compatible distribution is published; notebook, MCP, and Gradio are
+experimental / Alpha. No commercial SLA and no scheduled 1.0.
 
 Human accessibility testing protocol engineering is on the train; **compensated screen-reader
 sessions are not Supported yet** — do not market human AT as done.
@@ -26,7 +27,8 @@ sessions are not Supported yet** — do not market human AT as done.
 
 **Prefer polling** over SSE/WebSocket (`hedron.experimental`).
 
-**Pin and expect churn:** charts, notebook, MCP, Gradio.
+**Source-only on 0.25:** charts and sample kit. **Pin and expect churn:** notebook, MCP,
+and Gradio.
 
 Start building: [First app](../getting-started/quickstart.md). Evaluators:
 [Evaluate Hedron](evaluate.md). Maturity vocabulary:
@@ -76,7 +78,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Alpha** package (`hedron[charts]`) | Pin `hedron[charts]`; **Matplotlib** adapter path is the conservative **Supported** charts default; **Plotly** / **Altair** remain **experimental** (package Alpha ≠ Plotly Supported) until pins + CSP + a11y match DataTable ([CHARTS-025](../api/PRODUCTION_ARCHETYPE.md#charts-graduation-path-charts-025)) |
+| Charts | **Deferred for PyPI adopters on 0.25** | Repository source is Alpha; no published chart release accepts `hedron-core 0.25.x`. Matplotlib is the conservative in-tree default; Plotly / Altair remain experimental ([packaging limitation](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
@@ -117,7 +119,7 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | CameraCapture / MicrophoneCapture | `hedron` / `hedron-core` | Supported with permission/retention policy |
 | BrowserContext/Storage, Math, IFrame | `hedron` / `hedron-core` | Supported |
 | OIDC / session helpers + connection registry | `hedron` | Supported **helpers** (API `beta`); host auth/DI authoritative — **not** an IdP product |
-| Curated extras toolkit (install-isolated) | `hedron[extras]` | Supported for the curated toolkit surface; **not** CodeEditor / TerminalView / joystick / device (EXTRAS-025: registration quarantine via `hedron[experimental-ui]` + `HEDRON_EXPERIMENTAL_UI` / explicit plugin enable — landmines remain importable from `hedron_extras.experimental`) |
+| Curated extras toolkit (install-isolated) | `hedron[extras]` | Supported for the curated toolkit surface; **not** CodeEditor / TerminalView / joystick / device. Those surfaces require `hedron[experimental-ui]` plus `HEDRON_EXPERIMENTAL_UI` or explicit plugin enablement and remain importable from `hedron_extras.experimental` |
 | Dashboard bindings, patches, cross-filter, AppShell | `hedron` / `hedron-core` | Supported (API `beta`; see [what's new 0.17](whats-new-0.17.md)) |
 | Public `render_interaction` | `hedron` | Supported |
 | Dialog / Tabs / Pagination / Lazy markup asserts | `hedron.testing` | Supported |
@@ -126,9 +128,9 @@ API levels in [STABILITY](../api/STABILITY.md). Full cheat-sheet:
 | `InferencePolicy` / `ModelDemoScenario` | `hedron-core` | Supported capability; API level `beta`; in-process queue is dev-only |
 | `InteractionRecorder` | `hedron` | Supported capability; API level `beta`; public endpoints only |
 | Accessibility contracts / profile / claim boundaries | `hedron_core.a11y` | Supported capability; API `beta`; **no** auto WCAG/legal/VPAT claims — [A11Y](../api/A11Y.md) |
-| Progressive-enhancement forms / landmarks / `Page(scripts=)` | `hedron` / `hedron-core` | Supported (`PE-019` / `LANDMARK-019` / `SCRIPT-019`); HTMX optional |
+| Progressive-enhancement forms / landmarks / `Page(scripts=)` | `hedron` / `hedron-core` | Supported; HTMX is optional enhancement rather than a requirement for core form flows |
 | Explorer accessibility workspace | `hedron[dev]` / `hedron-explorer` | Supported for local diagnostics (`/hedron-explorer/a11y`) |
-| Automated Playwright/axe AT matrix (`AT-019`) | `hedron[browser]` | Supported automation evidence; **≠** human AT |
+| Automated Playwright/axe accessibility matrix | `hedron[browser]` | Supported automation evidence; **not equivalent to human assistive-technology testing** |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
 guaranteed multi-worker live-transport proof.
@@ -138,9 +140,9 @@ guaranteed multi-worker live-transport proof.
 | Capability | Package / surface | Notes |
 |---|---|---|
 | Live interaction: SSE, streaming, WebSocket, preload | `hedron.experimental` (FastAPI) | Prefer [polling](live-interaction.md) |
-| CodeEditor | `hedron[experimental-ui]` | **Host stub** (CSP-safe shell; no pinned CodeMirror 6 bundle) — experimental landmine; importable from `hedron_extras.experimental`, but default plugin registration is gated (EXTRAS-025) |
+| CodeEditor | `hedron[experimental-ui]` | **Host stub** (CSP-safe shell; no pinned CodeMirror 6 bundle); importable from `hedron_extras.experimental`, but omitted from default plugin registration |
 | Browser-Python sandbox | `hedron[extras]` | Origin-isolated; Experimental until you accept the isolation model |
-| TerminalView / joystick / device bridges | `hedron[experimental-ui]` | Fail-closed experimental landmines (EXTRAS-025 registration quarantine; not import-blocked) |
+| TerminalView / joystick / device bridges | `hedron[experimental-ui]` | Fail-closed experimental surfaces; omitted from default plugin registration but not blocked from direct Python imports |
 | Native desktop shell | docs recipe | Packaging guidance only |
 | Flask / Django live helpers | adapters | Prefer polling |
 
@@ -148,27 +150,27 @@ guaranteed multi-worker live-transport proof.
 
 | Package | Role |
 |---|---|
-| `hedron[charts]` / `hedron-charts` | Chart adapters — pin; Matplotlib is the conservative default |
+| `hedron[charts]` / `hedron-charts` | Source-only on 0.25; no compatible PyPI release. Matplotlib is the conservative in-tree default |
 | `hedron[native]` / `hedron-native` | Optional Rust HTML-escape accel; pure-Python fallback Supported |
 | `hedron[notebook]` / `hedron-notebook` | Localhost-oriented preview; not Supported production |
 | `hedron[mcp]` / `hedron-mcp` | Deny-by-default MCP projection |
 | `hedron[gradio]` / `hedron-gradio` | Gradio client interop; deny-by-default discover |
-| `hedron-sample-kit` | Plugin sample |
+| `hedron-sample-kit` | Source-only on 0.25; no compatible PyPI release |
 | `packages/hedron-runtime-*` | Experimental Java / Node conformance runtimes |
 
 ## Deferred (do not market as Supported)
 
-- Explorer live traces (`EXPLORER-10-001` on `0.10.x`)
-- Human screen-reader / compensated AT evaluation (**0.21** D-052: protocol Verified;
-  `SR-021` / `PARTICIPANT-021` Planned — not Supported; `AT-019` on 0.19 is automated
-  Playwright/axe only)
+- Explorer live traces from the historical `0.10.x` work remain deferred.
+- Compensated human screen-reader evaluation remains planned and is not Supported. The
+  published evidence covers the protocol and automated Playwright/axe checks, not
+  completed human sessions.
 
 ### Superseded in 0.24 (not Supported live)
 
-- Full multi-engine live browser matrix for FastAPI and adapters (`BROWSER-10-001` /
-  `LIVE-011-BROWSER`) — closed via `polling_only` / `BROWSER-024`
-- Load/proxy backpressure evidence for live transports (`PERF-10-001`) — closed via
-  `polling_only` / `PERF-024`
+- A full multi-engine live-browser matrix for FastAPI and adapters is not a Supported
+  claim; the production recommendation is polling.
+- Load/proxy backpressure evidence for live transports is incomplete; applications that
+  opt into SSE/WebSocket must validate their own proxy and workload behavior.
 
 Prefer [polling](live-interaction.md). Live SSE/WS helpers remain **experimental**.
 
@@ -212,10 +214,13 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 
 Pin `hedron>=0.25.0,<0.26` for the current published train.
 
-Extras: `"hedron[data]>=0.25.0,<0.26"`, `"hedron[charts]>=0.1.0,<0.2"` (Alpha),
-`"hedron[extras]>=0.25.0,<0.26"`, `"hedron[jinja]>=0.25.0,<0.26"`, `"hedron[dev]>=0.25.0,<0.26"`,
+Extras: `"hedron[data]>=0.25.0,<0.26"`, `"hedron[extras]>=0.25.0,<0.26"`,
+`"hedron[jinja]>=0.25.0,<0.26"`, `"hedron[dev]>=0.25.0,<0.26"`,
 `"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),
 `"hedron[gradio]>=0.1.0,<0.2"` (Alpha).
+
+Charts and sample kit are intentionally absent from this install list; see the
+[0.25 packaging limitation](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## Role-specific wrappers
 

@@ -2,16 +2,18 @@
 
 Third-party-shaped sample Hedron plugin package.
 
-**Package maturity:** Alpha (`0.1.x`) · tip **0.1.5** · pin `>=0.1.0,<0.2`  
+**Package maturity:** Alpha · **0.25 status:** source-only / Deferred for adopters
 **Flagship extra:** none — install directly · **Import:** `hedron_sample_kit`  
-Compatible with `hedron-core>=0.25.0,<0.26`. Reference / demo only — not an app
-framework.
+The repository source is compatible with `hedron-core>=0.25.0,<0.26`. Reference / demo
+only — not an app framework.
 
-## Install
+## Packaging notice
 
-```bash
-pip install "hedron-sample-kit>=0.1.0,<0.2"
-```
+There is currently **no PyPI release compatible with `hedron-core 0.25.x`**. Published
+`hedron-sample-kit 0.1.5` requires `hedron-core<0.20`; PyPI's default `0.11.0` requires
+`hedron-core==0.11.0`. Use the repository source as a reference, but do not install a
+published sample-kit release beside Hedron 0.25. Details:
+[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 Enable the plugin in your app’s `pyproject.toml`:
 

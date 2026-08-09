@@ -248,12 +248,12 @@ nav:
     - hedron-explorer: packages/hedron-explorer.md
     - hedron-extras: packages/hedron-extras.md
     - hedron-conformance: packages/hedron-conformance.md
-    - hedron-charts (Alpha): packages/hedron-charts.md
+    - hedron-charts (source-only on 0.25): packages/hedron-charts.md
     - hedron-native (Alpha): packages/hedron-native.md
     - hedron-notebook (Alpha): packages/hedron-notebook.md
     - hedron-mcp (Alpha): packages/hedron-mcp.md
     - hedron-gradio (Alpha): packages/hedron-gradio.md
-    - hedron-sample-kit (Alpha): packages/hedron-sample-kit.md
+    - hedron-sample-kit (source-only on 0.25): packages/hedron-sample-kit.md
     - hedron-sim (Alpha): packages/hedron-sim.md
   - Reference:
     - API overview: api/README.md
@@ -377,6 +377,7 @@ nav:
     - Native desktop shell recipe: guides/native-desktop-shell.md
     - Contributing: CONTRIBUTING.md
     - Contributor day-one: guides/contributor-day-one.md
+    - Documentation standards: guides/documentation-standards.md
     - Maintainers:
       - Handbook: guides/maintainer-handbook.md
       - Decisions index: guides/decisions-index.md

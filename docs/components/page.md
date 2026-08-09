@@ -50,7 +50,7 @@ Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, di
 | `head` | `NodeLike | None` | Additional trusted head nodes. |
 | `data_theme` | `str | None` | Initial `data-theme` value. |
 | `dir` | `str | None` | Optional `dir` on `<html>` (`ltr` / `rtl` / `auto`). |
-| `scripts` | `Sequence[SafeUrl] | None` | Allowlisted same-origin `SafeUrl` ASSET scripts (`SCRIPT-019`); free-form `<script>` nodes stay out of the tree. |
+| `scripts` | `Sequence[SafeUrl] | None` | Allowlisted same-origin `SafeUrl` ASSET scripts; free-form `<script>` nodes stay out of the tree. |
 | `script_defer` | `bool` | When true (default), emitted script tags use `defer`. |
 
 ## Composition and backend behavior

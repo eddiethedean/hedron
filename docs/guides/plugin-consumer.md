@@ -23,11 +23,12 @@ Full key table: [Configuration](../CONFIGURATION.md).
 
 ## Install a plugin distribution
 
-1. Add the package to your environment (same train pin as Hedron when possible):
+1. Add the reviewed package to your environment (same train pin as Hedron when possible).
+   The sample kit is currently a **source reference only** on Hedron 0.25; its published
+   releases require older `hedron-core` versions:
 
    ```bash
-   pip install "hedron-sample-kit>=0.1.0,<0.2"
-   # or: uv add "hedron-sample-kit>=0.1.0,<0.2"
+   # For a real plugin, use its reviewed distribution and compatible version pin.
    ```
 
 2. Enable it by **name** (the entry-point key, not the PyPI distribution name):
@@ -66,3 +67,5 @@ Checklist:
 
 [Plugin authoring](plugin-authoring.md) · [Plugins API](../api/PLUGINS.md) ·
 [`hedron-sample-kit`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
+is a source reference on the 0.25 train; see the
+[packaging limitation](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).

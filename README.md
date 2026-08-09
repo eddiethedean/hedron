@@ -101,6 +101,11 @@ Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Op
 (charts, conformance, extras, native accel, notebook, MCP, Gradio):
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
+> **Packaging notice:** the 0.25-compatible `hedron-charts` and `hedron-sample-kit`
+> sources are currently repository-only; their published PyPI releases require older
+> `hedron-core` versions. Do not install `hedron[charts]` or `hedron-sample-kit` with
+> Hedron 0.25. See [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#current-025-packaging-limitation-charts-and-sample-kit).
+
 ## Who it’s for
 
 CRUD, admin, dashboards, and forms as typed Python on FastAPI — when you want HTMX fragment
@@ -125,6 +130,21 @@ Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/
 
 [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/) ·
 [Public roadmap](https://hedron.readthedocs.io/en/latest/guides/roadmap/).
+
+## What you get
+
+| Need | Hedron provides |
+|---|---|
+| Server-rendered UI | Typed pages, layouts, forms, tables, and status components rendered as HTML |
+| Partial-page interaction | Declared HTMX regions and fragments with target allowlists and progressive-enhancement paths |
+| FastAPI integration | Ordinary routes, dependency injection, middleware, lifespan, and JSON endpoints alongside UI routes |
+| Safer defaults | Contextual escaping, CSRF profiles, typed URL/HTML trust boundaries, and conservative caching |
+| Production building blocks | Testing helpers, diagnostics, polling jobs, deployment guidance, and Flask/Django adapters |
+
+Hedron is **not** an ORM, identity provider, hosted service, or client-side SPA runtime.
+Your application still owns authentication, authorization, persistence, tenancy, and
+deployment. SSE and WebSocket helpers are experimental; use polling unless you have
+validated proxy buffering, timeouts, and backpressure for your environment.
 
 ## Documentation
 

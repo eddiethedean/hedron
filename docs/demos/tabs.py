@@ -20,10 +20,12 @@ def format_demo_code_tabs(
     code_blurb: str = (
         "Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):"
     ),
+    code: str | None = None,
 ) -> str:
     """Return Material tabbed markdown with a sim island and full app source."""
-    code = runnable_source(sim_id).rstrip() + "\n"
-    fence = _indent(f'```python title="app.py"\n{code}```')
+    source = runnable_source(sim_id) if code is None else code
+    source = source.rstrip() + "\n"
+    fence = _indent(f'```python title="app.py"\n{source}```')
     return (
         f'=== "Demo"\n'
         f"\n"

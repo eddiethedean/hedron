@@ -25,7 +25,8 @@ issues for undisclosed security problems.
 Package maturity **Beta** means the public API is usable and tested, but breaking changes
 may still land on the `0.x` line under the [compatibility policy](../COMPATIBILITY.md).
 Pin versions in production, read [upgrade](upgrade.md) notes before bumping trains, and
-treat Alpha packages (`hedron-charts`, `hedron-sample-kit`) as more volatile.
+treat Alpha packages as more volatile. Charts and sample kit are source-only on 0.25
+until compatible distributions are published — see [Compatibility](../COMPATIBILITY.md).
 
 **Support window:** security fixes target the current published train (`0.25.x`). There is
 no multi-year LTS — see [SECURITY.md](../SECURITY.md). Community GitHub support only;

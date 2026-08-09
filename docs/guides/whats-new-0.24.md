@@ -27,4 +27,4 @@ Gates: `DECIDE-024`, `BROWSER-024`, `PERF-024`, `DOCS-024`, `REGRESS-024`, `PKG-
 (all Verified).
 
 Human AT sessions (`SR-021` / …) remain Planned / not Supported. Next: production
-archetype / landmines (**0.25**).
+archetype / experimental-surface isolation (**0.25**).

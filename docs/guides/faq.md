@@ -18,8 +18,10 @@ That is the current published line (`v0.25.0`). Package maturity is **Beta** —
 
 For curated extras (`hedron-extras`), install `hedron[extras]>=0.25.0,<0.26`.
 **Auto** (inspectable object rendering built into `hedron` — no extra) is included.
-For DataTable/DataEditor, install `hedron[data]>=0.25.0,<0.26`. For charts, install
-`hedron[charts]>=0.1.0,<0.2` (Alpha). For Flask/Django adapters:
+For DataTable/DataEditor, install `hedron[data]>=0.25.0,<0.26`. Charts are source-only on
+the 0.25 train because no compatible chart wheel is published
+([Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit)).
+For Flask/Django adapters:
 
 ```bash
 pip install "hedron-flask>=0.25.0,<0.26"
@@ -128,16 +130,17 @@ A Beta package can expose Supported capabilities whose API level is still `beta`
 **Auto** (built-in inspectable object rendering — no extra) and **DataTable/DataEditor**
 are **Supported** capabilities (`hedron` / `hedron[data]`). Those packages are **Beta**
 on PyPI — pin versions.
-**Charts** (`hedron[charts]`) are **Alpha** — available on PyPI, pin versions, expect churn.
+**Charts** are Alpha source in the repository, but **not currently installable from PyPI
+with Hedron 0.25** because published chart releases require older `hedron-core` versions.
 See [What’s ready](whats-ready.md).
 
 ```bash
 pip install "hedron[data]>=0.25.0,<0.26"     # DataTable, DataEditor (Auto is already in hedron)
-pip install "hedron[charts]>=0.1.0,<0.2"   # Alpha: LineChart and visualization adapters
 ```
 
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), [Charts](../api/CHART.md), and the
-[charts and HTMX guide](charts-and-htmx.md).
+[charts and HTMX guide](charts-and-htmx.md). Packaging details:
+[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## Are Flask and Django supported?
 

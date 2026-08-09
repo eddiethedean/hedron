@@ -176,6 +176,43 @@ _TAB_BLOCK = re.compile(
     re.S,
 )
 
+_CODE_BLURBS: dict[tuple[str, str], str] = {
+    (
+        "guides/authentication.md",
+        "auth-login",
+    ): (
+        "Same `app.py` as the [session-auth recipe](../examples/session-auth.md): "
+        "soft redirects, CSRF-safe sign-in, and logout. The Demo tab is a simplified view:"
+    ),
+    (
+        "examples/notes-sqlalchemy.md",
+        "crud-notes",
+    ): (
+        "In-memory listing that reproduces the demo. The runnable recipe downloaded "
+        "below replaces the list with SQLAlchemy + SQLite persistence:"
+    ),
+    (
+        "examples/session-auth.md",
+        "auth-login",
+    ): (
+        "Real recipe listing with the documented soft redirect and logout flow. "
+        "The Demo tab is a simplified view:"
+    ),
+    (
+        "examples/jobs-poll.md",
+        "jobs-poll",
+    ): (
+        "Real recipe listing using `enqueue_durable`, `Poll`, and scoped job status. "
+        "The Demo tab is a simplified bounded view:"
+    ),
+}
+
+_CODE_SOURCES: dict[str, Path] = {
+    "guides/authentication.md": ROOT / "examples" / "session-auth" / "app.py",
+    "examples/session-auth.md": ROOT / "examples" / "session-auth" / "app.py",
+    "examples/jobs-poll.md": ROOT / "examples" / "jobs-poll" / "app.py",
+}
+
 
 def _sync_file(
     path: Path,
@@ -187,19 +224,30 @@ def _sync_file(
     sys.path.insert(0, str(DOCS))
     from demos.tabs import format_demo_code_tabs
 
-    code_blurb = (
-        "What `hedron new` writes as `app.py` (the real app, not the docs simulator):"
-        if sim_id in {"hello-refresh", "hello-refresh-quickstart"}
-        else (
-            "Minimal runnable `app.py` that reproduces this demo "
-            "(real Hedron, not the docs simulator):"
+    rel = path.relative_to(DOCS).as_posix()
+    if rel == "examples/reference-app.md":
+        code_blurb = (
+            "Focused runnable listing for this pattern—not the full reference app. "
+            "Use the run instructions below for the production archetype:"
         )
-    )
+    else:
+        code_blurb = _CODE_BLURBS.get(
+            (rel, sim_id),
+            (
+                "What `hedron new` writes as `app.py` (the real app, not the docs simulator):"
+                if sim_id in {"hello-refresh", "hello-refresh-quickstart"}
+                else (
+                    "Minimal runnable `app.py` that reproduces this demo "
+                    "(real Hedron, not the docs simulator):"
+                )
+            ),
+        )
     tabs = (
         format_demo_code_tabs(
             sim_id,
             demo_blurb=blurb,
             code_blurb=code_blurb,
+            code=(_CODE_SOURCES[rel].read_text(encoding="utf-8") if rel in _CODE_SOURCES else None),
         ).rstrip()
         + "\n"
     )

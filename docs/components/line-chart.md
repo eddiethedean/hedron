@@ -20,11 +20,9 @@ Plot one x/y series from row mappings with an accessible fallback.
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 
-Install the optional provider before importing this component:
+!!! danger "Source-only on Hedron 0.25"
 
-```bash
-pip install "hedron[charts]>=0.1.0,<0.2"
-```
+    No published `hedron-charts` release accepts `hedron-core 0.25.x`. This page documents the in-repository workspace package; do not install an older chart release into a 0.25 application. See [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## Basic use
 

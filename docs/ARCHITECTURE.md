@@ -99,7 +99,7 @@ never implies a public fragment endpoint. Details: [Interaction](api/INTERACTION
 
 ### Plugins and extras quarantine
 
-Plugins register into the sealed registry before first render. Specialty UI landmines
+Plugins register into the sealed registry before first render. Experimental specialty UI
 (`CodeEditor` / `TerminalView` / joystick / device) require `hedron[experimental-ui]` and
 do not register via plain `hedron[extras]` — see
 [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). Data/charts extras participate in the

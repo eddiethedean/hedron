@@ -51,6 +51,7 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 [reference app](../examples/reference-app.md) is an optional kitchen sink after that.
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
+   (charts are source-only on 0.25; no compatible PyPI wheel is published)
 2. More recipes: [File upload](../examples/file-upload.md) ·
    [Jobs poll](../examples/jobs-poll.md)
 3. Optional: [Dashboards](../guides/dashboards.md) · [Model demos](../guides/model-demos.md) ·

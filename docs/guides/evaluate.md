@@ -6,7 +6,7 @@ Start here if you are deciding whether Hedron fits. Pick the page that matches y
 | Role | Read |
 |---|---|
 | Product / eng fit | This page (below) · [Why Hedron](why-hedron.md) |
-| Capability maturity (SSOT) | [What’s ready today](whats-ready.md) |
+| Capability maturity (authoritative page) | [What’s ready today](whats-ready.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 | Ops / ship checklist | [Ship to production](ship-to-production.md) |
 | Architecture | [Architecture](../ARCHITECTURE.md) |
@@ -63,7 +63,8 @@ human AT evidence as Supported; team will not own FastAPI+HTMX literacy.
 - **Ship:** typed pages/fragments, CSRF profiles, HTMX loops, Flask/Django adapters,
   optional `hedron[data]` / `hedron[jinja]` / `hedron[dev]`, polling job status
 - **Prefer polling:** live SSE / WebSocket (`hedron.experimental`)
-- **Pin and expect churn:** `hedron[charts]` (Alpha), notebook / MCP / Gradio (Alpha / Experimental)
+- **Source-only on 0.25:** charts and sample kit have no compatible published wheel
+- **Pin and expect churn:** notebook / MCP / Gradio (Alpha / Experimental)
 - **Model demos:** **Supported** capability (fail-closed) via [Model demos](model-demos.md)
   guide snippets — the in-tree evidence app is a stub, not a product demo
 

@@ -235,19 +235,19 @@ setting production mode.
 
 ## Cannot import `Auto` / `DataTable` / chart helpers
 
-**Cause:** `Auto` is core (`from hedron import Auto`). `DataTable` / `DataEditor` and
-charts need optional extras—not a planned feature gap.
+**Cause:** `Auto` is core (`from hedron import Auto`). `DataTable` / `DataEditor` need the
+data extra. Charts have a separate 0.25 packaging limitation.
 
 **Fix:**
 
 ```bash
 # Auto needs no extra
 pip install "hedron[data]>=0.25.0,<0.26"      # DataTable, DataEditor
-pip install "hedron[charts]>=0.1.0,<0.2"    # LineChart / adapters
-pip install "hedron-charts[plotly]>=0.1.0,<0.2"   # example backend
 ```
 
-See [Installation](../getting-started/installation.md) and
+Do not install a published chart release beside Hedron 0.25; none is compatible. See
+[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit),
+[Installation](../getting-started/installation.md), and
 [charts and HTMX](charts-and-htmx.md).
 
 ## `NodeLike` import error from `hedron`

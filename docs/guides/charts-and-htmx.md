@@ -2,13 +2,14 @@
 
 A short path from install → chart → Markdown → typed fragment response.
 
-## Install
+## Availability
 
-```bash
-pip install "hedron[charts]>=0.1.0,<0.2" "hedron[markdown]>=0.25.0,<0.26"
-# optional backends:
-pip install "hedron-charts[matplotlib]>=0.1.0,<0.2"   # or plotly / altair
-```
+!!! danger "Source-only on Hedron 0.25"
+
+    No published `hedron-charts` release is compatible with `hedron-core 0.25.x`.
+    This guide documents the in-repository workspace package for evaluation and future
+    use; do not copy an old PyPI chart install into a 0.25 application. See
+    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## LineChart on a page
 

@@ -4,6 +4,13 @@
 are Verified; polling remains the Supported live-status story. See
 [What's ready](whats-ready.md) and [What's new in 0.25](whats-new-0.25.md).
 
+!!! danger "Charts and sample kit on 0.25"
+
+    Historical sections below describe the Alpha lines that existed with earlier trains.
+    No currently published `hedron-charts` or `hedron-sample-kit` release accepts
+    `hedron-core 0.25.x`. Do not carry those historical pins into a 0.25 environment;
+    see [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+
 !!! tip "Jump to your train"
 
     - **New install?** Use [Build your first app](../getting-started/quickstart.md) — not this page.
@@ -14,8 +21,8 @@ are Verified; polling remains the Supported live-status story. See
 
 | Change | Action |
 |---|---|
-| Specialty extras landmines quarantined | Install `hedron[experimental-ui]` + enable experimental plugin / `HEDRON_EXPERIMENTAL_UI=1` for CodeEditor / TerminalView / joystick / device; import from `hedron_extras.experimental` |
-| `hedron[extras]` no longer registers those landmines | Update apps that imported them from `hedron_extras` top-level |
+| Specialty experimental UI moved behind an explicit opt-in | Install `hedron[experimental-ui]` + enable the experimental plugin / `HEDRON_EXPERIMENTAL_UI=1` for CodeEditor / TerminalView / joystick / device; import from `hedron_extras.experimental` |
+| `hedron[extras]` no longer registers those experimental surfaces | Update apps that imported them from `hedron_extras` top-level |
 | Reference-app production posture | Prefer compose archetype (`HEDRON_ENV=production`, Redis, Explorer off) |
 
 Full step list: [Upgrade from 0.24 → 0.25](#upgrade-from-024-025) below. Older trains:

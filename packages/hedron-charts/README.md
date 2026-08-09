@@ -8,27 +8,25 @@
 Visualization adapters and chart components for Hedron.
 
 Beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart`, Matplotlib static
-SVG/PNG, Plotly interactive JSON, and Altair/Vega-Lite specifications. Versions
-independently of the Beta train. Install as `hedron-charts` or via `hedron[charts]`.
+SVG/PNG, Plotly interactive JSON, and Altair/Vega-Lite specifications.
 
-**Package maturity:** Alpha (`0.1.x`) · pin `>=0.1.0,<0.2` and expect churn
+**Package maturity:** Alpha · **0.25 status:** source-only / Deferred for adopters
 
 Interactive Plotly/Vega **full browser runtimes** remain **experimental**: Hedron
 ships host shims that fail closed when `window.Plotly` / `window.vegaEmbed` are
 missing. Applications may supply pinned local runtimes; first-party offline
 runtime fingerprinting is not Supported yet.
 
-## Install
+## Packaging notice
 
-```bash
-pip install "hedron-charts>=0.1.0,<0.2"
-# or
-uv add "hedron-charts>=0.1.0,<0.2"
-# via flagship:
-pip install "hedron[charts]>=0.1.0,<0.2"
-```
+There is currently **no PyPI release compatible with `hedron-core 0.25.x`**. Published
+`hedron-charts 0.1.5` requires `hedron-core<0.20`; PyPI's default `0.11.0` requires
+`hedron-core==0.11.0`. Do not install either release into a Hedron 0.25 application.
 
-Requires Python 3.11–3.14 and `hedron-core`. Tip on the Alpha line: **0.1.5**.
+The source in this repository targets `hedron-core>=0.25.0,<0.26` and is exercised by the
+monorepo test suite. A new compatible distribution must be published before these install
+instructions can return. Track the limitation in
+[Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#current-025-packaging-limitation-charts-and-sample-kit).
 
 ### Optional backends
 
@@ -42,11 +40,8 @@ Requires Python 3.11–3.14 and `hedron-core`. Tip on the Alpha line: **0.1.5**.
 | `bokeh` / `holoviews` / `pygal` / `datashader` / `great_tables` | Additional adapters |
 | `all` | Union of the above |
 
-```bash
-pip install "hedron-charts[matplotlib]>=0.1.0,<0.2"
-pip install "hedron-charts[plotly]>=0.1.0,<0.2"
-pip install "hedron-charts[altair]>=0.1.0,<0.2"
-```
+Backend extras apply to the repository workspace package; they are not an adopter install
+path until a compatible wheel is published.
 
 ## Quick start
 

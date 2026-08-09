@@ -11,18 +11,15 @@ Demonstrates a component (`Callout`), styles, asset, named example, Explorer
 panel, and diagnostic owner via the `hedron.plugins` entry point. Use it as a
 reference when authoring your own plugin distribution.
 
-**Package maturity:** Alpha (`0.1.x`) · compatible with `hedron-core>=0.25.0,<0.26` ·
-pin and expect churn
+**Package maturity:** Alpha · **0.25 status:** source-only / Deferred for adopters
 
-## Install
+## Packaging notice
 
-```bash
-pip install "hedron-sample-kit>=0.1.0,<0.2"
-# or
-uv add "hedron-sample-kit>=0.1.0,<0.2"
-```
-
-Requires Python 3.11–3.14. Tip on the Alpha line: **0.1.5**.
+There is currently **no PyPI release compatible with `hedron-core 0.25.x`**. Published
+`hedron-sample-kit 0.1.5` requires `hedron-core<0.20`; PyPI's default `0.11.0` requires
+`hedron-core==0.11.0`. Use this repository source as an authoring reference, but do not
+install either published release into a Hedron 0.25 application. See
+[Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#current-025-packaging-limitation-charts-and-sample-kit).
 
 Enable the plugin in your app’s `pyproject.toml`:
 

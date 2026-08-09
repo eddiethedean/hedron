@@ -58,7 +58,7 @@ changes, Streamlit reruns the file and reconstructs the page.
 Install Hedron with its data and chart packages, plus an ASGI server:
 
 ```bash
-uv add "hedron[data]>=0.25.0,<0.26" "hedron[charts]>=0.1.0,<0.2" "uvicorn[standard]"
+uv add "hedron[data]>=0.25.0,<0.26" "uvicorn[standard]"
 ```
 
 Create `app.py`:
@@ -205,7 +205,7 @@ literal shown above.
 | `st.columns` | `Grid` or `Inline` | Compose child components explicitly. |
 | `st.metric` | `Metric` | Pass the label, formatted value, and optional delta. |
 | `st.dataframe` | `DataTable` | Declare a `Model` when stable column types matter. Use `DataEditor` for edits. |
-| `st.line_chart` | `LineChart` | Install `hedron-charts`; provide a title and accessible description. |
+| `st.line_chart` | `LineChart` | Source-only on 0.25 until a compatible chart wheel is published; provide a title and accessible description. |
 | `st.plotly_chart` | `PlotlyChart` | Hedron compiles the supported figure through its chart adapter. |
 | `st.cache_data` | `cache_data` | Choose a TTL and a cache scope; include user or tenant dimensions for private data. |
 | `st.session_state` | Query parameters, your database, or `SessionState` | Prefer addressable URL state for filters and durable application storage for domain data. |

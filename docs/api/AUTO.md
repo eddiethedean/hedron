@@ -45,7 +45,8 @@ deterministic for a given registry and value shape.
 - Sequence → list or table according to shape
 - Markdown-like string policy → secure `Markdown` when registered
 - Dataframe-like / tabular rows → may select `DataTable` **when** `hedron[data]` is installed
-- Plotly / Altair / Matplotlib → chart adapters **when** `hedron[charts]` (+ backend) is installed
+- Plotly / Altair / Matplotlib → chart adapters when the in-repo chart provider is
+  available (PyPI installation is Deferred on 0.25)
 - PIL-like image → managed `Image` when helpers are available
 
 Ambiguous matches produce a documented winner or an actionable error; they never depend
@@ -56,7 +57,7 @@ on import order. Expensive inspection is bounded.
 | Situation | Behavior |
 |---|---|
 | No renderer for value | Diagnostic / render error with explanation metadata |
-| Optional package missing for chosen renderer | Import/extra error — install `hedron[data]` or `hedron[charts]` as needed |
+| Optional package missing for chosen renderer | Install `hedron[data]` for data; charts are source-only on 0.25 until a compatible distribution is published |
 | Ambiguous match without `as_` | Documented winner or actionable error |
 
 ## See also

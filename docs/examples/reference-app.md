@@ -40,14 +40,13 @@ The runnable app uses **HTTP Basic** (`admin` / `secret`). The Demo/Code below i
 
 === "Demo"
 
-    Wrong password → 401. ada / correct-horse → signed-in panel. Session-auth
-    simulation (not the reference app).
+    Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.
 
     <!-- hedron-sim:auth-login -->
 
 === "Code"
 
-    Minimal session-form sample (not `examples/reference-app` — that app uses HTTP Basic):
+    Focused runnable listing for this pattern—not the full reference app. Use the run instructions below for the production archetype:
 
     ```python title="app.py"
     import os
@@ -129,7 +128,7 @@ Unsafe POSTs require a CSRF token. Missing token → 403:
 
 === "Code"
 
-    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+    Focused runnable listing for this pattern—not the full reference app. Use the run instructions below for the production archetype:
 
     ```python title="app.py"
     import os
@@ -201,7 +200,7 @@ user table on the dashboard:
 
 === "Code"
 
-    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+    Focused runnable listing for this pattern—not the full reference app. Use the run instructions below for the production archetype:
 
     ```python title="app.py"
     from __future__ import annotations
@@ -304,7 +303,7 @@ Dashboard chart routes return `InteractionResult` fragments:
 
 === "Code"
 
-    Minimal runnable `app.py` that reproduces this demo (real Hedron, not the docs simulator):
+    Focused runnable listing for this pattern—not the full reference app. Use the run instructions below for the production archetype:
 
     ```python title="app.py"
     import os

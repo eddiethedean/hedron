@@ -110,7 +110,7 @@ Install extras only when you need them:
 | Extra | When you need it | Package docs |
 |---|---|---|
 | `hedron[data]` | DataTable / DataEditor / data sources | [hedron-data](../packages/hedron-data.md) |
-| `hedron[charts]` | LineChart and visualization adapters (Alpha) | [hedron-charts](../packages/hedron-charts.md) |
+| `hedron[charts]` | **Unavailable from PyPI on 0.25**; repository chart source only | [hedron-charts](../packages/hedron-charts.md) |
 | `hedron[jinja]` | Optional HDJ (`.hdj`) templates | [hedron-jinja](../packages/hedron-jinja.md) |
 | `hedron[dev]` | Component Explorer (`/hedron-explorer/`) | [hedron-explorer](../packages/hedron-explorer.md) |
 | `hedron[conformance]` | Language-neutral conformance kit / CLI runner | [hedron-conformance](../packages/hedron-conformance.md) |
@@ -122,16 +122,20 @@ Install extras only when you need them:
 | `hedron[otel]` | Optional OpenTelemetry tracing helpers | — |
 | `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` / `[auth]` / `[browser]` | Content, Authlib, or test helpers | — |
 
-Also install directly (no flagship extra):
-[hedron-sample-kit](../packages/hedron-sample-kit.md) ·
-[hedron-sim](../packages/hedron-sim.md).
+Also install directly (no flagship extra): [hedron-sim](../packages/hedron-sim.md).
+The [sample kit](../packages/hedron-sample-kit.md) is source-only on 0.25 because its
+published releases require older `hedron-core` versions.
 Full catalog: [Optional packages](../packages/index.md).
 
 ```bash
 pip install "hedron[data]>=0.25.0,<0.26"          # example
-pip install "hedron[charts]>=0.1.0,<0.2"         # Alpha — pin and expect churn
-pip install "hedron-charts[plotly]>=0.1.0,<0.2"  # chart backend after charts extra (tip: 0.1.5)
 ```
+
+!!! danger "Do not install charts or sample kit with Hedron 0.25"
+
+    No compatible PyPI distributions are currently published. See the exact resolver
+    conflict and source-only status in
+    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 !!! note "`hedron[browser]` needs Playwright browsers"
 

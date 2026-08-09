@@ -9,7 +9,7 @@ Adopter-facing summary for the **0.25.x** train. For per-package commit detail, 
 **Published** (`0.25.0`; last published PyPI/git = `v0.25.0`).
 
 **Adopter highlights:** production kitchen-sink reference app, CI critical-path budgets,
-extras landmine quarantine (`hedron[experimental-ui]`), Matplotlib-default charts path,
+experimental UI isolation (`hedron[experimental-ui]`), Matplotlib-default charts path,
 SBOM/evidence attach on train tags. Polling remains the Supported live-status story
 (from 0.24). Human AT **sessions** remain **Planned** — do not market human AT as
 Supported.

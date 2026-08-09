@@ -12,8 +12,9 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 | [`hedron-flask`](https://pypi.org/project/hedron-flask/) | Flask host adapter | [Flask](../getting-started/flask.md) · [Adapters](../api/ADAPTERS.md) |
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter | [Django](../getting-started/django.md) · [Adapters](../api/ADAPTERS.md) |
 
-Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). A few
-(`hedron-sample-kit`, `hedron-sim`) install directly.
+Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). `hedron-sim`
+installs directly. The chart and sample-kit rows below are source-only on the 0.25 train;
+see the packaging warning before trying them.
 
 !!! note "Maturity"
 
@@ -35,25 +36,30 @@ Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). A f
 pip install "hedron[data,dev]>=0.25.0,<0.26"
 ```
 
-## Alpha lines (`0.1.x`)
+## Alpha lines
 
 Pin and expect churn. Interactive chart runtimes, notebook preview, MCP, and Gradio
 interop are **Experimental** / Alpha — not production defaults.
 
 | Package | Extra | Role |
 |---|---|---|
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Chart components and visualization adapters |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | **Source-only on 0.25:** published releases require older `hedron-core` |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-notebook](hedron-notebook.md) | `hedron[notebook]` | Server-side notebook preview helper |
 | [hedron-mcp](hedron-mcp.md) | `hedron[mcp]` | Deny-by-default MCP projection |
 | [hedron-gradio](hedron-gradio.md) | `hedron[gradio]` | Gradio client interop |
-| [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape |
+| [hedron-sample-kit](hedron-sample-kit.md) | — | **Source-only on 0.25:** reference third-party plugin shape |
 | [hedron-sim](hedron-sim.md) | — | Offline HTMX sims for static docs |
 
 ```bash
-pip install "hedron[charts]>=0.1.0,<0.2"
 pip install "hedron-sim>=0.1.0,<0.2"
 ```
+
+!!! danger "Charts and sample kit are not installable with 0.25 from PyPI"
+
+    Their published releases require `hedron-core<0.20` or `==0.11.0`. Use the source
+    tree only for development until compatible distributions are published. Details:
+    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## Authoring an extension
 

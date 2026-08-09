@@ -13,8 +13,7 @@ Supports **create, list, and delete** — not a full admin CRUD surface.
 
 === "Code"
 
-    Minimal **in-memory** variant (real Hedron). The SQLAlchemy recipe below differs —
-    download `examples/notes-sqlalchemy/app.py` for persistence:
+    In-memory listing that reproduces the demo. The runnable recipe downloaded below replaces the list with SQLAlchemy + SQLite persistence:
 
     ```python title="app.py"
     from __future__ import annotations

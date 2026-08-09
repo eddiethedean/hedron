@@ -22,15 +22,13 @@ password store before production.
 
 === "Demo"
 
-    Simplified login panel simulation. Real recipe uses soft redirects + logout —
-    see Code (and the recipe page).
+    Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.
 
     <!-- hedron-sim:auth-login -->
 
 === "Code"
 
-    Same `app.py` as the [session-auth recipe](../examples/session-auth.md)
-    (`/login`, soft redirect from `/`, logout POST):
+    Same `app.py` as the [session-auth recipe](../examples/session-auth.md): soft redirects, CSRF-safe sign-in, and logout. The Demo tab is a simplified view:
 
     ```python title="app.py"
     """Session login gate (demo credentials). Local learning only."""
@@ -96,6 +94,7 @@ password store before production.
     def home(request: Request) -> Page | RedirectResponse:
         username = request.session.get("username")
         if not username:
+            # Soft landing — redirect to login instead of a bare 401.
             return RedirectResponse("/login", status_code=status.HTTP_303_SEE_OTHER)
         token = _csrf(request)
         return Page(

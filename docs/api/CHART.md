@@ -11,15 +11,14 @@ status: shipped
 
 **Status:** Shipped in `0.6.0`
 
-## Install
+## Availability
 
-```bash
-pip install "hedron[charts]>=0.1.0,<0.2"
-# backends (pick one or more):
-pip install "hedron-charts[matplotlib]>=0.1.0,<0.2"
-pip install "hedron-charts[plotly]>=0.1.0,<0.2"
-pip install "hedron-charts[altair]>=0.1.0,<0.2"
-```
+!!! danger "Source-only on Hedron 0.25"
+
+    No published chart distribution currently accepts `hedron-core 0.25.x`. These APIs
+    describe the in-repository workspace package; PyPI installation is Deferred until a
+    compatible release is published. See
+    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## Beginner `LineChart`
 

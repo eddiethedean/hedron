@@ -7,14 +7,13 @@ Experimental — prefer this recipe.
 
 === "Demo"
 
-    Click-through status steps only — **not** the real `Poll` recipe. Docs simulation.
+    Bounded job poll — each click advances one status step. Docs simulation.
 
     <!-- hedron-sim:jobs-poll -->
 
 === "Code"
 
-    Real recipe (`Poll` + `job_status_response`) — same as the curl download below.
-    The Demo tab is a simplified click-through simulation only.
+    Real recipe listing using `enqueue_durable`, `Poll`, and scoped job status. The Demo tab is a simplified bounded view:
 
     ```python title="app.py"
     """Polling job status (Supported path). In-memory backend — local demo only."""

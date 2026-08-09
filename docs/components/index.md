@@ -40,9 +40,7 @@ Full pages, metadata, and fragment composition.
 
 ## Landmarks
 
-Semantic regions that give a page its accessible structure. Real typed exports
-(`Header`, `Main`, `Nav`, `Aside`, `Footer`, `Section`) with allowlisted safe HTML
-attrs — not factory variables.
+Semantic regions that give a page its accessible structure. `Header`, `Main`, `Nav`, `Aside`, `Footer`, and `Section` are real typed exports with allowlisted safe HTML attributes, not factory variables.
 
 [`Header`](header.md) · [`Main`](main.md) · [`Nav`](nav.md) · [`Aside`](aside.md) · [`Footer`](footer.md) · [`Section`](section.md)
 

@@ -23,7 +23,7 @@ The full authoritative table lives in the repository (not duplicated here):
 |---|---|
 | Decisions | Binding product/architecture choices |
 | RFCs | Design detail (maintainer corpus on GitHub under `docs/rfcs/`) |
-| [What’s ready](whats-ready.md) | Adopter capability maturity SSOT |
+| [What’s ready](whats-ready.md) | Authoritative adopter capability-maturity page |
 | [STABILITY](../api/STABILITY.md) | API compatibility levels |
 
 Contributors: follow [Contributing](../CONTRIBUTING.md) before proposing a decision or RFC.

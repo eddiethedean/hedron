@@ -6,8 +6,8 @@ Curated optional extras and analysis workbenches for Hedron.
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`  
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 
-Composition / workbench surfaces are Beta. Specialty sandbox remains Experimental.
-**EXTRAS-025 quarantine** is **registration/discovery gated**, not import-gated:
+Composition / workbench surfaces are Beta. The specialty sandbox remains Experimental.
+Experimental UI is **registration/discovery gated**, not import-gated:
 `CodeEditor`, `TerminalView`, joystick, and device bridges remain importable from
 `hedron_extras.experimental` (and older `workbench` / `specialty` paths where present), but
 **default plugin registration** skips `hedron_extras_experimental` unless you install
@@ -23,7 +23,7 @@ pip install "hedron[extras]>=0.25.0,<0.26"
 pip install "hedron-extras>=0.25.0,<0.26"
 # feature-scoped:
 pip install "hedron-extras[data_explorer]>=0.25.0,<0.26"
-# experimental landmines (EXTRAS-025):
+# experimental UI (requires an explicit opt-in):
 pip install "hedron[experimental-ui]>=0.25.0,<0.26"
 # then set HEDRON_EXPERIMENTAL_UI=1 or enable plugin hedron_extras_experimental
 ```
@@ -39,7 +39,7 @@ cost.
 | `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Alpha) |
 | `image_tools` / `calendar` / `signature` / `typeahead` | UI tools |
 | `sandbox` | Experimental browser-Python sandbox |
-| `experimental-ui` | Honesty/pin signal for quarantined landmines (CodeEditor / TerminalView / joystick / device). Real gates: env + plugin enable; does **not** block Python imports. |
+| `experimental-ui` | Explicit opt-in for CodeEditor / TerminalView / joystick / device surfaces. Runtime gates are the environment flag and plugin enablement; the extra does **not** block Python imports. |
 | `all` | `hedron-data` + `hedron-charts` |
 
 ## When to use
@@ -62,7 +62,7 @@ card = MetricCard(label="Active users", value="1,284", hint="+12% WoW")
 Components register automatically when the package is installed.
 
 ```python
-# Experimental landmines (requires hedron[experimental-ui] + plugin enable / env):
+# Experimental UI (requires hedron[experimental-ui] + plugin enable / env):
 from hedron_extras.experimental import CodeEditor, TerminalView
 ```
 
@@ -83,7 +83,7 @@ from hedron_extras.experimental import CodeEditor, TerminalView
 
 | Condition | Behavior |
 |---|---|
-| Expecting landmines from `hedron[extras]` | Out of scope — use `hedron[experimental-ui]` |
+| Expecting experimental UI from `hedron[extras]` | Out of scope — use `hedron[experimental-ui]` |
 | Expecting a full CodeMirror editor from `CodeEditor` | Out of scope — host stub only; see What’s ready |
 | Specialty surface without policy | Fail closed — no silent privilege |
 | Missing `data_explorer` / chart deps | Import / feature unavailable until extras installed |
@@ -92,7 +92,7 @@ from hedron_extras.experimental import CodeEditor, TerminalView
 ## Related docs
 
 - [What’s ready](../guides/whats-ready.md)
-- [Production archetype](../api/PRODUCTION_ARCHETYPE.md) (`EXTRAS-025`)
+- [Production archetype](../api/PRODUCTION_ARCHETYPE.md) (maintainer evidence and graduation criteria)
 - [Plugins API](../api/PLUGINS.md)
 - [Native desktop shell recipe](../guides/native-desktop-shell.md) (not this package’s runtime)
 

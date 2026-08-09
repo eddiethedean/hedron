@@ -3,7 +3,7 @@
 **Published** as `v0.25.0`. Pin `hedron>=0.25.0,<0.26`.
 
 Phase **0.25** makes the production posture explicit: a runnable multi-worker archetype,
-critical-path load budgets in CI, and a quarantine so specialty “landmine” UI widgets are
+critical-path load budgets in CI, and an opt-in boundary so specialty experimental UI widgets are
 not implied by `hedron[extras]`. Polling remains the Supported live-status story (from
 0.24).
 
@@ -18,7 +18,7 @@ not implied by `hedron[extras]`. Polling remains the Supported live-status story
   stay on [What’s ready](whats-ready.md).
 - **Extras quarantine** — `CodeEditor` / `TerminalView` / joystick / device move behind
   `hedron[experimental-ui]` (and `hedron_extras.experimental`). Plain `hedron[extras]` no
-  longer registers those landmines as product UI.
+  longer registers those experimental widgets as product UI.
 - **Charts default** — Matplotlib remains the conservative Supported charts default; Plotly /
   Altair stay experimental.
 - **Supply-chain evidence** — Train tags attach SBOM / evidence bundles in release CI.

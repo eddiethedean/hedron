@@ -27,7 +27,7 @@ Raise production-level quality as **trust in the Supported surface**:
 - Resolve live SSE/WebSocket: **0.24 Accepted `polling_only`** — polling is the Supported
   production story; live helpers remain experimental
   ([LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md))
-- Harden a reference production archetype and quarantine Alpha/landmine extras
+- Harden a reference production archetype and isolate high-risk experimental extras
   ([PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) — **Published** /
   Verified on 0.25)
 

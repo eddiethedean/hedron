@@ -6,15 +6,13 @@ Minimal session login gate with CSRF. Demo credentials only — replace before a
 
 === "Demo"
 
-    Simplified login panel simulation (wrong password → error; ada / correct-horse →
-    signed-in). The real recipe uses soft redirects and a logout form — see Code.
+    Wrong password → 401. ada / correct-horse → signed-in panel. Docs simulation.
 
     <!-- hedron-sim:auth-login -->
 
 === "Code"
 
-    Real recipe — same as the curl download below (`/login`, soft redirect from `/`,
-    logout POST). Demo tab is a simplified simulation only.
+    Real recipe listing with the documented soft redirect and logout flow. The Demo tab is a simplified view:
 
     ```python title="app.py"
     """Session login gate (demo credentials). Local learning only."""

@@ -547,6 +547,12 @@ UNBOUNDED_CHARTS_INSTALL = re.compile(
     r"""pip\s+install\s+["']hedron-charts(?:\[[^\]]+\])?["'](?!\s*>=)"""
 )
 
+# No chart/sample-kit distribution currently accepts hedron-core 0.25.x. Keep broken
+# adopter commands out of public docs until compatible releases are published.
+BROKEN_025_ALPHA_INSTALL = re.compile(
+    r"(?:pip\s+install|uv\s+add)[^\n]*(?:hedron\[charts\]|hedron-charts|hedron-sample-kit)"
+)
+
 PIN_SCAN_ROOTS = [
     ROOT / "docs" / "getting-started",
     ROOT / "docs" / "guides",
@@ -557,6 +563,8 @@ PIN_SCAN_ROOTS = [
     ROOT / "docs" / "index.md",
     ROOT / "README.md",
     ROOT / "packages" / "hedron" / "README.md",
+    ROOT / "packages" / "hedron-charts" / "README.md",
+    ROOT / "packages" / "hedron-sample-kit" / "README.md",
     ROOT / "packages" / "hedron-conformance" / "README.md",
     ROOT / "docs" / "packages" / "hedron-extras.md",
     ROOT / "scripts" / "README.md",
@@ -618,6 +626,12 @@ def _check_unbounded_pins() -> list[str]:
                     f"{path.relative_to(ROOT)}:{lineno}: unbounded hedron-charts install "
                     f"(use >=0.1.0,<0.2): {line.strip()[:120]}"
                 )
+            if BROKEN_025_ALPHA_INSTALL.search(line):
+                failures.append(
+                    f"{path.relative_to(ROOT)}:{lineno}: charts/sample-kit PyPI install is "
+                    f"incompatible with Hedron 0.25; link the compatibility notice instead: "
+                    f"{line.strip()[:120]}"
+                )
     return failures
 
 
@@ -640,7 +654,8 @@ def main() -> int:
         return 1
     print(
         "ok: adopter docs assert Published 0.25 (v0.25.0), "
-        "upper-bound pins, and avoid Supported beta / SSOT / beachhead jargon"
+        "upper-bound pins, avoid broken chart/sample-kit installs, and avoid "
+        "Supported beta / SSOT / beachhead jargon"
     )
     return 0
 

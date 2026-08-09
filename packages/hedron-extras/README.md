@@ -14,9 +14,9 @@ dependency cost.
 
 **Package maturity:** Beta · **Train:** `0.25.0` (Published) · pin `>=0.25.0,<0.26`
 
-**EXTRAS-025:** `CodeEditor`, `TerminalView`, joystick/device bridges are quarantined
-behind **`hedron[experimental-ui]`** (import `hedron_extras.experimental`) — not product
-UI under `hedron[extras]`. See
+`CodeEditor`, `TerminalView`, and joystick/device bridges require the separate
+**`hedron[experimental-ui]`** opt-in (import `hedron_extras.experimental`) and are not
+part of the supported product UI under `hedron[extras]`. See
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
 
 ## Install
@@ -25,7 +25,7 @@ UI under `hedron[extras]`. See
 pip install "hedron[extras]>=0.25.0,<0.26"
 # or
 pip install "hedron-extras>=0.25.0,<0.26"
-# experimental landmines:
+# experimental UI (requires an explicit opt-in):
 pip install "hedron[experimental-ui]>=0.25.0,<0.26"
 ```
 

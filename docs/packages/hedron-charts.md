@@ -2,19 +2,19 @@
 
 Visualization adapters and chart components for Hedron.
 
-**Package maturity:** Alpha (`0.1.x`) · tip **0.1.5** · pin `>=0.1.0,<0.2`  
+**Package maturity:** Alpha · **0.25 status:** source-only / Deferred for adopters
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`  
 **Expect churn.** Interactive Plotly/Vega full browser runtimes remain **experimental**.
 
-## Install
+## Packaging notice
 
-```bash
-pip install "hedron[charts]>=0.1.0,<0.2"
-# or
-pip install "hedron-charts>=0.1.0,<0.2"
-```
+There is currently **no PyPI release compatible with `hedron-core 0.25.x`**. Published
+`hedron-charts 0.1.5` requires `hedron-core<0.20`; PyPI's default `0.11.0` requires
+`hedron-core==0.11.0`. Do not install `hedron[charts]` or `hedron-charts` into a Hedron
+0.25 application. The repository source targets the current workspace and registers
+through `hedron.plugins`.
 
-Requires `hedron-core`. Registers through `hedron.plugins`.
+See [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
 
 ### Optional backends
 
@@ -28,10 +28,8 @@ Requires `hedron-core`. Registers through `hedron.plugins`.
 | `bokeh` / `holoviews` / `pygal` / `datashader` / `great_tables` | Additional adapters |
 | `all` | Union of the above |
 
-```bash
-pip install "hedron-charts[matplotlib]>=0.1.0,<0.2"
-pip install "hedron-charts[plotly]>=0.1.0,<0.2"
-```
+Backend extras apply to the repository workspace package; they are not an adopter install
+path until a compatible wheel is published.
 
 ## When to use
 
@@ -86,7 +84,7 @@ see [Charts API](../api/CHART.md).
 |---|---|
 | Missing Plotly / Vega browser runtime | Fail closed (no silent blank interactive chart) |
 | Missing a11y title/description/alt | Raise / refuse render per accessibility contract |
-| Unpinned Alpha upgrade | Expect breaking churn on `0.1.x` |
+| Installing a published release beside Hedron 0.25 | Resolver conflict; no compatible wheel is published |
 
 ## Related docs
 

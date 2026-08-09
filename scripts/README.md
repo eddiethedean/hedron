@@ -13,7 +13,11 @@ scripts here when you add them.
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
-| `check_docs_train_ssot.py` | Fail if adopter docs claim a stale current train (expects **0.25**). CI: quality job |
+| `check_docs_train_ssot.py` | Fail on stale 0.25 claims, unsafe pins, or chart/sample-kit PyPI commands while those distributions remain incompatible. CI: quality job |
+| `check_recipe_code_sync.py` | Fail when a guide's recipe Code tab drifts from its marked runnable source. CI: quality job |
+
+Documentation source ownership and review rules:
+[Documentation standards](../docs/guides/documentation-standards.md).
 
 
 ## Release / gate (maintainers)

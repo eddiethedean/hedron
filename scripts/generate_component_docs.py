@@ -58,6 +58,22 @@ def _install_requirement(package: str) -> str:
     return package
 
 
+def _optional_install_text(package: str) -> str:
+    """Return the optional-provider note, including known publication gaps."""
+    if "charts" in package:
+        return (
+            '\n\n!!! danger "Source-only on Hedron 0.25"\n\n'
+            "    No published `hedron-charts` release accepts `hedron-core 0.25.x`. "
+            "This page documents the in-repository workspace package; do not install "
+            "an older chart release into a 0.25 application. See "
+            "[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit)."
+        )
+    return (
+        "\n\nInstall the optional provider before importing this component:"
+        f'\n\n```bash\npip install "{_install_requirement(package)}"\n```'
+    )
+
+
 @dataclass(frozen=True)
 class ComponentDoc:
     name: str
@@ -84,8 +100,8 @@ GROUPS = {
     "landmarks": (
         "Landmarks",
         "Semantic regions that give a page its accessible structure. "
-        "**LANDMARK-019:** real typed exports (`Header`, `Main`, `Nav`, `Aside`, `Footer`, "
-        "`Section`) with allowlisted safe HTML attrs — not factory variables.",
+        "`Header`, `Main`, `Nav`, `Aside`, `Footer`, and `Section` are real typed exports "
+        "with allowlisted safe HTML attributes, not factory variables.",
     ),
     "layout": ("Layout", "Explicit containers and one-dimensional or grid composition."),
     "content": ("Content", "Text, links, media, code, lists, tables, and Markdown."),
@@ -125,7 +141,7 @@ COMPONENTS = (
             p(
                 "scripts",
                 "Sequence[SafeUrl] | None",
-                "Allowlisted same-origin `SafeUrl` ASSET scripts (`SCRIPT-019`); free-form `<script>` nodes stay out of the tree.",
+                "Allowlisted same-origin `SafeUrl` ASSET scripts; free-form `<script>` nodes stay out of the tree.",
             ),
             p(
                 "script_defer",
@@ -209,10 +225,10 @@ COMPONENTS = (
                 p(
                     "lang / dir / role / title / tabindex / aria / data / hidden",
                     "allowlisted",
-                    "Safe HTML attrs (`LANDMARK-019`); hostile roles like `presentation` / `none` are rejected.",
+                    "Safe HTML attributes; hostile roles like `presentation` / `none` are rejected.",
                 ),
             ),
-            f"`{name}` emits a native `<{tag}>`, preserving semantic navigation instead of using a generic div. Children may be passed individually or as one non-string sequence. Landmark helpers are real typed classes with an allowlisted attr set (`LANDMARK-019`).",
+            f"`{name}` emits a native `<{tag}>`, preserving semantic navigation instead of using a generic div. Children may be passed individually or as one non-string sequence. Landmark helpers are real typed classes with an allowlisted attribute set.",
             a11y,
             pitfall,
         )
@@ -2571,8 +2587,7 @@ def page_text(spec: ComponentDoc) -> str:
         else "This component is primarily presentational; keep any mutation on an explicit action or component route."
     )
     optional = (
-        f"\n\nInstall the optional provider before importing this component:"
-        f'\n\n```bash\npip install "{_install_requirement(spec.package)}"\n```'
+        _optional_install_text(spec.package)
         if "[" in spec.package or spec.package.startswith("hedron-")
         else ""
     )
@@ -2672,7 +2687,12 @@ hide:
 
 # Component demos
 
-Every public Hedron component has a dedicated, usable example and a detailed operating guide. Static components use real semantic HTML. Features that normally call an HTMX endpoint use a clearly labelled JavaScript simulation so loading, replacement, retry, paging, polling, editing, and validation remain usable on the hosted documentation site.
+Every public Hedron component has a dedicated page (searchable; linked from the category
+pages below). The left nav lists **categories**, not every component — start with the
+table of ten, then open a group. Static components use real semantic HTML. Features that
+normally call an HTMX endpoint use a clearly labelled JavaScript simulation so loading,
+replacement, retry, paging, polling, editing, and validation remain usable on the hosted
+documentation site.
 
 !!! info "What the simulation does"
 

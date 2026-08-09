@@ -29,7 +29,7 @@ Requires Python 3.11–3.14.
 | `dev` | [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) (Component Explorer) |
 | `extras` | [`hedron-extras`](https://pypi.org/project/hedron-extras/) (workbenches) |
 | `conformance` | [`hedron-conformance`](https://pypi.org/project/hedron-conformance/) |
-| `charts` | [`hedron-charts`](https://pypi.org/project/hedron-charts/) (**Alpha** `0.1.x`) |
+| `charts` | `hedron-charts` (**currently incompatible on PyPI with Hedron 0.25; do not install**) |
 | `native` | [`hedron-native`](https://pypi.org/project/hedron-native/) (**Alpha**) |
 | `notebook` / `mcp` / `gradio` | Experimental Alpha packages |
 | `markdown` / `code` / `images` / `email` / `sanitize` | Content helpers |
@@ -39,8 +39,12 @@ Requires Python 3.11–3.14.
 
 ```bash
 pip install "hedron[data,dev]>=0.25.0,<0.26"
-pip install "hedron[charts]>=0.1.0,<0.2"   # Alpha — pin and expect churn
 ```
+
+**Charts packaging notice:** the repository contains 0.25-compatible chart source, but
+the published `hedron-charts` releases require older `hedron-core` versions. Do not
+install the `charts` extra until a compatible chart distribution is published. See
+[Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#current-025-packaging-limitation-charts-and-sample-kit).
 
 ## Quick start
 
