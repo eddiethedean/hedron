@@ -8,9 +8,9 @@
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12]
 #   scripts/ci_checks.sh browser [--python 3.12]
-#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.25.2]
+#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.27.0]
 #   scripts/ci_checks.sh packaging [--python 3.12]
-#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.25.2] [--with-browser]
+#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.27.0] [--with-browser]
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
@@ -21,7 +21,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.26.1}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.27.0}"
 WITH_BROWSER=0
 
 usage() {
@@ -215,16 +215,16 @@ cmd_browser() {
 cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/build_evidence_bundle.py
   run uv run --python "$PYTHON" --with pip-audit python scripts/dep_audit.py
-  # 0.21 session gates remain Planned until real human AT evidence; 0.26 is Verified.
+  # 0.21 session gates remain Planned until real human AT evidence; 0.27 is Verified.
   run uv run --python "$PYTHON" python scripts/check_release_gate.py "$GATE_VERSION"
   run uv run --python "$PYTHON" python scripts/check_human_at_packet.py
   run uv run --python "$PYTHON" python scripts/check_hed_codes.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_26.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_27.py
 }
 
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
-  run uv run --python "$PYTHON" python scripts/verify_pkg_26.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_27.py
 }
 
 cmd_all() {

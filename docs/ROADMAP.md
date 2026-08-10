@@ -1875,8 +1875,8 @@ Post-`0.25.2` quality follow-ups that must not inflate Supported claims:
 
 ## 0.27 — Production-grade adapters, data, authoring, and curated UI (`v0.27.0`)
 
-**Status:** Planned. Second package-graduation phase under the production-grade contract above.
-**Baseline train:** Published **`v0.26.0`**. Owning RFC:
+**Status:** Published as `v0.27.0` (2026-08-10). Second package-graduation phase under the
+production-grade contract above. **Baseline train:** Published **`v0.26.0`**. Owning RFC:
 [RFC-0058](rfcs/RFC-0058-PRODUCTION-GRADE-SATELLITES.md); decision: **D-055**.
 
 **Outcome:** The supported Python satellite train—`hedron-data`, `hedron-flask`, `hedron-django`,
@@ -1942,13 +1942,14 @@ flowchart LR
 6. **Release packet (`REGRESS-027` / `PKG-027`)** — full suite, independent wheel/source installs,
    package SBOMs, reference examples, inventory agreement, and `verify_pkg_27`.
 
-Acceptance packet shape (Planned stubs; do not invent full gate implementation here):
+Acceptance packet shape:
 
-- [docs/acceptance/RELEASE_0_27.md](acceptance/RELEASE_0_27.md) (Planned)
-- [docs/acceptance/release-gate-0.27.toml](acceptance/release-gate-0.27.toml) (Planned)
+- [docs/acceptance/RELEASE_0_27.md](acceptance/RELEASE_0_27.md)
+- [docs/acceptance/release-gate-0.27.toml](acceptance/release-gate-0.27.toml)
 - [docs/acceptance/production-grade-inventory-027.toml](acceptance/production-grade-inventory-027.toml)
-- [docs/acceptance/upgrade-fixtures-027.md](acceptance/upgrade-fixtures-027.md) (Planned)
-- `scripts/verify_pkg_27.py` (Planned; `--allow-planned` until cut)
+- [docs/acceptance/upgrade-fixtures-027.md](acceptance/upgrade-fixtures-027.md)
+- [docs/acceptance/security-review-027/](acceptance/security-review-027/)
+- `scripts/verify_pkg_27.py`
 
 ### Prep backlog (not exit gates)
 
@@ -2435,7 +2436,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Live-transport production disposition (`polling_only` Accepted) | 0.24 | **Published** `v0.24.0`; supersedes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056) — [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md). |
 | Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | **Published** `v0.25.0`; D-053 / RFC-0056; SBOM/evidence attach on train tags — [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). |
 | Production-grade `hedron-core`, `hedron`, and secured/development Explorer | 0.26 | **Published** `v0.26.0`; D-054 / RFC-0057; Verified `CONTRACT-026`…`PKG-026` — [RELEASE_0_26](acceptance/RELEASE_0_26.md). |
-| Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | Planned; D-055 / RFC-0058; gates `DATA-027`…`PKG-027` — [RELEASE_0_27](acceptance/RELEASE_0_27.md). |
+| Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | **Published** `v0.27.0`; D-055 / RFC-0058; Verified `DATA-027`…`PKG-027` — [RELEASE_0_27](acceptance/RELEASE_0_27.md). |
 | Production-grade charts and optional native acceleration | 0.28 | Static/a11y chart baseline, explicit backend dispositions, native fuzz/platform/fallback proof; acceleration never required. |
 | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.29 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes. |
 | Production-grade deny-by-default MCP projection | 0.30 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review. |

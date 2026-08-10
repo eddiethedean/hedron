@@ -17,7 +17,7 @@ manual.
     maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` /
     `deferred`).
 
-**Status:** Accepted · current train **0.26**
+**Status:** Accepted · current train **0.27**
 
 ## How to use this index
 
@@ -125,5 +125,5 @@ attributes and tags. Python keyword collisions use a trailing underscore such as
 ## Historical phase notes
 
 Phase 0.1–0.10 acceptance narratives remain in release notes / what’s-new pages. This
-index tracks the living **0.26** built-in catalog — do not treat older phase lists as the
+index tracks the living **0.27** built-in catalog — do not treat older phase lists as the
 complete API.

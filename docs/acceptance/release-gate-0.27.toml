@@ -1,62 +1,60 @@
 # Phase 0.27 production-grade satellite evidence index.
-# Consumed by scripts/check_release_gate.py with --evidence-manifest
-# docs/acceptance/release-gate-0.27.toml (--allow-planned until cut).
+# Consumed by scripts/check_release_gate.py 0.27.0 (--execute-verified at cut).
 # Zero Deferred policy for 0.27-owned rows: every row must be Verified at cut.
 # Owning decision: D-055. RFC: RFC-0058.
-# Living train remains 0.26.x until packages bump for v0.27.0.
 
 [[evidence]]
 id = "DATA-027"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_data_027.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "FLASK-027"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_flask_027.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "DJANGO-027"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_django_027.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "HDJ-027"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_hdj_027.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "EXTRAS-027"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_extras_027.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PARITY-027"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_parity_027.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "REGRESS-027"
-state = "Planned"
+state = "Verified"
 command = "bash scripts/ci_checks.sh test --python 3.12"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-027"
-state = "Planned"
+state = "Verified"
 command = "python scripts/verify_pkg_27.py"
 ci_job = "test"
 owner = "hedron"

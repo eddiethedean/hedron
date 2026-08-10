@@ -260,6 +260,7 @@ nav:
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.27: guides/whats-new-0.27.md
     - What's new in 0.26: guides/whats-new-0.26.md
     - Versioned documentation: guides/versions.md
     - Earlier releases: guides/whats-new-archive.md

@@ -1,6 +1,6 @@
 # Upgrade to Hedron 0.26
 
-This guide covers an application upgrade from **0.25.2** to the published **0.26.x**
+This guide covers an application upgrade from **0.25.2** to the published **0.27.x**
 train. New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
@@ -26,14 +26,14 @@ streaming, and navigation preload remain experimental.
 === "pip"
 
     ```bash
-    python -m pip install -U "hedron>=0.26.0,<0.27"
+    python -m pip install -U "hedron>=0.27.0,<0.28"
     python -m hedron --app app:app check
     ```
 
 === "uv"
 
     ```bash
-    uv add "hedron>=0.26.0,<0.27"
+    uv add "hedron>=0.27.0,<0.28"
     uv sync
     uv run hedron --app app:app check
     ```
@@ -42,9 +42,9 @@ Keep coordinated adapters and extras on the same train:
 
 ```bash
 python -m pip install -U \
-  "hedron>=0.26.0,<0.27" \
-  "hedron-flask>=0.26.0,<0.27" \
-  "hedron-django>=0.26.0,<0.27"
+  "hedron>=0.27.0,<0.28" \
+  "hedron-flask>=0.27.0,<0.28" \
+  "hedron-django>=0.27.0,<0.28"
 ```
 
 Install only the hosts you use. Charts and the sample kit retain independent satellite
@@ -84,7 +84,7 @@ Then verify the user flows that cross Hedron’s trust boundaries:
 - background-job polling from more than one worker, if used;
 - Explorer remaining unavailable in production.
 
-Expected version output is `0.26.0` or a later `0.26.x` patch.
+Expected version output is `0.26.0` or a later `0.27.x` patch.
 
 ## Roll back
 
