@@ -8,7 +8,7 @@ Living train for public installs. Maintainer cut process:
 
 | Item | Value |
 |---|---|
-| Version | **v0.25.0** (Published) |
+| Version | **v0.25.1** (Published; workspace candidate `0.25.2`) |
 | Pin | `hedron>=0.25.0,<0.26` |
 | Package maturity | Beta (flagship + adapters) |
 | GitHub Release | [github.com/eddiethedean/hedron/releases](https://github.com/eddiethedean/hedron/releases) |

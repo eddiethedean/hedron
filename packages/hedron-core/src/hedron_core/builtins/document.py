@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import html as html_lib
 from collections.abc import Sequence
+from typing import ClassVar
 
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
@@ -78,7 +79,7 @@ class Page(Component[PageProps]):
     """Full HTML document shell."""
 
     props_type = PageProps
-    slots = {"head": "optional", "body": "required"}
+    slots: ClassVar[dict[str, str]] = {"head": "optional", "body": "required"}
 
     def __init__(
         self,

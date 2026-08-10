@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import replace
 from typing import Any, ParamSpec, TypeVar, cast
@@ -12,7 +13,7 @@ from flask.typing import RouteCallable
 
 from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
-from hedron_core.interaction import FragmentRegion, InteractionPolicy, InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfileName
 from hedron_flask.blueprint import attach_hedron_to_flask
@@ -32,6 +33,7 @@ __all__ = ["HedronFlask"]
 _UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 P = ParamSpec("P")
 R = TypeVar("R")
+_logger = logging.getLogger("hedron.flask")
 
 
 class HedronFlask:
@@ -59,11 +61,30 @@ class HedronFlask:
         self.csrf_cookie_secure = csrf_cookie_secure
         self._auto_csrf_cookie = auto_csrf_cookie
         self.security_policy = SecurityPolicy.from_name(security)
+        self._sync_csrf_cookie_name()
         self.flask: Flask | None = None
         self.url_reverser: FlaskUrlReverser | None = None
         if import_name is not None:
             app = Flask(import_name, **kwargs)
             self.init_app(app)
+
+    def _sync_csrf_cookie_name(self) -> None:
+        """Keep extension and SecurityPolicy CSRF cookie names identical."""
+        policy = self.security_policy
+        strategy = policy.resolve_csrf_strategy() if policy.csrf_enabled else None
+        strategy_name = getattr(strategy, "cookie_name", None) if strategy is not None else None
+        if (
+            self.csrf_cookie_name != "hedron_csrf"
+            and policy.csrf is None
+            and policy.csrf_cookie_name == "hedron_csrf"
+        ):
+            # Explicit extension override wins over the default policy name.
+            self.security_policy = replace(policy, csrf_cookie_name=self.csrf_cookie_name)
+            return
+        if isinstance(strategy_name, str) and strategy_name:
+            self.csrf_cookie_name = strategy_name
+            if policy.csrf is None and policy.csrf_cookie_name != strategy_name:
+                self.security_policy = replace(policy, csrf_cookie_name=strategy_name)
 
     def init_app(
         self,
@@ -74,6 +95,7 @@ class HedronFlask:
         """Bind this extension to ``app`` (idempotent for the same app)."""
         if security is not None:
             self.security_policy = SecurityPolicy.from_name(security)
+        self._sync_csrf_cookie_name()
         existing = app.extensions.get("hedron")
         if existing is self:
             self.flask = app
@@ -201,6 +223,13 @@ class HedronFlask:
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
     ):
+        from hedron_core.async_bridge import running_loop
+
+        if running_loop():
+            raise RuntimeError(
+                "HedronFlask.respond() cannot prepare components while an event loop "
+                "is running; await respond_async(...) instead."
+            )
         if (
             self.csrf_protect
             and self.security_policy.csrf_enabled
@@ -212,13 +241,6 @@ class HedronFlask:
                 policy=self.security_policy,
             )
         if isinstance(value, InteractionResult):
-            if allow_undeclared_targets:
-                policy = value.policy or InteractionPolicy()
-                if not policy.allow_undeclared_targets:
-                    value = replace(
-                        value,
-                        policy=replace(policy, allow_undeclared_targets=True),
-                    )
             return interaction_response(
                 value,
                 context=context,
@@ -227,6 +249,7 @@ class HedronFlask:
                 headers_map=dict(request.headers),
                 authenticated=self.auth_signal(request).authenticated,
                 fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
             )
         return component_response(
             value,
@@ -237,6 +260,62 @@ class HedronFlask:
             authenticated=self.auth_signal(request).authenticated,
             fragment_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
+        )
+
+    async def respond_async(
+        self,
+        value: NodeLike | Component[Any] | InteractionResult | RenderResult,
+        request: Request,
+        *,
+        context: RenderContext | None = None,
+        mode: RenderMode | None = None,
+        extra_headers: Mapping[str, str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
+    ):
+        """Async-safe respond that awaits ``prepare_tree`` before rendering."""
+        from hedron_core.prepare import prepare_tree
+
+        if (
+            self.csrf_protect
+            and self.security_policy.csrf_enabled
+            and request.method.upper() in _UNSAFE_METHODS
+        ):
+            validate_csrf(
+                request,
+                cookie_name=self.csrf_cookie_name,
+                policy=self.security_policy,
+            )
+        if isinstance(value, InteractionResult):
+            if value.content is not None:
+                await prepare_tree(value.content)
+            for update in value.oob:
+                await prepare_tree(update.content)
+            return interaction_response(
+                value,
+                context=context,
+                mode=mode,
+                extra_headers=extra_headers,
+                headers_map=dict(request.headers),
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                skip_prepare=True,
+            )
+        if (
+            isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__")
+        ) and not isinstance(value, RenderResult):
+            await prepare_tree(value)  # type: ignore[arg-type]
+        return component_response(
+            value,
+            context=context,
+            mode=mode,
+            extra_headers=extra_headers,
+            headers_map=dict(request.headers),
+            authenticated=self.auth_signal(request).authenticated,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+            skip_prepare=True,
         )
 
     def auth_signal(self, request: Request | None = None) -> AuthSignal:
@@ -251,8 +330,11 @@ class HedronFlask:
                     user_id = get_id()
                 if user_id is None:
                     user_id = getattr(current_user, "id", None)
-        except Exception:
-            pass
+        except ImportError:
+            _logger.debug("flask_login is not installed; using session identity")
+        except Exception as exc:
+            # flask_login may raise outside a request context; fall back to session.
+            _logger.debug("flask_login current_user unavailable: %s", exc)
         if user_id is None:
             user_id = flask_session.get("user_id")
             if user_id is None:
@@ -281,8 +363,17 @@ class HedronFlask:
         if not self.security_policy.csrf_enabled:
             return ""
         value = token or self.csrf_token(request)
+        from hedron_core.mount import cookie_path_for_mount
+
         script_root = getattr(request, "script_root", "") or ""
-        cookie_path = script_root if isinstance(script_root, str) and script_root else "/"
+        cookie_path = (
+            cookie_path_for_mount(script_root)
+            if isinstance(script_root, str) and script_root
+            else "/"
+        )
+        configured = getattr(self, "csrf_cookie_path", None)
+        if isinstance(configured, str) and configured:
+            cookie_path = configured
         ensure_csrf_cookie(
             response,
             value,

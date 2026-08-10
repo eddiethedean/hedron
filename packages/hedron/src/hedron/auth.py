@@ -69,8 +69,12 @@ class _AuthenticatedFromSessionMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         session = getattr(request, "session", None)
-        if isinstance(session, Mapping) and session.get(self.session_key):
-            mark_authenticated(request, value=True)
+        if isinstance(session, Mapping):
+            subject = session.get(self.session_key)
+            # Require a non-empty string subject — truthy placeholders must not
+            # flip hedron_authenticated (cache / Explorer secured defaults).
+            if isinstance(subject, str) and subject.strip():
+                mark_authenticated(request, value=True)
         return await call_next(request)
 
 
@@ -83,6 +87,8 @@ def install_authenticated_from_session(
     Inserts innermost middleware so ``SessionMiddleware`` has already populated
     ``request.session``. Applications still own login and authorization; this only
     aligns cache/Explorer private defaults with an existing session user.
+
+    The session value for ``session_key`` must be a non-empty string subject id.
     """
 
     app.user_middleware.append(

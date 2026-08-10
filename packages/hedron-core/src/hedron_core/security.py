@@ -27,7 +27,12 @@ class UrlPurpose(StrEnum):
     REDIRECT = "redirect"
 
 
-def _validate_secret_inner(source_type: Any, value: Any) -> Any:
+def _validate_secret_inner(source_type: object, value: object) -> object:
+    """Validate ``value`` against the inner type of ``Secret[T]`` when present.
+
+    Raises:
+        HedronError: When pydantic rejects the value for the annotated inner type.
+    """
     args = get_args(source_type)
     if not args:
         return value
@@ -37,7 +42,7 @@ def _validate_secret_inner(source_type: Any, value: Any) -> Any:
         return value
     try:
         return TypeAdapter(inner).validate_python(value)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise error(
             "HED-SEC-0010",
             title="Secret value type mismatch",
@@ -50,12 +55,13 @@ class Secret(Generic[T]):
     """Typed sensitive value that never appears in public representations."""
 
     __slots__ = ("_value",)
+    _value: T
 
     def __init__(self, value: T) -> None:
         object.__setattr__(self, "_value", value)
 
     def reveal(self) -> T:
-        return self._value  # type: ignore[attr-defined]
+        return self._value
 
     def __str__(self) -> str:
         return _REDACTED
@@ -74,14 +80,16 @@ class Secret(Generic[T]):
     def __getstate__(self) -> dict[str, object]:
         return {"value": _REDACTED}
 
-    def __setattr__(self, name: str, value: Any) -> None:
+    def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("Secret is immutable")
 
     @classmethod
     def __get_pydantic_core_schema__(
-        cls, source_type: Any, handler: GetCoreSchemaHandler
+        cls,
+        source_type: Any,  # pydantic GetCoreSchemaHandler API uses Any for annotated forms
+        handler: GetCoreSchemaHandler,
     ) -> core_schema.CoreSchema:
-        def validate(value: Any) -> Secret[Any]:
+        def validate(value: object) -> Secret[Any]:
             if isinstance(value, Secret):
                 inner = _validate_secret_inner(source_type, value.reveal())
                 return Secret(inner)
@@ -102,8 +110,10 @@ class TrustedHtml:
     """Immutable raw-markup value created only at an explicit trust boundary."""
 
     __slots__ = ("_value", "_source")
+    _value: str
+    _source: str
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: object, **kwargs: object) -> None:
         raise TypeError("TrustedHtml has no public constructor; use TrustedHtml.reviewed(...)")
 
     @classmethod
@@ -141,11 +151,11 @@ class TrustedHtml:
 
     @property
     def value(self) -> str:
-        return self._value  # type: ignore[attr-defined]
+        return self._value
 
     @property
     def source(self) -> str:
-        return self._source  # type: ignore[attr-defined]
+        return self._source
 
     def __str__(self) -> str:
         return f"TrustedHtml(source={self.source!r})"
@@ -211,7 +221,7 @@ def contains_dangerous_scheme(value: str) -> bool:
 
 
 def reject_asset_path_traversal(raw: str, *, purpose: UrlPurpose = UrlPurpose.ASSET) -> None:
-    """Reject literal or percent-encoded ``..`` segments in root-relative asset paths."""
+    """Reject literal or percent-encoded ``..`` segments in root-relative paths."""
     path_only = raw.split("?", 1)[0].split("#", 1)[0]
     cleaned = path_only if path_only.startswith("/") else f"/{path_only.lstrip('/')}"
     decoded = _normalize_for_scheme_scan(path_only)
@@ -225,8 +235,9 @@ def reject_asset_path_traversal(raw: str, *, purpose: UrlPurpose = UrlPurpose.AS
         or any(seg == ".." or ".." in seg for seg in segments)
         or any(seg == ".." or ".." in seg for seg in cleaned.split("/"))
     ):
+        label = "Asset path" if purpose is UrlPurpose.ASSET else "Relative URL path"
         raise _url_error(
-            f"Asset path must be normalized without '..' (got {raw!r}, normalized={normalized!r})",
+            f"{label} must be normalized without '..' (got {raw!r}, normalized={normalized!r})",
             purpose,
         )
 
@@ -308,8 +319,11 @@ class SafeUrl:
     """Validated URL for a declared purpose; still subject to final render policy."""
 
     __slots__ = ("_value", "_purpose", "_allow_external")
+    _value: str
+    _purpose: UrlPurpose
+    _allow_external: bool
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: object, **kwargs: object) -> None:
         raise TypeError("SafeUrl has no public constructor; use SafeUrl.parse(...)")
 
     @classmethod
@@ -375,6 +389,21 @@ class SafeUrl:
                 raise _url_error(f"Unsupported or encoded URL scheme {scanned_scheme!r}", purpose)
             if scanned_scheme in {"http", "https"} and not allow_external:
                 raise _url_error("External HTTP(S) URLs require allow_external=True", purpose)
+            # Form/nav/redirect same-origin URLs must be root-relative, or a
+            # same-document fragment for navigation (`#id`).
+            if purpose in {
+                UrlPurpose.NAVIGATION,
+                UrlPurpose.FORM_ACTION,
+                UrlPurpose.REDIRECT,
+            }:
+                ok_root = raw.startswith("/") and not raw.startswith("//")
+                ok_fragment = purpose is UrlPurpose.NAVIGATION and raw.startswith("#")
+                if not (ok_root or ok_fragment):
+                    raise _url_error(
+                        "Relative URLs for navigation/form/redirect must be root-relative "
+                        "(start with /) or a same-document fragment (#…) for navigation",
+                        purpose,
+                    )
         else:
             raise _url_error(f"Unsupported URL scheme {scheme!r}", purpose)
 
@@ -385,6 +414,19 @@ class SafeUrl:
             # Same-origin relative assets: always reject encoded path traversal.
             # allow_external only gates absolute http(s), never traversal.
             reject_asset_path_traversal(raw, purpose=purpose)
+        elif (
+            purpose
+            in {
+                UrlPurpose.NAVIGATION,
+                UrlPurpose.FORM_ACTION,
+                UrlPurpose.REDIRECT,
+            }
+            and scheme == ""
+            and (
+                raw.startswith("/") or raw.startswith("./") or raw.startswith("../") or ".." in raw
+            )
+        ):
+            reject_asset_path_traversal(raw, purpose=purpose)
 
         obj = object.__new__(cls)
         object.__setattr__(obj, "_value", raw)
@@ -394,11 +436,11 @@ class SafeUrl:
 
     @property
     def value(self) -> str:
-        return self._value  # type: ignore[attr-defined]
+        return self._value
 
     @property
     def purpose(self) -> UrlPurpose:
-        return self._purpose  # type: ignore[attr-defined]
+        return self._purpose
 
     def __str__(self) -> str:
         return self.value
@@ -428,11 +470,11 @@ def _url_error(message: str, purpose: UrlPurpose) -> HedronError:
     )
 
 
-def is_secret(value: Any) -> bool:
+def is_secret(value: object) -> bool:
     return isinstance(value, Secret)
 
 
-def redact_value(value: Any) -> Any:
+def redact_value(value: object) -> object:
     if isinstance(value, Secret):
         return _REDACTED
     if isinstance(value, list):

@@ -9,7 +9,7 @@ upgrade is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.25.x` | Yes (current published train — pin `>=0.25.0,<0.26`; last published `v0.25.0`) |
+| `0.25.x` | Yes (current published train — pin `>=0.25.0,<0.26`; last published `v0.25.1`) |
 | `0.24.x` | Prefer upgrade to `0.25.x` (best-effort security triage ~90 days after 0.25 publish) |
 | `0.23.x` | Prefer upgrade to `0.25.x` |
 | `0.22.x` | Prefer upgrade to `0.25.x` |

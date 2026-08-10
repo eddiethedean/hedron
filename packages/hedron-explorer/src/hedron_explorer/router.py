@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html as html_lib
+import logging
 import time
 from collections import deque
 from pathlib import Path
@@ -13,12 +14,13 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 
 from hedron_core.dashboard import dashboard_graph_payload
 from hedron_core.plugins import get_explorer_panels
-from hedron_core.registry import get_registry
+from hedron_core.registry import ComponentMeta, get_registry
 from hedron_core.rendering import RenderMode, render
 from hedron_core.typing_aliases import JsonObject, JsonValue
 
 __all__ = ["explorer_router"]
 
+_logger = logging.getLogger("hedron.explorer")
 _TRACE: deque[JsonObject] = deque(maxlen=100)
 _RATE: dict[str, list[float]] = {}
 _AUDIT: deque[JsonObject] = deque(maxlen=200)
@@ -72,8 +74,9 @@ def _project_component_roots(request: Request | None) -> list[Path]:
                 extra = resolved(base=Path(project_root))
                 if isinstance(extra, (list, tuple)):
                     roots.extend(Path(p) for p in extra)
-        except Exception:  # noqa: BLE001 — explorer stays available without config
-            pass
+        except Exception as exc:
+            # Explorer stays available when optional config/settings fail to load.
+            _logger.debug("Explorer component roots from settings unavailable: %s", exc)
     return roots
 
 
@@ -136,8 +139,8 @@ async def explorer_guards(request: Request) -> None:
                 "Explorer rate limit exceeded",
                 attributes={"path": str(request.url.path), "client": client},
             )
-        except Exception:
-            pass
+        except Exception as exc:
+            _logger.debug("Security audit emit skipped during rate limit: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Explorer rate limit exceeded",
@@ -183,6 +186,64 @@ def _shell(title: str, body: str, *, active: str = "components") -> str:
   <main id="main" tabindex="-1">{body}</main>
 </body>
 </html>"""
+
+
+def _find_component(name: str) -> ComponentMeta | None:
+    """Resolve a registered component by short name or logical-id suffix."""
+    for component in get_registry().components():
+        if component.name == name or component.logical_id.endswith(f".{name}"):
+            return component
+    return None
+
+
+def _component_detail_body(meta: ComponentMeta, request: Request) -> str:
+    """Build the HTML body for a single Explorer component detail page."""
+    styles = _safe_read_text(meta.styles_path, meta, request)
+    styles_block = (
+        html_lib.escape(styles)
+        if styles is not None
+        else (
+            "(styles unavailable or outside allowlisted component roots)"
+            if meta.styles_path
+            else "(no styles.css)"
+        )
+    )
+    explanations = [
+        f"Style symbols: {dict(meta.style_symbols) or '{}'}",
+        "Jinja templates are application-level sources managed by hedron-jinja.",
+        "Browser modules register as fingerprinted assets when present.",
+        "Override style symbols via component STYLE_COMPONENT_ID / local eject.",
+    ]
+    preview_html = ""
+    try:
+        from hedron_core import Text
+
+        result = render(Text(f"Preview of {meta.name}"), mode=RenderMode.FRAGMENT)
+        preview_html = result.html
+        _TRACE.appendleft({"kind": "render", "component": meta.logical_id, "mode": "fragment"})
+    except Exception as exc:
+        preview_html = html_lib.escape(str(exc))
+    return f"""
+        <h2>{html_lib.escape(meta.name)}</h2>
+        <p><code>{html_lib.escape(meta.logical_id)}</code></p>
+        <section>
+          <h3>Preview</h3>
+          <div class="preview">{_preview_frame(preview_html)}</div>
+        </section>
+        <section>
+          <h3>Inference explanations</h3>
+          <ul>{"".join(f"<li>{html_lib.escape(x)}</li>" for x in explanations)}</ul>
+        </section>
+        <section>
+          <h3>Styles</h3>
+          <pre>{styles_block}</pre>
+        </section>
+        <section>
+          <h3>Assets</h3>
+          <p>Roots: {html_lib.escape(str([_redact(r) for r in meta.asset_roots]))}</p>
+          <p>Browser modules: {html_lib.escape(str([_redact(m) for m in meta.browser_modules]))}</p>
+        </section>
+        """
 
 
 def explorer_router() -> APIRouter:
@@ -245,60 +306,10 @@ def explorer_router() -> APIRouter:
 
     @router.get("/component/{name}", response_class=HTMLResponse, include_in_schema=False)
     async def component_detail(name: str, request: Request) -> str:
-        meta = None
-        for c in get_registry().components():
-            if c.name == name or c.logical_id.endswith(f".{name}"):
-                meta = c
-                break
+        meta = _find_component(name)
         if meta is None:
             raise HTTPException(status_code=404, detail=f"Unknown component {name}")
-        styles = _safe_read_text(meta.styles_path, meta, request)
-        styles_block = (
-            html_lib.escape(styles)
-            if styles is not None
-            else (
-                "(styles unavailable or outside allowlisted component roots)"
-                if meta.styles_path
-                else "(no styles.css)"
-            )
-        )
-        explanations = [
-            f"Style symbols: {dict(meta.style_symbols) or '{}'}",
-            "Jinja templates are application-level sources managed by hedron-jinja.",
-            "Browser modules register as fingerprinted assets when present.",
-            "Override style symbols via component STYLE_COMPONENT_ID / local eject.",
-        ]
-        preview_html = ""
-        try:
-            from hedron_core import Text
-
-            result = render(Text(f"Preview of {meta.name}"), mode=RenderMode.FRAGMENT)
-            preview_html = result.html
-            _TRACE.appendleft({"kind": "render", "component": meta.logical_id, "mode": "fragment"})
-        except Exception as exc:  # noqa: BLE001
-            preview_html = html_lib.escape(str(exc))
-        body = f"""
-        <h2>{html_lib.escape(meta.name)}</h2>
-        <p><code>{html_lib.escape(meta.logical_id)}</code></p>
-        <section>
-          <h3>Preview</h3>
-          <div class="preview">{_preview_frame(preview_html)}</div>
-        </section>
-        <section>
-          <h3>Inference explanations</h3>
-          <ul>{"".join(f"<li>{html_lib.escape(x)}</li>" for x in explanations)}</ul>
-        </section>
-        <section>
-          <h3>Styles</h3>
-          <pre>{styles_block}</pre>
-        </section>
-        <section>
-          <h3>Assets</h3>
-          <p>Roots: {html_lib.escape(str([_redact(r) for r in meta.asset_roots]))}</p>
-          <p>Browser modules: {html_lib.escape(str([_redact(m) for m in meta.browser_modules]))}</p>
-        </section>
-        """
-        return _shell(meta.name, body, active="components")
+        return _shell(meta.name, _component_detail_body(meta, request), active="components")
 
     @router.get("/graph", response_class=HTMLResponse, include_in_schema=False)
     async def graph_view() -> str:
@@ -659,7 +670,7 @@ def explorer_router() -> APIRouter:
                                 source_name=rel,
                             )
                         )
-                    except Exception as exc:  # noqa: BLE001
+                    except Exception as exc:
                         reports.append({"name": str(path), "error": str(exc)})
             inv = build_production_inventory(
                 template_reports=reports,
@@ -674,7 +685,7 @@ def explorer_router() -> APIRouter:
                     }
                 )
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             payload = html_lib.escape(f"Inventory unavailable: {exc}")
         body = f"<h2>Production inventory</h2><pre>{payload}</pre>"
         return _shell("Inventory", body, active="inventory")
@@ -764,7 +775,7 @@ def explorer_router() -> APIRouter:
     async def api_simulate(request: Request) -> Any:
         try:
             payload = await request.json()
-        except Exception:  # noqa: BLE001 — malformed JSON
+        except Exception:
             return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
         if not isinstance(payload, dict):
             return JSONResponse({"detail": "JSON object required"}, status_code=400)
@@ -786,31 +797,46 @@ def explorer_router() -> APIRouter:
                 {"detail": "CSRF policy required for simulate"},
                 status_code=403,
             )
-        # Fail closed when csrf_enabled is omitted on duck-typed policies.
-        if getattr(policy, "csrf_enabled", True):
-            from hedron_core.csrf import validate_double_submit
+        # Simulate always requires CSRF validation (ignore csrf_enabled=False).
+        # Deny when no strategy can validate rather than silently skipping.
+        from hedron_core.csrf import validate_double_submit
 
-            csrf_name = getattr(policy, "csrf_cookie_name", "hedron_csrf")
-            cookie = request.cookies.get(csrf_name)
-            header_name = getattr(policy, "csrf_header_name", "X-CSRF-Token")
-            header = (
-                request.headers.get(header_name)
-                or request.headers.get("X-CSRF-Token")
-                or request.headers.get("X-Hedron-CSRF")
-            )
-            form_token = None
-            validator = getattr(request.app.state, "hedron_csrf_validate", None)
-            if callable(validator):
-                try:
-                    result = validator(request, policy)
-                    if hasattr(result, "__await__"):
-                        await result  # type: ignore[misc]
-                except Exception:  # noqa: BLE001 — FastAPI CSRF raises HTTPException
-                    return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
-            elif not validate_double_submit(
-                cookie_token=cookie, header_token=header, form_token=form_token
-            ):
+        strategy = None
+        resolve = getattr(policy, "resolve_csrf_strategy", None)
+        if callable(resolve):
+            try:
+                strategy = resolve()
+            except Exception:
+                strategy = None
+        csrf_name = (
+            getattr(strategy, "cookie_name", None)
+            or getattr(policy, "csrf_cookie_name", None)
+            or "hedron_csrf"
+        )
+        cookie = request.cookies.get(csrf_name)
+        header_name = (
+            getattr(strategy, "header_name", None)
+            or getattr(policy, "csrf_header_name", None)
+            or "X-CSRF-Token"
+        )
+        header = (
+            request.headers.get(header_name)
+            or request.headers.get("X-CSRF-Token")
+            or request.headers.get("X-Hedron-CSRF")
+        )
+        form_token = None
+        validator = getattr(request.app.state, "hedron_csrf_validate", None)
+        if callable(validator):
+            try:
+                result = validator(request, policy)
+                if hasattr(result, "__await__"):
+                    await result  # type: ignore[misc]
+            except Exception:
                 return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
+        elif not validate_double_submit(
+            cookie_token=cookie, header_token=header, form_token=form_token
+        ):
+            return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
 
         name = payload.get("route")
         if not isinstance(name, str) or not name:

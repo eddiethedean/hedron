@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 import re
 import uuid
 from collections.abc import Callable, Iterator, Mapping
 from dataclasses import dataclass, field
 from typing import Any
 
+_logger = logging.getLogger("hedron.gradio")
 _GRADIO_CLIENT_IMPORT_ERROR = (
     "gradio_client is required for live Gradio discovery and predict calls. "
     "Install with: pip install gradio-client"
@@ -192,7 +194,7 @@ class GradioClientAdapter:
             if self.auth_token:
                 client_kwargs["hf_token"] = self.auth_token
             client = Client(self.base_url, **client_kwargs)
-        except Exception as exc:  # noqa: BLE001 — remote boundary
+        except Exception as exc:
             raise GradioRemoteError(f"Failed to connect to Gradio app: {exc}") from exc
 
         endpoints = self._endpoints_from_client(client)
@@ -214,9 +216,11 @@ class GradioClientAdapter:
                 except TypeError:
                     try:
                         info = candidate()
-                    except Exception:  # noqa: BLE001
+                    except Exception as exc:
+                        _logger.debug("Gradio endpoint probe %s() failed: %s", attr, exc)
                         continue
-                except Exception:  # noqa: BLE001
+                except Exception as exc:
+                    _logger.debug("Gradio endpoint probe %s failed: %s", attr, exc)
                     continue
                 break
             if candidate is not None and not callable(candidate):

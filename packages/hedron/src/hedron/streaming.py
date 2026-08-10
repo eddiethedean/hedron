@@ -60,9 +60,9 @@ class StreamingComponentResponse(StreamingResponse):
     ) -> None:
         _reject_header_controls("region_id", region_id)
         hdrs = {
+            **dict(headers or {}),
             "Cache-Control": "no-store",
             "X-Hedron-Stream-Region": region_id,
-            **dict(headers or {}),
         }
         for key, value in hdrs.items():
             _reject_header_controls(key, value)

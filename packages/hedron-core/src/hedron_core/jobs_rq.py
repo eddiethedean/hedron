@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable, Mapping
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.job_status_store import RedisStatusStore, require_redis_status_client
 from hedron_core.jobs import JobHandle, JobState, JobStatus, RedisClient
@@ -91,6 +91,7 @@ class RQJobBackend:
         ok = self._store.request_cancel(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
         if not ok:
             return False
+        cancelled = self._store._load(job_id)
         rq_job = self._rq_jobs.get(job_id)
         if rq_job is None:
             rq_job = self._fetch_rq_job(job_id)
@@ -105,21 +106,49 @@ class RQJobBackend:
                 "HED-JOB-0001 RQ cancel failed for job_id=%s; restoring prior status",
                 job_id,
             )
-            if prior is not None:
-                self._store.restore_snapshot(prior)
+            if prior is not None and cancelled is not None:
+                restored = self._store.restore_snapshot(
+                    prior,
+                    expected_updated_at=float(
+                        cast(float | int | str, cancelled.get("updated_at", -1))
+                    ),
+                )
+                if not restored:
+                    _logger.warning(
+                        "HED-JOB-0001 RQ cancel restore skipped for job_id=%s "
+                        "(status advanced concurrently)",
+                        job_id,
+                    )
             return False
         return True
 
     def _fetch_rq_job(self, job_id: str) -> Any | None:
-        """Resolve an RQ job across workers via the shared connection."""
+        """Resolve an RQ job across workers via the shared connection.
+
+        Missing jobs return ``None``. Unexpected fetch failures are logged and
+        also return ``None`` so callers keep the durable-status fallback path.
+        """
         connection = getattr(self._queue, "connection", None)
         if connection is None:
             return None
         try:
             from rq.job import Job  # type: ignore[import-not-found]
-
+        except ImportError:
+            _logger.debug("rq is not installed; cannot fetch job_id=%s", job_id)
+            return None
+        try:
             return Job.fetch(job_id, connection=connection)
-        except Exception:
+        except Exception as exc:
+            # Prefer typed NoSuchJobError when present; fall back to class name.
+            try:
+                from rq.exceptions import NoSuchJobError  # type: ignore[import-not-found]
+            except ImportError:
+                NoSuchJobError = ()  # type: ignore[misc,assignment]
+            if NoSuchJobError and isinstance(exc, NoSuchJobError):
+                return None
+            if type(exc).__name__ == "NoSuchJobError":
+                return None
+            _logger.warning("RQ Job.fetch failed for job_id=%s: %s", job_id, exc)
             return None
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:

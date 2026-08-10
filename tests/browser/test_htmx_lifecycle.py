@@ -103,7 +103,7 @@ def _selected_engine() -> str:
     return os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium"
 
 
-def _open_ready_page(pw: object, url: str):  # noqa: ANN001
+def _open_ready_page(pw: object, url: str):
     browser_type = getattr(pw, _selected_engine())
     browser = browser_type.launch(headless=True)
     page = browser.new_page()

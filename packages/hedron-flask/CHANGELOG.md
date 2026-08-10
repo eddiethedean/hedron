@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.25.2] — 2026-08-10
+
+### Fixed
+
+- Sync CSRF cookie names between HedronFlask extension and SecurityPolicy/strategy.
+- `hedron_route` resolves and honors the app SecurityPolicy (including csrf_enabled=False).
+- Propagate `allow_undeclared_targets` for InteractionResult responses.
+- Use shared `cookie_path_for_mount` for CSRF cookie Path under SCRIPT_NAME mounts.
+- `_maybe_prepare` fails closed under a running loop; add `respond_async` and `skip_prepare`.
+- Experimental SSE accepts only `SseEvent` (no raw string framing).
+
+### Changed
+
+- Coordinated Beta patch with `hedron` 0.25.2.
+
 ## [0.25.1] — 2026-08-09
 
 ### Changed

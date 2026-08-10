@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Literal
+from typing import ClassVar, Literal
 
 from hedron_core.builtins._base import collect_children, dom_id_part
 from hedron_core.component import Component, NodeLike
@@ -48,7 +48,8 @@ class Hx:
             raise ValueError(f"Unsafe HTMX swap value: {self.swap!r}")
         attrs: dict[str, HtmlAttrValue] = {}
         if self.method and self.url:
-            attrs[f"hx-{self.method.lower()}"] = self.url
+            safe = SafeUrl.parse(self.url, purpose=UrlPurpose.FORM_ACTION)
+            attrs[f"hx-{self.method.lower()}"] = safe
         if target:
             attrs["hx-target"] = target
         if self.swap:
@@ -60,7 +61,8 @@ class Hx:
         if self.push_url is True:
             attrs["hx-push-url"] = "true"
         elif isinstance(self.push_url, str) and self.push_url:
-            attrs["hx-push-url"] = self.push_url
+            safe_push = SafeUrl.parse(self.push_url, purpose=UrlPurpose.NAVIGATION)
+            attrs["hx-push-url"] = safe_push
         if disabled_elt:
             attrs["hx-disabled-elt"] = disabled_elt
         if indicator:
@@ -191,7 +193,7 @@ class FormFieldProps(Props):
 
 class FormField(Component[FormFieldProps]):
     props_type = FormFieldProps
-    slots = {"control": "required"}
+    slots: ClassVar[dict[str, str]] = {"control": "required"}
 
     def __init__(
         self,

@@ -2,7 +2,7 @@
 
 Curated optional extras and analysis workbenches for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.25.0` · pin `>=0.25.0,<0.26`  
+**Package maturity:** Beta · **Train:** `0.25.x` (last published `0.25.1`) · pin `>=0.25.0,<0.26`  
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`  
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 

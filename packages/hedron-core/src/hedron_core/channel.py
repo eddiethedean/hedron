@@ -68,7 +68,11 @@ class PageSessionChannel:
             raise ValueError(f"undeclared client read {component_id}.{field}")
 
     def encode_region_update(self, update: RegionUpdate) -> ChannelMessage:
+        from hedron_core.htmx_contract import safe_hx_swap
+
         self.validate_region(update.region_id)
+        if not safe_hx_swap(update.swap):
+            raise ValueError(f"Unsafe HTMX swap value: {update.swap!r}")
         if self.messages_sent >= self.budget.max_messages:
             raise RuntimeError("channel message budget exhausted")
         encoded = ChannelMessage(

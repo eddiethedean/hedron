@@ -234,12 +234,21 @@ def test_mark_authenticated_and_session_install() -> None:
 
     @app.post("/login")
     def login(req: Request) -> dict:
-        req.session["user"] = {"id": "ada"}
+        req.session["user"] = "ada"
         return {"ok": True}
 
     client = TestClient(app)
     assert client.get("/who").json()["auth"] is False
     assert client.post("/login").status_code == 200
     body = client.get("/who").json()
-    assert body["user"]["id"] == "ada"
+    assert body["user"] == "ada"
     assert body["auth"] is True
+
+    # Truthy non-string session values must not flip authentication.
+    @app.post("/login-dict")
+    def login_dict(req: Request) -> dict:
+        req.session["user"] = {"id": "ada"}
+        return {"ok": True}
+
+    assert client.post("/login-dict").status_code == 200
+    assert client.get("/who").json()["auth"] is False

@@ -36,7 +36,7 @@ def test_htmx_validation_returns_html_fragment() -> None:
     app = Hedron(title="t", security="standard", session_secret="test-secret", explorer="off")
 
     @app.action("/validate", method="POST")
-    def validate(amount: int) -> InteractionResult:  # noqa: ARG001
+    def validate(amount: int) -> InteractionResult:
         return InteractionResult(content=Text("ok"))
 
     client = TestClient(app)
@@ -173,7 +173,7 @@ def test_require_sqlalchemy_raises_when_missing(monkeypatch: pytest.MonkeyPatch)
 
     real_import = builtins.__import__
 
-    def _no_sqlalchemy(name: str, *args: object, **kwargs: object):  # noqa: ANN001
+    def _no_sqlalchemy(name: str, *args: object, **kwargs: object):
         if name == "sqlalchemy" or name.startswith("sqlalchemy."):
             raise ImportError("forced")
         return real_import(name, *args, **kwargs)  # type: ignore[arg-type]

@@ -1,6 +1,6 @@
 # What’s new in Hedron 0.25
 
-**Published** as `v0.25.0`. Pin `hedron>=0.25.0,<0.26`.
+**Published** as `v0.25.0` (last published patch `v0.25.1`; workspace candidate `0.25.2`). Pin `hedron>=0.25.0,<0.26`.
 
 Phase **0.25** makes the production posture explicit: a runnable multi-worker archetype,
 critical-path load budgets in CI, and an opt-in boundary so specialty experimental UI widgets are
@@ -24,6 +24,17 @@ not implied by `hedron[extras]`. Polling remains the Supported live-status story
   Plotly / Altair stay experimental. See
   [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 - **Supply-chain evidence** — Train tags attach SBOM / evidence bundles in release CI.
+
+
+## Prepared 0.25.2 (not tagged)
+
+Additional fail-closed hardening on the workspace candidate (see [release notes](release-notes.md)):
+
+- Mount path rejects `..` / `%2e` segments; redirect prefixes re-validate with `is_local_path`.
+- RedisStatusStore CAS matches RedisJobBackend; Celery/RQ cancel restore is CAS-only.
+- Adapter prepare raises under a running loop; Flask gains `respond_async`.
+- SSE/streaming force `Cache-Control: no-store`; adapter SSE accepts only `SseEvent`.
+- SafeUrl/Hx require root-relative form/nav URLs; reserved OOB always wraps; WS swap validated.
 
 ## Upgrade notes
 

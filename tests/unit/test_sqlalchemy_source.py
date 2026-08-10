@@ -67,7 +67,7 @@ def test_sql_contains_limit(session_factory, monkeypatch) -> None:
         def __init__(self) -> None:
             self._inner = real_factory()
 
-        def execute(self, statement):  # noqa: ANN001
+        def execute(self, statement):
             compiled = statement.compile(compile_kwargs={"literal_binds": True})
             executed.append(str(compiled))
             return self._inner.execute(statement)

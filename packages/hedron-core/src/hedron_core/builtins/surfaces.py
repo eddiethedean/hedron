@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.component import Component, NodeLike
@@ -17,7 +17,7 @@ class CardProps(ElementProps):
 
 class Card(Component[CardProps]):
     props_type = CardProps
-    slots = {"header": "optional", "footer": "optional"}
+    slots: ClassVar[dict[str, str]] = {"header": "optional", "footer": "optional"}
 
     def __init__(
         self,

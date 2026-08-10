@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.2] — 2026-08-10
+
+### Changed
+
+- Coordinated Beta patch with `hedron` 0.25.2 (docs honesty + package train alignment).
+
 ## [0.25.1] — 2026-08-09
 
 ### Changed

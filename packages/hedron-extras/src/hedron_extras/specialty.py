@@ -6,6 +6,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any
 
+from pydantic import Field
+
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -80,7 +82,7 @@ class TerminalPolicy:
 
 class TerminalViewProps(ElementProps):
     enabled: bool = False
-    allowlist: list[str] = []
+    allowlist: list[str] = Field(default_factory=list)
     output_budget: int = 50_000
     timeout_s: int = 30
 

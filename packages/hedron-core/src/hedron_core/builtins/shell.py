@@ -107,23 +107,26 @@ class HtmxLink(Component[HtmxLinkProps]):
         attrs: dict[str, HtmlAttrValue] = {"href": self.props.href}
         method = self.props.method.lower()
         path = str(self.props.href)
-        attrs[f"hx-{method}"] = path
-        if self.props.target:
-            attrs["hx-target"] = self.props.target
-        if self.props.swap:
-            attrs["hx-swap"] = self.props.swap
-        if self.props.select:
-            attrs["hx-select"] = self.props.select
-        if self.props.select_oob:
-            attrs["hx-select-oob"] = self.props.select_oob
-        if self.props.push_url is True:
-            attrs["hx-push-url"] = "true"
-        elif isinstance(self.props.push_url, str) and self.props.push_url:
-            attrs["hx-push-url"] = self.props.push_url
-        if self.props.disabled_elt:
-            attrs["hx-disabled-elt"] = self.props.disabled_elt
-        if self.props.indicator:
-            attrs["hx-indicator"] = self.props.indicator
+        # External links are plain navigation; do not emit hx-* absolute URLs
+        # (html URL policy rejects absolute schemes on hx-* attributes).
+        if not self.props.external:
+            attrs[f"hx-{method}"] = path
+            if self.props.target:
+                attrs["hx-target"] = self.props.target
+            if self.props.swap:
+                attrs["hx-swap"] = self.props.swap
+            if self.props.select:
+                attrs["hx-select"] = self.props.select
+            if self.props.select_oob:
+                attrs["hx-select-oob"] = self.props.select_oob
+            if self.props.push_url is True:
+                attrs["hx-push-url"] = "true"
+            elif isinstance(self.props.push_url, str) and self.props.push_url:
+                attrs["hx-push-url"] = self.props.push_url
+            if self.props.disabled_elt:
+                attrs["hx-disabled-elt"] = self.props.disabled_elt
+            if self.props.indicator:
+                attrs["hx-indicator"] = self.props.indicator
         if self.props.id:
             attrs["id"] = self.props.id
         base = "hedron-nav-link"

@@ -154,7 +154,7 @@ def _engine() -> str:
     return os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium"
 
 
-def _launch(pw: object):  # noqa: ANN001
+def _launch(pw: object):
     return getattr(pw, _engine()).launch(headless=True)
 
 
@@ -192,10 +192,10 @@ def docs_site(tmp_path_factory: pytest.TempPathFactory) -> Path:
 @pytest.fixture(scope="module")
 def docs_server(docs_site: Path):
     class Handler(http.server.SimpleHTTPRequestHandler):
-        def __init__(self, *args, **kwargs):  # noqa: ANN002, ANN003
+        def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=str(docs_site), **kwargs)
 
-        def log_message(self, format: str, *args) -> None:  # noqa: A003, ANN002
+        def log_message(self, format: str, *args) -> None:
             return
 
     # Bind an ephemeral port.
@@ -232,7 +232,7 @@ def test_docs_sim_page_under_material(
         try:
             leaked: list[str] = []
 
-            def on_request(req) -> None:  # noqa: ANN001
+            def on_request(req) -> None:
                 if req.method in {"POST", "PUT", "PATCH", "DELETE"}:
                     leaked.append(f"{req.method} {req.url}")
 

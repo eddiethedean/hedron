@@ -2,11 +2,70 @@
 
 from __future__ import annotations
 
+import sys
+from types import ModuleType
 from typing import Any
 
 from hedron_core.jobs import JobBackend, JobState
 from hedron_core.jobs_celery import CeleryJobBackend
 from hedron_core.jobs_rq import RQJobBackend
+
+
+class WatchError(Exception):
+    """Stub WatchError so RedisStatusStore CAS works without redis-py."""
+
+
+_redis_mod = ModuleType("redis")
+_exc_mod = ModuleType("redis.exceptions")
+_exc_mod.WatchError = WatchError  # type: ignore[attr-defined]
+_redis_mod.exceptions = _exc_mod  # type: ignore[attr-defined]
+sys.modules.setdefault("redis", _redis_mod)
+sys.modules.setdefault("redis.exceptions", _exc_mod)
+
+
+class _SharedPipeline:
+    def __init__(self, client: _SharedRedis) -> None:
+        self._client = client
+        self._watched: str | None = None
+        self._watched_value: str | None = None
+        self._buffer: list[tuple[str, tuple[object, ...], dict[str, object]]] = []
+
+    def watch(self, key: str) -> None:
+        self._watched = key
+        self._watched_value = self._client._store.get(key)
+
+    def unwatch(self) -> None:
+        self._watched = None
+        self._watched_value = None
+        self._buffer.clear()
+
+    def get(self, key: str) -> str | None:
+        return self._client.get(key)
+
+    def multi(self) -> None:
+        self._buffer.clear()
+
+    def set(
+        self,
+        key: str,
+        value: str,
+        ex: int | None = None,
+        nx: bool = False,
+    ) -> None:
+        self._buffer.append(("set", (key, value), {"ex": ex, "nx": nx}))
+
+    def execute(self) -> list[object]:
+        if self._watched is not None:
+            current = self._client._store.get(self._watched)
+            if current != self._watched_value:
+                self.unwatch()
+                raise WatchError("watched key changed")
+        results: list[object] = []
+        for op, args, kwargs in self._buffer:
+            if op == "set":
+                results.append(self._client.set(args[0], args[1], **kwargs))  # type: ignore[arg-type]
+        self.unwatch()
+        return results
 
 
 class _SharedRedis:
@@ -35,6 +94,9 @@ class _SharedRedis:
     def keys(self, pattern: str) -> list[str]:
         prefix = pattern.rstrip("*")
         return [k for k in self._store if k.startswith(prefix)]
+
+    def pipeline(self) -> _SharedPipeline:
+        return _SharedPipeline(self)
 
 
 class _FakeCelery:

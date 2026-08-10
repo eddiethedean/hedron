@@ -358,6 +358,7 @@ async def render_interaction(
     fragment_regions: tuple[FragmentRegion, ...] = (),
     mode: RenderMode | None = None,
     kind: str = "page",
+    allow_undeclared_targets: bool = False,
 ) -> StarletteResponse:
     """Public InteractionResult → Response conversion (RFC-0044 / #35).
 
@@ -370,6 +371,7 @@ async def render_interaction(
     from hedron.context import render_context_from_request
     from hedron.interaction import merge_route_regions
     from hedron.security.csrf import ensure_csrf_cookie
+    from hedron_core.interaction import apply_allow_undeclared_targets
 
     sec = policy
     if sec is None:
@@ -380,6 +382,7 @@ async def render_interaction(
         else authenticated
     )
 
+    result = apply_allow_undeclared_targets(result, allow_undeclared_targets)
     if fragment_regions:
         result = merge_route_regions(result, fragment_regions)
 
@@ -417,7 +420,7 @@ async def render_interaction(
     if result.oob:
         try:
             content = materialize_interaction_nodes(result)
-        except (FragmentRegionError, ValueError) as exc:
+        except (FragmentRegionError, ValueError, TypeError) as exc:
             if isinstance(exc, FragmentRegionError):
                 raise HTTPException(
                     status_code=403,
@@ -438,10 +441,16 @@ async def render_interaction(
     if kind == "component":
         force = force or RenderMode.FRAGMENT
     if result.status_code == 204 or (result.content is None and result.status_code == 204):
-        # Auth already ran; 204 has no primary body.
-        return StarletteResponse(status_code=204, headers=headers)
+        # Auth already ran; 204 has no primary body — still seed CSRF on safe methods.
+        response = StarletteResponse(status_code=204, headers=headers)
+        if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
+            ensure_csrf_cookie(response, sec, request=request)
+        return response
     if content is None:
-        return StarletteResponse(status_code=result.status_code, headers=headers)
+        response = StarletteResponse(status_code=result.status_code, headers=headers)
+        if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
+            ensure_csrf_cookie(response, sec, request=request)
+        return response
 
     from hedron.routing.route import _prepare_endpoint_value
 

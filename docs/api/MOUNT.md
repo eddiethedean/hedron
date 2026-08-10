@@ -17,7 +17,7 @@ These helpers resolve that mount and keep cookie paths consistent.
 1. Configure the proxy to strip or forward the prefix consistently.
 2. Set ASGI `root_path` (uvicorn `--root-path /apps/hedron`) **or** set
    `HEDRON_ROOT_PATH=/apps/hedron`.
-3. Confirm CSRF cookies use `Path=/apps/hedron/` (not `/` alone) and that Refresh /
+3. Confirm CSRF cookies use `Path=/apps/hedron` (not `/` alone) and that Refresh /
    form posts still hit the app.
 
 See [Deployment](../guides/deployment.md) · [Ship a Hedron app](../guides/ship.md) ·
@@ -34,6 +34,8 @@ See [Deployment](../guides/deployment.md) · [Ship a Hedron app](../guides/ship.
 4. Otherwise **site root** (`""`)
 
 Untrusted forwarded headers are ignored by default (fail closed for spoofed prefixes).
+
+`normalize_mount_path` also rejects path segments of `.` / `..` (including percent-encoded `%2e` forms) so cookie `Path` and redirect prefixes cannot escape the intended mount. Prefixed local URLs are re-checked with `is_local_path`.
 
 ## Parameters / Returns
 
@@ -53,7 +55,7 @@ Untrusted forwarded headers are ignored by default (fail closed for spoofed pref
 |---|---|---|
 | `path` | `str` | Normalized mount (`""` at site root, or `/prefix` with no trailing slash) |
 | `source` | `str` | Where the value came from (`env:HEDRON_ROOT_PATH`, `asgi:root_path`, …) |
-| `cookie_path` | `str` | Cookie `Path` (`/` at root, `/prefix/` under a mount) |
+| `cookie_path` | `str` | Cookie `Path` (`/` at root, `/prefix` under a mount; no forced trailing slash so `/prefix` matches both `/prefix` and `/prefix/...`) |
 
 ### `normalize_mount_path(value) -> str`
 

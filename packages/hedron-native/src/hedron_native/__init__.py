@@ -22,7 +22,7 @@ def _resolve_impls() -> tuple[Callable[[str], str], Callable[[str], str], bool]:
         from hedron_native._native import escape_text as native_text
 
         return native_text, native_attr, True
-    except Exception:  # noqa: BLE001 — optional extension may be absent
+    except Exception:
         return _py_escape_text, _py_escape_attr, False
 
 

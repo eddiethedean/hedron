@@ -6,9 +6,9 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · v0.25.0</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · v0.25.1</div>
 
-# Build dashboards and admin UIs in typed Python.<br><span class="hedron-gradient-text">HTMX fragments, no Node.</span>
+# Build interactive web UIs without leaving Python.<br><span class="hedron-gradient-text">Typed components. FastAPI underneath.</span>
 
 Routes return components; HTMX updates the page without a Node frontend or full-script
 rerun — unlike Streamlit’s script-rerun model.
@@ -85,7 +85,7 @@ rerun dashboards.
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron **0.25.0** is published (Beta packages — pin `hedron>=0.25.0,<0.26`).
+Hedron **0.25.x** is published (last `v0.25.1`) (Beta packages — pin `hedron>=0.25.0,<0.26`).
 Most APIs are compatibility level `beta`; see [What’s ready](guides/whats-ready.md) for
 Supported vs Experimental. Also: [Why Hedron](guides/why-hedron.md) ·
 [Evaluate Hedron](guides/evaluate.md).

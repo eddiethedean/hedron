@@ -14,7 +14,7 @@ status: implemented
 **Status:** Adapters shipped (`hedron-flask`, `hedron-django`). Capability readiness:
 **Supported** for Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
 DataSource. Package maturity remains **Beta** on PyPI — pin versions.
-Portable contracts live in `hedron-core`. Living train: **0.25.0** (**Published**).
+Portable contracts live in `hedron-core`. Living train: **0.25.x** (last published **v0.25.1**).
 
 Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapters). Quickstarts:
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).
@@ -226,3 +226,12 @@ permission/retention policy) — see [What’s ready](../guides/whats-ready.md).
 
 Machine-readable records: `hedron_core.adapter.capability_matrix()` /
 [COMPATIBILITY](../COMPATIBILITY.md) / [acceptance/ADAPTERS](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/ADAPTERS.md).
+
+
+## ASGI prepare (`respond_async`)
+
+Sync `respond()` / `_maybe_prepare` **fail closed** when an event loop is already running —
+unprepared trees are not rendered silently. On Django ASGI (and Flask async callers), use
+`await HedronDjango.respond_async(...)` / `await HedronFlask.respond_async(...)` so
+`prepare_tree` is awaited before render. Direct `component_response` callers under a running
+loop must await `prepare_tree` themselves and pass `skip_prepare=True`.

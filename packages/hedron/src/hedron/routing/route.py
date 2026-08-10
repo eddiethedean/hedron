@@ -33,7 +33,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
 
-__all__ = ["HedronRoute"]
+__all__ = ["HedronRoute", "HedronEndpointResult"]
 
 
 @runtime_checkable
@@ -153,6 +153,7 @@ class HedronRoute(APIRoute):
                 policy=policy,
                 authenticated=authenticated,
                 fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
             )
         if isinstance(result, HTML):
             _authorize_component_fragment(
@@ -211,6 +212,7 @@ class HedronRoute(APIRoute):
         policy: SecurityPolicy,
         authenticated: bool,
         fragment_regions: tuple[FragmentRegion, ...] = (),
+        allow_undeclared_targets: bool = False,
     ) -> StarletteResponse:
         """Deprecated private alias — prefer :func:`hedron.responses.render_interaction`."""
         return await render_interaction(
@@ -221,6 +223,7 @@ class HedronRoute(APIRoute):
             fragment_regions=fragment_regions,
             mode=mode,
             kind=kind,
+            allow_undeclared_targets=allow_undeclared_targets,
         )
 
 

@@ -6,7 +6,7 @@ import asyncio
 from collections.abc import Awaitable, Callable, Coroutine
 from typing import Any, TypeVar
 
-__all__ = ["run_coro", "running_loop"]
+__all__ = ["run_coro", "run_prepare", "running_loop"]
 
 T = TypeVar("T")
 
@@ -39,7 +39,14 @@ def run_coro(awaitable: Awaitable[T] | Coroutine[Any, Any, T]) -> T:
 
 
 def run_prepare(factory: Callable[[], Coroutine[Any, Any, Any]]) -> None:
-    """Create and run a prepare coroutine only when no loop is running."""
+    """Create and run a prepare coroutine only when no loop is running.
+
+    When a loop is already running, refuse silently-skipping prepare (fail closed)
+    so ASGI callers must ``await prepare_tree(...)`` explicitly.
+    """
     if running_loop():
-        return
+        raise RuntimeError(
+            "run_prepare() cannot be used while an event loop is already running; "
+            "await prepare_tree(...) from the ASGI path instead."
+        )
     asyncio.run(factory())

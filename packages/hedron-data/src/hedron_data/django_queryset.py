@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
-from typing import cast
+from collections.abc import Callable, Iterable, Sequence
+from typing import Protocol, cast
 
 from hedron_core.typing_aliases import JsonValue
 from hedron_data.sources import (
@@ -35,6 +35,22 @@ class QueryDiagnostics:
         self.query_count += n
         if self.query_count > self.budget:
             raise QueryBudgetExceeded(f"Query budget exceeded: {self.query_count} > {self.budget}")
+
+
+class _DjangoQuery(Protocol):
+    order_by: object
+
+
+class _DjangoQuerySet(Protocol):
+    query: _DjangoQuery
+
+    def filter(self, *args: object, **kwargs: object) -> _DjangoQuerySet: ...
+
+    def order_by(self, *fields: str) -> _DjangoQuerySet: ...
+
+    def count(self) -> int: ...
+
+    def __getitem__(self, item: slice) -> Iterable[object]: ...
 
 
 class DjangoQuerySetDataSource:
@@ -69,7 +85,8 @@ class DjangoQuerySetDataSource:
                 "DjangoQuerySetDataSource requires an application-supplied QuerySet; "
                 f"got {type_name!r}"
             )
-        self._base = base_queryset
+        # Runtime name check; Protocol describes the methods we call below.
+        self._base = cast(_DjangoQuerySet, base_queryset)
         self._key_field = key_field
         self._schema = tuple(schema)
         # Deny-by-default: omitted allowlists mean no client sort/filter refinements.
@@ -102,7 +119,7 @@ class DjangoQuerySetDataSource:
                 from django.forms.models import model_to_dict
 
                 data.update(cast(dict[str, JsonValue], model_to_dict(obj)))
-            except Exception:  # noqa: BLE001
+            except Exception:
                 meta = getattr(obj, "_meta", None)
                 fields = getattr(meta, "fields", ()) if meta is not None else ()
                 for field in fields:
@@ -137,32 +154,33 @@ class DjangoQuerySetDataSource:
         diag.record()  # base identity / clone
 
         for field_name, expected in q.filters.items():
-            qs = qs.filter(**{field_name: expected})  # type: ignore[attr-defined]
+            qs = qs.filter(**{field_name: expected})
             diag.record()
 
         if q.search and self._search_fields:
             from django.db.models import Q
 
-            clause: object = Q()
+            # Build OR of icontains lookups without relying on django-stubs Q| typing.
+            search_q = Q()
             for field_name in self._search_fields:
-                clause = clause | Q(**{f"{field_name}__icontains": q.search})  # type: ignore[operator]
-            qs = qs.filter(clause)  # type: ignore[attr-defined]
+                search_q |= Q(**{f"{field_name}__icontains": q.search})  # type: ignore[operator]
+            qs = qs.filter(search_q)
             diag.record()
 
         order_by: list[str] = []
         for field_name, direction in q.sort:
             order_by.append(field_name if direction == "asc" else f"-{field_name}")
         if order_by:
-            qs = qs.order_by(*order_by)  # type: ignore[attr-defined]
+            qs = qs.order_by(*order_by)
             diag.record()
-        elif not qs.query.order_by:  # type: ignore[attr-defined]
+        elif not qs.query.order_by:
             # Deterministic pagination requires stable ordering.
-            qs = qs.order_by(self._key_field if self._key_field != "pk" else "pk")  # type: ignore[attr-defined]
+            qs = qs.order_by(self._key_field if self._key_field != "pk" else "pk")
             diag.record()
 
-        total = qs.count()  # type: ignore[attr-defined]
+        total = qs.count()
         diag.record()
-        page_qs = qs[q.offset : q.offset + q.limit]  # type: ignore[index]
+        page_qs = qs[q.offset : q.offset + q.limit]
         diag.record()
         rows = [self._row_mapper(obj) for obj in page_qs]
         if q.projection:

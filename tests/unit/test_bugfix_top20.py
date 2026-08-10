@@ -86,9 +86,10 @@ def test_session_state_without_session_middleware() -> None:
     request = Request(scope)
     state = SessionState(request, "k", str)
     assert state.value is None
-    state.value = "ok"
-    assert state.value == "ok"
-    state.clear()
+    with pytest.raises(RuntimeError, match="SessionMiddleware"):
+        state.value = "ok"
+    with pytest.raises(RuntimeError, match="SessionMiddleware"):
+        state.clear()
 
 
 def test_strict_csrf_cookie_always_secure() -> None:
@@ -195,7 +196,7 @@ def test_line_chart_fallback_escapes_title(monkeypatch: pytest.MonkeyPatch) -> N
 
     real_import = builtins.__import__
 
-    def _no_matplotlib(name: str, *args: object, **kwargs: object):  # noqa: ANN001
+    def _no_matplotlib(name: str, *args: object, **kwargs: object):
         if name == "matplotlib" or name.startswith("matplotlib."):
             raise ImportError("forced")
         return real_import(name, *args, **kwargs)  # type: ignore[arg-type]

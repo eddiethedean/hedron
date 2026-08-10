@@ -184,7 +184,7 @@ async def prepare_csrf_from_request(request: Request, policy: SecurityPolicy) ->
         return
     try:
         form = await request.form()
-    except Exception:  # noqa: BLE001 — malformed body falls through to validate
+    except Exception:
         return
     field_val = form.get(form_field)
     if isinstance(field_val, str):

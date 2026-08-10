@@ -142,7 +142,8 @@ def retarget(
     """Return content with an approved ``HX-Retarget`` selector."""
     if isinstance(region, FragmentRegion):
         selector = region.selector
-        kwargs.setdefault("region_id", region.id)
+        # Prefer the CSS selector for HX-Target agreement when id differs from selector.
+        kwargs.setdefault("region_id", selector)
     else:
         selector = str(region)
     return InteractionResult(content=content, retarget=selector, **kwargs)

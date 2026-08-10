@@ -3,21 +3,26 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Mapping
-from dataclasses import dataclass, field
-from typing import Any, cast
+from dataclasses import dataclass, field, fields, replace
+from typing import Any, Literal, TypedDict, cast
 
 from hedron_core.diagnostics import error
 from hedron_core.identifiers import registry_resource_id
+
+# Closed set of registry route kinds used by adapters and Explorer.
+RouteKind = Literal["page", "component", "action"]
 
 __all__ = [
     "AddressableMeta",
     "AssetMeta",
     "BrowserModuleMeta",
     "ComponentMeta",
+    "RouteKind",
     "RouteMeta",
     "ThemeMeta",
     "Registry",
     "RegistryBuilder",
+    "RegistryBuilderSnapshot",
     "get_registry",
     "register_addressable",
     "register_asset",
@@ -53,6 +58,20 @@ class ComponentMeta:
     folder_path: str | None = None
 
 
+_COMPONENT_UPDATE_KEYS = frozenset(f.name for f in fields(ComponentMeta)) - {"logical_id"}
+
+
+class RegistryBuilderSnapshot(TypedDict):
+    """Typed rollback payload for ``snapshot_registry_builder`` / ``restore_registry_builder``."""
+
+    components: dict[str, ComponentMeta]
+    addressables: dict[str, AddressableMeta]
+    routes: dict[str, RouteMeta]
+    themes: dict[str, ThemeMeta]
+    assets: dict[str, AssetMeta]
+    browser_modules: dict[str, BrowserModuleMeta]
+
+
 @dataclass(frozen=True, slots=True)
 class AddressableMeta:
     logical_id: str
@@ -64,7 +83,7 @@ class AddressableMeta:
     cache_private: bool
     tags: tuple[str, ...]
     docs: str | None
-    factory: Callable[..., Any] | None = None
+    factory: Callable[..., object] | None = None
     route: str | None = None
 
 
@@ -72,7 +91,7 @@ class AddressableMeta:
 class RouteMeta:
     """Adapter-populated page/action/component route metadata."""
 
-    kind: str  # page | component | action
+    kind: RouteKind
     logical_id: str
     name: str
     path: str
@@ -82,7 +101,7 @@ class RouteMeta:
     module: str
     tags: tuple[str, ...] = ()
     docs: str | None = None
-    endpoint: Callable[..., Any] | None = None
+    endpoint: Callable[..., object] | None = None
     htmx_inference: Mapping[str, str] = field(default_factory=dict)
 
 
@@ -211,7 +230,7 @@ class RegistryBuilder:
                 )
         self._browser_modules[key] = meta
 
-    def update_component(self, logical_id: str, **updates: Any) -> None:
+    def update_component(self, logical_id: str, **updates: object) -> None:
         self._ensure_open()
         key = registry_resource_id("component", logical_id)
         existing = self._components.get(key)
@@ -222,25 +241,11 @@ class RegistryBuilder:
                 explanation=f"Component {logical_id!r} is not registered.",
                 remediation="Register the component before updating metadata.",
             )
-        data = {
-            "logical_id": existing.logical_id,
-            "name": existing.name,
-            "module": existing.module,
-            "distribution": existing.distribution,
-            "props_model": existing.props_model,
-            "slots": dict(existing.slots),
-            "examples": existing.examples,
-            "docs": existing.docs,
-            "route": existing.route,
-            "accessibility_notes": existing.accessibility_notes,
-            "styles_path": existing.styles_path,
-            "browser_modules": existing.browser_modules,
-            "asset_roots": existing.asset_roots,
-            "style_symbols": dict(existing.style_symbols),
-            "folder_path": existing.folder_path,
-        }
-        data.update(updates)
-        self._components[key] = ComponentMeta(**data)  # type: ignore[arg-type]
+        unknown = set(updates) - _COMPONENT_UPDATE_KEYS
+        if unknown:
+            raise TypeError(f"Unknown ComponentMeta fields: {sorted(unknown)}")
+        # kwargs mirror ComponentMeta fields; cast for dataclasses.replace typing.
+        self._components[key] = replace(existing, **cast(dict[str, Any], updates))
 
     def seal(self) -> Registry:
         self._sealed = True
@@ -284,7 +289,7 @@ class Registry:
     def addressables(self) -> Iterable[AddressableMeta]:
         return tuple(sorted(self._addressables.values(), key=lambda m: m.logical_id))
 
-    def get_route(self, kind: str, logical_id: str) -> RouteMeta | None:
+    def get_route(self, kind: RouteKind, logical_id: str) -> RouteMeta | None:
         return self._routes.get(registry_resource_id(kind, logical_id))
 
     def routes(self) -> Iterable[RouteMeta]:
@@ -351,7 +356,7 @@ def register_component(
     )
 
 
-def update_component_meta(logical_id: str, **updates: Any) -> None:
+def update_component_meta(logical_id: str, **updates: object) -> None:
     _builder.update_component(logical_id, **updates)
 
 
@@ -366,7 +371,7 @@ def register_addressable(
     cache_private: bool = True,
     tags: tuple[str, ...] = (),
     docs: str | None = None,
-    factory: Callable[..., Any] | None = None,
+    factory: Callable[..., object] | None = None,
     route: str | None = None,
 ) -> None:
     _builder.register_addressable(
@@ -388,7 +393,7 @@ def register_addressable(
 
 def register_route(
     *,
-    kind: str,
+    kind: RouteKind,
     logical_id: str,
     name: str,
     path: str,
@@ -398,7 +403,7 @@ def register_route(
     module: str,
     tags: tuple[str, ...] = (),
     docs: str | None = None,
-    endpoint: Callable[..., Any] | None = None,
+    endpoint: Callable[..., object] | None = None,
     htmx_inference: Mapping[str, str] | None = None,
 ) -> None:
     _builder.register_route(
@@ -513,19 +518,19 @@ def get_registry() -> Registry:
     )
 
 
-def snapshot_registry_builder() -> dict[str, dict[str, object]]:
+def snapshot_registry_builder() -> RegistryBuilderSnapshot:
     """Capture mutable builder maps for plugin-load rollback."""
     return {
-        "components": cast(dict[str, object], dict(_builder._components)),
-        "addressables": cast(dict[str, object], dict(_builder._addressables)),
-        "routes": cast(dict[str, object], dict(_builder._routes)),
-        "themes": cast(dict[str, object], dict(_builder._themes)),
-        "assets": cast(dict[str, object], dict(_builder._assets)),
-        "browser_modules": cast(dict[str, object], dict(_builder._browser_modules)),
+        "components": dict(_builder._components),
+        "addressables": dict(_builder._addressables),
+        "routes": dict(_builder._routes),
+        "themes": dict(_builder._themes),
+        "assets": dict(_builder._assets),
+        "browser_modules": dict(_builder._browser_modules),
     }
 
 
-def restore_registry_builder(snapshot: dict[str, dict[str, object]]) -> None:
+def restore_registry_builder(snapshot: RegistryBuilderSnapshot) -> None:
     """Restore builder maps from ``snapshot_registry_builder``."""
     if _builder._sealed:
         raise error(
@@ -534,14 +539,12 @@ def restore_registry_builder(snapshot: dict[str, dict[str, object]]) -> None:
             explanation="Cannot restore builder state on a sealed registry.",
             remediation="Roll back plugins before seal_registry().",
         )
-    _builder._components = cast(dict[str, ComponentMeta], dict(snapshot["components"]))
-    _builder._addressables = cast(dict[str, AddressableMeta], dict(snapshot["addressables"]))
-    _builder._routes = cast(dict[str, RouteMeta], dict(snapshot["routes"]))
-    _builder._themes = cast(dict[str, ThemeMeta], dict(snapshot["themes"]))
-    _builder._assets = cast(dict[str, AssetMeta], dict(snapshot["assets"]))
-    _builder._browser_modules = cast(
-        dict[str, BrowserModuleMeta], dict(snapshot["browser_modules"])
-    )
+    _builder._components = dict(snapshot["components"])
+    _builder._addressables = dict(snapshot["addressables"])
+    _builder._routes = dict(snapshot["routes"])
+    _builder._themes = dict(snapshot["themes"])
+    _builder._assets = dict(snapshot["assets"])
+    _builder._browser_modules = dict(snapshot["browser_modules"])
 
 
 def reset_registry_for_tests() -> None:
@@ -551,7 +554,7 @@ def reset_registry_for_tests() -> None:
     _active = None
 
 
-def component_meta_from_class(cls: type[Any]) -> ComponentMeta:
+def component_meta_from_class(cls: type[object]) -> ComponentMeta:
     logical_id = (
         f"{getattr(cls, 'distribution', 'hedron-core')}:"
         f"{cls.__module__}.{getattr(cls, 'logical_name', cls.__name__)}"

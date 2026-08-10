@@ -18,7 +18,7 @@ POLLING_FALLBACK_SUPPORTED = True
 
 
 def sse_response(
-    events: Iterable[SseEvent | str],
+    events: Iterable[SseEvent],
     *,
     status: int = 200,
 ) -> StreamingHttpResponse:
@@ -26,6 +26,8 @@ def sse_response(
 
     **Experimental** — prefer :func:`poll_status_response` in production. Import
     from ``hedron_django.experimental`` rather than the package root.
+    Only ``SseEvent`` values are accepted — raw strings are rejected to prevent
+    SSE framing injection.
     """
     warnings.warn(
         "hedron_django.live.sse_response is experimental; import from "
@@ -36,10 +38,12 @@ def sse_response(
 
     def generate() -> Iterator[bytes]:
         for item in events:
-            if isinstance(item, SseEvent):
-                yield encode_sse(item).encode("utf-8")
-            else:
-                yield str(item).encode("utf-8")
+            if not isinstance(item, SseEvent):
+                raise TypeError(
+                    "hedron_django.live.sse_response accepts only SseEvent values; "
+                    f"got {type(item)!r}"
+                )
+            yield encode_sse(item).encode("utf-8")
 
     response = StreamingHttpResponse(generate(), status=status, content_type="text/event-stream")
     response["Cache-Control"] = "no-store"

@@ -41,16 +41,24 @@ class SessionState(Generic[T]):
     def value(self, new_value: T) -> None:
         validated = self._adapter.validate_python(new_value)
         self._value = validated
-        if self._has_session(self._request):
-            if isinstance(validated, BaseModel):
-                self._request.session[self._key] = validated.model_dump(mode="json")
-            else:
-                self._request.session[self._key] = validated
+        if not self._has_session(self._request):
+            raise RuntimeError(
+                "SessionState write requires SessionMiddleware "
+                "(no 'session' in request scope); install SessionMiddleware "
+                "or avoid persisting session state on this request."
+            )
+        if isinstance(validated, BaseModel):
+            self._request.session[self._key] = validated.model_dump(mode="json")
+        else:
+            self._request.session[self._key] = validated
 
     def clear(self) -> None:
         self._value = self._default(self._adapter._type)  # type: ignore[attr-defined]
-        if self._has_session(self._request):
-            self._request.session.pop(self._key, None)
+        if not self._has_session(self._request):
+            raise RuntimeError(
+                "SessionState.clear requires SessionMiddleware (no 'session' in request scope)."
+            )
+        self._request.session.pop(self._key, None)
 
     @staticmethod
     def _default(annotation: type[Any]) -> Any:

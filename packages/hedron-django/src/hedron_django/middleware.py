@@ -72,6 +72,11 @@ class HedronSecurityHeadersMiddleware:
         if user is not None:
             authenticated = bool(getattr(user, "is_authenticated", False))
         for key, value in self.policy.response_headers(authenticated=authenticated).items():
+            existing = response.get(key)
             if (authenticated and key in {"Cache-Control", "Pragma"}) or (key not in response):
                 response[key] = value
+            elif key == "Cache-Control" and isinstance(existing, str):
+                lowered = existing.lower()
+                if "public" in lowered or "s-maxage" in lowered:
+                    response[key] = value
         return response

@@ -1,6 +1,6 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.25.0** (Published as `v0.25.0`). Other
+**Canonical maturity snapshot for Hedron 0.25.x** (last published `v0.25.1`). Other
 evaluator pages link here — do not treat parallel summaries as a second source of truth.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
@@ -13,6 +13,8 @@ Pin versions. Packages are Beta (no 1.0, no SLA). Prefer polling over SSE/WebSoc
 
 **Charts / sample kit:** install with floors
 `hedron[charts]>=0.25.1,<0.26` and `hedron-sample-kit>=0.1.6,<0.2`.
+Matplotlib/static charts are the **Supported** default path on the Alpha
+`hedron-charts` package; Plotly / Altair remain **Experimental**.
 **Experimental:** notebook, MCP, Gradio, live SSE/WS.
 
 Need procurement detail (API stability tiers, a11y sessions, evidence)? See
@@ -75,7 +77,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Beta static API on Alpha package** | Install `hedron[charts]>=0.25.1,<0.26`; Matplotlib/static charts are the conservative default, while Plotly / Altair remain experimental ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
+| Charts | **Supported** Matplotlib/static on Alpha package | Install `hedron[charts]>=0.25.1,<0.26`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 

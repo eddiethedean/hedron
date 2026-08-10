@@ -28,6 +28,7 @@ __all__ = [
     "StatusPolicy",
     "authorize_htmx_target",
     "authorize_oob_update",
+    "apply_allow_undeclared_targets",
     "default_interaction_policy",
     "form_sync_attrs",
     "interaction_headers",
@@ -225,6 +226,13 @@ class InteractionResult:
                     f"status_code must be int, got {type(self.status_code).__name__}"
                 ) from exc
             object.__setattr__(self, "status_code", code)
+        if self.oob:
+            bad = [item for item in self.oob if not isinstance(item, OobUpdate)]
+            if bad:
+                raise TypeError(
+                    "InteractionResult.oob items must be OobUpdate instances; "
+                    f"got {[type(item).__name__ for item in bad]}"
+                )
 
 
 def default_interaction_policy(**overrides: Any) -> InteractionPolicy:
@@ -233,6 +241,19 @@ def default_interaction_policy(**overrides: Any) -> InteractionPolicy:
         return base
     data = {**base.__dict__, **overrides}
     return InteractionPolicy(**data)
+
+
+def apply_allow_undeclared_targets(
+    result: InteractionResult,
+    allow: bool,
+) -> InteractionResult:
+    """Merge route-level ``allow_undeclared_targets`` into the result policy."""
+    if not allow:
+        return result
+    policy = result.policy or InteractionPolicy()
+    if policy.allow_undeclared_targets:
+        return result
+    return replace(result, policy=replace(policy, allow_undeclared_targets=True))
 
 
 def merge_route_regions(
@@ -611,9 +632,12 @@ def _bound_oob_element_id(
     *,
     regions: tuple[FragmentRegion, ...],
 ) -> str | None:
+    del regions  # regions authorize; id binding uses element_id / #select.
     if update.element_id is not None:
         return update.element_id
-    if regions and update.select and update.select.startswith("#"):
+    # Derive from #select even when regions are empty so reserved OOB sinks
+    # (toast/chrome) always get a forced hx-swap-oob wrapper.
+    if update.select and update.select.startswith("#"):
         return update.select[1:]
     return None
 

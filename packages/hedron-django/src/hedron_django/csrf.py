@@ -45,7 +45,7 @@ def csrf_header_name() -> str:
         from django.conf import settings
 
         raw = getattr(settings, "CSRF_HEADER_NAME", None)
-    except Exception:  # noqa: BLE001 — settings may be unconfigured in unit tests
+    except Exception:
         raw = None
     if raw == "HTTP_X_CSRF_TOKEN":
         return PORTABLE_CSRF_HEADER
@@ -112,7 +112,7 @@ def validate_csrf(request: HttpRequest) -> None:
         if portable:
             try:
                 mutable = request.POST.copy()
-            except Exception:  # noqa: BLE001
+            except Exception:
                 mutable = None
             if mutable is not None:
                 mutable["csrfmiddlewaretoken"] = portable

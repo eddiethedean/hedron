@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.25.2] — 2026-08-10
+
+### Fixed
+
+- Simulate CSRF fallback uses strategy cookie/header names from `resolve_csrf_strategy()`.
+- `/api/simulate` always requires CSRF validation (ignores `csrf_enabled=False`).
+
+### Changed
+
+- Coordinated Beta patch with `hedron` 0.25.2.
+
 ## [0.25.1] — 2026-08-09
 
 ### Changed

@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.component import Component, NodeLike
@@ -26,7 +26,7 @@ class ChoiceOption(Props):
 class ChoiceCardsProps(ElementProps):
     name: str
     options: list[ChoiceOption]
-    selected: list[str] = []
+    selected: list[str] = Field(default_factory=list)
     multiple: bool = False
     required: bool = False
 
@@ -99,13 +99,13 @@ class ChoiceCards(Component[ChoiceCardsProps]):
 class TreeNodeProps(Props):
     id: str
     label: str
-    children: list[TreeNodeProps] = []
+    children: list[TreeNodeProps] = Field(default_factory=list)
     selectable: bool = True
 
 
 class TreeViewProps(ElementProps):
     nodes: list[TreeNodeProps]
-    selected: list[str] = []
+    selected: list[str] = Field(default_factory=list)
     name: str = "tree"
 
 
@@ -243,7 +243,7 @@ class SplitPane(Component[SplitPaneProps]):
     props_type = SplitPaneProps
     logical_name = "SplitPane"
     distribution = "hedron-extras"
-    slots = {"primary": "optional", "secondary": "optional"}
+    slots: ClassVar[dict[str, str]] = {"primary": "optional", "secondary": "optional"}
 
     def __init__(
         self,

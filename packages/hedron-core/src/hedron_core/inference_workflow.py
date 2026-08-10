@@ -578,7 +578,7 @@ class InferenceWorkflow:
                             },
                         )
                     )
-                except Exception as exc:  # noqa: BLE001 — partial failure boundary
+                except Exception as exc:
                     failed = True
                     results.append(
                         WorkflowNodeResult(

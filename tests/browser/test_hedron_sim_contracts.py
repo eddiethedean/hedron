@@ -43,7 +43,7 @@ def _engine() -> str:
     return os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium"
 
 
-def _launch(pw: object):  # noqa: ANN001
+def _launch(pw: object):
     return getattr(pw, _engine()).launch(headless=True)
 
 
@@ -75,7 +75,7 @@ def _write_demo(tmp_path: Path, island_html: str, name: str = "demo.html") -> Pa
     return path
 
 
-def _root_locator(page, mode_demo: bool):  # noqa: ANN001
+def _root_locator(page, mode_demo: bool):
     if mode_demo:
         return page.locator("[data-hedron-sim-modes]").first
     return page.locator("[data-hedron-sim]").first
@@ -85,7 +85,7 @@ def _root_selector(mode_demo: bool) -> str:
     return "[data-hedron-sim-modes]" if mode_demo else "[data-hedron-sim]"
 
 
-def _assert_boot_invariants(root, contract_id: str) -> None:  # noqa: ANN001
+def _assert_boot_invariants(root, contract_id: str) -> None:
     for handle in root.locator("form").all():
         action = handle.get_attribute("action")
         assert action in {None, "#", ""}, f"{contract_id} form action={action!r}"
@@ -96,7 +96,7 @@ def _assert_boot_invariants(root, contract_id: str) -> None:  # noqa: ANN001
         )
 
 
-def _wait_for_trace(page, root_sel: str, needle: str, timeout_ms: int) -> None:  # noqa: ANN001
+def _wait_for_trace(page, root_sel: str, needle: str, timeout_ms: int) -> None:
     page.wait_for_function(
         """([sel, needle]) => {
           const root = document.querySelector(sel);
@@ -110,7 +110,7 @@ def _wait_for_trace(page, root_sel: str, needle: str, timeout_ms: int) -> None: 
 
 
 def _wait_for_contains(
-    page,  # noqa: ANN001
+    page,
     root_sel: str,
     target_sel: str | None,
     needles: tuple[str, ...],
@@ -130,7 +130,7 @@ def _wait_for_contains(
     )
 
 
-def _run_contract(page, contract) -> None:  # noqa: ANN001
+def _run_contract(page, contract) -> None:
     from demos.contracts import Step
 
     assert len(contract.steps) >= contract.min_steps, (
@@ -146,7 +146,7 @@ def _run_contract(page, contract) -> None:  # noqa: ANN001
 
     bad_requests: list[str] = []
 
-    def on_request(req) -> None:  # noqa: ANN001
+    def on_request(req) -> None:
         url = req.url
         if url.startswith("file:") or url.startswith("data:"):
             return

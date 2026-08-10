@@ -6,10 +6,12 @@ import json
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, cast
+from typing import TypeVar, cast
 
 from hedron_core.identifiers import content_digest
 from hedron_core.typing_aliases import AssetEntryDict, JsonObject, JsonValue
+
+T = TypeVar("T")
 
 __all__ = [
     "ASSET_MANIFEST_FORMAT",
@@ -73,7 +75,7 @@ def write_json_atomic(path: Path, value: JsonValue) -> str:
 @dataclass(frozen=True, slots=True)
 class AssetEntry:
     logical_id: str
-    kind: str  # css | js | module | media | font | other
+    kind: str  # css | js | module | media | font | other — open host vocabulary
     path: str
     digest: str
     content_type: str
@@ -252,10 +254,13 @@ class BuildManifest:
 
 
 def manifest_as_dict(obj: object) -> JsonObject:
-    if hasattr(obj, "to_dict"):
-        return cast(JsonObject, obj.to_dict())  # type: ignore[no-any-return]
-    return cast(JsonObject, asdict(obj))  # type: ignore[arg-type]
+    to_dict = getattr(obj, "to_dict", None)
+    if callable(to_dict):
+        # Host/dataclass to_dict may be untyped; JsonObject is the wire contract.
+        return cast(JsonObject, to_dict())
+    # Fallback for plain dataclasses without to_dict.
+    return cast(JsonObject, asdict(obj))  # type: ignore[arg-type]  # dataclass-only fallback
 
 
-def ensure_sequence(items: Sequence[Any]) -> tuple[Any, ...]:
+def ensure_sequence(items: Sequence[T]) -> tuple[T, ...]:
     return tuple(items)

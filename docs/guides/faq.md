@@ -8,7 +8,7 @@ pip install "hedron>=0.25.0,<0.26"
 uv add "hedron>=0.25.0,<0.26"
 ```
 
-That is the current published line (`v0.25.0`). Package maturity is **Beta** — see
+That is the current published line (`v0.25.1`). Package maturity is **Beta** — see
 [How to read](../getting-started/how-to-read.md). Pin with an upper bound:
 `hedron>=0.25.0,<0.26`. Using `>=0.24.0` alone (no upper bound) can resolve a future
 **0.25+** breaking train. See [What’s ready today](whats-ready.md) and the
@@ -231,7 +231,7 @@ See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/inst
 
 ## Where is the SBOM / evidence bundle?
 
-Prefer GitHub Release assets for the train tag (`v0.25.0`), or regenerate from the
+Prefer GitHub Release assets for the train tag (`v0.25.1`), or regenerate from the
 tagged checkout with
 `scripts/build_evidence_bundle.py`. Step-by-step:
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.

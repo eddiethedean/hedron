@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.25.2] — 2026-08-10
+
+### Fixed
+
+- Propagate `allow_undeclared_targets` for InteractionResult via `hedron_view` / `_convert`.
+- Await `prepare_tree` for InteractionResult content/OOB on ASGI; add `respond_async` / `skip_prepare`.
+- `_maybe_prepare` fails closed under a running loop.
+- Security middleware overrides anonymous `Cache-Control: public` / `s-maxage`.
+- Experimental SSE accepts only `SseEvent` (no raw string framing).
+
+### Changed
+
+- Coordinated Beta patch with `hedron` 0.25.2.
+
 ## [0.25.1] — 2026-08-09
 
 ### Changed
