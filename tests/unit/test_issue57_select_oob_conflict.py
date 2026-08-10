@@ -19,9 +19,7 @@ from hedron_core.interaction import (
 
 
 def test_parse_and_conflict_helper() -> None:
-    assert parse_select_oob_element_ids("#side-nav, #toast") == frozenset(
-        {"side-nav", "toast"}
-    )
+    assert parse_select_oob_element_ids("#side-nav, #toast") == frozenset({"side-nav", "toast"})
     oob = (
         OobUpdate(content="nav", element_id="side-nav", swap="innerHTML"),
         OobUpdate(content="x", element_id="other"),

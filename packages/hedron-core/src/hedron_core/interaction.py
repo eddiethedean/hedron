@@ -117,8 +117,7 @@ class OobUpdate:
     def __post_init__(self) -> None:
         if self.tag not in OOB_ENVELOPE_TAGS:
             raise ValueError(
-                f"Unsupported OobUpdate tag={self.tag!r}; "
-                f"allowlisted: {sorted(OOB_ENVELOPE_TAGS)}"
+                f"Unsupported OobUpdate tag={self.tag!r}; allowlisted: {sorted(OOB_ENVELOPE_TAGS)}"
             )
 
 
