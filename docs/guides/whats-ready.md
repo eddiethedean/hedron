@@ -74,7 +74,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Deferred for PyPI adopters on 0.25** | Repository source is Alpha; no published chart release accepts `hedron-core 0.25.x`. Matplotlib is the conservative in-tree default; Plotly / Altair remain experimental ([packaging limitation](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit)) |
+| Charts | **Beta static API on Alpha package** | Install `hedron[charts]>=0.25.1,<0.26`; Matplotlib/static charts are the conservative default, while Plotly / Altair remain experimental ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
@@ -146,12 +146,12 @@ guaranteed multi-worker live-transport proof.
 
 | Package | Role |
 |---|---|
-| `hedron[charts]` / `hedron-charts` | Source-only on 0.25; no compatible PyPI release. Matplotlib is the conservative in-tree default |
+| `hedron[charts]` / `hedron-charts` | Alpha package (`>=0.1.6,<0.2`); Matplotlib/static charts are the conservative default |
 | `hedron[native]` / `hedron-native` | Optional Rust HTML-escape accel; pure-Python fallback Supported |
 | `hedron[notebook]` / `hedron-notebook` | Localhost-oriented preview; not Supported production |
 | `hedron[mcp]` / `hedron-mcp` | Deny-by-default MCP projection |
 | `hedron[gradio]` / `hedron-gradio` | Gradio client interop; deny-by-default discover |
-| `hedron-sample-kit` | Source-only on 0.25; no compatible PyPI release |
+| `hedron-sample-kit` | Installable reference plugin (`>=0.1.6,<0.2`) |
 | `packages/hedron-runtime-*` | Experimental Java / Node conformance runtimes |
 
 ## Deferred (do not market as Supported)
@@ -213,10 +213,8 @@ Pin `hedron>=0.25.0,<0.26` for the current published train.
 Extras: `"hedron[data]>=0.25.0,<0.26"`, `"hedron[extras]>=0.25.0,<0.26"`,
 `"hedron[jinja]>=0.25.0,<0.26"`, `"hedron[dev]>=0.25.0,<0.26"`,
 `"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),
-`"hedron[gradio]>=0.1.0,<0.2"` (Alpha).
-
-Charts and sample kit are intentionally absent from this install list; see the
-[0.25 packaging limitation](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+`"hedron[gradio]>=0.1.0,<0.2"` (Alpha),
+`"hedron[charts]>=0.25.1,<0.26"`, and `"hedron-sample-kit>=0.1.6,<0.2"`.
 
 ## Role-specific wrappers
 

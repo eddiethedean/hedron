@@ -23,18 +23,16 @@ Full key table: [Configuration](../CONFIGURATION.md).
 
 ## Install a plugin distribution
 
-1. Add the reviewed package to your environment (same train pin as Hedron when possible).
-   The sample kit is **source-only on Hedron 0.25** — do not install it from PyPI:
+1. Add the reviewed package to your environment (same train pin as Hedron when possible):
 
    ```bash
    # Real third-party plugin (example shape — use the vendor's pin):
    # uv add "vendor-hedron-plugin>=1.0,<2"
 
-   # Study sample-kit from this monorepo instead of PyPI:
-   # uv sync   # from a hedron checkout (workspace includes hedron-sample-kit)
+   uv add "hedron-sample-kit>=0.1.6,<0.2"
    ```
 
-   Workspace details: [Plugin authoring](plugin-authoring.md#workspace-recipe-study-sample-kit-on-025).
+   Workspace details: [Plugin authoring](plugin-authoring.md#workspace-recipe-edit-sample-kit-in-the-monorepo).
 
 2. Enable it by **name** (the entry-point key, not the PyPI distribution name):
 
@@ -72,5 +70,4 @@ Checklist:
 
 [Plugin authoring](plugin-authoring.md) · [Plugins API](../api/PLUGINS.md) ·
 [`hedron-sample-kit`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
-is a source reference on the 0.25 train; see the
-[packaging limitation](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+is the installable reference shape on the 0.25 train.

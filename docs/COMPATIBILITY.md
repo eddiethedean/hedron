@@ -26,24 +26,18 @@ stay on the `0.25.x` train (Published as `0.25.0`; last published
 `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, and `hedron-mcp`
 version independently.
 
-### Current 0.25 packaging limitation: charts and sample kit
+### Charts and sample-kit compatibility floor
 
-!!! danger "Do not install these distributions from PyPI with Hedron 0.25"
+`hedron-charts>=0.1.6,<0.2` and `hedron-sample-kit>=0.1.6,<0.2` are compatible with
+`hedron-core>=0.25.0,<0.26`. The flagship `hedron[charts]>=0.25.1,<0.26` extra enforces
+that chart floor.
 
-    **Do not install `hedron[charts]`, `hedron-charts`, or `hedron-sample-kit` from
-    PyPI with Hedron 0.25.** The newest matching `0.1.x` releases on PyPI require
-    `hedron-core<0.20`; the registry-default `0.11.0` releases require
-    `hedron-core==0.11.0`. Neither line is compatible with `hedron-core 0.25.x`.
+!!! warning "Exclude older satellite wheels"
 
-    The repository contains 0.25-compatible source and tests, but a compatible wheel has
-    not been published. Treat charts and the sample kit as **source-only / Deferred for
-    adopters** until a new distribution version is published and this notice is removed.
-    Other Alpha packages listed above have compatible published `0.1.x` wheels.
-
-    **What happens if you install anyway:** resolvers typically pull
-    `hedron-charts==0.1.x` with `hedron-core<0.20` (or the older `0.11.0` pin), then either
-    fail to satisfy `hedron-core==0.25.x` or downgrade the flagship stack. Prefer a clean
-    venv and omit charts until a compatible release is published.
+    Satellite versions through `0.1.5` require `hedron-core<0.20`; historical `0.11.0`
+    requires `hedron-core==0.11.0`. Do not loosen the lower bound below `0.1.6` in a
+    Hedron 0.25 environment. Use a clean virtual environment when replacing an older
+    chart or sample-kit installation.
 
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
 acceleration is present or absent (D-001 / D-048).

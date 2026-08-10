@@ -41,10 +41,9 @@ Requires Python 3.11–3.14.
 pip install "hedron[data,dev]>=0.25.0,<0.26"
 ```
 
-**Charts packaging notice:** the repository contains 0.25-compatible chart source, but
-the published `hedron-charts` releases require older `hedron-core` versions. Do not
-install the `charts` extra until a compatible chart distribution is published. See
-[Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#current-025-packaging-limitation-charts-and-sample-kit).
+Charts require the fixed satellite floor:
+`pip install "hedron[charts]>=0.25.1,<0.26"`. See
+[Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 
 ## Quick start
 

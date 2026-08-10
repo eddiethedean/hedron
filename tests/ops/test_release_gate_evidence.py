@@ -62,3 +62,14 @@ def test_release_gate_0_23_manifest_passes_strict_checks() -> None:
     assert verified
     assert all(str(r.get("ci_job", "")).strip() for r in verified)
     assert any(gate._is_executable_ssot_command(str(r["command"])) for r in verified)
+
+
+def test_current_patch_package_metadata_passes() -> None:
+    assert gate.check_packages("0.25.1") == []
+
+
+def test_github_release_requires_successful_pypi_publish() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    assert "steps.pypi.outcome == 'success'" in workflow
+    assert "steps.pypi.outputs.publish_failed != '1'" in workflow
+    assert "steps.pypi.outcome == 'failure' || steps.pypi.outputs.publish_failed == '1'" in workflow

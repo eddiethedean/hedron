@@ -107,10 +107,9 @@ Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Op
 (data, jinja, conformance, extras, native accel, notebook, MCP, Gradio):
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
-> **Packaging notice:** the 0.25-compatible `hedron-charts` and `hedron-sample-kit`
-> sources are currently repository-only; their published PyPI releases require older
-> `hedron-core` versions. Do not install `hedron[charts]` or `hedron-sample-kit` with
-> Hedron 0.25. See [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#current-025-packaging-limitation-charts-and-sample-kit).
+Charts require the fixed satellite floor: `pip install "hedron[charts]>=0.25.1,<0.26"`.
+Plugin authors can install `hedron-sample-kit>=0.1.6,<0.2`. Older satellite releases target
+older cores; see [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 
 Prefer not to install locally? Use a **full cloud environment** (not a hosted playground) —
 [Codespaces / Dev Container](https://hedron.readthedocs.io/en/latest/examples/try-it/)

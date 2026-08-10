@@ -167,13 +167,14 @@ Install Hedron with the data extra, plus an ASGI server:
 uv add "hedron[data]>=0.25.0,<0.26" "uvicorn[standard]"
 ```
 
-!!! danger "Do not install charts from PyPI with Hedron 0.25"
+To include charts, install the compatible satellite through the flagship extra:
 
-    Do not install the charts extra or `hedron-charts` from PyPI — those releases require
-    older `hedron-core` and will break a 0.25 environment. See
-    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
-    For a PyPI-installable dashboard, use metrics and tables (below). Workspace clones can
-    follow the [workspace-only charts](#workspace-only-charts-on-025) section.
+```bash
+uv add "hedron[charts]>=0.25.1,<0.26"
+```
+
+This enforces `hedron-charts>=0.1.6,<0.2`; see
+[Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 Create `app.py`:
 
@@ -311,13 +312,11 @@ query parameters, and the route returns a new component tree. A production appli
 should load `session_secret` from its environment rather than using the development
 literal shown above.
 
-### Workspace-only charts on 0.25
+### Add a chart
 
-When you develop against this monorepo (or an editable checkout that includes
-`packages/hedron-charts`), you can restore a `LineChart` in place of the month `Table`:
+After installing the charts extra, you can replace the month `Table` with `LineChart`:
 
 ```python
-# workspace-only — requires packages/hedron-charts on PYTHONPATH / uv workspace
 from hedron_charts import LineChart
 
 LineChart(
@@ -329,8 +328,7 @@ LineChart(
 )
 ```
 
-Do not `pip install hedron-charts` from PyPI into a 0.25 app. Details:
-[Charts and HTMX](charts-and-htmx.md).
+Details: [Charts and HTMX](charts-and-htmx.md).
 
 ## How the concepts map
 
@@ -342,8 +340,8 @@ Do not `pip install hedron-charts` from PyPI into a 0.25 app. Details:
 | `st.columns` | `Grid` or `Inline` | Compose child components explicitly. |
 | `st.metric` | `Metric` | Pass the label, formatted value, and optional delta. |
 | `st.dataframe` | `DataTable` | Declare a `Model` when stable column types matter. Use `DataEditor` for edits. |
-| `st.line_chart` | `Table` / `Metric` on PyPI 0.25; `LineChart` workspace-only | Source-only charts until a compatible wheel is published; provide a title and accessible description when charts return. |
-| `st.plotly_chart` | `PlotlyChart` (workspace-only on 0.25) | Hedron compiles the supported figure through its chart adapter. |
+| `st.line_chart` | `LineChart` (`hedron[charts]>=0.25.1,<0.26`) | Provide a title and accessible description; a table fallback remains useful. |
+| `st.plotly_chart` | `PlotlyChart` (experimental) | Hedron compiles the figure through its bounded chart adapter. |
 | `st.cache_data` | `cache_data` | Choose a TTL and a cache scope; include user or tenant dimensions for private data. |
 | `st.session_state` | Query parameters, your database, or `SessionState` | Prefer addressable URL state for filters and durable application storage for domain data. |
 | `st.file_uploader` | `FileUpload` | Process uploads in an explicit server action with size and content policies. |
@@ -377,7 +375,7 @@ without a browser. Continue with [Test your UI](testing.md), [Security](security
 | Query returns 422 | FastAPI rejected an invalid typed value or bound | Correct the form value and render friendly validation guidance for the workflow |
 | `DataTable` cannot be imported | The data extra is not installed | Install `hedron[data]` at the same 0.25 version as `hedron` |
 | A private cache never hits | Sensitive scopes require concrete `vary_on` dimensions | Pass the user/tenant/session key as a function argument and include its name in `vary_on` |
-| Chart installation resolves an older core | The published 0.25-compatible chart wheel does not exist | Remove the chart extra; use metrics/tables or the documented workspace-only source path |
+| Chart installation resolves an older core | The lower bound allowed a satellite before `0.1.6` | Install `hedron[charts]>=0.25.1,<0.26` in a clean environment |
 | State disappears after deployment/restart | Process/session memory was treated as durable storage | Move durable state to a database or shared service and review the multi-worker model |
 
 ## Migration checkpoint

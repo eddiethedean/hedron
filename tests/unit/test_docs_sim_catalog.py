@@ -12,13 +12,14 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs"
+if str(DOCS) not in sys.path:
+    # Parametrization imports demos.contracts during collection, before fixtures run.
+    sys.path.insert(0, str(DOCS))
 
 
 @pytest.fixture(scope="module", autouse=True)
 def _docs_on_path() -> None:
-    path = str(DOCS)
-    if path not in sys.path:
-        sys.path.insert(0, path)
+    """Document the collection-time docs import-path dependency."""
 
 
 def _route_payload(html_out: str) -> dict:

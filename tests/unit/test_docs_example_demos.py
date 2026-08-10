@@ -23,9 +23,9 @@ _EXAMPLE_EXPECTED_SIMS: dict[str, frozenset[str]] = {
     "examples/jobs-poll.md": frozenset({"jobs-poll"}),
     "examples/single-file.md": frozenset({"hello-refresh"}),
     "examples/crud-tutorial.md": frozenset({"minimal-form", "mutations-htmx", "crud-notes"}),
-    "examples/reference-app.md": frozenset(
-        {"auth-login", "csrf-guard", "crud-notes", "charts-htmx"}
-    ),
+    # The reference app uses HTTP Basic. Session-form auth is demonstrated only by
+    # examples/session-auth, so embedding auth-login here would teach the wrong credentials.
+    "examples/reference-app.md": frozenset({"csrf-guard", "crud-notes", "charts-htmx"}),
 }
 
 
@@ -177,8 +177,8 @@ def test_tutorial_pages_have_distinct_multi_sim_sections() -> None:
     assert crud.count("<!-- hedron-sim:crud-notes -->") == 1
 
     ref = (DOCS / "examples/reference-app.md").read_text(encoding="utf-8")
-    assert ref.count('=== "Demo"') >= 4
-    for sim_id in ("auth-login", "csrf-guard", "crud-notes", "charts-htmx"):
+    assert ref.count('=== "Demo"') >= 3
+    for sim_id in ("csrf-guard", "crud-notes", "charts-htmx"):
         assert ref.count(f"<!-- hedron-sim:{sim_id} -->") == 1
 
 

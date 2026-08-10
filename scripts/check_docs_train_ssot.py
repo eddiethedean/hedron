@@ -357,7 +357,6 @@ STALE = [
     re.compile(r"train tag \(`v0\.22\.0`\)", re.I),
     re.compile(r"available on the 0\.22 train", re.I),
     re.compile(r"Published on the \*\*0\.22\*\* train", re.I),
-
     # Stale "current train is still 0.23" claims after v0.24.0 docs flip.
     # Keep patterns specific to *current* claims so historical whats-new-0.23 stays valid.
     re.compile(r"last published PyPI/git = `v0\.23\.0`", re.I),
@@ -440,7 +439,6 @@ STALE = [
     re.compile(r"current train 0\.23\)", re.I),
     re.compile(r"hedron_version=\"\>=0\.23,<0\.24\"", re.I),
     re.compile(r"check_release_gate\.py 0\.23\.0[^\n]*release-gate-0\.24", re.I),
-
     # Stale "current train is still 0.24" claims after v0.25.0 docs flip.
     # Keep patterns specific to *current* claims so historical whats-new-0.24 stays valid.
     re.compile(r"last published PyPI/git = `v0\.24\.0`", re.I),
@@ -541,17 +539,29 @@ UNBOUNDED_ALPHA = re.compile(
     r"hedron(?:-charts)?\[(?:charts|notebook|mcp|gradio|native|matplotlib|plotly|altair)\]"
     r">=0\.1\.0(?!,?\s*<0\.2)"
 )
-UNBOUNDED_CHARTS_PKG = re.compile(r"hedron-charts(?:\[[^\]]+\])?>=0\.1\.0(?!,?\s*<0\.2)")
+UNBOUNDED_CHARTS_PKG = re.compile(r"hedron-charts(?:\[[^\]]+\])?>=0\.1\.\d+(?!,?\s*<0\.2)")
 # pip install "hedron-charts[…]" without a version pin (table mentions are allowed).
 UNBOUNDED_CHARTS_INSTALL = re.compile(
     r"""pip\s+install\s+["']hedron-charts(?:\[[^\]]+\])?["'](?!\s*>=)"""
 )
 
-# No chart/sample-kit distribution currently accepts hedron-core 0.25.x. Keep broken
-# adopter commands out of public docs until compatible releases are published.
+# Hedron 0.25 requires the fixed satellite floors. Older matching Alpha releases target
+# older core trains, so an unbounded install can still select an incompatible artifact.
 BROKEN_025_ALPHA_INSTALL = re.compile(
     r"(?:pip\s+install|uv\s+add)[^\n]*(?:hedron\[charts\]|hedron-charts|hedron-sample-kit)"
 )
+
+
+def _has_compatible_satellite_floor(line: str) -> bool:
+    checks = []
+    if "hedron[charts]" in line:
+        checks.append("hedron[charts]>=0.25.1,<0.26" in line)
+    if "hedron-charts" in line:
+        checks.append("hedron-charts" in line and ">=0.1.6,<0.2" in line)
+    if "hedron-sample-kit" in line:
+        checks.append("hedron-sample-kit>=0.1.6,<0.2" in line)
+    return bool(checks) and all(checks)
+
 
 PIN_SCAN_ROOTS = [
     ROOT / "docs" / "getting-started",
@@ -625,20 +635,29 @@ def _check_unbounded_pins() -> list[str]:
                     f"{path.relative_to(ROOT)}:{lineno}: bare hedron[extra] "
                     f"(add >=…,<… pin): {line.strip()[:120]}"
                 )
-            if UNBOUNDED_ALPHA.search(line) or UNBOUNDED_CHARTS_PKG.search(line):
+            if UNBOUNDED_ALPHA.search(line):
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: unbounded Alpha pin "
                     f"(use >=0.1.0,<0.2): {line.strip()[:120]}"
                 )
+            if UNBOUNDED_CHARTS_PKG.search(line):
+                failures.append(
+                    f"{path.relative_to(ROOT)}:{lineno}: unbounded hedron-charts pin "
+                    f"(use >=0.1.6,<0.2): {line.strip()[:120]}"
+                )
             if UNBOUNDED_CHARTS_INSTALL.search(line) and not forbid:
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: unbounded hedron-charts install "
-                    f"(use >=0.1.0,<0.2): {line.strip()[:120]}"
+                    f"(use >=0.1.6,<0.2): {line.strip()[:120]}"
                 )
-            if BROKEN_025_ALPHA_INSTALL.search(line) and not forbid:
+            if (
+                BROKEN_025_ALPHA_INSTALL.search(line)
+                and not forbid
+                and not _has_compatible_satellite_floor(line)
+            ):
                 failures.append(
-                    f"{path.relative_to(ROOT)}:{lineno}: charts/sample-kit PyPI install is "
-                    f"incompatible with Hedron 0.25; link the compatibility notice instead: "
+                    f"{path.relative_to(ROOT)}:{lineno}: charts/sample-kit install lacks the "
+                    f"0.25-compatible floor (charts >=0.1.6 / flagship >=0.25.1): "
                     f"{line.strip()[:120]}"
                 )
     return failures
@@ -663,7 +682,7 @@ def main() -> int:
         return 1
     print(
         "ok: adopter docs assert Published 0.25 (v0.25.0), "
-        "upper-bound pins, avoid broken chart/sample-kit installs, and avoid "
+        "upper-bound pins, enforce chart/sample-kit compatibility floors, and avoid "
         "Supported beta / SSOT / beachhead jargon"
     )
     return 0

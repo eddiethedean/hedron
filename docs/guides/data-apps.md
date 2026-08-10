@@ -241,10 +241,9 @@ For editable grids, supply `apply_changes` on `SQLAlchemyDataSource` (or an
 
 ## Charts
 
-Charts are **source-only on Hedron 0.25** — do not `pip install "hedron[charts]"` (it pulls
-an incompatible older `hedron-core`). For PyPI apps, use `Metric`, `Table`, and
-`DataTable`. Workspace clones: see [Charts and HTMX](charts-and-htmx.md) and
-[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+Install `hedron[charts]>=0.25.1,<0.26` for the compatible `0.1.6` chart satellite.
+See [Charts and HTMX](charts-and-htmx.md) and
+[Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## See also
 

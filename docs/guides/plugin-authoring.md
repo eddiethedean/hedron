@@ -5,14 +5,11 @@ panels through the portable plugin protocol. Study
 [`hedron-sample-kit`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
 alongside this guide.
 
-!!! danger "Sample kit is source-only on Hedron 0.25"
+Install `hedron-sample-kit>=0.1.6,<0.2` for the 0.25-compatible reference package.
+Versions through `0.1.5` target older cores; see
+[Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
-    Do not `pip install hedron-sample-kit` from PyPI into a 0.25 app (older `hedron-core`
-    pins). Use the workspace recipe below, or copy the package layout into your own
-    distribution. See
-    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
-
-### Workspace recipe (study sample-kit on 0.25)
+### Workspace recipe (edit sample-kit in the monorepo)
 
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
@@ -22,8 +19,7 @@ uv sync
 uv run python -c "import hedron_sample_kit; print(hedron_sample_kit.__file__)"
 ```
 
-Point your experiment app at the monorepo with `uv sync` (workspace members are editable).
-Do not resolve the sample kit from PyPI for 0.25.
+Point your experiment app at the monorepo with `uv sync` when you want editable source.
 
 ## 1. Package layout
 

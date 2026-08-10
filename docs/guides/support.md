@@ -25,7 +25,8 @@ issues for undisclosed security problems.
 Package maturity **Beta** means the public API is usable and tested, but breaking changes
 may still land on the `0.x` line under the [compatibility policy](../COMPATIBILITY.md).
 Pin versions in production, read [upgrade](upgrade.md) notes before bumping trains, and
-treat Alpha packages as more volatile. Charts and sample kit are source-only on 0.25
+Treat Alpha packages as more volatile. Charts and sample kit require the compatible
+`>=0.1.6,<0.2` satellite floor on 0.25
 until compatible distributions are published — see [Compatibility](../COMPATIBILITY.md).
 
 **Support window:** security fixes target the current published train (`0.25.x`). There is

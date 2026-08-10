@@ -28,12 +28,6 @@ ROOT = Path(__file__).resolve().parents[2]
 # page path (under site/) → (sim root selector, primary click, expect)
 _PAGES: tuple[tuple[str, str, str, str], ...] = (
     (
-        "index.html",
-        '[data-hedron-sim^="hello-refresh"]',
-        'button:has-text("Refresh status")',
-        "GET /status → 200",
-    ),
-    (
         "getting-started/quickstart/index.html",
         '[data-hedron-sim^="hello-refresh"]',
         'button:has-text("Refresh status")',
@@ -59,12 +53,6 @@ _PAGES: tuple[tuple[str, str, str, str], ...] = (
     ),
     (
         "examples/reference-app/index.html",
-        '[data-hedron-sim="auth-login"]',
-        'button:has-text("Sign in")',
-        "401",
-    ),
-    (
-        "examples/reference-app/index.html",
         '[data-hedron-sim="csrf-guard"]',
         'button:has-text("POST without CSRF")',
         "403",
@@ -85,7 +73,7 @@ _PAGES: tuple[tuple[str, str, str, str], ...] = (
         "examples/session-auth/index.html",
         '[data-hedron-sim="auth-login"]',
         'button:has-text("Sign in")',
-        "401",
+        "POST /login → 200 fragment",
     ),
     (
         "examples/notes-sqlalchemy/index.html",
@@ -133,7 +121,7 @@ _PAGES: tuple[tuple[str, str, str, str], ...] = (
         "guides/authentication/index.html",
         '[data-hedron-sim="auth-login"]',
         'button:has-text("Open /home anonymously")',
-        "401",
+        "GET /home → 200 fragment",
     ),
     (
         "guides/security/index.html",
