@@ -13,6 +13,9 @@ details remain in the [package changelogs](changelog.md).
 
 Correctness and adoption-readiness patch for the 0.26 train.
 
+- Fixes Explorer navigation, component-detail, and static-asset links when Hedron is
+  mounted under a subpath (for example reverse-proxy `/app`), and requires
+  `hedron-explorer>=0.26.1` from the `dev` extra.
 - Fixes `hedron new`, `hedron new --flask`, and `hedron new --django` to generate the
   current `>=0.26.0,<0.27` dependency range rather than the obsolete 0.25 range.
 - Repairs optional-integration install commands and package-index links.

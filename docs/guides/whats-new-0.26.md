@@ -10,7 +10,8 @@ SSE, WebSocket, streaming, and preload stay experimental.
 
 ## 0.26.1 patch
 
-The 0.26.1 patch corrects generated-project pins, optional install guidance, and
+The 0.26.1 patch fixes Explorer links under a reverse-proxy mount path, corrects
+generated-project pins and optional install guidance, and strengthens
 release/documentation verification. It adds tested OIDC and model-demo workflows,
 checksummed release assets, and an exact-PyPI scaffold smoke before a GitHub Release is
 created. It does not remove a Supported API. See the [release notes](release-notes.md)
