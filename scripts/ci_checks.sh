@@ -75,7 +75,8 @@ parse_args() {
 # --- suites (edit checks here) -------------------------------------------------
 
 cmd_test() {
-  run uv run --python "$PYTHON" pytest -q
+  # Treat unknown markers and invalid pytest configuration as CI failures.
+  run uv run --python "$PYTHON" pytest -q --strict-config --strict-markers
 }
 
 cmd_quality() {
