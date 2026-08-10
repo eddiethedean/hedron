@@ -120,7 +120,7 @@ def run_kit(
                 )
             else:
                 detail = ""
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             passed = False
             detail = (
                 f"fixture={fixture.id} contract={fixture.contract_version} "

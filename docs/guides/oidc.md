@@ -7,7 +7,7 @@
     configuration, token exchange, user store, and authorization. Prefer the
     [session-auth recipe](../examples/session-auth.md) for first-hour auth.
 
-Pin: `pip install "hedron[auth]>=0.25.0,<0.26"`.
+Pin: `pip install "hedron[auth]>=0.26.0,<0.27"`.
 
 ## Wiring outline
 

@@ -8,16 +8,16 @@ Living train for public installs. Maintainer cut process:
 
 | Item | Value |
 |---|---|
-| Version | **v0.25.2** (Published) |
-| Pin | `hedron>=0.25.0,<0.26` |
+| Version | **v0.26.0** (Published) |
+| Pin | `hedron>=0.26.0,<0.27` |
 | Package maturity | Beta (flagship + adapters) |
 | GitHub Release | [github.com/eddiethedean/hedron/releases](https://github.com/eddiethedean/hedron/releases) |
 | Supply-chain | Prefer Release assets for SBOM / evidence bundle when attached; regenerate with repo scripts if missing |
 
 ```bash
-pip install -U "hedron>=0.25.0,<0.26"
+pip install -U "hedron>=0.26.0,<0.27"
 # or
-uv add "hedron>=0.25.0,<0.26"
+uv add "hedron>=0.26.0,<0.27"
 ```
 
 ## What to read next

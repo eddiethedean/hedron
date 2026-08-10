@@ -216,10 +216,10 @@ class GradioClientAdapter:
                 except TypeError:
                     try:
                         info = candidate()
-                    except Exception as exc:
+                    except Exception as exc:  # noqa: BLE001
                         _logger.debug("Gradio endpoint probe %s() failed: %s", attr, exc)
                         continue
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001
                     _logger.debug("Gradio endpoint probe %s failed: %s", attr, exc)
                     continue
                 break

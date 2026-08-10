@@ -281,7 +281,7 @@ async def _prepare_endpoint_value(value: NodeLike, *, request: Request) -> None:
                     disconnect.set()
                     return
                 await asyncio.sleep(0.05)
-        except Exception:
+        except Exception:  # noqa: BLE001
             return
 
     watcher = asyncio.create_task(_watch_disconnect())

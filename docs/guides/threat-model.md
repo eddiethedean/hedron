@@ -1,7 +1,7 @@
 # Threat model
 
 **Status:** Maintained for the **0.25** train (**Published**; last published
-PyPI/git = `v0.25.2`; baseline established in 0.11; refreshed for 0.15–0.25 surfaces)  
+PyPI/git = `v0.26.0`; baseline established in 0.11; refreshed for 0.15–0.25 surfaces)  
 
 **Owner:** hedron  
 **Evidence:** security acceptance on the current train; live-transport caveats on

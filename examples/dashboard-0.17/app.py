@@ -65,7 +65,7 @@ def apply_filters() -> InteractionResult:
             _STATE,
             PropertyPatch(target_id="dashboard", path="filter", op="assign", value="active"),
         )
-    except Exception:
+    except Exception:  # noqa: BLE001
         return swap(MainPanel(Text("Full fragment fallback"), id="main-panel"), policy=POLICY)
     dash = _STATE["dashboard"]
     assert isinstance(dash, dict)

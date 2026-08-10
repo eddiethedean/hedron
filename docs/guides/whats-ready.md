@@ -1,18 +1,18 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.25.x** (last published `v0.25.2`). Other
+**Canonical maturity snapshot for Hedron 0.26.x** (last published `v0.26.0`). Other
 evaluator pages link here — do not treat parallel summaries as a second source of truth.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-For a pinned internal admin/CRUD app on 0.25.x (`hedron>=0.25.0,<0.26`), you can use:
+For a pinned internal admin/CRUD app on 0.26.x (`hedron>=0.26.0,<0.27`), you can use:
 typed pages, HTMX fragments, CSRF (`standard`/`strict`), Flask/Django adapters,
 and polling for job status.
 
 Pin versions. Packages are Beta (no 1.0, no SLA). Prefer polling over SSE/WebSocket.
 
 **Charts / sample kit:** install with floors
-`hedron[charts]>=0.25.1,<0.26` and `hedron-sample-kit>=0.1.6,<0.2`.
+`hedron[charts]>=0.26.0,<0.27` and `hedron-sample-kit>=0.1.6,<0.2`.
 Matplotlib/static charts are the **Supported** default path on the Alpha
 `hedron-charts` package; Plotly / Altair remain **Experimental**.
 **Experimental:** notebook, MCP, Gradio, live SSE/WS.
@@ -77,13 +77,13 @@ sessions are not Supported yet** — do not market human AT as done.
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Supported** Matplotlib/static on Alpha package | Install `hedron[charts]>=0.25.1,<0.26`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
+| Charts | **Supported** Matplotlib/static on Alpha package | Install `hedron[charts]>=0.26.0,<0.27`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `hedron>=0.25.0,<0.26`. The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.26.0,<0.27`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
@@ -197,7 +197,7 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.25.0,<0.26" hedron new my-app
+    uvx --from "hedron>=0.26.0,<0.27" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -205,19 +205,19 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "pip"
 
     ```bash
-    pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
+    pip install "hedron>=0.26.0,<0.27" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.25.0,<0.26` for the current published train.
+Pin `hedron>=0.26.0,<0.27` for the current published train.
 
-Extras: `"hedron[data]>=0.25.0,<0.26"`, `"hedron[extras]>=0.25.0,<0.26"`,
-`"hedron[jinja]>=0.25.0,<0.26"`, `"hedron[dev]>=0.25.0,<0.26"`,
+Extras: `"hedron[data]>=0.26.0,<0.27"`, `"hedron[extras]>=0.26.0,<0.27"`,
+`"hedron[jinja]>=0.26.0,<0.27"`, `"hedron[dev]>=0.26.0,<0.27"`,
 `"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),
 `"hedron[gradio]>=0.1.0,<0.2"` (Alpha),
-`"hedron[charts]>=0.25.1,<0.26"`, and `"hedron-sample-kit>=0.1.6,<0.2"`.
+`"hedron[charts]>=0.26.0,<0.27"`, and `"hedron-sample-kit>=0.1.6,<0.2"`.
 
 ## Role-specific wrappers
 

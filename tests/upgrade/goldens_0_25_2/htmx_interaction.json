@@ -1,0 +1,16 @@
+{
+  "baseline": "v0.25.2",
+  "interaction_result_keys": [
+    "body",
+    "status_code",
+    "headers"
+  ],
+  "polling_only": true,
+  "supported_headers": [
+    "HX-Retarget",
+    "HX-Reswap",
+    "HX-Push-Url",
+    "HX-Redirect",
+    "HX-Trigger"
+  ]
+}

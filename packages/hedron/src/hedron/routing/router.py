@@ -102,7 +102,7 @@ def _wrap_endpoint(
     # Resolve annotations in the original function's globals so Depends survives wrapping.
     try:
         hints = typing.get_type_hints(fn, include_extras=True)
-    except Exception:
+    except Exception:  # noqa: BLE001
         # Nested locals / unresolved forward refs — FastAPI still gets a usable signature.
         hints = {}
     sig = inspect.signature(fn)

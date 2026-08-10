@@ -1,0 +1,15 @@
+{
+  "baseline": "v0.25.2",
+  "forbidden_keys": [
+    "session_secret",
+    "password",
+    "token",
+    "cookie"
+  ],
+  "required_keys": [
+    "package",
+    "version",
+    "security_profile",
+    "explorer_mode"
+  ]
+}

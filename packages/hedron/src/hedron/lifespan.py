@@ -104,7 +104,7 @@ def compose_lifespan(
                 except FileNotFoundError:
                     # Race: manifest disappeared between exists check and load.
                     pass
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001
                     import logging
 
                     logging.getLogger("hedron.lifespan").warning(

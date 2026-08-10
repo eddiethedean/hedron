@@ -126,7 +126,7 @@ def inspect_data(value: object) -> DataIntelligenceReport:
                     list[Mapping[str, object]],
                     normalize_rows(value, max_rows=_MAX_INSPECT_ROWS),
                 )
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001
                 notes.append(f"dataframe inspect skipped: {exc}")
         else:
             notes.append(f"unrecognized iterable {type_name}")
@@ -329,7 +329,7 @@ class Auto(Component[AutoProps]):
                     "geospatial_columns": list(report.geospatial_columns),
                     "notes": list(report.notes),
                 }
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001
                 inspection = {"error": str(exc)}
 
         candidates: list[str] = []
@@ -356,7 +356,7 @@ class Auto(Component[AutoProps]):
                 if spec.predicate is not None:
                     try:
                         matched = bool(spec.predicate(value))
-                    except Exception as exc:
+                    except Exception as exc:  # noqa: BLE001
                         rejected.append((spec.name, f"predicate error: {exc}"))
                         continue
                 elif spec.types:

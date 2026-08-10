@@ -63,6 +63,7 @@ CHECKED = [
     ROOT / "docs" / "guides" / "whats-new-0.22.md",
     ROOT / "docs" / "guides" / "whats-new-0.23.md",
     ROOT / "docs" / "guides" / "whats-new-0.25.md",
+    ROOT / "docs" / "guides" / "whats-new-0.26.md",
     ROOT / "docs" / "guides" / "roadmap.md",
     ROOT / "docs" / "guides" / "plugin-authoring.md",
     ROOT / "docs" / "api" / "STABLE_FACADE.md",
@@ -551,6 +552,22 @@ STALE = [
     re.compile(r"workspace `0\.25\.2` candidate", re.I),
     re.compile(r"0\.25\.2` candidate", re.I),
     re.compile(r"last published release remains `v0\.25\.1`", re.I),
+    # Stale last-published / tip claims after v0.26.0 (allow historical 0.25 phase pages).
+    re.compile(r"last published[\s`*]*v0\.25\.2", re.I | re.M),
+    re.compile(r"Last published:\s*<strong>v0\.25\.2</strong>", re.I),
+    re.compile(r"current published(?: line)?[^\n]*v0\.25\.2", re.I),
+    re.compile(r"hedron-eyebrow[^>]*>[^<\n]*v0\.25\.2", re.I),
+    re.compile(r"Current train — 0\.25\.2", re.I),
+    re.compile(r"Living published train is \*\*0\.25\*\*", re.I),
+    re.compile(r"\*\*Next\*\* = \*\*0\.26 Planned\*\*", re.I),
+    # Stale living-train install pins after v0.26.0 (historical upgrade notes may cite 0.25).
+    re.compile(r"hedron(?:\[[^\]]+\])?>=0\.25\.0,<0\.26", re.I),
+    re.compile(
+        r"hedron-(?:flask|django|core|data|explorer|jinja|conformance|extras)"
+        r"(?:\[[^\]]+\])?>=0\.25\.0,<0\.26",
+        re.I,
+    ),
+    re.compile(r"Train:\s*`0\.25\.x`", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.
@@ -565,8 +582,8 @@ BANNED = [
 UNBOUNDED_PIN = re.compile(
     r"(?:hedron(?:\[[^\]]+\])?|hedron-(?:flask|django|core|data|explorer|jinja|"
     r"conformance|extras))"
-    r">=0\.25\.0"
-    r"(?!,?\s*<0\.26)"
+    r">=0\.26\.0"
+    r"(?!,?\s*<0\.27)"
 )
 
 BARE_EXTRA = re.compile(r"""["']hedron\[[^\]]+\]["'](?!\s*>=)""")
@@ -591,7 +608,10 @@ BROKEN_025_ALPHA_INSTALL = re.compile(
 def _has_compatible_satellite_floor(line: str) -> bool:
     checks = []
     if "hedron[charts]" in line:
-        checks.append("hedron[charts]>=0.25.1,<0.26" in line)
+        checks.append(
+            "hedron[charts]>=0.26.0,<0.27" in line
+            or "hedron[charts]>=0.25.1,<0.26" in line
+        )
     if "hedron-charts" in line:
         checks.append("hedron-charts" in line and ">=0.1.6,<0.2" in line)
     if "hedron-sample-kit" in line:
@@ -664,7 +684,7 @@ def _check_unbounded_pins() -> list[str]:
             if UNBOUNDED_PIN.search(line):
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: unbounded 0.25 pin "
-                    f"(use >=0.25.0,<0.26): {line.strip()[:120]}"
+                    f"(use >=0.26.0,<0.27): {line.strip()[:120]}"
                 )
             if BARE_EXTRA.search(line) and not forbid:
                 failures.append(
@@ -693,7 +713,7 @@ def _check_unbounded_pins() -> list[str]:
             ):
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: charts/sample-kit install lacks the "
-                    f"0.25-compatible floor (charts >=0.1.6 / flagship >=0.25.1): "
+                    f"0.26-compatible floor (charts >=0.1.6 / flagship >=0.26.0): "
                     f"{line.strip()[:120]}"
                 )
     return failures
@@ -717,7 +737,7 @@ def main() -> int:
         print("\n".join(failures), file=sys.stderr)
         return 1
     print(
-        "ok: adopter docs assert Published 0.25 (last v0.25.2), "
+        "ok: adopter docs assert Published 0.26 (last v0.26.0), "
         "upper-bound pins, enforce chart/sample-kit compatibility floors, and avoid "
         "Supported beta / SSOT / beachhead jargon"
     )

@@ -1,34 +1,35 @@
 # Cutting a Hedron release
 
-**Living runbook for the current train (`0.25`).** Historical cut records live under
+**Living runbook for the current train (`0.26`).** Historical cut records live under
 [`docs/archive/`](https://github.com/eddiethedean/hedron/tree/main/docs/archive) and
 per-phase acceptance notes.
 
 Hedron uses a coordinated release train. The Git tag includes a leading `v`
-(for example `v0.25.0`); Python package metadata omits it (`0.25.0`).
+(for example `v0.26.0`); Python package metadata omits it (`0.26.0`).
 
 ## Current published train
 
-**Last published train:** `v0.25.2` (packages `0.25.2` including first-party
+**Last published train:** `v0.26.0` (packages `0.26.0` including first-party
 `hedron-extras`; Alpha charts/sample-kit `0.1.6`, native/notebook/mcp/gradio `0.1.x`).
 
-**Prior published:** `v0.25.1`, `v0.25.0`, `v0.24.0`, `v0.23.0`, `v0.22.0`, `v0.21.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
+**Prior published:** `v0.25.2`, `v0.25.1`, `v0.25.0`, `v0.24.0`, `v0.23.0`, `v0.22.0`, `v0.21.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
 
-**Current train:** `0.25.x` — **Published** as `v0.25.0` (production archetype / landmines /
-D-053). Gate index:
-[release-gate-0.25.toml](acceptance/release-gate-0.25.toml) /
-[RELEASE_0_25.md](acceptance/RELEASE_0_25.md);
-`python scripts/check_release_gate.py 0.25.0`,
-`python scripts/verify_pkg_25.py`.
+**Current train:** `0.26.x` — **Published** as `v0.26.0` (production-grade core / FastAPI /
+Explorer; D-054). Gate index:
+[release-gate-0.26.toml](acceptance/release-gate-0.26.toml) /
+[RELEASE_0_26.md](acceptance/RELEASE_0_26.md);
+`python scripts/check_release_gate.py 0.26.0`,
+`python scripts/verify_pkg_26.py`.
 Human AT **sessions** (`SR-021` / `PARTICIPANT-021`) remain **Planned** — not Supported
-(carryover from 0.21). Phase 0.24 evidence remains:
-[release-gate-0.24.toml](acceptance/release-gate-0.24.toml) /
-[RELEASE_0_24.md](acceptance/RELEASE_0_24.md).
+(carryover from 0.21). Phase 0.25 evidence remains:
+[release-gate-0.25.toml](acceptance/release-gate-0.25.toml) /
+[RELEASE_0_25.md](acceptance/RELEASE_0_25.md).
 
-Production-quality maturity program (**D-053** / RFC-0056): packet **0.25** is **Verified** —
+Production-quality maturity program (**D-053** / RFC-0056) packet **0.25** is **Verified**;
+phase **0.26** graduation (**D-054** / RFC-0057) is **Verified** —
 [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md) ·
 [production-quality guide](guides/production-quality.md);
-`python scripts/verify_pkg_25.py`.
+`python scripts/verify_pkg_26.py`.
 
 ### Tag rule
 
@@ -110,7 +111,7 @@ git push origin v0.25.0
 
 After the Git tag exists and wheels are on PyPI:
 
-1. Keep `docs/STATUS.md` / `docs/ROADMAP.md` honest: Published 0.25 train; keep human AT sessions Planned until Verified.
+1. Keep `docs/STATUS.md` / `docs/ROADMAP.md` honest: Published 0.26 train; keep human AT sessions Planned until Verified.
 2. Run `uv run python scripts/sync_status_roadmap.py` (then `--check`).
 3. Confirm root + `docs/SECURITY.md` support window lists the current published line.
 4. Re-run `uv run python scripts/check_docs_train_ssot.py`.

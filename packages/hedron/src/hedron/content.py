@@ -65,7 +65,7 @@ def highlight_code(code: str, *, lexer: str = "python") -> TrustedHtml:
         ) from exc
     try:
         lex = get_lexer_by_name(lexer)
-    except Exception:
+    except Exception:  # noqa: BLE001
         lex = guess_lexer(code)
     formatter = HtmlFormatter(nowrap=False)
     html_out = highlight(code, lex, formatter)

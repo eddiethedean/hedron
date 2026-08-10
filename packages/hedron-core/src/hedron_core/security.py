@@ -201,7 +201,7 @@ def _normalize_for_scheme_scan(value: str) -> str:
         unescaped = html_stdlib.unescape(current)
         try:
             decoded = unquote(unescaped, errors="strict")
-        except Exception:
+        except Exception:  # noqa: BLE001
             decoded = unquote(unescaped)
         # Collapse whitespace used to break scheme detection; drop format chars each round.
         collapsed = _strip_format_chars(re.sub(r"\s+", "", decoded))

@@ -1,6 +1,6 @@
 [project]
 name = "hedron-explorer"
-version = "0.25.2"
+version = "0.26.0"
 description = "Development Component Explorer preview for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -32,7 +32,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.25.0,<0.26",
+    "hedron-core>=0.26.0,<0.27",
     "fastapi>=0.141.1,<0.150",
 ]
 

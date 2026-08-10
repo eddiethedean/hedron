@@ -132,7 +132,7 @@ def _default_render_context() -> RenderContext:
     """Build RenderContext with CSRF material when a HedronFlask extension is bound."""
     try:
         from flask import current_app, has_request_context, request
-    except Exception:
+    except Exception:  # noqa: BLE001
         return RenderContext.standalone()
     if not has_request_context():
         return RenderContext.standalone()

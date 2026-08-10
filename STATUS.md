@@ -2,28 +2,29 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.25 **Published** as `v0.25.0` (2026-08-09); last published
-PyPI/git = `v0.25.2`.
+**Roadmap position:** phase 0.26 **Published** as `v0.26.0` (2026-08-10); last published
+PyPI/git = `v0.26.0`. Prior: 0.25 **Published** as `v0.25.0` (last patch `v0.25.2`).
 **Date:** 2026-08-10
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.25.2`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.6`,
+`0.26.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.6`,
 `hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0` (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
 `hedron-charts`, `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, `hedron-mcp`,
 `hedron-gradio`.
 
-**Phase focus:** Living published train is **0.25** (D-053 production archetype + landmine
-quarantine). **Next** = **0.26 Planned** (production-grade graduation for `hedron-core` /
-`hedron` / `hedron-explorer`). Live-transport disposition remains **`polling_only`** from
-0.24 — polling is the Supported production story; live SSE/WS/streaming/preload remain
-**experimental** (`hedron.experimental`). Human AT protocol remains **Verified**
-(`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021` remain
-Planned** until real sessions — **do not market human AT as Supported**. Automated AT
-(`AT-019`, phase 0.19) remains Supported and is not a substitute for human AT.
-Production-quality maturity program (**D-053** / RFC-0056) packet **0.25** is **Verified** —
-see [production-quality](docs/guides/production-quality.md) ·
+**Phase focus:** Living published train is **0.26** (D-054 / RFC-0057) — production-grade
+graduation for `hedron-core` / `hedron` / `hedron-explorer` on the declared Supported
+CRUD/admin inventory (`release-gate-0.26.toml` Verified). **Next** = **0.27 Planned**
+(data / Flask / Django / jinja / extras). Live-transport disposition remains
+**`polling_only`** from 0.24 — polling is the Supported production story; live
+SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
+remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` /
+`REMEDIATE-021` remain Planned** until real sessions — **do not market human AT as
+Supported**. Automated AT (`AT-019`, phase 0.19) remains Supported and is not a substitute
+for human AT. Prior production-quality packet **0.25** (D-053 / RFC-0056) remains
+**Verified** — see [production-quality](docs/guides/production-quality.md) ·
 [PRODUCTION_ARCHETYPE](docs/api/PRODUCTION_ARCHETYPE.md).
 
 ## Supported vs Deferred (operator view)
@@ -163,9 +164,9 @@ Program summary: [production-quality guide](docs/guides/production-quality.md).
 ## Next capability phases
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
-**Planned** until compensated screen-reader evidence lands. The roadmap now assigns the remaining
-package-production work to planned phases **0.26–0.32**: core/FastAPI/Explorer; supported Python
-satellites; charts/native; developer and portable conformance tooling; MCP; Gradio; then a
-whole-fleet closure audit. These phases require owning RFCs/decisions and Verified evidence before
-any package maturity label changes. They do not schedule `1.0`, promote every experimental
-subfeature, or change the current 0.25 readiness claims.
+**Planned** until compensated screen-reader evidence lands. Phase **0.26** is **Published**
+(`v0.26.0`; D-054). Remaining package-production work is planned for **0.27–0.32**: supported
+Python satellites; charts/native; developer and portable conformance tooling; MCP; Gradio; then
+a whole-fleet closure audit. These phases require owning RFCs/decisions and Verified evidence
+before any package maturity label changes. They do not schedule `1.0`, promote every experimental
+subfeature, or expand Supported live transports.

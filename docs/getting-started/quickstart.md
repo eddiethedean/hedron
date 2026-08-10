@@ -42,13 +42,13 @@ CLI: [single-file examples](../examples/single-file.md).
     `ModuleNotFoundError: hedron`. The **uv** path below does this in one flow. See
     [FAQ](../guides/faq.md#why-install-hedron-twice-cli-then-project).
 
-Pin production installs with `hedron>=0.25.0,<0.26`.
+Pin production installs with `hedron>=0.26.0,<0.27`.
 
 === "uv (recommended)"
 
     ```bash
     # macOS / Linux
-    uvx --from "hedron>=0.25.0,<0.26" hedron new my-hedron-app
+    uvx --from "hedron>=0.26.0,<0.27" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -57,7 +57,7 @@ Pin production installs with `hedron>=0.25.0,<0.26`.
     Windows (PowerShell), after installing uv:
 
     ```powershell
-    uvx --from "hedron>=0.25.0,<0.26" hedron new my-hedron-app
+    uvx --from "hedron>=0.26.0,<0.27" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -65,14 +65,14 @@ Pin production installs with `hedron>=0.25.0,<0.26`.
 
 === "pip (venv)"
 
-    1. **CLI:** `pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"` (provides `hedron` / `python -m hedron`)
+    1. **CLI:** `pip install "hedron>=0.26.0,<0.27" "uvicorn[standard]"` (provides `hedron` / `python -m hedron`)
     2. **Project:** after `hedron new`, `cd` into the app and `pip install -e .` (uvicorn uses the scaffold pin)
 
     ```bash
     # macOS / Linux
     python3 -m venv .venv
     source .venv/bin/activate
-    python -m pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
+    python -m pip install "hedron>=0.26.0,<0.27" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .
@@ -83,7 +83,7 @@ Pin production installs with `hedron>=0.25.0,<0.26`.
     # Windows (PowerShell)
     py -3 -m venv .venv
     .\.venv\Scripts\Activate.ps1
-    python -m pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
+    python -m pip install "hedron>=0.26.0,<0.27" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .

@@ -74,7 +74,7 @@ class PluginLoader:
             for hook in reversed(item.context._shutdown):
                 try:
                     hook()
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001
                     errors.append(exc)
         self._started = False
         if errors:
@@ -164,7 +164,7 @@ def load_plugins(
                         "hedron_version specifier."
                     ),
                     remediation=(
-                        "Attach PluginMeta(..., hedron_version='>=0.25,<0.26') to the "
+                        "Attach PluginMeta(..., hedron_version='>=0.26,<0.27') to the "
                         "register entry point."
                     ),
                 )

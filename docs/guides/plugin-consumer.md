@@ -70,4 +70,4 @@ Checklist:
 
 [Plugin authoring](plugin-authoring.md) · [Plugins API](../api/PLUGINS.md) ·
 [`hedron-sample-kit`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
-is the installable reference shape on the 0.25 train.
+is the installable reference shape on the 0.26 train.

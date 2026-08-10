@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.26.0] — 2026-08-10
+
+### Added
+
+- Production-grade graduation packet for the declared Supported CRUD/admin inventory
+  (D-054 / RFC-0057): machine-readable inventory, `v0.25.2` upgrade fixtures, secured
+  Explorer evidence, FastAPI ops smoke, and REVIEW-026 security disposition.
+
+### Changed
+
+- Coordinated Beta train bump to `0.26.0` (pin `>=0.26.0,<0.27`).
+
 ## [0.25.2] — 2026-08-10
 
 ### Fixed

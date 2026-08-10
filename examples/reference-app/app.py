@@ -230,7 +230,7 @@ def _parse_user_form(name: str, email: str, role: Role) -> UserForm | str:
     """Validate create/update fields; return ``UserForm`` or an error string."""
     try:
         return UserForm(name=name, email=email, role=role)
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         return str(exc)
 
 

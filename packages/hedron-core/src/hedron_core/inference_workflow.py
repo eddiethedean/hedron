@@ -578,7 +578,7 @@ class InferenceWorkflow:
                             },
                         )
                     )
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001
                     failed = True
                     results.append(
                         WorkflowNodeResult(

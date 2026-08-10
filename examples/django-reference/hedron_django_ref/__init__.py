@@ -66,5 +66,5 @@ try:
     from django.core.asgi import get_asgi_application
 
     asgi_application = get_asgi_application()
-except Exception:
+except Exception:  # noqa: BLE001
     asgi_application = None

@@ -130,7 +130,7 @@ def test_keyboard_and_landmarks_per_engine(engine: str) -> None:
         page.emulate_media(reduced_motion="reduce")
         try:
             page.emulate_media(forced_colors="active")
-        except Exception:
+        except Exception:  # noqa: BLE001
             page.emulate_media(color_scheme="dark")
         report = axe_scan_report(page)
         assert report["incomplete"] is False, report.get("message")

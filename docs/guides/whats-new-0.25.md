@@ -1,6 +1,6 @@
 # What’s new in Hedron 0.25
 
-**Published** as `v0.25.0` (last published patch `v0.25.2`). Pin `hedron>=0.25.0,<0.26`.
+**Published** as `v0.25.0` (last 0.25 patch `v0.25.2`). Living train is **0.26** — pin `hedron>=0.26.0,<0.27`.
 
 Phase **0.25** makes the production posture explicit: a runnable multi-worker archetype,
 critical-path load budgets in CI, and an opt-in boundary so specialty experimental UI widgets are
@@ -20,7 +20,7 @@ not implied by `hedron[extras]`. Polling remains the Supported live-status story
   `hedron[experimental-ui]` (and `hedron_extras.experimental`). Plain `hedron[extras]` no
   longer registers those experimental widgets as product UI.
 - **Charts on 0.25.1** — the `hedron-charts 0.1.6` satellite restores
-  `hedron[charts]>=0.25.1,<0.26`. Matplotlib/static charts remain the conservative default;
+  `hedron[charts]>=0.26.0,<0.27`. Matplotlib/static charts remain the conservative default;
   Plotly / Altair stay experimental. See
   [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 - **Supply-chain evidence** — Train tags attach SBOM / evidence bundles in release CI.
@@ -40,7 +40,7 @@ Additional fail-closed hardening on the published tip (see [release notes](relea
 
 | If you… | Do this |
 |---|---|
-| Are on 0.24 | Pin `>=0.25.0,<0.26`; re-read [upgrade](upgrade.md#upgrade-from-024-025) |
+| Are on 0.24 | Pin `>=0.26.0,<0.27`; re-read [upgrade](upgrade.md#upgrade-from-024-025) |
 | Used CodeEditor / TerminalView / joystick / device | Install `hedron[experimental-ui]` and import from `hedron_extras.experimental` |
 | Deploy multi-worker | Prefer the reference-app compose archetype + Redis |
 

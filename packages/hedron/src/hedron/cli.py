@@ -901,7 +901,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
             from hedron.security.policy import SecurityPolicy
 
             csp_policy = SecurityPolicy.from_name("standard").content_security_policy
-        except Exception:
+        except Exception:  # noqa: BLE001
             csp_policy = None
         for root in settings.resolved_roots(base=base) or [base]:
             root = Path(root).resolve()
@@ -939,7 +939,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
                             source_name=rel,
                         )
                     )
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001
                     reports.append({"name": str(path), "error": str(exc)})
         hdj_reports = reports
         inv = build_production_inventory(
@@ -1093,9 +1093,9 @@ def _cmd_audit_components(args: argparse.Namespace) -> int:
                     plugin_rows.append(cast(JsonObject, cast(PluginMetaDict, meta.to_dict())))
                 else:
                     plugin_rows.append({"name": ep.name, "version": "unknown"})
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001
                 plugin_rows.append({"name": ep.name, "error": str(exc)})
-    except Exception:
+    except Exception:  # noqa: BLE001
         plugin_rows = []
     payload: JsonObject = cast(
         JsonObject,
@@ -1158,7 +1158,7 @@ def _cmd_dev(args: argparse.Namespace) -> int:
                 try:
                     result = run_build(project_dir=base, settings=settings, production=False)
                     print(f"rebuilt → {result.build_dir}", file=sys.stderr)
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001
                     print(f"build failed (previous output retained): {exc}", file=sys.stderr)
     except KeyboardInterrupt:
         print("stopped", file=sys.stderr)

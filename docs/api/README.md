@@ -1,6 +1,6 @@
 # Public API
 
-Hand-maintained **contracts** for shipped surfaces on the **0.25** train, plus
+Hand-maintained **contracts** for shipped surfaces on the **0.26** train, plus
 [Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. Autodoc is still a
 **subset** of every `hedron.__all__` name (~230 exports). The [coverage map](COVERAGE.md)
 lists **every** root export → docs page. Public exception types:
@@ -57,9 +57,9 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
     may stay shorter — prefer guides + Autodoc when Errors is missing.
     Human error index: [Error codes](../guides/error-codes.md).
 
-## Surfaces introduced in 0.19 (available on the 0.25 train)
+## Surfaces introduced in 0.19 (available on the 0.26 train)
 
-These surfaces first shipped in the 0.19 phase and remain on the living **0.25.x**
+These surfaces first shipped in the 0.19 phase and remain on the living **0.26.x**
 train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
 phases through 0.25).
 
@@ -123,13 +123,13 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 ## Current train notes
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
-  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.25**
-  (**Published** as **v0.25.0**; last **v0.25.2**) — [A11Y API](A11Y.md),
+  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.26**
+  (**Published**; last **v0.26.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.25.x**)
+  (introduced in 0.11; Supported on **0.26.x**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.25.x**
+  — Supported on **0.26.x**
 - Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
 - Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
   narrative [What's new in 0.16](../guides/whats-new-0.16.md); package

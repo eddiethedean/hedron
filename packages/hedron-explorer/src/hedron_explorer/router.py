@@ -74,7 +74,7 @@ def _project_component_roots(request: Request | None) -> list[Path]:
                 extra = resolved(base=Path(project_root))
                 if isinstance(extra, (list, tuple)):
                     roots.extend(Path(p) for p in extra)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             # Explorer stays available when optional config/settings fail to load.
             _logger.debug("Explorer component roots from settings unavailable: %s", exc)
     return roots
@@ -139,7 +139,7 @@ async def explorer_guards(request: Request) -> None:
                 "Explorer rate limit exceeded",
                 attributes={"path": str(request.url.path), "client": client},
             )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             _logger.debug("Security audit emit skipped during rate limit: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -221,7 +221,7 @@ def _component_detail_body(meta: ComponentMeta, request: Request) -> str:
         result = render(Text(f"Preview of {meta.name}"), mode=RenderMode.FRAGMENT)
         preview_html = result.html
         _TRACE.appendleft({"kind": "render", "component": meta.logical_id, "mode": "fragment"})
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         preview_html = html_lib.escape(str(exc))
     return f"""
         <h2>{html_lib.escape(meta.name)}</h2>
@@ -670,7 +670,7 @@ def explorer_router() -> APIRouter:
                                 source_name=rel,
                             )
                         )
-                    except Exception as exc:
+                    except Exception as exc:  # noqa: BLE001
                         reports.append({"name": str(path), "error": str(exc)})
             inv = build_production_inventory(
                 template_reports=reports,
@@ -685,7 +685,7 @@ def explorer_router() -> APIRouter:
                     }
                 )
             )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             payload = html_lib.escape(f"Inventory unavailable: {exc}")
         body = f"<h2>Production inventory</h2><pre>{payload}</pre>"
         return _shell("Inventory", body, active="inventory")
@@ -775,7 +775,7 @@ def explorer_router() -> APIRouter:
     async def api_simulate(request: Request) -> Any:
         try:
             payload = await request.json()
-        except Exception:
+        except Exception:  # noqa: BLE001
             return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
         if not isinstance(payload, dict):
             return JSONResponse({"detail": "JSON object required"}, status_code=400)
@@ -806,7 +806,7 @@ def explorer_router() -> APIRouter:
         if callable(resolve):
             try:
                 strategy = resolve()
-            except Exception:
+            except Exception:  # noqa: BLE001
                 strategy = None
         csrf_name = (
             getattr(strategy, "cookie_name", None)
@@ -831,7 +831,7 @@ def explorer_router() -> APIRouter:
                 result = validator(request, policy)
                 if hasattr(result, "__await__"):
                     await result  # type: ignore[misc]
-            except Exception:
+            except Exception:  # noqa: BLE001
                 return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
         elif not validate_double_submit(
             cookie_token=cookie, header_token=header, form_token=form_token

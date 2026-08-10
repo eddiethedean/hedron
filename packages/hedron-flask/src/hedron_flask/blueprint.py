@@ -338,7 +338,7 @@ def attach_hedron_to_flask(
                     authenticated = bool(signal.authenticated)
                 else:
                     authenticated = bool(getattr(signal, "authenticated", False))
-            except Exception:
+            except Exception:  # noqa: BLE001
                 authenticated = False
         for key, value in policy.response_headers(authenticated=authenticated).items():
             # Authenticated responses must not remain publicly cacheable even if the

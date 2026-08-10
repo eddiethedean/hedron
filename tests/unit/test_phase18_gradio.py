@@ -153,7 +153,7 @@ def test_hedron_core_imports_without_hedron_gradio() -> None:
     """Core must not require hedron-gradio; the adapter is an optional plugin."""
     try:
         import hedron_core
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         pytest.skip(f"hedron_core import unavailable in this workspace: {exc}")
     assert hasattr(hedron_core, "__version__")
     try:

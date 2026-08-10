@@ -1,0 +1,53 @@
+# Phase 0.26 production-grade core / FastAPI / Explorer evidence index.
+# Consumed by scripts/check_release_gate.py 0.26.0 (--execute-verified at cut).
+# Zero Deferred policy for 0.26-owned rows: every row must be Verified at cut.
+# Owning decision: D-054. RFC: RFC-0057.
+
+[[evidence]]
+id = "CONTRACT-026"
+state = "Verified"
+command = "python scripts/check_contract_026.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "CORE-026"
+state = "Verified"
+command = "python scripts/check_core_026.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "FASTAPI-026"
+state = "Verified"
+command = "python scripts/check_fastapi_026.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "EXPLORER-026"
+state = "Verified"
+command = "python scripts/check_explorer_026.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REVIEW-026"
+state = "Verified"
+command = "python scripts/check_review_026.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-026"
+state = "Verified"
+command = "bash scripts/ci_checks.sh test --python 3.12"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-026"
+state = "Verified"
+command = "python scripts/verify_pkg_26.py"
+ci_job = "test"
+owner = "hedron"
