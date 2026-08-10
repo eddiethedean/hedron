@@ -25,10 +25,10 @@ The public MkDocs path is organized around adopters:
 
 1. **Start** — install, first success, core mental model
 2. **Guides** — task-oriented application work
-3. **Examples** — runnable, realistic workflows
-4. **Packages / Reference** — exact surfaces and signatures
+3. **Tutorials and examples** — runnable, realistic workflows
+4. **Reference** — exact surfaces, components, packages, and signatures
 5. **Evaluate** — fit, maturity, security, operations, support
-6. **Project** — releases, migration, contributing, maintenance
+6. **Releases / Contribute** — upgrades, history, governance, and maintenance
 
 RFCs, acceptance packets, internal status ledgers, and research notes stay in the GitHub
 maintainer corpus and are excluded from MkDocs search. Public pages may link to that
@@ -47,6 +47,7 @@ code, or internal decision number.
 | Recipe Code tab | marked source under `docs/demos/runnable/` | `check_recipe_code_sync.py` |
 | STATUS / ROADMAP | `docs/STATUS.md`, `docs/ROADMAP.md` | `sync_status_roadmap.py`, then `--check` |
 | Release procedure | `docs/RELEASE.md` | current release-gate checks |
+| Documentation owner/review cadence | `docs/documentation.toml` | `check_documentation_ownership.py` |
 
 Generated component pages and generated simulation HTML are outputs. Change their source
 and regenerate them; do not hand-edit output that the next generator run will overwrite.
@@ -107,6 +108,9 @@ For a normal docs change:
 ```bash
 uv sync --group docs
 uv run python scripts/check_docs_train_ssot.py
+uv run python scripts/check_documentation_ownership.py
+uv run python scripts/check_api_docs_coverage.py
+uv run python scripts/check_package_readme_links.py
 uv run python scripts/check_recipe_code_sync.py
 uv run --group docs mkdocs build --strict
 ```

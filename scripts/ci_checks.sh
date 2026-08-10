@@ -165,7 +165,11 @@ PY
 
   run uv run --python "$PYTHON" python scripts/sync_status_roadmap.py --check
   run uv run --python "$PYTHON" python scripts/generate_sim_demos.py --check
+  run uv run --python "$PYTHON" python scripts/generate_component_docs.py --check
   run uv run --python "$PYTHON" python scripts/check_docs_train_ssot.py
+  run uv run --python "$PYTHON" python scripts/check_documentation_ownership.py
+  run uv run --python "$PYTHON" python scripts/check_api_docs_coverage.py
+  run uv run --python "$PYTHON" python scripts/check_package_readme_links.py
   run uv run --python "$PYTHON" python scripts/check_recipe_code_sync.py
 
   uv run --python "$PYTHON" python - <<'PY'

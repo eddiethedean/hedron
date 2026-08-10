@@ -78,6 +78,7 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | `ByteRangeNotSatisfiable` | [EXCEPTIONS.md](EXCEPTIONS.md), [media-downloads](../guides/media-downloads.md) |
 | `CsrfStrategy` | [CSRF_COMPOSITION.md](CSRF_COMPOSITION.md), [EXCEPTIONS.md](EXCEPTIONS.md) |
 | `CsrfValidationError` | [EXCEPTIONS.md](EXCEPTIONS.md), [CSRF_COMPOSITION.md](CSRF_COMPOSITION.md) |
+| `FragmentRegionError` | [EXCEPTIONS.md](EXCEPTIONS.md), [INTERACTION.md](INTERACTION.md) |
 | `Dialogue` | [Dialogue](../components/dialogue.md) |
 | `DialogueTurn` | [EXCEPTIONS.md](EXCEPTIONS.md), [INFERENCE.md](INFERENCE.md) |
 | `DirectoryUpload` | [DirectoryUpload](../components/directory-upload.md) |

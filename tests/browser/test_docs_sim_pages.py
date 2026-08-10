@@ -28,12 +28,6 @@ ROOT = Path(__file__).resolve().parents[2]
 # page path (under site/) → (sim root selector, primary click, expect)
 _PAGES: tuple[tuple[str, str, str, str], ...] = (
     (
-        "getting-started/quickstart/index.html",
-        '[data-hedron-sim^="hello-refresh"]',
-        'button:has-text("Refresh status")',
-        "GET /status → 200",
-    ),
-    (
         "examples/crud-tutorial/index.html",
         '[data-hedron-sim="minimal-form"]',
         'button:has-text("Save")',

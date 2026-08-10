@@ -13,6 +13,10 @@ components, Hedron renders safe HTML, and HTMX updates just the part of the page
 changed. You keep FastAPI's routing, dependency injection, middleware, and JSON APIs;
 you do not need a Node.js toolchain or a full-script rerun model.
 
+> **Package identity:** PyPI releases older than `0.1.0` belong to an unrelated,
+> retired geolocation package. This web framework begins at `0.1.0`; there is no API or
+> migration continuity with the legacy project.
+
 ![A Hedron app with a status panel updated by HTMX](https://raw.githubusercontent.com/eddiethedean/hedron/main/docs/assets/hello-refresh.jpg)
 
 ## Try it in five minutes

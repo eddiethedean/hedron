@@ -161,12 +161,13 @@ beyond an opaque user id or username.
 These are conveniences, not a product. Authorization decisions (roles, object ACL)
 remain application code—never inferred from component props.
 
-!!! note "OIDC — helpers only (not a turnkey IdP walkthrough)"
+!!! note "OIDC — complete provider-neutral example"
 
-    Install `hedron[auth]` for Authlib-backed URL/PKCE helpers. Hedron does **not**
-    ship a complete IdP product or a pasteable OIDC callback app. See
-    [OIDC helpers](oidc.md) for the honest wiring outline, then bring your IdP’s
-    tutorial. Session demo above remains the Supported first-hour auth path.
+    Install `hedron[auth]` for the runnable login/callback/local-logout example.
+    Hedron still does **not** provide an IdP, user database, or authorization policy.
+    Follow the [OIDC guide](oidc.md), then apply your provider's registration and
+    production-hardening requirements. The session demo above remains the simplest
+    first-hour auth path.
 
 ```python
 # OIDC handshake / URL builders / claim redaction (needs hedron[auth] for Authlib URLs)

@@ -60,4 +60,4 @@ Or discover it through the Component Explorer when `hedron[dev]` is installed.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

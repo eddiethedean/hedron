@@ -1,0 +1,31 @@
+# Ownership and review cadence for public documentation. The checker requires every
+# published Markdown page to match exactly one group unless it is generated.
+
+[[group]]
+name = "start-and-tutorials"
+patterns = ["getting-started/**", "examples/**"]
+owner = "developer-experience"
+review = "each-release"
+
+[[group]]
+name = "user-guides"
+patterns = ["guides/**"]
+owner = "maintainers"
+review = "each-release"
+
+[[group]]
+name = "api-and-components"
+patterns = ["api/**", "components/**", "packages/**", "conformance/**"]
+owner = "api-maintainers"
+review = "each-release"
+
+[[group]]
+name = "project-policies"
+patterns = ["*.md", "foundations/**"]
+owner = "maintainers"
+review = "quarterly"
+
+[[generated]]
+patterns = ["components/**"]
+command = "python scripts/generate_component_docs.py"
+

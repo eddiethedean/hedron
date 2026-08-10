@@ -12,7 +12,7 @@ Distinct from the browser-Python / JupyterLite sandbox in
 ## Install
 
 ```bash
-pip install "hedron[notebook]>=0.1.0,<0.2"
+pip install "hedron[notebook]>=0.26.0,<0.27"
 # or
 pip install "hedron-notebook>=0.1.0,<0.2"
 ```

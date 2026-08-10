@@ -205,7 +205,8 @@ jobs:
             "${{ steps.ref.outputs.version }}" --allow-planned
       - name: Build evidence bundle
         run: |
-          uv run --python 3.11 python scripts/build_evidence_bundle.py
+          uv run --python 3.11 python scripts/build_evidence_bundle.py \
+            --version "${{ steps.ref.outputs.version }}"
           uv run --python 3.11 --with pip-audit python scripts/dep_audit.py
       - name: Build all workspace packages
         run: |
@@ -218,6 +219,10 @@ jobs:
             uv build --package "$pkg"
           done
           ls -la dist
+      - name: Write release checksum manifest
+        run: >
+          uv run --python 3.11 python scripts/write_release_manifest.py
+          "${{ steps.ref.outputs.version }}"
       - name: Attest build provenance
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
@@ -225,6 +230,7 @@ jobs:
             dist/*.whl
             dist/*.tar.gz
             dist/evidence-bundle/*
+            dist/release-manifest.json
       - name: Publish to PyPI
         id: pypi
         continue-on-error: true
@@ -416,6 +422,11 @@ jobs:
             exit 1
           fi
           echo "publish_failed=0" >> "$GITHUB_OUTPUT"
+      - name: Verify the published quick start
+        if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}
+        run: >
+          uv run --python 3.11 python scripts/check_published_quickstart.py
+          "${{ steps.ref.outputs.version }}"
       - name: Create GitHub Release
         if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}
         shell: bash
@@ -439,13 +450,17 @@ jobs:
             echo "SUPPLY-025: missing dist/evidence-bundle (required on train tags)" >&2
             exit 1
           fi
+          if [ ! -f dist/release-manifest.json ]; then
+            echo "SUPPLY-025: missing dist/release-manifest.json" >&2
+            exit 1
+          fi
           mapfile -t evidence_artifacts < <(find dist/evidence-bundle -type f | sort)
           if ((${#evidence_artifacts[@]} == 0)); then
             echo "SUPPLY-025: dist/evidence-bundle has no files to attach" >&2
             exit 1
           fi
 
-          attach=("${artifacts[@]}" "${evidence_artifacts[@]}")
+          attach=("${artifacts[@]}" "${evidence_artifacts[@]}" dist/release-manifest.json)
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists; uploading wheels + evidence"
             gh release upload "$TAG" "${attach[@]}" --clobber

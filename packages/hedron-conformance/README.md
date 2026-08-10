@@ -62,7 +62,7 @@ Experimental evaluators in the monorepo (not published as PyPI apps):
 ## Links
 
 - [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-conformance/)
-- [Conformance docs](https://hedron.readthedocs.io/en/latest/conformance/)
+- [Conformance docs](https://hedron.readthedocs.io/en/latest/conformance/INDEX/)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-conformance/CHANGELOG.md)
 - [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-conformance)
 - [Issues](https://github.com/eddiethedean/hedron/issues)
@@ -70,4 +70,4 @@ Experimental evaluators in the monorepo (not published as PyPI apps):
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

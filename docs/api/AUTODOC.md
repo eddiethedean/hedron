@@ -1,14 +1,15 @@
-# Autodoc — public symbols (expanded subset)
+# Autodoc — public signatures
 
 Generated signatures via **mkdocstrings** for the public surface used in Learn / Adopt
 paths, mount helpers, HTMX helpers, models, CSRF / form composition, and
 `hedron.experimental` live APIs.
 
-**Coverage (honest):** This page documents a large **subset** of `hedron.__all__`
-(~230 names), not every built-in component constructor. Prefer hand-maintained contract
-pages for narrative and errors; use Autodoc to verify parameter lists against installed
-sources. **Every export → page map:** [Coverage map](COVERAGE.md). Component constructor
-tables: [Components](../components/index.md). Live SSE / streaming / WebSocket helpers are
+This page expands signatures for the public surface used most often in Learn and Adopt
+paths. Prefer hand-maintained contract pages for narrative and errors; use Autodoc to
+verify parameter lists against installed sources. CI requires every `hedron.__all__`
+export to appear in the [coverage map](COVERAGE.md), while every built-in constructor is
+covered by the generated [component catalog](../components/index.md). Live SSE /
+streaming / WebSocket helpers are
 **not** in `__all__` — import from `hedron.experimental` (Autodoc below uses that path).
 
 **Page template for hand contracts:** Example → Signature/members → Parameters →

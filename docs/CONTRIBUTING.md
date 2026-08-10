@@ -54,7 +54,11 @@ uv run --group docs mkdocs build --strict
 # or preview: uv run --group docs mkdocs serve
 # or: ./scripts/mkdocs.sh serve
 uv run python scripts/check_docs_train_ssot.py
+uv run python scripts/check_documentation_ownership.py
+uv run python scripts/check_api_docs_coverage.py
+uv run python scripts/check_package_readme_links.py
 uv run python scripts/check_recipe_code_sync.py
+uv run python scripts/generate_component_docs.py --check
 uv run python scripts/generate_sim_demos.py --check
 # quality suite also covers docs checks after `uv sync --all-groups`:
 # bash scripts/ci_checks.sh quality --python 3.12
@@ -71,6 +75,8 @@ Docs-only PRs (allowlisted paths in `.github/workflows/ci.yml`) still run **`qua
 - `docs/*`, `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `mkdocs.yml`
 - `scripts/sync_demo_code_tabs.py`, `scripts/generate_component_docs.py`,
   `scripts/generate_sim_demos.py`, `scripts/check_docs_train_ssot.py`,
+  `scripts/check_documentation_ownership.py`, `scripts/check_api_docs_coverage.py`,
+  `scripts/check_package_readme_links.py`, `scripts/check_external_links.py`,
   `scripts/check_recipe_code_sync.py`, `scripts/README.md`
 
 **Not docs-only** (triggers the full matrix): root `STATUS.md` / `ROADMAP.md` mirrors,
@@ -252,7 +258,7 @@ questions. Accepted behavior is changed through an explicit decision entry and R
 revision or superseding RFC.
 
 Plugin authors: start from [Plugin authoring](guides/plugin-authoring.md) and the
-sample kit (`hedron-sample-kit>=0.1.6,<0.2` on Hedron 0.25).
+sample kit (`hedron-sample-kit>=0.1.6,<0.2` on Hedron 0.26).
 
 ### Implementation changes
 

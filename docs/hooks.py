@@ -9,7 +9,9 @@
 
 from __future__ import annotations
 
+import os
 import re
+import tomllib
 from pathlib import Path
 
 _DOCS = Path(__file__).resolve().parent
@@ -18,7 +20,17 @@ _SIM_MARKER = re.compile(r"<!--\s*hedron-sim:([a-z0-9-]+)\s*-->", re.IGNORECASE)
 
 
 def on_config(config):  # noqa: ANN001
-    """Copy hedron-sim assets into the docs static tree when the package is available."""
+    """Expose release metadata and copy optional simulation assets."""
+    release = tomllib.loads((_DOCS / "release.toml").read_text(encoding="utf-8"))["release"]
+    version = os.environ.get("READTHEDOCS_VERSION", "local")
+    version_type = os.environ.get("READTHEDOCS_VERSION_TYPE", "branch")
+    config.extra["hedron_docs"] = {
+        "version": version,
+        "published_version": release["published_version"],
+        "development_version": release["development_version"],
+        "is_development": version in {"local", "latest", "main"}
+        or version_type == "branch",
+    }
     try:
         from hedron_sim.assets import copy_assets
     except ImportError:

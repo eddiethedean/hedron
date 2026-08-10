@@ -109,7 +109,9 @@ exclude_docs: |
 
 validation:
   nav:
-    omitted_files: warn
+    # The sidebar is intentionally task-oriented. Detailed API/component pages
+    # remain built, searchable, and linkable without crowding navigation.
+    omitted_files: ignore
     not_found: warn
     absolute_links: warn
   links:
@@ -170,320 +172,80 @@ copyright: Copyright &copy; 2026 Odos Matthews · Released under the MIT License
 
 nav:
   - Home: index.md
-  - Learn:
+  - Start:
     - Overview: getting-started/index.md
     - Build your first app: getting-started/quickstart.md
-    - What is HTMX?: getting-started/what-is-htmx.md
-    - HTMX interactions: guides/htmx-interactions.md
-    - Minimal form POST: guides/minimal-form.md
-    - Learning path: getting-started/learning-path.md
     - Installation: getting-started/installation.md
+    - What is HTMX?: getting-started/what-is-htmx.md
     - Core concepts: getting-started/core-concepts.md
+    - Learning path: getting-started/learning-path.md
     - Troubleshooting: guides/troubleshooting.md
-    - Other hosts:
-      - Flask: getting-started/flask.md
-      - Django: getting-started/django.md
-      - Existing / plain FastAPI: guides/plain-fastapi.md
+    - Flask: getting-started/flask.md
+    - Django: getting-started/django.md
+    - Existing FastAPI app: guides/plain-fastapi.md
+  - Tutorials:
+    - Notes CRUD: examples/crud-tutorial.md
+    - Session authentication: examples/session-auth.md
+    - Notes with SQLAlchemy: examples/notes-sqlalchemy.md
+    - Reference app walkthrough: examples/reference-app.md
   - How-to:
     - Overview: guides/index.md
-    - Coming from Streamlit:
-      - Migration home: guides/streamlit-migration.md
-      - Execution and state: guides/streamlit-execution-state.md
-      - Component matrix: guides/streamlit-migration-matrix.md
-      - Production cutover: guides/streamlit-cutover.md
-    - Help:
-      - FAQ: guides/faq.md
-      - Error codes: guides/error-codes.md
-    - Interact:
+    - Build interactions:
+      - HTMX interactions: guides/htmx-interactions.md
       - Forms and actions: guides/forms-and-actions.md
-      - Mutations (@action vs @component): guides/mutations.md
-      - Authentication: guides/authentication.md
-      - OIDC helpers: guides/oidc.md
-      - Polling (experimental live): guides/live-interaction.md
-      - Dashboards and interaction graphs: guides/dashboards.md
+      - Mutations: guides/mutations.md
       - Cookbook: guides/cookbook.md
-      - Media downloads: guides/media-downloads.md
-      - Multi-tenant isolation: guides/multi-tenant.md
-    - Data and visuals:
+    - Add data and visuals:
       - Data applications: guides/data-apps.md
       - Charts and HTMX: guides/charts-and-htmx.md
       - Compose built-ins: guides/component-composition.md
-      - HDJ authoring: guides/hdj-authoring.md
-    - Security:
+    - Secure an app:
+      - Authentication: guides/authentication.md
+      - OIDC: guides/oidc.md
       - Security: guides/security.md
       - Hardened sessions: guides/hardened-sessions.md
-      - Threat model: guides/threat-model.md
-      - Accessibility: guides/accessibility.md
-    - Ops:
-      - Ship a Hedron app: guides/ship.md
+      - Multi-tenant isolation: guides/multi-tenant.md
+    - Operate an app:
+      - Ship an app: guides/ship.md
       - Deployment: guides/deployment.md
-      - Durable jobs (Celery / RQ): guides/jobs-celery-rq.md
-      - OpenAPI and HTML routes: guides/openapi.md
+      - Durable jobs: guides/jobs-celery-rq.md
       - Observability: guides/observability.md
       - Performance: guides/performance.md
       - Test your UI: guides/testing.md
       - Best practices: guides/best-practices.md
-      - Project workflow: guides/project-workflow.md
-    - Plugins:
-      - Using plugins: guides/plugin-consumer.md
-      - Plugin authoring: guides/plugin-authoring.md
-    - Model demos and inference: guides/model-demos.md
+    - Extend Hedron:
+      - Use plugins: guides/plugin-consumer.md
+      - Author plugins: guides/plugin-authoring.md
+      - Model demos: guides/model-demos.md
+    - Migrate from Streamlit: guides/streamlit-migration.md
+    - FAQ: guides/faq.md
+    - Error codes: guides/error-codes.md
   - Examples:
     - Overview: examples/index.md
-    - Try with Codespaces / Dev Container: examples/try-it.md
-    - Recipes:
-      - Overview: examples/recipes/index.md
-      - Notes + SQLAlchemy: examples/notes-sqlalchemy.md
-      - Session auth: examples/session-auth.md
-      - File upload: examples/file-upload.md
-      - Jobs poll: examples/jobs-poll.md
-      - Flask Refresh: examples/flask-recipe.md
-      - Django Refresh: examples/django-recipe.md
+    - Try in Codespaces: examples/try-it.md
+    - Recipe index: examples/recipes/index.md
     - Runnable examples: examples/runnable.md
-    - Tutorials:
-      - Notes CRUD (in-memory): examples/crud-tutorial.md
-      - Reference app walkthrough: examples/reference-app.md
-    - Single-file apps (alternate): examples/single-file.md
-  - Packages:
-    - Overview: packages/index.md
-    - hedron-data: packages/hedron-data.md
-    - hedron-jinja: packages/hedron-jinja.md
-    - hedron-explorer: packages/hedron-explorer.md
-    - hedron-extras: packages/hedron-extras.md
-    - hedron-conformance: packages/hedron-conformance.md
-    - hedron-charts (Alpha): packages/hedron-charts.md
-    - hedron-native (Alpha): packages/hedron-native.md
-    - hedron-notebook (Alpha): packages/hedron-notebook.md
-    - hedron-mcp (Alpha): packages/hedron-mcp.md
-    - hedron-gradio (Alpha): packages/hedron-gradio.md
-    - hedron-sample-kit (Alpha): packages/hedron-sample-kit.md
-    - hedron-sim (Alpha): packages/hedron-sim.md
+    - Single-file apps: examples/single-file.md
+    - Simulation gallery: examples/gallery.md
   - Reference:
     - API overview: api/README.md
-    - Components:
-      - Overview: components/index.md
-      - Start with these:
-        - Page: components/page.md
-        - Text: components/text.md
-        - Stack: components/stack.md
-        - Form: components/form.md
-        - TextInput: components/text-input.md
-        - SubmitButton: components/submit-button.md
-        - Button: components/button.md
-        - RefreshButton: components/refresh-button.md
-        - DataTable: components/data-table.md
-        - Poll: components/poll.md
-      - Document and composition:
-        - Overview: components/document.md
-        - Page: components/page.md
-        - Fragment: components/fragment.md
-        - Head: components/head.md
-        - Title: components/title.md
-      - Landmarks:
-        - Overview: components/landmarks.md
-        - Header: components/header.md
-        - Main: components/main.md
-        - Nav: components/nav.md
-        - Aside: components/aside.md
-        - Footer: components/footer.md
-        - Section: components/section.md
-      - Layout:
-        - Overview: components/layout.md
-        - Container: components/container.md
-        - Stack: components/stack.md
-        - Inline: components/inline.md
-        - Grid: components/grid.md
-        - Divider: components/divider.md
-        - MainPanel: components/main-panel.md
-        - AppShell: components/app-shell.md
-        - ActionDock: components/action-dock.md
-        - BottomDock: components/bottom-dock.md
-        - Spacer: components/spacer.md
-      - Content:
-        - Overview: components/content.md
-        - Heading: components/heading.md
-        - Text: components/text.md
-        - Link: components/link.md
-        - Image: components/image.md
-        - CodeBlock: components/code-block.md
-        - List: components/list.md
-        - DescriptionList: components/description-list.md
-        - Table: components/table.md
-        - Markdown: components/markdown.md
-        - Audio: components/audio.md
-        - PredictionLabel: components/prediction-label.md
-        - ParameterViewer: components/parameter-viewer.md
-        - Dialogue: components/dialogue.md
-        - Gallery: components/gallery.md
-        - GeoJSONLayer: components/geo-json-layer.md
-        - GeolocationHint: components/geolocation-hint.md
-        - IFrame: components/i-frame.md
-        - Logo: components/logo.md
-        - Map: components/map.md
-        - Math: components/math.md
-        - PageIcon: components/page-icon.md
-        - PdfViewer: components/pdf-viewer.md
-        - Video: components/video.md
-      - Surfaces and status:
-        - Overview: components/surfaces.md
-        - Card: components/card.md
-        - Badge: components/badge.md
-        - Alert: components/alert.md
-        - Skeleton: components/skeleton.md
-        - Carousel: components/carousel.md
-        - ContextMenu: components/context-menu.md
-        - Help: components/help.md
-        - Popover: components/popover.md
-        - Timeline: components/timeline.md
-        - Tooltip: components/tooltip.md
-      - Controls:
-        - Overview: components/controls.md
-        - HtmxLink: components/htmx-link.md
-        - NavLink: components/nav-link.md
-        - Button: components/button.md
-        - LinkButton: components/link-button.md
-        - IconButton: components/icon-button.md
-        - ClipboardCopy: components/clipboard-copy.md
-        - ConfirmButton: components/confirm-button.md
-        - MenuButton: components/menu-button.md
-      - Forms:
-        - Overview: components/forms.md
-        - Form: components/form.md
-        - Hx: components/hx.md
-        - CsrfField: components/csrf-field.md
-        - LoginCsrfField: components/login-csrf-field.md
-        - FormField: components/form-field.md
-        - Label: components/label.md
-        - TextInput: components/text-input.md
-        - TextArea: components/text-area.md
-        - Select: components/select.md
-        - Checkbox: components/checkbox.md
-        - RadioGroup: components/radio-group.md
-        - SubmitButton: components/submit-button.md
-        - FormErrors: components/form-errors.md
-        - AutoForm: components/auto-form.md
-        - CameraCapture: components/camera-capture.md
-        - ChipInput: components/chip-input.md
-        - ColorInput: components/color-input.md
-        - DateInput: components/date-input.md
-        - DateTimeInput: components/date-time-input.md
-        - DirectoryUpload: components/directory-upload.md
-        - GeolocationButton: components/geolocation-button.md
-        - MicrophoneCapture: components/microphone-capture.md
-        - MultiSelect: components/multi-select.md
-        - NumberInput: components/number-input.md
-        - Pills: components/pills.md
-        - RangeInput: components/range-input.md
-        - RatingInput: components/rating-input.md
-        - SegmentedControl: components/segmented-control.md
-        - SelectSlider: components/select-slider.md
-        - TimeInput: components/time-input.md
-        - ToggleSwitch: components/toggle-switch.md
-      - Interaction:
-        - Overview: components/interaction.md
-        - OobHost: components/oob-host.md
-        - AttrHost: components/attr-host.md
-        - RefreshButton: components/refresh-button.md
-        - Lazy: components/lazy.md
-        - Poll: components/poll.md
-        - InfiniteScroll: components/infinite-scroll.md
-        - Pagination: components/pagination.md
-        - Loading: components/loading.md
-        - ErrorState: components/error-state.md
-        - Dialog: components/dialog.md
-        - ChatMessage: components/chat-message.md
-        - ChatInput: components/chat-input.md
-      - Data:
-        - Overview: components/data.md
-        - Auto: components/auto.md
-        - DataTable: components/data-table.md
-        - DataEditor: components/data-editor.md
-      - Utilities:
-        - Overview: components/utilities.md
-        - Metric: components/metric.md
-        - FileUpload: components/file-upload.md
-        - DownloadButton: components/download-button.md
-        - CodeViewer: components/code-viewer.md
-        - JSONViewer: components/json-viewer.md
-        - Progress: components/progress.md
-        - Status: components/status.md
-        - Toast: components/toast.md
-        - Expander: components/expander.md
-        - Tabs: components/tabs.md
-        - Sidebar: components/sidebar.md
-        - CircularProgress: components/circular-progress.md
-        - HelpInspector: components/help-inspector.md
-      - Theme:
-        - Overview: components/theme.md
-        - ColorModeToggle: components/color-mode-toggle.md
-      - Charts:
-        - Overview: components/charts.md
-        - LineChart: components/line-chart.md
-        - AreaChart: components/area-chart.md
-        - BarChart: components/bar-chart.md
-        - ScatterChart: components/scatter-chart.md
-        - MatplotlibChart: components/matplotlib-chart.md
-        - PlotlyChart: components/plotly-chart.md
-        - AltairChart: components/altair-chart.md
-    - API:
-      - Meta:
-        - Autodoc (expanded subset): api/AUTODOC.md
-        - Public API coverage map: api/COVERAGE.md
-        - Public exceptions and failure types: api/EXCEPTIONS.md
-        - Stability (adopter summary + catalog): api/STABILITY.md
-        - Beginner / stable facade: api/STABLE_FACADE.md
-        - Production archetype (0.25): api/PRODUCTION_ARCHETYPE.md
-        - Live disposition (0.24): api/LIVE_DISPOSITION.md
-      - Application and routing:
-        - Hedron: api/HEDRON.md
-        - Router: api/ROUTER.md
-        - Page: api/PAGE.md
-        - Action: api/ACTION.md
-        - Addressable components: api/ADDRESSABLE.md
-        - Interaction: api/INTERACTION.md
-        - Mount / path prefix: api/MOUNT.md
-        - Responses: api/RESPONSES.md
-      - Models:
-        - Models and Props: api/MODELS.md
-        - Field: api/FIELD.md
-        - Component: api/COMPONENT.md
-        - Security types: api/SECURITY_TYPES.md
-        - CSRF composition (0.22): api/CSRF_COMPOSITION.md
-      - Rendering and content:
-        - Rendering: api/RENDERING.md
-        - Auto: api/AUTO.md
-        - Content: api/CONTENT.md
-        - Built-ins: api/BUILT_INS.md
-        - Utility components (outline): api/UTILITY_COMPONENTS.md
-        - Themes: api/THEME.md
-        - ColorMode (outline): api/COLORMODE.md
-      - Data and charts:
-        - Data: api/DATA.md
-        - Data sources (outline): api/DATA_SOURCE.md
-        - Charts: api/CHART.md
-      - Live:
-        - Jobs (polling): api/JOBS.md
-        - SSE (experimental): api/SSE.md
-        - Streaming (experimental): api/STREAMING.md
-        - WebSocket channel (experimental): api/WEBSOCKET_CHANNEL.md
-        - Navigation preload (experimental): api/PRELOAD.md
-        - Inference / model demos: api/INFERENCE.md
-      - Cross-cutting:
-        - Prepare lifecycle: api/PREPARE.md
-        - Security audit sink: api/AUDIT.md
-        - Tracing: api/TRACING.md
-        - State: api/STATE.md
-        - Cache: api/CACHE.md
-        - Auth: api/AUTH.md
-        - Accessibility (`hedron_core.a11y`): api/A11Y.md
-        - Explorer: api/EXPLORER.md
-        - Plugins: api/PLUGINS.md
-        - Testing: api/TESTING.md
-        - Framework adapters: api/ADAPTERS.md
-        - CLI: api/CLI.md
-        - API diagnostics: api/DIAGNOSTICS.md
-        - HDJ (Jinja): api/JINJA.md
-        - Conformance kit: api/CONFORMANCE.md
+    - Public API coverage: api/COVERAGE.md
+    - Stability and maturity: api/STABILITY.md
+    - Components index: components/index.md
+    - Application: api/HEDRON.md
+    - Routing: api/ROUTER.md
+    - Pages: api/PAGE.md
+    - Actions: api/ACTION.md
+    - Rendering: api/RENDERING.md
+    - Models and props: api/MODELS.md
+    - Built-ins: api/BUILT_INS.md
+    - Responses: api/RESPONSES.md
+    - Exceptions: api/EXCEPTIONS.md
+    - CLI: api/CLI.md
+    - Configuration: CONFIGURATION.md
+    - Compatibility: COMPATIBILITY.md
+    - Packages: packages/index.md
+    - Glossary: GLOSSARY.md
   - Evaluate:
     - Overview: guides/evaluate.md
     - Why Hedron: guides/why-hedron.md
@@ -491,59 +253,20 @@ nav:
     - Maturity labels: getting-started/how-to-read.md
     - Enterprise diligence: guides/enterprise-diligence.md
     - Architecture: ARCHITECTURE.md
-    - Compatibility: COMPATIBILITY.md
-    - Support: guides/support.md
     - Security disclosure: SECURITY.md
-  - Project:
+    - Support policy: guides/support.md
     - Evidence pack: guides/evidence-pack.md
-    - Public roadmap: guides/roadmap.md
-    - Upgrade to 0.25: guides/upgrade.md
+    - Roadmap: guides/roadmap.md
+  - Releases:
     - Release notes: guides/release-notes.md
-    - Release summary (adopters): guides/release-adopters.md
+    - Upgrade guide: guides/upgrade.md
     - What's new in 0.26: guides/whats-new-0.26.md
-    - What's new in 0.25: guides/whats-new-0.25.md
-    - Earlier trains:
-      - What's new in 0.24: guides/whats-new-0.24.md
-      - What's new in 0.23: guides/whats-new-0.23.md
-      - What's new in 0.22: guides/whats-new-0.22.md
-      - What's new in 0.21: guides/whats-new-0.21.md
-      - Archive index: guides/whats-new-archive.md
-      - What's new in 0.20: guides/whats-new-0.20.md
-      - What's new in 0.19: guides/whats-new-0.19.md
-      - What's new in 0.18: guides/whats-new-0.18.md
-      - What's new in 0.17: guides/whats-new-0.17.md
-      - What's new in 0.16: guides/whats-new-0.16.md
-      - What's new in 0.15: guides/whats-new-0.15.md
-      - What's new in 0.14: guides/whats-new-0.14.md
-      - What's new in 0.13: guides/whats-new-0.13.md
-      - What's new in 0.12: guides/whats-new-0.12.md
-      - What's new in 0.11: guides/whats-new-0.11.md
-      - What's new in 0.10.1: guides/whats-new-0.10.1.md
-      - What's new in 0.10: guides/whats-new-0.10.md
-    - Package changelogs: guides/changelog.md
-    - Migrations:
-      - NiceGUI: guides/nicegui-migration.md
-      - Dash: guides/dash-migration.md
-      - FastAPI / Jinja + HTMX: guides/fastapi-jinja-migration.md
-      - Gradio: guides/gradio-migration.md
-    - Configuration: CONFIGURATION.md
-    - Glossary: GLOSSARY.md
-    - Native desktop shell recipe: guides/native-desktop-shell.md
+    - Versioned documentation: guides/versions.md
+    - Earlier releases: guides/whats-new-archive.md
+  - Contribute:
     - Contributing: CONTRIBUTING.md
-    - Contributor day-one: guides/contributor-day-one.md
+    - Contributor day one: guides/contributor-day-one.md
     - Documentation standards: guides/documentation-standards.md
-    - Maintainers:
-      - Handbook: guides/maintainer-handbook.md
-      - Maintainers stub: guides/maintainers.md
-      - Decisions index: guides/decisions-index.md
-      - Release summary: guides/release-summary.md
-      - Phase evidence apps (stubs): examples/phase-evidence.md
-      - Simulated UI patterns: examples/gallery.md
-      - Production-quality maturity: guides/production-quality.md
-      - Production readiness (detailed): guides/production-readiness.md
-      - Ship to production (alias): guides/ship-to-production.md
-      - Design principles: guides/design-principles.md
-      - Non-goals: foundations/04_NON_GOALS.md
-      - Performance budgets: PERFORMANCE_BUDGETS.md
-      - Conformance kit: conformance/INDEX.md
+    - Governance: guides/governance.md
+    - Maintainer handbook: guides/maintainer-handbook.md
     - Code of Conduct: CODE_OF_CONDUCT.md

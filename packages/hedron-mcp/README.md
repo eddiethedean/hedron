@@ -25,7 +25,7 @@ pip install "hedron-mcp>=0.1.0,<0.2"
 # or
 uv add "hedron-mcp>=0.1.0,<0.2"
 # via flagship:
-pip install "hedron[mcp]>=0.1.0,<0.2"
+pip install "hedron[mcp]>=0.26.0,<0.27"
 ```
 
 Requires Python 3.11–3.14.
@@ -71,4 +71,4 @@ With `enabled=False` (the default), registration and mount stay inert.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

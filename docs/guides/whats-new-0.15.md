@@ -18,7 +18,7 @@ browser context, and scenario testing — without Streamlit-style whole-script r
 !!! note "Historical phase"
 
     This page describes **0.15**. The Living published train is **0.26** (last `v0.26.0`) —
-    see [What’s new in 0.25](whats-new-0.25.md) and the [upgrade guide](upgrade.md).
+    see [What’s new in 0.26](whats-new-0.26.md) and the [upgrade guide](upgrade.md).
 
 Pin `hedron>=0.15.0,<0.16` when staying on the 0.15 line.
 

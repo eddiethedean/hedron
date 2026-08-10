@@ -36,7 +36,7 @@ that chart floor.
 
     Satellite versions through `0.1.5` require `hedron-core<0.20`; historical `0.11.0`
     requires `hedron-core==0.11.0`. Do not loosen the lower bound below `0.1.6` in a
-    Hedron 0.25 environment. Use a clean virtual environment when replacing an older
+    Hedron 0.26 environment. Use a clean virtual environment when replacing an older
     chart or sample-kit installation.
 
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
@@ -243,7 +243,7 @@ CPython default builds are normative. Free-threaded CPython and PyPy are informa
 
 ## Release evidence
 
-Compatibility claims for the **0.25.0** train require clean-install, package, FastAPI
+Compatibility claims for the **0.26.0** train require clean-install, package, FastAPI
 adapter, OpenAPI, security corpus, reference-application, and owning-phase live-transport
 suites. Changing a Supported row requires compatibility evidence and an updated decision
 or RFC.

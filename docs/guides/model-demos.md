@@ -1,19 +1,24 @@
 # Model demos and inference workflows
 
 Build reviewable model demos, schedule inference over durable jobs, collect governed
-feedback, and compose permissioned workflows (introduced in **0.18**; living train **0.25**).
+feedback, and compose permissioned workflows (introduced in **0.18**; living train **0.26**).
 
 Capability readiness is **Supported** (fail-closed); API compatibility remains **`beta`**.
 Pin `hedron>=0.26.0,<0.27`.
 
 API contract: [Inference](../api/INFERENCE.md)
 
-!!! warning "No Gradio-like sample app in-tree"
+!!! example "Runnable interactive sample"
 
     [`examples/model-demo-0.18`](https://github.com/eddiethedean/hedron/tree/main/examples/model-demo-0.18)
-    is a **maintainer exit scenario** (text dump / synthetic scores) — **not** a product UI
-    and **not** the learning path. Learn from the snippets below; for interactive UI patterns
-    start from [recipes](../examples/recipes/index.md) or [First app](../getting-started/quickstart.md).
+    is a complete local classifier workflow: submit text through a CSRF-protected form,
+    run an explicitly registered action, render its scores, and inspect policy/workflow
+    metadata. Its classifier is deterministic and synthetic so the example needs no API
+    key or model download.
+
+```bash
+uv run uvicorn app:app --app-dir examples/model-demo-0.18 --reload
+```
 
 ## Minimal demo
 
@@ -110,7 +115,7 @@ assert result.status in {"completed", "partial", "failed", "cancelled"}
 ## Gradio (optional Alpha)
 
 ```bash
-pip install "hedron[gradio]>=0.1.0,<0.2"
+pip install "hedron[gradio]>=0.26.0,<0.27"
 # For live remote calls also install gradio_client
 ```
 

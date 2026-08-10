@@ -8,7 +8,6 @@ response time, or paid support contract.
 | Channel | Use for |
 |---|---|
 | [GitHub Issues](https://github.com/eddiethedean/hedron/issues) | Bugs, doc gaps, reproducible failures |
-| [GitHub Discussions](https://github.com/eddiethedean/hedron/discussions) | Design questions (if enabled) |
 | Pull requests | Fixes and documentation improvements |
 
 Before filing an issue, check [FAQ](faq.md), [Troubleshooting](troubleshooting.md),
@@ -25,12 +24,13 @@ issues for undisclosed security problems.
 Package maturity **Beta** means the public API is usable and tested, but breaking changes
 may still land on the `0.x` line under the [compatibility policy](../COMPATIBILITY.md).
 Pin versions in production, read [upgrade](upgrade.md) notes before bumping trains, and
-Treat Alpha packages as more volatile. Charts and sample kit require the compatible
-`>=0.1.6,<0.2` satellite floor on 0.25
-until compatible distributions are published — see [Compatibility](../COMPATIBILITY.md).
+Treat Alpha packages as more volatile. Charts and the sample kit require the compatible
+`>=0.1.6,<0.2` satellite floor — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current published train (`0.25.x`). There is
-no multi-year LTS — see [SECURITY.md](../SECURITY.md). Community GitHub support only;
+**Support window:** security fixes target the current published train (`0.26.x`). The
+previous `0.25.x` train receives best-effort security triage through approximately
+**2026-11-08**. There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).
+Community GitHub support only;
 [Ship a Hedron app](ship.md) for ops.
 
 ## Maintainer expectations

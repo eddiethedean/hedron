@@ -47,11 +47,11 @@ Failures print fixture id, contract version, and violated capability.
 ## Links
 
 - [`hedron-conformance`](https://pypi.org/project/hedron-conformance/)
-- [Conformance docs](https://hedron.readthedocs.io/en/latest/conformance/)
+- [Conformance docs](https://hedron.readthedocs.io/en/latest/conformance/INDEX/)
 - [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-java)
 - [Issues](https://github.com/eddiethedean/hedron/issues)
 - Sibling: [`hedron-runtime-node`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-runtime-node)
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

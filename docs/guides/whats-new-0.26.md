@@ -2,14 +2,23 @@
 
 **Published** as `v0.26.0`. Pin `hedron>=0.26.0,<0.27`.
 
-Phase **0.26** graduates `hedron-core`, `hedron`, and `hedron-explorer` to
-**production-grade for the declared Supported CRUD/admin surface** (D-054 /
-RFC-0057). Baseline: Published `v0.25.2`. Polling remains the Supported live-status
-story; SSE/WS/streaming/preload stay experimental.
+Hedron 0.26 strengthens the documented CRUD/admin path without promoting experimental
+live transports. It validates upgrades from 0.25.2, makes the supported surface
+machine-checkable, verifies secured Explorer behavior, and exercises the documented
+multi-worker deployment pattern. Polling remains the production live-status path;
+SSE, WebSocket, streaming, and preload stay experimental.
 
-## For adopters
+## 0.26.1 patch
 
-- **Production-grade inventory** — Supported / Experimental / excluded surfaces for the
+The 0.26.1 patch corrects generated-project pins, optional install guidance, and
+release/documentation verification. It adds tested OIDC and model-demo workflows,
+checksummed release assets, and an exact-PyPI scaffold smoke before a GitHub Release is
+created. It does not remove a Supported API. See the [release notes](release-notes.md)
+for the complete adopter-facing list.
+
+## What changes for application teams
+
+- **Capability inventory** — Supported / Experimental / excluded surfaces for the
   three packages are machine-checked
   ([production-grade-inventory-026.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/production-grade-inventory-026.toml)).
 - **Upgrade fixtures** — golden tests from `v0.25.2` facade identities, diagnostics,
@@ -18,8 +27,12 @@ story; SSE/WS/streaming/preload stay experimental.
   Explorer is never required at runtime.
 - **Ops** — reference-app multi-worker + Redis + reverse-proxy archetype remains the
   production kitchen sink; min-deps / offline-wheel smoke is gated.
-- **Security review packet** — redacted REPORT + disposition ledger under
+- **Security review evidence** — redacted report and disposition ledger under
   `docs/acceptance/security-review-026/`.
+
+No Supported CRUD/admin API removal is listed for 0.26.0. Existing 0.25.2 applications
+should follow [Upgrade to 0.26](upgrade.md), update the lockfile, run Hedron diagnostics,
+and repeat their application/browser tests.
 
 ## Non-goals (unchanged)
 
@@ -28,5 +41,9 @@ story; SSE/WS/streaming/preload stay experimental.
 - No public-by-default Explorer
 - No `1.0` / SLA / certification
 
-Contract: [STABILITY.md](../api/STABILITY.md) · [STABLE_FACADE.md](../api/STABLE_FACADE.md).
-Acceptance: [RELEASE_0_26](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_26.md).
+## Maintainer evidence
+
+The release decision is D-054 / RFC-0057. Contract:
+[STABILITY.md](../api/STABILITY.md) · [STABLE_FACADE.md](../api/STABLE_FACADE.md).
+Acceptance packet:
+[RELEASE_0_26](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_26.md).

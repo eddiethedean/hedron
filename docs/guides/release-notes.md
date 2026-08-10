@@ -1,73 +1,72 @@
-# Release notes
+# Releases
 
-Adopter-facing summary for the **0.26.x** train. For per-package commit detail, use the
-[package changelog index](changelog.md) or
-[GitHub Releases](https://github.com/eddiethedean/hedron/releases).
+This is the canonical adopter-facing release history. Package-level implementation
+details remain in the [package changelogs](changelog.md).
 
-## Current train — 0.26.0 (2026-08-10)
+!!! note "PyPI history before 0.1.0"
 
-**Published** (`0.26.0`; last published PyPI/git = `v0.26.0`).
+    Releases older than `0.1.0` belong to an unrelated, retired geolocation package.
+    The current web framework starts at `0.1.0`; there is no supported migration path or
+    API continuity with that legacy project.
 
-**Adopter highlights:** production-grade graduation for `hedron-core`, `hedron`, and
-`hedron-explorer` on the declared Supported CRUD/admin inventory (D-054 / RFC-0057):
-machine-readable inventory, `v0.25.2` upgrade fixtures, secured Explorer evidence,
-FastAPI multi-worker archetype proof, and REVIEW-026 security disposition. Polling
-remains the Supported live-status story (from 0.24). Human AT **sessions** remain
-**Planned** — do not market human AT as Supported. Pin `hedron>=0.26.0,<0.27`. Charts
-extra: `hedron[charts]>=0.26.0,<0.27`.
+## 0.26.1 — 2026-08-10
 
-Narrative: [What's new in 0.26](whats-new-0.26.md) · maturity:
-[What's ready today](whats-ready.md) · ship checklist:
-[Ship a Hedron app](ship.md) · pin / Release assets:
-[Release summary (adopters)](release-adopters.md).
+Correctness and adoption-readiness patch for the 0.26 train.
+
+- Fixes `hedron new`, `hedron new --flask`, and `hedron new --django` to generate the
+  current `>=0.26.0,<0.27` dependency range rather than the obsolete 0.25 range.
+- Repairs optional-integration install commands and package-index links.
+- Replaces the abbreviated OIDC outline and model-demo stub with tested, runnable
+  application flows.
+- Reorganizes documentation around tasks, adds an actual 5-minute quick start and
+  0.25.2→0.26 upgrade guide, and makes release/maturity/support claims consistent.
+- Adds CI enforcement for release-train metadata, API export coverage, documentation
+  ownership, generated pages, PyPI-safe package links, and scheduled external links.
+- Adds checksummed release manifests, versioned evidence metadata, documentation-version
+  guidance, and an exact-PyPI quick-start gate before GitHub Release creation.
+
+No Supported API removal is included. Existing 0.26.0 applications can upgrade within
+their bounded 0.26 train pin.
+
+## 0.26.0 — 2026-08-10
+
+Hedron 0.26.0 strengthens the Supported CRUD/admin path.
+
+- Publishes a machine-checked inventory of Supported, Experimental, and excluded
+  surfaces for `hedron-core`, `hedron`, and `hedron-explorer`.
+- Validates upgrades from 0.25.2 across facade identities, diagnostics, manifests, and
+  HTMX interactions.
+- Verifies secured Explorer behavior and refusal of development Explorer in production.
+- Verifies the documented FastAPI multi-worker, Redis, and reverse-proxy deployment
+  pattern.
+
+No Supported CRUD/admin API removal is listed. Polling remains the production path for
+live status; SSE, WebSocket, streaming, and preload remain experimental.
 
 ```bash
-pip install -U "hedron>=0.26.0,<0.27"
-# or
-uv add "hedron>=0.26.0,<0.27"
+python -m pip install -U "hedron>=0.26.0,<0.27"
 ```
 
-Optional: `pip install "hedron[gradio]>=0.1.0,<0.2"` · `"hedron[notebook]>=0.1.0,<0.2"` · `"hedron[mcp]>=0.1.0,<0.2"`.
+Read [Upgrade to 0.26](upgrade.md) before changing a production lockfile. Maintainer
+evidence identifiers and packets are linked from [What’s new in 0.26](whats-new-0.26.md).
 
-## Prior — 0.25.2 (2026-08-10)
+## 0.25.2 — 2026-08-10
 
-**Published** (`0.25.2`). CSRF / HTMX adapter fixes, trust-boundary hardening, Redis
-job/status CAS, fail-closed adapter prepare / SSE framing.
+Security and correctness patch for fragment authorization, CSRF cookies, mount paths,
+Redis job/status state, adapter lifecycle handling, and streaming cache headers.
 
-## Prior — 0.25.1 (2026-08-09)
+## 0.25.1 — 2026-08-09
 
-**Published** (`0.25.1`). Restores installable charts with `hedron-charts 0.1.6`, recipe
-fixes for session-auth / SQLAlchemy notes, release-publish hardening, and expanded
-adoption / Streamlit migration docs.
+Restored a resolvable charts extra, repaired adopter recipes, and hardened the release
+workflow so failed PyPI publication cannot create a GitHub Release.
 
-## Prior — 0.25.0 (2026-08-09)
+## 0.25.0 — 2026-08-09
 
-**Published** (`0.25.0`). Production kitchen-sink reference app, CI critical-path budgets,
-experimental UI isolation (`hedron[experimental-ui]`), Matplotlib-default charts path,
-SBOM/evidence attach on train tags.
+Added the production reference-app archetype, critical-path budgets, explicit
+experimental-UI quarantine, and release evidence assets.
 
-## Prior — 0.24.0
+## Earlier releases
 
-Live-transport disposition **`polling_only`**: polling is the Supported production story;
-SSE / WebSocket / streaming / preload helpers remain **experimental**
-(`hedron.experimental`). Prior Deferred live-ops IDs (`BROWSER-10-001`, `PERF-10-001`,
-`LIVE-011-BROWSER`) are **Superseded**. Narrative:
-[What's new in 0.24](whats-new-0.24.md).
-
-## Prior — 0.23.0
-
-Stable-tier expansion (D-053): narrow CRUD/admin Beginner facade promoted to API
-`stable` ([STABLE_FACADE](../api/STABLE_FACADE.md)), plus fail-closed HTMX region /
-CSRF-proxy / mount hardening. Narrative: [What's new in 0.23](whats-new-0.23.md).
-
-## Prior — 0.22.0
-
-CSRF / SecurityPolicy composition (D-051): pluggable CSRF strategies, composable
-`SecurityHeadersPolicy`, and `CsrfField` / `Form(hx=Hx(...))`. Narrative:
-[What's new in 0.22](whats-new-0.22.md).
-
-## Prior — 0.21.0
-
-Human AT protocol engineering on the train; compensated screen-reader sessions remain
-Planned. `@action` / component fragment-region parity. Narrative:
-[What's new in 0.21](whats-new-0.21.md).
+Use the [release archive](whats-new-archive.md) for 0.10–0.24. The project does not
+rewrite historical release pages to describe current maturity; use
+[What’s ready today](whats-ready.md) for present-day capability claims.

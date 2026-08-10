@@ -54,7 +54,9 @@ jobs:
               docs/*|README.md|CONTRIBUTING.md|SECURITY.md|CODE_OF_CONDUCT.md|mkdocs.yml|\
               scripts/sync_demo_code_tabs.py|scripts/generate_component_docs.py|\
               scripts/generate_sim_demos.py|scripts/check_docs_train_ssot.py|\
-              scripts/check_recipe_code_sync.py|scripts/README.md)
+              scripts/check_documentation_ownership.py|scripts/check_api_docs_coverage.py|\
+              scripts/check_package_readme_links.py|scripts/check_external_links.py|\
+              scripts/check_recipe_code_sync.py|scripts/README.md|.github/workflows/docs-health.yml)
                 ;;
               *)
                 docs_only=false

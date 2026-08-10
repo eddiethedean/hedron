@@ -84,7 +84,7 @@ see [Charts API](../api/CHART.md).
 |---|---|
 | Missing Plotly / Vega browser runtime | Fail closed (no silent blank interactive chart) |
 | Missing a11y title/description/alt | Raise / refuse render per accessibility contract |
-| Installing a release older than `0.1.6` beside Hedron 0.25 | Resolver conflict with the older core requirement |
+| Installing a release older than `0.1.6` beside Hedron 0.26 | Resolver conflict with the older core requirement |
 
 ## Related docs
 

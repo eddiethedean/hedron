@@ -123,7 +123,7 @@ Simulates swapping a region with filter chips. For the real `DataTable` componen
 ```bash
 pip install "hedron[data]>=0.26.0,<0.27"
 # optional backends
-pip install "hedron-data[pandas]"
+pip install "hedron-data[pandas]>=0.26.0,<0.27"
 ```
 
 ```python
@@ -167,7 +167,7 @@ Install the SQLAlchemy extra. **Your app owns the engine, sessions, and transact
 Hedron does not invent an ORM lifecycle.
 
 ```bash
-pip install "hedron-data[sqlalchemy]"
+pip install "hedron-data[sqlalchemy]>=0.26.0,<0.27"
 ```
 
 Minimal read-only table over a SQLAlchemy 2.x `Select` (paging uses SQL `OFFSET`/`LIMIT`;

@@ -89,7 +89,7 @@ If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 | Wrong / old version | `pip install -U "hedron>=0.26.0,<0.27"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
-| Need charts on 0.25 | Install `hedron[charts]>=0.26.0,<0.27` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
+| Need charts | Install `hedron[charts]>=0.26.0,<0.27` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
 | Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
 | Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
 
@@ -120,8 +120,10 @@ extras only when you need them:
 | `hedron[notebook]` | Alpha server-side notebook preview | [hedron-notebook](../packages/hedron-notebook.md) |
 | `hedron[mcp]` | Alpha deny-by-default MCP projection | [hedron-mcp](../packages/hedron-mcp.md) |
 | `hedron[gradio]` | Alpha Gradio client interop (experimental) | [hedron-gradio](../packages/hedron-gradio.md) |
-| `hedron[otel]` | Optional OpenTelemetry tracing helpers | — |
-| `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` / `[auth]` / `[browser]` | Content, Authlib, or test helpers | — |
+| `hedron[otel]` | Optional OpenTelemetry tracing helpers | [Observability](../guides/observability.md) |
+| `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` | Content rendering and validation helpers | [Content API](../api/CONTENT.md) |
+| `hedron[auth]` | Authlib-backed OIDC helpers | [OIDC walkthrough](../guides/oidc.md) |
+| `hedron[browser]` | Browser testing helpers | [Testing](../guides/testing.md) |
 
 Also install directly (no flagship extra): [hedron-sim](../packages/hedron-sim.md).
 Full catalog: [Optional packages](../packages/index.md).

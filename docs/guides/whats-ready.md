@@ -215,8 +215,9 @@ Pin `hedron>=0.26.0,<0.27` for the current published train.
 
 Extras: `"hedron[data]>=0.26.0,<0.27"`, `"hedron[extras]>=0.26.0,<0.27"`,
 `"hedron[jinja]>=0.26.0,<0.27"`, `"hedron[dev]>=0.26.0,<0.27"`,
-`"hedron[notebook]>=0.1.0,<0.2"` (Alpha), `"hedron[mcp]>=0.1.0,<0.2"` (Alpha),
-`"hedron[gradio]>=0.1.0,<0.2"` (Alpha),
+`"hedron[notebook]>=0.26.0,<0.27"` (Alpha satellite),
+`"hedron[mcp]>=0.26.0,<0.27"` (Alpha satellite),
+`"hedron[gradio]>=0.26.0,<0.27"` (Alpha satellite),
 `"hedron[charts]>=0.26.0,<0.27"`, and `"hedron-sample-kit>=0.1.6,<0.2"`.
 
 ## Role-specific wrappers

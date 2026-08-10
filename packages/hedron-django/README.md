@@ -94,4 +94,4 @@ Wire the view into your URLconf as usual. For HTMX fragments, declare
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

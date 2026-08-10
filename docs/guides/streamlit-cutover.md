@@ -110,7 +110,7 @@ deployable directories so removing Streamlit from the Hedron environment cannot 
 fallback. Preserve explicit pandas, NumPy, plotting, database, and model dependencies even
 if Streamlit previously installed some transitively.
 
-!!! note "Hedron 0.25 chart floor"
+!!! note "Hedron 0.26 chart floor"
 
     Install `hedron[charts]>=0.26.0,<0.27`; this requires the compatible
     `hedron-charts>=0.1.6,<0.2` satellite. See

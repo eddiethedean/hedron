@@ -11,7 +11,7 @@ Build admin tools, CRUD apps, and dashboards in Python on FastAPI.
 Routes return typed UI components; HTMX swaps HTML fragments — no Node frontend,
 and no Streamlit-style full-script rerun.
 
-**Requires Python 3.11+.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
+**Requires Python 3.11–3.14.** Prefer [uv](https://docs.astral.sh/uv/getting-started/installation/).
 **You only need the `hedron` package** (+ uvicorn). Optional packages are listed below.
 
 ```bash
@@ -74,9 +74,13 @@ Jinja+HTMX stack.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
-Hedron **0.26.x** is published (last `v0.26.0`) (Beta packages — pin as above). Before production, read
+Hedron **0.26.x** is published (last `v0.26.0`; Beta packages — pin as above). Before
+production, read
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
+
+Package identity note: PyPI versions older than `0.1.0` belong to an unrelated, retired
+geolocation project. This web framework begins at `0.1.0`; there is no API continuity.
 
 ### When not to choose Hedron
 
@@ -84,7 +88,7 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.25/) ·
+[What’s new in 0.26](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.26/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).

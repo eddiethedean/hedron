@@ -42,7 +42,7 @@ interop are **Experimental** / Alpha — not production defaults.
 
 | Package | Extra | Role |
 |---|---|---|
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.6,<0.2` on Hedron 0.25 |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.6,<0.2` on Hedron 0.26 |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-notebook](hedron-notebook.md) | `hedron[notebook]` | Server-side notebook preview helper |
 | [hedron-mcp](hedron-mcp.md) | `hedron[mcp]` | Deny-by-default MCP projection |

@@ -46,14 +46,15 @@ automatically promoting Alpha packages and experimental features without package
 | P3 | External security review + SBOM/evidence on every train tag | Process |
 | P3 | Optional written `1.0` DoD **without a date** | Documented in D-053; no phase scheduled |
 
-## Planned package-graduation phases
+## Package-quality phases
 
-The original D-053 trust program ends with the published 0.25 packet. Planned roadmap phases
-**0.26–0.32** extend its evidence discipline to the rest of the package fleet:
+The original D-053 trust program ends with the published 0.25 packet. Phase 0.26
+extends its evidence discipline to the flagship/core/Explorer group; later roadmap
+phases apply the same discipline to the remaining package fleet:
 
 | Phase | Package group |
 |---|---|
-| 0.26 | `hedron-core`, `hedron`, and Explorer |
+| 0.26 | `hedron-core`, `hedron`, and Explorer — **Published / Verified** |
 | 0.27 | Data, Flask/Django adapters, HDJ, and curated extras |
 | 0.28 | Charts and optional native acceleration |
 | 0.29 | Conformance, sample plugin, simulation/notebook tooling, and Node/Java evaluators |

@@ -156,11 +156,6 @@ GUIDE_TABS: tuple[tuple[str, str, str], ...] = (
         "core-concepts-modes",
         "Toggle the response shape — docs simulation only.",
     ),
-    (
-        "getting-started/quickstart.md",
-        "hello-refresh-quickstart",
-        "Optional preview — docs simulation (no server). Run uvicorn above first.",
-    ),
 )
 
 _TAB_BLOCK = re.compile(

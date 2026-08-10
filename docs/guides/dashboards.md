@@ -1,7 +1,7 @@
 # Dashboards and interaction graphs
 
 Phase **0.17** shipped page-local dashboard bindings and finite interaction graphs for
-reactive admin / data UIs. Capability readiness is **Supported** on the living **0.25**
+reactive admin / data UIs. Capability readiness is **Supported** on the living **0.26**
 train (feature introduced in 0.17); API compatibility remains **`beta`** — pin
 `hedron>=0.26.0,<0.27`.
 
@@ -83,4 +83,4 @@ tenant isolation in your host app ([multi-tenant](multi-tenant.md)).
 ## Next
 
 - [Compose built-ins](component-composition.md) · [Data apps](data-apps.md) ·
-  [Upgrade](upgrade.md#017-reactive-dashboards-and-agent-interfaces-published)
+  [0.17 dashboard release notes](whats-new-0.17.md#upgrade-notes)

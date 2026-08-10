@@ -73,4 +73,4 @@ Prefer [`hedron`](https://pypi.org/project/hedron/) for application work on Fast
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

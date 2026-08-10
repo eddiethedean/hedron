@@ -94,8 +94,8 @@ train is **0.26.x** (Published; last published PyPI/git = `v0.26.0`)—see
 
 Living tip is Published **`v0.26.0`**. The `v0.25.2` patch hardened mount `..` / `%2e`, RedisStatusStore / Celery–RQ cancel CAS, adapter prepare under a running loop, SSE/streaming `Cache-Control`, and root-relative SafeUrl/Hx attrs — still relevant when upgrading from earlier 0.25 lines onto `>=0.26.0,<0.27`.
 [What's ready](whats-ready.md) and the [public roadmap](roadmap.md). If docs describe a
-feature missing from your install, upgrade to a matching `0.25.x` pin
-(`hedron>=0.26.0,<0.27`) or use a git checkout of that work.
+feature missing from your install, upgrade to a matching `0.26.x` pin
+(`hedron>=0.26.0,<0.27`) or use a tagged checkout of that release.
 
 ## CSRF 403 on POST (FastAPI / Flask)
 
@@ -248,7 +248,7 @@ pip install "hedron[data]>=0.26.0,<0.27"      # DataTable, DataEditor
 pip install "hedron[charts]>=0.26.0,<0.27"   # chart components
 ```
 
-Versions before `hedron-charts 0.1.6` are incompatible with Hedron 0.25. See
+Versions before `hedron-charts 0.1.6` are incompatible with Hedron 0.26. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor),
 [Installation](../getting-started/installation.md), and
 [charts and HTMX](charts-and-htmx.md).

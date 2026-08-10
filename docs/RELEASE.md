@@ -1,167 +1,89 @@
 # Cutting a Hedron release
 
-**Living runbook for the current train (`0.26`).** Historical cut records live under
-[`docs/archive/`](https://github.com/eddiethedean/hedron/tree/main/docs/archive) and
-per-phase acceptance notes.
+This is the living maintainer runbook for the `0.26.x` train. Historical cut records
+live under `docs/archive/`. The last published release is `v0.26.0`; the next planned
+patch is `v0.26.1`.
 
-Hedron uses a coordinated release train. The Git tag includes a leading `v`
-(for example `v0.26.0`); Python package metadata omits it (`0.26.0`).
+Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
+Python metadata does not. Never move or replace a published tag.
 
-## Current published train
+## Preconditions
 
-**Last published train:** `v0.26.0` (packages `0.26.0` including first-party
-`hedron-extras`; Alpha charts/sample-kit `0.1.6`, native/notebook/mcp/gradio `0.1.x`).
+1. The release commit is on green `main`, with no unexplained waived checks.
+2. `docs/release.toml`, package metadata, `__version__`, dependency pins, lockfile,
+   changelog headings, CI gate version, security support window, and release notes agree.
+3. `docs/acceptance/release-gate-0.26.toml` remains Verified and the 0.26 package verifier
+   passes.
+4. The repository and PyPI trusted-publishing configuration are controlled by active
+   maintainers; the release uses the GitHub Actions workflow.
+5. The tag does not already exist locally or on the remote.
 
-**Prior published:** `v0.25.2`, `v0.25.1`, `v0.25.0`, `v0.24.0`, `v0.23.0`, `v0.22.0`, `v0.21.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
+## Local release candidate
 
-**Current train:** `0.26.x` — **Published** as `v0.26.0` (production-grade core / FastAPI /
-Explorer; D-054). Gate index:
-[release-gate-0.26.toml](acceptance/release-gate-0.26.toml) /
-[RELEASE_0_26.md](acceptance/RELEASE_0_26.md);
-`python scripts/check_release_gate.py 0.26.0`,
-`python scripts/verify_pkg_26.py`.
-Human AT **sessions** (`SR-021` / `PARTICIPANT-021`) remain **Planned** — not Supported
-(carryover from 0.21). Phase 0.25 evidence remains:
-[release-gate-0.25.toml](acceptance/release-gate-0.25.toml) /
-[RELEASE_0_25.md](acceptance/RELEASE_0_25.md).
-
-Production-quality maturity program (**D-053** / RFC-0056) packet **0.25** is **Verified**;
-phase **0.26** graduation (**D-054** / RFC-0057) is **Verified** —
-[PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md) ·
-[production-quality guide](guides/production-quality.md);
-`python scripts/verify_pkg_26.py`.
-
-### Tag rule
-
-- If `git rev-parse v0.25.0` **fails** (tag missing locally/remotely), run the **Cut
-  steps** below once from green `main`.
-- If `v0.25.0` **already exists** on the remote (and PyPI serves `0.25.0`), do **not**
-  retag or overwrite the release — use the **0.25.x patch** template for later fixes.
-
-### Supply chain attach (`SUPPLY-025`)
-
-Train tags **require SBOM and evidence-bundle attach** on every train tag (`SUPPLY-025`).
-Regenerate with:
-
-```bash
-uv run python scripts/build_evidence_bundle.py
-uv run python scripts/generate_sbom.py
-```
-
-Attach the resulting artifacts to the GitHub Release for the train tag. Instructions for
-the Evidence pack remain in [acceptance/EVIDENCE.md](acceptance/EVIDENCE.md).
-
-## Record: `v0.25.0` cut
-
-Commands for the `0.25.0` publish. Skip tagging when `v0.25.0` already exists (see **Tag
-rule**). For later patches, replace with `0.25.2` / `v0.25.2` (see patch template below).
-
-### Preconditions
-
-1. `main` is green on CI for Python 3.11–3.14 (including MkDocs `--strict`).
-2. Package version, `__version__`, inter-package pins, and changelog entries agree:
-   `uv run python scripts/check_release_gate.py 0.25.0`
-3. Phase 0.25 gate file: `docs/acceptance/release-gate-0.25.toml`
-   (all Verified).
-4. **License (D-033):** root `LICENSE` and every publishable package declare license
-   metadata. The release workflow refuses to publish without this.
-5. Trusted publishing / `PYPI_API_TOKEN` is configured in GitHub Actions as required by
-   `.github/workflows/release.yml`.
-6. STATUS, STABILITY, upgrade notes, What’s ready, SECURITY support window, and adopter
-   install pins describe the Published train (run
-   `uv run python scripts/check_docs_train_ssot.py`).
-
-### Cut steps (`v0.25.0`)
-
-`v0.25.0` is the **Published** production-archetype train. Use the patch
-template for `v0.25.2+`.
-
-1. Confirm the coordinated bump is committed on `main` (all package `pyproject.toml`,
-   `__version__`, CHANGELOG sections, `uv.lock`, CI gate argument).
-2. Re-run locally (same suites as CI — see `scripts/ci_checks.sh`):
+Run the same suites used by release CI:
 
 ```bash
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.25.0
-# optional: bash scripts/ci_checks.sh browser --python 3.12
-python scripts/verify_pkg_25.py
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.26.1
+bash scripts/ci_checks.sh browser --python 3.12
+uv run python scripts/check_release_gate.py 0.26.1
+uv run python scripts/verify_pkg_26.py
 ```
 
-3. Build evidence + optional wheel rehearse:
+Build and inspect local evidence if the release changes packaging or the release path:
 
 ```bash
-uv run python scripts/build_evidence_bundle.py
-rm -rf dist/wheels-scratch  # optional
-# build packages as needed, then:
+uv run python scripts/build_evidence_bundle.py --version 0.26.1
 uv run python scripts/rehearse_release.py
 ```
 
-4. Tag and push **only if** `v0.25.0` is still missing (trusted workflow publishes when
-   configured):
+Do not publish artifacts built on a maintainer laptop. These commands are rehearsal and
+diagnosis; the tag workflow builds and attests the released files.
+
+## Tag and publish
+
+After reviewing the complete version/changelog diff:
 
 ```bash
-git rev-parse v0.25.0 >/dev/null 2>&1 && echo "tag exists — do not retag" && exit 1
-git tag -a v0.25.0 -m "Hedron 0.25.0"
-git push origin v0.25.0
+git fetch --tags origin
+git rev-parse v0.26.1 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
+git tag -a v0.26.1 -m "Hedron 0.26.1"
+git push origin v0.26.1
 ```
 
-### Post-tag checklist
+The release workflow must, in order:
 
-After the Git tag exists and wheels are on PyPI:
+1. run Python 3.11–3.14 tests, quality/docs, browser, and evidence suites;
+2. build the evidence bundle for the tag version;
+3. build all workspace distributions;
+4. write `release-manifest.json` with SHA-256 checksums and attest the artifacts;
+5. publish packages to PyPI;
+6. install the exact published `hedron==0.26.1`, run `hedron new`, and import the
+   generated application;
+7. create the GitHub Release only after the published quick-start verification passes,
+   attaching distributions, evidence, and the checksum manifest.
 
-1. Keep `docs/STATUS.md` / `docs/ROADMAP.md` honest: Published 0.26 train; keep human AT sessions Planned until Verified.
-2. Run `uv run python scripts/sync_status_roadmap.py` (then `--check`).
-3. Confirm root + `docs/SECURITY.md` support window lists the current published line.
-4. Re-run `uv run python scripts/check_docs_train_ssot.py`.
+If publication is partial, use the workflow's explicit `publish_only` recovery input for
+the same immutable tag. Do not create a replacement tag or upload locally built files.
 
-## Template: 0.25.x patch cut
+## Post-release verification
 
-Replace `0.25.2` with the next patch.
+- Confirm `hedron==0.26.1` and every coordinated package version on PyPI.
+- Confirm the GitHub Release includes `release-manifest.json`, SBOM, license inventory,
+  evidence manifests, wheels, and source distributions.
+- Confirm build attestations exist and the checksum verifier succeeds on downloaded
+  assets.
+- Activate `v0.26.1` on Read the Docs, mark it stable, and verify the version menu.
+- Update `docs/release.toml` so `published_version` is `0.26.1`, run
+  `scripts/check_docs_train_ssot.py`, and publish any post-release documentation commit.
+- Verify the stable quick start from a clean environment once more.
 
-### Preconditions
+## Patch-release scope
 
-1. `main` is green on CI for Python 3.11–3.14 (including MkDocs `--strict`).
-2. Package version, `__version__`, inter-package pins, and changelog entries agree:
-   `uv run python scripts/check_release_gate.py 0.25.2`
-3. Phase 0.25 gate file: `docs/acceptance/release-gate-0.25.toml`.
-4. **License (D-033):** root `LICENSE` and every publishable package declare license
-   metadata. The release workflow refuses to publish without this.
-5. Trusted publishing / `PYPI_API_TOKEN` is configured in GitHub Actions as required by
-   `.github/workflows/release.yml`.
-6. STATUS, STABILITY, upgrade notes, What’s ready, SECURITY support window, and adopter
-   install pins describe the new patch version (run
-   `uv run python scripts/check_docs_train_ssot.py`).
-
-### Cut steps
-
-1. Confirm the coordinated bump is committed on `main` (all package `pyproject.toml`,
-   `__version__`, plugin metadata, CHANGELOG sections, `uv.lock`, CI gate argument).
-   For this patch, confirm charts/sample-kit are `0.1.6` and `hedron[charts]` requires
-   `hedron-charts>=0.1.6,<0.2`.
-2. Re-run locally (same suites as CI — see `scripts/ci_checks.sh`):
-
-```bash
-uv sync --locked --all-groups --python 3.12
-bash scripts/ci_checks.sh test --python 3.12
-bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.25.2
-# optional: bash scripts/ci_checks.sh browser --python 3.12
-```
-
-3. Build evidence + optional wheel rehearse:
-
-```bash
-uv run python scripts/build_evidence_bundle.py
-rm -rf dist/wheels-scratch  # optional
-# build packages as needed, then:
-uv run python scripts/rehearse_release.py
-```
-
-4. Tag and push (trusted workflow publishes when configured):
-
-```bash
-git tag -a v0.25.2 -m "Hedron 0.25.2"
-git push origin v0.25.2
-```
+A patch release may fix bugs, tests, documentation, packaging, or security issues
+without removing a Supported API. Any unavoidable behavior change must be called out in
+the release notes with impact, migration, and rollback instructions. Public API removal,
+security-default redesign, or a new compatibility train requires the RFC/decision path
+described in [governance](guides/governance.md).

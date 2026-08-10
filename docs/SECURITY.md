@@ -4,13 +4,13 @@
 
 Security fixes land on the **current published train** (`0.26.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.25.x`) may continue for about **90 days** after a new train publishes — after that,
-upgrade is required. There is **no contractual patch SLA**.
+minor (`0.25.x`) continues through approximately **2026-11-08** — after that, upgrade
+is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
 | `0.26.x` | Yes (current published train — pin `>=0.26.0,<0.27`; last published `v0.26.0`) |
-| `0.25.x` | Prefer upgrade to `0.26.x` (best-effort security triage ~90 days after 0.26 publish) |
+| `0.25.x` | Prefer upgrade to `0.26.x` (best-effort security triage through approximately 2026-11-08) |
 | `0.24.x` | Prefer upgrade to `0.26.x` |
 | `0.23.x` | Prefer upgrade to `0.26.x` |
 | `0.22.x` | Prefer upgrade to `0.26.x` |
@@ -46,7 +46,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes land on the current published train (`0.25.x`); see Supported versions above.
+4. Fixes land on the current published train (`0.26.x`); see Supported versions above.
 
 ### Alternate contact
 

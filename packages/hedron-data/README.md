@@ -90,4 +90,4 @@ table = DataTable(rows, row_model=EmployeeRow, caption="Employees")
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

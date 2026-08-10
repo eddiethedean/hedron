@@ -14,6 +14,10 @@ scripts here when you add them.
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
 | `check_docs_train_ssot.py` | Fail on stale 0.26 tip claims, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: quality job |
+| `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
+| `check_api_docs_coverage.py` | Require every `hedron.__all__` export in the public API coverage map. CI: quality job |
+| `check_package_readme_links.py` | Reject relative links that break when package READMEs render on PyPI. CI: quality job |
+| `check_external_links.py` | Check public HTTP links. Runs weekly in `docs-health.yml` to avoid network flakes on ordinary PRs |
 | `check_recipe_code_sync.py` | Fail when a guide's recipe Code tab drifts from its marked runnable source. CI: quality job |
 
 Documentation source ownership and review rules:
@@ -44,6 +48,9 @@ Documentation source ownership and review rules:
 | `check_supply_025.py` | `SUPPLY-025` RELEASE SBOM/evidence-bundle attach requirement |
 | `rehearse_release.py` | Clean install rehearsal before tagging |
 | `build_evidence_bundle.py` | Collect release evidence artifacts |
+| `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
+| `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
+| `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
 | `verify_pkg_26.py` / `verify_pkg_25.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_26.py`**) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |

@@ -133,10 +133,11 @@ Evaluators (three axes — skip if you are just building):
 Full cheat-sheet: [Maturity labels (evaluators)](../getting-started/how-to-read.md).
 Snapshot: [What’s ready today](whats-ready.md).
 
-## Why pin with an upper bound (`<0.26`)?
+## Why pin with an upper bound (`<0.27`)?
 
-A lower bound without an upper bound alone allows a future **0.26+** breaking train.
-Use `hedron>=0.26.0,<0.27` (and matching adapters/extras) in lockfiles. See
+A lower bound without an upper bound allows a future **0.27+** train to install
+automatically. Use `hedron>=0.26.0,<0.27` (and matching adapters/extras) so compatible
+0.26 patches are accepted while the next minor train requires an intentional review. See
 [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?

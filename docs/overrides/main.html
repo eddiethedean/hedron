@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block announce %}
-  Published: <strong>Hedron 0.26.x</strong>
-  (production-grade core/FastAPI/Explorer; polling_only; sessions Planned).
-  Last published: <strong>v0.26.0</strong>.
-  <a href="{{ base_url }}/guides/roadmap/">roadmap</a>
-  ·
-  <a href="{{ base_url }}/guides/whats-ready/">what's ready</a>
+  {% if config.extra.hedron_docs.is_development %}
+    <strong>Development documentation for {{ config.extra.hedron_docs.development_version }}.</strong>
+    For production, use stable v{{ config.extra.hedron_docs.published_version }}.
+  {% else %}
+    Documentation version: <strong>{{ config.extra.hedron_docs.version }}</strong>.
+    Current stable release: v{{ config.extra.hedron_docs.published_version }}.
+  {% endif %}
+  <a href="{{ base_url }}/guides/versions/">choose a version</a>
+  · <a href="{{ base_url }}/guides/whats-ready/">what's ready</a>
 {% endblock %}

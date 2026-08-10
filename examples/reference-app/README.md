@@ -1,6 +1,6 @@
 # Hedron reference application (FastAPI)
 
-Multi-worker production kitchen-sink sample for the living Hedron train (**0.25**).
+Multi-worker production kitchen-sink sample for the living Hedron train (**0.26**).
 Authenticated team-administration demo with CRUD, DataEditor, optional charts (workspace
 `hedron-charts` on 0.25 — not PyPI), and the production-archetype checklist
 (reverse-proxy subpath, Redis, CSP, Explorer off).
@@ -43,7 +43,7 @@ production deploy.**
 Open the home page for CRUD + DataEditor (+ charts/Markdown when workspace charts are
 available). Chart interaction endpoints live under `/charts/*` (for example
 `/charts/fragment`, `/charts/search`). Outside the workspace, install
-`hedron[charts]>=0.25.1,<0.26` to obtain the compatible chart satellite.
+`hedron[charts]>=0.26.0,<0.27` to obtain the compatible chart satellite.
 
 ## Production compose (canonical archetype)
 

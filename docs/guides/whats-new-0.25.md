@@ -40,7 +40,7 @@ Additional fail-closed hardening on the published tip (see [release notes](relea
 
 | If you… | Do this |
 |---|---|
-| Are on 0.24 | Pin `>=0.26.0,<0.27`; re-read [upgrade](upgrade.md#upgrade-from-024-025) |
+| Are on 0.24 | Pin `>=0.26.0,<0.27`; follow the [current upgrade guide](upgrade.md) |
 | Used CodeEditor / TerminalView / joystick / device | Install `hedron[experimental-ui]` and import from `hedron_extras.experimental` |
 | Deploy multi-worker | Prefer the reference-app compose archetype + Redis |
 

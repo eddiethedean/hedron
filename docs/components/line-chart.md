@@ -23,7 +23,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 Install the optional provider before importing this component:
 
 ```bash
-pip install "hedron[charts]>=0.25.1,<0.26"
+pip install "hedron[charts]>=0.26.0,<0.27"
 ```
 
 ## Basic use

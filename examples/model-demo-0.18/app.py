@@ -1,8 +1,20 @@
-"""Minimal model-demo reference app for phase 0.18 exit scenarios."""
+"""Interactive synthetic classifier showing Hedron's governed model-demo APIs."""
 
 from __future__ import annotations
 
-from hedron import Hedron, InteractionRecorder, Text
+from fastapi import Form as FastAPIForm
+from fastapi import Request, status
+from fastapi.responses import RedirectResponse
+
+from hedron import (
+    CsrfField,
+    Form,
+    Hedron,
+    InteractionRecorder,
+    SubmitButton,
+    Text,
+    TextInput,
+)
 from hedron_core import (
     ActionRegistry,
     AppShell,
@@ -35,16 +47,28 @@ app = Hedron(
 )
 
 REGISTRY = ActionRegistry()
-REGISTRY.register_action(
-    RegisteredAction(
-        action_id="classify",
-        input_schema={"text": "string"},
-        output_schema={"label": "string", "scores": "object"},
-        resource_policy="gpu-demo",
-        description="Synthetic classifier",
-        handler=lambda text: {"label": "cat", "scores": {"cat": 0.9, "dog": 0.1}},
-    )
+
+
+def classify_text(text: str) -> dict[str, object]:
+    """Deterministic local classifier: useful for UI learning, not a real model."""
+    normalized = text.casefold()
+    cat_score = 0.9 if any(word in normalized for word in ("cat", "meow", "kitten")) else 0.2
+    dog_score = round(1.0 - cat_score, 2)
+    return {
+        "label": "cat" if cat_score >= dog_score else "dog",
+        "scores": {"cat": cat_score, "dog": dog_score},
+    }
+
+
+CLASSIFY_ACTION = RegisteredAction(
+    action_id="classify",
+    input_schema={"text": "string"},
+    output_schema={"label": "string", "scores": "object"},
+    resource_policy="gpu-demo",
+    description="Deterministic synthetic classifier",
+    handler=classify_text,
 )
+REGISTRY.register_action(CLASSIFY_ACTION)
 DEMO = ModelDemo(registry=REGISTRY)
 INTERFACE = DEMO.build_from_action("classify")
 
@@ -117,31 +141,48 @@ RUN = WORKFLOW.run(
 )
 
 RECORDER = InteractionRecorder()
-RECORDER.declare_public("POST:/api/predict")
+RECORDER.declare_public("POST:/predict")
 RECORDER.record(
     method="POST",
-    path="/api/predict",
+    path="/predict",
     body={"text": "meow", "password": "should-redact"},
     session_assumptions=("optional demo session",),
 )
 
 
 @app.page("/")
-def home() -> AppShell:
+def home(request: Request) -> AppShell:
     # Show policy groups without admitting on every GET (avoids slot leak).
     groups = ", ".join(POLICY.groups)
     feedback_count = len(FEEDBACK.export(principal="demo"))
+    prediction = request.session.get("prediction")
+    scores = prediction.get("scores", {}) if isinstance(prediction, dict) else {}
+    score_rows = [
+        {"class_id": str(label), "score": float(score), "calibrated": False}
+        for label, score in scores.items()
+        if isinstance(score, (int, float))
+    ]
+    prediction_panel = (
+        PredictionLabel(score_rows, title=f"Prediction: {prediction['label']}")
+        if isinstance(prediction, dict) and score_rows
+        else Text("Submit text to generate a synthetic prediction.")
+    )
     return AppShell(
         nav=(HtmxLink("Demo", "/", target="#main-panel", select="#main-panel", push_url=True),),
         body=MainPanel(
             Text("Model demo (0.18 reference)"),
+            Text("Try “meow at the window” or “walk the dog”. This runs locally."),
+            Form(
+                CsrfField(),
+                TextInput("text", value="meow at the window", required=True),
+                SubmitButton("Classify"),
+                action="/predict",
+                method="post",
+            ),
+            prediction_panel,
             Text(f"Interface={INTERFACE.interface_id} source={INTERFACE.source_id}"),
             Text(f"Policy groups={groups}"),
             Text(f"Workflow run={RUN.status} outputs={RUN.outputs}"),
-            PredictionLabel(
-                [{"class_id": "cat", "score": 0.9, "calibrated": True}],
-                title="Synthetic scores",
-            ),
             ParameterViewer(
                 {"temperature": 0.0, "api_token": "hidden"}, secret_keys=("api_token",)
             ),
@@ -155,15 +196,23 @@ def home() -> AppShell:
     )
 
 
-@app.component("/api/predict", methods=["POST"])
-def predict_public() -> Text:
+@app.action("/predict", method="POST")
+def predict_public(
+    request: Request,
+    text: str = FastAPIForm(..., min_length=1, max_length=500),
+) -> RedirectResponse:
+    handler = CLASSIFY_ACTION.handler
+    if handler is None:  # Defensive: registered demos fail closed without a handler.
+        raise RuntimeError("classify action has no handler")
+    result = handler(text=text)
+    request.session["prediction"] = result
     RECORDER.record(
         method="POST",
-        path="/api/predict",
-        body={"text": "meow", "password": "should-redact"},
+        path="/predict",
+        body={"text": text, "password": "should-redact"},
         session_assumptions=("optional demo session",),
     )
-    return Text("ok")
+    return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 def recorded_snippets() -> list[str]:

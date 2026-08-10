@@ -24,7 +24,7 @@ pip install "hedron-notebook>=0.1.0,<0.2"
 # or
 uv add "hedron-notebook>=0.1.0,<0.2"
 # via flagship:
-pip install "hedron[notebook]>=0.1.0,<0.2"
+pip install "hedron[notebook]>=0.26.0,<0.27"
 ```
 
 Requires Python 3.11–3.14.
@@ -79,4 +79,4 @@ preview.shutdown()
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

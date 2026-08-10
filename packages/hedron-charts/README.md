@@ -80,4 +80,4 @@ chart = MatplotlibChart(fig, alt="y = x squared", description="Quadratic growth"
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

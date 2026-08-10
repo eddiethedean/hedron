@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.25.x**)
+**Status:** Accepted · **Shipped** (introduced in 0.4; current train **0.26.x**)
 
 ```python
 from fastapi import Depends

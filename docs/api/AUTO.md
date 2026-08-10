@@ -46,7 +46,7 @@ deterministic for a given registry and value shape.
 - Markdown-like string policy → secure `Markdown` when registered
 - Dataframe-like / tabular rows → may select `DataTable` **when** `hedron[data]` is installed
 - Plotly / Altair / Matplotlib → chart adapters when the in-repo chart provider is
-  available (PyPI installation is Deferred on 0.25)
+  available from PyPI at the documented compatibility floor
 - PIL-like image → managed `Image` when helpers are available
 
 Ambiguous matches produce a documented winner or an actionable error; they never depend

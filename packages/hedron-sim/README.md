@@ -95,4 +95,4 @@ Then load `hedron-sim.js` (and optionally `hedron-sim.css`) from MkDocs
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).

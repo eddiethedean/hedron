@@ -1,57 +1,68 @@
-# OIDC helpers (not an IdP product)
+# OpenID Connect with Authlib
 
-!!! important "Helpers only"
+Hedron is not an identity provider. It supplies the application and signed host
+session; Authlib performs the standard OIDC authorization-code exchange. Your app owns
+provider registration, user records, roles, and authorization.
 
-    Hedron does **not** ship a managed SSO product or a complete pasteable OIDC app.
-    `hedron[auth]` provides Authlib-backed URL/PKCE/state helpers. **You** own the IdP
-    configuration, token exchange, user store, and authorization. Prefer the
-    [session-auth recipe](../examples/session-auth.md) for first-hour auth.
+The runnable [`examples/oidc`](https://github.com/eddiethedean/hedron/tree/main/examples/oidc)
+sample implements login, callback validation, a minimal identity session, error handling,
+and CSRF-protected local logout.
 
-Pin: `pip install "hedron[auth]>=0.26.0,<0.27"`.
+## 1. Register the application
 
-## Wiring outline
+Create an OIDC web application with your provider and allow this development redirect:
 
-1. **Install** `hedron[auth]` and configure your IdP (issuer, client id/secret, redirect URI).
-2. **Login route** — generate PKCE/state/nonce, `store_oidc_handshake` in the host session,
-   redirect to `login_url(...)`.
-3. **Callback route** — `validate_callback_state` / nonce, exchange the code with Authlib
-   (your code), `normalize_claims`, then mark the host session
-   (`mark_authenticated` / set your own session keys).
-4. **Logout** — clear session; optional `logout_url(...)` to the IdP end-session endpoint.
-5. **Gate pages** — ordinary FastAPI `Depends` / soft redirects, same as
-   [Authentication](authentication.md).
-
-```python
-from hedron.oidc import (
-    OidcClientConfig,
-    generate_pkce,
-    generate_state,
-    generate_nonce,
-    login_url,
-    store_oidc_handshake,
-    validate_callback_state,
-)
-
-config = OidcClientConfig(
-    issuer="https://idp.example/",
-    client_id="app",
-    redirect_uri="https://app.example/auth/callback",
-)
-# Build authorize URL + store handshake secrets in request.session — see Auth API.
+```text
+http://127.0.0.1:8000/auth/callback
 ```
 
-Symbol reference: [Auth API](../api/AUTH.md). Session hardening:
-[Hardened sessions](hardened-sessions.md).
+Use the exact scheme, host, port, and path. `localhost` and `127.0.0.1` are different
+redirect URIs to most providers.
 
-## What you still bring
+## 2. Install and configure
+
+```bash
+pip install "hedron[auth]>=0.26.0,<0.27" "uvicorn[standard]"
+curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/oidc/app.py -o app.py
+export OIDC_ISSUER="https://your-provider.example"
+export OIDC_CLIENT_ID="your-client-id"
+export OIDC_CLIENT_SECRET="your-client-secret"
+export SESSION_SECRET="$(python -c 'import secrets; print(secrets.token_urlsafe(48))')"
+uvicorn app:app --reload
+```
+
+Open <http://127.0.0.1:8000>, choose **Sign in**, authenticate with the provider, and
+confirm that the app displays the returned name. Sign out clears the local session.
+
+## 3. Understand the security boundary
+
+The example uses provider discovery, state validation, nonce/ID-token validation, and
+the authorization-code exchange through Authlib. It stores only `sub` and a display
+name in the signed session—not access, refresh, or ID tokens.
 
 | Concern | Owner |
 |---|---|
-| IdP tenant / app registration | You / IdP admin |
-| Authorization code → tokens exchange | Your Authlib (or gateway) code |
-| Roles / object ACL | Your app |
-| Multi-worker session store | Sticky sessions or shared store |
+| Provider tenant and client registration | You / identity administrator |
+| Protocol exchange and token validation | Authlib using provider metadata |
+| Session cookie and rendered UI | Hedron / Starlette |
+| User provisioning, roles, and object permissions | Your application |
+| Provider logout, token revocation, and refresh | Your application policy |
 
-## See also
+For production, require HTTPS, rotate the session secret, use a shared server-side
+session/token store when workers need shared state, set the provider's production
+redirect URI exactly, and implement authorization independently of UI visibility.
 
-- [Authentication](authentication.md) · [Auth API](../api/AUTH.md) · [What’s ready](whats-ready.md)
+## Common failures
+
+| Symptom | Check |
+|---|---|
+| Provider reports `redirect_uri` mismatch | Registered URI exactly matches `OIDC_REDIRECT_URI` |
+| Callback returns to the signed-out page | Cookie domain/HTTPS policy and a stable `SESSION_SECRET` |
+| State validation fails | Login and callback used the same origin, browser session, and worker session store |
+| Discovery fails | `OIDC_ISSUER` is the issuer base, not the authorization endpoint |
+| Sign-in succeeds but access is too broad | Add application authorization; OIDC authentication alone grants no role |
+
+Low-level URL, PKCE, state, nonce, and claim-redaction helpers remain available in
+[`hedron.oidc`](../api/AUTH.md) for integrations that cannot use Authlib's Starlette
+client. See also [authentication](authentication.md), [hardened sessions](hardened-sessions.md),
+and the [threat model](threat-model.md).

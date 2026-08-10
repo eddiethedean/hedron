@@ -1,4 +1,4 @@
-# Streamlit → Hedron 0.25 migration matrix
+# Streamlit → Hedron 0.26 migration matrix
 
 Use this page to find the closest Hedron path for a Streamlit API. It is a migration aid,
 not a claim of call-for-call compatibility. The execution model, state ownership, and
@@ -14,7 +14,7 @@ yet decided whether Hedron fits the app. For callbacks, reruns, state, and cache
 |---|---|
 | **Direct** | A first-party Hedron component handles substantially the same UI job. |
 | **Equivalent** | The user outcome is supported through explicit routes, forms, HTTP, or host-framework services. |
-| **Partial** | A narrower path exists or the 0.25 packaging/maturity boundary matters. Test before committing. |
+| **Partial** | A narrower path exists or the 0.26 packaging/maturity boundary matters. Test before committing. |
 | **No parity** | Hedron deliberately does not reproduce the mechanism. Redesign around explicit requests and state. |
 
 The audit baseline is Streamlit's official 1.60.0 documentation. Check the maintained
@@ -72,7 +72,7 @@ for community packages.
 | `st.download_button` | `DownloadButton` + download response helpers | **Equivalent** | Authorize the response; do not expose arbitrary filesystem paths. |
 | `st.graphviz_chart`, Mermaid | Optional chart/diagram adapters or pre-rendered safe media | **Partial** | Check package availability and CSP before migration. |
 
-!!! note "Hedron 0.25 chart floor"
+!!! note "Hedron 0.26 chart floor"
 
     Use `hedron[charts]>=0.26.0,<0.27`, which enforces
     `hedron-charts>=0.1.6,<0.2`. See
