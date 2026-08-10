@@ -99,7 +99,7 @@ def browser_app_url() -> Iterator[str]:
         thread.join(timeout=5)
 
 
-def _launch(pw: object, engine: str):  # noqa: ANN001
+def _launch(pw: object, engine: str):
     browser_type = getattr(pw, engine)
     return browser_type.launch(headless=True)
 

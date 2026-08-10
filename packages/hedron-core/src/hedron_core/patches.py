@@ -216,7 +216,7 @@ def apply_property_patch(
         _apply_op(new_target, segments, op, patch.value)
     except PatchError:
         raise
-    except Exception as exc:  # noqa: BLE001 — fail closed with PatchError
+    except Exception as exc:
         raise _patch_error(
             HED_PATCH_0004,
             f"Failed to apply {op.value} at {patch.path!r}: {exc}",

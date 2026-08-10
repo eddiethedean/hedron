@@ -4,14 +4,15 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import Any, TypeVar
+from typing import Any, Protocol, TypeVar, cast
 
 from flask import Blueprint, Flask, Response, current_app, request
 
 from hedron_core.addressable import AddressableDescriptor
-from hedron_core.component import Component
+from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderResult
+from hedron_core.security_policy import SecurityPolicy
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, assert_flask_csrf_strategy, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
 
@@ -21,6 +22,22 @@ F = TypeVar("F", bound=Callable[..., Any])
 
 _UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 _SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "TRACE"})
+
+
+class _AuthSignalLike(Protocol):
+    authenticated: bool
+
+
+class _HedronFlaskExtension(Protocol):
+    """Minimal extension surface used by blueprint helpers."""
+
+    csrf_protect: bool
+    csrf_cookie_name: str
+    csrf_cookie_path: str | None
+    csrf_cookie_secure: bool | None
+    security_policy: SecurityPolicy | None
+
+    def auth_signal(self, req: object = ...) -> _AuthSignalLike: ...
 
 
 def _normalize_fragment_regions(
@@ -63,8 +80,9 @@ def convert_view_result(
             allow_undeclared_targets=allow_undeclared_targets,
         )
     if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
+        # Duck-typed component / NodeLike after isinstance/hasattr gate.
         return component_response(
-            value,  # type: ignore[arg-type]
+            cast(NodeLike | Component[Any] | RenderResult, value),
             authenticated=authenticated,
             fragment_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
@@ -72,22 +90,27 @@ def convert_view_result(
     return value
 
 
+def _extension() -> _HedronFlaskExtension | None:
+    extension = current_app.extensions.get("hedron")
+    if extension is None:
+        return None
+    return cast(_HedronFlaskExtension, extension)
+
+
 def _authenticated() -> bool:
     auth_fn = getattr(current_app, "auth_signal", None)
     if callable(auth_fn):
         signal = auth_fn(request)
         return bool(getattr(signal, "authenticated", False))
-    extension = current_app.extensions.get("hedron")
-    if extension is not None and hasattr(extension, "auth_signal"):
+    extension = _extension()
+    if extension is not None:
         signal = extension.auth_signal(request)
         return bool(getattr(signal, "authenticated", False))
     return False
 
 
-def _csrf_settings() -> tuple[bool, str, object | None]:
-    from hedron_core.security_policy import SecurityPolicy
-
-    extension = current_app.extensions.get("hedron")
+def _csrf_settings() -> tuple[bool, str, SecurityPolicy | None]:
+    extension = _extension()
     if extension is None:
         return True, DEFAULT_CSRF_COOKIE, None
     protect = bool(getattr(extension, "csrf_protect", True))
@@ -108,9 +131,7 @@ def wrap_hedron_view(
     regions = _normalize_fragment_regions(fragment_regions)
 
     @wraps(view)
-    def wrapped(*args: Any, **kwargs: Any) -> Any:
-        from hedron_core.security_policy import SecurityPolicy
-
+    def wrapped(*args: object, **kwargs: object) -> object:
         protect, cookie_name, policy = _csrf_settings()
         if require_csrf and protect and request.method.upper() in _UNSAFE_METHODS:
             if isinstance(policy, SecurityPolicy):
@@ -125,7 +146,7 @@ def wrap_hedron_view(
             allow_undeclared_targets=allow_undeclared_targets,
         )
 
-    return wrapped  # type: ignore[return-value]
+    return cast(F, wrapped)
 
 
 # Backward-compatible alias for older internal imports.
@@ -266,51 +287,50 @@ def attach_hedron_to_flask(
     """Store extension state and apply security headers (and optional CSRF cookies)."""
 
     import contextlib
+    from dataclasses import replace
 
     from hedron_core.adapter import AuthSignal
-    from hedron_core.security_policy import SecurityPolicy
 
+    ext = cast(_HedronFlaskExtension, extension)
     policy = (
-        SecurityPolicy.from_name(security)  # type: ignore[arg-type]
+        SecurityPolicy.from_name(cast(str | SecurityPolicy, security))
         if security is not None
-        else getattr(extension, "security_policy", None)
+        else getattr(ext, "security_policy", None)
     )
     if policy is None:
         policy = SecurityPolicy.from_name("standard")
     if not isinstance(policy, SecurityPolicy):
-        policy = SecurityPolicy.from_name(policy)
+        policy = SecurityPolicy.from_name(cast(str | SecurityPolicy, policy))
     assert_flask_csrf_strategy(policy)
     # Keep extension cookie name and policy/strategy cookie name identical.
     strategy = policy.resolve_csrf_strategy() if policy.csrf_enabled else None
     strategy_name = getattr(strategy, "cookie_name", None) if strategy is not None else None
-    ext_name = getattr(extension, "csrf_cookie_name", DEFAULT_CSRF_COOKIE)
+    ext_name = getattr(ext, "csrf_cookie_name", DEFAULT_CSRF_COOKIE)
     if (
         isinstance(ext_name, str)
         and ext_name != DEFAULT_CSRF_COOKIE
         and policy.csrf is None
         and policy.csrf_cookie_name == DEFAULT_CSRF_COOKIE
     ):
-        from dataclasses import replace
-
         policy = replace(policy, csrf_cookie_name=ext_name)
     elif isinstance(strategy_name, str) and strategy_name:
         with contextlib.suppress(Exception):
-            extension.csrf_cookie_name = strategy_name  # type: ignore[attr-defined]
+            ext.csrf_cookie_name = strategy_name
     with contextlib.suppress(Exception):
-        extension.security_policy = policy  # type: ignore[attr-defined]
-        if isinstance(getattr(extension, "csrf_cookie_name", None), str):
+        ext.security_policy = policy
+        if isinstance(getattr(ext, "csrf_cookie_name", None), str):
             synced = policy.resolve_csrf_strategy()
             synced_name = getattr(synced, "cookie_name", None) if synced is not None else None
             if isinstance(synced_name, str) and synced_name:
-                extension.csrf_cookie_name = synced_name  # type: ignore[attr-defined]
+                ext.csrf_cookie_name = synced_name
 
     app.extensions["hedron"] = extension
-    app.auth_signal = extension.auth_signal  # type: ignore[attr-defined]
+    app.auth_signal = ext.auth_signal  # type: ignore[attr-defined]  # Flask monkey-patch
 
     @app.after_request
-    def _hedron_after_request(response: Response) -> Response:  # type: ignore[no-untyped-def]
+    def _hedron_after_request(response: Response) -> Response:
         authenticated = False
-        auth_fn = getattr(extension, "auth_signal", None)
+        auth_fn = getattr(ext, "auth_signal", None)
         if callable(auth_fn):
             try:
                 signal = auth_fn(request)
@@ -329,8 +349,8 @@ def attach_hedron_to_flask(
                 response.headers[key] = value
         seed_cookie = auto_csrf_cookie and request.method in {"GET", "HEAD"}
         if seed_cookie and policy.csrf_enabled:
-            strategy = policy.resolve_csrf_strategy()
-            if strategy is not None and bool(getattr(strategy, "sets_cookie", True)):
+            csrf_strategy = policy.resolve_csrf_strategy()
+            if csrf_strategy is not None and bool(getattr(csrf_strategy, "sets_cookie", True)):
                 from hedron_core.mount import cookie_path_for_mount
                 from hedron_flask.csrf import (
                     csrf_cookie_force_secure,
@@ -339,8 +359,9 @@ def attach_hedron_to_flask(
                     ensure_csrf_cookie,
                 )
 
-                cookie_name = getattr(strategy, "cookie_name", None) or getattr(
-                    extension, "csrf_cookie_name", DEFAULT_CSRF_COOKIE
+                cookie_name = str(
+                    getattr(csrf_strategy, "cookie_name", None)
+                    or getattr(ext, "csrf_cookie_name", DEFAULT_CSRF_COOKIE)
                 )
                 script_root = getattr(request, "script_root", "") or ""
                 cookie_path = (
@@ -348,21 +369,21 @@ def attach_hedron_to_flask(
                     if isinstance(script_root, str) and script_root
                     else "/"
                 )
-                configured = getattr(extension, "csrf_cookie_path", None)
+                configured = getattr(ext, "csrf_cookie_path", None)
                 if isinstance(configured, str) and configured:
                     cookie_path = configured
                 force = csrf_cookie_force_secure(
-                    getattr(extension, "csrf_cookie_secure", None),
+                    getattr(ext, "csrf_cookie_secure", None),
                     policy,
                 )
                 ensure_csrf_cookie(
                     response,
                     csrf_token_for_request(
                         request,
-                        cookie_name=cookie_name,  # type: ignore[arg-type]
+                        cookie_name=cookie_name,
                         policy=policy,
                     ),
-                    cookie_name=cookie_name,  # type: ignore[arg-type]
+                    cookie_name=cookie_name,
                     secure=csrf_cookie_should_be_secure(
                         request,
                         force_secure=force,

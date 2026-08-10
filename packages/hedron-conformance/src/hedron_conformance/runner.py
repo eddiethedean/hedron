@@ -120,7 +120,7 @@ def run_kit(
                 )
             else:
                 detail = ""
-        except Exception as exc:  # noqa: BLE001 — runner must surface evaluator failures
+        except Exception as exc:
             passed = False
             detail = (
                 f"fixture={fixture.id} contract={fixture.contract_version} "

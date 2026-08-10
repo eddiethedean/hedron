@@ -59,7 +59,7 @@ def _apply_project_discovery(base: Path | None = None) -> HedronSettings:
     if settings.plugins is not None:
         try:
             load_plugins(enabled=list(settings.plugins))
-        except Exception as exc:  # noqa: BLE001 — CLI surfaces plugin errors
+        except Exception as exc:
             print(f"Plugin load failed: {exc}", file=sys.stderr)
             raise SystemExit(1) from exc
     return settings
@@ -901,7 +901,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
             from hedron.security.policy import SecurityPolicy
 
             csp_policy = SecurityPolicy.from_name("standard").content_security_policy
-        except Exception:  # noqa: BLE001
+        except Exception:
             csp_policy = None
         for root in settings.resolved_roots(base=base) or [base]:
             root = Path(root).resolve()
@@ -939,7 +939,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
                             source_name=rel,
                         )
                     )
-                except Exception as exc:  # noqa: BLE001 — inventory is best-effort
+                except Exception as exc:
                     reports.append({"name": str(path), "error": str(exc)})
         hdj_reports = reports
         inv = build_production_inventory(
@@ -1093,9 +1093,9 @@ def _cmd_audit_components(args: argparse.Namespace) -> int:
                     plugin_rows.append(cast(JsonObject, cast(PluginMetaDict, meta.to_dict())))
                 else:
                     plugin_rows.append({"name": ep.name, "version": "unknown"})
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 plugin_rows.append({"name": ep.name, "error": str(exc)})
-    except Exception:  # noqa: BLE001
+    except Exception:
         plugin_rows = []
     payload: JsonObject = cast(
         JsonObject,

@@ -8,7 +8,7 @@ from contextvars import ContextVar
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from types import MappingProxyType
-from typing import Any, NoReturn, Protocol, cast
+from typing import Any, ClassVar, NoReturn, Protocol, cast
 from urllib.parse import urlsplit
 from weakref import ReferenceType, WeakKeyDictionary, ref
 
@@ -204,7 +204,7 @@ def _environment_binding(environment: Environment) -> HedronJinja | None:
 class HedronJinjaExtension(Extension):
     """The small HDJ grammar: guard, components, slots, and conditional assets."""
 
-    tags = {"hdj_guard", "hedron", "slot", "hedron_asset"}
+    tags: ClassVar[set[str]] = {"hdj_guard", "hedron", "slot", "hedron_asset"}
 
     def parse(self, parser: Parser) -> nodes.Node:
         token = next(parser.stream)

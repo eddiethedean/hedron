@@ -82,7 +82,7 @@ class RedisCacheBackend(CacheBackend):
     def ping(self) -> bool:
         try:
             return bool(self._client.ping())
-        except Exception:  # noqa: BLE001
+        except Exception:
             return False
 
     def age_ms(self, key: str) -> float | None:

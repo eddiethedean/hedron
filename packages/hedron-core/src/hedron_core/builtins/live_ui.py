@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import itertools
 import re
-from typing import Literal
+from typing import ClassVar, Literal
 
 from hedron_core.builtins._base import collect_children
 from hedron_core.component import Component, NodeLike
@@ -28,7 +28,7 @@ class Dialog(Component[DialogProps]):
 
     props_type = DialogProps
     logical_name = "Dialog"
-    slots = {"body": "optional", "actions": "optional"}
+    slots: ClassVar[dict[str, str]] = {"body": "optional", "actions": "optional"}
 
     def __init__(
         self,

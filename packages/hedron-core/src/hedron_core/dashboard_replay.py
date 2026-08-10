@@ -263,7 +263,7 @@ def _apply_patch(
                 "target_id": target_id,
             }
         )
-    except Exception as exc:  # noqa: BLE001 — record fail-closed conflict for fixtures
+    except Exception as exc:
         audit.append(
             {
                 "kind": "conflict",

@@ -116,13 +116,14 @@ src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explo
 extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B", "SIM"]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF100", "RUF012", "S110", "S112"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/**/*.py" = ["B008"]
 "packages/hedron-core/src/hedron_core/addressable.py" = ["UP047"]
 "packages/hedron/src/hedron/async_utils.py" = ["UP047"]
 "packages/hedron/src/hedron/state.py" = ["UP046", "UP047"]
+"packages/hedron-data/src/hedron_data/spreadsheet.py" = ["E501"]
 
 [tool.pyright]
 include = [

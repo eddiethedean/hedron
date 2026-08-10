@@ -1,7 +1,5 @@
 """Spreadsheet import/export beyond CSV (xlsx/ods) with formula sandbox."""
 
-# ruff: noqa: E501
-
 from __future__ import annotations
 
 import csv

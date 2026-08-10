@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import replace
 from typing import Any, ParamSpec, TypeVar, cast
@@ -32,6 +33,7 @@ __all__ = ["HedronFlask"]
 _UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 P = ParamSpec("P")
 R = TypeVar("R")
+_logger = logging.getLogger("hedron.flask")
 
 
 class HedronFlask:
@@ -328,8 +330,11 @@ class HedronFlask:
                     user_id = get_id()
                 if user_id is None:
                     user_id = getattr(current_user, "id", None)
-        except Exception:
-            pass
+        except ImportError:
+            _logger.debug("flask_login is not installed; using session identity")
+        except Exception as exc:
+            # flask_login may raise outside a request context; fall back to session.
+            _logger.debug("flask_login current_user unavailable: %s", exc)
         if user_id is None:
             user_id = flask_session.get("user_id")
             if user_id is None:

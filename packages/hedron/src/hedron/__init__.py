@@ -86,7 +86,7 @@ from hedron.security import (
 from hedron.state import SessionState, session_state
 
 # Re-export beginner core API.
-from hedron_core import (  # noqa: F401
+from hedron_core import (
     ActionDock,
     ActionRegistry,
     Alert,

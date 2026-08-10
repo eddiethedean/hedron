@@ -6,6 +6,8 @@ import json
 from collections.abc import Sequence
 from typing import Any, Literal
 
+from pydantic import Field
+
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -200,12 +202,12 @@ class ImageCrop(Component[ImageCropProps]):
 
 class RegionProps(Props):
     kind: Literal["box", "lasso"] = "box"
-    points: list[list[float]] = []
+    points: list[list[float]] = Field(default_factory=list)
 
 
 class ImageRegionSelectProps(ElementProps):
     src: SafeUrl
-    regions: list[RegionProps] = []
+    regions: list[RegionProps] = Field(default_factory=list)
     name: str = "region"
     mode: Literal["box", "lasso"] = "box"
 
@@ -278,7 +280,7 @@ class AnnotationProps(Props):
 
 class ImageAnnotationsProps(ElementProps):
     src: SafeUrl
-    annotations: list[AnnotationProps] = []
+    annotations: list[AnnotationProps] = Field(default_factory=list)
     name: str = "annotations"
 
 

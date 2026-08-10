@@ -36,9 +36,9 @@ __all__ = ["Hedron", "mount_build_assets", "mount_hedron_static"]
 
 def _settings_explorer_hint() -> str | None:
     """Read explicit [tool.hedron] explorer from cwd when present."""
-    try:
-        import tomllib
+    import tomllib
 
+    try:
         cwd = Path.cwd()
         pyproject = cwd / "pyproject.toml"
         if not pyproject.is_file():
@@ -51,7 +51,7 @@ def _settings_explorer_hint() -> str | None:
         mode = str(hedron["explorer"] or "off")
         if mode in {"off", "development", "secured"}:
             return mode
-    except Exception:  # noqa: BLE001 — constructor must not fail on bad config
+    except (OSError, TypeError, ValueError, KeyError, tomllib.TOMLDecodeError):
         return None
     return None
 
@@ -174,7 +174,8 @@ class Hedron(FastAPI):
                 self.state.hedron_mount_path = env_mount.path
             else:
                 self.state.hedron_mount_path = ""
-        except Exception:  # noqa: BLE001
+        except (ImportError, OSError, ValueError, TypeError) as exc:
+            logger.debug("Mount path from environ unavailable: %s", exc)
             self.state.hedron_mount_path = ""
 
         if enable_sessions:
@@ -221,8 +222,8 @@ class Hedron(FastAPI):
             from hedron.config import load_hedron_settings
 
             self.state.hedron_settings_loader = load_hedron_settings
-        except Exception:  # noqa: BLE001
-            pass
+        except ImportError:
+            logger.debug("hedron.config unavailable; explorer settings bridge disabled")
         try:
             from hedron.security.csrf import prepare_csrf_from_request, validate_csrf
 
@@ -231,7 +232,8 @@ class Hedron(FastAPI):
                 validate_csrf(request, policy)
 
             self.state.hedron_csrf_validate = _csrf_validate
-        except Exception:  # noqa: BLE001
+        except ImportError:
+            logger.debug("CSRF helpers unavailable; explorer CSRF bridge disabled")
             self.state.hedron_csrf_validate = None
 
         if self.hedron_explorer_mode == "development":

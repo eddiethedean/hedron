@@ -6,16 +6,20 @@ Secret values stay as opaque refs/strings; Hedron does not store a secret manage
 
 from __future__ import annotations
 
+import logging
 from collections.abc import AsyncGenerator, Callable, Mapping
 from contextlib import asynccontextmanager, suppress
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any, Literal, Protocol, TypeVar, cast
 
 from fastapi import FastAPI, Request
 
 ConnectionKind = Literal["sqlalchemy", "snowflake", "custom"]
+T = TypeVar("T")
+_logger = logging.getLogger("hedron.connections")
 
 __all__ = [
+    "ClosableConnection",
     "ConnectionKind",
     "ConnectionRegistry",
     "ConnectionSpec",
@@ -28,13 +32,29 @@ __all__ = [
 ]
 
 
+class ClosableConnection(Protocol):
+    """Optional dispose surface probed by sync/async close helpers.
+
+    Host connection objects need not implement this Protocol explicitly; the
+    registry looks for ``close`` / ``dispose`` / ``shutdown`` / ``aclose`` by
+    attribute. Declared for documentation and structural typing.
+    """
+
+    def close(self) -> object: ...
+
+
 @dataclass(frozen=True, slots=True)
 class ConnectionSpec:
-    """Named connection metadata (secrets remain opaque refs/strings)."""
+    """Named connection metadata (secrets remain opaque refs/strings).
+
+    ``config`` holds host-defined opaque values (DSN refs, provider labels).
+    Live secret material must not be stored here — use ``secret_refs`` labels.
+    """
 
     name: str
     kind: ConnectionKind = "custom"
-    config: Mapping[str, Any] = field(default_factory=dict)
+    # Host-defined opaque config (DSN refs, provider labels, etc.).
+    config: Mapping[str, object] = field(default_factory=dict)
     healthcheck: str | None = None
 
     def __post_init__(self) -> None:
@@ -52,7 +72,7 @@ class ConnectionSpec:
             raise ValueError("healthcheck must be a non-empty string when set")
 
 
-def _dispose_instance(instance: Any) -> None:
+def _dispose_instance(instance: object) -> None:
     for attr in ("close", "dispose", "shutdown"):
         method = getattr(instance, attr, None)
         if callable(method):
@@ -70,14 +90,14 @@ def _dispose_instance(instance: Any) -> None:
             return
 
 
-async def _dispose_instance_async(instance: Any) -> None:
+async def _dispose_instance_async(instance: object) -> None:
     for attr in ("close", "dispose", "shutdown", "aclose"):
         method = getattr(instance, attr, None)
         if callable(method):
             with suppress(Exception):
                 result = method()
                 if hasattr(result, "__await__"):
-                    await result  # type: ignore[misc]
+                    await result  # type: ignore[misc]  # duck-typed awaitable from host close()
             return
 
 
@@ -86,20 +106,20 @@ class ConnectionRegistry:
 
     def __init__(self) -> None:
         self._specs: dict[str, ConnectionSpec] = {}
-        self._factories: dict[str, Callable[[], Any]] = {}
-        self._healthchecks: dict[str, Callable[[Any], bool]] = {}
-        self._instances: dict[str, Any] = {}
+        self._factories: dict[str, Callable[[], object]] = {}
+        self._healthchecks: dict[str, Callable[[object], bool]] = {}
+        self._instances: dict[str, object] = {}
         self._secret_refs: dict[str, Mapping[str, str]] = {}
 
     def register(
         self,
         name: str,
-        factory: Callable[[], Any],
+        factory: Callable[[], T],
         *,
         kind: ConnectionKind = "custom",
         secret_refs: Mapping[str, str] | None = None,
-        config: Mapping[str, Any] | None = None,
-        healthcheck: Callable[[Any], bool] | None = None,
+        config: Mapping[str, object] | None = None,
+        healthcheck: Callable[[T], bool] | None = None,
         healthcheck_name: str | None = None,
     ) -> ConnectionSpec:
         """Register a lazy factory under ``name`` (replaces prior registration)."""
@@ -112,7 +132,7 @@ class ConnectionRegistry:
             check_name = getattr(healthcheck, "__name__", None)
             if not isinstance(check_name, str) or check_name in {"<lambda>", "<locals>"}:
                 check_name = "healthcheck"
-        merged: dict[str, Any] = dict(config or {})
+        merged: dict[str, object] = dict(config or {})
         if secret_refs:
             # Opaque refs only — values are labels/paths, not live secrets.
             merged.setdefault("secret_refs", dict(secret_refs))
@@ -129,7 +149,8 @@ class ConnectionRegistry:
         self._factories[name] = factory
         self._secret_refs[name] = dict(secret_refs or {})
         if healthcheck is not None:
-            self._healthchecks[name] = healthcheck
+            # Heterogeneous registry stores checks as object→bool after registration.
+            self._healthchecks[name] = cast(Callable[[object], bool], healthcheck)
         else:
             self._healthchecks.pop(name, None)
         return spec
@@ -143,7 +164,7 @@ class ConnectionRegistry:
     def names(self) -> tuple[str, ...]:
         return tuple(self._specs)
 
-    def get(self, name: str) -> Any:
+    def get(self, name: str) -> object:
         """Return a cached instance, creating it via the registered factory once."""
         if name not in self._factories:
             raise KeyError(f"unknown connection {name!r}")
@@ -152,12 +173,17 @@ class ConnectionRegistry:
         return self._instances[name]
 
     def health(self, name: str) -> bool:
-        """Run the registered healthcheck (or ``True`` when none is configured)."""
+        """Run the registered healthcheck (or ``True`` when none is configured).
+
+        Factory or healthcheck failures return ``False`` and are logged so ops
+        can distinguish unhealthy connections from a quiet miss.
+        """
         if name not in self._factories:
             raise KeyError(f"unknown connection {name!r}")
         try:
             instance = self.get(name)
         except Exception:
+            _logger.exception("Connection %r factory failed during health check", name)
             return False
         check = self._healthchecks.get(name)
         if check is None:
@@ -165,6 +191,7 @@ class ConnectionRegistry:
         try:
             return bool(check(instance))
         except Exception:
+            _logger.exception("Connection %r healthcheck raised", name)
             return False
 
     def reset(self, name: str) -> None:
@@ -202,7 +229,7 @@ def install_connections(app: FastAPI, registry: ConnectionRegistry) -> Connectio
     return registry
 
 
-def get_connection(request: Request, name: str) -> Any:
+def get_connection(request: Request, name: str) -> object:
     """Resolve a named connection from the request's app registry."""
     registry = getattr(request.app.state, "hedron_connections", None)
     if not isinstance(registry, ConnectionRegistry):
@@ -212,23 +239,23 @@ def get_connection(request: Request, name: str) -> Any:
     return registry.get(name)
 
 
-def connection_dependency(name: str) -> Callable[[Request], Any]:
+def connection_dependency(name: str) -> Callable[[Request], object]:
     """FastAPI ``Depends`` factory for a named connection."""
 
-    def _dependency(request: Request) -> Any:
+    def _dependency(request: Request) -> object:
         return get_connection(request, name)
 
     _dependency.__name__ = f"connection_{name}"
-    _dependency.__hedron_connection__ = name  # type: ignore[attr-defined]
+    _dependency.__hedron_connection__ = name  # type: ignore[attr-defined]  # FastAPI dep marker
     return _dependency
 
 
 def bind_connection_fixture(
     registry: ConnectionRegistry,
-    fixture: Any,
+    fixture: object,
     *,
-    factory: Callable[[], Any] | None = None,
-    healthcheck: Callable[[Any], bool] | None = None,
+    factory: Callable[[], object] | None = None,
+    healthcheck: Callable[[object], bool] | None = None,
 ) -> ConnectionSpec:
     """Map a :class:`~hedron_core.testing.fixtures.NamedConnectionFixture` onto ``registry``.
 
@@ -251,7 +278,7 @@ def bind_connection_fixture(
 
     dsn = getattr(fixture, "dsn", None)
     options = getattr(fixture, "options", {}) or {}
-    config: dict[str, Any] = {"provider": provider, **dict(options)}
+    config: dict[str, object] = {"provider": provider, **dict(options)}
     secret_refs: dict[str, str] = {}
     if isinstance(dsn, str) and dsn.strip():
         # DSN is treated as an opaque secret ref for config/redaction, not expanded here.
@@ -260,7 +287,7 @@ def bind_connection_fixture(
 
     if factory is None:
 
-        def _stub() -> dict[str, Any]:
+        def _stub() -> dict[str, object]:
             return {
                 "name": name,
                 "provider": provider,
@@ -281,12 +308,12 @@ def bind_connection_fixture(
 
 
 def sqlalchemy_connection_factory(
-    url_or_engine: Any,
+    url_or_engine: object,
     *,
-    statement: Any | None = None,
-    session_factory: Callable[[], Any] | None = None,
-    **source_kwargs: Any,
-) -> Callable[[], Any]:
+    statement: object | None = None,
+    session_factory: Callable[[], object] | None = None,
+    **source_kwargs: Any,  # forwarded host kwargs for SQLAlchemyDataSource
+) -> Callable[[], object]:
     """Lazy factory for a SQLAlchemy Engine or :class:`SQLAlchemyDataSource`.
 
     Without ``statement``, returns ``url_or_engine`` when it already looks like an
@@ -294,7 +321,7 @@ def sqlalchemy_connection_factory(
     lazy-imports ``hedron_data`` and returns a :class:`SQLAlchemyDataSource`.
     """
 
-    def _factory() -> Any:
+    def _factory() -> object:
         if statement is not None:
             from hedron_data.sqlalchemy_source import SQLAlchemyDataSource
 
@@ -305,13 +332,15 @@ def sqlalchemy_connection_factory(
                 if isinstance(url_or_engine, str) or not hasattr(url_or_engine, "connect"):
                     from sqlalchemy import create_engine
 
-                    engine = create_engine(url_or_engine)
+                    engine = create_engine(
+                        url_or_engine if isinstance(url_or_engine, str) else str(url_or_engine)
+                    )
 
-                def sf() -> Any:
-                    return engine.connect()
+                def sf() -> object:
+                    return engine.connect()  # type: ignore[union-attr]  # engine from create_engine/connect
 
             return SQLAlchemyDataSource(
-                session_factory=sf,
+                session_factory=sf,  # type: ignore[arg-type]  # host session factory duck-types _SessionLike
                 statement=statement,
                 **source_kwargs,
             )
@@ -320,18 +349,20 @@ def sqlalchemy_connection_factory(
             return url_or_engine
         from sqlalchemy import create_engine
 
-        return create_engine(url_or_engine)
+        return create_engine(
+            url_or_engine if isinstance(url_or_engine, str) else str(url_or_engine)
+        )
 
     return _factory
 
 
 def snowflake_connection_factory(
     *,
-    connection_factory: Callable[[], Any] | None = None,
+    connection_factory: Callable[[], object] | None = None,
     statement: str | None = None,
-    connect_kwargs: Mapping[str, Any] | None = None,
-    **source_kwargs: Any,
-) -> Callable[[], Any]:
+    connect_kwargs: Mapping[str, object] | None = None,
+    **source_kwargs: Any,  # forwarded host kwargs for SnowflakeDataSource
+) -> Callable[[], object]:
     """Lazy factory for a Snowflake connection or :class:`SnowflakeDataSource`.
 
     With ``statement``, wraps :class:`~hedron_data.snowflake_source.SnowflakeDataSource`.
@@ -340,14 +371,14 @@ def snowflake_connection_factory(
     """
     connect_kwargs = dict(connect_kwargs or {})
 
-    def _connect() -> Any:
+    def _connect() -> object:
         if connection_factory is not None:
             return connection_factory()
-        import snowflake.connector  # type: ignore[import-not-found]
+        import snowflake.connector  # type: ignore[import-not-found]  # optional snowflake extra
 
         return snowflake.connector.connect(**connect_kwargs)
 
-    def _factory() -> Any:
+    def _factory() -> object:
         if statement is not None:
             from hedron_data.snowflake_source import SnowflakeDataSource
 

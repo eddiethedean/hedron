@@ -31,7 +31,7 @@ def _engine() -> str:
     return os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium"
 
 
-def _launch(pw: object):  # noqa: ANN001
+def _launch(pw: object):
     return getattr(pw, _engine()).launch(headless=True)
 
 

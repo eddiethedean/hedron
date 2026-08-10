@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
-from typing import Any, Literal, cast
+from typing import Any, ClassVar, Literal, cast
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
 from hedron_core.component import Component, NodeLike
@@ -312,7 +312,7 @@ class ExpanderProps(ElementProps):
 class Expander(Component[ExpanderProps]):
     props_type = ExpanderProps
     logical_name = "Expander"
-    slots = {"body": "optional"}
+    slots: ClassVar[dict[str, str]] = {"body": "optional"}
 
     def __init__(
         self,
@@ -425,7 +425,7 @@ class SidebarProps(ElementProps):
 class Sidebar(Component[SidebarProps]):
     props_type = SidebarProps
     logical_name = "Sidebar"
-    slots = {"body": "optional"}
+    slots: ClassVar[dict[str, str]] = {"body": "optional"}
 
     def __init__(
         self,

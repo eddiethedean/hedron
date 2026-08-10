@@ -122,7 +122,7 @@ class RedisStatusStore:
             from redis.exceptions import WatchError as _WatchError  # type: ignore[import-not-found]
 
             watch_error = _WatchError
-        except Exception:
+        except ImportError:
             watch_error = None
         if watch_error is None:
             raise RuntimeError(

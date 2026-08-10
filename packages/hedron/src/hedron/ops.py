@@ -37,7 +37,7 @@ def readiness(
             results[name] = "up" if check() else "down"
             if results[name] == "down":
                 ok = False
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             results[name] = "error"
             ok = False
             logger.warning("readiness check %s failed: %s", name, type(exc).__name__)

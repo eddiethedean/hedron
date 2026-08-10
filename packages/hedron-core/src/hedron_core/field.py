@@ -11,7 +11,7 @@ from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonObject
 
 
-def Field(  # noqa: N802 — public API matches specification
+def Field(
     default: Any = ...,
     *,
     default_factory: Any = None,

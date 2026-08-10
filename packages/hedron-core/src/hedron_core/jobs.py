@@ -40,6 +40,11 @@ class JobState(StrEnum):
     CANCELLED = "cancelled"
 
 
+# Brief poll while the idempotency winner's job body becomes visible under Redis lag.
+_IDEMPOTENCY_WINNER_POLL_ATTEMPTS = 5
+_IDEMPOTENCY_WINNER_POLL_SECONDS = 0.01
+
+
 @dataclass(frozen=True, slots=True)
 class JobHandle:
     job_id: str
@@ -532,7 +537,7 @@ class RedisJobBackend:
             from redis.exceptions import WatchError as _WatchError  # type: ignore[import-not-found]
 
             watch_error = _WatchError
-        except Exception:
+        except ImportError:
             watch_error = None
         if watch_error is None:
             raise RuntimeError(
@@ -630,11 +635,11 @@ class RedisJobBackend:
                 self._client.delete(self._key(job_id))
                 existing = self._decode(self._client.get(idem_redis_key))
                 if existing is not None:
-                    for _ in range(5):
+                    for _ in range(_IDEMPOTENCY_WINNER_POLL_ATTEMPTS):
                         loaded = self._load(existing)
                         if loaded is not None:
                             return JobHandle(job_id=existing, idempotency_key=idempotency_key)
-                        time.sleep(0.01)
+                        time.sleep(_IDEMPOTENCY_WINNER_POLL_SECONDS)
                     if self._load(existing) is not None:
                         return JobHandle(job_id=existing, idempotency_key=idempotency_key)
                 raise RuntimeError(

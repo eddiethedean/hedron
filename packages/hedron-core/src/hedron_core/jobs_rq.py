@@ -123,15 +123,32 @@ class RQJobBackend:
         return True
 
     def _fetch_rq_job(self, job_id: str) -> Any | None:
-        """Resolve an RQ job across workers via the shared connection."""
+        """Resolve an RQ job across workers via the shared connection.
+
+        Missing jobs return ``None``. Unexpected fetch failures are logged and
+        also return ``None`` so callers keep the durable-status fallback path.
+        """
         connection = getattr(self._queue, "connection", None)
         if connection is None:
             return None
         try:
             from rq.job import Job  # type: ignore[import-not-found]
-
+        except ImportError:
+            _logger.debug("rq is not installed; cannot fetch job_id=%s", job_id)
+            return None
+        try:
             return Job.fetch(job_id, connection=connection)
-        except Exception:
+        except Exception as exc:
+            # Prefer typed NoSuchJobError when present; fall back to class name.
+            try:
+                from rq.exceptions import NoSuchJobError  # type: ignore[import-not-found]
+            except ImportError:
+                NoSuchJobError = ()  # type: ignore[misc,assignment]
+            if NoSuchJobError and isinstance(exc, NoSuchJobError):
+                return None
+            if type(exc).__name__ == "NoSuchJobError":
+                return None
+            _logger.warning("RQ Job.fetch failed for job_id=%s: %s", job_id, exc)
             return None
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:

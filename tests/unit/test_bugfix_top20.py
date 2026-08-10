@@ -196,7 +196,7 @@ def test_line_chart_fallback_escapes_title(monkeypatch: pytest.MonkeyPatch) -> N
 
     real_import = builtins.__import__
 
-    def _no_matplotlib(name: str, *args: object, **kwargs: object):  # noqa: ANN001
+    def _no_matplotlib(name: str, *args: object, **kwargs: object):
         if name == "matplotlib" or name.startswith("matplotlib."):
             raise ImportError("forced")
         return real_import(name, *args, **kwargs)  # type: ignore[arg-type]

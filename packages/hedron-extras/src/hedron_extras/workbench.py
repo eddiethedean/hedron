@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
+
+from pydantic import Field
 
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
@@ -20,7 +22,7 @@ _ALLOWED_CODE_LANGUAGES = frozenset(
 class DataExplorerFacet(Props):
     field: str
     label: str
-    values: list[str] = []
+    values: list[str] = Field(default_factory=list)
 
 
 class DataExplorerProps(ElementProps):
@@ -256,7 +258,11 @@ class ChartWorkbench(Component[ChartWorkbenchProps]):
     props_type = ChartWorkbenchProps
     logical_name = "ChartWorkbench"
     distribution = "hedron-extras"
-    slots = {"chart": "optional", "table": "optional", "explorer": "optional"}
+    slots: ClassVar[dict[str, str]] = {
+        "chart": "optional",
+        "table": "optional",
+        "explorer": "optional",
+    }
 
     def __init__(
         self,

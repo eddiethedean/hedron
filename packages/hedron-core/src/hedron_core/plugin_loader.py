@@ -74,7 +74,7 @@ class PluginLoader:
             for hook in reversed(item.context._shutdown):
                 try:
                     hook()
-                except Exception as exc:  # noqa: BLE001 — aggregate shutdown failures
+                except Exception as exc:
                     errors.append(exc)
         self._started = False
         if errors:
@@ -147,7 +147,7 @@ def load_plugins(
                 continue
             try:
                 target = ep.load() if hasattr(ep, "load") else ep
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 raise error(
                     HED_PLUGIN_MISSING,
                     title="Plugin import failed",

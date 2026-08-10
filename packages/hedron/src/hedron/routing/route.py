@@ -33,7 +33,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.models import Model
 from hedron_core.rendering import RenderMode
 
-__all__ = ["HedronRoute"]
+__all__ = ["HedronRoute", "HedronEndpointResult"]
 
 
 @runtime_checkable

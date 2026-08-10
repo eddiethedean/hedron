@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from pydantic import Field
+
 from hedron_core.builtins._base import ElementProps, class_names, mark_data
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
@@ -35,7 +37,7 @@ class BrowserPythonSandboxProps(ElementProps):
     cpu_ms: int = 5_000
     memory_mb: int = 256
     output_chars: int = 100_000
-    packages: list[str] = []
+    packages: list[str] = Field(default_factory=list)
     network: bool = False
 
 

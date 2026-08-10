@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Literal
+from typing import ClassVar, Literal
 
 from hedron_core.builtins._base import collect_children, dom_id_part
 from hedron_core.component import Component, NodeLike
@@ -193,7 +193,7 @@ class FormFieldProps(Props):
 
 class FormField(Component[FormFieldProps]):
     props_type = FormFieldProps
-    slots = {"control": "required"}
+    slots: ClassVar[dict[str, str]] = {"control": "required"}
 
     def __init__(
         self,
