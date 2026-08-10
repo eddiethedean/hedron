@@ -12,6 +12,8 @@
 
 - Allow safe accessibility attributes on `MainPanel` and `OobHost`, merging caller
   `data` with internal `data-hedron-*` markers (`#56`).
+- Accept additive `class_` theme hooks on `Button` / `LinkButton` / `SubmitButton` /
+  `IconButton`, `Text` / `Heading`, and `Alert` / `Badge` / `Status` (`#29`).
 
 ### Changed
 

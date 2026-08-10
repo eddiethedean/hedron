@@ -60,6 +60,7 @@ class Card(Component[CardProps]):
 class BadgeProps(Props):
     text: str
     tone: Literal["neutral", "info", "success", "warning", "danger"] = "neutral"
+    class_: str | None = None
 
 
 class Badge(Component[BadgeProps]):
@@ -70,14 +71,15 @@ class Badge(Component[BadgeProps]):
         text: str,
         *,
         tone: Literal["neutral", "info", "success", "warning", "danger"] = "neutral",
+        class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(BadgeProps(text=text, tone=tone, **kwargs))
+        super().__init__(BadgeProps(text=text, tone=tone, class_=class_, **kwargs))
 
     def render(self) -> NodeLike:
         return html.span(
             self.props.text,
-            class_=f"hedron-badge hedron-badge-{self.props.tone}",
+            class_=class_names(f"hedron-badge hedron-badge-{self.props.tone}", self.props.class_),
         )
 
 
@@ -85,6 +87,7 @@ class AlertProps(Props):
     message: str
     tone: Literal["info", "success", "warning", "danger"] = "info"
     title: str | None = None
+    class_: str | None = None
 
 
 class Alert(Component[AlertProps]):
@@ -96,9 +99,12 @@ class Alert(Component[AlertProps]):
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
         title: str | None = None,
+        class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(AlertProps(message=message, tone=tone, title=title, **kwargs))
+        super().__init__(
+            AlertProps(message=message, tone=tone, title=title, class_=class_, **kwargs)
+        )
 
     def render(self) -> NodeLike:
         role = "alert" if self.props.tone == "danger" else "status"
@@ -108,7 +114,7 @@ class Alert(Component[AlertProps]):
         parts.append(html.span(self.props.message))
         return html.div(
             *parts,
-            class_=f"hedron-alert hedron-alert-{self.props.tone}",
+            class_=class_names(f"hedron-alert hedron-alert-{self.props.tone}", self.props.class_),
             role=role,
         )
 

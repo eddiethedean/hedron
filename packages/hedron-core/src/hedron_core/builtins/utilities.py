@@ -251,6 +251,7 @@ class StatusProps(Props):
     message: str
     tone: Literal["info", "success", "warning", "danger"] = "info"
     live: bool = True
+    class_: str | None = None
 
 
 class Status(Component[StatusProps]):
@@ -263,13 +264,18 @@ class Status(Component[StatusProps]):
         *,
         tone: Literal["info", "success", "warning", "danger"] = "info",
         live: bool = True,
+        class_: str | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(StatusProps(message=message, tone=tone, live=live, **kwargs))
+        super().__init__(
+            StatusProps(message=message, tone=tone, live=live, class_=class_, **kwargs)
+        )
 
     def render(self) -> NodeLike:
         attrs: dict[str, HtmlAttrValue] = {
-            "class_": f"hedron-status hedron-status-{self.props.tone}",
+            "class_": class_names(
+                f"hedron-status hedron-status-{self.props.tone}", self.props.class_
+            ),
             "role": "status",
         }
         if self.props.live:
