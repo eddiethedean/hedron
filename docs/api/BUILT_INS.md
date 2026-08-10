@@ -122,6 +122,18 @@ Hedron component names use PascalCase. Native elements use lowercase `hedron.htm
 attributes and tags. Python keyword collisions use a trailing underscore such as
 `class_`; rendered HTML always uses the canonical attribute name.
 
+### Additive `class_` theme hooks
+
+Content and control builtins such as `Button`, `LinkButton`, `SubmitButton`,
+`IconButton`, `Text`, `Heading`, `Alert`, `Badge`, and `Status` accept optional
+`class_`. Host theme classes are **appended after** Hedron’s own `hedron-*`
+classes (for example
+`Button("Save", variant="primary", class_="button button-primary")`).
+
+Use `class_` only as a design-system bridge. Do **not** use it to bypass security
+attributes, CSRF wiring, SafeUrl constraints, or other typed props — those remain
+enforced on the component API.
+
 ## Historical phase notes
 
 Phase 0.1–0.10 acceptance narratives remain in release notes / what’s-new pages. This
