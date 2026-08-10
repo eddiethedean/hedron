@@ -334,7 +334,7 @@ def __getattr__(name: str) -> object:
             raise ImportError(
                 f"{name} requires the hedron-charts package. "
                 'Install with: pip install "hedron[charts]>=0.27.0,<0.28" or '
-                'pip install "hedron-charts>=0.1.6,<0.2". '
+                'pip install "hedron-charts>=0.1.7,<0.2". '
                 "See https://hedron.readthedocs.io/en/latest/COMPATIBILITY/"
             ) from exc
         return getattr(_hedron_charts, name)

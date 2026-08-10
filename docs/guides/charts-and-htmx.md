@@ -8,7 +8,7 @@ A short path from install → chart → Markdown → typed fragment response.
 pip install "hedron[charts]>=0.27.0,<0.28"
 ```
 
-This enforces `hedron-charts>=0.1.6,<0.2`; older satellite releases target older cores.
+This enforces `hedron-charts>=0.1.7,<0.2`; older satellite releases target older cores.
 See [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## LineChart on a page

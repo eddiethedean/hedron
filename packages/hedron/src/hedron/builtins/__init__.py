@@ -83,7 +83,7 @@ def oob_swap(
     element_id: str,
     content: NodeLike,
     *,
-    swap: str = "true",
+    swap: str = "innerHTML",
     tag: Literal["div", "section", "aside", "main", "nav"] = "div",
 ) -> NodeLike:
     """Mark a node for HTMX out-of-band swap via hx-swap-oob."""

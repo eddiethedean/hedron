@@ -27,6 +27,7 @@ from hedron_flask.csrf import (
 from hedron_flask.htmx import htmx_context, render_mode_for_request
 from hedron_flask.responses import component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser
+from hedron_flask.static_mount import mount_hedron_static
 
 __all__ = ["HedronFlask"]
 
@@ -110,6 +111,7 @@ class HedronFlask:
             auto_csrf_cookie=self._auto_csrf_cookie,
             security=self.security_policy,
         )
+        mount_hedron_static(app)
         return app
 
     @property

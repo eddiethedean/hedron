@@ -6,6 +6,16 @@ also attaches a checksum manifest and refuses to create the GitHub Release until
 exact PyPI artifact passes the documented scaffold smoke. PyPI remains authoritative
 for installable package versions.
 
+## 0.27.0 assets
+
+- [GitHub Release v0.27.0](https://github.com/eddiethedean/hedron/releases/tag/v0.27.0)
+- [Hedron 0.27.0 on PyPI](https://pypi.org/project/hedron/0.27.0/)
+- [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
+
+Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
+evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
+expected asset is missing.
+
 ## 0.26.0 assets
 
 - [GitHub Release v0.26.0](https://github.com/eddiethedean/hedron/releases/tag/v0.26.0)
@@ -25,7 +35,7 @@ For 0.26.1 or later, download `release-manifest.json`, the assets you need, and 
 verification script from the same tag. Replace `VERSION` below, then run:
 
 ```bash
-VERSION=0.26.1
+VERSION=0.27.0
 curl -fsSLO "https://github.com/eddiethedean/hedron/releases/download/v${VERSION}/release-manifest.json"
 curl -fsSLO "https://raw.githubusercontent.com/eddiethedean/hedron/v${VERSION}/scripts/verify_release_manifest.py"
 # Download the wheel, sdist, and/or evidence assets you intend to verify.
@@ -49,10 +59,10 @@ the artifacts actually published by the release workflow.
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
-git checkout v0.26.0
+git checkout v0.27.0
 uv sync --locked
-uv run python scripts/build_evidence_bundle.py --version 0.26.0
-uv run python scripts/verify_pkg_26.py
+uv run python scripts/build_evidence_bundle.py --version 0.27.0
+uv run python scripts/verify_pkg_27.py
 ```
 
 | Artifact | Generator |

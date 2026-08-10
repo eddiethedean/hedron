@@ -17,6 +17,11 @@ from hedron_core.interaction import (
 
 
 def test_nav_link_renders_htmx_attrs() -> None:
+    """Attr emit only — ``select_oob`` is valid markup by itself.
+
+    Pairing the same id with a server ``OobUpdate`` is the #57 conflict; see
+    ``test_issue57_select_oob_conflict`` / ``hedron check`` (HED-HTMX-0002).
+    """
     html = render(
         HtmxLink(
             "Profile",
@@ -39,6 +44,17 @@ def test_nav_link_renders_htmx_attrs() -> None:
     assert NavLink is HtmxLink
 
 
+def test_nav_link_select_oob_without_oobupdate_is_attr_only() -> None:
+    """Emitting select_oob alone must not be treated as an OobUpdate conflict."""
+    from hedron_core.interaction import conflicting_select_oob_targets
+
+    html = render(
+        HtmxLink("Profile", "/profile", target="#main-panel", select_oob="#side-nav")
+    ).html
+    assert 'hx-select-oob="#side-nav"' in html
+    assert conflicting_select_oob_targets("#side-nav", oob=()) == frozenset()
+
+
 def test_nav_link_rejects_unsafe_target() -> None:
     with pytest.raises(ValueError, match="Unsafe"):
         HtmxLink("X", "/x", target="<script>")
@@ -52,6 +68,24 @@ def test_oob_host_and_attr_host_require_id() -> None:
     assert "hedron-oob-host" in html
     html2 = render(AttrHost("y", id="attr-root")).html
     assert "hedron-attr-host" in html2
+
+
+def test_attr_host_accepts_a11y_attrs() -> None:
+    html = render(
+        AttrHost(
+            "busy",
+            id="attr-root",
+            aria={"busy": "true", "label": "Status host"},
+            title="Status",
+            tabindex=-1,
+            data={"tone": "info"},
+        )
+    ).html
+    assert 'aria-busy="true"' in html
+    assert 'aria-label="Status host"' in html
+    assert 'title="Status"' in html
+    assert 'tabindex="-1"' in html
+    assert 'data-tone="info"' in html
 
 
 def test_main_panel_accepts_landmark_a11y_attrs() -> None:
@@ -111,6 +145,7 @@ def test_app_shell_and_main_panel() -> None:
     html = render(shell).html
     assert "hedron-app-shell" in html
     assert 'id="main-panel"' in html
+    assert 'aria-label="Primary"' in html
     frag = render(shell.as_fragment()).html
     assert "hedron-main-panel" in frag
     assert "hedron-app-shell-nav" not in frag

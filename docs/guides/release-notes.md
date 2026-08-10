@@ -9,6 +9,32 @@ details remain in the [package changelogs](changelog.md).
     The current web framework starts at `0.1.0`; there is no supported migration path or
     API continuity with that legacy project.
 
+## 0.27.0 — 2026-08-10
+
+Hedron 0.27.0 graduates data, Flask/Django, HDJ, and curated extras inventories.
+
+- Publishes a machine-checked production-grade inventory for `hedron-data`,
+  `hedron-flask`, `hedron-django`, `hedron-jinja`, and `hedron-extras`.
+- Validates upgrades from Published `v0.26.0` across satellite public contracts.
+- Verifies host-only Flask/Django/data/HDJ/extras smokes and portable PAGE/FRAGMENT
+  parity.
+- Scopes `hedron check` Django / Plotly-Altair notices to detected adapters and chart
+  extras (`#54`); injects HTMX before bundled extensions on PAGE responses (`#55`);
+  warns on `select_oob` + `OobUpdate` same-target conflicts and defaults `OobUpdate`
+  swaps to `innerHTML` (`#57`).
+- Mounts `/hedron-static` and injects shared PAGE assets on Flask and Django like
+  FastAPI.
+
+No Supported CRUD/admin API removal is listed. Polling remains the production path for
+live status; SSE, WebSocket, streaming, and preload remain experimental.
+
+```bash
+python -m pip install -U "hedron>=0.27.0,<0.28"
+```
+
+Read [Upgrade to 0.27](upgrade.md) before changing a production lockfile. Maintainer
+evidence identifiers and packets are linked from [What’s new in 0.27](whats-new-0.27.md).
+
 ## 0.26.1 — 2026-08-10
 
 Correctness and adoption-readiness patch for the 0.26 train.
@@ -17,7 +43,7 @@ Correctness and adoption-readiness patch for the 0.26 train.
   mounted under a subpath (for example reverse-proxy `/app`), and requires
   `hedron-explorer>=0.26.1` from the `dev` extra.
 - Fixes `hedron new`, `hedron new --flask`, and `hedron new --django` to generate the
-  current `>=0.27.0,<0.28` dependency range rather than the obsolete 0.25 range.
+  then-current `>=0.26.0,<0.27` dependency range rather than the obsolete 0.25 range.
 - Repairs optional-integration install commands and package-index links.
 - Replaces the abbreviated OIDC outline and model-demo stub with tested, runnable
   application flows.
@@ -46,12 +72,8 @@ Hedron 0.26.0 strengthens the Supported CRUD/admin path.
 No Supported CRUD/admin API removal is listed. Polling remains the production path for
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
-```bash
-python -m pip install -U "hedron>=0.27.0,<0.28"
-```
-
-Read [Upgrade to 0.26](upgrade.md) before changing a production lockfile. Maintainer
-evidence identifiers and packets are linked from [What’s new in 0.26](whats-new-0.26.md).
+Historical pin for this train: `hedron>=0.26.0,<0.27`. Current tip is
+[Upgrade to 0.27](upgrade.md) / [What’s new in 0.27](whats-new-0.27.md).
 
 ## 0.25.2 — 2026-08-10
 

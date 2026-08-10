@@ -44,7 +44,7 @@ def _format_sim_live_demo(sim_name: str) -> str:
 _ALPHA_EXTRAS = frozenset({"charts", "notebook", "mcp", "gradio", "native"})
 _TRAIN_PIN = ">=0.27.0,<0.28"
 _ALPHA_PIN = ">=0.1.0,<0.2"
-_CHARTS_PIN = ">=0.1.6,<0.2"
+_CHARTS_PIN = ">=0.1.7,<0.2"
 _CHARTS_FLAGSHIP_PIN = ">=0.27.0,<0.28"
 
 

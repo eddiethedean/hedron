@@ -10,16 +10,23 @@
 
 ### Fixed
 
-- Allow safe accessibility attributes on `MainPanel` and `OobHost`, merging caller
-  `data` with internal `data-hedron-*` markers (`#56`).
+- Allow safe accessibility attributes on `MainPanel`, `OobHost`, and `AttrHost`,
+  merging caller `data` with internal `data-hedron-*` markers (`#56`).
+- Default unnamed `AppShell` navigation to `aria-label="Primary"`.
 - Accept additive `class_` theme hooks on `Button` / `LinkButton` / `SubmitButton` /
-  `IconButton`, `Text` / `Heading`, and `Alert` / `Badge` / `Status` (`#29`).
-- Detect `HtmxLink`/`NavLink` `select_oob` conflicting with the same-target
-  `OobUpdate`, document one-OOB-mechanism shell guidance, and allow optional
-  landmark `OobUpdate(tag=...)` as defense in depth (`#57`).
+  `IconButton`, `Text` / `Heading`, `Alert` / `Badge` / `Status`, and primary form
+  controls (`TextInput` / `TextArea` / `Select` / `Checkbox`) (`#29`).
+- Detect `select_oob` conflicting with the same-target `OobUpdate`, document
+  one-OOB-mechanism shell guidance, and allow optional landmark
+  `OobUpdate(tag=...)` as defense in depth (`#57`).
+- Surface non-`#id` `select_oob` tokens via `unparsed_select_oob_tokens`.
 
 ### Changed
 
+- Own bundled `/hedron-static` assets and shared PAGE inject helpers
+  (`hedron_core.page_assets`) for FastAPI/Flask/Django hosts.
+- `OobUpdate` / `oob_swap` default `swap` is `innerHTML` so landmark hosts keep
+  their tag when applying out-of-band updates.
 - Coordinated Beta train bump to `0.27.0` (pin `>=0.27.0,<0.28`).
 
 ## [0.26.1] — 2026-08-10
@@ -38,7 +45,7 @@
 
 ### Changed
 
-- Coordinated Beta train bump to `0.26.0` (pin `>=0.27.0,<0.28`).
+- Coordinated Beta train bump to `0.26.0` (pin `>=0.26.0,<0.27`).
 
 ## [0.25.2] — 2026-08-10
 

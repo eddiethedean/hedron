@@ -71,8 +71,8 @@ After following [Build your first app](quickstart.md):
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.26.0`** or a newer **`0.27.x`** patch on this train. Last published
-PyPI/git is **`v0.26.0`**. Pin with `hedron>=0.27.0,<0.28` for
+Expect **`0.27.0`** or a newer **`0.27.x`** patch on this train. Last published
+PyPI/git is **`v0.27.0`**. Pin with `hedron>=0.27.0,<0.28` for
 production.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
@@ -136,7 +136,7 @@ Charts and the sample plugin have explicit compatibility floors:
 
 ```bash
 pip install "hedron[charts]>=0.27.0,<0.28"
-pip install "hedron-sample-kit>=0.1.6,<0.2"
+pip install "hedron-sample-kit>=0.1.7,<0.2"
 ```
 
 Versions through `0.1.5` target older cores. Details:

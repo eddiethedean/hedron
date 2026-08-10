@@ -5,7 +5,7 @@ panels through the portable plugin protocol. Study
 [`hedron-sample-kit`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
 alongside this guide.
 
-Install `hedron-sample-kit>=0.1.6,<0.2` for the 0.25-compatible reference package.
+Install `hedron-sample-kit>=0.1.7,<0.2` for the 0.27-compatible reference package.
 Versions through `0.1.5` target older cores; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

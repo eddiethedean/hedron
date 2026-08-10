@@ -173,7 +173,9 @@ def render_component_response(
     if request is not None:
         html_text = _inject_build_assets(html_text, selected_mode, request, result)
     else:
+        # Request-less PAGE paths still need extension order (#55).
         html_text = _ensure_htmx_asset(html_text, selected_mode, policy=policy)
+        html_text = _inject_htmx_extension_assets(html_text, request=None)
     return response_cls(
         content=html_text,
         status_code=status_code,
@@ -279,40 +281,19 @@ def _inject_build_assets(
 
 def _htmx_core_script_end(html_text: str) -> int | None:
     """Return the index immediately after the HTMX core ``</script>`` tag, if present."""
-    marker = "htmx.min.js"
-    marker_at = html_text.find(marker)
-    if marker_at < 0:
-        return None
-    script_at = html_text.rfind("<script", 0, marker_at)
-    if script_at < 0:
-        return None
-    close_at = html_text.find("</script>", marker_at)
-    if close_at < 0:
-        return None
-    return close_at + len("</script>")
+    from hedron_core.page_assets import htmx_core_script_end
+
+    return htmx_core_script_end(html_text)
 
 
-def _inject_htmx_extension_assets(html_text: str, request: Request) -> str:
+def _inject_htmx_extension_assets(html_text: str, request: Request | None) -> str:
     """Insert non-deferred HTMX extensions after the core runtime script."""
-    from hedron_core.htmx_extensions import known_extensions
+    from hedron_core.page_assets import inject_htmx_extensions
 
-    tags: list[str] = []
-    for ext in sorted(known_extensions(), key=lambda e: e.load_order):
-        if ext.deferred:
-            continue
-        ext_path = _mounted_static_href(ext.path, request)
-        if ext.path in html_text or ext_path in html_text:
-            continue
-        tags.append(f'<script src="{ext_path}" defer></script>')
-    if not tags:
-        return html_text
-    injection = "\n".join(tags)
-    core_end = _htmx_core_script_end(html_text)
-    if core_end is not None:
-        return html_text[:core_end] + "\n" + injection + html_text[core_end:]
-    if "</body>" in html_text:
-        return html_text.replace("</body>", f"{injection}\n</body>", 1)
-    return html_text + injection
+    def _href(path: str) -> str:
+        return _mounted_static_href(path, request)
+
+    return inject_htmx_extensions(html_text, static_href=_href)
 
 
 def _ensure_htmx_asset(
@@ -323,27 +304,12 @@ def _ensure_htmx_asset(
     request: Request | None = None,
 ) -> str:
     """Inject the bundled HTMX runtime and profile-driven secure v2 defaults."""
-    if mode is not RenderMode.PAGE:
-        return html_text
-    sec = policy or SecurityPolicy.from_name("standard")
-    if sec.htmx_browser_preset:
-        config = f"<meta name=\"htmx-config\" content='{sec.htmx_config_json()}'>"
-        if 'name="htmx-config"' not in html_text and "name='htmx-config'" not in html_text:
-            if "</head>" in html_text:
-                html_text = html_text.replace("</head>", f"{config}</head>", 1)
-            else:
-                html_text = config + html_text
-    htmx_src = _mounted_static_href("/hedron-static/htmx.min.js", request)
-    tag = f'<script src="{htmx_src}" defer></script>'
-    if "htmx.min.js" in html_text:
-        return html_text
-    # Prefer <head> so deferred extensions inserted after this tag still precede
-    # document parse completion and run after the core runtime (issue #55).
-    if "</head>" in html_text:
-        return html_text.replace("</head>", f"{tag}\n</head>", 1)
-    if "</body>" in html_text:
-        return html_text.replace("</body>", f"{tag}</body>", 1)
-    return html_text + tag
+    from hedron_core.page_assets import inject_htmx_core
+
+    def _href(path: str) -> str:
+        return _mounted_static_href(path, request)
+
+    return inject_htmx_core(html_text, mode, policy=policy, static_href=_href)
 
 
 merge_htmx_headers = approved_headers

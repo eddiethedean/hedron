@@ -13,8 +13,18 @@ __all__ = ["mount_build_assets", "mount_hedron_static"]
 
 
 def mount_hedron_static(app: FastAPI, *, path: str = "/hedron-static") -> None:
-    """Mount bundled Hedron static assets (HTMX, disclose) on any FastAPI app."""
-    static_dir = Path(str(resources.files("hedron").joinpath("static")))
+    """Mount bundled Hedron static assets (HTMX, disclose) on any FastAPI app.
+
+    Assets are owned by ``hedron-core`` so Flask/Django adapters share the same
+    files without depending on the FastAPI flagship package.
+    """
+    from hedron_core.page_assets import static_directory
+
+    static_dir = static_directory()
+    if not static_dir.is_dir():
+        # Back-compat: older editable installs may still ship assets under hedron.
+        legacy = Path(str(resources.files("hedron").joinpath("static")))
+        static_dir = legacy if legacy.is_dir() else static_dir
     if not static_dir.is_dir():
         return
     for route in app.routes:

@@ -14,7 +14,7 @@ status: beta
 ## Availability
 
 Install `hedron[charts]>=0.27.0,<0.28`; this enforces the compatible
-`hedron-charts>=0.1.6,<0.2` floor. See
+`hedron-charts>=0.1.7,<0.2` floor. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## Beginner `LineChart`

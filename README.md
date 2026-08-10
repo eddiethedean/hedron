@@ -112,7 +112,7 @@ Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Op
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 Charts require the fixed satellite floor: `pip install "hedron[charts]>=0.27.0,<0.28"`.
-Plugin authors can install `hedron-sample-kit>=0.1.6,<0.2`. Older satellite releases target
+Plugin authors can install `hedron-sample-kit>=0.1.7,<0.2`. Older satellite releases target
 older cores; see [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 
 Prefer not to install locally? Use a **full cloud environment** (not a hosted playground) —

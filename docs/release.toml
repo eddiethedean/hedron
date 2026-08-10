@@ -12,7 +12,7 @@ previous_version = "0.26.0"
 previous_security_until = "2026-11-10"
 
 [satellites]
-minimum_version = "0.1.6"
+minimum_version = "0.1.7"
 maximum_version = "0.2"
 
 [documentation]

@@ -1,6 +1,7 @@
 # What’s new in Hedron 0.26
 
-**Published** as `v0.26.0`. Pin `hedron>=0.26.0,<0.27`.
+**Published** as `v0.26.0`. Historical pin for this train: `hedron>=0.26.0,<0.27`.
+Living tip: pin `hedron>=0.27.0,<0.28` — see [What’s new in 0.27](whats-new-0.27.md).
 
 Hedron 0.26 strengthens the documented CRUD/admin path without promoting experimental
 live transports. It validates upgrades from 0.25.2, makes the supported surface
@@ -32,7 +33,8 @@ for the complete adopter-facing list.
   `docs/acceptance/security-review-026/`.
 
 No Supported CRUD/admin API removal is listed for 0.26.0. Existing 0.25.2 applications
-should follow [Upgrade to 0.26](upgrade.md), update the lockfile, run Hedron diagnostics,
+should follow the historical 0.26 upgrade steps (now superseded by
+[Upgrade to 0.27](upgrade.md)), update the lockfile, run Hedron diagnostics,
 and repeat their application/browser tests.
 
 ## Non-goals (unchanged)

@@ -12,7 +12,7 @@ and polling for job status.
 Pin versions. Packages are Beta (no 1.0, no SLA). Prefer polling over SSE/WebSocket.
 
 **Charts / sample kit:** install with floors
-`hedron[charts]>=0.27.0,<0.28` and `hedron-sample-kit>=0.1.6,<0.2`.
+`hedron[charts]>=0.27.0,<0.28` and `hedron-sample-kit>=0.1.7,<0.2`.
 Matplotlib/static charts are the **Supported** default path on the Alpha
 `hedron-charts` package; Plotly / Altair remain **Experimental**.
 **Experimental:** notebook, MCP, Gradio, live SSE/WS.
@@ -149,12 +149,12 @@ guaranteed multi-worker live-transport proof.
 
 | Package | Role |
 |---|---|
-| `hedron[charts]` / `hedron-charts` | Alpha package (`>=0.1.6,<0.2`); Matplotlib/static charts are the conservative default |
+| `hedron[charts]` / `hedron-charts` | Alpha package (`>=0.1.7,<0.2`); Matplotlib/static charts are the conservative default |
 | `hedron[native]` / `hedron-native` | Optional Rust HTML-escape accel; pure-Python fallback Supported |
 | `hedron[notebook]` / `hedron-notebook` | Localhost-oriented preview; not Supported production |
 | `hedron[mcp]` / `hedron-mcp` | Deny-by-default MCP projection |
 | `hedron[gradio]` / `hedron-gradio` | Gradio client interop; deny-by-default discover |
-| `hedron-sample-kit` | Installable reference plugin (`>=0.1.6,<0.2`) |
+| `hedron-sample-kit` | Installable reference plugin (`>=0.1.7,<0.2`) |
 | `packages/hedron-runtime-*` | Experimental Java / Node conformance runtimes |
 
 ## Deferred (do not market as Supported)
@@ -218,7 +218,7 @@ Extras: `"hedron[data]>=0.27.0,<0.28"`, `"hedron[extras]>=0.27.0,<0.28"`,
 `"hedron[notebook]>=0.27.0,<0.28"` (Alpha satellite),
 `"hedron[mcp]>=0.27.0,<0.28"` (Alpha satellite),
 `"hedron[gradio]>=0.27.0,<0.28"` (Alpha satellite),
-`"hedron[charts]>=0.27.0,<0.28"`, and `"hedron-sample-kit>=0.1.6,<0.2"`.
+`"hedron[charts]>=0.27.0,<0.28"`, and `"hedron-sample-kit>=0.1.7,<0.2"`.
 
 ## Role-specific wrappers
 

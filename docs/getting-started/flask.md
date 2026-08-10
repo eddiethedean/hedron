@@ -2,7 +2,8 @@
 
 Use `hedron-flask` when your app is Flask-native. The adapter renders the same
 `hedron-core` components and `InteractionResult` values as the FastAPI flagship—
-without installing FastAPI.
+without installing FastAPI. Like FastAPI, the adapter mounts `/hedron-static` so PAGE
+responses can inject bundled HTMX.
 
 ## Golden path (scaffold + Refresh)
 

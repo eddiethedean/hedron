@@ -44,6 +44,7 @@ __all__ = [
     "resolve_fragment_region",
     "select_htmx_auth_target",
     "status_policy_for",
+    "unparsed_select_oob_tokens",
     "validated_extra_headers",
 ]
 
@@ -104,12 +105,14 @@ class OobUpdate:
     Hedron's OOB envelope. Use :func:`conflicting_select_oob_targets` /
     ``hedron check`` to detect that conflict.
 
-    ``tag`` is defense in depth when an envelope must match a landmark host; it
-    does not replace avoiding the ``select_oob`` + ``OobUpdate`` conflict.
+    Default ``swap`` is ``innerHTML`` so landmark hosts keep their tag and
+    accessible name. ``tag`` is defense in depth when an envelope must match a
+    landmark host; it does not replace avoiding the ``select_oob`` + ``OobUpdate``
+    conflict.
     """
 
     content: NodeLike
-    swap: str = "true"
+    swap: str = "innerHTML"
     select: str | None = None
     element_id: str | None = None
     tag: OobEnvelopeTag = "div"
@@ -645,7 +648,12 @@ def form_sync_attrs(policy: InteractionPolicy | None = None) -> dict[str, str]:
 
 
 def parse_select_oob_element_ids(select_oob: str | None) -> frozenset[str]:
-    """Extract simple ``#id`` targets from an ``hx-select-oob`` value."""
+    """Extract simple ``#id`` targets from an ``hx-select-oob`` value.
+
+    Only ``#id`` tokens (alphanumeric / ``_`` / ``-``) are recognized. Complex
+    selectors are ignored for conflict detection; use
+    :func:`unparsed_select_oob_tokens` to surface them.
+    """
     if not select_oob:
         return frozenset()
     ids: set[str] = set()
@@ -657,6 +665,29 @@ def parse_select_oob_element_ids(select_oob: str | None) -> frozenset[str]:
         if element_id.replace("-", "").replace("_", "").isalnum():
             ids.add(element_id)
     return frozenset(ids)
+
+
+def unparsed_select_oob_tokens(select_oob: str | None) -> frozenset[str]:
+    """Return ``hx-select-oob`` tokens that are not simple ``#id`` selectors.
+
+    Hedron's conflict scanner only understands ``#id`` lists. Attribute or
+    descendant selectors are returned here so hosts can warn or document the
+    limitation.
+    """
+    if not select_oob:
+        return frozenset()
+    unparsed: set[str] = set()
+    for part in select_oob.split(","):
+        token = part.strip()
+        if not token:
+            continue
+        if not safe_css_selector(token) or not token.startswith("#"):
+            unparsed.add(token)
+            continue
+        element_id = token[1:]
+        if not element_id.replace("-", "").replace("_", "").isalnum():
+            unparsed.add(token)
+    return frozenset(unparsed)
 
 
 def oob_update_element_ids(oob: Sequence[OobUpdate] | None) -> frozenset[str]:
@@ -693,7 +724,7 @@ def oob_swap(
     element_id: str,
     content: NodeLike,
     *,
-    swap: str = "true",
+    swap: str = "innerHTML",
     tag: OobEnvelopeTag = "div",
 ) -> NodeLike:
     """Mark a node for HTMX out-of-band swap via hx-swap-oob (framework-neutral)."""

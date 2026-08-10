@@ -184,7 +184,16 @@ async def prepare_csrf_from_request(request: Request, policy: SecurityPolicy) ->
         return
     try:
         form = await request.form()
-    except Exception:  # noqa: BLE001
+    except (ValueError, TypeError, RuntimeError, OSError) as exc:
+        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+        emit_security_audit(
+            SecurityAuditEventType.CSRF_REJECTED,
+            f"CSRF form body parse failed: {exc}",
+            attributes={"path": str(request.url.path), "content_type": content_type},
+        )
+        # Fail closed for CSRF-required unsafe methods: leave form token unset so
+        # validate_csrf rejects when the header is also absent.
         return
     field_val = form.get(form_field)
     if isinstance(field_val, str):

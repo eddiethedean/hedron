@@ -10,6 +10,8 @@
 
 ### Changed
 
+- Mount `/hedron-static` and inject shared PAGE HTMX assets the same way as the
+  FastAPI flagship (`mount_hedron_static` / core `page_assets`).
 - Coordinated Beta train bump to `0.27.0` (pin `>=0.27.0,<0.28`).
 
 ## [0.26.1] — 2026-08-10
@@ -28,7 +30,7 @@
 
 ### Changed
 
-- Coordinated Beta train bump to `0.26.0` (pin `>=0.27.0,<0.28`).
+- Coordinated Beta train bump to `0.26.0` (pin `>=0.26.0,<0.27`).
 
 ## [0.25.2] — 2026-08-10
 

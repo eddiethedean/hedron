@@ -26,28 +26,45 @@ def test_current_train_claim_rejects_any_stale_minor_without_a_version_blacklist
     assert failures("The living train is 0.24.")
 
 
+def test_living_version_before_train_is_checked() -> None:
+    assert failures("Capability readiness is Supported on the living **0.26** train.")
+    assert not failures("Capability readiness is Supported on the living **0.27** train.")
+    assert failures("Ship on the living 0.26 train.")
+    assert not failures(f"Ship on the living {ssot.FACTS.train} train.")
+
+
+def test_last_version_claim_without_published_keyword() -> None:
+    assert failures("| Version | **0.27.x** / last **v0.26.0** |")
+    assert not failures("| Version | **0.27.x** / last **v0.27.0** |")
+
+
 def test_previous_train_is_allowed_only_when_explicitly_historical_or_supported() -> None:
-    assert not failures("The previous 0.25.x train receives best-effort security triage.")
-    assert failures("The current train is 0.25.x.")
+    prev = ssot.FACTS.previous_train
+    assert not failures(f"The previous {prev}.x train receives best-effort security triage.")
+    assert failures(f"The current train is {prev}.x.")
 
 
 def test_install_commands_require_the_canonical_bounded_pin() -> None:
-    assert not failures('pip install "hedron>=0.27.0,<0.28"')
+    assert not failures(f'pip install "hedron{ssot.FACTS.pin}"')
     assert failures('pip install "hedron>=0.26.0"')
     assert failures("uv add hedron")
 
 
 def test_satellite_floors_come_from_release_metadata() -> None:
-    assert ssot._has_compatible_satellite_floor(
-        'pip install "hedron-charts[matplotlib]>=0.1.6,<0.2"'
+    floor = f">={ssot.FACTS.satellite_minimum},<{ssot.FACTS.satellite_maximum}"
+    assert ssot._has_compatible_satellite_floor(f'pip install "hedron-charts[matplotlib]{floor}"')
+    assert ssot._has_compatible_satellite_floor(f'uv add "hedron-sample-kit{floor}"')
+    assert not ssot._has_compatible_satellite_floor(
+        f'pip install "hedron-charts>=0.1.5,<{ssot.FACTS.satellite_maximum}"'
     )
-    assert ssot._has_compatible_satellite_floor('uv add "hedron-sample-kit>=0.1.6,<0.2"')
-    assert not ssot._has_compatible_satellite_floor('pip install "hedron-charts>=0.1.5,<0.2"')
 
 
 def test_unbounded_fixed_charts_floor_is_rejected() -> None:
-    assert ssot.UNBOUNDED_CHARTS_PKG.search("hedron-charts>=0.1.6")
-    assert not ssot.UNBOUNDED_CHARTS_PKG.search("hedron-charts>=0.1.6,<0.2")
+    floor = ssot.FACTS.satellite_minimum
+    assert ssot.UNBOUNDED_CHARTS_PKG.search(f"hedron-charts>={floor}")
+    assert not ssot.UNBOUNDED_CHARTS_PKG.search(
+        f"hedron-charts>={floor},<{ssot.FACTS.satellite_maximum}"
+    )
 
 
 def test_metadata_matches_workspace_and_changelog() -> None:

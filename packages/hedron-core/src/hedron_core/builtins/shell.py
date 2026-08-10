@@ -282,6 +282,41 @@ class OobHost(Component[OobHostProps]):
 class AttrHostProps(ElementProps):
     tag: Literal["div", "span", "section"] = "div"
     attrs: dict[str, str] | None = None
+    lang: str | None = None
+    dir: Literal["ltr", "rtl", "auto"] | None = None
+    title: str | None = None
+    tabindex: int | None = None
+    aria: dict[str, str | bool | int | float | None] | None = None
+    data: dict[str, str | bool | int | float | None] | None = None
+    hidden: bool | None = None
+
+
+_ATTR_HOST_SAFE_KEYS = frozenset(
+    {
+        "class_",
+        "id",
+        "tag",
+        "mark",
+        "attrs",
+        "lang",
+        "dir",
+        "title",
+        "tabindex",
+        "aria",
+        "data",
+        "hidden",
+    }
+)
+
+
+def _filter_attr_host_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+    unknown = set(kwargs) - _ATTR_HOST_SAFE_KEYS
+    if unknown:
+        raise TypeError(
+            f"Unsupported AttrHost attribute(s): {sorted(unknown)}. "
+            f"Allowlisted: {sorted(_ATTR_HOST_SAFE_KEYS)}."
+        )
+    return {k: v for k, v in kwargs.items() if k in _ATTR_HOST_SAFE_KEYS}
 
 
 class AttrHost(Component[AttrHostProps]):
@@ -298,20 +333,53 @@ class AttrHost(Component[AttrHostProps]):
         attrs: dict[str, str] | None = None,
         class_: str | None = None,
         mark: str | None = None,
+        lang: str | None = None,
+        dir: Literal["ltr", "rtl", "auto"] | None = None,
+        title: str | None = None,
+        tabindex: int | None = None,
+        aria: dict[str, str | bool | int | float | None] | None = None,
+        data: dict[str, str | bool | int | float | None] | None = None,
+        hidden: bool | None = None,
         **kwargs: object,
     ) -> None:
         if not id or not str(id).strip():
             raise ValueError("AttrHost requires a non-empty id")
-        super().__init__(
-            AttrHostProps(id=id, tag=tag, attrs=attrs, class_=class_, mark=mark, **kwargs)
+        filtered = _filter_attr_host_kwargs(
+            {
+                "id": id,
+                "tag": tag,
+                "attrs": attrs,
+                "class_": class_,
+                "mark": mark,
+                "lang": lang,
+                "dir": dir,
+                "title": title,
+                "tabindex": tabindex,
+                "aria": aria,
+                "data": data,
+                "hidden": hidden,
+                **kwargs,
+            }
         )
+        super().__init__(AttrHostProps(**filtered))
         self._kids = _kids(*children)
 
     def render(self) -> NodeLike:
         assert self.props.id is not None
-        data = mark_data(self.props.mark)
-        data["hedron-attr-host"] = "true"
+        data = _merge_marker_data(self.props.mark, self.props.data, **{"hedron-attr-host": "true"})
         extra: dict[str, HtmlAttrValue] = dict(self.props.attrs or {})
+        if self.props.lang:
+            extra["lang"] = self.props.lang
+        if self.props.dir:
+            extra["dir"] = self.props.dir
+        if self.props.title:
+            extra["title"] = self.props.title
+        if self.props.tabindex is not None:
+            extra["tabindex"] = self.props.tabindex
+        if self.props.aria:
+            extra["aria"] = self.props.aria
+        if self.props.hidden:
+            extra["hidden"] = True
         return getattr(html, self.props.tag)(
             *self._kids,
             id=self.props.id,
@@ -421,7 +489,10 @@ class AppShell(Component[AppShellProps]):
             nav = html.nav(*child._children, **_landmark_attrs(props))
         else:
             nav = html.nav(
-                *self._nav, class_="hedron-app-shell-nav", data={"hedron-app-nav": "true"}
+                *self._nav,
+                class_="hedron-app-shell-nav",
+                data={"hedron-app-nav": "true"},
+                aria={"label": "Primary"},
             )
         attrs: dict[str, HtmlAttrValue] = {
             "class_": class_names("hedron-app-shell", self.props.class_),

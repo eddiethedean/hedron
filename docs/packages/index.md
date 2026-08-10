@@ -13,7 +13,7 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter | [Django](../getting-started/django.md) · [Adapters](../api/ADAPTERS.md) |
 
 Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). `hedron-sim`
-and the sample kit install directly. Charts require the compatible `0.1.6` satellite floor.
+and the sample kit install directly. Charts require the compatible `0.1.7` satellite floor.
 
 !!! note "Maturity"
 
@@ -21,7 +21,7 @@ and the sample kit install directly. Charts require the compatible `0.1.6` satel
     See [How to read](../getting-started/how-to-read.md) and
     [What’s ready](../guides/whats-ready.md). Pin versions on `0.x`.
 
-## Beta extensions (`0.25.x`)
+## Beta extensions (`0.27.x`)
 
 | Package | Extra | Role |
 |---|---|---|
@@ -42,17 +42,17 @@ interop are **Experimental** / Alpha — not production defaults.
 
 | Package | Extra | Role |
 |---|---|---|
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.6,<0.2` on Hedron 0.26 |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.7,<0.2` on Hedron 0.27 |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-notebook](hedron-notebook.md) | `hedron[notebook]` | Server-side notebook preview helper |
 | [hedron-mcp](hedron-mcp.md) | `hedron[mcp]` | Deny-by-default MCP projection |
 | [hedron-gradio](hedron-gradio.md) | `hedron[gradio]` | Gradio client interop |
-| [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.1.6,<0.2` |
+| [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.1.7,<0.2` |
 | [hedron-sim](hedron-sim.md) | — | Offline HTMX sims for static docs |
 
 ```bash
 pip install "hedron[charts]>=0.27.0,<0.28"
-pip install "hedron-sample-kit>=0.1.6,<0.2" "hedron-sim>=0.1.0,<0.2"
+pip install "hedron-sample-kit>=0.1.7,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 
 ## Authoring an extension
