@@ -19,8 +19,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.26.toml"
 # Living published tip while documenting pre-cut history; cut uses RELEASE_CANDIDATE.
-LIVING_TRAIN = "0.26.0"
-RELEASE_CANDIDATE = "0.26.0"
+LIVING_TRAIN = "0.26.1"
+RELEASE_CANDIDATE = "0.26.1"
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -150,7 +150,40 @@ async def explorer_guards(request: Request) -> None:
     _audit("request", path=str(request.url.path))
 
 
-def _shell(title: str, body: str, *, active: str = "components") -> str:
+def _mount_path(request: Request) -> str:
+    """Return the operator-configured or ASGI mount path for Explorer links."""
+    from hedron_core.mount import normalize_mount_path
+
+    configured = getattr(request.app.state, "hedron_mount_path", None)
+    if isinstance(configured, str) and configured:
+        return normalize_mount_path(configured)
+    return normalize_mount_path(str(request.scope.get("root_path") or ""))
+
+
+def _explorer_href(request: Request, path: str) -> str:
+    """Build an escaped, mount-aware local Explorer/static URL."""
+    normalized_path = "/" + path.lstrip("/")
+    mount = _mount_path(request)
+    href = f"{mount}{normalized_path}" if mount else normalized_path
+    return html_lib.escape(href, quote=True)
+
+
+def _nav_link(request: Request, key: str, label: str, href: str, active: str) -> str:
+    """Render one escaped, mount-aware Explorer navigation link."""
+    css_class = "active" if key == active else ""
+    return (
+        f'<a href="{_explorer_href(request, href)}" class="{css_class}">'
+        f"{html_lib.escape(label)}</a>"
+    )
+
+
+def _component_href(request: Request, name: str) -> str:
+    """Return an escaped, mount-aware detail URL for a registry component."""
+    path = "/hedron-explorer/component/" + name
+    return _explorer_href(request, path)
+
+
+def _shell(title: str, body: str, *, request: Request, active: str = "components") -> str:
     nav = [
         ("components", "Components", "/hedron-explorer/"),
         ("routes", "Routes", "/hedron-explorer/routes"),
@@ -165,17 +198,14 @@ def _shell(title: str, body: str, *, active: str = "components") -> str:
         ("inventory", "Inventory", "/hedron-explorer/inventory"),
         ("settings", "Settings", "/hedron-explorer/settings"),
     ]
-    links = "".join(
-        f'<a href="{href}" class="{"active" if key == active else ""}">{html_lib.escape(label)}</a>'
-        for key, label, href in nav
-    )
+    links = "".join(_nav_link(request, key, label, href, active) for key, label, href in nav)
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title>{html_lib.escape(title)} · Hedron Explorer</title>
-  <link rel="stylesheet" href="/hedron-explorer/static/explorer.css">
-  <script src="/hedron-static/htmx.min.js" defer></script>
+  <link rel="stylesheet" href="{_explorer_href(request, "/hedron-explorer/static/explorer.css")}">
+  <script src="{_explorer_href(request, "/hedron-static/htmx.min.js")}" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -265,10 +295,10 @@ def explorer_router() -> APIRouter:
         return FileResponse(target)
 
     @router.get("/", response_class=HTMLResponse, include_in_schema=False)
-    async def index() -> str:
+    async def index(request: Request) -> str:
         components = list(get_registry().components())
         rows = "".join(
-            f"<tr><td><a href='/hedron-explorer/component/{html_lib.escape(c.name)}'>"
+            f"<tr><td><a href='{_component_href(request, c.name)}'>"
             f"{html_lib.escape(c.name)}</a></td>"
             f"<td><code>{html_lib.escape(c.logical_id)}</code></td>"
             f"<td>{html_lib.escape(c.distribution)}</td></tr>"
@@ -281,10 +311,10 @@ def explorer_router() -> APIRouter:
           <tbody>{rows or "<tr><td colspan='3'>No components</td></tr>"}</tbody>
         </table>
         """
-        return _shell("Components", body, active="components")
+        return _shell("Components", body, request=request, active="components")
 
     @router.get("/routes", response_class=HTMLResponse, include_in_schema=False)
-    async def routes_view() -> str:
+    async def routes_view(request: Request) -> str:
         routes = list(get_registry().routes())
         rows = "".join(
             f"<tr><td>{html_lib.escape(r.kind)}</td><td>{html_lib.escape(r.name)}</td>"
@@ -302,17 +332,19 @@ def explorer_router() -> APIRouter:
           <tbody>{rows or "<tr><td colspan='5'>No routes</td></tr>"}</tbody>
         </table>
         """
-        return _shell("Routes", body, active="routes")
+        return _shell("Routes", body, request=request, active="routes")
 
     @router.get("/component/{name}", response_class=HTMLResponse, include_in_schema=False)
     async def component_detail(name: str, request: Request) -> str:
         meta = _find_component(name)
         if meta is None:
             raise HTTPException(status_code=404, detail=f"Unknown component {name}")
-        return _shell(meta.name, _component_detail_body(meta, request), active="components")
+        return _shell(
+            meta.name, _component_detail_body(meta, request), request=request, active="components"
+        )
 
     @router.get("/graph", response_class=HTMLResponse, include_in_schema=False)
-    async def graph_view() -> str:
+    async def graph_view(request: Request) -> str:
         edges = []
         for c in get_registry().components():
             if c.styles_path:
@@ -323,11 +355,12 @@ def explorer_router() -> APIRouter:
         return _shell(
             "Graph",
             f"<h2>Component graph</h2><ul>{items or '<li>No edges</li>'}</ul>",
+            request=request,
             active="graph",
         )
 
     @router.get("/security", response_class=HTMLResponse, include_in_schema=False)
-    async def security_view() -> str:
+    async def security_view(request: Request) -> str:
         findings = [
             "Explorer absent in production by default",
             "CSRF required for unsafe cookie-authenticated actions",
@@ -338,11 +371,12 @@ def explorer_router() -> APIRouter:
         return _shell(
             "Security",
             f"<h2>Security findings</h2><ul>{items}</ul>",
+            request=request,
             active="security",
         )
 
     @router.get("/a11y", response_class=HTMLResponse, include_in_schema=False)
-    async def a11y_view() -> str:
+    async def a11y_view(request: Request) -> str:
         from hedron_core import Main, Page, Text, render
         from hedron_core.a11y import (
             ACCESSIBILITY_PROFILE,
@@ -456,10 +490,10 @@ def explorer_router() -> APIRouter:
           Repair guidance is reversible and author-reviewed; features default on.</p>
         </section>
         """
-        return _shell("Accessibility", body, active="a11y")
+        return _shell("Accessibility", body, request=request, active="a11y")
 
     @router.get("/cache", response_class=HTMLResponse, include_in_schema=False)
-    async def cache_view() -> str:
+    async def cache_view(request: Request) -> str:
         from hedron_core.cache import CacheTrace
 
         events = CacheTrace.recent(50)
@@ -483,10 +517,10 @@ def explorer_router() -> APIRouter:
           <tbody>{rows or "<tr><td colspan='6'>No cache activity</td></tr>"}</tbody>
         </table>
         """
-        return _shell("Cache", body, active="cache")
+        return _shell("Cache", body, request=request, active="cache")
 
     @router.get("/charts", response_class=HTMLResponse, include_in_schema=False)
-    async def charts_view() -> str:
+    async def charts_view(request: Request) -> str:
         from hedron_core.registry import get_registry
 
         registry = get_registry()
@@ -529,10 +563,10 @@ def explorer_router() -> APIRouter:
           <li>Private authenticated caching defaults apply</li>
         </ul>
         """
-        return _shell("Charts", body, active="charts")
+        return _shell("Charts", body, request=request, active="charts")
 
     @router.get("/data", response_class=HTMLResponse, include_in_schema=False)
-    async def data_view() -> str:
+    async def data_view(request: Request) -> str:
         from hedron_core.registry import get_registry
 
         registry = get_registry()
@@ -579,10 +613,10 @@ def explorer_router() -> APIRouter:
           <li>Large sources must use bounded DataEditorSource paging</li>
         </ul>
         """
-        return _shell("Data", body, active="data")
+        return _shell("Data", body, request=request, active="data")
 
     @router.get("/auto", response_class=HTMLResponse, include_in_schema=False)
-    async def auto_view() -> str:
+    async def auto_view(request: Request) -> str:
         from hedron_core.auto import get_last_auto_decision
 
         decision = get_last_auto_decision()
@@ -606,10 +640,10 @@ def explorer_router() -> APIRouter:
             <ul>{rejected or "<li>None</li>"}</ul>
             """
         body = f"<h2>Auto renderer evidence</h2>{detail}"
-        return _shell("Auto", body, active="auto")
+        return _shell("Auto", body, request=request, active="auto")
 
     @router.get("/packages", response_class=HTMLResponse, include_in_schema=False)
-    async def packages_view() -> str:
+    async def packages_view(request: Request) -> str:
         panels = get_explorer_panels()
         items = "".join(
             f"<li><strong>{html_lib.escape(p.title)}</strong> "
@@ -619,6 +653,7 @@ def explorer_router() -> APIRouter:
         return _shell(
             "Packages",
             f"<h2>Packages / plugin panels</h2><ul>{items or '<li>No plugin panels</li>'}</ul>",
+            request=request,
             active="packages",
         )
 
@@ -688,7 +723,7 @@ def explorer_router() -> APIRouter:
         except Exception as exc:  # noqa: BLE001
             payload = html_lib.escape(f"Inventory unavailable: {exc}")
         body = f"<h2>Production inventory</h2><pre>{payload}</pre>"
-        return _shell("Inventory", body, active="inventory")
+        return _shell("Inventory", body, request=request, active="inventory")
 
     @router.get("/settings", response_class=HTMLResponse, include_in_schema=False)
     async def settings_view(request: Request) -> str:
@@ -702,7 +737,7 @@ def explorer_router() -> APIRouter:
           <dt>Allow mutations</dt><dd>false (default)</dd>
         </dl>
         """
-        return _shell("Settings", body, active="settings")
+        return _shell("Settings", body, request=request, active="settings")
 
     @router.get("/api/routes", include_in_schema=False)
     async def api_routes() -> list[dict[str, Any]]:

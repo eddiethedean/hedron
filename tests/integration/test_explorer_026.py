@@ -6,6 +6,8 @@ import warnings
 
 import pytest
 from fastapi import Depends, HTTPException, status
+from starlette.applications import Starlette
+from starlette.routing import Mount
 from starlette.testclient import TestClient
 
 from hedron import Hedron
@@ -121,3 +123,22 @@ def test_csp_compatible_html_shell() -> None:
     assert response.status_code == 200
     # No inline script javascript: handlers required for the shell to load.
     assert "javascript:" not in response.text.lower()
+
+
+def test_explorer_shell_respects_mount_path(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Explorer navigation and static assets remain reachable under a subpath."""
+    monkeypatch.setenv("HEDRON_ROOT_PATH", "/app")
+    inner = Hedron(
+        title="ex026-mounted",
+        security="standard",
+        explorer="development",
+        session_secret="test-secret-ex026-mounted",
+    )
+    client = TestClient(Starlette(routes=[Mount("/app", app=inner)]))
+
+    response = client.get("/app/hedron-explorer/")
+
+    assert response.status_code == 200
+    assert 'href="/app/hedron-explorer/routes"' in response.text
+    assert 'href="/app/hedron-explorer/static/explorer.css"' in response.text
+    assert 'src="/app/hedron-static/htmx.min.js"' in response.text

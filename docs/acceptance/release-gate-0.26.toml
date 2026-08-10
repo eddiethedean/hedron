@@ -1,5 +1,5 @@
 # Phase 0.26 production-grade core / FastAPI / Explorer evidence index.
-# Consumed by scripts/check_release_gate.py 0.26.0 (--execute-verified at cut).
+# Consumed by scripts/check_release_gate.py 0.26.1 (--execute-verified at cut).
 # Zero Deferred policy for 0.26-owned rows: every row must be Verified at cut.
 # Owning decision: D-054. RFC: RFC-0057.
 

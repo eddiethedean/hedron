@@ -21,7 +21,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.26.0}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.26.1}"
 WITH_BROWSER=0
 
 usage() {

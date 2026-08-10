@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.26.1] — 2026-08-10
+
+### Changed
+
+- Coordinated Beta patch release.
+
 ## [0.26.0] — 2026-08-10
 
 ### Added

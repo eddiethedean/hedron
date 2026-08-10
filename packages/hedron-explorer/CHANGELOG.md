@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.26.1] — 2026-08-10
+
+### Fixed
+
+- Generate Explorer navigation, component detail, and static-asset links relative to a configured Hedron mount path.
+
 ## [0.26.0] — 2026-08-10
 
 ### Added

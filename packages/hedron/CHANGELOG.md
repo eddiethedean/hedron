@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.26.1] — 2026-08-10
+
+### Fixed
+
+- Require the mount-path-safe `hedron-explorer>=0.26.1` in the `dev` extra.
+
 ## [0.26.0] — 2026-08-10
 
 ### Added
