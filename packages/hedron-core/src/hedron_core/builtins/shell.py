@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
-from typing import Literal
+from collections.abc import Mapping, Sequence
+from typing import Any, Literal
 
 from hedron_core.builtins._base import ElementProps, class_names, collect_children, mark_data
-from hedron_core.builtins.landmarks import Nav
+from hedron_core.builtins.landmarks import (
+    LandmarkProps,
+    Nav,
+    _filter_landmark_kwargs,
+    _landmark_attrs,
+)
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
@@ -31,6 +36,54 @@ def _safe_optional_selector(value: str | None, *, label: str) -> str | None:
     if not safe_css_selector(value):
         raise ValueError(f"Unsafe HTMX {label} selector: {value!r}")
     return value
+
+
+def _merge_marker_data(
+    mark: str | None,
+    caller: Mapping[str, str | bool | int | float | None] | None,
+    **markers: str,
+) -> dict[str, str | bool | int | float | None]:
+    """Merge caller ``data`` with internal ``data-hedron-*`` markers (markers win)."""
+    merged: dict[str, str | bool | int | float | None] = {}
+    if caller:
+        merged.update(caller)
+    merged.update(mark_data(mark))
+    merged.update(markers)
+    return merged
+
+
+_OOB_HOST_SAFE_KEYS = frozenset(
+    {
+        "class_",
+        "id",
+        "tag",
+        "mark",
+        "lang",
+        "dir",
+        "title",
+        "tabindex",
+        "aria",
+        "data",
+        "hidden",
+        "role",
+    }
+)
+
+
+def _filter_oob_host_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+    unknown = set(kwargs) - _OOB_HOST_SAFE_KEYS
+    if unknown:
+        raise TypeError(
+            f"Unsupported OobHost attribute(s): {sorted(unknown)}. "
+            f"Allowlisted: {sorted(k for k in _OOB_HOST_SAFE_KEYS if k != 'role')}."
+        )
+    role = kwargs.get("role")
+    if isinstance(role, str) and role.strip():
+        raise TypeError(
+            f"role={role!r} is not allowed on OobHost "
+            "(prefer native landmark tags via tag=; do not set role=)."
+        )
+    return {k: v for k, v in kwargs.items() if k in _OOB_HOST_SAFE_KEYS and k != "role"}
 
 
 class HtmxLinkProps(ElementProps):
@@ -150,6 +203,13 @@ NavLink = HtmxLink
 
 class OobHostProps(ElementProps):
     tag: Literal["div", "section", "aside", "main", "nav"] = "div"
+    lang: str | None = None
+    dir: Literal["ltr", "rtl", "auto"] | None = None
+    title: str | None = None
+    tabindex: int | None = None
+    aria: dict[str, str | bool | int | float | None] | None = None
+    data: dict[str, str | bool | int | float | None] | None = None
+    hidden: bool | None = None
 
 
 class OobHost(Component[OobHostProps]):
@@ -165,23 +225,58 @@ class OobHost(Component[OobHostProps]):
         tag: Literal["div", "section", "aside", "main", "nav"] = "div",
         class_: str | None = None,
         mark: str | None = None,
+        lang: str | None = None,
+        dir: Literal["ltr", "rtl", "auto"] | None = None,
+        title: str | None = None,
+        tabindex: int | None = None,
+        aria: dict[str, str | bool | int | float | None] | None = None,
+        data: dict[str, str | bool | int | float | None] | None = None,
+        hidden: bool | None = None,
         **kwargs: object,
     ) -> None:
         if not id or not str(id).strip():
             raise ValueError("OobHost requires a non-empty id")
-        super().__init__(OobHostProps(id=id, tag=tag, class_=class_, mark=mark, **kwargs))
+        filtered = _filter_oob_host_kwargs(
+            {
+                "id": id,
+                "tag": tag,
+                "class_": class_,
+                "mark": mark,
+                "lang": lang,
+                "dir": dir,
+                "title": title,
+                "tabindex": tabindex,
+                "aria": aria,
+                "data": data,
+                "hidden": hidden,
+                **kwargs,
+            }
+        )
+        super().__init__(OobHostProps(**filtered))
         self._kids = _kids(*children)
 
     def render(self) -> NodeLike:
         assert self.props.id is not None
-        data = mark_data(self.props.mark)
-        data["hedron-oob-host"] = "true"
-        return getattr(html, self.props.tag)(
-            *self._kids,
-            id=self.props.id,
-            class_=class_names("hedron-oob-host", self.props.class_),
-            data=data,
-        )
+        attrs: dict[str, HtmlAttrValue] = {
+            "id": self.props.id,
+            "class_": class_names("hedron-oob-host", self.props.class_),
+            "data": _merge_marker_data(
+                self.props.mark, self.props.data, **{"hedron-oob-host": "true"}
+            ),
+        }
+        if self.props.lang:
+            attrs["lang"] = self.props.lang
+        if self.props.dir:
+            attrs["dir"] = self.props.dir
+        if self.props.title:
+            attrs["title"] = self.props.title
+        if self.props.tabindex is not None:
+            attrs["tabindex"] = self.props.tabindex
+        if self.props.aria:
+            attrs["aria"] = self.props.aria
+        if self.props.hidden:
+            attrs["hidden"] = True
+        return getattr(html, self.props.tag)(*self._kids, **attrs)
 
 
 class AttrHostProps(ElementProps):
@@ -226,8 +321,8 @@ class AttrHost(Component[AttrHostProps]):
         )
 
 
-class MainPanelProps(ElementProps):
-    pass
+class MainPanelProps(LandmarkProps):
+    mark: str | None = None
 
 
 class MainPanel(Component[MainPanelProps]):
@@ -242,20 +337,41 @@ class MainPanel(Component[MainPanelProps]):
         id: str = "main-panel",
         class_: str | None = None,
         mark: str | None = None,
+        lang: str | None = None,
+        dir: Literal["ltr", "rtl", "auto"] | None = None,
+        title: str | None = None,
+        tabindex: int | None = None,
+        aria: dict[str, str | bool | int | float | None] | None = None,
+        data: dict[str, str | bool | int | float | None] | None = None,
+        hidden: bool | None = None,
         **kwargs: object,
     ) -> None:
-        super().__init__(MainPanelProps(id=id, class_=class_, mark=mark, **kwargs))
+        filtered = _filter_landmark_kwargs(
+            {
+                "id": id,
+                "class_": class_,
+                "mark": mark,
+                "lang": lang,
+                "dir": dir,
+                "title": title,
+                "tabindex": tabindex,
+                "aria": aria,
+                "data": data,
+                "hidden": hidden,
+                **kwargs,
+            },
+            extra_allowed=frozenset({"mark"}),
+        )
+        super().__init__(MainPanelProps(**filtered))
         self._kids = _kids(*children)
 
     def render(self) -> NodeLike:
-        data = mark_data(self.props.mark)
-        data["hedron-main-panel"] = "true"
-        return html.main(
-            *self._kids,
-            id=self.props.id,
-            class_=class_names("hedron-main-panel", self.props.class_),
-            data=data,
+        attrs = _landmark_attrs(self.props)
+        attrs["class_"] = class_names("hedron-main-panel", self.props.class_)
+        attrs["data"] = _merge_marker_data(
+            self.props.mark, self.props.data, **{"hedron-main-panel": "true"}
         )
+        return html.main(*self._kids, **attrs)
 
 
 class AppShellProps(Props):
@@ -285,8 +401,6 @@ class AppShell(Component[AppShellProps]):
         self._body = () if body is None else _kids(body)  # type: ignore[arg-type]
 
     def render(self) -> NodeLike:
-        from hedron_core.builtins.landmarks import LandmarkProps, _landmark_attrs
-
         panel = MainPanel(*self._body, id=self.props.panel_id)
         if len(self._nav) == 1 and isinstance(self._nav[0], Nav):
             # Avoid nested <nav> landmarks when callers pass Nav(...).
