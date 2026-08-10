@@ -27,7 +27,12 @@ def main() -> int:
     if not GOLDENS.is_dir():
         errors.append(f"missing {GOLDENS.relative_to(ROOT)}")
     else:
-        required = ("identities.json", "diagnostics.json", "manifest_keys.json", "htmx_interaction.json")
+        required = (
+            "identities.json",
+            "diagnostics.json",
+            "manifest_keys.json",
+            "htmx_interaction.json",
+        )
         for name in required:
             if not (GOLDENS / name).is_file():
                 errors.append(f"missing golden {name}")

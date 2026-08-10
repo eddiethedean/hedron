@@ -151,7 +151,7 @@ def _default_render_context(request: HttpRequest | None) -> RenderContext:
         token = get_token(request)
         if isinstance(token, str) and token:
             csrf_token = token
-    except Exception:
+    except Exception:  # noqa: BLE001
         csrf_token = None
     return RenderContext.standalone(
         csrf_token=csrf_token,

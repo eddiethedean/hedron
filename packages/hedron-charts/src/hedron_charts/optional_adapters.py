@@ -318,7 +318,7 @@ class GraphVizAdapter:
             svg = None
         except HedronError:
             raise
-        except Exception:
+        except Exception:  # noqa: BLE001
             svg = None
         if svg is not None:
             return ChartOutput(

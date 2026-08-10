@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 ROOT = Path(__file__).resolve().parents[2]
 GOLDENS = Path(__file__).resolve().parent / "goldens_0_25_2"
 FACADE = ROOT / "docs" / "api" / "STABLE_FACADE.md"

@@ -119,7 +119,7 @@ class DjangoQuerySetDataSource:
                 from django.forms.models import model_to_dict
 
                 data.update(cast(dict[str, JsonValue], model_to_dict(obj)))
-            except Exception:
+            except Exception:  # noqa: BLE001
                 meta = getattr(obj, "_meta", None)
                 fields = getattr(meta, "fields", ()) if meta is not None else ()
                 for field in fields:

@@ -46,7 +46,7 @@ def check_protocol_files() -> list[str]:
 
 def _parse_ledger_rows() -> tuple[list[object], list[str]]:
     _load_sys_path()
-    from hedron_core.a11y import HumanAtRecord  # noqa: PLC0415
+    from hedron_core.a11y import HumanAtRecord
 
     errors: list[str] = []
     schema_path = HUMAN_AT / "ledger.schema.json"

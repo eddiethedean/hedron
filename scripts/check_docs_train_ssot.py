@@ -562,7 +562,11 @@ STALE = [
     re.compile(r"\*\*Next\*\* = \*\*0\.26 Planned\*\*", re.I),
     # Stale living-train install pins after v0.26.0 (historical upgrade notes may cite 0.25).
     re.compile(r"hedron(?:\[[^\]]+\])?>=0\.25\.0,<0\.26", re.I),
-    re.compile(r"hedron-(?:flask|django|core|data|explorer|jinja|conformance|extras)(?:\[[^\]]+\])?>=0\.25\.0,<0\.26", re.I),
+    re.compile(
+        r"hedron-(?:flask|django|core|data|explorer|jinja|conformance|extras)"
+        r"(?:\[[^\]]+\])?>=0\.25\.0,<0\.26",
+        re.I,
+    ),
     re.compile(r"Train:\s*`0\.25\.x`", re.I),
 ]
 

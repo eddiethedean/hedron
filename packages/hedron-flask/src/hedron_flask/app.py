@@ -332,7 +332,7 @@ class HedronFlask:
                     user_id = getattr(current_user, "id", None)
         except ImportError:
             _logger.debug("flask_login is not installed; using session identity")
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             # flask_login may raise outside a request context; fall back to session.
             _logger.debug("flask_login current_user unavailable: %s", exc)
         if user_id is None:

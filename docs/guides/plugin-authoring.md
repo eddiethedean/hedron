@@ -61,7 +61,7 @@ PLUGIN_META = PluginMeta(
     name="my_plugin",
     version="0.1.0",  # keep aligned with your distribution version
     distribution="my-hedron-plugin",
-    hedron_version=">=0.25,<0.26",
+    hedron_version=">=0.26,<0.27",
     capabilities=PluginCapabilities(python=True, styles=True, assets=True),
 )
 

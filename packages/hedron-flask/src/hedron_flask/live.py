@@ -65,7 +65,7 @@ def sse_response(
         iterator: Iterable[str] = (
             stream_with_context(generate()) if has_request_context() else generate()
         )
-    except Exception:
+    except Exception:  # noqa: BLE001
         iterator = generate()
 
     return Response(
@@ -104,7 +104,7 @@ def stream_text(
         iterator: Iterable[str] = (
             stream_with_context(generate()) if has_request_context() else generate()
         )
-    except Exception:
+    except Exception:  # noqa: BLE001
         iterator = generate()
 
     return Response(
