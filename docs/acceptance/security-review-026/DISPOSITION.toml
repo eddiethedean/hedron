@@ -1,0 +1,39 @@
+# REVIEW-026 finding disposition ledger (redacted).
+# critical_high_open must be false for Verified.
+
+critical_high_open = false
+reviewer = "structured-maintainer-review"
+baseline = "v0.25.2"
+packet = "0.26"
+
+[[findings]]
+id = "REV-026-001"
+severity = "high"
+title = "Explorer development mode must not remain enabled under production"
+status = "fixed"
+notes = "Hedron forces explorer development -> off when is_production_env; covered by EXPLORER-026 tests."
+
+[[findings]]
+id = "REV-026-002"
+severity = "high"
+title = "Experimental live transports must not leak into default hedron.__all__"
+status = "fixed"
+notes = "Live helpers remain behind hedron.experimental; CONTRACT-026 + smoke_fastapi_026 assert."
+
+[[findings]]
+id = "REV-026-003"
+severity = "medium"
+title = "Explorer audit buffer is process-local"
+status = "accepted_risk"
+owner = "hedron"
+deadline = "0.27"
+notes = "Documented bounded in-memory audit/trace; multi-worker adopters must not treat it as durable SIEM."
+
+[[findings]]
+id = "REV-026-004"
+severity = "low"
+title = "Plugin discovery depends on installed entry points"
+status = "accepted_risk"
+owner = "hedron"
+deadline = "0.29"
+notes = "Inventory excludes silent experimental enablement; plugin authoring remains explicit."

@@ -37,7 +37,7 @@ def _load_escape() -> tuple[object, object]:
         from hedron_native import escape_text as native_text
 
         return native_text, native_attr
-    except Exception:
+    except Exception:  # noqa: BLE001
         return None, None
 
 

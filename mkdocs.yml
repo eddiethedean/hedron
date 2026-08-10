@@ -500,6 +500,7 @@ nav:
     - Upgrade to 0.25: guides/upgrade.md
     - Release notes: guides/release-notes.md
     - Release summary (adopters): guides/release-adopters.md
+    - What's new in 0.26: guides/whats-new-0.26.md
     - What's new in 0.25: guides/whats-new-0.25.md
     - Earlier trains:
       - What's new in 0.24: guides/whats-new-0.24.md

@@ -1,0 +1,78 @@
+# Phase 0.26 production-grade inventory (machine-checked by check_contract_026.py).
+# Supported = production-grade label at 0.26 exit for these three packages only.
+# Experimental = may ship but excluded from production-grade claims.
+# Excluded = must not be required for a production-grade Supported workflow.
+# Owning decision: D-054. RFC: RFC-0057.
+
+baseline = "v0.25.2"
+packages = ["hedron-core", "hedron", "hedron-explorer"]
+
+[hedron-core]
+supported = [
+  "models",
+  "components",
+  "renderer",
+  "registry",
+  "security_contracts",
+  "interaction_contracts",
+  "polling_jobs",
+  "cache_contracts",
+  "stable_facade",
+]
+experimental = [
+  "experimental_live_helpers",
+]
+excluded = [
+  "alpha_charts",
+  "notebook_server",
+  "mcp_public_server",
+]
+
+[hedron]
+supported = [
+  "fastapi_pages",
+  "fastapi_components",
+  "fastapi_actions",
+  "csrf_security_profiles",
+  "build_assets",
+  "polling_status",
+  "cli_scaffolds",
+  "testing_helpers",
+  "production_startup_gates",
+]
+experimental = [
+  "hedron.experimental",
+  "sse",
+  "websocket",
+  "streaming",
+  "preload",
+]
+excluded = [
+  "explorer_required_at_runtime",
+  "public_unauthenticated_explorer",
+]
+
+[hedron-explorer]
+supported = [
+  "development_mode",
+  "secured_mode_authz",
+  "secured_mode_audit",
+  "csp_compatible_inspection",
+  "bounded_payloads",
+]
+experimental = []
+excluded = [
+  "public_by_default",
+  "required_runtime_dependency",
+]
+
+[install_guards]
+# Importing the default package must not silently enable experimental live APIs.
+hedron_default_enables_experimental_live = false
+explorer_public_by_default = false
+explorer_required_at_runtime = false
+
+[docs_anchors]
+stability = "docs/api/STABILITY.md"
+stable_facade = "docs/api/STABLE_FACADE.md"
+live_disposition = "docs/api/LIVE_DISPOSITION.md"

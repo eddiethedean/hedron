@@ -11,7 +11,7 @@ Typed data-source protocols, optional dataframe normalization, and a
 Tabulator-backed grid Web Component — registered through the public Hedron
 plugin contract. Install as `hedron-data` or via the flagship extra `hedron[data]`.
 
-**Package maturity:** Beta · **Train:** `0.25.x` (last published `0.25.2`) · pin `>=0.25.0,<0.26`
+**Package maturity:** Beta · **Train:** `0.25.x` (last published `0.26.0`) · pin `>=0.26.0,<0.27`
 
 ## Install
 
@@ -20,7 +20,7 @@ pip install "hedron-data>=0.25.0,<0.26"
 # or
 uv add "hedron-data>=0.25.0,<0.26"
 # via flagship:
-pip install "hedron[data]>=0.25.0,<0.26"
+pip install "hedron[data]>=0.26.0,<0.27"
 ```
 
 Requires Python 3.11–3.14 and `hedron-core`.

@@ -21,7 +21,7 @@ Requires Python 3.11–3.14. The fastest path uses
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash
-uvx --from "hedron>=0.25.0,<0.26" hedron new my-hedron-app
+uvx --from "hedron>=0.26.0,<0.27" hedron new my-hedron-app
 cd my-hedron-app
 uv sync
 uv run uvicorn app:app --reload
@@ -115,13 +115,13 @@ Coming from Streamlit? Start with the
 Pin the current Beta train so upgrades are intentional:
 
 ```bash
-uv add "hedron>=0.25.0,<0.26" "uvicorn[standard]"
+uv add "hedron>=0.26.0,<0.27" "uvicorn[standard]"
 # or
-python -m pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
+python -m pip install "hedron>=0.26.0,<0.27" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Train:** `0.25.x` · last published `0.25.2` ·
-pin `>=0.25.0,<0.26`
+**Package maturity:** Beta · **Train:** `0.25.x` · last published `0.26.0` ·
+pin `>=0.26.0,<0.27`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the
@@ -148,13 +148,13 @@ interactions, security profiles, and CLI. Integrations are optional:
 For example:
 
 ```bash
-uv add "hedron[data,dev]>=0.25.0,<0.26"
+uv add "hedron[data,dev]>=0.26.0,<0.27"
 ```
 
 Charts require the fixed compatible floor:
 
 ```bash
-uv add "hedron[charts]>=0.25.1,<0.26"
+uv add "hedron[charts]>=0.26.0,<0.27"
 ```
 
 See the full

@@ -1169,7 +1169,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.25** (last published `v0.25.2`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.25** (last published `v0.26.0`).
 See [STATUS](STATUS.md) and
 [release-gate-0.19.toml](acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -1773,9 +1773,9 @@ Zero Deferred among 0.25-owned gate rows at cut. Gate IDs and commands (cut Veri
 
 ## 0.26 — Production-grade core and FastAPI flagship (`v0.26.0`)
 
-**Status:** Planned. First package-graduation phase under the production-grade contract above.
-**Baseline train:** Published **`v0.25.2`**. Owning RFC and architectural decision required before
-implementation begins.
+**Status:** Published as `v0.26.0` (2026-08-10). First package-graduation phase under the
+production-grade contract above. **Baseline train:** Published **`v0.25.2`**. Owning RFC:
+[RFC-0057](rfcs/RFC-0057-PRODUCTION-GRADE-CORE.md); decision: **D-054**.
 
 **Outcome:** `hedron-core`, `hedron`, and `hedron-explorer` are production-grade for the documented
 server-rendered CRUD/admin Supported surface. Beta package maturity today is **not** the
@@ -2379,7 +2379,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Expand minimal `stable` API tier for Supported CRUD/HTMX/jobs + Beginner facade inventory | 0.23 | D-053 / RFC-0056; does not promote Alpha extras or live transports. |
 | Live-transport production disposition (`polling_only` Accepted) | 0.24 | **Published** `v0.24.0`; supersedes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056) — [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md). |
 | Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | **Published** `v0.25.0`; D-053 / RFC-0056; SBOM/evidence attach on train tags — [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). |
-| Production-grade `hedron-core`, `hedron`, and secured/development Explorer | 0.26 | Planned; baseline Published `v0.25.2`; inventory freeze → upgrade fixtures → security review → multi-worker/Explorer ops → budgets → `REGRESS`/`PKG` evidence (`RELEASE_0_26` / `release-gate-0.26.toml` / `verify_pkg_26` planned). |
+| Production-grade `hedron-core`, `hedron`, and secured/development Explorer | 0.26 | **Published** `v0.26.0`; D-054 / RFC-0057; Verified `CONTRACT-026`…`PKG-026` — [RELEASE_0_26](acceptance/RELEASE_0_26.md). |
 | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | Independent clean installs, adapter parity, bounded data/browser evidence, HDJ format compatibility, and experimental-ui quarantine. |
 | Production-grade charts and optional native acceleration | 0.28 | Static/a11y chart baseline, explicit backend dispositions, native fuzz/platform/fallback proof; acceleration never required. |
 | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.29 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes. |

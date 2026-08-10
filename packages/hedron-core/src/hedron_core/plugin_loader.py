@@ -74,7 +74,7 @@ class PluginLoader:
             for hook in reversed(item.context._shutdown):
                 try:
                     hook()
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001
                     errors.append(exc)
         self._started = False
         if errors:

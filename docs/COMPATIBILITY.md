@@ -1,7 +1,7 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.25.x** train (**Published**; last published
-PyPI/git = `v0.25.2`)
+**Status:** Accepted for the **0.26.x** train (**Published**; last published
+PyPI/git = `v0.26.0`)
 **Reviewed:** 2026-08-10
 
 ## Current train (read this first)
@@ -21,15 +21,15 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`)
-stay on the `0.25.x` train (Published as `0.25.0`; last published
-`v0.25.2`). Alpha packages `hedron-charts`, `hedron-gradio`,
+stay on the `0.26.x` train (Published as `0.26.0`; last published
+`v0.26.0`). Alpha packages `hedron-charts`, `hedron-gradio`,
 `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, and `hedron-mcp`
 version independently.
 
 ### Charts and sample-kit compatibility floor
 
 `hedron-charts>=0.1.6,<0.2` and `hedron-sample-kit>=0.1.6,<0.2` are compatible with
-`hedron-core>=0.25.0,<0.26`. The flagship `hedron[charts]>=0.25.1,<0.26` extra enforces
+`hedron-core>=0.25.0,<0.26`. The flagship `hedron[charts]>=0.26.0,<0.27` extra enforces
 that chart floor.
 
 !!! warning "Exclude older satellite wheels"
@@ -58,7 +58,7 @@ when evaluating a new install. Maturity Supported vs Experimental claims:
 
     Phase 0.7–0.10 baselines below describe what each phase **introduced**. They are not
     the current maturity snapshot. Live transports introduced in 0.10 are **experimental**
-    on the 0.25 train (Accepted disposition `polling_only`).
+    on the 0.26 train (Accepted disposition `polling_only`).
 
 ## Dependency pin conflicts
 
@@ -91,7 +91,7 @@ See [Installation](getting-started/installation.md) and
 | Pydantic | Supported `>=2.13.4,<2.14`; declared `>=2.13.4,<2.15` | Required by `hedron-core`; Hedron shields public contracts from Pydantic internals. |
 | Starlette | FastAPI-managed compatible version | No independent direct pin unless implementation use requires one; test the resolved FastAPI set. |
 | HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js`. |
-| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=0.25.1,<0.26`; Matplotlib/static charts are the conservative default. |
+| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=0.26.0,<0.27`; Matplotlib/static charts are the conservative default. |
 | Plotly | `>=5.18,<7` via `hedron-charts[plotly]` | Experimental; local host asset, no CDN callbacks. |
 | Altair | `>=6.0,<7` via `hedron-charts[altair]` | Experimental; Python 3.14 requires Altair 6+ (TypedDict fix). |
 | nh3 | `>=0.2` via `hedron[sanitize]` / `[markdown]` | TrustedHtml.nh3 named constructor. |

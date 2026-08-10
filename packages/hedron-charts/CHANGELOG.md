@@ -5,7 +5,7 @@
 ### Fixed
 
 - Publish the first chart satellite compatible with `hedron-core>=0.25.0,<0.26`,
-  restoring the `hedron[charts]>=0.25.1,<0.26` installation path.
+  restoring the `hedron[charts]>=0.26.0,<0.27` installation path.
 - Replace the repository-only missing-extra diagnostic with valid PyPI install commands.
 
 ## [0.1.5] — 2026-08-07

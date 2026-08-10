@@ -25,7 +25,7 @@ python -m hedron check
 **Other fixes:**
 
 1. Re-open the terminal after install (PATH updates often need a new shell).
-2. Prefer `uv tool install "hedron>=0.25.0,<0.26"` (or `pipx install "hedron>=0.25.0,<0.26"`) so the
+2. Prefer `uv tool install "hedron>=0.26.0,<0.27"` (or `pipx install "hedron>=0.26.0,<0.27"`) so the
    tool is on PATH, then run `hedron new …`.
 3. Inside a scaffolded project, use the project environment: `uv run hedron check` (or
    activate `.venv` and run `hedron` / `python -m hedron`).
@@ -53,7 +53,7 @@ but are not CI-proven.
 
 **Fix:** Create a **clean virtual environment** for the Hedron app (do not reuse a shared
 env that already pins an older FastAPI). Install only Hedron + uvicorn first
-(`hedron>=0.25.0,<0.26`), then add other dependencies. For first apps, prefer staying
+(`hedron>=0.26.0,<0.27`), then add other dependencies. For first apps, prefer staying
 inside the Supported band. See [Compatibility](../COMPATIBILITY.md).
 
 ## Wrong interpreter or ModuleNotFoundError for hedron
@@ -89,13 +89,13 @@ that port in the browser.
 **Symptom:** Features in the docs are missing from your install, or verify text does not match.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
-`pip install -U "hedron>=0.25.0,<0.26"` (or `uv add "hedron>=0.25.0,<0.26"`). The current
-train is **0.25.x** (Published; last published PyPI/git = `v0.25.2`)—see
+`pip install -U "hedron>=0.26.0,<0.27"` (or `uv add "hedron>=0.26.0,<0.27"`). The current
+train is **0.26.x** (Published; last published PyPI/git = `v0.26.0`)—see
 
 Published **`v0.25.2`** hardens additional edges vs earlier 0.25 patches: mount paths with `..` / `%2e`, RedisStatusStore / Celery–RQ cancel CAS, adapter prepare under a running loop, SSE/streaming `Cache-Control` overwrite, and root-relative SafeUrl/Hx attrs. Prefer the tip patch on the `0.25.x` train.
 [What's ready](whats-ready.md) and the [public roadmap](roadmap.md). If docs describe a
 feature missing from your install, upgrade to a matching `0.25.x` pin
-(`hedron>=0.25.0,<0.26`) or use a git checkout of that work.
+(`hedron>=0.26.0,<0.27`) or use a git checkout of that work.
 
 ## CSRF 403 on POST (FastAPI / Flask)
 
@@ -213,8 +213,8 @@ with auth in rare cases; keep production off.
 
 **Cause:** An old CLI wrote `hedron>=0.4.0` (or another pre-0.11 floor).
 
-**Fix:** Edit `pyproject.toml` to `hedron>=0.25.0,<0.26` and `uvicorn[standard]>=0.30`, then
-reinstall. Current `hedron new` scaffolds `hedron>=0.25.0,<0.26` automatically.
+**Fix:** Edit `pyproject.toml` to `hedron>=0.26.0,<0.27` and `uvicorn[standard]>=0.30`, then
+reinstall. Current `hedron new` scaffolds `hedron>=0.26.0,<0.27` automatically.
 
 ## SSE / WebSocket / preload not working
 
@@ -244,8 +244,8 @@ data extra. Charts require the corrected satellite floor shipped with 0.25.1.
 
 ```bash
 # Auto needs no extra
-pip install "hedron[data]>=0.25.0,<0.26"      # DataTable, DataEditor
-pip install "hedron[charts]>=0.25.1,<0.26"   # chart components
+pip install "hedron[data]>=0.26.0,<0.27"      # DataTable, DataEditor
+pip install "hedron[charts]>=0.26.0,<0.27"   # chart components
 ```
 
 Versions before `hedron-charts 0.1.6` are incompatible with Hedron 0.25. See

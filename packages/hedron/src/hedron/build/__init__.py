@@ -36,7 +36,7 @@ try:
     from importlib.metadata import version as _pkg_version
 
     _hedron_version = _pkg_version("hedron")
-except Exception:  # pragma: no cover
+except Exception:  # pragma: no cover  # noqa: BLE001
     _hedron_version = CORE_VERSION
 
 __all__ = ["BuildResult", "load_build_manifest", "run_build"]

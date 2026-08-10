@@ -3,23 +3,23 @@
 ## Which version should I install?
 
 ```bash
-pip install "hedron>=0.25.0,<0.26"
+pip install "hedron>=0.26.0,<0.27"
 # or
-uv add "hedron>=0.25.0,<0.26"
+uv add "hedron>=0.26.0,<0.27"
 ```
 
-That is the current published line (`v0.25.2`). Package maturity is **Beta** — see
+That is the current published line (`v0.26.0`). Package maturity is **Beta** — see
 [How to read](../getting-started/how-to-read.md). Pin with an upper bound:
-`hedron>=0.25.0,<0.26`. Using `>=0.24.0` alone (no upper bound) can resolve a future
+`hedron>=0.26.0,<0.27`. Using `>=0.24.0` alone (no upper bound) can resolve a future
 **0.25+** breaking train. See [What’s ready today](whats-ready.md) and the
 [public roadmap](roadmap.md).
 
 **How is this different from Streamlit or FastHTML?** See [Why Hedron](why-hedron.md).
 
-For curated extras (`hedron-extras`), install `hedron[extras]>=0.25.0,<0.26`.
+For curated extras (`hedron-extras`), install `hedron[extras]>=0.26.0,<0.27`.
 **Auto** (inspectable object rendering built into `hedron` — no extra) is included.
-For DataTable/DataEditor, install `hedron[data]>=0.25.0,<0.26`. For charts, install
-`hedron[charts]>=0.25.1,<0.26`
+For DataTable/DataEditor, install `hedron[data]>=0.26.0,<0.27`. For charts, install
+`hedron[charts]>=0.26.0,<0.27`
 ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)).
 For Flask/Django adapters:
 
@@ -82,7 +82,7 @@ status — [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md).
 ## Is Hedron production-ready for internal admin?
 
 For pinned **Supported** CRUD/admin/forms on FastAPI (and Flask/Django adapters), yes
-with eyes open: packages are **Beta**, pin `>=0.25.0,<0.26`, prefer polling for live
+with eyes open: packages are **Beta**, pin `>=0.26.0,<0.27`, prefer polling for live
 status, and read [What’s ready](whats-ready.md). There is no vendor SLA or scheduled
 1.0. Use the [PoC checklist](evaluate.md#poc-checklist) on [Evaluate](evaluate.md).
 
@@ -109,18 +109,18 @@ install is what the scaffold’s `pyproject.toml` declares—do not skip it on p
 ## `uv add hedron` failed with “No pyproject.toml”
 
 Create a project first: `uv init my-app && cd my-app`, then
-`uv add "hedron>=0.25.0,<0.26"`. Or use
-`hedron new my-app` after `pip install "hedron>=0.25.0,<0.26"`.
+`uv add "hedron>=0.26.0,<0.27"`. Or use
+`hedron new my-app` after `pip install "hedron>=0.26.0,<0.27"`.
 
 ## Should I use `uv init` or `hedron new`?
 
-Prefer **`hedron new`** for a ready scaffold on **0.25.x** (install Hedron first).
+Prefer **`hedron new`** for a ready scaffold on **0.26.x** (install Hedron first).
 `uv init` + a hand-written `app.py` from the quickstart also works. Do not nest both into
 the same directory by accident.
 
 ## What do Beta, Supported, and Deferred mean?
 
-Short version for builders: **pin `hedron>=0.25.0,<0.26`**. Packages are Beta; that does
+Short version for builders: **pin `hedron>=0.26.0,<0.27`**. Packages are Beta; that does
 not mean “do not use” — it means expect occasional `0.x` churn and pin upper bounds.
 
 Evaluators (three axes — skip if you are just building):
@@ -136,7 +136,7 @@ Snapshot: [What’s ready today](whats-ready.md).
 ## Why pin with an upper bound (`<0.26`)?
 
 A lower bound without an upper bound alone allows a future **0.26+** breaking train.
-Use `hedron>=0.25.0,<0.26` (and matching adapters/extras) in lockfiles. See
+Use `hedron>=0.26.0,<0.27` (and matching adapters/extras) in lockfiles. See
 [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
@@ -144,14 +144,14 @@ Use `hedron>=0.25.0,<0.26` (and matching adapters/extras) in lockfiles. See
 **Auto** (built-in — no extra) and **DataTable/DataEditor** (`hedron[data]`) are
 **Supported**. Those packages are **Beta** on PyPI — pin versions.
 
-Charts install through `hedron[charts]>=0.25.1,<0.26`; the sample kit installs as
+Charts install through `hedron[charts]>=0.26.0,<0.27`; the sample kit installs as
 `hedron-sample-kit>=0.1.6,<0.2`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ```bash
-pip install "hedron[data]>=0.25.0,<0.26"     # DataTable, DataEditor (Auto is already in hedron)
-pip install "hedron[charts]>=0.25.1,<0.26"   # compatible chart satellite
+pip install "hedron[data]>=0.26.0,<0.27"     # DataTable, DataEditor (Auto is already in hedron)
+pip install "hedron[charts]>=0.26.0,<0.27"   # compatible chart satellite
 ```
 
 See [Auto](../api/AUTO.md), [Data](../api/DATA.md), and the
@@ -222,9 +222,9 @@ variables / your secret store. Constructor args override both when explicit.
 ## How do I install HDJ / Jinja templates?
 
 ```bash
-pip install "hedron[jinja]>=0.25.0,<0.26"
+pip install "hedron[jinja]>=0.26.0,<0.27"
 # or
-uv add "hedron[jinja]>=0.25.0,<0.26"
+uv add "hedron[jinja]>=0.26.0,<0.27"
 ```
 
 See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/installation.md).

@@ -11,7 +11,7 @@ the status region update without a full page reload.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.25.0,<0.26" hedron new my-flask-app --flask
+uvx --from "hedron>=0.26.0,<0.27" hedron new my-flask-app --flask
 cd my-flask-app && uv sync && uv run flask --app app run --port 8000
 ```
 

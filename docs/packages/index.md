@@ -51,7 +51,7 @@ interop are **Experimental** / Alpha — not production defaults.
 | [hedron-sim](hedron-sim.md) | — | Offline HTMX sims for static docs |
 
 ```bash
-pip install "hedron[charts]>=0.25.1,<0.26"
+pip install "hedron[charts]>=0.26.0,<0.27"
 pip install "hedron-sample-kit>=0.1.6,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 

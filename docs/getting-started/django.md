@@ -10,7 +10,7 @@ the status region update without a full page reload.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.25.0,<0.26" hedron new my-django-app --django
+uvx --from "hedron>=0.26.0,<0.27" hedron new my-django-app --django
 cd my-django-app && uv sync
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```

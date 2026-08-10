@@ -184,7 +184,7 @@ async def prepare_csrf_from_request(request: Request, policy: SecurityPolicy) ->
         return
     try:
         form = await request.form()
-    except Exception:
+    except Exception:  # noqa: BLE001
         return
     field_val = form.get(form_field)
     if isinstance(field_val, str):

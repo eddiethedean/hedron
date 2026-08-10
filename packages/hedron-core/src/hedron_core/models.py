@@ -147,7 +147,7 @@ class Model(BaseModel):
             from typing import get_type_hints
 
             hints = get_type_hints(cls)
-        except Exception:
+        except Exception:  # noqa: BLE001
             hints = {
                 k: v
                 for k, v in getattr(cls, "__annotations__", {}).items()

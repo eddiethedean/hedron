@@ -263,7 +263,7 @@ def _apply_patch(
                 "target_id": target_id,
             }
         )
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         audit.append(
             {
                 "kind": "conflict",
