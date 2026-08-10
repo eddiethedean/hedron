@@ -1,38 +1,155 @@
 :root {
-  --hedron-teal: #14b8a6;
-  --hedron-cyan: #67e8f9;
-  --hedron-ink: #102a43;
-  --hedron-muted: #526579;
-  --hedron-surface: #f6f9fc;
-  --hedron-border: rgba(25, 55, 85, 0.12);
-  --md-primary-fg-color: #123047;
-  --md-primary-fg-color--light: #1d4962;
-  --md-primary-fg-color--dark: #0b2234;
-  --md-accent-fg-color: #0f9488;
+  --hedron-teal: #00a8a0;
+  --hedron-cyan: #58d3ca;
+  --hedron-ink: #17212b;
+  --hedron-muted: #5c6670;
+  --hedron-surface: #f7f8fa;
+  --hedron-border: #e6e9ed;
+  --md-primary-fg-color: #ffffff;
+  --md-primary-fg-color--light: #ffffff;
+  --md-primary-fg-color--dark: #ffffff;
+  --md-accent-fg-color: #008b8a;
+  --md-default-bg-color: #ffffff;
+  --md-default-fg-color: #17212b;
 }
 
 [data-md-color-scheme="slate"] {
-  --hedron-ink: #edf8ff;
-  --hedron-muted: #a9bfd0;
-  --hedron-surface: rgba(20, 45, 62, 0.46);
-  --hedron-border: rgba(151, 201, 220, 0.16);
-  --md-default-bg-color: #0b1620;
-  --md-default-fg-color: #e6f1f7;
-  --md-code-bg-color: #101f2b;
-  --md-accent-fg-color: #5eead4;
+  --hedron-ink: #f1f5f9;
+  --hedron-muted: #aeb9c5;
+  --hedron-surface: #18212b;
+  --hedron-border: #2d3945;
+  --md-default-bg-color: #111820;
+  --md-default-fg-color: #eef2f6;
+  --md-code-bg-color: #18212b;
+  --md-accent-fg-color: #4dd6cf;
+}
+
+[data-md-color-scheme="slate"] .md-header,
+[data-md-color-scheme="slate"] .md-tabs {
+  background: #111820;
+}
+
+[data-md-color-scheme="slate"] .md-search__form {
+  background-color: #18212b;
 }
 
 body {
-  letter-spacing: -0.006em;
+  letter-spacing: -0.004em;
 }
 
 .md-header {
-  background: rgba(13, 40, 58, 0.94);
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid var(--hedron-border);
+  box-shadow: none;
+  color: var(--hedron-ink);
   backdrop-filter: blur(16px);
 }
 
 .md-tabs {
-  background: #0d283a;
+  background: #fff;
+  border-bottom: 1px solid var(--hedron-border);
+  color: var(--hedron-ink);
+}
+
+.md-tabs__link {
+  color: var(--hedron-muted);
+  font-size: 0.73rem;
+  font-weight: 650;
+}
+
+.md-tabs__link--active,
+.md-tabs__link:hover {
+  color: var(--md-accent-fg-color);
+}
+
+.md-header__title,
+.md-header__topic,
+.md-header__button,
+.md-header__option {
+  color: var(--hedron-ink);
+}
+
+.md-header__button.md-icon:hover {
+  color: var(--md-accent-fg-color);
+}
+
+.md-search__form {
+  background-color: #f4f6f8;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  color: var(--hedron-ink);
+}
+
+.md-search__form:hover,
+.md-search__input:focus ~ .md-search__icon {
+  border-color: var(--hedron-border);
+}
+
+.md-search__input::placeholder {
+  color: var(--hedron-muted);
+}
+
+.md-search__output {
+  border: 1px solid var(--hedron-border);
+}
+
+.md-nav__title {
+  color: var(--hedron-ink);
+  font-size: 0.77rem;
+  font-weight: 750;
+}
+
+.md-nav--primary .md-nav__link,
+.md-nav--secondary .md-nav__link {
+  color: var(--hedron-muted);
+  font-size: 0.76rem;
+}
+
+.md-nav--primary .md-nav__link--active,
+.md-nav--primary .md-nav__link:hover,
+.md-nav--secondary .md-nav__link--active,
+.md-nav--secondary .md-nav__link:hover {
+  color: var(--md-accent-fg-color);
+}
+
+.md-sidebar {
+  background: var(--md-default-bg-color);
+}
+
+.md-sidebar--primary {
+  border-right: 1px solid var(--hedron-border);
+}
+
+.md-sidebar--secondary {
+  border-left: 1px solid var(--hedron-border);
+}
+
+.md-main__inner {
+  margin-top: 1.55rem;
+}
+
+.md-content {
+  max-width: 48rem;
+}
+
+.md-content__inner {
+  margin-bottom: 4rem;
+  padding-top: 0.25rem;
+}
+
+.md-typeset {
+  color: var(--hedron-ink);
+  font-size: 0.81rem;
+  line-height: 1.7;
+}
+
+.md-typeset a {
+  color: #007c7c;
+  font-weight: 550;
+}
+
+[data-md-color-scheme="slate"] .md-typeset a {
+  color: #4dd6cf;
 }
 
 .md-header__button.md-logo img,
@@ -45,12 +162,13 @@ body {
 .md-typeset h2,
 .md-typeset h3 {
   color: var(--hedron-ink);
-  font-weight: 750;
-  letter-spacing: -0.035em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
 .md-typeset h1 {
-  font-size: clamp(2rem, 5vw, 3.15rem);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  line-height: 1.15;
 }
 
 .md-typeset h2 {
@@ -63,31 +181,31 @@ body {
 
 .md-typeset .highlight {
   border: 1px solid var(--hedron-border);
-  border-radius: 0.7rem;
-  box-shadow: 0 18px 45px rgba(9, 31, 45, 0.08);
+  border-radius: 0.4rem;
+  box-shadow: none;
   overflow: hidden;
 }
 
 .md-typeset .admonition,
 .md-typeset details {
-  border-radius: 0.65rem;
+  border-radius: 0.4rem;
   box-shadow: none;
 }
 
 .md-footer {
-  background: #081923;
+  background: #17212b;
 }
 
 .hedron-hero {
-  margin: 0 -0.6rem 3.5rem;
-  padding: 3.3rem 0.6rem 1.2rem;
+  margin: 0 0 3.5rem;
+  padding: 2.6rem 0 1.2rem;
   position: relative;
 }
 
 .hedron-hero::before {
   background:
-    radial-gradient(circle at 15% 20%, rgba(103, 232, 249, 0.17), transparent 29rem),
-    radial-gradient(circle at 88% 12%, rgba(20, 184, 166, 0.14), transparent 27rem);
+    radial-gradient(circle at 8% 0%, rgba(88, 211, 202, 0.12), transparent 26rem),
+    radial-gradient(circle at 92% 0%, rgba(0, 168, 160, 0.08), transparent 23rem);
   content: "";
   inset: -3rem -8vw -2rem;
   pointer-events: none;
@@ -116,15 +234,15 @@ body {
 }
 
 .hedron-hero h1 {
-  font-size: clamp(2.6rem, 7vw, 5.25rem);
-  letter-spacing: -0.06em;
-  line-height: 0.98;
+  font-size: clamp(2.55rem, 6vw, 4.5rem);
+  letter-spacing: -0.05em;
+  line-height: 1.02;
   margin: 0;
   max-width: 15ch;
 }
 
 .hedron-gradient-text {
-  background: linear-gradient(110deg, #0f9488 15%, #1787a8 80%);
+  background: linear-gradient(110deg, #008b8a 15%, #167ba8 80%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -156,14 +274,15 @@ body {
 }
 
 .md-typeset .hedron-actions .md-button {
-  border-radius: 0.5rem;
-  padding: 0.65em 1.25em;
+  border-radius: 0.35rem;
+  font-weight: 650;
+  padding: 0.55em 1.1em;
 }
 
 .md-typeset .hedron-actions .md-button--primary {
-  background: #0f9488;
-  border-color: #0f9488;
-  box-shadow: 0 10px 30px rgba(15, 148, 136, 0.22);
+  background: #008b8a;
+  border-color: #008b8a;
+  box-shadow: none;
 }
 
 .hedron-signal-row {
@@ -192,7 +311,7 @@ body {
 .hedron-card {
   background: var(--hedron-surface);
   border: 1px solid var(--hedron-border);
-  border-radius: 0.8rem;
+  border-radius: 0.45rem;
   color: var(--hedron-muted);
   min-height: 10rem;
   padding: 1.25rem;
@@ -200,9 +319,9 @@ body {
 }
 
 a.hedron-card:hover {
-  border-color: rgba(20, 184, 166, 0.55);
-  box-shadow: 0 14px 35px rgba(9, 31, 45, 0.08);
-  transform: translateY(-2px);
+  border-color: rgba(0, 139, 138, 0.6);
+  box-shadow: 0 8px 20px rgba(23, 33, 43, 0.08);
+  transform: translateY(-1px);
 }
 
 .hedron-card strong {
