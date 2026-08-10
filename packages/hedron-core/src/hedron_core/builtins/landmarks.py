@@ -71,12 +71,17 @@ def _landmark_attrs(props: LandmarkProps) -> dict[str, HtmlAttrValue]:
     return attrs
 
 
-def _filter_landmark_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
-    unknown = set(kwargs) - _LANDMARK_SAFE_KEYS - set(LandmarkProps.model_fields)
+def _filter_landmark_kwargs(
+    kwargs: dict[str, Any],
+    *,
+    extra_allowed: frozenset[str] = frozenset(),
+) -> dict[str, Any]:
+    allowed = _LANDMARK_SAFE_KEYS | extra_allowed | set(LandmarkProps.model_fields)
+    unknown = set(kwargs) - allowed
     if unknown:
         raise TypeError(
             f"Unsupported landmark attribute(s): {sorted(unknown)}. "
-            f"Allowlisted: {sorted(_LANDMARK_SAFE_KEYS)}."
+            f"Allowlisted: {sorted(_LANDMARK_SAFE_KEYS | extra_allowed)}."
         )
     role = kwargs.get("role")
     if isinstance(role, str) and role.strip():
@@ -85,11 +90,7 @@ def _filter_landmark_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
             "(native landmark tags already imply the correct role; "
             "do not set role= on Header/Main/Nav/Aside/Footer)."
         )
-    return {
-        k: v
-        for k, v in kwargs.items()
-        if k in LandmarkProps.model_fields or k in _LANDMARK_SAFE_KEYS
-    }
+    return {k: v for k, v in kwargs.items() if k in allowed}
 
 
 class Header(Component[LandmarkProps]):

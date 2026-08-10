@@ -8,6 +8,11 @@
   (D-055 / RFC-0058): inventory freeze, `v0.26.0` upgrade fixtures, host-only
   adapter/data/HDJ/extras evidence, portable parity, and REVIEW-027 disposition.
 
+### Fixed
+
+- Allow safe accessibility attributes on `MainPanel` and `OobHost`, merging caller
+  `data` with internal `data-hedron-*` markers (`#56`).
+
 ### Changed
 
 - Coordinated Beta train bump to `0.27.0` (pin `>=0.27.0,<0.28`).
