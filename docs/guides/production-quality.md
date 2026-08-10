@@ -32,7 +32,7 @@ Raise production-level quality as **trust in the Supported surface**:
   Verified on 0.25)
 
 Explicitly **not** the goal: calendar `1.0`, commercial SLA, WCAG/VPAT product claims, or
-promoting every Alpha extra.
+automatically promoting Alpha packages and experimental features without package-specific evidence.
 
 ## Priority stack
 
@@ -45,6 +45,26 @@ promoting every Alpha extra.
 | P2 | Production archetype + load budgets + extras quarantine (**0.25**) | **Published** / Verified (`v0.25.0`; D-053) — [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md) |
 | P3 | External security review + SBOM/evidence on every train tag | Process |
 | P3 | Optional written `1.0` DoD **without a date** | Documented in D-053; no phase scheduled |
+
+## Planned package-graduation phases
+
+The original D-053 trust program ends with the published 0.25 packet. Planned roadmap phases
+**0.26–0.32** extend its evidence discipline to the rest of the package fleet:
+
+| Phase | Package group |
+|---|---|
+| 0.26 | `hedron-core`, `hedron`, and Explorer |
+| 0.27 | Data, Flask/Django adapters, HDJ, and curated extras |
+| 0.28 | Charts and optional native acceleration |
+| 0.29 | Conformance, sample plugin, simulation/notebook tooling, and Node/Java evaluators |
+| 0.30 | Deny-by-default MCP projection |
+| 0.31 | Gradio/Hugging Face client interoperability |
+| 0.32 | Whole-fleet resolver, upgrade, supply-chain, and maturity closure |
+
+Each phase requires an owning RFC/decision and Verified package-specific gates before a maturity
+label changes. “Production-grade” applies only to the declared Supported surface: notebook remains
+local development tooling, native remains optional, and experimental backends/namespaces remain
+explicitly outside the claim.
 
 Public phase table: [Roadmap](roadmap.md). Maintainer detail:
 [`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).

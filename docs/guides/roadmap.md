@@ -21,6 +21,13 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.23** | Expand `stable` API tier for narrow CRUD/admin facade (regions/`swap`, Poll/jobs, `CsrfField`/`Form`, beginner chrome, AppScenario asserts) | **Published** (`v0.23.0`; D-053) |
 | **0.24** | Live-transport production disposition (`polling_only`) | **Published** (`v0.24.0`; D-053) |
 | **0.25** | Production archetype, load budgets, extras quarantine | **Published** (`v0.25.0`; D-053) |
+| **0.26** | Production-grade core, FastAPI flagship, and secured/development Explorer | Planned; owning RFC/decision required |
+| **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | Planned; depends on 0.26 contract |
+| **0.28** | Production-grade charts and optional native acceleration | Planned; conservative Supported subsets only |
+| **0.29** | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | Planned; tooling scope remains explicit |
+| **0.30** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required |
+| **0.31** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access |
+| **0.32** | Whole-fleet production-grade closure | Planned; no unowned Alpha package or ambiguous tool disposition |
 
 ## What this means for you
 
@@ -37,6 +44,9 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md).
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
+- Planned **0.26–0.32** phases apply an evidence-based production-grade contract to the remaining
+  package fleet. This is not a blanket feature promotion or a scheduled `1.0`; see the
+  [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
 ## Honest gaps on the current train (0.25)
 

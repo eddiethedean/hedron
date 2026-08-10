@@ -25,6 +25,32 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 - migration notes, examples, and compatibility evidence;
 - a working increment of the reference application using packaged-style imports.
 
+## Production-grade package contract (0.26+)
+
+Phases 0.26–0.32 apply one additional contract to every publishable distribution. A package is
+**production-grade for its declared Supported surface** only when all of the following are true:
+
+- the Supported, Experimental, and excluded surfaces are inventoried; installing the package does
+  not silently enable an experimental capability;
+- the Supported public API has an explicit stability tier, compatibility window, deprecation path,
+  and upgrade test from the previous supported line;
+- clean wheel and source installs pass on every advertised Python/platform or language-runtime
+  combination, with locked dependency floors/ceilings and import-without-optional-dependencies tests;
+- the package has a threat model, adversarial tests for its trust boundaries, secret-redaction
+  coverage, dependency/license inventory, SBOM, and release provenance;
+- relevant browser, accessibility, performance, concurrency, cancellation, cleanup, and bounded-
+  resource evidence is attached to the release gate rather than asserted only in prose;
+- operators have configuration, health, diagnostics, rollback, and failure-mode guidance, while an
+  independent packaged example exercises the Supported path;
+- all package-owned production-grade gates are Verified, with no Deferred row hidden behind the
+  package-level maturity claim.
+
+This label is scoped. It does **not** require every experimental backend or namespace to graduate,
+does not turn notebook/docs tooling into a public application server, does not promise a commercial
+SLA or certification, and does not schedule `1.0`. Experimental surfaces may remain in a clearly
+named namespace or extra, but they are excluded from the package-level Supported inventory and may
+not be required for a production-grade workflow.
+
 ## Phase 0.9 authoring break — HDJ replaces HDN
 
 D-041 makes phase 0.9 an intentional clean break. The HDN parser, evaluator, formatter,
@@ -1745,6 +1771,377 @@ Zero Deferred among 0.25-owned gate rows at cut. Gate IDs and commands (cut Veri
   ([release-gate-0.25.toml](acceptance/release-gate-0.25.toml)).
 - Public production-quality and production-readiness guides link the archetype.
 
+## 0.26 — Production-grade core and FastAPI flagship (`v0.26.0`)
+
+**Status:** Planned. First package-graduation phase under the production-grade contract above.
+Requires an accepted owning RFC and architectural decision before implementation begins.
+
+**Outcome:** `hedron-core`, `hedron`, and `hedron-explorer` are production-grade for the documented
+server-rendered CRUD/admin surface. The main FastAPI path has an independently reviewed security
+boundary, supported-upgrade evidence, multi-worker operational proof, and a compatibility-protected
+public inventory without promoting experimental live transports.
+
+### Package dispositions
+
+| Package | Production-grade scope at exit |
+|---|---|
+| `hedron-core` | Models, components, renderer, registry, security/interaction contracts, polling jobs, cache contracts, and stable facade |
+| `hedron` | FastAPI pages/components/actions, CSRF/security profiles, build assets, polling status, CLI/scaffolds, testing helpers, and production startup gates |
+| `hedron-explorer` | Development mode plus authenticated/authorized secured inspection; never public-by-default and never required at runtime |
+
+### Scope
+
+- Freeze a machine-readable Supported API inventory for the three packages and add upgrade tests
+  from the final 0.25 line, including serialized identities, diagnostics, manifests, and HTMX
+  interaction results.
+- Commission an independent security review of escaping/trusted types, fragment/OOB authorization,
+  CSRF/session composition, build/static serving, plugin discovery, job observation, and Explorer
+  exposure; close or explicitly time-bound every material finding.
+- Prove the reference application under multi-worker process churn, Redis job/cache backends,
+  reverse-proxy subpaths, graceful shutdown, deploy rollback, and production asset manifests.
+- Set enforced latency, allocation, payload, startup, and job-poll budgets for the Supported critical
+  paths; retain pure-Python deterministic behavior as the reference.
+- Publish a supported-version policy and clean install/upgrade matrix for Python 3.11–3.14 and the
+  pinned FastAPI/Pydantic range, including minimum-dependency and offline-wheel smoke tests.
+- Make Explorer security posture inspectable: explicit mode, authentication/authorization hook,
+  CSP compatibility, audit events, bounded payloads, and production refusal for unsafe modes.
+- Attach package SBOMs, provenance, changelogs, rollback notes, and the external-review disposition
+  to the release evidence bundle.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `CONTRACT-026` | Production-grade contract and machine-readable Supported/Experimental inventories agree with public docs and package metadata |
+| `CORE-026` | Renderer/model/registry stable inventory, adversarial corpus, determinism, resource budgets, and 0.25 upgrade fixtures pass |
+| `FASTAPI-026` | Reference app passes multi-worker, proxy, assets, CSRF, job/cache, lifecycle, rollback, and minimum-dependency matrices |
+| `EXPLORER-026` | Secured mode has authz, audit, CSP, payload, and accidental-production-exposure browser evidence |
+| `REVIEW-026` | Independent security report is attached in redacted form; critical/high findings are fixed and other findings have owners and deadlines |
+| `REGRESS-026` / `PKG-026` | Full suite, wheel/sdist/install matrix, SBOM/provenance, upgrade rehearsal, and release verifier pass |
+
+### Non-goals
+
+- Promoting SSE, WebSocket, focused streaming, or preload from the 0.24 `polling_only` disposition.
+- Claiming that every `hedron-core` Beta/experimental symbol is stable.
+- Making Explorer an unauthenticated production endpoint.
+- Scheduling `1.0`, promising an SLA, or making a compliance/certification claim.
+
+### Exit gate
+
+- Every 0.26-owned gate row is Verified with immutable or CI-linked evidence.
+- Package metadata and adopter docs use the production-grade label only for the declared Supported
+  inventory; all exclusions remain conspicuous.
+
+## 0.27 — Production-grade adapters, data, authoring, and curated UI (`v0.27.0`)
+
+**Status:** Planned. Depends on the 0.26 production-grade core contract and upgrade fixtures.
+
+**Outcome:** The supported Python satellite train—`hedron-data`, `hedron-flask`, `hedron-django`,
+`hedron-jinja`, and `hedron-extras`—is production-grade for explicitly bounded workflows. Each
+package installs and upgrades independently, and optional integrations cannot weaken host security
+or core rendering guarantees.
+
+### Package dispositions
+
+| Package | Production-grade scope at exit |
+|---|---|
+| `hedron-data` | Bounded DataTable/DataEditor CRUD, supported in-memory/dataframe/SQL/Django sources, saved views, and documented spreadsheet paths |
+| `hedron-flask` | Native Flask pages/fragments/actions, host-owned sessions/CSRF/auth, polling jobs, scaffolds, and deployment integration |
+| `hedron-django` | Native Django responses/views/middleware/forms, bounded QuerySet source, polling jobs, system checks, and deployment integration |
+| `hedron-jinja` | Trusted `.hdj` v1 authoring, strict sink analysis, manifests/assets, component bindings, async preparation, and host integration |
+| `hedron-extras` | Curated default extra only; `experimental-ui` remains separately named and outside the production-grade Supported inventory |
+
+### Scope
+
+- Publish cross-adapter conformance for PAGE/FRAGMENT selection, target/OOB authorization, security
+  headers, CSRF composition, URL reversal under mounts, status responses, and error semantics.
+- Run real database and worker matrices for bounded data sources, tenant-first QuerySet filtering,
+  pagination/sort/filter allowlists, optimistic concurrency, transaction ownership, cancellation,
+  exports, and maximum payloads.
+- Browser-test DataTable/DataEditor and curated extras across the supported engines for keyboard,
+  zoom, forced colors, reduced motion, CSP, disconnect/reconnect, repeated mount/unmount, and memory
+  cleanup.
+- Version the HDJ format and feature profiles independently of Jinja internals; add golden upgrade
+  fixtures, strict dynamic-sink tests, manifest reproducibility, and deployment-CSP reconciliation.
+- Require each adapter and satellite to build, install, import, and exercise its reference example
+  without FastAPI or unrelated optional integrations installed.
+- Give quarantined specialty UI a machine-checked disposition: remain explicitly Experimental under
+  `hedron[experimental-ui]`, graduate with its own evidence, or be removed; it cannot leak into the
+  default `hedron[extras]` registry.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `DATA-027` | Bounded query/write/export matrices, browser/a11y coverage, multi-worker concurrency, cleanup, payload budgets, and upgrade fixtures pass |
+| `FLASK-027` / `DJANGO-027` | Clean host-only installs plus native security, lifecycle, proxy, polling, scaffold, and deployment matrices pass |
+| `HDJ-027` | Versioned format compatibility, strict sink corpus, assets/CSP, async preparation, diagnostics, and upgrade fixtures pass |
+| `EXTRAS-027` | Curated components meet browser/a11y/CSP/cleanup budgets and experimental-ui discovery remains fail-closed and separately labeled |
+| `PARITY-027` | Portable interaction/security conformance produces equivalent outcomes across FastAPI, Flask, and Django for Supported capabilities |
+| `REGRESS-027` / `PKG-027` | Independent wheel/source installs, package SBOMs, reference examples, and release verifier pass |
+
+### Non-goals
+
+- Requiring Flask/Django parity for experimental live transports.
+- Treating arbitrary application QuerySets, SQL, templates, or trusted HTML as safe without app
+  authorization and validation.
+- Graduating `CodeEditor`, `TerminalView`, joystick, or device bridges merely because the containing
+  distribution graduates.
+- Bundling every optional dataframe, database, spreadsheet, or Jinja extension by default.
+
+### Exit gate
+
+- All five packages satisfy the production-grade contract for their declared Supported inventories.
+- No adapter or satellite has an unowned Deferred production-grade row.
+
+## 0.28 — Production-grade visualization and native acceleration (`v0.28.0`)
+
+**Status:** Planned. Independent package releases may use their own compatible version line; the
+roadmap phase does not require them to adopt the main train's version number.
+
+**Outcome:** `hedron-charts` and `hedron-native` graduate from Alpha for a conservative, fully
+evidenced scope. Static accessible charts and optional acceleration are safe production choices;
+experimental interactive backends remain opt-in until they independently satisfy the same bar.
+
+### Scope
+
+- Define the `hedron-charts` Supported backend inventory. Matplotlib/static SVG/PNG and beginner
+  charts must have deterministic output, accessible tabular/text alternatives, bounded payloads,
+  CSP-safe local assets, lifecycle cleanup, and browser/print/export evidence.
+- Graduate Plotly and Altair/Vega only if pinned offline runtimes, CSP, keyboard/AT behavior, resize,
+  fragment remount, event validation, payload budgets, and supply-chain provenance pass; otherwise
+  retain them as explicitly Experimental without blocking the static package graduation.
+- Require every other visualization adapter to be classified Supported, Experimental, or removed;
+  an importable adapter name alone is not a production claim.
+- Publish `hedron-native` wheels for the supported CPython/platform matrix, plus reproducible source
+  builds, fuzz/property parity against the Python reference, memory-safety tooling, malformed-input
+  corpora, and a measured end-to-end benefit on named workloads.
+- Prove native absence, import failure, unsupported platform, and runtime disablement all fall back
+  without semantic, identity, escaping, diagnostic, or availability differences.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `CHARTS-028` | Static/beginner chart Supported inventory passes render, a11y, CSP, browser, export, cleanup, payload, and upgrade matrices |
+| `INTERACTIVE-028` | Each Plotly/Altair path is either fully Verified against its graduation matrix or remains machine-labeled Experimental and absent from production defaults |
+| `NATIVE-028` | Wheel/source platform matrix, fuzz and sanitizer evidence, Python parity, fallback injection, and end-to-end benefit thresholds pass |
+| `SUPPLY-028` | Browser runtimes and native artifacts have pins, hashes, license inventory, SBOM, provenance, and offline install evidence |
+| `REGRESS-028` / `PKG-028` | Cross-package compatibility, clean installs, downgrade/fallback rehearsal, and package release verifiers pass |
+
+### Non-goals
+
+- Declaring all visualization backends Supported as a group.
+- Making native acceleration required for correctness or availability.
+- Loading chart runtimes from unpinned public CDNs in the Supported configuration.
+- Claiming performance improvement from microbenchmarks without material application impact.
+
+### Exit gate
+
+- `hedron-charts` and `hedron-native` are no longer Alpha for their declared Supported scopes.
+- Every non-Supported backend remains explicit, opt-in, and non-transitive from production defaults.
+
+## 0.29 — Production-grade developer tooling and portable conformance (`v0.29.0`)
+
+**Status:** Planned. Tooling-grade means reliable and supported for its stated development or
+conformance purpose; it does not convert the tools into application production servers.
+
+**Outcome:** `hedron-conformance`, `hedron-sample-kit`, `hedron-sim`, `hedron-notebook`, and the
+Node/Java conformance runtimes are production-grade for their intended tooling roles. Cross-language
+artifacts are published and reproducible, while notebook preview remains deliberately local-only.
+
+### Package dispositions
+
+| Package/tool | Production-grade scope at exit |
+|---|---|
+| `hedron-conformance` | Versioned schemas/fixtures, normalization, runner CLI/API, compatibility policy, and third-party runtime author kit |
+| `hedron-sample-kit` | Maintained external-plugin exemplar with compatibility, security, assets, diagnostics, and Explorer tests |
+| `hedron-sim` | Deterministic offline docs/demo fragments with CSP-safe static assets and declared HTMX-subset limitations |
+| `hedron-notebook` | Localhost-only preview lifecycle, iframe isolation, port/process cleanup, diagnostics, and Jupyter compatibility |
+| `hedron-runtime-node` | Published, signed Node conformance evaluator—not an application server or full Hedron port |
+| `hedron-runtime-java` | Published, signed Java conformance evaluator—not an application server or full Hedron port |
+
+### Scope
+
+- Version conformance schemas independently, publish forward/backward compatibility rules, retain
+  golden fixtures, and test third-party runner failures with actionable diagnostics.
+- Publish Node and Java artifacts to their customary registries with supported runtime matrices,
+  dependency-free/offline execution where practical, reproducible builds, provenance, licenses,
+  and parity against the same immutable fixture bundle.
+- Exercise `hedron-sample-kit` from a separately built consumer repository so entry-point discovery,
+  assets, diagnostics, Explorer panels, and uninstall/disable behavior represent real plugins.
+- Bound `hedron-sim` to a documented HTMX subset; fail loudly for unsupported behavior and prove
+  deterministic timestamps, target/OOB authorization, escaping, assets, CSP, and generated-doc drift.
+- Harden notebook preview against non-loopback binding, token leakage, iframe origin confusion,
+  orphan threads/processes, port races, repeated start/stop, kernel interruption, and unsupported
+  Jupyter frontend versions. Remote/public serving remains refused by the Supported API.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `CONF-029` | Versioned fixture/schema compatibility, runner diagnostics, third-party author kit, and immutable corpus publication pass |
+| `PLUGIN-029` | External-consumer sample plugin passes discovery, security, assets, disable/uninstall, compatibility, and packaging tests |
+| `SIM-029` | Declared subset, deterministic generation, escaping/authorization/CSP, unsupported-feature failure, and docs drift checks pass |
+| `NOTEBOOK-029` | Loopback enforcement, iframe isolation, lifecycle cleanup, port/kernel race, Jupyter matrix, and warning/error UX pass |
+| `NODE-029` / `JAVA-029` | Published artifacts, runtime matrices, reproducibility/provenance, offline conformance, and Python-reference parity pass |
+| `REGRESS-029` / `PKG-029` | Clean consumer installs and coordinated conformance version negotiation pass |
+
+### Non-goals
+
+- Turning `hedron-notebook` into a hosted multi-user notebook service.
+- Describing the Node/Java evaluators as full component frameworks or web servers.
+- Claiming `hedron-sim` emulates all browser/HTMX behavior.
+- Making sample-kit a required runtime dependency.
+
+### Exit gate
+
+- All tooling artifacts have a supported purpose, version policy, release channel, and rollback path.
+- No monorepo-only Alpha package remains ambiguous between maintained product and test fixture.
+
+## 0.30 — Production-grade MCP projection (`v0.30.0`)
+
+**Status:** Planned. `hedron-mcp` remains Experimental Alpha until every gate below is Verified.
+
+**Outcome:** `hedron-mcp` is production-grade as a deny-by-default, authenticated MCP projection.
+Installation and mounting grant no authority; every resource/tool/action is explicitly registered,
+scoped to the caller, bounded, observable, cancellable, and safe under multi-worker deployment.
+
+### Scope
+
+- Track a pinned MCP protocol/SDK compatibility matrix with version negotiation, schema fixtures,
+  upgrade tests, and documented behavior for unsupported client capabilities.
+- Integrate explicit authentication and application-owned authorization/tenancy hooks; prevent
+  confused-deputy access, identifier enumeration, cross-tenant observation, and authority widening
+  between HTTP, UI, job, resource, and tool surfaces.
+- Separate read resources, read-only tools, and mutations. Mutations require explicit enablement,
+  idempotency/replay policy, audit records, bounded inputs/outputs, timeouts, cancellation, and clear
+  user-visible failure semantics.
+- Prove origin/transport security, session lifecycle, rate/concurrency limits, request size, file/URI
+  handling, SSRF/path traversal resistance, prompt/tool metadata redaction, and graceful shutdown.
+- Run adversarial multi-client and multi-worker suites plus compatibility tests against supported
+  MCP clients; attach an independent security review focused on tool authority and data exfiltration.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `PROTOCOL-030` | Pinned protocol/SDK matrix, negotiation, schemas, client compatibility, and upgrade fixtures pass |
+| `AUTHZ-030` | Authn/authz/tenant propagation is fail-closed across resources, tools, mutations, jobs, and disconnects |
+| `BOUNDS-030` | Size/rate/concurrency/time/cancel/replay/file/URI limits and multi-worker lifecycle evidence pass |
+| `AUDIT-030` | Redacted structured audit and diagnostics cover registration, authorization, execution, cancellation, and failure |
+| `REVIEW-030` | Independent MCP threat review has no unresolved critical/high finding at cut |
+| `REGRESS-030` / `PKG-030` | Clean optional install, disabled/no-registration no-op, SBOM/provenance, compatibility, and release verifier pass |
+
+### Non-goals
+
+- Default-public tools, automatic projection of components/routes, or ambient application authority.
+- Acting as an identity provider, secrets broker, approval system, or tenant model.
+- Executing arbitrary Python, shell, URLs, or filesystem paths from model-controlled input.
+- Treating protocol conformance as proof that an application's tools are safe or correctly authorized.
+
+### Exit gate
+
+- `hedron-mcp` leaves Alpha only for the deny-by-default Supported inventory above.
+- Mutating or vendor-specific extensions without full evidence remain explicitly Experimental.
+
+## 0.31 — Production-grade Gradio interoperability (`v0.31.0`)
+
+**Status:** Planned. `hedron-gradio` remains Experimental Alpha until every gate below is Verified.
+
+**Outcome:** `hedron-gradio` is production-grade for explicitly declared remote Gradio endpoints and
+Hugging Face Spaces. Remote calls have allowlisted destinations and operations, bounded file and
+stream handling, auth/secret hygiene, cancellation, observability, and verified upstream
+compatibility without embedding Gradio's UI runtime into Hedron.
+
+### Scope
+
+- Maintain a pinned `gradio_client` and protocol compatibility matrix with recorded upstream fixtures,
+  discovery/schema drift detection, minimum/maximum versions, and actionable mismatch errors.
+- Require explicit destination and endpoint declarations; enforce scheme/host/redirect policy, DNS
+  rebinding/SSRF defenses, TLS verification, credential scoping, and redacted logs/diagnostics.
+- Bound upload/download types and sizes, artifact retention, temporary files, queue waits, streaming
+  buffers, retries, deadlines, cancellation, disconnect cleanup, and remote error translation.
+- Propagate Hedron job identity and caller/tenant scope without forwarding ambient cookies or tokens;
+  prove multi-worker polling as the Supported status path.
+- Test supported self-hosted Gradio and Hugging Face Space scenarios, including private auth,
+  cold-start/queue behavior, schema changes, partial streams, cancellation, and provider outages.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `COMPAT-031` | Pinned client/server matrix, discovery/schema drift, recorded fixtures, and upgrade behavior pass |
+| `EGRESS-031` | Destination allowlists, redirect/DNS/TLS/SSRF controls, credential scope, and redaction pass adversarial tests |
+| `FILES-031` | File type/size/retention/path and artifact cleanup limits pass malicious and interrupted-transfer corpora |
+| `JOBS-031` | Queue/predict/stream timeout, cancellation, retry, disconnect, multi-worker polling, and outage behavior pass |
+| `VENDOR-031` | Supported Hugging Face paths have auth, cold-start, quota, failure, and compatibility evidence |
+| `REGRESS-031` / `PKG-031` | Absence/no-op import, optional dependency isolation, clean installs, SBOM/provenance, and release verifier pass |
+
+### Non-goals
+
+- Embedding or cloning Gradio's UI runtime, mutable global-state model, or share tunnels.
+- Allowing arbitrary caller-provided remote URLs, endpoint names, files, or credentials by default.
+- Remote host-code editing or treating provider output as trusted HTML, files, or ground truth.
+- Promising availability beyond the configured remote provider.
+
+### Exit gate
+
+- `hedron-gradio` leaves Alpha for its declared client-interoperability scope.
+- Unsupported upstream versions and experimental vendor extensions fail clearly and remain outside the
+  production-grade inventory.
+
+## 0.32 — Whole-fleet production-grade closure (`v0.32.0`)
+
+**Status:** Planned. Final audit phase for the package-graduation program; not a `1.0` substitute.
+
+**Outcome:** Every publishable Hedron distribution has either reached production-grade status for a
+declared Supported scope or has an explicit terminal disposition outside the production fleet. The
+full install/upgrade solver, release train, documentation, security evidence, and examples agree;
+no package remains Alpha merely because it lacked an owner.
+
+### Scope
+
+- Publish a machine-readable fleet inventory covering every `packages/*` distribution/tool with
+  owner, purpose, release channel, maturity, Supported/Experimental surfaces, compatibility range,
+  latest evidence bundle, and rollback/EOL policy.
+- Test supported combinations of flagship extras and satellites from a clean resolver, including
+  minimum dependencies, offline wheelhouse, upgrade from 0.25 and each graduation phase, rollback,
+  mixed-version rejection, and removal of optional packages.
+- Run the production reference app with each production-grade optional package enabled in isolation
+  and in supported combinations; attach security, browser/a11y, performance, lifecycle, and
+  diagnostics deltas.
+- Reconcile PyPI/npm/Maven metadata, documentation tables, compatibility constraints, stable API
+  inventories, SBOMs, provenance, vulnerability policy, and deprecation/EOL notices.
+- Give every remaining experimental namespace/backend one of three machine-checked dispositions:
+  owned incubator with a future evidence destination, retained internal test fixture, or removed.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `FLEET-032` | Inventory covers every package/tool and no published Alpha/ambiguous maturity row lacks an owner and terminal or future disposition |
+| `SOLVER-032` | Supported extra combinations, min/max dependencies, offline installs, mixed-version failures, upgrades, rollback, and uninstall pass |
+| `COMPOSE-032` | Reference-app isolation and supported-combination matrices pass security, a11y/browser, performance, lifecycle, and diagnostics budgets |
+| `DOCS-032` | Package metadata, readiness/compatibility docs, API inventories, examples, and release notes agree with the fleet inventory |
+| `SUPPLY-032` | Every published artifact has license inventory, SBOM, provenance, vulnerability disposition, retention, and rollback evidence |
+| `REGRESS-032` / `PKG-032` | Full cross-language/package suite and whole-fleet release rehearsal pass with zero Deferred 0.32-owned rows |
+
+### Non-goals
+
+- Renaming `v0.32.0` to `1.0`, freezing experimental APIs, or claiming all features are Supported.
+- Commercial SLA, hosted-service, legal compliance, WCAG conformance, VPAT/ACR, or certification
+  claims.
+- Keeping abandoned packages published solely to make the fleet look larger.
+- Reopening the polling-only live-transport decision without a separately accepted evidence packet.
+
+### Exit gate
+
+- Every publishable package satisfies the production-grade contract for its Supported surface.
+- There are zero unowned Alpha packages, zero ambiguous monorepo package/tool dispositions, and zero
+  Deferred rows among 0.32-owned gates.
+- The fleet inventory and release evidence are published with `v0.32.0`.
+
 ## Complete capability-to-release ledger
 
 This ledger is the coverage check for planned capabilities. The detailed phase sections above remain normative; the ledger prevents a subsystem or cross-cutting requirement from disappearing between plans.
@@ -1941,6 +2338,13 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Expand minimal `stable` API tier for Supported CRUD/HTMX/jobs + Beginner facade inventory | 0.23 | D-053 / RFC-0056; does not promote Alpha extras or live transports. |
 | Live-transport production disposition (`polling_only` Accepted) | 0.24 | **Published** `v0.24.0`; supersedes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056) — [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md). |
 | Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | **Published** `v0.25.0`; D-053 / RFC-0056; SBOM/evidence attach on train tags — [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). |
+| Production-grade `hedron-core`, `hedron`, and secured/development Explorer | 0.26 | Stable Supported inventory, independent security review, multi-worker/proxy/build proof, upgrade fixtures, and release provenance. |
+| Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | Independent clean installs, adapter parity, bounded data/browser evidence, HDJ format compatibility, and experimental-ui quarantine. |
+| Production-grade charts and optional native acceleration | 0.28 | Static/a11y chart baseline, explicit backend dispositions, native fuzz/platform/fallback proof; acceleration never required. |
+| Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.29 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes. |
+| Production-grade deny-by-default MCP projection | 0.30 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review. |
+| Production-grade Gradio/Hugging Face client interoperability | 0.31 | Allowlisted egress/endpoints, file/stream bounds, cancellation, polling jobs, provider compatibility, and secret hygiene. |
+| Whole-fleet production-grade closure | 0.32 | Machine-readable inventory, resolver/upgrade/rollback matrices, composed reference-app proof, and no unowned Alpha package. |
 | Optional written `1.0` DoD without a calendar date | D-053 | Not a roadmap phase; preserves D-038. |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 
@@ -2064,8 +2468,12 @@ must always retain an owner, rationale, destination, and public stability impact
 owns the post-0.11 host-security and adapter-parity packet (D-051). Phase **0.22** owns the CSRF /
 SecurityPolicy composition split (#36–#38) so 0.20 stays cuttable without a new CSRF protocol.
 Phase **0.21** owns the human AT packet from D-050 / D-052 (engineering-complete /
-sessions outstanding). Phases **0.23–0.25** own the production-quality maturity program from
-D-053 / RFC-0056 (stable-tier expansion, live-transport disposition, production archetype /
-landmine quarantine). These additions do not renumber earlier phases. An optional `1.0`
-definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
+sessions outstanding). Phases **0.23–0.25** own the original production-quality maturity program
+from D-053 / RFC-0056 (stable-tier expansion, live-transport disposition, production archetype /
+landmine quarantine). Planned phases **0.26–0.32** extend that evidence discipline across the
+remaining package fleet: core/flagship, Python satellites, charts/native, developer and portable
+tooling, MCP, Gradio, and a whole-fleet closure audit. Each planned phase requires an accepted
+owning RFC/decision before implementation; adding it here assigns scope and prevents maturity work
+from becoming an unowned backlog. These additions do not renumber earlier phases. An optional
+`1.0` definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
 roadmap phase.

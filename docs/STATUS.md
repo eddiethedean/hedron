@@ -161,6 +161,9 @@ Program summary: [production-quality guide](guides/production-quality.md).
 ## Next capability phases
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
-**Planned** until compensated screen-reader evidence lands. Optional later (D-053 P3):
-external security review cadence; undated written `1.0` definition of done — no scheduled
-calendar `1.0`.
+**Planned** until compensated screen-reader evidence lands. The roadmap now assigns the remaining
+package-production work to planned phases **0.26–0.32**: core/FastAPI/Explorer; supported Python
+satellites; charts/native; developer and portable conformance tooling; MCP; Gradio; then a
+whole-fleet closure audit. These phases require owning RFCs/decisions and Verified evidence before
+any package maturity label changes. They do not schedule `1.0`, promote every experimental
+subfeature, or change the current 0.25 readiness claims.
