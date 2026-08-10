@@ -18,7 +18,7 @@ already have a Jinja codebase.
 ## Quick install
 
 ```bash
-pip install "hedron[jinja]>=0.25.0,<0.26"
+pip install "hedron[jinja]>=0.26.0,<0.27"
 ```
 
 Then follow [HDJ API — Setup](../api/JINJA.md#setup).

@@ -44,7 +44,7 @@ Set `HEDRON_SESSION_SECRET` before production.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron-flask>=0.25.0,<0.26"
+python -m pip install "hedron-flask>=0.26.0,<0.27"
 ```
 
 Save as `app.py`:

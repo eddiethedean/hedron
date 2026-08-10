@@ -164,7 +164,7 @@ changes, Streamlit reruns the file and reconstructs the page.
 Install Hedron with the data extra, plus an ASGI server:
 
 ```bash
-uv add "hedron[data]>=0.25.0,<0.26" "uvicorn[standard]"
+uv add "hedron[data]>=0.26.0,<0.27" "uvicorn[standard]"
 ```
 
 To include charts, install the compatible satellite through the flagship extra:

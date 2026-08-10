@@ -2,7 +2,7 @@
 
 Language-neutral Hedron conformance-test kit and capability runner.
 
-**Package maturity:** Beta · **Train:** `0.25.x` (last published `0.26.0`) · pin `>=0.26.0,<0.27`
+**Package maturity:** Beta · **Train:** `0.26.x` (last published `0.26.0`) · pin `>=0.26.0,<0.27`
 **Flagship extra:** `hedron[conformance]` · **Import:** `hedron_conformance`  
 **CLI:** `hedron-conformance` · depends on pydantic only (no `hedron-core`)
 
@@ -11,7 +11,7 @@ Language-neutral Hedron conformance-test kit and capability runner.
 ```bash
 pip install "hedron[conformance]>=0.26.0,<0.27"
 # or
-pip install "hedron-conformance>=0.25.0,<0.26"
+pip install "hedron-conformance>=0.26.0,<0.27"
 ```
 
 ## When to use

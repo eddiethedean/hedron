@@ -24,8 +24,8 @@ For DataTable/DataEditor, install `hedron[data]>=0.26.0,<0.27`. For charts, inst
 For Flask/Django adapters:
 
 ```bash
-pip install "hedron-flask>=0.25.0,<0.26"
-pip install "hedron-django>=0.25.0,<0.26"   # requires Django >=5.2,<6
+pip install "hedron-flask>=0.26.0,<0.27"
+pip install "hedron-django>=0.26.0,<0.27"   # requires Django >=5.2,<6
 ```
 
 ## Do I need Node.js?
@@ -231,7 +231,7 @@ See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/inst
 
 ## Where is the SBOM / evidence bundle?
 
-Prefer GitHub Release assets for the train tag (`v0.25.2`), or regenerate from the
+Prefer GitHub Release assets for the train tag (`v0.26.0`), or regenerate from the
 tagged checkout with
 `scripts/build_evidence_bundle.py`. Step-by-step:
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.

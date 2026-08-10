@@ -100,7 +100,7 @@ Start with a clean environment and remove Streamlit only after the Hedron app no
 imports it.
 
 ```bash
-uv add "hedron[data]>=0.25.0,<0.26" "uvicorn[standard]"
+uv add "hedron[data]>=0.26.0,<0.27" "uvicorn[standard]"
 uv remove streamlit
 uv lock
 ```

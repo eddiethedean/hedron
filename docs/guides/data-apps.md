@@ -121,7 +121,7 @@ Simulates swapping a region with filter chips. For the real `DataTable` componen
 ## In-memory DataTable (requires `hedron[data]`)
 
 ```bash
-pip install "hedron[data]>=0.25.0,<0.26"
+pip install "hedron[data]>=0.26.0,<0.27"
 # optional backends
 pip install "hedron-data[pandas]"
 ```

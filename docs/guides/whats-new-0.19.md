@@ -1,6 +1,6 @@
 # What’s new in 0.19
 
-**Published as `v0.19.0`** (2026-08-07). Living published train is **0.25.0**.
+**Published as `v0.19.0`** (2026-08-07). Living published train is **0.26**.
 Historical installs for this phase used a 0.19 upper-bound pin; current train is
 `hedron>=0.26.0,<0.27`.
 

@@ -5,7 +5,7 @@ evaluator pages link here — do not treat parallel summaries as a second source
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-For a pinned internal admin/CRUD app on 0.25.x (`hedron>=0.26.0,<0.27`), you can use:
+For a pinned internal admin/CRUD app on 0.26.x (`hedron>=0.26.0,<0.27`), you can use:
 typed pages, HTMX fragments, CSRF (`standard`/`strict`), Flask/Django adapters,
 and polling for job status.
 

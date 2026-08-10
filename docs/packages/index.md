@@ -32,7 +32,7 @@ and the sample kit install directly. Charts require the compatible `0.1.6` satel
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
 
 ```bash
-pip install "hedron[data,dev]>=0.25.0,<0.26"
+pip install "hedron[data,dev]>=0.26.0,<0.27"
 ```
 
 ## Alpha lines

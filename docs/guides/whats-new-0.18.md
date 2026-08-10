@@ -34,6 +34,6 @@ workflows, and optional Gradio interop. See
 
 ## Upgrade notes
 
-Prefer the living 0.25 train for new apps; stay on a historical upper-bound pin
+Prefer the living 0.26 train for new apps; stay on a historical upper-bound pin
 only when you must freeze this phase. Install `hedron[gradio]` only when needed.
 See [Gradio migration](gradio-migration.md).

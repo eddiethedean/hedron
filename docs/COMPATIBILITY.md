@@ -29,7 +29,7 @@ version independently.
 ### Charts and sample-kit compatibility floor
 
 `hedron-charts>=0.1.6,<0.2` and `hedron-sample-kit>=0.1.6,<0.2` are compatible with
-`hedron-core>=0.25.0,<0.26`. The flagship `hedron[charts]>=0.26.0,<0.27` extra enforces
+`hedron-core>=0.26.0,<0.27`. The flagship `hedron[charts]>=0.26.0,<0.27` extra enforces
 that chart floor.
 
 !!! warning "Exclude older satellite wheels"

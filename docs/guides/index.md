@@ -2,7 +2,7 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.26 train** (**Published**; last **v0.26.0**): production archetype + extras quarantine — [What’s new in 0.25](whats-new-0.25.md) · [What’s ready](whats-ready.md).
+**0.26 train** (**Published**; last **v0.26.0**): production-grade core / FastAPI / Explorer — [What’s new in 0.26](whats-new-0.26.md) · [What’s ready](whats-ready.md).
 
 Complete **Learn** first ([Learning path](../getting-started/learning-path.md):
 First app → HTMX → Minimal form). HTMX and minimal form live under **Learn** — this

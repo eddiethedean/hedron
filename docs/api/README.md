@@ -1,6 +1,6 @@
 # Public API
 
-Hand-maintained **contracts** for shipped surfaces on the **0.25** train, plus
+Hand-maintained **contracts** for shipped surfaces on the **0.26** train, plus
 [Autodoc](AUTODOC.md) (mkdocstrings) for critical signatures. Autodoc is still a
 **subset** of every `hedron.__all__` name (~230 exports). The [coverage map](COVERAGE.md)
 lists **every** root export → docs page. Public exception types:
@@ -123,8 +123,8 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 ## Current train notes
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
-  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.25**
-  (**Published** as **v0.25.0**; last **v0.26.0**) — [A11Y API](A11Y.md),
+  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.26**
+  (**Published**; last **v0.26.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
   (introduced in 0.11; Supported on **0.26.x**)

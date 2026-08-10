@@ -92,7 +92,7 @@ that port in the browser.
 `pip install -U "hedron>=0.26.0,<0.27"` (or `uv add "hedron>=0.26.0,<0.27"`). The current
 train is **0.26.x** (Published; last published PyPI/git = `v0.26.0`)—see
 
-Published **`v0.25.2`** hardens additional edges vs earlier 0.25 patches: mount paths with `..` / `%2e`, RedisStatusStore / Celery–RQ cancel CAS, adapter prepare under a running loop, SSE/streaming `Cache-Control` overwrite, and root-relative SafeUrl/Hx attrs. Prefer the tip patch on the `0.25.x` train.
+Living tip is Published **`v0.26.0`**. The `v0.25.2` patch hardened mount `..` / `%2e`, RedisStatusStore / Celery–RQ cancel CAS, adapter prepare under a running loop, SSE/streaming `Cache-Control`, and root-relative SafeUrl/Hx attrs — still relevant when upgrading from earlier 0.25 lines onto `>=0.26.0,<0.27`.
 [What's ready](whats-ready.md) and the [public roadmap](roadmap.md). If docs describe a
 feature missing from your install, upgrade to a matching `0.25.x` pin
 (`hedron>=0.26.0,<0.27`) or use a git checkout of that work.
