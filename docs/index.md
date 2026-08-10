@@ -8,7 +8,7 @@ hide:
 
 <div class="hedron-eyebrow">Python · FastAPI · HTMX · last published v0.26.0</div>
 
-# Build interactive web UIs without leaving Python.<br><span class="hedron-gradient-text">Typed components. FastAPI underneath.</span>
+# Build interactive web apps in Python.
 
 Routes return components; HTMX updates the page without a Node frontend or full-script
 rerun — unlike Streamlit’s script-rerun model.
