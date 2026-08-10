@@ -231,7 +231,9 @@ def test_htmx_core_loads_before_extensions(browser_app_url: str, engine: str) ->
             browser.close()
 
 
-def test_htmx_core_loads_before_extensions_under_mount(engine: str, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_htmx_core_loads_before_extensions_under_mount(
+    engine: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Custom Hedron mount paths must keep the same deferred script order (#55)."""
     uvicorn = pytest.importorskip("uvicorn")
     from starlette.applications import Starlette
