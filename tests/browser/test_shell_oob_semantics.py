@@ -105,9 +105,13 @@ def shell_app_url() -> Iterator[str]:
         thread.join(timeout=5)
 
 
+def _selected_engine() -> str:
+    return os.environ.get("HEDRON_BROWSER_ENGINE") or "chromium"
+
+
 def test_side_nav_remains_nav_with_aria_label(shell_app_url: str) -> None:
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = getattr(pw, _selected_engine()).launch(headless=True)
         page = browser.new_page()
         try:
             page.goto(shell_app_url + "/")
