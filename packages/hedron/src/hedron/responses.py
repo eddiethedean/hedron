@@ -264,21 +264,52 @@ def _inject_build_assets(
     if "hedron-ui.mjs" not in html_text:
         ui = _mounted_static_href("/hedron-static/hedron-ui.mjs", request)
         add(f'<script type="module" src="{ui}"></script>')
-    # Pin non-deferred HTMX extensions after the core runtime (RFC-0032).
+    if tags:
+        injection = "\n".join(tags)
+        if "</head>" in html_text:
+            html_text = html_text.replace("</head>", f"{injection}\n</head>", 1)
+        elif "</body>" in html_text:
+            html_text = html_text.replace("</body>", f"{injection}\n</body>", 1)
+        else:
+            html_text = html_text + injection
+    # Pin bundled HTMX extensions immediately after the core runtime so deferred
+    # scripts execute in dependency order (issue #55 / RFC-0032).
+    return _inject_htmx_extension_assets(html_text, request)
+
+
+def _htmx_core_script_end(html_text: str) -> int | None:
+    """Return the index immediately after the HTMX core ``</script>`` tag, if present."""
+    marker = "htmx.min.js"
+    marker_at = html_text.find(marker)
+    if marker_at < 0:
+        return None
+    script_at = html_text.rfind("<script", 0, marker_at)
+    if script_at < 0:
+        return None
+    close_at = html_text.find("</script>", marker_at)
+    if close_at < 0:
+        return None
+    return close_at + len("</script>")
+
+
+def _inject_htmx_extension_assets(html_text: str, request: Request) -> str:
+    """Insert non-deferred HTMX extensions after the core runtime script."""
     from hedron_core.htmx_extensions import known_extensions
 
+    tags: list[str] = []
     for ext in sorted(known_extensions(), key=lambda e: e.load_order):
         if ext.deferred:
             continue
         ext_path = _mounted_static_href(ext.path, request)
         if ext.path in html_text or ext_path in html_text:
             continue
-        add(f'<script src="{ext_path}" defer></script>')
+        tags.append(f'<script src="{ext_path}" defer></script>')
     if not tags:
         return html_text
     injection = "\n".join(tags)
-    if "</head>" in html_text:
-        return html_text.replace("</head>", f"{injection}\n</head>", 1)
+    core_end = _htmx_core_script_end(html_text)
+    if core_end is not None:
+        return html_text[:core_end] + "\n" + injection + html_text[core_end:]
     if "</body>" in html_text:
         return html_text.replace("</body>", f"{injection}\n</body>", 1)
     return html_text + injection
@@ -306,6 +337,10 @@ def _ensure_htmx_asset(
     tag = f'<script src="{htmx_src}" defer></script>'
     if "htmx.min.js" in html_text:
         return html_text
+    # Prefer <head> so deferred extensions inserted after this tag still precede
+    # document parse completion and run after the core runtime (issue #55).
+    if "</head>" in html_text:
+        return html_text.replace("</head>", f"{tag}\n</head>", 1)
     if "</body>" in html_text:
         return html_text.replace("</body>", f"{tag}</body>", 1)
     return html_text + tag

@@ -213,3 +213,73 @@ def test_extension_assets_served(browser_app_url: str, engine: str) -> None:
             assert "head-support" in head.text().lower() or "head" in head.text().lower()
         finally:
             browser.close()
+
+
+def test_htmx_core_loads_before_extensions(browser_app_url: str, engine: str) -> None:
+    """Deferred extensions must not ReferenceError when the core is injected first (#55)."""
+    page_errors: list[str] = []
+    with sync_playwright() as pw:
+        browser = _launch(pw, engine)
+        page = browser.new_page()
+        page.on("pageerror", lambda exc: page_errors.append(str(exc)))
+        try:
+            page.goto(browser_app_url + "/", wait_until="load")
+            page.wait_for_function("() => typeof window.htmx !== 'undefined'")
+            assert page.evaluate("() => typeof window.htmx !== 'undefined'")
+            assert not any("htmx is not defined" in err for err in page_errors), page_errors
+        finally:
+            browser.close()
+
+
+def test_htmx_core_loads_before_extensions_under_mount(engine: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Custom Hedron mount paths must keep the same deferred script order (#55)."""
+    uvicorn = pytest.importorskip("uvicorn")
+    from starlette.applications import Starlette
+    from starlette.routing import Mount
+
+    from hedron import Hedron, Page, Stack, Text
+
+    monkeypatch.setenv("HEDRON_ROOT_PATH", "/app")
+    reset_browser_plugin_state()
+    inner = Hedron(
+        title="BrowserMounted",
+        security="standard",
+        session_secret="browser-secret-mounted",
+        explorer="off",
+    )
+
+    @inner.page("/")
+    def home() -> Page:
+        return Page(Stack(Text("mounted")), title="Mounted")
+
+    outer = Starlette(routes=[Mount("/app", app=inner)])
+    port = _free_port()
+    config = uvicorn.Config(outer, host="127.0.0.1", port=port, log_level="warning")
+    server = uvicorn.Server(config)
+    thread = threading.Thread(target=server.run, daemon=True)
+    thread.start()
+    wait_for_port(port)
+    page_errors: list[str] = []
+    try:
+        with sync_playwright() as pw:
+            browser = _launch(pw, engine)
+            page = browser.new_page()
+            page.on("pageerror", lambda exc: page_errors.append(str(exc)))
+            try:
+                page.goto(f"http://127.0.0.1:{port}/app/", wait_until="load")
+                page.wait_for_function("() => typeof window.htmx !== 'undefined'")
+                srcs = page.evaluate(
+                    """() => Array.from(document.scripts)
+                        .map((s) => s.getAttribute('src') || '')
+                        .filter(Boolean)"""
+                )
+                core = "/app/hedron-static/htmx.min.js"
+                assert core in srcs
+                assert srcs.index(core) < srcs.index("/app/hedron-static/ext/head-support.js")
+                assert srcs.index(core) < srcs.index("/app/hedron-static/ext/sse.js")
+                assert not any("htmx is not defined" in err for err in page_errors), page_errors
+            finally:
+                browser.close()
+    finally:
+        server.should_exit = True
+        thread.join(timeout=5)
