@@ -191,7 +191,7 @@ jobs:
           distribution: temurin
           java-version: "17"
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "20"
       - name: Run evidence suite
@@ -230,7 +230,7 @@ jobs:
           distribution: temurin
           java-version: "17"
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "20"
       - name: Run packaging suite
