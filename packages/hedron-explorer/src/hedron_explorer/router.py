@@ -206,6 +206,8 @@ def _shell(title: str, body: str, *, request: Request, active: str = "components
   <title>{html_lib.escape(title)} · Hedron Explorer</title>
   <link rel="stylesheet" href="{_explorer_href(request, "/hedron-explorer/static/explorer.css")}">
   <script src="{_explorer_href(request, "/hedron-static/htmx.min.js")}" defer></script>
+  <script src="{_explorer_href(request, "/hedron-static/ext/head-support.js")}" defer></script>
+  <script src="{_explorer_href(request, "/hedron-static/ext/sse.js")}" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -841,8 +843,15 @@ def explorer_router() -> APIRouter:
         if callable(resolve):
             try:
                 strategy = resolve()
-            except Exception:  # noqa: BLE001
-                strategy = None
+            except Exception as exc:  # noqa: BLE001 — surface as CSRF failure
+                return JSONResponse(
+                    {"detail": f"CSRF strategy resolve failed: {exc}"},
+                    status_code=403,
+                )
+        if strategy is None and getattr(policy, "csrf_enabled", True):
+            # Prefer an explicit strategy when CSRF is required; fall through to
+            # double-submit only when the policy intentionally has no strategy.
+            pass
         csrf_name = (
             getattr(strategy, "cookie_name", None)
             or getattr(policy, "csrf_cookie_name", None)

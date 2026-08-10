@@ -366,6 +366,7 @@ class TextInputProps(Props):
     aria_describedby: str | None = None
     aria_invalid: str | None = None
     aria_required: str | None = None
+    class_: str | None = None
 
 
 class TextInput(Component[TextInputProps]):
@@ -385,6 +386,7 @@ class TextInput(Component[TextInputProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
+        class_: str | None = None,
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -400,6 +402,7 @@ class TextInput(Component[TextInputProps]):
                 aria_describedby=aria_describedby,
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
+                class_=class_,
                 **kwargs,
             )
         )
@@ -411,6 +414,8 @@ class TextInput(Component[TextInputProps]):
             "id": self.props.id,
             "value": self.props.value,
         }
+        if self.props.class_:
+            attrs["class_"] = class_names("hedron-text-input", self.props.class_)
         if self.props.placeholder:
             attrs["placeholder"] = self.props.placeholder
         if self.props.required:
@@ -437,6 +442,7 @@ class TextAreaProps(Props):
     aria_describedby: str | None = None
     aria_invalid: str | None = None
     aria_required: str | None = None
+    class_: str | None = None
 
 
 class TextArea(Component[TextAreaProps]):
@@ -454,6 +460,7 @@ class TextArea(Component[TextAreaProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
+        class_: str | None = None,
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -467,6 +474,7 @@ class TextArea(Component[TextAreaProps]):
                 aria_describedby=aria_describedby,
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
+                class_=class_,
                 **kwargs,
             )
         )
@@ -477,6 +485,8 @@ class TextArea(Component[TextAreaProps]):
             "id": self.props.id,
             "rows": self.props.rows,
         }
+        if self.props.class_:
+            attrs["class_"] = class_names("hedron-textarea", self.props.class_)
         if self.props.required:
             attrs["required"] = True
         if self.props.placeholder:
@@ -496,6 +506,7 @@ class SelectProps(Props):
     aria_describedby: str | None = None
     aria_invalid: str | None = None
     aria_required: str | None = None
+    class_: str | None = None
 
 
 class Select(Component[SelectProps]):
@@ -512,6 +523,7 @@ class Select(Component[SelectProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
+        class_: str | None = None,
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -522,6 +534,7 @@ class Select(Component[SelectProps]):
                 aria_describedby=aria_describedby,
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
+                class_=class_,
                 **kwargs,
             )
         )
@@ -539,6 +552,8 @@ class Select(Component[SelectProps]):
             "name": self.props.name,
             "id": self.props.id,
         }
+        if self.props.class_:
+            attrs["class_"] = class_names("hedron-select", self.props.class_)
         if self.props.required:
             attrs["required"] = True
         attrs["aria"] = {
@@ -558,6 +573,7 @@ class CheckboxProps(Props):
     aria_describedby: str | None = None
     aria_invalid: str | None = None
     aria_required: str | None = None
+    class_: str | None = None
 
 
 class Checkbox(Component[CheckboxProps]):
@@ -574,6 +590,7 @@ class Checkbox(Component[CheckboxProps]):
         aria_describedby: str | None = None,
         aria_invalid: str | None = None,
         aria_required: str | None = None,
+        class_: str | None = None,
         **kwargs: object,
     ) -> None:
         super().__init__(
@@ -586,6 +603,7 @@ class Checkbox(Component[CheckboxProps]):
                 aria_describedby=aria_describedby,
                 aria_invalid=aria_invalid,
                 aria_required=aria_required,
+                class_=class_,
                 **kwargs,
             )
         )
@@ -608,7 +626,7 @@ class Checkbox(Component[CheckboxProps]):
         return html.div(
             html.input(**attrs),
             html.label(self.props.label, for_=self.props.id),
-            class_="hedron-checkbox",
+            class_=class_names("hedron-checkbox", self.props.class_),
         )
 
 

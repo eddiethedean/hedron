@@ -248,7 +248,7 @@ pip install "hedron[data]>=0.27.0,<0.28"      # DataTable, DataEditor
 pip install "hedron[charts]>=0.27.0,<0.28"   # chart components
 ```
 
-Versions before `hedron-charts 0.1.6` are incompatible with Hedron 0.27. See
+Versions before `hedron-charts 0.1.7` are incompatible with Hedron 0.27. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor),
 [Installation](../getting-started/installation.md), and
 [charts and HTMX](charts-and-htmx.md).

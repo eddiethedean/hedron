@@ -62,13 +62,25 @@ def load_release_facts(path: Path = RELEASE_FILE) -> ReleaseFacts:
 
 FACTS = load_release_facts()
 
+# Markdown emphasis / code ticks often wrap the version token.
+_MD_GAP = r"(?:[\s*`*_])*"
 CURRENT_CLAIM_VERSION = re.compile(
+    r"(?:"
+    # current/living train … then version (or last published … version)
     r"\b(?:"
     r"current(?:ly)?(?:\s+published)?\s+(?:train|line|version|release)|"
     r"living(?:\s+published)?\s+(?:train|line|version|release)|"
     r"last\s+(?:published|PyPI/git)|"
     r"published/latest"
-    r")[^\n]{0,100}?v?(0\.\d+(?:\.\d+)?(?:\.x)?)",
+    r")[^\n]{0,100}?v?(0\.\d+(?:\.\d+)?(?:\.x)?)"
+    r"|"
+    # living/current **0.26** train (version before train|line)
+    rf"\b(?:current(?:ly)?|living)(?:\s+published)?{_MD_GAP}"
+    rf"v?(0\.\d+(?:\.\d+)?(?:\.x)?){_MD_GAP}(?:train|line)\b"
+    r"|"
+    # tip-hub "last **v0.26.0**" (bold version; avoids phase "last `v0.25.2`" rows)
+    rf"\blast{_MD_GAP}\*\*v?(0\.\d+(?:\.\d+)?(?:\.x)?)\*\*"
+    r")",
     re.I,
 )
 INSTALL_LINE = re.compile(r"\b(?:pip(?:3)?\s+install|uv\s+add|uvx\b)", re.I)
@@ -159,7 +171,9 @@ def check_text(path: Path, text: str, facts: ReleaseFacts = FACTS) -> list[str]:
     lines = text.splitlines()
     for index, line in enumerate(lines, start=1):
         for claim in CURRENT_CLAIM_VERSION.finditer(line):
-            value = claim.group(1)
+            value = next((group for group in claim.groups() if group), None)
+            if value is None:
+                continue
             if not _version_matches_current(value, facts) and not _line_allows_previous_support(
                 line, facts
             ):

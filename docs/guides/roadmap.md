@@ -20,7 +20,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | **Published** (`v0.22.0`; D-051) |
 | **0.23** | Expand `stable` API tier for narrow CRUD/admin facade (regions/`swap`, Poll/jobs, `CsrfField`/`Form`, beginner chrome, AppScenario asserts) | **Published** (`v0.23.0`; D-053) |
 | **0.24** | Live-transport production disposition (`polling_only`) | **Published** (`v0.24.0`; D-053) |
-| **0.25** | Production archetype, load budgets, extras quarantine | **Published** (`v0.25.0`+; last `v0.27.0`; D-053) |
+| **0.25** | Production archetype, load budgets, extras quarantine | **Published** (`v0.25.0`+; last `v0.25.2`; D-053) |
 | **0.26** | Production-grade core, FastAPI flagship, and secured/development Explorer | **Published** (`v0.26.0`; D-054) |
 | **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | **Published** (`v0.27.0`; D-055) |
 | **0.28** | Production-grade charts and optional native acceleration | Planned; conservative Supported subsets only |

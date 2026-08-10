@@ -7,6 +7,7 @@ from hedron_flask.blueprint import HedronBlueprint, wrap_hedron_view
 from hedron_flask.live import POLLING_FALLBACK_SUPPORTED, poll_status_response
 from hedron_flask.responses import component_response, interaction_response
 from hedron_flask.routing import FlaskUrlReverser, hedron_route
+from hedron_flask.static_mount import mount_hedron_static
 
 __version__ = "0.27.0"
 
@@ -19,6 +20,7 @@ __all__ = [
     "component_response",
     "hedron_route",
     "interaction_response",
+    "mount_hedron_static",
     "poll_status_response",
     "wrap_hedron_view",
 ]

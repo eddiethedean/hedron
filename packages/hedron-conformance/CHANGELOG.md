@@ -28,7 +28,7 @@
 
 ### Changed
 
-- Coordinated Beta train bump to `0.26.0` (pin `>=0.27.0,<0.28`).
+- Coordinated Beta train bump to `0.26.0` (pin `>=0.26.0,<0.27`).
 
 ## [0.25.2] — 2026-08-10
 

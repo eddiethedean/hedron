@@ -583,7 +583,7 @@ HEDRON_SECURITY_PROFILE = "standard"
 from django.urls import path
 from hedron_core import FragmentRegion, InteractionResult, Page, Text, html
 from hedron_core.interaction import InteractionPolicy
-from hedron_django import hedron_view
+from hedron_django import hedron_static_urlpatterns, hedron_view
 
 PANEL = FragmentRegion(id="panel", selector="#panel")
 
@@ -622,8 +622,9 @@ def status(request):
 
 
 urlpatterns = [
-    path("", home),
-    path("status", status),
+    *hedron_static_urlpatterns(),
+    path("", home, name="home"),
+    path("status", status, name="status"),
 ]
 """,
         encoding="utf-8",
@@ -813,16 +814,25 @@ def _ast_call_name(func: Any) -> str | None:
 
 def _scan_select_oob_and_oob_updates(
     base: Path,
-) -> list[tuple[str, frozenset[str], frozenset[str]]]:
-    """Per-file ``select_oob`` ids and ``OobUpdate`` bound ids (when both are literals)."""
+) -> list[tuple[str, frozenset[str], frozenset[str], frozenset[str]]]:
+    """Per-file ``select_oob`` ids, ``OobUpdate`` bound ids, and unparsed tokens."""
     from hedron_core.interaction import OobUpdate as _OobUpdate
     from hedron_core.interaction import (
         oob_update_element_ids,
         parse_select_oob_element_ids,
+        unparsed_select_oob_tokens,
     )
 
-    findings: list[tuple[str, frozenset[str], frozenset[str]]] = []
+    findings: list[tuple[str, frozenset[str], frozenset[str], frozenset[str]]] = []
     skip = {".venv", "node_modules", "dist", "site-packages", ".git"}
+    select_oob_call_names = {
+        "HtmxLink",
+        "NavLink",
+        "Hx",
+        "Form",
+        "Button",
+        "RefreshButton",
+    }
     for path in sorted(base.rglob("*.py")):
         if any(part in skip or part.startswith(".") for part in path.parts):
             continue
@@ -833,66 +843,117 @@ def _scan_select_oob_and_oob_updates(
             continue
         select_oob_ids: set[str] = set()
         oob_ids: set[str] = set()
+        unparsed: set[str] = set()
         for node in ast.walk(tree):
-            if not isinstance(node, ast.Call):
-                continue
-            name = _ast_call_name(node.func)
-            if name in {"HtmxLink", "NavLink"}:
-                select_oob = _ast_str_kw(node, "select_oob")
-                if select_oob:
-                    select_oob_ids.update(parse_select_oob_element_ids(select_oob))
-            elif name == "OobUpdate":
-                element_id = _ast_str_kw(node, "element_id")
-                select = _ast_str_kw(node, "select")
-                # Reconstruct enough to reuse core binding (content unused for ids).
-                update = _OobUpdate(content="", element_id=element_id, select=select)
-                oob_ids.update(oob_update_element_ids((update,)))
-        if select_oob_ids and oob_ids:
-            findings.append((str(path), frozenset(select_oob_ids), frozenset(oob_ids)))
+            if isinstance(node, ast.Call):
+                name = _ast_call_name(node.func)
+                if name in select_oob_call_names:
+                    select_oob = _ast_str_kw(node, "select_oob")
+                    if select_oob is None:
+                        select_oob = _ast_str_kw(node, "hx_select_oob")
+                    if select_oob:
+                        select_oob_ids.update(parse_select_oob_element_ids(select_oob))
+                        unparsed.update(unparsed_select_oob_tokens(select_oob))
+                elif name == "OobUpdate":
+                    element_id = _ast_str_kw(node, "element_id")
+                    select = _ast_str_kw(node, "select")
+                    update = _OobUpdate(content="", element_id=element_id, select=select)
+                    oob_ids.update(oob_update_element_ids((update,)))
+                # Hx(**{"hx-select-oob": "..."}) / raw kwargs via keywords with Constant keys
+                for kw in node.keywords:
+                    if kw.arg is None and isinstance(kw.value, ast.Dict):
+                        for key, value in zip(kw.value.keys, kw.value.values, strict=False):
+                            if (
+                                isinstance(key, ast.Constant)
+                                and key.value in {"hx-select-oob", "select_oob"}
+                                and isinstance(value, ast.Constant)
+                                and isinstance(value.value, str)
+                            ):
+                                select_oob_ids.update(parse_select_oob_element_ids(value.value))
+                                unparsed.update(unparsed_select_oob_tokens(value.value))
+                    elif (
+                        kw.arg in {"select_oob", "hx_select_oob"}
+                        and isinstance(kw.value, ast.Constant)
+                        and isinstance(kw.value.value, str)
+                    ):
+                        # Already handled for named calls above; still catch unknown wrappers.
+                        select_oob_ids.update(parse_select_oob_element_ids(kw.value.value))
+                        unparsed.update(unparsed_select_oob_tokens(kw.value.value))
+            elif isinstance(node, ast.Dict):
+                for key, value in zip(node.keys, node.values, strict=False):
+                    if (
+                        isinstance(key, ast.Constant)
+                        and key.value == "hx-select-oob"
+                        and isinstance(value, ast.Constant)
+                        and isinstance(value.value, str)
+                    ):
+                        select_oob_ids.update(parse_select_oob_element_ids(value.value))
+                        unparsed.update(unparsed_select_oob_tokens(value.value))
+        if (select_oob_ids and oob_ids) or unparsed:
+            findings.append(
+                (str(path), frozenset(select_oob_ids), frozenset(oob_ids), frozenset(unparsed))
+            )
     return findings
 
 
 def _check_select_oob_conflicts(base: Path) -> list[Any]:
-    """Warn when the same id is used with both ``select_oob`` and ``OobUpdate``."""
+    """Error when the same id is used with both ``select_oob`` and ``OobUpdate``."""
     from hedron_core import DiagnosticSeverity
     from hedron_core.codes import HED_HTMX_0002
     from hedron_core.diagnostics import make_diagnostic
     from hedron_core.interaction import conflicting_select_oob_targets
 
     diags = []
-    for file_path, select_ids, oob_ids in _scan_select_oob_and_oob_updates(base):
-        # Reconstruct a comma-joined selector list for the shared helper.
+    for file_path, select_ids, oob_ids, unparsed in _scan_select_oob_and_oob_updates(base):
         select_oob = ",".join(f"#{item}" for item in sorted(select_ids))
         conflicts = conflicting_select_oob_targets(select_oob, oob_ids=oob_ids)
-        if not conflicts:
-            continue
-        targets = ", ".join(f"#{item}" for item in sorted(conflicts))
-        diags.append(
-            make_diagnostic(
-                HED_HTMX_0002,
-                severity=DiagnosticSeverity.WARNING,
-                title="select_oob / OobUpdate same-target conflict",
-                explanation=(
-                    f"{file_path} uses both HtmxLink/NavLink select_oob and "
-                    f"OobUpdate for {targets}. Combining hx-select-oob with a "
-                    "server hx-swap-oob envelope for the same id can replace a "
-                    "semantic shell host (for example <nav aria-label=...>) with "
-                    "Hedron's OOB wrapper."
-                ),
-                remediation=(
-                    "Use one OOB mechanism per target. Prefer explicit OobUpdate "
-                    "with swap='innerHTML' and omit matching select_oob so the "
-                    "existing host tag and aria-* attributes are preserved. "
-                    "OobUpdate(tag=...) is defense in depth only."
-                ),
-                context={
-                    "path": file_path,
-                    "conflicts": sorted(conflicts),
-                    "select_oob_ids": sorted(select_ids),
-                    "oob_ids": sorted(oob_ids),
-                },
+        if conflicts:
+            targets = ", ".join(f"#{item}" for item in sorted(conflicts))
+            diags.append(
+                make_diagnostic(
+                    HED_HTMX_0002,
+                    severity=DiagnosticSeverity.ERROR,
+                    title="select_oob / OobUpdate same-target conflict",
+                    explanation=(
+                        f"{file_path} uses both select_oob / hx-select-oob and "
+                        f"OobUpdate for {targets}. Combining hx-select-oob with a "
+                        "server hx-swap-oob envelope for the same id can replace a "
+                        "semantic shell host (for example <nav aria-label=...>) with "
+                        "Hedron's OOB wrapper."
+                    ),
+                    remediation=(
+                        "Use one OOB mechanism per target. Prefer explicit OobUpdate "
+                        "with swap='innerHTML' (the default) and omit matching "
+                        "select_oob so the existing host tag and aria-* attributes "
+                        "are preserved. OobUpdate(tag=...) is defense in depth only."
+                    ),
+                    context={
+                        "path": file_path,
+                        "conflicts": sorted(conflicts),
+                        "select_oob_ids": sorted(select_ids),
+                        "oob_ids": sorted(oob_ids),
+                    },
+                )
             )
-        )
+        if unparsed:
+            tokens = ", ".join(sorted(unparsed))
+            diags.append(
+                make_diagnostic(
+                    HED_HTMX_0002,
+                    severity=DiagnosticSeverity.WARNING,
+                    title="select_oob uses non-#id selectors",
+                    explanation=(
+                        f"{file_path} has hx-select-oob / select_oob token(s) that "
+                        f"are not simple #id selectors ({tokens}). Hedron conflict "
+                        "detection only understands #id lists."
+                    ),
+                    remediation=(
+                        "Prefer comma-separated #id targets for select_oob so "
+                        "hedron check can detect OobUpdate conflicts."
+                    ),
+                    context={"path": file_path, "unparsed": sorted(unparsed)},
+                )
+            )
     return diags
 
 

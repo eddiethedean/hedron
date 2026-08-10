@@ -13,7 +13,7 @@ scripts here when you add them.
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
-| `check_docs_train_ssot.py` | Fail on stale 0.26 tip claims, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: quality job |
+| `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: quality job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
 | `check_api_docs_coverage.py` | Require every `hedron.__all__` export in the public API coverage map. CI: quality job |
 | `check_package_readme_links.py` | Reject relative links that break when package READMEs render on PyPI. CI: quality job |

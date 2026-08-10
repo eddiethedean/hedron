@@ -9,7 +9,7 @@ from django.urls import path
 
 from hedron_core import Heading, Page, Text
 from hedron_core.interaction import FragmentRegion, InteractionResult
-from hedron_django import HedronDjango, hedron_view
+from hedron_django import HedronDjango, hedron_static_urlpatterns, hedron_view
 
 if not settings.configured:
     settings.configure(
@@ -56,6 +56,7 @@ def fragment(request: HttpRequest):
 
 
 urlpatterns = [
+    *hedron_static_urlpatterns(),
     path("", home, name="home"),
     path("fragment/", fragment, name="fragment"),
 ]

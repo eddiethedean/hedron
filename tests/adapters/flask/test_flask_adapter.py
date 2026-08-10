@@ -50,8 +50,19 @@ def client() -> FlaskClient:
 def test_page_render(client: FlaskClient) -> None:
     response = client.get("/page")
     assert response.status_code == 200
-    assert "<h1" in response.get_data(as_text=True)
-    assert "<html" in response.get_data(as_text=True)
+    body = response.get_data(as_text=True)
+    assert "<h1" in body
+    assert "<html" in body
+    assert "htmx.min.js" in body
+    assert "/hedron-static/ext/head-support.js" in body
+    assert body.index("htmx.min.js") < body.index("/hedron-static/ext/head-support.js")
+
+
+def test_hedron_static_mount(client: FlaskClient) -> None:
+    response = client.get("/hedron-static/htmx.min.js")
+    assert response.status_code == 200
+    payload = response.get_data(as_text=True)
+    assert "htmx" in payload.lower() or len(payload) > 1000
 
 
 def test_fragment_render(client: FlaskClient) -> None:

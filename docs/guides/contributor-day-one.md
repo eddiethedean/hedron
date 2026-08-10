@@ -79,7 +79,7 @@ Skip RFC / decision vocabulary unless your change alters a public contract — s
 ## Good first contributions
 
 - Typos, dead links, and Install/FAQ/Troubleshooting clarity
-- Example README fixes that match the living `0.26` train pins
+- Example README fixes that match the living `0.27` train pins
 - Small test coverage for an existing bug you hit
 
 Avoid starting with release-gate TOMLs, STATUS ledgers, or phase packets unless a
@@ -88,6 +88,6 @@ maintainer asked you to.
 ## Plugins and RFCs (second contribution)
 
 - Plugin sample / authoring: [Plugin authoring](plugin-authoring.md) ·
-  [Using plugins](plugin-consumer.md) (`hedron-sample-kit>=0.1.6,<0.2` on 0.25).
+  [Using plugins](plugin-consumer.md) (`hedron-sample-kit>=0.1.7,<0.2` on 0.27).
 - Public contract changes: [Changing public contracts](../CONTRIBUTING.md#changing-public-contracts)
   (RFC intake steps).

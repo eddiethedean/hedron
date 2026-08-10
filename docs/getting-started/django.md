@@ -1,7 +1,8 @@
 # Django — greenfield or existing project
 
 Use `hedron-django` for Django-native apps. Requires **Django `>=5.2,<6`**.
-The adapter does not install FastAPI.
+The adapter does not install FastAPI. Like FastAPI, the adapter mounts `/hedron-static`
+so PAGE responses can inject bundled HTMX.
 
 ## Golden path (scaffold + Refresh)
 

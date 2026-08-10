@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 
 from hedron_core import Heading, Page, Text
 from hedron_core.interaction import InteractionResult
-from hedron_django import hedron_view
+from hedron_django import hedron_static_urlpatterns, hedron_view
 from hedron_django.csrf import extract_csrf_from_post
 
 
@@ -43,6 +43,7 @@ def action_view(request: HttpRequest):
 
 
 urlpatterns = [
+    *hedron_static_urlpatterns(),
     path("", page_view, name="home"),
     path("page/", page_view, name="page"),
     path("fragment/", fragment_view, name="fragment"),

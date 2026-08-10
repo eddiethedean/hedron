@@ -29,7 +29,7 @@ Full key table: [Configuration](../CONFIGURATION.md).
    # Real third-party plugin (example shape — use the vendor's pin):
    # uv add "vendor-hedron-plugin>=1.0,<2"
 
-   uv add "hedron-sample-kit>=0.1.6,<0.2"
+   uv add "hedron-sample-kit>=0.1.7,<0.2"
    ```
 
    Workspace details: [Plugin authoring](plugin-authoring.md#workspace-recipe-edit-sample-kit-in-the-monorepo).
@@ -70,4 +70,4 @@ Checklist:
 
 [Plugin authoring](plugin-authoring.md) · [Plugins API](../api/PLUGINS.md) ·
 [`hedron-sample-kit`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
-is the installable reference shape on the 0.26 train.
+is the installable reference shape on the 0.27 train.

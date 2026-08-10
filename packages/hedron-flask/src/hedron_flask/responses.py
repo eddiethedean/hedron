@@ -23,7 +23,9 @@ from hedron_core.interaction import (
     select_htmx_auth_target,
     validated_extra_headers,
 )
+from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
+from hedron_core.security_policy import SecurityPolicy
 from hedron_flask.htmx import render_mode_for_request
 
 __all__ = [
@@ -197,6 +199,23 @@ def _apply_auth_cache_headers(headers: dict[str, str], *, authenticated: bool) -
             headers["Cache-Control"] = "private, no-store"
 
 
+def _security_policy_from_app() -> SecurityPolicy:
+    try:
+        from flask import current_app
+
+        ext = current_app.extensions.get("hedron")
+        policy = getattr(ext, "security_policy", None)
+        if isinstance(policy, SecurityPolicy):
+            return policy
+    except RuntimeError:
+        pass
+    return SecurityPolicy.from_name("standard")
+
+
+def _inject_page_html(html_text: str, mode: RenderMode) -> str:
+    return inject_page_assets(html_text, mode, policy=_security_policy_from_app())
+
+
 def component_response(
     value: NodeLike | Component[Any] | RenderResult,
     *,
@@ -234,7 +253,9 @@ def component_response(
         except ValueError as exc:
             return Response(str(exc), status=403, mimetype="text/plain")
         _apply_auth_cache_headers(headers, authenticated=authenticated)
-    return Response(result.html, status=status_code, mimetype="text/html", headers=headers)
+    selected_mode = render_mode_for_request(hdrs, force=mode)
+    body = _inject_page_html(result.html, selected_mode)
+    return Response(body, status=status_code, mimetype="text/html", headers=headers)
 
 
 def interaction_response(

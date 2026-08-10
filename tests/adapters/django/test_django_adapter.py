@@ -22,6 +22,16 @@ def test_page_render(django_client: Client) -> None:
     content = response.content.decode()
     assert "<h1" in content
     assert "<html" in content
+    assert "htmx.min.js" in content
+    assert "/hedron-static/ext/head-support.js" in content
+    assert content.index("htmx.min.js") < content.index("/hedron-static/ext/head-support.js")
+
+
+def test_hedron_static_mount(django_client: Client) -> None:
+    response = django_client.get("/hedron-static/htmx.min.js")
+    assert response.status_code == 200
+    payload = b"".join(response.streaming_content)
+    assert len(payload) > 1000
 
 
 def test_fragment_render(django_client: Client) -> None:

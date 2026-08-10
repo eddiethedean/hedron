@@ -1,10 +1,18 @@
 # Changelog
 
+## [0.1.7] — 2026-08-10
+
+### Changed
+
+- Pin `hedron-core` to `>=0.27.0,<0.28` for the living Beta train.
+- Document the release as **0.27-compatible**.
+
 ## [0.1.6] — 2026-08-09
 
 ### Fixed
 
-- Publish a sample-kit satellite compatible with `hedron-core>=0.25.0,<0.26`.
+- Publish a sample-kit satellite compatible with the living Hedron train (workspace
+  pin `hedron-core>=0.27.0,<0.28` on the 0.27 cut).
 
 ## [0.1.5] — 2026-08-07
 

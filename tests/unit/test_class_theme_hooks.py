@@ -45,3 +45,14 @@ def test_alert_badge_status_class_() -> None:
     assert 'class="hedron-badge hedron-badge-info chip"' in badge
     status = render(Status("Ready", class_="status-pill")).html
     assert 'class="hedron-status hedron-status-info status-pill"' in status
+
+
+def test_form_controls_class_() -> None:
+    from hedron_core import Checkbox, Select, TextArea, TextInput
+
+    assert "host-input" in render(TextInput("email", class_="host-input")).html
+    assert "hedron-text-input" in render(TextInput("email", class_="host-input")).html
+    assert "host-area" in render(TextArea("bio", class_="host-area")).html
+    assert "host-select" in render(Select("role", [("a", "A")], class_="host-select")).html
+    assert "host-check" in render(Checkbox("ok", "OK", class_="host-check")).html
+    assert "class=" not in render(TextInput("plain")).html

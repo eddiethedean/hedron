@@ -7,7 +7,7 @@ PyPI/git = `v0.27.0`. Prior: 0.26 **Published** as `v0.26.0`.
 **Date:** 2026-08-10
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.27.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.6`,
+`0.27.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.7`,
 `hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0` (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —

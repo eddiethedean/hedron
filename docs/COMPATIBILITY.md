@@ -1,7 +1,7 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.26.x** train (**Published**; last published
-PyPI/git = `v0.26.0`)
+**Status:** Accepted for the **0.27.x** train (**Published**; last published
+PyPI/git = `v0.27.0`)
 **Reviewed:** 2026-08-10
 
 ## Current train (read this first)
@@ -21,22 +21,22 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`)
-stay on the `0.26.x` train (Published as `0.26.0`; last published
-`v0.26.0`). Alpha packages `hedron-charts`, `hedron-gradio`,
+stay on the `0.27.x` train (Published as `0.27.0`; last published
+`v0.27.0`). Alpha packages `hedron-charts`, `hedron-gradio`,
 `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, and `hedron-mcp`
 version independently.
 
 ### Charts and sample-kit compatibility floor
 
-`hedron-charts>=0.1.6,<0.2` and `hedron-sample-kit>=0.1.6,<0.2` are compatible with
+`hedron-charts>=0.1.7,<0.2` and `hedron-sample-kit>=0.1.7,<0.2` are compatible with
 `hedron-core>=0.27.0,<0.28`. The flagship `hedron[charts]>=0.27.0,<0.28` extra enforces
 that chart floor.
 
 !!! warning "Exclude older satellite wheels"
 
-    Satellite versions through `0.1.5` require `hedron-core<0.20`; historical `0.11.0`
-    requires `hedron-core==0.11.0`. Do not loosen the lower bound below `0.1.6` in a
-    Hedron 0.26 environment. Use a clean virtual environment when replacing an older
+    Satellite versions through `0.1.6` require an older `hedron-core` bound; historical
+    `0.11.0` requires `hedron-core==0.11.0`. Do not loosen the lower bound below `0.1.7` in a
+    Hedron 0.27 environment. Use a clean virtual environment when replacing an older
     chart or sample-kit installation.
 
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
@@ -58,7 +58,7 @@ when evaluating a new install. Maturity Supported vs Experimental claims:
 
     Phase 0.7–0.10 baselines below describe what each phase **introduced**. They are not
     the current maturity snapshot. Live transports introduced in 0.10 are **experimental**
-    on the 0.26 train (Accepted disposition `polling_only`).
+    on the 0.27 train (Accepted disposition `polling_only`).
 
 ## Dependency pin conflicts
 
@@ -243,7 +243,7 @@ CPython default builds are normative. Free-threaded CPython and PyPy are informa
 
 ## Release evidence
 
-Compatibility claims for the **0.26.0** train require clean-install, package, FastAPI
+Compatibility claims for the **0.27.0** train require clean-install, package, FastAPI
 adapter, OpenAPI, security corpus, reference-application, and owning-phase live-transport
 suites. Changing a Supported row requires compatibility evidence and an updated decision
 or RFC.

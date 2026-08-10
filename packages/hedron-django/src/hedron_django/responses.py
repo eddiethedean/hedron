@@ -22,7 +22,9 @@ from hedron_core.interaction import (
     select_htmx_auth_target,
     validated_extra_headers,
 )
+from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
+from hedron_core.security_policy import SecurityPolicy
 from hedron_django.htmx import render_mode_for_request
 
 __all__ = [
@@ -146,12 +148,16 @@ def _default_render_context(request: HttpRequest | None) -> RenderContext:
         return RenderContext.standalone()
     csrf_token: str | None = None
     try:
+        from django.core.exceptions import ImproperlyConfigured
+    except ImportError:
+        return RenderContext.standalone(csrf_form_field="csrfmiddlewaretoken")
+    try:
         from django.middleware.csrf import get_token
 
         token = get_token(request)
         if isinstance(token, str) and token:
             csrf_token = token
-    except Exception:  # noqa: BLE001
+    except ImproperlyConfigured:
         csrf_token = None
     return RenderContext.standalone(
         csrf_token=csrf_token,
@@ -198,6 +204,23 @@ def _apply_auth_cache_headers(headers: dict[str, str], *, authenticated: bool) -
             headers["Cache-Control"] = "private, no-store"
 
 
+def _security_policy_from_settings() -> SecurityPolicy:
+    try:
+        from django.conf import settings
+        from django.core.exceptions import ImproperlyConfigured
+    except ImportError:
+        return SecurityPolicy.from_name("standard")
+    try:
+        name = getattr(settings, "HEDRON_SECURITY_PROFILE", "standard")
+        return SecurityPolicy.from_name(str(name))
+    except ImproperlyConfigured:
+        return SecurityPolicy.from_name("standard")
+
+
+def _inject_page_html(html_text: str, mode: RenderMode) -> str:
+    return inject_page_assets(html_text, mode, policy=_security_policy_from_settings())
+
+
 def component_response(
     value: NodeLike | Component[Any] | RenderResult,
     *,
@@ -241,8 +264,10 @@ def component_response(
                 content_type="text/plain; charset=utf-8",
             )
         _apply_auth_cache_headers(headers, authenticated=authenticated)
+    selected_mode = render_mode_for_request(hdrs, force=mode)
+    body = _inject_page_html(result.html, selected_mode)
     return HttpResponse(
-        result.html.encode("utf-8"),
+        body.encode("utf-8"),
         status=status_code,
         content_type="text/html; charset=utf-8",
         headers=headers,

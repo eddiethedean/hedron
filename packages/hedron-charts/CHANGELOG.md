@@ -1,11 +1,19 @@
 # Changelog
 
+## [0.1.7] — 2026-08-10
+
+### Changed
+
+- Pin `hedron-core` to `>=0.27.0,<0.28` for the living Beta train.
+- Document the release as **0.27-compatible** (supersedes the mistaken 0.25 wording on `0.1.6`).
+
 ## [0.1.6] — 2026-08-09
 
 ### Fixed
 
-- Publish the first chart satellite compatible with `hedron-core>=0.25.0,<0.26`,
-  restoring the `hedron[charts]>=0.27.0,<0.28` installation path.
+- Publish a chart satellite compatible with the living Hedron train (workspace pin
+  `hedron-core>=0.27.0,<0.28` on the 0.27 cut; earlier draft notes mentioning
+  `>=0.25.0,<0.26` were incorrect for that wheel).
 - Replace the repository-only missing-extra diagnostic with valid PyPI install commands.
 
 ## [0.1.5] — 2026-08-07

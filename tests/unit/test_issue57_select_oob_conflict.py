@@ -56,6 +56,7 @@ def test_materialize_honors_oob_update_tag() -> None:
 
 def test_check_detects_select_oob_oobupdate_conflict(tmp_path) -> None:
     from hedron.cli import _check_select_oob_conflicts
+    from hedron_core.diagnostics import DiagnosticSeverity
 
     bad = tmp_path / "shell.py"
     bad.write_text(
@@ -79,7 +80,36 @@ result = InteractionResult(
     )
     diags = _check_select_oob_conflicts(tmp_path)
     assert any(d.code == HED_HTMX_0002 for d in diags)
+    assert any(d.severity is DiagnosticSeverity.ERROR for d in diags if d.code == HED_HTMX_0002)
     assert any("side-nav" in d.explanation for d in diags)
+
+    hx = tmp_path / "hx_form.py"
+    hx.write_text(
+        """
+from hedron_core import Form, InteractionResult, OobUpdate, Text
+
+form = Form(Text("x"), action="/save", select_oob="#toast")
+result = InteractionResult(
+    content=Text("main"),
+    oob=(OobUpdate(content=Text("t"), element_id="toast"),),
+)
+""",
+        encoding="utf-8",
+    )
+    diags_hx = _check_select_oob_conflicts(tmp_path)
+    assert any("toast" in d.explanation for d in diags_hx)
+
+    complex_sel = tmp_path / "complex.py"
+    complex_sel.write_text(
+        """
+link_attrs = {"hx-select-oob": "nav.side"}
+""",
+        encoding="utf-8",
+    )
+    diags_complex = _check_select_oob_conflicts(tmp_path)
+    assert any(
+        d.code == HED_HTMX_0002 and d.severity is DiagnosticSeverity.WARNING for d in diags_complex
+    )
 
     good = tmp_path / "shell_ok.py"
     good.write_text(
@@ -94,7 +124,21 @@ result = InteractionResult(
 """,
         encoding="utf-8",
     )
-    # Only the conflicting file should warn; rewrite project to good-only.
     bad.unlink()
+    hx.unlink()
+    complex_sel.unlink()
     diags_ok = _check_select_oob_conflicts(tmp_path)
     assert not any(d.code == HED_HTMX_0002 for d in diags_ok)
+
+
+def test_oob_default_swap_is_inner_html() -> None:
+    html = render(oob_swap("side-nav", "Profile")).html
+    assert 'hx-swap-oob="innerHTML"' in html
+    assert OobUpdate(content="x", element_id="side-nav").swap == "innerHTML"
+
+
+def test_unparsed_select_oob_tokens() -> None:
+    from hedron_core.interaction import unparsed_select_oob_tokens
+
+    assert unparsed_select_oob_tokens("#ok, nav.side") == frozenset({"nav.side"})
+    assert unparsed_select_oob_tokens("#ok") == frozenset()

@@ -123,9 +123,11 @@ def swap(
         elif isinstance(toast, str):
             from hedron_core.builtins import Toast
 
-            updates.append(OobUpdate(content=Toast(toast), element_id="hedron-toast"))
+            updates.append(
+                OobUpdate(content=Toast(toast), element_id="hedron-toast", swap="innerHTML")
+            )
         else:
-            updates.append(OobUpdate(content=toast, element_id="hedron-toast"))
+            updates.append(OobUpdate(content=toast, element_id="hedron-toast", swap="innerHTML"))
     return InteractionResult(content=content, oob=tuple(updates), **kwargs)
 
 

@@ -146,7 +146,7 @@ automatically. Use `hedron>=0.27.0,<0.28` (and matching adapters/extras) so comp
 **Supported**. Those packages are **Beta** on PyPI — pin versions.
 
 Charts install through `hedron[charts]>=0.27.0,<0.28`; the sample kit installs as
-`hedron-sample-kit>=0.1.6,<0.2`. Earlier satellite versions target older cores. See
+`hedron-sample-kit>=0.1.7,<0.2`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

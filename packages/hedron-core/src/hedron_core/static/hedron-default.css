@@ -1,0 +1,1171 @@
+@layer reset, tokens, base, components, utilities, overrides;
+
+@layer tokens {
+  :root {
+    --hedron-default-bg: #f6f8fb;
+    --hedron-default-surface: #ffffff;
+    --hedron-default-surface-muted: #f0f3f8;
+    --hedron-default-fg: #172033;
+    --hedron-default-muted: #647084;
+    --hedron-default-border: #dce2eb;
+    --hedron-default-border-strong: #c7d0dd;
+    --hedron-default-accent: #2563eb;
+    --hedron-default-accent-hover: #1d4ed8;
+    --hedron-default-accent-soft: #e8f0ff;
+    --hedron-default-danger: #c73939;
+    --hedron-default-danger-soft: #fff0f0;
+    --hedron-default-success: #15805f;
+    --hedron-default-success-soft: #e9f8f1;
+    --hedron-default-warning: #9a6200;
+    --hedron-default-warning-soft: #fff6dd;
+    --hedron-default-info-soft: #eaf3ff;
+    --hedron-default-shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 8px 24px rgb(15 23 42 / 7%);
+    --hedron-default-shadow-raised: 0 14px 38px rgb(15 23 42 / 13%);
+    --hedron-default-radius-sm: 0.5rem;
+    --hedron-default-radius: 0.8rem;
+    --hedron-default-radius-lg: 1.1rem;
+    --hedron-default-content-width: 74rem;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --hedron-default-bg: #0d121c;
+      --hedron-default-surface: #151c28;
+      --hedron-default-surface-muted: #1b2432;
+      --hedron-default-fg: #eef3fa;
+      --hedron-default-muted: #9ba8ba;
+      --hedron-default-border: #2c3748;
+      --hedron-default-border-strong: #3b485c;
+      --hedron-default-accent: #7ca7ff;
+      --hedron-default-accent-hover: #a2c0ff;
+      --hedron-default-accent-soft: #1d3158;
+      --hedron-default-danger: #ff8585;
+      --hedron-default-danger-soft: #442326;
+      --hedron-default-success: #65d5aa;
+      --hedron-default-success-soft: #183b32;
+      --hedron-default-warning: #f3c86b;
+      --hedron-default-warning-soft: #41351f;
+      --hedron-default-info-soft: #193453;
+      --hedron-default-shadow: 0 1px 2px rgb(0 0 0 / 25%), 0 12px 30px rgb(0 0 0 / 24%);
+      --hedron-default-shadow-raised: 0 18px 46px rgb(0 0 0 / 38%);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --hedron-default-bg: #0d121c;
+    --hedron-default-surface: #151c28;
+    --hedron-default-surface-muted: #1b2432;
+    --hedron-default-fg: #eef3fa;
+    --hedron-default-muted: #9ba8ba;
+    --hedron-default-border: #2c3748;
+    --hedron-default-border-strong: #3b485c;
+    --hedron-default-accent: #7ca7ff;
+    --hedron-default-accent-hover: #a2c0ff;
+    --hedron-default-accent-soft: #1d3158;
+    --hedron-default-danger: #ff8585;
+    --hedron-default-danger-soft: #442326;
+    --hedron-default-success: #65d5aa;
+    --hedron-default-success-soft: #183b32;
+    --hedron-default-warning: #f3c86b;
+    --hedron-default-warning-soft: #41351f;
+    --hedron-default-info-soft: #193453;
+    --hedron-default-shadow: 0 1px 2px rgb(0 0 0 / 25%), 0 12px 30px rgb(0 0 0 / 24%);
+    --hedron-default-shadow-raised: 0 18px 46px rgb(0 0 0 / 38%);
+    color-scheme: dark;
+  }
+}
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    min-width: 20rem;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  img,
+  svg,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+@layer base {
+  html {
+    font-family: var(
+      --hedron-font-family,
+      ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+    );
+    font-size: var(--hedron-font-size, 1rem);
+    line-height: 1.55;
+    background: var(--hedron-color-bg, var(--hedron-default-bg));
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+  }
+
+  body {
+    min-height: 100vh;
+    padding: clamp(1.25rem, 4vw, 3.5rem);
+    background:
+      radial-gradient(
+        circle at 12% 0%,
+        color-mix(in srgb, var(--hedron-color-accent, var(--hedron-default-accent)) 9%, transparent),
+        transparent 29rem
+      ),
+      var(--hedron-color-bg, var(--hedron-default-bg));
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body > header,
+  body > main,
+  body > footer,
+  body > section,
+  body > article,
+  body > div,
+  body > form {
+    width: min(100%, var(--hedron-default-content-width));
+    margin-inline: auto;
+  }
+
+  body > * + *:not(script) {
+    margin-top: 1.5rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-block: 0 0.65em;
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4vw, 3.15rem);
+    letter-spacing: -0.045em;
+  }
+
+  h2 {
+    font-size: clamp(1.45rem, 2.5vw, 2rem);
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  p {
+    margin-block: 0 1rem;
+  }
+
+  small,
+  .hedron-field-help {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+  }
+
+  a {
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+    font-weight: 600;
+    text-underline-offset: 0.18em;
+  }
+
+  a:hover {
+    color: var(--hedron-default-accent-hover);
+  }
+
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: var(
+      --hedron-focus-ring,
+      3px solid color-mix(in srgb, var(--hedron-color-focus, var(--hedron-default-accent)) 62%, white)
+    );
+    outline-offset: 2px;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  header :where(h1, h2, h3) {
+    margin-bottom: 0;
+  }
+
+  header nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  main,
+  section {
+    min-width: 0;
+  }
+
+  footer {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--hedron-default-border);
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.9rem;
+  }
+
+  hr {
+    width: 100%;
+    flex: none;
+    height: 1px;
+    margin-block: 1.5rem;
+    border: 0;
+    background: var(--hedron-default-border);
+  }
+
+  pre {
+    max-width: 100%;
+    margin: 0;
+    padding: 1rem 1.1rem;
+    overflow: auto;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface-muted);
+    font: 0.88rem/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  code:not(pre code) {
+    padding: 0.12em 0.35em;
+    border-radius: 0.35rem;
+    background: var(--hedron-default-surface-muted);
+    font-size: 0.9em;
+  }
+
+  blockquote {
+    margin-inline: 0;
+    padding: 0.2rem 0 0.2rem 1rem;
+    border-left: 0.22rem solid var(--hedron-color-accent, var(--hedron-default-accent));
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+  }
+
+  dl:not(.hedron-metric) {
+    display: grid;
+    grid-template-columns: minmax(7rem, auto) minmax(0, 1fr);
+    gap: 0.4rem 1rem;
+    margin-block: 1rem 0;
+  }
+
+  dl:not(.hedron-metric) dt {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-weight: 650;
+  }
+
+  dl:not(.hedron-metric) dd {
+    margin: 0;
+  }
+
+  form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  label,
+  legend {
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    font-size: 0.9rem;
+    font-weight: 650;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    width: 100%;
+    min-height: 2.65rem;
+    padding: 0.62rem 0.75rem;
+    border: 1px solid var(--hedron-default-border-strong);
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-default-surface);
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    box-shadow: inset 0 1px 2px rgb(15 23 42 / 4%);
+    transition:
+      border-color var(--hedron-motion-duration, 150ms),
+      box-shadow var(--hedron-motion-duration, 150ms);
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):hover,
+  select:hover,
+  textarea:hover {
+    border-color: var(--hedron-default-muted);
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    inline-size: 1.05rem;
+    block-size: 1.05rem;
+    accent-color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"])[aria-invalid="true"],
+  select[aria-invalid="true"],
+  textarea[aria-invalid="true"] {
+    border-color: var(--hedron-color-danger, var(--hedron-default-danger));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hedron-color-danger, var(--hedron-default-danger)) 12%, transparent);
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):disabled,
+  select:disabled,
+  textarea:disabled {
+    background: var(--hedron-default-surface-muted);
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    cursor: not-allowed;
+    opacity: 0.72;
+  }
+
+  fieldset {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0.85rem 1rem 1rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-sm);
+  }
+
+  fieldset legend {
+    padding-inline: 0.35rem;
+  }
+
+  button,
+  .hedron-button,
+  .hedron-download-button {
+    display: inline-flex;
+    min-height: 2.55rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.58rem 0.95rem;
+    border: 1px solid transparent;
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-color-accent, var(--hedron-default-accent));
+    color: #ffffff;
+    font-weight: 680;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 12%);
+    transition:
+      transform var(--hedron-motion-duration, 150ms),
+      background var(--hedron-motion-duration, 150ms),
+      border-color var(--hedron-motion-duration, 150ms);
+  }
+
+  button:hover,
+  .hedron-button:hover,
+  .hedron-download-button:hover {
+    background: var(--hedron-default-accent-hover);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  button:active,
+  .hedron-button:active,
+  .hedron-download-button:active {
+    transform: translateY(0);
+  }
+
+  button:disabled,
+  .hedron-button[aria-disabled="true"] {
+    opacity: 0.52;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .hedron-button-secondary,
+  [role="tab"] {
+    border-color: var(--hedron-default-border-strong);
+    background: var(--hedron-default-surface);
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    box-shadow: none;
+  }
+
+  .hedron-button-secondary:hover,
+  [role="tab"]:hover {
+    border-color: var(--hedron-color-accent, var(--hedron-default-accent));
+    background: var(--hedron-default-accent-soft);
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-button-danger {
+    background: var(--hedron-color-danger, var(--hedron-default-danger));
+  }
+
+  .hedron-button-danger:hover {
+    background: color-mix(
+      in srgb,
+      var(--hedron-color-danger, var(--hedron-default-danger)) 84%,
+      black
+    );
+  }
+
+  .hedron-icon-button {
+    inline-size: 2.55rem;
+    padding: 0;
+  }
+
+  .hedron-file-upload {
+    display: grid;
+    gap: 0.45rem;
+    padding: 1rem;
+    border: 1px dashed var(--hedron-default-border-strong);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface-muted);
+  }
+
+  .hedron-file-upload:hover {
+    border-color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-container {
+    width: min(100%, var(--hedron-default-content-width));
+    margin-inline: auto;
+  }
+
+  .hedron-stack {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1rem;
+    gap: var(--hedron-gap, 1rem);
+  }
+
+  .hedron-inline {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    gap: var(--hedron-gap, 0.5rem);
+  }
+
+  .hedron-grid {
+    display: grid;
+    min-width: 0;
+    gap: 1rem;
+    gap: var(--hedron-gap, 1rem);
+  }
+
+  .hedron-grid[data-hedron-columns="1"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hedron-grid[data-hedron-columns="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hedron-grid[data-hedron-columns="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hedron-grid[data-hedron-columns="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .hedron-grid[data-hedron-columns="5"] {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .hedron-grid[data-hedron-columns="6"] {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .hedron-grid:has(> .hedron-sidebar) {
+    grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  [role="separator"][aria-orientation="vertical"] {
+    width: 1px;
+    height: 1.5rem;
+    flex: none;
+    align-self: center;
+    background: var(--hedron-default-border);
+  }
+
+  .hedron-grid > aside:not(.hedron-sidebar) {
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--hedron-default-border);
+    border-left: 0.25rem solid var(--hedron-color-accent, var(--hedron-default-accent));
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface-muted);
+  }
+
+  .hedron-sidebar {
+    position: sticky;
+    top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.15rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: color-mix(in srgb, var(--hedron-default-surface) 94%, transparent);
+    box-shadow: var(--hedron-default-shadow);
+    backdrop-filter: blur(12px);
+  }
+
+  .hedron-sidebar h2,
+  .hedron-sidebar h3 {
+    margin: 0;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .hedron-card {
+    overflow: hidden;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: var(--hedron-default-surface);
+    box-shadow: var(--hedron-default-shadow);
+  }
+
+  .hedron-card-header,
+  .hedron-card-footer {
+    padding: 0.9rem 1.1rem;
+    background: var(--hedron-default-surface-muted);
+  }
+
+  .hedron-card-header {
+    border-bottom: 1px solid var(--hedron-default-border);
+  }
+
+  .hedron-card-header > :last-child,
+  .hedron-card-footer > :last-child {
+    margin-bottom: 0;
+  }
+
+  .hedron-card-footer {
+    border-top: 1px solid var(--hedron-default-border);
+  }
+
+  .hedron-card-body {
+    padding: 1.1rem;
+  }
+
+  .hedron-card-body > .hedron-card {
+    box-shadow: none;
+  }
+
+  .hedron-metric {
+    min-width: 0;
+    margin: 0;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface);
+    box-shadow: var(--hedron-default-shadow);
+  }
+
+  .hedron-metric dt {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.86rem;
+    font-weight: 650;
+  }
+
+  .hedron-metric dd {
+    margin: 0;
+  }
+
+  .hedron-metric [data-metric-value="true"] {
+    margin-top: 0.15rem;
+    overflow: hidden;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 760;
+    letter-spacing: -0.04em;
+    text-overflow: ellipsis;
+  }
+
+  [data-metric-delta="up"] {
+    color: var(--hedron-default-success);
+  }
+
+  [data-metric-delta="down"] {
+    color: var(--hedron-color-danger, var(--hedron-default-danger));
+  }
+
+  .hedron-form-field {
+    display: grid;
+    gap: 0.38rem;
+  }
+
+  .hedron-field-help,
+  .hedron-field-error {
+    margin: 0;
+    font-size: 0.82rem;
+  }
+
+  .hedron-field-error,
+  .hedron-form-errors {
+    color: var(--hedron-color-danger, var(--hedron-default-danger));
+  }
+
+  .hedron-form-errors {
+    padding: 0.75rem 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--hedron-color-danger, var(--hedron-default-danger)) 28%, transparent);
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-default-danger-soft);
+  }
+
+  .hedron-form-errors ul {
+    margin-block: 0;
+    padding-left: 1.2rem;
+  }
+
+  .hedron-checkbox,
+  .hedron-radio {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  table {
+    width: 100%;
+    border-spacing: 0;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface);
+    box-shadow: var(--hedron-default-shadow);
+  }
+
+  caption {
+    padding: 0 0 0.65rem;
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    font-weight: 700;
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding: 0.72rem 0.85rem;
+    border-bottom: 1px solid var(--hedron-default-border);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    background: var(--hedron-default-surface-muted);
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.76rem;
+    font-weight: 750;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tbody tr:hover td {
+    background: color-mix(in srgb, var(--hedron-default-accent-soft) 45%, transparent);
+  }
+
+  .hedron-chart {
+    margin: 0;
+    padding: clamp(1rem, 3vw, 1.4rem);
+    overflow: hidden;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: var(--hedron-default-surface);
+    box-shadow: var(--hedron-default-shadow);
+  }
+
+  .hedron-chart h2 {
+    font-size: 1.08rem;
+  }
+
+  .hedron-chart > p {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.9rem;
+  }
+
+  .hedron-chart > svg {
+    width: 100%;
+    height: auto;
+    border-radius: var(--hedron-default-radius-sm);
+    background: #ffffff;
+  }
+
+  .hedron-chart-fallback {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    border: 0;
+    white-space: nowrap;
+  }
+
+  .hedron-alert,
+  .hedron-status,
+  .hedron-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-info-soft);
+  }
+
+  .hedron-alert-success,
+  .hedron-status-success,
+  .hedron-toast-success {
+    border-color: color-mix(in srgb, var(--hedron-default-success) 32%, transparent);
+    background: var(--hedron-default-success-soft);
+  }
+
+  .hedron-alert-warning,
+  .hedron-status-warning,
+  .hedron-toast-warning {
+    border-color: color-mix(in srgb, var(--hedron-default-warning) 35%, transparent);
+    background: var(--hedron-default-warning-soft);
+  }
+
+  .hedron-alert-danger,
+  .hedron-status-danger,
+  .hedron-toast-danger {
+    border-color: color-mix(in srgb, var(--hedron-color-danger, var(--hedron-default-danger)) 32%, transparent);
+    background: var(--hedron-default-danger-soft);
+  }
+
+  .hedron-toast {
+    width: min(100%, 28rem);
+    box-shadow: var(--hedron-default-shadow-raised);
+  }
+
+  .hedron-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.55rem;
+    padding-inline: 0.55rem;
+    border-radius: 999px;
+    background: var(--hedron-default-surface-muted);
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.74rem;
+    font-weight: 750;
+  }
+
+  .hedron-badge-info {
+    background: var(--hedron-default-info-soft);
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-badge-success {
+    background: var(--hedron-default-success-soft);
+    color: var(--hedron-default-success);
+  }
+
+  .hedron-badge-warning {
+    background: var(--hedron-default-warning-soft);
+    color: var(--hedron-default-warning);
+  }
+
+  .hedron-badge-danger {
+    background: var(--hedron-default-danger-soft);
+    color: var(--hedron-color-danger, var(--hedron-default-danger));
+  }
+
+  .hedron-skeleton {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .hedron-skeleton-line {
+    height: 0.85rem;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      var(--hedron-default-surface-muted),
+      var(--hedron-default-border),
+      var(--hedron-default-surface-muted)
+    );
+    background-size: 200% 100%;
+    animation: hedron-default-shimmer 1.5s ease-in-out infinite;
+  }
+
+  details {
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface);
+  }
+
+  summary {
+    padding: 0.8rem 0.95rem;
+    font-weight: 680;
+    cursor: pointer;
+  }
+
+  details > :not(summary) {
+    margin-inline: 0.95rem;
+  }
+
+  details > :last-child:not(summary) {
+    margin-bottom: 0.95rem;
+  }
+
+  .hedron-dialog {
+    width: min(calc(100% - 2rem), 34rem);
+    max-height: min(46rem, calc(100dvh - 2rem));
+    padding: 0;
+    overflow: auto;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: var(--hedron-default-surface);
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    box-shadow: var(--hedron-default-shadow-raised);
+  }
+
+  .hedron-dialog::backdrop {
+    background: rgb(15 23 42 / 52%);
+    backdrop-filter: blur(3px);
+  }
+
+  .hedron-dialog-header,
+  .hedron-dialog-actions {
+    padding: 1rem 1.15rem;
+    background: var(--hedron-default-surface-muted);
+  }
+
+  .hedron-dialog-header {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    border-bottom: 1px solid var(--hedron-default-border);
+  }
+
+  .hedron-dialog-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .hedron-dialog-close {
+    display: block;
+  }
+
+  .hedron-dialog-close button {
+    min-height: 2.2rem;
+    padding: 0.45rem 0.7rem;
+    border-color: var(--hedron-default-border-strong);
+    background: var(--hedron-default-surface);
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    box-shadow: none;
+    font-size: 0.85rem;
+  }
+
+  .hedron-dialog-close button:hover {
+    background: var(--hedron-default-accent-soft);
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-dialog-body {
+    padding: 1.15rem;
+  }
+
+  .hedron-dialog-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  .hedron-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    border-top: 1px solid var(--hedron-default-border);
+  }
+
+  .hedron-chat-message {
+    width: fit-content;
+    max-width: min(82%, 44rem);
+    padding: 0.72rem 0.88rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius) var(--hedron-default-radius)
+      var(--hedron-default-radius) 0.3rem;
+    background: var(--hedron-default-surface);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 6%);
+  }
+
+  .hedron-chat-user {
+    margin-left: auto;
+    border-color: transparent;
+    border-radius: var(--hedron-default-radius) var(--hedron-default-radius) 0.3rem
+      var(--hedron-default-radius);
+    background: var(--hedron-color-accent, var(--hedron-default-accent));
+    color: #ffffff;
+  }
+
+  .hedron-chat-message.hedron-chat-system,
+  .hedron-chat-message.hedron-chat-tool,
+  .hedron-chat-message.hedron-chat-status {
+    max-width: 100%;
+    border-style: dashed;
+    background: var(--hedron-default-surface-muted);
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.9rem;
+  }
+
+  .hedron-chat-content {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .hedron-chat-status:not(article) {
+    margin-top: 0.35rem;
+    font-size: 0.76rem;
+    opacity: 0.78;
+  }
+
+  .hedron-chat-input {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 0.55rem;
+    padding: 0.65rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: var(--hedron-default-surface);
+    box-shadow: var(--hedron-default-shadow);
+  }
+
+  .hedron-chat-label {
+    display: grid;
+    min-width: 0;
+    gap: 0.3rem;
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.78rem;
+  }
+
+  .hedron-chat-textarea {
+    min-height: 3.1rem;
+    max-height: 12rem;
+    resize: vertical;
+  }
+
+  .hedron-chat-send {
+    min-width: 4.8rem;
+    min-height: 3.1rem;
+  }
+
+  .hedron-chat-attachment {
+    grid-column: 1 / -1;
+    max-width: 100%;
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.82rem;
+  }
+
+  .hedron-tablist {
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.55rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--hedron-default-border);
+  }
+
+  [role="tab"][aria-selected="true"] {
+    border-color: var(--hedron-color-accent, var(--hedron-default-accent));
+    background: var(--hedron-default-accent-soft);
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  progress {
+    width: 100%;
+    height: 0.65rem;
+    overflow: hidden;
+    border: 0;
+    border-radius: 999px;
+    appearance: none;
+    background: var(--hedron-default-border);
+    accent-color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  progress::-webkit-progress-bar {
+    border-radius: 999px;
+    background: var(--hedron-default-border);
+  }
+
+  progress::-webkit-progress-value {
+    border-radius: 999px;
+    background: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  progress::-moz-progress-bar {
+    border-radius: 999px;
+    background: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .hedron-pagination a {
+    min-width: 2.25rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-default-surface);
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .hedron-loading,
+  .hedron-error {
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface);
+  }
+
+  .hedron-loading {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+  }
+
+  .hedron-infinite-scroll {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    margin-top: 0.65rem;
+    padding: 0.42rem 0.7rem;
+    border: 1px dashed var(--hedron-default-border-strong);
+    border-radius: var(--hedron-default-radius-sm);
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.88rem;
+    font-weight: 650;
+  }
+
+  [data-hedron-chart-error] {
+    min-height: 5rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--hedron-default-warning) 35%, transparent);
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-default-warning-soft);
+    color: var(--hedron-default-warning);
+  }
+
+  .hedron-error {
+    border-color: color-mix(in srgb, var(--hedron-color-danger, var(--hedron-default-danger)) 32%, transparent);
+    background: var(--hedron-default-danger-soft);
+  }
+
+  .hedron-error > :last-child {
+    margin-bottom: 0;
+  }
+
+  @keyframes hedron-default-shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    body {
+      padding: 1.1rem;
+    }
+
+    header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .hedron-grid,
+    .hedron-grid:has(> .hedron-sidebar),
+    .hedron-grid[data-hedron-columns] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hedron-sidebar {
+      position: static;
+    }
+
+    .hedron-chat-message {
+      max-width: 92%;
+    }
+
+    .hedron-chat-input {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hedron-chat-send {
+      width: 100%;
+      min-height: 2.65rem;
+    }
+
+    dl:not(.hedron-metric) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.15rem;
+    }
+
+    table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    button,
+    .hedron-button,
+    .hedron-download-button,
+    input,
+    select,
+    textarea,
+    table,
+    .hedron-card,
+    .hedron-metric,
+    .hedron-sidebar,
+    .hedron-chart {
+      border: 1px solid CanvasText;
+    }
+  }
+}
