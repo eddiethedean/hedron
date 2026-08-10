@@ -89,7 +89,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-AppShell composes landmark-friendly chrome with a swappable MainPanel so full page loads and HTMX fragment swaps share one layout. Use with HtmxLink/NavLink targeting the panel id.
+AppShell composes landmark-friendly chrome with a swappable MainPanel so full page loads and HTMX fragment swaps share one layout. Use HtmxLink/NavLink targeting the panel id for the primary swap. When side chrome must update too, return an explicit `OobUpdate(element_id=..., swap='innerHTML')` and do **not** also set `select_oob` for that same id—`hx-select-oob` selects response nodes for OOB handling, while `OobUpdate` already emits `hx-swap-oob`.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
@@ -115,7 +115,7 @@ Mutating flows must use POST, validate CSRF, authorize on the server, re-validat
 
 ## Accessibility
 
-Keep global chrome outside MainPanel; put page-specific content inside the body slot.
+Keep global chrome outside MainPanel; put page-specific content inside the body slot. Prefer one OOB mechanism per target so `<nav>` / landmark hosts keep their tag and `aria-*` attributes.
 
 ## Security
 
@@ -124,7 +124,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Do not use AppShell as a generic card or modal wrapper.
+- Do not use AppShell as a generic card or modal wrapper. Do not combine `select_oob='#side-nav'` with `OobUpdate(element_id='side-nav')` on the same navigation flow.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

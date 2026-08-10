@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import importlib
 import json
 import re
@@ -710,8 +711,6 @@ def _declared_selectors_for_routes() -> dict[str, set[str]]:
 
 def _scan_refresh_button_targets(base: Path) -> list[tuple[str, str | None, str | None, str]]:
     """AST-light scan for RefreshButton(target=..., href=...) / for_region mismatches."""
-    import ast
-
     findings: list[tuple[str, str | None, str | None, str]] = []
     skip = {".venv", "node_modules", "dist", "site-packages", ".git"}
     for path in sorted(base.rglob("*.py")):
@@ -790,6 +789,110 @@ def _check_htmx_region_mismatches(base: Path) -> list[Any]:
                     context={"href": href, "target": target, "declared": sorted(allowed)},
                 )
             )
+    return diags
+
+
+def _ast_str_kw(node: Any, name: str) -> str | None:
+    for kw in getattr(node, "keywords", ()):
+        if (
+            kw.arg == name
+            and isinstance(kw.value, ast.Constant)
+            and isinstance(kw.value.value, str)
+        ):
+            return kw.value.value
+    return None
+
+
+def _ast_call_name(func: Any) -> str | None:
+    if isinstance(func, ast.Name):
+        return func.id
+    if isinstance(func, ast.Attribute):
+        return func.attr
+    return None
+
+
+def _scan_select_oob_and_oob_updates(
+    base: Path,
+) -> list[tuple[str, frozenset[str], frozenset[str]]]:
+    """Per-file ``select_oob`` ids and ``OobUpdate`` bound ids (when both are literals)."""
+    from hedron_core.interaction import OobUpdate as _OobUpdate
+    from hedron_core.interaction import (
+        oob_update_element_ids,
+        parse_select_oob_element_ids,
+    )
+
+    findings: list[tuple[str, frozenset[str], frozenset[str]]] = []
+    skip = {".venv", "node_modules", "dist", "site-packages", ".git"}
+    for path in sorted(base.rglob("*.py")):
+        if any(part in skip or part.startswith(".") for part in path.parts):
+            continue
+        try:
+            source = path.read_text(encoding="utf-8")
+            tree = ast.parse(source, filename=str(path))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        select_oob_ids: set[str] = set()
+        oob_ids: set[str] = set()
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            name = _ast_call_name(node.func)
+            if name in {"HtmxLink", "NavLink"}:
+                select_oob = _ast_str_kw(node, "select_oob")
+                if select_oob:
+                    select_oob_ids.update(parse_select_oob_element_ids(select_oob))
+            elif name == "OobUpdate":
+                element_id = _ast_str_kw(node, "element_id")
+                select = _ast_str_kw(node, "select")
+                # Reconstruct enough to reuse core binding (content unused for ids).
+                update = _OobUpdate(content="", element_id=element_id, select=select)
+                oob_ids.update(oob_update_element_ids((update,)))
+        if select_oob_ids and oob_ids:
+            findings.append((str(path), frozenset(select_oob_ids), frozenset(oob_ids)))
+    return findings
+
+
+def _check_select_oob_conflicts(base: Path) -> list[Any]:
+    """Warn when the same id is used with both ``select_oob`` and ``OobUpdate``."""
+    from hedron_core import DiagnosticSeverity
+    from hedron_core.codes import HED_HTMX_0002
+    from hedron_core.diagnostics import make_diagnostic
+    from hedron_core.interaction import conflicting_select_oob_targets
+
+    diags = []
+    for file_path, select_ids, oob_ids in _scan_select_oob_and_oob_updates(base):
+        # Reconstruct a comma-joined selector list for the shared helper.
+        select_oob = ",".join(f"#{item}" for item in sorted(select_ids))
+        conflicts = conflicting_select_oob_targets(select_oob, oob_ids=oob_ids)
+        if not conflicts:
+            continue
+        targets = ", ".join(f"#{item}" for item in sorted(conflicts))
+        diags.append(
+            make_diagnostic(
+                HED_HTMX_0002,
+                severity=DiagnosticSeverity.WARNING,
+                title="select_oob / OobUpdate same-target conflict",
+                explanation=(
+                    f"{file_path} uses both HtmxLink/NavLink select_oob and "
+                    f"OobUpdate for {targets}. Combining hx-select-oob with a "
+                    "server hx-swap-oob envelope for the same id can replace a "
+                    "semantic shell host (for example <nav aria-label=...>) with "
+                    "Hedron's OOB wrapper."
+                ),
+                remediation=(
+                    "Use one OOB mechanism per target. Prefer explicit OobUpdate "
+                    "with swap='innerHTML' and omit matching select_oob so the "
+                    "existing host tag and aria-* attributes are preserved. "
+                    "OobUpdate(tag=...) is defense in depth only."
+                ),
+                context={
+                    "path": file_path,
+                    "conflicts": sorted(conflicts),
+                    "select_oob_ids": sorted(select_ids),
+                    "oob_ids": sorted(oob_ids),
+                },
+            )
+        )
     return diags
 
 
@@ -1030,6 +1133,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
                     diags.extend(exc.diagnostics)
 
     diags.extend(_check_htmx_region_mismatches(base))
+    diags.extend(_check_select_oob_conflicts(base))
 
     # Security / a11y / compatibility-boundary informational findings (excluded from exit code).
     # Adapter/extra COMPAT notices are scoped to the project under check unless --all-compat (#54).

@@ -14,6 +14,9 @@
   deferred `head-support` / `sse` scripts can register (`#55`).
 - Scope `hedron check` Django / Plotly-Altair compatibility notices to detected adapters
   and chart extras; add `--all-compat` for the global summary (`#54`).
+- Warn via `hedron check` (`HED-HTMX-0002`) when the same id appears in both
+  `select_oob` and `OobUpdate`, and document the recommended one-mechanism shell
+  pattern (`#57`).
 
 ### Changed
 

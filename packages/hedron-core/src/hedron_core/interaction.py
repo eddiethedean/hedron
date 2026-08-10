@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal
 
@@ -23,12 +23,15 @@ __all__ = [
     "HtmxRequestFacts",
     "InteractionPolicy",
     "InteractionResult",
+    "OOB_ENVELOPE_TAGS",
+    "OobEnvelopeTag",
     "OobUpdate",
     "RESERVED_OOB_ELEMENT_IDS",
     "StatusPolicy",
     "authorize_htmx_target",
     "authorize_oob_update",
     "apply_allow_undeclared_targets",
+    "conflicting_select_oob_targets",
     "default_interaction_policy",
     "form_sync_attrs",
     "interaction_headers",
@@ -36,6 +39,8 @@ __all__ = [
     "merge_interaction_headers",
     "merge_route_regions",
     "oob_swap",
+    "oob_update_element_ids",
+    "parse_select_oob_element_ids",
     "resolve_fragment_region",
     "select_htmx_auth_target",
     "status_policy_for",
@@ -44,6 +49,8 @@ __all__ = [
 
 CacheHint = Literal["private", "no-store", "vary-htmx"]
 HistoryMode = Literal["push", "replace", "none"]
+OobEnvelopeTag = Literal["div", "section", "aside", "main", "nav"]
+OOB_ENVELOPE_TAGS: frozenset[str] = frozenset({"div", "section", "aside", "main", "nav"})
 
 _EXTRA_HEADER_KWARGS: dict[str, str] = {
     "HX-Redirect": "redirect",
@@ -89,10 +96,30 @@ class FragmentRegion:
 
 @dataclass(frozen=True, slots=True)
 class OobUpdate:
+    """Out-of-band fragment update.
+
+    Prefer one OOB mechanism per target: either request-side ``hx-select-oob``
+    *or* a server ``OobUpdate`` with ``hx-swap-oob``. Combining both for the same
+    id can replace a semantic host (for example ``<nav aria-label=...>``) with
+    Hedron's OOB envelope. Use :func:`conflicting_select_oob_targets` /
+    ``hedron check`` to detect that conflict.
+
+    ``tag`` is defense in depth when an envelope must match a landmark host; it
+    does not replace avoiding the ``select_oob`` + ``OobUpdate`` conflict.
+    """
+
     content: NodeLike
     swap: str = "true"
     select: str | None = None
     element_id: str | None = None
+    tag: OobEnvelopeTag = "div"
+
+    def __post_init__(self) -> None:
+        if self.tag not in OOB_ENVELOPE_TAGS:
+            raise ValueError(
+                f"Unsupported OobUpdate tag={self.tag!r}; "
+                f"allowlisted: {sorted(OOB_ENVELOPE_TAGS)}"
+            )
 
 
 @dataclass(frozen=True, slots=True)
@@ -618,13 +645,68 @@ def form_sync_attrs(policy: InteractionPolicy | None = None) -> dict[str, str]:
     return attrs
 
 
-def oob_swap(element_id: str, content: NodeLike, *, swap: str = "true") -> NodeLike:
+def parse_select_oob_element_ids(select_oob: str | None) -> frozenset[str]:
+    """Extract simple ``#id`` targets from an ``hx-select-oob`` value."""
+    if not select_oob:
+        return frozenset()
+    ids: set[str] = set()
+    for part in select_oob.split(","):
+        token = part.strip()
+        if not token or not safe_css_selector(token) or not token.startswith("#"):
+            continue
+        element_id = token[1:]
+        if element_id.replace("-", "").replace("_", "").isalnum():
+            ids.add(element_id)
+    return frozenset(ids)
+
+
+def oob_update_element_ids(oob: Sequence[OobUpdate] | None) -> frozenset[str]:
+    """Return element ids that ``OobUpdate`` values will bind for ``hx-swap-oob``."""
+    if not oob:
+        return frozenset()
+    ids: set[str] = set()
+    for update in oob:
+        bound = _bound_oob_element_id(update, regions=())
+        if bound is not None:
+            ids.add(bound)
+    return frozenset(ids)
+
+
+def conflicting_select_oob_targets(
+    select_oob: str | None,
+    oob: Sequence[OobUpdate] | None = None,
+    *,
+    oob_ids: frozenset[str] | set[str] | None = None,
+) -> frozenset[str]:
+    """Return ids targeted by both ``hx-select-oob`` and server ``OobUpdate``.
+
+    Use one mechanism per target. Prefer explicit ``OobUpdate`` (omit matching
+    ``select_oob``) so ``innerHTML`` swaps preserve semantic shell hosts.
+    """
+    selected = parse_select_oob_element_ids(select_oob)
+    if not selected:
+        return frozenset()
+    bound = frozenset(oob_ids) if oob_ids is not None else oob_update_element_ids(oob)
+    return frozenset(selected & bound)
+
+
+def oob_swap(
+    element_id: str,
+    content: NodeLike,
+    *,
+    swap: str = "true",
+    tag: OobEnvelopeTag = "div",
+) -> NodeLike:
     """Mark a node for HTMX out-of-band swap via hx-swap-oob (framework-neutral)."""
     if not element_id.replace("-", "").replace("_", "").isalnum():
         raise ValueError("Unsafe OOB element id")
+    if tag not in OOB_ENVELOPE_TAGS:
+        raise ValueError(
+            f"Unsupported OOB envelope tag={tag!r}; allowlisted: {sorted(OOB_ENVELOPE_TAGS)}"
+        )
     from hedron_core.html import html
 
-    return html.div(content, id=element_id, **{"hx-swap-oob": swap})
+    return getattr(html, tag)(content, id=element_id, **{"hx-swap-oob": swap})
 
 
 def _bound_oob_element_id(
@@ -658,7 +740,12 @@ def materialize_interaction_nodes(result: InteractionResult) -> NodeLike | None:
         if bound_id is not None:
             # Always wrap to the authorized id so caller content cannot emit a
             # different hx-swap-oob target under declared regions.
-            node: NodeLike = oob_swap(bound_id, update.content, swap=update.swap)
+            node: NodeLike = oob_swap(
+                bound_id,
+                update.content,
+                swap=update.swap,
+                tag=update.tag,
+            )
         else:
             node = update.content
         nodes.append(node)
