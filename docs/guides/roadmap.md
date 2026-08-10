@@ -20,9 +20,9 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.22** | CSRF and SecurityPolicy composition (`CsrfField`, pluggable CSRF, composable headers) | **Published** (`v0.22.0`; D-051) |
 | **0.23** | Expand `stable` API tier for narrow CRUD/admin facade (regions/`swap`, Poll/jobs, `CsrfField`/`Form`, beginner chrome, AppScenario asserts) | **Published** (`v0.23.0`; D-053) |
 | **0.24** | Live-transport production disposition (`polling_only`) | **Published** (`v0.24.0`; D-053) |
-| **0.25** | Production archetype, load budgets, extras quarantine | **Published** (`v0.25.0`+; last `v0.26.0`; D-053) |
+| **0.25** | Production archetype, load budgets, extras quarantine | **Published** (`v0.25.0`+; last `v0.27.0`; D-053) |
 | **0.26** | Production-grade core, FastAPI flagship, and secured/development Explorer | **Published** (`v0.26.0`; D-054) |
-| **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | Planned; D-055 / RFC-0058; packet opened (`release-gate-0.27.toml`) |
+| **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | **Published** (`v0.27.0`; D-055) |
 | **0.28** | Production-grade charts and optional native acceleration | Planned; conservative Supported subsets only |
 | **0.29** | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | Planned; tooling scope remains explicit |
 | **0.30** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required |
@@ -48,12 +48,12 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   package fleet. This is not a blanket feature promotion or a scheduled `1.0`; see the
   [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
-## Honest gaps on the current train (0.26)
+## Honest gaps on the current train (0.27)
 
-- Current **published** PyPI train is **0.26.x** (last `v0.26.0`)
-- Production-grade label applies only to the declared `hedron-core` / `hedron` /
-  `hedron-explorer` Supported inventory (not every Beta symbol); 0.27 satellite
-  graduation is Planned under D-055 / RFC-0058 and must not be marketed until Verified
+- Current **published** PyPI train is **0.27.x** (last `v0.27.0`)
+- Production-grade label applies to declared `hedron-core` / `hedron` /
+  `hedron-explorer` (0.26) **and** `hedron-data` / `hedron-flask` / `hedron-django` /
+  `hedron-jinja` / `hedron-extras` (0.27) Supported inventories — not every Beta symbol
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
   `hedron[experimental-ui]` (quarantined from `hedron[extras]`)

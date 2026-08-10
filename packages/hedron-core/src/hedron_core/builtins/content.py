@@ -26,6 +26,7 @@ def _kids(*children: NodeLike) -> tuple[NodeLike, ...]:
 class TextProps(Props):
     content: str
     as_: Literal["p", "span", "strong", "em", "small"] = "p"
+    class_: str | None = None
 
 
 class Text(Component[TextProps]):
@@ -36,29 +37,46 @@ class Text(Component[TextProps]):
         content: str = "",
         *,
         as_: Literal["p", "span", "strong", "em", "small"] = "p",
+        class_: str | None = None,
         **kwargs: object,
     ) -> None:
-        super().__init__(TextProps(content=content, as_=as_, **kwargs))
+        super().__init__(TextProps(content=content, as_=as_, class_=class_, **kwargs))
 
     def render(self) -> NodeLike:
-        return getattr(html, self.props.as_)(self.props.content)
+        from hedron_core.builtins._base import class_names
+
+        attrs: dict[str, HtmlAttrValue] = {}
+        if self.props.class_:
+            attrs["class_"] = class_names("hedron-text", self.props.class_)
+        return getattr(html, self.props.as_)(self.props.content, **attrs)
 
 
 class HeadingProps(Props):
     content: str
     level: Literal[1, 2, 3, 4, 5, 6] = 2
+    class_: str | None = None
 
 
 class Heading(Component[HeadingProps]):
     props_type = HeadingProps
 
     def __init__(
-        self, content: str = "", *, level: Literal[1, 2, 3, 4, 5, 6] = 2, **kwargs: object
+        self,
+        content: str = "",
+        *,
+        level: Literal[1, 2, 3, 4, 5, 6] = 2,
+        class_: str | None = None,
+        **kwargs: object,
     ) -> None:
-        super().__init__(HeadingProps(content=content, level=level, **kwargs))
+        super().__init__(HeadingProps(content=content, level=level, class_=class_, **kwargs))
 
     def render(self) -> NodeLike:
-        return getattr(html, f"h{self.props.level}")(self.props.content)
+        from hedron_core.builtins._base import class_names
+
+        attrs: dict[str, HtmlAttrValue] = {}
+        if self.props.class_:
+            attrs["class_"] = class_names("hedron-heading", self.props.class_)
+        return getattr(html, f"h{self.props.level}")(self.props.content, **attrs)
 
 
 class LinkProps(ElementProps):

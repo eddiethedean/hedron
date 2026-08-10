@@ -3,7 +3,7 @@
 Phase **0.17** shipped page-local dashboard bindings and finite interaction graphs for
 reactive admin / data UIs. Capability readiness is **Supported** on the living **0.26**
 train (feature introduced in 0.17); API compatibility remains **`beta`** — pin
-`hedron>=0.26.0,<0.27`.
+`hedron>=0.27.0,<0.28`.
 
 ## Start here
 

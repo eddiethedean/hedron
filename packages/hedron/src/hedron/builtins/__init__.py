@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from typing import ClassVar
+from typing import ClassVar, Literal
 
 from hedron.htmx import _safe_css_selector
 from hedron.routing.reverse import ComponentRef
@@ -79,11 +79,17 @@ def action_attrs(
     return attrs
 
 
-def oob_swap(element_id: str, content: NodeLike, *, swap: str = "true") -> NodeLike:
+def oob_swap(
+    element_id: str,
+    content: NodeLike,
+    *,
+    swap: str = "true",
+    tag: Literal["div", "section", "aside", "main", "nav"] = "div",
+) -> NodeLike:
     """Mark a node for HTMX out-of-band swap via hx-swap-oob."""
     from hedron_core.interaction import oob_swap as core_oob_swap
 
-    return core_oob_swap(element_id, content, swap=swap)
+    return core_oob_swap(element_id, content, swap=swap, tag=tag)
 
 
 def _safe_target(target: str | None) -> str | None:

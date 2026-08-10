@@ -1,0 +1,15 @@
+{
+  "baseline": "v0.26.0",
+  "data_symbols": [
+    "hedron_data:DataTable",
+    "hedron_data:DataEditor",
+    "hedron_data:SavedView",
+    "hedron_data:InMemoryDataSource",
+    "hedron_data:SQLAlchemyDataSource",
+    "hedron_data:DjangoQuerySetDataSource",
+    "hedron_data:import_rows_xlsx",
+    "hedron_data:export_rows_xlsx"
+  ],
+  "saved_view_required_keys": ["id", "name", "query"],
+  "spreadsheet_paths": ["import_rows_xlsx", "export_rows_xlsx", "import_rows_ods", "export_rows_ods"]
+}

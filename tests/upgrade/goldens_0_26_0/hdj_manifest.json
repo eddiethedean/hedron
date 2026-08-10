@@ -1,0 +1,12 @@
+{
+  "baseline": "v0.26.0",
+  "version": 1,
+  "required_prologue_keys": ["version", "kind", "profile"],
+  "allowed_prologue_keys": ["version", "kind", "profile", "features", "requires", "assets", "regions"],
+  "sample_templates": [
+    "examples/hdj-progressive/templates/01_minimal.hdj",
+    "examples/hdj-progressive/templates/02_jinja.hdj",
+    "examples/hdj-progressive/templates/03_components.hdj"
+  ],
+  "manifest_required_keys": ["assets", "content_hash"]
+}

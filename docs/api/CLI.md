@@ -88,9 +88,14 @@ hedron check --format sarif > hedron.sarif
 | `--project` | Project root |
 | `--format` | `text` (default), `json`, or `sarif` |
 | `--severity` | Fail when diagnostics meet or exceed `error` (default), `warning`, or `information` |
+| `--all-compat` | Include global adapter/extra compatibility notices even when those integrations are not detected |
 
 Exit code is non-zero when diagnostics meet or exceed the severity threshold.
 Evergreen information findings do not fail the default `error` gate.
+Adapter-specific notices such as the Django floor (`HED-COMPAT-0002`) and experimental
+Plotly/Altair status (`HED-COMPAT-0003`) appear only when the project references those
+surfaces (or when `--all-compat` is set). The generic baseline notice (`HED-COMPAT-0001`)
+always remains available.
 
 ### `routes` / `components` / `graph` / `audit-components`
 

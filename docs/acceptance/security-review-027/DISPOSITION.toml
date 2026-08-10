@@ -1,0 +1,37 @@
+# REVIEW-027 finding disposition ledger (redacted).
+# critical_high_open must be false for Verified.
+
+critical_high_open = false
+reviewer = "structured-maintainer-review"
+baseline = "v0.26.0"
+packet = "0.27"
+
+[[findings]]
+id = "REV-027-001"
+severity = "high"
+title = "Adapter packages must not import FastAPI"
+status = "fixed"
+notes = "smoke_flask_027 / smoke_django_027 and adversarial suite assert no FastAPI imports."
+
+[[findings]]
+id = "REV-027-002"
+severity = "high"
+title = "Default extras must not enable experimental-ui landmines"
+status = "fixed"
+notes = "CONTRACT-027 + EXTRAS-027 + extras-quarantine-025 keep TerminalView/Joystick/DeviceBridge/CodeEditor out of default registry."
+
+[[findings]]
+id = "REV-027-003"
+severity = "medium"
+title = "Explorer audit buffer remains process-local"
+status = "accepted_risk"
+owner = "hedron"
+deadline = "explorer-followup"
+notes = "Carryover of REV-026-003. Not expanded into satellite graduation scope."
+
+[[findings]]
+id = "REV-027-004"
+severity = "low"
+title = "HDJ feature profiles must stay versioned"
+status = "fixed"
+notes = "HDJ-027 goldens and smoke require version = 1 prologue."

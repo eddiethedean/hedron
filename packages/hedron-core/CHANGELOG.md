@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.27.0] — 2026-08-10
+
+### Added
+
+- Production-grade graduation for the declared Supported satellite inventory
+  (D-055 / RFC-0058): inventory freeze, `v0.26.0` upgrade fixtures, host-only
+  adapter/data/HDJ/extras evidence, portable parity, and REVIEW-027 disposition.
+
+### Fixed
+
+- Allow safe accessibility attributes on `MainPanel` and `OobHost`, merging caller
+  `data` with internal `data-hedron-*` markers (`#56`).
+- Accept additive `class_` theme hooks on `Button` / `LinkButton` / `SubmitButton` /
+  `IconButton`, `Text` / `Heading`, and `Alert` / `Badge` / `Status` (`#29`).
+- Detect `HtmxLink`/`NavLink` `select_oob` conflicting with the same-target
+  `OobUpdate`, document one-OOB-mechanism shell guidance, and allow optional
+  landmark `OobUpdate(tag=...)` as defense in depth (`#57`).
+
+### Changed
+
+- Coordinated Beta train bump to `0.27.0` (pin `>=0.27.0,<0.28`).
+
 ## [0.26.1] — 2026-08-10
 
 ### Changed
@@ -16,7 +38,7 @@
 
 ### Changed
 
-- Coordinated Beta train bump to `0.26.0` (pin `>=0.26.0,<0.27`).
+- Coordinated Beta train bump to `0.26.0` (pin `>=0.27.0,<0.28`).
 
 ## [0.25.2] — 2026-08-10
 

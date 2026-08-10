@@ -1,0 +1,8 @@
+{
+  "baseline": "v0.26.0",
+  "supported_headers": ["HX-Retarget", "HX-Reswap", "HX-Trigger", "HX-Redirect"],
+  "polling_only": true,
+  "flask_fragment_explanation": "demo fragment",
+  "django_requires_csrf_middleware": true,
+  "forbidden_live_parity": ["sse", "websocket", "streaming", "preload"]
+}

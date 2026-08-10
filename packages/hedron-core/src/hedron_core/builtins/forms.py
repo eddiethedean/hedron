@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import ClassVar, Literal
 
-from hedron_core.builtins._base import collect_children, dom_id_part
+from hedron_core.builtins._base import class_names, collect_children, dom_id_part
 from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
@@ -673,20 +673,28 @@ class RadioGroup(Component[RadioGroupProps]):
 class SubmitButtonProps(Props):
     label: str = "Submit"
     disabled: bool = False
+    class_: str | None = None
 
 
 class SubmitButton(Component[SubmitButtonProps]):
     props_type = SubmitButtonProps
 
-    def __init__(self, label: str = "Submit", *, disabled: bool = False, **kwargs: object) -> None:
-        super().__init__(SubmitButtonProps(label=label, disabled=disabled, **kwargs))
+    def __init__(
+        self,
+        label: str = "Submit",
+        *,
+        disabled: bool = False,
+        class_: str | None = None,
+        **kwargs: object,
+    ) -> None:
+        super().__init__(SubmitButtonProps(label=label, disabled=disabled, class_=class_, **kwargs))
 
     def render(self) -> NodeLike:
         return html.button(
             self.props.label,
             type="submit",
             disabled=self.props.disabled or None,
-            class_="hedron-button hedron-button-primary",
+            class_=class_names("hedron-button hedron-button-primary", self.props.class_),
         )
 
 

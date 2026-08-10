@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import importlib
 import json
+import re
 import shutil
 import sys
 import time
@@ -357,7 +359,7 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron>=0.26.0,<0.27",
+    "hedron>=0.27.0,<0.28",
     "uvicorn[standard]>=0.30",
 ]
 
@@ -434,8 +436,8 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron-flask>=0.26.0,<0.27",
-    "hedron-core>=0.26.0,<0.27",
+    "hedron-flask>=0.27.0,<0.28",
+    "hedron-core>=0.27.0,<0.28",
     "flask>=3,<4",
 ]
 
@@ -527,8 +529,8 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron-django>=0.26.0,<0.27",
-    "hedron-core>=0.26.0,<0.27",
+    "hedron-django>=0.27.0,<0.28",
+    "hedron-core>=0.27.0,<0.28",
     "django>=5.2,<6",
     "waitress>=3,<4",
 ]
@@ -709,8 +711,6 @@ def _declared_selectors_for_routes() -> dict[str, set[str]]:
 
 def _scan_refresh_button_targets(base: Path) -> list[tuple[str, str | None, str | None, str]]:
     """AST-light scan for RefreshButton(target=..., href=...) / for_region mismatches."""
-    import ast
-
     findings: list[tuple[str, str | None, str | None, str]] = []
     skip = {".venv", "node_modules", "dist", "site-packages", ".git"}
     for path in sorted(base.rglob("*.py")):
@@ -792,6 +792,302 @@ def _check_htmx_region_mismatches(base: Path) -> list[Any]:
     return diags
 
 
+def _ast_str_kw(node: Any, name: str) -> str | None:
+    for kw in getattr(node, "keywords", ()):
+        if (
+            kw.arg == name
+            and isinstance(kw.value, ast.Constant)
+            and isinstance(kw.value.value, str)
+        ):
+            return kw.value.value
+    return None
+
+
+def _ast_call_name(func: Any) -> str | None:
+    if isinstance(func, ast.Name):
+        return func.id
+    if isinstance(func, ast.Attribute):
+        return func.attr
+    return None
+
+
+def _scan_select_oob_and_oob_updates(
+    base: Path,
+) -> list[tuple[str, frozenset[str], frozenset[str]]]:
+    """Per-file ``select_oob`` ids and ``OobUpdate`` bound ids (when both are literals)."""
+    from hedron_core.interaction import OobUpdate as _OobUpdate
+    from hedron_core.interaction import (
+        oob_update_element_ids,
+        parse_select_oob_element_ids,
+    )
+
+    findings: list[tuple[str, frozenset[str], frozenset[str]]] = []
+    skip = {".venv", "node_modules", "dist", "site-packages", ".git"}
+    for path in sorted(base.rglob("*.py")):
+        if any(part in skip or part.startswith(".") for part in path.parts):
+            continue
+        try:
+            source = path.read_text(encoding="utf-8")
+            tree = ast.parse(source, filename=str(path))
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            continue
+        select_oob_ids: set[str] = set()
+        oob_ids: set[str] = set()
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            name = _ast_call_name(node.func)
+            if name in {"HtmxLink", "NavLink"}:
+                select_oob = _ast_str_kw(node, "select_oob")
+                if select_oob:
+                    select_oob_ids.update(parse_select_oob_element_ids(select_oob))
+            elif name == "OobUpdate":
+                element_id = _ast_str_kw(node, "element_id")
+                select = _ast_str_kw(node, "select")
+                # Reconstruct enough to reuse core binding (content unused for ids).
+                update = _OobUpdate(content="", element_id=element_id, select=select)
+                oob_ids.update(oob_update_element_ids((update,)))
+        if select_oob_ids and oob_ids:
+            findings.append((str(path), frozenset(select_oob_ids), frozenset(oob_ids)))
+    return findings
+
+
+def _check_select_oob_conflicts(base: Path) -> list[Any]:
+    """Warn when the same id is used with both ``select_oob`` and ``OobUpdate``."""
+    from hedron_core import DiagnosticSeverity
+    from hedron_core.codes import HED_HTMX_0002
+    from hedron_core.diagnostics import make_diagnostic
+    from hedron_core.interaction import conflicting_select_oob_targets
+
+    diags = []
+    for file_path, select_ids, oob_ids in _scan_select_oob_and_oob_updates(base):
+        # Reconstruct a comma-joined selector list for the shared helper.
+        select_oob = ",".join(f"#{item}" for item in sorted(select_ids))
+        conflicts = conflicting_select_oob_targets(select_oob, oob_ids=oob_ids)
+        if not conflicts:
+            continue
+        targets = ", ".join(f"#{item}" for item in sorted(conflicts))
+        diags.append(
+            make_diagnostic(
+                HED_HTMX_0002,
+                severity=DiagnosticSeverity.WARNING,
+                title="select_oob / OobUpdate same-target conflict",
+                explanation=(
+                    f"{file_path} uses both HtmxLink/NavLink select_oob and "
+                    f"OobUpdate for {targets}. Combining hx-select-oob with a "
+                    "server hx-swap-oob envelope for the same id can replace a "
+                    "semantic shell host (for example <nav aria-label=...>) with "
+                    "Hedron's OOB wrapper."
+                ),
+                remediation=(
+                    "Use one OOB mechanism per target. Prefer explicit OobUpdate "
+                    "with swap='innerHTML' and omit matching select_oob so the "
+                    "existing host tag and aria-* attributes are preserved. "
+                    "OobUpdate(tag=...) is defense in depth only."
+                ),
+                context={
+                    "path": file_path,
+                    "conflicts": sorted(conflicts),
+                    "select_oob_ids": sorted(select_ids),
+                    "oob_ids": sorted(oob_ids),
+                },
+            )
+        )
+    return diags
+
+
+_SKIP_SCAN_DIRS = frozenset(
+    {
+        ".git",
+        ".hg",
+        ".svn",
+        ".venv",
+        "venv",
+        "node_modules",
+        "dist",
+        "build",
+        "site",
+        "site-packages",
+        "__pycache__",
+        ".mypy_cache",
+        ".pytest_cache",
+        ".ruff_cache",
+        ".tox",
+    }
+)
+_IMPORT_ROOT_RE = re.compile(
+    r"(?m)^\s*(?:from|import)\s+([A-Za-z_][\w.]*)",
+)
+
+
+def _path_is_skipped(path: Path, *, base: Path) -> bool:
+    try:
+        parts = path.resolve().relative_to(base.resolve()).parts
+    except ValueError:
+        parts = path.parts
+    return any(part in _SKIP_SCAN_DIRS for part in parts)
+
+
+def _iter_project_py_files(base: Path) -> list[Path]:
+    if not base.exists():
+        return []
+    files: list[Path] = []
+    for path in base.rglob("*.py"):
+        if _path_is_skipped(path, base=base):
+            continue
+        files.append(path)
+    return files
+
+
+def _app_source_paths(app_path: str | None) -> list[Path]:
+    """Return source files for a loaded ``--app`` module/package."""
+    if not app_path or ":" not in app_path:
+        return []
+    module_name = app_path.split(":", 1)[0]
+    module = sys.modules.get(module_name)
+    if module is None:
+        return []
+    file_name = getattr(module, "__file__", None)
+    if not file_name:
+        return []
+    path = Path(file_name).resolve()
+    paths = [path]
+    package_dir = path.parent if path.name == "__init__.py" else None
+    if package_dir is not None and package_dir.is_dir():
+        paths.extend(sorted(package_dir.rglob("*.py")))
+    return paths
+
+
+def _files_import_any(paths: list[Path], roots: frozenset[str]) -> bool:
+    for path in paths:
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        for match in _IMPORT_ROOT_RE.finditer(text):
+            top = match.group(1).split(".", 1)[0]
+            if top in roots:
+                return True
+    return False
+
+
+def _manifest_mentions(base: Path, tokens: frozenset[str]) -> bool:
+    lowered = tuple(token.lower() for token in tokens)
+    for name in ("pyproject.toml", "requirements.txt", "requirements.in", "Pipfile"):
+        path = base / name
+        if not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8").lower()
+        except OSError:
+            continue
+        if any(token in text for token in lowered):
+            return True
+    return False
+
+
+def _registry_has_chart_surface() -> bool:
+    markers = ("chart", "plotly", "altair", "vega")
+    for meta in get_registry().components():
+        blob = f"{meta.distribution} {meta.name} {meta.logical_id}".lower()
+        if any(marker in blob for marker in markers):
+            return True
+    return False
+
+
+def _compat_surface_active(
+    base: Path,
+    *,
+    app: str | None,
+    module_roots: frozenset[str],
+    package_tokens: frozenset[str],
+    registry_active: bool = False,
+) -> bool:
+    """True when the project/app references a compatibility surface (not ambient installs)."""
+    if registry_active:
+        return True
+    paths = [*_iter_project_py_files(base), *_app_source_paths(app)]
+    if _files_import_any(paths, module_roots):
+        return True
+    return _manifest_mentions(base, module_roots | package_tokens)
+
+
+def _compat_info_diagnostics(
+    *,
+    base: Path,
+    app: str | None,
+    all_compat: bool,
+) -> list[Any]:
+    """Evergreen informational findings; adapter/extra notices are project-scoped (#54)."""
+    from hedron_core import DiagnosticSeverity
+    from hedron_core.diagnostics import make_diagnostic
+
+    info_diags = [
+        make_diagnostic(
+            "HED-SEC-0001",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="CSRF required for unsafe actions",
+            explanation="Cookie-authenticated unsafe methods must validate CSRF.",
+            remediation="Use HedronRouter.action and standard security profile.",
+        ),
+        make_diagnostic(
+            "HED-A11Y-0001",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="Run axe for interactive surfaces",
+            explanation="Static markup checks do not replace browser accessibility analysis.",
+            remediation="Use hedron[browser] axe hooks for Explorer and forms.",
+        ),
+        make_diagnostic(
+            "HED-COMPAT-0001",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="0.19 compatibility baseline is active",
+            explanation=(
+                "Phase 0.19 classifies the public API and accessibility contracts. "
+                "See docs/api/STABILITY.md for Supported vs experimental surfaces."
+            ),
+            remediation="See docs/api/STABILITY.md and docs/guides/upgrade.md.",
+        ),
+    ]
+    django_active = all_compat or _compat_surface_active(
+        base,
+        app=app,
+        module_roots=frozenset({"django", "hedron_django"}),
+        package_tokens=frozenset({"hedron-django"}),
+    )
+    if django_active:
+        info_diags.append(
+            make_diagnostic(
+                "HED-COMPAT-0002",
+                severity=DiagnosticSeverity.INFORMATION,
+                title="Django Supported floor is 5.2 LTS",
+                explanation="hedron-django requires Django >=5.2,<6 for Supported adapter claims.",
+                remediation="Upgrade Django to the 5.2 LTS line before production adapter use.",
+            )
+        )
+    charts_active = all_compat or _compat_surface_active(
+        base,
+        app=app,
+        module_roots=frozenset({"hedron_charts", "plotly", "altair"}),
+        package_tokens=frozenset({"hedron-charts", "hedron[charts]"}),
+        registry_active=_registry_has_chart_surface(),
+    )
+    if charts_active:
+        info_diags.append(
+            make_diagnostic(
+                "HED-COMPAT-0003",
+                severity=DiagnosticSeverity.INFORMATION,
+                title="Interactive Plotly/Altair runtimes are experimental",
+                explanation=(
+                    "Full Plotly/Vega interactive hosts remain experimental until offline pins "
+                    "and browser evidence promote them; prefer Matplotlib static SVG for stable "
+                    "dashboards."
+                ),
+                remediation="See docs/api/STABILITY.md and docs/api/CHART.md.",
+            )
+        )
+    return info_diags
+
+
 def _cmd_check(args: argparse.Namespace) -> int:
     from hedron_core import (
         DiagnosticSeverity,
@@ -837,51 +1133,15 @@ def _cmd_check(args: argparse.Namespace) -> int:
                     diags.extend(exc.diagnostics)
 
     diags.extend(_check_htmx_region_mismatches(base))
+    diags.extend(_check_select_oob_conflicts(base))
 
-    # Security / a11y / compatibility-boundary informational findings (excluded from exit code)
-    info_diags = [
-        make_diagnostic(
-            "HED-SEC-0001",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="CSRF required for unsafe actions",
-            explanation="Cookie-authenticated unsafe methods must validate CSRF.",
-            remediation="Use HedronRouter.action and standard security profile.",
-        ),
-        make_diagnostic(
-            "HED-A11Y-0001",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="Run axe for interactive surfaces",
-            explanation="Static markup checks do not replace browser accessibility analysis.",
-            remediation="Use hedron[browser] axe hooks for Explorer and forms.",
-        ),
-        make_diagnostic(
-            "HED-COMPAT-0001",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="0.19 compatibility baseline is active",
-            explanation=(
-                "Phase 0.19 classifies the public API and accessibility contracts. "
-                "See docs/api/STABILITY.md for Supported vs experimental surfaces."
-            ),
-            remediation="See docs/api/STABILITY.md and docs/guides/upgrade.md.",
-        ),
-        make_diagnostic(
-            "HED-COMPAT-0002",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="Django Supported floor is 5.2 LTS",
-            explanation="hedron-django requires Django >=5.2,<6 for Supported adapter claims.",
-            remediation="Upgrade Django to the 5.2 LTS line before production adapter use.",
-        ),
-        make_diagnostic(
-            "HED-COMPAT-0003",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="Interactive Plotly/Altair runtimes are experimental",
-            explanation=(
-                "Full Plotly/Vega interactive hosts remain experimental until offline pins and "
-                "browser evidence promote them; prefer Matplotlib static SVG for stable dashboards."
-            ),
-            remediation="See docs/api/STABILITY.md and docs/api/CHART.md.",
-        ),
-    ]
+    # Security / a11y / compatibility-boundary informational findings (excluded from exit code).
+    # Adapter/extra COMPAT notices are scoped to the project under check unless --all-compat (#54).
+    info_diags = _compat_info_diagnostics(
+        base=base,
+        app=getattr(args, "app", None),
+        all_compat=bool(getattr(args, "all_compat", False)),
+    )
 
     inventory_summary: JsonObject | None = None
     hdj_reports: list[JsonObject] = []
@@ -1233,6 +1493,14 @@ def main(argv: list[str] | None = None) -> None:
         choices=("error", "warning", "information"),
         default="error",
         help="Fail when diagnostics meet or exceed this severity",
+    )
+    check_p.add_argument(
+        "--all-compat",
+        action="store_true",
+        help=(
+            "Include global adapter/extra compatibility notices even when those "
+            "integrations are not detected in the project under check"
+        ),
     )
     check_p.set_defaults(func=_cmd_check)
 

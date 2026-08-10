@@ -2,25 +2,23 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.26 **Published** as `v0.26.0` (2026-08-10); last published
-PyPI/git = `v0.26.0`. Prior: 0.25 **Published** as `v0.25.0` (last patch `v0.25.2`).
+**Roadmap position:** phase 0.27 **Published** as `v0.27.0` (2026-08-10); last published
+PyPI/git = `v0.27.0`. Prior: 0.26 **Published** as `v0.26.0`.
 **Date:** 2026-08-10
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.26.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.6`,
+`0.27.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.6`,
 `hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0` (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
 `hedron-charts`, `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, `hedron-mcp`,
 `hedron-gradio`.
 
-**Phase focus:** Living published train is **0.26** (D-054 / RFC-0057) — production-grade
-graduation for `hedron-core` / `hedron` / `hedron-explorer` on the declared Supported
-CRUD/admin inventory (`release-gate-0.26.toml` Verified). **Next** = **0.27 Planned**
-(D-055 / RFC-0058) — packet opened for `hedron-data` / `hedron-flask` / `hedron-django` /
-`hedron-jinja` / `hedron-extras` (`release-gate-0.27.toml` Planned;
-`production-grade-inventory-027.toml` frozen; `verify_pkg_27.py --allow-planned`). Do **not**
-market satellite production-grade labels until every 0.27-owned row is Verified. Live-transport
+**Phase focus:** Living published train is **0.27** (D-055 / RFC-0058) — production-grade
+graduation for `hedron-data` / `hedron-flask` / `hedron-django` / `hedron-jinja` /
+`hedron-extras` on declared Supported inventories (`release-gate-0.27.toml` Verified), while
+`hedron-core` / `hedron` / `hedron-explorer` retain the 0.26 production-grade CRUD/admin
+inventory (D-054 / RFC-0057). **Next** = **0.28 Planned** (charts / native). Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
 remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` /
@@ -29,8 +27,8 @@ Supported**. Automated AT (`AT-019`, phase 0.19) remains Supported and is not a 
 for human AT. Prior production-quality packet **0.25** (D-053 / RFC-0056) remains
 **Verified** — see [production-quality](docs/guides/production-quality.md) ·
 [PRODUCTION_ARCHETYPE](docs/api/PRODUCTION_ARCHETYPE.md). `REV-026-003` (Explorer process-local
-audit buffer) remains an Explorer-owned accepted risk noted against the 0.27 window; it does
-not expand satellite graduation scope.
+audit buffer) remains an Explorer-owned accepted risk; it was not expanded into satellite
+graduation scope.
 
 ## Supported vs Deferred (operator view)
 
@@ -88,6 +86,14 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `SUPPLY-025` | SBOM/evidence attach on train tags | **Verified** (0.25) | process |
 | `REGRESS-025` | Full suite at 0.25 cut | **Verified** (0.25) | |
 | `PKG-025` | `verify_pkg_25.py` packet evidence | **Verified** (0.25) | |
+| `DATA-027` | Bounded data CRUD / sources / exports | **Verified** (0.27) | D-055 / RFC-0058 |
+| `FLASK-027` | Host-only Flask adapter matrices | **Verified** (0.27) | |
+| `DJANGO-027` | Host-only Django adapter matrices | **Verified** (0.27) | |
+| `HDJ-027` | Versioned HDJ authoring | **Verified** (0.27) | |
+| `EXTRAS-027` | Curated extras + experimental-ui quarantine | **Verified** (0.27) | |
+| `PARITY-027` | Portable FastAPI/Flask/Django parity | **Verified** (0.27) | |
+| `REGRESS-027` | Full suite at 0.27 cut | **Verified** (0.27) | |
+| `PKG-027` | `verify_pkg_27.py` packet evidence | **Verified** (0.27) | |
 | `LIVE-011-BROWSER` | Full adapter live browser matrix | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `BROWSER-024` |
 | `BROWSER-10-001` | Full three-engine live browser matrix | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `BROWSER-024` |
 | `PERF-10-001` | Load/proxy backpressure evidence | **Superseded** (0.24) | By `DECIDE-024` `polling_only` / `PERF-024` |
@@ -166,15 +172,31 @@ SSOT: [PRODUCTION_ARCHETYPE](docs/api/PRODUCTION_ARCHETYPE.md) ·
 Cut verify: `python scripts/verify_pkg_25.py`.
 Program summary: [production-quality guide](docs/guides/production-quality.md).
 
+## Phase 0.27 evidence
+
+All `*-027` capability gates are **Verified** on the Published `v0.27.0` train:
+
+| Gate | Disposition |
+|---|---|
+| `DATA-027` | Verified — bounded data CRUD/sources/exports + upgrade fixtures |
+| `FLASK-027` | Verified — host-only Flask install/security/lifecycle evidence |
+| `DJANGO-027` | Verified — host-only Django install/system-check evidence |
+| `HDJ-027` | Verified — HDJ v1 prologue/sinks/async/manifests |
+| `EXTRAS-027` | Verified — curated registry + experimental-ui quarantine |
+| `PARITY-027` | Verified — portable PAGE/FRAGMENT/CSRF parity + REVIEW-027 |
+| `REGRESS-027` / `PKG-027` | Verified — suite + `verify_pkg_27.py` |
+
+SSOT: [RELEASE_0_27](docs/acceptance/RELEASE_0_27.md) ·
+[release-gate-0.27.toml](docs/acceptance/release-gate-0.27.toml) ·
+[production-grade-inventory-027.toml](docs/acceptance/production-grade-inventory-027.toml).
+Cut verify: `python scripts/verify_pkg_27.py`.
+
 ## Next capability phases
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
-**Planned** until compensated screen-reader evidence lands. Phase **0.26** is **Published**
-(`v0.26.0`; D-054). Phase **0.27** is **Planned** with owning RFC-0058 / D-055 and Planned
-acceptance scaffolding (`RELEASE_0_27.md`, `release-gate-0.27.toml`,
-`production-grade-inventory-027.toml`, `verify_pkg_27.py`); gate evidence remains open.
-Remaining package-production work after 0.27 is planned for **0.28–0.32**: charts/native;
-developer and portable conformance tooling; MCP; Gradio; then a whole-fleet closure audit.
-These phases require owning RFCs/decisions and Verified evidence before any package maturity
-label changes. They do not schedule `1.0`, promote every experimental subfeature, or expand
-Supported live transports.
+**Planned** until compensated screen-reader evidence lands. Phase **0.27** is **Published**
+(`v0.27.0`; D-055). Remaining package-production work is planned for **0.28–0.32**:
+charts/native; developer and portable conformance tooling; MCP; Gradio; then a whole-fleet
+closure audit. These phases require owning RFCs/decisions and Verified evidence before any
+package maturity label changes. They do not schedule `1.0`, promote every experimental
+subfeature, or expand Supported live transports.

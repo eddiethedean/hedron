@@ -11,7 +11,8 @@ Owning decision: [D-055](../DECISIONS.md). RFC:
 [RFC-0058](../rfcs/RFC-0058-PRODUCTION-GRADE-SATELLITES.md).
 Packet SSOT:
 [production-grade-inventory-027.toml](production-grade-inventory-027.toml) ·
-[upgrade-fixtures-027.md](upgrade-fixtures-027.md).
+[upgrade-fixtures-027.md](upgrade-fixtures-027.md) ·
+[security-review-027/](security-review-027/).
 
 ## Entry criteria
 
@@ -24,15 +25,15 @@ Packet SSOT:
 
 - [x] ROADMAP §0.27 scope; D-055 / RFC-0058 recorded
 - [x] Gate checker recognizes `0.27` evidence manifest:
-  `python scripts/check_release_gate.py 0.26.1 --evidence-manifest docs/acceptance/release-gate-0.27.toml --allow-planned`
-  (or `python scripts/verify_pkg_27.py --allow-planned`)
-- [ ] Per-gate checkers Verified at cut (Planned until implementation):
+  `python scripts/check_release_gate.py 0.27.0`
+  (or `python scripts/verify_pkg_27.py`)
+- [x] Per-gate checkers Verified at cut:
   `check_data_027.py`, `check_flask_027.py`, `check_django_027.py`,
   `check_hdj_027.py`, `check_extras_027.py`, `check_parity_027.py`,
-  `verify_pkg_27.py`
-- [ ] `DATA-027` / `FLASK-027` / `DJANGO-027` / `HDJ-027` / `EXTRAS-027` /
+  `check_contract_027.py`, `verify_pkg_27.py`
+- [x] `DATA-027` / `FLASK-027` / `DJANGO-027` / `HDJ-027` / `EXTRAS-027` /
   `PARITY-027` Verified
-- [ ] `REGRESS-027` / `PKG-027` at cut
+- [x] `REGRESS-027` / `PKG-027` at cut
 
 ## Out of 0.27
 
@@ -44,6 +45,6 @@ Packet SSOT:
 
 ## Exit
 
-- [ ] Every 0.27-owned release-gate row is `Verified`
-- [ ] Production-grade label used only for declared Supported inventory
-- [ ] Satellite trust-boundary review + disposition ledger attached
+- [x] Every 0.27-owned release-gate row is `Verified`
+- [x] Production-grade label used only for declared Supported inventory
+- [x] Satellite trust-boundary review + disposition ledger attached

@@ -17,7 +17,7 @@ manual.
     maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` /
     `deferred`).
 
-**Status:** Accepted · current train **0.26**
+**Status:** Accepted · current train **0.27**
 
 ## How to use this index
 
@@ -122,8 +122,20 @@ Hedron component names use PascalCase. Native elements use lowercase `hedron.htm
 attributes and tags. Python keyword collisions use a trailing underscore such as
 `class_`; rendered HTML always uses the canonical attribute name.
 
+### Additive `class_` theme hooks
+
+Content and control builtins such as `Button`, `LinkButton`, `SubmitButton`,
+`IconButton`, `Text`, `Heading`, `Alert`, `Badge`, and `Status` accept optional
+`class_`. Host theme classes are **appended after** Hedron’s own `hedron-*`
+classes (for example
+`Button("Save", variant="primary", class_="button button-primary")`).
+
+Use `class_` only as a design-system bridge. Do **not** use it to bypass security
+attributes, CSRF wiring, SafeUrl constraints, or other typed props — those remain
+enforced on the component API.
+
 ## Historical phase notes
 
 Phase 0.1–0.10 acceptance narratives remain in release notes / what’s-new pages. This
-index tracks the living **0.26** built-in catalog — do not treat older phase lists as the
+index tracks the living **0.27** built-in catalog — do not treat older phase lists as the
 complete API.

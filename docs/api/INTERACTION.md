@@ -9,7 +9,7 @@ status: shipped
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.26**)
+**Status:** Shipped (fragment regions + `InteractionResult`; living train **0.27**)
 
 Typed FastAPI/HTMX request and result contracts live in `hedron.interaction` and are
 re-exported from `hedron`.
@@ -265,6 +265,24 @@ must also resolve to authorized regions. With declared regions, materialization 
 the rendered OOB target to the authorized `#id` (select-only `#id` is rewritten to that
 id); `element_id` must match an authorized `select="#…"` when both are set. Callers cannot
 use `select="#main"` to authorize content that swaps a different id.
+
+#### `hx-select-oob` vs `OobUpdate` (one mechanism per target)
+
+Request-side `HtmxLink(..., select_oob="#side-nav")` asks HTMX to **select** matching
+nodes from the response for OOB handling. Server-side `OobUpdate(element_id="side-nav",
+swap="innerHTML")` already emits a Hedron `hx-swap-oob` envelope. Combining both for the
+same id can replace a semantic shell host (for example
+`<nav id="side-nav" aria-label="Account navigation">`) with Hedron's wrapper
+(`<div id="side-nav" hx-swap-oob="innerHTML">`), dropping the landmark tag and accessible
+name.
+
+Recommended shell pattern: return explicit `OobUpdate` and **omit** matching `select_oob`.
+Use `conflicting_select_oob_targets(...)` or `hedron check` (`HED-HTMX-0002`) when both
+appear with literal metadata in the same file.
+
+Optional `OobUpdate(tag="nav")` (allowlisted: `div`, `section`, `aside`, `main`, `nav`) is
+**defense in depth** if an envelope must match a landmark host—it is not a substitute for
+avoiding the conflict.
 
 `Cache-Control: public` / `s-maxage` in `headers` extras is rejected. Typed `cache=`
 policy owns private/no-store behavior.

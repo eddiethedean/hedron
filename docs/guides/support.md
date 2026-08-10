@@ -27,7 +27,7 @@ Pin versions in production, read [upgrade](upgrade.md) notes before bumping trai
 Treat Alpha packages as more volatile. Charts and the sample kit require the compatible
 `>=0.1.6,<0.2` satellite floor — see [Compatibility](../COMPATIBILITY.md).
 
-**Support window:** security fixes target the current published train (`0.26.x`). The
+**Support window:** security fixes target the current published train (`0.27.x`). The
 previous `0.25.x` train receives best-effort security triage through approximately
 **2026-11-08**. There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).
 Community GitHub support only;

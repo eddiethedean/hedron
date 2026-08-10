@@ -18,7 +18,7 @@ def failures(text: str) -> list[str]:
 
 
 def test_current_train_claim_accepts_release_metadata() -> None:
-    assert not failures("Current train: 0.26.x; last published v0.26.0.")
+    assert not failures("Current train: 0.27.x; last published v0.27.0.")
 
 
 def test_current_train_claim_rejects_any_stale_minor_without_a_version_blacklist() -> None:
@@ -32,7 +32,7 @@ def test_previous_train_is_allowed_only_when_explicitly_historical_or_supported(
 
 
 def test_install_commands_require_the_canonical_bounded_pin() -> None:
-    assert not failures('pip install "hedron>=0.26.0,<0.27"')
+    assert not failures('pip install "hedron>=0.27.0,<0.28"')
     assert failures('pip install "hedron>=0.26.0"')
     assert failures("uv add hedron")
 

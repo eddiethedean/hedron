@@ -20,7 +20,7 @@ runtime fingerprinting is not Supported yet.
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.26.0,<0.27"
+pip install "hedron[charts]>=0.27.0,<0.28"
 # Add a backend when needed:
 pip install "hedron-charts[matplotlib]>=0.1.6,<0.2"
 ```

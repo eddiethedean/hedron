@@ -54,6 +54,58 @@ def test_oob_host_and_attr_host_require_id() -> None:
     assert "hedron-attr-host" in html2
 
 
+def test_main_panel_accepts_landmark_a11y_attrs() -> None:
+    html = render(
+        MainPanel(
+            "Profile",
+            tabindex=-1,
+            aria={"label": "Main content"},
+            lang="en",
+            data={"panel": "profile"},
+        )
+    ).html
+    assert "<main" in html
+    assert 'tabindex="-1"' in html
+    assert 'aria-label="Main content"' in html
+    assert 'lang="en"' in html
+    assert 'data-panel="profile"' in html
+    assert "data-hedron-main-panel=" in html
+
+
+def test_main_panel_rejects_hostile_roles_and_unknown_attrs() -> None:
+    with pytest.raises(TypeError, match=r"role='presentation' is not allowed on landmark"):
+        MainPanel("x", role="presentation")
+    with pytest.raises(TypeError, match="Unsupported landmark"):
+        MainPanel("x", onclick="alert(1)")  # type: ignore[call-arg]
+
+
+def test_oob_host_accepts_live_region_attrs() -> None:
+    html = render(
+        OobHost(
+            "Saved",
+            id="toast-host",
+            aria={"live": "polite", "atomic": "true"},
+            title="Status",
+            tabindex=-1,
+            data={"tone": "success"},
+        )
+    ).html
+    assert 'id="toast-host"' in html
+    assert 'aria-live="polite"' in html
+    assert 'aria-atomic="true"' in html
+    assert 'title="Status"' in html
+    assert 'tabindex="-1"' in html
+    assert 'data-tone="success"' in html
+    assert "data-hedron-oob-host=" in html
+
+
+def test_oob_host_rejects_role_and_unknown_attrs() -> None:
+    with pytest.raises(TypeError, match=r"role='status' is not allowed on OobHost"):
+        OobHost("x", id="toast", role="status")
+    with pytest.raises(TypeError, match="Unsupported OobHost"):
+        OobHost("x", id="toast", onclick="alert(1)")  # type: ignore[call-arg]
+
+
 def test_app_shell_and_main_panel() -> None:
     shell = AppShell(nav=HtmxLink("Home", "/"), body="Body")
     html = render(shell).html

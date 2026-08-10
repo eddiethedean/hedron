@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.26.0,<0.27`. Treat the **stable** tables below (minimal +
+**For adopters:** Pin `hedron>=0.27.0,<0.28`. Treat the **stable** tables below (minimal +
 expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
 `experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
 lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -8,15 +8,15 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Living train **0.26** (**Published**; last published
-PyPI/git = `v0.26.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
+**Status:** Living train **0.27** (**Published**; last published
+PyPI/git = `v0.27.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
 (D-038: no calendar `1.0` scheduled; D-053 / RFC-0056; D-054 / RFC-0057).
-**Version:** `0.26.x` / catalog baseline
-`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`+`0.24`+`0.25`+`0.26`
+**Version:** `0.27.x` / catalog baseline
+`0.8`+`0.10`+`0.11`+`0.12`+`0.13`+`0.14`+`0.15`+`0.16`+`0.17`+`0.18`+`0.19`+`0.20`+`0.21`+`0.22`+`0.23`+`0.24`+`0.25`+`0.26`+`0.27`
 
 This catalog classifies Hedron's public surface beginning with `v0.8.0` and reflects the
-`0.26.x` train on `main`. Levels apply to documented contracts; symbols not listed here are
+`0.27.x` train on `main`. Levels apply to documented contracts; symbols not listed here are
 **internal** unless a later phase explicitly promotes them.
 
 </details>
@@ -163,7 +163,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - Dask/Snowflake sources, AG Grid Community host: **beta**
 - Spreadsheet I/O / collab helpers: **beta**
 
-### `hedron-charts` (Alpha distribution; `>=0.1.6,<0.2` on 0.26)
+### `hedron-charts` (Alpha distribution; `>=0.1.6,<0.2` on 0.27)
 
 - `MatplotlibChart` / static SVG: **beta** API on Alpha distribution.
 - `PlotlyChart` / `AltairChart`: **experimental**.

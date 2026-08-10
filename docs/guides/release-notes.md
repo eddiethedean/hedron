@@ -17,7 +17,7 @@ Correctness and adoption-readiness patch for the 0.26 train.
   mounted under a subpath (for example reverse-proxy `/app`), and requires
   `hedron-explorer>=0.26.1` from the `dev` extra.
 - Fixes `hedron new`, `hedron new --flask`, and `hedron new --django` to generate the
-  current `>=0.26.0,<0.27` dependency range rather than the obsolete 0.25 range.
+  current `>=0.27.0,<0.28` dependency range rather than the obsolete 0.25 range.
 - Repairs optional-integration install commands and package-index links.
 - Replaces the abbreviated OIDC outline and model-demo stub with tested, runnable
   application flows.
@@ -47,7 +47,7 @@ No Supported CRUD/admin API removal is listed. Polling remains the production pa
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
 ```bash
-python -m pip install -U "hedron>=0.26.0,<0.27"
+python -m pip install -U "hedron>=0.27.0,<0.28"
 ```
 
 Read [Upgrade to 0.26](upgrade.md) before changing a production lockfile. Maintainer

@@ -42,10 +42,10 @@ def _format_sim_live_demo(sim_name: str) -> str:
 
 # Keep install snippets aligned with scripts/check_docs_train_ssot.py.
 _ALPHA_EXTRAS = frozenset({"charts", "notebook", "mcp", "gradio", "native"})
-_TRAIN_PIN = ">=0.26.0,<0.27"
+_TRAIN_PIN = ">=0.27.0,<0.28"
 _ALPHA_PIN = ">=0.1.0,<0.2"
 _CHARTS_PIN = ">=0.1.6,<0.2"
-_CHARTS_FLAGSHIP_PIN = ">=0.26.0,<0.27"
+_CHARTS_FLAGSHIP_PIN = ">=0.27.0,<0.28"
 
 
 def _install_requirement(package: str) -> str:
@@ -441,34 +441,47 @@ COMPONENTS = (
         "HtmxLink",
         "controls",
         "Navigate with a SafeUrl href and typed HTMX attributes for in-shell swaps.",
-        "HtmxLink(label, href, *, hx_get=None, hx_target=None, hx_swap=None, active=False, class_=None)",
-        "HtmxLink('Reports', '/reports', hx_get='/reports', hx_target='#main-panel', hx_swap='innerHTML')",
+        "HtmxLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, active=False, class_=None)",
+        "HtmxLink('Reports', '/reports', target='#main-panel', swap='innerHTML', select='#main-panel')",
         (
             p("label", "str", "Visible link text."),
             p("href", "SafeUrl | str", "Validated navigation URL (also the no-JS fallback)."),
+            p("method", "str", "HTMX verb mapped to hx-get / hx-post / … (default get)."),
+            p("target / swap", "str | None", "Approved hx-target and hx-swap for the primary region."),
             p(
-                "hx_get / hx_post / …",
+                "select",
                 "str | None",
-                "Typed HTMX request attrs from the html.a allowlist.",
+                "Optional hx-select for the primary fragment in the response.",
             ),
-            p("hx_target / hx_swap", "str | None", "Approved swap target and strategy."),
+            p(
+                "select_oob",
+                "str | None",
+                "Optional hx-select-oob for response nodes that should be treated as OOB. "
+                "Do not combine with a server OobUpdate for the same id.",
+            ),
+            p("push_url", "bool | str", "Optional hx-push-url for in-shell history."),
             p("active", "bool", "Optional active styling hook for current location."),
             p("class_", "str | None", "Additional CSS classes."),
         ),
-        "HtmxLink keeps ordinary anchor navigation as the progressive-enhancement path while attaching the same HTMX allowlist used by `html.a` and ComponentRef. Use it under Nav for in-shell panel swaps.",
-        "Prefer descriptive labels and stable region ids for `hx_target`. Keep CSRF and region authorization on the receiving action.",
+        "HtmxLink keeps ordinary anchor navigation as the progressive-enhancement path while attaching typed HTMX attrs. "
+        "`select` / `select_oob` pull nodes from the response; server `OobUpdate` emits `hx-swap-oob` envelopes. "
+        "Use one OOB mechanism per target—prefer explicit `OobUpdate(..., swap='innerHTML')` and omit matching `select_oob` "
+        "so semantic shell hosts (for example `<nav aria-label=...>`) keep their tag and accessible name.",
+        "Prefer descriptive labels and stable region ids for `target`. Keep CSRF and region authorization on the receiving action.",
+        "Do not set `select_oob` for an id that the same navigation flow also updates via `OobUpdate`—that combination can replace landmark hosts with Hedron's OOB wrapper. "
         "Do not use HtmxLink for mutating form posts that belong on Button or Form; it is navigation-first.",
     ),
     ComponentDoc(
         "NavLink",
         "controls",
         "Alias of HtmxLink for navigation lists and AppShell side nav.",
-        "NavLink(label, href, *, hx_get=None, hx_target=None, hx_swap=None, active=False, class_=None)",
-        "NavLink('Home', '/', hx_get='/', hx_target='#main-panel', active=True)",
+        "NavLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, active=False, class_=None)",
+        "NavLink('Home', '/', target='#main-panel', swap='innerHTML', active=True)",
         (p("…", "same as HtmxLink", "NavLink is the same component class as HtmxLink."),),
-        "NavLink is an intentional DX alias of HtmxLink so shell navigation reads clearly under Nav / AppShell. Behavior, allowlists, and SafeUrl policy are identical.",
+        "NavLink is an intentional DX alias of HtmxLink so shell navigation reads clearly under Nav / AppShell. Behavior, allowlists, and SafeUrl policy are identical—including the one-OOB-mechanism-per-target rule for `select_oob` vs `OobUpdate`.",
         "Use NavLink in primary navigation; use Link for ordinary content links without HTMX shell targets.",
-        "Do not register both names as separate plugins—only one component class exists.",
+        "Do not register both names as separate plugins—only one component class exists. "
+        "Do not combine NavLink `select_oob` with a matching `OobUpdate` for the same shell host id.",
     ),
     ComponentDoc(
         "OobHost",
@@ -525,9 +538,14 @@ COMPONENTS = (
             p("nav", "NodeLike | None", "Optional side navigation (often Nav of NavLinks)."),
             p("panel_id", "str", "Id forwarded to the composed MainPanel."),
         ),
-        "AppShell composes landmark-friendly chrome with a swappable MainPanel so full page loads and HTMX fragment swaps share one layout. Use with HtmxLink/NavLink targeting the panel id.",
-        "Keep global chrome outside MainPanel; put page-specific content inside the body slot.",
-        "Do not use AppShell as a generic card or modal wrapper.",
+        "AppShell composes landmark-friendly chrome with a swappable MainPanel so full page loads and HTMX fragment swaps share one layout. "
+        "Use HtmxLink/NavLink targeting the panel id for the primary swap. When side chrome must update too, return an explicit "
+        "`OobUpdate(element_id=..., swap='innerHTML')` and do **not** also set `select_oob` for that same id—"
+        "`hx-select-oob` selects response nodes for OOB handling, while `OobUpdate` already emits `hx-swap-oob`.",
+        "Keep global chrome outside MainPanel; put page-specific content inside the body slot. "
+        "Prefer one OOB mechanism per target so `<nav>` / landmark hosts keep their tag and `aria-*` attributes.",
+        "Do not use AppShell as a generic card or modal wrapper. "
+        "Do not combine `select_oob='#side-nav'` with `OobUpdate(element_id='side-nav')` on the same navigation flow.",
     ),
     ComponentDoc(
         "Image",
