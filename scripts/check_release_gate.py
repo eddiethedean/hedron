@@ -36,9 +36,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 # Includes historical ``release`` attestation used by older gate manifests.
-KNOWN_CI_JOBS = frozenset(
-    {"test", "quality", "browser", "evidence", "packaging", "release"}
-)
+KNOWN_CI_JOBS = frozenset({"test", "quality", "browser", "evidence", "packaging", "release"})
 # Commands that must not be re-entered from --execute-verified.
 _RECURSIVE_SCRIPT_NAMES = frozenset(
     {
@@ -86,6 +84,11 @@ def check_packages(tag_version: str) -> list[str]:
     if not (ROOT / "LICENSE").is_file():
         errors.append("missing root LICENSE (required before public publication)")
 
+    workspace = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
+    workspace_version = str(workspace["version"])
+    if workspace_version != tag_version:
+        errors.append(f"hedron-workspace: version {workspace_version!r} != tag {tag_version!r}")
+
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
         project = data["project"]
@@ -106,6 +109,17 @@ def check_packages(tag_version: str) -> list[str]:
             errors.append(f"{name}: __version__ not found in {init}")
         elif match.group(1) != expected:
             errors.append(f"{name}: __version__ {match.group(1)!r} != package {expected!r}")
+        for plugin in init.parent.rglob("*.py"):
+            plugin_match = re.search(
+                r"PLUGIN_META\s*=\s*PluginMeta\(.*?\bversion\s*=\s*[\"']([^\"']+)[\"']",
+                plugin.read_text(encoding="utf-8"),
+                re.S,
+            )
+            if plugin_match and plugin_match.group(1) != version:
+                errors.append(
+                    f"{name}: PluginMeta version {plugin_match.group(1)!r} in "
+                    f"{plugin.relative_to(pkg_dir)} != package {version!r}"
+                )
         changelog = pkg_dir / "CHANGELOG.md"
         if not changelog.is_file():
             errors.append(f"{name}: missing CHANGELOG.md")
@@ -166,9 +180,7 @@ def _validate_verified_command(eid: str, command: str, ci_job: str) -> list[str]
     if not ci_job:
         errors.append(f"{eid}: Verified entries require ci_job (CI attestation)")
     elif ci_job not in KNOWN_CI_JOBS:
-        errors.append(
-            f"{eid}: unknown ci_job {ci_job!r} (expected one of {sorted(KNOWN_CI_JOBS)})"
-        )
+        errors.append(f"{eid}: unknown ci_job {ci_job!r} (expected one of {sorted(KNOWN_CI_JOBS)})")
 
     for rel in _referenced_repo_paths(command):
         target = ROOT / rel

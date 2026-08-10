@@ -1,6 +1,6 @@
 [project]
 name = "hedron-extras"
-version = "0.25.0"
+version = "0.25.1"
 description = "Curated optional extras and analysis workbenches for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -41,7 +41,7 @@ dependencies = [
 code_editor = []
 json_editor = []
 data_explorer = ["hedron-data>=0.25.0,<0.26"]
-chart_workbench = ["hedron-data>=0.25.0,<0.26", "hedron-charts>=0.1.0,<0.2"]
+chart_workbench = ["hedron-data>=0.25.0,<0.26", "hedron-charts>=0.1.6,<0.2"]
 image_tools = []
 calendar = []
 signature = []
@@ -52,7 +52,7 @@ joystick = []
 experimental-ui = []
 all = [
     "hedron-data>=0.25.0,<0.26",
-    "hedron-charts>=0.1.0,<0.2",
+    "hedron-charts>=0.1.6,<0.2",
 ]
 
 [project.entry-points."hedron.plugins"]

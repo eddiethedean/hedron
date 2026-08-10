@@ -236,17 +236,18 @@ setting production mode.
 ## Cannot import `Auto` / `DataTable` / chart helpers
 
 **Cause:** `Auto` is core (`from hedron import Auto`). `DataTable` / `DataEditor` need the
-data extra. Charts have a separate 0.25 packaging limitation.
+data extra. Charts require the corrected satellite floor shipped with 0.25.1.
 
 **Fix:**
 
 ```bash
 # Auto needs no extra
 pip install "hedron[data]>=0.25.0,<0.26"      # DataTable, DataEditor
+pip install "hedron[charts]>=0.25.1,<0.26"   # chart components
 ```
 
-Do not install a published chart release beside Hedron 0.25; none is compatible. See
-[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit),
+Versions before `hedron-charts 0.1.6` are incompatible with Hedron 0.25. See
+[Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor),
 [Installation](../getting-started/installation.md), and
 [charts and HTMX](charts-and-htmx.md).
 

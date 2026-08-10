@@ -90,7 +90,7 @@ Rendering a component never implies a public route — only `@page` / `@componen
 | Unscoped job HTTP status | Fail closed | Pass `auth_subject` / `tenant_id` |
 | Wrong `HX-Target` | HTTP **403** | Declare `FragmentRegion` / `app.region` |
 | CSRF missing on POST | HTTP **403** | Seed token on GET; include field/header |
-| Charts from PyPI on 0.25 | Resolver downgrade | Omit `hedron[charts]` — source-only |
+| Chart satellite older than `0.1.6` on 0.25 | Resolver conflict / downgrade | Install `hedron[charts]>=0.25.1,<0.26` |
 
 ## Multi-worker, jobs, and inference
 

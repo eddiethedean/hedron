@@ -4,6 +4,17 @@ Adopter-facing summary for the **0.25.x** train. For per-package commit detail, 
 [package changelog index](changelog.md) or
 [GitHub Releases](https://github.com/eddiethedean/hedron/releases).
 
+## Prepared patch — 0.25.1 (not yet tagged)
+
+- Restores installable charts with `hedron-charts 0.1.6` and a safe lower bound in
+  `hedron[charts]`.
+- Fixes session-auth feedback and malformed input handling in adopter recipes.
+- Repairs documentation simulator tests and formatting drift.
+- Prevents GitHub Release creation when any PyPI package publish fails.
+- Expands the adoption and Streamlit migration documentation added after 0.25.0.
+
+The last published release remains `v0.25.0` until the tag workflow completes.
+
 ## Current train — 0.25.0 (2026-08-09)
 
 **Published** (`0.25.0`; last published PyPI/git = `v0.25.0`).

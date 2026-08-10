@@ -4,17 +4,16 @@ A short path from install → chart → Markdown → typed fragment response.
 
 ## Availability
 
-!!! danger "Source-only on Hedron 0.25"
+```bash
+pip install "hedron[charts]>=0.25.1,<0.26"
+```
 
-    No published `hedron-charts` release is compatible with `hedron-core 0.25.x`.
-    This guide documents the in-repository workspace package for evaluation and future
-    use; do not copy an old PyPI chart install into a 0.25 application. See
-    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+This enforces `hedron-charts>=0.1.6,<0.2`; older satellite releases target older cores.
+See [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
-## LineChart on a page (workspace-only)
+## LineChart on a page
 
 ```python
-# workspace-only — do not pip install hedron-charts into a PyPI 0.25 app
 from hedron import Hedron, Page, Text
 from hedron_charts import LineChart
 

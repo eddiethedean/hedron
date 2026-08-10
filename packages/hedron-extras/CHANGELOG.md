@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.25.1] — 2026-08-09
+
+### Fixed
+
+- Require `hedron-charts>=0.1.6,<0.2` for the chart workbench so the extra cannot
+  resolve to a chart wheel built for an older Hedron core.
+
 ## [0.25.0] — 2026-08-09
 
 ### Changed

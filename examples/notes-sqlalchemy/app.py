@@ -6,7 +6,7 @@ Create / list / delete — not a full admin CRUD app.
 from __future__ import annotations
 
 from fastapi import Form as FastAPIForm
-from fastapi import Request, status
+from fastapi import HTTPException, Request, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy import Column, Integer, String, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
@@ -76,16 +76,22 @@ def home(request: Request) -> Page:
 
 @app.action("/save", method="POST")
 def save(body: str = FastAPIForm(...)) -> RedirectResponse:
+    normalized = body.strip()
+    if not normalized:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Note body must not be blank",
+        )
     with SessionLocal() as db:
-        db.add(Note(body=body.strip()[:500]))
+        db.add(Note(body=normalized[:500]))
         db.commit()
     return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.action("/delete", method="POST")
-def delete(note_id: str = FastAPIForm(...)) -> RedirectResponse:
+def delete(note_id: int = FastAPIForm(...)) -> RedirectResponse:
     with SessionLocal() as db:
-        note = db.get(Note, int(note_id))
+        note = db.get(Note, note_id)
         if note is not None:
             db.delete(note)
             db.commit()

@@ -6,7 +6,7 @@ Does **not** publish or tag.
 * Default (omit ``--allow-planned``): require every evidence row ``Verified``, then
   execute Verified SSOT ``check_*.py`` commands from the manifest (cut path).
 * ``--allow-planned`` remains for lenient gate shape checks against living
-  train metadata (``0.25.0``).
+  train metadata.
 """
 
 from __future__ import annotations
@@ -18,8 +18,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.25.toml"
-# Living published train (also used with --allow-planned post-cut until next publishes).
-LIVING_TRAIN = "0.25.0"
+# Prepared patch candidate. This does not imply that the tag or packages are published.
+RELEASE_CANDIDATE = "0.25.1"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -27,7 +27,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--allow-planned",
         action="store_true",
-        help="Allow Planned rows (pre-cut / packet refine). Omit at v0.25.0 cut.",
+        help=f"Allow Planned rows (pre-cut / packet refine). Omit at v{RELEASE_CANDIDATE} cut.",
     )
     args = parser.parse_args(argv)
 
@@ -35,7 +35,7 @@ def main(argv: list[str] | None = None) -> int:
         gate_cmd = [
             sys.executable,
             str(ROOT / "scripts" / "check_release_gate.py"),
-            LIVING_TRAIN,
+            RELEASE_CANDIDATE,
             "--evidence-manifest",
             str(EVIDENCE),
             "--allow-planned",
@@ -44,7 +44,7 @@ def main(argv: list[str] | None = None) -> int:
         gate_cmd = [
             sys.executable,
             str(ROOT / "scripts" / "check_release_gate.py"),
-            "0.25.0",
+            RELEASE_CANDIDATE,
             "--execute-verified",
         ]
 

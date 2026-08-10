@@ -31,7 +31,7 @@ def main() -> int:
             [
                 '@app.page("/login")',
                 '@app.action("/logout"',
-                "RedirectResponse(\"/login\"",
+                'RedirectResponse("/login"',
                 "curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/session-auth/app.py",
                 "Real recipe",
             ],

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.6] — 2026-08-09
+
+### Fixed
+
+- Publish a sample-kit satellite compatible with `hedron-core>=0.25.0,<0.26`.
+
 ## [0.1.5] — 2026-08-07
 
 ### Changed

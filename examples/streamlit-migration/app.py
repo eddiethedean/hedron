@@ -103,9 +103,9 @@ def dashboard(
         label="Dashboard filters",
     )
 
-    monthly_rows = [
-        [month, f"${revenue:,}"] for month, revenue in by_month.items()
-    ] or [["—", "No rows"]]
+    monthly_rows = [[month, f"${revenue:,}"] for month, revenue in by_month.items()] or [
+        ["—", "No rows"]
+    ]
 
     content = Stack(
         Heading("Sales dashboard", level=1),

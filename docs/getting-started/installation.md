@@ -89,7 +89,7 @@ If `hedron` is not found after install, prefer **`python -m hedron …`** or see
 | Wrong / old version | `pip install -U "hedron>=0.25.0,<0.26"` — [Troubleshooting](../guides/troubleshooting.md#wrong-or-unexpected-version) |
 | CSRF 403 on first POST | Seed cookie with a GET — [Troubleshooting](../guides/troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | Cannot import DataTable | Install `hedron[data]` — [Troubleshooting](../guides/troubleshooting.md#cannot-import-auto-datatable-chart-helpers) |
-| Need charts on 0.25 | Not on PyPI — [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit) |
+| Need charts on 0.25 | Install `hedron[charts]>=0.25.1,<0.26` — [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) |
 | Explorer 404 | Install `hedron[dev]` and enable development Explorer — [Troubleshooting](../guides/troubleshooting.md#explorer-404-or-missing-in-production) |
 | Production missing manifest | Run `hedron build` before `HEDRON_ENV=production` — [Troubleshooting](../guides/troubleshooting.md#production-startup-missing-manifest-hed-build-0003) |
 
@@ -130,15 +130,17 @@ Full catalog: [Optional packages](../packages/index.md).
 pip install "hedron[data]>=0.25.0,<0.26"          # example
 ```
 
-!!! danger "Charts and sample-kit are Deferred from PyPI on 0.25"
+Charts and the sample plugin have explicit compatibility floors:
 
-    Do **not** run `pip install "hedron[charts]"` or install `hedron-sample-kit` from
-    PyPI with Hedron 0.25 — published wheels require older `hedron-core` and typically
-    downgrade or fail the resolver. Compatible sources live in this repository only.
-    Details:
-    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit)
-    · [hedron-charts](../packages/hedron-charts.md) ·
-    [Charts and HTMX](../guides/charts-and-htmx.md).
+```bash
+pip install "hedron[charts]>=0.25.1,<0.26"
+pip install "hedron-sample-kit>=0.1.6,<0.2"
+```
+
+Versions through `0.1.5` target older cores. Details:
+[Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor) ·
+[hedron-charts](../packages/hedron-charts.md) ·
+[Charts and HTMX](../guides/charts-and-htmx.md).
 
 !!! note "`hedron[browser]` needs Playwright browsers"
 

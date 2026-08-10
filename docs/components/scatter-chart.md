@@ -10,7 +10,7 @@ Plot an x/y scatter series from row mappings with an accessible fallback.
 | | |
 |---|---|
 | Import | `from hedron_charts import ScatterChart` |
-| Distribution | `hedron[charts]` (workspace-only on 0.25 — not PyPI) |
+| Distribution | `hedron[charts]` |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -20,14 +20,15 @@ Plot an x/y scatter series from row mappings with an accessible fallback.
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 
-!!! danger "Source-only on Hedron 0.25"
+Install the optional provider before importing this component:
 
-    No published `hedron-charts` release accepts `hedron-core 0.25.x`. This page documents the in-repository workspace package; do not `pip install "hedron[charts]"` or `hedron-charts` from PyPI into a 0.25 application. Examples below are **workspace-only**. See [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+```bash
+pip install "hedron[charts]>=0.25.1,<0.26"
+```
 
 ## Basic use
 
 ```python
-# workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
 from hedron_charts import ScatterChart
 
 component = ScatterChart(rows, x='latency', y='errors', title='Latency vs errors', description='Higher latency correlates with elevated error rates.')

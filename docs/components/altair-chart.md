@@ -10,7 +10,7 @@ Render an Altair chart through the declarative visualization adapter.
 | | |
 |---|---|
 | Import | `from hedron_charts import AltairChart` |
-| Distribution | `hedron-charts[altair]` (workspace-only on 0.25 — not PyPI) |
+| Distribution | `hedron-charts[altair]` |
 | Backend activity | No |
 | Normal render mode | `RenderMode.FRAGMENT` |
 
@@ -20,14 +20,15 @@ Render an Altair chart through the declarative visualization adapter.
 
 The preview is a local docs simulation (not a running Hedron server). Interactive demos show a “Simulated HTMX” trace when applicable.
 
-!!! danger "Source-only on Hedron 0.25"
+Install the optional provider before importing this component:
 
-    No published `hedron-charts` release accepts `hedron-core 0.25.x`. This page documents the in-repository workspace package; do not `pip install "hedron[charts]"` or `hedron-charts` from PyPI into a 0.25 application. Examples below are **workspace-only**. See [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+```bash
+pip install "hedron-charts[altair]>=0.1.6,<0.2"
+```
 
 ## Basic use
 
 ```python
-# workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
 from hedron_charts import AltairChart
 
 component = AltairChart(chart, title='Deployments per week', description='Deployments peaked in week four.')

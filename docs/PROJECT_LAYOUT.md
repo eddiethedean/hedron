@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.25.0** train on `main`
+**Status:** Accepted; kept current with the **0.25.1** patch candidate on `main`
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -76,7 +76,7 @@ hedron/
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
-| `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` (Alpha line `0.1.x`, tip `0.1.5`) |
+| `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` (Alpha line `0.1.x`, tip `0.1.6`) |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Supported capability; Beta package) |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Supported; Beta package) |
 | `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.25.0` |
@@ -93,8 +93,8 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated train is **`0.25.0`** (**Published** as `v0.25.0`; last
-published PyPI/git = `v0.25.0`) for the production security floor — see [STATUS](STATUS.md).
+**Publish note:** the coordinated workspace is **`0.25.1`** (release candidate; not tagged);
+the last published PyPI/git train remains **`v0.25.0`** — see [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
 

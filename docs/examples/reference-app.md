@@ -11,16 +11,10 @@ Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README
 [`examples/reference-app/README.md`](https://github.com/eddiethedean/hedron/blob/main/examples/reference-app/README.md).
 
 Click through the pattern demos below (docs simulations for CSRF, fragments, and chart
-**panel** refresh — not a live login and not a PyPI charts install), then run the full app
-locally or via production compose.
-
-!!! danger "Charts require the monorepo on 0.25"
-
-    The reference app’s chart routes use workspace `hedron-charts` (Docker/compose installs
-    from this repository). **Do not** `pip install "hedron[charts]"` from PyPI with Hedron
-    0.25 — see
-    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
-    PyPI adopters can still run CRUD, DataEditor, and auth without charts.
+**panel** refresh — not a live login), then run the full app locally or via production
+compose. Outside the workspace, install `hedron[charts]>=0.25.1,<0.26` for the compatible
+chart satellite; see
+[Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 !!! warning "Credentials for this app"
 

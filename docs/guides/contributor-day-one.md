@@ -88,7 +88,6 @@ maintainer asked you to.
 ## Plugins and RFCs (second contribution)
 
 - Plugin sample / authoring: [Plugin authoring](plugin-authoring.md) ·
-  [Using plugins](plugin-consumer.md) (sample-kit is **source-only** on 0.25 — see
-  Compatibility).
+  [Using plugins](plugin-consumer.md) (`hedron-sample-kit>=0.1.6,<0.2` on 0.25).
 - Public contract changes: [Changing public contracts](../CONTRIBUTING.md#changing-public-contracts)
   (RFC intake steps).

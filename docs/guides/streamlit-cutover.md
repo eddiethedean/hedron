@@ -110,12 +110,11 @@ deployable directories so removing Streamlit from the Hedron environment cannot 
 fallback. Preserve explicit pandas, NumPy, plotting, database, and model dependencies even
 if Streamlit previously installed some transitively.
 
-!!! warning "Hedron 0.25 chart packaging"
+!!! note "Hedron 0.25 chart floor"
 
-    Do not install `hedron[charts]` or the published `hedron-charts` wheel with Hedron 0.25.
-    The compatible chart source is repository-only on this train. Use metrics/tables for a
-    PyPI-only migration or wait for a compatible published chart package. See
-    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
+    Install `hedron[charts]>=0.25.1,<0.26`; this requires the compatible
+    `hedron-charts>=0.1.6,<0.2` satellite. See
+    [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## 5. Build the production artifact
 

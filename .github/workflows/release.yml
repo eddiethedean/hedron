@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_tag:
-        description: "Tag to publish (e.g. v0.25.0). Required when publish_only is true."
+        description: "Tag to publish (e.g. v0.25.1). Required when publish_only is true."
         type: string
         default: ""
       publish_only:
@@ -22,7 +22,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "0.25.0"
+  HEDRON_GATE_VERSION: "0.25.1"
 
 jobs:
   test:
@@ -417,7 +417,7 @@ jobs:
           fi
           echo "publish_failed=0" >> "$GITHUB_OUTPUT"
       - name: Create GitHub Release
-        if: ${{ always() && !cancelled() }}
+        if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -455,7 +455,7 @@ jobs:
               --notes "$NOTES"
           fi
       - name: Fail job if PyPI publish failed
-        if: ${{ always() && !cancelled() && steps.pypi.outputs.publish_failed == '1' }}
+        if: ${{ always() && !cancelled() && (steps.pypi.outcome == 'failure' || steps.pypi.outputs.publish_failed == '1') }}
         run: |
-          echo "PyPI publish reported failures; GitHub Release may still have been created." >&2
+          echo "PyPI publish reported failures; GitHub Release creation was skipped." >&2
           exit 1

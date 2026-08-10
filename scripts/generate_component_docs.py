@@ -44,6 +44,8 @@ def _format_sim_live_demo(sim_name: str) -> str:
 _ALPHA_EXTRAS = frozenset({"charts", "notebook", "mcp", "gradio", "native"})
 _TRAIN_PIN = ">=0.25.0,<0.26"
 _ALPHA_PIN = ">=0.1.0,<0.2"
+_CHARTS_PIN = ">=0.1.6,<0.2"
+_CHARTS_FLAGSHIP_PIN = ">=0.25.1,<0.26"
 
 
 def _install_requirement(package: str) -> str:
@@ -51,24 +53,21 @@ def _install_requirement(package: str) -> str:
     match = re.fullmatch(r"hedron\[([^\]]+)\]", package)
     if match is not None:
         extra = match.group(1).split(",", 1)[0].strip()
-        pin = _ALPHA_PIN if extra in _ALPHA_EXTRAS else _TRAIN_PIN
+        pin = (
+            _CHARTS_FLAGSHIP_PIN
+            if extra == "charts"
+            else _ALPHA_PIN
+            if extra in _ALPHA_EXTRAS
+            else _TRAIN_PIN
+        )
         return f"{package}{pin}"
     if package == "hedron-charts" or package.startswith("hedron-charts["):
-        return f"{package}{_ALPHA_PIN}"
+        return f"{package}{_CHARTS_PIN}"
     return package
 
 
 def _optional_install_text(package: str) -> str:
-    """Return the optional-provider note, including known publication gaps."""
-    if "charts" in package:
-        return (
-            '\n\n!!! danger "Source-only on Hedron 0.25"\n\n'
-            "    No published `hedron-charts` release accepts `hedron-core 0.25.x`. "
-            "This page documents the in-repository workspace package; do not "
-            '`pip install "hedron[charts]"` or `hedron-charts` from PyPI into a 0.25 '
-            "application. Examples below are **workspace-only**. See "
-            "[Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit)."
-        )
+    """Return the optional-provider installation note."""
     return (
         "\n\nInstall the optional provider before importing this component:"
         f'\n\n```bash\npip install "{_install_requirement(package)}"\n```'
@@ -2610,17 +2609,9 @@ def page_text(spec: ComponentDoc) -> str:
         else ""
     )
     is_charts = "charts" in spec.package
-    workspace_only = (
-        "# workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace\n"
-        if is_charts
-        else ""
-    )
+    workspace_only = ""
     import_module = "hedron_charts" if is_charts else "hedron"
-    distribution = (
-        f"`{spec.package}` (workspace-only on 0.25 — not PyPI)"
-        if is_charts
-        else f"`{spec.package}`"
-    )
+    distribution = f"`{spec.package}`"
     return f"""---
 title: {spec.name}
 description: {spec.summary}

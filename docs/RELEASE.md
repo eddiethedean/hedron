@@ -12,6 +12,9 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 **Last published train:** `v0.25.0` (packages `0.25.0` including first-party
 `hedron-extras`; Alpha charts/sample-kit/native/notebook/mcp/gradio `0.1.x`).
 
+**Prepared candidate (not tagged):** Beta packages `0.25.1`; charts and sample kit
+`0.1.6`. Do not describe these versions as published until the tag workflow succeeds.
+
 **Prior published:** `v0.24.0`, `v0.23.0`, `v0.22.0`, `v0.21.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
 
 **Current train:** `0.25.x` — **Published** as `v0.25.0` (production archetype / landmines /
@@ -136,7 +139,9 @@ Replace `0.25.1` with the next patch.
 ### Cut steps
 
 1. Confirm the coordinated bump is committed on `main` (all package `pyproject.toml`,
-   `__version__`, CHANGELOG sections, `uv.lock`, CI gate argument).
+   `__version__`, plugin metadata, CHANGELOG sections, `uv.lock`, CI gate argument).
+   For this patch, confirm charts/sample-kit are `0.1.6` and `hedron[charts]` requires
+   `hedron-charts>=0.1.6,<0.2`.
 2. Re-run locally (same suites as CI — see `scripts/ci_checks.sh`):
 
 ```bash

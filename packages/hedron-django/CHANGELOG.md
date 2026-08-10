@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.25.1] — 2026-08-09
+
+### Changed
+
+- Coordinated Beta patch release with `hedron` 0.25.1.
+
 ## [0.25.0] — 2026-08-09
 
 ### Changed

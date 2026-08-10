@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.25.1] — 2026-08-09
+
+### Fixed
+
+- Restore a resolvable `hedron[charts]` install by requiring the compatible
+  `hedron-charts>=0.1.6,<0.2` satellite release.
+- Re-export `FragmentRegionError` from the beginner-facing package facade.
+- Correct the session-auth and SQLAlchemy adopter recipes: failed sign-in feedback is
+  visible, blank notes are rejected, and malformed delete identifiers return 422.
+- Repair reference-app simulator expectations and formatting drift introduced by the
+  post-0.25 documentation adoption pass.
+
+### Changed
+
+- Expand and reorganize onboarding, API, deployment, and Streamlit migration guidance.
+- Harden release preparation so a failed PyPI publish cannot create a GitHub Release.
+
 ## [0.25.0] — 2026-08-09
 
 ### Added

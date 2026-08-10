@@ -136,19 +136,20 @@ def check_ledger_rows(
 
     if need_artifact:
         for row in real:
-            if not str(getattr(row, "known_issue", "") or "").strip() and not getattr(
-                row, "issue_url", None
+            if (
+                not str(getattr(row, "known_issue", "") or "").strip()
+                and not getattr(row, "issue_url", None)
+                and (
+                    getattr(row, "severity", "none") != "none"
+                    or getattr(row, "result", "") in {"fail", "blocker"}
+                )
             ):
-                # Pass/fail session rows still need a known_issue note or linked issue for
+                # Fail/blocker session rows still need a known_issue note or linked issue for
                 # ARTIFACT-021 inventory completeness (even when severity is none).
-                if getattr(row, "severity", "none") != "none" or getattr(row, "result", "") in {
-                    "fail",
-                    "blocker",
-                }:
-                    errors.append(
-                        f"ARTIFACT-021 {row.record_id}: fail/blocker rows need "  # type: ignore[attr-defined]
-                        "known_issue or issue_url"
-                    )
+                errors.append(
+                    f"ARTIFACT-021 {row.record_id}: fail/blocker rows need "  # type: ignore[attr-defined]
+                    "known_issue or issue_url"
+                )
             notes = str(getattr(row, "notes", "") or "")
             if "placeholder" in notes.lower() and getattr(row, "result", "") != "placeholder":
                 errors.append(

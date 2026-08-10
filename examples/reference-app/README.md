@@ -42,8 +42,8 @@ production deploy.**
 
 Open the home page for CRUD + DataEditor (+ charts/Markdown when workspace charts are
 available). Chart interaction endpoints live under `/charts/*` (for example
-`/charts/fragment`, `/charts/search`). **PyPI note:** do not install `hedron[charts]` with
-Hedron 0.25 — use this monorepo (or omit charts).
+`/charts/fragment`, `/charts/search`). Outside the workspace, install
+`hedron[charts]>=0.25.1,<0.26` to obtain the compatible chart satellite.
 
 ## Production compose (canonical archetype)
 

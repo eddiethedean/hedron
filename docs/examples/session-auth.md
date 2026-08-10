@@ -23,7 +23,7 @@ Minimal session login gate with CSRF. Demo credentials only — replace before a
     from fastapi import Request, status
     from fastapi.responses import RedirectResponse
 
-    from hedron import CsrfField, Form, Hedron, Page, Stack, SubmitButton, Text, TextInput
+    from hedron import Alert, CsrfField, Form, Hedron, Page, Stack, SubmitButton, Text, TextInput
 
     app = Hedron(
         title="Session auth demo",
@@ -37,12 +37,18 @@ Minimal session login gate with CSRF. Demo credentials only — replace before a
 
 
     @app.page("/login")
-    def login_page(request: Request) -> Page | RedirectResponse:
+    def login_page(request: Request, error: str | None = None) -> Page | RedirectResponse:
         if request.session.get("username"):
             return RedirectResponse("/", status_code=status.HTTP_303_SEE_OTHER)
+        feedback = (
+            Alert("Invalid username or password.", tone="danger", title="Sign-in failed")
+            if error == "1"
+            else None
+        )
         return Page(
             Stack(
                 Text("Sign in (demo: ada / correct-horse)"),
+                feedback,
                 Form(
                     CsrfField(),
                     TextInput("username", value="", required=True),

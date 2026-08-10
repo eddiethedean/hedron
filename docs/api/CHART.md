@@ -1,5 +1,5 @@
 ---
-status: deferred
+status: beta
 ---
 
 # Chart APIs
@@ -13,20 +13,13 @@ status: deferred
 
 ## Availability
 
-!!! danger "Source-only on Hedron 0.25"
+Install `hedron[charts]>=0.25.1,<0.26`; this enforces the compatible
+`hedron-charts>=0.1.6,<0.2` floor. See
+[Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
-    No published chart distribution currently accepts `hedron-core 0.25.x`. These APIs
-    describe the in-repository workspace package; PyPI installation is Deferred until a
-    compatible release is published. See
-    [Compatibility](../COMPATIBILITY.md#current-025-packaging-limitation-charts-and-sample-kit).
-
-    Do **not** run `pip install "hedron[charts]"` or `pip install hedron-charts` into a
-    0.25 application. Examples below are **workspace-only**.
-
-## Beginner `LineChart` (workspace-only)
+## Beginner `LineChart`
 
 ```python
-# workspace-only — packages/hedron-charts on PYTHONPATH / uv workspace
 from hedron import Hedron, Page
 from hedron_charts import LineChart
 
@@ -53,10 +46,9 @@ def home() -> Page:
     )
 ```
 
-## Familiar-library adapters (workspace-only)
+## Familiar-library adapters
 
 ```python
-# workspace-only
 from hedron_charts import AltairChart, MatplotlibChart, PlotlyChart
 
 PlotlyChart(figure, description="Revenue by region")

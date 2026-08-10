@@ -333,9 +333,8 @@ def __getattr__(name: str) -> object:
         except ImportError as exc:  # pragma: no cover
             raise ImportError(
                 f"{name} requires the hedron-charts package. "
-                "On Hedron 0.25, charts are source-only in the monorepo workspace "
-                "(packages/hedron-charts) — do not pip install hedron[charts] / "
-                "hedron-charts from PyPI (those releases require older hedron-core). "
+                'Install with: pip install "hedron[charts]>=0.25.1,<0.26" or '
+                'pip install "hedron-charts>=0.1.6,<0.2". '
                 "See https://hedron.readthedocs.io/en/latest/COMPATIBILITY/"
             ) from exc
         return getattr(_hedron_charts, name)
@@ -354,7 +353,7 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "0.25.0"
+__version__ = "0.25.1"
 
 # Stable + beta public facade. Live transports live in ``hedron.experimental``
 # (compat attribute access retained via ``__getattr__``). Optional data/charts/auth
