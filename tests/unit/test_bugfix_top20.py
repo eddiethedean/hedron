@@ -86,9 +86,10 @@ def test_session_state_without_session_middleware() -> None:
     request = Request(scope)
     state = SessionState(request, "k", str)
     assert state.value is None
-    state.value = "ok"
-    assert state.value == "ok"
-    state.clear()
+    with pytest.raises(RuntimeError, match="SessionMiddleware"):
+        state.value = "ok"
+    with pytest.raises(RuntimeError, match="SessionMiddleware"):
+        state.clear()
 
 
 def test_strict_csrf_cookie_always_secure() -> None:

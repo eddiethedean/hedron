@@ -76,7 +76,7 @@ third-party open-source software with pinned versions and your own threat model 
 
 ## Supply-chain evidence
 
-Prefer GitHub Release assets for tag **`v0.25.0`** (SBOM / license / evidence-bundle) when
+Prefer GitHub Release assets for tag **`v0.25.1`** (SBOM / license / evidence-bundle) when
 attached. If assets are missing, regenerate from the tagged checkout — see
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.
 Maintainers should attach evidence bundles on release day when publishing a train tag.

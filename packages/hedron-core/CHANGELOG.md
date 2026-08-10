@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.25.2] — 2026-08-10
+
+### Fixed
+
+- Validate `InteractionResult.oob` items are `OobUpdate` instances in `__post_init__`.
+- `Hx.as_html_attrs` parses `url` / string `push_url` through `SafeUrl`.
+- `HtmxLink(external=True)` renders as a plain link without rejected absolute `hx-*` URLs.
+- Reject `..` path traversal for relative NAVIGATION / FORM_ACTION / REDIRECT SafeUrls.
+- `run_prepare` fails closed when an event loop is already running; shared `cookie_path_for_mount` lives in core.
+- Redis job CAS fails closed without pipeline/WATCH support.
+- Add `apply_allow_undeclared_targets` helper for host adapters.
+
+### Changed
+
+- Coordinated Beta patch with `hedron` 0.25.2.
+
 ## [0.25.1] — 2026-08-09
 
 ### Changed

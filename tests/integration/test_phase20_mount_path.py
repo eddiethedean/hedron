@@ -30,7 +30,7 @@ def test_normalize_and_cookie_path() -> None:
     assert normalize_mount_path("/") == ""
     assert normalize_mount_path("/app/") == "/app"
     assert cookie_path_for_mount("") == "/"
-    assert cookie_path_for_mount("/app") == "/app/"
+    assert cookie_path_for_mount("/app") == "/app"
     # Protocol-relative / absolute URL mounts must not authorize open redirects.
     assert normalize_mount_path("//evil.example") == ""
     assert normalize_mount_path("https://evil.example/app") == ""
@@ -82,13 +82,18 @@ def test_env_root_path_scopes_csrf_cookie(monkeypatch: pytest.MonkeyPatch) -> No
     # Starlette TestClient exposes set-cookie; path should be mount-scoped.
     set_cookie = response.headers.get("set-cookie", "")
     assert "hedron_csrf=" in set_cookie
-    assert "Path=/app/" in set_cookie or "path=/app/" in set_cookie.lower()
+    assert (
+        "Path=/app;" in set_cookie
+        or "path=/app;" in set_cookie.lower()
+        or set_cookie.lower().endswith("path=/app")
+        or "Path=/app" in set_cookie
+    )
 
 
 def test_mount_scoped_csrf_post_succeeds_under_subpath(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """CSRF double-submit works when the app is mounted at /app with Path=/app/."""
+    """CSRF double-submit works when the app is mounted at /app with Path=/app."""
     monkeypatch.setenv("HEDRON_ROOT_PATH", "/app")
     monkeypatch.delenv("HEDRON_ENV", raising=False)
     inner = Hedron(
@@ -111,7 +116,8 @@ def test_mount_scoped_csrf_post_succeeds_under_subpath(
     seeded = client.get("/app/")
     assert seeded.status_code == 200
     set_cookie = seeded.headers.get("set-cookie", "")
-    assert "Path=/app/" in set_cookie or "path=/app/" in set_cookie.lower()
+    assert "Path=/app" in set_cookie or "path=/app" in set_cookie.lower()
+    assert "Path=/app/" not in set_cookie and "path=/app/" not in set_cookie.lower()
     token = seeded.cookies.get("hedron_csrf")
     assert token
 
@@ -126,7 +132,7 @@ def test_mount_scoped_csrf_post_succeeds_under_subpath(
 def test_mount_scoped_csrf_cookie_not_sent_outside_path(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Path=/app/ cookie must not satisfy CSRF on routes outside the mount path."""
+    """Path=/app cookie must not satisfy CSRF on routes outside the mount path."""
     monkeypatch.setenv("HEDRON_ROOT_PATH", "/app")
     monkeypatch.delenv("HEDRON_ENV", raising=False)
     app = Hedron(
@@ -148,15 +154,15 @@ def test_mount_scoped_csrf_cookie_not_sent_outside_path(
     seeded = client.get("/")
     assert seeded.status_code == 200
     set_cookie = seeded.headers.get("set-cookie", "")
-    assert "Path=/app/" in set_cookie or "path=/app/" in set_cookie.lower()
-    # Extract token from Set-Cookie even if the jar omits Path=/app/ for `/save`.
+    assert "Path=/app" in set_cookie or "path=/app" in set_cookie.lower()
+    # Extract token from Set-Cookie even if the jar omits Path=/app for `/save`.
     token = None
     for part in set_cookie.split(","):
         if "hedron_csrf=" in part:
             token = part.split("hedron_csrf=", 1)[1].split(";", 1)[0].strip()
             break
     assert token
-    # Request path `/save` is outside cookie Path=/app/ — double-submit must fail.
+    # Request path `/save` is outside cookie Path=/app — double-submit must fail.
     denied = client.post("/save", headers={"X-CSRF-Token": token})
     assert denied.status_code == 403
 

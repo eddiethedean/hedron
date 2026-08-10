@@ -57,7 +57,24 @@ def _dispose_instance(instance: Any) -> None:
         method = getattr(instance, attr, None)
         if callable(method):
             with suppress(Exception):
-                method()
+                result = method()
+                if hasattr(result, "__await__"):
+                    # Sync dispose path cannot await; prefer close_all_async.
+                    with suppress(Exception):
+                        close = getattr(result, "close", None)
+                        if callable(close):
+                            close()
+            return
+
+
+async def _dispose_instance_async(instance: Any) -> None:
+    for attr in ("close", "dispose", "shutdown", "aclose"):
+        method = getattr(instance, attr, None)
+        if callable(method):
+            with suppress(Exception):
+                result = method()
+                if hasattr(result, "__await__"):
+                    await result  # type: ignore[misc]
             return
 
 
@@ -159,6 +176,11 @@ class ConnectionRegistry:
         for name in list(self._instances):
             _dispose_instance(self._instances.pop(name))
 
+    async def close_all_async(self) -> None:
+        """Awaitable dispose for async connection closes during lifespan shutdown."""
+        for name in list(self._instances):
+            await _dispose_instance_async(self._instances.pop(name))
+
 
 def install_connections(app: FastAPI, registry: ConnectionRegistry) -> ConnectionRegistry:
     """Attach ``registry`` to ``app.state.hedron_connections`` and close on shutdown."""
@@ -171,7 +193,7 @@ def install_connections(app: FastAPI, registry: ConnectionRegistry) -> Connectio
             async with previous(app_):
                 yield
         finally:
-            registry.close_all()
+            await registry.close_all_async()
 
     app.router.lifespan_context = _connections_lifespan
     return registry

@@ -52,7 +52,10 @@ def test_swap_builders_return_interaction_result() -> None:
     region = FragmentRegion(id="main", selector="#main")
     moved = retarget(body, region)
     assert moved.retarget == "#main"
-    assert moved.region_id == "main"
+    assert moved.region_id == "#main"
+    diverged = retarget(body, FragmentRegion(id="main", selector="#panel"))
+    assert diverged.region_id == "#panel"
+    assert diverged.retarget == "#panel"
     moved_sel = retarget(body, "#other")
     assert moved_sel.retarget == "#other"
 

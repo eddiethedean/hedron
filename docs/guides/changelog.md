@@ -2,7 +2,7 @@
 
 Per-package CHANGELOG files are the source of truth for shipped commits. For the
 adopter-facing train summary, start with [What’s new in 0.25](whats-new-0.25.md)
-(0.25 train — **Published** as **v0.25.0**) and
+(0.25 train — **Published**; last **v0.25.1**) and
 [Release notes](release-notes.md).
 
 ## Narrative “what’s new”

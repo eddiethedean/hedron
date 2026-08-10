@@ -9,10 +9,10 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**Last published train:** `v0.25.0` (packages `0.25.0` including first-party
-`hedron-extras`; Alpha charts/sample-kit/native/notebook/mcp/gradio `0.1.x`).
+**Last published train:** `v0.25.1` (packages `0.25.1` including first-party
+`hedron-extras`; Alpha charts/sample-kit `0.1.6`, native/notebook/mcp/gradio `0.1.x`).
 
-**Prepared candidate (not tagged):** Beta packages `0.25.1`; charts and sample kit
+**Prepared candidate (not tagged):** Beta packages `0.25.2`; charts and sample kit
 `0.1.6`. Do not describe these versions as published until the tag workflow succeeds.
 
 **Prior published:** `v0.24.0`, `v0.23.0`, `v0.22.0`, `v0.21.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
@@ -56,7 +56,7 @@ the Evidence pack remain in [acceptance/EVIDENCE.md](acceptance/EVIDENCE.md).
 ## Record: `v0.25.0` cut
 
 Commands for the `0.25.0` publish. Skip tagging when `v0.25.0` already exists (see **Tag
-rule**). For later patches, replace with `0.25.1` / `v0.25.1` (see patch template below).
+rule**). For later patches, replace with `0.25.2` / `v0.25.2` (see patch template below).
 
 ### Preconditions
 
@@ -76,7 +76,7 @@ rule**). For later patches, replace with `0.25.1` / `v0.25.1` (see patch templat
 ### Cut steps (`v0.25.0`)
 
 `v0.25.0` is the **Published** production-archetype train. Use the patch
-template for `v0.25.1+`.
+template for `v0.25.2+`.
 
 1. Confirm the coordinated bump is committed on `main` (all package `pyproject.toml`,
    `__version__`, CHANGELOG sections, `uv.lock`, CI gate argument).
@@ -120,13 +120,13 @@ After the Git tag exists and wheels are on PyPI:
 
 ## Template: 0.25.x patch cut
 
-Replace `0.25.1` with the next patch.
+Replace `0.25.2` with the next patch.
 
 ### Preconditions
 
 1. `main` is green on CI for Python 3.11–3.14 (including MkDocs `--strict`).
 2. Package version, `__version__`, inter-package pins, and changelog entries agree:
-   `uv run python scripts/check_release_gate.py 0.25.1`
+   `uv run python scripts/check_release_gate.py 0.25.2`
 3. Phase 0.25 gate file: `docs/acceptance/release-gate-0.25.toml`.
 4. **License (D-033):** root `LICENSE` and every publishable package declare license
    metadata. The release workflow refuses to publish without this.
@@ -148,7 +148,7 @@ Replace `0.25.1` with the next patch.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.25.1
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.25.2
 # optional: bash scripts/ci_checks.sh browser --python 3.12
 ```
 
@@ -164,6 +164,6 @@ uv run python scripts/rehearse_release.py
 4. Tag and push (trusted workflow publishes when configured):
 
 ```bash
-git tag -a v0.25.1 -m "Hedron 0.25.1"
-git push origin v0.25.1
+git tag -a v0.25.2 -m "Hedron 0.25.2"
+git push origin v0.25.2
 ```

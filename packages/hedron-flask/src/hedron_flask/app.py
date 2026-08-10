@@ -12,7 +12,7 @@ from flask.typing import RouteCallable
 
 from hedron_core.adapter import FLASK_CAPABILITIES, AuthSignal
 from hedron_core.component import Component, NodeLike
-from hedron_core.interaction import FragmentRegion, InteractionPolicy, InteractionResult
+from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult
 from hedron_core.security_policy import SecurityPolicy, SecurityProfileName
 from hedron_flask.blueprint import attach_hedron_to_flask
@@ -59,11 +59,30 @@ class HedronFlask:
         self.csrf_cookie_secure = csrf_cookie_secure
         self._auto_csrf_cookie = auto_csrf_cookie
         self.security_policy = SecurityPolicy.from_name(security)
+        self._sync_csrf_cookie_name()
         self.flask: Flask | None = None
         self.url_reverser: FlaskUrlReverser | None = None
         if import_name is not None:
             app = Flask(import_name, **kwargs)
             self.init_app(app)
+
+    def _sync_csrf_cookie_name(self) -> None:
+        """Keep extension and SecurityPolicy CSRF cookie names identical."""
+        policy = self.security_policy
+        strategy = policy.resolve_csrf_strategy() if policy.csrf_enabled else None
+        strategy_name = getattr(strategy, "cookie_name", None) if strategy is not None else None
+        if (
+            self.csrf_cookie_name != "hedron_csrf"
+            and policy.csrf is None
+            and policy.csrf_cookie_name == "hedron_csrf"
+        ):
+            # Explicit extension override wins over the default policy name.
+            self.security_policy = replace(policy, csrf_cookie_name=self.csrf_cookie_name)
+            return
+        if isinstance(strategy_name, str) and strategy_name:
+            self.csrf_cookie_name = strategy_name
+            if policy.csrf is None and policy.csrf_cookie_name != strategy_name:
+                self.security_policy = replace(policy, csrf_cookie_name=strategy_name)
 
     def init_app(
         self,
@@ -74,6 +93,7 @@ class HedronFlask:
         """Bind this extension to ``app`` (idempotent for the same app)."""
         if security is not None:
             self.security_policy = SecurityPolicy.from_name(security)
+        self._sync_csrf_cookie_name()
         existing = app.extensions.get("hedron")
         if existing is self:
             self.flask = app
@@ -212,13 +232,6 @@ class HedronFlask:
                 policy=self.security_policy,
             )
         if isinstance(value, InteractionResult):
-            if allow_undeclared_targets:
-                policy = value.policy or InteractionPolicy()
-                if not policy.allow_undeclared_targets:
-                    value = replace(
-                        value,
-                        policy=replace(policy, allow_undeclared_targets=True),
-                    )
             return interaction_response(
                 value,
                 context=context,
@@ -227,6 +240,7 @@ class HedronFlask:
                 headers_map=dict(request.headers),
                 authenticated=self.auth_signal(request).authenticated,
                 fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
             )
         return component_response(
             value,
@@ -281,8 +295,17 @@ class HedronFlask:
         if not self.security_policy.csrf_enabled:
             return ""
         value = token or self.csrf_token(request)
+        from hedron_core.mount import cookie_path_for_mount
+
         script_root = getattr(request, "script_root", "") or ""
-        cookie_path = script_root if isinstance(script_root, str) and script_root else "/"
+        cookie_path = (
+            cookie_path_for_mount(script_root)
+            if isinstance(script_root, str) and script_root
+            else "/"
+        )
+        configured = getattr(self, "csrf_cookie_path", None)
+        if isinstance(configured, str) and configured:
+            cookie_path = configured
         ensure_csrf_cookie(
             response,
             value,

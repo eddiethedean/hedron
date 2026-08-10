@@ -790,9 +790,24 @@ def explorer_router() -> APIRouter:
         if getattr(policy, "csrf_enabled", True):
             from hedron_core.csrf import validate_double_submit
 
-            csrf_name = getattr(policy, "csrf_cookie_name", "hedron_csrf")
+            strategy = None
+            resolve = getattr(policy, "resolve_csrf_strategy", None)
+            if callable(resolve):
+                try:
+                    strategy = resolve()
+                except Exception:  # noqa: BLE001 — duck-typed policies
+                    strategy = None
+            csrf_name = (
+                getattr(strategy, "cookie_name", None)
+                or getattr(policy, "csrf_cookie_name", None)
+                or "hedron_csrf"
+            )
             cookie = request.cookies.get(csrf_name)
-            header_name = getattr(policy, "csrf_header_name", "X-CSRF-Token")
+            header_name = (
+                getattr(strategy, "header_name", None)
+                or getattr(policy, "csrf_header_name", None)
+                or "X-CSRF-Token"
+            )
             header = (
                 request.headers.get(header_name)
                 or request.headers.get("X-CSRF-Token")

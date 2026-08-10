@@ -521,6 +521,14 @@ STALE = [
     re.compile(r"charts and sample kit have no compatible published wheel", re.I),
     re.compile(r"until a compatible chart wheel is published", re.I),
     re.compile(r"use repo source only if you must", re.I),
+    re.compile(r"currently incompatible on PyPI", re.I),
+    re.compile(r"chart wheels are unavailable", re.I),
+    re.compile(r"do not install\*\*\)", re.I),
+    # Stale last-published claims after v0.25.1.
+    re.compile(r"last published[` *]*v0\.25\.0", re.I),
+    re.compile(r"Last published:\s*<strong>v0\.25\.0</strong>", re.I),
+    re.compile(r"current published(?: line)?[^\n]*v0\.25\.0", re.I),
+    re.compile(r"Published/Last published \*\*0\.25\.0\*\*", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.
@@ -663,7 +671,7 @@ def _check_unbounded_pins() -> list[str]:
             ):
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: charts/sample-kit install lacks the "
-                    f"0.25-compatible floor (charts >=0.1.6 / flagship >=0.25.1): "
+                    f"0.25-compatible floor (charts >=0.1.6 / flagship >=0.25.2): "
                     f"{line.strip()[:120]}"
                 )
     return failures
@@ -687,7 +695,7 @@ def main() -> int:
         print("\n".join(failures), file=sys.stderr)
         return 1
     print(
-        "ok: adopter docs assert Published 0.25 (v0.25.0), "
+        "ok: adopter docs assert Published 0.25 (last v0.25.1), "
         "upper-bound pins, enforce chart/sample-kit compatibility floors, and avoid "
         "Supported beta / SSOT / beachhead jargon"
     )

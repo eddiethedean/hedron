@@ -8,9 +8,9 @@
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12]
 #   scripts/ci_checks.sh browser [--python 3.12]
-#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.25.1]
+#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.25.2]
 #   scripts/ci_checks.sh packaging [--python 3.12]
-#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.25.1] [--with-browser]
+#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.25.2] [--with-browser]
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
@@ -21,7 +21,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.25.1}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.25.2}"
 WITH_BROWSER=0
 
 usage() {

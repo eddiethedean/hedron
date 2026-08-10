@@ -111,8 +111,8 @@ services, multiple contributors, or conventional production operations.
 ## Worked migration: sales dashboard
 
 This guide rewrites a small sales dashboard with filters, metrics, and a table. On Hedron
-**0.25**, published chart wheels are unavailable — use `Metric` + `DataTable` (or `Table`)
-from PyPI, then add charts from the workspace when you need them.
+**0.25.1+**, install `hedron[charts]>=0.25.1,<0.26` for Matplotlib charts; or keep
+`Metric` + `DataTable` when charts are optional.
 
 ## The Streamlit version
 
@@ -179,6 +179,7 @@ This enforces `hedron-charts>=0.1.6,<0.2`; see
 Create `app.py`:
 
 ```python title="app.py"
+import os
 from typing import Annotated, Literal
 
 from fastapi import Query
@@ -226,7 +227,8 @@ def load_sales() -> list[SalesRow]:
 app = Hedron(
     title="Sales dashboard",
     security="standard",
-    session_secret="dev-only-change-me",
+    explorer="off",
+    session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only-change-me"),
 )
 
 

@@ -50,7 +50,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 ## Honest gaps on the current train (0.25)
 
-- Current **published** PyPI train is **0.25.x** (`v0.25.0`)
+- Current **published** PyPI train is **0.25.x** (last `v0.25.1`)
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
   `hedron[experimental-ui]` (quarantined from `hedron[extras]`)

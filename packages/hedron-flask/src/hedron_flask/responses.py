@@ -106,12 +106,17 @@ def _authorize_component_htmx(
 
 
 def _maybe_prepare(value: NodeLike | Component[Any] | RenderResult) -> None:
-    """Best-effort prepare_tree before sync render (WSGI / no running loop)."""
+    """Best-effort prepare_tree before sync render (WSGI / no running loop).
+
+    When an event loop is already running, skip — callers must await prepare explicitly.
+    """
     if isinstance(value, RenderResult):
         return
-    from hedron_core.async_bridge import run_prepare
+    from hedron_core.async_bridge import run_prepare, running_loop
     from hedron_core.prepare import prepare_tree
 
+    if running_loop():
+        return
     run_prepare(lambda: prepare_tree(value))
 
 
@@ -229,11 +234,15 @@ def interaction_response(
     headers_map: Mapping[str, str] | None = None,
     authenticated: bool = False,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
 ) -> Response:
+    from hedron_core.interaction import apply_allow_undeclared_targets
+
     if headers_map is not None:
         hdrs: Mapping[str, str] = headers_map
     else:
         hdrs = dict(flask_request.headers)
+    result = apply_allow_undeclared_targets(result, allow_undeclared_targets)
     regions = _normalize_regions(fragment_regions)
     if regions:
         result = merge_route_regions(result, regions)
@@ -252,7 +261,7 @@ def interaction_response(
         )
         node = materialize_interaction_nodes(result)
         headers = merge_interaction_headers(result, extra_headers)
-    except (FragmentRegionError, ValueError) as exc:
+    except (FragmentRegionError, ValueError, TypeError) as exc:
         path = ""
         try:
             path = str(getattr(flask_request, "path", "") or "")

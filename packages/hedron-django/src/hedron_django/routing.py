@@ -65,6 +65,7 @@ def _convert(
             request=request,
             authenticated=authenticated,
             fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
         )
     if isinstance(value, RenderResult):
         return component_response(
@@ -97,11 +98,14 @@ async def _convert_async(
     """ASGI path: await prepare_tree before converting to HttpResponse."""
     from hedron_core.prepare import prepare_tree
 
-    if (
-        (isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"))
-        and not isinstance(value, RenderResult)
-        and not isinstance(value, InteractionResult)
-    ):
+    if isinstance(value, InteractionResult):
+        if value.content is not None:
+            await prepare_tree(value.content)
+        for update in value.oob:
+            await prepare_tree(update.content)
+    elif (
+        isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__")
+    ) and not isinstance(value, RenderResult):
         await prepare_tree(value)  # type: ignore[arg-type]
     return _convert(
         value,

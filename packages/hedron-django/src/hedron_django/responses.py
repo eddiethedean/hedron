@@ -118,12 +118,18 @@ def _authorize_component_htmx(
 
 
 def _maybe_prepare(value: NodeLike | Component[Any] | RenderResult) -> None:
-    """Best-effort prepare_tree before sync render (WSGI / no running loop)."""
+    """Best-effort prepare_tree before sync render (WSGI / no running loop).
+
+    When an event loop is already running (ASGI), skip here — the async path must
+    have awaited ``prepare_tree`` already (see ``_convert_async`` / ``respond_async``).
+    """
     if isinstance(value, RenderResult):
         return
-    from hedron_core.async_bridge import run_prepare
+    from hedron_core.async_bridge import run_prepare, running_loop
     from hedron_core.prepare import prepare_tree
 
+    if running_loop():
+        return
     run_prepare(lambda: prepare_tree(value))
 
 
@@ -241,8 +247,12 @@ def interaction_response(
     extra_headers: Mapping[str, str] | None = None,
     authenticated: bool = False,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
 ) -> HttpResponse:
+    from hedron_core.interaction import apply_allow_undeclared_targets
+
     hdrs = _headers_mapping(request)
+    result = apply_allow_undeclared_targets(result, allow_undeclared_targets)
     regions = _normalize_regions(fragment_regions)
     if regions:
         result = merge_route_regions(result, regions)
@@ -261,7 +271,7 @@ def interaction_response(
         )
         node = materialize_interaction_nodes(result)
         headers = merge_interaction_headers(result, extra_headers)
-    except (FragmentRegionError, ValueError) as exc:
+    except (FragmentRegionError, ValueError, TypeError) as exc:
         path = getattr(request, "path", "") if request is not None else ""
         emit_security_audit(
             SecurityAuditEventType.HTMX_TARGET_REJECTED,

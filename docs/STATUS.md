@@ -1,12 +1,12 @@
 # Specification and implementation status
 
 **Roadmap position:** phase 0.25 **Published** as `v0.25.0` (2026-08-09); last published
-PyPI/git = `v0.25.0`. Workspace release candidate (not tagged): Beta `0.25.1`, charts /
+PyPI/git = `v0.25.1`. Workspace release candidate (not tagged): Beta `0.25.2`, charts /
 sample-kit `0.1.6`, native `0.1.0`, notebook/mcp/gradio `0.1.0`.
-**Date:** 2026-08-09
+**Date:** 2026-08-10
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.25.1` candidate; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.6`,
+`0.25.2` candidate; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.6`,
 `hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0` (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —

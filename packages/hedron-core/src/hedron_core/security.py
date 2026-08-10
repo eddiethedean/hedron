@@ -211,7 +211,7 @@ def contains_dangerous_scheme(value: str) -> bool:
 
 
 def reject_asset_path_traversal(raw: str, *, purpose: UrlPurpose = UrlPurpose.ASSET) -> None:
-    """Reject literal or percent-encoded ``..`` segments in root-relative asset paths."""
+    """Reject literal or percent-encoded ``..`` segments in root-relative paths."""
     path_only = raw.split("?", 1)[0].split("#", 1)[0]
     cleaned = path_only if path_only.startswith("/") else f"/{path_only.lstrip('/')}"
     decoded = _normalize_for_scheme_scan(path_only)
@@ -225,8 +225,9 @@ def reject_asset_path_traversal(raw: str, *, purpose: UrlPurpose = UrlPurpose.AS
         or any(seg == ".." or ".." in seg for seg in segments)
         or any(seg == ".." or ".." in seg for seg in cleaned.split("/"))
     ):
+        label = "Asset path" if purpose is UrlPurpose.ASSET else "Relative URL path"
         raise _url_error(
-            f"Asset path must be normalized without '..' (got {raw!r}, normalized={normalized!r})",
+            f"{label} must be normalized without '..' (got {raw!r}, normalized={normalized!r})",
             purpose,
         )
 
@@ -384,6 +385,19 @@ class SafeUrl:
         if purpose is UrlPurpose.ASSET and scheme == "":
             # Same-origin relative assets: always reject encoded path traversal.
             # allow_external only gates absolute http(s), never traversal.
+            reject_asset_path_traversal(raw, purpose=purpose)
+        elif (
+            purpose
+            in {
+                UrlPurpose.NAVIGATION,
+                UrlPurpose.FORM_ACTION,
+                UrlPurpose.REDIRECT,
+            }
+            and scheme == ""
+            and (
+                raw.startswith("/") or raw.startswith("./") or raw.startswith("../") or ".." in raw
+            )
+        ):
             reject_asset_path_traversal(raw, purpose=purpose)
 
         obj = object.__new__(cls)

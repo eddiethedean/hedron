@@ -76,8 +76,21 @@ def hedron_route(
         @app.route(rule, endpoint=endpoint, methods=methods, **options)
         @wraps(view)
         def wrapped(*args: Any, **kwargs: Any) -> Any:
-            if csrf_protect and request.method.upper() in _UNSAFE_METHODS:
-                validate_csrf(request, cookie_name=csrf_cookie_name)
+            from hedron_core.security_policy import SecurityPolicy
+
+            extension = current_app.extensions.get("hedron")
+            policy = getattr(extension, "security_policy", None) if extension is not None else None
+            cookie = csrf_cookie_name
+            if extension is not None:
+                cookie = str(getattr(extension, "csrf_cookie_name", csrf_cookie_name))
+            protect = csrf_protect
+            if isinstance(policy, SecurityPolicy) and not policy.csrf_enabled:
+                protect = False
+            if protect and request.method.upper() in _UNSAFE_METHODS:
+                if isinstance(policy, SecurityPolicy):
+                    validate_csrf(request, cookie_name=cookie, policy=policy)
+                else:
+                    validate_csrf(request, cookie_name=cookie)
             value = current_app.ensure_sync(view)(*args, **kwargs)
             authenticated = False
             auth_fn = getattr(current_app, "auth_signal", None)
@@ -89,6 +102,7 @@ def hedron_route(
                     value,
                     authenticated=authenticated,
                     fragment_regions=fragment_regions,
+                    allow_undeclared_targets=allow_undeclared_targets,
                 )
             if isinstance(value, RenderResult):
                 return component_response(

@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.25.2] — 2026-08-10
+
+### Fixed
+
+- Propagate route `allow_undeclared_targets` into `render_interaction` / InteractionResult conversion.
+- `retarget()` prefers the CSS selector for HX-Target agreement when region id differs.
+- Seed CSRF cookies on safe-method HTTP 204 InteractionResult responses.
+- SessionState raises when writing without SessionMiddleware; await async connection dispose on lifespan shutdown.
+- Mount CSRF cookie Path no longer forces a trailing slash (`/app` matches `/app` and `/app/...`).
+
+### Changed
+
+- Coordinated Beta patch with workspace packages at `0.25.2`.
+
 ## [0.25.1] — 2026-08-09
 
 ### Fixed

@@ -48,7 +48,8 @@ class Hx:
             raise ValueError(f"Unsafe HTMX swap value: {self.swap!r}")
         attrs: dict[str, HtmlAttrValue] = {}
         if self.method and self.url:
-            attrs[f"hx-{self.method.lower()}"] = self.url
+            safe = SafeUrl.parse(self.url, purpose=UrlPurpose.FORM_ACTION)
+            attrs[f"hx-{self.method.lower()}"] = str(safe)
         if target:
             attrs["hx-target"] = target
         if self.swap:
@@ -60,7 +61,8 @@ class Hx:
         if self.push_url is True:
             attrs["hx-push-url"] = "true"
         elif isinstance(self.push_url, str) and self.push_url:
-            attrs["hx-push-url"] = self.push_url
+            safe_push = SafeUrl.parse(self.push_url, purpose=UrlPurpose.NAVIGATION)
+            attrs["hx-push-url"] = str(safe_push)
         if disabled_elt:
             attrs["hx-disabled-elt"] = disabled_elt
         if indicator:

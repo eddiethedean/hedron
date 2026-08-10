@@ -522,19 +522,10 @@ class RedisJobBackend:
         key = self._key(str(data["job_id"]))
         pipeline_factory = getattr(self._client, "pipeline", None)
         if not callable(pipeline_factory):
-            # Best-effort merge for stubs without WATCH: re-read cancel flag.
-            latest = self._load(str(data["job_id"]))
-            merged = dict(data)
-            if latest is not None and latest.get("cancel_requested"):
-                merged["cancel_requested"] = True
-            if merged.get("cancel_requested") and merged.get("state") in {
-                JobState.RUNNING.value,
-                JobState.SUCCEEDED.value,
-                JobState.FAILED.value,
-            }:
-                merged["state"] = JobState.CANCELLED.value
-            self._store(merged)
-            return True
+            raise RuntimeError(
+                "RedisJobBackend requires a client with pipeline()/WATCH for CAS; "
+                "blind overwrite is not allowed for production job state."
+            )
         pipe = cast(RedisPipeline, pipeline_factory())
         watch_error: type[BaseException] | None = None
         try:
@@ -543,6 +534,11 @@ class RedisJobBackend:
             watch_error = _WatchError
         except Exception:
             watch_error = None
+        if watch_error is None:
+            raise RuntimeError(
+                "RedisJobBackend requires redis.exceptions.WatchError for CAS; "
+                "install redis-py or use a client with WATCH support."
+            )
         for _ in range(8):
             try:
                 pipe.watch(key)
@@ -572,24 +568,9 @@ class RedisJobBackend:
                 pipe.execute()
                 return True
             except Exception as exc:
-                if watch_error is not None and isinstance(exc, watch_error):
+                if isinstance(exc, watch_error):
                     continue
-                # Real Redis WATCH path: do not blind-overwrite on unexpected errors.
-                if watch_error is not None:
-                    raise
-                # Client without proper WATCH support — fall back once.
-                latest = self._load(str(data["job_id"]))
-                merged = dict(data)
-                if latest is not None and latest.get("cancel_requested"):
-                    merged["cancel_requested"] = True
-                if merged.get("cancel_requested") and merged.get("state") in {
-                    JobState.RUNNING.value,
-                    JobState.SUCCEEDED.value,
-                    JobState.FAILED.value,
-                }:
-                    merged["state"] = JobState.CANCELLED.value
-                self._store(merged)
-                return True
+                raise
         return False
 
     def submit(

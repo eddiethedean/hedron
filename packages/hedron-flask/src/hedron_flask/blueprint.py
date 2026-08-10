@@ -53,6 +53,7 @@ def convert_view_result(
             value,
             authenticated=authenticated,
             fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
         )
     if isinstance(value, RenderResult):
         return component_response(
@@ -279,8 +280,29 @@ def attach_hedron_to_flask(
     if not isinstance(policy, SecurityPolicy):
         policy = SecurityPolicy.from_name(policy)
     assert_flask_csrf_strategy(policy)
+    # Keep extension cookie name and policy/strategy cookie name identical.
+    strategy = policy.resolve_csrf_strategy() if policy.csrf_enabled else None
+    strategy_name = getattr(strategy, "cookie_name", None) if strategy is not None else None
+    ext_name = getattr(extension, "csrf_cookie_name", DEFAULT_CSRF_COOKIE)
+    if (
+        isinstance(ext_name, str)
+        and ext_name != DEFAULT_CSRF_COOKIE
+        and policy.csrf is None
+        and policy.csrf_cookie_name == DEFAULT_CSRF_COOKIE
+    ):
+        from dataclasses import replace
+
+        policy = replace(policy, csrf_cookie_name=ext_name)
+    elif isinstance(strategy_name, str) and strategy_name:
+        with contextlib.suppress(Exception):
+            extension.csrf_cookie_name = strategy_name  # type: ignore[attr-defined]
     with contextlib.suppress(Exception):
         extension.security_policy = policy  # type: ignore[attr-defined]
+        if isinstance(getattr(extension, "csrf_cookie_name", None), str):
+            synced = policy.resolve_csrf_strategy()
+            synced_name = getattr(synced, "cookie_name", None) if synced is not None else None
+            if isinstance(synced_name, str) and synced_name:
+                extension.csrf_cookie_name = synced_name  # type: ignore[attr-defined]
 
     app.extensions["hedron"] = extension
     app.auth_signal = extension.auth_signal  # type: ignore[attr-defined]
@@ -309,6 +331,7 @@ def attach_hedron_to_flask(
         if seed_cookie and policy.csrf_enabled:
             strategy = policy.resolve_csrf_strategy()
             if strategy is not None and bool(getattr(strategy, "sets_cookie", True)):
+                from hedron_core.mount import cookie_path_for_mount
                 from hedron_flask.csrf import (
                     csrf_cookie_force_secure,
                     csrf_cookie_should_be_secure,
@@ -316,9 +339,15 @@ def attach_hedron_to_flask(
                     ensure_csrf_cookie,
                 )
 
-                cookie_name = getattr(extension, "csrf_cookie_name", DEFAULT_CSRF_COOKIE)
+                cookie_name = getattr(strategy, "cookie_name", None) or getattr(
+                    extension, "csrf_cookie_name", DEFAULT_CSRF_COOKIE
+                )
                 script_root = getattr(request, "script_root", "") or ""
-                cookie_path = script_root if isinstance(script_root, str) and script_root else "/"
+                cookie_path = (
+                    cookie_path_for_mount(script_root)
+                    if isinstance(script_root, str) and script_root
+                    else "/"
+                )
                 configured = getattr(extension, "csrf_cookie_path", None)
                 if isinstance(configured, str) and configured:
                     cookie_path = configured

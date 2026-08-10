@@ -1,6 +1,6 @@
 # What’s new in Hedron 0.25
 
-**Published** as `v0.25.0`. Pin `hedron>=0.25.0,<0.26`.
+**Published** as `v0.25.0` (last published patch `v0.25.1`; workspace candidate `0.25.2`). Pin `hedron>=0.25.0,<0.26`.
 
 Phase **0.25** makes the production posture explicit: a runnable multi-worker archetype,
 critical-path load budgets in CI, and an opt-in boundary so specialty experimental UI widgets are

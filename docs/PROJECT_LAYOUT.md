@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.25.1** patch candidate on `main`
+**Status:** Accepted; kept current with the **0.25.2** patch candidate on `main`
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -93,8 +93,8 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated workspace is **`0.25.1`** (release candidate; not tagged);
-the last published PyPI/git train remains **`v0.25.0`** — see [STATUS](STATUS.md).
+**Publish note:** the coordinated workspace is **`0.25.2`** (release candidate; not tagged);
+the last published PyPI/git train remains **`v0.25.1`** — see [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.
 

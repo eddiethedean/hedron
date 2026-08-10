@@ -29,7 +29,7 @@ Requires Python 3.11–3.14.
 | `dev` | [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) (Component Explorer) |
 | `extras` | [`hedron-extras`](https://pypi.org/project/hedron-extras/) (workbenches) |
 | `conformance` | [`hedron-conformance`](https://pypi.org/project/hedron-conformance/) |
-| `charts` | `hedron-charts` (**currently incompatible on PyPI with Hedron 0.25; do not install**) |
+| `charts` | `hedron-charts` (Alpha; install `hedron[charts]>=0.25.1,<0.26` for the `0.1.6` satellite floor) |
 | `native` | [`hedron-native`](https://pypi.org/project/hedron-native/) (**Alpha**) |
 | `notebook` / `mcp` / `gradio` | Experimental Alpha packages |
 | `markdown` / `code` / `images` / `email` / `sanitize` | Content helpers |

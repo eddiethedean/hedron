@@ -19,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.25.toml"
 # Prepared patch candidate. This does not imply that the tag or packages are published.
-RELEASE_CANDIDATE = "0.25.1"
+RELEASE_CANDIDATE = "0.25.2"
 
 
 def main(argv: list[str] | None = None) -> int:
