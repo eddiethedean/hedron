@@ -11,7 +11,8 @@ and polling for job status.
 
 Pin versions. Packages are Beta (no 1.0, no SLA). Prefer polling over SSE/WebSocket.
 
-**Not ready from PyPI on 0.25:** charts and sample-kit (use repo source only if you must).
+**Charts / sample kit:** install with floors
+`hedron[charts]>=0.25.1,<0.26` and `hedron-sample-kit>=0.1.6,<0.2`.
 **Experimental:** notebook, MCP, Gradio, live SSE/WS.
 
 Need procurement detail (API stability tiers, a11y sessions, evidence)? See

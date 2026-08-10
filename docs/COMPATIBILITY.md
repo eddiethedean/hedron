@@ -91,9 +91,9 @@ See [Installation](getting-started/installation.md) and
 | Pydantic | Supported `>=2.13.4,<2.14`; declared `>=2.13.4,<2.15` | Required by `hedron-core`; Hedron shields public contracts from Pydantic internals. |
 | Starlette | FastAPI-managed compatible version | No independent direct pin unless implementation use requires one; test the resolved FastAPI set. |
 | HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js`. |
-| Matplotlib | `>=3.8,<4` in the in-repo `hedron-charts` workspace package | Source-only on 0.25 until a compatible chart wheel is published. |
-| Plotly | `>=5.18,<7` in the in-repo `hedron-charts` workspace package | Source-only; local host asset, no CDN callbacks. |
-| Altair | `>=6.0,<7` in the in-repo `hedron-charts` workspace package | Source-only; Python 3.14 requires Altair 6+ (TypedDict fix). |
+| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=0.25.1,<0.26`; Matplotlib/static charts are the conservative default. |
+| Plotly | `>=5.18,<7` via `hedron-charts[plotly]` | Experimental; local host asset, no CDN callbacks. |
+| Altair | `>=6.0,<7` via `hedron-charts[altair]` | Experimental; Python 3.14 requires Altair 6+ (TypedDict fix). |
 | nh3 | `>=0.2` via `hedron[sanitize]` / `[markdown]` | TrustedHtml.nh3 named constructor. |
 | Pygments | `>=2.17` via `hedron[code]` | Optional syntax highlighting for CodeViewer. |
 | Pillow | `>=10.0` via `hedron[images]` | Optional image processing. |

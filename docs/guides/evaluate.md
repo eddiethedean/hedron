@@ -64,7 +64,9 @@ human AT evidence as Supported; team will not own FastAPI+HTMX literacy.
 - **Ship:** typed pages/fragments, CSRF profiles, HTMX loops, Flask/Django adapters,
   optional `hedron[data]` / `hedron[jinja]` / `hedron[dev]`, polling job status
 - **Prefer polling:** live SSE / WebSocket (`hedron.experimental`)
-- **Source-only on 0.25:** charts and sample kit have no compatible published wheel
+- **Charts / sample kit:** pin floors
+  `hedron[charts]>=0.25.1,<0.26` and `hedron-sample-kit>=0.1.6,<0.2`
+  ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor))
 - **Pin and expect churn:** notebook / MCP / Gradio (Alpha / Experimental)
 - **Model demos:** **Supported** capability (fail-closed) via [Model demos](model-demos.md)
   guide snippets — the in-tree evidence app is a stub, not a product demo

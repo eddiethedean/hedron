@@ -515,6 +515,12 @@ STALE = [
     re.compile(r'hedron_version=">=0\.24,<0\.25"', re.I),
     re.compile(r"check_release_gate\.py 0\.24\.0[^\n]*release-gate-0\.25", re.I),
     re.compile(r"Ops-oriented narrative for \*\*Hedron 0\.24\.0\*\*", re.I),
+    # Stale 0.25.0 packaging caveats after the 0.25.1 charts/sample-kit floor.
+    re.compile(r"Source-only on 0\.25", re.I),
+    re.compile(r"Not ready from PyPI on 0\.25", re.I),
+    re.compile(r"charts and sample kit have no compatible published wheel", re.I),
+    re.compile(r"until a compatible chart wheel is published", re.I),
+    re.compile(r"use repo source only if you must", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.

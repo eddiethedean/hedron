@@ -206,7 +206,7 @@ nav:
       - Multi-tenant isolation: guides/multi-tenant.md
     - Data and visuals:
       - Data applications: guides/data-apps.md
-      - Charts and HTMX (source-only on 0.25): guides/charts-and-htmx.md
+      - Charts and HTMX: guides/charts-and-htmx.md
       - Compose built-ins: guides/component-composition.md
       - HDJ authoring: guides/hdj-authoring.md
     - Security:
@@ -251,12 +251,12 @@ nav:
     - hedron-explorer: packages/hedron-explorer.md
     - hedron-extras: packages/hedron-extras.md
     - hedron-conformance: packages/hedron-conformance.md
-    - hedron-charts (source-only on 0.25): packages/hedron-charts.md
+    - hedron-charts (Alpha): packages/hedron-charts.md
     - hedron-native (Alpha): packages/hedron-native.md
     - hedron-notebook (Alpha): packages/hedron-notebook.md
     - hedron-mcp (Alpha): packages/hedron-mcp.md
     - hedron-gradio (Alpha): packages/hedron-gradio.md
-    - hedron-sample-kit (source-only on 0.25): packages/hedron-sample-kit.md
+    - hedron-sample-kit (Alpha): packages/hedron-sample-kit.md
     - hedron-sim (Alpha): packages/hedron-sim.md
   - Reference:
     - API overview: api/README.md
@@ -416,7 +416,7 @@ nav:
       - Theme:
         - Overview: components/theme.md
         - ColorModeToggle: components/color-mode-toggle.md
-      - Charts (source-only on 0.25):
+      - Charts:
         - Overview: components/charts.md
         - LineChart: components/line-chart.md
         - AreaChart: components/area-chart.md
@@ -460,7 +460,7 @@ nav:
       - Data and charts:
         - Data: api/DATA.md
         - Data sources (outline): api/DATA_SOURCE.md
-        - Charts (source-only on 0.25): api/CHART.md
+        - Charts: api/CHART.md
       - Live:
         - Jobs (polling): api/JOBS.md
         - SSE (experimental): api/SSE.md
