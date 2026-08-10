@@ -55,7 +55,7 @@ phases apply the same discipline to the remaining package fleet:
 | Phase | Package group |
 |---|---|
 | 0.26 | `hedron-core`, `hedron`, and Explorer — **Published / Verified** |
-| 0.27 | Data, Flask/Django adapters, HDJ, and curated extras |
+| 0.27 | Data, Flask/Django adapters, HDJ, and curated extras — **Planned** (D-055 / RFC-0058; packet opened) |
 | 0.28 | Charts and optional native acceleration |
 | 0.29 | Conformance, sample plugin, simulation/notebook tooling, and Node/Java evaluators |
 | 0.30 | Deny-by-default MCP projection |

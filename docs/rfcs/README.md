@@ -73,3 +73,6 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0053](RFC-0053-PROGRESSIVE-ENHANCEMENT.md) | Progressive enhancement, landmarks, Page scripts | Accepted |
 | [0054](RFC-0054-ATAG-AUTHORING.md) | ATAG-oriented authoring assistance | Accepted |
 | [0055](RFC-0055-A11Y-GOVERNANCE.md) | A11y evidence governance and AT matrix | Accepted |
+| [0056](RFC-0056-PRODUCTION-QUALITY.md) | Production-quality maturity program | Accepted |
+| [0057](RFC-0057-PRODUCTION-GRADE-CORE.md) | Production-grade core, FastAPI flagship, and Explorer | Accepted |
+| [0058](RFC-0058-PRODUCTION-GRADE-SATELLITES.md) | Production-grade adapters, data, HDJ, and curated extras | Accepted |

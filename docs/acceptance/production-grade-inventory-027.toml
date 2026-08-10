@@ -1,0 +1,114 @@
+# Phase 0.27 production-grade inventory (machine-checked at PKG-027 cut).
+# Supported = production-grade label at 0.27 exit for these five packages only.
+# Experimental = may ship but excluded from production-grade claims.
+# Excluded = must not be required for a production-grade Supported workflow.
+# Owning decision: D-055. RFC: RFC-0058.
+
+baseline = "v0.26.0"
+packages = [
+  "hedron-data",
+  "hedron-flask",
+  "hedron-django",
+  "hedron-jinja",
+  "hedron-extras",
+]
+
+[hedron-data]
+supported = [
+  "datatable_crud",
+  "dataeditor_crud",
+  "source_in_memory",
+  "source_pandas",
+  "source_sqlalchemy",
+  "source_django_queryset_bounded",
+  "saved_views",
+  "spreadsheet_documented_paths",
+]
+experimental = []
+excluded = [
+  "arbitrary_queryset_as_safe",
+  "arbitrary_sql_as_safe",
+  "unbounded_exports",
+  "silent_dataframe_extras",
+]
+
+[hedron-flask]
+supported = [
+  "flask_pages",
+  "flask_fragments",
+  "flask_actions",
+  "host_owned_sessions_csrf_auth",
+  "polling_jobs",
+  "scaffolds",
+  "deployment_integration",
+]
+experimental = [
+  "experimental_live_helpers",
+]
+excluded = [
+  "fastapi_only_sse",
+  "fastapi_only_websocket",
+  "experimental_live_parity_required",
+]
+
+[hedron-django]
+supported = [
+  "django_views",
+  "django_middleware",
+  "django_forms",
+  "source_queryset_bounded",
+  "polling_jobs",
+  "system_checks",
+  "deployment_integration",
+]
+experimental = [
+  "experimental_live_helpers",
+]
+excluded = [
+  "unbounded_querysets_as_safe",
+  "experimental_live_parity_required",
+]
+
+[hedron-jinja]
+supported = [
+  "hdj_v1",
+  "strict_sink_analysis",
+  "manifests_assets",
+  "component_bindings",
+  "async_preparation",
+  "host_integration",
+]
+experimental = []
+excluded = [
+  "unversioned_jinja_internals_as_public_api",
+  "every_jinja_extension_by_default",
+]
+
+[hedron-extras]
+supported = [
+  "curated_extras_registry",
+]
+experimental = [
+  "experimental_ui",
+  "codeeditor_host_stub",
+]
+excluded = [
+  "terminal_view_in_default_extras",
+  "joystick_in_default_extras",
+  "device_bridges_in_default_extras",
+  "codeeditor_graduated_runtime",
+]
+
+[install_guards]
+# Default installs must not silently enable experimental surfaces.
+extras_default_enables_experimental_ui = false
+adapters_import_without_fastapi = true
+data_default_enables_silent_dataframe_extras = false
+jinja_default_enables_every_extension = false
+
+[docs_anchors]
+stability = "docs/api/STABILITY.md"
+extras_quarantine = "docs/acceptance/extras-quarantine-025.toml"
+live_disposition = "docs/api/LIVE_DISPOSITION.md"
+data_api = "docs/api/DATA.md"
+jinja_api = "docs/api/JINJA.md"

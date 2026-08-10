@@ -15,15 +15,20 @@ PyPI/git = `v0.26.0`. Prior: 0.25 **Published** as `v0.25.0` (last patch `v0.25.
 **Phase focus:** Living published train is **0.26** (D-054 / RFC-0057) — production-grade
 graduation for `hedron-core` / `hedron` / `hedron-explorer` on the declared Supported
 CRUD/admin inventory (`release-gate-0.26.toml` Verified). **Next** = **0.27 Planned**
-(data / Flask / Django / jinja / extras). Live-transport disposition remains
-**`polling_only`** from 0.24 — polling is the Supported production story; live
-SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
+(D-055 / RFC-0058) — packet opened for `hedron-data` / `hedron-flask` / `hedron-django` /
+`hedron-jinja` / `hedron-extras` (`release-gate-0.27.toml` Planned;
+`production-grade-inventory-027.toml` frozen; `verify_pkg_27.py --allow-planned`). Do **not**
+market satellite production-grade labels until every 0.27-owned row is Verified. Live-transport
+disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
+live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
 remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` /
 `REMEDIATE-021` remain Planned** until real sessions — **do not market human AT as
 Supported**. Automated AT (`AT-019`, phase 0.19) remains Supported and is not a substitute
 for human AT. Prior production-quality packet **0.25** (D-053 / RFC-0056) remains
 **Verified** — see [production-quality](guides/production-quality.md) ·
-[PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md).
+[PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). `REV-026-003` (Explorer process-local
+audit buffer) remains an Explorer-owned accepted risk noted against the 0.27 window; it does
+not expand satellite graduation scope.
 
 ## Supported vs Deferred (operator view)
 
@@ -163,8 +168,11 @@ Program summary: [production-quality guide](guides/production-quality.md).
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
 **Planned** until compensated screen-reader evidence lands. Phase **0.26** is **Published**
-(`v0.26.0`; D-054). Remaining package-production work is planned for **0.27–0.32**: supported
-Python satellites; charts/native; developer and portable conformance tooling; MCP; Gradio; then
-a whole-fleet closure audit. These phases require owning RFCs/decisions and Verified evidence
-before any package maturity label changes. They do not schedule `1.0`, promote every experimental
-subfeature, or expand Supported live transports.
+(`v0.26.0`; D-054). Phase **0.27** is **Planned** with owning RFC-0058 / D-055 and Planned
+acceptance scaffolding (`RELEASE_0_27.md`, `release-gate-0.27.toml`,
+`production-grade-inventory-027.toml`, `verify_pkg_27.py`); gate evidence remains open.
+Remaining package-production work after 0.27 is planned for **0.28–0.32**: charts/native;
+developer and portable conformance tooling; MCP; Gradio; then a whole-fleet closure audit.
+These phases require owning RFCs/decisions and Verified evidence before any package maturity
+label changes. They do not schedule `1.0`, promote every experimental subfeature, or expand
+Supported live transports.

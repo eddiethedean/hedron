@@ -1875,12 +1875,15 @@ Post-`0.25.2` quality follow-ups that must not inflate Supported claims:
 
 ## 0.27 — Production-grade adapters, data, authoring, and curated UI (`v0.27.0`)
 
-**Status:** Planned. Depends on the 0.26 production-grade core contract and upgrade fixtures.
+**Status:** Planned. Second package-graduation phase under the production-grade contract above.
+**Baseline train:** Published **`v0.26.0`**. Owning RFC:
+[RFC-0058](rfcs/RFC-0058-PRODUCTION-GRADE-SATELLITES.md); decision: **D-055**.
 
 **Outcome:** The supported Python satellite train—`hedron-data`, `hedron-flask`, `hedron-django`,
 `hedron-jinja`, and `hedron-extras`—is production-grade for explicitly bounded workflows. Each
 package installs and upgrades independently, and optional integrations cannot weaken host security
-or core rendering guarantees.
+or core rendering guarantees. Beta package maturity today is **not** the production-grade label;
+0.27 is the graduation that earns that label for the declared inventory only.
 
 ### Package dispositions
 
@@ -1892,23 +1895,68 @@ or core rendering guarantees.
 | `hedron-jinja` | Trusted `.hdj` v1 authoring, strict sink analysis, manifests/assets, component bindings, async preparation, and host integration |
 | `hedron-extras` | Curated default extra only; `experimental-ui` remains separately named and outside the production-grade Supported inventory |
 
-### Scope
+### Entry criteria
 
-- Publish cross-adapter conformance for PAGE/FRAGMENT selection, target/OOB authorization, security
-  headers, CSRF composition, URL reversal under mounts, status responses, and error semantics.
-- Run real database and worker matrices for bounded data sources, tenant-first QuerySet filtering,
-  pagination/sort/filter allowlists, optimistic concurrency, transaction ownership, cancellation,
-  exports, and maximum payloads.
-- Browser-test DataTable/DataEditor and curated extras across the supported engines for keyboard,
-  zoom, forced colors, reduced motion, CSP, disconnect/reconnect, repeated mount/unmount, and memory
-  cleanup.
-- Version the HDJ format and feature profiles independently of Jinja internals; add golden upgrade
-  fixtures, strict dynamic-sink tests, manifest reproducibility, and deployment-CSP reconciliation.
-- Require each adapter and satellite to build, install, import, and exercise its reference example
-  without FastAPI or unrelated optional integrations installed.
-- Give quarantined specialty UI a machine-checked disposition: remain explicitly Experimental under
-  `hedron[experimental-ui]`, graduate with its own evidence, or be removed; it cannot leak into the
-  default `hedron[extras]` registry.
+- Tip/SSOT honesty for Published **`0.26.0`** is done (STATUS / RELEASE / adopter tip hubs).
+- Owning RFC and architectural decision are **Accepted** for applying the production-grade contract
+  to these five packages (RFC-0058 / D-055).
+- A machine-readable inventory draft exists (Supported vs Experimental vs excluded), aligned with
+  public docs and package metadata, without promoting experimental live APIs or specialty UI.
+- An upgrade-fixture plan from **`v0.26.0`** data/adapter/HDJ/extras public contracts is sketched.
+
+### Sequenced scope
+
+```mermaid
+flowchart LR
+  tip[Tip honesty 0.26.0] --> rfc[RFC and decision]
+  rfc --> inventory[Inventory freeze]
+  inventory --> upgrade[Upgrade fixtures]
+  upgrade --> hosts[Host-only installs]
+  hosts --> parity[PARITY portable]
+  parity --> packages[Per-package evidence]
+  packages --> packet[REGRESS PKG evidence]
+  packet --> cut[v0.27.0]
+```
+
+1. **Inventory freeze** — Supported / Experimental / excluded for the five packages; docs and
+   package metadata agree; no silent experimental-ui or live-transport enablement on default
+   install ([production-grade-inventory-027.toml](acceptance/production-grade-inventory-027.toml)).
+2. **Upgrade fixtures** — golden tests from **`v0.26.0`** data/adapter/HDJ/extras public contracts
+   under `tests/upgrade/` ([upgrade-fixtures-027.md](acceptance/upgrade-fixtures-027.md)).
+3. **Host-only install matrices** — each adapter and satellite builds, installs, imports, and
+   exercises its reference example without FastAPI or unrelated optional integrations installed.
+4. **Portable parity (`PARITY-027`)** — PAGE/FRAGMENT selection, target/OOB authorization, security
+   headers, CSRF composition, URL reversal under mounts, status responses, and error semantics
+   produce equivalent Supported outcomes across FastAPI, Flask, and Django (extend
+   `tests/conformance/`).
+5. **Per-package operational / browser / a11y / CSP / budget evidence** —
+   - `DATA-027`: bounded query/write/export matrices, multi-worker concurrency, cleanup, payload
+     budgets, and DataTable/DataEditor browser coverage.
+   - `FLASK-027` / `DJANGO-027`: native security, lifecycle, proxy, polling, scaffold, and
+     deployment matrices on clean host-only installs.
+   - `HDJ-027`: versioned `.hdj` v1 compatibility, strict sink corpus, assets/CSP, async
+     preparation, diagnostics, and manifest reproducibility.
+   - `EXTRAS-027`: curated components meet browser/a11y/CSP/cleanup budgets; experimental-ui
+     discovery remains fail-closed and separately labeled (reuse
+     [extras-quarantine-025.toml](acceptance/extras-quarantine-025.toml)).
+6. **Release packet (`REGRESS-027` / `PKG-027`)** — full suite, independent wheel/source installs,
+   package SBOMs, reference examples, inventory agreement, and `verify_pkg_27`.
+
+Acceptance packet shape (Planned stubs; do not invent full gate implementation here):
+
+- [docs/acceptance/RELEASE_0_27.md](acceptance/RELEASE_0_27.md) (Planned)
+- [docs/acceptance/release-gate-0.27.toml](acceptance/release-gate-0.27.toml) (Planned)
+- [docs/acceptance/production-grade-inventory-027.toml](acceptance/production-grade-inventory-027.toml)
+- [docs/acceptance/upgrade-fixtures-027.md](acceptance/upgrade-fixtures-027.md) (Planned)
+- `scripts/verify_pkg_27.py` (Planned; `--allow-planned` until cut)
+
+### Prep backlog (not exit gates)
+
+Post-`0.26.0` quality follow-ups that must not inflate Supported claims:
+
+- `REV-026-003` (Explorer process-local audit buffer) remains an Explorer-owned accepted risk with
+  deadline noted on 0.27; do **not** expand satellite scope to make Explorer audit durable.
+- Incremental typing/lint reductions only where they unblock inventory or reviewability.
 
 ### Locked exit evidence
 
@@ -1919,7 +1967,7 @@ or core rendering guarantees.
 | `HDJ-027` | Versioned format compatibility, strict sink corpus, assets/CSP, async preparation, diagnostics, and upgrade fixtures pass |
 | `EXTRAS-027` | Curated components meet browser/a11y/CSP/cleanup budgets and experimental-ui discovery remains fail-closed and separately labeled |
 | `PARITY-027` | Portable interaction/security conformance produces equivalent outcomes across FastAPI, Flask, and Django for Supported capabilities |
-| `REGRESS-027` / `PKG-027` | Independent wheel/source installs, package SBOMs, reference examples, and release verifier pass |
+| `REGRESS-027` / `PKG-027` | Independent wheel/source installs, package SBOMs, reference examples, inventory/docs agreement, and release verifier pass |
 
 ### Non-goals
 
@@ -1929,11 +1977,18 @@ or core rendering guarantees.
 - Graduating `CodeEditor`, `TerminalView`, joystick, or device bridges merely because the containing
   distribution graduates.
 - Bundling every optional dataframe, database, spreadsheet, or Jinja extension by default.
+- Promoting SSE, WebSocket, focused streaming, or preload from the 0.24 `polling_only` disposition.
+- Graduating charts, native acceleration, MCP, Gradio, or conformance tooling (later phases).
+- Making Explorer audit durable (`REV-026-003`).
+- Scheduling `1.0`, promising an SLA, or making a compliance/certification claim.
 
 ### Exit gate
 
+- Every 0.27-owned gate row is Verified with immutable or CI-linked evidence.
 - All five packages satisfy the production-grade contract for their declared Supported inventories.
 - No adapter or satellite has an unowned Deferred production-grade row.
+- Package metadata and adopter docs use the production-grade label only for the declared Supported
+  inventory; all exclusions remain conspicuous.
 
 ## 0.28 — Production-grade visualization and native acceleration (`v0.28.0`)
 
@@ -2380,7 +2435,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Live-transport production disposition (`polling_only` Accepted) | 0.24 | **Published** `v0.24.0`; supersedes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056) — [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md). |
 | Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | **Published** `v0.25.0`; D-053 / RFC-0056; SBOM/evidence attach on train tags — [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). |
 | Production-grade `hedron-core`, `hedron`, and secured/development Explorer | 0.26 | **Published** `v0.26.0`; D-054 / RFC-0057; Verified `CONTRACT-026`…`PKG-026` — [RELEASE_0_26](acceptance/RELEASE_0_26.md). |
-| Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | Independent clean installs, adapter parity, bounded data/browser evidence, HDJ format compatibility, and experimental-ui quarantine. |
+| Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | Planned; D-055 / RFC-0058; gates `DATA-027`…`PKG-027` — [RELEASE_0_27](acceptance/RELEASE_0_27.md). |
 | Production-grade charts and optional native acceleration | 0.28 | Static/a11y chart baseline, explicit backend dispositions, native fuzz/platform/fallback proof; acceleration never required. |
 | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.29 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes. |
 | Production-grade deny-by-default MCP projection | 0.30 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review. |
@@ -2448,6 +2503,9 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0053 Progressive enhancement / landmarks / Page scripts | 0.19 |
 | 0054 ATAG authoring assistance | 0.19 |
 | 0055 A11y evidence governance / AT matrix / statement | 0.19 |
+| 0056 Production-quality maturity program | 0.23–0.25 (D-053) |
+| 0057 Production-grade core / FastAPI / Explorer | 0.26 |
+| 0058 Production-grade adapters / data / HDJ / curated extras | 0.27 |
 
 ## Open GitHub issue ownership (0.13+)
 

@@ -36,6 +36,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_24.py` | Phase **0.24** historical packet + live disposition (`check_release_gate.py 0.24.0`) |
 | `verify_pkg_25.py` | Phase **0.25** historical packet + archetype / landmines (`check_release_gate.py 0.25.0`) |
 | `verify_pkg_26.py` | Phase **0.26** living-train packet + production-grade graduation (`check_release_gate.py 0.26.0`) |
+| `verify_pkg_27.py` | Phase **0.27** satellite graduation packet (`--allow-planned` while open; omit at `v0.27.0` cut) |
 | `check_contract_026.py` | `CONTRACT-026` production-grade inventory |
 | `check_core_026.py` | `CORE-026` upgrade fixtures |
 | `check_fastapi_026.py` | `FASTAPI-026` ops smoke |
@@ -51,7 +52,7 @@ Documentation source ownership and review rules:
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
 | `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
-| `verify_pkg_26.py` / `verify_pkg_25.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_26.py`**) |
+| `verify_pkg_26.py` / `verify_pkg_25.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_26.py`**; next packet: **`verify_pkg_27.py --allow-planned`**) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |
