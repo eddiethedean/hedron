@@ -1,12 +1,11 @@
 # Specification and implementation status
 
 **Roadmap position:** phase 0.25 **Published** as `v0.25.0` (2026-08-09); last published
-PyPI/git = `v0.25.1`. Workspace release candidate (not tagged): Beta `0.25.2`, charts /
-sample-kit `0.1.6`, native `0.1.0`, notebook/mcp/gradio `0.1.0`.
+PyPI/git = `v0.25.2`.
 **Date:** 2026-08-10
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.25.2` candidate; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.6`,
+`0.25.2`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.6`,
 `hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0` (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
@@ -14,14 +13,15 @@ sample-kit `0.1.6`, native `0.1.0`, notebook/mcp/gradio `0.1.0`.
 `hedron-gradio`.
 
 **Phase focus:** Living published train is **0.25** (D-053 production archetype + landmine
-quarantine). Live-transport disposition remains **`polling_only`** from 0.24 — polling is the
-Supported production story; live SSE/WS/streaming/preload remain **experimental**
-(`hedron.experimental`). Human AT protocol remains **Verified** (`PROTOCOL-021`);
-**`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021` remain Planned** until real
-sessions — **do not market human AT as Supported**. Automated AT (`AT-019`, phase 0.19)
-remains Supported and is not a substitute for human AT. Production-quality maturity program
-(**D-053** / RFC-0056) packet **0.25** is **Verified** — see
-[production-quality](guides/production-quality.md) ·
+quarantine). **Next** = **0.26 Planned** (production-grade graduation for `hedron-core` /
+`hedron` / `hedron-explorer`). Live-transport disposition remains **`polling_only`** from
+0.24 — polling is the Supported production story; live SSE/WS/streaming/preload remain
+**experimental** (`hedron.experimental`). Human AT protocol remains **Verified**
+(`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021` remain
+Planned** until real sessions — **do not market human AT as Supported**. Automated AT
+(`AT-019`, phase 0.19) remains Supported and is not a substitute for human AT.
+Production-quality maturity program (**D-053** / RFC-0056) packet **0.25** is **Verified** —
+see [production-quality](guides/production-quality.md) ·
 [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md).
 
 ## Supported vs Deferred (operator view)

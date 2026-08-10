@@ -9,13 +9,10 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 
 ## Current published train
 
-**Last published train:** `v0.25.1` (packages `0.25.1` including first-party
+**Last published train:** `v0.25.2` (packages `0.25.2` including first-party
 `hedron-extras`; Alpha charts/sample-kit `0.1.6`, native/notebook/mcp/gradio `0.1.x`).
 
-**Prepared candidate (not tagged):** Beta packages `0.25.2`; charts and sample kit
-`0.1.6`. Do not describe these versions as published until the tag workflow succeeds.
-
-**Prior published:** `v0.24.0`, `v0.23.0`, `v0.22.0`, `v0.21.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
+**Prior published:** `v0.25.1`, `v0.25.0`, `v0.24.0`, `v0.23.0`, `v0.22.0`, `v0.21.0`, `v0.20.0`, `v0.19.0`, `v0.18.0`, `v0.17.0`, `v0.16.0`, and earlier trains.
 
 **Current train:** `0.25.x` — **Published** as `v0.25.0` (production archetype / landmines /
 D-053). Gate index:

@@ -14,7 +14,7 @@ status: implemented
 **Status:** Adapters shipped (`hedron-flask`, `hedron-django`). Capability readiness:
 **Supported** for Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
 DataSource. Package maturity remains **Beta** on PyPI — pin versions.
-Portable contracts live in `hedron-core`. Living train: **0.25.x** (last published **v0.25.1**).
+Portable contracts live in `hedron-core`. Living train: **0.25.x** (last published **v0.25.2**).
 
 Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapters). Quickstarts:
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).

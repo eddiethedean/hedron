@@ -1171,7 +1171,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.25** (last published `v0.25.1`; workspace candidate `0.25.2`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.25** (last published `v0.25.2`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -1776,12 +1776,15 @@ Zero Deferred among 0.25-owned gate rows at cut. Gate IDs and commands (cut Veri
 ## 0.26 — Production-grade core and FastAPI flagship (`v0.26.0`)
 
 **Status:** Planned. First package-graduation phase under the production-grade contract above.
-Requires an accepted owning RFC and architectural decision before implementation begins.
+**Baseline train:** Published **`v0.25.2`**. Owning RFC and architectural decision required before
+implementation begins.
 
 **Outcome:** `hedron-core`, `hedron`, and `hedron-explorer` are production-grade for the documented
-server-rendered CRUD/admin surface. The main FastAPI path has an independently reviewed security
-boundary, supported-upgrade evidence, multi-worker operational proof, and a compatibility-protected
-public inventory without promoting experimental live transports.
+server-rendered CRUD/admin Supported surface. Beta package maturity today is **not** the
+production-grade label; 0.26 is the graduation that earns that label for the declared inventory
+only. The main FastAPI path has an independently reviewed security boundary, upgrade evidence from
+`v0.25.2`, multi-worker operational proof, and a compatibility-protected public inventory without
+promoting experimental live transports.
 
 ### Package dispositions
 
@@ -1791,35 +1794,73 @@ public inventory without promoting experimental live transports.
 | `hedron` | FastAPI pages/components/actions, CSRF/security profiles, build assets, polling status, CLI/scaffolds, testing helpers, and production startup gates |
 | `hedron-explorer` | Development mode plus authenticated/authorized secured inspection; never public-by-default and never required at runtime |
 
-### Scope
+### Entry criteria
 
-- Freeze a machine-readable Supported API inventory for the three packages and add upgrade tests
-  from the final 0.25 line, including serialized identities, diagnostics, manifests, and HTMX
-  interaction results.
-- Commission an independent security review of escaping/trusted types, fragment/OOB authorization,
-  CSRF/session composition, build/static serving, plugin discovery, job observation, and Explorer
-  exposure; close or explicitly time-bound every material finding.
-- Prove the reference application under multi-worker process churn, Redis job/cache backends,
-  reverse-proxy subpaths, graceful shutdown, deploy rollback, and production asset manifests.
-- Set enforced latency, allocation, payload, startup, and job-poll budgets for the Supported critical
-  paths; retain pure-Python deterministic behavior as the reference.
-- Publish a supported-version policy and clean install/upgrade matrix for Python 3.11–3.14 and the
-  pinned FastAPI/Pydantic range, including minimum-dependency and offline-wheel smoke tests.
-- Make Explorer security posture inspectable: explicit mode, authentication/authorization hook,
-  CSP compatibility, audit events, bounded payloads, and production refusal for unsafe modes.
-- Attach package SBOMs, provenance, changelogs, rollback notes, and the external-review disposition
-  to the release evidence bundle.
+- Tip/SSOT honesty for Published **`0.25.2`** is done (STATUS / RELEASE / adopter tip hubs).
+- Owning RFC and architectural decision are **Accepted** for applying the production-grade contract
+  to these three packages.
+- A machine-readable inventory draft exists (Supported vs Experimental vs excluded), aligned with
+  [STABILITY.md](docs/api/STABILITY.md) / stable-facade scripts, without promoting experimental live APIs.
+- An upgrade-fixture plan from **`v0.25.2`** serialized identities, diagnostics, manifests, and HTMX
+  interaction results is sketched.
+
+### Sequenced scope
+
+```mermaid
+flowchart LR
+  tip[Tip honesty 0.25.2] --> rfc[RFC and decision]
+  rfc --> inventory[CONTRACT inventory freeze]
+  inventory --> review[REVIEW security]
+  inventory --> upgrade[CORE upgrade fixtures]
+  review --> ops[FASTAPI multi-worker proof]
+  upgrade --> ops
+  ops --> budgets[Budgets and install matrix]
+  budgets --> packet[REGRESS PKG evidence]
+  packet --> cut[v0.26.0]
+```
+
+1. **Inventory freeze (`CONTRACT-026`)** — Supported / Experimental / excluded for the three
+   packages; docs and package metadata agree; no silent experimental enablement on install.
+2. **Upgrade fixtures (`CORE-026`)** — golden tests from **`v0.25.2`** serialized identities,
+   diagnostics, manifests, and HTMX interaction results.
+3. **Independent security review (`REVIEW-026`)** — escaping/trusted types, fragment/OOB
+   authorization, CSRF/session composition, build/static serving, plugin discovery, job
+   observation, and Explorer exposure; critical/high fixed; other findings owned and time-bound;
+   redacted report in the evidence bundle.
+4. **Operational proof (`FASTAPI-026` / `EXPLORER-026`)** — multi-worker + Redis job/cache +
+   reverse-proxy mount + shutdown/rollback + production assets; Explorer secured-mode authz /
+   audit / CSP / payload / browser refusal for unsafe production exposure.
+5. **Budgets + install matrix** — enforced latency / allocation / payload / startup / job-poll
+   budgets; Python 3.11–3.14 and pinned FastAPI/Pydantic; minimum-dependency and offline-wheel
+   smoke.
+6. **Release packet (`REGRESS-026` / `PKG-026`)** — full suite, wheel/sdist matrix, SBOM /
+   provenance, upgrade rehearsal, and a `verify_pkg_26`-shaped verifier (planned artifact).
+
+Acceptance packet shape (planned; open like 0.25 — do not invent full gate implementation here):
+
+- [docs/acceptance/RELEASE_0_26.md](docs/acceptance/RELEASE_0_26.md) (planned)
+- [docs/acceptance/release-gate-0.26.toml](docs/acceptance/release-gate-0.26.toml) (planned)
+- `scripts/verify_pkg_26.py` (planned)
+
+### Prep backlog (not exit gates)
+
+Post-`0.25.2` quality follow-ups that must not inflate Supported claims:
+
+- Move toward enabling Ruff `BLE001` with a documented noqa policy.
+- Reduce pyright `reportUnknown*` warnings on Beta hubs incrementally.
+- Surgical Explorer / CLI / jinja complexity reductions only where they unblock inventory or
+  reviewability.
 
 ### Locked exit evidence
 
 | Gate | Verified means |
 |---|---|
 | `CONTRACT-026` | Production-grade contract and machine-readable Supported/Experimental inventories agree with public docs and package metadata |
-| `CORE-026` | Renderer/model/registry stable inventory, adversarial corpus, determinism, resource budgets, and 0.25 upgrade fixtures pass |
+| `CORE-026` | Renderer/model/registry stable inventory, adversarial corpus, determinism, resource budgets, and **`v0.25.2`** upgrade fixtures pass |
 | `FASTAPI-026` | Reference app passes multi-worker, proxy, assets, CSRF, job/cache, lifecycle, rollback, and minimum-dependency matrices |
 | `EXPLORER-026` | Secured mode has authz, audit, CSP, payload, and accidental-production-exposure browser evidence |
 | `REVIEW-026` | Independent security report is attached in redacted form; critical/high findings are fixed and other findings have owners and deadlines |
-| `REGRESS-026` / `PKG-026` | Full suite, wheel/sdist/install matrix, SBOM/provenance, upgrade rehearsal, and release verifier pass |
+| `REGRESS-026` / `PKG-026` | Full suite, wheel/sdist/install matrix, SBOM/provenance, upgrade rehearsal, and planned `scripts/verify_pkg_26.py` pass |
 
 ### Non-goals
 
@@ -2340,7 +2381,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Expand minimal `stable` API tier for Supported CRUD/HTMX/jobs + Beginner facade inventory | 0.23 | D-053 / RFC-0056; does not promote Alpha extras or live transports. |
 | Live-transport production disposition (`polling_only` Accepted) | 0.24 | **Published** `v0.24.0`; supersedes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056) — [LIVE_DISPOSITION](docs/api/LIVE_DISPOSITION.md). |
 | Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | **Published** `v0.25.0`; D-053 / RFC-0056; SBOM/evidence attach on train tags — [PRODUCTION_ARCHETYPE](docs/api/PRODUCTION_ARCHETYPE.md). |
-| Production-grade `hedron-core`, `hedron`, and secured/development Explorer | 0.26 | Stable Supported inventory, independent security review, multi-worker/proxy/build proof, upgrade fixtures, and release provenance. |
+| Production-grade `hedron-core`, `hedron`, and secured/development Explorer | 0.26 | Planned; baseline Published `v0.25.2`; inventory freeze → upgrade fixtures → security review → multi-worker/Explorer ops → budgets → `REGRESS`/`PKG` evidence (`RELEASE_0_26` / `release-gate-0.26.toml` / `verify_pkg_26` planned). |
 | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | Independent clean installs, adapter parity, bounded data/browser evidence, HDJ format compatibility, and experimental-ui quarantine. |
 | Production-grade charts and optional native acceleration | 0.28 | Static/a11y chart baseline, explicit backend dispositions, native fuzz/platform/fallback proof; acceleration never required. |
 | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.29 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes. |

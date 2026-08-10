@@ -535,6 +535,22 @@ STALE = [
     re.compile(r"current train \*\*0\.25\.0\*\*", re.I),
     re.compile(r"Living train:\s*\*\*0\.25\.0\*\*", re.I),
     re.compile(r"Ops-oriented narrative for \*\*Hedron 0\.25\.0\*\*", re.I),
+    # Stale last-published / tip claims after v0.25.2 (allow phase "Published as v0.25.0/0.25.1").
+    re.compile(r"last published[\s`*]*v0\.25\.1", re.I | re.M),
+    re.compile(r"Last published:\s*<strong>v0\.25\.1</strong>", re.I),
+    re.compile(r"current published(?: line)?[^\n]*v0\.25\.1", re.I),
+    re.compile(r"Published/Last published \*\*0\.25\.1\*\*", re.I),
+    re.compile(r"Train:\s*`0\.25\.1`\s*\(Published\)", re.I),
+    re.compile(r"\| Version \| \*\*v?0\.25\.1\*\*", re.I),
+    re.compile(r"hedron-eyebrow[^>]*>[^<\n]*v0\.25\.1", re.I),
+    re.compile(r"current train \*\*0\.25\.1\*\*", re.I),
+    re.compile(r"Living train:\s*\*\*0\.25\.1\*\*", re.I),
+    re.compile(r"Current train — 0\.25\.1", re.I),
+    re.compile(r"Prepared (?:patch|candidate).*0\.25\.2.*not (?:yet )?tagged", re.I),
+    re.compile(r"workspace (?:release )?candidate[^\n]*0\.25\.2", re.I),
+    re.compile(r"workspace `0\.25\.2` candidate", re.I),
+    re.compile(r"0\.25\.2` candidate", re.I),
+    re.compile(r"last published release remains `v0\.25\.1`", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.
@@ -701,7 +717,7 @@ def main() -> int:
         print("\n".join(failures), file=sys.stderr)
         return 1
     print(
-        "ok: adopter docs assert Published 0.25 (last v0.25.1), "
+        "ok: adopter docs assert Published 0.25 (last v0.25.2), "
         "upper-bound pins, enforce chart/sample-kit compatibility floors, and avoid "
         "Supported beta / SSOT / beachhead jargon"
     )

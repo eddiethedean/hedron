@@ -13,7 +13,7 @@ these artifacts at cut time.
 | Package verify (0.25) | CI / release checklist | [`scripts/verify_pkg_25.py`](https://github.com/eddiethedean/hedron/blob/main/scripts/verify_pkg_25.py) |
 
 **PyPI is authoritative for published package versions.** Last published train is
-`hedron==0.25.1` (`v0.25.1`). Confirm on [PyPI](https://pypi.org/project/hedron/).
+`hedron==0.25.2` (`v0.25.2`). Confirm on [PyPI](https://pypi.org/project/hedron/).
 
 Releases: [eddiethedean/hedron/releases](https://github.com/eddiethedean/hedron/releases).
 Tags: [eddiethedean/hedron/tags](https://github.com/eddiethedean/hedron/tags).
@@ -21,8 +21,8 @@ Script index: [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/
 
 ## How to verify (evaluator)
 
-1. Confirm package versions on PyPI match your pin (for example `hedron==0.25.1`).
-2. Prefer GitHub Release assets for **`v0.25.1`** when present (SBOM / license /
+1. Confirm package versions on PyPI match your pin (for example `hedron==0.25.2`).
+2. Prefer GitHub Release assets for **`v0.25.2`** when present (SBOM / license /
    evidence-bundle). Maintainers should attach these on release day; if absent,
    regenerate from the tagged checkout.
 3. If Release assets are absent, clone and regenerate:
@@ -30,7 +30,7 @@ Script index: [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
-git checkout v0.25.1
+git checkout v0.25.2
 uv sync
 uv run python scripts/build_evidence_bundle.py
 uv run python scripts/verify_pkg_25.py

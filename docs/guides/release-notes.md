@@ -4,29 +4,16 @@ Adopter-facing summary for the **0.25.x** train. For per-package commit detail, 
 [package changelog index](changelog.md) or
 [GitHub Releases](https://github.com/eddiethedean/hedron/releases).
 
-## Prepared patch — 0.25.2 (not yet tagged)
+## Current train — 0.25.2 (2026-08-10)
 
-- CSRF / HTMX adapter fixes: Flask cookie-name sync, InteractionResult
-  `allow_undeclared_targets`, retarget selector agreement, Explorer strategy CSRF names.
-- Trust-boundary hardening: SafeUrl traversal + root-relative form/nav URLs, Hx SafeUrl attrs,
-  external HtmxLink, mount cookie Path, mount `..` / `%2e` rejection.
-- Runtime fail-closed: SessionState without middleware, RedisJobBackend **and** RedisStatusStore
-  CAS without WATCH, Celery/RQ CAS restore, ASGI prepare (`respond_async` / no silent skip),
-  SSE/streaming `Cache-Control: no-store`, adapter SSE framing (SseEvent only).
-- Docs honesty: last published `v0.25.1`, published-safe charts pin `>=0.25.1,<0.26`, tip hubs
-  no longer brand `v0.25.0` as the living tip.
+**Published** (`0.25.2`; last published PyPI/git = `v0.25.2`).
 
-The last published release remains `v0.25.1` until the tag workflow completes.
-
-## Current train — 0.25.1 (2026-08-09)
-
-**Published** (`0.25.1`; last published PyPI/git = `v0.25.1`).
-
-**Adopter highlights:** restores installable charts with `hedron-charts 0.1.6`, recipe
-fixes for session-auth / SQLAlchemy notes, release-publish hardening, and expanded
-adoption / Streamlit migration docs. Polling remains the Supported live-status story
-(from 0.24). Human AT **sessions** remain **Planned** — do not market human AT as
-Supported.
+**Adopter highlights:** CSRF / HTMX adapter fixes, trust-boundary hardening (SafeUrl /
+Hx / mount), Redis job/status CAS and Celery/RQ cancel restore, fail-closed adapter
+prepare / SSE framing, and tip-honesty docs for the published `v0.25.2` line. Polling
+remains the Supported live-status story (from 0.24). Human AT **sessions** remain
+**Planned** — do not market human AT as Supported. Charts floor remains
+`hedron[charts]>=0.25.1,<0.26`.
 
 Narrative: [What's new in 0.25](whats-new-0.25.md) · maturity:
 [What's ready today](whats-ready.md) · ship checklist:
@@ -40,6 +27,12 @@ uv add "hedron>=0.25.0,<0.26"
 ```
 
 Optional: `pip install "hedron[gradio]>=0.1.0,<0.2"` · `"hedron[notebook]>=0.1.0,<0.2"` · `"hedron[mcp]>=0.1.0,<0.2"`.
+
+## Prior — 0.25.1 (2026-08-09)
+
+**Published** (`0.25.1`). Restores installable charts with `hedron-charts 0.1.6`, recipe
+fixes for session-auth / SQLAlchemy notes, release-publish hardening, and expanded
+adoption / Streamlit migration docs.
 
 ## Prior — 0.25.0 (2026-08-09)
 

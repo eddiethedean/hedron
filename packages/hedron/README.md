@@ -120,8 +120,8 @@ uv add "hedron>=0.25.0,<0.26" "uvicorn[standard]"
 python -m pip install "hedron>=0.25.0,<0.26" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Train:** `0.25.x` · last published `0.25.1` · workspace
-`0.25.2` candidate
+**Package maturity:** Beta · **Train:** `0.25.x` · last published `0.25.2` ·
+pin `>=0.25.0,<0.26`
 
 Before deploying, read
 [What's ready today](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and the

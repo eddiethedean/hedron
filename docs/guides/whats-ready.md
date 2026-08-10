@@ -1,6 +1,6 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.25.x** (last published `v0.25.1`). Other
+**Canonical maturity snapshot for Hedron 0.25.x** (last published `v0.25.2`). Other
 evaluator pages link here — do not treat parallel summaries as a second source of truth.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
