@@ -12,6 +12,8 @@
 
 - Inject the HTMX core runtime before bundled extensions in PAGE document order so
   deferred `head-support` / `sse` scripts can register (`#55`).
+- Scope `hedron check` Django / Plotly-Altair compatibility notices to detected adapters
+  and chart extras; add `--all-compat` for the global summary (`#54`).
 
 ### Changed
 

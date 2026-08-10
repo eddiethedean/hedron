@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import importlib
 import json
+import re
 import shutil
 import sys
 import time
@@ -792,6 +793,198 @@ def _check_htmx_region_mismatches(base: Path) -> list[Any]:
     return diags
 
 
+_SKIP_SCAN_DIRS = frozenset(
+    {
+        ".git",
+        ".hg",
+        ".svn",
+        ".venv",
+        "venv",
+        "node_modules",
+        "dist",
+        "build",
+        "site",
+        "site-packages",
+        "__pycache__",
+        ".mypy_cache",
+        ".pytest_cache",
+        ".ruff_cache",
+        ".tox",
+    }
+)
+_IMPORT_ROOT_RE = re.compile(
+    r"(?m)^\s*(?:from|import)\s+([A-Za-z_][\w.]*)",
+)
+
+
+def _path_is_skipped(path: Path, *, base: Path) -> bool:
+    try:
+        parts = path.resolve().relative_to(base.resolve()).parts
+    except ValueError:
+        parts = path.parts
+    return any(part in _SKIP_SCAN_DIRS for part in parts)
+
+
+def _iter_project_py_files(base: Path) -> list[Path]:
+    if not base.exists():
+        return []
+    files: list[Path] = []
+    for path in base.rglob("*.py"):
+        if _path_is_skipped(path, base=base):
+            continue
+        files.append(path)
+    return files
+
+
+def _app_source_paths(app_path: str | None) -> list[Path]:
+    """Return source files for a loaded ``--app`` module/package."""
+    if not app_path or ":" not in app_path:
+        return []
+    module_name = app_path.split(":", 1)[0]
+    module = sys.modules.get(module_name)
+    if module is None:
+        return []
+    file_name = getattr(module, "__file__", None)
+    if not file_name:
+        return []
+    path = Path(file_name).resolve()
+    paths = [path]
+    package_dir = path.parent if path.name == "__init__.py" else None
+    if package_dir is not None and package_dir.is_dir():
+        paths.extend(sorted(package_dir.rglob("*.py")))
+    return paths
+
+
+def _files_import_any(paths: list[Path], roots: frozenset[str]) -> bool:
+    for path in paths:
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        for match in _IMPORT_ROOT_RE.finditer(text):
+            top = match.group(1).split(".", 1)[0]
+            if top in roots:
+                return True
+    return False
+
+
+def _manifest_mentions(base: Path, tokens: frozenset[str]) -> bool:
+    lowered = tuple(token.lower() for token in tokens)
+    for name in ("pyproject.toml", "requirements.txt", "requirements.in", "Pipfile"):
+        path = base / name
+        if not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8").lower()
+        except OSError:
+            continue
+        if any(token in text for token in lowered):
+            return True
+    return False
+
+
+def _registry_has_chart_surface() -> bool:
+    markers = ("chart", "plotly", "altair", "vega")
+    for meta in get_registry().components():
+        blob = f"{meta.distribution} {meta.name} {meta.logical_id}".lower()
+        if any(marker in blob for marker in markers):
+            return True
+    return False
+
+
+def _compat_surface_active(
+    base: Path,
+    *,
+    app: str | None,
+    module_roots: frozenset[str],
+    package_tokens: frozenset[str],
+    registry_active: bool = False,
+) -> bool:
+    """True when the project/app references a compatibility surface (not ambient installs)."""
+    if registry_active:
+        return True
+    paths = [*_iter_project_py_files(base), *_app_source_paths(app)]
+    if _files_import_any(paths, module_roots):
+        return True
+    return _manifest_mentions(base, module_roots | package_tokens)
+
+
+def _compat_info_diagnostics(
+    *,
+    base: Path,
+    app: str | None,
+    all_compat: bool,
+) -> list[Any]:
+    """Evergreen informational findings; adapter/extra notices are project-scoped (#54)."""
+    from hedron_core import DiagnosticSeverity
+    from hedron_core.diagnostics import make_diagnostic
+
+    info_diags = [
+        make_diagnostic(
+            "HED-SEC-0001",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="CSRF required for unsafe actions",
+            explanation="Cookie-authenticated unsafe methods must validate CSRF.",
+            remediation="Use HedronRouter.action and standard security profile.",
+        ),
+        make_diagnostic(
+            "HED-A11Y-0001",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="Run axe for interactive surfaces",
+            explanation="Static markup checks do not replace browser accessibility analysis.",
+            remediation="Use hedron[browser] axe hooks for Explorer and forms.",
+        ),
+        make_diagnostic(
+            "HED-COMPAT-0001",
+            severity=DiagnosticSeverity.INFORMATION,
+            title="0.19 compatibility baseline is active",
+            explanation=(
+                "Phase 0.19 classifies the public API and accessibility contracts. "
+                "See docs/api/STABILITY.md for Supported vs experimental surfaces."
+            ),
+            remediation="See docs/api/STABILITY.md and docs/guides/upgrade.md.",
+        ),
+    ]
+    django_active = all_compat or _compat_surface_active(
+        base,
+        app=app,
+        module_roots=frozenset({"django", "hedron_django"}),
+        package_tokens=frozenset({"hedron-django"}),
+    )
+    if django_active:
+        info_diags.append(
+            make_diagnostic(
+                "HED-COMPAT-0002",
+                severity=DiagnosticSeverity.INFORMATION,
+                title="Django Supported floor is 5.2 LTS",
+                explanation="hedron-django requires Django >=5.2,<6 for Supported adapter claims.",
+                remediation="Upgrade Django to the 5.2 LTS line before production adapter use.",
+            )
+        )
+    charts_active = all_compat or _compat_surface_active(
+        base,
+        app=app,
+        module_roots=frozenset({"hedron_charts", "plotly", "altair"}),
+        package_tokens=frozenset({"hedron-charts", "hedron[charts]"}),
+        registry_active=_registry_has_chart_surface(),
+    )
+    if charts_active:
+        info_diags.append(
+            make_diagnostic(
+                "HED-COMPAT-0003",
+                severity=DiagnosticSeverity.INFORMATION,
+                title="Interactive Plotly/Altair runtimes are experimental",
+                explanation=(
+                    "Full Plotly/Vega interactive hosts remain experimental until offline pins "
+                    "and browser evidence promote them; prefer Matplotlib static SVG for stable "
+                    "dashboards."
+                ),
+                remediation="See docs/api/STABILITY.md and docs/api/CHART.md.",
+            )
+        )
+    return info_diags
+
+
 def _cmd_check(args: argparse.Namespace) -> int:
     from hedron_core import (
         DiagnosticSeverity,
@@ -838,50 +1031,13 @@ def _cmd_check(args: argparse.Namespace) -> int:
 
     diags.extend(_check_htmx_region_mismatches(base))
 
-    # Security / a11y / compatibility-boundary informational findings (excluded from exit code)
-    info_diags = [
-        make_diagnostic(
-            "HED-SEC-0001",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="CSRF required for unsafe actions",
-            explanation="Cookie-authenticated unsafe methods must validate CSRF.",
-            remediation="Use HedronRouter.action and standard security profile.",
-        ),
-        make_diagnostic(
-            "HED-A11Y-0001",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="Run axe for interactive surfaces",
-            explanation="Static markup checks do not replace browser accessibility analysis.",
-            remediation="Use hedron[browser] axe hooks for Explorer and forms.",
-        ),
-        make_diagnostic(
-            "HED-COMPAT-0001",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="0.19 compatibility baseline is active",
-            explanation=(
-                "Phase 0.19 classifies the public API and accessibility contracts. "
-                "See docs/api/STABILITY.md for Supported vs experimental surfaces."
-            ),
-            remediation="See docs/api/STABILITY.md and docs/guides/upgrade.md.",
-        ),
-        make_diagnostic(
-            "HED-COMPAT-0002",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="Django Supported floor is 5.2 LTS",
-            explanation="hedron-django requires Django >=5.2,<6 for Supported adapter claims.",
-            remediation="Upgrade Django to the 5.2 LTS line before production adapter use.",
-        ),
-        make_diagnostic(
-            "HED-COMPAT-0003",
-            severity=DiagnosticSeverity.INFORMATION,
-            title="Interactive Plotly/Altair runtimes are experimental",
-            explanation=(
-                "Full Plotly/Vega interactive hosts remain experimental until offline pins and "
-                "browser evidence promote them; prefer Matplotlib static SVG for stable dashboards."
-            ),
-            remediation="See docs/api/STABILITY.md and docs/api/CHART.md.",
-        ),
-    ]
+    # Security / a11y / compatibility-boundary informational findings (excluded from exit code).
+    # Adapter/extra COMPAT notices are scoped to the project under check unless --all-compat (#54).
+    info_diags = _compat_info_diagnostics(
+        base=base,
+        app=getattr(args, "app", None),
+        all_compat=bool(getattr(args, "all_compat", False)),
+    )
 
     inventory_summary: JsonObject | None = None
     hdj_reports: list[JsonObject] = []
@@ -1233,6 +1389,14 @@ def main(argv: list[str] | None = None) -> None:
         choices=("error", "warning", "information"),
         default="error",
         help="Fail when diagnostics meet or exceed this severity",
+    )
+    check_p.add_argument(
+        "--all-compat",
+        action="store_true",
+        help=(
+            "Include global adapter/extra compatibility notices even when those "
+            "integrations are not detected in the project under check"
+        ),
     )
     check_p.set_defaults(func=_cmd_check)
 
