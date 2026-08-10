@@ -17,6 +17,7 @@ This catalog is complete for the registered set enforced by
 | `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.27.0,<0.28"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
+| `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
 | CSRF **403** on POST | blocker | Missing or mismatched CSRF token | Seed on GET; include token on POST — [Troubleshooting](troubleshooting.md#csrf-403-on-post-fastapi-flask) |
 | `HED-PLUGIN-0001` | blocker | Named plugin missing from entry points | Install the package or remove the name from `[tool.hedron].plugins` |
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
@@ -212,6 +213,7 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | Code | Catalog symbol |
 |---|---|
 | `HED-HTMX-0001` | `HED_HTMX_0001` |
+| `HED-HTMX-0002` | `HED_HTMX_0002` |
 
 ## HED-ICON
 

@@ -98,7 +98,7 @@ def panel() -> InteractionResult:
 | `content` | Primary swap body (`NodeLike` / `Component` / `None`) |
 | `status_code` | HTTP status (default `200`) |
 | `target` / `swap` / `retarget` / `reswap` / `reselect` | HTMX target/swap overrides |
-| `oob` | Tuple of `OobUpdate(content, swap=..., select=..., element_id=...)` |
+| `oob` | Tuple of `OobUpdate(content, swap=..., select=..., element_id=..., tag=...)` |
 | `trigger` / `trigger_after_swap` / `trigger_after_settle` | `HX-Trigger*` payloads |
 | `push_url` / `replace_url` / `history` | History (`push` / `replace` / `none`) |
 | `redirect` / `refresh` / `location` | Local redirect, full refresh, or `HX-Location` |

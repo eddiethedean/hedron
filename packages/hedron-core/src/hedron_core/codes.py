@@ -192,6 +192,7 @@ HED_JOB_0001 = "HED-JOB-0001"
 
 # HTMX / fragment regions (0.15 ergonomics)
 HED_HTMX_0001 = "HED-HTMX-0001"
+HED_HTMX_0002 = "HED-HTMX-0002"  # select_oob + OobUpdate same-target conflict
 
 # Map / GeoJSON (0.15 RFC-0033)
 HED_MAP_0001 = "HED-MAP-0001"

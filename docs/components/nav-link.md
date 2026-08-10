@@ -82,21 +82,21 @@ Alias of HtmxLink for navigation lists and AppShell side nav.
 ```python
 from hedron import NavLink
 
-component = NavLink('Home', '/', hx_get='/', hx_target='#main-panel', active=True)
+component = NavLink('Home', '/', target='#main-panel', swap='innerHTML', active=True)
 ```
 
 Compose under `Page` for full documents, or return from a fragment route for HTMX swaps.
 
 ## How it works
 
-NavLink is an intentional DX alias of HtmxLink so shell navigation reads clearly under Nav / AppShell. Behavior, allowlists, and SafeUrl policy are identical.
+NavLink is an intentional DX alias of HtmxLink so shell navigation reads clearly under Nav / AppShell. Behavior, allowlists, and SafeUrl policy are identical—including the one-OOB-mechanism-per-target rule for `select_oob` vs `OobUpdate`.
 
 This component can initiate or represent a backend interaction. The live documentation intercepts that interaction with JavaScript and shows the same pending, success, or replacement states without making a real request. In an application, keep the URL, authorization, validation, and returned fragment on the server; JavaScript is only progressive enhancement.
 
 ## Constructor and parameters
 
 ```python
-NavLink(label, href, *, hx_get=None, hx_target=None, hx_swap=None, active=False, class_=None)
+NavLink(label, href, *, method='get', target=None, swap='outerHTML', select=None, select_oob=None, push_url=False, active=False, class_=None)
 ```
 
 | Parameter | Type | Meaning |
@@ -122,7 +122,7 @@ exposure remain application code. Redact secrets before rendering.
 
 ## Common mistakes
 
-- Do not register both names as separate plugins—only one component class exists.
+- Do not register both names as separate plugins—only one component class exists. Do not combine NavLink `select_oob` with a matching `OobUpdate` for the same shell host id.
 - Do not copy docs-preview JavaScript into an application server.
 
 ## Testing

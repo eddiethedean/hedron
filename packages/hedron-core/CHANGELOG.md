@@ -14,6 +14,9 @@
   `data` with internal `data-hedron-*` markers (`#56`).
 - Accept additive `class_` theme hooks on `Button` / `LinkButton` / `SubmitButton` /
   `IconButton`, `Text` / `Heading`, and `Alert` / `Badge` / `Status` (`#29`).
+- Detect `HtmxLink`/`NavLink` `select_oob` conflicting with the same-target
+  `OobUpdate`, document one-OOB-mechanism shell guidance, and allow optional
+  landmark `OobUpdate(tag=...)` as defense in depth (`#57`).
 
 ### Changed
 
