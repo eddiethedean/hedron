@@ -1171,7 +1171,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.25** (`v0.25.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.25** (last published `v0.25.1`; workspace candidate `0.25.2`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),

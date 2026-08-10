@@ -32,13 +32,15 @@ def poll_status_response(body: str, *, status: int = 200) -> Response:
 
 
 def sse_response(
-    events: Iterable[SseEvent | str],
+    events: Iterable[SseEvent],
     *,
     status: int = 200,
 ) -> Response:
     """Return a text/event-stream response (experimental).
 
     Prefer ``hedron_flask.experimental.sse_response``. Polling is the Supported fallback.
+    Only ``SseEvent`` values are accepted — raw strings are rejected to prevent
+    SSE framing injection.
     """
     warnings.warn(
         "hedron_flask.live.sse_response is experimental; import from "
@@ -49,10 +51,12 @@ def sse_response(
 
     def generate() -> Iterator[str]:
         for item in events:
-            if isinstance(item, SseEvent):
-                yield encode_sse(item)
-            else:
-                yield str(item)
+            if not isinstance(item, SseEvent):
+                raise TypeError(
+                    "hedron_flask.live.sse_response accepts only SseEvent values; "
+                    f"got {type(item)!r}"
+                )
+            yield encode_sse(item)
 
     # Prefer stream_with_context inside a request; fall back for factory use/tests.
     try:

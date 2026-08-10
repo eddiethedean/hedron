@@ -632,9 +632,12 @@ def _bound_oob_element_id(
     *,
     regions: tuple[FragmentRegion, ...],
 ) -> str | None:
+    del regions  # regions authorize; id binding uses element_id / #select.
     if update.element_id is not None:
         return update.element_id
-    if regions and update.select and update.select.startswith("#"):
+    # Derive from #select even when regions are empty so reserved OOB sinks
+    # (toast/chrome) always get a forced hx-swap-oob wrapper.
+    if update.select and update.select.startswith("#"):
         return update.select[1:]
     return None
 

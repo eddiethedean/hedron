@@ -142,6 +142,7 @@ class HedronDjango:
                 authenticated=self.auth_signal(request).authenticated,
                 fragment_regions=fragment_regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                skip_prepare=True,
             )
         if (
             isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__")
@@ -156,6 +157,7 @@ class HedronDjango:
             authenticated=self.auth_signal(request).authenticated,
             fragment_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
+            skip_prepare=True,
         )
 
     def auth_signal(self, request: HttpRequest) -> AuthSignal:

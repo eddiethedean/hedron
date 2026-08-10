@@ -8,9 +8,13 @@ Adopter-facing summary for the **0.25.x** train. For per-package commit detail, 
 
 - CSRF / HTMX adapter fixes: Flask cookie-name sync, InteractionResult
   `allow_undeclared_targets`, retarget selector agreement, Explorer strategy CSRF names.
-- Trust-boundary hardening: SafeUrl traversal, Hx attrs, external HtmxLink, mount cookie Path.
-- Runtime fail-closed: SessionState without middleware, Redis CAS without WATCH, ASGI prepare.
-- Docs honesty: last published `v0.25.1`, published-safe charts pin `>=0.25.1,<0.26`.
+- Trust-boundary hardening: SafeUrl traversal + root-relative form/nav URLs, Hx SafeUrl attrs,
+  external HtmxLink, mount cookie Path, mount `..` / `%2e` rejection.
+- Runtime fail-closed: SessionState without middleware, RedisJobBackend **and** RedisStatusStore
+  CAS without WATCH, Celery/RQ CAS restore, ASGI prepare (`respond_async` / no silent skip),
+  SSE/streaming `Cache-Control: no-store`, adapter SSE framing (SseEvent only).
+- Docs honesty: last published `v0.25.1`, published-safe charts pin `>=0.25.1,<0.26`, tip hubs
+  no longer brand `v0.25.0` as the living tip.
 
 The last published release remains `v0.25.1` until the tag workflow completes.
 

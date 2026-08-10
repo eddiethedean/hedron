@@ -5,11 +5,14 @@
 ### Fixed
 
 - Validate `InteractionResult.oob` items are `OobUpdate` instances in `__post_init__`.
-- `Hx.as_html_attrs` parses `url` / string `push_url` through `SafeUrl`.
+- `Hx.as_html_attrs` keeps `SafeUrl` instances for `url` / string `push_url`.
 - `HtmxLink(external=True)` renders as a plain link without rejected absolute `hx-*` URLs.
-- Reject `..` path traversal for relative NAVIGATION / FORM_ACTION / REDIRECT SafeUrls.
+- Reject `..` path traversal and bare path-relative tokens for NAVIGATION / FORM_ACTION / REDIRECT SafeUrls (root-relative required).
 - `run_prepare` fails closed when an event loop is already running; shared `cookie_path_for_mount` lives in core.
-- Redis job CAS fails closed without pipeline/WATCH support.
+- `normalize_mount_path` rejects `.` / `..` / `%2e` segments.
+- RedisJobBackend **and** RedisStatusStore CAS fail closed without pipeline/WATCH; Celery/RQ cancel restore is CAS-only.
+- Reserved OOB `#select` always forces `hx-swap-oob` wrapping; WebSocket `RegionUpdate.swap` validated.
+- Redis `cleanup_expired` prefers `SCAN` over `KEYS`.
 - Add `apply_allow_undeclared_targets` helper for host adapters.
 
 ### Changed

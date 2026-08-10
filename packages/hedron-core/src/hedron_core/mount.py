@@ -2,10 +2,28 @@
 
 from __future__ import annotations
 
+from urllib.parse import unquote
+
 __all__ = [
     "cookie_path_for_mount",
     "normalize_mount_path",
 ]
+
+_DECODE_ROUNDS = 3
+
+
+def _segment_is_dot_or_dotdot(segment: str) -> bool:
+    """True when a path segment is ``.`` / ``..`` (including percent-encoded forms)."""
+    if not segment:
+        return False
+    decoded = segment
+    for _ in range(_DECODE_ROUNDS):
+        next_decoded = unquote(decoded)
+        if next_decoded == decoded:
+            break
+        decoded = next_decoded
+    lowered = decoded.lower()
+    return lowered in {".", ".."}
 
 
 def normalize_mount_path(value: str | None) -> str:
@@ -13,6 +31,8 @@ def normalize_mount_path(value: str | None) -> str:
 
     Protocol-relative (``//host``) and absolute URL mounts are rejected as empty so
     they cannot become scheme-relative open redirects via path prefixing.
+    Path segments of ``.`` / ``..`` (including percent-encoded ``%2e`` forms) are
+    also rejected so cookie Path and redirect prefixes cannot escape the mount.
     """
     if value is None:
         return ""
@@ -27,6 +47,24 @@ def normalize_mount_path(value: str | None) -> str:
     normalized = text.rstrip("/") or ""
     if "//" in normalized:
         return ""
+    if not normalized:
+        return ""
+    # Reject traversal / current-dir segments (literal or percent-encoded).
+    for segment in normalized.split("/")[1:]:
+        if not segment or _segment_is_dot_or_dotdot(segment):
+            return ""
+    # Defense in depth after decoding the whole path.
+    decoded = normalized
+    for _ in range(_DECODE_ROUNDS):
+        next_decoded = unquote(decoded)
+        if next_decoded == decoded:
+            break
+        decoded = next_decoded
+        if "//" in decoded or "\\" in decoded or "://" in decoded:
+            return ""
+        for segment in decoded.split("/")[1:]:
+            if not segment or segment in {".", ".."}:
+                return ""
     return normalized
 
 

@@ -7,8 +7,12 @@
 - Propagate route `allow_undeclared_targets` into `render_interaction` / InteractionResult conversion.
 - `retarget()` prefers the CSS selector for HX-Target agreement when region id differs.
 - Seed CSRF cookies on safe-method HTTP 204 InteractionResult responses.
-- SessionState raises when writing without SessionMiddleware; await async connection dispose on lifespan shutdown.
+- SessionState raises when writing without SessionMiddleware; sync connection dispose fails closed on awaitables (use `close_all_async`).
 - Mount CSRF cookie Path no longer forces a trailing slash (`/app` matches `/app` and `/app/...`).
+- `normalize_mount_path` rejects `.` / `..` / `%2e` segments; `prefix_local_path` re-validates with `is_local_path`.
+- SSE / streaming responses force `Cache-Control: no-store` after caller header merge.
+- Explorer `/api/simulate` always requires CSRF (ignores `csrf_enabled=False`).
+- `install_authenticated_from_session` requires a non-empty string session subject.
 
 ### Changed
 

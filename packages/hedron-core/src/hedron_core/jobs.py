@@ -9,7 +9,7 @@ import time
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import TYPE_CHECKING, Protocol, cast, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, cast, runtime_checkable
 
 from hedron_core.typing_aliases import JobStatusDict, JsonValue
 
@@ -703,14 +703,10 @@ class RedisJobBackend:
         return False
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:
-        # Redis TTLs own expiry; scan is best-effort for tests/stubs without SCAN.
+        # Prefer SCAN over KEYS to avoid blocking production Redis.
         removed = 0
         cutoff = time.time() - older_than_seconds
-        keys_fn = getattr(self._client, "keys", None)
-        if not callable(keys_fn):
-            return 0
-        for key in cast(Iterable[object], keys_fn(f"{self._prefix}*")):
-            key_s = self._decode(cast(bytes | str | None, key)) or ""
+        for key_s in _iter_redis_keys(self._client, f"{self._prefix}*"):
             if ":idem:" in key_s:
                 continue
             raw = self._decode(self._client.get(key_s))
@@ -802,6 +798,37 @@ class RedisJobBackend:
         # Contended beyond retries — return latest known status without blind overwrite.
         data = self._load(job_id)
         return _status_from_dict(data) if data is not None else None
+
+
+def _iter_redis_keys(client: object, pattern: str) -> list[str]:
+    """Prefer SCAN; fall back to KEYS only for test stubs without scan."""
+    scan_fn = getattr(client, "scan_iter", None)
+    if callable(scan_fn):
+        return [
+            (k.decode("utf-8") if isinstance(k, bytes) else str(k))
+            for k in cast(Iterable[object], scan_fn(match=pattern))
+        ]
+    scan = getattr(client, "scan", None)
+    if callable(scan):
+        keys: list[str] = []
+        cursor: int | bytes | str = 0
+        while True:
+            result = cast(
+                tuple[Any, Iterable[object]], scan(cursor=cursor, match=pattern, count=100)
+            )
+            cursor, batch = result
+            for key in batch:
+                keys.append(key.decode("utf-8") if isinstance(key, bytes) else str(key))
+            if cursor in {0, b"0", "0"}:
+                break
+        return keys
+    keys_fn = getattr(client, "keys", None)
+    if not callable(keys_fn):
+        return []
+    return [
+        (k.decode("utf-8") if isinstance(k, bytes) else str(k))
+        for k in cast(Iterable[object], keys_fn(pattern))
+    ]
 
 
 _backend: JobBackend = InMemoryJobBackend()

@@ -21,7 +21,7 @@ Script index: [`scripts/README.md`](https://github.com/eddiethedean/hedron/blob/
 
 ## How to verify (evaluator)
 
-1. Confirm package versions on PyPI match your pin (for example `hedron==0.25.0`).
+1. Confirm package versions on PyPI match your pin (for example `hedron==0.25.1`).
 2. Prefer GitHub Release assets for **`v0.25.1`** when present (SBOM / license /
    evidence-bundle). Maintainers should attach these on release day; if absent,
    regenerate from the tagged checkout.

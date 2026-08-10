@@ -186,9 +186,12 @@ class SQLAlchemyDataSource(Generic[T]):
         if q.search:
             clauses = []
             fields = q.allowlisted_filter_fields or frozenset()
+            # Escape LIKE metacharacters so user % / _ cannot broaden matches.
+            escaped = q.search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+            pattern = f"%{escaped}%"
             for name in fields:
                 col = _column_from_selectable(stmt, name)
-                clauses.append(col.ilike(f"%{q.search}%"))  # type: ignore[union-attr]
+                clauses.append(col.ilike(pattern, escape="\\"))  # type: ignore[union-attr]
             if clauses:
                 stmt = stmt.where(or_(*clauses))  # type: ignore[union-attr]
         if q.projection:

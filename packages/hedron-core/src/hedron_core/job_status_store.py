@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import secrets
 import time
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from typing import Any, cast
 
 from hedron_core.jobs import (
@@ -95,18 +95,27 @@ class RedisStatusStore:
             ex=self._ttl,
         )
 
-    def _store_cas(self, data: Mapping[str, object], *, expected_updated_at: float) -> bool:
-        """Compare-and-swap store when Redis WATCH/pipeline is available."""
+    def _store_cas(
+        self,
+        data: Mapping[str, object],
+        *,
+        expected_updated_at: float,
+        sticky_cancel: bool = True,
+    ) -> bool:
+        """Compare-and-swap store when Redis WATCH/pipeline is available.
+
+        Fail closed without pipeline/WATCH — never blind-overwrite production job state.
+        When ``sticky_cancel`` is true (default), preserve ``cancel_requested`` from the
+        current record. Snapshot restore sets ``sticky_cancel=False`` so a failed broker
+        cancel can roll status back exactly.
+        """
         key = self._key(str(data["job_id"]))
         pipeline_factory = getattr(self._client, "pipeline", None)
         if not callable(pipeline_factory):
-            latest = self._load(str(data["job_id"]))
-            merged = dict(data)
-            if latest is not None and latest.get("cancel_requested"):
-                merged["cancel_requested"] = True
-            _apply_cancel_sticky(merged)
-            self._store(merged)
-            return True
+            raise RuntimeError(
+                "RedisStatusStore requires a client with pipeline()/WATCH for CAS; "
+                "blind overwrite is not allowed for production job state."
+            )
         pipe = cast(RedisPipeline, pipeline_factory())
         watch_error: type[BaseException] | None = None
         try:
@@ -115,6 +124,11 @@ class RedisStatusStore:
             watch_error = _WatchError
         except Exception:
             watch_error = None
+        if watch_error is None:
+            raise RuntimeError(
+                "RedisStatusStore requires redis.exceptions.WatchError for CAS; "
+                "install redis-py or use a client with WATCH support."
+            )
         for _ in range(8):
             try:
                 pipe.watch(key)
@@ -127,9 +141,10 @@ class RedisStatusStore:
                     pipe.unwatch()
                     return False
                 merged = dict(data)
-                if current.get("cancel_requested"):
-                    merged["cancel_requested"] = True
-                _apply_cancel_sticky(merged)
+                if sticky_cancel:
+                    if current.get("cancel_requested"):
+                        merged["cancel_requested"] = True
+                    _apply_cancel_sticky(merged)
                 pipe.multi()
                 pipe.set(
                     key,
@@ -139,22 +154,33 @@ class RedisStatusStore:
                 pipe.execute()
                 return True
             except Exception as exc:
-                if watch_error is not None and isinstance(exc, watch_error):
+                if isinstance(exc, watch_error):
                     continue
-                if watch_error is not None:
-                    raise
-                latest = self._load(str(data["job_id"]))
-                merged = dict(data)
-                if latest is not None and latest.get("cancel_requested"):
-                    merged["cancel_requested"] = True
-                _apply_cancel_sticky(merged)
-                self._store(merged)
-                return True
+                raise
         return False
 
-    def restore_snapshot(self, data: Mapping[str, object]) -> None:
-        """Blind-write a prior snapshot (used when broker cancel fails after status update)."""
-        self._store(dict(data))
+    def restore_snapshot(
+        self,
+        data: Mapping[str, object],
+        *,
+        expected_updated_at: float | None = None,
+    ) -> bool:
+        """Restore a prior snapshot when broker cancel fails after a status update.
+
+        When ``expected_updated_at`` is set, restore only via CAS so a concurrent
+        worker ``mark()`` is not rolled back. Without an expected version, refuse
+        (fail closed) — blind restore is no longer supported.
+        """
+        if expected_updated_at is None:
+            raise RuntimeError(
+                "RedisStatusStore.restore_snapshot requires expected_updated_at for CAS; "
+                "blind overwrite is not allowed."
+            )
+        return self._store_cas(
+            dict(data),
+            expected_updated_at=expected_updated_at,
+            sticky_cancel=False,
+        )
 
     def delete(self, job_id: str) -> None:
         """Remove a job body and any idempotency pointer it owns."""
@@ -361,14 +387,10 @@ class RedisStatusStore:
         return _status_from_dict(data) if data is not None else None
 
     def cleanup_expired(self, *, older_than_seconds: float = 86400) -> int:
-        keys_fn = getattr(self._client, "keys", None)
-        if not callable(keys_fn):
-            return 0
+        # Prefer SCAN over KEYS to avoid blocking production Redis.
         removed = 0
         cutoff = time.time() - older_than_seconds
-        raw_keys = cast(list[Any], keys_fn(f"{self._prefix}*"))
-        for key in raw_keys:
-            key_s = key.decode("utf-8") if isinstance(key, bytes) else str(key)
+        for key_s in _iter_redis_keys(self._client, f"{self._prefix}*"):
             if ":idem:" in key_s:
                 continue
             raw = self._decode(self._client.get(key_s))
@@ -389,3 +411,32 @@ class RedisStatusStore:
                     self._client.delete(key_s)
                 removed += 1
         return removed
+
+
+def _iter_redis_keys(client: object, pattern: str) -> list[str]:
+    """Prefer SCAN; fall back to KEYS only for test stubs without scan."""
+    scan_fn = getattr(client, "scan_iter", None)
+    if callable(scan_fn):
+        return [
+            (k.decode("utf-8") if isinstance(k, bytes) else str(k))
+            for k in cast(Iterable[Any], scan_fn(match=pattern))
+        ]
+    scan = getattr(client, "scan", None)
+    if callable(scan):
+        keys: list[str] = []
+        cursor: int | bytes | str = 0
+        while True:
+            result = cast(tuple[Any, Iterable[Any]], scan(cursor=cursor, match=pattern, count=100))
+            cursor, batch = result
+            for key in batch:
+                keys.append(key.decode("utf-8") if isinstance(key, bytes) else str(key))
+            if cursor in {0, b"0", "0"}:
+                break
+        return keys
+    keys_fn = getattr(client, "keys", None)
+    if not callable(keys_fn):
+        return []
+    return [
+        (k.decode("utf-8") if isinstance(k, bytes) else str(k))
+        for k in cast(list[Any], keys_fn(pattern))
+    ]

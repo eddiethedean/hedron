@@ -524,11 +524,17 @@ STALE = [
     re.compile(r"currently incompatible on PyPI", re.I),
     re.compile(r"chart wheels are unavailable", re.I),
     re.compile(r"do not install\*\*\)", re.I),
-    # Stale last-published claims after v0.25.1.
-    re.compile(r"last published[` *]*v0\.25\.0", re.I),
+    # Stale last-published / tip claims after v0.25.1 (allow phase "Published as v0.25.0").
+    re.compile(r"last published[\s`*]*v0\.25\.0", re.I | re.M),
     re.compile(r"Last published:\s*<strong>v0\.25\.0</strong>", re.I),
     re.compile(r"current published(?: line)?[^\n]*v0\.25\.0", re.I),
     re.compile(r"Published/Last published \*\*0\.25\.0\*\*", re.I),
+    re.compile(r"Train:\s*`0\.25\.0`\s*\(Published\)", re.I),
+    re.compile(r"\| Version \| \*\*0\.25\.0\*\*", re.I),
+    re.compile(r"hedron-eyebrow[^>]*>[^<\n]*v0\.25\.0", re.I),
+    re.compile(r"current train \*\*0\.25\.0\*\*", re.I),
+    re.compile(r"Living train:\s*\*\*0\.25\.0\*\*", re.I),
+    re.compile(r"Ops-oriented narrative for \*\*Hedron 0\.25\.0\*\*", re.I),
 ]
 
 # Adopter-facing jargon / maturity collisions banned on checked entry pages.
@@ -671,7 +677,7 @@ def _check_unbounded_pins() -> list[str]:
             ):
                 failures.append(
                     f"{path.relative_to(ROOT)}:{lineno}: charts/sample-kit install lacks the "
-                    f"0.25-compatible floor (charts >=0.1.6 / flagship >=0.25.2): "
+                    f"0.25-compatible floor (charts >=0.1.6 / flagship >=0.25.1): "
                     f"{line.strip()[:120]}"
                 )
     return failures

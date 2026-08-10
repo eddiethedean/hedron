@@ -786,46 +786,46 @@ def explorer_router() -> APIRouter:
                 {"detail": "CSRF policy required for simulate"},
                 status_code=403,
             )
-        # Fail closed when csrf_enabled is omitted on duck-typed policies.
-        if getattr(policy, "csrf_enabled", True):
-            from hedron_core.csrf import validate_double_submit
+        # Simulate always requires CSRF validation (ignore csrf_enabled=False).
+        # Deny when no strategy can validate rather than silently skipping.
+        from hedron_core.csrf import validate_double_submit
 
-            strategy = None
-            resolve = getattr(policy, "resolve_csrf_strategy", None)
-            if callable(resolve):
-                try:
-                    strategy = resolve()
-                except Exception:  # noqa: BLE001 — duck-typed policies
-                    strategy = None
-            csrf_name = (
-                getattr(strategy, "cookie_name", None)
-                or getattr(policy, "csrf_cookie_name", None)
-                or "hedron_csrf"
-            )
-            cookie = request.cookies.get(csrf_name)
-            header_name = (
-                getattr(strategy, "header_name", None)
-                or getattr(policy, "csrf_header_name", None)
-                or "X-CSRF-Token"
-            )
-            header = (
-                request.headers.get(header_name)
-                or request.headers.get("X-CSRF-Token")
-                or request.headers.get("X-Hedron-CSRF")
-            )
-            form_token = None
-            validator = getattr(request.app.state, "hedron_csrf_validate", None)
-            if callable(validator):
-                try:
-                    result = validator(request, policy)
-                    if hasattr(result, "__await__"):
-                        await result  # type: ignore[misc]
-                except Exception:  # noqa: BLE001 — FastAPI CSRF raises HTTPException
-                    return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
-            elif not validate_double_submit(
-                cookie_token=cookie, header_token=header, form_token=form_token
-            ):
+        strategy = None
+        resolve = getattr(policy, "resolve_csrf_strategy", None)
+        if callable(resolve):
+            try:
+                strategy = resolve()
+            except Exception:  # noqa: BLE001 — duck-typed policies
+                strategy = None
+        csrf_name = (
+            getattr(strategy, "cookie_name", None)
+            or getattr(policy, "csrf_cookie_name", None)
+            or "hedron_csrf"
+        )
+        cookie = request.cookies.get(csrf_name)
+        header_name = (
+            getattr(strategy, "header_name", None)
+            or getattr(policy, "csrf_header_name", None)
+            or "X-CSRF-Token"
+        )
+        header = (
+            request.headers.get(header_name)
+            or request.headers.get("X-CSRF-Token")
+            or request.headers.get("X-Hedron-CSRF")
+        )
+        form_token = None
+        validator = getattr(request.app.state, "hedron_csrf_validate", None)
+        if callable(validator):
+            try:
+                result = validator(request, policy)
+                if hasattr(result, "__await__"):
+                    await result  # type: ignore[misc]
+            except Exception:  # noqa: BLE001 — FastAPI CSRF raises HTTPException
                 return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
+        elif not validate_double_submit(
+            cookie_token=cookie, header_token=header, form_token=form_token
+        ):
+            return JSONResponse({"detail": "CSRF validation failed"}, status_code=403)
 
         name = payload.get("route")
         if not isinstance(name, str) or not name:

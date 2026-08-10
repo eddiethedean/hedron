@@ -41,10 +41,10 @@ class SseResponse(StreamingResponse):
         background: BackgroundTask | None = None,
     ) -> None:
         hdrs = {
+            **dict(headers or {}),
             "Cache-Control": "no-store",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
-            **dict(headers or {}),
         }
         for key, value in hdrs.items():
             _reject_header_controls(key, value)

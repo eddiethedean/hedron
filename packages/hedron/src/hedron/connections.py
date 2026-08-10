@@ -56,14 +56,17 @@ def _dispose_instance(instance: Any) -> None:
     for attr in ("close", "dispose", "shutdown"):
         method = getattr(instance, attr, None)
         if callable(method):
-            with suppress(Exception):
-                result = method()
-                if hasattr(result, "__await__"):
-                    # Sync dispose path cannot await; prefer close_all_async.
-                    with suppress(Exception):
-                        close = getattr(result, "close", None)
-                        if callable(close):
-                            close()
+            result = method()
+            if hasattr(result, "__await__"):
+                # Sync dispose cannot await — fail closed so callers use close_all_async.
+                with suppress(Exception):
+                    close = getattr(result, "close", None)
+                    if callable(close):
+                        close()
+                raise RuntimeError(
+                    "Connection dispose returned an awaitable from the sync path; "
+                    "use close_all_async() / lifespan async shutdown instead."
+                )
             return
 
 

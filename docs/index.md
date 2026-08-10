@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · v0.25.0</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · v0.25.1</div>
 
 # Build interactive web UIs without leaving Python.<br><span class="hedron-gradient-text">Typed components. FastAPI underneath.</span>
 

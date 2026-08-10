@@ -35,6 +35,8 @@ See [Deployment](../guides/deployment.md) · [Ship a Hedron app](../guides/ship.
 
 Untrusted forwarded headers are ignored by default (fail closed for spoofed prefixes).
 
+`normalize_mount_path` also rejects path segments of `.` / `..` (including percent-encoded `%2e` forms) so cookie `Path` and redirect prefixes cannot escape the intended mount. Prefixed local URLs are re-checked with `is_local_path`.
+
 ## Parameters / Returns
 
 | Helper | Parameters (summary) | Returns |

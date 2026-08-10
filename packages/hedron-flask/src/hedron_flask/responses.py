@@ -105,18 +105,26 @@ def _authorize_component_htmx(
         raise
 
 
-def _maybe_prepare(value: NodeLike | Component[Any] | RenderResult) -> None:
-    """Best-effort prepare_tree before sync render (WSGI / no running loop).
+def _maybe_prepare(
+    value: NodeLike | Component[Any] | RenderResult,
+    *,
+    skip_prepare: bool = False,
+) -> None:
+    """Run prepare_tree before sync render (WSGI / no running loop).
 
-    When an event loop is already running, skip — callers must await prepare explicitly.
+    When an event loop is already running, refuse unless ``skip_prepare`` is set
+    (ASGI callers must await ``prepare_tree`` then pass ``skip_prepare=True``).
     """
-    if isinstance(value, RenderResult):
+    if skip_prepare or isinstance(value, RenderResult):
         return
     from hedron_core.async_bridge import run_prepare, running_loop
     from hedron_core.prepare import prepare_tree
 
     if running_loop():
-        return
+        raise RuntimeError(
+            "component prepare cannot run while an event loop is already running; "
+            "await prepare_tree(...) then pass skip_prepare=True, or use respond_async()."
+        )
     run_prepare(lambda: prepare_tree(value))
 
 
@@ -155,10 +163,11 @@ def _render_body(
     headers: Mapping[str, str] | None = None,
     context: RenderContext | None = None,
     mode: RenderMode | None = None,
+    skip_prepare: bool = False,
 ) -> RenderResult:
     if isinstance(value, RenderResult):
         return value
-    _maybe_prepare(value)
+    _maybe_prepare(value, skip_prepare=skip_prepare)
     hdrs = dict(headers) if headers is not None else dict(flask_request.headers)
     selected_mode = render_mode_for_request(hdrs, force=mode)
     render_context = context or _default_render_context()
@@ -199,6 +208,7 @@ def component_response(
     authenticated: bool = False,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
+    skip_prepare: bool = False,
 ) -> Response:
     if headers_map is not None:
         hdrs: Mapping[str, str] = headers_map
@@ -212,7 +222,9 @@ def component_response(
         )
     except FragmentRegionError as exc:
         return Response(str(exc), status=403, mimetype="text/plain")
-    result = _render_body(value, headers=hdrs, context=context, mode=mode)
+    result = _render_body(
+        value, headers=hdrs, context=context, mode=mode, skip_prepare=skip_prepare
+    )
     headers = dict(result.headers)
     _merge_vary(headers)
     _apply_auth_cache_headers(headers, authenticated=authenticated)
@@ -235,6 +247,7 @@ def interaction_response(
     authenticated: bool = False,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
+    skip_prepare: bool = False,
 ) -> Response:
     from hedron_core.interaction import apply_allow_undeclared_targets
 
@@ -287,6 +300,7 @@ def interaction_response(
             headers=headers_map,
             context=context,
             mode=mode or RenderMode.FRAGMENT,
+            skip_prepare=skip_prepare,
         )
         body = rendered.html
     return Response(

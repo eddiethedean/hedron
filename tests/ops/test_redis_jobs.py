@@ -9,6 +9,8 @@ import sys
 from types import ModuleType
 from typing import Any
 
+import pytest
+
 from hedron_core.jobs import JobState, RedisJobBackend
 
 
@@ -66,19 +68,22 @@ class _SharedRedis:
 
 
 class _SharedPipeline:
-    """Minimal WATCH/MULTI/EXEC stub for RedisJobBackend CAS tests."""
+    """WATCH/MULTI/EXEC stub that raises WatchError on concurrent mutation."""
 
     def __init__(self, client: _SharedRedis) -> None:
         self._client = client
         self._watched: str | None = None
+        self._watched_value: str | None = None
         self._buffer: list[tuple[str, tuple[object, ...], dict[str, object]]] = []
         self._in_multi = False
 
     def watch(self, key: str) -> None:
         self._watched = key
+        self._watched_value = self._client._store.get(key)
 
     def unwatch(self) -> None:
         self._watched = None
+        self._watched_value = None
         self._buffer.clear()
         self._in_multi = False
 
@@ -99,6 +104,11 @@ class _SharedPipeline:
         self._buffer.append(("set", (key, value), {"ex": ex, "nx": nx}))
 
     def execute(self) -> list[object]:
+        if self._watched is not None:
+            current = self._client._store.get(self._watched)
+            if current != self._watched_value:
+                self.unwatch()
+                raise WatchError("watched key changed")
         results: list[object] = []
         for op, args, kwargs in self._buffer:
             if op == "set":
@@ -122,3 +132,27 @@ def test_redis_job_backend_shares_state_via_client_protocol() -> None:
     marked = b.mark(handle.job_id, JobState.CANCELLED)
     assert marked is not None
     assert a.get(handle.job_id) is not None
+
+
+def test_redis_job_backend_cas_contends_on_watch() -> None:
+    """Concurrent mutation during WATCH raises WatchError and retries safely."""
+    shared: Any = _SharedRedis()
+    backend = RedisJobBackend(shared)
+    handle = backend.submit("demo", {"n": 1}, tenant_id="t")
+    key = f"h1:job:{handle.job_id}"
+    original = shared.get(key)
+    assert original is not None
+
+    pipe = shared.pipeline()
+    pipe.watch(key)
+    # Mutate under another client while watched.
+    shared.set(key, original.replace('"queued"', '"running"'))
+    pipe.multi()
+    pipe.set(key, original)
+    with pytest.raises(WatchError):
+        pipe.execute()
+
+    # Backend mark still succeeds via CAS retry after contention.
+    marked = backend.mark(handle.job_id, JobState.SUCCEEDED)
+    assert marked is not None
+    assert marked.state is JobState.SUCCEEDED

@@ -376,6 +376,21 @@ class SafeUrl:
                 raise _url_error(f"Unsupported or encoded URL scheme {scanned_scheme!r}", purpose)
             if scanned_scheme in {"http", "https"} and not allow_external:
                 raise _url_error("External HTTP(S) URLs require allow_external=True", purpose)
+            # Form/nav/redirect same-origin URLs must be root-relative, or a
+            # same-document fragment for navigation (`#id`).
+            if purpose in {
+                UrlPurpose.NAVIGATION,
+                UrlPurpose.FORM_ACTION,
+                UrlPurpose.REDIRECT,
+            }:
+                ok_root = raw.startswith("/") and not raw.startswith("//")
+                ok_fragment = purpose is UrlPurpose.NAVIGATION and raw.startswith("#")
+                if not (ok_root or ok_fragment):
+                    raise _url_error(
+                        "Relative URLs for navigation/form/redirect must be root-relative "
+                        "(start with /) or a same-document fragment (#…) for navigation",
+                        purpose,
+                    )
         else:
             raise _url_error(f"Unsupported URL scheme {scheme!r}", purpose)
 

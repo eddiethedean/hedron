@@ -10,7 +10,7 @@ Short diligence sheet for security, procurement, and architecture reviewers.
 | Item | Value |
 |---|---|
 | License | MIT |
-| Version | **0.25.0** (Beta; Published — pin for production) |
+| Version | **v0.25.1** (Beta; Published — pin for production; workspace candidate `0.25.2` not tagged) |
 | Scheduled 1.0 / commercial SLA | **None** |
 | Support | Community GitHub Issues only — [Support](support.md) |
 | Primary maintainer contact | Package author metadata / GitHub org owner |

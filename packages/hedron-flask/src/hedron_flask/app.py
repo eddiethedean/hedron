@@ -221,6 +221,13 @@ class HedronFlask:
         fragment_regions: Sequence[FragmentRegion | str] | None = None,
         allow_undeclared_targets: bool = False,
     ):
+        from hedron_core.async_bridge import running_loop
+
+        if running_loop():
+            raise RuntimeError(
+                "HedronFlask.respond() cannot prepare components while an event loop "
+                "is running; await respond_async(...) instead."
+            )
         if (
             self.csrf_protect
             and self.security_policy.csrf_enabled
@@ -251,6 +258,62 @@ class HedronFlask:
             authenticated=self.auth_signal(request).authenticated,
             fragment_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
+        )
+
+    async def respond_async(
+        self,
+        value: NodeLike | Component[Any] | InteractionResult | RenderResult,
+        request: Request,
+        *,
+        context: RenderContext | None = None,
+        mode: RenderMode | None = None,
+        extra_headers: Mapping[str, str] | None = None,
+        fragment_regions: Sequence[FragmentRegion | str] | None = None,
+        allow_undeclared_targets: bool = False,
+    ):
+        """Async-safe respond that awaits ``prepare_tree`` before rendering."""
+        from hedron_core.prepare import prepare_tree
+
+        if (
+            self.csrf_protect
+            and self.security_policy.csrf_enabled
+            and request.method.upper() in _UNSAFE_METHODS
+        ):
+            validate_csrf(
+                request,
+                cookie_name=self.csrf_cookie_name,
+                policy=self.security_policy,
+            )
+        if isinstance(value, InteractionResult):
+            if value.content is not None:
+                await prepare_tree(value.content)
+            for update in value.oob:
+                await prepare_tree(update.content)
+            return interaction_response(
+                value,
+                context=context,
+                mode=mode,
+                extra_headers=extra_headers,
+                headers_map=dict(request.headers),
+                authenticated=self.auth_signal(request).authenticated,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+                skip_prepare=True,
+            )
+        if (
+            isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__")
+        ) and not isinstance(value, RenderResult):
+            await prepare_tree(value)  # type: ignore[arg-type]
+        return component_response(
+            value,
+            context=context,
+            mode=mode,
+            extra_headers=extra_headers,
+            headers_map=dict(request.headers),
+            authenticated=self.auth_signal(request).authenticated,
+            fragment_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+            skip_prepare=True,
         )
 
     def auth_signal(self, request: Request | None = None) -> AuthSignal:

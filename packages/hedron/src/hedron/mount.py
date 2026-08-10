@@ -33,7 +33,14 @@ class MountPath:
 
 
 def prefix_local_path(url: str, mount: str) -> str:
-    """Prefix a local absolute path with ``mount`` once (no double-prefix)."""
+    """Prefix a local absolute path with ``mount`` once (no double-prefix).
+
+    Returns ``url`` unchanged when the mount is empty/rejected or when the
+    prefixed result would fail :func:`hedron_core.htmx_contract.is_local_path`
+    (defense in depth against dirty mounts).
+    """
+    from hedron_core.htmx_contract import is_local_path
+
     normalized = normalize_mount_path(mount)
     if not normalized:
         return url
@@ -44,9 +51,11 @@ def prefix_local_path(url: str, mount: str) -> str:
         return url
     if url == normalized or url.startswith(normalized + "/"):
         return url
-    if url == "/":
-        return normalized + "/"
-    return normalized + url
+    prefixed = normalized + "/" if url == "/" else normalized + url
+    # Refuse to emit a Location/path that is_local_path would reject.
+    if not is_local_path(prefixed):
+        return url
+    return prefixed
 
 
 def resolve_mount_path_from_environ(

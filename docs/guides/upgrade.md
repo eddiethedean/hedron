@@ -1,6 +1,6 @@
 # Upgrade
 
-**Hedron 0.25.0** — pin `hedron>=0.25.0,<0.26`. Production archetype and extras quarantine
+**Hedron 0.25.x** — pin `hedron>=0.25.0,<0.26`. Production archetype and extras quarantine
 are Verified; polling remains the Supported live-status story. See
 [What's ready](whats-ready.md) and [What's new in 0.25](whats-new-0.25.md).
 

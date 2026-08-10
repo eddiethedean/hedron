@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast
 
 from hedron_core.job_status_store import RedisStatusStore, require_redis_status_client
 from hedron_core.jobs import JobHandle, JobState, JobStatus, RedisClient
@@ -84,6 +84,7 @@ class CeleryJobBackend:
         ok = self._store.request_cancel(job_id, auth_subject=auth_subject, tenant_id=tenant_id)
         if not ok:
             return False
+        cancelled = self._store._load(job_id)
         try:
             self._app.control.revoke(job_id, terminate=False)
         except Exception:
@@ -91,8 +92,20 @@ class CeleryJobBackend:
                 "HED-JOB-0001 Celery revoke failed for job_id=%s; restoring prior status",
                 job_id,
             )
-            if prior is not None:
-                self._store.restore_snapshot(prior)
+            if prior is not None and cancelled is not None:
+                # CAS restore only if no concurrent mark advanced the record.
+                restored = self._store.restore_snapshot(
+                    prior,
+                    expected_updated_at=float(
+                        cast(float | int | str, cancelled.get("updated_at", -1))
+                    ),
+                )
+                if not restored:
+                    _logger.warning(
+                        "HED-JOB-0001 Celery revoke restore skipped for job_id=%s "
+                        "(status advanced concurrently)",
+                        job_id,
+                    )
             return False
         return True
 

@@ -47,6 +47,7 @@ def _convert(
     *,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
+    skip_prepare: bool = False,
 ) -> HttpResponse:
     from hedron_django.csrf import DjangoCsrfError, seed_csrf_cookie, validate_csrf
 
@@ -66,6 +67,7 @@ def _convert(
             authenticated=authenticated,
             fragment_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
+            skip_prepare=skip_prepare,
         )
     if isinstance(value, RenderResult):
         return component_response(
@@ -74,6 +76,7 @@ def _convert(
             authenticated=authenticated,
             fragment_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
+            skip_prepare=skip_prepare,
         )
     if isinstance(value, (Component, str)) or hasattr(value, "__hedron_component__"):
         return component_response(
@@ -82,6 +85,7 @@ def _convert(
             authenticated=authenticated,
             fragment_regions=fragment_regions,
             allow_undeclared_targets=allow_undeclared_targets,
+            skip_prepare=skip_prepare,
         )
     if isinstance(value, HttpResponse):
         return value
@@ -112,6 +116,7 @@ async def _convert_async(
         request,
         fragment_regions=fragment_regions,
         allow_undeclared_targets=allow_undeclared_targets,
+        skip_prepare=True,
     )
 
 

@@ -35,6 +35,10 @@ def test_normalize_and_cookie_path() -> None:
     assert normalize_mount_path("//evil.example") == ""
     assert normalize_mount_path("https://evil.example/app") == ""
     assert prefix_local_path("/login", "//evil.example") == "/login"
+    # Traversal / encoded-dot segments must fail closed.
+    assert normalize_mount_path("/app/../evil") == ""
+    assert normalize_mount_path("/app/%2e%2e/evil") == ""
+    assert prefix_local_path("/login", "/app/../evil") == "/login"
 
 
 def test_prefix_local_path_once() -> None:
