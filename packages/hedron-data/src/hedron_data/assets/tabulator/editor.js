@@ -609,20 +609,29 @@
     customElements.define(TAG, HedronDataEditor);
   }
 
+  const HOST_SELECTOR = "[data-hedron-module='hedron-data:tabulator-editor']";
+
+  function matchingElements(root, selector) {
+    const elements = [];
+    if (root && root.matches && root.matches(selector)) elements.push(root);
+    if (root && root.querySelectorAll) {
+      elements.push(...root.querySelectorAll(selector));
+    }
+    return elements;
+  }
+
   function enhance(root) {
-    root
-      .querySelectorAll("[data-hedron-module='hedron-data:tabulator-editor']")
-      .forEach((host) => {
-        if (host.querySelector(TAG)) return;
-        const el = document.createElement(TAG);
-        host.appendChild(el);
-        const fallback = host.querySelector(":scope > .hedron-data-editor-fallback");
-        if (fallback) fallback.hidden = true;
-      });
+    matchingElements(root, HOST_SELECTOR).forEach((host) => {
+      if (host.querySelector(TAG)) return;
+      const el = document.createElement(TAG);
+      host.appendChild(el);
+      const fallback = host.querySelector(":scope > .hedron-data-editor-fallback");
+      if (fallback) fallback.hidden = true;
+    });
   }
 
   function disposeAll(root) {
-    root.querySelectorAll(TAG).forEach((el) => el.dispose && el.dispose());
+    matchingElements(root, TAG).forEach((el) => el.dispose && el.dispose());
   }
 
   const api = {
