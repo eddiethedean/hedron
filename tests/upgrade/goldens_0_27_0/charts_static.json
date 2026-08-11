@@ -1,0 +1,19 @@
+{
+  "baseline": "v0.27.0",
+  "supported_keys": [
+    "matplotlib_static_svg_png",
+    "beginner_line_chart_static",
+    "beginner_bar_chart_static",
+    "beginner_area_chart_static",
+    "beginner_scatter_chart_static",
+    "accessible_tabular_text_alternatives",
+    "csp_safe_local_assets",
+    "bounded_payloads",
+    "lifecycle_cleanup",
+    "browser_print_export_evidence"
+  ],
+  "beginner_components": ["LineChart", "BarChart", "AreaChart", "ScatterChart"],
+  "a11y_markers": ["role", "title", "description", "tabular_fallback"],
+  "payload_budget_codes": ["HED-CHART-0002", "HED-CHART-0003"],
+  "static_adapter": "matplotlib"
+}

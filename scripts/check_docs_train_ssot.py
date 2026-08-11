@@ -170,17 +170,31 @@ def check_text(path: Path, text: str, facts: ReleaseFacts = FACTS) -> list[str]:
     failures: list[str] = []
     lines = text.splitlines()
     for index, line in enumerate(lines, start=1):
-        for claim in CURRENT_CLAIM_VERSION.finditer(line):
-            value = next((group for group in claim.groups() if group), None)
-            if value is None:
-                continue
-            if not _version_matches_current(value, facts) and not _line_allows_previous_support(
-                line, facts
-            ):
-                failures.append(
-                    f"{path}:{index}: current/living claim uses {value}; "
-                    f"expected {facts.train_line} or v{facts.published_version}"
-                )
+        # Soft-wrap only when this line starts a living/current claim but the
+        # version/train token continues on the next line (e.g. living **0.27**\ntrain).
+        claim_windows = [line]
+        if index < len(lines):
+            lower = line.lower()
+            incomplete = bool(
+                re.search(r"\b(?:living|current(?:ly)?)\b", lower)
+                and re.search(r"0\.\d+", line)
+                and not re.search(r"\b(?:train|line)\b", lower)
+                and not CURRENT_CLAIM_VERSION.search(line)
+            )
+            if incomplete:
+                claim_windows.append(f"{line.rstrip()} {lines[index].strip()}")
+        for scan in claim_windows:
+            for claim in CURRENT_CLAIM_VERSION.finditer(scan):
+                value = next((group for group in claim.groups() if group), None)
+                if value is None:
+                    continue
+                if not _version_matches_current(value, facts) and not _line_allows_previous_support(
+                    scan, facts
+                ):
+                    failures.append(
+                        f"{path}:{index}: current/living claim uses {value}; "
+                        f"expected {facts.train_line} or v{facts.published_version}"
+                    )
 
         if MATURITY_COLLISION.search(line):
             failures.append(f"{path}:{index}: ambiguous maturity phrase: {line.strip()}")
@@ -218,7 +232,8 @@ def check_text(path: Path, text: str, facts: ReleaseFacts = FACTS) -> list[str]:
                     f"{path}:{index}: install for {match.group('name')} must use "
                     f"{expected}; found {constraint or 'no version constraint'}"
                 )
-    return failures
+    # Soft-wrap joins can duplicate the same claim; keep stable unique messages.
+    return list(dict.fromkeys(failures))
 
 
 def _has_compatible_satellite_floor(line: str, facts: ReleaseFacts = FACTS) -> bool:

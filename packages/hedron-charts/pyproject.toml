@@ -1,6 +1,6 @@
 [project]
 name = "hedron-charts"
-version = "0.1.7"
+version = "0.1.9"
 description = "Visualization adapters and chart components for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -21,7 +21,7 @@ keywords = [
     "visualization",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
@@ -36,7 +36,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.27.0,<0.28",
+    "hedron-core>=0.28.1,<0.29",
 ]
 
 [project.optional-dependencies]

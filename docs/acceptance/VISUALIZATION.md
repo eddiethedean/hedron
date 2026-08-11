@@ -3,12 +3,12 @@
 ## Adapters
 
 - [x] Matplotlib static output, Plotly interactive JSON, and Altair/Vega-Lite specifications follow
-  one lifecycle contract. *(unit/adapter evidence; interactive browser runtime pin Deferred as
-  `VIS-C06-002`)*
+  one lifecycle contract. *(unit/adapter evidence; interactive browser runtimes are Experimental —
+  vendored pins under SUPPLY-028 / INTERACTIVE-028, not Supported)*
 - [x] Optional packages are lazy and missing dependencies produce exact installation commands.
-- [ ] ~~Browser runtimes pinned/fingerprinted/offline~~ — **Deferred** (`VIS-C06-002`): host shims
-  fail closed; apps may supply runtimes; first-party pin/fingerprint remains 0.6.x maintenance /
-  0.7 evidence before advertising as supported.
+- [x] ~~Browser runtimes pinned/fingerprinted/offline~~ — **Experimental pins Verified** for
+  Plotly/Vega/Chart.js/ECharts/Mermaid/MapLibre digests (`RUNTIME_PINS`); hosts fail closed when
+  globals are missing; **not** production Auto defaults / Supported path (see `INTERACTIVE-028`).
 - [x] Payload and row limits prevent accidental large browser transfers.
 - [x] Raw executable callbacks, unapproved remote resources, and active content in chart/SVG
   fallback paths are rejected by an adversarial corpus. *(`VIS-C06-001` /
@@ -27,4 +27,5 @@
 ## Exit
 
 Matplotlib / `LineChart` path is verified for 0.6 closure. Interactive Plotly/Vega offline runtime
-pinning is explicitly Deferred (`VIS-C06-002`). See [release-gate-0.6.toml](release-gate-0.6.toml).
+pins ship as **Experimental** (see `VIS-C06-002` disposition → 0.28 `INTERACTIVE-028` /
+`SUPPLY-028`). See [release-gate-0.6.toml](release-gate-0.6.toml).

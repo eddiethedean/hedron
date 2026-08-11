@@ -37,6 +37,7 @@ Documentation source ownership and review rules:
 | `verify_pkg_25.py` | Phase **0.25** historical packet + archetype / landmines (`check_release_gate.py 0.25.0`) |
 | `verify_pkg_26.py` | Phase **0.26** living-train packet + production-grade graduation (`check_release_gate.py 0.26.0`) |
 | `verify_pkg_27.py` | Phase **0.27** satellite graduation packet (`check_release_gate.py 0.27.0`) |
+| `verify_pkg_28.py` | Phase **0.28** charts/native graduation packet (`check_release_gate.py 0.28.1`) |
 | `check_contract_027.py` | Satellite production-grade inventory / install guards |
 | `check_data_027.py` | `DATA-027` bounded data evidence |
 | `check_flask_027.py` | `FLASK-027` host-only Flask evidence |
@@ -59,7 +60,7 @@ Documentation source ownership and review rules:
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
 | `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
-| `verify_pkg_26.py` / `verify_pkg_25.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_27.py`**) |
+| `verify_pkg_26.py` / `verify_pkg_25.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_28.py`**) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

@@ -1,0 +1,44 @@
+# REVIEW-028 finding disposition ledger (redacted).
+# critical_high_open must be false for Verified.
+
+critical_high_open = false
+reviewer = "structured-maintainer-review"
+baseline = "v0.27.0"
+packet = "0.28"
+
+[[findings]]
+id = "REV-028-001"
+severity = "high"
+title = "Interactive Plotly/Altair must not be production Auto defaults"
+status = "fixed"
+notes = "RendererSpec.maturity=experimental; Auto skips experimental without as_=; INTERACTIVE-028 tests."
+
+[[findings]]
+id = "REV-028-002"
+severity = "high"
+title = "Chart adapters must reject CDN/active SVG/callbacks on Supported path"
+status = "fixed"
+notes = "reject_remote_urls / reject_active_svg / reject_callbacks + VIS-C06 SVG corpus + CHARTS-028 matrix."
+
+[[findings]]
+id = "REV-028-003"
+severity = "high"
+title = "Native absence/disable must not change escape semantics"
+status = "fixed"
+notes = "HEDRON_NATIVE_DISABLE + fallback suite; core serializer checks disable before preferring native."
+
+[[findings]]
+id = "REV-028-004"
+severity = "medium"
+title = "Experimental interactive hosts require served runtimes even when pinned"
+status = "accepted_risk"
+owner = "hedron"
+deadline = "interactive-followup"
+notes = "Hosts fail closed without window.Plotly/vegaEmbed; pins are Experimental not Supported."
+
+[[findings]]
+id = "REV-028-005"
+severity = "low"
+title = "macOS x86_64 wheels not Supported"
+status = "fixed"
+notes = "Inventory trimmed; native-wheels-028.toml excludes macosx_x86_64."

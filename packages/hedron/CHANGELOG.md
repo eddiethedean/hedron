@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.28.1] — 2026-08-10
+
+### Fixed
+
+- Tip honesty and adapter parity: native floor/docs, Auto Experimental remediation,
+  optional chart HTMX dispose, Flask/Django mount-aware static prefixes, live
+  `HEDRON_NATIVE_DISABLE`, and tip-hub/SSOT/CI footguns.
+
+### Changed
+
+- Coordinated Beta patch to `0.28.1` (pin `>=0.28.1,<0.29`).
+- Charts / sample-kit floors raised to `>=0.1.9,<0.2`; native to `>=0.1.2,<0.2`
+  (PyPI immutability for HTMX lifecycle / live native-disable fixes).
+
+## [0.28.0] — 2026-08-10
+
+### Added
+
+- Production-grade graduation for `hedron-charts` / `hedron-native` Supported
+  inventories (D-056 / RFC-0059): static/Matplotlib beginner charts, optional
+  native escape acceleration with `HEDRON_NATIVE_DISABLE` fallback, interactive
+  Auto quarantine, and SUPPLY-028 pin/SBOM evidence.
+
+### Changed
+
+- Coordinated Beta train bump to `0.28.0` (pin `>=0.28.0,<0.29`).
+- Charts / sample-kit floors raised to `>=0.1.8,<0.2`; native to `>=0.1.1,<0.2`.
+
+
 ## [0.27.0] — 2026-08-10
 
 ### Added

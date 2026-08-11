@@ -1,0 +1,239 @@
+name: Native wheels
+
+on:
+  workflow_dispatch:
+    inputs:
+      crates_only:
+        description: "Publish hedron-native to crates.io only (skip Python wheels/sdist)."
+        type: boolean
+        default: false
+      publish_pypi:
+        description: "After building wheels/sdist, publish them to PyPI."
+        type: boolean
+        default: false
+  push:
+    tags:
+      - "v*"
+  pull_request:
+    paths:
+      - "packages/hedron-native/**"
+      - ".github/workflows/native-wheels.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-wheels-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_NO_PROGRESS: "1"
+  CIBW_BUILD: "cp311-* cp312-* cp313-* cp314-*"
+  CIBW_SKIP: "pp* *-musllinux_*"
+  # manylinux containers do not inherit the host rustup from dtolnay/rust-toolchain.
+  CIBW_BEFORE_ALL_LINUX: >-
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
+    | sh -s -- -y --default-toolchain stable --profile default
+  CIBW_ENVIRONMENT_LINUX: 'PATH="$HOME/.cargo/bin:$PATH" RUSTUP_TOOLCHAIN=stable'
+  # macOS / Windows build on the host runner (no container).
+  CIBW_BEFORE_BUILD_MACOS: "rustup default stable"
+  CIBW_BEFORE_BUILD_WINDOWS: "rustup default stable"
+  CIBW_ENVIRONMENT: 'PATH="$HOME/.cargo/bin:$PATH"'
+
+jobs:
+  wheels:
+    name: ${{ matrix.os }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.crates_only) }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            arch: auto
+          - os: ubuntu-24.04-arm
+            arch: auto
+          - os: macos-14
+            arch: auto
+          - os: windows-latest
+            arch: auto
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+
+      - name: Install cibuildwheel
+        run: python -m pip install "cibuildwheel>=2.21,<3" "maturin>=1.7,<2"
+
+      - name: Build wheels
+        working-directory: packages/hedron-native
+        run: python -m cibuildwheel --output-dir wheelhouse
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hedron-native-wheels-${{ matrix.os }}
+          path: packages/hedron-native/wheelhouse/*.whl
+          if-no-files-found: error
+
+  sdist:
+    name: Source distribution
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.crates_only) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.12.1"
+
+      - name: Build sdist
+        run: |
+          uv build --package hedron-native --sdist --out-dir packages/hedron-native/dist
+
+      - name: Upload sdist
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hedron-native-sdist
+          path: packages/hedron-native/dist/*.tar.gz
+          if-no-files-found: error
+
+  publish-pypi:
+    name: Publish wheels to PyPI
+    needs: [wheels, sdist]
+    if: |
+      always() &&
+      !cancelled() &&
+      needs.wheels.result == 'success' &&
+      needs.sdist.result == 'success' &&
+      (
+        startsWith(github.ref, 'refs/tags/v') ||
+        (github.event_name == 'workflow_dispatch' && inputs.publish_pypi && !inputs.crates_only)
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.12.1"
+
+      - name: Download wheel artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: hedron-native-wheels-*
+          path: dist
+          merge-multiple: true
+
+      - name: Download sdist artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: hedron-native-sdist
+          path: dist
+
+      - name: Publish to PyPI
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${UV_PUBLISH_TOKEN:-}" ]; then
+            echo "PYPI_API_TOKEN secret is not set" >&2
+            exit 1
+          fi
+          shopt -s nullglob
+          files=(dist/*.whl dist/*.tar.gz)
+          if ((${#files[@]} == 0)); then
+            echo "No hedron-native artifacts to publish" >&2
+            exit 1
+          fi
+          # Drop plain linux_* tags; keep manylinux/musllinux/mac/win.
+          publish=()
+          for f in "${files[@]}"; do
+            base="$(basename "$f")"
+            case "$base" in
+              *-linux_*.whl|*-linux-*.whl)
+                if [[ "$base" != *manylinux* && "$base" != *musllinux* ]]; then
+                  echo "WARN: omitting unsupported platform wheel: $base" >&2
+                  continue
+                fi
+                ;;
+            esac
+            publish+=("$f")
+          done
+          if ((${#publish[@]} == 0)); then
+            echo "No publishable hedron-native artifacts after platform filter" >&2
+            exit 1
+          fi
+          set +e
+          out="$(uv publish --token "$UV_PUBLISH_TOKEN" "${publish[@]}" 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "$out"
+          if [ "$status" -eq 0 ]; then
+            exit 0
+          fi
+          if printf '%s' "$out" | grep -Eqi 'File already exists|filename-reuse'; then
+            echo "INFO: some artifacts already on PyPI; treating as success"
+            exit 0
+          fi
+          exit "$status"
+
+  crates-io:
+    name: Publish to crates.io
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [sdist]
+    # Tags always publish crates; workflow_dispatch only when crates_only.
+    if: |
+      always() &&
+      !cancelled() &&
+      (
+        startsWith(github.ref, 'refs/tags/v') ||
+        (github.event_name == 'workflow_dispatch' && inputs.crates_only)
+      ) &&
+      (needs.sdist.result == 'success' || needs.sdist.result == 'skipped')
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Publish hedron-native
+        working-directory: packages/hedron-native
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CARGO_REGISTRY_TOKEN:-}" ]; then
+            echo "CARGO_REGISTRY_TOKEN secret is not set" >&2
+            exit 1
+          fi
+          cargo publish --dry-run
+          set +e
+          out="$(cargo publish 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "$out"
+          if [ "$status" -eq 0 ]; then
+            exit 0
+          fi
+          if printf '%s' "$out" | grep -Eqi 'already exists|already uploaded'; then
+            echo "INFO: crates.io already has this version; treating as success"
+            exit 0
+          fi
+          exit "$status"

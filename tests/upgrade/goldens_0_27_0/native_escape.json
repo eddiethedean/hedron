@@ -1,0 +1,12 @@
+{
+  "baseline": "v0.27.0",
+  "disable_env": "HEDRON_NATIVE_DISABLE",
+  "supported_keys": ["escape_text", "escape_attr", "fallback_runtime_disable"],
+  "samples": [
+    {"input": "", "escape_text": "", "escape_attr": ""},
+    {"input": "<script>", "escape_text": "&lt;script&gt;", "escape_attr": "&lt;script&gt;"},
+    {"input": "a&b", "escape_text": "a&amp;b", "escape_attr": "a&amp;b"},
+    {"input": "q\"w", "escape_text": "q\"w", "escape_attr": "q&quot;w"},
+    {"input": "nul\u0000byte", "escape_text": "nulbyte", "escape_attr": "nulbyte"}
+  ]
+}

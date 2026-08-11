@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.1.9] — 2026-08-10
+
+### Fixed
+
+- Chart hosts dispose and remount when the HTMX swap target is the host element
+  itself (`matches` + `querySelectorAll`), not only descendants.
+- Register HTMX lifecycle listeners on `document` (avoid `document.body &&` races).
+
+### Changed
+
+- Pin `hedron-core` to `>=0.28.1,<0.29`.
+- Auto chart-stub remediation points adopters at Experimental opt-in (`as_`) instead
+  of an install-only message for Plotly/Altair.
+
+## [0.1.8] — 2026-08-10
+
+### Added
+
+- Production-grade Supported inventory for Matplotlib/static beginner charts
+  (CHARTS-028); Plotly/Altair remain Experimental and excluded from Auto defaults
+  (INTERACTIVE-028).
+
+### Changed
+
+- Package maturity Alpha → **Beta**.
+- Pin `hedron-core` to `>=0.28.0,<0.29`.
+- Expand `RUNTIME_PINS` digests for Experimental echarts/mermaid/maplibre hosts.
+- Plotly/Vega hosts purge on `htmx:beforeSwap`.
+
 ## [0.1.7] — 2026-08-10
 
 ### Changed

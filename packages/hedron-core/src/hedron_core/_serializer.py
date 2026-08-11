@@ -31,13 +31,13 @@ from hedron_core.typing_aliases import HtmlAttrValue
 
 
 def _load_escape() -> tuple[object, object]:
-    """Prefer optional hedron-native acceleration; fall back to pure Python."""
+    """Load optional hedron-native escape helpers (they honor HEDRON_NATIVE_DISABLE)."""
     try:
         from hedron_native import escape_attr as native_attr
         from hedron_native import escape_text as native_text
 
         return native_text, native_attr
-    except Exception:  # noqa: BLE001
+    except Exception:  # noqa: BLE001 — missing optional accel is Supported
         return None, None
 
 

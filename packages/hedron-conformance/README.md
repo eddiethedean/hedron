@@ -14,16 +14,16 @@ reference — without matching incidental CPython formatting.
 
 Also available as the flagship extra `hedron[conformance]`.
 
-**Package maturity:** Beta · **Train:** `0.27.x` (last published `0.27.0`) · pin `>=0.27.0,<0.28`
+**Package maturity:** Beta · **Train:** `0.28.x` (last published `0.28.1`) · pin `>=0.28.1,<0.29`
 
 ## Install
 
 ```bash
-pip install "hedron-conformance>=0.27.0,<0.28"
+pip install "hedron-conformance>=0.28.1,<0.29"
 # or
-uv add "hedron-conformance>=0.27.0,<0.28"
+uv add "hedron-conformance>=0.28.1,<0.29"
 # via flagship:
-pip install "hedron[conformance]>=0.27.0,<0.28"
+pip install "hedron[conformance]>=0.28.1,<0.29"
 ```
 
 Requires Python 3.11–3.14.

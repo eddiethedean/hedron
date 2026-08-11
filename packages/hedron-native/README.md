@@ -1,6 +1,7 @@
 # hedron-native
 
 [![PyPI](https://img.shields.io/pypi/v/hedron-native.svg)](https://pypi.org/project/hedron-native/)
+[![crates.io](https://img.shields.io/crates/v/hedron-native.svg)](https://crates.io/crates/hedron-native)
 [![Python](https://img.shields.io/pypi/pyversions/hedron-native.svg)](https://pypi.org/project/hedron-native/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
@@ -13,19 +14,19 @@ helpers when the package is installed and falls back otherwise.
 
 Also available as the flagship extra `hedron[native]`.
 
-**Package maturity:** Alpha (`0.1.x`) · pin `>=0.1.0,<0.2` and expect churn
+**Package maturity:** Beta (`0.1.x`) · pin `>=0.1.2,<0.2` and expect churn
 
 ## Install
 
 ```bash
-pip install "hedron-native>=0.1.0,<0.2"
+pip install "hedron-native>=0.1.2,<0.2"
 # or
-uv add "hedron-native>=0.1.0,<0.2"
+uv add "hedron-native>=0.1.2,<0.2"
 # via flagship:
-pip install "hedron[native]>=0.27.0,<0.28"
+pip install "hedron[native]>=0.28.1,<0.29"
 ```
 
-Requires Python 3.11–3.14. Prebuilt wheels are published for common platforms;
+Requires Python 3.11–3.14. Prebuilt wheels for the Supported matrix are built by `native-wheels.yml` (confirm on PyPI after publish);
 if a wheel is unavailable, pip may build from the Rust source (requires a Rust
 toolchain) or you can rely on the pure-Python path without this package.
 
@@ -62,6 +63,8 @@ print("native extension loaded:", native_available())
 ## Links
 
 - [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-native/)
+- [PyPI](https://pypi.org/project/hedron-native/)
+- [crates.io](https://crates.io/crates/hedron-native)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-native/CHANGELOG.md)
 - [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-native)
 - [Issues](https://github.com/eddiethedean/hedron/issues)

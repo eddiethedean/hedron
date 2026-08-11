@@ -43,9 +43,9 @@ _OPTIONAL_RUNTIMES = (
 
 PLUGIN_META = PluginMeta(
     name="hedron_charts",
-    version="0.1.7",
+    version="0.1.9",
     distribution="hedron-charts",
-    hedron_version=">=0.27,<0.28",
+    hedron_version=">=0.28,<0.29",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -151,7 +151,28 @@ def register(ctx: PluginContext) -> None:
             htmx_lifecycle=True,
         )
 
-    # Replace chart-stub with real adapters when package is loaded.
+    # Matplotlib is the Supported production Auto default (INTERACTIVE-028).
+    # Plotly/Altair remain registered for explicit as_= opt-in only.
+    # Replace core chart-stub so fail-closed copy mentions Experimental opt-in
+    # instead of "Install hedron-charts" when this package is already loaded.
+    def _factory_chart_opt_in(value: object) -> NodeLike:
+        from hedron_core.diagnostics import error
+
+        raise error(
+            "HED-AUTO-0004",
+            title="Experimental chart backend requires explicit as_",
+            explanation=(
+                f"No Supported Auto renderer matched "
+                f"{type(value).__module__}.{type(value).__name__}. "
+                "Plotly and Altair are Experimental and are excluded from "
+                "production Auto defaults."
+            ),
+            remediation=(
+                "Use as_='plotly' or as_='altair' for Experimental backends, "
+                "or pass a Matplotlib Figure for the Supported Auto chart path."
+            ),
+        )
+
     register_renderer(
         RendererSpec(
             name="matplotlib",
@@ -160,6 +181,7 @@ def register(ctx: PluginContext) -> None:
             optional_package="hedron-charts[matplotlib]",
             explanation="Matplotlib Figure → MatplotlibChart",
             factory=_factory_matplotlib,
+            maturity="supported",
         )
     )
     register_renderer(
@@ -168,8 +190,9 @@ def register(ctx: PluginContext) -> None:
             priority=920,
             predicate=PlotlyAdapter().supports,
             optional_package="hedron-charts[plotly]",
-            explanation="Plotly figure → PlotlyChart",
+            explanation="Plotly figure → PlotlyChart (Experimental; opt-in via as_)",
             factory=_factory_plotly,
+            maturity="experimental",
         )
     )
     register_renderer(
@@ -178,8 +201,24 @@ def register(ctx: PluginContext) -> None:
             priority=915,
             predicate=AltairAdapter().supports,
             optional_package="hedron-charts[altair]",
-            explanation="Altair/Vega-Lite → AltairChart",
+            explanation="Altair/Vega-Lite → AltairChart (Experimental; opt-in via as_)",
             factory=_factory_altair,
+            maturity="experimental",
+        )
+    )
+    register_renderer(
+        RendererSpec(
+            name="chart-stub",
+            priority=900,
+            predicate=lambda v: (
+                PlotlyAdapter().supports(v)
+                or AltairAdapter().supports(v)
+                or MatplotlibAdapter().supports(v)
+            ),
+            optional_package="hedron-charts",
+            explanation="Fail closed when Supported Auto chart path does not match",
+            factory=_factory_chart_opt_in,
+            maturity="supported",
         )
     )
 

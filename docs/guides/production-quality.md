@@ -3,7 +3,7 @@
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
 checklist in [Production readiness](production-readiness.md).
 
-**Living published train:** pin `hedron>=0.27.0,<0.28`. Capability maturity snapshot:
+**Living published train:** pin `hedron>=0.28.1,<0.29`. Capability maturity snapshot:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 (maintainer corpus on GitHub).
@@ -74,7 +74,7 @@ Public phase table: [Roadmap](roadmap.md). Maintainer detail:
 
 1. Ship with pins and the [production readiness](production-readiness.md) checklist.
 2. Prefer [polling](live-interaction.md) over `hedron.experimental` live helpers.
-3. Treat Alpha extras (charts, notebook, MCP, Gradio) and specialty stubs as pin-and-expect-churn.
+3. Treat Alpha extras (notebook, MCP, Gradio) and specialty stubs as pin-and-expect-churn.
 4. Track trust-program progress on this page and the [public roadmap](roadmap.md).
 
 ## What we will not do

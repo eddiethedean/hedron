@@ -65,6 +65,24 @@ def test_hedron_static_mount(client: FlaskClient) -> None:
     assert "htmx" in payload.lower() or len(payload) > 1000
 
 
+def test_page_static_href_honors_script_root() -> None:
+    app = HedronFlask(__name__).flask
+
+    @app.get("/page")
+    def page():
+        return component_response(
+            Page(Heading("Hello", level=1), title="Test"),
+            mode=RenderMode.PAGE,
+        )
+
+    client = app.test_client()
+    response = client.get("/page", environ_overrides={"SCRIPT_NAME": "/app"})
+    assert response.status_code == 200
+    body = response.get_data(as_text=True)
+    assert "/app/hedron-static/htmx.min.js" in body
+    assert 'src="/hedron-static/htmx.min.js"' not in body
+
+
 def test_fragment_render(client: FlaskClient) -> None:
     response = client.get("/fragment", headers={"HX-Request": "true"})
     assert response.status_code == 200

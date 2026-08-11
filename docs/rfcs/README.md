@@ -76,3 +76,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0056](RFC-0056-PRODUCTION-QUALITY.md) | Production-quality maturity program | Accepted |
 | [0057](RFC-0057-PRODUCTION-GRADE-CORE.md) | Production-grade core, FastAPI flagship, and Explorer | Accepted |
 | [0058](RFC-0058-PRODUCTION-GRADE-SATELLITES.md) | Production-grade adapters, data, HDJ, and curated extras | Accepted |
+| [0059](RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md) | Production-grade charts and optional native acceleration | Accepted |

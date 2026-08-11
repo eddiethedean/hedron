@@ -15,6 +15,18 @@
     }
   }
 
+  function destroy(el) {
+    try {
+      if (el && el._vegaView && typeof el._vegaView.finalize === "function") {
+        el._vegaView.finalize();
+      }
+    } catch (_) {
+      /* ignore */
+    }
+    el._vegaView = null;
+    el.removeAttribute("data-hedron-chart-mounted");
+  }
+
   function mount(el) {
     const raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
@@ -32,18 +44,35 @@
       fail(el, "Invalid Vega-Lite chart payload JSON");
       return;
     }
-    window.vegaEmbed(el, payload.spec || payload, { actions: false });
+    const result = window.vegaEmbed(el, payload.spec || payload, { actions: false });
+    el.setAttribute("data-hedron-chart-mounted", "1");
+    if (result && typeof result.then === "function") {
+      result.then(function (res) {
+        if (res && res.view) {
+          el._vegaView = res.view;
+        }
+      });
+    }
   }
 
   function scan(root) {
-    (root || document)
-      .querySelectorAll('[data-hedron-chart="vega-lite"]')
-      .forEach(mount);
+    var base = root || document;
+    var sel = '[data-hedron-chart="vega-lite"]';
+    if (base.matches && base.matches(sel)) mount(base);
+    if (base.querySelectorAll) base.querySelectorAll(sel).forEach(mount);
+  }
+
+  function beforeSwap(ev) {
+    const target = ev && ev.target;
+    if (!target) return;
+    var sel = '[data-hedron-chart="vega-lite"]';
+    if (target.matches && target.matches(sel)) destroy(target);
+    if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
 
   document.addEventListener("DOMContentLoaded", () => scan(document));
-  document.body &&
-    document.body.addEventListener("htmx:afterSwap", (ev) => {
-      scan(ev.target);
-    });
+  document.addEventListener("htmx:afterSwap", (ev) => {
+    scan(ev.target);
+  });
+  document.addEventListener("htmx:beforeSwap", beforeSwap);
 })();

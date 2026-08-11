@@ -1,0 +1,29 @@
+{
+  "baseline": "v0.27.0",
+  "supported_auto_default": "matplotlib",
+  "production_default_excluded": ["plotly", "altair"],
+  "experimental": [
+    "plotly",
+    "altair",
+    "vega_interactive_hosts",
+    "vega-lite",
+    "vega-transform",
+    "pydeck",
+    "maplibre",
+    "folium",
+    "geospatial",
+    "graphviz",
+    "mermaid",
+    "chartjs",
+    "great-tables",
+    "sigma",
+    "threejs",
+    "echarts",
+    "datashader",
+    "bokeh",
+    "holoviews",
+    "pygal",
+    "plotly-resample"
+  ],
+  "optional_adapter_names_must_be_subset_of_experimental": true
+}

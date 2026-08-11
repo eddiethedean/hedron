@@ -1917,7 +1917,7 @@ flowchart LR
   hosts --> parity[PARITY portable]
   parity --> packages[Per-package evidence]
   packages --> packet[REGRESS PKG evidence]
-  packet --> cut[v0.27.0]
+  packet --> cut[v0.28.1]
 ```
 
 1. **Inventory freeze** — Supported / Experimental / excluded for the five packages; docs and
@@ -1993,37 +1993,55 @@ Post-`0.26.0` quality follow-ups that must not inflate Supported claims:
 - Package metadata and adopter docs use the production-grade label only for the declared Supported
   inventory; all exclusions remain conspicuous.
 
-## 0.28 — Production-grade visualization and native acceleration (`v0.28.0`)
+## 0.28 — Production-grade visualization and native acceleration (`v0.28.1`)
 
-**Status:** Planned. Independent package releases may use their own compatible version line; the
-roadmap phase does not require them to adopt the main train's version number.
+**Status:** Published as `v0.28.1` (2026-08-10). Owned by **D-056** /
+[RFC-0059](docs/rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
+Independent package releases may use their own compatible version line; the roadmap phase does
+not require them to adopt the main train's version number. Packet SSOT:
+[RELEASE_0_28.md](docs/acceptance/RELEASE_0_28.md) ·
+[release-gate-0.28.toml](docs/acceptance/release-gate-0.28.toml) ·
+[production-grade-inventory-028.toml](docs/acceptance/production-grade-inventory-028.toml).
+Cut verify: `python scripts/verify_pkg_28.py`.
 
 **Outcome:** `hedron-charts` and `hedron-native` graduate from Alpha for a conservative, fully
 evidenced scope. Static accessible charts and optional acceleration are safe production choices;
 experimental interactive backends remain opt-in until they independently satisfy the same bar.
 
+### Locked Supported inventory
+
+| Package | Supported at 0.28 exit |
+|---|---|
+| `hedron-charts` | Matplotlib static SVG/PNG; beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart` on the static/Matplotlib path; accessible tabular/text alternatives; CSP-safe local assets; bounded payloads; lifecycle cleanup; browser/print/export evidence |
+| `hedron-native` | Optional Rust `escape_text` / `escape_attr`; Supported CPython × OS wheel matrix via `native-wheels.yml` (manylinux x86_64 + aarch64, macOS arm64, Windows amd64) — confirm artifacts on PyPI after publish; source builds; fuzz/sanitizer/parity; measured serialize-stage benefit; absence / import failure / unsupported platform / runtime-disable fallback without semantic drift |
+
+### Interactive / optional disposition
+
+- Plotly, Altair/Vega interactive hosts, and **every** `optional_adapters` name remain
+  **Experimental** for this phase.
+- `INTERACTIVE-028` passes by machine-labeling them Experimental and keeping them **absent from
+  production defaults** — not by graduating interactive backends.
+- An importable adapter name alone is not a production claim.
+
 ### Scope
 
-- Define the `hedron-charts` Supported backend inventory. Matplotlib/static SVG/PNG and beginner
-  charts must have deterministic output, accessible tabular/text alternatives, bounded payloads,
-  CSP-safe local assets, lifecycle cleanup, and browser/print/export evidence.
-- Graduate Plotly and Altair/Vega only if pinned offline runtimes, CSP, keyboard/AT behavior, resize,
-  fragment remount, event validation, payload budgets, and supply-chain provenance pass; otherwise
-  retain them as explicitly Experimental without blocking the static package graduation.
-- Require every other visualization adapter to be classified Supported, Experimental, or removed;
-  an importable adapter name alone is not a production claim.
-- Publish `hedron-native` wheels for the supported CPython/platform matrix, plus reproducible source
-  builds, fuzz/property parity against the Python reference, memory-safety tooling, malformed-input
-  corpora, and a measured end-to-end benefit on named workloads.
-- Prove native absence, import failure, unsupported platform, and runtime disablement all fall back
-  without semantic, identity, escaping, diagnostic, or availability differences.
+- Prove the locked `hedron-charts` Supported inventory with deterministic output, accessible
+  tabular/text alternatives, bounded payloads, CSP-safe local assets, lifecycle cleanup, and
+  browser/print/export evidence.
+- Retain Plotly/Altair and all optional visualization adapters as explicitly Experimental without
+  blocking static package graduation.
+- Publish `hedron-native` wheels for the Supported CPython/platform matrix, plus reproducible
+  source builds, fuzz/property parity against the Python reference, memory-safety tooling,
+  malformed-input corpora, and a measured end-to-end benefit on named workloads.
+- Prove native absence, import failure, unsupported platform, and runtime disablement all fall
+  back without semantic, identity, escaping, diagnostic, or availability differences.
 
 ### Locked exit evidence
 
 | Gate | Verified means |
 |---|---|
 | `CHARTS-028` | Static/beginner chart Supported inventory passes render, a11y, CSP, browser, export, cleanup, payload, and upgrade matrices |
-| `INTERACTIVE-028` | Each Plotly/Altair path is either fully Verified against its graduation matrix or remains machine-labeled Experimental and absent from production defaults |
+| `INTERACTIVE-028` | Plotly/Altair and every optional adapter remain machine-labeled Experimental and absent from production defaults |
 | `NATIVE-028` | Wheel/source platform matrix, fuzz and sanitizer evidence, Python parity, fallback injection, and end-to-end benefit thresholds pass |
 | `SUPPLY-028` | Browser runtimes and native artifacts have pins, hashes, license inventory, SBOM, provenance, and offline install evidence |
 | `REGRESS-028` / `PKG-028` | Cross-package compatibility, clean installs, downgrade/fallback rehearsal, and package release verifiers pass |
@@ -2034,6 +2052,7 @@ experimental interactive backends remain opt-in until they independently satisfy
 - Making native acceleration required for correctness or availability.
 - Loading chart runtimes from unpinned public CDNs in the Supported configuration.
 - Claiming performance improvement from microbenchmarks without material application impact.
+- Graduating MCP, Gradio, or conformance tooling; scheduling `1.0`.
 
 ### Exit gate
 

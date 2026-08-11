@@ -23,7 +23,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.25** | Production archetype, load budgets, extras quarantine | **Published** (`v0.25.0`+; last `v0.25.2`; D-053) |
 | **0.26** | Production-grade core, FastAPI flagship, and secured/development Explorer | **Published** (`v0.26.0`; D-054) |
 | **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | **Published** (`v0.27.0`; D-055) |
-| **0.28** | Production-grade charts and optional native acceleration | Planned; conservative Supported subsets only |
+| **0.28** | Production-grade charts and optional native acceleration | **Published** (`v0.28.1`; D-056 / RFC-0059) |
 | **0.29** | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | Planned; tooling scope remains explicit |
 | **0.30** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required |
 | **0.31** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access |
@@ -33,7 +33,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 - Pin `hedron` (and extras) in production; `0.x` may still take breaking changes under the
   [compatibility policy](../COMPATIBILITY.md).
-- Package maturity is **Beta** for the flagship and most adapters; charts remain **Alpha**.
+- Package maturity is **Beta** for the flagship, adapters, charts, and native Supported inventories.
 - No `1.0` phase is scheduled (D-038). A **minimal + expanded (0.23) `stable` API tier** is
   catalogued in [STABILITY.md](../api/STABILITY.md); most other public APIs remain `beta` or
   `experimental`.
@@ -48,12 +48,13 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   package fleet. This is not a blanket feature promotion or a scheduled `1.0`; see the
   [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
-## Honest gaps on the current train (0.27)
+## Honest gaps on the current train (0.28)
 
-- Current **published** PyPI train is **0.27.x** (last `v0.27.0`)
+- Current **published** PyPI train is **0.28.x** (last `v0.28.1`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
-  `hedron-explorer` (0.26) **and** `hedron-data` / `hedron-flask` / `hedron-django` /
-  `hedron-jinja` / `hedron-extras` (0.27) Supported inventories — not every Beta symbol
+  `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
+  `hedron-jinja` / `hedron-extras` (0.27), and `hedron-charts` / `hedron-native`
+  (0.28) Supported inventories — not every Beta symbol
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
   `hedron[experimental-ui]` (quarantined from `hedron[extras]`)

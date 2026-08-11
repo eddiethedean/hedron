@@ -77,6 +77,17 @@
       });
   }
 
+  function destroy(el) {
+    try {
+      if (window.Plotly && typeof window.Plotly.purge === "function") {
+        window.Plotly.purge(el);
+      }
+    } catch (_) {
+      /* ignore purge errors during swap */
+    }
+    el.removeAttribute("data-hedron-chart-mounted");
+  }
+
   function mount(el) {
     const raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
@@ -100,6 +111,7 @@
       responsive: true,
       staticPlot: false,
     });
+    el.setAttribute("data-hedron-chart-mounted", "1");
     if (plotted && typeof plotted.then === "function") {
       plotted.then(function () {
         bindEvents(el);
@@ -110,14 +122,23 @@
   }
 
   function scan(root) {
-    (root || document)
-      .querySelectorAll('[data-hedron-chart="plotly"]')
-      .forEach(mount);
+    var base = root || document;
+    var sel = '[data-hedron-chart="plotly"]';
+    if (base.matches && base.matches(sel)) mount(base);
+    if (base.querySelectorAll) base.querySelectorAll(sel).forEach(mount);
+  }
+
+  function beforeSwap(ev) {
+    const target = ev && ev.target;
+    if (!target) return;
+    var sel = '[data-hedron-chart="plotly"]';
+    if (target.matches && target.matches(sel)) destroy(target);
+    if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
 
   document.addEventListener("DOMContentLoaded", () => scan(document));
-  document.body &&
-    document.body.addEventListener("htmx:afterSwap", (ev) => {
-      scan(ev.target);
-    });
+  document.addEventListener("htmx:afterSwap", (ev) => {
+    scan(ev.target);
+  });
+  document.addEventListener("htmx:beforeSwap", beforeSwap);
 })();

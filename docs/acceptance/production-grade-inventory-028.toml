@@ -1,0 +1,94 @@
+# Phase 0.28 production-grade inventory (machine-checked at PKG-028 cut).
+# Supported = production-grade label at 0.28 exit for these two packages only.
+# Experimental = may ship but excluded from production-grade claims.
+# Excluded = must not be required for a production-grade Supported workflow.
+# Owning decision: D-056. RFC: RFC-0059.
+
+baseline = "v0.27.0"
+packages = [
+  "hedron-charts",
+  "hedron-native",
+]
+
+[hedron-charts]
+supported = [
+  "matplotlib_static_svg_png",
+  "beginner_line_chart_static",
+  "beginner_bar_chart_static",
+  "beginner_area_chart_static",
+  "beginner_scatter_chart_static",
+  "accessible_tabular_text_alternatives",
+  "csp_safe_local_assets",
+  "bounded_payloads",
+  "lifecycle_cleanup",
+  "browser_print_export_evidence",
+]
+experimental = [
+  "plotly",
+  "altair",
+  "vega_interactive_hosts",
+  "vega-lite",
+  "vega-transform",
+  "pydeck",
+  "maplibre",
+  "folium",
+  "geospatial",
+  "graphviz",
+  "mermaid",
+  "chartjs",
+  "great-tables",
+  "sigma",
+  "threejs",
+  "echarts",
+  "datashader",
+  "bokeh",
+  "holoviews",
+  "pygal",
+  "plotly-resample",
+]
+excluded = [
+  "cdn_unpinned_chart_runtimes",
+  "all_backends_supported_as_group",
+  "human_at_charts_as_supported",
+  "interactive_as_production_default",
+]
+
+[hedron-native]
+supported = [
+  "escape_text",
+  "escape_attr",
+  "wheels_manylinux_x86_64",
+  "wheels_manylinux_aarch64",
+  "wheels_macos_arm64",
+  "wheels_windows_amd64",
+  "source_builds",
+  "fuzz_sanitizer_parity",
+  "serialize_stage_benefit",
+  "fallback_absence",
+  "fallback_import_failure",
+  "fallback_unsupported_platform",
+  "fallback_runtime_disable",
+]
+experimental = []
+excluded = [
+  "required_for_correctness",
+  "desktop_shell_pywebview",
+  "microbenchmark_only_perf_claims",
+]
+
+[install_guards]
+# Default installs must not silently enable experimental interactive charts
+# or require native acceleration.
+charts_default_enables_interactive = false
+charts_default_enables_optional_adapters = false
+charts_supported_loads_cdn = false
+native_required_for_correctness = false
+native_runtime_disable_supported = true
+
+[docs_anchors]
+stability = "docs/api/STABILITY.md"
+compatibility = "docs/COMPATIBILITY.md"
+whats_ready = "docs/guides/whats-ready.md"
+charts_package = "docs/packages/hedron-charts.md"
+native_package = "docs/packages/hedron-native.md"
+chart_api = "docs/api/CHART.md"

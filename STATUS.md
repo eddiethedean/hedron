@@ -2,23 +2,24 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.27 **Published** as `v0.27.0` (2026-08-10); last published
-PyPI/git = `v0.27.0`. Prior: 0.26 **Published** as `v0.26.0`.
+**Roadmap position:** phase 0.28 **Published** as `v0.28.1` (2026-08-10); last published
+PyPI/git = `v0.28.1`. Prior: 0.27 **Published** as `v0.27.0`.
 **Date:** 2026-08-10
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.27.0`; Alpha (independent) — `hedron-charts` / `hedron-sample-kit` `0.1.7`,
-`hedron-native` / `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0` (MIT, D-033).
+`0.28.1`; Beta (independent) — `hedron-charts` `0.1.9`, `hedron-native` `0.1.2`; Alpha —
+`hedron-sample-kit` `0.1.9`, `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0`
+(MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
-`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`; Alpha —
-`hedron-charts`, `hedron-sample-kit`, `hedron-native`, `hedron-notebook`, `hedron-mcp`,
-`hedron-gradio`.
+`hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
+`hedron-charts`, `hedron-native`; Alpha — `hedron-sample-kit`, `hedron-notebook`,
+`hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living published train is **0.27** (D-055 / RFC-0058) — production-grade
-graduation for `hedron-data` / `hedron-flask` / `hedron-django` / `hedron-jinja` /
-`hedron-extras` on declared Supported inventories (`release-gate-0.27.toml` Verified), while
-`hedron-core` / `hedron` / `hedron-explorer` retain the 0.26 production-grade CRUD/admin
-inventory (D-054 / RFC-0057). **Next** = **0.28 Planned** (charts / native). Live-transport
+**Phase focus:** Living published train is **0.28** (D-056 / RFC-0059) — production-grade
+graduation for `hedron-charts` / `hedron-native` on declared Supported inventories
+(`release-gate-0.28.toml` Verified), while prior production-grade inventories for core /
+flagship / Explorer (0.26) and data / adapters / HDJ / extras (0.27) remain in force.
+**Next** = **0.29 Planned** (developer tooling / portable conformance). Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
 remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` /
@@ -191,12 +192,34 @@ SSOT: [RELEASE_0_27](docs/acceptance/RELEASE_0_27.md) ·
 [production-grade-inventory-027.toml](docs/acceptance/production-grade-inventory-027.toml).
 Cut verify: `python scripts/verify_pkg_27.py`.
 
+## Phase 0.28 evidence
+
+Owning decision: **D-056** / [RFC-0059](docs/rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
+Baseline: Published **`v0.27.0`**. Packages: `hedron-charts` `0.1.9` / `hedron-native`
+`0.1.2` — **Beta** for declared Supported inventories.
+Locked Supported inventory:
+[production-grade-inventory-028.toml](docs/acceptance/production-grade-inventory-028.toml).
+
+| Gate | Status |
+|---|---|
+| `CHARTS-028` | Verified — static/beginner Supported matrices |
+| `INTERACTIVE-028` | Verified — Experimental labels + no production defaults |
+| `NATIVE-028` | Verified — wheels / fuzz / sanitizer / fallback injection |
+| `SUPPLY-028` | Verified — pins / SBOM / offline / provenance |
+| `REGRESS-028` / `PKG-028` | Verified — suite + `verify_pkg_28.py` |
+
+SSOT: [RELEASE_0_28](docs/acceptance/RELEASE_0_28.md) ·
+[release-gate-0.28.toml](docs/acceptance/release-gate-0.28.toml) ·
+[production-grade-inventory-028.toml](docs/acceptance/production-grade-inventory-028.toml).
+Cut verify: `python scripts/verify_pkg_28.py`.
+
 ## Next capability phases
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
 **Planned** until compensated screen-reader evidence lands. Phase **0.27** is **Published**
-(`v0.27.0`; D-055). Remaining package-production work is planned for **0.28–0.32**:
-charts/native; developer and portable conformance tooling; MCP; Gradio; then a whole-fleet
+(`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.1`; D-056 / RFC-0059).
+Remaining package-production work continues through **0.29–0.32**:
+developer and portable conformance tooling; MCP; Gradio; then a whole-fleet
 closure audit. These phases require owning RFCs/decisions and Verified evidence before any
 package maturity label changes. They do not schedule `1.0`, promote every experimental
 subfeature, or expand Supported live transports.

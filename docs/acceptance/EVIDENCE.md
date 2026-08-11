@@ -44,7 +44,7 @@ Use `--allow-planned` while scaffolds are incomplete.
 | `SEC-C06-001` | Verified | `uv run pytest tests/security/test_interaction_headers.py -q` |
 | `SEC-C06-002` | Verified | `uv run pytest tests/security/test_chart_svg_corpus.py -q` |
 | `VIS-C06-001` | Verified | `uv run pytest tests/security/test_chart_svg_corpus.py -q` |
-| `VIS-C06-002` | Deferred | Plotly/Vega full offline runtime pin (experimental host shims) |
+| `VIS-C06-002` | Superseded (0.28) | Plotly/Vega offline pins exist as **Experimental** (`RUNTIME_PINS` / SUPPLY-028); not Supported; Auto defaults quarantined (`INTERACTIVE-028`) |
 | `DATA-C06-001` | Verified | `uv run pytest tests/unit/test_sqlalchemy_source.py -q` |
 
 ## Minimum retained bundle

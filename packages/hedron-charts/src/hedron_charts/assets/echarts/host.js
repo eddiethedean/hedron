@@ -7,11 +7,25 @@
     el.setAttribute("role", "alert");
     if (!el.textContent) el.textContent = message;
   }
+  function destroy(el) {
+    try {
+      if (window.echarts && typeof window.echarts.getInstanceByDom === "function") {
+        var existing = window.echarts.getInstanceByDom(el);
+        if (existing && typeof existing.dispose === "function") {
+          existing.dispose();
+        }
+      }
+    } catch (_) {
+      /* ignore dispose errors during swap */
+    }
+    el.removeAttribute("data-hedron-chart-mounted");
+  }
   function mount(el) {
     if (!window.echarts) {
       fail(el, "ECharts runtime missing (serve local echarts.min.js)");
       return;
     }
+    destroy(el);
     var raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
     var payload;
@@ -23,15 +37,26 @@
     }
     var chart = window.echarts.init(el);
     chart.setOption(payload.spec || payload);
+    el.setAttribute("data-hedron-chart-mounted", "1");
   }
   function scan(root) {
-    (root || document).querySelectorAll('[data-hedron-chart="echarts"]').forEach(mount);
+    var base = root || document;
+    var sel = '[data-hedron-chart="echarts"]';
+    if (base.matches && base.matches(sel)) mount(base);
+    if (base.querySelectorAll) base.querySelectorAll(sel).forEach(mount);
+  }
+  function beforeSwap(ev) {
+    var target = ev && ev.target;
+    if (!target) return;
+    var sel = '[data-hedron-chart="echarts"]';
+    if (target.matches && target.matches(sel)) destroy(target);
+    if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);
   });
-  document.body &&
-    document.body.addEventListener("htmx:afterSwap", function (ev) {
-      scan(ev.target);
-    });
+  document.addEventListener("htmx:afterSwap", function (ev) {
+    scan(ev.target);
+  });
+  document.addEventListener("htmx:beforeSwap", beforeSwap);
 })();

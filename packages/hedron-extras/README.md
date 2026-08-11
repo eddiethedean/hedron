@@ -12,7 +12,7 @@ a second component runtime. Install as `hedron-extras` or via `hedron[extras]`.
 Absent extras add no core import, browser asset, startup, or transitive
 dependency cost.
 
-**Package maturity:** Beta · **Train:** `0.27.x` (last published `0.27.0`) · pin `>=0.27.0,<0.28`
+**Package maturity:** Beta · **Train:** `0.28.x` (last published `0.28.1`) · pin `>=0.28.1,<0.29`
 
 `CodeEditor`, `TerminalView`, and joystick/device bridges require the separate
 **`hedron[experimental-ui]`** opt-in (import `hedron_extras.experimental`) and are not
@@ -22,11 +22,11 @@ part of the supported product UI under `hedron[extras]`. See
 ## Install
 
 ```bash
-pip install "hedron[extras]>=0.27.0,<0.28"
+pip install "hedron[extras]>=0.28.1,<0.29"
 # or
-pip install "hedron-extras>=0.27.0,<0.28"
+pip install "hedron-extras>=0.28.1,<0.29"
 # experimental UI (requires an explicit opt-in):
-pip install "hedron[experimental-ui]>=0.27.0,<0.28"
+pip install "hedron[experimental-ui]>=0.28.1,<0.29"
 ```
 
 Requires Python 3.11–3.14 and `hedron-core`.
@@ -36,7 +36,7 @@ Requires Python 3.11–3.14 and `hedron-core`.
 | Extra | Notes |
 |---|---|
 | `json_editor` / `data_explorer` | Editor / explorer workbenches |
-| `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Alpha) |
+| `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Beta) |
 | `image_tools` / `calendar` / `signature` / `typeahead` | UI tools |
 | `sandbox` | Experimental browser-Python sandbox |
 | `experimental-ui` | Quarantined CodeEditor / TerminalView / joystick / device |

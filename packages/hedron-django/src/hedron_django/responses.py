@@ -22,6 +22,7 @@ from hedron_core.interaction import (
     select_htmx_auth_target,
     validated_extra_headers,
 )
+from hedron_core.mount import normalize_mount_path, prefix_local_path
 from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 from hedron_core.security_policy import SecurityPolicy
@@ -217,8 +218,26 @@ def _security_policy_from_settings() -> SecurityPolicy:
         return SecurityPolicy.from_name("standard")
 
 
+def _django_static_href(path: str) -> str:
+    href = path if path.startswith("/") else f"/{path}"
+    script = ""
+    try:
+        from django.urls import get_script_prefix
+
+        script = get_script_prefix() or ""
+    except Exception:  # noqa: BLE001
+        script = ""
+    mount = normalize_mount_path(str(script).rstrip("/") or "")
+    return prefix_local_path(href, mount)
+
+
 def _inject_page_html(html_text: str, mode: RenderMode) -> str:
-    return inject_page_assets(html_text, mode, policy=_security_policy_from_settings())
+    return inject_page_assets(
+        html_text,
+        mode,
+        policy=_security_policy_from_settings(),
+        static_href=_django_static_href,
+    )
 
 
 def component_response(

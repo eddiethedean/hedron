@@ -2,7 +2,7 @@
 
 Curated optional extras and analysis workbenches for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.27.x` (last published `0.27.0`) · pin `>=0.27.0,<0.28`  
+**Package maturity:** Beta · **Train:** `0.28.x` (last published `0.28.1`) · pin `>=0.28.1,<0.29`  
 **Flagship extra:** `hedron[extras]` · **Import:** `hedron_extras`  
 **Plugin:** registers via `hedron.plugins` — not a second component runtime
 
@@ -18,13 +18,13 @@ and set ``HEDRON_EXPERIMENTAL_UI=1`` or explicitly enable the experimental plugi
 ## Install
 
 ```bash
-pip install "hedron[extras]>=0.27.0,<0.28"
+pip install "hedron[extras]>=0.28.1,<0.29"
 # or
-pip install "hedron-extras>=0.27.0,<0.28"
+pip install "hedron-extras>=0.28.1,<0.29"
 # feature-scoped:
-pip install "hedron-extras[data_explorer]>=0.27.0,<0.28"
+pip install "hedron-extras[data_explorer]>=0.28.1,<0.29"
 # experimental UI (requires an explicit opt-in):
-pip install "hedron[experimental-ui]>=0.27.0,<0.28"
+pip install "hedron[experimental-ui]>=0.28.1,<0.29"
 # then set HEDRON_EXPERIMENTAL_UI=1 or enable plugin hedron_extras_experimental
 ```
 
@@ -36,7 +36,7 @@ cost.
 | Extra | Notes |
 |---|---|
 | `json_editor` / `data_explorer` | Editor / explorer surfaces |
-| `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Alpha) |
+| `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Beta) |
 | `image_tools` / `calendar` / `signature` / `typeahead` | UI tools |
 | `sandbox` | Experimental browser-Python sandbox |
 | `experimental-ui` | Explicit opt-in for CodeEditor / TerminalView / joystick / device surfaces. Runtime gates are the environment flag and plugin enablement; the extra does **not** block Python imports. |

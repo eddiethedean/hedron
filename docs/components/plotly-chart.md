@@ -23,7 +23,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 Install the optional provider before importing this component:
 
 ```bash
-pip install "hedron-charts[plotly]>=0.1.7,<0.2"
+pip install "hedron-charts[plotly]>=0.1.9,<0.2"
 ```
 
 ## Basic use

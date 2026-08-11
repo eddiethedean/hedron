@@ -1,7 +1,7 @@
 # What’s new in Hedron 0.26
 
 **Published** as `v0.26.0`. Historical pin for this train: `hedron>=0.26.0,<0.27`.
-Living tip: pin `hedron>=0.27.0,<0.28` — see [What’s new in 0.27](whats-new-0.27.md).
+Living tip: pin `hedron>=0.28.1,<0.29` — see [What’s new in 0.27](whats-new-0.27.md).
 
 Hedron 0.26 strengthens the documented CRUD/admin path without promoting experimental
 live transports. It validates upgrades from 0.25.2, makes the supported surface
