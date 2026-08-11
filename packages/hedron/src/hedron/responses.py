@@ -143,11 +143,12 @@ def _authorize_component_htmx(
     *,
     fragment_regions: tuple[FragmentRegion, ...],
     allow_undeclared_targets: bool = False,
+    target: str | None = None,
 ) -> None:
     is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
     if not is_htmx:
         return
-    target = request.headers.get("HX-Target")
+    target = request.headers.get("HX-Target") if target is None else target
     history_restore = (request.headers.get("HX-History-Restore-Request") or "").lower() == "true"
     authorize_htmx_target(
         InteractionPolicy(
@@ -188,6 +189,7 @@ def render_component_response(
     background: BackgroundTask | None = None,
     fragment_regions: Sequence[FragmentRegion | str] | None = None,
     allow_undeclared_targets: bool = False,
+    _authorized_htmx_target: str | None = None,
 ) -> ComponentResponse:
     from fastapi import HTTPException
 
@@ -198,6 +200,7 @@ def render_component_response(
                 request,
                 fragment_regions=regions,
                 allow_undeclared_targets=allow_undeclared_targets,
+                target=_authorized_htmx_target,
             )
         except FragmentRegionError as exc:
             from hedron_core.audit import SecurityAuditEventType, emit_security_audit
@@ -553,6 +556,7 @@ async def render_interaction(
         or fragment_regions,
         allow_undeclared_targets=allow_undeclared_targets
         or bool(result.policy and result.policy.allow_undeclared_targets),
+        _authorized_htmx_target=auth_target,
     )
     if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
         ensure_csrf_cookie(response, sec, request=request)
