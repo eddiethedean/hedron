@@ -2,6 +2,11 @@
 
 ## [0.28.2] — 2026-08-11
 
+### Fixed
+
+- Serialize ``InMemoryDataSource.apply`` / ``fetch`` with an instance lock so
+  concurrent nonconflicting commits cannot silently lose updates (#114).
+
 ### Changed
 
 - Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).

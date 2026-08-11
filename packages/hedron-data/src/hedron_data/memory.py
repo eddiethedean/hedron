@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import threading
 from collections.abc import Callable, Mapping, Sequence
 
 from hedron_core.typing_aliases import JsonValue
@@ -23,7 +24,12 @@ def _row_key(row: Mapping[str, JsonValue], key_field: str) -> str:
 
 
 class InMemoryDataSource:
-    """Sync in-memory source with optimistic concurrency via per-row versions."""
+    """Sync in-memory source with optimistic concurrency via per-row versions.
+
+    Concurrent ``apply`` / ``fetch`` calls on one instance are serialized with an
+    instance lock so a successful ``ok=True`` result always means the accepted
+    changes are present (no lost updates under threaded hosts).
+    """
 
     def __init__(
         self,
@@ -46,10 +52,12 @@ class InMemoryDataSource:
         self._dataset_version = version
         self._audit_hook = audit_hook
         self._version_counter = int(version) if version.isdigit() else 1
+        self._lock = threading.RLock()
 
     @property
     def dataset_version(self) -> str:
-        return self._dataset_version
+        with self._lock:
+            return self._dataset_version
 
     def _next_version(self) -> str:
         self._version_counter += 1
@@ -57,6 +65,10 @@ class InMemoryDataSource:
         return self._dataset_version
 
     def fetch(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
+        with self._lock:
+            return self._fetch_unlocked(query)
+
+    def _fetch_unlocked(self, query: DataQuery) -> DataPage[dict[str, JsonValue]]:
         q = query.validated()
         items = list(self._rows.values())
         for field_name, expected in q.filters.items():
@@ -87,6 +99,12 @@ class InMemoryDataSource:
         )
 
     def apply(
+        self, changes: DataChanges[dict[str, JsonValue]]
+    ) -> DataSaveResult[dict[str, JsonValue]]:
+        with self._lock:
+            return self._apply_unlocked(changes)
+
+    def _apply_unlocked(
         self, changes: DataChanges[dict[str, JsonValue]]
     ) -> DataSaveResult[dict[str, JsonValue]]:
         if changes.dataset_version is not None and changes.dataset_version != self._dataset_version:
