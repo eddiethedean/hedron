@@ -1,6 +1,7 @@
 # hedron-native
 
 [![PyPI](https://img.shields.io/pypi/v/hedron-native.svg)](https://pypi.org/project/hedron-native/)
+[![crates.io](https://img.shields.io/crates/v/hedron-native.svg)](https://crates.io/crates/hedron-native)
 [![Python](https://img.shields.io/pypi/pyversions/hedron-native.svg)](https://pypi.org/project/hedron-native/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
@@ -62,6 +63,8 @@ print("native extension loaded:", native_available())
 ## Links
 
 - [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-native/)
+- [PyPI](https://pypi.org/project/hedron-native/)
+- [crates.io](https://crates.io/crates/hedron-native)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-native/CHANGELOG.md)
 - [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-native)
 - [Issues](https://github.com/eddiethedean/hedron/issues)

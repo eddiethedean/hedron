@@ -60,9 +60,10 @@ The release workflow must, in order:
 3. build all workspace distributions;
 4. write `release-manifest.json` with SHA-256 checksums and attest the artifacts;
 5. publish packages to PyPI;
-6. install the exact published `hedron==0.28.0`, run `hedron new`, and import the
+6. publish `hedron-native` to crates.io (`CARGO_REGISTRY_TOKEN`);
+7. install the exact published `hedron==0.28.0`, run `hedron new`, and import the
    generated application;
-7. create the GitHub Release only after the published quick-start verification passes,
+8. create the GitHub Release only after the published quick-start verification passes,
    attaching distributions, evidence, and the checksum manifest.
 
 If publication is partial, use the workflow's explicit `publish_only` recovery input for

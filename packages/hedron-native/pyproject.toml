@@ -40,7 +40,7 @@ build-backend = "maturin"
 manifest-path = "Cargo.toml"
 python-source = "src"
 module-name = "hedron_native._native"
-features = ["pyo3/extension-module"]
+features = ["extension-module"]
 
 [tool.cibuildwheel]
 build = "cp311-* cp312-* cp313-* cp314-*"
