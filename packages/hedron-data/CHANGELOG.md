@@ -9,6 +9,8 @@
 - DataEditor CSV export keeps pending edits, uses RFC quoting (not
   ``JSON.stringify``), and sanitizes spreadsheet formula prefixes like
   ``DataTable.to_csv`` (#112).
+- DataEditor save success clears only the submitted batch (by operation id),
+  so edits made while a request is in flight remain queued (#111).
 
 ### Changed
 

@@ -226,3 +226,5 @@ def test_data_editor_enhancement_hides_no_script_fallback() -> None:
     assert "function sanitizeFormulaCell" in script
     assert "function buildCsv" in script
     assert "JSON.stringify(row[c.field]" not in script
+    assert "function reconcileAfterSuccess" in script
+    assert "snapshotSaveBatch" in script
