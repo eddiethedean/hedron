@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
+import threading
 import uuid
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -42,6 +45,8 @@ except Exception:  # pragma: no cover  # noqa: BLE001
 __all__ = ["BuildResult", "load_build_manifest", "run_build"]
 
 _URL_RE = re.compile(r"url\(\s*(['\"]?)([^)'\"]+)\1\s*\)", re.IGNORECASE)
+_BUILD_LOCKS_GUARD = threading.Lock()
+_BUILD_LOCKS: dict[Path, threading.RLock] = {}
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,6 +89,38 @@ def _atomic_promote(tmp_root: Path, final_dir: Path) -> None:
         raise
     if backup is not None:
         shutil.rmtree(backup, ignore_errors=True)
+
+
+@contextmanager
+def _build_lock(final_dir: Path):
+    """Serialize builds for one output directory across threads and processes."""
+    lock_path = final_dir.parent / f".{final_dir.name}.lock"
+    with _BUILD_LOCKS_GUARD:
+        thread_lock = _BUILD_LOCKS.setdefault(lock_path, threading.RLock())
+    with thread_lock:
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        with lock_path.open("a+b") as lock_file:
+            if os.name == "nt":  # pragma: no cover - exercised on Windows
+                import msvcrt
+
+                lock_file.seek(0)
+                lock_file.write(b"\\0")
+                lock_file.flush()
+                lock_file.seek(0)
+                msvcrt.locking(lock_file.fileno(), msvcrt.LK_LOCK, 1)
+                try:
+                    yield
+                finally:
+                    lock_file.seek(0)
+                    msvcrt.locking(lock_file.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+                try:
+                    yield
+                finally:
+                    fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
 
 
 def run_build(
@@ -133,6 +170,23 @@ def _run_build(
 ) -> BuildResult:
     base = (project_dir or Path.cwd()).resolve()
     settings = settings or load_hedron_settings(base)
+    final_dir = settings.resolved_build_dir(base=base)
+    with _build_lock(final_dir):
+        return _run_build_locked(
+            base=base,
+            settings=settings,
+            production=production,
+            assets_url_prefix=assets_url_prefix,
+        )
+
+
+def _run_build_locked(
+    *,
+    base: Path,
+    settings: HedronSettings,
+    production: bool,
+    assets_url_prefix: str,
+) -> BuildResult:
     ensure_default_theme_registered()
 
     roots = settings.resolved_roots(base=base)

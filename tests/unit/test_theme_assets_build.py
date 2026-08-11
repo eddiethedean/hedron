@@ -13,6 +13,17 @@ from hedron_core.manifests import AssetManifest, BuildManifest
 from hedron_core.theme import REQUIRED_A11Y_TOKENS
 
 
+def _run_production_build(project_dir: str) -> None:
+    from hedron.build import run_build
+    from hedron.config import HedronSettings
+
+    run_build(
+        project_dir=Path(project_dir),
+        settings=HedronSettings(build_dir=".hedron/build", theme="default", plugins=()),
+        production=True,
+    )
+
+
 def test_default_theme_has_a11y_tokens() -> None:
     theme = default_theme()
     for token in REQUIRED_A11Y_TOKENS:
@@ -174,6 +185,49 @@ def test_build_temp_staging_same_device(tmp_path: Path) -> None:
     # No leftover staging dirs after successful promote.
     leftovers = list((tmp_path / "out").glob(".hedron-build-tmp-*"))
     assert leftovers == []
+
+
+def test_concurrent_builds_share_a_project_scoped_lock(tmp_path: Path) -> None:
+    """Concurrent builds cannot interleave registry mutations or promotion (#101)."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    from hedron.build import run_build
+    from hedron.config import HedronSettings
+
+    settings = HedronSettings(build_dir=".hedron/build", theme="default", plugins=())
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        results = list(
+            executor.map(
+                lambda _: run_build(project_dir=tmp_path, settings=settings, production=True),
+                range(8),
+            )
+        )
+
+    build_dir = tmp_path / ".hedron" / "build"
+    assert all(result.build_dir == build_dir for result in results)
+    assert (build_dir / "manifest.json").is_file()
+    assert list(build_dir.parent.glob(".hedron-build-tmp-*")) == []
+    assert list(build_dir.parent.glob(".hedron-build-bak-*")) == []
+
+
+def test_concurrent_process_builds_share_a_project_scoped_lock(tmp_path: Path) -> None:
+    """The filesystem lock also serializes separate production workers (#101)."""
+    from multiprocessing import get_context
+
+    workers = [
+        get_context("spawn").Process(target=_run_production_build, args=(str(tmp_path),))
+        for _ in range(4)
+    ]
+    for worker in workers:
+        worker.start()
+    for worker in workers:
+        worker.join(timeout=30)
+        assert worker.exitcode == 0
+
+    build_dir = tmp_path / ".hedron" / "build"
+    assert (build_dir / "manifest.json").is_file()
+    assert list(build_dir.parent.glob(".hedron-build-tmp-*")) == []
+    assert list(build_dir.parent.glob(".hedron-build-bak-*")) == []
 
 
 def test_strict_csp_no_unsafe_inline_styles() -> None:
