@@ -33,6 +33,53 @@ def _check_wheel_evidence(errors: list[str]) -> None:
         errors.append(f"native-wheels-028.toml missing tags: {missing}")
     if "wheels_macos_x86_64" in tags or "macosx_x86_64" in tags:
         errors.append("macOS x86_64 must not be claimed in Supported wheel evidence")
+    workflow = (ROOT / ".github" / "workflows" / "native-wheels.yml").read_text(encoding="utf-8")
+    if "publish-pypi:" not in workflow or "PYPI_API_TOKEN" not in workflow:
+        errors.append("native-wheels.yml must publish cibuildwheel artifacts to PyPI")
+
+
+def _check_pypi_wheel_tags(errors: list[str]) -> None:
+    """Fail closed when enabled and PyPI is missing Supported wheel tags."""
+    import json
+    import urllib.error
+    import urllib.request
+
+    data = tomllib.loads(WHEEL_EVIDENCE.read_text(encoding="utf-8"))
+    if not bool(data.get("require_pypi_wheels", False)):
+        return
+
+    pyproject = tomllib.loads(
+        (ROOT / "packages" / "hedron-native" / "pyproject.toml").read_text(encoding="utf-8")
+    )
+    version = str(pyproject["project"]["version"])
+    url = f"https://pypi.org/pypi/hedron-native/{version}/json"
+    try:
+        with urllib.request.urlopen(url, timeout=20) as resp:  # noqa: S310
+            payload = json.load(resp)
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        errors.append(f"unable to query PyPI for hedron-native=={version}: {exc}")
+        return
+    filenames = [str(item.get("filename") or "") for item in payload.get("urls") or []]
+    required = {
+        "manylinux_x86_64": any(
+            "manylinux" in name and "x86_64" in name and name.endswith(".whl") for name in filenames
+        ),
+        "manylinux_aarch64": any(
+            "manylinux" in name and "aarch64" in name and name.endswith(".whl")
+            for name in filenames
+        ),
+        "macosx_arm64": any(
+            "macosx" in name and "arm64" in name and name.endswith(".whl") for name in filenames
+        ),
+        "win_amd64": any("win_amd64" in name and name.endswith(".whl") for name in filenames),
+        "source_sdist": any(name.endswith(".tar.gz") for name in filenames),
+    }
+    missing = [tag for tag, ok in required.items() if not ok]
+    if missing:
+        errors.append(
+            f"PyPI hedron-native=={version} missing Supported artifacts {missing}; "
+            f"found={filenames or ['<none>']}"
+        )
 
 
 def main() -> int:
@@ -71,6 +118,7 @@ def main() -> int:
         errors,
     )
     _check_wheel_evidence(errors)
+    _check_pypi_wheel_tags(errors)
     native_docs = (ROOT / "docs" / "packages" / "hedron-native.md").read_text(encoding="utf-8")
     if "HEDRON_NATIVE_DISABLE" not in native_docs:
         errors.append("docs/packages/hedron-native.md must document HEDRON_NATIVE_DISABLE")

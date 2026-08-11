@@ -7,11 +7,16 @@
     el.setAttribute("role", "alert");
     if (!el.textContent) el.textContent = message;
   }
+  function destroy(el) {
+    el.innerHTML = "";
+    el.removeAttribute("data-hedron-chart-mounted");
+  }
   function mount(el) {
     if (!window.mermaid) {
       fail(el, "Mermaid runtime missing (serve local mermaid.min.js)");
       return;
     }
+    destroy(el);
     var raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
     var payload;
@@ -23,22 +28,27 @@
     }
     var spec = payload.spec || payload;
     var diagram = (spec && spec.diagram) || String(spec);
-    el.innerHTML = "";
     var pre = document.createElement("pre");
     pre.className = "mermaid";
     pre.textContent = diagram;
     el.appendChild(pre);
     window.mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
     window.mermaid.run({ nodes: [pre] });
+    el.setAttribute("data-hedron-chart-mounted", "1");
   }
   function scan(root) {
     (root || document).querySelectorAll('[data-hedron-chart="mermaid"]').forEach(mount);
   }
+  function beforeSwap(ev) {
+    var target = ev && ev.target;
+    if (!target || !target.querySelectorAll) return;
+    target.querySelectorAll('[data-hedron-chart="mermaid"]').forEach(destroy);
+  }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);
   });
-  document.body &&
-    document.body.addEventListener("htmx:afterSwap", function (ev) {
-      scan(ev.target);
-    });
+  document.addEventListener("htmx:afterSwap", function (ev) {
+    scan(ev.target);
+  });
+  document.addEventListener("htmx:beforeSwap", beforeSwap);
 })();

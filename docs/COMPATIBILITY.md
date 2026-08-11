@@ -1,7 +1,7 @@
 # Compatibility policy
 
 **Status:** Accepted for the **0.28.x** train (**Published**; last published
-PyPI/git = `v0.28.0`)
+PyPI/git = `v0.28.1`)
 **Reviewed:** 2026-08-10
 
 ## Current train (read this first)
@@ -21,8 +21,8 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`)
-stay on the `0.28.x` train (Published as `0.28.0`; last published
-`v0.28.0`). Independent Beta packages `hedron-charts` and `hedron-native`
+stay on the `0.28.x` train (Published as `0.28.1`; last published
+`v0.28.1`). Independent Beta packages `hedron-charts` and `hedron-native`
 version on `0.1.x`. Alpha packages `hedron-gradio`,
 `hedron-sample-kit`, `hedron-notebook`, and `hedron-mcp`
 version independently.
@@ -30,14 +30,14 @@ version independently.
 ### Charts and sample-kit compatibility floor
 
 `hedron-charts>=0.1.8,<0.2` and `hedron-sample-kit>=0.1.8,<0.2` are compatible with
-`hedron-core>=0.28.0,<0.29`. The flagship `hedron[charts]>=0.28.0,<0.29` extra enforces
+`hedron-core>=0.28.1,<0.29`. The flagship `hedron[charts]>=0.28.1,<0.29` extra enforces
 that chart floor.
 
 !!! warning "Exclude older satellite wheels"
 
     Satellite versions through `0.1.6` require an older `hedron-core` bound; historical
-    `0.11.0` requires `hedron-core==0.11.0`. Do not loosen the lower bound below `0.1.7` in a
-    Hedron 0.27 environment. Use a clean virtual environment when replacing an older
+    `0.11.0` requires `hedron-core==0.11.0`. Do not loosen the lower bound below `0.1.8` in a
+    Hedron 0.28 environment. Use a clean virtual environment when replacing an older
     chart or sample-kit installation.
 
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
@@ -92,7 +92,7 @@ See [Installation](getting-started/installation.md) and
 | Pydantic | Supported `>=2.13.4,<2.14`; declared `>=2.13.4,<2.15` | Required by `hedron-core`; Hedron shields public contracts from Pydantic internals. |
 | Starlette | FastAPI-managed compatible version | No independent direct pin unless implementation use requires one; test the resolved FastAPI set. |
 | HTMX | Bundled 2.0.10; compatible contract `>=2.0,<3.0` | Official assets pin an exact reviewed version per Hedron release; PAGE responses inject `/hedron-static/htmx.min.js`. |
-| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=0.28.0,<0.29`; Matplotlib/static charts are the conservative default. |
+| Matplotlib | `>=3.8,<4` via `hedron-charts[matplotlib]` | Install with `hedron[charts]>=0.28.1,<0.29`; Matplotlib/static charts are the conservative default. |
 | Plotly | `>=5.18,<7` via `hedron-charts[plotly]` | Experimental; local host asset, no CDN callbacks. |
 | Altair | `>=6.0,<7` via `hedron-charts[altair]` | Experimental; Python 3.14 requires Altair 6+ (TypedDict fix). |
 | nh3 | `>=0.2` via `hedron[sanitize]` / `[markdown]` | TrustedHtml.nh3 named constructor. |

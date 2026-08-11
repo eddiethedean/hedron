@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.28.1] — 2026-08-10
+
+### Changed
+
+- Coordinated Beta patch to `0.28.1` (pin `>=0.28.1,<0.29`).
+
 ## [0.28.0] — 2026-08-10
 
 ### Added
@@ -25,7 +31,7 @@
 
 ### Changed
 
-- Coordinated Beta train bump to `0.28.0` (pin `>=0.28.0,<0.29`).
+- Coordinated Beta train bump to `0.27.0` (pin `>=0.27.0,<0.28`).
 
 ## [0.26.1] — 2026-08-10
 

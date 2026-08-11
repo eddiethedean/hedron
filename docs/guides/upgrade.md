@@ -25,7 +25,7 @@ remain experimental.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.28.0,<0.29"
+python -m pip install -U "hedron>=0.28.1,<0.29"
 python -m pip install -U "hedron-charts>=0.1.8,<0.2" "hedron-native>=0.1.1,<0.2"
 ```
 
@@ -54,7 +54,7 @@ Absence of `hedron-native` continues to fall back without semantic drift.
 ## After upgrading
 
 1. Run your test suite and any HTMX/browser checks that cover chart fragments.
-2. Confirm Explorer / plugin loads succeed under `0.28.0` (`hedron_version` pins).
+2. Confirm Explorer / plugin loads succeed under `0.28.x` (`hedron_version` pins).
 3. Read [What’s new in 0.28](whats-new-0.28.md) and [What’s ready](whats-ready.md).
 
 Prior 0.26→0.27 notes remain in [What’s new in 0.27](whats-new-0.27.md).

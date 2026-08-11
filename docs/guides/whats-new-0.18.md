@@ -2,7 +2,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.18**. The Living published train is **0.28** (last `v0.28.0`). Pin `hedron>=0.28.0,<0.29`.
+    This page describes **0.18**. The Living published train is **0.28** (last `v0.28.1`). Pin `hedron>=0.28.1,<0.29`.
 
 Phase **0.18** adds model demos and inference workflows — fail-closed demo composition,
 governed feedback, inference scheduling over `JobBackend`, an interaction recorder, typed

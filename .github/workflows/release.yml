@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_tag:
-        description: "Tag to publish (e.g. v0.27.0). Required when publish_only is true."
+        description: "Tag to publish (e.g. v0.28.1). Required when publish_only is true."
         type: string
         default: ""
       publish_only:
@@ -22,7 +22,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "0.28.0"
+  HEDRON_GATE_VERSION: "0.28.1"
 
 jobs:
   test:
@@ -198,11 +198,15 @@ jobs:
       - name: Verify tag, versions, license, and changelog
         run: |
           set -euo pipefail
-          # Engineering publish for 0.21 allows Planned human-AT session gates
-          # (SR/PARTICIPANT/ARTIFACT/REMEDIATE). Drop --allow-planned only when
-          # every 0.21 row is Verified (D-052 Verified human-AT cut).
-          uv run --python 3.11 python scripts/check_release_gate.py \
-            "${{ steps.ref.outputs.version }}" --allow-planned
+          # Engineering publish for 0.21 allows Planned human-AT session gates.
+          # 0.28+ capability gates are Verified — do not pass --allow-planned.
+          version="${{ steps.ref.outputs.version }}"
+          if [[ "$version" == 0.21* ]]; then
+            uv run --python 3.11 python scripts/check_release_gate.py \
+              "$version" --allow-planned
+          else
+            uv run --python 3.11 python scripts/check_release_gate.py "$version"
+          fi
       - name: Build evidence bundle
         run: |
           uv run --python 3.11 python scripts/build_evidence_bundle.py \

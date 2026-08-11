@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.28.1] — 2026-08-10
+
+### Fixed
+
+- Tip honesty and adapter parity: native floor/docs, Auto Experimental remediation,
+  optional chart HTMX dispose, Flask/Django mount-aware static prefixes, live
+  `HEDRON_NATIVE_DISABLE`, and tip-hub/SSOT/CI footguns.
+
+### Changed
+
+- Coordinated Beta patch to `0.28.1` (pin `>=0.28.1,<0.29`).
+
 ## [0.28.0] — 2026-08-10
 
 ### Added
@@ -39,8 +51,8 @@
 - PAGE responses inject shared core page assets (HTMX before extensions) via the
   flagship static mount backed by `hedron-core` assets.
 - Default toast `OobUpdate` uses `swap='innerHTML'`.
-- Charts / sample-kit extras floor raised to `>=0.1.8,<0.2`.
-- Coordinated Beta train bump to `0.28.0` (pin `>=0.28.0,<0.29`).
+- Charts / sample-kit extras floor raised to `>=0.1.7,<0.2`.
+- Coordinated Beta train bump to `0.27.0` (pin `>=0.27.0,<0.28`).
 
 ## [0.26.1] — 2026-08-10
 

@@ -8,11 +8,24 @@
     el.setAttribute("role", "alert");
     if (!el.textContent) el.textContent = message;
   }
+  function destroy(el) {
+    try {
+      var map = el._hedronMapLibre;
+      if (map && typeof map.remove === "function") {
+        map.remove();
+      }
+    } catch (_) {
+      /* ignore remove errors during swap */
+    }
+    el._hedronMapLibre = null;
+    el.removeAttribute("data-hedron-chart-mounted");
+  }
   function mount(el) {
     if (!window.maplibregl) {
       fail(el, "MapLibre runtime missing (serve local maplibre-gl.js)");
       return;
     }
+    destroy(el);
     var raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
     var payload;
@@ -47,6 +60,7 @@
       zoom: Number(spec.zoom || 2),
       attributionControl: false,
     });
+    el._hedronMapLibre = map;
     (spec.markers || []).forEach(function (m) {
       if (!m || !m.location) return;
       var loc = m.location;
@@ -65,17 +79,23 @@
         });
       });
     }
+    el.setAttribute("data-hedron-chart-mounted", "1");
   }
   function scan(root) {
     (root || document)
       .querySelectorAll('[data-hedron-chart="maplibre"]')
       .forEach(mount);
   }
+  function beforeSwap(ev) {
+    var target = ev && ev.target;
+    if (!target || !target.querySelectorAll) return;
+    target.querySelectorAll('[data-hedron-chart="maplibre"]').forEach(destroy);
+  }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);
   });
-  document.body &&
-    document.body.addEventListener("htmx:afterSwap", function (ev) {
-      scan(ev.target);
-    });
+  document.addEventListener("htmx:afterSwap", function (ev) {
+    scan(ev.target);
+  });
+  document.addEventListener("htmx:beforeSwap", beforeSwap);
 })();

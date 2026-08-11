@@ -22,7 +22,7 @@ redirect URIs to most providers.
 ## 2. Install and configure
 
 ```bash
-pip install "hedron[auth]>=0.28.0,<0.29" "uvicorn[standard]"
+pip install "hedron[auth]>=0.28.1,<0.29" "uvicorn[standard]"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/oidc/app.py -o app.py
 export OIDC_ISSUER="https://your-provider.example"
 export OIDC_CLIENT_ID="your-client-id"

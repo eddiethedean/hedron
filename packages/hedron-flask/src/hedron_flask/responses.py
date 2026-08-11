@@ -23,6 +23,7 @@ from hedron_core.interaction import (
     select_htmx_auth_target,
     validated_extra_headers,
 )
+from hedron_core.mount import normalize_mount_path, prefix_local_path
 from hedron_core.page_assets import inject_page_assets
 from hedron_core.rendering import RenderContext, RenderMode, RenderResult, render
 from hedron_core.security_policy import SecurityPolicy
@@ -212,8 +213,23 @@ def _security_policy_from_app() -> SecurityPolicy:
     return SecurityPolicy.from_name("standard")
 
 
+def _flask_static_href(path: str) -> str:
+    href = path if path.startswith("/") else f"/{path}"
+    try:
+        script_root = getattr(flask_request, "script_root", "") or ""
+    except RuntimeError:
+        script_root = ""
+    mount = normalize_mount_path(str(script_root))
+    return prefix_local_path(href, mount)
+
+
 def _inject_page_html(html_text: str, mode: RenderMode) -> str:
-    return inject_page_assets(html_text, mode, policy=_security_policy_from_app())
+    return inject_page_assets(
+        html_text,
+        mode,
+        policy=_security_policy_from_app(),
+        static_href=_flask_static_href,
+    )
 
 
 def component_response(

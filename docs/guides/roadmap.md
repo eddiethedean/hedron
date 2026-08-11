@@ -23,7 +23,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.25** | Production archetype, load budgets, extras quarantine | **Published** (`v0.25.0`+; last `v0.25.2`; D-053) |
 | **0.26** | Production-grade core, FastAPI flagship, and secured/development Explorer | **Published** (`v0.26.0`; D-054) |
 | **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | **Published** (`v0.27.0`; D-055) |
-| **0.28** | Production-grade charts and optional native acceleration | **Published** (`v0.28.0`; D-056 / RFC-0059) |
+| **0.28** | Production-grade charts and optional native acceleration | **Published** (`v0.28.1`; D-056 / RFC-0059) |
 | **0.29** | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | Planned; tooling scope remains explicit |
 | **0.30** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required |
 | **0.31** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access |
@@ -50,7 +50,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 ## Honest gaps on the current train (0.28)
 
-- Current **published** PyPI train is **0.28.x** (last `v0.28.0`)
+- Current **published** PyPI train is **0.28.x** (last `v0.28.1`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), and `hedron-charts` / `hedron-native`

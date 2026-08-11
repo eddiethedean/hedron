@@ -359,7 +359,7 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron>=0.28.0,<0.29",
+    "hedron>=0.28.1,<0.29",
     "uvicorn[standard]>=0.30",
 ]
 
@@ -436,8 +436,8 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron-flask>=0.28.0,<0.29",
-    "hedron-core>=0.28.0,<0.29",
+    "hedron-flask>=0.28.1,<0.29",
+    "hedron-core>=0.28.1,<0.29",
     "flask>=3,<4",
 ]
 
@@ -529,8 +529,8 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron-django>=0.28.0,<0.29",
-    "hedron-core>=0.28.0,<0.29",
+    "hedron-django>=0.28.1,<0.29",
+    "hedron-core>=0.28.1,<0.29",
     "django>=5.2,<6",
     "waitress>=3,<4",
 ]

@@ -47,8 +47,10 @@ def test_auto_without_as_rejects_experimental_plotly() -> None:
 
     with pytest.raises(HedronError) as exc:
         Auto(_PlotlyLike()).resolve()
-    # Experimental plotly is skipped; chart-stub then fail-closes (HED-AUTO-0004).
-    assert exc.value.diagnostic.code in {"HED-AUTO-0001", "HED-AUTO-0004"}
+    assert exc.value.diagnostic.code == "HED-AUTO-0004"
+    rem = (exc.value.diagnostic.remediation or "").lower()
+    assert "as_=" in rem or "as_='" in rem or "plotly" in rem
+    assert "install hedron-charts" not in rem
     decision = get_last_auto_decision()
     assert decision is not None
     assert decision.selected != "plotly"

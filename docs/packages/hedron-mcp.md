@@ -13,7 +13,7 @@ never grants authority beyond the authenticated principal.
 ## Install
 
 ```bash
-pip install "hedron[mcp]>=0.28.0,<0.29"
+pip install "hedron[mcp]>=0.28.1,<0.29"
 # or
 pip install "hedron-mcp>=0.1.0,<0.2"
 ```

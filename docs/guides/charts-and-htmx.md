@@ -5,7 +5,7 @@ A short path from install → chart → Markdown → typed fragment response.
 ## Availability
 
 ```bash
-pip install "hedron[charts]>=0.28.0,<0.29"
+pip install "hedron[charts]>=0.28.1,<0.29"
 ```
 
 This enforces `hedron-charts>=0.1.8,<0.2`; older satellite releases target older cores.

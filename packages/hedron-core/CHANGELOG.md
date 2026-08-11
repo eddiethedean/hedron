@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.28.1] — 2026-08-10
+
+### Fixed
+
+- Mount-aware static path helper for adapters; live native-disable honor on escape
+  paths; plugin remediation pin stays train-scoped from release metadata.
+
+### Changed
+
+- Coordinated Beta patch to `0.28.1` (pin `>=0.28.1,<0.29`).
+
 ## [0.28.0] — 2026-08-10
 
 ### Added
@@ -42,7 +53,7 @@
   (`hedron_core.page_assets`) for FastAPI/Flask/Django hosts.
 - `OobUpdate` / `oob_swap` default `swap` is `innerHTML` so landmark hosts keep
   their tag when applying out-of-band updates.
-- Coordinated Beta train bump to `0.28.0` (pin `>=0.28.0,<0.29`).
+- Coordinated Beta train bump to `0.27.0` (pin `>=0.27.0,<0.28`).
 
 ## [0.26.1] — 2026-08-10
 

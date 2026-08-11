@@ -1915,7 +1915,7 @@ flowchart LR
   hosts --> parity[PARITY portable]
   parity --> packages[Per-package evidence]
   packages --> packet[REGRESS PKG evidence]
-  packet --> cut[v0.28.0]
+  packet --> cut[v0.28.1]
 ```
 
 1. **Inventory freeze** — Supported / Experimental / excluded for the five packages; docs and
@@ -1991,9 +1991,9 @@ Post-`0.26.0` quality follow-ups that must not inflate Supported claims:
 - Package metadata and adopter docs use the production-grade label only for the declared Supported
   inventory; all exclusions remain conspicuous.
 
-## 0.28 — Production-grade visualization and native acceleration (`v0.28.0`)
+## 0.28 — Production-grade visualization and native acceleration (`v0.28.1`)
 
-**Status:** Published as `v0.28.0` (2026-08-10). Owned by **D-056** /
+**Status:** Published as `v0.28.1` (2026-08-10). Owned by **D-056** /
 [RFC-0059](rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
 Independent package releases may use their own compatible version line; the roadmap phase does
 not require them to adopt the main train's version number. Packet SSOT:

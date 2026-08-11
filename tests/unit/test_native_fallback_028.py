@@ -40,6 +40,25 @@ def test_native_disabled_by_env_reads_live_env(monkeypatch: pytest.MonkeyPatch) 
     assert native_disabled_by_env() is True
 
 
+def test_live_disable_switches_escape_and_availability(monkeypatch: pytest.MonkeyPatch) -> None:
+    from hedron_native import native_available
+
+    monkeypatch.delenv("HEDRON_NATIVE_DISABLE", raising=False)
+    before = native_available()
+    monkeypatch.setenv("HEDRON_NATIVE_DISABLE", "1")
+    assert native_available() is False
+    assert escape_text("<x>") == escape_text_python("<x>")
+    monkeypatch.delenv("HEDRON_NATIVE_DISABLE", raising=False)
+    assert native_available() is before
+
+
+def test_serializer_live_disable(monkeypatch: pytest.MonkeyPatch) -> None:
+    from hedron_core._serializer import escape_text as core_escape
+
+    monkeypatch.setenv("HEDRON_NATIVE_DISABLE", "1")
+    assert core_escape("<script>") == escape_text_python("<script>")
+
+
 def test_hedron_native_disable_subprocess_forces_python_path() -> None:
     code = (
         "from hedron_native import ("

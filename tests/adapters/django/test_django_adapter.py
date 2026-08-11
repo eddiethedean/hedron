@@ -34,6 +34,20 @@ def test_hedron_static_mount(django_client: Client) -> None:
     assert len(payload) > 1000
 
 
+def test_page_static_href_honors_script_prefix(django_client: Client) -> None:
+    from django.urls import clear_script_prefix, set_script_prefix
+
+    set_script_prefix("/app/")
+    try:
+        response = django_client.get("/page/")
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "/app/hedron-static/htmx.min.js" in content
+        assert 'src="/hedron-static/htmx.min.js"' not in content
+    finally:
+        clear_script_prefix()
+
+
 def test_fragment_render(django_client: Client) -> None:
     response = django_client.get("/fragment/", HTTP_HX_REQUEST="true")
     assert response.status_code == 200

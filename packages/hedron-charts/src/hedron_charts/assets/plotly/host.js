@@ -134,9 +134,8 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => scan(document));
-  document.body &&
-    document.body.addEventListener("htmx:afterSwap", (ev) => {
-      scan(ev.target);
-    });
-  document.body && document.body.addEventListener("htmx:beforeSwap", beforeSwap);
+  document.addEventListener("htmx:afterSwap", (ev) => {
+    scan(ev.target);
+  });
+  document.addEventListener("htmx:beforeSwap", beforeSwap);
 })();

@@ -9,7 +9,7 @@ Visualization adapters and chart components for Hedron.
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.28.0,<0.29"
+pip install "hedron[charts]>=0.28.1,<0.29"
 # Add a backend when needed:
 pip install "hedron-charts[matplotlib]>=0.1.8,<0.2"
 ```

@@ -32,7 +32,7 @@ def missing_extra(extra: str, *, package: str = "hedron-charts") -> HedronError:
         explanation=f"This chart adapter requires the {extra!r} extra.",
         remediation=(
             f'Install with: pip install "{package}[{extra}]>=0.1.8,<0.2" or '
-            f'pip install "hedron[charts]>=0.28.0,<0.29".'
+            f'pip install "hedron[charts]>=0.28.1,<0.29".'
         ),
     )
 

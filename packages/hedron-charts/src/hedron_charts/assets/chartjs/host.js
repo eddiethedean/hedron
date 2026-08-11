@@ -8,11 +8,27 @@
     el.setAttribute("role", "alert");
     if (!el.textContent) el.textContent = message;
   }
+  function destroy(el) {
+    try {
+      var canvas = el.querySelector("canvas");
+      var chart =
+        canvas && window.Chart && typeof window.Chart.getChart === "function"
+          ? window.Chart.getChart(canvas)
+          : null;
+      if (chart && typeof chart.destroy === "function") {
+        chart.destroy();
+      }
+    } catch (_) {
+      /* ignore destroy errors during swap */
+    }
+    el.removeAttribute("data-hedron-chart-mounted");
+  }
   function mount(el) {
     if (!window.Chart) {
       fail(el, "Chart.js runtime missing (serve local chart.umd.min.js)");
       return;
     }
+    destroy(el);
     var raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
     var payload;
@@ -27,15 +43,21 @@
     el.innerHTML = "";
     el.appendChild(canvas);
     new window.Chart(canvas.getContext("2d"), spec);
+    el.setAttribute("data-hedron-chart-mounted", "1");
   }
   function scan(root) {
     (root || document).querySelectorAll('[data-hedron-chart="chartjs"]').forEach(mount);
   }
+  function beforeSwap(ev) {
+    var target = ev && ev.target;
+    if (!target || !target.querySelectorAll) return;
+    target.querySelectorAll('[data-hedron-chart="chartjs"]').forEach(destroy);
+  }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);
   });
-  document.body &&
-    document.body.addEventListener("htmx:afterSwap", function (ev) {
-      scan(ev.target);
-    });
+  document.addEventListener("htmx:afterSwap", function (ev) {
+    scan(ev.target);
+  });
+  document.addEventListener("htmx:beforeSwap", beforeSwap);
 })();

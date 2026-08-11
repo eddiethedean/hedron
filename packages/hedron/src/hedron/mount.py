@@ -39,23 +39,9 @@ def prefix_local_path(url: str, mount: str) -> str:
     prefixed result would fail :func:`hedron_core.htmx_contract.is_local_path`
     (defense in depth against dirty mounts).
     """
-    from hedron_core.htmx_contract import is_local_path
+    from hedron_core.mount import prefix_local_path as _core_prefix
 
-    normalized = normalize_mount_path(mount)
-    if not normalized:
-        return url
-    if not url.startswith("/") or url.startswith("//"):
-        return url
-    # Defense in depth if a caller bypassed normalize_mount_path.
-    if normalized.startswith("//") or "://" in normalized:
-        return url
-    if url == normalized or url.startswith(normalized + "/"):
-        return url
-    prefixed = normalized + "/" if url == "/" else normalized + url
-    # Refuse to emit a Location/path that is_local_path would reject.
-    if not is_local_path(prefixed):
-        return url
-    return prefixed
+    return _core_prefix(url, mount)
 
 
 def resolve_mount_path_from_environ(

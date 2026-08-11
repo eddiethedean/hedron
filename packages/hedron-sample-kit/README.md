@@ -11,7 +11,7 @@ Demonstrates a component (`Callout`), styles, asset, named example, Explorer
 panel, and diagnostic owner via the `hedron.plugins` entry point. Use it as a
 reference when authoring your own plugin distribution.
 
-**Package maturity:** Alpha · **0.28-compatible release:** `0.1.7`
+**Package maturity:** Alpha · **0.28-compatible release:** `0.1.8`
 
 ## Install
 
@@ -19,7 +19,7 @@ reference when authoring your own plugin distribution.
 pip install "hedron-sample-kit>=0.1.8,<0.2"
 ```
 
-Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.7` floor. See
+Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.8` floor. See
 [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 
 Enable the plugin in your app’s `pyproject.toml`:

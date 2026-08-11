@@ -23,7 +23,7 @@ pip install "hedron-native>=0.1.1,<0.2"
 # or
 uv add "hedron-native>=0.1.1,<0.2"
 # via flagship:
-pip install "hedron[native]>=0.28.0,<0.29"
+pip install "hedron[native]>=0.28.1,<0.29"
 ```
 
 Requires Python 3.11–3.14. Prebuilt wheels are published for common platforms;
