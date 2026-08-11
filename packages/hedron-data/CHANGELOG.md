@@ -11,6 +11,7 @@
   ``DataTable.to_csv`` (#112).
 - DataEditor save success clears only the submitted batch (by operation id),
   so edits made while a request is in flight remain queued (#111).
+  Retained updates refresh ``row_version`` to the post-save dataset version.
 
 ### Changed
 

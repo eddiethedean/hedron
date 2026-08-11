@@ -68,12 +68,19 @@
   }
 
   /** Remove only operations that were included in the submitted snapshot. */
-  function reconcileAfterSuccess(pending, inserts, deletes, snapshot) {
+  function reconcileAfterSuccess(pending, inserts, deletes, snapshot, nextVersion) {
     const updateIds = new Set(snapshot.updateIds || []);
     const insertIds = new Set(snapshot.insertIds || []);
     const deleteIds = new Set(snapshot.deleteIds || []);
+    const version =
+      nextVersion == null || nextVersion === "" ? null : String(nextVersion);
     return {
-      pending: (pending || []).filter((u) => !updateIds.has(u._opId)),
+      pending: (pending || [])
+        .filter((u) => !updateIds.has(u._opId))
+        .map((u) => {
+          if (version == null || u.row_version == null) return u;
+          return { ...u, row_version: version };
+        }),
       inserts: (inserts || []).filter((r) => !insertIds.has(r._opId)),
       deletes: (deletes || []).filter((d) => {
         const id = typeof d === "string" ? d : d._opId;
@@ -516,17 +523,18 @@
         }
         const bar = this.querySelector("[data-conflict-bar]");
         if (data.ok) {
+          if (data.version) this._payload.version = data.version;
           const kept = reconcileAfterSuccess(
             this._pending,
             this._inserts,
             this._deletes,
-            snapshot
+            snapshot,
+            this._payload.version
           );
           this._pending = kept.pending;
           this._inserts = kept.inserts;
           this._deletes = kept.deletes;
           if (bar) bar.hidden = true;
-          if (data.version) this._payload.version = data.version;
           this._announce("Saved successfully");
         } else if (data.conflicts && data.conflicts.length) {
           this._announce("Conflict: choose reload, retain-and-retry, compare, or cancel");

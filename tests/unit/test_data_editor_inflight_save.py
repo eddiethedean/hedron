@@ -96,7 +96,26 @@ process.stdout.write(JSON.stringify(kept.pending));
     assert json.loads(out) == [{"row_key": "1", "field": "a", "value": "A2", "_opId": 2}]
 
 
-def test_serialize_save_body_strips_op_ids(node_bin: str) -> None:
+def test_reconcile_refreshes_row_version_on_retained_edits(node_bin: str) -> None:
+    out = _run_node(
+        node_bin,
+        f"""
+const api = require({json.dumps(str(EDITOR_JS))});
+let pending = [
+  {{row_key: "1", field: "a", value: "A", row_version: "1", _opId: 1}},
+];
+const snapshot = api.snapshotSaveBatch(pending, [], []);
+pending = pending.concat([
+  {{row_key: "1", field: "b", value: "B", row_version: "1", _opId: 2}},
+]);
+const kept = api.reconcileAfterSuccess(pending, [], [], snapshot, "2");
+process.stdout.write(JSON.stringify(kept.pending));
+""",
+    )
+    assert json.loads(out) == [
+        {"row_key": "1", "field": "b", "value": "B", "row_version": "2", "_opId": 2}
+    ]
+
     out = _run_node(
         node_bin,
         f"""
