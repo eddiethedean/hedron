@@ -24,7 +24,14 @@ env:
   UV_NO_PROGRESS: "1"
   CIBW_BUILD: "cp311-* cp312-* cp313-* cp314-*"
   CIBW_SKIP: "pp* *-musllinux_*"
-  CIBW_BEFORE_BUILD: "rustup default stable"
+  # manylinux containers do not inherit the host rustup from dtolnay/rust-toolchain.
+  CIBW_BEFORE_ALL_LINUX: >-
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
+    | sh -s -- -y --default-toolchain stable --profile default
+  CIBW_ENVIRONMENT_LINUX: 'PATH="$HOME/.cargo/bin:$PATH" RUSTUP_TOOLCHAIN=stable'
+  # macOS / Windows build on the host runner (no container).
+  CIBW_BEFORE_BUILD_MACOS: "rustup default stable"
+  CIBW_BEFORE_BUILD_WINDOWS: "rustup default stable"
   CIBW_ENVIRONMENT: 'PATH="$HOME/.cargo/bin:$PATH"'
 
 jobs:
