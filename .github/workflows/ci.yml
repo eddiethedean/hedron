@@ -158,7 +158,7 @@ jobs:
         run: bash scripts/ci_checks.sh browser --python 3.12
       - name: Upload Playwright artifacts on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: browser-htmx-${{ matrix.browser }}
           path: |
@@ -199,7 +199,7 @@ jobs:
       - name: Run evidence suite
         run: bash scripts/ci_checks.sh evidence --python 3.12 --gate-version ${{ env.HEDRON_GATE_VERSION }}
       - name: Upload evidence bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: hedron-evidence-bundle
           path: dist/evidence-bundle/
