@@ -333,7 +333,7 @@ def __getattr__(name: str) -> object:
         except ImportError as exc:  # pragma: no cover
             raise ImportError(
                 f"{name} requires the hedron-charts package. "
-                'Install with: pip install "hedron[charts]>=0.28.0,<0.28" or '
+                'Install with: pip install "hedron[charts]>=0.28.0,<0.29" or '
                 'pip install "hedron-charts>=0.1.8,<0.2". '
                 "See https://hedron.readthedocs.io/en/latest/COMPATIBILITY/"
             ) from exc

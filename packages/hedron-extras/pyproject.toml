@@ -34,14 +34,14 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.28.0,<0.28",
+    "hedron-core>=0.28.0,<0.29",
 ]
 
 [project.optional-dependencies]
 code_editor = []
 json_editor = []
-data_explorer = ["hedron-data>=0.28.0,<0.28"]
-chart_workbench = ["hedron-data>=0.28.0,<0.28", "hedron-charts>=0.1.8,<0.2"]
+data_explorer = ["hedron-data>=0.28.0,<0.29"]
+chart_workbench = ["hedron-data>=0.28.0,<0.29", "hedron-charts>=0.1.8,<0.2"]
 image_tools = []
 calendar = []
 signature = []
@@ -51,7 +51,7 @@ terminal = []
 joystick = []
 experimental-ui = []
 all = [
-    "hedron-data>=0.28.0,<0.28",
+    "hedron-data>=0.28.0,<0.29",
     "hedron-charts>=0.1.8,<0.2",
 ]
 

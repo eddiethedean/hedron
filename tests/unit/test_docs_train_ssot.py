@@ -18,7 +18,7 @@ def failures(text: str) -> list[str]:
 
 
 def test_current_train_claim_accepts_release_metadata() -> None:
-    assert not failures("Current train: 0.27.x; last published v0.27.0.")
+    assert not failures("Current train: 0.28.x; last published v0.28.0.")
 
 
 def test_current_train_claim_rejects_any_stale_minor_without_a_version_blacklist() -> None:
@@ -27,15 +27,15 @@ def test_current_train_claim_rejects_any_stale_minor_without_a_version_blacklist
 
 
 def test_living_version_before_train_is_checked() -> None:
-    assert failures("Capability readiness is Supported on the living **0.26** train.")
-    assert not failures("Capability readiness is Supported on the living **0.27** train.")
-    assert failures("Ship on the living 0.26 train.")
+    assert failures("Capability readiness is Supported on the living **0.27** train.")
+    assert not failures("Capability readiness is Supported on the living **0.28** train.")
+    assert failures("Ship on the living 0.27 train.")
     assert not failures(f"Ship on the living {ssot.FACTS.train} train.")
 
 
 def test_last_version_claim_without_published_keyword() -> None:
-    assert failures("| Version | **0.27.x** / last **v0.26.0** |")
-    assert not failures("| Version | **0.27.x** / last **v0.27.0** |")
+    assert failures("| Version | **0.28.x** / last **v0.27.0** |")
+    assert not failures("| Version | **0.28.x** / last **v0.28.0** |")
 
 
 def test_previous_train_is_allowed_only_when_explicitly_historical_or_supported() -> None:

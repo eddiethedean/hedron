@@ -32,7 +32,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.28.0,<0.28",
+    "hedron-core>=0.28.0,<0.29",
     "fastapi>=0.141.1,<0.150",
 ]
 
