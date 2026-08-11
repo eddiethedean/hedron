@@ -56,15 +56,18 @@
   }
 
   function scan(root) {
-    (root || document)
-      .querySelectorAll('[data-hedron-chart="vega-lite"]')
-      .forEach(mount);
+    var base = root || document;
+    var sel = '[data-hedron-chart="vega-lite"]';
+    if (base.matches && base.matches(sel)) mount(base);
+    if (base.querySelectorAll) base.querySelectorAll(sel).forEach(mount);
   }
 
   function beforeSwap(ev) {
     const target = ev && ev.target;
-    if (!target || !target.querySelectorAll) return;
-    target.querySelectorAll('[data-hedron-chart="vega-lite"]').forEach(destroy);
+    if (!target) return;
+    var sel = '[data-hedron-chart="vega-lite"]';
+    if (target.matches && target.matches(sel)) destroy(target);
+    if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
 
   document.addEventListener("DOMContentLoaded", () => scan(document));

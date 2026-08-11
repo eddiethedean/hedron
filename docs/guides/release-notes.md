@@ -32,7 +32,7 @@ Hedron 0.28.0 graduates charts and optional native acceleration inventories.
   and are excluded from production Auto defaults.
 - Optional Rust escape acceleration ships with `HEDRON_NATIVE_DISABLE` fallback and a
   Supported wheel matrix.
-- Charts `0.1.8` and native `0.1.1` leave Alpha for declared Supported scopes.
+- Charts `0.1.9` and native `0.1.2` leave Alpha for declared Supported scopes.
 
 No Supported CRUD/admin API removal is listed. Polling remains the production path for
 live status; SSE, WebSocket, streaming, and preload remain experimental.

@@ -65,7 +65,7 @@ human AT evidence as Supported; team will not own FastAPI+HTMX literacy.
   optional `hedron[data]` / `hedron[jinja]` / `hedron[dev]`, polling job status
 - **Prefer polling:** live SSE / WebSocket (`hedron.experimental`)
 - **Charts / sample kit:** pin floors
-  `hedron[charts]>=0.28.1,<0.29` and `hedron-sample-kit>=0.1.8,<0.2`
+  `hedron[charts]>=0.28.1,<0.29` and `hedron-sample-kit>=0.1.9,<0.2`
   ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor))
 - **Pin and expect churn:** notebook / MCP / Gradio (Alpha / Experimental)
 - **Model demos:** **Supported** capability (fail-closed) via [Model demos](model-demos.md)

@@ -5,7 +5,7 @@ The canonical security policy for GitHub and adopters is
 
 Summary:
 
-- Supported lines: **`0.28.x` (current published — `v0.28.1`)**; prefer-upgrade: `0.26.x`
+- Supported lines: **`0.28.x` (current published — `v0.28.1`)**; prefer-upgrade: `0.27.x`
   (best-effort through approximately 2026-11-10). No multi-year LTS — see
   [docs/SECURITY.md](docs/SECURITY.md) for the full table
 - **Do not** open public issues for vulnerabilities — use GitHub

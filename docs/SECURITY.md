@@ -4,13 +4,14 @@
 
 Security fixes land on the **current published train** (`0.28.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.26.x`) continues through approximately **2026-11-10** — after that, upgrade
+minor (`0.27.x`) continues through approximately **2026-11-10** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
 | `0.28.x` | Yes (current published train — pin `>=0.28.1,<0.29`; last published `v0.28.1`) |
-| `0.26.x` | Prefer upgrade to `0.28.x` (best-effort security triage through approximately 2026-11-10) |
+| `0.27.x` | Prefer upgrade to `0.28.x` (best-effort security triage through approximately 2026-11-10) |
+| `0.26.x` | Prefer upgrade to `0.28.x` |
 | `0.25.x` | Prefer upgrade to `0.28.x` |
 | `0.24.x` | Prefer upgrade to `0.28.x` |
 | `0.23.x` | Prefer upgrade to `0.28.x` |

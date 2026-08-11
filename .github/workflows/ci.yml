@@ -206,7 +206,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: PKG-025 packaging rehearsal
+    name: PKG-028 packaging rehearsal
     needs: [changes, evidence]
     if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest

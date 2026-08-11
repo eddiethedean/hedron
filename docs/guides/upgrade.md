@@ -26,7 +26,7 @@ remain experimental.
 
 ```bash
 python -m pip install -U "hedron>=0.28.1,<0.29"
-python -m pip install -U "hedron-charts>=0.1.8,<0.2" "hedron-native>=0.1.1,<0.2"
+python -m pip install -U "hedron-charts>=0.1.9,<0.2" "hedron-native>=0.1.2,<0.2"
 ```
 
 ## Charts Auto defaults

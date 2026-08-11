@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.2] — 2026-08-10
+
+### Fixed
+
+- Honor `HEDRON_NATIVE_DISABLE` on every `escape_*` / `native_available()` call so
+  ops can force the Python-reference path without process restart (NATIVE-028).
+
+### Changed
+
+- Cargo / PyPI version bump so the live-disable fix is installable (PyPI `0.1.1`
+  remains immutable).
+
 ## [0.1.1] — 2026-08-10
 
 ### Added

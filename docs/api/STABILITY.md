@@ -163,7 +163,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - Dask/Snowflake sources, AG Grid Community host: **beta**
 - Spreadsheet I/O / collab helpers: **beta**
 
-### `hedron-charts` (Beta distribution; `>=0.1.8,<0.2` on 0.28)
+### `hedron-charts` (Beta distribution; `>=0.1.9,<0.2` on 0.28)
 
 - `MatplotlibChart` / static SVG: **beta** API on Beta distribution for Supported scopes.
 - `PlotlyChart` / `AltairChart`: **experimental**.
@@ -176,7 +176,7 @@ Live helpers are **experimental** (polling remains Supported fallback).
 
 ### `hedron-explorer` (Beta) — `beta` for `explorer_router`; panel internals **internal**
 
-### `hedron-sample-kit` (Alpha distribution; `>=0.1.8,<0.2`) — **experimental**
+### `hedron-sample-kit` (Alpha distribution; `>=0.1.9,<0.2`) — **experimental**
 
 ### `hedron-jinja` / HDJ (Beta) — `beta`; HDJ format v1 frozen
 

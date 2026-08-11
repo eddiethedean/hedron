@@ -18,7 +18,9 @@ def failures(text: str) -> list[str]:
 
 
 def test_current_train_claim_accepts_release_metadata() -> None:
-    assert not failures("Current train: 0.28.x; last published v0.28.1.")
+    assert not failures(
+        f"Current train: {ssot.FACTS.train_line}; last published v{ssot.FACTS.published_version}."
+    )
 
 
 def test_current_train_claim_rejects_any_stale_minor_without_a_version_blacklist() -> None:
@@ -42,7 +44,9 @@ def test_soft_wrapped_living_claim_is_checked() -> None:
 
 def test_last_version_claim_without_published_keyword() -> None:
     assert failures("| Version | **0.28.x** / last **v0.27.0** |")
-    assert not failures("| Version | **0.28.x** / last **v0.28.1** |")
+    assert not failures(
+        f"| Version | **{ssot.FACTS.train_line}** / last **v{ssot.FACTS.published_version}** |"
+    )
 
 
 def test_previous_train_is_allowed_only_when_explicitly_historical_or_supported() -> None:

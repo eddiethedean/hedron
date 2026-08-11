@@ -91,11 +91,11 @@ def test_025_satellites_have_installable_patch_floors() -> None:
         (ROOT / "packages" / "hedron-extras" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
 
-    charts_pin = "hedron-charts>=0.1.8,<0.2"
+    charts_pin = "hedron-charts>=0.1.9,<0.2"
     assert hedron["optional-dependencies"]["charts"] == [charts_pin]
     assert charts_pin in extras["optional-dependencies"]["chart_workbench"]
     assert charts_pin in extras["optional-dependencies"]["all"]
-    for package, version in (("hedron-charts", "0.1.8"), ("hedron-sample-kit", "0.1.8")):
+    for package, version in (("hedron-charts", "0.1.9"), ("hedron-sample-kit", "0.1.9")):
         project = tomllib.loads(
             (ROOT / "packages" / package / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]

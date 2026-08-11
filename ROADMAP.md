@@ -2013,7 +2013,7 @@ experimental interactive backends remain opt-in until they independently satisfy
 | Package | Supported at 0.28 exit |
 |---|---|
 | `hedron-charts` | Matplotlib static SVG/PNG; beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart` on the static/Matplotlib path; accessible tabular/text alternatives; CSP-safe local assets; bounded payloads; lifecycle cleanup; browser/print/export evidence |
-| `hedron-native` | Optional Rust `escape_text` / `escape_attr`; published wheels for the Supported CPython × OS matrix (manylinux x86_64 + aarch64, macOS arm64, Windows amd64); source builds; fuzz/sanitizer/parity; measured serialize-stage benefit; absence / import failure / unsupported platform / runtime-disable fallback without semantic drift |
+| `hedron-native` | Optional Rust `escape_text` / `escape_attr`; Supported CPython × OS wheel matrix via `native-wheels.yml` (manylinux x86_64 + aarch64, macOS arm64, Windows amd64) — confirm artifacts on PyPI after publish; source builds; fuzz/sanitizer/parity; measured serialize-stage benefit; absence / import failure / unsupported platform / runtime-disable fallback without semantic drift |
 
 ### Interactive / optional disposition
 

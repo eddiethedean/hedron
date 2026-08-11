@@ -11,6 +11,8 @@
 ### Changed
 
 - Coordinated Beta patch to `0.28.1` (pin `>=0.28.1,<0.29`).
+- Charts / sample-kit floors raised to `>=0.1.9,<0.2`; native to `>=0.1.2,<0.2`
+  (PyPI immutability for HTMX lifecycle / live native-disable fixes).
 
 ## [0.28.0] — 2026-08-10
 

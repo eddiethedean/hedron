@@ -29,14 +29,14 @@ version independently.
 
 ### Charts and sample-kit compatibility floor
 
-`hedron-charts>=0.1.8,<0.2` and `hedron-sample-kit>=0.1.8,<0.2` are compatible with
+`hedron-charts>=0.1.9,<0.2` and `hedron-sample-kit>=0.1.9,<0.2` are compatible with
 `hedron-core>=0.28.1,<0.29`. The flagship `hedron[charts]>=0.28.1,<0.29` extra enforces
 that chart floor.
 
 !!! warning "Exclude older satellite wheels"
 
     Satellite versions through `0.1.6` require an older `hedron-core` bound; historical
-    `0.11.0` requires `hedron-core==0.11.0`. Do not loosen the lower bound below `0.1.8` in a
+    `0.11.0` requires `hedron-core==0.11.0`. Do not loosen the lower bound below `0.1.9` in a
     Hedron 0.28 environment. Use a clean virtual environment when replacing an older
     chart or sample-kit installation.
 

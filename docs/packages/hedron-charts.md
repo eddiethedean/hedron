@@ -2,7 +2,7 @@
 
 Visualization adapters and chart components for Hedron.
 
-**Package maturity:** Beta · **0.28-compatible release:** `0.1.8`
+**Package maturity:** Beta · **0.28-compatible release:** `0.1.9`
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`  
 **Expect churn.** Interactive Plotly/Vega full browser runtimes remain **experimental**.
 
@@ -11,10 +11,10 @@ Visualization adapters and chart components for Hedron.
 ```bash
 pip install "hedron[charts]>=0.28.1,<0.29"
 # Add a backend when needed:
-pip install "hedron-charts[matplotlib]>=0.1.8,<0.2"
+pip install "hedron-charts[matplotlib]>=0.1.9,<0.2"
 ```
 
-Versions through `0.1.5` target older Hedron cores; keep the `>=0.1.8` floor. See
+Versions through `0.1.5` target older Hedron cores; keep the `>=0.1.9` floor. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ### Optional backends

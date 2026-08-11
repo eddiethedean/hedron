@@ -46,12 +46,17 @@
     el.setAttribute("data-hedron-chart-mounted", "1");
   }
   function scan(root) {
-    (root || document).querySelectorAll('[data-hedron-chart="chartjs"]').forEach(mount);
+    var base = root || document;
+    var sel = '[data-hedron-chart="chartjs"]';
+    if (base.matches && base.matches(sel)) mount(base);
+    if (base.querySelectorAll) base.querySelectorAll(sel).forEach(mount);
   }
   function beforeSwap(ev) {
     var target = ev && ev.target;
-    if (!target || !target.querySelectorAll) return;
-    target.querySelectorAll('[data-hedron-chart="chartjs"]').forEach(destroy);
+    if (!target) return;
+    var sel = '[data-hedron-chart="chartjs"]';
+    if (target.matches && target.matches(sel)) destroy(target);
+    if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);

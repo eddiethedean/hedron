@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.9] — 2026-08-10
+
+### Changed
+
+- Version bump aligned with the charts satellite floor (`>=0.1.9,<0.2`) for the
+  0.28.1 cut; pin `hedron-core` to `>=0.28.1,<0.29`.
+
 ## [0.1.8] — 2026-08-10
 
 ### Changed

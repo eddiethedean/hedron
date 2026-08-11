@@ -136,7 +136,7 @@ Charts and the sample plugin have explicit compatibility floors:
 
 ```bash
 pip install "hedron[charts]>=0.28.1,<0.29"
-pip install "hedron-sample-kit>=0.1.8,<0.2"
+pip install "hedron-sample-kit>=0.1.9,<0.2"
 ```
 
 Versions through `0.1.5` target older cores. Details:

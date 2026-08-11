@@ -26,12 +26,15 @@
     el.setAttribute("data-hedron-chart-mounted", "1");
   }
   function scan(root) {
-    (root || document).querySelectorAll(SELECTOR).forEach(mount);
+    var base = root || document;
+    if (base.matches && base.matches(SELECTOR)) mount(base);
+    if (base.querySelectorAll) base.querySelectorAll(SELECTOR).forEach(mount);
   }
   function beforeSwap(ev) {
     var target = ev && ev.target;
-    if (!target || !target.querySelectorAll) return;
-    target.querySelectorAll(SELECTOR).forEach(destroy);
+    if (!target) return;
+    if (target.matches && target.matches(SELECTOR)) destroy(target);
+    if (target.querySelectorAll) target.querySelectorAll(SELECTOR).forEach(destroy);
   }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);

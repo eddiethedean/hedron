@@ -133,11 +133,11 @@ Evaluators (three axes — skip if you are just building):
 Full cheat-sheet: [Maturity labels (evaluators)](../getting-started/how-to-read.md).
 Snapshot: [What’s ready today](whats-ready.md).
 
-## Why pin with an upper bound (`<0.27`)?
+## Why pin with an upper bound (`<0.29`)?
 
-A lower bound without an upper bound allows a future **0.27+** train to install
+A lower bound without an upper bound allows a future **0.29+** train to install
 automatically. Use `hedron>=0.28.1,<0.29` (and matching adapters/extras) so compatible
-0.27 patches are accepted while the next minor train requires an intentional review. See
+0.28 patches are accepted while the next minor train requires an intentional review. See
 [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
@@ -146,7 +146,7 @@ automatically. Use `hedron>=0.28.1,<0.29` (and matching adapters/extras) so comp
 **Supported**. Those packages are **Beta** on PyPI — pin versions.
 
 Charts install through `hedron[charts]>=0.28.1,<0.29`; the sample kit installs as
-`hedron-sample-kit>=0.1.8,<0.2`. Earlier satellite versions target older cores. See
+`hedron-sample-kit>=0.1.9,<0.2`. Earlier satellite versions target older cores. See
 [What’s ready](whats-ready.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

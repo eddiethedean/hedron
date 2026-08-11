@@ -113,7 +113,7 @@ if Streamlit previously installed some transitively.
 !!! note "Hedron 0.27 chart floor"
 
     Install `hedron[charts]>=0.28.1,<0.29`; this requires the compatible
-    `hedron-charts>=0.1.8,<0.2` satellite. See
+    `hedron-charts>=0.1.9,<0.2` satellite. See
     [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## 5. Build the production artifact

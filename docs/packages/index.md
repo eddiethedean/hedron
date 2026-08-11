@@ -13,7 +13,7 @@ Start with the flagship and adapters if you are new; use this catalog for **extr
 | [`hedron-django`](https://pypi.org/project/hedron-django/) | Django host adapter | [Django](../getting-started/django.md) · [Adapters](../api/ADAPTERS.md) |
 
 Most extras install as flagship extras (`hedron[data]`, `hedron[dev]`, …). `hedron-sim`
-and the sample kit install directly. Charts require the compatible `0.1.8` satellite floor.
+and the sample kit install directly. Charts require the compatible `0.1.9` satellite floor.
 
 !!! note "Maturity"
 
@@ -30,7 +30,7 @@ and the sample kit install directly. Charts require the compatible `0.1.8` satel
 | [hedron-explorer](hedron-explorer.md) | `hedron[dev]` | Development Component Explorer |
 | [hedron-extras](hedron-extras.md) | `hedron[extras]` | Curated toolkit (specialty widgets may be Experimental/stub) |
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.8,<0.2` on Hedron 0.28 |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.9,<0.2` on Hedron 0.28 |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 
 ```bash
@@ -47,12 +47,12 @@ Gradio interop are **Experimental** / Alpha — not production defaults.
 | [hedron-notebook](hedron-notebook.md) | `hedron[notebook]` | Server-side notebook preview helper |
 | [hedron-mcp](hedron-mcp.md) | `hedron[mcp]` | Deny-by-default MCP projection |
 | [hedron-gradio](hedron-gradio.md) | `hedron[gradio]` | Gradio client interop |
-| [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.1.8,<0.2` |
+| [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.1.9,<0.2` |
 | [hedron-sim](hedron-sim.md) | — | Offline HTMX sims for static docs |
 
 ```bash
 pip install "hedron[charts]>=0.28.1,<0.29"
-pip install "hedron-sample-kit>=0.1.8,<0.2" "hedron-sim>=0.1.0,<0.2"
+pip install "hedron-sample-kit>=0.1.9,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 
 ## Authoring an extension
