@@ -126,7 +126,7 @@ def _walk_callbacks(obj: object) -> bool:
 
 
 def reject_remote_urls(obj: object) -> None:
-    if _walk_remote(obj):
+    if _walk_remote(obj) or (isinstance(obj, str) and _is_remote_url(obj)):
         raise error(
             "HED-CHART-0005",
             title="Remote chart assets rejected",
