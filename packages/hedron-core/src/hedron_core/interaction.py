@@ -624,11 +624,7 @@ def _is_reserved_response_sink(selector: str) -> bool:
     if selector.startswith("##"):
         return False
     needle = _single_hash_id(selector)
-    return (
-        needle is not None
-        and needle in RESERVED_RESPONSE_SINK_IDS
-        and selector == f"#{needle}"
-    )
+    return needle is not None and needle in RESERVED_RESPONSE_SINK_IDS and selector == f"#{needle}"
 
 
 def authorize_response_selector(

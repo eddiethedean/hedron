@@ -225,11 +225,11 @@ from hedron_core.inference_workflow import (
     WorkflowRunResult,
 )
 from hedron_core.interaction import (
+    RESERVED_RESPONSE_SINK_IDS,
     FragmentRegion,
     InteractionPolicy,
     InteractionResult,
     OobUpdate,
-    RESERVED_RESPONSE_SINK_IDS,
     StatusPolicy,
     authorize_htmx_target,
     authorize_oob_update,
@@ -420,7 +420,8 @@ __all__ = [
     "interaction_headers",
     "prepare_tree",
     "set_security_audit_sink",
-    "RESERVED_RESPONSE_SINK_IDS",    "ActionDock",
+    "RESERVED_RESPONSE_SINK_IDS",
+    "ActionDock",
     "Aside",
     "AttrHost",
     "AssetRef",

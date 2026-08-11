@@ -224,9 +224,7 @@ def test_retarget_undeclared_host_rejected() -> None:
     """Outbound HX-Retarget cannot escape declared FragmentRegion allowlist (#76)."""
     from hedron_core.interaction import FragmentRegionError
 
-    policy = InteractionPolicy(
-        declared_regions=(FragmentRegion(id="main", selector="#main"),)
-    )
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
     with pytest.raises(FragmentRegionError, match="HX-Retarget"):
         interaction_headers(
             InteractionResult(
@@ -241,9 +239,7 @@ def test_retarget_undeclared_host_rejected() -> None:
 def test_reselect_undeclared_host_rejected() -> None:
     from hedron_core.interaction import FragmentRegionError
 
-    policy = InteractionPolicy(
-        declared_regions=(FragmentRegion(id="main", selector="#main"),)
-    )
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
     with pytest.raises(FragmentRegionError, match="HX-Reselect"):
         interaction_headers(
             InteractionResult(
@@ -258,9 +254,7 @@ def test_reselect_undeclared_host_rejected() -> None:
 def test_retarget_via_extra_headers_still_authorized() -> None:
     from hedron_core.interaction import FragmentRegionError
 
-    policy = InteractionPolicy(
-        declared_regions=(FragmentRegion(id="main", selector="#main"),)
-    )
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
     with pytest.raises(FragmentRegionError, match="HX-Retarget"):
         interaction_headers(
             InteractionResult(
