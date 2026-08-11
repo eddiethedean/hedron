@@ -23,6 +23,17 @@ def test_cdn_remote_url_rejected_for_charts() -> None:
     assert exc.value.diagnostic.code == "HED-CHART-0005"
 
 
+@pytest.mark.parametrize("url", ["file:///tmp/model.gltf", "javascript:alert(1)"])
+def test_dangerous_asset_schemes_rejected_for_charts(url: str) -> None:
+    with pytest.raises(HedronError) as exc:
+        reject_remote_urls({"url": url})
+    assert exc.value.diagnostic.code == "HED-CHART-0005"
+
+
+def test_literal_url_data_is_not_treated_as_an_asset() -> None:
+    reject_remote_urls({"data": {"values": [{"label": "https://example.com"}]}})
+
+
 def test_interactive_auto_quarantines_plotly() -> None:
     clear_renderers_for_tests()
     reset_explorer_panels_for_tests()
