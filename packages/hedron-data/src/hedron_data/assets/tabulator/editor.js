@@ -10,7 +10,47 @@
     return String(value).replace(/[^a-zA-Z0-9_-]/g, "\\$&");
   }
 
-  class HedronDataEditor extends HTMLElement {
+  /** Mirror hedron_data.spreadsheet._reject_or_sanitize(..., formula_policy="sanitize"). */
+  function sanitizeFormulaCell(value) {
+    const text = value == null ? "" : String(value);
+    const dangerous =
+      text.length > 0 &&
+      ("=+-@".indexOf(text.charAt(0)) !== -1 || text.charAt(0) === "\t" || text.charAt(0) === "\r");
+    if (!dangerous) return text;
+    return "'" + text.replace(/^[\t\r]+/, "");
+  }
+
+  /** RFC 4180-style field encoding (doubled quotes; quote when needed). */
+  function csvEscapeField(value) {
+    const text = value == null ? "" : String(value);
+    if (/[",\r\n]/.test(text)) {
+      return '"' + text.replace(/"/g, '""') + '"';
+    }
+    return text;
+  }
+
+  /**
+   * Build a CSV document from column metadata and row objects.
+   * @param {{field: string, title?: string, visible?: boolean}[]} columns
+   * @param {Record<string, unknown>[]} rows
+   */
+  function buildCsv(columns, rows) {
+    const cols = (columns || []).filter((c) => c && c.visible !== false);
+    const header = cols.map((c) => csvEscapeField(c.title || c.field)).join(",");
+    const lines = [header];
+    (rows || []).forEach((row) => {
+      lines.push(
+        cols
+          .map((c) => csvEscapeField(sanitizeFormulaCell(row[c.field] == null ? "" : row[c.field])))
+          .join(",")
+      );
+    });
+    return lines.join("\n");
+  }
+
+  const ElementBase = typeof HTMLElement !== "undefined" ? HTMLElement : class {};
+
+  class HedronDataEditor extends ElementBase {
     constructor() {
       super();
       this._pending = [];
@@ -244,6 +284,9 @@
         value,
         row_version: this._payload.version,
       });
+      const keyField = this._payload.keyField || "id";
+      const row = this._rows.find((r) => String(r[keyField]) === String(rowKey));
+      if (row) row[field] = value;
       this._announce("Pending edit " + field + " on row " + rowKey);
     }
 
@@ -295,6 +338,8 @@
         this._pending = this._pending.filter(
           (u) => !(u.row_key === last.rowKey && u.field === last.field)
         );
+        const keyField = this._payload.keyField || "id";
+        const row = this._rows.find((r) => String(r[keyField]) === String(last.rowKey));
         const cell = this.querySelector(
           'tr[data-row-key="' +
             cssEscape(last.rowKey) +
@@ -304,9 +349,18 @@
         );
         if (cell) {
           const input = cell.querySelector("input,select");
-          if (input && input.type === "checkbox") input.checked = last.previous === "true";
-          else if (input) input.value = last.previous;
-          else cell.textContent = last.previous;
+          if (input && input.type === "checkbox") {
+            input.checked = last.previous === "true";
+            if (row) row[last.field] = last.previous === "true";
+          } else if (input) {
+            input.value = last.previous;
+            if (row) row[last.field] = last.previous;
+          } else {
+            cell.textContent = last.previous;
+            if (row) row[last.field] = last.previous;
+          }
+        } else if (row) {
+          row[last.field] = last.previous;
         }
       } else if (last.kind === "insert") {
         this._inserts = this._inserts.filter(
@@ -329,12 +383,8 @@
     }
 
     _exportCsv() {
-      const cols = (this._payload.columns || []).filter((c) => c.visible !== false);
-      const lines = [cols.map((c) => c.title || c.field).join(",")];
-      this._rows.forEach((row) => {
-        lines.push(cols.map((c) => JSON.stringify(row[c.field] ?? "")).join(","));
-      });
-      const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+      const csv = buildCsv(this._payload.columns || [], this._rows);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = "export.csv";
@@ -431,7 +481,7 @@
     }
   }
 
-  if (!customElements.get(TAG)) {
+  if (typeof customElements !== "undefined" && !customElements.get(TAG)) {
     customElements.define(TAG, HedronDataEditor);
   }
 
@@ -451,13 +501,28 @@
     root.querySelectorAll(TAG).forEach((el) => el.dispose && el.dispose());
   }
 
-  document.addEventListener("DOMContentLoaded", () => enhance(document));
-  document.addEventListener("htmx:afterSwap", (ev) => {
-    enhance(ev.target || document);
-  });
-  document.addEventListener("htmx:beforeSwap", (ev) => {
-    disposeAll(ev.target || document);
-  });
+  const api = {
+    enhance,
+    disposeAll,
+    sanitizeFormulaCell,
+    csvEscapeField,
+    buildCsv,
+  };
 
-  window.HedronDataEditor = { enhance, disposeAll };
+  if (typeof document !== "undefined" && document.addEventListener) {
+    document.addEventListener("DOMContentLoaded", () => enhance(document));
+    document.addEventListener("htmx:afterSwap", (ev) => {
+      enhance(ev.target || document);
+    });
+    document.addEventListener("htmx:beforeSwap", (ev) => {
+      disposeAll(ev.target || document);
+    });
+  }
+
+  if (typeof window !== "undefined") {
+    window.HedronDataEditor = api;
+  }
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
 })();
