@@ -22,8 +22,9 @@ until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`)
 stay on the `0.28.x` train (Published as `0.28.0`; last published
-`v0.28.0`). Alpha packages `hedron-charts`, `hedron-gradio`,
-`hedron-sample-kit`, `hedron-native`, `hedron-notebook`, and `hedron-mcp`
+`v0.28.0`). Independent Beta packages `hedron-charts` and `hedron-native`
+version on `0.1.x`. Alpha packages `hedron-gradio`,
+`hedron-sample-kit`, `hedron-notebook`, and `hedron-mcp`
 version independently.
 
 ### Charts and sample-kit compatibility floor
@@ -243,7 +244,7 @@ CPython default builds are normative. Free-threaded CPython and PyPy are informa
 
 ## Release evidence
 
-Compatibility claims for the **0.27.0** train require clean-install, package, FastAPI
+Compatibility claims for the **0.28.0** train require clean-install, package, FastAPI
 adapter, OpenAPI, security corpus, reference-application, and owning-phase live-transport
 suites. Changing a Supported row requires compatibility evidence and an updated decision
 or RFC.

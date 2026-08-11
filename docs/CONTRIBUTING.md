@@ -153,8 +153,8 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 | `test` | `test` — `pytest` on Python 3.11–3.14 | Yes, unless **docs-only** |
 | `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, recipe/sim checks, relative doc links, `mkdocs build --strict` | **Always** |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
-| `evidence` | `evidence` — Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_27.py` | Yes, unless **docs-only**; also on release |
-| `release` (commit CI) | `packaging` — Packaging rehearsal (`verify_pkg_27`) | After `evidence` succeeds (skipped when docs-only) |
+| `evidence` | `evidence` — Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_28.py` | Yes, unless **docs-only**; also on release |
+| `release` (commit CI) | `packaging` — Packaging rehearsal (`verify_pkg_28`) | After `evidence` succeeds (skipped when docs-only) |
 
 Release workflow (`release.yml`) runs the same `test` / `quality` / `browser` / `evidence`
 suites before `publish` (tag pushes only).
@@ -193,14 +193,14 @@ package builds.
 | `packages/hedron` | FastAPI flagship |
 | `packages/hedron-explorer` | Dev Explorer (`hedron[dev]`) |
 | `packages/hedron-data` | DataTable / DataEditor (`hedron[data]`) |
-| `packages/hedron-charts` | Visualization adapters (`hedron[charts]`, Alpha) |
+| `packages/hedron-charts` | Visualization adapters (`hedron[charts]`, Beta) |
 | `packages/hedron-sample-kit` | Sample plugin (Alpha) |
 | `packages/hedron-flask` | Flask adapter |
 | `packages/hedron-django` | Django adapter |
 | `packages/hedron-jinja` | Optional HDJ templates |
 | `packages/hedron-conformance` | Language-neutral conformance kit |
 | `packages/hedron-extras` | Curated extras / workbenches (`hedron[extras]`) |
-| `packages/hedron-native` | Optional Rust HTML-escape acceleration (Alpha) |
+| `packages/hedron-native` | Optional Rust HTML-escape acceleration (Beta) |
 | `packages/hedron-notebook` | Server-side notebook preview (Alpha) |
 | `packages/hedron-mcp` | Deny-by-default MCP projection (Alpha) |
 | `packages/hedron-gradio` | Gradio client interop (Alpha / Experimental) |

@@ -57,7 +57,7 @@ def test_charts_interactive_experimental_alignment() -> None:
     assert golden["experimental"] == inv
     assert golden["supported_auto_default"] == "matplotlib"
     assert set(golden["production_default_excluded"]) == {"plotly", "altair"}
-    live_names = {getattr(adapter, "name") for adapter in optional_adapters()}
+    live_names = {adapter.name for adapter in optional_adapters()}
     assert live_names <= set(EXPERIMENTAL_ADAPTER_NAMES)
     assert live_names <= set(golden["experimental"])
 

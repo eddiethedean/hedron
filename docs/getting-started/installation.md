@@ -115,7 +115,7 @@ extras only when you need them:
 | `hedron[jinja]` | Optional HDJ (`.hdj`) templates | [hedron-jinja](../packages/hedron-jinja.md) |
 | `hedron[dev]` | Component Explorer (`/hedron-explorer/`) | [hedron-explorer](../packages/hedron-explorer.md) |
 | `hedron[conformance]` | Language-neutral conformance kit / CLI runner | [hedron-conformance](../packages/hedron-conformance.md) |
-| `hedron[native]` | Optional Rust HTML-escape acceleration (Alpha) | [hedron-native](../packages/hedron-native.md) |
+| `hedron[native]` | Optional Rust HTML-escape acceleration (Beta) | [hedron-native](../packages/hedron-native.md) |
 | `hedron[extras]` | Curated extras / workbenches | [hedron-extras](../packages/hedron-extras.md) |
 | `hedron[notebook]` | Alpha server-side notebook preview | [hedron-notebook](../packages/hedron-notebook.md) |
 | `hedron[mcp]` | Alpha deny-by-default MCP projection | [hedron-mcp](../packages/hedron-mcp.md) |

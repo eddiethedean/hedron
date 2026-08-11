@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.27.0** published train
+**Status:** Accepted; kept current with the **0.28.0** published train
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -44,7 +44,7 @@ hedron/
 │   │   └── src/hedron_gradio/
 │   ├── hedron-sim/                  # Alpha offline HTMX docs/demo simulator
 │   │   └── src/hedron_sim/
-│   ├── hedron-native/             # Optional Rust acceleration (Alpha 0.1.x)
+│   ├── hedron-native/             # Optional Rust acceleration (Beta 0.1.x)
 │   │   └── src/hedron_native/
 │   ├── hedron-runtime-node/       # Experimental Node runtime (outside uv workspace)
 │   └── hedron-runtime-java/       # Experimental Java runtime (outside uv workspace)
@@ -76,7 +76,7 @@ hedron/
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
-| `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` (Alpha line `0.1.x`, tip `0.1.7`) |
+| `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` (Beta line `0.1.x`, tip `0.1.8`) |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Supported capability; Beta package) |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Supported; Beta package) |
 | `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.25.x` |
@@ -86,7 +86,7 @@ hedron/
 | `hedron-mcp` | `hedron_mcp` | Optional MCP projection (experimental Alpha; deny-by-default); also `hedron[mcp]` | `v0.1.0` |
 | `hedron-gradio` | `hedron_gradio` | Optional Gradio client interop (experimental Alpha); also `hedron[gradio]` | `v0.1.0` |
 | `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Alpha) | `v0.1.0` |
-| `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Alpha; independent of Beta train) |
+| `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
 `hedron-explorer` for development diagnostics; `hedron[jinja]` installs the separate integration.

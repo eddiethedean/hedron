@@ -9,6 +9,21 @@ details remain in the [package changelogs](changelog.md).
     The current web framework starts at `0.1.0`; there is no supported migration path or
     API continuity with that legacy project.
 
+## 0.28.0 — 2026-08-10
+
+Hedron 0.28.0 graduates charts and optional native acceleration inventories.
+
+- Publishes a machine-checked production-grade inventory for `hedron-charts` and
+  `hedron-native` (D-056 / RFC-0059).
+- Matplotlib/static beginner charts are Supported; Plotly/Altair remain Experimental
+  and are excluded from production Auto defaults.
+- Optional Rust escape acceleration ships with `HEDRON_NATIVE_DISABLE` fallback and a
+  Supported wheel matrix.
+- Charts `0.1.8` and native `0.1.1` leave Alpha for declared Supported scopes.
+
+No Supported CRUD/admin API removal is listed. Polling remains the production path for
+live status; SSE, WebSocket, streaming, and preload remain experimental.
+
 ## 0.27.0 — 2026-08-10
 
 Hedron 0.27.0 graduates data, Flask/Django, HDJ, and curated extras inventories.

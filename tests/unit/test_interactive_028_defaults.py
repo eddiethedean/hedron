@@ -52,12 +52,10 @@ def test_auto_without_as_rejects_experimental_plotly() -> None:
     decision = get_last_auto_decision()
     assert decision is not None
     assert decision.selected != "plotly"
-    assert any(
-        name == "plotly" and "experimental" in reason for name, reason in decision.rejected
-    )
+    assert any(name == "plotly" and "experimental" in reason for name, reason in decision.rejected)
 
 
 def test_optional_adapter_names_are_experimental_subset() -> None:
-    names = {getattr(adapter, "name") for adapter in optional_adapters()}
+    names = {adapter.name for adapter in optional_adapters()}
     assert names
     assert names <= set(EXPERIMENTAL_ADAPTER_NAMES)

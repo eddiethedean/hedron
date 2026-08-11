@@ -20,7 +20,7 @@ _SAMPLES = (
     "",
     "plain",
     "<script>alert(1)</script>",
-    'a"b\'c',
+    "a\"b'c",
     "nul\x00byte",
     "café <tag>&",
     "<" * 50 + "&" * 50,

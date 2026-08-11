@@ -36,7 +36,7 @@ cost.
 | Extra | Notes |
 |---|---|
 | `json_editor` / `data_explorer` | Editor / explorer surfaces |
-| `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Alpha) |
+| `chart_workbench` | Pulls `hedron-data` + `hedron-charts` (Beta) |
 | `image_tools` / `calendar` / `signature` / `typeahead` | UI tools |
 | `sandbox` | Experimental browser-Python sandbox |
 | `experimental-ui` | Explicit opt-in for CodeEditor / TerminalView / joystick / device surfaces. Runtime gates are the environment flag and plugin enablement; the extra does **not** block Python imports. |

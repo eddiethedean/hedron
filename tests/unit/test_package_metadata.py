@@ -38,7 +38,7 @@ def test_version_is_synchronized() -> None:
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]
         assert other["version"] == __version__, name
-    alpha_packages = ("hedron-charts", "hedron-sample-kit")
+    alpha_packages = ("hedron-sample-kit",)
     for name in alpha_packages:
         other = tomllib.loads(
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
@@ -50,6 +50,18 @@ def test_version_is_synchronized() -> None:
         ]
         assert development_status == ["Development Status :: 3 - Alpha"], name
         # Alpha packages may version independently of the Beta train.
+    independent_beta = ("hedron-charts", "hedron-native")
+    for name in independent_beta:
+        other = tomllib.loads(
+            (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
+        )["project"]
+        development_status = [
+            classifier
+            for classifier in other["classifiers"]
+            if classifier.startswith("Development Status ::")
+        ]
+        assert development_status == ["Development Status :: 4 - Beta"], name
+        assert str(other["version"]).startswith("0.1."), name
 
 
 def test_public_metadata_fields() -> None:
@@ -86,7 +98,8 @@ def test_package_maturity_classifiers() -> None:
         "hedron-django": "Development Status :: 4 - Beta",
         "hedron-explorer": "Development Status :: 4 - Beta",
         "hedron-flask": "Development Status :: 4 - Beta",
-        "hedron-charts": "Development Status :: 3 - Alpha",
+        "hedron-charts": "Development Status :: 4 - Beta",
+        "hedron-native": "Development Status :: 4 - Beta",
         "hedron-sample-kit": "Development Status :: 3 - Alpha",
         "hedron-jinja": "Development Status :: 4 - Beta",
     }

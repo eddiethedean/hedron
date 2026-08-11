@@ -74,7 +74,7 @@ Public phase table: [Roadmap](roadmap.md). Maintainer detail:
 
 1. Ship with pins and the [production readiness](production-readiness.md) checklist.
 2. Prefer [polling](live-interaction.md) over `hedron.experimental` live helpers.
-3. Treat Alpha extras (charts, notebook, MCP, Gradio) and specialty stubs as pin-and-expect-churn.
+3. Treat Alpha extras (notebook, MCP, Gradio) and specialty stubs as pin-and-expect-churn.
 4. Track trust-program progress on this page and the [public roadmap](roadmap.md).
 
 ## What we will not do

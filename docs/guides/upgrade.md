@@ -1,130 +1,60 @@
-# Upgrade to Hedron 0.27
+# Upgrade to Hedron 0.28
 
-This guide covers an application upgrade from **0.26.x** to the published **0.28.x**
+This guide covers an application upgrade from **0.27.x** to the published **0.28.x**
 train. New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.27.0 graduates `hedron-data`, `hedron-flask`, `hedron-django`,
-`hedron-jinja`, and `hedron-extras` to production-grade for their declared Supported
-inventories (D-055 / RFC-0058). It does not list removals from the
-compatibility-protected facade. It adds machine-checked satellite inventory,
-`v0.26.0` upgrade fixtures, host-only adapter/data/HDJ/extras evidence, and portable
-PAGE/FRAGMENT parity.
+Hedron 0.28.0 graduates `hedron-charts` and `hedron-native` to production-grade for
+their declared Supported inventories (D-056 / RFC-0059). Matplotlib/static beginner
+charts and optional native escape acceleration are the Supported scopes. Plotly/Altair
+and optional visualization adapters remain Experimental and are not production Auto
+defaults.
 
-Polling remains the production recommendation for live status. SSE, WebSocket,
-streaming, and navigation preload remain experimental.
+No Supported CRUD/admin API removal is listed. Polling remains the production
+recommendation for live status. SSE, WebSocket, streaming, and navigation preload
+remain experimental.
 
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm the application is on `hedron==0.26.0` / `0.26.1` or record its exact older version.
-3. Run unit, adapter, and browser tests on the old environment.
-4. Search for imports from `hedron.experimental` and application reliance on Explorer.
-5. Record the current `python -m hedron --app app:app check` output.
+2. Confirm you are on `hedron>=0.27.0,<0.28` (or an earlier 0.27-compatible pin).
+3. If you use charts, note whether you rely on Auto-selected Plotly/Altair — those
+   backends now require explicit `as_=` or chart components.
 
-## Upgrade
-
-=== "pip"
-
-    ```bash
-    python -m pip install -U "hedron>=0.28.0,<0.29"
-    python -m hedron --app app:app check
-    ```
-
-=== "uv"
-
-    ```bash
-    uv add "hedron>=0.28.0,<0.29"
-    uv sync
-    uv run hedron --app app:app check
-    ```
-
-Keep coordinated adapters and extras on the same train:
+## Install
 
 ```bash
-python -m pip install -U \
-  "hedron>=0.28.0,<0.29" \
-  "hedron-flask>=0.28.0,<0.29" \
-  "hedron-django>=0.28.0,<0.29" \
-  "hedron-data>=0.28.0,<0.29" \
-  "hedron-jinja>=0.28.0,<0.29" \
-  "hedron-extras>=0.28.0,<0.29"
+python -m pip install -U "hedron>=0.28.0,<0.29"
+python -m pip install -U "hedron-charts>=0.1.8,<0.2" "hedron-native>=0.1.1,<0.2"
 ```
 
-Install only the hosts and extras you use. Charts and the sample kit retain independent
-satellite floors: `hedron-charts>=0.1.8,<0.2` and `hedron-sample-kit>=0.1.8,<0.2`.
+## Charts Auto defaults
 
-## Required application changes
+Production Auto no longer selects Plotly/Altair without an explicit renderer name:
 
-No Supported CRUD/admin API removal is listed for 0.27.0. Applications using only the
-[stable facade](../api/STABLE_FACADE.md) should normally require a dependency and
-lockfile update, followed by verification.
+```python
+from hedron_core.auto import Auto
 
-Review these boundaries even when code changes are unnecessary:
+Auto(figure, as_="plotly")  # Experimental opt-in
+```
 
-- **Satellites:** treat graduated data / Flask / Django / HDJ / extras inventories as
-  production-grade only for the declared Supported rows — not every Beta symbol.
-- **Explorer:** development mode is refused in production; secured mode must have real
-  authentication dependencies.
-- **Live transports:** do not promote experimental SSE/WebSocket helpers based on the
-  0.27 release. Keep a polling fallback.
-- **Charts:** exclude satellite versions older than 0.1.7.
-- **Production startup:** run `hedron build` before enabling production mode.
-- **Multi-worker jobs:** use a shared status/backend store; in-memory state is local
-  development only.
-- **Static assets:** Flask and Django adapters mount `/hedron-static` like FastAPI so
-  PAGE HTMX injection resolves.
+Matplotlib remains the Supported Auto chart path when `hedron-charts` is installed.
 
-## Validate
+## Native disable
+
+Force the pure-Python escape path (ops / parity drills):
 
 ```bash
-python -c "import hedron; print(hedron.__version__)"
-python -m hedron --app app:app check
-pytest
+export HEDRON_NATIVE_DISABLE=1
 ```
 
-Then verify the user flows that cross Hedron’s trust boundaries:
+Absence of `hedron-native` continues to fall back without semantic drift.
 
-- a full-page GET and an HTMX fragment GET;
-- a CSRF-protected POST;
-- login, logout, and an authorization failure;
-- reverse-proxy mount paths and static assets (`/hedron-static/`);
-- background-job polling from more than one worker, if used;
-- Explorer remaining unavailable in production.
+## After upgrading
 
-Expected version output is `0.28.0` or a later `0.28.x` patch.
+1. Run your test suite and any HTMX/browser checks that cover chart fragments.
+2. Confirm Explorer / plugin loads succeed under `0.28.0` (`hedron_version` pins).
+3. Read [What’s new in 0.28](whats-new-0.28.md) and [What’s ready](whats-ready.md).
 
-## Roll back
-
-Restore the previous lockfile, or temporarily reinstall the exact old release:
-
-```bash
-python -m pip install "hedron==0.26.1"
-```
-
-Do not leave an open-ended `>=0.26` constraint in production. After rollback, repeat the
-same smoke tests and retain the failure that triggered rollback for an issue report.
-
-## Upgrading from 0.25 or earlier
-
-Use the release narratives in order because several trains changed security and
-authoring contracts:
-
-1. [0.22: CSRF composition](whats-new-0.22.md)
-2. [0.23: stable CRUD/admin facade](whats-new-0.23.md)
-3. [0.24: polling-only production disposition](whats-new-0.24.md)
-4. [0.25: production archetype and extras quarantine](whats-new-0.25.md)
-5. [0.26: production-grade core / FastAPI / Explorer](whats-new-0.26.md)
-6. Apply the 0.26→0.27 steps on this page.
-
-Pre-0.9 applications must also replace removed HDN templates with HDJ or typed Python
-components. There is no automatic HDN converter.
-
-## See also
-
-- [What’s new in 0.27](whats-new-0.27.md)
-- [Release notes](release-notes.md)
-- [Compatibility](../COMPATIBILITY.md)
-- [What’s ready](whats-ready.md)
-- [Troubleshooting](troubleshooting.md)
+Prior 0.26→0.27 notes remain in [What’s new in 0.27](whats-new-0.27.md).

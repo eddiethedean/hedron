@@ -94,7 +94,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 | Surface | Disposition |
 |---|---|
 | `job_status_sse_response` and other `hedron.experimental` live helpers | Remain **experimental**; 0.24 Accepted `polling_only` |
-| Alpha charts / notebook / MCP / Gradio / native | Not promoted |
+| Alpha notebook / MCP / Gradio | Not promoted |
 | `hedron[data]` / DataEditor, extras, OIDC product surface | Stay `beta` (Supported capability OK) |
 | Dialog / Tabs / Pagination / Lazy, Map / media / capture, dashboards, inference | Stay `beta` |
 
@@ -163,12 +163,12 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - Dask/Snowflake sources, AG Grid Community host: **beta**
 - Spreadsheet I/O / collab helpers: **beta**
 
-### `hedron-charts` (Alpha distribution; `>=0.1.8,<0.2` on 0.27)
+### `hedron-charts` (Beta distribution; `>=0.1.8,<0.2` on 0.28)
 
-- `MatplotlibChart` / static SVG: **beta** API on Alpha distribution.
+- `MatplotlibChart` / static SVG: **beta** API on Beta distribution for Supported scopes.
 - `PlotlyChart` / `AltairChart`: **experimental**.
 - `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **beta**.
-- Optional adapters + offline runtime pins: **experimental** (Alpha distribution).
+- Optional adapters + offline runtime pins: **experimental**.
 
 ### `hedron-flask` / `hedron-django` (Beta) — `beta` Supported adapters
 
@@ -245,10 +245,10 @@ disabled; absence adds no core cost. Not Supported production parity with Gradio
 | `Page(scripts=[SafeUrl…])` allowlisted PE scripts | `hedron-core` | `beta` | `SCRIPT-019` |
 | Evidence inventory / statement / waiver governance | `hedron-core` (`hedron_core.a11y`) | `beta` | RFC-0055 / `GOVERN-019` |
 
-### `hedron-native` (Alpha, versioned independently as `0.1.x`) — **experimental** accel
+### `hedron-native` (Beta, versioned independently as `0.1.x`) — Supported optional accel
 
 Optional Rust HTML-escape acceleration with pure-Python fallback. Absence never changes public
-semantics (D-048).
+semantics (D-048 / D-056). Runtime disable: `HEDRON_NATIVE_DISABLE`.
 
 ## Deferred destinations
 

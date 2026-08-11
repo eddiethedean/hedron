@@ -16,7 +16,7 @@ def test_native_escape_at_least_20pct_faster_when_loaded() -> None:
         pytest.skip("hedron-native extension not loaded")
 
     # Dense escapable input stresses the hot path.
-    sample = ("<&\">" * 8000) + ("plain-text-" * 2000)
+    sample = ('<&">' * 8000) + ("plain-text-" * 2000)
     rounds = 80
 
     # Warmup
@@ -36,6 +36,5 @@ def test_native_escape_at_least_20pct_faster_when_loaded() -> None:
 
     # Native path must be at least 20% faster than the pure-Python reference.
     assert native_s * 1.20 <= python_s, (
-        f"native={native_s:.4f}s python={python_s:.4f}s "
-        f"(need native <= python/1.20)"
+        f"native={native_s:.4f}s python={python_s:.4f}s (need native <= python/1.20)"
     )
