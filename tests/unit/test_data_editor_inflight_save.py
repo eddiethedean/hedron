@@ -116,6 +116,60 @@ process.stdout.write(JSON.stringify(kept.pending));
         {"row_key": "1", "field": "b", "value": "B", "row_version": "2", "_opId": 2}
     ]
 
+    # Untouched rows keep their prior row_version; only batch-touched rows bump.
+    out = _run_node(
+        node_bin,
+        f"""
+const api = require({json.dumps(str(EDITOR_JS))});
+let pending = [
+  {{row_key: "1", field: "a", value: "A", row_version: "1", _opId: 1}},
+  {{row_key: "2", field: "a", value: "X", row_version: "1", _opId: 2}},
+];
+const snapshot = api.snapshotSaveBatch(
+  [pending[0]], [], []
+);
+pending = [
+  {{row_key: "2", field: "a", value: "X", row_version: "1", _opId: 2}},
+  {{row_key: "1", field: "b", value: "B", row_version: "1", _opId: 3}},
+];
+const kept = api.reconcileAfterSuccess(pending, [], [], snapshot, "2");
+process.stdout.write(JSON.stringify(kept.pending));
+""",
+    )
+    assert json.loads(out) == [
+        {"row_key": "2", "field": "a", "value": "X", "row_version": "1", "_opId": 2},
+        {"row_key": "1", "field": "b", "value": "B", "row_version": "2", "_opId": 3},
+    ]
+
+    # Multi-row batch: each touched row gets its own intermediate stamp.
+    out = _run_node(
+        node_bin,
+        f"""
+const api = require({json.dumps(str(EDITOR_JS))});
+const snapshot = api.snapshotSaveBatch(
+  [
+    {{row_key: "1", field: "a", value: "A", row_version: "1", _opId: 1}},
+    {{row_key: "2", field: "a", value: "B", row_version: "1", _opId: 2}},
+  ],
+  [],
+  []
+);
+const pending = [
+  {{row_key: "1", field: "b", value: "C", row_version: "1", _opId: 3}},
+];
+const kept = api.reconcileAfterSuccess(pending, [], [], snapshot, "3");
+process.stdout.write(JSON.stringify({{
+  versions: api.rowVersionsAfterBatch(snapshot, "3"),
+  pending: kept.pending,
+}}));
+""",
+    )
+    payload = json.loads(out)
+    assert payload["versions"] == {"1": "2", "2": "3"}
+    assert payload["pending"] == [
+        {"row_key": "1", "field": "b", "value": "C", "row_version": "2", "_opId": 3}
+    ]
+
     out = _run_node(
         node_bin,
         f"""

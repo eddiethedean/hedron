@@ -56,7 +56,7 @@
   }
 
   /** Snapshot live queues before fetch so success can drop only that batch. */
-  function snapshotSaveBatch(pending, inserts, deletes) {
+  function snapshotSaveBatch(pending, inserts, deletes, keyField) {
     return {
       updates: (pending || []).slice(),
       inserts: (inserts || []).slice(),
@@ -64,7 +64,34 @@
       updateIds: (pending || []).map((u) => u._opId),
       insertIds: (inserts || []).map((r) => r._opId),
       deleteIds: (deletes || []).map((d) => (typeof d === "string" ? d : d._opId)),
+      keyField: keyField || "id",
     };
+  }
+
+  /**
+   * Mirror InMemoryDataSource: each accepted update/insert bumps a shared
+   * counter and stamps that value on the affected row. Untouched rows keep
+   * their prior versions (which may lag the dataset version).
+   */
+  function rowVersionsAfterBatch(snapshot, nextVersion) {
+    const updates = snapshot.updates || [];
+    const inserts = snapshot.inserts || [];
+    const bumps = updates.length + inserts.length;
+    if (!bumps || nextVersion == null || nextVersion === "") return {};
+    const end = Number(nextVersion);
+    if (!Number.isFinite(end)) return {};
+    let counter = end - bumps;
+    const versions = {};
+    const keyField = snapshot.keyField || "id";
+    updates.forEach((u) => {
+      counter += 1;
+      versions[String(u.row_key)] = String(counter);
+    });
+    inserts.forEach((row) => {
+      counter += 1;
+      if (row && row[keyField] != null) versions[String(row[keyField])] = String(counter);
+    });
+    return versions;
   }
 
   /** Remove only operations that were included in the submitted snapshot. */
@@ -72,14 +99,15 @@
     const updateIds = new Set(snapshot.updateIds || []);
     const insertIds = new Set(snapshot.insertIds || []);
     const deleteIds = new Set(snapshot.deleteIds || []);
-    const version =
-      nextVersion == null || nextVersion === "" ? null : String(nextVersion);
+    const touchedVersions = rowVersionsAfterBatch(snapshot, nextVersion);
     return {
       pending: (pending || [])
         .filter((u) => !updateIds.has(u._opId))
         .map((u) => {
-          if (version == null || u.row_version == null) return u;
-          return { ...u, row_version: version };
+          if (u.row_version == null) return u;
+          const next = touchedVersions[String(u.row_key)];
+          if (next == null) return u;
+          return { ...u, row_version: next };
         }),
       inserts: (inserts || []).filter((r) => !insertIds.has(r._opId)),
       deletes: (deletes || []).filter((d) => {
@@ -493,7 +521,12 @@
       }
       this._saving = true;
       this._saveAgain = false;
-      const snapshot = snapshotSaveBatch(this._pending, this._inserts, this._deletes);
+      const snapshot = snapshotSaveBatch(
+        this._pending,
+        this._inserts,
+        this._deletes,
+        this._payload.keyField || "id"
+      );
       const body = serializeSaveBody(
         snapshot.updates,
         snapshot.inserts,
@@ -599,6 +632,7 @@
     csvEscapeField,
     buildCsv,
     snapshotSaveBatch,
+    rowVersionsAfterBatch,
     reconcileAfterSuccess,
     serializeSaveBody,
   };
