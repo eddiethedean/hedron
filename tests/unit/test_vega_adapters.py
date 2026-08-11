@@ -10,3 +10,16 @@ def test_vega_adapters() -> None:
         {"mark": "bar", "transform": [{"filter": "datum.x > 0"}]}, accessibility=acc
     )
     assert out2.metadata["server_transforms"]
+
+
+def test_vega_lite_schema_and_literal_url_data_are_allowed() -> None:
+    acc = ChartAccessibility(title="t", description="d")
+    out = VegaLiteAdapter().compile(
+        {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "mark": "bar",
+            "data": {"values": [{"label": "https://example.com"}]},
+        },
+        accessibility=acc,
+    )
+    assert out.kind == "vega-lite"
