@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal
@@ -28,9 +29,12 @@ __all__ = [
     "OobEnvelopeTag",
     "OobUpdate",
     "RESERVED_OOB_ELEMENT_IDS",
+    "RESERVED_RESPONSE_SINK_IDS",
     "StatusPolicy",
     "authorize_htmx_target",
+    "authorize_location_selectors",
     "authorize_oob_update",
+    "authorize_response_selector",
     "apply_allow_undeclared_targets",
     "conflicting_select_oob_targets",
     "default_interaction_policy",
@@ -213,7 +217,9 @@ class InteractionResult:
 
     Raises:
         FragmentRegionError: When resolving a request target that is not an
-            authorized declared region (via ``resolve_fragment_region`` helpers).
+            authorized declared region (via ``resolve_fragment_region`` helpers),
+            or when outbound ``HX-Retarget`` / ``HX-Reselect`` escape the route
+            allowlist (via ``interaction_headers``).
 
     Examples:
         >>> from hedron_core.interaction import InteractionResult
@@ -509,6 +515,10 @@ def merge_interaction_headers(
         if key in APPROVED_RESPONSE_HEADERS and key in headers:
             continue
         headers[key] = value
+    # Re-check after adapter extras: typed fields already won above, but extras
+    # may introduce HX-Retarget / HX-Reselect / HX-Location selectors when typed
+    # fields were absent.
+    _authorize_outbound_selectors(result.policy, headers)
     return headers
 
 
@@ -556,7 +566,61 @@ def interaction_headers(result: InteractionResult) -> dict[str, str]:
             # Typed cache policy owns Cache-Control; extras cannot weaken it.
             continue
         headers[key] = value
+    # Authorize outbound selectors after typed + extra headers merge so neither
+    # InteractionResult fields nor headers={} can bypass region policy.
+    _authorize_outbound_selectors(result.policy, headers)
     return headers
+
+
+def _authorize_outbound_selectors(
+    policy: InteractionPolicy | None,
+    headers: Mapping[str, str],
+) -> None:
+    """Authorize HX-Retarget / HX-Reselect / HX-Location target+select fields."""
+    authorize_response_selector(
+        policy,
+        headers.get("HX-Retarget"),
+        header_name="HX-Retarget",
+    )
+    authorize_response_selector(
+        policy,
+        headers.get("HX-Reselect"),
+        header_name="HX-Reselect",
+    )
+    authorize_location_selectors(policy, headers.get("HX-Location"))
+
+
+def authorize_location_selectors(
+    policy: InteractionPolicy | None,
+    location_header: str | None,
+) -> None:
+    """Authorize ``target`` / ``select`` inside an ``HX-Location`` JSON payload.
+
+    String locations are path-only and have no selectors. Mapping payloads may
+    include ``target`` / ``select`` which must pass the same region allowlist as
+    ``HX-Retarget`` / ``HX-Reselect``.
+    """
+    if location_header is None:
+        return
+    text = location_header.strip()
+    if not text or text[0] != "{":
+        return
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError("HX-Location must be a local path or JSON object") from exc
+    if not isinstance(payload, dict):
+        raise ValueError("HX-Location JSON must be an object")
+    target = payload.get("target")
+    if target is not None:
+        if not isinstance(target, str):
+            raise ValueError("HX-Location target must be a string selector")
+        authorize_response_selector(policy, target, header_name="HX-Location target")
+    select = payload.get("select")
+    if select is not None:
+        if not isinstance(select, str):
+            raise ValueError("HX-Location select must be a string selector")
+        authorize_response_selector(policy, select, header_name="HX-Location select")
 
 
 def interaction_trace(result: InteractionResult) -> InteractionTrace:
@@ -576,6 +640,10 @@ def interaction_trace(result: InteractionResult) -> InteractionTrace:
 # every fragment route. Does not weaken HX-Target authorization for primary swaps.
 RESERVED_OOB_ELEMENT_IDS = frozenset({"hedron-toast"})
 
+# Framework-owned status / chrome sinks allowed as HX-Retarget / HX-Reselect hosts
+# without declaring them on every fragment route (status policies + toast).
+RESERVED_RESPONSE_SINK_IDS = frozenset({"hedron-toast", "hedron-errors", "hedron-auth"})
+
 
 def _is_reserved_oob_target(*, element_id: str | None, select: str | None) -> bool:
     if element_id is not None and element_id in RESERVED_OOB_ELEMENT_IDS:
@@ -585,6 +653,50 @@ def _is_reserved_oob_target(*, element_id: str | None, select: str | None) -> bo
         if needle is not None and needle in RESERVED_OOB_ELEMENT_IDS and select == f"#{needle}":
             return True
     return False
+
+
+def _is_reserved_response_sink(selector: str) -> bool:
+    """True when ``selector`` is exactly ``#<reserved-id>`` (bare ids rejected)."""
+    if selector.startswith("##"):
+        return False
+    needle = _single_hash_id(selector)
+    return needle is not None and needle in RESERVED_RESPONSE_SINK_IDS and selector == f"#{needle}"
+
+
+def authorize_response_selector(
+    policy: InteractionPolicy | None,
+    selector: str | None,
+    *,
+    header_name: str = "HX-Retarget",
+) -> None:
+    """Authorize outbound ``HX-Retarget`` / ``HX-Reselect`` against declared regions.
+
+    Reserved framework sinks (``#hedron-toast``, ``#hedron-errors``, ``#hedron-auth``)
+    are always allowed. When ``declared_regions`` are present, other selectors must
+    resolve like inbound ``HX-Target``. ``allow_undeclared_targets`` opts out.
+    With no declared regions there is no allowlist to enforce (selector safety still
+    runs via :func:`approved_headers`).
+    """
+    if selector is None:
+        return
+    if _is_reserved_response_sink(selector):
+        return
+    allow_open = bool(policy is not None and policy.allow_undeclared_targets)
+    if allow_open:
+        return
+    regions = policy.declared_regions if policy is not None else ()
+    if not regions:
+        return
+    try:
+        resolve_fragment_region(policy, selector)
+    except FragmentRegionError as exc:
+        declared = _declared_region_labels(regions)
+        raise FragmentRegionError(
+            f"{header_name} {selector!r} is not an authorized fragment region for this route",
+            requested=selector,
+            declared=declared,
+            code=exc.code,
+        ) from exc
 
 
 def authorize_oob_update(

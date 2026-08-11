@@ -218,3 +218,100 @@ def test_explorer_interaction_trace_populated() -> None:
     request = Request(scope)
     interaction_headers(InteractionResult(content=Text("x"), explanation="trace"), request=request)
     assert request.state.hedron_interaction["explanation"] == "trace"
+
+
+def test_retarget_undeclared_host_rejected() -> None:
+    """Outbound HX-Retarget cannot escape declared FragmentRegion allowlist (#76)."""
+    from hedron_core.interaction import FragmentRegionError
+
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
+    with pytest.raises(FragmentRegionError, match="HX-Retarget"):
+        interaction_headers(
+            InteractionResult(
+                content=Text("SECRET"),
+                region_id="main",
+                retarget="#admin-sidebar",
+                policy=policy,
+            )
+        )
+
+
+def test_reselect_undeclared_host_rejected() -> None:
+    from hedron_core.interaction import FragmentRegionError
+
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
+    with pytest.raises(FragmentRegionError, match="HX-Reselect"):
+        interaction_headers(
+            InteractionResult(
+                content=Text("SECRET"),
+                region_id="main",
+                reselect="#admin-sidebar",
+                policy=policy,
+            )
+        )
+
+
+def test_retarget_via_extra_headers_still_authorized() -> None:
+    from hedron_core.interaction import FragmentRegionError
+
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
+    with pytest.raises(FragmentRegionError, match="HX-Retarget"):
+        interaction_headers(
+            InteractionResult(
+                content=Text("SECRET"),
+                policy=policy,
+                headers={"HX-Retarget": "#admin-sidebar"},
+            )
+        )
+
+
+def test_retarget_declared_and_reserved_sinks_allowed() -> None:
+    policy = InteractionPolicy(
+        declared_regions=(
+            FragmentRegion(id="main", selector="#main"),
+            FragmentRegion(id="side", selector="#side"),
+        )
+    )
+    declared = interaction_headers(
+        InteractionResult(content=Text("ok"), retarget="#side", policy=policy)
+    )
+    assert declared["HX-Retarget"] == "#side"
+    for sink in ("#hedron-toast", "#hedron-errors", "#hedron-auth"):
+        headers = interaction_headers(
+            InteractionResult(content=Text("ok"), retarget=sink, policy=policy)
+        )
+        assert headers["HX-Retarget"] == sink
+
+
+def test_retarget_allow_undeclared_targets_opt_out() -> None:
+    policy = InteractionPolicy(
+        declared_regions=(FragmentRegion(id="main", selector="#main"),),
+        allow_undeclared_targets=True,
+    )
+    headers = interaction_headers(
+        InteractionResult(content=Text("ok"), retarget="#admin-sidebar", policy=policy)
+    )
+    assert headers["HX-Retarget"] == "#admin-sidebar"
+
+
+def test_route_retarget_bypass_returns_403() -> None:
+    app = Hedron(title="t", security="standard", session_secret="test-secret", explorer="off")
+    regions = (FragmentRegion(id="main", selector="#main"),)
+
+    @app.component("/frag", fragment_regions=regions)
+    def frag() -> InteractionResult:
+        return InteractionResult(
+            content=Text("SECRET"),
+            region_id="main",
+            retarget="#admin-sidebar",
+        )
+
+    client = TestClient(app)
+    response = client.get(
+        "/frag",
+        headers={"HX-Request": "true", "HX-Target": "#main"},
+    )
+    assert response.status_code == 403
+    # Status-policy handlers may retarget errors to #hedron-auth; never the bypass host.
+    assert response.headers.get("HX-Retarget") != "#admin-sidebar"
+    assert "SECRET" not in response.text

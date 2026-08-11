@@ -225,13 +225,16 @@ from hedron_core.inference_workflow import (
     WorkflowRunResult,
 )
 from hedron_core.interaction import (
+    RESERVED_RESPONSE_SINK_IDS,
     FragmentRegion,
     InteractionPolicy,
     InteractionResult,
     OobUpdate,
     StatusPolicy,
     authorize_htmx_target,
+    authorize_location_selectors,
     authorize_oob_update,
+    authorize_response_selector,
     default_interaction_policy,
     interaction_headers,
 )
@@ -409,6 +412,8 @@ __all__ = [
     "allow_htmx_eval",
     "authorize_htmx_target",
     "authorize_oob_update",
+    "authorize_location_selectors",
+    "authorize_response_selector",
     "capability_matrix",
     "htmx_eval_allowed",
     "default_interaction_policy",
@@ -417,6 +422,7 @@ __all__ = [
     "interaction_headers",
     "prepare_tree",
     "set_security_audit_sink",
+    "RESERVED_RESPONSE_SINK_IDS",
     "ActionDock",
     "Aside",
     "AttrHost",

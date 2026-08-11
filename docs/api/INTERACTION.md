@@ -196,7 +196,13 @@ RefreshButton.for_region(status, href="/status", label="Refresh status")
 | Situation | Result |
 |---|---|
 | Fragment `HX-Target` not on the route allowlist | HTTP **403** |
+| `HX-Retarget` / `HX-Reselect` not on the route allowlist (and not a reserved sink) | Rejected before emit / HTTP **403** |
+| `HX-Location` JSON `target` / `select` not on the route allowlist | Rejected before emit / HTTP **403** |
 | Redirect URL is not local | Rejected before emit |
+
+Reserved response sinks that do not need a route declaration: `#hedron-toast`,
+`#hedron-errors`, `#hedron-auth`. Set `InteractionPolicy.allow_undeclared_targets=True`
+to opt out of region membership checks for inbound and outbound selectors.
 
 Walkthrough: [HTMX interactions](../guides/htmx-interactions.md).
 
