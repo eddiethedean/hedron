@@ -41,7 +41,7 @@ WebSocket, streaming, and preload stay experimental.
   sink.
 
 No Supported CRUD/admin API removal is listed for 0.27.0. Existing 0.26 applications
-should follow [Upgrade to 0.27](upgrade.md), update the lockfile, run Hedron diagnostics,
+should follow [Upgrade to 0.28](upgrade.md), update the lockfile, run Hedron diagnostics,
 and repeat their application/browser tests.
 
 ## Non-goals (unchanged)

@@ -1,13 +1,13 @@
 # What’s new in 0.28
 
-**Published** as `v0.28.2`. Pin `hedron>=0.28.2,<0.29`.
+**Cut-ready tip** `0.28.2` (not tagged until publish). Pin `hedron>=0.28.2,<0.29`.
 
 Phase **0.28** (D-056 / RFC-0059) graduates `hedron-charts` and `hedron-native` to
 **production-grade for their declared Supported inventories**.
 
 ## Highlights
 
-- **Charts (Beta `0.1.10`):** Matplotlib/static beginner Line/Bar/Area/Scatter charts are
+- **Charts (Beta `0.1.11` tip; floor `>=0.1.10`):** Matplotlib/static beginner Line/Bar/Area/Scatter charts are
   production-grade with a11y alternatives, CSP-safe local assets, payload budgets, and
   browser/print evidence.
 - **Interactive quarantine:** Plotly/Altair and optional adapters remain **Experimental**

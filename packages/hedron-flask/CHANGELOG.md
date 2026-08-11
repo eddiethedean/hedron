@@ -2,6 +2,12 @@
 
 ## [0.28.2] — 2026-08-11
 
+### Fixed
+
+- Honor ``SecurityPolicy.allow_htmx_eval`` during render; PAGE-mode
+  ``interaction_response`` injects page assets; CSRF Secure flag uses the shared
+  ``hedron_core.csrf_secure`` helper (``FLASK_ENV`` / ``ENV`` parity retained).
+
 ### Changed
 
 - Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).

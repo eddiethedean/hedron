@@ -2,6 +2,12 @@
 
 ## [0.28.2] — 2026-08-11
 
+### Fixed
+
+- Honor ``SecurityPolicy.allow_htmx_eval`` during render; PAGE-mode
+  ``interaction_response`` injects page assets; ``hedron new --django`` sets
+  ``CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"`` for portable HTMX CSRF headers.
+
 ### Changed
 
 - Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).

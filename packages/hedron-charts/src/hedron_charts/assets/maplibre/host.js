@@ -1,6 +1,7 @@
 /**
  * MapLibre host — expects window.maplibregl from local maplibre-gl.js.
  * Folium/PyDeck/GeoJSON payloads are CSP-safe JSON (no remote tile URLs required).
+ * ``coord_order``: ``latlng`` (Folium default) or ``lnglat`` (MapLibre-native).
  */
 (function () {
   function fail(el, message) {
@@ -9,6 +10,7 @@
     if (!el.textContent) el.textContent = message;
   }
   function destroy(el) {
+    el._hedronMapGen = (el._hedronMapGen || 0) + 1;
     try {
       var map = el._hedronMapLibre;
       if (map && typeof map.remove === "function") {
@@ -20,12 +22,22 @@
     el._hedronMapLibre = null;
     el.removeAttribute("data-hedron-chart-mounted");
   }
+  function toLngLat(pair, coordOrder) {
+    if (!Array.isArray(pair) || pair.length < 2) return [0, 0];
+    if (coordOrder === "lnglat") {
+      return [Number(pair[0]), Number(pair[1])];
+    }
+    // Folium / latlng default
+    return [Number(pair[1]), Number(pair[0])];
+  }
   function mount(el) {
     if (!window.maplibregl) {
       fail(el, "MapLibre runtime missing (serve local maplibre-gl.js)");
       return;
     }
     destroy(el);
+    var gen = (el._hedronMapGen || 0) + 1;
+    el._hedronMapGen = gen;
     var raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
     var payload;
@@ -36,13 +48,10 @@
       return;
     }
     var spec = payload.spec || payload;
+    var coordOrder = payload.coord_order || spec.coord_order || "latlng";
     el.style.minHeight = el.style.minHeight || "240px";
     var center = spec.center || [0, 0];
-    // MapLibre expects [lng, lat]; Folium uses [lat, lng].
-    var lngLat =
-      Array.isArray(center) && center.length >= 2
-        ? [Number(center[1]), Number(center[0])]
-        : [0, 0];
+    var lngLat = toLngLat(center, coordOrder);
     var map = new window.maplibregl.Map({
       container: el,
       style: {
@@ -65,18 +74,23 @@
       if (!m || !m.location) return;
       var loc = m.location;
       new window.maplibregl.Marker()
-        .setLngLat([Number(loc[1]), Number(loc[0])])
+        .setLngLat(toLngLat(loc, coordOrder))
         .addTo(map);
     });
     if (spec.geojson) {
       map.on("load", function () {
-        map.addSource("hedron-geo", { type: "geojson", data: spec.geojson });
-        map.addLayer({
-          id: "hedron-geo-fill",
-          type: "fill",
-          source: "hedron-geo",
-          paint: { "fill-color": "#3388ff", "fill-opacity": 0.3 },
-        });
+        if (el._hedronMapGen !== gen || el._hedronMapLibre !== map) return;
+        try {
+          map.addSource("hedron-geo", { type: "geojson", data: spec.geojson });
+          map.addLayer({
+            id: "hedron-geo-fill",
+            type: "fill",
+            source: "hedron-geo",
+            paint: { "fill-color": "#3388ff", "fill-opacity": 0.3 },
+          });
+        } catch (_) {
+          /* ignore after destroy */
+        }
       });
     }
     el.setAttribute("data-hedron-chart-mounted", "1");
@@ -94,6 +108,9 @@
     if (target.matches && target.matches(sel)) destroy(target);
     if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
+  function oobTarget(ev) {
+    return (ev && ev.detail && ev.detail.elt) || (ev && ev.target) || null;
+  }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);
   });
@@ -101,4 +118,13 @@
     scan(ev.target);
   });
   document.addEventListener("htmx:beforeSwap", beforeSwap);
+  document.addEventListener("htmx:oobAfterSwap", function (ev) {
+    scan(oobTarget(ev));
+  });
+  document.addEventListener("htmx:oobBeforeSwap", function (ev) {
+    beforeSwap({ target: oobTarget(ev) });
+  });
+  document.addEventListener("htmx:load", function (ev) {
+    scan(ev.target);
+  });
 })();

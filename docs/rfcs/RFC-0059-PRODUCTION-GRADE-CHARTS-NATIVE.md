@@ -1,7 +1,7 @@
 # RFC-0059: Production-grade visualization and native acceleration
 
 **Status:** Accepted
-**Phase:** 0.28 (`v0.28.0`)
+**Phase:** 0.28 (tip `0.28.2` cut-ready; baseline `v0.27.0`)
 **Stability:** `beta` (process / package-graduation contract)
 **Evidence:** [RELEASE_0_28.md](../acceptance/RELEASE_0_28.md) ·
 [release-gate-0.28.toml](../acceptance/release-gate-0.28.toml) ·
@@ -14,7 +14,7 @@
 
 Apply the ROADMAP **production-grade package contract (0.26+)** to
 `hedron-charts` and `hedron-native` for explicitly bounded Supported workflows.
-Baseline train is Published **`v0.28.0`**. Alpha maturity today is not the
+Baseline train is Published **`v0.27.0`**. Alpha maturity today is not the
 production-grade label; 0.28 is the graduation that earns that label for the
 **declared inventory only**. Independent package version lines may remain
 `0.1.x` until cut; classifiers leave Alpha only when every 0.28-owned gate is

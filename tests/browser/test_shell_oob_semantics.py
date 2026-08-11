@@ -196,7 +196,7 @@ def shell_conflict_app_url() -> Iterator[str]:
                 OobUpdate(
                     content=html.a("Profile", href=_href("/profile")),
                     element_id="side-nav",
-                    swap="true",
+                    swap="outerHTML",
                 ),
             ),
             policy=policy,

@@ -1172,7 +1172,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.28** (last published tip `v0.28.2`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.28** (cut-ready tip `0.28.2`; last published tip `v0.28.1`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -1996,7 +1996,7 @@ Post-`0.26.0` quality follow-ups that must not inflate Supported claims:
 
 ## 0.28 — Production-grade visualization and native acceleration (`v0.28.2`)
 
-**Status:** Published as `v0.28.2` (2026-08-10). Owned by **D-056** /
+**Status:** Cut-ready tip `0.28.2` (2026-08-11); last published tip `v0.28.1`. Owned by **D-056** /
 [RFC-0059](docs/rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
 Independent package releases may use their own compatible version line; the roadmap phase does
 not require them to adopt the main train's version number. Packet SSOT:

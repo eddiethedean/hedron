@@ -1,11 +1,12 @@
 # Upgrade to Hedron 0.28
 
-This guide covers an application upgrade from **0.27.x** to the published **0.28.x**
-train. New applications should use [Build your first app](../getting-started/quickstart.md).
+This guide covers an application upgrade from **0.27.x** to the **0.28.x** train
+(current tip **`0.28.2` cut-ready**). New applications should use
+[Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.28.0 graduates `hedron-charts` and `hedron-native` to production-grade for
+Hedron 0.28.x graduates `hedron-charts` and `hedron-native` to production-grade for
 their declared Supported inventories (D-056 / RFC-0059). Matplotlib/static beginner
 charts and optional native escape acceleration are the Supported scopes. Plotly/Altair
 and optional visualization adapters remain Experimental and are not production Auto

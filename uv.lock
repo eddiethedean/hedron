@@ -1052,7 +1052,7 @@ provides-extras = ["dev", "data", "charts", "markdown", "code", "images", "email
 
 [[package]]
 name = "hedron-charts"
-version = "0.1.10"
+version = "0.1.11"
 source = { editable = "packages/hedron-charts" }
 dependencies = [
     { name = "hedron-core" },

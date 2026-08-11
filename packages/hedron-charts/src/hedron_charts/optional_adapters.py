@@ -207,9 +207,11 @@ class MapLibreAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         assert isinstance(value, Mapping)
+        body = dict(value)
+        body.setdefault("coord_order", "lnglat")
         return _json_output(
             kind="maplibre",
-            body=dict(value),
+            body=body,
             accessibility=accessibility,
             limits=limits,
             metadata={"adapter": self.name},

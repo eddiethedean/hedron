@@ -12,7 +12,7 @@ a second component runtime. Install as `hedron-extras` or via `hedron[extras]`.
 Absent extras add no core import, browser asset, startup, or transitive
 dependency cost.
 
-**Package maturity:** Beta · **Train:** `0.28.x` (last published `0.28.2`) · pin `>=0.28.2,<0.29`
+**Package maturity:** Beta · **Train:** `0.28.x` (tip `0.28.2` cut-ready) · pin `>=0.28.2,<0.29`
 
 `CodeEditor`, `TerminalView`, and joystick/device bridges require the separate
 **`hedron[experimental-ui]`** opt-in (import `hedron_extras.experimental`) and are not

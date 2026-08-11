@@ -108,7 +108,7 @@ link_attrs = {"hx-select-oob": "nav.side"}
     )
     diags_complex = _check_select_oob_conflicts(tmp_path)
     assert any(
-        d.code == HED_HTMX_0002 and d.severity is DiagnosticSeverity.WARNING for d in diags_complex
+        d.code == HED_HTMX_0002 and d.severity is DiagnosticSeverity.ERROR for d in diags_complex
     )
 
     good = tmp_path / "shell_ok.py"

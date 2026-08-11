@@ -37,8 +37,35 @@ def test_chart_hosts_register_document_htmx_lifecycle() -> None:
         assert 'document.addEventListener("htmx:beforeSwap"' in text or (
             "document.addEventListener('htmx:beforeSwap'" in text
         ), rel
+        assert "htmx:oobBeforeSwap" in text, rel
+        assert "htmx:oobAfterSwap" in text, rel
+        assert "htmx:load" in text, rel
         assert "document.body &&" not in text, rel
         assert "beforeSwap" in text, rel
+
+
+def test_plotly_vega_guard_stale_async_mount() -> None:
+    plotly = (_ASSETS / "plotly/host.js").read_text(encoding="utf-8")
+    vega = (_ASSETS / "vega/host.js").read_text(encoding="utf-8")
+    assert "_hedronPlotlyGen" in plotly
+    assert "el._hedronPlotlyGen !== gen" in plotly
+    assert "_hedronVegaGen" in vega
+    assert "el._hedronVegaGen !== gen" in vega
+
+
+def test_maplibre_coord_order_and_load_guard() -> None:
+    text = (_ASSETS / "maplibre/host.js").read_text(encoding="utf-8")
+    assert "coord_order" in text
+    assert "lnglat" in text
+    assert "_hedronMapGen" in text
+    assert "el._hedronMapLibre !== map" in text
+
+
+def test_mermaid_initialize_once() -> None:
+    text = (_ASSETS / "mermaid/host.js").read_text(encoding="utf-8")
+    assert "var initialized = false" in text
+    assert "if (!initialized)" in text
+    assert text.count("mermaid.initialize") == 1
 
 
 def test_chart_hosts_dispose_and_scan_include_self_target() -> None:

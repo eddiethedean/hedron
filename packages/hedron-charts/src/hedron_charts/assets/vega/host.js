@@ -16,6 +16,7 @@
   }
 
   function destroy(el) {
+    el._hedronVegaGen = (el._hedronVegaGen || 0) + 1;
     try {
       if (el && el._vegaView && typeof el._vegaView.finalize === "function") {
         el._vegaView.finalize();
@@ -29,6 +30,8 @@
 
   function mount(el) {
     destroy(el);
+    const gen = (el._hedronVegaGen || 0) + 1;
+    el._hedronVegaGen = gen;
     const raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
     if (!window.vegaEmbed) {
@@ -49,6 +52,16 @@
     el.setAttribute("data-hedron-chart-mounted", "1");
     if (result && typeof result.then === "function") {
       result.then(function (res) {
+        if (el._hedronVegaGen !== gen) {
+          try {
+            if (res && res.view && typeof res.view.finalize === "function") {
+              res.view.finalize();
+            }
+          } catch (_) {
+            /* ignore stale finalize */
+          }
+          return;
+        }
         if (res && res.view) {
           el._vegaView = res.view;
         }
@@ -71,9 +84,22 @@
     if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
 
+  function oobTarget(ev) {
+    return (ev && ev.detail && ev.detail.elt) || (ev && ev.target) || null;
+  }
+
   document.addEventListener("DOMContentLoaded", () => scan(document));
   document.addEventListener("htmx:afterSwap", (ev) => {
     scan(ev.target);
   });
   document.addEventListener("htmx:beforeSwap", beforeSwap);
+  document.addEventListener("htmx:oobAfterSwap", (ev) => {
+    scan(oobTarget(ev));
+  });
+  document.addEventListener("htmx:oobBeforeSwap", (ev) => {
+    beforeSwap({ target: oobTarget(ev) });
+  });
+  document.addEventListener("htmx:load", (ev) => {
+    scan(ev.target);
+  });
 })();

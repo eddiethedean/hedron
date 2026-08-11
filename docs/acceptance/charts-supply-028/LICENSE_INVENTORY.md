@@ -1,6 +1,6 @@
 # Charts supply license inventory (SUPPLY-028)
 
-Owning gate: `SUPPLY-028`. Baseline: Published `v0.28.0`.
+Owning gate: `SUPPLY-028`. Baseline: Published `v0.27.0` (0.28 phase cut started from `v0.28.0`).
 
 ## Supported runtime
 

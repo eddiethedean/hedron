@@ -2,6 +2,7 @@
  * Mermaid host — expects window.mermaid from local mermaid.min.js.
  */
 (function () {
+  var initialized = false;
   function fail(el, message) {
     el.setAttribute("data-hedron-chart-error", message);
     el.setAttribute("role", "alert");
@@ -32,7 +33,10 @@
     pre.className = "mermaid";
     pre.textContent = diagram;
     el.appendChild(pre);
-    window.mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
+    if (!initialized) {
+      window.mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
+      initialized = true;
+    }
     window.mermaid.run({ nodes: [pre] });
     el.setAttribute("data-hedron-chart-mounted", "1");
   }
@@ -49,6 +53,9 @@
     if (target.matches && target.matches(sel)) destroy(target);
     if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
+  function oobTarget(ev) {
+    return (ev && ev.detail && ev.detail.elt) || (ev && ev.target) || null;
+  }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);
   });
@@ -56,4 +63,13 @@
     scan(ev.target);
   });
   document.addEventListener("htmx:beforeSwap", beforeSwap);
+  document.addEventListener("htmx:oobAfterSwap", function (ev) {
+    scan(oobTarget(ev));
+  });
+  document.addEventListener("htmx:oobBeforeSwap", function (ev) {
+    beforeSwap({ target: oobTarget(ev) });
+  });
+  document.addEventListener("htmx:load", function (ev) {
+    scan(ev.target);
+  });
 })();

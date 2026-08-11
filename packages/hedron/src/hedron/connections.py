@@ -91,14 +91,22 @@ def _dispose_instance(instance: object) -> None:
 
 
 async def _dispose_instance_async(instance: object) -> None:
+    errors: list[BaseException] = []
     for attr in ("close", "dispose", "shutdown", "aclose"):
         method = getattr(instance, attr, None)
         if callable(method):
-            with suppress(Exception):
+            try:
                 result = method()
                 if hasattr(result, "__await__"):
                     await result  # type: ignore[misc]  # duck-typed awaitable from host close()
-            return
+            except Exception as exc:  # noqa: BLE001 — aggregate then fail closed
+                errors.append(exc)
+            else:
+                return
+    if errors:
+        raise RuntimeError(
+            f"Connection dispose failed with {len(errors)} error(s): {errors[0]!r}"
+        ) from errors[0]
 
 
 class ConnectionRegistry:

@@ -10,17 +10,21 @@
   }
   function destroy(el) {
     try {
-      var canvas = el.querySelector("canvas");
-      var chart =
-        canvas && window.Chart && typeof window.Chart.getChart === "function"
-          ? window.Chart.getChart(canvas)
-          : null;
+      var chart = el._hedronChart;
+      if (!chart) {
+        var canvas = el.querySelector("canvas");
+        chart =
+          canvas && window.Chart && typeof window.Chart.getChart === "function"
+            ? window.Chart.getChart(canvas)
+            : null;
+      }
       if (chart && typeof chart.destroy === "function") {
         chart.destroy();
       }
     } catch (_) {
       /* ignore destroy errors during swap */
     }
+    el._hedronChart = null;
     el.removeAttribute("data-hedron-chart-mounted");
   }
   function mount(el) {
@@ -42,7 +46,7 @@
     var canvas = document.createElement("canvas");
     el.innerHTML = "";
     el.appendChild(canvas);
-    new window.Chart(canvas.getContext("2d"), spec);
+    el._hedronChart = new window.Chart(canvas.getContext("2d"), spec);
     el.setAttribute("data-hedron-chart-mounted", "1");
   }
   function scan(root) {
@@ -58,6 +62,9 @@
     if (target.matches && target.matches(sel)) destroy(target);
     if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
+  function oobTarget(ev) {
+    return (ev && ev.detail && ev.detail.elt) || (ev && ev.target) || null;
+  }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);
   });
@@ -65,4 +72,13 @@
     scan(ev.target);
   });
   document.addEventListener("htmx:beforeSwap", beforeSwap);
+  document.addEventListener("htmx:oobAfterSwap", function (ev) {
+    scan(oobTarget(ev));
+  });
+  document.addEventListener("htmx:oobBeforeSwap", function (ev) {
+    beforeSwap({ target: oobTarget(ev) });
+  });
+  document.addEventListener("htmx:load", function (ev) {
+    scan(ev.target);
+  });
 })();

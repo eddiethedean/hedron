@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 
 from fastapi.responses import HTMLResponse
 from starlette.background import BackgroundTask
@@ -16,6 +16,7 @@ from hedron_core.component import NodeLike
 from hedron_core.interaction import (
     FragmentRegion,
     FragmentRegionError,
+    InteractionPolicy,
     InteractionResult,
     authorize_htmx_target,
     interaction_headers,
@@ -122,6 +123,53 @@ def _fragment_value(value: NodeLike) -> NodeLike:
     return value
 
 
+def _normalize_fragment_regions(
+    fragment_regions: Sequence[FragmentRegion | str] | None,
+) -> tuple[FragmentRegion, ...]:
+    if not fragment_regions:
+        return ()
+    out: list[FragmentRegion] = []
+    for region in fragment_regions:
+        if isinstance(region, FragmentRegion):
+            out.append(region)
+        else:
+            name = str(region).removeprefix("#")
+            out.append(FragmentRegion(id=name, selector=f"#{name}"))
+    return tuple(out)
+
+
+def _authorize_component_htmx(
+    request: Request,
+    *,
+    fragment_regions: tuple[FragmentRegion, ...],
+    allow_undeclared_targets: bool = False,
+) -> None:
+    is_htmx = (request.headers.get("HX-Request") or "").lower() == "true"
+    if not is_htmx:
+        return
+    target = request.headers.get("HX-Target")
+    history_restore = (request.headers.get("HX-History-Restore-Request") or "").lower() == "true"
+    authorize_htmx_target(
+        InteractionPolicy(
+            declared_regions=fragment_regions,
+            allow_undeclared_targets=allow_undeclared_targets,
+        ),
+        target,
+        is_htmx=True,
+        history_restore=history_restore,
+    )
+
+
+def _apply_auth_cache_headers(headers: dict[str, str], *, authenticated: bool) -> None:
+    if authenticated:
+        headers["Cache-Control"] = "private, no-store"
+    else:
+        existing = headers.get("Cache-Control", "")
+        lowered = existing.lower()
+        if "public" in lowered or not existing:
+            headers["Cache-Control"] = "private, no-store"
+
+
 def render_component_response(
     value: NodeLike | HTML | RenderResult,
     *,
@@ -133,7 +181,35 @@ def render_component_response(
     extra_headers: Mapping[str, str] | None = None,
     status_code: int = 200,
     background: BackgroundTask | None = None,
+    fragment_regions: Sequence[FragmentRegion | str] | None = None,
+    allow_undeclared_targets: bool = False,
 ) -> ComponentResponse:
+    from fastapi import HTTPException
+
+    regions = _normalize_fragment_regions(fragment_regions)
+    if request is not None:
+        try:
+            _authorize_component_htmx(
+                request,
+                fragment_regions=regions,
+                allow_undeclared_targets=allow_undeclared_targets,
+            )
+        except FragmentRegionError as exc:
+            from hedron_core.audit import SecurityAuditEventType, emit_security_audit
+
+            emit_security_audit(
+                SecurityAuditEventType.HTMX_TARGET_REJECTED,
+                str(exc),
+                attributes={
+                    "path": str(request.url.path),
+                    "target": request.headers.get("HX-Target"),
+                },
+            )
+            raise HTTPException(
+                status_code=403,
+                detail=_fragment_region_http_detail(exc, request=request),
+            ) from exc
+
     force_mode = mode
     if isinstance(value, HTML):
         force_mode = value.mode or force_mode
@@ -165,6 +241,7 @@ def render_component_response(
         headers.update(policy.response_headers(authenticated=authenticated))
     if extra_headers:
         headers.update(validated_extra_headers(extra_headers))
+    _apply_auth_cache_headers(headers, authenticated=authenticated)
 
     response_cls: type[ComponentResponse] = (
         FragmentResponse if selected_mode is RenderMode.FRAGMENT else PageResponse
@@ -443,11 +520,13 @@ async def render_interaction(
         force = force or RenderMode.FRAGMENT
     if result.status_code == 204 or (result.content is None and result.status_code == 204):
         # Auth already ran; 204 has no primary body — still seed CSRF on safe methods.
+        _apply_auth_cache_headers(headers, authenticated=auth)
         response = StarletteResponse(status_code=204, headers=headers)
         if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
             ensure_csrf_cookie(response, sec, request=request)
         return response
     if content is None:
+        _apply_auth_cache_headers(headers, authenticated=auth)
         response = StarletteResponse(status_code=result.status_code, headers=headers)
         if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
             ensure_csrf_cookie(response, sec, request=request)
@@ -465,6 +544,10 @@ async def render_interaction(
         authenticated=auth,
         extra_headers=headers,
         status_code=result.status_code,
+        fragment_regions=(result.policy.declared_regions if result.policy is not None else ())
+        or fragment_regions,
+        allow_undeclared_targets=allow_undeclared_targets
+        or bool(result.policy and result.policy.allow_undeclared_targets),
     )
     if sec.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
         ensure_csrf_cookie(response, sec, request=request)

@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.11] — 2026-08-11
+
+### Fixed
+
+- Chart hosts also listen for ``htmx:oobBeforeSwap`` / ``htmx:oobAfterSwap`` and
+  ``htmx:load`` so OOB swaps dispose and remount correctly.
+- Plotly and Vega ignore stale async ``then`` callbacks after remount/destroy
+  (generation token).
+- MapLibre honors ``coord_order`` (``latlng`` Folium vs ``lnglat`` native) and
+  ignores GeoJSON ``load`` handlers after destroy.
+- Mermaid initializes once per page; Chart.js keeps the instance on the host
+  element for reliable destroy.
+
 ## [0.1.10] — 2026-08-11
 
 ### Fixed

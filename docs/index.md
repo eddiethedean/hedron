@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · last published v0.28.2</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · tip 0.28.2 cut-ready</div>
 
 # Build interactive web apps in Python.
 
@@ -49,6 +49,14 @@ rerun dashboards.
 **You only need the `hedron` package** (+ uvicorn). Optional adapters and extras:
 [Installation](getting-started/installation.md).
 
+| Your starting point | Best next page |
+|---|---|
+| New Python/FastAPI app | [Build your first app](getting-started/quickstart.md) |
+| Existing FastAPI app | [Add Hedron to FastAPI](guides/plain-fastapi.md) |
+| Flask or Django project | [Choose a host](getting-started/index.md#choose-your-path) |
+| Streamlit application | [Migration center](guides/streamlit-migration.md) |
+| Production evaluation | [Evaluate Hedron](guides/evaluate.md) |
+
 ## A backend-native way to build UI
 
 <div class="hedron-grid">
@@ -85,10 +93,11 @@ rerun dashboards.
 <details markdown>
 <summary>Package maturity and production pins</summary>
 
-Hedron **0.28.x** is published (last `v0.28.2`; Beta packages — pin `hedron>=0.28.2,<0.29`).
-Most APIs are compatibility level `beta`; see [What’s ready](guides/whats-ready.md) for
-Supported vs Experimental. Also: [Why Hedron](guides/why-hedron.md) ·
-[Evaluate Hedron](guides/evaluate.md).
+Hedron’s flagship and host-adapter packages are Beta, so use the bounded pin shown
+above. Capability readiness and API compatibility are separate: read
+[Maturity labels](getting-started/how-to-read.md) before interpreting Supported,
+Experimental, `stable`, or `beta`. For production adoption, continue with
+[What’s ready](guides/whats-ready.md) and [Evaluate Hedron](guides/evaluate.md).
 </details>
 
 ## What you get (after Hello)

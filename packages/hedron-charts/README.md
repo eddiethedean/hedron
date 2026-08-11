@@ -10,7 +10,7 @@ Visualization adapters and chart components for Hedron.
 Beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart`, Matplotlib static
 SVG/PNG, Plotly interactive JSON, and Altair/Vega-Lite specifications.
 
-**Package maturity:** Beta · **0.28-compatible release:** `0.1.10`
+**Package maturity:** Beta · **0.28-compatible release:** `0.1.11`
 
 Interactive Plotly/Vega **full browser runtimes** remain **experimental**: Hedron
 ships host shims that fail closed when `window.Plotly` / `window.vegaEmbed` are
@@ -27,9 +27,7 @@ pip install "hedron-charts[matplotlib]>=0.1.10,<0.2"
 ```
 
 Versions through `0.1.6` may target older Hedron cores; keep the `>=0.1.10` floor for
-the living 0.28 train. See
-[Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
-
+the living 0.28 train. Prefer tip `0.1.11` for OOB lifecycle and MapLibre coord fixes.
 ### Optional backends
 
 | Extra | Backend |

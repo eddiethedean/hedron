@@ -78,6 +78,7 @@
   }
 
   function destroy(el) {
+    el._hedronPlotlyGen = (el._hedronPlotlyGen || 0) + 1;
     try {
       if (window.Plotly && typeof window.Plotly.purge === "function") {
         window.Plotly.purge(el);
@@ -90,6 +91,8 @@
 
   function mount(el) {
     destroy(el);
+    const gen = (el._hedronPlotlyGen || 0) + 1;
+    el._hedronPlotlyGen = gen;
     const raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
     if (!window.Plotly) {
@@ -115,9 +118,10 @@
     el.setAttribute("data-hedron-chart-mounted", "1");
     if (plotted && typeof plotted.then === "function") {
       plotted.then(function () {
+        if (el._hedronPlotlyGen !== gen) return;
         bindEvents(el);
       });
-    } else {
+    } else if (el._hedronPlotlyGen === gen) {
       bindEvents(el);
     }
   }
@@ -137,9 +141,22 @@
     if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
   }
 
+  function oobTarget(ev) {
+    return (ev && ev.detail && ev.detail.elt) || (ev && ev.target) || null;
+  }
+
   document.addEventListener("DOMContentLoaded", () => scan(document));
   document.addEventListener("htmx:afterSwap", (ev) => {
     scan(ev.target);
   });
   document.addEventListener("htmx:beforeSwap", beforeSwap);
+  document.addEventListener("htmx:oobAfterSwap", (ev) => {
+    scan(oobTarget(ev));
+  });
+  document.addEventListener("htmx:oobBeforeSwap", (ev) => {
+    beforeSwap({ target: oobTarget(ev) });
+  });
+  document.addEventListener("htmx:load", (ev) => {
+    scan(ev.target);
+  });
 })();

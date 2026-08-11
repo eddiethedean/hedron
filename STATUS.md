@@ -2,18 +2,18 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.28 **Published** as `v0.28.2` (2026-08-11); last published
-PyPI/git = `v0.28.2`. Prior: 0.27 **Published** as `v0.27.0`.
+**Roadmap position:** phase 0.28 tip **`0.28.2` cut-ready** (2026-08-11); last published
+PyPI/git = `v0.28.1`. Prior: 0.27 **Published** as `v0.27.0`.
 **Date:** 2026-08-11
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.28.2`; Beta (independent) — `hedron-charts` `0.1.10`, `hedron-native` `0.1.2`; Alpha —
-`hedron-sample-kit` `0.1.10`, `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0`
+`0.28.2`; Beta (independent) — `hedron-charts` `0.1.11`, `hedron-native` `0.1.2`; Alpha —
+`hedron-sample-kit` `0.1.10`, `hedron-notebook` / `hedron-mcp` / `hedron-gradio` / `hedron-sim` `0.1.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-charts`, `hedron-native`; Alpha — `hedron-sample-kit`, `hedron-notebook`,
-`hedron-mcp`, `hedron-gradio`.
+`hedron-mcp`, `hedron-gradio`, `hedron-sim`.
 
 **Phase focus:** Living published train is **0.28** (D-056 / RFC-0059) — production-grade
 graduation for `hedron-charts` / `hedron-native` on declared Supported inventories
@@ -195,7 +195,7 @@ Cut verify: `python scripts/verify_pkg_27.py`.
 ## Phase 0.28 evidence
 
 Owning decision: **D-056** / [RFC-0059](docs/rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
-Baseline: Published **`v0.27.0`**. Packages: `hedron-charts` `0.1.9` / `hedron-native`
+Baseline: Published **`v0.27.0`**. Packages: `hedron-charts` `0.1.11` / `hedron-native`
 `0.1.2` — **Beta** for declared Supported inventories.
 Locked Supported inventory:
 [production-grade-inventory-028.toml](docs/acceptance/production-grade-inventory-028.toml).
@@ -217,7 +217,7 @@ Cut verify: `python scripts/verify_pkg_28.py`.
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
 **Planned** until compensated screen-reader evidence lands. Phase **0.27** is **Published**
-(`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
+(`v0.27.0`; D-055). Phase **0.28** tip is **cut-ready** (`0.28.2`; D-056 / RFC-0059); last published tip remains `v0.28.1` until tag.
 Remaining package-production work continues through **0.29–0.32**:
 developer and portable conformance tooling; MCP; Gradio; then a whole-fleet
 closure audit. These phases require owning RFCs/decisions and Verified evidence before any

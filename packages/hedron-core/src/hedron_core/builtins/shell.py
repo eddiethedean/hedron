@@ -91,7 +91,7 @@ class HtmxLinkProps(ElementProps):
     label: str
     method: Literal["get", "post", "put", "patch", "delete"] = "get"
     target: str | None = None
-    swap: str = "outerHTML"
+    swap: str = "innerHTML"
     select: str | None = None
     select_oob: str | None = None
     push_url: bool | str = False
@@ -114,7 +114,7 @@ class HtmxLink(Component[HtmxLinkProps]):
         *,
         method: Literal["get", "post", "put", "patch", "delete"] = "get",
         target: str | None = None,
-        swap: str = "outerHTML",
+        swap: str = "innerHTML",
         select: str | None = None,
         select_oob: str | None = None,
         push_url: bool | str = False,
@@ -131,6 +131,15 @@ class HtmxLink(Component[HtmxLinkProps]):
         target = _safe_optional_selector(target, label="target")
         select = _safe_optional_selector(select, label="select")
         select_oob = _safe_optional_selector(select_oob, label="select-oob")
+        if select_oob is not None:
+            from hedron_core.interaction import unparsed_select_oob_tokens
+
+            unparsed = unparsed_select_oob_tokens(select_oob)
+            if unparsed:
+                tokens = ", ".join(sorted(unparsed))
+                raise ValueError(
+                    f"select_oob must use simple #id selectors only; unsupported token(s): {tokens}"
+                )
         disabled_elt = _safe_optional_selector(disabled_elt, label="disabled-elt")
         indicator = _safe_optional_selector(indicator, label="indicator")
         if not safe_hx_swap(swap):

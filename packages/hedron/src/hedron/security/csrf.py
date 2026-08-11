@@ -72,15 +72,17 @@ def _csrf_cookie_should_be_secure(request: Request | None, policy: SecurityPolic
     proxies still get Secure without letting arbitrary clients force the flag over
     plain HTTP.
     """
+    from hedron_core.csrf_secure import csrf_cookie_should_be_secure as shared
+
     if policy.profile is SecurityProfile.STRICT:
         return True
-    from hedron_core.compile_gate import is_production_env
-
-    if is_production_env():
-        return True
-    if request is None:
-        return False
-    return bool(request.url.is_secure) or _forwarded_proto_https_trusted(request)
+    return shared(
+        force_secure=None,
+        request_is_secure=bool(request.url.is_secure) if request is not None else False,
+        forwarded_proto_https_trusted=(
+            bool(_forwarded_proto_https_trusted(request)) if request is not None else False
+        ),
+    )
 
 
 def _strategy_names(strategy: CsrfStrategy) -> tuple[str, str, str | None]:

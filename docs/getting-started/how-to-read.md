@@ -34,7 +34,7 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current published train is **0.28.x** (last published `v0.28.2`). Use:
+The current train is **0.28.x** (tip `0.28.2`, cut-ready). Use:
 
 ```bash
 python -m pip install "hedron>=0.28.2,<0.29"

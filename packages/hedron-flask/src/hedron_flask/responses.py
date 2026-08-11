@@ -168,16 +168,23 @@ def _render_body(
     mode: RenderMode | None = None,
     skip_prepare: bool = False,
 ) -> RenderResult:
+    from hedron_core.htmx_eval import reset_htmx_eval_allowed, set_htmx_eval_allowed
+
     if isinstance(value, RenderResult):
         return value
-    _maybe_prepare(value, skip_prepare=skip_prepare)
-    hdrs = dict(headers) if headers is not None else dict(flask_request.headers)
-    selected_mode = render_mode_for_request(hdrs, force=mode)
-    render_context = context or _default_render_context()
-    to_render: NodeLike | Component[Any] = value
-    if selected_mode is RenderMode.FRAGMENT:
-        to_render = _fragment_value(value)
-    return render(to_render, context=render_context, mode=selected_mode)
+    policy = _security_policy_from_app()
+    eval_token = set_htmx_eval_allowed(policy.allow_htmx_eval)
+    try:
+        _maybe_prepare(value, skip_prepare=skip_prepare)
+        hdrs = dict(headers) if headers is not None else dict(flask_request.headers)
+        selected_mode = render_mode_for_request(hdrs, force=mode)
+        render_context = context or _default_render_context()
+        to_render: NodeLike | Component[Any] = value
+        if selected_mode is RenderMode.FRAGMENT:
+            to_render = _fragment_value(value)
+        return render(to_render, context=render_context, mode=selected_mode)
+    finally:
+        reset_htmx_eval_allowed(eval_token)
 
 
 def _merge_vary(headers: dict[str, str], *, include_target: bool = False) -> None:
@@ -332,14 +339,17 @@ def interaction_response(
     _apply_auth_cache_headers(headers, authenticated=authenticated)
     body = ""
     if node is not None:
+        selected_mode = mode or RenderMode.FRAGMENT
         rendered = _render_body(
             node,
             headers=headers_map,
             context=context,
-            mode=mode or RenderMode.FRAGMENT,
+            mode=selected_mode,
             skip_prepare=skip_prepare,
         )
         body = rendered.html
+        if selected_mode is RenderMode.PAGE:
+            body = _inject_page_html(body, selected_mode)
     return Response(
         body,
         status=result.status_code,

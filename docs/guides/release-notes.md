@@ -16,7 +16,11 @@ Coordinated Beta patch on the 0.28 train (cut-ready tip).
 - Raises coordinated package versions / pins to `0.28.2` (`>=0.28.2,<0.29`).
 - Aligns `hedron new` scaffolds and the published-quickstart release checker on
   `docs/release.toml` `pin_floor` (fixes the v0.28.1 release verify footgun).
-- Plotly/Vega chart hosts destroy-before-remount; `hedron-charts` `0.1.10`.
+- HTMX/OOB hardening: validated OOB swaps, select_oob conflict fail-closed,
+  landmark-safe `HtmxLink` default `innerHTML`, FastAPI fragment-target auth parity,
+  Flask/Django `allow_htmx_eval` + PAGE asset inject, portable Django CSRF header.
+- Chart hosts listen for OOB/load lifecycle events; Plotly/Vega generation guards;
+  MapLibre `coord_order`; tip `hedron-charts` `0.1.11` (floor `>=0.1.10`).
 - GitHub Release create waits on quickstart verify and omits plain `linux_*` wheels.
 - No Supported CRUD/admin API removal.
 
@@ -72,7 +76,7 @@ live status; SSE, WebSocket, streaming, and preload remain experimental.
 
 Install the current tip with the pin under **0.28.2** above.
 
-Read [Upgrade to 0.27](upgrade.md) before changing a production lockfile. Maintainer
+Read [Upgrade to 0.28](upgrade.md) before changing a production lockfile. Maintainer
 evidence identifiers and packets are linked from [What’s new in 0.27](whats-new-0.27.md).
 
 ## 0.26.1 — 2026-08-10
@@ -113,7 +117,7 @@ No Supported CRUD/admin API removal is listed. Polling remains the production pa
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
 Historical pin for this train: `hedron>=0.26.0,<0.27`. Current tip is
-[Upgrade to 0.27](upgrade.md) / [What’s new in 0.27](whats-new-0.27.md).
+[Upgrade to 0.28](upgrade.md) / [What’s new in 0.27](whats-new-0.27.md).
 
 ## 0.25.2 — 2026-08-10
 

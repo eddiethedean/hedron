@@ -8,12 +8,18 @@
   `docs/release.toml` `pin_floor` (release verify no longer expects train `.0`).
 - Release workflow creates the GitHub Release only after quickstart verify succeeds
   and omits plain `linux_*` native wheels from attach.
+- `render_component_response` authorizes HTMX targets (Flask/Django parity); empty/204
+  InteractionResult responses apply authenticated private cache headers.
+- Flask/Django honor `SecurityPolicy.allow_htmx_eval`; Flask/Django PAGE
+  `interaction_response` injects page assets; Django scaffold sets portable
+  `CSRF_HEADER_NAME`; async connection dispose no longer swallows close errors.
+- `hedron check` escalates non-`#id` `select_oob` tokens to ERROR.
 
 ### Changed
 
 - Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).
 - Charts floor for `hedron[charts]` raised to `hedron-charts>=0.1.10,<0.2` (Plotly/Vega
-  destroy-before-remount).
+  destroy-before-remount; tip charts `0.1.11` for OOB lifecycle).
 
 ## [0.28.1] — 2026-08-10
 

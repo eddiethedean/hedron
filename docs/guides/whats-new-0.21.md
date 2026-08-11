@@ -1,9 +1,9 @@
 # What's new in 0.21
 
-!!! warning "Living train is 0.27"
+!!! warning "Living train is 0.28"
 
     Pin `hedron>=0.28.2,<0.29`. The pin below is historical for the 0.21 train only.
-    See [What’s new in 0.27](whats-new-0.27.md).
+    See [What’s new in 0.28](whats-new-0.28.md).
 
 **Published** as `v0.21.0`. Historical pin: `hedron>=0.21.0,<0.22`.
 

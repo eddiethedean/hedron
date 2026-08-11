@@ -6,12 +6,18 @@ also attaches a checksum manifest and refuses to create the GitHub Release until
 exact PyPI artifact passes the documented scaffold smoke. PyPI remains authoritative
 for installable package versions.
 
-## 0.28.2 assets
+## 0.28.2 assets (cut-ready tip — after tag)
 
-- [GitHub Release v0.28.2](https://github.com/eddiethedean/hedron/releases/tag/v0.28.2)
-  (after the tip tag is published)
-- [Hedron 0.28.2 on PyPI](https://pypi.org/project/hedron/0.28.2/)
+Until `v0.28.2` is tagged and published, use the last published tip:
+
+- [GitHub Release v0.28.1](https://github.com/eddiethedean/hedron/releases/tag/v0.28.1)
+- [Hedron 0.28.1 on PyPI](https://pypi.org/project/hedron/0.28.1/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
+
+After the tip tag is published, the matching Release/PyPI pages become:
+
+- GitHub Release `v0.28.2`
+- PyPI `hedron/0.28.2`
 
 Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
 evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an

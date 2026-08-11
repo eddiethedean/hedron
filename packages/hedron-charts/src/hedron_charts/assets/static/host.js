@@ -36,6 +36,9 @@
     if (target.matches && target.matches(SELECTOR)) destroy(target);
     if (target.querySelectorAll) target.querySelectorAll(SELECTOR).forEach(destroy);
   }
+  function oobTarget(ev) {
+    return (ev && ev.detail && ev.detail.elt) || (ev && ev.target) || null;
+  }
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);
   });
@@ -43,4 +46,13 @@
     scan(ev.target);
   });
   document.addEventListener("htmx:beforeSwap", beforeSwap);
+  document.addEventListener("htmx:oobAfterSwap", function (ev) {
+    scan(oobTarget(ev));
+  });
+  document.addEventListener("htmx:oobBeforeSwap", function (ev) {
+    beforeSwap({ target: oobTarget(ev) });
+  });
+  document.addEventListener("htmx:load", function (ev) {
+    scan(ev.target);
+  });
 })();

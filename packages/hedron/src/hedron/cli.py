@@ -607,6 +607,8 @@ TEMPLATES = []
 DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}}
 STATIC_URL = "static/"
 HEDRON_SECURITY_PROFILE = "standard"
+# Accept portable Hedron HTMX CSRF header (X-CSRF-Token) with stock CsrfViewMiddleware.
+CSRF_HEADER_NAME = "HTTP_X_CSRF_TOKEN"
 """,
         encoding="utf-8",
     )
@@ -973,7 +975,7 @@ def _check_select_oob_conflicts(base: Path) -> list[Any]:
             diags.append(
                 make_diagnostic(
                     HED_HTMX_0002,
-                    severity=DiagnosticSeverity.WARNING,
+                    severity=DiagnosticSeverity.ERROR,
                     title="select_oob uses non-#id selectors",
                     explanation=(
                         f"{file_path} has hx-select-oob / select_oob token(s) that "

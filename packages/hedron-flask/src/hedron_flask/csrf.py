@@ -144,22 +144,14 @@ def csrf_cookie_should_be_secure(
     Secure when ``HEDRON_ENV`` / ``FLASK_ENV`` / ``ENV`` is ``production`` (or
     ``HEDRON_ENV=prod``).
     """
-    if force_secure is True:
-        return True
-    if force_secure is False:
-        return False
-    import os
+    from hedron_core.csrf_secure import csrf_cookie_should_be_secure as shared
 
-    from hedron_core.compile_gate import is_production_env
-
-    if is_production_env():
-        return True
-    env = (os.environ.get("FLASK_ENV") or os.environ.get("ENV") or "").lower()
-    if env == "production":
-        return True
-    if _forwarded_proto_https_trusted(request):
-        return True
-    return bool(request.is_secure)
+    return shared(
+        force_secure=force_secure,
+        request_is_secure=bool(request.is_secure),
+        forwarded_proto_https_trusted=bool(_forwarded_proto_https_trusted(request)),
+        extra_production_env_vars=("FLASK_ENV", "ENV"),
+    )
 
 
 def ensure_csrf_cookie(

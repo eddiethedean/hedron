@@ -36,6 +36,18 @@ Click **Refresh status**. The timestamp should change without a full-page reload
 confirms the browser requested `/status`, Hedron authorized the declared target, and
 HTMX replaced only the status region.
 
+### What just happened?
+
+| Browser action | Server behavior | Visible result |
+|---|---|---|
+| Open `/` | The page route returns a typed `Page` and Hedron renders a full document | The Hello page loads |
+| Click **Refresh status** | HTMX requests `/status` for the declared region | Only the status timestamp changes |
+| Send the wrong target | Hedron rejects a target outside the route’s region policy | The request fails closed with HTTP 403 |
+
+That page/fragment distinction is the central Hedron interaction model. The next guide
+lets you inspect it directly; you do not need to understand HTMX before completing this
+quickstart.
+
 ## 2. Make one edit
 
 Open `app.py` and change:
@@ -82,9 +94,21 @@ and a `components/` directory. The generated page declares a region and returns 
 fragment for that region. See [Scaffold anatomy](core-concepts.md) or the
 [single-file examples](../examples/single-file.md) when you want the complete source.
 
+```text
+my-hedron-app/
+├── app.py           # application, page route, and status fragment
+├── pyproject.toml   # dependencies and bounded Hedron pin
+└── components/      # project-owned reusable UI components
+```
+
+These are normal Python project files. Hedron does not generate a separate JavaScript
+application or require Node.js for the production build.
+
 ## Continue
 
-1. [What is HTMX?](what-is-htmx.md)
-2. [HTMX interactions](../guides/htmx-interactions.md)
-3. [Minimal form POST](../guides/minimal-form.md)
-4. [Learning path](learning-path.md)
+| If you want to… | Continue with |
+|---|---|
+| Understand the refresh you just used | [What is HTMX?](what-is-htmx.md) |
+| Add another independently updating region | [HTMX interactions](../guides/htmx-interactions.md) |
+| Submit data safely | [Minimal form POST](../guides/minimal-form.md) |
+| See the full beginner-to-production sequence | [Learning path](learning-path.md) |

@@ -12,6 +12,7 @@ from hedron_core.htmx_contract import (
     HtmxContext,
     approved_headers,
     safe_css_selector,
+    safe_hx_swap,
 )
 from hedron_core.typing_aliases import HxLocation, InteractionTrace, JsonValue
 
@@ -122,6 +123,8 @@ class OobUpdate:
             raise ValueError(
                 f"Unsupported OobUpdate tag={self.tag!r}; allowlisted: {sorted(OOB_ENVELOPE_TAGS)}"
             )
+        if not safe_hx_swap(self.swap):
+            raise ValueError(f"Unsafe OobUpdate swap value: {self.swap!r}")
 
 
 @dataclass(frozen=True, slots=True)
@@ -241,6 +244,8 @@ class InteractionResult:
     policy: InteractionPolicy | None = None
     headers: Mapping[str, str] = field(default_factory=dict)
     explanation: str = ""
+    # Request-side hx-select-oob when known (same-target conflict detection).
+    select_oob: str | None = None
 
     def __post_init__(self) -> None:
         code = self.status_code
@@ -261,6 +266,13 @@ class InteractionResult:
                 raise TypeError(
                     "InteractionResult.oob items must be OobUpdate instances; "
                     f"got {[type(item).__name__ for item in bad]}"
+                )
+        if self.select_oob is not None:
+            unparsed = unparsed_select_oob_tokens(self.select_oob)
+            if unparsed:
+                tokens = ", ".join(sorted(unparsed))
+                raise ValueError(
+                    f"select_oob must use simple #id selectors only; unsupported token(s): {tokens}"
                 )
 
 
@@ -325,7 +337,9 @@ def resolve_fragment_region(
     if policy is None or not policy.declared_regions:
         return None
     if target is None:
-        return policy.declared_regions[0] if policy.declared_regions else None
+        # Fail closed: do not implicitly authorize the first declared region.
+        # authorize_htmx_target already rejects missing HX-Target when regions exist.
+        return None
     if target.startswith("##"):
         declared = _declared_region_labels(policy.declared_regions)
         raise FragmentRegionError(
@@ -734,6 +748,8 @@ def oob_swap(
         raise ValueError(
             f"Unsupported OOB envelope tag={tag!r}; allowlisted: {sorted(OOB_ENVELOPE_TAGS)}"
         )
+    if not safe_hx_swap(swap):
+        raise ValueError(f"Unsafe OOB swap value: {swap!r}")
     from hedron_core.html import html
 
     return getattr(html, tag)(content, id=element_id, **{"hx-swap-oob": swap})
@@ -754,9 +770,35 @@ def _bound_oob_element_id(
     return None
 
 
-def materialize_interaction_nodes(result: InteractionResult) -> NodeLike | None:
-    """Authorize OOB updates and return a renderable node tree (or None)."""
+def materialize_interaction_nodes(
+    result: InteractionResult,
+    *,
+    select_oob: str | None = None,
+) -> NodeLike | None:
+    """Authorize OOB updates and return a renderable node tree (or None).
+
+    When ``select_oob`` (or ``result.select_oob``) is known, fail closed on
+    same-target ``hx-select-oob`` / ``OobUpdate`` collisions and on non-``#id``
+    select-oob tokens.
+    """
     from hedron_core.builtins import Fragment
+
+    effective_select_oob = select_oob if select_oob is not None else result.select_oob
+    if effective_select_oob:
+        unparsed = unparsed_select_oob_tokens(effective_select_oob)
+        if unparsed:
+            tokens = ", ".join(sorted(unparsed))
+            raise ValueError(
+                f"select_oob must use simple #id selectors only; unsupported token(s): {tokens}"
+            )
+        conflicts = conflicting_select_oob_targets(effective_select_oob, result.oob)
+        if conflicts:
+            targets = ", ".join(f"#{item}" for item in sorted(conflicts))
+            raise ValueError(
+                f"select_oob / OobUpdate same-target conflict for {targets}; "
+                "use one OOB mechanism per target (prefer OobUpdate with "
+                "swap='innerHTML' and omit matching select_oob)"
+            )
 
     regions = result.policy.declared_regions if result.policy is not None else ()
     if not result.oob:

@@ -74,7 +74,7 @@ Jinja+HTMX stack.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
-Hedron **0.28.x** is published (last `v0.28.2`; Beta packages — pin as above). Before
+Hedron **0.28.x** tip is **`0.28.2` cut-ready** (Beta packages — pin as above; tag when publishing). Before
 production, read
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).

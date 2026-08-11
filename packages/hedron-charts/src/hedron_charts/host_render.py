@@ -78,6 +78,7 @@ def extract_folium_payload(value: object) -> dict[str, Any]:
                 "geojson": value.get("geojson"),
                 "markers": list(value.get("markers") or []),
                 "style": value.get("style") or "basic",
+                "coord_order": value.get("coord_order") or "latlng",
             }
         raise TypeError("Folium mapping requires center/location or type=folium")
 
@@ -111,6 +112,7 @@ def extract_folium_payload(value: object) -> dict[str, Any]:
         "markers": markers,
         "geojson": geojson,
         "style": "basic",
+        "coord_order": "latlng",
     }
 
 

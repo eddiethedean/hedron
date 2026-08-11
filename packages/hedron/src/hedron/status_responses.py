@@ -79,6 +79,7 @@ def install_interaction_handlers(app: FastAPI) -> None:
             extra_headers=_policy_headers(policy),
             authenticated=bool(getattr(request.state, "hedron_authenticated", False)),
             policy=getattr(request.app.state, "hedron_security", None),
+            allow_undeclared_targets=True,
         )
 
     @app.exception_handler(StarletteHTTPException)
@@ -95,4 +96,5 @@ def install_interaction_handlers(app: FastAPI) -> None:
             extra_headers=_policy_headers(policy),
             authenticated=bool(getattr(request.state, "hedron_authenticated", False)),
             policy=getattr(request.app.state, "hedron_security", None),
+            allow_undeclared_targets=True,
         )

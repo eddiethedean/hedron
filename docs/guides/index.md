@@ -2,7 +2,7 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.28 train** (**Published**; last **v0.28.2**): production-grade charts/native — [What’s new in 0.28](whats-new-0.28.md) · [What’s ready](whats-ready.md).
+**0.28 train** (**cut-ready tip** **0.28.2**): production-grade charts/native — [What’s new in 0.28](whats-new-0.28.md) · [What’s ready](whats-ready.md).
 
 Complete **Learn** first ([Learning path](../getting-started/learning-path.md):
 First app → HTMX → Minimal form). HTMX and minimal form live under **Learn** — this
@@ -88,7 +88,7 @@ Evaluating adoption? Use the **Evaluate** tab
   <a class="hedron-card" href="charts-and-htmx/">
     <span class="hedron-card__icon" aria-hidden="true">↗</span>
     <strong>Charts and HTMX</strong>
-    <p>Alpha chart adapters with fragment-friendly updates.</p>
+    <p>Supported static/Matplotlib charts, plus clearly labeled experimental interactive adapters.</p>
   </a>
   <a class="hedron-card" href="component-composition/">
     <span class="hedron-card__icon" aria-hidden="true">⧉</span>

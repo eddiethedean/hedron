@@ -16,7 +16,7 @@ from hedron_charts.components import (
 from hedron_charts.optional_adapters import optional_adapters
 from hedron_charts.pins import RUNTIME_PINS, ensure_pin_stubs, pinned_runtime, verify_pin
 
-__version__ = "0.1.10"
+__version__ = "0.1.11"
 
 __all__ = [
     "AltairAdapter",

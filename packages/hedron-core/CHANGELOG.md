@@ -2,6 +2,15 @@
 
 ## [0.28.2] — 2026-08-11
 
+### Fixed
+
+- Validate ``OobUpdate`` / ``oob_swap`` with ``safe_hx_swap``; fail closed when
+  ``resolve_fragment_region`` is called with a missing target; reject
+  ``select_oob`` / ``OobUpdate`` same-target conflicts and non-``#id`` tokens at
+  materialize / construction time.
+- ``HtmxLink`` / ``NavLink`` default ``hx-swap`` is ``innerHTML`` (landmark-safe).
+- Shared ``csrf_cookie_should_be_secure`` helper for host adapters.
+
 ### Changed
 
 - Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).

@@ -169,6 +169,8 @@ class HedronRoute(APIRoute):
                 policy=policy,
                 authenticated=authenticated,
                 extra_headers=vary,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(response, policy, request=request)
@@ -196,6 +198,8 @@ class HedronRoute(APIRoute):
                 policy=policy,
                 authenticated=authenticated,
                 extra_headers=vary,
+                fragment_regions=fragment_regions,
+                allow_undeclared_targets=allow_undeclared_targets,
             )
             if policy.csrf_enabled and request.method.upper() in {"GET", "HEAD"}:
                 ensure_csrf_cookie(response, policy, request=request)
