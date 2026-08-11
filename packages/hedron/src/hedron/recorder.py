@@ -49,9 +49,18 @@ SENSITIVE_FIELD_NAMES = frozenset(
 _REDACTED = "[redacted]"
 
 
+def _canonical_key(key: str) -> str:
+    return key.casefold().replace("-", "_")
+
+
+_SENSITIVE_KEYS = frozenset(
+    _canonical_key(name) for name in SENSITIVE_FIELD_NAMES | SENSITIVE_HEADER_NAMES
+)
+
+
 def _is_sensitive_key(key: str) -> bool:
-    lowered = key.lower().replace("-", "_")
-    if lowered in SENSITIVE_FIELD_NAMES or lowered in SENSITIVE_HEADER_NAMES:
+    lowered = _canonical_key(key)
+    if lowered in _SENSITIVE_KEYS:
         return True
     return any(part in lowered for part in ("password", "secret", "token", "credential"))
 
