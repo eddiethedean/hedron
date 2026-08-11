@@ -106,3 +106,31 @@ def test_merge_interaction_headers_keeps_typed_hx_redirect() -> None:
 def test_vary_headers_portable() -> None:
     headers = interaction_headers(InteractionResult(cache="vary-htmx"))
     assert "HX-Request" in headers["Vary"]
+
+
+def test_response_retarget_requires_declared_region() -> None:
+    from hedron_core import Text
+    from hedron_core.interaction import authorize_response_selector
+
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
+    authorize_response_selector(policy, "#main", header_name="HX-Retarget")
+    authorize_response_selector(policy, "#hedron-errors", header_name="HX-Retarget")
+    with pytest.raises(FragmentRegionError, match="HX-Retarget"):
+        authorize_response_selector(policy, "#admin-sidebar", header_name="HX-Retarget")
+    with pytest.raises(FragmentRegionError, match="HX-Reselect"):
+        interaction_headers(
+            InteractionResult(
+                content=Text("x"),
+                reselect="#admin-sidebar",
+                policy=policy,
+            )
+        )
+
+
+def test_merge_extras_cannot_bypass_retarget_allowlist() -> None:
+    from hedron_core import Text
+
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
+    result = InteractionResult(content=Text("x"), policy=policy)
+    with pytest.raises(FragmentRegionError, match="HX-Retarget"):
+        merge_interaction_headers(result, {"HX-Retarget": "#admin-sidebar"})

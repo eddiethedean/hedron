@@ -4,6 +4,9 @@
 
 ### Fixed
 
+- Authorize ``HX-Retarget`` / ``HX-Reselect`` against declared fragment regions so
+  handlers cannot redirect swaps outside the route allowlist (#76; via
+  ``hedron-core``).
 - `hedron new` scaffolds and the published-quickstart release checker share
   `docs/release.toml` `pin_floor` (release verify no longer expects train `.0`).
 - Release workflow creates the GitHub Release only after quickstart verify succeeds
