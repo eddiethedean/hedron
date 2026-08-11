@@ -213,7 +213,7 @@ class InteractionResult:
         headers: Extra response headers (must pass HTMX allowlist validation).
         explanation: Optional human-readable note for diagnostics / Explorer.
 
-        Raises:
+    Raises:
         FragmentRegionError: When resolving a request target that is not an
             authorized declared region (via ``resolve_fragment_region`` helpers),
             or when outbound ``HX-Retarget`` / ``HX-Reselect`` escape the route
