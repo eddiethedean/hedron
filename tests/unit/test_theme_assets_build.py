@@ -223,3 +223,6 @@ def test_data_editor_enhancement_hides_no_script_fallback() -> None:
     forbidden_idx = script.index("res.status === 403")
     json_idx = script.index("await res.json()", forbidden_idx)
     assert forbidden_idx < json_idx
+    assert "function sanitizeFormulaCell" in script
+    assert "function buildCsv" in script
+    assert "JSON.stringify(row[c.field]" not in script

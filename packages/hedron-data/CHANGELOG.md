@@ -6,6 +6,9 @@
 
 - Serialize ``InMemoryDataSource.apply`` / ``fetch`` with an instance lock so
   concurrent nonconflicting commits cannot silently lose updates (#114).
+- DataEditor CSV export keeps pending edits, uses RFC quoting (not
+  ``JSON.stringify``), and sanitizes spreadsheet formula prefixes like
+  ``DataTable.to_csv`` (#112).
 
 ### Changed
 
