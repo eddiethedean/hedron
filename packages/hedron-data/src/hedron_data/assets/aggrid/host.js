@@ -103,7 +103,19 @@
     };
   }
 
+  function destroy(el) {
+    var api = el._hedronAgGridApi;
+    try {
+      if (api && typeof api.destroy === "function") api.destroy();
+    } catch (_) {
+      /* ignore teardown errors while HTMX replaces the host */
+    }
+    delete el._hedronAgGridApi;
+    el.removeAttribute("data-hedron-grid-mounted");
+  }
+
   function mount(el) {
+    destroy(el);
     if (!window.agGrid || !window.agGrid.createGrid) {
       fail(el, "AG Grid Community runtime missing (serve local ag-grid-community.min.js)");
       return;
@@ -139,20 +151,43 @@
     }
     var api = window.agGrid.createGrid(el, options);
     el._hedronAgGridApi = api;
+    el.setAttribute("data-hedron-grid-mounted", "1");
     bindGridEvents(el, api);
   }
 
   function scan(root) {
-    (root || document)
-      .querySelectorAll("hedron-data-aggrid, [data-hedron-grid='aggrid']")
-      .forEach(mount);
+    var base = root || document;
+    var sel = "hedron-data-aggrid, [data-hedron-grid='aggrid']";
+    if (base.matches && base.matches(sel)) mount(base);
+    if (base.querySelectorAll) base.querySelectorAll(sel).forEach(mount);
+  }
+
+  function beforeSwap(ev) {
+    var target = ev && ev.target;
+    if (!target) return;
+    var sel = "hedron-data-aggrid, [data-hedron-grid='aggrid']";
+    if (target.matches && target.matches(sel)) destroy(target);
+    if (target.querySelectorAll) target.querySelectorAll(sel).forEach(destroy);
+  }
+
+  function oobTarget(ev) {
+    return (ev && ev.detail && ev.detail.elt) || (ev && ev.target) || null;
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     scan(document);
   });
-  document.body &&
-    document.body.addEventListener("htmx:afterSwap", function (ev) {
-      scan(ev.target);
-    });
+  document.addEventListener("htmx:afterSwap", function (ev) {
+    scan(ev.target);
+  });
+  document.addEventListener("htmx:beforeSwap", beforeSwap);
+  document.addEventListener("htmx:oobAfterSwap", function (ev) {
+    scan(oobTarget(ev));
+  });
+  document.addEventListener("htmx:oobBeforeSwap", function (ev) {
+    beforeSwap({ target: oobTarget(ev) });
+  });
+  document.addEventListener("htmx:load", function (ev) {
+    scan(ev.target);
+  });
 })();
