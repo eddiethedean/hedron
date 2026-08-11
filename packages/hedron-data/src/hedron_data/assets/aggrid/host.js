@@ -17,13 +17,14 @@
   }
 
   function emit(el, name, detail) {
-    el.dispatchEvent(
-      new CustomEvent(name, {
-        bubbles: true,
-        composed: true,
-        detail: detail || {},
-      })
-    );
+    var event = new CustomEvent(name, {
+      bubbles: true,
+      cancelable: true,
+      composed: true,
+      detail: detail || {},
+    });
+    el.dispatchEvent(event);
+    return event;
   }
 
   function columnDefs(payload) {
@@ -78,18 +79,41 @@
 
   function infiniteDatasource(el, payload) {
     var blockSize = (payload.blockSize || payload.block_size || 100) | 0;
+    var nextRequestId = 0;
     if (blockSize < 1) blockSize = 100;
     return {
       getRows: function (params) {
-        emit(el, "hedron-data-pagination", {
+        var settled = false;
+        var requestId = ++nextRequestId;
+        function succeed(rows, lastRow) {
+          if (settled) return false;
+          settled = true;
+          params.successCallback(
+            Array.isArray(rows) ? rows : [],
+            typeof lastRow === "number" ? lastRow : -1
+          );
+          return true;
+        }
+        function reject() {
+          if (settled) return false;
+          settled = true;
+          if (params.failCallback) params.failCallback();
+          return true;
+        }
+        var event = emit(el, "hedron-data-pagination", {
           kind: "infinite-block",
+          request_id: requestId,
           start_row: params.startRow,
           end_row: params.endRow,
           block_size: blockSize,
           sort: params.sortModel || [],
           filter: params.filterModel || {},
+          success: succeed,
+          fail: reject,
         });
-        // Apps may reply by setting rows on the element; default uses payload.rows slice.
+        // A listener can preventDefault() and settle this request asynchronously.
+        if (event.defaultPrevented) return;
+        // Without a listener, retain the embedded-row fallback.
         var rows = payload.rows || [];
         var slice = rows.slice(params.startRow, params.endRow);
         var last =
@@ -98,7 +122,7 @@
             : params.endRow > rows.length
               ? rows.length
               : -1;
-        params.successCallback(slice, last);
+        succeed(slice, last);
       },
     };
   }
