@@ -12,7 +12,7 @@ Contract: [PRODUCTION_ARCHETYPE](../api/PRODUCTION_ARCHETYPE.md). Example README
 
 Click through the pattern demos below (docs simulations for CSRF, fragments, and chart
 **panel** refresh — not a live login), then run the full app locally or via production
-compose. Outside the workspace, install `hedron[charts]>=0.27.0,<0.28` for the compatible
+compose. Outside the workspace, install `hedron[charts]>=0.28.0,<0.29` for the compatible
 chart satellite; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

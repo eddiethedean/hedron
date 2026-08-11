@@ -1,8 +1,8 @@
 # What’s new in 0.19
 
-**Published as `v0.19.0`** (2026-08-07). Living published train is **0.27**.
+**Published as `v0.19.0`** (2026-08-07). Living published train is **0.28**.
 Historical installs for this phase used a 0.19 upper-bound pin; tip pin is
-`hedron>=0.27.0,<0.28`.
+`hedron>=0.28.0,<0.29`.
 
 Phase 0.19 delivers accessibility engineering and inclusive authoring without automatic
 WCAG / legal / VPAT claims (D-050).

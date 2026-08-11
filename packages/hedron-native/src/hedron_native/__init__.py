@@ -3,9 +3,18 @@
 from __future__ import annotations
 
 import html as html_stdlib
+import os
 from collections.abc import Callable
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
+
+# Process-start disable for NATIVE-028 fallback injection (ops / evidence).
+_DISABLE_ENV = "HEDRON_NATIVE_DISABLE"
+
+
+def _env_disables_native() -> bool:
+    raw = os.environ.get(_DISABLE_ENV, "").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
 
 
 def _py_escape_text(value: str) -> str:
@@ -17,6 +26,8 @@ def _py_escape_attr(value: str) -> str:
 
 
 def _resolve_impls() -> tuple[Callable[[str], str], Callable[[str], str], bool]:
+    if _env_disables_native():
+        return _py_escape_text, _py_escape_attr, False
     try:
         from hedron_native._native import escape_attr as native_attr
         from hedron_native._native import escape_text as native_text
@@ -30,8 +41,13 @@ _escape_text_impl, _escape_attr_impl, _native_loaded = _resolve_impls()
 
 
 def native_available() -> bool:
-    """Return True when the compiled Rust extension is loaded."""
+    """Return True when the compiled Rust extension is loaded and not disabled."""
     return _native_loaded
+
+
+def native_disabled_by_env() -> bool:
+    """Return True when HEDRON_NATIVE_DISABLE forces the Python path."""
+    return _env_disables_native()
 
 
 def escape_text(value: str) -> str:
@@ -61,4 +77,5 @@ __all__ = [
     "escape_text",
     "escape_text_python",
     "native_available",
+    "native_disabled_by_env",
 ]

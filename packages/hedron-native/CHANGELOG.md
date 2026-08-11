@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.1] — 2026-08-10
+
+### Added
+
+- `HEDRON_NATIVE_DISABLE` runtime disable for Python-reference fallback (NATIVE-028).
+- cibuildwheel Supported matrix (manylinux x86_64/aarch64, macOS arm64, Windows amd64).
+- Fuzz corpus + sanitize evidence packet under `docs/acceptance/native-fuzz-028/`.
+
+### Changed
+
+- Package maturity Alpha → **Beta**.
+
 ## [0.1.0] — 2026-08-05
 
 ### Added

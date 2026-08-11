@@ -1,0 +1,46 @@
+# Phase 0.28 production-grade charts/native evidence index.
+# Consumed by scripts/check_release_gate.py 0.28.0 (--execute-verified at cut).
+# Zero Deferred policy for 0.28-owned rows: every row must be Verified at cut.
+# Owning decision: D-056. RFC: RFC-0059.
+
+[[evidence]]
+id = "CHARTS-028"
+state = "Verified"
+command = "python scripts/check_charts_028.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "INTERACTIVE-028"
+state = "Verified"
+command = "python scripts/check_interactive_028.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "NATIVE-028"
+state = "Verified"
+command = "python scripts/check_native_028.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "SUPPLY-028"
+state = "Verified"
+command = "python scripts/check_supply_028.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-028"
+state = "Verified"
+command = "bash scripts/ci_checks.sh test --python 3.12"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-028"
+state = "Verified"
+command = "python scripts/verify_pkg_28.py"
+ci_job = "test"
+owner = "hedron"

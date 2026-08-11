@@ -1,6 +1,6 @@
 # What’s new in Hedron 0.25
 
-**Published** as `v0.25.0` (last 0.25 patch `v0.25.2`). Living train is **0.27** — pin `hedron>=0.27.0,<0.28`.
+**Published** as `v0.25.0` (last 0.25 patch `v0.25.2`). Living train is **0.28** — pin `hedron>=0.28.0,<0.29`.
 
 Phase **0.25** makes the production posture explicit: a runnable multi-worker archetype,
 critical-path load budgets in CI, and an opt-in boundary so specialty experimental UI widgets are
@@ -40,7 +40,7 @@ Additional fail-closed hardening on the published tip (see [release notes](relea
 
 | If you… | Do this |
 |---|---|
-| Are on 0.24 | Pin `>=0.27.0,<0.28`; follow the [current upgrade guide](upgrade.md) |
+| Are on 0.24 | Pin `>=0.28.0,<0.29`; follow the [current upgrade guide](upgrade.md) |
 | Used CodeEditor / TerminalView / joystick / device | Install `hedron[experimental-ui]` and import from `hedron_extras.experimental` |
 | Deploy multi-worker | Prefer the reference-app compose archetype + Redis |
 

@@ -9,7 +9,7 @@ This inventory maps Gradio outcomes to Hedron without claiming automatic convers
 optional Alpha package only when needed:
 
 ```bash
-pip install "hedron[gradio]>=0.27.0,<0.28"
+pip install "hedron[gradio]>=0.28.0,<0.29"
 # Live remote discovery/predict also needs:
 pip install gradio-client
 ```

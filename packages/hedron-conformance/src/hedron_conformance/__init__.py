@@ -14,7 +14,7 @@ from hedron_conformance.schema import (
     load_bundled_fixtures,
 )
 
-__version__ = "0.27.0"
+__version__ = "0.28.0"
 
 __all__ = [
     "CONTRACT_VERSION",

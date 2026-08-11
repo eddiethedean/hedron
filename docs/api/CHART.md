@@ -13,8 +13,8 @@ status: beta
 
 ## Availability
 
-Install `hedron[charts]>=0.27.0,<0.28`; this enforces the compatible
-`hedron-charts>=0.1.7,<0.2` floor. See
+Install `hedron[charts]>=0.28.0,<0.29`; this enforces the compatible
+`hedron-charts>=0.1.8,<0.2` floor. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## Beginner `LineChart`
@@ -58,12 +58,14 @@ AltairChart(chart, description="Declarative Vega-Lite figure")
 
 Every chart declares title, description or alt text, output mode, data policy, and optional tabular fallback. Interactive adapters register host shims and serialize specifications as non-executable data. Raw JavaScript callbacks and unapproved remote assets are rejected by default.
 
-!!! note "Plotly / Vega runtimes (deferred)"
+!!! note "Plotly / Vega runtimes (Experimental)"
 
-    Full offline pin/fingerprint/serve of Plotly.js and Vega/vega-embed is
-    **Deferred / experimental**. Host scripts fail closed when the globals are
-    missing. Supply a local runtime yourself, or use Matplotlib / `LineChart`
-    for supported static charts.
+    Interactive Plotly.js and Vega/vega-embed runtimes ship as **vendored,
+    fingerprinted Experimental** assets under `hedron-charts` (`RUNTIME_PINS`).
+    Host scripts fail closed when `window.Plotly` / `vegaEmbed` are missing.
+    They are **not** production Auto defaults (`INTERACTIVE-028`); opt in with
+    `Auto(..., as_="plotly")` / explicit `PlotlyChart` / `AltairChart`.
+    Supported production charts remain Matplotlib / beginner static charts.
 
 Adapters implement a public `VisualizationAdapter` capability contract but may keep backend compilation types internal. Missing optional backend extras produce a precise installation command for the **workspace** package — not a PyPI `hedron[charts]` pin on 0.25. Payload limits and server-transform policies are explicit and visible in Explorer.
 

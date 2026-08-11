@@ -1,0 +1,19 @@
+{
+  "baseline": "v0.27.0",
+  "matplotlib_maturity": "Supported",
+  "license_inventory_doc": "docs/acceptance/charts-supply-028/LICENSE_INVENTORY.md",
+  "sbom_script": "scripts/generate_sbom.py",
+  "offline_install_doc": "docs/acceptance/charts-supply-028/OFFLINE_INSTALL.md",
+  "pin_keys": [
+    "plotly-host",
+    "vega-host",
+    "plotly",
+    "vega",
+    "vega-embed",
+    "chartjs",
+    "echarts",
+    "mermaid",
+    "maplibre"
+  ],
+  "cdn_unpinned_excluded": true
+}

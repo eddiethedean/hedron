@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, cast
+from typing import Any, Literal, cast
 
 from hedron_core.builtins.content import DescriptionList, Text
 from hedron_core.builtins.content import List as HedronList
@@ -20,8 +20,11 @@ __all__ = [
     "RendererSpec",
     "clear_renderers_for_tests",
     "inspect_data",
+    "list_renderers",
     "register_renderer",
 ]
+
+RendererMaturity = Literal["supported", "experimental"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -35,6 +38,7 @@ class RendererSpec:
     security_notes: str = ""
     explanation: str = ""
     factory: Callable[[object], NodeLike] | None = None
+    maturity: RendererMaturity = "supported"
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,6 +79,11 @@ def register_renderer(spec: RendererSpec) -> None:
         (*[r for r in _renderers if r.name != spec.name], spec),
         key=lambda r: (-r.priority, r.name),
     )
+
+
+def list_renderers() -> tuple[RendererSpec, ...]:
+    """Return registered Auto renderers (priority order)."""
+    return tuple(_renderers)
 
 
 def get_last_auto_decision() -> AutoDecision | None:
@@ -352,6 +361,11 @@ class Auto(Component[AutoProps]):
         else:
             for spec in _renderers:
                 candidates.append(spec.name)
+                if spec.maturity == "experimental":
+                    rejected.append(
+                        (spec.name, "experimental renderer excluded from production Auto defaults")
+                    )
+                    continue
                 matched = False
                 if spec.predicate is not None:
                     try:

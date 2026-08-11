@@ -359,7 +359,7 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron>=0.27.0,<0.28",
+    "hedron>=0.28.0,<0.29",
     "uvicorn[standard]>=0.30",
 ]
 
@@ -436,8 +436,8 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron-flask>=0.27.0,<0.28",
-    "hedron-core>=0.27.0,<0.28",
+    "hedron-flask>=0.28.0,<0.29",
+    "hedron-core>=0.28.0,<0.29",
     "flask>=3,<4",
 ]
 
@@ -529,8 +529,8 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron-django>=0.27.0,<0.28",
-    "hedron-core>=0.27.0,<0.28",
+    "hedron-django>=0.28.0,<0.29",
+    "hedron-core>=0.28.0,<0.29",
     "django>=5.2,<6",
     "waitress>=3,<4",
 ]
@@ -1363,9 +1363,15 @@ def _cmd_accel_status(args: argparse.Namespace) -> int:
     """Report optional native acceleration status."""
     try:
         from hedron_native import __version__ as native_version
-        from hedron_native import native_available
+        from hedron_native import native_available, native_disabled_by_env
     except ImportError:
         print("hedron-native: not installed (pure-Python serializer active)")
+        return 0
+    if native_disabled_by_env():
+        print(
+            f"hedron-native {native_version}: disabled "
+            "(HEDRON_NATIVE_DISABLE; pure-Python serializer active)"
+        )
         return 0
     status = "loaded" if native_available() else "installed (fallback pure-Python)"
     print(f"hedron-native {native_version}: {status}")

@@ -49,8 +49,8 @@ state = "Deferred"
 command = ""
 ci_job = ""
 owner = "hedron"
-rationale = "Interactive Plotly/Vega full offline runtime pin/fingerprint/serve remains experimental; host shims fail closed when globals are missing."
-destination = "0.6.x maintenance or 0.7 evidence before advertising as supported"
+rationale = "Historical 0.6 row. Interactive Plotly/Vega offline pins now ship as Experimental (RUNTIME_PINS); Supported path remains Matplotlib/static. Disposition owned by INTERACTIVE-028 / SUPPLY-028 on the 0.28 train."
+destination = "0.28 INTERACTIVE-028 / SUPPLY-028 (Experimental pins; not Supported graduation)"
 stability_impact = "PlotlyChart/AltairChart interactive mounting is experimental until runtimes are first-party pinned."
 
 [[evidence]]

@@ -35,6 +35,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.25": ROOT / "docs" / "acceptance" / "release-gate-0.25.toml",
     "0.26": ROOT / "docs" / "acceptance" / "release-gate-0.26.toml",
     "0.27": ROOT / "docs" / "acceptance" / "release-gate-0.27.toml",
+    "0.28": ROOT / "docs" / "acceptance" / "release-gate-0.28.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 # Includes historical ``release`` attestation used by older gate manifests.
@@ -62,6 +63,7 @@ _RECURSIVE_SCRIPT_NAMES = frozenset(
         "verify_pkg_25.py",
         "verify_pkg_26.py",
         "verify_pkg_27.py",
+        "verify_pkg_28.py",
         "ci_checks.sh",
     }
 )
@@ -83,6 +85,19 @@ def _is_alpha_package(project: dict[str, object]) -> bool:
     return any("Development Status :: 3 - Alpha" in str(c) for c in classifiers)
 
 
+def _is_independent_version_package(project: dict[str, object]) -> bool:
+    """True when the package versions independently of the Beta flagship train.
+
+    Alpha satellites always version independently. Beta packages on the ``0.1.x``
+    satellite line (charts/native after 0.28 graduation) also stay independent of
+    the ``0.N.0`` train tag.
+    """
+    if _is_alpha_package(project):
+        return True
+    version = str(project.get("version", ""))
+    return version.startswith("0.1.")
+
+
 def check_packages(tag_version: str) -> list[str]:
     errors: list[str] = []
     if not (ROOT / "LICENSE").is_file():
@@ -98,10 +113,10 @@ def check_packages(tag_version: str) -> list[str]:
         project = data["project"]
         name = str(project["name"])
         version = str(project["version"])
-        alpha = _is_alpha_package(project)
-        # Alpha satellites version independently of the Beta flagship train.
-        expected = version if alpha else tag_version
-        if not alpha and version != tag_version:
+        independent = _is_independent_version_package(project)
+        # Independent satellites (Alpha or 0.1.x Beta) version off the flagship train.
+        expected = version if independent else tag_version
+        if not independent and version != tag_version:
             errors.append(f"{name}: package version {version!r} != tag {tag_version!r}")
         if "license" not in project and "license-files" not in project:
             errors.append(f"{name}: [project].license (or license-files) is required")

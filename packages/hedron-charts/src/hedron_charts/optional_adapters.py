@@ -32,6 +32,7 @@ __all__ = [
     "ChartJsAdapter",
     "DatashaderAdapter",
     "EChartsAdapter",
+    "EXPERIMENTAL_ADAPTER_NAMES",
     "FoliumAdapter",
     "GeospatialLayerAdapter",
     "GraphVizAdapter",
@@ -775,6 +776,35 @@ class PlotlyResamplingAdapter:
 
     def render_node(self, output: ChartOutput) -> NodeLike:
         return _render_host(output, "plotly")
+
+
+# Machine-readable Experimental inventory (INTERACTIVE-028 / D-056).
+# Must stay aligned with docs/acceptance/production-grade-inventory-028.toml.
+EXPERIMENTAL_ADAPTER_NAMES: frozenset[str] = frozenset(
+    {
+        "plotly",
+        "altair",
+        "vega_interactive_hosts",
+        "vega-lite",
+        "vega-transform",
+        "pydeck",
+        "maplibre",
+        "folium",
+        "geospatial",
+        "graphviz",
+        "mermaid",
+        "chartjs",
+        "great-tables",
+        "sigma",
+        "threejs",
+        "echarts",
+        "datashader",
+        "bokeh",
+        "holoviews",
+        "pygal",
+        "plotly-resample",
+    }
+)
 
 
 def optional_adapters() -> list[object]:

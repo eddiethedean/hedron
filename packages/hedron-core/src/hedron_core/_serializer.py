@@ -32,10 +32,18 @@ from hedron_core.typing_aliases import HtmlAttrValue
 
 def _load_escape() -> tuple[object, object]:
     """Prefer optional hedron-native acceleration; fall back to pure Python."""
+    import os
+
+    raw = os.environ.get("HEDRON_NATIVE_DISABLE", "").strip().lower()
+    if raw in {"1", "true", "yes", "on"}:
+        return None, None
     try:
         from hedron_native import escape_attr as native_attr
         from hedron_native import escape_text as native_text
+        from hedron_native import native_available
 
+        if not native_available():
+            return None, None
         return native_text, native_attr
     except Exception:  # noqa: BLE001
         return None, None

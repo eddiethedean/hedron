@@ -1,6 +1,6 @@
 # Upgrade to Hedron 0.27
 
-This guide covers an application upgrade from **0.26.x** to the published **0.27.x**
+This guide covers an application upgrade from **0.26.x** to the published **0.28.x**
 train. New applications should use [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
@@ -28,14 +28,14 @@ streaming, and navigation preload remain experimental.
 === "pip"
 
     ```bash
-    python -m pip install -U "hedron>=0.27.0,<0.28"
+    python -m pip install -U "hedron>=0.28.0,<0.29"
     python -m hedron --app app:app check
     ```
 
 === "uv"
 
     ```bash
-    uv add "hedron>=0.27.0,<0.28"
+    uv add "hedron>=0.28.0,<0.29"
     uv sync
     uv run hedron --app app:app check
     ```
@@ -44,16 +44,16 @@ Keep coordinated adapters and extras on the same train:
 
 ```bash
 python -m pip install -U \
-  "hedron>=0.27.0,<0.28" \
-  "hedron-flask>=0.27.0,<0.28" \
-  "hedron-django>=0.27.0,<0.28" \
-  "hedron-data>=0.27.0,<0.28" \
-  "hedron-jinja>=0.27.0,<0.28" \
-  "hedron-extras>=0.27.0,<0.28"
+  "hedron>=0.28.0,<0.29" \
+  "hedron-flask>=0.28.0,<0.29" \
+  "hedron-django>=0.28.0,<0.29" \
+  "hedron-data>=0.28.0,<0.29" \
+  "hedron-jinja>=0.28.0,<0.29" \
+  "hedron-extras>=0.28.0,<0.29"
 ```
 
 Install only the hosts and extras you use. Charts and the sample kit retain independent
-satellite floors: `hedron-charts>=0.1.7,<0.2` and `hedron-sample-kit>=0.1.7,<0.2`.
+satellite floors: `hedron-charts>=0.1.8,<0.2` and `hedron-sample-kit>=0.1.8,<0.2`.
 
 ## Required application changes
 
@@ -93,7 +93,7 @@ Then verify the user flows that cross Hedron’s trust boundaries:
 - background-job polling from more than one worker, if used;
 - Explorer remaining unavailable in production.
 
-Expected version output is `0.27.0` or a later `0.27.x` patch.
+Expected version output is `0.28.0` or a later `0.28.x` patch.
 
 ## Roll back
 

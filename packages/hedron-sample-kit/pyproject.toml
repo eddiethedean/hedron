@@ -1,13 +1,13 @@
 [project]
 name = "hedron-sample-kit"
-version = "0.1.7"
+version = "0.1.8"
 description = "Third-party-shaped sample Hedron plugin package for phase 0.4"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
 license = "MIT"
 license-files = ["LICENSE"]
 dependencies = [
-    "hedron-core>=0.27.0,<0.28",
+    "hedron-core>=0.28.0,<0.29",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",

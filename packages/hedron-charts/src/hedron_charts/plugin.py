@@ -43,9 +43,9 @@ _OPTIONAL_RUNTIMES = (
 
 PLUGIN_META = PluginMeta(
     name="hedron_charts",
-    version="0.1.7",
+    version="0.1.8",
     distribution="hedron-charts",
-    hedron_version=">=0.27,<0.28",
+    hedron_version=">=0.28,<0.29",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -152,6 +152,8 @@ def register(ctx: PluginContext) -> None:
         )
 
     # Replace chart-stub with real adapters when package is loaded.
+    # Matplotlib is the Supported production Auto default (INTERACTIVE-028).
+    # Plotly/Altair remain registered for explicit as_= opt-in only.
     register_renderer(
         RendererSpec(
             name="matplotlib",
@@ -160,6 +162,7 @@ def register(ctx: PluginContext) -> None:
             optional_package="hedron-charts[matplotlib]",
             explanation="Matplotlib Figure → MatplotlibChart",
             factory=_factory_matplotlib,
+            maturity="supported",
         )
     )
     register_renderer(
@@ -168,8 +171,9 @@ def register(ctx: PluginContext) -> None:
             priority=920,
             predicate=PlotlyAdapter().supports,
             optional_package="hedron-charts[plotly]",
-            explanation="Plotly figure → PlotlyChart",
+            explanation="Plotly figure → PlotlyChart (Experimental; opt-in via as_)",
             factory=_factory_plotly,
+            maturity="experimental",
         )
     )
     register_renderer(
@@ -178,8 +182,9 @@ def register(ctx: PluginContext) -> None:
             priority=915,
             predicate=AltairAdapter().supports,
             optional_package="hedron-charts[altair]",
-            explanation="Altair/Vega-Lite → AltairChart",
+            explanation="Altair/Vega-Lite → AltairChart (Experimental; opt-in via as_)",
             factory=_factory_altair,
+            maturity="experimental",
         )
     )
 

@@ -8,7 +8,7 @@ for installable package versions.
 
 ## 0.27.0 assets
 
-- [GitHub Release v0.27.0](https://github.com/eddiethedean/hedron/releases/tag/v0.27.0)
+- [GitHub Release v0.28.0](https://github.com/eddiethedean/hedron/releases/tag/v0.28.0)
 - [Hedron 0.27.0 on PyPI](https://pypi.org/project/hedron/0.27.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
@@ -59,7 +59,7 @@ the artifacts actually published by the release workflow.
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
-git checkout v0.27.0
+git checkout v0.28.0
 uv sync --locked
 uv run python scripts/build_evidence_bundle.py --version 0.27.0
 uv run python scripts/verify_pkg_27.py

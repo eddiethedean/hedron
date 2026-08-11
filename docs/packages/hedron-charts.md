@@ -2,16 +2,16 @@
 
 Visualization adapters and chart components for Hedron.
 
-**Package maturity:** Alpha · **0.27-compatible release:** `0.1.7`
+**Package maturity:** Beta · **0.28-compatible release:** `0.1.7`
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`  
 **Expect churn.** Interactive Plotly/Vega full browser runtimes remain **experimental**.
 
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.27.0,<0.28"
+pip install "hedron[charts]>=0.28.0,<0.29"
 # Add a backend when needed:
-pip install "hedron-charts[matplotlib]>=0.1.7,<0.2"
+pip install "hedron-charts[matplotlib]>=0.1.8,<0.2"
 ```
 
 Versions through `0.1.5` target older Hedron cores; keep the `>=0.1.7` floor. See
@@ -38,7 +38,8 @@ Backend extras are optional and should be installed only for the adapter in use.
 
 Pin local browser runtimes for interactive Plotly/Vega. Host shims **fail closed**
 when `window.Plotly` / `window.vegaEmbed` are missing. First-party offline runtime
-fingerprinting is not Supported yet.
+pins exist for **Experimental** interactive hosts (`RUNTIME_PINS`); they are not
+Supported production Auto defaults.
 
 ## Quick start
 

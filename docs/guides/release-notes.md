@@ -29,7 +29,7 @@ No Supported CRUD/admin API removal is listed. Polling remains the production pa
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
 ```bash
-python -m pip install -U "hedron>=0.27.0,<0.28"
+python -m pip install -U "hedron>=0.28.0,<0.29"
 ```
 
 Read [Upgrade to 0.27](upgrade.md) before changing a production lockfile. Maintainer

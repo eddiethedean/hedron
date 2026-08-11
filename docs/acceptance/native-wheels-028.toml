@@ -1,0 +1,20 @@
+# NATIVE-028 Supported wheel / sdist platform evidence.
+# Owning gate: NATIVE-028 (scripts/check_native_028.py).
+# macOS x86_64 is intentionally excluded from Supported claims.
+
+baseline = "v0.27.0"
+package = "hedron-native"
+
+supported_platform_tags = [
+  "manylinux_x86_64",
+  "manylinux_aarch64",
+  "macosx_arm64",
+  "win_amd64",
+  "source_sdist",
+]
+
+[notes]
+manylinux = "manylinux_2_17 / manylinux2014 compatible wheels via maturin"
+macos = "Apple Silicon (arm64) only for Supported claims"
+windows = "win_amd64"
+source = "sdist builds when a wheel is unavailable; pure-Python fallback remains Supported"

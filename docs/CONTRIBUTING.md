@@ -258,7 +258,7 @@ questions. Accepted behavior is changed through an explicit decision entry and R
 revision or superseding RFC.
 
 Plugin authors: start from [Plugin authoring](guides/plugin-authoring.md) and the
-sample kit (`hedron-sample-kit>=0.1.7,<0.2` on Hedron 0.27).
+sample kit (`hedron-sample-kit>=0.1.8,<0.2` on Hedron 0.27).
 
 ### Implementation changes
 

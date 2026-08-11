@@ -1,0 +1,1 @@
+NOTE: escape helpers must strip U+0000 (NUL) rather than emit it into HTML. Seed documents intent; runners may also inject raw NUL bytes.

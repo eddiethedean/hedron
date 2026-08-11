@@ -14,7 +14,7 @@ _MARK = _COMPONENT / "mark.txt"
 
 PLUGIN_META = PluginMeta(
     name="sample_kit",
-    version="0.1.7",
+    version="0.1.8",
     distribution="hedron-sample-kit",
     hedron_version=">=0.27,<0.28",
     capabilities=PluginCapabilities(

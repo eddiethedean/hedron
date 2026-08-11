@@ -18,6 +18,9 @@ _MIN_BYTES: dict[str, int] = {
     "vega": 50_000,
     "vega-embed": 10_000,
     "chartjs": 50_000,
+    "echarts": 50_000,
+    "mermaid": 50_000,
+    "maplibre": 50_000,
 }
 
 __all__ = [
@@ -47,31 +50,55 @@ RUNTIME_PINS: dict[str, dict[str, Any]] = {
         "version": "0.12.0-host",
         "path": "assets/plotly/host.js",
         "digest": _digest_file(_ASSETS / "plotly" / "host.js"),
+        "maturity": "experimental",
     },
     "vega-host": {
         "version": "0.12.0-host",
         "path": "assets/vega/host.js",
         "digest": _digest_file(_ASSETS / "vega" / "host.js"),
+        "maturity": "experimental",
     },
     "plotly": {
         "version": "2.35.0",
         "path": "assets/plotly/plotly.min.js",
         "digest": _digest_file(_ASSETS / "plotly" / "plotly.min.js"),
+        "maturity": "experimental",
     },
     "vega": {
         "version": "5.30.0",
         "path": "assets/vega/vega.min.js",
         "digest": _digest_file(_ASSETS / "vega" / "vega.min.js"),
+        "maturity": "experimental",
     },
     "vega-embed": {
         "version": "6.26.0",
         "path": "assets/vega/vega-embed.min.js",
         "digest": _digest_file(_ASSETS / "vega" / "vega-embed.min.js"),
+        "maturity": "experimental",
     },
     "chartjs": {
         "version": "4.4.0",
         "path": "assets/chartjs/chart.umd.min.js",
         "digest": _digest_file(_ASSETS / "chartjs" / "chart.umd.min.js"),
+        "maturity": "experimental",
+    },
+    "echarts": {
+        "version": "5.5.0",
+        "path": "assets/echarts/echarts.min.js",
+        "digest": _digest_file(_ASSETS / "echarts" / "echarts.min.js"),
+        "maturity": "experimental",
+    },
+    "mermaid": {
+        "version": "10.9.0",
+        "path": "assets/mermaid/mermaid.min.js",
+        "digest": _digest_file(_ASSETS / "mermaid" / "mermaid.min.js"),
+        "maturity": "experimental",
+    },
+    "maplibre": {
+        "version": "4.5.0",
+        "path": "assets/maplibre/maplibre-gl.js",
+        "digest": _digest_file(_ASSETS / "maplibre" / "maplibre-gl.js"),
+        "maturity": "experimental",
     },
 }
 

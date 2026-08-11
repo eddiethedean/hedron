@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.8] — 2026-08-10
+
+### Added
+
+- Production-grade Supported inventory for Matplotlib/static beginner charts
+  (CHARTS-028); Plotly/Altair remain Experimental and excluded from Auto defaults
+  (INTERACTIVE-028).
+
+### Changed
+
+- Package maturity Alpha → **Beta**.
+- Pin `hedron-core` to `>=0.28.0,<0.29`.
+- Expand `RUNTIME_PINS` digests for Experimental echarts/mermaid/maplibre hosts.
+- Plotly/Vega hosts purge on `htmx:beforeSwap`.
+
 ## [0.1.7] — 2026-08-10
 
 ### Changed

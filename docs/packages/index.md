@@ -21,7 +21,7 @@ and the sample kit install directly. Charts require the compatible `0.1.7` satel
     See [How to read](../getting-started/how-to-read.md) and
     [What’s ready](../guides/whats-ready.md). Pin versions on `0.x`.
 
-## Beta extensions (`0.27.x`)
+## Beta extensions (`0.28.x`)
 
 | Package | Extra | Role |
 |---|---|---|
@@ -32,7 +32,7 @@ and the sample kit install directly. Charts require the compatible `0.1.7` satel
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
 
 ```bash
-pip install "hedron[data,dev]>=0.27.0,<0.28"
+pip install "hedron[data,dev]>=0.28.0,<0.29"
 ```
 
 ## Alpha lines
@@ -42,17 +42,17 @@ interop are **Experimental** / Alpha — not production defaults.
 
 | Package | Extra | Role |
 |---|---|---|
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.7,<0.2` on Hedron 0.27 |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.8,<0.2` on Hedron 0.27 |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-notebook](hedron-notebook.md) | `hedron[notebook]` | Server-side notebook preview helper |
 | [hedron-mcp](hedron-mcp.md) | `hedron[mcp]` | Deny-by-default MCP projection |
 | [hedron-gradio](hedron-gradio.md) | `hedron[gradio]` | Gradio client interop |
-| [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.1.7,<0.2` |
+| [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.1.8,<0.2` |
 | [hedron-sim](hedron-sim.md) | — | Offline HTMX sims for static docs |
 
 ```bash
-pip install "hedron[charts]>=0.27.0,<0.28"
-pip install "hedron-sample-kit>=0.1.7,<0.2" "hedron-sim>=0.1.0,<0.2"
+pip install "hedron[charts]>=0.28.0,<0.29"
+pip install "hedron-sample-kit>=0.1.8,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 
 ## Authoring an extension

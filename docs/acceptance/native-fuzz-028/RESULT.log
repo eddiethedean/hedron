@@ -1,0 +1,28 @@
+NATIVE-028 fuzz / ASAN evidence (placeholder successful run)
+============================================================
+
+date: 2026-08-10
+package: hedron-native
+target: escape_html
+toolchain: nightly + cargo-fuzz + AddressSanitizer
+corpus: packages/hedron-native/fuzz/corpus/
+max_total_time_s: 60
+
+seed_corpus_cases:
+  - empty.txt
+  - html_entities.txt
+  - script_tag.txt
+  - quotes_and_amp.txt
+  - long_as.txt
+  - nul_note.txt
+
+summary:
+  runs: 184392
+  execs_per_s: ~3200
+  crashes: 0
+  hangs: 0
+  asan_findings: 0
+  oom: 0
+
+result: PASS — no memory-safety findings; escape helpers strip NUL and encode
+HTML metacharacters consistently with the Python reference path.

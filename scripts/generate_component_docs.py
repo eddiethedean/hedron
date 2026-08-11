@@ -41,11 +41,12 @@ def _format_sim_live_demo(sim_name: str) -> str:
 
 
 # Keep install snippets aligned with scripts/check_docs_train_ssot.py.
-_ALPHA_EXTRAS = frozenset({"charts", "notebook", "mcp", "gradio", "native"})
-_TRAIN_PIN = ">=0.27.0,<0.28"
+_ALPHA_EXTRAS = frozenset({"notebook", "mcp", "gradio"})
+_TRAIN_PIN = ">=0.28.0,<0.29"
 _ALPHA_PIN = ">=0.1.0,<0.2"
-_CHARTS_PIN = ">=0.1.7,<0.2"
-_CHARTS_FLAGSHIP_PIN = ">=0.27.0,<0.28"
+_CHARTS_PIN = ">=0.1.8,<0.2"
+_CHARTS_FLAGSHIP_PIN = ">=0.28.0,<0.29"
+_NATIVE_PIN = ">=0.1.1,<0.2"
 
 
 def _install_requirement(package: str) -> str:
@@ -53,16 +54,19 @@ def _install_requirement(package: str) -> str:
     match = re.fullmatch(r"hedron\[([^\]]+)\]", package)
     if match is not None:
         extra = match.group(1).split(",", 1)[0].strip()
-        pin = (
-            _CHARTS_FLAGSHIP_PIN
-            if extra == "charts"
-            else _ALPHA_PIN
-            if extra in _ALPHA_EXTRAS
-            else _TRAIN_PIN
-        )
+        if extra == "charts":
+            pin = _CHARTS_FLAGSHIP_PIN
+        elif extra == "native":
+            pin = _CHARTS_FLAGSHIP_PIN  # flagship extra pin tracks train; package is 0.1.x
+        elif extra in _ALPHA_EXTRAS:
+            pin = _ALPHA_PIN
+        else:
+            pin = _TRAIN_PIN
         return f"{package}{pin}"
     if package == "hedron-charts" or package.startswith("hedron-charts["):
         return f"{package}{_CHARTS_PIN}"
+    if package == "hedron-native" or package.startswith("hedron-native["):
+        return f"{package}{_NATIVE_PIN}"
     return package
 
 

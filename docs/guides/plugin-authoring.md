@@ -5,7 +5,7 @@ panels through the portable plugin protocol. Study
 [`hedron-sample-kit`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
 alongside this guide.
 
-Install `hedron-sample-kit>=0.1.7,<0.2` for the 0.27-compatible reference package.
+Install `hedron-sample-kit>=0.1.8,<0.2` for the 0.28-compatible reference package.
 Versions through `0.1.5` target older cores; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
@@ -113,7 +113,7 @@ Load the plugin in CI via the same entry-point path production uses.
 ## 7. Publish and version
 
 - Pin against `hedron-core` (and optionally `hedron`) with an upper bound matching the
-  adopter train (for example `>=0.27.0,<0.28`).
+  adopter train (for example `>=0.28.0,<0.29`).
 - Declare license metadata; do not pull FastAPI/Flask/Django into a core-facing package.
 - Ship a CHANGELOG and document Experimental vs Supported claims honestly
   ([What’s ready](whats-ready.md)).

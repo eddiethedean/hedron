@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.8] — 2026-08-10
+
+### Changed
+
+- Pin `hedron-core` to `>=0.28.0,<0.29` for the living Beta train.
+
 ## [0.1.7] — 2026-08-10
 
 ### Changed

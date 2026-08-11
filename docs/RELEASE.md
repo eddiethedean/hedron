@@ -1,7 +1,7 @@
 # Cutting a Hedron release
 
-This is the living maintainer runbook for the `0.27.x` train. Historical cut records
-live under `docs/archive/`. The last published release is `v0.27.0`; the next planned
+This is the living maintainer runbook for the `0.28.x` train. Historical cut records
+live under `docs/archive/`. The last published release is `v0.28.0`; the next planned
 patch is `v0.27.1`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
@@ -48,9 +48,9 @@ After reviewing the complete version/changelog diff:
 
 ```bash
 git fetch --tags origin
-git rev-parse v0.27.0 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
-git tag -a v0.27.0 -m "Hedron 0.27.0"
-git push origin v0.27.0
+git rev-parse v0.28.0 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
+git tag -a v0.28.0 -m "Hedron 0.27.0"
+git push origin v0.28.0
 ```
 
 The release workflow must, in order:
@@ -75,6 +75,6 @@ the same immutable tag. Do not create a replacement tag or upload locally built 
   evidence manifests, wheels, and source distributions.
 - Confirm build attestations exist and the checksum verifier succeeds on downloaded
   assets.
-- Activate `v0.27.0` on Read the Docs, mark it stable, and verify the version menu.
-- Update `docs/release.toml` so `published_version` is `0.27.0`, run
+- Activate `v0.28.0` on Read the Docs, mark it stable, and verify the version menu.
+- Update `docs/release.toml` so `published_version` is `0.28.0`, run
   `scripts/check_docs_train_ssot.py`, and publish any post-release documentation commit.
