@@ -48,6 +48,84 @@
     return lines.join("\n");
   }
 
+  function stripOpId(item) {
+    if (!item || typeof item !== "object") return item;
+    const copy = { ...item };
+    delete copy._opId;
+    return copy;
+  }
+
+  /** Snapshot live queues before fetch so success can drop only that batch. */
+  function snapshotSaveBatch(pending, inserts, deletes, keyField) {
+    return {
+      updates: (pending || []).slice(),
+      inserts: (inserts || []).slice(),
+      deletes: (deletes || []).slice(),
+      updateIds: (pending || []).map((u) => u._opId),
+      insertIds: (inserts || []).map((r) => r._opId),
+      deleteIds: (deletes || []).map((d) => (typeof d === "string" ? d : d._opId)),
+      keyField: keyField || "id",
+    };
+  }
+
+  /**
+   * Mirror InMemoryDataSource: each accepted update/insert bumps a shared
+   * counter and stamps that value on the affected row. Untouched rows keep
+   * their prior versions (which may lag the dataset version).
+   */
+  function rowVersionsAfterBatch(snapshot, nextVersion) {
+    const updates = snapshot.updates || [];
+    const inserts = snapshot.inserts || [];
+    const bumps = updates.length + inserts.length;
+    if (!bumps || nextVersion == null || nextVersion === "") return {};
+    const end = Number(nextVersion);
+    if (!Number.isFinite(end)) return {};
+    let counter = end - bumps;
+    const versions = {};
+    const keyField = snapshot.keyField || "id";
+    updates.forEach((u) => {
+      counter += 1;
+      versions[String(u.row_key)] = String(counter);
+    });
+    inserts.forEach((row) => {
+      counter += 1;
+      if (row && row[keyField] != null) versions[String(row[keyField])] = String(counter);
+    });
+    return versions;
+  }
+
+  /** Remove only operations that were included in the submitted snapshot. */
+  function reconcileAfterSuccess(pending, inserts, deletes, snapshot, nextVersion) {
+    const updateIds = new Set(snapshot.updateIds || []);
+    const insertIds = new Set(snapshot.insertIds || []);
+    const deleteIds = new Set(snapshot.deleteIds || []);
+    const touchedVersions = rowVersionsAfterBatch(snapshot, nextVersion);
+    return {
+      pending: (pending || [])
+        .filter((u) => !updateIds.has(u._opId))
+        .map((u) => {
+          if (u.row_version == null) return u;
+          const next = touchedVersions[String(u.row_key)];
+          if (next == null) return u;
+          return { ...u, row_version: next };
+        }),
+      inserts: (inserts || []).filter((r) => !insertIds.has(r._opId)),
+      deletes: (deletes || []).filter((d) => {
+        const id = typeof d === "string" ? d : d._opId;
+        return !deleteIds.has(id);
+      }),
+    };
+  }
+
+  function serializeSaveBody(pending, inserts, deletes, version) {
+    return {
+      updates: (pending || []).map(stripOpId),
+      inserts: (inserts || []).map(stripOpId),
+      deletes: (deletes || []).map((d) => (typeof d === "string" ? d : d.row_key)),
+      dataset_version: version,
+    };
+  }
+
   const ElementBase = typeof HTMLElement !== "undefined" ? HTMLElement : class {};
 
   class HedronDataEditor extends ElementBase {
@@ -60,6 +138,9 @@
       this._disposed = false;
       this._rows = [];
       this._tempId = 0;
+      this._opSeq = 0;
+      this._saving = false;
+      this._saveAgain = false;
     }
 
     connectedCallback() {
@@ -77,7 +158,14 @@
       this._history = [];
       this._inserts = [];
       this._deletes = [];
+      this._saving = false;
+      this._saveAgain = false;
       this.innerHTML = "";
+    }
+
+    _nextOpId() {
+      this._opSeq += 1;
+      return this._opSeq;
     }
 
     _boot() {
@@ -283,6 +371,7 @@
         field,
         value,
         row_version: this._payload.version,
+        _opId: this._nextOpId(),
       });
       const keyField = this._payload.keyField || "id";
       const row = this._rows.find((r) => String(r[keyField]) === String(rowKey));
@@ -293,7 +382,7 @@
     _insertRow() {
       this._tempId += 1;
       const key = "new-" + this._tempId;
-      const row = { [this._payload.keyField || "id"]: key };
+      const row = { [this._payload.keyField || "id"]: key, _opId: this._nextOpId() };
       (this._payload.columns || []).forEach((col) => {
         if (col.field !== (this._payload.keyField || "id")) row[col.field] = "";
       });
@@ -313,7 +402,7 @@
         const cb = tr.querySelector('input[type="checkbox"]');
         if (!cb || !cb.checked) return;
         const key = tr.dataset.rowKey;
-        this._deletes.push(key);
+        this._deletes.push({ row_key: key, _opId: this._nextOpId() });
         this._pending = this._pending.filter((u) => u.row_key !== key);
         this._inserts = this._inserts.filter(
           (r) => String(r[this._payload.keyField || "id"]) !== key
@@ -372,7 +461,10 @@
         const tr = this.querySelector('tr[data-row-key="' + cssEscape(last.rowKey) + '"]');
         if (tr) tr.remove();
       } else if (last.kind === "delete") {
-        this._deletes = this._deletes.filter((k) => k !== last.rowKey);
+        this._deletes = this._deletes.filter((d) => {
+          const key = typeof d === "string" ? d : d.row_key;
+          return key !== last.rowKey;
+        });
         const body = this.querySelector("[data-editor-body]");
         if (body && last.row) {
           this._rows.push({ ...last.row });
@@ -420,12 +512,27 @@
         this._announce("No save endpoint configured");
         return;
       }
-      const body = {
-        updates: this._pending,
-        inserts: this._inserts,
-        deletes: this._deletes,
-        dataset_version: this._payload.version,
-      };
+      if (this._saving) {
+        this._saveAgain = true;
+        return;
+      }
+      if (!this._pending.length && !this._inserts.length && !this._deletes.length) {
+        return;
+      }
+      this._saving = true;
+      this._saveAgain = false;
+      const snapshot = snapshotSaveBatch(
+        this._pending,
+        this._inserts,
+        this._deletes,
+        this._payload.keyField || "id"
+      );
+      const body = serializeSaveBody(
+        snapshot.updates,
+        snapshot.inserts,
+        snapshot.deletes,
+        this._payload.version
+      );
       const csrf = document.querySelector('meta[name="csrf-token"]');
       const headers = { "Content-Type": "application/json" };
       if (csrf) headers["X-CSRF-Token"] = csrf.getAttribute("content") || "";
@@ -449,11 +556,18 @@
         }
         const bar = this.querySelector("[data-conflict-bar]");
         if (data.ok) {
-          this._pending = [];
-          this._inserts = [];
-          this._deletes = [];
-          if (bar) bar.hidden = true;
           if (data.version) this._payload.version = data.version;
+          const kept = reconcileAfterSuccess(
+            this._pending,
+            this._inserts,
+            this._deletes,
+            snapshot,
+            this._payload.version
+          );
+          this._pending = kept.pending;
+          this._inserts = kept.inserts;
+          this._deletes = kept.deletes;
+          if (bar) bar.hidden = true;
           this._announce("Saved successfully");
         } else if (data.conflicts && data.conflicts.length) {
           this._announce("Conflict: choose reload, retain-and-retry, compare, or cancel");
@@ -477,6 +591,16 @@
         }
       } catch (err) {
         this._announce("Save failed");
+      } finally {
+        this._saving = false;
+        const again = this._saveAgain;
+        this._saveAgain = false;
+        if (
+          again &&
+          (this._pending.length || this._inserts.length || this._deletes.length)
+        ) {
+          queueMicrotask(() => this._save());
+        }
       }
     }
   }
@@ -507,6 +631,10 @@
     sanitizeFormulaCell,
     csvEscapeField,
     buildCsv,
+    snapshotSaveBatch,
+    rowVersionsAfterBatch,
+    reconcileAfterSuccess,
+    serializeSaveBody,
   };
 
   if (typeof document !== "undefined" && document.addEventListener) {
