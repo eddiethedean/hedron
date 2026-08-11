@@ -258,7 +258,9 @@ def _idempotency_scope_key(
     tenant_id: str | None,
     auth_subject: str | None,
 ) -> str:
-    return f"{tenant_id or ''}\x1f{auth_subject or ''}\x1f{idempotency_key}"
+    # JSON preserves the distinction between an omitted scope and an explicit
+    # empty-string scope, while also avoiding delimiter collisions in user input.
+    return json.dumps([tenant_id, auth_subject, idempotency_key], separators=(",", ":"))
 
 
 @dataclass
@@ -338,11 +340,13 @@ class InMemoryJobBackend:
                 existing_id = self._idempotency.get(scoped)
                 if existing_id is not None:
                     existing = self._jobs.get(existing_id)
-                    if existing is not None and job_authorized(
-                        existing.status, auth_subject=auth_subject, tenant_id=tenant_id
-                    ):
-                        return JobHandle(job_id=existing_id, idempotency_key=idempotency_key)
-                    # Stale or cross-scope pointer — drop and continue.
+                    if existing is not None:
+                        if job_authorized(
+                            existing.status, auth_subject=auth_subject, tenant_id=tenant_id
+                        ):
+                            return JobHandle(job_id=existing_id, idempotency_key=idempotency_key)
+                        raise PermissionError("Idempotency key is already bound to another scope")
+                    # The pointed-to job expired or was removed, so reclaim the key.
                     del self._idempotency[scoped]
             job_id = secrets.token_urlsafe(16)
             now = time.time()
@@ -599,7 +603,8 @@ class RedisJobBackend:
                     status = _status_from_dict(loaded)
                     if job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
                         return JobHandle(job_id=existing, idempotency_key=idempotency_key)
-                # Stale or cross-scope pointer: drop it so a fresh job can claim the key.
+                    raise PermissionError("Idempotency key is already bound to another scope")
+                # The pointed-to job expired or was removed, so reclaim the key.
                 self._client.delete(idem_redis_key)
 
         job_id = secrets.token_urlsafe(16)

@@ -134,6 +134,22 @@ def test_redis_job_backend_shares_state_via_client_protocol() -> None:
     assert a.get(handle.job_id) is not None
 
 
+def test_redis_idempotency_distinguishes_missing_and_empty_scopes() -> None:
+    shared: Any = _SharedRedis()
+    backend = RedisJobBackend(shared)
+    unscoped = backend.submit("demo", {}, idempotency_key="same")
+    empty_scoped = backend.submit(
+        "demo", {}, idempotency_key="same", tenant_id="", auth_subject=""
+    )
+
+    assert unscoped.job_id != empty_scoped.job_id
+    assert backend.submit("demo", {}, idempotency_key="same").job_id == unscoped.job_id
+    assert (
+        backend.submit("demo", {}, idempotency_key="same", tenant_id="", auth_subject="").job_id
+        == empty_scoped.job_id
+    )
+
+
 def test_redis_job_backend_cas_contends_on_watch() -> None:
     """Concurrent mutation during WATCH raises WatchError and retries safely."""
     shared: Any = _SharedRedis()
