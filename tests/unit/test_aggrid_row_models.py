@@ -24,3 +24,15 @@ def test_aggrid_client_and_infinite() -> None:
     assert "infinite" in text
     assert "hedron-data-edit" in text
     assert "fail(" in text
+
+
+def test_aggrid_host_registers_htmx_lifecycle_and_disposes_grids() -> None:
+    text = (_ASSETS / "host.js").read_text(encoding="utf-8")
+    assert "function destroy(el)" in text
+    assert "api.destroy" in text
+    assert "delete el._hedronAgGridApi" in text
+    assert "data-hedron-grid-mounted" in text
+    assert "base.matches" in text
+    assert 'document.addEventListener("htmx:beforeSwap", beforeSwap)' in text
+    assert "htmx:oobBeforeSwap" in text
+    assert "htmx:oobAfterSwap" in text
