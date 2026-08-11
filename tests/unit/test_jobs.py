@@ -48,9 +48,7 @@ def test_cleanup_drops_idempotency() -> None:
 def test_idempotency_distinguishes_missing_and_empty_scopes() -> None:
     backend = InMemoryJobBackend()
     unscoped = backend.submit("demo", {}, idempotency_key="same")
-    empty_scoped = backend.submit(
-        "demo", {}, idempotency_key="same", tenant_id="", auth_subject=""
-    )
+    empty_scoped = backend.submit("demo", {}, idempotency_key="same", tenant_id="", auth_subject="")
 
     assert unscoped.job_id != empty_scoped.job_id
     assert backend.submit("demo", {}, idempotency_key="same").job_id == unscoped.job_id
