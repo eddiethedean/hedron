@@ -57,10 +57,11 @@ phases apply the same discipline to the remaining package fleet:
 | 0.26 | `hedron-core`, `hedron`, and Explorer — **Published / Verified** |
 | 0.27 | Data, Flask/Django adapters, HDJ, and curated extras — **Published / Verified** (D-055 / RFC-0058) |
 | 0.28 | Charts and optional native acceleration |
-| 0.29 | Conformance, sample plugin, simulation/notebook tooling, and Node/Java evaluators |
-| 0.30 | Deny-by-default MCP projection |
-| 0.31 | Gradio/Hugging Face client interoperability |
-| 0.32 | Whole-fleet resolver, upgrade, supply-chain, and maturity closure |
+| 0.29 | `hedron-workbench` Posit Workbench deployment adapter |
+| 0.30 | Conformance, sample plugin, simulation/notebook tooling, and Node/Java evaluators |
+| 0.31 | Deny-by-default MCP projection |
+| 0.32 | Gradio/Hugging Face client interoperability |
+| 0.33 | Whole-fleet resolver, upgrade, supply-chain, and maturity closure |
 
 Each phase requires an owning RFC/decision and Verified package-specific gates before a maturity
 label changes. “Production-grade” applies only to the declared Supported surface: notebook remains

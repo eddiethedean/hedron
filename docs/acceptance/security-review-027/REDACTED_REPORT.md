@@ -35,5 +35,5 @@ All critical/high dispositions are **fixed** or **not applicable** (see
 ## Residual risk
 
 `REV-026-003` Explorer audit buffer remains accepted_risk with Explorer ownership.
-Plugin entry-point trust remains accepted_risk toward 0.29. They do not block the
+Plugin entry-point trust remains accepted_risk toward 0.30. They do not block the
 production-grade label for the declared satellite Supported inventories.

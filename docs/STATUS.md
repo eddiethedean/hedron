@@ -17,7 +17,8 @@ PyPI/git = `v0.28.1`. Prior: 0.27 **Published** as `v0.27.0`.
 graduation for `hedron-charts` / `hedron-native` on declared Supported inventories
 (`release-gate-0.28.toml` Verified), while prior production-grade inventories for core /
 flagship / Explorer (0.26) and data / adapters / HDJ / extras (0.27) remain in force.
-**Next** = **0.29 Planned** (developer tooling / portable conformance). Live-transport
+**Next** = **0.29 Planned** (`hedron-workbench` Posit Workbench deployment adapter; owning RFC and
+decision required before implementation). Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
 remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` /
@@ -217,14 +218,15 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 **Planned** until compensated screen-reader evidence lands
 ([#86](https://github.com/eddiethedean/hedron/issues/86)). Phase **0.27** is **Published**
 (`v0.27.0`; D-055). Phase **0.28** tip is **cut-ready** (`0.28.2`; D-056 / RFC-0059); last published tip remains `v0.28.1` until tag.
-Remaining package-production work continues through **0.29–0.32**:
-developer and portable conformance tooling ([#87](https://github.com/eddiethedean/hedron/issues/87),
+Remaining package-production work continues through **0.29–0.33**: the optional
+`hedron-workbench` adapter first, then developer and portable conformance tooling
+([#87](https://github.com/eddiethedean/hedron/issues/87),
 [#88](https://github.com/eddiethedean/hedron/issues/88)); MCP
 ([#89](https://github.com/eddiethedean/hedron/issues/89)); Gradio
 ([#90](https://github.com/eddiethedean/hedron/issues/90)); then a whole-fleet
 closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform
 work is tracked as [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(phases 0.33–0.38). These phases require owning RFCs/decisions and Verified evidence before any
+(phases 0.34–0.39). These phases require owning RFCs/decisions and Verified evidence before any
 package maturity label changes. They do not schedule `1.0`, promote every experimental
 subfeature, or expand Supported live transports. Close each tracking issue only when its owning
 release-gate rows are Verified.
