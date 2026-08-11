@@ -215,6 +215,7 @@ def test_select_htmx_auth_target_prefers_client_and_rejects_mismatch() -> None:
 
 
 def test_flask_django_auth_cache_overwrites_public() -> None:
+    from hedron.responses import _apply_auth_cache_headers as fastapi_apply
     from hedron_django.responses import _apply_auth_cache_headers as django_apply
     from hedron_flask.responses import _apply_auth_cache_headers as flask_apply
 
@@ -224,6 +225,11 @@ def test_flask_django_auth_cache_overwrites_public() -> None:
     headers = {"Cache-Control": "public, max-age=3600"}
     django_apply(headers, authenticated=True)
     assert headers["Cache-Control"] == "private, no-store"
+
+    for apply_cache_headers in (fastapi_apply, flask_apply, django_apply):
+        headers = {"Cache-Control": "max-age=60"}
+        apply_cache_headers(headers, authenticated=False)
+        assert headers["Cache-Control"] == "private, no-store"
 
 
 def test_hdj_rejects_autoescape_off() -> None:

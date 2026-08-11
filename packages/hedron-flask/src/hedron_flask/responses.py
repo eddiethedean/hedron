@@ -203,7 +203,12 @@ def _apply_auth_cache_headers(headers: dict[str, str], *, authenticated: bool) -
         # Fragment/HTMX responses must not remain publicly cacheable.
         existing = headers.get("Cache-Control", "")
         lowered = existing.lower()
-        if "public" in lowered or not existing:
+        if (
+            not existing
+            or "public" in lowered
+            or "s-maxage" in lowered
+            or ("private" not in lowered and "no-store" not in lowered)
+        ):
             headers["Cache-Control"] = "private, no-store"
 
 

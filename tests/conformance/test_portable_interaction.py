@@ -103,6 +103,14 @@ def test_merge_interaction_headers_keeps_typed_hx_redirect() -> None:
     assert headers["Cache-Control"] == "private"
 
 
+def test_merge_interaction_headers_keeps_vary_htmx_cache_policy() -> None:
+    headers = merge_interaction_headers(
+        InteractionResult(cache="vary-htmx"),
+        {"Cache-Control": "max-age=60"},
+    )
+    assert headers["Cache-Control"] == "private, no-store"
+
+
 def test_vary_headers_portable() -> None:
     headers = interaction_headers(InteractionResult(cache="vary-htmx"))
     assert "HX-Request" in headers["Vary"]

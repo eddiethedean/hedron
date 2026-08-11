@@ -509,7 +509,7 @@ def merge_interaction_headers(
         return headers
     validated = _validated_extra_headers(extra_headers)
     for key, value in validated.items():
-        if key == "Cache-Control" and result.cache in {"private", "no-store"}:
+        if key == "Cache-Control" and result.cache in {"private", "no-store", "vary-htmx"}:
             continue
         # Typed interaction headers win for approved HX URL/selector fields.
         if key in APPROVED_RESPONSE_HEADERS and key in headers:
