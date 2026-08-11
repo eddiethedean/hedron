@@ -1,6 +1,6 @@
 # What’s new in 0.28
 
-**Cut-ready tip** `0.28.2` (not tagged until publish). Pin `hedron>=0.28.2,<0.29`.
+**Published** as `v0.28.2`. Pin `hedron>=0.28.2,<0.29`.
 
 Phase **0.28** (D-056 / RFC-0059) graduates `hedron-charts` and `hedron-native` to
 **production-grade for their declared Supported inventories**.
@@ -13,7 +13,7 @@ Phase **0.28** (D-056 / RFC-0059) graduates `hedron-charts` and `hedron-native` 
 - **Interactive quarantine:** Plotly/Altair and optional adapters remain **Experimental**
   and are excluded from production Auto defaults (`as_=` opt-in).
 - **Native (Beta `0.1.2`):** Optional Rust escape acceleration with Supported wheel tags
-  built by `native-wheels.yml` (confirm on PyPI after publish), `HEDRON_NATIVE_DISABLE`,
+  built by `native-wheels.yml` (confirm Supported tags on PyPI), `HEDRON_NATIVE_DISABLE`,
   and Python-reference fallback parity.
 
 ## Upgrade

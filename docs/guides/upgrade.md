@@ -1,7 +1,7 @@
 # Upgrade to Hedron 0.28
 
 This guide covers an application upgrade from **0.27.x** to the **0.28.x** train
-(current tip **`0.28.2` cut-ready**). New applications should use
+(current tip **`v0.28.2`**). New applications should use
 [Build your first app](../getting-started/quickstart.md).
 
 ## Summary

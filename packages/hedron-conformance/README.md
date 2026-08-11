@@ -14,7 +14,7 @@ reference — without matching incidental CPython formatting.
 
 Also available as the flagship extra `hedron[conformance]`.
 
-**Package maturity:** Beta · **Train:** `0.28.x` (tip `0.28.2` cut-ready) · pin `>=0.28.2,<0.29`
+**Package maturity:** Beta · **Train:** `0.28.x` (last published `0.28.2`) · pin `>=0.28.2,<0.29`
 
 ## Install
 

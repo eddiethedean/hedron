@@ -1,7 +1,7 @@
 # RFC-0059: Production-grade visualization and native acceleration
 
 **Status:** Accepted
-**Phase:** 0.28 (tip `0.28.2` cut-ready; baseline `v0.27.0`)
+**Phase:** 0.28 (Published `v0.28.2`; baseline `v0.27.0`)
 **Stability:** `beta` (process / package-graduation contract)
 **Evidence:** [RELEASE_0_28.md](../acceptance/RELEASE_0_28.md) ·
 [release-gate-0.28.toml](../acceptance/release-gate-0.28.toml) ·

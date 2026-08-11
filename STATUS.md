@@ -2,8 +2,8 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.28 tip **`0.28.2` cut-ready** (2026-08-11); last published
-PyPI/git = `v0.28.1`. Prior: 0.27 **Published** as `v0.27.0`.
+**Roadmap position:** phase 0.28 **Published** as `v0.28.2` (2026-08-11); last published
+PyPI/git = `v0.28.2`. Prior: 0.27 **Published** as `v0.27.0`.
 **Date:** 2026-08-11
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
@@ -219,7 +219,7 @@ Cut verify: `python scripts/verify_pkg_28.py`.
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
 **Planned** until compensated screen-reader evidence lands
 ([#86](https://github.com/eddiethedean/hedron/issues/86)). Phase **0.27** is **Published**
-(`v0.27.0`; D-055). Phase **0.28** tip is **cut-ready** (`0.28.2`; D-056 / RFC-0059); last published tip remains `v0.28.1` until tag.
+(`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
 Remaining package-production work continues through **0.29–0.33**: the optional
 `hedron-workbench` adapter first, then developer and portable conformance tooling
 ([#87](https://github.com/eddiethedean/hedron/issues/87),

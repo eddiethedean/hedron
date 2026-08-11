@@ -9,7 +9,7 @@ is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.28.x` | Yes (current train — pin `>=0.28.2,<0.29`; tip `0.28.2` cut-ready) |
+| `0.28.x` | Yes (current published train — pin `>=0.28.2,<0.29`; last published `v0.28.2`) |
 | `0.27.x` | Prefer upgrade to `0.28.x` (best-effort security triage through approximately 2026-11-10) |
 | `0.26.x` | Prefer upgrade to `0.28.x` |
 | `0.25.x` | Prefer upgrade to `0.28.x` |

@@ -11,7 +11,7 @@ details remain in the [package changelogs](changelog.md).
 
 ## 0.28.2 — 2026-08-11
 
-Coordinated Beta patch on the 0.28 train (cut-ready tip).
+Coordinated Beta patch on the 0.28 train.
 
 - Raises coordinated package versions / pins to `0.28.2` (`>=0.28.2,<0.29`).
 - Aligns `hedron new` scaffolds and the published-quickstart release checker on

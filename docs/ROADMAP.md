@@ -1170,7 +1170,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.28** (cut-ready tip `0.28.2`; last published tip `v0.28.1`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.28** (last published tip `v0.28.2`).
 See [STATUS](STATUS.md) and
 [release-gate-0.19.toml](acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -1996,7 +1996,7 @@ Post-`0.26.0` quality follow-ups that must not inflate Supported claims:
 
 ## 0.28 — Production-grade visualization and native acceleration (`v0.28.2`)
 
-**Status:** Cut-ready tip `0.28.2` (2026-08-11); last published tip `v0.28.1`. Owned by **D-056** /
+**Status:** Published as `v0.28.2` (2026-08-11). Owned by **D-056** /
 [RFC-0059](rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
 Independent package releases may use their own compatible version line; the roadmap phase does
 not require them to adopt the main train's version number. Packet SSOT:
@@ -2014,7 +2014,7 @@ experimental interactive backends remain opt-in until they independently satisfy
 | Package | Supported at 0.28 exit |
 |---|---|
 | `hedron-charts` | Matplotlib static SVG/PNG; beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart` on the static/Matplotlib path; accessible tabular/text alternatives; CSP-safe local assets; bounded payloads; lifecycle cleanup; browser/print/export evidence |
-| `hedron-native` | Optional Rust `escape_text` / `escape_attr`; Supported CPython × OS wheel matrix via `native-wheels.yml` (manylinux x86_64 + aarch64, macOS arm64, Windows amd64) — confirm artifacts on PyPI after publish; source builds; fuzz/sanitizer/parity; measured serialize-stage benefit; absence / import failure / unsupported platform / runtime-disable fallback without semantic drift |
+| `hedron-native` | Optional Rust `escape_text` / `escape_attr`; Supported CPython × OS wheel matrix via `native-wheels.yml` (manylinux x86_64 + aarch64, macOS arm64, Windows amd64) — confirm Supported tags on PyPI; source builds; fuzz/sanitizer/parity; measured serialize-stage benefit; absence / import failure / unsupported platform / runtime-disable fallback without semantic drift |
 
 ### Interactive / optional disposition
 

@@ -11,7 +11,7 @@ HDJ lets advanced applications write ordinary HTML, CSS, JavaScript, Web
 Components, Jinja, and HTMX directly while preserving typed Hedron components and
 render metadata. Install as `hedron-jinja` or via the flagship extra `hedron[jinja]`.
 
-**Package maturity:** Beta · **Train:** `0.28.x` (tip `0.28.2` cut-ready) · pin `>=0.28.2,<0.29`
+**Package maturity:** Beta · **Train:** `0.28.x` (last published `0.28.2`) · pin `>=0.28.2,<0.29`
 
 ## Install
 

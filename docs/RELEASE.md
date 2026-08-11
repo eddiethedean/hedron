@@ -1,10 +1,8 @@
 # Cutting a Hedron release
 
 This is the living maintainer runbook for the `0.28.x` train. Historical cut records
-live under `docs/archive/`.
-
-**Workspace tip:** coordinated packages are **`0.28.2`** (cut-ready; tag `v0.28.2` not
-required until publish). **Next planned patch after that cut:** `v0.28.3`.
+live under `docs/archive/`. The last published release is `v0.28.2`; the next planned
+patch is `v0.28.3`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
 Python metadata does not. Never move or replace a published tag.
@@ -20,7 +18,7 @@ Python metadata does not. Never move or replace a published tag.
    maintainers; the release uses the GitHub Actions workflow.
 5. The tag does not already exist locally or on the remote.
 
-## Local release candidate (tip `0.28.2`)
+## Local release candidate
 
 Run the same suites used by release CI:
 
@@ -44,7 +42,7 @@ uv run python scripts/rehearse_release.py
 Do not publish artifacts built on a maintainer laptop. These commands are rehearsal and
 diagnosis; the tag workflow builds and attests the released files.
 
-## Tag and publish (tip cut)
+## Tag and publish
 
 After reviewing the complete version/changelog diff:
 
@@ -85,8 +83,7 @@ the same immutable tag. Do not create a replacement tag or upload locally built 
 
 ## Template: next patch (`0.28.3`)
 
-After `v0.28.2` is published, bump the coordinated train to `0.28.3`, set
-`docs/release.toml` accordingly, then:
+Bump the coordinated train to `0.28.3`, set `docs/release.toml` accordingly, then:
 
 ```bash
 bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.28.3

@@ -6,7 +6,7 @@ hide:
 
 <div class="hedron-hero" markdown>
 
-<div class="hedron-eyebrow">Python · FastAPI · HTMX · tip 0.28.2 cut-ready</div>
+<div class="hedron-eyebrow">Python · FastAPI · HTMX · last published v0.28.2</div>
 
 # Build interactive web apps in Python.
 
