@@ -24,16 +24,16 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.26** | Production-grade core, FastAPI flagship, and secured/development Explorer | **Published** (`v0.26.0`; D-054) |
 | **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | **Published** (`v0.27.0`; D-055) |
 | **0.28** | Production-grade charts and optional native acceleration | **Cut-ready** tip (`0.28.2`; D-056 / RFC-0059) |
-| **0.29** | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | Planned; tooling scope remains explicit |
-| **0.30** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required |
-| **0.31** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access |
-| **0.32** | Whole-fleet production-grade closure | Planned; no unowned Alpha package or ambiguous tool disposition |
-| **0.33** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Planned; Draft RFC-0060 |
-| **0.34** | Async interaction state, form-associated elements, gestures/overlays, and semantic primitives | Planned |
-| **0.35** | Optimistic mutations and rich data, chart, map, media, and editor elements | Planned |
-| **0.36** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | Planned |
-| **0.37** | Typed browser composition, bounded draft state, and navigation | Planned |
-| **0.38** | Production-grade Web Component platform | Planned; locked Supported inventory only |
+| **0.29** | Production-grade conformance/plugin/simulation/notebook tooling, Node/Java evaluators, and a reviewable Streamlit AST migration assistant | Planned; tooling scope remains explicit; RFC-0061 Proposed ([#87](https://github.com/eddiethedean/hedron/issues/87), [#88](https://github.com/eddiethedean/hedron/issues/88)) |
+| **0.30** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required ([#89](https://github.com/eddiethedean/hedron/issues/89)) |
+| **0.31** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access ([#90](https://github.com/eddiethedean/hedron/issues/90)) |
+| **0.32** | Whole-fleet production-grade closure | Planned; no unowned Alpha package or ambiguous tool disposition ([#91](https://github.com/eddiethedean/hedron/issues/91)) |
+| **0.33** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Planned; Draft RFC-0060 ([#92](https://github.com/eddiethedean/hedron/issues/92)) |
+| **0.34** | Async interaction state, form-associated elements, gestures/overlays, and semantic primitives | Planned ([#93](https://github.com/eddiethedean/hedron/issues/93)) |
+| **0.35** | Optimistic mutations and rich data, chart, map, media, and editor elements | Planned ([#94](https://github.com/eddiethedean/hedron/issues/94)) |
+| **0.36** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | Planned ([#95](https://github.com/eddiethedean/hedron/issues/95)) |
+| **0.37** | Typed browser composition, bounded draft state, and navigation | Planned ([#96](https://github.com/eddiethedean/hedron/issues/96)) |
+| **0.38** | Production-grade Web Component platform | Planned; locked Supported inventory only ([#97](https://github.com/eddiethedean/hedron/issues/97)) |
 
 ## What this means for you
 
@@ -69,7 +69,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)
 - Identity helpers are **opt-in wiring** (not a managed IdP) — [Authentication](authentication.md)
 - Human screen-reader / compensated AT evaluation — protocol Verified; sessions Planned
-  (not Supported); `AT-019` is automated Playwright/axe only
+  (not Supported); tracked by [#86](https://github.com/eddiethedean/hedron/issues/86);
+  `AT-019` is automated Playwright/axe only
 - Prior live-browser / load Deferred IDs (`LIVE-011-BROWSER`, `BROWSER-10-001`,
   `PERF-10-001`) are **Superseded** by `DECIDE-024` `polling_only`
 - Explorer live traces → owned `0.10.x` Deferred (`EXPLORER-10-001`; **not** re-homed to 0.24)

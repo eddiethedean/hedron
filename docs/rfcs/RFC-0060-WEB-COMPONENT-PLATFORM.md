@@ -4,6 +4,10 @@
 
 **Target phases:** 0.33–0.38
 
+**Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
+(one enhancement issue per phase). Close each issue when its owning release-gate rows are
+Verified; do not begin implementation until this RFC is Accepted.
+
 ## Summary
 
 Hedron will make standards-based Web Components the preferred browser boundary for interactive

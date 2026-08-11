@@ -56,10 +56,10 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | — | Accessibility engineering / PE | Verified (0.19) | D-050 |
 | — | Production security / adapter parity | Verified (0.20) | D-051 |
 | `PROTOCOL-021` | Human AT protocol packet | **Verified** (0.21) | D-052 engineering |
-| `SR-021` | VoiceOver / NVDA / TalkBack matrix | **Planned** (0.21) | sessions outstanding |
-| `PARTICIPANT-021` | Compensated participant floor | **Planned** (0.21) | sessions outstanding |
-| `ARTIFACT-021` | Redacted ledger + statement update | **Planned** (0.21) | after sessions |
-| `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions |
+| `SR-021` | VoiceOver / NVDA / TalkBack matrix | **Planned** (0.21) | sessions outstanding; [#86](https://github.com/eddiethedean/hedron/issues/86) |
+| `PARTICIPANT-021` | Compensated participant floor | **Planned** (0.21) | sessions outstanding; [#86](https://github.com/eddiethedean/hedron/issues/86) |
+| `ARTIFACT-021` | Redacted ledger + statement update | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
+| `REMEDIATE-021` | Blocker fix / waiver | **Planned** (0.21) | after sessions; [#86](https://github.com/eddiethedean/hedron/issues/86) |
 | `REGRESS-021` | Full suite at cut | **Verified** (0.21) | engineering publish |
 | `PKG-021` | `verify_pkg_21.py` packet evidence | **Verified** (0.21) | engineering publish |
 | `CSRF-022` | Pluggable CSRF strategies | **Verified** (0.22) | D-051; [#36](https://github.com/eddiethedean/hedron/issues/36) |
@@ -214,10 +214,17 @@ Cut verify: `python scripts/verify_pkg_28.py`.
 ## Next capability phases
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
-**Planned** until compensated screen-reader evidence lands. Phase **0.27** is **Published**
+**Planned** until compensated screen-reader evidence lands
+([#86](https://github.com/eddiethedean/hedron/issues/86)). Phase **0.27** is **Published**
 (`v0.27.0`; D-055). Phase **0.28** tip is **cut-ready** (`0.28.2`; D-056 / RFC-0059); last published tip remains `v0.28.1` until tag.
 Remaining package-production work continues through **0.29–0.32**:
-developer and portable conformance tooling; MCP; Gradio; then a whole-fleet
-closure audit. These phases require owning RFCs/decisions and Verified evidence before any
+developer and portable conformance tooling ([#87](https://github.com/eddiethedean/hedron/issues/87),
+[#88](https://github.com/eddiethedean/hedron/issues/88)); MCP
+([#89](https://github.com/eddiethedean/hedron/issues/89)); Gradio
+([#90](https://github.com/eddiethedean/hedron/issues/90)); then a whole-fleet
+closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform
+work is tracked as [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
+(phases 0.33–0.38). These phases require owning RFCs/decisions and Verified evidence before any
 package maturity label changes. They do not schedule `1.0`, promote every experimental
-subfeature, or expand Supported live transports.
+subfeature, or expand Supported live transports. Close each tracking issue only when its owning
+release-gate rows are Verified.
