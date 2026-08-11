@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import pytest
+
 from hedron_core.jobs import (
     InMemoryJobBackend,
     JobState,
+    _idempotency_scope_key,
     job_status_interaction,
     reset_jobs_for_tests,
 )
@@ -40,6 +43,31 @@ def test_cleanup_drops_idempotency() -> None:
     assert backend.cleanup_expired(older_than_seconds=1) == 1
     again = backend.submit("demo", {}, idempotency_key="gone")
     assert again.job_id != handle.job_id
+
+
+def test_idempotency_distinguishes_missing_and_empty_scopes() -> None:
+    backend = InMemoryJobBackend()
+    unscoped = backend.submit("demo", {}, idempotency_key="same")
+    empty_scoped = backend.submit("demo", {}, idempotency_key="same", tenant_id="", auth_subject="")
+
+    assert unscoped.job_id != empty_scoped.job_id
+    assert backend.submit("demo", {}, idempotency_key="same").job_id == unscoped.job_id
+    assert (
+        backend.submit("demo", {}, idempotency_key="same", tenant_id="", auth_subject="").job_id
+        == empty_scoped.job_id
+    )
+    assert len(backend._jobs) == 2
+
+
+def test_idempotency_scope_key_does_not_delete_cross_scope_pointer() -> None:
+    backend = InMemoryJobBackend()
+    other = backend.submit("demo", {}, idempotency_key="same", tenant_id="other")
+    scoped = _idempotency_scope_key("same", tenant_id="expected", auth_subject=None)
+    backend._idempotency[scoped] = other.job_id
+
+    with pytest.raises(PermissionError, match="another scope"):
+        backend.submit("demo", {}, idempotency_key="same", tenant_id="expected")
+    assert backend._idempotency[scoped] == other.job_id
 
 
 def test_mark_and_status_interaction() -> None:

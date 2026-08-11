@@ -11,7 +11,7 @@ from typing import Any
 
 import pytest
 
-from hedron_core.jobs import JobState, RedisJobBackend
+from hedron_core.jobs import JobState, RedisJobBackend, _legacy_idempotency_scope_key
 
 
 class WatchError(Exception):
@@ -132,6 +132,31 @@ def test_redis_job_backend_shares_state_via_client_protocol() -> None:
     marked = b.mark(handle.job_id, JobState.CANCELLED)
     assert marked is not None
     assert a.get(handle.job_id) is not None
+
+
+def test_redis_idempotency_distinguishes_missing_and_empty_scopes() -> None:
+    shared: Any = _SharedRedis()
+    backend = RedisJobBackend(shared)
+    unscoped = backend.submit("demo", {}, idempotency_key="same")
+    empty_scoped = backend.submit("demo", {}, idempotency_key="same", tenant_id="", auth_subject="")
+
+    assert unscoped.job_id != empty_scoped.job_id
+    assert backend.submit("demo", {}, idempotency_key="same").job_id == unscoped.job_id
+    assert (
+        backend.submit("demo", {}, idempotency_key="same", tenant_id="", auth_subject="").job_id
+        == empty_scoped.job_id
+    )
+
+
+def test_redis_idempotency_reads_matching_legacy_scope() -> None:
+    shared: Any = _SharedRedis()
+    backend = RedisJobBackend(shared)
+    original = backend.submit("demo", {}, tenant_id="tenant")
+    legacy_scope = _legacy_idempotency_scope_key("same", tenant_id="tenant", auth_subject=None)
+    shared.set(f"h1:job:idem:{legacy_scope}", original.job_id)
+
+    repeated = backend.submit("demo", {}, idempotency_key="same", tenant_id="tenant")
+    assert repeated.job_id == original.job_id
 
 
 def test_redis_job_backend_cas_contends_on_watch() -> None:

@@ -258,6 +258,18 @@ def _idempotency_scope_key(
     tenant_id: str | None,
     auth_subject: str | None,
 ) -> str:
+    # JSON preserves the distinction between an omitted scope and an explicit
+    # empty-string scope, while also avoiding delimiter collisions in user input.
+    return json.dumps([tenant_id, auth_subject, idempotency_key], separators=(",", ":"))
+
+
+def _legacy_idempotency_scope_key(
+    idempotency_key: str,
+    *,
+    tenant_id: str | None,
+    auth_subject: str | None,
+) -> str:
+    """Return the pre-0.29 scope format for safe rolling-upgrade reads."""
     return f"{tenant_id or ''}\x1f{auth_subject or ''}\x1f{idempotency_key}"
 
 
@@ -335,15 +347,24 @@ class InMemoryJobBackend:
                 scoped = _idempotency_scope_key(
                     idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
                 )
+                legacy_scoped = _legacy_idempotency_scope_key(
+                    idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
+                )
+                matched_scope = scoped
                 existing_id = self._idempotency.get(scoped)
+                if existing_id is None and legacy_scoped != scoped:
+                    matched_scope = legacy_scoped
+                    existing_id = self._idempotency.get(legacy_scoped)
                 if existing_id is not None:
                     existing = self._jobs.get(existing_id)
-                    if existing is not None and job_authorized(
-                        existing.status, auth_subject=auth_subject, tenant_id=tenant_id
-                    ):
-                        return JobHandle(job_id=existing_id, idempotency_key=idempotency_key)
-                    # Stale or cross-scope pointer — drop and continue.
-                    del self._idempotency[scoped]
+                    if existing is not None:
+                        if job_authorized(
+                            existing.status, auth_subject=auth_subject, tenant_id=tenant_id
+                        ):
+                            return JobHandle(job_id=existing_id, idempotency_key=idempotency_key)
+                        raise PermissionError("Idempotency key is already bound to another scope")
+                    # The pointed-to job expired or was removed, so reclaim the key.
+                    del self._idempotency[matched_scope]
             job_id = secrets.token_urlsafe(16)
             now = time.time()
             status = JobStatus(
@@ -592,15 +613,22 @@ class RedisJobBackend:
             idem_redis_key = self._idem_key(
                 idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
             )
-            existing = self._decode(self._client.get(idem_redis_key))
-            if existing is not None:
+            legacy_scoped = _legacy_idempotency_scope_key(
+                idempotency_key, tenant_id=tenant_id, auth_subject=auth_subject
+            )
+            legacy_redis_key = f"{self._prefix}idem:{legacy_scoped}"
+            for candidate_key in (idem_redis_key, legacy_redis_key):
+                existing = self._decode(self._client.get(candidate_key))
+                if existing is None:
+                    continue
                 loaded = self._load(existing)
                 if loaded is not None:
                     status = _status_from_dict(loaded)
                     if job_authorized(status, auth_subject=auth_subject, tenant_id=tenant_id):
                         return JobHandle(job_id=existing, idempotency_key=idempotency_key)
-                # Stale or cross-scope pointer: drop it so a fresh job can claim the key.
-                self._client.delete(idem_redis_key)
+                    raise PermissionError("Idempotency key is already bound to another scope")
+                # The pointed-to job expired or was removed, so reclaim the key.
+                self._client.delete(candidate_key)
 
         job_id = secrets.token_urlsafe(16)
         now = time.time()
