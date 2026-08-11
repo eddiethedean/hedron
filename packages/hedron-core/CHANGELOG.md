@@ -7,6 +7,8 @@
 - Authorize ``HX-Retarget`` / ``HX-Reselect`` against declared ``FragmentRegion``s
   (plus reserved sinks ``#hedron-toast`` / ``#hedron-errors`` / ``#hedron-auth``)
   so outbound retarget cannot land outside the route allowlist (#76).
+- Authorize ``HX-Location`` JSON ``target`` / ``select`` with the same region
+  allowlist so location payloads cannot bypass retarget controls.
 - Validate ``OobUpdate`` / ``oob_swap`` with ``safe_hx_swap``; fail closed when
   ``resolve_fragment_region`` is called with a missing target; reject
   ``select_oob`` / ``OobUpdate`` same-target conflicts and non-``#id`` tokens at

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal
@@ -31,6 +32,7 @@ __all__ = [
     "RESERVED_RESPONSE_SINK_IDS",
     "StatusPolicy",
     "authorize_htmx_target",
+    "authorize_location_selectors",
     "authorize_oob_update",
     "authorize_response_selector",
     "apply_allow_undeclared_targets",
@@ -514,17 +516,9 @@ def merge_interaction_headers(
             continue
         headers[key] = value
     # Re-check after adapter extras: typed fields already won above, but extras
-    # may introduce HX-Retarget / HX-Reselect when typed fields were absent.
-    authorize_response_selector(
-        result.policy,
-        headers.get("HX-Retarget"),
-        header_name="HX-Retarget",
-    )
-    authorize_response_selector(
-        result.policy,
-        headers.get("HX-Reselect"),
-        header_name="HX-Reselect",
-    )
+    # may introduce HX-Retarget / HX-Reselect / HX-Location selectors when typed
+    # fields were absent.
+    _authorize_outbound_selectors(result.policy, headers)
     return headers
 
 
@@ -572,19 +566,61 @@ def interaction_headers(result: InteractionResult) -> dict[str, str]:
             # Typed cache policy owns Cache-Control; extras cannot weaken it.
             continue
         headers[key] = value
-    # Authorize outbound retarget/reselect after typed + extra headers merge so
-    # neither InteractionResult fields nor headers={} can bypass region policy.
+    # Authorize outbound selectors after typed + extra headers merge so neither
+    # InteractionResult fields nor headers={} can bypass region policy.
+    _authorize_outbound_selectors(result.policy, headers)
+    return headers
+
+
+def _authorize_outbound_selectors(
+    policy: InteractionPolicy | None,
+    headers: Mapping[str, str],
+) -> None:
+    """Authorize HX-Retarget / HX-Reselect / HX-Location target+select fields."""
     authorize_response_selector(
-        result.policy,
+        policy,
         headers.get("HX-Retarget"),
         header_name="HX-Retarget",
     )
     authorize_response_selector(
-        result.policy,
+        policy,
         headers.get("HX-Reselect"),
         header_name="HX-Reselect",
     )
-    return headers
+    authorize_location_selectors(policy, headers.get("HX-Location"))
+
+
+def authorize_location_selectors(
+    policy: InteractionPolicy | None,
+    location_header: str | None,
+) -> None:
+    """Authorize ``target`` / ``select`` inside an ``HX-Location`` JSON payload.
+
+    String locations are path-only and have no selectors. Mapping payloads may
+    include ``target`` / ``select`` which must pass the same region allowlist as
+    ``HX-Retarget`` / ``HX-Reselect``.
+    """
+    if location_header is None:
+        return
+    text = location_header.strip()
+    if not text or text[0] != "{":
+        return
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError("HX-Location must be a local path or JSON object") from exc
+    if not isinstance(payload, dict):
+        raise ValueError("HX-Location JSON must be an object")
+    target = payload.get("target")
+    if target is not None:
+        if not isinstance(target, str):
+            raise ValueError("HX-Location target must be a string selector")
+        authorize_response_selector(policy, target, header_name="HX-Location target")
+    select = payload.get("select")
+    if select is not None:
+        if not isinstance(select, str):
+            raise ValueError("HX-Location select must be a string selector")
+        authorize_response_selector(policy, select, header_name="HX-Location select")
 
 
 def interaction_trace(result: InteractionResult) -> InteractionTrace:

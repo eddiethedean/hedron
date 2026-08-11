@@ -134,3 +134,37 @@ def test_merge_extras_cannot_bypass_retarget_allowlist() -> None:
     result = InteractionResult(content=Text("x"), policy=policy)
     with pytest.raises(FragmentRegionError, match="HX-Retarget"):
         merge_interaction_headers(result, {"HX-Retarget": "#admin-sidebar"})
+
+
+def test_location_target_cannot_bypass_region_allowlist() -> None:
+    from hedron_core import Text
+
+    policy = InteractionPolicy(declared_regions=(FragmentRegion(id="main", selector="#main"),))
+    with pytest.raises(FragmentRegionError, match="HX-Location target"):
+        interaction_headers(
+            InteractionResult(
+                content=Text("SECRET"),
+                policy=policy,
+                location={"path": "/x", "target": "#admin-sidebar"},
+            )
+        )
+    with pytest.raises(FragmentRegionError, match="HX-Location select"):
+        interaction_headers(
+            InteractionResult(
+                content=Text("SECRET"),
+                policy=policy,
+                location={"path": "/x", "select": "#admin-sidebar"},
+            )
+        )
+    allowed = interaction_headers(
+        InteractionResult(
+            content=Text("ok"),
+            policy=policy,
+            location={"path": "/x", "target": "#main", "select": "#hedron-errors"},
+        )
+    )
+    assert '"target": "#main"' in allowed["HX-Location"]
+    path_only = interaction_headers(
+        InteractionResult(content=Text("ok"), policy=policy, location="/elsewhere")
+    )
+    assert path_only["HX-Location"] == "/elsewhere"
