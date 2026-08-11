@@ -216,6 +216,46 @@ async def test_render_interaction_public_api() -> None:
 
 
 @pytest.mark.anyio
+async def test_render_interaction_uses_region_id_when_htmx_target_is_missing() -> None:
+    request = _request(headers={"HX-Request": "true"})
+    request.app.state.hedron_security = SecurityPolicy.from_name("standard")  # type: ignore[attr-defined]
+    result = InteractionResult(
+        content=MainPanel("ok"),
+        policy=InteractionPolicy(
+            declared_regions=(FragmentRegion(id="main-panel", selector="#main-panel"),),
+            allow_undeclared_targets=False,
+        ),
+        region_id="main-panel",
+    )
+
+    response = await render_interaction(
+        request,
+        result,
+        policy=SecurityPolicy(csrf_enabled=False),
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.anyio
+async def test_render_interaction_rejects_target_that_conflicts_with_region_id() -> None:
+    from fastapi import HTTPException
+
+    request = _request(headers={"HX-Request": "true", "HX-Target": "#other"})
+    result = InteractionResult(
+        content=MainPanel("ok"),
+        policy=InteractionPolicy(
+            declared_regions=(FragmentRegion(id="main-panel", selector="#main-panel"),),
+            allow_undeclared_targets=False,
+        ),
+        region_id="main-panel",
+    )
+
+    with pytest.raises(HTTPException) as exc:
+        await render_interaction(request, result, policy=SecurityPolicy(csrf_enabled=False))
+    assert exc.value.status_code == 403
+
+
+@pytest.mark.anyio
 async def test_render_interaction_rejects_undeclared_target() -> None:
     from fastapi import HTTPException
 
