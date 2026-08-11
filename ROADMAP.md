@@ -2602,6 +2602,107 @@ complete browser supply-chain provenance.
   published with compatibility, review, AT, performance, and supply evidence.
 - Experimental elements remain conspicuous, non-default, and independently owned.
 
+## 0.39 — Posit Workbench deployment adapter (`v0.39.0`)
+
+**Status:** Planned. Owning RFC and architectural decision are required before implementation.
+The behavior inventory starts from `fastapi-workbench` 0.3.4 and must be refreshed against its
+latest release when the RFC is accepted. The new distribution is `hedron-workbench`, importing as
+`hedron_workbench`.
+
+**Outcome:** A FastAPI-based Hedron application can be launched or wrapped once and then behaves
+correctly at the root, below ordinary ASGI mount prefixes, and below Posit Workbench / RStudio
+Server session and project proxy prefixes. Routes, redirects, HTMX navigation, static/build assets,
+OpenAPI, Explorer, sessions, and CSRF cookies preserve the browser-visible mount exactly once.
+
+The package is a thin Posit-specific adapter over the production-grade `hedron` mount, URL,
+redirect, security, and operations contracts. It does not fork those contracts or make Workbench
+logic a dependency of `hedron-core`, `hedron`, Flask, or Django.
+
+### Public package contract
+
+- Publish `WorkbenchConfig`, `WorkbenchPathMiddleware`, environment/request detection helpers, and
+  an idempotent `workbenchify(app, *, config=...)` ASGI wrapper. Configuration has explicit
+  `auto` / `on` / `off` modes; installation alone never mutates unrelated applications.
+- Publish a `hedron-workbench run module:app` launcher that discovers the Workbench browser URL and
+  mount before importing the application, sets the namespaced Hedron mount/public-base inputs,
+  applies the wrapper exactly once, and starts Uvicorn with bounded, validated host/port/proxy
+  settings. This is the zero-application-code path; `workbenchify` is the server-neutral path.
+- Keep the Supported surface FastAPI/ASGI-specific: `Hedron()` applications and plain FastAPI apps
+  containing Hedron routers/responses. Flask, Django, generic WSGI, and notebook preview servers do
+  not gain implied support.
+- Define compatibility and precedence for namespaced settings plus the relevant established
+  `fastapi-workbench` inputs (`RS_SERVER_URL`, explicit force/debug mode, base path, and public base
+  URL). Namespaced settings win; ambiguous or conflicting mount/public-base inputs fail closed with
+  an actionable diagnostic.
+- Publish a behavior/provenance matrix showing which `fastapi-workbench` adaptations are adopted,
+  implemented through existing Hedron APIs, intentionally changed, or excluded. Preserve required
+  MIT attribution without promising drop-in API compatibility or vendoring an untracked copy.
+
+### Sequenced scope
+
+1. **Contract and package boundary (`CONTRACT-039`)** — accept the RFC/decision; freeze Supported,
+   Experimental, and excluded APIs; add the workspace package, dependency/import-isolation rules,
+   upstream provenance record, compatibility window, and removal/rollback behavior.
+2. **Detection and ASGI normalization (`PATH-039`)** — recognize explicit mode and Workbench
+   environment/request signals; decode encoded absolute request targets; normalize `/proxy/<port>`
+   roots and session/project prefixes; strip duplicated `root_path` from `path`; and keep `path`,
+   `raw_path`, and `query_string` consistent for HTTP and WebSocket scopes. Repeated wrapping or
+   already-normalized scopes are no-ops.
+3. **Hedron URL/security integration (`URL-039`)** — resolve browser origin and mount with a
+   documented precedence order; reuse `normalize_mount_path`, `prefix_local_path`, `SafeUrl`,
+   `redirect_local`, and HTMX header validation; prefix local redirects, reverse URLs, UI/API links,
+   static/build assets, docs, and Explorer once; scope session/CSRF cookies to the discovered mount.
+   Posit Connect's app-base header is accepted only under the RFC's explicit trusted-peer/host
+   rules and never acts as an ambient authorization signal.
+4. **Workbench-aware launcher (`RUNNER-039`)** — validate or allocate the listening port; invoke
+   the installed `rserver-url` helper without a shell; accept either its path or full-URL form;
+   derive `root_path` and browser URL before application import; configure Uvicorn proxy trust;
+   optionally open the browser; and provide clear fallback diagnostics when Workbench discovery is
+   absent or fails. Database migrations and arbitrary startup commands remain application-owned.
+5. **Diagnostics and developer workflow (`DX-039`)** — add redacted debug traces for detection and
+   scope rewrites, a CLI `check`/dry-run view of resolved inputs, a minimal Workbench scaffold or
+   deployment recipe, and Explorer/CLI visibility without logging tokens, session identifiers, or
+   secret-like query values.
+6. **Compatibility and release proof (`COMPAT-039`)** — exercise clean wheel/sdist installs on the
+   supported Python/FastAPI/Starlette/Uvicorn/Hedron matrix, upgrade/rollback from the preceding
+   Hedron train, an upstream-behavior fixture corpus, and a packaged example through mock and real
+   Workbench deployments.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `CONTRACT-039` | Accepted RFC/decision, machine-readable Supported inventory, upstream behavior/provenance map, dependency isolation, compatibility, deprecation, and rollback contracts agree |
+| `PATH-039` | HTTP/WebSocket scope fixtures cover root, ordinary mount, `/proxy/<port>`, session/project mount, encoded absolute target, malformed input, idempotence, and disabled mode without losing path/query bytes |
+| `URL-039` | Routes, local/HX redirects, reverse/UI URLs, assets, docs/OpenAPI, Explorer, and session/CSRF cookies use the browser mount exactly once; traversal, protocol-relative, hostile-host, and untrusted-header cases fail closed |
+| `RUNNER-039` | Fake-`rserver-url` and subprocess tests cover path/full-URL output, import ordering, port validation/allocation, browser URL, proxy trust, missing binary, malformed output, startup failure, signals, and shutdown |
+| `SECURITY-039` | Independent review covers absolute-target decoding, header/origin trust, open redirects, path traversal, cookie scope, proxy spoofing, subprocess execution, debug redaction, and production configuration with no unresolved critical/high finding |
+| `REALWB-039` | Packaged reference app passes ordinary local Uvicorn plus at least one supported real Posit Workbench session/project deployment, including full-page and HTMX navigation, assets, auth/session, CSRF POST, docs, and Explorer-off production behavior |
+| `COMPAT-039` / `PERF-039` | Clean install and upgrade/rollback matrices pass; middleware/URL overhead stays within locked budgets; upstream behavior drift is detected and dispositioned rather than silently inherited |
+| `REGRESS-039` / `PKG-039` | Full regression, docs, license/SBOM/provenance, offline wheel, packaged-example, and release rehearsal pass with zero Deferred 0.39-owned row |
+
+### Non-goals
+
+- Replacing Hedron's generic trusted reverse-proxy mount API or weakening its local-URL, header,
+  CSRF, cookie, CSP, or production startup policy.
+- Becoming an identity provider, trusting Workbench authentication implicitly, or treating a
+  prefix/base header as proof of identity or authorization.
+- Managing Posit Workbench/Connect installation, licensing, projects, sessions, load balancing, TLS,
+  or deployment lifecycle; bundling `rserver-url`; or guaranteeing undocumented proxy behavior.
+- Running database migrations, importing the application before mount discovery, or executing
+  shell-provided startup fragments.
+- Claiming Flask/Django/WSGI support, exact `fastapi-workbench` API compatibility, or automatic
+  activation merely because the distribution is installed.
+
+### Exit gate
+
+- A documented existing Hedron app works unchanged when launched with `hedron-workbench run`, and
+  the same app works under another ASGI server when explicitly wrapped with `workbenchify`.
+- Ordinary non-Workbench and generic mounted deployments retain their existing Hedron behavior;
+  Workbench normalization is idempotent and can be disabled explicitly.
+- All 0.39-owned rows are Verified with zero Deferred, and the production-grade Supported inventory
+  is published with real-Workbench, security, compatibility, performance, and supply evidence.
+
 ## Complete capability-to-release ledger
 
 This ledger is the coverage check for planned capabilities. The detailed phase sections above remain normative; the ledger prevents a subsystem or cross-cutting requirement from disappearing between plans.
@@ -2773,6 +2874,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Declared fragment regions, boosted metadata, semantic validation/status responses | 0.6 | Target allowlists, full-page fallbacks, and accessible errors. |
 | Page/fragment/target cache variation and synchronized form/search policy | 0.6 | Prevents cache confusion and request races. |
 | Request-aware URL reversal, capability-aware cancellation, and 202 job interactions | 0.7A–0.7E | Correct under mounts/proxies and explicit ASGI/WSGI capability boundaries. |
+| Production-grade `hedron-workbench` Posit Workbench adapter | 0.39 | One wrapper or launcher normalizes Workbench paths and composes existing Hedron mount, URL, redirect, cookie, security, asset, docs, and Explorer contracts without changing non-Workbench behavior. |
 | HTMX 2 rich-browser lifecycle, head/assets, errors, morphing, transitions | 0.6 | Core behavior first; optional extensions require conformance evidence. |
 | HTMX 2 extension asset contract and transport decision | 0.7F | Independent pins, local serving, CSP; polling is sufficient and SSE may remain deferred. |
 | HTMX 2 real-browser, privacy, and supply-chain hardening | 0.8 | Release evidence across Chromium, Firefox, and WebKit. |
@@ -2884,6 +2986,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0058 Production-grade adapters / data / HDJ / curated extras | 0.27 |
 | 0059 Production-grade charts / native acceleration | 0.28 |
 | 0060 Web Component platform program | 0.33–0.38 (Draft; must be Accepted before implementation) |
+| Posit Workbench deployment adapter RFC (planned) | 0.39 (must be Accepted before implementation) |
 
 ## Open GitHub issue ownership (0.13+)
 
@@ -2975,4 +3078,8 @@ migration matrix and third-party authoring/interoperability, typed browser compo
 production-grade Supported inventory. The program is governed by Draft RFC-0060 and may not enter
 implementation until that RFC is Accepted. It preserves server-rendered HTML, HTMX, native
 form/navigation, polling, and server validation as canonical fallbacks; it does not turn Hedron into
-an SPA runtime or require Node.js in consuming Python applications.
+an SPA runtime or require Node.js in consuming Python applications. Planned phase **0.39** adds the
+optional production-grade `hedron-workbench` ASGI adapter after that program. It specializes the
+existing trusted mount and security contracts for Posit Workbench, requires an Accepted owning RFC
+before implementation, and must preserve ordinary non-Workbench behavior and FastAPI/Starlette
+compatibility rather than becoming a second generic proxy layer.
