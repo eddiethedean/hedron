@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.28.1,<0.29`. Treat the **stable** tables below (minimal +
+**For adopters:** Pin `hedron>=0.28.2,<0.29`. Treat the **stable** tables below (minimal +
 expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
 `experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
 lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -9,7 +9,7 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <summary>Maintainer catalog metadata</summary>
 
 **Status:** Living train **0.28** (**Published**; last published
-PyPI/git = `v0.28.1`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
+PyPI/git = `v0.28.2`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
 (D-038: no calendar `1.0` scheduled; D-053 / RFC-0056; D-054 / RFC-0057).
 **Version:** `0.28.x` / catalog baseline
@@ -163,7 +163,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - Dask/Snowflake sources, AG Grid Community host: **beta**
 - Spreadsheet I/O / collab helpers: **beta**
 
-### `hedron-charts` (Beta distribution; `>=0.1.9,<0.2` on 0.28)
+### `hedron-charts` (Beta distribution; `>=0.1.10,<0.2` on 0.28)
 
 - `MatplotlibChart` / static SVG: **beta** API on Beta distribution for Supported scopes.
 - `PlotlyChart` / `AltairChart`: **experimental**.
@@ -176,7 +176,7 @@ Live helpers are **experimental** (polling remains Supported fallback).
 
 ### `hedron-explorer` (Beta) — `beta` for `explorer_router`; panel internals **internal**
 
-### `hedron-sample-kit` (Alpha distribution; `>=0.1.9,<0.2`) — **experimental**
+### `hedron-sample-kit` (Alpha distribution; `>=0.1.10,<0.2`) — **experimental**
 
 ### `hedron-jinja` / HDJ (Beta) — `beta`; HDJ format v1 frozen
 

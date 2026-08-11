@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_tag:
-        description: "Tag to publish (e.g. v0.28.1). Required when publish_only is true."
+        description: "Tag to publish (e.g. v0.28.2). Required when publish_only is true."
         type: string
         default: ""
       publish_only:
@@ -22,7 +22,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "0.28.1"
+  HEDRON_GATE_VERSION: "0.28.2"
 
 jobs:
   test:
@@ -454,12 +454,13 @@ jobs:
           fi
           exit "$status"
       - name: Verify the published quick start
+        id: verify_quickstart
         if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}
         run: >
           uv run --python 3.11 python scripts/check_published_quickstart.py
           "${{ steps.ref.outputs.version }}"
       - name: Create GitHub Release
-        if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}
+        if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' && steps.verify_quickstart.outcome == 'success' }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -469,10 +470,22 @@ jobs:
           VERSION="${{ steps.ref.outputs.version }}"
           NOTES="$(uv run --python 3.11 python scripts/release_notes.py "$VERSION" --package hedron)"
           shopt -s nullglob
-          artifacts=(dist/*.whl dist/*.tar.gz)
+          # SUPPLY: omit plain linux_* wheels (PyPI rejects them); keep manylinux/musllinux.
+          artifacts=()
+          for f in dist/*.whl dist/*.tar.gz; do
+            case "$f" in
+              *-linux_*.whl|*-linux-*.whl)
+                if [[ "$f" != *manylinux* && "$f" != *musllinux* ]]; then
+                  echo "WARN: omitting unsupported platform wheel from GitHub Release: $f" >&2
+                  continue
+                fi
+                ;;
+            esac
+            artifacts+=("$f")
+          done
 
           # SUPPLY-025: require wheels + SBOM/evidence before any GitHub Release create/upload
-          # so a failed evidence step never leaves an orphan tag release without SBOM.
+          # so a failed evidence step never leaves an orphan tag release missing SBOM.
           if ((${#artifacts[@]} == 0)); then
             echo "SUPPLY-025: no dist wheels/sdists to attach (earlier steps may have failed)" >&2
             exit 1

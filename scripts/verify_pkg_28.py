@@ -5,7 +5,7 @@ Does **not** publish or tag.
 
 * ``--allow-planned``: validate the 0.28 evidence manifest shape while rows may
   still be Planned (packet refine).
-* Omit ``--allow-planned`` at ``v0.28.1`` cut once every evidence row is
+* Omit ``--allow-planned`` at ``v0.28.2`` cut once every evidence row is
   ``Verified`` and package metadata matches the living **0.28.x** train.
 """
 
@@ -21,8 +21,8 @@ ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.28.toml"
 INVENTORY = ROOT / "docs" / "acceptance" / "production-grade-inventory-028.toml"
 # Living published tip after the 0.28 cut.
-LIVING_TRAIN = "0.28.1"
-RELEASE_CANDIDATE = "0.28.1"
+LIVING_TRAIN = "0.28.2"
+RELEASE_CANDIDATE = "0.28.2"
 EXPECTED_PACKAGES = (
     "hedron-charts",
     "hedron-native",

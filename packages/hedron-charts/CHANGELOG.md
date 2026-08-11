@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.10] — 2026-08-11
+
+### Fixed
+
+- Plotly and Vega hosts call ``destroy`` at the start of ``mount`` so remounts without
+  a prior HTMX dispose do not stack handlers or leak views.
+
+### Changed
+
+- Pin ``hedron-core`` to ``>=0.28.2,<0.29``.
+
 ## [0.1.9] — 2026-08-10
 
 ### Fixed

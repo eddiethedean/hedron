@@ -1,5 +1,5 @@
 # Phase 0.28 production-grade charts/native evidence index.
-# Consumed by scripts/check_release_gate.py 0.28.1 (--execute-verified at cut).
+# Consumed by scripts/check_release_gate.py 0.28.2 (--execute-verified at cut).
 # Zero Deferred policy for 0.28-owned rows: every row must be Verified at cut.
 # Owning decision: D-056. RFC: RFC-0059.
 

@@ -10,7 +10,7 @@ without CDN fetches.
    ```bash
    mkdir -p /tmp/hedron-offline-wheels
    pip download -d /tmp/hedron-offline-wheels \
-     "hedron[charts,native]>=0.28.1,<0.29" \
+     "hedron[charts,native]>=0.28.2,<0.29" \
      "matplotlib"
    ```
 
@@ -21,7 +21,7 @@ without CDN fetches.
 
    ```bash
    pip install --no-index --find-links=/tmp/hedron-offline-wheels \
-     "hedron[charts,native]>=0.28.1,<0.29"
+     "hedron[charts,native]>=0.28.2,<0.29"
    ```
 
 4. **Smoke**:

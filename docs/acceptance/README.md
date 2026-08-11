@@ -26,6 +26,7 @@ status commentary, not a satisfied release gate.
 - [Jobs and asynchronous work](JOBS.md)
 - [Observability](OBSERVABILITY.md)
 - [Accessibility](ACCESSIBILITY.md)
+- [Web Component platform](WEB_COMPONENT_PLATFORM.md) — draft 0.33–0.38 program
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

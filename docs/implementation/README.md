@@ -12,6 +12,9 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Explorer backend](EXPLORER_BACKEND.md)
 - [Explorer frontend](EXPLORER_FRONTEND.md)
 - [Asset pipeline](ASSET_PIPELINE.md)
+- [Web Component platform](WEB_COMPONENT_PLATFORM.md) — draft 0.33–0.38 program
+- [Web Component interaction contracts](WEB_COMPONENT_INTERACTION_CONTRACTS.md) — state,
+  async interaction, optimism, gestures/overlays, and React migration
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

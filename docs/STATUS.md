@@ -1,12 +1,12 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.28 **Published** as `v0.28.1` (2026-08-10); last published
-PyPI/git = `v0.28.1`. Prior: 0.27 **Published** as `v0.27.0`.
-**Date:** 2026-08-10
+**Roadmap position:** phase 0.28 **Published** as `v0.28.2` (2026-08-11); last published
+PyPI/git = `v0.28.2`. Prior: 0.27 **Published** as `v0.27.0`.
+**Date:** 2026-08-11
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.28.1`; Beta (independent) — `hedron-charts` `0.1.9`, `hedron-native` `0.1.2`; Alpha —
-`hedron-sample-kit` `0.1.9`, `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0`
+`0.28.2`; Beta (independent) — `hedron-charts` `0.1.10`, `hedron-native` `0.1.2`; Alpha —
+`hedron-sample-kit` `0.1.10`, `hedron-notebook` / `hedron-mcp` / `hedron-gradio` `0.1.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
@@ -215,7 +215,7 @@ Cut verify: `python scripts/verify_pkg_28.py`.
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
 **Planned** until compensated screen-reader evidence lands. Phase **0.27** is **Published**
-(`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.1`; D-056 / RFC-0059).
+(`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
 Remaining package-production work continues through **0.29–0.32**:
 developer and portable conformance tooling; MCP; Gradio; then a whole-fleet
 closure audit. These phases require owning RFCs/decisions and Verified evidence before any

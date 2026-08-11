@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.28.2] — 2026-08-11
+
+### Changed
+
+- Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).
+
 ## [0.28.1] — 2026-08-10
 
 ### Changed

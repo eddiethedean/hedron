@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.10] — 2026-08-11
+
+### Changed
+
+- Coordinated satellite floor with `hedron-charts` `0.1.10` (pin `hedron-core>=0.28.2,<0.29`).
+
 ## [0.1.9] — 2026-08-10
 
 ### Changed

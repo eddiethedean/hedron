@@ -124,7 +124,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
   `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.28**
-  (**Published**; last **v0.28.1**) — [A11Y API](A11Y.md),
+  (**Published**; last **v0.28.2**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
   (introduced in 0.11; Supported on **0.28.x**)

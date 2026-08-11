@@ -38,7 +38,7 @@ def test_all_packages_declare_license_and_version() -> None:
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
         if name in _BETA_PACKAGES:
-            assert project["version"] == "0.28.1", pyproject
+            assert project["version"] == "0.28.2", pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:
             assert str(project["version"]).startswith("0.1."), pyproject
         else:
@@ -91,11 +91,11 @@ def test_025_satellites_have_installable_patch_floors() -> None:
         (ROOT / "packages" / "hedron-extras" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
 
-    charts_pin = "hedron-charts>=0.1.9,<0.2"
+    charts_pin = "hedron-charts>=0.1.10,<0.2"
     assert hedron["optional-dependencies"]["charts"] == [charts_pin]
     assert charts_pin in extras["optional-dependencies"]["chart_workbench"]
     assert charts_pin in extras["optional-dependencies"]["all"]
-    for package, version in (("hedron-charts", "0.1.9"), ("hedron-sample-kit", "0.1.9")):
+    for package, version in (("hedron-charts", "0.1.10"), ("hedron-sample-kit", "0.1.10")):
         project = tomllib.loads(
             (ROOT / "packages" / package / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]

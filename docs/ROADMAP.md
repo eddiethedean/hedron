@@ -27,8 +27,9 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 
 ## Production-grade package contract (0.26+)
 
-Phases 0.26–0.32 apply one additional contract to every publishable distribution. A package is
-**production-grade for its declared Supported surface** only when all of the following are true:
+Phases 0.26–0.32—and any later phase using the same label, including 0.38—apply one additional
+contract to every publishable distribution in scope. A package is **production-grade for its
+declared Supported surface** only when all of the following are true:
 
 - the Supported, Experimental, and excluded surfaces are inventoried; installing the package does
   not silently enable an experimental capability;
@@ -1169,7 +1170,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.25** (last published `v0.26.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.28** (last published tip `v0.28.2`).
 See [STATUS](STATUS.md) and
 [release-gate-0.19.toml](acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -1915,7 +1916,7 @@ flowchart LR
   hosts --> parity[PARITY portable]
   parity --> packages[Per-package evidence]
   packages --> packet[REGRESS PKG evidence]
-  packet --> cut[v0.28.1]
+  packet --> cut[v0.28.2]
 ```
 
 1. **Inventory freeze** — Supported / Experimental / excluded for the five packages; docs and
@@ -1991,9 +1992,9 @@ Post-`0.26.0` quality follow-ups that must not inflate Supported claims:
 - Package metadata and adopter docs use the production-grade label only for the declared Supported
   inventory; all exclusions remain conspicuous.
 
-## 0.28 — Production-grade visualization and native acceleration (`v0.28.1`)
+## 0.28 — Production-grade visualization and native acceleration (`v0.28.2`)
 
-**Status:** Published as `v0.28.1` (2026-08-10). Owned by **D-056** /
+**Status:** Published as `v0.28.2` (2026-08-10). Owned by **D-056** /
 [RFC-0059](rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
 Independent package releases may use their own compatible version line; the roadmap phase does
 not require them to adopt the main train's version number. Packet SSOT:
@@ -2258,6 +2259,307 @@ no package remains Alpha merely because it lacked an owner.
   Deferred rows among 0.32-owned gates.
 - The fleet inventory and release evidence are published with `v0.32.0`.
 
+## 0.33 — Web Component ABI and lifecycle foundation (`v0.33.0`)
+
+**Status:** Planned; specification draft under
+[RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md). Implementation may not begin until the RFC is
+Accepted and its open browser/package questions are resolved.
+
+**Outcome:** Hedron has one versioned, framework-neutral Web Component ABI instead of independent
+widget scripts. A new Alpha `hedron-elements` distribution supplies native ES modules and Python
+metadata while server-rendered HTML and HTMX remain the canonical fallback and request layer.
+
+### Scope
+
+- Define element registry metadata for tag/module/ABI identity, attributes, structured inputs,
+  properties/methods, typed events, DOM ownership, forms, accessibility, styles, resources,
+  lifecycle, and fallback.
+- Define `ElementStateOwnership` so every mutable field is explicitly controlled, local, draft, or
+  preference state, with reflection, incoming-update, persistence, submit/discard, rebase/conflict,
+  and authority rules; no silent mixed ownership or last-write-wins.
+- Register the new Alpha package immediately in the fleet inventory with an owner, compatibility
+  range, release channel, and production-grade destination at 0.38 so 0.32's ownership rule remains
+  true as the fleet grows.
+- Reserve the `hedron-` first-party tag prefix; make same-definition registration idempotent and
+  reject definition/ABI conflicts with redacted `HED-ELEMENT-*` diagnostics.
+- Ship one representative light-DOM element end to end across Python rendering, local fingerprinted
+  assets, Explorer, FastAPI, Flask, Django, and the three-engine browser matrix.
+- Specify useful pre-upgrade/failed-upgrade HTML, bounded inert structured data, strict CSP and
+  Trusted Types behavior, and light-DOM server/element ownership rules.
+- Make `connectedCallback` / `disconnectedCallback` the correctness lifecycle, with HTMX cleanup,
+  history, inner/outer/OOB swap, request abort, listener/observer/timer/worker, and leak evidence.
+- Keep the shared bridge at or below 12 KiB gzip and load no element or rich adapter on routes that
+  do not render it.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `ABI-033` | Registry schema, naming, version negotiation, conflicts, fixtures, and diagnostics pass |
+| `ELEMENTS-033` | Framework-neutral wheel and representative element pass clean installs and all hosts |
+| `LIFECYCLE-033` | Connect/reconnect/disconnect, HTMX/history/failure races, cleanup, and repeated-swap leak corpus pass |
+| `SSR-033` | Pre-upgrade/JS-off/failure fallback, structured-input bounds/escaping, and DOM ownership pass |
+| `STATE-033` | Controlled/local/draft/preference ownership, reflection, update, conflict, persistence, and diagnostics pass |
+| `SECURITY-033` / `A11Y-033` | CSP/Trusted Types/event adversarial suite and fallback/upgraded accessibility state matrix pass |
+| `BROWSER-033` / `PKG-033` | Three engines, loading/performance budgets, manifests, supply evidence, docs, and release verifier pass |
+
+### Non-goals
+
+- Wrapping static text, layout, landmarks, or ordinary links in custom elements.
+- Hydration, a virtual DOM, synthetic events, a global browser store, or an application Node build.
+- Treating Shadow DOM, element events, or client validation as a security/authorization boundary.
+- Calling `hedron-elements` production-grade or promoting tag/event contracts to `stable`.
+
+### Exit gate
+
+- One public ABI governs first-party browser behavior and has portable, browser, security,
+  accessibility, lifecycle, performance, and packaging proof.
+- SSR/native HTML remains usable before, without, and after failed element upgrade.
+
+## 0.34 — Form-associated elements and interactive primitives (`v0.34.0`)
+
+**Status:** Planned; depends on the published 0.33 ABI and RFC-0060 acceptance.
+
+**Outcome:** Hedron's richer controls use form-associated custom elements without splitting ordinary
+HTML navigation, HTMX submission, server validation, or accessible fallback into separate models.
+Semantic interactive primitives share the same focus, lifecycle, and failure contracts.
+
+### Scope
+
+- Provide single- and multi-value form-associated controls using `ElementInternals` with tested
+  native/light-DOM fallback, consistent ordinary/HTMX payloads, reset/restore, and disabled states.
+- Integrate constraint validation, visible/programmatic field errors, labels/descriptions,
+  server-returned 422 fragments, CSRF, duplicate-submit policy, and host-adapter forms.
+- Ship `InteractionState` as the common idle/pending/progress/success/error/canceled contract with
+  bounded concurrency, retry, timeout, late-response, job/polling, cancellation, focus, and
+  accessible status behavior.
+- Lock a primitive catalog for material browser-local behaviors such as disclosure, dialog, tabs,
+  menu/popover, selection, and bounded upload; native elements remain preferred when sufficient.
+- Lock `GestureOverlayCatalog` contracts for reorder/drag-drop, resize, pointer/keyboard/touch/cancel,
+  dialog/popover/menu/combobox/tooltip/command/toast top-layer behavior, focus/dismissal, typed intent,
+  allowlisted targets, HTMX swaps, and deterministic cleanup.
+- Prove keyboard conventions, focus entry/exit/restore, screen-reader completion, autofill
+  expectations, localization, zoom/reflow, forced colors, reduced motion, and print fallback.
+- Exercise slow/canceled requests, retarget/reselect, inner/outer/OOB swaps, history restore, module
+  failure, file limits, and cleanup without losing server errors or unsent user intent silently.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `FORM-034` | Native and HTMX submissions match across controls, hosts, reset/restore, and error states |
+| `VALIDITY-034` | ElementInternals/native fallback, constraint/server validation, labels/errors, and CSRF pass |
+| `PRIMITIVE-034` | Locked catalog passes semantic fallback, keyboard/focus, lifecycle, and native-first review |
+| `ACTIONSTATE-034` | Common async state/concurrency/progress/retry/cancel/job/late-response and accessible fallback pass |
+| `INTERACT-034` | Gesture and overlay catalog passes pointer/keyboard/touch/focus/top-layer/security/swap/cleanup matrices |
+| `HTMX-034` | Swap/422/history/duplicate/slow/cancel matrices preserve values, errors, focus, and authority |
+| `AT-034` | Representative keyboard and human screen-reader form/primitives packet is dispositioned |
+| `REGRESS-034` / `PKG-034` | Cross-host/browser/security/performance/compatibility/docs/package suites pass |
+
+### Non-goals
+
+- Reimplementing native controls for visual consistency alone.
+- Client-owned business validation, authorization, CSRF, form persistence, or upload authority.
+- Hiding an inaccessible upgraded control behind an accessible but non-equivalent fallback.
+
+### Exit gate
+
+- Supported rich controls submit and validate as real forms with and without HTMX/upgrade.
+- The selected primitives have no separate ad hoc loader, focus, event, or cleanup protocol.
+
+## 0.35 — Rich data and visualization elements (`v0.35.0`)
+
+**Status:** Planned; depends on the 0.34 form/primitive packet.
+
+**Outcome:** Data grids/editors, interactive charts, maps, media, editors, and eligible specialty
+surfaces converge on the shared ABI. Rich adapters remain optional and bounded; useful server-rendered
+tables, summaries, forms, media links, and exports survive slow, absent, or failed JavaScript.
+
+### Scope
+
+- Migrate DataTable/DataEditor browser behavior to common configuration, typed edit/selection/event,
+  pending/conflict, validation, paging/virtualization, saved-view, fallback, and disposal contracts.
+- Prove `OptimisticMutation` on bounded DataEditor/collection edits using explicit base revisions,
+  forward/inverse typed patches or canonical refetch, idempotency, proposed/submitted/confirmed state,
+  rollback, conflict resolution, reconnect, and deny-by-default risk exclusions.
+- Migrate interactive chart backends to common resize/visibility/event/selection/export/annotation,
+  asset, accessible-summary, Shadow/light DOM, failure, and adapter-dispose contracts.
+- Apply the ABI to map, media/capture, code/editor, and eligible specialty surfaces; retain explicit
+  Experimental exceptions with an owner/destination when a surface cannot meet the gates.
+- Inventory and bound workers, WASM, object URLs, media streams, observers, buffers, third-party
+  runtimes, remote origins, payloads, cancellation, and disconnect cleanup.
+- Establish per-surface browser performance, memory, long-task, layout-shift, a11y, large-data, and
+  failure-injection budgets without making rich adapters default/transitive assets.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `DATA-035` | Grid/editor edits, state, virtualization, validation, fallback, authorization, and teardown pass common ABI suites |
+| `OPTIMISTIC-035` | Typed revision/idempotency/confirm/rollback/refetch/conflict/reconnect contract and risk exclusions pass |
+| `CHART-035` | Interactive charts pass event, resize/export, fallback/summary, asset, a11y, and dispose contracts |
+| `RICH-035` / `WORKER-035` | Map/media/editor inventory and worker/WASM/stream/buffer/origin cleanup and bounds pass |
+| `PERF-035` / `A11Y-035` | Named large scenarios meet performance/memory and accessible fallback/upgraded-state budgets |
+| `REGRESS-035` / `PKG-035` | Import/markup upgrades, optional isolation, browsers/hosts, docs, and package evidence pass |
+
+### Non-goals
+
+- Graduating every third-party backend merely because it implements the ABI.
+- Sending unbounded datasets through element attributes/document payloads.
+- Making canvas, Shadow DOM, workers, WASM, live transports, or a specific vendor required.
+
+### Exit gate
+
+- First-party rich browser surfaces either share the ABI or have a machine-visible Experimental
+  exception; none keeps an unowned lifecycle/event/fallback protocol.
+
+## 0.36 — Web Component authoring and interoperability (`v0.36.0`)
+
+**Status:** Planned; depends on proven first-party ABI use in 0.33–0.35.
+
+**Outcome:** Third-party authors can build portable Hedron elements without private APIs. Plugins,
+HDJ, Explorer, themes, and conformance understand the same element metadata. An optional npm mirror
+may expose the browser modules without changing the Python no-Node consumer path.
+
+### Scope
+
+- Publish an author kit for typed metadata/events, DOM ownership, lifecycle/fallback, assets,
+  accessibility, diagnostics, compatibility, testing, and packaging.
+- Add an element scaffold that creates the Python wrapper, native module, CSS, examples, metadata,
+  unit/browser/a11y tests, and build declarations; prove it in an external consumer repository.
+- Publish `ReactMigrationMatrix` mappings and fit guidance for React render/props/callbacks/state/
+  effects/context/reducers/forms/data/routing/portals/loading/errors/lists/transitions/gestures/rich
+  widgets, with per-dependency native/Hedron/element/temporary-island/not-a-fit dispositions.
+- Provide an optional migration-only Experimental React-island bridge with one owned root, pinned
+  non-transitive assets, typed props/events, SSR fallback, CSP/supply inventory, deterministic
+  unmount, no HTMX-region ownership, and an explicit removal ledger.
+- Extend HDJ feature manifests, plugin discovery, and Explorer inspection/simulation to cover ABI,
+  events/actions, fragments, forms, assets, lifecycle/failure, slots/parts/tokens, and performance.
+- Define stable customization through scoped light-DOM classes and bounded Shadow-DOM tokens,
+  `part`, and slots; themes/color modes/forced colors/print work without redefining elements.
+- Publish portable positive/negative fixtures; if `@hedron/elements` ships, require content identity,
+  reproducible build, provenance, license/SBOM, and explicit standalone support boundaries.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `AUTHOR-036` / `PLUGIN-036` | Public author contract, scaffold, and separately built plugin consumer pass |
+| `HDJ-036` | Standards-native element markup and static feature/ABI/asset/event/fragment declarations pass |
+| `THEME-036` | Scoped styles and public tokens/parts/slots pass theme, color, forced-color, print, and compatibility suites |
+| `EXPLORER-036` / `CONF-036` | Full element inspection/failure simulation and portable positive/negative fixtures pass |
+| `MIGRATE-036` | React coverage matrix, fit/non-fit guidance, worked migrations, dependency dispositions, and bounded island bridge pass |
+| `SUPPLY-036` / `PKG-036` | Wheel/npm identity where applicable, clean consumers, provenance/SBOM/licenses, docs, and verifier pass |
+
+### Non-goals
+
+- Requiring npm, a bundler, TypeScript, Lit, or another framework for Python applications/authors.
+- Promising universal React parity or making the temporary React-island bridge Supported/default.
+- Supporting arbitrary remote modules, unreviewed runtime package download, or private Shadow-DOM
+  customization.
+- Treating a portable metadata evaluator as a full browser or Hedron application runtime.
+
+### Exit gate
+
+- A third party can author, package, test, inspect, upgrade, and remove an element using public
+  contracts only; Python consumers still install and run without Node.js.
+
+## 0.37 — Browser composition, state, and navigation (`v0.37.0`)
+
+**Status:** Planned; depends on the public authoring/interoperability contract.
+
+**Outcome:** Elements compose through typed DOM events and registered interaction graphs while the
+server remains authoritative. Bounded browser-local draft transfer, history/navigation, diagnostics,
+and failure isolation make multi-element applications predictable across HTMX swaps.
+
+### Scope
+
+- Compose elements through versioned events, registered actions, and `InteractionGraph` bindings
+  with cycle, payload, target, authorization, cancellation, and full-fragment fallback policy.
+- Classify derived, draft, preference, server, and capability state; allow only explicit bounded
+  schema/version/route/identity/expiry draft transfer and clear it on identity/authority changes.
+- Preserve `ElementStateOwnership` and `InteractionState` operation/revision identity across
+  composition, transfer, history, late responses, optimistic confirmation, rollback, and conflict.
+- Specify submit/discard/reconnect/swap/history behavior for every stateful element; forbid hidden
+  global stores, private cross-element calls, and arbitrary selector/object mutation.
+- Integrate boosted navigation, push/replace URL, history cache, focus/title, optional preload and
+  View Transitions, and full navigation fallback without reopening the polling-only decision.
+- Correlate lifecycle/event/state/asset/action/failure traces without recording payload/user content,
+  and isolate slow/failing/incompatible elements from native navigation and unrelated regions.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `COMPOSE-037` | Typed event/action/graph composition, cycles, cancellation, authorization, and fallback pass |
+| `STATE-037` | State classes and bounded draft transfer/clearing/rejection/no-transfer fallback pass |
+| `NAV-037` | Boost/history/focus/title/preload/view-transition feature detection and full navigation fallback pass |
+| `TRACE-037` / `FALLBACK-037` | Redacted correlation and per-element slow/failure/version-skew isolation pass |
+| `BROWSER-037` / `REGRESS-037` / `PKG-037` | Multi-element host/browser/a11y/perf/privacy/compatibility/package matrices pass |
+
+### Non-goals
+
+- A Redux-like global store, client router, offline application authority, or hidden SPA runtime.
+- Persisting secrets, capabilities, files, trusted HTML, authorization, or server state in element
+  transfer/storage.
+- Making preload, View Transitions, browser storage, or live transports a correctness dependency.
+
+### Exit gate
+
+- Multi-element flows have explicit event, state, navigation, diagnostics, failure, and fallback
+  behavior with no ambient browser authority.
+
+## 0.38 — Production-grade Web Component platform (`v0.38.0`)
+
+**Status:** Planned. Final graduation phase for the 0.33–0.38 program; not a blanket promotion of
+every element/backend and not a scheduled `1.0`.
+
+**Outcome:** `hedron-elements` and a locked first-party element inventory are production-grade for
+their declared Supported workflows. Stable browser ABI/tag/event/form/customization contracts have
+upgrade/rollback evidence, independent security review, human AT evidence, performance budgets, and
+complete browser supply-chain provenance.
+
+### Scope
+
+- Publish a machine-readable Supported inventory of stable tags, ABI versions, attributes/properties,
+  events, form encodings, slots/parts/tokens, fallback, browser floor, packages, and exclusions.
+- Inventory Supported `ElementStateOwnership` modes, `InteractionState` transitions,
+  `OptimisticMutation` types, `GestureOverlayCatalog` entries, and the terminal/Experimental
+  disposition of the React migration bridge.
+- Prove minimum/current browsers/dependencies, mixed versions, 0.33–0.37 upgrades, rollback, offline
+  installs, package removal, and incompatible/unknown feature fallback.
+- Complete independent browser/security review across code execution, CSP/Trusted Types, inputs,
+  events, origins/assets/workers, Shadow DOM assumptions, state/forms, version skew, dependencies,
+  failure isolation, and redaction; resolve every critical/high finding.
+- Complete human AT sessions for representative form, navigation, data-editor, chart, and swap/failure
+  workflows; keep blocked/unproven surfaces outside Supported inventory.
+- Lock production-reference-app bundle/request/upgrade/interaction/memory/leak/long-task/layout-shift
+  budgets plus wheel/npm/module/worker/WASM/source/license/SBOM/provenance/rollback evidence.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `STABLE-038` / `COMPAT-038` | Machine inventory, stable ABI surface, browser/package matrices, upgrade/rollback/offline/removal pass |
+| `REVIEW-038` | Independent threat review has no unresolved critical/high finding at cut |
+| `AT-038` | Human AT representative workflows are remediated/dispositioned and Supported inventory is honest |
+| `PERF-038` | Reference-app loading, upgrade, interaction, memory/leak, long-task, and layout budgets pass |
+| `SUPPLY-038` | All browser/Python artifacts have complete reproducibility, SBOM, provenance, license, vulnerability, and rollback evidence |
+| `REGRESS-038` / `PKG-038` | Hosts, HDJ/plugins, conformance, browser/a11y/security/perf/docs/package release rehearsal pass |
+
+### Non-goals
+
+- Converting all Hedron components into custom elements or describing Hedron as an SPA framework.
+- Promoting every rich/third-party/experimental element backend.
+- Replacing SSR, native HTML/forms/navigation, HTMX, server validation, or polling.
+- Claiming application WCAG/legal compliance, certification, VPAT/ACR, commercial SLA, or `1.0`.
+
+### Exit gate
+
+- All 0.38-owned rows are Verified with zero Deferred, and the Supported element inventory is
+  published with compatibility, review, AT, performance, and supply evidence.
+- Experimental elements remain conspicuous, non-default, and independently owned.
+
 ## Complete capability-to-release ledger
 
 This ledger is the coverage check for planned capabilities. The detailed phase sections above remain normative; the ledger prevents a subsystem or cross-cutting requirement from disappearing between plans.
@@ -2307,6 +2609,16 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Fingerprinted assets, CSS URL rewriting, CSP/offline manifests | 0.3 | Production performs no required runtime compilation. |
 | Component folders with code, CSS, examples, tests, docs, and browser modules | 0.3; HDJ package namespaces 0.11 | Phase 0.9 accepts application HDJ; finite package namespaces and overrides arrive with the 0.11 manifest boundary. |
 | Web Component registration, typed events, light/Shadow DOM policy | 0.3 | Browser-local interaction integrates safely with HTMX swaps. |
+| Versioned element ABI, `hedron-elements`, SSR fallback, DOM ownership, HTMX lifecycle | 0.33 | Shared native custom-element boundary; no hydration, VDOM, global store, or application Node build. |
+| `ElementStateOwnership` controlled/local/draft/preference contract | 0.33 | Explicit source-of-truth, reflection, incoming-update, conflict, persistence, and authority rules. |
+| Form-associated elements and semantic interactive primitives | 0.34 | Native-first controls preserve ordinary forms, HTMX, server validation, keyboard/focus, and failed-upgrade fallback. |
+| `InteractionState` and `GestureOverlayCatalog` | 0.34 | Common async progress/cancel/error model plus accessible pointer/keyboard/touch/top-layer primitives. |
+| Data/chart/map/media/editor convergence on the shared element ABI | 0.35 | Rich adapters stay optional, bounded, disposable, and paired with useful server-rendered fallbacks. |
+| `OptimisticMutation` | 0.35 | Explicit typed revision/idempotency/confirmation/rollback/refetch/conflict contract; server-confirmed is default. |
+| Third-party element authoring, HDJ/plugin/Explorer integration, tokens/parts/slots, portable fixtures | 0.36 | Public author kit and optional npm mirror do not change the Python no-Node consumer path. |
+| `ReactMigrationMatrix` and temporary island disposition | 0.36 | Concept/dependency coverage ledger, worked migrations, honest non-fits, and Experimental non-transitive bridge. |
+| Typed element composition, bounded draft transfer, history/navigation, traces, failure isolation | 0.37 | Server authority and full navigation/fragment fallbacks remain canonical. |
+| Production-grade Web Component Supported inventory | 0.38 | Stable ABI/tag/event/form/customization contracts require independent review, human AT, performance, compatibility, and supply evidence. |
 | Component package authoring and browser-asset declarations | 0.4 | Public extension and audit contracts. |
 | `hedron-explorer` and official Explorer browser assets | 0.2 preview; 0.4 full | Optional development distribution with production opt-in controls. |
 
@@ -2461,6 +2773,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Production-grade deny-by-default MCP projection | 0.30 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review. |
 | Production-grade Gradio/Hugging Face client interoperability | 0.31 | Allowlisted egress/endpoints, file/stream bounds, cancellation, polling jobs, provider compatibility, and secret hygiene. |
 | Whole-fleet production-grade closure | 0.32 | Machine-readable inventory, resolver/upgrade/rollback matrices, composed reference-app proof, and no unowned Alpha package. |
+| Web Component platform program | 0.33–0.38 | ABI/lifecycle → forms/primitives → rich surfaces → authoring → composition → production-grade graduation (draft RFC-0060). |
 | Optional written `1.0` DoD without a calendar date | D-053 | Not a roadmap phase; preserves D-038. |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 
@@ -2526,6 +2839,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0056 Production-quality maturity program | 0.23–0.25 (D-053) |
 | 0057 Production-grade core / FastAPI / Explorer | 0.26 |
 | 0058 Production-grade adapters / data / HDJ / curated extras | 0.27 |
+| 0059 Production-grade charts / native acceleration | 0.28 |
+| 0060 Web Component platform program | 0.33–0.38 (Draft; must be Accepted before implementation) |
 
 ## Open GitHub issue ownership (0.13+)
 
@@ -2595,4 +2910,11 @@ tooling, MCP, Gradio, and a whole-fleet closure audit. Each planned phase requir
 owning RFC/decision before implementation; adding it here assigns scope and prevents maturity work
 from becoming an unowned backlog. These additions do not renumber earlier phases. An optional
 `1.0` definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
-roadmap phase.
+roadmap phase. Planned phases **0.33–0.38** establish the next capability program: a versioned
+Web Component ABI and lifecycle foundation, explicit state ownership and async interaction,
+form-associated gesture/overlay primitives, optimistic rich data/visualization elements, a React
+migration matrix and third-party authoring/interoperability, typed browser composition, and a
+production-grade Supported inventory. The program is governed by Draft RFC-0060 and may not enter
+implementation until that RFC is Accepted. It preserves server-rendered HTML, HTMX, native
+form/navigation, polling, and server validation as canonical fallbacks; it does not turn Hedron into
+an SPA runtime or require Node.js in consuming Python applications.

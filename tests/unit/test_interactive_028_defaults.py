@@ -57,6 +57,20 @@ def test_auto_without_as_rejects_experimental_plotly() -> None:
     assert any(name == "plotly" and "experimental" in reason for name, reason in decision.rejected)
 
 
+def test_auto_matplotlib_resolves_without_as() -> None:
+    matplotlib = pytest.importorskip("matplotlib")
+    matplotlib.use("Agg")
+    from matplotlib import pyplot as plt
+
+    fig, ax = plt.subplots()
+    ax.plot([1, 2, 3], [1, 4, 9])
+    try:
+        node = Auto(fig).resolve()
+    finally:
+        plt.close(fig)
+    assert type(node).__name__ == "MatplotlibChart"
+
+
 def test_optional_adapter_names_are_experimental_subset() -> None:
     names = {adapter.name for adapter in optional_adapters()}
     assert names

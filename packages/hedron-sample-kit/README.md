@@ -11,12 +11,12 @@ Demonstrates a component (`Callout`), styles, asset, named example, Explorer
 panel, and diagnostic owner via the `hedron.plugins` entry point. Use it as a
 reference when authoring your own plugin distribution.
 
-**Package maturity:** Alpha · **0.28-compatible release:** `0.1.9`
+**Package maturity:** Alpha · **0.28-compatible release:** `0.1.10`
 
 ## Install
 
 ```bash
-pip install "hedron-sample-kit>=0.1.9,<0.2"
+pip install "hedron-sample-kit>=0.1.10,<0.2"
 ```
 
 Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.9` floor. See

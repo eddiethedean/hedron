@@ -23,11 +23,17 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.25** | Production archetype, load budgets, extras quarantine | **Published** (`v0.25.0`+; last `v0.25.2`; D-053) |
 | **0.26** | Production-grade core, FastAPI flagship, and secured/development Explorer | **Published** (`v0.26.0`; D-054) |
 | **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | **Published** (`v0.27.0`; D-055) |
-| **0.28** | Production-grade charts and optional native acceleration | **Published** (`v0.28.1`; D-056 / RFC-0059) |
+| **0.28** | Production-grade charts and optional native acceleration | **Published** (`v0.28.2`; D-056 / RFC-0059) |
 | **0.29** | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | Planned; tooling scope remains explicit |
 | **0.30** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required |
 | **0.31** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access |
 | **0.32** | Whole-fleet production-grade closure | Planned; no unowned Alpha package or ambiguous tool disposition |
+| **0.33** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Planned; Draft RFC-0060 |
+| **0.34** | Async interaction state, form-associated elements, gestures/overlays, and semantic primitives | Planned |
+| **0.35** | Optimistic mutations and rich data, chart, map, media, and editor elements | Planned |
+| **0.36** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | Planned |
+| **0.37** | Typed browser composition, bounded draft state, and navigation | Planned |
+| **0.38** | Production-grade Web Component platform | Planned; locked Supported inventory only |
 
 ## What this means for you
 
@@ -45,12 +51,14 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
 - Planned **0.26–0.32** phases apply an evidence-based production-grade contract to the remaining
-  package fleet. This is not a blanket feature promotion or a scheduled `1.0`; see the
+  package fleet. Planned **0.33–0.38** then establish a standards-based Web Component platform while
+  preserving SSR, native forms/navigation, HTMX, and no-Node Python consumption. Neither program is
+  a blanket feature promotion or a scheduled `1.0`; see the
   [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
 ## Honest gaps on the current train (0.28)
 
-- Current **published** PyPI train is **0.28.x** (last `v0.28.1`)
+- Current **published** PyPI train is **0.28.x** (last `v0.28.2`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), and `hedron-charts` / `hedron-native`

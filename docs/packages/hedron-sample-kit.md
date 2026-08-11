@@ -2,15 +2,15 @@
 
 Third-party-shaped sample Hedron plugin package.
 
-**Package maturity:** Alpha · **0.28-compatible release:** `0.1.9`
+**Package maturity:** Alpha · **0.28-compatible release:** `0.1.10`
 **Flagship extra:** none — install directly · **Import:** `hedron_sample_kit`  
-The repository source is compatible with `hedron-core>=0.28.1,<0.29`. Reference / demo
+The repository source is compatible with `hedron-core>=0.28.2,<0.29`. Reference / demo
 only — not an app framework.
 
 ## Install
 
 ```bash
-pip install "hedron-sample-kit>=0.1.9,<0.2"
+pip install "hedron-sample-kit>=0.1.10,<0.2"
 ```
 
 Versions through `0.1.5` target older Hedron cores; keep the `>=0.1.9` floor. Details:

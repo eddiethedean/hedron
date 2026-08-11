@@ -10,6 +10,8 @@ import re
 import shutil
 import sys
 import time
+import tomllib
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, cast
 
@@ -18,6 +20,37 @@ from hedron_core.registry import ComponentMeta, get_registry
 from hedron_core.typing_aliases import JsonObject, PluginMetaDict
 
 __all__ = ["main"]
+
+
+@lru_cache(maxsize=1)
+def _release_pin_bounds() -> tuple[str, str]:
+    """Return ``(pin_floor, pin_ceiling)`` for scaffold dependency pins.
+
+    Prefer ``docs/release.toml`` when running from a monorepo checkout. Fall back to
+    this package's ``__version__`` as the floor (published wheels) and the next
+    minor train as the ceiling.
+    """
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        candidate = parent / "docs" / "release.toml"
+        if not candidate.is_file():
+            continue
+        release = tomllib.loads(candidate.read_text(encoding="utf-8")).get("release", {})
+        floor = str(release.get("pin_floor", "")).strip()
+        ceiling = str(release.get("pin_ceiling", "")).strip()
+        if floor and ceiling:
+            return floor, ceiling
+    from hedron import __version__ as package_version
+
+    parts = package_version.split(".")
+    if len(parts) < 2 or not parts[1].isdigit():
+        raise RuntimeError(f"cannot derive scaffold pin from version {package_version!r}")
+    return package_version, f"0.{int(parts[1]) + 1}"
+
+
+def _scaffold_dep(package: str) -> str:
+    floor, ceiling = _release_pin_bounds()
+    return f"{package}>={floor},<{ceiling}"
 
 
 def _load_app(app_path: str | None) -> Any | None:
@@ -359,7 +392,7 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron>=0.28.1,<0.29",
+    "{_scaffold_dep("hedron")}",
     "uvicorn[standard]>=0.30",
 ]
 
@@ -436,8 +469,8 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron-flask>=0.28.1,<0.29",
-    "hedron-core>=0.28.1,<0.29",
+    "{_scaffold_dep("hedron-flask")}",
+    "{_scaffold_dep("hedron-core")}",
     "flask>=3,<4",
 ]
 
@@ -529,8 +562,8 @@ name = "{args.name}"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "hedron-django>=0.28.1,<0.29",
-    "hedron-core>=0.28.1,<0.29",
+    "{_scaffold_dep("hedron-django")}",
+    "{_scaffold_dep("hedron-core")}",
     "django>=5.2,<6",
     "waitress>=3,<4",
 ]

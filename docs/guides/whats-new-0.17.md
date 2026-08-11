@@ -2,7 +2,7 @@
 
 !!! note "Historical phase"
 
-    This page describes **0.17**. The Living published train is **0.28** (last `v0.28.1`). Pin `hedron>=0.28.1,<0.29`.
+    This page describes **0.17**. The Living published train is **0.28** (last `v0.28.2`). Pin `hedron>=0.28.2,<0.29`.
 
 Phase **0.17** adds reactive dashboards and agent interfaces — finite interaction graphs,
 bounded patches, optional notebook preview and deny-by-default MCP — plus HTMX shell authoring

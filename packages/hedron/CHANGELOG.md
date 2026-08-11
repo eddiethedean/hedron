@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.28.2] — 2026-08-11
+
+### Fixed
+
+- `hedron new` scaffolds and the published-quickstart release checker share
+  `docs/release.toml` `pin_floor` (release verify no longer expects train `.0`).
+- Release workflow creates the GitHub Release only after quickstart verify succeeds
+  and omits plain `linux_*` native wheels from attach.
+
+### Changed
+
+- Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).
+- Charts floor for `hedron[charts]` raised to `hedron-charts>=0.1.10,<0.2` (Plotly/Vega
+  destroy-before-remount).
+
 ## [0.28.1] — 2026-08-10
 
 ### Fixed

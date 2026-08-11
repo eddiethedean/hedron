@@ -28,6 +28,7 @@
   }
 
   function mount(el) {
+    destroy(el);
     const raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
     if (!window.vegaEmbed) {

@@ -9,11 +9,33 @@ import subprocess
 import sys
 import tempfile
 import time
+import tomllib
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+RELEASE_TOML = ROOT / "docs" / "release.toml"
 
 
 def run(command: list[str], *, cwd: Path) -> None:
     subprocess.run(command, cwd=cwd, check=True)
+
+
+def expected_hedron_scaffold_pin(version: str, *, release_toml: Path = RELEASE_TOML) -> str:
+    """Pin the published scaffold must contain (matches ``hedron new`` / release.toml)."""
+    if not re.fullmatch(r"\d+\.\d+\.\d+", version):
+        raise ValueError(f"invalid release version: {version!r}")
+    if release_toml.is_file():
+        release = tomllib.loads(release_toml.read_text(encoding="utf-8"))["release"]
+        floor = str(release["pin_floor"]).strip()
+        ceiling = str(release["pin_ceiling"]).strip()
+        if floor != version:
+            raise ValueError(
+                f"release.toml pin_floor {floor!r} does not match published version {version!r}"
+            )
+        return f">={floor},<{ceiling}"
+    train = ".".join(version.split(".")[:2])
+    next_minor = f"0.{int(train.split('.')[1]) + 1}"
+    return f">={version},<{next_minor}"
 
 
 def main() -> int:
@@ -71,10 +93,12 @@ def main() -> int:
             cwd=project,
         )
         pyproject = (project / "pyproject.toml").read_text(encoding="utf-8")
-        train = ".".join(args.version.split(".")[:2])
-        next_minor = f"0.{int(train.split('.')[1]) + 1}"
-        if f'"hedron>={train}.0,<{next_minor}"' not in pyproject:
-            raise SystemExit("published scaffold contains the wrong Hedron train pin")
+        expected = f'"hedron{expected_hedron_scaffold_pin(args.version)}"'
+        if expected not in pyproject:
+            raise SystemExit(
+                "published scaffold contains the wrong Hedron train pin "
+                f"(expected {expected})"
+            )
 
     print(f"ok: PyPI hedron=={args.version} installs and its scaffold imports")
     return 0

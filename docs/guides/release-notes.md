@@ -9,6 +9,21 @@ details remain in the [package changelogs](changelog.md).
     The current web framework starts at `0.1.0`; there is no supported migration path or
     API continuity with that legacy project.
 
+## 0.28.2 — 2026-08-11
+
+Coordinated Beta patch on the 0.28 train (cut-ready tip).
+
+- Raises coordinated package versions / pins to `0.28.2` (`>=0.28.2,<0.29`).
+- Aligns `hedron new` scaffolds and the published-quickstart release checker on
+  `docs/release.toml` `pin_floor` (fixes the v0.28.1 release verify footgun).
+- Plotly/Vega chart hosts destroy-before-remount; `hedron-charts` `0.1.10`.
+- GitHub Release create waits on quickstart verify and omits plain `linux_*` wheels.
+- No Supported CRUD/admin API removal.
+
+```bash
+python -m pip install -U "hedron>=0.28.2,<0.29"
+```
+
 ## 0.28.1 — 2026-08-10
 
 Correctness and tip-honesty patch for the 0.28 train.
@@ -18,9 +33,8 @@ Correctness and tip-honesty patch for the 0.28 train.
   mount-aware static prefixes, and live `HEDRON_NATIVE_DISABLE`.
 - Hardens tip-hub SSOT wrap scans and CI native/crates publish footguns.
 
-```bash
-python -m pip install -U "hedron>=0.28.1,<0.29"
-```
+Install the current tip with the pin under **0.28.2** above (historical cut pin was
+`>=0.28.1,<0.29`).
 
 ## 0.28.0 — 2026-08-10
 
@@ -56,9 +70,7 @@ Hedron 0.27.0 graduates data, Flask/Django, HDJ, and curated extras inventories.
 No Supported CRUD/admin API removal is listed. Polling remains the production path for
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
-```bash
-python -m pip install -U "hedron>=0.28.1,<0.29"
-```
+Install the current tip with the pin under **0.28.2** above.
 
 Read [Upgrade to 0.27](upgrade.md) before changing a production lockfile. Maintainer
 evidence identifiers and packets are linked from [What’s new in 0.27](whats-new-0.27.md).
