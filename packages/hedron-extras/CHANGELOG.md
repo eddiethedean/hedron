@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.0] — 2026-08-11
+
+### Changed
+
+- Coordinated 0.29 train bump.
+
+
 ## [0.28.2] — 2026-08-11
 
 ### Changed

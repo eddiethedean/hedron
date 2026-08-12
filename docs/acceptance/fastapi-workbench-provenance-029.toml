@@ -1,0 +1,99 @@
+# Adopt / adapt / exclude matrix vs fastapi-workbench 0.3.4 (MIT).
+# Re-audit latest upstream at RFC acceptance and at the 0.29 cut.
+# Do not vendor or depend on fastapi-workbench.
+
+upstream = "fastapi-workbench"
+upstream_version = "0.3.4"
+upstream_repo = "https://github.com/eddiethedean/jwt-user-management/tree/main/fastapi_workbench"
+license = "MIT"
+attribution = "Reimplemented with MIT attribution; no runtime dependency."
+
+[[adopt]]
+id = "MW-DECODE"
+source = "middleware.py:_maybe_decode_absolute_url_path"
+notes = "Decode encoded absolute http(s) request target once; copy path/raw_path/query."
+
+[[adapt]]
+id = "MW-STRIP"
+source = "middleware.py:_canonicalize_proxy_root"
+notes = "When path already includes root_path, leave path prefixed and let Starlette get_route_path strip (StaticFiles/OpenAPI). Rewrite /proxy/<port> root_path only. No greedy partial suffix."
+
+[[adopt]]
+id = "MW-PROXY"
+source = "middleware.py + detect.py"
+notes = "/proxy/<decimal-port>/<rest> only in root/mount position."
+
+[[adopt]]
+id = "MW-WRAP"
+source = "workbenchify"
+notes = "Idempotent outer wrapper or native HedronWorkbench normalizer; HTTP/WS only; copy scope."
+
+[[adopt]]
+id = "RUN-RSERVER"
+source = "runner.py:discover_rserver_url"
+notes = "Absolute rserver-url -l <port> without a shell; bounded stdout/stderr; path or full URL."
+
+[[adopt]]
+id = "RUN-RS-SERVER-URL"
+source = "runner.py + detect.py"
+notes = "RS_SERVER_URL is discovery-only; not redirect mode or trust."
+
+[[adopt]]
+id = "RUN-LOOPBACK"
+source = "runner.py:run_target"
+notes = "Default loopback; exact shared proxy allowlist; external bind explicit; reload/multi-worker rejected."
+
+[[adopt]]
+id = "REDIR-034"
+source = "CHANGELOG 0.3.4 + path_safety.workbench_mount_redirect_url"
+notes = "Mount-prefixed Location when root_path set; do not use ../ depth."
+
+[[adopt]]
+id = "ALIAS"
+source = "detect.py / runner.py"
+notes = "WORKBENCH_FORCE, WORKBENCH_DEBUG, BASE_PATH, PUBLIC_BASE_URL, HOST, PORT as warned aliases."
+
+[[adopt]]
+id = "REDACT"
+source = "path_safety.redact_scope_for_log"
+notes = "Redact session/project/token-like path and query before logs."
+
+[[adapt]]
+id = "HEDRON-ROOT"
+notes = "Export HEDRON_ROOT_PATH before import so cookie Path is construction-correct."
+
+[[adapt]]
+id = "HEDRON-FACADE"
+notes = "HedronWorkbench subclasses Hedron, consumes resolved launcher state, and is inactive outside Workbench."
+
+[[adapt]]
+id = "HEDRON-URL"
+notes = "redirect_local / prefix_local_path / SafeUrl; no public safe_redirect/external_url facade."
+
+[[adapt]]
+id = "CLI"
+notes = "hedron-workbench run/check/--dry-run instead of start_app; no Alembic."
+
+[[adapt]]
+id = "DIAG"
+notes = "HED-WB-* diagnostics and typed WorkbenchConfig / ResolvedDeployment."
+
+[[exclude]]
+id = "ALEMBIC"
+notes = "RUN_MIGRATIONS / alembic upgrade."
+
+[[exclude]]
+id = "FLUXLIT"
+notes = "FLUXLIT_PUBLIC_BASE_URL."
+
+[[exclude]]
+id = "AUTO"
+notes = "Import/sitecustomize/entry-point auto-wrap."
+
+[[exclude]]
+id = "BUNDLE"
+notes = "Shipping rserver-url."
+
+[[exclude]]
+id = "CONNECT-IDENTITY"
+notes = "rstudio-connect-app-base-url as identity or default trust."

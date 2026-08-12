@@ -18,6 +18,7 @@ on a clean venv — that is the polished first-success path.
 | [`flask-reference/`](flask-reference/) | Flask | Home + fragment slice (port **8000**) |
 | [`django-reference/`](django-reference/) | Django | Waitress WSGI or uvicorn ASGI (manage-less) |
 | [`hdj-progressive/`](hdj-progressive/) | CLI render | Prints HTML to stdout — not a web server |
+| [`workbench-reference/`](workbench-reference/) | FastAPI | Ordinary Hedron and `HedronWorkbench` launch paths (0.29) |
 
 ## Phase evidence (0.15–0.18) — maintainers
 

@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workspace"
-version = "0.28.2"
+version = "0.29.0"
 description = "Hedron monorepo workspace"
 requires-python = ">=3.11,<3.15"
 readme = "README.md"
@@ -26,6 +26,7 @@ members = [
     "packages/hedron-mcp",
     "packages/hedron-gradio",
     "packages/hedron-sim",
+    "packages/hedron-workbench",
 ]
 
 [dependency-groups]
@@ -46,6 +47,7 @@ dev = [
     "hedron-mcp",
     "hedron-gradio",
     "hedron-sim",
+    "hedron-workbench",
     "pytest>=8.3",
     "httpx>=0.28",
     "anyio>=4.8",
@@ -99,6 +101,7 @@ hedron-notebook = { workspace = true }
 hedron-mcp = { workspace = true }
 hedron-gradio = { workspace = true }
 hedron-sim = { workspace = true }
+hedron-workbench = { workspace = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]
@@ -112,7 +115,7 @@ markers = [
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "tests", "examples"]
+src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-workbench/src", "tests", "examples"]
 extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
@@ -143,6 +146,7 @@ include = [
     "packages/hedron-mcp/src",
     "packages/hedron-gradio/src",
     "packages/hedron-sim/src",
+    "packages/hedron-workbench/src",
 ]
 pythonVersion = "3.11"
 typeCheckingMode = "strict"

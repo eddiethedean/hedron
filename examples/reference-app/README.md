@@ -43,7 +43,7 @@ production deploy.**
 Open the home page for CRUD + DataEditor (+ charts/Markdown when workspace charts are
 available). Chart interaction endpoints live under `/charts/*` (for example
 `/charts/fragment`, `/charts/search`). Outside the workspace, install
-`hedron[charts]>=0.28.2,<0.29` to obtain the compatible chart satellite.
+`hedron[charts]>=0.29.0,<0.30` to obtain the compatible chart satellite.
 
 ## Production compose (canonical archetype)
 

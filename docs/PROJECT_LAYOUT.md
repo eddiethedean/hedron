@@ -44,6 +44,8 @@ hedron/
 │   │   └── src/hedron_gradio/
 │   ├── hedron-sim/                  # Alpha offline HTMX docs/demo simulator
 │   │   └── src/hedron_sim/
+│   ├── hedron-workbench/            # Posit Workbench adapter (0.29)
+│   │   └── src/hedron_workbench/
 │   ├── hedron-native/             # Optional Rust acceleration (Beta 0.1.x)
 │   │   └── src/hedron_native/
 │   ├── hedron-runtime-node/       # Experimental Node runtime (outside uv workspace)
@@ -72,7 +74,7 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.28.x`) |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.29.x`) |
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
@@ -87,6 +89,7 @@ hedron/
 | `hedron-gradio` | `hedron_gradio` | Optional Gradio client interop (experimental Alpha); also `hedron[gradio]` | `v0.1.0` |
 | `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Alpha) | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
+| `hedron-workbench` | `hedron_workbench` | Optional Posit Workbench / RStudio Server adapter; also `hedron[workbench]` | `v0.29.0` |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
 `hedron-explorer` for development diagnostics; `hedron[jinja]` installs the separate integration.

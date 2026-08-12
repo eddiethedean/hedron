@@ -12,7 +12,7 @@ the status region update without a full page reload.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.28.2,<0.29" hedron new my-flask-app --flask
+uvx --from "hedron>=0.29.0,<0.30" hedron new my-flask-app --flask
 cd my-flask-app && uv sync && uv run flask --app app run --port 8000
 ```
 
@@ -45,7 +45,7 @@ Set `HEDRON_SESSION_SECRET` before production.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-python -m pip install "hedron-flask>=0.28.2,<0.29"
+python -m pip install "hedron-flask>=0.29.0,<0.30"
 ```
 
 Save as `app.py`:

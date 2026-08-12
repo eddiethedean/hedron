@@ -78,6 +78,45 @@ def test_mounted_page_injects_htmx_core_before_bundled_extensions(
     _assert_htmx_before_extensions(response.text, static_prefix="/app/hedron-static")
 
 
+def test_dynamic_asgi_root_path_prefixes_assets(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("HEDRON_ROOT_PATH", raising=False)
+    inner = Hedron(
+        title="order-dynamic-mount",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-dynamic-mount",
+    )
+
+    @inner.page("/")
+    def home() -> Page:
+        return Page(Text("dynamic mounted"), title="Dynamic mounted")
+
+    client = TestClient(Starlette(routes=[Mount("/dynamic", app=inner)]))
+    response = client.get("/dynamic/")
+    assert response.status_code == 200
+    _assert_htmx_before_extensions(response.text, static_prefix="/dynamic/hedron-static")
+
+
+def test_explicit_root_mount_wins_over_dynamic_scope(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("HEDRON_ROOT_PATH", raising=False)
+    inner = Hedron(
+        title="order-explicit-root",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-explicit-root",
+        root_path="/",
+    )
+
+    @inner.page("/")
+    def home() -> Page:
+        return Page(Text("explicit root"), title="Explicit root")
+
+    client = TestClient(Starlette(routes=[Mount("/dynamic", app=inner)]))
+    response = client.get("/dynamic/")
+    assert response.status_code == 200
+    _assert_htmx_before_extensions(response.text)
+
+
 def test_duplicate_htmx_and_extension_assets_are_not_reinjected() -> None:
     from starlette.requests import Request
 

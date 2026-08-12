@@ -4,7 +4,7 @@
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md).
     Mount helpers are part of the production security floor (0.20+) and remain on the
-    living **0.28** train. Package maturity remains **Beta** — pin versions.
+    living **0.29** train. Package maturity remains **Beta** — pin versions.
 
 **Status:** Shipped · public exports from `hedron`
 
@@ -15,10 +15,15 @@ These helpers resolve that mount and keep cookie paths consistent.
 ## Quick start (operator)
 
 1. Configure the proxy to strip or forward the prefix consistently.
-2. Set ASGI `root_path` (uvicorn `--root-path /apps/hedron`) **or** set
-   `HEDRON_ROOT_PATH=/apps/hedron`.
+2. Set **`HEDRON_ROOT_PATH=/apps/hedron`** (or `Hedron(..., root_path="/apps/hedron")`)
+   **before** constructing the app so session and CSRF cookie `Path` are scoped.
+   Uvicorn `--root-path` alone does **not** change cookie Path.
 3. Confirm CSRF cookies use `Path=/apps/hedron` (not `/` alone) and that Refresh /
    form posts still hit the app.
+
+Posit Workbench: `hedron-workbench run` exports `HEDRON_ROOT_PATH` from discovered
+`rserver-url` output **before** importing the app. See
+[Posit Workbench](../guides/posit-workbench.md).
 
 See [Deployment](../guides/deployment.md) · [Ship a Hedron app](../guides/ship.md) ·
 [Troubleshooting](../guides/troubleshooting.md).

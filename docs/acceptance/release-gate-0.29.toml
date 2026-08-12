@@ -1,0 +1,88 @@
+# Phase 0.29 production-grade hedron-workbench evidence index.
+# Consumed by scripts/check_release_gate.py 0.29.0 (--execute-verified at cut).
+# Zero Deferred policy for 0.29-owned rows: every row must be Verified at cut.
+# Owning decision: D-057. RFC: RFC-0062. Tracking: #134.
+
+[[evidence]]
+id = "CONTRACT-029"
+state = "Verified"
+command = "python scripts/check_contract_029.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "RESOLVE-029"
+state = "Verified"
+command = "python scripts/check_resolve_029.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PATH-029"
+state = "Verified"
+command = "python scripts/check_path_029.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "URL-029"
+state = "Verified"
+command = "python scripts/check_url_029.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "RUNNER-029"
+state = "Verified"
+command = "python scripts/check_runner_029.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "DX-029"
+state = "Verified"
+command = "python scripts/check_dx_029.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "SECURITY-029"
+state = "Verified"
+command = "python scripts/check_security_029.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REALWB-029"
+state = "Verified"
+command = "python scripts/check_realwb_029.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "COMPAT-029"
+state = "Verified"
+command = "python scripts/check_compat_029.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PERF-029"
+state = "Verified"
+command = "python scripts/check_perf_029.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-029"
+state = "Verified"
+command = "bash scripts/ci_checks.sh test --python 3.12"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-029"
+state = "Verified"
+command = "python scripts/verify_pkg_29.py"
+ci_job = "packaging"
+owner = "hedron"

@@ -24,7 +24,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.26** | Production-grade core, FastAPI flagship, and secured/development Explorer | **Published** (`v0.26.0`; D-054) |
 | **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | **Published** (`v0.27.0`; D-055) |
 | **0.28** | Production-grade charts and optional native acceleration | **Published** (`v0.28.2`; D-056 / RFC-0059) |
-| **0.29** | Production-grade `hedron-workbench` Posit Workbench deployment adapter | Planned; pre-import launch-command adaptation, explicit ASGI wrapper, and no implicit activation; owning RFC/decision required |
+| **0.29** | Production-grade `hedron-workbench` Posit Workbench deployment adapter | **Published** (`v0.29.0`; D-057 / RFC-0062; [#134](https://github.com/eddiethedean/hedron/issues/134)) |
 | **0.30** | Production-grade conformance/plugin/simulation/notebook tooling, Node/Java evaluators, and a reviewable Streamlit AST migration assistant | Planned; tooling scope remains explicit; RFC-0061 Proposed ([#87](https://github.com/eddiethedean/hedron/issues/87), [#88](https://github.com/eddiethedean/hedron/issues/88)) |
 | **0.31** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required ([#89](https://github.com/eddiethedean/hedron/issues/89)) |
 | **0.32** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access ([#90](https://github.com/eddiethedean/hedron/issues/90)) |
@@ -57,7 +57,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   a blanket feature promotion or a scheduled `1.0`; see the
   [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
-## Honest gaps on the current train (0.28)
+## Honest gaps on the current train (0.29)
 
 - Current **published** PyPI train is **0.28.x** (last `v0.28.2`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /

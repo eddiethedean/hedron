@@ -95,7 +95,19 @@ profile expansion, feature IDs, and prologue schema are defined by RFC-0031.
 | `HEDRON_BUILD_DIR` | Overrides build directory when not set on the constructor |
 | `HEDRON_THEME` | Overrides theme when not forced by constructor overrides |
 | `HEDRON_REDIS_URL` | Optional. Used by sample/compose job backends that speak Redis; omit for ordinary page apps |
-| `HEDRON_ROOT_PATH` | Optional. Sample deployments under a reverse-proxy prefix; not a substitute for correct ASGI `root_path` / WSGI `SCRIPT_NAME` |
+| `HEDRON_ROOT_PATH` | Construction-time mount for session/CSRF cookie `Path` and asset prefixes. Required under a reverse-proxy subpath; uvicorn `--root-path` alone does not scope cookies |
+| `HEDRON_TRUSTED_PROXIES` | Optional comma-separated peer allowlist for `X-Forwarded-Proto` (CSRF Secure) and related trusted-header checks |
+| `HEDRON_WORKBENCH_MODE` | `auto` / `on` / `off` for `hedron-workbench` (optional extra) |
+| `HEDRON_WORKBENCH_MOUNT` | Explicit browser mount; exported to `HEDRON_ROOT_PATH` before app import |
+| `HEDRON_WORKBENCH_HOST` / `HEDRON_WORKBENCH_PORT` | Loopback bind (default `127.0.0.1`, port `0`) |
+| `HEDRON_WORKBENCH_PUBLIC_BASE_URL` | Optional public origin; must not conflict with mount |
+| `HEDRON_WORKBENCH_RSERVER_URL` | Absolute path to `rserver-url` (default `/usr/lib/rstudio-server/bin/rserver-url`) |
+| `HEDRON_WORKBENCH_DEBUG` | Redacted scope logs from path middleware |
+| `HEDRON_WORKBENCH_FORWARDED_ALLOW_IPS` | Exact comma-separated proxy IP allowlist shared by Uvicorn and Hedron; wildcard trust is rejected |
+| `HEDRON_WORKBENCH_ALLOW_EXTERNAL_BIND` | Explicit opt-in for a non-loopback listener; default is false |
+| `HEDRON_WORKBENCH_WORKERS` / `HEDRON_WORKBENCH_RELOAD` | Parsed for diagnostics; the pre-bound runner rejects values other than one worker / no reload |
+| `RS_SERVER_URL` | Discovery trigger only — never wraps or grants trust |
+| `WORKBENCH_FORCE` / `BASE_PATH` / `PUBLIC_BASE_URL` / `HOST` / `PORT` | Launcher compatibility aliases; warn (`HED-WB-0008`); namespaced vars win. Inactive `HedronWorkbench` ignores broad aliases to preserve ordinary-host behavior |
 
 ### Session secrets (application-owned)
 

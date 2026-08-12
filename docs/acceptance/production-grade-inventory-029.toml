@@ -1,0 +1,78 @@
+# Phase 0.29 production-grade inventory (machine-checked at PKG-029 cut).
+# Supported = production-grade label at 0.29 exit for hedron-workbench only.
+# Experimental = may ship but excluded from production-grade claims.
+# Excluded = must not be required for a production-grade Supported workflow.
+# Owning decision: D-057. RFC: RFC-0062.
+
+baseline = "v0.28.2"
+packages = [
+  "hedron-workbench",
+]
+
+[hedron-workbench]
+supported = [
+  "hedron_workbench_facade",
+  "inactive_hedron_parity",
+  "resolved_launcher_handoff",
+  "single_normalizer",
+  "workbench_config",
+  "workbench_mode_auto_on_off",
+  "pure_resolver",
+  "rserver_url_path_and_full_url",
+  "pre_import_launcher",
+  "hedron_root_path_export",
+  "workbenchify_wrap_once",
+  "path_middleware_http_websocket",
+  "proxy_port_mount",
+  "session_project_mount",
+  "cookie_path_at_construction",
+  "hedron_redirect_url_composition",
+  "check_dry_run_text_json",
+  "loopback_single_worker",
+  "ordinary_local_uvicorn_noop",
+  "generic_asgi_root_path",
+  "explicit_mount_without_asgi_root_path",
+  "exact_proxy_trust_allowlist",
+  "bounded_discovery_output",
+]
+experimental = [
+  "posit_connect_base_header",
+  "open_browser",
+]
+excluded = [
+  "builtin_runner_reload",
+  "builtin_runner_multi_worker",
+  "flask_django_wsgi",
+  "vendor_fastapi_workbench",
+  "import_auto_activation",
+  "rs_server_url_as_trust",
+  "bundle_rserver_url",
+  "alembic_migrations",
+  "fluxlit_public_base_url",
+  "connect_publishing",
+  "identity_from_workbench_auth",
+]
+
+[install_guards]
+workbench_import_does_not_wrap = true
+inactive_facade_matches_hedron = true
+rs_server_url_does_not_activate = true
+flask_django_untouched = true
+reload_not_default = true
+multi_worker_not_default = true
+connect_header_not_default_trust = true
+
+[docs_anchors]
+stability = "docs/api/STABILITY.md"
+compatibility = "docs/COMPATIBILITY.md"
+whats_ready = "docs/guides/whats-ready.md"
+workbench_package = "docs/packages/hedron-workbench.md"
+workbench_guide = "docs/guides/posit-workbench.md"
+mount_api = "docs/api/MOUNT.md"
+rfc = "docs/rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md"
+
+[realwb]
+image = "posit/workbench:2026.07.0"
+platform = "linux/amd64"
+license_env = "WORKBENCH_API_KEY"
+license_container_env = "PWB_LICENSE"

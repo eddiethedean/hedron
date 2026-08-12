@@ -232,6 +232,17 @@ HED_A11Y_0010 = "HED-A11Y-0010"  # expired accessibility waiver
 HED_A11Y_0011 = "HED-A11Y-0011"  # automatic conformance claim refused
 HED_A11Y_0012 = "HED-A11Y-0012"  # statement export requires human approval
 
+# Posit Workbench adapter (0.29 RFC-0062)
+HED_WB_0001 = "HED-WB-0001"  # invalid configuration / conflicting mount or origin
+HED_WB_0002 = "HED-WB-0002"  # malformed or rejected rserver-url output
+HED_WB_0003 = "HED-WB-0003"  # rserver-url binary missing or failed
+HED_WB_0004 = "HED-WB-0004"  # bind / listen failure
+HED_WB_0005 = "HED-WB-0005"  # application import or factory failure
+HED_WB_0006 = "HED-WB-0006"  # adversarial or malformed request target rejected
+HED_WB_0007 = "HED-WB-0007"  # platform / image cannot run (e.g. non-amd64)
+HED_WB_0008 = "HED-WB-0008"  # deprecated compatibility alias used
+HED_WB_0009 = "HED-WB-0009"  # unsupported Workbench launch topology
+
 
 def registered_codes() -> frozenset[str]:
     """Return every ``HED-*`` code constant defined in this module."""

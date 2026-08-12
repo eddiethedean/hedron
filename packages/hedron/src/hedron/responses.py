@@ -305,7 +305,8 @@ def _mounted_static_href(path: str, request: Request | None) -> str:
     from hedron.mount import mount_from_request, prefix_local_path
 
     mount = getattr(request.app.state, "hedron_mount_path", None)
-    if not isinstance(mount, str):
+    configured = bool(getattr(request.app.state, "hedron_mount_was_configured", False))
+    if not isinstance(mount, str) or (not mount and not configured):
         mount = mount_from_request(request).path
     return prefix_local_path(href, mount)
 

@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.28.2,<0.29`. Treat the **stable** tables below (minimal +
+**For adopters:** Pin `hedron>=0.29.0,<0.30`. Treat the **stable** tables below (minimal +
 expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
 `experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
 lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -8,8 +8,8 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Living train **0.28** (**Published**; last published
-PyPI/git = `v0.28.2`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
+**Status:** Living train **0.29** (**Published**; last published
+PyPI/git = `v0.29.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
 (D-038: no calendar `1.0` scheduled; D-053 / RFC-0056; D-054 / RFC-0057).
 **Version:** `0.28.x` / catalog baseline
@@ -169,6 +169,20 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - `PlotlyChart` / `AltairChart`: **experimental**.
 - `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **beta**.
 - Optional adapters + offline runtime pins: **experimental**.
+
+### `hedron-workbench` (Beta) — `beta` optional Workbench adapter
+
+Install `hedron[workbench]` / `hedron-workbench>=0.29.0,<0.30`. Supported:
+`HedronWorkbench`, pre-import launcher and resolved-state handoff,
+`HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, construction-time cookie
+Path, explicit-mount routing, and ordinary local Uvicorn/generic-root-path
+parity. Posit Connect trusted-header behavior remains Experimental. The
+built-in pre-bound runner rejects reload and multiple workers; use an external
+supervisor. Excluded: Flask/Django/WSGI, auto-activation, wildcard proxy trust,
+vendoring fastapi-workbench, and bundling `rserver-url`.
+
+See [production-grade-inventory-029.toml](../acceptance/production-grade-inventory-029.toml)
+and [Posit Workbench](../guides/posit-workbench.md).
 
 ### `hedron-flask` / `hedron-django` (Beta) — `beta` Supported adapters
 

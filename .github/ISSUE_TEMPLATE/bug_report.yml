@@ -28,6 +28,7 @@ body:
         - hedron-charts
         - hedron-jinja
         - hedron-explorer
+        - hedron-workbench
         - docs / other
     validations:
       required: true

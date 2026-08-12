@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.0] — 2026-08-11
+
+### Changed
+
+- Coordinated 0.29 train bump. Hedron(root_path=...), resolve_mount_path_from_environ re-export, color-mode cookie Path, optional hedron[workbench] extra.
+
+
 ## [0.28.2] — 2026-08-11
 
 ### Fixed

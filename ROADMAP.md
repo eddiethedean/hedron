@@ -1172,7 +1172,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.28** (last published tip `v0.28.2`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.29** (last published tip `v0.29.0`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -2064,9 +2064,13 @@ experimental interactive backends remain opt-in until they independently satisfy
 
 ## 0.29 — Posit Workbench deployment adapter (`v0.29.0`)
 
-**Status:** Planned; next implementation phase after the 0.28 train. Owning RFC, architectural
-decision, tracking issue, and release-gate packet are required before implementation. This roadmap
-section assigns the capability packet but does not freeze an API ahead of that decision.
+**Status:** Published as `v0.29.0` (2026-08-11). Owned by **D-057** /
+[RFC-0062](docs/rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
+Tracking: [#134](https://github.com/eddiethedean/hedron/issues/134).
+Packet SSOT: [RELEASE_0_29.md](docs/acceptance/RELEASE_0_29.md) ·
+[release-gate-0.29.toml](docs/acceptance/release-gate-0.29.toml) ·
+[production-grade-inventory-029.toml](docs/acceptance/production-grade-inventory-029.toml).
+Cut verify: `python scripts/verify_pkg_29.py`.
 
 **Behavior baseline:** Start from the observed `fastapi-workbench` 0.3.4 behavior and test corpus,
 then re-audit the latest upstream release at RFC acceptance and again at the 0.29 cut. Publish an
@@ -2105,6 +2109,7 @@ the server. Installing the distribution alone, importing `hedron_workbench`, or 
 | Distribution | `hedron-workbench`, importing as `hedron_workbench`, aligned with the coordinated 0.29 Hedron train and removable without changing application source |
 | Hosts | `Hedron()` and plain FastAPI applications using Hedron routers/responses over ASGI HTTP and WebSocket; non-ASGI scopes pass through unchanged |
 | Automatic path | `hedron-workbench run module:app` and `module:create_app --factory`; discovery and Hedron mount export occur before module import or factory call |
+| Native facade | `HedronWorkbench` subclasses `Hedron`; inactive instances preserve ordinary Hedron behavior and launcher-resolved instances normalize once |
 | Explicit path | Idempotent `workbenchify(app, *, config=...)` outer ASGI wrapper for servers that manage startup; construction-time cookie scoping requires an explicit pre-import mount or the launcher |
 | Deployments | Ordinary local Uvicorn, generic ASGI `root_path` mounts, and the RFC-locked Posit Workbench / RStudio Server session and project proxy shapes |
 | Posit Connect | At most a separately inventoried request-base-header compatibility path with trusted-peer and same-host checks; Connect publishing/operations are not part of the Supported Workbench deployment claim |
@@ -2116,7 +2121,7 @@ and independently useful/tested in `hedron`; Posit-specific detection and path r
 
 ### Public contract and configuration
 
-- Publish an immutable typed `WorkbenchConfig`, `WorkbenchMode` (`auto` / `on` / `off`),
+- Publish `HedronWorkbench`, an immutable typed `WorkbenchConfig`, `WorkbenchMode` (`auto` / `on` / `off`),
   `WorkbenchPathMiddleware`, `workbenchify`, environment/scope detection, and a resolved deployment
   record containing mode, internal bind address, external origin, browser mount, cookie mount, and
   redacted source diagnostics. URL/redirect conveniences are thin adapters over Hedron's existing
@@ -2169,8 +2174,8 @@ and independently useful/tested in `hedron`; Posit-specific detection and path r
    resolution records. Unit tests require no Workbench installation, application import, listener,
    browser, or process-global mutation.
 3. **ASGI normalization (`PATH-029`)** — implement the fixed normalization pipeline and idempotent
-   outer middleware for HTTP/WebSocket, with mock Workbench shapes and a direct fixture comparison
-   against every adopted upstream path behavior.
+   outer middleware plus the `HedronWorkbench` native facade for HTTP/WebSocket, with mock Workbench
+   shapes and a direct fixture comparison against every adopted upstream path behavior.
 4. **Hedron composition (`URL-029`)** — route all mount, local/HX redirect, reverse/UI URL, asset,
    OpenAPI/docs, Explorer, session, and CSRF behavior through existing Hedron safety contracts.
    Prove root, ordinary mount, `/proxy/<port>`, session/project, terminal `/api`, public base that
@@ -2179,10 +2184,9 @@ and independently useful/tested in `hedron`; Posit-specific detection and path r
    before discovery so free-port selection has no check-then-bind race; execute the configured
    absolute `rserver-url` binary without a shell; validate path/full-URL output; export resolved
    Hedron state; import an app object or call a factory; wrap once; and serve the pre-bound socket.
-   Defaults are loopback, one worker, no reload, and loopback-only forwarded trust. Development
-   reload or multi-worker modes are Supported only if child bootstrap/import ordering, durable
-   Hedron backends, signal handling, and shutdown are proven; otherwise they remain explicit
-   Experimental exclusions.
+   Defaults are loopback, one worker, no reload, and exact loopback forwarded trust. The built-in
+   pre-bound runner rejects reload and multi-worker modes; an external supervisor owns those
+   process topologies.
 6. **Diagnostics and adoption (`DX-029`)** — add stable `HED-WB-*` diagnostics, redacted resolution
    and before/after scope traces, `check`/dry-run text+JSON, one existing-app launch recipe, one
    explicit-wrapper recipe, troubleshooting, and a packaged Workbench reference app. Workbench
@@ -2235,6 +2239,8 @@ and independently useful/tested in `hedron`; Posit-specific detection and path r
   and a restart into a different session/project does not retain the previous browser mount.
 - The same app works through explicit `workbenchify` when the operator supplies construction-time
   mount settings, and `hedron-workbench check` explains the resolved import-independent deployment.
+- `HedronWorkbench` consumes launcher state without a second wrapper, supports explicit mounts when
+  ASGI `root_path` is absent, and remains behaviorally equivalent to `Hedron` when inactive.
 - Golden ordinary-local and generic-mounted requests/responses remain equivalent to unadapted
   Hedron; `mode="off"` is a strict no-op, `auto` changes only proven Workbench shapes, and repeated
   normalization/wrapping is idempotent.
@@ -3117,6 +3123,7 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#44](https://github.com/eddiethedean/hedron/issues/44) | `hedron-mcp` deny-by-default projection | 0.17 |
 | [#45](https://github.com/eddiethedean/hedron/issues/45) | Dash / NiceGUI migration inventory | 0.17 |
 | [#86](https://github.com/eddiethedean/hedron/issues/86) | Human AT sessions / remediations (`SR-021`…`REMEDIATE-021`) | 0.21 (sessions outstanding) |
+| [#134](https://github.com/eddiethedean/hedron/issues/134) | Production-grade `hedron-workbench` Posit Workbench adapter | 0.29 |
 | [#87](https://github.com/eddiethedean/hedron/issues/87) | Production-grade conformance / plugin / sim / notebook / Node+Java | 0.30 |
 | [#88](https://github.com/eddiethedean/hedron/issues/88) | Streamlit AST migration assistant (`MIGRATE-030` / RFC-0061) | 0.30 |
 | [#89](https://github.com/eddiethedean/hedron/issues/89) | Production-grade deny-by-default MCP projection | 0.31 |

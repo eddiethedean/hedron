@@ -165,7 +165,7 @@ def load_plugins(
                     ),
                     remediation=(
                         # Example pin must stay aligned with docs/release.toml train bounds.
-                        "Attach PluginMeta(..., hedron_version='>=0.28,<0.29') to the "
+                        "Attach PluginMeta(..., hedron_version='>=0.29,<0.30') to the "
                         "register entry point."
                     ),
                 )

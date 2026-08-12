@@ -65,6 +65,7 @@ plugins:
             - packages/hedron-core/src
             - packages/hedron-flask/src
             - packages/hedron-django/src
+            - packages/hedron-workbench/src
 
 hooks:
   - docs/hooks.py
@@ -210,6 +211,7 @@ nav:
     - Operate an app:
       - Ship an app: guides/ship.md
       - Deployment: guides/deployment.md
+      - Posit Workbench: guides/posit-workbench.md
       - Durable jobs: guides/jobs-celery-rq.md
       - Observability: guides/observability.md
       - Performance: guides/performance.md
@@ -262,6 +264,7 @@ nav:
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.29: guides/whats-new-0.29.md
     - What's new in 0.28: guides/whats-new-0.28.md
     - What's new in 0.27: guides/whats-new-0.27.md
     - What's new in 0.26: guides/whats-new-0.26.md

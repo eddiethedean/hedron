@@ -1,24 +1,24 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.28 **Published** as `v0.28.2` (2026-08-11); last published
-PyPI/git = `v0.28.2`. Prior: 0.27 **Published** as `v0.27.0`.
+**Roadmap position:** phase 0.29 **Published** as `v0.29.0` (2026-08-11); last published
+PyPI/git = `v0.29.0`. Prior: 0.28 **Published** as `v0.28.2`.
 **Date:** 2026-08-11
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
-`hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras`
-`0.28.2`; Beta (independent) — `hedron-charts` `0.1.11`, `hedron-native` `0.1.2`; Alpha —
+`hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
+`hedron-workbench` `0.29.0`; Beta (independent) — `hedron-charts` `0.1.11`, `hedron-native` `0.1.2`; Alpha —
 `hedron-sample-kit` `0.1.10`, `hedron-notebook` / `hedron-mcp` / `hedron-gradio` / `hedron-sim` `0.1.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-`hedron-charts`, `hedron-native`; Alpha — `hedron-sample-kit`, `hedron-notebook`,
+`hedron-workbench`, `hedron-charts`, `hedron-native`; Alpha — `hedron-sample-kit`, `hedron-notebook`,
 `hedron-mcp`, `hedron-gradio`, `hedron-sim`.
 
-**Phase focus:** Living published train is **0.28** (D-056 / RFC-0059) — production-grade
-graduation for `hedron-charts` / `hedron-native` on declared Supported inventories
-(`release-gate-0.28.toml` Verified), while prior production-grade inventories for core /
-flagship / Explorer (0.26) and data / adapters / HDJ / extras (0.27) remain in force.
-**Next** = **0.29 Planned** (`hedron-workbench` Posit Workbench deployment adapter; owning RFC and
-decision required before implementation). Live-transport
+**Phase focus:** Living published train is **0.29** (D-057 / RFC-0062) — production-grade
+`hedron-workbench` Posit Workbench / RStudio Server adapter on the declared Supported
+inventory (`release-gate-0.29.toml` Verified). Prior inventories for core / flagship /
+Explorer (0.26), data / adapters / HDJ / extras (0.27), and charts / native (0.28) remain
+in force. **Next** = **0.30 Planned** (conformance / plugin / simulation / notebook tooling).
+Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
 remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` /
@@ -212,14 +212,40 @@ SSOT: [RELEASE_0_28](acceptance/RELEASE_0_28.md) ·
 [production-grade-inventory-028.toml](acceptance/production-grade-inventory-028.toml).
 Cut verify: `python scripts/verify_pkg_28.py`.
 
+## Phase 0.29 evidence
+
+Owning decision: **D-057** / [RFC-0062](rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
+Baseline: Published **`v0.28.2`**. Package: `hedron-workbench` `0.29.0` — **Beta**
+for the declared Supported inventory.
+Locked Supported inventory:
+[production-grade-inventory-029.toml](acceptance/production-grade-inventory-029.toml).
+
+| Gate | Status |
+|---|---|
+| `CONTRACT-029` | Verified — RFC-0062 / D-057 / inventory |
+| `RESOLVE-029` | Verified — pure resolver corpus |
+| `PATH-029` | Verified — ASGI middleware + 0.3.4 parity (Hedron-adapted) |
+| `URL-029` | Verified — mount/redirect/CSRF/cookie/HTMX/assets |
+| `RUNNER-029` | Verified — pre-bind launcher + CLI |
+| `DX-029` | Verified — check/dry-run + docs |
+| `SECURITY-029` | Verified — adversarial suite + review packet |
+| `REALWB-029` | Verified — Docker smoke + redacted RESULT.log |
+| `COMPAT-029` / `PERF-029` | Verified — isolation/upgrade + middleware budget |
+| `REGRESS-029` / `PKG-029` | Verified — suite + `verify_pkg_29.py` |
+
+SSOT: [RELEASE_0_29](acceptance/RELEASE_0_29.md) ·
+[release-gate-0.29.toml](acceptance/release-gate-0.29.toml) ·
+[production-grade-inventory-029.toml](acceptance/production-grade-inventory-029.toml).
+Cut verify: `python scripts/verify_pkg_29.py`.
+
 ## Next capability phases
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
 **Planned** until compensated screen-reader evidence lands
 ([#86](https://github.com/eddiethedean/hedron/issues/86)). Phase **0.27** is **Published**
 (`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
-Remaining package-production work continues through **0.29–0.33**: the optional
-`hedron-workbench` adapter first, then developer and portable conformance tooling
+Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Remaining
+package-production work continues through **0.30–0.33**: developer and portable conformance tooling
 ([#87](https://github.com/eddiethedean/hedron/issues/87),
 [#88](https://github.com/eddiethedean/hedron/issues/88)); MCP
 ([#89](https://github.com/eddiethedean/hedron/issues/89)); Gradio

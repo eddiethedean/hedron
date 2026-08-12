@@ -40,15 +40,22 @@ def apply_color_mode_cookie(
     preference: ColorMode | str,
     *,
     max_age: int = 60 * 60 * 24 * 365,
+    path: str | None = None,
+    request: Request | None = None,
 ) -> None:
     value = preference.value if isinstance(preference, ColorMode) else str(preference)
+    cookie_path = path
+    if cookie_path is None and request is not None:
+        cookie_path = str(getattr(request.app.state, "hedron_cookie_path", "/") or "/")
+    if not cookie_path:
+        cookie_path = "/"
     response.set_cookie(
         COOKIE_NAME,
         value,
         max_age=max_age,
         httponly=False,
         samesite="lax",
-        path="/",
+        path=cookie_path,
     )
 
 

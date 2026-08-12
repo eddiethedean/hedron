@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import django
 import pytest
 from django.conf import settings
@@ -70,6 +72,51 @@ def _reset_process_state() -> None:
         pass
     else:
         reset_explorer_runtime_for_tests()
+
+
+_WORKBENCH_ENV_KEYS = (
+    "HEDRON_ROOT_PATH",
+    "HEDRON_WORKBENCH_RESOLVED_PUBLIC_BASE",
+    "HEDRON_WORKBENCH_RESOLVED_MOUNT",
+    "HEDRON_WORKBENCH_RESOLVED_MODE",
+    "HEDRON_WORKBENCH_RESOLVED_SOURCE",
+    "HEDRON_WORKBENCH_MOUNT",
+    "HEDRON_WORKBENCH_MODE",
+    "HEDRON_WORKBENCH_PUBLIC_BASE_URL",
+    "HEDRON_WORKBENCH_HOST",
+    "HEDRON_WORKBENCH_PORT",
+    "HEDRON_WORKBENCH_DEBUG",
+    "HEDRON_WORKBENCH_RELOAD",
+    "HEDRON_WORKBENCH_WORKERS",
+    "HEDRON_WORKBENCH_OPEN_BROWSER",
+    "HEDRON_WORKBENCH_FORWARDED_ALLOW_IPS",
+    "HEDRON_WORKBENCH_ALLOW_EXTERNAL_BIND",
+    "HEDRON_WORKBENCH_FORCE",
+    "HEDRON_TRUSTED_PROXIES",
+    "RS_SERVER_URL",
+    "WORKBENCH_FORCE",
+    "WORKBENCH_DEBUG",
+    "RELOAD",
+    "BASE_PATH",
+    "PUBLIC_BASE_URL",
+    "HOST",
+    "PORT",
+    "FORWARDED_ALLOW_IPS",
+)
+
+
+@pytest.fixture(autouse=True)
+def _isolate_workbench_environ() -> None:
+    """Prevent Workbench launcher env from leaking into unrelated Hedron tests."""
+    snapshot = {key: os.environ.get(key) for key in _WORKBENCH_ENV_KEYS}
+    try:
+        yield
+    finally:
+        for key, value in snapshot.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
 
 
 @pytest.fixture(autouse=True)

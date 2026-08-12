@@ -338,7 +338,7 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.28.2"
+__version__ = "0.29.0"
 
 __all__ = [
     "ActionRegistry",

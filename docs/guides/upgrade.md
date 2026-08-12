@@ -1,61 +1,68 @@
-# Upgrade to Hedron 0.28
+# Upgrade to Hedron 0.29
 
-This guide covers an application upgrade from **0.27.x** to the **0.28.x** train
-(current tip **`v0.28.2`**). New applications should use
+This guide covers an application upgrade from **0.28.x** to the **0.29.x** train
+(current tip **`v0.29.0`**). New applications should use
 [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.28.x graduates `hedron-charts` and `hedron-native` to production-grade for
-their declared Supported inventories (D-056 / RFC-0059). Matplotlib/static beginner
-charts and optional native escape acceleration are the Supported scopes. Plotly/Altair
-and optional visualization adapters remain Experimental and are not production Auto
-defaults.
+Hedron 0.29.x ships production-grade `hedron-workbench` (D-057 / RFC-0062): an
+optional Posit Workbench / RStudio Server adapter. Existing FastAPI Hedron apps
+run unchanged by switching the launch command. Cookie `Path` is still
+construction-time (`HEDRON_ROOT_PATH` or `Hedron(root_path=...)`).
+New applications can import `HedronWorkbench` in place of `Hedron`; the subclass
+retains ordinary Hedron behavior outside Workbench.
 
 No Supported CRUD/admin API removal is listed. Polling remains the production
 recommendation for live status. SSE, WebSocket, streaming, and navigation preload
-remain experimental.
+remain experimental. Flask/Django adapters are untouched.
 
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on `hedron>=0.27.0,<0.28` (or an earlier 0.27-compatible pin).
-3. If you use charts, note whether you rely on Auto-selected Plotly/Altair — those
-   backends now require explicit `as_=` or chart components.
+2. Confirm you are on `hedron>=0.28.2,<0.29` (or an earlier 0.28-compatible pin).
+3. If you deploy on Posit Workbench, plan to install `hedron[workbench]` and
+   switch the session launch command. Application source does not need to import
+   `hedron_workbench`.
+
+Alternatively, change only the app class for an explicit Workbench-aware source
+surface:
+
+```python
+from hedron_workbench import HedronWorkbench
+
+app = HedronWorkbench(...)
+```
 
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.28.2,<0.29"
-python -m pip install -U "hedron-charts>=0.1.10,<0.2" "hedron-native>=0.1.2,<0.2"
+python -m pip install -U "hedron>=0.29.0,<0.30"
+# Optional Workbench adapter:
+python -m pip install -U "hedron-workbench>=0.29.0,<0.30"
 ```
 
-## Charts Auto defaults
-
-Production Auto no longer selects Plotly/Altair without an explicit renderer name:
-
-```python
-from hedron_core.auto import Auto
-
-Auto(figure, as_="plotly")  # Experimental opt-in
-```
-
-Matplotlib remains the Supported Auto chart path when `hedron-charts` is installed.
-
-## Native disable
-
-Force the pure-Python escape path (ops / parity drills):
+Local development is unchanged:
 
 ```bash
-export HEDRON_NATIVE_DISABLE=1
+uvicorn app:app --reload
 ```
 
-Absence of `hedron-native` continues to fall back without semantic drift.
+Workbench / RStudio Server:
 
-## After upgrading
+```bash
+hedron-workbench run app:app
+```
 
-1. Run your test suite and any HTMX/browser checks that cover chart fragments.
-2. Confirm Explorer / plugin loads succeed under `0.28.x` (`hedron_version` pins).
-3. Read [What’s new in 0.28](whats-new-0.28.md) and [What’s ready](whats-ready.md).
+Uninstalling `hedron-workbench` restores the 0.28 launch command.
 
-Prior 0.26→0.27 notes remain in [What’s new in 0.27](whats-new-0.27.md).
+## Cookie Path / reverse proxies
+
+`Hedron(root_path=...)` now wins over `HEDRON_ROOT_PATH`. Uvicorn `--root-path`
+alone still does **not** scope session/CSRF cookies. Export `HEDRON_ROOT_PATH`
+before constructing the app, or pass `root_path=` to `Hedron()`.
+
+## Rollback
+
+Pin `hedron>=0.28.2,<0.29` and remove `hedron-workbench`. Application source that
+never imported the adapter needs no code rollback.

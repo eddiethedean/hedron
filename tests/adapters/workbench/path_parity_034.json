@@ -1,0 +1,37 @@
+{
+  "baseline": "fastapi-workbench 0.3.4 (Hedron-adapted: leave path prefixed when it already includes root_path so Starlette get_route_path + StaticFiles compose)",
+  "cases": [
+    {
+      "id": "strip-session-mount",
+      "path": "/s/abc/p/1/login",
+      "root_path": "/s/abc/p/1",
+      "expected_path": "/s/abc/p/1/login",
+      "expected_root_path": "/s/abc/p/1",
+      "expected_route_path": "/login"
+    },
+    {
+      "id": "proxy-port-rest",
+      "path": "/s/abc/p/1/home",
+      "root_path": "/proxy/8050/s/abc/p/1",
+      "expected_path": "/s/abc/p/1/home",
+      "expected_root_path": "/s/abc/p/1",
+      "expected_route_path": "/home"
+    },
+    {
+      "id": "partial-prefix-refused",
+      "path": "/api/items",
+      "root_path": "/content/x/api",
+      "expected_path": "/api/items",
+      "expected_root_path": "/content/x/api",
+      "expected_route_path": "/api/items"
+    },
+    {
+      "id": "root-only",
+      "path": "/s/abc/p/1",
+      "root_path": "/s/abc/p/1",
+      "expected_path": "/s/abc/p/1",
+      "expected_root_path": "/s/abc/p/1",
+      "expected_route_path": ""
+    }
+  ]
+}

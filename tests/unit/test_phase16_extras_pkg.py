@@ -32,7 +32,7 @@ def setup_function() -> None:
 def test_feature_manifest_registration() -> None:
     loader = load_plugins(
         enabled=["hedron_extras"],
-        hedron_version="0.28.2",
+        hedron_version="0.29.0",
         entry_points=[_EP()],
     )
     assert any(p.meta.name == "hedron_extras" for p in loader.loaded)
@@ -49,7 +49,7 @@ def test_feature_manifest_registration() -> None:
 def test_extras_components_registered_without_landmines() -> None:
     load_plugins(
         enabled=["hedron_extras"],
-        hedron_version="0.28.2",
+        hedron_version="0.29.0",
         entry_points=[_EP()],
     )
     registry = get_registry()
@@ -67,7 +67,7 @@ def test_extras_components_registered_without_landmines() -> None:
 def test_experimental_ui_landmines_register_when_enabled() -> None:
     load_plugins(
         enabled=["hedron_extras", "hedron_extras_experimental"],
-        hedron_version="0.28.2",
+        hedron_version="0.29.0",
         entry_points=[
             _EP("hedron_extras", extras_register),
             _EP("hedron_extras_experimental", experimental_register),
@@ -94,7 +94,7 @@ def test_experimental_ui_landmines_register_when_enabled() -> None:
 def test_experimental_skipped_on_default_discovery() -> None:
     load_plugins(
         enabled=None,
-        hedron_version="0.28.2",
+        hedron_version="0.29.0",
         entry_points=[
             _EP("hedron_extras", extras_register),
             _EP("hedron_extras_experimental", experimental_register),
@@ -110,7 +110,7 @@ def test_experimental_loads_when_env_enabled(monkeypatch: pytest.MonkeyPatch) ->
     monkeypatch.setenv("HEDRON_EXPERIMENTAL_UI", "1")
     load_plugins(
         enabled=None,
-        hedron_version="0.28.2",
+        hedron_version="0.29.0",
         entry_points=[
             _EP("hedron_extras", extras_register),
             _EP("hedron_extras_experimental", experimental_register),

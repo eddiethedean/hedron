@@ -1,0 +1,7 @@
+{
+  "browser_mount": "",
+  "cookie_mount": "/",
+  "mode": "off",
+  "reload": false,
+  "workers": 1
+}

@@ -1,0 +1,41 @@
+name: Workbench smoke
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+    tags:
+      - "v0.29.*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workbench-smoke-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  realwb:
+    name: REALWB-029
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Sync workspace
+        run: uv sync --frozen --all-extras
+      - name: Run Workbench Docker smoke
+        env:
+          WORKBENCH_API_KEY: ${{ secrets.WORKBENCH_API_KEY }}
+          HEDRON_REALWB: "1"
+        run: python scripts/check_realwb_029.py --live
+      - name: Upload redacted RESULT.log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: realwb-029-result
+          path: docs/acceptance/realwb-029/RESULT.log
+          if-no-files-found: ignore

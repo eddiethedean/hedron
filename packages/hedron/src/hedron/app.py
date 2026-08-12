@@ -76,6 +76,9 @@ class Hedron(FastAPI):
         default_styles: When ``True``, emit default theme styles on PAGE responses.
         build_dir: Optional precompiled asset manifest directory for production.
         production: Force production gate behavior; ``None`` follows ``HEDRON_ENV``.
+        root_path: Optional construction-time mount (cookie Path / asset prefix).
+            Wins over ``HEDRON_ROOT_PATH`` when set. ASGI ``root_path`` alone does
+            not scope cookies.
         *args: Forwarded to ``FastAPI``.
         **kwargs: Forwarded to ``FastAPI`` (``lifespan`` is composed with Hedron gates).
 
@@ -98,6 +101,7 @@ class Hedron(FastAPI):
         default_styles: bool = True,
         build_dir: str | Path | None = None,
         production: bool | None = None,
+        root_path: str | None = None,
         **kwargs: Any,
     ) -> None:
         user_lifespan = kwargs.pop("lifespan", None)
@@ -165,18 +169,27 @@ class Hedron(FastAPI):
         )
 
         mount_cookie_path = "/"
+        mount_was_configured = False
         try:
-            from hedron.mount import resolve_mount_path_from_environ
+            from hedron.mount import normalize_mount_path, resolve_mount_path_from_environ
 
-            env_mount = resolve_mount_path_from_environ()
-            if env_mount is not None:
-                mount_cookie_path = env_mount.cookie_path
-                self.state.hedron_mount_path = env_mount.path
+            if root_path is not None:
+                mount_was_configured = True
+                explicit = normalize_mount_path(root_path)
+                mount_cookie_path = explicit if explicit else "/"
+                self.state.hedron_mount_path = explicit
             else:
-                self.state.hedron_mount_path = ""
+                env_mount = resolve_mount_path_from_environ()
+                if env_mount is not None:
+                    mount_was_configured = True
+                    mount_cookie_path = env_mount.cookie_path
+                    self.state.hedron_mount_path = env_mount.path
+                else:
+                    self.state.hedron_mount_path = ""
         except (ImportError, OSError, ValueError, TypeError) as exc:
             logger.debug("Mount path from environ unavailable: %s", exc)
             self.state.hedron_mount_path = ""
+        self.state.hedron_mount_was_configured = mount_was_configured
 
         if enable_sessions:
             if (

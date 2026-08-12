@@ -1,6 +1,6 @@
 # Earlier what’s-new (archive)
 
-Living train notes: [What’s new in 0.28](whats-new-0.28.md) · [What’s new in 0.27](whats-new-0.27.md) ·
+Living train notes: [What’s new in 0.29](whats-new-0.29.md) · [What’s new in 0.28](whats-new-0.28.md) · [What’s new in 0.27](whats-new-0.27.md) ·
 [What’s new in 0.24](whats-new-0.24.md) · [Release notes](release-notes.md) ·
 [Changelog](changelog.md).
 

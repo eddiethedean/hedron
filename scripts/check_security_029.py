@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""SECURITY-029: adversarial suite + review packet."""
+
+from __future__ import annotations
+
+import sys
+import tomllib
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+from _gate_029 import require_files, run_pytest  # noqa: E402
+
+REVIEW = ROOT / "docs" / "acceptance" / "security-review-029"
+
+
+def main() -> int:
+    errors: list[str] = []
+    require_files(
+        [
+            REVIEW / "BRIEF.md",
+            REVIEW / "REDACTED_REPORT.md",
+            REVIEW / "DISPOSITION.toml",
+            ROOT / "tests" / "security" / "test_workbench_adversarial.py",
+        ],
+        errors,
+    )
+    if errors:
+        print("\n".join(errors), file=sys.stderr)
+        return 1
+    disposition = tomllib.loads((REVIEW / "DISPOSITION.toml").read_text(encoding="utf-8"))
+    if disposition.get("critical_high_open") is not False:
+        print("DISPOSITION.toml critical_high_open must be false", file=sys.stderr)
+        return 1
+    if run_pytest(["tests/security/test_workbench_adversarial.py"], "SECURITY-029"):
+        return 1
+    print("ok: SECURITY-029")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

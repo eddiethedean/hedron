@@ -30,7 +30,9 @@ def test_current_train_claim_rejects_any_stale_minor_without_a_version_blacklist
 
 def test_living_version_before_train_is_checked() -> None:
     assert failures("Capability readiness is Supported on the living **0.27** train.")
-    assert not failures("Capability readiness is Supported on the living **0.28** train.")
+    assert not failures(
+        f"Capability readiness is Supported on the living **{ssot.FACTS.train}** train."
+    )
     assert failures("Ship on the living 0.27 train.")
     assert not failures(f"Ship on the living {ssot.FACTS.train} train.")
 
@@ -38,7 +40,7 @@ def test_living_version_before_train_is_checked() -> None:
 def test_soft_wrapped_living_claim_is_checked() -> None:
     wrapped = "Capability readiness is Supported on the living **0.27**\ntrain."
     assert failures(wrapped)
-    ok = "Capability readiness is Supported on the living **0.28**\ntrain."
+    ok = f"Capability readiness is Supported on the living **{ssot.FACTS.train}**\ntrain."
     assert not failures(ok)
 
 

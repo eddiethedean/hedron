@@ -35,6 +35,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Walkthrough:
 | [flask-reference](https://github.com/eddiethedean/hedron/tree/main/examples/flask-reference) | Flask adapter | Home + fragment |
 | [django-reference](https://github.com/eddiethedean/hedron/tree/main/examples/django-reference) | Django adapter | Home + fragment |
 | [hdj-progressive](https://github.com/eddiethedean/hedron/tree/main/examples/hdj-progressive) | Optional HDJ | Prints HTML to stdout (not a web server) |
+| [workbench-reference](https://github.com/eddiethedean/hedron/tree/main/examples/workbench-reference) | FastAPI + Workbench | Ordinary-app launcher and `HedronWorkbench` variants |
 
 Quickstarts: [FastAPI](../getting-started/quickstart.md) ·
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) ·

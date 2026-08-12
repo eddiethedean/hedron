@@ -1,0 +1,43 @@
+# REALWB-029: official Posit Workbench image + Hedron app sidecar.
+# License: WORKBENCH_API_KEY from the environment (maps to PWB_LICENSE).
+# Image is linux/amd64. Fail closed on other platforms rather than hanging on QEMU.
+
+services:
+  workbench:
+    image: ${HEDRON_WORKBENCH_IMAGE:-posit/workbench:2026.07.0}
+    platform: linux/amd64
+    ports:
+      - "8787:8787"
+    environment:
+      PWB_LICENSE: ${PWB_LICENSE:?Set WORKBENCH_API_KEY and map it to PWB_LICENSE}
+      PWB_TESTUSER: hedron
+      PWB_TESTUSER_PASSWD: hedron
+      PWB_LAUNCHER: "false"
+    volumes:
+      - ./rserver.conf:/etc/rstudio/rserver.conf:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8787/auth-sign-in"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  app:
+    image: python:3.12-slim
+    platform: linux/amd64
+    working_dir: /src/examples/workbench-reference
+    volumes:
+      - ../..:/src:ro
+    environment:
+      HEDRON_SESSION_SECRET: realwb-session-secret-not-for-production
+      RS_SERVER_URL: http://workbench:8787/
+      PYTHONPATH: /src/examples/workbench-reference
+    command: >
+      bash -lc "pip install -q uv && cd /src && uv sync --frozen --package hedron-workbench
+      && uv run hedron-workbench run app_facade:app --host 0.0.0.0 --allow-external-bind
+      --port 8050 --mount /s/demo/p/9"
+    depends_on:
+      workbench:
+        condition: service_started
+    ports:
+      - "8050:8050"
+    profiles: ["app"]

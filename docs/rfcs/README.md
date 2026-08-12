@@ -79,3 +79,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0059](RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md) | Production-grade charts and optional native acceleration | Accepted |
 | [0060](RFC-0060-WEB-COMPONENT-PLATFORM.md) | Web Component platform program | Draft |
 | [0061](RFC-0061-STREAMLIT-AST-MIGRATOR.md) | Reviewable Streamlit AST migration assistant | Proposed |
+| [0062](RFC-0062-POSIT-WORKBENCH-ADAPTER.md) | Production-grade Posit Workbench deployment adapter | Accepted |
