@@ -14,8 +14,11 @@ external-link modes. Distinct from the browser-Python / JupyterLite sandbox in
 **Package maturity:** Experimental Alpha (`0.1.x`) · pin `>=0.1.0,<0.2` and expect churn
 
 Default guidance is **localhost-only** development. Hosted or publicly reachable
-hosts raise an explicit warning. This package is **not** a Supported production
-server.
+hosts raise an explicit warning. Preview URLs include an unguessable session token
+(`hedron_preview_token` query parameter). The first successful request seeds an
+HttpOnly cookie so iframe follow-up requests (assets, HTMX, WebSockets) stay
+authorized; `X-Hedron-Preview-Token` is also accepted. Requests without a matching
+token are rejected. This package is **not** a Supported production server.
 
 ## Install
 
@@ -65,8 +68,10 @@ preview.shutdown()
 
 | Symbol | Role |
 |---|---|
-| `start_preview(app)` | Start a local preview server for an ASGI app |
+| `start_preview(app)` | Start a local preview server for an ASGI app (token-gated) |
 | `NotebookPreview` | Handle with `.url`, `.iframe_html()`, `.shutdown()` |
+| `wrap_preview_app(app, token)` | ASGI wrapper requiring the preview session token |
+| `PreviewTokenGate` | Pure-ASGI middleware used by `start_preview` |
 
 ## Links
 
