@@ -7,6 +7,8 @@
 - Async cache single-flight no longer publishes owner ``CancelledError`` into the
   shared future; sibling waiters retry and take ownership instead of being
   cancelled (#158).
+- Celery/RQ bridges skip broker enqueue on idempotent replay and only
+  ``mark(FAILED)`` when this call created the job body (#157).
 
 ## [0.30.0] — 2026-08-12
 

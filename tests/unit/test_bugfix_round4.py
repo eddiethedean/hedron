@@ -135,7 +135,7 @@ class _FakeRedis:
 
 def test_redis_status_store_cancel_requires_auth() -> None:
     store = RedisStatusStore(_FakeRedis())  # type: ignore[arg-type]
-    handle = store.submit("demo", {}, auth_subject="alice")
+    handle, _created = store.submit("demo", {}, auth_subject="alice")
     assert store.request_cancel(handle.job_id) is False
     assert store.request_cancel(handle.job_id, auth_subject="bob") is False
     assert store.request_cancel(handle.job_id, auth_subject="alice") is True
@@ -146,7 +146,7 @@ def test_redis_status_store_cancel_requires_auth() -> None:
 
 def test_redis_status_store_mark_honors_cancel() -> None:
     store = RedisStatusStore(_FakeRedis())  # type: ignore[arg-type]
-    handle = store.submit("demo", {}, auth_subject="alice")
+    handle, _created = store.submit("demo", {}, auth_subject="alice")
     assert store.request_cancel(handle.job_id, auth_subject="alice") is True
     marked = store.mark(handle.job_id, JobState.RUNNING)
     assert marked is not None
@@ -156,8 +156,10 @@ def test_redis_status_store_mark_honors_cancel() -> None:
 def test_redis_status_store_idempotency_nx() -> None:
     client = _FakeRedis()
     store = RedisStatusStore(client)  # type: ignore[arg-type]
-    first = store.submit("demo", {"n": 1}, idempotency_key="k", auth_subject="a")
-    second = store.submit("demo", {"n": 2}, idempotency_key="k", auth_subject="a")
+    first, first_created = store.submit("demo", {"n": 1}, idempotency_key="k", auth_subject="a")
+    second, second_created = store.submit("demo", {"n": 2}, idempotency_key="k", auth_subject="a")
+    assert first_created is True
+    assert second_created is False
     assert first.job_id == second.job_id
     bodies = [k for k in client._data if ":idem:" not in k]
     assert len(bodies) == 1

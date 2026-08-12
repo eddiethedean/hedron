@@ -52,13 +52,15 @@ class RQJobBackend:
         fn = self._registry.get(job_type)
         if fn is None:
             raise KeyError(f"Unknown RQ job_type {job_type!r}")
-        handle = self._store.submit(
+        handle, created = self._store.submit(
             job_type,
             payload,
             idempotency_key=idempotency_key,
             tenant_id=tenant_id,
             auth_subject=auth_subject,
         )
+        if not created:
+            return handle
         try:
             rq_job = self._queue.enqueue(fn, dict(payload), job_id=handle.job_id)
             self._rq_jobs[handle.job_id] = rq_job

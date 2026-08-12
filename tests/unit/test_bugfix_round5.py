@@ -203,7 +203,7 @@ def test_inmemory_cancel_sticky_forces_cancelled_on_success() -> None:
 def test_redis_status_store_cleanup_deletes_idem_keys() -> None:
     redis = _FakeRedis()
     store = RedisStatusStore(redis)  # type: ignore[arg-type]
-    handle = store.submit("t", {}, idempotency_key="idem-1", auth_subject="u1")
+    handle, _created = store.submit("t", {}, idempotency_key="idem-1", auth_subject="u1")
     store.mark(handle.job_id, JobState.SUCCEEDED)
     # Force expiry by rewriting updated_at into the past.
     raw = redis.get(f"h1:job:{handle.job_id}")
@@ -221,7 +221,7 @@ def test_redis_status_store_cleanup_deletes_idem_keys() -> None:
 
 def test_redis_status_cancel_sticky_on_succeeded_mark() -> None:
     store = RedisStatusStore(_FakeRedis())  # type: ignore[arg-type]
-    handle = store.submit("t", {})
+    handle, _created = store.submit("t", {})
     assert store.request_cancel(handle.job_id) is True
     store.mark(handle.job_id, JobState.RUNNING)
     status = store.mark(handle.job_id, JobState.SUCCEEDED)

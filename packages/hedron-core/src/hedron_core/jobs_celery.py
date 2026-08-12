@@ -46,13 +46,15 @@ class CeleryJobBackend:
         tenant_id: str | None = None,
         auth_subject: str | None = None,
     ) -> JobHandle:
-        handle = self._store.submit(
+        handle, created = self._store.submit(
             job_type,
             payload,
             idempotency_key=idempotency_key,
             tenant_id=tenant_id,
             auth_subject=auth_subject,
         )
+        if not created:
+            return handle
         try:
             self._app.send_task(job_type, args=[dict(payload)], task_id=handle.job_id)
         except Exception:
