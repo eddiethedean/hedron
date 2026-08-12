@@ -9,6 +9,11 @@ never grants authority beyond the authenticated principal.
 
 **Not** a Supported production surface — see
 [What’s ready](../guides/whats-ready.md).
+**Next:** production-grade graduation is **Planned** as phase **0.32**
+([RFC-0065](../rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) / D-060;
+[#89](https://github.com/eddiethedean/hedron/issues/89);
+[RELEASE_0_32](../acceptance/RELEASE_0_32.md)). At cut the satellite publishes
+`0.2.0` Beta (`>=0.2.0,<0.3`); keep the `0.1.x` pin until then.
 
 ## Install
 

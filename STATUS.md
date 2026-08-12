@@ -21,7 +21,11 @@
 conformance, sample-kit, sim, notebook, Node/Java evaluators, and `hedron migrate streamlit`
 (`release-gate-0.31.toml` Verified; Published as `v0.31.0`). Prior Published **0.30**
 (`fastapi-workbench` 1.0.0 + `hedron-workbench` dependency inversion as `v0.30.0`) remains
-in force. **Next** = **0.32 Planned** (deny-by-default MCP projection; [#89](https://github.com/eddiethedean/hedron/issues/89)).
+in force. **Next** = **0.32 Planned** (deny-by-default MCP projection; D-060 /
+[RFC-0065](docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md);
+[#89](https://github.com/eddiethedean/hedron/issues/89);
+[`release-gate-0.32.toml`](docs/acceptance/release-gate-0.32.toml) Planned;
+at cut `hedron-mcp` `0.2.0` Beta — remains Alpha `0.1.x` today).
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
@@ -242,6 +246,32 @@ SSOT: [RELEASE_0_29](docs/acceptance/RELEASE_0_29.md) ·
 [production-grade-inventory-029.toml](docs/acceptance/production-grade-inventory-029.toml).
 Cut verify: `python scripts/verify_pkg_29.py`.
 
+## Phase 0.32 evidence (Planned — MCP graduation)
+
+**Owning decision / RFC:** [D-060](docs/DECISIONS.md) ·
+[RFC-0065](docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md). Alpha product contract remains
+[RFC-0043](docs/rfcs/RFC-0043-MCP-PROJECTION.md) (0.17).
+**Baseline tip:** Published `v0.31.0`.
+**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89).
+**Version policy at cut:** independent satellite `hedron-mcp` **`0.2.0` Beta**
+(pin `>=0.2.0,<0.3`); today remains Alpha `0.1.x`. Do **not** market MCP as
+Supported until every row below is Verified.
+
+| ID | Disposition | Notes |
+|---|---|---|
+| `PROTOCOL-032` | **Planned** | Pinned protocol/SDK matrix, client matrix, Alpha upgrade fixtures |
+| `AUTHZ-032` | **Planned** | Host authn reuse; app-owned authz/tenant; confused-deputy suites |
+| `BOUNDS-032` | **Planned** | Size/rate/concurrency/time/cancel/replay/file/URI + multi-worker |
+| `AUDIT-032` | **Planned** | Redacted structured audit/diagnostics |
+| `REVIEW-032` | **Planned** | [security-review-032/BRIEF.md](docs/acceptance/security-review-032/BRIEF.md) |
+| `REGRESS-032` / `PKG-032` | **Planned** | Inventory/docs/metadata + `verify_pkg_32.py` |
+
+SSOT: [RELEASE_0_32](docs/acceptance/RELEASE_0_32.md) ·
+[release-gate-0.32.toml](docs/acceptance/release-gate-0.32.toml) ·
+[production-grade-inventory-032.toml](docs/acceptance/production-grade-inventory-032.toml).
+Cut verify (when checkers exist): `python scripts/verify_pkg_32.py --allow-planned`
+during refine; drop `--allow-planned` at cut.
+
 ## Next capability phases
 
 Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-021`) remain
@@ -250,8 +280,9 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 (`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
 Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is **Published**
 (`v0.30.0`; D-058 / RFC-0063). Phase **0.31** is **Published** (`v0.31.0`; D-059 / RFC-0064 /
-RFC-0061). Remaining package-production work continues through **0.32–0.34**: MCP
-([#89](https://github.com/eddiethedean/hedron/issues/89)); Gradio
+RFC-0061). Phase **0.32** is **Planned** (D-060 / RFC-0065;
+[#89](https://github.com/eddiethedean/hedron/issues/89); packet stubs above). Remaining
+package-production work continues through **0.33–0.34**: Gradio
 ([#90](https://github.com/eddiethedean/hedron/issues/90)); then a whole-fleet
 closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform
 work is tracked as [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)

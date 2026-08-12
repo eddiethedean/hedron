@@ -2454,13 +2454,61 @@ flagship CLI gains a reviewable Streamlit AST migration assistant (RFC-0061).
 
 ## 0.32 — Production-grade MCP projection (`v0.32.0`)
 
-**Status:** Planned. `hedron-mcp` remains Experimental Alpha until every gate below is Verified.
+**Status:** Planned. `hedron-mcp` remains Experimental Alpha `0.1.x` until every gate below is
+Verified; at cut the satellite publishes **`0.2.0` Beta** for the declared Supported inventory only.
+**Owning decision / RFC:** [D-060](DECISIONS.md) ·
+[RFC-0065](rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) (graduation). Alpha product contract remains
+[RFC-0043](rfcs/RFC-0043-MCP-PROJECTION.md) (phase 0.17; not reopened).
+Evidence (Planned stubs): [release-gate-0.32.toml](acceptance/release-gate-0.32.toml) ·
+[RELEASE_0_32.md](acceptance/RELEASE_0_32.md) ·
+[production-grade-inventory-032.toml](acceptance/production-grade-inventory-032.toml) ·
+[security-review-032/BRIEF.md](acceptance/security-review-032/BRIEF.md).
+**Baseline tip:** Published **`v0.31.0`**.
 **Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close when all 0.32-owned
-gates are Verified and the package leaves Alpha for the declared Supported inventory.
+gates are Verified and `hedron-mcp` publishes `0.2.0` Beta for the declared Supported inventory.
 
 **Outcome:** `hedron-mcp` is production-grade as a deny-by-default, authenticated MCP projection.
 Installation and mounting grant no authority; every resource/tool/action is explicitly registered,
 scoped to the caller, bounded, observable, cancellable, and safe under multi-worker deployment.
+
+### Entry criteria
+
+- Tip/SSOT honesty for Published `v0.31.0`
+- Owning RFC-0065 / D-060 Accepted
+- Machine-readable inventory draft (Supported / Experimental / excluded)
+- Tracking [#89](https://github.com/eddiethedean/hedron/issues/89) bound to `*-032` gate IDs
+- Per-gate checker scripts implemented (`scripts/check_*_032.py` / `verify_pkg_32.py`) — engineering
+  train (not this packet refine)
+
+### Package dispositions
+
+| Package | At packet refine | At `v0.32.0` cut |
+|---|---|---|
+| `hedron-mcp` | Experimental Alpha `0.1.x` (pin `>=0.1.0,<0.2`) | Beta `0.2.0` independent satellite (pin `>=0.2.0,<0.3`); Alpha `0.1.x` is the upgrade source |
+| Train | Living tip `v0.31.0` | Coordinated Hedron train `v0.32.0`; MCP version stays satellite `0.2.0` (not train-locked `0.32.0`, not `1.0.0`) |
+
+| Production-grade scope at exit | Remains Experimental |
+|---|---|
+| Deny-by-default Streamable HTTP mount; explicit registration; fail-closed empty mount; read resources and read-only tools; host authn reuse; app-owned authz/tenant hooks; bounds, audit, cancel, multi-worker lifecycle | Mutating tools without full evidence; vendor-specific extensions; Gradio auto-composition; ambient component/route/OpenAPI projection |
+
+### Sequenced scope
+
+1. Freeze [production-grade-inventory-032.toml](acceptance/production-grade-inventory-032.toml) and
+   public docs/package metadata agreement for `PKG-032`.
+2. Pin MCP protocol/SDK compatibility matrix with version negotiation, schema fixtures, upgrade
+   tests from Alpha `0.1.x`, and documented behavior for unsupported client capabilities
+   (`PROTOCOL-032`).
+3. Wire host authn reuse and application-owned authz/tenancy hooks; prove fail-closed confused-deputy,
+   identifier enumeration, cross-tenant observation, and authority-widening resistance across HTTP,
+   UI, job, resource, and tool surfaces (`AUTHZ-032`).
+4. Prove origin/transport security, session lifecycle, size/rate/concurrency/time/cancel/replay,
+   file/URI handling, SSRF/path traversal resistance, prompt/tool metadata redaction, graceful
+   shutdown, and multi-worker lifecycle (`BOUNDS-032`).
+5. Cover registration, authorization, execution, cancellation, and failure with redacted structured
+   audit/diagnostics (`AUDIT-032`).
+6. Complete independent threat review per
+   [security-review-032/BRIEF.md](acceptance/security-review-032/BRIEF.md) (`REVIEW-032`).
+7. Cut verify: `REGRESS-032` / `PKG-032` with zero Deferred among 0.32-owned rows.
 
 ### Scope
 
@@ -2471,22 +2519,25 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
   between HTTP, UI, job, resource, and tool surfaces.
 - Separate read resources, read-only tools, and mutations. Mutations require explicit enablement,
   idempotency/replay policy, audit records, bounded inputs/outputs, timeouts, cancellation, and clear
-  user-visible failure semantics.
+  user-visible failure semantics; without that evidence they remain Experimental.
 - Prove origin/transport security, session lifecycle, rate/concurrency limits, request size, file/URI
   handling, SSRF/path traversal resistance, prompt/tool metadata redaction, and graceful shutdown.
-- Run adversarial multi-client and multi-worker suites plus compatibility tests against supported
-  MCP clients; attach an independent security review focused on tool authority and data exfiltration.
+- Run adversarial multi-client and multi-worker suites plus compatibility tests against a documented
+  supported-client matrix; attach an independent security review focused on tool authority and data
+  exfiltration.
+- Prove deny-by-default claims: install alone grants nothing; mount/enable with zero registrations
+  yields an empty server; no ambient component, route, Explorer, or OpenAPI projection.
 
 ### Locked exit evidence
 
 | Gate | Verified means |
 |---|---|
-| `PROTOCOL-032` | Pinned protocol/SDK matrix, negotiation, schemas, client compatibility, and upgrade fixtures pass |
-| `AUTHZ-032` | Authn/authz/tenant propagation is fail-closed across resources, tools, mutations, jobs, and disconnects |
-| `BOUNDS-032` | Size/rate/concurrency/time/cancel/replay/file/URI limits and multi-worker lifecycle evidence pass |
-| `AUDIT-032` | Redacted structured audit and diagnostics cover registration, authorization, execution, cancellation, and failure |
-| `REVIEW-032` | Independent MCP threat review has no unresolved critical/high finding at cut |
-| `REGRESS-032` / `PKG-032` | Clean optional install, disabled/no-registration no-op, SBOM/provenance, compatibility, and release verifier pass |
+| `PROTOCOL-032` | Pinned protocol/SDK matrix, negotiation, schema fixtures, documented client matrix, Alpha `0.1.x` upgrade fixtures, and unsupported-capability behavior pass (`scripts/check_protocol_032.py`) |
+| `AUTHZ-032` | Host authn reuse plus app-owned authz/tenant hooks are fail-closed across resources, tools, mutations, jobs, and disconnects; confused-deputy / enumeration / cross-tenant suites pass (`scripts/check_authz_032.py`) |
+| `BOUNDS-032` | Size/rate/concurrency/time/cancel/replay/file/URI limits, origin/session lifecycle, and multi-worker evidence pass (`scripts/check_bounds_032.py`) |
+| `AUDIT-032` | Redacted structured audit and diagnostics cover registration, authorization, execution, cancellation, and failure (`scripts/check_audit_032.py`) |
+| `REVIEW-032` | Independent MCP threat review per `security-review-032/BRIEF.md` has no unresolved critical/high finding at cut (`scripts/check_review_032.py`) |
+| `REGRESS-032` / `PKG-032` | Clean optional install, disabled/no-registration no-op, inventory/docs/metadata agreement, SBOM/provenance, compatibility, and `scripts/verify_pkg_32.py` pass |
 
 ### Non-goals
 
@@ -2494,11 +2545,15 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
 - Acting as an identity provider, secrets broker, approval system, or tenant model.
 - Executing arbitrary Python, shell, URLs, or filesystem paths from model-controlled input.
 - Treating protocol conformance as proof that an application's tools are safe or correctly authorized.
+- Gradio MCP substitute or auto-composing Gradio tools (phase 0.33 owns Gradio).
+- Scheduling Hedron `1.0`, SLA, or certification claims.
 
 ### Exit gate
 
-- `hedron-mcp` leaves Alpha only for the deny-by-default Supported inventory above.
+- `hedron-mcp` leaves Alpha for Beta **`0.2.0`** only for the deny-by-default Supported inventory
+  above; Experimental leftovers stay Experimental.
 - Mutating or vendor-specific extensions without full evidence remain explicitly Experimental.
+- Every `release-gate-0.32.toml` row is Verified with zero Deferred; [#89](https://github.com/eddiethedean/hedron/issues/89) closes only then.
 
 ## 0.33 — Production-grade Gradio interoperability (`v0.33.0`)
 
@@ -3132,7 +3187,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Production-grade charts and optional native acceleration | 0.28 | Static/a11y chart baseline, explicit backend dispositions, native fuzz/platform/fallback proof; acceleration never required. |
 | Production-grade standalone FastAPI Workbench package and Hedron dependency inversion | 0.30 | First monorepo `fastapi-workbench` release is 1.0.0; plain FastAPI has hands-off launch without Hedron, and `hedron-workbench` depends on the shared generic implementation (D-058). |
 | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.31 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes (RFC-0064 / D-059; [#87](https://github.com/eddiethedean/hedron/issues/87)). |
-| Production-grade deny-by-default MCP projection | 0.32 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review ([#89](https://github.com/eddiethedean/hedron/issues/89)). |
+| Production-grade deny-by-default MCP projection | 0.32 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review (RFC-0065 / D-060; [#89](https://github.com/eddiethedean/hedron/issues/89)). |
 | Production-grade Gradio/Hugging Face client interoperability | 0.33 | Allowlisted egress/endpoints, file/stream bounds, cancellation, polling jobs, provider compatibility, and secret hygiene ([#90](https://github.com/eddiethedean/hedron/issues/90)). |
 | Whole-fleet production-grade closure | 0.34 | Machine-readable inventory, resolver/upgrade/rollback matrices, composed reference-app proof, and no unowned Alpha package ([#91](https://github.com/eddiethedean/hedron/issues/91)). |
 | Web Component platform program | 0.35–0.40 | ABI/lifecycle → forms/primitives → rich surfaces → authoring → composition → production-grade graduation (draft RFC-0060; [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)). |
@@ -3185,7 +3240,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0040 Interaction graph / TriggerContext | 0.17 |
 | 0041 PropertyPatch / CollectionPatch / collections | 0.17 |
 | 0042 Notebook preview (`hedron-notebook`) | 0.17 |
-| 0043 MCP projection (`hedron-mcp`) | 0.17 |
+| 0043 MCP projection (`hedron-mcp`) | 0.17 (Alpha product contract); graduation ownership → 0.32 / RFC-0065 |
 | 0044 Shell primitives / InteractionResult render API | 0.17 |
 | 0045 InferenceInterface / ModelDemo | 0.18 |
 | 0046 ExampleSet / presentation / PredictionFeedback | 0.18 |
@@ -3204,6 +3259,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0059 Production-grade charts / native acceleration | 0.28 |
 | Posit Workbench deployment adapter RFC (planned) | 0.29 (must be Accepted before implementation) |
 | FastAPI Workbench extraction RFC | 0.30 (`fastapi-workbench` 1.0.0; D-058; RFC-0063 Accepted) |
+| 0064 Production-grade developer / portable conformance tooling | 0.31 (D-059; Accepted) |
+| 0065 Production-grade deny-by-default MCP projection | 0.32 (D-060; Accepted; Alpha product contract remains 0043 @ 0.17) |
 | 0060 Web Component platform program | 0.35–0.40 (Draft; must be Accepted before implementation) |
 
 ## Open GitHub issue ownership (0.13+)
@@ -3259,7 +3316,7 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#134](https://github.com/eddiethedean/hedron/issues/134) | Production-grade `hedron-workbench` Posit Workbench adapter | 0.29 |
 | [#87](https://github.com/eddiethedean/hedron/issues/87) | Production-grade conformance / plugin / sim / notebook / Node+Java | 0.31 |
 | [#88](https://github.com/eddiethedean/hedron/issues/88) | Streamlit AST migration assistant (`MIGRATE-031` / RFC-0061) | 0.31 |
-| [#89](https://github.com/eddiethedean/hedron/issues/89) | Production-grade deny-by-default MCP projection | 0.32 |
+| [#89](https://github.com/eddiethedean/hedron/issues/89) | Production-grade deny-by-default MCP projection | 0.32 (D-060 / RFC-0065) |
 | [#90](https://github.com/eddiethedean/hedron/issues/90) | Production-grade Gradio / Hugging Face client interop | 0.33 |
 | [#91](https://github.com/eddiethedean/hedron/issues/91) | Whole-fleet production-grade closure | 0.34 |
 | [#92](https://github.com/eddiethedean/hedron/issues/92) | Web Component ABI / `hedron-elements` / SSR / HTMX lifecycle | 0.35 |
@@ -3291,9 +3348,10 @@ Phase **0.29** is the published production-grade `hedron-workbench` ASGI adapter
 repository-owned version as independently versioned `1.0.0`, makes the hands-off launcher
 available to plain FastAPI applications, and changes `hedron-workbench` to depend on its generic
 implementation (D-058). Phase **0.31** owns production-grade developer/portable conformance
-tooling and the Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061). Tracking
+tooling and the Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061). Phase **0.32** owns
+production-grade deny-by-default MCP projection (D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89)). Tracking
 enhancement issues [#86](https://github.com/eddiethedean/hedron/issues/86)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-cover remaining Planned 0.21 human-AT sessions and Planned phases 0.31–0.40. Close each issue
+cover remaining Planned 0.21 human-AT sessions and Planned phases 0.32–0.40. Close each issue
 only when its owning release-gate rows are Verified. An optional
 `1.0` definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
 roadmap phase. Planned phases **0.35–0.40** establish the next capability program: a versioned

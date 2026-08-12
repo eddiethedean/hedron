@@ -60,7 +60,7 @@ phases apply the same discipline to the remaining package fleet:
 | 0.29 | `hedron-workbench` Posit Workbench deployment adapter |
 | 0.30 | Standalone `fastapi-workbench` 1.0.0 for hands-off plain-FastAPI deployment; `hedron-workbench` depends on the shared generic implementation (D-058) |
 | 0.31 | Conformance, sample plugin, simulation/notebook tooling, Node/Java evaluators, and reviewable Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061) |
-| 0.32 | Deny-by-default MCP projection |
+| 0.32 | Deny-by-default MCP projection — **Planned** (D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89); at cut `hedron-mcp` `0.2.0` Beta) |
 | 0.33 | Gradio/Hugging Face client interoperability |
 | 0.34 | Whole-fleet resolver, upgrade, supply-chain, and maturity closure |
 
@@ -76,7 +76,7 @@ Public phase table: [Roadmap](roadmap.md). Maintainer detail:
 
 1. Ship with pins and the [production readiness](production-readiness.md) checklist.
 2. Prefer [polling](live-interaction.md) over `hedron.experimental` live helpers.
-3. Treat Alpha extras (notebook, MCP, Gradio) and specialty stubs as pin-and-expect-churn.
+3. Treat Alpha extras (MCP, Gradio) and specialty stubs as pin-and-expect-churn; notebook is tooling-grade localhost-only after 0.31.
 4. Track trust-program progress on this page and the [public roadmap](roadmap.md).
 
 ## What we will not do

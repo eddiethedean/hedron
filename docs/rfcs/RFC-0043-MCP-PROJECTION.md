@@ -9,6 +9,11 @@ default
 **Related:** [Plotly Dash feature cross-check](../PLOTLY_DASH_FEATURE_CROSSCHECK.md) (Dash MCP);
 RFC-0012, RFC-0014, RFC-0016; Gradio MCP notes deferred to 0.18 composition
 
+**Graduation ownership:** Production-grade exit for the declared Supported inventory is
+owned by phase **0.32** / [RFC-0065](RFC-0065-PRODUCTION-GRADE-MCP.md) / D-060
+([#89](https://github.com/eddiethedean/hedron/issues/89)). This RFC remains the Alpha
+product contract; it is not the 0.32 graduation packet.
+
 ## Summary
 
 Define an optional `hedron-mcp` distribution that projects only explicitly opted-in page/component/

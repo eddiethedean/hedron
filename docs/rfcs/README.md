@@ -81,3 +81,5 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0061](RFC-0061-STREAMLIT-AST-MIGRATOR.md) | Reviewable Streamlit AST migration assistant | Proposed |
 | [0062](RFC-0062-POSIT-WORKBENCH-ADAPTER.md) | Production-grade Posit Workbench deployment adapter | Accepted |
 | [0063](RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md) | Standalone FastAPI Workbench extraction | Accepted |
+| [0064](RFC-0064-PRODUCTION-GRADE-TOOLING.md) | Production-grade developer and portable conformance tooling | Accepted |
+| [0065](RFC-0065-PRODUCTION-GRADE-MCP.md) | Production-grade deny-by-default MCP projection | Accepted |

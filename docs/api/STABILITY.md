@@ -216,12 +216,15 @@ Optional server-side notebook preview helper ([RFC-0042](https://github.com/eddi
 Distinct from the 0.16 browser-Python sandbox. D-015 separate distribution; maturity Alpha /
 API `experimental`. Localhost-oriented; not Supported production.
 
-### `hedron-mcp` (Alpha / experimental — phase 0.17)
+### `hedron-mcp` (Alpha / experimental — phase 0.17; graduation Planned 0.32)
 
 Optional deny-by-default MCP Streamable HTTP projection
 ([RFC-0043](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0043-MCP-PROJECTION.md)).
 D-015 separate distribution; maturity Alpha / API `experimental`. Disabled and empty by default;
-not Supported production tools.
+not Supported production tools. Production-grade graduation for the declared Supported inventory
+is **Planned** as phase **0.32** ([RFC-0065](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) /
+D-060; [#89](https://github.com/eddiethedean/hedron/issues/89)); at cut the satellite publishes
+`0.2.0` Beta — pin remains `>=0.1.0,<0.2` until then.
 
 ### `hedron-gradio` (Alpha / experimental — phase 0.18)
 

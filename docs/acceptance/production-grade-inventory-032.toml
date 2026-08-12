@@ -1,0 +1,48 @@
+# Phase 0.32 production-grade inventory (machine-checked at PKG-032 cut).
+# Supported = production-grade / Beta label at 0.32 exit for the declared package only.
+# Experimental = may ship but excluded from production-grade claims.
+# Excluded = must not be required for a production-grade Supported workflow.
+# Owning decision: D-060. RFC: RFC-0065.
+# Version policy at cut: hedron-mcp 0.2.0 Beta (pin >=0.2.0,<0.3); Alpha 0.1.x is upgrade source.
+
+baseline = "v0.31.0"
+packages = [
+  "hedron-mcp",
+]
+
+[hedron-mcp]
+supported = [
+  "deny_by_default_streamable_http_mount",
+  "explicit_resource_registration",
+  "explicit_tool_registration",
+  "fail_closed_empty_mount",
+  "read_resources",
+  "read_only_tools",
+  "host_authn_reuse",
+  "app_owned_authz_hooks",
+  "app_owned_tenant_hooks",
+  "rate_size_concurrency_deadline_bounds",
+  "cancellation_and_disconnect",
+  "redacted_structured_audit",
+  "multi_worker_lifecycle",
+]
+experimental = [
+  "mutating_tools_without_full_evidence",
+  "vendor_specific_mcp_extensions",
+  "non_streamable_transports",
+  "gradio_auto_composition",
+]
+excluded = [
+  "ambient_component_projection",
+  "ambient_route_projection",
+  "ambient_explorer_projection",
+  "ambient_openapi_projection",
+  "install_grants_authority",
+  "mount_grants_authority",
+  "identity_provider",
+  "secrets_broker",
+  "approval_system",
+  "tenant_model",
+  "arbitrary_python_shell_url_fs_from_model_input",
+  "hedron_1_0_or_sla_or_certification",
+]

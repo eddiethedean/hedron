@@ -17,7 +17,10 @@ Also available as the flagship extra `hedron[mcp]`.
 
 Not a Supported production surface — see
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
-
+**Next:** production-grade graduation is **Planned** as phase **0.32**
+([RFC-0065](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) /
+D-060; [#89](https://github.com/eddiethedean/hedron/issues/89)). At cut the
+satellite publishes `0.2.0` Beta (`>=0.2.0,<0.3`); keep the `0.1.x` pin until then.
 ## Install
 
 ```bash

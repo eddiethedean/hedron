@@ -1,0 +1,55 @@
+# Phase 0.32 MCP production-grade cut evidence index.
+# Consumed by scripts/check_release_gate.py 0.32.0 (--execute-verified at cut).
+# Zero Deferred policy for 0.32-owned rows: every row must be Verified at cut.
+# Owning decision: D-060. RFC: RFC-0065 (graduation); RFC-0043 remains Alpha product contract.
+# Tracking: #89.
+# Packet refine status: all rows Planned until engineering checkers land.
+
+[[evidence]]
+id = "PROTOCOL-032"
+state = "Planned"
+command = "python scripts/check_protocol_032.py"
+ci_job = "test"
+owner = "hedron-mcp"
+
+[[evidence]]
+id = "AUTHZ-032"
+state = "Planned"
+command = "python scripts/check_authz_032.py"
+ci_job = "test"
+owner = "hedron-mcp"
+
+[[evidence]]
+id = "BOUNDS-032"
+state = "Planned"
+command = "python scripts/check_bounds_032.py"
+ci_job = "test"
+owner = "hedron-mcp"
+
+[[evidence]]
+id = "AUDIT-032"
+state = "Planned"
+command = "python scripts/check_audit_032.py"
+ci_job = "test"
+owner = "hedron-mcp"
+
+[[evidence]]
+id = "REVIEW-032"
+state = "Planned"
+command = "python scripts/check_review_032.py"
+ci_job = "test"
+owner = "hedron-mcp"
+
+[[evidence]]
+id = "REGRESS-032"
+state = "Planned"
+command = "python scripts/check_regress_032.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-032"
+state = "Planned"
+command = "python scripts/verify_pkg_32.py"
+ci_job = "packaging"
+owner = "hedron"

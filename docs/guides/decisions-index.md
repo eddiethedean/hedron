@@ -9,6 +9,7 @@ The full authoritative table lives in the repository (not duplicated here):
 
 | ID | Topic |
 |---|---|
+| D-060 | Production-grade deny-by-default MCP projection (`hedron-mcp` `0.2.0` Beta at cut; 0.32; RFC-0065) |
 | D-059 | Production-grade developer/portable tooling + Streamlit AST migrator (0.31; RFC-0064 / RFC-0061) |
 | D-058 | `fastapi-workbench` monorepo ownership and independent 1.0.0 release; `hedron-workbench` dependency inversion (0.30); later planned phases shift to 0.31–0.40 |
 | D-057 | Production-grade Posit Workbench deployment adapter (`hedron-workbench`, 0.29) |

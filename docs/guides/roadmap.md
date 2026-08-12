@@ -27,7 +27,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.29** | Production-grade `hedron-workbench` Posit Workbench deployment adapter | **Published** (`v0.29.0`; D-057 / RFC-0062; [#134](https://github.com/eddiethedean/hedron/issues/134)) |
 | **0.30** | Standalone `fastapi-workbench` 1.0.0 for plain FastAPI Workbench; `hedron-workbench` depends on it | **Published** (`v0.30.0`; D-058 / RFC-0063; [#135](https://github.com/eddiethedean/hedron/issues/135)) |
 | **0.31** | Production-grade conformance/plugin/simulation/notebook tooling, Node/Java evaluators, and a reviewable Streamlit AST migration assistant | **Published** (`v0.31.0`; D-059 / RFC-0064 / RFC-0061; [#87](https://github.com/eddiethedean/hedron/issues/87), [#88](https://github.com/eddiethedean/hedron/issues/88)) |
-| **0.32** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required ([#89](https://github.com/eddiethedean/hedron/issues/89)) |
+| **0.32** | Production-grade deny-by-default MCP projection | Planned (D-060 / RFC-0065); independent security evidence; at cut `hedron-mcp` `0.2.0` Beta ([#89](https://github.com/eddiethedean/hedron/issues/89)) |
 | **0.33** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access ([#90](https://github.com/eddiethedean/hedron/issues/90)) |
 | **0.34** | Whole-fleet production-grade closure | Planned; no unowned Alpha package or ambiguous tool disposition ([#91](https://github.com/eddiethedean/hedron/issues/91)) |
 | **0.35** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Planned; Draft RFC-0060 ([#92](https://github.com/eddiethedean/hedron/issues/92)) |
@@ -67,7 +67,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
   (0.28), and Workbench packages (`hedron-workbench` / `fastapi-workbench` on 0.29–0.30)
   Supported inventories — not every Beta symbol
-- Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
+- Notebook preview is tooling-grade / localhost-only (0.31); MCP remains **Experimental** /
+  Alpha today — graduation Planned as phase **0.32** (D-060 / RFC-0065; at cut `0.2.0` Beta)
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
   `hedron[experimental-ui]` (quarantined from `hedron[extras]`)
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)
