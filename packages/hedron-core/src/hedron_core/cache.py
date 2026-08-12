@@ -43,6 +43,10 @@ class CacheScope(StrEnum):
     SESSION = "session"
 
 
+class _AsyncSingleFlightRetry(Exception):
+    """Owner cancelled; waiters should re-enter and take ownership."""
+
+
 @dataclass(frozen=True, slots=True)
 class CacheEvent:
     kind: str  # hit|miss|wait|store|reject|invalidate
@@ -267,35 +271,50 @@ class InMemoryCacheBackend(CacheBackend):
                     self._flight_errors.pop(key, None)
 
     async def single_flight_async(self, key: str, loader: Callable[[], Any]) -> Any:
-        cached = self.get(key)
-        if cached is not None:
-            return cached
-        loop = asyncio.get_running_loop()
-        with self._lock:
-            existing = self._async_flights.get(key)
-            if existing is not None:
-                fut = existing
-                owner = False
-            else:
-                fut = loop.create_future()
-                self._async_flights[key] = fut
-                owner = True
-        if not owner:
-            return await asyncio.shield(fut)
-        try:
-            result = loader()
-            if inspect.isawaitable(result):
-                result = await result
-            if not fut.done():
-                fut.set_result(result)
-            return result
-        except BaseException as exc:
-            if not fut.done():
-                fut.set_exception(exc)
-            raise
-        finally:
+        while True:
+            cached = self.get(key)
+            if cached is not None:
+                return cached
+            loop = asyncio.get_running_loop()
             with self._lock:
-                self._async_flights.pop(key, None)
+                existing = self._async_flights.get(key)
+                if existing is not None:
+                    fut = existing
+                    owner = False
+                else:
+                    fut = loop.create_future()
+                    self._async_flights[key] = fut
+                    owner = True
+            if not owner:
+                try:
+                    return await asyncio.shield(fut)
+                except _AsyncSingleFlightRetry:
+                    # Owner cancelled; try again as a new owner or waiter.
+                    continue
+            try:
+                result = loader()
+                if inspect.isawaitable(result):
+                    result = await result
+                if not fut.done():
+                    fut.set_result(result)
+                return result
+            except asyncio.CancelledError:
+                # Do not publish CancelledError into the shared future — that
+                # would cancel sibling waiters that were not themselves cancelled.
+                with self._lock:
+                    if self._async_flights.get(key) is fut:
+                        self._async_flights.pop(key, None)
+                if not fut.done():
+                    fut.set_exception(_AsyncSingleFlightRetry())
+                raise
+            except BaseException as exc:
+                if not fut.done():
+                    fut.set_exception(exc)
+                raise
+            finally:
+                with self._lock:
+                    if self._async_flights.get(key) is fut:
+                        self._async_flights.pop(key, None)
 
 
 _backend: CacheBackend = InMemoryCacheBackend()

@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Async cache single-flight no longer publishes owner ``CancelledError`` into the
+  shared future; sibling waiters retry and take ownership instead of being
+  cancelled (#158).
+
 ## [0.30.0] — 2026-08-12
 
 - Coordinated `0.30.0` train; `hedron-workbench` depends on `fastapi-workbench` 1.0.0 (phase 0.30 / D-058).
