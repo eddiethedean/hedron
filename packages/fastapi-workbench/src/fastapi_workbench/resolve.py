@@ -86,6 +86,36 @@ def _first_str(
     return None
 
 
+def explicit_mount_hint(
+    config: WorkbenchConfig,
+    env: Mapping[str, str],
+    *,
+    compatibility_aliases: bool = True,
+    warnings: list[str] | None = None,
+) -> str | None:
+    """Return a non-empty mount when ``discover_rserver_url`` can be skipped.
+
+    Mirrors the mount-presence logic in ``resolve_deployment()`` so launcher
+    paths do not call discovery when the resolver already has an explicit mount.
+    """
+    w = warnings if warnings is not None else []
+    mount_explicit = _first_str(
+        explicit=config.mount,
+        namespaced=env.get(_ENV_MOUNT),
+        resolved=env.get(RESOLVED_MOUNT_ENV),
+        alias=env.get("BASE_PATH") if compatibility_aliases else None,
+        alias_name="BASE_PATH",
+        warnings=w,
+    )
+    if mount_explicit is None and rs_server_url(env) and not is_workbench_job(env):
+        uvicorn_root = env.get(_UVICORN_ROOT_PATH)
+        if uvicorn_root is not None and str(uvicorn_root).strip():
+            mount_explicit = str(uvicorn_root).strip()
+            if warnings is not None:
+                warnings.append("using UVICORN_ROOT_PATH supplied by the Posit Workbench runtime")
+    return mount_explicit
+
+
 def _parse_port(raw: str | int | None, *, name: str = "port") -> int | None:
     if raw is None or not str(raw).strip():
         return None
@@ -404,19 +434,12 @@ def resolve_deployment(
     else:
         port = 0
 
-    mount_explicit = _first_str(
-        explicit=cfg.mount,
-        namespaced=env.get(_ENV_MOUNT),
-        resolved=env.get(RESOLVED_MOUNT_ENV),
-        alias=env.get("BASE_PATH") if compatibility_aliases else None,
-        alias_name="BASE_PATH",
+    mount_explicit = explicit_mount_hint(
+        cfg,
+        env,
+        compatibility_aliases=compatibility_aliases,
         warnings=warnings,
     )
-    if mount_explicit is None and rs_server_url(env) and not job_context:
-        uvicorn_root = env.get(_UVICORN_ROOT_PATH)
-        if uvicorn_root is not None and str(uvicorn_root).strip():
-            mount_explicit = str(uvicorn_root).strip()
-            warnings.append("using UVICORN_ROOT_PATH supplied by the Posit Workbench runtime")
     public_explicit = _first_str(
         explicit=cfg.public_base_url,
         namespaced=env.get(_ENV_PUBLIC),

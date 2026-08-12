@@ -22,7 +22,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "0.29.0"
+  HEDRON_GATE_VERSION: "0.30.0"
 
 jobs:
   test:
@@ -409,13 +409,25 @@ jobs:
           done
 
           # Any NEW name not yet on PyPI after the loop counts as remaining work.
+          # PyPI's simple index can lag seconds behind a successful upload.
           still_missing=()
           for name in "${new_names[@]}"; do
             normalized="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | tr '_.' '-')"
-            code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
-              -H 'Accept: application/vnd.pypi.simple.v1+json' \
-              "https://pypi.org/simple/${normalized}/")"
-            if [ "$code" != "200" ]; then
+            found=0
+            for attempt in 1 2 3 4 5 6; do
+              code="$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' \
+                -H 'Accept: application/vnd.pypi.simple.v1+json' \
+                "https://pypi.org/simple/${normalized}/")"
+              if [ "$code" = "200" ]; then
+                found=1
+                break
+              fi
+              if [ "$attempt" -lt 6 ]; then
+                echo "Waiting for ${name} to appear on PyPI (attempt ${attempt}/6)..."
+                sleep 10
+              fi
+            done
+            if [ "$found" -eq 0 ]; then
               still_missing+=("$name")
             fi
           done
