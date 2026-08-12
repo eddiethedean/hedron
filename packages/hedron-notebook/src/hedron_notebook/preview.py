@@ -124,9 +124,7 @@ def _tokens_match(expected: str, provided: str | None) -> bool:
 def _set_cookie_header(token: str, *, root_path: str) -> bytes:
     path = root_path if root_path else "/"
     # HttpOnly so document JS cannot exfiltrate; SameSite=Lax keeps iframe same-site GETs.
-    return (
-        f"{PREVIEW_TOKEN_COOKIE}={token}; Path={path}; HttpOnly; SameSite=Lax".encode("latin-1")
-    )
+    return f"{PREVIEW_TOKEN_COOKIE}={token}; Path={path}; HttpOnly; SameSite=Lax".encode("latin-1")
 
 
 class PreviewTokenGate:
