@@ -112,9 +112,7 @@ def explicit_mount_hint(
         if uvicorn_root is not None and str(uvicorn_root).strip():
             mount_explicit = str(uvicorn_root).strip()
             if warnings is not None:
-                warnings.append(
-                    "using UVICORN_ROOT_PATH supplied by the Posit Workbench runtime"
-                )
+                warnings.append("using UVICORN_ROOT_PATH supplied by the Posit Workbench runtime")
     return mount_explicit
 
 

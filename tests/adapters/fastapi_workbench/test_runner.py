@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from fastapi_workbench.config import WorkbenchConfig, WorkbenchMode
+from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig, WorkbenchMode
 from fastapi_workbench.resolve import (
     RESOLVED_MOUNT_ENV,
     explicit_mount_hint,
@@ -69,7 +69,7 @@ def test_run_target_skips_discovery_when_uvicorn_root_path_set(
 
     monkeypatch.setattr("fastapi_workbench.runner.bind_loopback", lambda _h, _p: FakeSock())
 
-    served: list[object] = []
+    served: list[ResolvedDeployment] = []
 
     def fake_prepare_app(**kwargs: object) -> tuple[object, object]:
         resolved = resolve_deployment(
@@ -98,7 +98,7 @@ def test_run_target_skips_discovery_when_uvicorn_root_path_set(
 
     assert discover_calls == []
     assert len(served) == 1
-    assert getattr(served[0], "browser_mount") == "/s/session/p/12345"
+    assert served[0].browser_mount == "/s/session/p/12345"
 
 
 def test_run_target_skips_discovery_when_resolved_mount_env_set(
