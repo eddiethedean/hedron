@@ -1,0 +1,109 @@
+# Phase 0.31 production-grade inventory (machine-checked at PKG-031 cut).
+# Supported = production-grade / tooling-grade label at 0.31 exit for the declared role.
+# Experimental = may ship but excluded from tooling-grade claims.
+# Excluded = must not be required for a tooling-grade Supported workflow.
+# Owning decision: D-059. RFCs: RFC-0064, RFC-0061.
+
+baseline = "v0.30.0"
+packages = [
+  "hedron-conformance",
+  "hedron-sample-kit",
+  "hedron-sim",
+  "hedron-notebook",
+  "hedron-runtime-node",
+  "hedron-runtime-java",
+  "hedron",
+]
+
+[hedron-conformance]
+supported = [
+  "versioned_schemas",
+  "golden_fixtures",
+  "runner_cli_api",
+  "compatibility_policy",
+  "third_party_runtime_author_kit",
+]
+experimental = []
+excluded = [
+  "application_production_server",
+]
+
+[hedron-sample-kit]
+supported = [
+  "external_plugin_exemplar",
+  "entry_point_discovery",
+  "assets_diagnostics",
+  "explorer_panels",
+  "disable_uninstall",
+]
+experimental = []
+excluded = [
+  "required_runtime_dependency",
+]
+
+[hedron-sim]
+supported = [
+  "deterministic_offline_fragments",
+  "declared_htmx_subset",
+  "csp_safe_static_assets",
+  "unsupported_feature_failure",
+]
+experimental = []
+excluded = [
+  "full_browser_htmx_emulation",
+]
+
+[hedron-notebook]
+supported = [
+  "localhost_only_preview",
+  "iframe_isolation",
+  "lifecycle_cleanup",
+  "jupyter_compatibility_matrix",
+]
+experimental = []
+excluded = [
+  "hosted_multi_user_notebook",
+  "remote_public_serving",
+]
+
+[hedron-runtime-node]
+supported = [
+  "published_signed_evaluator",
+  "runtime_matrix",
+  "python_reference_parity",
+  "offline_conformance",
+]
+experimental = []
+excluded = [
+  "application_server",
+  "full_hedron_port",
+]
+
+[hedron-runtime-java]
+supported = [
+  "published_signed_evaluator",
+  "runtime_matrix",
+  "python_reference_parity",
+  "offline_conformance",
+]
+experimental = []
+excluded = [
+  "application_server",
+  "full_hedron_port",
+]
+
+[hedron]
+supported = [
+  "migrate_streamlit_cli",
+  "non_executing_ast_inventory",
+  "versioned_mapping_report_schema",
+  "secure_scaffold_generation",
+  "source_maps_and_findings",
+]
+experimental = []
+excluded = [
+  "streamlit_call_for_call_parity",
+  "execute_source_by_default",
+  "silent_state_side_effect_copy",
+  "unreviewed_production_ready_output",
+]

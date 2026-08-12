@@ -1,4 +1,4 @@
-# Streamlit → Hedron 0.27 migration matrix
+# Streamlit → Hedron migration matrix
 
 Use this page to find the closest Hedron path for a Streamlit API. It is a migration aid,
 not a claim of call-for-call compatibility. The execution model, state ownership, and

@@ -1,11 +1,14 @@
 # RFC-0061: Reviewable Streamlit AST migration assistant
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Target phase:** 0.31 (`v0.31.0`)
 
+**Owning decision:** D-059 (companion tooling packet: [RFC-0064](RFC-0064-PRODUCTION-GRADE-TOOLING.md))
+
 **Revision:** 2026-08-12 — D-058 shifted this planned phase and its evidence suffix from
-0.30 / `MIGRATE-030` to 0.31 / `MIGRATE-031`; scope is unchanged.
+0.30 / `MIGRATE-030` to 0.31 / `MIGRATE-031`; scope is unchanged. Open questions closed
+under D-059; status moved Proposed → Accepted.
 
 **Related:** RFC-0017, RFC-0019, RFC-0024, RFC-0026; phase 0.15 Streamlit migration
 matrix; [Streamlit migration guide](../guides/streamlit-migration.md); [ROADMAP
@@ -64,11 +67,11 @@ Common options:
 |---|---|
 | `SOURCE` | A Python entrypoint or project directory |
 | `--out PATH` | New output directory; required unless `--analyze-only` |
-| `--project-root PATH` | Explicit boundary for local-module discovery |
+| `--project-root PATH` | Explicit boundary for local-module discovery (default: nearest `pyproject.toml` walking up from `SOURCE`, else entrypoint parent) |
 | `--analyze-only` | Produce the report without generating a project |
-| `--format text\|json\|sarif` | Human, automation, or code-scanning report |
+| `--format text\|json\|sarif` | Human, automation, or code-scanning report (SARIF via shared diagnostics adapter) |
 | `--python-version 3.11\|3.12\|3.13\|3.14` | Parser grammar for the input source |
-| `--fail-on information\|warning\|error` | CI threshold for findings |
+| `--fail-on information\|warning\|error` | CI threshold for findings (default: `error`) |
 
 Exit status `0` means analysis/generation completed below the configured finding threshold,
 `1` means the tool could not safely parse, resolve, or write the migration, and `2` means a
@@ -337,19 +340,19 @@ The source application remains untouched and can continue running during accepta
 Hedron application uses a separate directory, process, hostname/path, and deployment until the
 existing cutover checklist is complete.
 
-## Open questions
+## Resolved design decisions (formerly open questions)
 
-1. Should `--project-root` default to the entrypoint parent or the nearest `pyproject.toml` when
-   both are present?
-2. Should phase 0.31 include bounded extraction of proven Streamlit-free functions into a generated
-   `domain.py`, or only reference their original modules until the developer extracts them?
-3. Which exact Streamlit versions form the first mapping-catalog compatibility window?
-4. Should warnings make the default exit status `2`, or only errors, while keeping
-   `--fail-on` configurable?
-5. Is SARIF emitted directly by `hedron`, or through the existing diagnostics adapter shared with
-   `hedron check`?
-
-These questions must be closed before the RFC moves from Proposed to Accepted.
+1. **`--project-root` default:** Walk up from `SOURCE` for the nearest `pyproject.toml`;
+   otherwise use the entrypoint parent. Explicit `--project-root` always wins.
+2. **`domain.py` extraction:** Out of phase 0.31. Generated code imports or references
+   original modules; developers extract Streamlit-free helpers manually.
+3. **Streamlit compatibility window:** The first mapping catalog audits Streamlit **1.60.x**
+   documentation (same baseline as the public migration matrix). Unknown or newer APIs are
+   reported, never guessed.
+4. **Default exit threshold:** Default `--fail-on error` (warnings do not force exit `2`).
+   `--fail-on` remains configurable for CI.
+5. **SARIF path:** Emit through the existing diagnostics / SARIF adapter shared with
+   `hedron check`, not a one-off migrator-only encoder.
 
 ## Acceptance criteria
 

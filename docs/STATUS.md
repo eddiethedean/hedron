@@ -18,7 +18,9 @@
 `1.0.0` for plain FastAPI Workbench deployment and `hedron-workbench` `0.30.0` dependency
 inversion (`release-gate-0.30.toml` Verified; Published as `v0.30.0`). Prior Published **0.29**
 (`hedron-workbench` production-grade adapter as `v0.29.0`) remains in force. **Next** =
-**0.31 Planned** (developer tooling / RFC-0061 Streamlit migrator). The former planned
+**0.31 Planned** (D-059 / RFC-0064 tooling graduation + RFC-0061 Streamlit AST migrator;
+[#87](https://github.com/eddiethedean/hedron/issues/87),
+[#88](https://github.com/eddiethedean/hedron/issues/88)). The former planned
 0.30–0.39 phases remain at 0.31–0.40.
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
@@ -248,9 +250,9 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 (`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
 Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is **Published**
 (`v0.30.0`; D-058 / RFC-0063). Remaining package-production work continues through **0.31–0.34**:
-developer and portable conformance tooling
+developer and portable conformance tooling plus the Streamlit AST migrator
 ([#87](https://github.com/eddiethedean/hedron/issues/87),
-[#88](https://github.com/eddiethedean/hedron/issues/88)); MCP
+[#88](https://github.com/eddiethedean/hedron/issues/88); D-059 / RFC-0064 / RFC-0061); MCP
 ([#89](https://github.com/eddiethedean/hedron/issues/89)); Gradio
 ([#90](https://github.com/eddiethedean/hedron/issues/90)); then a whole-fleet
 closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform

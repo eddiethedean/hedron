@@ -9,6 +9,7 @@ The full authoritative table lives in the repository (not duplicated here):
 
 | ID | Topic |
 |---|---|
+| D-059 | Production-grade developer/portable tooling + Streamlit AST migrator (0.31; RFC-0064 / RFC-0061) |
 | D-058 | `fastapi-workbench` monorepo ownership and independent 1.0.0 release; `hedron-workbench` dependency inversion (0.30); later planned phases shift to 0.31–0.40 |
 | D-057 | Production-grade Posit Workbench deployment adapter (`hedron-workbench`, 0.29) |
 | D-051 | Production security floor (0.20) + CSRF / `SecurityPolicy` composition (0.22) |

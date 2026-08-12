@@ -2375,6 +2375,11 @@ generic package never imports, discovers, or conditionally activates Hedron.
 
 **Status:** Planned. Tooling-grade means reliable and supported for its stated development or
 conformance purpose; it does not convert the tools into application production servers.
+**Owning decision / RFCs:** [D-059](DECISIONS.md) ·
+[RFC-0064](rfcs/RFC-0064-PRODUCTION-GRADE-TOOLING.md) (tooling) ·
+[RFC-0061](rfcs/RFC-0061-STREAMLIT-AST-MIGRATOR.md) (migrator; Accepted).
+Evidence scaffold: [release-gate-0.31.toml](acceptance/release-gate-0.31.toml) ·
+[RELEASE_0_31.md](acceptance/RELEASE_0_31.md).
 **Tracking:** [#87](https://github.com/eddiethedean/hedron/issues/87) (tooling evaluators),
 [#88](https://github.com/eddiethedean/hedron/issues/88) (`MIGRATE-031` / RFC-0061). Close those
 issues when the owning gates are Verified on the `v0.31.0` cut.
@@ -3105,7 +3110,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Streamlit migration matrix and parity diagnostics | 0.15 | Tracks feature families and preserves explicit non-parity with rerun/global-state semantics; HTMX testing helpers (#22–#23, #25–#26) ship with the AppScenario harness. |
 | Standalone hands-off Posit Workbench deployment for plain FastAPI | 0.30 | `fastapi-workbench` 1.0.0 owns generic discovery, ASGI normalization, pre-import launch, diagnostics, and real-host proof with no Hedron dependency (`CONTRACT-030`…`PKG-030`; D-058). |
 | `hedron-workbench` dependency inversion onto `fastapi-workbench` | 0.30 | Hedron 0.30 declares `fastapi-workbench>=1.0.0,<2.0`, delegates the generic resolver/middleware/runner, and retains only Hedron-specific integration. |
-| Reviewable Streamlit AST migration assistant | 0.31 | Generates a new Hedron scaffold plus versioned report/source map from a locked mapping inventory; never executes or overwrites source, silently drops calls, or promises whole-app equivalence (`MIGRATE-031`, RFC-0061; [#88](https://github.com/eddiethedean/hedron/issues/88)). |
+| Reviewable Streamlit AST migration assistant | 0.31 | Generates a new Hedron scaffold plus versioned report/source map from a locked mapping inventory; never executes or overwrites source, silently drops calls, or promises whole-app equivalence (`MIGRATE-031`, RFC-0061 / D-059; [#88](https://github.com/eddiethedean/hedron/issues/88)). |
 | streamlit-extras catalog matrix and curated extras toolkit | 0.16 | Tracks every active/deprecated extra as covered, planned, recipe/plugin, or deliberate non-parity. |
 | Plotly Dash matrix, reactive dashboard graph, notebook preview, and optional MCP projection | 0.17 | Adopts useful outcomes without a global callback runtime, arbitrary client JavaScript, or broad default tool exposure. |
 | HTMX shell primitives (`NavLink`, `OobHost`, `AppShell`/`MainPanel`) and public InteractionResult→Response API | 0.17 | In-shell navigation and stable conversion for apps that own CSRF/headers/region policy ([#28](https://github.com/eddiethedean/hedron/issues/28)–[#30](https://github.com/eddiethedean/hedron/issues/30), [#35](https://github.com/eddiethedean/hedron/issues/35), [#40](https://github.com/eddiethedean/hedron/issues/40)). |
@@ -3125,7 +3130,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | **Published** `v0.27.0`; D-055 / RFC-0058; Verified `DATA-027`…`PKG-027` — [RELEASE_0_27](acceptance/RELEASE_0_27.md). |
 | Production-grade charts and optional native acceleration | 0.28 | Static/a11y chart baseline, explicit backend dispositions, native fuzz/platform/fallback proof; acceleration never required. |
 | Production-grade standalone FastAPI Workbench package and Hedron dependency inversion | 0.30 | First monorepo `fastapi-workbench` release is 1.0.0; plain FastAPI has hands-off launch without Hedron, and `hedron-workbench` depends on the shared generic implementation (D-058). |
-| Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.31 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes ([#87](https://github.com/eddiethedean/hedron/issues/87)). |
+| Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.31 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes (RFC-0064 / D-059; [#87](https://github.com/eddiethedean/hedron/issues/87)). |
 | Production-grade deny-by-default MCP projection | 0.32 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review ([#89](https://github.com/eddiethedean/hedron/issues/89)). |
 | Production-grade Gradio/Hugging Face client interoperability | 0.33 | Allowlisted egress/endpoints, file/stream bounds, cancellation, polling jobs, provider compatibility, and secret hygiene ([#90](https://github.com/eddiethedean/hedron/issues/90)). |
 | Whole-fleet production-grade closure | 0.34 | Machine-readable inventory, resolver/upgrade/rollback matrices, composed reference-app proof, and no unowned Alpha package ([#91](https://github.com/eddiethedean/hedron/issues/91)). |
@@ -3280,14 +3285,14 @@ remaining package fleet: core/flagship, Python satellites, charts/native, the Po
 adapter, standalone FastAPI Workbench, developer and portable tooling, MCP, Gradio, and a whole-fleet closure audit. Each planned phase requires an accepted
 owning RFC/decision before implementation; adding it here assigns scope and prevents maturity work
 from becoming an unowned backlog. These additions do not renumber published phases through 0.29.
-Phase **0.30** is the published production-grade `hedron-workbench` ASGI adapter. Phase **0.30**
-brings the existing `fastapi-workbench` project into this monorepo, releases its first repository-
-owned version as independently versioned `1.0.0`, makes the hands-off launcher available to plain
-FastAPI applications, and changes `hedron-workbench` to depend on its generic implementation
-(D-058). Tracking
+Phase **0.29** is the published production-grade `hedron-workbench` ASGI adapter (D-057). Phase
+**0.30** brings the existing `fastapi-workbench` project into this monorepo, releases its first
+repository-owned version as independently versioned `1.0.0`, makes the hands-off launcher
+available to plain FastAPI applications, and changes `hedron-workbench` to depend on its generic
+implementation (D-058). Phase **0.31** owns production-grade developer/portable conformance
+tooling and the Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061). Tracking
 enhancement issues [#86](https://github.com/eddiethedean/hedron/issues/86)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-cover remaining Planned 0.21 human-AT sessions and Planned phases 0.31–0.40; the 0.30 tracking issue
-must be assigned with its owning RFC. Close each issue
+cover remaining Planned 0.21 human-AT sessions and Planned phases 0.31–0.40. Close each issue
 only when its owning release-gate rows are Verified. An optional
 `1.0` definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
 roadmap phase. Planned phases **0.35–0.40** establish the next capability program: a versioned

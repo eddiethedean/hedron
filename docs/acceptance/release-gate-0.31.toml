@@ -1,0 +1,69 @@
+# Phase 0.31 dual tooling + migrator cut evidence index.
+# Consumed by scripts/check_release_gate.py 0.31.0 (--allow-planned during refine;
+# --execute-verified at cut once every row is Verified).
+# Zero Deferred policy for 0.31-owned rows: every row must be Verified at cut.
+# Owning decision: D-059. RFCs: RFC-0064 (tooling), RFC-0061 (migrator).
+# Tracking: #87 (tooling), #88 (MIGRATE-031).
+
+[[evidence]]
+id = "CONF-031"
+state = "Planned"
+command = "python scripts/check_conf_031.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "PLUGIN-031"
+state = "Planned"
+command = "python scripts/check_plugin_031.py"
+ci_job = "test"
+owner = "hedron-sample-kit"
+
+[[evidence]]
+id = "SIM-031"
+state = "Planned"
+command = "python scripts/check_sim_031.py"
+ci_job = "test"
+owner = "hedron-sim"
+
+[[evidence]]
+id = "NOTEBOOK-031"
+state = "Planned"
+command = "python scripts/check_notebook_031.py"
+ci_job = "test"
+owner = "hedron-notebook"
+
+[[evidence]]
+id = "NODE-031"
+state = "Planned"
+command = "python scripts/check_node_031.py"
+ci_job = "packaging"
+owner = "hedron-runtime-node"
+
+[[evidence]]
+id = "JAVA-031"
+state = "Planned"
+command = "python scripts/check_java_031.py"
+ci_job = "packaging"
+owner = "hedron-runtime-java"
+
+[[evidence]]
+id = "MIGRATE-031"
+state = "Planned"
+command = "python scripts/check_migrate_031.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-031"
+state = "Planned"
+command = "bash scripts/ci_checks.sh test --python 3.12"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-031"
+state = "Planned"
+command = "python scripts/verify_pkg_31.py"
+ci_job = "packaging"
+owner = "hedron"
