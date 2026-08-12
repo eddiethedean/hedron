@@ -47,8 +47,12 @@ build = "cp311-* cp312-* cp313-* cp314-*"
 skip = "pp* *-musllinux_*"
 before-build = "rustup default stable"
 
+# Native-wheels.yml already splits Linux across ubuntu-latest (x86_64) and
+# ubuntu-24.04-arm (aarch64). Building both arches on one runner pulls a
+# foreign manylinux image through QEMU, hits `exec format error`, and hangs
+# until the job timeout.
 [tool.cibuildwheel.linux]
-archs = ["x86_64", "aarch64"]
+archs = ["native"]
 
 [tool.cibuildwheel.macos]
 archs = ["arm64"]

@@ -30,6 +30,9 @@ env:
   UV_NO_PROGRESS: "1"
   CIBW_BUILD: "cp311-* cp312-* cp313-* cp314-*"
   CIBW_SKIP: "pp* *-musllinux_*"
+  # One native arch per runner. Dual-arch Linux builds pull qemu foreign
+  # manylinux images (`exec format error`) and hang until timeout.
+  CIBW_ARCHS: native
   # manylinux containers do not inherit the host rustup from dtolnay/rust-toolchain.
   CIBW_BEFORE_ALL_LINUX: >-
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
@@ -45,7 +48,7 @@ jobs:
     name: ${{ matrix.os }}
     if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.crates_only) }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 120
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
