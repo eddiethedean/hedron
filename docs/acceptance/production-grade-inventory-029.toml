@@ -77,3 +77,4 @@ image = "posit/workbench:2026.07.0"
 platform = "linux/amd64"
 license_env = "PWB_LICENSE"
 license_container_env = "PWB_LICENSE"
+license_stop_timeout_seconds = 120

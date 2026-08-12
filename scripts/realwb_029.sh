@@ -22,6 +22,8 @@ PROXY_PORT=8053
 APP_PID=""
 PROXY_CONTAINER="hedron-workbench-proxy-smoke-$$"
 PROXY_STARTED=0
+WORKBENCH_STARTED=0
+LICENSE_STOP_TIMEOUT="${HEDRON_WORKBENCH_LICENSE_STOP_TIMEOUT:-120}"
 SMOKE_DIR="$(mktemp -d /tmp/hedron-workbench-smoke.XXXXXX)"
 APP_LOG="$SMOKE_DIR/app.log"
 
@@ -60,7 +62,34 @@ license_unavailable_in_logs() {
     'license.*expired|expired.*license|license has expired|product key.*maximum number of computers'
 }
 
+deactivate_workbench_license() {
+  if [[ "$WORKBENCH_STARTED" -ne 1 ]]; then
+    "${COMPOSE[@]}" down --remove-orphans >/dev/null 2>&1 || true
+    return 0
+  fi
+  local current_cid=""
+  current_cid="$("${COMPOSE[@]}" ps -q workbench 2>/dev/null || true)"
+  if [[ -n "$current_cid" ]] && \
+     [[ "$(docker inspect --format '{{.State.Running}}' "$current_cid" 2>/dev/null || true)" == "true" ]]; then
+    log "LICENSE_DEACTIVATE=begin timeout=${LICENSE_STOP_TIMEOUT}s"
+    docker exec "$current_cid" rstudio-server license-manager deactivate >/dev/null 2>&1 || \
+      log "LICENSE_DEACTIVATE=manager_exit_nonzero"
+    "${COMPOSE[@]}" stop -t "$LICENSE_STOP_TIMEOUT" workbench >/dev/null 2>&1 || \
+      log "LICENSE_DEACTIVATE=stop_exit_nonzero"
+    log "LICENSE_DEACTIVATE=end"
+  else
+    log "LICENSE_DEACTIVATE=skipped container_not_running"
+  fi
+  "${COMPOSE[@]}" down --remove-orphans >/dev/null 2>&1 || true
+  WORKBENCH_STARTED=0
+}
+
+CLEANUP_DONE=0
 cleanup() {
+  if [[ "$CLEANUP_DONE" -eq 1 ]]; then
+    return 0
+  fi
+  CLEANUP_DONE=1
   if [[ -n "${APP_PID}" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
     kill "$APP_PID" >/dev/null 2>&1 || true
     wait "$APP_PID" >/dev/null 2>&1 || true
@@ -68,7 +97,7 @@ cleanup() {
   if [[ "$PROXY_STARTED" -eq 1 ]]; then
     docker rm -f "$PROXY_CONTAINER" >/dev/null 2>&1 || true
   fi
-  "${COMPOSE[@]}" down --remove-orphans >/dev/null 2>&1 || true
+  deactivate_workbench_license
   if [[ -d "$SMOKE_DIR" && "$SMOKE_DIR" == /tmp/hedron-workbench-smoke.* ]]; then
     rm -r -- "$SMOKE_DIR"
   else
@@ -87,7 +116,7 @@ if [[ -f "$RESULT" ]]; then
 fi
 : > "$RESULT"
 exec > >(tee -a "$RESULT") 2>&1
-trap cleanup EXIT
+trap cleanup EXIT INT TERM
 
 log "REALWB-029 start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "image=$IMAGE"
@@ -154,6 +183,7 @@ if ! "${COMPOSE[@]}" up -d --pull "$compose_pull" workbench; then
   fi
   fail "HED-WB-0007" "failed to start $IMAGE (license/platform/qemu). Do not hang on QEMU."
 fi
+WORKBENCH_STARTED=1
 cid="$("${COMPOSE[@]}" ps -q workbench)"
 if [[ -z "$cid" ]]; then
   fail "HED-WB-0007" "workbench container id missing"

@@ -25,6 +25,9 @@ hedron-workbench run app:app
 ## Docker smoke (REALWB-029)
 
 Requires `PWB_LICENSE` in repo-root `.env` (Posit license key). Never commit it.
+REALWB stops Workbench with a 120s grace period and runs
+`rstudio-server license-manager deactivate` before teardown so license-key activations
+are released for the next local or CI run.
 The live matrix probes the pinned Workbench image and real `rserver-url`, then
 checks mounted pages/cookies, fragments, CSRF actions, assets, OpenAPI, redirects,
 encoded-target guards, request-independent public invite URLs, diagnostics,

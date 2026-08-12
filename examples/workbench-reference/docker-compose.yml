@@ -1,11 +1,12 @@
 # REALWB-029: official Posit Workbench image + Hedron app sidecar.
 # License: PWB_LICENSE from the environment.
-# Image is linux/amd64. Fail closed on other platforms rather than hanging on QEMU.
+# Stop with a 120s grace period so Posit can deactivate license-key activations.
 
 services:
   workbench:
     image: ${HEDRON_WORKBENCH_IMAGE:-posit/workbench:2026.07.0}
     platform: linux/amd64
+    stop_grace_period: 120s
     ports:
       - "8787:8787"
     environment:
