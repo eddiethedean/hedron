@@ -31,8 +31,7 @@ Hedron uses a coordinated release train. The Git tag includes a leading `v`
 5. `PYPI_API_TOKEN` is configured in GitHub Actions secrets (already required by
    `.github/workflows/release.yml`).
 6. **PyPI name:** the `hedron` project on PyPI is this FastAPI framework train
-   (reclaimed at `0.2.0`). Prior geolocation releases (`<=0.0.6`) remain
-   historical; keep the project description aligned after each publish.
+   (reclaimed at `0.2.0`). Keep the project description aligned after each publish.
 
 ## Cut `v0.1.0` (`hedron-core` only)
 

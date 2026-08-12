@@ -3,12 +3,6 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
-!!! note "PyPI history before 0.1.0"
-
-    Releases older than `0.1.0` belong to an unrelated, retired geolocation package.
-    The current web framework starts at `0.1.0`; there is no supported migration path or
-    API continuity with that legacy project.
-
 ## 0.30.0 — 2026-08-12
 
 Coordinated Beta train cut for standalone Workbench package extraction (D-058 /

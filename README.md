@@ -79,9 +79,6 @@ production, read
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
 
-Package identity note: PyPI versions older than `0.1.0` belong to an unrelated, retired
-geolocation project. This web framework begins at `0.1.0`; there is no API continuity.
-
 ### When not to choose Hedron
 
 Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you do not
