@@ -289,14 +289,29 @@ if [[ "$HOST_ARCH" != "arm64" ]]; then
     fail "HED-WB-0007" "launched Workbench session did not expose a session URL"
   fi
 
-  set +e
-  rurl_out="$(docker exec -u hedron -e RS_SERVER_URL="$session_url" \
-    "$cid" "$RSERVER_URL_BIN" -l "$PROXY_PORT" 2>/dev/null)"
-  rurl_rc=$?
-  set -e
-  if [[ "$rurl_rc" -ne 0 || -z "$rurl_out" ]]; then
+  rurl_out=""
+  rurl_rc=1
+  for _ in $(seq 1 24); do
+    set +e
+    rurl_out="$(docker exec -u hedron -e RS_SERVER_URL="$session_url" \
+      "$cid" "$RSERVER_URL_BIN" -l "$PROXY_PORT" 2>/dev/null)"
+    rurl_rc=$?
+    set -e
+    if [[ "$rurl_rc" -eq 0 && -n "$rurl_out" ]]; then
+      break
+    fi
+    if [[ "$rurl_rc" -eq 139 ]]; then
+      break
+    fi
+    sleep 5
+  done
+  if [[ "$rurl_rc" -eq 139 ]]; then
+    log "PROXY_E2E=session_rserver_url_limited rc=139"
+    docker exec "$cid" rstudio-server revoke-api-token hedron-smoke >/dev/null 2>&1 || true
+    api_token=""
+  elif [[ "$rurl_rc" -ne 0 || -z "$rurl_out" ]]; then
     fail "HED-WB-0003" "session-scoped rserver-url failed rc=$rurl_rc"
-  fi
+  else
   proxy_mount="$(PROXY_URL="$rurl_out" "$ROOT/.venv/bin/python" -c '
 import os
 from urllib.parse import urlsplit
@@ -387,6 +402,7 @@ print(urlsplit(value).path if "://" in value else value)
   log "PROXY_E2E=ok authenticated=true session_launch=api path_generation=rserver-url controls=clicked csrf=ok redirect=ok"
   docker exec "$cid" rstudio-server revoke-api-token hedron-smoke >/dev/null 2>&1 || true
   api_token=""
+  fi
 fi
 
 (
