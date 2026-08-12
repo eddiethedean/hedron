@@ -9,6 +9,7 @@
 #   scripts/ci_checks.sh quality [--python 3.12]
 #   scripts/ci_checks.sh browser [--python 3.12]
 #   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.29.0]
+#   scripts/ci_checks.sh realwb [--python 3.12]
 #   scripts/ci_checks.sh packaging [--python 3.12]
 #   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.29.0] [--with-browser]
 #
@@ -225,6 +226,12 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/verify_pkg_29.py
 }
 
+cmd_realwb() {
+  # Live Posit Workbench Docker smoke (REALWB-029). Requires Docker and PWB_LICENSE.
+  # Skips successfully when PWB_LICENSE is expired (see check_realwb_029.py).
+  run uv run --python "$PYTHON" python scripts/check_realwb_029.py --live
+}
+
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
   run uv run --python "$PYTHON" python scripts/verify_pkg_29.py
@@ -257,6 +264,7 @@ case "$SUITE" in
   quality) cmd_quality ;;
   browser) cmd_browser ;;
   evidence) cmd_evidence ;;
+  realwb) cmd_realwb ;;
   packaging) cmd_packaging ;;
   all) cmd_all ;;
   -h | --help) usage 0 ;;

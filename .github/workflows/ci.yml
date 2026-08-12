@@ -209,6 +209,41 @@ jobs:
             playwright-report/
           if-no-files-found: ignore
 
+  realwb:
+    name: REALWB-029
+    needs: changes
+    if: >
+      needs.changes.outputs.docs_only != 'true' &&
+      (github.event_name != 'pull_request' ||
+       github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --locked --python 3.12
+      - name: Run Workbench Docker smoke
+        env:
+          PWB_LICENSE: ${{ secrets.PWB_LICENSE }}
+          HEDRON_REALWB: "1"
+        run: bash scripts/ci_checks.sh realwb --python 3.12
+      - name: Upload redacted RESULT.log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: realwb-029-result
+          path: docs/acceptance/realwb-029/RESULT.log
+          if-no-files-found: ignore
+
   evidence:
     name: Supply-chain evidence bundle
     needs: changes

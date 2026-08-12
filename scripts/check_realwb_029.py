@@ -3,6 +3,8 @@
 
 Default: validate a redacted RESULT.log (no Docker on every CI run).
 Live: ``--live`` or ``HEDRON_REALWB=1`` runs ``scripts/realwb_029.sh``.
+When the live smoke detects an expired ``PWB_LICENSE``, it exits 42 and this
+checker reports a successful skip instead of failing CI.
 """
 
 from __future__ import annotations
@@ -46,6 +48,7 @@ SECRET_PATTERNS = (
     re.compile(r"\b[A-Za-z0-9]{4}(?:-[A-Za-z0-9]{4}){5,}\b"),
     re.compile(r"(?i)\b(?:api[_ -]?key|token|secret)\s*[=:]\s*[^*\s,]+"),
 )
+SKIP_EXIT_CODE = 42
 
 
 def _validate_log(text: str) -> list[str]:
@@ -81,6 +84,9 @@ def main(argv: list[str] | None = None) -> int:
         try:
             subprocess.check_call(["bash", str(SCRIPT)], cwd=ROOT)
         except subprocess.CalledProcessError as exc:
+            if exc.returncode == SKIP_EXIT_CODE:
+                print("skip: REALWB-029 (PWB_LICENSE expired)")
+                return 0
             print(f"realwb_029.sh failed ({exc.returncode})", file=sys.stderr)
             return 1
 

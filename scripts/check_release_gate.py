@@ -40,7 +40,9 @@ EVIDENCE_BY_MAJOR_MINOR = {
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 # Includes historical ``release`` attestation used by older gate manifests.
-KNOWN_CI_JOBS = frozenset({"test", "quality", "browser", "evidence", "packaging", "release"})
+KNOWN_CI_JOBS = frozenset(
+    {"test", "quality", "browser", "evidence", "realwb", "packaging", "release"}
+)
 # Commands that must not be re-entered from --execute-verified.
 _RECURSIVE_SCRIPT_NAMES = frozenset(
     {

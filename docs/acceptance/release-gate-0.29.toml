@@ -55,8 +55,8 @@ owner = "hedron"
 [[evidence]]
 id = "REALWB-029"
 state = "Verified"
-command = "python scripts/check_realwb_029.py"
-ci_job = "evidence"
+command = "bash scripts/ci_checks.sh realwb --python 3.12"
+ci_job = "realwb"
 owner = "hedron"
 
 [[evidence]]

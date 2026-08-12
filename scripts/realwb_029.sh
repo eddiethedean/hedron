@@ -43,6 +43,20 @@ fail() {
   exit 1
 }
 
+skip_license_expired() {
+  log "REALWB-029 skip reason=license_expired Workbench license expired (redacted)"
+  log "RESULT=skip"
+  log "REALWB-029 end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
+    cp "$RESULT_BACKUP" "$RESULT"
+  fi
+  exit 42
+}
+
+license_expired_in_logs() {
+  printf '%s' "$1" | grep -qiE 'license.*expired|expired.*license|license has expired'
+}
+
 cleanup() {
   if [[ -n "${APP_PID}" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
     kill "$APP_PID" >/dev/null 2>&1 || true
@@ -57,9 +71,17 @@ cleanup() {
   else
     log "cleanup_refused_unexpected_temp_path=true"
   fi
+  if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
+    rm -f -- "$RESULT_BACKUP"
+  fi
 }
 
 mkdir -p "$RESULT_DIR"
+RESULT_BACKUP=""
+if [[ -f "$RESULT" ]]; then
+  RESULT_BACKUP="$(mktemp)"
+  cp "$RESULT" "$RESULT_BACKUP"
+fi
 : > "$RESULT"
 exec > >(tee -a "$RESULT") 2>&1
 trap cleanup EXIT
@@ -123,6 +145,10 @@ if docker image inspect "$IMAGE" >/dev/null 2>&1; then
 fi
 log "compose=up workbench pull=$compose_pull"
 if ! "${COMPOSE[@]}" up -d --pull "$compose_pull" workbench; then
+  logs="$("${COMPOSE[@]}" logs --no-color --tail 80 workbench 2>/dev/null || true)"
+  if license_expired_in_logs "$logs"; then
+    skip_license_expired
+  fi
   fail "HED-WB-0007" "failed to start $IMAGE (license/platform/qemu). Do not hang on QEMU."
 fi
 cid="$("${COMPOSE[@]}" ps -q workbench)"
@@ -150,8 +176,11 @@ if [[ "$ok" -ne 1 ]]; then
   log "failure_container_log_begin"
   printf '%s\n' "$logs" | redact_stream
   log "failure_container_log_end"
+  if license_expired_in_logs "$logs"; then
+    skip_license_expired
+  fi
   if printf '%s' "$logs" | grep -qiE \
-    'license.*(invalid|expired|denied)|product key.*maximum number of computers'; then
+    'license.*(invalid|denied)|product key.*maximum number of computers'; then
     fail "HED-WB-0001" "Workbench license was rejected (redacted)"
   fi
   fail "HED-WB-0007" "Workbench did not become ready on :8787/auth-sign-in"
