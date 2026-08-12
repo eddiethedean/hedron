@@ -13,7 +13,7 @@ services:
       PWB_LICENSE: ${PWB_LICENSE:?Set PWB_LICENSE}
       PWB_TESTUSER: hedron
       PWB_TESTUSER_PASSWD: hedron
-      PWB_LAUNCHER: "false"
+      PWB_LAUNCHER: "true"
     volumes:
       - ./rserver.conf:/etc/rstudio/rserver.conf:ro
     healthcheck:

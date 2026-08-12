@@ -252,12 +252,21 @@ if [[ "$HOST_ARCH" != "arm64" ]]; then
     --token-env HEDRON_PWB_API_TOKEN >/dev/null 2>&1; then
     fail "HED-WB-0007" "could not generate an ephemeral Workbench super-admin token"
   fi
-  launch_json="$(curl -fsS --max-time 15 \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer ${api_token}" \
-    --data '{"method":"launch_session","kwparams":{"launch_parameters":{"name":"Hedron Smoke","cluster":"Local"},"username":"hedron"}}' \
-    'http://127.0.0.1:8787/api/launch_session')" || \
+  launch_json=""
+  for _ in $(seq 1 24); do
+    launch_json="$(curl -fsS --max-time 15 \
+      -H 'Content-Type: application/json' \
+      -H "Authorization: Bearer ${api_token}" \
+      --data '{"method":"launch_session","kwparams":{"workbench":"RStudio","name":"Hedron Smoke","launch_parameters":{"name":"Hedron Smoke","cluster":"Local"},"username":"hedron"}}' \
+      'http://127.0.0.1:8787/api/launch_session')" || true
+    if [[ -n "$launch_json" ]] && ! printf '%s' "$launch_json" | jq -e '.error' >/dev/null; then
+      break
+    fi
+    sleep 5
+  done
+  if [[ -z "$launch_json" ]]; then
     fail "HED-WB-0007" "Workbench API session launch failed"
+  fi
   if printf '%s' "$launch_json" | jq -e '.error' >/dev/null; then
     fail "HED-WB-0007" "Workbench API returned a redacted session launch error"
   fi
