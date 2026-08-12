@@ -2063,11 +2063,11 @@ experimental interactive backends remain opt-in until they independently satisfy
 ## 0.29 — Posit Workbench deployment adapter (`v0.29.0`)
 
 **Status:** Published as `v0.29.0` (2026-08-11). Owned by **D-057** /
-[RFC-0062](docs/rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
+[RFC-0062](rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
 Tracking: [#134](https://github.com/eddiethedean/hedron/issues/134).
-Packet SSOT: [RELEASE_0_29.md](docs/acceptance/RELEASE_0_29.md) ·
-[release-gate-0.29.toml](docs/acceptance/release-gate-0.29.toml) ·
-[production-grade-inventory-029.toml](docs/acceptance/production-grade-inventory-029.toml).
+Packet SSOT: [RELEASE_0_29.md](acceptance/RELEASE_0_29.md) ·
+[release-gate-0.29.toml](acceptance/release-gate-0.29.toml) ·
+[production-grade-inventory-029.toml](acceptance/production-grade-inventory-029.toml).
 Cut verify: `python scripts/verify_pkg_29.py`.
 
 **Behavior baseline:** Start from the observed `fastapi-workbench` 0.3.4 behavior and test corpus,

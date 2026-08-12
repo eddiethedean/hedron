@@ -9,7 +9,7 @@ application code. Autodoc signatures: [AUTODOC.md](AUTODOC.md). Stability catalo
 | Export | Primary docs |
 |---|---|
 | `Hedron`, `mount_hedron_static` | [HEDRON.md](HEDRON.md), Autodoc |
-| `MountPath`, `resolve_mount_path`, `normalize_mount_path`, `cookie_path_for_mount`, `mount_from_request`, `prefix_local_path` | [MOUNT.md](MOUNT.md), [deployment](../guides/deployment.md) |
+| `MountPath`, `resolve_mount_path`, `resolve_mount_path_from_environ`, `normalize_mount_path`, `cookie_path_for_mount`, `mount_from_request`, `prefix_local_path` | [MOUNT.md](MOUNT.md), [deployment](../guides/deployment.md) |
 | `HedronRouter`, `HedronRoute`, `ComponentRef`, `resolve_route_path` | [ROUTER.md](ROUTER.md), [ADDRESSABLE.md](ADDRESSABLE.md) |
 | `InteractionResult`, `FragmentRegion`, `InteractionPolicy`, `HtmxRequest`, `OobUpdate` | [INTERACTION.md](INTERACTION.md), Autodoc |
 | `default_interaction_policy`, `form_sync_attrs`, `htmx_request`, `approved_headers`, `htmx_context` | [INTERACTION.md](INTERACTION.md), [htmx-interactions](../guides/htmx-interactions.md) |

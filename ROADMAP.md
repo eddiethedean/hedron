@@ -2110,7 +2110,7 @@ the server. Installing the distribution alone, importing `hedron_workbench`, or 
 | Hosts | `Hedron()` and plain FastAPI applications using Hedron routers/responses over ASGI HTTP and WebSocket; non-ASGI scopes pass through unchanged |
 | Automatic path | `hedron-workbench run module:app` and `module:create_app --factory`; discovery and Hedron mount export occur before module import or factory call |
 | Native facade | `HedronWorkbench` subclasses `Hedron`; inactive instances preserve ordinary Hedron behavior and launcher-resolved instances normalize once |
-| Explicit path | Idempotent `workbenchify(app, *, config=...)` outer ASGI wrapper for servers that manage startup; construction-time cookie scoping requires an explicit pre-import mount or the launcher |
+| Explicit path | Idempotent `workbenchify(app, *, config=...)` outer ASGI wrapper for servers that manage startup; pre-import cookie scoping is preferred and Hedron-owned root cookies can be repaired from a validated request mount |
 | Deployments | Ordinary local Uvicorn, generic ASGI `root_path` mounts, and the RFC-locked Posit Workbench / RStudio Server session and project proxy shapes |
 | Posit Connect | At most a separately inventoried request-base-header compatibility path with trusted-peer and same-host checks; Connect publishing/operations are not part of the Supported Workbench deployment claim |
 | Dependency direction | `hedron-workbench` may depend on public `hedron` / Starlette / Uvicorn contracts; `hedron-core`, `hedron`, Flask, and Django never import or discover it implicitly |
@@ -2184,9 +2184,9 @@ and independently useful/tested in `hedron`; Posit-specific detection and path r
    before discovery so free-port selection has no check-then-bind race; execute the configured
    absolute `rserver-url` binary without a shell; validate path/full-URL output; export resolved
    Hedron state; import an app object or call a factory; wrap once; and serve the pre-bound socket.
-   Defaults are loopback, one worker, no reload, and exact loopback forwarded trust. The built-in
-   pre-bound runner rejects reload and multi-worker modes; an external supervisor owns those
-   process topologies.
+   Defaults are loopback, one worker, no reload, and exact loopback forwarded trust. The pre-bound
+   parent can exec Uvicorn reload or multi-worker supervision with the inherited listener; those
+   two modes remain mutually exclusive.
 6. **Diagnostics and adoption (`DX-029`)** — add stable `HED-WB-*` diagnostics, redacted resolution
    and before/after scope traces, `check`/dry-run text+JSON, one existing-app launch recipe, one
    explicit-wrapper recipe, troubleshooting, and a packaged Workbench reference app. Workbench
