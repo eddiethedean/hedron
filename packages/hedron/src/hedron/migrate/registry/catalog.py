@@ -53,9 +53,7 @@ def _u(
     code: str = "HED-MIG-ST-0002",
     note: str = "",
 ) -> MappingRule:
-    return MappingRule(
-        symbol, Disposition.UNSUPPORTED, Confidence.EXACT, hint, code, note
-    )
+    return MappingRule(symbol, Disposition.UNSUPPORTED, Confidence.EXACT, hint, code, note)
 
 
 # Phase 0.31 Supported-ish subset from streamlit-migration-matrix.md / RFC-0061 §4.

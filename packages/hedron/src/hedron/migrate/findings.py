@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from hedron.migrate.ir import Disposition, StreamlitCall, StreamlitMigrationPlan
 from hedron_core.codes import (
     HED_MIG_ST_0001,
     HED_MIG_ST_0002,
@@ -21,11 +22,11 @@ from hedron_core.codes import (
 from hedron_core.diagnostics import (
     Diagnostic,
     DiagnosticSeverity,
-    SourceSpan as DiagSpan,
     make_diagnostic,
 )
-
-from hedron.migrate.ir import Disposition, StreamlitCall, StreamlitMigrationPlan
+from hedron_core.diagnostics import (
+    SourceSpan as DiagSpan,
+)
 
 _CODE_META: dict[str, tuple[DiagnosticSeverity, str, str]] = {
     HED_MIG_ST_0001: (
@@ -41,7 +42,10 @@ _CODE_META: dict[str, tuple[DiagnosticSeverity, str, str]] = {
     HED_MIG_ST_0003: (
         DiagnosticSeverity.WARNING,
         "Ambiguous widget-state owner",
-        "Classify session/query/form/database ownership explicitly; do not copy session_state wholesale.",
+        (
+            "Classify session/query/form/database ownership explicitly; "
+            "do not copy session_state wholesale."
+        ),
     ),
     HED_MIG_ST_0004: (
         DiagnosticSeverity.ERROR,
@@ -61,7 +65,10 @@ _CODE_META: dict[str, tuple[DiagnosticSeverity, str, str]] = {
     HED_MIG_ST_0007: (
         DiagnosticSeverity.ERROR,
         "Trust, file, or secret boundary",
-        "Raw HTML, uploads, downloads, and secrets require explicit trust and authorization decisions.",
+        (
+            "Raw HTML, uploads, downloads, and secrets require explicit trust "
+            "and authorization decisions."
+        ),
     ),
     HED_MIG_ST_0008: (
         DiagnosticSeverity.ERROR,

@@ -61,7 +61,7 @@ def require_supported_swap(swap: str) -> str:
     # normalize casing for known tokens
     for style in DECLARED_SWAP_STYLES:
         if key.lower() == style.lower():
-            return style if " " not in token else f"{style}{token[len(key):]}"
+            return style if " " not in token else f"{style}{token[len(key) :]}"
     raise UnsupportedSimFeatureError(
         f"hedron-sim does not emulate hx-swap style {swap!r}; "
         f"declared subset={sorted(DECLARED_SWAP_STYLES)}"

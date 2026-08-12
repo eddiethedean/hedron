@@ -6,12 +6,11 @@ import argparse
 import sys
 from pathlib import Path
 
-from hedron_core.diagnostics import DiagnosticSeverity, meets_severity_threshold
-
 from hedron.migrate.analyze import analyze_source
 from hedron.migrate.findings import finding_for_code, plan_to_diagnostics
 from hedron.migrate.generate import generate_project
 from hedron.migrate.report import format_report
+from hedron_core.diagnostics import DiagnosticSeverity, meets_severity_threshold
 
 
 def build_streamlit_parser(
@@ -125,9 +124,7 @@ def run_migrate_streamlit(
             sys.stdout.write(format_report(plan, diagnostics, fmt=fmt))
             return 1
 
-    sys.stdout.write(
-        format_report(plan, diagnostics, fmt=fmt, generated_files=generated or None)
-    )
+    sys.stdout.write(format_report(plan, diagnostics, fmt=fmt, generated_files=generated or None))
 
     threshold = DiagnosticSeverity(fail_on)
     if meets_severity_threshold(diagnostics, threshold):

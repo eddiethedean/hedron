@@ -22,10 +22,7 @@ st.title("Sales dashboard")
 region = st.sidebar.selectbox("Region", ["All", "North", "South"])
 minimum = st.sidebar.slider("Minimum revenue", 0, 5000, 0, step=500)
 
-filtered = sales[
-    ((sales["region"] == region) | (region == "All"))
-    & (sales["revenue"] >= minimum)
-]
+filtered = sales[((sales["region"] == region) | (region == "All")) & (sales["revenue"] >= minimum)]
 
 revenue, orders = st.columns(2)
 revenue.metric("Revenue", f"${filtered['revenue'].sum():,}")

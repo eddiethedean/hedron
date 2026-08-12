@@ -5,14 +5,13 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from hedron.migrate.ir import StreamlitMigrationPlan
 from hedron_core.diagnostics import (
     Diagnostic,
     DiagnosticSeverity,
     diagnostics_to_sarif,
     diagnostics_to_text,
 )
-
-from hedron.migrate.ir import StreamlitMigrationPlan
 
 
 def report_payload(

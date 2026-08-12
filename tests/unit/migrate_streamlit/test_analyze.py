@@ -59,19 +59,19 @@ def test_works_without_streamlit_installed() -> None:
     import ast
     from pathlib import Path
 
-    migrate_root = Path(__file__).resolve().parents[3] / "packages" / "hedron" / "src" / "hedron" / "migrate"
+    migrate_root = (
+        Path(__file__).resolve().parents[3] / "packages" / "hedron" / "src" / "hedron" / "migrate"
+    )
     for path in migrate_root.rglob("*.py"):
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    assert alias.name != "streamlit" and not alias.name.startswith(
-                        "streamlit."
-                    ), path
+                    assert alias.name != "streamlit" and not alias.name.startswith("streamlit."), (
+                        path
+                    )
             if isinstance(node, ast.ImportFrom) and node.module:
-                assert node.module != "streamlit" and not node.module.startswith(
-                    "streamlit."
-                ), path
+                assert node.module != "streamlit" and not node.module.startswith("streamlit."), path
     plan = analyze_source(FIXTURE)
     assert not plan.tool_errors
     assert plan.calls

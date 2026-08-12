@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from hedron.migrate.ir import SourceUnit
-from hedron.migrate.limits import AnalysisLimits, DEFAULT_LIMITS
+from hedron.migrate.limits import DEFAULT_LIMITS, AnalysisLimits
 
 _FEATURE_BY_VERSION: dict[str, int] = {
     "3.11": 11,
@@ -62,8 +62,7 @@ def parse_file(
     nodes = count_ast_nodes(tree)
     if nodes + nodes_so_far > limits.max_ast_nodes:
         raise ValueError(
-            f"AST node limit exceeded in {path} "
-            f"({nodes + nodes_so_far} > {limits.max_ast_nodes})"
+            f"AST node limit exceeded in {path} ({nodes + nodes_so_far} > {limits.max_ast_nodes})"
         )
     rel = str(path.resolve().relative_to(project_root.resolve()))
     unit = SourceUnit(

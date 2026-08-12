@@ -49,14 +49,20 @@ def check_contract_version(version: str) -> CompatibilityDecision:
         return CompatibilityDecision(
             ok=False,
             code="CONF-COMPAT-CONTRACT-MALFORMED",
-            message=f"malformed contract_version {version!r}; expected family-N like {CONTRACT_VERSION!r}",
+            message=(
+                f"malformed contract_version {version!r}; "
+                f"expected family-N like {CONTRACT_VERSION!r}"
+            ),
         )
     family, major = parsed
     if family not in _SUPPORTED_CONTRACT_FAMILIES:
         return CompatibilityDecision(
             ok=False,
             code="CONF-COMPAT-CONTRACT-FAMILY",
-            message=f"unsupported contract family {family!r}; supported={sorted(_SUPPORTED_CONTRACT_FAMILIES)}",
+            message=(
+                f"unsupported contract family {family!r}; "
+                f"supported={sorted(_SUPPORTED_CONTRACT_FAMILIES)}"
+            ),
         )
     if major not in _SUPPORTED_CONTRACT_MAJORS:
         return CompatibilityDecision(
@@ -82,7 +88,9 @@ def check_fixture_version(version: str) -> CompatibilityDecision:
         return CompatibilityDecision(
             ok=False,
             code="CONF-COMPAT-FIXTURE-MALFORMED",
-            message=f"malformed fixture_version {version!r}; expected semver-like {FIXTURE_VERSION!r}",
+            message=(
+                f"malformed fixture_version {version!r}; expected semver-like {FIXTURE_VERSION!r}"
+            ),
         )
     if major not in _SUPPORTED_FIXTURE_MAJORS:
         return CompatibilityDecision(
@@ -109,6 +117,10 @@ def compatibility_policy_dict() -> dict[str, object]:
         "supported_contract_families": sorted(_SUPPORTED_CONTRACT_FAMILIES),
         "supported_contract_majors": sorted(_SUPPORTED_CONTRACT_MAJORS),
         "supported_fixture_majors": sorted(_SUPPORTED_FIXTURE_MAJORS),
-        "forward": "Same family + same major is accepted; newer majors refuse with CONF-COMPAT-*.",
-        "backward": "Older majors in the same family refuse; re-publish fixtures against the runner major.",
+        "forward": (
+            "Same family + same major is accepted; newer majors refuse with CONF-COMPAT-*."
+        ),
+        "backward": (
+            "Older majors in the same family refuse; re-publish fixtures against the runner major."
+        ),
     }

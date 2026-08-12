@@ -41,7 +41,7 @@ PLUGIN_META = PluginMeta(
     name="hedron_extras",
     version="0.31.0",
     distribution="hedron-extras",
-    hedron_version=">=0.30,<0.31",
+    hedron_version=">=0.31,<0.32",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,

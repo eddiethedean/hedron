@@ -15,7 +15,7 @@ from hedron.migrate.ir import (
     StreamlitCall,
     StreamlitMigrationPlan,
 )
-from hedron.migrate.limits import AnalysisLimits, DEFAULT_LIMITS
+from hedron.migrate.limits import DEFAULT_LIMITS, AnalysisLimits
 from hedron.migrate.parse import parse_file
 from hedron.migrate.registry import (
     CATALOG_VERSION,
@@ -74,9 +74,7 @@ def analyze_source(
     started = time.monotonic()
     tool_errors: list[str] = []
     try:
-        discovered = discover_sources(
-            source, project_root=project_root, max_files=limits.max_files
-        )
+        discovered = discover_sources(source, project_root=project_root, max_files=limits.max_files)
     except (OSError, ValueError) as exc:
         return StreamlitMigrationPlan(
             schema_version=SCHEMA_VERSION,

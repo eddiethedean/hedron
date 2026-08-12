@@ -30,7 +30,9 @@ def build_source_map(
                 "symbol": c.symbol,
                 "disposition": c.disposition.value,
                 "span": c.span.to_dict(),
-                "generated": "app.py" if c.disposition.value in {"translated", "scaffolded"} else None,
+                "generated": "app.py"
+                if c.disposition.value in {"translated", "scaffolded"}
+                else None,
             }
             for c in plan.calls
         ],

@@ -18,7 +18,9 @@ FIXTURE = (
 )
 
 
-def test_migrate_generate_sales_dashboard(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_migrate_generate_sales_dashboard(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     out = tmp_path / "sales_out"
     with pytest.raises(SystemExit) as result:
         main(

@@ -32,7 +32,9 @@ def author_kit_readme() -> str:
     return path.read_text(encoding="utf-8")
 
 
-def validate_author_manifest(contract_version: str, fixture_version: str) -> list[AuthorKitDiagnostic]:
+def validate_author_manifest(
+    contract_version: str, fixture_version: str
+) -> list[AuthorKitDiagnostic]:
     """Validate versions a third-party runtime claims to implement."""
     out: list[AuthorKitDiagnostic] = []
     for decision in (
