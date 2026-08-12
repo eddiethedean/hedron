@@ -30,4 +30,13 @@ def render_context_from_request(request: Request) -> RenderContext:
         theme=theme if isinstance(theme, str) else None,
         csrf_token=csrf_token,
         csrf_form_field=csrf_form_field,
+        mount_path=_mount_path_from_request(request),
     )
+
+
+def _mount_path_from_request(request: Request) -> str:
+    from hedron.mount import mount_from_request
+
+    state_mount = str(getattr(request.app.state, "hedron_mount_path", "") or "")
+    configured = bool(getattr(request.app.state, "hedron_mount_was_configured", False))
+    return state_mount if state_mount or configured else mount_from_request(request).path

@@ -41,7 +41,14 @@ def normalize_mount_path(value: str | None) -> str:
     if not text or text == "/":
         return ""
     # Fail closed: never accept scheme-relative or absolute URL mounts.
-    if text.startswith("//") or "://" in text or "\\" in text or any(ch.isspace() for ch in text):
+    if (
+        text.startswith("//")
+        or "://" in text
+        or "\\" in text
+        or "?" in text
+        or "#" in text
+        or any(ch.isspace() for ch in text)
+    ):
         return ""
     if not text.startswith("/"):
         text = "/" + text
@@ -90,7 +97,9 @@ def prefix_local_path(url: str, mount: str) -> str:
         return url
     if normalized.startswith("//") or "://" in normalized:
         return url
-    if url == normalized or url.startswith(normalized + "/"):
+    suffix_at = min((index for token in "?#" if (index := url.find(token)) >= 0), default=len(url))
+    url_path = url[:suffix_at]
+    if url_path == normalized or url_path.startswith(normalized + "/"):
         return url
     prefixed = normalized + "/" if url == "/" else normalized + url
     if not is_local_path(prefixed):

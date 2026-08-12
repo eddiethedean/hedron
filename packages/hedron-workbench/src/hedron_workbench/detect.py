@@ -36,6 +36,28 @@ def is_workbench_env(environ: Mapping[str, str] | None = None) -> bool:
     return bool(rs_server_url(environ)) or is_workbench_forced(environ)
 
 
+def is_workbench_job(environ: Mapping[str, str] | None = None) -> bool:
+    """Detect an explicitly marked or audited non-interactive Workbench job."""
+    env = os.environ if environ is None else environ
+    marker = env.get("HEDRON_WORKBENCH_JOB")
+    if marker is not None and str(marker).strip():
+        return truthy(str(marker))
+    # Posit's audited-job contract exposes this path to job processes.
+    return bool(rs_server_url(env) and str(env.get("AUDIT_DETAILS_PATH") or "").strip())
+
+
+def is_posit_connect_scope(scope: Scope, environ: Mapping[str, str] | None = None) -> bool:
+    """Recognize Connect's audited ASGI proxy contract without granting trust."""
+    env = os.environ if environ is None else environ
+    if str(env.get("POSIT_PRODUCT") or "").strip().upper() != "CONNECT":
+        return False
+    headers = scope.get("headers") or ()
+    base_headers = [
+        value for name, value in headers if bytes(name).lower() == b"rstudio-connect-app-base-url"
+    ]
+    return len(base_headers) == 1 and bool(str(scope.get("root_path") or "").strip())
+
+
 def path_has_encoded_absolute_url(path: str) -> bool:
     candidate = path.lstrip("/").lower()
     return candidate.startswith(("http%3a", "https%3a", "http://", "https://"))

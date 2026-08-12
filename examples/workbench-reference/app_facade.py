@@ -6,11 +6,22 @@ import os
 import secrets
 from datetime import UTC, datetime
 
-from fastapi import WebSocket
+from fastapi import Request, WebSocket
 from starlette.responses import JSONResponse
 
-from hedron import CsrfField, Form, Page, RefreshButton, Stack, SubmitButton, Text, html, swap
-from hedron_workbench import HedronWorkbench, mounted_redirect
+from hedron import (
+    CsrfField,
+    Form,
+    Page,
+    RefreshButton,
+    Stack,
+    SubmitButton,
+    Text,
+    html,
+    redirect_local,
+    swap,
+)
+from hedron_workbench import HedronWorkbench
 
 app = HedronWorkbench(
     title="Workbench facade reference",
@@ -33,7 +44,8 @@ def status_panel():
 
 
 @app.page("/")
-def home() -> Page:
+def home(request: Request) -> Page:
+    request.session["smoke"] = "ok"
     return Page(
         Stack(
             Text("Hello from Hedron on Workbench"),
@@ -72,12 +84,19 @@ def accept_invite() -> Page:
 
 @app.get("/invite-link", include_in_schema=False)
 def invite_link() -> JSONResponse:
+    durable_error = ""
+    try:
+        app.external_url_for("accept_invite", query={"token": "smoke token +"})
+    except ValueError as exc:
+        durable_error = str(exc)
     return JSONResponse(
         {
-            "url": app.external_url_for(
+            "browser_url": app.browser_url_for(
                 "accept_invite",
                 query={"token": "smoke token +"},
-            )
+            ),
+            "durable_error": durable_error,
+            "capabilities": app.deployment_capabilities().as_dict(),
         }
     )
 
@@ -89,7 +108,9 @@ def encoded_target() -> Page:
 
 @app.page("/go")
 def go():
-    return mounted_redirect("/login", mount=app.state.hedron_mount_path)
+    # Deliberately return an unmounted safe redirect. The outer adapter must
+    # scope Location exactly once.
+    return redirect_local("/login")
 
 
 @app.get("/workbench-status", include_in_schema=False)

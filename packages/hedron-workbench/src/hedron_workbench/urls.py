@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ipaddress
 import os
+import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
@@ -18,6 +19,7 @@ from hedron_core.htmx_contract import is_local_path
 
 _CONNECT_BASE_HEADER = "rstudio-connect-app-base-url"
 _DEFAULT_CONNECT_PROXY_PEERS = ("127.0.0.1", "::1")
+_WORKBENCH_SESSION_MOUNT = re.compile(r"^/s/[^/]+/p/[^/]+(?:/|$)")
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,6 +33,62 @@ class ExternalBase:
     @property
     def url(self) -> str:
         return f"{self.origin}{self.mount}"
+
+    @property
+    def ephemeral(self) -> bool:
+        return is_ephemeral_workbench_mount(self.mount)
+
+
+def normalize_http_origin(raw: str) -> str:
+    """Return a canonical http(s) origin or raise ``ValueError``."""
+    text = str(raw).strip()
+    if not text or "\\" in text or any(char.isspace() or ord(char) < 32 for char in text):
+        raise ValueError("origin contains whitespace, controls, or backslashes")
+    try:
+        parsed = urlsplit(text)
+        port = parsed.port
+    except ValueError as exc:
+        raise ValueError("origin has an invalid host or port") from exc
+    if (
+        parsed.scheme.lower() not in {"http", "https"}
+        or not parsed.netloc
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.path not in {"", "/"}
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise ValueError("origin must contain only an http(s) scheme and host")
+    scheme = parsed.scheme.lower()
+    hostname = parsed.hostname.lower()
+    try:
+        address = ipaddress.ip_address(hostname)
+    except ValueError:
+        try:
+            host = hostname.encode("idna").decode("ascii")
+        except UnicodeError as exc:
+            raise ValueError("origin contains an invalid internationalized host") from exc
+        if (
+            not re.fullmatch(r"[a-z0-9.-]+", host)
+            or ".." in host
+            or any(
+                not label or label.startswith("-") or label.endswith("-")
+                for label in host.rstrip(".").split(".")
+            )
+        ):
+            raise ValueError("origin contains an invalid DNS host") from None
+        host = host.rstrip(".")
+    else:
+        host = f"[{address.compressed}]" if address.version == 6 else address.compressed
+    default_port = 443 if scheme == "https" else 80
+    suffix = f":{port}" if port is not None and port != default_port else ""
+    return f"{scheme}://{host}{suffix}"
+
+
+def is_ephemeral_workbench_mount(mount: str) -> bool:
+    """Return whether a mount is tied to a disposable Workbench session."""
+    return bool(_WORKBENCH_SESSION_MOUNT.match(normalize_mount_path(mount)))
 
 
 def _validated_external_base(raw: str, *, source: str) -> ExternalBase:
@@ -54,7 +112,7 @@ def _validated_external_base(raw: str, *, source: str) -> ExternalBase:
     if parsed.path not in {"", "/"} and not mount:
         raise ValueError("public base URL contains an unsafe mount path")
     return ExternalBase(
-        origin=f"{parsed.scheme.lower()}://{parsed.netloc}",
+        origin=normalize_http_origin(f"{parsed.scheme}://{parsed.netloc}"),
         mount=mount,
         source=source,
     )
@@ -139,7 +197,8 @@ def browser_mount_from_request(request: Request) -> str:
     scope_mount = normalize_mount_path(str(request.scope.get("root_path") or ""))
     state = getattr(getattr(request, "app", None), "state", None)
     env_mount = str(getattr(state, "hedron_mount_path", "") or "")
-    return env_mount or scope_mount
+    configured = bool(getattr(state, "hedron_mount_was_configured", False))
+    return env_mount if env_mount or configured else scope_mount
 
 
 def local_href(path: str, *, mount: str) -> str:

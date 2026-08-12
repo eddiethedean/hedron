@@ -9,9 +9,20 @@ import pytest
 from fastapi import WebSocket
 from fastapi.testclient import TestClient
 from starlette.requests import Request
+from starlette.responses import Response
 from starlette.types import Receive, Scope, Send
 
-from hedron import Hedron, Page, Text, redirect_local, resolve_mount_path_from_environ, swap
+from hedron import (
+    Form,
+    Hedron,
+    Page,
+    RefreshButton,
+    SubmitButton,
+    Text,
+    redirect_local,
+    resolve_mount_path_from_environ,
+    swap,
+)
 from hedron.mount import prefix_local_path
 from hedron_core import reset_registry_for_tests
 from hedron_workbench import HedronWorkbench, WorkbenchConfig, workbenchify
@@ -69,7 +80,7 @@ def _app(*, mount: str = "/s/demo/p/9"):
 
     @app.page("/go")
     def go():
-        return redirect_local("/login", mount=mount)
+        return redirect_local("/login")
 
     return workbenchify(app, mode="on"), region
 
@@ -178,6 +189,120 @@ def test_workbench_facade_full_stack_without_scope_injector() -> None:
     assert client.get(f"{mount}/openapi.json").status_code == 200
     with client.websocket_connect(f"{mount}/ws") as websocket:
         assert websocket.receive_text() == "native-ws"
+
+
+def test_rendered_component_urls_are_automatically_mounted_once() -> None:
+    mount = "/s/rendered/p/7"
+    app = HedronWorkbench(
+        title="rendered",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+        workbench_mount=mount,
+    )
+    region = app.region("rendered-status", description="rendered status")
+
+    @app.page("/")
+    def mounted_controls() -> Page:
+        return Page(
+            RefreshButton.for_region(region, href="/status", label="Refresh"),
+            Form(SubmitButton("Send"), action="/ping", method="post"),
+            title="Mounted controls",
+        )
+
+    response = TestClient(app).get(f"{mount}/")
+    assert response.status_code == 200
+    assert f'hx-get="{mount}/status"' in response.text
+    assert f'action="{mount}/ping"' in response.text
+    assert response.text.count(f"{mount}{mount}") == 0
+    assert f'name="hedron-mount-path" content="{mount}"' in response.text
+    assert f'src="{mount}/hedron-static/hedron-mount.mjs"' in response.text
+
+
+def test_request_time_root_path_adapts_urls_redirects_and_owned_cookies() -> None:
+    mount = "/content/runtime"
+    app = HedronWorkbench(
+        title="runtime",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+    )
+
+    @app.page("/")
+    def runtime_home() -> Page:
+        return Page(Form(SubmitButton("Send"), action="/ping", method="post"), title="Runtime")
+
+    @app.page("/go")
+    def runtime_go():
+        return redirect_local("/login")
+
+    client = TestClient(_RootPathInjector(app, mount))
+    home = client.get(f"{mount}/")
+    assert home.status_code == 200
+    assert f'action="{mount}/ping"' in home.text
+    assert f"Path={mount}" in home.headers.get("set-cookie", "")
+    redirect = client.get(f"{mount}/go", follow_redirects=False)
+    assert redirect.headers["location"] == f"{mount}/login"
+    assert app.state.hedron_cookie_path == "/"
+
+
+def test_connect_contract_leaves_one_outer_response_rebase(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("POSIT_PRODUCT", "CONNECT")
+    mount = "/content/runtime"
+    app = HedronWorkbench(
+        title="connect-runtime",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+    )
+
+    @app.page("/")
+    def connect_home(request: Request) -> Page:
+        request.session["probe"] = "ok"
+        return Page(
+            Form(SubmitButton("Send"), action="/ping", method="post"),
+            title="Runtime",
+        )
+
+    @app.page("/go")
+    def connect_go():
+        return redirect_local("/login")
+
+    client = TestClient(_RootPathInjector(app, mount))
+    headers = {"RStudio-Connect-App-Base-URL": f"https://connect.example{mount}"}
+    home = client.get(f"{mount}/", headers=headers)
+    assert f'action="{mount}/ping"' in home.text
+    owned = [
+        value
+        for value in home.headers.get_list("set-cookie")
+        if value.startswith(("hedron_csrf=", "session="))
+    ]
+    assert len(owned) == 2
+    assert all("path=/;" in value.lower() for value in owned)
+    assert all(mount not in value for value in owned)
+
+    redirect = client.get(f"{mount}/go", headers=headers, follow_redirects=False)
+    assert redirect.headers["location"] == f"{mount}/login"
+
+
+def test_htmx_redirect_header_is_automatically_mounted() -> None:
+    mount = "/s/headers/p/4"
+    app = HedronWorkbench(
+        title="headers",
+        security="development",
+        explorer="off",
+        session_secret="test-secret-ok",
+        workbench_mount=mount,
+    )
+
+    @app.get("/hx")
+    def hx_redirect():
+        return Response(headers={"HX-Redirect": "/next"})
+
+    response = TestClient(app).get(f"{mount}/hx")
+    assert response.headers["hx-redirect"] == f"{mount}/next"
 
 
 def test_inactive_workbench_facade_matches_plain_hedron(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -462,10 +587,30 @@ def test_external_url_uses_active_workbench_resolution_once() -> None:
         workbench_mount="/s/session/p/8000",
         workbench_public_base_url="https://wb.example/s/session/p/8000",
     )
-    assert app.external_url("/accept") == "https://wb.example/s/session/p/8000/accept"
-    assert app.external_url("/s/session/p/8000/accept") == (
+    assert app.browser_url("/accept") == "https://wb.example/s/session/p/8000/accept"
+    assert app.browser_url("/s/session/p/8000/accept") == (
         "https://wb.example/s/session/p/8000/accept"
     )
+    with pytest.raises(ValueError, match="session URLs are ephemeral"):
+        app.external_url("/accept")
+    capabilities = app.deployment_capabilities()
+    assert capabilities.browser_links is True
+    assert capabilities.durable_links is False
+    assert capabilities.ephemeral_session is True
+
+
+def test_stable_external_base_enables_durable_background_links() -> None:
+    app = HedronWorkbench(
+        title="durable",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+        external_base_url="https://apps.example/stable",
+    )
+    captured = app.external_base()
+    assert captured.url == "https://apps.example/stable"
+    assert app.external_url("/accept") == "https://apps.example/stable/accept"
+    assert app.deployment_capabilities().background_links is True
 
 
 def test_external_url_rejects_implicit_workbench_loopback_origin() -> None:
@@ -478,6 +623,17 @@ def test_external_url_rejects_implicit_workbench_loopback_origin() -> None:
     )
     with pytest.raises(ValueError, match="resolved only a loopback origin"):
         app.external_url("/accept")
+
+
+def test_explicit_activation_of_constructed_inactive_facade_fails_loudly() -> None:
+    app = HedronWorkbench(
+        title="inactive",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret-ok",
+    )
+    with pytest.raises(ValueError, match="already-constructed inactive"):
+        workbenchify(app, mode="on")
 
 
 def test_external_url_fails_closed_without_trusted_deployment_base() -> None:

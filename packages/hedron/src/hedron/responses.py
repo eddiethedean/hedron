@@ -339,7 +339,7 @@ def _inject_build_assets(
         add(f'<link rel="stylesheet" href="{css}">')
 
     for asset in result.assets:
-        href = html_lib.escape(asset.href, quote=True)
+        href = html_lib.escape(_mounted_static_href(asset.href, request), quote=True)
         if asset.kind == "css":
             add(f'<link rel="stylesheet" href="{href}">')
         elif asset.kind in {"js", "module"}:
@@ -352,6 +352,13 @@ def _inject_build_assets(
     if "hedron-ui.mjs" not in html_text:
         ui = _mounted_static_href("/hedron-static/hedron-ui.mjs", request)
         add(f'<script type="module" src="{ui}"></script>')
+    mount = _mounted_static_href("/", request).removesuffix("/")
+    if mount and 'name="hedron-mount-path"' not in html_text:
+        safe_mount = html_lib.escape(mount, quote=True)
+        add(f'<meta name="hedron-mount-path" content="{safe_mount}">')
+    if mount and "hedron-mount.mjs" not in html_text:
+        runtime = _mounted_static_href("/hedron-static/hedron-mount.mjs", request)
+        add(f'<script type="module" src="{runtime}"></script>')
     if tags:
         injection = "\n".join(tags)
         if "</head>" in html_text:

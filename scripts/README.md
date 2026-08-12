@@ -9,6 +9,7 @@ scripts here when you add them.
 |---|---|
 | `ci_checks.sh` | **Shared CI suites** used by `.github/workflows/ci.yml` and `release.yml`. Local: `bash scripts/ci_checks.sh test\|quality\|browser\|evidence\|packaging\|all` |
 | `mkdocs.sh` | Docs preview / build wrapper (`./scripts/mkdocs.sh serve`) |
+| `smoke_workbench_adapter_docker.sh` | License-independent Linux smoke for mounted Workbench adapter behavior |
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |

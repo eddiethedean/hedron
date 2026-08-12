@@ -63,6 +63,7 @@ class RenderContext:
     max_nodes: int = 50_000
     csrf_token: str | None = None
     csrf_form_field: str = "csrf_token"
+    mount_path: str = ""
 
     @classmethod
     def standalone(
@@ -72,12 +73,14 @@ class RenderContext:
         theme: str | None = None,
         csrf_token: str | None = None,
         csrf_form_field: str = "csrf_token",
+        mount_path: str = "",
     ) -> RenderContext:
         return cls(
             locale=locale,
             theme=theme,
             csrf_token=csrf_token,
             csrf_form_field=csrf_form_field,
+            mount_path=mount_path,
         )
 
 
@@ -359,11 +362,11 @@ def _serialize_result(
         from hedron_core.builtins.document import Page
 
         if isinstance(value, Page):
-            html_text = serialize_tree(nodes)
+            html_text = serialize_tree(nodes, mount_path=context.mount_path)
             if not html_text.lstrip().lower().startswith("<!doctype"):
                 html_text = "<!DOCTYPE html>" + html_text
         else:
-            body_html = serialize_tree(nodes)
+            body_html = serialize_tree(nodes, mount_path=context.mount_path)
             html_text = (
                 "<!DOCTYPE html>"
                 f'<html lang="{_escape_attr(context.locale)}">'
@@ -373,7 +376,7 @@ def _serialize_result(
                 f"<body>{body_html}</body></html>"
             )
     else:
-        html_text = serialize_tree(nodes)
+        html_text = serialize_tree(nodes, mount_path=context.mount_path)
     return html_text
 
 

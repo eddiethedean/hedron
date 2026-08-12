@@ -22,6 +22,7 @@ REQUIRED_MARKERS = (
     "image=",
     "rserver-url=",
     "RSERVER_URL=",
+    "PROXY_E2E=",
     "LAUNCHER_PATH=",
     "PAGE=",
     "FRAGMENT=",

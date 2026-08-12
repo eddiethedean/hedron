@@ -78,8 +78,9 @@ Namespaced values win. Conflicting explicit mount/origin fail closed.
 6. Serve the pre-bound socket
 
 Defaults: loopback, one worker, no reload, exact loopback proxy allowlist.
-The pre-bound runner rejects reload and multi-worker topologies; operators use
-an external supervisor when they need multiple processes.
+The pre-bound parent can exec Uvicorn's reload supervisor or multi-worker
+supervisor with the inherited listener; reload and workers are mutually
+exclusive.
 
 ### Normalization pipeline
 
@@ -113,7 +114,10 @@ before text, JSON, logs, and evidence.
 1. **Vendor fastapi-workbench.** Rejected — untracked copy, parallel safety model, FluxLit/Alembic surface.
 2. **Put detection in hedron.** Rejected — D-015; Posit-specific code stays in the satellite.
 3. **Import-time auto-wrap when `RS_SERVER_URL` is set.** Rejected — implicit activation is a non-goal.
-4. **Fix cookie Path at request time.** Rejected — Starlette SessionMiddleware path is construction-time.
+4. **Rewrite every cookie at request time.** Rejected — unknown third-party
+   cookies remain application-owned. A hardening amendment permits the outer
+   adapter to repair only Hedron-owned cookies still at `Path=/` when a
+   validated ASGI request mount arrives after construction.
 
 ## Security implications
 

@@ -21,6 +21,7 @@ from hedron_workbench.runner import (
     load_app,
     prepare_app,
     serve,
+    supervised_uvicorn_command,
 )
 
 
@@ -65,6 +66,14 @@ def test_discover_redacts_stderr(tmp_path: Path) -> None:
     assert "supersecret" not in str(exc.value)
 
 
+def test_discover_rejects_invalid_utf8(tmp_path: Path) -> None:
+    script = tmp_path / "rserver-url-invalid-utf8"
+    script.write_bytes(b"#!/bin/sh\nprintf '\\377'\n")
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    with pytest.raises(HedronError, match="valid UTF-8"):
+        discover_rserver_url(binary=str(script), port=8050)
+
+
 def test_export_sets_hedron_root_path(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("HEDRON_ROOT_PATH", raising=False)
     monkeypatch.delenv("HEDRON_WORKBENCH_RESOLVED_PUBLIC_BASE", raising=False)
@@ -78,6 +87,21 @@ def test_export_sets_hedron_root_path(monkeypatch: pytest.MonkeyPatch) -> None:
     assert os.environ[RESOLVED_MODE_ENV] == "auto"
     assert os.environ[HEDRON_PUBLIC_BASE]
     assert os.environ["HEDRON_TRUSTED_PROXIES"] == resolved.forwarded_allow_ips
+
+
+def test_export_clears_stale_handoff_for_inactive_app() -> None:
+    env = {
+        "HEDRON_ROOT_PATH": "/stale",
+        RESOLVED_MOUNT_ENV: "/stale",
+        HEDRON_PUBLIC_BASE: "https://stale.example",
+        "HEDRON_TRUSTED_PROXIES": "10.0.0.1",
+    }
+    resolved = resolve_deployment(WorkbenchConfig(), environ={})
+    export_hedron_state(resolved, environ=env)
+    assert "HEDRON_ROOT_PATH" not in env
+    assert RESOLVED_MOUNT_ENV not in env
+    assert HEDRON_PUBLIC_BASE not in env
+    assert env["HEDRON_TRUSTED_PROXIES"] == resolved.forwarded_allow_ips
 
 
 def test_prepare_app_exports_before_import(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -128,3 +152,15 @@ def test_runner_rejects_reload_and_multi_worker() -> None:
     with pytest.raises(HedronError) as workers_exc:
         serve(object(), replace(resolved, workers=2))
     assert "HED-WB-0009" in str(workers_exc.value)
+
+
+def test_supervised_command_reuses_bound_fd_for_reload_or_workers() -> None:
+    resolved = resolve_deployment(WorkbenchConfig(reload=True), environ={})
+    reload_command = supervised_uvicorn_command(resolved, fd=17)
+    assert reload_command[:3] == [os.sys.executable, "-m", "uvicorn"]
+    assert reload_command[reload_command.index("--fd") + 1] == "17"
+    assert "--reload" in reload_command
+
+    workers = replace(resolved, reload=False, workers=3)
+    worker_command = supervised_uvicorn_command(workers, fd=18)
+    assert worker_command[worker_command.index("--workers") + 1] == "3"

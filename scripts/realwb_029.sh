@@ -18,7 +18,10 @@ MOUNT="/s/demo/p/9"
 PUBLIC_BASE="https://wb.example${MOUNT}"
 APP_PORT=8050
 LOCAL_PORT=8051
+PROXY_PORT=8053
 APP_PID=""
+PROXY_CONTAINER="hedron-workbench-proxy-smoke-$$"
+PROXY_STARTED=0
 SMOKE_DIR="$(mktemp -d /tmp/hedron-workbench-smoke.XXXXXX)"
 APP_LOG="$SMOKE_DIR/app.log"
 
@@ -44,6 +47,9 @@ cleanup() {
   if [[ -n "${APP_PID}" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
     kill "$APP_PID" >/dev/null 2>&1 || true
     wait "$APP_PID" >/dev/null 2>&1 || true
+  fi
+  if [[ "$PROXY_STARTED" -eq 1 ]]; then
+    docker rm -f "$PROXY_CONTAINER" >/dev/null 2>&1 || true
   fi
   "${COMPOSE[@]}" down --remove-orphans >/dev/null 2>&1 || true
   if [[ -d "$SMOKE_DIR" && "$SMOKE_DIR" == /tmp/hedron-workbench-smoke.* ]]; then
@@ -120,28 +126,39 @@ log "compose=up workbench pull=$compose_pull"
 if ! "${COMPOSE[@]}" up -d --pull "$compose_pull" workbench; then
   fail "HED-WB-0007" "failed to start $IMAGE (license/platform/qemu). Do not hang on QEMU."
 fi
+cid="$("${COMPOSE[@]}" ps -q workbench)"
+if [[ -z "$cid" ]]; then
+  fail "HED-WB-0007" "workbench container id missing"
+fi
 
+READY_ATTEMPTS="${HEDRON_WORKBENCH_READY_ATTEMPTS:-72}"
+if [[ ! "$READY_ATTEMPTS" =~ ^[0-9]+$ ]] || (( READY_ATTEMPTS < 1 || READY_ATTEMPTS > 120 )); then
+  fail "HED-WB-0007" "HEDRON_WORKBENCH_READY_ATTEMPTS must be an integer from 1 to 120"
+fi
 ok=0
-for _ in $(seq 1 36); do
+for _ in $(seq 1 "$READY_ATTEMPTS"); do
   if curl -fsS -o /dev/null --max-time 5 "http://127.0.0.1:8787/auth-sign-in" >/dev/null 2>&1; then
     ok=1
+    break
+  fi
+  if [[ "$(docker inspect --format '{{.State.Running}}' "$cid" 2>/dev/null || true)" != "true" ]]; then
     break
   fi
   sleep 5
 done
 if [[ "$ok" -ne 1 ]]; then
   logs="$("${COMPOSE[@]}" logs --no-color --tail 80 workbench 2>/dev/null || true)"
-  if printf '%s' "$logs" | grep -qiE 'license.*(invalid|expired|denied)'; then
+  log "failure_container_log_begin"
+  printf '%s\n' "$logs" | redact_stream
+  log "failure_container_log_end"
+  if printf '%s' "$logs" | grep -qiE \
+    'license.*(invalid|expired|denied)|product key.*maximum number of computers'; then
     fail "HED-WB-0001" "Workbench license was rejected (redacted)"
   fi
   fail "HED-WB-0007" "Workbench did not become ready on :8787/auth-sign-in"
 fi
 log "auth-sign-in=ok"
 
-cid="$("${COMPOSE[@]}" ps -q workbench)"
-if [[ -z "$cid" ]]; then
-  fail "HED-WB-0007" "workbench container id missing"
-fi
 if ! docker exec "$cid" test -x "$RSERVER_URL_BIN"; then
   fail "HED-WB-0003" "real rserver-url missing at $RSERVER_URL_BIN"
 fi
@@ -150,20 +167,157 @@ log "rserver-url=$RSERVER_URL_BIN"
 version_out="$(docker exec "$cid" rstudio-server version 2>/dev/null || true)"
 log "rstudio-server=$(printf '%s' "$version_out" | tr '\n' ' ' | redact_stream)"
 
-set +e
-rurl_out="$(docker exec "$cid" "$RSERVER_URL_BIN" -l "$APP_PORT" 2>/dev/null)"
-rurl_rc=$?
-set -e
-log "rserver-url_rc=$rurl_rc"
-if [[ -n "$rurl_out" ]]; then
-  log "rserver-url_stdout=$(printf '%s' "$rurl_out" | redact_stream)"
-fi
-if [[ "$rurl_rc" -eq 0 ]]; then
-  log "RSERVER_URL=ok"
-elif [[ "$HOST_ARCH" == "arm64" && "$rurl_rc" -eq 139 ]]; then
-  log "RSERVER_URL=emulation_limited rc=139 platform=linux/amd64-on-arm64"
+if [[ "$HOST_ARCH" == "arm64" ]]; then
+  set +e
+  rurl_out="$(docker exec "$cid" "$RSERVER_URL_BIN" -l "$APP_PORT" 2>/dev/null)"
+  rurl_rc=$?
+  set -e
+  log "rserver-url_rc=$rurl_rc"
+  if [[ "$rurl_rc" -eq 139 ]]; then
+    log "RSERVER_URL=emulation_limited rc=139 platform=linux/amd64-on-arm64"
+  else
+    log "RSERVER_URL=emulation_probe rc=$rurl_rc session_context=absent"
+  fi
+  log "PROXY_E2E=emulation_limited requires=native-amd64"
 else
-  fail "HED-WB-0003" "real rserver-url execution failed rc=$rurl_rc"
+  log "RSERVER_URL=session_context_pending"
+fi
+
+if [[ "$HOST_ARCH" != "arm64" ]]; then
+  command -v openssl >/dev/null 2>&1 || \
+    fail "HED-WB-0007" "openssl is required for native proxy E2E"
+  api_token="$(openssl rand -hex 16)"
+  if ! docker exec -e HEDRON_PWB_API_TOKEN="$api_token" "$cid" \
+    rstudio-server generate-api-token super-admin hedron-smoke hedron \
+    --token-env HEDRON_PWB_API_TOKEN >/dev/null 2>&1; then
+    fail "HED-WB-0007" "could not generate an ephemeral Workbench super-admin token"
+  fi
+  launch_json="$(curl -fsS --max-time 15 \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer ${api_token}" \
+    --data '{"method":"launch_session","kwparams":{"launch_parameters":{"name":"Hedron Smoke","cluster":"Local"},"username":"hedron"}}' \
+    'http://127.0.0.1:8787/api/launch_session')" || \
+    fail "HED-WB-0007" "Workbench API session launch failed"
+  if printf '%s' "$launch_json" | jq -e '.error' >/dev/null; then
+    fail "HED-WB-0007" "Workbench API returned a redacted session launch error"
+  fi
+
+  session_url=""
+  for _ in $(seq 1 36); do
+    session_json="$(curl -fsS --max-time 10 \
+      -H 'Content-Type: application/json' \
+      -H "Authorization: Bearer ${api_token}" \
+      --data '{"method":"get_session","kwparams":{"username":"hedron"}}' \
+      'http://127.0.0.1:8787/api/get_session')" || true
+    session_url="$(printf '%s' "$session_json" | jq -r \
+      '.. | strings | select(test("(^https?://[^ ]+)?/s/[^/]+/?$"))' | head -n1)"
+    if [[ -n "$session_url" ]]; then
+      break
+    fi
+    sleep 5
+  done
+  if [[ -z "$session_url" ]]; then
+    fail "HED-WB-0007" "launched Workbench session did not expose a session URL"
+  fi
+
+  set +e
+  rurl_out="$(docker exec -u hedron -e RS_SERVER_URL="$session_url" \
+    "$cid" "$RSERVER_URL_BIN" -l "$PROXY_PORT" 2>/dev/null)"
+  rurl_rc=$?
+  set -e
+  if [[ "$rurl_rc" -ne 0 || -z "$rurl_out" ]]; then
+    fail "HED-WB-0003" "session-scoped rserver-url failed rc=$rurl_rc"
+  fi
+  proxy_mount="$(PROXY_URL="$rurl_out" "$ROOT/.venv/bin/python" -c '
+import os
+from urllib.parse import urlsplit
+value = os.environ["PROXY_URL"]
+print(urlsplit(value).path if "://" in value else value)
+')"
+  if [[ "$proxy_mount" != /s/*/p/* ]]; then
+    fail "HED-WB-0003" "session-scoped rserver-url returned an unexpected mount shape"
+  fi
+
+  if ! docker image inspect python:3.12-slim >/dev/null 2>&1; then
+    docker pull python:3.12-slim >/dev/null || \
+      fail "HED-WB-0007" "could not pull Python sidecar for proxy E2E"
+  fi
+  if ! docker run -d \
+    --name "$PROXY_CONTAINER" \
+    --network "container:${cid}" \
+    -v "$ROOT:/src:ro" \
+    -w /src/examples/workbench-reference \
+    -e HEDRON_SESSION_SECRET=realwb-proxy-smoke-not-for-production \
+    -e PYTHONPATH=/src/examples/workbench-reference \
+    python:3.12-slim \
+    sh -lc "pip install -q /src/packages/hedron-core /src/packages/hedron /src/packages/hedron-workbench && python -m hedron_workbench.cli run app_facade:app --mode on --host 127.0.0.1 --port ${PROXY_PORT} --mount '${proxy_mount}' --public-base-url 'http://127.0.0.1:8787${proxy_mount}'" \
+    >/dev/null; then
+    fail "HED-WB-0007" "could not start the Workbench-network app sidecar"
+  fi
+  PROXY_STARTED=1
+  proxy_ready=0
+  for _ in $(seq 1 60); do
+    if docker exec "$cid" curl -fsS --max-time 3 \
+      "http://127.0.0.1:${PROXY_PORT}/" >/dev/null 2>&1; then
+      proxy_ready=1
+      break
+    fi
+    sleep 2
+  done
+  if [[ "$proxy_ready" -ne 1 ]]; then
+    fail "HED-WB-0005" "proxy E2E app sidecar did not become ready"
+  fi
+
+  auth_cookie="$SMOKE_DIR/workbench.cookies"
+  if ! curl -fsS --max-time 10 -c "$auth_cookie" \
+    --data-urlencode 'username=hedron' \
+    --data-urlencode 'password=hedron' \
+    --data-urlencode 'staySignedIn=1' \
+    --data-urlencode 'appUri=/' \
+    'http://127.0.0.1:8787/auth-do-sign-in' >/dev/null; then
+    fail "HED-WB-0007" "PAM sign-in failed for proxy E2E"
+  fi
+  proxy_page="$SMOKE_DIR/proxy-page.html"
+  proxy_headers="$SMOKE_DIR/proxy-page.headers"
+  if ! curl -fsS --max-time 15 -b "$auth_cookie" -c "$auth_cookie" \
+    -D "$proxy_headers" \
+    "http://127.0.0.1:8787${proxy_mount}/" -o "$proxy_page"; then
+    fail "HED-WB-0006" "authenticated request did not traverse Workbench proxy"
+  fi
+  if ! grep -q 'Hello from Hedron on Workbench' "$proxy_page" || \
+     ! grep -Fq "${proxy_mount}/status" "$proxy_page" || \
+     ! grep -Fq "${proxy_mount}/ping" "$proxy_page"; then
+    fail "HED-WB-0006" "proxied page or generated controls were incorrect"
+  fi
+  proxy_fragment="$(curl -fsS --max-time 15 -b "$auth_cookie" \
+    -H 'HX-Request: true' -H 'HX-Target: #service-status' \
+    "http://127.0.0.1:8787${proxy_mount}/status")" || \
+    fail "HED-WB-0006" "proxied refresh control request failed"
+  if [[ "$proxy_fragment" != *"All systems operational"* ]]; then
+    fail "HED-WB-0006" "proxied refresh control returned an unexpected fragment"
+  fi
+  proxy_csrf="$(awk '$6=="hedron_csrf" {print $7; exit}' "$auth_cookie")"
+  if [[ -z "$proxy_csrf" ]]; then
+    fail "HED-WB-0006" "proxied page did not seed a CSRF cookie"
+  fi
+  proxy_post_code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 \
+    -b "$auth_cookie" -H "X-CSRF-Token: ${proxy_csrf}" -X POST \
+    "http://127.0.0.1:8787${proxy_mount}/ping")"
+  if [[ "$proxy_post_code" != "200" ]]; then
+    fail "HED-WB-0006" "proxied form submission status=$proxy_post_code"
+  fi
+  proxy_redirect_headers="$SMOKE_DIR/proxy-redirect.headers"
+  proxy_redirect_code="$(curl -sS -o /dev/null -D "$proxy_redirect_headers" \
+    -w '%{http_code}' --max-time 15 -b "$auth_cookie" \
+    "http://127.0.0.1:8787${proxy_mount}/go")"
+  proxy_location="$(awk 'tolower($1)=="location:" {gsub(/\r/, ""); print $2; exit}' \
+    "$proxy_redirect_headers")"
+  if [[ "$proxy_redirect_code" != "303" || "$proxy_location" != "${proxy_mount}/login" ]]; then
+    fail "HED-WB-0006" "proxied redirect was not mount-correct"
+  fi
+  log "PROXY_E2E=ok authenticated=true session_launch=api path_generation=rserver-url controls=clicked csrf=ok redirect=ok"
+  docker exec "$cid" rstudio-server revoke-api-token hedron-smoke >/dev/null 2>&1 || true
+  api_token=""
 fi
 
 (
@@ -207,7 +361,16 @@ fi
 if ! grep -qi "Path=${MOUNT}" "$page_headers" && ! grep -qi "path=${MOUNT}" "$page_headers"; then
   fail "HED-WB-0006" "CSRF/session cookie Path was not mount-scoped"
 fi
-log "PAGE=ok mount_prefix=ok cookie_path=ok"
+for suffix in \
+  "/hedron-static/hedron-default.css" \
+  "/hedron-static/hedron-mount.mjs" \
+  "/status" \
+  "/ping"; do
+  if ! grep -Fq "${MOUNT}${suffix}" "$page_html"; then
+    fail "HED-WB-0006" "automatically generated PAGE URL omitted mount: $suffix"
+  fi
+done
+log "PAGE=ok mount_prefix=ok generated_urls=automatic cookie_path=ok"
 
 token="$(awk 'BEGIN{IGNORECASE=1} /set-cookie:.*hedron_csrf=/{print; exit}' "$page_headers" | sed -E 's/.*hedron_csrf=([^;]+).*/\1/')"
 if [[ -z "$token" ]]; then
@@ -281,13 +444,19 @@ if [[ "$conflict_code" != "400" ]]; then
   fail "HED-WB-0006" "conflicting encoded Workbench query status=$conflict_code expected=400"
 fi
 
+wrong_origin_code="$(curl -sS --path-as-is -o /dev/null -w '%{http_code}' --max-time 5 \
+  "http://127.0.0.1:${APP_PORT}/https%3A%2F%2Fevil.example%2Fs%2Fdemo%2Fp%2F9%2Fencoded")"
+if [[ "$wrong_origin_code" != "400" ]]; then
+  fail "HED-WB-0006" "unknown encoded origin status=$wrong_origin_code expected=400"
+fi
+
 oversized_segment="$(printf '%*s' 8200 '' | tr ' ' a)"
 oversized_code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 \
   "http://127.0.0.1:${APP_PORT}/${oversized_segment}")"
 if [[ "$oversized_code" != "414" ]]; then
   fail "HED-WB-0006" "oversized Workbench target status=$oversized_code expected=414"
 fi
-log "TARGET_GUARDS=ok unsafe=400 conflict=400 oversized=414"
+log "TARGET_GUARDS=ok unsafe=400 conflict=400 origin=400 oversized=414"
 
 status_json="$(curl -fsS --max-time 5 \
   "http://127.0.0.1:${APP_PORT}${MOUNT}/workbench-status")"
@@ -313,7 +482,7 @@ log "DIAGNOSTICS=ok active=true normalizer_count=1 handoff=ok redacted=ok"
 
 invite_json="$(curl -fsS --max-time 5 \
   "http://127.0.0.1:${APP_PORT}${MOUNT}/invite-link")"
-invite_url="$(printf '%s' "$invite_json" | jq -r '.url')"
+invite_url="$(printf '%s' "$invite_json" | jq -r '.browser_url')"
 if ! INVITE_URL="$invite_url" EXPECTED_MOUNT="$MOUNT" \
   "$ROOT/.venv/bin/python" -c '
 import os
@@ -326,7 +495,14 @@ assert parse_qs(url.query) == {"token": ["smoke token +"]}
 '; then
   fail "HED-WB-0006" "Workbench external invite URL was invalid"
 fi
-log "EXTERNAL_URL=ok invite_query=encoded mount_once=ok"
+durable_error="$(printf '%s' "$invite_json" | jq -r '.durable_error')"
+durable_cap="$(printf '%s' "$invite_json" | jq -r '.capabilities.durable_links')"
+ephemeral_cap="$(printf '%s' "$invite_json" | jq -r '.capabilities.ephemeral_session')"
+if [[ "$durable_error" != *"ephemeral"* || "$durable_cap" != "false" || \
+      "$ephemeral_cap" != "true" ]]; then
+  fail "HED-WB-0006" "ephemeral Workbench URL was not rejected for durable sharing"
+fi
+log "EXTERNAL_URL=ok browser_query=encoded mount_once=ok durable_guard=ok"
 
 if ! uv run --python 3.12 --directory "$ROOT" python scripts/smoke_workbench_websocket.py \
   "ws://127.0.0.1:${APP_PORT}${MOUNT}/ws"; then

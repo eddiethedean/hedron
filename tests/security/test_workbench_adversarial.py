@@ -91,7 +91,7 @@ def _run_asgi(middleware: WorkbenchPathMiddleware, scope: dict[str, object]) -> 
 
 
 def test_adversarial_absolute_target_returns_400() -> None:
-    mw = WorkbenchPathMiddleware(_Null(), mode="on")
+    mw = WorkbenchPathMiddleware(_Null(), mode="on", expected_origins=("https://wb.example",))
     target = "/" + quote("https://wb.example/s/x/../admin", safe="")
     messages = _run_asgi(
         mw,
@@ -133,7 +133,7 @@ def test_oversized_target_returns_414() -> None:
 
 
 def test_conflicting_absolute_target_query_returns_400() -> None:
-    mw = WorkbenchPathMiddleware(_Null(), mode="on")
+    mw = WorkbenchPathMiddleware(_Null(), mode="on", expected_origins=("https://wb.example",))
     target = "/" + quote("https://wb.example/s/x?token=one", safe="")
     messages = _run_asgi(
         mw,
@@ -147,6 +147,36 @@ def test_conflicting_absolute_target_query_returns_400() -> None:
             "raw_path": target.encode(),
             "root_path": "",
             "query_string": b"token=two",
+            "headers": [],
+        },
+    )
+    assert messages[0]["status"] == 400
+
+
+@pytest.mark.parametrize(
+    "absolute",
+    [
+        "https://evil.example/s/x/admin",
+        "https://user:pass@wb.example/s/x/admin",
+        "https://wb.example:99999/s/x/admin",
+        "https://wb.example/s/x/admin#fragment",
+    ],
+)
+def test_absolute_target_origin_is_bound_to_discovered_origin(absolute: str) -> None:
+    mw = WorkbenchPathMiddleware(_Null(), mode="on", expected_origins=("https://wb.example",))
+    target = "/" + quote(absolute, safe="")
+    messages = _run_asgi(
+        mw,
+        {
+            "type": "http",
+            "asgi": {"version": "3.0"},
+            "http_version": "1.1",
+            "method": "GET",
+            "scheme": "http",
+            "path": target,
+            "raw_path": target.encode(),
+            "root_path": "",
+            "query_string": b"",
             "headers": [],
         },
     )

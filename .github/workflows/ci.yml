@@ -96,6 +96,49 @@ jobs:
       - name: Run test suite
         run: bash scripts/ci_checks.sh test --python ${{ matrix.python-version }}
 
+  workbench-dependencies:
+    name: Workbench dependencies (${{ matrix.bounds }})
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        bounds: [minimum, latest]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Create bounds environment
+        run: uv venv .bounds-venv --python 3.12
+      - name: Install minimum supported dependencies
+        if: matrix.bounds == 'minimum'
+        run: >-
+          uv pip install --python .bounds-venv/bin/python
+          -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench
+          -e packages/hedron-django
+          pytest httpx "django>=5.2,<6" "starlette==0.46.0" "uvicorn==0.32.0"
+      - name: Install latest supported dependencies
+        if: matrix.bounds == 'latest'
+        run: >-
+          uv pip install --python .bounds-venv/bin/python
+          -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench
+          -e packages/hedron-django
+          pytest httpx "django>=5.2,<6" "starlette>=0.46" "uvicorn>=0.32"
+      - name: Run Workbench contract suite
+        run: >-
+          .bounds-venv/bin/pytest -q
+          tests/adapters/workbench
+          tests/integration/test_workbench_urls.py
+          tests/integration/test_workbench_runner.py
+          tests/security/test_workbench_adversarial.py
+
   quality:
     name: Quality, docs, and packages
     needs: changes

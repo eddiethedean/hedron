@@ -221,15 +221,37 @@ fi
 if ! grep -qi "hedron_csrf=.*Path=${CONTENT_PATH}/" "$page_headers"; then
   fail "HED-CONNECT-0006" "Connect did not scope the CSRF cookie to the content path"
 fi
+if ! grep -qiE "session=.*Path=${CONTENT_PATH}/?([;[:space:]]|$)" "$page_headers"; then
+  log "cookie_path_summary_begin"
+  awk '
+    BEGIN { IGNORECASE=1 }
+    tolower($0) ~ /^set-cookie:/ {
+      line=$0
+      sub(/\r$/, "", line)
+      name=line
+      sub(/^set-cookie:[[:space:]]*/, "", name)
+      sub(/=.*/, "", name)
+      lower=tolower(line)
+      if (match(lower, /;[[:space:]]*path=[^;]*/)) {
+        print name " " substr(line, RSTART + 1, RLENGTH - 1)
+      } else {
+        print name " Path=<missing>"
+      }
+    }
+  ' "$page_headers" | redact_stream
+  log "cookie_path_summary_end"
+  fail "HED-CONNECT-0006" "runtime root_path did not repair the session cookie Path"
+fi
 for suffix in \
   "/hedron-static/hedron-default.css" \
+  "/hedron-static/hedron-mount.mjs" \
   "/status" \
   "/ping"; do
   if ! grep -Fq "${CONTENT_PATH}${suffix}" "$SMOKE_DIR/page.html"; then
     fail "HED-CONNECT-0006" "generated PAGE URL omitted the Connect prefix: $suffix"
   fi
 done
-log "PAGE=ok root_path=ok generated_urls=ok cookie_path=ok"
+log "PAGE=ok root_path=ok generated_urls=automatic cookie_path=runtime_repaired"
 
 token="$(awk '$6=="hedron_csrf" {print $7; exit}' "$cookie_jar")"
 if [[ -z "$token" ]]; then

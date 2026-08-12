@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import importlib.util
 import tomllib
+from argparse import Namespace
 from pathlib import Path
 
 import pytest
 
-from hedron.cli import _release_pin_bounds, _scaffold_dep, main
+from hedron.cli import _cmd_run_app, _release_pin_bounds, _scaffold_dep, main
 
 ROOT = Path(__file__).resolve().parents[2]
 RELEASE = tomllib.loads((ROOT / "docs/release.toml").read_text(encoding="utf-8"))["release"]
@@ -69,3 +70,34 @@ def test_published_quickstart_pin_matches_scaffold_and_release_toml() -> None:
     if not version.endswith(".0"):
         train = ".".join(version.split(".")[:2])
         assert expected != f">={train}.0,<{RELEASE['pin_ceiling']}"
+
+
+def test_hedron_run_auto_delegates_to_workbench_launcher(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    called: dict[str, object] = {}
+
+    def fake_run(target: str, *, config: object) -> None:
+        called.update(target=target, config=config)
+
+    monkeypatch.setenv("RS_SERVER_URL", "https://wb.example/s/session/")
+    monkeypatch.setattr("hedron_workbench.runner.run_target", fake_run)
+    args = Namespace(
+        target="sample:app",
+        app=None,
+        workbench=False,
+        workbench_mode="auto",
+        host=None,
+        port=None,
+        mount=None,
+        public_base_url=None,
+        forwarded_allow_ips=None,
+        allow_external_bind=False,
+        reload=False,
+        workers=1,
+        debug=False,
+        factory=False,
+        topology="auto",
+    )
+    assert _cmd_run_app(args) == 0
+    assert called["target"] == "sample:app"

@@ -1497,6 +1497,7 @@ def _cmd_dev(args: argparse.Namespace) -> int:
     print(f"initial build → {result.build_dir}", file=sys.stderr)
     if args.once:
         return 0
+
     mtimes: dict[Path, float] = {}
 
     def snapshot() -> dict[Path, float]:
@@ -1525,6 +1526,62 @@ def _cmd_dev(args: argparse.Namespace) -> int:
     except KeyboardInterrupt:
         print("stopped", file=sys.stderr)
         return 0
+
+
+def _cmd_run_app(args: argparse.Namespace) -> int:
+    """Run locally, or delegate to the optional Workbench pre-import launcher."""
+    import os
+
+    target = str(args.target or args.app or "").strip()
+    if not target or ":" not in target:
+        print("hedron run requires module:attribute", file=sys.stderr)
+        return 2
+    workbench_runtime = bool(str(os.environ.get("RS_SERVER_URL") or "").strip())
+    if args.workbench or workbench_runtime:
+        try:
+            from hedron_workbench.config import (
+                WorkbenchConfig,
+                WorkbenchMode,
+                WorkbenchTopology,
+            )
+            from hedron_workbench.runner import run_target
+        except ImportError:
+            print(
+                "Posit Workbench runtime detected but hedron-workbench is not installed; "
+                "install hedron[workbench]",
+                file=sys.stderr,
+            )
+            return 2
+        config = WorkbenchConfig(
+            mode=WorkbenchMode.parse(args.workbench_mode),
+            host=args.host,
+            port=args.port,
+            mount=args.mount,
+            public_base_url=args.public_base_url,
+            forwarded_allow_ips=args.forwarded_allow_ips,
+            allow_external_bind=args.allow_external_bind,
+            reload=args.reload,
+            workers=args.workers,
+            debug=args.debug,
+            factory=args.factory,
+            app_target=target,
+            topology=WorkbenchTopology.parse(args.topology),
+        )
+        run_target(target, config=config)
+        return 0
+
+    import uvicorn
+
+    uvicorn.run(
+        target,
+        host=args.host or "127.0.0.1",
+        port=args.port or 8000,
+        reload=args.reload,
+        workers=args.workers,
+        factory=args.factory,
+        log_level="debug" if args.debug else "info",
+    )
+    return 0
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -1630,6 +1687,37 @@ def main(argv: list[str] | None = None) -> None:
     dev_p.add_argument("--interval", type=float, default=0.5)
     dev_p.add_argument("--once", action="store_true", help="Build once and exit")
     dev_p.set_defaults(func=_cmd_dev)
+
+    run_p = sub.add_parser(
+        "run",
+        help="Run an ASGI app; auto-use hedron-workbench inside Posit Workbench",
+    )
+    run_p.add_argument("target", nargs="?", help="module:app or module:factory")
+    run_p.add_argument("--factory", action="store_true")
+    run_p.add_argument("--host")
+    run_p.add_argument("--port", type=int)
+    run_p.add_argument("--reload", action="store_true")
+    run_p.add_argument("--workers", type=int, default=1)
+    run_p.add_argument("--debug", action="store_true")
+    run_p.add_argument("--workbench", action="store_true")
+    run_p.add_argument("--workbench-mode", choices=("auto", "on", "off"), default="auto")
+    run_p.add_argument("--mount")
+    run_p.add_argument("--public-base-url")
+    run_p.add_argument("--forwarded-allow-ips")
+    run_p.add_argument("--allow-external-bind", action="store_true")
+    run_p.add_argument(
+        "--topology",
+        choices=(
+            "auto",
+            "local",
+            "launcher-local",
+            "launcher-kubernetes",
+            "launcher-slurm",
+            "reverse-proxy",
+        ),
+        default="auto",
+    )
+    run_p.set_defaults(func=_cmd_run_app)
 
     args = parser.parse_args(argv)
     raise SystemExit(args.func(args))

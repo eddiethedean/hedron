@@ -7,7 +7,7 @@ import json
 import pytest
 
 from hedron_core.diagnostics import HedronError
-from hedron_workbench.config import WorkbenchConfig, WorkbenchMode
+from hedron_workbench.config import WorkbenchConfig, WorkbenchMode, WorkbenchTopology
 from hedron_workbench.detect import is_workbench_env, is_workbench_forced
 from hedron_workbench.redact import redact_record, redact_text, redact_url
 from hedron_workbench.resolve import (
@@ -28,6 +28,17 @@ def test_default_local_resolution() -> None:
     assert resolved.reload is False
     assert resolved.workers == 1
     assert resolved.active is False
+
+
+def test_bound_ephemeral_port_replaces_requested_zero() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(mode=WorkbenchMode.ON, port=0, mount="/s/bound/p/1"),
+        environ={},
+        bound_port=43123,
+    )
+    assert resolved.port == 43123
+    assert resolved.bind == "127.0.0.1:43123"
+    assert resolved.external_origin == "http://127.0.0.1:43123"
 
 
 def test_mode_off_clears_mount() -> None:
@@ -71,6 +82,21 @@ def test_rs_server_url_is_not_activation(monkeypatch: pytest.MonkeyPatch) -> Non
     assert "pending" in resolved.source or resolved.source == "default"
 
 
+def test_noninteractive_workbench_job_does_not_activate_browser_proxy() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(),
+        environ={
+            "RS_SERVER_URL": "https://wb.example/s/inherited/",
+            "UVICORN_ROOT_PATH": "/s/inherited/p/8000",
+            "AUDIT_DETAILS_PATH": "/tmp/audit",
+        },
+    )
+    assert resolved.active is False
+    assert resolved.browser_mount == ""
+    assert resolved.source == "workbench-job:non-interactive"
+    assert any("non-interactive" in warning for warning in resolved.warnings)
+
+
 def test_parse_rserver_path_and_full_url() -> None:
     mount, origin, source = parse_rserver_url_output(
         "https://wb.example/s/4566a3c9ab5a7ad01e1a7/p/30507931/",
@@ -101,6 +127,16 @@ def test_parse_rserver_rejects_malformed() -> None:
         parse_rserver_url_output("\n" * 3, port=1)
     with pytest.raises(HedronError):
         parse_rserver_url_output("x" * 5000, port=1)
+    with pytest.raises(HedronError):
+        parse_rserver_url_output("https://wb.example/s/x?ignored=true", port=1)
+    with pytest.raises(HedronError):
+        parse_rserver_url_output("https://wb.example:99999/s/x", port=1)
+
+
+def test_parse_rserver_canonicalizes_ipv6_origin() -> None:
+    mount, origin, _ = parse_rserver_url_output("https://[2001:db8::1]:8443/s/x/p/1", port=1)
+    assert mount == "/s/x/p/1"
+    assert origin == "https://[2001:db8::1]:8443"
 
 
 def test_conflicting_mount_and_public_base() -> None:
@@ -172,6 +208,58 @@ def test_forwarded_allowlist_is_unified_and_validated() -> None:
     assert any("FORWARDED_ALLOW_IPS" in warning for warning in alias.warnings)
     with pytest.raises(HedronError):
         resolve_deployment(WorkbenchConfig(forwarded_allow_ips="*"), environ={})
+    cidr = resolve_deployment(
+        WorkbenchConfig(forwarded_allow_ips="10.42.0.0/24,fd00::/64"), environ={}
+    )
+    assert cidr.forwarded_allow_ips == "10.42.0.0/24,fd00::/64"
+
+
+def test_workbench_uvicorn_root_path_is_consumed_only_with_runtime_evidence() -> None:
+    workbench = resolve_deployment(
+        WorkbenchConfig(),
+        environ={
+            "RS_SERVER_URL": "https://wb.example/",
+            "UVICORN_ROOT_PATH": "/s/default/p/8000",
+        },
+    )
+    assert workbench.active is True
+    assert workbench.browser_mount == "/s/default/p/8000"
+    ordinary = resolve_deployment(
+        WorkbenchConfig(),
+        environ={"UVICORN_ROOT_PATH": "/generic"},
+    )
+    assert ordinary.active is False
+    assert ordinary.browser_mount == ""
+
+
+def test_operator_public_origin_may_differ_from_discovery_origin() -> None:
+    resolved = resolve_deployment(
+        WorkbenchConfig(public_base_url="https://canonical.example/s/x/p/1"),
+        environ={},
+        discovered_raw="https://internal.example/s/x/p/1",
+        bound_port=8050,
+    )
+    assert resolved.external_origin == "https://canonical.example"
+
+
+@pytest.mark.parametrize(
+    "topology",
+    [WorkbenchTopology.LAUNCHER_KUBERNETES, WorkbenchTopology.LAUNCHER_SLURM],
+)
+def test_remote_launcher_profiles_select_reachable_bind(
+    topology: WorkbenchTopology,
+) -> None:
+    resolved = resolve_deployment(WorkbenchConfig(topology=topology), environ={})
+    assert resolved.host == "0.0.0.0"
+    assert resolved.topology is topology
+
+
+def test_invalid_topology_is_diagnostic() -> None:
+    with pytest.raises(HedronError, match="Invalid Workbench topology"):
+        resolve_deployment(
+            WorkbenchConfig(),
+            environ={"HEDRON_WORKBENCH_TOPOLOGY": "somewhere"},
+        )
 
 
 def test_launcher_handoff_is_consumed_as_active_state() -> None:

@@ -40,7 +40,7 @@ classifiers = [
 dependencies = [
     "hedron>=0.29.0,<0.30",
     "starlette>=0.46",
-    "uvicorn>=0.32",
+    "uvicorn[standard]>=0.32",
 ]
 
 [project.scripts]

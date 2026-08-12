@@ -34,6 +34,8 @@ def test_normalize_and_cookie_path() -> None:
     # Protocol-relative / absolute URL mounts must not authorize open redirects.
     assert normalize_mount_path("//evil.example") == ""
     assert normalize_mount_path("https://evil.example/app") == ""
+    assert normalize_mount_path("/app?query=1") == ""
+    assert normalize_mount_path("/app#fragment") == ""
     assert prefix_local_path("/login", "//evil.example") == "/login"
     # Traversal / encoded-dot segments must fail closed.
     assert normalize_mount_path("/app/../evil") == ""
@@ -44,6 +46,8 @@ def test_normalize_and_cookie_path() -> None:
 def test_prefix_local_path_once() -> None:
     assert prefix_local_path("/login", "/app") == "/app/login"
     assert prefix_local_path("/app/login", "/app") == "/app/login"
+    assert prefix_local_path("/app/login?next=%2F", "/app") == "/app/login?next=%2F"
+    assert prefix_local_path("/app#main", "/app") == "/app#main"
     assert prefix_local_path("/", "/app") == "/app/"
 
 

@@ -16,9 +16,11 @@ from hedron_core import (
     Props,
     RenderContext,
     RenderMode,
+    SafeUrl,
     Secret,
     Stack,
     Text,
+    UrlPurpose,
     get_registry,
     html,
     register_component,
@@ -142,6 +144,30 @@ def test_standalone_context() -> None:
     assert result.trace is not None
     assert result.trace["locale"] == "fr"
     assert result.trace["theme"] == "default"
+
+
+def test_render_context_mount_prefixes_typed_local_url_attributes_once() -> None:
+    node = html.div(
+        html.a(
+            "Status",
+            href=SafeUrl.parse("/status", purpose=UrlPurpose.NAVIGATION),
+            **{"hx-get": "/status"},
+        ),
+        html.form(
+            action=SafeUrl.parse("/ping", purpose=UrlPurpose.FORM_ACTION),
+            method="post",
+        ),
+        html.img(
+            src=SafeUrl.parse("/image.png", purpose=UrlPurpose.ASSET),
+            alt="test",
+        ),
+    )
+    result = render(node, context=RenderContext(mount_path="/content/abc"))
+    assert 'href="/content/abc/status"' in result.html
+    assert 'hx-get="/content/abc/status"' in result.html
+    assert 'action="/content/abc/ping"' in result.html
+    assert 'src="/content/abc/image.png"' in result.html
+    assert "/content/abc/content/abc" not in result.html
 
 
 def test_render_result_immutable_maps() -> None:

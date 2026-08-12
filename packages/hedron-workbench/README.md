@@ -45,6 +45,7 @@ Run the same object locally with Uvicorn or on Workbench with the launcher:
 
 ```bash
 uvicorn app:app --reload
+hedron run app:app  # auto-selects the Workbench launcher when RS_SERVER_URL is present
 hedron-workbench run app:app
 ```
 
@@ -71,11 +72,13 @@ cookie `Path` is correct), recognizes `HedronWorkbench` as already adapted, and
 serves with one normalizer.
 
 External binds require the explicit `--allow-external-bind` flag. The built-in
-pre-bound runner rejects reload and multiple workers; use an external process
-supervisor for those topologies.
+runner supports `--reload` and `--workers`: its parent binds and discovers once,
+then execs Uvicorn's supervisor/workers with the inherited listener and resolved
+mount. Reload and multiple workers cannot be enabled together.
 
 `workbenchify(app)` remains available for adapting an already-created generic
-ASGI application. It cannot repair a Hedron cookie `Path` after construction.
+ASGI application. The response boundary repairs Hedron-owned cookies whose path
+is still `/`; third-party cookies remain application-owned.
 
 `app.workbench_status()` returns a redacted deployment diagnostic without
 exposing session IDs, URL credentials, or token-shaped values.
@@ -100,8 +103,11 @@ def send_invite(request: Request):
     # enqueue email containing accept_url
 ```
 
-In Workbench, the resolved public origin and session mount are used. On Posit
-Connect, a request can supply the platform's app-base header, but it is accepted
+`external_url*` is deliberately durable: a disposable Workbench `/s/.../p/...`
+session URL is rejected. Use `browser_url*` for a link that stays in the current
+interactive session, and deploy durable invitations/callbacks to a stable URL
+(typically Posit Connect or an explicit `external_base_url`). On Posit Connect,
+a request can supply the platform's app-base header, but it is accepted
 only when its path exactly matches ASGI `root_path` and Connect's protected
 runtime marker is present (or an immediate proxy peer is explicitly trusted).
 Outside either platform, configure a stable base explicitly:
@@ -118,12 +124,50 @@ If no trusted base exists, link generation raises `ValueError`; it never falls
 back to an untrusted inbound `Host` header. Route paths must remain local and
 query parameters are encoded structurally. A Workbench discovery result that
 contains only a mount path also fails for public links because its inferred
-origin is loopback; configure `workbench_public_base_url` in that case.
+origin is loopback; configure `workbench_public_base_url` for browser-only links
+or a stable `external_base_url` for durable links.
+
+## Hands-off URL adaptation
+
+Hedron-owned component URL attributes (`href`, form actions, HTMX request and
+history paths, assets), safe local response redirects, HTMX redirect/location
+headers, OpenAPI, static assets, cookies, and WebSockets are mount-aware. A
+request-time ASGI `root_path` from Posit Connect or a generic proxy is sufficient;
+the app does not need to manually call `local_href` or `mounted_redirect`.
+Connect's authenticated proxy adds its content prefix to cookie paths but passes
+redirect locations through, so the adapter de-scopes only Hedron-owned cookies
+before Connect's outer rewrite and still mounts local response headers itself.
+
+Mounted pages expose `window.Hedron.href()`, `.fetch()`, `.eventSource()`,
+`.websocketUrl()`, and `.websocket()` for application JavaScript. Python code can
+use `app.href_for()`, `app.redirect_for()`, `app.browser_url_for()`, and
+`app.external_url_for()`. `app.external_base(request=...)` captures a validated,
+immutable base for a background job; `app.deployment_capabilities()` explains
+whether that base is browser-only or durable.
+
+Raw trusted HTML, arbitrary JavaScript strings, third-party ASGI response bodies,
+third-party cookies, and a stable sharing destination cannot be inferred safely.
+Those remain explicit integration points.
+
+## Diagnostics and topology profiles
+
+```bash
+hedron-workbench doctor --format json
+hedron-workbench doctor app:app --live --mount /s/example/p/8050
+hedron-workbench run app:app --topology launcher-kubernetes
+```
+
+`doctor --live` binds, discovers when applicable, imports the app after the
+handoff, and ASGI-probes generated URLs and cookie paths. Topology profiles cover
+local, local Launcher, Kubernetes Launcher, Slurm Launcher, and external reverse
+proxy deployments. Remote Launcher profiles select a reachable bind by default;
+proxy CIDRs must still be explicitly bounded (wildcard trust remains rejected).
 
 ## Non-goals
 
-Flask/Django/WSGI, auto-activation, bundling `rserver-url`, automating Posit
-Connect publishing, and treating Workbench or Connect login as Hedron identity.
+Flask/Django/WSGI, bundling `rserver-url`, automated Connect publishing, treating
+Workbench or Connect login as Hedron identity, or guessing a durable deployment
+from an ephemeral session.
 
 ## License
 

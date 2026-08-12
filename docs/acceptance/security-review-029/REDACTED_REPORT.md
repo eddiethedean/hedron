@@ -31,7 +31,10 @@
 
 ## Residual risk
 
-Operators who call `workbenchify` on an already-constructed `Hedron()` without exporting `HEDRON_ROOT_PATH` will ship cookies at `Path=/`. `HedronWorkbench` and the launcher avoid this ordering hazard; the generic wrapper documents it rather than rewriting cookies after construction.
+The launcher still configures cookie paths before import. If ASGI `root_path`
+only arrives with a request, the outer adapter now repairs `Path=/` for the
+bounded set of Hedron-owned cookies. It does not rewrite unknown third-party
+cookies. Tests cover session and CSRF continuity through the real Connect mount.
 
 ## Disposition
 

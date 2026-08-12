@@ -1,4 +1,4 @@
-REALCONNECT-029 start 2026-08-12T03:11:35Z
+REALCONNECT-029 start 2026-08-12T04:24:18Z
 image=posit/connect@sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9
 host_arch=arm64
 image_digest=sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9
@@ -8,7 +8,7 @@ connect_version=Version: 2026.07.0 Build: v2026.07.0
 rsconnect_python=1.29.0
 CONNECT_BOOTSTRAP=ok
 CONNECT_DEPLOY=ok runtime=python-3.14.6 vendored_local_source=true
-PAGE=ok root_path=ok generated_urls=ok cookie_path=ok
+PAGE=ok root_path=ok generated_urls=automatic cookie_path=runtime_repaired
 FRAGMENT=ok
 CSRF=ok
 ASSETS=ok
@@ -20,4 +20,4 @@ WORKBENCH_ISOLATION=ok encoded_target=307 external_escape=blocked
 WEBSOCKET=ok
 OUTSIDE_CONNECT=ok hedron_parity=ok generic_aliases_ignored=ok
 RESULT=pass
-REALCONNECT-029 end 2026-08-12T03:12:15Z
+REALCONNECT-029 end 2026-08-12T04:24:58Z

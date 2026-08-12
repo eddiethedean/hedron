@@ -33,3 +33,25 @@ def test_external_bind_requires_flag(capsys: pytest.CaptureFixture[str]) -> None
 def test_bad_worker_count_is_diagnostic(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["check", "--workers", "0"]) == 1
     assert "HED-WB-0001" in capsys.readouterr().err
+
+
+def test_doctor_reports_topology_without_importing_app(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert (
+        main(
+            [
+                "doctor",
+                "--format",
+                "json",
+                "--mode",
+                "off",
+                "--topology",
+                "reverse-proxy",
+            ]
+        )
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["deployment"]["topology"] == "reverse-proxy"
+    assert payload["checks"]["listener_host_safe"] is True

@@ -7,6 +7,7 @@ import importlib
 import os
 import socket
 import subprocess
+import sys
 import threading
 import webbrowser
 from collections.abc import Mapping
@@ -15,7 +16,7 @@ from typing import IO, Any
 from hedron_core.codes import HED_WB_0002, HED_WB_0003, HED_WB_0004, HED_WB_0005, HED_WB_0009
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
 from hedron_workbench.config import ResolvedDeployment, WorkbenchConfig
-from hedron_workbench.detect import rs_server_url
+from hedron_workbench.detect import is_workbench_job, rs_server_url
 from hedron_workbench.middleware import workbenchify
 from hedron_workbench.redact import redact_text
 from hedron_workbench.resolve import (
@@ -29,6 +30,8 @@ from hedron_workbench.resolve import (
 HEDRON_ROOT_PATH = "HEDRON_ROOT_PATH"
 HEDRON_PUBLIC_BASE = RESOLVED_PUBLIC_BASE_ENV
 _MAX_DISCOVERY_STREAM = 4096
+_SUPERVISED_TARGET_ENV = "HEDRON_WORKBENCH_APP_TARGET"
+_SUPERVISED_FACTORY_ENV = "HEDRON_WORKBENCH_APP_FACTORY"
 
 
 def _read_bounded(
@@ -174,8 +177,19 @@ def discover_rserver_url(*, binary: str, port: int) -> str:
             )
         )
 
-    stdout = b"".join(stdout_chunks).decode("utf-8", errors="replace")
-    stderr = b"".join(stderr_chunks).decode("utf-8", errors="replace")
+    try:
+        stdout = b"".join(stdout_chunks).decode("utf-8", errors="strict")
+        stderr = b"".join(stderr_chunks).decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise HedronError(
+            make_diagnostic(
+                HED_WB_0002,
+                severity=DiagnosticSeverity.ERROR,
+                title="Malformed rserver-url output",
+                explanation="Discovery output was not valid UTF-8.",
+                remediation="Use the official rserver-url binary and capture stdout only.",
+            )
+        ) from exc
     if proc.returncode != 0:
         raise HedronError(
             make_diagnostic(
@@ -195,17 +209,22 @@ def export_hedron_state(
     environ: dict[str, str] | None = None,
 ) -> None:
     env = os.environ if environ is None else environ
+    # Always clear the complete launcher handoff first. This prevents a prior
+    # app prepared in the same process from contaminating the next import.
+    for name in (
+        HEDRON_ROOT_PATH,
+        RESOLVED_MOUNT_ENV,
+        HEDRON_PUBLIC_BASE,
+        RESOLVED_MODE_ENV,
+        RESOLVED_SOURCE_ENV,
+        "HEDRON_TRUSTED_PROXIES",
+    ):
+        env.pop(name, None)
     if resolved.browser_mount:
         env[HEDRON_ROOT_PATH] = resolved.browser_mount
         env[RESOLVED_MOUNT_ENV] = resolved.browser_mount
-    else:
-        env.pop(RESOLVED_MOUNT_ENV, None)
-        if resolved.active:
-            env.pop(HEDRON_ROOT_PATH, None)
     if resolved.active and resolved.external_origin:
         env[HEDRON_PUBLIC_BASE] = resolved.external_origin
-    else:
-        env.pop(HEDRON_PUBLIC_BASE, None)
     env[RESOLVED_MODE_ENV] = resolved.mode.value
     env[RESOLVED_SOURCE_ENV] = resolved.source
     env["HEDRON_TRUSTED_PROXIES"] = resolved.forwarded_allow_ips
@@ -334,6 +353,82 @@ def _assert_supported_topology(resolved: ResolvedDeployment) -> None:
         )
 
 
+def app_from_environ() -> Any:
+    """Uvicorn worker factory used after parent-side bind/discovery/export."""
+    target = os.environ.get(_SUPERVISED_TARGET_ENV, "").strip()
+    if not target:
+        raise RuntimeError(f"{_SUPERVISED_TARGET_ENV} is missing")
+    factory = os.environ.get(_SUPERVISED_FACTORY_ENV, "").strip() == "1"
+    resolved = resolve_deployment(WorkbenchConfig(), compatibility_aliases=False)
+    app = load_app(target, factory=factory)
+    return workbenchify(
+        app,
+        config=WorkbenchConfig(
+            mode=resolved.mode,
+            mount=resolved.browser_mount or None,
+            public_base_url=(
+                f"{resolved.external_origin}{resolved.browser_mount}" if resolved.active else None
+            ),
+            debug=resolved.debug,
+        ),
+        mode=resolved.mode,
+        expected_mount=resolved.browser_mount,
+        debug=resolved.debug,
+    )
+
+
+def supervised_uvicorn_command(
+    resolved: ResolvedDeployment,
+    *,
+    fd: int,
+) -> list[str]:
+    """Build the deterministic Uvicorn command for reload/multi-worker launch."""
+    command = [
+        sys.executable,
+        "-m",
+        "uvicorn",
+        "hedron_workbench.runner:app_from_environ",
+        "--factory",
+        "--fd",
+        str(fd),
+        "--proxy-headers",
+        "--forwarded-allow-ips",
+        resolved.forwarded_allow_ips,
+        "--log-level",
+        "debug" if resolved.debug else "info",
+    ]
+    if resolved.reload:
+        command.append("--reload")
+    if resolved.workers > 1:
+        command.extend(("--workers", str(resolved.workers)))
+    return command
+
+
+def _exec_supervised(
+    resolved: ResolvedDeployment,
+    *,
+    sock: socket.socket,
+    target: str,
+    factory: bool,
+) -> None:
+    if resolved.reload and resolved.workers > 1:
+        raise HedronError(
+            make_diagnostic(
+                HED_WB_0009,
+                severity=DiagnosticSeverity.ERROR,
+                title="Conflicting Workbench launch topology",
+                explanation="Uvicorn reload and multiple workers are mutually exclusive.",
+                remediation="Choose reload for development or multiple workers for serving.",
+            )
+        )
+    export_hedron_state(resolved)
+    os.environ[_SUPERVISED_TARGET_ENV] = target
+    os.environ[_SUPERVISED_FACTORY_ENV] = "1" if factory else "0"
+    sock.set_inheritable(True)
+    command = supervised_uvicorn_command(resolved, fd=sock.fileno())
+    os.execv(sys.executable, command)
+
+
 def run_target(
     target: str,
     *,
@@ -343,17 +438,30 @@ def run_target(
     cfg = config or WorkbenchConfig(app_target=target)
     env = os.environ if environ is None else environ
     initial = resolve_deployment(cfg, environ=env)
-    _assert_supported_topology(initial)
     sock = bind_loopback(initial.host, initial.port)
     try:
         bound_port = int(sock.getsockname()[1])
         discovered: str | None = None
         mount_hint = cfg.mount or env.get("HEDRON_WORKBENCH_MOUNT") or env.get("BASE_PATH")
-        if rs_server_url(env) and not mount_hint:
+        if rs_server_url(env) and not is_workbench_job(env) and not mount_hint:
             discovered = discover_rserver_url(
                 binary=resolve_deployment(cfg, environ=env).rserver_url_bin,
                 port=bound_port,
             )
+        resolved = resolve_deployment(
+            cfg,
+            environ=env,
+            bound_port=bound_port,
+            discovered_raw=discovered,
+        )
+        if resolved.reload or resolved.workers > 1:
+            _exec_supervised(
+                resolved,
+                sock=sock,
+                target=target,
+                factory=cfg.factory,
+            )
+            return
         app, resolved = prepare_app(
             target=target,
             config=cfg,

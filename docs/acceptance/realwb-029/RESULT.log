@@ -14,6 +14,7 @@ rserver-url=/usr/lib/rstudio-server/bin/rserver-url
 rstudio-server=2026.07.0+139.pro9 Workbench (Pacific Dogwood) for Ubuntu Jammy
 rserver-url_rc=139
 RSERVER_URL=emulation_limited rc=139 platform=linux/amd64-on-arm64
+PROXY_E2E=emulation_limited requires=native-amd64
 LAUNCHER_PATH=ok stripped_prefix=ok
 PAGE=ok mount_prefix=ok cookie_path=ok
 FRAGMENT=ok

@@ -26,6 +26,7 @@ from hedron_core._nodes import (
 )
 from hedron_core.diagnostics import error
 from hedron_core.htmx_eval import reject_hx_eval_value
+from hedron_core.mount import prefix_local_path
 from hedron_core.security import SafeUrl, check_url_purpose_for_attribute
 from hedron_core.typing_aliases import HtmlAttrValue
 
@@ -77,7 +78,7 @@ def _attr_sort_key(name: str) -> tuple[int, str]:
         return (len(ATTR_ORDER), name)
 
 
-def _format_attr(name: str, value: HtmlAttrValue) -> str | None:
+def _format_attr(name: str, value: HtmlAttrValue, *, mount_path: str = "") -> str | None:
     if value is None:
         return None
     _require_safe_attr_name(name)
@@ -129,7 +130,7 @@ def _format_attr(name: str, value: HtmlAttrValue) -> str | None:
             return f'{lower}="{value.lower()}"'
         if isinstance(value, SafeUrl):
             check_url_purpose_for_attribute(value, lower)
-            return f'{lower}="{escape_attr(value.value)}"'
+            return f'{lower}="{escape_attr(prefix_local_path(value.value, mount_path))}"'
         raise error(
             "HED-SEC-0003",
             title="URL attribute requires SafeUrl",
@@ -146,9 +147,16 @@ def _format_attr(name: str, value: HtmlAttrValue) -> str | None:
             from hedron_core.html import _normalize_srcset
 
             text = _normalize_srcset(value)
+            candidates: list[str] = []
+            for candidate in text.split(","):
+                tokens = candidate.strip().split()
+                if tokens:
+                    tokens[0] = prefix_local_path(tokens[0], mount_path)
+                    candidates.append(" ".join(tokens))
+            text = ", ".join(candidates)
         elif isinstance(value, SafeUrl):
             check_url_purpose_for_attribute(value, lower)
-            text = value.value
+            text = prefix_local_path(value.value, mount_path)
         elif isinstance(value, str):
             raise error(
                 "HED-SEC-0003",
@@ -183,10 +191,10 @@ def _format_attr(name: str, value: HtmlAttrValue) -> str | None:
     return f'{lower}="{escape_attr(text)}"'
 
 
-def serialize_attributes(attributes: Mapping[str, HtmlAttrValue]) -> str:
+def serialize_attributes(attributes: Mapping[str, HtmlAttrValue], *, mount_path: str = "") -> str:
     parts: list[str] = []
     for name in sorted(attributes.keys(), key=_attr_sort_key):
-        formatted = _format_attr(name, attributes[name])
+        formatted = _format_attr(name, attributes[name], mount_path=mount_path)
         if formatted is not None:
             parts.append(formatted)
     if not parts:
@@ -194,7 +202,7 @@ def serialize_attributes(attributes: Mapping[str, HtmlAttrValue]) -> str:
     return " " + " ".join(parts)
 
 
-def serialize_node(node: Node) -> str:
+def serialize_node(node: Node, *, mount_path: str = "") -> str:
     if isinstance(node, EmptyNode):
         return ""
     if isinstance(node, TextNode):
@@ -205,9 +213,9 @@ def serialize_node(node: Node) -> str:
         safe = node.text.replace("--", " - - ")
         return f"<!--{safe}-->"
     if isinstance(node, FragmentNode):
-        return "".join(serialize_node(child) for child in node.children)
+        return "".join(serialize_node(child, mount_path=mount_path) for child in node.children)
     if isinstance(node, ComponentBoundaryNode):
-        return "".join(serialize_node(child) for child in node.children)
+        return "".join(serialize_node(child, mount_path=mount_path) for child in node.children)
     if isinstance(node, ElementNode):
         tag = node.tag.lower()
         if tag in FORBIDDEN_TAGS:
@@ -216,7 +224,7 @@ def serialize_node(node: Node) -> str:
                 title="Active HTML element rejected",
                 explanation=f"<{tag}> cannot be serialized under baseline policy.",
             )
-        attrs = serialize_attributes(node.attributes)
+        attrs = serialize_attributes(node.attributes, mount_path=mount_path)
         if node.void or tag in VOID_TAGS:
             if node.children:
                 raise error(
@@ -226,7 +234,7 @@ def serialize_node(node: Node) -> str:
                     remediation="Remove children from void elements.",
                 )
             return f"<{tag}{attrs}>"
-        inner = "".join(serialize_node(child) for child in node.children)
+        inner = "".join(serialize_node(child, mount_path=mount_path) for child in node.children)
         return f"<{tag}{attrs}>{inner}</{tag}>"
     raise error(
         "HED-RENDER-0001",
@@ -235,7 +243,7 @@ def serialize_node(node: Node) -> str:
     )
 
 
-def serialize_tree(nodes: tuple[Node, ...] | Node) -> str:
+def serialize_tree(nodes: tuple[Node, ...] | Node, *, mount_path: str = "") -> str:
     if isinstance(nodes, tuple):
-        return "".join(serialize_node(n) for n in nodes)
-    return serialize_node(nodes)
+        return "".join(serialize_node(n, mount_path=mount_path) for n in nodes)
+    return serialize_node(nodes, mount_path=mount_path)

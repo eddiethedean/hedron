@@ -10,13 +10,19 @@ from urllib.parse import urlsplit
 from fastapi import Request, WebSocket
 from starlette.responses import JSONResponse
 
-from hedron import CsrfField, Form, Page, RefreshButton, Stack, SubmitButton, Text, html, swap
-from hedron_workbench import (
-    HedronWorkbench,
-    browser_mount_from_request,
-    local_href,
-    mounted_redirect,
+from hedron import (
+    CsrfField,
+    Form,
+    Page,
+    RefreshButton,
+    Stack,
+    SubmitButton,
+    Text,
+    html,
+    redirect_local,
+    swap,
 )
+from hedron_workbench import HedronWorkbench
 
 app = HedronWorkbench(
     title="Posit Connect reference",
@@ -40,20 +46,20 @@ def status_panel():
 
 @app.page("/")
 def home(request: Request) -> Page:
-    mount = browser_mount_from_request(request)
+    request.session["smoke"] = "ok"
     return Page(
         Stack(
             Text("Hello from Hedron on Connect"),
             status_panel(),
             RefreshButton.for_region(
                 status,
-                href=local_href("/status", mount=mount),
+                href="/status",
                 label="Refresh status",
             ),
             Form(
                 CsrfField(),
                 SubmitButton("Ping"),
-                action=local_href("/ping", mount=mount),
+                action="/ping",
                 method="post",
             ),
         ),
@@ -96,8 +102,8 @@ def invite_link(request: Request) -> JSONResponse:
 
 
 @app.page("/go")
-def go(request: Request):
-    return mounted_redirect("/login", mount=browser_mount_from_request(request))
+def go():
+    return redirect_local("/login")
 
 
 @app.get("/connect-scope", include_in_schema=False)
@@ -122,6 +128,7 @@ def connect_scope(request: Request) -> JSONResponse:
             "workbench_active": app.hedron_workbench.active,
             "normalizer_count": app.workbench_status()["normalizer_count"],
             "public_base_valid": public_base_valid,
+            "capabilities": app.deployment_capabilities(request=request).as_dict(),
             "server_secret_env_present": bool(
                 os.environ.get("PCT_LICENSE") or os.environ.get("CONNECT_BOOTSTRAP_SECRETKEY")
             ),

@@ -2,23 +2,39 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import re
+from typing import cast
 from urllib.parse import quote, unquote, urlsplit
 
 from starlette.responses import PlainTextResponse
-from starlette.types import ASGIApp, Receive, Scope, Send
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
-from hedron.mount import normalize_mount_path
+from hedron.mount import normalize_mount_path, prefix_local_path
 from hedron_core.codes import HED_WB_0006
+from hedron_core.htmx_contract import is_local_path
 from hedron_workbench.config import WorkbenchConfig, WorkbenchMode
-from hedron_workbench.detect import is_workbench_scope, path_has_encoded_absolute_url
+from hedron_workbench.detect import (
+    is_posit_connect_scope,
+    is_workbench_scope,
+    path_has_encoded_absolute_url,
+)
 from hedron_workbench.redact import redact_scope_for_log
+from hedron_workbench.urls import normalize_http_origin
 
 log = logging.getLogger("hedron_workbench")
 _PROXY_PREFIX = re.compile(r"^/proxy/\d+(?P<rest>/.*)$")
 _MAX_TARGET = 8192
 _DECODE_ROUNDS = 3
+_LOCAL_RESPONSE_HEADERS = {
+    b"location",
+    b"hx-redirect",
+    b"hx-push-url",
+    b"hx-replace-url",
+}
+_COOKIE_PATH_ROOT = re.compile(rb"(?i)(;[ \t]*path=)/(?=;|$)")
+_COOKIE_PATH = re.compile(rb"(?i)(;[ \t]*path=)([^;]*)")
 
 
 class _RejectedRequestTarget(Exception):
@@ -68,6 +84,10 @@ class WorkbenchPathMiddleware:
         decode_absolute_url_path: bool = True,
         strip_root_path_from_path: bool = True,
         debug: bool = False,
+        expected_origins: tuple[str, ...] = (),
+        runtime_mounts: bool = False,
+        mounted_response_headers: bool = True,
+        owned_cookie_names: tuple[str, ...] = (),
     ) -> None:
         self.app = app
         self.mode = WorkbenchMode.parse(mode)
@@ -76,12 +96,23 @@ class WorkbenchPathMiddleware:
         self.decode_absolute_url_path = decode_absolute_url_path
         self.strip_root_path_from_path = strip_root_path_from_path
         self.debug = debug
+        origins: set[str] = set()
+        for origin in expected_origins:
+            try:
+                origins.add(normalize_http_origin(origin))
+            except ValueError:
+                continue
+        self.expected_origins = frozenset(origins)
+        self.runtime_mounts = runtime_mounts
+        self.mounted_response_headers = mounted_response_headers
+        self.owned_cookie_names = frozenset(owned_cookie_names)
 
     def _should_normalize(self, scope: Scope) -> bool:
         if self.mode is WorkbenchMode.OFF:
             return False
         if self.mode is WorkbenchMode.AUTO and not self.active:
-            return False
+            root_path = normalize_mount_path(str(scope.get("root_path") or ""))
+            return self.runtime_mounts and bool(root_path)
         if self.mode is WorkbenchMode.ON:
             return True
         path = str(scope.get("path") or "")
@@ -104,6 +135,16 @@ class WorkbenchPathMiddleware:
         parsed = urlsplit(decoded)
         if parsed.scheme.lower() not in {"http", "https"} or not parsed.netloc:
             raise _RejectedRequestTarget(400, "malformed absolute Workbench request target")
+        try:
+            candidate_origin = normalize_http_origin(f"{parsed.scheme}://{parsed.netloc}")
+        except ValueError as exc:
+            raise _RejectedRequestTarget(
+                400, "malformed absolute Workbench request origin"
+            ) from exc
+        if parsed.username is not None or parsed.password is not None or parsed.fragment:
+            raise _RejectedRequestTarget(400, "unsafe absolute Workbench request origin")
+        if not self.expected_origins or candidate_origin not in self.expected_origins:
+            raise _RejectedRequestTarget(400, "unexpected absolute Workbench request origin")
         decoded_path = parsed.path or "/"
         if _unsafe_decoded_path(decoded_path):
             raise _RejectedRequestTarget(400, "unsafe Workbench request path")
@@ -155,9 +196,94 @@ class WorkbenchPathMiddleware:
     def normalize_scope(self, scope: Scope) -> Scope:
         if scope.get("type") not in {"http", "websocket"} or not self._should_normalize(scope):
             return scope
-        decoded = self._maybe_decode_absolute_url_path(scope)
+        # Runtime-only mounts (for example Posit Connect ASGI root_path) need
+        # response adaptation but must not activate Workbench's encoded-target
+        # compatibility mode.
+        decoded = (
+            self._maybe_decode_absolute_url_path(scope)
+            if self.active or self.expected_mount
+            else scope
+        )
         mounted = self._apply_expected_mount(decoded)
         return self._canonicalize_proxy_root(mounted)
+
+    @staticmethod
+    def _rewrite_hx_location(value: bytes, mount: str) -> bytes:
+        text = value.decode("latin-1")
+        if not text.startswith("{"):
+            if is_local_path(text):
+                return prefix_local_path(text, mount).encode("latin-1")
+            return value
+        try:
+            payload_object = json.loads(text)
+        except (TypeError, ValueError):
+            return value
+        if not isinstance(payload_object, dict):
+            return value
+        payload = cast(dict[str, object], payload_object)
+        path = payload.get("path")
+        if not isinstance(path, str) or not is_local_path(path):
+            return value
+        payload["path"] = prefix_local_path(path, mount)
+        return json.dumps(payload, separators=(",", ":")).encode("latin-1")
+
+    def _rewrite_set_cookie(self, value: bytes, mount: str) -> bytes:
+        if not self.owned_cookie_names:
+            return value
+        first = value.split(b"=", 1)[0].strip().decode("latin-1")
+        if first not in self.owned_cookie_names:
+            return value
+        return _COOKIE_PATH_ROOT.sub(
+            lambda match: match.group(1) + mount.encode("ascii"),
+            value,
+            count=1,
+        )
+
+    def _prepare_connect_cookie(self, value: bytes, mount: str) -> bytes:
+        """Undo app-side scoping that Connect will apply at its outer proxy."""
+        if not self.owned_cookie_names:
+            return value
+        first = value.split(b"=", 1)[0].strip().decode("latin-1")
+        if first not in self.owned_cookie_names:
+            return value
+        match = _COOKIE_PATH.search(value)
+        if match is None:
+            return value
+        path = match.group(2).rstrip(b"/") or b"/"
+        if path != mount.encode("ascii"):
+            return value
+        return value[: match.start(2)] + b"/" + value[match.end(2) :]
+
+    def _rewrite_response_start(
+        self, message: Message, mount: str, *, connect_proxy: bool = False
+    ) -> Message:
+        if message.get("type") != "http.response.start" or not mount:
+            return message
+        headers = cast(list[tuple[bytes, bytes]], message.get("headers") or [])
+        changed = False
+        rewritten: list[tuple[bytes, bytes]] = []
+        for name, value in headers:
+            lower = name.lower()
+            new_value = value
+            if lower in _LOCAL_RESPONSE_HEADERS:
+                text = value.decode("latin-1")
+                if text.lower() not in {"true", "false"} and is_local_path(text):
+                    new_value = prefix_local_path(text, mount).encode("latin-1")
+            elif lower == b"hx-location":
+                new_value = self._rewrite_hx_location(value, mount)
+            elif lower == b"set-cookie":
+                new_value = (
+                    self._prepare_connect_cookie(value, mount)
+                    if connect_proxy
+                    else self._rewrite_set_cookie(value, mount)
+                )
+            changed = changed or new_value != value
+            rewritten.append((name, new_value))
+        if not changed:
+            return message
+        out = dict(message)
+        out["headers"] = rewritten
+        return out
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope.get("type") not in {"http", "websocket"}:
@@ -190,7 +316,18 @@ class WorkbenchPathMiddleware:
                 after["root_path"],
                 after["path"],
             )
-        await self.app(normalized, receive, send)
+        if not self.mounted_response_headers or scope.get("type") != "http":
+            await self.app(normalized, receive, send)
+            return
+        mount = normalize_mount_path(str(normalized.get("root_path") or ""))
+        if not mount and self.active:
+            mount = self.expected_mount
+        connect_proxy = not self.active and is_posit_connect_scope(normalized)
+
+        async def mounted_send(message: Message) -> None:
+            await send(self._rewrite_response_start(message, mount, connect_proxy=connect_proxy))
+
+        await self.app(normalized, receive, mounted_send)
 
 
 def is_workbenchified(app: object) -> bool:
@@ -212,10 +349,23 @@ def workbenchify(
 ) -> ASGIApp:
     """Wrap ``app`` at most once. Cookie Path must still be set before construction."""
     if is_workbenchified(app):
+        requested = WorkbenchMode.parse(mode)
+        deployment = getattr(app, "hedron_workbench", None)
+        if (
+            requested is WorkbenchMode.ON
+            and deployment is not None
+            and not bool(getattr(deployment, "active", False))
+        ):
+            raise ValueError(
+                "cannot activate an already-constructed inactive HedronWorkbench; "
+                "construct it with workbench_mode='on'/workbench_mount=..., or use "
+                "hedron-workbench run so cookie and asset paths are configured before import"
+            )
         return app
     resolved_mode = mode
     resolved_debug = debug
     resolved_mount = expected_mount
+    expected_origins: tuple[str, ...] = ()
     if config is not None:
         from hedron_workbench.resolve import resolve_deployment
 
@@ -223,6 +373,13 @@ def workbenchify(
         resolved_mode = resolved_mode or resolved.mode
         resolved_debug = debug or resolved.debug
         resolved_mount = resolved_mount if resolved_mount is not None else resolved.browser_mount
+        expected_origins = (resolved.external_origin,)
+    state = getattr(app, "state", None)
+    owned = {"session", "hedron_color_mode"}
+    policy = getattr(state, "hedron_security", None)
+    csrf_name = getattr(policy, "csrf_cookie_name", None)
+    if isinstance(csrf_name, str) and csrf_name:
+        owned.add(csrf_name)
     return WorkbenchPathMiddleware(
         app,
         mode=resolved_mode or WorkbenchMode.AUTO,
@@ -231,6 +388,10 @@ def workbenchify(
         decode_absolute_url_path=decode_absolute_url_path,
         strip_root_path_from_path=strip_root_path_from_path,
         debug=resolved_debug,
+        expected_origins=expected_origins,
+        runtime_mounts=True,
+        mounted_response_headers=True,
+        owned_cookie_names=tuple(sorted(owned)),
     )
 
 

@@ -103,9 +103,12 @@ profile expansion, feature IDs, and prologue schema are defined by RFC-0031.
 | `HEDRON_WORKBENCH_PUBLIC_BASE_URL` | Optional public origin; must not conflict with mount |
 | `HEDRON_WORKBENCH_RSERVER_URL` | Absolute path to `rserver-url` (default `/usr/lib/rstudio-server/bin/rserver-url`) |
 | `HEDRON_WORKBENCH_DEBUG` | Redacted scope logs from path middleware |
-| `HEDRON_WORKBENCH_FORWARDED_ALLOW_IPS` | Exact comma-separated proxy IP allowlist shared by Uvicorn and Hedron; wildcard trust is rejected |
+| `HEDRON_WORKBENCH_FORWARDED_ALLOW_IPS` | Comma-separated exact IP / bounded CIDR proxy allowlist shared by Uvicorn and Hedron; wildcard trust is rejected |
 | `HEDRON_WORKBENCH_ALLOW_EXTERNAL_BIND` | Explicit opt-in for a non-loopback listener; default is false |
-| `HEDRON_WORKBENCH_WORKERS` / `HEDRON_WORKBENCH_RELOAD` | Parsed for diagnostics; the pre-bound runner rejects values other than one worker / no reload |
+| `HEDRON_WORKBENCH_WORKERS` / `HEDRON_WORKBENCH_RELOAD` | Parent discovers once then execs Uvicorn workers or reload; the two modes are mutually exclusive |
+| `HEDRON_WORKBENCH_TOPOLOGY` | `auto`, `local`, `launcher-local`, `launcher-kubernetes`, `launcher-slurm`, or `reverse-proxy` diagnostics/defaults |
+| `UVICORN_ROOT_PATH` | Consumed as a validated default-port mount only when paired with `RS_SERVER_URL` Workbench evidence |
+| `HEDRON_WORKBENCH_JOB` | Mark a non-interactive inherited environment so auto mode does not advertise a browser proxy URL; audited jobs are detected from Posit's `AUDIT_DETAILS_PATH` contract |
 | `RS_SERVER_URL` | Discovery trigger only — never wraps or grants trust |
 | `WORKBENCH_FORCE` / `BASE_PATH` / `PUBLIC_BASE_URL` / `HOST` / `PORT` | Launcher compatibility aliases; warn (`HED-WB-0008`); namespaced vars win. Inactive `HedronWorkbench` ignores broad aliases to preserve ordinary-host behavior |
 

@@ -1,5 +1,30 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Automatic render-time mount adaptation for Hedron URL attributes plus a
+  browser runtime for fetch, EventSource, and WebSocket paths.
+- Request-aware safe redirect/HTMX header rewriting and Hedron-owned cookie Path
+  repair for ASGI mounts that arrive after construction.
+- Separate browser-session and durable URL APIs, deployment capabilities,
+  background-safe external-base capture, topology profiles, and `doctor --live`.
+- Parent-side discovery followed by inherited-socket Uvicorn reload/workers.
+- A complete Uvicorn runtime, including WebSocket and reload dependencies, in
+  the default Workbench installation.
+- Posit Connect's asymmetric proxy contract: emit owned cookies for one outer
+  path rebase while continuing to mount redirects inside Hedron.
+- Native-amd64 authenticated Workbench proxy E2E and expanded Connect runtime
+  cookie/link acceptance coverage.
+
+### Security
+
+- Bound encoded absolute request targets to canonical expected origins; reject
+  credentials, fragments, malformed ports, and unknown hosts.
+- Reject rserver-url query strings and invalid UTF-8, canonicalize IPv6 origins,
+  accept bounded proxy CIDRs, and clear stale launcher handoff state.
+
 ## [0.29.0] — 2026-08-11
 
 ### Added

@@ -80,7 +80,11 @@ def test_unrelated_proxy_path_untouched() -> None:
 
 
 def test_encoded_absolute_target() -> None:
-    mw = WorkbenchPathMiddleware(_NullApp(), mode=WorkbenchMode.ON)
+    mw = WorkbenchPathMiddleware(
+        _NullApp(),
+        mode=WorkbenchMode.ON,
+        expected_origins=("https://wb.example",),
+    )
     encoded = "/" + quote("https://wb.example/s/abc/p/1/login")
     out = mw.normalize_scope(_scope(path=encoded, root_path=""))
     assert out["path"] == "/s/abc/p/1/login"

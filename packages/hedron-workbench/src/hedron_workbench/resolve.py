@@ -18,8 +18,10 @@ from hedron_workbench.config import (
     ResolvedDeployment,
     WorkbenchConfig,
     WorkbenchMode,
+    WorkbenchTopology,
 )
-from hedron_workbench.detect import is_workbench_forced, rs_server_url, truthy
+from hedron_workbench.detect import is_workbench_forced, is_workbench_job, rs_server_url, truthy
+from hedron_workbench.urls import normalize_http_origin
 
 _PROXY_ROOT = re.compile(r"^/proxy/(?P<port>\d+)(?P<rest>/.*)$")
 _MAX_RSERVER_OUTPUT = 4096
@@ -37,6 +39,8 @@ _ENV_WORKERS = "HEDRON_WORKBENCH_WORKERS"
 _ENV_OPEN = "HEDRON_WORKBENCH_OPEN_BROWSER"
 _ENV_FORWARD = "HEDRON_WORKBENCH_FORWARDED_ALLOW_IPS"
 _ENV_ALLOW_EXTERNAL = "HEDRON_WORKBENCH_ALLOW_EXTERNAL_BIND"
+_ENV_TOPOLOGY = "HEDRON_WORKBENCH_TOPOLOGY"
+_UVICORN_ROOT_PATH = "UVICORN_ROOT_PATH"
 
 # Launcher-only handoff. These are exported after the listener is bound and
 # rserver-url has been resolved, then consumed by HedronWorkbench at import.
@@ -142,6 +146,14 @@ def _validated_public_base(raw: str) -> tuple[str | None, str, SplitResult | Non
     looks_like_url = bool(parsed.scheme or parsed.netloc or text.startswith("//") or "://" in text)
     if not looks_like_url:
         return None, _validated_mount(text, source="public base path"), None
+    try:
+        _ = parsed.port
+    except ValueError as exc:
+        raise _error(
+            title="Invalid Workbench public base URL",
+            explanation="Public base URL contained an invalid port.",
+            remediation="Use a valid TCP port from 1 through 65535.",
+        ) from exc
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         raise _error(
             title="Invalid Workbench public base URL",
@@ -155,7 +167,20 @@ def _validated_public_base(raw: str) -> tuple[str | None, str, SplitResult | Non
             remediation="Configure credentials separately and provide only origin plus mount path.",
         )
     mount = _validated_mount(parsed.path or "/", source="public base URL path")
-    return f"{parsed.scheme}://{parsed.netloc}", mount, parsed
+    try:
+        origin = normalize_http_origin(f"{parsed.scheme}://{parsed.netloc}")
+    except ValueError as exc:
+        raise _error(
+            title="Invalid Workbench public base URL",
+            explanation=str(exc),
+            remediation="Set a valid http(s) origin and optional local mount path.",
+        ) from exc
+    return origin, mount, parsed
+
+
+def _local_origin(host: str, port: int | None = None) -> str:
+    literal = f"[{host}]" if ":" in host and not host.startswith("[") else host
+    return f"http://{literal}:{port}" if port else f"http://{literal}"
 
 
 def _validate_host(host: str, *, allow_external: bool) -> str:
@@ -198,12 +223,17 @@ def _validate_forwarded_allow_ips(raw: str | None) -> str:
                 remediation="List the exact proxy IP addresses that connect to Uvicorn.",
             )
         try:
-            ipaddress.ip_address(entry)
+            if "/" in entry:
+                ipaddress.ip_network(entry, strict=False)
+            else:
+                ipaddress.ip_address(entry)
         except ValueError as exc:
             raise _error(
                 title="Invalid forwarded proxy allowlist",
-                explanation=f"Proxy entry {entry!r} is not an IP address.",
-                remediation="Use a comma-separated list such as '127.0.0.1,::1'.",
+                explanation=f"Proxy entry {entry!r} is not an IP address or CIDR network.",
+                remediation=(
+                    "Use exact addresses or bounded CIDRs such as '127.0.0.1,::1,10.42.0.0/24'."
+                ),
             ) from exc
     return ",".join(entries)
 
@@ -254,18 +284,31 @@ def parse_rserver_url_output(raw: str, *, port: int) -> tuple[str, str, str]:
                     remediation="Reject the output and fail closed.",
                 )
             )
-        if parsed.username or parsed.password or parsed.fragment:
+        try:
+            _ = parsed.port
+        except ValueError as exc:
+            raise HedronError(
+                make_diagnostic(
+                    HED_WB_0002,
+                    severity=DiagnosticSeverity.ERROR,
+                    title="Invalid rserver-url URL",
+                    explanation="Full-URL discovery contained an invalid port.",
+                    remediation="Reject the output and fail closed.",
+                )
+            ) from exc
+        if parsed.username or parsed.password or parsed.fragment or parsed.query:
             raise HedronError(
                 make_diagnostic(
                     HED_WB_0002,
                     severity=DiagnosticSeverity.ERROR,
                     title="Unsafe rserver-url URL",
-                    explanation="Credentials and fragments are not accepted.",
+                    explanation="Credentials, query strings, and fragments are not accepted.",
                     remediation="Use rserver-url without embedding secrets.",
                 )
             )
         mount = _canonicalize_discovered_mount(parsed.path)
-        return mount, f"{parsed.scheme}://{parsed.netloc}", "rserver-url:full-url"
+        origin = normalize_http_origin(f"{parsed.scheme}://{parsed.netloc}")
+        return mount, origin, "rserver-url:full-url"
     if "://" in text.split("/", 1)[0] or text.startswith("//"):
         raise HedronError(
             make_diagnostic(
@@ -277,7 +320,7 @@ def parse_rserver_url_output(raw: str, *, port: int) -> tuple[str, str, str]:
             )
         )
     mount = _canonicalize_discovered_mount(text)
-    return mount, f"http://{DEFAULT_HOST}:{port}", "rserver-url:path"
+    return mount, _local_origin(DEFAULT_HOST, port), "rserver-url:path"
 
 
 def _canonicalize_discovered_mount(path: str) -> str:
@@ -310,6 +353,19 @@ def resolve_deployment(
     cfg = config or WorkbenchConfig()
     env = os.environ if environ is None else environ
     warnings: list[str] = []
+    job_context = is_workbench_job(env)
+
+    topology_raw = (
+        cfg.topology.value if cfg.topology is not WorkbenchTopology.AUTO else env.get(_ENV_TOPOLOGY)
+    )
+    try:
+        topology = WorkbenchTopology.parse(topology_raw)
+    except ValueError as exc:
+        raise _error(
+            title="Invalid Workbench topology",
+            explanation=str(exc),
+            remediation="Select an explicit supported topology or use auto.",
+        ) from exc
 
     mode_raw = _first_str(
         explicit=cfg.mode.value if cfg.mode is not WorkbenchMode.AUTO else None,
@@ -336,9 +392,19 @@ def resolve_deployment(
         alias_name="HOST",
         warnings=warnings,
     )
-    host = _validate_host(host_raw or DEFAULT_HOST, allow_external=allow_external)
+    remote_launcher = topology in {
+        WorkbenchTopology.LAUNCHER_KUBERNETES,
+        WorkbenchTopology.LAUNCHER_SLURM,
+    }
+    topology_host = "0.0.0.0" if remote_launcher and host_raw is None else DEFAULT_HOST
+    host = _validate_host(
+        host_raw or topology_host,
+        allow_external=allow_external or remote_launcher,
+    )
 
-    if cfg.port is not None:
+    if bound_port is not None:
+        port = _parse_port(bound_port, name="bound port") or 0
+    elif cfg.port is not None:
         port = _parse_port(cfg.port, name="config port")
     elif env.get(_ENV_PORT) is not None:
         port = _parse_port(env.get(_ENV_PORT), name=_ENV_PORT)
@@ -346,7 +412,7 @@ def resolve_deployment(
         warnings.append(_warn_alias("PORT"))
         port = _parse_port(env.get("PORT"), name="PORT")
     else:
-        port = _parse_port(bound_port, name="bound port") or 0
+        port = 0
 
     mount_explicit = _first_str(
         explicit=cfg.mount,
@@ -356,6 +422,14 @@ def resolve_deployment(
         alias_name="BASE_PATH",
         warnings=warnings,
     )
+    # Posit Workbench configures this for the conventional FastAPI port. Treat
+    # it as a mount hint only when paired with Workbench runtime evidence; it
+    # never supplies or authenticates a public origin.
+    if mount_explicit is None and rs_server_url(env) and not job_context:
+        uvicorn_root = env.get(_UVICORN_ROOT_PATH)
+        if uvicorn_root is not None and str(uvicorn_root).strip():
+            mount_explicit = str(uvicorn_root).strip()
+            warnings.append("using UVICORN_ROOT_PATH supplied by the Posit Workbench runtime")
     public_explicit = _first_str(
         explicit=cfg.public_base_url,
         namespaced=env.get(_ENV_PUBLIC),
@@ -405,7 +479,7 @@ def resolve_deployment(
     )
     active = mode is WorkbenchMode.ON or forced
     browser_mount = ""
-    external_origin = f"http://{host}:{port}" if port else f"http://{host}"
+    external_origin = _local_origin(host, port or None)
 
     public_origin: str | None = None
     public_mount = ""
@@ -439,14 +513,9 @@ def resolve_deployment(
         discovered = True
         active = True
         if public_origin:
-            discovered_netloc = urlsplit(origin).netloc.lower()
+            # The operator-controlled public origin may legitimately be a
+            # canonical reverse-proxy hostname different from discovery.
             assert public_parsed is not None
-            if public_parsed.netloc.lower() != discovered_netloc:
-                raise _error(
-                    title="Conflicting Workbench origin",
-                    explanation="Explicit public base disagrees with rserver-url.",
-                    remediation="Unset PUBLIC_BASE_URL or HEDRON_WORKBENCH_PUBLIC_BASE_URL.",
-                )
             external_origin = public_origin
         else:
             external_origin = origin
@@ -465,13 +534,28 @@ def resolve_deployment(
             "WORKBENCH_FORCE requests local reproduction; RS_SERVER_URL still does not grant trust"
         )
 
+    if job_context and mode is WorkbenchMode.AUTO and mount_explicit is None:
+        browser_mount = ""
+        source = "workbench-job:non-interactive"
+        discovered = False
+        active = False
+        warnings.append(
+            "non-interactive Workbench job detected; browser proxy adaptation was not activated"
+        )
+
     if mode is WorkbenchMode.OFF:
         browser_mount = ""
         source = "mode:off"
         discovered = False
         active = False
 
-    if rs_server_url(env) and not discovered and discovered_raw is None and mount_explicit is None:
+    if (
+        rs_server_url(env)
+        and not job_context
+        and not discovered
+        and discovered_raw is None
+        and mount_explicit is None
+    ):
         source = "rs_server_url:pending" if source == "default" else source
 
     return ResolvedDeployment(
@@ -494,4 +578,5 @@ def resolve_deployment(
         debug=debug,
         factory=cfg.factory,
         app_target=cfg.app_target,
+        topology=topology,
     )

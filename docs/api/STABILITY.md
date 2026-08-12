@@ -174,12 +174,14 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 
 Install `hedron[workbench]` / `hedron-workbench>=0.29.0,<0.30`. Supported:
 `HedronWorkbench`, pre-import launcher and resolved-state handoff,
-`HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, construction-time cookie
-Path, explicit-mount routing, and ordinary local Uvicorn/generic-root-path
-parity. Posit Connect trusted-header behavior remains Experimental. The
-built-in pre-bound runner rejects reload and multiple workers; use an external
-supervisor. Excluded: Flask/Django/WSGI, auto-activation, wildcard proxy trust,
-vendoring fastapi-workbench, and bundling `rserver-url`.
+`HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic typed URL and safe
+response-header adaptation, Hedron-owned request-time cookie repair,
+browser/durable URL separation, explicit-mount routing, topology diagnostics,
+and ordinary local Uvicorn/generic-root-path parity. Posit Connect trusted-header
+behavior remains Experimental. The launcher can hand its pre-bound listener to
+Uvicorn reload or multiple workers (not both). Excluded: Flask/Django/WSGI,
+wildcard proxy trust, arbitrary raw HTML/JavaScript rewriting, vendoring
+fastapi-workbench, and bundling `rserver-url`.
 
 See [production-grade-inventory-029.toml](../acceptance/production-grade-inventory-029.toml)
 and [Posit Workbench](../guides/posit-workbench.md).
