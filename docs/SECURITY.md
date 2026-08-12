@@ -2,21 +2,21 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.29.x`). Older `0.x` lines should
+Security fixes land on the **current published train** (`0.30.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
 minor (`0.28.x`) continues through approximately **2026-11-11** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.29.x` | Yes (current published train — pin `>=0.29.0,<0.30`; last published `v0.29.0`) |
-| `0.28.x` | Prefer upgrade to `0.29.x` (best-effort security triage through approximately 2026-11-11) |
-| `0.27.x` | Prefer upgrade to `0.29.x` |
-| `0.26.x` | Prefer upgrade to `0.29.x` |
-| `0.25.x` | Prefer upgrade to `0.29.x` |
-| `0.24.x` | Prefer upgrade to `0.29.x` |
-| `0.23.x` | Prefer upgrade to `0.29.x` |
-| `0.22.x` | Prefer upgrade to `0.29.x` |
+| `0.30.x` | Yes (current published train — pin `>=0.30.0,<0.31`; last published `v0.30.0`) |
+| `0.28.x` | Prefer upgrade to `0.30.x` (best-effort security triage through approximately 2026-11-11) |
+| `0.27.x` | Prefer upgrade to `0.30.x` |
+| `0.26.x` | Prefer upgrade to `0.30.x` |
+| `0.25.x` | Prefer upgrade to `0.30.x` |
+| `0.24.x` | Prefer upgrade to `0.30.x` |
+| `0.23.x` | Prefer upgrade to `0.30.x` |
+| `0.22.x` | Prefer upgrade to `0.30.x` |
 | `0.20.x` | Prefer upgrading to the current train |
 | `0.19.x` | Prefer upgrading to the current train |
 | `0.18.x` | Prefer upgrading to the current train |
@@ -49,7 +49,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes land on the current published train (`0.29.x`); see Supported versions above.
+4. Fixes land on the current published train (`0.30.x`); see Supported versions above.
 
 ### Alternate contact
 

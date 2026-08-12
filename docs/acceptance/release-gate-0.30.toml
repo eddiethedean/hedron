@@ -1,0 +1,109 @@
+# Phase 0.30 dual-package cut evidence index (fastapi-workbench 1.0.0 + hedron-workbench 0.30.0).
+# Consumed by scripts/check_release_gate.py 0.30.0 (--execute-verified at cut).
+# Zero Deferred policy for 0.30-owned rows: every row must be Verified at cut.
+# Owning decision: D-058. RFC: RFC-0063. Tracking: #135.
+
+[[evidence]]
+id = "CONTRACT-030"
+state = "Verified"
+command = "python scripts/check_contract_030.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PACKAGE-030"
+state = "Verified"
+command = "python scripts/check_package_030.py"
+ci_job = "packaging"
+owner = "fastapi-workbench"
+
+[[evidence]]
+id = "RESOLVE-030"
+state = "Verified"
+command = "python scripts/check_resolve_030.py"
+ci_job = "test"
+owner = "fastapi-workbench"
+
+[[evidence]]
+id = "PATH-030"
+state = "Verified"
+command = "python scripts/check_path_030.py"
+ci_job = "test"
+owner = "fastapi-workbench"
+
+[[evidence]]
+id = "URL-030"
+state = "Verified"
+command = "python scripts/check_url_030.py"
+ci_job = "test"
+owner = "fastapi-workbench"
+
+[[evidence]]
+id = "RUNNER-030"
+state = "Verified"
+command = "python scripts/check_runner_030.py"
+ci_job = "test"
+owner = "fastapi-workbench"
+
+[[evidence]]
+id = "FASTAPI-030"
+state = "Verified"
+command = "python scripts/check_fastapi_030.py"
+ci_job = "test"
+owner = "fastapi-workbench"
+
+[[evidence]]
+id = "DX-030"
+state = "Verified"
+command = "python scripts/check_dx_030.py"
+ci_job = "test"
+owner = "fastapi-workbench"
+
+[[evidence]]
+id = "DEPENDENCY-030"
+state = "Verified"
+command = "python scripts/check_dependency_030.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "COMPAT-030"
+state = "Verified"
+command = "python scripts/check_compat_030.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "SECURITY-030"
+state = "Verified"
+command = "python scripts/check_security_030.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REALWB-030"
+state = "Verified"
+command = "bash scripts/ci_checks.sh realwb --python 3.12"
+ci_job = "realwb"
+owner = "hedron"
+
+[[evidence]]
+id = "PERF-030"
+state = "Verified"
+command = "python scripts/check_perf_030.py"
+ci_job = "test"
+owner = "fastapi-workbench"
+
+[[evidence]]
+id = "REGRESS-030"
+state = "Verified"
+command = "bash scripts/ci_checks.sh test --python 3.12"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-030"
+state = "Verified"
+command = "python scripts/verify_pkg_30.py"
+ci_job = "packaging"
+owner = "hedron"

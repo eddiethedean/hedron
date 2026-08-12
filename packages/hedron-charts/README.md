@@ -21,13 +21,13 @@ production Auto defaults.
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.29.0,<0.30"
+pip install "hedron[charts]>=0.30.0,<0.31"
 # Add a backend when needed:
 pip install "hedron-charts[matplotlib]>=0.1.10,<0.2"
 ```
 
 Versions through `0.1.6` may target older Hedron cores; keep the `>=0.1.10` floor for
-the living 0.29 train. Prefer tip `0.1.11` for OOB lifecycle and MapLibre coord fixes.
+the living 0.30 train. Prefer tip `0.1.11` for OOB lifecycle and MapLibre coord fixes.
 ### Optional backends
 
 | Extra | Backend |

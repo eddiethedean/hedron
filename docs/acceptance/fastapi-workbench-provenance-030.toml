@@ -1,0 +1,48 @@
+# Monorepo-owned fastapi-workbench 1.0.0 disposition.
+# Upgrade source: public fastapi-workbench 0.3.4 (MIT).
+# Re-audit upstream 0.3.4 at RFC acceptance and at the 0.30 cut.
+
+package = "fastapi-workbench"
+version = "1.0.0"
+upstream = "fastapi-workbench"
+upstream_version = "0.3.4"
+upstream_repo = "https://github.com/eddiethedean/jwt-user-management/tree/main/fastapi_workbench"
+ownership = "monorepo"
+location = "packages/fastapi-workbench"
+license = "MIT"
+attribution = "Continues MIT lineage from public 0.3.4; developed and released from this monorepo."
+
+[[migration]]
+from = "0.3.4"
+to = "1.0.0"
+notes = "Documented CLI/env aliases; FWB-* diagnostics; independent semver; no Hedron dependency."
+
+[[disposition]]
+id = "MONO-030-001"
+status = "owned"
+summary = "Generic resolver, configuration, and diagnostics live in packages/fastapi-workbench."
+
+[[disposition]]
+id = "MONO-030-002"
+status = "owned"
+summary = "HTTP/WebSocket scope normalization and workbenchify exported from fastapi_workbench.middleware."
+
+[[disposition]]
+id = "MONO-030-003"
+status = "owned"
+summary = "Pre-import launcher, rserver-url discovery, and fastapi-workbench CLI owned by fastapi_workbench.runner/cli."
+
+[[disposition]]
+id = "MONO-030-004"
+status = "delegated"
+summary = "Hedron facade, HEDRON_ROOT_PATH export, cookie repair, and Hedron URL adapters remain in hedron-workbench 0.30."
+
+[[disposition]]
+id = "MONO-030-005"
+status = "excluded"
+summary = "No Hedron import, vendoring, or runtime optional dependency detection in fastapi-workbench."
+
+[[disposition]]
+id = "MONO-030-006"
+status = "excluded"
+summary = "Alembic migrations, FLUXLIT_PUBLIC_BASE_URL, import hooks, and bundled rserver-url remain out of scope."

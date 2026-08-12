@@ -12,7 +12,7 @@ Disabled by default; absence adds no core dependency or startup cost.
 ## Install
 
 ```bash
-pip install "hedron[gradio]>=0.29.0,<0.30"
+pip install "hedron[gradio]>=0.30.0,<0.31"
 # or
 pip install "hedron-gradio>=0.1.0,<0.2"
 ```

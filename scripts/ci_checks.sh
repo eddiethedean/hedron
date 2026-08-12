@@ -8,10 +8,10 @@
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12]
 #   scripts/ci_checks.sh browser [--python 3.12]
-#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.29.0]
+#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.30.0]
 #   scripts/ci_checks.sh realwb [--python 3.12]
 #   scripts/ci_checks.sh packaging [--python 3.12]
-#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.29.0] [--with-browser]
+#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.30.0] [--with-browser]
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
@@ -22,7 +22,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.29.0}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.30.0}"
 WITH_BROWSER=0
 
 usage() {
@@ -219,22 +219,22 @@ cmd_browser() {
 cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/build_evidence_bundle.py
   run uv run --python "$PYTHON" --with pip-audit python scripts/dep_audit.py
-  # 0.21 session gates may remain Planned; 0.29 capability gates are Verified.
+  # 0.21 session gates may remain Planned; 0.30 capability gates are Verified.
   run uv run --python "$PYTHON" python scripts/check_release_gate.py "$GATE_VERSION"
   run uv run --python "$PYTHON" python scripts/check_human_at_packet.py
   run uv run --python "$PYTHON" python scripts/check_hed_codes.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_29.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_30.py
 }
 
 cmd_realwb() {
-  # Live Posit Workbench Docker smoke (REALWB-029). Requires Docker and PWB_LICENSE.
-  # Skips successfully when PWB_LICENSE is unavailable (see check_realwb_029.py).
-  run uv run --python "$PYTHON" python scripts/check_realwb_029.py --live
+  # Live Posit Workbench Docker smoke (REALWB-030). Requires Docker and PWB_LICENSE.
+  # Skips successfully when PWB_LICENSE is unavailable (see check_realwb_smoke.py).
+  run uv run --python "$PYTHON" python scripts/check_realwb_smoke.py --live
 }
 
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
-  run uv run --python "$PYTHON" python scripts/verify_pkg_29.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_30.py
 }
 
 cmd_all() {

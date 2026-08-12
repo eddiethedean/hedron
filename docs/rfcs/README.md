@@ -80,3 +80,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0060](RFC-0060-WEB-COMPONENT-PLATFORM.md) | Web Component platform program | Draft |
 | [0061](RFC-0061-STREAMLIT-AST-MIGRATOR.md) | Reviewable Streamlit AST migration assistant | Proposed |
 | [0062](RFC-0062-POSIT-WORKBENCH-ADAPTER.md) | Production-grade Posit Workbench deployment adapter | Accepted |
+| [0063](RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md) | Standalone FastAPI Workbench extraction | Accepted |

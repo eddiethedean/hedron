@@ -9,7 +9,7 @@ details remain in the [package changelogs](changelog.md).
     The current web framework starts at `0.1.0`; there is no supported migration path or
     API continuity with that legacy project.
 
-## 0.29.0 — 2026-08-11
+## 0.30.0 — 2026-08-11
 
 Coordinated Beta train cut for production-grade `hedron-workbench`.
 
@@ -18,12 +18,12 @@ Coordinated Beta train cut for production-grade `hedron-workbench`.
 - Hedron-neutral polish: `Hedron(root_path=...)`, re-exported
   `resolve_mount_path_from_environ`, color-mode cookie Path.
 - No auto-activation on install/import/`RS_SERVER_URL`. Flask/Django unchanged.
-- Pin `hedron>=0.29.0,<0.30`. Uninstalling `hedron-workbench` restores the 0.28
+- Pin `hedron>=0.30.0,<0.31`. Uninstalling `hedron-workbench` restores the 0.28
   `uvicorn` launch command.
 
 ```bash
-python -m pip install -U "hedron>=0.29.0,<0.30"
-python -m pip install -U "hedron-workbench>=0.29.0,<0.30"
+python -m pip install -U "hedron>=0.30.0,<0.31"
+python -m pip install -U "hedron-workbench>=0.30.0,<0.31"
 ```
 
 ## 0.28.2 — 2026-08-11
@@ -42,7 +42,7 @@ Coordinated Beta patch on the 0.28 train.
 - GitHub Release create waits on quickstart verify and omits plain `linux_*` wheels.
 - No Supported CRUD/admin API removal.
 
-Install the current tip with the pin under **0.29.0** above (historical cut pin was
+Install the current tip with the pin under **0.30.0** above (historical cut pin was
 `>=0.28.2,<0.29`).
 
 ## 0.28.1 — 2026-08-10

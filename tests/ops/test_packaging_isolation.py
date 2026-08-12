@@ -25,6 +25,9 @@ _INDEPENDENT_BETA = {
     "hedron-charts",
     "hedron-native",
 }
+_INDEPENDENT_MAJOR = {
+    "fastapi-workbench",
+}
 _ALPHA_INDEPENDENT = {
     "hedron-sample-kit",
     "hedron-notebook",
@@ -39,9 +42,11 @@ def test_all_packages_declare_license_and_version() -> None:
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
         if name in _BETA_PACKAGES:
-            assert project["version"] == "0.29.0", pyproject
+            assert project["version"] == "0.30.0", pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:
             assert str(project["version"]).startswith("0.1."), pyproject
+        elif name in _INDEPENDENT_MAJOR:
+            assert str(project["version"]).startswith("1."), pyproject
         else:
             raise AssertionError(f"unexpected package {name}")
         assert "license" in project or "license-files" in project, pyproject.name

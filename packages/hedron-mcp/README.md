@@ -25,7 +25,7 @@ pip install "hedron-mcp>=0.1.0,<0.2"
 # or
 uv add "hedron-mcp>=0.1.0,<0.2"
 # via flagship:
-pip install "hedron[mcp]>=0.29.0,<0.30"
+pip install "hedron[mcp]>=0.30.0,<0.31"
 ```
 
 Requires Python 3.11–3.14.

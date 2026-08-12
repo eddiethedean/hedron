@@ -2,12 +2,13 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.29 **Published** as `v0.29.0` (2026-08-11); last published
-PyPI/git = `v0.29.0`. Prior: 0.28 **Published** as `v0.28.2`.
+**Roadmap position:** phase 0.30 **Implemented** on the `0.30.0` train (2026-08-12); prior Published
+PyPI/git = `v0.30.0`. Prior: 0.29 **Published** as `v0.30.0` (2026-08-11).
 **Date:** 2026-08-12
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` `0.29.0`; Beta (independent) — `hedron-charts` `0.1.11`, `hedron-native` `0.1.2`; Alpha —
+`hedron-workbench` `0.30.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
+`0.1.11`, `hedron-native` `0.1.2`; Alpha —
 `hedron-sample-kit` `0.1.10`, `hedron-notebook` / `hedron-mcp` / `hedron-gradio` / `hedron-sim` `0.1.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
@@ -15,14 +16,11 @@ PyPI/git = `v0.29.0`. Prior: 0.28 **Published** as `v0.28.2`.
 `hedron-workbench`, `hedron-charts`, `hedron-native`; Alpha — `hedron-sample-kit`, `hedron-notebook`,
 `hedron-mcp`, `hedron-gradio`, `hedron-sim`.
 
-**Phase focus:** Living published train is **0.29** (D-057 / RFC-0062) — production-grade
-`hedron-workbench` Posit Workbench / RStudio Server adapter on the declared Supported
-inventory (`release-gate-0.29.toml` Verified). Prior inventories for core / flagship /
-Explorer (0.26), data / adapters / HDJ / extras (0.27), and charts / native (0.28) remain
-in force. **Next** = **0.30 Planned** (bring `fastapi-workbench` into this monorepo, publish its
-first repository-developed release as independently versioned `1.0.0`, give plain FastAPI apps the
-hands-off Workbench launcher, and make `hedron-workbench` 0.30 depend on
-`fastapi-workbench>=1.0.0,<2.0`; D-058). The former planned 0.30–0.39 phases move to 0.31–0.40.
+**Phase focus:** Living train is **0.30** (D-058 / RFC-0063) — standalone `fastapi-workbench`
+`1.0.0` for plain FastAPI Workbench deployment and `hedron-workbench` `0.30.0` dependency
+inversion (`release-gate-0.30.toml` Verified). Prior Published **0.30** (`hedron-workbench`
+production-grade adapter) remains in force. **Next** = **0.31 Planned** (developer tooling /
+RFC-0061 Streamlit migrator). The former planned 0.30–0.39 phases remain at 0.31–0.40.
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
@@ -220,7 +218,7 @@ Cut verify: `python scripts/verify_pkg_28.py`.
 ## Phase 0.29 evidence
 
 Owning decision: **D-057** / [RFC-0062](docs/rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
-Baseline: Published **`v0.28.2`**. Package: `hedron-workbench` `0.29.0` — **Beta**
+Baseline: Published **`v0.28.2`**. Package: `hedron-workbench` `0.30.0` — **Beta**
 for the declared Supported inventory.
 Locked Supported inventory:
 [production-grade-inventory-029.toml](docs/acceptance/production-grade-inventory-029.toml).
@@ -249,7 +247,7 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 **Planned** until compensated screen-reader evidence lands
 ([#86](https://github.com/eddiethedean/hedron/issues/86)). Phase **0.27** is **Published**
 (`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
-Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is Planned for
+Phase **0.30** is **Published** (`v0.30.0`; D-057 / RFC-0062). Phase **0.30** is Planned for
 standalone `fastapi-workbench` 1.0.0 and `hedron-workbench` dependency inversion (D-058; owning RFC
 and tracking issue required). Remaining package-production work continues through **0.31–0.34**:
 developer and portable conformance tooling

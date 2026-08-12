@@ -17,7 +17,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by release.yml).
-  HEDRON_GATE_VERSION: "0.29.0"
+  HEDRON_GATE_VERSION: "0.30.0"
 
 jobs:
   changes:
@@ -210,7 +210,7 @@ jobs:
           if-no-files-found: ignore
 
   realwb:
-    name: REALWB-029
+    name: REALWB-030
     needs: changes
     if: >
       needs.changes.outputs.docs_only != 'true' &&
@@ -240,8 +240,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: realwb-029-result
-          path: docs/acceptance/realwb-029/RESULT.log
+          name: realwb-030-result
+          path: docs/acceptance/realwb-030/RESULT.log
           if-no-files-found: ignore
 
   evidence:

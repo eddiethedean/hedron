@@ -1,7 +1,7 @@
 # Cutting a Hedron release
 
-This is the living maintainer runbook for the `0.29.x` train. Historical cut records
-live under `docs/archive/`. The last published release is `v0.29.0`; the next planned
+This is the living maintainer runbook for the `0.30.x` train. Historical cut records
+live under `docs/archive/`. The last published release is `v0.30.0`; the next planned
 patch is `v0.29.1`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
@@ -26,16 +26,16 @@ Run the same suites used by release CI:
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.29.0
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.30.0
 bash scripts/ci_checks.sh browser --python 3.12
-uv run python scripts/check_release_gate.py 0.29.0
+uv run python scripts/check_release_gate.py 0.30.0
 uv run python scripts/verify_pkg_29.py
 ```
 
 Build and inspect local evidence if the release changes packaging or the release path:
 
 ```bash
-uv run python scripts/build_evidence_bundle.py --version 0.29.0
+uv run python scripts/build_evidence_bundle.py --version 0.30.0
 uv run python scripts/rehearse_release.py
 ```
 

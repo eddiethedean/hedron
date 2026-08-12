@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-11
 **Baseline:** Published `v0.28.2` mount/CSRF/redirect contracts
-**Package:** `hedron-workbench` `0.29.0`
+**Package:** `hedron-workbench` `0.30.0`
 **Reviewer role:** maintainer-led, independent of the feature-authoring pass
 **Method:** adversarial pytest corpus + source review of resolver, middleware, runner, CLI, redaction
 

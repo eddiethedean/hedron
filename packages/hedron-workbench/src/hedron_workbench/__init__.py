@@ -34,7 +34,7 @@ from hedron_workbench.urls import (
     validate_external_base_url,
 )
 
-__version__ = "0.29.0"
+__version__ = "0.30.0"
 
 __all__ = [
     "ResolvedDeployment",

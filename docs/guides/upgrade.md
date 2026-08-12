@@ -1,12 +1,12 @@
 # Upgrade to Hedron 0.29
 
-This guide covers an application upgrade from **0.28.x** to the **0.29.x** train
-(current tip **`v0.29.0`**). New applications should use
+This guide covers an application upgrade from **0.28.x** to the **0.30.x** train
+(current tip **`v0.30.0`**). New applications should use
 [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.29.x ships production-grade `hedron-workbench` (D-057 / RFC-0062): an
+Hedron 0.30.x ships production-grade `hedron-workbench` (D-057 / RFC-0062): an
 optional Posit Workbench / RStudio Server adapter. Existing FastAPI Hedron apps
 run unchanged by switching the launch command. Cookie `Path` is still
 construction-time (`HEDRON_ROOT_PATH` or `Hedron(root_path=...)`).
@@ -37,9 +37,9 @@ app = HedronWorkbench(...)
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.29.0,<0.30"
+python -m pip install -U "hedron>=0.30.0,<0.31"
 # Optional Workbench adapter:
-python -m pip install -U "hedron-workbench>=0.29.0,<0.30"
+python -m pip install -U "hedron-workbench>=0.30.0,<0.31"
 ```
 
 Local development is unchanged:

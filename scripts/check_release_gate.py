@@ -37,6 +37,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.27": ROOT / "docs" / "acceptance" / "release-gate-0.27.toml",
     "0.28": ROOT / "docs" / "acceptance" / "release-gate-0.28.toml",
     "0.29": ROOT / "docs" / "acceptance" / "release-gate-0.29.toml",
+    "0.30": ROOT / "docs" / "acceptance" / "release-gate-0.30.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 # Includes historical ``release`` attestation used by older gate manifests.
@@ -68,6 +69,7 @@ _RECURSIVE_SCRIPT_NAMES = frozenset(
         "verify_pkg_27.py",
         "verify_pkg_28.py",
         "verify_pkg_29.py",
+        "verify_pkg_30.py",
         "ci_checks.sh",
     }
 )
@@ -94,9 +96,12 @@ def _is_independent_version_package(project: dict[str, object]) -> bool:
 
     Alpha satellites always version independently. Beta packages on the ``0.1.x``
     satellite line (charts/native after 0.28 graduation) also stay independent of
-    the ``0.N.0`` train tag.
+    the ``0.N.0`` train tag. ``fastapi-workbench`` 1.x versions independently per D-058.
     """
     if _is_alpha_package(project):
+        return True
+    name = str(project.get("name", ""))
+    if name == "fastapi-workbench":
         return True
     version = str(project.get("version", ""))
     return version.startswith("0.1.")

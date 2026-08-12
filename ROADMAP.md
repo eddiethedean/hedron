@@ -1176,7 +1176,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.29** (last published tip `v0.29.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.30** (last published tip `v0.30.0`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -2066,9 +2066,9 @@ experimental interactive backends remain opt-in until they independently satisfy
 - `hedron-charts` and `hedron-native` are no longer Alpha for their declared Supported scopes.
 - Every non-Supported backend remains explicit, opt-in, and non-transitive from production defaults.
 
-## 0.29 — Posit Workbench deployment adapter (`v0.29.0`)
+## 0.29 — Posit Workbench deployment adapter (`v0.30.0`)
 
-**Status:** Published as `v0.29.0` (2026-08-11). Owned by **D-057** /
+**Status:** Published as `v0.30.0` (2026-08-11). Owned by **D-057** /
 [RFC-0062](docs/rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
 Tracking: [#134](https://github.com/eddiethedean/hedron/issues/134).
 Packet SSOT: [RELEASE_0_29.md](docs/acceptance/RELEASE_0_29.md) ·
@@ -2256,8 +2256,20 @@ and independently useful/tested in `hedron`; Posit-specific detection and path r
 
 ## 0.30 — Standalone FastAPI Workbench package (`v0.30.0`; `fastapi-workbench` `1.0.0`)
 
-**Status:** Planned; package direction and phase insertion accepted by **D-058**. A dedicated public
-contract RFC and tracking issue must be assigned before implementation begins.
+**Status:** Implemented on the `0.30.0` train; owned by **D-058** /
+[RFC-0063](docs/rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md).
+Tracking: [#135](https://github.com/eddiethedean/hedron/issues/135).
+Packet SSOT: [RELEASE_0_30.md](docs/acceptance/RELEASE_0_30.md) ·
+[release-gate-0.30.toml](docs/acceptance/release-gate-0.30.toml) ·
+[production-grade-inventory-030.toml](docs/acceptance/production-grade-inventory-030.toml).
+Cut verify: `python scripts/verify_pkg_30.py`.
+
+### Entry criteria
+
+- Phase **0.30** Published (`v0.30.0`) with Verified `CONTRACT-029`…`PKG-029`.
+- [RFC-0063](docs/rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md) Accepted and tracking [#135](https://github.com/eddiethedean/hedron/issues/135) open.
+- [fastapi-workbench-provenance-029.toml](docs/acceptance/fastapi-workbench-provenance-029.toml) extended to
+  [fastapi-workbench-provenance-030.toml](docs/acceptance/fastapi-workbench-provenance-030.toml).
 
 **Version baseline:** The existing PyPI `fastapi-workbench` 0.3.4 line is the upgrade source. Its
 first release developed from this monorepo is **`1.0.0`** and follows an independent semantic
@@ -2322,13 +2334,17 @@ generic package never imports, discovers, or conditionally activates Hedron.
 
 | Gate | Verified means |
 |---|---|
-| `CONTRACT-030` | Accepted RFC, 0.3.4 disposition, 1.0 API/CLI/config/version policy, support matrices, migrations, rollback, and uninstall contracts agree |
+| `CONTRACT-030` | Accepted RFC-0063, 0.3.4 disposition, 1.0 API/CLI/config/version policy, support matrices, migrations, rollback, and uninstall contracts agree |
 | `PACKAGE-030` | Monorepo source ownership, independent 1.0.0 versioning, clean wheel/sdist/offline installs, metadata, licenses, SBOM, provenance, and release rehearsal pass |
+| `RESOLVE-030` | Pure resolver corpus passes with Hedron absent; env precedence and alias warnings match RFC-0063 |
 | `PATH-030` | Resolver and HTTP/WebSocket normalization corpora pass idempotence, immutability, malformed/adversarial input, trusted-header, and ordinary-local no-op cases with Hedron absent |
+| `URL-030` | Plain FastAPI redirects, static, docs/OpenAPI, WebSocket, and cookie behavior under mounted shapes |
 | `FASTAPI-030` / `RUNNER-030` | A packaged plain FastAPI object and factory run unchanged through local and locked Workbench shapes; discovery precedes import and wrapper/startup behavior is deterministic and redacted |
+| `DX-030` | `run` / `check` / `--dry-run` / `doctor` text and JSON output with shared redaction rules |
 | `DEPENDENCY-030` | `fastapi-workbench` imports no Hedron code; `hedron-workbench` declares `fastapi-workbench>=1.0.0,<2.0`, delegates generic behavior, and contains no divergent resolver/middleware/runner copy |
 | `COMPAT-030` | Public 0.3.4 consumers have tested migration or explicit deprecation errors; Hedron 0.29→0.30, mixed-version refusal, rollback, uninstall, dependency floors/ceilings, and response parity pass |
 | `SECURITY-030` / `REALWB-030` | Independent review has no unresolved critical/high finding, and plain FastAPI plus Hedron packaged apps pass the same mock and real Workbench security/operations matrix |
+| `PERF-030` | Normalization and launcher overhead remain within locked budgets |
 | `REGRESS-030` / `PKG-030` | Full tests, shared fixture identity, docs/link checks, package isolation, performance budgets, and publication of `fastapi-workbench` 1.0.0 plus Hedron 0.30.0 pass with zero Deferred 0.30-owned row |
 
 ### Non-goals
@@ -3183,7 +3199,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0058 Production-grade adapters / data / HDJ / curated extras | 0.27 |
 | 0059 Production-grade charts / native acceleration | 0.28 |
 | Posit Workbench deployment adapter RFC (planned) | 0.29 (must be Accepted before implementation) |
-| FastAPI Workbench extraction RFC (required) | 0.30 (`fastapi-workbench` 1.0.0; D-058; must be Accepted before implementation) |
+| FastAPI Workbench extraction RFC | 0.30 (`fastapi-workbench` 1.0.0; D-058; RFC-0063 Accepted) |
 | 0060 Web Component platform program | 0.35–0.40 (Draft; must be Accepted before implementation) |
 
 ## Open GitHub issue ownership (0.13+)
@@ -3266,7 +3282,7 @@ remaining package fleet: core/flagship, Python satellites, charts/native, the Po
 adapter, standalone FastAPI Workbench, developer and portable tooling, MCP, Gradio, and a whole-fleet closure audit. Each planned phase requires an accepted
 owning RFC/decision before implementation; adding it here assigns scope and prevents maturity work
 from becoming an unowned backlog. These additions do not renumber published phases through 0.29.
-Phase **0.29** is the published production-grade `hedron-workbench` ASGI adapter. Phase **0.30**
+Phase **0.30** is the published production-grade `hedron-workbench` ASGI adapter. Phase **0.30**
 brings the existing `fastapi-workbench` project into this monorepo, releases its first repository-
 owned version as independently versioned `1.0.0`, makes the hands-off launcher available to plain
 FastAPI applications, and changes `hedron-workbench` to depend on its generic implementation

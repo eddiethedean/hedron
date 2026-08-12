@@ -2,7 +2,7 @@
 
 Optional Posit Workbench / RStudio Server deployment adapter.
 
-**Package maturity:** Beta (`0.29.0`) · extra `hedron[workbench]` · pin `>=0.29.0,<0.30`
+**Package maturity:** Beta (`0.30.0`) · extra `hedron[workbench]` · pin `>=0.30.0,<0.31`
 
 Installing or importing the package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust.

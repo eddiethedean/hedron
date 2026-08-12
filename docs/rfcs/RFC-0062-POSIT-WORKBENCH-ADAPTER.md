@@ -1,11 +1,15 @@
 # RFC-0062: Production-grade Posit Workbench deployment adapter
 
+**Revision:** 2026-08-12 — Phase 0.30 (`RFC-0063`) extracts generic behavior into
+`fastapi-workbench` 1.0.0; this RFC remains the authoritative 0.29 Published contract.
+For 0.30+, see [RFC-0063](RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md).
+
 **Revision:** 2026-08-12 — D-058 leaves the published 0.29 contract and evidence unchanged, but
 supersedes its no-dependency disposition for 0.30+: `fastapi-workbench` moves into this monorepo at
 1.0.0 and `hedron-workbench` becomes its explicit downstream specialization.
 
 **Status:** Accepted
-**Phase:** 0.29 (`v0.29.0`; baseline Published `v0.28.2`)
+**Phase:** 0.29 (`v0.30.0`; baseline Published `v0.28.2`)
 **Stability:** `beta` (package + public API)
 **Evidence:** [RELEASE_0_29.md](../acceptance/RELEASE_0_29.md) ·
 [release-gate-0.29.toml](../acceptance/release-gate-0.29.toml) ·
@@ -43,7 +47,7 @@ keeps Posit detection out of `hedron-core` and the flagship.
 
 | Surface | Contract |
 |---|---|
-| Distribution | `hedron-workbench` `0.29.0` Beta; extra `hedron[workbench]` |
+| Distribution | `hedron-workbench` `0.30.0` Beta; extra `hedron[workbench]` |
 | Hosts | `Hedron()` and plain FastAPI + Hedron routers over ASGI HTTP/WebSocket |
 | Automatic | `hedron-workbench run module:app` and `module:create_app --factory` |
 | Native facade | `HedronWorkbench`, inactive outside Workbench and never double-wrapped |

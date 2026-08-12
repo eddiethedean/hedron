@@ -121,9 +121,9 @@ Simulates swapping a region with filter chips. For the real `DataTable` componen
 ## In-memory DataTable (requires `hedron[data]`)
 
 ```bash
-pip install "hedron[data]>=0.29.0,<0.30"
+pip install "hedron[data]>=0.30.0,<0.31"
 # optional backends
-pip install "hedron-data[pandas]>=0.29.0,<0.30"
+pip install "hedron-data[pandas]>=0.30.0,<0.31"
 ```
 
 ```python
@@ -167,7 +167,7 @@ Install the SQLAlchemy extra. **Your app owns the engine, sessions, and transact
 Hedron does not invent an ORM lifecycle.
 
 ```bash
-pip install "hedron-data[sqlalchemy]>=0.29.0,<0.30"
+pip install "hedron-data[sqlalchemy]>=0.30.0,<0.31"
 ```
 
 Minimal read-only table over a SQLAlchemy 2.x `Select` (paging uses SQL `OFFSET`/`LIMIT`;
@@ -241,7 +241,7 @@ For editable grids, supply `apply_changes` on `SQLAlchemyDataSource` (or an
 
 ## Charts
 
-Install `hedron[charts]>=0.29.0,<0.30` for the compatible `0.1.10` chart satellite.
+Install `hedron[charts]>=0.30.0,<0.31` for the compatible `0.1.10` chart satellite.
 See [Charts and HTMX](charts-and-htmx.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

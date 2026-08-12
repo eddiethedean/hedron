@@ -35,7 +35,7 @@ and the sample kit install directly. Charts require the compatible `0.1.10` sate
 | [hedron-workbench](hedron-workbench.md) | `hedron[workbench]` | Posit Workbench / RStudio Server launch adapter |
 
 ```bash
-pip install "hedron[data,dev]>=0.29.0,<0.30"
+pip install "hedron[data,dev]>=0.30.0,<0.31"
 ```
 
 ## Alpha lines
@@ -52,7 +52,7 @@ Gradio interop are **Experimental** / Alpha — not production defaults.
 | [hedron-sim](hedron-sim.md) | — | Offline HTMX sims for static docs |
 
 ```bash
-pip install "hedron[charts]>=0.29.0,<0.30"
+pip install "hedron[charts]>=0.30.0,<0.31"
 pip install "hedron-sample-kit>=0.1.10,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 
