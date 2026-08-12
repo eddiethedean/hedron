@@ -1,6 +1,6 @@
 # What’s new in 0.30
 
-**Published** as `v0.30.0`. Pin `hedron>=0.31.0,<0.32`.
+**Published** as `v0.30.0`. Pin `hedron>=0.32.0,<0.33`.
 
 Phase **0.30** (D-058 / RFC-0063) extracts generic Posit Workbench / RStudio Server
 deployment into monorepo-owned **`fastapi-workbench` `1.0.0`**, and makes
@@ -23,8 +23,8 @@ deployment into monorepo-owned **`fastapi-workbench` `1.0.0`**, and makes
 From `0.29.x` (Hedron apps):
 
 ```bash
-python -m pip install -U "hedron>=0.31.0,<0.32"
-python -m pip install -U "hedron-workbench>=0.31.0,<0.32"
+python -m pip install -U "hedron>=0.32.0,<0.33"
+python -m pip install -U "hedron-workbench>=0.32.0,<0.33"
 # Workbench sessions:
 hedron-workbench run app:app
 # Local remains:

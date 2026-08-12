@@ -2,14 +2,15 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.31.x`). Older `0.x` lines should
+Security fixes land on the **current published train** (`0.32.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
 minor (`0.30.x`) continues through approximately **2027-01-12** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.31.x` | Yes (current published train — pin `>=0.31.0,<0.32`; last published `v0.31.0`) |
+| `0.32.x` | Yes (current living tip — pin `>=0.32.0,<0.33`; in-tree `v0.32.0`, git tag deferred) |
+| `0.31.x` | Yes (previous published train — pin `>=0.32.0,<0.33`; last published `v0.31.0`) |
 | `0.30.x` | Prefer upgrade to `0.31.x` (best-effort security triage through approximately 2027-01-12) |
 | `0.29.x` | Prefer upgrade to `0.31.x` |
 | `0.28.x` | Prefer upgrade to `0.31.x` |
@@ -51,7 +52,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes land on the current published train (`0.31`); see Supported versions above.
+4. Fixes land on the current published train (`0.32`); see Supported versions above.
 
 ### Alternate contact
 

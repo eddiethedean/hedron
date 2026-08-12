@@ -83,3 +83,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0063](RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md) | Standalone FastAPI Workbench extraction | Accepted |
 | [0064](RFC-0064-PRODUCTION-GRADE-TOOLING.md) | Production-grade developer and portable conformance tooling | Accepted |
 | [0065](RFC-0065-PRODUCTION-GRADE-MCP.md) | Production-grade deny-by-default MCP projection | Accepted |
+| [0066](RFC-0066-HEDRON-POSIT.md) | Unified `hedron-posit` Workbench and Connect deployment adapter | Draft |

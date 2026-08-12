@@ -21,11 +21,11 @@
 
 ## Out of scope
 
-- Gradio / Hugging Face client interoperability (phase 0.33)
+- Gradio / Hugging Face client interoperability (phase 0.34 under D-061)
 - Making Hedron an identity provider, secrets broker, or approval system
 - Commercial SLA / certification / Hedron `1.0`
 - Vendor-specific MCP extensions left Experimental at cut
-- Web Component platform (0.35–0.40)
+- Web Component platform (0.36–0.41 under D-061)
 
 ## Adversarial suite
 
@@ -40,5 +40,4 @@ Structured maintainer-led review independent of the feature-authoring pass
 
 ## Packet status
 
-**Planned** — brief only; no redacted report or disposition ledger until the
-engineering train completes `REVIEW-032`.
+**Verified** — see `REDACTED_REPORT.md` and `DISPOSITION.toml` (`critical_high_open = false`).

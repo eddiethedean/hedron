@@ -16,4 +16,4 @@ def test_sample_kit_registers_explorer_panel() -> None:
 
 def test_sample_kit_meta_pins_living_train() -> None:
     # Compatibility floor for the exemplar plugin.
-    assert "0.30" in PLUGIN_META.hedron_version or "0.31" in PLUGIN_META.hedron_version
+    assert "0.32" in PLUGIN_META.hedron_version

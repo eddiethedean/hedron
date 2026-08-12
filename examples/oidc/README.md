@@ -8,7 +8,7 @@ provider, then run:
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install "hedron[auth]>=0.31.0,<0.32" "uvicorn[standard]"
+pip install "hedron[auth]>=0.32.0,<0.33" "uvicorn[standard]"
 export OIDC_ISSUER="https://your-provider.example"
 export OIDC_CLIENT_ID="your-client-id"
 export OIDC_CLIENT_SECRET="your-client-secret"

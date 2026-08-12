@@ -28,17 +28,17 @@ Hedron train `v0.32.0`; package version is not train-locked `0.32.0` and is not
 - [x] Owning RFC-0065 / D-060 Accepted
 - [x] Machine-readable inventory draft (Supported / Experimental / excluded)
 - [x] Tracking issue #89 bound to phase 0.32 / `*-032` gates
-- [ ] Per-gate checker scripts implemented (`scripts/check_*_032.py`)
-- [ ] Upgrade-fixture plan from Alpha `0.1.x` consumers
-- [ ] Independent security review packet completed (`REVIEW-032`)
+- [x] Per-gate checker scripts implemented (`scripts/check_*_032.py`)
+- [x] Upgrade-fixture plan from Alpha `0.1.x` consumers
+- [x] Independent security review packet completed (`REVIEW-032`)
 
 ## Spec packet
 
 - [x] ROADMAP §0.32 scope; D-060 / RFC-0065 recorded
-- [x] `release-gate-0.32.toml` Planned evidence rows present
-- [ ] Gate checker recognizes `0.32` evidence manifest
-- [ ] Per-gate checkers Verified at cut
-- [ ] `REGRESS-032` / `PKG-032` at cut
+- [x] `release-gate-0.32.toml` Verified evidence rows present
+- [x] Gate checker recognizes `0.32` evidence manifest
+- [x] Per-gate checkers Verified at cut
+- [x] `REGRESS-032` / `PKG-032` at cut
 
 ## Out of 0.32
 
@@ -46,7 +46,7 @@ Hedron train `v0.32.0`; package version is not train-locked `0.32.0` and is not
 - Identity provider, secrets broker, approval system, or tenant model
 - Arbitrary Python/shell/URL/filesystem execution from model input
 - Treating MCP protocol conformance as application tool safety
-- Gradio MCP substitute / auto-composing Gradio tools (phase 0.33)
+- Gradio MCP substitute / auto-composing Gradio tools (phase 0.34 under D-061)
 - Scheduling Hedron `1.0` / SLA / certification
 - Claiming every MCP symbol is Supported (mutations/vendor extensions may remain
   Experimental)
@@ -68,6 +68,6 @@ uv run python scripts/check_release_gate.py 0.32.0 --execute-verified
 
 ## Exit
 
-- [ ] Every 0.32-owned release-gate row is `Verified`
-- [ ] Production-grade / Beta maturity labels used only for declared Supported inventory
-- [ ] Close #89 (after `hedron-mcp` `0.2.0` tag)
+- [x] Every 0.32-owned release-gate row is `Verified`
+- [x] Production-grade / Beta maturity labels used only for declared Supported inventory
+- [ ] Close #89 (after tagged `hedron-mcp` `0.2.0` / `v0.32.0` publish)

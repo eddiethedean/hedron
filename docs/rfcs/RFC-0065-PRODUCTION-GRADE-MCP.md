@@ -131,7 +131,7 @@ Cut requires no unresolved critical/high finding for the Supported inventory.
 - Acting as an identity provider, secrets broker, approval system, or tenant model
 - Arbitrary Python/shell/URL/filesystem execution from model input
 - Treating MCP protocol conformance as equivalent to application tool safety
-- Gradio MCP substitute or auto-composing Gradio tools (phase 0.33 owns Gradio)
+- Gradio MCP substitute or auto-composing Gradio tools (phase 0.34 owns Gradio under D-061)
 - Scheduling Hedron `1.0`, SLA, or certification claims
 
 ## Acceptance

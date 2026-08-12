@@ -2,10 +2,10 @@
 
 **Status:** Draft
 
-**Target phases:** 0.35–0.40
+**Target phases:** 0.36–0.41
 
-**Revision:** 2026-08-12 — D-058 shifted the planned program from 0.34–0.39 to 0.35–0.40;
-scope and ordering are unchanged.
+**Revision:** 2026-08-12 — D-058 first shifted the planned program from 0.34–0.39 to
+0.35–0.40; D-061 then shifted it to 0.36–0.41. Scope and ordering are unchanged.
 
 **Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 (one enhancement issue per phase). Close each issue when its owning release-gate rows are
@@ -60,8 +60,8 @@ element metadata, and locally served browser modules. It depends on `hedron-core
 framework. FastAPI, Flask, and Django integrations consume the same assets and metadata through the
 existing registry and manifest contracts.
 
-The distribution begins as Alpha in phase 0.35. Selected beginner-facing elements may be
-re-exported from `hedron`; host adapters do not fork their browser implementations. Phase 0.38 may
+The distribution begins as Alpha in phase 0.36. Selected beginner-facing elements may be
+re-exported from `hedron`; host adapters do not fork their browser implementations. Phase 0.39 may
 publish the same browser modules as `@hedron/elements` for non-Python authors, but Python consumers
 never need npm or an application bundler.
 
@@ -132,7 +132,7 @@ diagnostics, and compatibility. Elements cannot rely on a global after-swap scan
 
 Outer swaps disconnect the old element and connect a new instance. Inner swaps are permitted only
 inside declared server-owned regions. Browser-local state is disposable unless the contract
-explicitly submits it, reflects it into bounded state, or participates in the phase 0.39 transfer
+explicitly submits it, reflects it into bounded state, or participates in the phase 0.40 transfer
 protocol.
 
 ### 6. Attributes, properties, methods, and events
@@ -172,7 +172,7 @@ Every mutable element field declares one ownership mode:
 Capabilities and durable server state are never element-owned. Programmatic controlled updates do
 not emit user-intent events by default. A dirty draft receiving new server state must explicitly
 replace, preserve, perform a proven typed rebase, or enter conflict; it cannot silently use
-last-write-wins. Phase 0.39 adds bounded transfer only for eligible drafts.
+last-write-wins. Phase 0.40 adds bounded transfer only for eligible drafts.
 
 ### 9. `InteractionState`
 
@@ -197,11 +197,11 @@ The browser distinguishes proposed/submitted from confirmed. Only a matching ser
 the mutation canonical. Rejection rolls back or refetches; conflicts preserve an explicit resolution
 path. Optimism is excluded by default for auth/permission changes, irreversible destruction,
 payments, secrets, publication, cross-tenant moves, and mutations without safe replay and recovery.
-Phase 0.37 first proves the contract on bounded DataEditor/collection edits.
+Phase 0.38 first proves the contract on bounded DataEditor/collection edits.
 
 ### 11. `GestureOverlayCatalog`
 
-Phase 0.36 locks reusable contracts for reorder/drag-drop, resize/splitter, pointer capture, keyboard
+Phase 0.37 locks reusable contracts for reorder/drag-drop, resize/splitter, pointer capture, keyboard
 equivalence, touch/scroll/RTL/reduced-motion behavior, and cancellation. Gestures emit typed intent
 with stable identities and allowlisted targets; they do not directly mutate authoritative records.
 
@@ -213,7 +213,7 @@ information, and command surfaces invoke registered routes/actions only.
 
 ### 12. `ReactMigrationMatrix`
 
-Phase 0.38 publishes a coverage ledger mapping React components, props, callbacks, state, effects,
+Phase 0.39 publishes a coverage ledger mapping React components, props, callbacks, state, effects,
 context, reducers, fetching/mutations, routing, portals, loading/error boundaries, memoization, list
 identity, forms, gestures, virtualization, rich widgets, testing, styling, and deployment to Hedron,
 HTMX, and element contracts.
@@ -263,7 +263,7 @@ WCAG, legal, VPAT/ACR, or certification claims.
 ### 16. Performance and loading
 
 Routes load only modules required by rendered elements. Definitions are deduplicated and rich
-adapters are lazy. The shared bridge target is at most 12 KiB gzip at the 0.35 cut; every exception
+adapters are lazy. The shared bridge target is at most 12 KiB gzip at the 0.36 cut; every exception
 requires a recorded budget revision. No global mutation observer or full-document rescan is needed
 for ordinary upgrade.
 
@@ -275,12 +275,12 @@ Performance claims use end-to-end browser scenarios rather than bundle size alon
 
 | Phase | Capability packet |
 |---|---|
-| 0.35 | Element ABI, `hedron-elements`, state ownership, registry/assets, SSR fallback, HTMX lifecycle, CSP/a11y/browser baseline |
-| 0.36 | `InteractionState`, form-associated controls, gestures/overlays, and interactive semantic primitives |
-| 0.37 | `OptimisticMutation` plus data, chart, map, media, and editor convergence on the shared element contract |
-| 0.38 | `ReactMigrationMatrix`, third-party author kit, HDJ/plugin/Explorer integration, themes/slots/parts, npm mirror and conformance |
-| 0.39 | Typed composition, browser-local state transfer, history/navigation, diagnostics, and failure isolation |
-| 0.40 | Stable inventory, compatibility, independent review, human AT, performance, supply chain, and production-grade graduation |
+| 0.36 | Element ABI, `hedron-elements`, state ownership, registry/assets, SSR fallback, HTMX lifecycle, CSP/a11y/browser baseline |
+| 0.37 | `InteractionState`, form-associated controls, gestures/overlays, and interactive semantic primitives |
+| 0.38 | `OptimisticMutation` plus data, chart, map, media, and editor convergence on the shared element contract |
+| 0.39 | `ReactMigrationMatrix`, third-party author kit, HDJ/plugin/Explorer integration, themes/slots/parts, npm mirror and conformance |
+| 0.40 | Typed composition, browser-local state transfer, history/navigation, diagnostics, and failure isolation |
+| 0.41 | Stable inventory, compatibility, independent review, human AT, performance, supply chain, and production-grade graduation |
 
 Detailed gates live in the roadmap and the Web Component acceptance specification.
 
@@ -346,9 +346,9 @@ SSR content remains visible before upgrade, so module latency does not block fir
 
 ## Compatibility and migration
 
-Existing ad hoc browser modules keep working during 0.35–0.37. Each migrated component publishes a
+Existing ad hoc browser modules keep working during 0.36–0.38. Each migrated component publishes a
 compatibility note and retains its server-rendered fallback. Tag names and event schemas enter the
-stable inventory only in 0.40; prior phases are explicitly Alpha/Beta and pinned.
+stable inventory only in 0.41; prior phases are explicitly Alpha/Beta and pinned.
 
 The `ReactMigrationMatrix` is a migration aid, not a promise of universal React compatibility.
 Temporary React islands remain Experimental, explicitly inventoried, non-transitive, and removable.
@@ -359,13 +359,13 @@ rewrite Python routes merely because a component's internal browser implementati
 
 ## Open questions
 
-- Which first-party primitive is the 0.35 end-to-end reference element?
+- Which first-party primitive is the 0.36 end-to-end reference element?
 - Should `hedron-elements` align its package version with the flagship train from its first release?
-- Which parts of `@hedron/elements` are supported for standalone non-Python consumption in 0.38?
-- What exact browser-version floor will apply at 0.35 and at production-grade graduation?
-- Which rich surfaces can graduate in 0.37, and which must remain Experimental behind the common ABI?
+- Which parts of `@hedron/elements` are supported for standalone non-Python consumption in 0.39?
+- What exact browser-version floor will apply at 0.36 and at production-grade graduation?
+- Which rich surfaces can graduate in 0.38, and which must remain Experimental behind the common ABI?
 - Which mutation classes are safe enough for the first `OptimisticMutation` Supported inventory?
-- What exact gesture/overlay entries and native-platform fallbacks form the 0.36 locked catalog?
+- What exact gesture/overlay entries and native-platform fallbacks form the 0.37 locked catalog?
 - Does the temporary React-island bridge live in `hedron-elements`, a separate migration package,
   or documentation/reference code only?
 
@@ -374,7 +374,7 @@ state, no-hydration, progressive-enhancement, or HTMX lifecycle boundaries.
 
 ## Acceptance criteria
 
-- The roadmap owns every phase from 0.35 through 0.40 with explicit gates and non-goals.
+- The roadmap owns every phase from 0.36 through 0.41 with explicit gates and non-goals.
 - The implementation specification defines package direction, ABI artifacts, DOM ownership,
   lifecycle, fallback, events, forms, assets, diagnostics, and failure behavior.
 - `ElementStateOwnership`, `InteractionState`, `OptimisticMutation`, `GestureOverlayCatalog`, and
@@ -382,4 +382,4 @@ state, no-hydration, progressive-enhancement, or HTMX lifecycle boundaries.
 - The acceptance specification covers functional, security, accessibility, browser, performance,
   compatibility, documentation, packaging, and supply-chain evidence.
 - RFC-0021, RFC-0025, and this RFC have no unresolved normative conflict.
-- No phase claims production-grade Web Components before all 0.40 gates are Verified.
+- No phase claims production-grade Web Components before all 0.41 gates are Verified.

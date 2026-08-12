@@ -1,6 +1,6 @@
 # What’s new in 0.31
 
-**Published** as `v0.31.0`. Pin `hedron>=0.31.0,<0.32`.
+**Published** as `v0.31.0`. Pin `hedron>=0.32.0,<0.33`.
 
 Phase **0.31** (D-059 / RFC-0064 / RFC-0061) graduates developer and portable
 conformance tooling and ships a reviewable Streamlit AST migration assistant.
@@ -18,9 +18,9 @@ conformance tooling and ships a reviewable Streamlit AST migration assistant.
 ## Upgrade
 
 ```bash
-python -m pip install -U "hedron>=0.31.0,<0.32"
+python -m pip install -U "hedron>=0.32.0,<0.33"
 # Optional tooling:
-python -m pip install -U "hedron[conformance]>=0.31.0,<0.32"
+python -m pip install -U "hedron[conformance]>=0.32.0,<0.33"
 python -m pip install -U "hedron-sample-kit>=0.1.10,<0.2"
 hedron migrate streamlit streamlit_app.py --out hedron_app
 ```

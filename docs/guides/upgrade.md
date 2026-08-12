@@ -37,9 +37,9 @@ app = HedronWorkbench(...)
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.31.0,<0.32"
+python -m pip install -U "hedron>=0.32.0,<0.33"
 # Optional Workbench adapter:
-python -m pip install -U "hedron-workbench>=0.31.0,<0.32"
+python -m pip install -U "hedron-workbench>=0.32.0,<0.33"
 ```
 
 Local development is unchanged:

@@ -11,7 +11,7 @@ Minimal **native Django** slice (manage-less): home + fragment. Depends on
 Or (pip, outside the monorepo):
 
 ```bash
-pip install "hedron-django>=0.31.0,<0.32" "django>=5.2,<6" "waitress>=3,<4"
+pip install "hedron-django>=0.32.0,<0.33" "django>=5.2,<6" "waitress>=3,<4"
 ```
 
 For ASGI locally you can use `uvicorn` instead of Waitress.

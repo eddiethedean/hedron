@@ -28,7 +28,9 @@ _LINK = re.compile(r"\]\((?!https?://|mailto:|#|docs/)([^)]+)\)")
 def _to_root(text: str) -> str:
     def repl(match: re.Match[str]) -> str:
         target = match.group(1)
-        if target.startswith(("acceptance/", "api/", "guides/", "rfcs/", "foundations/")):
+        if target.startswith(
+            ("acceptance/", "api/", "guides/", "rfcs/", "foundations/", "implementation/")
+        ):
             return f"](docs/{target})"
         if target.endswith(".md") and "/" not in target.split("#", 1)[0]:
             return f"](docs/{target})"

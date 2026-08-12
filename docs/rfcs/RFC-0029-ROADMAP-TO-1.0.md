@@ -25,6 +25,10 @@ native Flask/Django depth moved to 0.11.
 `fastapi-workbench` 1.0.0 monorepo release and `hedron-workbench` dependency inversion; formerly
 planned phases 0.30–0.39 move to 0.31–0.40 without renumbering published phases.
 
+**Revision:** 2026-08-12 — D-061 assigns the unified `hedron-posit` adapter to phase 0.33;
+formerly planned phases 0.33–0.40 move to 0.34–0.41 without changing the owned MCP 0.32 packet or
+renumbering published phases.
+
 ## Release strategy
 
 Hedron develops through cumulative, usable capability phases rather than toward a version-number

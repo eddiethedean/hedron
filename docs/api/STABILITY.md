@@ -1,6 +1,6 @@
 # Public stability classifications
 
-**For adopters:** Pin `hedron>=0.31.0,<0.32`. Treat the **stable** tables below (minimal +
+**For adopters:** Pin `hedron>=0.32.0,<0.33`. Treat the **stable** tables below (minimal +
 expanded 0.23 CRUD/admin facade) as the compatibility promise; everything else is `beta` /
 `experimental` and may change on `0.x`. Capability readiness (Supported vs Experimental)
 lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI remains **Beta**.
@@ -8,7 +8,7 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <details markdown>
 <summary>Maintainer catalog metadata</summary>
 
-**Status:** Living train **0.31** (**Published**; last published
+**Status:** Living train **0.32** (**Published**; last published
 PyPI/git = `v0.30.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
 (D-038: no calendar `1.0` scheduled; D-053 / RFC-0056; D-054 / RFC-0057).
@@ -172,7 +172,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 
 ### `hedron-workbench` (Beta) — `beta` optional Workbench adapter
 
-Install `hedron[workbench]` / `hedron-workbench>=0.31.0,<0.32`. Supported:
+Install `hedron[workbench]` / `hedron-workbench>=0.32.0,<0.33`. Supported:
 `HedronWorkbench`, pre-import launcher and resolved-state handoff,
 `HEDRON_ROOT_PATH` export, wrap-once `workbenchify`, automatic typed URL and safe
 response-header adaptation, Hedron-owned request-time cookie repair,
@@ -216,15 +216,14 @@ Optional server-side notebook preview helper ([RFC-0042](https://github.com/eddi
 Distinct from the 0.16 browser-Python sandbox. D-015 separate distribution; maturity Alpha /
 API `experimental`. Localhost-oriented; not Supported production.
 
-### `hedron-mcp` (Alpha / experimental — phase 0.17; graduation Planned 0.32)
+### `hedron-mcp` (Beta — phase 0.32 Supported inventory)
 
 Optional deny-by-default MCP Streamable HTTP projection
-([RFC-0043](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0043-MCP-PROJECTION.md)).
-D-015 separate distribution; maturity Alpha / API `experimental`. Disabled and empty by default;
-not Supported production tools. Production-grade graduation for the declared Supported inventory
-is **Planned** as phase **0.32** ([RFC-0065](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) /
-D-060; [#89](https://github.com/eddiethedean/hedron/issues/89)); at cut the satellite publishes
-`0.2.0` Beta — pin remains `>=0.1.0,<0.2` until then.
+([RFC-0043](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0043-MCP-PROJECTION.md)
+product contract; [RFC-0065](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md)
+graduation). D-015 separate distribution; maturity Beta / API `beta` for the declared Supported
+inventory. Pin `hedron-mcp>=0.2.0,<0.3`. Disabled and empty by default. Mutating tools remain
+Experimental (`allow_mutations=True`).
 
 ### `hedron-gradio` (Alpha / experimental — phase 0.18)
 

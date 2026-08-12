@@ -29,7 +29,7 @@ Every implementation phase from 0.1 onward—and its corresponding initial relea
 
 ## Production-grade package contract (0.26+)
 
-Phases 0.26–0.34—and any later phase using the same label, including 0.40—apply one additional
+Phases 0.26–0.35—and any later phase using the same label, including 0.41—apply one additional
 contract to every publishable distribution in scope. A package is **production-grade for its
 declared Supported surface** only when all of the following are true:
 
@@ -2289,7 +2289,7 @@ maintaining a second copy of the resolver, path middleware, launcher, or Workben
 | Supported host | Plain FastAPI applications and factories over ASGI HTTP/WebSocket, using documented FastAPI, Starlette, Uvicorn, and ASGI contracts |
 | Automatic path | `fastapi-workbench run module:app` and `module:create_app --factory`; Workbench discovery and mount export complete before import/factory execution |
 | Explicit path | Idempotent public ASGI wrapper/middleware and typed configuration for servers that own startup |
-| Dependency direction | `fastapi-workbench` has no Hedron dependency; `hedron-workbench>=0.31.0,<0.32` depends on `fastapi-workbench>=1.0.0,<2.0` and public Hedron contracts |
+| Dependency direction | `fastapi-workbench` has no Hedron dependency; `hedron-workbench>=0.32.0,<0.33` depends on `fastapi-workbench>=1.0.0,<2.0` and public Hedron contracts |
 | Hedron specialization | `HedronWorkbench`, Hedron construction-time mount/cookie handoff, Hedron diagnostics, and Hedron-specific URL/asset/Explorer coverage remain in `hedron-workbench` and delegate generic behavior |
 | Upgrade source | Public `fastapi-workbench` 0.3.4 APIs, CLI, environment compatibility aliases, behavior corpus, license attribution, and documented migrations into 1.0.0 |
 
@@ -2454,18 +2454,18 @@ flagship CLI gains a reviewable Streamlit AST migration assistant (RFC-0061).
 
 ## 0.32 — Production-grade MCP projection (`v0.32.0`)
 
-**Status:** Planned. `hedron-mcp` remains Experimental Alpha `0.1.x` until every gate below is
-Verified; at cut the satellite publishes **`0.2.0` Beta** for the declared Supported inventory only.
+**Status:** Published as `v0.32.0` (2026-08-12) in-tree; `hedron-mcp` **`0.2.0` Beta**.
+Git tag / PyPI publish deferred. `release-gate-0.32.toml` Verified with zero Deferred.
 **Owning decision / RFC:** [D-060](DECISIONS.md) ·
 [RFC-0065](rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) (graduation). Alpha product contract remains
 [RFC-0043](rfcs/RFC-0043-MCP-PROJECTION.md) (phase 0.17; not reopened).
-Evidence (Planned stubs): [release-gate-0.32.toml](acceptance/release-gate-0.32.toml) ·
+Evidence: [release-gate-0.32.toml](acceptance/release-gate-0.32.toml) ·
 [RELEASE_0_32.md](acceptance/RELEASE_0_32.md) ·
 [production-grade-inventory-032.toml](acceptance/production-grade-inventory-032.toml) ·
-[security-review-032/BRIEF.md](acceptance/security-review-032/BRIEF.md).
+[security-review-032/BRIEF.md](acceptance/security-review-032/BRIEF.md) (Verified).
 **Baseline tip:** Published **`v0.31.0`**.
-**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close when all 0.32-owned
-gates are Verified and `hedron-mcp` publishes `0.2.0` Beta for the declared Supported inventory.
+**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close when the tagged
+publish lands after this in-tree cut.
 
 **Outcome:** `hedron-mcp` is production-grade as a deny-by-default, authenticated MCP projection.
 Installation and mounting grant no authority; every resource/tool/action is explicitly registered,
@@ -2545,7 +2545,7 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
 - Acting as an identity provider, secrets broker, approval system, or tenant model.
 - Executing arbitrary Python, shell, URLs, or filesystem paths from model-controlled input.
 - Treating protocol conformance as proof that an application's tools are safe or correctly authorized.
-- Gradio MCP substitute or auto-composing Gradio tools (phase 0.33 owns Gradio).
+- Gradio MCP substitute or auto-composing Gradio tools (phase 0.34 owns Gradio).
 - Scheduling Hedron `1.0`, SLA, or certification claims.
 
 ### Exit gate
@@ -2555,10 +2555,123 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
 - Mutating or vendor-specific extensions without full evidence remain explicitly Experimental.
 - Every `release-gate-0.32.toml` row is Verified with zero Deferred; [#89](https://github.com/eddiethedean/hedron/issues/89) closes only then.
 
-## 0.33 — Production-grade Gradio interoperability (`v0.33.0`)
+## Default presentation quality program (0.33+ cross-cutting)
+
+**Plan:** [Default presentation quality plan](implementation/DEFAULT_PRESENTATION_033_PLUS.md).
+
+**Outcome:** A new `Hedron(default_styles=True)` application looks deliberate and production-ready
+before application CSS: cohesive shell hierarchy, polished forms and surfaces, safe responsive
+containment, complete loading/error/recovery presentation, and predictable full-page/HTMX motion.
+The program extracts reusable contracts from a visually validated account/admin application without
+copying its branding or making Hedron an identity product.
+
+This is a cross-cutting quality program, not a replacement phase and not a new package. Phase 0.33
+freezes the framework-owned visual gallery, geometry contract, and low-risk defect fixes. Phase 0.34
+makes the refreshed presentation the normal `default_styles=True` experience after compatibility
+evidence. Phase 0.35 audits the presentation contract in whole-fleet closure. Phases 0.36–0.41
+carry the same tokens, composition, responsive, state, navigation,
+authoring, browser, accessibility, human-AT, performance, and upgrade contract through the Web
+Component program and its production-grade graduation.
+
+| Phase | Default-presentation ownership |
+|---|---|
+| 0.33 | Gallery/contract baseline; containment, composite padding, initial opacity, and active mobile-nav defect fixes; optional preview if the redesign is not yet compatibility-proven. |
+| 0.34 | Refreshed defaults, scaffolds, reference-app adoption, migration/rollback evidence, and clean-package visual proof. |
+| 0.35 | Whole-fleet presentation inventory, supported-combination consistency, packaging, and documentation closure. |
+| 0.36 | Shared token/SSR/fallback/lifecycle contract for `hedron-elements`. |
+| 0.37 | Form, validation, dialog, async-state, overlay, and generic public/recovery composition quality. |
+| 0.38 | Dense table/data/editor/chart/map/media containment and complete state presentation. |
+| 0.39 | Third-party theme, token, class, part, slot, variant, fixture, and override contract. |
+| 0.40 | Active-nav reveal, fragment-only motion, history/focus/title behavior, and failure isolation. |
+| 0.41 | Locked Supported visual inventory with browser, a11y, human-AT, perf, upgrade/rollback, and supply evidence. |
+
+The cross-cutting gate requires deterministic geometry assertions and visual regression coverage at
+320/390/768/1024/1440 CSS pixels in light/dark modes, plus reduced-motion, forced-colors, zoom/reflow,
+long-content, and supported-browser evidence. The page viewport may not horizontally overflow;
+intrinsically wide content must remain available in an explicit contained scroller. Full-page main
+content begins visible, and optional entry motion applies only to newly swapped regions.
+
+`default_styles=False` remains the custom-canvas escape hatch. Hedron does not own application
+branding, authentication/recovery policy, authorization, or compliance claims.
+
+## 0.33 — Unified Posit deployment adapter (`v0.33.0`)
+
+**Status:** Planned; specification draft under
+[RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md), with staged work in
+[HEDRON_POSIT_033](implementation/HEDRON_POSIT_033.md) and cut evidence in
+[RELEASE_0_33](acceptance/RELEASE_0_33.md). Implementation may not begin until the licensed Connect
+contract probe is complete and the RFC is Accepted.
+**Owning decision / RFC:** [D-061](DECISIONS.md) ·
+[RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md).
+**Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167). Close when all 0.33-owned
+gates are Verified and the package ships on the declared Beta compatibility line.
+
+**Outcome:** A new `hedron-posit` distribution provides one `HedronPosit` application facade that
+runs as ordinary Hedron, on Posit Workbench, and on Posit Connect. It owns Hedron-specific Posit
+integration, delegates generic Workbench behavior to `fastapi-workbench`, and leaves
+`hedron-workbench` as a one-way compatibility package rather than creating parallel normalizers.
+
+### Scope
+
+- Ship `hedron_posit.HedronPosit`, nested immutable `PositConfig` / `ConnectConfig`, typed product and
+  cookie-mode enums, resolved-deployment/status records, `hedron-posit run/check/doctor`, and the
+  `hedron[posit]` extra.
+- Lock the one-way dependency graph `hedron-posit -> hedron + fastapi-workbench` and
+  `hedron-workbench -> hedron-posit`; retain `HedronWorkbench` as a distinct compatibility subclass
+  and its imports/CLI/extra through at least 0.35 with no 0.33 runtime deprecation warning.
+- Preserve ordinary-Hedron behavior outside a supported Posit runtime and delegate Workbench
+  discovery, normalization, launch, URL, redirect, WebSocket, asset, and cookie behavior to the
+  existing shared implementation.
+- Set Connect 2024.11.0 as the native protocol floor while requiring the release-cut floor to remain
+  inside Posit's then-current support window; prove protected product evidence, a singular base
+  header exactly matching ASGI `root_path`, and the licensed GUID/vanity/on-host/off-host matrix.
+- Offer `authenticated_header_v1` only when a live probe reproduces native request-cookie loss. The
+  off-by-default bridge uses two fixed singular base64url headers, a >=32-byte secret, constant-time
+  comparison, a frozen application-cookie registry, 16 KiB/128-pair bounds, conflict rejection,
+  header removal, reference-proxy bypass prevention, bounded secret rotation, and log redaction.
+- Keep Connect credentials and user-session headers as pass-through application inputs; they never
+  become Hedron authentication, authorization, or diagnostic data.
+- Publish local, Workbench, Connect-native, and authenticated private-proxy deployment recipes with
+  health checks, isolation/TLS requirements, secret rotation, failure diagnostics, kill switch,
+  rollback, and explicit Supported/Experimental boundaries.
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `CONTRACT-033` | Accepted RFC, licensed contract probe, exact cut matrix, API/stability, product evidence, protocol floor, compatibility window, dependency graph, bridge decision, and exclusions agree |
+| `PACKAGE-033` | Clean wheel/sdist/offline installs, optional dependency isolation, manifests, SBOM, provenance, and license evidence pass |
+| `PARITY-033` | Inactive `Hedron` parity and existing `HedronWorkbench` type/import/constructor/runner/status/URL/cookie compatibility pass through upgrade and rollback |
+| `WORKBENCH-033` | Pre-import launch, single normalization, HTTP/WebSocket, browser/durable URLs, redirects, assets, CSRF, sessions, and multi-worker paths pass |
+| `CONNECT-033` | Exact licensed native matrix passes protected product/base/root evidence, GUID/vanity mounts, HTTP/HTMX/WebSocket, cookie paths, login/logout/session, assets, redirects, CSRF, scaling/restart, diagnostics, and rollback |
+| `BRIDGE-033` | Reproduced native failure is repaired on the named proxy lane; secret/spoof/bypass/duplicate/conflict/bounds/parser/registry/rotation/log/redaction/disable suites pass without accepting non-owned cookies |
+| `PERF-033` | Locked inactive/Workbench/native <=5 ms and bridge <=10 ms p95 CI ceilings pass; native performs no bridge parsing and each mode has one normalizer |
+| `REVIEW-033` | Independent package/product/header/origin/mount/cookie/bridge/session/CSRF/diagnostic/supply/rollback review has no unresolved critical/high finding |
+| `DOCS-033` | Copyable local, Workbench, native Connect, and reference-proxy operations, compatibility migration, health, secret rotation, kill switch, rollback, troubleshooting, and support boundaries pass review |
+| `REGRESS-033` / `PKG-033` | Full suite, clean consumer, compatibility, security, documentation, and release verifier pass with zero Deferred 0.33-owned rows |
+
+### Non-goals
+
+- A second path/cookie normalizer, Posit Connect publishing automation, Connect administration, or
+  a replacement for application-owned users, sessions, CSRF, authorization, and cookies.
+- Automatic activation of the legacy cookie bridge, trust in client-controlled forwarding headers,
+  or restoration of Connect platform and unrelated cookies.
+- Treating Connect login, credentials, or user-session headers as Hedron identity or authorization.
+- Renaming `fastapi-workbench`, adding a generic `FastAPIPosit` facade, or deprecating/removing
+  `hedron-workbench` without a separately accepted migration decision.
+
+### Exit gate
+
+- One application object passes local, Workbench, and the exact Supported licensed Connect matrix
+  without deployment-specific source changes or weaker security contracts.
+- The bridge repairs a reproduced failure, remains explicit, fail-closed, bounded,
+  application-cookie-only, and safe to rotate, disable, or roll back; all 0.33 gates are Verified
+  with zero Deferred.
+
+## 0.34 — Production-grade Gradio interoperability (`v0.34.0`)
 
 **Status:** Planned. `hedron-gradio` remains Experimental Alpha until every gate below is Verified.
-**Tracking:** [#90](https://github.com/eddiethedean/hedron/issues/90). Close when all 0.33-owned
+**Tracking:** [#90](https://github.com/eddiethedean/hedron/issues/90). Close when all 0.34-owned
 gates are Verified and the package leaves Alpha for declared client-interop scope.
 
 **Outcome:** `hedron-gradio` is production-grade for explicitly declared remote Gradio endpoints and
@@ -2583,12 +2696,12 @@ compatibility without embedding Gradio's UI runtime into Hedron.
 
 | Gate | Verified means |
 |---|---|
-| `COMPAT-033` | Pinned client/server matrix, discovery/schema drift, recorded fixtures, and upgrade behavior pass |
-| `EGRESS-033` | Destination allowlists, redirect/DNS/TLS/SSRF controls, credential scope, and redaction pass adversarial tests |
-| `FILES-033` | File type/size/retention/path and artifact cleanup limits pass malicious and interrupted-transfer corpora |
-| `JOBS-033` | Queue/predict/stream timeout, cancellation, retry, disconnect, multi-worker polling, and outage behavior pass |
-| `VENDOR-033` | Supported Hugging Face paths have auth, cold-start, quota, failure, and compatibility evidence |
-| `REGRESS-033` / `PKG-033` | Absence/no-op import, optional dependency isolation, clean installs, SBOM/provenance, and release verifier pass |
+| `COMPAT-034` | Pinned client/server matrix, discovery/schema drift, recorded fixtures, and upgrade behavior pass |
+| `EGRESS-034` | Destination allowlists, redirect/DNS/TLS/SSRF controls, credential scope, and redaction pass adversarial tests |
+| `FILES-034` | File type/size/retention/path and artifact cleanup limits pass malicious and interrupted-transfer corpora |
+| `JOBS-034` | Queue/predict/stream timeout, cancellation, retry, disconnect, multi-worker polling, and outage behavior pass |
+| `VENDOR-034` | Supported Hugging Face paths have auth, cold-start, quota, failure, and compatibility evidence |
+| `REGRESS-034` / `PKG-034` | Absence/no-op import, optional dependency isolation, clean installs, SBOM/provenance, and release verifier pass |
 
 ### Non-goals
 
@@ -2603,11 +2716,11 @@ compatibility without embedding Gradio's UI runtime into Hedron.
 - Unsupported upstream versions and experimental vendor extensions fail clearly and remain outside the
   production-grade inventory.
 
-## 0.34 — Whole-fleet production-grade closure (`v0.34.0`)
+## 0.35 — Whole-fleet production-grade closure (`v0.35.0`)
 
 **Status:** Planned. Final audit phase for the package-graduation program; not a `1.0` substitute.
-**Tracking:** [#91](https://github.com/eddiethedean/hedron/issues/91). Close when all 0.34-owned
-gates are Verified, the fleet inventory is published with `v0.34.0`, and zero unowned Alpha rows
+**Tracking:** [#91](https://github.com/eddiethedean/hedron/issues/91). Close when all 0.35-owned
+gates are Verified, the fleet inventory is published with `v0.35.0`, and zero unowned Alpha rows
 remain.
 
 **Outcome:** Every publishable Hedron distribution has either reached production-grade status for a
@@ -2635,16 +2748,16 @@ no package remains Alpha merely because it lacked an owner.
 
 | Gate | Verified means |
 |---|---|
-| `FLEET-034` | Inventory covers every package/tool and no published Alpha/ambiguous maturity row lacks an owner and terminal or future disposition |
-| `SOLVER-034` | Supported extra combinations, min/max dependencies, offline installs, mixed-version failures, upgrades, rollback, and uninstall pass |
-| `COMPOSE-034` | Reference-app isolation and supported-combination matrices pass security, a11y/browser, performance, lifecycle, and diagnostics budgets |
-| `DOCS-034` | Package metadata, readiness/compatibility docs, API inventories, examples, and release notes agree with the fleet inventory |
-| `SUPPLY-034` | Every published artifact has license inventory, SBOM, provenance, vulnerability disposition, retention, and rollback evidence |
-| `REGRESS-034` / `PKG-034` | Full cross-language/package suite and whole-fleet release rehearsal pass with zero Deferred 0.34-owned rows |
+| `FLEET-035` | Inventory covers every package/tool and no published Alpha/ambiguous maturity row lacks an owner and terminal or future disposition |
+| `SOLVER-035` | Supported extra combinations, min/max dependencies, offline installs, mixed-version failures, upgrades, rollback, and uninstall pass |
+| `COMPOSE-035` | Reference-app isolation and supported-combination matrices pass security, a11y/browser, performance, lifecycle, and diagnostics budgets |
+| `DOCS-035` | Package metadata, readiness/compatibility docs, API inventories, examples, and release notes agree with the fleet inventory |
+| `SUPPLY-035` | Every published artifact has license inventory, SBOM, provenance, vulnerability disposition, retention, and rollback evidence |
+| `REGRESS-035` / `PKG-035` | Full cross-language/package suite and whole-fleet release rehearsal pass with zero Deferred 0.35-owned rows |
 
 ### Non-goals
 
-- Renaming `v0.34.0` to `1.0`, freezing experimental APIs, or claiming all features are Supported.
+- Renaming `v0.35.0` to `1.0`, freezing experimental APIs, or claiming all features are Supported.
 - Commercial SLA, hosted-service, legal compliance, WCAG conformance, VPAT/ACR, or certification
   claims.
 - Keeping abandoned packages published solely to make the fleet look larger.
@@ -2654,15 +2767,15 @@ no package remains Alpha merely because it lacked an owner.
 
 - Every publishable package satisfies the production-grade contract for its Supported surface.
 - There are zero unowned Alpha packages, zero ambiguous monorepo package/tool dispositions, and zero
-  Deferred rows among 0.34-owned gates.
-- The fleet inventory and release evidence are published with `v0.34.0`.
+  Deferred rows among 0.35-owned gates.
+- The fleet inventory and release evidence are published with `v0.35.0`.
 
-## 0.35 — Web Component ABI and lifecycle foundation (`v0.35.0`)
+## 0.36 — Web Component ABI and lifecycle foundation (`v0.36.0`)
 
 **Status:** Planned; specification draft under
 [RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md). Implementation may not begin until the RFC is
 Accepted and its open browser/package questions are resolved.
-**Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92). Close when all 0.35-owned
+**Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92). Close when all 0.36-owned
 gates are Verified after RFC-0060 acceptance.
 
 **Outcome:** Hedron has one versioned, framework-neutral Web Component ABI instead of independent
@@ -2678,7 +2791,7 @@ metadata while server-rendered HTML and HTMX remain the canonical fallback and r
   preference state, with reflection, incoming-update, persistence, submit/discard, rebase/conflict,
   and authority rules; no silent mixed ownership or last-write-wins.
 - Register the new Alpha package immediately in the fleet inventory with an owner, compatibility
-  range, release channel, and production-grade destination at 0.40 so 0.34's ownership rule remains
+  range, release channel, and production-grade destination at 0.41 so 0.35's ownership rule remains
   true as the fleet grows.
 - Reserve the `hedron-` first-party tag prefix; make same-definition registration idempotent and
   reject definition/ABI conflicts with redacted `HED-ELEMENT-*` diagnostics.
@@ -2695,13 +2808,13 @@ metadata while server-rendered HTML and HTMX remain the canonical fallback and r
 
 | Gate | Verified means |
 |---|---|
-| `ABI-035` | Registry schema, naming, version negotiation, conflicts, fixtures, and diagnostics pass |
-| `ELEMENTS-035` | Framework-neutral wheel and representative element pass clean installs and all hosts |
-| `LIFECYCLE-035` | Connect/reconnect/disconnect, HTMX/history/failure races, cleanup, and repeated-swap leak corpus pass |
-| `SSR-035` | Pre-upgrade/JS-off/failure fallback, structured-input bounds/escaping, and DOM ownership pass |
-| `STATE-035` | Controlled/local/draft/preference ownership, reflection, update, conflict, persistence, and diagnostics pass |
-| `SECURITY-035` / `A11Y-035` | CSP/Trusted Types/event adversarial suite and fallback/upgraded accessibility state matrix pass |
-| `BROWSER-035` / `PKG-035` | Three engines, loading/performance budgets, manifests, supply evidence, docs, and release verifier pass |
+| `ABI-036` | Registry schema, naming, version negotiation, conflicts, fixtures, and diagnostics pass |
+| `ELEMENTS-036` | Framework-neutral wheel and representative element pass clean installs and all hosts |
+| `LIFECYCLE-036` | Connect/reconnect/disconnect, HTMX/history/failure races, cleanup, and repeated-swap leak corpus pass |
+| `SSR-036` | Pre-upgrade/JS-off/failure fallback, structured-input bounds/escaping, and DOM ownership pass |
+| `STATE-036` | Controlled/local/draft/preference ownership, reflection, update, conflict, persistence, and diagnostics pass |
+| `SECURITY-036` / `A11Y-036` | CSP/Trusted Types/event adversarial suite and fallback/upgraded accessibility state matrix pass |
+| `BROWSER-036` / `PKG-036` | Three engines, loading/performance budgets, manifests, supply evidence, docs, and release verifier pass |
 
 ### Non-goals
 
@@ -2716,10 +2829,10 @@ metadata while server-rendered HTML and HTMX remain the canonical fallback and r
   accessibility, lifecycle, performance, and packaging proof.
 - SSR/native HTML remains usable before, without, and after failed element upgrade.
 
-## 0.36 — Form-associated elements and interactive primitives (`v0.36.0`)
+## 0.37 — Form-associated elements and interactive primitives (`v0.37.0`)
 
-**Status:** Planned; depends on the published 0.35 ABI and RFC-0060 acceptance.
-**Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93). Close when all 0.36-owned
+**Status:** Planned; depends on the published 0.36 ABI and RFC-0060 acceptance.
+**Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93). Close when all 0.37-owned
 gates are Verified.
 
 **Outcome:** Hedron's richer controls use form-associated custom elements without splitting ordinary
@@ -2749,14 +2862,14 @@ Semantic interactive primitives share the same focus, lifecycle, and failure con
 
 | Gate | Verified means |
 |---|---|
-| `FORM-036` | Native and HTMX submissions match across controls, hosts, reset/restore, and error states |
-| `VALIDITY-036` | ElementInternals/native fallback, constraint/server validation, labels/errors, and CSRF pass |
-| `PRIMITIVE-036` | Locked catalog passes semantic fallback, keyboard/focus, lifecycle, and native-first review |
-| `ACTIONSTATE-036` | Common async state/concurrency/progress/retry/cancel/job/late-response and accessible fallback pass |
-| `INTERACT-036` | Gesture and overlay catalog passes pointer/keyboard/touch/focus/top-layer/security/swap/cleanup matrices |
-| `HTMX-036` | Swap/422/history/duplicate/slow/cancel matrices preserve values, errors, focus, and authority |
-| `AT-036` | Representative keyboard and human screen-reader form/primitives packet is dispositioned |
-| `REGRESS-036` / `PKG-036` | Cross-host/browser/security/performance/compatibility/docs/package suites pass |
+| `FORM-037` | Native and HTMX submissions match across controls, hosts, reset/restore, and error states |
+| `VALIDITY-037` | ElementInternals/native fallback, constraint/server validation, labels/errors, and CSRF pass |
+| `PRIMITIVE-037` | Locked catalog passes semantic fallback, keyboard/focus, lifecycle, and native-first review |
+| `ACTIONSTATE-037` | Common async state/concurrency/progress/retry/cancel/job/late-response and accessible fallback pass |
+| `INTERACT-037` | Gesture and overlay catalog passes pointer/keyboard/touch/focus/top-layer/security/swap/cleanup matrices |
+| `HTMX-037` | Swap/422/history/duplicate/slow/cancel matrices preserve values, errors, focus, and authority |
+| `AT-037` | Representative keyboard and human screen-reader form/primitives packet is dispositioned |
+| `REGRESS-037` / `PKG-037` | Cross-host/browser/security/performance/compatibility/docs/package suites pass |
 
 ### Non-goals
 
@@ -2769,10 +2882,10 @@ Semantic interactive primitives share the same focus, lifecycle, and failure con
 - Supported rich controls submit and validate as real forms with and without HTMX/upgrade.
 - The selected primitives have no separate ad hoc loader, focus, event, or cleanup protocol.
 
-## 0.37 — Rich data and visualization elements (`v0.37.0`)
+## 0.38 — Rich data and visualization elements (`v0.38.0`)
 
-**Status:** Planned; depends on the 0.36 form/primitive packet.
-**Tracking:** [#94](https://github.com/eddiethedean/hedron/issues/94). Close when all 0.37-owned
+**Status:** Planned; depends on the 0.37 form/primitive packet.
+**Tracking:** [#94](https://github.com/eddiethedean/hedron/issues/94). Close when all 0.38-owned
 gates are Verified and every first-party rich surface shares the ABI or has an owned Experimental
 exception.
 
@@ -2800,12 +2913,12 @@ tables, summaries, forms, media links, and exports survive slow, absent, or fail
 
 | Gate | Verified means |
 |---|---|
-| `DATA-037` | Grid/editor edits, state, virtualization, validation, fallback, authorization, and teardown pass common ABI suites |
-| `OPTIMISTIC-037` | Typed revision/idempotency/confirm/rollback/refetch/conflict/reconnect contract and risk exclusions pass |
-| `CHART-037` | Interactive charts pass event, resize/export, fallback/summary, asset, a11y, and dispose contracts |
-| `RICH-037` / `WORKER-037` | Map/media/editor inventory and worker/WASM/stream/buffer/origin cleanup and bounds pass |
-| `PERF-037` / `A11Y-037` | Named large scenarios meet performance/memory and accessible fallback/upgraded-state budgets |
-| `REGRESS-037` / `PKG-037` | Import/markup upgrades, optional isolation, browsers/hosts, docs, and package evidence pass |
+| `DATA-038` | Grid/editor edits, state, virtualization, validation, fallback, authorization, and teardown pass common ABI suites |
+| `OPTIMISTIC-038` | Typed revision/idempotency/confirm/rollback/refetch/conflict/reconnect contract and risk exclusions pass |
+| `CHART-038` | Interactive charts pass event, resize/export, fallback/summary, asset, a11y, and dispose contracts |
+| `RICH-038` / `WORKER-038` | Map/media/editor inventory and worker/WASM/stream/buffer/origin cleanup and bounds pass |
+| `PERF-038` / `A11Y-038` | Named large scenarios meet performance/memory and accessible fallback/upgraded-state budgets |
+| `REGRESS-038` / `PKG-038` | Import/markup upgrades, optional isolation, browsers/hosts, docs, and package evidence pass |
 
 ### Non-goals
 
@@ -2818,10 +2931,10 @@ tables, summaries, forms, media links, and exports survive slow, absent, or fail
 - First-party rich browser surfaces either share the ABI or have a machine-visible Experimental
   exception; none keeps an unowned lifecycle/event/fallback protocol.
 
-## 0.38 — Web Component authoring and interoperability (`v0.38.0`)
+## 0.39 — Web Component authoring and interoperability (`v0.39.0`)
 
-**Status:** Planned; depends on proven first-party ABI use in 0.35–0.37.
-**Tracking:** [#95](https://github.com/eddiethedean/hedron/issues/95). Close when all 0.38-owned
+**Status:** Planned; depends on proven first-party ABI use in 0.36–0.38.
+**Tracking:** [#95](https://github.com/eddiethedean/hedron/issues/95). Close when all 0.39-owned
 gates are Verified (React-island bridge may remain Experimental).
 
 **Outcome:** Third-party authors can build portable Hedron elements without private APIs. Plugins,
@@ -2851,12 +2964,12 @@ may expose the browser modules without changing the Python no-Node consumer path
 
 | Gate | Verified means |
 |---|---|
-| `AUTHOR-038` / `PLUGIN-038` | Public author contract, scaffold, and separately built plugin consumer pass |
-| `HDJ-038` | Standards-native element markup and static feature/ABI/asset/event/fragment declarations pass |
-| `THEME-038` | Scoped styles and public tokens/parts/slots pass theme, color, forced-color, print, and compatibility suites |
-| `EXPLORER-038` / `CONF-038` | Full element inspection/failure simulation and portable positive/negative fixtures pass |
-| `MIGRATE-038` | React coverage matrix, fit/non-fit guidance, worked migrations, dependency dispositions, and bounded island bridge pass |
-| `SUPPLY-038` / `PKG-038` | Wheel/npm identity where applicable, clean consumers, provenance/SBOM/licenses, docs, and verifier pass |
+| `AUTHOR-039` / `PLUGIN-039` | Public author contract, scaffold, and separately built plugin consumer pass |
+| `HDJ-039` | Standards-native element markup and static feature/ABI/asset/event/fragment declarations pass |
+| `THEME-039` | Scoped styles and public tokens/parts/slots pass theme, color, forced-color, print, and compatibility suites |
+| `EXPLORER-039` / `CONF-039` | Full element inspection/failure simulation and portable positive/negative fixtures pass |
+| `MIGRATE-039` | React coverage matrix, fit/non-fit guidance, worked migrations, dependency dispositions, and bounded island bridge pass |
+| `SUPPLY-039` / `PKG-039` | Wheel/npm identity where applicable, clean consumers, provenance/SBOM/licenses, docs, and verifier pass |
 
 ### Non-goals
 
@@ -2871,10 +2984,10 @@ may expose the browser modules without changing the Python no-Node consumer path
 - A third party can author, package, test, inspect, upgrade, and remove an element using public
   contracts only; Python consumers still install and run without Node.js.
 
-## 0.39 — Browser composition, state, and navigation (`v0.39.0`)
+## 0.40 — Browser composition, state, and navigation (`v0.40.0`)
 
 **Status:** Planned; depends on the public authoring/interoperability contract.
-**Tracking:** [#96](https://github.com/eddiethedean/hedron/issues/96). Close when all 0.39-owned
+**Tracking:** [#96](https://github.com/eddiethedean/hedron/issues/96). Close when all 0.40-owned
 gates are Verified.
 
 **Outcome:** Elements compose through typed DOM events and registered interaction graphs while the
@@ -2900,11 +3013,11 @@ and failure isolation make multi-element applications predictable across HTMX sw
 
 | Gate | Verified means |
 |---|---|
-| `COMPOSE-039` | Typed event/action/graph composition, cycles, cancellation, authorization, and fallback pass |
-| `STATE-039` | State classes and bounded draft transfer/clearing/rejection/no-transfer fallback pass |
-| `NAV-039` | Boost/history/focus/title/preload/view-transition feature detection and full navigation fallback pass |
-| `TRACE-039` / `FALLBACK-039` | Redacted correlation and per-element slow/failure/version-skew isolation pass |
-| `BROWSER-039` / `REGRESS-039` / `PKG-039` | Multi-element host/browser/a11y/perf/privacy/compatibility/package matrices pass |
+| `COMPOSE-040` | Typed event/action/graph composition, cycles, cancellation, authorization, and fallback pass |
+| `STATE-040` | State classes and bounded draft transfer/clearing/rejection/no-transfer fallback pass |
+| `NAV-040` | Boost/history/focus/title/preload/view-transition feature detection and full navigation fallback pass |
+| `TRACE-040` / `FALLBACK-040` | Redacted correlation and per-element slow/failure/version-skew isolation pass |
+| `BROWSER-040` / `REGRESS-040` / `PKG-040` | Multi-element host/browser/a11y/perf/privacy/compatibility/package matrices pass |
 
 ### Non-goals
 
@@ -2918,11 +3031,11 @@ and failure isolation make multi-element applications predictable across HTMX sw
 - Multi-element flows have explicit event, state, navigation, diagnostics, failure, and fallback
   behavior with no ambient browser authority.
 
-## 0.40 — Production-grade Web Component platform (`v0.40.0`)
+## 0.41 — Production-grade Web Component platform (`v0.41.0`)
 
-**Status:** Planned. Final graduation phase for the 0.35–0.40 program; not a blanket promotion of
+**Status:** Planned. Final graduation phase for the 0.36–0.41 program; not a blanket promotion of
 every element/backend and not a scheduled `1.0`.
-**Tracking:** [#97](https://github.com/eddiethedean/hedron/issues/97). Close when all 0.40-owned
+**Tracking:** [#97](https://github.com/eddiethedean/hedron/issues/97). Close when all 0.41-owned
 gates are Verified and the Supported element inventory is published with review/AT/perf/supply
 evidence.
 
@@ -2938,7 +3051,7 @@ complete browser supply-chain provenance.
 - Inventory Supported `ElementStateOwnership` modes, `InteractionState` transitions,
   `OptimisticMutation` types, `GestureOverlayCatalog` entries, and the terminal/Experimental
   disposition of the React migration bridge.
-- Prove minimum/current browsers/dependencies, mixed versions, 0.35–0.39 upgrades, rollback, offline
+- Prove minimum/current browsers/dependencies, mixed versions, 0.36–0.40 upgrades, rollback, offline
   installs, package removal, and incompatible/unknown feature fallback.
 - Complete independent browser/security review across code execution, CSP/Trusted Types, inputs,
   events, origins/assets/workers, Shadow DOM assumptions, state/forms, version skew, dependencies,
@@ -2952,12 +3065,12 @@ complete browser supply-chain provenance.
 
 | Gate | Verified means |
 |---|---|
-| `STABLE-040` / `COMPAT-040` | Machine inventory, stable ABI surface, browser/package matrices, upgrade/rollback/offline/removal pass |
-| `REVIEW-040` | Independent threat review has no unresolved critical/high finding at cut |
-| `AT-040` | Human AT representative workflows are remediated/dispositioned and Supported inventory is honest |
-| `PERF-040` | Reference-app loading, upgrade, interaction, memory/leak, long-task, and layout budgets pass |
-| `SUPPLY-040` | All browser/Python artifacts have complete reproducibility, SBOM, provenance, license, vulnerability, and rollback evidence |
-| `REGRESS-040` / `PKG-040` | Hosts, HDJ/plugins, conformance, browser/a11y/security/perf/docs/package release rehearsal pass |
+| `STABLE-041` / `COMPAT-041` | Machine inventory, stable ABI surface, browser/package matrices, upgrade/rollback/offline/removal pass |
+| `REVIEW-041` | Independent threat review has no unresolved critical/high finding at cut |
+| `AT-041` | Human AT representative workflows are remediated/dispositioned and Supported inventory is honest |
+| `PERF-041` | Reference-app loading, upgrade, interaction, memory/leak, long-task, and layout budgets pass |
+| `SUPPLY-041` | All browser/Python artifacts have complete reproducibility, SBOM, provenance, license, vulnerability, and rollback evidence |
+| `REGRESS-041` / `PKG-041` | Hosts, HDJ/plugins, conformance, browser/a11y/security/perf/docs/package release rehearsal pass |
 
 ### Non-goals
 
@@ -2968,7 +3081,7 @@ complete browser supply-chain provenance.
 
 ### Exit gate
 
-- All 0.40-owned rows are Verified with zero Deferred, and the Supported element inventory is
+- All 0.41-owned rows are Verified with zero Deferred, and the Supported element inventory is
   published with compatibility, review, AT, performance, and supply evidence.
 - Experimental elements remain conspicuous, non-default, and independently owned.
 
@@ -3021,16 +3134,16 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Fingerprinted assets, CSS URL rewriting, CSP/offline manifests | 0.3 | Production performs no required runtime compilation. |
 | Component folders with code, CSS, examples, tests, docs, and browser modules | 0.3; HDJ package namespaces 0.11 | Phase 0.9 accepts application HDJ; finite package namespaces and overrides arrive with the 0.11 manifest boundary. |
 | Web Component registration, typed events, light/Shadow DOM policy | 0.3 | Browser-local interaction integrates safely with HTMX swaps. |
-| Versioned element ABI, `hedron-elements`, SSR fallback, DOM ownership, HTMX lifecycle | 0.35 | Shared native custom-element boundary; no hydration, VDOM, global store, or application Node build ([#92](https://github.com/eddiethedean/hedron/issues/92)). |
-| `ElementStateOwnership` controlled/local/draft/preference contract | 0.35 | Explicit source-of-truth, reflection, incoming-update, conflict, persistence, and authority rules ([#92](https://github.com/eddiethedean/hedron/issues/92)). |
-| Form-associated elements and semantic interactive primitives | 0.36 | Native-first controls preserve ordinary forms, HTMX, server validation, keyboard/focus, and failed-upgrade fallback ([#93](https://github.com/eddiethedean/hedron/issues/93)). |
-| `InteractionState` and `GestureOverlayCatalog` | 0.36 | Common async progress/cancel/error model plus accessible pointer/keyboard/touch/top-layer primitives ([#93](https://github.com/eddiethedean/hedron/issues/93)). |
-| Data/chart/map/media/editor convergence on the shared element ABI | 0.37 | Rich adapters stay optional, bounded, disposable, and paired with useful server-rendered fallbacks ([#94](https://github.com/eddiethedean/hedron/issues/94)). |
-| `OptimisticMutation` | 0.37 | Explicit typed revision/idempotency/confirmation/rollback/refetch/conflict contract; server-confirmed is default ([#94](https://github.com/eddiethedean/hedron/issues/94)). |
-| Third-party element authoring, HDJ/plugin/Explorer integration, tokens/parts/slots, portable fixtures | 0.38 | Public author kit and optional npm mirror do not change the Python no-Node consumer path ([#95](https://github.com/eddiethedean/hedron/issues/95)). |
-| `ReactMigrationMatrix` and temporary island disposition | 0.38 | Concept/dependency coverage ledger, worked migrations, honest non-fits, and Experimental non-transitive bridge ([#95](https://github.com/eddiethedean/hedron/issues/95)). |
-| Typed element composition, bounded draft transfer, history/navigation, traces, failure isolation | 0.39 | Server authority and full navigation/fragment fallbacks remain canonical ([#96](https://github.com/eddiethedean/hedron/issues/96)). |
-| Production-grade Web Component Supported inventory | 0.40 | Stable ABI/tag/event/form/customization contracts require independent review, human AT, performance, compatibility, and supply evidence ([#97](https://github.com/eddiethedean/hedron/issues/97)). |
+| Versioned element ABI, `hedron-elements`, SSR fallback, DOM ownership, HTMX lifecycle | 0.36 | Shared native custom-element boundary; no hydration, VDOM, global store, or application Node build ([#92](https://github.com/eddiethedean/hedron/issues/92)). |
+| `ElementStateOwnership` controlled/local/draft/preference contract | 0.36 | Explicit source-of-truth, reflection, incoming-update, conflict, persistence, and authority rules ([#92](https://github.com/eddiethedean/hedron/issues/92)). |
+| Form-associated elements and semantic interactive primitives | 0.37 | Native-first controls preserve ordinary forms, HTMX, server validation, keyboard/focus, and failed-upgrade fallback ([#93](https://github.com/eddiethedean/hedron/issues/93)). |
+| `InteractionState` and `GestureOverlayCatalog` | 0.37 | Common async progress/cancel/error model plus accessible pointer/keyboard/touch/top-layer primitives ([#93](https://github.com/eddiethedean/hedron/issues/93)). |
+| Data/chart/map/media/editor convergence on the shared element ABI | 0.38 | Rich adapters stay optional, bounded, disposable, and paired with useful server-rendered fallbacks ([#94](https://github.com/eddiethedean/hedron/issues/94)). |
+| `OptimisticMutation` | 0.38 | Explicit typed revision/idempotency/confirmation/rollback/refetch/conflict contract; server-confirmed is default ([#94](https://github.com/eddiethedean/hedron/issues/94)). |
+| Third-party element authoring, HDJ/plugin/Explorer integration, tokens/parts/slots, portable fixtures | 0.39 | Public author kit and optional npm mirror do not change the Python no-Node consumer path ([#95](https://github.com/eddiethedean/hedron/issues/95)). |
+| `ReactMigrationMatrix` and temporary island disposition | 0.39 | Concept/dependency coverage ledger, worked migrations, honest non-fits, and Experimental non-transitive bridge ([#95](https://github.com/eddiethedean/hedron/issues/95)). |
+| Typed element composition, bounded draft transfer, history/navigation, traces, failure isolation | 0.40 | Server authority and full navigation/fragment fallbacks remain canonical ([#96](https://github.com/eddiethedean/hedron/issues/96)). |
+| Production-grade Web Component Supported inventory | 0.41 | Stable ABI/tag/event/form/customization contracts require independent review, human AT, performance, compatibility, and supply evidence ([#97](https://github.com/eddiethedean/hedron/issues/97)). |
 | Component package authoring and browser-asset declarations | 0.4 | Public extension and audit contracts. |
 | `hedron-explorer` and official Explorer browser assets | 0.2 preview; 0.4 full | Optional development distribution with production opt-in controls. |
 
@@ -3155,7 +3268,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Flask/Django fragment regions, portable CSP headers, Flask-Login AuthSignal | 0.20 | Completes 0.11 adapter depth for HTMX targets, profile header application, and common auth libraries (`REGION-020`, `CSP-020`, `AUTH-020`). |
 | Accessibility contracts and WCAG-oriented acceptance | 0.1–0.8 baseline; comprehensive engineering in 0.19 | Every built-in/integration gains versioned obligations, dynamic evidence, AT coverage, and transparent limitations. |
 | Performance benchmarks, payload limits, and budgets | 0.1–0.8 | 0.7 establishes production workloads/budgets; 0.8 enforces them. |
-| Public API/artifact stability classification and compatibility baseline | 0.8 | HDN is reclassified experimental by D-039; other promises remain governed by the catalog. |
+| Public API/artifact stability classification and compatibility baseline | 0.8 | HDN is reclassified experimental by D-040; other promises remain governed by the catalog. |
 | Versioning, deprecation, upgrade, migration, compatibility | 0.7–0.8; maintained thereafter | Every phase declares and tests its compatibility impact. |
 | Native Flask/Django application integration and QuerySet source | 0.11 | Framework-native ergonomics with bounded data execution. |
 | SSE, WebSocket, focused streaming, and navigation preload | 0.10 | Ordinary HTTP/polling/navigation fallbacks remain supported. |
@@ -3188,10 +3301,12 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Production-grade standalone FastAPI Workbench package and Hedron dependency inversion | 0.30 | First monorepo `fastapi-workbench` release is 1.0.0; plain FastAPI has hands-off launch without Hedron, and `hedron-workbench` depends on the shared generic implementation (D-058). |
 | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.31 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes (RFC-0064 / D-059; [#87](https://github.com/eddiethedean/hedron/issues/87)). |
 | Production-grade deny-by-default MCP projection | 0.32 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review (RFC-0065 / D-060; [#89](https://github.com/eddiethedean/hedron/issues/89)). |
-| Production-grade Gradio/Hugging Face client interoperability | 0.33 | Allowlisted egress/endpoints, file/stream bounds, cancellation, polling jobs, provider compatibility, and secret hygiene ([#90](https://github.com/eddiethedean/hedron/issues/90)). |
-| Whole-fleet production-grade closure | 0.34 | Machine-readable inventory, resolver/upgrade/rollback matrices, composed reference-app proof, and no unowned Alpha package ([#91](https://github.com/eddiethedean/hedron/issues/91)). |
-| Web Component platform program | 0.35–0.40 | ABI/lifecycle → forms/primitives → rich surfaces → authoring → composition → production-grade graduation (draft RFC-0060; [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)). |
-| Optional written `1.0` DoD without a calendar date | D-053 | Not a roadmap phase; preserves D-038. |
+| Unified `hedron-posit` Workbench and Connect deployment adapter | 0.33 | One `HedronPosit` facade composes existing mount/cookie behavior; the optional legacy Connect cookie bridge is explicit, authenticated, bounded, and off by default (draft RFC-0066 / D-061; [#167](https://github.com/eddiethedean/hedron/issues/167)). |
+| Production-grade Gradio/Hugging Face client interoperability | 0.34 | Allowlisted egress/endpoints, file/stream bounds, cancellation, polling jobs, provider compatibility, and secret hygiene ([#90](https://github.com/eddiethedean/hedron/issues/90)). |
+| Whole-fleet production-grade closure | 0.35 | Machine-readable inventory, resolver/upgrade/rollback matrices, composed reference-app proof, and no unowned Alpha package ([#91](https://github.com/eddiethedean/hedron/issues/91)). |
+| Polished default presentation quality program | 0.33–0.41 | Gallery and geometry baseline → refreshed `default_styles=True` → fleet audit → element/form/data/authoring/navigation integration → production-grade visual inventory ([implementation plan](implementation/DEFAULT_PRESENTATION_033_PLUS.md)). |
+| Web Component platform program | 0.36–0.41 | ABI/lifecycle → forms/primitives → rich surfaces → authoring → composition → production-grade graduation (draft RFC-0060; [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)). |
+| Optional written `1.0` DoD without a calendar date | D-053 | Not a roadmap phase; preserves D-039. |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
 
 ## RFC-to-phase coverage
@@ -3261,7 +3376,8 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | FastAPI Workbench extraction RFC | 0.30 (`fastapi-workbench` 1.0.0; D-058; RFC-0063 Accepted) |
 | 0064 Production-grade developer / portable conformance tooling | 0.31 (D-059; Accepted) |
 | 0065 Production-grade deny-by-default MCP projection | 0.32 (D-060; Accepted; Alpha product contract remains 0043 @ 0.17) |
-| 0060 Web Component platform program | 0.35–0.40 (Draft; must be Accepted before implementation) |
+| 0066 `hedron-posit` unified Posit deployment adapter | 0.33 (D-061; Draft; must be Accepted before implementation) |
+| 0060 Web Component platform program | 0.36–0.41 (Draft; must be Accepted before implementation) |
 
 ## Open GitHub issue ownership (0.13+)
 
@@ -3317,14 +3433,15 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#87](https://github.com/eddiethedean/hedron/issues/87) | Production-grade conformance / plugin / sim / notebook / Node+Java | 0.31 |
 | [#88](https://github.com/eddiethedean/hedron/issues/88) | Streamlit AST migration assistant (`MIGRATE-031` / RFC-0061) | 0.31 |
 | [#89](https://github.com/eddiethedean/hedron/issues/89) | Production-grade deny-by-default MCP projection | 0.32 (D-060 / RFC-0065) |
-| [#90](https://github.com/eddiethedean/hedron/issues/90) | Production-grade Gradio / Hugging Face client interop | 0.33 |
-| [#91](https://github.com/eddiethedean/hedron/issues/91) | Whole-fleet production-grade closure | 0.34 |
-| [#92](https://github.com/eddiethedean/hedron/issues/92) | Web Component ABI / `hedron-elements` / SSR / HTMX lifecycle | 0.35 |
-| [#93](https://github.com/eddiethedean/hedron/issues/93) | Form-associated elements / InteractionState / gesture overlays | 0.36 |
-| [#94](https://github.com/eddiethedean/hedron/issues/94) | Rich data / chart / map / media / editor elements | 0.37 |
-| [#95](https://github.com/eddiethedean/hedron/issues/95) | Element authoring kit / React migration matrix / interop | 0.38 |
-| [#96](https://github.com/eddiethedean/hedron/issues/96) | Browser composition / bounded draft state / navigation | 0.39 |
-| [#97](https://github.com/eddiethedean/hedron/issues/97) | Production-grade Web Component platform graduation | 0.40 |
+| [#167](https://github.com/eddiethedean/hedron/issues/167) | Unified `hedron-posit` Workbench / Connect deployment adapter | 0.33 (D-061 / RFC-0066) |
+| [#90](https://github.com/eddiethedean/hedron/issues/90) | Production-grade Gradio / Hugging Face client interop | 0.34 |
+| [#91](https://github.com/eddiethedean/hedron/issues/91) | Whole-fleet production-grade closure | 0.35 |
+| [#92](https://github.com/eddiethedean/hedron/issues/92) | Web Component ABI / `hedron-elements` / SSR / HTMX lifecycle | 0.36 |
+| [#93](https://github.com/eddiethedean/hedron/issues/93) | Form-associated elements / InteractionState / gesture overlays | 0.37 |
+| [#94](https://github.com/eddiethedean/hedron/issues/94) | Rich data / chart / map / media / editor elements | 0.38 |
+| [#95](https://github.com/eddiethedean/hedron/issues/95) | Element authoring kit / React migration matrix / interop | 0.39 |
+| [#96](https://github.com/eddiethedean/hedron/issues/96) | Browser composition / bounded draft state / navigation | 0.40 |
+| [#97](https://github.com/eddiethedean/hedron/issues/97) | Production-grade Web Component platform graduation | 0.41 |
 
 ## Later-phase policy
 
@@ -3338,7 +3455,7 @@ SecurityPolicy composition split (#36–#38) so 0.20 stays cuttable without a ne
 Phase **0.21** owns the human AT packet from D-050 / D-052 (engineering-complete /
 sessions outstanding). Phases **0.23–0.25** own the original production-quality maturity program
 from D-053 / RFC-0056 (stable-tier expansion, live-transport disposition, production archetype /
-landmine quarantine). Planned phases **0.26–0.34** extend that evidence discipline across the
+landmine quarantine). Planned phases **0.26–0.35** extend that evidence discipline across the
 remaining package fleet: core/flagship, Python satellites, charts/native, the Posit Workbench
 adapter, standalone FastAPI Workbench, developer and portable tooling, MCP, Gradio, and a whole-fleet closure audit. Each planned phase requires an accepted
 owning RFC/decision before implementation; adding it here assigns scope and prevents maturity work
@@ -3349,12 +3466,16 @@ repository-owned version as independently versioned `1.0.0`, makes the hands-off
 available to plain FastAPI applications, and changes `hedron-workbench` to depend on its generic
 implementation (D-058). Phase **0.31** owns production-grade developer/portable conformance
 tooling and the Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061). Phase **0.32** owns
-production-grade deny-by-default MCP projection (D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89)). Tracking
-enhancement issues [#86](https://github.com/eddiethedean/hedron/issues/86)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-cover remaining Planned 0.21 human-AT sessions and Planned phases 0.32–0.40. Close each issue
+production-grade deny-by-default MCP projection (D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89)).
+Phase **0.33** owns the planned unified `hedron-posit` Workbench/Connect facade (D-061 / draft
+RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)); the former 0.33–0.40 plan moves
+to 0.34–0.41 without changing its scope. Tracking enhancement issues
+[#86](https://github.com/eddiethedean/hedron/issues/86)–[#97](https://github.com/eddiethedean/hedron/issues/97)
+plus [#167](https://github.com/eddiethedean/hedron/issues/167) cover remaining Planned 0.21
+human-AT sessions and Planned phases 0.32–0.41. Close each issue
 only when its owning release-gate rows are Verified. An optional
 `1.0` definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
-roadmap phase. Planned phases **0.35–0.40** establish the next capability program: a versioned
+roadmap phase. Planned phases **0.36–0.41** establish the next capability program: a versioned
 Web Component ABI and lifecycle foundation, explicit state ownership and async interaction,
 form-associated gesture/overlay primitives, optimistic rich data/visualization elements, a React
 migration matrix and third-party authoring/interoperability, typed browser composition, and a

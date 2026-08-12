@@ -11,10 +11,10 @@ Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061).
 - Tooling-grade `hedron-conformance`, `hedron-sample-kit`, `hedron-sim`, `hedron-notebook`.
 - Published Node/Java evaluators (`hedron-runtime-node` / `hedron-runtime-java` `0.31.0`).
 - `hedron migrate streamlit` non-executing AST assistant.
-- Pin `hedron>=0.31.0,<0.32`.
+- Pin `hedron>=0.32.0,<0.33`.
 
 ```bash
-python -m pip install -U "hedron>=0.31.0,<0.32"
+python -m pip install -U "hedron>=0.32.0,<0.33"
 hedron migrate streamlit streamlit_app.py --analyze-only --format text
 ```
 

@@ -27,15 +27,27 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.29** | Production-grade `hedron-workbench` Posit Workbench deployment adapter | **Published** (`v0.29.0`; D-057 / RFC-0062; [#134](https://github.com/eddiethedean/hedron/issues/134)) |
 | **0.30** | Standalone `fastapi-workbench` 1.0.0 for plain FastAPI Workbench; `hedron-workbench` depends on it | **Published** (`v0.30.0`; D-058 / RFC-0063; [#135](https://github.com/eddiethedean/hedron/issues/135)) |
 | **0.31** | Production-grade conformance/plugin/simulation/notebook tooling, Node/Java evaluators, and a reviewable Streamlit AST migration assistant | **Published** (`v0.31.0`; D-059 / RFC-0064 / RFC-0061; [#87](https://github.com/eddiethedean/hedron/issues/87), [#88](https://github.com/eddiethedean/hedron/issues/88)) |
-| **0.32** | Production-grade deny-by-default MCP projection | Planned (D-060 / RFC-0065); independent security evidence; at cut `hedron-mcp` `0.2.0` Beta ([#89](https://github.com/eddiethedean/hedron/issues/89)) |
-| **0.33** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access ([#90](https://github.com/eddiethedean/hedron/issues/90)) |
-| **0.34** | Whole-fleet production-grade closure | Planned; no unowned Alpha package or ambiguous tool disposition ([#91](https://github.com/eddiethedean/hedron/issues/91)) |
-| **0.35** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Planned; Draft RFC-0060 ([#92](https://github.com/eddiethedean/hedron/issues/92)) |
-| **0.36** | Async interaction state, form-associated elements, gestures/overlays, and semantic primitives | Planned ([#93](https://github.com/eddiethedean/hedron/issues/93)) |
-| **0.37** | Optimistic mutations and rich data, chart, map, media, and editor elements | Planned ([#94](https://github.com/eddiethedean/hedron/issues/94)) |
-| **0.38** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | Planned ([#95](https://github.com/eddiethedean/hedron/issues/95)) |
-| **0.39** | Typed browser composition, bounded draft state, and navigation | Planned ([#96](https://github.com/eddiethedean/hedron/issues/96)) |
-| **0.40** | Production-grade Web Component platform | Planned; locked Supported inventory only ([#97](https://github.com/eddiethedean/hedron/issues/97)) |
+| **0.32** | Production-grade deny-by-default MCP projection | **Published** in-tree (`v0.32.0` / `hedron-mcp` `0.2.0` Beta; D-060 / RFC-0065; git tag deferred; [#89](https://github.com/eddiethedean/hedron/issues/89)) |
+| **0.33** | Unified `hedron-posit` facade for ordinary Hedron, Posit Workbench, and Posit Connect | Planned; Draft RFC-0066 / D-061; authenticated legacy cookie bridge remains off by default ([#167](https://github.com/eddiethedean/hedron/issues/167)) |
+| **0.34** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access ([#90](https://github.com/eddiethedean/hedron/issues/90)) |
+| **0.35** | Whole-fleet production-grade closure | Planned; no unowned Alpha package or ambiguous tool disposition ([#91](https://github.com/eddiethedean/hedron/issues/91)) |
+| **0.36** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Planned; Draft RFC-0060 ([#92](https://github.com/eddiethedean/hedron/issues/92)) |
+| **0.37** | Async interaction state, form-associated elements, gestures/overlays, and semantic primitives | Planned ([#93](https://github.com/eddiethedean/hedron/issues/93)) |
+| **0.38** | Optimistic mutations and rich data, chart, map, media, and editor elements | Planned ([#94](https://github.com/eddiethedean/hedron/issues/94)) |
+| **0.39** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | Planned ([#95](https://github.com/eddiethedean/hedron/issues/95)) |
+| **0.40** | Typed browser composition, bounded draft state, and navigation | Planned ([#96](https://github.com/eddiethedean/hedron/issues/96)) |
+| **0.41** | Production-grade Web Component platform | Planned; locked Supported inventory only ([#97](https://github.com/eddiethedean/hedron/issues/97)) |
+
+### Cross-cutting default presentation plan (0.33+)
+
+Phases 0.33–0.41 also carry the
+[default presentation quality plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/DEFAULT_PRESENTATION_033_PLUS.md): a
+framework-owned visual gallery and responsive geometry contract in 0.33, a refreshed polished
+`default_styles=True` experience in 0.34, a whole-fleet presentation audit in 0.35, then shared
+element, form, data, authoring, navigation, accessibility, performance, and upgrade evidence
+through 0.41. This improves Hedron's out-of-box
+appearance without copying an application brand, owning authentication policy, or removing
+`default_styles=False` for custom canvases.
 
 ## What this means for you
 
@@ -53,13 +65,13 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   [LIVE_DISPOSITION](../api/LIVE_DISPOSITION.md).
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
-- Planned **0.26–0.34** phases apply an evidence-based production-grade contract to the remaining
-  package fleet. Planned **0.35–0.40** then establish a standards-based Web Component platform while
+- Planned **0.26–0.35** phases apply an evidence-based production-grade contract to the remaining
+  package fleet. Planned **0.36–0.41** then establish a standards-based Web Component platform while
   preserving SSR, native forms/navigation, HTMX, and no-Node Python consumption. Neither program is
   a blanket feature promotion or a scheduled `1.0`; see the
   [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
-## Honest gaps on the current train (0.31)
+## Honest gaps on the current train (0.32)
 
 - Current **published** PyPI train is **0.31.x** (last `v0.30.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
@@ -67,8 +79,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
   (0.28), and Workbench packages (`hedron-workbench` / `fastapi-workbench` on 0.29–0.30)
   Supported inventories — not every Beta symbol
-- Notebook preview is tooling-grade / localhost-only (0.31); MCP remains **Experimental** /
-  Alpha today — graduation Planned as phase **0.32** (D-060 / RFC-0065; at cut `0.2.0` Beta)
+- Notebook preview is tooling-grade / localhost-only (0.31); MCP is Beta for the declared
+  Supported inventory (`hedron-mcp` `0.2.0`; phase 0.32 / RFC-0065); mutations remain Experimental
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
   `hedron[experimental-ui]` (quarantined from `hedron[extras]`)
 - CodeEditor ships a CSP-safe **host stub** (no pinned CodeMirror 6 bundle)

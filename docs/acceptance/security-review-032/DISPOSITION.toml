@@ -1,0 +1,51 @@
+# REVIEW-032 disposition ledger (redacted).
+# critical_high_open must be false at cut.
+
+phase = "0.32"
+packages = ["hedron-mcp"]
+baseline = "v0.31.0"
+review_date = "2026-08-12"
+critical_high_open = false
+methodology = "maintainer-led structured review + adversarial pytest"
+
+[[findings]]
+id = "REV-032-001"
+severity = "high"
+status = "mitigated"
+summary = "Deny-by-default empty mount; install/mount grant no ambient authority"
+
+[[findings]]
+id = "REV-032-002"
+severity = "high"
+status = "mitigated"
+summary = "Confused-deputy principal elevation rejected in check_authz scopes"
+
+[[findings]]
+id = "REV-032-003"
+severity = "high"
+status = "mitigated"
+summary = "Cross-tenant observation fail-closed via application tenant_hook"
+
+[[findings]]
+id = "REV-032-004"
+severity = "medium"
+status = "mitigated"
+summary = "file/http/https resource URI schemes excluded from Supported registration"
+
+[[findings]]
+id = "REV-032-005"
+severity = "medium"
+status = "mitigated"
+summary = "Mutating tools require explicit allow_mutations Experimental flag"
+
+[[findings]]
+id = "REV-032-006"
+severity = "medium"
+status = "mitigated"
+summary = "Structured audit redacts secret-shaped keys under HED-MCP-* codes"
+
+[[findings]]
+id = "REV-032-007"
+severity = "low"
+status = "accepted_risk"
+summary = "Process-local audit buffer requires operator-provided sink for multi-worker centralization"

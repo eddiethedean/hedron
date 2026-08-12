@@ -3,7 +3,7 @@
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
 checklist in [Production readiness](production-readiness.md).
 
-**Living published train:** pin `hedron>=0.31.0,<0.32`. Capability maturity snapshot:
+**Living published train:** pin `hedron>=0.32.0,<0.33`. Capability maturity snapshot:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 (maintainer corpus on GitHub).
@@ -60,9 +60,10 @@ phases apply the same discipline to the remaining package fleet:
 | 0.29 | `hedron-workbench` Posit Workbench deployment adapter |
 | 0.30 | Standalone `fastapi-workbench` 1.0.0 for hands-off plain-FastAPI deployment; `hedron-workbench` depends on the shared generic implementation (D-058) |
 | 0.31 | Conformance, sample plugin, simulation/notebook tooling, Node/Java evaluators, and reviewable Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061) |
-| 0.32 | Deny-by-default MCP projection — **Planned** (D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89); at cut `hedron-mcp` `0.2.0` Beta) |
-| 0.33 | Gradio/Hugging Face client interoperability |
-| 0.34 | Whole-fleet resolver, upgrade, supply-chain, and maturity closure |
+| 0.32 | Deny-by-default MCP projection — **Published** in-tree (`hedron-mcp` `0.2.0` Beta; D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89); git tag deferred) |
+| 0.33 | Unified `hedron-posit` Workbench and Connect deployment adapter (D-061 / draft RFC-0066) |
+| 0.34 | Gradio/Hugging Face client interoperability |
+| 0.35 | Whole-fleet resolver, upgrade, supply-chain, and maturity closure |
 
 Each phase requires an owning RFC/decision and Verified package-specific gates before a maturity
 label changes. “Production-grade” applies only to the declared Supported surface: notebook remains
@@ -76,7 +77,7 @@ Public phase table: [Roadmap](roadmap.md). Maintainer detail:
 
 1. Ship with pins and the [production readiness](production-readiness.md) checklist.
 2. Prefer [polling](live-interaction.md) over `hedron.experimental` live helpers.
-3. Treat Alpha extras (MCP, Gradio) and specialty stubs as pin-and-expect-churn; notebook is tooling-grade localhost-only after 0.31.
+3. Treat Alpha extras (Gradio) and specialty stubs as pin-and-expect-churn; notebook is tooling-grade localhost-only; MCP is Beta for its Supported inventory only.
 4. Track trust-program progress on this page and the [public roadmap](roadmap.md).
 
 ## What we will not do

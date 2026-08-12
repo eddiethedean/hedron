@@ -32,12 +32,12 @@ This repository includes a [Dev Container](https://containers.dev/) definition a
 3. Run the Hello scaffold (published pin — independent of editable workspace packages):
 
 ```bash
-uvx --from "hedron>=0.31.0,<0.32" hedron new /tmp/my-hedron-app
+uvx --from "hedron>=0.32.0,<0.33" hedron new /tmp/my-hedron-app
 cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-Pin production installs with `hedron>=0.31.0,<0.32`.
+Pin production installs with `hedron>=0.32.0,<0.33`.
 
 4. Forward port **8000** and open the URL. You should see **Hello from hedron new**.
    Click **Refresh status** — the page updates without a full reload (HTMX swaps a small
@@ -89,7 +89,7 @@ That path does **not** require cloning this repository.
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
 uv sync
-uvx --from "hedron>=0.31.0,<0.32" hedron new /tmp/my-hedron-app
+uvx --from "hedron>=0.32.0,<0.33" hedron new /tmp/my-hedron-app
 cd /tmp/my-hedron-app && uv sync
 uv run uvicorn app:app --reload
 ```

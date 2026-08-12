@@ -11,16 +11,16 @@ HDJ lets advanced applications write ordinary HTML, CSS, JavaScript, Web
 Components, Jinja, and HTMX directly while preserving typed Hedron components and
 render metadata. Install as `hedron-jinja` or via the flagship extra `hedron[jinja]`.
 
-**Package maturity:** Beta · **Train:** `0.31.x` (last published `0.31.0`) · pin `>=0.31.0,<0.32`
+**Package maturity:** Beta · **Train:** `0.32.x` (last published `0.32.0`) · pin `>=0.32.0,<0.33`
 
 ## Install
 
 ```bash
-pip install "hedron-jinja>=0.31.0,<0.32"
+pip install "hedron-jinja>=0.32.0,<0.33"
 # or
-uv add "hedron-jinja>=0.31.0,<0.32"
+uv add "hedron-jinja>=0.32.0,<0.33"
 # via flagship:
-pip install "hedron[jinja]>=0.31.0,<0.32"
+pip install "hedron[jinja]>=0.32.0,<0.33"
 ```
 
 Requires Python 3.11–3.14, `hedron-core`, and Jinja2.

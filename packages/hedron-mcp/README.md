@@ -13,22 +13,19 @@ package without registrations remains a no-op empty server.
 
 Also available as the flagship extra `hedron[mcp]`.
 
-**Package maturity:** Experimental Alpha (`0.1.x`) · pin `>=0.1.0,<0.2` and expect churn
+**Package maturity:** Beta (`0.2.x`) · pin `>=0.2.0,<0.3`
 
-Not a Supported production surface — see
-[What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/).
-**Next:** production-grade graduation is **Planned** as phase **0.32**
-([RFC-0065](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) /
-D-060; [#89](https://github.com/eddiethedean/hedron/issues/89)). At cut the
-satellite publishes `0.2.0` Beta (`>=0.2.0,<0.3`); keep the `0.1.x` pin until then.
+Production-grade for the declared Supported inventory (phase 0.32 / RFC-0065).
+Mutating tools remain Experimental (`allow_mutations=True`).
+
 ## Install
 
 ```bash
-pip install "hedron-mcp>=0.1.0,<0.2"
+pip install "hedron-mcp>=0.2.0,<0.3"
 # or
-uv add "hedron-mcp>=0.1.0,<0.2"
+uv add "hedron-mcp>=0.2.0,<0.3"
 # via flagship:
-pip install "hedron[mcp]>=0.31.0,<0.32"
+pip install "hedron[mcp]>=0.32.0,<0.33"
 ```
 
 Requires Python 3.11–3.14.
@@ -43,35 +40,24 @@ app = Hedron(
     title="MCP demo",
     security="standard",
     session_secret="dev-only",
-    explorer="off",
 )
 
-proj = McpProjection(enabled=True)
-proj.register_resource(McpResource(uri="hedron://pages/home", name="home"))
-proj.register_tool(McpTool(name="ping", schema={}, mutate=False, handler=lambda: {"ok": True}))
-mount_mcp(app, proj)
+projection = McpProjection(
+    enabled=True,
+    principal_resolver=lambda request: request.headers.get("x-hedron-principal"),
+)
+projection.register_resource(McpResource(uri="hedron://page/home", name="home"))
+projection.register_tool(
+    McpTool(
+        name="status",
+        schema={"type": "object", "properties": {}},
+        mutate=False,
+        handler=lambda: {"ok": True},
+    )
+)
+mount_mcp(app, projection)
 ```
-
-With `enabled=False` (the default), registration and mount stay inert.
-
-## Public API
-
-| Symbol | Role |
-|---|---|
-| `McpProjection` | Deny-by-default registry (`enabled=False` by default) |
-| `McpResource` / `McpTool` | Explicit registrations |
-| `mount_mcp(app, projection)` | Attach projection to a Hedron/FastAPI app |
-| `AuthorizationError` | Fail-closed authorization signal |
-
-## Links
-
-- [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-mcp/)
-- [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
-- [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-mcp/CHANGELOG.md)
-- [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-mcp)
-- [Issues](https://github.com/eddiethedean/hedron/issues)
-- [`hedron`](https://pypi.org/project/hedron/)
 
 ## License
 
-MIT. See the [repository license](https://github.com/eddiethedean/hedron/blob/main/LICENSE).
+MIT

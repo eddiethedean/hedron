@@ -17,7 +17,7 @@ from hedron_mcp import (
 
 
 def test_package_version() -> None:
-    assert __version__ == "0.1.0"
+    assert __version__ == "0.2.0"
 
 
 def test_deny_by_default_empty_when_disabled() -> None:

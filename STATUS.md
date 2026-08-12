@@ -2,30 +2,29 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.31 **Published** as `v0.31.0` (2026-08-12). Prior: 0.30
-**Published** as `v0.30.0` (2026-08-12). Living tip PyPI/git = `v0.31.0`.
+**Roadmap position:** phase 0.32 **Published** as `v0.32.0` (2026-08-12, in-tree tip;
+git tag/PyPI publish deferred). Prior: 0.31 **Published** as `v0.31.0` (2026-08-12).
+Living tip git = `v0.32.0`.
 **Date:** 2026-08-12
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` `0.31.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
+`hedron-workbench` `0.32.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.1.11`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
-`hedron-sim` `0.1.0`, `hedron-runtime-node` / `hedron-runtime-java` `0.31.0`; Alpha —
-`hedron-mcp` / `hedron-gradio` `0.1.0`
+`hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
+`0.32.0`; Alpha — `hedron-gradio` `0.1.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
-`hedron-sim`; Alpha — `hedron-mcp`, `hedron-gradio`.
+`hedron-sim`, `hedron-mcp`; Alpha — `hedron-gradio`.
 
-**Phase focus:** Living train is **0.31** (D-059 / RFC-0064 / RFC-0061) — tooling-grade
-conformance, sample-kit, sim, notebook, Node/Java evaluators, and `hedron migrate streamlit`
-(`release-gate-0.31.toml` Verified; Published as `v0.31.0`). Prior Published **0.30**
-(`fastapi-workbench` 1.0.0 + `hedron-workbench` dependency inversion as `v0.30.0`) remains
-in force. **Next** = **0.32 Planned** (deny-by-default MCP projection; D-060 /
-[RFC-0065](docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md);
-[#89](https://github.com/eddiethedean/hedron/issues/89);
-[`release-gate-0.32.toml`](docs/acceptance/release-gate-0.32.toml) Planned;
-at cut `hedron-mcp` `0.2.0` Beta — remains Alpha `0.1.x` today).
+**Phase focus:** Living train is **0.32** (D-060 / RFC-0065) — production-grade
+deny-by-default MCP projection (`hedron-mcp` `0.2.0` Beta;
+`release-gate-0.32.toml` Verified; tip `v0.32.0` without git tag). Prior Published **0.31**
+(tooling + Streamlit migrator as `v0.31.0`) remains in force. **Next** = **0.33 Planned**
+(unified `hedron-posit` Workbench / Connect adapter; draft RFC-0066 / D-061;
+[#167](https://github.com/eddiethedean/hedron/issues/167)); a licensed Connect contract probe and
+RFC acceptance are required before implementation.
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
@@ -43,8 +42,9 @@ graduation scope.
 Adopter summary: [What’s ready today](docs/guides/whats-ready.md). Rule of thumb: do not market a
 capability as unqualified **Supported** when its owning gate row is **Deferred** or still
 **Planned**. Live SSE/WS/streaming/preload remain **experimental** (polling Supported —
-`polling_only` Accepted in 0.24). Notebook preview, MCP, and Gradio interop are
-**Experimental** / Alpha. Phase 0.20 closed with **zero Deferred** among **0.20 gate IDs**.
+`polling_only` Accepted in 0.24). Notebook preview is tooling-grade / localhost-only;
+MCP is Beta for the declared Supported inventory (0.32 / `hedron-mcp` `0.2.0`); Gradio interop
+remains **Experimental** / Alpha. Phase 0.20 closed with **zero Deferred** among **0.20 gate IDs**.
 Phase 0.21 ships the engineering train with an honest human-AT gap: protocol Verified;
 sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy composition with
 **zero Deferred** among 0.22-owned rows. Phase **0.23** ships stable-tier expansion with
@@ -246,31 +246,29 @@ SSOT: [RELEASE_0_29](docs/acceptance/RELEASE_0_29.md) ·
 [production-grade-inventory-029.toml](docs/acceptance/production-grade-inventory-029.toml).
 Cut verify: `python scripts/verify_pkg_29.py`.
 
-## Phase 0.32 evidence (Planned — MCP graduation)
+## Phase 0.32 evidence (Verified — MCP graduation; tip without git tag)
 
 **Owning decision / RFC:** [D-060](docs/DECISIONS.md) ·
 [RFC-0065](docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md). Alpha product contract remains
 [RFC-0043](docs/rfcs/RFC-0043-MCP-PROJECTION.md) (0.17).
 **Baseline tip:** Published `v0.31.0`.
-**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89).
+**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89) (close after tagged publish).
 **Version policy at cut:** independent satellite `hedron-mcp` **`0.2.0` Beta**
-(pin `>=0.2.0,<0.3`); today remains Alpha `0.1.x`. Do **not** market MCP as
-Supported until every row below is Verified.
+(pin `>=0.2.0,<0.3`).
 
 | ID | Disposition | Notes |
 |---|---|---|
-| `PROTOCOL-032` | **Planned** | Pinned protocol/SDK matrix, client matrix, Alpha upgrade fixtures |
-| `AUTHZ-032` | **Planned** | Host authn reuse; app-owned authz/tenant; confused-deputy suites |
-| `BOUNDS-032` | **Planned** | Size/rate/concurrency/time/cancel/replay/file/URI + multi-worker |
-| `AUDIT-032` | **Planned** | Redacted structured audit/diagnostics |
-| `REVIEW-032` | **Planned** | [security-review-032/BRIEF.md](docs/acceptance/security-review-032/BRIEF.md) |
-| `REGRESS-032` / `PKG-032` | **Planned** | Inventory/docs/metadata + `verify_pkg_32.py` |
+| `PROTOCOL-032` | **Verified** | Streamable HTTP + SDK matrix + upgrade fixtures |
+| `AUTHZ-032` | **Verified** | Host authn reuse; app authz/tenant; adversarial suites |
+| `BOUNDS-032` | **Verified** | Size/rate/concurrency/cancel + multi-worker prefix |
+| `AUDIT-032` | **Verified** | Redacted structured `HED-MCP-*` audit |
+| `REVIEW-032` | **Verified** | [security-review-032](docs/acceptance/security-review-032/BRIEF.md) |
+| `REGRESS-032` / `PKG-032` | **Verified** | Inventory/docs/metadata + `verify_pkg_32.py` |
 
 SSOT: [RELEASE_0_32](docs/acceptance/RELEASE_0_32.md) ·
 [release-gate-0.32.toml](docs/acceptance/release-gate-0.32.toml) ·
 [production-grade-inventory-032.toml](docs/acceptance/production-grade-inventory-032.toml).
-Cut verify (when checkers exist): `python scripts/verify_pkg_32.py --allow-planned`
-during refine; drop `--allow-planned` at cut.
+Cut verify: `python scripts/verify_pkg_32.py` (no `--allow-planned`).
 
 ## Next capability phases
 
@@ -280,13 +278,17 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 (`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
 Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is **Published**
 (`v0.30.0`; D-058 / RFC-0063). Phase **0.31** is **Published** (`v0.31.0`; D-059 / RFC-0064 /
-RFC-0061). Phase **0.32** is **Planned** (D-060 / RFC-0065;
-[#89](https://github.com/eddiethedean/hedron/issues/89); packet stubs above). Remaining
-package-production work continues through **0.33–0.34**: Gradio
-([#90](https://github.com/eddiethedean/hedron/issues/90)); then a whole-fleet
+RFC-0061). Phase **0.32** is **Published** in-tree (`v0.32.0` / `hedron-mcp` `0.2.0`; D-060 /
+RFC-0065; git tag deferred). Phase **0.33** is the
+planned unified `hedron-posit` Workbench / Connect adapter (D-061 / draft RFC-0066;
+[#167](https://github.com/eddiethedean/hedron/issues/167)); see the staged
+[implementation plan](docs/implementation/HEDRON_POSIT_033.md) and
+[0.33 acceptance packet](docs/acceptance/RELEASE_0_33.md). Remaining package-production work
+continues through **0.34–0.35**: Gradio ([#90](https://github.com/eddiethedean/hedron/issues/90));
+then a whole-fleet
 closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform
 work is tracked as [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(phases 0.35–0.40). These phases require owning RFCs/decisions and Verified evidence before any
+(phases 0.36–0.41). These phases require owning RFCs/decisions and Verified evidence before any
 package maturity label changes. They do not schedule `1.0`, promote every experimental
 subfeature, or expand Supported live transports. Close each tracking issue only when its owning
 release-gate rows are Verified.

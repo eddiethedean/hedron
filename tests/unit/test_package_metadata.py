@@ -38,7 +38,7 @@ def test_version_is_synchronized() -> None:
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]
         assert other["version"] == __version__, name
-    alpha_packages = ("hedron-mcp", "hedron-gradio")
+    alpha_packages = ("hedron-gradio",)
     for name in alpha_packages:
         other = tomllib.loads(
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
@@ -68,6 +68,16 @@ def test_version_is_synchronized() -> None:
         ]
         assert development_status == ["Development Status :: 4 - Beta"], name
         assert str(other["version"]).startswith("0.1."), name
+    mcp = tomllib.loads(
+        (ROOT / "packages" / "hedron-mcp" / "pyproject.toml").read_text(encoding="utf-8")
+    )["project"]
+    mcp_status = [
+        classifier
+        for classifier in mcp["classifiers"]
+        if classifier.startswith("Development Status ::")
+    ]
+    assert mcp_status == ["Development Status :: 4 - Beta"]
+    assert mcp["version"] == "0.2.0"
 
 
 def test_public_metadata_fields() -> None:

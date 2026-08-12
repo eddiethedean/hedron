@@ -10,7 +10,7 @@ status: shipped
     `hedron_jinja`, and `.hdj` is the explicit, versioned template format. After a small static
     TOML prologue, the body is ordinary Jinja and HTML.
 
-    **Package maturity:** Beta on the living **0.31** train (HDJ introduced earlier).
+    **Package maturity:** Beta on the living **0.32** train (HDJ introduced earlier).
     The phase 0.9 core authoring surface is **shipped**. Remaining RFC-0031 capability
     edges continue to close without blocking basic `.hdj` use—see [STABILITY](STABILITY.md)
     and [What’s ready](../guides/whats-ready.md).
@@ -36,9 +36,9 @@ every Python component, or silently relax CSP/CSRF/authorization policy.
 ## Install
 
 ```bash
-pip install "hedron[jinja]>=0.31.0,<0.32"
+pip install "hedron[jinja]>=0.32.0,<0.33"
 # or
-pip install "hedron-jinja>=0.31.0,<0.32"
+pip install "hedron-jinja>=0.32.0,<0.33"
 ```
 
 Neither `hedron-core` nor a default `hedron` installation depends on Jinja.

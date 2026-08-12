@@ -35,7 +35,7 @@ and the sample kit install directly. Charts require the compatible `0.1.10` sate
 | [hedron-workbench](hedron-workbench.md) | `hedron[workbench]` | Posit Workbench / RStudio Server launch adapter |
 
 ```bash
-pip install "hedron[data,dev]>=0.31.0,<0.32"
+pip install "hedron[data,dev]>=0.32.0,<0.33"
 ```
 
 ## Alpha lines
@@ -54,7 +54,7 @@ Gradio interop are **Experimental** / Alpha — not production defaults.
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 
 ```bash
-pip install "hedron[charts]>=0.31.0,<0.32"
+pip install "hedron[charts]>=0.32.0,<0.33"
 pip install "hedron-sample-kit>=0.1.10,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 
