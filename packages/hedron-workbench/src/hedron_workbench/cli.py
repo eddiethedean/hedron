@@ -14,7 +14,7 @@ from hedron_workbench import __version__
 from hedron_workbench.config import WorkbenchConfig, WorkbenchMode, WorkbenchTopology
 from hedron_workbench.detect import rs_server_url
 from hedron_workbench.redact import redact_record, redact_text
-from hedron_workbench.resolve import resolve_deployment
+from hedron_workbench.resolve import explicit_mount_hint, resolve_deployment
 from hedron_workbench.runner import (
     bind_loopback,
     discover_rserver_url,
@@ -65,7 +65,7 @@ def _emit(resolved: Any, *, fmt: str) -> None:
 def _cmd_check(args: argparse.Namespace) -> int:
     cfg = _config_from_args(args)
     discovered: str | None = None
-    if getattr(args, "discover", False) and rs_server_url() and not cfg.mount:
+    if getattr(args, "discover", False) and rs_server_url() and explicit_mount_hint(cfg) is None:
         try:
             discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=cfg.port or 8000)
         except HedronError as exc:
@@ -135,7 +135,7 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
         if args.live:
             sock = bind_loopback(cfg.host or "127.0.0.1", cfg.port or 0)
             bound_port = int(sock.getsockname()[1])
-            if rs_server_url() and not cfg.mount:
+            if rs_server_url() and explicit_mount_hint(cfg) is None:
                 discovered = discover_rserver_url(binary=cfg.rserver_url_bin, port=bound_port)
         resolved = resolve_deployment(
             cfg,
