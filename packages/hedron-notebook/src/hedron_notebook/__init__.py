@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from hedron_notebook.preview import (
+    PREVIEW_TOKEN_COOKIE,
     PREVIEW_TOKEN_HEADER,
     PREVIEW_TOKEN_QUERY,
     NotebookPreview,
@@ -14,6 +15,7 @@ from hedron_notebook.preview import (
 __version__ = "0.1.0"
 
 __all__ = [
+    "PREVIEW_TOKEN_COOKIE",
     "PREVIEW_TOKEN_HEADER",
     "PREVIEW_TOKEN_QUERY",
     "NotebookPreview",

@@ -8,6 +8,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 
 from hedron_notebook import (
+    PREVIEW_TOKEN_COOKIE,
     PREVIEW_TOKEN_HEADER,
     PREVIEW_TOKEN_QUERY,
     NotebookPreview,
@@ -51,6 +52,7 @@ def test_package_version_and_exports() -> None:
     assert PreviewTokenGate is not None
     assert PREVIEW_TOKEN_QUERY == "hedron_preview_token"
     assert PREVIEW_TOKEN_HEADER == "x-hedron-preview-token"
+    assert PREVIEW_TOKEN_COOKIE == "hedron_preview_token"
 
 
 def test_localhost_preview_token_and_url() -> None:
@@ -130,10 +132,28 @@ async def test_preview_token_gate_rejects_missing_and_wrong_token() -> None:
         ok_query = await client.get("/", params={PREVIEW_TOKEN_QUERY: "secret-token"})
         assert ok_query.status_code == 200
         assert ok_query.text == "ok"
+        set_cookie = ok_query.headers.get("set-cookie", "")
+        assert f"{PREVIEW_TOKEN_COOKIE}=secret-token" in set_cookie
+        assert "HttpOnly" in set_cookie
+        assert "SameSite=Lax" in set_cookie
 
         ok_header = await client.get("/", headers={PREVIEW_TOKEN_HEADER: "secret-token"})
         assert ok_header.status_code == 200
         assert ok_header.text == "ok"
+        assert PREVIEW_TOKEN_COOKIE in ok_header.headers.get("set-cookie", "")
+
+
+@pytest.mark.anyio
+async def test_preview_token_cookie_authorizes_follow_up_requests() -> None:
+    """Iframe assets/HTMX must work after the first query-auth seeds a cookie."""
+    gated = wrap_preview_app(_ok_app, "cookie-token")
+    transport = ASGITransport(app=gated)
+    async with AsyncClient(transport=transport, base_url="http://preview.test") as client:
+        first = await client.get("/", params={PREVIEW_TOKEN_QUERY: "cookie-token"})
+        assert first.status_code == 200
+        follow = await client.get("/fragment")
+        assert follow.status_code == 200
+        assert follow.text == "ok"
 
 
 @pytest.mark.anyio
@@ -151,5 +171,7 @@ async def test_start_preview_wraps_app_with_token_gate() -> None:
             assert denied.status_code == 401
             allowed = await client.get("/", params={PREVIEW_TOKEN_QUERY: preview.token})
             assert allowed.status_code == 200
+            follow = await client.get("/assets/app.js")
+            assert follow.status_code == 200
     finally:
         preview.shutdown()

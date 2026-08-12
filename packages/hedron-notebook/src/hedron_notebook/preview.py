@@ -13,6 +13,7 @@ from typing import Any, Protocol
 from urllib.parse import parse_qs, quote, urlencode
 
 __all__ = [
+    "PREVIEW_TOKEN_COOKIE",
     "PREVIEW_TOKEN_HEADER",
     "PREVIEW_TOKEN_QUERY",
     "NotebookPreview",
@@ -26,6 +27,7 @@ _LOOPBACK_NAMES = frozenset({"localhost", "127.0.0.1", "::1", "0:0:0:0:0:0:0:1"}
 
 PREVIEW_TOKEN_QUERY = "hedron_preview_token"
 PREVIEW_TOKEN_HEADER = "x-hedron-preview-token"
+PREVIEW_TOKEN_COOKIE = "hedron_preview_token"
 
 
 class PreviewServer(Protocol):
@@ -73,20 +75,40 @@ def _header_map(scope: MutableMapping[str, Any]) -> dict[str, str]:
     return headers
 
 
-def _token_from_scope(scope: MutableMapping[str, Any]) -> str | None:
-    headers = _header_map(scope)
-    header_token = headers.get(PREVIEW_TOKEN_HEADER)
-    if header_token:
-        return header_token
+def _cookie_token(cookie_header: str | None) -> str | None:
+    if not cookie_header:
+        return None
+    for part in cookie_header.split(";"):
+        name, sep, value = part.strip().partition("=")
+        if sep and name == PREVIEW_TOKEN_COOKIE:
+            return value
+    return None
+
+
+def _query_token(scope: MutableMapping[str, Any]) -> str | None:
     query = scope.get("query_string") or b""
-    if isinstance(query, bytes):
-        query_text = query.decode("latin-1")
-    else:
-        query_text = str(query)
+    query_text = query.decode("latin-1") if isinstance(query, bytes) else str(query)
     values = parse_qs(query_text, keep_blank_values=False).get(PREVIEW_TOKEN_QUERY) or []
     if not values:
         return None
     return values[0]
+
+
+def _token_presentation(
+    scope: MutableMapping[str, Any],
+) -> tuple[str | None, str | None]:
+    """Return ``(token, source)`` where source is ``header``, ``query``, or ``cookie``."""
+    headers = _header_map(scope)
+    header_token = headers.get(PREVIEW_TOKEN_HEADER)
+    if header_token:
+        return header_token, "header"
+    query_token = _query_token(scope)
+    if query_token:
+        return query_token, "query"
+    cookie_token = _cookie_token(headers.get("cookie"))
+    if cookie_token:
+        return cookie_token, "cookie"
+    return None, None
 
 
 def _tokens_match(expected: str, provided: str | None) -> bool:
@@ -99,8 +121,22 @@ def _tokens_match(expected: str, provided: str | None) -> bool:
     return secrets.compare_digest(expected, provided)
 
 
+def _set_cookie_header(token: str, *, root_path: str) -> bytes:
+    path = root_path if root_path else "/"
+    # HttpOnly so document JS cannot exfiltrate; SameSite=Lax keeps iframe same-site GETs.
+    return (
+        f"{PREVIEW_TOKEN_COOKIE}={token}; Path={path}; HttpOnly; SameSite=Lax".encode("latin-1")
+    )
+
+
 class PreviewTokenGate:
-    """ASGI middleware that requires the preview session token on HTTP/WebSocket."""
+    """ASGI middleware that requires the preview session token on HTTP/WebSocket.
+
+    The initial ``external_url()`` / iframe ``src`` carries the token as a query
+    parameter. On that first authenticated response the gate sets an HttpOnly
+    cookie so subsequent browser requests (static assets, HTMX, WebSockets) are
+    authorized without re-attaching the query string.
+    """
 
     def __init__(self, app: Any, token: str) -> None:
         if not token:
@@ -117,27 +153,47 @@ class PreviewTokenGate:
             await self.app(scope, receive, send)
             return
 
-        if _tokens_match(self.token, _token_from_scope(scope)):
+        provided, source = _token_presentation(scope)
+        if not _tokens_match(self.token, provided):
+            if scope_type == "websocket":
+                await send({"type": "websocket.close", "code": 4401})
+                return
+            body = b'{"detail":"Preview token required"}'
+            await send(
+                {
+                    "type": "http.response.start",
+                    "status": 401,
+                    "headers": [
+                        (b"content-type", b"application/json"),
+                        (b"content-length", str(len(body)).encode("ascii")),
+                        (b"cache-control", b"no-store"),
+                    ],
+                }
+            )
+            await send({"type": "http.response.body", "body": body})
+            return
+
+        # Seed a session cookie when auth came from query/header so iframe
+        # follow-up requests (assets, HTMX, forms) succeed automatically.
+        seed_cookie = scope_type == "http" and source in {"header", "query"}
+        if not seed_cookie:
             await self.app(scope, receive, send)
             return
 
-        if scope_type == "websocket":
-            await send({"type": "websocket.close", "code": 4401})
-            return
+        root_path = str(scope.get("root_path") or "")
+        cookie = _set_cookie_header(self.token, root_path=root_path)
+        cookie_sent = False
 
-        body = b'{"detail":"Preview token required"}'
-        await send(
-            {
-                "type": "http.response.start",
-                "status": 401,
-                "headers": [
-                    (b"content-type", b"application/json"),
-                    (b"content-length", str(len(body)).encode("ascii")),
-                    (b"cache-control", b"no-store"),
-                ],
-            }
-        )
-        await send({"type": "http.response.body", "body": body})
+        async def send_with_cookie(message: MutableMapping[str, Any]) -> None:
+            nonlocal cookie_sent
+            if message.get("type") == "http.response.start" and not cookie_sent:
+                headers = list(message.get("headers") or [])
+                headers.append((b"set-cookie", cookie))
+                message = {**message, "headers": headers}
+                cookie_sent = True
+            await send(message)
+
+        await self.app(scope, receive, send_with_cookie)
 
 
 def wrap_preview_app(app: Any, token: str) -> PreviewTokenGate:
@@ -276,8 +332,10 @@ def start_preview(
     token:
         Optional fixed session token (tests); otherwise a random unguessable token.
         HTTP and WebSocket requests must present this token via the
-        ``hedron_preview_token`` query parameter or ``X-Hedron-Preview-Token``
-        header; missing or wrong tokens receive HTTP 401 / WebSocket close 4401.
+        ``hedron_preview_token`` query parameter, ``X-Hedron-Preview-Token``
+        header, or the HttpOnly ``hedron_preview_token`` cookie seeded after the
+        first successful query/header auth. Missing or wrong tokens receive
+        HTTP 401 / WebSocket close 4401.
     """
     hosted_warning = not _is_loopback_host(host)
     if hosted_warning:

@@ -15,9 +15,10 @@ external-link modes. Distinct from the browser-Python / JupyterLite sandbox in
 
 Default guidance is **localhost-only** development. Hosted or publicly reachable
 hosts raise an explicit warning. Preview URLs include an unguessable session token
-(`hedron_preview_token` query parameter, or `X-Hedron-Preview-Token` header);
-requests without a matching token are rejected. This package is **not** a
-Supported production server.
+(`hedron_preview_token` query parameter). The first successful request seeds an
+HttpOnly cookie so iframe follow-up requests (assets, HTMX, WebSockets) stay
+authorized; `X-Hedron-Preview-Token` is also accepted. Requests without a matching
+token are rejected. This package is **not** a Supported production server.
 
 ## Install
 
