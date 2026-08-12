@@ -26,6 +26,7 @@ supported = [
   "proxy_port_mount",
   "session_project_mount",
   "cookie_path_at_construction",
+  "owned_cookie_path_repair",
   "hedron_redirect_url_composition",
   "check_dry_run_text_json",
   "loopback_single_worker",

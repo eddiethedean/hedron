@@ -11,10 +11,10 @@
 | ID | Severity | Status | Summary |
 |---|---|---|---|
 | REV-029-001 | Medium | Mitigated | Encoded absolute request-target decode could follow `//` or `..` — rejected before strip |
-| REV-029-002 | Medium | Mitigated | Cookie `Path` is construction-time only; launcher exports `HEDRON_ROOT_PATH` before import; wrapper cannot repair later |
+| REV-029-002 | Medium | Mitigated | Cookie `Path` is construction-time preferred; launcher exports `HEDRON_ROOT_PATH` before import; outer adapter may repair only Hedron-owned `Path=/` cookies from a validated request mount |
 | REV-029-003 | Medium | Mitigated | `rserver-url` exec requires an absolute path and never uses a shell |
 | REV-029-004 | Low | Mitigated | Compatibility aliases warn (`HED-WB-0008`); namespaced env wins |
-| REV-029-005 | Low | Mitigated | Pre-bound runner rejects reload/multi-worker; external supervisors own other process topologies |
+| REV-029-005 | Low | Mitigated | In-process serve rejects reload/multi-worker; launcher may exec Uvicorn's supervisor with the inherited listener (mutually exclusive; excluded from Supported) |
 | REV-029-006 | Info | Mitigated | Session IDs, license-shaped tokens, and token-like query keys are redacted in check JSON and debug logs |
 | REV-029-007 | Info | Mitigated | `RS_SERVER_URL` and Connect base headers do not grant trust or auto-wrap |
 | REV-029-008 | Info | Mitigated | Mount-prefixed `Location` uses Hedron `prefix_local_path` once; traversal mounts fail closed |

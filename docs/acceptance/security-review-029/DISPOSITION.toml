@@ -18,7 +18,7 @@ summary = "Encoded absolute target decode rejects traversal and protocol-relativ
 id = "REV-029-002"
 severity = "medium"
 status = "mitigated"
-summary = "Cookie Path exported via HEDRON_ROOT_PATH before import; wrapper cannot repair later"
+summary = "Cookie Path exported via HEDRON_ROOT_PATH before import; outer adapter may repair only Hedron-owned Path=/ cookies from a validated request mount"
 
 [[findings]]
 id = "REV-029-003"
@@ -36,7 +36,7 @@ summary = "Deprecated aliases warn; namespaced HEDRON_WORKBENCH_* wins"
 id = "REV-029-005"
 severity = "low"
 status = "mitigated"
-summary = "Pre-bound runner rejects reload and multi-worker; external supervisor required"
+summary = "In-process serve rejects reload/multi-worker; launcher may exec Uvicorn's supervisor on the inherited listener (modes mutually exclusive; excluded from Supported)"
 
 [[findings]]
 id = "REV-029-006"

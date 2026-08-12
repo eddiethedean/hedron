@@ -9,7 +9,7 @@
 1. Encoded absolute request-target decoding (scheme, authority not trusted)
 2. Header/origin trust (`RS_SERVER_URL`, forwarded prefix/host/proto, Connect base)
 3. Open redirects and traversal in mount-prefixed Location
-4. Cookie Path scoped at construction via `HEDRON_ROOT_PATH`
+4. Cookie Path scoped at construction via `HEDRON_ROOT_PATH`; owned `Path=/` repair from a validated request mount
 5. Subprocess/binary selection and bounded output (absolute argv, no shell)
 6. Loopback bind exposure and unified exact-IP `forwarded_allow_ips`
 7. Debug/check JSON redaction (session/project/token/license)

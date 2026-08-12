@@ -3,7 +3,14 @@
 from __future__ import annotations
 
 import os
+import signal
+import socket
 import stat
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.request
 from dataclasses import replace
 from pathlib import Path
 
@@ -24,6 +31,8 @@ from hedron_workbench.runner import (
     supervised_uvicorn_command,
 )
 
+ROOT = Path(__file__).resolve().parents[2]
+
 
 def test_bind_port_zero() -> None:
     sock = bind_loopback("127.0.0.1", 0)
@@ -34,9 +43,32 @@ def test_bind_port_zero() -> None:
         sock.close()
 
 
+def test_bind_explicit_port() -> None:
+    probe = bind_loopback("127.0.0.1", 0)
+    port = int(probe.getsockname()[1])
+    probe.close()
+    sock = bind_loopback("127.0.0.1", port)
+    try:
+        assert int(sock.getsockname()[1]) == port
+    finally:
+        sock.close()
+
+
+def test_bind_failure_is_diagnostic() -> None:
+    with pytest.raises(HedronError) as exc:
+        bind_loopback("256.256.256.256", 8050)
+    assert "HED-WB-0004" in str(exc.value)
+
+
 def test_discover_requires_absolute_binary() -> None:
     with pytest.raises(HedronError) as exc:
         discover_rserver_url(binary="rserver-url", port=8000)
+    assert "HED-WB-0003" in str(exc.value)
+
+
+def test_discover_missing_binary() -> None:
+    with pytest.raises(HedronError) as exc:
+        discover_rserver_url(binary="/no/such/hedron-rserver-url", port=8000)
     assert "HED-WB-0003" in str(exc.value)
 
 
@@ -164,3 +196,63 @@ def test_supervised_command_reuses_bound_fd_for_reload_or_workers() -> None:
     workers = replace(resolved, reload=False, workers=3)
     worker_command = supervised_uvicorn_command(workers, fd=18)
     assert worker_command[worker_command.index("--workers") + 1] == "3"
+
+
+def test_open_browser_uses_docs_url(monkeypatch: pytest.MonkeyPatch) -> None:
+    import uvicorn
+
+    opened: list[str] = []
+    monkeypatch.setattr("hedron_workbench.runner.webbrowser.open", opened.append)
+    monkeypatch.setattr(uvicorn, "run", lambda *args, **kwargs: None)
+    resolved = resolve_deployment(
+        WorkbenchConfig(mount="/s/demo/p/9", open_browser=True, port=8050),
+        environ={},
+    )
+    serve(object(), replace(resolved, open_browser=True, browser_mount="/s/demo/p/9"))
+    assert opened == ["http://127.0.0.1:8050/s/demo/p/9/docs"]
+
+
+def test_run_target_shuts_down_on_sigterm() -> None:
+    probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    probe.bind(("127.0.0.1", 0))
+    port = int(probe.getsockname()[1])
+    probe.close()
+    proc = subprocess.Popen(
+        [
+            sys.executable,
+            "-m",
+            "hedron_workbench.cli",
+            "run",
+            "tests.integration._workbench_sample:app",
+            "--mode",
+            "off",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            str(port),
+        ],
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    try:
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
+            if proc.poll() is not None:
+                stderr = (proc.stderr.read() if proc.stderr else b"").decode("utf-8", "replace")
+                raise AssertionError(f"launcher exited {proc.returncode}: {stderr}")
+            try:
+                with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=0.5) as response:
+                    assert response.status == 200
+                break
+            except (TimeoutError, urllib.error.URLError, ConnectionError, OSError):
+                time.sleep(0.1)
+        else:
+            raise AssertionError("launcher did not become reachable")
+        proc.send_signal(signal.SIGTERM)
+        proc.wait(timeout=15)
+        assert proc.returncode in {0, -signal.SIGTERM}
+    finally:
+        if proc.poll() is None:
+            proc.kill()
+            proc.wait(timeout=5)

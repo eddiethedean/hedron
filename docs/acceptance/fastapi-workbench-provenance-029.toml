@@ -41,7 +41,7 @@ notes = "RS_SERVER_URL is discovery-only; not redirect mode or trust."
 [[adopt]]
 id = "RUN-LOOPBACK"
 source = "runner.py:run_target"
-notes = "Default loopback; exact shared proxy allowlist; external bind explicit; reload/multi-worker rejected."
+notes = "Default loopback; exact shared proxy allowlist; external bind explicit; in-process reload/multi-worker rejected (HED-WB-0009). Optional inherited-fd Uvicorn supervisor remains excluded from Supported."
 
 [[adopt]]
 id = "REDIR-034"
@@ -68,7 +68,7 @@ notes = "HedronWorkbench subclasses Hedron, consumes resolved launcher state, an
 
 [[adapt]]
 id = "HEDRON-URL"
-notes = "redirect_local / prefix_local_path / SafeUrl; no public safe_redirect/external_url facade."
+notes = "Thin adapters over Hedron prefix_local_path / SafeUrl / redirect_local. HedronWorkbench.browser_url and durable external_url reuse those contracts rather than a parallel safety model."
 
 [[adapt]]
 id = "CLI"

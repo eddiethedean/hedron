@@ -56,6 +56,7 @@ def main() -> int:
             "hedron_root_path_export",
             "workbenchify_wrap_once",
             "cookie_path_at_construction",
+            "owned_cookie_path_repair",
             "ordinary_local_uvicorn_noop",
         ):
             if required not in supported:
