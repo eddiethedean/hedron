@@ -24,7 +24,7 @@ hedron-workbench run app:app
 
 ## Docker smoke (REALWB-029)
 
-Requires `WORKBENCH_API_KEY` in repo-root `.env` (Posit license key). Never commit it.
+Requires `PWB_LICENSE` in repo-root `.env` (Posit license key). Never commit it.
 The live matrix probes the pinned Workbench image and real `rserver-url`, then
 checks mounted pages/cookies, fragments, CSRF actions, assets, OpenAPI, redirects,
 encoded-target guards, request-independent public invite URLs, diagnostics,

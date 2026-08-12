@@ -2,12 +2,15 @@
 
 **Status:** Proposed
 
-**Target phase:** 0.30 (`v0.30.0`)
+**Target phase:** 0.31 (`v0.31.0`)
+
+**Revision:** 2026-08-12 — D-058 shifted this planned phase and its evidence suffix from
+0.30 / `MIGRATE-030` to 0.31 / `MIGRATE-031`; scope is unchanged.
 
 **Related:** RFC-0017, RFC-0019, RFC-0024, RFC-0026; phase 0.15 Streamlit migration
 matrix; [Streamlit migration guide](../guides/streamlit-migration.md); [ROADMAP
-§0.30](../ROADMAP.md); tracking
-[#88](https://github.com/eddiethedean/hedron/issues/88) (close when `MIGRATE-030` is Verified)
+§0.31](../ROADMAP.md); tracking
+[#88](https://github.com/eddiethedean/hedron/issues/88) (close when `MIGRATE-031` is Verified)
 
 ## Summary
 
@@ -219,7 +222,7 @@ No success summary may hide warning/error counts. A generated application with b
 
 ### 8. Extensibility boundary
 
-The nested `hedron migrate streamlit` command leaves room for future analyzers, but phase 0.30
+The nested `hedron migrate streamlit` command leaves room for future analyzers, but phase 0.31
 ships only Streamlit. Mappings are first-party code and data, not executable third-party plugins.
 Supporting third-party migration rules would require a separate trust and compatibility design.
 
@@ -338,7 +341,7 @@ existing cutover checklist is complete.
 
 1. Should `--project-root` default to the entrypoint parent or the nearest `pyproject.toml` when
    both are present?
-2. Should phase 0.30 include bounded extraction of proven Streamlit-free functions into a generated
+2. Should phase 0.31 include bounded extraction of proven Streamlit-free functions into a generated
    `domain.py`, or only reference their original modules until the developer extracts them?
 3. Which exact Streamlit versions form the first mapping-catalog compatibility window?
 4. Should warnings make the default exit status `2`, or only errors, while keeping
@@ -352,7 +355,7 @@ These questions must be closed before the RFC moves from Proposed to Accepted.
 
 - `hedron migrate streamlit` analyzes without importing/executing the source or requiring
   Streamlit to be installed.
-- The versioned mapping inventory covers the declared phase-0.30 subset and agrees with the public
+- The versioned mapping inventory covers the declared phase-0.31 subset and agrees with the public
   Streamlit migration matrix.
 - Every recognized Streamlit call receives a disposition; no call is silently dropped.
 - Generated projects use public Hedron APIs, bounded pins, secure defaults, explicit routes/state,
@@ -363,4 +366,4 @@ These questions must be closed before the RFC moves from Proposed to Accepted.
   suites pass for the Supported mapping inventory.
 - The runnable sales-dashboard migration can be regenerated to the reviewed reference outcome,
   with any intentionally manual decisions represented by stable findings.
-- The phase `MIGRATE-030` gate is Verified before the tool is called tooling-grade or Supported.
+- The phase `MIGRATE-031` gate is Verified before the tool is called tooling-grade or Supported.

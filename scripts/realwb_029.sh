@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # REALWB-029: start pinned Posit Workbench, invoke real rserver-url, smoke Hedron.
-# Never prints WORKBENCH_API_KEY / PWB_LICENSE / generated tokens.
+# Never prints PWB_LICENSE / generated tokens.
 set -euo pipefail
 umask 077
 
@@ -67,14 +67,14 @@ trap cleanup EXIT
 log "REALWB-029 start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "image=$IMAGE"
 
-if [[ -z "${WORKBENCH_API_KEY:-}" && -f "$ROOT/.env" ]]; then
-  WORKBENCH_API_KEY="$("$ROOT/.venv/bin/python" -c '
+if [[ -z "${PWB_LICENSE:-}" && -f "$ROOT/.env" ]]; then
+  PWB_LICENSE="$("$ROOT/.venv/bin/python" -c '
 import shlex, sys
 for raw in open(sys.argv[1], encoding="utf-8"):
     line = raw.strip()
     if line.startswith("export "):
         line = line[7:].lstrip()
-    if not line.startswith("WORKBENCH_API_KEY="):
+    if not line.startswith("PWB_LICENSE="):
         continue
     value = line.split("=", 1)[1].strip()
     parsed = shlex.split(value, comments=True, posix=True)
@@ -83,11 +83,11 @@ for raw in open(sys.argv[1], encoding="utf-8"):
 ' "$ROOT/.env")"
 fi
 
-if [[ -z "${WORKBENCH_API_KEY:-}" ]]; then
-  fail "HED-WB-0001" "WORKBENCH_API_KEY is unset (load .env or export it)"
+if [[ -z "${PWB_LICENSE:-}" ]]; then
+  fail "HED-WB-0001" "PWB_LICENSE is unset (load .env or export it)"
 fi
-if [[ ! "$WORKBENCH_API_KEY" =~ ^[[:alnum:]]{4}(-[[:alnum:]]{4}){5,}$ ]]; then
-  fail "HED-WB-0001" "WORKBENCH_API_KEY is not a product-license-shaped value"
+if [[ ! "$PWB_LICENSE" =~ ^[[:alnum:]]{4}(-[[:alnum:]]{4}){5,}$ ]]; then
+  fail "HED-WB-0001" "PWB_LICENSE is not a product-license-shaped value"
 fi
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -113,8 +113,7 @@ log "image_digest=$IMAGE_DIGEST"
 HOST_ARCH="$(uname -m)"
 log "host_arch=$HOST_ARCH"
 
-export PWB_LICENSE="$WORKBENCH_API_KEY"
-unset WORKBENCH_API_KEY
+export PWB_LICENSE
 export HEDRON_WORKBENCH_IMAGE="$IMAGE"
 # Compose interpolates PWB_LICENSE; do not print it.
 

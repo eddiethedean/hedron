@@ -39,7 +39,6 @@ REQUIRED_MARKERS = (
     "RESULT=pass",
 )
 FORBIDDEN = (
-    "WORKBENCH_API_KEY=",
     "PWB_LICENSE=",
     "6IX8-",
 )

@@ -1,5 +1,9 @@
 # RFC-0062: Production-grade Posit Workbench deployment adapter
 
+**Revision:** 2026-08-12 — D-058 leaves the published 0.29 contract and evidence unchanged, but
+supersedes its no-dependency disposition for 0.30+: `fastapi-workbench` moves into this monorepo at
+1.0.0 and `hedron-workbench` becomes its explicit downstream specialization.
+
 **Status:** Accepted
 **Phase:** 0.29 (`v0.29.0`; baseline Published `v0.28.2`)
 **Stability:** `beta` (package + public API)
@@ -144,7 +148,7 @@ per-request overhead budgets are PERF-029. Native acceleration is unrelated.
 - Hedron URL/CSRF/cookie/asset integration
 - Fake `rserver-url` runner tests
 - Adversarial security corpus
-- Docker REALWB-029 using `WORKBENCH_API_KEY` as `PWB_LICENSE`
+- Docker REALWB-029 using `PWB_LICENSE`
 - Upgrade/rollback from 0.28.2; non-Workbench parity
 
 ## Compatibility and migration

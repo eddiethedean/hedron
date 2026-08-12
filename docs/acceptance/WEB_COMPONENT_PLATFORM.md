@@ -1,7 +1,8 @@
 # Web Component platform acceptance
 
-**Planning status:** Draft; phases 0.34–0.39 under
+**Planning status:** Draft; phases 0.35–0.40 under
 [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md).
+Renumbered from 0.34–0.39 by D-058; scope and ordering are unchanged.
 The exact five interaction protocols are defined in the
 [interaction-contract specification](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md).
 
@@ -26,9 +27,9 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 | Supply chain | Local/fingerprinted assets, source/build mapping, SBOM, provenance, licenses, vulnerabilities, and rollback |
 | Documentation | Public contract, fallback, limitations, stability, examples, migration, diagnostics, and Supported/Experimental claims agree |
 
-## 0.34 — Element ABI and lifecycle foundation
+## 0.35 — Element ABI and lifecycle foundation
 
-### `ABI-034`
+### `ABI-035`
 
 - [ ] The element registry schema covers tag/module/ABI identity, attributes, structured inputs,
   properties/methods, typed events, DOM ownership, forms, accessibility, styles, resources,
@@ -39,7 +40,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
   `HED-ELEMENT-*` diagnostics with no payload leakage.
 - [ ] The `hedron-` first-party namespace and third-party naming rules are machine-checked.
 
-### `ELEMENTS-034`
+### `ELEMENTS-035`
 
 - [ ] `hedron-elements` builds and installs as a framework-neutral wheel with no Node.js required by
   a consuming FastAPI, Flask, or Django application.
@@ -47,7 +48,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
   module/CSS assets, typed events, Explorer metadata, and all three hosts.
 - [ ] Pure `hedron-core` rendering remains deterministic when browser assets are not mounted.
 
-### `LIFECYCLE-034`
+### `LIFECYCLE-035`
 
 - [ ] Connect/reconnect is idempotent; disconnect and HTMX early cleanup release all declared
   listeners, observers, timers, workers, object URLs, requests, focus traps, and adapter handles.
@@ -56,7 +57,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Module timeout/failure, initialization exception, removed-before-load, and reconnect races
   restore or preserve useful fallback content.
 
-### `SSR-034`
+### `SSR-035`
 
 - [ ] The representative element is understandable and completes its documented fallback workflow
   before upgrade, with JavaScript disabled, and after module/ABI failure.
@@ -64,7 +65,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
   byte/item/depth limits; malicious closing tags, HTML, URLs, and oversized inputs fail safely.
 - [ ] Server-owned and element-owned DOM regions are disjoint and machine-audited.
 
-### `STATE-034` — `ElementStateOwnership`
+### `STATE-035` — `ElementStateOwnership`
 
 - [ ] Every mutable field declares `controlled`, `local`, `draft`, or `preference` ownership plus
   reflection, incoming-update, persistence, limit, and event policy; capabilities/server authority
@@ -76,7 +77,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Ownership violations and illegal persistence emit redacted `HED-ELEMENT-STATE-*` diagnostics
   while useful server fallback remains available.
 
-### `SECURITY-034` / `A11Y-034`
+### `SECURITY-035` / `A11Y-035`
 
 - [ ] Strict CSP and Trusted Types enforcement pass without inline handlers, eval, remote runtime
   fetches, undeclared executable assets, or unsafe HTML construction.
@@ -85,7 +86,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Pre-upgrade, upgraded, failed-upgrade, swap, and history states pass semantic, keyboard, focus,
   axe/ACT, zoom, forced-colors, reduced-motion, and localization checks.
 
-### `BROWSER-034` / `PKG-034`
+### `BROWSER-035` / `PKG-035`
 
 - [ ] Chromium, Firefox, and WebKit run the same lifecycle/fallback corpus on the declared browser
   floor; unsupported versions receive a usable fallback and explicit support message.
@@ -93,9 +94,9 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
   elements meet the recorded upgrade/swap/long-task/layout-shift budget.
 - [ ] Clean wheels, source maps, manifests, SBOM/provenance/licenses, docs, and release verifier pass.
 
-## 0.35 — Form-associated controls and semantic primitives
+## 0.36 — Form-associated controls and semantic primitives
 
-### `FORM-035` / `VALIDITY-035`
+### `FORM-036` / `VALIDITY-036`
 
 - [ ] Named single- and multi-value controls submit identical values through ordinary navigation,
   HTMX, and supported hosts, including disabled, reset, restore, repeated-name, and empty states.
@@ -106,7 +107,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] File/directory controls retain browser objects only within bounded user-initiated flows and
   pass upload type/size/path/cancel/cleanup adversarial cases.
 
-### `PRIMITIVE-035`
+### `PRIMITIVE-036`
 
 - [ ] A locked catalog selects only primitives with material browser-local behavior; ordinary links,
   buttons, fields, layout, and landmarks remain native when custom elements add no value.
@@ -115,7 +116,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Native platform features are used when they meet the contract; polyfills/adapters are local,
   conditional, inventoried, and removable.
 
-### `ACTIONSTATE-035` — `InteractionState`
+### `ACTIONSTATE-036` — `InteractionState`
 
 - [ ] All element-owned async operations use `idle`, `pending`, `success`, `error`, and `canceled`
   with bounded progress, opaque operation correlation, timestamps/durations, and safe status/error
@@ -127,7 +128,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Pending/progress/error/retry/cancel states preserve native form fallback, focus, `aria-busy`,
   restrained announcements, reduced motion, and JS/module-failure completion paths.
 
-### `INTERACT-035` — `GestureOverlayCatalog`
+### `INTERACT-036` — `GestureOverlayCatalog`
 
 - [ ] Reorder/drag-drop, resize/splitter, pointer capture, keyboard equivalence, touch/scroll/RTL,
   reduced-motion, Escape/cancel, target allowlists, and disconnect cleanup share catalog fixtures.
@@ -139,25 +140,25 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Command surfaces invoke registered routes/actions under ordinary authz/CSRF validation;
   tooltips/toasts never become the sole essential instruction, error, or completion record.
 
-### `HTMX-035` / `AT-035` / `REGRESS-035` / `PKG-035`
+### `HTMX-036` / `AT-036` / `REGRESS-036` / `PKG-036`
 
 - [ ] Controls survive inner/outer/OOB swaps, 422 validation fragments, duplicate submission,
   retarget/reselect, history restore, and slow/canceled requests without lost errors or stale state.
 - [ ] Representative keyboard-only and screen-reader sessions cover fallback and upgraded form
   completion; findings are remediated or explicitly dispositioned without application WCAG claims.
 - [ ] Cross-host forms, browser matrix, performance/leak, compatibility, docs, clean install, and
-  package evidence pass with zero Deferred 0.35 rows.
+  package evidence pass with zero Deferred 0.36 rows.
 
-## 0.36 — Rich data and visualization convergence
+## 0.37 — Rich data and visualization convergence
 
-### `DATA-036`
+### `DATA-037`
 
 - [ ] DataTable/DataEditor adapters use the common element ABI for configuration, typed edits,
   selections, validation, paging/virtualization, saved views, fallback tables/forms, and teardown.
 - [ ] Local pending edits have explicit submit/discard/conflict/swap/history behavior and never
   widen source authorization or tenant filters.
 
-### `OPTIMISTIC-036` — `OptimisticMutation`
+### `OPTIMISTIC-037` — `OptimisticMutation`
 
 - [ ] Each optimistic mutation declares registered action, base revision, typed forward patch,
   deterministic inverse or canonical refetch, idempotency/replay, affected region, limits, and
@@ -171,14 +172,14 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Pending, rollback, and conflict are announced without color/motion-only cues or focus theft;
   reconnect resolves by operation/revision or canonical refetch rather than assuming rollback.
 
-### `CHART-036`
+### `CHART-037`
 
 - [ ] Interactive chart adapters use common event, payload, asset, resize, visibility, export,
   annotation, fallback, and dispose contracts.
 - [ ] Static accessible summaries remain available before/without upgrade; canvas/SVG/Shadow DOM
   does not erase title, description, data summary, keyboard alternative, or export fallback.
 
-### `RICH-036` / `WORKER-036`
+### `RICH-037` / `WORKER-037`
 
 - [ ] Map, media/capture, code/editor, and eligible specialty surfaces adopt the shared ABI or retain
   an explicit Experimental exception with owner and destination.
@@ -187,7 +188,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Third-party adapters cannot target undeclared origins, inject untrusted HTML, or bypass the
   element/server event and action contracts.
 
-### `PERF-036` / `A11Y-036` / `REGRESS-036` / `PKG-036`
+### `PERF-037` / `A11Y-037` / `REGRESS-037` / `PKG-037`
 
 - [ ] Representative large data/chart/map scenarios meet surface-specific response, interaction,
   memory, worker, long-task, layout-shift, and route-asset budgets on documented hardware/data.
@@ -196,9 +197,9 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Existing component imports and server markup have upgrade fixtures; no rich adapter becomes a
   transitive/default asset merely because it implements the common ABI.
 
-## 0.37 — Authoring, interoperability, and ecosystem
+## 0.38 — Authoring, interoperability, and ecosystem
 
-### `AUTHOR-037` / `PLUGIN-037`
+### `AUTHOR-038` / `PLUGIN-038`
 
 - [ ] A third-party author kit defines typed metadata/events, DOM ownership, lifecycle/fallback,
   asset/resource disclosure, tests, diagnostics, compatibility, and packaging without private APIs.
@@ -207,7 +208,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] An externally built consumer plugin proves discovery, disable/uninstall, conflict errors,
   manifests, Explorer, clean install, and no host-framework dependency leakage.
 
-### `HDJ-037` / `THEME-037`
+### `HDJ-038` / `THEME-038`
 
 - [ ] HDJ can use registered custom elements as standards-based markup while its static prologue
   declares modules, feature/ABI requirements, events/actions, and fragment regions.
@@ -216,7 +217,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Theme changes, color modes, forced colors, reduced motion, and print/export paths work without
   redefining elements or an application JavaScript build.
 
-### `EXPLORER-037` / `CONF-037` / `SUPPLY-037` / `PKG-037`
+### `EXPLORER-038` / `CONF-038` / `SUPPLY-038` / `PKG-038`
 
 - [ ] Explorer displays and simulates fallback/upgrade/failure, ABI, attributes/properties/events,
   forms, DOM ownership, slots/parts/tokens, assets, lifecycle, performance, and accessibility.
@@ -225,9 +226,9 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] If `@hedron/elements` is published, npm and wheel modules have matching content identity,
   version/provenance/license/SBOM policy and reproducible consumer tests.
 - [ ] Documentation clearly separates the supported Python-host workflow from any standalone npm
-  scope; clean author and consumer packages pass with zero Deferred 0.37 rows.
+  scope; clean author and consumer packages pass with zero Deferred 0.38 rows.
 
-### `MIGRATE-037` — `ReactMigrationMatrix`
+### `MIGRATE-038` — `ReactMigrationMatrix`
 
 - [ ] The React matrix maps components/props/callbacks/state/effects/context/reducers, controlled
   forms, data/mutations, routing, portals, loading/error boundaries, memoization/list identity,
@@ -242,16 +243,16 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] The fit guide explicitly rejects universal parity and covers offline/client-authoritative,
   games/canvas, arbitrary npm, and high-frequency collaboration non-equivalents.
 
-## 0.38 — Composition, state, and navigation
+## 0.39 — Composition, state, and navigation
 
-### `COMPOSE-038`
+### `COMPOSE-039`
 
 - [ ] Typed element events compose through registered actions and `InteractionGraph` bindings with
   cycle, payload, target, authorization, cancellation, and full-fragment fallback controls.
 - [ ] Element-to-element communication uses DOM events or registered graph contracts, not hidden
   global stores, direct private method calls, or arbitrary selector mutation.
 
-### `STATE-038`
+### `STATE-039`
 
 - [ ] Disposable, draft, preference, server, and capability state classes are machine-visible and
   enforce their persistence/authority rules.
@@ -263,7 +264,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
   stable through transfer, composition, history, and late-response scenarios; transfer cannot turn
   local/draft state into canonical server state.
 
-### `NAV-038` / `TRACE-038` / `FALLBACK-038`
+### `NAV-039` / `TRACE-039` / `FALLBACK-039`
 
 - [ ] Boosted navigation, push/replace URL, history cache, focus/title, preload, view transitions
   where supported, and full navigation fallback preserve server authority and existing privacy rules.
@@ -272,20 +273,20 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] One failing/slow/incompatible element cannot prevent unrelated elements, native navigation,
   form submission, or authorized HTMX regions from operating.
 
-### `BROWSER-038` / `REGRESS-038` / `PKG-038`
+### `BROWSER-039` / `REGRESS-039` / `PKG-039`
 
 - [ ] Multi-element dashboard/form/navigation scenarios pass three-engine browser, host, a11y,
   performance, memory, failure-injection, history/privacy, and compatibility matrices.
-- [ ] No phase 0.38 feature creates a hidden correctness dependency on live transports, preload,
+- [ ] No phase 0.39 feature creates a hidden correctness dependency on live transports, preload,
   View Transitions, browser storage, or JavaScript.
 
-## 0.39 — Production-grade Web Component platform
+## 0.40 — Production-grade Web Component platform
 
-### `STABLE-039` / `COMPAT-039`
+### `STABLE-040` / `COMPAT-040`
 
 - [ ] A machine-readable Supported inventory names stable tags, ABI versions, attributes/properties,
   event schemas, form encodings, slots/parts/tokens, fallback, browser floor, and package versions.
-- [ ] Minimum/current dependency and browser matrices, mixed versions, upgrades from 0.34–0.38,
+- [ ] Minimum/current dependency and browser matrices, mixed versions, upgrades from 0.35–0.39,
   rollback, offline installs, CDN refusal, package removal, and unsupported-feature failure pass.
 - [ ] Experimental elements/adapters are absent from production defaults and have an owner,
   destination/terminal disposition, and conspicuous capability label.
@@ -293,7 +294,7 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
   optimistic mutation types, gesture/overlay entries, and React-migration bridge disposition; any
   excluded contract remains explicit and non-default.
 
-### `REVIEW-039` / `AT-039`
+### `REVIEW-040` / `AT-040`
 
 - [ ] An independent browser/security review covers code execution, CSP/Trusted Types, XSS/HTML
   sinks, payloads/events, origins/assets/workers, Shadow DOM assumptions, state transfer, forms,
@@ -302,23 +303,23 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
   workflows across the declared desktop/mobile screen-reader and other-disability matrix; blockers
   are fixed or the affected surface remains outside Supported inventory.
 
-### `PERF-039` / `SUPPLY-039`
+### `PERF-040` / `SUPPLY-040`
 
 - [ ] Shared and per-surface bundle, request, upgrade, interaction, memory/leak, long-task,
   layout-shift, and slow-module budgets pass in the production reference app.
 - [ ] Wheel/npm artifacts, modules, workers/WASM, source maps, licenses, SBOMs, provenance,
   vulnerabilities, reproducible builds, retention, and rollback evidence are complete.
 
-### `REGRESS-039` / `PKG-039`
+### `REGRESS-040` / `PKG-040`
 
 - [ ] FastAPI, Flask, Django, HDJ, plugins, reference app, conformance, browser/a11y, security,
-  performance, docs, and packaging suites pass with zero Deferred 0.39-owned rows.
+  performance, docs, and packaging suites pass with zero Deferred 0.40-owned rows.
 - [ ] `hedron-elements` is production-grade only for the declared Supported inventory; the release
   does not imply that all Hedron UI is a custom element or that applications are SPAs.
 
 ## Program exit
 
-The Web Component platform is production-grade only after all 0.39 gates are Verified. Earlier
+The Web Component platform is production-grade only after all 0.40 gates are Verified. Earlier
 phases may ship Alpha/Beta surfaces behind explicit pins and capability labels. SSR, native HTML,
 ordinary forms/navigation, HTMX fragments, and server validation remain supported fallbacks
 throughout the program. The five interaction contracts must either appear in the locked Supported

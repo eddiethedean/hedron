@@ -62,7 +62,7 @@ def test_encoded_dot_target_not_stripped() -> None:
 
 
 def test_redaction_covers_license_and_query() -> None:
-    assert "26TA" not in redact_text("WORKBENCH_API_KEY=6IX8-R4P6-UDJS-BIE5-UGAH-8XSS-26TA")
+    assert "26TA" not in redact_text("PWB_LICENSE=6IX8-R4P6-UDJS-BIE5-UGAH-8XSS-26TA")
     redacted = redact_scope_for_log(
         {
             "method": "GET",

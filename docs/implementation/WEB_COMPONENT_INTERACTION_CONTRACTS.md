@@ -58,7 +58,7 @@ declared policy:
 - `conflict`: retain base, incoming value, and draft long enough for an explicit resolution UI.
 
 `conflict` is the default when a safe rebase is not proven. No last-write-wins behavior is inferred.
-Phase 0.38 may transfer eligible drafts across swaps/history using the bounds in the platform spec;
+Phase 0.39 may transfer eligible drafts across swaps/history using the bounds in the platform spec;
 all other local state remains disposable.
 
 ### Metadata and diagnostics
@@ -160,12 +160,12 @@ context for an explicit resolution; it never silently overwrites the server or a
   operation/revision or canonical refetch.
 - Pending/rollback/conflict states are perceivable without color or motion and do not steal focus.
 
-Optimistic support is first proven on bounded DataEditor/collection mutations in phase 0.36. Other
+Optimistic support is first proven on bounded DataEditor/collection mutations in phase 0.37. Other
 components remain server-confirmed until they pass the same evidence.
 
 ## 4. `GestureOverlayCatalog`
 
-Phase 0.35 locks a catalog of reusable interaction behaviors so components do not independently
+Phase 0.36 locks a catalog of reusable interaction behaviors so components do not independently
 implement drag/drop, resizing, focus traps, dismissal, or top-layer behavior.
 
 ### Gesture contracts
@@ -270,7 +270,7 @@ wrapping of arbitrary npm components.
   games/canvas runtimes, arbitrary npm ecosystems, and high-frequency collaborative clients without
   an accepted server synchronization design.
 
-The matrix ships in phase 0.37 and becomes part of the 0.39 Supported-inventory honesty review.
+The matrix ships in phase 0.38 and becomes part of the 0.40 Supported-inventory honesty review.
 
 ## Cross-contract ordering
 
@@ -282,7 +282,7 @@ ElementStateOwnership
         -> ReactMigrationMatrix
 ```
 
-State ownership is foundational in 0.34. Interaction and gesture/overlay contracts ship with forms
-and primitives in 0.35. Optimistic mutation is proven on rich data surfaces in 0.36. The migration
-matrix and optional bridge ship with authoring/interoperability in 0.37. Composition/state transfer
-in 0.38 and production graduation in 0.39 test all five together.
+State ownership is foundational in 0.35. Interaction and gesture/overlay contracts ship with forms
+and primitives in 0.36. Optimistic mutation is proven on rich data surfaces in 0.37. The migration
+matrix and optional bridge ship with authoring/interoperability in 0.38. Composition/state transfer
+in 0.39 and production graduation in 0.40 test all five together.

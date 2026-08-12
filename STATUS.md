@@ -4,7 +4,7 @@
 
 **Roadmap position:** phase 0.29 **Published** as `v0.29.0` (2026-08-11); last published
 PyPI/git = `v0.29.0`. Prior: 0.28 **Published** as `v0.28.2`.
-**Date:** 2026-08-11
+**Date:** 2026-08-12
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
 `hedron-workbench` `0.29.0`; Beta (independent) — `hedron-charts` `0.1.11`, `hedron-native` `0.1.2`; Alpha —
@@ -19,7 +19,10 @@ PyPI/git = `v0.29.0`. Prior: 0.28 **Published** as `v0.28.2`.
 `hedron-workbench` Posit Workbench / RStudio Server adapter on the declared Supported
 inventory (`release-gate-0.29.toml` Verified). Prior inventories for core / flagship /
 Explorer (0.26), data / adapters / HDJ / extras (0.27), and charts / native (0.28) remain
-in force. **Next** = **0.30 Planned** (conformance / plugin / simulation / notebook tooling).
+in force. **Next** = **0.30 Planned** (bring `fastapi-workbench` into this monorepo, publish its
+first repository-developed release as independently versioned `1.0.0`, give plain FastAPI apps the
+hands-off Workbench launcher, and make `hedron-workbench` 0.30 depend on
+`fastapi-workbench>=1.0.0,<2.0`; D-058). The former planned 0.30–0.39 phases move to 0.31–0.40.
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
@@ -246,15 +249,17 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 **Planned** until compensated screen-reader evidence lands
 ([#86](https://github.com/eddiethedean/hedron/issues/86)). Phase **0.27** is **Published**
 (`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
-Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Remaining
-package-production work continues through **0.30–0.33**: developer and portable conformance tooling
+Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is Planned for
+standalone `fastapi-workbench` 1.0.0 and `hedron-workbench` dependency inversion (D-058; owning RFC
+and tracking issue required). Remaining package-production work continues through **0.31–0.34**:
+developer and portable conformance tooling
 ([#87](https://github.com/eddiethedean/hedron/issues/87),
 [#88](https://github.com/eddiethedean/hedron/issues/88)); MCP
 ([#89](https://github.com/eddiethedean/hedron/issues/89)); Gradio
 ([#90](https://github.com/eddiethedean/hedron/issues/90)); then a whole-fleet
 closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform
 work is tracked as [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(phases 0.34–0.39). These phases require owning RFCs/decisions and Verified evidence before any
+(phases 0.35–0.40). These phases require owning RFCs/decisions and Verified evidence before any
 package maturity label changes. They do not schedule `1.0`, promote every experimental
 subfeature, or expand Supported live transports. Close each tracking issue only when its owning
 release-gate rows are Verified.

@@ -1,5 +1,5 @@
 # REALWB-029: official Posit Workbench image + Hedron app sidecar.
-# License: WORKBENCH_API_KEY from the environment (maps to PWB_LICENSE).
+# License: PWB_LICENSE from the environment.
 # Image is linux/amd64. Fail closed on other platforms rather than hanging on QEMU.
 
 services:
@@ -9,7 +9,7 @@ services:
     ports:
       - "8787:8787"
     environment:
-      PWB_LICENSE: ${PWB_LICENSE:?Set WORKBENCH_API_KEY and map it to PWB_LICENSE}
+      PWB_LICENSE: ${PWB_LICENSE:?Set PWB_LICENSE}
       PWB_TESTUSER: hedron
       PWB_TESTUSER_PASSWD: hedron
       PWB_LAUNCHER: "false"

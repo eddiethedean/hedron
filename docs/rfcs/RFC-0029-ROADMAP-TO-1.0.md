@@ -21,14 +21,20 @@ native Flask/Django depth moved to 0.11.
 **Revision:** 2026-08-07 — D-053 / RFC-0056 add the production-quality maturity program
 (phases 0.23–0.25) without scheduling a calendar `1.0` (preserves D-038).
 
+**Revision:** 2026-08-12 — D-058 inserts phase 0.30 for the independently versioned
+`fastapi-workbench` 1.0.0 monorepo release and `hedron-workbench` dependency inversion; formerly
+planned phases 0.30–0.39 move to 0.31–0.40 without renumbering published phases.
+
 ## Release strategy
 
 Hedron develops through cumulative, usable capability phases rather than toward a version-number
 deadline. Phase 0.0 is a documentation baseline with no package publication. Each implementation
 phase `0.N` produces initial release `v0.N.0`; phase 0.10 produces `v0.10.0`. Python package
-versions omit the tag prefix, and first-party distributions use the coordinated release train.
+versions omit the tag prefix, and first-party Hedron distributions use the coordinated release
+train. D-058 defines one explicit independent-package exception: phase 0.30 ships Hedron
+`v0.30.0` and the first monorepo-developed `fastapi-workbench` release as `1.0.0`.
 
-No 1.0 phase is scheduled. Stability is a per-contract classification backed by compatibility,
+No Hedron 1.0 phase is scheduled. Stability is a per-contract classification backed by compatibility,
 deprecation, migration, and evidence obligations; it is not inferred from the distribution version.
 The detailed normative scope and exit criteria live in the project roadmap.
 
