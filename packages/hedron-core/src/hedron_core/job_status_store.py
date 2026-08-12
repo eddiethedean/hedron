@@ -203,7 +203,12 @@ class RedisStatusStore:
         idempotency_key: str | None = None,
         tenant_id: str | None = None,
         auth_subject: str | None = None,
-    ) -> JobHandle:
+    ) -> tuple[JobHandle, bool]:
+        """Persist a queued job; return ``(handle, created)``.
+
+        ``created`` is ``False`` on an idempotency replay so broker bridges can
+        skip re-enqueue and avoid marking a live job failed.
+        """
         idem_redis_key: str | None = None
         if idempotency_key:
             idem_redis_key = self._idem_key(
@@ -213,7 +218,10 @@ class RedisStatusStore:
             if existing_raw:
                 existing = self.get(existing_raw, auth_subject=auth_subject, tenant_id=tenant_id)
                 if existing is not None:
-                    return JobHandle(job_id=existing.job_id, idempotency_key=idempotency_key)
+                    return (
+                        JobHandle(job_id=existing.job_id, idempotency_key=idempotency_key),
+                        False,
+                    )
                 # Stale or cross-scope pointer — drop and continue.
                 self._client.delete(idem_redis_key)
 
@@ -252,15 +260,21 @@ class RedisStatusStore:
                     for _ in range(5):
                         loaded = self._load(existing)
                         if loaded is not None:
-                            return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+                            return (
+                                JobHandle(job_id=existing, idempotency_key=idempotency_key),
+                                False,
+                            )
                         time.sleep(0.01)
                     if self._load(existing) is not None:
-                        return JobHandle(job_id=existing, idempotency_key=idempotency_key)
+                        return (
+                            JobHandle(job_id=existing, idempotency_key=idempotency_key),
+                            False,
+                        )
                 raise RuntimeError(
                     "Idempotent job submit lost the race and the winner record is unavailable"
                 )
 
-        return JobHandle(job_id=job_id, idempotency_key=idempotency_key)
+        return JobHandle(job_id=job_id, idempotency_key=idempotency_key), True
 
     def get(
         self,
