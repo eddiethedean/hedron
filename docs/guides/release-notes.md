@@ -3,6 +3,21 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.31.0 — 2026-08-12
+
+Coordinated Beta train cut for tooling-grade developer/portable conformance and the
+Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061).
+
+- Tooling-grade `hedron-conformance`, `hedron-sample-kit`, `hedron-sim`, `hedron-notebook`.
+- Published Node/Java evaluators (`hedron-runtime-node` / `hedron-runtime-java` `0.31.0`).
+- `hedron migrate streamlit` non-executing AST assistant.
+- Pin `hedron>=0.31.0,<0.32`.
+
+```bash
+python -m pip install -U "hedron>=0.31.0,<0.32"
+hedron migrate streamlit streamlit_app.py --analyze-only --format text
+```
+
 ## 0.30.0 — 2026-08-12
 
 Coordinated Beta train cut for standalone Workbench package extraction (D-058 /
@@ -12,15 +27,11 @@ RFC-0063).
   RStudio Server deployment without installing Hedron.
 - `hedron-workbench` `0.30.0` depends on `fastapi-workbench>=1.0.0,<2.0` and delegates
   generic resolver / middleware / runner behavior.
-- Pin `hedron>=0.30.0,<0.31`. Uninstalling `hedron-workbench` restores the ordinary
-  `uvicorn` launch command; plain FastAPI apps can use `fastapi-workbench run` instead.
+- Historical cut pin `hedron>=0.30.0,<0.31`. Install the current tip with the pin under
+  **0.31.0** above.
 
-```bash
-python -m pip install -U "hedron>=0.30.0,<0.31"
-python -m pip install -U "hedron-workbench>=0.30.0,<0.31"
-# or, for plain FastAPI without Hedron:
-python -m pip install -U "fastapi-workbench>=1.0.0,<2.0"
-```
+Historical cut used `hedron` / `hedron-workbench` on the 0.30 train and
+`fastapi-workbench>=1.0.0,<2.0`. Prefer the current tip pin under **0.31.0** above.
 
 ## 0.29.0 — 2026-08-11
 
@@ -32,7 +43,7 @@ Coordinated Beta train cut for production-grade `hedron-workbench`.
   `resolve_mount_path_from_environ`, color-mode cookie Path.
 - No auto-activation on install/import/`RS_SERVER_URL`. Flask/Django unchanged.
 - Historical cut pin `hedron>=0.29.0,<0.30`. Install the current tip with the pin under
-  **0.30.0** above.
+  **0.31.0** above.
 
 ## 0.28.2 — 2026-08-11
 

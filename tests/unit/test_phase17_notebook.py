@@ -99,14 +99,10 @@ def test_empty_token_rejected() -> None:
         start_preview(object(), server=_FakeServer(), token="")
 
 
-def test_hosted_warning_for_non_loopback() -> None:
+def test_non_loopback_host_refused() -> None:
     server = _FakeServer()
-    with pytest.warns(UserWarning, match="non-loopback"):
-        preview = start_preview(object(), host="0.0.0.0", server=server)
-    try:
-        assert preview.hosted_warning is True
-    finally:
-        preview.shutdown()
+    with pytest.raises(ValueError, match="refuses non-loopback"):
+        start_preview(object(), host="0.0.0.0", server=server)
 
 
 def test_shutdown_is_idempotent() -> None:

@@ -1,18 +1,18 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.30.x** (last published `v0.30.0`). Other
+**Canonical maturity snapshot for Hedron 0.31.x** (last published `v0.31.0`). Other
 evaluator pages link here — do not treat parallel summaries as a second source of truth.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-For a pinned internal admin/CRUD app on 0.30.x (`hedron>=0.30.0,<0.31`), you can use:
+For a pinned internal admin/CRUD app on 0.30.x (`hedron>=0.31.0,<0.32`), you can use:
 typed pages, HTMX fragments, CSRF (`standard`/`strict`), Flask/Django adapters,
 and polling for job status.
 
 Pin versions. Packages are Beta (no 1.0, no SLA). Prefer polling over SSE/WebSocket.
 
 **Charts / sample kit:** install with floors
-`hedron[charts]>=0.30.0,<0.31` and `hedron-sample-kit>=0.1.10,<0.2`.
+`hedron[charts]>=0.31.0,<0.32` and `hedron-sample-kit>=0.1.10,<0.2`.
 Matplotlib/static charts are the **Supported** default path on the Beta
 `hedron-charts` package; Plotly / Altair remain **Experimental**.
 **Experimental:** notebook, MCP, Gradio, live SSE/WS.
@@ -78,13 +78,13 @@ sessions are not Supported yet** — do not market human AT as done.
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]`) | [Posit Workbench](posit-workbench.md) — `HedronWorkbench` or launch-command-only adaptation; no import auto-wrap |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Supported** Matplotlib/static on Beta package | Install `hedron[charts]>=0.30.0,<0.31`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
+| Charts | **Supported** Matplotlib/static on Beta package | Install `hedron[charts]>=0.31.0,<0.32`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | Notebook / MCP / Gradio | **Experimental** / **Alpha** | Pin extras; not production defaults |
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `hedron>=0.30.0,<0.31`. The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.31.0,<0.32`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
@@ -203,7 +203,7 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.30.0,<0.31" hedron new my-app
+    uvx --from "hedron>=0.31.0,<0.32" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -211,20 +211,20 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "pip"
 
     ```bash
-    pip install "hedron>=0.30.0,<0.31" "uvicorn[standard]"
+    pip install "hedron>=0.31.0,<0.32" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.30.0,<0.31` for the current published train.
+Pin `hedron>=0.31.0,<0.32` for the current published train.
 
-Extras: `"hedron[data]>=0.30.0,<0.31"`, `"hedron[extras]>=0.30.0,<0.31"`,
-`"hedron[jinja]>=0.30.0,<0.31"`, `"hedron[dev]>=0.30.0,<0.31"`,
-`"hedron[notebook]>=0.30.0,<0.31"` (Alpha satellite),
-`"hedron[mcp]>=0.30.0,<0.31"` (Alpha satellite),
-`"hedron[gradio]>=0.30.0,<0.31"` (Alpha satellite),
-`"hedron[charts]>=0.30.0,<0.31"`, `"hedron[workbench]>=0.30.0,<0.31"`,
+Extras: `"hedron[data]>=0.31.0,<0.32"`, `"hedron[extras]>=0.31.0,<0.32"`,
+`"hedron[jinja]>=0.31.0,<0.32"`, `"hedron[dev]>=0.31.0,<0.32"`,
+`"hedron[notebook]>=0.31.0,<0.32"` (Alpha satellite),
+`"hedron[mcp]>=0.31.0,<0.32"` (Alpha satellite),
+`"hedron[gradio]>=0.31.0,<0.32"` (Alpha satellite),
+`"hedron[charts]>=0.31.0,<0.32"`, `"hedron[workbench]>=0.31.0,<0.32"`,
 and `"hedron-sample-kit>=0.1.10,<0.2"`.
 
 ## Role-specific wrappers

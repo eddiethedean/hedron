@@ -12,16 +12,16 @@ settings, charts, and interaction simulation — plus sanitized JSON APIs with
 rate limiting and audit hooks. Installed through `hedron[dev]`; **not required**
 in production.
 
-**Package maturity:** Beta · **Train:** `0.30.x` (last published `0.30.0`) · pin `>=0.30.0,<0.31`
+**Package maturity:** Beta · **Train:** `0.31.x` (last published `0.31.0`) · pin `>=0.31.0,<0.32`
 
 ## Install
 
 ```bash
-pip install "hedron[dev]>=0.30.0,<0.31"
+pip install "hedron[dev]>=0.31.0,<0.32"
 # or install the package directly:
-pip install "hedron-explorer>=0.30.0,<0.31"
+pip install "hedron-explorer>=0.31.0,<0.32"
 # or
-uv add "hedron[dev]>=0.30.0,<0.31"
+uv add "hedron[dev]>=0.31.0,<0.32"
 ```
 
 Requires Python 3.11–3.14 and [`hedron`](https://pypi.org/project/hedron/).

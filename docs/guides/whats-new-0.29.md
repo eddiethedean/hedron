@@ -2,7 +2,7 @@
 
 !!! note "Living train is 0.30"
 
-    Pin `hedron>=0.30.0,<0.31`. The pin below is historical for the 0.29 train only.
+    Pin `hedron>=0.31.0,<0.32`. The pin below is historical for the 0.29 train only.
     See [What’s new in 0.30](whats-new-0.30.md).
 
 **Published** as `v0.29.0`. Historical pin: `hedron>=0.29.0,<0.30`.

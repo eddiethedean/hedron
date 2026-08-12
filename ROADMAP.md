@@ -1176,7 +1176,7 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.30** (last published tip `v0.30.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.31** (last published tip `v0.30.0`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -2291,7 +2291,7 @@ maintaining a second copy of the resolver, path middleware, launcher, or Workben
 | Supported host | Plain FastAPI applications and factories over ASGI HTTP/WebSocket, using documented FastAPI, Starlette, Uvicorn, and ASGI contracts |
 | Automatic path | `fastapi-workbench run module:app` and `module:create_app --factory`; Workbench discovery and mount export complete before import/factory execution |
 | Explicit path | Idempotent public ASGI wrapper/middleware and typed configuration for servers that own startup |
-| Dependency direction | `fastapi-workbench` has no Hedron dependency; `hedron-workbench>=0.30.0,<0.31` depends on `fastapi-workbench>=1.0.0,<2.0` and public Hedron contracts |
+| Dependency direction | `fastapi-workbench` has no Hedron dependency; `hedron-workbench>=0.31.0,<0.32` depends on `fastapi-workbench>=1.0.0,<2.0` and public Hedron contracts |
 | Hedron specialization | `HedronWorkbench`, Hedron construction-time mount/cookie handoff, Hedron diagnostics, and Hedron-specific URL/asset/Explorer coverage remain in `hedron-workbench` and delegate generic behavior |
 | Upgrade source | Public `fastapi-workbench` 0.3.4 APIs, CLI, environment compatibility aliases, behavior corpus, license attribution, and documented migrations into 1.0.0 |
 
@@ -2375,13 +2375,14 @@ generic package never imports, discovers, or conditionally activates Hedron.
 
 ## 0.31 — Production-grade developer tooling and portable conformance (`v0.31.0`)
 
-**Status:** Planned. Tooling-grade means reliable and supported for its stated development or
-conformance purpose; it does not convert the tools into application production servers.
+**Status:** Published as `v0.31.0` (2026-08-12). Tooling-grade means reliable and supported for its
+stated development or conformance purpose; it does not convert the tools into application
+production servers.
 **Owning decision / RFCs:** [D-059](docs/DECISIONS.md) ·
 [RFC-0064](docs/rfcs/RFC-0064-PRODUCTION-GRADE-TOOLING.md) (tooling) ·
 [RFC-0061](docs/rfcs/RFC-0061-STREAMLIT-AST-MIGRATOR.md) (migrator; Accepted).
-Evidence scaffold: [release-gate-0.31.toml](docs/acceptance/release-gate-0.31.toml) ·
-[RELEASE_0_31.md](docs/acceptance/RELEASE_0_31.md).
+Evidence: [release-gate-0.31.toml](docs/acceptance/release-gate-0.31.toml) ·
+[RELEASE_0_31.md](docs/acceptance/RELEASE_0_31.md) (Verified).
 **Tracking:** [#87](https://github.com/eddiethedean/hedron/issues/87) (tooling evaluators),
 [#88](https://github.com/eddiethedean/hedron/issues/88) (`MIGRATE-031` / RFC-0061). Close those
 issues when the owning gates are Verified on the `v0.31.0` cut.

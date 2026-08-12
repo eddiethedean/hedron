@@ -22,7 +22,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "0.30.0"
+  HEDRON_GATE_VERSION: "0.31.0"
 
 jobs:
   test:
@@ -465,6 +465,50 @@ jobs:
             exit 0
           fi
           exit "$status"
+      - name: Publish hedron-runtime-node to npm
+        id: npm_runtime
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        working-directory: packages/hedron-runtime-node
+        run: |
+          set -euo pipefail
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "NPM_TOKEN secret is not set; skipping npm publish (dry-run pack only)" >&2
+            npm pack --dry-run
+            exit 0
+          fi
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+          set +e
+          out="$(npm publish --access public 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "$out"
+          if [ "$status" -eq 0 ]; then
+            exit 0
+          fi
+          if printf '%s' "$out" | grep -Eqi 'cannot publish over|already exists|EPUBLISHCONFLICT'; then
+            echo "INFO: npm already has this version; treating as success"
+            exit 0
+          fi
+          exit "$status"
+      - name: Publish hedron-runtime-java (Maven Central dry-run / optional deploy)
+        id: maven_runtime
+        working-directory: packages/hedron-runtime-java
+        run: |
+          set -euo pipefail
+          if ! command -v mvn >/dev/null 2>&1; then
+            sudo apt-get update -y
+            sudo apt-get install -y maven
+          fi
+          mvn -q -DskipTests package
+          if [ -z "${SONATYPE_USERNAME:-}" ] || [ -z "${SONATYPE_PASSWORD:-}" ]; then
+            echo "INFO: SONATYPE credentials unset; Maven package dry-run only"
+            exit 0
+          fi
+          mvn -q -DskipTests deploy
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
       - name: Verify the published quick start
         id: verify_quickstart
         if: ${{ !cancelled() && steps.pypi.outcome == 'success' && steps.pypi.outputs.publish_failed != '1' }}

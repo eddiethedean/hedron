@@ -1,0 +1,131 @@
+[
+  {
+    "id": "escape-text-basic",
+    "capability": "escaping",
+    "description": "Escape angle brackets and ampersands in text",
+    "input": {"kind": "escape_text", "text": "<script>&"},
+    "expected": {"escaped_text": "&lt;script&gt;&amp;"}
+  },
+  {
+    "id": "escape-attr-quotes",
+    "capability": "escaping",
+    "description": "Escape quotes in attributes",
+    "input": {"kind": "escape_attr", "attr": "a\"b'c"},
+    "expected": {"escaped_attr": "a&quot;b&#x27;c"}
+  },
+  {
+    "id": "escape-nul-stripped",
+    "capability": "adversarial",
+    "description": "NUL bytes are stripped before escaping",
+    "input": {"kind": "escape_text", "text": "a\u0000b"},
+    "expected": {"escaped_text": "ab"}
+  },
+  {
+    "id": "render-element-text",
+    "capability": "rendering",
+    "description": "Render a simple element with text child",
+    "input": {
+      "kind": "render_tree",
+      "tree": {
+        "kind": "element",
+        "tag": "p",
+        "attributes": {"class": "x"},
+        "children": [{"kind": "text", "text": "Hello <world>"}]
+      }
+    },
+    "expected": {"html": "<p class=\"x\">Hello &lt;world&gt;</p>"}
+  },
+  {
+    "id": "render-void-br",
+    "capability": "rendering",
+    "description": "Void elements serialize without closing tag",
+    "input": {
+      "kind": "render_tree",
+      "tree": {"kind": "element", "tag": "br", "void": true, "attributes": {}, "children": []}
+    },
+    "expected": {"html": "<br>"}
+  },
+  {
+    "id": "identity-logical",
+    "capability": "identity",
+    "description": "Deterministic identity from logical id",
+    "input": {"kind": "identity", "logical_id": "app.home"},
+    "expected": {"identity": "id:app.home"}
+  },
+  {
+    "id": "diagnostic-sec-0002",
+    "capability": "diagnostics",
+    "description": "Stable diagnostic code for inline handlers",
+    "input": {"kind": "diagnostic", "expect_error": true},
+    "expected": {"diagnostic_code": "HED-SEC-0002"}
+  },
+  {
+    "id": "artifact-version-echo",
+    "capability": "artifact-version",
+    "description": "Artifact version field is preserved",
+    "input": {"kind": "artifact", "artifact": {"version": "h1"}},
+    "expected": {"artifact_version": "h1"}
+  },
+  {
+    "id": "a11y-img-alt-ok",
+    "capability": "accessibility",
+    "description": "img with alt passes sound subset",
+    "input": {
+      "kind": "a11y",
+      "tree": {
+        "kind": "element",
+        "tag": "img",
+        "attributes": {"alt": "logo", "src": "/x.png"},
+        "children": []
+      }
+    },
+    "expected": {"a11y_ok": true}
+  },
+  {
+    "id": "a11y-button-unnamed",
+    "capability": "accessibility",
+    "description": "button without accessible name fails",
+    "input": {
+      "kind": "a11y",
+      "tree": {
+        "kind": "element",
+        "tag": "button",
+        "attributes": {},
+        "children": []
+      }
+    },
+    "expected": {"a11y_ok": false}
+  },
+  {
+    "id": "a11y-duplicate-id",
+    "capability": "accessibility",
+    "description": "duplicate ids fail",
+    "negative": true,
+    "input": {
+      "kind": "a11y",
+      "tree": {
+        "kind": "fragment",
+        "children": [
+          {"kind": "element", "tag": "div", "attributes": {"id": "a"}, "children": []},
+          {"kind": "element", "tag": "span", "attributes": {"id": "a"}, "children": []}
+        ]
+      }
+    },
+    "expected": {"a11y_ok": false}
+  },
+  {
+    "id": "adversarial-script-tag-text",
+    "capability": "adversarial",
+    "description": "Script-like text is escaped in element body",
+    "input": {
+      "kind": "render_tree",
+      "tree": {
+        "kind": "element",
+        "tag": "div",
+        "attributes": {},
+        "children": [{"kind": "text", "text": "<script>alert(1)</script>"}]
+      }
+    },
+    "expected": {"html": "<div>&lt;script&gt;alert(1)&lt;/script&gt;</div>"}
+  }
+]

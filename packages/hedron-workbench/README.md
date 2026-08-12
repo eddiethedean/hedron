@@ -12,7 +12,7 @@ application. `RS_SERVER_URL` is discovery-only and never grants trust.
 
 Also available as `hedron[workbench]`.
 
-**Package maturity:** Beta · **Train:** `0.30.x` · pin `>=0.30.0,<0.31`
+**Package maturity:** Beta · **Train:** `0.30.x` · pin `>=0.31.0,<0.32`
 
 Behavior is reimplemented from observed
 [fastapi-workbench 0.3.4](https://github.com/eddiethedean/jwt-user-management/tree/main/fastapi_workbench)
@@ -21,9 +21,9 @@ Behavior is reimplemented from observed
 ## Install
 
 ```bash
-pip install "hedron-workbench>=0.30.0,<0.31"
+pip install "hedron-workbench>=0.31.0,<0.32"
 # or
-uv add "hedron[workbench]>=0.30.0,<0.31"
+uv add "hedron[workbench]>=0.31.0,<0.32"
 ```
 
 ## Hedron application facade

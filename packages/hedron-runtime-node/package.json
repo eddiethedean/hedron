@@ -1,14 +1,28 @@
 {
   "name": "hedron-runtime-node",
-  "version": "0.14.0",
-  "description": "Experimental Node.js Hedron conformance runtime (phase 0.14)",
+  "version": "0.31.0",
+  "description": "Hedron portable conformance evaluator for Node.js (tooling-grade)",
   "type": "module",
-  "private": true,
   "license": "MIT",
   "bin": {
     "hedron-runtime-node": "./bin/run-conformance.mjs"
   },
+  "files": [
+    "bin/",
+    "lib/",
+    "fixtures/",
+    "README.md",
+    "LICENSE"
+  ],
   "engines": {
     "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eddiethedean/hedron.git",
+    "directory": "packages/hedron-runtime-node"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

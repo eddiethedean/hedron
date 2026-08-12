@@ -20,8 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.31.toml"
 INVENTORY = ROOT / "docs" / "acceptance" / "production-grade-inventory-031.toml"
-# During refine, package metadata still tracks the published tip.
-LIVING_TIP = "0.30.0"
+LIVING_TIP = "0.31.0"
 RELEASE_CANDIDATE = "0.31.0"
 EXPECTED_PACKAGES = (
     "hedron-conformance",
@@ -64,11 +63,10 @@ def main(argv: list[str] | None = None) -> int:
     _check_inventory()
 
     if args.allow_planned:
-        # Tip honesty remains 0.30.x; only the 0.31 evidence shape is validated.
         gate_cmd = [
             sys.executable,
             str(ROOT / "scripts" / "check_release_gate.py"),
-            LIVING_TIP,
+            "0.30.0",
             "--evidence-manifest",
             str(EVIDENCE),
             "--allow-planned",

@@ -6,7 +6,6 @@ import ipaddress
 import secrets
 import socket
 import threading
-import warnings
 from collections.abc import MutableMapping
 from dataclasses import dataclass, field
 from typing import Any, Protocol
@@ -337,14 +336,10 @@ def start_preview(
     """
     hosted_warning = not _is_loopback_host(host)
     if hosted_warning:
-        warnings.warn(
-            (
-                f"hedron-notebook preview is binding to non-loopback host {host!r}. "
-                "This is intended for localhost development only; hosted or publicly "
-                "reachable notebooks risk token leakage and open ports."
-            ),
-            UserWarning,
-            stacklevel=2,
+        raise ValueError(
+            f"hedron-notebook preview refuses non-loopback host {host!r}. "
+            "Supported preview binds only to loopback (localhost / 127.0.0.1 / ::1). "
+            "Remote or public serving is not part of the Supported API."
         )
 
     bind_port = port if port else (server.port if server is not None else _pick_free_port(host))

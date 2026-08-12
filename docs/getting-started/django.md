@@ -11,7 +11,7 @@ the status region update without a full page reload.
 
 ```bash
 # Need uv? https://docs.astral.sh/uv/getting-started/installation/
-uvx --from "hedron>=0.30.0,<0.31" hedron new my-django-app --django
+uvx --from "hedron>=0.31.0,<0.32" hedron new my-django-app --django
 cd my-django-app && uv sync
 uv run waitress-serve --listen=127.0.0.1:8000 wsgi:application
 ```
@@ -50,7 +50,7 @@ ASGI: `uv run uvicorn asgi:application --host 127.0.0.1 --port 8000`.
 ## Existing Django project (add a Refresh page)
 
 ```bash
-pip install "hedron-django>=0.30.0,<0.31" "django>=5.2,<6"
+pip install "hedron-django>=0.31.0,<0.32" "django>=5.2,<6"
 ```
 
 Add `hedron_django` to `INSTALLED_APPS` when you need forms/QuerySet helpers.

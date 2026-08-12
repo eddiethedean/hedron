@@ -2,9 +2,9 @@
 
 Server-side notebook preview helper for Hedron.
 
-**Package maturity:** Experimental Alpha (`0.1.x`) · pin `>=0.1.0,<0.2`  
+**Package maturity:** Beta (tooling-grade; localhost-only) (`0.1.x`) · pin `>=0.1.0,<0.2`  
 **Flagship extra:** `hedron[notebook]` · **Import:** `hedron_notebook`  
-**Not** a Supported production server. Default guidance is **localhost-only**.
+**Not** a Supported production server. The Supported preview API is **localhost-only**.
 
 Distinct from the browser-Python / JupyterLite sandbox in
 [`hedron-extras`](hedron-extras.md) (`BrowserPythonSandbox`).
@@ -12,7 +12,7 @@ Distinct from the browser-Python / JupyterLite sandbox in
 ## Install
 
 ```bash
-pip install "hedron[notebook]>=0.30.0,<0.31"
+pip install "hedron[notebook]>=0.31.0,<0.32"
 # or
 pip install "hedron-notebook>=0.1.0,<0.2"
 ```
@@ -28,8 +28,20 @@ pip install "hedron-notebook[server]>=0.1.0,<0.2"   # pulls uvicorn
 - Authoring notebooks that need an inline iframe or external-link preview of a
   normal Hedron ASGI app
 
-Do **not** expose the preview server on a public host without understanding the
-warning path — hosted / publicly reachable hosts raise an explicit warning.
+`start_preview` **refuses** non-loopback hosts (`ValueError`). Remote or public
+serving is excluded from the Supported API.
+
+## Jupyter compatibility matrix
+
+| Frontend | Status |
+|---|---|
+| JupyterLab 4.x | Supported for localhost preview embedding |
+| Jupyter Notebook 7.x | Supported for localhost preview embedding |
+| Classic Notebook &lt; 7 | Unsupported — use JupyterLab / Notebook 7 |
+| Hosted JupyterHub public bind | Refused by Supported API |
+
+Warning/error UX: missing/wrong preview tokens return HTTP 401 / WS close 4401;
+non-loopback bind raises before the server starts.
 
 ## Quick start
 

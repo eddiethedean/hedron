@@ -14,7 +14,7 @@ This catalog is complete for the registered set enforced by
 | `HED-BUILD-0004` | blocker | Runtime compile refused in production | Prebuild assets; do not rely on runtime CSS compile under `HEDRON_ENV=production` |
 | `HED-SEC-0001` | blocker | Dangerous or invalid URL | Use `SafeUrl.parse` with the right `UrlPurpose` |
 | `HED-SEC-0006` | blocker | URL purpose mismatch for an attribute | Match purpose to `href` / `src` / `action` / redirect context |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.30.0,<0.31"` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.31.0,<0.32"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -23,7 +23,7 @@ This catalog is complete for the registered set enforced by
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.30.0,<0.31"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.31.0,<0.32"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -397,6 +397,27 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-WB-0007` | `HED_WB_0007` |
 | `HED-WB-0008` | `HED_WB_0008` |
 | `HED-WB-0009` | `HED_WB_0009` |
+
+## HED-MIG-ST
+
+Streamlit AST migrator findings (RFC-0061 / `MIGRATE-031`).
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-MIG-ST-0001` | `HED_MIG_ST_0001` |
+| `HED-MIG-ST-0002` | `HED_MIG_ST_0002` |
+| `HED-MIG-ST-0003` | `HED_MIG_ST_0003` |
+| `HED-MIG-ST-0004` | `HED_MIG_ST_0004` |
+| `HED-MIG-ST-0005` | `HED_MIG_ST_0005` |
+| `HED-MIG-ST-0006` | `HED_MIG_ST_0006` |
+| `HED-MIG-ST-0007` | `HED_MIG_ST_0007` |
+| `HED-MIG-ST-0008` | `HED_MIG_ST_0008` |
+| `HED-MIG-ST-0009` | `HED_MIG_ST_0009` |
+| `HED-MIG-ST-0010` | `HED_MIG_ST_0010` |
+| `HED-MIG-ST-0011` | `HED_MIG_ST_0011` |
+| `HED-MIG-ST-0012` | `HED_MIG_ST_0012` |
+| `HED-MIG-ST-0013` | `HED_MIG_ST_0013` |
+| `HED-MIG-ST-0014` | `HED_MIG_ST_0014` |
 
 ## HED-WORKFLOW
 

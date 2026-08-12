@@ -19,7 +19,7 @@ keywords = [
     "preview",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
@@ -34,8 +34,8 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.30.0,<0.31",
-    "hedron>=0.30.0,<0.31",
+    "hedron-core>=0.31.0,<0.32",
+    "hedron>=0.31.0,<0.32",
 ]
 
 [project.optional-dependencies]

@@ -243,6 +243,22 @@ HED_WB_0007 = "HED-WB-0007"  # platform / image cannot run (e.g. non-amd64)
 HED_WB_0008 = "HED-WB-0008"  # deprecated compatibility alias used
 HED_WB_0009 = "HED-WB-0009"  # unsupported Workbench launch topology
 
+# Streamlit AST migrator (0.31 RFC-0061)
+HED_MIG_ST_0001 = "HED-MIG-ST-0001"  # unresolved / dynamic Streamlit symbol
+HED_MIG_ST_0002 = "HED-MIG-ST-0002"  # unsupported or version-unknown API
+HED_MIG_ST_0003 = "HED-MIG-ST-0003"  # ambiguous widget-state owner
+HED_MIG_ST_0004 = "HED-MIG-ST-0004"  # callback or rerun control flow
+HED_MIG_ST_0005 = "HED-MIG-ST-0005"  # interleaved or duplicate side effect
+HED_MIG_ST_0006 = "HED-MIG-ST-0006"  # cache / resource lifecycle review
+HED_MIG_ST_0007 = "HED-MIG-ST-0007"  # raw HTML / unsafe URL / file / secret / component
+HED_MIG_ST_0008 = "HED-MIG-ST-0008"  # authentication / authorization / tenant boundary
+HED_MIG_ST_0009 = "HED-MIG-ST-0009"  # accessibility label / order / fallback review
+HED_MIG_ST_0010 = "HED-MIG-ST-0010"  # dependency / hosting non-parity
+HED_MIG_ST_0011 = "HED-MIG-ST-0011"  # parse / discovery / analysis limit failure
+HED_MIG_ST_0012 = "HED-MIG-ST-0012"  # output destination refused or write failure
+HED_MIG_ST_0013 = "HED-MIG-ST-0013"  # scaffolded mapping requires review
+HED_MIG_ST_0014 = "HED-MIG-ST-0014"  # report-only construct (no generated code)
+
 
 def registered_codes() -> frozenset[str]:
     """Return every ``HED-*`` code constant defined in this module."""

@@ -2,7 +2,8 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.30 train** (**Published**; last **v0.30.0**): fastapi-workbench extraction — [What’s ready](whats-ready.md).
+**0.31 train** (**Published**; last **v0.31.0**): tooling-grade conformance/sim/notebook/sample-kit,
+Node/Java evaluators, and `hedron migrate streamlit` — [What’s ready](whats-ready.md).
 
 Complete **Learn** first ([Learning path](../getting-started/learning-path.md):
 First app → HTMX → Minimal form). HTMX and minimal form live under **Learn** — this
@@ -153,7 +154,7 @@ Evaluating adoption? Use the **Evaluate** tab
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>Upgrade to the living 0.30 train (also under Project → Upgrade).</p>
+    <p>Upgrade to the living 0.31 train (also under Project → Upgrade).</p>
   </a>
   <a class="hedron-card" href="openapi/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>

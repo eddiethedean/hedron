@@ -1,27 +1,25 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.30 **Published** as `v0.30.0` (2026-08-12). Prior: 0.29
-**Published** as `v0.29.0` (2026-08-11). Living tip PyPI/git = `v0.30.0`.
+**Roadmap position:** phase 0.31 **Published** as `v0.31.0` (2026-08-12). Prior: 0.30
+**Published** as `v0.30.0` (2026-08-12). Living tip PyPI/git = `v0.31.0`.
 **Date:** 2026-08-12
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` `0.30.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
-`0.1.11`, `hedron-native` `0.1.2`; Alpha —
-`hedron-sample-kit` `0.1.10`, `hedron-notebook` / `hedron-mcp` / `hedron-gradio` / `hedron-sim` `0.1.0`
+`hedron-workbench` `0.31.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
+`0.1.11`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
+`hedron-sim` `0.1.0`, `hedron-runtime-node` / `hedron-runtime-java` `0.31.0`; Alpha —
+`hedron-mcp` / `hedron-gradio` `0.1.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-`hedron-workbench`, `hedron-charts`, `hedron-native`; Alpha — `hedron-sample-kit`, `hedron-notebook`,
-`hedron-mcp`, `hedron-gradio`, `hedron-sim`.
+`hedron-workbench`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
+`hedron-sim`; Alpha — `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.30** (D-058 / RFC-0063) — standalone `fastapi-workbench`
-`1.0.0` for plain FastAPI Workbench deployment and `hedron-workbench` `0.30.0` dependency
-inversion (`release-gate-0.30.toml` Verified; Published as `v0.30.0`). Prior Published **0.29**
-(`hedron-workbench` production-grade adapter as `v0.29.0`) remains in force. **Next** =
-**0.31 Planned** (D-059 / RFC-0064 tooling graduation + RFC-0061 Streamlit AST migrator;
-[#87](https://github.com/eddiethedean/hedron/issues/87),
-[#88](https://github.com/eddiethedean/hedron/issues/88)). The former planned
-0.30–0.39 phases remain at 0.31–0.40.
+**Phase focus:** Living train is **0.31** (D-059 / RFC-0064 / RFC-0061) — tooling-grade
+conformance, sample-kit, sim, notebook, Node/Java evaluators, and `hedron migrate streamlit`
+(`release-gate-0.31.toml` Verified; Published as `v0.31.0`). Prior Published **0.30**
+(`fastapi-workbench` 1.0.0 + `hedron-workbench` dependency inversion as `v0.30.0`) remains
+in force. **Next** = **0.32 Planned** (deny-by-default MCP projection; [#89](https://github.com/eddiethedean/hedron/issues/89)).
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
@@ -249,10 +247,8 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 ([#86](https://github.com/eddiethedean/hedron/issues/86)). Phase **0.27** is **Published**
 (`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
 Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is **Published**
-(`v0.30.0`; D-058 / RFC-0063). Remaining package-production work continues through **0.31–0.34**:
-developer and portable conformance tooling plus the Streamlit AST migrator
-([#87](https://github.com/eddiethedean/hedron/issues/87),
-[#88](https://github.com/eddiethedean/hedron/issues/88); D-059 / RFC-0064 / RFC-0061); MCP
+(`v0.30.0`; D-058 / RFC-0063). Phase **0.31** is **Published** (`v0.31.0`; D-059 / RFC-0064 /
+RFC-0061). Remaining package-production work continues through **0.32–0.34**: MCP
 ([#89](https://github.com/eddiethedean/hedron/issues/89)); Gradio
 ([#90](https://github.com/eddiethedean/hedron/issues/90)); then a whole-fleet
 closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform

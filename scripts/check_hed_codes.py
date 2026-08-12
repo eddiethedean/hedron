@@ -9,7 +9,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CODE_RE = re.compile(r"HED-[A-Z][A-Z0-9]*-\d+")
+# Allow multi-segment areas (e.g. HED-MIG-ST-0001) as well as HED-WB-0001.
+CODE_RE = re.compile(r"HED-(?:[A-Z][A-Z0-9]*-)+\d+")
 PACKAGES = ROOT / "packages"
 DOCS = ROOT / "docs" / "guides" / "error-codes.md"
 

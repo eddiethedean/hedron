@@ -1719,6 +1719,15 @@ def main(argv: list[str] | None = None) -> None:
     )
     run_p.set_defaults(func=_cmd_run_app)
 
+    migrate_p = sub.add_parser(
+        "migrate",
+        help="Reviewable framework migration assistants (RFC-0061)",
+    )
+    migrate_sub = migrate_p.add_subparsers(dest="migrate_command", required=True)
+    from hedron.migrate.cli import build_streamlit_parser
+
+    build_streamlit_parser(migrate_sub)
+
     args = parser.parse_args(argv)
     raise SystemExit(args.func(args))
 
