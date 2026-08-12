@@ -7,6 +7,7 @@ from collections.abc import Mapping
 
 from fastapi_workbench.config import ResolvedDeployment, WorkbenchConfig
 from fastapi_workbench.diagnostics import WorkbenchError
+from fastapi_workbench.resolve import explicit_mount_hint as _explicit_mount_hint
 from fastapi_workbench.resolve import parse_rserver_url_output as _parse_rserver_url_output
 from fastapi_workbench.resolve import resolve_deployment as _resolve_deployment
 from hedron_core.diagnostics import DiagnosticSeverity, HedronError, make_diagnostic
@@ -81,6 +82,28 @@ def parse_rserver_url_output(raw: str, *, port: int) -> tuple[str, str, str]:
         return _parse_rserver_url_output(raw, port=port)
     except WorkbenchError as exc:
         raise _translate_error(exc) from exc
+
+
+def explicit_mount_hint(
+    config: WorkbenchConfig,
+    env: Mapping[str, str] | None = None,
+    *,
+    compatibility_aliases: bool = True,
+    warnings: list[str] | None = None,
+) -> str | None:
+    """Return a non-empty mount when ``discover_rserver_url`` can be skipped.
+
+    Applies Hedron→generic env merging, then delegates to
+    ``fastapi_workbench.resolve.explicit_mount_hint`` so launcher paths skip
+    discovery when ``UVICORN_ROOT_PATH`` / resolved-mount env already supply a
+    mount (parity with fastapi-workbench #144 / hedron #159).
+    """
+    return _explicit_mount_hint(
+        config,
+        _merge_environ(env),
+        compatibility_aliases=compatibility_aliases,
+        warnings=warnings,
+    )
 
 
 def resolve_deployment(

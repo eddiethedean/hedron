@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Skip `rserver-url` discovery in `run_target` / `check --discover` / `doctor --live`
+  when `UVICORN_ROOT_PATH` or resolved-mount env already supplies the mount
+  (parity with fastapi-workbench #144; #159).
+
 ## [0.30.0] — 2026-08-12
 
 - Coordinated `0.30.0` train; `hedron-workbench` depends on `fastapi-workbench` 1.0.0 (phase 0.30 / D-058).

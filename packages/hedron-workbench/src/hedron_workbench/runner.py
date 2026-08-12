@@ -25,6 +25,7 @@ from hedron_workbench.resolve import (
     RESOLVED_SOURCE_ENV,
     _merge_environ,
     _translate_error,
+    explicit_mount_hint,
     resolve_deployment,
 )
 
@@ -211,13 +212,11 @@ def run_target(
     try:
         bound_port = int(sock.getsockname()[1])
         discovered: str | None = None
-        mount_hint = (
-            cfg.mount
-            or env.get("HEDRON_WORKBENCH_MOUNT")
-            or env.get("FASTAPI_WORKBENCH_MOUNT")
-            or env.get("BASE_PATH")
-        )
-        if rs_server_url(env) and not is_workbench_job(env) and not mount_hint:
+        if (
+            rs_server_url(env)
+            and not is_workbench_job(env)
+            and explicit_mount_hint(cfg, env) is None
+        ):
             discovered = discover_rserver_url(
                 binary=resolve_deployment(cfg, environ=env).rserver_url_bin,
                 port=bound_port,
