@@ -2066,9 +2066,9 @@ experimental interactive backends remain opt-in until they independently satisfy
 - `hedron-charts` and `hedron-native` are no longer Alpha for their declared Supported scopes.
 - Every non-Supported backend remains explicit, opt-in, and non-transitive from production defaults.
 
-## 0.29 — Posit Workbench deployment adapter (`v0.30.0`)
+## 0.29 — Posit Workbench deployment adapter (`v0.29.0`)
 
-**Status:** Published as `v0.30.0` (2026-08-11). Owned by **D-057** /
+**Status:** Published as `v0.29.0` (2026-08-11). Owned by **D-057** /
 [RFC-0062](docs/rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
 Tracking: [#134](https://github.com/eddiethedean/hedron/issues/134).
 Packet SSOT: [RELEASE_0_29.md](docs/acceptance/RELEASE_0_29.md) ·
@@ -2256,7 +2256,7 @@ and independently useful/tested in `hedron`; Posit-specific detection and path r
 
 ## 0.30 — Standalone FastAPI Workbench package (`v0.30.0`; `fastapi-workbench` `1.0.0`)
 
-**Status:** Implemented on the `0.30.0` train; owned by **D-058** /
+**Status:** Published as `v0.30.0` (2026-08-12). Owned by **D-058** /
 [RFC-0063](docs/rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md).
 Tracking: [#135](https://github.com/eddiethedean/hedron/issues/135).
 Packet SSOT: [RELEASE_0_30.md](docs/acceptance/RELEASE_0_30.md) ·
@@ -2266,7 +2266,7 @@ Cut verify: `python scripts/verify_pkg_30.py`.
 
 ### Entry criteria
 
-- Phase **0.30** Published (`v0.30.0`) with Verified `CONTRACT-029`…`PKG-029`.
+- Phase **0.29** Published (`v0.29.0`) with Verified `CONTRACT-029`…`PKG-029`.
 - [RFC-0063](docs/rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md) Accepted and tracking [#135](https://github.com/eddiethedean/hedron/issues/135) open.
 - [fastapi-workbench-provenance-029.toml](docs/acceptance/fastapi-workbench-provenance-029.toml) extended to
   [fastapi-workbench-provenance-030.toml](docs/acceptance/fastapi-workbench-provenance-030.toml).

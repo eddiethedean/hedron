@@ -1,8 +1,14 @@
 # What’s new in 0.18
 
+
+!!! note "Living train is 0.30"
+
+    Pin `hedron>=0.30.0,<0.31`. The pin below is historical for this train only.
+    See [What’s new in 0.30](whats-new-0.30.md).
+
 !!! note "Historical phase"
 
-    This page describes **0.18**. The Living published train is **0.28** (last `v0.28.2`). Pin `hedron>=0.28.2,<0.29`.
+    This page describes **0.18**. The Living published train is **0.30** (last `v0.30.0`). Pin `hedron>=0.30.0,<0.31`.
 
 Phase **0.18** adds model demos and inference workflows — fail-closed demo composition,
 governed feedback, inference scheduling over `JobBackend`, an interaction recorder, typed

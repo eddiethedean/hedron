@@ -1,6 +1,11 @@
 # What’s new in 0.28
 
-**Published** as `v0.28.2`. Pin `hedron>=0.28.2,<0.29`.
+!!! note "Living train is 0.30"
+
+    Pin `hedron>=0.30.0,<0.31`. The pin below is historical for the 0.28 train only.
+    See [What’s new in 0.30](whats-new-0.30.md).
+
+**Published** as `v0.28.2`. Historical pin: `hedron>=0.28.2,<0.29`.
 
 Phase **0.28** (D-056 / RFC-0059) graduates `hedron-charts` and `hedron-native` to
 **production-grade for their declared Supported inventories**.

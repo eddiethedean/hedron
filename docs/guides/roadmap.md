@@ -24,8 +24,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.26** | Production-grade core, FastAPI flagship, and secured/development Explorer | **Published** (`v0.26.0`; D-054) |
 | **0.27** | Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | **Published** (`v0.27.0`; D-055) |
 | **0.28** | Production-grade charts and optional native acceleration | **Published** (`v0.28.2`; D-056 / RFC-0059) |
-| **0.30** | Production-grade `hedron-workbench` Posit Workbench deployment adapter | **Published** (`v0.30.0`; D-057 / RFC-0062; [#134](https://github.com/eddiethedean/hedron/issues/134)) |
-| **0.30** | Bring `fastapi-workbench` into the monorepo for hands-off plain-FastAPI Workbench deployment; make `hedron-workbench` depend on it | Planned; first monorepo `fastapi-workbench` release is independently versioned `1.0.0`, while Hedron ships `v0.30.0` (D-058; RFC/tracking issue required) |
+| **0.29** | Production-grade `hedron-workbench` Posit Workbench deployment adapter | **Published** (`v0.29.0`; D-057 / RFC-0062; [#134](https://github.com/eddiethedean/hedron/issues/134)) |
+| **0.30** | Standalone `fastapi-workbench` 1.0.0 for plain FastAPI Workbench; `hedron-workbench` depends on it | **Published** (`v0.30.0`; D-058 / RFC-0063; [#135](https://github.com/eddiethedean/hedron/issues/135)) |
 | **0.31** | Production-grade conformance/plugin/simulation/notebook tooling, Node/Java evaluators, and a reviewable Streamlit AST migration assistant | Planned; tooling scope remains explicit; RFC-0061 Proposed ([#87](https://github.com/eddiethedean/hedron/issues/87), [#88](https://github.com/eddiethedean/hedron/issues/88)) |
 | **0.32** | Production-grade deny-by-default MCP projection | Planned; independent security evidence required ([#89](https://github.com/eddiethedean/hedron/issues/89)) |
 | **0.33** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access ([#90](https://github.com/eddiethedean/hedron/issues/90)) |
@@ -61,11 +61,12 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 ## Honest gaps on the current train (0.30)
 
-- Current **published** PyPI train is **0.28.x** (last `v0.28.2`)
+- Current **published** PyPI train is **0.30.x** (last `v0.30.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
-  `hedron-jinja` / `hedron-extras` (0.27), and `hedron-charts` / `hedron-native`
-  (0.28) Supported inventories — not every Beta symbol
+  `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
+  (0.28), and Workbench packages (`hedron-workbench` / `fastapi-workbench` on 0.29–0.30)
+  Supported inventories — not every Beta symbol
 - Notebook preview and MCP are **Experimental** / Alpha — deny-by-default / localhost-oriented
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via
   `hedron[experimental-ui]` (quarantined from `hedron[extras]`)

@@ -3,6 +3,7 @@
 ## [0.30.0] — 2026-08-12
 
 - Coordinated `0.30.0` train; `hedron-workbench` depends on `fastapi-workbench` 1.0.0 (phase 0.30 / D-058).
+- Inherits `fastapi-workbench` 1.0.0 path-security and mount-hint runner fixes (#142, #144).
 
 
 ## [0.29.0] — 2026-08-11

@@ -1,8 +1,14 @@
 # What’s new in 0.16
 
+
+!!! note "Living train is 0.30"
+
+    Pin `hedron>=0.30.0,<0.31`. The pin below is historical for this train only.
+    See [What’s new in 0.30](whats-new-0.30.md).
+
 !!! note "Historical phase"
 
-    This page describes **0.16**. The Living published train is **0.28** (last `v0.28.2`). Pin `hedron>=0.28.2,<0.29`.
+    This page describes **0.16**. The Living published train is **0.30** (last `v0.30.0`). Pin `hedron>=0.30.0,<0.31`.
 
 Phase **0.16** adds an optional `hedron-extras` toolkit for specialized data-app interactions and
 analysis workbenches — without expanding the core runtime or adopting Streamlit-style reruns or a

@@ -91,10 +91,11 @@ that port in the browser.
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
 `pip install -U "hedron>=0.30.0,<0.31"` (or `uv add "hedron>=0.30.0,<0.31"`). The current
 train is **0.30.x** (Published; last published PyPI/git = `v0.30.0`)—see
-
-Living tip is Published **`v0.28.2`**. The `v0.25.2` patch hardened mount `..` / `%2e`, RedisStatusStore / Celery–RQ cancel CAS, adapter prepare under a running loop, SSE/streaming `Cache-Control`, and root-relative SafeUrl/Hx attrs — still relevant when upgrading from earlier 0.25 lines onto `>=0.30.0,<0.31`.
-[What's ready](whats-ready.md) and the [public roadmap](roadmap.md). If docs describe a
-feature missing from your install, upgrade to a matching `0.28.x` pin
+[What's ready](whats-ready.md) and the [public roadmap](roadmap.md). The `v0.25.2` patch
+hardened mount `..` / `%2e`, RedisStatusStore / Celery–RQ cancel CAS, adapter prepare under
+a running loop, SSE/streaming `Cache-Control`, and root-relative SafeUrl/Hx attrs — still
+relevant when upgrading from earlier 0.25 lines onto `>=0.30.0,<0.31`. If docs describe a
+feature missing from your install, upgrade to a matching `0.30.x` pin
 (`hedron>=0.30.0,<0.31`) or use a tagged checkout of that release.
 
 ## CSRF 403 on POST (FastAPI / Flask)

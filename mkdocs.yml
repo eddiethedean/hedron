@@ -264,6 +264,7 @@ nav:
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.30: guides/whats-new-0.30.md
     - What's new in 0.29: guides/whats-new-0.29.md
     - What's new in 0.28: guides/whats-new-0.28.md
     - What's new in 0.27: guides/whats-new-0.27.md

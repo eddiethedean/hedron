@@ -114,7 +114,7 @@ Create a project first: `uv init my-app && cd my-app`, then
 
 ## Should I use `uv init` or `hedron new`?
 
-Prefer **`hedron new`** for a ready scaffold on **0.28.x** (install Hedron first).
+Prefer **`hedron new`** for a ready scaffold on **0.30.x** (install Hedron first).
 `uv init` + a hand-written `app.py` from the quickstart also works. Do not nest both into
 the same directory by accident.
 
@@ -133,11 +133,11 @@ Evaluators (three axes — skip if you are just building):
 Full cheat-sheet: [Maturity labels (evaluators)](../getting-started/how-to-read.md).
 Snapshot: [What’s ready today](whats-ready.md).
 
-## Why pin with an upper bound (`<0.29`)?
+## Why pin with an upper bound (`<0.31`)?
 
-A lower bound without an upper bound allows a future **0.29+** train to install
+A lower bound without an upper bound allows a future **0.31+** train to install
 automatically. Use `hedron>=0.30.0,<0.31` (and matching adapters/extras) so compatible
-0.28 patches are accepted while the next minor train requires an intentional review. See
+0.30 patches are accepted while the next minor train requires an intentional review. See
 [Compatibility](../COMPATIBILITY.md).
 
 ## Are Auto, DataTable, and charts available?
@@ -232,7 +232,7 @@ See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/inst
 
 ## Where is the SBOM / evidence bundle?
 
-Prefer GitHub Release assets for the train tag (`v0.28.2`), or regenerate from the
+Prefer GitHub Release assets for the train tag (`v0.30.0`), or regenerate from the
 tagged checkout with
 `scripts/build_evidence_bundle.py`. Step-by-step:
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.

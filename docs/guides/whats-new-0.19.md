@@ -1,6 +1,12 @@
 # What’s new in 0.19
 
-**Published as `v0.19.0`** (2026-08-07). Living published train is **0.28**.
+
+!!! note "Living train is 0.30"
+
+    Pin `hedron>=0.30.0,<0.31`. The pin below is historical for this train only.
+    See [What’s new in 0.30](whats-new-0.30.md).
+
+**Published as `v0.19.0`** (2026-08-07). Living published train is **0.30**.
 Historical installs for this phase used a 0.19 upper-bound pin; tip pin is
 `hedron>=0.28.2,<0.29`.
 

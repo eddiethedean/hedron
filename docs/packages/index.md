@@ -30,7 +30,7 @@ and the sample kit install directly. Charts require the compatible `0.1.10` sate
 | [hedron-explorer](hedron-explorer.md) | `hedron[dev]` | Development Component Explorer |
 | [hedron-extras](hedron-extras.md) | `hedron[extras]` | Curated toolkit (specialty widgets may be Experimental/stub) |
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
-| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.10,<0.2` on Hedron 0.28 |
+| [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.10,<0.2` on Hedron 0.30 |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
 | [hedron-workbench](hedron-workbench.md) | `hedron[workbench]` | Posit Workbench / RStudio Server launch adapter |
 

@@ -6,15 +6,23 @@ also attaches a checksum manifest and refuses to create the GitHub Release until
 exact PyPI artifact passes the documented scaffold smoke. PyPI remains authoritative
 for installable package versions.
 
+## 0.30.0 assets
+
+- [GitHub Release v0.30.0](https://github.com/eddiethedean/hedron/releases/tag/v0.30.0)
+- [Hedron 0.30.0 on PyPI](https://pypi.org/project/hedron/0.30.0/)
+- [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
+
+Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
+evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
+expected asset is missing.
+
 ## 0.28.2 assets
 
 - [GitHub Release v0.28.2](https://github.com/eddiethedean/hedron/releases/tag/v0.28.2)
 - [Hedron 0.28.2 on PyPI](https://pypi.org/project/hedron/0.28.2/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
-evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
-expected asset is missing.
+Historical 0.28 tip assets; prefer **0.30.0** above for the living train.
 
 ## 0.26.0 assets
 
@@ -35,7 +43,7 @@ For 0.26.1 or later, download `release-manifest.json`, the assets you need, and 
 verification script from the same tag. Replace `VERSION` below, then run:
 
 ```bash
-VERSION=0.28.2
+VERSION=0.30.0
 curl -fsSLO "https://github.com/eddiethedean/hedron/releases/download/v${VERSION}/release-manifest.json"
 curl -fsSLO "https://raw.githubusercontent.com/eddiethedean/hedron/v${VERSION}/scripts/verify_release_manifest.py"
 # Download the wheel, sdist, and/or evidence assets you intend to verify.
@@ -59,10 +67,10 @@ the artifacts actually published by the release workflow.
 ```bash
 git clone https://github.com/eddiethedean/hedron.git
 cd hedron
-git checkout v0.28.2
+git checkout v0.30.0
 uv sync --locked
-uv run python scripts/build_evidence_bundle.py --version 0.28.2
-uv run python scripts/verify_pkg_28.py
+uv run python scripts/build_evidence_bundle.py --version 0.30.0
+uv run python scripts/verify_pkg_30.py
 ```
 
 | Artifact | Generator |

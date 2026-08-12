@@ -4,6 +4,10 @@
 
 - Coordinated `0.30.0` train; `hedron-workbench` depends on `fastapi-workbench` 1.0.0 (phase 0.30 / D-058).
 
+### Fixed
+
+- SSE polling rejects non-positive `poll_interval_seconds` instead of busy-looping (#143).
+
 
 ## [0.29.0] — 2026-08-11
 

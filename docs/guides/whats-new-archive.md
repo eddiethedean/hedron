@@ -25,4 +25,4 @@ Historical phase notes (read only if you are upgrading from that line):
 | 0.10.1 | [whats-new-0.10.1](whats-new-0.10.1.md) |
 | 0.10 | [whats-new-0.10](whats-new-0.10.md) |
 
-Upgrade path: [Upgrade to 0.28](upgrade.md).
+Upgrade path: [Upgrade guide](upgrade.md).

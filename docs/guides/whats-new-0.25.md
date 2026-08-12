@@ -1,6 +1,12 @@
 # What’s new in Hedron 0.25
 
-**Published** as `v0.25.0` (last 0.25 patch `v0.25.2`). Living train is **0.28** — pin `hedron>=0.28.2,<0.29`.
+
+!!! note "Living train is 0.30"
+
+    Pin `hedron>=0.30.0,<0.31`. The pin below is historical for this train only.
+    See [What’s new in 0.30](whats-new-0.30.md).
+
+**Published** as `v0.25.0` (last 0.25 patch `v0.25.2`). Historical pin: `hedron>=0.25.0,<0.26`.
 
 Phase **0.25** makes the production posture explicit: a runnable multi-worker archetype,
 critical-path load budgets in CI, and an opt-in boundary so specialty experimental UI widgets are

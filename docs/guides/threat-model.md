@@ -1,6 +1,6 @@
 # Threat model
 
-**Status:** Maintained for the **0.28** train (**Published**; last published
+**Status:** Maintained for the **0.30** train (**Published**; last published
 PyPI/git = `v0.30.0`; baseline established in 0.11; refreshed for 0.15–0.28 surfaces)
 
 **Owner:** hedron  

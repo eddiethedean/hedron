@@ -57,7 +57,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
     may stay shorter — prefer guides + Autodoc when Errors is missing.
     Human error index: [Error codes](../guides/error-codes.md).
 
-## Surfaces introduced in 0.19 (available on the 0.28 train)
+## Surfaces introduced in 0.19 (available on the 0.30 train)
 
 These surfaces first shipped in the 0.19 phase and remain on the living **0.30.x**
 train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
@@ -127,9 +127,9 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
   (**Published**; last **v0.30.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.28.x**)
+  (introduced in 0.11; Supported on **0.30.x**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.28.x**
+  — Supported on **0.30.x**
 - Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
 - Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
   narrative [What's new in 0.16](../guides/whats-new-0.16.md); package

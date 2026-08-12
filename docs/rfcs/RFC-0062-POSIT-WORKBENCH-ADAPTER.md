@@ -9,7 +9,7 @@ supersedes its no-dependency disposition for 0.30+: `fastapi-workbench` moves in
 1.0.0 and `hedron-workbench` becomes its explicit downstream specialization.
 
 **Status:** Accepted
-**Phase:** 0.29 (`v0.30.0`; baseline Published `v0.28.2`)
+**Phase:** 0.29 (`v0.29.0`; baseline Published `v0.28.2`)
 **Stability:** `beta` (package + public API)
 **Evidence:** [RELEASE_0_29.md](../acceptance/RELEASE_0_29.md) ·
 [release-gate-0.29.toml](../acceptance/release-gate-0.29.toml) ·

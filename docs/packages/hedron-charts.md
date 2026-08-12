@@ -2,7 +2,7 @@
 
 Visualization adapters and chart components for Hedron.
 
-**Package maturity:** Beta · **0.28-compatible release:** `0.1.11` (floor `>=0.1.10`)
+**Package maturity:** Beta · **0.30-compatible release:** `0.1.11` (floor `>=0.1.10`)
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`  
 **Expect churn.** Interactive Plotly/Vega full browser runtimes remain **experimental**.
 

@@ -10,3 +10,8 @@
   wrap-once ASGI middleware, mount helpers, and redacted diagnostics (`FWB-0001`
   through `FWB-0009`).
 - Starlette and Uvicorn runtime dependencies only; no Hedron imports.
+
+### Fixed
+
+- Absolute-URL decode rejects semicolon path-smuggling via shared traversal checks (#142).
+- `run_target` discovery respects an explicit mount hint when the mount is already known (#144).

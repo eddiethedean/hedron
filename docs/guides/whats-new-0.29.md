@@ -1,6 +1,11 @@
 # What’s new in 0.29
 
-**Published** as `v0.29.0`. Pin `hedron>=0.29.0,<0.30`.
+!!! note "Living train is 0.30"
+
+    Pin `hedron>=0.30.0,<0.31`. The pin below is historical for the 0.29 train only.
+    See [What’s new in 0.30](whats-new-0.30.md).
+
+**Published** as `v0.29.0`. Historical pin: `hedron>=0.29.0,<0.30`.
 
 Phase **0.29** (D-057 / RFC-0062) ships production-grade
 `hedron-workbench` — an optional Posit Workbench / RStudio Server deployment
