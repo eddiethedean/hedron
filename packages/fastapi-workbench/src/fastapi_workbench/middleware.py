@@ -18,7 +18,12 @@ from fastapi_workbench.detect import (
     is_workbench_scope,
     path_has_encoded_absolute_url,
 )
-from fastapi_workbench.mount import is_local_path, normalize_mount_path, prefix_local_path
+from fastapi_workbench.mount import (
+    _path_has_traversal,
+    is_local_path,
+    normalize_mount_path,
+    prefix_local_path,
+)
 from fastapi_workbench.redact import redact_scope_for_log
 from fastapi_workbench.urls import normalize_http_origin
 
@@ -52,20 +57,26 @@ def _copy_scope(scope: Scope) -> Scope:
 
 
 def _unsafe_decoded_path(path: str) -> bool:
+    """Reject decoded absolute-URL paths that are not safe local targets.
+
+    Uses the same traversal rules as ``is_local_path()`` / ``_path_has_traversal()``
+    so semicolon-smuggled segments (``/..;/…``) are rejected (issue #142).
+    """
     if path.startswith("//") or "\\" in path or any(ord(char) < 32 for char in path):
+        return True
+    if _path_has_traversal(path):
         return True
     decoded = path
     for _ in range(_DECODE_ROUNDS):
-        for segment in decoded.split("/"):
-            if segment in {".", ".."}:
-                return True
+        if _path_has_traversal(decoded):
+            return True
         next_decoded = unquote(decoded)
         if next_decoded == decoded:
             break
         decoded = next_decoded
         if decoded.startswith("//") or "\\" in decoded:
             return True
-    return False
+    return _path_has_traversal(decoded)
 
 
 class WorkbenchPathMiddleware:
