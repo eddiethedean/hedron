@@ -228,7 +228,7 @@ cmd_evidence() {
 
 cmd_realwb() {
   # Live Posit Workbench Docker smoke (REALWB-029). Requires Docker and PWB_LICENSE.
-  # Skips successfully when PWB_LICENSE is expired (see check_realwb_029.py).
+  # Skips successfully when PWB_LICENSE is unavailable (see check_realwb_029.py).
   run uv run --python "$PYTHON" python scripts/check_realwb_029.py --live
 }
 

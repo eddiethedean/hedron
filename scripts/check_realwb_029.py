@@ -3,8 +3,8 @@
 
 Default: validate a redacted RESULT.log (no Docker on every CI run).
 Live: ``--live`` or ``HEDRON_REALWB=1`` runs ``scripts/realwb_029.sh``.
-When the live smoke detects an expired ``PWB_LICENSE``, it exits 42 and this
-checker reports a successful skip instead of failing CI.
+When the live smoke cannot use ``PWB_LICENSE`` (expired or activation limit), it
+exits 42 and this checker reports a successful skip instead of failing CI.
 """
 
 from __future__ import annotations
@@ -85,7 +85,7 @@ def main(argv: list[str] | None = None) -> int:
             subprocess.check_call(["bash", str(SCRIPT)], cwd=ROOT)
         except subprocess.CalledProcessError as exc:
             if exc.returncode == SKIP_EXIT_CODE:
-                print("skip: REALWB-029 (PWB_LICENSE expired)")
+                print("skip: REALWB-029 (PWB_LICENSE unavailable)")
                 return 0
             print(f"realwb_029.sh failed ({exc.returncode})", file=sys.stderr)
             return 1

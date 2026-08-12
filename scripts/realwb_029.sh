@@ -43,8 +43,10 @@ fail() {
   exit 1
 }
 
-skip_license_expired() {
-  log "REALWB-029 skip reason=license_expired Workbench license expired (redacted)"
+skip_license_unavailable() {
+  local reason="$1"
+  shift
+  log "REALWB-029 skip reason=$reason $*"
   log "RESULT=skip"
   log "REALWB-029 end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
@@ -53,8 +55,9 @@ skip_license_expired() {
   exit 42
 }
 
-license_expired_in_logs() {
-  printf '%s' "$1" | grep -qiE 'license.*expired|expired.*license|license has expired'
+license_unavailable_in_logs() {
+  printf '%s' "$1" | grep -qiE \
+    'license.*expired|expired.*license|license has expired|product key.*maximum number of computers'
 }
 
 cleanup() {
@@ -146,8 +149,8 @@ fi
 log "compose=up workbench pull=$compose_pull"
 if ! "${COMPOSE[@]}" up -d --pull "$compose_pull" workbench; then
   logs="$("${COMPOSE[@]}" logs --no-color --tail 80 workbench 2>/dev/null || true)"
-  if license_expired_in_logs "$logs"; then
-    skip_license_expired
+  if license_unavailable_in_logs "$logs"; then
+    skip_license_unavailable "license_unavailable" "Workbench license unavailable (redacted)"
   fi
   fail "HED-WB-0007" "failed to start $IMAGE (license/platform/qemu). Do not hang on QEMU."
 fi
@@ -176,11 +179,10 @@ if [[ "$ok" -ne 1 ]]; then
   log "failure_container_log_begin"
   printf '%s\n' "$logs" | redact_stream
   log "failure_container_log_end"
-  if license_expired_in_logs "$logs"; then
-    skip_license_expired
+  if license_unavailable_in_logs "$logs"; then
+    skip_license_unavailable "license_unavailable" "Workbench license unavailable (redacted)"
   fi
-  if printf '%s' "$logs" | grep -qiE \
-    'license.*(invalid|denied)|product key.*maximum number of computers'; then
+  if printf '%s' "$logs" | grep -qiE 'license.*(invalid|denied)'; then
     fail "HED-WB-0001" "Workbench license was rejected (redacted)"
   fi
   fail "HED-WB-0007" "Workbench did not become ready on :8787/auth-sign-in"

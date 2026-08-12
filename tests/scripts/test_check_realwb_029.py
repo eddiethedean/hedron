@@ -1,4 +1,4 @@
-"""REALWB checker behavior (skip on expired license)."""
+"""REALWB checker behavior (skip on unavailable license)."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import check_realwb_029  # noqa: E402
 
 
-def test_live_skip_on_expired_license_exit_code(monkeypatch) -> None:
+def test_live_skip_on_unavailable_license_exit_code(monkeypatch) -> None:
     def fake_check_call(cmd, *, cwd):  # type: ignore[no-untyped-def]
         assert cmd == ["bash", str(ROOT / "scripts" / "realwb_029.sh")]
         raise subprocess.CalledProcessError(check_realwb_029.SKIP_EXIT_CODE, cmd)
