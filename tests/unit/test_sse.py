@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from fastapi import FastAPI, Request
 from starlette.testclient import TestClient
 
@@ -162,3 +163,49 @@ def test_extension_script_tags_include_sse() -> None:
     joined = "\n".join(tags)
     assert "/hedron-static/ext/sse.js" in joined
     assert "/hedron-static/ext/head-support.js" in joined
+
+
+def test_poll_interval_clamps_non_positive_values() -> None:
+    from hedron.sse import _poll_interval
+
+    assert _poll_interval(None, retry_after=2.0) == 2.0
+    assert _poll_interval(None, retry_after=0.01) == 0.05
+    assert _poll_interval(0.0, retry_after=2.0) == 2.0
+    assert _poll_interval(-1.0, retry_after=0.01) == 0.05
+    assert _poll_interval(0.2, retry_after=2.0) == 0.2
+
+
+def test_job_status_sse_zero_poll_interval_no_busy_loop(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Regression for #143: poll_interval_seconds=0 must not sleep(0) forever."""
+    import asyncio
+
+    backend = InMemoryJobBackend()
+    set_job_backend(backend)
+    handle = backend.submit("demo", {"n": 1}, auth_subject="alice")
+    backend.mark(handle.job_id, JobState.RUNNING)
+
+    sleeps: list[float] = []
+    real_sleep = asyncio.sleep
+
+    async def capture_sleep(delay: float, result: object = None) -> object:
+        sleeps.append(float(delay))
+        if len(sleeps) >= 2:
+            backend.mark(handle.job_id, JobState.SUCCEEDED, result={"ok": True})
+        return await real_sleep(0)
+
+    monkeypatch.setattr(asyncio, "sleep", capture_sleep)
+
+    body = _read_sse_body(
+        lambda: job_status_sse_response(
+            handle.job_id,
+            backend=backend,
+            auth_subject="alice",
+            poll_interval_seconds=0,
+        )
+    )
+    assert sleeps
+    assert all(delay >= 0.05 for delay in sleeps)
+    assert b"succeeded" in body
+    assert b"hedron-close" in body
