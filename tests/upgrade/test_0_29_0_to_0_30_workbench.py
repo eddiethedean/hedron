@@ -15,10 +15,12 @@ def test_hedron_workbench_declares_fastapi_workbench_dependency() -> None:
     assert any("fastapi-workbench>=1.0.0,<2.0" in dep for dep in deps)
 
 
-def test_coordinated_train_is_030() -> None:
+def test_coordinated_train_tracks_living_tip() -> None:
+    """0.30 introduced the fastapi-workbench split; tip stays coordinated afterward."""
+    release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
     pyproject = ROOT / "packages" / "hedron-workbench" / "pyproject.toml"
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
-    assert data["project"]["version"] == "0.30.0"
+    assert data["project"]["version"] == release["published_version"]
 
 
 def test_fastapi_workbench_independent_version() -> None:

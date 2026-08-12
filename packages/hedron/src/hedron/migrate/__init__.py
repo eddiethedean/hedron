@@ -2,9 +2,19 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 SCHEMA_VERSION = "0.31.0-beta"
 MAPPING_CATALOG_VERSION = "1.60.0-hedron-0.31"
 STREAMLIT_AUDIT_BASELINE = "1.60.x"
+
+
+def run_migrate_streamlit(*args: Any, **kwargs: Any) -> int:
+    """Lazy wrapper so ``hedron.migrate`` constants import without pulling the CLI graph."""
+    from hedron.migrate.cli import run_migrate_streamlit as _run
+
+    return _run(*args, **kwargs)
+
 
 __all__ = [
     "MAPPING_CATALOG_VERSION",
@@ -12,11 +22,3 @@ __all__ = [
     "STREAMLIT_AUDIT_BASELINE",
     "run_migrate_streamlit",
 ]
-
-
-def __getattr__(name: str):
-    if name == "run_migrate_streamlit":
-        from hedron.migrate.cli import run_migrate_streamlit
-
-        return run_migrate_streamlit
-    raise AttributeError(name)
