@@ -1,4 +1,4 @@
-REALWB-030 start 2026-08-12T15:21:59Z
+REALWB-030 start 2026-08-12T15:45:09Z
 image=posit/workbench@sha256:***
 python=Python 3.12.13
 image_digest=sha256:***
@@ -44,6 +44,6 @@ FASTAPI_WEBSOCKET=ok
 FASTAPI_OUTSIDE_WORKBENCH=ok active=false workbenchified=false generic_aliases_ignored=ok
 FASTAPI_PACKAGE=pass
 RESULT=pass
-REALWB-030 end 2026-08-12T15:22:20Z
+REALWB-030 end 2026-08-12T15:45:25Z
 LICENSE_DEACTIVATE=begin timeout=120s
 LICENSE_DEACTIVATE=end

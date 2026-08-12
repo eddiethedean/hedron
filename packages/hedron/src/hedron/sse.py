@@ -22,6 +22,18 @@ __all__ = [
 
 
 _TERMINAL = frozenset({JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED})
+_MIN_POLL_INTERVAL_SECONDS = 0.05
+
+
+def _poll_interval(poll_interval_seconds: float | None, *, retry_after: float) -> float:
+    """Resolve the next sleep interval; clamp non-positive values to a floor.
+
+    Explicit ``0`` / negative values previously reached ``asyncio.sleep(0)`` and
+    busy-looped on unchanged non-terminal jobs (issue #143).
+    """
+    if poll_interval_seconds is not None and poll_interval_seconds > 0:
+        return float(poll_interval_seconds)
+    return max(_MIN_POLL_INTERVAL_SECONDS, float(retry_after))
 
 
 def _reject_header_controls(name: str, value: str) -> None:
@@ -157,24 +169,18 @@ def job_status_sse_response(
                     ):
                         yield encode_sse(event).encode("utf-8")
                     return
-                interval = (
-                    poll_interval_seconds
-                    if poll_interval_seconds is not None
-                    else max(0.05, float(status_obj.retry_after))
+                await asyncio.sleep(
+                    _poll_interval(poll_interval_seconds, retry_after=status_obj.retry_after)
                 )
-                await asyncio.sleep(interval)
                 last_id = None  # only skip the first matching snapshot
                 continue
             key = (status_obj.state.value, status_obj.updated_at)
             if key == last_emitted_key:
                 if status_obj.state in _TERMINAL:
                     return
-                interval = (
-                    poll_interval_seconds
-                    if poll_interval_seconds is not None
-                    else max(0.05, float(status_obj.retry_after))
+                await asyncio.sleep(
+                    _poll_interval(poll_interval_seconds, retry_after=status_obj.retry_after)
                 )
-                await asyncio.sleep(interval)
                 continue
             terminal = status_obj.state in _TERMINAL
             for event in job_status_sse_events(
@@ -190,11 +196,8 @@ def job_status_sse_response(
             last_id = None
             if terminal:
                 return
-            interval = (
-                poll_interval_seconds
-                if poll_interval_seconds is not None
-                else max(0.05, float(status_obj.retry_after))
+            await asyncio.sleep(
+                _poll_interval(poll_interval_seconds, retry_after=status_obj.retry_after)
             )
-            await asyncio.sleep(interval)
 
     return SseResponse(_gen())
