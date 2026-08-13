@@ -1,0 +1,55 @@
+# Phase 0.33 production-grade inventory (machine-checked at PKG-033 / refine).
+# Supported = intended production-grade / Beta label at 0.33 exit for the declared package.
+# Experimental = may ship but excluded from production-grade claims.
+# Excluded = must not be required for a production-grade Supported workflow.
+# Owning decision: D-061. RFC: RFC-0066.
+# Baseline tip: Published v0.32.0. Package versions at cut: hedron-posit / hedron-workbench 0.33.0 Beta.
+# Stage 0 bridge decision (packet refine): Supported authenticated_header_v1 dropped unless
+# realconnect-033 reproduces native request-cookie loss (see RESULT.log BRIDGE_DECISION=).
+
+baseline = "v0.32.0"
+packages = [
+  "hedron-posit",
+  "hedron-workbench",
+]
+
+[hedron-posit]
+supported = [
+  "hedron_posit_facade",
+  "posit_config",
+  "connect_config",
+  "native_connect",
+  "workbench_delegation",
+  "one_way_dependency_graph",
+  "posit_cli_run_check_doctor",
+  "hedron_posit_extra",
+]
+experimental = [
+  "off_host_connect",
+  "authenticated_header_v1_extension_point",
+  "vanity_url_matrix_expansion",
+]
+excluded = [
+  "authenticated_header_v1_supported",
+  "connect_publishing",
+  "connect_administration",
+  "fastapi_posit_facade",
+  "second_path_normalizer",
+  "connect_credentials_as_hedron_auth",
+  "hedron_1_0_or_sla_or_certification",
+]
+
+[hedron-workbench]
+supported = [
+  "hedron_workbench_compat_subclass",
+  "public_imports_cli_extra",
+  "inactive_hedron_parity",
+  "workbench_pre_import_launcher",
+]
+experimental = [
+  "posit_connect_base_header",
+]
+excluded = [
+  "connect_publishing",
+  "dependency_on_hedron_posit_cycle",
+]
