@@ -71,9 +71,7 @@ class ArtifactStore:
         self._evict_expired()
         self._validate_name(name)
         if len(data) > self._max_bytes:
-            raise GradioRemoteError(
-                f"Artifact exceeds max size ({len(data)} > {self._max_bytes})"
-            )
+            raise GradioRemoteError(f"Artifact exceeds max size ({len(data)} > {self._max_bytes})")
         artifact_id = f"{name}:{uuid.uuid4().hex}"
         if not _ARTIFACT_ID.match(artifact_id):
             raise GradioRemoteError("Generated artifact id failed validation")

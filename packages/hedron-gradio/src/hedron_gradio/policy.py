@@ -117,9 +117,7 @@ def validate_remote_url(
         raise GradioRemoteError(f"Missing host in {label} URL: {url!r}")
     normalized = normalize_host(host)
     if normalized not in config.allowed_hosts:
-        raise GradioRemoteError(
-            f"Host {normalized!r} is not in the allowlist for {label}"
-        )
+        raise GradioRemoteError(f"Host {normalized!r} is not in the allowlist for {label}")
     if not config.allow_private_hosts and _host_is_private(normalized):
         raise GradioRemoteError(f"Private or loopback host blocked for {label}: {normalized!r}")
 

@@ -1,6 +1,6 @@
 # Upgrade fixtures — phase 0.34 (`hedron-gradio`)
 
-Baseline: Published **`v0.34.0`**. Cut: **`v0.34.0`** / `hedron-gradio` **`0.2.0` Beta**.
+Baseline: Published **`v0.33.0`**. Cut: **`v0.34.0`** / `hedron-gradio` **`0.2.0` Beta**.
 
 ## Goldens
 

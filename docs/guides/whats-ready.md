@@ -15,7 +15,8 @@ Pin versions. Packages are Beta (no 1.0, no SLA). Prefer polling over SSE/WebSoc
 `hedron[charts]>=0.34.0,<0.35` and `hedron-sample-kit>=0.1.10,<0.2`.
 Matplotlib/static charts are the **Supported** default path on the Beta
 `hedron-charts` package; Plotly / Altair remain **Experimental**.
-**Experimental:** notebook preview, Gradio, live SSE/WS. MCP is **Beta** for its
+**Experimental:** notebook preview, live SSE/WS. Gradio remote client interop is **Beta**
+(`hedron-gradio` `0.2.0`) for declared allowlisted destinations. MCP is **Beta** for its
 declared Supported inventory (`hedron-mcp` `0.2.0`).
 
 Need procurement detail (API stability tiers, a11y sessions, evidence)? See
@@ -83,7 +84,8 @@ sessions are not Supported yet** — do not market human AT as done.
 | Charts | **Supported** Matplotlib/static on Beta package | Install `hedron[charts]>=0.34.0,<0.35`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.0` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
-| Notebook / Gradio | **Experimental** / **Alpha** | Localhost notebook preview; Gradio interop — not production defaults |
+| Notebook preview | **Experimental** | Localhost notebook preview; not Supported production |
+| Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
 
 !!! note "Package train vs capability"
 
@@ -134,6 +136,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Progressive-enhancement forms / landmarks / `Page(scripts=)` | `hedron` / `hedron-core` | Supported; HTMX is optional enhancement rather than a requirement for core form flows |
 | Explorer accessibility workspace | `hedron[dev]` / `hedron-explorer` | Supported for local diagnostics (`/hedron-explorer/a11y`) |
 | Automated Playwright/axe accessibility matrix | `hedron[browser]` | Supported automation evidence; **not equivalent to human assistive-technology testing** |
+| Remote Gradio / HF Space client interop | `hedron[gradio]` / `hedron-gradio` | Supported for declared allowlisted destinations; pin `>=0.2.0,<0.3` |
 
 Pin package versions in production. “Supported” does not mean a commercial SLA or
 guaranteed multi-worker live-transport proof.
@@ -154,7 +157,6 @@ guaranteed multi-worker live-transport proof.
 | Package | Role |
 |---|---|
 | `hedron[notebook]` / `hedron-notebook` | Localhost-oriented preview; not Supported production |
-| `hedron[gradio]` / `hedron-gradio` | Gradio client interop; deny-by-default discover |
 | `hedron-sample-kit` | Installable reference plugin (`>=0.1.10,<0.2`) |
 | `packages/hedron-runtime-*` | Tooling-grade Java / Node conformance evaluators |
 
@@ -163,6 +165,7 @@ guaranteed multi-worker live-transport proof.
 | Package | Role |
 |---|---|
 | `hedron[mcp]` / `hedron-mcp` | Beta `0.2.0` (`>=0.2.0,<0.3`); deny-by-default Supported inventory; mutations Experimental |
+| `hedron[gradio]` / `hedron-gradio` | Beta `0.2.0` (`>=0.2.0,<0.3`); allowlisted remote predict/stream/file transport |
 | `hedron[charts]` / `hedron-charts` | Beta package (`>=0.1.10,<0.2`); Matplotlib/static Supported; Plotly/Altair Experimental |
 | `hedron[native]` / `hedron-native` | Optional Rust HTML-escape accel; pure-Python fallback Supported |
 
@@ -226,7 +229,7 @@ Extras: `"hedron[data]>=0.34.0,<0.35"`, `"hedron[extras]>=0.34.0,<0.35"`,
 `"hedron[jinja]>=0.34.0,<0.35"`, `"hedron[dev]>=0.34.0,<0.35"`,
 `"hedron[notebook]>=0.34.0,<0.35"` (tooling / localhost),
 `"hedron[mcp]>=0.34.0,<0.35"` (Beta Supported inventory),
-`"hedron[gradio]>=0.34.0,<0.35"` (Alpha satellite),
+`"hedron[gradio]>=0.34.0,<0.35"` (Beta satellite; pin `hedron-gradio>=0.2.0,<0.3`),
 `"hedron[charts]>=0.34.0,<0.35"`, `"hedron[workbench]>=0.34.0,<0.35"`,
 `"hedron[posit]>=0.34.0,<0.35"`,
 and `"hedron-sample-kit>=0.1.10,<0.2"`.

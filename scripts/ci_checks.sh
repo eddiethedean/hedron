@@ -224,8 +224,8 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/check_release_gate.py "$GATE_VERSION"
   run uv run --python "$PYTHON" python scripts/check_human_at_packet.py
   run uv run --python "$PYTHON" python scripts/check_hed_codes.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_33.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_34.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_33.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_34.py
 }
 
 cmd_realconnect() {
@@ -242,7 +242,7 @@ cmd_realwb() {
 
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
-  run uv run --python "$PYTHON" python scripts/verify_pkg_33.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_34.py
 }
 
 cmd_all() {

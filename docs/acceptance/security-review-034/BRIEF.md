@@ -1,7 +1,7 @@
 # Security review brief — phase 0.34 (`hedron-gradio`)
 
 **Package at cut:** `hedron-gradio` `0.2.0` Beta  
-**Owning RFC:** [RFC-0067](../rfcs/RFC-0067-PRODUCTION-GRADE-GRADIO.md)  
+**Owning RFC:** [RFC-0067](../../rfcs/RFC-0067-PRODUCTION-GRADE-GRADIO.md)  
 **Gate:** `REVIEW-034`  
 **Tracking:** [#90](https://github.com/eddiethedean/hedron/issues/90)
 
@@ -36,4 +36,5 @@ Independent review of the **Supported** remote client-interop surface:
 
 ## Status
 
-**Planned** — maintainer-led or external review completes before `REVIEW-034` Verified at cut.
+**Verified** (2026-08-13) — maintainer-led review complete; no open critical/high findings.
+See `REDACTED_REPORT.md` and `DISPOSITION.toml`.

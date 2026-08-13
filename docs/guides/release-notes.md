@@ -30,12 +30,8 @@ Coordinated Beta train cut for unified Posit Workbench / Connect adapter
 - Supported cookie bridge dropped after Stage 0 (`BRIDGE_DECISION=drop_supported`).
 - Coordinated `hedron` / core packages `0.33.0`; `fastapi-workbench` stays `1.x`;
   MCP stays satellite `>=0.2.0,<0.3`.
-- Pin `hedron>=0.34.0,<0.35`.
-
-```bash
-python -m pip install -U "hedron>=0.34.0,<0.35"
-python -m pip install -U "hedron[posit]>=0.34.0,<0.35"
-```
+- Historical cut pin `hedron>=0.33.0,<0.34`. Install the current tip with the pin under
+  **0.34.0** above.
 
 ## 0.32.0 — 2026-08-12
 

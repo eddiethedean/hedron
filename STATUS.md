@@ -2,24 +2,24 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.33 **Published** as `v0.34.0` (2026-08-13). Prior: 0.32 **Published** as `v0.32.0` (2026-08-12).
+**Roadmap position:** phase 0.34 **Published** as `v0.34.0` (2026-08-13). Prior: 0.33 **Published** as `v0.33.0` (2026-08-13); 0.32 **Published** as `v0.32.0` (2026-08-12).
 Living tip = `v0.34.0`.
 **Date:** 2026-08-13
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
 `hedron-workbench` / `hedron-posit` `0.34.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.1.11`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
-`hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
-`0.32.0`; Alpha — `hedron-gradio` `0.1.0`
+`hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
+`0.32.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
 `hedron-workbench`, `hedron-posit`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
-`hedron-sim`, `hedron-mcp`; Alpha — `hedron-gradio`.
+`hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.33** (D-061 / RFC-0066) — unified `hedron-posit`
-Workbench / Connect adapter (`release-gate-0.33.toml` Verified; published tip `v0.34.0`).
-Prior Published **0.32** (MCP production-grade as `v0.32.0`) remains in force.
+**Phase focus:** Living train is **0.34** (D-062 / RFC-0067) — production-grade `hedron-gradio`
+remote client interop (`release-gate-0.34.toml` Verified; published tip `v0.34.0`).
+Prior Published **0.33** (unified Posit adapter as `v0.33.0`) and **0.32** (MCP as `v0.32.0`) remain in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
@@ -44,8 +44,8 @@ Adopter summary: [What’s ready today](docs/guides/whats-ready.md). Rule of thu
 capability as unqualified **Supported** when its owning gate row is **Deferred** or still
 **Planned**. Live SSE/WS/streaming/preload remain **experimental** (polling Supported —
 `polling_only` Accepted in 0.24). Notebook preview is tooling-grade / localhost-only;
-MCP is Beta for the declared Supported inventory (0.32 / `hedron-mcp` `0.2.0`); Gradio interop
-remains **Experimental** / Alpha. Phase 0.20 closed with **zero Deferred** among **0.20 gate IDs**.
+MCP is Beta for the declared Supported inventory (0.32 / `hedron-mcp` `0.2.0`); Gradio remote
+client interop is Beta for declared allowlisted destinations (0.34 / `hedron-gradio` `0.2.0`). Phase 0.20 closed with **zero Deferred** among **0.20 gate IDs**.
 Phase 0.21 ships the engineering train with an honest human-AT gap: protocol Verified;
 sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy composition with
 **zero Deferred** among 0.22-owned rows. Phase **0.23** ships stable-tier expansion with
@@ -280,12 +280,14 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is **Published**
 (`v0.30.0`; D-058 / RFC-0063). Phase **0.31** is **Published** (`v0.31.0`; D-059 / RFC-0064 /
 RFC-0061). Phase **0.32** is **Published** (`v0.32.0` / `hedron-mcp` `0.2.0`; D-060 /
-RFC-0065). Phase **0.33** is **Published** (`v0.34.0` / `hedron-posit` `0.34.0` Beta; D-061 /
+RFC-0065). Phase **0.33** is **Published** (`v0.33.0` / `hedron-posit` `0.33.0` Beta; D-061 /
 RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)); see
 [implementation plan](docs/implementation/HEDRON_POSIT_033.md) and
-[0.33 acceptance packet](docs/acceptance/RELEASE_0_33.md). Remaining package-production work
-continues through **0.34–0.35**: Gradio ([#90](https://github.com/eddiethedean/hedron/issues/90));
-then a whole-fleet
+[0.33 acceptance packet](docs/acceptance/RELEASE_0_33.md). Phase **0.34** is **Published**
+(`v0.34.0` / `hedron-gradio` `0.2.0` Beta; D-062 / RFC-0067; [#90](https://github.com/eddiethedean/hedron/issues/90));
+see [implementation plan](docs/implementation/HEDRON_GRADIO_034.md) and
+[0.34 acceptance packet](docs/acceptance/RELEASE_0_34.md). Remaining package-production work
+continues through **0.35**: whole-fleet
 closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform
 work is tracked as [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 (phases 0.36–0.41). These phases require owning RFCs/decisions and Verified evidence before any

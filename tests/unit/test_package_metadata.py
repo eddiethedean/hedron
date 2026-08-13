@@ -38,7 +38,7 @@ def test_version_is_synchronized() -> None:
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
         )["project"]
         assert other["version"] == __version__, name
-    alpha_packages = ("hedron-gradio",)
+    alpha_packages: tuple[str, ...] = ()
     for name in alpha_packages:
         other = tomllib.loads(
             (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
@@ -50,6 +50,21 @@ def test_version_is_synchronized() -> None:
         ]
         assert development_status == ["Development Status :: 3 - Alpha"], name
         # Alpha packages may version independently of the Beta train.
+    independent_beta_02 = (
+        "hedron-mcp",
+        "hedron-gradio",
+    )
+    for name in independent_beta_02:
+        other = tomllib.loads(
+            (ROOT / "packages" / name / "pyproject.toml").read_text(encoding="utf-8")
+        )["project"]
+        development_status = [
+            classifier
+            for classifier in other["classifiers"]
+            if classifier.startswith("Development Status ::")
+        ]
+        assert development_status == ["Development Status :: 4 - Beta"], name
+        assert str(other["version"]).startswith("0.2."), name
     independent_beta = (
         "hedron-charts",
         "hedron-native",
@@ -78,6 +93,16 @@ def test_version_is_synchronized() -> None:
     ]
     assert mcp_status == ["Development Status :: 4 - Beta"]
     assert mcp["version"] == "0.2.0"
+    gradio = tomllib.loads(
+        (ROOT / "packages" / "hedron-gradio" / "pyproject.toml").read_text(encoding="utf-8")
+    )["project"]
+    gradio_status = [
+        classifier
+        for classifier in gradio["classifiers"]
+        if classifier.startswith("Development Status ::")
+    ]
+    assert gradio_status == ["Development Status :: 4 - Beta"]
+    assert gradio["version"] == "0.2.0"
 
 
 def test_public_metadata_fields() -> None:

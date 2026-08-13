@@ -33,7 +33,7 @@ Other majors/minors raise `GradioRemoteError`.
 | Flagging | `PredictionFeedback` | Consent mandatory; never ground truth. |
 | Queue / batch / concurrency | `InferencePolicy` over `JobBackend` | In-process queue is development-only. |
 | API recorder | `InteractionRecorder` | Public endpoints only; secrets redacted. |
-| Remote Gradio apps | `hedron_gradio.GradioClientAdapter` | Experimental Alpha protocol client. |
+| Remote Gradio apps | `hedron_gradio.GradioClientAdapter` | Beta production-grade remote client (0.34+); allowlisted destinations only. |
 | `Workflow` canvas | `InferenceWorkflow` + structured editor | No canvas required; JSON cannot run host code. |
 | HF Space / OAuth / ZeroGPU | Vendor nodes in `hedron-gradio` | Not portable core contracts. |
 

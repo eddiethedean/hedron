@@ -1,6 +1,6 @@
 # What's new in Hedron 0.34
 
-**Planned** as `v0.34.0`. Pin `hedron>=0.34.0,<0.35` at cut.
+**Published** as `v0.34.0`. Pin `hedron>=0.34.0,<0.35`.
 
 Phase 0.34 graduates **`hedron-gradio` `0.2.0` Beta** for production-grade remote Gradio and
 bounded Hugging Face Space client interoperability. Default presentation refresh remains deferred

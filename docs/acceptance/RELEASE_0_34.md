@@ -1,34 +1,35 @@
 # Hedron `v0.34` production-grade Gradio acceptance
 
-**Status:** **Planned** (packet refine; target `v0.34.0`).
+**Status:** **Published** as `v0.34.0` (2026-08-13).
 
 Phase 0.34 graduates **`hedron-gradio` `0.2.0` Beta** for explicitly declared remote Gradio
-endpoints and bounded Hugging Face Space client paths. Baseline: Published `v0.34.0`. Evidence is
+endpoints and bounded Hugging Face Space client paths. Baseline: Published `v0.33.0`. Evidence is
 indexed by [`release-gate-0.34.toml`](release-gate-0.34.toml). **Zero Deferred:** every 0.34-owned
 Gradio gate must be Verified at cut.
 
 Owning decision: [D-062](../DECISIONS.md). Design:
-[RFC-0067](../rfcs/RFC-0067-PRODUCTION-GRADE-GRADIO.md) (Draft at refine; Accepted at cut).
-Implementation: [HEDRON_GRADIO_034](../implementation/HEDRON_GRADIO_034.md). Tracking:
+[RFC-0067](../rfcs/RFC-0067-PRODUCTION-GRADE-GRADIO.md) (**Accepted** 2026-08-13). Implementation:
+[HEDRON_GRADIO_034](../implementation/HEDRON_GRADIO_034.md). Tracking:
 [#90](https://github.com/eddiethedean/hedron/issues/90).
 
 ## Release contract
 
-- `hedron-gradio==0.2.*` depends on `hedron-core>=0.34,<0.35` at cut; Alpha `0.1.x` remains the
-  upgrade source during refine.
+- `hedron-gradio==0.2.*` depends on `hedron-core>=0.34,<0.35`; Alpha `0.1.x` remains the
+  upgrade source.
 - `hedron[gradio]` extra installs the satellite; absence adds no core dependency or startup cost.
 - Supported remote calls require explicit destination allowlist and endpoint declarations.
 - Gradio UI runtime embed, share tunnels, and arbitrary caller URLs remain **Excluded**.
 - Python 3.11–3.14 remain the supported interpreter matrix.
-- Default presentation refresh (`PRESENT-034`) is **optional** and non-blocking for Gradio cut.
+- Default presentation refresh (`PRESENT-034`) is **optional** and non-blocking for Gradio cut
+  (Deferred to 0.35).
 
 ## Entry criteria
 
-- [x] `v0.34.0` published; D-061 Accepted; #167 closed
+- [x] `v0.33.0` published; D-061 Accepted; #167 closed
 - [x] Gradio Alpha baseline from 0.18 (`GRADIO-018`)
-- [ ] Draft RFC-0067 and implementation plan present
-- [ ] Tracking issue #90 bound to phase 0.34 gate IDs
-- [ ] Planned release-gate rows and checker ownership reviewed
+- [x] RFC-0067 Accepted and implementation plan present
+- [x] Tracking issue #90 bound to phase 0.34 gate IDs
+- [x] Planned release-gate rows and checker ownership reviewed
 
 ## Exact cut matrix
 
@@ -88,8 +89,8 @@ python scripts/check_release_gate.py 0.34.0 \
 
 ## Exit
 
-- [ ] Exact cut matrix has no `TBD` on Supported lanes
-- [ ] RFC-0067 Accepted and implementation matches it
-- [ ] Every 0.34-owned Gradio release-gate row Verified with zero Deferred
-- [ ] `hedron-gradio` maturity claim matches the inventory
+- [x] Exact cut matrix has no `TBD` on Supported lanes
+- [x] RFC-0067 Accepted and implementation matches it
+- [x] Every 0.34-owned Gradio release-gate row Verified with zero Deferred
+- [x] `hedron-gradio` maturity claim matches the inventory
 - [ ] Close #90 after release assets are published on GitHub/PyPI

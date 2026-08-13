@@ -100,7 +100,7 @@ phases through 0.25).
 - [Security types](SECURITY_TYPES.md)
 - [Auth](AUTH.md)
 - [Explorer](EXPLORER.md)
-- [Accessibility (`hedron_core.a11y`)](A11Y.md) — introduced in 0.19; available on the living 0.33 train
+- [Accessibility (`hedron_core.a11y`)](A11Y.md) — introduced in 0.19; available on the living 0.34 train
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
 - [API diagnostics](DIAGNOSTICS.md)

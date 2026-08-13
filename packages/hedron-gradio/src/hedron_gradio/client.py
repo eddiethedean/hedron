@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 import re
-import uuid
 from collections.abc import Callable, Iterator, Mapping
 from dataclasses import dataclass, field
 from typing import Any
@@ -161,7 +160,7 @@ class GradioClientAdapter:
                 return status.as_dict()
         status = self._job_manager.poll(job_id, scope_key=self.scope_key)
         if status.status == "running" and self.endpoints:
-            record = self._job_manager._get_scoped(job_id, self.scope_key)  # noqa: SLF001
+            record = self._job_manager._get_scoped(job_id, self.scope_key)
             status = self._job_manager.complete(
                 job_id,
                 scope_key=self.scope_key,

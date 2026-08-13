@@ -71,14 +71,13 @@ def main(argv: list[str] | None = None) -> int:
     _check_review_packet(allow_planned=args.allow_planned)
 
     if args.allow_planned:
-        gate_cmd = [
-            sys.executable,
-            str(ROOT / "scripts" / "check_release_gate.py"),
-            LIVING_TIP,
-            "--evidence-manifest",
-            str(EVIDENCE),
-            "--allow-planned",
-        ]
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import check_release_gate as gate  # noqa: E402
+
+        errors = gate.check_evidence_manifest_lenient(EVIDENCE)
+        if errors:
+            raise SystemExit("\n".join(errors))
+        print("ok: release-gate-0.33.toml (historical shape)")
     else:
         gate_cmd = [
             sys.executable,
@@ -88,8 +87,8 @@ def main(argv: list[str] | None = None) -> int:
             str(EVIDENCE),
             "--execute-verified",
         ]
-    print("+", *gate_cmd)
-    subprocess.check_call(gate_cmd, cwd=ROOT)
+        print("+", *gate_cmd)
+        subprocess.check_call(gate_cmd, cwd=ROOT)
     print(f"ok: verify_pkg_33 ({'allow-planned' if args.allow_planned else 'cut'})")
     return 0
 

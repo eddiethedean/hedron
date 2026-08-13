@@ -2684,9 +2684,11 @@ integration, delegates generic Workbench behavior to `fastapi-workbench`, and le
 
 ## 0.34 — Production-grade Gradio interoperability (`v0.34.0`)
 
-**Status:** Planned. `hedron-gradio` remains Experimental Alpha until every gate below is Verified.
-**Tracking:** [#90](https://github.com/eddiethedean/hedron/issues/90). Close when all 0.34-owned
-gates are Verified and the package leaves Alpha for declared client-interop scope.
+**Status:** **Published** as `v0.34.0` (2026-08-13). `hedron-gradio` `0.2.0` Beta for declared
+remote client-interop scope. Evidence: [`RELEASE_0_34.md`](docs/acceptance/RELEASE_0_34.md) ·
+[`release-gate-0.34.toml`](docs/acceptance/release-gate-0.34.toml).
+**Tracking:** [#90](https://github.com/eddiethedean/hedron/issues/90). Close after release assets
+are published on GitHub/PyPI.
 
 **Outcome:** `hedron-gradio` is production-grade for explicitly declared remote Gradio endpoints and
 Hugging Face Spaces. Remote calls have allowlisted destinations and operations, bounded file and

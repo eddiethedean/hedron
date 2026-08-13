@@ -22,7 +22,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by ci.yml).
-  HEDRON_GATE_VERSION: "0.33.0"
+  HEDRON_GATE_VERSION: "0.34.0"
 
 jobs:
   test:
@@ -118,7 +118,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Install dependencies
-        # Docs group required: verify_pkg_33 DOCS/REGRESS gates run strict MkDocs.
+        # Docs group required: verify_pkg_34 DOCS/REGRESS gates run strict MkDocs.
         run: uv sync --locked --python 3.12 --group docs
       - name: Set up Java
         uses: actions/setup-java@v5
