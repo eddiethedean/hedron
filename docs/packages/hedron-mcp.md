@@ -41,9 +41,11 @@ app = Hedron(
     session_secret=os.environ.get("HEDRON_SESSION_SECRET", "dev-only"),
 )
 
+# Prefer session / host auth. Do not trust client headers unless a reverse
+# proxy overwrites them; the default resolver never reads x-hedron-principal.
 projection = McpProjection(
     enabled=True,
-    principal_resolver=lambda request: request.headers.get("x-hedron-principal"),
+    principal_resolver=lambda request: request.session.get("user"),
 )
 projection.register_resource(McpResource(uri="hedron://page/home", name="home"))
 projection.register_tool(

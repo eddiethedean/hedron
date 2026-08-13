@@ -42,9 +42,11 @@ app = Hedron(
     session_secret="dev-only",
 )
 
+# Prefer session / host auth. Header identity is host-owned opt-in only —
+# the default resolver never trusts x-hedron-principal / x-user.
 projection = McpProjection(
     enabled=True,
-    principal_resolver=lambda request: request.headers.get("x-hedron-principal"),
+    principal_resolver=lambda request: request.session.get("user"),
 )
 projection.register_resource(McpResource(uri="hedron://page/home", name="home"))
 projection.register_tool(
