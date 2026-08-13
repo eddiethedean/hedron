@@ -2454,8 +2454,8 @@ flagship CLI gains a reviewable Streamlit AST migration assistant (RFC-0061).
 
 ## 0.32 — Production-grade MCP projection (`v0.32.0`)
 
-**Status:** Published as `v0.32.0` (2026-08-12) in-tree; `hedron-mcp` **`0.2.0` Beta**.
-Git tag / PyPI publish deferred. `release-gate-0.32.toml` Verified with zero Deferred.
+**Status:** Published as `v0.32.0` (2026-08-12); `hedron-mcp` **`0.2.0` Beta**.
+`release-gate-0.32.toml` Verified with zero Deferred.
 **Owning decision / RFC:** [D-060](DECISIONS.md) ·
 [RFC-0065](rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) (graduation). Alpha product contract remains
 [RFC-0043](rfcs/RFC-0043-MCP-PROJECTION.md) (phase 0.17; not reopened).
@@ -2464,8 +2464,8 @@ Evidence: [release-gate-0.32.toml](acceptance/release-gate-0.32.toml) ·
 [production-grade-inventory-032.toml](acceptance/production-grade-inventory-032.toml) ·
 [security-review-032/BRIEF.md](acceptance/security-review-032/BRIEF.md) (Verified).
 **Baseline tip:** Published **`v0.31.0`**.
-**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close when the tagged
-publish lands after this in-tree cut.
+**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close after the published
+`v0.32.0` / `hedron-mcp` `0.2.0` release assets are attached.
 
 **Outcome:** `hedron-mcp` is production-grade as a deny-by-default, authenticated MCP projection.
 Installation and mounting grant no authority; every resource/tool/action is explicitly registered,
@@ -2485,7 +2485,7 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
 | Package | At packet refine | At `v0.32.0` cut |
 |---|---|---|
 | `hedron-mcp` | Experimental Alpha `0.1.x` (pin `>=0.1.0,<0.2`) | Beta `0.2.0` independent satellite (pin `>=0.2.0,<0.3`); Alpha `0.1.x` is the upgrade source |
-| Train | Living tip `v0.31.0` | Coordinated Hedron train `v0.32.0`; MCP version stays satellite `0.2.0` (not train-locked `0.32.0`, not `1.0.0`) |
+| Train | Living tip `v0.32.0` | Coordinated Hedron train `v0.32.0`; MCP version stays satellite `0.2.0` (not train-locked `0.32.0`, not `1.0.0`) |
 
 | Production-grade scope at exit | Remains Experimental |
 |---|---|
@@ -2565,11 +2565,13 @@ containment, complete loading/error/recovery presentation, and predictable full-
 The program extracts reusable contracts from a visually validated account/admin application without
 copying its branding or making Hedron an identity product.
 
-This is a cross-cutting quality program, not a replacement phase and not a new package. Phase 0.33
-freezes the framework-owned visual gallery, geometry contract, and low-risk defect fixes. Phase 0.34
-makes the refreshed presentation the normal `default_styles=True` experience after compatibility
-evidence. Phase 0.35 audits the presentation contract in whole-fleet closure. Phases 0.36–0.41
-carry the same tokens, composition, responsive, state, navigation,
+This is a cross-cutting quality program, not a replacement phase and not a new package. **It must
+not block** phase 0.33 Posit adapter Stage 0 probe completion, RFC-0066 acceptance, or Stage 1
+package extraction (`CONTRACT-033`…`PKG-033` remain the phase-owned release gates). Phase 0.33
+may freeze the framework-owned visual gallery, geometry contract, and low-risk defect fixes in
+parallel. Phase 0.34 makes the refreshed presentation the normal `default_styles=True` experience
+after compatibility evidence. Phase 0.35 audits the presentation contract in whole-fleet closure.
+Phases 0.36–0.41 carry the same tokens, composition, responsive, state, navigation,
 authoring, browser, accessibility, human-AT, performance, and upgrade contract through the Web
 Component program and its production-grade graduation.
 
@@ -2596,20 +2598,32 @@ branding, authentication/recovery policy, authorization, or compliance claims.
 
 ## 0.33 — Unified Posit deployment adapter (`v0.33.0`)
 
-**Status:** Planned; specification draft under
+**Status:** Planned (packet refine **complete**; RFC-0066 **Accepted**; Stage 1 ready); specification under
 [RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md), with staged work in
 [HEDRON_POSIT_033](implementation/HEDRON_POSIT_033.md) and cut evidence in
-[RELEASE_0_33](acceptance/RELEASE_0_33.md). Implementation may not begin until the licensed Connect
-contract probe is complete and the RFC is Accepted.
+[RELEASE_0_33](acceptance/RELEASE_0_33.md). Stage 0 licensed Connect probe complete
+(`BRIDGE_DECISION=drop_supported` on Connect 2026.07.0).
 **Owning decision / RFC:** [D-061](DECISIONS.md) ·
 [RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md).
 **Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167). Close when all 0.33-owned
 gates are Verified and the package ships on the declared Beta compatibility line.
+**Baseline tip:** Published **`v0.32.0`**.
 
 **Outcome:** A new `hedron-posit` distribution provides one `HedronPosit` application facade that
 runs as ordinary Hedron, on Posit Workbench, and on Posit Connect. It owns Hedron-specific Posit
 integration, delegates generic Workbench behavior to `fastapi-workbench`, and leaves
 `hedron-workbench` as a one-way compatibility package rather than creating parallel normalizers.
+
+### Entry criteria / refine vs cut
+
+| Topic | At packet refine | At `v0.33.0` cut |
+|---|---|---|
+| RFC-0066 | Accepted after Stage 0 probe + exact cut matrix + bridge keep/drop | Unchanged Accepted contract |
+| Gate plumbing | `release-gate-0.33.toml` Planned; `scripts/check_*_033.py` / `verify_pkg_33.py`; `check_release_gate.py` maps `0.33`; `--allow-planned` green on living tip | Every 0.33-owned row Verified; zero Deferred; no `--allow-planned` |
+| Connect probe | Licensed native evidence + sanitized fixtures under `tests/fixtures/posit-connect/` | `CONNECT-033` live matrix Verified |
+| Bridge | Stage 0 drop: Supported bridge out of scope; extension-point only | `BRIDGE-033` Verifies drop / non-Supported inventory |
+| Packages | No `packages/hedron-posit/` yet (Stage 1 blocked) | `hedron-posit` `0.33.0` Beta + `hedron-workbench` compat |
+| Presentation program | May proceed in parallel; **must not block** refine exit | Not a 0.33 release-gate owner |
 
 ### Scope
 
@@ -2625,10 +2639,10 @@ integration, delegates generic Workbench behavior to `fastapi-workbench`, and le
 - Set Connect 2024.11.0 as the native protocol floor while requiring the release-cut floor to remain
   inside Posit's then-current support window; prove protected product evidence, a singular base
   header exactly matching ASGI `root_path`, and the licensed GUID/vanity/on-host/off-host matrix.
-- Offer `authenticated_header_v1` only when a live probe reproduces native request-cookie loss. The
-  off-by-default bridge uses two fixed singular base64url headers, a >=32-byte secret, constant-time
-  comparison, a frozen application-cookie registry, 16 KiB/128-pair bounds, conflict rejection,
-  header removal, reference-proxy bypass prevention, bounded secret rotation, and log redaction.
+- Offer `authenticated_header_v1` only as an Experimental extension point in 0.33 after Stage 0
+  recorded `BRIDGE_DECISION=drop_supported` (native cookies round-trip on Connect 2026.07.0). A
+  future Accepted decision may restore Supported bridge scope if loss is reproduced on a named
+  topology; the reserved wire contract stays in RFC-0066.
 - Keep Connect credentials and user-session headers as pass-through application inputs; they never
   become Hedron authentication, authorization, or diagnostic data.
 - Publish local, Workbench, Connect-native, and authenticated private-proxy deployment recipes with
@@ -2644,7 +2658,7 @@ integration, delegates generic Workbench behavior to `fastapi-workbench`, and le
 | `PARITY-033` | Inactive `Hedron` parity and existing `HedronWorkbench` type/import/constructor/runner/status/URL/cookie compatibility pass through upgrade and rollback |
 | `WORKBENCH-033` | Pre-import launch, single normalization, HTTP/WebSocket, browser/durable URLs, redirects, assets, CSRF, sessions, and multi-worker paths pass |
 | `CONNECT-033` | Exact licensed native matrix passes protected product/base/root evidence, GUID/vanity mounts, HTTP/HTMX/WebSocket, cookie paths, login/logout/session, assets, redirects, CSRF, scaling/restart, diagnostics, and rollback |
-| `BRIDGE-033` | Reproduced native failure is repaired on the named proxy lane; secret/spoof/bypass/duplicate/conflict/bounds/parser/registry/rotation/log/redaction/disable suites pass without accepting non-owned cookies |
+| `BRIDGE-033` | Stage 0 drop verified: no Supported bridge implementation; inventory marks extension-point only |
 | `PERF-033` | Locked inactive/Workbench/native <=5 ms and bridge <=10 ms p95 CI ceilings pass; native performs no bridge parsing and each mode has one normalizer |
 | `REVIEW-033` | Independent package/product/header/origin/mount/cookie/bridge/session/CSRF/diagnostic/supply/rollback review has no unresolved critical/high finding |
 | `DOCS-033` | Copyable local, Workbench, native Connect, and reference-proxy operations, compatibility migration, health, secret rotation, kill switch, rollback, troubleshooting, and support boundaries pass review |
@@ -2664,9 +2678,8 @@ integration, delegates generic Workbench behavior to `fastapi-workbench`, and le
 
 - One application object passes local, Workbench, and the exact Supported licensed Connect matrix
   without deployment-specific source changes or weaker security contracts.
-- The bridge repairs a reproduced failure, remains explicit, fail-closed, bounded,
-  application-cookie-only, and safe to rotate, disable, or roll back; all 0.33 gates are Verified
-  with zero Deferred.
+- Supported bridge remains out of 0.33 scope per Stage 0 (`drop_supported`); all 0.33 gates are
+  Verified with zero Deferred.
 
 ## 0.34 — Production-grade Gradio interoperability (`v0.34.0`)
 

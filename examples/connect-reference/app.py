@@ -136,6 +136,21 @@ def connect_scope(request: Request) -> JSONResponse:
     )
 
 
+@app.get("/cookie-echo", include_in_schema=False)
+def cookie_echo(request: Request) -> JSONResponse:
+    """Stage 0 helper: report owned cookie *names* only (never values)."""
+    names = sorted({name for name in request.cookies})
+    return JSONResponse(
+        {
+            "cookie_names": names,
+            "has_session": "session" in request.cookies,
+            "has_hedron_csrf": "hedron_csrf" in request.cookies,
+            "cookie_header_present": "cookie" in {k.lower() for k in request.headers},
+            "root_path": str(request.scope.get("root_path") or ""),
+        }
+    )
+
+
 @app.websocket("/ws")
 async def websocket_smoke(websocket: WebSocket) -> None:
     await websocket.accept()

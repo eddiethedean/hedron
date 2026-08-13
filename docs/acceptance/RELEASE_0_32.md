@@ -70,4 +70,4 @@ uv run python scripts/check_release_gate.py 0.32.0 --execute-verified
 
 - [x] Every 0.32-owned release-gate row is `Verified`
 - [x] Production-grade / Beta maturity labels used only for declared Supported inventory
-- [ ] Close #89 (after tagged `hedron-mcp` `0.2.0` / `v0.32.0` publish)
+- [ ] Close #89 (maintainer: after Release assets for `v0.32.0` / `hedron-mcp` `0.2.0`)

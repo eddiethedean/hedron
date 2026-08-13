@@ -202,7 +202,7 @@ package builds.
 | `packages/hedron-extras` | Curated extras / workbenches (`hedron[extras]`) |
 | `packages/hedron-native` | Optional Rust HTML-escape acceleration (Beta) |
 | `packages/hedron-notebook` | Server-side notebook preview (Alpha) |
-| `packages/hedron-mcp` | Deny-by-default MCP projection (Alpha) |
+| `packages/hedron-mcp` | Deny-by-default MCP projection (Beta) |
 | `packages/hedron-gradio` | Gradio client interop (Alpha / Experimental) |
 | `tests/` | Unit, integration, conformance, adapters, security, browser |
 | `examples/reference-app` | FastAPI cumulative example |

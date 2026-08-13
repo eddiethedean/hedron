@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased]
+## [0.32.0] — 2026-08-12
+
+- Coordinated train bump for phase 0.32 MCP production-grade graduation.
 
 ### Security
 
@@ -8,11 +10,6 @@
   controls, and BOM, and treat fullwidth ``＝＋－＠`` prefixes as dangerous so
   padded formula-injection payloads cannot bypass the check (#169). Tabulator
   ``sanitizeFormulaCell`` stays in lockstep.
-
-## [0.32.0]
-
-- Coordinated train bump for phase 0.32 MCP production-grade graduation (no publish tag in this commit).
-
 
 ## [0.31.0] — 2026-08-12
 

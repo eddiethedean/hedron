@@ -71,8 +71,8 @@ After following [Build your first app](quickstart.md):
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.30.0`** or a newer **`0.30.x`** patch on this train. Last published
-PyPI/git is **`v0.30.0`**. Pin with `hedron>=0.32.0,<0.33` for
+Expect **`0.32.0`** or a newer **`0.32.x`** patch on this train. Last published
+PyPI/git is **`v0.32.0`**. Pin with `hedron>=0.32.0,<0.33` for
 production.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see
@@ -118,7 +118,7 @@ extras only when you need them:
 | `hedron[native]` | Optional Rust HTML-escape acceleration (Beta) | [hedron-native](../packages/hedron-native.md) |
 | `hedron[extras]` | Curated extras / workbenches | [hedron-extras](../packages/hedron-extras.md) |
 | `hedron[notebook]` | Alpha server-side notebook preview | [hedron-notebook](../packages/hedron-notebook.md) |
-| `hedron[mcp]` | Alpha deny-by-default MCP projection | [hedron-mcp](../packages/hedron-mcp.md) |
+| `hedron[mcp]` | Beta deny-by-default MCP projection (Supported inventory) | [hedron-mcp](../packages/hedron-mcp.md) |
 | `hedron[gradio]` | Alpha Gradio client interop (experimental) | [hedron-gradio](../packages/hedron-gradio.md) |
 | `hedron[otel]` | Optional OpenTelemetry tracing helpers | [Observability](../guides/observability.md) |
 | `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` | Content rendering and validation helpers | [Content API](../api/CONTENT.md) |

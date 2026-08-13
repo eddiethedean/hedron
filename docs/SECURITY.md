@@ -4,22 +4,22 @@
 
 Security fixes land on the **current published train** (`0.32.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.30.x`) continues through approximately **2027-01-12** — after that, upgrade
+minor (`0.31.x`) continues through approximately **2027-02-12** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.32.x` | Yes (current living tip — pin `>=0.32.0,<0.33`; in-tree `v0.32.0`, git tag deferred) |
-| `0.31.x` | Yes (previous published train — pin `>=0.32.0,<0.33`; last published `v0.31.0`) |
-| `0.30.x` | Prefer upgrade to `0.31.x` (best-effort security triage through approximately 2027-01-12) |
-| `0.29.x` | Prefer upgrade to `0.31.x` |
-| `0.28.x` | Prefer upgrade to `0.31.x` |
-| `0.27.x` | Prefer upgrade to `0.31.x` |
-| `0.26.x` | Prefer upgrade to `0.31.x` |
-| `0.25.x` | Prefer upgrade to `0.31.x` |
-| `0.24.x` | Prefer upgrade to `0.31.x` |
-| `0.23.x` | Prefer upgrade to `0.31.x` |
-| `0.22.x` | Prefer upgrade to `0.31.x` |
+| `0.32.x` | Yes (current living tip — pin `>=0.32.0,<0.33`; published `v0.32.0`) |
+| `0.31.x` | Prefer upgrade to `0.32.x` (best-effort security triage through approximately 2027-02-12) |
+| `0.30.x` | Prefer upgrade to `0.32.x` |
+| `0.29.x` | Prefer upgrade to `0.32.x` |
+| `0.28.x` | Prefer upgrade to `0.32.x` |
+| `0.27.x` | Prefer upgrade to `0.32.x` |
+| `0.26.x` | Prefer upgrade to `0.32.x` |
+| `0.25.x` | Prefer upgrade to `0.32.x` |
+| `0.24.x` | Prefer upgrade to `0.32.x` |
+| `0.23.x` | Prefer upgrade to `0.32.x` |
+| `0.22.x` | Prefer upgrade to `0.32.x` |
 | `0.20.x` | Prefer upgrading to the current train |
 | `0.19.x` | Prefer upgrading to the current train |
 | `0.18.x` | Prefer upgrading to the current train |

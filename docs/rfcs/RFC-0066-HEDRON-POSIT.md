@@ -1,6 +1,10 @@
 # RFC-0066: `hedron-posit` unified Posit deployment adapter
 
-**Status:** Draft
+**Status:** Accepted
+
+**Accepted:** 2026-08-13 (Stage 0 licensed Connect probe;
+[`realconnect-033`](../acceptance/realconnect-033/RESULT.log);
+`BRIDGE_DECISION=drop_supported`)
 
 **Target phase:** 0.33
 
@@ -28,10 +32,11 @@ The same application object runs as ordinary Hedron, in Posit Workbench, and on 
 package owns Posit product resolution and Hedron-specific integration while delegating generic
 Workbench discovery, mounting, path normalization, and launch behavior to `fastapi-workbench`.
 
-The phase first makes the current native Connect contract production-grade. An authenticated
-request-cookie bridge is a separately enabled compatibility lane for Connect deployments that can
-prove native application cookies are unavailable. The bridge does not turn Connect identity into
-Hedron identity and never activates from product detection alone.
+The phase makes the current native Connect contract production-grade. Stage 0 licensed evidence on
+Connect **2026.07.0** shows application-owned request cookies (`session`, `hedron_csrf`) round-trip
+to Python content, so **`authenticated_header_v1` is not a Supported 0.33 surface**. The wire
+contract below remains a documented extension point for a future phase if loss is reproduced on a
+named topology; 0.33 does not ship a Supported bridge implementation.
 
 ## Why this phase exists
 
@@ -66,6 +71,14 @@ The cut matrix contains the exact minimum Supported Connect release, the current
 on-host execution, off-host execution where licensed, GUID and vanity mounts, public and private
 content, HTTP, and WebSocket traffic. A simulated fixture cannot replace at least one licensed live
 native-Connect run.
+
+**Stage 0 result (2026-08-13):** licensed on-host Connect **2026.07.0**
+(`posit/connect@sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9`)
+passed GUID mount product/base/`root_path`, HTTP/HTMX/CSRF/session, assets, OpenAPI, redirect,
+WebSocket, and **native request-cookie** echo (`NATIVE_COOKIES=ok`). Off-host Kubernetes was not
+exercised and remains **Experimental**. Vanity-URL expansion beyond synthetic fixtures remains
+Experimental until live vanity evidence is attached at `CONNECT-033`. See
+[RELEASE_0_33 Exact cut matrix](../acceptance/RELEASE_0_33.md#exact-cut-matrix).
 
 ## Locked package architecture
 
@@ -115,7 +128,9 @@ app = HedronPosit(
 Public records and enums:
 
 - `PositProduct`: `auto`, `inactive`, `workbench`, `connect`;
-- `ConnectCookieMode`: `native`, `authenticated_header_v1`;
+- `ConnectCookieMode`: `native` (Supported); `authenticated_header_v1` remains an
+  **Experimental extension-point enum value only** in 0.33 — constructors that select it must fail
+  closed / refuse startup until a future Accepted decision ships Supported bridge evidence;
 - frozen `PositConfig` containing product selection, a `WorkbenchConfig`, and a `ConnectConfig`;
 - frozen `ConnectConfig` containing cookie mode, explicitly trusted proxy peers, and custom
   application-cookie names;
@@ -186,16 +201,24 @@ The live matrix covers login/logout/session continuity, CSRF, redirects, assets,
 WebSockets, workers, scaling/restart, GUID and vanity mounts, and rolling back to ordinary
 `Hedron`/`hedron-workbench`.
 
-## Authenticated legacy cookie bridge v1
+## Authenticated legacy cookie bridge v1 (extension point; not Supported in 0.33)
 
 ### Support boundary
 
-`authenticated_header_v1` is off by default. It is Supported only for the documented reference
-proxy topology and the exact Connect versions exercised by `BRIDGE-033`; every other topology is
-Experimental. The 0.33 release cannot call the bridge Supported without a live licensed test that
-first demonstrates the native-cookie failure and then passes the repaired end-to-end session flow.
+Stage 0 recorded `BRIDGE_DECISION=drop_supported`: on Connect 2026.07.0 with the licensed on-host
+GUID topology, application-owned request cookies round-trip to Python content. Therefore
+**0.33 does not ship a Supported `authenticated_header_v1` implementation**, does not require a
+reference proxy topology, and treats `BRIDGE-033` as proof of that negative claim (inventory
+excludes Supported bridge; extension-point docs only).
 
-Enabling the bridge requires all of the following at startup:
+The historical wire contract below is retained so a future phase can Accept Supported bridge
+behavior only after reproducing native request-cookie loss on a named topology. Enabling the
+bridge must never activate from product detection alone and must never map Connect identity into
+Hedron identity.
+
+### Reserved wire contract (future; not implemented as Supported in 0.33)
+
+If a later Accepted decision restores Supported bridge scope, enabling it would require all of:
 
 - explicit `ConnectCookieMode.AUTHENTICATED_HEADER_V1`;
 - protected Connect runtime evidence;
@@ -205,8 +228,6 @@ Enabling the bridge requires all of the following at startup:
 
 Missing or weak configuration fails startup. Request-time protocol violations fail the request and
 never fall back to accepting the bridged cookies.
-
-### Wire contract
 
 The v1 wire names are fixed:
 
@@ -229,18 +250,10 @@ present in the native `Cookie` header may be merged only when byte-identical; co
 request. The adapter emits one canonical downstream `Cookie` header and removes both bridge headers
 before calling application middleware.
 
-### Reference topology and secret operations
-
-The reference proxy must overwrite both bridge headers, be the only network path to Connect, use TLS
-on untrusted hops, forward WebSocket upgrades, and prevent direct access around the proxy. The same
-secret is supplied from the proxy secret store and Connect's masked runtime environment; it is never
-checked into an app bundle or proxy template. Connect documents runtime environment values as
-encrypted and masked, but operators remain responsible for access control and rotation.
-
-Rotation uses an overlap window with `current` and `previous` secret references; new requests use
-`current`, both may validate for at most 15 minutes, and `previous` is then removed. Status output
-reports only key slots and rotation age. Operators must keep Connect proxy-header logging disabled
-during normal operation and treat any diagnostic capture as sensitive.
+A future reference proxy would overwrite both bridge headers, be the only network path to Connect,
+use TLS on untrusted hops, forward WebSocket upgrades, and prevent direct access around the proxy.
+Rotation would use an overlap window with `current` and `previous` secret references (at most 15
+minutes). Operators must keep Connect proxy-header logging disabled during normal operation.
 
 ## Compatibility contract
 
@@ -286,16 +299,17 @@ logs, metrics, and evidence artifacts.
 Implementation follows five reviewable stages. A later stage may not compensate for failed earlier
 parity.
 
-1. **Contract probe:** capture sanitized real Connect scopes for the cut matrix; verify the
+1. **Contract probe (complete):** capture sanitized real Connect scopes for the cut matrix; verify the
    2024.11 protocol floor, native request-cookie behavior, base header, root path, response cookies,
-   redirects, and WebSockets; accept RFC-0066 only after the bridge need is reproduced.
+   redirects, and WebSockets; Accept RFC-0066 after bridge keep/drop from live evidence
+   (`BRIDGE_DECISION=drop_supported` on 2026.07.0).
 2. **Package extraction:** create `hedron-posit`, move Hedron-specific deployment code, establish the
    one-way dependency graph, and make all inactive/Workbench/compatibility tests pass without new
    Connect behavior.
 3. **Native Connect:** add product resolution, typed configuration/status, native URL/mount/cookie
    behavior, CLI diagnostics, live native matrix, and performance measurements.
-4. **Bridge v1:** implement the frozen cookie registry and bounded authenticated carrier; publish and
-   adversarially test the reference proxy, bypass prevention, rotation, logging, and rollback.
+4. **Bridge v1:** **skipped for Supported 0.33 scope** per Stage 0; retain extension-point docs only.
+   Do not implement Supported bridge middleware in this phase.
 5. **Release closure:** finish clean-package/offline installs, upgrade/rollback, docs, independent
    security review, SBOM/provenance, full regressions, and the 0.33 release rehearsal.
 
@@ -309,9 +323,10 @@ The package must add no middleware in `inactive` mode beyond a single cheap prod
 branch, no second normalizer in Workbench or Connect, and no bridge decode or cookie parsing in
 native mode.
 
-`PERF-033` records p50/p95 request overhead and allocations for inactive, Workbench, native Connect,
-and bridge modes under one and multiple workers. Budgets are fixed in the acceptance packet before
-implementation measurements are used for optimization.
+`PERF-033` records p50/p95 request overhead and allocations for inactive, Workbench, and native
+Connect under one and multiple workers. Bridge-mode budgets apply only if a future phase restores
+Supported bridge scope. Budgets are fixed in the acceptance packet before implementation
+measurements are used for optimization.
 
 ## Non-goals
 
@@ -321,23 +336,25 @@ implementation measurements are used for optimization.
   `FastAPIPosit` facade.
 - Treating Connect login, `RStudio-Connect-Credentials`, or
   `Posit-Connect-User-Session-Token` as Hedron authentication or authorization.
-- Restoring Connect platform or arbitrary third-party cookies from the legacy carrier.
-- Auto-enabling the bridge, trusting caller forwarding headers, or supporting an untested proxy
+- Shipping Supported `authenticated_header_v1` in 0.33 after Stage 0 drop.
+- Restoring Connect platform or arbitrary third-party cookies from a legacy carrier.
+- Auto-enabling any bridge, trusting caller forwarding headers, or supporting an untested proxy
   topology.
 - Immediate deprecation or removal of `hedron-workbench`.
 
 ## Acceptance criteria
 
-- RFC-0066 is Accepted only after the contract probe records the exact Connect cut matrix and either
-  reproduces the legacy cookie failure or removes bridge support from the RFC.
+- RFC-0066 is Accepted after the contract probe records the exact Connect cut matrix and either
+  reproduces the legacy cookie failure or removes Supported bridge from the RFC (**done:** removed).
 - Package/import/API/CLI/extras/stability metadata and the one-way dependency graph agree.
 - Inactive parity passes against `Hedron`; Workbench and compatibility parity pass against the 0.32
   `HedronWorkbench` contract.
 - Native Connect passes the declared live and simulated matrix for URLs, mounts, HTTP/WebSocket,
   assets, redirects, sessions, CSRF, response/request cookies, scaling, failure, and rollback.
-- Bridge v1 passes live repaired-session evidence plus spoof, bypass, weak/missing secret,
-  duplicate, conflict, oversize, malformed, late registration, rotation, log, and redaction tests.
+- `BRIDGE-033` Verifies the Stage 0 drop (no Supported bridge implementation; inventory/extension-point
+  agreement) rather than a live repaired-proxy suite.
 - Independent review has no unresolved critical/high finding; fixed performance budgets pass.
-- Local, Workbench, native Connect, and reference-bridge operations include copyable setup, health,
-  security, rollback, and troubleshooting instructions.
+- Local, Workbench, and native Connect operations include copyable setup, health, security,
+  rollback, and troubleshooting instructions (bridge recipes only as Experimental extension-point
+  notes).
 - Every 0.33-owned row in `release-gate-0.33.toml` is Verified with zero Deferred at cut.

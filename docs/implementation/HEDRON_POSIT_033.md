@@ -56,6 +56,11 @@ Stop conditions:
 Exit: `CONTRACT-033` can move from Planned only after the matrix and wire-contract decision are
 recorded and RFC-0066 is Accepted.
 
+**Stage 0 complete (2026-08-13):** `scripts/realconnect_033_probe.sh` →
+`docs/acceptance/realconnect-033/RESULT.log` (`RESULT=pass`, `NATIVE_COOKIES=ok`,
+`BRIDGE_DECISION=drop_supported` on Connect 2026.07.0); sanitized fixtures under
+`tests/fixtures/posit-connect/`; RFC-0066 **Accepted**; Supported bridge Stage 4 skipped.
+
 ## Stage 1 — additive package extraction
 
 **Goal:** establish the package boundary with no deployment behavior change.
@@ -151,45 +156,22 @@ Exit: `CONNECT-033`, native portions of `REVIEW-033`, and the native `PERF-033` 
 
 ## Stage 3 — authenticated bridge v1
 
-**Goal:** repair only a reproduced legacy request-cookie gap on one documented topology.
+**Status:** **Skipped for Supported 0.33 scope** after Stage 0
+(`BRIDGE_DECISION=drop_supported` on Connect 2026.07.0). Do not implement Supported bridge
+middleware in this phase. Retain RFC extension-point wire contract only.
 
-Implementation shape:
+`BRIDGE-033` Verifies the negative claim (inventory excludes Supported bridge; extension-point
+docs agree) rather than a live repaired-proxy suite.
 
-- `BridgeCookieRegistry`: app-owned, mutable only before lifespan startup, frozen afterward;
-- `AuthenticatedCookieBridgeMiddleware`: outermost Posit middleware, Connect-only, no-op unless
-  explicitly enabled;
-- secret holder with redacted `repr`, current/previous slots, and bounded rotation overlap;
-- singular v1 auth/cookie header parser with base64url validation and strict limits; and
-- canonical cookie merge that admits only registered names and rejects conflicts.
-
-Adversarial corpus:
-
-- direct-to-Connect bypass and client-supplied bridge headers;
-- missing, weak, wrong, duplicated, rotated, or leaked-looking secrets;
-- malformed/overlong base64, decoded 16 KiB boundary, too many pairs, invalid tokens/controls;
-- duplicate owned names, identical native/bridge values, conflicting values, and unowned platform
-  cookies;
-- late cookie registration, plugin load ordering, two middleware instances, and multiple workers;
-- Connect proxy-header/access/application log capture and exception/status redaction; and
-- rollback from bridge to native without invalidating valid Hedron sessions unnecessarily.
-
-Operations packet:
-
-- one version-controlled reference proxy template with placeholders, never a committed secret;
-- topology diagram, direct-access firewall rule, TLS and WebSocket configuration;
-- secret generation, dual-slot rotation, emergency disable, and rollback steps;
-- startup/readiness probes that reveal no secret or cookie data; and
-- explicit Supported Connect/proxy versions and exclusions.
-
-Exit: `BRIDGE-033` and bridge portions of `REVIEW-033`/`PERF-033` pass. No simulated test can replace
-the live repaired-session run.
+Historical goal (future phase only): repair only a reproduced legacy request-cookie gap on one
+documented topology.
 
 ## Stage 4 — release closure
 
 Work items:
 
-1. Complete `docs/guides/posit.md`, migration material, package reference, native and bridge runbooks,
-   troubleshooting, and release notes.
+1. Complete `docs/guides/posit.md`, migration material, package reference, native and (extension-point)
+   bridge runbooks, troubleshooting, and release notes.
 2. Run clean wheel/sdist/editable/offline installs for `hedron-posit`, `hedron[posit]`, direct
    `hedron-workbench`, and `hedron[workbench]`; test minimum/current dependencies and Python
    3.11–3.14.

@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.1.0] — 2026-08-07
 
 ### Fixed
 
@@ -42,7 +42,6 @@
 - Bounded `hx-trigger="load"` and `hx-confirm` support in the JS shim.
 - PAGE / FRAGMENT mode-toggle helper for core-concepts demos.
 
-## [0.1.0] — 2026-08-07
 
 ### Added
 

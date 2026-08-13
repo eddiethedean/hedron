@@ -182,6 +182,8 @@ rsync -a --exclude '__pycache__' packages/hedron/src/hedron/ "$BUNDLE/hedron/"
 rsync -a --exclude '__pycache__' packages/hedron-core/src/hedron_core/ "$BUNDLE/hedron_core/"
 rsync -a --exclude '__pycache__' \
   packages/hedron-workbench/src/hedron_workbench/ "$BUNDLE/hedron_workbench/"
+rsync -a --exclude '__pycache__' \
+  packages/fastapi-workbench/src/fastapi_workbench/ "$BUNDLE/fastapi_workbench/"
 
 export CONNECT_SERVER="http://127.0.0.1:${CONNECT_PORT}"
 export CONNECT_API_KEY="$(tr -d '\n' < "$SMOKE_DIR/api.key")"

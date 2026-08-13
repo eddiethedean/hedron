@@ -143,7 +143,8 @@ interactions, security profiles, and CLI. Integrations are optional:
 | `hedron[auth]` | Authlib OIDC helpers |
 | `hedron[markdown]` | Markdown rendering and sanitization |
 | `hedron[native]` | Optional Beta native acceleration |
-| `hedron[notebook]`, `hedron[mcp]`, `hedron[gradio]` | Experimental Alpha integrations |
+| `hedron[mcp]` | Beta MCP projection (Supported inventory; mutations Experimental) |
+| `hedron[notebook]`, `hedron[gradio]` | Experimental Alpha integrations |
 
 For example:
 

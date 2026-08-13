@@ -1,0 +1,25 @@
+{
+  "type": "http",
+  "asgi": {
+    "version": "3.0"
+  },
+  "http_version": "1.1",
+  "method": "GET",
+  "scheme": "http",
+  "path": "/",
+  "root_path": "/content/00000000-0000-4000-8000-000000000000",
+  "headers": [
+    [
+      "host",
+      "connect.example"
+    ],
+    [
+      "rstudio-connect-app-base-url",
+      "/content/00000000-0000-4000-8000-000000000000"
+    ],
+    [
+      "cookie",
+      "***"
+    ]
+  ]
+}

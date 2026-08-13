@@ -1,6 +1,10 @@
 # What’s new in 0.31
 
-**Published** as `v0.31.0`. Pin `hedron>=0.32.0,<0.33`.
+!!! note "Living train is 0.32"
+
+    Pin `hedron>=0.32.0,<0.33`. See [What’s new in 0.32](whats-new-0.32.md).
+
+**Published** as `v0.31.0`. Historical pin: `hedron>=0.31.0,<0.32`.
 
 Phase **0.31** (D-059 / RFC-0064 / RFC-0061) graduates developer and portable
 conformance tooling and ships a reviewable Streamlit AST migration assistant.

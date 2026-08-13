@@ -48,9 +48,10 @@ status commentary, not a satisfied release gate.
 - [`v0.23` stable-tier expansion](RELEASE_0_23.md) — **Published** (D-053 / RFC-0056)
 - [`v0.24` live-transport disposition](RELEASE_0_24.md) — **Published** (`v0.24.0`; `polling_only`) (D-053 / RFC-0056)
 - [`v0.25` production archetype and landmine quarantine](RELEASE_0_25.md) — **Published** (`v0.25.0`; packet Verified complete) (D-053 / RFC-0056)
-- [`v0.32` production-grade MCP projection](RELEASE_0_32.md) — **Planned** (D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89); `hedron-mcp` remains Alpha until cut)
-- [`v0.33` unified Posit deployment adapter](RELEASE_0_33.md) — **Planned** (D-061 / Draft
-  RFC-0066; licensed Connect contract probe required before acceptance)
+- [`v0.32` production-grade MCP projection](RELEASE_0_32.md) — **Published** (`v0.32.0`; `hedron-mcp` `0.2.0` Beta; D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89))
+- [`v0.33` unified Posit deployment adapter](RELEASE_0_33.md) — **Planned** (packet refine
+  complete; RFC-0066 **Accepted**; D-061; [#167](https://github.com/eddiethedean/hedron/issues/167);
+  Stage 1 package extraction unblocked; Supported bridge dropped per Stage 0)
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),
   [release-gate-0.7.toml](release-gate-0.7.toml),
@@ -72,7 +73,7 @@ status commentary, not a satisfied release gate.
   [release-gate-0.23.toml](release-gate-0.23.toml),
   [release-gate-0.24.toml](release-gate-0.24.toml),
   [release-gate-0.25.toml](release-gate-0.25.toml),
-  [release-gate-0.32.toml](release-gate-0.32.toml) (Planned),
+  [release-gate-0.32.toml](release-gate-0.32.toml) (Verified),
   [release-gate-0.33.toml](release-gate-0.33.toml) (Planned)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning

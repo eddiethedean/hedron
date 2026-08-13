@@ -6,7 +6,7 @@ The canonical security policy for GitHub and adopters is
 Summary:
 
 - Supported lines: **`0.32.x` (current published train — `v0.32.0`)**; prefer-upgrade:
-  `0.30.x` (best-effort through approximately 2027-01-12). No multi-year LTS — see
+  `0.31.x` (best-effort through approximately 2027-02-12). No multi-year LTS — see
   [docs/SECURITY.md](docs/SECURITY.md) for the full table
 - **Do not** open public issues for vulnerabilities — use GitHub
   [security advisories](https://github.com/eddiethedean/hedron/security/advisories/new)

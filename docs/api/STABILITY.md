@@ -9,7 +9,7 @@ lives on [What’s ready](../guides/whats-ready.md). Package maturity on PyPI re
 <summary>Maintainer catalog metadata</summary>
 
 **Status:** Living train **0.32** (**Published**; last published
-PyPI/git = `v0.30.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
+PyPI/git = `v0.32.0`). Prior: 0.25 archetype; 0.24 live disposition; 0.23 stable-tier expansion; 0.22 CSRF / SecurityPolicy composition.
 A **minimal `stable` tier** plus the **expanded 0.23 CRUD/admin facade** are listed below
 (D-038: no calendar `1.0` scheduled; D-053 / RFC-0056; D-054 / RFC-0057).
 **Version:** `0.28.x` / catalog baseline
@@ -94,7 +94,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 | Surface | Disposition |
 |---|---|
 | `job_status_sse_response` and other `hedron.experimental` live helpers | Remain **experimental**; 0.24 Accepted `polling_only` |
-| Alpha notebook / MCP / Gradio | Not promoted |
+| Alpha notebook / Gradio; MCP Beta Supported inventory | Notebook/Gradio not promoted; MCP Supported inventory only |
 | `hedron[data]` / DataEditor, extras, OIDC product surface | Stay `beta` (Supported capability OK) |
 | Dialog / Tabs / Pagination / Lazy, Map / media / capture, dashboards, inference | Stay `beta` |
 
