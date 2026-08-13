@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Verify phase 0.34 packaging / packet evidence for hedron-gradio."""
+"""Verify phase 0.34 packaging / packet evidence for hedron-gradio.
+
+Does **not** publish or tag.
+
+* ``--allow-planned``: validate the 0.34 evidence manifest shape while the living
+  tip may already be on a later train (historical packet shape after 0.35 cut).
+* Omit ``--allow-planned`` at ``v0.34.0`` cut once every evidence row is
+  ``Verified`` and package versions match the 0.34 train.
+"""
 
 from __future__ import annotations
 
@@ -14,7 +22,6 @@ EVIDENCE = ROOT / "docs" / "acceptance" / "release-gate-0.34.toml"
 INVENTORY = ROOT / "docs" / "acceptance" / "production-grade-inventory-034.toml"
 REVIEW_BRIEF = ROOT / "docs" / "acceptance" / "security-review-034" / "BRIEF.md"
 RELEASE_CANDIDATE = "0.34.0"
-LIVING_TIP = "0.34.0"
 EXPECTED_PACKAGES = ("hedron-gradio",)
 
 
@@ -52,7 +59,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--allow-planned",
         action="store_true",
-        help=f"Allow Deferred/Planned rows (pre-cut / packet refine). Omit at v{RELEASE_CANDIDATE} cut.",
+        help=(
+            f"Allow Planned rows / skip train package pin checks (historical shape). "
+            f"Omit at v{RELEASE_CANDIDATE} cut."
+        ),
     )
     args = parser.parse_args(argv)
 
@@ -60,14 +70,13 @@ def main(argv: list[str] | None = None) -> int:
     _check_review_packet(allow_planned=args.allow_planned)
 
     if args.allow_planned:
-        gate_cmd = [
-            sys.executable,
-            str(ROOT / "scripts" / "check_release_gate.py"),
-            LIVING_TIP,
-            "--evidence-manifest",
-            str(EVIDENCE),
-            "--allow-planned",
-        ]
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import check_release_gate as gate
+
+        errors = gate.check_evidence_manifest_lenient(EVIDENCE)
+        if errors:
+            raise SystemExit("\n".join(errors))
+        print("ok: release-gate-0.34.toml (historical shape)")
     else:
         gate_cmd = [
             sys.executable,
@@ -77,8 +86,8 @@ def main(argv: list[str] | None = None) -> int:
             str(EVIDENCE),
             "--execute-verified",
         ]
-    print("+", *gate_cmd)
-    subprocess.check_call(gate_cmd, cwd=ROOT)
+        print("+", *gate_cmd)
+        subprocess.check_call(gate_cmd, cwd=ROOT)
     print(f"ok: verify_pkg_34 ({'allow-planned' if args.allow_planned else 'cut'})")
     return 0
 

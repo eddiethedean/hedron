@@ -2734,11 +2734,10 @@ compatibility without embedding Gradio's UI runtime into Hedron.
 
 ## 0.35 — Whole-fleet production-grade closure (`v0.35.0`)
 
-**Status:** Planned (packet refine in progress; D-063 Accepted; RFC-0068 Draft). Final audit phase
-for the package-graduation program; not a `1.0` substitute.
-**Tracking:** [#91](https://github.com/eddiethedean/hedron/issues/91). Close when all 0.35-owned
-gates are Verified, the fleet inventory is published with `v0.35.0`, and zero unowned Alpha rows
-remain. Evidence: [`RELEASE_0_35.md`](docs/acceptance/RELEASE_0_35.md) ·
+**Status:** **Published** as `v0.35.0` (2026-08-13). Final audit phase for the
+package-graduation program; not a `1.0` substitute.
+**Tracking:** [#91](https://github.com/eddiethedean/hedron/issues/91). Evidence:
+[`RELEASE_0_35.md`](docs/acceptance/RELEASE_0_35.md) ·
 [`release-gate-0.35.toml`](docs/acceptance/release-gate-0.35.toml) ·
 [`HEDRON_FLEET_035.md`](docs/implementation/HEDRON_FLEET_035.md).
 

@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+
 from hedron import Hedron, Text
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -27,7 +28,7 @@ def minimal_client():
 def test_reference_style_app_health_and_headers(minimal_client: TestClient) -> None:
     response = minimal_client.get("/")
     assert response.status_code == 200
-    assert "content-type" in {k.lower() for k in response.headers.keys()}
+    assert "content-type" in {k.lower() for k in response.headers}
 
 
 @pytest.mark.parametrize(

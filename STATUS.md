@@ -2,12 +2,12 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.34 **Published** as `v0.34.0` (2026-08-13). Prior: 0.33 **Published** as `v0.33.0` (2026-08-13); 0.32 **Published** as `v0.32.0` (2026-08-12).
-Living tip = `v0.34.0`.
+**Roadmap position:** phase 0.35 **Published** as `v0.35.0` (2026-08-13). Prior: 0.34 **Published** as `v0.34.0` (2026-08-13); 0.33 **Published** as `v0.33.0` (2026-08-13).
+Living tip = `v0.35.0`.
 **Date:** 2026-08-13
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` `0.34.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
+`hedron-workbench` / `hedron-posit` `0.35.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.1.11`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.32.0`
@@ -17,9 +17,8 @@ Living tip = `v0.34.0`.
 `hedron-workbench`, `hedron-posit`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
 `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.34** (D-062 / RFC-0067) — production-grade `hedron-gradio`
-remote client interop (`release-gate-0.34.toml` Verified; published tip `v0.34.0`).
-Prior Published **0.33** (unified Posit adapter as `v0.33.0`) and **0.32** (MCP as `v0.32.0`) remain in force.
+**Phase focus:** Living train is **0.35** (D-063 / RFC-0068) — whole-fleet closure (`release-gate-0.35.toml` Verified; published tip `v0.35.0`).
+Prior Published **0.34** Gradio / **0.33** (unified Posit adapter as `v0.33.0`) and **0.32** (MCP as `v0.32.0`) remain in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
@@ -286,11 +285,9 @@ RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)); see
 [0.33 acceptance packet](docs/acceptance/RELEASE_0_33.md). Phase **0.34** is **Published**
 (`v0.34.0` / `hedron-gradio` `0.2.0` Beta; D-062 / RFC-0067; [#90](https://github.com/eddiethedean/hedron/issues/90));
 see [implementation plan](docs/implementation/HEDRON_GRADIO_034.md) and
-[0.34 acceptance packet](docs/acceptance/RELEASE_0_34.md). Phase **0.35** packet refine is **in progress**
-(D-063 / Draft [RFC-0068](docs/rfcs/RFC-0068-WHOLE-FLEET-CLOSURE.md); [#91](https://github.com/eddiethedean/hedron/issues/91));
+[0.34 acceptance packet](docs/acceptance/RELEASE_0_34.md). Phase **0.35** is **Published** (`v0.35.0`; D-063 / [RFC-0068](docs/rfcs/RFC-0068-WHOLE-FLEET-CLOSURE.md); [#91](https://github.com/eddiethedean/hedron/issues/91));
 see [implementation plan](docs/implementation/HEDRON_FLEET_035.md) and
-[0.35 acceptance packet](docs/acceptance/RELEASE_0_35.md). Living tip remains `v0.34.0` until cut.
-Web Component platform
+[0.35 acceptance packet](docs/acceptance/RELEASE_0_35.md). Next: Web Component platform
 work is tracked as [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 (phases 0.36–0.41). These phases require owning RFCs/decisions and Verified evidence before any
 package maturity label changes. They do not schedule `1.0`, promote every experimental
