@@ -114,7 +114,7 @@ Create a project first: `uv init my-app && cd my-app`, then
 
 ## Should I use `uv init` or `hedron new`?
 
-Prefer **`hedron new`** for a ready scaffold on **0.32.x** (install Hedron first).
+Prefer **`hedron new`** for a ready scaffold on **0.33.x** (install Hedron first).
 `uv init` + a hand-written `app.py` from the quickstart also works. Do not nest both into
 the same directory by accident.
 

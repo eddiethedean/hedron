@@ -77,7 +77,8 @@ sessions are not Supported yet** — do not market human AT as done.
 | Multi-worker durable jobs | **Supported** with shared Redis backend | [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
-| Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]`) | [Posit Workbench](posit-workbench.md) — `HedronWorkbench` or launch-command-only adaptation; no import auto-wrap |
+| Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — `HedronWorkbench` / `HedronPosit`; no import auto-wrap |
+| Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2026.07.0** floor; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
 | Charts | **Supported** Matplotlib/static on Beta package | Install `hedron[charts]>=0.33.0,<0.34`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
@@ -227,6 +228,7 @@ Extras: `"hedron[data]>=0.33.0,<0.34"`, `"hedron[extras]>=0.33.0,<0.34"`,
 `"hedron[mcp]>=0.33.0,<0.34"` (Beta Supported inventory),
 `"hedron[gradio]>=0.33.0,<0.34"` (Alpha satellite),
 `"hedron[charts]>=0.33.0,<0.34"`, `"hedron[workbench]>=0.33.0,<0.34"`,
+`"hedron[posit]>=0.33.0,<0.34"`,
 and `"hedron-sample-kit>=0.1.10,<0.2"`.
 
 ## Role-specific wrappers

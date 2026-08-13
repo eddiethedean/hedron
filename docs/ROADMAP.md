@@ -2603,8 +2603,8 @@ branding, authentication/recovery policy, authorization, or compliance claims.
 [RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md) (**Accepted**).
 **Implementation plan:** [HEDRON_POSIT_033](implementation/HEDRON_POSIT_033.md).
 **Acceptance packet:** [RELEASE_0_33](acceptance/RELEASE_0_33.md).
-**Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167). Close when Published
-cut artifacts exist (match prior MCP/#89 practice).
+**Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167). Published cut
+`v0.33.0` (2026-08-13).
 **Baseline tip:** Living tip **`v0.33.0`** (pre-cut baseline was Published `v0.32.0`).
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` on Connect 2026.07.0.
 
@@ -3313,7 +3313,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Production-grade standalone FastAPI Workbench package and Hedron dependency inversion | 0.30 | First monorepo `fastapi-workbench` release is 1.0.0; plain FastAPI has hands-off launch without Hedron, and `hedron-workbench` depends on the shared generic implementation (D-058). |
 | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.31 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes (RFC-0064 / D-059; [#87](https://github.com/eddiethedean/hedron/issues/87)). |
 | Production-grade deny-by-default MCP projection | 0.32 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review (RFC-0065 / D-060; [#89](https://github.com/eddiethedean/hedron/issues/89)). |
-| Unified `hedron-posit` Workbench and Connect deployment adapter | 0.33 | One `HedronPosit` facade composes existing mount/cookie behavior; the optional legacy Connect cookie bridge is explicit, authenticated, bounded, and off by default (draft RFC-0066 / D-061; [#167](https://github.com/eddiethedean/hedron/issues/167)). |
+| Unified `hedron-posit` Workbench and Connect deployment adapter | 0.33 | One `HedronPosit` facade composes existing mount/cookie behavior; Supported cookie bridge dropped after Stage 0 (RFC-0066 / D-061 **Accepted**; **Published** `v0.33.0`; [#167](https://github.com/eddiethedean/hedron/issues/167)). |
 | Production-grade Gradio/Hugging Face client interoperability | 0.34 | Allowlisted egress/endpoints, file/stream bounds, cancellation, polling jobs, provider compatibility, and secret hygiene ([#90](https://github.com/eddiethedean/hedron/issues/90)). |
 | Whole-fleet production-grade closure | 0.35 | Machine-readable inventory, resolver/upgrade/rollback matrices, composed reference-app proof, and no unowned Alpha package ([#91](https://github.com/eddiethedean/hedron/issues/91)). |
 | Polished default presentation quality program | 0.33–0.41 | Gallery and geometry baseline → refreshed `default_styles=True` → fleet audit → element/form/data/authoring/navigation integration → production-grade visual inventory ([implementation plan](implementation/DEFAULT_PRESENTATION_033_PLUS.md)). |
@@ -3479,8 +3479,8 @@ available to plain FastAPI applications, and changes `hedron-workbench` to depen
 implementation (D-058). Phase **0.31** owns production-grade developer/portable conformance
 tooling and the Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061). Phase **0.32** owns
 production-grade deny-by-default MCP projection (D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89)).
-Phase **0.33** owns the planned unified `hedron-posit` Workbench/Connect facade (D-061 / draft
-RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)); the former 0.33–0.40 plan moves
+Phase **0.33** shipped the unified `hedron-posit` Workbench/Connect facade (D-061 / RFC-0066
+**Accepted**; **Published** `v0.33.0`; [#167](https://github.com/eddiethedean/hedron/issues/167)); the former 0.33–0.40 plan moves
 to 0.34–0.41 without changing its scope. Tracking enhancement issues
 [#86](https://github.com/eddiethedean/hedron/issues/86)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 plus [#167](https://github.com/eddiethedean/hedron/issues/167) cover remaining Planned 0.21

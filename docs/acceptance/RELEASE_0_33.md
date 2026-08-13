@@ -1,5 +1,7 @@
 # Hedron `v0.33` unified Posit adapter acceptance
 
+**Status:** **Published** as `v0.33.0` (2026-08-13).
+
 Phase 0.33 ships **`hedron-posit` `0.33.0` Beta** as the preferred local / Posit Workbench / Posit
 Connect facade and keeps **`hedron-workbench` `0.33.0` Beta** as a supported compatibility package.
 Baseline: Published `v0.32.0`. Evidence is indexed by
@@ -57,9 +59,9 @@ Off-host Connect is explicitly Experimental. Supported bridge code does not ship
 
 ## Locked evidence gates
 
-Gate ownership (reviewed at packet refine): Posit-specific rows are owned by the future
-`hedron-posit` distribution; `PARITY-033` is owned by the retained `hedron-workbench`
-compatibility package; shared train rows `REGRESS-033` / `PKG-033` are owned by `hedron`.
+Gate ownership: Posit-specific rows are owned by `hedron-posit`; `PARITY-033` is owned by the
+retained `hedron-workbench` compatibility package; shared train rows `REGRESS-033` / `PKG-033` are
+owned by `hedron`.
 
 | Gate | Owner | Verified means |
 |---|---|---|
@@ -93,27 +95,26 @@ content/session identifiers, CSRF material, or token-shaped path/query values.
 
 ## Cut verification
 
-During packet refine (living tip still on `0.32.x`):
-
-```bash
-python scripts/verify_pkg_33.py --allow-planned
-# equivalent:
-python scripts/check_release_gate.py 0.32.0 \
-  --evidence-manifest docs/acceptance/release-gate-0.33.toml \
-  --allow-planned
-```
-
-At cut (after train bump to `0.33.0` and every row Verified):
+At `v0.33.0` cut (every row Verified):
 
 ```bash
 python scripts/verify_pkg_33.py
 python scripts/check_release_gate.py 0.33.0 --execute-verified
 ```
 
+During packet refine (historical; living tip was still on `0.32.x`):
+
+```bash
+python scripts/verify_pkg_33.py --allow-planned
+python scripts/check_release_gate.py 0.32.0 \
+  --evidence-manifest docs/acceptance/release-gate-0.33.toml \
+  --allow-planned
+```
+
 ## Exit
 
 - [x] Exact cut matrix has no `TBD`
-- [x] RFC-0066 Accepted and implementation matches it (Stage 1+ still pending)
-- [ ] Every 0.33-owned release-gate row Verified with zero Deferred
-- [ ] `hedron-posit` and retained `hedron-workbench` maturity claims match the inventory
-- [ ] Close #167 only after artifacts and evidence are published
+- [x] RFC-0066 Accepted and implementation matches it
+- [x] Every 0.33-owned release-gate row Verified with zero Deferred
+- [x] `hedron-posit` and retained `hedron-workbench` maturity claims match the inventory
+- [ ] Close #167 after release assets are published on GitHub/PyPI

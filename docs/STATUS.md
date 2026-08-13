@@ -276,9 +276,8 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is **Published**
 (`v0.30.0`; D-058 / RFC-0063). Phase **0.31** is **Published** (`v0.31.0`; D-059 / RFC-0064 /
 RFC-0061). Phase **0.32** is **Published** (`v0.32.0` / `hedron-mcp` `0.2.0`; D-060 /
-RFC-0065). Phase **0.33** is the
-planned unified `hedron-posit` Workbench / Connect adapter (D-061 / draft RFC-0066;
-[#167](https://github.com/eddiethedean/hedron/issues/167)); see the staged
+RFC-0065). Phase **0.33** is **Published** (`v0.33.0` / `hedron-posit` `0.33.0` Beta; D-061 /
+RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)); see
 [implementation plan](implementation/HEDRON_POSIT_033.md) and
 [0.33 acceptance packet](acceptance/RELEASE_0_33.md). Remaining package-production work
 continues through **0.34–0.35**: Gradio ([#90](https://github.com/eddiethedean/hedron/issues/90));
