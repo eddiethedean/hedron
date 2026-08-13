@@ -36,6 +36,18 @@ def _result(req_id: Any, result: Mapping[str, Any] | list[Any] | None) -> dict[s
     return {"jsonrpc": "2.0", "id": req_id, "result": result}
 
 
+def _cancel_key(req_id: Any) -> str | None:
+    """Normalize JSON-RPC ids to the cancel-registry key clients know about (#171)."""
+    if req_id is None:
+        return None
+    return str(req_id)
+
+
+def _raise_if_cancelled(projection: Any, cancel_key: str | None) -> None:
+    if cancel_key and projection.bounds.is_cancelled(cancel_key):
+        raise BoundsError("MCP request cancelled")
+
+
 def _origin_forbidden(request: Any, projection: Any) -> bool:
     if projection.allowed_origins is None:
         return False
@@ -133,7 +145,8 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
     params: dict[str, Any] = raw_params if isinstance(raw_params, dict) else {}
 
     principal = projection.resolve_principal(request)
-    request_id = projection.bounds.new_request_id()
+    # Cancel keys are the client-visible JSON-RPC id, not a private server UUID (#171).
+    cancel_key = _cancel_key(req_id)
     client_session_id = request.headers.get("mcp-session-id")
     origin = request.headers.get("origin")
 
@@ -150,8 +163,8 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
         return _json_response({"error": str(exc)}, status_code=429)
 
     try:
-        if projection.bounds.is_cancelled(request_id):
-            raise BoundsError("MCP request cancelled")
+        if method not in {"notifications/cancelled"}:
+            _raise_if_cancelled(projection, cancel_key)
 
         if method in {"initialize", "notifications/initialized"}:
             version = negotiate_protocol_version(params.get("protocolVersion"))
@@ -219,6 +232,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             return _json_response(_result(req_id, {"resources": resources}))
 
         if method == "resources/read":
+            _raise_if_cancelled(projection, cancel_key)
             uri = str(params.get("uri") or "")
             content = projection.read_resource(uri, principal=principal)
             projection.audit.emit(
@@ -227,6 +241,8 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 principal=principal,
                 detail={"uri": uri},
             )
+            if cancel_key:
+                projection.bounds.clear_cancel(cancel_key)
             return _json_response(
                 _result(
                     req_id,
@@ -261,6 +277,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             return _json_response(_result(req_id, {"tools": tools}))
 
         if method == "tools/call":
+            _raise_if_cancelled(projection, cancel_key)
             name = str(params.get("name") or "")
             arguments = params.get("arguments") if isinstance(params.get("arguments"), dict) else {}
             result = projection.call_tool(name, arguments, principal=principal)
@@ -270,6 +287,8 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 principal=principal,
                 detail={"name": name},
             )
+            if cancel_key:
+                projection.bounds.clear_cancel(cancel_key)
             return _json_response(
                 _result(
                     req_id,
@@ -277,16 +296,25 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                 )
             )
 
-        if method in {"shutdown", "notifications/cancelled"}:
-            if method == "notifications/cancelled":
-                cancel_id = str(params.get("requestId") or request_id)
-                projection.bounds.request_cancel(cancel_id)
-                projection.audit.emit(
-                    code="HED-MCP-CANCEL",
-                    kind="cancellation",
-                    principal=principal,
-                    detail={"request_id": cancel_id},
+        if method == "notifications/cancelled":
+            raw_cancel = params.get("requestId")
+            if raw_cancel is None:
+                return _json_response(
+                    _error(req_id, -32602, "notifications/cancelled requires params.requestId"),
+                    status_code=400,
                 )
+            cancel_id = str(raw_cancel)
+            projection.bounds.request_cancel(cancel_id)
+            projection.audit.emit(
+                code="HED-MCP-CANCEL",
+                kind="cancellation",
+                principal=principal,
+                detail={"request_id": cancel_id},
+            )
+            # Cancel marks a request; it must not tear down the MCP session.
+            return _json_response({"ok": True})
+
+        if method == "shutdown":
             if client_session_id:
                 projection.bounds.close_session(client_session_id)
             return _json_response(_result(req_id, {}))

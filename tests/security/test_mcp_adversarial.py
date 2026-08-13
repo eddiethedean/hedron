@@ -254,3 +254,81 @@ def test_session_principal_mismatch_is_rejected() -> None:
     )
     assert denied.status_code == 403
     assert "principal mismatch" in denied.text
+
+
+def test_notifications_cancelled_blocks_matching_jsonrpc_request_id() -> None:
+    """Client cancel of JSON-RPC id must reject the matching tools/call (#171)."""
+    app = Starlette()
+    projection = McpProjection(
+        enabled=True,
+        principal_resolver=lambda _r: "alice",
+    )
+    projection.register_tool(
+        McpTool(
+            name="ping",
+            schema={"type": "object"},
+            mutate=False,
+            handler=lambda: "pong",
+        )
+    )
+    mount_mcp(app, projection)
+    client = TestClient(app)
+
+    cancelled = client.post(
+        "/mcp",
+        json={
+            "jsonrpc": "2.0",
+            "method": "notifications/cancelled",
+            "params": {"requestId": 99},
+        },
+    )
+    assert cancelled.status_code == 200
+    assert projection.bounds.is_cancelled("99")
+
+    blocked = client.post(
+        "/mcp",
+        json={
+            "jsonrpc": "2.0",
+            "id": 99,
+            "method": "tools/call",
+            "params": {"name": "ping", "arguments": {}},
+        },
+    )
+    assert blocked.status_code == 429
+    assert "cancelled" in blocked.text
+
+    allowed = client.post(
+        "/mcp",
+        json={
+            "jsonrpc": "2.0",
+            "id": 100,
+            "method": "tools/call",
+            "params": {"name": "ping", "arguments": {}},
+        },
+    )
+    assert allowed.status_code == 200
+
+
+def test_notifications_cancelled_does_not_close_session() -> None:
+    app = Starlette()
+    projection = McpProjection(
+        enabled=True,
+        principal_resolver=lambda _r: "alice",
+    )
+    mount_mcp(app, projection)
+    client = TestClient(app)
+    init = client.post(
+        "/mcp",
+        json={"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+    )
+    session_id = init.headers["mcp-session-id"]
+    client.post(
+        "/mcp",
+        json={
+            "jsonrpc": "2.0",
+            "method": "notifications/cancelled",
+            "params": {"requestId": "1"},
+        },
+        headers={"mcp-session-id": session_id},
+    )
+    assert projection.bounds.session(session_id) is not None
