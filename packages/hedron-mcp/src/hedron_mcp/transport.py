@@ -189,9 +189,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             )
 
         # When a session header is present, enforce principal binding (#173).
-        _enforce_session_principal(
-            projection, session_id=client_session_id, principal=principal
-        )
+        _enforce_session_principal(projection, session_id=client_session_id, principal=principal)
 
         # All subsequent methods require authz.
         projection.authorize(
