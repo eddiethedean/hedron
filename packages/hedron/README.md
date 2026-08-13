@@ -149,7 +149,7 @@ interactions, security profiles, and CLI. Integrations are optional:
 For example:
 
 ```bash
-uv add "hedron[data,dev]>=0.32.0,<0.33"
+uv add "hedron[data,dev]>=0.33.0,<0.34"
 ```
 
 Charts require the fixed compatible floor:

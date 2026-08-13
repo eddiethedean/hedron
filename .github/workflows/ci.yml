@@ -17,7 +17,7 @@ env:
   UV_NO_PROGRESS: "1"
   UV_VERSION: "0.12.1"
   # Shared check suites live in scripts/ci_checks.sh (also used by release.yml).
-  HEDRON_GATE_VERSION: "0.32.0"
+  HEDRON_GATE_VERSION: "0.33.0"
 
 jobs:
   changes:
@@ -284,7 +284,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: PKG-032 packaging rehearsal
+    name: PKG-033 packaging rehearsal
     needs: [changes, evidence]
     if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest

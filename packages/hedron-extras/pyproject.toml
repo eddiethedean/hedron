@@ -40,8 +40,8 @@ dependencies = [
 [project.optional-dependencies]
 code_editor = []
 json_editor = []
-data_explorer = ["hedron-data>=0.32.0,<0.33"]
-chart_workbench = ["hedron-data>=0.32.0,<0.33", "hedron-charts>=0.1.10,<0.2"]
+data_explorer = ["hedron-data>=0.33.0,<0.34"]
+chart_workbench = ["hedron-data>=0.33.0,<0.34", "hedron-charts>=0.1.10,<0.2"]
 image_tools = []
 calendar = []
 signature = []
@@ -51,7 +51,7 @@ terminal = []
 joystick = []
 experimental-ui = []
 all = [
-    "hedron-data>=0.32.0,<0.33",
+    "hedron-data>=0.33.0,<0.34",
     "hedron-charts>=0.1.10,<0.2",
 ]
 
