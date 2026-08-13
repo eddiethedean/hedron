@@ -126,21 +126,26 @@ class McpProjection:
         return list(self._tools.values())
 
     def resolve_principal(self, request: Any) -> str | None:
-        """Reuse host authentication; never invent an IdP."""
+        """Reuse host authentication; never invent an IdP.
+
+        Default identity comes only from an authenticated session when
+        ``SessionMiddleware`` (or equivalent) has installed ``scope["session"]``.
+        Client-controlled headers such as ``x-hedron-principal`` / ``x-user`` are
+        never trusted unless the host supplies an explicit ``principal_resolver``.
+        """
         if self.principal_resolver is not None:
             return self.principal_resolver(request)
-        # Common host patterns: session user, Authorization bearer subject header.
-        session = getattr(request, "session", None)
+        # Starlette's Request.session asserts when middleware is absent; only read
+        # the session when the scope extension is present.
+        scope = getattr(request, "scope", None)
+        if not isinstance(scope, Mapping) or "session" not in scope:
+            return None
+        session = request.session
         if isinstance(session, Mapping):
             for key in ("user", "username", "principal", "sub"):
                 value = session.get(key)
                 if value:
                     return str(value)
-        headers = getattr(request, "headers", None)
-        if headers is not None:
-            subject = headers.get("x-hedron-principal") or headers.get("x-user")
-            if subject:
-                return str(subject)
         return None
 
     def check_authz(

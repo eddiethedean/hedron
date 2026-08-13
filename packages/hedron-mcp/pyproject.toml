@@ -36,7 +36,7 @@ classifiers = [
 dependencies = [
     "hedron-core>=0.32.0,<0.33",
     "mcp>=1.9.0,<2",
-    "starlette>=0.40,<1",
+    "starlette>=1.3.1,<2",
 ]
 
 [project.entry-points."hedron.plugins"]

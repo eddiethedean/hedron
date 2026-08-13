@@ -99,3 +99,79 @@ def test_mutating_tool_without_flag_is_not_ambient_authority() -> None:
     )
     with pytest.raises(AuthorizationError, match="allow_mutations"):
         projection.call_tool("wipe", {}, principal="alice")
+
+
+def test_default_resolver_rejects_forgeable_principal_headers() -> None:
+    """Default identity must not invent principal from client-controlled headers (#168)."""
+    from starlette.middleware.sessions import SessionMiddleware
+
+    app = Starlette()
+    app.add_middleware(SessionMiddleware, secret_key="test")
+    projection = McpProjection(enabled=True)  # no principal_resolver
+    projection.register_tool(
+        McpTool(
+            name="ping",
+            schema={"type": "object"},
+            mutate=False,
+            handler=lambda: "pong",
+        )
+    )
+    mount_mcp(app, projection)
+    client = TestClient(app)
+    payload = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {"name": "ping", "arguments": {}},
+    }
+    anonymous = client.post("/mcp", json=payload)
+    forged = client.post(
+        "/mcp",
+        json=payload,
+        headers={"x-hedron-principal": "attacker"},
+    )
+    forged_x_user = client.post(
+        "/mcp",
+        json=payload,
+        headers={"x-user": "attacker"},
+    )
+    assert anonymous.status_code == 403
+    assert forged.status_code == 403
+    assert forged_x_user.status_code == 403
+
+
+def test_default_resolver_accepts_authenticated_session_subject() -> None:
+    from starlette.middleware.sessions import SessionMiddleware
+    from starlette.requests import Request
+    from starlette.responses import JSONResponse
+
+    app = Starlette()
+    app.add_middleware(SessionMiddleware, secret_key="test")
+
+    async def login(request: Request) -> JSONResponse:
+        request.session["user"] = "alice"
+        return JSONResponse({"ok": True})
+
+    app.add_route("/login", login, methods=["POST"])
+    projection = McpProjection(enabled=True)
+    projection.register_tool(
+        McpTool(
+            name="ping",
+            schema={"type": "object"},
+            mutate=False,
+            handler=lambda: "pong",
+        )
+    )
+    mount_mcp(app, projection)
+    client = TestClient(app)
+    assert client.post("/login").status_code == 200
+    response = client.post(
+        "/mcp",
+        json={
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "tools/call",
+            "params": {"name": "ping", "arguments": {}},
+        },
+    )
+    assert response.status_code == 200

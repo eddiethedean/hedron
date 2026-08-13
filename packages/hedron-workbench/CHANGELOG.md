@@ -17,6 +17,11 @@
   when `UVICORN_ROOT_PATH` or resolved-mount env already supplies the mount
   (parity with fastapi-workbench #144; #159).
 
+### Security
+
+- Raise the Starlette floor to ``>=1.3.1`` (aligned with ``fastapi-workbench``)
+  so installs resolve patched releases for known Starlette advisories.
+
 ## [0.30.0] — 2026-08-12
 
 - Coordinated `0.30.0` train; `hedron-workbench` depends on `fastapi-workbench` 1.0.0 (phase 0.30 / D-058).
