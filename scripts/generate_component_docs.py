@@ -129,7 +129,7 @@ COMPONENTS = (
         "Page",
         "document",
         "Render a complete HTML document with safe head defaults and a body.",
-        "Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, dir=None, scripts=None, script_defer=True)",
+        "Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, data_hedron_theme=None, dir=None, scripts=None, script_defer=True)",
         "Page(Header(Heading('Account', level=1)), Main(Text('Signed in')), title='Account')",
         (
             p(
@@ -141,6 +141,11 @@ COMPONENTS = (
             p("title", "str | None", "Convenience document title."),
             p("head", "NodeLike | None", "Additional trusted head nodes."),
             p("data_theme", "str | None", "Initial `data-theme` value."),
+            p(
+                "data_hedron_theme",
+                "str | None",
+                "Named Hedron theme for this document; overrides the app selection.",
+            ),
             p("dir", "str | None", "Optional `dir` on `<html>` (`ltr` / `rtl` / `auto`)."),
             p(
                 "scripts",

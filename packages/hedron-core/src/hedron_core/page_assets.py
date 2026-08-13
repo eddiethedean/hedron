@@ -8,6 +8,7 @@ bundled extensions load without depending on the FastAPI flagship package.
 from __future__ import annotations
 
 import html as html_lib
+import re
 from collections.abc import Callable, Mapping, Sequence
 from importlib import resources
 from pathlib import Path
@@ -23,10 +24,14 @@ __all__ = [
     "inject_htmx_core",
     "inject_htmx_extensions",
     "inject_page_assets",
+    "inject_page_theme",
     "static_directory",
 ]
 
 DEFAULT_STATIC_PREFIX = "/hedron-static"
+_THEME_NAME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+_HTML_TAG_RE = re.compile(r"<html\b", re.IGNORECASE)
+_THEME_ATTR_RE = re.compile(r"\bdata-hedron-theme\s*=", re.IGNORECASE)
 
 
 class _HtmxConfigPolicy(Protocol):
@@ -60,6 +65,21 @@ def _prefix_href(path: str, *, static_href: Callable[[str], str] | None) -> str:
     if static_href is None:
         return href
     return static_href(href)
+
+
+def inject_page_theme(html_text: str, mode: RenderMode, theme: str | None) -> str:
+    """Apply a validated named theme to PAGE HTML unless the page chose one explicitly."""
+    if mode is not RenderMode.PAGE or not theme or _THEME_ATTR_RE.search(html_text):
+        return html_text
+    if _THEME_NAME_RE.fullmatch(theme) is None:
+        return html_text
+    match = _HTML_TAG_RE.search(html_text)
+    if match is None:
+        return html_text
+    safe_theme = html_lib.escape(theme, quote=True)
+    return (
+        html_text[: match.end()] + f' data-hedron-theme="{safe_theme}"' + html_text[match.end() :]
+    )
 
 
 def inject_htmx_core(
@@ -128,6 +148,7 @@ def inject_page_assets(
     include_ui_modules: bool = True,
     assets: Sequence[AssetRef] | None = None,
     asset_attributes: Mapping[str, Mapping[str, str]] | None = None,
+    theme: str | None = None,
 ) -> str:
     """Inject HTMX core, default CSS/UI modules, build assets, then extensions.
 
@@ -135,6 +156,7 @@ def inject_page_assets(
     scripts execute in dependency order (issue #55 / RFC-0032).
     """
     del asset_attributes  # reserved for future attribute passthrough
+    html_text = inject_page_theme(html_text, mode, theme)
     html_text = inject_htmx_core(html_text, mode, policy=policy, static_href=static_href)
     if mode is not RenderMode.PAGE:
         return html_text

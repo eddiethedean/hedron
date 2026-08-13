@@ -33,6 +33,7 @@ def home() -> Page:
 | `lang` | `str` | `"en"` | Root `html` lang attribute |
 | `head` | `NodeLike` \| `None` | `None` | Optional extra head nodes |
 | `data_theme` | `str` \| `None` | `None` | Optional `data-theme` on `<html>` |
+| `data_hedron_theme` | `str` \| `None` | `None` | Optional named Hedron theme on `<html>`; overrides the app theme for this page |
 | `**kwargs` | — | — | Additional `PageProps` / component kwargs when declared |
 
 ## Returns

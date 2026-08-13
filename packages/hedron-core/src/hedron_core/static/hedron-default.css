@@ -12,8 +12,10 @@
     --hedron-default-accent: #2563eb;
     --hedron-default-accent-hover: #1d4ed8;
     --hedron-default-accent-soft: #e8f0ff;
+    --hedron-default-on-accent: #ffffff;
     --hedron-default-danger: #c73939;
     --hedron-default-danger-soft: #fff0f0;
+    --hedron-default-on-danger: #ffffff;
     --hedron-default-success: #15805f;
     --hedron-default-success-soft: #e9f8f1;
     --hedron-default-warning: #9a6200;
@@ -40,8 +42,10 @@
       --hedron-default-accent: #7ca7ff;
       --hedron-default-accent-hover: #a2c0ff;
       --hedron-default-accent-soft: #1d3158;
+      --hedron-default-on-accent: #071a3c;
       --hedron-default-danger: #ff8585;
       --hedron-default-danger-soft: #442326;
+      --hedron-default-on-danger: #321214;
       --hedron-default-success: #65d5aa;
       --hedron-default-success-soft: #183b32;
       --hedron-default-warning: #f3c86b;
@@ -64,8 +68,10 @@
     --hedron-default-accent: #7ca7ff;
     --hedron-default-accent-hover: #a2c0ff;
     --hedron-default-accent-soft: #1d3158;
+    --hedron-default-on-accent: #071a3c;
     --hedron-default-danger: #ff8585;
     --hedron-default-danger-soft: #442326;
+    --hedron-default-on-danger: #321214;
     --hedron-default-success: #65d5aa;
     --hedron-default-success-soft: #183b32;
     --hedron-default-warning: #f3c86b;
@@ -73,6 +79,124 @@
     --hedron-default-info-soft: #193453;
     --hedron-default-shadow: 0 1px 2px rgb(0 0 0 / 25%), 0 12px 30px rgb(0 0 0 / 24%);
     --hedron-default-shadow-raised: 0 18px 46px rgb(0 0 0 / 38%);
+    color-scheme: dark;
+  }
+
+  :root[data-hedron-theme="aurora"] {
+    --hedron-default-bg: #f7f5ff;
+    --hedron-default-surface: #ffffff;
+    --hedron-default-surface-muted: #eeeaff;
+    --hedron-default-fg: #221a35;
+    --hedron-default-muted: #675e78;
+    --hedron-default-border: #ddd6fe;
+    --hedron-default-border-strong: #c4b5fd;
+    --hedron-default-accent: #6d3ce7;
+    --hedron-default-accent-hover: #5725c9;
+    --hedron-default-accent-soft: #ede9fe;
+    --hedron-default-on-accent: #ffffff;
+    --hedron-default-danger: #b4234d;
+    --hedron-default-danger-soft: #ffe8ef;
+    --hedron-default-on-danger: #ffffff;
+    --hedron-default-success: #087a57;
+    --hedron-default-success-soft: #dcf8ed;
+    --hedron-default-warning: #8a5800;
+    --hedron-default-warning-soft: #fff1cc;
+    --hedron-default-info-soft: #e9ddff;
+    --hedron-default-shadow: 0 1px 2px rgb(46 16 101 / 7%), 0 10px 28px rgb(76 29 149 / 9%);
+    --hedron-default-shadow-raised: 0 18px 46px rgb(76 29 149 / 17%);
+    --hedron-default-radius-sm: 0.38rem;
+    --hedron-default-radius: 0.68rem;
+    --hedron-default-radius-lg: 0.92rem;
+    --hedron-color-bg: #f7f5ff;
+    --hedron-color-surface: #ffffff;
+    --hedron-color-surface-muted: #eeeaff;
+    --hedron-color-fg: #221a35;
+    --hedron-color-muted: #675e78;
+    --hedron-color-accent: #6d3ce7;
+    --hedron-color-on-accent: #ffffff;
+    --hedron-color-focus: #6d3ce7;
+    --hedron-color-danger: #b4234d;
+    --hedron-color-on-danger: #ffffff;
+    --hedron-font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --hedron-motion-duration: 170ms;
+    --hedron-focus-ring: 3px solid #8b5cf6;
+    --hedron-aurora-glow: #d946ef;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root[data-hedron-theme="aurora"]:not([data-theme="light"]) {
+      --hedron-default-bg: #120d1f;
+      --hedron-default-surface: #1d162d;
+      --hedron-default-surface-muted: #261c3a;
+      --hedron-default-fg: #f8f4ff;
+      --hedron-default-muted: #b9abc9;
+      --hedron-default-border: #3a2c51;
+      --hedron-default-border-strong: #4e3a6a;
+      --hedron-default-accent: #c4a7ff;
+      --hedron-default-accent-hover: #dccbff;
+      --hedron-default-accent-soft: #352252;
+      --hedron-default-on-accent: #20123a;
+      --hedron-default-danger: #ff87a9;
+      --hedron-default-danger-soft: #4a1d2e;
+      --hedron-default-on-danger: #3d0718;
+      --hedron-default-success: #6ee7b7;
+      --hedron-default-success-soft: #153b31;
+      --hedron-default-warning: #f5c76f;
+      --hedron-default-warning-soft: #40331d;
+      --hedron-default-info-soft: #30204d;
+      --hedron-default-shadow: 0 1px 2px rgb(0 0 0 / 28%), 0 14px 34px rgb(0 0 0 / 30%);
+      --hedron-default-shadow-raised: 0 22px 54px rgb(0 0 0 / 44%);
+      --hedron-color-bg: #120d1f;
+      --hedron-color-surface: #1d162d;
+      --hedron-color-surface-muted: #261c3a;
+      --hedron-color-fg: #f8f4ff;
+      --hedron-color-muted: #b9abc9;
+      --hedron-color-accent: #c4a7ff;
+      --hedron-color-on-accent: #20123a;
+      --hedron-color-focus: #c4a7ff;
+      --hedron-color-danger: #ff87a9;
+      --hedron-color-on-danger: #3d0718;
+      --hedron-focus-ring: 3px solid #c4a7ff;
+      --hedron-aurora-glow: #ec4899;
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-hedron-theme="aurora"][data-theme="dark"] {
+    --hedron-default-bg: #120d1f;
+    --hedron-default-surface: #1d162d;
+    --hedron-default-surface-muted: #261c3a;
+    --hedron-default-fg: #f8f4ff;
+    --hedron-default-muted: #b9abc9;
+    --hedron-default-border: #3a2c51;
+    --hedron-default-border-strong: #4e3a6a;
+    --hedron-default-accent: #c4a7ff;
+    --hedron-default-accent-hover: #dccbff;
+    --hedron-default-accent-soft: #352252;
+    --hedron-default-on-accent: #20123a;
+    --hedron-default-danger: #ff87a9;
+    --hedron-default-danger-soft: #4a1d2e;
+    --hedron-default-on-danger: #3d0718;
+    --hedron-default-success: #6ee7b7;
+    --hedron-default-success-soft: #153b31;
+    --hedron-default-warning: #f5c76f;
+    --hedron-default-warning-soft: #40331d;
+    --hedron-default-info-soft: #30204d;
+    --hedron-default-shadow: 0 1px 2px rgb(0 0 0 / 28%), 0 14px 34px rgb(0 0 0 / 30%);
+    --hedron-default-shadow-raised: 0 22px 54px rgb(0 0 0 / 44%);
+    --hedron-color-bg: #120d1f;
+    --hedron-color-surface: #1d162d;
+    --hedron-color-surface-muted: #261c3a;
+    --hedron-color-fg: #f8f4ff;
+    --hedron-color-muted: #b9abc9;
+    --hedron-color-accent: #c4a7ff;
+    --hedron-color-on-accent: #20123a;
+    --hedron-color-focus: #c4a7ff;
+    --hedron-color-danger: #ff87a9;
+    --hedron-color-on-danger: #3d0718;
+    --hedron-focus-ring: 3px solid #c4a7ff;
+    --hedron-aurora-glow: #ec4899;
     color-scheme: dark;
   }
 }
@@ -133,6 +257,26 @@
     color: var(--hedron-color-fg, var(--hedron-default-fg));
     font-synthesis: none;
     -webkit-font-smoothing: antialiased;
+  }
+
+  :root[data-hedron-theme="aurora"] body {
+    background:
+      radial-gradient(
+        circle at 88% -8%,
+        color-mix(in srgb, var(--hedron-aurora-glow) 13%, transparent),
+        transparent 31rem
+      ),
+      radial-gradient(
+        circle at 8% 4%,
+        color-mix(in srgb, var(--hedron-color-accent) 16%, transparent),
+        transparent 34rem
+      ),
+      var(--hedron-color-bg);
+  }
+
+  :root[data-hedron-theme="aurora"] :where(h1, h2, h3) {
+    font-weight: 750;
+    letter-spacing: -0.035em;
   }
 
   body > header,
@@ -296,7 +440,7 @@
     font-weight: 650;
   }
 
-  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
   select,
   textarea {
     width: 100%;
@@ -312,7 +456,7 @@
       box-shadow var(--hedron-motion-duration, 150ms);
   }
 
-  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):hover,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):hover,
   select:hover,
   textarea:hover {
     border-color: var(--hedron-default-muted);
@@ -330,14 +474,14 @@
     accent-color: var(--hedron-color-accent, var(--hedron-default-accent));
   }
 
-  input:not([type="checkbox"]):not([type="radio"]):not([type="range"])[aria-invalid="true"],
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"])[aria-invalid="true"],
   select[aria-invalid="true"],
   textarea[aria-invalid="true"] {
     border-color: var(--hedron-color-danger, var(--hedron-default-danger));
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--hedron-color-danger, var(--hedron-default-danger)) 12%, transparent);
   }
 
-  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):disabled,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):disabled,
   select:disabled,
   textarea:disabled {
     background: var(--hedron-default-surface-muted);
@@ -371,7 +515,7 @@
     border: 1px solid transparent;
     border-radius: var(--hedron-default-radius-sm);
     background: var(--hedron-color-accent, var(--hedron-default-accent));
-    color: #ffffff;
+    color: var(--hedron-color-on-accent, var(--hedron-default-on-accent));
     font-weight: 680;
     line-height: 1;
     text-decoration: none;
@@ -387,7 +531,7 @@
   .hedron-button:hover,
   .hedron-download-button:hover {
     background: var(--hedron-default-accent-hover);
-    color: #ffffff;
+    color: var(--hedron-color-on-accent, var(--hedron-default-on-accent));
     transform: translateY(-1px);
   }
 
@@ -421,6 +565,7 @@
 
   .hedron-button-danger {
     background: var(--hedron-color-danger, var(--hedron-default-danger));
+    color: var(--hedron-color-on-danger, var(--hedron-default-on-danger));
   }
 
   .hedron-button-danger:hover {
@@ -429,6 +574,7 @@
       var(--hedron-color-danger, var(--hedron-default-danger)) 84%,
       black
     );
+    color: var(--hedron-color-on-danger, var(--hedron-default-on-danger));
   }
 
   .hedron-icon-button {
@@ -447,6 +593,76 @@
 
   .hedron-file-upload:hover {
     border-color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-color-mode {
+    display: grid;
+    grid-template-columns: auto minmax(8rem, 1fr) auto;
+    align-items: end;
+    gap: 0.55rem;
+  }
+
+  .hedron-app-shell {
+    display: grid;
+    grid-template-columns: minmax(12.5rem, 15rem) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(1.5rem, 4vw, 3.25rem);
+  }
+
+  .hedron-app-shell-nav {
+    position: sticky;
+    top: 1.25rem;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.65rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: color-mix(in srgb, var(--hedron-default-surface) 94%, transparent);
+    box-shadow: var(--hedron-default-shadow);
+    backdrop-filter: blur(12px);
+  }
+
+  .hedron-nav-link {
+    display: flex;
+    min-height: 2.55rem;
+    align-items: center;
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--hedron-default-radius-sm);
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.9rem;
+    font-weight: 680;
+    text-decoration: none;
+  }
+
+  .hedron-nav-link:hover,
+  .hedron-nav-link.active,
+  .hedron-nav-link[aria-current="page"] {
+    background: var(--hedron-default-accent-soft);
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-main-panel {
+    min-width: 0;
+  }
+
+  .hedron-spacer {
+    flex: none;
+    pointer-events: none;
+  }
+
+  .hedron-spacer[data-hedron-spacer-axis="block"] {
+    block-size: var(--hedron-gap, 1rem);
+  }
+
+  .hedron-spacer[data-hedron-spacer-axis="inline"] {
+    inline-size: var(--hedron-gap, 1rem);
+  }
+
+  .hedron-spacer[data-hedron-spacer-axis="both"] {
+    inline-size: var(--hedron-gap, 1rem);
+    block-size: var(--hedron-gap, 1rem);
   }
 
   .hedron-container {
@@ -1088,6 +1304,588 @@
     margin-bottom: 0;
   }
 
+  /* Extended form controls */
+  .hedron-range-input-wrap,
+  .hedron-select-slider-wrap {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .hedron-color-input {
+    width: 3.25rem;
+    min-height: 2.65rem;
+    padding: 0.25rem;
+    border: 1px solid var(--hedron-default-border-strong);
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-default-surface);
+    cursor: pointer;
+  }
+
+  .hedron-toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .hedron-toggle-switch input[type="checkbox"] {
+    position: relative;
+    inline-size: 2.75rem;
+    block-size: 1.5rem;
+    flex: none;
+    margin: 0;
+    border: 1px solid var(--hedron-default-border-strong);
+    border-radius: 999px;
+    appearance: none;
+    background: var(--hedron-default-border-strong);
+    cursor: pointer;
+    transition:
+      background var(--hedron-motion-duration, 150ms),
+      border-color var(--hedron-motion-duration, 150ms);
+  }
+
+  .hedron-toggle-switch input[type="checkbox"]::before {
+    position: absolute;
+    inset: 0.18rem auto auto 0.18rem;
+    inline-size: 1rem;
+    block-size: 1rem;
+    border-radius: 50%;
+    background: var(--hedron-default-surface);
+    box-shadow: 0 1px 3px rgb(15 23 42 / 24%);
+    content: "";
+    transition: transform var(--hedron-motion-duration, 150ms);
+  }
+
+  .hedron-toggle-switch input[type="checkbox"]:checked {
+    border-color: var(--hedron-color-accent, var(--hedron-default-accent));
+    background: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-toggle-switch input[type="checkbox"]:checked::before {
+    transform: translateX(1.22rem);
+  }
+
+  .hedron-toggle-switch input[type="checkbox"]:disabled + label {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+  }
+
+  .hedron-segmented-control,
+  .hedron-pills,
+  .hedron-rating-input {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0;
+    border: 0;
+  }
+
+  .hedron-segmented-control legend,
+  .hedron-pills legend,
+  .hedron-rating-input legend {
+    flex-basis: 100%;
+    margin-bottom: 0.1rem;
+    padding: 0;
+  }
+
+  .hedron-segment,
+  .hedron-rating-option {
+    position: relative;
+  }
+
+  .hedron-segment input,
+  .hedron-rating-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+  }
+
+  .hedron-segment label,
+  .hedron-rating-option label {
+    display: inline-flex;
+    min-height: 2.35rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.48rem 0.8rem;
+    border: 1px solid var(--hedron-default-border-strong);
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-default-surface);
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    cursor: pointer;
+  }
+
+  .hedron-pills .hedron-segment label,
+  .hedron-rating-option label {
+    border-radius: 999px;
+  }
+
+  .hedron-segment input:checked + label,
+  .hedron-rating-option input:checked + label {
+    border-color: var(--hedron-color-accent, var(--hedron-default-accent));
+    background: var(--hedron-default-accent-soft);
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  .hedron-segment input:focus-visible + label,
+  .hedron-rating-option input:focus-visible + label {
+    outline: var(
+      --hedron-focus-ring,
+      3px solid color-mix(in srgb, var(--hedron-color-focus, var(--hedron-default-accent)) 62%, white)
+    );
+    outline-offset: 2px;
+  }
+
+  .hedron-chip-input {
+    display: flex;
+    min-height: 2.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem;
+    border: 1px solid var(--hedron-default-border-strong);
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-default-surface);
+  }
+
+  .hedron-chip-list {
+    display: contents;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hedron-chip {
+    display: inline-flex;
+    min-height: 1.9rem;
+    align-items: center;
+    padding-inline: 0.65rem;
+    border-radius: 999px;
+    background: var(--hedron-default-accent-soft);
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+    font-size: 0.8rem;
+    font-weight: 680;
+  }
+
+  .hedron-chip-entry {
+    min-width: 8rem;
+    flex: 1;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .hedron-help,
+  .hedron-geolocation-hint {
+    margin: 0;
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.82rem;
+  }
+
+  .hedron-directory-upload {
+    display: grid;
+    gap: 0.55rem;
+    padding: 1rem;
+    border: 1px dashed var(--hedron-default-border-strong);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface-muted);
+    cursor: pointer;
+  }
+
+  .hedron-directory-upload:hover {
+    border-color: var(--hedron-color-accent, var(--hedron-default-accent));
+  }
+
+  /* Navigation, overlays, and rich surfaces */
+  .hedron-carousel {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .hedron-carousel-slides,
+  .hedron-carousel-nav,
+  .hedron-timeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hedron-carousel-slides {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: var(--hedron-default-surface);
+    scroll-snap-type: x mandatory;
+  }
+
+  .hedron-carousel-slide {
+    min-width: 0;
+    padding: 1.1rem;
+    scroll-snap-align: start;
+  }
+
+  .hedron-carousel-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+
+  .hedron-carousel-prev,
+  .hedron-carousel-next {
+    display: inline-flex;
+    min-width: 2rem;
+    min-height: 2rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: 999px;
+    background: var(--hedron-default-surface);
+    text-decoration: none;
+  }
+
+  .hedron-timeline {
+    display: grid;
+  }
+
+  .hedron-timeline-entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(3.5rem, auto) minmax(0, 1fr);
+    gap: 0.15rem 0.9rem;
+    padding: 0 0 1rem 1rem;
+    border-left: 1px solid var(--hedron-default-border-strong);
+  }
+
+  .hedron-timeline-entry::before {
+    position: absolute;
+    top: 0.38rem;
+    left: -0.31rem;
+    inline-size: 0.55rem;
+    block-size: 0.55rem;
+    border: 2px solid var(--hedron-default-surface);
+    border-radius: 50%;
+    background: var(--hedron-color-accent, var(--hedron-default-accent));
+    box-shadow: 0 0 0 1px var(--hedron-color-accent, var(--hedron-default-accent));
+    content: "";
+  }
+
+  .hedron-timeline-entry:last-child {
+    padding-bottom: 0;
+    border-left-color: transparent;
+  }
+
+  .hedron-timeline-time {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.78rem;
+  }
+
+  .hedron-timeline-label {
+    font-weight: 700;
+  }
+
+  .hedron-timeline-body {
+    grid-column: 2;
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.88rem;
+  }
+
+  .hedron-timeline-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  .hedron-popover,
+  .hedron-context-menu,
+  .hedron-menu-button {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .hedron-popover-details {
+    display: block;
+  }
+
+  .hedron-popover-panel,
+  .hedron-context-menu-panel,
+  .hedron-menu-button-panel {
+    min-width: 14rem;
+    max-width: min(24rem, calc(100vw - 2rem));
+    padding: 0.75rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface);
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    box-shadow: var(--hedron-default-shadow-raised);
+  }
+
+  .hedron-context-menu-panel,
+  .hedron-menu-button-panel {
+    gap: 0.35rem;
+    margin: 0;
+    list-style: none;
+  }
+
+  .hedron-context-menu-panel:popover-open,
+  .hedron-menu-button-panel:popover-open {
+    display: grid;
+  }
+
+  .hedron-context-menu-overflow {
+    display: none;
+  }
+
+  .hedron-popover-body > :last-child,
+  .hedron-popover-panel > :last-child {
+    margin-bottom: 0;
+  }
+
+  .hedron-tooltip {
+    display: inline-flex;
+  }
+
+  .hedron-action-dock {
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    padding: 0.75rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: color-mix(in srgb, var(--hedron-default-surface) 92%, transparent);
+    box-shadow: var(--hedron-default-shadow-raised);
+    backdrop-filter: blur(14px);
+  }
+
+  .hedron-bottom-dock {
+    position: sticky;
+    bottom: 1rem;
+  }
+
+  .hedron-aside-dock {
+    position: sticky;
+    top: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Media, embedded content, and data viewers */
+  .hedron-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+    gap: 1rem;
+  }
+
+  .hedron-gallery-item {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface);
+    box-shadow: var(--hedron-default-shadow);
+  }
+
+  .hedron-gallery-item :where(img, video) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .hedron-gallery-item figcaption,
+  .hedron-gallery-select {
+    display: block;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .hedron-gallery-lightbox-open {
+    display: block;
+  }
+
+  .hedron-gallery-lightbox {
+    width: min(calc(100% - 2rem), 64rem);
+    max-height: calc(100dvh - 2rem);
+    padding: 0.75rem;
+    overflow: auto;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-lg);
+    background: var(--hedron-default-surface);
+    color: var(--hedron-color-fg, var(--hedron-default-fg));
+    box-shadow: var(--hedron-default-shadow-raised);
+  }
+
+  .hedron-gallery-lightbox::backdrop {
+    background: rgb(8 12 20 / 72%);
+    backdrop-filter: blur(4px);
+  }
+
+  .hedron-gallery-lightbox form {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.75rem;
+  }
+
+  .hedron-gallery-lightbox img {
+    width: 100%;
+    max-height: calc(100dvh - 7rem);
+    border-radius: var(--hedron-default-radius-sm);
+    object-fit: contain;
+  }
+
+  .hedron-audio,
+  .hedron-video,
+  .hedron-iframe-wrap,
+  .hedron-pdf-viewer-wrap,
+  .hedron-map-root,
+  .hedron-camera-capture,
+  .hedron-microphone-capture,
+  .hedron-geolocation,
+  .hedron-help-inspector {
+    overflow: hidden;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface);
+  }
+
+  .hedron-audio,
+  .hedron-video,
+  .hedron-camera-capture,
+  .hedron-microphone-capture,
+  .hedron-geolocation,
+  .hedron-help-inspector {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.9rem;
+  }
+
+  .hedron-audio audio,
+  .hedron-video video,
+  .hedron-iframe,
+  .hedron-pdf-viewer {
+    width: 100%;
+  }
+
+  .hedron-iframe,
+  .hedron-pdf-viewer {
+    min-height: 24rem;
+    border: 0;
+    background: var(--hedron-default-surface-muted);
+  }
+
+  .hedron-logo,
+  .hedron-page-icon {
+    width: auto;
+    max-height: 3rem;
+  }
+
+  .hedron-logo-link {
+    display: inline-flex;
+  }
+
+  .hedron-code-viewer,
+  .hedron-json-viewer {
+    max-height: 30rem;
+  }
+
+  .hedron-math-display {
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-default-surface-muted);
+  }
+
+  .hedron-math-source {
+    white-space: pre-wrap;
+  }
+
+  .hedron-map-root {
+    min-height: 18rem;
+  }
+
+  .hedron-map-fallback,
+  .hedron-map-alternative {
+    padding: 1rem;
+  }
+
+  .hedron-map-attribution,
+  .hedron-geolocation-note {
+    margin: 0;
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.78rem;
+  }
+
+  .hedron-help-inspector-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  /* Model, progress, and inspection surfaces */
+  .hedron-circular-progress {
+    display: inline-grid;
+    min-width: 5rem;
+    justify-items: center;
+    gap: 0.4rem;
+  }
+
+  .hedron-circular-progress-meter {
+    width: 4.5rem;
+  }
+
+  .hedron-circular-progress-value {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .hedron-parameter-viewer,
+  .hedron-dialogue {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .hedron-parameter {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius-sm);
+    background: var(--hedron-default-surface);
+  }
+
+  .hedron-prediction-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: var(--hedron-default-accent-soft);
+    color: var(--hedron-color-accent, var(--hedron-default-accent));
+    font-weight: 700;
+  }
+
+  .hedron-dialogue > * {
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--hedron-default-border);
+    border-radius: var(--hedron-default-radius);
+    background: var(--hedron-default-surface);
+  }
+
+  .hedron-dialogue-speaker {
+    margin-right: 0.5rem;
+  }
+
+  .hedron-dialogue-meta {
+    color: var(--hedron-color-muted, var(--hedron-default-muted));
+    font-size: 0.78rem;
+  }
+
+  .hedron-chat-user {
+    color: var(--hedron-color-on-accent, var(--hedron-default-on-accent));
+  }
+
   @keyframes hedron-default-shimmer {
     from {
       background-position: 200% 0;
@@ -1110,6 +1908,27 @@
     .hedron-grid,
     .hedron-grid:has(> .hedron-sidebar),
     .hedron-grid[data-hedron-columns] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hedron-app-shell {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hedron-app-shell-nav {
+      position: static;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+      padding: 0.45rem;
+      overflow-x: visible;
+    }
+
+    .hedron-nav-link {
+      flex: none;
+      white-space: normal;
+    }
+
+    .hedron-color-mode {
       grid-template-columns: minmax(0, 1fr);
     }
 
@@ -1139,6 +1958,14 @@
       display: block;
       overflow-x: auto;
       white-space: nowrap;
+    }
+
+    .hedron-timeline-entry {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hedron-timeline-body {
+      grid-column: 1;
     }
   }
 

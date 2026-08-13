@@ -70,6 +70,7 @@ class PageProps(Props):
     lang: str = "en"
     title: str | None = None
     data_theme: str | None = None
+    data_hedron_theme: str | None = None
     dir: str | None = None
     script_defer: bool = True
     script_async: bool = False
@@ -89,6 +90,7 @@ class Page(Component[PageProps]):
         head: NodeLike = None,
         children: NodeLike = None,
         data_theme: str | None = None,
+        data_hedron_theme: str | None = None,
         dir: str | None = None,
         scripts: Sequence[SafeUrl] | None = None,
         script_defer: bool = True,
@@ -107,6 +109,7 @@ class Page(Component[PageProps]):
                 lang=lang,
                 title=title,
                 data_theme=data_theme,
+                data_hedron_theme=data_hedron_theme,
                 dir=dir,
                 script_defer=script_defer,
                 script_async=script_async,
@@ -135,8 +138,13 @@ class Page(Component[PageProps]):
         html_attrs: dict[str, HtmlAttrValue] = {"lang": self.props.lang}
         if self.props.dir:
             html_attrs["dir"] = self.props.dir
+        data_attrs: dict[str, str | bool | int | float | None] = {}
         if self.props.data_theme:
-            html_attrs["data"] = {"theme": self.props.data_theme}
+            data_attrs["theme"] = self.props.data_theme
+        if self.props.data_hedron_theme:
+            data_attrs["hedron-theme"] = self.props.data_hedron_theme
+        if data_attrs:
+            html_attrs["data"] = data_attrs
         body_nodes: list[NodeLike] = list(self._children)
         # Allowlisted PE scripts are TrustedHtml escapes of SafeUrl ASSET paths only —
         # free-form <script> nodes remain forbidden in the component tree.

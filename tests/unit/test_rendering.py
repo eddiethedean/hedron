@@ -58,6 +58,19 @@ def test_render_page_doctype() -> None:
     assert "<title>Admin</title>" in result.html
 
 
+def test_page_can_select_named_theme_and_color_mode() -> None:
+    result = render(
+        Page(
+            Text("themed"),
+            data_theme="dark",
+            data_hedron_theme="aurora",
+        ),
+        mode=RenderMode.PAGE,
+    )
+    assert 'data-theme="dark"' in result.html
+    assert 'data-hedron-theme="aurora"' in result.html
+
+
 def test_component_props_immutable() -> None:
     c = Hello("Ada")
     with pytest.raises((TypeError, ValidationError, AttributeError)):

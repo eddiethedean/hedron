@@ -24,7 +24,7 @@ configuration.
 | `format_version` | `int` | `1` | Schema version; unsupported values fail |
 | `component_roots` | `list[str]` | `[]` | Relative dirs searched for component folders |
 | `build_dir` | `str` | `".hedron/build"` | Build/manifest output directory |
-| `theme` | `str` \| omit | `"default"` | Registered theme name |
+| `theme` | `str` \| omit | `"default"` | Registered theme name (`"default"` or built-in `"aurora"`) |
 | `plugins` | `list[str]` \| omit | unset (`null`) | `null`/omit = discover all entry points; `[]` = load none; names = exact enable list |
 | `explorer` | `str` | `"off"` | `"off"` \| `"development"` \| `"secured"` (constructor may override) |
 | `compiler_checks` | `bool` | `true` | Enable compiler diagnostics in check/build |
@@ -47,7 +47,7 @@ configuration.
 format_version = 1
 component_roots = ["components"]
 build_dir = ".hedron/build"
-theme = "default"
+theme = "aurora"
 plugins = []
 explorer = "off"
 

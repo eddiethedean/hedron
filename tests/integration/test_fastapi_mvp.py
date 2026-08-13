@@ -72,6 +72,25 @@ def test_default_styles_can_be_disabled() -> None:
     assert "hedron-default.css" not in response.text
 
 
+def test_hedron_selects_aurora_theme_on_the_document_root() -> None:
+    app = Hedron(
+        title="aurora",
+        theme="aurora",
+        security="standard",
+        explorer="off",
+        session_secret="test-secret",
+    )
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(Text("aurora app"), title="Aurora")
+
+    response = TestClient(app).get("/")
+    assert response.status_code == 200
+    assert 'data-hedron-theme="aurora"' in response.text
+    assert get_registry().get_theme("aurora") is not None
+
+
 def test_plain_fastapi_html_helper() -> None:
     app = FastAPI()
     router = HedronRouter()

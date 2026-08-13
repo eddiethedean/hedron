@@ -39,7 +39,7 @@ This component's core behavior is server-rendered HTML and does not require a br
 ## Constructor and parameters
 
 ```python
-Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, dir=None, scripts=None, script_defer=True)
+Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, data_hedron_theme=None, dir=None, scripts=None, script_defer=True)
 ```
 
 | Parameter | Type | Meaning |
@@ -49,6 +49,7 @@ Page(*body, lang='en', title=None, head=None, children=None, data_theme=None, di
 | `title` | `str | None` | Convenience document title. |
 | `head` | `NodeLike | None` | Additional trusted head nodes. |
 | `data_theme` | `str | None` | Initial `data-theme` value. |
+| `data_hedron_theme` | `str | None` | Named Hedron theme for this document; overrides the app selection. |
 | `dir` | `str | None` | Optional `dir` on `<html>` (`ltr` / `rtl` / `auto`). |
 | `scripts` | `Sequence[SafeUrl] | None` | Allowlisted same-origin `SafeUrl` ASSET scripts; free-form `<script>` nodes stay out of the tree. |
 | `script_defer` | `bool` | When true (default), emitted script tags use `defer`. |

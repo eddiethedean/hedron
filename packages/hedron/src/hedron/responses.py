@@ -319,9 +319,14 @@ def _inject_build_assets(
 ) -> str:
     import html as html_lib
 
+    from hedron_core.page_assets import inject_page_theme
+
     policy = getattr(request.app.state, "hedron_security", None)
     if not isinstance(policy, SecurityPolicy):
         policy = SecurityPolicy.from_name("standard")
+    trace_theme = result.trace.get("theme") if result.trace is not None else None
+    theme = trace_theme if isinstance(trace_theme, str) else None
+    html_text = inject_page_theme(html_text, mode, theme)
     html_text = _ensure_htmx_asset(html_text, mode, policy=policy, request=request)
     if mode is not RenderMode.PAGE:
         return html_text

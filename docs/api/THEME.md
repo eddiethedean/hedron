@@ -16,7 +16,7 @@ from hedron import Hedron
 
 app = Hedron(
     title="Themed app",
-    theme="default",
+    theme="aurora",
     security="standard",
     session_secret="replace-in-production",
 )
@@ -35,6 +35,18 @@ A component `styles.css` exposes local classes through a typed `styles` binding.
 
 `Theme` declares semantic CSS variables and component variant defaults. Applications may register themes and select one globally or at supported boundaries. Themes must define required accessibility tokens and may extend, but not silently remove, base contracts.
 
+Hedron ships two complete themes. `default` is the quiet blue product baseline;
+`aurora` uses a more expressive violet palette, tighter geometry, richer depth, and a
+two-tone ambient background. Both include explicit light and dark palettes and follow
+the browser preference when no color mode is forced.
+
+```python
+app = Hedron(theme="aurora")
+
+# An individual page can override the app selection for previews or mounted surfaces.
+return Page(content, data_hedron_theme="default", data_theme="dark")
+```
+
 ```python
 Theme(
     name="acme",
@@ -42,9 +54,9 @@ Theme(
 )
 ```
 
-## Default presentation
+## Built-in presentation
 
-`Hedron()` includes a local, responsive baseline stylesheet for typography, spacing,
+`Hedron()` includes a local, responsive stylesheet for typography, spacing,
 forms, buttons, cards, tables, navigation, status states, and the built-in layout
 components. It supports light and dark system preferences and does not require a build
 step or a remote stylesheet.

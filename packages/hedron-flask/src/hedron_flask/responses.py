@@ -235,12 +235,18 @@ def _flask_static_href(path: str) -> str:
     return prefix_local_path(href, mount)
 
 
-def _inject_page_html(html_text: str, mode: RenderMode) -> str:
+def _render_theme(result: RenderResult) -> str | None:
+    theme = result.trace.get("theme") if result.trace is not None else None
+    return theme if isinstance(theme, str) else None
+
+
+def _inject_page_html(html_text: str, mode: RenderMode, *, theme: str | None = None) -> str:
     return inject_page_assets(
         html_text,
         mode,
         policy=_security_policy_from_app(),
         static_href=_flask_static_href,
+        theme=theme,
     )
 
 
@@ -282,7 +288,7 @@ def component_response(
             return Response(str(exc), status=403, mimetype="text/plain")
         _apply_auth_cache_headers(headers, authenticated=authenticated)
     selected_mode = render_mode_for_request(hdrs, force=mode)
-    body = _inject_page_html(result.html, selected_mode)
+    body = _inject_page_html(result.html, selected_mode, theme=_render_theme(result))
     return Response(body, status=status_code, mimetype="text/html", headers=headers)
 
 
@@ -354,7 +360,7 @@ def interaction_response(
         )
         body = rendered.html
         if selected_mode is RenderMode.PAGE:
-            body = _inject_page_html(body, selected_mode)
+            body = _inject_page_html(body, selected_mode, theme=_render_theme(rendered))
     return Response(
         body,
         status=result.status_code,

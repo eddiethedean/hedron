@@ -312,7 +312,14 @@ from hedron_core.security_policy import (
 )
 from hedron_core.streaming import ChunkedList, StreamBudget, StreamedDocument, TokenStream
 from hedron_core.styles import StyleSymbols, styles_from_manifest
-from hedron_core.theme import Theme, default_theme, emit_theme_css
+from hedron_core.theme import (
+    Theme,
+    aurora_theme,
+    builtin_themes,
+    default_theme,
+    emit_theme_css,
+    ensure_builtin_themes_registered,
+)
 from hedron_core.typing_aliases import (
     HtmlAttrMap,
     HtmlAttrValue,
@@ -644,12 +651,15 @@ __all__ = [
     "__version__",
     "addressable",
     "apply_suppressions",
+    "aurora_theme",
+    "builtin_themes",
     "compile_css",
     "default_theme",
     "diagnostics_to_json",
     "diagnostics_to_sarif",
     "diagnostics_to_text",
     "emit_theme_css",
+    "ensure_builtin_themes_registered",
     "get_registry",
     "html",
     "meets_severity_threshold",

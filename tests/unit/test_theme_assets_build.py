@@ -7,7 +7,15 @@ from pathlib import Path
 import pytest
 
 from hedron.config import load_hedron_settings
-from hedron_core import HedronError, Theme, default_theme, emit_theme_css
+from hedron_core import (
+    HedronError,
+    Theme,
+    aurora_theme,
+    default_theme,
+    emit_theme_css,
+    ensure_builtin_themes_registered,
+    get_registry,
+)
 from hedron_core.assets import fingerprint_bytes
 from hedron_core.manifests import AssetManifest, BuildManifest
 from hedron_core.theme import REQUIRED_A11Y_TOKENS
@@ -35,6 +43,60 @@ def test_default_theme_has_a11y_tokens() -> None:
     assert "prefers-reduced-motion" in css
 
 
+def test_aurora_is_a_registered_first_party_theme() -> None:
+    themes = ensure_builtin_themes_registered()
+    assert [theme.name for theme in themes] == ["default", "aurora"]
+    assert get_registry().get_theme("aurora") is not None
+    assert "#6d3ce7" in emit_theme_css(aurora_theme())
+
+
+def test_production_build_accepts_aurora_theme(tmp_path: Path) -> None:
+    from hedron.build import run_build
+    from hedron.config import HedronSettings
+
+    result = run_build(
+        project_dir=tmp_path,
+        settings=HedronSettings(
+            build_dir=".hedron/build",
+            theme="aurora",
+            plugins=(),
+        ),
+        production=True,
+    )
+    assert result.css_bundle_path is not None
+    css = result.css_bundle_path.read_text(encoding="utf-8")
+    assert "#6d3ce7" in css
+    assert "#c4a7ff" in css
+
+
+def _relative_luminance(hex_color: str) -> float:
+    channels = [int(hex_color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
+    linear = [
+        value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+        for value in channels
+    ]
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+
+def _contrast_ratio(first: str, second: str) -> float:
+    lighter, darker = sorted(
+        (_relative_luminance(first), _relative_luminance(second)), reverse=True
+    )
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+@pytest.mark.parametrize("theme", [default_theme(), aurora_theme()], ids=lambda item: item.name)
+def test_builtin_theme_light_and_dark_pairs_meet_aa_contrast(theme: Theme) -> None:
+    light = theme.tokens
+    dark = {**theme.tokens, **theme.modes["dark"]}
+
+    for palette in (light, dark):
+        assert _contrast_ratio(palette["color.bg"], palette["color.fg"]) >= 4.5
+        assert _contrast_ratio(palette["color.bg"], palette["color.muted"]) >= 4.5
+        assert _contrast_ratio(palette["color.accent"], palette["color.on-accent"]) >= 4.5
+        assert _contrast_ratio(palette["color.danger"], palette["color.on-danger"]) >= 4.5
+
+
 def test_default_stylesheet_is_local_layered_and_customizable() -> None:
     stylesheet = (
         Path(__file__).resolve().parents[2]
@@ -51,6 +113,13 @@ def test_default_stylesheet_is_local_layered_and_customizable() -> None:
     assert ".hedron-form-field" in stylesheet
     assert ".hedron-dialog" in stylesheet
     assert ".hedron-chat-input" in stylesheet
+    assert ".hedron-app-shell" in stylesheet
+    assert ".hedron-toggle-switch" in stylesheet
+    assert ".hedron-timeline" in stylesheet
+    assert ".hedron-gallery" in stylesheet
+    assert ':root[data-hedron-theme="aurora"]' in stylesheet
+    assert "--hedron-aurora-glow" in stylesheet
+    assert "--hedron-default-on-accent" in stylesheet
     assert "var(--hedron-gap" in stylesheet
     assert "data-hedron-gap" in stylesheet or "--hedron-gap" in stylesheet
     assert "\n  table {" in stylesheet
@@ -59,6 +128,13 @@ def test_default_stylesheet_is_local_layered_and_customizable() -> None:
     assert "http://" not in stylesheet
     assert "https://" not in stylesheet
     assert "url(" not in stylesheet
+
+
+def test_default_stylesheet_copies_stay_in_sync() -> None:
+    root = Path(__file__).resolve().parents[2] / "packages"
+    core = root / "hedron-core" / "src" / "hedron_core" / "static" / "hedron-default.css"
+    facade = root / "hedron" / "src" / "hedron" / "static" / "hedron-default.css"
+    assert core.read_bytes() == facade.read_bytes()
 
 
 def test_theme_missing_token_rejected() -> None:
