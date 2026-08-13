@@ -78,6 +78,8 @@ jobs:
 
       - name: Build wheels
         working-directory: packages/hedron-native
+        # Force bash so the retry loop is not parsed by Windows PowerShell.
+        shell: bash
         run: |
           set -euo pipefail
           attempt=1
