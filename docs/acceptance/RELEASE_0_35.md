@@ -70,4 +70,4 @@ python scripts/check_release_gate.py 0.35.0 --execute-verified
 - [x] RFC-0068 Accepted and implementation matches it
 - [x] Every 0.35-owned release-gate row Verified with zero Deferred
 - [x] Fleet inventory published with `v0.35.0`; zero unowned Alpha rows
-- [ ] Close #91 after release assets are published on GitHub/PyPI
+- [x] Close #91 after release assets are published on GitHub/PyPI
