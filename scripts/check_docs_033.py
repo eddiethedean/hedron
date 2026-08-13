@@ -39,13 +39,15 @@ def main() -> int:
     if fail_errors(errors, "DOCS-033"):
         return 1
     cmd = [
-        sys.executable,
-        "-m",
+        "uv",
+        "run",
+        "--group",
+        "docs",
         "mkdocs",
         "build",
+        "--strict",
         "-f",
         str(ROOT / "mkdocs.yml"),
-        "-s",
     ]
     print("+", *cmd)
     try:

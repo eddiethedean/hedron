@@ -43,13 +43,15 @@ def main() -> int:
     if code != 0:
         return code
     cmd = [
-        sys.executable,
-        "-m",
+        "uv",
+        "run",
+        "--group",
+        "docs",
         "mkdocs",
         "build",
+        "--strict",
         "-f",
         str(ROOT / "mkdocs.yml"),
-        "-s",
     ]
     print("+", *cmd)
     try:

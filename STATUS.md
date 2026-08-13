@@ -1,3 +1,5 @@
+<!-- Generated from docs/STATUS.md — edit the docs/ copy, then run scripts/sync_status_roadmap.py -->
+
 # Specification and implementation status
 
 **Roadmap position:** phase 0.33 **Published** as `v0.33.0` (2026-08-13). Prior: 0.32 **Published** as `v0.32.0` (2026-08-12).
@@ -20,7 +22,7 @@ Workbench / Connect adapter (`release-gate-0.33.toml` Verified; published tip `v
 Prior Published **0.32** (MCP production-grade as `v0.32.0`) remains in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2026.07.0); Supported bridge is out of 0.33 scope. The
-[default presentation quality program](implementation/DEFAULT_PRESENTATION_033_PLUS.md) is
+[default presentation quality program](docs/implementation/DEFAULT_PRESENTATION_033_PLUS.md) is
 **cross-cutting and must not block** Posit adapter work.
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
@@ -29,14 +31,14 @@ remains **Verified** (`PROTOCOL-021`); **`SR-021` / `PARTICIPANT-021` / `ARTIFAC
 `REMEDIATE-021` remain Planned** until real sessions — **do not market human AT as
 Supported**. Automated AT (`AT-019`, phase 0.19) remains Supported and is not a substitute
 for human AT. Prior production-quality packet **0.25** (D-053 / RFC-0056) remains
-**Verified** — see [production-quality](guides/production-quality.md) ·
-[PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). `REV-026-003` (Explorer process-local
+**Verified** — see [production-quality](docs/guides/production-quality.md) ·
+[PRODUCTION_ARCHETYPE](docs/api/PRODUCTION_ARCHETYPE.md). `REV-026-003` (Explorer process-local
 audit buffer) remains an Explorer-owned accepted risk; it was not expanded into satellite
 graduation scope.
 
 ## Supported vs Deferred (operator view)
 
-Adopter summary: [What’s ready today](guides/whats-ready.md). Rule of thumb: do not market a
+Adopter summary: [What’s ready today](docs/guides/whats-ready.md). Rule of thumb: do not market a
 capability as unqualified **Supported** when its owning gate row is **Deferred** or still
 **Planned**. Live SSE/WS/streaming/preload remain **experimental** (polling Supported —
 `polling_only` Accepted in 0.24). Notebook preview is tooling-grade / localhost-only;
@@ -74,13 +76,13 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 | `REGRESS-022` | Full suite at 0.22 cut | **Verified** (0.22) | |
 | `PKG-022` | `verify_pkg_22.py` packet evidence | **Verified** (0.22) | |
 | `STABLE-023` | Expanded stable tier allowlist | **Verified** (0.23) | D-053 / RFC-0056 |
-| `FACADE-023` | Beginner facade inventory | **Verified** (0.23) | [STABLE_FACADE](api/STABLE_FACADE.md) |
+| `FACADE-023` | Beginner facade inventory | **Verified** (0.23) | [STABLE_FACADE](docs/api/STABLE_FACADE.md) |
 | `INVENTORY-023` | Stability inventory checker | **Verified** (0.23) | |
 | `REGRESS-023` | Full suite at 0.23 cut | **Verified** (0.23) | |
 | `PKG-023` | `verify_pkg_23.py` packet evidence | **Verified** (0.23) | |
 | `DECIDE-024` | Live disposition XOR (`polling_only`) | **Verified** (0.24) | D-053 / RFC-0056 |
-| `BROWSER-024` | Browser waive ledger for prior live IDs | **Verified** (0.24) | [waive-browser-024.toml](acceptance/waive-browser-024.toml) |
-| `PERF-024` | Perf waive ledger for `PERF-10-001` | **Verified** (0.24) | [waive-perf-024.toml](acceptance/waive-perf-024.toml) |
+| `BROWSER-024` | Browser waive ledger for prior live IDs | **Verified** (0.24) | [waive-browser-024.toml](docs/acceptance/waive-browser-024.toml) |
+| `PERF-024` | Perf waive ledger for `PERF-10-001` | **Verified** (0.24) | [waive-perf-024.toml](docs/acceptance/waive-perf-024.toml) |
 | `DOCS-024` | Docs train SSOT + live-claim honesty | **Verified** (0.24) | |
 | `REGRESS-024` | Full suite at 0.24 cut | **Verified** (0.24) | |
 | `PKG-024` | `verify_pkg_24.py` packet evidence | **Verified** (0.24) | |
@@ -106,44 +108,44 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 
 ## Phase 0.24 evidence
 
-- Gate index: [release-gate-0.24.toml](acceptance/release-gate-0.24.toml)
+- Gate index: [release-gate-0.24.toml](docs/acceptance/release-gate-0.24.toml)
   (all `Verified`; zero-Deferred for 0.24-owned rows).
-- Acceptance: [RELEASE_0_24.md](acceptance/RELEASE_0_24.md).
-- Disposition: [api/LIVE_DISPOSITION.md](api/LIVE_DISPOSITION.md) ·
-  [live-disposition-024.toml](acceptance/live-disposition-024.toml) (`polling_only`).
-- Waive ledgers: [waive-browser-024.toml](acceptance/waive-browser-024.toml) ·
-  [waive-perf-024.toml](acceptance/waive-perf-024.toml).
-- What’s new: [guides/whats-new-0.24.md](guides/whats-new-0.24.md).
+- Acceptance: [RELEASE_0_24.md](docs/acceptance/RELEASE_0_24.md).
+- Disposition: [api/LIVE_DISPOSITION.md](docs/api/LIVE_DISPOSITION.md) ·
+  [live-disposition-024.toml](docs/acceptance/live-disposition-024.toml) (`polling_only`).
+- Waive ledgers: [waive-browser-024.toml](docs/acceptance/waive-browser-024.toml) ·
+  [waive-perf-024.toml](docs/acceptance/waive-perf-024.toml).
+- What’s new: [guides/whats-new-0.24.md](docs/guides/whats-new-0.24.md).
 - Checker: `python scripts/check_release_gate.py 0.24.0`,
   `python scripts/verify_pkg_24.py`.
 
 ## Phase 0.23 evidence (prior)
 
-- Gate index: [release-gate-0.23.toml](acceptance/release-gate-0.23.toml)
+- Gate index: [release-gate-0.23.toml](docs/acceptance/release-gate-0.23.toml)
   (all `Verified`; zero-Deferred for 0.23-owned rows).
-- Acceptance: [RELEASE_0_23.md](acceptance/RELEASE_0_23.md).
-- Contracts: [api/STABILITY.md](api/STABILITY.md) · [api/STABLE_FACADE.md](api/STABLE_FACADE.md).
-- What’s new: [guides/whats-new-0.23.md](guides/whats-new-0.23.md).
+- Acceptance: [RELEASE_0_23.md](docs/acceptance/RELEASE_0_23.md).
+- Contracts: [api/STABILITY.md](docs/api/STABILITY.md) · [api/STABLE_FACADE.md](docs/api/STABLE_FACADE.md).
+- What’s new: [guides/whats-new-0.23.md](docs/guides/whats-new-0.23.md).
 - Checker: `python scripts/check_release_gate.py 0.23.0`,
   `python scripts/verify_pkg_23.py`.
 
 ## Phase 0.22 evidence (prior)
 
-- Gate index: [release-gate-0.22.toml](acceptance/release-gate-0.22.toml)
+- Gate index: [release-gate-0.22.toml](docs/acceptance/release-gate-0.22.toml)
   (all `Verified`; zero-Deferred for 0.22-owned rows).
-- Acceptance: [RELEASE_0_22.md](acceptance/RELEASE_0_22.md).
-- Contract: [api/CSRF_COMPOSITION.md](api/CSRF_COMPOSITION.md).
-- What’s new: [guides/whats-new-0.22.md](guides/whats-new-0.22.md).
+- Acceptance: [RELEASE_0_22.md](docs/acceptance/RELEASE_0_22.md).
+- Contract: [api/CSRF_COMPOSITION.md](docs/api/CSRF_COMPOSITION.md).
+- What’s new: [guides/whats-new-0.22.md](docs/guides/whats-new-0.22.md).
 - Checker: `python scripts/check_release_gate.py 0.22.0`,
   `python scripts/verify_pkg_22.py`.
 
 ## Phase 0.21 evidence (prior)
 
-- Gate index: [release-gate-0.21.toml](acceptance/release-gate-0.21.toml)
+- Gate index: [release-gate-0.21.toml](docs/acceptance/release-gate-0.21.toml)
   (`PROTOCOL-021` / `REGRESS-021` / `PKG-021` Verified; SR/PARTICIPANT/ARTIFACT/REMEDIATE Planned).
-- Acceptance: [RELEASE_0_21.md](acceptance/RELEASE_0_21.md).
-- Protocol: [acceptance/human-at/](acceptance/human-at/).
-- What’s new: [guides/whats-new-0.21.md](guides/whats-new-0.21.md).
+- Acceptance: [RELEASE_0_21.md](docs/acceptance/RELEASE_0_21.md).
+- Protocol: [acceptance/human-at/](docs/acceptance/human-at/).
+- What’s new: [guides/whats-new-0.21.md](docs/guides/whats-new-0.21.md).
 - Checker: `python scripts/check_release_gate.py 0.21.0 --allow-planned`,
   `python scripts/check_human_at_packet.py`, `python scripts/verify_pkg_21.py`.
 - Human AT is **not** Supported for adopter marketing until remaining gates are Verified after
@@ -151,12 +153,12 @@ sessions Planned / not Supported. Phase **0.22** ships CSRF / SecurityPolicy com
 
 ## Phase 0.20 evidence (prior)
 
-- Closure index: [release-gate-0.20.toml](acceptance/release-gate-0.20.toml)
+- Closure index: [release-gate-0.20.toml](docs/acceptance/release-gate-0.20.toml)
   (all `Verified`; zero-Deferred for 0.20-owned rows).
-- Acceptance: [RELEASE_0_20.md](acceptance/RELEASE_0_20.md).
-- Stability: [api/STABILITY.md](api/STABILITY.md).
-- Compatibility / deprecation: [COMPATIBILITY.md](COMPATIBILITY.md).
-- Upgrade: [guides/upgrade.md](guides/upgrade.md).
+- Acceptance: [RELEASE_0_20.md](docs/acceptance/RELEASE_0_20.md).
+- Stability: [api/STABILITY.md](docs/api/STABILITY.md).
+- Compatibility / deprecation: [COMPATIBILITY.md](docs/COMPATIBILITY.md).
+- Upgrade: [guides/upgrade.md](docs/guides/upgrade.md).
 
 ## Phase 0.25 evidence
 
@@ -171,11 +173,11 @@ All `*-025` capability gates are **Verified** on the Published `v0.25.0` train:
 | `SUPPLY-025` | Verified — atomic SBOM/evidence attach on train tags |
 | `REGRESS-025` / `PKG-025` | Verified — suite + `verify_pkg_25.py` |
 
-SSOT: [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md) ·
-[RELEASE_0_25](acceptance/RELEASE_0_25.md) ·
-[release-gate-0.25.toml](acceptance/release-gate-0.25.toml).
+SSOT: [PRODUCTION_ARCHETYPE](docs/api/PRODUCTION_ARCHETYPE.md) ·
+[RELEASE_0_25](docs/acceptance/RELEASE_0_25.md) ·
+[release-gate-0.25.toml](docs/acceptance/release-gate-0.25.toml).
 Cut verify: `python scripts/verify_pkg_25.py`.
-Program summary: [production-quality guide](guides/production-quality.md).
+Program summary: [production-quality guide](docs/guides/production-quality.md).
 
 ## Phase 0.27 evidence
 
@@ -191,18 +193,18 @@ All `*-027` capability gates are **Verified** on the Published `v0.27.0` train:
 | `PARITY-027` | Verified — portable PAGE/FRAGMENT/CSRF parity + REVIEW-027 |
 | `REGRESS-027` / `PKG-027` | Verified — suite + `verify_pkg_27.py` |
 
-SSOT: [RELEASE_0_27](acceptance/RELEASE_0_27.md) ·
-[release-gate-0.27.toml](acceptance/release-gate-0.27.toml) ·
-[production-grade-inventory-027.toml](acceptance/production-grade-inventory-027.toml).
+SSOT: [RELEASE_0_27](docs/acceptance/RELEASE_0_27.md) ·
+[release-gate-0.27.toml](docs/acceptance/release-gate-0.27.toml) ·
+[production-grade-inventory-027.toml](docs/acceptance/production-grade-inventory-027.toml).
 Cut verify: `python scripts/verify_pkg_27.py`.
 
 ## Phase 0.28 evidence
 
-Owning decision: **D-056** / [RFC-0059](rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
+Owning decision: **D-056** / [RFC-0059](docs/rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
 Baseline: Published **`v0.27.0`**. Packages: `hedron-charts` `0.1.11` / `hedron-native`
 `0.1.2` — **Beta** for declared Supported inventories.
 Locked Supported inventory:
-[production-grade-inventory-028.toml](acceptance/production-grade-inventory-028.toml).
+[production-grade-inventory-028.toml](docs/acceptance/production-grade-inventory-028.toml).
 
 | Gate | Status |
 |---|---|
@@ -212,18 +214,18 @@ Locked Supported inventory:
 | `SUPPLY-028` | Verified — pins / SBOM / offline / provenance |
 | `REGRESS-028` / `PKG-028` | Verified — suite + `verify_pkg_28.py` |
 
-SSOT: [RELEASE_0_28](acceptance/RELEASE_0_28.md) ·
-[release-gate-0.28.toml](acceptance/release-gate-0.28.toml) ·
-[production-grade-inventory-028.toml](acceptance/production-grade-inventory-028.toml).
+SSOT: [RELEASE_0_28](docs/acceptance/RELEASE_0_28.md) ·
+[release-gate-0.28.toml](docs/acceptance/release-gate-0.28.toml) ·
+[production-grade-inventory-028.toml](docs/acceptance/production-grade-inventory-028.toml).
 Cut verify: `python scripts/verify_pkg_28.py`.
 
 ## Phase 0.29 evidence
 
-Owning decision: **D-057** / [RFC-0062](rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
+Owning decision: **D-057** / [RFC-0062](docs/rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
 Baseline: Published **`v0.28.2`**. Package: `hedron-workbench` `0.30.0` — **Beta**
 for the declared Supported inventory.
 Locked Supported inventory:
-[production-grade-inventory-029.toml](acceptance/production-grade-inventory-029.toml).
+[production-grade-inventory-029.toml](docs/acceptance/production-grade-inventory-029.toml).
 
 | Gate | Status |
 |---|---|
@@ -238,16 +240,16 @@ Locked Supported inventory:
 | `COMPAT-029` / `PERF-029` | Verified — isolation/upgrade + middleware budget |
 | `REGRESS-029` / `PKG-029` | Verified — suite + `verify_pkg_29.py` |
 
-SSOT: [RELEASE_0_29](acceptance/RELEASE_0_29.md) ·
-[release-gate-0.29.toml](acceptance/release-gate-0.29.toml) ·
-[production-grade-inventory-029.toml](acceptance/production-grade-inventory-029.toml).
+SSOT: [RELEASE_0_29](docs/acceptance/RELEASE_0_29.md) ·
+[release-gate-0.29.toml](docs/acceptance/release-gate-0.29.toml) ·
+[production-grade-inventory-029.toml](docs/acceptance/production-grade-inventory-029.toml).
 Cut verify: `python scripts/verify_pkg_29.py`.
 
 ## Phase 0.32 evidence (Verified — MCP graduation; published `v0.32.0`)
 
-**Owning decision / RFC:** [D-060](DECISIONS.md) ·
-[RFC-0065](rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md). Alpha product contract remains
-[RFC-0043](rfcs/RFC-0043-MCP-PROJECTION.md) (0.17).
+**Owning decision / RFC:** [D-060](docs/DECISIONS.md) ·
+[RFC-0065](docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md). Alpha product contract remains
+[RFC-0043](docs/rfcs/RFC-0043-MCP-PROJECTION.md) (0.17).
 **Baseline tip:** Published `v0.31.0`.
 **Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89).
 **Version policy at cut:** independent satellite `hedron-mcp` **`0.2.0` Beta**
@@ -259,12 +261,12 @@ Cut verify: `python scripts/verify_pkg_29.py`.
 | `AUTHZ-032` | **Verified** | Host authn reuse; app authz/tenant; adversarial suites |
 | `BOUNDS-032` | **Verified** | Size/rate/concurrency/cancel + multi-worker prefix |
 | `AUDIT-032` | **Verified** | Redacted structured `HED-MCP-*` audit |
-| `REVIEW-032` | **Verified** | [security-review-032](acceptance/security-review-032/BRIEF.md) |
+| `REVIEW-032` | **Verified** | [security-review-032](docs/acceptance/security-review-032/BRIEF.md) |
 | `REGRESS-032` / `PKG-032` | **Verified** | Inventory/docs/metadata + `verify_pkg_32.py` |
 
-SSOT: [RELEASE_0_32](acceptance/RELEASE_0_32.md) ·
-[release-gate-0.32.toml](acceptance/release-gate-0.32.toml) ·
-[production-grade-inventory-032.toml](acceptance/production-grade-inventory-032.toml).
+SSOT: [RELEASE_0_32](docs/acceptance/RELEASE_0_32.md) ·
+[release-gate-0.32.toml](docs/acceptance/release-gate-0.32.toml) ·
+[production-grade-inventory-032.toml](docs/acceptance/production-grade-inventory-032.toml).
 Cut verify: `python scripts/verify_pkg_32.py` (no `--allow-planned`).
 
 ## Next capability phases
@@ -279,8 +281,8 @@ RFC-0061). Phase **0.32** is **Published** (`v0.32.0` / `hedron-mcp` `0.2.0`; D-
 RFC-0065). Phase **0.33** is the
 planned unified `hedron-posit` Workbench / Connect adapter (D-061 / draft RFC-0066;
 [#167](https://github.com/eddiethedean/hedron/issues/167)); see the staged
-[implementation plan](implementation/HEDRON_POSIT_033.md) and
-[0.33 acceptance packet](acceptance/RELEASE_0_33.md). Remaining package-production work
+[implementation plan](docs/implementation/HEDRON_POSIT_033.md) and
+[0.33 acceptance packet](docs/acceptance/RELEASE_0_33.md). Remaining package-production work
 continues through **0.34–0.35**: Gradio ([#90](https://github.com/eddiethedean/hedron/issues/90));
 then a whole-fleet
 closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform

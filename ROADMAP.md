@@ -1,3 +1,5 @@
+<!-- Generated from docs/ROADMAP.md — edit the docs/ copy, then run scripts/sync_status_roadmap.py -->
+
 # Capability roadmap
 
 Hedron advances through cumulative, capability-driven `0.x` phases. Phase 0.0 is the documentation
@@ -449,7 +451,7 @@ compatibility subsystem.
 
 **Status:** Published. Owned Deferred follow-up `EXPLORER-10-001` remains for `0.10.x`.
 `BROWSER-10-001` / `PERF-10-001` were **Superseded** in **0.24** under `polling_only`
-([LIVE_DISPOSITION](api/LIVE_DISPOSITION.md)). `EXAMPLES-10-001` is Verified (poll + stream
+([LIVE_DISPOSITION](docs/api/LIVE_DISPOSITION.md)). `EXAMPLES-10-001` is Verified (poll + stream
 + SSE + Job SSE + WS + preload in `examples/live-interaction`).
 **Outcome:** Hedron supports evidence-backed live updates, streaming where it materially helps, and
 measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
@@ -496,8 +498,8 @@ measured navigation preloading while preserving ordinary HTTP/HTML fallbacks.
 first-party data boundary supports Django QuerySets without compromising bounded execution or
 framework-neutral core ownership.
 
-**Status:** Published as `v0.11.0` (2026-08-04). See [STATUS.md](STATUS.md) and
-[acceptance/RELEASE_0_11.md](acceptance/RELEASE_0_11.md).
+**Status:** Published as `v0.11.0` (2026-08-04). See [STATUS.md](docs/STATUS.md) and
+[acceptance/RELEASE_0_11.md](docs/acceptance/RELEASE_0_11.md).
 
 ### Entry gate
 
@@ -535,8 +537,8 @@ framework-neutral core ownership.
 **Outcome:** Hedron handles richer editing, distributed/lazy data, and geospatial or high-volume
 visualization through bounded, inspectable adapters.
 
-**Status:** Published as `v0.12.0` (2026-08-05). See [STATUS.md](STATUS.md) and
-[release-gate-0.12.toml](acceptance/release-gate-0.12.toml) (zero Deferred; D-047).
+**Status:** Published as `v0.12.0` (2026-08-05). See [STATUS.md](docs/STATUS.md) and
+[release-gate-0.12.toml](docs/acceptance/release-gate-0.12.toml) (zero Deferred; D-047).
 
 ### Scope
 
@@ -589,8 +591,8 @@ visualization through bounded, inspectable adapters.
 **Outcome:** Applications can prepare component data concurrently and adapt resource use without
 introducing a second hidden runtime or losing trace and cancellation semantics.
 
-**Status:** Published as `v0.13.0` (2026-08-05). See [STATUS.md](STATUS.md) and
-[release-gate-0.13.toml](acceptance/release-gate-0.13.toml) (zero Deferred for 0.13-owned rows).
+**Status:** Published as `v0.13.0` (2026-08-05). See [STATUS.md](docs/STATUS.md) and
+[release-gate-0.13.toml](docs/acceptance/release-gate-0.13.toml) (zero Deferred for 0.13-owned rows).
 
 ### Scope
 
@@ -686,12 +688,12 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
   revision to an existing RFC.
 - The [NiceGUI feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/NICEGUI_FEATURE_CROSSCHECK.md) is refreshed against the
   audited NiceGUI documentation/element catalog and every 0.15-accepted gap has an owning RFC or an
-  explicit revision to an existing RFC ([RFC-0033](rfcs/RFC-0033-MAP-GEOJSON.md),
-  [RFC-0034](rfcs/RFC-0034-MEDIA-DOWNLOAD-RANGE.md),
-  [RFC-0035](rfcs/RFC-0035-SURFACE-CHROME.md),
-  [RFC-0036](rfcs/RFC-0036-SCENARIO-MARKS.md)). Vue/Quasar outbox, `run_javascript`, implicit
+  explicit revision to an existing RFC ([RFC-0033](docs/rfcs/RFC-0033-MAP-GEOJSON.md),
+  [RFC-0034](docs/rfcs/RFC-0034-MEDIA-DOWNLOAD-RANGE.md),
+  [RFC-0035](docs/rfcs/RFC-0035-SURFACE-CHROME.md),
+  [RFC-0036](docs/rfcs/RFC-0036-SCENARIO-MARKS.md)). Vue/Quasar outbox, `run_javascript`, implicit
   binding, and SPA `sub_pages` remain deliberate non-parity.
-- [RFC-0039](rfcs/RFC-0039-INTERACTION-ERGONOMICS.md) (interaction authoring ergonomics) is
+- [RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md) (interaction authoring ergonomics) is
   **Accepted**, or remains Draft only with every open question explicitly resolved or Deferred in
   the RFC before implementation claims Supported ergonomics. Parent-region target inference and
   broader brainstorm items (beginner barrels, `form.invalid` helpers, interaction stories) stay
@@ -725,7 +727,7 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
     ([#26](https://github.com/eddiethedean/hedron/issues/26),
     [#8](https://github.com/eddiethedean/hedron/issues/8)).
 - Interaction authoring ergonomics over existing HTMX contracts
-  ([RFC-0039](rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)): `app.region` / `@app.fragment` one-liner
+  ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)): `app.region` / `@app.fragment` one-liner
   registration, `swap(...)` builders over `InteractionResult`, and dev-gated region-mismatch
   diagnostics plus Explorer “what will this click do?” preview — without weakening fail-closed
   targets, auto-exposing components, or adding implicit widget state.
@@ -735,11 +737,11 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
   explicit to keep authorization tests honest.
 - Typed form/control families for number and range input, date/time/datetime input, multiselect,
   toggle/switch, segmented control and pills, color input, rating/feedback, select slider, chip/tag
-  input ([RFC-0035](rfcs/RFC-0035-SURFACE-CHROME.md)), and menu button behavior. Native HTML is the
+  input ([RFC-0035](docs/rfcs/RFC-0035-SURFACE-CHROME.md)), and menu button behavior. Native HTML is the
   baseline; browser enhancement preserves submitted-value, validation, keyboard, and no-JavaScript
   semantics.
 - `Audio`, `Video`, `PdfViewer`, a responsive image/video `Gallery`, `Carousel` and lightbox
-  selection patterns ([RFC-0035](rfcs/RFC-0035-SURFACE-CHROME.md)), and application-logo/page-icon
+  selection patterns ([RFC-0035](docs/rfcs/RFC-0035-SURFACE-CHROME.md)), and application-logo/page-icon
   helpers plus microphone and camera capture inputs. Media URLs, uploads, ranges, preview,
   selection, authorized download/download-all, lazy loading, autoplay, device permission,
   retention, metadata, typed caption/subtitle and audio-description tracks, transcript/descriptive-
@@ -748,14 +750,14 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
   drafts, not accessibility evidence by themselves.
 - Typed download helpers and authorized Range/streaming media responses for players, PDF, and
   file delivery (`Content-Disposition`, size/type limits, authz), complementary to gallery
-  download-all ([RFC-0034](rfcs/RFC-0034-MEDIA-DOWNLOAD-RANGE.md)).
+  download-all ([RFC-0034](docs/rfcs/RFC-0034-MEDIA-DOWNLOAD-RANGE.md)).
 - A policy-bounded `Map` / GeoJSON adapter with pinned local assets, CSP, attribution, tile/source
   allowlists, marker/popup events as declared actions, and keyboard/static alternatives
-  ([RFC-0033](rfcs/RFC-0033-MAP-GEOJSON.md)). It is not a general Leaflet/Vue runtime and must not
+  ([RFC-0033](docs/rfcs/RFC-0033-MAP-GEOJSON.md)). It is not a general Leaflet/Vue runtime and must not
   load arbitrary remote scripts by default.
 - Semantic `Timeline`, accessible `ContextMenu` (keyboard and non-pointer alternatives), and
   Progress variants (including circular determinate/indeterminate) composing with existing
-  `Progress` / `Skeleton` / `Loading` ([RFC-0035](rfcs/RFC-0035-SURFACE-CHROME.md)).
+  `Progress` / `Skeleton` / `Loading` ([RFC-0035](docs/rfcs/RFC-0035-SURFACE-CHROME.md)).
 - `Popover`, sticky/bottom action or chat docks, and semantic spacing primitives, implemented with
   native platform behavior where available and tested for focus order, zoom, reduced motion,
   virtual keyboards, safe-area insets, and fragment swaps.
@@ -765,7 +767,7 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
   counts, per-file size, total size, and traversal are validated server-side.
 - Scenario mark/filter ergonomics for stable component identities (NiceGUI `ElementFilter` /
   `.mark()`-inspired) that compose with `AppScenario` markup asserts without inventing a parallel
-  DOM simulator ([RFC-0036](rfcs/RFC-0036-SCENARIO-MARKS.md)).
+  DOM simulator ([RFC-0036](docs/rfcs/RFC-0036-SCENARIO-MARKS.md)).
 - `Math` / LaTeX rendering, a bounded object/help inspector, and a sandboxed `IFrame` component with
   local/remote URL, CSP, permissions, referrer, sizing, and untrusted-content policies. Raw trusted
   HTML remains a separate, explicit trust boundary.
@@ -830,7 +832,7 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
 - HTMX testing helpers cover InteractionResult headers/OOB/Toast, non-200 fragments, builtin
   markup asserts, FragmentRegion fail-closed checks, and shell panel-swap dual paths
   ([#22](https://github.com/eddiethedean/hedron/issues/22)–[#26](https://github.com/eddiethedean/hedron/issues/26)).
-- Interaction authoring ergonomics ([RFC-0039](rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)):
+- Interaction authoring ergonomics ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)):
   getting-started guide and `hedron new` scaffold use `app.region` / `@app.fragment` (or the
   documented equivalent) without triple-copying region ids; `swap(...)` is the documented default
   fragment return with `InteractionResult` retained as the advanced envelope; production
@@ -844,8 +846,8 @@ reruns, Vue/WebSocket outbox mutation, or global mutable application state.
 
 ## 0.16 — Curated extras and interactive analysis tools (`v0.16.0`)
 
-**Status:** Published as `v0.16.0` (2026-08-06). See [STATUS.md](STATUS.md) and
-[acceptance/RELEASE_0_16.md](acceptance/RELEASE_0_16.md).
+**Status:** Published as `v0.16.0` (2026-08-06). See [STATUS.md](docs/STATUS.md) and
+[acceptance/RELEASE_0_16.md](docs/acceptance/RELEASE_0_16.md).
 
 **Outcome:** Hedron offers a maintained optional toolkit for specialized data-app interactions and
 analysis workbenches — including accepted NiceGUI-adjacent editors and specialty extras — without
@@ -860,8 +862,8 @@ expanding the core runtime or adopting Streamlit-style rerun semantics or a Vue/
   audited NiceGUI catalog and every 0.16-accepted extra (CodeEditor, calendar/signature/typeahead,
   annotation overlays, optional TerminalView, specialty robotics/IoT) has an owning RFC revision,
   dependency/asset owner, and explicit first-party-versus-recipe disposition
-  ([RFC-0037](rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md),
-  [RFC-0038](rfcs/RFC-0038-SPECIALTY-EXTRAS.md)).
+  ([RFC-0037](docs/rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md),
+  [RFC-0038](docs/rfcs/RFC-0038-SPECIALTY-EXTRAS.md)).
 - The 0.4 plugin/package contracts, 0.12 visualization boundaries, 0.14 portable-runtime evidence,
   and 0.15 control/media/browser/map contracts are stable enough to be reused rather than forked.
 
@@ -884,34 +886,34 @@ expanding the core runtime or adopting Streamlit-style rerun semantics or a Vue/
 - Interactive analysis workbenches: a faceted `DataExplorer` that emits bounded source-transform
   plans, an editable/schema-aware `JSONEditor`, a CSP-safe `CodeEditor` host stub (no pinned CodeMirror 6 bundle)
   distinct from `CodeBlock`/`CodeViewer` with CSP, language allowlists, and no arbitrary eval
-  ([RFC-0037](rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)), a chart/data/export/explore workbench, and a
+  ([RFC-0037](docs/rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)), a chart/data/export/explore workbench, and a
   typed callable-to-action form adapter. Server authorization, validation, query bounds, side
   effects, and export policy remain explicit.
 - Interactive image tools for before/after comparison, normalized rectangular/circular crop bounds,
   box/lasso region selection, and optional annotation/overlay events (NiceGUI interactive-image
-  demand) ([RFC-0037](rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)). Inputs accept only declared
+  demand) ([RFC-0037](docs/rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)). Inputs accept only declared
   URL/file/byte sources; orientation, touch/keyboard operation, numeric/step/select-and-place
   alternatives to dragging, output metadata, payload limits, image decoding, and accessible static
   alternatives are part of the contracts.
 - Optional calendar, signature-pad, and typeahead/combobox extras or recipes over declared actions
   and fragments, with pinned assets, validation, and no-JavaScript fallbacks where promised
-  ([RFC-0037](rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)).
+  ([RFC-0037](docs/rfcs/RFC-0037-CODE-EDITOR-EXTRAS.md)).
 - Specialized display adapters and recipes for network graphs, 3D models, annotated/token-weighted
   text, architecture-diagram outputs, live job/log consoles, and common link/badge/metric/todo
   compositions. Adapters reuse 0.12 contracts; recipes do not create redundant primitives.
 - An optional bounded `TerminalView` / PTY extra only behind explicit command allowlists,
   authentication/authorization, audit, output budgets, and accessibility policy
-  ([RFC-0038](rfcs/RFC-0038-SPECIALTY-EXTRAS.md)). It is not a default install and must not imply
+  ([RFC-0038](docs/rfcs/RFC-0038-SPECIALTY-EXTRAS.md)). It is not a default install and must not imply
   shell access from markup alone.
 - Specialty robotics/IoT extras (virtual joystick, deep 3D scene controls, serial/device bridges)
-  remain recipe-or-extra with explicit audience labeling ([RFC-0038](rfcs/RFC-0038-SPECIALTY-EXTRAS.md));
+  remain recipe-or-extra with explicit audience labeling ([RFC-0038](docs/rfcs/RFC-0038-SPECIALTY-EXTRAS.md));
   they are not beachhead for CRUD/admin onboarding and must not require a Vue/WebSocket outbox.
 - An optional browser-Python/notebook sandbox bridge, such as a pinned JupyterLite/Pyodide runtime,
   isolated from the application origin and server state. Package/network allowlists, CSP, worker
   termination, CPU/memory/output budgets, persistence, accessibility, and offline behavior are
   explicit; arbitrary code never executes in the Hedron server process.
 - Optional native-desktop shell recipe (e.g. pywebview over the ASGI app) documented as packaging
-  guidance ([RFC-0038](rfcs/RFC-0038-SPECIALTY-EXTRAS.md)), not a second UI runtime or Supported
+  guidance ([RFC-0038](docs/rfcs/RFC-0038-SPECIALTY-EXTRAS.md)), not a second UI runtime or Supported
   multi-window application model.
 
 ### Exit gate
@@ -934,9 +936,9 @@ expanding the core runtime or adopting Streamlit-style rerun semantics or a Vue/
 ## 0.17 — Reactive dashboards and agent interfaces (`v0.17.0`)
 
 **Status:** Published as `v0.17.0` (2026-08-06). Spec:
-[acceptance/RELEASE_0_17.md](acceptance/RELEASE_0_17.md);
-evidence index [acceptance/release-gate-0.17.toml](acceptance/release-gate-0.17.toml).
-Owning RFCs: [RFC-0040](rfcs/RFC-0040-INTERACTION-GRAPH.md)–[RFC-0044](rfcs/RFC-0044-SHELL-INTERACTION-RESULT.md).
+[acceptance/RELEASE_0_17.md](docs/acceptance/RELEASE_0_17.md);
+evidence index [acceptance/release-gate-0.17.toml](docs/acceptance/release-gate-0.17.toml).
+Owning RFCs: [RFC-0040](docs/rfcs/RFC-0040-INTERACTION-GRAPH.md)–[RFC-0044](docs/rfcs/RFC-0044-SHELL-INTERACTION-RESULT.md).
 
 **Outcome:** Hedron supports cohesive cross-filter dashboards, bounded incremental updates,
 server-side notebook previews, and explicitly authorized agent access without adding a universal
@@ -950,7 +952,7 @@ and leftover docs/assert completions ship in the same cut.
   owning RFC, public stability label (`beta` / `experimental`), and evidence ID.
 - The [NiceGUI feature cross-check](https://github.com/eddiethedean/hedron/blob/main/docs/NICEGUI_FEATURE_CROSSCHECK.md)
   binding/timer/refreshable rows are reconciled: accepted dashboard ergonomics map to
-  `DashboardBinding` / polling-or-SSE fallbacks ([RFC-0040](rfcs/RFC-0040-INTERACTION-GRAPH.md));
+  `DashboardBinding` / polling-or-SSE fallbacks ([RFC-0040](docs/rfcs/RFC-0040-INTERACTION-GRAPH.md));
   Vue outbox, implicit element binding, and `run_javascript` remain deliberate non-parity with
   documented migration notes (`MIGRATE-017`).
 - RFCs 0040–0044 are Accepted; Zero Deferred for 0.17-owned evidence rows at cut
@@ -996,7 +998,7 @@ and leftover docs/assert completions ship in the same cut.
 - Cross-filter dashboard composition over Plotly and other 0.12 event adapters, grid selections,
   form controls, URL/session/browser state, data-source transforms, jobs, multi-region results, and
   throttled map viewport (pan/zoom/bounds) events as declared triggers
-  ([RFC-0033](rfcs/RFC-0033-MAP-GEOJSON.md) deferred streaming → this composition, not continuous
+  ([RFC-0033](docs/rfcs/RFC-0033-MAP-GEOJSON.md) deferred streaming → this composition, not continuous
   pixel WebSocket). Saved dashboard views are explicitly versioned and scoped, and Explorer shows
   the interaction graph with trigger, target, timing, payload, cache, job, transport, and failure
   information.
@@ -1080,8 +1082,8 @@ and leftover docs/assert completions ship in the same cut.
 
 ## 0.18 — Model demos and inference workflows (`v0.18.0`)
 
-**Status:** Published as `v0.18.0` (2026-08-06). See [STATUS](STATUS.md) and
-[release-gate-0.18.toml](acceptance/release-gate-0.18.toml).
+**Status:** Published as `v0.18.0` (2026-08-06). See [STATUS](docs/STATUS.md) and
+[release-gate-0.18.toml](docs/acceptance/release-gate-0.18.toml).
 
 **Outcome:** Hedron can turn explicitly registered typed model actions into production-auditable
 demos, schedule inference workloads, collect governed evaluation feedback, interoperate with
@@ -1175,10 +1177,10 @@ publishing arbitrary callables or adding a second application runtime.
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
 **Status:** Published as `v0.19.0` (2026-08-07). Living train is **0.31** (last published tip `v0.30.0`).
-See [STATUS](STATUS.md) and
-[release-gate-0.19.toml](acceptance/release-gate-0.19.toml). Decision: D-050.
-Owning RFCs: [RFC-0023](rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
-[RFC-0051](rfcs/RFC-0051-ACCESSIBILITY-CONTRACT.md)–[RFC-0055](rfcs/RFC-0055-A11Y-GOVERNANCE.md)
+See [STATUS](docs/STATUS.md) and
+[release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
+Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
+[RFC-0051](docs/rfcs/RFC-0051-ACCESSIBILITY-CONTRACT.md)–[RFC-0055](docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md)
 (Accepted).
 
 **Outcome:** Hedron makes accessibility obligations, authoring assistance, dynamic interaction
@@ -1192,7 +1194,7 @@ an arbitrary application.
   stable WCAG, HTML, WAI-ARIA, accessible-name, ACT, and ATAG sources. RFC-0023 and RFCs 0051–0055
   define the normative versions, draft/experimental policy, evidence matrix, severity policy,
   waiver governance, and boundaries of any public claim; acceptance checklist
-  [RELEASE_0_19.md](acceptance/RELEASE_0_19.md) owns the gate map.
+  [RELEASE_0_19.md](docs/acceptance/RELEASE_0_19.md) owns the gate map.
 - The component catalog, HDJ authoring, Explorer/testing APIs, themes, data/visualization adapters,
   media/identity controls, extras, dashboards, and inference workflow surfaces through 0.18 are
   stable enough to receive one shared accessibility contract rather than package-specific checklists.
@@ -1305,11 +1307,11 @@ Zero Deferred among 0.19-owned gate rows at cut (same policy as 0.18). Gate IDs:
 
 ## 0.20 — Production security floor and adapter parity (`v0.20.0`)
 
-**Status:** **Published** as `v0.20.0` (2026-08-07). See [STATUS](STATUS.md) and
-[release-gate-0.20.toml](acceptance/release-gate-0.20.toml). Decision: D-051.
-Owning RFCs (Accepted baselines; phase deltas): [RFC-0012](rfcs/RFC-0012-SECURITY.md),
-[RFC-0021](rfcs/RFC-0021-BROWSER-RUNTIME.md), [RFC-0028](rfcs/RFC-0028-DEPLOYMENT.md).
-Acceptance checklist: [RELEASE_0_20.md](acceptance/RELEASE_0_20.md).
+**Status:** **Published** as `v0.20.0` (2026-08-07). See [STATUS](docs/STATUS.md) and
+[release-gate-0.20.toml](docs/acceptance/release-gate-0.20.toml). Decision: D-051.
+Owning RFCs (Accepted baselines; phase deltas): [RFC-0012](docs/rfcs/RFC-0012-SECURITY.md),
+[RFC-0021](docs/rfcs/RFC-0021-BROWSER-RUNTIME.md), [RFC-0028](docs/rfcs/RFC-0028-DEPLOYMENT.md).
+Acceptance checklist: [RELEASE_0_20.md](docs/acceptance/RELEASE_0_20.md).
 
 **Outcome:** Post-0.11 host security defaults, deployment helpers, and Flask/Django parity close
 remaining correctness and DX gaps without becoming an identity provider or absorbing Deferred
@@ -1426,11 +1428,11 @@ remain Planned** until real sessions — **not Supported**. Tracking:
 [#86](https://github.com/eddiethedean/hedron/issues/86) — close when those session gates are
 Verified (`check_release_gate.py 0.21.0 --require-sessions`). Engineering publish uses
 `check_release_gate.py 0.21.0 --allow-planned`. Owning RFC baseline:
-[RFC-0055](rfcs/RFC-0055-A11Y-GOVERNANCE.md)
-(amended). Acceptance checklist: [RELEASE_0_21.md](acceptance/RELEASE_0_21.md). Evidence:
-[release-gate-0.21.toml](acceptance/release-gate-0.21.toml). Protocol:
-[acceptance/human-at/](acceptance/human-at/). What’s new:
-[guides/whats-new-0.21.md](guides/whats-new-0.21.md).
+[RFC-0055](docs/rfcs/RFC-0055-A11Y-GOVERNANCE.md)
+(amended). Acceptance checklist: [RELEASE_0_21.md](docs/acceptance/RELEASE_0_21.md). Evidence:
+[release-gate-0.21.toml](docs/acceptance/release-gate-0.21.toml). Protocol:
+[acceptance/human-at/](docs/acceptance/human-at/). What’s new:
+[guides/whats-new-0.21.md](docs/guides/whats-new-0.21.md).
 
 **Outcome:** Hedron publishes scoped human assistive-technology and compensated-participant
 evidence for the reference application’s critical flows, complements automated `AT-019`
@@ -1454,15 +1456,15 @@ Zero Deferred among 0.21-owned gate rows at cut. Gate IDs:
 
 - **`PROTOCOL-021`** — Written evaluation protocol covering recruitment/compensation, consent,
   accommodations, retention, privacy (git vs private store), severity → waiver/fix path, and
-  retest policy ([PROTOCOL.md](acceptance/human-at/PROTOCOL.md),
-  [PRIVACY.md](acceptance/human-at/PRIVACY.md)).
+  retest policy ([PROTOCOL.md](docs/acceptance/human-at/PROTOCOL.md),
+  [PRIVACY.md](docs/acceptance/human-at/PRIVACY.md)).
 - **`SR-021`** — Manual screen-reader matrix on the Verified minimum combos: VoiceOver + Safari
   (macOS); NVDA + Firefox (Windows); TalkBack + Chromium (Android). Each redacted ledger row
   records OS/browser/AT versions, settings, task, result, known issue, owner, and retest date.
 - **`PARTICIPANT-021`** — ≥2 compensated disabled-participant sessions with ≥1 screen-reader
   user and ≥1 other disability category (motor, low-vision, or cognitive), against the
   reference-app task corpus
-  ([task-scripts.md](acceptance/human-at/task-scripts.md)).
+  ([task-scripts.md](docs/acceptance/human-at/task-scripts.md)).
 - **`ARTIFACT-021`** — Redacted public evidence ledger validating against
   `ledger.schema.json`; reference-app `EvidenceInventory` / `AccessibilityStatement` updated
   after sessions; raw PII never committed.
@@ -1503,8 +1505,8 @@ so composition builds on applied adapter headers rather than inventing a paralle
 Decision: D-051 (split from 0.20). Issues
 [#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)
 remain linked for history; **in-repo gates and
-[RELEASE_0_22.md](acceptance/RELEASE_0_22.md) are normative.** Contract:
-[api/CSRF_COMPOSITION.md](api/CSRF_COMPOSITION.md).
+[RELEASE_0_22.md](docs/acceptance/RELEASE_0_22.md) are normative.** Contract:
+[api/CSRF_COMPOSITION.md](docs/api/CSRF_COMPOSITION.md).
 
 **Outcome:** Apps that own sessions and CSP can plug CSRF strategies without requiring Starlette
 cookie sessions, merge/override security headers per name, and use `CsrfField` plus first-class
@@ -1542,25 +1544,25 @@ Zero Deferred among 0.22-owned gate rows at cut. Gate IDs:
 ### Exit gate
 
 - Every 0.22-owned release-gate row is `Verified`
-  ([release-gate-0.22.toml](acceptance/release-gate-0.22.toml)).
+  ([release-gate-0.22.toml](docs/acceptance/release-gate-0.22.toml)).
 - Security guide, CSRF composition contract, and What’s ready agree on Supported vs Planned claims.
 
 ## 0.23 — Stable-tier expansion for Supported CRUD/admin (`v0.23.0`)
 
 **Status:** **Published** as `v0.23.0`. Part of the production-quality maturity program
-(**D-053** / [RFC-0056](rfcs/RFC-0056-PRODUCTION-QUALITY.md)). Depends on Published **0.22**;
+(**D-053** / [RFC-0056](docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)). Depends on Published **0.22**;
 must not claim 0.21 human AT as API-stable evidence. Locked allowlist + distinct gate
 commands below — every 0.23-owned gate is `Verified`.
 
 **Outcome:** The compatibility-protected `stable` tier in
-[STABILITY.md](api/STABILITY.md) covers a **narrow curated** Supported CRUD/admin happy path
+[STABILITY.md](docs/api/STABILITY.md) covers a **narrow curated** Supported CRUD/admin happy path
 (beginner facade, regions/`swap`, Poll/job status helpers, security profile ergonomics /
 `CsrfField`+`Form`+`Hx`, and related testing helpers) so Beta package maturity no longer
 implies unconstrained churn on that primary ship surface. This is **API compatibility
 protection**, not a new feature phase and not “every What’s ready Supported row.”
 
-Inventory / facade SSOT for Beginner imports: [STABLE_FACADE.md](api/STABLE_FACADE.md).
-Expanded tier: [STABILITY.md](api/STABILITY.md#expanded-stable-tier-023).
+Inventory / facade SSOT for Beginner imports: [STABLE_FACADE.md](docs/api/STABLE_FACADE.md).
+Expanded tier: [STABILITY.md](docs/api/STABILITY.md#expanded-stable-tier-023).
 
 ### Locked promotion catalog (`STABLE-023`)
 
@@ -1595,7 +1597,7 @@ Zero Deferred among 0.23-owned gate rows at cut. Gate IDs and commands (packet r
 
 - **`STABLE-023`** — `python scripts/check_stable_tier_023.py` — STABILITY expanded-tier
   section matches the locked allowlist; migration notes for boundary adjustments.
-- **`FACADE-023`** — `python scripts/check_stable_facade.py` — [STABLE_FACADE.md](api/STABLE_FACADE.md)
+- **`FACADE-023`** — `python scripts/check_stable_facade.py` — [STABLE_FACADE.md](docs/api/STABLE_FACADE.md)
   Beginner inventory importable; Alpha / experimental names denied.
 - **`INVENTORY-023`** — `python scripts/check_stability_inventory.py` (`FRZ-001` still green).
 - **`REGRESS-023`** — `bash scripts/ci_checks.sh test --python 3.12` at cut.
@@ -1613,7 +1615,7 @@ Zero Deferred among 0.23-owned gate rows at cut. Gate IDs and commands (packet r
 ### Exit gate
 
 - Every 0.23-owned release-gate row is `Verified`
-  ([release-gate-0.23.toml](acceptance/release-gate-0.23.toml)).
+  ([release-gate-0.23.toml](docs/acceptance/release-gate-0.23.toml)).
 - Public docs (What’s ready, STABILITY, STABLE_FACADE, production-quality) agree on the
   expanded tier.
 
@@ -1630,8 +1632,8 @@ documented ops constraints, **or** (B) formally document polling-only as the Sup
 production story and keep live helpers experimental without implying an imminent Supported
 claim. **Cut Accepted (B).**
 
-Disposition SSOT: [LIVE_DISPOSITION.md](api/LIVE_DISPOSITION.md) ·
-[live-disposition-024.toml](acceptance/live-disposition-024.toml).
+Disposition SSOT: [LIVE_DISPOSITION.md](docs/api/LIVE_DISPOSITION.md) ·
+[live-disposition-024.toml](docs/acceptance/live-disposition-024.toml).
 
 ### Disposition XOR contract (`DECIDE-024`)
 
@@ -1662,9 +1664,9 @@ Zero Deferred among 0.24-owned gate rows at cut. Gate IDs and commands (packet r
 - **`DECIDE-024`** — `python scripts/check_live_disposition_024.py` — schema + XOR; refine uses
   `--allow-undecided`; cut requires `prove_ops` or `polling_only` and SSOT label agreement.
 - **`BROWSER-024`** — `python scripts/check_browser_024.py` — evidence path **or**
-  [waive-browser-024.toml](acceptance/waive-browser-024.toml) consistent with disposition.
+  [waive-browser-024.toml](docs/acceptance/waive-browser-024.toml) consistent with disposition.
 - **`PERF-024`** — `python scripts/check_perf_024.py` — evidence path **or**
-  [waive-perf-024.toml](acceptance/waive-perf-024.toml) consistent with disposition.
+  [waive-perf-024.toml](docs/acceptance/waive-perf-024.toml) consistent with disposition.
 - **`DOCS-024`** — `python scripts/check_docs_024.py` — train-pin SSOT + live-claim honesty.
 - **`REGRESS-024`** — `bash scripts/ci_checks.sh test --python 3.12` at cut.
 - **`PKG-024`** — `python scripts/verify_pkg_24.py` (gate checker without `--allow-planned` at cut;
@@ -1690,7 +1692,7 @@ Zero Deferred among 0.24-owned gate rows at cut. Gate IDs and commands (packet r
 ### Exit gate
 
 - Every 0.24-owned row Verified
-  ([release-gate-0.24.toml](acceptance/release-gate-0.24.toml)).
+  ([release-gate-0.24.toml](docs/acceptance/release-gate-0.24.toml)).
 - Prior Deferred live-ops IDs (`BROWSER-10-001`, `PERF-10-001`, `LIVE-011-BROWSER`) have a
   terminal owner note (Verified, waived, or superseded).
 
@@ -1706,9 +1708,9 @@ extras landmines are quarantined behind `hedron[experimental-ui]`; Matplotlib re
 conservative charts default with a written graduation path for Plotly/Altair; RELEASE requires
 SBOM/evidence attach on train tags.
 
-Packet SSOT: [PRODUCTION_ARCHETYPE.md](api/PRODUCTION_ARCHETYPE.md) ·
-[extras-quarantine-025.toml](acceptance/extras-quarantine-025.toml) ·
-[PERFORMANCE_BUDGETS.md](PERFORMANCE_BUDGETS.md) (§0.25 workloads).
+Packet SSOT: [PRODUCTION_ARCHETYPE.md](docs/api/PRODUCTION_ARCHETYPE.md) ·
+[extras-quarantine-025.toml](docs/acceptance/extras-quarantine-025.toml) ·
+[PERFORMANCE_BUDGETS.md](docs/PERFORMANCE_BUDGETS.md) (§0.25 workloads).
 
 ### Extras quarantine XOR (`EXTRAS-025`)
 
@@ -1728,10 +1730,10 @@ Cut requires exactly one of `quarantine` | `finish_supported`. Do not half-verif
 | Gate | Verified means |
 |---|---|
 | `ARCHETYPE-025` | `examples/reference-app` documented as canonical deploy archetype covering reverse-proxy subpath, Redis job/cache, sticky sessions **or** external session store, `HEDRON_ENV=production` + CSP, Explorer off, multi-worker notes; production-quality and production-readiness guides link it |
-| `BUDGET-025` | Runnable evidence (CI or immutable artifact) against [PERFORMANCE_BUDGETS.md](PERFORMANCE_BUDGETS.md) for `W-025-FRAGMENT`, `W-025-JOB-POLL`, and `W-025-DATAEDITOR` |
+| `BUDGET-025` | Runnable evidence (CI or immutable artifact) against [PERFORMANCE_BUDGETS.md](docs/PERFORMANCE_BUDGETS.md) for `W-025-FRAGMENT`, `W-025-JOB-POLL`, and `W-025-DATAEDITOR` |
 | `EXTRAS-025` | Quarantine TOML is `quarantine` **or** `finish_supported`; SSOT + What’s ready agree; `hedron[extras]` honesty matches the chosen path |
 | `CHARTS-025` | Matplotlib-default Supported path documented; Plotly/Altair remain experimental until pins + CSP + a11y match the DataTable bar (graduation checklist present; full Plotly graduation not required) |
-| `SUPPLY-025` | [RELEASE.md](RELEASE.md) requires SBOM/evidence-bundle attach on train tags; regenerate instructions remain in the Evidence pack |
+| `SUPPLY-025` | [RELEASE.md](docs/RELEASE.md) requires SBOM/evidence-bundle attach on train tags; regenerate instructions remain in the Evidence pack |
 | `REGRESS-025` / `PKG-025` | Full suite + `verify_pkg_25.py` at cut |
 
 ### Scope (locked gate commands)
@@ -1775,14 +1777,14 @@ Zero Deferred among 0.25-owned gate rows at cut. Gate IDs and commands (cut Veri
 ### Exit gate
 
 - Every 0.25-owned row Verified
-  ([release-gate-0.25.toml](acceptance/release-gate-0.25.toml)).
+  ([release-gate-0.25.toml](docs/acceptance/release-gate-0.25.toml)).
 - Public production-quality and production-readiness guides link the archetype.
 
 ## 0.26 — Production-grade core and FastAPI flagship (`v0.26.0`)
 
 **Status:** Published as `v0.26.0` (2026-08-10). First package-graduation phase under the
 production-grade contract above. **Baseline train:** Published **`v0.25.2`**. Owning RFC:
-[RFC-0057](rfcs/RFC-0057-PRODUCTION-GRADE-CORE.md); decision: **D-054**.
+[RFC-0057](docs/rfcs/RFC-0057-PRODUCTION-GRADE-CORE.md); decision: **D-054**.
 
 **Outcome:** `hedron-core`, `hedron`, and `hedron-explorer` are production-grade for the documented
 server-rendered CRUD/admin Supported surface. Beta package maturity today is **not** the
@@ -1805,7 +1807,7 @@ promoting experimental live transports.
 - Owning RFC and architectural decision are **Accepted** for applying the production-grade contract
   to these three packages.
 - A machine-readable inventory draft exists (Supported vs Experimental vs excluded), aligned with
-  [STABILITY.md](api/STABILITY.md) / stable-facade scripts, without promoting experimental live APIs.
+  [STABILITY.md](docs/api/STABILITY.md) / stable-facade scripts, without promoting experimental live APIs.
 - An upgrade-fixture plan from **`v0.25.2`** serialized identities, diagnostics, manifests, and HTMX
   interaction results is sketched.
 
@@ -1843,8 +1845,8 @@ flowchart LR
 
 Acceptance packet shape (planned; open like 0.25 — do not invent full gate implementation here):
 
-- [docs/acceptance/RELEASE_0_26.md](acceptance/RELEASE_0_26.md) (planned)
-- [docs/acceptance/release-gate-0.26.toml](acceptance/release-gate-0.26.toml) (planned)
+- [docs/acceptance/RELEASE_0_26.md](docs/acceptance/RELEASE_0_26.md) (planned)
+- [docs/acceptance/release-gate-0.26.toml](docs/acceptance/release-gate-0.26.toml) (planned)
 - `scripts/verify_pkg_26.py` (planned)
 
 ### Prep backlog (not exit gates)
@@ -1884,7 +1886,7 @@ Post-`0.25.2` quality follow-ups that must not inflate Supported claims:
 
 **Status:** Published as `v0.27.0` (2026-08-10). Second package-graduation phase under the
 production-grade contract above. **Baseline train:** Published **`v0.26.0`**. Owning RFC:
-[RFC-0058](rfcs/RFC-0058-PRODUCTION-GRADE-SATELLITES.md); decision: **D-055**.
+[RFC-0058](docs/rfcs/RFC-0058-PRODUCTION-GRADE-SATELLITES.md); decision: **D-055**.
 
 **Outcome:** The supported Python satellite train—`hedron-data`, `hedron-flask`, `hedron-django`,
 `hedron-jinja`, and `hedron-extras`—is production-grade for explicitly bounded workflows. Each
@@ -1927,9 +1929,9 @@ flowchart LR
 
 1. **Inventory freeze** — Supported / Experimental / excluded for the five packages; docs and
    package metadata agree; no silent experimental-ui or live-transport enablement on default
-   install ([production-grade-inventory-027.toml](acceptance/production-grade-inventory-027.toml)).
+   install ([production-grade-inventory-027.toml](docs/acceptance/production-grade-inventory-027.toml)).
 2. **Upgrade fixtures** — golden tests from **`v0.26.0`** data/adapter/HDJ/extras public contracts
-   under `tests/upgrade/` ([upgrade-fixtures-027.md](acceptance/upgrade-fixtures-027.md)).
+   under `tests/upgrade/` ([upgrade-fixtures-027.md](docs/acceptance/upgrade-fixtures-027.md)).
 3. **Host-only install matrices** — each adapter and satellite builds, installs, imports, and
    exercises its reference example without FastAPI or unrelated optional integrations installed.
 4. **Portable parity (`PARITY-027`)** — PAGE/FRAGMENT selection, target/OOB authorization, security
@@ -1945,17 +1947,17 @@ flowchart LR
      preparation, diagnostics, and manifest reproducibility.
    - `EXTRAS-027`: curated components meet browser/a11y/CSP/cleanup budgets; experimental-ui
      discovery remains fail-closed and separately labeled (reuse
-     [extras-quarantine-025.toml](acceptance/extras-quarantine-025.toml)).
+     [extras-quarantine-025.toml](docs/acceptance/extras-quarantine-025.toml)).
 6. **Release packet (`REGRESS-027` / `PKG-027`)** — full suite, independent wheel/source installs,
    package SBOMs, reference examples, inventory agreement, and `verify_pkg_27`.
 
 Acceptance packet shape:
 
-- [docs/acceptance/RELEASE_0_27.md](acceptance/RELEASE_0_27.md)
-- [docs/acceptance/release-gate-0.27.toml](acceptance/release-gate-0.27.toml)
-- [docs/acceptance/production-grade-inventory-027.toml](acceptance/production-grade-inventory-027.toml)
-- [docs/acceptance/upgrade-fixtures-027.md](acceptance/upgrade-fixtures-027.md)
-- [docs/acceptance/security-review-027/](acceptance/security-review-027/)
+- [docs/acceptance/RELEASE_0_27.md](docs/acceptance/RELEASE_0_27.md)
+- [docs/acceptance/release-gate-0.27.toml](docs/acceptance/release-gate-0.27.toml)
+- [docs/acceptance/production-grade-inventory-027.toml](docs/acceptance/production-grade-inventory-027.toml)
+- [docs/acceptance/upgrade-fixtures-027.md](docs/acceptance/upgrade-fixtures-027.md)
+- [docs/acceptance/security-review-027/](docs/acceptance/security-review-027/)
 - `scripts/verify_pkg_27.py`
 
 ### Prep backlog (not exit gates)
@@ -2001,12 +2003,12 @@ Post-`0.26.0` quality follow-ups that must not inflate Supported claims:
 ## 0.28 — Production-grade visualization and native acceleration (`v0.28.2`)
 
 **Status:** Published as `v0.28.2` (2026-08-11). Owned by **D-056** /
-[RFC-0059](rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
+[RFC-0059](docs/rfcs/RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md).
 Independent package releases may use their own compatible version line; the roadmap phase does
 not require them to adopt the main train's version number. Packet SSOT:
-[RELEASE_0_28.md](acceptance/RELEASE_0_28.md) ·
-[release-gate-0.28.toml](acceptance/release-gate-0.28.toml) ·
-[production-grade-inventory-028.toml](acceptance/production-grade-inventory-028.toml).
+[RELEASE_0_28.md](docs/acceptance/RELEASE_0_28.md) ·
+[release-gate-0.28.toml](docs/acceptance/release-gate-0.28.toml) ·
+[production-grade-inventory-028.toml](docs/acceptance/production-grade-inventory-028.toml).
 Cut verify: `python scripts/verify_pkg_28.py`.
 
 **Outcome:** `hedron-charts` and `hedron-native` graduate from Alpha for a conservative, fully
@@ -2067,11 +2069,11 @@ experimental interactive backends remain opt-in until they independently satisfy
 ## 0.29 — Posit Workbench deployment adapter (`v0.29.0`)
 
 **Status:** Published as `v0.29.0` (2026-08-11). Owned by **D-057** /
-[RFC-0062](rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
+[RFC-0062](docs/rfcs/RFC-0062-POSIT-WORKBENCH-ADAPTER.md).
 Tracking: [#134](https://github.com/eddiethedean/hedron/issues/134).
-Packet SSOT: [RELEASE_0_29.md](acceptance/RELEASE_0_29.md) ·
-[release-gate-0.29.toml](acceptance/release-gate-0.29.toml) ·
-[production-grade-inventory-029.toml](acceptance/production-grade-inventory-029.toml).
+Packet SSOT: [RELEASE_0_29.md](docs/acceptance/RELEASE_0_29.md) ·
+[release-gate-0.29.toml](docs/acceptance/release-gate-0.29.toml) ·
+[production-grade-inventory-029.toml](docs/acceptance/production-grade-inventory-029.toml).
 Cut verify: `python scripts/verify_pkg_29.py`.
 
 **Behavior baseline:** Start from the observed `fastapi-workbench` 0.3.4 behavior and test corpus,
@@ -2255,19 +2257,19 @@ and independently useful/tested in `hedron`; Posit-specific detection and path r
 ## 0.30 — Standalone FastAPI Workbench package (`v0.30.0`; `fastapi-workbench` `1.0.0`)
 
 **Status:** Published as `v0.30.0` (2026-08-12). Owned by **D-058** /
-[RFC-0063](rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md).
+[RFC-0063](docs/rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md).
 Tracking: [#135](https://github.com/eddiethedean/hedron/issues/135).
-Packet SSOT: [RELEASE_0_30.md](acceptance/RELEASE_0_30.md) ·
-[release-gate-0.30.toml](acceptance/release-gate-0.30.toml) ·
-[production-grade-inventory-030.toml](acceptance/production-grade-inventory-030.toml).
+Packet SSOT: [RELEASE_0_30.md](docs/acceptance/RELEASE_0_30.md) ·
+[release-gate-0.30.toml](docs/acceptance/release-gate-0.30.toml) ·
+[production-grade-inventory-030.toml](docs/acceptance/production-grade-inventory-030.toml).
 Cut verify: `python scripts/verify_pkg_30.py`.
 
 ### Entry criteria
 
 - Phase **0.29** Published (`v0.29.0`) with Verified `CONTRACT-029`…`PKG-029`.
-- [RFC-0063](rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md) Accepted and tracking [#135](https://github.com/eddiethedean/hedron/issues/135) open.
-- [fastapi-workbench-provenance-029.toml](acceptance/fastapi-workbench-provenance-029.toml) extended to
-  [fastapi-workbench-provenance-030.toml](acceptance/fastapi-workbench-provenance-030.toml).
+- [RFC-0063](docs/rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md) Accepted and tracking [#135](https://github.com/eddiethedean/hedron/issues/135) open.
+- [fastapi-workbench-provenance-029.toml](docs/acceptance/fastapi-workbench-provenance-029.toml) extended to
+  [fastapi-workbench-provenance-030.toml](docs/acceptance/fastapi-workbench-provenance-030.toml).
 
 **Version baseline:** The existing PyPI `fastapi-workbench` 0.3.4 line is the upgrade source. Its
 first release developed from this monorepo is **`1.0.0`** and follows an independent semantic
@@ -2376,11 +2378,11 @@ generic package never imports, discovers, or conditionally activates Hedron.
 **Status:** Published as `v0.31.0` (2026-08-12). Tooling-grade means reliable and supported for its
 stated development or conformance purpose; it does not convert the tools into application
 production servers.
-**Owning decision / RFCs:** [D-059](DECISIONS.md) ·
-[RFC-0064](rfcs/RFC-0064-PRODUCTION-GRADE-TOOLING.md) (tooling) ·
-[RFC-0061](rfcs/RFC-0061-STREAMLIT-AST-MIGRATOR.md) (migrator; Accepted).
-Evidence: [release-gate-0.31.toml](acceptance/release-gate-0.31.toml) ·
-[RELEASE_0_31.md](acceptance/RELEASE_0_31.md) (Verified).
+**Owning decision / RFCs:** [D-059](docs/DECISIONS.md) ·
+[RFC-0064](docs/rfcs/RFC-0064-PRODUCTION-GRADE-TOOLING.md) (tooling) ·
+[RFC-0061](docs/rfcs/RFC-0061-STREAMLIT-AST-MIGRATOR.md) (migrator; Accepted).
+Evidence: [release-gate-0.31.toml](docs/acceptance/release-gate-0.31.toml) ·
+[RELEASE_0_31.md](docs/acceptance/RELEASE_0_31.md) (Verified).
 **Tracking:** [#87](https://github.com/eddiethedean/hedron/issues/87) (tooling evaluators),
 [#88](https://github.com/eddiethedean/hedron/issues/88) (`MIGRATE-031` / RFC-0061). Close those
 issues when the owning gates are Verified on the `v0.31.0` cut.
@@ -2420,7 +2422,7 @@ flagship CLI gains a reviewable Streamlit AST migration assistant (RFC-0061).
   never execute or overwrite the source; translate only a locked mapping inventory; emit text/JSON/
   SARIF findings, source maps, provenance, and a secure Hedron scaffold; require explicit review for
   state ownership, callbacks, side effects, caches/resources, custom components, raw HTML, auth,
-  files, secrets, and deployment non-parity ([RFC-0061](rfcs/RFC-0061-STREAMLIT-AST-MIGRATOR.md)).
+  files, secrets, and deployment non-parity ([RFC-0061](docs/rfcs/RFC-0061-STREAMLIT-AST-MIGRATOR.md)).
 
 ### Locked exit evidence
 
@@ -2456,13 +2458,13 @@ flagship CLI gains a reviewable Streamlit AST migration assistant (RFC-0061).
 
 **Status:** Published as `v0.32.0` (2026-08-12); `hedron-mcp` **`0.2.0` Beta**.
 `release-gate-0.32.toml` Verified with zero Deferred.
-**Owning decision / RFC:** [D-060](DECISIONS.md) ·
-[RFC-0065](rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) (graduation). Alpha product contract remains
-[RFC-0043](rfcs/RFC-0043-MCP-PROJECTION.md) (phase 0.17; not reopened).
-Evidence: [release-gate-0.32.toml](acceptance/release-gate-0.32.toml) ·
-[RELEASE_0_32.md](acceptance/RELEASE_0_32.md) ·
-[production-grade-inventory-032.toml](acceptance/production-grade-inventory-032.toml) ·
-[security-review-032/BRIEF.md](acceptance/security-review-032/BRIEF.md) (Verified).
+**Owning decision / RFC:** [D-060](docs/DECISIONS.md) ·
+[RFC-0065](docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) (graduation). Alpha product contract remains
+[RFC-0043](docs/rfcs/RFC-0043-MCP-PROJECTION.md) (phase 0.17; not reopened).
+Evidence: [release-gate-0.32.toml](docs/acceptance/release-gate-0.32.toml) ·
+[RELEASE_0_32.md](docs/acceptance/RELEASE_0_32.md) ·
+[production-grade-inventory-032.toml](docs/acceptance/production-grade-inventory-032.toml) ·
+[security-review-032/BRIEF.md](docs/acceptance/security-review-032/BRIEF.md) (Verified).
 **Baseline tip:** Published **`v0.31.0`**.
 **Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close after the published
 `v0.32.0` / `hedron-mcp` `0.2.0` release assets are attached.
@@ -2493,7 +2495,7 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
 
 ### Sequenced scope
 
-1. Freeze [production-grade-inventory-032.toml](acceptance/production-grade-inventory-032.toml) and
+1. Freeze [production-grade-inventory-032.toml](docs/acceptance/production-grade-inventory-032.toml) and
    public docs/package metadata agreement for `PKG-032`.
 2. Pin MCP protocol/SDK compatibility matrix with version negotiation, schema fixtures, upgrade
    tests from Alpha `0.1.x`, and documented behavior for unsupported client capabilities
@@ -2507,7 +2509,7 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
 5. Cover registration, authorization, execution, cancellation, and failure with redacted structured
    audit/diagnostics (`AUDIT-032`).
 6. Complete independent threat review per
-   [security-review-032/BRIEF.md](acceptance/security-review-032/BRIEF.md) (`REVIEW-032`).
+   [security-review-032/BRIEF.md](docs/acceptance/security-review-032/BRIEF.md) (`REVIEW-032`).
 7. Cut verify: `REGRESS-032` / `PKG-032` with zero Deferred among 0.32-owned rows.
 
 ### Scope
@@ -2557,7 +2559,7 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
 
 ## Default presentation quality program (0.33+ cross-cutting)
 
-**Plan:** [Default presentation quality plan](implementation/DEFAULT_PRESENTATION_033_PLUS.md).
+**Plan:** [Default presentation quality plan](docs/implementation/DEFAULT_PRESENTATION_033_PLUS.md).
 
 **Outcome:** A new `Hedron(default_styles=True)` application looks deliberate and production-ready
 before application CSS: cohesive shell hierarchy, polished forms and surfaces, safe responsive
@@ -2599,10 +2601,10 @@ branding, authentication/recovery policy, authorization, or compliance claims.
 ## 0.33 — Unified Posit deployment adapter (`v0.33.0`)
 
 **Status:** Published as `v0.33.0` (2026-08-13); `hedron-posit` **`0.33.0` Beta**.
-**Owning decision / RFC:** [D-061](DECISIONS.md) ·
-[RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md) (**Accepted**).
-**Implementation plan:** [HEDRON_POSIT_033](implementation/HEDRON_POSIT_033.md).
-**Acceptance packet:** [RELEASE_0_33](acceptance/RELEASE_0_33.md).
+**Owning decision / RFC:** [D-061](docs/DECISIONS.md) ·
+[RFC-0066](docs/rfcs/RFC-0066-HEDRON-POSIT.md) (**Accepted**).
+**Implementation plan:** [HEDRON_POSIT_033](docs/implementation/HEDRON_POSIT_033.md).
+**Acceptance packet:** [RELEASE_0_33](docs/acceptance/RELEASE_0_33.md).
 **Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167). Close when Published
 cut artifacts exist (match prior MCP/#89 practice).
 **Baseline tip:** Living tip **`v0.33.0`** (pre-cut baseline was Published `v0.32.0`).
@@ -2785,7 +2787,7 @@ no package remains Alpha merely because it lacked an owner.
 ## 0.36 — Web Component ABI and lifecycle foundation (`v0.36.0`)
 
 **Status:** Planned; specification draft under
-[RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md). Implementation may not begin until the RFC is
+[RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md). Implementation may not begin until the RFC is
 Accepted and its open browser/package questions are resolved.
 **Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92). Close when all 0.36-owned
 gates are Verified after RFC-0060 acceptance.
@@ -3179,7 +3181,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Published cross-language conformance-test kit | 0.14 | Versioned fixtures, negative cases, artifacts, and capability-level failure reports. |
 | HTTP-faithful `AppScenario` application-flow harness | 0.15 | Route, session, typed control/action, fragment, redirect, and response assertions; explicitly no whole-script rerun simulation. |
 | HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); Dialog/Tabs/Pagination/Lazy asserts deferred to 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
-| Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
+| Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
 | Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |
 | Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |
@@ -3249,7 +3251,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Pre-auth CSRF, session idle/absolute timeouts, auth rate limits, trusted-header identity | 0.15 | Optional helpers and recipes; not an IdP ([#2](https://github.com/eddiethedean/hedron/issues/2), [#4](https://github.com/eddiethedean/hedron/issues/4), [#5](https://github.com/eddiethedean/hedron/issues/5), [#7](https://github.com/eddiethedean/hedron/issues/7)). |
 | Hardened rotating-refresh session reference and FastAPI authenticated-cache auto-wire | 0.15 | Application-owned identity recipe plus private/no-store parity with adapters ([#10](https://github.com/eddiethedean/hedron/issues/10), [#16](https://github.com/eddiethedean/hedron/issues/16)). |
 | HTMX InteractionResult, fragment, region, and shell-swap testing helpers | 0.15 | First-class asserts composing with `AppScenario` / adapter clients ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); remaining builtin markup asserts in 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
-| `region` / `@fragment` / `swap` builders and Explorer click preview | 0.15 | Authoring ergonomics ([RFC-0039](rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); production fail-closed region auth preserved. |
+| `region` / `@fragment` / `swap` builders and Explorer click preview | 0.15 | Authoring ergonomics ([RFC-0039](docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); production fail-closed region auth preserved. |
 | Named resource/connection registry and SQLAlchemy/Snowflake providers | 0.15 | Built on host DI/lifespan and external secret managers; no global service locator. |
 | Math/LaTeX, bounded help inspector, and sandboxed iframe | 0.15 | Executable content, remote URLs, and browser permissions remain explicit trust boundaries. |
 | Lazy imports, version gates, missing-extra guidance | 0.4–0.6 | Required for every optional integration. |
@@ -3305,10 +3307,10 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Flask/Django fragment_regions, portable CSP headers, scaffolds, wheel smoke, Flask-Login AuthSignal | 0.20 | Adapter parity and DX after 0.11 foundations (`REGION-020`, `CSP-020`, `SCAFFOLD-020`, `WHEEL-020`, `AUTH-020`; [#12](https://github.com/eddiethedean/hedron/issues/12), [#14](https://github.com/eddiethedean/hedron/issues/14), [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19), [#20](https://github.com/eddiethedean/hedron/issues/20)). |
 | Pluggable CSRF strategies, composable SecurityPolicy headers, `CsrfField` / Form HTMX kwargs | 0.22 | Packet refined (`CSRF-022` / `HEADERS-022` / `FORM-022`); FastAPI composition for apps that own sessions/CSP; depends on 0.20 `CSP-020` ([#36](https://github.com/eddiethedean/hedron/issues/36)–[#38](https://github.com/eddiethedean/hedron/issues/38)). |
 | Expand minimal `stable` API tier for Supported CRUD/HTMX/jobs + Beginner facade inventory | 0.23 | D-053 / RFC-0056; does not promote Alpha extras or live transports. |
-| Live-transport production disposition (`polling_only` Accepted) | 0.24 | **Published** `v0.24.0`; supersedes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056) — [LIVE_DISPOSITION](api/LIVE_DISPOSITION.md). |
-| Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | **Published** `v0.25.0`; D-053 / RFC-0056; SBOM/evidence attach on train tags — [PRODUCTION_ARCHETYPE](api/PRODUCTION_ARCHETYPE.md). |
-| Production-grade `hedron-core`, `hedron`, and secured/development Explorer | 0.26 | **Published** `v0.26.0`; D-054 / RFC-0057; Verified `CONTRACT-026`…`PKG-026` — [RELEASE_0_26](acceptance/RELEASE_0_26.md). |
-| Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | **Published** `v0.27.0`; D-055 / RFC-0058; Verified `DATA-027`…`PKG-027` — [RELEASE_0_27](acceptance/RELEASE_0_27.md). |
+| Live-transport production disposition (`polling_only` Accepted) | 0.24 | **Published** `v0.24.0`; supersedes `BROWSER-10-001` / `PERF-10-001` / `LIVE-011-BROWSER` (D-053 / RFC-0056) — [LIVE_DISPOSITION](docs/api/LIVE_DISPOSITION.md). |
+| Reference-app production archetype, load budgets, extras quarantine, charts graduation path | 0.25 | **Published** `v0.25.0`; D-053 / RFC-0056; SBOM/evidence attach on train tags — [PRODUCTION_ARCHETYPE](docs/api/PRODUCTION_ARCHETYPE.md). |
+| Production-grade `hedron-core`, `hedron`, and secured/development Explorer | 0.26 | **Published** `v0.26.0`; D-054 / RFC-0057; Verified `CONTRACT-026`…`PKG-026` — [RELEASE_0_26](docs/acceptance/RELEASE_0_26.md). |
+| Production-grade data, Flask/Django adapters, HDJ authoring, and curated extras | 0.27 | **Published** `v0.27.0`; D-055 / RFC-0058; Verified `DATA-027`…`PKG-027` — [RELEASE_0_27](docs/acceptance/RELEASE_0_27.md). |
 | Production-grade charts and optional native acceleration | 0.28 | Static/a11y chart baseline, explicit backend dispositions, native fuzz/platform/fallback proof; acceleration never required. |
 | Production-grade standalone FastAPI Workbench package and Hedron dependency inversion | 0.30 | First monorepo `fastapi-workbench` release is 1.0.0; plain FastAPI has hands-off launch without Hedron, and `hedron-workbench` depends on the shared generic implementation (D-058). |
 | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.31 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes (RFC-0064 / D-059; [#87](https://github.com/eddiethedean/hedron/issues/87)). |
@@ -3316,7 +3318,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Unified `hedron-posit` Workbench and Connect deployment adapter | 0.33 | One `HedronPosit` facade composes existing mount/cookie behavior; the optional legacy Connect cookie bridge is explicit, authenticated, bounded, and off by default (draft RFC-0066 / D-061; [#167](https://github.com/eddiethedean/hedron/issues/167)). |
 | Production-grade Gradio/Hugging Face client interoperability | 0.34 | Allowlisted egress/endpoints, file/stream bounds, cancellation, polling jobs, provider compatibility, and secret hygiene ([#90](https://github.com/eddiethedean/hedron/issues/90)). |
 | Whole-fleet production-grade closure | 0.35 | Machine-readable inventory, resolver/upgrade/rollback matrices, composed reference-app proof, and no unowned Alpha package ([#91](https://github.com/eddiethedean/hedron/issues/91)). |
-| Polished default presentation quality program | 0.33–0.41 | Gallery and geometry baseline → refreshed `default_styles=True` → fleet audit → element/form/data/authoring/navigation integration → production-grade visual inventory ([implementation plan](implementation/DEFAULT_PRESENTATION_033_PLUS.md)). |
+| Polished default presentation quality program | 0.33–0.41 | Gallery and geometry baseline → refreshed `default_styles=True` → fleet audit → element/form/data/authoring/navigation integration → production-grade visual inventory ([implementation plan](docs/implementation/DEFAULT_PRESENTATION_033_PLUS.md)). |
 | Web Component platform program | 0.36–0.41 | ABI/lifecycle → forms/primitives → rich surfaces → authoring → composition → production-grade graduation (draft RFC-0060; [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)). |
 | Optional written `1.0` DoD without a calendar date | D-053 | Not a roadmap phase; preserves D-039. |
 | Published reference application and release artifacts | 0.1 onward | Grows cumulatively and validates clean installation. |
