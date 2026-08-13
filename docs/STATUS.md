@@ -284,9 +284,11 @@ RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)); see
 [0.33 acceptance packet](acceptance/RELEASE_0_33.md). Phase **0.34** is **Published**
 (`v0.34.0` / `hedron-gradio` `0.2.0` Beta; D-062 / RFC-0067; [#90](https://github.com/eddiethedean/hedron/issues/90));
 see [implementation plan](implementation/HEDRON_GRADIO_034.md) and
-[0.34 acceptance packet](acceptance/RELEASE_0_34.md). Remaining package-production work
-continues through **0.35**: whole-fleet
-closure audit ([#91](https://github.com/eddiethedean/hedron/issues/91)). Web Component platform
+[0.34 acceptance packet](acceptance/RELEASE_0_34.md). Phase **0.35** packet refine is **in progress**
+(D-063 / Draft [RFC-0068](rfcs/RFC-0068-WHOLE-FLEET-CLOSURE.md); [#91](https://github.com/eddiethedean/hedron/issues/91));
+see [implementation plan](implementation/HEDRON_FLEET_035.md) and
+[0.35 acceptance packet](acceptance/RELEASE_0_35.md). Living tip remains `v0.34.0` until cut.
+Web Component platform
 work is tracked as [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 (phases 0.36–0.41). These phases require owning RFCs/decisions and Verified evidence before any
 package maturity label changes. They do not schedule `1.0`, promote every experimental

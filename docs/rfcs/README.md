@@ -85,3 +85,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0065](RFC-0065-PRODUCTION-GRADE-MCP.md) | Production-grade deny-by-default MCP projection | Accepted |
 | [0066](RFC-0066-HEDRON-POSIT.md) | Unified `hedron-posit` Workbench and Connect deployment adapter | Accepted |
 | [0067](RFC-0067-PRODUCTION-GRADE-GRADIO.md) | Production-grade Gradio client interoperability | Accepted |
+| [0068](RFC-0068-WHOLE-FLEET-CLOSURE.md) | Whole-fleet production-grade closure | Draft |

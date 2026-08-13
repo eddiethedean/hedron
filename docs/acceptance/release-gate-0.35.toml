@@ -1,0 +1,54 @@
+# Phase 0.35 whole-fleet closure evidence index.
+# Consumed by scripts/check_release_gate.py (manifest path) / verify_pkg_35.py.
+# Zero Deferred policy: every 0.35-owned row must be Verified at cut.
+# Owning decision: D-063. Design: RFC-0068. Tracking: #91.
+# PRESENT-034 folds into FLEET-035 + DOCS-035 (no PRESENT-035 gate).
+
+[[evidence]]
+id = "FLEET-035"
+state = "Planned"
+command = "python scripts/check_fleet_035.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "SOLVER-035"
+state = "Planned"
+command = "python scripts/check_solver_035.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "COMPOSE-035"
+state = "Planned"
+command = "python scripts/check_compose_035.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "DOCS-035"
+state = "Planned"
+command = "python scripts/check_docs_035.py"
+ci_job = "quality"
+owner = "hedron"
+
+[[evidence]]
+id = "SUPPLY-035"
+state = "Planned"
+command = "python scripts/check_supply_035.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-035"
+state = "Planned"
+command = "python scripts/check_regress_035.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-035"
+state = "Planned"
+command = "python scripts/verify_pkg_35.py"
+ci_job = "packaging"
+owner = "hedron"
