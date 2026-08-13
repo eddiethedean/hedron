@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Security
+
+- Raise the Starlette floor to ``>=1.3.1`` so installs resolve patched releases
+  for FormParser, URL authority, StaticFiles, and HTTPEndpoint advisories
+  (PYSEC-2026-161 / 248 / 249 / 2280 / 2281).
+
 ## [1.0.0] — 2026-08-12
 
 ### Added

@@ -6,6 +6,9 @@
   ``x-hedron-principal`` / ``x-user`` headers. Identity comes from an
   authenticated session subject or an explicit host ``principal_resolver``
   only (#168).
+- Raise the Starlette floor to ``>=1.3.1,<2`` so installs resolve patched
+  releases for FormParser, URL authority, StaticFiles, and HTTPEndpoint
+  advisories (PYSEC-2026-161 / 248 / 249 / 2280 / 2281).
 
 ## [0.2.0]
 
