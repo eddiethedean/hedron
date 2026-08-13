@@ -175,3 +175,82 @@ def test_default_resolver_accepts_authenticated_session_subject() -> None:
         },
     )
     assert response.status_code == 200
+
+
+def test_delete_terminates_server_minted_session() -> None:
+    """DELETE /mcp closes the session; client-chosen ids are not trusted (#173)."""
+    app = Starlette()
+    projection = McpProjection(
+        enabled=True,
+        principal_resolver=lambda _r: "alice",
+    )
+    mount_mcp(app, projection)
+    client = TestClient(app)
+
+    init = client.post(
+        "/mcp",
+        json={"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+        headers={"mcp-session-id": "keepme"},
+    )
+    assert init.status_code == 200
+    minted = init.headers.get("mcp-session-id")
+    assert minted
+    assert minted != "keepme"
+    assert projection.bounds.session("keepme") is None
+    assert projection.bounds.session(minted) is not None
+
+    deleted = client.delete("/mcp", headers={"mcp-session-id": minted})
+    assert deleted.status_code == 204
+    assert projection.bounds.session(minted) is None
+
+
+def test_session_principal_mismatch_is_rejected() -> None:
+    app = Starlette()
+    current = {"principal": "alice"}
+
+    projection = McpProjection(
+        enabled=True,
+        principal_resolver=lambda _r: current["principal"],
+    )
+    projection.register_tool(
+        McpTool(
+            name="ping",
+            schema={"type": "object"},
+            mutate=False,
+            handler=lambda: "pong",
+        )
+    )
+    mount_mcp(app, projection)
+    client = TestClient(app)
+
+    init = client.post(
+        "/mcp",
+        json={"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}},
+    )
+    session_id = init.headers["mcp-session-id"]
+
+    ok = client.post(
+        "/mcp",
+        json={
+            "jsonrpc": "2.0",
+            "id": 2,
+            "method": "tools/call",
+            "params": {"name": "ping", "arguments": {}},
+        },
+        headers={"mcp-session-id": session_id},
+    )
+    assert ok.status_code == 200
+
+    current["principal"] = "bob"
+    denied = client.post(
+        "/mcp",
+        json={
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "tools/call",
+            "params": {"name": "ping", "arguments": {}},
+        },
+        headers={"mcp-session-id": session_id},
+    )
+    assert denied.status_code == 403
+    assert "principal mismatch" in denied.text

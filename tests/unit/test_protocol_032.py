@@ -56,6 +56,7 @@ def test_streamable_http_initialize_and_empty_lists() -> None:
     assert init.status_code == 200
     body = init.json()
     assert body["result"]["protocolVersion"] == "2025-03-26"
+    assert init.headers.get("mcp-session-id")
 
     listed = client.post(
         "/mcp",
