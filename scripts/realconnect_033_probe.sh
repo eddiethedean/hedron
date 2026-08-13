@@ -1,22 +1,32 @@
 #!/usr/bin/env bash
-# REALCONNECT-033 Stage 0: licensed Connect contract probe for RFC-0066.
+# Licensed Connect contract probe for RFC-0066 (REALCONNECT-033 family).
 # Never prints CONNECT_LICENSE, CONNECT_API_KEY, PCT_LICENSE, bootstrap secrets, or publishing keys.
+#
+# Defaults target Connect 2026.07.0 (current Supported lane). Override for minimum-floor probes:
+#   HEDRON_CONNECT_PROBE_ID=REALCONNECT-033-202506
+#   HEDRON_CONNECT_RESULT_DIR=docs/acceptance/realconnect-033-202506
+#   HEDRON_CONNECT_IMAGE_DIGEST=sha256:...
+#   HEDRON_CONNECT_DOCKER_PLATFORM=linux/amd64
+#   HEDRON_CONNECT_WRITE_FIXTURES=0
 set -euo pipefail
 umask 077
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-RESULT_DIR="$ROOT/docs/acceptance/realconnect-033"
+PROBE_ID="${HEDRON_CONNECT_PROBE_ID:-REALCONNECT-033}"
+RESULT_DIR="${HEDRON_CONNECT_RESULT_DIR:-$ROOT/docs/acceptance/realconnect-033}"
 RESULT="$RESULT_DIR/RESULT.log"
 FIXTURE_DIR="$ROOT/tests/fixtures/posit-connect"
-IMAGE_DIGEST="sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9"
+IMAGE_DIGEST="${HEDRON_CONNECT_IMAGE_DIGEST:-sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9}"
 IMAGE="${HEDRON_CONNECT_IMAGE:-posit/connect@${IMAGE_DIGEST}}"
+DOCKER_PLATFORM="${HEDRON_CONNECT_DOCKER_PLATFORM:-}"
+WRITE_FIXTURES="${HEDRON_CONNECT_WRITE_FIXTURES:-1}"
 CONNECT_PORT="${HEDRON_CONNECT_PORT:-3939}"
 LOCAL_PORT="${HEDRON_CONNECT_LOCAL_PORT:-8056}"
-CONTAINER="hedron-connect-033-$$"
+CONTAINER="${HEDRON_CONNECT_CONTAINER:-hedron-connect-probe-$$}"
 CLIENT_VERSION="1.29.0"
-SMOKE_DIR="$(mktemp -d /tmp/hedron-connect-033.XXXXXX)"
+SMOKE_DIR="$(mktemp -d /tmp/hedron-connect-probe.XXXXXX)"
 CLIENT_DIR="$SMOKE_DIR/rsconnect-venv"
 APP_PID=""
 CONTAINER_STARTED=0
@@ -25,6 +35,10 @@ PLACEHOLDER_MOUNT="/content/${PLACEHOLDER_GUID}"
 RESULT_BACKUP=""
 LICENSE_STOP_TIMEOUT="${HEDRON_CONNECT_LICENSE_STOP_TIMEOUT:-120}"
 CONNECT_LICENSE_MANAGER="/opt/rstudio-connect/bin/license-manager"
+DOCKER_PLATFORM_ARGS=()
+if [[ -n "$DOCKER_PLATFORM" ]]; then
+  DOCKER_PLATFORM_ARGS=(--platform "$DOCKER_PLATFORM")
+fi
 
 redact_stream() {
   sed -E \
@@ -40,7 +54,7 @@ log() {
 fail() {
   local code="$1"
   shift
-  log "REALCONNECT-033 $code $*"
+  log "$PROBE_ID $code $*"
   log "RESULT=fail"
   exit 1
 }
@@ -48,9 +62,9 @@ fail() {
 skip_license_unavailable() {
   local reason="$1"
   shift
-  log "REALCONNECT-033 skip reason=$reason $*"
+  log "$PROBE_ID skip reason=$reason $*"
   log "RESULT=skip"
-  log "REALCONNECT-033 end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  log "$PROBE_ID end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
     cp "$RESULT_BACKUP" "$RESULT"
   fi
@@ -123,7 +137,7 @@ cleanup() {
     fi
     deactivate_connect_license
   fi
-  if [[ -d "$SMOKE_DIR" && "$SMOKE_DIR" == /tmp/hedron-connect-033.* ]]; then
+  if [[ -d "$SMOKE_DIR" && "$SMOKE_DIR" == /tmp/hedron-connect-probe.* ]]; then
     rm -r -- "$SMOKE_DIR"
   else
     log "cleanup_refused_unexpected_temp_path=true"
@@ -143,7 +157,7 @@ fi
 exec > >(tee -a "$RESULT") 2>&1
 trap cleanup EXIT INT TERM
 
-log "REALCONNECT-033 start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+log "$PROBE_ID start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "image=$IMAGE"
 log "host_arch=$(uname -m)"
 log "protocol_floor=2024.11.0"
@@ -173,7 +187,7 @@ for command in curl jq openssl rsync; do
 done
 
 if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
-  docker pull "$IMAGE" >/dev/null || \
+  docker pull "${DOCKER_PLATFORM_ARGS[@]}" "$IMAGE" >/dev/null || \
     fail "HED-CONNECT-0002" "could not pull the pinned Connect image"
 fi
 resolved_digests="$(docker image inspect "$IMAGE" --format '{{join .RepoDigests ","}}' 2>/dev/null || true)"
@@ -190,6 +204,7 @@ BOOTSTRAP_SECRET="$(tr -d '\n' < "$SMOKE_DIR/bootstrap.key")"
 
 log "container=start privileged=true"
 if ! docker run -d \
+  "${DOCKER_PLATFORM_ARGS[@]}" \
   --name "$CONTAINER" \
   --privileged \
   --stop-timeout 120 \
@@ -249,30 +264,66 @@ log "CONNECT_BOOTSTRAP=ok"
 
 BUNDLE="$SMOKE_DIR/bundle"
 mkdir -p "$BUNDLE"
-cp examples/connect-reference/app.py \
-  examples/connect-reference/requirements.txt \
-  examples/connect-reference/.python-version \
-  "$BUNDLE/"
-rsync -a --exclude '__pycache__' packages/hedron/src/hedron/ "$BUNDLE/hedron/"
-rsync -a --exclude '__pycache__' packages/hedron-core/src/hedron_core/ "$BUNDLE/hedron_core/"
-rsync -a --exclude '__pycache__' \
-  packages/hedron-posit/src/hedron_posit/ "$BUNDLE/hedron_posit/"
-rsync -a --exclude '__pycache__' \
-  packages/hedron-workbench/src/hedron_workbench/ "$BUNDLE/hedron_workbench/"
-rsync -a --exclude '__pycache__' \
-  packages/fastapi-workbench/src/fastapi_workbench/ "$BUNDLE/fastapi_workbench/"
+cp examples/connect-reference/app.py "$BUNDLE/"
+BUNDLE_PYTHON="${HEDRON_CONNECT_BUNDLE_PYTHON:-}"
+BUNDLE_MODE="${HEDRON_CONNECT_BUNDLE_MODE:-vendor}"
+if [[ -n "$BUNDLE_PYTHON" ]]; then
+  printf '%s\n' "$BUNDLE_PYTHON" > "$BUNDLE/.python-version"
+else
+  cp examples/connect-reference/.python-version "$BUNDLE/"
+fi
+if [[ "$BUNDLE_MODE" == "wheels" ]]; then
+  WHEEL_DIR="$BUNDLE/wheels"
+  mkdir -p "$WHEEL_DIR"
+  for pkg in hedron-core hedron hedron-posit hedron-workbench fastapi-workbench; do
+    uv build "packages/$pkg" --out-dir "$WHEEL_DIR" -q
+  done
+  cp examples/connect-reference/requirements.txt "$BUNDLE/requirements.txt"
+  {
+    cat "$BUNDLE/requirements.txt"
+    echo ""
+    for wheel in "$WHEEL_DIR"/*.whl; do
+      name="$(basename "$wheel")"
+      echo "./wheels/${name}"
+    done
+  } > "$BUNDLE/requirements.txt"
+  log "bundle_mode=wheels wheel_count=$(find "$WHEEL_DIR" -name '*.whl' | wc -l | tr -d ' ')"
+else
+  cp examples/connect-reference/requirements.txt "$BUNDLE/"
+  rsync -a --exclude '__pycache__' packages/hedron/src/hedron/ "$BUNDLE/hedron/"
+  rsync -a --exclude '__pycache__' packages/hedron-core/src/hedron_core/ "$BUNDLE/hedron_core/"
+  rsync -a --exclude '__pycache__' \
+    packages/hedron-posit/src/hedron_posit/ "$BUNDLE/hedron_posit/"
+  rsync -a --exclude '__pycache__' \
+    packages/hedron-posit/src/pkg_resources/ "$BUNDLE/pkg_resources/"
+  rsync -a --exclude '__pycache__' \
+    packages/hedron-workbench/src/hedron_workbench/ "$BUNDLE/hedron_workbench/"
+  rsync -a --exclude '__pycache__' \
+    packages/fastapi-workbench/src/fastapi_workbench/ "$BUNDLE/fastapi_workbench/"
+  log "bundle_mode=vendor"
+fi
 
 export CONNECT_SERVER="http://127.0.0.1:${CONNECT_PORT}"
 export CONNECT_API_KEY="$(tr -d '\n' < "$SMOKE_DIR/api.key")"
+deploy_rc=0
 if ! "$CLIENT_DIR/bin/rsconnect" deploy fastapi \
   --entrypoint app:app \
   --title hedron-connect-smoke \
   "$BUNDLE" > "$SMOKE_DIR/deploy.log" 2>&1; then
-  log "deploy_log=$(redact_stream < "$SMOKE_DIR/deploy.log" | tail -n 100)"
-  fail "HED-CONNECT-0005" "FastAPI content deployment failed"
+  deploy_rc=1
+fi
+if [[ "$deploy_rc" -ne 0 ]]; then
+  if grep -q "Deployment completed successfully" "$SMOKE_DIR/deploy.log"; then
+    log "CONNECT_DEPLOY=verify_failed_continuing"
+    deploy_rc=0
+  else
+    log "deploy_log=$(redact_stream < "$SMOKE_DIR/deploy.log" | tail -n 100)"
+    fail "HED-CONNECT-0005" "FastAPI content deployment failed"
+  fi
 fi
 unset CONNECT_SERVER CONNECT_API_KEY
-log "CONNECT_DEPLOY=ok runtime=python-3.14.6 vendored_local_source=true"
+DEPLOY_PYTHON="$(tr -d '\n' < "$BUNDLE/.python-version")"
+log "CONNECT_DEPLOY=ok runtime=python-${DEPLOY_PYTHON} bundle_mode=${BUNDLE_MODE}"
 
 BUNDLE_RECORD="$BUNDLE/rsconnect-python/bundle.json"
 GUID="$($ROOT/.venv/bin/python -c \
@@ -287,11 +338,33 @@ AUTH="$(tr -d '\n' < "$SMOKE_DIR/api.key")"
 
 page_headers="$SMOKE_DIR/page.headers"
 cookie_jar="$SMOKE_DIR/cookies"
-if ! curl -fsS --max-time 15 \
-  -H "Authorization: Key ${AUTH}" \
-  -c "$cookie_jar" \
-  -D "$page_headers" \
-  "$BASE/" -o "$SMOKE_DIR/page.html"; then
+page_ok=0
+for _ in $(seq 1 24); do
+  if curl -fsS --max-time 15 \
+    -H "Authorization: Key ${AUTH}" \
+    -c "$cookie_jar" \
+    -D "$page_headers" \
+    "$BASE/" -o "$SMOKE_DIR/page.html"; then
+    page_ok=1
+    break
+  fi
+  sleep 5
+done
+if [[ "$page_ok" -ne 1 ]]; then
+  if [[ "$CONTAINER_STARTED" -eq 1 ]]; then
+    log "content_job_log_begin"
+    jobs_json="$(curl -sS --max-time 15 -H "Authorization: Key ${AUTH}" \
+      "http://127.0.0.1:${CONNECT_PORT}/__api__/v1/content/${GUID}/jobs" || true)"
+    job_key="$(printf '%s' "$jobs_json" | jq -r '.[0].key // empty' 2>/dev/null || true)"
+    if [[ -n "$job_key" ]]; then
+      curl -sS --max-time 15 -H "Authorization: Key ${AUTH}" \
+        "http://127.0.0.1:${CONNECT_PORT}/__api__/v1/content/${GUID}/jobs/${job_key}/download" \
+        2>/dev/null | redact_stream | tail -n 80 || true
+    else
+      log "content_job_log=unavailable"
+    fi
+    log "content_job_log_end"
+  fi
   fail "HED-CONNECT-0006" "deployed PAGE request failed"
 fi
 if ! grep -q "Hello from Hedron on Connect" "$SMOKE_DIR/page.html"; then
@@ -380,6 +453,7 @@ else
 fi
 
 # Sanitized fixtures (placeholder GUID/mount; boolean presence only).
+if [[ "$WRITE_FIXTURES" == "1" ]]; then
 mkdir -p "$FIXTURE_DIR"
 "$ROOT/.venv/bin/python" - "$FIXTURE_DIR" "$PLACEHOLDER_MOUNT" <<'PY'
 import json
@@ -448,11 +522,14 @@ asgi_vanity = {
 (fixture_dir / "README.md").write_text(
     "# Sanitized Posit Connect fixtures (0.33 Stage 0)\n\n"
     "Synthetic GUID/vanity ASGI shapes derived from licensed on-host Connect "
-    "2026.07.0 probe evidence. Cookie values are always redacted.\n",
+    "2025.06.0 and 2026.07.0 probe evidence. Cookie values are always redacted.\n",
     encoding="utf-8",
 )
 print("FIXTURES=ok")
 PY
+else
+  log "FIXTURES=skipped"
+fi
 
 asset_code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 \
   -H "Authorization: Key ${AUTH}" \
@@ -626,5 +703,5 @@ fi
 log "OUTSIDE_CONNECT=ok hedron_parity=ok generic_aliases_ignored=ok"
 
 log "RESULT=pass"
-log "REALCONNECT-033 end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+log "$PROBE_ID end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 exit 0

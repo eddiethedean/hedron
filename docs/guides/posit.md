@@ -3,8 +3,8 @@
 Run the same Hedron application locally, in Posit Workbench, and on Posit Connect
 with one facade.
 
-**Requires:** `hedron-posit>=0.33.0,<0.34` (or `hedron[posit]>=0.33.0,<0.34`).
-Compatibility package: `hedron-workbench>=0.33.0,<0.34` (or `hedron[workbench]`).
+**Requires:** `hedron-posit>=0.34.0,<0.35` (or `hedron[posit]>=0.34.0,<0.35`).
+Compatibility package: `hedron-workbench>=0.34.0,<0.35` (or `hedron[workbench]`).
 Generic Workbench ASGI behavior remains in `fastapi-workbench>=1.0.0,<2.0`.
 
 ## Preferred facade
@@ -63,19 +63,29 @@ Workbench mode delegates discovery and path normalization to `fastapi-workbench`
 through `hedron-posit`. Session URLs remain ephemeral — use
 `external_base_url` or Connect for durable email/OAuth callbacks.
 
+Supported Workbench floor is **2025.05.1** (linux/amd64). Current verified lane is
+Workbench **2026.07.0**. Live evidence: `docs/acceptance/realwb-030-202505/RESULT.log`
+and `docs/acceptance/realwb-030/RESULT.log`.
+
 See also [Posit Workbench](posit-workbench.md) for the compatibility
 `HedronWorkbench` surface (supported through at least 0.35; no 0.33 deprecation
 warning).
 
 ## Native Connect
 
-Supported floor for on-host GUID content is Connect **2026.07.0** (protocol floor
-2024.11.0). Native mode requires:
+Supported floor for on-host GUID content is Connect **2025.06.0** (protocol floor
+2024.11.0). Current verified lane is Connect **2026.07.0**. Native mode requires:
 
 - protected Connect runtime evidence (`POSIT_PRODUCT=CONNECT`);
 - exactly one `RStudio-Connect-App-Base-URL` whose path matches ASGI `root_path`;
 - request cookies passed through unchanged (`ConnectCookieMode.native`);
 - owned response-cookie Path repair exactly once.
+
+Install `hedron-posit` into the content environment (pip extra or wheel). Connect
+**2025.06.0** FastAPI workers import `pkg_resources.parse_version` before user
+code; setuptools 82+ removed that module. `hedron-posit` ships a tiny shim so
+workers start. Copying source trees without installing the package is not enough
+on 2025.06.
 
 Off-host Connect and live vanity-URL expansion remain **Experimental**.
 
@@ -86,7 +96,7 @@ Reference app: `examples/connect-reference/`.
 `ConnectCookieMode.authenticated_header_v1` is retained only as a documented
 extension-point enum. Selecting it fails startup with `HED-POSIT-0401`. Stage 0
 evidence recorded `BRIDGE_DECISION=drop_supported` (native cookies OK on
-2026.07.0). Do not enable a Supported bridge until a future Accepted decision
+2025.06.0 and 2026.07.0). Do not enable a Supported bridge until a future Accepted decision
 reproduces native request-cookie loss on a named topology.
 
 ## Migration from `hedron-workbench`

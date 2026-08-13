@@ -41,6 +41,7 @@ EVIDENCE_BY_MAJOR_MINOR = {
     "0.31": ROOT / "docs" / "acceptance" / "release-gate-0.31.toml",
     "0.32": ROOT / "docs" / "acceptance" / "release-gate-0.32.toml",
     "0.33": ROOT / "docs" / "acceptance" / "release-gate-0.33.toml",
+    "0.34": ROOT / "docs" / "acceptance" / "release-gate-0.34.toml",
 }
 DEFAULT_EVIDENCE = EVIDENCE_BY_MAJOR_MINOR["0.6"]
 # Includes historical ``release`` attestation used by older gate manifests.
@@ -76,6 +77,7 @@ _RECURSIVE_SCRIPT_NAMES = frozenset(
         "verify_pkg_31.py",
         "verify_pkg_32.py",
         "verify_pkg_33.py",
+        "verify_pkg_34.py",
         "ci_checks.sh",
     }
 )
@@ -108,7 +110,7 @@ def _is_independent_version_package(project: dict[str, object]) -> bool:
     if _is_alpha_package(project):
         return True
     name = str(project.get("name", ""))
-    if name in {"fastapi-workbench", "hedron-mcp"}:
+    if name in {"fastapi-workbench", "hedron-mcp", "hedron-gradio"}:
         return True
     version = str(project.get("version", ""))
     return version.startswith("0.1.")

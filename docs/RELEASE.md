@@ -1,7 +1,7 @@
 # Cutting a Hedron release
 
-This is the living maintainer runbook for the `0.33.x` train. Historical cut records
-live under `docs/archive/`. The last published release is `v0.33.0`; the next planned
+This is the living maintainer runbook for the `0.34.x` train. Historical cut records
+live under `docs/archive/`. The last published release is `v0.34.0`; the next planned
 patch is `v0.33.1`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
@@ -24,22 +24,22 @@ Python metadata does not. Never move or replace a published tag.
 uv sync --locked --all-groups --python 3.12
 bash scripts/ci_checks.sh test --python 3.12
 bash scripts/ci_checks.sh quality --python 3.12
-bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.33.0
+bash scripts/ci_checks.sh evidence --python 3.12 --gate-version 0.34.0
 bash scripts/ci_checks.sh browser --python 3.12
-uv run python scripts/check_release_gate.py 0.33.0
+uv run python scripts/check_release_gate.py 0.34.0
 uv run python scripts/verify_pkg_33.py
 ```
 
 ## Tag and publish
 
 After reviewing the complete version/changelog diff (tip honesty already treats
-`v0.33.0` as published in adopter docs/`docs/release.toml`):
+`v0.34.0` as published in adopter docs/`docs/release.toml`):
 
 ```bash
 git fetch --tags origin
-git rev-parse v0.33.0 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
-git tag -a v0.33.0 -m "Hedron 0.33.0"
-git push origin v0.33.0
+git rev-parse v0.34.0 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
+git tag -a v0.34.0 -m "Hedron 0.34.0"
+git push origin v0.34.0
 ```
 
 ## Template: next patch (`0.33.1`)

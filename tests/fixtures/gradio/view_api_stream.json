@@ -1,0 +1,12 @@
+{
+  "named_endpoints": {
+    "/stream": {
+      "name": "stream",
+      "parameters": {
+        "text": {"type": "string"}
+      },
+      "supports_stream": true,
+      "streaming": true
+    }
+  }
+}

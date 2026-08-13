@@ -3,7 +3,7 @@
 How Hedron plans to raise **adopter trust** for the Supported surface — beyond the ops
 checklist in [Production readiness](production-readiness.md).
 
-**Living published train:** pin `hedron>=0.33.0,<0.34`. Capability maturity snapshot:
+**Living published train:** pin `hedron>=0.34.0,<0.35`. Capability maturity snapshot:
 [What’s ready today](whats-ready.md). Program decision: **D-053**; RFC:
 [RFC-0056](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0056-PRODUCTION-QUALITY.md)
 (maintainer corpus on GitHub).
@@ -61,7 +61,7 @@ phases apply the same discipline to the remaining package fleet:
 | 0.30 | Standalone `fastapi-workbench` 1.0.0 for hands-off plain-FastAPI deployment; `hedron-workbench` depends on the shared generic implementation (D-058) |
 | 0.31 | Conformance, sample plugin, simulation/notebook tooling, Node/Java evaluators, and reviewable Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061) |
 | 0.32 | Deny-by-default MCP projection — **Published** (`hedron-mcp` `0.2.0` Beta; D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89)) |
-| 0.33 | Unified `hedron-posit` Workbench and Connect deployment adapter — **Published** (`v0.33.0`; D-061 / RFC-0066) |
+| 0.33 | Unified `hedron-posit` Workbench and Connect deployment adapter — **Published** (`v0.34.0`; D-061 / RFC-0066) |
 | 0.34 | Gradio/Hugging Face client interoperability |
 | 0.35 | Whole-fleet resolver, upgrade, supply-chain, and maturity closure |
 

@@ -2,9 +2,9 @@
 
 !!! note "Living train"
 
-    Pin `hedron>=0.33.0,<0.34`. See [What’s new in 0.33](whats-new-0.33.md).
+    Pin `hedron>=0.34.0,<0.35`. See [What’s new in 0.33](whats-new-0.33.md).
 
-**Published** as `v0.32.0`. Historical pin for this train: `hedron>=0.33.0,<0.34`.
+**Published** as `v0.32.0`. Historical pin for this train: `hedron>=0.34.0,<0.35`.
 
 Phase **0.32** (D-060 / RFC-0065) graduates **`hedron-mcp`** to production-grade
 deny-by-default MCP Streamable HTTP projection for an explicitly bounded Supported
@@ -27,7 +27,7 @@ inventory. Install and mount grant no ambient authority.
 ## Upgrade
 
 ```bash
-python -m pip install -U "hedron>=0.33.0,<0.34"
+python -m pip install -U "hedron>=0.34.0,<0.35"
 # Optional MCP projection:
 python -m pip install -U "hedron[mcp]>=0.32.0,<0.33"
 # or

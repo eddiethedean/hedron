@@ -31,6 +31,8 @@ def main() -> int:
         "HedronPosit",
         "ConnectCookieMode",
         "authenticated_header_v1",
+        "2025.05.1",
+        "2025.06.0",
         "2026.07.0",
         "BRIDGE_DECISION",
     ):

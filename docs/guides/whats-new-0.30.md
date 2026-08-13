@@ -2,7 +2,7 @@
 
 !!! note "Living train is 0.32"
 
-    Pin `hedron>=0.33.0,<0.34`. See [What’s new in 0.32](whats-new-0.32.md).
+    Pin `hedron>=0.34.0,<0.35`. See [What’s new in 0.32](whats-new-0.32.md).
 
 **Published** as `v0.30.0`. Historical pin: `hedron>=0.30.0,<0.31`.
 
@@ -27,7 +27,7 @@ deployment into monorepo-owned **`fastapi-workbench` `1.0.0`**, and makes
 From `0.29.x` (Hedron apps):
 
 ```bash
-python -m pip install -U "hedron>=0.33.0,<0.34"
+python -m pip install -U "hedron>=0.34.0,<0.35"
 python -m pip install -U "hedron-workbench>=0.32.0,<0.33"
 # Workbench sessions:
 hedron-workbench run app:app

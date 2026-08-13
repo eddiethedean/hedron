@@ -24,3 +24,8 @@ def test_live_skip_on_unavailable_license_exit_code(monkeypatch) -> None:
 def test_offline_result_log_includes_both_packages() -> None:
     text = smoke.RESULT.read_text(encoding="utf-8")
     assert smoke._validate_log(text) == []
+
+
+def test_offline_floor_result_log_includes_three_packages() -> None:
+    text = smoke.RESULT_FLOOR.read_text(encoding="utf-8")
+    assert smoke._validate_floor_log(text) == []

@@ -29,11 +29,13 @@ REALWB stops Workbench with a 120s grace period and runs
 `rstudio-server license-manager deactivate` before teardown so license-key activations
 are released for the next local or CI run.
 The live matrix probes the pinned Workbench image and real `rserver-url`, then runs
-**two package passes**:
+**three package passes**:
 
 1. **hedron-workbench** — `app_facade.py` via `hedron-workbench run` (HTMX, CSRF,
    Hedron assets, external invite URLs, WebSockets, inactive-facade parity).
-2. **fastapi-workbench** — plain FastAPI `app.py` via `fastapi-workbench run`
+2. **hedron-posit** — `app_posit.py` via `hedron-posit run` (`HedronPosit` launcher,
+   mount handoff, redirects, `posit_status`, inactive ordinary-host parity).
+3. **fastapi-workbench** — plain FastAPI `app.py` via `fastapi-workbench run`
    (mounted pages/forms, OpenAPI, redirects, encoded-target guards, diagnostics,
    WebSockets, outside-Workbench parity).
 
@@ -45,7 +47,12 @@ probe on an amd64 host before release while retaining the remaining arm64 Docker
 evidence.
 
 ```bash
+# Current verified lane (Workbench 2026.07.0)
 bash ../../scripts/realwb_smoke.sh
+
+# Supported minimum floor (Workbench 2025.05.1, linux/amd64)
+bash ../../scripts/realwb_202505_probe.sh
+
 # backward-compatible alias:
 bash ../../scripts/realwb_029.sh
 ```

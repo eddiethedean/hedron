@@ -3,7 +3,7 @@
 **Baseline:** Published `v0.32.0` tip; `hedron-workbench` / `fastapi-workbench` Supported Workbench
 surface; Connect base-header helpers remain Experimental in inventory-029 until 0.33 native
 graduation evidence.
-**Package at cut:** `hedron-posit` `0.33.0` Beta + retained `hedron-workbench` `0.33.0` Beta.
+**Package at cut:** `hedron-posit` `0.34.0` Beta + retained `hedron-workbench` `0.34.0` Beta.
 **Owning decision:** D-061 / RFC-0066.
 **Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167).
 

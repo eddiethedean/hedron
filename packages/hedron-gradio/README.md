@@ -5,25 +5,25 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/eddiethedean/hedron/blob/main/LICENSE)
 
-Experimental Gradio client interoperability for Hedron.
+Production-grade Gradio client interoperability for Hedron.
 
-Endpoint discovery, typed predict / job / stream helpers, file and artifact
-transport, and Hugging Face vendor-node adapters — without embedding Gradio’s UI
-runtime in core. Disabled by default; absence of this package adds no core
+Endpoint discovery, allowlisted remote calls, typed predict / job / stream helpers,
+bounded file transport, and Hugging Face vendor-node adapters — without embedding
+Gradio’s UI runtime in core. Disabled by default; absence of this package adds no core
 dependency or startup cost.
 
 Also available as the flagship extra `hedron[gradio]`.
 
-**Package maturity:** Experimental Alpha (`0.1.x`) · pin `>=0.1.0,<0.2` and expect churn
+**Package maturity:** Beta · **Train:** `0.2.x` · pin `>=0.2.0,<0.3`
 
 ## Install
 
 ```bash
-pip install "hedron-gradio>=0.1.0,<0.2"
+pip install "hedron-gradio>=0.2.0,<0.3"
 # or
-uv add "hedron-gradio>=0.1.0,<0.2"
-# via flagship:
-pip install "hedron[gradio]>=0.33.0,<0.34"
+uv add "hedron-gradio>=0.2.0,<0.3"
+# via flagship (at 0.34 train cut):
+pip install "hedron[gradio]>=0.34.0,<0.35"
 ```
 
 Requires Python 3.11–3.14.
@@ -35,18 +35,18 @@ client library, helpers return stub-friendly status payloads.
 ## Quick start
 
 ```python
-from hedron_gradio import GradioClientAdapter, GradioEndpoint, hf_space_node
+from hedron_gradio import GradioClientAdapter, GradioEndpoint, GradioRemoteConfig
 
+config = GradioRemoteConfig.from_base_url("https://example.gradio.live")
 adapter = GradioClientAdapter(
-    base_url="https://example.gradio.live",
+    base_url=config.base_url,
     enabled=True,
+    remote_config=config,
     endpoints=(GradioEndpoint(name="predict", api_name="/predict", parameters={}),),
 )
 
 endpoints = adapter.discover()
 result = adapter.predict("predict", {"text": "hi"})
-
-node = hf_space_node("n1", "owner/space")
 ```
 
 With `enabled=False` (the default), `discover()` returns empty.
@@ -55,6 +55,7 @@ With `enabled=False` (the default), `discover()` returns empty.
 
 | Symbol | Role |
 |---|---|
+| `GradioRemoteConfig` | Allowlisted destination policy |
 | `GradioClientAdapter` | Discovery, predict, jobs, streams, file transfer |
 | `GradioEndpoint` | Declared endpoint metadata |
 | `GradioRemoteError` | Remote failure signal |
@@ -64,11 +65,10 @@ With `enabled=False` (the default), `discover()` returns empty.
 
 - [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-gradio/)
 - [Gradio migration guide](https://hedron.readthedocs.io/en/latest/guides/gradio-migration/)
-- [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/)
+- [What's new in 0.34](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.34.md)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-gradio/CHANGELOG.md)
 - [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-gradio)
 - [Issues](https://github.com/eddiethedean/hedron/issues)
-- [`hedron`](https://pypi.org/project/hedron/)
 
 ## License
 

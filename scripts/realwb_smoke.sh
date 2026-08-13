@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
-# REALWB-030: pinned Posit Workbench Docker smoke for hedron-workbench and fastapi-workbench.
-# Never prints PWB_LICENSE / generated tokens.
+# REALWB-030 family: pinned Posit Workbench Docker smoke for hedron-workbench,
+# hedron-posit, and fastapi-workbench. Never prints PWB_LICENSE / generated tokens.
+#
+# Defaults target Workbench 2026.07.0 (current Supported lane). Override for
+# the minimum-floor probe:
+#   HEDRON_REALWB_PROBE_ID=REALWB-030-202505
+#   HEDRON_REALWB_RESULT_DIR=docs/acceptance/realwb-030-202505
+#   HEDRON_REALWB_IMAGE_DIGEST=sha256:...
+#   HEDRON_WORKBENCH_DOCKER_PLATFORM=linux/amd64
 set -euo pipefail
 umask 077
 
@@ -9,10 +16,13 @@ cd "$ROOT"
 
 COMPOSE_DIR="$ROOT/examples/workbench-reference"
 COMPOSE=(docker compose -f "$COMPOSE_DIR/docker-compose.yml" --project-directory "$COMPOSE_DIR")
+PROBE_ID="${HEDRON_REALWB_PROBE_ID:-REALWB-030}"
 RESULT_DIR="${HEDRON_REALWB_RESULT_DIR:-$ROOT/docs/acceptance/realwb-030}"
 RESULT="$RESULT_DIR/RESULT.log"
-IMAGE_DIGEST="sha256:d10ee76a840e8af054d54506ed4b54bc27ee7344ee09d8c99541cd23f39b8c32"
+IMAGE_DIGEST="${HEDRON_REALWB_IMAGE_DIGEST:-sha256:d10ee76a840e8af054d54506ed4b54bc27ee7344ee09d8c99541cd23f39b8c32}"
 IMAGE="${HEDRON_WORKBENCH_IMAGE:-posit/workbench@${IMAGE_DIGEST}}"
+DOCKER_PLATFORM="${HEDRON_WORKBENCH_DOCKER_PLATFORM:-linux/amd64}"
+DOCKER_PLATFORM_ARGS=(--platform "$DOCKER_PLATFORM")
 RSERVER_URL_BIN="/usr/lib/rstudio-server/bin/rserver-url"
 MOUNT="/s/demo/p/9"
 PUBLIC_BASE="https://wb.example${MOUNT}"
@@ -20,8 +30,11 @@ APP_PORT=8050
 LOCAL_PORT=8051
 FWB_PORT=8052
 FWB_LOCAL_PORT=8054
+POSIT_PORT=8055
+POSIT_LOCAL_PORT=8061
 FWB_DIR="$ROOT/examples/fastapi-workbench-reference"
 PROXY_PORT=8053
+SMOKE_PORTS=("$APP_PORT" "$LOCAL_PORT" "$FWB_PORT" "$FWB_LOCAL_PORT" "$POSIT_PORT" "$POSIT_LOCAL_PORT" "$PROXY_PORT")
 APP_PID=""
 PROXY_CONTAINER="hedron-workbench-proxy-smoke-$$"
 PROXY_STARTED=0
@@ -43,7 +56,7 @@ log() {
 fail() {
   local code="$1"
   shift
-  log "REALWB-030 $code $*"
+  log "$PROBE_ID $code $*"
   log "RESULT=fail"
   exit 1
 }
@@ -51,9 +64,9 @@ fail() {
 skip_license_unavailable() {
   local reason="$1"
   shift
-  log "REALWB-030 skip reason=$reason $*"
+  log "$PROBE_ID skip reason=$reason $*"
   log "RESULT=skip"
-  log "REALWB-030 end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  log "$PROBE_ID end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
     cp "$RESULT_BACKUP" "$RESULT"
   fi
@@ -87,6 +100,23 @@ deactivate_workbench_license() {
   WORKBENCH_STARTED=0
 }
 
+kill_listen() {
+  local port="$1"
+  local pids=""
+  pids="$(lsof -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)"
+  if [[ -n "$pids" ]]; then
+    # shellcheck disable=SC2086
+    kill $pids >/dev/null 2>&1 || true
+  fi
+}
+
+kill_smoke_ports() {
+  local port
+  for port in "${SMOKE_PORTS[@]}"; do
+    kill_listen "$port"
+  done
+}
+
 CLEANUP_DONE=0
 cleanup() {
   if [[ "$CLEANUP_DONE" -eq 1 ]]; then
@@ -97,6 +127,7 @@ cleanup() {
     kill "$APP_PID" >/dev/null 2>&1 || true
     wait "$APP_PID" >/dev/null 2>&1 || true
   fi
+  kill_smoke_ports
   if [[ "$PROXY_STARTED" -eq 1 ]]; then
     docker rm -f "$PROXY_CONTAINER" >/dev/null 2>&1 || true
   fi
@@ -121,8 +152,9 @@ fi
 exec > >(tee -a "$RESULT") 2>&1
 trap cleanup EXIT INT TERM
 
-log "REALWB-030 start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+log "$PROBE_ID start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "image=$IMAGE"
+log "docker_platform=$DOCKER_PLATFORM"
 
 if [[ ! -f "$ROOT/.venv/bin/python" ]]; then
   fail "HED-WB-0007" "workspace venv missing — run: uv sync --frozen --all-extras --python 3.12"
@@ -154,17 +186,17 @@ if [[ ! "$PWB_LICENSE" =~ ^[[:alnum:]]{4}(-[[:alnum:]]{4}){5,}$ ]]; then
 fi
 
 if ! command -v docker >/dev/null 2>&1; then
-  fail "HED-WB-0007" "docker is required for REALWB-030"
+  fail "HED-WB-0007" "docker is required for $PROBE_ID"
 fi
 if ! docker info >/dev/null 2>&1; then
   fail "HED-WB-0007" "docker daemon is not reachable"
 fi
 for command in curl jq; do
   command -v "$command" >/dev/null 2>&1 || \
-    fail "HED-WB-0007" "$command is required for REALWB-030"
+    fail "HED-WB-0007" "$command is required for $PROBE_ID"
 done
 if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
-  docker pull "$IMAGE" >/dev/null || \
+  docker pull "${DOCKER_PLATFORM_ARGS[@]}" "$IMAGE" >/dev/null || \
     fail "HED-WB-0007" "could not pull the pinned Workbench image"
 fi
 resolved_digests="$(docker image inspect "$IMAGE" --format '{{join .RepoDigests ","}}' 2>/dev/null || true)"
@@ -172,6 +204,7 @@ if [[ "$IMAGE" == *"@sha256:"* && "$resolved_digests" != *"$IMAGE_DIGEST"* ]]; t
   fail "HED-WB-0007" "cached Workbench image did not match the pinned digest"
 fi
 log "image_digest=$IMAGE_DIGEST"
+kill_smoke_ports
 
 HOST_ARCH="$(uname -m)"
 log "host_arch=$HOST_ARCH"
@@ -185,6 +218,7 @@ if docker image inspect "$IMAGE" >/dev/null 2>&1; then
   compose_pull="never"
 fi
 log "compose=up workbench pull=$compose_pull"
+"${COMPOSE[@]}" down --remove-orphans >/dev/null 2>&1 || true
 if ! "${COMPOSE[@]}" up -d --pull "$compose_pull" workbench; then
   logs="$("${COMPOSE[@]}" logs --no-color --tail 80 workbench 2>/dev/null || true)"
   if license_unavailable_in_logs "$logs"; then
@@ -661,6 +695,129 @@ fi
 log "OUTSIDE_WORKBENCH=ok active=false hedron_parity=ok generic_aliases_ignored=ok"
 log "HEDRON_PACKAGE=pass"
 
+# --- hedron-posit native facade pass ------------------------------------------
+
+log "POSIT_PACKAGE=begin"
+
+if [[ -n "$APP_PID" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
+  kill -- -"$APP_PID" >/dev/null 2>&1 || kill "$APP_PID" >/dev/null 2>&1 || true
+  wait "$APP_PID" >/dev/null 2>&1 || true
+  APP_PID=""
+fi
+
+(
+  cd "$COMPOSE_DIR"
+  PYTHONPATH="$COMPOSE_DIR" "$PY" -m hedron_posit.cli run app_posit:app \
+    --mode on --host 127.0.0.1 --port "$POSIT_PORT" --mount "$MOUNT" \
+    --public-base-url "$PUBLIC_BASE"
+) >"$APP_LOG" 2>&1 &
+APP_PID=$!
+
+posit_ready=0
+for _ in $(seq 1 40); do
+  if curl -fsS -o /dev/null --max-time 2 "http://127.0.0.1:${POSIT_PORT}/" >/dev/null 2>&1; then
+    posit_ready=1
+    break
+  fi
+  if ! kill -0 "$APP_PID" >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+if [[ "$posit_ready" -ne 1 ]]; then
+  log "app_log=$(redact_stream < "$APP_LOG" | tail -n 50)"
+  fail "HED-WB-0005" "HedronPosit app did not become ready on :$POSIT_PORT"
+fi
+
+posit_body="$(curl -fsS --max-time 5 "http://127.0.0.1:${POSIT_PORT}/")"
+if ! printf '%s' "$posit_body" | grep -q "Hello from HedronPosit on Workbench"; then
+  fail "HED-WB-0006" "hedron-posit launcher-stripped request path did not route"
+fi
+posit_page="$(curl -fsS --max-time 5 "http://127.0.0.1:${POSIT_PORT}${MOUNT}/")"
+if ! printf '%s' "$posit_page" | grep -q "Hello from HedronPosit on Workbench"; then
+  fail "HED-WB-0006" "hedron-posit PAGE body missing expected text"
+fi
+posit_redirect_headers="$SMOKE_DIR/posit-redirect.headers"
+posit_redirect_code="$(curl -sS -o /dev/null -D "$posit_redirect_headers" \
+  -w '%{http_code}' --max-time 5 "http://127.0.0.1:${POSIT_PORT}${MOUNT}/go")"
+posit_redirect_location="$(awk 'tolower($1)=="location:" {gsub(/\r/, ""); print $2; exit}' \
+  "$posit_redirect_headers")"
+if [[ "$posit_redirect_code" != "303" || "$posit_redirect_location" != "${MOUNT}/login" ]]; then
+  fail "HED-WB-0006" "hedron-posit mounted redirect failed status=$posit_redirect_code location=$posit_redirect_location"
+fi
+posit_status="$(curl -fsS --max-time 5 "http://127.0.0.1:${POSIT_PORT}${MOUNT}/posit-status")"
+if ! printf '%s' "$posit_status" | grep -q '"browser_mount":"/s/demo/p/9"'; then
+  fail "HED-WB-0006" "hedron-posit diagnostic missing launcher mount handoff"
+fi
+if ! printf '%s' "$posit_status" | grep -q '"compatibility_facade":false'; then
+  fail "HED-WB-0006" "HedronPosit unexpectedly reported the compatibility facade"
+fi
+if ! printf '%s' "$posit_status" | grep -q '"normalizer_count":1'; then
+  fail "HED-WB-0006" "hedron-posit normalizer count was not exactly one"
+fi
+posit_product="$(printf '%s' "$posit_status" | jq -r '.product')"
+posit_wb_status="$(curl -fsS --max-time 5 "http://127.0.0.1:${POSIT_PORT}${MOUNT}/workbench-status")"
+if ! printf '%s' "$posit_wb_status" | grep -q '"active":true'; then
+  fail "HED-WB-0006" "hedron-posit Workbench diagnostic was not active"
+fi
+log "POSIT_LAUNCHER_PATH=ok stripped_prefix=ok"
+log "POSIT_PAGE=ok mount_prefix=ok"
+log "POSIT_REDIRECT=ok mount_once=ok"
+log "POSIT_DIAGNOSTICS=ok product=${posit_product} compatibility_facade=false handoff=ok"
+
+kill "$APP_PID" >/dev/null 2>&1 || true
+wait "$APP_PID" >/dev/null 2>&1 || true
+APP_PID=""
+(
+  cd "$COMPOSE_DIR"
+  env \
+    -u RS_SERVER_URL \
+    -u HEDRON_ROOT_PATH \
+    -u HEDRON_WORKBENCH_RESOLVED_MOUNT \
+    -u HEDRON_WORKBENCH_RESOLVED_PUBLIC_BASE \
+    -u HEDRON_WORKBENCH_RESOLVED_MODE \
+    -u HEDRON_WORKBENCH_RESOLVED_SOURCE \
+    -u HEDRON_WORKBENCH_MOUNT \
+    -u HEDRON_WORKBENCH_MODE \
+    -u HEDRON_WORKBENCH_FORCE \
+    HOST=public.example PORT=99999 BASE_PATH=/generic-platform \
+    PYTHONPATH="$COMPOSE_DIR" "$PY" -m uvicorn app_posit:app --host 127.0.0.1 --port "$POSIT_LOCAL_PORT"
+) >"$APP_LOG" 2>&1 &
+APP_PID=$!
+
+posit_local_ready=0
+for _ in $(seq 1 40); do
+  if curl -fsS -o /dev/null --max-time 2 "http://127.0.0.1:${POSIT_LOCAL_PORT}/" >/dev/null 2>&1; then
+    posit_local_ready=1
+    break
+  fi
+  if ! kill -0 "$APP_PID" >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+if [[ "$posit_local_ready" -ne 1 ]]; then
+  log "app_log=$(redact_stream < "$APP_LOG" | tail -n 50)"
+  fail "HED-WB-0005" "HedronPosit did not start as an ordinary Hedron app"
+fi
+posit_local_body="$(curl -fsS --max-time 5 "http://127.0.0.1:${POSIT_LOCAL_PORT}/")"
+if ! printf '%s' "$posit_local_body" | grep -q "Hello from HedronPosit on Workbench"; then
+  fail "HED-WB-0006" "ordinary HedronPosit page behavior changed"
+fi
+posit_local_status="$(curl -fsS --max-time 5 "http://127.0.0.1:${POSIT_LOCAL_PORT}/posit-status")"
+if ! printf '%s' "$posit_local_status" | grep -q '"product":"inactive"'; then
+  fail "HED-WB-0006" "HedronPosit was not inactive outside Workbench"
+fi
+posit_local_wb="$(curl -fsS --max-time 5 "http://127.0.0.1:${POSIT_LOCAL_PORT}/workbench-status")"
+if ! printf '%s' "$posit_local_wb" | grep -q '"active":false'; then
+  fail "HED-WB-0006" "HedronPosit unexpectedly activated outside Workbench"
+fi
+if printf '%s' "$posit_local_wb" | grep -q 'generic-platform'; then
+  fail "HED-WB-0006" "generic BASE_PATH alias changed the ordinary HedronPosit app"
+fi
+log "POSIT_OUTSIDE_WORKBENCH=ok active=false generic_aliases_ignored=ok"
+log "POSIT_PACKAGE=pass"
+
 # --- fastapi-workbench plain FastAPI pass -------------------------------------
 
 log "FASTAPI_PACKAGE=begin"
@@ -854,5 +1011,5 @@ log "FASTAPI_OUTSIDE_WORKBENCH=ok active=false workbenchified=false generic_alia
 log "FASTAPI_PACKAGE=pass"
 
 log "RESULT=pass"
-log "REALWB-030 end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+log "$PROBE_ID end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 exit 0

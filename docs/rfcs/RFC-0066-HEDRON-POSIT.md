@@ -34,7 +34,8 @@ Workbench discovery, mounting, path normalization, and launch behavior to `fasta
 
 The phase makes the current native Connect contract production-grade. Stage 0 licensed evidence on
 Connect **2026.07.0** shows application-owned request cookies (`session`, `hedron_csrf`) round-trip
-to Python content, so **`authenticated_header_v1` is not a Supported 0.33 surface**. The wire
+to Python content; licensed follow-up evidence on Connect **2025.06.0** shows the same native
+cookie contract. **`authenticated_header_v1` is not a Supported 0.33 surface**. The wire
 contract below remains a documented extension point for a future phase if loss is reproduced on a
 named topology; 0.33 does not ship a Supported bridge implementation.
 

@@ -15,18 +15,18 @@ Owning decision: [D-061](../DECISIONS.md). Design: [RFC-0066](../rfcs/RFC-0066-H
 
 ## Release contract
 
-- `hedron-posit==0.33.*` depends on `hedron>=0.33,<0.34` and
+- `hedron-posit==0.33.*` depends on `hedron>=0.34,<0.35` and
   `fastapi-workbench>=1,<2`; it never imports `hedron-workbench`.
-- `hedron-workbench==0.33.*` depends on `hedron-posit>=0.33,<0.34` and retains its public 0.32
+- `hedron-workbench==0.33.*` depends on `hedron-posit>=0.34,<0.35` and retains its public 0.32
   imports, CLI, configuration, and Beta maturity.
 - `hedron[posit]` installs the new facade; `hedron[workbench]` remains installable.
 - Native Connect is the default and the only Supported Connect cookie lane in 0.33.
 - `authenticated_header_v1` is **not Supported** in 0.33 (Stage 0
   `BRIDGE_DECISION=drop_supported`); retain docs-only extension-point language, no Supported
   bridge implementation.
-- Protocol floor for native Connect is 2024.11.0. Supported live floor for this refine packet is
-  Connect **2026.07.0** (licensed on-host GUID evidence). Expanding older Supported minors requires
-  additional live probes before `CONNECT-033` Verified.
+- Protocol floor for native Connect is 2024.11.0. Supported live floor is
+  Connect **2025.06.0** (licensed on-host GUID evidence, amd64 image). Current
+  verified lane remains Connect **2026.07.0**.
 - Python 3.11–3.14 remain the supported interpreter matrix.
 
 ## Entry criteria
@@ -48,10 +48,11 @@ Stage 0 evidence: [`realconnect-033/RESULT.log`](realconnect-033/RESULT.log),
 
 | Lane | Version/topology | Required evidence |
 |---|---|---|
-| Native minimum | Connect **2026.07.0** on-host (pinned `posit/connect@sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9`); protocol eligibility floor remains 2024.11.0 | Licensed GUID mount: product/base/`root_path`, HTTP/HTMX/WS/session/CSRF, native request cookies |
-| Native current | Connect **2026.07.0** (same pinned image as minimum for this refine) | Same plus assets/OpenAPI/redirect/diagnostics; scale/restart expansion at `CONNECT-033` |
+| Native minimum | Connect **2025.06.0** on-host (pinned `posit/connect@sha256:d1921d6dd4344f2e0c3066a29338fc13f7f9ea8b6b31330a7cc6d7df4b4fcfa0`, linux/amd64); protocol eligibility floor remains 2024.11.0 | Licensed GUID mount: product/base/`root_path`, HTTP/HTMX/WS/session/CSRF, native request cookies — [`realconnect-033-202506/RESULT.log`](realconnect-033-202506/RESULT.log) |
+| Native current | Connect **2026.07.0** (pinned `posit/connect@sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9`) | Same plus assets/OpenAPI/redirect/diagnostics; scale/restart expansion at `CONNECT-033` |
 | Native off-host | **Experimental** — licensed Kubernetes off-host not exercised in Stage 0 | N/A for Supported claims |
-| Workbench | Existing `REALWB-029`/`REALWB-030` floor + current cut image | Launcher, session/project proxy, HTTP/WS/session/CSRF |
+| Workbench minimum | Workbench **2025.05.1** (pinned `posit/workbench@sha256:2b017722bef663940d345178d14d196d8716b37d9cf8a52d3da7caba477e7d23`, linux/amd64) | `hedron-workbench`, `hedron-posit`, and `fastapi-workbench` launcher/HTTP/WS/session/CSRF — [`realwb-030-202505/RESULT.log`](realwb-030-202505/RESULT.log) |
+| Workbench current | Workbench **2026.07.0** (pinned `posit/workbench@sha256:d10ee76a840e8af054d54506ed4b54bc27ee7344ee09d8c99541cd23f39b8c32`) | Same plus current-lane `REALWB-030` evidence — [`realwb-030/RESULT.log`](realwb-030/RESULT.log) |
 | Bridge reference | **Out of Supported scope** (`BRIDGE_DECISION=drop_supported`) — native cookies round-trip on 2026.07.0 | Extension-point docs only; no Supported bridge wire |
 | Local | Linux/macOS/Windows Python 3.11–3.14 | Ordinary Uvicorn parity and no-op product resolution |
 

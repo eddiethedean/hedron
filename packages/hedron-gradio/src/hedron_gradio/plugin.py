@@ -6,9 +6,9 @@ from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
 
 PLUGIN_META = PluginMeta(
     name="hedron_gradio",
-    version="0.1.0",
+    version="0.2.0",
     distribution="hedron-gradio",
-    hedron_version=">=0.33,<0.34",
+    hedron_version=">=0.34,<0.35",
     capabilities=PluginCapabilities(
         python=True,
         styles=False,
@@ -22,7 +22,7 @@ PLUGIN_META = PluginMeta(
 def register(ctx: PluginContext) -> None:
     ctx.register_feature(
         name="gradio_client",
-        stability="experimental",
+        stability="beta",
         description=(
             "Optional Gradio client protocol adapter for endpoint discovery, "
             "predict/job/stream, and file transport; disabled by default."

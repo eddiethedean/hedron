@@ -1,0 +1,21 @@
+# REVIEW-034 disposition
+
+critical_high_open = false
+review_date = "2026-08-13"
+package = "hedron-gradio"
+package_version = "0.2.0"
+baseline = "v0.33.0"
+
+[[findings]]
+id = "REV-034-001"
+severity = "info"
+status = "accepted"
+title = "Default presentation deferred to 0.35"
+notes = "PRESENT-034 Deferred; Gradio-first cut does not switch default_styles gallery"
+
+[[findings]]
+id = "REV-034-002"
+severity = "info"
+status = "accepted"
+title = "Live HF/Gradio smoke optional"
+notes = "Recorded fixtures are primary CI evidence; realgradio_034_probe.sh is maintainer-only"

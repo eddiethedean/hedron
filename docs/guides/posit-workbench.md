@@ -3,9 +3,13 @@
 Run Hedron behind Posit Workbench or RStudio Server with a Workbench-aware app
 facade or by changing only the launch command of an existing app.
 
-**Requires:** `hedron-workbench>=0.33.0,<0.34` (or `hedron[workbench]>=0.33.0,<0.34`).
+**Requires:** `hedron-workbench>=0.34.0,<0.35` (or `hedron[workbench]>=0.34.0,<0.35`).
 Generic Workbench behavior is provided by `fastapi-workbench>=1.0.0,<2.0`; see
 [FastAPI Workbench](fastapi-workbench.md) for plain FastAPI apps.
+
+Supported Workbench floor is **2025.05.1** (linux/amd64). Current verified lane is
+Workbench **2026.07.0**. Prefer `HedronPosit` / `hedron-posit run` for new apps;
+`HedronWorkbench` remains the compatibility facade.
 
 ## One application class, local and Workbench
 

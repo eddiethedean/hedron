@@ -10,7 +10,7 @@ environment. Node.js is not required.
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.33.0,<0.34" hedron new my-hedron-app
+    uvx --from "hedron>=0.34.0,<0.35" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -19,7 +19,7 @@ environment. Node.js is not required.
 === "pip (activated virtual environment)"
 
     ```bash
-    python -m pip install "hedron>=0.33.0,<0.34" "uvicorn[standard]"
+    python -m pip install "hedron>=0.34.0,<0.35" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .

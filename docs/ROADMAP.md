@@ -2596,16 +2596,16 @@ content begins visible, and optional entry motion applies only to newly swapped 
 `default_styles=False` remains the custom-canvas escape hatch. Hedron does not own application
 branding, authentication/recovery policy, authorization, or compliance claims.
 
-## 0.33 — Unified Posit deployment adapter (`v0.33.0`)
+## 0.33 — Unified Posit deployment adapter (`v0.34.0`)
 
-**Status:** Published as `v0.33.0` (2026-08-13); `hedron-posit` **`0.33.0` Beta**.
+**Status:** Published as `v0.34.0` (2026-08-13); `hedron-posit` **`0.34.0` Beta**.
 **Owning decision / RFC:** [D-061](DECISIONS.md) ·
 [RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md) (**Accepted**).
 **Implementation plan:** [HEDRON_POSIT_033](implementation/HEDRON_POSIT_033.md).
 **Acceptance packet:** [RELEASE_0_33](acceptance/RELEASE_0_33.md).
 **Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167). Published cut
-`v0.33.0` (2026-08-13).
-**Baseline tip:** Living tip **`v0.33.0`** (pre-cut baseline was Published `v0.32.0`).
+`v0.34.0` (2026-08-13).
+**Baseline tip:** Living tip **`v0.34.0`** (pre-cut baseline was Published `v0.32.0`).
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` on Connect 2026.07.0.
 
 **Outcome:** A new `hedron-posit` distribution provides one `HedronPosit` application facade that
@@ -2615,13 +2615,13 @@ integration, delegates generic Workbench behavior to `fastapi-workbench`, and le
 
 ### Entry criteria / refine vs cut
 
-| Topic | At packet refine | At `v0.33.0` cut |
+| Topic | At packet refine | At `v0.34.0` cut |
 |---|---|---|
 | RFC-0066 | Accepted after Stage 0 probe + exact cut matrix + bridge keep/drop | Unchanged Accepted contract |
 | Gate plumbing | `release-gate-0.33.toml` Planned; `scripts/check_*_033.py` / `verify_pkg_33.py`; `check_release_gate.py` maps `0.33`; `--allow-planned` green on living tip | Every 0.33-owned row Verified; zero Deferred; no `--allow-planned` |
 | Connect probe | Licensed native evidence + sanitized fixtures under `tests/fixtures/posit-connect/` | `CONNECT-033` live matrix Verified |
 | Bridge | Stage 0 drop: Supported bridge out of scope; extension-point only | `BRIDGE-033` Verifies drop / non-Supported inventory |
-| Packages | No `packages/hedron-posit/` yet (Stage 1 blocked) | `hedron-posit` `0.33.0` Beta + `hedron-workbench` compat |
+| Packages | No `packages/hedron-posit/` yet (Stage 1 blocked) | `hedron-posit` `0.34.0` Beta + `hedron-workbench` compat |
 | Presentation program | May proceed in parallel; **must not block** refine exit | Not a 0.33 release-gate owner |
 
 ### Scope
@@ -2639,7 +2639,7 @@ integration, delegates generic Workbench behavior to `fastapi-workbench`, and le
   inside Posit's then-current support window; prove protected product evidence, a singular base
   header exactly matching ASGI `root_path`, and the licensed GUID/vanity/on-host/off-host matrix.
 - Offer `authenticated_header_v1` only as an Experimental extension point in 0.33 after Stage 0
-  recorded `BRIDGE_DECISION=drop_supported` (native cookies round-trip on Connect 2026.07.0). A
+  recorded `BRIDGE_DECISION=drop_supported` (native cookies round-trip on Connect 2025.06.0 and 2026.07.0). A
   future Accepted decision may restore Supported bridge scope if loss is reproduced on a named
   topology; the reserved wire contract stays in RFC-0066.
 - Keep Connect credentials and user-session headers as pass-through application inputs; they never
@@ -3313,7 +3313,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Production-grade standalone FastAPI Workbench package and Hedron dependency inversion | 0.30 | First monorepo `fastapi-workbench` release is 1.0.0; plain FastAPI has hands-off launch without Hedron, and `hedron-workbench` depends on the shared generic implementation (D-058). |
 | Production-grade conformance, plugin/simulation/notebook tooling, and Node/Java evaluators | 0.31 | Tooling-grade within declared purpose; notebook remains local-only and portable evaluators remain non-server runtimes (RFC-0064 / D-059; [#87](https://github.com/eddiethedean/hedron/issues/87)). |
 | Production-grade deny-by-default MCP projection | 0.32 | Protocol compatibility, explicit authz/tenancy, bounded mutations, audit, multi-worker lifecycle, and independent threat review (RFC-0065 / D-060; [#89](https://github.com/eddiethedean/hedron/issues/89)). |
-| Unified `hedron-posit` Workbench and Connect deployment adapter | 0.33 | One `HedronPosit` facade composes existing mount/cookie behavior; Supported cookie bridge dropped after Stage 0 (RFC-0066 / D-061 **Accepted**; **Published** `v0.33.0`; [#167](https://github.com/eddiethedean/hedron/issues/167)). |
+| Unified `hedron-posit` Workbench and Connect deployment adapter | 0.33 | One `HedronPosit` facade composes existing mount/cookie behavior; Supported cookie bridge dropped after Stage 0 (RFC-0066 / D-061 **Accepted**; **Published** `v0.34.0`; [#167](https://github.com/eddiethedean/hedron/issues/167)). |
 | Production-grade Gradio/Hugging Face client interoperability | 0.34 | Allowlisted egress/endpoints, file/stream bounds, cancellation, polling jobs, provider compatibility, and secret hygiene ([#90](https://github.com/eddiethedean/hedron/issues/90)). |
 | Whole-fleet production-grade closure | 0.35 | Machine-readable inventory, resolver/upgrade/rollback matrices, composed reference-app proof, and no unowned Alpha package ([#91](https://github.com/eddiethedean/hedron/issues/91)). |
 | Polished default presentation quality program | 0.33–0.41 | Gallery and geometry baseline → refreshed `default_styles=True` → fleet audit → element/form/data/authoring/navigation integration → production-grade visual inventory ([implementation plan](implementation/DEFAULT_PRESENTATION_033_PLUS.md)). |
@@ -3480,7 +3480,7 @@ implementation (D-058). Phase **0.31** owns production-grade developer/portable 
 tooling and the Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061). Phase **0.32** owns
 production-grade deny-by-default MCP projection (D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89)).
 Phase **0.33** shipped the unified `hedron-posit` Workbench/Connect facade (D-061 / RFC-0066
-**Accepted**; **Published** `v0.33.0`; [#167](https://github.com/eddiethedean/hedron/issues/167)); the former 0.33–0.40 plan moves
+**Accepted**; **Published** `v0.34.0`; [#167](https://github.com/eddiethedean/hedron/issues/167)); the former 0.33–0.40 plan moves
 to 0.34–0.41 without changing its scope. Tracking enhancement issues
 [#86](https://github.com/eddiethedean/hedron/issues/86)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 plus [#167](https://github.com/eddiethedean/hedron/issues/167) cover remaining Planned 0.21

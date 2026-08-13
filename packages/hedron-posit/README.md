@@ -12,7 +12,12 @@ from hedron_posit import HedronPosit
 app = HedronPosit(title="My app", session_secret="replace-me")
 ```
 
-Install with `pip install "hedron[posit]>=0.33.0,<0.34"` or `hedron-posit`.
+Install with `pip install "hedron[posit]>=0.34.0,<0.35"` or `hedron-posit`.
+
+Native Connect GUID is Supported on Posit Connect **2025.06.0** through **2026.07.0**.
+Posit Workbench **2025.05.1** through **2026.07.0** is Supported.
+Install this package into the content environment (do not vendor only source trees
+on Connect 2025.06).
 
 Docs: [Posit deployments](https://hedron.readthedocs.io/en/latest/guides/posit/).
 Compatibility package: `hedron-workbench` (re-exports / `HedronWorkbench` subclass).

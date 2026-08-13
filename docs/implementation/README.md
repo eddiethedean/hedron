@@ -16,6 +16,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
   for polished out-of-box styles, shell composition, responsive containment, and visual evidence
 - [`hedron-posit` phase 0.33](HEDRON_POSIT_033.md) — staged licensed Connect probe, package
   extraction, native mode, bounded authenticated bridge, compatibility, and release closure
+- [`hedron-gradio` phase 0.34](HEDRON_GRADIO_034.md) — production-grade remote client interop,
+  allowlisted egress, bounded files/streams, and HF vendor evidence
 - [Web Component platform](WEB_COMPONENT_PLATFORM.md) — draft 0.36–0.41 program
 - [Web Component interaction contracts](WEB_COMPONENT_INTERACTION_CONTRACTS.md) — state,
   async interaction, optimism, gestures/overlays, and React migration

@@ -1,6 +1,6 @@
 [project]
 name = "hedron"
-version = "0.33.0"
+version = "0.34.0"
 description = "FastAPI-native typed component framework for HTML and HTMX"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -37,7 +37,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.33.0,<0.34",
+    "hedron-core>=0.34.0,<0.35",
     "pydantic>=2.13.4,<2.15",
     "fastapi>=0.141.1,<0.150",
     "itsdangerous>=2.2",
@@ -47,10 +47,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "hedron-explorer>=0.33.0,<0.34",
+    "hedron-explorer>=0.34.0,<0.35",
 ]
 data = [
-    "hedron-data>=0.33.0,<0.34",
+    "hedron-data>=0.34.0,<0.35",
 ]
 charts = [
     "hedron-charts>=0.1.10,<0.2",
@@ -80,19 +80,19 @@ browser = [
     "axe-playwright-python>=0.1.4",
 ]
 jinja = [
-    "hedron-jinja>=0.33.0,<0.34",
+    "hedron-jinja>=0.34.0,<0.35",
 ]
 native = [
     "hedron-native>=0.1.2,<0.2",
 ]
 conformance = [
-    "hedron-conformance>=0.33.0,<0.34",
+    "hedron-conformance>=0.34.0,<0.35",
 ]
 extras = [
-    "hedron-extras>=0.33.0,<0.34",
+    "hedron-extras>=0.34.0,<0.35",
 ]
 experimental-ui = [
-    "hedron-extras[experimental-ui]>=0.33.0,<0.34",
+    "hedron-extras[experimental-ui]>=0.34.0,<0.35",
 ]
 notebook = [
     "hedron-notebook>=0.1.0,<0.2",
@@ -104,10 +104,10 @@ gradio = [
     "hedron-gradio>=0.1.0,<0.2",
 ]
 workbench = [
-    "hedron-workbench>=0.33.0,<0.34",
+    "hedron-workbench>=0.34.0,<0.35",
 ]
 posit = [
-    "hedron-posit>=0.33.0,<0.34",
+    "hedron-posit>=0.34.0,<0.35",
 ]
 otel = [
     "opentelemetry-api>=1.27,<2",

@@ -1,3 +1,12 @@
+## [0.34.0] — 2026-08-13
+
+### Added
+
+- Coordinated Beta train cut for production-grade Gradio client interop (D-062 / RFC-0067).
+- Native Connect GUID path Supported on Connect **2025.06.0** (in addition to 2026.07.0).
+  `hedron-posit` ships a `pkg_resources.parse_version` shim so Connect 2025.06 FastAPI
+  workers start under setuptools 82+.
+
 # Changelog
 
 ## [0.33.0] — 2026-08-13

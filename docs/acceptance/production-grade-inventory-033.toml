@@ -57,8 +57,24 @@ excluded = [
 [realconnect]
 image = "posit/connect:2026.07.0"
 image_digest = "sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9"
+minimum_image = "posit/connect:2025.06.0"
+minimum_image_digest = "sha256:d1921d6dd4344f2e0c3066a29338fc13f7f9ea8b6b31330a7cc6d7df4b4fcfa0"
+minimum_platform = "linux/amd64"
 license_env = "CONNECT_LICENSE"
 license_container_env = "PCT_LICENSE"
 license_stop_timeout_seconds = 120
 ci_secret = "CONNECT_LICENSE"
 ci_workflows = [".github/workflows/ci.yml", ".github/workflows/connect-smoke.yml"]
+
+[realwb]
+image = "posit/workbench:2026.07.0"
+image_digest = "sha256:d10ee76a840e8af054d54506ed4b54bc27ee7344ee09d8c99541cd23f39b8c32"
+platform = "linux/amd64"
+minimum_image = "posit/workbench:2025.05.1"
+minimum_image_digest = "sha256:2b017722bef663940d345178d14d196d8716b37d9cf8a52d3da7caba477e7d23"
+minimum_platform = "linux/amd64"
+license_env = "PWB_LICENSE"
+license_container_env = "PWB_LICENSE"
+license_stop_timeout_seconds = 120
+ci_secret = "PWB_LICENSE"
+ci_workflows = [".github/workflows/ci.yml", ".github/workflows/workbench-smoke.yml"]

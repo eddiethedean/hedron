@@ -1,8 +1,14 @@
 # Posit Connect reference
 
-This FastAPI content bundle imports `HedronWorkbench` and exercises the same
+This FastAPI content bundle imports `HedronPosit` and exercises the same
 page, fragment, CSRF, asset, OpenAPI, redirect, diagnostics, WebSocket, and
-outside-Workbench behavior as the licensed Workbench reference.
+outside-Connect behavior as the licensed Workbench reference.
+
+`scripts/realconnect_033_probe.sh` vendors workspace packages for Connect **2026.07.0**.
+The 2025.06.0 minimum-floor probe (`scripts/realconnect_033_202506_probe.sh`) installs
+workspace wheels so Connect's FastAPI runtime can import `pkg_resources.parse_version`.
+Pin `setuptools>=69,<82` in this `requirements.txt` as a belt-and-suspenders for hosts
+that still honor that pin.
 
 `scripts/realconnect_029.sh` creates a temporary deployment bundle and vendors
 the local `hedron`, `hedron-core`, `hedron-workbench`, and `fastapi-workbench`

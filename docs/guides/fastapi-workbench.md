@@ -6,6 +6,9 @@ installing Hedron.
 **Package:** `fastapi-workbench` `1.0.0` (independent semver) · import `fastapi_workbench`
 **Requires:** Python 3.11–3.14, FastAPI/Starlette ASGI app
 
+Supported Workbench floor is **2025.05.1** (linux/amd64). Current verified lane is
+Workbench **2026.07.0**.
+
 ## Install
 
 ```bash

@@ -26,12 +26,20 @@ Replace assumptions with sanitized live evidence before Accepting RFC-0066:
 ## Commands
 
 ```bash
-# Full Stage 0 probe (writes docs/acceptance/realconnect-033/RESULT.log + fixtures)
+# Current verified lane (Connect 2026.07.0)
 bash scripts/realconnect_033_probe.sh
+
+# Supported minimum floor (Connect 2025.06.0, linux/amd64)
+bash scripts/realconnect_033_202506_probe.sh
 
 # Shape-only refine gate (does not require Verified rows)
 python scripts/verify_pkg_33.py --allow-planned
 ```
+
+Connect **2025.06.0** is amd64-only. On arm64 hosts the minimum-floor probe uses
+`HEDRON_CONNECT_DOCKER_PLATFORM=linux/amd64`. That image's FastAPI runtime imports
+`pkg_resources.parse_version`; `hedron-posit` must be installed as a package (wheel)
+so the shim is on `sys.path`.
 
 Prior Published evidence in `docs/acceptance/realconnect-029/RESULT.log` is complementary
 Workbench/Connect smoke history; Stage 0 for 0.33 must still produce `realconnect-033` artifacts.

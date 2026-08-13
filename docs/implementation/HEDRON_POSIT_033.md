@@ -6,8 +6,8 @@ Accepted before package movement begins.
 
 ## Outcome
 
-Ship `hedron-posit` `0.33.0` Beta as the preferred Hedron deployment facade for local Uvicorn,
-Posit Workbench, and the declared Posit Connect matrix. Keep `hedron-workbench` `0.33.0` as a
+Ship `hedron-posit` `0.34.0` Beta as the preferred Hedron deployment facade for local Uvicorn,
+Posit Workbench, and the declared Posit Connect matrix. Keep `hedron-workbench` `0.34.0` as a
 supported compatibility package with no dependency cycle or behavior regression.
 
 The phase is complete only when native Connect is proven live, the optional bridge is proven on its
@@ -23,7 +23,8 @@ named topology, and every row in
 | Compatibility type | `HedronWorkbench` remains a distinct subclass that translates old arguments |
 | Compatibility window | Supported through at least 0.35; no 0.33 runtime deprecation warning |
 | Product resolution | Explicit setting, protected Connect marker, existing Workbench evidence, then inactive; conflicts fail |
-| Native Connect floor | Protocol floor 2024.11.0; cut floor also respects Posit's then-current support window |
+| Native Connect floor | Protocol floor 2024.11.0; Supported live floor Connect 2025.06.0; current lane 2026.07.0 |
+| Workbench floor | Supported live floor Workbench 2025.05.1 (linux/amd64); current lane 2026.07.0 |
 | Native cookie behavior | Pass request cookies unchanged; preserve existing owned response-cookie repair |
 | Bridge | Off by default; fixed versioned headers; 16 KiB decoded limit; owned-cookie allowlist; fail closed |
 | Identity | Connect credentials/session headers are application inputs, never Hedron authentication |
@@ -58,7 +59,7 @@ recorded and RFC-0066 is Accepted.
 
 **Stage 0 complete (2026-08-13):** `scripts/realconnect_033_probe.sh` →
 `docs/acceptance/realconnect-033/RESULT.log` (`RESULT=pass`, `NATIVE_COOKIES=ok`,
-`BRIDGE_DECISION=drop_supported` on Connect 2026.07.0); sanitized fixtures under
+`BRIDGE_DECISION=drop_supported` on Connect 2025.06.0 and 2026.07.0); sanitized fixtures under
 `tests/fixtures/posit-connect/`; RFC-0066 **Accepted**; Supported bridge Stage 4 skipped.
 
 ## Stage 1 — additive package extraction
@@ -157,7 +158,7 @@ Exit: `CONNECT-033`, native portions of `REVIEW-033`, and the native `PERF-033` 
 ## Stage 3 — authenticated bridge v1
 
 **Status:** **Skipped for Supported 0.33 scope** after Stage 0
-(`BRIDGE_DECISION=drop_supported` on Connect 2026.07.0). Do not implement Supported bridge
+(`BRIDGE_DECISION=drop_supported` on Connect 2025.06.0 and 2026.07.0). Do not implement Supported bridge
 middleware in this phase. Retain RFC extension-point wire contract only.
 
 `BRIDGE-033` Verifies the negative claim (inventory excludes Supported bridge; extension-point

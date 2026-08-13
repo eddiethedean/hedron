@@ -1,0 +1,43 @@
+# Phase 0.34 production-grade inventory (machine-checked at PKG-034 cut).
+# Supported = production-grade / Beta label at 0.34 exit for the declared package only.
+# Experimental = may ship but excluded from production-grade claims.
+# Excluded = must not be required for a production-grade Supported workflow.
+# Owning decision: D-062. RFC: RFC-0067 (Draft at refine; Accepted at cut).
+# Version policy at cut: hedron-gradio 0.2.0 Beta (pin >=0.2.0,<0.3); Alpha 0.1.x is upgrade source.
+
+baseline = "v0.33.0"
+packages = [
+  "hedron-gradio",
+]
+
+[hedron-gradio]
+supported = [
+  "disabled_by_default_adapter",
+  "explicit_endpoint_declarations",
+  "allowlisted_egress",
+  "redirect_dns_tls_ssrf_defenses",
+  "bounded_file_transport",
+  "bounded_stream_transport",
+  "artifact_retention_cleanup",
+  "job_timeout_cancel_disconnect",
+  "hedron_polling_job_integration",
+  "pinned_gradio_client_matrix",
+  "schema_drift_detection",
+  "redacted_diagnostics",
+  "hf_space_auth_scope",
+]
+experimental = [
+  "vendor_specific_extensions",
+  "gradio_auto_composition",
+  "mcp_crossover",
+  "live_vendor_smoke_without_fixtures",
+]
+excluded = [
+  "gradio_ui_runtime_embed",
+  "share_tunnels",
+  "arbitrary_caller_urls",
+  "ambient_authority_on_install",
+  "trusted_provider_html_or_files",
+  "remote_host_code_editing",
+  "hedron_1_0_or_sla_or_certification",
+]

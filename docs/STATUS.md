@@ -1,11 +1,11 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.33 **Published** as `v0.33.0` (2026-08-13). Prior: 0.32 **Published** as `v0.32.0` (2026-08-12).
-Living tip = `v0.33.0`.
+**Roadmap position:** phase 0.33 **Published** as `v0.34.0` (2026-08-13). Prior: 0.32 **Published** as `v0.32.0` (2026-08-12).
+Living tip = `v0.34.0`.
 **Date:** 2026-08-13
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` `0.33.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
+`hedron-workbench` / `hedron-posit` `0.34.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.1.11`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.32.0`; Alpha — `hedron-gradio` `0.1.0`
@@ -16,10 +16,12 @@ Living tip = `v0.33.0`.
 `hedron-sim`, `hedron-mcp`; Alpha — `hedron-gradio`.
 
 **Phase focus:** Living train is **0.33** (D-061 / RFC-0066) — unified `hedron-posit`
-Workbench / Connect adapter (`release-gate-0.33.toml` Verified; published tip `v0.33.0`).
+Workbench / Connect adapter (`release-gate-0.33.toml` Verified; published tip `v0.34.0`).
 Prior Published **0.32** (MCP production-grade as `v0.32.0`) remains in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
-Connect 2026.07.0); Supported bridge is out of 0.33 scope. The
+Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
+Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
+`hedron-posit`, and `fastapi-workbench`. The
 [default presentation quality program](implementation/DEFAULT_PRESENTATION_033_PLUS.md) is
 **cross-cutting and must not block** Posit adapter work.
 Live-transport
@@ -276,7 +278,7 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is **Published**
 (`v0.30.0`; D-058 / RFC-0063). Phase **0.31** is **Published** (`v0.31.0`; D-059 / RFC-0064 /
 RFC-0061). Phase **0.32** is **Published** (`v0.32.0` / `hedron-mcp` `0.2.0`; D-060 /
-RFC-0065). Phase **0.33** is **Published** (`v0.33.0` / `hedron-posit` `0.33.0` Beta; D-061 /
+RFC-0065). Phase **0.33** is **Published** (`v0.34.0` / `hedron-posit` `0.34.0` Beta; D-061 /
 RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)); see
 [implementation plan](implementation/HEDRON_POSIT_033.md) and
 [0.33 acceptance packet](acceptance/RELEASE_0_33.md). Remaining package-production work

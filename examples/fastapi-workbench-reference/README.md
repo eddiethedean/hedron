@@ -16,4 +16,6 @@ uvicorn app:app --reload
 ```
 
 This app is exercised by the REALWB-030 Docker smoke matrix alongside
-`examples/workbench-reference/app_facade.py` (hedron-workbench).
+`examples/workbench-reference/app_facade.py` (hedron-workbench) and
+`examples/workbench-reference/app_posit.py` (hedron-posit), including the
+Workbench **2025.05.1** floor probe.

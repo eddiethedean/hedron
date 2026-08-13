@@ -17,7 +17,7 @@ manual.
     maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` /
     `deferred`).
 
-**Status:** Accepted · current train **0.33.x**
+**Status:** Accepted · current train **0.34.x**
 
 ## How to use this index
 

@@ -6,6 +6,8 @@ Starlette-compatible ASGI applications.
 Installing or importing this package does **not** wrap your application.
 `RS_SERVER_URL` is discovery-only and never grants trust.
 
+Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
+
 ## Install
 
 ```bash

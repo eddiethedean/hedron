@@ -1,18 +1,18 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.33.x** (last published `v0.33.0`). Other
+**Canonical maturity snapshot for Hedron 0.34.x** (last published `v0.34.0`). Other
 evaluator pages link here — do not treat parallel summaries as a second source of truth.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-For a pinned internal admin/CRUD app on 0.33.x (`hedron>=0.33.0,<0.34`), you can use:
+For a pinned internal admin/CRUD app on 0.34.x (`hedron>=0.34.0,<0.35`), you can use:
 typed pages, HTMX fragments, CSRF (`standard`/`strict`), Flask/Django adapters,
 and polling for job status.
 
 Pin versions. Packages are Beta (no 1.0, no SLA). Prefer polling over SSE/WebSocket.
 
 **Charts / sample kit:** install with floors
-`hedron[charts]>=0.33.0,<0.34` and `hedron-sample-kit>=0.1.10,<0.2`.
+`hedron[charts]>=0.34.0,<0.35` and `hedron-sample-kit>=0.1.10,<0.2`.
 Matplotlib/static charts are the **Supported** default path on the Beta
 `hedron-charts` package; Plotly / Altair remain **Experimental**.
 **Experimental:** notebook preview, Gradio, live SSE/WS. MCP is **Beta** for its
@@ -77,17 +77,17 @@ sessions are not Supported yet** — do not market human AT as done.
 | Multi-worker durable jobs | **Supported** with shared Redis backend | [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`) | [Data apps](data-apps.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
-| Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — `HedronWorkbench` / `HedronPosit`; no import auto-wrap |
-| Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2026.07.0** floor; native cookies |
+| Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronWorkbench` / `HedronPosit`; no import auto-wrap |
+| Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Supported** Matplotlib/static on Beta package | Install `hedron[charts]>=0.33.0,<0.34`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
+| Charts | **Supported** Matplotlib/static on Beta package | Install `hedron[charts]>=0.34.0,<0.35`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.0` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook / Gradio | **Experimental** / **Alpha** | Localhost notebook preview; Gradio interop — not production defaults |
 
 !!! note "Package train vs capability"
 
-    Flagship packages are **Beta** maturity — pin `hedron>=0.33.0,<0.34`. The table above is
+    Flagship packages are **Beta** maturity — pin `hedron>=0.34.0,<0.35`. The table above is
     **capability readiness** (Supported / Experimental / Deferred), not package maturity.
 
 <details markdown>
@@ -206,7 +206,7 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.33.0,<0.34" hedron new my-app
+    uvx --from "hedron>=0.34.0,<0.35" hedron new my-app
     cd my-app && uv sync
     uv run uvicorn app:app --reload
     ```
@@ -214,21 +214,21 @@ Phase-stamped folders (`data-app-0.15`, `dashboard-0.17`, `model-demo-0.18`, …
 === "pip"
 
     ```bash
-    pip install "hedron>=0.33.0,<0.34" "uvicorn[standard]"
+    pip install "hedron>=0.34.0,<0.35" "uvicorn[standard]"
     python -m hedron new my-app
     cd my-app && pip install -e .
     uvicorn app:app --reload
     ```
 
-Pin `hedron>=0.33.0,<0.34` for the current published train.
+Pin `hedron>=0.34.0,<0.35` for the current published train.
 
-Extras: `"hedron[data]>=0.33.0,<0.34"`, `"hedron[extras]>=0.33.0,<0.34"`,
-`"hedron[jinja]>=0.33.0,<0.34"`, `"hedron[dev]>=0.33.0,<0.34"`,
-`"hedron[notebook]>=0.33.0,<0.34"` (tooling / localhost),
-`"hedron[mcp]>=0.33.0,<0.34"` (Beta Supported inventory),
-`"hedron[gradio]>=0.33.0,<0.34"` (Alpha satellite),
-`"hedron[charts]>=0.33.0,<0.34"`, `"hedron[workbench]>=0.33.0,<0.34"`,
-`"hedron[posit]>=0.33.0,<0.34"`,
+Extras: `"hedron[data]>=0.34.0,<0.35"`, `"hedron[extras]>=0.34.0,<0.35"`,
+`"hedron[jinja]>=0.34.0,<0.35"`, `"hedron[dev]>=0.34.0,<0.35"`,
+`"hedron[notebook]>=0.34.0,<0.35"` (tooling / localhost),
+`"hedron[mcp]>=0.34.0,<0.35"` (Beta Supported inventory),
+`"hedron[gradio]>=0.34.0,<0.35"` (Alpha satellite),
+`"hedron[charts]>=0.34.0,<0.35"`, `"hedron[workbench]>=0.34.0,<0.35"`,
+`"hedron[posit]>=0.34.0,<0.35"`,
 and `"hedron-sample-kit>=0.1.10,<0.2"`.
 
 ## Role-specific wrappers

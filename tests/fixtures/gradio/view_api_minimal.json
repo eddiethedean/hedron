@@ -1,0 +1,11 @@
+{
+  "named_endpoints": {
+    "/predict": {
+      "name": "predict",
+      "parameters": {
+        "text": {"type": "string"}
+      },
+      "supports_stream": false
+    }
+  }
+}

@@ -1,0 +1,84 @@
+# Phase 0.34 production-grade Gradio evidence index.
+# Consumed by scripts/check_release_gate.py 0.34.0.
+# Zero Deferred policy: every Gradio-owned row must be Verified at cut.
+# Owning decision: D-062. Design: RFC-0067. Tracking: #90.
+# PRESENT-034 is optional and non-blocking for Gradio cut.
+
+[[evidence]]
+id = "CONTRACT-034"
+state = "Verified"
+command = "python scripts/check_contract_034.py"
+ci_job = "test"
+owner = "hedron-gradio"
+
+[[evidence]]
+id = "COMPAT-034"
+state = "Verified"
+command = "python scripts/check_compat_034.py"
+ci_job = "test"
+owner = "hedron-gradio"
+
+[[evidence]]
+id = "EGRESS-034"
+state = "Verified"
+command = "python scripts/check_egress_034.py"
+ci_job = "test"
+owner = "hedron-gradio"
+
+[[evidence]]
+id = "FILES-034"
+state = "Verified"
+command = "python scripts/check_files_034.py"
+ci_job = "test"
+owner = "hedron-gradio"
+
+[[evidence]]
+id = "JOBS-034"
+state = "Verified"
+command = "python scripts/check_jobs_034.py"
+ci_job = "test"
+owner = "hedron-gradio"
+
+[[evidence]]
+id = "VENDOR-034"
+state = "Verified"
+command = "python scripts/check_vendor_034.py"
+ci_job = "test"
+owner = "hedron-gradio"
+
+[[evidence]]
+id = "REVIEW-034"
+state = "Verified"
+command = "python scripts/check_review_034.py"
+ci_job = "test"
+owner = "hedron-gradio"
+
+[[evidence]]
+id = "DOCS-034"
+state = "Verified"
+command = "python scripts/check_docs_034.py"
+ci_job = "quality"
+owner = "hedron-gradio"
+
+[[evidence]]
+id = "REGRESS-034"
+state = "Verified"
+command = "python scripts/check_regress_034.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-034"
+state = "Verified"
+command = "python scripts/verify_pkg_34.py"
+ci_job = "packaging"
+owner = "hedron"
+
+[[evidence]]
+id = "PRESENT-034"
+state = "Deferred"
+command = "python scripts/check_present_034.py"
+ci_job = "browser"
+owner = "hedron-core"
+rationale = "Default presentation gallery and geometry suite not green; deferred to whole-fleet 0.35 audit"
+destination = "0.35"

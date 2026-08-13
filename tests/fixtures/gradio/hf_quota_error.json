@@ -1,0 +1,4 @@
+{
+  "status": "quota",
+  "message": "Rate limit exceeded for hf_token=hf_example_redacted"
+}

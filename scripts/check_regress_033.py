@@ -19,6 +19,7 @@ def main() -> int:
             ROOT / "docs" / "acceptance" / "release-gate-0.33.toml",
             ROOT / "docs" / "acceptance" / "production-grade-inventory-033.toml",
             ROOT / "docs" / "acceptance" / "realconnect-033" / "RESULT.log",
+            ROOT / "docs" / "acceptance" / "realconnect-033-202506" / "RESULT.log",
             ROOT / "docs" / "acceptance" / "realconnect-029" / "RESULT.log",
         ],
         errors,

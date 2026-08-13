@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from _gate_033 import (  # noqa: E402
     FIXTURES,
     PROBE_RESULT,
+    PROBE_RESULT_MINIMUM,
     fail_errors,
     require_dirs,
     require_files,
@@ -42,6 +43,27 @@ def _result_freshness_errors(text: str, errors: list[str]) -> None:
         )
 
 
+def _minimum_floor_errors(text: str, errors: list[str]) -> None:
+    if "RESULT=pass" not in text:
+        errors.append("realconnect-033-202506 RESULT.log missing RESULT=pass")
+    if "NATIVE_COOKIES=ok" not in text:
+        errors.append("realconnect-033-202506 RESULT.log missing NATIVE_COOKIES=ok")
+    if "2025.06.0" not in text:
+        errors.append("realconnect-033-202506 RESULT.log missing Connect 2025.06.0 pin")
+    match = re.search(
+        r"REALCONNECT-033-202506 start (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)", text
+    )
+    if not match:
+        errors.append("realconnect-033-202506 RESULT.log missing start timestamp")
+        return
+    started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
+    age = datetime.now(UTC) - started
+    if age > timedelta(days=45):
+        errors.append(
+            f"realconnect-033-202506 RESULT.log is stale ({age.days} days); refresh live smoke"
+        )
+
+
 def main() -> int:
     errors: list[str] = []
     require_files(
@@ -51,6 +73,8 @@ def main() -> int:
             ROOT / "examples" / "connect-reference" / "app.py",
             ROOT / "packages" / "hedron-posit" / "src" / "hedron_posit" / "connect.py",
             ROOT / "packages" / "hedron-posit" / "src" / "hedron_posit" / "products.py",
+            ROOT / "packages" / "hedron-posit" / "src" / "pkg_resources" / "__init__.py",
+            PROBE_RESULT_MINIMUM,
         ],
         errors,
     )
@@ -66,12 +90,15 @@ def main() -> int:
         errors.append("connect-reference must deploy HedronPosit")
     if PROBE_RESULT.is_file():
         _result_freshness_errors(PROBE_RESULT.read_text(encoding="utf-8"), errors)
+    if PROBE_RESULT_MINIMUM.is_file():
+        _minimum_floor_errors(PROBE_RESULT_MINIMUM.read_text(encoding="utf-8"), errors)
     if fail_errors(errors, "CONNECT-033"):
         return 1
     return run_pytest(
         [
             "tests/adapters/posit/test_resolve_connect.py",
             "tests/adapters/posit/test_compat.py",
+            "tests/adapters/posit/test_pkg_resources_shim.py",
         ],
         "CONNECT-033",
     )

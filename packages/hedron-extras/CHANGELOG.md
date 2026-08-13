@@ -1,3 +1,9 @@
+## [0.34.0] — 2026-08-13
+
+### Added
+
+- Coordinated Beta train cut for production-grade Gradio client interop (D-062 / RFC-0067).
+
 # Changelog
 
 ## [0.33.0] — 2026-08-13

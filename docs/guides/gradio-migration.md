@@ -6,15 +6,20 @@
 [GRADIO_FEATURE_CROSSCHECK.md](https://github.com/eddiethedean/hedron/blob/main/docs/GRADIO_FEATURE_CROSSCHECK.md)
 
 This inventory maps Gradio outcomes to Hedron without claiming automatic conversion. Install the
-optional Alpha package only when needed:
+optional package only when needed:
 
 ```bash
-pip install "hedron[gradio]>=0.33.0,<0.34"
+pip install "hedron[gradio]>=0.34.0,<0.35"
+# or
+pip install "hedron-gradio>=0.2.0,<0.3"
 # Live remote discovery/predict also needs:
 pip install gradio-client
 ```
 
 Absence of `hedron-gradio` adds no core dependency, route, asset, or startup cost.
+
+**Production-grade remote policy (0.34+):** declare destinations with `GradioRemoteConfig` /
+allowlisted hosts. Arbitrary caller URLs and private/metadata hosts fail closed.
 
 **Supported Gradio client range (checked):** major **6**, minor **17–22** (through **6.22.x**).
 Other majors/minors raise `GradioRemoteError`.
@@ -43,12 +48,13 @@ separate Gradio process/URL for remote predict/jobs. Auth tokens stay on the ada
 ## Minimal adapter usage
 
 ```python
-from hedron_gradio import GradioClientAdapter, GradioEndpoint
+from hedron_gradio import GradioClientAdapter, GradioEndpoint, GradioRemoteConfig
 
-# Preload endpoints for tests / offline; or enable live discover with gradio_client.
+config = GradioRemoteConfig.from_base_url("https://demo.example.invalid")
 adapter = GradioClientAdapter(
-    "http://127.0.0.1:7860",
+    config.base_url,
     enabled=True,
+    remote_config=config,
     endpoints=(
         GradioEndpoint(
             name="predict",

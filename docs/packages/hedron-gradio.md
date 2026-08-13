@@ -1,50 +1,50 @@
 # hedron-gradio
 
-Experimental Gradio client interoperability for Hedron.
+Production-grade Gradio client interoperability for Hedron.
 
-**Package maturity:** Experimental Alpha (`0.1.x`) · pin `>=0.1.0,<0.2`  
+**Package maturity:** Beta (`0.2.0`) · pin `>=0.2.0,<0.3`  
 **Flagship extra:** `hedron[gradio]` · **Import:** `hedron_gradio`  
-Provides endpoint discovery, typed predict / job / stream helpers, and Hugging Face
-vendor-node adapters — **without** embedding Gradio’s UI runtime in core.
+Provides allowlisted remote endpoint discovery, typed predict / job / stream helpers, bounded
+file transport, and Hugging Face vendor-node adapters — **without** embedding Gradio’s UI runtime
+in core.
 
 Disabled by default; absence adds no core dependency or startup cost.
 
 ## Install
 
 ```bash
-pip install "hedron[gradio]>=0.33.0,<0.34"
+pip install "hedron[gradio]>=0.34.0,<0.35"
 # or
-pip install "hedron-gradio>=0.1.0,<0.2"
+pip install "hedron-gradio>=0.2.0,<0.3"
 ```
 
-For **live** Gradio endpoints, also install `gradio_client`. The package imports
-without `gradio` or `gradio_client`; with declared endpoints and no client library,
-helpers return stub-friendly status payloads.
+For **live** Gradio endpoints, also install `gradio_client`. The package imports without
+`gradio` or `gradio_client`; with declared endpoints and no client library, helpers return
+stub-friendly status payloads.
 
 ## When to use
 
-- Calling remote Gradio apps / HF Spaces from Hedron workflows
+- Calling remote Gradio apps / HF Spaces from Hedron workflows with explicit allowlists
 - Typed predict / job / stream helpers without pulling Gradio UI into core
 
-This is **not** production parity with Gradio’s full UI. Prefer Hedron-native
-inference / jobs surfaces when you control the model server —
-[Model demos](../guides/model-demos.md).
+This is **not** production parity with Gradio’s full UI. Prefer Hedron-native inference / jobs
+surfaces when you control the model server — [Model demos](../guides/model-demos.md).
 
 ## Quick start
 
 ```python
-from hedron_gradio import GradioClientAdapter, GradioEndpoint, hf_space_node
+from hedron_gradio import GradioClientAdapter, GradioEndpoint, GradioRemoteConfig
 
+config = GradioRemoteConfig.from_base_url("https://demo.example.invalid")
 adapter = GradioClientAdapter(
-    base_url="https://example.gradio.live",
+    base_url=config.base_url,
     enabled=True,
+    remote_config=config,
     endpoints=(GradioEndpoint(name="predict", api_name="/predict", parameters={}),),
 )
 
 endpoints = adapter.discover()
 result = adapter.predict("predict", {"text": "hi"})
-
-node = hf_space_node("n1", "owner/space")
 ```
 
 With `enabled=False` (the default), `discover()` returns empty.
@@ -53,29 +53,26 @@ With `enabled=False` (the default), `discover()` returns empty.
 
 | Symbol | Role |
 |---|---|
+| `GradioRemoteConfig` | Allowlisted destination policy |
 | `GradioClientAdapter` | Discovery, predict, jobs, streams, file transfer |
 | `GradioEndpoint` | Declared endpoint metadata |
 | `GradioRemoteError` | Remote failure signal |
 | `HuggingFaceVendorNode` / `hf_space_node` | HF Space vendor helpers |
-
-Adapter methods include `discover()`, `predict()`, `submit_job()`, `job_status()`,
-`cancel_job()`, `stream_results()`, `upload_file()`, `download_artifact()`, and
-`check_version_compat()`.
 
 ## Errors and failure modes
 
 | Condition | Behavior |
 |---|---|
 | `enabled=False` | Empty discovery — no remote calls |
-| Missing `gradio_client` for live calls | Stub / unavailable path — install client for live |
-| Remote Gradio failure | `GradioRemoteError` |
+| Undeclared / private host | `GradioRemoteError` (fail closed) |
+| Missing `gradio_client` for live calls | Stub / unavailable path |
 | Expecting Gradio UI embedding | Out of scope — client interop only |
 
 ## Related docs
 
 - Guide: [Gradio migration](../guides/gradio-migration.md)
-- [Model demos / inference](../guides/model-demos.md) · [Inference API](../api/INFERENCE.md)
-- [What’s ready](../guides/whats-ready.md)
+- [What's new in 0.34](../guides/whats-new-0.34.md)
+- [Model demos / inference](../guides/model-demos.md)
 
 ## Links
 

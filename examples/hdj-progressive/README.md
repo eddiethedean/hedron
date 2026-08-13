@@ -10,7 +10,7 @@ uv run python examples/hdj-progressive/app.py
 Outside the monorepo:
 
 ```bash
-pip install "hedron[jinja]>=0.33.0,<0.34"
+pip install "hedron[jinja]>=0.34.0,<0.35"
 # then run app.py from this directory with PYTHONPATH set appropriately
 ```
 

@@ -1,7 +1,7 @@
 [project]
 name = "hedron-gradio"
-version = "0.1.0"
-description = "Experimental Alpha Gradio client interop for Hedron (RFC-0049)"
+version = "0.2.0"
+description = "Production-grade Gradio client interop for Hedron (RFC-0049 / RFC-0067)"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
 license = "MIT"
@@ -19,7 +19,7 @@ keywords = [
     "interop",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
@@ -34,7 +34,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.33.0,<0.34",
+    "hedron-core>=0.34.0,<0.35",
 ]
 
 [project.entry-points."hedron.plugins"]
