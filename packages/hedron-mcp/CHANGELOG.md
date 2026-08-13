@@ -12,6 +12,8 @@
 - Streamable HTTP ``DELETE /mcp`` terminates the session identified by
   ``mcp-session-id``; initialize mints and returns server session ids and
   subsequent requests reject principal mismatches on an existing session (#173).
+- Cap and TTL-evict process-local cancel ids, sessions, and rate-bucket keys so
+  long-lived MCP workers cannot retain unbounded memory (#172).
 
 ## [0.2.0]
 
