@@ -22,17 +22,13 @@ from hedron_core.production_gate import assert_production_security_config
         "Production",
     ],
 )
-def test_is_production_env_strips_whitespace(
-    monkeypatch: pytest.MonkeyPatch, value: str
-) -> None:
+def test_is_production_env_strips_whitespace(monkeypatch: pytest.MonkeyPatch, value: str) -> None:
     monkeypatch.setenv("HEDRON_ENV", value)
     assert is_production_env() is True
 
 
 @pytest.mark.parametrize("value", ["", "development", "staging", "prodution"])
-def test_is_production_env_non_production(
-    monkeypatch: pytest.MonkeyPatch, value: str
-) -> None:
+def test_is_production_env_non_production(monkeypatch: pytest.MonkeyPatch, value: str) -> None:
     if value:
         monkeypatch.setenv("HEDRON_ENV", value)
     else:
