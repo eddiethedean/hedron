@@ -93,4 +93,4 @@ python scripts/check_release_gate.py 0.34.0 \
 - [x] RFC-0067 Accepted and implementation matches it
 - [x] Every 0.34-owned Gradio release-gate row Verified with zero Deferred
 - [x] `hedron-gradio` maturity claim matches the inventory
-- [ ] Close #90 after release assets are published on GitHub/PyPI
+- [x] Close #90 after release assets are published on GitHub/PyPI

@@ -139,7 +139,11 @@ def check_packages(tag_version: str) -> list[str]:
         if "license" not in project and "license-files" not in project:
             errors.append(f"{name}: [project].license (or license-files) is required")
         pkg_dir = pyproject.parent
-        init = next(pkg_dir.glob("src/*/__init__.py"))
+        module_name = name.replace("-", "_")
+        init = pkg_dir / "src" / module_name / "__init__.py"
+        if not init.is_file():
+            errors.append(f"{name}: primary __init__ missing at {init.relative_to(ROOT)}")
+            continue
         init_text = init.read_text(encoding="utf-8")
         match = re.search(r'^__version__\s*=\s*["\']([^"\']+)["\']', init_text, re.M)
         if not match:
