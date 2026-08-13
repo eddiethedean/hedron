@@ -22,12 +22,15 @@ __all__ = [
 
 
 def read_color_mode_preference(request: Request) -> ColorMode:
-    session = getattr(request, "session", None)
-    if isinstance(session, dict) and SESSION_KEY in session:
-        try:
-            return ColorMode(str(session[SESSION_KEY]))
-        except ValueError:
-            pass
+    # Starlette's Request.session asserts when SessionMiddleware is absent;
+    # getattr still invokes the property, so gate on scope first (#170).
+    if "session" in request.scope:
+        session = request.session
+        if isinstance(session, dict) and SESSION_KEY in session:
+            try:
+                return ColorMode(str(session[SESSION_KEY]))
+            except ValueError:
+                pass
     raw = request.cookies.get(COOKIE_NAME, "system")
     try:
         return ColorMode(raw)

@@ -68,13 +68,16 @@ class _AuthenticatedFromSessionMiddleware(BaseHTTPMiddleware):
         self.session_key = session_key
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        session = getattr(request, "session", None)
-        if isinstance(session, Mapping):
-            subject = session.get(self.session_key)
-            # Require a non-empty string subject — truthy placeholders must not
-            # flip hedron_authenticated (cache / Explorer secured defaults).
-            if isinstance(subject, str) and subject.strip():
-                mark_authenticated(request, value=True)
+        # Starlette's Request.session asserts when SessionMiddleware is absent;
+        # getattr still invokes the property, so gate on scope first (#170).
+        if "session" in request.scope:
+            session = request.session
+            if isinstance(session, Mapping):
+                subject = session.get(self.session_key)
+                # Require a non-empty string subject — truthy placeholders must not
+                # flip hedron_authenticated (cache / Explorer secured defaults).
+                if isinstance(subject, str) and subject.strip():
+                    mark_authenticated(request, value=True)
         return await call_next(request)
 
 
