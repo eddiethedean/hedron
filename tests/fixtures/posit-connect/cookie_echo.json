@@ -1,0 +1,10 @@
+{
+  "cookie_names": [
+    "hedron_csrf",
+    "session"
+  ],
+  "has_session": true,
+  "has_hedron_csrf": true,
+  "cookie_header_present": true,
+  "root_path": "/content/00000000-0000-4000-8000-000000000000"
+}

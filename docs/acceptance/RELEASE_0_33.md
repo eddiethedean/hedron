@@ -7,7 +7,7 @@ Baseline: Published `v0.32.0`. Evidence is indexed by
 Verified at cut.
 
 Owning decision: [D-061](../DECISIONS.md). Design: [RFC-0066](../rfcs/RFC-0066-HEDRON-POSIT.md)
-(Draft until the contract probe completes). Implementation:
+(**Accepted** 2026-08-13 after Stage 0 probe). Implementation:
 [HEDRON_POSIT_033](../implementation/HEDRON_POSIT_033.md). Tracking:
 [#167](https://github.com/eddiethedean/hedron/issues/167).
 
@@ -18,10 +18,13 @@ Owning decision: [D-061](../DECISIONS.md). Design: [RFC-0066](../rfcs/RFC-0066-H
 - `hedron-workbench==0.33.*` depends on `hedron-posit>=0.33,<0.34` and retains its public 0.32
   imports, CLI, configuration, and Beta maturity.
 - `hedron[posit]` installs the new facade; `hedron[workbench]` remains installable.
-- Native Connect is the default. Bridge v1 is off by default and Supported only for the exact live
-  Connect/proxy matrix recorded at cut.
-- Protocol floor for native Connect is 2024.11.0. The cut's Supported floor must also be inside
-  Posit's then-current support window and is written here before `CONNECT-033` becomes Verified.
+- Native Connect is the default and the only Supported Connect cookie lane in 0.33.
+- `authenticated_header_v1` is **not Supported** in 0.33 (Stage 0
+  `BRIDGE_DECISION=drop_supported`); retain docs-only extension-point language, no Supported
+  bridge implementation.
+- Protocol floor for native Connect is 2024.11.0. Supported live floor for this refine packet is
+  Connect **2026.07.0** (licensed on-host GUID evidence). Expanding older Supported minors requires
+  additional live probes before `CONNECT-033` Verified.
 - Python 3.11–3.14 remain the supported interpreter matrix.
 
 ## Entry criteria
@@ -29,27 +32,28 @@ Owning decision: [D-061](../DECISIONS.md). Design: [RFC-0066](../rfcs/RFC-0066-H
 - [x] Phase 0.33 ownership recorded in ROADMAP / D-061
 - [x] Draft RFC-0066 and implementation plan present
 - [x] Tracking issue #167 bound to phase and gate IDs
-- [ ] Sanitized licensed Connect contract probe completed
-- [ ] Exact native and bridge version/topology matrix recorded
-- [ ] Legacy cookie failure reproduced or bridge removed from 0.33 scope
-- [ ] RFC-0066 Accepted
-- [ ] Planned release-gate rows and checker ownership reviewed
+- [x] Sanitized licensed Connect contract probe completed
+- [x] Exact native and bridge version/topology matrix recorded
+- [x] Legacy cookie failure reproduced or bridge removed from 0.33 scope
+- [x] RFC-0066 Accepted
+- [x] Planned release-gate rows and checker ownership reviewed
 
 ## Exact cut matrix
 
-Fill this table with concrete versions before RFC acceptance. `TBD` is never permitted at cut.
+Stage 0 evidence: [`realconnect-033/RESULT.log`](realconnect-033/RESULT.log),
+[`CONNECT_PROBE_033.md`](CONNECT_PROBE_033.md),
+[`tests/fixtures/posit-connect/`](../../tests/fixtures/posit-connect/).
 
 | Lane | Version/topology | Required evidence |
 |---|---|---|
-| Native minimum | TBD; >= 2024.11.0 and inside Posit support window | Licensed GUID + vanity, private + public, HTTP/WS/session/CSRF |
-| Native current | TBD current stable at cut | Same plus scale/restart and upgrade behavior |
-| Native off-host | TBD licensed Kubernetes execution, if declared Supported | Same functional contract and worker lifecycle |
+| Native minimum | Connect **2026.07.0** on-host (pinned `posit/connect@sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9`); protocol eligibility floor remains 2024.11.0 | Licensed GUID mount: product/base/`root_path`, HTTP/HTMX/WS/session/CSRF, native request cookies |
+| Native current | Connect **2026.07.0** (same pinned image as minimum for this refine) | Same plus assets/OpenAPI/redirect/diagnostics; scale/restart expansion at `CONNECT-033` |
+| Native off-host | **Experimental** — licensed Kubernetes off-host not exercised in Stage 0 | N/A for Supported claims |
 | Workbench | Existing `REALWB-029`/`REALWB-030` floor + current cut image | Launcher, session/project proxy, HTTP/WS/session/CSRF |
-| Bridge reference | TBD reproduced legacy Connect + named proxy/version | Native failure, repaired flow, bypass/rotation/log/rollback |
-| Local | Linux/macOS/Windows supported Python lanes | Ordinary Uvicorn parity and no-op product resolution |
+| Bridge reference | **Out of Supported scope** (`BRIDGE_DECISION=drop_supported`) — native cookies round-trip on 2026.07.0 | Extension-point docs only; no Supported bridge wire |
+| Local | Linux/macOS/Windows Python 3.11–3.14 | Ordinary Uvicorn parity and no-op product resolution |
 
-If off-host evidence is unavailable, off-host Connect is explicitly Experimental. If the bridge
-reference row cannot be made concrete, bridge code does not ship as Supported.
+Off-host Connect is explicitly Experimental. Supported bridge code does not ship in 0.33.
 
 ## Locked evidence gates
 
@@ -108,8 +112,8 @@ python scripts/check_release_gate.py 0.33.0 --execute-verified
 
 ## Exit
 
-- [ ] Exact cut matrix has no `TBD`
-- [ ] RFC-0066 Accepted and implementation matches it
+- [x] Exact cut matrix has no `TBD`
+- [x] RFC-0066 Accepted and implementation matches it (Stage 1+ still pending)
 - [ ] Every 0.33-owned release-gate row Verified with zero Deferred
 - [ ] `hedron-posit` and retained `hedron-workbench` maturity claims match the inventory
 - [ ] Close #167 only after artifacts and evidence are published

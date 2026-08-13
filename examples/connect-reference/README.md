@@ -5,8 +5,10 @@ page, fragment, CSRF, asset, OpenAPI, redirect, diagnostics, WebSocket, and
 outside-Workbench behavior as the licensed Workbench reference.
 
 `scripts/realconnect_029.sh` creates a temporary deployment bundle and vendors
-the local `hedron`, `hedron-core`, and `hedron-workbench` source trees so the
-Connect smoke validates this checkout rather than a published package.
+the local `hedron`, `hedron-core`, `hedron-workbench`, and `fastapi-workbench`
+source trees so the Connect smoke validates this checkout rather than a published
+package. Phase 0.33 Stage 0 uses `scripts/realconnect_033_probe.sh` (same vendoring)
+and adds a `/cookie-echo` diagnostic that reports owned cookie **names** only.
 
 The deployed app also builds an email-invite-style URL with
 `app.external_url_for(...)`. The smoke proves that Connect's public content

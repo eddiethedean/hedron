@@ -2641,10 +2641,10 @@ integration, delegates generic Workbench behavior to `fastapi-workbench`, and le
 - Set Connect 2024.11.0 as the native protocol floor while requiring the release-cut floor to remain
   inside Posit's then-current support window; prove protected product evidence, a singular base
   header exactly matching ASGI `root_path`, and the licensed GUID/vanity/on-host/off-host matrix.
-- Offer `authenticated_header_v1` only when a live probe reproduces native request-cookie loss. The
-  off-by-default bridge uses two fixed singular base64url headers, a >=32-byte secret, constant-time
-  comparison, a frozen application-cookie registry, 16 KiB/128-pair bounds, conflict rejection,
-  header removal, reference-proxy bypass prevention, bounded secret rotation, and log redaction.
+- Offer `authenticated_header_v1` only as an Experimental extension point in 0.33 after Stage 0
+  recorded `BRIDGE_DECISION=drop_supported` (native cookies round-trip on Connect 2026.07.0). A
+  future Accepted decision may restore Supported bridge scope if loss is reproduced on a named
+  topology; the reserved wire contract stays in RFC-0066.
 - Keep Connect credentials and user-session headers as pass-through application inputs; they never
   become Hedron authentication, authorization, or diagnostic data.
 - Publish local, Workbench, Connect-native, and authenticated private-proxy deployment recipes with

@@ -19,13 +19,13 @@ Living tip = `v0.32.0`.
 deny-by-default MCP projection (`hedron-mcp` `0.2.0` Beta;
 `release-gate-0.32.toml` Verified; published tip `v0.32.0`). Prior Published **0.31**
 (tooling + Streamlit migrator as `v0.31.0`) remains in force. **Next** = **0.33 Planned**
-(unified `hedron-posit` Workbench / Connect adapter; RFC-0066 / D-061;
-[#167](https://github.com/eddiethedean/hedron/issues/167)) — **packet refine in progress**.
-Phase owner is the Posit adapter (`CONTRACT-033`…`PKG-033`). The
+(unified `hedron-posit` Workbench / Connect adapter; **RFC-0066 Accepted** / D-061;
+[#167](https://github.com/eddiethedean/hedron/issues/167)) — **packet refine complete**; Stage 1
+package extraction may begin. Phase owner is the Posit adapter (`CONTRACT-033`…`PKG-033`).
+Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
+Connect 2026.07.0). The
 [default presentation quality program](implementation/DEFAULT_PRESENTATION_033_PLUS.md) is
-**cross-cutting and must not block** Stage 0 probe completion, RFC-0066 acceptance, or Stage 1
-package extraction. Licensed Connect contract probe + RFC acceptance remain required before
-implementation.
+**cross-cutting and must not block** Stage 1+ Posit adapter work.
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol

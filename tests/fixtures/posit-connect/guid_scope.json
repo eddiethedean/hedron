@@ -1,0 +1,12 @@
+{
+  "posit_product": "CONNECT",
+  "header_present": true,
+  "header_count": 1,
+  "header_path": "/content/00000000-0000-4000-8000-000000000000",
+  "root_path": "/content/00000000-0000-4000-8000-000000000000",
+  "request_path": "/",
+  "public_base_valid": true,
+  "workbench_active": false,
+  "normalizer_count": 1,
+  "server_secret_env_present": false
+}

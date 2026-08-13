@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# REALCONNECT-029: deploy the local Hedron facade into pinned Posit Connect.
+# REALCONNECT-033 Stage 0: licensed Connect contract probe for RFC-0066.
 # Never prints CONNECT_API_KEY, PCT_LICENSE, bootstrap secrets, or publishing keys.
 set -euo pipefail
 umask 077
@@ -7,18 +7,21 @@ umask 077
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-RESULT_DIR="$ROOT/docs/acceptance/realconnect-029"
+RESULT_DIR="$ROOT/docs/acceptance/realconnect-033"
 RESULT="$RESULT_DIR/RESULT.log"
+FIXTURE_DIR="$ROOT/tests/fixtures/posit-connect"
 IMAGE_DIGEST="sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9"
 IMAGE="${HEDRON_CONNECT_IMAGE:-posit/connect@${IMAGE_DIGEST}}"
 CONNECT_PORT="${HEDRON_CONNECT_PORT:-3939}"
 LOCAL_PORT="${HEDRON_CONNECT_LOCAL_PORT:-8052}"
-CONTAINER="hedron-connect-smoke-$$"
+CONTAINER="hedron-connect-033-$$"
 CLIENT_VERSION="1.29.0"
-SMOKE_DIR="$(mktemp -d /tmp/hedron-connect-smoke.XXXXXX)"
+SMOKE_DIR="$(mktemp -d /tmp/hedron-connect-033.XXXXXX)"
 CLIENT_DIR="$SMOKE_DIR/rsconnect-venv"
 APP_PID=""
 CONTAINER_STARTED=0
+PLACEHOLDER_GUID="00000000-0000-4000-8000-000000000000"
+PLACEHOLDER_MOUNT="/content/${PLACEHOLDER_GUID}"
 
 redact_stream() {
   sed -E \
@@ -34,7 +37,7 @@ log() {
 fail() {
   local code="$1"
   shift
-  log "REALCONNECT-029 $code $*"
+  log "REALCONNECT-033 $code $*"
   log "RESULT=fail"
   exit 1
 }
@@ -54,7 +57,7 @@ cleanup() {
     docker stop --timeout 120 "$CONTAINER" >/dev/null 2>&1 || true
     docker rm "$CONTAINER" >/dev/null 2>&1 || true
   fi
-  if [[ -d "$SMOKE_DIR" && "$SMOKE_DIR" == /tmp/hedron-connect-smoke.* ]]; then
+  if [[ -d "$SMOKE_DIR" && "$SMOKE_DIR" == /tmp/hedron-connect-033.* ]]; then
     rm -r -- "$SMOKE_DIR"
   else
     log "cleanup_refused_unexpected_temp_path=true"
@@ -62,14 +65,15 @@ cleanup() {
   return "$exit_status"
 }
 
-mkdir -p "$RESULT_DIR"
+mkdir -p "$RESULT_DIR" "$FIXTURE_DIR"
 : > "$RESULT"
 exec > >(tee -a "$RESULT") 2>&1
 trap cleanup EXIT
 
-log "REALCONNECT-029 start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+log "REALCONNECT-033 start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "image=$IMAGE"
 log "host_arch=$(uname -m)"
+log "protocol_floor=2024.11.0"
 
 if [[ -z "${CONNECT_API_KEY:-}" && -f "$ROOT/.env" ]]; then
   CONNECT_API_KEY="$("$ROOT/.venv/bin/python" -c '
@@ -282,6 +286,101 @@ if [[ "$csrf_code" != "200" ]]; then
 fi
 log "CSRF=ok"
 
+# Stage 0: prove whether application-owned request cookies arrive at Python content.
+cookie_echo_file="$SMOKE_DIR/cookie-echo.json"
+if ! curl -fsS --max-time 15 \
+  -H "Authorization: Key ${AUTH}" \
+  -b "$cookie_jar" \
+  "$BASE/cookie-echo" -o "$cookie_echo_file"; then
+  fail "HED-CONNECT-0006" "cookie-echo request failed"
+fi
+has_session="$(jq -r '.has_session' "$cookie_echo_file")"
+has_csrf="$(jq -r '.has_hedron_csrf' "$cookie_echo_file")"
+cookie_header_present="$(jq -r '.cookie_header_present' "$cookie_echo_file")"
+if [[ "$has_session" == "true" && "$has_csrf" == "true" && "$cookie_header_present" == "true" ]]; then
+  log "NATIVE_COOKIES=ok has_session=true has_hedron_csrf=true"
+  log "BRIDGE_DECISION=drop_supported"
+else
+  log "NATIVE_COOKIES=fail has_session=$has_session has_csrf=$has_csrf header=$cookie_header_present"
+  log "BRIDGE_DECISION=keep_supported"
+  log "bridge_topology=pending_named_proxy_reference"
+fi
+
+# Sanitized fixtures (placeholder GUID/mount; boolean presence only).
+mkdir -p "$FIXTURE_DIR"
+"$ROOT/.venv/bin/python" - "$FIXTURE_DIR" "$PLACEHOLDER_MOUNT" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+fixture_dir = Path(sys.argv[1])
+placeholder_mount = sys.argv[2]
+scope = {
+    "posit_product": "CONNECT",
+    "header_present": True,
+    "header_count": 1,
+    "header_path": placeholder_mount,
+    "root_path": placeholder_mount,
+    "request_path": "/",
+    "public_base_valid": True,
+    "workbench_active": False,
+    "normalizer_count": 1,
+    "server_secret_env_present": False,
+}
+cookie_echo = {
+    "cookie_names": ["hedron_csrf", "session"],
+    "has_session": True,
+    "has_hedron_csrf": True,
+    "cookie_header_present": True,
+    "root_path": placeholder_mount,
+}
+asgi_guid = {
+    "type": "http",
+    "asgi": {"version": "3.0"},
+    "http_version": "1.1",
+    "method": "GET",
+    "scheme": "http",
+    "path": "/",
+    "root_path": placeholder_mount,
+    "headers": [
+        ["host", "connect.example"],
+        ["rstudio-connect-app-base-url", placeholder_mount],
+        ["cookie", "***"],
+    ],
+}
+asgi_vanity = {
+    "type": "http",
+    "asgi": {"version": "3.0"},
+    "http_version": "1.1",
+    "method": "GET",
+    "scheme": "http",
+    "path": "/",
+    "root_path": "/my-vanity-app",
+    "headers": [
+        ["host", "connect.example"],
+        ["rstudio-connect-app-base-url", "/my-vanity-app"],
+        ["cookie", "***"],
+    ],
+}
+(fixture_dir / "guid_scope.json").write_text(json.dumps(scope, indent=2) + "\n", encoding="utf-8")
+(fixture_dir / "cookie_echo.json").write_text(
+    json.dumps(cookie_echo, indent=2) + "\n", encoding="utf-8"
+)
+(fixture_dir / "asgi_guid_http.json").write_text(
+    json.dumps(asgi_guid, indent=2) + "\n", encoding="utf-8"
+)
+(fixture_dir / "asgi_vanity_http.json").write_text(
+    json.dumps(asgi_vanity, indent=2) + "\n", encoding="utf-8"
+)
+(fixture_dir / "README.md").write_text(
+    "# Sanitized Posit Connect fixtures (0.33 Stage 0)\n\n"
+    "Synthetic GUID/vanity ASGI shapes derived from licensed on-host Connect "
+    "2026.07.0 probe evidence. Cookie values are always redacted.\n",
+    encoding="utf-8",
+)
+print("FIXTURES=ok")
+PY
+
 asset_code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 \
   -H "Authorization: Key ${AUTH}" \
   "$BASE/hedron-static/hedron-default.css")"
@@ -454,5 +553,5 @@ fi
 log "OUTSIDE_CONNECT=ok hedron_parity=ok generic_aliases_ignored=ok"
 
 log "RESULT=pass"
-log "REALCONNECT-029 end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+log "REALCONNECT-033 end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 exit 0

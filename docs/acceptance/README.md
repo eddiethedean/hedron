@@ -49,9 +49,9 @@ status commentary, not a satisfied release gate.
 - [`v0.24` live-transport disposition](RELEASE_0_24.md) — **Published** (`v0.24.0`; `polling_only`) (D-053 / RFC-0056)
 - [`v0.25` production archetype and landmine quarantine](RELEASE_0_25.md) — **Published** (`v0.25.0`; packet Verified complete) (D-053 / RFC-0056)
 - [`v0.32` production-grade MCP projection](RELEASE_0_32.md) — **Published** (`v0.32.0`; `hedron-mcp` `0.2.0` Beta; D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89))
-- [`v0.33` unified Posit deployment adapter](RELEASE_0_33.md) — **Planned** (packet refine;
-  D-061 / RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167); licensed Connect
-  contract probe required before RFC acceptance / implementation)
+- [`v0.33` unified Posit deployment adapter](RELEASE_0_33.md) — **Planned** (packet refine
+  complete; RFC-0066 **Accepted**; D-061; [#167](https://github.com/eddiethedean/hedron/issues/167);
+  Stage 1 package extraction unblocked; Supported bridge dropped per Stage 0)
 - [Release evidence policy](EVIDENCE.md)
 - Phase indices: [release-gate-0.6.toml](release-gate-0.6.toml),
   [release-gate-0.7.toml](release-gate-0.7.toml),
