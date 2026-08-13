@@ -11,13 +11,34 @@
   }
 
   /** Mirror hedron_data.spreadsheet._reject_or_sanitize(..., formula_policy="sanitize"). */
+  function stripFormulaEvasionPrefix(text) {
+    let index = 0;
+    while (index < text.length) {
+      const code = text.charCodeAt(index);
+      const char = text.charAt(index);
+      // BOM, ASCII controls (incl. DEL), and Unicode whitespace (incl. NBSP).
+      if (char === "\ufeff" || code < 32 || code === 127 || /\s/u.test(char)) {
+        index += 1;
+        continue;
+      }
+      break;
+    }
+    return text.slice(index);
+  }
+
   function sanitizeFormulaCell(value) {
     const text = value == null ? "" : String(value);
+    const normalized = stripFormulaEvasionPrefix(text);
+    const prefix = normalized.charAt(0);
     const dangerous =
-      text.length > 0 &&
-      ("=+-@".indexOf(text.charAt(0)) !== -1 || text.charAt(0) === "\t" || text.charAt(0) === "\r");
+      normalized.length > 0 &&
+      ("=+-@".indexOf(prefix) !== -1 ||
+        prefix === "\uff1d" ||
+        prefix === "\uff0b" ||
+        prefix === "\uff0d" ||
+        prefix === "\uff20");
     if (!dangerous) return text;
-    return "'" + text.replace(/^[\t\r]+/, "");
+    return "'" + normalized;
   }
 
   /** RFC 4180-style field encoding (doubled quotes; quote when needed). */

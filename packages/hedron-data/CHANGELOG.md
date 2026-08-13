@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Security
+
+- Spreadsheet formula reject/sanitize policies strip leading whitespace, ASCII
+  controls, and BOM, and treat fullwidth ``＝＋－＠`` prefixes as dangerous so
+  padded formula-injection payloads cannot bypass the check (#169). Tabulator
+  ``sanitizeFormulaCell`` stays in lockstep.
+
 ## [0.32.0]
 
 - Coordinated train bump for phase 0.32 MCP production-grade graduation (no publish tag in this commit).

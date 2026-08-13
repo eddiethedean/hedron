@@ -61,7 +61,45 @@ def test_xlsx_roundtrip_and_formula_reject() -> None:
     assert str(cleaned[0]["id"]).startswith("'")
 
     # Import reject still fails closed on unsanitized spreadsheet payloads.
-    for bad in ("=1", "+1", "-1", "@1", "\t1"):
+    for bad in ("=1", "+1", "-1", "@1", "\t=1"):
         with pytest.raises(HedronError):
             import_rows_ods(_ods_with_cell(bad), formula_policy="reject")
         assert _reject_or_sanitize(bad, formula_policy="sanitize").startswith("'")
+
+
+_FORMULA_EVASION_CORPUS = (
+    ' =HYPERLINK("http://evil","x")',
+    "\x00=cmd",
+    "\ufeff=CMD",
+    "\xa0=cmd",
+    "\n=cmd",
+    "\uff1dcmd",  # fullwidth equals
+    "\uff0b1",  # fullwidth plus
+    "\uff0d1",  # fullwidth hyphen-minus
+    "\uff20cmd",  # fullwidth at
+)
+
+
+def test_formula_policy_rejects_whitespace_control_and_fullwidth_prefixes() -> None:
+    for payload in _FORMULA_EVASION_CORPUS:
+        with pytest.raises(HedronError, match="HED-DATA-0040|formula"):
+            _reject_or_sanitize(payload, formula_policy="reject")
+        sanitized = _reject_or_sanitize(payload, formula_policy="sanitize")
+        assert sanitized.startswith("'")
+        assert not sanitized[1:].startswith((" ", "\n", "\x00", "\ufeff", "\xa0"))
+
+
+def test_xlsx_export_import_rejects_spaced_formula_payload() -> None:
+    blob = export_rows_xlsx(
+        [{"name": ' =HYPERLINK("http://evil","x")'}],
+        ["name"],
+    )
+    # Export sanitizes; re-import under reject must accept the neutralized cell.
+    cleaned = import_rows_xlsx(blob, formula_policy="reject")
+    assert str(cleaned[0]["name"]).startswith("'")
+
+    with pytest.raises(HedronError):
+        import_rows_ods(
+            _ods_with_cell(' =HYPERLINK("http://evil","x")'),
+            formula_policy="reject",
+        )
