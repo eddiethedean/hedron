@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PARITY-033: HedronWorkbench compatibility ownership (refine stub)."""
+"""PARITY-033: HedronWorkbench compatibility ownership."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from _gate_033 import (  # noqa: E402
     require_files,
     require_inventory_keys,
     require_inventory_packages,
+    run_pytest,
 )
 
 
@@ -36,10 +37,19 @@ def main() -> int:
         ),
         errors=errors,
     )
+    wb = (ROOT / "packages" / "hedron-workbench" / "pyproject.toml").read_text(encoding="utf-8")
+    if "hedron-posit" not in wb:
+        errors.append("hedron-workbench must depend on hedron-posit")
     if fail_errors(errors, "PARITY-033"):
         return 1
-    print("ok: PARITY-033")
-    return 0
+    return run_pytest(
+        [
+            "tests/adapters/posit/test_compat.py",
+            "tests/unit/test_workbench_isolation.py",
+            "tests/adapters/workbench/",
+        ],
+        "PARITY-033",
+    )
 
 
 if __name__ == "__main__":

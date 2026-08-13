@@ -1,8 +1,8 @@
-"""Immutable Workbench configuration and resolved deployment records."""
+"""Compatibility re-export from hedron_posit.config."""
 
 from __future__ import annotations
 
-from fastapi_workbench.config import (
+from hedron_posit.config import (
     DEFAULT_FORWARDED_ALLOW_IPS,
     DEFAULT_HOST,
     DEFAULT_RSERVER_URL,

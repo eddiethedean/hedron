@@ -1,0 +1,22 @@
+# REVIEW-033 disposition
+
+critical_high_open = false
+review_date = "2026-08-13"
+package = "hedron-posit"
+package_version = "0.33.0"
+baseline = "v0.32.0"
+bridge_decision = "drop_supported"
+
+[[findings]]
+id = "REV-033-001"
+severity = "info"
+status = "accepted"
+title = "Supported bridge deferred after Stage 0"
+notes = "BRIDGE_DECISION=drop_supported; extension-point enum fails closed with HED-POSIT-0401"
+
+[[findings]]
+id = "REV-033-002"
+severity = "info"
+status = "accepted"
+title = "Off-host Connect and vanity live remain Experimental"
+notes = "Cut matrix records GUID on-host 2026.07.0 as Supported floor"

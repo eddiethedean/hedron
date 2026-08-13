@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PACKAGE-033: hedron-posit distribution / extra / dependency graph (refine stub)."""
+"""PACKAGE-033: hedron-posit distribution / extra / dependency graph."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from _gate_033 import (  # noqa: E402
     require_files,
     require_inventory_keys,
     require_inventory_packages,
+    run_pytest,
 )
 
 
@@ -22,6 +23,9 @@ def main() -> int:
         [
             ROOT / "docs" / "acceptance" / "production-grade-inventory-033.toml",
             ROOT / "docs" / "acceptance" / "RELEASE_0_33.md",
+            ROOT / "packages" / "hedron-posit" / "pyproject.toml",
+            ROOT / "packages" / "hedron-posit" / "src" / "hedron_posit" / "app.py",
+            ROOT / "packages" / "hedron" / "pyproject.toml",
         ],
         errors,
     )
@@ -44,27 +48,30 @@ def main() -> int:
         errors=errors,
     )
     posit_pkg = ROOT / "packages" / "hedron-posit" / "pyproject.toml"
-    if posit_pkg.is_file():
-        text = posit_pkg.read_text(encoding="utf-8")
-        if "hedron-workbench" in text and "dependencies" in text:
-            # Soft check: dependency stanza must not list hedron-workbench.
+    text = posit_pkg.read_text(encoding="utf-8")
+    in_deps = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("dependencies"):
+            in_deps = True
+            continue
+        if in_deps and stripped.startswith("["):
             in_deps = False
-            for line in text.splitlines():
-                stripped = line.strip()
-                if stripped.startswith("dependencies"):
-                    in_deps = True
-                    continue
-                if in_deps and stripped.startswith("["):
-                    in_deps = False
-                if in_deps and "hedron-workbench" in stripped:
-                    errors.append("hedron-posit must not depend on hedron-workbench")
-                    break
-    else:
-        print("PACKAGE-033: packages/hedron-posit not present yet (packet refine)", file=sys.stderr)
+        if in_deps and "hedron-workbench" in stripped:
+            errors.append("hedron-posit must not depend on hedron-workbench")
+            break
+    hedron_toml = (ROOT / "packages" / "hedron" / "pyproject.toml").read_text(encoding="utf-8")
+    if "posit" not in hedron_toml or "hedron-posit" not in hedron_toml:
+        errors.append("hedron[posit] extra must declare hedron-posit")
     if fail_errors(errors, "PACKAGE-033"):
         return 1
-    print("ok: PACKAGE-033")
-    return 0
+    return run_pytest(
+        [
+            "tests/unit/test_posit_isolation.py",
+            "tests/upgrade/test_0_32_to_0_33_posit.py",
+        ],
+        "PACKAGE-033",
+    )
 
 
 if __name__ == "__main__":

@@ -39,5 +39,5 @@ Structured maintainer-led review independent of the feature-authoring pass
 
 ## Packet status
 
-**Planned** — brief only at packet refine. Full report + disposition required before
-`REVIEW-033` Verified.
+**Verified** — maintainer-led review complete for Supported 0.33 surface.
+See `REDACTED_REPORT.md` and `DISPOSITION.toml` (`critical_high_open = false`).

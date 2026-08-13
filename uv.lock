@@ -30,6 +30,7 @@ members = [
     "hedron-mcp",
     "hedron-native",
     "hedron-notebook",
+    "hedron-posit",
     "hedron-sample-kit",
     "hedron-sim",
     "hedron-workbench",
@@ -961,7 +962,7 @@ wheels = [
 
 [[package]]
 name = "hedron"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron" }
 dependencies = [
     { name = "fastapi" },
@@ -1030,6 +1031,9 @@ notebook = [
 otel = [
     { name = "opentelemetry-api" },
 ]
+posit = [
+    { name = "hedron-posit" },
+]
 sanitize = [
     { name = "nh3" },
 ]
@@ -1055,6 +1059,7 @@ requires-dist = [
     { name = "hedron-mcp", marker = "extra == 'mcp'", editable = "packages/hedron-mcp" },
     { name = "hedron-native", marker = "extra == 'native'", editable = "packages/hedron-native" },
     { name = "hedron-notebook", marker = "extra == 'notebook'", editable = "packages/hedron-notebook" },
+    { name = "hedron-posit", marker = "extra == 'posit'", editable = "packages/hedron-posit" },
     { name = "hedron-workbench", marker = "extra == 'workbench'", editable = "packages/hedron-workbench" },
     { name = "httpx", marker = "extra == 'auth'", specifier = ">=0.28" },
     { name = "itsdangerous", specifier = ">=2.2" },
@@ -1069,7 +1074,7 @@ requires-dist = [
     { name = "pygments", marker = "extra == 'code'", specifier = ">=2.17" },
     { name = "python-multipart", specifier = ">=0.0.9" },
 ]
-provides-extras = ["dev", "data", "charts", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "jinja", "native", "conformance", "extras", "experimental-ui", "notebook", "mcp", "gradio", "workbench", "otel"]
+provides-extras = ["dev", "data", "charts", "markdown", "code", "images", "email", "sanitize", "auth", "browser", "jinja", "native", "conformance", "extras", "experimental-ui", "notebook", "mcp", "gradio", "workbench", "posit", "otel"]
 
 [[package]]
 name = "hedron-charts"
@@ -1167,7 +1172,7 @@ provides-extras = ["matplotlib", "plotly", "altair", "pydeck", "folium", "graphv
 
 [[package]]
 name = "hedron-conformance"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron-conformance" }
 dependencies = [
     { name = "pydantic" },
@@ -1178,7 +1183,7 @@ requires-dist = [{ name = "pydantic", specifier = ">=2.13.4,<2.15" }]
 
 [[package]]
 name = "hedron-core"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron-core" }
 dependencies = [
     { name = "packaging" },
@@ -1193,7 +1198,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-data"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron-data" }
 dependencies = [
     { name = "hedron-core" },
@@ -1255,7 +1260,7 @@ provides-extras = ["pandas", "polars", "pyarrow", "dataframes", "sqlalchemy", "s
 
 [[package]]
 name = "hedron-django"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron-django" }
 dependencies = [
     { name = "asgiref" },
@@ -1272,7 +1277,7 @@ requires-dist = [
 
 [[package]]
 name = "hedron-explorer"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron-explorer" }
 dependencies = [
     { name = "fastapi" },
@@ -1294,7 +1299,7 @@ provides-extras = ["fastapi"]
 
 [[package]]
 name = "hedron-extras"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron-extras" }
 dependencies = [
     { name = "hedron-core" },
@@ -1326,7 +1331,7 @@ provides-extras = ["code-editor", "json-editor", "data-explorer", "chart-workben
 
 [[package]]
 name = "hedron-flask"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron-flask" }
 dependencies = [
     { name = "flask" },
@@ -1354,7 +1359,7 @@ requires-dist = [{ name = "hedron-core", editable = "packages/hedron-core" }]
 
 [[package]]
 name = "hedron-jinja"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron-jinja" }
 dependencies = [
     { name = "hedron-core" },
@@ -1414,6 +1419,25 @@ requires-dist = [
 provides-extras = ["server"]
 
 [[package]]
+name = "hedron-posit"
+version = "0.33.0"
+source = { editable = "packages/hedron-posit" }
+dependencies = [
+    { name = "fastapi-workbench" },
+    { name = "hedron" },
+    { name = "starlette" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi-workbench", editable = "packages/fastapi-workbench" },
+    { name = "hedron", editable = "packages/hedron" },
+    { name = "starlette", specifier = ">=1.3.1" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
+]
+
+[[package]]
 name = "hedron-sample-kit"
 version = "0.1.10"
 source = { editable = "packages/hedron-sample-kit" }
@@ -1441,26 +1465,18 @@ requires-dist = [
 
 [[package]]
 name = "hedron-workbench"
-version = "0.32.0"
+version = "0.33.0"
 source = { editable = "packages/hedron-workbench" }
 dependencies = [
-    { name = "fastapi-workbench" },
-    { name = "hedron" },
-    { name = "starlette" },
-    { name = "uvicorn", extra = ["standard"] },
+    { name = "hedron-posit" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "fastapi-workbench", editable = "packages/fastapi-workbench" },
-    { name = "hedron", editable = "packages/hedron" },
-    { name = "starlette", specifier = ">=1.3.1" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
-]
+requires-dist = [{ name = "hedron-posit", editable = "packages/hedron-posit" }]
 
 [[package]]
 name = "hedron-workspace"
-version = "0.32.0"
+version = "0.33.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -1488,6 +1504,7 @@ dev = [
     { name = "hedron-mcp" },
     { name = "hedron-native" },
     { name = "hedron-notebook" },
+    { name = "hedron-posit" },
     { name = "hedron-sample-kit" },
     { name = "hedron-sim" },
     { name = "hedron-workbench" },
@@ -1545,6 +1562,7 @@ dev = [
     { name = "hedron-mcp", editable = "packages/hedron-mcp" },
     { name = "hedron-native", editable = "packages/hedron-native" },
     { name = "hedron-notebook", editable = "packages/hedron-notebook" },
+    { name = "hedron-posit", editable = "packages/hedron-posit" },
     { name = "hedron-sample-kit", editable = "packages/hedron-sample-kit" },
     { name = "hedron-sim", editable = "packages/hedron-sim" },
     { name = "hedron-workbench", editable = "packages/hedron-workbench" },

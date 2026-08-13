@@ -185,6 +185,8 @@ cp examples/connect-reference/app.py \
 rsync -a --exclude '__pycache__' packages/hedron/src/hedron/ "$BUNDLE/hedron/"
 rsync -a --exclude '__pycache__' packages/hedron-core/src/hedron_core/ "$BUNDLE/hedron_core/"
 rsync -a --exclude '__pycache__' \
+  packages/hedron-posit/src/hedron_posit/ "$BUNDLE/hedron_posit/"
+rsync -a --exclude '__pycache__' \
   packages/hedron-workbench/src/hedron_workbench/ "$BUNDLE/hedron_workbench/"
 rsync -a --exclude '__pycache__' \
   packages/fastapi-workbench/src/fastapi_workbench/ "$BUNDLE/fastapi_workbench/"

@@ -243,6 +243,14 @@ HED_WB_0007 = "HED-WB-0007"  # platform / image cannot run (e.g. non-amd64)
 HED_WB_0008 = "HED-WB-0008"  # deprecated compatibility alias used
 HED_WB_0009 = "HED-WB-0009"  # unsupported Workbench launch topology
 
+# Unified Posit adapter (0.33 RFC-0066)
+HED_POSIT_0101 = "HED-POSIT-0101"  # conflicting product evidence
+HED_POSIT_0301 = "HED-POSIT-0301"  # invalid Connect base header (spoof / peer)
+HED_POSIT_0302 = "HED-POSIT-0302"  # Connect base path validation failed
+HED_POSIT_0303 = "HED-POSIT-0303"  # duplicate Connect base headers
+HED_POSIT_0304 = "HED-POSIT-0304"  # Connect base path does not match ASGI root_path
+HED_POSIT_0401 = "HED-POSIT-0401"  # authenticated_header_v1 not Supported in 0.33
+
 # Streamlit AST migrator (0.31 RFC-0061)
 HED_MIG_ST_0001 = "HED-MIG-ST-0001"  # unresolved / dynamic Streamlit symbol
 HED_MIG_ST_0002 = "HED-MIG-ST-0002"  # unsupported or version-unknown API

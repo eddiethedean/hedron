@@ -9,7 +9,7 @@ is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.32.x` | Yes (current living tip — pin `>=0.32.0,<0.33`; published `v0.32.0`) |
+| `0.32.x` | Yes (current living tip — pin `>=0.33.0,<0.34`; published `v0.32.0`) |
 | `0.31.x` | Prefer upgrade to `0.32.x` (best-effort security triage through approximately 2027-02-12) |
 | `0.30.x` | Prefer upgrade to `0.32.x` |
 | `0.29.x` | Prefer upgrade to `0.32.x` |

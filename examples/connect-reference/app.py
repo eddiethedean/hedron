@@ -22,13 +22,17 @@ from hedron import (
     redirect_local,
     swap,
 )
-from hedron_workbench import HedronWorkbench
+from hedron_posit import ConnectConfig, ConnectCookieMode, HedronPosit, PositConfig, PositProduct
 
-app = HedronWorkbench(
+app = HedronPosit(
     title="Posit Connect reference",
     security="standard",
     explorer="off",
     session_secret=os.environ.get("HEDRON_SESSION_SECRET") or secrets.token_urlsafe(32),
+    posit=PositConfig(
+        product=PositProduct.AUTO,
+        connect=ConnectConfig(cookie_mode=ConnectCookieMode.NATIVE),
+    ),
 )
 
 status = app.region("service-status", description="Live status panel")

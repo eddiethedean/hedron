@@ -1,4 +1,4 @@
-"""Packaging metadata checks for the coordinated 0.32 train."""
+"""Packaging metadata checks for the coordinated 0.33 train."""
 
 from __future__ import annotations
 
@@ -20,6 +20,7 @@ _BETA_PACKAGES = {
     "hedron-conformance",
     "hedron-extras",
     "hedron-workbench",
+    "hedron-posit",
 }
 _INDEPENDENT_BETA = {
     "hedron-charts",
@@ -44,7 +45,7 @@ def test_all_packages_declare_license_and_version() -> None:
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
         if name in _BETA_PACKAGES:
-            assert project["version"] == "0.32.0", pyproject
+            assert project["version"] == "0.33.0", pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert project["version"] == "0.2.0", pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:

@@ -1,57 +1,50 @@
-# Upgrade to Hedron 0.32
+# Upgrade to Hedron 0.33
 
-This guide covers an application upgrade onto the **0.32.x** train
-(current tip **`v0.32.0`**). New applications should use
+This guide covers an application upgrade onto the **0.33.x** train
+(current tip **`v0.33.0`**). New applications should use
 [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.32.x graduates **`hedron-mcp`** to production-grade deny-by-default MCP
-projection (D-060 / RFC-0065): authenticated Streamable HTTP for an explicitly
-bounded Supported inventory. Install and mount grant no ambient authority.
-Mutating tools remain Experimental (`allow_mutations=True`).
+Hedron 0.33.x ships **`hedron-posit`** as the preferred Posit Workbench / Connect
+deployment facade (D-061 / RFC-0066). Native Connect GUID on Connect **2026.07.0**
+is Supported. Supported cookie bridge is **out of scope** (`BRIDGE_DECISION=drop_supported`).
+`hedron-workbench` remains a Supported compatibility package through at least 0.35.
 
-Prior trains remain in force: Workbench (`hedron-workbench` / `fastapi-workbench`),
-tooling-grade conformance packages, and `hedron migrate streamlit` from 0.29–0.31.
-No Supported CRUD/admin API removal is listed. Polling remains the production
-recommendation for live status. SSE, WebSocket, streaming, and navigation preload
-remain experimental. Flask/Django adapters are untouched.
+Prior trains remain in force: MCP (`hedron-mcp` `0.2.x`), Workbench ASGI
+(`fastapi-workbench` `1.x`), tooling-grade conformance packages, and
+`hedron migrate streamlit`. Polling remains the production recommendation for live
+status. SSE, WebSocket, streaming, and navigation preload remain experimental.
 
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.28.2,<0.29` through `>=0.31.0,<0.32`,
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.32.0,<0.33`,
    or the tip pin already).
-3. If you use Alpha `hedron-mcp` `0.1.x`, plan to re-register tools/resources and
-   stop relying on client-controlled identity headers — principals come from the
-   authenticated session or an explicit host `principal_resolver`.
-4. If you deploy on Posit Workbench, keep `hedron[workbench]` and the
-   `hedron-workbench run` launch command (unchanged by 0.32).
+3. If you use Posit Workbench or Connect, prefer `hedron[posit]` / `HedronPosit`.
+   Existing `hedron[workbench]` / `HedronWorkbench` imports continue to work.
+4. Do not select `ConnectCookieMode.authenticated_header_v1` — it fails closed in 0.33.
 
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.32.0,<0.33"
-# Optional MCP:
-python -m pip install -U "hedron[mcp]>=0.32.0,<0.33"
-# or
-python -m pip install -U "hedron-mcp>=0.2.0,<0.3"
+python -m pip install -U "hedron>=0.33.0,<0.34"
+python -m pip install -U "hedron[posit]>=0.33.0,<0.34"
+# compatibility:
+python -m pip install -U "hedron[workbench]>=0.33.0,<0.34"
 ```
 
-Workbench sessions (unchanged):
+## Posit migration sketch
 
-```bash
-python -m pip install -U "hedron[workbench]>=0.32.0,<0.33"
-hedron-workbench run app:app
+```python
+# Before (still supported)
+from hedron_workbench import HedronWorkbench
+app = HedronWorkbench(...)
+
+# Preferred
+from hedron_posit import HedronPosit, PositConfig
+app = HedronPosit(..., posit=PositConfig())
 ```
 
-## After upgrading
-
-1. Run your test suite and a smoke path through login → HTMX fragment → logout.
-2. If you mount MCP, confirm `enabled=True` only with explicit registrations and
-   host authn; verify DELETE `/mcp` and cancel behavior under your reverse proxy.
-3. Prefer [polling](live-interaction.md) for live job status unless you accept
-   experimental SSE/WebSocket risk.
-
-See [What’s new in 0.32](whats-new-0.32.md) · [What’s ready](whats-ready.md) ·
-[hedron-mcp](../packages/hedron-mcp.md).
+See [What’s new in 0.33](whats-new-0.33.md) · [Posit guide](posit.md) ·
+[What’s ready](whats-ready.md) · [release notes](release-notes.md).

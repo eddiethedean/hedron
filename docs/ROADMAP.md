@@ -2598,16 +2598,15 @@ branding, authentication/recovery policy, authorization, or compliance claims.
 
 ## 0.33 — Unified Posit deployment adapter (`v0.33.0`)
 
-**Status:** Planned (packet refine **complete**; RFC-0066 **Accepted**; Stage 1 ready); specification under
-[RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md), with staged work in
-[HEDRON_POSIT_033](implementation/HEDRON_POSIT_033.md) and cut evidence in
-[RELEASE_0_33](acceptance/RELEASE_0_33.md). Stage 0 licensed Connect probe complete
-(`BRIDGE_DECISION=drop_supported` on Connect 2026.07.0).
+**Status:** Published as `v0.33.0` (2026-08-13); `hedron-posit` **`0.33.0` Beta**.
 **Owning decision / RFC:** [D-061](DECISIONS.md) ·
-[RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md).
-**Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167). Close when all 0.33-owned
-gates are Verified and the package ships on the declared Beta compatibility line.
-**Baseline tip:** Published **`v0.32.0`**.
+[RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md) (**Accepted**).
+**Implementation plan:** [HEDRON_POSIT_033](implementation/HEDRON_POSIT_033.md).
+**Acceptance packet:** [RELEASE_0_33](acceptance/RELEASE_0_33.md).
+**Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167). Close when Published
+cut artifacts exist (match prior MCP/#89 practice).
+**Baseline tip:** Living tip **`v0.33.0`** (pre-cut baseline was Published `v0.32.0`).
+Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` on Connect 2026.07.0.
 
 **Outcome:** A new `hedron-posit` distribution provides one `HedronPosit` application facade that
 runs as ordinary Hedron, on Posit Workbench, and on Posit Connect. It owns Hedron-specific Posit

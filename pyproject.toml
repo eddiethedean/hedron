@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workspace"
-version = "0.32.0"
+version = "0.33.0"
 description = "Hedron monorepo workspace"
 requires-python = ">=3.11,<3.15"
 readme = "README.md"
@@ -27,6 +27,7 @@ members = [
     "packages/hedron-gradio",
     "packages/hedron-sim",
     "packages/hedron-workbench",
+    "packages/hedron-posit",
     "packages/fastapi-workbench",
 ]
 
@@ -49,6 +50,7 @@ dev = [
     "hedron-gradio",
     "hedron-sim",
     "hedron-workbench",
+    "hedron-posit",
     "fastapi-workbench",
     "pytest>=8.3",
     "httpx>=0.28",
@@ -104,6 +106,7 @@ hedron-mcp = { workspace = true }
 hedron-gradio = { workspace = true }
 hedron-sim = { workspace = true }
 hedron-workbench = { workspace = true }
+hedron-posit = { workspace = true }
 fastapi-workbench = { workspace = true }
 
 [tool.pytest.ini_options]
@@ -118,7 +121,7 @@ markers = [
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-workbench/src", "packages/fastapi-workbench/src", "tests", "examples"]
+src = ["packages/hedron-core/src", "packages/hedron/src", "packages/hedron-explorer/src", "packages/hedron-sample-kit/src", "packages/hedron-data/src", "packages/hedron-charts/src", "packages/hedron-flask/src", "packages/hedron-django/src", "packages/hedron-jinja/src", "packages/hedron-conformance/src", "packages/hedron-native/src", "packages/hedron-extras/src", "packages/hedron-notebook/src", "packages/hedron-mcp/src", "packages/hedron-gradio/src", "packages/hedron-sim/src", "packages/hedron-workbench/src", "packages/hedron-posit/src", "packages/fastapi-workbench/src", "tests", "examples"]
 extend-exclude = ["docs", "archive", "dist", ".venv"]
 
 [tool.ruff.lint]
@@ -150,6 +153,7 @@ include = [
     "packages/hedron-gradio/src",
     "packages/hedron-sim/src",
     "packages/hedron-workbench/src",
+    "packages/hedron-posit/src",
     "packages/fastapi-workbench/src",
 ]
 pythonVersion = "3.11"

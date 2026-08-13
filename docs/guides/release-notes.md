@@ -3,6 +3,23 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.33.0 — 2026-08-13
+
+Coordinated Beta train cut for unified Posit Workbench / Connect adapter
+(D-061 / RFC-0066).
+
+- Ships `hedron-posit` `0.33.0` Beta: `HedronPosit` + `PositConfig` / native Connect.
+- `hedron-workbench` `0.33.0` remains a Supported compatibility package (≥0.35).
+- Supported cookie bridge dropped after Stage 0 (`BRIDGE_DECISION=drop_supported`).
+- Coordinated `hedron` / core packages `0.33.0`; `fastapi-workbench` stays `1.x`;
+  MCP stays satellite `>=0.2.0,<0.3`.
+- Pin `hedron>=0.33.0,<0.34`.
+
+```bash
+python -m pip install -U "hedron>=0.33.0,<0.34"
+python -m pip install -U "hedron[posit]>=0.33.0,<0.34"
+```
+
 ## 0.32.0 — 2026-08-12
 
 Coordinated Beta train cut for production-grade deny-by-default MCP projection
@@ -13,11 +30,12 @@ Coordinated Beta train cut for production-grade deny-by-default MCP projection
 - Coordinated `hedron` / core packages `0.32.0`; MCP stays satellite `>=0.2.0,<0.3`.
 - Security hardening: session-bound MCP principals, formula-injection evasion strip,
   optional-session scope gates, MCP cancel/session lifecycle bounds.
-- Pin `hedron>=0.32.0,<0.33`.
+- Historical cut pin `hedron>=0.32.0,<0.33`. Install the current tip with the pin under
+  **0.33.0** above.
 
 ```bash
-python -m pip install -U "hedron>=0.32.0,<0.33"
-python -m pip install -U "hedron[mcp]>=0.32.0,<0.33"
+python -m pip install -U "hedron>=0.33.0,<0.34"
+python -m pip install -U "hedron[mcp]>=0.33.0,<0.34"
 ```
 
 ## 0.31.0 — 2026-08-12

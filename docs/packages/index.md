@@ -32,10 +32,11 @@ and the sample kit install directly. Charts require the compatible `0.1.10` sate
 | [hedron-conformance](hedron-conformance.md) | `hedron[conformance]` | Language-neutral conformance kit |
 | [hedron-charts](hedron-charts.md) | `hedron[charts]` | Visualization adapters; `>=0.1.10,<0.2` on Hedron 0.30 |
 | [hedron-native](hedron-native.md) | `hedron[native]` | Optional Rust HTML-escape acceleration |
-| [hedron-workbench](hedron-workbench.md) | `hedron[workbench]` | Posit Workbench / RStudio Server launch adapter |
+| [hedron-workbench](hedron-workbench.md) | `hedron[workbench]` | Posit Workbench compatibility facade (`HedronWorkbench`) |
+| [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
 
 ```bash
-pip install "hedron[data,dev]>=0.32.0,<0.33"
+pip install "hedron[data,dev,posit]>=0.33.0,<0.34"
 ```
 
 ## Alpha lines
@@ -54,7 +55,7 @@ Gradio interop are **Experimental** / Alpha — not production defaults.
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 
 ```bash
-pip install "hedron[charts]>=0.32.0,<0.33"
+pip install "hedron[charts]>=0.33.0,<0.34"
 pip install "hedron-sample-kit>=0.1.10,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 

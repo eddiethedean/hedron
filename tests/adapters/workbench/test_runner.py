@@ -55,7 +55,7 @@ def test_run_target_skips_discovery_when_uvicorn_root_path_set(
         discover_calls.append(kwargs)
         raise AssertionError("discover_rserver_url should not be called")
 
-    monkeypatch.setattr("hedron_workbench.runner.discover_rserver_url", boom)
+    monkeypatch.setattr("hedron_posit.runner.discover_rserver_url", boom)
 
     class FakeSock:
         def getsockname(self) -> tuple[str, int]:
@@ -67,7 +67,7 @@ def test_run_target_skips_discovery_when_uvicorn_root_path_set(
         def fileno(self) -> int:
             return 3
 
-    monkeypatch.setattr("hedron_workbench.runner.bind_loopback", lambda _h, _p: FakeSock())
+    monkeypatch.setattr("hedron_posit.runner.bind_loopback", lambda _h, _p: FakeSock())
 
     served: list[ResolvedDeployment] = []
 
@@ -80,9 +80,9 @@ def test_run_target_skips_discovery_when_uvicorn_root_path_set(
         )
         return object(), resolved
 
-    monkeypatch.setattr("hedron_workbench.runner.prepare_app", fake_prepare_app)
+    monkeypatch.setattr("hedron_posit.runner.prepare_app", fake_prepare_app)
     monkeypatch.setattr(
-        "hedron_workbench.runner.serve",
+        "hedron_posit.runner.serve",
         lambda _app, resolved, sock=None: served.append(resolved),
     )
 
@@ -110,7 +110,7 @@ def test_run_target_skips_discovery_when_hedron_resolved_mount_env_set(
         discover_calls.append(kwargs)
         raise AssertionError("discover_rserver_url should not be called")
 
-    monkeypatch.setattr("hedron_workbench.runner.discover_rserver_url", boom)
+    monkeypatch.setattr("hedron_posit.runner.discover_rserver_url", boom)
 
     class FakeSock:
         def getsockname(self) -> tuple[str, int]:
@@ -127,9 +127,9 @@ def test_run_target_skips_discovery_when_hedron_resolved_mount_env_set(
         RESOLVED_MOUNT_ENV: "/s/resolved/p/9",
     }
 
-    monkeypatch.setattr("hedron_workbench.runner.bind_loopback", lambda _h, _p: FakeSock())
+    monkeypatch.setattr("hedron_posit.runner.bind_loopback", lambda _h, _p: FakeSock())
     monkeypatch.setattr(
-        "hedron_workbench.runner.prepare_app",
+        "hedron_posit.runner.prepare_app",
         lambda **kwargs: (
             object(),
             resolve_deployment(
@@ -140,7 +140,7 @@ def test_run_target_skips_discovery_when_hedron_resolved_mount_env_set(
             ),
         ),
     )
-    monkeypatch.setattr("hedron_workbench.runner.serve", lambda *_a, **_k: None)
+    monkeypatch.setattr("hedron_posit.runner.serve", lambda *_a, **_k: None)
 
     run_target("tests.integration._workbench_sample:app", environ=env)
 

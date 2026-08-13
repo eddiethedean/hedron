@@ -8,10 +8,10 @@
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12]
 #   scripts/ci_checks.sh browser [--python 3.12]
-#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.32.0]
+#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.33.0]
 #   scripts/ci_checks.sh realwb [--python 3.12]
 #   scripts/ci_checks.sh packaging [--python 3.12]
-#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.32.0] [--with-browser]
+#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.33.0] [--with-browser]
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
@@ -22,7 +22,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.32.0}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.33.0}"
 WITH_BROWSER=0
 
 usage() {
@@ -223,7 +223,7 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/check_release_gate.py "$GATE_VERSION"
   run uv run --python "$PYTHON" python scripts/check_human_at_packet.py
   run uv run --python "$PYTHON" python scripts/check_hed_codes.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_32.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_33.py
 }
 
 cmd_realwb() {
@@ -234,7 +234,7 @@ cmd_realwb() {
 
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
-  run uv run --python "$PYTHON" python scripts/verify_pkg_32.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_33.py
 }
 
 cmd_all() {

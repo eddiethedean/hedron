@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.33.0] — 2026-08-13
+
+- Coordinated train bump for phase 0.33 (`hedron-posit` unified Posit adapter; D-061 / RFC-0066).
+
 ## [0.32.0] — 2026-08-12
 
 - Coordinated train bump for phase 0.32 MCP production-grade graduation.

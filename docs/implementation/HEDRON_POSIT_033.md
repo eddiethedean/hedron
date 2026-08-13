@@ -212,8 +212,8 @@ normalization must remain byte-idempotent and normalizer count must equal one.
 ## Definition of done
 
 - The same source-level `HedronPosit` app passes local, Workbench, and Supported native Connect.
-- The reference bridge repairs a reproduced legacy failure without admitting unowned cookies or
-  weakening native mode.
+- Supported `authenticated_header_v1` is **out of 0.33**: `BRIDGE-033` proves the Stage 0 drop
+  (`BRIDGE_DECISION=drop_supported`); the wire contract remains an Experimental extension point only.
 - Existing `HedronWorkbench` imports/CLI/configuration remain supported and behaviorally compatible.
 - No product path applies more than one normalizer or trusts an ambiguous product/header signal.
 - All package, security, performance, operations, documentation, and release gates are Verified

@@ -398,6 +398,19 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-WB-0008` | `HED_WB_0008` |
 | `HED-WB-0009` | `HED_WB_0009` |
 
+## HED-POSIT
+
+Unified Posit Workbench / Connect adapter (RFC-0066 / 0.33).
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-POSIT-0101` | `HED_POSIT_0101` |
+| `HED-POSIT-0301` | `HED_POSIT_0301` |
+| `HED-POSIT-0302` | `HED_POSIT_0302` |
+| `HED-POSIT-0303` | `HED_POSIT_0303` |
+| `HED-POSIT-0304` | `HED_POSIT_0304` |
+| `HED-POSIT-0401` | `HED_POSIT_0401` |
+
 ## HED-MIG-ST
 
 Streamlit AST migrator findings (RFC-0061 / `MIGRATE-031`).

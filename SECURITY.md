@@ -5,7 +5,7 @@ The canonical security policy for GitHub and adopters is
 
 Summary:
 
-- Supported lines: **`0.32.x` (current published train — `v0.32.0`)**; prefer-upgrade:
+- Supported lines: **`0.33.x` (current published train — `v0.33.0`)**; prefer-upgrade:
   `0.31.x` (best-effort through approximately 2027-02-12). No multi-year LTS — see
   [docs/SECURITY.md](docs/SECURITY.md) for the full table
 - **Do not** open public issues for vulnerabilities — use GitHub

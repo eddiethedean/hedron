@@ -5,77 +5,77 @@
 
 [[evidence]]
 id = "CONTRACT-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_contract_033.py"
 ci_job = "test"
 owner = "hedron-posit"
 
 [[evidence]]
 id = "PACKAGE-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_package_033.py"
 ci_job = "packaging"
 owner = "hedron-posit"
 
 [[evidence]]
 id = "PARITY-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_parity_033.py"
 ci_job = "test"
 owner = "hedron-workbench"
 
 [[evidence]]
 id = "WORKBENCH-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_workbench_033.py"
 ci_job = "test"
 owner = "hedron-posit"
 
 [[evidence]]
 id = "CONNECT-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_connect_033.py"
 ci_job = "test"
 owner = "hedron-posit"
 
 [[evidence]]
 id = "BRIDGE-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_bridge_033.py"
 ci_job = "test"
 owner = "hedron-posit"
 
 [[evidence]]
 id = "PERF-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_perf_033.py"
 ci_job = "test"
 owner = "hedron-posit"
 
 [[evidence]]
 id = "REVIEW-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_review_033.py"
 ci_job = "test"
 owner = "hedron-posit"
 
 [[evidence]]
 id = "DOCS-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_docs_033.py"
-ci_job = "docs"
+ci_job = "quality"
 owner = "hedron-posit"
 
 [[evidence]]
 id = "REGRESS-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_regress_033.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-033"
-state = "Planned"
+state = "Verified"
 command = "python scripts/verify_pkg_33.py"
 ci_job = "packaging"
 owner = "hedron"

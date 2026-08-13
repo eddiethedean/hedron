@@ -1,31 +1,27 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.32 **Published** as `v0.32.0` (2026-08-12). Prior: 0.31 **Published** as `v0.31.0` (2026-08-12).
-Living tip = `v0.32.0`.
-**Date:** 2026-08-12
+**Roadmap position:** phase 0.33 **Published** as `v0.33.0` (2026-08-13). Prior: 0.32 **Published** as `v0.32.0` (2026-08-12).
+Living tip = `v0.33.0`.
+**Date:** 2026-08-13
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` `0.32.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
+`hedron-workbench` / `hedron-posit` `0.33.0`; Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.1.11`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.32.0`; Alpha — `hedron-gradio` `0.1.0`
 (MIT, D-033).
 **Package maturity:** Beta — `hedron`, `hedron-core`, `hedron-explorer`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-conformance`, `hedron-extras`,
-`hedron-workbench`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
+`hedron-workbench`, `hedron-posit`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
 `hedron-sim`, `hedron-mcp`; Alpha — `hedron-gradio`.
 
-**Phase focus:** Living train is **0.32** (D-060 / RFC-0065) — production-grade
-deny-by-default MCP projection (`hedron-mcp` `0.2.0` Beta;
-`release-gate-0.32.toml` Verified; published tip `v0.32.0`). Prior Published **0.31**
-(tooling + Streamlit migrator as `v0.31.0`) remains in force. **Next** = **0.33 Planned**
-(unified `hedron-posit` Workbench / Connect adapter; **RFC-0066 Accepted** / D-061;
-[#167](https://github.com/eddiethedean/hedron/issues/167)) — **packet refine complete**; Stage 1
-package extraction may begin. Phase owner is the Posit adapter (`CONTRACT-033`…`PKG-033`).
+**Phase focus:** Living train is **0.33** (D-061 / RFC-0066) — unified `hedron-posit`
+Workbench / Connect adapter (`release-gate-0.33.toml` Verified; published tip `v0.33.0`).
+Prior Published **0.32** (MCP production-grade as `v0.32.0`) remains in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
-Connect 2026.07.0). The
+Connect 2026.07.0); Supported bridge is out of 0.33 scope. The
 [default presentation quality program](implementation/DEFAULT_PRESENTATION_033_PLUS.md) is
-**cross-cutting and must not block** Stage 1+ Posit adapter work.
+**cross-cutting and must not block** Posit adapter work.
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol

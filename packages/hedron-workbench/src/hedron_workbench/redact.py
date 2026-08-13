@@ -1,8 +1,8 @@
-"""Redact session/project IDs and token-like values before logs or JSON."""
+"""Compatibility re-export from hedron_posit.redact."""
 
 from __future__ import annotations
 
-from fastapi_workbench.redact import (
+from hedron_posit.redact import (
     redact_path,
     redact_query,
     redact_record,
