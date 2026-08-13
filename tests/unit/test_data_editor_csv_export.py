@@ -55,7 +55,18 @@ def test_editor_js_exports_csv_helpers(node_bin: str) -> None:
         node_bin,
         f"""
 const api = require({json.dumps(str(EDITOR_JS))});
-const vectors = ["=2+2", "+1", "-1", "@cmd", "\\t=1", "safe", 'a\\"b', "x,y", "line\\r\\nbreak"];
+const vectors = [
+  "=2+2", "+1", "-1", "@cmd", "\\t=1", "safe", 'a\\"b', "x,y", "line\\r\\nbreak",
+  " =HYPERLINK(\\"http://evil\\",\\"x\\")",
+  "\\u0000=cmd",
+  "\\ufeff=CMD",
+  "\\u00a0=cmd",
+  "\\n=cmd",
+  "\\uff1dcmd",
+  "\\uff0b1",
+  "\\uff0d1",
+  "\\uff20cmd",
+];
 for (const v of vectors) {{
   process.stdout.write(JSON.stringify(api.sanitizeFormulaCell(v)) + "\\n");
 }}
@@ -66,13 +77,30 @@ process.stdout.write(api.buildCsv(
 """,
     )
     lines = out.splitlines()
-    sanitized = lines[:9]
-    csv_body = "\n".join(lines[9:])
-
-    expected = [
-        _reject_or_sanitize(v, formula_policy="sanitize")
-        for v in ["=2+2", "+1", "-1", "@cmd", "\t=1", "safe", 'a"b', "x,y", "line\r\nbreak"]
+    vectors = [
+        "=2+2",
+        "+1",
+        "-1",
+        "@cmd",
+        "\t=1",
+        "safe",
+        'a"b',
+        "x,y",
+        "line\r\nbreak",
+        ' =HYPERLINK("http://evil","x")',
+        "\x00=cmd",
+        "\ufeff=CMD",
+        "\xa0=cmd",
+        "\n=cmd",
+        "\uff1dcmd",
+        "\uff0b1",
+        "\uff0d1",
+        "\uff20cmd",
     ]
+    sanitized = lines[: len(vectors)]
+    csv_body = "\n".join(lines[len(vectors) :])
+
+    expected = [_reject_or_sanitize(v, formula_policy="sanitize") for v in vectors]
     assert [json.loads(item) for item in sanitized] == expected
 
     assert csv_body.splitlines()[0] == "Name"

@@ -21,11 +21,39 @@ __all__ = [
 ]
 
 
+def _strip_formula_evasion_prefix(value: str) -> str:
+    """Drop leading BOM, ASCII controls, and Unicode whitespace used to evade checks."""
+    index = 0
+    length = len(value)
+    while index < length:
+        char = value[index]
+        code = ord(char)
+        if char == "\ufeff" or code < 32 or code == 127 or char.isspace():
+            index += 1
+            continue
+        break
+    return value[index:]
+
+
+# ASCII formula prefixes plus common fullwidth lookalikes used to bypass filters.
+_DANGEROUS_FORMULA_PREFIXES = frozenset(
+    {
+        "=",
+        "+",
+        "-",
+        "@",
+        "\uff1d",  # fullwidth equals
+        "\uff0b",  # fullwidth plus
+        "\uff0d",  # fullwidth hyphen-minus
+        "\uff20",  # fullwidth commercial at
+    }
+)
+
+
 def _reject_or_sanitize(value: str, *, formula_policy: str) -> str:
-    # Classic spreadsheet/CSV injection prefixes.
-    dangerous = (
-        value[:1] in {"=", "+", "-", "@"} or value.startswith("\t") or value.startswith("\r")
-    )
+    # Classic spreadsheet/CSV injection prefixes, after stripping evasion padding.
+    normalized = _strip_formula_evasion_prefix(value)
+    dangerous = bool(normalized) and normalized[:1] in _DANGEROUS_FORMULA_PREFIXES
     if dangerous:
         if formula_policy == "reject":
             raise error(
@@ -35,7 +63,8 @@ def _reject_or_sanitize(value: str, *, formula_policy: str) -> str:
                 remediation="Strip formulas before import or use formula_policy='sanitize'.",
             )
         if formula_policy == "sanitize":
-            return "'" + value.lstrip("\t\r")
+            # Prefix the neutralized residual so Excel/ODS treat it as text.
+            return "'" + normalized
         raise ValueError(f"Unknown formula_policy {formula_policy!r}")
     return value
 
