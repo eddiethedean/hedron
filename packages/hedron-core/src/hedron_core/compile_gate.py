@@ -26,7 +26,9 @@ _force_allow: ContextVar[bool] = ContextVar("hedron_force_runtime_compile", defa
 def is_production_env(*, production: bool | None = None) -> bool:
     if production is not None:
         return production
-    return os.environ.get("HEDRON_ENV", "").lower() in {"prod", "production"}
+    # Strip so trailing/leading whitespace from env files / orchestrators cannot
+    # silently disable production gates (see #195).
+    return os.environ.get("HEDRON_ENV", "").strip().lower() in {"prod", "production"}
 
 
 def set_runtime_compile_allowed(allowed: bool) -> None:
