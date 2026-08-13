@@ -224,6 +224,7 @@ nav:
       - Author plugins: guides/plugin-authoring.md
       - Model demos: guides/model-demos.md
     - Migrate from Streamlit: guides/streamlit-migration.md
+    - Hands-on team training: guides/training-streamlit-to-hedron-posit.md
     - FAQ: guides/faq.md
     - Error codes: guides/error-codes.md
   - Examples:

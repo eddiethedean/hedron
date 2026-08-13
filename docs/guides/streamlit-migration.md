@@ -25,6 +25,7 @@ action routes.
 | What replaces reruns, callbacks, and `st.session_state`? | [Execution and state](streamlit-execution-state.md) |
 | What replaces a specific `st.*` API? | [Component migration matrix](streamlit-migration-matrix.md) |
 | How do I test, deploy, and cut over safely? | [Production cutover](streamlit-cutover.md) |
+| Can I run a team workshop on Posit? | [Hands-on training guide](training-streamlit-to-hedron-posit.md) |
 | Can I run a finished migration? | [`examples/streamlit-migration`](https://github.com/eddiethedean/hedron/tree/main/examples/streamlit-migration) |
 
 ## Should you migrate?
