@@ -72,7 +72,7 @@ not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
   a blanket feature promotion or a scheduled `1.0`; see the
   [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
-## Honest gaps on the current train (0.32)
+## Honest gaps on the current train (0.33.x)
 
 - Current **published** PyPI train is **0.33.x** (last `v0.33.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /

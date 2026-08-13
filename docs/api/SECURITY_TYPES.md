@@ -32,9 +32,9 @@ body = TrustedHtml.reviewed(sanitized_html, source="application-sanitizer:v1")
 `TrustedHtml.nh3(value, *, tags=None)` sanitizes HTML with [nh3](https://github.com/messense/nh3) and records `source` as `nh3:<version>`. Requires the optional dependency:
 
 ```bash
-pip install "hedron[sanitize]>=0.32.0,<0.33"
+pip install "hedron[sanitize]>=0.33.0,<0.34"
 # or
-pip install "hedron[markdown]>=0.32.0,<0.33"
+pip install "hedron[markdown]>=0.33.0,<0.34"
 ```
 
 Missing nh3 raises `HED-SEC-0020` with that remediation. Integrations with supported sanitizers may provide equivalent named constructors that record a policy/version.
@@ -118,7 +118,7 @@ These values are immutable and safe to compare, but their representations never 
 |---|---|---|
 | Invalid / dangerous URL | `HED-SEC-0001` (and related) | Use `SafeUrl.parse` with the correct `UrlPurpose`; avoid `javascript:` and credentialed URLs |
 | URL purpose mismatch for attribute | `HED-SEC-0006` | Match purpose to the attribute (`NAVIGATION`, `ASSET`, `FORM_ACTION`, `REDIRECT`) |
-| Missing nh3 for `TrustedHtml.nh3` | `HED-SEC-0020` | `pip install "hedron[sanitize]>=0.32.0,<0.33"` (or `[markdown]`) |
+| Missing nh3 for `TrustedHtml.nh3` | `HED-SEC-0020` | `pip install "hedron[sanitize]>=0.33.0,<0.34"` (or `[markdown]`) |
 | Secret leaked via str/repr | Redacted | Call `reveal()` only in trusted application code |
 | `html.raw(...)` without `TrustedHtml` | Rejected | Wrap reviewed markup with `TrustedHtml.reviewed` / `.nh3` |
 | External redirect without policy | Rejected | Set `allow_external_redirects=True` on an explicit `SecurityPolicy` |

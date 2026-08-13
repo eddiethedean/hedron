@@ -30,7 +30,7 @@ Coordinated Beta train cut for production-grade deny-by-default MCP projection
 - Coordinated `hedron` / core packages `0.32.0`; MCP stays satellite `>=0.2.0,<0.3`.
 - Security hardening: session-bound MCP principals, formula-injection evasion strip,
   optional-session scope gates, MCP cancel/session lifecycle bounds.
-- Historical cut pin `hedron>=0.32.0,<0.33`. Install the current tip with the pin under
+- Historical cut pin `hedron>=0.33.0,<0.34`. Install the current tip with the pin under
   **0.33.0** above.
 
 ```bash
@@ -50,7 +50,7 @@ Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061).
   **0.32.0** above.
 
 ```bash
-python -m pip install -U "hedron>=0.32.0,<0.33"
+python -m pip install -U "hedron>=0.33.0,<0.34"
 hedron migrate streamlit streamlit_app.py --analyze-only --format text
 ```
 

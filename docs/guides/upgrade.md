@@ -19,7 +19,7 @@ status. SSE, WebSocket, streaming, and navigation preload remain experimental.
 ## Before upgrading
 
 1. Commit or back up your lockfile.
-2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.32.0,<0.33`,
+2. Confirm you are on a recent pin (`hedron>=0.29.0,<0.30` through `>=0.33.0,<0.34`,
    or the tip pin already).
 3. If you use Posit Workbench or Connect, prefer `hedron[posit]` / `HedronPosit`.
    Existing `hedron[workbench]` / `HedronWorkbench` imports continue to work.

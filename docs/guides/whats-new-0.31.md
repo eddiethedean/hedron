@@ -2,7 +2,7 @@
 
 !!! note "Living train is 0.32"
 
-    Pin `hedron>=0.32.0,<0.33`. See [What’s new in 0.32](whats-new-0.32.md).
+    Pin `hedron>=0.33.0,<0.34`. See [What’s new in 0.32](whats-new-0.32.md).
 
 **Published** as `v0.31.0`. Historical pin: `hedron>=0.31.0,<0.32`.
 
@@ -22,7 +22,7 @@ conformance tooling and ships a reviewable Streamlit AST migration assistant.
 ## Upgrade
 
 ```bash
-python -m pip install -U "hedron>=0.32.0,<0.33"
+python -m pip install -U "hedron>=0.33.0,<0.34"
 # Optional tooling:
 python -m pip install -U "hedron[conformance]>=0.32.0,<0.33"
 python -m pip install -U "hedron-sample-kit>=0.1.10,<0.2"
