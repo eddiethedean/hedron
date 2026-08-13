@@ -14,6 +14,9 @@
   subsequent requests reject principal mismatches on an existing session (#173).
 - Cap and TTL-evict process-local cancel ids, sessions, and rate-bucket keys so
   long-lived MCP workers cannot retain unbounded memory (#172).
+- ``notifications/cancelled`` marks the client JSON-RPC ``requestId`` so matching
+  ``tools/call`` / ``resources/read`` requests fail closed; cancel no longer
+  tears down the MCP session. Async tool handlers remain unsupported (#171).
 
 ## [0.2.0]
 
