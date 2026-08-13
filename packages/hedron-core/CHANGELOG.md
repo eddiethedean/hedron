@@ -4,6 +4,11 @@
 
 - Coordinated Beta train cut for whole-fleet production-grade closure (D-063 / RFC-0068).
 
+### Fixed
+
+- ``is_production_env`` and CSRF Secure env helpers strip whitespace so padded
+  ``HEDRON_ENV`` / ``FLASK_ENV`` values cannot silently disable production gates (#195).
+
 ## [0.34.0] — 2026-08-13
 
 ### Added

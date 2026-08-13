@@ -31,7 +31,9 @@ def csrf_cookie_should_be_secure(
     if is_production_env():
         return True
     for name in extra_production_env_vars:
-        if (os.environ.get(name) or "").lower() == "production":
+        # Strip mirrors ``is_production_env`` so ``FLASK_ENV=production `` still
+        # enables Secure cookies (#195).
+        if (os.environ.get(name) or "").strip().lower() == "production":
             return True
     if forwarded_proto_https_trusted:
         return True
