@@ -21,10 +21,10 @@ Baseline: Published **`v0.34.0`**. Cut: **`v0.35.0`**.
 Independent satellites stay on their own lines (`hedron-mcp` / `hedron-gradio` `>=0.2.0,<0.3`,
 `hedron-charts` / tooling `0.1.x`, `fastapi-workbench` `>=1,<2`).
 
-## Offline / mixed-version
+## offline / mixed-version
 
-- Offline wheelhouse rehearsal: [`fleet-supply-035/OFFLINE_INSTALL.md`](fleet-supply-035/OFFLINE_INSTALL.md)
-- Mixed-version: train packages must not be mixed with older train floors; satellite majors remain distinct from the train pin (enforced in `test_solver_035.py`)
+- offline wheelhouse rehearsal: [`fleet-supply-035/OFFLINE_INSTALL.md`](fleet-supply-035/OFFLINE_INSTALL.md)
+- mixed-version: train packages must not be mixed with older train floors; satellite majors remain distinct from the train pin (enforced in `test_solver_035.py`)
 - Uninstall / absence of optional satellites must add no core cost (inventory `excluded` honesty)
 
 ## Behavior notes

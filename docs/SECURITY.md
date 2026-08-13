@@ -2,25 +2,26 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.34.x`). Older `0.x` lines should
+Security fixes land on the **current published train** (`0.35.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.32.x`) continues through approximately **2027-02-12** — after that, upgrade
+minor (`0.34.x`) continues through approximately **2027-08-13** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.34.x` | Yes (current living tip — pin `>=0.35.0,<0.36`; published `v0.34.0`) |
-| `0.32.x` | Prefer upgrade to `0.34.x` (best-effort security triage through approximately 2027-02-12) |
-| `0.31.x` | Prefer upgrade to `0.34.x` |
-| `0.30.x` | Prefer upgrade to `0.34.x` |
-| `0.29.x` | Prefer upgrade to `0.34.x` |
-| `0.28.x` | Prefer upgrade to `0.34.x` |
-| `0.27.x` | Prefer upgrade to `0.34.x` |
-| `0.26.x` | Prefer upgrade to `0.34.x` |
-| `0.25.x` | Prefer upgrade to `0.34.x` |
-| `0.24.x` | Prefer upgrade to `0.34.x` |
-| `0.23.x` | Prefer upgrade to `0.34.x` |
-| `0.22.x` | Prefer upgrade to `0.34.x` |
+| `0.35.x` | Yes (current living tip — pin `>=0.35.0,<0.36`; published `v0.35.0`) |
+| `0.34.x` | Prefer upgrade to `0.35.x` (best-effort security triage through approximately 2027-08-13) |
+| `0.32.x` | Prefer upgrade to `0.35.x` |
+| `0.31.x` | Prefer upgrade to `0.35.x` |
+| `0.30.x` | Prefer upgrade to `0.35.x` |
+| `0.29.x` | Prefer upgrade to `0.35.x` |
+| `0.28.x` | Prefer upgrade to `0.35.x` |
+| `0.27.x` | Prefer upgrade to `0.35.x` |
+| `0.26.x` | Prefer upgrade to `0.35.x` |
+| `0.25.x` | Prefer upgrade to `0.35.x` |
+| `0.24.x` | Prefer upgrade to `0.35.x` |
+| `0.23.x` | Prefer upgrade to `0.35.x` |
+| `0.22.x` | Prefer upgrade to `0.35.x` |
 | `0.20.x` | Prefer upgrading to the current train |
 | `0.19.x` | Prefer upgrading to the current train |
 | `0.18.x` | Prefer upgrading to the current train |
@@ -53,7 +54,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes land on the current published train (`0.34.x`); see Supported versions above.
+4. Fixes land on the current published train (`0.35.x`); see Supported versions above.
 
 ### Alternate contact
 

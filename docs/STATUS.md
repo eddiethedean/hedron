@@ -15,7 +15,7 @@ Living tip = `v0.35.0`.
 `hedron-workbench`, `hedron-posit`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
 `hedron-sim`, `hedron-mcp`, `hedron-gradio`.
 
-**Phase focus:** Living train is **0.35** (D-062 / RFC-0067) — whole-fleet closure (`release-gate-0.35.toml` Verified; published tip `v0.35.0`).
+**Phase focus:** Living train is **0.35** (D-063 / RFC-0068) — whole-fleet closure (`release-gate-0.35.toml` Verified; published tip `v0.35.0`).
 Prior Published **0.34** Gradio / **0.33** (unified Posit adapter as `v0.33.0`) and **0.32** (MCP as `v0.32.0`) remain in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.

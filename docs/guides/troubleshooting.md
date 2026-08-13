@@ -90,7 +90,7 @@ that port in the browser.
 
 **Fix:** Check `python -c "import hedron; print(hedron.__version__)"`. Upgrade with
 `pip install -U "hedron>=0.35.0,<0.36"` (or `uv add "hedron>=0.35.0,<0.36"`). The current
-train is **0.34.x** (Published; last published PyPI/git = `v0.34.0`)—see
+train is **0.35.x** (Published; last published PyPI/git = `v0.35.0`)—see
 [What's ready](whats-ready.md) and the [public roadmap](roadmap.md). The `v0.25.2` patch
 hardened mount `..` / `%2e`, RedisStatusStore / Celery–RQ cancel CAS, adapter prepare under
 a running loop, SSE/streaming `Cache-Control`, and root-relative SafeUrl/Hx attrs — still

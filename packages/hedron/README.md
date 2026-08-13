@@ -120,7 +120,7 @@ uv add "hedron>=0.35.0,<0.36" "uvicorn[standard]"
 python -m pip install "hedron>=0.35.0,<0.36" "uvicorn[standard]"
 ```
 
-**Package maturity:** Beta · **Train:** `0.34.x` · last published `0.35.0` ·
+**Package maturity:** Beta · **Train:** `0.35.x` · last published `0.35.0` ·
 pin `>=0.35.0,<0.36`
 
 Before deploying, read

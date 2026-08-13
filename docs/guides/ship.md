@@ -1,6 +1,6 @@
 # Ship a Hedron app
 
-**Canonical adopter checklist** for shipping on the living **0.34** train. Capability
+**Canonical adopter checklist** for shipping on the living **0.35** train. Capability
 maturity lives only on [What’s ready](whats-ready.md). Evaluators:
 [Evaluate Hedron](evaluate.md).
 

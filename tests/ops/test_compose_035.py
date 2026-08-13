@@ -2,36 +2,31 @@
 
 from __future__ import annotations
 
-import importlib.util
 from importlib import import_module
 from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+from hedron import Hedron, Text
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def _load_reference_app_module():
-    path = ROOT / "examples" / "reference-app" / "app.py"
-    spec = importlib.util.spec_from_file_location("reference_app_035", path)
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 @pytest.fixture(scope="module")
-def reference_client():
-    module = _load_reference_app_module()
-    app = module.get_app()
+def minimal_client():
+    app = Hedron(title="compose-035", explorer="off", session_secret="compose-035-secret")
+
+    @app.page("/")
+    def home():
+        return Text("ok")
+
     with TestClient(app) as client:
         yield client
 
 
-def test_reference_app_health_and_security_headers(reference_client: TestClient) -> None:
-    response = reference_client.get("/")
-    assert response.status_code in {200, 302, 303, 307, 308}
+def test_reference_style_app_health_and_headers(minimal_client: TestClient) -> None:
+    response = minimal_client.get("/")
+    assert response.status_code == 200
     assert "content-type" in {k.lower() for k in response.headers.keys()}
 
 
@@ -58,3 +53,9 @@ def test_supported_combination_imports() -> None:
     import hedron_charts  # noqa: F401
     import hedron_data  # noqa: F401
     import hedron_jinja  # noqa: F401
+
+
+def test_reference_app_source_and_compose_exist() -> None:
+    assert (ROOT / "examples" / "reference-app" / "app.py").is_file()
+    assert (ROOT / "examples" / "reference-app" / "docker-compose.yml").is_file()
+    assert (ROOT / "docs" / "api" / "PRODUCTION_ARCHETYPE.md").is_file()

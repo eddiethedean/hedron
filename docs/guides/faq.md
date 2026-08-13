@@ -8,7 +8,7 @@ pip install "hedron>=0.35.0,<0.36"
 uv add "hedron>=0.35.0,<0.36"
 ```
 
-That is the current published line (`v0.34.x`). Package maturity is **Beta** — see
+That is the current published line (`v0.35.x`). Package maturity is **Beta** — see
 [How to read](../getting-started/how-to-read.md). Pin with an upper bound:
 `hedron>=0.35.0,<0.36`. Using `>=0.24.0` alone (no upper bound) can resolve a future
 **0.25+** breaking train. See [What’s ready today](whats-ready.md) and the

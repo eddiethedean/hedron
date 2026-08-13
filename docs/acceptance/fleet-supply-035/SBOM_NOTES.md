@@ -15,7 +15,7 @@ asset and stability inventories. Dependency vulnerability triage:
 python scripts/dep_audit.py
 ```
 
-## Retention
+## retention
 
 - Cut-time evidence bundles are retained with the GitHub Release assets for `v0.35.0`
 - Prior train bundles remain available on historical tags (`v0.34.0`, …)
