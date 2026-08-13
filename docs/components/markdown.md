@@ -23,7 +23,7 @@ The preview is a local docs simulation (not a running Hedron server). Interactiv
 Install the optional provider before importing this component:
 
 ```bash
-pip install "hedron[markdown]>=0.34.0,<0.35"
+pip install "hedron[markdown]>=0.35.0,<0.36"
 ```
 
 ## Basic use

@@ -1,3 +1,9 @@
+## [0.35.0] — 2026-08-13
+
+### Added
+
+- Coordinated Beta train cut for whole-fleet production-grade closure (D-063 / RFC-0068).
+
 ## [0.34.0] — 2026-08-13
 
 ### Added

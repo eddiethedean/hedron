@@ -1,0 +1,28 @@
+# REVIEW-035 disposition
+
+critical_high_open = false
+review_date = "2026-08-13"
+package = "hedron"
+package_version = "0.35.0"
+baseline = "v0.34.0"
+
+[[findings]]
+id = "REV-035-001"
+severity = "info"
+status = "accepted"
+title = "Default presentation gallery remains deferred"
+notes = "PRESENT-034 folds into FLEET-035/DOCS-035 honesty; gallery not implemented in 0.35"
+
+[[findings]]
+id = "REV-035-002"
+severity = "info"
+status = "accepted"
+title = "Experimental live transports stay incubator"
+notes = "polling_only remains; live SSE/WS not promoted"
+
+[[findings]]
+id = "REV-035-003"
+severity = "info"
+status = "accepted"
+title = "Tooling package maturity labels reconciled to Beta tooling-grade"
+notes = "notebook/sample-kit/sim/runtimes keep tooling Supported scope from 0.31"

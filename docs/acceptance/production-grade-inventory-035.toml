@@ -156,7 +156,7 @@ excluded = ["required_for_correctness"]
 
 [hedron-sample-kit]
 owner = "hedron-sample-kit"
-maturity = "alpha"
+maturity = "beta"
 channel = "pypi"
 pin = ">=0.1.10,<0.2"
 evidence = "release-gate-0.31.toml"
@@ -164,11 +164,11 @@ disposition = "production_grade"
 supported = ["external_plugin_exemplar", "entry_point_discovery"]
 experimental = []
 excluded = ["required_runtime_dependency"]
-notes = "Tooling-grade Supported role from 0.31; package maturity label remains Alpha until DOCS-035 reconcile"
+notes = "Tooling-grade Supported role from 0.31; package maturity Beta tooling-grade at 0.35 reconcile"
 
 [hedron-sim]
 owner = "hedron-sim"
-maturity = "alpha"
+maturity = "beta"
 channel = "pypi"
 pin = ">=0.1.0,<0.2"
 evidence = "release-gate-0.31.toml"
@@ -176,11 +176,11 @@ disposition = "production_grade"
 supported = ["deterministic_offline_fragments", "declared_htmx_subset"]
 experimental = []
 excluded = ["full_browser_htmx_emulation"]
-notes = "Tooling-grade Supported role from 0.31; package maturity label remains Alpha until DOCS-035 reconcile"
+notes = "Tooling-grade Supported role from 0.31; package maturity Beta tooling-grade at 0.35 reconcile"
 
 [hedron-notebook]
 owner = "hedron-notebook"
-maturity = "alpha"
+maturity = "beta"
 channel = "pypi"
 pin = ">=0.1.0,<0.2"
 evidence = "release-gate-0.31.toml"
@@ -247,7 +247,7 @@ excluded = ["hedron_dependency", "hedron_1_0_claim"]
 
 [hedron-runtime-node]
 owner = "hedron-runtime-node"
-maturity = "alpha"
+maturity = "beta"
 channel = "npm"
 pin = "0.32.0"
 evidence = "release-gate-0.31.toml"
@@ -255,11 +255,11 @@ disposition = "production_grade"
 supported = ["published_signed_evaluator", "python_reference_parity"]
 experimental = []
 excluded = ["application_server", "full_hedron_port"]
-notes = "Tooling-grade evaluator; package maturity Alpha until DOCS-035 reconcile"
+notes = "Tooling-grade evaluator; package maturity Beta tooling-grade at 0.35 reconcile"
 
 [hedron-runtime-java]
 owner = "hedron-runtime-java"
-maturity = "alpha"
+maturity = "beta"
 channel = "maven"
 pin = "0.32.0"
 evidence = "release-gate-0.31.toml"
@@ -267,7 +267,7 @@ disposition = "production_grade"
 supported = ["published_signed_evaluator", "python_reference_parity"]
 experimental = []
 excluded = ["application_server", "full_hedron_port"]
-notes = "Tooling-grade evaluator; package maturity Alpha until DOCS-035 reconcile"
+notes = "Tooling-grade evaluator; package maturity Beta tooling-grade at 0.35 reconcile"
 
 [experimental_namespaces]
 owner = "hedron"

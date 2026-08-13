@@ -12,7 +12,7 @@ regions), then embed them in static docs. A small JavaScript runtime intercepts
 `hx-*` attributes and serves pre-rendered fragment HTML — no FastAPI process
 required.
 
-**Package maturity:** Alpha (`0.1.x`) · pin `>=0.1.0,<0.2` and expect churn
+**Package maturity:** Beta tooling-grade (`0.1.x`) · pin `>=0.1.0,<0.2`
 
 ## Install
 

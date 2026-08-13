@@ -76,7 +76,7 @@ from hedron_data.sqlalchemy_source import SQLAlchemyDataSource
 from hedron_data.table import DataTable
 from hedron_data.views import SavedView
 
-__version__ = "0.34.0"
+__version__ = "0.35.0"
 
 __all__ = [
     "AG_GRID_BACKEND",

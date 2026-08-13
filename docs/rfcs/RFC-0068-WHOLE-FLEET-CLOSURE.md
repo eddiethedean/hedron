@@ -1,6 +1,6 @@
 # RFC-0068: Whole-fleet production-grade closure
 
-**Status:** Draft
+**Status:** Accepted
 
 **Target phase:** 0.35 (`v0.35.0` train)
 

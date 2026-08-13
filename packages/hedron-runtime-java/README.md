@@ -4,14 +4,14 @@
 [![JDK](https://img.shields.io/badge/JDK-11%2B-brightgreen.svg)](https://openjdk.org/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 
-Experimental Java Hedron conformance runtime.
+Tooling-grade Java Hedron conformance runtime.
 
 Minimal evaluator for the published [`hedron-conformance`](https://pypi.org/project/hedron-conformance/)
 fixtures. Compiles a single Java source with `javac --release 11` and runs the
 bundled portable fixture. Lives outside the uv Python workspace and is **not**
 published to Maven Central.
 
-**Maturity:** Experimental / Alpha
+**Maturity:** Beta tooling-grade · portable Java conformance evaluator
 
 ## Requirements
 

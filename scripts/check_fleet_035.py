@@ -18,6 +18,8 @@ from _gate_035 import (  # noqa: E402
     fail_errors,
     require_files,
     require_inventory_shape,
+    rfc_is_accepted,
+    run_pytest,
 )
 
 
@@ -25,12 +27,13 @@ def main() -> int:
     errors: list[str] = []
     require_files([RFC, RELEASE_PACKET, IMPLEMENTATION, GATE, INVENTORY, REVIEW_BRIEF], errors)
     require_inventory_shape(errors)
-    text = INVENTORY.read_text(encoding="utf-8") if INVENTORY.is_file() else ""
-    if "present_034_status" not in text:
-        errors.append("inventory must record present_034_status")
+    if not rfc_is_accepted():
+        errors.append("RFC-0068 must be Accepted before FLEET-035 can pass")
     if fail_errors(errors, "FLEET-035"):
         return 1
-    print("ok: FLEET-035 (packet refine shape)")
+    if run_pytest(["tests/ops/test_fleet_035.py"], "FLEET-035"):
+        return 1
+    print("ok: FLEET-035")
     return 0
 
 

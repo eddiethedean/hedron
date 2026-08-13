@@ -4,13 +4,13 @@
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
 [![CI](https://img.shields.io/github/actions/workflow/status/eddiethedean/hedron/ci.yml?branch=main&label=CI)](https://github.com/eddiethedean/hedron/actions/workflows/ci.yml)
 
-Experimental Node.js Hedron conformance runtime.
+Tooling-grade Node.js Hedron conformance runtime.
 
 Minimal evaluator for the published [`hedron-conformance`](https://pypi.org/project/hedron-conformance/)
 fixtures. **Not** a FastAPI port — only the portable IR capabilities required by
 the kit. Lives outside the uv Python workspace and is **not** published to npm.
 
-**Maturity:** Experimental / Alpha · monorepo package version `0.14.0`
+**Maturity:** Beta tooling-grade · monorepo package for portable Node conformance
 
 ## Requirements
 

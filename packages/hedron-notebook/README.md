@@ -11,7 +11,7 @@ Run a normal Hedron ASGI app from an authoring notebook with inline iframe and
 external-link modes. Distinct from the browser-Python / JupyterLite sandbox in
 `hedron-extras`. Install as `hedron-notebook` or via `hedron[notebook]`.
 
-**Package maturity:** Experimental Alpha (`0.1.x`) · pin `>=0.1.0,<0.2` and expect churn
+**Package maturity:** Beta tooling-grade (`0.1.x`) · pin `>=0.1.0,<0.2` (localhost preview only)
 
 Default guidance is **localhost-only** development. Hosted or publicly reachable
 hosts raise an explicit warning. Preview URLs include an unguessable session token
@@ -27,7 +27,7 @@ pip install "hedron-notebook>=0.1.0,<0.2"
 # or
 uv add "hedron-notebook>=0.1.0,<0.2"
 # via flagship:
-pip install "hedron[notebook]>=0.34.0,<0.35"
+pip install "hedron[notebook]>=0.35.0,<0.36"
 ```
 
 Requires Python 3.11–3.14.

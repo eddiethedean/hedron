@@ -36,5 +36,5 @@ Independent review of the **fleet closure** surface:
 
 ## Status
 
-**Planned** — maintainer-led or external review completes before cut; BRIEF-only is sufficient
-during Stage 0 `--allow-planned` refine.
+**Verified** (2026-08-13) — maintainer-led fleet honesty review complete; no open critical/high findings.
+See `REDACTED_REPORT.md` and `DISPOSITION.toml`.

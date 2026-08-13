@@ -15,7 +15,7 @@ rerun — unlike Streamlit’s script-rerun model.
 { .hedron-lede }
 
 **In about 10 minutes:** install → `hedron new` → open localhost:8000 → click
-**Refresh status**. Pin `hedron>=0.34.0,<0.35`. Before production, see
+**Refresh status**. Pin `hedron>=0.35.0,<0.36`. Before production, see
 [What’s ready](guides/whats-ready.md).
 { .hedron-lede }
 
