@@ -17,10 +17,15 @@ PrincipalResolver = Callable[[Any], str | None]
 # Starlette/FastAPI Request-like object.
 
 
-def _json_response(payload: Mapping[str, Any], *, status_code: int = 200) -> Any:
+def _json_response(
+    payload: Mapping[str, Any],
+    *,
+    status_code: int = 200,
+    headers: Mapping[str, str] | None = None,
+) -> Any:
     from starlette.responses import JSONResponse
 
-    return JSONResponse(dict(payload), status_code=status_code)
+    return JSONResponse(dict(payload), status_code=status_code, headers=dict(headers or {}))
 
 
 def _error(req_id: Any, code: int, message: str) -> dict[str, Any]:
@@ -31,10 +36,79 @@ def _result(req_id: Any, result: Mapping[str, Any] | list[Any] | None) -> dict[s
     return {"jsonrpc": "2.0", "id": req_id, "result": result}
 
 
+def _origin_forbidden(request: Any, projection: Any) -> bool:
+    if projection.allowed_origins is None:
+        return False
+    origin = request.headers.get("origin")
+    return origin is None or origin not in projection.allowed_origins
+
+
+def _enforce_session_principal(
+    projection: Any,
+    *,
+    session_id: str | None,
+    principal: str | None,
+) -> None:
+    """Reject silent principal switches on an existing MCP session (#173)."""
+    if not session_id:
+        return
+    sess = projection.bounds.session(session_id)
+    if sess is None:
+        raise KeyError("MCP session not found")
+    stored = str(sess.get("principal") or "")
+    current = principal or ""
+    if stored != current:
+        raise PermissionError("MCP session principal mismatch")
+
+
+async def _handle_session_delete(request: Any, projection: Any) -> Any:
+    """Terminate the Streamable HTTP session identified by ``mcp-session-id``."""
+    session_id = request.headers.get("mcp-session-id")
+    if not session_id:
+        return _json_response({"error": "mcp-session-id required"}, status_code=400)
+    if _origin_forbidden(request, projection):
+        return _json_response({"error": "origin not allowed"}, status_code=403)
+
+    principal = projection.resolve_principal(request)
+    try:
+        projection.bounds.check_rate(principal or "anonymous")
+        projection.bounds.acquire()
+    except BoundsError as exc:
+        return _json_response({"error": str(exc)}, status_code=429)
+
+    try:
+        _enforce_session_principal(projection, session_id=session_id, principal=principal)
+        projection.bounds.close_session(session_id)
+        projection.audit.emit(
+            code="HED-MCP-SESSION-DELETE",
+            kind="cancellation",
+            principal=principal,
+            detail={"session_id": session_id},
+        )
+        from starlette.responses import Response
+
+        return Response(status_code=204)
+    except PermissionError as exc:
+        projection.audit.emit(
+            code="HED-MCP-AUTHZ",
+            kind="authorization",
+            principal=principal,
+            detail={"error": str(exc), "method": "DELETE"},
+        )
+        return _json_response({"error": str(exc)}, status_code=403)
+    except KeyError as exc:
+        return _json_response({"error": str(exc)}, status_code=404)
+    finally:
+        projection.bounds.release()
+
+
 async def handle_mcp_http(request: Any, projection: Any) -> Any:
     """Handle one Streamable HTTP MCP JSON-RPC request."""
     if not projection.enabled:
         return _json_response({"error": "MCP projection disabled"}, status_code=404)
+
+    if request.method == "DELETE":
+        return await _handle_session_delete(request, projection)
 
     raw = await request.body()
     try:
@@ -42,10 +116,7 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
     except BoundsError as exc:
         return _json_response({"error": str(exc)}, status_code=413)
 
-    origin = request.headers.get("origin")
-    if projection.allowed_origins is not None and (
-        origin is None or origin not in projection.allowed_origins
-    ):
+    if _origin_forbidden(request, projection):
         return _json_response({"error": "origin not allowed"}, status_code=403)
 
     try:
@@ -63,7 +134,8 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
 
     principal = projection.resolve_principal(request)
     request_id = projection.bounds.new_request_id()
-    session_id = request.headers.get("mcp-session-id") or uuid.uuid4().hex
+    client_session_id = request.headers.get("mcp-session-id")
+    origin = request.headers.get("origin")
 
     try:
         projection.bounds.check_rate(principal or "anonymous")
@@ -88,6 +160,8 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
             )
             # Ignore unsupported client capabilities (documented behavior).
             _ = caps
+            # Server-minted session ids — never bind unbound client-chosen values (#173).
+            session_id = uuid.uuid4().hex
             projection.bounds.open_session(session_id, principal=principal or "", origin=origin)
             projection.audit.emit(
                 code="HED-MCP-INIT",
@@ -99,8 +173,9 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                     "unsupported_capability_behavior": UNSUPPORTED_CAPABILITY_BEHAVIOR,
                 },
             )
+            session_headers = {"mcp-session-id": session_id}
             if method == "notifications/initialized":
-                return _json_response({"ok": True})
+                return _json_response({"ok": True}, headers=session_headers)
             return _json_response(
                 _result(
                     req_id,
@@ -109,8 +184,14 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                         "capabilities": {"resources": {}, "tools": {}},
                         "serverInfo": {"name": "hedron-mcp", "version": projection.package_version},
                     },
-                )
+                ),
+                headers=session_headers,
             )
+
+        # When a session header is present, enforce principal binding (#173).
+        _enforce_session_principal(
+            projection, session_id=client_session_id, principal=principal
+        )
 
         # All subsequent methods require authz.
         projection.authorize(
@@ -208,7 +289,8 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
                     principal=principal,
                     detail={"request_id": cancel_id},
                 )
-            projection.bounds.close_session(session_id)
+            if client_session_id:
+                projection.bounds.close_session(client_session_id)
             return _json_response(_result(req_id, {}))
 
         return _json_response(

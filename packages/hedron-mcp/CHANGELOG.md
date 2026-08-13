@@ -9,6 +9,9 @@
 - Raise the Starlette floor to ``>=1.3.1,<2`` so installs resolve patched
   releases for FormParser, URL authority, StaticFiles, and HTTPEndpoint
   advisories (PYSEC-2026-161 / 248 / 249 / 2280 / 2281).
+- Streamable HTTP ``DELETE /mcp`` terminates the session identified by
+  ``mcp-session-id``; initialize mints and returns server session ids and
+  subsequent requests reject principal mismatches on an existing session (#173).
 
 ## [0.2.0]
 
