@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Optional session reads in ``install_authenticated_from_session`` and
+  ``read_color_mode_preference`` no longer raise when ``SessionMiddleware`` is
+  absent; gate on ``\"session\" in request.scope`` instead of ``getattr`` (#170).
+
 ## [0.32.0]
 
 - Coordinated train bump for phase 0.32 MCP production-grade graduation (no publish tag in this commit).
