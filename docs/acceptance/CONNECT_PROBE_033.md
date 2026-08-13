@@ -17,7 +17,10 @@ Replace assumptions with sanitized live evidence before Accepting RFC-0066:
 ## Prerequisites
 
 - Docker reachable; `uv`, `curl`, `jq`, `openssl`, `rsync` on `PATH`
-- Repo-root `.env` with product-license-shaped `CONNECT_API_KEY` (parsed as data; never sourced)
+- Product-license-shaped `CONNECT_LICENSE`:
+  - **Local:** repo-root `.env` (or export; parsed as data; never sourced)
+  - **CI:** GitHub Actions secret `CONNECT_LICENSE` (same name as the env var)
+- Legacy alias `CONNECT_API_KEY` is accepted locally only
 - Prefer the pinned image used by `scripts/realconnect_029.sh` unless intentionally re-pinning
 
 ## Commands
@@ -37,13 +40,20 @@ Workbench/Connect smoke history; Stage 0 for 0.33 must still produce `realconnec
 
 Never commit or print:
 
-- `CONNECT_API_KEY` / `PCT_LICENSE` / bootstrap or publishing keys
+- `CONNECT_LICENSE` / `CONNECT_API_KEY` / `PCT_LICENSE` / bootstrap or publishing keys
 - Raw `Cookie` / `Set-Cookie` values, CSRF tokens, session identifiers
 - Content GUIDs or vanity names that identify a private deployment
 - `RStudio-Connect-Credentials` / user-session headers
 
 Sanitized fixtures may record boolean presence, cookie **names**, path shapes with a placeholder
 mount (`/content/00000000-0000-4000-8000-000000000000`), and header **counts**.
+
+## License teardown
+
+Each probe run deactivates the Connect product license before stopping the container
+(`/opt/rstudio-connect/bin/license-manager deactivate`) with a 120s stop grace period.
+This mirrors REALWB-030 and avoids consuming activation slots on repeated CI runs.
+Set `HEDRON_CONNECT_LICENSE_STOP_TIMEOUT` to override the stop timeout (seconds).
 
 ## Stop conditions (from RFC-0066)
 

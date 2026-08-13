@@ -53,3 +53,12 @@ excluded = [
   "connect_publishing",
   "dependency_on_hedron_posit_cycle",
 ]
+
+[realconnect]
+image = "posit/connect:2026.07.0"
+image_digest = "sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9"
+license_env = "CONNECT_LICENSE"
+license_container_env = "PCT_LICENSE"
+license_stop_timeout_seconds = 120
+ci_secret = "CONNECT_LICENSE"
+ci_workflows = [".github/workflows/ci.yml", ".github/workflows/connect-smoke.yml"]

@@ -39,6 +39,13 @@ ci_job = "test"
 owner = "hedron-posit"
 
 [[evidence]]
+id = "REALCONNECT-033"
+state = "Verified"
+command = "bash scripts/ci_checks.sh realconnect --python 3.12"
+ci_job = "realconnect"
+owner = "hedron-posit"
+
+[[evidence]]
 id = "BRIDGE-033"
 state = "Verified"
 command = "python scripts/check_bridge_033.py"

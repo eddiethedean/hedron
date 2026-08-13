@@ -10,6 +10,7 @@
 #   scripts/ci_checks.sh browser [--python 3.12]
 #   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.33.0]
 #   scripts/ci_checks.sh realwb [--python 3.12]
+#   scripts/ci_checks.sh realconnect [--python 3.12]
 #   scripts/ci_checks.sh packaging [--python 3.12]
 #   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.33.0] [--with-browser]
 #
@@ -226,6 +227,12 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/verify_pkg_33.py
 }
 
+cmd_realconnect() {
+  # Live Posit Connect Docker smoke (REALCONNECT-033). Requires Docker and CONNECT_LICENSE.
+  # Skips successfully when CONNECT_LICENSE is unavailable (see check_realconnect_033.py).
+  run uv run --python "$PYTHON" python scripts/check_realconnect_033.py --live
+}
+
 cmd_realwb() {
   # Live Posit Workbench Docker smoke (REALWB-030). Requires Docker and PWB_LICENSE.
   # Skips successfully when PWB_LICENSE is unavailable (see check_realwb_smoke.py).
@@ -265,6 +272,7 @@ case "$SUITE" in
   browser) cmd_browser ;;
   evidence) cmd_evidence ;;
   realwb) cmd_realwb ;;
+  realconnect) cmd_realconnect ;;
   packaging) cmd_packaging ;;
   all) cmd_all ;;
   -h | --help) usage 0 ;;

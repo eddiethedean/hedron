@@ -343,7 +343,7 @@ print(urlsplit(value).path if "://" in value else value)
     -e HEDRON_SESSION_SECRET=realwb-proxy-smoke-not-for-production \
     -e PYTHONPATH=/src/examples/workbench-reference \
     python:3.12-slim \
-    sh -lc "pip install -q /src/packages/hedron-core /src/packages/hedron /src/packages/hedron-workbench && python -m hedron_workbench.cli run app_facade:app --mode on --host 127.0.0.1 --port ${PROXY_PORT} --mount '${proxy_mount}' --public-base-url 'http://127.0.0.1:8787${proxy_mount}'" \
+    sh -lc "pip install -q /src/packages/hedron-core /src/packages/hedron /src/packages/fastapi-workbench /src/packages/hedron-posit /src/packages/hedron-workbench && python -m hedron_workbench.cli run app_facade:app --mode on --host 127.0.0.1 --port ${PROXY_PORT} --mount '${proxy_mount}' --public-base-url 'http://127.0.0.1:8787${proxy_mount}'" \
     >/dev/null; then
     fail "HED-WB-0007" "could not start the Workbench-network app sidecar"
   fi
@@ -664,6 +664,12 @@ log "HEDRON_PACKAGE=pass"
 # --- fastapi-workbench plain FastAPI pass -------------------------------------
 
 log "FASTAPI_PACKAGE=begin"
+
+if [[ -n "$APP_PID" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
+  kill -- -"$APP_PID" >/dev/null 2>&1 || kill "$APP_PID" >/dev/null 2>&1 || true
+  wait "$APP_PID" >/dev/null 2>&1 || true
+  APP_PID=""
+fi
 
 (
   cd "$FWB_DIR"

@@ -25,7 +25,7 @@ docker run --rm -d \
   -e HEDRON_SESSION_SECRET=adapter-docker-smoke-not-for-production \
   -e PYTHONPATH=/src/examples/workbench-reference \
   python:3.12-slim \
-  sh -lc "pip install -q /src/packages/hedron-core /src/packages/hedron /src/packages/hedron-workbench && python -m hedron_workbench.cli run app_facade:app --mode on --host 0.0.0.0 --allow-external-bind --port 8050 --mount '${MOUNT}' --public-base-url 'https://wb.example${MOUNT}'" \
+  sh -lc "pip install -q /src/packages/hedron-core /src/packages/hedron /src/packages/fastapi-workbench /src/packages/hedron-posit /src/packages/hedron-workbench && python -m hedron_workbench.cli run app_facade:app --mode on --host 0.0.0.0 --allow-external-bind --port 8050 --mount '${MOUNT}' --public-base-url 'https://wb.example${MOUNT}'" \
   >/dev/null
 
 ready=0

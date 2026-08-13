@@ -12,13 +12,15 @@ RESULT="$RESULT_DIR/RESULT.log"
 IMAGE_DIGEST="sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9"
 IMAGE="${HEDRON_CONNECT_IMAGE:-posit/connect@${IMAGE_DIGEST}}"
 CONNECT_PORT="${HEDRON_CONNECT_PORT:-3939}"
-LOCAL_PORT="${HEDRON_CONNECT_LOCAL_PORT:-8052}"
+LOCAL_PORT="${HEDRON_CONNECT_LOCAL_PORT:-8056}"
 CONTAINER="hedron-connect-smoke-$$"
 CLIENT_VERSION="1.29.0"
 SMOKE_DIR="$(mktemp -d /tmp/hedron-connect-smoke.XXXXXX)"
 CLIENT_DIR="$SMOKE_DIR/rsconnect-venv"
 APP_PID=""
 CONTAINER_STARTED=0
+LICENSE_STOP_TIMEOUT="${HEDRON_CONNECT_LICENSE_STOP_TIMEOUT:-120}"
+CONNECT_LICENSE_MANAGER="/opt/rstudio-connect/bin/license-manager"
 
 redact_stream() {
   sed -E \
@@ -39,10 +41,28 @@ fail() {
   exit 1
 }
 
+deactivate_connect_license() {
+  if [[ "$CONTAINER_STARTED" -ne 1 ]]; then
+    return 0
+  fi
+  if [[ "$(docker inspect --format '{{.State.Running}}' "$CONTAINER" 2>/dev/null || true)" == "true" ]]; then
+    log "LICENSE_DEACTIVATE=begin timeout=${LICENSE_STOP_TIMEOUT}s"
+    docker exec "$CONTAINER" "$CONNECT_LICENSE_MANAGER" deactivate >/dev/null 2>&1 || \
+      log "LICENSE_DEACTIVATE=manager_exit_nonzero"
+    log "LICENSE_DEACTIVATE=end"
+  else
+    log "LICENSE_DEACTIVATE=skipped container_not_running"
+  fi
+  docker stop --timeout "$LICENSE_STOP_TIMEOUT" "$CONTAINER" >/dev/null 2>&1 || \
+    log "LICENSE_DEACTIVATE=stop_exit_nonzero"
+  docker rm "$CONTAINER" >/dev/null 2>&1 || true
+  CONTAINER_STARTED=0
+}
+
 cleanup() {
   local exit_status=$?
   if [[ -n "$APP_PID" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
-    kill "$APP_PID" >/dev/null 2>&1 || true
+    kill -- -"$APP_PID" >/dev/null 2>&1 || kill "$APP_PID" >/dev/null 2>&1 || true
     wait "$APP_PID" >/dev/null 2>&1 || true
   fi
   if [[ "$CONTAINER_STARTED" -eq 1 ]]; then
@@ -51,8 +71,7 @@ cleanup() {
       docker logs --tail 200 "$CONTAINER" 2>&1 | redact_stream || true
       log "failure_container_log_end"
     fi
-    docker stop --timeout 120 "$CONTAINER" >/dev/null 2>&1 || true
-    docker rm "$CONTAINER" >/dev/null 2>&1 || true
+    deactivate_connect_license
   fi
   if [[ -d "$SMOKE_DIR" && "$SMOKE_DIR" == /tmp/hedron-connect-smoke.* ]]; then
     rm -r -- "$SMOKE_DIR"

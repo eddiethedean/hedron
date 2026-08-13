@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # REALCONNECT-033 Stage 0: licensed Connect contract probe for RFC-0066.
-# Never prints CONNECT_API_KEY, PCT_LICENSE, bootstrap secrets, or publishing keys.
+# Never prints CONNECT_LICENSE, CONNECT_API_KEY, PCT_LICENSE, bootstrap secrets, or publishing keys.
 set -euo pipefail
 umask 077
 
@@ -13,7 +13,7 @@ FIXTURE_DIR="$ROOT/tests/fixtures/posit-connect"
 IMAGE_DIGEST="sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9"
 IMAGE="${HEDRON_CONNECT_IMAGE:-posit/connect@${IMAGE_DIGEST}}"
 CONNECT_PORT="${HEDRON_CONNECT_PORT:-3939}"
-LOCAL_PORT="${HEDRON_CONNECT_LOCAL_PORT:-8052}"
+LOCAL_PORT="${HEDRON_CONNECT_LOCAL_PORT:-8056}"
 CONTAINER="hedron-connect-033-$$"
 CLIENT_VERSION="1.29.0"
 SMOKE_DIR="$(mktemp -d /tmp/hedron-connect-033.XXXXXX)"
@@ -22,6 +22,9 @@ APP_PID=""
 CONTAINER_STARTED=0
 PLACEHOLDER_GUID="00000000-0000-4000-8000-000000000000"
 PLACEHOLDER_MOUNT="/content/${PLACEHOLDER_GUID}"
+RESULT_BACKUP=""
+LICENSE_STOP_TIMEOUT="${HEDRON_CONNECT_LICENSE_STOP_TIMEOUT:-120}"
+CONNECT_LICENSE_MANAGER="/opt/rstudio-connect/bin/license-manager"
 
 redact_stream() {
   sed -E \
@@ -42,10 +45,74 @@ fail() {
   exit 1
 }
 
+skip_license_unavailable() {
+  local reason="$1"
+  shift
+  log "REALCONNECT-033 skip reason=$reason $*"
+  log "RESULT=skip"
+  log "REALCONNECT-033 end $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
+    cp "$RESULT_BACKUP" "$RESULT"
+  fi
+  exit 42
+}
+
+license_unavailable_in_logs() {
+  printf '%s' "$1" | grep -qiE \
+    'license.*expired|expired.*license|license has expired|product key.*maximum number of computers|license.*invalid|license.*denied'
+}
+
+resolve_connect_license() {
+  if [[ -n "${CONNECT_LICENSE:-}" ]]; then
+    printf '%s' "$CONNECT_LICENSE"
+    return 0
+  fi
+  if [[ -n "${CONNECT_API_KEY:-}" ]]; then
+    printf '%s' "$CONNECT_API_KEY"
+    return 0
+  fi
+  if [[ -f "$ROOT/.env" ]]; then
+    "$ROOT/.venv/bin/python" -c '
+import shlex, sys
+for raw in open(sys.argv[1], encoding="utf-8"):
+    line = raw.strip()
+    if line.startswith("export "):
+        line = line[7:].lstrip()
+    for key in ("CONNECT_LICENSE=", "CONNECT_API_KEY="):
+        if line.startswith(key):
+            value = line.split("=", 1)[1].strip()
+            parsed = shlex.split(value, comments=True, posix=True)
+            print(parsed[0] if len(parsed) == 1 else "")
+            break
+    else:
+        continue
+    break
+' "$ROOT/.env"
+  fi
+}
+
+deactivate_connect_license() {
+  if [[ "$CONTAINER_STARTED" -ne 1 ]]; then
+    return 0
+  fi
+  if [[ "$(docker inspect --format '{{.State.Running}}' "$CONTAINER" 2>/dev/null || true)" == "true" ]]; then
+    log "LICENSE_DEACTIVATE=begin timeout=${LICENSE_STOP_TIMEOUT}s"
+    docker exec "$CONTAINER" "$CONNECT_LICENSE_MANAGER" deactivate >/dev/null 2>&1 || \
+      log "LICENSE_DEACTIVATE=manager_exit_nonzero"
+    log "LICENSE_DEACTIVATE=end"
+  else
+    log "LICENSE_DEACTIVATE=skipped container_not_running"
+  fi
+  docker stop --timeout "$LICENSE_STOP_TIMEOUT" "$CONTAINER" >/dev/null 2>&1 || \
+    log "LICENSE_DEACTIVATE=stop_exit_nonzero"
+  docker rm "$CONTAINER" >/dev/null 2>&1 || true
+  CONTAINER_STARTED=0
+}
+
 cleanup() {
   local exit_status=$?
   if [[ -n "$APP_PID" ]] && kill -0 "$APP_PID" >/dev/null 2>&1; then
-    kill "$APP_PID" >/dev/null 2>&1 || true
+    kill -- -"$APP_PID" >/dev/null 2>&1 || kill "$APP_PID" >/dev/null 2>&1 || true
     wait "$APP_PID" >/dev/null 2>&1 || true
   fi
   if [[ "$CONTAINER_STARTED" -eq 1 ]]; then
@@ -54,48 +121,45 @@ cleanup() {
       docker logs --tail 200 "$CONTAINER" 2>&1 | redact_stream || true
       log "failure_container_log_end"
     fi
-    docker stop --timeout 120 "$CONTAINER" >/dev/null 2>&1 || true
-    docker rm "$CONTAINER" >/dev/null 2>&1 || true
+    deactivate_connect_license
   fi
   if [[ -d "$SMOKE_DIR" && "$SMOKE_DIR" == /tmp/hedron-connect-033.* ]]; then
     rm -r -- "$SMOKE_DIR"
   else
     log "cleanup_refused_unexpected_temp_path=true"
   fi
+  if [[ -n "${RESULT_BACKUP:-}" && -f "$RESULT_BACKUP" ]]; then
+    rm -f -- "$RESULT_BACKUP"
+  fi
   return "$exit_status"
 }
 
 mkdir -p "$RESULT_DIR" "$FIXTURE_DIR"
+if [[ -f "$RESULT" ]]; then
+  RESULT_BACKUP="$(mktemp)"
+  cp "$RESULT" "$RESULT_BACKUP"
+fi
 : > "$RESULT"
 exec > >(tee -a "$RESULT") 2>&1
-trap cleanup EXIT
+trap cleanup EXIT INT TERM
 
 log "REALCONNECT-033 start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 log "image=$IMAGE"
 log "host_arch=$(uname -m)"
 log "protocol_floor=2024.11.0"
 
-if [[ -z "${CONNECT_API_KEY:-}" && -f "$ROOT/.env" ]]; then
-  CONNECT_API_KEY="$("$ROOT/.venv/bin/python" -c '
-import shlex, sys
-for raw in open(sys.argv[1], encoding="utf-8"):
-    line = raw.strip()
-    if line.startswith("export "):
-        line = line[7:].lstrip()
-    if not line.startswith("CONNECT_API_KEY="):
-        continue
-    value = line.split("=", 1)[1].strip()
-    parsed = shlex.split(value, comments=True, posix=True)
-    print(parsed[0] if len(parsed) == 1 else "")
-    break
-' "$ROOT/.env")"
+if [[ ! -f "$ROOT/.venv/bin/python" ]]; then
+  fail "HED-CONNECT-0002" "workspace venv missing — run: uv sync --frozen --all-extras --python 3.12"
 fi
+PY="$ROOT/.venv/bin/python"
+log "python=$("$PY" --version 2>&1 | tr -d '\n')"
 
-if [[ -z "${CONNECT_API_KEY:-}" ]]; then
-  fail "HED-CONNECT-0001" "CONNECT_API_KEY is unset (load .env or export it)"
+CONNECT_LICENSE_VALUE="$(resolve_connect_license || true)"
+if [[ -z "${CONNECT_LICENSE_VALUE:-}" ]]; then
+  fail "HED-CONNECT-0001" "CONNECT_LICENSE is unset (load .env or export it)"
 fi
-if [[ ! "$CONNECT_API_KEY" =~ ^[[:alnum:]]{4}(-[[:alnum:]]{4}){5,}$ ]]; then
-  fail "HED-CONNECT-0001" "CONNECT_API_KEY is not a product-license-shaped value"
+if [[ ! "$CONNECT_LICENSE_VALUE" =~ ^[[:alnum:]]{4}(-[[:alnum:]]{4}){5,}$ ]]; then
+  fail "HED-CONNECT-0001" "CONNECT_LICENSE is not a product-license-shaped value"
 fi
 if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
   fail "HED-CONNECT-0002" "docker is required and must be reachable"
@@ -118,8 +182,8 @@ if [[ "$IMAGE" == *"@sha256:"* && "$resolved_digests" != *"$IMAGE_DIGEST"* ]]; t
 fi
 log "image_digest=$IMAGE_DIGEST"
 
-export PCT_LICENSE="$CONNECT_API_KEY"
-unset CONNECT_API_KEY
+export PCT_LICENSE="$CONNECT_LICENSE_VALUE"
+unset CONNECT_LICENSE CONNECT_API_KEY CONNECT_LICENSE_VALUE
 openssl rand -base64 32 > "$SMOKE_DIR/bootstrap.key"
 chmod 600 "$SMOKE_DIR/bootstrap.key"
 BOOTSTRAP_SECRET="$(tr -d '\n' < "$SMOKE_DIR/bootstrap.key")"
@@ -135,6 +199,10 @@ if ! docker run -d \
   -e CONNECT_BOOTSTRAP_SECRETKEY="$BOOTSTRAP_SECRET" \
   -e CONNECT_APPLICATIONS_INHERITSYSTEMENVVARS=false \
   "$IMAGE" >/dev/null; then
+  logs="$(docker logs --tail 100 "$CONTAINER" 2>&1 | redact_stream || true)"
+  if license_unavailable_in_logs "$logs"; then
+    skip_license_unavailable "license_unavailable" "Connect license unavailable (redacted)"
+  fi
   fail "HED-CONNECT-0002" "failed to start pinned Posit Connect image"
 fi
 CONTAINER_STARTED=1
@@ -151,6 +219,9 @@ done
 if [[ "$healthy" -ne 1 ]]; then
   logs="$(docker logs --tail 100 "$CONTAINER" 2>&1 | redact_stream || true)"
   log "connect_log=$logs"
+  if license_unavailable_in_logs "$logs"; then
+    skip_license_unavailable "license_unavailable" "Connect license unavailable (redacted)"
+  fi
   fail "HED-CONNECT-0003" "Connect did not become healthy"
 fi
 log "CONNECT_HEALTH=ok"
