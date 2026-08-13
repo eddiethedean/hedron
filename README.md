@@ -74,7 +74,7 @@ Jinja+HTMX stack.
 
 Flask and Django hosts are supported via `hedron-flask` / `hedron-django` (pin versions).
 Live SSE/WebSocket helpers are experimental — prefer polling behind buffering proxies.
-Hedron **0.32.x** is published in-tree (last tagged `v0.31.0`; Beta packages — pin as above). Before
+Hedron **0.32.x** is published as `v0.32.0` (Beta packages — pin as above). Before
 production, read
 [What’s ready](https://hedron.readthedocs.io/en/latest/guides/whats-ready/) and
 [Why Hedron](https://hedron.readthedocs.io/en/latest/guides/why-hedron/).
@@ -85,7 +85,7 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new in 0.30](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.30/) ·
+[What’s new in 0.32](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.32/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).

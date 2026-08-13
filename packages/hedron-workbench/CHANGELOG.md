@@ -1,15 +1,8 @@
 # Changelog
 
-## [0.32.0]
+## [0.32.0] — 2026-08-12
 
-- Coordinated train bump for phase 0.32 MCP production-grade graduation (no publish tag in this commit).
-
-
-## [0.31.0] — 2026-08-12
-
-- Coordinated `0.31.0` train: tooling-grade conformance/sim/notebook/sample-kit/Node+Java evaluators and `hedron migrate streamlit` (D-059 / RFC-0064 / RFC-0061).
-
-## [Unreleased]
+- Coordinated train bump for phase 0.32 MCP production-grade graduation.
 
 ### Fixed
 
@@ -21,6 +14,10 @@
 
 - Raise the Starlette floor to ``>=1.3.1`` (aligned with ``fastapi-workbench``)
   so installs resolve patched releases for known Starlette advisories.
+
+## [0.31.0] — 2026-08-12
+
+- Coordinated `0.31.0` train: tooling-grade conformance/sim/notebook/sample-kit/Node+Java evaluators and `hedron migrate streamlit` (D-059 / RFC-0064 / RFC-0061).
 
 ## [0.30.0] — 2026-08-12
 

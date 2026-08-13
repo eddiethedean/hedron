@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.31.x** published train (tip `v0.30.0`)
+**Status:** Accepted; kept current with the **0.32.x** published train (tip `v0.32.0`)
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -85,18 +85,18 @@ hedron/
 | `hedron-conformance` | `hedron_conformance` | Fixture schema + runner (stdlib + pydantic) | `v0.16.0` |
 | `hedron-extras` | `hedron_extras` | Optional curated extras / workbenches; also `hedron[extras]` | `v0.16.0` |
 | `hedron-notebook` | `hedron_notebook` | Optional notebook preview (experimental Alpha); also `hedron[notebook]` | `v0.1.0` |
-| `hedron-mcp` | `hedron_mcp` | Optional MCP projection (experimental Alpha; deny-by-default); also `hedron[mcp]` | `v0.1.0` |
+| `hedron-mcp` | `hedron_mcp` | Optional MCP projection (Beta Supported inventory; deny-by-default); also `hedron[mcp]` | `v0.2.0` |
 | `hedron-gradio` | `hedron_gradio` | Optional Gradio client interop (experimental Alpha); also `hedron[gradio]` | `v0.1.0` |
-| `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Alpha) | `v0.1.0` |
+| `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Beta tooling) | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
-| `hedron-workbench` | `hedron_workbench` | Optional Posit Workbench / RStudio Server adapter; also `hedron[workbench]` | `v0.30.0` |
+| `hedron-workbench` | `hedron_workbench` | Optional Posit Workbench / RStudio Server adapter; also `hedron[workbench]` | `v0.32.0` |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
 `hedron-explorer` for development diagnostics; `hedron[jinja]` installs the separate integration.
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated published train tip is **`v0.30.0`** — see
+**Publish note:** the coordinated published train tip is **`v0.32.0`** — see
 [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.

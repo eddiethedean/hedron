@@ -1,6 +1,6 @@
 # Production readiness
 
-Ops-oriented narrative for **Hedron 0.31.x**. **Do not start here for the checklist.**
+Ops-oriented narrative for **Hedron 0.32.x**. **Do not start here for the checklist.**
 
 | Need | Canonical page |
 |---|---|

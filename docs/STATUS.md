@@ -1,8 +1,7 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.32 **Published** as `v0.32.0` (2026-08-12, in-tree tip;
-git tag/PyPI publish deferred). Prior: 0.31 **Published** as `v0.31.0` (2026-08-12).
-Living tip git = `v0.32.0`.
+**Roadmap position:** phase 0.32 **Published** as `v0.32.0` (2026-08-12). Prior: 0.31 **Published** as `v0.31.0` (2026-08-12).
+Living tip = `v0.32.0`.
 **Date:** 2026-08-12
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
@@ -18,11 +17,15 @@ Living tip git = `v0.32.0`.
 
 **Phase focus:** Living train is **0.32** (D-060 / RFC-0065) — production-grade
 deny-by-default MCP projection (`hedron-mcp` `0.2.0` Beta;
-`release-gate-0.32.toml` Verified; tip `v0.32.0` without git tag). Prior Published **0.31**
+`release-gate-0.32.toml` Verified; published tip `v0.32.0`). Prior Published **0.31**
 (tooling + Streamlit migrator as `v0.31.0`) remains in force. **Next** = **0.33 Planned**
-(unified `hedron-posit` Workbench / Connect adapter; draft RFC-0066 / D-061;
-[#167](https://github.com/eddiethedean/hedron/issues/167)); a licensed Connect contract probe and
-RFC acceptance are required before implementation.
+(unified `hedron-posit` Workbench / Connect adapter; RFC-0066 / D-061;
+[#167](https://github.com/eddiethedean/hedron/issues/167)) — **packet refine in progress**.
+Phase owner is the Posit adapter (`CONTRACT-033`…`PKG-033`). The
+[default presentation quality program](implementation/DEFAULT_PRESENTATION_033_PLUS.md) is
+**cross-cutting and must not block** Stage 0 probe completion, RFC-0066 acceptance, or Stage 1
+package extraction. Licensed Connect contract probe + RFC acceptance remain required before
+implementation.
 Live-transport
 disposition remains **`polling_only`** from 0.24 — polling is the Supported production story;
 live SSE/WS/streaming/preload remain **experimental** (`hedron.experimental`). Human AT protocol
@@ -244,13 +247,13 @@ SSOT: [RELEASE_0_29](acceptance/RELEASE_0_29.md) ·
 [production-grade-inventory-029.toml](acceptance/production-grade-inventory-029.toml).
 Cut verify: `python scripts/verify_pkg_29.py`.
 
-## Phase 0.32 evidence (Verified — MCP graduation; tip without git tag)
+## Phase 0.32 evidence (Verified — MCP graduation; published `v0.32.0`)
 
 **Owning decision / RFC:** [D-060](DECISIONS.md) ·
 [RFC-0065](rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md). Alpha product contract remains
 [RFC-0043](rfcs/RFC-0043-MCP-PROJECTION.md) (0.17).
 **Baseline tip:** Published `v0.31.0`.
-**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89) (close after tagged publish).
+**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89).
 **Version policy at cut:** independent satellite `hedron-mcp` **`0.2.0` Beta**
 (pin `>=0.2.0,<0.3`).
 
@@ -276,8 +279,8 @@ Human AT sessions (`SR-021` / `PARTICIPANT-021` / `ARTIFACT-021` / `REMEDIATE-02
 (`v0.27.0`; D-055). Phase **0.28** is **Published** (`v0.28.2`; D-056 / RFC-0059).
 Phase **0.29** is **Published** (`v0.29.0`; D-057 / RFC-0062). Phase **0.30** is **Published**
 (`v0.30.0`; D-058 / RFC-0063). Phase **0.31** is **Published** (`v0.31.0`; D-059 / RFC-0064 /
-RFC-0061). Phase **0.32** is **Published** in-tree (`v0.32.0` / `hedron-mcp` `0.2.0`; D-060 /
-RFC-0065; git tag deferred). Phase **0.33** is the
+RFC-0061). Phase **0.32** is **Published** (`v0.32.0` / `hedron-mcp` `0.2.0`; D-060 /
+RFC-0065). Phase **0.33** is the
 planned unified `hedron-posit` Workbench / Connect adapter (D-061 / draft RFC-0066;
 [#167](https://github.com/eddiethedean/hedron/issues/167)); see the staged
 [implementation plan](implementation/HEDRON_POSIT_033.md) and

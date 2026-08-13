@@ -1,4 +1,4 @@
-## [Unreleased]
+## [0.1.0] — 2026-08-06
 
 ### Fixed
 
@@ -8,7 +8,6 @@
   with HTTP 401 / WebSocket close 4401 instead of serving the app to anyone who can reach
   the bound port (#161).
 
-## [0.1.0] — 2026-08-06
 
 ### Added
 

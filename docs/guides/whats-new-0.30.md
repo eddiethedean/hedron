@@ -1,6 +1,10 @@
 # What’s new in 0.30
 
-**Published** as `v0.30.0`. Pin `hedron>=0.32.0,<0.33`.
+!!! note "Living train is 0.32"
+
+    Pin `hedron>=0.32.0,<0.33`. See [What’s new in 0.32](whats-new-0.32.md).
+
+**Published** as `v0.30.0`. Historical pin: `hedron>=0.30.0,<0.31`.
 
 Phase **0.30** (D-058 / RFC-0063) extracts generic Posit Workbench / RStudio Server
 deployment into monorepo-owned **`fastapi-workbench` `1.0.0`**, and makes

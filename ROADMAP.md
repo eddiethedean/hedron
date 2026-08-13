@@ -2456,8 +2456,8 @@ flagship CLI gains a reviewable Streamlit AST migration assistant (RFC-0061).
 
 ## 0.32 — Production-grade MCP projection (`v0.32.0`)
 
-**Status:** Published as `v0.32.0` (2026-08-12) in-tree; `hedron-mcp` **`0.2.0` Beta**.
-Git tag / PyPI publish deferred. `release-gate-0.32.toml` Verified with zero Deferred.
+**Status:** Published as `v0.32.0` (2026-08-12); `hedron-mcp` **`0.2.0` Beta**.
+`release-gate-0.32.toml` Verified with zero Deferred.
 **Owning decision / RFC:** [D-060](docs/DECISIONS.md) ·
 [RFC-0065](docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) (graduation). Alpha product contract remains
 [RFC-0043](docs/rfcs/RFC-0043-MCP-PROJECTION.md) (phase 0.17; not reopened).
@@ -2466,8 +2466,8 @@ Evidence: [release-gate-0.32.toml](docs/acceptance/release-gate-0.32.toml) ·
 [production-grade-inventory-032.toml](docs/acceptance/production-grade-inventory-032.toml) ·
 [security-review-032/BRIEF.md](docs/acceptance/security-review-032/BRIEF.md) (Verified).
 **Baseline tip:** Published **`v0.31.0`**.
-**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close when the tagged
-publish lands after this in-tree cut.
+**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close after the published
+`v0.32.0` / `hedron-mcp` `0.2.0` release assets are attached.
 
 **Outcome:** `hedron-mcp` is production-grade as a deny-by-default, authenticated MCP projection.
 Installation and mounting grant no authority; every resource/tool/action is explicitly registered,
@@ -2487,7 +2487,7 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
 | Package | At packet refine | At `v0.32.0` cut |
 |---|---|---|
 | `hedron-mcp` | Experimental Alpha `0.1.x` (pin `>=0.1.0,<0.2`) | Beta `0.2.0` independent satellite (pin `>=0.2.0,<0.3`); Alpha `0.1.x` is the upgrade source |
-| Train | Living tip `v0.31.0` | Coordinated Hedron train `v0.32.0`; MCP version stays satellite `0.2.0` (not train-locked `0.32.0`, not `1.0.0`) |
+| Train | Living tip `v0.32.0` | Coordinated Hedron train `v0.32.0`; MCP version stays satellite `0.2.0` (not train-locked `0.32.0`, not `1.0.0`) |
 
 | Production-grade scope at exit | Remains Experimental |
 |---|---|

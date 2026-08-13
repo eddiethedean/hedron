@@ -2454,8 +2454,8 @@ flagship CLI gains a reviewable Streamlit AST migration assistant (RFC-0061).
 
 ## 0.32 — Production-grade MCP projection (`v0.32.0`)
 
-**Status:** Published as `v0.32.0` (2026-08-12) in-tree; `hedron-mcp` **`0.2.0` Beta**.
-Git tag / PyPI publish deferred. `release-gate-0.32.toml` Verified with zero Deferred.
+**Status:** Published as `v0.32.0` (2026-08-12); `hedron-mcp` **`0.2.0` Beta**.
+`release-gate-0.32.toml` Verified with zero Deferred.
 **Owning decision / RFC:** [D-060](DECISIONS.md) ·
 [RFC-0065](rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) (graduation). Alpha product contract remains
 [RFC-0043](rfcs/RFC-0043-MCP-PROJECTION.md) (phase 0.17; not reopened).
@@ -2464,8 +2464,8 @@ Evidence: [release-gate-0.32.toml](acceptance/release-gate-0.32.toml) ·
 [production-grade-inventory-032.toml](acceptance/production-grade-inventory-032.toml) ·
 [security-review-032/BRIEF.md](acceptance/security-review-032/BRIEF.md) (Verified).
 **Baseline tip:** Published **`v0.31.0`**.
-**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close when the tagged
-publish lands after this in-tree cut.
+**Tracking:** [#89](https://github.com/eddiethedean/hedron/issues/89). Close after the published
+`v0.32.0` / `hedron-mcp` `0.2.0` release assets are attached.
 
 **Outcome:** `hedron-mcp` is production-grade as a deny-by-default, authenticated MCP projection.
 Installation and mounting grant no authority; every resource/tool/action is explicitly registered,
@@ -2485,7 +2485,7 @@ scoped to the caller, bounded, observable, cancellable, and safe under multi-wor
 | Package | At packet refine | At `v0.32.0` cut |
 |---|---|---|
 | `hedron-mcp` | Experimental Alpha `0.1.x` (pin `>=0.1.0,<0.2`) | Beta `0.2.0` independent satellite (pin `>=0.2.0,<0.3`); Alpha `0.1.x` is the upgrade source |
-| Train | Living tip `v0.31.0` | Coordinated Hedron train `v0.32.0`; MCP version stays satellite `0.2.0` (not train-locked `0.32.0`, not `1.0.0`) |
+| Train | Living tip `v0.32.0` | Coordinated Hedron train `v0.32.0`; MCP version stays satellite `0.2.0` (not train-locked `0.32.0`, not `1.0.0`) |
 
 | Production-grade scope at exit | Remains Experimental |
 |---|---|
@@ -2565,11 +2565,13 @@ containment, complete loading/error/recovery presentation, and predictable full-
 The program extracts reusable contracts from a visually validated account/admin application without
 copying its branding or making Hedron an identity product.
 
-This is a cross-cutting quality program, not a replacement phase and not a new package. Phase 0.33
-freezes the framework-owned visual gallery, geometry contract, and low-risk defect fixes. Phase 0.34
-makes the refreshed presentation the normal `default_styles=True` experience after compatibility
-evidence. Phase 0.35 audits the presentation contract in whole-fleet closure. Phases 0.36–0.41
-carry the same tokens, composition, responsive, state, navigation,
+This is a cross-cutting quality program, not a replacement phase and not a new package. **It must
+not block** phase 0.33 Posit adapter Stage 0 probe completion, RFC-0066 acceptance, or Stage 1
+package extraction (`CONTRACT-033`…`PKG-033` remain the phase-owned release gates). Phase 0.33
+may freeze the framework-owned visual gallery, geometry contract, and low-risk defect fixes in
+parallel. Phase 0.34 makes the refreshed presentation the normal `default_styles=True` experience
+after compatibility evidence. Phase 0.35 audits the presentation contract in whole-fleet closure.
+Phases 0.36–0.41 carry the same tokens, composition, responsive, state, navigation,
 authoring, browser, accessibility, human-AT, performance, and upgrade contract through the Web
 Component program and its production-grade graduation.
 
@@ -2596,7 +2598,7 @@ branding, authentication/recovery policy, authorization, or compliance claims.
 
 ## 0.33 — Unified Posit deployment adapter (`v0.33.0`)
 
-**Status:** Planned; specification draft under
+**Status:** Planned (packet refine in progress); specification under
 [RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md), with staged work in
 [HEDRON_POSIT_033](implementation/HEDRON_POSIT_033.md) and cut evidence in
 [RELEASE_0_33](acceptance/RELEASE_0_33.md). Implementation may not begin until the licensed Connect
@@ -2605,11 +2607,23 @@ contract probe is complete and the RFC is Accepted.
 [RFC-0066](rfcs/RFC-0066-HEDRON-POSIT.md).
 **Tracking:** [#167](https://github.com/eddiethedean/hedron/issues/167). Close when all 0.33-owned
 gates are Verified and the package ships on the declared Beta compatibility line.
+**Baseline tip:** Published **`v0.32.0`**.
 
 **Outcome:** A new `hedron-posit` distribution provides one `HedronPosit` application facade that
 runs as ordinary Hedron, on Posit Workbench, and on Posit Connect. It owns Hedron-specific Posit
 integration, delegates generic Workbench behavior to `fastapi-workbench`, and leaves
 `hedron-workbench` as a one-way compatibility package rather than creating parallel normalizers.
+
+### Entry criteria / refine vs cut
+
+| Topic | At packet refine | At `v0.33.0` cut |
+|---|---|---|
+| RFC-0066 | Accepted after Stage 0 probe + exact cut matrix + bridge keep/drop | Unchanged Accepted contract |
+| Gate plumbing | `release-gate-0.33.toml` Planned; `scripts/check_*_033.py` / `verify_pkg_33.py`; `check_release_gate.py` maps `0.33`; `--allow-planned` green on living tip | Every 0.33-owned row Verified; zero Deferred; no `--allow-planned` |
+| Connect probe | Licensed native evidence + sanitized fixtures under `tests/fixtures/posit-connect/` | `CONNECT-033` live matrix Verified |
+| Bridge | Keep Supported only if cookie loss reproduced; else extension-point / non-Supported | `BRIDGE-033` Verified for that decision |
+| Packages | No `packages/hedron-posit/` yet (Stage 1 blocked) | `hedron-posit` `0.33.0` Beta + `hedron-workbench` compat |
+| Presentation program | May proceed in parallel; **must not block** refine exit | Not a 0.33 release-gate owner |
 
 ### Scope
 

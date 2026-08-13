@@ -1,7 +1,7 @@
 # Threat model
 
 **Status:** Maintained for the **0.30** train (**Published**; last published
-PyPI/git = `v0.30.0`; baseline established in 0.11; refreshed for 0.15–0.28 surfaces)
+PyPI/git = `v0.32.0`; baseline established in 0.11; refreshed for 0.15–0.32 surfaces)
 
 **Owner:** hedron  
 **Evidence:** security acceptance on the current train; live-transport caveats on
@@ -65,7 +65,7 @@ PyPI/git = `v0.30.0`; baseline established in 0.11; refreshed for 0.15–0.28 su
 | Inference data leakage / unauthorized demo actions | Explicit `ActionRegistry` / exposure; fail-closed `InferencePolicy`; no silent tool expansion |
 | Feedback without consent | `PredictionFeedback` requires documented consent before retention |
 | Recorder expanding endpoint authority | Public-endpoint allowlist + redaction (`InteractionRecorder`) |
-| MCP / Gradio accidental exposure | Deny-by-default extras; pin Alpha packages; keep off production defaults |
+| MCP / Gradio accidental exposure | Deny-by-default extras; pin packages; keep Gradio and MCP mutations off production defaults |
 | Notebook preview cross-user access | Treat as local/dev; do not expose without app authz |
 
 ## Out of scope (application-owned)

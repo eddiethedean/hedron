@@ -27,8 +27,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.29** | Production-grade `hedron-workbench` Posit Workbench deployment adapter | **Published** (`v0.29.0`; D-057 / RFC-0062; [#134](https://github.com/eddiethedean/hedron/issues/134)) |
 | **0.30** | Standalone `fastapi-workbench` 1.0.0 for plain FastAPI Workbench; `hedron-workbench` depends on it | **Published** (`v0.30.0`; D-058 / RFC-0063; [#135](https://github.com/eddiethedean/hedron/issues/135)) |
 | **0.31** | Production-grade conformance/plugin/simulation/notebook tooling, Node/Java evaluators, and a reviewable Streamlit AST migration assistant | **Published** (`v0.31.0`; D-059 / RFC-0064 / RFC-0061; [#87](https://github.com/eddiethedean/hedron/issues/87), [#88](https://github.com/eddiethedean/hedron/issues/88)) |
-| **0.32** | Production-grade deny-by-default MCP projection | **Published** in-tree (`v0.32.0` / `hedron-mcp` `0.2.0` Beta; D-060 / RFC-0065; git tag deferred; [#89](https://github.com/eddiethedean/hedron/issues/89)) |
-| **0.33** | Unified `hedron-posit` facade for ordinary Hedron, Posit Workbench, and Posit Connect | Planned; Draft RFC-0066 / D-061; authenticated legacy cookie bridge remains off by default ([#167](https://github.com/eddiethedean/hedron/issues/167)) |
+| **0.32** | Production-grade deny-by-default MCP projection | **Published** (`v0.32.0` / `hedron-mcp` `0.2.0` Beta; D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89)) |
+| **0.33** | Unified `hedron-posit` facade for ordinary Hedron, Posit Workbench, and Posit Connect | Planned (packet refine); RFC-0066 / D-061; [#167](https://github.com/eddiethedean/hedron/issues/167). Presentation gallery work is cross-cutting and must not block the Posit adapter. |
 | **0.34** | Production-grade Gradio/Hugging Face client interoperability | Planned; bounded allowlisted remote access ([#90](https://github.com/eddiethedean/hedron/issues/90)) |
 | **0.35** | Whole-fleet production-grade closure | Planned; no unowned Alpha package or ambiguous tool disposition ([#91](https://github.com/eddiethedean/hedron/issues/91)) |
 | **0.36** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Planned; Draft RFC-0060 ([#92](https://github.com/eddiethedean/hedron/issues/92)) |
@@ -47,7 +47,8 @@ framework-owned visual gallery and responsive geometry contract in 0.33, a refre
 element, form, data, authoring, navigation, accessibility, performance, and upgrade evidence
 through 0.41. This improves Hedron's out-of-box
 appearance without copying an application brand, owning authentication policy, or removing
-`default_styles=False` for custom canvases.
+`default_styles=False` for custom canvases. **It does not own phase 0.33 release gates** and must
+not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
 
 ## What this means for you
 
@@ -73,7 +74,7 @@ appearance without copying an application brand, owning authentication policy, o
 
 ## Honest gaps on the current train (0.32)
 
-- Current **published** PyPI train is **0.31.x** (last `v0.30.0`)
+- Current **published** PyPI train is **0.32.x** (last `v0.32.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`

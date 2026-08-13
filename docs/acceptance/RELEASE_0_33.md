@@ -53,19 +53,23 @@ reference row cannot be made concrete, bridge code does not ship as Supported.
 
 ## Locked evidence gates
 
-| Gate | Verified means |
-|---|---|
-| `CONTRACT-033` | Accepted RFC, exact cut matrix, public API, product evidence, protocol floor, compatibility window, dependency graph, bridge decision, and exclusions agree |
-| `PACKAGE-033` | New distribution/extra/type marker/metadata, one-way dependency graph, wheel/sdist/editable/offline installs, optional isolation, licenses, SBOM, and provenance pass |
-| `PARITY-033` | Inactive `Hedron` parity and 0.32 `HedronWorkbench` import/type/constructor/CLI/config/status/URL/cookie behavior pass through upgrade and rollback |
-| `WORKBENCH-033` | Existing Workbench pre-import discovery, runner, HTTP/WebSocket normalization, URLs, redirects, assets, OpenAPI, session/CSRF cookies, workers, shutdown, and real-image suites pass with one normalizer |
-| `CONNECT-033` | Exact licensed native matrix passes protected product/base/root evidence, GUID/vanity URLs, HTTP/HTMX/WS, assets, redirects, OpenAPI, login/logout/session, CSRF, cookie paths, scale/restart, diagnostics, and rollback |
-| `BRIDGE-033` | Reproduced native-cookie failure is repaired on the named reference topology; secret, spoof/bypass, duplicate/conflict, bounds/parser, allowlist, registry freeze, rotation, logs/redaction, WS, multi-worker, disable, and rollback suites pass |
-| `PERF-033` | p95 ceilings pass: inactive <=5 ms, Workbench <=5 ms, native Connect <=5 ms, bridge <=10 ms; native does no bridge parsing and every mode has one normalizer |
-| `REVIEW-033` | Independent review covers package inversion, product/header trust, origin/mount, request/response cookies, bridge secret/proxy/bypass/replay/logging, sessions/CSRF, diagnostics, workers, supply chain, and rollback with no unresolved critical/high finding |
-| `DOCS-033` | Copyable local, Workbench, native Connect, and bridge recipes, compatibility migration, health/readiness, secret rotation, failure diagnostics, kill switch, rollback, and Supported/Experimental boundaries pass review |
-| `REGRESS-033` | Full tests, minimum/current dependencies, Python 3.11–3.14, upgrade/mixed-train/rollback/uninstall, docs strict build, and redaction/inventory checks pass |
-| `PKG-033` | Clean consumer and offline wheelhouse rehearsal, release metadata, changelogs, inventories, tags/artifact plan, vulnerability disposition, and all 0.33 gate commands pass with zero Deferred |
+Gate ownership (reviewed at packet refine): Posit-specific rows are owned by the future
+`hedron-posit` distribution; `PARITY-033` is owned by the retained `hedron-workbench`
+compatibility package; shared train rows `REGRESS-033` / `PKG-033` are owned by `hedron`.
+
+| Gate | Owner | Verified means |
+|---|---|---|
+| `CONTRACT-033` | `hedron-posit` | Accepted RFC, exact cut matrix, public API, product evidence, protocol floor, compatibility window, dependency graph, bridge decision, and exclusions agree |
+| `PACKAGE-033` | `hedron-posit` | New distribution/extra/type marker/metadata, one-way dependency graph, wheel/sdist/editable/offline installs, optional isolation, licenses, SBOM, and provenance pass |
+| `PARITY-033` | `hedron-workbench` | Inactive `Hedron` parity and 0.32 `HedronWorkbench` import/type/constructor/CLI/config/status/URL/cookie behavior pass through upgrade and rollback |
+| `WORKBENCH-033` | `hedron-posit` | Existing Workbench pre-import discovery, runner, HTTP/WebSocket normalization, URLs, redirects, assets, OpenAPI, session/CSRF cookies, workers, shutdown, and real-image suites pass with one normalizer |
+| `CONNECT-033` | `hedron-posit` | Exact licensed native matrix passes protected product/base/root evidence, GUID/vanity URLs, HTTP/HTMX/WS, assets, redirects, OpenAPI, login/logout/session, CSRF, cookie paths, scale/restart, diagnostics, and rollback |
+| `BRIDGE-033` | `hedron-posit` | Either (a) reproduced native-cookie failure is repaired on the named reference topology with full adversarial suites, or (b) Stage 0 proves native cookies round-trip and Supported bridge is absent (extension-point docs only) |
+| `PERF-033` | `hedron-posit` | p95 ceilings pass: inactive <=5 ms, Workbench <=5 ms, native Connect <=5 ms, bridge <=10 ms when in scope; native does no bridge parsing and every mode has one normalizer |
+| `REVIEW-033` | `hedron-posit` | Independent review covers package inversion, product/header trust, origin/mount, request/response cookies, bridge secret/proxy/bypass/replay/logging (when in scope), sessions/CSRF, diagnostics, workers, supply chain, and rollback with no unresolved critical/high finding |
+| `DOCS-033` | `hedron-posit` | Copyable local, Workbench, native Connect, and bridge (when in scope) recipes, compatibility migration, health/readiness, secret rotation, failure diagnostics, kill switch, rollback, and Supported/Experimental boundaries pass review |
+| `REGRESS-033` | `hedron` | Full tests, minimum/current dependencies, Python 3.11–3.14, upgrade/mixed-train/rollback/uninstall, docs strict build, and redaction/inventory checks pass |
+| `PKG-033` | `hedron` | Clean consumer and offline wheelhouse rehearsal, release metadata, changelogs, inventories, tags/artifact plan, vulnerability disposition, and all 0.33 gate commands pass with zero Deferred |
 
 ## Required adversarial cases
 
@@ -85,13 +89,17 @@ content/session identifiers, CSRF material, or token-shaped path/query values.
 
 ## Cut verification
 
-During planning and implementation:
+During packet refine (living tip still on `0.32.x`):
 
 ```bash
-python scripts/check_release_gate.py 0.33.0 --allow-planned
+python scripts/verify_pkg_33.py --allow-planned
+# equivalent:
+python scripts/check_release_gate.py 0.32.0 \
+  --evidence-manifest docs/acceptance/release-gate-0.33.toml \
+  --allow-planned
 ```
 
-At cut:
+At cut (after train bump to `0.33.0` and every row Verified):
 
 ```bash
 python scripts/verify_pkg_33.py

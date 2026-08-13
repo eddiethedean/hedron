@@ -232,7 +232,7 @@ See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/inst
 
 ## Where is the SBOM / evidence bundle?
 
-Prefer GitHub Release assets for the train tag (`v0.30.0`), or regenerate from the
+Prefer GitHub Release assets for the train tag (`v0.32.0`), or regenerate from the
 tagged checkout with
 `scripts/build_evidence_bundle.py`. Step-by-step:
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.

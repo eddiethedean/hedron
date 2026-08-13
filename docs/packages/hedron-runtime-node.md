@@ -3,7 +3,7 @@
 Tooling-grade Node.js evaluator for the Hedron portable conformance corpus.
 
 **Maturity:** Beta (tooling-grade evaluator — not an application server)  
-**Version:** `0.31.0` · **Runtime matrix:** Node.js 18 / 20 / 22 LTS  
+**Version:** `0.32.0` · **Runtime matrix:** Node.js 18 / 20 / 22 LTS  
 **Install:** `npm install -g hedron-runtime-node` (published from the Hedron release workflow)
 
 ## Run

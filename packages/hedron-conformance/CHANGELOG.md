@@ -1,8 +1,8 @@
 # Changelog
 
-## [0.32.0]
+## [0.32.0] — 2026-08-12
 
-- Coordinated train bump for phase 0.32 MCP production-grade graduation (no publish tag in this commit).
+- Coordinated train bump for phase 0.32 MCP production-grade graduation.
 
 
 ## [0.31.0] — 2026-08-12
