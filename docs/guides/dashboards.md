@@ -22,7 +22,9 @@ train (feature introduced in 0.17); API compatibility remains **`beta`** — pin
 - **`PropertyPatch` / `CollectionPatch`** provide versioned incremental updates with
   full-fragment fallback when a patch cannot apply.
 - Cross-filter and recorder/replay compose chart/grid/map viewport triggers; do not rely
-  on sleep-based races in tests.
+  on sleep-based races in tests. On **0.39**, prefer `compose_chartlink_039` so table
+  selection consumes Published `hedron-chart` events without a parallel renderer
+  ([DATA.md](../api/DATA.md)).
 - Live SSE/WebSocket transports remain **experimental** — prefer HTMX **polling** /
   fragment refresh for Supported production paths ([live interaction](live-interaction.md)).
 

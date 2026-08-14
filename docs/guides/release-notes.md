@@ -5,6 +5,28 @@ details remain in the [package changelogs](changelog.md).
 
 ## 0.39.0 — 2026-08-14
 
+Coordinated Beta train cut for rich data surfaces and OptimisticMutation
+(D-067 / RFC-0060).
+
+- Ships ABI-conforming `<hedron-data-editor>` with retained SSR fallback after
+  upgrade, typed `OptimisticMutation` on bounded collection edits, and
+  `compose_chartlink_039` so DataTable/DataEditor consume Published 0.38
+  `hedron-chart` events without a parallel renderer.
+- Records owned Experimental exceptions for map / media / code-editor /
+  specialty surfaces; worker/object-URL abort and media Range streaming bounds.
+- Closes tracking [#94](https://github.com/eddiethedean/hedron/issues/94) and the
+  locked 27-issue rich-data remediation packet.
+- Pin `hedron>=0.39.0,<0.40`. Charts remain on `hedron-charts>=0.2.0,<0.3`.
+
+```bash
+python -m pip install -U "hedron>=0.39.0,<0.40"
+python -m pip install "hedron[data]>=0.39.0,<0.40"
+python -m pip install "hedron[charts]>=0.39.0,<0.40"
+python -m pip install "hedron-charts>=0.2.0,<0.3"
+```
+
+## 0.38.0 — 2026-08-14
+
 Coordinated Beta train cut for first-party high-fidelity charts
 (D-066 / RFC-0069).
 
@@ -13,7 +35,8 @@ Coordinated Beta train cut for first-party high-fidelity charts
   `LineChart` / `AreaChart` / `BarChart` / `ScatterChart` compiled to the grammar.
 - `MatplotlibChart` remains Supported; Plotly/Altair stay Experimental.
 - Closes remediations #71, #72, #75, #81, #82, #83, #201, and #239.
-- Pin `hedron>=0.39.0,<0.40` and charts satellite `hedron-charts>=0.2.0,<0.3`.
+- Historical cut pin `hedron>=0.38.0,<0.39`. Install the current tip with the pin under
+  **0.39.0** above.
 
 ```bash
 python -m pip install -U "hedron>=0.39.0,<0.40"

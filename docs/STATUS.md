@@ -1,6 +1,6 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.39 **Published** as `v0.39.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Prior Published: 0.38 as `v0.38.0` / `hedron-charts` `0.2.0` (2026-08-14).
+**Roadmap position:** phase 0.39 **Published** as `v0.39.0` (2026-08-14). Prior Published: 0.38 as `v0.38.0` / `hedron-charts` `0.2.0` (2026-08-14).
 Living tip = `v0.39.0`.
 **Date:** 2026-08-14
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -19,8 +19,7 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 **Phase focus:** Living train is **0.39** (D-067 / RFC-0060) — DataTable/DataEditor ABI,
 typed `OptimisticMutation` on bounded collection edits, Published `hedron-chart` cross-filter
 composition, rich-surface Experimental exceptions, worker/stream bounds, and the 27-issue
-remediation packet (`release-gate-0.39.toml` Verified; tip `v0.39.0`; in-tree cut, tag/PyPI
-deferred). Prior Published **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
+remediation packet (`release-gate-0.39.toml` Verified; tip `v0.39.0`). Prior Published **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
@@ -330,12 +329,16 @@ see [implementation plan](implementation/HEDRON_ELEMENTS_037.md) and
 [grammar catalogs](implementation/CHART_SPEC.md), and
 [0.38 acceptance packet](acceptance/RELEASE_0_38.md)). It ships an ABI-conforming
 `hedron-chart`, typed `ChartSpec` / `ChartPlan`, modular first-party rendering, visual/a11y/performance/
-export/security evidence, and independent `hedron-charts` `0.2.0`. Phase **0.39** Stage 0
-contract packet is refined against Published `v0.38.0` (D-067 / RFC-0060;
-[`RELEASE_0_39.md`](acceptance/RELEASE_0_39.md); `release-gate-0.39.toml` all Planned;
-[`HEDRON_RICH_ELEMENTS_039.md`](implementation/HEDRON_RICH_ELEMENTS_039.md);
-[#94](https://github.com/eddiethedean/hedron/issues/94) open — do not close until gates Verified).
-Later phases [#95](https://github.com/eddiethedean/hedron/issues/95)–[#97](https://github.com/eddiethedean/hedron/issues/97)
+export/security evidence, and independent `hedron-charts` `0.2.0`. Phase **0.39** rich data / OptimisticMutation is **Published** as `v0.39.0` (D-067 /
+[RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md); `release-gate-0.39.toml` Verified;
+[#94](https://github.com/eddiethedean/hedron/issues/94) closed; see
+[implementation plan](implementation/HEDRON_RICH_ELEMENTS_039.md),
+[rich-surface catalogs](implementation/RICH_SURFACE_039.md), and
+[0.39 acceptance packet](acceptance/RELEASE_0_39.md)). It ships ABI-conforming
+`hedron-data-editor`, typed `OptimisticMutation` on bounded collection edits, Published
+`hedron-chart` cross-filter composition (`compose_chartlink_039`), owned Experimental rich-surface
+exceptions, worker/stream bounds, and the locked 27-issue remediation packet. Later phases
+[#95](https://github.com/eddiethedean/hedron/issues/95)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 (rephased to 0.40–0.42) still require their own Stage 0 packets. Living tip is **`v0.39.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close

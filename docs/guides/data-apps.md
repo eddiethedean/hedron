@@ -1,9 +1,12 @@
 # Data applications
 
 Render common Python objects with core `Auto`, then install the data extra for
-tabular `DataTable` / `DataEditor`. The charts package is **Beta**: Matplotlib/static is
-Supported, while Plotly and Altair browser hosts remain Experimental. See
-[Charts and HTMX](charts-and-htmx.md).
+tabular `DataTable` / `DataEditor`. On **0.39**, `DataEditor` renders as ABI
+`<hedron-data-editor>` with SSR fallback retained after upgrade; bounded
+`OptimisticMutation` covers collection/cell edits only (deny-by-default for other
+risk classes). See [DATA.md](../api/DATA.md) and [What’s new in 0.39](whats-new-0.39.md).
+The charts package is **Beta**: Matplotlib/static is Supported, while Plotly and Altair
+browser hosts remain Experimental. See [Charts and HTMX](charts-and-htmx.md).
 
 ## Auto (core — no extra)
 

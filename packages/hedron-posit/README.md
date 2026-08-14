@@ -6,7 +6,7 @@
 
 Unified Posit Workbench / Connect deployment facade for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.38.x` · pin `>=0.39.0,<0.40`
+**Package maturity:** Beta · **Train:** `0.39.x` · pin `>=0.39.0,<0.40`
 
 ```python
 from hedron_posit import HedronPosit

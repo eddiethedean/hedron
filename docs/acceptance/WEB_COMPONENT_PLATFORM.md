@@ -7,7 +7,7 @@ Phase **0.37** is **Published** (`v0.37.0`; all owned gates Verified) — see
 [`RELEASE_0_37.md`](RELEASE_0_37.md) and [`release-gate-0.37.toml`](release-gate-0.37.toml).
 Phase **0.38** high-fidelity charts is **Published** (`v0.38.0` / `hedron-charts` `0.2.0`;
 RFC-0069 / D-066; all owned gates Verified) — see [`RELEASE_0_38.md`](RELEASE_0_38.md) and
-[`release-gate-0.38.toml`](release-gate-0.38.toml). Phase **0.39** rich data / `OptimisticMutation` is **Published** as `v0.39.0` (RFC-0060 / D-067; in-tree cut) — see
+[`release-gate-0.38.toml`](release-gate-0.38.toml). Phase **0.39** rich data / `OptimisticMutation` is **Published** as `v0.39.0` (RFC-0060 / D-067) — see
 [`RELEASE_0_39.md`](RELEASE_0_39.md) and [`release-gate-0.39.toml`](release-gate-0.39.toml).
 Later phases (0.40–0.42) remain draft until their own Stage 0 packets land.
 Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061. D-066 inserts charts
@@ -251,7 +251,7 @@ Normative acceptance: [`RELEASE_0_39.md`](RELEASE_0_39.md). Evidence index:
 [HEDRON_RICH_ELEMENTS_039](../implementation/HEDRON_RICH_ELEMENTS_039.md). Catalogs:
 [RICH_SURFACE_039](../implementation/RICH_SURFACE_039.md) ·
 [WEB_COMPONENT_INTERACTION_CONTRACTS](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md) §3.
-**Status:** Published as `v0.39.0` (in-tree cut; tag/PyPI deferred). Tracking
+**Status:** Published as `v0.39.0`. Tracking
 [#94](https://github.com/eddiethedean/hedron/issues/94).
 
 ### `DATA-039`

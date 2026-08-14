@@ -1,30 +1,45 @@
 # What's new in Hedron 0.39
 
-Hedron **`v0.39.0`** converges DataTable/DataEditor onto the public element ABI, proves typed
-`OptimisticMutation` on bounded collection edits, and links Published `hedron-chart` cross-filter
-composition without a parallel renderer.
+**Published** as `v0.39.0` on 2026-08-14. Pin: `hedron>=0.39.0,<0.40`. Charts remain on the
+Published 0.2 line: `hedron-charts>=0.2.0,<0.3`.
+
+Phase **0.39** converges rich data surfaces onto the public Web Component ABI and proves typed
+optimistic edits ([RFC-0060](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) / D-067).
 
 ## Highlights
 
-- ABI-conforming `<hedron-data-editor>` with SSR fallback retained after upgrade
-- `OptimisticMutation` state machine (proposed → submitted → confirmed) with idempotency and conflict rebase
-- `compose_chartlink_039` binds Published 0.38 chart events to grid selection
-- Owned Experimental exceptions for map/media/editor/specialty surfaces
-- Worker/object-URL abort cleanup; media Range streaming; spreadsheet/import remediations
+- ABI-conforming **`<hedron-data-editor>`** with SSR fallback retained after upgrade
+  (`data-hedron-fallback` / `aria-hidden`)
+- Typed **`OptimisticMutation`** state machine (`proposed` → `submitted` → `confirmed`) with
+  idempotency keys, conflict rebase, and deny-by-default risk classes outside bounded collection
+  edits
+- **`compose_chartlink_039`** binds Published 0.38 `hedron-chart` events to DataTable/DataEditor
+  selection without a parallel chart renderer
+- Owned **Experimental** exceptions for map / media / code-editor / specialty surfaces that cannot
+  yet meet the shared ABI gates
+- Worker / object-URL abort cleanup, media Range streaming, and the locked 27-issue rich-data
+  remediation packet
 
-## Install
+## Honesty
+
+- Human screen-reader / compensated AT (`SR-021`) remains **Planned** — not Supported.
+- MapLibre / media capture / AG Grid / specialty editors stay **Experimental** where the inventory
+  records an owned exception.
+- Live SSE / WebSocket / streaming remain **experimental**; polling is the Supported production
+  story.
+
+## Pins
 
 ```bash
 pip install "hedron>=0.39.0,<0.40"
-```
-
-Charts remain on the Published 0.2 line:
-
-```bash
+pip install "hedron[data]>=0.39.0,<0.40"
+# charts satellite (Published 0.38 line):
 pip install "hedron-charts>=0.2.0,<0.3"
 ```
 
-## Upgrade
+## See also
 
-See [upgrade-fixtures-039](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-039.md) and [upgrade](upgrade.md).
-Rollback pins `hedron>=0.38.0,<0.39`.
+- [Data API](../api/DATA.md)
+- [hedron-data package](../packages/hedron-data.md)
+- [Upgrade](upgrade.md)
+- [RELEASE_0_39](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_39.md)

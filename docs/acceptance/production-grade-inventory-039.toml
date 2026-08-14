@@ -2,7 +2,7 @@
 # Machine-checked by verify_pkg_39 / PKG-039 at cut; shape validated during refine.
 # disposition: production_grade | incubator | fixture | eol
 # Extends the 0.38 fleet. hedron-elements remains incubator until 0.42 (D-067).
-# Living pins remain 0.38.x until the 0.39 cut; hedron-charts stays on Published 0.2.x.
+# Living tip Published as v0.39.0; hedron-charts stays on Published 0.2.x.
 # Owning decision: D-067; extends D-066 / D-065 / D-064 fleet. RFC: RFC-0060.
 # PRESENT-034 deferred presentation audit is recorded under hedron-core (see present_034_status).
 # Tracking: #94.

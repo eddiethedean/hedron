@@ -6,6 +6,16 @@ also attaches a checksum manifest and refuses to create the GitHub Release until
 exact PyPI artifact passes the documented scaffold smoke. PyPI remains authoritative
 for installable package versions.
 
+## 0.39.0 assets
+
+- [GitHub Release v0.39.0](https://github.com/eddiethedean/hedron/releases/tag/v0.39.0)
+- [Hedron 0.39.0 on PyPI](https://pypi.org/project/hedron/0.39.0/)
+- [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
+
+Prefer the release-tag `release-manifest.json` (when attached) plus SBOM / license /
+evidence-bundle assets for evaluator diligence. Reproduce from the immutable tag if an
+expected asset is missing.
+
 ## 0.38.0 assets
 
 - [GitHub Release v0.38.0](https://github.com/eddiethedean/hedron/releases/tag/v0.38.0)

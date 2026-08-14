@@ -18,7 +18,7 @@ production-grade Web Components and **not** Hedron `1.0`.
 ## Install
 
 ```bash
-# Historical 0.36 environment only; new apps should use the 0.38 pin above.
+# Historical 0.36 environment only; new apps should use the 0.39 pin above.
 python -m pip install "hedron>=0.36.0,<0.37" "hedron[elements]>=0.36.0,<0.37"
 ```
 

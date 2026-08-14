@@ -1,7 +1,7 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.38.x** train (**Published**; tip
-PyPI/git = `v0.38.0`)
+**Status:** Accepted for the **0.39.x** train (**Published**; tip
+PyPI/git = `v0.39.0`)
 **Reviewed:** 2026-08-14
 
 ## Current train (read this first)
@@ -21,11 +21,11 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`, `hedron-workbench`, `hedron-posit`)
-stay on the `0.38.x` train (Published as `v0.38.0`). Independent Beta packages
+stay on the `0.39.x` train (Published as `v0.39.0`). Independent Beta packages
 `hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
 lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
 also version independently. `hedron-elements` is the Alpha incubator on the coordinated
-0.38 line.
+0.39 line.
 
 ### Charts and sample-kit compatibility floor
 

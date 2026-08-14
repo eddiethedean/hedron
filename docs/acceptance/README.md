@@ -30,6 +30,7 @@ status commentary, not a satisfied release gate.
 - [`v0.36` Web Component ABI](RELEASE_0_36.md) — **Published**; all owned gates Verified; tip `v0.36.0`
 - [`v0.37` form-associated elements and primitives](RELEASE_0_37.md) — **Published** (`v0.37.0`)
 - [`v0.38` high-fidelity charts](RELEASE_0_38.md) — **Published** (`v0.38.0` / `hedron-charts` `0.2.0`); RFC-0069 / D-066; [#251](https://github.com/eddiethedean/hedron/issues/251)
+- [`v0.39` rich data and OptimisticMutation](RELEASE_0_39.md) — **Published** (`v0.39.0`); RFC-0060 / D-067; [#94](https://github.com/eddiethedean/hedron/issues/94) closed
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
@@ -80,7 +81,8 @@ status commentary, not a satisfied release gate.
   [release-gate-0.35.toml](release-gate-0.35.toml) (Verified),
   [release-gate-0.36.toml](release-gate-0.36.toml) (Verified),
   [release-gate-0.37.toml](release-gate-0.37.toml) (Verified),
-  [release-gate-0.38.toml](release-gate-0.38.toml) (Planned; Stage 0 contract refined)
+  [release-gate-0.38.toml](release-gate-0.38.toml) (Verified),
+  [release-gate-0.39.toml](release-gate-0.39.toml) (Verified)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.

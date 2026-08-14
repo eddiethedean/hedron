@@ -1,6 +1,6 @@
 # Hedron `v0.39` rich data and visualization elements acceptance
 
-**Status:** Published as Hedron **`v0.39.0`** (in-tree cut; tag/PyPI deferred). Stage 0 baseline was Published **`v0.38.0`**. All owned gates Verified.
+**Status:** Published (`v0.39.0`; Stage 0 was refined against Published **`v0.38.0`**). All owned gates Verified.
 
 Phase 0.39 converges first-party rich browser surfaces (DataTable/DataEditor, maps, media,
 editors, and eligible specialty hosts) onto the shared element ABI, proves typed

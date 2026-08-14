@@ -1,8 +1,7 @@
 # Upgrade fixtures — phase 0.39 rich data and visualization elements
 
-Stage 0 contract refine baseline: living Published `v0.39.0`. Runtime implementation begins at
-Stage 1. Cut target: Hedron `v0.39.0`. Tracking
-[#94](https://github.com/eddiethedean/hedron/issues/94).
+Published cut: Hedron **`v0.39.0`**. Stage 0 was refined against living Published `v0.38.0`.
+Tracking [#94](https://github.com/eddiethedean/hedron/issues/94) closed.
 
 ## Required upgrade corpus
 
@@ -19,22 +18,21 @@ Stage 1. Cut target: Hedron `v0.39.0`. Tracking
   fallbacks.
 - HTMX inner/outer/OOB lifecycle fixtures for DataTable/DataEditor remain green under the ABI
   migration.
-- The locked 27-issue remediation corpus under #94 remains cited until each issue is closed at
-  `REGRESS-039` Verified.
+- The locked 27-issue remediation corpus under #94 is closed at `REGRESS-039` Verified.
 
 ## Pin migration at cut
 
-| Surface | Before (living tip) | At phase 0.39 cut |
+| Surface | Before (0.38 tip) | At Published 0.39 |
 |---|---|---|
-| Hedron train | `hedron>=0.39.0,<0.40` | `hedron>=0.39.0,<0.40` |
+| Hedron train | `hedron>=0.38.0,<0.39` | `hedron>=0.39.0,<0.40` |
 | Charts | `hedron-charts>=0.2.0,<0.3` | `hedron-charts>=0.2.0,<0.3` (consume 0.38 contract) |
-| DataTable / DataEditor | 0.38 call shapes | ABI-shared Supported path |
+| DataTable / DataEditor | 0.38 call shapes | ABI-shared Supported path (`hedron-data-editor`) |
 | OptimisticMutation | Not Supported | Bounded DataEditor/collection proof |
 | Map / media / editors | Mixed / Experimental | ABI or owned Experimental exception |
 
 ## Rollback
 
-Rollback pins `hedron>=0.39.0,<0.40`, removes 0.39-only optimistic/ABI assets, and verifies no
+Rollback pins `hedron>=0.38.0,<0.39`, removes 0.39-only optimistic/ABI assets, and verifies no
 stale custom-element definition, worker, object URL, or cached optimistic revision remains.
 Browser-local pending edits are disposable and are not migrated as server authority.
 

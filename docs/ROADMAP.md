@@ -2998,10 +2998,9 @@ Supported for a locked catalog rather than delegated to incompatible vendor JSON
 
 ## 0.39 — Rich data and visualization elements (`v0.39.0`)
 
-**Status:** Published as `v0.39.0` (D-067; in-tree cut; tag/PyPI deferred). Stage 0 was refined against Published `v0.38.0`.
-**Tracking:** [#94](https://github.com/eddiethedean/hedron/issues/94). Close when all 0.39-owned
-gates are Verified and every first-party rich surface shares the ABI or has an owned Experimental
-exception.
+**Status:** **Published** as `v0.39.0` (D-067). Stage 0 was refined against Published `v0.38.0`.
+**Tracking:** [#94](https://github.com/eddiethedean/hedron/issues/94) **closed**. All 0.39-owned
+gates are Verified; first-party rich surfaces share the ABI or have an owned Experimental exception.
 
 **Outcome:** Data grids/editors, interactive charts, maps, media, editors, and eligible specialty
 surfaces converge on the shared ABI. Rich adapters remain optional and bounded; useful server-rendered

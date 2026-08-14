@@ -2,10 +2,11 @@
 
 DataTable, DataEditor, and data-source toolkit for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.38.x` (published `v0.38.0`) · pin `>=0.39.0,<0.40`
+**Package maturity:** Beta · **Train:** `0.39.x` (published `v0.39.0`) · pin `>=0.39.0,<0.40`
 **Flagship extra:** `hedron[data]` · **Import:** `hedron_data`  
-**Capability:** Supported for DataTable / DataEditor when pinned — see
-[What’s ready](../guides/whats-ready.md).
+**Capability:** Supported for DataTable / DataEditor (ABI `hedron-data-editor`) and
+bounded `OptimisticMutation` when pinned — see [What’s ready](../guides/whats-ready.md)
+and [DATA.md](../api/DATA.md).
 
 ## Install
 
@@ -37,7 +38,8 @@ pip install "hedron-data[sqlalchemy]>=0.39.0,<0.40"
 ## When to use
 
 - Paginated, sortable tables inside Hedron pages (FastAPI / Flask / Django)
-- Editable grids with server-side save handlers
+- Editable grids with server-side save handlers and optional bounded optimistic cell edits
+- Table↔chart cross-filter via `compose_chartlink_039` (Published 0.38 `hedron-chart` events)
 - Typed `DataSource` backends (in-memory, SQLAlchemy, Django QuerySet, …)
 
 Prefer ordinary built-ins (`Table`, forms) for tiny static lists. Install this package

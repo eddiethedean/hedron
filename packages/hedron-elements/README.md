@@ -1,6 +1,6 @@
 # hedron-elements
 
-**Package maturity:** Alpha · **Train:** `0.38.x` · pin `>=0.39.0,<0.40`
+**Package maturity:** Alpha · **Train:** `0.39.x` · pin `>=0.39.0,<0.40`
 
 Framework-neutral Web Component ABI and HTMX-safe bridge for Hedron. Includes the
 `hedron-example` reference plus Alpha form controls (`hedron-field-text`,

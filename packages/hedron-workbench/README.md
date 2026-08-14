@@ -12,7 +12,7 @@ application. `RS_SERVER_URL` is discovery-only and never grants trust.
 
 Also available as `hedron[workbench]`.
 
-**Package maturity:** Beta · **Train:** `0.38.x` · pin `>=0.39.0,<0.40`
+**Package maturity:** Beta · **Train:** `0.39.x` · pin `>=0.39.0,<0.40`
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
 

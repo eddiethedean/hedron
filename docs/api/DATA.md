@@ -42,8 +42,12 @@ Read-only accessible table with paging metadata and optional CSV download.
 
 ## `DataEditor`
 
-Editable grid hosted by a Web Component. `on_save` is **server-only factory
-configuration** — never part of the serializable props contract. Prefer an explicit
+Editable grid hosted by the public **`hedron-data-editor`** custom element
+(`TAG_NAME = "hedron-data-editor"`). Markup is ABI-shaped
+(`<hedron-data-editor data-hedron-abi …>`) with the previous SSR table retained
+inside as a progressive-enhancement fallback (`data-hedron-fallback` /
+`aria-hidden` after boot). `on_save` is **server-only factory configuration** —
+never part of the serializable props contract. Prefer an explicit
 `DataEditorSource` for large data.
 
 | Parameter | Type | Default | Description |
@@ -68,6 +72,37 @@ configuration** — never part of the serializable props contract. Prefer an exp
 | `DataSaveResult[Row]` | model | Success, normalized values, field errors, concurrency conflicts |
 | Writable fields | server policy | Visible fields are not automatically writable; validate on every save |
 
+## `OptimisticMutation` (0.39)
+
+Typed optimistic edit contract for **bounded DataEditor / collection cell edits**.
+Import from `hedron_data`:
+
+```python
+from hedron_data import OptimisticMutation, OptimisticMutationState, assert_optimism_allowed
+```
+
+State machine: `canonical` → `proposed` → `submitted` → `confirmed` (with
+`rejected` / `rolled_back` / `conflicted` / `refetched` branches). Every mutation
+carries an idempotency key and optional base revision. Risk classes outside the
+proven inventory (auth, payments, irreversible deletes, bulk admin, …) are
+**deny-by-default** via `assert_optimism_allowed` / `DENY_BY_DEFAULT_RISKS`.
+
+Server-confirmed remains the default truth; the browser may paint proposed state
+only for allowlisted collection edits.
+
+## Chartlink (0.39)
+
+Compose Published 0.38 `hedron-chart` events with DataTable/DataEditor selection
+without a parallel chart renderer:
+
+```python
+from hedron_core.cross_filter import compose_chartlink_039
+```
+
+`compose_chartlink_039` binds chart event kinds from the Published chart contract
+to grid selection / filter state. Keep vendor chart adapters Experimental and
+out of the default Supported path.
+
 ## Errors
 
 | Situation | Behavior |
@@ -75,9 +110,11 @@ configuration** — never part of the serializable props contract. Prefer an exp
 | Missing `hedron-data` | Import error — install `hedron[data]` |
 | Unauthorized / invalid save | Application / `DataSaveResult` field errors |
 | Oversized client payload | Bounded serialization failure / diagnostic |
+| Disallowed optimistic risk | Fail closed (`assert_optimism_allowed`) |
 
 ## See also
 
 - [Data sources](DATA_SOURCE.md) — protocols, `InMemoryDataSource`, paging
 - [Data applications guide](../guides/data-apps.md) — SQLAlchemy end-to-end
 - [DataTable component](../components/data-table.md) · [DataEditor](../components/data-editor.md) · [Field](FIELD.md)
+- [What’s new in 0.39](../guides/whats-new-0.39.md)

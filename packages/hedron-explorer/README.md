@@ -12,7 +12,7 @@ settings, charts, and interaction simulation — plus sanitized JSON APIs with
 rate limiting and audit hooks. Installed through `hedron[dev]`; **not required**
 in production.
 
-**Package maturity:** Beta · **Train:** `0.38.x` (last published `0.39.0`) · pin `>=0.39.0,<0.40`
+**Package maturity:** Beta · **Train:** `0.39.x` (published `v0.39.0`) · pin `>=0.39.0,<0.40`
 
 ## Install
 

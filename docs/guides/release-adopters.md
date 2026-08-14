@@ -7,7 +7,7 @@ Current public release: **v0.39.0**. Recommended constraint:
 
 Continue with:
 
-- [Upgrade to 0.38](upgrade.md)
+- [Upgrade to 0.39](upgrade.md)
 - [What’s ready today](whats-ready.md)
 - [Ship a Hedron app](ship.md)
 - [Release evidence](evidence-pack.md)

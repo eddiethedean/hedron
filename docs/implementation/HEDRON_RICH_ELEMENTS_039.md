@@ -1,11 +1,14 @@
 # Phase 0.39 implementation plan: rich data and visualization elements
 
-This plan turns [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) / D-067 into reviewable
-work. The living published tip is `v0.39.0`. Stage 0 (including this contract refine) adds
-contracts only and does not change runtime behavior or versions. Tracking
-[#94](https://github.com/eddiethedean/hedron/issues/94). Authoritative optimistic contract:
-[WEB_COMPONENT_INTERACTION_CONTRACTS.md](WEB_COMPONENT_INTERACTION_CONTRACTS.md) §3. Surface
-catalog: [RICH_SURFACE_039.md](RICH_SURFACE_039.md).
+**Status:** Historical implementation plan; the `v0.39.0` cut is published. This file records
+the accepted target and work slicing, not the exact current runtime surface. Use
+[DATA.md](../api/DATA.md) and [What’s new in 0.39](../guides/whats-new-0.39.md) for adopter
+contracts.
+
+This plan turned [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) / D-067 into reviewable
+work. Tracking [#94](https://github.com/eddiethedean/hedron/issues/94) closed. Authoritative
+optimistic contract: [WEB_COMPONENT_INTERACTION_CONTRACTS.md](WEB_COMPONENT_INTERACTION_CONTRACTS.md)
+§3. Surface catalog: [RICH_SURFACE_039.md](RICH_SURFACE_039.md).
 
 ## Outcome
 
@@ -15,7 +18,7 @@ edits, and DataTable/DataEditor composition consumes the Published 0.38 `hedron-
 without a parallel renderer.
 
 Completion requires every row in
-[`release-gate-0.39.toml`](../acceptance/release-gate-0.39.toml) Verified.
+[`release-gate-0.39.toml`](../acceptance/release-gate-0.39.toml) Verified — **done**.
 
 ## Locked architecture
 
@@ -32,25 +35,13 @@ Completion requires every row in
 
 ### Stage 0 — contract and evidence packet (complete)
 
-### Stage 1+ — implementation and cut (complete)
-
 - Accept D-067 / RFC-0060 Resolved questions (D-067).
 - Add this plan, release packet, gate manifest, inventories, upgrade fixtures, review brief,
   [RICH_SURFACE_039.md](RICH_SURFACE_039.md), and scoped [AT-039](../acceptance/human-at/039/PROTOCOL.md).
-- Bind tracking [#94](https://github.com/eddiethedean/hedron/issues/94) and medium/low remediations
-  #73/#84/#102/#104/#105/#107/#113/#115–#121/#176/#188–#194/#221/#240/#241/#247/#248.
-- Rebaseline living published tip acknowledgment to `v0.39.0`.
-- Add lenient packet verification to CI.
-- Do not modify DataEditor/OptimisticMutation runtime, package versions, living pins, or release
-  status.
+- Bind tracking [#94](https://github.com/eddiethedean/hedron/issues/94) and medium/low remediations.
+- Exit: `python scripts/verify_pkg_39.py --allow-planned`.
 
-**Explicitly forbidden until Stage 1+:** ABI migration code, OptimisticMutation runtime,
-chartlink wiring, worker enforcement, workspace or tip bump, flipping any 0.39 gate to Verified,
-adopter-facing “0.39 Published” claims.
-
-Exit: `python scripts/verify_pkg_39.py --allow-planned`.
-
-### Stage 1+ (sketched only)
+### Stage 1+ — implementation and cut (complete)
 
 - DATA-039: migrate DataTable/DataEditor browser hosts to shared ABI suites.
 - OPTIMISTIC-039: implement typed revision machine on bounded collection edits.
@@ -61,10 +52,9 @@ Exit: `python scripts/verify_pkg_39.py --allow-planned`.
 
 ## Cut commands
 
-During planning and implementation:
-
 ```bash
-python scripts/verify_pkg_39.py --allow-planned
+python scripts/verify_pkg_39.py
+uv run python scripts/check_release_gate.py 0.39.0
 ```
 
 At the `v0.39.0` cut:

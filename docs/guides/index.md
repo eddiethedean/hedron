@@ -3,7 +3,8 @@
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
 **0.39 train** (**Published**; last **v0.39.0**): typed FastAPI/HTMX applications,
-first-party high-fidelity charts, tooling-grade conformance/sim/notebook/sample-kit,
+rich data ABI / OptimisticMutation / chartlink, Published first-party charts
+(`hedron-charts` `0.2.x`), tooling-grade conformance/sim/notebook/sample-kit,
 Node/Java evaluators, and `hedron migrate streamlit` — [What’s ready](whats-ready.md).
 
 Complete **Learn** first ([Learning path](../getting-started/learning-path.md):

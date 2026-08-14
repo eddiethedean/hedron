@@ -4,7 +4,7 @@
 !!! note "Current train is 0.39"
 
     Pin `hedron>=0.39.0,<0.40` for new apps. The pin below is historical for this train only.
-    See [What’s new in 0.38](whats-new-0.39.md).
+    See [What’s new in 0.39](whats-new-0.39.md).
 
 **Published as `v0.19.0`** (2026-08-07). Current published train is **0.39.x** (last `v0.39.0`).
 Historical installs for this phase used a 0.19 upper-bound pin; the current pin is
