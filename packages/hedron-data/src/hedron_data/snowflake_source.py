@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import re
 from collections.abc import Callable, Sequence
 from typing import Any, Generic, TypeVar
 
@@ -78,6 +79,54 @@ def _strip_sql_comments(statement: str) -> str:
     return "".join(out)
 
 
+def _without_sql_string_literals(statement: str) -> str:
+    """Blank quoted SQL string contents so keyword scans ignore literal data."""
+    out: list[str] = []
+    i = 0
+    n = len(statement)
+    in_single = False
+    in_double = False
+    while i < n:
+        ch = statement[i]
+        nxt = statement[i + 1] if i + 1 < n else ""
+        if in_single:
+            if ch == "'" and nxt == "'":
+                out.append("  ")
+                i += 2
+                continue
+            out.append(" ")
+            if ch == "'":
+                in_single = False
+            i += 1
+            continue
+        if in_double:
+            if ch == '"' and nxt == '"':
+                out.append("  ")
+                i += 2
+                continue
+            out.append(" ")
+            if ch == '"':
+                in_double = False
+            i += 1
+            continue
+        if ch == "'":
+            in_single = True
+            out.append(" ")
+            i += 1
+            continue
+        if ch == '"':
+            in_double = True
+            out.append(" ")
+            i += 1
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
+_INTO_TOKEN = re.compile(r"\binto\b", re.IGNORECASE)
+
+
 def assert_select_only(statement: str) -> str:
     """Require a single SELECT/WITH statement; reject mutating or multi-statement SQL."""
     cleaned = _strip_sql_comments(statement).strip().rstrip(";").strip()
@@ -137,6 +186,17 @@ def assert_select_only(statement: str) -> str:
                 explanation="Mutating SQL is not accepted through the data source.",
                 remediation="Pass a SELECT and apply mutations through an app-owned bridge.",
             )
+    # SELECT … INTO [TEMP[ORARY]] TABLE is a mutation in Snowflake (#197).
+    if _INTO_TOKEN.search(_without_sql_string_literals(cleaned)):
+        raise error(
+            "HED-DATA-0061",
+            title="Snowflake statement must be a SELECT",
+            explanation=(
+                "SELECT … INTO table materialization is not accepted through the "
+                "SELECT-only data source."
+            ),
+            remediation="Pass a plain SELECT/WITH and apply mutations through an app-owned bridge.",
+        )
     return cleaned
 
 
