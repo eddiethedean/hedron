@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Mapping
 from html import escape
 from typing import Any
@@ -20,6 +21,54 @@ __all__ = [
 MAX_STRUCTURED_BYTES = 8192
 MAX_STRUCTURED_ITEMS = 64
 MAX_STRUCTURED_DEPTH = 4
+
+# Custom-element token: no quotes, spaces, ``>``, or ``/`` breakouts (#215).
+_CUSTOM_ELEMENT_TAG = re.compile(r"^[a-z][a-z0-9]*(-[a-z0-9]+)+$")
+# Match hedron_core.html / _serializer attribute-name allowlist.
+_SAFE_ATTR_NAME = re.compile(r"^[A-Za-z_][\w.-]*$")
+_FROZEN_ATTR_NAMES = frozenset(
+    {
+        "data-hedron-abi",
+        "data-hedron-element",
+        "data-hedron-input",
+    }
+)
+
+
+def _strip_nul(value: str) -> str:
+    return value.replace("\x00", "")
+
+
+def _require_element_tag(tag_name: str) -> str:
+    tag = _strip_nul(tag_name).strip().lower()
+    if not _CUSTOM_ELEMENT_TAG.match(tag) or not tag.startswith("hedron-"):
+        raise error(
+            "HED-ELEMENT-0003",
+            title="Invalid element tag",
+            explanation=f"Tag {tag_name!r} is not a valid first-party element name.",
+            remediation="Use a hedron-* custom element tag matching [a-z][a-z0-9]*(-[a-z0-9]+)+.",
+        )
+    return tag
+
+
+def _require_safe_attr_name(name: str) -> str:
+    cleaned = _strip_nul(name)
+    if not cleaned or not _SAFE_ATTR_NAME.match(cleaned) or any(ord(ch) < 32 for ch in cleaned):
+        raise error(
+            "HED-SEC-0010",
+            title="Unsafe attribute name rejected",
+            explanation=f"Attribute name {name!r} contains forbidden characters.",
+            remediation="Use token attribute names matching [A-Za-z_][\\w.-]*.",
+        )
+    lower = cleaned.lower()
+    if lower.startswith("on"):
+        raise error(
+            "HED-SEC-0002",
+            title="Inline event handler rejected",
+            explanation=f"Attribute {name!r} is an inline event handler.",
+            remediation="Use HTMX attributes or registered Web Components instead.",
+        )
+    return cleaned
 
 
 def _depth(value: object, current: int = 0) -> int:
@@ -64,7 +113,7 @@ def encode_structured_input(payload: Mapping[str, Any], *, instance_id: str) -> 
             explanation=f"Payload exceeds depth {MAX_STRUCTURED_DEPTH}.",
             remediation="Flatten configuration.",
         )
-    safe_id = escape(instance_id, quote=True)
+    safe_id = escape(_strip_nul(instance_id), quote=True)
     # Escape closing tags inside JSON text nodes.
     safe_json = raw.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
     return f'<script type="application/json" data-hedron-input-for="{safe_id}">{safe_json}</script>'
@@ -81,13 +130,7 @@ def render_element_markup(
     structured_input: Mapping[str, Any] | None = None,
 ) -> str:
     """Render frozen ABI markup for a light-DOM first-party element."""
-    if not tag_name.startswith("hedron-") or "-" not in tag_name:
-        raise error(
-            "HED-ELEMENT-0003",
-            title="Invalid element tag",
-            explanation=f"Tag {tag_name!r} is not a valid first-party element name.",
-            remediation="Use a hedron-* custom element tag.",
-        )
+    tag = _require_element_tag(tag_name)
     if abi_version < 1:
         raise error(
             "HED-ELEMENT-0002",
@@ -95,18 +138,27 @@ def render_element_markup(
             explanation=f"ABI {abi_version} is unsupported.",
             remediation="Use a positive ABI major.",
         )
-    attrs = {
-        "data-hedron-abi": str(abi_version),
-        "data-hedron-element": element_id,
-        **dict(attributes or {}),
-    }
+    # Caller attributes first; frozen ABI identity always wins afterward (#215).
+    attrs: dict[str, str] = {}
+    for key, value in dict(attributes or {}).items():
+        safe_key = _require_safe_attr_name(str(key))
+        if safe_key.lower() in _FROZEN_ATTR_NAMES:
+            raise error(
+                "HED-ELEMENT-0003",
+                title="Frozen element attribute rejected",
+                explanation=f"Attribute {safe_key!r} is reserved for ABI identity markup.",
+                remediation="Omit data-hedron-abi / data-hedron-element / data-hedron-input.",
+            )
+        attrs[safe_key] = _strip_nul(str(value))
+    attrs["data-hedron-abi"] = str(abi_version)
+    attrs["data-hedron-element"] = _strip_nul(element_id)
     if instance_id:
-        attrs["data-hedron-input"] = instance_id
-    attr_html = " ".join(f'{escape(k)}="{escape(str(v), quote=True)}"' for k, v in attrs.items())
-    content = escape(server_content)
-    body = (
-        f'<{tag_name} {attr_html}><p data-hedron-server-region="content">{content}</p></{tag_name}>'
+        attrs["data-hedron-input"] = _strip_nul(instance_id)
+    attr_html = " ".join(
+        f'{escape(k, quote=True)}="{escape(str(v), quote=True)}"' for k, v in attrs.items()
     )
+    content = escape(_strip_nul(server_content))
+    body = f'<{tag} {attr_html}><p data-hedron-server-region="content">{content}</p></{tag}>'
     if structured_input is not None:
         if not instance_id:
             raise error(
