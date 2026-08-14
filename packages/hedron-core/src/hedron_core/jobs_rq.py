@@ -6,7 +6,11 @@ import logging
 from collections.abc import Callable, Mapping
 from typing import Any, cast
 
-from hedron_core.job_status_store import RedisStatusStore, require_redis_status_client
+from hedron_core.job_status_store import (
+    RQ_ENQUEUE_FAILED,
+    RedisStatusStore,
+    require_redis_status_client,
+)
 from hedron_core.jobs import JobHandle, JobState, JobStatus, RedisClient
 from hedron_core.typing_aliases import JsonValue
 
@@ -65,11 +69,8 @@ class RQJobBackend:
             rq_job = self._queue.enqueue(fn, dict(payload), job_id=handle.job_id)
             self._rq_jobs[handle.job_id] = rq_job
         except Exception:
-            self._store.mark(
-                handle.job_id,
-                JobState.FAILED,
-                error="RQ enqueue failed",
-            )
+            # Release idempotency so a later submit can retry after a broker blip (#199).
+            self._store.mark_enqueue_failed(handle.job_id, error=RQ_ENQUEUE_FAILED)
             raise
         return handle
 

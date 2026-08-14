@@ -21,7 +21,18 @@ from hedron_core.jobs import (
 )
 from hedron_core.typing_aliases import JsonValue
 
-__all__ = ["RedisStatusStore", "require_redis_status_client"]
+__all__ = [
+    "CELERY_ENQUEUE_FAILED",
+    "ENQUEUE_FAILED_ERRORS",
+    "RQ_ENQUEUE_FAILED",
+    "RedisStatusStore",
+    "require_redis_status_client",
+]
+
+# Broker never accepted the task — reclaimable under the same idempotency key (#199).
+CELERY_ENQUEUE_FAILED = "Celery enqueue failed"
+RQ_ENQUEUE_FAILED = "RQ enqueue failed"
+ENQUEUE_FAILED_ERRORS = frozenset({CELERY_ENQUEUE_FAILED, RQ_ENQUEUE_FAILED})
 
 _TERMINAL = frozenset({JobState.SUCCEEDED, JobState.FAILED, JobState.CANCELLED})
 _CANCEL_FORCE = frozenset({JobState.RUNNING, JobState.SUCCEEDED, JobState.FAILED})
@@ -211,12 +222,28 @@ class RedisStatusStore:
         self._client.delete(self._key(job_id))
         if data is None:
             return
+        self._release_idempotency_pointer(job_id, data)
+
+    def release_idempotency(self, job_id: str) -> None:
+        """Drop the idempotency pointer if it still names ``job_id`` (keep the job body)."""
+        data = self._load(job_id)
+        if data is None:
+            return
+        self._release_idempotency_pointer(job_id, data)
+
+    def _release_idempotency_pointer(self, job_id: str, data: Mapping[str, object]) -> None:
         scope = data.get("idempotency_scope_key")
         if isinstance(scope, str) and scope:
             idem_key = f"{self._prefix}idem:{scope}"
             pointed = self._decode(self._client.get(idem_key))
             if pointed == job_id:
                 self._client.delete(idem_key)
+
+    def mark_enqueue_failed(self, job_id: str, *, error: str) -> JobStatus | None:
+        """Mark FAILED for a broker enqueue miss and reclaim the idempotency key (#199)."""
+        status = self.mark(job_id, JobState.FAILED, error=error)
+        self.release_idempotency(job_id)
+        return status
 
     def submit(
         self,
@@ -231,6 +258,9 @@ class RedisStatusStore:
 
         ``created`` is ``False`` on an idempotency replay so broker bridges can
         skip re-enqueue and avoid marking a live job failed.
+
+        Jobs that never reached the broker (``ENQUEUE_FAILED_ERRORS``) release the
+        idempotency key so a later submit can create a fresh job (#199).
         """
         idem_redis_key: str | None = None
         if idempotency_key:
@@ -241,12 +271,20 @@ class RedisStatusStore:
             if existing_raw:
                 existing = self.get(existing_raw, auth_subject=auth_subject, tenant_id=tenant_id)
                 if existing is not None:
-                    return (
-                        JobHandle(job_id=existing.job_id, idempotency_key=idempotency_key),
-                        False,
-                    )
-                # Stale or cross-scope pointer — drop and continue.
-                self._client.delete(idem_redis_key)
+                    if (
+                        existing.state is JobState.FAILED
+                        and existing.error in ENQUEUE_FAILED_ERRORS
+                    ):
+                        # Heal pre-fix stuck pointers: broker never accepted the task.
+                        self.release_idempotency(existing.job_id)
+                    else:
+                        return (
+                            JobHandle(job_id=existing.job_id, idempotency_key=idempotency_key),
+                            False,
+                        )
+                else:
+                    # Stale or cross-scope pointer — drop and continue.
+                    self._client.delete(idem_redis_key)
 
         job_id = secrets.token_urlsafe(12)
         now = time.time()
