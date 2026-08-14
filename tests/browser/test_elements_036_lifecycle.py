@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import socket
 import threading
 from collections.abc import Iterator
 
@@ -14,7 +15,7 @@ from playwright.sync_api import sync_playwright
 from hedron import Hedron
 from hedron_core.builtins import Page, Text
 from hedron_elements.example import Example
-from hedron_elements.plugin import register
+from tests.browser._harness import reset_browser_plugin_state, wait_for_port
 
 pytestmark = pytest.mark.browser
 
@@ -23,24 +24,25 @@ def _browser_enabled() -> bool:
     return os.environ.get("HEDRON_BROWSER", "").strip() in {"1", "true", "yes"}
 
 
+def _free_port() -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(("127.0.0.1", 0))
+        return int(sock.getsockname()[1])
+
+
 @pytest.fixture(scope="module")
 def server_url() -> Iterator[str]:
     if not _browser_enabled():
         pytest.skip("HEDRON_BROWSER not set")
 
-    class _Ctx:
-        def register_diagnostic_owner(self, prefix: str) -> None:
-            return None
+    # Lifespan load_plugins registers hedron-elements — do not register twice.
+    reset_browser_plugin_state()
 
-        def register_feature(self, **kwargs: object) -> None:
-            return None
-
-        def register_explorer_panel(self, **kwargs: object) -> None:
-            return None
-
-    register(_Ctx())  # type: ignore[arg-type]
-
-    app = Hedron(title="elements-036", explorer="off", session_secret="secret")
+    app = Hedron(
+        title="elements-036",
+        explorer="off",
+        session_secret="browser-lifecycle-secret-ok-32chars",
+    )
 
     @app.page("/")
     def home() -> Page:
@@ -57,24 +59,17 @@ def server_url() -> Iterator[str]:
 
     import uvicorn
 
-    config = uvicorn.Config(app, host="127.0.0.1", port=8765, log_level="error")
+    port = _free_port()
+    config = uvicorn.Config(app, host="127.0.0.1", port=port, log_level="error")
     server = uvicorn.Server(config)
     thread = threading.Thread(target=server.run, daemon=True)
     thread.start()
-    import time
-
-    for _ in range(50):
-        try:
-            import urllib.error
-            import urllib.request
-
-            urllib.request.urlopen("http://127.0.0.1:8765/", timeout=0.2)
-            break
-        except (OSError, urllib.error.URLError):
-            time.sleep(0.1)
-    yield "http://127.0.0.1:8765"
-    server.should_exit = True
-    thread.join(timeout=5)
+    try:
+        wait_for_port(port)
+        yield f"http://127.0.0.1:{port}"
+    finally:
+        server.should_exit = True
+        thread.join(timeout=5)
 
 
 def test_repeated_outer_swap_instances(server_url: str) -> None:
