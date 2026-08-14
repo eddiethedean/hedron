@@ -95,6 +95,12 @@ class RedisStatusStore:
             ex=self._ttl,
         )
 
+    def _idem_redis_key_from_data(self, data: Mapping[str, object]) -> str | None:
+        scope = data.get("idempotency_scope_key")
+        if isinstance(scope, str) and scope:
+            return f"{self._prefix}idem:{scope}"
+        return None
+
     def _store_cas(
         self,
         data: Mapping[str, object],
@@ -108,8 +114,13 @@ class RedisStatusStore:
         When ``sticky_cancel`` is true (default), preserve ``cancel_requested`` from the
         current record. Snapshot restore sets ``sticky_cancel=False`` so a failed broker
         cancel can roll status back exactly.
+
+        Refreshes the associated idempotency key TTL in the same transaction so
+        long-running jobs cannot outlive the write-once idempotency TTL (#210).
         """
-        key = self._key(str(data["job_id"]))
+        job_id = str(data["job_id"])
+        key = self._key(job_id)
+        idem_key = self._idem_redis_key_from_data(data)
         pipeline_factory = getattr(self._client, "pipeline", None)
         if not callable(pipeline_factory):
             raise RuntimeError(
@@ -132,6 +143,8 @@ class RedisStatusStore:
         for _ in range(8):
             try:
                 pipe.watch(key)
+                if idem_key is not None:
+                    pipe.watch(idem_key)
                 raw = self._decode(pipe.get(key) if hasattr(pipe, "get") else self._client.get(key))
                 if raw is None:
                     pipe.unwatch()
@@ -145,12 +158,22 @@ class RedisStatusStore:
                     if current.get("cancel_requested"):
                         merged["cancel_requested"] = True
                     _apply_cancel_sticky(merged)
+                refresh_idem = False
+                if idem_key is not None:
+                    pointed = self._decode(
+                        pipe.get(idem_key) if hasattr(pipe, "get") else self._client.get(idem_key)
+                    )
+                    # Refresh when we still own the key, or recreate when TTL skew
+                    # expired it while the job body remains (#210).
+                    refresh_idem = pointed is None or pointed == job_id
                 pipe.multi()
                 pipe.set(
                     key,
                     json.dumps(merged, default=str, separators=(",", ":")),
                     ex=self._ttl,
                 )
+                if idem_key is not None and refresh_idem:
+                    pipe.set(idem_key, job_id, ex=self._ttl)
                 pipe.execute()
                 return True
             except Exception as exc:

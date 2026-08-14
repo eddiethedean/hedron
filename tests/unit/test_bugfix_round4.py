@@ -52,18 +52,15 @@ sys.modules.setdefault("redis.exceptions", _exc_mod)
 class _FakePipeline:
     def __init__(self, client: _FakeRedis) -> None:
         self._client = client
-        self._watched: str | None = None
-        self._watched_value: str | None = None
+        self._watched: dict[str, str | None] = {}
         self._buffer: list[tuple[str, tuple[object, ...], dict[str, object]]] = []
         self._in_multi = False
 
     def watch(self, key: str) -> None:
-        self._watched = key
-        self._watched_value = self._client._data.get(key)
+        self._watched[key] = self._client._data.get(key)
 
     def unwatch(self) -> None:
-        self._watched = None
-        self._watched_value = None
+        self._watched.clear()
         self._buffer.clear()
         self._in_multi = False
 
@@ -84,9 +81,9 @@ class _FakePipeline:
         self._buffer.append(("set", (key, value), {"ex": ex, "nx": nx}))
 
     def execute(self) -> list[object]:
-        if self._watched is not None:
-            current = self._client._data.get(self._watched)
-            if current != self._watched_value:
+        for watched_key, watched_value in self._watched.items():
+            current = self._client._data.get(watched_key)
+            if current != watched_value:
                 self.unwatch()
                 raise WatchError("watched key changed")
         results: list[object] = []
@@ -163,6 +160,32 @@ def test_redis_status_store_idempotency_nx() -> None:
     assert first.job_id == second.job_id
     bodies = [k for k in client._data if ":idem:" not in k]
     assert len(bodies) == 1
+
+
+def test_redis_status_store_mark_refreshes_idempotency_key() -> None:
+    """#210: mark/CAS must refresh or recreate the idempotency pointer TTL."""
+    client = _FakeRedis()
+    store = RedisStatusStore(client, ttl_seconds=10)  # type: ignore[arg-type]
+    handle, created = store.submit("demo", {"n": 1}, idempotency_key="k-skew", auth_subject="a")
+    assert created is True
+    idem_keys = [k for k in client._data if ":idem:" in k]
+    assert len(idem_keys) == 1
+    idem_key = idem_keys[0]
+
+    client.delete(idem_key)
+    assert client.get(idem_key) is None
+    assert client.get(f"h1:job:{handle.job_id}") is not None
+
+    marked = store.mark(handle.job_id, JobState.RUNNING)
+    assert marked is not None
+    assert marked.state is JobState.RUNNING
+    assert client.get(idem_key) == handle.job_id
+
+    again, again_created = store.submit(
+        "demo", {"n": 2}, idempotency_key="k-skew", auth_subject="a"
+    )
+    assert again_created is False
+    assert again.job_id == handle.job_id
 
 
 def test_celery_enqueue_failure_marks_failed() -> None:
