@@ -2857,7 +2857,17 @@ metadata while server-rendered HTML and HTMX remain the canonical fallback and r
 **Status:** Planned (Stage 0 packet refined); depends on the published 0.36 ABI and RFC-0060 acceptance.
 Acceptance packet: [`docs/acceptance/RELEASE_0_37.md`](docs/acceptance/RELEASE_0_37.md).
 **Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93). Close when all 0.37-owned
-gates are Verified.
+gates are Verified. High-severity remediations (D-065 amendment; issue bodies remain
+normative for `REGRESS-037`):
+[#230](https://github.com/eddiethedean/hedron/issues/230),
+[#231](https://github.com/eddiethedean/hedron/issues/231),
+[#232](https://github.com/eddiethedean/hedron/issues/232),
+[#233](https://github.com/eddiethedean/hedron/issues/233),
+[#234](https://github.com/eddiethedean/hedron/issues/234),
+[#235](https://github.com/eddiethedean/hedron/issues/235),
+[#236](https://github.com/eddiethedean/hedron/issues/236),
+[#237](https://github.com/eddiethedean/hedron/issues/237).
+Close each when its owning 0.37 gate is Verified.
 
 **Outcome:** Hedron's richer controls use form-associated custom elements without splitting ordinary
 HTML navigation, HTMX submission, server validation, or accessible fallback into separate models.
@@ -2881,6 +2891,11 @@ Semantic interactive primitives share the same focus, lifecycle, and failure con
   expectations, localization, zoom/reflow, forced colors, reduced motion, and print fallback.
 - Exercise slow/canceled requests, retarget/reselect, inner/outer/OOB swaps, history restore, module
   failure, file limits, and cleanup without losing server errors or unsent user intent silently.
+- Close the open high-severity defects owned by this phase (#230 HTMX `data-hx-*` eval/SafeUrl
+  bypass; #231 Flask production session cookie flags; #232 MCP Origin skip; #233 MCP
+  `max_request_bytes` buffering; #234 directory-upload NUL paths; #235 SelectSlider index
+  submissions; #236 Redis idempotency pointer delete; #237 element markup `hx-on` / `js:` /
+  `javascript:` emission).
 
 ### Locked exit evidence
 
@@ -2893,7 +2908,7 @@ Semantic interactive primitives share the same focus, lifecycle, and failure con
 | `INTERACT-037` | Gesture and overlay catalog passes pointer/keyboard/touch/focus/top-layer/security/swap/cleanup matrices |
 | `HTMX-037` | Swap/422/history/duplicate/slow/cancel matrices preserve values, errors, focus, and authority |
 | `AT-037` | Representative keyboard and human screen-reader form/primitives packet is dispositioned |
-| `REGRESS-037` / `PKG-037` | Cross-host/browser/security/performance/compatibility/docs/package suites pass |
+| `REGRESS-037` / `PKG-037` | Cross-host/browser/security/performance/compatibility/docs/package suites pass; open high-severity issues #230–#237 are closed |
 
 ### Non-goals
 
@@ -3229,6 +3244,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | `ElementStateOwnership` controlled/local/draft/preference contract | 0.36 | Explicit source-of-truth, reflection, incoming-update, conflict, persistence, and authority rules ([#92](https://github.com/eddiethedean/hedron/issues/92)). |
 | Form-associated elements and semantic interactive primitives | 0.37 | Native-first controls preserve ordinary forms, HTMX, server validation, keyboard/focus, and failed-upgrade fallback ([#93](https://github.com/eddiethedean/hedron/issues/93)). |
 | `InteractionState` and `GestureOverlayCatalog` | 0.37 | Common async progress/cancel/error model plus accessible pointer/keyboard/touch/top-layer primitives ([#93](https://github.com/eddiethedean/hedron/issues/93)). |
+| Open high-severity remediations (#230–#237) | 0.37 | Cut-blocking `REGRESS-037` defects: HTMX `data-hx-*` / element-markup eval, Flask cookie flags, MCP Origin and body limits, upload NUL paths, SelectSlider values, Redis idempotency delete. |
 | High-fidelity typed charts and first-party `hedron-chart` Web Component | 0.38 | D3-backed SVG/Canvas renderer, visual system, interactions, a11y, export, performance, review, and migration are gated by RFC-0069 / D-066. |
 | Data/chart/map/media/editor convergence on the shared element ABI | 0.39 | Data and other rich surfaces consume the 0.38 chart contract; adapters stay optional, bounded, disposable, and paired with useful server-rendered fallbacks ([#94](https://github.com/eddiethedean/hedron/issues/94)). |
 | `OptimisticMutation` | 0.39 | Explicit typed revision/idempotency/confirmation/rollback/refetch/conflict contract; server-confirmed is default ([#94](https://github.com/eddiethedean/hedron/issues/94)). |
@@ -3531,6 +3547,14 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#91](https://github.com/eddiethedean/hedron/issues/91) | Whole-fleet production-grade closure | 0.35 |
 | [#92](https://github.com/eddiethedean/hedron/issues/92) | Web Component ABI / `hedron-elements` / SSR / HTMX lifecycle | 0.36 |
 | [#93](https://github.com/eddiethedean/hedron/issues/93) | Form-associated elements / InteractionState / gesture overlays | 0.37 |
+| [#230](https://github.com/eddiethedean/hedron/issues/230) | HTMX `data-hx-*` aliases bypass EVAL-020 and SafeUrl gates | 0.37 |
+| [#231](https://github.com/eddiethedean/hedron/issues/231) | HedronFlask production session cookies omit Secure and SameSite | 0.37 |
+| [#232](https://github.com/eddiethedean/hedron/issues/232) | MCP Streamable HTTP skips Origin checks when `allowed_origins` is None | 0.37 |
+| [#233](https://github.com/eddiethedean/hedron/issues/233) | MCP `max_request_bytes` is checked after the body is fully buffered | 0.37 |
+| [#234](https://github.com/eddiethedean/hedron/issues/234) | `validate_directory_upload` accepts raw NUL in paths | 0.37 |
+| [#235](https://github.com/eddiethedean/hedron/issues/235) | SelectSlider submits option indexes instead of option values | 0.37 |
+| [#236](https://github.com/eddiethedean/hedron/issues/236) | Redis idempotency pointer delete is not atomic so concurrent reclaim can drop a live key | 0.37 |
+| [#237](https://github.com/eddiethedean/hedron/issues/237) | `render_element_markup` still emits `hx-on`, `js:` values, and `javascript:` URLs | 0.37 |
 | [#94](https://github.com/eddiethedean/hedron/issues/94) | Rich data / chart / map / media / editor elements | 0.39 (rephased by D-066) |
 | [#95](https://github.com/eddiethedean/hedron/issues/95) | Element authoring kit / React migration matrix / interop | 0.40 (rephased by D-066) |
 | [#96](https://github.com/eddiethedean/hedron/issues/96) | Browser composition / bounded draft state / navigation | 0.41 (rephased by D-066) |
@@ -3565,7 +3589,10 @@ Phase **0.33** shipped the unified `hedron-posit` Workbench/Connect facade (D-06
 to 0.34–0.41 without changing its scope. Tracking enhancement issues
 [#86](https://github.com/eddiethedean/hedron/issues/86)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 plus [#167](https://github.com/eddiethedean/hedron/issues/167) cover remaining Planned 0.21
-human-AT sessions and Planned phases 0.32–0.42. Close each issue
+human-AT sessions and Planned phases 0.32–0.42. Phase **0.37** also owns open high-severity
+remediations
+[#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237)
+(`REGRESS-037`; D-065 amendment). Close each issue
 only when its owning release-gate rows are Verified. An optional
 `1.0` definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
 roadmap phase. D-066 inserts high-fidelity charts at **0.38** and re-homes the previously planned

@@ -5,7 +5,7 @@
 # Owning decision: D-065; extends D-064 / D-063 fleet. RFC: RFC-0060.
 # PRESENT-034 deferred presentation audit is recorded under hedron-core (see present_034_status).
 
-baseline = "v0.36.0"
+baseline = "v0.37.0"
 present_034_status = "deferred_to_fleet_docs_audit"
 present_034_gates = ["FLEET-035", "DOCS-035"]
 
@@ -38,7 +38,7 @@ packages = [
 owner = "hedron"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.26.toml"
 disposition = "production_grade"
 supported = ["typed_pages", "htmx_fragments", "csrf_profiles", "polling_jobs", "inference_workflows"]
@@ -49,7 +49,7 @@ excluded = ["hedron_1_0_or_sla", "polling_only_reopen_without_packet"]
 owner = "hedron-core"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.26.toml"
 disposition = "production_grade"
 supported = ["components", "jobs", "security_floor", "default_styles_baseline"]
@@ -61,7 +61,7 @@ notes = "PRESENT-034 Deferred gallery/geometry audited via FLEET-035 + DOCS-035"
 owner = "hedron-explorer"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.26.toml"
 disposition = "production_grade"
 supported = ["local_dev_diagnostics", "a11y_workspace"]
@@ -72,7 +72,7 @@ excluded = ["public_by_default", "durable_audit_buffer"]
 owner = "hedron-data"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.27.toml"
 disposition = "production_grade"
 supported = ["datatable", "dataeditor", "transform_plan"]
@@ -83,7 +83,7 @@ excluded = ["ag_grid_enterprise"]
 owner = "hedron-flask"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.27.toml"
 disposition = "production_grade"
 supported = ["blueprint_init_app"]
@@ -94,7 +94,7 @@ excluded = []
 owner = "hedron-django"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.27.toml"
 disposition = "production_grade"
 supported = ["appconfig_forms_queryset"]
@@ -105,7 +105,7 @@ excluded = []
 owner = "hedron-jinja"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.27.toml"
 disposition = "production_grade"
 supported = ["hdj_templates", "a11y_static_checks"]
@@ -116,7 +116,7 @@ excluded = []
 owner = "hedron-extras"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.27.toml"
 disposition = "production_grade"
 supported = ["curated_extras_toolkit"]
@@ -127,7 +127,7 @@ excluded = ["default_plugin_registration_for_experimental_ui"]
 owner = "hedron-conformance"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.31.toml"
 disposition = "production_grade"
 supported = ["versioned_schemas", "golden_fixtures", "runner_cli_api"]
@@ -218,7 +218,7 @@ excluded = ["gradio_ui_runtime_embed", "arbitrary_caller_urls", "share_tunnels"]
 owner = "hedron-workbench"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.33.toml"
 disposition = "production_grade"
 supported = ["HedronWorkbench_compat", "workbench_run_check_doctor"]
@@ -229,7 +229,7 @@ excluded = ["import_auto_wrap"]
 owner = "hedron-posit"
 maturity = "beta"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.33.toml"
 disposition = "production_grade"
 supported = ["HedronPosit", "native_connect_guid", "workbench_path_prefix"]
@@ -286,7 +286,7 @@ human_at_sessions = "incubator_issue_86"
 owner = "hedron"
 maturity = "alpha"
 channel = "pypi"
-pin = ">=0.36.0,<0.37"
+pin = ">=0.37.0,<0.38"
 evidence = "release-gate-0.36.toml"
 disposition = "incubator"
 supported = []

@@ -5,64 +5,22 @@ from __future__ import annotations
 from typing import Literal
 
 from hedron_core.diagnostics import error
-from hedron_core.registry import ElementFieldOwnership
-
-OwnershipMode = Literal["controlled", "local", "draft", "preference"]
-IncomingPolicy = Literal["replace", "preserve", "rebase", "conflict"]
-
-_CAPABILITY_FIELDS = frozenset(
-    {
-        "auth",
-        "authorization",
-        "csrf",
-        "secret",
-        "token",
-        "capability",
-        "trusted_html",
-        "tenant",
-    }
+from hedron_core.element_types import (
+    ElementFieldOwnership,
+    OwnershipMode,
+    validate_field_ownership,
 )
 
+IncomingPolicy = Literal["replace", "preserve", "rebase", "conflict"]
+
 __all__ = [
+    "ElementFieldOwnership",
     "IncomingPolicy",
     "OwnershipMode",
     "apply_incoming_update",
     "refuse_transfer",
     "validate_field_ownership",
 ]
-
-
-def validate_field_ownership(field: ElementFieldOwnership) -> ElementFieldOwnership:
-    if field.mode not in {"controlled", "local", "draft", "preference"}:
-        raise error(
-            "HED-ELEMENT-STATE-0001",
-            title="Unknown ownership mode",
-            explanation=f"Field {field.name!r} has invalid mode {field.mode!r}.",
-            remediation="Use controlled, local, draft, or preference.",
-        )
-    lowered = field.name.lower()
-    if any(token in lowered for token in _CAPABILITY_FIELDS) and field.mode != "controlled":
-        raise error(
-            "HED-ELEMENT-STATE-0002",
-            title="Illegal element-owned capability",
-            explanation=f"Field {field.name!r} cannot use mode {field.mode!r}.",
-            remediation="Keep capabilities under server-controlled ownership.",
-        )
-    if field.persistence not in {"none", "preference", "draft"}:
-        raise error(
-            "HED-ELEMENT-STATE-0002",
-            title="Illegal persistence policy",
-            explanation=f"Persistence {field.persistence!r} is not allowed.",
-            remediation="Use none, preference, or draft persistence.",
-        )
-    if field.persistence == "preference" and field.mode != "preference":
-        raise error(
-            "HED-ELEMENT-STATE-0002",
-            title="Illegal persistence for ownership mode",
-            explanation="Only preference fields may persist as preference.",
-            remediation="Align persistence with ownership mode.",
-        )
-    return field
 
 
 def apply_incoming_update(
@@ -98,7 +56,6 @@ def apply_incoming_update(
             remediation="Declare replace, preserve, rebase, or conflict.",
         )
     if chosen == "conflict":
-        # Explicit conflict path — never last-write-wins.
         return "conflict"
     return chosen
 

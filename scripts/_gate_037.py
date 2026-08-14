@@ -32,8 +32,43 @@ EXPECTED_GATES = (
     "PKG-037",
 )
 
+# Open high-severity issues owned by phase 0.37 (D-065 amendment).
+# Issue bodies remain normative for REGRESS-037; cut requires them closed.
+HIGH_SEVERITY_ISSUES = (230, 231, 232, 233, 234, 235, 236, 237)
+ROADMAP = ROOT / "docs" / "ROADMAP.md"
+
 # Populated in Stage 1+ as evidence lands.
-GATE_TESTS: dict[str, list[str]] = {}
+GATE_TESTS: dict[str, list[str]] = {
+    "FORM-037": [
+        "tests/unit/test_elements_037_form.py",
+        "tests/integration/test_elements_037_hosts.py",
+    ],
+    "VALIDITY-037": [
+        "tests/unit/test_elements_037_validity.py",
+        "tests/security/test_elements_037_security.py",
+    ],
+    "PRIMITIVE-037": [
+        "tests/unit/test_elements_037_primitives.py",
+        "tests/browser/test_elements_037_primitives.py",
+    ],
+    "ACTIONSTATE-037": [
+        "tests/unit/test_elements_037_actionstate.py",
+        "tests/browser/test_elements_037_actionstate.py",
+    ],
+    "INTERACT-037": [
+        "tests/browser/test_elements_037_interact.py",
+        "tests/unit/test_elements_037_gesture_catalog.py",
+    ],
+    "HTMX-037": [
+        "tests/browser/test_elements_037_htmx.py",
+        "tests/integration/test_elements_037_htmx_hosts.py",
+    ],
+    "AT-037": ["tests/a11y/test_elements_037_a11y.py"],
+    "REGRESS-037": [
+        "tests/unit/test_elements_037_regress.py",
+        "tests/unit/test_phase037_packet.py",
+    ],
+}
 
 
 def require_files(paths: list[Path], errors: list[str]) -> None:
@@ -76,6 +111,35 @@ def d065_present() -> bool:
     if not DECISIONS.is_file():
         return False
     return "| D-065 | Accepted |" in DECISIONS.read_text(encoding="utf-8")
+
+
+def high_severity_issue_refs() -> tuple[str, ...]:
+    return tuple(f"#{n}" for n in HIGH_SEVERITY_ISSUES)
+
+
+def missing_high_severity_citations() -> list[str]:
+    """Require every 0.37 high-severity issue to be named in the packet."""
+    errors: list[str] = []
+    required = (
+        RELEASE_PACKET,
+        DECISIONS,
+        ROADMAP,
+        GATE,
+    )
+    refs = high_severity_issue_refs()
+    for path in required:
+        if not path.is_file():
+            errors.append(f"missing required file: {path}")
+            continue
+        text = path.read_text(encoding="utf-8")
+        missing = [ref for ref in refs if ref not in text]
+        if missing:
+            errors.append(f"{path}: missing high-severity issue refs {missing}")
+    if DECISIONS.is_file():
+        decisions = DECISIONS.read_text(encoding="utf-8")
+        if "Amendment to D-065 (high-severity remediations)" not in decisions:
+            errors.append("DECISIONS.md: missing D-065 high-severity amendment")
+    return errors
 
 
 def elements_package_present() -> bool:

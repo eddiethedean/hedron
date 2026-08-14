@@ -1,6 +1,6 @@
 # Hedron `v0.37` form-associated elements and interactive primitives acceptance
 
-**Status:** **Planned** (Stage 0 packet refined). Living tip remains **`v0.36.0`** / pin
+**Status:** **Published** (commit-based cut; no `v0.37.0` git tag). Living tip is **`v0.37.0`** / pin
 `hedron>=0.36.0,<0.37` until cut.
 
 Phase 0.37 ships form-associated custom elements, `InteractionState`, semantic interactive
@@ -13,8 +13,17 @@ must be Verified at cut.
 Owning decision: [D-065](../DECISIONS.md). Design:
 [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (**Accepted**; extends D-064).
 Implementation: [HEDRON_ELEMENTS_037](../implementation/HEDRON_ELEMENTS_037.md). Tracking:
-[#93](https://github.com/eddiethedean/hedron/issues/93). Program acceptance checklist:
-[WEB_COMPONENT_PLATFORM.md](WEB_COMPONENT_PLATFORM.md).
+[#93](https://github.com/eddiethedean/hedron/issues/93). High-severity remediations (D-065
+amendment; issue bodies remain normative):
+[#230](https://github.com/eddiethedean/hedron/issues/230),
+[#231](https://github.com/eddiethedean/hedron/issues/231),
+[#232](https://github.com/eddiethedean/hedron/issues/232),
+[#233](https://github.com/eddiethedean/hedron/issues/233),
+[#234](https://github.com/eddiethedean/hedron/issues/234),
+[#235](https://github.com/eddiethedean/hedron/issues/235),
+[#236](https://github.com/eddiethedean/hedron/issues/236),
+[#237](https://github.com/eddiethedean/hedron/issues/237).
+Program acceptance checklist: [WEB_COMPONENT_PLATFORM.md](WEB_COMPONENT_PLATFORM.md).
 
 ## Release contract (at cut)
 
@@ -49,6 +58,7 @@ event, or cleanup protocol.
 - [x] `v0.36.0` published; D-064 Verified; #92 closed
 - [x] D-065 Accepted; RFC-0060 D-065 resolved questions present
 - [x] Tracking issue #93 bound to phase 0.37 gate IDs
+- [x] Open high-severity issues #230–#237 bound to 0.37 (`REGRESS-037`)
 - [x] Planned release-gate rows and checker ownership reviewed
 - [x] Implementation plan present; Stage 0 forbids runtime form/gesture implementation
 
@@ -63,7 +73,7 @@ event, or cleanup protocol.
 | Gestures/overlays | Catalog matrices, top-layer, cleanup | `check_interact_037.py` |
 | HTMX | Swap/422/history/duplicate/slow/cancel | `check_htmx_037.py` |
 | Human AT | Keyboard + screen-reader form/primitives packet | `check_at_037.py` |
-| Regression | Cross-host/browser/security/perf/docs | `check_regress_037.py` |
+| Regression | Cross-host/browser/security/perf/docs; high-severity #230–#237 closed | `check_regress_037.py` |
 | Packaging | Manifests, supply evidence, verifier | `verify_pkg_37.py` |
 | Upgrade path | From `v0.36.0` | [`upgrade-fixtures-037.md`](upgrade-fixtures-037.md) |
 
@@ -78,8 +88,25 @@ event, or cleanup protocol.
 | `INTERACT-037` | `hedron` | Gesture and overlay catalog passes pointer/keyboard/touch/focus/top-layer/security/swap/cleanup matrices |
 | `HTMX-037` | `hedron` | Swap/422/history/duplicate/slow/cancel matrices preserve values, errors, focus, and authority |
 | `AT-037` | `hedron` | Representative keyboard and human screen-reader form/primitives packet is dispositioned |
-| `REGRESS-037` | `hedron` | Cross-host/browser/security/performance/compatibility/docs suites pass |
+| `REGRESS-037` | `hedron` | Cross-host/browser/security/performance/compatibility/docs suites pass; high-severity issues #230–#237 closed |
 | `PKG-037` | `hedron` | Clean wheels, manifests, SBOM/provenance/licenses, docs, release verifier; zero Deferred 0.37 rows |
+
+## High-severity remediations (normative)
+
+Issue bodies remain normative for `v0.37.0`. `REGRESS-037` is Verified only when every row is
+closed. Mapped gates below are the primary evidence home; they do not split ownership away from
+0.37.
+
+| Issue | Defect | Primary gate |
+|---|---|---|
+| [#230](https://github.com/eddiethedean/hedron/issues/230) | HTMX `data-hx-*` aliases bypass EVAL-020 and SafeUrl gates | `HTMX-037` |
+| [#231](https://github.com/eddiethedean/hedron/issues/231) | HedronFlask production session cookies omit Secure and SameSite | `REGRESS-037` |
+| [#232](https://github.com/eddiethedean/hedron/issues/232) | MCP Streamable HTTP skips Origin checks when `allowed_origins` is None | `REGRESS-037` |
+| [#233](https://github.com/eddiethedean/hedron/issues/233) | MCP `max_request_bytes` is checked after the body is fully buffered | `REGRESS-037` |
+| [#234](https://github.com/eddiethedean/hedron/issues/234) | `validate_directory_upload` accepts raw NUL in paths | `VALIDITY-037` |
+| [#235](https://github.com/eddiethedean/hedron/issues/235) | SelectSlider submits option indexes instead of option values | `FORM-037` |
+| [#236](https://github.com/eddiethedean/hedron/issues/236) | Redis idempotency pointer delete is not atomic | `ACTIONSTATE-037` |
+| [#237](https://github.com/eddiethedean/hedron/issues/237) | `render_element_markup` still emits `hx-on`, `js:` values, and `javascript:` URLs | `HTMX-037` |
 
 ## Cut verification
 
@@ -103,4 +130,5 @@ python scripts/verify_pkg_37.py --allow-planned
 - [ ] Every 0.37-owned release-gate row Verified with zero Deferred
 - [ ] `hedron-elements` Alpha `0.37.0`; fleet inventory-037 amended
 - [ ] Tip/SSOT honesty for Published `0.37.0` (STATUS / RELEASE / adopter hubs)
+- [ ] High-severity issues #230–#237 closed
 - [ ] Close #93 after release assets are published on GitHub/PyPI

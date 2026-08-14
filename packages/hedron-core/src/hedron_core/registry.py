@@ -7,6 +7,8 @@ from dataclasses import dataclass, field, fields, replace
 from typing import Any, Literal, TypedDict, cast
 
 from hedron_core.diagnostics import error
+from hedron_core.element_form import validate_form_contract
+from hedron_core.element_types import validate_field_ownership
 from hedron_core.identifiers import registry_resource_id
 
 # Closed set of registry route kinds used by adapters and Explorer.
@@ -141,16 +143,8 @@ class BrowserModuleMeta:
 OwnershipMode = Literal["controlled", "local", "draft", "preference"]
 
 
-@dataclass(frozen=True, slots=True)
-class ElementFieldOwnership:
-    """Per-field ElementStateOwnership declaration (phase 0.36)."""
-
-    name: str
-    mode: OwnershipMode
-    reflection: str = "attribute"
-    incoming_update: str = "replace"
-    persistence: str = "none"
-    event: str | None = None
+# Re-export for backward compatibility (STATE-036).
+from hedron_core.element_types import ElementFieldOwnership  # noqa: E402
 
 
 @dataclass(frozen=True, slots=True)
@@ -332,6 +326,14 @@ class RegistryBuilder:
                     explanation=f"Tag {meta.tag_name!r} is already owned by {other.logical_id!r}.",
                     remediation="Use a unique tag or compatible same-definition registration.",
                 )
+        validated_ownership = tuple(
+            validate_field_ownership(field) for field in meta.state_ownership
+        )
+        if validated_ownership != meta.state_ownership:
+            meta = ElementDefinitionMeta(
+                **{**meta.__dict__, "state_ownership": validated_ownership}
+            )
+        validate_form_contract(meta.form_contract, tag_name=meta.tag_name)
         self._element_definitions[key] = meta
 
     def update_component(self, logical_id: str, **updates: object) -> None:

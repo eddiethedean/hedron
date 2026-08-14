@@ -802,7 +802,20 @@ class RedisJobBackend:
             else:
                 return
         pointed = self._decode(self._client.get(idem_key))
-        if pointed == job_id:
+        if pointed != job_id:
+            return
+        release = getattr(self._client, "eval", None)
+        if callable(release):
+            # Atomic compare-and-delete (#236).
+            script = (
+                "if redis.call('get', KEYS[1]) == ARGV[1] then "
+                "return redis.call('del', KEYS[1]) else return 0 end"
+            )
+            release(script, 1, idem_key, job_id)
+            return
+        # Fallback when Lua eval is unavailable (tests / minimal stubs).
+        pointed_again = self._decode(self._client.get(idem_key))
+        if pointed_again == job_id:
             self._client.delete(idem_key)
 
     def mark(

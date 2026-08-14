@@ -21,6 +21,7 @@ Pins at cut: `hedron>=0.37.0,<0.38` and Alpha
   slow/canceled requests — values, errors, focus, authority preserved
 - Human AT packet: representative keyboard-only and screen-reader form/primitive sessions
 - Regression: 0.36 ABI evidence (`hedron-example`) must remain green alongside 0.37 suites
+- High-severity remediations: #230–#237 closed (see [RELEASE_0_37](RELEASE_0_37.md))
 
 ## Pin migration (at cut)
 

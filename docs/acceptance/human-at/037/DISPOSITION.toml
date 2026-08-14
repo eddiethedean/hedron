@@ -1,0 +1,11 @@
+# Human AT disposition — AT-037 (scoped, not Supported)
+
+reviewer = "maintainer"
+date = "2026-08-14"
+gate = "AT-037"
+scope = "form + disclosure/dialog + action-async keyboard paths"
+
+[summary]
+sessions_recorded = 3
+blocking = 0
+note = "Scoped evidence only; not a Supported human AT matrix."

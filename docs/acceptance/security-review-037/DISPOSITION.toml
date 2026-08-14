@@ -1,0 +1,39 @@
+# SECURITY-037 / AT-037 disposition ledger
+
+reviewer = "maintainer"
+date = "2026-08-14"
+gate = "REGRESS-037"
+
+[[findings]]
+id = "EL-037-01"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "EL-037-02"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "EL-037-03"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "EL-037-04"
+severity = "low"
+status = "accepted"
+
+[[findings]]
+id = "EL-037-05"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "EL-037-06"
+severity = "info"
+status = "accepted"
+
+[summary]
+open_critical = 0
+open_high = 0

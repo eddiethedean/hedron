@@ -996,42 +996,42 @@ class SelectSlider(Component[SelectSliderProps]):
         index = 0
         if self._value is not None and self._value in values:
             index = values.index(self._value)
-        markers = [v for v, _ in self._options]
         # Reuse RangeInput markers pattern with discrete indices mapped via datalist labels.
         field_id = self.props.id or f"field-{dom_id_part(self.props.name)}"
         list_id = f"{field_id}-markers"
+        selected_value = values[index] if values else ""
         attrs: dict[str, HtmlAttrValue] = {
             "type": "range",
-            "name": self.props.name,
             "id": field_id,
             "min": "0",
-            "max": str(len(self._options) - 1),
+            "max": str(max(len(self._options) - 1, 0)),
             "step": "1",
             "value": str(index),
             "list": list_id,
             "class_": "hedron-select-slider",
+            "aria": _aria_attrs(
+                describedby=self.props.aria_describedby,
+                invalid=self.props.aria_invalid,
+                required=self.props.aria_required,
+            ),
         }
         if self.props.required:
             attrs["required"] = True
         if self.props.disabled:
             attrs["disabled"] = True
-        attrs["aria"] = _aria_attrs(
-            describedby=self.props.aria_describedby,
-            invalid=self.props.aria_invalid,
-            required=self.props.aria_required,
-        )
         data = mark_data(self.props.mark)
         if data:
             attrs["data"] = data
         options = [html.option(label, value=str(i)) for i, (_v, label) in enumerate(self._options)]
-        # Also emit hidden inputs for option value lookup (index → value) for no-JS clarity.
-        value_map = [
-            html.input(type="hidden", name=f"{self.props.name}__option", value=v) for v in markers
-        ]
         return html.div(
             html.input(**attrs),
+            html.input(
+                type="hidden",
+                name=self.props.name,
+                value=selected_value,
+                id=f"{field_id}-value",
+            ),
             html.datalist(*options, id=list_id),
-            *value_map,
             class_="hedron-select-slider-wrap",
             data={"hedron-select-slider": "true"},
         )
@@ -1120,7 +1120,11 @@ def _as_upload_file(
 def _reject_traversal(path: str) -> None:
     from urllib.parse import unquote
 
+    if "\x00" in path:
+        raise ValueError(f"Unsafe directory upload path: {path!r}")
     raw = path.replace("\\", "/")
+    if "\x00" in raw:
+        raise ValueError(f"Unsafe directory upload path: {path!r}")
     if not raw or raw.strip() != raw:
         raise ValueError(f"Unsafe directory upload path: {path!r}")
     if raw.startswith("/") or (len(raw) > 1 and raw[1] == ":"):

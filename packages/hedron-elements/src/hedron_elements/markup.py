@@ -9,6 +9,12 @@ from html import escape
 from typing import Any
 
 from hedron_core.diagnostics import error
+from hedron_core.htmx_eval import (
+    canonical_hx_attribute,
+    hx_attribute_is_url,
+    reject_hx_eval_value,
+)
+from hedron_core.security import SafeUrl, UrlPurpose
 
 __all__ = [
     "MAX_STRUCTURED_BYTES",
@@ -61,7 +67,7 @@ def _require_safe_attr_name(name: str) -> str:
             remediation="Use token attribute names matching [A-Za-z_][\\w.-]*.",
         )
     lower = cleaned.lower()
-    if lower.startswith("on"):
+    if lower.startswith("on") or lower.startswith("hx-on"):
         raise error(
             "HED-SEC-0002",
             title="Inline event handler rejected",
@@ -69,6 +75,31 @@ def _require_safe_attr_name(name: str) -> str:
             remediation="Use HTMX attributes or registered Web Components instead.",
         )
     return cleaned
+
+
+def _normalize_element_attr_value(name: str, value: str) -> str:
+    """Apply HTMX/url security parity with hedron_core.html (#237)."""
+    canonical = canonical_hx_attribute(name)
+    reject_hx_eval_value(canonical, value)
+    lowered = value.strip().lower()
+    if lowered.startswith("javascript:") or lowered.startswith("js:"):
+        raise error(
+            "HED-SEC-0003",
+            title="Unsafe URL rejected",
+            explanation=f"Attribute {name!r} value uses a forbidden scheme.",
+            remediation="Use SafeUrl or relative paths.",
+        )
+    if hx_attribute_is_url(name):
+        if value.startswith("/") and not value.startswith("//"):
+            SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION)
+        else:
+            raise error(
+                "HED-SEC-0003",
+                title="URL attribute requires SafeUrl",
+                explanation=f"Attribute {canonical!r} must be a SafeUrl or safe relative path.",
+                remediation="Pass SafeUrl.parse(...) for absolute URLs.",
+            )
+    return value
 
 
 def _depth(value: object, current: int = 0) -> int:
@@ -149,7 +180,7 @@ def render_element_markup(
                 explanation=f"Attribute {safe_key!r} is reserved for ABI identity markup.",
                 remediation="Omit data-hedron-abi / data-hedron-element / data-hedron-input.",
             )
-        attrs[safe_key] = _strip_nul(str(value))
+        attrs[safe_key] = _normalize_element_attr_value(safe_key, _strip_nul(str(value)))
     attrs["data-hedron-abi"] = str(abi_version)
     attrs["data-hedron-element"] = _strip_nul(element_id)
     if instance_id:

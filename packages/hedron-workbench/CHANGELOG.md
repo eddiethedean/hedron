@@ -1,3 +1,7 @@
+## [0.37.0]
+
+- Coordinated train cut for phase 0.37 (D-065).
+
 ## [0.36.0] — 2026-08-13
 
 - Coordinated Beta train cut for Web Component ABI foundation (D-064 / RFC-0060).

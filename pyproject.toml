@@ -1,6 +1,6 @@
 [project]
 name = "hedron-workspace"
-version = "0.36.0"
+version = "0.37.0"
 description = "Hedron monorepo workspace"
 requires-python = ">=3.11,<3.15"
 readme = "README.md"
@@ -114,6 +114,7 @@ fastapi-workbench = { workspace = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]
+addopts = ["--import-mode=importlib"]
 markers = [
     "security: adversarial security corpus",
     "a11y: accessibility core checks",

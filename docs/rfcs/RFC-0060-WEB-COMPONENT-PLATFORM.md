@@ -4,16 +4,20 @@
 
 **Target phases:** 0.36–0.42
 
-**Revision:** 2026-08-13 — Stage 0 refine for phase 0.36 under D-064: open questions
-resolved, public markup ABI frozen, 0.36/0.37 boundaries clarified. Prior: 2026-08-12 —
+**Revision:** 2026-08-14 — D-065 amendment: open high-severity issues #230–#237 are owned by
+phase 0.37 (`REGRESS-037`; issue bodies remain normative). Prior: 2026-08-13 — Stage 0 refine
+for phase 0.36 under D-064: open questions resolved, public markup ABI frozen, 0.36/0.37
+boundaries clarified. Prior: 2026-08-12 —
 D-058 shifted the planned program from 0.34–0.39 to 0.35–0.40; D-061 then shifted it to
 0.36–0.41. D-066 inserts the RFC-0069 chart flagship at 0.38 and moves the previously planned
 0.38–0.41 capabilities to 0.39–0.42 without scope loss.
 
 **Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(one enhancement issue per phase). Close each issue when its owning release-gate rows are
-Verified. Implementation of phase 0.36 may begin after this RFC is Accepted (Stage 0
-complete); do not claim Verified gates or bump the living tip until cut evidence lands.
+(one enhancement issue per phase) plus 0.37 high-severity remediations
+[#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237).
+Close each issue when its owning release-gate rows are Verified. Implementation of phase 0.36
+may begin after this RFC is Accepted (Stage 0 complete); do not claim Verified gates or bump
+the living tip until cut evidence lands.
 
 ## Summary
 
@@ -403,6 +407,7 @@ rewrite Python routes merely because a component's internal browser implementati
 | Primitive catalog | Disclosure, dialog, tabs, menu/popover, selection, and bounded upload per ROADMAP §0.37; native `<dialog>`, Popover API, and CSS anchoring preferred when the browser floor provides required semantics. |
 | Gesture/overlay catalog | Reorder/drag-drop, resize/splitter, pointer capture, keyboard equivalence, and overlay entries (dialog, popover/menu, combobox popup, tooltip, command palette, toast) per [WEB_COMPONENT_INTERACTION_CONTRACTS.md](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md) §4; typed intent with allowlisted targets only. |
 | Browser floor at 0.37 | Same three-engine Playwright family as 0.36; exact build IDs recorded in `REGRESS-037` / `HTMX-037` evidence at cut. |
+| High-severity remediations | Open high-severity defects **#230–#237** are owned by 0.37. Issue bodies remain normative; `REGRESS-037` is Verified only when they are closed. Mapping: #230/#237 → `HTMX-037`; #234 → `VALIDITY-037`; #235 → `FORM-037`; #236 → `ACTIONSTATE-037`; #231/#232/#233 → `REGRESS-037`. |
 
 ### Later-phase provisional (unblocks Accept; amendable by phase-owned decisions)
 

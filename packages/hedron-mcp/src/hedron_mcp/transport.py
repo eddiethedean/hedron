@@ -49,10 +49,29 @@ def _raise_if_cancelled(projection: Any, cancel_key: str | None) -> None:
 
 
 def _origin_forbidden(request: Any, projection: Any) -> bool:
-    if projection.allowed_origins is None:
-        return False
     origin = request.headers.get("origin")
+    if projection.allowed_origins is None:
+        # Fail closed for browser-facing requests when no allowlist is configured (#232).
+        return origin is not None
     return origin is None or origin not in projection.allowed_origins
+
+
+async def _read_body_bounded(request: Any, max_bytes: int) -> bytes:
+    """Read request body without buffering more than ``max_bytes`` (#233)."""
+    chunks: list[bytes] = []
+    total = 0
+    stream = getattr(request, "stream", None)
+    if callable(stream):
+        async for chunk in stream():
+            total += len(chunk)
+            if total > max_bytes:
+                raise BoundsError(f"MCP request exceeds max_request_bytes={max_bytes}")
+            chunks.append(chunk)
+        return b"".join(chunks)
+    raw = await request.body()
+    if len(raw) > max_bytes:
+        raise BoundsError(f"MCP request exceeds max_request_bytes={max_bytes}")
+    return raw
 
 
 def _enforce_session_principal(
@@ -122,8 +141,8 @@ async def handle_mcp_http(request: Any, projection: Any) -> Any:
     if request.method == "DELETE":
         return await _handle_session_delete(request, projection)
 
-    raw = await request.body()
     try:
+        raw = await _read_body_bounded(request, projection.bounds.max_request_bytes)
         projection.bounds.check_size(raw)
     except BoundsError as exc:
         return _json_response({"error": str(exc)}, status_code=413)

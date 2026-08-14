@@ -27,7 +27,7 @@ The phase is complete only when every row in
 | Package | Alpha `hedron-elements` cut target `0.37.0`, train-aligned pin at cut |
 | Browser floor | Playwright Chromium / Firefox / WebKit |
 | Baseline | Published `v0.36.0` |
-| Tracking | [#93](https://github.com/eddiethedean/hedron/issues/93) |
+| Tracking | [#93](https://github.com/eddiethedean/hedron/issues/93); high-severity #230–#237 |
 | Non-goals | No high-fidelity charts (0.38), OptimisticMutation (0.39), React bridge (0.40), draft transfer (0.41), production-grade graduation (0.42); no tip bump in Stage 0 |
 
 ## Stage 0 — contract refine (no behavior change)
@@ -42,6 +42,7 @@ Deliverables:
 - `upgrade-fixtures-037.md`, `security-review-037/BRIEF.md`
 - `production-grade-inventory-037.toml` (baseline `v0.36.0`)
 - Tracking [#93](https://github.com/eddiethedean/hedron/issues/93) synced to 0.37 gates
+- High-severity remediations #230–#237 bound to `REGRESS-037` (D-065 amendment)
 - Spec tighten: `form_contract` 0.37+ fields, 0.36/0.37 boundary, diagnostic names
 
 **Explicitly forbidden in Stage 0:**
@@ -97,7 +98,8 @@ redacted report and disposition ledger.
 ## Stage 9 — cut (`PKG-037`, `REGRESS-037`)
 
 Flip gates to Verified; `verify_pkg_37.py` without `--allow-planned`; bump train to `0.37.0`;
-publish Alpha `hedron-elements`; close #93 when GitHub/PyPI release artifacts are attached.
+publish Alpha `hedron-elements`; close #93 and high-severity #230–#237 when GitHub/PyPI
+release artifacts are attached and those issues are fixed.
 
 ## Cut verification
 

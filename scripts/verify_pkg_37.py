@@ -32,6 +32,7 @@ from _gate_037 import (  # noqa: E402
     d064_present,
     d065_present,
     elements_package_present,
+    missing_high_severity_citations,
     rfc_is_accepted,
 )
 
@@ -80,6 +81,13 @@ def _check_packet_files() -> None:
     print("ok: 0.37 Stage 0 packet files")
 
 
+def _check_high_severity_issues() -> None:
+    errors = missing_high_severity_citations()
+    if errors:
+        raise SystemExit("\n".join(errors))
+    print("ok: 0.37 high-severity issue citations (#230–#237)")
+
+
 def _check_gate_ids() -> None:
     data = tomllib.loads(EVIDENCE.read_text(encoding="utf-8"))
     rows = data.get("evidence")
@@ -109,8 +117,8 @@ def _check_inventory() -> None:
     missing = [name for name in EXPECTED_PACKAGES if name not in packages]
     if missing:
         raise SystemExit(f"{INVENTORY}: missing packages {missing}")
-    if str(data.get("baseline", "")).strip() != "v0.36.0":
-        raise SystemExit(f"{INVENTORY}: baseline must be v0.36.0")
+    if str(data.get("baseline", "")).strip() != "v0.37.0":
+        raise SystemExit(f"{INVENTORY}: baseline must be v0.37.0")
     elements = data.get("hedron-elements")
     if not isinstance(elements, dict):
         raise SystemExit(f"{INVENTORY}: hedron-elements table required")
@@ -158,6 +166,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     _check_packet_files()
+    _check_high_severity_issues()
     _check_gate_ids()
     if not rfc_is_accepted():
         raise SystemExit("RFC-0060 must be Accepted")

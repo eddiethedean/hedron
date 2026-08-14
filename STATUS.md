@@ -292,6 +292,9 @@ Phase **0.36** is **Published** as `v0.36.0` (D-064 / [RFC-0060](docs/rfcs/RFC-0
 see [implementation plan](docs/implementation/HEDRON_ELEMENTS_036.md) and
 [0.36 acceptance packet](docs/acceptance/RELEASE_0_36.md). Phase **0.37** Stage 0 packet is **refined**
 (D-065 / RFC-0060; [#93](https://github.com/eddiethedean/hedron/issues/93) — Planned gates only;
+high-severity remediations
+[#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237)
+remain normative for `REGRESS-037`;
 see [implementation plan](docs/implementation/HEDRON_ELEMENTS_037.md) and
 [0.37 acceptance packet](docs/acceptance/RELEASE_0_37.md)). Phase **0.38** high-fidelity charts Stage 0
 is **refined** (D-066 / [RFC-0069](docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md); Planned gates only;

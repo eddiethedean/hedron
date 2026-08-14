@@ -12,7 +12,7 @@ from hedron_core.addressable import AddressableDescriptor
 from hedron_core.component import Component, NodeLike
 from hedron_core.interaction import FragmentRegion, InteractionResult
 from hedron_core.rendering import RenderResult
-from hedron_core.security_policy import SecurityPolicy
+from hedron_core.security_policy import SecurityPolicy, SecurityProfile
 from hedron_flask.csrf import DEFAULT_CSRF_COOKIE, assert_flask_csrf_strategy, validate_csrf
 from hedron_flask.responses import component_response, interaction_response
 
@@ -277,6 +277,18 @@ class HedronBlueprint(Blueprint):
         self.add_url_rule(path, endpoint=ep, view_func=wrapped, methods=method_list, **options)
 
 
+def _apply_flask_session_cookie_defaults(app: Flask, policy: SecurityPolicy) -> None:
+    """Set Secure/SameSite session cookies in production and STRICT profiles (#231)."""
+    from hedron_core.compile_gate import is_production_env
+    from hedron_flask.csrf import csrf_cookie_force_secure
+
+    force = csrf_cookie_force_secure(None, policy)
+    prod = is_production_env() or policy.profile is SecurityProfile.STRICT
+    if force is True or prod:
+        app.config["SESSION_COOKIE_SECURE"] = True
+        app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+
+
 def attach_hedron_to_flask(
     app: Flask,
     extension: object,
@@ -326,6 +338,8 @@ def attach_hedron_to_flask(
 
     app.extensions["hedron"] = extension
     app.auth_signal = ext.auth_signal  # type: ignore[attr-defined]  # Flask monkey-patch
+
+    _apply_flask_session_cookie_defaults(app, policy)
 
     @app.after_request
     def _hedron_after_request(response: Response) -> Response:

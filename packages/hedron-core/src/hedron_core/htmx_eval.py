@@ -10,6 +10,31 @@ from collections.abc import Iterator
 # Matches HDJ ``_HX_JS_VALUE_RE`` in hedron_jinja.source.
 _HX_JS_VALUE_RE = re.compile(r"(?:^|[\s,{])js\s*:", re.I)
 _HX_EVAL_VALUE_ATTRS = frozenset({"hx-vals", "hx-headers"})
+_HX_URL_ATTR_SUFFIXES = frozenset(
+    {
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete",
+        "push-url",
+        "replace-url",
+        "boost",
+        "trigger",
+        "target",
+        "select",
+        "select-oob",
+    }
+)
+
+
+def canonical_hx_attribute(attribute: str) -> str:
+    """Map ``data-hx-*`` aliases to canonical ``hx-*`` names (#230)."""
+    lower = attribute.lower()
+    if lower.startswith("data-hx-"):
+        return "hx-" + lower[8:]
+    return lower
+
 
 _allow_htmx_eval: contextvars.ContextVar[bool] = contextvars.ContextVar(
     "hedron_allow_htmx_eval", default=False
@@ -45,7 +70,7 @@ def hx_value_needs_eval(attribute: str, value: object) -> bool:
     """True when an HTMX attribute value requires the ``htmx.eval`` capability."""
     if not isinstance(value, str):
         return False
-    lower = attribute.lower()
+    lower = canonical_hx_attribute(attribute)
     if lower.startswith("hx-on"):
         return True
     if lower not in _HX_EVAL_VALUE_ATTRS:
@@ -53,9 +78,19 @@ def hx_value_needs_eval(attribute: str, value: object) -> bool:
     return bool(_HX_JS_VALUE_RE.search(value))
 
 
+def hx_attribute_is_url(attribute: str) -> bool:
+    """True when an HTMX attribute carries a URL (#230 data-hx parity)."""
+    lower = canonical_hx_attribute(attribute)
+    if not lower.startswith("hx-"):
+        return False
+    suffix = lower[3:]
+    return suffix in _HX_URL_ATTR_SUFFIXES
+
+
 def reject_hx_eval_value(attribute: str, value: object) -> None:
     """Raise ``HED-SEC-0011`` when ``js:`` appears without an explicit opt-in."""
-    if not hx_value_needs_eval(attribute, value):
+    canonical = canonical_hx_attribute(attribute)
+    if not hx_value_needs_eval(canonical, value):
         return
     if htmx_eval_allowed():
         return
@@ -65,7 +100,7 @@ def reject_hx_eval_value(attribute: str, value: object) -> None:
         "HED-SEC-0011",
         title="HTMX js: attribute value rejected",
         explanation=(
-            f"Attribute {attribute!r} uses a js: expression, which requires an explicit "
+            f"Attribute {canonical!r} uses a js: expression, which requires an explicit "
             "htmx.eval opt-in (allow_htmx_eval() or SecurityPolicy.allow_htmx_eval)."
         ),
         remediation=(

@@ -224,6 +224,8 @@ Command (at Verified): `python scripts/check_regress_037.py` / `python scripts/v
   completion; findings are remediated or explicitly dispositioned without application WCAG claims.
 - [ ] Cross-host forms, browser matrix, performance/leak, compatibility, docs, clean install, and
   package evidence pass with zero Deferred 0.37 rows.
+- [ ] Open high-severity issues #230–#237 are closed (`REGRESS-037`; see
+  [RELEASE_0_37](RELEASE_0_37.md) remediations table).
 
 ## 0.38 — High-fidelity declarative charts
 

@@ -16,7 +16,7 @@ from hedron_core._html_meta import (
 from hedron_core._nodes import ElementNode, Node, TrustedHtmlNode
 from hedron_core.component import NodeLike
 from hedron_core.diagnostics import error
-from hedron_core.htmx_eval import reject_hx_eval_value
+from hedron_core.htmx_eval import canonical_hx_attribute, hx_attribute_is_url, reject_hx_eval_value
 from hedron_core.security import SafeUrl, TrustedHtml, UrlPurpose, check_url_purpose_for_attribute
 from hedron_core.typing_aliases import HtmlAttrValue
 
@@ -96,7 +96,8 @@ def _normalize_attrs(attrs: dict[str, HtmlAttrValue], *, tag: str) -> dict[str, 
         name = ATTR_ALIASES.get(key, key)
         _require_safe_attr_name(str(name))
         lower = name.lower()
-        if lower.startswith("on"):
+        canonical = canonical_hx_attribute(lower)
+        if canonical.startswith("on"):
             raise error(
                 "HED-SEC-0002",
                 title="Inline event handler rejected",
@@ -127,21 +128,30 @@ def _normalize_attrs(attrs: dict[str, HtmlAttrValue], *, tag: str) -> dict[str, 
                 explanation=f"Attribute {name!r} is not in the allowlist.",
                 remediation="Use documented attributes, data={...}, or aria={...}.",
             )
-        reject_hx_eval_value(lower, value)
-        if lower in URL_ATTRS or lower.endswith("href") or lower.endswith("src"):
+        reject_hx_eval_value(canonical, value)
+        url_attr = (
+            lower in URL_ATTRS
+            or lower.endswith("href")
+            or lower.endswith("src")
+            or hx_attribute_is_url(lower)
+        )
+        if url_attr:
             if lower == "srcset":
                 out[lower] = _normalize_srcset(value)
                 continue
-            if lower in {"hx-push-url", "hx-replace-url"} and isinstance(value, bool):
+            hx_url = canonical if hx_attribute_is_url(lower) else lower
+            if hx_url in {"hx-push-url", "hx-replace-url"} and isinstance(value, bool):
                 out[lower] = value
                 continue
-            if lower in {"hx-push-url", "hx-replace-url"} and isinstance(value, str):
-                lowered = value.lower()
-                if lowered in {"true", "false"}:
-                    out[lower] = lowered
+            if hx_url in {"hx-push-url", "hx-replace-url"} and isinstance(value, str):
+                lowered_val = value.lower()
+                if lowered_val in {"true", "false"}:
+                    out[lower] = lowered_val
                     continue
             if isinstance(value, SafeUrl):
-                check_url_purpose_for_attribute(value, lower)
+                check_url_purpose_for_attribute(
+                    value, hx_url if hx_url.startswith("hx-") else lower
+                )
                 out[lower] = value
             elif isinstance(value, str):
                 purpose = (
@@ -152,7 +162,11 @@ def _normalize_attrs(attrs: dict[str, HtmlAttrValue], *, tag: str) -> dict[str, 
                     else UrlPurpose.NAVIGATION
                 )
                 # Local HTMX/resource paths may be provided as strings and are coerced.
-                if lower.startswith("hx-") and value.startswith("/") and not value.startswith("//"):
+                if (
+                    hx_url.startswith("hx-")
+                    and value.startswith("/")
+                    and not value.startswith("//")
+                ):
                     out[lower] = SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION)
                 elif lower == "ping":
                     # ping may contain space-separated URLs; require SafeUrl for single URL,
@@ -164,11 +178,12 @@ def _normalize_attrs(attrs: dict[str, HtmlAttrValue], *, tag: str) -> dict[str, 
                         remediation="Pass SafeUrl.parse(...).",
                     )
                 else:
+                    attr_name = hx_url if hx_url.startswith("hx-") else lower
                     raise error(
                         "HED-SEC-0003",
                         title="URL attribute requires SafeUrl",
                         explanation=(
-                            f"Attribute {lower!r} must be a SafeUrl (purpose={purpose.value})."
+                            f"Attribute {attr_name!r} must be a SafeUrl (purpose={purpose.value})."
                         ),
                         remediation="Pass SafeUrl.parse(...).",
                     )

@@ -78,6 +78,21 @@ reload or multi-worker supervision with its inherited listener; the two modes
 are mutually exclusive. Unknown cookies and arbitrary response bodies remain
 outside the automatic adaptation contract.
 
+Amendment to D-065 (high-severity remediations): Phase **0.37** also owns the open
+high-severity defects
+[#230](https://github.com/eddiethedean/hedron/issues/230),
+[#231](https://github.com/eddiethedean/hedron/issues/231),
+[#232](https://github.com/eddiethedean/hedron/issues/232),
+[#233](https://github.com/eddiethedean/hedron/issues/233),
+[#234](https://github.com/eddiethedean/hedron/issues/234),
+[#235](https://github.com/eddiethedean/hedron/issues/235),
+[#236](https://github.com/eddiethedean/hedron/issues/236), and
+[#237](https://github.com/eddiethedean/hedron/issues/237).
+Issue bodies remain normative for `REGRESS-037` and the mapped form/HTMX/validity/action
+gates in [RELEASE_0_37](acceptance/RELEASE_0_37.md). Cut `v0.37.0` requires those issues
+closed. This does not add a tenth gate ID, does not reopen 0.37 non-goals, and does not
+move later Web Component phases.
+
 ## Phase 0.7 entry blockers
 
 Entry blockers for adapter implementation (COMPATIBILITY ranges, evidence ledgers, core ownership,

@@ -1,6 +1,6 @@
 [project]
 name = "hedron-jinja"
-version = "0.36.0"
+version = "0.37.0"
 description = "Explicit standards-first .hdj templates over Jinja, HTML, and HTMX for Hedron"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -26,7 +26,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.36.0,<0.37",
+    "hedron-core>=0.37.0,<0.38",
     "jinja2>=3.1,<4",
     "markupsafe>=3,<4",
 ]

@@ -3,7 +3,8 @@
 **Package / train at cut:** Hedron `v0.37.0` + Alpha `hedron-elements` `0.37.0`  
 **Owning RFC:** [RFC-0060](../../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (D-065)  
 **Gates:** `FORM-037`, `VALIDITY-037`, `INTERACT-037`, `ACTIONSTATE-037` (cross-cutting with `HTMX-037` / `PKG-037`)  
-**Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93)
+**Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93); high-severity
+[#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237)
 
 ## Scope
 
@@ -19,6 +20,10 @@ Independent review of the **form, async interaction, and gesture/overlay** surfa
 - Gesture allowlists: typed intent payloads reject DOM nodes, selectors, arbitrary MIME/path/HTML/URL
 - Command palette / toast surfaces invoke registered routes under ordinary authz/CSRF validation
 - HTMX swap/history paths preserve server errors and do not drop unsent user intent silently
+- High-severity remediations in the 0.37 packet: HTMX `data-hx-*` / element-markup eval (#230,
+  #237), Flask production cookie flags (#231), MCP Origin and body-limit checks (#232, #233),
+  directory-upload NUL paths (#234), SelectSlider value encoding (#235), Redis idempotency
+  pointer delete (#236)
 
 ## Out of scope
 

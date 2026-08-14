@@ -32,7 +32,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.34** | Production-grade Gradio/Hugging Face client interoperability | **Published** (`v0.34.0` / `hedron-gradio` `0.2.0` Beta; D-062 / RFC-0067; [#90](https://github.com/eddiethedean/hedron/issues/90)) |
 | **0.35** | Whole-fleet production-grade closure | **Published** (`v0.35.0`; D-063 / RFC-0068; [#91](https://github.com/eddiethedean/hedron/issues/91)) |
 | **0.36** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | **Published** (`v0.36.0`; D-064; [#92](https://github.com/eddiethedean/hedron/issues/92)) |
-| **0.37** | Async interaction state, form-associated elements, gestures/overlays, and semantic primitives | Planned ([#93](https://github.com/eddiethedean/hedron/issues/93)) |
+| **0.37** | Async interaction state, form-associated elements, gestures/overlays, semantic primitives, and high-severity remediations #230–#237 | Planned ([#93](https://github.com/eddiethedean/hedron/issues/93)) |
 | **0.38** | High-fidelity typed charts: `hedron-chart`, modular D3, SVG/Canvas, visual system, interactions, a11y, export, and hard performance/security gates | Planned Stage 0 (D-066 / RFC-0069) |
 | **0.39** | Optimistic mutations and rich data, chart integration, map, media, and editor elements | Planned ([#94](https://github.com/eddiethedean/hedron/issues/94)) |
 | **0.40** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | Planned ([#95](https://github.com/eddiethedean/hedron/issues/95)) |
