@@ -31,7 +31,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.33** | Unified `hedron-posit` facade for ordinary Hedron, Posit Workbench, and Posit Connect | **Published** (`v0.33.0` / `hedron-posit` `0.33.0` Beta; D-061 / RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)). Supported cookie bridge dropped after Stage 0. |
 | **0.34** | Production-grade Gradio/Hugging Face client interoperability | **Published** (`v0.34.0` / `hedron-gradio` `0.2.0` Beta; D-062 / RFC-0067; [#90](https://github.com/eddiethedean/hedron/issues/90)) |
 | **0.35** | Whole-fleet production-grade closure | **Published** (`v0.35.0`; D-063 / RFC-0068; [#91](https://github.com/eddiethedean/hedron/issues/91)) |
-| **0.36** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Planned; Draft RFC-0060 ([#92](https://github.com/eddiethedean/hedron/issues/92)) |
+| **0.36** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Stage 0 refined; RFC-0060 Accepted (D-064; [#92](https://github.com/eddiethedean/hedron/issues/92)) |
 | **0.37** | Async interaction state, form-associated elements, gestures/overlays, and semantic primitives | Planned ([#93](https://github.com/eddiethedean/hedron/issues/93)) |
 | **0.38** | Optimistic mutations and rich data, chart, map, media, and editor elements | Planned ([#94](https://github.com/eddiethedean/hedron/issues/94)) |
 | **0.39** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | Planned ([#95](https://github.com/eddiethedean/hedron/issues/95)) |

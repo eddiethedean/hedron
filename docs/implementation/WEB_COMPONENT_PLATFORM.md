@@ -1,7 +1,7 @@
 # Web Component platform implementation
 
-**Planning status:** Draft; depends on acceptance of
-[RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md).
+**Planning status:** Normative under Accepted
+[RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (D-064).
 
 This document specifies implementation boundaries for phases 0.36–0.41. Names are descriptive
 unless the RFC and public API review promote them; private class/function names are not frozen.
@@ -44,7 +44,7 @@ The shared registry gains an element record with at least:
 | `state_ownership` | Controlled/local/draft/preference modes and incoming-update policy |
 | `events` | Detail schema, version, bubbles/composed/cancelable flags |
 | `dom_policy` | Light/Shadow choice and server/element-owned regions |
-| `form_contract` | Association, value, reset, restore, validation, fallback |
+| `form_contract` | **0.36:** reserved metadata stub only (association/value/reset/validation fields may be absent or null). **0.37+:** association, value, reset, restore, validation, fallback |
 | `a11y_contract` | Semantics, keyboard/focus, states, live regions, limitations |
 | `style_contract` | Scoped classes or supported tokens/parts/slots |
 | `resources` | CSS, workers, fonts, WASM, adapters, remote origins, licenses |
@@ -60,24 +60,43 @@ Diagnostics redact structured values and never print element payloads by default
 Server markup includes the semantic fallback and only the configuration needed to initialize the
 element. It identifies the ABI and logical definition without encoding executable behavior.
 
-Illustrative shape (not yet a frozen public syntax):
+**Frozen public syntax (ABI-036):**
 
 ```html
-<hedron-example data-hedron-abi="1" status="ready">
+<hedron-example
+  data-hedron-abi="1"
+  data-hedron-element="hedron-example"
+  status="ready"
+>
   <p data-hedron-server-region="content">Ready</p>
 </hedron-example>
 ```
 
-Scalar attributes pass through the existing validated/contextually escaped serializer. Structured
-inputs use one of two declared paths:
+| Attribute / region | Rule |
+|---|---|
+| Tag name | First-party tags use the reserved `hedron-` prefix. The 0.36 reference element is **`hedron-example`**. |
+| `data-hedron-abi` | Required positive integer ABI major understood by markup and module. |
+| `data-hedron-element` | Logical definition id; must match the registered definition for the tag. |
+| Scalar attrs (e.g. `status`) | Validated/contextually escaped strings; controlled fields reflect server authority. |
+| `data-hedron-server-region` | Marks a server-owned light-DOM region eligible for authorized HTMX inner swaps. |
+| Element-owned DOM | Must not use `data-hedron-server-region`; disjoint from server regions. |
 
-1. an inert, escaped payload associated by collision-safe instance ID; or
-2. a loader property assignment from a response-owned, validated value.
+Structured inputs (when declared) use one of two sealed paths:
+
+1. an inert, escaped payload associated by collision-safe instance ID via
+   `data-hedron-input="<instance-id>"` pointing at a sibling
+   `<script type="application/json" data-hedron-input-for="<instance-id>" nonce="…">` (or host
+   equivalent) that is never executed as JavaScript; or
+2. a loader property assignment from a response-owned, validated value performed by the registered
+   bridge after upgrade.
 
 The serializer escapes `<`, closing-tag sequences, and context delimiters appropriate to the inert
 container. The loader enforces the declared content type, schema, item/byte/depth limit, and instance
 association before parsing. Payloads never create script text, handlers, CSS, arbitrary attributes,
 trusted HTML, URLs, or methods.
+
+The 0.36 reference element exercises controlled `status` text and disposable local UI state only;
+it is **not** form-associated.
 
 ## Module protocol
 

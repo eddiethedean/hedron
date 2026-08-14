@@ -1,15 +1,18 @@
 # RFC-0060: Web Component platform program
 
-**Status:** Draft
+**Status:** Accepted
 
 **Target phases:** 0.36–0.41
 
-**Revision:** 2026-08-12 — D-058 first shifted the planned program from 0.34–0.39 to
-0.35–0.40; D-061 then shifted it to 0.36–0.41. Scope and ordering are unchanged.
+**Revision:** 2026-08-13 — Stage 0 refine for phase 0.36 under D-064: open questions
+resolved, public markup ABI frozen, 0.36/0.37 boundaries clarified. Prior: 2026-08-12 —
+D-058 shifted the planned program from 0.34–0.39 to 0.35–0.40; D-061 then shifted it to
+0.36–0.41. Scope and ordering are unchanged.
 
 **Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 (one enhancement issue per phase). Close each issue when its owning release-gate rows are
-Verified; do not begin implementation until this RFC is Accepted.
+Verified. Implementation of phase 0.36 may begin after this RFC is Accepted (Stage 0
+complete); do not claim Verified gates or bump the living tip until cut evidence lands.
 
 ## Summary
 
@@ -160,6 +163,11 @@ constraint validation, error association, labels, descriptions, CSRF, HTMX submi
 server-returned validation fragments. Client validation improves feedback but never replaces
 server validation or authorization.
 
+**Phase boundary:** Phase **0.36** may declare a reserved `form_contract` metadata field on the
+registry record so later phases do not reshape the schema. Runtime `ElementInternals` behavior,
+submission parity, and `FORM-037` / `VALIDITY-037` evidence are **out of scope for 0.36** and
+owned by phase **0.37**. The 0.36 reference element `hedron-example` is not form-associated.
+
 ### 8. `ElementStateOwnership`
 
 Every mutable element field declares one ownership mode:
@@ -186,6 +194,10 @@ The bridge derives state from owned HTMX or registered job/polling lifecycles. H
 durable-job success, and aborting a browser request is not server cancellation without
 acknowledgement. Raw responses, stack traces, secrets, and user data never enter reflected state or
 telemetry.
+
+**Phase boundary:** Phase **0.36** ships typed `CustomEvent` schemas and allowlisted event→HTMX
+bridges only. The shared async state machine, concurrency policies, and `ACTIONSTATE-037` evidence
+are owned by phase **0.37**.
 
 ### 10. `OptimisticMutation`
 
@@ -267,7 +279,8 @@ adapters are lazy. The shared bridge target is at most 12 KiB gzip at the 0.36 c
 requires a recorded budget revision. No global mutation observer or full-document rescan is needed
 for ordinary upgrade.
 
-Acceptance includes repeated connect/disconnect leak checks, 100-element upgrade/swap scenarios,
+Acceptance includes repeated connect/disconnect leak checks, **100 upgrade/swap cycle
+instances** of the phase’s reference element(s) (not 100 distinct tag types in 0.36),
 long-task and layout-shift budgets, slow/failing-module fallback, and rich-widget worker cleanup.
 Performance claims use end-to-end browser scenarios rather than bundle size alone.
 
@@ -357,20 +370,34 @@ An incompatible ABI change requires either a compatibility adapter or a new tag/
 Mixed server/module versions fail visibly and preserve fallback content. Applications never need to
 rewrite Python routes merely because a component's internal browser implementation migrates.
 
-## Open questions
+## Resolved questions (D-064)
 
-- Which first-party primitive is the 0.36 end-to-end reference element?
-- Should `hedron-elements` align its package version with the flagship train from its first release?
-- Which parts of `@hedron/elements` are supported for standalone non-Python consumption in 0.39?
-- What exact browser-version floor will apply at 0.36 and at production-grade graduation?
-- Which rich surfaces can graduate in 0.38, and which must remain Experimental behind the common ABI?
-- Which mutation classes are safe enough for the first `OptimisticMutation` Supported inventory?
-- What exact gesture/overlay entries and native-platform fallbacks form the 0.37 locked catalog?
-- Does the temporary React-island bridge live in `hedron-elements`, a separate migration package,
-  or documentation/reference code only?
+### 0.36 definitive
 
-These questions must be resolved before this RFC becomes Accepted; none changes the server-owned
-state, no-hydration, progressive-enhancement, or HTMX lifecycle boundaries.
+| Question | Answer |
+|---|---|
+| 0.36 reference element | First-party light-DOM **`hedron-example`**: controlled `status` text plus disposable local UI state; **not** form-associated. |
+| `hedron-elements` versioning | Align with the flagship train from first release: Alpha **`0.36.0`**, pin `>=0.36.0,<0.37`, depends on `hedron-core` only. |
+| Browser floor at 0.36 | Playwright-managed **Chromium, Firefox, and WebKit** as exercised by `tests/browser/test_browser_matrix.py`. Unsupported engines receive usable SSR fallback and an explicit support message. Exact engine build IDs are recorded in `BROWSER-036` evidence at cut. |
+| `BROWSER-036` “100 elements” | **100 upgrade/swap cycle instances** of `hedron-example` (outer / authorized inner / OOB / history), not 100 distinct tag types. |
+| Registry `form_contract` | Present as a **reserved metadata stub** in the 0.36 registry schema; no `ElementInternals` runtime and no form-submission proof until `FORM-037` / `VALIDITY-037`. |
+| Events vs `InteractionState` | 0.36 ships typed `CustomEvent` detail schemas only. The idle/pending/success/error/canceled machine waits for `ACTIONSTATE-037`. |
+| Draft transfer vs `STATE-036` | Ownership, reflection, conflict, and rebase rules are in force in 0.36; **cross-instance draft transfer** remains a non-goal until phase 0.40. |
+| Presentation | Bind tokens / focus / SSR no-JS visuals through `SSR-036` and `A11Y-036`. Do **not** invent `PRESENT-036`. |
+
+### Later-phase provisional (unblocks Accept; amendable by phase-owned decisions)
+
+| Question | Provisional answer |
+|---|---|
+| 0.37 gesture/overlay catalog | Disclosure, dialog, tabs, menu/popover, selection, and bounded upload as listed in ROADMAP §0.37; native platform features preferred when sufficient. |
+| 0.38 rich-surface graduation | DataEditor and chart adapters may graduate behind the shared ABI; specialty UI (`CodeEditor` / `TerminalView` / device) remains Experimental. |
+| First `OptimisticMutation` inventory | Bounded DataEditor / collection cell edits only; auth, irreversible destruction, payments, secrets, and cross-tenant moves stay deny-by-default. |
+| `@hedron/elements` in 0.39 | Modules and TypeScript types only for non-Python authors; no React runtime and no application bundler requirement. |
+| React-island bridge home | Documentation and reference code only in 0.39 — **not** shipped inside `hedron-elements`. |
+| Browser floor at 0.41 | Same three-engine family; exact build IDs re-recorded at graduation cut. |
+
+None of these answers changes the server-owned state, no-hydration, progressive-enhancement, or
+HTMX lifecycle boundaries.
 
 ## Acceptance criteria
 

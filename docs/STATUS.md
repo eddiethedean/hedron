@@ -286,8 +286,12 @@ see [implementation plan](implementation/HEDRON_GRADIO_034.md) and
 [0.34 acceptance packet](acceptance/RELEASE_0_34.md). Phase **0.35** is **Published** (`v0.35.0`; D-063 / [RFC-0068](rfcs/RFC-0068-WHOLE-FLEET-CLOSURE.md); [#91](https://github.com/eddiethedean/hedron/issues/91));
 see [implementation plan](implementation/HEDRON_FLEET_035.md) and
 [0.35 acceptance packet](acceptance/RELEASE_0_35.md). Next: Web Component platform
-work is tracked as [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(phases 0.36–0.41). These phases require owning RFCs/decisions and Verified evidence before any
-package maturity label changes. They do not schedule `1.0`, promote every experimental
-subfeature, or expand Supported live transports. Close each tracking issue only when its owning
-release-gate rows are Verified.
+phase **0.36** is Stage 0 refined (D-064 / [RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md)
+**Accepted**; [#92](https://github.com/eddiethedean/hedron/issues/92)); see
+[implementation plan](implementation/HEDRON_ELEMENTS_036.md) and
+[0.36 acceptance packet](acceptance/RELEASE_0_36.md). Later phases
+[#93](https://github.com/eddiethedean/hedron/issues/93)–[#97](https://github.com/eddiethedean/hedron/issues/97)
+(0.37–0.41) still require their own Stage 0 packets. Living tip remains **`v0.35.0`**.
+These phases require Verified evidence before any package maturity label changes. They do not
+schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
+each tracking issue only when its owning release-gate rows are Verified.

@@ -1,15 +1,16 @@
 # Web Component interaction contracts
 
-**Planning status:** Draft; depends on
-[RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md).
+**Planning status:** Normative under Accepted
+[RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (D-064); public type names and
+serialized shapes freeze with `ABI-036` / `STATE-036` fixtures.
 
 These five contracts close the browser-interaction gaps that appear when a React application moves
 to server-rendered Hedron + HTMX. They extend the
 [Web Component platform implementation](WEB_COMPONENT_PLATFORM.md); they do not add a virtual DOM,
 hydration, client router, global store, or client-side authority.
 
-Public type names and serialized shapes remain provisional until RFC-0060 is Accepted. The state
-machines, ownership rules, and failure boundaries are normative for planning and acceptance.
+The state machines, ownership rules, and failure boundaries are normative for planning and
+acceptance.
 
 ## 1. `ElementStateOwnership`
 
@@ -58,8 +59,10 @@ declared policy:
 - `conflict`: retain base, incoming value, and draft long enough for an explicit resolution UI.
 
 `conflict` is the default when a safe rebase is not proven. No last-write-wins behavior is inferred.
-Phase 0.40 may transfer eligible drafts across swaps/history using the bounds in the platform spec;
-all other local state remains disposable.
+**Phase boundary (D-064):** Phase **0.36** (`STATE-036`) owns ownership modes, reflection,
+incoming-update, persistence, submit/discard, and conflict/rebase rules for a single connected
+instance. **Cross-instance draft transfer** across swaps/history remains a non-goal until phase
+**0.40**; all other local state remains disposable.
 
 ### Metadata and diagnostics
 
@@ -67,6 +70,26 @@ Registry metadata declares each mutable field's mode, reflection, incoming-updat
 limits, and event. Explorer shows authority and dirty/conflict state without displaying field values.
 Unknown ownership, illegal persistence, or an ambiguous controlled/draft transition emits a redacted
 `HED-ELEMENT-STATE-*` diagnostic and falls back to server rendering.
+
+#### Diagnostic catalog (0.36)
+
+| Code | When |
+|---|---|
+| `HED-ELEMENT-0001` | Tag or ABI definition conflict at registration |
+| `HED-ELEMENT-0002` | Incompatible server/module ABI pair |
+| `HED-ELEMENT-0003` | First-party `hedron-` prefix misuse / third-party naming violation |
+| `HED-ELEMENT-0004` | Missing or undeclared module/CSS asset |
+| `HED-ELEMENT-0005` | Structured-input schema, bound, or encoding failure |
+| `HED-ELEMENT-0006` | Module timeout, init exception, or upgrade failure (fallback retained) |
+| `HED-ELEMENT-STATE-0001` | Unknown or missing ownership mode on a mutable field |
+| `HED-ELEMENT-STATE-0002` | Illegal persistence / capability marked element-owned |
+| `HED-ELEMENT-STATE-0003` | Controlled update loop / illegal intent emission |
+| `HED-ELEMENT-STATE-0004` | Dirty-draft incoming update without declared policy |
+| `HED-ELEMENT-STATE-0005` | Conflict entered; last-write-wins refused |
+| `HED-ELEMENT-STATE-0006` | Transfer attempted before phase 0.40 eligibility |
+
+Diagnostics redact payloads and never print secrets, credentials, or full structured inputs by
+default.
 
 ## 2. `InteractionState`
 

@@ -50,6 +50,7 @@ hedron/
 │   │   └── src/hedron_posit/
 │   ├── hedron-native/             # Optional Rust acceleration (Beta 0.1.x)
 │   │   └── src/hedron_native/
+│   ├── hedron-elements/           # Planned Alpha 0.36 Web Component ABI (D-064; not yet in tree)
 │   ├── hedron-runtime-node/       # Experimental Node runtime (outside uv workspace)
 │   └── hedron-runtime-java/       # Experimental Java runtime (outside uv workspace)
 ├── tests/
@@ -91,6 +92,7 @@ hedron/
 | `hedron-gradio` | `hedron_gradio` | Optional Gradio client interop (experimental Alpha); also `hedron[gradio]` | `v0.1.0` |
 | `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Beta tooling) | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
+| `hedron-elements` | `hedron_elements` | Planned Alpha Web Component ABI / modules (phase 0.36; **not yet packaged**) | Planned `0.36.0` |
 | `hedron-workbench` | `hedron_workbench` | `hedron-posit`; Posit Workbench compatibility; also `hedron[workbench]` | `v0.32.0` (0.34.x compat subclass) |
 | `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | `v0.34.0` |
 

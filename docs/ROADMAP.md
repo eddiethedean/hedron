@@ -2788,11 +2788,13 @@ no package remains Alpha merely because it lacked an owner.
 
 ## 0.36 — Web Component ABI and lifecycle foundation (`v0.36.0`)
 
-**Status:** Planned; specification draft under
-[RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md). Implementation may not begin until the RFC is
-Accepted and its open browser/package questions are resolved.
+**Status:** Planned; Stage 0 refined. [RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md)
+**Accepted** (D-064). Implementation may begin after Stage 0; cut requires every gate Verified.
 **Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92). Close when all 0.36-owned
-gates are Verified after RFC-0060 acceptance.
+gates are Verified.
+**Evidence:** [RELEASE_0_36](acceptance/RELEASE_0_36.md) ·
+[release-gate-0.36.toml](acceptance/release-gate-0.36.toml) ·
+[HEDRON_ELEMENTS_036](implementation/HEDRON_ELEMENTS_036.md).
 
 **Outcome:** Hedron has one versioned, framework-neutral Web Component ABI instead of independent
 widget scripts. A new Alpha `hedron-elements` distribution supplies native ES modules and Python
@@ -2825,12 +2827,14 @@ metadata while server-rendered HTML and HTMX remain the canonical fallback and r
 | Gate | Verified means |
 |---|---|
 | `ABI-036` | Registry schema, naming, version negotiation, conflicts, fixtures, and diagnostics pass |
-| `ELEMENTS-036` | Framework-neutral wheel and representative element pass clean installs and all hosts |
+| `ELEMENTS-036` | Framework-neutral wheel and representative element (`hedron-example`) pass clean installs and all hosts |
 | `LIFECYCLE-036` | Connect/reconnect/disconnect, HTMX/history/failure races, cleanup, and repeated-swap leak corpus pass |
 | `SSR-036` | Pre-upgrade/JS-off/failure fallback, structured-input bounds/escaping, and DOM ownership pass |
 | `STATE-036` | Controlled/local/draft/preference ownership, reflection, update, conflict, persistence, and diagnostics pass |
-| `SECURITY-036` / `A11Y-036` | CSP/Trusted Types/event adversarial suite and fallback/upgraded accessibility state matrix pass |
-| `BROWSER-036` / `PKG-036` | Three engines, loading/performance budgets, manifests, supply evidence, docs, and release verifier pass |
+| `SECURITY-036` | CSP/Trusted Types/event adversarial suite pass |
+| `A11Y-036` | Fallback/upgraded accessibility state matrix pass |
+| `BROWSER-036` | Three engines; 100 upgrade/swap **instances**; loading/performance budgets pass |
+| `PKG-036` | Manifests, supply evidence, docs, and release verifier pass |
 
 ### Non-goals
 
@@ -3393,7 +3397,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0064 Production-grade developer / portable conformance tooling | 0.31 (D-059; Accepted) |
 | 0065 Production-grade deny-by-default MCP projection | 0.32 (D-060; Accepted; Alpha product contract remains 0043 @ 0.17) |
 | 0066 `hedron-posit` unified Posit deployment adapter | 0.33 (D-061; Draft; must be Accepted before implementation) |
-| 0060 Web Component platform program | 0.36–0.41 (Draft; must be Accepted before implementation) |
+| 0060 Web Component platform program | 0.36–0.41 (**Accepted**; D-064; 0.36 Stage 0 refined) |
 
 ## Open GitHub issue ownership (0.13+)
 

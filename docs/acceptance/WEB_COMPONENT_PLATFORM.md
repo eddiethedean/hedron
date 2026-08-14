@@ -1,13 +1,15 @@
 # Web Component platform acceptance
 
-**Planning status:** Draft; phases 0.36–0.41 under
-[RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md).
+**Planning status:** RFC-0060 **Accepted** (D-064); phases 0.36–0.41. Phase **0.36**
+Stage 0 refined — see [`RELEASE_0_36.md`](RELEASE_0_36.md) and
+[`release-gate-0.36.toml`](release-gate-0.36.toml). Later phases remain draft until their
+own Stage 0 packets land.
 Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061;
 scope and ordering are unchanged.
 The exact five interaction protocols are defined in the
 [interaction-contract specification](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md).
 
-Unchecked requirements are future release gates, not claims about the current 0.28 train. Each
+Unchecked requirements are future release gates, not claims about the current 0.35 train. Each
 phase requires a `release-gate-0.N.toml` index, retained evidence under the release evidence policy,
 and zero Deferred rows among that phase's owned gates at cut.
 
@@ -30,26 +32,40 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 
 ## 0.36 — Element ABI and lifecycle foundation
 
+Evidence index: [`release-gate-0.36.toml`](release-gate-0.36.toml). Acceptance packet:
+[`RELEASE_0_36.md`](RELEASE_0_36.md). Reference element: **`hedron-example`**.
+`BROWSER-036` “100 elements” means **100 upgrade/swap cycle instances** of that reference
+element, not 100 distinct tag types.
+
 ### `ABI-036`
 
+Command (at Verified): `python scripts/check_abi_036.py`
+
 - [ ] The element registry schema covers tag/module/ABI identity, attributes, structured inputs,
-  properties/methods, typed events, DOM ownership, forms, accessibility, styles, resources,
+  properties/methods, typed events, DOM ownership, forms (**metadata stub**), accessibility, styles, resources,
   lifecycle, and fallback.
 - [ ] Duplicate same-definition registration is idempotent; tag or ABI conflicts fail visibly
   before use and preserve server-rendered content.
 - [ ] Compatible and incompatible server/module combinations have immutable fixtures and
   `HED-ELEMENT-*` diagnostics with no payload leakage.
 - [ ] The `hedron-` first-party namespace and third-party naming rules are machine-checked.
+- [ ] Frozen markup attributes (`data-hedron-abi`, `data-hedron-element`,
+  `data-hedron-server-region`, structured-input encoding) match
+  [WEB_COMPONENT_PLATFORM.md](../implementation/WEB_COMPONENT_PLATFORM.md).
 
 ### `ELEMENTS-036`
 
+Command (at Verified): `python scripts/check_elements_036.py`
+
 - [ ] `hedron-elements` builds and installs as a framework-neutral wheel with no Node.js required by
   a consuming FastAPI, Flask, or Django application.
-- [ ] One representative light-DOM element exercises Python rendering, registry discovery, local
+- [ ] One representative light-DOM element (`hedron-example`) exercises Python rendering, registry discovery, local
   module/CSS assets, typed events, Explorer metadata, and all three hosts.
 - [ ] Pure `hedron-core` rendering remains deterministic when browser assets are not mounted.
 
 ### `LIFECYCLE-036`
+
+Command (at Verified): `python scripts/check_lifecycle_036.py`
 
 - [ ] Connect/reconnect is idempotent; disconnect and HTMX early cleanup release all declared
   listeners, observers, timers, workers, object URLs, requests, focus traps, and adapter handles.
@@ -60,6 +76,8 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 
 ### `SSR-036`
 
+Command (at Verified): `python scripts/check_ssr_036.py`
+
 - [ ] The representative element is understandable and completes its documented fallback workflow
   before upgrade, with JavaScript disabled, and after module/ABI failure.
 - [ ] Structured configuration uses a declared inert/property path with contextual escaping and
@@ -67,6 +85,8 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
 - [ ] Server-owned and element-owned DOM regions are disjoint and machine-audited.
 
 ### `STATE-036` — `ElementStateOwnership`
+
+Command (at Verified): `python scripts/check_state_036.py`
 
 - [ ] Every mutable field declares `controlled`, `local`, `draft`, or `preference` ownership plus
   reflection, incoming-update, persistence, limit, and event policy; capabilities/server authority
@@ -77,22 +97,37 @@ artifacts, time/size limits, and failure disposition before it may become Verifi
   unsafe/unspecified merge defaults to visible conflict rather than last-write-wins or silent loss.
 - [ ] Ownership violations and illegal persistence emit redacted `HED-ELEMENT-STATE-*` diagnostics
   while useful server fallback remains available.
+- [ ] Cross-instance draft **transfer** is out of scope until phase 0.40.
 
-### `SECURITY-036` / `A11Y-036`
+### `SECURITY-036`
+
+Command (at Verified): `python scripts/check_security_036.py`
 
 - [ ] Strict CSP and Trusted Types enforcement pass without inline handlers, eval, remote runtime
   fetches, undeclared executable assets, or unsafe HTML construction.
 - [ ] Event details are schema-validated, contain no capability/secret/DOM/executable values, and
   remain untrusted under CSRF/authn/authz/tenant/server validation.
+
+### `A11Y-036`
+
+Command (at Verified): `python scripts/check_a11y_036.py`
+
 - [ ] Pre-upgrade, upgraded, failed-upgrade, swap, and history states pass semantic, keyboard, focus,
   axe/ACT, zoom, forced-colors, reduced-motion, and localization checks.
 
-### `BROWSER-036` / `PKG-036`
+### `BROWSER-036`
+
+Command (at Verified): `python scripts/check_browser_036.py`
 
 - [ ] Chromium, Firefox, and WebKit run the same lifecycle/fallback corpus on the declared browser
   floor; unsupported versions receive a usable fallback and explicit support message.
-- [ ] The shared bridge is at most 12 KiB gzip; unused rich adapters do not load; 100 representative
-  elements meet the recorded upgrade/swap/long-task/layout-shift budget.
+- [ ] The shared bridge is at most 12 KiB gzip; unused rich adapters do not load; **100 upgrade/swap
+  cycle instances** of `hedron-example` meet the recorded upgrade/swap/long-task/layout-shift budget.
+
+### `PKG-036`
+
+Command (at Verified): `python scripts/verify_pkg_36.py`
+
 - [ ] Clean wheels, source maps, manifests, SBOM/provenance/licenses, docs, and release verifier pass.
 
 ## 0.37 — Form-associated controls and semantic primitives

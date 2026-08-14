@@ -26,7 +26,8 @@ status commentary, not a satisfied release gate.
 - [Jobs and asynchronous work](JOBS.md)
 - [Observability](OBSERVABILITY.md)
 - [Accessibility](ACCESSIBILITY.md)
-- [Web Component platform](WEB_COMPONENT_PLATFORM.md) — draft 0.36–0.41 program
+- [Web Component platform](WEB_COMPONENT_PLATFORM.md) — 0.36–0.41 program; **0.36 Stage 0 refined**
+- [`v0.36` Web Component ABI](RELEASE_0_36.md) — Stage 0 refined; Planned gates; living tip `v0.35.0`
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)
@@ -72,7 +73,10 @@ status commentary, not a satisfied release gate.
   [release-gate-0.24.toml](release-gate-0.24.toml),
   [release-gate-0.25.toml](release-gate-0.25.toml),
   [release-gate-0.32.toml](release-gate-0.32.toml) (Verified),
-  [release-gate-0.33.toml](release-gate-0.33.toml) (Verified)
+  [release-gate-0.33.toml](release-gate-0.33.toml) (Verified),
+  [release-gate-0.34.toml](release-gate-0.34.toml) (Verified),
+  [release-gate-0.35.toml](release-gate-0.35.toml) (Verified),
+  [release-gate-0.36.toml](release-gate-0.36.toml) (Planned; Stage 0)
 
 Unchecked boxes are requirements, not optional suggestions, unless marked Deferred with an owning
 RFC, destination phase, owner, and public stability impact.
