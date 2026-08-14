@@ -76,6 +76,47 @@
     return copy;
   }
 
+  const CSRF_COOKIE = "hedron_csrf";
+
+  function readCookie(name, cookieSource) {
+    const raw =
+      cookieSource == null
+        ? typeof document !== "undefined"
+          ? document.cookie || ""
+          : ""
+        : String(cookieSource);
+    const prefix = name + "=";
+    const parts = raw.split(";");
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i].trim();
+      if (part.indexOf(prefix) === 0) {
+        const value = part.slice(prefix.length);
+        try {
+          return decodeURIComponent(value);
+        } catch (err) {
+          return value;
+        }
+      }
+    }
+    return "";
+  }
+
+  /**
+   * CSRF token for JSON fetch saves under Hedron double-submit (#216).
+   * Prefer meta[name=csrf-token] when present; otherwise read the non-HttpOnly
+   * hedron_csrf cookie that PAGE responses already seed.
+   */
+  function readCsrfToken(doc, cookieSource) {
+    const root = doc || (typeof document !== "undefined" ? document : null);
+    if (root && typeof root.querySelector === "function") {
+      const meta = root.querySelector('meta[name="csrf-token"]');
+      const fromMeta =
+        meta && typeof meta.getAttribute === "function" ? meta.getAttribute("content") || "" : "";
+      if (fromMeta) return fromMeta;
+    }
+    return readCookie(CSRF_COOKIE, cookieSource);
+  }
+
   /** Snapshot live queues before fetch so success can drop only that batch. */
   function snapshotSaveBatch(pending, inserts, deletes, keyField) {
     return {
@@ -554,9 +595,9 @@
         snapshot.deletes,
         this._payload.version
       );
-      const csrf = document.querySelector('meta[name="csrf-token"]');
       const headers = { "Content-Type": "application/json" };
-      if (csrf) headers["X-CSRF-Token"] = csrf.getAttribute("content") || "";
+      const csrfToken = readCsrfToken(document);
+      if (csrfToken) headers["X-CSRF-Token"] = csrfToken;
       try {
         const res = await fetch(endpoint, {
           method: "POST",
@@ -665,6 +706,7 @@
     rowVersionsAfterBatch,
     reconcileAfterSuccess,
     serializeSaveBody,
+    readCsrfToken,
   };
 
   if (typeof document !== "undefined" && document.addEventListener) {
