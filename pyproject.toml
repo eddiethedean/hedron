@@ -114,6 +114,7 @@ fastapi-workbench = { workspace = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]
+pythonpath = ["."]
 addopts = ["--import-mode=importlib"]
 markers = [
     "security: adversarial security corpus",

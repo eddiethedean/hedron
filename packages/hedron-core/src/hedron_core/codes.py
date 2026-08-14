@@ -275,6 +275,7 @@ HED_ELEMENT_0003 = "HED-ELEMENT-0003"  # hedron- prefix / naming violation
 HED_ELEMENT_0004 = "HED-ELEMENT-0004"  # missing or undeclared module/CSS asset
 HED_ELEMENT_0005 = "HED-ELEMENT-0005"  # structured-input schema/bound/encoding failure
 HED_ELEMENT_0006 = "HED-ELEMENT-0006"  # module timeout / init / upgrade failure
+HED_ELEMENT_0007 = "HED-ELEMENT-0007"  # incomplete/invalid form_contract at registration
 HED_ELEMENT_STATE_0001 = "HED-ELEMENT-STATE-0001"  # unknown/missing ownership mode
 HED_ELEMENT_STATE_0002 = "HED-ELEMENT-STATE-0002"  # illegal persistence / capability owned
 HED_ELEMENT_STATE_0003 = "HED-ELEMENT-STATE-0003"  # controlled update loop / illegal intent

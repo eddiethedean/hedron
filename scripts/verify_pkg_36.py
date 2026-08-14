@@ -122,7 +122,11 @@ def _check_living_tip(*, allow_planned: bool) -> None:
     data = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
     version = str(data.get("project", {}).get("version", "")).strip()
     if allow_planned:
-        if not (version.startswith("0.35.") or version.startswith("0.36.")):
+        if not (
+            version.startswith("0.35.")
+            or version.startswith("0.36.")
+            or version.startswith("0.37.")
+        ):
             raise SystemExit(f"unexpected workspace version {version!r}")
         print(f"ok: living tip {version} (allow-planned)")
         return

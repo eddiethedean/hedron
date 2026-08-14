@@ -19,11 +19,6 @@ _HX_URL_ATTR_SUFFIXES = frozenset(
         "delete",
         "push-url",
         "replace-url",
-        "boost",
-        "trigger",
-        "target",
-        "select",
-        "select-oob",
     }
 )
 

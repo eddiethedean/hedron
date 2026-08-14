@@ -8,11 +8,11 @@
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12]
 #   scripts/ci_checks.sh browser [--python 3.12]
-#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.36.0]
+#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.37.0]
 #   scripts/ci_checks.sh realwb [--python 3.12]
 #   scripts/ci_checks.sh realconnect [--python 3.12]
 #   scripts/ci_checks.sh packaging [--python 3.12]
-#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.36.0] [--with-browser]
+#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.37.0] [--with-browser]
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
@@ -23,7 +23,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.36.0}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.37.0}"
 WITH_BROWSER=0
 
 usage() {
@@ -177,7 +177,8 @@ PY
   run uv run --python "$PYTHON" python scripts/check_api_docs_coverage.py
   run uv run --python "$PYTHON" python scripts/check_package_readme_links.py
   run uv run --python "$PYTHON" python scripts/check_recipe_code_sync.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
 
   uv run --python "$PYTHON" python - <<'PY'
@@ -229,8 +230,8 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/check_hed_codes.py
   run uv run --python "$PYTHON" python scripts/verify_pkg_34.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_35.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_36.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py
   run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
 }
 
@@ -249,8 +250,8 @@ cmd_realwb() {
 cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
   run uv run --python "$PYTHON" python scripts/verify_pkg_35.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_36.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py
   run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
 }
 

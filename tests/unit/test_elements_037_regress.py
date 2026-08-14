@@ -26,7 +26,7 @@ from hedron_mcp.transport import _origin_forbidden, _read_body_bounded
 def test_230_data_hx_canonical_parity() -> None:
     assert canonical_hx_attribute("data-hx-post") == "hx-post"
     assert hx_attribute_is_url("data-hx-post") is True
-    assert hx_attribute_is_url("data-hx-target") is True
+    assert hx_attribute_is_url("data-hx-target") is False
 
 
 def test_231_flask_session_cookie_defaults_on_attach() -> None:

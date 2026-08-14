@@ -1,14 +1,14 @@
 [release]
 # Public release facts. Adopter-facing "current", "living", and install-pin claims
 # must agree with this file. The workspace may be preparing a later patch.
-train = "0.36"
-published_version = "0.36.0"
-development_version = "0.36.0"
-published_date = "2026-08-13"
-pin_floor = "0.36.0"
-pin_ceiling = "0.37"
-previous_train = "0.35"
-previous_version = "0.35.0"
+train = "0.37"
+published_version = "0.37.0"
+development_version = "0.37.0"
+published_date = "2026-08-14"
+pin_floor = "0.37.0"
+pin_ceiling = "0.38"
+previous_train = "0.36"
+previous_version = "0.36.0"
 previous_security_until = "2027-08-13"
 
 [satellites]

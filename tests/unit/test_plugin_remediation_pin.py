@@ -13,6 +13,6 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def test_missing_meta_remediation_matches_release_train_pin() -> None:
     release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
-    expected = f">={release['train']},<{release['pin_ceiling']}"
+    expected = f">={release['pin_floor'].rsplit('.', 1)[0]},<{release['pin_ceiling']}"
     source = inspect.getsource(plugin_loader.load_plugins)
     assert f"hedron_version='{expected}'" in source
