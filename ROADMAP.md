@@ -2924,7 +2924,7 @@ Semantic interactive primitives share the same focus, lifecycle, and failure con
 
 ## 0.38 — High-fidelity declarative charts (`v0.38.0`)
 
-**Status:** Verified in-tree (workspace `v0.38.0` / `hedron-charts` `0.2.0`; not tagged/published). Owning design: [RFC-0069](docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066.
+**Status:** Published (`v0.38.0` / `hedron-charts` `0.2.0`). Owning design: [RFC-0069](docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066.
 **Tracking:** [#251](https://github.com/eddiethedean/hedron/issues/251).
 **Evidence:** [RELEASE_0_38](docs/acceptance/RELEASE_0_38.md) ·
 [release-gate-0.38.toml](docs/acceptance/release-gate-0.38.toml) ·
@@ -3717,7 +3717,7 @@ Phase **0.33** shipped the unified `hedron-posit` Workbench/Connect facade (D-06
 to 0.34–0.41 without changing its scope. Tracking enhancement issues
 [#86](https://github.com/eddiethedean/hedron/issues/86)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 plus [#167](https://github.com/eddiethedean/hedron/issues/167) cover remaining Planned 0.21
-human-AT sessions and Planned phases 0.38–0.42. Phase **0.37** closed high-severity
+human-AT sessions and Planned phases 0.39–0.42. Phase **0.37** closed high-severity
 remediations
 [#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237)
 and follow-on [#244](https://github.com/eddiethedean/hedron/issues/244)
@@ -3725,8 +3725,8 @@ and follow-on [#244](https://github.com/eddiethedean/hedron/issues/244)
 only when its owning release-gate rows are Verified. An optional
 `1.0` definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
 roadmap phase. D-066 inserts high-fidelity charts at **0.38** and re-homes the previously planned
-0.38–0.41 Web Component phases to **0.39–0.42** without scope loss. Published phases **0.36–0.37**
-and Planned phases **0.38–0.42** therefore establish a versioned Web Component ABI and lifecycle
+0.38–0.41 Web Component phases to **0.39–0.42** without scope loss. Published phases **0.36–0.38**
+and Planned phases **0.39–0.42** therefore establish a versioned Web Component ABI and lifecycle
 foundation, explicit state
 ownership and async interaction, form-associated gesture/overlay primitives, a D3-class chart
 flagship, optimistic rich data/visualization elements, a React migration matrix and third-party

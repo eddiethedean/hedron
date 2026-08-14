@@ -1,13 +1,13 @@
 # Hedron `v0.38` high-fidelity charts acceptance
 
-**Status:** Verified (in-tree cut; no tag/PyPI) (Stage 0 contract refined against Published **`v0.37.0`**). Runtime
-implementation begins at Stage 1; this refine ships no `ChartSpec` / `hedron-chart` code.
+**Status:** Published (`v0.38.0` / `hedron-charts` `0.2.0`; Stage 0 was refined against Published
+**`v0.37.0`**). Runtime ships typed `ChartSpec` / `ChartPlan` and ABI-conforming `hedron-chart`.
 
 Phase 0.38 makes an ABI-conforming **`hedron-chart` Web Component** the first-party interactive
 default for `hedron-charts` `0.2.0`. Its typed grammar, rendering quality, interaction,
 accessibility, responsive behavior, export, performance, security, and lifecycle are release-gated
 at a D3-class quality bar. Evidence is indexed by
-[`release-gate-0.38.toml`](release-gate-0.38.toml). **Zero Deferred:** every 0.38-owned row must be
+[`release-gate-0.38.toml`](release-gate-0.38.toml). **Zero Deferred:** every 0.38-owned row is
 Verified at cut.
 
 Owning decision: [D-066](../DECISIONS.md). Design:

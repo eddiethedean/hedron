@@ -142,9 +142,9 @@ Exit: `python scripts/verify_pkg_38.py --allow-planned`.
 ### Stage 12 — cut (`REGRESS-038`, `PKG-038`)
 
 - Run complete Python/browser/visual/a11y/security/perf/package suites.
-- Flip all gates to Verified; cut Hedron `v0.38.0` and `hedron-charts` `0.2.0`.
+- Flip all gates to Verified; cut Hedron `v0.38.0` and `hedron-charts` `0.2.0` (**complete**).
 - Publish capability inventory, review, benchmark, visual-review, supply, upgrade, and rollback
-  artifacts; update living docs only after artifacts exist.
+  artifacts; update living docs only after artifacts exist (**complete** for in-repo evidence).
 
 ## Pull-request slicing
 

@@ -18,13 +18,13 @@ missing. Applications may supply pinned local runtimes; first-party offline
 runtime pins exist for **Experimental** interactive hosts and are not Supported
 production Auto defaults.
 
-## Planned high-fidelity chart phase
+## Phase 0.38 first-party charts
 
-Phase 0.38 plans `hedron-charts` `0.2.0` around a typed `ChartSpec` / `ChartPlan` and an
-ABI-conforming `hedron-chart` Web Component with a pinned modular D3 renderer, SVG/Canvas output,
+Phase **0.38** ships `hedron-charts` **`0.2.0`** with typed `ChartSpec` / `ChartPlan` and an
+ABI-conforming `hedron-chart` Web Component (SVG default, Canvas for dense marks),
 publication-quality layout, accessible keyboard interactions, deterministic export, visual
-regression review, and hard performance/security budgets. This work is **Planned** and does not
-describe the current `0.1.11` API. See
+regression review, and hard performance/security budgets. Matplotlib remains Supported;
+Plotly/Altair stay Experimental. See
 [RFC-0069](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md)
 and the
 [phase 0.38 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_38.md).
@@ -33,12 +33,13 @@ and the
 
 ```bash
 pip install "hedron[charts]>=0.38.0,<0.39"
+# independent satellite:
+pip install "hedron-charts>=0.2.0,<0.3"
 # Add a backend when needed:
 pip install "hedron-charts[matplotlib]>=0.2.0,<0.3"
 ```
 
-Versions through `0.1.6` may target older Hedron cores; keep the `>=0.1.10` floor for
-the living 0.38 train. Prefer tip `0.1.11` for OOB lifecycle and MapLibre coord fixes.
+Pin the living charts line at `>=0.2.0,<0.3` for the Published 0.38 train.
 ### Optional backends
 
 | Extra | Backend |

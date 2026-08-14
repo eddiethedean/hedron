@@ -2,8 +2,8 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.38 **Verified in-tree** as workspace `v0.38.0` / `hedron-charts` `0.2.0` (2026-08-14; **not git-tagged / not PyPI-published** in this pass). Prior Published: 0.37 as `v0.38.0` (2026-08-14).
-Living tip = `v0.38.0` (workspace).
+**Roadmap position:** phase 0.38 **Published** as `v0.38.0` / `hedron-charts` `0.2.0` (2026-08-14). Prior Published: 0.37 as `v0.37.0` (2026-08-14).
+Living tip = `v0.38.0`.
 **Date:** 2026-08-14
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
@@ -317,22 +317,22 @@ see [implementation plan](docs/implementation/HEDRON_GRADIO_034.md) and
 Phase **0.36** is **Published** as `v0.36.0` (D-064 / [RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md); [#92](https://github.com/eddiethedean/hedron/issues/92));
 see [implementation plan](docs/implementation/HEDRON_ELEMENTS_036.md) and
 [0.36 acceptance packet](docs/acceptance/RELEASE_0_36.md). Phase **0.37** is **Published** as
-`v0.38.0` (D-065 / RFC-0060; [#93](https://github.com/eddiethedean/hedron/issues/93) closed;
+`v0.37.0` (D-065 / RFC-0060; [#93](https://github.com/eddiethedean/hedron/issues/93) closed;
 high-severity remediations
 [#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237)
 and follow-on [#244](https://github.com/eddiethedean/hedron/issues/244) closed;
 see [implementation plan](docs/implementation/HEDRON_ELEMENTS_037.md) and
 [0.37 acceptance packet](docs/acceptance/RELEASE_0_37.md)). Phase **0.38** high-fidelity charts is
-**Verified in-tree** as workspace `v0.38.0` / `hedron-charts` `0.2.0` (D-066 /
+**Published** as `v0.38.0` / `hedron-charts` `0.2.0` (D-066 /
 [RFC-0069](docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md); `release-gate-0.38.toml` Verified;
-[#251](https://github.com/eddiethedean/hedron/issues/251); **not git-tagged / not PyPI-published**
-in this pass; see [implementation plan](docs/implementation/HEDRON_CHARTS_038.md),
+[#251](https://github.com/eddiethedean/hedron/issues/251); see
+[implementation plan](docs/implementation/HEDRON_CHARTS_038.md),
 [grammar catalogs](docs/implementation/CHART_SPEC.md), and
 [0.38 acceptance packet](docs/acceptance/RELEASE_0_38.md)). It ships an ABI-conforming
 `hedron-chart`, typed `ChartSpec` / `ChartPlan`, modular first-party rendering, visual/a11y/performance/
 export/security evidence, and independent `hedron-charts` `0.2.0`. Later phases
 [#94](https://github.com/eddiethedean/hedron/issues/94)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(rephased to 0.39–0.42) still require their own Stage 0 packets. Living tip is **`v0.38.0`** (workspace).
+(rephased to 0.39–0.42) still require their own Stage 0 packets. Living tip is **`v0.38.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

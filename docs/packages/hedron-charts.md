@@ -25,7 +25,7 @@ pip install "hedron-charts>=0.2.0,<0.3"
 pip install "hedron-charts[matplotlib]>=0.2.0,<0.3"
 ```
 
-Rollback to the prior static line with `hedron-charts>=0.2.0,<0.3` if needed. See
+Rollback to the prior static line with `hedron-charts>=0.1.10,<0.2` if needed. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ### Optional backends

@@ -260,7 +260,7 @@ No Supported CRUD/admin API removal is listed. Polling remains the production pa
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
 Historical pin for this train: `hedron>=0.26.0,<0.27`. Current tip guidance:
-[Upgrade to 0.38](upgrade.md) / [What’s new in 0.37](whats-new-0.38.md).
+[Upgrade to 0.38](upgrade.md) / [What’s new in 0.38](whats-new-0.38.md).
 
 ## 0.25.2 — 2026-08-10
 

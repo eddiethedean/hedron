@@ -37,6 +37,9 @@ def test_ssr_includes_fallback_semantics() -> None:
 def test_axe_hedron_chart_chromium() -> None:
     if os.environ.get("HEDRON_BROWSER", "").strip() not in {"1", "true", "yes"}:
         pytest.skip("HEDRON_BROWSER not set")
+    selected = os.environ.get("HEDRON_BROWSER_ENGINE")
+    if selected and selected != "chromium":
+        pytest.skip(f"engine filter {selected}")
     pytest.importorskip("playwright")
     pytest.importorskip("axe_playwright_python")
 
