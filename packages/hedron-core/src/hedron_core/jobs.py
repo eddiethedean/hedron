@@ -776,22 +776,34 @@ class RedisJobBackend:
                 JobState.FAILED,
                 JobState.CANCELLED,
             }:
+                job_id = status.job_id
                 self._client.delete(key_s)
-                scope = data.get("idempotency_scope_key")
-                if isinstance(scope, str) and scope:
-                    self._client.delete(f"{self._prefix}idem:{scope}")
-                else:
-                    idem = data.get("idempotency_key")
-                    if isinstance(idem, str) and idem:
-                        self._client.delete(
-                            self._idem_key(
-                                idem,
-                                tenant_id=status.tenant_id,
-                                auth_subject=status.auth_subject,
-                            )
-                        )
+                # Only drop the idempotency pointer when we still own it — a newer
+                # job may have reclaimed the same scope (#198).
+                self._release_idempotency_if_owner(job_id, data, status)
                 removed += 1
         return removed
+
+    def _release_idempotency_if_owner(
+        self,
+        job_id: str,
+        data: Mapping[str, object],
+        status: JobStatus,
+    ) -> None:
+        idem_key = self._idem_redis_key_from_data(data)
+        if idem_key is None:
+            idem = data.get("idempotency_key")
+            if isinstance(idem, str) and idem:
+                idem_key = self._idem_key(
+                    idem,
+                    tenant_id=status.tenant_id,
+                    auth_subject=status.auth_subject,
+                )
+            else:
+                return
+        pointed = self._decode(self._client.get(idem_key))
+        if pointed == job_id:
+            self._client.delete(idem_key)
 
     def mark(
         self,
