@@ -104,8 +104,7 @@ def _raise_unsafe_url(canonical: str, cause: HedronError) -> NoReturn:
         title="Unsafe URL rejected",
         explanation=f"Attribute {canonical!r} value is not a safe URL.",
         remediation=(
-            "Pass a root-relative path; javascript/vbscript/data/file/blob "
-            "are forbidden."
+            "Pass a root-relative path; javascript/vbscript/data/file/blob are forbidden."
         ),
     ) from cause
 

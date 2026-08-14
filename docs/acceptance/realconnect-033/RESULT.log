@@ -1,30 +1,8 @@
-REALCONNECT-033 start 2026-08-13T12:24:34Z
+REALCONNECT-033 start 2026-08-14T15:30:54Z
 image=posit/connect@sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9
 host_arch=arm64
 protocol_floor=2024.11.0
 python=Python 3.12.13
 image_digest=sha256:ae5753745ddc576cca06ad7466a370e18bc54580b154f4b5bcbef9390f1c54a9
 container=start privileged=true
-CONNECT_HEALTH=ok
-connect_version=Version: 2026.07.0 Build: v2026.07.0
-rsconnect_python=1.29.0
-CONNECT_BOOTSTRAP=ok
-CONNECT_DEPLOY=ok runtime=python-3.14.6 vendored_local_source=true
-PAGE=ok root_path=ok generated_urls=automatic cookie_path=runtime_repaired
-FRAGMENT=ok
-CSRF=ok
-NATIVE_COOKIES=ok has_session=true has_hedron_csrf=true
-BRIDGE_DECISION=drop_supported
-FIXTURES=ok
-ASSETS=ok
-OPENAPI=ok docs=200 spec=200
-REDIRECT=ok mount_once=ok
-DIAGNOSTICS=ok posit_product=CONNECT root_path=ok header=ok workbench_active=false
-EXTERNAL_URL=ok invite_query=encoded connect_runtime=verified secrets_isolated=ok
-WORKBENCH_ISOLATION=ok encoded_target=307 external_escape=blocked
-WEBSOCKET=ok
-OUTSIDE_CONNECT=ok hedron_parity=ok generic_aliases_ignored=ok
-RESULT=pass
-REALCONNECT-033 end 2026-08-13T12:24:49Z
-LICENSE_DEACTIVATE=begin timeout=120s
-LICENSE_DEACTIVATE=end
+/Volumes/SAN-DRIVE/coding/hedron/scripts/realconnect_033_probe.sh: line 206: DOCKER_PLATFORM_ARGS[@]: unbound variable
