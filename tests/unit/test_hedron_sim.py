@@ -320,7 +320,7 @@ def test_wrap_browser_chrome_escapes_url_and_wraps_island() -> None:
     assert "hedron-browser-sim" in wrapped
     assert "&lt;script&gt;" in wrapped
     assert 'src="assets/&quot;mark&quot;.svg"' in wrapped
-    assert "Click <strong>Refresh</strong>" in wrapped
+    assert "Click &lt;strong&gt;Refresh&lt;/strong&gt;" in wrapped
     assert 'data-hedron-sim="unit-hello"' in wrapped
 
 

@@ -120,9 +120,7 @@ def _validate_floor_log(text: str) -> list[str]:
     if "rstudio-server=" in text and "2025.05.1" not in text:
         errors.append("realwb-030-202505 RESULT.log missing Workbench 2025.05.1 pin")
     errors.extend(_secret_errors(text, "realwb-030-202505 RESULT.log"))
-    match = re.search(
-        r"REALWB-030-202505 start (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)", text
-    )
+    match = re.search(r"REALWB-030-202505 start (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)", text)
     if not match:
         errors.append("realwb-030-202505 RESULT.log missing start timestamp")
         return errors
@@ -169,9 +167,7 @@ def main(argv: list[str] | None = None) -> int:
 
     errors: list[str] = []
     if not RESULT.is_file():
-        errors.append(
-            f"missing {RESULT.relative_to(ROOT)} — run with --live / HEDRON_REALWB=1"
-        )
+        errors.append(f"missing {RESULT.relative_to(ROOT)} — run with --live / HEDRON_REALWB=1")
     else:
         errors.extend(_validate_log(RESULT.read_text(encoding="utf-8")))
 

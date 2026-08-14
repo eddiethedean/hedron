@@ -55,9 +55,45 @@ PACKET_FILES = (
     DECISIONS,
 )
 
-# Stage 0: bind only the packet unit test until Stage 1+ evidence lands.
+# Domain evidence is bound as Stage 1+ surfaces land; packet test remains on every gate.
 GATE_TESTS: dict[str, list[str]] = {
-    gate: ["tests/unit/test_phase040_packet.py"] for gate in EXPECTED_GATES
+    "AUTHOR-040": [
+        "tests/unit/test_author_040.py",
+        "tests/unit/test_phase040_packet.py",
+    ],
+    "PLUGIN-040": [
+        "tests/unit/test_plugin_040.py",
+        "tests/unit/test_phase040_packet.py",
+    ],
+    "HDJ-040": [
+        "tests/unit/test_hdj_040.py",
+        "tests/unit/test_phase040_packet.py",
+    ],
+    "THEME-040": [
+        "tests/unit/test_theme_040.py",
+        "tests/unit/test_phase040_packet.py",
+    ],
+    "EXPLORER-040": [
+        "tests/unit/test_explorer_040.py",
+        "tests/unit/test_phase040_packet.py",
+    ],
+    "CONF-040": [
+        "tests/unit/test_conf_040.py",
+        "tests/unit/test_phase040_packet.py",
+    ],
+    "MIGRATE-040": [
+        "tests/unit/test_migrate_040.py",
+        "tests/unit/test_phase040_packet.py",
+    ],
+    "SUPPLY-040": [
+        "tests/unit/test_supply_040.py",
+        "tests/unit/test_phase040_packet.py",
+    ],
+    "REGRESS-040": [
+        "tests/unit/test_regress_040_issues.py",
+        "tests/unit/test_phase040_packet.py",
+    ],
+    "PKG-040": ["tests/unit/test_phase040_packet.py"],
 }
 
 

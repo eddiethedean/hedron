@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Check HDJ-040 (delegates to _gate_040)."""
+
 from __future__ import annotations
 
 from _gate_040 import check_gate

@@ -46,8 +46,7 @@ def main() -> int:
                 for f in findings
                 if isinstance(f, dict)
                 and str(f.get("severity", "")).lower() in {"critical", "high"}
-                and str(f.get("status", "")).lower()
-                not in {"fixed", "accepted_risk", "mitigated"}
+                and str(f.get("status", "")).lower() not in {"fixed", "accepted_risk", "mitigated"}
             ]
             if open_critical:
                 errors.append(f"open critical/high findings: {open_critical}")

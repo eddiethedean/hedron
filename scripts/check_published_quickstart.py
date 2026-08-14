@@ -96,8 +96,7 @@ def main() -> int:
         expected = f'"hedron{expected_hedron_scaffold_pin(args.version)}"'
         if expected not in pyproject:
             raise SystemExit(
-                "published scaffold contains the wrong Hedron train pin "
-                f"(expected {expected})"
+                f"published scaffold contains the wrong Hedron train pin (expected {expected})"
             )
 
     print(f"ok: PyPI hedron=={args.version} installs and its scaffold imports")

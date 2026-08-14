@@ -15,6 +15,7 @@ from hedron_conformance.compat import (
     check_fixture_version,
     compatibility_policy_dict,
 )
+from hedron_conformance.element_abi import load_element_abi_fixtures
 from hedron_conformance.normalize import normalize_html
 from hedron_conformance.runner import CapabilityResult, FixtureResult, run_kit
 from hedron_conformance.schema import (
@@ -27,7 +28,7 @@ from hedron_conformance.schema import (
     load_bundled_fixtures,
 )
 
-__version__ = "0.39.0"
+__version__ = "0.40.0"
 
 __all__ = [
     "CONTRACT_VERSION",
@@ -48,6 +49,7 @@ __all__ = [
     "compatibility_policy_dict",
     "intentional_failure_examples",
     "load_bundled_fixtures",
+    "load_element_abi_fixtures",
     "normalize_html",
     "run_kit",
     "validate_author_manifest",

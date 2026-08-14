@@ -284,8 +284,16 @@ class NotebookPreview:
         return f"http://{host}:{self.port}{root}/?{query}"
 
     def iframe_html(self, *, width: str | None = None, height: str | None = None) -> str:
-        w = width if width is not None else self.width
-        h = height if height is not None else self.height
+        import html as html_lib
+
+        w = html_lib.escape(
+            width if width is not None else self.width,
+            quote=True,
+        )
+        h = html_lib.escape(
+            height if height is not None else self.height,
+            quote=True,
+        )
         src = quote(self.external_url(), safe=":/?&=#%[]")
         return (
             f'<iframe src="{src}" width="{w}" height="{h}" '

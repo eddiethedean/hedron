@@ -6,6 +6,7 @@ from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Literal
 
+from hedron_core.element_types import ElementFieldOwnership
 from hedron_core.typing_aliases import PluginMetaDict
 
 StabilityLabel = Literal["stable", "beta", "experimental", "recipe"]
@@ -246,6 +247,80 @@ class PluginContext:
             events=events,
             shadow_dom=shadow_dom,
             htmx_lifecycle=htmx_lifecycle,
+        )
+
+    def register_asset(
+        self,
+        *,
+        logical_id: str,
+        kind: str,
+        path: str,
+        digest: str,
+        content_type: str,
+        attributes: Mapping[str, str] | None = None,
+    ) -> None:
+        from hedron_core.registry import register_asset
+
+        register_asset(
+            logical_id=logical_id,
+            kind=kind,
+            path=path,
+            digest=digest,
+            content_type=content_type,
+            attributes=attributes,
+        )
+
+    def register_element_definition(
+        self,
+        *,
+        logical_id: str,
+        tag_name: str,
+        abi_version: int,
+        module_asset_id: str,
+        attributes: Iterable[str] = (),
+        structured_inputs: Mapping[str, str] | None = None,
+        properties: Iterable[str] = (),
+        methods: Iterable[str] = (),
+        state_ownership: Iterable[ElementFieldOwnership] = (),
+        events: Iterable[str] = (),
+        dom_policy: str = "light",
+        server_regions: Iterable[str] = (),
+        form_contract: Mapping[str, object] | None = None,
+        a11y_contract: Mapping[str, str] | None = None,
+        style_contract: Mapping[str, str] | None = None,
+        resources: Iterable[str] = (),
+        lifecycle: Mapping[str, str] | None = None,
+        fallback: Mapping[str, str] | None = None,
+        parts: Iterable[str] = (),
+        slots: Mapping[str, str] | None = None,
+        tokens: Iterable[str] = (),
+        first_party: bool = False,
+    ) -> None:
+        from hedron_core.registry import register_element_definition
+
+        register_element_definition(
+            logical_id=logical_id,
+            tag_name=tag_name,
+            abi_version=abi_version,
+            module_asset_id=module_asset_id,
+            attributes=attributes,
+            structured_inputs=structured_inputs,
+            properties=properties,
+            methods=methods,
+            state_ownership=state_ownership,
+            events=events,
+            dom_policy=dom_policy,
+            server_regions=server_regions,
+            form_contract=form_contract,
+            a11y_contract=a11y_contract,
+            style_contract=style_contract,
+            resources=resources,
+            lifecycle=lifecycle,
+            fallback=fallback,
+            parts=parts,
+            slots=slots,
+            tokens=tokens,
+            first_party=first_party,
         )
 
     def register_explorer_panel(

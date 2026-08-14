@@ -3050,9 +3050,9 @@ tables, summaries, forms, media links, and exports survive slow, absent, or fail
 
 ## 0.40 — Web Component authoring and interoperability (`v0.40.0`)
 
-**Status:** Planned (Stage 0 contract refined against Published `v0.39.0`; D-068). Depends on proven first-party ABI use in 0.36–0.39. Living tip stays `v0.39.0` until cut.
-**Tracking:** [#95](https://github.com/eddiethedean/hedron/issues/95). Close when all 0.40-owned
-gates are Verified (React-island bridge may remain Experimental).
+**Status:** Published as `v0.40.0` (2026-08-14; in-tree cut, tag/PyPI deferred; D-068). Depends on proven first-party ABI use in 0.36–0.39. Living tip = `v0.40.0`.
+**Tracking:** [#95](https://github.com/eddiethedean/hedron/issues/95). All 0.40-owned
+gates are Verified (React-island bridge remains Experimental).
 
 **Outcome:** Third-party authors can build portable Hedron elements without private APIs. Plugins,
 HDJ, Explorer, themes, and conformance understand the same element metadata. An optional npm mirror

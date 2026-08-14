@@ -163,15 +163,18 @@ def _check_versions(*, allow_planned: bool) -> None:
             version.startswith("0.37.")
             or version.startswith("0.38.")
             or version.startswith("0.39.")
+            or version.startswith("0.40.")
         ):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0/history expects 0.37.x–0.39.x"
+                f"unexpected workspace version {version!r}; Stage 0/history expects 0.37.x–0.40.x"
             )
         print(f"ok: living tip {version} (0.38 allow-planned)")
         return
-    if version != RELEASE_CANDIDATE and not version.startswith("0.39."):
+    if version != RELEASE_CANDIDATE and not (
+        version.startswith("0.39.") or version.startswith("0.40.")
+    ):
         raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE}; found {version!r}")
-    if version.startswith("0.39."):
+    if version.startswith("0.39.") or version.startswith("0.40."):
         # Post-0.38 tip: packet already Verified; skip workspace pin equality.
         print(f"ok: post-cut living tip {version} (0.38 packet verified)")
         return

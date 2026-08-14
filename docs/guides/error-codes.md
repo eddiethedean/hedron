@@ -19,9 +19,15 @@ This catalog is complete for the registered set enforced by
 | `HED-ELEMENT-0002` | blocker | Incompatible element ABI pair | Align markup/module ABI majors |
 | `HED-ELEMENT-0003` | blocker | First-party naming / prefix violation | Use `hedron-*` for first-party tags |
 | `HED-ELEMENT-0005` | blocker | Structured input bound/encoding failure | Reduce payload size/depth |
+| `HED-ELEMENT-ASSET-0001` | blocker | Packaged element asset path escape | Pass a single basename under `static/` |
+| `HED-ELEMENT-ASSET-0002` | blocker | Packaged element asset missing | Use a filename that ships in the package |
+| `HED-ELEMENT-AUTHOR-0001` | blocker | Incomplete third-party author metadata | Declare every required author metadata surface |
+| `HED-ELEMENT-AUTHOR-0002` | blocker | Invalid author tag or a11y contract | Use a hyphenated tag and mapping `a11y_contract` |
 | `HED-ELEMENT-STATE-0002` | blocker | Illegal element-owned capability | Keep capabilities server-controlled |
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.39.0,<0.40"` |
+| `HED-SIM-ASSET-0001` | blocker | Packaged sim asset path escape | Pass a single basename under `static/` |
+| `HED-SIM-ASSET-0002` | blocker | Packaged sim asset missing | Use a filename that ships in `hedron_sim/static/` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.40.0,<0.41"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -30,7 +36,7 @@ This catalog is complete for the registered set enforced by
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.39.0,<0.40"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.40.0,<0.41"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -389,8 +395,14 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-ELEMENT-0002` | blocker | Incompatible element ABI pair | Align markup/module ABI majors |
 | `HED-ELEMENT-0003` | blocker | First-party naming / prefix violation | Use `hedron-*` for first-party tags |
 | `HED-ELEMENT-0005` | blocker | Structured input bound/encoding failure | Reduce payload size/depth |
+| `HED-ELEMENT-ASSET-0001` | blocker | Packaged element asset path escape | Pass a single basename under `static/` |
+| `HED-ELEMENT-ASSET-0002` | blocker | Packaged element asset missing | Use a filename that ships in the package |
+| `HED-ELEMENT-AUTHOR-0001` | blocker | Incomplete third-party author metadata | Declare every required author metadata surface |
+| `HED-ELEMENT-AUTHOR-0002` | blocker | Invalid author tag or a11y contract | Use a hyphenated tag and mapping `a11y_contract` |
 | `HED-ELEMENT-STATE-0002` | blocker | Illegal element-owned capability | Keep capabilities server-controlled |
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
+| `HED-SIM-ASSET-0001` | blocker | Packaged sim asset path escape | Pass a single basename under `static/` |
+| `HED-SIM-ASSET-0002` | blocker | Packaged sim asset missing | Use a filename that ships in `hedron_sim/static/` |
 | `HED-SEC-0020` | `HED_SEC_0020` |
 
 ## HED-A11Y
@@ -443,6 +455,39 @@ Unified Posit Workbench / Connect adapter (RFC-0066 / 0.33).
 | `HED-POSIT-0303` | `HED_POSIT_0303` |
 | `HED-POSIT-0304` | `HED_POSIT_0304` |
 | `HED-POSIT-0401` | `HED_POSIT_0401` |
+
+## HED-ELEMENT
+
+Web Component element ABI, author kit, and packaged assets (RFC-0060).
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-ELEMENT-0001` | `HED_ELEMENT_0001` |
+| `HED-ELEMENT-0002` | `HED_ELEMENT_0002` |
+| `HED-ELEMENT-0003` | `HED_ELEMENT_0003` |
+| `HED-ELEMENT-0004` | `HED_ELEMENT_0004` |
+| `HED-ELEMENT-0005` | `HED_ELEMENT_0005` |
+| `HED-ELEMENT-0006` | `HED_ELEMENT_0006` |
+| `HED-ELEMENT-0007` | `HED_ELEMENT_0007` |
+| `HED-ELEMENT-ASSET-0001` | `HED_ELEMENT_ASSET_0001` |
+| `HED-ELEMENT-ASSET-0002` | `HED_ELEMENT_ASSET_0002` |
+| `HED-ELEMENT-AUTHOR-0001` | `HED_ELEMENT_AUTHOR_0001` |
+| `HED-ELEMENT-AUTHOR-0002` | `HED_ELEMENT_AUTHOR_0002` |
+| `HED-ELEMENT-STATE-0001` | `HED_ELEMENT_STATE_0001` |
+| `HED-ELEMENT-STATE-0002` | `HED_ELEMENT_STATE_0002` |
+| `HED-ELEMENT-STATE-0003` | `HED_ELEMENT_STATE_0003` |
+| `HED-ELEMENT-STATE-0004` | `HED_ELEMENT_STATE_0004` |
+| `HED-ELEMENT-STATE-0005` | `HED_ELEMENT_STATE_0005` |
+| `HED-ELEMENT-STATE-0006` | `HED_ELEMENT_STATE_0006` |
+
+## HED-SIM
+
+Docs simulation packaged assets.
+
+| Code | Catalog symbol |
+|---|---|
+| `HED-SIM-ASSET-0001` | `HED_SIM_ASSET_0001` |
+| `HED-SIM-ASSET-0002` | `HED_SIM_ASSET_0002` |
 
 ## HED-MIG-ST
 

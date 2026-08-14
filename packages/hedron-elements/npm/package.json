@@ -1,0 +1,23 @@
+{
+  "name": "@hedron/elements",
+  "version": "0.40.0",
+  "description": "Modules and TypeScript types mirror for Hedron elements (no React runtime)",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "modules"
+  ],
+  "exports": {
+    "./hedron-bridge": {
+      "types": "./modules/hedron-bridge.d.ts",
+      "default": "./modules/hedron-bridge.mjs"
+    },
+    "./hedron-example": {
+      "types": "./modules/hedron-example.d.ts",
+      "default": "./modules/hedron-example.mjs"
+    }
+  },
+  "scripts": {
+    "test": "node --check modules/hedron-bridge.mjs && node --check modules/hedron-example.mjs"
+  }
+}

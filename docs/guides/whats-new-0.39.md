@@ -1,6 +1,10 @@
 # What's new in Hedron 0.39
 
-**Published** as `v0.39.0` on 2026-08-14. Pin: `hedron>=0.39.0,<0.40`. Charts remain on the
+!!! note "Current train is 0.40"
+
+    Pin `hedron>=0.40.0,<0.41` for new apps. See [What's new in 0.40](whats-new-0.40.md).
+
+**Published** as `v0.39.0` on 2026-08-14. Historical pin: `hedron>=0.39.0,<0.40`. Charts remain on the
 Published 0.2 line: `hedron-charts>=0.2.0,<0.3`.
 
 Phase **0.39** converges rich data surfaces onto the public Web Component ABI and proves typed
@@ -31,8 +35,8 @@ optimistic edits ([RFC-0060](https://github.com/eddiethedean/hedron/blob/main/do
 ## Pins
 
 ```bash
-pip install "hedron>=0.39.0,<0.40"
-pip install "hedron[data]>=0.39.0,<0.40"
+pip install "hedron>=0.40.0,<0.41"
+pip install "hedron[data]>=0.40.0,<0.41"
 # charts satellite (Published 0.38 line):
 pip install "hedron-charts>=0.2.0,<0.3"
 ```

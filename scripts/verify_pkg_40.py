@@ -113,7 +113,9 @@ def _check_inventory(*, allow_planned: bool) -> None:
         raise SystemExit(f"{INVENTORY}: npm_mirror.react_runtime must be false")
     matrix = data.get("react_migration_matrix")
     if not isinstance(matrix, dict) or matrix.get("island_in_hedron_elements") is not False:
-        raise SystemExit(f"{INVENTORY}: react_migration_matrix.island_in_hedron_elements must be false")
+        raise SystemExit(
+            f"{INVENTORY}: react_migration_matrix.island_in_hedron_elements must be false"
+        )
     print("ok: authoring-capability-inventory-040.toml")
 
 

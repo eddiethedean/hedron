@@ -84,11 +84,7 @@ def _check_gate_ids() -> None:
     rows = data.get("evidence")
     if not isinstance(rows, list):
         raise SystemExit(f"{EVIDENCE}: [[evidence]] required")
-    found = {
-        str(row.get("id", "")).strip()
-        for row in rows
-        if isinstance(row, dict)
-    }
+    found = {str(row.get("id", "")).strip() for row in rows if isinstance(row, dict)}
     missing = [gid for gid in EXPECTED_GATES if gid not in found]
     if missing:
         raise SystemExit(f"{EVIDENCE}: missing gate ids {missing}")
@@ -128,6 +124,7 @@ def _check_living_tip(*, allow_planned: bool) -> None:
             or version.startswith("0.37.")
             or version.startswith("0.38.")
             or version.startswith("0.39.")
+            or version.startswith("0.40.")
         ):
             raise SystemExit(f"unexpected workspace version {version!r}")
         print(f"ok: living tip {version} (allow-planned)")

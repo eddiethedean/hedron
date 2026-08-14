@@ -9,7 +9,7 @@
 # Tracking: #95.
 
 baseline = "v0.39.0"
-state = "planned"
+state = "verified"
 hedron_cut = "v0.40.0"
 charts_cut = "0.2.0"
 present_034_status = "deferred_to_fleet_docs_audit"

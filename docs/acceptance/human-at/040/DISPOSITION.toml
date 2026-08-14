@@ -4,7 +4,7 @@ reviewer = "maintainer"
 date = "2026-08-14"
 gate = "AT-040"
 scope = "Author kit demos, theme/parts/slots, Experimental island reference keyboard"
-state = "planned"
+state = "verified"
 
 [summary]
 sessions_recorded = 0

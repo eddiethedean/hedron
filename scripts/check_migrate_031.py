@@ -73,9 +73,9 @@ def main() -> int:
     )
 
     # Codes + docs alignment for HED-MIG-ST-*
-    codes = (
-        ROOT / "packages" / "hedron-core" / "src" / "hedron_core" / "codes.py"
-    ).read_text(encoding="utf-8")
+    codes = (ROOT / "packages" / "hedron-core" / "src" / "hedron_core" / "codes.py").read_text(
+        encoding="utf-8"
+    )
     docs = (ROOT / "docs" / "guides" / "error-codes.md").read_text(encoding="utf-8")
     for code in (
         "HED-MIG-ST-0001",
@@ -88,9 +88,7 @@ def main() -> int:
         if code not in docs:
             errors.append(f"error-codes.md missing {code}")
 
-    cli = (ROOT / "packages" / "hedron" / "src" / "hedron" / "cli.py").read_text(
-        encoding="utf-8"
-    )
+    cli = (ROOT / "packages" / "hedron" / "src" / "hedron" / "cli.py").read_text(encoding="utf-8")
     if "migrate" not in cli or "build_streamlit_parser" not in cli:
         errors.append("hedron.cli missing migrate streamlit wiring")
 

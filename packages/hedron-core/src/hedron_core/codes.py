@@ -295,12 +295,18 @@ HED_ELEMENT_0004 = "HED-ELEMENT-0004"  # missing or undeclared module/CSS asset
 HED_ELEMENT_0005 = "HED-ELEMENT-0005"  # structured-input schema/bound/encoding failure
 HED_ELEMENT_0006 = "HED-ELEMENT-0006"  # module timeout / init / upgrade failure
 HED_ELEMENT_0007 = "HED-ELEMENT-0007"  # incomplete/invalid form_contract at registration
+HED_ELEMENT_ASSET_0001 = "HED-ELEMENT-ASSET-0001"  # packaged asset name escapes static/
+HED_ELEMENT_ASSET_0002 = "HED-ELEMENT-ASSET-0002"  # packaged element asset missing
+HED_ELEMENT_AUTHOR_0001 = "HED-ELEMENT-AUTHOR-0001"  # incomplete third-party author metadata
+HED_ELEMENT_AUTHOR_0002 = "HED-ELEMENT-AUTHOR-0002"  # invalid author tag or a11y_contract
 HED_ELEMENT_STATE_0001 = "HED-ELEMENT-STATE-0001"  # unknown/missing ownership mode
 HED_ELEMENT_STATE_0002 = "HED-ELEMENT-STATE-0002"  # illegal persistence / capability owned
 HED_ELEMENT_STATE_0003 = "HED-ELEMENT-STATE-0003"  # controlled update loop / illegal intent
 HED_ELEMENT_STATE_0004 = "HED-ELEMENT-STATE-0004"  # dirty-draft incoming without policy
 HED_ELEMENT_STATE_0005 = "HED-ELEMENT-STATE-0005"  # conflict entered; LWW refused
 HED_ELEMENT_STATE_0006 = "HED-ELEMENT-STATE-0006"  # transfer attempted before 0.40
+HED_SIM_ASSET_0001 = "HED-SIM-ASSET-0001"  # packaged sim asset name escapes static/
+HED_SIM_ASSET_0002 = "HED-SIM-ASSET-0002"  # packaged sim asset missing
 
 
 def registered_codes() -> frozenset[str]:

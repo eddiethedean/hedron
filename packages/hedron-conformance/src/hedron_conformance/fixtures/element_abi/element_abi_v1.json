@@ -1,0 +1,45 @@
+{
+  "contract_version": "1",
+  "kind": "element_abi",
+  "fixtures": [
+    {
+      "id": "positive-minimal-meta",
+      "expect": "pass",
+      "meta": {
+        "logical_id": "demo:ext-probe",
+        "tag_name": "ext-probe",
+        "abi_version": 1,
+        "module_asset_id": "demo:ext-probe.mjs",
+        "events": ["ext-probe-change"],
+        "parts": ["label"],
+        "slots": {"default": "content"},
+        "tokens": ["--demo-fg"]
+      }
+    },
+    {
+      "id": "negative-missing-hyphen",
+      "expect": "fail",
+      "meta": {
+        "logical_id": "demo:bad",
+        "tag_name": "badtag",
+        "abi_version": 1,
+        "module_asset_id": "demo:bad.mjs"
+      },
+      "error_contains": "hyphen"
+    },
+    {
+      "id": "negative-capability-ownership",
+      "expect": "fail",
+      "meta": {
+        "logical_id": "demo:csrf",
+        "tag_name": "ext-csrf",
+        "abi_version": 1,
+        "module_asset_id": "demo:csrf.mjs",
+        "state_ownership": [
+          {"name": "csrf_token", "mode": "local"}
+        ]
+      },
+      "error_contains": "HED-ELEMENT-STATE"
+    }
+  ]
+}

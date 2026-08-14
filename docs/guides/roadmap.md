@@ -35,7 +35,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.37** | Async interaction state, form-associated elements, gestures/overlays, semantic primitives, and high-severity remediations #230–#237 / #244 | **Published** (`v0.37.0`; D-065; [#93](https://github.com/eddiethedean/hedron/issues/93)) |
 | **0.38** | High-fidelity typed charts: `hedron-chart`, modular D3, SVG/Canvas, visual system, interactions, a11y, export, and hard performance/security gates | **Published** (`v0.38.0` / `hedron-charts` `0.2.0`; D-066 / RFC-0069; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
 | **0.39** | Optimistic mutations and rich data, chart integration, map, media, and editor elements | **Published** (`v0.39.0`; D-067; [#94](https://github.com/eddiethedean/hedron/issues/94) closed) |
-| **0.40** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | Planned (Stage 0 refined vs `v0.39.0`; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95)) |
+| **0.40** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | **Published** (`v0.40.0`; in-tree cut, tag/PyPI deferred; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95)) |
 | **0.41** | Typed browser composition, bounded draft state, and navigation | Planned ([#96](https://github.com/eddiethedean/hedron/issues/96)) |
 | **0.42** | Production-grade Web Component platform | Planned; locked Supported inventory only ([#97](https://github.com/eddiethedean/hedron/issues/97)) |
 
@@ -79,9 +79,9 @@ not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
   `1.0`; see the
   [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
-## Honest gaps on the current train (0.39.x)
+## Honest gaps on the current train (0.40.x)
 
-- Current **published** PyPI train is **0.39.x** (last `v0.39.0`)
+- Current **published** PyPI train is **0.40.x** (last `v0.40.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`

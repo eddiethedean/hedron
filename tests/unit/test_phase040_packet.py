@@ -38,7 +38,7 @@ def test_phase040_manifest_commands_exist() -> None:
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     rows = data["evidence"]
     assert {row["id"] for row in rows} == EXPECTED_GATES_SET
-    assert {row["state"] for row in rows} == {"Planned"}
+    assert {row["state"] for row in rows} == {"Verified"}
     assert set(GATE_TESTS) == EXPECTED_GATES_SET
     for gate_id, tests in GATE_TESTS.items():
         assert tests, gate_id
@@ -49,7 +49,7 @@ def test_phase040_manifest_commands_exist() -> None:
 
 def test_phase040_inventory_locks_author_and_island() -> None:
     data = tomllib.loads(INVENTORY.read_text(encoding="utf-8"))
-    assert data["state"] == "planned"
+    assert data["state"] == "verified"
     assert data["living_published_baseline"] == "v0.39.0"
     assert data["hedron_cut"] == "v0.40.0"
     assert data["owning_decision"] == "D-068"
@@ -80,7 +80,7 @@ def test_phase040_decision_and_roadmap_agree() -> None:
     assert TRACKING_ISSUE in release
     assert TRACKING_ISSUE in roadmap
     assert "## 0.40 — Web Component authoring and interoperability" in roadmap
-    assert "Stage 0 contract refined against Published `v0.39.0`" in roadmap
+    assert "Published as `v0.40.0`" in roadmap
 
 
 def test_phase040_medium_issues_are_cited() -> None:

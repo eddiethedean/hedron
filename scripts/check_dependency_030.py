@@ -17,8 +17,7 @@ def _imports_hedron(path: Path) -> bool:
     tree = ast.parse(path.read_text(encoding="utf-8"))
     for node in ast.walk(tree):
         if isinstance(node, ast.Import) and any(
-            alias.name == "hedron" or alias.name.startswith("hedron.")
-            for alias in node.names
+            alias.name == "hedron" or alias.name.startswith("hedron.") for alias in node.names
         ):
             return True
         if isinstance(node, ast.ImportFrom):
@@ -54,7 +53,9 @@ def main() -> int:
     )
     deps = [str(dep) for dep in (hed_project.get("dependencies") or [])]
     if not any(dep.startswith("fastapi-workbench>=") for dep in deps):
-        errors.append("hedron-workbench pyproject.toml must depend on fastapi-workbench>=1.0.0,<2.0")
+        errors.append(
+            "hedron-workbench pyproject.toml must depend on fastapi-workbench>=1.0.0,<2.0"
+        )
 
     inventory = tomllib.loads(
         (ROOT / "docs" / "acceptance" / "production-grade-inventory-030.toml").read_text(

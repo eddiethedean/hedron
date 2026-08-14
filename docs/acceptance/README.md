@@ -31,7 +31,7 @@ status commentary, not a satisfied release gate.
 - [`v0.37` form-associated elements and primitives](RELEASE_0_37.md) — **Published** (`v0.37.0`)
 - [`v0.38` high-fidelity charts](RELEASE_0_38.md) — **Published** (`v0.38.0` / `hedron-charts` `0.2.0`); RFC-0069 / D-066; [#251](https://github.com/eddiethedean/hedron/issues/251)
 - [`v0.39` rich data and OptimisticMutation](RELEASE_0_39.md) — **Published** (`v0.39.0`); RFC-0060 / D-067; [#94](https://github.com/eddiethedean/hedron/issues/94) closed
-- [`v0.40` authoring and React migration](RELEASE_0_40.md) — **Planned** (Stage 0 refined vs `v0.39.0`; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95))
+- [`v0.40` authoring and React migration](RELEASE_0_40.md) — **Published** (`v0.40.0`; in-tree cut, tag/PyPI deferred; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95))
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

@@ -44,8 +44,9 @@ from hedron_jinja.providers import (
     data_provider_manifest,
     provider_available,
 )
+from hedron_jinja.source import validate_element_declarations
 
-__version__ = "0.39.0"
+__version__ = "0.40.0"
 
 __all__ = [
     "AsyncIoBudget",
@@ -83,4 +84,5 @@ __all__ = [
     "record_loop_iteration",
     "record_macro_call",
     "run_declared_async_io",
+    "validate_element_declarations",
 ]

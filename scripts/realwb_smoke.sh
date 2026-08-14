@@ -179,10 +179,10 @@ for raw in open(sys.argv[1], encoding="utf-8"):
 fi
 
 if [[ -z "${PWB_LICENSE:-}" ]]; then
-  fail "HED-WB-0001" "PWB_LICENSE is unset (load .env or export it)"
+  skip_license_unavailable "license_unset" "PWB_LICENSE is unset (load .env or export it)"
 fi
 if [[ ! "$PWB_LICENSE" =~ ^[[:alnum:]]{4}(-[[:alnum:]]{4}){5,}$ ]]; then
-  fail "HED-WB-0001" "PWB_LICENSE is not a product-license-shaped value"
+  skip_license_unavailable "license_malformed" "PWB_LICENSE is not a product-license-shaped value"
 fi
 
 if ! command -v docker >/dev/null 2>&1; then

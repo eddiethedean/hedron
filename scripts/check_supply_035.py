@@ -34,7 +34,9 @@ def main() -> int:
         ("OFFLINE_INSTALL.md", ("--no-index", "wheelhouse", "0.35")),
         ("ROLLBACK.md", ("rollback", "previous", "pin")),
     ):
-        text = (SUPPLY_DIR / name).read_text(encoding="utf-8") if (SUPPLY_DIR / name).is_file() else ""
+        text = (
+            (SUPPLY_DIR / name).read_text(encoding="utf-8") if (SUPPLY_DIR / name).is_file() else ""
+        )
         for needle in needles:
             if needle not in text:
                 errors.append(f"{name} missing {needle!r}")

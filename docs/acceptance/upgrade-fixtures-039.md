@@ -24,7 +24,7 @@ Tracking [#94](https://github.com/eddiethedean/hedron/issues/94) closed.
 
 | Surface | Before (0.38 tip) | At Published 0.39 |
 |---|---|---|
-| Hedron train | `hedron>=0.38.0,<0.39` | `hedron>=0.39.0,<0.40` |
+| Hedron train | `hedron>=0.38.0,<0.39` | `hedron>=0.40.0,<0.41` |
 | Charts | `hedron-charts>=0.2.0,<0.3` | `hedron-charts>=0.2.0,<0.3` (consume 0.38 contract) |
 | DataTable / DataEditor | 0.38 call shapes | ABI-shared Supported path (`hedron-data-editor`) |
 | OptimisticMutation | Not Supported | Bounded DataEditor/collection proof |

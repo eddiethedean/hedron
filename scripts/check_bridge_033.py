@@ -36,9 +36,7 @@ def main() -> int:
             errors=errors,
         )
     else:
-        errors.append(
-            "BRIDGE_DECISION must be keep_supported or drop_supported in RESULT.log"
-        )
+        errors.append("BRIDGE_DECISION must be keep_supported or drop_supported in RESULT.log")
     if fail_errors(errors, "BRIDGE-033"):
         return 1
     print("ok: BRIDGE-033")

@@ -108,6 +108,22 @@ class TemplateDeclaration:
     regions: tuple[str, ...]
     source_digest: str
     body_start_line: int
+    elements: tuple[str, ...] = ()
+    element_abi: Mapping[str, int] = field(default_factory=lambda: MappingProxyType({}))
+    element_modules: Mapping[str, str] = field(default_factory=lambda: MappingProxyType({}))
+    element_events: Mapping[str, tuple[str, ...]] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "elements", tuple(self.elements))
+        object.__setattr__(self, "element_abi", MappingProxyType(dict(self.element_abi)))
+        object.__setattr__(self, "element_modules", MappingProxyType(dict(self.element_modules)))
+        object.__setattr__(
+            self,
+            "element_events",
+            MappingProxyType({tag: tuple(events) for tag, events in self.element_events.items()}),
+        )
 
 
 @dataclass(frozen=True, slots=True)

@@ -4,7 +4,7 @@
 
 schema = 1
 phase = "0.40"
-state = "planned"
+state = "verified"
 living_published_baseline = "v0.39.0"
 implementation_entry = "v0.39.0"
 hedron_cut = "v0.40.0"

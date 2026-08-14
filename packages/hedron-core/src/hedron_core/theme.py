@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import cast
@@ -12,6 +13,8 @@ from hedron_core.registry import ThemeMeta, get_registry, register_theme
 from hedron_core.typing_aliases import JsonValue
 
 __all__ = [
+    "FORCED_COLOR_TOKENS",
+    "PRINT_SAFE_TOKENS",
     "REQUIRED_A11Y_TOKENS",
     "Theme",
     "aurora_theme",
@@ -22,6 +25,8 @@ __all__ = [
     "ensure_default_theme_registered",
     "get_theme",
     "register_theme_instance",
+    "theme_element_compatibility",
+    "validate_element_style_contract",
     "validate_theme_tokens",
 ]
 
@@ -38,6 +43,72 @@ REQUIRED_A11Y_TOKENS: tuple[str, ...] = (
     "motion.duration",
     "focus.ring",
 )
+
+# Element CSS must continue to consume these semantic tokens inside
+# ``@media (forced-colors: active)`` rather than relying on literal colors.
+FORCED_COLOR_TOKENS: tuple[str, ...] = (
+    "color.bg",
+    "color.fg",
+    "color.accent",
+    "color.focus",
+    "color.danger",
+)
+
+# Element print rules should resolve through this bounded token set and avoid
+# motion, translucent surfaces, or color-only state communication.
+PRINT_SAFE_TOKENS: tuple[str, ...] = (
+    "color.bg",
+    "color.fg",
+    "font.family",
+    "font.size",
+)
+
+
+def _contract_names(value: object) -> set[str]:
+    if isinstance(value, str):
+        return {item for item in re.split(r"[\s,]+", value) if item}
+    if isinstance(value, (tuple, list, set, frozenset)):
+        if any(not isinstance(item, str) or not item for item in value):
+            raise ValueError("element style contract names must be non-empty strings")
+        return set(value)
+    raise TypeError("element style contract entries must be strings or string collections")
+
+
+def validate_element_style_contract(
+    style_contract: Mapping[str, object],
+    parts: tuple[str, ...] | list[str],
+    slots: Mapping[str, str],
+    tokens: tuple[str, ...] | list[str],
+) -> None:
+    """Ensure style-contract references agree with the element ABI metadata."""
+    unknown = set(style_contract) - {"parts", "slots", "tokens"}
+    if unknown:
+        raise ValueError(f"unknown element style contract keys: {', '.join(sorted(unknown))}")
+    declared = {
+        "parts": set(parts),
+        "slots": set(slots),
+        "tokens": set(tokens),
+    }
+    for kind, available in declared.items():
+        if kind not in style_contract:
+            continue
+        referenced = _contract_names(style_contract[kind])
+        if any("*" in name for name in referenced):
+            continue
+        missing = referenced - available
+        if missing:
+            raise ValueError(
+                f"style contract references undeclared {kind}: {', '.join(sorted(missing))}"
+            )
+
+
+def theme_element_compatibility(
+    theme_tokens: Mapping[str, str] | tuple[str, ...] | list[str] | set[str],
+    element_tokens: tuple[str, ...] | list[str] | set[str],
+) -> list[str]:
+    """Return element token names not supplied by a theme."""
+    available = set(theme_tokens)
+    return sorted(set(element_tokens) - available)
 
 
 @dataclass(frozen=True, slots=True)

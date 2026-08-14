@@ -253,7 +253,9 @@ from hedron_core.diagnostics import HedronError
 
 
 def repro_callbacks_onclick_in_formatter() -> None:
-    spec = {"options": {"plugins": {"tooltip": {"callbacks": {"label": "function(ctx){return ctx}"}}}}}
+    spec = {
+        "options": {"plugins": {"tooltip": {"callbacks": {"label": "function(ctx){return ctx}"}}}}
+    }
     try:
         reject_callbacks(spec)
         print("NOT rejected — onclick/callback bypass (#75 territory)")
@@ -310,7 +312,9 @@ def repro_great_tables_payload_bytes_mismatch() -> None:
     out = adapter.compile(rows, accessibility=acc, limits=VisualizationLimits(max_rows=100))
     body_parsed = out.body
     meta_rows = out.metadata.get("rows")
-    print(f"payload_bytes={out.payload_bytes} body_len={len(str(body_parsed))} meta_rows={meta_rows}")
+    print(
+        f"payload_bytes={out.payload_bytes} body_len={len(str(body_parsed))} meta_rows={meta_rows}"
+    )
 
 
 def repro_downsample_empty() -> None:

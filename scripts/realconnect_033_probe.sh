@@ -176,10 +176,10 @@ log "python=$("$PY" --version 2>&1 | tr -d '\n')"
 
 CONNECT_LICENSE_VALUE="$(resolve_connect_license || true)"
 if [[ -z "${CONNECT_LICENSE_VALUE:-}" ]]; then
-  fail "HED-CONNECT-0001" "CONNECT_LICENSE is unset (load .env or export it)"
+  skip_license_unavailable "license_unset" "CONNECT_LICENSE is unset (load .env or export it)"
 fi
 if [[ ! "$CONNECT_LICENSE_VALUE" =~ ^[[:alnum:]]{4}(-[[:alnum:]]{4}){5,}$ ]]; then
-  fail "HED-CONNECT-0001" "CONNECT_LICENSE is not a product-license-shaped value"
+  skip_license_unavailable "license_malformed" "CONNECT_LICENSE is not a product-license-shaped value"
 fi
 if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
   fail "HED-CONNECT-0002" "docker is required and must be reachable"

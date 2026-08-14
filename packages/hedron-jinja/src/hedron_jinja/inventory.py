@@ -125,6 +125,27 @@ class DynamicDependencyManifest:
                 )
 
 
+def _csp_directives(csp: str) -> dict[str, str]:
+    """Parse a CSP into lowercased directive name → value string."""
+    directives: dict[str, str] = {}
+    for chunk in csp.split(";"):
+        piece = chunk.strip()
+        if not piece:
+            continue
+        name, _, value = piece.partition(" ")
+        key = name.strip().lower()
+        if not key:
+            continue
+        directives[key] = value.strip().lower()
+    return directives
+
+
+def _script_src_value(directives: Mapping[str, str]) -> str:
+    if "script-src" in directives:
+        return directives["script-src"]
+    return directives.get("default-src", "")
+
+
 def reconcile_csp(
     policy_csp: str | None,
     *,
@@ -136,21 +157,28 @@ def reconcile_csp(
 
     Returns a list of mismatch messages (empty when reconciled). Callers must treat
     non-empty results as hard failures — never inject unsafe-inline/eval/nonces.
+
+    Script capabilities are evaluated only against ``script-src`` (falling back to
+    ``default-src``). Tokens on ``style-src`` must not authorize script behavior.
     """
     mismatches: list[str] = []
     csp = (policy_csp or "").lower()
-    has_script_src = "script-src" in csp
+    directives = _csp_directives(csp)
+    script_src = _script_src_value(directives)
+    has_script_src = bool(script_src) or "script-src" in directives
     for capability in required_capabilities:
         if capability == "browser.inline-script":
             authorized = has_script_src and (
-                "'unsafe-inline'" in csp or "nonce-" in csp or "'strict-dynamic'" in csp
+                "'unsafe-inline'" in script_src
+                or "nonce-" in script_src
+                or "'strict-dynamic'" in script_src
             )
             if not authorized:
                 mismatches.append(
                     f"{source_name}:{line}: capability {capability!r} conflicts with CSP "
                     f"(missing explicit inline/nonce/strict-dynamic authorization)"
                 )
-        if capability == "htmx.eval" and (not has_script_src or "unsafe-eval" not in csp):
+        if capability == "htmx.eval" and (not has_script_src or "unsafe-eval" not in script_src):
             mismatches.append(
                 f"{source_name}:{line}: capability {capability!r} requires explicit "
                 f"unsafe-eval authorization in SecurityPolicy CSP"

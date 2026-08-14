@@ -14,8 +14,8 @@ contracts only, plugins/HDJ/Explorer/themes share element metadata, an optional 
 modules/TS mirror may exist without requiring Node for Python consumers, and a React migration
 matrix ships with an Experimental island bridge as docs/reference only.
 
-Completion requires every row in
-[`release-gate-0.40.toml`](../acceptance/release-gate-0.40.toml) Verified (React-island may remain
+**Cut status:** in-tree Published as `v0.40.0` (tag/PyPI deferred). Every row in
+[`release-gate-0.40.toml`](../acceptance/release-gate-0.40.toml) is Verified (React-island remains
 Experimental per D-068).
 
 ## Locked architecture

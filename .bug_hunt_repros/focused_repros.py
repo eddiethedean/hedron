@@ -46,6 +46,7 @@ rows = [{"secret": "leak", "name": "a"}]
 acc = ChartAccessibility(title="t", description="d").validated()
 out = adapter.compile(rows, accessibility=acc, limits=VisualizationLimits(max_rows=100))
 import json
+
 body = json.loads(str(out.body))
 redacted_body = json.loads(json.dumps(redact_rows(rows)))
 print(f"body in output: {body}")

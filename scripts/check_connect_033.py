@@ -38,9 +38,7 @@ def _result_freshness_errors(text: str, errors: list[str]) -> None:
     started = datetime.strptime(match.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
     age = datetime.now(UTC) - started
     if age > timedelta(days=45):
-        errors.append(
-            f"realconnect-033 RESULT.log is stale ({age.days} days); refresh live smoke"
-        )
+        errors.append(f"realconnect-033 RESULT.log is stale ({age.days} days); refresh live smoke")
 
 
 def _minimum_floor_errors(text: str, errors: list[str]) -> None:
@@ -50,9 +48,7 @@ def _minimum_floor_errors(text: str, errors: list[str]) -> None:
         errors.append("realconnect-033-202506 RESULT.log missing NATIVE_COOKIES=ok")
     if "2025.06.0" not in text:
         errors.append("realconnect-033-202506 RESULT.log missing Connect 2025.06.0 pin")
-    match = re.search(
-        r"REALCONNECT-033-202506 start (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)", text
-    )
+    match = re.search(r"REALCONNECT-033-202506 start (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)", text)
     if not match:
         errors.append("realconnect-033-202506 RESULT.log missing start timestamp")
         return

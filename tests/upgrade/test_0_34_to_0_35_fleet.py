@@ -18,7 +18,10 @@ def test_inventory_baseline_is_v0_34() -> None:
 def test_release_toml_train_is_documented_for_cut() -> None:
     # Historical cut facts remain documented even after later tip bumps.
     data = tomllib.loads(RELEASE.read_text(encoding="utf-8"))["release"]
-    if data["train"] == "0.39":
+    if data["train"] == "0.40":
+        assert data["previous_train"] == "0.39"
+        assert data["previous_version"] == "0.39.0"
+    elif data["train"] == "0.39":
         assert data["previous_train"] == "0.38"
         assert data["previous_version"] == "0.38.0"
     elif data["train"] == "0.38":

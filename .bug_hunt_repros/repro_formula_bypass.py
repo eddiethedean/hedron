@@ -2,6 +2,7 @@
 """Standalone repro: formula policy bypass via invisible Unicode."""
 
 import sys
+
 sys.path[:0] = [
     "packages/hedron-data/src",
     "packages/hedron-core/src",
@@ -46,10 +47,10 @@ content = (
     "<office:body><office:spreadsheet>"
     '<table:table table:name="Sheet1">'
     "<table:table-row>"
-    f'<table:table-cell><text:p>val</text:p></table:table-cell>'
+    f"<table:table-cell><text:p>val</text:p></table:table-cell>"
     "</table:table-row>"
     "<table:table-row>"
-    f'<table:table-cell><text:p>{cell}</text:p></table:table-cell>'
+    f"<table:table-cell><text:p>{cell}</text:p></table:table-cell>"
     "</table:table-row>"
     "</table:table></office:spreadsheet></office:body></office:document-content>"
 )

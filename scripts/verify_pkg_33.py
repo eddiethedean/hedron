@@ -60,10 +60,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--allow-planned",
         action="store_true",
-        help=(
-            f"Allow Planned rows (pre-cut / packet refine). "
-            f"Omit at v{RELEASE_CANDIDATE} cut."
-        ),
+        help=(f"Allow Planned rows (pre-cut / packet refine). Omit at v{RELEASE_CANDIDATE} cut."),
     )
     args = parser.parse_args(argv)
 

@@ -195,6 +195,7 @@ def _shell(title: str, body: str, *, request: Request, active: str = "components
         ("charts", "Charts", "/hedron-explorer/charts"),
         ("auto", "Auto", "/hedron-explorer/auto"),
         ("packages", "Packages", "/hedron-explorer/packages"),
+        ("elements", "Elements", "/hedron-explorer/elements"),
         ("inventory", "Inventory", "/hedron-explorer/inventory"),
         ("settings", "Settings", "/hedron-explorer/settings"),
     ]
@@ -658,6 +659,90 @@ def explorer_router() -> APIRouter:
             request=request,
             active="packages",
         )
+
+    @router.get("/elements", response_class=HTMLResponse, include_in_schema=False)
+    async def elements_view(request: Request) -> str:
+        rows = []
+        for meta in get_registry().element_definitions():
+            href = _explorer_href(request, f"/hedron-explorer/elements/{meta.logical_id}")
+            events = html_lib.escape(", ".join(meta.events) or "—")
+            parts = html_lib.escape(", ".join(meta.parts) or "—")
+            origin = "first-party" if meta.first_party else "third-party"
+            rows.append(
+                "<tr>"
+                f'<td><a href="{href}">{html_lib.escape(meta.logical_id)}</a></td>'
+                f"<td>{html_lib.escape(meta.tag_name)}</td>"
+                f"<td>{meta.abi_version}</td>"
+                f"<td>{origin}</td>"
+                f"<td>{events}</td>"
+                f"<td>{parts}</td>"
+                "</tr>"
+            )
+        empty = '<tr><td colspan="6">No element definitions</td></tr>'
+        body = (
+            "<h2>Elements</h2>"
+            "<table><thead><tr>"
+            "<th>Logical id</th><th>Tag</th><th>ABI</th><th>Origin</th>"
+            "<th>Events</th><th>Parts</th></tr></thead>"
+            f"<tbody>{''.join(rows) or empty}</tbody></table>"
+        )
+        return _shell("Elements", body, request=request, active="elements")
+
+    @router.get("/elements/{logical_id:path}", response_class=HTMLResponse, include_in_schema=False)
+    async def element_detail_view(request: Request, logical_id: str) -> str:
+        meta = get_registry().get_element_definition(logical_id)
+        if meta is None:
+            raise HTTPException(status_code=404, detail="Element not found")
+        fallback = "".join(
+            f"<li><code>{html_lib.escape(key)}</code>: {html_lib.escape(value)}</li>"
+            for key, value in meta.fallback.items()
+        )
+        body = f"""
+        <h2>{html_lib.escape(meta.tag_name)}</h2>
+        <dl>
+          <dt>Logical id</dt><dd>{html_lib.escape(meta.logical_id)}</dd>
+          <dt>ABI</dt><dd>{meta.abi_version}</dd>
+          <dt>Module</dt><dd>{html_lib.escape(meta.module_asset_id)}</dd>
+          <dt>Events</dt><dd>{html_lib.escape(", ".join(meta.events) or "—")}</dd>
+          <dt>Parts</dt><dd>{html_lib.escape(", ".join(meta.parts) or "—")}</dd>
+          <dt>Slots</dt><dd>{html_lib.escape(", ".join(meta.slots) or "—")}</dd>
+          <dt>Tokens</dt><dd>{html_lib.escape(", ".join(meta.tokens) or "—")}</dd>
+          <dt>First party</dt><dd>{meta.first_party}</dd>
+        </dl>
+        <h3>Fallback</h3>
+        <ul>{fallback or "<li>None declared</li>"}</ul>
+        """
+        return _shell(meta.tag_name, body, request=request, active="elements")
+
+    @router.post("/api/element-simulate", include_in_schema=False)
+    async def api_element_simulate(request: Request) -> Any:
+        try:
+            payload = await request.json()
+        except Exception:  # noqa: BLE001
+            return JSONResponse({"detail": "Invalid JSON body"}, status_code=400)
+        if not isinstance(payload, dict):
+            return JSONResponse({"detail": "JSON object required"}, status_code=400)
+        logical_id = payload.get("logical_id")
+        failure = payload.get("failure", "none")
+        if not isinstance(logical_id, str) or not logical_id:
+            return JSONResponse({"detail": "logical_id required"}, status_code=400)
+        if failure not in {"none", "module", "upgrade"}:
+            return JSONResponse({"detail": "failure must be none|module|upgrade"}, status_code=400)
+        meta = get_registry().get_element_definition(logical_id)
+        if meta is None:
+            return JSONResponse({"detail": "Element not found"}, status_code=404)
+        behavior = {
+            "none": meta.fallback.get("pre_upgrade", "server content visible"),
+            "module": meta.fallback.get("module_failure", "retain server content"),
+            "upgrade": meta.fallback.get("js_off", "server content visible"),
+        }[failure]
+        return {
+            "logical_id": meta.logical_id,
+            "tag_name": meta.tag_name,
+            "failure": failure,
+            "fallback": behavior,
+            "declared_fallback": dict(meta.fallback),
+        }
 
     @router.get("/inventory", response_class=HTMLResponse, include_in_schema=False)
     async def inventory_view(request: Request) -> str:

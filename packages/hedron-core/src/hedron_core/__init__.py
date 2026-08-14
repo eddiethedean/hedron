@@ -285,11 +285,17 @@ from hedron_core.prepare import (
 )
 from hedron_core.registry import (
     AddressableMeta,
+    AssetMeta,
+    BrowserModuleMeta,
+    ElementDefinitionMeta,
+    ElementFieldOwnership,
     RouteMeta,
     get_registry,
     register_addressable,
+    register_asset,
     register_browser_module,
     register_component,
+    register_element_definition,
     register_route,
     register_theme,
     reset_registry_for_tests,
@@ -313,12 +319,16 @@ from hedron_core.security_policy import (
 from hedron_core.streaming import ChunkedList, StreamBudget, StreamedDocument, TokenStream
 from hedron_core.styles import StyleSymbols, styles_from_manifest
 from hedron_core.theme import (
+    FORCED_COLOR_TOKENS,
+    PRINT_SAFE_TOKENS,
     Theme,
     aurora_theme,
     builtin_themes,
     default_theme,
     emit_theme_css,
     ensure_builtin_themes_registered,
+    theme_element_compatibility,
+    validate_element_style_contract,
 )
 from hedron_core.typing_aliases import (
     HtmlAttrMap,
@@ -345,12 +355,13 @@ from hedron_core.visualization import (
     validate_chart_event,
 )
 
-__version__ = "0.39.0"
+__version__ = "0.40.0"
 
 __all__ = [
     "ActionRegistry",
     "AddressableDescriptor",
     "AddressableMeta",
+    "AssetMeta",
     "Alert",
     "AppShell",
     "AuthSignal",
@@ -438,6 +449,7 @@ __all__ = [
     "Badge",
     "BottomDock",
     "BrowserContext",
+    "BrowserModuleMeta",
     "BrowserStorage",
     "BrowserStorageUnavailable",
     "Button",
@@ -473,6 +485,8 @@ __all__ = [
     "DirectoryUploadFile",
     "Divider",
     "EventPayload",
+    "ElementDefinitionMeta",
+    "ElementFieldOwnership",
     "Field",
     "Footer",
     "Form",
@@ -660,19 +674,25 @@ __all__ = [
     "diagnostics_to_text",
     "emit_theme_css",
     "ensure_builtin_themes_registered",
+    "FORCED_COLOR_TOKENS",
     "get_registry",
     "html",
     "meets_severity_threshold",
     "register_addressable",
+    "register_asset",
     "register_browser_module",
     "register_component",
+    "register_element_definition",
     "register_route",
     "register_theme",
     "render",
+    "PRINT_SAFE_TOKENS",
     "reset_registry_for_tests",
     "scoped_identifier",
     "seal_registry",
     "styles_from_manifest",
+    "theme_element_compatibility",
+    "validate_element_style_contract",
 ]
 
 

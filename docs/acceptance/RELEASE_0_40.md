@@ -1,8 +1,7 @@
 # Hedron `v0.40` Web Component authoring and interoperability acceptance
 
-**Status:** Planned (Stage 0 contract refined against Published **`v0.39.0`**). Runtime
-implementation begins at Stage 1; this refine ships no author kit scaffold, React-island
-bridge, HDJ/Explorer/theme runtime, or npm mirror.
+**Status:** Published as `v0.40.0` (2026-08-14; **in-tree cut, tag/PyPI deferred**). All owned
+gates Verified; React-island remains Experimental docs/reference only per D-068.
 
 Phase 0.40 enables third-party authors to build portable Hedron elements without private
 APIs, publishes a React migration matrix with an Experimental island bridge (docs/reference

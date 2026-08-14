@@ -170,6 +170,9 @@ class ElementDefinitionMeta:
     resources: tuple[str, ...] = ()
     lifecycle: Mapping[str, str] = field(default_factory=dict)
     fallback: Mapping[str, str] = field(default_factory=dict)
+    parts: tuple[str, ...] = ()
+    slots: Mapping[str, str] = field(default_factory=dict)
+    tokens: tuple[str, ...] = ()
     first_party: bool = True
 
 
@@ -271,6 +274,11 @@ class RegistryBuilder:
 
     def register_element_definition(self, meta: ElementDefinitionMeta) -> None:
         self._ensure_open()
+        validated_ownership = tuple(
+            validate_field_ownership(field) for field in meta.state_ownership
+        )
+        if validated_ownership != meta.state_ownership:
+            meta = replace(meta, state_ownership=validated_ownership)
         key = registry_resource_id("element", meta.logical_id)
         if "-" not in meta.tag_name:
             raise error(
@@ -327,11 +335,6 @@ class RegistryBuilder:
                     explanation=f"Tag {meta.tag_name!r} is already owned by {other.logical_id!r}.",
                     remediation="Use a unique tag or compatible same-definition registration.",
                 )
-        validated_ownership = tuple(
-            validate_field_ownership(field) for field in meta.state_ownership
-        )
-        if validated_ownership != meta.state_ownership:
-            meta = replace(meta, state_ownership=validated_ownership)
         validate_form_contract(meta.form_contract, tag_name=meta.tag_name)
         self._element_definitions[key] = meta
 
@@ -627,6 +630,9 @@ def register_element_definition(
     resources: Iterable[str] = (),
     lifecycle: Mapping[str, str] | None = None,
     fallback: Mapping[str, str] | None = None,
+    parts: Iterable[str] = (),
+    slots: Mapping[str, str] | None = None,
+    tokens: Iterable[str] = (),
     first_party: bool = True,
 ) -> None:
     _builder.register_element_definition(
@@ -649,6 +655,9 @@ def register_element_definition(
             resources=tuple(resources),
             lifecycle=dict(lifecycle or {}),
             fallback=dict(fallback or {}),
+            parts=tuple(parts),
+            slots=dict(slots or {}),
+            tokens=tuple(tokens),
             first_party=first_party,
         )
     )

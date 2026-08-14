@@ -160,7 +160,9 @@ def wrap_browser_chrome(
         )
     url_text = html_lib.escape(url)
     cap = (
-        f'<figcaption class="hedron-browser-sim__caption">{caption}</figcaption>' if caption else ""
+        f'<figcaption class="hedron-browser-sim__caption">{html_lib.escape(caption)}</figcaption>'
+        if caption
+        else ""
     )
     return (
         '<figure class="hedron-browser-sim">'

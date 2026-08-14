@@ -40,9 +40,7 @@ def main() -> int:
         ),
         errors,
     )
-    pyproject = (
-        ROOT / "packages" / "hedron-mcp" / "pyproject.toml"
-    ).read_text(encoding="utf-8")
+    pyproject = (ROOT / "packages" / "hedron-mcp" / "pyproject.toml").read_text(encoding="utf-8")
     if "mcp" not in pyproject:
         errors.append("hedron-mcp pyproject must pin official mcp SDK")
     if fail_errors(errors, "PROTOCOL-032"):

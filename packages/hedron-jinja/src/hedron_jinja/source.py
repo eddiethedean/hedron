@@ -8,7 +8,7 @@ import tomllib
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from html.parser import HTMLParser
-from typing import cast
+from typing import Any, cast
 from urllib.parse import urlsplit
 
 from jinja2 import BaseLoader, Environment, TemplateNotFound, nodes
@@ -107,6 +107,8 @@ _NETWORK_CAPABILITY_RE = re.compile(
 _LOGICAL_ID_RE = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._:/-]*$")
 _REGION_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]*$")
 _TAG_RE = re.compile(r"<\s*([A-Za-z][A-Za-z0-9:-]*)\b")
+_CUSTOM_TAG_RE = re.compile(r"^[a-z][a-z0-9]*(?:-[a-z0-9]+)+$")
+_EVENT_RE = re.compile(r"^[A-Za-z][A-Za-z0-9:._-]*$")
 _OUTPUT_RE = re.compile(r"{{(?P<expr>.*?)}}", re.DOTALL)
 
 
@@ -183,7 +185,19 @@ def parse_hdj_source(name: str, raw: str) -> ParsedHdjSource:
             "Correct the static TOML prologue.",
         ) from exc
 
-    allowed_keys = {"version", "kind", "profile", "features", "requires", "assets", "regions"}
+    allowed_keys = {
+        "version",
+        "kind",
+        "profile",
+        "features",
+        "requires",
+        "assets",
+        "regions",
+        "elements",
+        "element_abi",
+        "element_modules",
+        "element_events",
+    }
     unknown_keys = set(data) - allowed_keys
     if unknown_keys:
         raise _source_error(
@@ -221,6 +235,10 @@ def parse_hdj_source(name: str, raw: str) -> ParsedHdjSource:
     requires = _string_tuple(name, data, "requires")
     assets = _string_tuple(name, data, "assets")
     regions = _string_tuple(name, data, "regions")
+    elements = _string_tuple(name, data, "elements")
+    element_abi = _element_abi_table(name, data)
+    element_modules = _element_modules_table(name, data)
+    element_events = _element_events_table(name, data)
     for feature in features:
         if feature in DEFERRED_V1_FEATURES:
             raise _source_error(
@@ -253,8 +271,47 @@ def parse_hdj_source(name: str, raw: str) -> ParsedHdjSource:
             )
 
     effective = PROFILE_FEATURES[profile] | frozenset(features)
+    element_keys = {"elements", "element_abi", "element_modules", "element_events"}
+    if element_keys.intersection(data) and "web.custom-elements" not in effective:
+        raise _source_error(
+            name,
+            2,
+            "Element declarations require the `web.custom-elements` feature.",
+            'Use profile = "full" or explicitly declare `web.custom-elements`.',
+        )
+    for tag in elements:
+        _validate_custom_tag(name, tag, "elements")
+    declared_tags = set(elements)
+    for key, table in (
+        ("element_abi", element_abi),
+        ("element_modules", element_modules),
+        ("element_events", element_events),
+    ):
+        for tag in table:
+            _validate_custom_tag(name, tag, key)
+        undeclared = set(table) - declared_tags
+        if undeclared and "elements" in data:
+            raise _source_error(
+                name,
+                2,
+                f"`{key}` contains tags absent from `elements`: {', '.join(sorted(undeclared))}.",
+                "Declare each metadata tag in `elements`.",
+            )
     body_start_line = closing_index + 2
     body = "".join(lines[closing_index + 1 :])
+    if "elements" in data:
+        used_tags = {
+            match.group(1).lower() for match in _TAG_RE.finditer(body) if "-" in match.group(1)
+        }
+        undeclared_used = used_tags - declared_tags
+        if undeclared_used:
+            raise _source_error(
+                name,
+                body_start_line,
+                "Custom tags used by the template are absent from `elements`: "
+                f"{', '.join(sorted(undeclared_used))}.",
+                "Add each used custom tag to the `elements` declaration.",
+            )
     guard_ending = "\r\n" if lines[closing_index].endswith("\r\n") else "\n"
     # A spanning Jinja comment preserves the original line numbers without
     # emitting the prologue's padding as leading response whitespace.
@@ -273,6 +330,10 @@ def parse_hdj_source(name: str, raw: str) -> ParsedHdjSource:
         regions=regions,
         source_digest=hashlib.sha256(raw.encode("utf-8")).hexdigest(),
         body_start_line=body_start_line,
+        elements=elements,
+        element_abi=element_abi,
+        element_modules=element_modules,
+        element_events=element_events,
     )
     return ParsedHdjSource(declaration=declaration, raw=raw, body=body, compiled=compiled)
 
@@ -286,6 +347,102 @@ def _string_tuple(name: str, data: dict[str, JsonValue], key: str) -> tuple[str,
     if len(value) != len(set(value)):
         raise _source_error(name, 2, f"`{key}` contains duplicates.", "List each value once.")
     return tuple(cast(list[str], value))
+
+
+def _validate_custom_tag(name: str, tag: object, key: str) -> None:
+    if not isinstance(tag, str) or not _CUSTOM_TAG_RE.fullmatch(tag):
+        raise _source_error(
+            name,
+            2,
+            f"`{key}` contains invalid custom-element tag {tag!r}.",
+            "Use a lowercase hyphenated tag such as `acme-panel`.",
+        )
+
+
+def _element_abi_table(name: str, data: dict[str, JsonValue]) -> dict[str, int]:
+    value = data.get("element_abi", {})
+    if not isinstance(value, dict):
+        raise _source_error(name, 2, "`element_abi` must be a tag-to-integer table.", "Correct it.")
+    result: dict[str, int] = {}
+    for tag, abi in value.items():
+        if isinstance(abi, bool) or not isinstance(abi, int) or abi < 1:
+            raise _source_error(
+                name, 2, f"`element_abi.{tag}` must be a positive integer.", "Correct it."
+            )
+        result[str(tag)] = abi
+    return result
+
+
+def _element_modules_table(name: str, data: dict[str, JsonValue]) -> dict[str, str]:
+    value = data.get("element_modules", {})
+    if not isinstance(value, dict):
+        raise _source_error(
+            name, 2, "`element_modules` must be a tag-to-logical-ID table.", "Correct it."
+        )
+    result: dict[str, str] = {}
+    for tag, logical_id in value.items():
+        if not isinstance(logical_id, str) or not _LOGICAL_ID_RE.fullmatch(logical_id):
+            raise _source_error(
+                name,
+                2,
+                f"`element_modules.{tag}` must be a canonical logical asset ID.",
+                "Correct it.",
+            )
+        result[str(tag)] = logical_id
+    return result
+
+
+def _element_events_table(name: str, data: dict[str, JsonValue]) -> dict[str, tuple[str, ...]]:
+    value = data.get("element_events", {})
+    if not isinstance(value, dict):
+        raise _source_error(
+            name, 2, "`element_events` must map tags to event-name arrays.", "Correct it."
+        )
+    result: dict[str, tuple[str, ...]] = {}
+    for tag, events in value.items():
+        if (
+            not isinstance(events, list)
+            or any(not isinstance(event, str) or not _EVENT_RE.fullmatch(event) for event in events)
+            or len(events) != len(set(events))
+        ):
+            raise _source_error(
+                name,
+                2,
+                f"`element_events.{tag}` must be an array of unique event names.",
+                "Correct it.",
+            )
+        result[str(tag)] = tuple(cast(list[str], events))
+    return result
+
+
+def validate_element_declarations(
+    declaration: TemplateDeclaration, registry: object | None = None
+) -> None:
+    """Validate declared custom-element tags against an optional registry snapshot."""
+    for tag in declaration.elements:
+        _validate_custom_tag(declaration.name, tag, "elements")
+    if registry is None:
+        return
+    definitions = getattr(registry, "element_definitions", None)
+    if not callable(definitions):
+        raise TypeError("registry must provide element_definitions()")
+    registered = {meta.tag_name: meta for meta in cast(Iterable[Any], definitions())}
+    unknown = set(declaration.elements) - set(registered)
+    if unknown:
+        raise ValueError(f"unregistered element tags: {', '.join(sorted(unknown))}")
+    for tag, abi in declaration.element_abi.items():
+        meta = registered.get(tag)
+        if meta is not None and meta.abi_version != abi:
+            raise ValueError(
+                f"element ABI mismatch for {tag}: declared {abi}, registered {meta.abi_version}"
+            )
+    for tag, module in declaration.element_modules.items():
+        meta = registered.get(tag)
+        if meta is not None and meta.module_asset_id != module:
+            raise ValueError(
+                f"element module mismatch for {tag}: declared {module!r}, "
+                f"registered {meta.module_asset_id!r}"
+            )
 
 
 def _valid_network_capability(capability: str) -> bool:

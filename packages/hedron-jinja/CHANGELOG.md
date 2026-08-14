@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.40.0] — 2026-08-14
+
+### Added
+- Phase 0.40 authoring kit, metadata parity, React migration matrix, and remediation packet (D-068).
+
 ## [0.39.0] — 2026-08-14
 
 ### Added

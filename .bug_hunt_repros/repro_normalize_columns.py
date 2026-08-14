@@ -2,6 +2,7 @@
 """Standalone repro: normalize_rows column-oriented dict bugs."""
 
 import sys
+
 sys.path[:0] = [
     "packages/hedron-data/src",
     "packages/hedron-core/src",

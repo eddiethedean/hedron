@@ -1,0 +1,8 @@
+ext-author-probe {
+  color: var(--ext-author-probe-color, currentColor);
+  display: block;
+}
+ext-author-probe {
+  display: inline-block;
+  color: var(--ext-author-fg, inherit);
+}

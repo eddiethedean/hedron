@@ -21,14 +21,14 @@ Stage 1. Cut target: Hedron `v0.40.0`. Tracking
 
 | Surface | Before (living tip) | At phase 0.40 cut |
 |---|---|---|
-| Hedron train | `hedron>=0.39.0,<0.40` | `hedron>=0.40.0,<0.41` |
+| Hedron train | `hedron>=0.40.0,<0.41` | `hedron>=0.40.0,<0.41` |
 | Author kit / scaffold | Not Supported | Public contracts + `hedron new element` |
 | React islands | Not Supported | Experimental docs/reference only |
 | `@hedron/elements` | Absent / provisional | Modules + TS types only (optional) |
 
 ## Rollback
 
-Rollback pins `hedron>=0.39.0,<0.40`, removes 0.40-only author/island/npm assets, and verifies no
+Rollback pins `hedron>=0.40.0,<0.41`, removes 0.40-only author/island/npm assets, and verifies no
 stale custom-element definition or island root remains. Browser-local island state is disposable.
 
 ## Required artifacts

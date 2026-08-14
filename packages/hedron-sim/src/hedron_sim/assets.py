@@ -3,16 +3,55 @@
 from __future__ import annotations
 
 from importlib import resources
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+
+from hedron_core.diagnostics import error
 
 __all__ = ["asset_path", "copy_assets", "css_text", "javascript_text"]
 
 
+def _sanitize_asset_name(name: str) -> str:
+    raw = PurePosixPath(name)
+    if (
+        raw.is_absolute()
+        or ".." in raw.parts
+        or "/" in name
+        or "\\" in name
+        or name.startswith("~")
+        or not name
+    ):
+        raise error(
+            "HED-SIM-ASSET-0001",
+            title="Invalid packaged asset name",
+            explanation=f"Asset name {name!r} escapes the package static directory.",
+            remediation="Pass a single basename under hedron_sim/static/.",
+        )
+    return raw.name
+
+
 def asset_path(name: str) -> Path:
-    """Return a filesystem path to a packaged static asset (may be inside a zip)."""
-    target = resources.files("hedron_sim").joinpath("static").joinpath(name)
-    with resources.as_file(target) as path:
-        return Path(path)
+    """Return a filesystem path to a packaged static asset by basename."""
+    safe = _sanitize_asset_name(name)
+    root = resources.files("hedron_sim").joinpath("static")
+    with resources.as_file(root) as base:
+        target = (Path(base) / safe).resolve()
+        try:
+            target.relative_to(Path(base).resolve())
+        except ValueError as exc:
+            raise error(
+                "HED-SIM-ASSET-0001",
+                title="Invalid packaged asset name",
+                explanation=f"Asset name {name!r} escapes the package static directory.",
+                remediation="Pass a single basename under hedron_sim/static/.",
+            ) from exc
+        if not target.is_file():
+            raise error(
+                "HED-SIM-ASSET-0002",
+                title="Packaged asset missing",
+                explanation=f"Asset {safe!r} was not found under static/.",
+                remediation="Use a filename that ships in hedron_sim/static/.",
+            )
+        return target
 
 
 def javascript_text() -> str:
