@@ -2956,6 +2956,15 @@ Supported for a locked catalog rather than delegated to incompatible vendor JSON
   provenance.
 - Keep Plotly, Altair/Vega-Lite, ECharts, Chart.js, and other vendor engines explicit Experimental
   adapters; no backend silently becomes the Hedron grammar.
+- Close the phase-owned open medium/low chart remediation packet: host lifecycle races
+  ([#71](https://github.com/eddiethedean/hedron/issues/71),
+  [#72](https://github.com/eddiethedean/hedron/issues/72)), formatter/limit/fallback defects
+  ([#75](https://github.com/eddiethedean/hedron/issues/75),
+  [#82](https://github.com/eddiethedean/hedron/issues/82),
+  [#83](https://github.com/eddiethedean/hedron/issues/83)), and SVG active-content bypasses
+  ([#81](https://github.com/eddiethedean/hedron/issues/81),
+  [#201](https://github.com/eddiethedean/hedron/issues/201),
+  [#239](https://github.com/eddiethedean/hedron/issues/239)).
 
 ### Locked exit evidence
 
@@ -2969,7 +2978,7 @@ Supported for a locked catalog rather than delegated to incompatible vendor JSON
 | `EXPORT-038` | Deterministic bounded authorized SVG/PNG/CSV/JSON/print paths pass |
 | `SECURITY-038` | Spec/transform/text/URL/SVG/event/export/lifecycle/build review has no open critical/high finding |
 | `COMPAT-038` / `DOCS-038` | Beginner/Matplotlib compatibility, vendor migration honesty, Explorer, catalog, recipes, and rollback pass |
-| `REGRESS-038` / `PKG-038` | Full suites, wheels/assets/types/SBOM/provenance, inventory, and release rehearsal pass |
+| `REGRESS-038` / `PKG-038` | Full suites, wheels/assets/types/SBOM/provenance, inventory, release rehearsal, and the phase-owned medium/low issue packet pass |
 
 ### Non-goals
 
@@ -3012,6 +3021,9 @@ tables, summaries, forms, media links, and exports survive slow, absent, or fail
   runtimes, remote origins, payloads, cancellation, and disconnect cleanup.
 - Establish per-surface browser performance, memory, long-task, layout-shift, a11y, large-data, and
   failure-injection budgets without making rich adapters default/transitive assets.
+- Close the phase-owned open medium/low rich-data packet covering bounded adapters, grid/editor
+  state, row normalization, spreadsheet import/export, map/3D/media behavior, and authorized file
+  delivery; the exact 27-issue set is locked in the ownership index below.
 
 ### Locked exit evidence
 
@@ -3022,7 +3034,7 @@ tables, summaries, forms, media links, and exports survive slow, absent, or fail
 | `CHARTLINK-039` | Data/editor cross-filter and rich-surface composition consume the 0.38 chart contract without a parallel renderer |
 | `RICH-039` / `WORKER-039` | Map/media/editor inventory and worker/WASM/stream/buffer/origin cleanup and bounds pass |
 | `PERF-039` / `A11Y-039` | Named large scenarios meet performance/memory and accessible fallback/upgraded-state budgets |
-| `REGRESS-039` / `PKG-039` | Import/markup upgrades, optional isolation, browsers/hosts, docs, and package evidence pass |
+| `REGRESS-039` / `PKG-039` | Import/markup upgrades, optional isolation, browsers/hosts, docs, package evidence, and the phase-owned medium/low issue packet pass |
 
 ### Non-goals
 
@@ -3063,6 +3075,14 @@ may expose the browser modules without changing the Python no-Node consumer path
   `part`, and slots; themes/color modes/forced colors/print work without redefining elements.
 - Publish portable positive/negative fixtures; if `@hedron/elements` ships, require content identity,
   reproducible build, provenance, license/SBOM, and explicit standalone support boundaries.
+- Close the phase-owned open medium/low authoring/interoperability packet for notebook and simulator
+  escaping, HDJ CSP inference, event-detail validation, packaged asset containment, and element
+  state-ownership metadata ([#162](https://github.com/eddiethedean/hedron/issues/162),
+  [#203](https://github.com/eddiethedean/hedron/issues/203),
+  [#204](https://github.com/eddiethedean/hedron/issues/204),
+  [#219](https://github.com/eddiethedean/hedron/issues/219),
+  [#220](https://github.com/eddiethedean/hedron/issues/220),
+  [#222](https://github.com/eddiethedean/hedron/issues/222)).
 
 ### Locked exit evidence
 
@@ -3073,7 +3093,7 @@ may expose the browser modules without changing the Python no-Node consumer path
 | `THEME-040` | Scoped styles and public tokens/parts/slots pass theme, color, forced-color, print, and compatibility suites |
 | `EXPLORER-040` / `CONF-040` | Full element inspection/failure simulation and portable positive/negative fixtures pass |
 | `MIGRATE-040` | React coverage matrix, fit/non-fit guidance, worked migrations, dependency dispositions, and bounded island bridge pass |
-| `SUPPLY-040` / `PKG-040` | Wheel/npm identity where applicable, clean consumers, provenance/SBOM/licenses, docs, and verifier pass |
+| `SUPPLY-040` / `REGRESS-040` / `PKG-040` | Wheel/npm identity where applicable, clean consumers, provenance/SBOM/licenses, docs, verifier, and the phase-owned medium/low issue packet pass |
 
 ### Non-goals
 
@@ -3112,6 +3132,9 @@ and failure isolation make multi-element applications predictable across HTMX sw
   View Transitions, and full navigation fallback without reopening the polling-only decision.
 - Correlate lifecycle/event/state/asset/action/failure traces without recording payload/user content,
   and isolate slow/failing/incompatible elements from native navigation and unrelated regions.
+- Close the phase-owned open medium/low interaction packet for OOB parity, response security policy,
+  live-frame/cancellation cleanup, session-state identity, Workbench/mount navigation, eval
+  normalization, URL reversal, and SSE resume semantics; the exact 14-issue set is locked below.
 
 ### Locked exit evidence
 
@@ -3121,7 +3144,7 @@ and failure isolation make multi-element applications predictable across HTMX sw
 | `STATE-041` | State classes and bounded draft transfer/clearing/rejection/no-transfer fallback pass |
 | `NAV-041` | Boost/history/focus/title/preload/view-transition feature detection and full navigation fallback pass |
 | `TRACE-041` / `FALLBACK-041` | Redacted correlation and per-element slow/failure/version-skew isolation pass |
-| `BROWSER-041` / `REGRESS-041` / `PKG-041` | Multi-element host/browser/a11y/perf/privacy/compatibility/package matrices pass |
+| `BROWSER-041` / `REGRESS-041` / `PKG-041` | Multi-element host/browser/a11y/perf/privacy/compatibility/package matrices and the phase-owned medium/low issue packet pass |
 
 ### Non-goals
 
@@ -3164,6 +3187,10 @@ complete browser supply-chain provenance.
   workflows; keep blocked/unproven surfaces outside Supported inventory.
 - Lock production-reference-app bundle/request/upgrade/interaction/memory/leak/long-task/layout-shift
   budgets plus wheel/npm/module/worker/WASM/source/license/SBOM/provenance/rollback evidence.
+- Close the remaining phase-owned open medium/low cross-fleet production packet: cache/job/inference
+  lifecycle, authentication/session/CSRF and cookie policy, Workbench/Gradio/Explorer/MCP adapter
+  correctness, Redis atomicity/upgrade behavior, and configuration/validation edge cases. These
+  defects are cut-blocking regressions, not an expansion of the Supported element inventory.
 
 ### Locked exit evidence
 
@@ -3174,7 +3201,7 @@ complete browser supply-chain provenance.
 | `AT-042` | Human AT representative workflows are remediated/dispositioned and Supported inventory is honest |
 | `PERF-042` | Reference-app loading, upgrade, interaction, memory/leak, long-task, and layout budgets pass |
 | `SUPPLY-042` | All browser/Python artifacts have complete reproducibility, SBOM, provenance, license, vulnerability, and rollback evidence |
-| `REGRESS-042` / `PKG-042` | Hosts, HDJ/plugins, conformance, browser/a11y/security/perf/docs/package release rehearsal pass |
+| `REGRESS-042` / `PKG-042` | Hosts, HDJ/plugins, conformance, browser/a11y/security/perf/docs/package release rehearsal and the phase-owned medium/low issue packet pass |
 
 ### Non-goals
 
@@ -3557,6 +3584,104 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#95](https://github.com/eddiethedean/hedron/issues/95) | Element authoring kit / React migration matrix / interop | 0.40 (rephased by D-066) |
 | [#96](https://github.com/eddiethedean/hedron/issues/96) | Browser composition / bounded draft state / navigation | 0.41 (rephased by D-066) |
 | [#97](https://github.com/eddiethedean/hedron/issues/97) | Production-grade Web Component platform graduation | 0.42 (rephased by D-066) |
+
+### Open medium/low remediation ownership (2026-08-14 snapshot)
+
+The following index assigns every currently open issue whose body declares **Medium** or **Low**
+severity to a planned phase at or after 0.38. Issue bodies remain normative for acceptance criteria.
+Closure is part of the owning phase's regression gate; moving an issue requires an explicit roadmap
+update rather than silently dropping it. Open high-severity issue #244 is intentionally outside
+this medium/low packet and follows the separate high-severity remediation policy.
+
+| Issue | Severity | Title | Owning phase |
+|---:|:---:|---|---:|
+| [#71](https://github.com/eddiethedean/hedron/issues/71) | Medium | Mermaid chart host remount race lacks generation guard | 0.38 |
+| [#72](https://github.com/eddiethedean/hedron/issues/72) | Medium | Plotly host does not purge stale `newPlot` on generation mismatch | 0.38 |
+| [#75](https://github.com/eddiethedean/hedron/issues/75) | Medium | Chart formatter callback rejection allows HTML event-handler strings | 0.38 |
+| [#81](https://github.com/eddiethedean/hedron/issues/81) | Medium | NUL bytes bypass SVG/icon active-content scans | 0.38 |
+| [#82](https://github.com/eddiethedean/hedron/issues/82) | Medium | Chart tabular fallback drops row data | 0.38 |
+| [#83](https://github.com/eddiethedean/hedron/issues/83) | Medium | Negative `max_points` defeats Plotly downsampling limits | 0.38 |
+| [#201](https://github.com/eddiethedean/hedron/issues/201) | Medium | SVG/icon active-markup scan permits remote CSS `@import` | 0.38 |
+| [#239](https://github.com/eddiethedean/hedron/issues/239) | Medium | SVG/icon scanner permits SMIL remote-href mutation | 0.38 |
+| [#73](https://github.com/eddiethedean/hedron/issues/73) | Medium | Great Tables list path skips payload-byte limits | 0.39 |
+| [#84](https://github.com/eddiethedean/hedron/issues/84) | Medium | PyDeck adapter emits JSON the MapLibre host cannot render | 0.39 |
+| [#102](https://github.com/eddiethedean/hedron/issues/102) | Medium | XLSX importer shifts sparse cells | 0.39 |
+| [#104](https://github.com/eddiethedean/hedron/issues/104) | Medium | `download_all_zip` loses duplicate basenames | 0.39 |
+| [#105](https://github.com/eddiethedean/hedron/issues/105) | Medium | ODS importer shifts repeated columns | 0.39 |
+| [#107](https://github.com/eddiethedean/hedron/issues/107) | Medium | XLSX importer returns shared-string indexes | 0.39 |
+| [#113](https://github.com/eddiethedean/hedron/issues/113) | Medium | DataEditor batch save conflicts on multi-field row edits | 0.39 |
+| [#115](https://github.com/eddiethedean/hedron/issues/115) | Medium | In-memory data source drops duplicate initial keys | 0.39 |
+| [#116](https://github.com/eddiethedean/hedron/issues/116) | Medium | In-memory data source crashes sorting mixed JSON values | 0.39 |
+| [#117](https://github.com/eddiethedean/hedron/issues/117) | Low | DataQuery accepts invalid sort directions and capped limits | 0.39 |
+| [#118](https://github.com/eddiethedean/hedron/issues/118) | Low | Folium adapter replaces zoom level zero | 0.39 |
+| [#119](https://github.com/eddiethedean/hedron/issues/119) | Medium | Deleting an unsaved DataEditor row submits a server deletion | 0.39 |
+| [#120](https://github.com/eddiethedean/hedron/issues/120) | Low | DataEditor undo loses the prior pending value | 0.39 |
+| [#121](https://github.com/eddiethedean/hedron/issues/121) | Medium | DataEditor retry resubmits a stale conflict revision | 0.39 |
+| [#176](https://github.com/eddiethedean/hedron/issues/176) | Low | XLSX/ODS exporters embed XML-illegal control characters | 0.39 |
+| [#188](https://github.com/eddiethedean/hedron/issues/188) | Medium | `normalize_rows` mishandles column-oriented dictionaries | 0.39 |
+| [#189](https://github.com/eddiethedean/hedron/issues/189) | Low | `normalize_rows({})` returns a phantom row | 0.39 |
+| [#190](https://github.com/eddiethedean/hedron/issues/190) | Medium | In-memory data source leaks raw `KeyError` for missing keys | 0.39 |
+| [#191](https://github.com/eddiethedean/hedron/issues/191) | Medium | Invisible Unicode prefixes bypass spreadsheet formula policy | 0.39 |
+| [#192](https://github.com/eddiethedean/hedron/issues/192) | Low | Row redaction false-positives on key substrings | 0.39 |
+| [#193](https://github.com/eddiethedean/hedron/issues/193) | Low | `rows_to_tree` overwrites duplicate identifiers | 0.39 |
+| [#194](https://github.com/eddiethedean/hedron/issues/194) | Medium | Three.js adapter accepts relative model path traversal | 0.39 |
+| [#221](https://github.com/eddiethedean/hedron/issues/221) | Medium | Media range responses buffer the entire range | 0.39 |
+| [#240](https://github.com/eddiethedean/hedron/issues/240) | Medium | ODS import ignores formulas under reject policy | 0.39 |
+| [#241](https://github.com/eddiethedean/hedron/issues/241) | Medium | XLSX importer drops rich-text inline strings | 0.39 |
+| [#247](https://github.com/eddiethedean/hedron/issues/247) | Medium | Formula evaluator treats `[column]eN` as scientific notation | 0.39 |
+| [#248](https://github.com/eddiethedean/hedron/issues/248) | Medium | XLSX/ODS importers lack decompression bounds | 0.39 |
+| [#162](https://github.com/eddiethedean/hedron/issues/162) | Medium | Notebook iframe dimensions are not HTML-escaped | 0.40 |
+| [#203](https://github.com/eddiethedean/hedron/issues/203) | Medium | HDJ CSP reconciliation confuses inline style and script authority | 0.40 |
+| [#204](https://github.com/eddiethedean/hedron/issues/204) | Medium | Simulator browser caption is not HTML-escaped | 0.40 |
+| [#219](https://github.com/eddiethedean/hedron/issues/219) | Low | Event-detail prototype-pollution guard is ineffective | 0.40 |
+| [#220](https://github.com/eddiethedean/hedron/issues/220) | Medium | Packaged asset path can escape the static directory | 0.40 |
+| [#222](https://github.com/eddiethedean/hedron/issues/222) | Medium | Element definitions skip state-ownership validation | 0.40 |
+| [#70](https://github.com/eddiethedean/hedron/issues/70) | Medium | Request-side HTMX controls reject valid multi-target `select_oob` | 0.41 |
+| [#74](https://github.com/eddiethedean/hedron/issues/74) | Medium | FastAPI render helpers ignore `allow_htmx_eval` policy | 0.41 |
+| [#85](https://github.com/eddiethedean/hedron/issues/85) | Medium | Duplicate OOB update element identifiers are accepted | 0.41 |
+| [#98](https://github.com/eddiethedean/hedron/issues/98) | Medium | WebSocket channel crashes on valid non-object JSON frames | 0.41 |
+| [#103](https://github.com/eddiethedean/hedron/issues/103) | Medium | Adaptive gather leaves siblings running after overload | 0.41 |
+| [#106](https://github.com/eddiethedean/hedron/issues/106) | Medium | Connection registry races create duplicate connections | 0.41 |
+| [#135](https://github.com/eddiethedean/hedron/issues/135) | Medium | Workbench resolver drops an extra public-base prefix | 0.41 |
+| [#149](https://github.com/eddiethedean/hedron/issues/149) | Medium | SessionState returns stale values after direct mutation | 0.41 |
+| [#150](https://github.com/eddiethedean/hedron/issues/150) | Medium | Duplicate SessionState dependencies create separate caches | 0.41 |
+| [#185](https://github.com/eddiethedean/hedron/issues/185) | Medium | Explicit mount hint ignores `HEDRON_ROOT_PATH` | 0.41 |
+| [#186](https://github.com/eddiethedean/hedron/issues/186) | Medium | Workbench checks rediscover a mount already supplied by Uvicorn | 0.41 |
+| [#200](https://github.com/eddiethedean/hedron/issues/200) | Medium | Zero-width Unicode bypasses HTMX `js:` eval rejection | 0.41 |
+| [#202](https://github.com/eddiethedean/hedron/issues/202) | Medium | Adapter URL reversal uses unsafe mount-prefix matching | 0.41 |
+| [#207](https://github.com/eddiethedean/hedron/issues/207) | Medium | Job SSE re-emits an acknowledged non-terminal snapshot | 0.41 |
+| [#99](https://github.com/eddiethedean/hedron/issues/99) | Medium | Async cache single-flight fails across event loops | 0.42 |
+| [#100](https://github.com/eddiethedean/hedron/issues/100) | Low | Cache decorators miss functions returning `None` | 0.42 |
+| [#108](https://github.com/eddiethedean/hedron/issues/108) | Low | Snowflake SELECT validation rejects semicolons in literals | 0.42 |
+| [#136](https://github.com/eddiethedean/hedron/issues/136) | Medium | Workbench preparation mutates `os.environ` instead of caller state | 0.42 |
+| [#137](https://github.com/eddiethedean/hedron/issues/137) | Medium | Workbench check reports a default port without binding it | 0.42 |
+| [#138](https://github.com/eddiethedean/hedron/issues/138) | Medium | Login CSRF rejects a valid cookie when session state differs | 0.42 |
+| [#139](https://github.com/eddiethedean/hedron/issues/139) | Medium | Authentication rate limiter never evicts stale IP keys | 0.42 |
+| [#140](https://github.com/eddiethedean/hedron/issues/140) | Low | Negative session timeout limits force immediate expiry | 0.42 |
+| [#141](https://github.com/eddiethedean/hedron/issues/141) | Low | `Secret.__hash__` crashes for unhashable values | 0.42 |
+| [#145](https://github.com/eddiethedean/hedron/issues/145) | Medium | Redis status ignores legacy idempotency keys during upgrade | 0.42 |
+| [#146](https://github.com/eddiethedean/hedron/issues/146) | Medium | Redis status reclaims cross-scope idempotency pointers | 0.42 |
+| [#147](https://github.com/eddiethedean/hedron/issues/147) | Medium | Workbench environment overrides explicit `workers=1` | 0.42 |
+| [#148](https://github.com/eddiethedean/hedron/issues/148) | Medium | Workbench ignores caller environment for expected origins | 0.42 |
+| [#151](https://github.com/eddiethedean/hedron/issues/151) | Low | Public cache scope bypasses the user-specific positional guard | 0.42 |
+| [#152](https://github.com/eddiethedean/hedron/issues/152) | Medium | Partial OIDC handshake updates overwrite prior fields | 0.42 |
+| [#156](https://github.com/eddiethedean/hedron/issues/156) | Medium | Explorer simulation can bypass CSRF through the Hedron bridge | 0.42 |
+| [#160](https://github.com/eddiethedean/hedron/issues/160) | Medium | Workbench cookie Path check accepts substring matches | 0.42 |
+| [#174](https://github.com/eddiethedean/hedron/issues/174) | Medium | Notebook preview permits Set-Cookie Path injection | 0.42 |
+| [#175](https://github.com/eddiethedean/hedron/issues/175) | Medium | Explorer rate limiter retains idle client keys | 0.42 |
+| [#177](https://github.com/eddiethedean/hedron/issues/177) | Medium | MCP advertises but does not enforce tool input schemas | 0.42 |
+| [#187](https://github.com/eddiethedean/hedron/issues/187) | Medium | Flask route CSRF omits non-POST unsafe methods | 0.42 |
+| [#205](https://github.com/eddiethedean/hedron/issues/205) | Medium | Gradio private-host detection misses abbreviated loopback addresses | 0.42 |
+| [#206](https://github.com/eddiethedean/hedron/issues/206) | Medium | RQ cancellation reports success on infrastructure failure | 0.42 |
+| [#208](https://github.com/eddiethedean/hedron/issues/208) | Medium | Redis cache tag indexes outlive value TTLs | 0.42 |
+| [#217](https://github.com/eddiethedean/hedron/issues/217) | Medium | MCP cancellation is not bound to principal or session | 0.42 |
+| [#218](https://github.com/eddiethedean/hedron/issues/218) | Medium | Redis cache set/tag writes are non-atomic | 0.42 |
+| [#238](https://github.com/eddiethedean/hedron/issues/238) | Medium | Production weak-secret gate accepts repeated placeholders | 0.42 |
+| [#242](https://github.com/eddiethedean/hedron/issues/242) | Medium | Redis cache TTL handling diverges from the in-memory backend | 0.42 |
+| [#243](https://github.com/eddiethedean/hedron/issues/243) | Medium | RQ local job cache grows without bound | 0.42 |
+| [#245](https://github.com/eddiethedean/hedron/issues/245) | Medium | Mount paths allow cookie-attribute injection | 0.42 |
+| [#246](https://github.com/eddiethedean/hedron/issues/246) | Medium | Inference policy retains request maps after release | 0.42 |
+| [#249](https://github.com/eddiethedean/hedron/issues/249) | Low | Color-mode cookie never sets `Secure` | 0.42 |
 
 ## Later-phase policy
 
