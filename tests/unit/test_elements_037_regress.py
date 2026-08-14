@@ -138,3 +138,32 @@ def test_237_markup_rejects_javascript_scheme() -> None:
             server_content="ok",
         )
     assert exc.value.diagnostic.code == "HED-SEC-0003"
+
+
+def test_244_markup_rejects_style_javascript_url() -> None:
+    with pytest.raises(HedronError) as exc:
+        render_element_markup(
+            tag_name="hedron-example",
+            abi_version=1,
+            element_id="hedron-example",
+            attributes={"style": "background:url(javascript:alert(1))"},
+            server_content="ok",
+        )
+    assert exc.value.diagnostic.code == "HED-SEC-0007"
+
+
+def test_244_markup_rejects_vbscript_and_data_urls() -> None:
+    for attributes in (
+        {"href": "vbscript:msgbox(1)"},
+        {"src": "data:text/html,alert(1)"},
+        {"formaction": "vbscript:msgbox(1)"},
+    ):
+        with pytest.raises(HedronError) as exc:
+            render_element_markup(
+                tag_name="hedron-example",
+                abi_version=1,
+                element_id="hedron-example",
+                attributes=attributes,
+                server_content="ok",
+            )
+        assert exc.value.diagnostic.code == "HED-SEC-0003"

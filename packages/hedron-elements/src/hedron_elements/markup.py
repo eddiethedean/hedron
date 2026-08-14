@@ -6,9 +6,11 @@ import json
 import re
 from collections.abc import Mapping
 from html import escape
-from typing import Any
+from typing import Any, NoReturn
 
-from hedron_core.diagnostics import error
+from hedron_core._html_meta import FORBIDDEN_ATTRS, URL_ATTRS
+from hedron_core.diagnostics import HedronError, error
+from hedron_core.html import _is_safe_layout_style, _normalize_srcset
 from hedron_core.htmx_eval import (
     canonical_hx_attribute,
     hx_attribute_is_url,
@@ -77,29 +79,79 @@ def _require_safe_attr_name(name: str) -> str:
     return cleaned
 
 
+def _url_purpose_for_attr(name: str) -> UrlPurpose:
+    lower = name.lower()
+    if lower in {"action", "formaction"}:
+        return UrlPurpose.FORM_ACTION
+    if lower in {"src", "poster", "ping"} or lower.endswith("src"):
+        return UrlPurpose.ASSET
+    return UrlPurpose.NAVIGATION
+
+
+def _is_url_attribute(name: str) -> bool:
+    lower = name.lower()
+    return (
+        lower in URL_ATTRS
+        or lower.endswith("href")
+        or lower.endswith("src")
+        or hx_attribute_is_url(lower)
+    )
+
+
+def _raise_unsafe_url(canonical: str, cause: HedronError) -> NoReturn:
+    raise error(
+        "HED-SEC-0003",
+        title="Unsafe URL rejected",
+        explanation=f"Attribute {canonical!r} value is not a safe URL.",
+        remediation=(
+            "Pass a root-relative path; javascript/vbscript/data/file/blob "
+            "are forbidden."
+        ),
+    ) from cause
+
+
 def _normalize_element_attr_value(name: str, value: str) -> str:
-    """Apply HTMX/url security parity with hedron_core.html (#237)."""
+    """Apply HTMX/url/style security parity with ``hedron_core.html`` (#237, #244)."""
     canonical = canonical_hx_attribute(name)
+    lower = name.lower()
     reject_hx_eval_value(canonical, value)
-    lowered = value.strip().lower()
-    if lowered.startswith("javascript:") or lowered.startswith("js:"):
+
+    if lower in {"style", "style_"}:
+        if _is_safe_layout_style(value):
+            return str(value).strip().rstrip(";")
         raise error(
-            "HED-SEC-0003",
-            title="Unsafe URL rejected",
-            explanation=f"Attribute {name!r} value uses a forbidden scheme.",
-            remediation="Use SafeUrl or relative paths.",
+            "HED-SEC-0007",
+            title="Forbidden attribute",
+            explanation=f"Attribute {name!r} is not permitted under baseline policy.",
+            remediation="Only layout custom properties like '--hedron-gap: 1rem' are allowed.",
         )
-    if hx_attribute_is_url(name):
-        if value.startswith("/") and not value.startswith("//"):
-            SafeUrl.parse(value, purpose=UrlPurpose.NAVIGATION)
-        else:
-            raise error(
-                "HED-SEC-0003",
-                title="URL attribute requires SafeUrl",
-                explanation=f"Attribute {canonical!r} must be a SafeUrl or safe relative path.",
-                remediation="Pass SafeUrl.parse(...) for absolute URLs.",
-            )
-    return value
+    if lower in FORBIDDEN_ATTRS:
+        raise error(
+            "HED-SEC-0007",
+            title="Forbidden attribute",
+            explanation=f"Attribute {name!r} is not permitted under baseline policy.",
+            remediation="Remove style/srcdoc and use typed theme or trusted assets later.",
+        )
+
+    if not _is_url_attribute(name):
+        return value
+
+    if lower == "srcset":
+        try:
+            return _normalize_srcset(value)
+        except HedronError as exc:
+            _raise_unsafe_url(canonical, exc)
+
+    hx_url = canonical if hx_attribute_is_url(lower) else lower
+    if hx_url in {"hx-push-url", "hx-replace-url"} and value.lower() in {"true", "false"}:
+        return value.lower()
+
+    purpose = _url_purpose_for_attr(hx_url if hx_url.startswith("hx-") else lower)
+    try:
+        parsed = SafeUrl.parse(value, purpose=purpose)
+    except HedronError as exc:
+        _raise_unsafe_url(canonical, exc)
+    return parsed.value
 
 
 def _depth(value: object, current: int = 0) -> int:
