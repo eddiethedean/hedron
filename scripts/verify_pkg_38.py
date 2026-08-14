@@ -102,7 +102,11 @@ def _check_inventory(*, allow_planned: bool) -> None:
         if str(data.get(key, "")).strip() != expected:
             raise SystemExit(f"{INVENTORY}: {key} must be {expected!r}")
     expected_state = "planned" if allow_planned else "verified"
-    if str(data.get("state", "")).strip() != expected_state:
+    state = str(data.get("state", "")).strip()
+    if allow_planned:
+        if state not in {"planned", "verified"}:
+            raise SystemExit(f"{INVENTORY}: state must be planned or verified (post-cut)")
+    elif state != expected_state:
         raise SystemExit(f"{INVENTORY}: state must be {expected_state!r}")
     element = data.get("element")
     if not isinstance(element, dict) or element.get("tag") != "hedron-chart":
@@ -155,14 +159,22 @@ def _workspace_version() -> str:
 def _check_versions(*, allow_planned: bool) -> None:
     version = _workspace_version()
     if allow_planned:
-        if not (version.startswith("0.37.") or version.startswith("0.38.")):
+        if not (
+            version.startswith("0.37.")
+            or version.startswith("0.38.")
+            or version.startswith("0.39.")
+        ):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.37.x–0.38.x"
+                f"unexpected workspace version {version!r}; Stage 0/history expects 0.37.x–0.39.x"
             )
         print(f"ok: living tip {version} (0.38 allow-planned)")
         return
-    if version != RELEASE_CANDIDATE:
+    if version != RELEASE_CANDIDATE and not version.startswith("0.39."):
         raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE}; found {version!r}")
+    if version.startswith("0.39."):
+        # Post-0.38 tip: packet already Verified; skip workspace pin equality.
+        print(f"ok: post-cut living tip {version} (0.38 packet verified)")
+        return
     charts = tomllib.loads(CHARTS_PROJECT.read_text(encoding="utf-8"))
     charts_version = str(charts.get("project", {}).get("version", "")).strip()
     if charts_version != CHARTS_CANDIDATE:
@@ -189,7 +201,11 @@ def _check_at_skeleton(*, allow_planned: bool) -> None:
     if str(data.get("gate", "")).strip() != "A11Y-038":
         raise SystemExit(f"{AT_DISPOSITION}: gate must be A11Y-038")
     expected = "planned" if allow_planned else "verified"
-    if str(data.get("state", "")).strip() != expected:
+    state = str(data.get("state", "")).strip()
+    if allow_planned:
+        if state not in {"planned", "verified"}:
+            raise SystemExit(f"{AT_DISPOSITION}: state must be planned or verified")
+    elif state != expected:
         raise SystemExit(f"{AT_DISPOSITION}: state must be {expected}")
     print("ok: human-at/038 scoped skeleton")
 

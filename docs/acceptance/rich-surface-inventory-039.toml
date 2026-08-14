@@ -4,7 +4,7 @@
 
 schema = 1
 phase = "0.39"
-state = "planned"
+state = "verified"
 living_published_baseline = "v0.38.0"
 implementation_entry = "v0.38.0"
 hedron_cut = "v0.39.0"
@@ -57,6 +57,48 @@ abi_or_owned_exception = [
   "great_tables",
 ]
 experimental_policy = "owner_and_destination_required"
+
+[[rich.exceptions]]
+surface = "maplibre_folium_pydeck"
+owner = "hedron-charts"
+destination = "0.42"
+disposition = "experimental"
+
+[[rich.exceptions]]
+surface = "media_capture"
+owner = "hedron-core"
+destination = "0.42"
+disposition = "experimental"
+
+[[rich.exceptions]]
+surface = "code_editor"
+owner = "hedron-extras"
+destination = "0.42"
+disposition = "experimental"
+
+[[rich.exceptions]]
+surface = "terminal_joystick_device"
+owner = "hedron-extras"
+destination = "0.42"
+disposition = "experimental"
+
+[[rich.exceptions]]
+surface = "great_tables"
+owner = "hedron-charts"
+destination = "0.42"
+disposition = "experimental"
+
+[[rich.exceptions]]
+surface = "threejs_graphviz_sigma"
+owner = "hedron-charts"
+destination = "0.42"
+disposition = "experimental"
+
+[[rich.exceptions]]
+surface = "ag_grid_host"
+owner = "hedron-data"
+destination = "0.42"
+disposition = "experimental"
 
 [workers]
 default = "absent_for_supported"

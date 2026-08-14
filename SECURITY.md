@@ -2,14 +2,15 @@
 
 ## Supported versions
 
-Security fixes land on the **current published train** (`0.38.x`). Older `0.x` lines should
+Security fixes land on the **current published train** (`0.39.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.37.x`) continues through approximately **2027-08-13** — after that, upgrade
+minor (`0.38.x`) continues through approximately **2027-08-13** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.38.x` | Yes (current published train — pin `>=0.38.0,<0.39`; published `v0.38.0`) |
+| `0.39.x` | Yes (current published train — pin `>=0.39.0,<0.40`; published `v0.39.0`) |
+| `0.38.x` | Best-effort security triage through approximately 2027-08-13; upgrade to `0.39.x` |
 | `0.37.x` | Best-effort security triage through approximately 2027-08-13; upgrade to `0.38.x` |
 | `0.9.x`–`0.36.x` | No; upgrade to the current train |
 | `0.8.x` | No; final HDN-capable line, retained only for historical migration context |
@@ -32,7 +33,7 @@ publication.
 1. File the private advisory with the details below.
 2. Expect acknowledgment within a few business days (**no contractual security SLA**).
 3. Coordinated disclosure is preferred; allow reasonable time before public discussion.
-4. Fixes land on the current published train (`0.38.x`); see Supported versions above.
+4. Fixes land on the current published train (`0.39.x`); see Supported versions above.
 
 ### Alternate contact
 

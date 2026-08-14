@@ -106,7 +106,12 @@ def evaluate_formula(
                 return 0.0
         return 0.0
 
-    replaced = _COLUMN_REF.sub(lambda m: str(_cell_float(m.group(1))), text)
+    # Replace column refs with bound Names so "[a]e3" cannot become scientific
+    # notation after string substitution (#247).
+    env: dict[str, float] = {}
+    for name in refs:
+        env[f"_col_{name}"] = _cell_float(name)
+    replaced = _COLUMN_REF.sub(lambda m: f"_col_{m.group(1)}", text)
     try:
         tree = ast.parse(replaced, mode="eval")
     except SyntaxError as exc:
@@ -122,6 +127,15 @@ def evaluate_formula(
             return _eval(node.body)
         if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
             return float(node.value)
+        if isinstance(node, ast.Name):
+            if node.id not in env:
+                raise error(
+                    "HED-DATA-0032",
+                    title="Disallowed formula construct",
+                    explanation=f"Unknown name {node.id!r} is not permitted.",
+                    remediation="Use only numeric literals, [column] refs, and + - * /.",
+                )
+            return env[node.id]
         if isinstance(node, ast.UnaryOp):
             op_type = type(node.op)
             fn = _UNARY_OPS.get(op_type)
@@ -204,8 +218,15 @@ def rows_to_tree(
     parent_field: str = "parent_id",
 ) -> list[TreeNode]:
     nodes: dict[str, dict[str, Any]] = {}
-    for row in rows:
+    for index, row in enumerate(rows):
         key = str(row.get(id_field))
+        if key in nodes:
+            raise error(
+                "HED-DATA-0034",
+                title="Duplicate tree id",
+                explanation=(f"Duplicate {id_field!r} value {key!r} at row index {index}."),
+                remediation="Ensure id values are unique before building a tree.",
+            )
         nodes[key] = {"data": dict(row), "children": [], "parent": row.get(parent_field)}
     roots: list[str] = []
     for key, node in nodes.items():

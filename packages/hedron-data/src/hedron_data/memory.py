@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import copy
 import threading
+from collections import defaultdict
 from collections.abc import Callable, Mapping, Sequence
 
+from hedron_core.diagnostics import error
 from hedron_core.typing_aliases import JsonValue
 from hedron_data.sources import (
     CellUpdate,
@@ -20,7 +22,22 @@ from hedron_data.sources import (
 
 
 def _row_key(row: Mapping[str, JsonValue], key_field: str) -> str:
+    if key_field not in row:
+        raise KeyError(key_field)
     return str(row[key_field])
+
+
+def _sort_key(value: JsonValue) -> tuple[int, str, float | str]:
+    """Deterministic cross-type ordering for heterogeneous JSON cells (#116)."""
+    if value is None:
+        return (0, "", "")
+    if isinstance(value, bool):
+        return (1, "bool", "1" if value else "0")
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return (2, "number", float(value))
+    if isinstance(value, str):
+        return (3, "str", value)
+    return (4, type(value).__name__, str(value))
 
 
 class InMemoryDataSource:
@@ -42,9 +59,37 @@ class InMemoryDataSource:
         audit_hook: Callable[[DataChanges[dict[str, JsonValue]]], None] | None = None,
     ) -> None:
         self._key_field = key_field
-        self._rows: dict[str, dict[str, JsonValue]] = {
-            _row_key(r, key_field): {str(k): v for k, v in r.items()} for r in rows
-        }
+        built: dict[str, dict[str, JsonValue]] = {}
+        for index, row in enumerate(rows):
+            if key_field not in row:
+                raise error(
+                    "HED-DATA-0010",
+                    title="Row missing key field",
+                    explanation=(
+                        f"Row at index {index} is missing required key field {key_field!r}."
+                    ),
+                    remediation="Ensure every row includes the configured key_field.",
+                )
+            try:
+                key = _row_key(row, key_field)
+            except (TypeError, ValueError) as exc:
+                raise error(
+                    "HED-DATA-0010",
+                    title="Unusable row key",
+                    explanation=f"Row at index {index} has an unusable key: {exc}.",
+                    remediation="Use hashable, stringifiable key_field values.",
+                ) from exc
+            if key in built:
+                raise error(
+                    "HED-DATA-0011",
+                    title="Duplicate row key",
+                    explanation=(
+                        f"Duplicate key {key!r} at index {index} (key_field={key_field!r})."
+                    ),
+                    remediation="Provide unique identities before constructing the source.",
+                )
+            built[key] = {str(k): v for k, v in row.items()}
+        self._rows = built
         self._row_versions: dict[str, str] = {k: version for k in self._rows}
         self._schema = tuple(schema)
         # Deny-by-default: omitted writable_fields means no field is writable.
@@ -82,7 +127,7 @@ class InMemoryDataSource:
             ]
         for field_name, direction in reversed(q.sort):
             items.sort(
-                key=lambda r, f=field_name: (r.get(f) is None, r.get(f)),
+                key=lambda r, f=field_name: _sort_key(r.get(f)),  # type: ignore[arg-type]
                 reverse=direction == "desc",
             )
         total = len(items)
@@ -140,51 +185,90 @@ class InMemoryDataSource:
         accepted_inserts: list[dict[str, JsonValue]] = []
         accepted_deletes: list[str] = []
 
+        # Group updates by row so multi-field edits share one pre-batch version (#113).
+        grouped: dict[str, list[CellUpdate]] = defaultdict(list)
         for upd in changes.updates:
-            if upd.field not in self._writable:
-                errors.append(
-                    FieldError(
-                        row_key=upd.row_key,
-                        field=upd.field,
-                        message="Field is not writable",
-                    )
-                )
-                continue
-            schema_col = next((c for c in self._schema if c.name == upd.field), None)
-            if schema_col is not None and (schema_col.read_only or schema_col.hidden):
-                errors.append(
-                    FieldError(
-                        row_key=upd.row_key,
-                        field=upd.field,
-                        message="Field is read-only or hidden",
-                    )
-                )
-                continue
-            row = rows.get(upd.row_key)
-            if row is None:
-                errors.append(
-                    FieldError(row_key=upd.row_key, field=upd.field, message="Unknown row")
-                )
-                continue
-            current_ver = row_versions.get(upd.row_key)
-            if upd.row_version is not None and upd.row_version != current_ver:
+            grouped[upd.row_key].append(upd)
+
+        for row_key, updates in grouped.items():
+            submitted_versions = {u.row_version for u in updates if u.row_version is not None}
+            if len(submitted_versions) > 1:
                 conflicts.append(
                     Conflict(
-                        row_key=upd.row_key,
-                        field=upd.field,
-                        server_value=row.get(upd.field),
-                        client_value=upd.value,
-                        message="Stale row version",
+                        row_key=row_key,
+                        field=None,
+                        server_value=row_versions.get(row_key),
+                        client_value=",".join(sorted(str(v) for v in submitted_versions)),
+                        message="Inconsistent row versions in batch",
                     )
                 )
                 continue
-            row[upd.field] = upd.value
-            row_versions[upd.row_key] = next_version()
-            accepted_updates.append(upd)
+            submitted = next(iter(submitted_versions), None)
+            row = rows.get(row_key)
+            if row is None:
+                for upd in updates:
+                    errors.append(
+                        FieldError(row_key=upd.row_key, field=upd.field, message="Unknown row")
+                    )
+                continue
+            current_ver = row_versions.get(row_key)
+            if submitted is not None and submitted != current_ver:
+                for upd in updates:
+                    conflicts.append(
+                        Conflict(
+                            row_key=upd.row_key,
+                            field=upd.field,
+                            server_value=row.get(upd.field),
+                            client_value=upd.value,
+                            message="Stale row version",
+                        )
+                    )
+                continue
+
+            row_errors = False
+            for upd in updates:
+                if upd.field not in self._writable:
+                    errors.append(
+                        FieldError(
+                            row_key=upd.row_key,
+                            field=upd.field,
+                            message="Field is not writable",
+                        )
+                    )
+                    row_errors = True
+                    continue
+                schema_col = next((c for c in self._schema if c.name == upd.field), None)
+                if schema_col is not None and (schema_col.read_only or schema_col.hidden):
+                    errors.append(
+                        FieldError(
+                            row_key=upd.row_key,
+                            field=upd.field,
+                            message="Field is read-only or hidden",
+                        )
+                    )
+                    row_errors = True
+                    continue
+            if row_errors:
+                continue
+
+            for upd in updates:
+                row[upd.field] = upd.value
+                accepted_updates.append(upd)
+            row_versions[row_key] = next_version()
 
         for inserted in changes.inserts:
             row = dict(inserted)
-            key = _row_key(row, self._key_field)
+            try:
+                key = _row_key(row, self._key_field)
+            except KeyError:
+                errors.append(
+                    FieldError(
+                        row_key="",
+                        field=self._key_field,
+                        message="Inserted row missing key field",
+                    )
+                )
+                continue
             if key in rows:
                 errors.append(
                     FieldError(row_key=key, field=self._key_field, message="Duplicate key")

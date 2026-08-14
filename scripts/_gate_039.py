@@ -68,14 +68,40 @@ MEDIUM_ISSUES = (
 
 # Populated as implementation evidence lands.
 GATE_TESTS: dict[str, list[str]] = {
-    "DATA-039": ["tests/unit/test_phase039_packet.py"],
-    "OPTIMISTIC-039": ["tests/unit/test_phase039_packet.py"],
-    "CHARTLINK-039": ["tests/unit/test_phase039_packet.py"],
-    "RICH-039": ["tests/unit/test_phase039_packet.py"],
-    "WORKER-039": ["tests/unit/test_phase039_packet.py"],
-    "PERF-039": ["tests/unit/test_phase039_packet.py"],
-    "A11Y-039": ["tests/unit/test_phase039_packet.py"],
-    "REGRESS-039": ["tests/unit/test_phase039_packet.py"],
+    "DATA-039": [
+        "tests/unit/test_data_039_abi.py",
+        "tests/unit/test_phase039_packet.py",
+    ],
+    "OPTIMISTIC-039": [
+        "tests/unit/test_data_039_abi.py",
+        "tests/unit/test_phase039_packet.py",
+    ],
+    "CHARTLINK-039": [
+        "tests/unit/test_data_039_abi.py",
+        "tests/unit/test_phase17_cross_filter.py",
+        "tests/unit/test_phase039_packet.py",
+    ],
+    "RICH-039": [
+        "tests/unit/test_rich_worker_039.py",
+        "tests/unit/test_phase039_packet.py",
+    ],
+    "WORKER-039": [
+        "tests/unit/test_rich_worker_039.py",
+        "tests/unit/test_phase039_packet.py",
+    ],
+    "PERF-039": [
+        "tests/unit/test_perf_a11y_039.py",
+        "tests/unit/test_phase039_packet.py",
+    ],
+    "A11Y-039": [
+        "tests/unit/test_perf_a11y_039.py",
+        "tests/unit/test_phase039_packet.py",
+    ],
+    "REGRESS-039": [
+        "tests/unit/test_regress_039_issues.py",
+        "tests/unit/test_data_editor_039_js.py",
+        "tests/unit/test_phase039_packet.py",
+    ],
     "PKG-039": ["tests/unit/test_phase039_packet.py"],
 }
 

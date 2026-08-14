@@ -1,7 +1,7 @@
-"""Cross-filter dashboard composition helpers (RFC-0040 / XFILTER-017).
+"""Cross-filter dashboard composition helpers (RFC-0040 / XFILTER-017 / CHARTLINK-039).
 
-Wires chart events, grid selection fields, and optional map viewport triggers into
-page-local ``DashboardBinding`` edges over declared target regions.
+Wires Published ``hedron-chart`` events (0.38), grid selection fields, and optional map
+viewport triggers into page-local ``DashboardBinding`` edges over declared target regions.
 """
 
 from __future__ import annotations
@@ -13,14 +13,31 @@ from hedron_core.dashboard import DashboardBinding, InteractionGraph
 from hedron_core.visualization import ChartEvent
 
 __all__ = [
+    "CHART_038_EVENT_KINDS",
     "MAP_VIEWPORT_TRIGGER",
     "CrossFilterBinding",
+    "compose_chartlink_039",
     "compose_cross_filter",
     "triggers_from_chart_event",
     "triggers_from_grid_selection",
+    "triggers_from_hedron_chart_event",
 ]
 
 MAP_VIEWPORT_TRIGGER = "map.viewport"
+
+# Published 0.38 first-party chart event kinds (no parallel renderer).
+CHART_038_EVENT_KINDS = (
+    "inspect",
+    "focus",
+    "select",
+    "legend_filter",
+    "brush",
+    "zoom",
+    "pan",
+    "reset",
+    "crosshair",
+    "drill_intent",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,6 +95,21 @@ def triggers_from_chart_event(
     return tuple(name if "." in name else f"chart.{name}" for name in fields)
 
 
+def triggers_from_hedron_chart_event(
+    kind: str,
+    *,
+    event_name: str | None = None,
+) -> tuple[str, ...]:
+    """Return trigger ids for a Published 0.38 ``hedron-chart-*`` event kind."""
+    if kind not in CHART_038_EVENT_KINDS:
+        raise ValueError(
+            f"Unknown hedron-chart event kind {kind!r}; expected one of {CHART_038_EVENT_KINDS}"
+        )
+    if event_name:
+        return (event_name if "." in event_name else f"chart.{event_name}",)
+    return (f"chart.{kind}",)
+
+
 def triggers_from_grid_selection(
     *,
     fields: Sequence[str] = ("selection",),
@@ -117,6 +149,37 @@ def compose_cross_filter(
         snapshot_inputs=(),
         targets=tuple(targets),
         action_id=action_id,
+        debounce_ms=debounce_ms,
+    )
+    graph.register(binding)
+    return binding
+
+
+def compose_chartlink_039(
+    graph: InteractionGraph,
+    *,
+    targets: Sequence[str],
+    chart_kinds: Sequence[str] = ("select", "legend_filter", "brush"),
+    grid_trigger: str = "grid.selection",
+    binding_id: str = "chartlink_039",
+    debounce_ms: int = 0,
+) -> DashboardBinding:
+    """CHARTLINK-039: bind Published hedron-chart events to DataTable/DataEditor selection.
+
+    Does not create a parallel chart renderer; consumes 0.38 event kinds only.
+    """
+    if not targets:
+        raise ValueError("compose_chartlink_039 requires one or more targets.")
+    triggers: list[str] = [grid_trigger]
+    for kind in chart_kinds:
+        triggers.extend(triggers_from_hedron_chart_event(kind))
+    graph.declare_inputs(*triggers)
+    binding = DashboardBinding(
+        id=binding_id,
+        triggers=tuple(triggers),
+        snapshot_inputs=(),
+        targets=tuple(targets),
+        action_id="cross_filter",
         debounce_ms=debounce_ms,
     )
     graph.register(binding)

@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.39.0] — 2026-08-14
+
+### Added
+- Phase 0.39 rich data ABI, OptimisticMutation, chartlink, and remediation packet (D-067).
+
 ## [0.38.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
@@ -332,7 +337,7 @@
 - Celery/RQ bridges implement the full `JobBackend` protocol (idempotency, cancel, cleanup, mark).
 
 
-## [0.10.1] - 2026-08-04
+## [0.10.1] — 2026-08-04
 
 ### Fixed
 - Reject unsafe HTML attribute names and spaced `meta refresh` URL forms.
@@ -341,13 +346,13 @@
 - Reject control characters in HTMX approved header values.
 - Always emit HTMX `Vary` for private/no-store interaction cache hints.
 
-## [0.10.0] - 2026-08-04
+## [0.10.0] — 2026-08-04
 
 ### Added
 - Live transport contracts: SSE framing, focused streaming, page/session channels, media sessions, navigation preload (RFC-0032).
 - `Dialog` and `ChatMessage` built-ins; pinned HTMX SSE and head-support extension digests.
 
-## [0.9.0] - 2026-08-04
+## [0.9.0] — 2026-08-04
 
 ### Added
 
@@ -363,7 +368,7 @@
 
 - Build manifests use format 2 and no longer contain HDN program entries.
 
-## [0.8.0] - 2026-08-03
+## [0.8.0] — 2026-08-03
 
 ### Added
 
@@ -388,7 +393,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
-## [0.6.0] - 2026-08-03
+## [0.6.0] — 2026-08-03
 
 Visualization contracts, trusted content boundaries, and Auto chart hooks for phase 0.6.
 
@@ -407,7 +412,7 @@ Visualization contracts, trusted content boundaries, and Auto chart hooks for ph
 
 - Default plugin `hedron_version` gate is `>=0.6,<0.7`.
 
-## [0.5.0] - 2026-08-03
+## [0.5.0] — 2026-08-03
 
 Data application foundations in core: `Auto()` renderer registry, cache protocols,
 utility components, and ColorMode.
@@ -431,7 +436,7 @@ utility components, and ColorMode.
 - Native attributes match HTMX 2: `hx-disinherit`, `hx-inherit`, and `hx-validate` are accepted;
   removed `hx-sse` / `hx-ws` and non-core `hx-href` are rejected.
 
-## [0.4.0] - 2026-08-03
+## [0.4.0] — 2026-08-03
 
 Developer platform: JSON/SARIF diagnostics, suppressions, source spans, and plugin
 metadata contracts in core.
@@ -448,7 +453,7 @@ metadata contracts in core.
 - SARIF `tool.driver.version` comes from package `__version__`.
 - Registry builder snapshot/restore helpers for plugin rollback.
 
-## [0.3.0] - 2026-08-03
+## [0.3.0] — 2026-08-03
 
 Authoring, scoped styles, themes, and assets for the phase 0.3 release train.
 
@@ -486,7 +491,7 @@ Authoring, scoped styles, themes, and assets for the phase 0.3 release train.
 [0.4.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.4.0
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 
-## [0.2.0] - 2026-08-03
+## [0.2.0] — 2026-08-03
 
 Framework-neutral support for the FastAPI MVP release train.
 
@@ -508,7 +513,7 @@ Framework-neutral support for the FastAPI MVP release train.
 - `FormField` binds controls without mutating shared props; Checkbox aria lands on
   the input; `Secret[T]` validates the inner type `T`.
 
-## [0.1.0] - 2026-08-03
+## [0.1.0] — 2026-08-03
 
 Initial public release of the framework-neutral typed rendering core.
 

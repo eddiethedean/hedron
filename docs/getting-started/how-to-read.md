@@ -34,10 +34,10 @@ reference page before treating its signature as compatibility-protected.
 
 ## Current release
 
-The current published train is **0.38.x** (last published `v0.38.0`). Use:
+The current published train is **0.39.x** (last published `v0.39.0`). Use:
 
 ```bash
-python -m pip install "hedron>=0.38.0,<0.39"
+python -m pip install "hedron>=0.39.0,<0.40"
 ```
 
 There is no commercial SLA or scheduled 1.0. See [Evaluate Hedron](../guides/evaluate.md)

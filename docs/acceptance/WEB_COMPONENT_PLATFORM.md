@@ -7,8 +7,7 @@ Phase **0.37** is **Published** (`v0.37.0`; all owned gates Verified) — see
 [`RELEASE_0_37.md`](RELEASE_0_37.md) and [`release-gate-0.37.toml`](release-gate-0.37.toml).
 Phase **0.38** high-fidelity charts is **Published** (`v0.38.0` / `hedron-charts` `0.2.0`;
 RFC-0069 / D-066; all owned gates Verified) — see [`RELEASE_0_38.md`](RELEASE_0_38.md) and
-[`release-gate-0.38.toml`](release-gate-0.38.toml). Phase **0.39** rich data /
-`OptimisticMutation` has a refined Planned Stage 0 packet under RFC-0060 / D-067 — see
+[`release-gate-0.38.toml`](release-gate-0.38.toml). Phase **0.39** rich data / `OptimisticMutation` is **Published** as `v0.39.0` (RFC-0060 / D-067; in-tree cut) — see
 [`RELEASE_0_39.md`](RELEASE_0_39.md) and [`release-gate-0.39.toml`](release-gate-0.39.toml).
 Later phases (0.40–0.42) remain draft until their own Stage 0 packets land.
 Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061. D-066 inserts charts
@@ -16,7 +15,7 @@ at 0.38 and moves the former 0.38–0.41 capabilities to 0.39–0.42 without sco
 The exact five interaction protocols are defined in the
 [interaction-contract specification](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md).
 
-Unchecked requirements are future release gates, not claims about the current 0.38 train. Each
+Unchecked requirements are future release gates, not claims about the current 0.39 train. Each
 phase requires a `release-gate-0.N.toml` index, retained evidence under the release evidence policy,
 and zero Deferred rows among that phase's owned gates at cut.
 
@@ -252,7 +251,7 @@ Normative acceptance: [`RELEASE_0_39.md`](RELEASE_0_39.md). Evidence index:
 [HEDRON_RICH_ELEMENTS_039](../implementation/HEDRON_RICH_ELEMENTS_039.md). Catalogs:
 [RICH_SURFACE_039](../implementation/RICH_SURFACE_039.md) ·
 [WEB_COMPONENT_INTERACTION_CONTRACTS](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md) §3.
-**Status:** Stage 0 refined / Planned against Published `v0.38.0`. Tracking
+**Status:** Published as `v0.39.0` (in-tree cut; tag/PyPI deferred). Tracking
 [#94](https://github.com/eddiethedean/hedron/issues/94).
 
 ### `DATA-039`

@@ -32,7 +32,15 @@ from hedron_data.django_queryset import (
     QueryBudgetExceeded,
     QueryDiagnostics,
 )
-from hedron_data.editor import DataEditor, conflict_actions, filter_writable_changes
+from hedron_data.editor import (
+    ABI_VERSION,
+    DATA_EDITOR_EVENTS,
+    ELEMENT_ID,
+    TAG_NAME,
+    DataEditor,
+    conflict_actions,
+    filter_writable_changes,
+)
 from hedron_data.events import (
     GridCellEvent,
     GridDragEvent,
@@ -46,6 +54,14 @@ from hedron_data.events import (
 )
 from hedron_data.memory import AsyncInMemoryDataSource, InMemoryDataSource
 from hedron_data.normalize import normalize_rows
+from hedron_data.optimistic import (
+    DENY_BY_DEFAULT_RISKS,
+    OptimisticMutation,
+    OptimisticMutationState,
+    OptimisticPatch,
+    assert_optimism_allowed,
+    new_idempotency_key,
+)
 from hedron_data.plans import TransformPlan, TransformStep, apply_plan_in_memory, plan_from_query
 from hedron_data.snowflake_source import SnowflakeDataSource, require_snowflake
 from hedron_data.sources import (
@@ -76,9 +92,10 @@ from hedron_data.sqlalchemy_source import SQLAlchemyDataSource
 from hedron_data.table import DataTable
 from hedron_data.views import SavedView
 
-__version__ = "0.38.0"
+__version__ = "0.39.0"
 
 __all__ = [
+    "ABI_VERSION",
     "AG_GRID_BACKEND",
     "AGGridRowModel",
     "AsyncDataEditorSource",
@@ -90,6 +107,8 @@ __all__ = [
     "Column",
     "ColumnSchema",
     "Conflict",
+    "DATA_EDITOR_EVENTS",
+    "DENY_BY_DEFAULT_RISKS",
     "DaskDataSource",
     "DataChanges",
     "DataEditor",
@@ -102,6 +121,7 @@ __all__ = [
     "DEFAULT_MAX_VIZ_PAYLOAD_BYTES",
     "DEFAULT_MAX_VIZ_ROWS",
     "DjangoQuerySetDataSource",
+    "ELEMENT_ID",
     "EditProvenance",
     "FieldError",
     "GridCellEvent",
@@ -114,12 +134,16 @@ __all__ = [
     "HARD_MAX_PAGE_SIZE",
     "InMemoryDataSource",
     "MergeRegion",
+    "OptimisticMutation",
+    "OptimisticMutationState",
+    "OptimisticPatch",
     "QueryBudgetExceeded",
     "QueryDiagnostics",
     "SQLAlchemyDataSource",
     "SavedView",
     "SnowflakeDataSource",
     "SpatialAlternative",
+    "TAG_NAME",
     "TransformPlan",
     "TransformStep",
     "TreeNode",
@@ -127,6 +151,7 @@ __all__ = [
     "__version__",
     "aggrid_column_defs",
     "apply_plan_in_memory",
+    "assert_optimism_allowed",
     "authorized_grid_event",
     "columns_from_model",
     "conflict_actions",
@@ -140,6 +165,7 @@ __all__ = [
     "import_rows_xlsx",
     "infinite_block_request",
     "merge_changes",
+    "new_idempotency_key",
     "normalize_rows",
     "pivot_rows",
     "plan_from_query",

@@ -16,8 +16,13 @@
     while (index < text.length) {
       const code = text.charCodeAt(index);
       const char = text.charAt(index);
-      // BOM, ASCII controls (incl. DEL), and Unicode whitespace (incl. NBSP).
-      if (char === "\ufeff" || code < 32 || code === 127 || /\s/u.test(char)) {
+      // BOM, ASCII controls (incl. DEL), Unicode whitespace, and Cf format chars (#191).
+      const isFormat =
+        (code >= 0x200b && code <= 0x200f) ||
+        (code >= 0x202a && code <= 0x202e) ||
+        (code >= 0x2060 && code <= 0x2064) ||
+        code === 0xfeff;
+      if (char === "\ufeff" || code < 32 || code === 127 || /\s/u.test(char) || isFormat) {
         index += 1;
         continue;
       }
@@ -131,23 +136,31 @@
   }
 
   /**
-   * Mirror InMemoryDataSource: each accepted update/insert bumps a shared
-   * counter and stamps that value on the affected row. Untouched rows keep
-   * their prior versions (which may lag the dataset version).
+   * Mirror InMemoryDataSource: each accepted *row* (unique key among updates)
+   * plus each insert bumps the shared counter once (#113).
    */
   function rowVersionsAfterBatch(snapshot, nextVersion) {
     const updates = snapshot.updates || [];
     const inserts = snapshot.inserts || [];
-    const bumps = updates.length + inserts.length;
+    const touchedRows = [];
+    const seen = new Set();
+    updates.forEach((u) => {
+      const key = String(u.row_key);
+      if (!seen.has(key)) {
+        seen.add(key);
+        touchedRows.push(key);
+      }
+    });
+    const bumps = touchedRows.length + inserts.length;
     if (!bumps || nextVersion == null || nextVersion === "") return {};
     const end = Number(nextVersion);
     if (!Number.isFinite(end)) return {};
     let counter = end - bumps;
     const versions = {};
     const keyField = snapshot.keyField || "id";
-    updates.forEach((u) => {
+    touchedRows.forEach((key) => {
       counter += 1;
-      versions[String(u.row_key)] = String(counter);
+      versions[key] = String(counter);
     });
     inserts.forEach((row) => {
       counter += 1;
@@ -199,10 +212,18 @@
       this._deletes = [];
       this._disposed = false;
       this._rows = [];
+      this._baselines = {};
+      this._rowVersions = {};
       this._tempId = 0;
       this._opSeq = 0;
       this._saving = false;
       this._saveAgain = false;
+      this._lastConflict = null;
+      this._abort = null;
+      this._optimisticState = "canonical";
+      this._idempotencyKey = null;
+      this._conflictServerVersion = null;
+      this._booted = false;
     }
 
     connectedCallback() {
@@ -216,13 +237,25 @@
 
     dispose() {
       this._disposed = true;
+      if (this._abort) {
+        try { this._abort.abort(); } catch (_) {}
+        this._abort = null;
+      }
       this._pending = [];
       this._history = [];
       this._inserts = [];
       this._deletes = [];
       this._saving = false;
       this._saveAgain = false;
-      this.innerHTML = "";
+      this._optimisticState = "canonical";
+      this._idempotencyKey = null;
+      this._conflictServerVersion = null;
+      this._booted = false;
+      // Preserve SSR fallback table; remove only upgraded chrome.
+      Array.from(this.children).forEach((child) => {
+        if (child.classList && child.classList.contains("hedron-data-editor-fallback")) return;
+        child.remove();
+      });
     }
 
     _nextOpId() {
@@ -230,17 +263,46 @@
       return this._opSeq;
     }
 
+    _rowVersionFor(rowKey) {
+      const key = String(rowKey);
+      if (this._rowVersions && this._rowVersions[key] != null) {
+        return String(this._rowVersions[key]);
+      }
+      if (this._payload && this._payload.version != null) {
+        return String(this._payload.version);
+      }
+      return "1";
+    }
+
     _boot() {
+      if (this._booted || this._disposed) return;
+      this._booted = true;
       const host =
-        this.closest("[data-hedron-module='hedron-data:tabulator-editor']") || this;
+        this.matches("[data-hedron-element='hedron-data-editor'],[data-hedron-module='hedron-data:tabulator-editor']")
+          ? this
+          : this.closest("[data-hedron-module='hedron-data:tabulator-editor']") || this;
       let payload = {};
       try {
-        payload = JSON.parse(host.getAttribute("data-hedron-payload") || "{}");
+        payload = JSON.parse(host.getAttribute("data-hedron-payload") || this.getAttribute("data-hedron-payload") || "{}");
       } catch (_) {
         payload = {};
       }
       this._payload = payload;
       this._rows = Array.isArray(payload.rows) ? payload.rows.map((r) => ({ ...r })) : [];
+      this._baselines = {};
+      this._rowVersions = {};
+      const keyField = payload.keyField || "id";
+      const version = payload.version != null ? String(payload.version) : "1";
+      (this._rows || []).forEach((row) => {
+        const rk = String(row[keyField]);
+        this._rowVersions[rk] = version;
+      });
+      // Keep SSR fallback in-tree; mark upgraded without HTML hidden removal of content.
+      const fallback = this.querySelector(":scope > .hedron-data-editor-fallback");
+      if (fallback) {
+        fallback.setAttribute("data-hedron-fallback", "upgraded");
+        fallback.setAttribute("aria-hidden", "true");
+      }
       this._renderShell(payload);
       this._announce("Data editor ready. Use Tab to move between cells.");
     }
@@ -349,6 +411,7 @@
       const cb = document.createElement("input");
       cb.type = "checkbox";
       cb.setAttribute("aria-label", "Select row " + key);
+      cb.addEventListener("change", () => this._emitSelection());
       selTd.appendChild(cb);
       tr.appendChild(selTd);
       (payload.columns || []).forEach((col) => {
@@ -363,7 +426,10 @@
           input.checked = Boolean(value);
           input.disabled = !col.editor;
           input.addEventListener("change", () => {
-            this._queueUpdate(key, col.field, input.checked, String(value));
+            const keyField = payload.keyField || "id";
+            const live = this._rows.find((r) => String(r[keyField]) === String(key));
+            const prev = live ? live[col.field] : value;
+            this._queueUpdate(key, col.field, input.checked, String(prev));
             if ((payload.saveMode || "batch") === "cell") this._save();
           });
           td.appendChild(input);
@@ -378,7 +444,10 @@
           });
           select.disabled = col.editor === false;
           select.addEventListener("change", () => {
-            this._queueUpdate(key, col.field, select.value, String(value ?? ""));
+            const keyField = payload.keyField || "id";
+            const live = this._rows.find((r) => String(r[keyField]) === String(key));
+            const prev = live ? live[col.field] : value;
+            this._queueUpdate(key, col.field, select.value, String(prev ?? ""));
             if ((payload.saveMode || "batch") === "cell") this._save();
           });
           td.appendChild(select);
@@ -418,12 +487,23 @@
     }
 
     _queueUpdate(rowKey, field, value, previous) {
+      const priorPending = this._pending.find(
+        (u) => u.row_key === rowKey && u.field === field
+      );
       this._history.push({
         kind: "update",
         rowKey,
         field,
         value,
         previous: previous == null ? "" : String(previous),
+        priorPending: priorPending
+          ? {
+              row_key: priorPending.row_key,
+              field: priorPending.field,
+              value: priorPending.value,
+              row_version: priorPending.row_version,
+            }
+          : null,
       });
       this._pending = this._pending.filter(
         (u) => !(u.row_key === rowKey && u.field === field)
@@ -432,13 +512,15 @@
         row_key: rowKey,
         field,
         value,
-        row_version: this._payload.version,
+        row_version: this._rowVersionFor(rowKey),
         _opId: this._nextOpId(),
       });
       const keyField = this._payload.keyField || "id";
       const row = this._rows.find((r) => String(r[keyField]) === String(rowKey));
       if (row) row[field] = value;
+      this._setOptimistic("proposed");
       this._announce("Pending edit " + field + " on row " + rowKey);
+      this._emit("hedron-data-cell-edit", { row_key: rowKey, field, value });
     }
 
     _insertRow() {
@@ -460,25 +542,25 @@
     _deleteSelected() {
       const body = this.querySelector("[data-editor-body]");
       if (!body) return;
+      const keyField = this._payload.keyField || "id";
       Array.from(body.querySelectorAll("tr")).forEach((tr) => {
         const cb = tr.querySelector('input[type="checkbox"]');
         if (!cb || !cb.checked) return;
         const key = tr.dataset.rowKey;
-        this._deletes.push({ row_key: key, _opId: this._nextOpId() });
+        // #119: unsaved local inserts must not become server deletes.
+        const wasInsert = this._inserts.some((r) => String(r[keyField]) === String(key));
         this._pending = this._pending.filter((u) => u.row_key !== key);
-        this._inserts = this._inserts.filter(
-          (r) => String(r[this._payload.keyField || "id"]) !== key
-        );
-        const rowSnapshot = { ...(this._rows.find(
-          (r) => String(r[this._payload.keyField || "id"]) === key
-        ) || {}) };
-        this._rows = this._rows.filter(
-          (r) => String(r[this._payload.keyField || "id"]) !== key
-        );
-        this._history.push({ kind: "delete", rowKey: key, row: rowSnapshot });
+        this._inserts = this._inserts.filter((r) => String(r[keyField]) !== String(key));
+        if (!wasInsert) {
+          this._deletes.push({ row_key: key, _opId: this._nextOpId() });
+        }
+        const rowSnapshot = { ...(this._rows.find((r) => String(r[keyField]) === String(key)) || {}) };
+        this._rows = this._rows.filter((r) => String(r[keyField]) !== String(key));
+        this._history.push({ kind: "delete", rowKey: key, row: rowSnapshot, wasInsert });
         tr.remove();
       });
       this._announce("Deleted selected rows");
+      this._emit("hedron-data-row-edit", { kind: "delete" });
       if ((this._payload.saveMode || "batch") === "row") this._save();
     }
 
@@ -486,11 +568,18 @@
       const last = this._history.pop();
       if (!last) return;
       if (last.kind === "update") {
+        // #120: restore the prior pending value for this cell when undoing.
         this._pending = this._pending.filter(
           (u) => !(u.row_key === last.rowKey && u.field === last.field)
         );
+        if (last.priorPending) {
+          this._pending.push({ ...last.priorPending, _opId: this._nextOpId() });
+        }
         const keyField = this._payload.keyField || "id";
         const row = this._rows.find((r) => String(r[keyField]) === String(last.rowKey));
+        const restoreValue = last.priorPending
+          ? last.priorPending.value
+          : last.previous;
         const cell = this.querySelector(
           'tr[data-row-key="' +
             cssEscape(last.rowKey) +
@@ -501,18 +590,19 @@
         if (cell) {
           const input = cell.querySelector("input,select");
           if (input && input.type === "checkbox") {
-            input.checked = last.previous === "true";
-            if (row) row[last.field] = last.previous === "true";
+            input.checked = restoreValue === true || restoreValue === "true";
+            if (row) row[last.field] = restoreValue === true || restoreValue === "true";
           } else if (input) {
-            input.value = last.previous;
-            if (row) row[last.field] = last.previous;
+            input.value = restoreValue == null ? "" : String(restoreValue);
+            if (row) row[last.field] = restoreValue;
           } else {
-            cell.textContent = last.previous;
-            if (row) row[last.field] = last.previous;
+            cell.textContent = restoreValue == null ? "" : String(restoreValue);
+            if (row) row[last.field] = restoreValue;
           }
         } else if (row) {
-          row[last.field] = last.previous;
+          row[last.field] = restoreValue;
         }
+        this._setOptimistic("proposed");
       } else if (last.kind === "insert") {
         this._inserts = this._inserts.filter(
           (r) => String(r[this._payload.keyField || "id"]) !== last.rowKey
@@ -554,18 +644,73 @@
       }
       if (action === "cancel") {
         this._pending = [];
+        this._conflictServerVersion = null;
+        this._setOptimistic("rolled_back");
         if (bar) bar.hidden = true;
         this._announce("Cancelled pending conflicted edits");
         return;
       }
       if (action === "retain-and-retry") {
+        // #121: rebase onto server revision from conflict; never resubmit stale base.
+        if (this._conflictServerVersion != null && this._conflictServerVersion !== "") {
+          this._payload.version = this._conflictServerVersion;
+          const fresh = String(this._conflictServerVersion);
+          this._pending = this._pending.map((u) => ({
+            ...u,
+            row_version: fresh,
+          }));
+          Object.keys(this._rowVersions || {}).forEach((rk) => {
+            this._rowVersions[rk] = fresh;
+          });
+        } else {
+          this._announce("Cannot retry without a fresh server revision; reload or cancel");
+          return;
+        }
+        this._idempotencyKey = null;
         if (bar) bar.hidden = true;
+        this._setOptimistic("proposed");
         this._save();
         return;
       }
       if (action === "compare") {
         this._announce("Compare server and client values, then choose retry or cancel");
       }
+    }
+
+    _emit(name, detail) {
+      this.dispatchEvent(
+        new CustomEvent(name, {
+          detail: detail || {},
+          bubbles: true,
+          composed: true,
+        })
+      );
+    }
+
+    _setOptimistic(state) {
+      this._optimisticState = state;
+      this.setAttribute("data-hedron-optimistic", state);
+      this._emit("hedron-data-optimistic", {
+        state,
+        base_revision: this._payload ? this._payload.version : null,
+        idempotency_key: this._idempotencyKey,
+      });
+    }
+
+    _selectionKeys() {
+      const body = this.querySelector("[data-editor-body]");
+      if (!body) return [];
+      return Array.from(body.querySelectorAll("tr"))
+        .filter((tr) => {
+          const cb = tr.querySelector('input[type="checkbox"]');
+          return cb && cb.checked;
+        })
+        .map((tr) => tr.dataset.rowKey);
+    }
+
+    _emitSelection() {
+      const keys = this._selectionKeys();
+      this._emit("hedron-data-selection-change", { keys, filters: { id: keys } });
     }
 
     async _save() {
@@ -583,6 +728,11 @@
       }
       this._saving = true;
       this._saveAgain = false;
+      if (!this._idempotencyKey) {
+        this._idempotencyKey =
+          "hed-opt-" + String(Date.now()) + "-" + String(this._nextOpId());
+      }
+      this._setOptimistic("submitted");
       const snapshot = snapshotSaveBatch(
         this._pending,
         this._inserts,
@@ -595,17 +745,26 @@
         snapshot.deletes,
         this._payload.version
       );
+      body.idempotency_key = this._idempotencyKey;
+      body.base_revision = this._payload.version;
       const headers = { "Content-Type": "application/json" };
       const csrfToken = readCsrfToken(document);
       if (csrfToken) headers["X-CSRF-Token"] = csrfToken;
+      if (this._abort) {
+        try { this._abort.abort(); } catch (_) {}
+      }
+      this._abort = typeof AbortController !== "undefined" ? new AbortController() : null;
       try {
         const res = await fetch(endpoint, {
           method: "POST",
           headers,
           credentials: "same-origin",
           body: JSON.stringify(body),
+          signal: this._abort ? this._abort.signal : undefined,
         });
+        if (this._disposed) return;
         if (res.status === 403) {
+          this._setOptimistic("rejected");
           this._announce("Save forbidden (CSRF or authorization)");
           return;
         }
@@ -613,6 +772,7 @@
         try {
           data = await res.json();
         } catch (parseErr) {
+          this._setOptimistic("rejected");
           this._announce("Save failed");
           return;
         }
@@ -629,17 +789,31 @@
           this._pending = kept.pending;
           this._inserts = kept.inserts;
           this._deletes = kept.deletes;
+          const touched = rowVersionsAfterBatch(snapshot, this._payload.version);
+          Object.keys(touched).forEach((rk) => {
+            this._rowVersions[rk] = touched[rk];
+          });
+          this._idempotencyKey = null;
+          this._conflictServerVersion = null;
+          this._setOptimistic("confirmed");
           if (bar) bar.hidden = true;
           this._announce("Saved successfully");
         } else if (data.conflicts && data.conflicts.length) {
+          this._conflictServerVersion =
+            data.version != null && data.version !== ""
+              ? data.version
+              : data.server_version != null
+                ? data.server_version
+                : null;
+          this._setOptimistic("conflicted");
           this._announce("Conflict: choose reload, retain-and-retry, compare, or cancel");
           if (bar) bar.hidden = false;
-          this.dispatchEvent(
-            new CustomEvent("hedron-data-conflict", { detail: data, bubbles: true })
-          );
+          this._emit("hedron-data-conflict", data);
         } else if (data.errors && data.errors.length) {
           const first = data.errors[0];
+          this._setOptimistic("rejected");
           this._announce("Validation error: " + (first.message || "invalid"));
+          this._emit("hedron-data-validation-error", first);
           const cell = this.querySelector(
             'tr[data-row-key="' +
               cssEscape(first.row_key || "") +
@@ -647,11 +821,15 @@
               cssEscape(first.field || "") +
               '"]'
           );
-          if (cell) cell.focus();
+          // Do not steal focus; announce only (OPTIMISTIC-039).
+          if (cell) cell.setAttribute("data-invalid", "1");
         } else {
+          this._setOptimistic("rejected");
           this._announce("Save failed");
         }
       } catch (err) {
+        if (err && err.name === "AbortError") return;
+        this._setOptimistic("rejected");
         this._announce("Save failed");
       } finally {
         this._saving = false;
@@ -683,12 +861,21 @@
   }
 
   function enhance(root) {
+    // ABI path: markup already is <hedron-data-editor>; ensure connected boot.
+    matchingElements(root, TAG + "[data-hedron-element], " + TAG).forEach((el) => {
+      if (el._boot && !el._booted) el._boot();
+    });
+    // Legacy div host upgrade path (0.38 fixtures).
     matchingElements(root, HOST_SELECTOR).forEach((host) => {
+      if (host.tagName && host.tagName.toLowerCase() === TAG) return;
       if (host.querySelector(TAG)) return;
       const el = document.createElement(TAG);
       host.appendChild(el);
       const fallback = host.querySelector(":scope > .hedron-data-editor-fallback");
-      if (fallback) fallback.hidden = true;
+      if (fallback) {
+        fallback.setAttribute("data-hedron-fallback", "upgraded");
+        fallback.setAttribute("aria-hidden", "true");
+      }
     });
   }
 
@@ -707,6 +894,7 @@
     reconcileAfterSuccess,
     serializeSaveBody,
     readCsrfToken,
+    TAG,
   };
 
   if (typeof document !== "undefined" && document.addEventListener) {

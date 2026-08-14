@@ -119,22 +119,22 @@
 
 
 
-## [0.10.1] - 2026-08-04
+## [0.10.1] — 2026-08-04
 
 ### Fixed
 - Re-validate Matplotlib `render_node` SVG/PNG bodies before trusted emission.
 - Treat chart `data:` URLs as disallowed remote assets.
 
-## [0.10.0] - 2026-08-04
+## [0.10.0] — 2026-08-04
 
 - Joined the coordinated 0.10 package train.
 - Raise the Altair optional extra to `>=6.0,<7` for Python 3.14 TypedDict compatibility.
 
-## [0.9.0] - 2026-08-04
+## [0.9.0] — 2026-08-04
 
 - Joined the coordinated 0.9 package train and updated plugin compatibility metadata.
 
-## [0.8.0] - 2026-08-03
+## [0.8.0] — 2026-08-03
 
 ### Added
 
@@ -152,7 +152,7 @@
 - Phase 0.7 portable adapters, operations, and jobs train.
 
 
-## [0.6.0] - 2026-08-03
+## [0.6.0] — 2026-08-03
 
 - Initial `hedron-charts` package: `VisualizationAdapter` implementations for
   Matplotlib, Plotly, and Altair/Vega-Lite; beginner `LineChart`; accessibility

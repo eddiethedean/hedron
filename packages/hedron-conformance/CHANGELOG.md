@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.39.0] — 2026-08-14
+
+### Added
+- Phase 0.39 rich data ABI, OptimisticMutation, chartlink, and remediation packet (D-067).
+
 ## [0.38.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).

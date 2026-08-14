@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.39.0] — 2026-08-14
+
+### Added
+- Phase 0.39 rich data ABI, OptimisticMutation, chartlink, and remediation packet (D-067).
+
 ## [0.38.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
@@ -262,20 +267,20 @@
 - Public `wrap_hedron_view` export for factory apps.
 
 
-## [0.10.1] - 2026-08-04
+## [0.10.1] — 2026-08-04
 
 ### Fixed
 - Set `Cache-Control: private, no-store` on authenticated component/interaction responses.
 
-## [0.10.0] - 2026-08-04
+## [0.10.0] — 2026-08-04
 
 - Joined the coordinated 0.10 package train; FastAPI remains the Supported live host (D-044).
 
-## [0.9.0] - 2026-08-04
+## [0.9.0] — 2026-08-04
 
 - Joined the coordinated 0.9 package train; native framework depth remains planned for 0.11.
 
-## [0.8.0] - 2026-08-03
+## [0.8.0] — 2026-08-03
 
 ### Added
 
@@ -288,7 +293,7 @@
 
 - Feature freeze: no new subsystems, adapters, or transports on the 0.8 train.
 
-## [0.7.0] - 2026-08-03
+## [0.7.0] — 2026-08-03
 
 - Initial `hedron-flask` package: `HedronFlask`, component/interaction responses,
   Flask `url_for` reversal, CSRF double-submit helpers, and `AuthSignal` session mapping.

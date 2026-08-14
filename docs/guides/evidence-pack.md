@@ -38,7 +38,7 @@ expected asset is missing.
 - [Hedron 0.30.0 on PyPI](https://pypi.org/project/hedron/0.30.0/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical train assets; prefer **0.38.0** above for the living train.
+Historical train assets; prefer **0.39.0** above for the living train.
 
 ## 0.28.2 assets
 
@@ -46,7 +46,7 @@ Historical train assets; prefer **0.38.0** above for the living train.
 - [Hedron 0.28.2 on PyPI](https://pypi.org/project/hedron/0.28.2/)
 - [Build provenance attestations](https://github.com/eddiethedean/hedron/attestations)
 
-Historical 0.28 tip assets; prefer **0.38.0** above for the living train.
+Historical 0.28 tip assets; prefer **0.39.0** above for the living train.
 
 ## 0.26.0 assets
 

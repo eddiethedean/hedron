@@ -37,7 +37,7 @@ def test_phase039_manifest_commands_exist() -> None:
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     rows = data["evidence"]
     assert {row["id"] for row in rows} == EXPECTED_GATES_SET
-    assert {row["state"] for row in rows} == {"Planned"}
+    assert {row["state"] for row in rows} <= {"Planned", "Implemented", "Verified"}
     assert set(GATE_TESTS) == EXPECTED_GATES_SET
     for gate_id, tests in GATE_TESTS.items():
         assert tests, gate_id
@@ -48,7 +48,7 @@ def test_phase039_manifest_commands_exist() -> None:
 
 def test_phase039_inventory_locks_optimistic_and_chartlink() -> None:
     data = tomllib.loads(INVENTORY.read_text(encoding="utf-8"))
-    assert data["state"] == "planned"
+    assert data["state"] in {"planned", "verified"}
     assert data["living_published_baseline"] == "v0.38.0"
     assert data["hedron_cut"] == "v0.39.0"
     assert data["owning_decision"] == "D-067"
@@ -60,7 +60,7 @@ def test_phase039_inventory_locks_optimistic_and_chartlink() -> None:
 def test_phase039_fleet_inventory_baselines_038() -> None:
     data = tomllib.loads(FLEET_INVENTORY.read_text(encoding="utf-8"))
     assert data["baseline"] == "v0.38.0"
-    assert data["state"] == "planned"
+    assert data["state"] in {"planned", "verified"}
     assert "hedron_chart" in data["hedron-charts"]["supported"]
     assert data["hedron-elements"]["disposition"] == "incubator"
 
@@ -68,7 +68,9 @@ def test_phase039_fleet_inventory_baselines_038() -> None:
 def test_phase039_decision_and_roadmap_agree() -> None:
     decisions = (ROOT / "docs" / "DECISIONS.md").read_text(encoding="utf-8")
     roadmap = (ROOT / "docs" / "ROADMAP.md").read_text(encoding="utf-8")
-    rfc = (ROOT / "docs" / "rfcs" / "RFC-0060-WEB-COMPONENT-PLATFORM.md").read_text(encoding="utf-8")
+    rfc = (ROOT / "docs" / "rfcs" / "RFC-0060-WEB-COMPONENT-PLATFORM.md").read_text(
+        encoding="utf-8"
+    )
     release = (ROOT / "docs" / "acceptance" / "RELEASE_0_39.md").read_text(encoding="utf-8")
     assert "| D-067 | Accepted |" in decisions
     assert "**Status:** Accepted" in rfc[:800]

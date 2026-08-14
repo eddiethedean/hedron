@@ -118,7 +118,7 @@ password store before production.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/session-auth/app.py -o app.py
-pip install "hedron>=0.38.0,<0.39" "uvicorn[standard]"
+pip install "hedron>=0.39.0,<0.40" "uvicorn[standard]"
 uvicorn app:app --reload
 ```
 

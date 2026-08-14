@@ -11,6 +11,7 @@ from typing import Any
 from hedron_charts.host_render import (
     downsample_plotly_body,
     extract_folium_payload,
+    extract_pydeck_payload,
     render_host_figure,
 )
 from hedron_charts.limits import (
@@ -169,7 +170,7 @@ class PyDeckAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         if isinstance(value, Mapping):
-            body = dict(value)
+            raw_body: Mapping[str, Any] = dict(value)
         else:
             try:
                 importlib.import_module("pydeck")
@@ -178,15 +179,21 @@ class PyDeckAdapter:
             to_json = getattr(value, "to_json", None)
             raw = to_json() if callable(to_json) else None
             if isinstance(raw, (str, bytes, bytearray)):
-                body = json.loads(raw)
+                parsed = json.loads(raw)
+                if not isinstance(parsed, Mapping):
+                    raise TypeError("PyDeck to_json() must return a mapping")
+                raw_body = parsed
             else:
-                body = {"repr": str(value)}
+                raise TypeError(
+                    "PyDeck value must expose to_json() returning MapLibre-compatible JSON"
+                )
+        body = extract_pydeck_payload(raw_body)
         return _json_output(
             kind="maplibre",
             body=body,
             accessibility=accessibility,
             limits=limits,
-            metadata={"adapter": self.name},
+            metadata={"adapter": self.name, "source": "pydeck-extract"},
         )
 
     def render_node(self, output: ChartOutput) -> NodeLike:
@@ -439,13 +446,14 @@ class GreatTablesAdapter:
     ) -> ChartOutput:
         if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
             rows = [dict(row) for row in value if isinstance(row, Mapping)]
-            ensure_limits(rows, None, limits=limits)
+            body = json.dumps(redact_rows(rows))
+            ensure_limits(rows, body, limits=limits)
             return ChartOutput(
                 kind="html",
-                body=json.dumps(redact_rows(rows)),
+                body=body,
                 accessibility=accessibility.validated(),
                 media_type="application/json",
-                payload_bytes=payload_size(json.dumps(rows)),
+                payload_bytes=payload_size(body),
                 metadata={"adapter": self.name, "rows": len(rows)},
             )
         try:
@@ -548,12 +556,16 @@ class ThreeJsAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         assert isinstance(value, Mapping)
-        url = str(value.get("model_url") or "")
+        url = str(value.get("model_url") or "").strip()
         lower = url.lower()
         if not any(lower.endswith(ext) for ext in self._ALLOWED):
             raise ValueError(f"Model format not allowlisted: {url!r}")
-        if url.startswith(("http://", "https://", "//")):
+        if url.startswith(("http://", "https://", "//", "data:", "file:", "javascript:")):
             reject_remote_urls({"url": url})
+        # App-controlled local asset refs only; reject path traversal (#194).
+        parts = [p for p in url.replace("\\", "/").split("/") if p not in ("", ".")]
+        if ".." in parts:
+            raise ValueError(f"Model path traversal rejected: {url!r}")
         size = int(value.get("bytes") or 0)
         lim = limits or VisualizationLimits()
         if size > lim.max_payload_bytes:

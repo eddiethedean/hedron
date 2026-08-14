@@ -10,7 +10,10 @@ from hedron_core.visualization import ChartAccessibility
 
 def test_map_adapters() -> None:
     acc = ChartAccessibility(title="t", description="d")
-    pydeck = PyDeckAdapter().compile({"layers": []}, accessibility=acc)
+    pydeck = PyDeckAdapter().compile(
+        {"layers": [], "initial_view_state": {"latitude": 0.0, "longitude": 0.0, "zoom": 1}},
+        accessibility=acc,
+    )
     assert pydeck.metadata["adapter"] == "pydeck"
     assert "data-hedron-chart" in render_html(PyDeckAdapter().render_node(pydeck))
 

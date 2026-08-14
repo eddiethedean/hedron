@@ -67,14 +67,30 @@ def _tabular(rows: object) -> NodeLike:
     )
 
 
+def _coerce_zoom(raw: object, *, default: int = 2) -> int:
+    """Preserve explicit zoom 0; default only when absent/None (#118)."""
+    if raw is None:
+        return default
+    if isinstance(raw, bool):
+        raise ValueError("zoom must be a numeric level, not a boolean")
+    try:
+        zoom = int(raw)  # type: ignore[arg-type]
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"Invalid zoom value {raw!r}") from exc
+    if zoom < 0 or zoom > 22:
+        raise ValueError(f"zoom out of range: {zoom}")
+    return zoom
+
+
 def extract_folium_payload(value: object) -> dict[str, Any]:
     """Extract CSP-safe map center/zoom/markers from a Folium map or mapping."""
     if isinstance(value, Mapping):
         if value.get("type") == "folium" or "center" in value or "location" in value:
             center = value.get("center") or value.get("location") or [0.0, 0.0]
+            zoom_raw = value.get("zoom")
             return {
                 "center": list(center) if not isinstance(center, list) else center,
-                "zoom": int(value.get("zoom") or 2),
+                "zoom": _coerce_zoom(zoom_raw),
                 "geojson": value.get("geojson"),
                 "markers": list(value.get("markers") or []),
                 "style": value.get("style") or "basic",
@@ -83,7 +99,9 @@ def extract_folium_payload(value: object) -> dict[str, Any]:
         raise TypeError("Folium mapping requires center/location or type=folium")
 
     location = getattr(value, "location", None)
-    zoom = getattr(value, "zoom_start", None) or getattr(value, "zoom", None) or 2
+    zoom_raw = getattr(value, "zoom_start", None)
+    if zoom_raw is None:
+        zoom_raw = getattr(value, "zoom", None)
     markers: list[dict[str, Any]] = []
     geojson: object | None = None
     children = getattr(value, "_children", None)
@@ -108,11 +126,84 @@ def extract_folium_payload(value: object) -> dict[str, Any]:
         location = [0.0, 0.0]
     return {
         "center": list(location),
-        "zoom": int(zoom),
+        "zoom": _coerce_zoom(zoom_raw),
         "markers": markers,
         "geojson": geojson,
         "style": "basic",
         "coord_order": "latlng",
+    }
+
+
+def extract_pydeck_payload(value: Mapping[str, Any]) -> dict[str, Any]:
+    """Normalize PyDeck / deck.gl JSON to the Folium-shaped MapLibre host contract (#84)."""
+    if "center" in value and "zoom" in value and "initial_view_state" not in value:
+        # Already MapLibre/Folium-shaped.
+        center = value["center"]
+        return {
+            "center": list(center) if not isinstance(center, list) else center,
+            "zoom": _coerce_zoom(value.get("zoom")),
+            "geojson": value.get("geojson"),
+            "markers": list(value.get("markers") or []),
+            "style": value.get("style") or "basic",
+            "coord_order": value.get("coord_order") or "latlng",
+        }
+
+    view = value.get("initial_view_state") or value.get("view_state") or {}
+    if not isinstance(view, Mapping):
+        raise TypeError("PyDeck payload requires initial_view_state mapping")
+
+    lat = view.get("latitude")
+    lng = view.get("longitude")
+    if lat is None or lng is None:
+        raise TypeError("PyDeck initial_view_state requires latitude and longitude")
+    center = [float(lat), float(lng)]
+    zoom = _coerce_zoom(view.get("zoom"))
+
+    layers = value.get("layers") or []
+    markers: list[dict[str, Any]] = list(value.get("markers") or [])
+    geojson: object | None = value.get("geojson")
+    if layers:
+        converted = False
+        for layer in layers:
+            if not isinstance(layer, Mapping):
+                raise TypeError(
+                    "PyDeck layers cannot be rendered by the MapLibre host; "
+                    "pass Folium-shaped center/zoom/markers/geojson instead."
+                )
+            data = layer.get("data")
+            # Accept simple point lists as markers; anything else is unsupported.
+            if (
+                isinstance(data, list)
+                and data
+                and all(isinstance(pt, (list, tuple)) and len(pt) >= 2 for pt in data)
+            ):
+                for pt in data:
+                    markers.append({"location": [float(pt[1]), float(pt[0])]})  # lng,lat → latlng
+                converted = True
+            elif isinstance(data, Mapping) and data.get("type") in {
+                "FeatureCollection",
+                "Feature",
+                "GeometryCollection",
+            }:
+                geojson = data
+                converted = True
+            elif data in (None, [], {}):
+                converted = True
+            else:
+                raise TypeError(
+                    "Unsupported PyDeck layer for MapLibre host; "
+                    "convert to markers/geojson or omit layers."
+                )
+        if not converted and layers:
+            raise TypeError("Unsupported PyDeck layers for MapLibre host")
+
+    return {
+        "center": center,
+        "zoom": zoom,
+        "markers": markers,
+        "geojson": geojson,
+        "style": value.get("style") or "basic",
+        "coord_order": value.get("coord_order") or "latlng",
     }
 
 

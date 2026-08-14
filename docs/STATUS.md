@@ -1,11 +1,11 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.38 **Published** as `v0.38.0` / `hedron-charts` `0.2.0` (2026-08-14). Prior Published: 0.37 as `v0.37.0` (2026-08-14).
-Living tip = `v0.38.0`.
+**Roadmap position:** phase 0.39 **Published** as `v0.39.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Prior Published: 0.38 as `v0.38.0` / `hedron-charts` `0.2.0` (2026-08-14).
+Living tip = `v0.39.0`.
 **Date:** 2026-08-14
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` `0.38.0`; Alpha (train-aligned) — `hedron-elements` `0.38.0`;
+`hedron-workbench` / `hedron-posit` `0.39.0`; Alpha (train-aligned) — `hedron-elements` `0.39.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
@@ -16,12 +16,12 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `hedron-workbench`, `hedron-posit`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
 `hedron-sim`, `hedron-mcp`, `hedron-gradio`. Alpha — `hedron-elements`.
 
-**Phase focus:** Living train is **0.38** (D-066 / RFC-0069) — high-fidelity `ChartSpec` /
-`ChartPlan`, ABI-conforming `hedron-chart`, SVG/Canvas rendering, interaction/a11y/export/
-security evidence (`release-gate-0.38.toml` Verified; tip `v0.38.0`). Phase **0.39** Stage 0
-contract packet is refined against that tip (D-067 / RFC-0060; `release-gate-0.39.toml` all
-Planned; `verify_pkg_39.py --allow-planned`); no 0.39 runtime or tip bump yet. Prior Published
-**0.37** form/primitive packet / **0.36** ABI / **0.35** fleet closure remain in force.
+**Phase focus:** Living train is **0.39** (D-067 / RFC-0060) — DataTable/DataEditor ABI,
+typed `OptimisticMutation` on bounded collection edits, Published `hedron-chart` cross-filter
+composition, rich-surface Experimental exceptions, worker/stream bounds, and the 27-issue
+remediation packet (`release-gate-0.39.toml` Verified; tip `v0.39.0`; in-tree cut, tag/PyPI
+deferred). Prior Published **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
+**0.36** ABI / **0.35** fleet closure remain in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
@@ -280,7 +280,7 @@ Cut verify: `python scripts/verify_pkg_32.py` (no `--allow-planned`).
 **Baseline tip:** Published `v0.36.0`.
 **Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93) (closed).
 **High-severity remediations:** [#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237) closed at cut; follow-on [#244](https://github.com/eddiethedean/hedron/issues/244) closed (element-markup `style=` / `vbscript:` / `data:`).
-**Version policy at cut:** Alpha `hedron-elements` **`0.38.0`** (pin `>=0.38.0,<0.39`).
+**Version policy at cut:** Alpha `hedron-elements` **`0.39.0`** (pin `>=0.39.0,<0.40`).
 
 | ID | Disposition | Notes |
 |---|---|---|
@@ -336,7 +336,7 @@ contract packet is refined against Published `v0.38.0` (D-067 / RFC-0060;
 [`HEDRON_RICH_ELEMENTS_039.md`](implementation/HEDRON_RICH_ELEMENTS_039.md);
 [#94](https://github.com/eddiethedean/hedron/issues/94) open — do not close until gates Verified).
 Later phases [#95](https://github.com/eddiethedean/hedron/issues/95)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(rephased to 0.40–0.42) still require their own Stage 0 packets. Living tip is **`v0.38.0`**.
+(rephased to 0.40–0.42) still require their own Stage 0 packets. Living tip is **`v0.39.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

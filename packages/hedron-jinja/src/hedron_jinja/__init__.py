@@ -45,7 +45,7 @@ from hedron_jinja.providers import (
     provider_available,
 )
 
-__version__ = "0.38.0"
+__version__ = "0.39.0"
 
 __all__ = [
     "AsyncIoBudget",

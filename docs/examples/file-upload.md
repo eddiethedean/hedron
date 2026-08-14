@@ -82,7 +82,7 @@ CSRF-safe multipart upload with size and type checks in the action handler.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: py -3 -m venv .venv && .\.venv\Scripts\Activate.ps1
-pip install "hedron>=0.38.0,<0.39" "uvicorn[standard]"
+pip install "hedron>=0.39.0,<0.40" "uvicorn[standard]"
 curl -fsSL https://raw.githubusercontent.com/eddiethedean/hedron/main/examples/file-upload/app.py -o app.py
 uvicorn app:app --reload
 ```

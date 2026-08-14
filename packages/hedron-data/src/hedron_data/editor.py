@@ -28,6 +28,18 @@ from hedron_data.sources import (
 
 SaveMode = Literal["batch", "row", "cell"]
 
+ABI_VERSION = 1
+TAG_NAME = "hedron-data-editor"
+ELEMENT_ID = "hedron-data-editor"
+DATA_EDITOR_EVENTS = (
+    "hedron-data-cell-edit",
+    "hedron-data-row-edit",
+    "hedron-data-selection-change",
+    "hedron-data-validation-error",
+    "hedron-data-conflict",
+    "hedron-data-optimistic",
+)
+
 
 def _public_row(row: Mapping[str, object], columns: Sequence[Column]) -> dict[str, JsonValue]:
     out: dict[str, JsonValue] = {}
@@ -336,17 +348,22 @@ class DataEditor(Component[DataEditorProps]):
             "conflictActions": list(conflict_actions()),
         }
         noscript = DataTableFallback(self._columns, public_rows, self.props.caption)
-        return html.div(
+        # ABI host: the custom element IS the markup (chart/example pattern).
+        # SSR fallback table remains a child after upgrade (not permanently removed).
+        return html.tag(TAG_NAME)(
             noscript.render(),
-            class_="hedron-data-editor",
-            data={
-                "hedron-editor": self.props.editor_key,
-                "hedron-module": "hedron-data:tabulator-editor",
-                "hedron-payload": json.dumps(payload, default=str, separators=(",", ":")),
+            **{
+                "class_": "hedron-data-editor",
+                "data-hedron-abi": str(ABI_VERSION),
+                "data-hedron-element": ELEMENT_ID,
+                "data-hedron-editor": self.props.editor_key,
+                "data-hedron-module": "hedron-data:tabulator-editor",
+                "data-hedron-payload": json.dumps(payload, default=str, separators=(",", ":")),
+                "data-hedron-server-region": "fallback",
+                "role": "grid",
+                "aria-label": self.props.caption or "Data editor",
+                "tabindex": "0",
             },
-            role="grid",
-            aria={"label": self.props.caption or "Data editor"},
-            tabindex="0",
         )
 
 
@@ -377,4 +394,6 @@ class DataTableFallback:
 
 
 def conflict_actions() -> tuple[str, ...]:
+    # retain-and-retry must rebase onto the server revision from the conflict
+    # response (OPTIMISTIC-039 / #121) — never silently overwrite (no LWW).
     return ("reload", "retain-and-retry", "compare", "cancel")

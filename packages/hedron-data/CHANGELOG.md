@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.39.0] — 2026-08-14
+
+### Added
+- Phase 0.39 rich data ABI, OptimisticMutation, chartlink, and remediation packet (D-067).
+
 ## [0.38.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
@@ -243,20 +248,20 @@
 - `DjangoQuerySetDataSource` deny-by-default allowlists when sort/filter lists are omitted.
 
 
-## [0.10.1] - 2026-08-04
+## [0.10.1] — 2026-08-04
 
 ### Fixed
 - Fail closed on unsupported SQLAlchemy `DataQuery.projection`.
 
-## [0.10.0] - 2026-08-04
+## [0.10.0] — 2026-08-04
 
 - Joined the coordinated 0.10 package train.
 
-## [0.9.0] - 2026-08-04
+## [0.9.0] — 2026-08-04
 
 - Joined the coordinated 0.9 package train and updated plugin compatibility metadata.
 
-## [0.8.0] - 2026-08-03
+## [0.8.0] — 2026-08-03
 
 ### Added
 
@@ -274,14 +279,14 @@
 - Phase 0.7 portable adapters, operations, and jobs train.
 
 
-## [0.6.0] - 2026-08-03
+## [0.6.0] — 2026-08-03
 
 - Async `VisualizationSource` protocol and viz row/payload defaults.
 - `SQLAlchemyDataSource` adapter (`hedron-data[sqlalchemy]` / `[sqlmodel]`).
 - AG Grid Community host shim and `ensure_aggrid_assets()` (`hedron-data[aggrid]`).
 - Bounded SQLAlchemy paging: `OFFSET`/`LIMIT` applied in SQL (not collect-all-then-slice).
 
-## [0.5.0] - 2026-08-03
+## [0.5.0] — 2026-08-03
 
 - Initial `hedron-data` package: data-source protocols, `DataTable`, `DataEditor`,
   in-memory paged sources (sync + async), optional Narwhals dataframe normalization, and

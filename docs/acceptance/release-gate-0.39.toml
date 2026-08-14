@@ -4,63 +4,63 @@
 
 [[evidence]]
 id = "DATA-039"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_data_039.py"
 ci_job = "test"
 owner = "hedron-data"
 
 [[evidence]]
 id = "OPTIMISTIC-039"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_optimistic_039.py"
 ci_job = "test"
 owner = "hedron-core"
 
 [[evidence]]
 id = "CHARTLINK-039"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_chartlink_039.py"
 ci_job = "browser"
 owner = "hedron-charts"
 
 [[evidence]]
 id = "RICH-039"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_rich_039.py"
 ci_job = "test"
 owner = "hedron-extras"
 
 [[evidence]]
 id = "WORKER-039"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_worker_039.py"
 ci_job = "browser"
 owner = "hedron-core"
 
 [[evidence]]
 id = "PERF-039"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_perf_039.py"
 ci_job = "browser"
 owner = "hedron-data"
 
 [[evidence]]
 id = "A11Y-039"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_a11y_039.py"
 ci_job = "browser"
 owner = "hedron-data"
 
 [[evidence]]
 id = "REGRESS-039"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_regress_039.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-039"
-state = "Planned"
+state = "Verified"
 command = "python scripts/verify_pkg_39.py"
 ci_job = "quality"
 owner = "hedron"

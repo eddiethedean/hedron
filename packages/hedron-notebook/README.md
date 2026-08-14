@@ -27,7 +27,7 @@ pip install "hedron-notebook>=0.1.0,<0.2"
 # or
 uv add "hedron-notebook>=0.1.0,<0.2"
 # via flagship:
-pip install "hedron[notebook]>=0.38.0,<0.39"
+pip install "hedron[notebook]>=0.39.0,<0.40"
 ```
 
 Requires Python 3.11–3.14.

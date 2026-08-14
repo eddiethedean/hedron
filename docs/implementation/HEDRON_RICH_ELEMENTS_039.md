@@ -1,7 +1,7 @@
 # Phase 0.39 implementation plan: rich data and visualization elements
 
 This plan turns [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) / D-067 into reviewable
-work. The living published tip is `v0.38.0`. Stage 0 (including this contract refine) adds
+work. The living published tip is `v0.39.0`. Stage 0 (including this contract refine) adds
 contracts only and does not change runtime behavior or versions. Tracking
 [#94](https://github.com/eddiethedean/hedron/issues/94). Authoritative optimistic contract:
 [WEB_COMPONENT_INTERACTION_CONTRACTS.md](WEB_COMPONENT_INTERACTION_CONTRACTS.md) §3. Surface
@@ -32,12 +32,14 @@ Completion requires every row in
 
 ### Stage 0 — contract and evidence packet (complete)
 
+### Stage 1+ — implementation and cut (complete)
+
 - Accept D-067 / RFC-0060 Resolved questions (D-067).
 - Add this plan, release packet, gate manifest, inventories, upgrade fixtures, review brief,
   [RICH_SURFACE_039.md](RICH_SURFACE_039.md), and scoped [AT-039](../acceptance/human-at/039/PROTOCOL.md).
 - Bind tracking [#94](https://github.com/eddiethedean/hedron/issues/94) and medium/low remediations
   #73/#84/#102/#104/#105/#107/#113/#115–#121/#176/#188–#194/#221/#240/#241/#247/#248.
-- Rebaseline living published tip acknowledgment to `v0.38.0`.
+- Rebaseline living published tip acknowledgment to `v0.39.0`.
 - Add lenient packet verification to CI.
 - Do not modify DataEditor/OptimisticMutation runtime, package versions, living pins, or release
   status.

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from pathlib import Path
 
 import pytest
@@ -83,7 +84,14 @@ def test_media_file_response_206_and_416(tmp_path: Path) -> None:
     assert partial.status_code == 206
     assert partial.headers["content-range"] == "bytes 2-5/10"
     assert partial.headers["cache-control"] == "private, no-store"
-    assert partial.body == b"2345"
+
+    async def _read() -> bytes:
+        chunks: list[bytes] = []
+        async for chunk in partial.body_iterator:
+            chunks.append(chunk)
+        return b"".join(chunks)
+
+    assert asyncio.run(_read()) == b"2345"
     assert "inline" in partial.headers["content-disposition"]
 
     unsat = media_file_response(

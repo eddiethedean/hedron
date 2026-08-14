@@ -76,12 +76,29 @@ def payload_size(payload: str | bytes) -> int:
     return len(payload.encode("utf-8"))
 
 
+# Exact sensitive column names only — avoid substring false-positives (#192).
+_SENSITIVE_KEYS = frozenset(
+    {
+        "secret",
+        "password",
+        "passwd",
+        "token",
+        "api_key",
+        "apikey",
+        "access_token",
+        "refresh_token",
+        "private_key",
+        "client_secret",
+    }
+)
+
+
 def redact_rows(rows: Sequence[Mapping[str, JsonValue]]) -> list[JsonObject]:
     out: list[JsonObject] = []
     for row in rows:
         cleaned: JsonObject = {}
         for key, value in row.items():
-            if "secret" in str(key).lower() or "password" in str(key).lower():
+            if str(key).lower() in _SENSITIVE_KEYS:
                 cleaned[str(key)] = "***"
             else:
                 cleaned[str(key)] = value  # JsonValue from input mapping

@@ -66,7 +66,7 @@
         ],
       },
       center: lngLat,
-      zoom: Number(spec.zoom || 2),
+      zoom: spec.zoom === 0 || spec.zoom === "0" ? 0 : Number(spec.zoom != null && spec.zoom !== "" ? spec.zoom : 2),
       attributionControl: false,
     });
     el._hedronMapLibre = map;

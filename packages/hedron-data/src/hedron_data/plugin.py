@@ -1,4 +1,4 @@
-"""Register hedron-data browser module and components."""
+"""Register hedron-data browser module, ABI element, and components."""
 
 from __future__ import annotations
 
@@ -6,8 +6,14 @@ from pathlib import Path
 
 from hedron_core.identifiers import content_digest
 from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
-from hedron_core.registry import register_asset, register_browser_module, register_component
-from hedron_data.editor import DataEditor
+from hedron_core.registry import (
+    ElementFieldOwnership,
+    register_asset,
+    register_browser_module,
+    register_component,
+    register_element_definition,
+)
+from hedron_data.editor import DATA_EDITOR_EVENTS, DataEditor
 from hedron_data.table import DataTable
 
 _ROOT = Path(__file__).resolve().parent
@@ -16,9 +22,9 @@ _CSS = _ROOT / "assets" / "tabulator" / "editor.css"
 
 PLUGIN_META = PluginMeta(
     name="hedron_data",
-    version="0.38.0",
+    version="0.39.0",
     distribution="hedron-data",
-    hedron_version=">=0.38,<0.39",
+    hedron_version=">=0.39,<0.40",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -57,10 +63,70 @@ def register(ctx: PluginContext) -> None:
             logical_id="hedron-data:tabulator-editor",
             tag_name="hedron-data-editor",
             module_path=str(_JS),
-            observed_attributes=("data-hedron-payload",),
-            events=("hedron-data-conflict",),
+            observed_attributes=("data-hedron-payload", "data-hedron-abi", "data-hedron-element"),
+            events=DATA_EDITOR_EVENTS,
             shadow_dom=False,
             htmx_lifecycle=True,
+        )
+        register_element_definition(
+            logical_id="hedron-data-editor",
+            tag_name="hedron-data-editor",
+            abi_version=1,
+            module_asset_id="hedron-data:tabulator.editor.js",
+            attributes=(
+                "data-hedron-payload",
+                "data-hedron-abi",
+                "data-hedron-element",
+                "data-hedron-editor",
+                "data-hedron-module",
+            ),
+            state_ownership=(
+                ElementFieldOwnership(
+                    name="payload",
+                    mode="controlled",
+                    reflection="attribute",
+                    incoming_update="replace",
+                    persistence="none",
+                    event="hedron-data-cell-edit",
+                ),
+                ElementFieldOwnership(
+                    name="selection",
+                    mode="local",
+                    reflection="none",
+                    incoming_update="ignore",
+                    persistence="none",
+                    event="hedron-data-selection-change",
+                ),
+                ElementFieldOwnership(
+                    name="optimistic",
+                    mode="local",
+                    reflection="none",
+                    incoming_update="ignore",
+                    persistence="none",
+                    event="hedron-data-optimistic",
+                ),
+            ),
+            events=DATA_EDITOR_EVENTS,
+            dom_policy="light",
+            server_regions=("fallback",),
+            a11y_contract={
+                "role": "grid",
+                "name_from": "aria-label",
+                "keyboard": "cell-navigation",
+            },
+            style_contract={"tokens": "--hedron-data-*"},
+            resources=("hedron-data:tabulator.editor.js", "hedron-data:tabulator.editor.css"),
+            lifecycle={
+                "connect": "idempotent",
+                "disconnect": "abort+dispose",
+                "htmx": "beforeCleanupElement",
+            },
+            fallback={
+                "table": "semantic",
+                "summary": "caption",
+                "export": "authorized_csv",
+            },
+            first_party=True,
         )
     if _CSS.is_file():
         digest = content_digest(_CSS.read_bytes())

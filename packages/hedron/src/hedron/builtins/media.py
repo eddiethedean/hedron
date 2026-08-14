@@ -3,21 +3,25 @@
 from __future__ import annotations
 
 import zipfile
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from io import BytesIO
 from pathlib import Path
 from typing import Literal
 
-from starlette.responses import FileResponse, Response
+from starlette.responses import FileResponse, Response, StreamingResponse
 
 from hedron.builtins.files import validate_upload_filename
 
 __all__ = [
     "ByteRangeNotSatisfiable",
+    "DEFAULT_MAX_RANGE_BYTES",
     "download_all_zip",
     "media_file_response",
     "parse_byte_range",
 ]
+
+DEFAULT_MAX_RANGE_BYTES = 32 * 1024 * 1024
+_RANGE_CHUNK_SIZE = 64 * 1024
 
 
 class ByteRangeNotSatisfiable(ValueError):
@@ -118,6 +122,18 @@ def _content_disposition(disposition: Literal["inline", "attachment"], filename:
     return f'{disposition}; filename="{safe}"'
 
 
+def _iter_file_range(path: Path, start: int, length: int) -> Iterator[bytes]:
+    remaining = length
+    with path.open("rb") as handle:
+        handle.seek(start)
+        while remaining > 0:
+            chunk = handle.read(min(_RANGE_CHUNK_SIZE, remaining))
+            if not chunk:
+                break
+            remaining -= len(chunk)
+            yield chunk
+
+
 def media_file_response(
     path: str | Path,
     *,
@@ -128,6 +144,7 @@ def media_file_response(
     request_headers: Mapping[str, str] | None = None,
     range_header: str | None = None,
     max_size: int | None = None,
+    max_range_bytes: int | None = DEFAULT_MAX_RANGE_BYTES,
     disposition: Literal["inline", "attachment"] = "inline",
 ) -> Response:
     """Serve a file with authz-before-bytes, path jail, and optional Range (206/416)."""
@@ -166,11 +183,13 @@ def media_file_response(
 
     start, end = byte_range
     length = end - start + 1
-    with file_path.open("rb") as handle:
-        handle.seek(start)
-        payload = handle.read(length)
-    return Response(
-        content=payload,
+    range_budget = max_range_bytes
+    if range_budget is not None and length > range_budget:
+        raise ValueError(
+            f"Requested Range length {length} exceeds max_range_bytes of {range_budget}"
+        )
+    return StreamingResponse(
+        _iter_file_range(file_path, start, length),
         status_code=206,
         media_type=content_type,
         headers={
@@ -179,6 +198,25 @@ def media_file_response(
             "Content-Length": str(length),
         },
     )
+
+
+def _unique_arcnames(files: Sequence[Path], *, root: Path) -> list[tuple[Path, str]]:
+    """Build deterministic unique ZIP member names relative to ``root`` (#104)."""
+    root_resolved = root.resolve()
+    used: set[str] = set()
+    out: list[tuple[Path, str]] = []
+    for file_path in files:
+        rel = file_path.resolve().relative_to(root_resolved).as_posix()
+        # Harden against absolute / traversal members.
+        safe_parts = [p for p in rel.split("/") if p not in ("", ".", "..")]
+        if not safe_parts:
+            safe_parts = [file_path.name]
+        arcname = "/".join(safe_parts)
+        if arcname in used:
+            raise ValueError(f"Duplicate archive member name {arcname!r}")
+        used.add(arcname)
+        out.append((file_path, arcname))
+    return out
 
 
 def download_all_zip(
@@ -206,10 +244,11 @@ def download_all_zip(
             )
         files.append(file_path)
 
+    members = _unique_arcnames(files, root=Path(root))
     buffer = BytesIO()
     with zipfile.ZipFile(buffer, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
-        for file_path in files:
-            archive.write(file_path, arcname=file_path.name)
+        for file_path, arcname in members:
+            archive.write(file_path, arcname=arcname)
     payload = buffer.getvalue()
 
     safe_name = validate_upload_filename(filename)

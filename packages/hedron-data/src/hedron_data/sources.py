@@ -33,17 +33,25 @@ class DataQuery:
     def validated(self, *, max_page_size: int = DEFAULT_MAX_PAGE_SIZE) -> DataQuery:
         if self.offset < 0:
             raise ValueError("DataQuery.offset must be >= 0")
+        if (
+            not isinstance(max_page_size, int)
+            or isinstance(max_page_size, bool)
+            or max_page_size < 1
+        ):
+            raise ValueError("max_page_size must be an integer >= 1")
         limit = self.limit
         if limit < 1:
             raise ValueError("DataQuery.limit must be >= 1")
         capped = min(limit, max_page_size, HARD_MAX_PAGE_SIZE)
+        if capped < 1:
+            raise ValueError("DataQuery.limit must be >= 1 after capping")
         sort = self.sort
-        if self.allowlisted_sort_fields is not None:
-            for name, direction in sort:
-                if name not in self.allowlisted_sort_fields:
-                    raise ValueError(f"Sort field {name!r} is not allowlisted")
-                if direction not in ("asc", "desc"):
-                    raise ValueError(f"Invalid sort direction {direction!r}")
+        for name, direction in sort:
+            if direction not in ("asc", "desc"):
+                raise ValueError(f"Invalid sort direction {direction!r}")
+            allow = self.allowlisted_sort_fields
+            if allow is not None and name not in allow:
+                raise ValueError(f"Sort field {name!r} is not allowlisted")
         filters = dict(self.filters)
         if self.allowlisted_filter_fields is not None:
             for name in filters:

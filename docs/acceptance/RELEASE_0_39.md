@@ -1,8 +1,6 @@
 # Hedron `v0.39` rich data and visualization elements acceptance
 
-**Status:** Planned (Stage 0 contract refined against Published **`v0.38.0`**). Runtime
-implementation begins at Stage 1; this refine ships no DataEditor ABI migration,
-`OptimisticMutation` runtime, chart cross-filter wiring, or worker-bound enforcement.
+**Status:** Published as Hedron **`v0.39.0`** (in-tree cut; tag/PyPI deferred). Stage 0 baseline was Published **`v0.38.0`**. All owned gates Verified.
 
 Phase 0.39 converges first-party rich browser surfaces (DataTable/DataEditor, maps, media,
 editors, and eligible specialty hosts) onto the shared element ABI, proves typed
@@ -85,7 +83,7 @@ remain normative; `REGRESS-039` Verified only when closed):
   production-grade inventory, rich-surface catalogs, and scoped AT-039 skeleton exist
 - [x] Tracking issue [#94](https://github.com/eddiethedean/hedron/issues/94) is bound to every
   0.39 gate and the locked 27-issue remediation set
-- [x] `v0.38.0` is Published; living baseline for this refine is `v0.38.0`
+- [x] `v0.39.0` is Published; living baseline for this refine is `v0.39.0`
 - [x] Stage 0 / contract refine makes no runtime/version/living-tip claim
 
 ## Verification

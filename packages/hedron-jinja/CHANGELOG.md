@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.39.0] — 2026-08-14
+
+### Added
+- Phase 0.39 rich data ABI, OptimisticMutation, chartlink, and remediation packet (D-067).
+
 ## [0.38.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
@@ -220,17 +225,17 @@
 - `reconcile_csp` fails closed when CSP is missing or lacks `script-src` for eval/inline caps.
 
 
-## [0.10.1] - 2026-08-04
+## [0.10.1] — 2026-08-04
 
 ### Fixed
 - Reject generic `|safe` / `autoescape false` even when `strict=False`.
 
-## [0.10.0] - 2026-08-04
+## [0.10.0] — 2026-08-04
 
 ### Added
 - `two_phase_stream()` metadata-first streaming API; version-aware unknown `hx-*` diagnostics (HED-JINJA-0027); registered fragment head-management path for `htmx-ext-head-support`.
 
-## [0.9.0] - 2026-08-04
+## [0.9.0] — 2026-08-04
 
 - Replace the removed HDN language with HDJ, an explicit standards-first `.hdj` format whose static
   prologue declares template kind, feature profile, and required capabilities before a Jinja body.

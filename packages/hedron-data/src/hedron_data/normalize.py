@@ -94,12 +94,25 @@ def normalize_rows(data: object, *, max_rows: int = _MAX_INLINE_ROWS) -> list[di
     ):
         return _from_narwhals(data)
     if isinstance(data, Mapping) and not isinstance(data, Model):
+        if not data:
+            return []
         # column-oriented dict of sequences
-        if data and all(
-            isinstance(v, Sequence) and not isinstance(v, (str, bytes)) for v in data.values()
-        ):
+        if all(isinstance(v, Sequence) and not isinstance(v, (str, bytes)) for v in data.values()):
             keys = list(data.keys())
-            length = len(next(iter(data.values())))
+            lengths = [len(data[k]) for k in keys]
+            if not lengths:
+                return []
+            length = lengths[0]
+            if any(length != col_len for col_len in lengths):
+                raise error(
+                    "HED-DATA-0005",
+                    title="Column-oriented lengths mismatch",
+                    explanation=(
+                        "All column sequences must share the same length; "
+                        f"got {dict(zip((str(k) for k in keys), lengths, strict=True))}."
+                    ),
+                    remediation="Align column arrays or pass list[dict] rows instead.",
+                )
             if length > max_rows:
                 raise error(
                     "HED-DATA-0004",
@@ -107,6 +120,8 @@ def normalize_rows(data: object, *, max_rows: int = _MAX_INLINE_ROWS) -> list[di
                     explanation=f"Refusing to inline {length} rows (max {max_rows}).",
                     remediation="Use a paged DataEditorSource.",
                 )
+            if length == 0:
+                return []
             return [{str(k): cast(JsonValue, data[k][i]) for k in keys} for i in range(length)]
         return [_row_to_mapping(data)]
     if isinstance(data, Sequence) and not isinstance(data, (str, bytes)):

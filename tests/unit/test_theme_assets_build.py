@@ -330,7 +330,7 @@ def test_disclose_script_avoids_label_innerhtml_interpolation() -> None:
     assert "textContent = label" in script
 
 
-def test_data_editor_enhancement_hides_no_script_fallback() -> None:
+def test_data_editor_enhancement_marks_fallback_upgraded() -> None:
     script = (
         Path(__file__).resolve().parents[2]
         / "packages"
@@ -342,7 +342,8 @@ def test_data_editor_enhancement_hides_no_script_fallback() -> None:
         / "editor.js"
     ).read_text(encoding="utf-8")
     assert ":scope > .hedron-data-editor-fallback" in script
-    assert "fallback.hidden = true" in script
+    assert 'fallback.setAttribute("data-hedron-fallback", "upgraded")' in script
+    assert 'fallback.setAttribute("aria-hidden", "true")' in script
     assert 'delBtn.className = "hedron-button hedron-button-danger"' in script
     assert 'ev.key === "Escape"' in script
     assert 'td.dataset.editCancel = "1"' in script

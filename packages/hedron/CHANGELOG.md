@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.39.0] — 2026-08-14
+
+### Added
+- Phase 0.39 rich data ABI, OptimisticMutation, chartlink, and remediation packet (D-067).
+
 ## [0.38.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
@@ -388,7 +393,7 @@
 - CLI/Explorer HDJ inventory reporting; Django forms radio/number/file widget mapping.
 
 
-## [0.10.1] - 2026-08-04
+## [0.10.1] — 2026-08-04
 
 ### Fixed
 - Require `vary_on` for default private `cache_data` scopes.
@@ -397,13 +402,13 @@
 - Job SSE returns HTTP 403/404 on authz/missing; sanitize bad `Last-Event-ID`.
 - Poll `job_status_response` enforces the same job authz contract as SSE.
 
-## [0.10.0] - 2026-08-04
+## [0.10.0] — 2026-08-04
 
 ### Added
 - Official SSE helpers (`SseResponse`, job status SSE), focused `StreamingComponentResponse`, WebSocket page/session channels, navigation preload, and `ChatInput`.
 - Bundled `/hedron-static/ext/sse.js` and `head-support.js`.
 
-## [0.9.0] - 2026-08-04
+## [0.9.0] — 2026-08-04
 
 ### Added
 
@@ -413,7 +418,7 @@
 
 - All HDN CLI, discovery, build, and public API integration; 0.8 is the final HDN-capable line.
 
-## [0.8.0] - 2026-08-03
+## [0.8.0] — 2026-08-03
 
 ### Added
 
@@ -438,7 +443,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
-## [0.6.0] - 2026-08-03
+## [0.6.0] — 2026-08-03
 
 Visualization extras, typed HTMX interaction envelope, first-party content/auth helpers,
 and 0.6 behavioral closure hardening.
@@ -464,7 +469,7 @@ and 0.6 behavioral closure hardening.
 
 - `cache="private"` / `"no-store"` emit `Cache-Control` on interaction responses.
 
-## [0.5.0] - 2026-08-03
+## [0.5.0] — 2026-08-03
 
 Data application toolkit on the FastAPI flagship: caching decorators, upload/download
 helpers, ColorMode persistence, and re-exports for `hedron-data` / Auto / utilities.
@@ -488,7 +493,7 @@ helpers, ColorMode persistence, and re-exports for `hedron-data` / Auto / utilit
 - Full pages apply CSP-compatible HTMX defaults for history, eval/scripts, same-origin requests,
   indicator styles, and native form-validity reporting.
 
-## [0.4.0] - 2026-08-03
+## [0.4.0] — 2026-08-03
 
 Developer platform for the FastAPI flagship.
 
@@ -515,7 +520,7 @@ Developer platform for the FastAPI flagship.
 - Builds match lifespan plugin discovery and restore the registry afterward so in-process app startup can reload plugins; `override_dependencies` restores FastAPI overrides.
 - Asset `href` values are HTML-escaped before page injection.
 
-## [0.3.0] - 2026-08-03
+## [0.3.0] — 2026-08-03
 
 Authoring, styles, assets, and themes for the FastAPI flagship.
 
@@ -551,7 +556,7 @@ Authoring, styles, assets, and themes for the FastAPI flagship.
 [0.4.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.4.0
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 
-## [0.2.0] - 2026-08-03
+## [0.2.0] — 2026-08-03
 
 Initial FastAPI flagship distribution for the secure HTML/HTMX application MVP.
 

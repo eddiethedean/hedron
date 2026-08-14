@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.39.0] — 2026-08-14
+
+### Added
+- Phase 0.39 rich data ABI, OptimisticMutation, chartlink, and remediation packet (D-067).
+
 ## [0.38.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
@@ -228,20 +233,20 @@
 - `/inventory` loads project `.hdj` template reports when available (not an empty stub).
 
 
-## [0.10.1] - 2026-08-04
+## [0.10.1] — 2026-08-04
 
 ### Changed
 - Coordinated patch train with the 0.10.1 security and correctness fixes.
 
-## [0.10.0] - 2026-08-04
+## [0.10.0] — 2026-08-04
 
 - Joined the coordinated 0.10 live-interaction package train.
 
-## [0.9.0] - 2026-08-04
+## [0.9.0] — 2026-08-04
 
 - Removed HDN source, graph, and API panels.
 
-## [0.8.0] - 2026-08-03
+## [0.8.0] — 2026-08-03
 
 ### Added
 
@@ -265,7 +270,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with the Hedron coordinated release train (`0.N.0` for phase `0.N`).
 
-## [0.6.0] - 2026-08-03
+## [0.6.0] — 2026-08-03
 
 Explorer visualization panel and richer HTMX interaction simulation.
 
@@ -275,14 +280,14 @@ Explorer visualization panel and richer HTMX interaction simulation.
 - `/api/simulate` modes: fragment/boosted/history/validation with region allowlist checks,
   cache variation, and inference traces.
 
-## [0.5.0] - 2026-08-03
+## [0.5.0] — 2026-08-03
 
 ### Added
 
 - First-party `/hedron-explorer/cache`, `/data`, and `/auto` panels.
 - `/data` lists registered DataTable/DataEditor components and a sample writable policy.
 
-## [0.4.0] - 2026-08-03
+## [0.4.0] — 2026-08-03
 
 Full HTMX Explorer shell with panels for components, routes, graph, security,
 accessibility, packages, and settings; sanitized JSON APIs; rate limiting and
@@ -299,12 +304,12 @@ audit hooks; mutation simulation disabled by default.
 [0.4.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.4.0
 [0.3.0]: https://github.com/eddiethedean/hedron/releases/tag/v0.3.0
 
-## [0.3.0] - 2026-08-03
+## [0.3.0] — 2026-08-03
 
 Coordinated release train bump with `hedron` 0.3.0. Explorer preview unchanged;
 full style/HDN panels remain phase 0.4.
 
-## [0.2.0] - 2026-08-03
+## [0.2.0] — 2026-08-03
 
 Initial Explorer preview for the FastAPI MVP.
 

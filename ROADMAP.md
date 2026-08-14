@@ -1176,8 +1176,8 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). The current train is **0.38.x**
-(last published tip `v0.38.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). The current train is **0.39.x**
+(last published tip `v0.39.0`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -3000,9 +3000,7 @@ Supported for a locked catalog rather than delegated to incompatible vendor JSON
 
 ## 0.39 — Rich data and visualization elements (`v0.39.0`)
 
-**Status:** Planned; Stage 0 contract refined against Published `v0.38.0` (D-067). Depends on the
-0.37 form/primitive packet and the Published 0.38 chart system. Runtime implementation begins at
-Stage 1; this refine does not bump the living tip or flip gates to Verified.
+**Status:** Published as `v0.39.0` (D-067; in-tree cut; tag/PyPI deferred). Stage 0 was refined against Published `v0.38.0`.
 **Tracking:** [#94](https://github.com/eddiethedean/hedron/issues/94). Close when all 0.39-owned
 gates are Verified and every first-party rich surface shares the ABI or has an owned Experimental
 exception.
