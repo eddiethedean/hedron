@@ -414,8 +414,8 @@ rewrite Python routes merely because a component's internal browser implementati
 | Question | Provisional answer |
 |---|---|
 | 0.38 chart flagship | **Published** `hedron-chart` / `ChartSpec` for the locked RFC-0069 inventory; whole-platform ABI graduation remains 0.42. |
-| `@hedron/elements` in 0.40 | Modules and TypeScript types only for non-Python authors; no React runtime and no application bundler requirement. |
-| React-island bridge home | Documentation and reference code only in 0.40 — **not** shipped inside `hedron-elements`. |
+| `@hedron/elements` in 0.40 | **Owned by D-068** — see [Resolved questions (D-068)](#resolved-questions-d-068). |
+| React-island bridge home | **Owned by D-068** — see [Resolved questions (D-068)](#resolved-questions-d-068). |
 | Browser floor at 0.42 | Same three-engine family; exact build IDs re-recorded at graduation cut. |
 
 ## Resolved questions (D-067)
@@ -439,6 +439,30 @@ Tracking: [#94](https://github.com/eddiethedean/hedron/issues/94).
 
 None of these answers changes the server-owned state, no-hydration, progressive-enhancement, or
 HTMX lifecycle boundaries.
+
+
+## Resolved questions (D-068)
+
+Tracking: [#95](https://github.com/eddiethedean/hedron/issues/95).
+
+### 0.40 definitive
+
+| Question | Answer |
+|---|---|
+| Stage 0 living baseline | Published **`v0.39.0`**. Stage 0 changes contracts only; tip stays `0.39.x` until cut. |
+| Cut target | Coordinated Hedron **`v0.40.0`**. |
+| Author kit / scaffold | Public author contracts only (no private APIs). Scaffold command **`hedron new element`** produces Python wrapper, native module, CSS, examples, metadata, unit/browser/a11y tests, and build declarations; proven via an external consumer plugin (`AUTHOR-040` / `PLUGIN-040`). |
+| `@hedron/elements` / npm mirror | Modules and TypeScript types only for non-Python authors. **No** React runtime. **No** application bundler requirement. Python consumers remain no-Node. If npm ships: wheel↔npm **content identity**, provenance/SBOM/license, and reproducible consumers (`SUPPLY-040` / `PKG-040`). |
+| ReactMigrationMatrix dispositions | `native` / `hedron` / `element` / `react-island` / `not-a-fit` with honest non-fits (offline/client-auth, games/canvas, arbitrary npm, high-frequency collab). |
+| React-island bridge | **Experimental** docs and reference code only — **not** shipped inside `hedron-elements`. Non-transitive, single owned root, pinned assets, typed props/events, SSR fallback, CSP/supply inventory, deterministic unmount, **no HTMX-region ownership**, removal ledger. **Not** Supported/default; **not** universal React parity. |
+| Exit honesty for islands | `MIGRATE-040` may Verified with the island bridge remaining Experimental; do not market Supported React islands. |
+| HDJ / plugin / Explorer / theme | Same element metadata across HDJ, plugins, Explorer, themes/parts/slots (`HDJ-040`, `THEME-040`, `EXPLORER-040`, `CONF-040`). |
+| Medium/low remediations | `#162 #203 #204 #219 #220 #222` are owned by 0.40; issue bodies remain normative; `REGRESS-040` Verified only when closed. |
+| Gate IDs | `AUTHOR-040`, `PLUGIN-040`, `HDJ-040`, `THEME-040`, `EXPLORER-040`, `CONF-040`, `MIGRATE-040`, `SUPPLY-040`, `REGRESS-040`, `PKG-040`. |
+
+None of these answers changes the server-owned state, no-hydration, progressive-enhancement, or
+HTMX lifecycle boundaries. They supersede the D-065 provisional `@hedron/elements` and
+React-island rows for phase 0.40 ownership.
 
 ## Acceptance criteria
 

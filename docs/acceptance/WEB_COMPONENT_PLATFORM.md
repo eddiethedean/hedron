@@ -1,6 +1,6 @@
 # Web Component platform acceptance
 
-**Planning status:** RFC-0060 **Accepted** (D-064 / D-065 / D-067); phases 0.36–0.42. Phase
+**Planning status:** RFC-0060 **Accepted** (D-064 / D-065 / D-067 / D-068); phases 0.36–0.42. Phase
 **0.36** is **Published** (`v0.36.0`; all owned gates Verified) — see
 [`RELEASE_0_36.md`](RELEASE_0_36.md) and [`release-gate-0.36.toml`](release-gate-0.36.toml).
 Phase **0.37** is **Published** (`v0.37.0`; all owned gates Verified) — see
@@ -9,7 +9,10 @@ Phase **0.38** high-fidelity charts is **Published** (`v0.38.0` / `hedron-charts
 RFC-0069 / D-066; all owned gates Verified) — see [`RELEASE_0_38.md`](RELEASE_0_38.md) and
 [`release-gate-0.38.toml`](release-gate-0.38.toml). Phase **0.39** rich data / `OptimisticMutation` is **Published** as `v0.39.0` (RFC-0060 / D-067) — see
 [`RELEASE_0_39.md`](RELEASE_0_39.md) and [`release-gate-0.39.toml`](release-gate-0.39.toml).
-Later phases (0.40–0.42) remain draft until their own Stage 0 packets land.
+Phase **0.40** authoring / React migration Stage 0 is refined against Published `v0.39.0`
+(D-068; all owned gates Planned) — see [`RELEASE_0_40.md`](RELEASE_0_40.md) and
+[`release-gate-0.40.toml`](release-gate-0.40.toml). Later phases (0.41–0.42) remain draft until
+their own Stage 0 packets land.
 Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061. D-066 inserts charts
 at 0.38 and moves the former 0.38–0.41 capabilities to 0.39–0.42 without scope loss.
 The exact five interaction protocols are defined in the

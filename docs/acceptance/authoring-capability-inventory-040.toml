@@ -1,0 +1,37 @@
+# Phase 0.40 authoring / React migration capability inventory (Stage 0 planned)
+# Living published baseline: Published v0.39.0. Cut target: Hedron v0.40.0.
+# Owning decision: D-068. RFC: RFC-0060. Tracking #95.
+
+schema = 1
+phase = "0.40"
+state = "planned"
+living_published_baseline = "v0.39.0"
+implementation_entry = "v0.39.0"
+hedron_cut = "v0.40.0"
+owning_decision = "D-068"
+owning_rfc = "RFC-0060"
+tracking = "#95"
+
+[author_kit]
+scaffold_command = "hedron new element"
+private_apis = false
+surfaces = ["element_metadata", "events", "lifecycle", "fallback", "assets", "a11y", "diagnostics"]
+
+[npm_mirror]
+package = "@hedron/elements"
+modules_and_types_only = true
+react_runtime = false
+application_bundler_required = false
+python_no_node = true
+
+[react_migration_matrix]
+dispositions = ["native", "hedron", "element", "react-island", "not-a-fit"]
+island_bridge = "experimental_docs_reference_only"
+island_in_hedron_elements = false
+supported_default = false
+
+[hdj_plugin_explorer_theme]
+shared_element_metadata = true
+
+[remediations]
+issues = [162, 203, 204, 219, 220, 222]

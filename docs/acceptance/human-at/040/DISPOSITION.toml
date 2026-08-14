@@ -1,0 +1,12 @@
+# Human AT disposition — AT-040 scoped skeleton (not Supported)
+
+reviewer = "maintainer"
+date = "2026-08-14"
+gate = "AT-040"
+scope = "Author kit demos, theme/parts/slots, Experimental island reference keyboard"
+state = "planned"
+
+[summary]
+sessions_recorded = 0
+blocking = 0
+note = "Scoped AT skeleton for 0.40 Stage 0. Not a Supported human AT matrix. Do not market SR-021 as done."

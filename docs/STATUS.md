@@ -337,9 +337,13 @@ export/security evidence, and independent `hedron-charts` `0.2.0`. Phase **0.39*
 [0.39 acceptance packet](acceptance/RELEASE_0_39.md)). It ships ABI-conforming
 `hedron-data-editor`, typed `OptimisticMutation` on bounded collection edits, Published
 `hedron-chart` cross-filter composition (`compose_chartlink_039`), owned Experimental rich-surface
-exceptions, worker/stream bounds, and the locked 27-issue remediation packet. Later phases
-[#95](https://github.com/eddiethedean/hedron/issues/95)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(rephased to 0.40–0.42) still require their own Stage 0 packets. Living tip is **`v0.39.0`**.
+exceptions, worker/stream bounds, and the locked 27-issue remediation packet. Phase **0.40** Stage 0
+contract packet is refined against Published `v0.39.0` (D-068 / RFC-0060;
+[`RELEASE_0_40.md`](acceptance/RELEASE_0_40.md); `release-gate-0.40.toml` all Planned;
+[`HEDRON_AUTHORING_040.md`](implementation/HEDRON_AUTHORING_040.md);
+[#95](https://github.com/eddiethedean/hedron/issues/95) open — do not close until gates Verified).
+Later phases [#96](https://github.com/eddiethedean/hedron/issues/96)–[#97](https://github.com/eddiethedean/hedron/issues/97)
+(rephased to 0.41–0.42) still require their own Stage 0 packets. Living tip is **`v0.39.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

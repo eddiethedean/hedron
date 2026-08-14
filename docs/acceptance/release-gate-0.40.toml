@@ -1,0 +1,74 @@
+# Phase 0.40 authoring / React migration evidence index.
+# Stage 0 contract refine against Published v0.39.0 (all rows Planned).
+# Owning decision: D-068. Design: RFC-0060. Tracking: #95. Zero Deferred at cut
+# (React-island may remain Experimental per D-068).
+
+[[evidence]]
+id = "AUTHOR-040"
+state = "Planned"
+command = "python scripts/check_author_040.py"
+ci_job = "test"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "PLUGIN-040"
+state = "Planned"
+command = "python scripts/check_plugin_040.py"
+ci_job = "test"
+owner = "hedron-core"
+
+[[evidence]]
+id = "HDJ-040"
+state = "Planned"
+command = "python scripts/check_hdj_040.py"
+ci_job = "test"
+owner = "hedron-jinja"
+
+[[evidence]]
+id = "THEME-040"
+state = "Planned"
+command = "python scripts/check_theme_040.py"
+ci_job = "browser"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "EXPLORER-040"
+state = "Planned"
+command = "python scripts/check_explorer_040.py"
+ci_job = "test"
+owner = "hedron-explorer"
+
+[[evidence]]
+id = "CONF-040"
+state = "Planned"
+command = "python scripts/check_conf_040.py"
+ci_job = "test"
+owner = "hedron-conformance"
+
+[[evidence]]
+id = "MIGRATE-040"
+state = "Planned"
+command = "python scripts/check_migrate_040.py"
+ci_job = "browser"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "SUPPLY-040"
+state = "Planned"
+command = "python scripts/check_supply_040.py"
+ci_job = "evidence"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-040"
+state = "Planned"
+command = "python scripts/check_regress_040.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-040"
+state = "Planned"
+command = "python scripts/verify_pkg_40.py"
+ci_job = "packaging"
+owner = "hedron"
