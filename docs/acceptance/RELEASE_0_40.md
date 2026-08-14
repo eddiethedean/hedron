@@ -1,6 +1,6 @@
 # Hedron `v0.40` Web Component authoring and interoperability acceptance
 
-**Status:** Published as `v0.40.0` (2026-08-14; **in-tree cut, tag/PyPI deferred**). All owned
+**Status:** Published as `v0.40.0` (2026-08-14). All owned
 gates Verified; React-island remains Experimental docs/reference only per D-068.
 
 Phase 0.40 enables third-party authors to build portable Hedron elements without private

@@ -23,6 +23,23 @@ pip install "hedron[jinja]>=0.40.0,<0.41"
 
 Then follow [HDJ API — Setup](../api/JINJA.md#setup).
 
+## Element declarations (0.40)
+
+HDJ prologues may declare custom-element metadata that must stay aligned with the
+registry:
+
+```toml
+elements = ["ext-probe"]
+element_abi = { "ext-probe" = 1 }
+element_modules = { "ext-probe" = "my-plugin:probe.mjs" }
+element_events = { "ext-probe" = ["hedron:ready"] }
+```
+
+Undeclared hyphenated tags and ABI/module mismatches fail closed when validated against
+a registry. Theme compatibility can require declared `parts` / `slots` / `tokens` on
+element definitions.
+
 ## See also
 
-[What’s ready](whats-ready.md) · [Runnable HDJ example](../examples/runnable.md)
+[What’s ready](whats-ready.md) · [Runnable HDJ example](../examples/runnable.md) ·
+[What’s new in 0.40](whats-new-0.40.md) · [HDJ API](../api/JINJA.md)

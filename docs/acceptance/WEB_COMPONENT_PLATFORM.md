@@ -9,8 +9,8 @@ Phase **0.38** high-fidelity charts is **Published** (`v0.38.0` / `hedron-charts
 RFC-0069 / D-066; all owned gates Verified) — see [`RELEASE_0_38.md`](RELEASE_0_38.md) and
 [`release-gate-0.38.toml`](release-gate-0.38.toml). Phase **0.39** rich data / `OptimisticMutation` is **Published** as `v0.39.0` (RFC-0060 / D-067) — see
 [`RELEASE_0_39.md`](RELEASE_0_39.md) and [`release-gate-0.39.toml`](release-gate-0.39.toml).
-Phase **0.40** authoring / React migration is **Published** as `v0.40.0` (in-tree cut,
-tag/PyPI deferred; D-068; all owned gates Verified; React-island remains Experimental) — see
+Phase **0.40** authoring / React migration is **Published** as `v0.40.0` (D-068; all owned
+gates Verified; React-island remains Experimental) — see
 [`RELEASE_0_40.md`](RELEASE_0_40.md) and
 [`release-gate-0.40.toml`](release-gate-0.40.toml). Later phases (0.41–0.42) remain draft until
 their own Stage 0 packets land.
@@ -19,7 +19,7 @@ at 0.38 and moves the former 0.38–0.41 capabilities to 0.39–0.42 without sco
 The exact five interaction protocols are defined in the
 [interaction-contract specification](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md).
 
-Unchecked requirements are future release gates, not claims about the current 0.39 train. Each
+Unchecked requirements are future release gates, not claims about the current 0.40 train. Each
 phase requires a `release-gate-0.N.toml` index, retained evidence under the release evidence policy,
 and zero Deferred rows among that phase's owned gates at cut.
 

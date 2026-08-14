@@ -1,8 +1,8 @@
 # Upgrade fixtures — phase 0.40 authoring and interoperability
 
-Stage 0 contract refine baseline: living Published `v0.39.0`. Runtime implementation begins at
-Stage 1. Cut target: Hedron `v0.40.0`. Tracking
-[#95](https://github.com/eddiethedean/hedron/issues/95).
+Historical upgrade corpus for the Published `v0.40.0` cut (baseline Published `v0.39.0`).
+Tracking [#95](https://github.com/eddiethedean/hedron/issues/95) closed with
+[`release-gate-0.40.toml`](release-gate-0.40.toml) Verified.
 
 ## Required upgrade corpus
 
@@ -21,14 +21,14 @@ Stage 1. Cut target: Hedron `v0.40.0`. Tracking
 
 | Surface | Before (living tip) | At phase 0.40 cut |
 |---|---|---|
-| Hedron train | `hedron>=0.40.0,<0.41` | `hedron>=0.40.0,<0.41` |
+| Hedron train | `hedron>=0.39.0,<0.40` | `hedron>=0.40.0,<0.41` |
 | Author kit / scaffold | Not Supported | Public contracts + `hedron new element` |
 | React islands | Not Supported | Experimental docs/reference only |
 | `@hedron/elements` | Absent / provisional | Modules + TS types only (optional) |
 
 ## Rollback
 
-Rollback pins `hedron>=0.40.0,<0.41`, removes 0.40-only author/island/npm assets, and verifies no
+Rollback pins `hedron>=0.39.0,<0.40`, removes 0.40-only author/island/npm assets, and verifies no
 stale custom-element definition or island root remains. Browser-local island state is disposable.
 
 ## Required artifacts
@@ -38,3 +38,9 @@ stale custom-element definition or island root remains. Browser-local island sta
 - three-browser island mount/unmount and cache/version-skew tests;
 - clean wheelhouse (and npm, if shipped) install for 0.39 → 0.40 and rollback documentation;
 - remediation fixtures for #162/#203/#204/#219/#220/#222.
+
+## See also
+
+- [Upgrade to 0.40](../guides/upgrade.md)
+- [What’s new in 0.40](../guides/whats-new-0.40.md)
+- [RELEASE_0_40](RELEASE_0_40.md)

@@ -124,6 +124,21 @@ Only `version`, `kind`, and `profile` are required. Profiles keep common templat
 | `full` | Standard plus native JavaScript/custom elements and advanced HTMX events/selectors/transitions |
 | `custom` | Only invariant parsing, escaping, secret, loader, and metadata boundaries plus the IDs in `features` |
 
+### Element declarations (0.40)
+
+Custom-element tags used in the body should be declared in the prologue when you want
+registry validation (`validate_element_declarations`). Example:
+
+```toml
+elements = ["ext-probe"]
+element_abi = { "ext-probe" = 1 }
+element_modules = { "ext-probe" = "my-plugin:probe.mjs" }
+element_events = { "ext-probe" = ["hedron:ready"] }
+```
+
+Requires the `web.custom-elements` feature (for example `profile = "full"`). Undeclared
+hyphenated tags and ABI/module mismatches fail closed against a registry snapshot.
+
 Use `features` for additions or the complete custom set. Feature IDs are namespaced (`web.*`,
 `jinja.*`, `hedron.*`, `htmx.*`, and `browser.*`). Provider-bound features—custom Jinja
 extensions, i18n/do/loop-controls/async, data, charts, and individual HTMX extensions—need their own

@@ -61,7 +61,7 @@ PLUGIN_META = PluginMeta(
     name="my_plugin",
     version="0.1.0",  # keep aligned with your distribution version
     distribution="my-hedron-plugin",
-    hedron_version=">=0.37,<0.38",
+    hedron_version=">=0.40,<0.41",
     capabilities=PluginCapabilities(python=True, styles=True, assets=True),
 )
 
@@ -89,14 +89,57 @@ register.PLUGIN_META = PLUGIN_META  # type: ignore[attr-defined]
 - `hedron_version` constrains which Hedron trains load the plugin
 - Incompatible plugins fail at load with `HED-PLUGIN-0002` — do not silently no-op
 
-## 5. Assets, CSP, and Explorer
+## 5. Custom elements (0.40)
+
+Third-party elements register through public `PluginContext` APIs — never private registry
+imports:
+
+```python
+def register(ctx: PluginContext) -> None:
+    ctx.register_asset(
+        logical_id="my-plugin:probe.mjs",
+        kind="module",
+        path="static/ext-probe.mjs",
+        digest="sha256-...",
+        content_type="text/javascript",
+    )
+    ctx.register_element_definition(
+        logical_id="my-plugin:probe",
+        tag_name="ext-probe",
+        abi_version=1,
+        module_asset_id="my-plugin:probe.mjs",
+        events=("hedron:ready",),
+        parts=("root",),
+        slots={"default": "Primary content"},
+        tokens=("--ext-probe-accent",),
+        first_party=False,
+    )
+```
+
+Scaffold a starter plugin with:
+
+```bash
+hedron new element my-probe
+```
+
+Validate author metadata with `hedron_elements.author.validate_element_author_meta`.
+External consumer proof:
+[`examples/element-author-plugin`](https://github.com/eddiethedean/hedron/tree/main/examples/element-author-plugin).
+
+React migration dispositions (`native` / `hedron` / `element` / `react-island` /
+`not-a-fit`) live in
+[REACT_MIGRATION_MATRIX_040](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/REACT_MIGRATION_MATRIX_040.md).
+The React-island bridge is **Experimental docs/reference only** — not Supported and not
+shipped inside `hedron-elements`.
+
+## 6. Assets, CSP, and Explorer
 
 - Prefer package resources for assets; avoid remote asset URLs unless policy allows
 - Do not ship active script / dangerous URL schemes in registered SVG icons
 - Optional: `ctx.register_explorer_panel(...)` for Explorer UI (see sample kit)
 - Optional: `ctx.register_diagnostic_owner("HED-MINE-")` for plugin-owned codes
 
-## 6. Test without FastAPI
+## 7. Test without FastAPI
 
 ```python
 from hedron_core.plugins import PluginContext
@@ -110,7 +153,7 @@ def test_registers() -> None:
 
 Load the plugin in CI via the same entry-point path production uses.
 
-## 7. Publish and version
+## 8. Publish and version
 
 - Pin against `hedron-core` (and optionally `hedron`) with an upper bound matching the
   adopter train (for example `>=0.40.0,<0.41`).
@@ -119,7 +162,7 @@ Load the plugin in CI via the same entry-point path production uses.
   ([What’s ready](whats-ready.md)).
 - Prefer extras so absent features add **no** import or asset cost.
 
-## 8. Security review checklist
+## 9. Security review checklist
 
 - No raw request/session/DB handles crossed into `hedron-core` types
 - Assets and HTML use SafeUrl / TrustedHtml where required
@@ -132,4 +175,6 @@ Load the plugin in CI via the same entry-point path production uses.
 - [Using plugins](plugin-consumer.md) (adopter enablement) · [Plugins API](../api/PLUGINS.md) ·
   [Error codes](error-codes.md) · [STABILITY](../api/STABILITY.md)
 - Sample kit: `packages/hedron-sample-kit`
+- Element author example: `examples/element-author-plugin`
 - Layout rules: [PROJECT_LAYOUT](https://github.com/eddiethedean/hedron/blob/main/docs/PROJECT_LAYOUT.md)
+- [What’s new in 0.40](whats-new-0.40.md)

@@ -81,6 +81,8 @@ sessions are not Supported yet** — do not market human AT as done.
 | Multi-worker durable jobs | **Supported** with shared Redis backend | [Jobs](../api/JOBS.md) · [Celery / RQ](jobs-celery-rq.md) |
 | DataTable / DataEditor | **Supported** (`hedron[data]`; ABI `hedron-data-editor`) | [Data apps](data-apps.md) · [DATA.md](../api/DATA.md) |
 | Bounded OptimisticMutation | **Supported** for collection/cell edits only; deny-by-default elsewhere | [DATA.md](../api/DATA.md) · [What’s new in 0.39](whats-new-0.39.md) |
+| Public element author kit | **Supported** contracts (`hedron new element`, plugin registration) | [Plugin authoring](plugin-authoring.md) · [What’s new in 0.40](whats-new-0.40.md) |
+| ReactMigrationMatrix / island | Matrix **Supported** as guidance; island **Experimental** docs/reference only | [REACT_MIGRATION_MATRIX_040](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/REACT_MIGRATION_MATRIX_040.md) |
 | Table↔chart cross-filter | **Supported** via `compose_chartlink_039` on Published 0.38 `hedron-chart` | [Dashboards](dashboards.md) |
 | Flask / Django host | **Supported** | [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md) |
 | Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronWorkbench` / `HedronPosit`; no import auto-wrap |

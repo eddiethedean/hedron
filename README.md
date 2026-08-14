@@ -85,7 +85,7 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new in 0.39](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.39/) ·
+[What’s new in 0.40](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.40/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).

@@ -127,9 +127,9 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
   (**Published**; last **v0.40.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.39.x**)
+  (introduced in 0.11; Supported on **0.40.x**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.39.x**
+  — Supported on **0.40.x**
 - Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
 - Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
   narrative [What's new in 0.16](../guides/whats-new-0.16.md); package

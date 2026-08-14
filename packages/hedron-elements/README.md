@@ -19,6 +19,14 @@ The element tags are registered by the package plugin and are not Python compone
 They remain Alpha/incubator surfaces; pin the train and test the native/light-DOM fallback
 on your browser matrix.
 
+**0.40 author kit:** use public `PluginContext` registration and
+`hedron_elements.author` helpers (or `hedron new element`). See
+[Plugin authoring](https://hedron.readthedocs.io/en/latest/guides/plugin-authoring/) and
+[`examples/element-author-plugin`](https://github.com/eddiethedean/hedron/tree/main/examples/element-author-plugin).
+Optional `@hedron/elements` modules/types live under `npm/`; React-island remains
+Experimental docs/reference only.
+
 See the [implementation plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_ELEMENTS_036.md)
 and [0.37 extension plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_ELEMENTS_037.md),
-plus the [platform spec](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/WEB_COMPONENT_PLATFORM.md).
+plus the [0.40 authoring plan](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_AUTHORING_040.md)
+and [platform spec](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/WEB_COMPONENT_PLATFORM.md).

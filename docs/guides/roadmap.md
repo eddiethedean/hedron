@@ -73,7 +73,7 @@ not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](production-quality.md).
 - Planned **0.26–0.35** phases apply an evidence-based production-grade contract to the remaining
-  package fleet. **Published 0.36–0.39** and Planned **0.40–0.42** then establish a
+  package fleet. **Published 0.36–0.40** and Planned **0.41–0.42** then establish a
   standards-based Web Component platform while preserving SSR, native forms/navigation, HTMX,
   and no-Node Python consumption. Neither program is a blanket feature promotion or a scheduled
   `1.0`; see the

@@ -270,6 +270,7 @@ nav:
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
+    - What's new in 0.40: guides/whats-new-0.40.md
     - What's new in 0.39: guides/whats-new-0.39.md
     - What's new in 0.38: guides/whats-new-0.38.md
     - What's new in 0.37: guides/whats-new-0.37.md

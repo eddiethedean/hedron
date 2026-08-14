@@ -1,6 +1,6 @@
 # Specification and implementation status
 
-**Roadmap position:** phase 0.40 **Published** as `v0.40.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Prior Published: 0.39 as `v0.39.0` (2026-08-14).
+**Roadmap position:** phase 0.40 **Published** as `v0.40.0` (2026-08-14). Prior Published: 0.39 as `v0.39.0` (2026-08-14).
 Living tip = `v0.40.0`.
 **Date:** 2026-08-14
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -338,13 +338,18 @@ export/security evidence, and independent `hedron-charts` `0.2.0`. Phase **0.39*
 [0.39 acceptance packet](acceptance/RELEASE_0_39.md)). It ships ABI-conforming
 `hedron-data-editor`, typed `OptimisticMutation` on bounded collection edits, Published
 `hedron-chart` cross-filter composition (`compose_chartlink_039`), owned Experimental rich-surface
-exceptions, worker/stream bounds, and the locked 27-issue remediation packet. Phase **0.40** Stage 0
-contract packet is refined against Published `v0.39.0` (D-068 / RFC-0060;
-[`RELEASE_0_40.md`](acceptance/RELEASE_0_40.md); `release-gate-0.40.toml` all Planned;
-[`HEDRON_AUTHORING_040.md`](implementation/HEDRON_AUTHORING_040.md);
-[#95](https://github.com/eddiethedean/hedron/issues/95) open — do not close until gates Verified).
-Later phases [#96](https://github.com/eddiethedean/hedron/issues/96)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(rephased to 0.41–0.42) still require their own Stage 0 packets. Living tip is **`v0.39.0`**.
+exceptions, worker/stream bounds, and the locked 27-issue remediation packet. Phase **0.40**
+Web Component authoring and interoperability is **Published** as `v0.40.0` (D-068 /
+[RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md); `release-gate-0.40.toml` Verified;
+[#95](https://github.com/eddiethedean/hedron/issues/95) closed; see
+[implementation plan](implementation/HEDRON_AUTHORING_040.md),
+[React migration matrix](implementation/REACT_MIGRATION_MATRIX_040.md), and
+[0.40 acceptance packet](acceptance/RELEASE_0_40.md)). It ships the public author kit and
+`hedron new element`, plugin/HDJ/Explorer/theme metadata parity, `ReactMigrationMatrix` with an
+Experimental island docs/reference, optional `@hedron/elements` modules/types mirror, and the
+locked 6-issue remediation packet. Later phases
+[#96](https://github.com/eddiethedean/hedron/issues/96)–[#97](https://github.com/eddiethedean/hedron/issues/97)
+(rephased to 0.41–0.42) still require their own Stage 0 packets. Living tip is **`v0.40.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

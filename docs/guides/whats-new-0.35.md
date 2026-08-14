@@ -1,7 +1,7 @@
 # What's new in Hedron 0.35
 
 **Published** as `v0.35.0`. Historical pin: `hedron>=0.35.0,<0.36`.
-For new apps, use `hedron>=0.40.0,<0.41`; see [What’s new in 0.39](whats-new-0.40.md).
+For new apps, use `hedron>=0.40.0,<0.41`; see [What’s new in 0.40](whats-new-0.40.md).
 
 Phase 0.35 closes the 0.26+ package-graduation program with a whole-fleet audit: every
 publishable distribution has an owned Supported (or tooling-grade Supported) scope or an

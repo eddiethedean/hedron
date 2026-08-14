@@ -85,6 +85,38 @@ register.PLUGIN_META = PLUGIN_META
 | `shadow_dom` | `bool` | `False` | Use shadow DOM |
 | `htmx_lifecycle` | `bool` | `True` | Participate in HTMX lifecycle |
 
+### `register_asset` (0.40)
+
+Register a packaged asset for element modules/CSS without private registry imports.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `logical_id` | `str` | required | Stable asset id |
+| `kind` | `str` | required | Asset kind (`module`, `style`, …) |
+| `path` | `str` | required | Packaged path relative to the plugin |
+| `digest` | `str` | required | Content digest |
+| `content_type` | `str` | required | MIME type |
+| `attributes` | mapping | `None` | Optional HTML attributes |
+
+### `register_element_definition` (0.40)
+
+Register a portable custom-element definition. Defaults to `first_party=False` for third-party
+authors.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `logical_id` | `str` | required | Stable definition id |
+| `tag_name` | `str` | required | Hyphenated custom-element tag |
+| `abi_version` | `int` | required | Element ABI major |
+| `module_asset_id` | `str` | required | Registered module asset id |
+| `attributes` / `properties` / `methods` / `events` | iterable | `()` | Declared surfaces |
+| `parts` | iterable of `str` | `()` | CSS parts |
+| `slots` | mapping | `None` | Slot name → description |
+| `tokens` | iterable of `str` | `()` | Theme token names |
+| `first_party` | `bool` | `False` | Require `hedron-*` naming when true |
+
+Guide: [Plugin authoring — custom elements](../guides/plugin-authoring.md#5-custom-elements-040).
+
 ### `register_explorer_panel`
 
 | Parameter | Type | Default | Description |

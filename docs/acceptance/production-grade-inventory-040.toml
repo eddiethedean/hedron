@@ -1,9 +1,8 @@
-# Stage 0 planned; baseline v0.39.0
-# Phase 0.40 whole-fleet inventory (Stage 0 planned; baseline v0.39.0).
-# Machine-checked by verify_pkg_40 / PKG-040 at cut; shape validated during refine.
+# Phase 0.40 whole-fleet inventory (Published v0.40.0; baseline v0.39.0).
+# Machine-checked by verify_pkg_40 / PKG-040.
 # disposition: production_grade | incubator | fixture | eol
-# Extends the 0.38 fleet. hedron-elements remains incubator until 0.42 (D-068).
-# Living tip remains Published v0.39.0 until 0.40 cut; hedron-charts stays on Published 0.2.x.
+# Extends the 0.39 fleet. hedron-elements remains incubator until 0.42 (D-068).
+# Living tip is Published v0.40.0; hedron-charts stays on Published 0.2.x.
 # Owning decision: D-068; extends D-066 / D-065 / D-064 fleet. RFC: RFC-0060.
 # PRESENT-034 deferred presentation audit is recorded under hedron-core (see present_034_status).
 # Tracking: #95.

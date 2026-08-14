@@ -1,5 +1,5 @@
-# Phase 0.40 authoring / React migration capability inventory (Stage 0 planned)
-# Living published baseline: Published v0.39.0. Cut target: Hedron v0.40.0.
+# Phase 0.40 authoring / React migration capability inventory (Published v0.40.0)
+# Living published baseline at Stage 0: Published v0.39.0. Cut: Hedron v0.40.0.
 # Owning decision: D-068. RFC: RFC-0060. Tracking #95.
 
 schema = 1

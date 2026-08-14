@@ -29,5 +29,9 @@ APIs and aligns plugins, HDJ, Explorer, themes, and conformance on shared elemen
 ## See also
 
 - [Upgrade to 0.40](upgrade.md)
+- [Plugin authoring](plugin-authoring.md)
+- [HDJ authoring](hdj-authoring.md)
+- [hedron-elements](../packages/hedron-elements.md)
 - [Release notes](release-notes.md)
 - [RELEASE_0_40](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_40.md)
+- [React island reference](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/react-island-reference/README.md)

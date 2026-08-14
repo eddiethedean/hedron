@@ -1,7 +1,8 @@
 # React migration matrix and authoring catalog (0.40)
 
-Phase **0.40** catalog under D-068 / RFC-0060. Stage 0 locks dispositions; runtime lands in
-Stage 1+.
+**Status:** Historical catalog for Published `v0.40.0` (D-068 / RFC-0060). Adopter entry points:
+[What’s new in 0.40](../guides/whats-new-0.40.md) ·
+[Experimental island reference](react-island-reference/README.md).
 
 ## ReactMigrationMatrix dispositions
 

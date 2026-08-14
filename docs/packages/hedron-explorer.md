@@ -2,7 +2,7 @@
 
 Development Component Explorer for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.39.x` (published `v0.39.0`) · pin `>=0.40.0,<0.41`
+**Package maturity:** Beta · **Train:** `0.40.x` (published `v0.40.0`) · pin `>=0.40.0,<0.41`
 **Flagship extra:** `hedron[dev]` · **Import:** `hedron_explorer`  
 **Mount:** `/hedron-explorer/` when enabled · **not required in production**
 
@@ -49,8 +49,10 @@ Open **`/hedron-explorer/`** on the running app.
 | Surface | Role |
 |---|---|
 | `explorer_router` | FastAPI router mounted under `/hedron-explorer/` |
-| HTML panels | Components, routes, graph, security, a11y, packages, settings |
+| HTML panels | Components, routes, graph, security, a11y, packages, settings, **Elements** |
 | JSON APIs | `/hedron-explorer/api/*` — sanitized registry views |
+| Element detail | Inspect ABI, parts/slots/tokens, events, and fallback for registered definitions |
+| Element simulate | `POST /hedron-explorer/api/element-simulate` for allowlisted event simulation |
 | Preview | Production renderer + active build manifest when present |
 | Request simulation | Allowlisted; mutation-safe by default |
 

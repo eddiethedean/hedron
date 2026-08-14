@@ -1176,8 +1176,8 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). The current train is **0.39.x**
-(last published tip `v0.39.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). The current train is **0.40.x**
+(last published tip `v0.40.0`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),
@@ -3052,7 +3052,7 @@ tables, summaries, forms, media links, and exports survive slow, absent, or fail
 
 ## 0.40 — Web Component authoring and interoperability (`v0.40.0`)
 
-**Status:** Published as `v0.40.0` (2026-08-14; in-tree cut, tag/PyPI deferred; D-068). Depends on proven first-party ABI use in 0.36–0.39. Living tip = `v0.40.0`.
+**Status:** Published as `v0.40.0` (2026-08-14; D-068). Depends on proven first-party ABI use in 0.36–0.39. Living tip = `v0.40.0`.
 **Tracking:** [#95](https://github.com/eddiethedean/hedron/issues/95). All 0.40-owned
 gates are Verified (React-island bridge remains Experimental).
 
