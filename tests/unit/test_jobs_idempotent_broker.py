@@ -1,4 +1,4 @@
-"""Celery/RQ idempotent submit must not re-enqueue or fail live jobs (#157)."""
+"""Celery/RQ idempotent submit: skip live re-enqueue (#157); reclaim enqueue fails (#199)."""
 
 from __future__ import annotations
 
@@ -160,3 +160,75 @@ def test_celery_new_submit_enqueue_failure_still_marks_failed() -> None:
     status = backend.get(job_id, auth_subject="u")
     assert status is not None
     assert status.state is JobState.FAILED
+    # Idempotency pointer must be cleared so a retry can create a new job (#199).
+    idem_keys = [k for k in backend._store._client._data if ":idem:" in k]  # type: ignore[attr-defined]
+    assert idem_keys == []
+
+
+def test_celery_idempotent_retry_after_enqueue_failure_reenqueues() -> None:
+    celery = MagicMock()
+    celery.send_task.side_effect = [RuntimeError("broker down"), None]
+    backend = CeleryJobBackend(celery, redis_client=_FakeRedis())  # type: ignore[arg-type]
+
+    with pytest.raises(RuntimeError, match="broker"):
+        backend.submit("demo", {"x": 1}, idempotency_key="idem1", auth_subject="u")
+
+    handle2 = backend.submit("demo", {"x": 1}, idempotency_key="idem1", auth_subject="u")
+    assert celery.send_task.call_count == 2
+    status = backend.get(handle2.job_id, auth_subject="u")
+    assert status is not None
+    assert status.state is JobState.QUEUED
+
+
+def test_rq_idempotent_retry_after_enqueue_failure_reenqueues() -> None:
+    def _task(payload: dict[str, object]) -> None:
+        del payload
+
+    queue = MagicMock()
+    queue.enqueue.side_effect = [RuntimeError("broker down"), MagicMock()]
+    backend = RQJobBackend(
+        queue,
+        redis_client=_FakeRedis(),  # type: ignore[arg-type]
+        task_registry={"demo": _task},
+    )
+
+    with pytest.raises(RuntimeError, match="broker"):
+        backend.submit("demo", {"x": 1}, idempotency_key="idem1", auth_subject="u")
+
+    handle2 = backend.submit("demo", {"x": 1}, idempotency_key="idem1", auth_subject="u")
+    assert queue.enqueue.call_count == 2
+    status = backend.get(handle2.job_id, auth_subject="u")
+    assert status is not None
+    assert status.state is JobState.QUEUED
+
+
+def test_celery_worker_failure_still_blocks_idempotent_replay() -> None:
+    """Real execution failures must keep the idempotency key (#157 / opposite of #199)."""
+    celery = MagicMock()
+    backend = CeleryJobBackend(celery, redis_client=_FakeRedis())  # type: ignore[arg-type]
+    handle = backend.submit("demo", {}, idempotency_key="k", auth_subject="u")
+    backend.mark(handle.job_id, JobState.FAILED, error="worker boom")
+
+    second = backend.submit("demo", {}, idempotency_key="k", auth_subject="u")
+    assert second.job_id == handle.job_id
+    assert celery.send_task.call_count == 1
+
+
+def test_submit_heals_legacy_enqueue_failed_pointer() -> None:
+    """Stuck FAILED+enqueue-error pointers from before the fix are reclaimable."""
+    from hedron_core.job_status_store import CELERY_ENQUEUE_FAILED
+
+    celery = MagicMock()
+    redis = _FakeRedis()
+    backend = CeleryJobBackend(celery, redis_client=redis)  # type: ignore[arg-type]
+    handle = backend.submit("demo", {}, idempotency_key="stuck", auth_subject="u")
+    # Simulate the pre-fix path: FAILED enqueue error while pointer remains.
+    backend._store.mark(handle.job_id, JobState.FAILED, error=CELERY_ENQUEUE_FAILED)
+    assert any(":idem:" in k for k in redis._data)
+
+    handle2 = backend.submit("demo", {}, idempotency_key="stuck", auth_subject="u")
+    assert handle2.job_id != handle.job_id
+    assert celery.send_task.call_count == 2
+    status = backend.get(handle2.job_id, auth_subject="u")
+    assert status is not None
+    assert status.state is JobState.QUEUED

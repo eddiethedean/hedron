@@ -6,7 +6,11 @@ import logging
 from collections.abc import Mapping
 from typing import Any, cast
 
-from hedron_core.job_status_store import RedisStatusStore, require_redis_status_client
+from hedron_core.job_status_store import (
+    CELERY_ENQUEUE_FAILED,
+    RedisStatusStore,
+    require_redis_status_client,
+)
 from hedron_core.jobs import JobHandle, JobState, JobStatus, RedisClient
 from hedron_core.typing_aliases import JsonValue
 
@@ -58,11 +62,8 @@ class CeleryJobBackend:
         try:
             self._app.send_task(job_type, args=[dict(payload)], task_id=handle.job_id)
         except Exception:
-            self._store.mark(
-                handle.job_id,
-                JobState.FAILED,
-                error="Celery enqueue failed",
-            )
+            # Release idempotency so a later submit can retry after a broker blip (#199).
+            self._store.mark_enqueue_failed(handle.job_id, error=CELERY_ENQUEUE_FAILED)
             raise
         return handle
 
