@@ -5,12 +5,16 @@ update. You need CPython **3.11–3.14** and either
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/) or an activated virtual
 environment. Node.js is not required.
 
+If terms such as project folder, terminal, virtual environment, or development server are new,
+use [Your first application with VS Code](first-app-vscode.md). In Posit Workbench, use the
+[`hedron-posit` beginner walkthrough](first-app-posit-workbench.md).
+
 ## 1. Scaffold and run
 
 === "uv (recommended)"
 
     ```bash
-    uvx --from "hedron>=0.36.0,<0.37" hedron new my-hedron-app
+    uvx --from "hedron>=0.37.0,<0.38" hedron new my-hedron-app
     cd my-hedron-app
     uv sync
     uv run uvicorn app:app --reload
@@ -19,7 +23,7 @@ environment. Node.js is not required.
 === "pip (activated virtual environment)"
 
     ```bash
-    python -m pip install "hedron>=0.36.0,<0.37" "uvicorn[standard]"
+    python -m pip install "hedron>=0.37.0,<0.38" "uvicorn[standard]"
     python -m hedron new my-hedron-app
     cd my-hedron-app
     python -m pip install -e .

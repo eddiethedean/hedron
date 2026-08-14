@@ -1,12 +1,15 @@
 # Learning path
 
 A suggested order from first page to production-minded apps. Start with
-[Build your first app](quickstart.md), then [What is HTMX?](what-is-htmx.md). Use
-[Installation](installation.md) when you need prerequisites, adapter choices, or
-troubleshooting.
+[Build your first app](quickstart.md), then [What is HTMX?](what-is-htmx.md). If you know Python
+but are new to editors, terminals, environments, servers, or tests, begin with
+[Your first application with VS Code](first-app-vscode.md) or
+[Your first application in Posit Workbench](first-app-posit-workbench.md) instead. Use
+[Installation](installation.md) when you need prerequisites, adapter choices, or troubleshooting.
 
-**Skills assumed:** Python 3.11+, basic FastAPI (routes / `Form`), and HTML forms.
-No SPA or prior HTMX background is required.
+**Skills assumed after the first-app step:** Python 3.11+ and the ability to edit a file and run a
+command. Basic FastAPI, HTML forms, SPA, and HTMX knowledge are not prerequisites; the curriculum
+introduces the necessary web concepts as they appear.
 
 Coming from Streamlit? Keep this foundation, then use the
 [Streamlit migration center](../guides/streamlit-migration.md) to translate reruns,
@@ -14,7 +17,9 @@ Session State, caching, components, tests, and deployment.
 
 ## 1. Hello page (~10 minutes)
 
-1. [Build your first app](quickstart.md)
+1. Choose one first-app path: [quickstart](quickstart.md),
+   [beginner VS Code](first-app-vscode.md), or
+   [beginner Posit Workbench](first-app-posit-workbench.md)
 2. [Installation](installation.md) (extras / troubleshooting as needed)
 3. [What is HTMX?](what-is-htmx.md) — browser / fragment / region / swap mental model
 4. Optional later (evaluators only): [Maturity labels](how-to-read.md)
@@ -56,7 +61,7 @@ Then read [Core concepts](core-concepts.md) if you want the page/fragment model 
 [reference app](../examples/reference-app.md) is an optional kitchen sink after that.
 
 1. [Data applications](../guides/data-apps.md) / [Charts and HTMX](../guides/charts-and-htmx.md)
-   (`hedron[charts]>=0.36.0,<0.37`; static Matplotlib is the conservative default)
+   (`hedron[charts]>=0.37.0,<0.38`; static Matplotlib is the conservative default)
 2. More recipes: [File upload](../examples/file-upload.md) ·
    [Jobs poll](../examples/jobs-poll.md)
 3. Optional: [Dashboards](../guides/dashboards.md) · [Model demos](../guides/model-demos.md) ·

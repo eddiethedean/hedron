@@ -177,6 +177,8 @@ nav:
   - Start:
     - Overview: getting-started/index.md
     - Build your first app: getting-started/quickstart.md
+    - New developer — VS Code: getting-started/first-app-vscode.md
+    - New developer — Posit Workbench: getting-started/first-app-posit-workbench.md
     - Installation: getting-started/installation.md
     - What is HTMX?: getting-started/what-is-htmx.md
     - Add an HTMX region: guides/htmx-interactions.md

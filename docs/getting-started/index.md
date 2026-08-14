@@ -7,6 +7,13 @@ has an observable browser result.
 **Start now:** [Build your first app](quickstart.md) — scaffold → Hello → Refresh → edit
 (~5–10 minutes after Python + uv/pip are ready).
 
+New to application development, VS Code, or terminals? Choose the slower, fully explained
+walkthrough for your environment:
+
+- [Your first application with VS Code](first-app-vscode.md)
+- [Your first application in Posit Workbench](first-app-posit-workbench.md) — installs and uses
+  `hedron-posit` / `HedronPosit`
+
 ## Golden path
 
 | Step | You add | You verify |
@@ -28,6 +35,8 @@ Evaluating production use? [What’s ready](../guides/whats-ready.md) ·
 
 | Starting point | Continue with |
 |---|---|
+| Know Python, new to application development | [Start with VS Code and terminal basics](first-app-vscode.md) |
+| Know Python, developing in Posit Workbench | [Start with `hedron-posit` in Workbench](first-app-posit-workbench.md) |
 | New FastAPI app | [Build your first app](quickstart.md) |
 | Existing FastAPI app | [Mount Hedron beside existing routes](../guides/plain-fastapi.md) |
 | Flask app | [Scaffold or integrate the Flask adapter](flask.md) — no FastAPI dependency |

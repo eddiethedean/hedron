@@ -6,17 +6,41 @@
 #
 # Usage:
 #   scripts/ci_checks.sh test [--python 3.12]
+#   scripts/ci_checks.sh workbench [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12]
 #   scripts/ci_checks.sh browser [--python 3.12]
 #   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.37.0]
 #   scripts/ci_checks.sh realwb [--python 3.12]
 #   scripts/ci_checks.sh realconnect [--python 3.12]
 #   scripts/ci_checks.sh packaging [--python 3.12]
-#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.37.0] [--with-browser]
+#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.37.0] [options]
+#
+# Full local CI (`all`) mirrors `.github/workflows/ci.yml` job order:
+#   test (Python 3.11–3.14 by default) → workbench-dependencies → quality →
+#   browser (Chromium; pass --all-browsers for main-branch matrix) → realwb →
+#   realconnect → evidence → packaging
+#
+# `all` options (opt out of slow or credential-gated jobs):
+#   --python 3.12       Single Python for test (default matrix: 3.11–3.14)
+#   --all-pythons       Force full test matrix even after --python
+#   --skip-browser      Skip Playwright HTMX suite
+#   --skip-workbench    Skip Workbench dependency bounds matrix
+#   --skip-realwb       Skip REALWB-030 Docker smoke
+#   --skip-realconnect  Skip REALCONNECT-033 Docker smoke
+#   --all-browsers      Run Chromium + Firefox + WebKit (main / release CI)
+#   --with-browser      Deprecated alias (browser runs by default in `all`)
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
 #   HEDRON_GATE_VERSION — default for --gate-version
+#   PWB_LICENSE / CONNECT_LICENSE — optional; realwb/realconnect skip when unset
+#
+# Prerequisites for `all` (match workflow setup steps):
+#   uv sync --locked --all-groups --python 3.12
+#   uv sync --locked --python 3.12 --group docs   # evidence / packaging
+#   Rust toolchain — quality + evidence (hedron-native wheels)
+#   Java 17 + Node 20 — evidence / packaging verify scripts
+#   Playwright — browser job (see ci.yml browser install step)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -24,7 +48,14 @@ cd "$ROOT"
 
 PYTHON="${PYTHON:-3.12}"
 GATE_VERSION="${HEDRON_GATE_VERSION:-0.37.0}"
-WITH_BROWSER=0
+CI_PYTHONS=(3.11 3.12 3.13 3.14)
+PYTHON_EXPLICIT=0
+ALL_PYTHONS=0
+ALL_BROWSERS=0
+SKIP_BROWSER=0
+SKIP_WORKBENCH=0
+SKIP_REALWB=0
+SKIP_REALCONNECT=0
 
 usage() {
   awk '
@@ -48,19 +79,48 @@ run() {
   "$@"
 }
 
+section() {
+  printf '\n======== %s ========\n' "$*"
+}
+
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --python)
         PYTHON="${2:?--python requires a version}"
+        PYTHON_EXPLICIT=1
         shift 2
         ;;
       --gate-version)
         GATE_VERSION="${2:?--gate-version requires a version}"
         shift 2
         ;;
+      --all-pythons)
+        ALL_PYTHONS=1
+        shift
+        ;;
+      --all-browsers)
+        ALL_BROWSERS=1
+        shift
+        ;;
+      --skip-browser)
+        SKIP_BROWSER=1
+        shift
+        ;;
+      --skip-workbench)
+        SKIP_WORKBENCH=1
+        shift
+        ;;
+      --skip-realwb)
+        SKIP_REALWB=1
+        shift
+        ;;
+      --skip-realconnect)
+        SKIP_REALCONNECT=1
+        shift
+        ;;
       --with-browser)
-        WITH_BROWSER=1
+        SKIP_BROWSER=0
         shift
         ;;
       -h | --help)
@@ -221,6 +281,31 @@ cmd_browser() {
   run uv run --python "$PYTHON" pytest -q -m browser --tb=short
 }
 
+cmd_workbench() {
+  # Matches ci.yml workbench-dependencies (minimum + latest Starlette/Uvicorn bounds).
+  local bounds venv=".bounds-venv"
+  for bounds in minimum latest; do
+    echo "== workbench dependencies ($bounds) =="
+    uv venv "$venv" --python "$PYTHON" --clear
+    if [[ "$bounds" == minimum ]]; then
+      uv pip install --python "$venv/bin/python" \
+        -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
+        -e packages/hedron-django \
+        pytest httpx "django>=5.2,<6" "starlette==1.3.1" "uvicorn==0.32.0"
+    else
+      uv pip install --python "$venv/bin/python" \
+        -e packages/hedron-core -e packages/hedron -e packages/hedron-workbench \
+        -e packages/hedron-django \
+        pytest httpx "django>=5.2,<6" "starlette>=1.3.1" "uvicorn>=0.32"
+    fi
+    run "$venv/bin/pytest" -q \
+      tests/adapters/workbench \
+      tests/integration/test_workbench_urls.py \
+      tests/integration/test_workbench_runner.py \
+      tests/security/test_workbench_adversarial.py
+  done
+}
+
 cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/build_evidence_bundle.py
   run uv run --python "$PYTHON" --with pip-audit python scripts/dep_audit.py
@@ -256,15 +341,81 @@ cmd_packaging() {
 }
 
 cmd_all() {
-  cmd_test
-  cmd_quality
-  cmd_evidence
-  cmd_packaging
-  if [[ "$WITH_BROWSER" -eq 1 ]]; then
-    cmd_browser
-  else
-    echo "skip: browser (pass --with-browser to include)"
+  local py browser saved_python="$PYTHON"
+  local -a browsers
+
+  if [[ "$ALL_PYTHONS" -eq 0 && "$PYTHON_EXPLICIT" -eq 0 ]]; then
+    ALL_PYTHONS=1
   fi
+
+  section "CI full check (mirrors .github/workflows/ci.yml)"
+  cat <<'NOTE'
+Prerequisites (same as GitHub Actions setup steps):
+  uv sync --locked --all-groups --python 3.12
+  uv sync --locked --python 3.12 --group docs
+  Rust, Java 17, Node 20, Playwright — see script header
+NOTE
+
+  if [[ "$ALL_PYTHONS" -eq 1 ]]; then
+    for py in "${CI_PYTHONS[@]}"; do
+      section "test (Python $py)"
+      PYTHON="$py"
+      cmd_test
+    done
+  else
+    section "test (Python $PYTHON)"
+    cmd_test
+  fi
+
+  if [[ "$PYTHON_EXPLICIT" -eq 0 ]]; then
+    PYTHON="3.12"
+  else
+    PYTHON="$saved_python"
+  fi
+
+  if [[ "$SKIP_WORKBENCH" -eq 0 ]]; then
+    section "workbench-dependencies"
+    cmd_workbench
+  else
+    echo "skip: workbench (--skip-workbench)"
+  fi
+
+  section "quality"
+  cmd_quality
+
+  if [[ "$SKIP_BROWSER" -eq 0 ]]; then
+    browsers=(chromium)
+    if [[ "$ALL_BROWSERS" -eq 1 ]]; then
+      browsers=(chromium firefox webkit)
+    fi
+    for browser in "${browsers[@]}"; do
+      section "browser ($browser)"
+      export HEDRON_BROWSER_ENGINE="$browser"
+      cmd_browser
+    done
+  else
+    echo "skip: browser (--skip-browser)"
+  fi
+
+  if [[ "$SKIP_REALWB" -eq 0 ]]; then
+    section "realwb"
+    cmd_realwb
+  else
+    echo "skip: realwb (--skip-realwb)"
+  fi
+
+  if [[ "$SKIP_REALCONNECT" -eq 0 ]]; then
+    section "realconnect"
+    cmd_realconnect
+  else
+    echo "skip: realconnect (--skip-realconnect)"
+  fi
+
+  section "evidence"
+  cmd_evidence
+
+  section "packaging"
+  cmd_packaging
 }
 
 # --- dispatch ------------------------------------------------------------------
@@ -279,6 +430,7 @@ parse_args "$@"
 
 case "$SUITE" in
   test) cmd_test ;;
+  workbench) cmd_workbench ;;
   quality) cmd_quality ;;
   browser) cmd_browser ;;
   evidence) cmd_evidence ;;

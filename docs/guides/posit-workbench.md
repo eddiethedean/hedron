@@ -1,9 +1,14 @@
 # Posit Workbench
 
-Run Hedron behind Posit Workbench or RStudio Server with a Workbench-aware app
-facade or by changing only the launch command of an existing app.
+Run Hedron behind Posit Workbench or RStudio Server with a Workbench-aware app facade or by
+changing only the launch command of an existing app. For a new application, install
+`hedron-posit`, use `HedronPosit`, and launch with `hedron-posit run`; the
+[`hedron-posit` beginner walkthrough](../getting-started/first-app-posit-workbench.md) explains each
+step.
 
-**Requires:** `hedron-workbench>=0.36.0,<0.37` (or `hedron[workbench]>=0.36.0,<0.37`).
+**Preferred for new apps:** `hedron-posit>=0.37.0,<0.38` (or
+`hedron[posit]>=0.37.0,<0.38`). **Compatibility surface:**
+`hedron-workbench>=0.37.0,<0.38` (or `hedron[workbench]>=0.37.0,<0.38`).
 Generic Workbench behavior is provided by `fastapi-workbench>=1.0.0,<2.0`; see
 [FastAPI Workbench](fastapi-workbench.md) for plain FastAPI apps.
 
@@ -15,9 +20,9 @@ Workbench **2026.07.0**. Prefer `HedronPosit` / `hedron-posit run` for new apps;
 
 ```python
 from hedron import Page, Text
-from hedron_workbench import HedronWorkbench
+from hedron_posit import HedronPosit
 
-app = HedronWorkbench(
+app = HedronPosit(
     title="My app",
     security="standard",
     explorer="off",
@@ -42,7 +47,7 @@ uvicorn app:app --reload
 For local reproduction of a prefixed Workbench request:
 
 ```python
-app = HedronWorkbench(..., workbench_mount="/s/example/p/8050")
+app = HedronPosit(..., workbench_mount="/s/example/p/8050")
 ```
 
 The explicit mount scopes cookies during construction and routes both
@@ -51,15 +56,19 @@ mount-prefixed requests and already-stripped proxy requests.
 ## Workbench launcher
 
 ```bash
+hedron-posit check
+hedron-posit run app:app
+hedron-posit run app:create_app --factory
+
+# Compatibility entry points for an existing app:
 hedron run app:app
 hedron-workbench run app:app
-hedron-workbench run app:create_app --factory
 hedron-workbench check --format json
 ```
 
-`hedron run` automatically delegates to the installed optional adapter when
-`RS_SERVER_URL` is present; the package-specific command remains available for
-explicit deployment configuration and diagnostics.
+Use the `hedron-posit` commands for a new app. `hedron run` automatically delegates to an
+installed optional adapter when `RS_SERVER_URL` is present; the `hedron-workbench` commands remain
+available for compatibility with existing projects.
 
 The launcher:
 
@@ -71,15 +80,15 @@ The launcher:
 Session and CSRF cookies are then scoped to the browser mount. Hedron component
 URLs, safe redirects, HTMX headers, assets, OpenAPI, and browser runtime helpers
 are prefixed exactly once without application-side `local_href` calls.
-`HedronWorkbench` consumes the resolved launcher handoff and is not wrapped a
+`HedronPosit` consumes the resolved launcher handoff and is not wrapped a
 second time. An existing `Hedron` or generic ASGI app still receives the outer
 `workbenchify` wrapper, so changing only the command remains supported.
 
-Dynamic discovery cannot happen inside `HedronWorkbench.__init__`: the
+Dynamic discovery cannot happen inside `HedronPosit.__init__`: the
 `rserver-url` command needs the listener's selected port before the application
 module is imported.
 
-## Explicit wrapper
+## Compatibility wrapper for an existing app
 
 ```python
 import os
@@ -103,11 +112,11 @@ HTMX response headers itself.
 
 ## Diagnostics and trust
 
-`hedron-workbench check --format json` resolves configuration without binding,
+`hedron-posit check --format json` resolves configuration without binding,
 executing discovery, or importing the app. `app.workbench_status()` reports the
 facade's redacted resolved state.
 
-`hedron-workbench doctor app:app --live` additionally binds, discovers, imports,
+`hedron-posit doctor app:app --live` additionally binds, discovers, imports,
 and ASGI-probes generated URLs and cookie paths. Use `--topology` with `local`,
 `launcher-local`, `launcher-kubernetes`, `launcher-slurm`, or `reverse-proxy`.
 
@@ -130,7 +139,7 @@ and never derives an origin from the inbound `Host` header.
 
 | Symptom | Fix |
 |---|---|
-| Cookies missing under `/s/…/p/…` | Prefer `HedronWorkbench` / the launcher; request-time `root_path` repairs Hedron-owned cookies only |
+| Cookies missing under `/s/…/p/…` | Prefer `HedronPosit` / `hedron-posit run`; request-time `root_path` repairs Hedron-owned cookies only |
 | HTMX 403 | Declare fragment regions; mount stripping is fail-closed |
 | `HED-WB-0003` | `rserver-url` missing or non-absolute; pass `--mount` for local repro |
 | `HED-WB-0009` | Reload and multiple workers were combined; select one supervisor mode |
