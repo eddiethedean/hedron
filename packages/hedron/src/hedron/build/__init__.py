@@ -45,6 +45,11 @@ except Exception:  # pragma: no cover  # noqa: BLE001
 __all__ = ["BuildResult", "load_build_manifest", "run_build"]
 
 _URL_RE = re.compile(r"url\(\s*(['\"]?)([^)'\"]+)\1\s*\)", re.IGNORECASE)
+# Static/dynamic import and re-export specifiers with relative paths only.
+_MODULE_SPEC_RE = re.compile(
+    r"""(?P<head>\b(?:import|export)\b[^'"\n]*?\bfrom\s+|import\s*\(\s*)"""
+    r"""(?P<quote>['"])(?P<spec>\.\.?/[^'"]+)(?P=quote)"""
+)
 _BUILD_LOCKS_GUARD = threading.Lock()
 _BUILD_LOCKS: dict[Path, threading.RLock] = {}
 
@@ -70,6 +75,73 @@ def _rewrite_css_urls(css: str, url_map: dict[str, str]) -> str:
         return f"url({quote}{rewritten}{quote})"
 
     return _URL_RE.sub(repl, css)
+
+
+def _rewrite_module_imports(js: str, basename_map: dict[str, str]) -> str:
+    """Rewrite relative ES module specifiers to fingerprinted sibling filenames.
+
+    Build flattens modules into one assets directory, so ``./foo.mjs`` becomes
+    ``./foo.<digest>.mjs`` when ``foo.mjs`` was fingerprinted in the same pass.
+    """
+
+    def repl(match: re.Match[str]) -> str:
+        spec = match.group("spec")
+        name = Path(spec).name
+        hashed = basename_map.get(name)
+        if hashed is None or hashed == name:
+            return match.group(0)
+        return f"{match.group('head')}{match.group('quote')}./{hashed}{match.group('quote')}"
+
+    return _MODULE_SPEC_RE.sub(repl, js)
+
+
+def _relink_fingerprinted_modules(
+    assets_dir: Path,
+    entries: list[Any],
+    *,
+    basename_by_path: dict[str, str],
+) -> list[Any]:
+    """After copy-fingerprint, rewrite relative imports and re-emit changed modules."""
+    from hedron_core.manifests import AssetEntry
+
+    # Bound iterations: longest import chain cannot exceed module count.
+    for _ in range(max(len(basename_by_path), 1) + 2):
+        changed = False
+        basename_map = {basename_by_path[path]: path for path in list(basename_by_path)}
+        for index, entry in enumerate(list(entries)):
+            if not isinstance(entry, AssetEntry) or entry.kind != "module":
+                continue
+            if not entry.path.endswith((".mjs", ".js")):
+                continue
+            dest = assets_dir / entry.path
+            if not dest.is_file():
+                continue
+            text = dest.read_text(encoding="utf-8")
+            rewritten = _rewrite_module_imports(text, basename_map)
+            if rewritten == text:
+                continue
+            original_basename = basename_by_path.get(entry.path, Path(entry.path).name)
+            stem = Path(original_basename).stem
+            suffix = Path(original_basename).suffix or ".mjs"
+            old_path = entry.path
+            dest.unlink(missing_ok=True)
+            new_entry = fingerprint_bytes(
+                rewritten.encode("utf-8"),
+                output_dir=assets_dir,
+                logical_id=entry.logical_id,
+                kind=entry.kind,
+                filename_prefix=stem,
+                suffix=suffix,
+                content_type=entry.content_type or "text/javascript",
+                attributes=dict(entry.attributes),
+            )
+            entries[index] = new_entry
+            basename_by_path.pop(old_path, None)
+            basename_by_path[new_entry.path] = original_basename
+            changed = True
+        if not changed:
+            break
+    return entries
 
 
 def _atomic_promote(tmp_root: Path, final_dir: Path) -> None:
@@ -274,6 +346,7 @@ def _execute_build(
 
         css_symbols: list[CssSymbolManifest] = []
         asset_entries = []
+        module_basename_by_path: dict[str, str] = {}
 
         registry = get_registry()
         for meta in registry.components():
@@ -328,6 +401,7 @@ def _execute_build(
                     attributes={"type": "module"},
                 )
                 asset_entries.append(entry)
+                module_basename_by_path[entry.path] = path.name
 
         # Plugin/package assets registered via register_asset (e.g. DataEditor CSS).
         component_browser_paths = {
@@ -351,6 +425,8 @@ def _execute_build(
                 attributes=attrs,
             )
             asset_entries.append(entry)
+            if asset.kind == "module":
+                module_basename_by_path[entry.path] = path.name
 
         css_parts.append("@layer utilities {\n}\n")
         css_parts.append("@layer overrides {\n}\n")
@@ -374,15 +450,15 @@ def _execute_build(
         try:
             proof = Path(str(resources.files("hedron").joinpath("static/hedron-disclose.mjs")))
             if proof.is_file():
-                asset_entries.append(
-                    fingerprint_file(
-                        proof,
-                        output_dir=assets_dir,
-                        logical_id="hedron:disclose",
-                        kind="module",
-                        attributes={"type": "module"},
-                    )
+                disclose_entry = fingerprint_file(
+                    proof,
+                    output_dir=assets_dir,
+                    logical_id="hedron:disclose",
+                    kind="module",
+                    attributes={"type": "module"},
                 )
+                asset_entries.append(disclose_entry)
+                module_basename_by_path[disclose_entry.path] = proof.name
         except HedronError:
             raise
         except OSError as exc:
@@ -392,6 +468,12 @@ def _execute_build(
                 "Could not fingerprint hedron-disclose.mjs: %s",
                 exc,
             )
+
+        _relink_fingerprinted_modules(
+            assets_dir,
+            asset_entries,
+            basename_by_path=module_basename_by_path,
+        )
 
         asset_manifest = build_asset_manifest(asset_entries)
         manifest = BuildManifest(
