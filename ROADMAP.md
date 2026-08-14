@@ -2790,9 +2790,9 @@ no package remains Alpha merely because it lacked an owner.
 
 ## 0.36 — Web Component ABI and lifecycle foundation (`v0.36.0`)
 
-**Status:** Published in-tree as `v0.36.0` (tag/PyPI pending). [RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md)
+**Status:** **Published** as `v0.36.0`. [RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md)
 **Accepted** (D-064). All 0.36-owned gates Verified.
-**Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92). Close after GitHub/PyPI publish assets.
+**Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92). Publish assets tracked in the 0.36 acceptance packet.
 **Evidence:** [RELEASE_0_36](docs/acceptance/RELEASE_0_36.md) ·
 [release-gate-0.36.toml](docs/acceptance/release-gate-0.36.toml) ·
 [HEDRON_ELEMENTS_036](docs/implementation/HEDRON_ELEMENTS_036.md).
@@ -3398,7 +3398,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0064 Production-grade developer / portable conformance tooling | 0.31 (D-059; Accepted) |
 | 0065 Production-grade deny-by-default MCP projection | 0.32 (D-060; Accepted; Alpha product contract remains 0043 @ 0.17) |
 | 0066 `hedron-posit` unified Posit deployment adapter | 0.33 (D-061; Draft; must be Accepted before implementation) |
-| 0060 Web Component platform program | 0.36–0.41 (**Accepted**; D-064; 0.36 Stage 0 refined) |
+| 0060 Web Component platform program | 0.36–0.41 (**Accepted**; D-064; 0.36 **Published**) |
 
 ## Open GitHub issue ownership (0.13+)
 

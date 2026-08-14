@@ -30,8 +30,8 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 | **0.32** | Production-grade deny-by-default MCP projection | **Published** (`v0.32.0` / `hedron-mcp` `0.2.0` Beta; D-060 / RFC-0065; [#89](https://github.com/eddiethedean/hedron/issues/89)) |
 | **0.33** | Unified `hedron-posit` facade for ordinary Hedron, Posit Workbench, and Posit Connect | **Published** (`v0.33.0` / `hedron-posit` `0.33.0` Beta; D-061 / RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)). Supported cookie bridge dropped after Stage 0. |
 | **0.34** | Production-grade Gradio/Hugging Face client interoperability | **Published** (`v0.34.0` / `hedron-gradio` `0.2.0` Beta; D-062 / RFC-0067; [#90](https://github.com/eddiethedean/hedron/issues/90)) |
-| **0.35** | Whole-fleet production-grade closure | **Published** (`v0.36.0`; D-063 / RFC-0068; [#91](https://github.com/eddiethedean/hedron/issues/91)) |
-| **0.36** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | Published in-tree `v0.36.0` (D-064; [#92](https://github.com/eddiethedean/hedron/issues/92); tag pending) |
+| **0.35** | Whole-fleet production-grade closure | **Published** (`v0.35.0`; D-063 / RFC-0068; [#91](https://github.com/eddiethedean/hedron/issues/91)) |
+| **0.36** | Web Component ABI, state ownership, `hedron-elements`, SSR fallback, and HTMX lifecycle | **Published** (`v0.36.0`; D-064; [#92](https://github.com/eddiethedean/hedron/issues/92)) |
 | **0.37** | Async interaction state, form-associated elements, gestures/overlays, and semantic primitives | Planned ([#93](https://github.com/eddiethedean/hedron/issues/93)) |
 | **0.38** | Optimistic mutations and rich data, chart, map, media, and editor elements | Planned ([#94](https://github.com/eddiethedean/hedron/issues/94)) |
 | **0.39** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | Planned ([#95](https://github.com/eddiethedean/hedron/issues/95)) |
@@ -74,12 +74,13 @@ not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
 
 ## Honest gaps on the current train (0.36.x)
 
-- Current **published** PyPI train is **0.34.x** (last `v0.36.0`)
+- Current **published** PyPI train is **0.36.x** (last `v0.36.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`
   (0.28), and Workbench packages (`hedron-workbench` / `fastapi-workbench` on 0.29–0.30)
   Supported inventories — not every Beta symbol
+- Alpha `hedron-elements` ships on the 0.36 train (incubator until 0.41)
 - Notebook preview is tooling-grade / localhost-only (0.31); MCP is Beta for the declared
   Supported inventory (`hedron-mcp` `0.2.0`; phase 0.32 / RFC-0065); mutations remain Experimental
 - Specialty extras (TerminalView / joystick / device) are **Experimental** — install via

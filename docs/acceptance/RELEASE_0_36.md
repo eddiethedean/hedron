@@ -1,7 +1,7 @@
 # Hedron `v0.36` Web Component ABI / lifecycle foundation acceptance
 
-**Status:** **Published** in-tree as `v0.36.0` (2026-08-13; git tag / PyPI / GitHub Release
-pending). Living tip is `v0.36.0` / pin `hedron>=0.36.0,<0.37`.
+**Status:** **Published** as `v0.36.0` (2026-08-13). Living tip is `v0.36.0` / pin
+`hedron>=0.36.0,<0.37`.
 
 Phase 0.36 establishes one versioned, framework-neutral Web Component ABI and ships Alpha
 `hedron-elements` with SSR/native HTML as the canonical fallback and HTMX as the request
@@ -70,7 +70,7 @@ Implementation: [HEDRON_ELEMENTS_036](../implementation/HEDRON_ELEMENTS_036.md).
 
 ## Cut verification
 
-At in-tree `v0.36.0` tip bump (tag/PyPI later):
+At Published `v0.36.0`:
 
 ```bash
 python scripts/verify_pkg_36.py
@@ -82,7 +82,10 @@ python scripts/check_release_gate.py 0.36.0 --execute-verified
 - [x] Exact cut matrix has no `TBD` on Supported lanes
 - [x] RFC-0060 Accepted and implementation plan matches it
 - [x] Every 0.36-owned release-gate row Verified with zero Deferred
-- [x] `hedron-elements` Alpha `0.36.0` in-tree; fleet inventory-036 amended
-- [x] Tip/SSOT honesty for living `0.36.0` (STATUS / RELEASE / adopter hubs)
+- [x] `hedron-elements` Alpha `0.36.0`; fleet inventory-036 amended
+- [x] Tip/SSOT honesty for Published `0.36.0` (STATUS / RELEASE / adopter hubs)
+
+### Post-cut publish assets (maintainer)
+
 - [ ] Close #92 after release assets are published on GitHub/PyPI
 - [ ] `git tag` / push `v0.36.0`, PyPI publish, GitHub Release

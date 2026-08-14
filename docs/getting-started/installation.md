@@ -71,8 +71,8 @@ After following [Build your first app](quickstart.md):
     python -c "import hedron; print(hedron.__version__)"
     ```
 
-Expect **`0.34.0`** or a newer **`0.34.x`** patch on this train. Last published
-PyPI/git is **`v0.34.0`**. Pin with `hedron>=0.36.0,<0.37` for
+Expect **`0.36.0`** or a newer **`0.36.x`** patch on this train. Last published
+PyPI/git is **`v0.36.0`**. Pin with `hedron>=0.36.0,<0.37` for
 production.
 
 If `hedron` is not found after install, prefer **`python -m hedron …`** or see

@@ -1,8 +1,8 @@
 # Compatibility policy
 
-**Status:** Accepted for the **0.34.x** train (**Published**; tip
-PyPI/git = `v0.34.0`)
-**Reviewed:** 2026-08-11
+**Status:** Accepted for the **0.36.x** train (**Published**; tip
+PyPI/git = `v0.36.0`)
+**Reviewed:** 2026-08-13
 
 ## Current train (read this first)
 
@@ -21,9 +21,9 @@ compatible range; versions outside the Supported column are installable but unsu
 until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`, `hedron-workbench`, `hedron-posit`)
-stay on the `0.34.x` train (Published as `v0.34.0`). Independent Beta packages
+stay on the `0.36.x` train (Published as `v0.36.0`). Independent Beta packages
 `hedron-charts`, `hedron-native`, and `hedron-mcp` version on satellite lines.
-Alpha packages `hedron-gradio`, and tooling packages `hedron-sample-kit`,
+Alpha packages `hedron-elements`, `hedron-gradio`, and tooling packages `hedron-sample-kit`,
 `hedron-notebook`, and `hedron-sim` version independently.
 
 ### Charts and sample-kit compatibility floor

@@ -101,7 +101,7 @@ hedron/
 The flagship package contains the registry and trace hooks needed by
 Explorer but not the Explorer frontend.
 
-**Publish note:** the coordinated published train tip is **`v0.34.0`** — see
+**Publish note:** the coordinated published train tip is **`v0.36.0`** — see
 [STATUS](STATUS.md).
 Experimental Java/Node runtimes live under
 `packages/hedron-runtime-*` outside the uv workspace.

@@ -1,7 +1,10 @@
 # What’s new in 0.36
 
-**Published** as `v0.36.0` (in-tree tip; PyPI/GitHub Release pending tag). Pin
-`hedron>=0.36.0,<0.37`.
+**Published** as `v0.36.0`. Pin `hedron>=0.36.0,<0.37`.
+
+Phase 0.36 establishes the Web Component ABI foundation (RFC-0060 / D-064): a versioned
+element registry, SSR/HTMX lifecycle rules, and `ElementStateOwnership`. This is **not**
+production-grade Web Components and **not** Hedron `1.0`.
 
 ## Highlights
 
@@ -21,4 +24,11 @@ python -m pip install "hedron[elements]>=0.36.0,<0.37"
 ## Notes
 
 - Live SSE/WS remain experimental; polling stays the Supported production story.
-- Closing the 0.36 tracking issue awaits the tagged PyPI/GitHub release assets.
+- `hedron-elements` is Alpha / incubator until phase **0.41**.
+
+## See also
+
+[RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) ·
+[RELEASE_0_36](../acceptance/RELEASE_0_36.md) ·
+[What’s ready](whats-ready.md) ·
+[Upgrade](upgrade.md)

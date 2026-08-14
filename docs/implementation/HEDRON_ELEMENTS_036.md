@@ -80,7 +80,8 @@ Wire CI jobs (`test` / `browser` / `packaging`) to the gate commands.
 ## Stage 6 — cut (`PKG-036`)
 
 - Flip gates to Verified; `verify_pkg_36.py` without `--allow-planned`
-- Bump train to `0.36.0`; publish Alpha `hedron-elements`; close #92
+- Bump train to `0.36.0`; publish Alpha `hedron-elements`; publish assets / close #92
+  when GitHub/PyPI release artifacts are attached
 
 ## Cut verification
 

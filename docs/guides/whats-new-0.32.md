@@ -2,9 +2,9 @@
 
 !!! note "Living train"
 
-    Pin `hedron>=0.34.0,<0.35`. See [What’s new in 0.33](whats-new-0.33.md).
+    Pin `hedron>=0.36.0,<0.37` for new apps. See [What’s new in 0.36](whats-new-0.36.md).
 
-**Published** as `v0.32.0`. Historical pin for this train: `hedron>=0.34.0,<0.35`.
+**Published** as `v0.32.0`. Historical pin for this train: `hedron>=0.32.0,<0.33`.
 
 Phase **0.32** (D-060 / RFC-0065) graduates **`hedron-mcp`** to production-grade
 deny-by-default MCP Streamable HTTP projection for an explicitly bounded Supported

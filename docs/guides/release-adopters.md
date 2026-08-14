@@ -2,12 +2,12 @@
 
 The canonical release history now lives on [Releases](release-notes.md).
 
-Current public release: **v0.34.0**. Recommended constraint:
+Current public release: **v0.36.0**. Recommended constraint:
 `hedron>=0.36.0,<0.37`.
 
 Continue with:
 
-- [Upgrade to 0.32](upgrade.md)
+- [Upgrade to 0.36](upgrade.md)
 - [What’s ready today](whats-ready.md)
 - [Ship a Hedron app](ship.md)
 - [Release evidence](evidence-pack.md)

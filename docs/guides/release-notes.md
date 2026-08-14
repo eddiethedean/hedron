@@ -3,6 +3,23 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.36.0 — 2026-08-13
+
+Coordinated Beta train cut for Web Component ABI / lifecycle foundation
+(D-064 / RFC-0060).
+
+- Ships Alpha `hedron-elements` `0.36.0` with shared bridge and reference
+  `hedron-example` (SSR/HTMX lifecycle; not form-associated).
+- Versioned element registry, `ElementStateOwnership`, and `HED-ELEMENT-*` /
+  `HED-ELEMENT-STATE-*` diagnostics.
+- Fleet inventory-036 registers `hedron-elements` as incubator until 0.41.
+- Pin `hedron>=0.36.0,<0.37`.
+
+```bash
+python -m pip install -U "hedron>=0.36.0,<0.37"
+python -m pip install "hedron[elements]>=0.36.0,<0.37"
+```
+
 ## 0.35.0 — 2026-08-13
 
 Coordinated Beta train cut for whole-fleet production-grade closure
@@ -12,11 +29,8 @@ Coordinated Beta train cut for whole-fleet production-grade closure
   for every publishable package/runtime.
 - Tooling packages (notebook, sample-kit, sim, runtimes) reconciled to Beta tooling-grade.
 - PRESENT-034 default presentation gallery remains deferred/experimental.
-- Pin `hedron>=0.36.0,<0.37`.
-
-```bash
-python -m pip install -U "hedron>=0.36.0,<0.37"
-```
+- Historical cut pin `hedron>=0.35.0,<0.36`. Install the current tip with the pin under
+  **0.36.0** above.
 
 ## 0.34.0 — 2026-08-13
 
@@ -29,7 +43,7 @@ interop (D-062 / RFC-0067).
   MCP stays satellite `>=0.2.0,<0.3`.
 - Default presentation gallery (`PRESENT-034`) deferred to whole-fleet `0.35` audit.
 - Historical cut pin `hedron>=0.34.0,<0.35`. Install the current tip with the pin under
-  **0.35.0** above.
+  **0.36.0** above.
 
 ## 0.33.0 — 2026-08-13
 

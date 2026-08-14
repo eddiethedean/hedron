@@ -2,7 +2,7 @@
 # Consumed by scripts/check_release_gate.py (manifest path) / verify_pkg_36.py.
 # Zero Deferred policy: every 0.36-owned row must be Verified at cut.
 # Owning decision: D-064. Design: RFC-0060. Tracking: #92.
-# Stage 0 refine: all rows Planned; living tip remains 0.35.x.
+# Stage 0 refine complete; all rows Verified at Published tip `v0.36.0`.
 
 [[evidence]]
 id = "ABI-036"

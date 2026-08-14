@@ -1,7 +1,7 @@
 # Web Component platform acceptance
 
-**Planning status:** RFC-0060 **Accepted** (D-064); phases 0.36–0.41. Phase **0.36**
-Stage 0 refined — see [`RELEASE_0_36.md`](RELEASE_0_36.md) and
+**Planning status:** RFC-0060 **Accepted** (D-064); phases 0.36–0.41. Phase **0.36** is
+**Published** (`v0.36.0`; all owned gates Verified) — see [`RELEASE_0_36.md`](RELEASE_0_36.md) and
 [`release-gate-0.36.toml`](release-gate-0.36.toml). Later phases remain draft until their
 own Stage 0 packets land.
 Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061;

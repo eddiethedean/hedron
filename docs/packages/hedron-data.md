@@ -2,7 +2,7 @@
 
 DataTable, DataEditor, and data-source toolkit for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.34.x` (published `v0.34.0`) · pin `>=0.36.0,<0.37`
+**Package maturity:** Beta · **Train:** `0.36.x` (published `v0.36.0`) · pin `>=0.36.0,<0.37`
 **Flagship extra:** `hedron[data]` · **Import:** `hedron_data`  
 **Capability:** Supported for DataTable / DataEditor when pinned — see
 [What’s ready](../guides/whats-ready.md).

@@ -2,7 +2,7 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.36 **Published** as `v0.36.0` (2026-08-13; in-tree tip, tag/PyPI pending). Prior: 0.35 **Published** as `v0.35.0` (2026-08-13).
+**Roadmap position:** phase 0.36 **Published** as `v0.36.0` (2026-08-13). Prior: 0.35 **Published** as `v0.35.0` (2026-08-13).
 Living tip = `v0.36.0`.
 **Date:** 2026-08-13
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
@@ -19,7 +19,7 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `hedron-sim`, `hedron-mcp`, `hedron-gradio`. Alpha — `hedron-elements`.
 
 **Phase focus:** Living train is **0.36** (D-064 / RFC-0060) — Web Component ABI / Alpha `hedron-elements`
-(`release-gate-0.36.toml` Verified; in-tree tip `v0.36.0`, tag/PyPI pending).
+(`release-gate-0.36.toml` Verified; tip `v0.36.0`).
 Prior Published **0.35** fleet closure / **0.34** Gradio / **0.33** (unified Posit adapter as `v0.33.0`) and **0.32** (MCP as `v0.32.0`) remain in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
@@ -288,10 +288,9 @@ RFC-0066; [#167](https://github.com/eddiethedean/hedron/issues/167)); see
 (`v0.34.0` / `hedron-gradio` `0.2.0` Beta; D-062 / RFC-0067; [#90](https://github.com/eddiethedean/hedron/issues/90));
 see [implementation plan](docs/implementation/HEDRON_GRADIO_034.md) and
 [0.34 acceptance packet](docs/acceptance/RELEASE_0_34.md). Phase **0.35** is **Published** (`v0.35.0`; D-063 / [RFC-0068](docs/rfcs/RFC-0068-WHOLE-FLEET-CLOSURE.md); [#91](https://github.com/eddiethedean/hedron/issues/91)).
-Phase **0.36** is **Published** in-tree as `v0.36.0` (D-064 / [RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md); [#92](https://github.com/eddiethedean/hedron/issues/92));
+Phase **0.36** is **Published** as `v0.36.0` (D-064 / [RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md); [#92](https://github.com/eddiethedean/hedron/issues/92));
 see [implementation plan](docs/implementation/HEDRON_ELEMENTS_036.md) and
-[0.36 acceptance packet](docs/acceptance/RELEASE_0_36.md). Git tag / PyPI / GitHub Release remain
-pending; keep #92 open until publish assets exist. Later phases
+[0.36 acceptance packet](docs/acceptance/RELEASE_0_36.md). Later phases
 [#93](https://github.com/eddiethedean/hedron/issues/93)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 (0.37–0.41) still require their own Stage 0 packets. Living tip is **`v0.36.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
