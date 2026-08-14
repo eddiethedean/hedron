@@ -219,6 +219,49 @@ def test_accumulate_requires_empty_handler() -> None:
             return swap(html.li(sim_form("note")))
 
 
+def test_duplicate_fragment_route_registration_fails_closed() -> None:
+    """#209: same METHOD path must not silently overwrite the first handler."""
+    app = SimApp(demo_id="dup")
+    region = app.region("panel")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(html.div(id=region.id), title="x")
+
+    @app.fragment("/x", region=region)
+    def first():
+        return swap(html.div("a", id=region.id))
+
+    with pytest.raises(ValueError, match="Duplicate SimApp route"):
+
+        @app.fragment("/x", region=region)
+        def second():
+            return swap(html.div("b", id=region.id))
+
+    assert app.routes["GET /x"].handler is first
+
+
+def test_duplicate_action_route_registration_fails_closed() -> None:
+    app = SimApp(demo_id="dup-action")
+    region = app.region("panel")
+
+    @app.page("/")
+    def home() -> Page:
+        return Page(html.div(id=region.id), title="x")
+
+    @app.action("/save", region=region)
+    def first():
+        return swap(html.div("a", id=region.id))
+
+    with pytest.raises(ValueError, match="Duplicate SimApp route"):
+
+        @app.action("/save", region=region)
+        def second():
+            return swap(html.div("b", id=region.id))
+
+    assert app.routes["POST /save"].handler is first
+
+
 def test_embed_requires_page() -> None:
     app = SimApp(demo_id="empty")
     with pytest.raises(ValueError, match="page"):
