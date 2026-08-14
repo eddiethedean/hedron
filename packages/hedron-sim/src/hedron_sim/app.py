@@ -140,10 +140,19 @@ class SimApp:
                 empty=empty,
                 list_remove=list_remove,
             )
-            self._routes[route.key] = route
+            self._register_route(route)
             return fn
 
         return wrap
+
+    def _register_route(self, route: SimRoute) -> None:
+        """Store a route; fail closed on duplicate METHOD/path keys (#209)."""
+        if route.key in self._routes:
+            raise ValueError(
+                f"Duplicate SimApp route registration for {route.key!r}; "
+                "each METHOD path may only be registered once."
+            )
+        self._routes[route.key] = route
 
     def action(
         self,
