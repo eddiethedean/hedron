@@ -6,8 +6,8 @@ Accepted before package movement begins.
 
 ## Outcome
 
-Ship `hedron-posit` `0.34.0` Beta as the preferred Hedron deployment facade for local Uvicorn,
-Posit Workbench, and the declared Posit Connect matrix. Keep `hedron-workbench` `0.34.0` as a
+Ship `hedron-posit` `0.33.0` Beta as the preferred Hedron deployment facade for local Uvicorn,
+Posit Workbench, and the declared Posit Connect matrix. Keep `hedron-workbench` `0.33.0` as a
 supported compatibility package with no dependency cycle or behavior regression.
 
 The phase is complete only when native Connect is proven live, the optional bridge is proven on its

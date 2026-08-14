@@ -10,13 +10,24 @@ Visualization adapters and chart components for Hedron.
 Beginner `LineChart` / `BarChart` / `AreaChart` / `ScatterChart`, Matplotlib static
 SVG/PNG, Plotly interactive JSON, and Altair/Vega-Lite specifications.
 
-**Package maturity:** Beta · **0.30-compatible release:** `0.1.11`
+**Package maturity:** Beta · **Current compatible release:** `0.1.11`
 
 Interactive Plotly/Vega **full browser runtimes** remain **experimental**: Hedron
 ships host shims that fail closed when `window.Plotly` / `window.vegaEmbed` are
 missing. Applications may supply pinned local runtimes; first-party offline
 runtime pins exist for **Experimental** interactive hosts and are not Supported
 production Auto defaults.
+
+## Planned high-fidelity chart phase
+
+Phase 0.38 plans `hedron-charts` `0.2.0` around a typed `ChartSpec` / `ChartPlan` and an
+ABI-conforming `hedron-chart` Web Component with a pinned modular D3 renderer, SVG/Canvas output,
+publication-quality layout, accessible keyboard interactions, deterministic export, visual
+regression review, and hard performance/security budgets. This work is **Planned** and does not
+describe the current `0.1.11` API. See
+[RFC-0069](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md)
+and the
+[phase 0.38 acceptance packet](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_38.md).
 
 ## Install
 

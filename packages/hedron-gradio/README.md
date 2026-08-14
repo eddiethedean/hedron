@@ -65,7 +65,7 @@ With `enabled=False` (the default), `discover()` returns empty.
 
 - [Package docs](https://hedron.readthedocs.io/en/latest/packages/hedron-gradio/)
 - [Gradio migration guide](https://hedron.readthedocs.io/en/latest/guides/gradio-migration/)
-- [What's new in 0.34](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.34.md)
+- [What's new in 0.34](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.34/)
 - [Changelog](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-gradio/CHANGELOG.md)
 - [Source](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-gradio)
 - [Issues](https://github.com/eddiethedean/hedron/issues)

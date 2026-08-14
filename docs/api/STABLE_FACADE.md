@@ -47,7 +47,7 @@ On `HedronRouter`, declare `FragmentRegion` values and pass `fragment_regions=` 
 ## Deny list (must not appear in inventory)
 
 - Any `hedron.experimental` export (`job_status_sse_response`, `SseResponse`, stream/WS/preload helpers, …)
-- Alpha root names from charts / notebook / MCP / Gradio / native
+- Optional-integration root names from charts / notebook / MCP / Gradio / native
 - `DataTable`, `DataEditor`, dashboard/inference facades
 
 ## Inventory (machine-checked)

@@ -54,6 +54,7 @@ jobs:
               docs/*|README.md|CONTRIBUTING.md|SECURITY.md|CODE_OF_CONDUCT.md|mkdocs.yml|\
               scripts/sync_demo_code_tabs.py|scripts/generate_component_docs.py|\
               scripts/generate_sim_demos.py|scripts/check_docs_train_ssot.py|\
+              scripts/check_package_docs_inventory.py|\
               scripts/check_documentation_ownership.py|scripts/check_api_docs_coverage.py|\
               scripts/check_package_readme_links.py|scripts/check_external_links.py|\
               scripts/check_recipe_code_sync.py|scripts/README.md|.github/workflows/docs-health.yml)
@@ -299,7 +300,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Install dependencies
-        # Docs group required: verify_pkg_33 DOCS/REGRESS gates run strict MkDocs.
+        # Docs group required: the living packet's DOCS/REGRESS gates run strict MkDocs.
         run: uv sync --locked --python 3.12 --group docs
       - name: Set up Java
         uses: actions/setup-java@v5

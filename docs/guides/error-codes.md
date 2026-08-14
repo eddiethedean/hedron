@@ -20,7 +20,7 @@ This catalog is complete for the registered set enforced by
 | `HED-ELEMENT-0003` | blocker | First-party naming / prefix violation | Use `hedron-*` for first-party tags |
 | `HED-ELEMENT-0005` | blocker | Structured input bound/encoding failure | Reduce payload size/depth |
 | `HED-ELEMENT-STATE-0002` | blocker | Illegal element-owned capability | Keep capabilities server-controlled |
-| `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.40 | Keep drafts instance-local |
+| `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
 | `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.36.0,<0.37"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
@@ -371,7 +371,7 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-ELEMENT-0003` | blocker | First-party naming / prefix violation | Use `hedron-*` for first-party tags |
 | `HED-ELEMENT-0005` | blocker | Structured input bound/encoding failure | Reduce payload size/depth |
 | `HED-ELEMENT-STATE-0002` | blocker | Illegal element-owned capability | Keep capabilities server-controlled |
-| `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.40 | Keep drafts instance-local |
+| `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
 | `HED-SEC-0020` | `HED_SEC_0020` |
 
 ## HED-A11Y

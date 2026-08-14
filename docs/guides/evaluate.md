@@ -36,7 +36,7 @@ HTML forms. HTMX is introduced in
 
 | Item | Value |
 |---|---|
-| Version | **0.34.x** (Beta; **Published** — pin `hedron>=0.36.0,<0.37`) |
+| Version | **0.36.x** (Beta; **Published** — pin `hedron>=0.36.0,<0.37`) |
 | Python | 3.11–3.14 |
 | License | MIT |
 | Commercial SLA | **None** — community support via GitHub only |
@@ -67,8 +67,10 @@ human AT evidence as Supported; team will not own FastAPI+HTMX literacy.
 - **Charts / sample kit:** pin floors
   `hedron[charts]>=0.36.0,<0.37` and `hedron-sample-kit>=0.1.10,<0.2`
   ([Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor))
-- **Pin and expect churn:** notebook / Gradio (Alpha / Experimental). MCP is Beta
-  for its Supported inventory (`hedron-mcp` `0.2.0`); mutations remain Experimental.
+- **Narrow optional scopes:** notebook is Beta tooling-grade for localhost preview only;
+  Gradio is Beta for declared allowlisted client interoperability; MCP is Beta for its
+  Supported inventory (`hedron-mcp` `0.2.0`). MCP mutations and Gradio vendor extensions
+  remain Experimental.
 - **Model demos:** **Supported** capability (fail-closed) via [Model demos](model-demos.md)
   guide snippets — the in-tree evidence app is a stub, not a product demo
 

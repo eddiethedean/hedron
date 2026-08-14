@@ -29,14 +29,18 @@ planned phases 0.30–0.39 move to 0.31–0.40 without renumbering published pha
 formerly planned phases 0.33–0.40 move to 0.34–0.41 without changing the owned MCP 0.32 packet or
 renumbering published phases.
 
+**Revision:** 2026-08-14 — D-066 inserts high-fidelity charts at phase 0.38 and moves the former
+0.38–0.41 Web Component capabilities to 0.39–0.42 without renumbering published phases.
+
 ## Release strategy
 
 Hedron develops through cumulative, usable capability phases rather than toward a version-number
 deadline. Phase 0.0 is a documentation baseline with no package publication. Each implementation
 phase `0.N` produces initial release `v0.N.0`; phase 0.10 produces `v0.10.0`. Python package
 versions omit the tag prefix, and first-party Hedron distributions use the coordinated release
-train. D-058 defines one explicit independent-package exception: phase 0.30 ships Hedron
-`v0.30.0` and the first monorepo-developed `fastapi-workbench` release as `1.0.0`.
+train. Independently versioned satellites may cut the package version named by their owning
+decision: D-058 pairs Hedron `v0.30.0` with `fastapi-workbench` `1.0.0`; D-066 pairs Hedron
+`v0.38.0` with `hedron-charts` `0.2.0`. Neither package version declares Hedron `1.0`.
 
 No Hedron 1.0 phase is scheduled. Stability is a per-contract classification backed by compatibility,
 deprecation, migration, and evidence obligations; it is not inferred from the distribution version.

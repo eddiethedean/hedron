@@ -9,6 +9,9 @@ The full authoritative table lives in the repository (not duplicated here):
 
 | ID | Topic |
 |---|---|
+| D-066 | High-fidelity charts own 0.38; later Web Component phases move to 0.39–0.42 (RFC-0069) |
+| D-065 | Form-associated elements, InteractionState, and gesture/overlay primitives own 0.37 |
+| D-064 | Web Component ABI and lifecycle foundation owns published 0.36 |
 | D-061 | Schedule unified `hedron-posit` for 0.33; move Gradio, fleet closure, and the Web Component program down to 0.34–0.41 without changing MCP 0.32 |
 | D-060 | Production-grade deny-by-default MCP projection (`hedron-mcp` `0.2.0` Beta at cut; 0.32; RFC-0065) |
 | D-059 | Production-grade developer/portable tooling + Streamlit AST migrator (0.31; RFC-0064 / RFC-0061) |

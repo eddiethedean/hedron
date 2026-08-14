@@ -2,7 +2,7 @@
 
 Third-party-shaped sample Hedron plugin package.
 
-**Package maturity:** Alpha · **0.30-compatible release:** `0.1.10`
+**Package maturity:** Beta tooling-grade · **Current compatible release:** `0.1.10`
 **Flagship extra:** none — install directly · **Import:** `hedron_sample_kit`  
 The repository source is compatible with `hedron-core>=0.36.0,<0.37`. Reference / demo
 only — not an app framework.
@@ -13,7 +13,7 @@ only — not an app framework.
 pip install "hedron-sample-kit>=0.1.10,<0.2"
 ```
 
-Versions through `0.1.5` target older Hedron cores; keep the `>=0.1.9` floor. Details:
+Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.10` floor. Details:
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 Enable the plugin in your app’s `pyproject.toml`:

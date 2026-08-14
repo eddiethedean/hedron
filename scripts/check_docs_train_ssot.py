@@ -68,7 +68,7 @@ CURRENT_CLAIM_VERSION = re.compile(
     r"(?:"
     # current/living train … then version (or last published … version)
     r"\b(?:"
-    r"current(?:ly)?(?:\s+published)?\s+(?:train|line|version|release)|"
+    r"current(?:ly)?(?:\s+published)?\s+(?:train|line|version|release|tip|train\s+tag)|"
     r"living(?:\s+published)?\s+(?:train|line|version|release)|"
     r"last\s+(?:published|PyPI/git)|"
     r"published/latest"
@@ -81,6 +81,11 @@ CURRENT_CLAIM_VERSION = re.compile(
     # tip-hub "last **v0.26.0**" (bold version; avoids phase "last `v0.25.2`" rows)
     rf"\blast{_MD_GAP}\*\*v?(0\.\d+(?:\.\d+)?(?:\.x)?)\*\*"
     r")",
+    re.I,
+)
+CURRENT_PIN_CLAIM = re.compile(
+    r"\b(?:current(?:ly)?|living)[^\n]{0,100}?"
+    r"hedron(?:\[[^\]]+\])?(>=\d+(?:\.\d+){1,2},<\d+(?:\.\d+){1,2})",
     re.I,
 )
 INSTALL_LINE = re.compile(r"\b(?:pip(?:3)?\s+install|uv\s+add|uvx\b)", re.I)
@@ -166,20 +171,24 @@ def _line_allows_previous_support(line: str, facts: ReleaseFacts) -> bool:
     )
 
 
-def check_text(path: Path, text: str, facts: ReleaseFacts = FACTS) -> list[str]:
+def check_text(
+    path: Path,
+    text: str,
+    facts: ReleaseFacts = FACTS,
+    *,
+    check_installs: bool = True,
+) -> list[str]:
     failures: list[str] = []
     lines = text.splitlines()
     for index, line in enumerate(lines, start=1):
-        # Soft-wrap only when this line starts a living/current claim but the
-        # version/train token continues on the next line (e.g. living **0.27**\ntrain).
+        # Join a soft-wrapped current/living/last-published claim to its next line.
         claim_windows = [line]
         if index < len(lines):
             lower = line.lower()
             incomplete = bool(
-                re.search(r"\b(?:living|current(?:ly)?)\b", lower)
-                and re.search(r"0\.\d+", line)
-                and not re.search(r"\b(?:train|line)\b", lower)
+                re.search(r"\b(?:living|current(?:ly)?|last\s+published)\b", lower)
                 and not CURRENT_CLAIM_VERSION.search(line)
+                and not line.lstrip().startswith("|")
             )
             if incomplete:
                 claim_windows.append(f"{line.rstrip()} {lines[index].strip()}")
@@ -195,12 +204,21 @@ def check_text(path: Path, text: str, facts: ReleaseFacts = FACTS) -> list[str]:
                         f"{path}:{index}: current/living claim uses {value}; "
                         f"expected {facts.train_line} or v{facts.published_version}"
                     )
+            for claim in CURRENT_PIN_CLAIM.finditer(scan):
+                constraint = claim.group(1)
+                if constraint != facts.pin:
+                    failures.append(
+                        f"{path}:{index}: current/living pin uses {constraint}; "
+                        f"expected {facts.pin}"
+                    )
 
         if MATURITY_COLLISION.search(line):
             failures.append(f"{path}:{index}: ambiguous maturity phrase: {line.strip()}")
 
-        if not INSTALL_LINE.search(line) or re.search(
-            r"\b(?:not available|do not|don't|never|failed with)\b", line, re.I
+        if (
+            not check_installs
+            or not INSTALL_LINE.search(line)
+            or re.search(r"\b(?:not available|do not|don't|never|failed with)\b", line, re.I)
         ):
             continue
 
@@ -280,6 +298,13 @@ def main() -> int:
     for path in adopter_files():
         relative = path.relative_to(ROOT)
         failures.extend(check_text(relative, path.read_text(encoding="utf-8")))
+    # Historical release pages may keep their original install commands, but any
+    # explicit current/living pointer on those pages must track release.toml.
+    for path in sorted((ROOT / "docs" / "guides").glob("whats-new-0.*.md")):
+        relative = path.relative_to(ROOT)
+        failures.extend(
+            check_text(relative, path.read_text(encoding="utf-8"), check_installs=False)
+        )
     if failures:
         print("\n".join(failures), file=sys.stderr)
         return 1

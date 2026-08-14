@@ -36,4 +36,4 @@ At `v0.36.0` cut, append `hedron-elements` to the living fleet inventory without
 | Disposition | `incubator` |
 | Compatibility | `hedron-core>=0.36.0,<0.37` |
 | Channel | coordinated train Alpha |
-| Production-grade destination | phase **0.41** |
+| Production-grade destination | phase **0.42** |

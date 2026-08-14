@@ -3,9 +3,10 @@
 **Planning status:** Normative under Accepted
 [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (D-064).
 
-This document specifies implementation boundaries for phases 0.36–0.41. Names are descriptive
+This document specifies implementation boundaries for phases 0.36–0.42. Names are descriptive
 unless the RFC and public API review promote them; private class/function names are not frozen.
-The program moved from 0.34–0.39 to 0.35–0.40 under D-058, then to 0.36–0.41 under D-061;
+The program moved from 0.34–0.39 to 0.35–0.40 under D-058, then to 0.36–0.41 under D-061.
+D-066 inserts high-fidelity charts at 0.38 and moves the former 0.38–0.41 phases to 0.39–0.42;
 scope and ordering are unchanged.
 The companion [interaction-contract specification](WEB_COMPONENT_INTERACTION_CONTRACTS.md) defines
 state ownership, asynchronous interaction, optimistic mutation, gesture/overlay, and React-migration
@@ -26,7 +27,7 @@ Data, chart, extras, and future third-party packages may depend on its public me
 surface without importing a host framework.
 
 Browser source may use repository build tooling. Published wheels contain already-built, auditable
-modules and source maps according to release policy. Phase 0.39 may publish identical module content
+modules and source maps according to release policy. Phase 0.40 may publish identical module content
 to npm with matching provenance and hashes.
 
 ## Registry records
@@ -44,7 +45,7 @@ The shared registry gains an element record with at least:
 | `state_ownership` | Controlled/local/draft/preference modes and incoming-update policy |
 | `events` | Detail schema, version, bubbles/composed/cancelable flags |
 | `dom_policy` | Light/Shadow choice and server/element-owned regions |
-| `form_contract` | **0.36:** reserved metadata stub only (association/value/reset/validation fields may be absent or null). **0.37+:** association, value, reset, restore, validation, fallback |
+| `form_contract` | **0.36:** reserved metadata stub only (fields may be absent or null). **0.37+:** required subfields — `association_mode` (`none` \| `single` \| `multi`), `value_encoding` (scalar, repeated-name, file-object policy), `reset_policy`, `restore_policy`, `validation_mapping` (client hint vs server-authoritative errors), `fallback_tag` (native/light-DOM equivalent) |
 | `a11y_contract` | Semantics, keyboard/focus, states, live regions, limitations |
 | `style_contract` | Scoped classes or supported tokens/parts/slots |
 | `resources` | CSS, workers, fonts, WASM, adapters, remote origins, licenses |
@@ -204,7 +205,7 @@ Browser state is classified as:
 |---|---|---|
 | Controlled | Canonical record value, selected server view | Server-owned; user interaction emits intent and waits for canonical response |
 | Local | Open panel, measured width, adapter viewport | Disposable; initialize/recompute on connect |
-| Draft | Unsubmitted edit, staged selection | User-local and bounded; explicit submit/discard/conflict and optional 0.40 transfer |
+| Draft | Unsubmitted edit, staged selection | User-local and bounded; explicit submit/discard/conflict and optional 0.41 transfer |
 | Preference | Theme, density | Existing namespaced `BrowserStorage`; never secret/authoritative |
 | Capability | CSRF, auth, signed URL, permissions | Never element-owned or persisted in public element state |
 
@@ -212,7 +213,7 @@ Every mutable field declares one mode plus reflection and incoming-update behavi
 replace, preserve, proven rebase, or explicit conflict handling; conflict is the default when a safe
 merge is unavailable. Programmatic controlled updates do not emit user-intent events by default.
 
-The phase 0.40 transfer protocol keys eligible draft state by component instance, schema version,
+The phase 0.41 transfer protocol keys eligible draft state by component instance, schema version,
 route/history identity, and bounded expiry. It requires explicit opt-in, clears on authorization or
 identity changes, and cannot transfer capabilities or server authority. Full behavior lives in
 [the interaction contracts](WEB_COMPONENT_INTERACTION_CONTRACTS.md#1-elementstateownership).
@@ -247,7 +248,9 @@ remain subject to server authorization.
 
 The element ABI has an explicit supported range. Additive attributes/events may remain compatible;
 changed semantics, event shapes, DOM ownership, form encoding, or fallback require an ABI transition.
-Stable tag/event contracts begin only with the 0.41 inventory.
+Stable general tag/event contracts begin only with the 0.42 inventory. RFC-0069 may lock the
+chart-scoped `hedron-chart` contract for the `hedron-charts` 0.2 line in phase 0.38 without
+promoting unrelated elements.
 
 Servers and assets publish compatibility metadata in package manifests. Clean-install and mixed
 version tests cover supported combinations. Unknown-new attributes are ignored only when the

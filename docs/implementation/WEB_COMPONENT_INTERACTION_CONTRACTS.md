@@ -62,7 +62,7 @@ declared policy:
 **Phase boundary (D-064):** Phase **0.36** (`STATE-036`) owns ownership modes, reflection,
 incoming-update, persistence, submit/discard, and conflict/rebase rules for a single connected
 instance. **Cross-instance draft transfer** across swaps/history remains a non-goal until phase
-**0.40**; all other local state remains disposable.
+**0.41**; all other local state remains disposable.
 
 ### Metadata and diagnostics
 
@@ -86,7 +86,7 @@ Unknown ownership, illegal persistence, or an ambiguous controlled/draft transit
 | `HED-ELEMENT-STATE-0003` | Controlled update loop / illegal intent emission |
 | `HED-ELEMENT-STATE-0004` | Dirty-draft incoming update without declared policy |
 | `HED-ELEMENT-STATE-0005` | Conflict entered; last-write-wins refused |
-| `HED-ELEMENT-STATE-0006` | Transfer attempted before phase 0.40 eligibility |
+| `HED-ELEMENT-STATE-0006` | Transfer attempted before phase 0.41 eligibility |
 
 Diagnostics redact payloads and never print secrets, credentials, or full structured inputs by
 default.
@@ -183,7 +183,7 @@ context for an explicit resolution; it never silently overwrites the server or a
   operation/revision or canonical refetch.
 - Pending/rollback/conflict states are perceivable without color or motion and do not steal focus.
 
-Optimistic support is first proven on bounded DataEditor/collection mutations in phase 0.38. Other
+Optimistic support is first proven on bounded DataEditor/collection mutations in phase 0.39. Other
 components remain server-confirmed until they pass the same evidence.
 
 ## 4. `GestureOverlayCatalog`
@@ -293,7 +293,7 @@ wrapping of arbitrary npm components.
   games/canvas runtimes, arbitrary npm ecosystems, and high-frequency collaborative clients without
   an accepted server synchronization design.
 
-The matrix ships in phase 0.39 and becomes part of the 0.41 Supported-inventory honesty review.
+The matrix ships in phase 0.40 and becomes part of the 0.42 Supported-inventory honesty review.
 
 ## Cross-contract ordering
 
@@ -306,6 +306,7 @@ ElementStateOwnership
 ```
 
 State ownership is foundational in 0.36. Interaction and gesture/overlay contracts ship with forms
-and primitives in 0.37. Optimistic mutation is proven on rich data surfaces in 0.38. The migration
-matrix and optional bridge ship with authoring/interoperability in 0.39. Composition/state transfer
-in 0.40 and production graduation in 0.41 test all five together.
+and primitives in 0.37. Phase 0.38 proves the chart-scoped interaction profile on `hedron-chart`;
+optimistic mutation is proven on rich data surfaces in 0.39. The migration matrix and optional
+bridge ship with authoring/interoperability in 0.40. Composition/state transfer in 0.41 and
+production graduation in 0.42 test all five together.

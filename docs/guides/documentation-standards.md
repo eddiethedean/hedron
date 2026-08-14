@@ -108,6 +108,7 @@ For a normal docs change:
 ```bash
 uv sync --group docs
 uv run python scripts/check_docs_train_ssot.py
+uv run python scripts/check_package_docs_inventory.py
 uv run python scripts/check_documentation_ownership.py
 uv run python scripts/check_api_docs_coverage.py
 uv run python scripts/check_package_readme_links.py

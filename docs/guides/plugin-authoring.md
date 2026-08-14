@@ -5,8 +5,8 @@ panels through the portable plugin protocol. Study
 [`hedron-sample-kit`](https://github.com/eddiethedean/hedron/tree/main/packages/hedron-sample-kit)
 alongside this guide.
 
-Install `hedron-sample-kit>=0.1.10,<0.2` for the 0.30-compatible reference package.
-Versions through `0.1.5` target older cores; see
+Install `hedron-sample-kit>=0.1.10,<0.2` for the current compatible reference package.
+Versions through `0.1.6` target older cores; see
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ### Workspace recipe (edit sample-kit in the monorepo)
@@ -61,7 +61,7 @@ PLUGIN_META = PluginMeta(
     name="my_plugin",
     version="0.1.0",  # keep aligned with your distribution version
     distribution="my-hedron-plugin",
-    hedron_version=">=0.32,<0.33",
+    hedron_version=">=0.36,<0.37",
     capabilities=PluginCapabilities(python=True, styles=True, assets=True),
 )
 

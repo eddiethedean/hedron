@@ -12,7 +12,7 @@ Coordinated Beta train cut for Web Component ABI / lifecycle foundation
   `hedron-example` (SSR/HTMX lifecycle; not form-associated).
 - Versioned element registry, `ElementStateOwnership`, and `HED-ELEMENT-*` /
   `HED-ELEMENT-STATE-*` diagnostics.
-- Fleet inventory-036 registers `hedron-elements` as incubator until 0.41.
+- Fleet inventory-036 registers `hedron-elements` as incubator until the rephased 0.42 graduation.
 - Pin `hedron>=0.36.0,<0.37`.
 
 ```bash
@@ -56,7 +56,7 @@ Coordinated Beta train cut for unified Posit Workbench / Connect adapter
 - Coordinated `hedron` / core packages `0.33.0`; `fastapi-workbench` stays `1.x`;
   MCP stays satellite `>=0.2.0,<0.3`.
 - Historical cut pin `hedron>=0.33.0,<0.34`. Install the current tip with the pin under
-  **0.34.0** above.
+  **0.36.0** above.
 
 ## 0.32.0 — 2026-08-12
 
@@ -69,7 +69,7 @@ Coordinated Beta train cut for production-grade deny-by-default MCP projection
 - Security hardening: session-bound MCP principals, formula-injection evasion strip,
   optional-session scope gates, MCP cancel/session lifecycle bounds.
 - Historical cut pin `hedron>=0.32.0,<0.33`. Install the current tip with the pin under
-  **0.34.0** above.
+  **0.36.0** above.
 
 ## 0.31.0 — 2026-08-12
 
@@ -80,7 +80,7 @@ Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061).
 - Published Node/Java evaluators (`hedron-runtime-node` / `hedron-runtime-java` `0.31.0`).
 - `hedron migrate streamlit` non-executing AST assistant.
 - Historical cut pin `hedron>=0.31.0,<0.32`. Install the current tip with the pin under
-  **0.34.0** above.
+  **0.36.0** above.
 
 ```bash
 python -m pip install -U "hedron>=0.36.0,<0.37"
@@ -97,10 +97,10 @@ RFC-0063).
 - `hedron-workbench` `0.30.0` depends on `fastapi-workbench>=1.0.0,<2.0` and delegates
   generic resolver / middleware / runner behavior.
 - Historical cut pin `hedron>=0.30.0,<0.31`. Install the current tip with the pin under
-  **0.34.0** above.
+  **0.36.0** above.
 
 Historical cut used `hedron` / `hedron-workbench` on the 0.30 train and
-`fastapi-workbench>=1.0.0,<2.0`. Prefer the current tip pin under **0.35.0** above.
+`fastapi-workbench>=1.0.0,<2.0`. Prefer the current tip pin under **0.36.0** above.
 
 ## 0.29.0 — 2026-08-11
 
@@ -112,7 +112,7 @@ Coordinated Beta train cut for production-grade `hedron-workbench`.
   `resolve_mount_path_from_environ`, color-mode cookie Path.
 - No auto-activation on install/import/`RS_SERVER_URL`. Flask/Django unchanged.
 - Historical cut pin `hedron>=0.29.0,<0.30`. Install the current tip with the pin under
-  **0.34.0** above.
+  **0.36.0** above.
 
 ## 0.28.2 — 2026-08-11
 
@@ -130,7 +130,7 @@ Coordinated Beta patch on the 0.28 train.
 - GitHub Release create waits on quickstart verify and omits plain `linux_*` wheels.
 - No Supported CRUD/admin API removal.
 
-Install the current tip with the pin under **0.35.0** above (historical cut pin was
+Install the current tip with the pin under **0.36.0** above (historical cut pin was
 `>=0.28.2,<0.29`).
 
 ## 0.28.1 — 2026-08-10
@@ -142,7 +142,7 @@ Correctness and tip-honesty patch for the 0.28 train.
   mount-aware static prefixes, and live `HEDRON_NATIVE_DISABLE`.
 - Hardens tip-hub SSOT wrap scans and CI native/crates publish footguns.
 
-Install the current tip with the pin under **0.35.0** above (historical cut pin was
+Install the current tip with the pin under **0.36.0** above (historical cut pin was
 `>=0.28.1,<0.29`).
 
 ## 0.28.0 — 2026-08-10
@@ -179,7 +179,7 @@ Hedron 0.27.0 graduates data, Flask/Django, HDJ, and curated extras inventories.
 No Supported CRUD/admin API removal is listed. Polling remains the production path for
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
-Install the current tip with the pin under **0.35.0** above.
+Install the current tip with the pin under **0.36.0** above.
 
 Read [Upgrade to 0.33](upgrade.md) before changing a production lockfile. Maintainer
 evidence identifiers and packets are linked from [What’s new in 0.27](whats-new-0.27.md).
@@ -221,8 +221,8 @@ Hedron 0.26.0 strengthens the Supported CRUD/admin path.
 No Supported CRUD/admin API removal is listed. Polling remains the production path for
 live status; SSE, WebSocket, streaming, and preload remain experimental.
 
-Historical pin for this train: `hedron>=0.26.0,<0.27`. Current tip is
-[Upgrade to 0.28](upgrade.md) / [What’s new in 0.27](whats-new-0.27.md).
+Historical pin for this train: `hedron>=0.26.0,<0.27`. Current tip guidance:
+[Upgrade to 0.36](upgrade.md) / [What’s new in 0.36](whats-new-0.36.md).
 
 ## 0.25.2 — 2026-08-10
 

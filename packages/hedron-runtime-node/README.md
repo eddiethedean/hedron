@@ -8,9 +8,10 @@ Tooling-grade Node.js Hedron conformance runtime.
 
 Minimal evaluator for the published [`hedron-conformance`](https://pypi.org/project/hedron-conformance/)
 fixtures. **Not** a FastAPI port — only the portable IR capabilities required by
-the kit. Lives outside the uv Python workspace and is **not** published to npm.
+the kit. Lives outside the uv Python workspace and publishes independently to npm.
 
 **Maturity:** Beta tooling-grade · monorepo package for portable Node conformance
+**Version:** `0.32.0` · install with `npm install -g hedron-runtime-node`
 
 ## Requirements
 
@@ -40,7 +41,7 @@ Failures print fixture id, contract version, and violated capability.
 |---|---|
 | Conformance fixture evaluator | Application server |
 | Portable IR parity check | Full Hedron component runtime |
-| Monorepo-only experimental package | Published npm distribution |
+| Independently versioned npm tooling | Application framework or full Hedron port |
 
 ## Links
 

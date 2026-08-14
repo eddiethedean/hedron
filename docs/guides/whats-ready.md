@@ -9,13 +9,16 @@ For a pinned internal admin/CRUD app on 0.36.x (`hedron>=0.36.0,<0.37`), you can
 typed pages, HTMX fragments, CSRF (`standard`/`strict`), Flask/Django adapters,
 and polling for job status.
 
-Pin versions. Packages are Beta (no 1.0, no SLA). Prefer polling over SSE/WebSocket.
+Pin versions. The flagship and adapters are Beta (no Hedron 1.0, no SLA);
+`hedron-elements` is Alpha, while `fastapi-workbench` has an independent 1.x line.
+Prefer polling over SSE/WebSocket.
 
 **Charts / sample kit:** install with floors
 `hedron[charts]>=0.36.0,<0.37` and `hedron-sample-kit>=0.1.10,<0.2`.
 Matplotlib/static charts are the **Supported** default path on the Beta
 `hedron-charts` package; Plotly / Altair remain **Experimental**.
-**Experimental:** notebook preview, live SSE/WS. Gradio remote client interop is **Beta**
+**Tooling-grade:** notebook preview is Supported only on localhost and is not a production
+server. **Experimental:** live SSE/WS. Gradio remote client interop is **Beta**
 (`hedron-gradio` `0.2.0`) for declared allowlisted destinations. MCP is **Beta** for its
 declared Supported inventory (`hedron-mcp` `0.2.0`).
 
@@ -84,7 +87,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Charts | **Supported** Matplotlib/static on Beta package | Install `hedron[charts]>=0.36.0,<0.37`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.0` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
-| Notebook preview | **Experimental** | Localhost notebook preview; not Supported production |
+| Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
 | Remote Gradio / HF Space client interop | **Supported** on Beta `hedron-gradio` `0.2.0` | Declared allowlisted destinations; pin `>=0.2.0,<0.3`; [Gradio migration](gradio-migration.md) |
 
 !!! note "Package train vs capability"

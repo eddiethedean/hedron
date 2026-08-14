@@ -3,7 +3,7 @@
 **Status:** Shipped on the **0.18.0** train · RFCs 0045–0050 · Evidence
 [release-gate-0.18.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/release-gate-0.18.toml)
 
-Adopter guide: [Model demos](../guides/model-demos.md) · Gradio Alpha:
+Adopter guide: [Model demos](../guides/model-demos.md) · Gradio Beta client interop:
 [Gradio migration](../guides/gradio-migration.md) · Narrative:
 [What's new in 0.18](../guides/whats-new-0.18.md)
 

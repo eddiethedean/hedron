@@ -33,6 +33,8 @@ Scaffold an application.
 ```bash
 hedron new my-app
 hedron new my-app --path ./apps/my-app --force
+hedron new my-flask-app --flask
+hedron new my-django-app --django
 ```
 
 | Argument / flag | Description |
@@ -40,6 +42,8 @@ hedron new my-app --path ./apps/my-app --force
 | `name` | Project name |
 | `--path` | Destination directory (default: `./<name>`) |
 | `--force` | Allow writing into a non-empty destination |
+| `--flask` | Scaffold a Flask + `hedron-flask` app without FastAPI |
+| `--django` | Scaffold a Django + `hedron-django` app without FastAPI |
 
 Exit `0` on success. Refuses to overwrite protected files without `--force`.
 
@@ -122,7 +126,82 @@ hedron eject UserCard --out ./ejected --force
 |---|---|
 | `preview <logical_id>` | Inspect a route/component preview payload |
 | `inspect <component>` | Explain styles and dependencies |
-| `eject <component>` | Write an editable `styles.css` override (`--out`, `--force`) |
+| `eject <component>` | Write `accessibility_contract.json` plus an editable `styles.css` override (`--out`, `--force`) |
+
+### `conformance`
+
+Run the published language-neutral fixture kit. Install `hedron[conformance]` first.
+
+```bash
+hedron conformance
+hedron conformance --json
+```
+
+Without `hedron-conformance`, the command explains the required extra and exits `2`.
+Fixture failures return the conformance runner’s non-zero status.
+
+### `accel-status`
+
+Report whether optional `hedron-native` acceleration is loaded, disabled, absent, or using
+the pure-Python fallback.
+
+```bash
+hedron accel-status
+```
+
+An absent or disabled native extension is a valid configuration and exits `0`; correctness
+always falls back to the reference Python serializer.
+
+### `run`
+
+Run an ASGI application with Uvicorn. When Posit Workbench is explicitly selected or
+`RS_SERVER_URL` is present, delegate pre-import mount discovery to `hedron-workbench`.
+
+```bash
+hedron run app:app --reload
+hedron run app:create_app --factory
+hedron run app:app --workbench --workbench-mode on
+```
+
+| Flag | Description |
+|---|---|
+| `--host`, `--port` | Bind address and port (local defaults: `127.0.0.1:8000`) |
+| `--reload` | Enable Uvicorn reload |
+| `--workers` | Worker count (default `1`) |
+| `--factory` | Treat the target as an application factory |
+| `--debug` | Use debug logging |
+| `--workbench` | Force the Workbench launcher path |
+| `--workbench-mode` | `auto`, `on`, or `off` |
+| `--mount`, `--public-base-url` | Explicit proxy/mount settings |
+| `--forwarded-allow-ips` | Trusted proxy allowlist |
+| `--allow-external-bind` | Permit a reviewed non-loopback bind |
+| `--topology` | `auto`, local, launcher, or reverse-proxy topology |
+
+The target must be `module:attribute` (or supplied through global `--app`). A detected
+Workbench runtime without `hedron[workbench]` exits `2` with an install hint.
+
+### `migrate streamlit`
+
+Statically analyze a Streamlit entrypoint or project and optionally generate a reviewable
+Hedron scaffold. The assistant parses source; it does not execute the Streamlit application.
+
+```bash
+hedron migrate streamlit streamlit_app.py --analyze-only
+hedron migrate streamlit streamlit_app.py --analyze-only --format sarif
+hedron migrate streamlit streamlit_app.py --out ./migrated-app --python-version 3.12
+```
+
+| Flag | Description |
+|---|---|
+| `--out` | Fresh output directory; required unless `--analyze-only` |
+| `--project-root` | Boundary for local-module discovery |
+| `--analyze-only` | Report without generating files |
+| `--format` | `text`, `json`, or `sarif` |
+| `--python-version` | Parser grammar: Python 3.11–3.14 |
+| `--fail-on` | Return `2` when findings reach `information`, `warning`, or `error` (default) |
+
+Exit `1` covers invalid input or generation failure; exit `2` means review findings met the
+configured threshold. See the [Streamlit migration guide](../guides/streamlit-migration.md).
 
 ## Errors / exit codes
 
@@ -132,6 +211,7 @@ hedron eject UserCard --out ./ejected --force
 | Diagnostics at/above `--severity` on `check` | Non-zero exit |
 | `new` into non-empty dir without `--force` | Refuse; non-zero |
 | Missing `--app` when registry import required | Import/empty-registry failure or incomplete output |
+| Missing optional package for a command | Install hint and non-zero exit where required (for example, conformance or Workbench runtime) |
 | Unknown command / bad args | argparse error; non-zero |
 
 ## See also

@@ -1,11 +1,14 @@
 # Web Component platform acceptance
 
-**Planning status:** RFC-0060 **Accepted** (D-064); phases 0.36–0.41. Phase **0.36** is
+**Planning status:** RFC-0060 **Accepted** (D-064); phases 0.36–0.42. Phase **0.36** is
 **Published** (`v0.36.0`; all owned gates Verified) — see [`RELEASE_0_36.md`](RELEASE_0_36.md) and
-[`release-gate-0.36.toml`](release-gate-0.36.toml). Later phases remain draft until their
+[`release-gate-0.36.toml`](release-gate-0.36.toml). Phase **0.37** Stage 0 packet is refined
+(Planned gates) — see [`RELEASE_0_37.md`](RELEASE_0_37.md) and
+[`release-gate-0.37.toml`](release-gate-0.37.toml). Phase **0.38** high-fidelity charts has a
+refined Planned packet under RFC-0069 / D-066. Later phases (0.39–0.42) remain draft until their
 own Stage 0 packets land.
-Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061;
-scope and ordering are unchanged.
+Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061. D-066 inserts charts
+at 0.38 and moves the former 0.38–0.41 capabilities to 0.39–0.42 without scope loss.
 The exact five interaction protocols are defined in the
 [interaction-contract specification](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md).
 
@@ -97,7 +100,7 @@ Command (at Verified): `python scripts/check_state_036.py`
   unsafe/unspecified merge defaults to visible conflict rather than last-write-wins or silent loss.
 - [ ] Ownership violations and illegal persistence emit redacted `HED-ELEMENT-STATE-*` diagnostics
   while useful server fallback remains available.
-- [ ] Cross-instance draft **transfer** is out of scope until phase 0.40.
+- [ ] Cross-instance draft **transfer** is out of scope until phase 0.41.
 
 ### `SECURITY-036`
 
@@ -132,7 +135,44 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 
 ## 0.37 — Form-associated controls and semantic primitives
 
-### `FORM-037` / `VALIDITY-037`
+Evidence index: [`release-gate-0.37.toml`](release-gate-0.37.toml). Acceptance packet:
+[`RELEASE_0_37.md`](RELEASE_0_37.md). Reference elements: **`hedron-field-text`**,
+**`hedron-field-choice`**, **`hedron-field-file`**, **`hedron-disclosure`**, **`hedron-dialog`**,
+**`hedron-action-async`**. **`hedron-example`** remains non-form.
+
+### `FORM-037`
+
+Command (at Verified): `python scripts/check_form_037.py`
+
+### `VALIDITY-037`
+
+Command (at Verified): `python scripts/check_validity_037.py`
+
+### `PRIMITIVE-037`
+
+Command (at Verified): `python scripts/check_primitive_037.py`
+
+### `ACTIONSTATE-037` — `InteractionState`
+
+Command (at Verified): `python scripts/check_actionstate_037.py`
+
+### `INTERACT-037` — `GestureOverlayCatalog`
+
+Command (at Verified): `python scripts/check_interact_037.py`
+
+### `HTMX-037`
+
+Command (at Verified): `python scripts/check_htmx_037.py`
+
+### `AT-037`
+
+Command (at Verified): `python scripts/check_at_037.py`
+
+### `REGRESS-037` / `PKG-037`
+
+Command (at Verified): `python scripts/check_regress_037.py` / `python scripts/verify_pkg_37.py`
+
+### `FORM-037` / `VALIDITY-037` (requirements)
 
 - [ ] Named single- and multi-value controls submit identical values through ordinary navigation,
   HTMX, and supported hosts, including disabled, reset, restore, repeated-name, and empty states.
@@ -143,7 +183,7 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] File/directory controls retain browser objects only within bounded user-initiated flows and
   pass upload type/size/path/cancel/cleanup adversarial cases.
 
-### `PRIMITIVE-037`
+### `PRIMITIVE-037` (requirements)
 
 - [ ] A locked catalog selects only primitives with material browser-local behavior; ordinary links,
   buttons, fields, layout, and landmarks remain native when custom elements add no value.
@@ -152,7 +192,7 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] Native platform features are used when they meet the contract; polyfills/adapters are local,
   conditional, inventoried, and removable.
 
-### `ACTIONSTATE-037` — `InteractionState`
+### `ACTIONSTATE-037` — `InteractionState` (requirements)
 
 - [ ] All element-owned async operations use `idle`, `pending`, `success`, `error`, and `canceled`
   with bounded progress, opaque operation correlation, timestamps/durations, and safe status/error
@@ -164,7 +204,7 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] Pending/progress/error/retry/cancel states preserve native form fallback, focus, `aria-busy`,
   restrained announcements, reduced motion, and JS/module-failure completion paths.
 
-### `INTERACT-037` — `GestureOverlayCatalog`
+### `INTERACT-037` — `GestureOverlayCatalog` (requirements)
 
 - [ ] Reorder/drag-drop, resize/splitter, pointer capture, keyboard equivalence, touch/scroll/RTL,
   reduced-motion, Escape/cancel, target allowlists, and disconnect cleanup share catalog fixtures.
@@ -176,7 +216,7 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] Command surfaces invoke registered routes/actions under ordinary authz/CSRF validation;
   tooltips/toasts never become the sole essential instruction, error, or completion record.
 
-### `HTMX-037` / `AT-037` / `REGRESS-037` / `PKG-037`
+### `HTMX-037` / `AT-037` / `REGRESS-037` / `PKG-037` (requirements)
 
 - [ ] Controls survive inner/outer/OOB swaps, 422 validation fragments, duplicate submission,
   retarget/reselect, history restore, and slow/canceled requests without lost errors or stale state.
@@ -185,16 +225,30 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] Cross-host forms, browser matrix, performance/leak, compatibility, docs, clean install, and
   package evidence pass with zero Deferred 0.37 rows.
 
-## 0.38 — Rich data and visualization convergence
+## 0.38 — High-fidelity declarative charts
 
-### `DATA-038`
+Normative acceptance: [`RELEASE_0_38.md`](RELEASE_0_38.md). Evidence index:
+[`release-gate-0.38.toml`](release-gate-0.38.toml). Design:
+[RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md).
+
+- [ ] `hedron-chart` is an ABI-conforming, lifecycle-safe Web Component that upgrades a useful
+  semantic figure/summary/table/export fallback and owns no application authorization.
+- [ ] Typed `ChartSpec` / deterministic `ChartPlan`, modular pinned D3, SVG/Canvas rendering,
+  publication-quality design, typed interaction, accessibility, performance, export, visual
+  review, security, compatibility, documentation, and packaging satisfy all thirteen 0.38 gates.
+- [ ] The chart-scoped Python/spec/element contract may become Supported for `hedron-charts` 0.2
+  without promoting unrelated element tags or the general author ABI before 0.42.
+
+## 0.39 — Rich data and visualization convergence
+
+### `DATA-039`
 
 - [ ] DataTable/DataEditor adapters use the common element ABI for configuration, typed edits,
   selections, validation, paging/virtualization, saved views, fallback tables/forms, and teardown.
 - [ ] Local pending edits have explicit submit/discard/conflict/swap/history behavior and never
   widen source authorization or tenant filters.
 
-### `OPTIMISTIC-038` — `OptimisticMutation`
+### `OPTIMISTIC-039` — `OptimisticMutation`
 
 - [ ] Each optimistic mutation declares registered action, base revision, typed forward patch,
   deterministic inverse or canonical refetch, idempotency/replay, affected region, limits, and
@@ -208,14 +262,16 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] Pending, rollback, and conflict are announced without color/motion-only cues or focus theft;
   reconnect resolves by operation/revision or canonical refetch rather than assuming rollback.
 
-### `CHART-038`
+### `CHARTLINK-039`
 
-- [ ] Interactive chart adapters use common event, payload, asset, resize, visibility, export,
-  annotation, fallback, and dispose contracts.
-- [ ] Static accessible summaries remain available before/without upgrade; canvas/SVG/Shadow DOM
-  does not erase title, description, data summary, keyboard alternative, or export fallback.
+- [ ] DataTable/DataEditor cross-filtering and rich-surface composition consume the 0.38
+  `hedron-chart` event, selection, fallback, export, and lifecycle contracts without creating a
+  parallel renderer or vendor-default path.
+- [ ] Accessible chart summaries remain available during optimistic data/editor states and
+  cross-surface failure; Canvas/SVG does not erase title, description, data summary, keyboard
+  alternative, or export fallback.
 
-### `RICH-038` / `WORKER-038`
+### `RICH-039` / `WORKER-039`
 
 - [ ] Map, media/capture, code/editor, and eligible specialty surfaces adopt the shared ABI or retain
   an explicit Experimental exception with owner and destination.
@@ -224,7 +280,7 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] Third-party adapters cannot target undeclared origins, inject untrusted HTML, or bypass the
   element/server event and action contracts.
 
-### `PERF-038` / `A11Y-038` / `REGRESS-038` / `PKG-038`
+### `PERF-039` / `A11Y-039` / `REGRESS-039` / `PKG-039`
 
 - [ ] Representative large data/chart/map scenarios meet surface-specific response, interaction,
   memory, worker, long-task, layout-shift, and route-asset budgets on documented hardware/data.
@@ -233,9 +289,9 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] Existing component imports and server markup have upgrade fixtures; no rich adapter becomes a
   transitive/default asset merely because it implements the common ABI.
 
-## 0.39 — Authoring, interoperability, and ecosystem
+## 0.40 — Authoring, interoperability, and ecosystem
 
-### `AUTHOR-039` / `PLUGIN-039`
+### `AUTHOR-040` / `PLUGIN-040`
 
 - [ ] A third-party author kit defines typed metadata/events, DOM ownership, lifecycle/fallback,
   asset/resource disclosure, tests, diagnostics, compatibility, and packaging without private APIs.
@@ -244,7 +300,7 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] An externally built consumer plugin proves discovery, disable/uninstall, conflict errors,
   manifests, Explorer, clean install, and no host-framework dependency leakage.
 
-### `HDJ-039` / `THEME-039`
+### `HDJ-040` / `THEME-040`
 
 - [ ] HDJ can use registered custom elements as standards-based markup while its static prologue
   declares modules, feature/ABI requirements, events/actions, and fragment regions.
@@ -253,7 +309,7 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] Theme changes, color modes, forced colors, reduced motion, and print/export paths work without
   redefining elements or an application JavaScript build.
 
-### `EXPLORER-039` / `CONF-039` / `SUPPLY-039` / `PKG-039`
+### `EXPLORER-040` / `CONF-040` / `SUPPLY-040` / `PKG-040`
 
 - [ ] Explorer displays and simulates fallback/upgrade/failure, ABI, attributes/properties/events,
   forms, DOM ownership, slots/parts/tokens, assets, lifecycle, performance, and accessibility.
@@ -262,9 +318,9 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] If `@hedron/elements` is published, npm and wheel modules have matching content identity,
   version/provenance/license/SBOM policy and reproducible consumer tests.
 - [ ] Documentation clearly separates the supported Python-host workflow from any standalone npm
-  scope; clean author and consumer packages pass with zero Deferred 0.39 rows.
+  scope; clean author and consumer packages pass with zero Deferred 0.40 rows.
 
-### `MIGRATE-039` — `ReactMigrationMatrix`
+### `MIGRATE-040` — `ReactMigrationMatrix`
 
 - [ ] The React matrix maps components/props/callbacks/state/effects/context/reducers, controlled
   forms, data/mutations, routing, portals, loading/error boundaries, memoization/list identity,
@@ -279,16 +335,16 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] The fit guide explicitly rejects universal parity and covers offline/client-authoritative,
   games/canvas, arbitrary npm, and high-frequency collaboration non-equivalents.
 
-## 0.40 — Composition, state, and navigation
+## 0.41 — Composition, state, and navigation
 
-### `COMPOSE-040`
+### `COMPOSE-041`
 
 - [ ] Typed element events compose through registered actions and `InteractionGraph` bindings with
   cycle, payload, target, authorization, cancellation, and full-fragment fallback controls.
 - [ ] Element-to-element communication uses DOM events or registered graph contracts, not hidden
   global stores, direct private method calls, or arbitrary selector mutation.
 
-### `STATE-040`
+### `STATE-041`
 
 - [ ] Disposable, draft, preference, server, and capability state classes are machine-visible and
   enforce their persistence/authority rules.
@@ -300,7 +356,7 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
   stable through transfer, composition, history, and late-response scenarios; transfer cannot turn
   local/draft state into canonical server state.
 
-### `NAV-040` / `TRACE-040` / `FALLBACK-040`
+### `NAV-041` / `TRACE-041` / `FALLBACK-041`
 
 - [ ] Boosted navigation, push/replace URL, history cache, focus/title, preload, view transitions
   where supported, and full navigation fallback preserve server authority and existing privacy rules.
@@ -309,20 +365,20 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
 - [ ] One failing/slow/incompatible element cannot prevent unrelated elements, native navigation,
   form submission, or authorized HTMX regions from operating.
 
-### `BROWSER-040` / `REGRESS-040` / `PKG-040`
+### `BROWSER-041` / `REGRESS-041` / `PKG-041`
 
 - [ ] Multi-element dashboard/form/navigation scenarios pass three-engine browser, host, a11y,
   performance, memory, failure-injection, history/privacy, and compatibility matrices.
-- [ ] No phase 0.40 feature creates a hidden correctness dependency on live transports, preload,
+- [ ] No phase 0.41 feature creates a hidden correctness dependency on live transports, preload,
   View Transitions, browser storage, or JavaScript.
 
-## 0.41 — Production-grade Web Component platform
+## 0.42 — Production-grade Web Component platform
 
-### `STABLE-041` / `COMPAT-041`
+### `STABLE-042` / `COMPAT-042`
 
 - [ ] A machine-readable Supported inventory names stable tags, ABI versions, attributes/properties,
   event schemas, form encodings, slots/parts/tokens, fallback, browser floor, and package versions.
-- [ ] Minimum/current dependency and browser matrices, mixed versions, upgrades from 0.36–0.40,
+- [ ] Minimum/current dependency and browser matrices, mixed versions, upgrades from 0.36–0.41,
   rollback, offline installs, CDN refusal, package removal, and unsupported-feature failure pass.
 - [ ] Experimental elements/adapters are absent from production defaults and have an owner,
   destination/terminal disposition, and conspicuous capability label.
@@ -330,7 +386,7 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
   optimistic mutation types, gesture/overlay entries, and React-migration bridge disposition; any
   excluded contract remains explicit and non-default.
 
-### `REVIEW-041` / `AT-041`
+### `REVIEW-042` / `AT-042`
 
 - [ ] An independent browser/security review covers code execution, CSP/Trusted Types, XSS/HTML
   sinks, payloads/events, origins/assets/workers, Shadow DOM assumptions, state transfer, forms,
@@ -339,23 +395,23 @@ Command (at Verified): `python scripts/verify_pkg_36.py`
   workflows across the declared desktop/mobile screen-reader and other-disability matrix; blockers
   are fixed or the affected surface remains outside Supported inventory.
 
-### `PERF-041` / `SUPPLY-041`
+### `PERF-042` / `SUPPLY-042`
 
 - [ ] Shared and per-surface bundle, request, upgrade, interaction, memory/leak, long-task,
   layout-shift, and slow-module budgets pass in the production reference app.
 - [ ] Wheel/npm artifacts, modules, workers/WASM, source maps, licenses, SBOMs, provenance,
   vulnerabilities, reproducible builds, retention, and rollback evidence are complete.
 
-### `REGRESS-041` / `PKG-041`
+### `REGRESS-042` / `PKG-042`
 
 - [ ] FastAPI, Flask, Django, HDJ, plugins, reference app, conformance, browser/a11y, security,
-  performance, docs, and packaging suites pass with zero Deferred 0.41-owned rows.
+  performance, docs, and packaging suites pass with zero Deferred 0.42-owned rows.
 - [ ] `hedron-elements` is production-grade only for the declared Supported inventory; the release
   does not imply that all Hedron UI is a custom element or that applications are SPAs.
 
 ## Program exit
 
-The Web Component platform is production-grade only after all 0.41 gates are Verified. Earlier
+The Web Component platform is production-grade only after all 0.42 gates are Verified. Earlier
 phases may ship Alpha/Beta surfaces behind explicit pins and capability labels. SSR, native HTML,
 ordinary forms/navigation, HTMX fragments, and server validation remain supported fallbacks
 throughout the program. The five interaction contracts must either appear in the locked Supported

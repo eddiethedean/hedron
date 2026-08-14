@@ -36,13 +36,13 @@ hedron/
 │   ├── hedron-conformance/        # Language-neutral conformance kit (0.14)
 │   │   └── src/hedron_conformance/
 │   ├── hedron-extras/               # Curated extras / workbenches (0.16)
-│   ├── hedron-notebook/             # Alpha 0.17 server-side notebook preview (RFC-0042)
+│   ├── hedron-notebook/             # Beta tooling-grade localhost notebook preview (RFC-0042)
 │   │   └── src/hedron_notebook/
-│   ├── hedron-mcp/                  # Alpha 0.17 deny-by-default MCP projection (RFC-0043)
+│   ├── hedron-mcp/                  # Beta deny-by-default MCP projection (RFC-0043 / RFC-0065)
 │   │   └── src/hedron_mcp/
-│   ├── hedron-gradio/               # Alpha 0.18 Gradio client interop (RFC-0049)
+│   ├── hedron-gradio/               # Beta allowlisted Gradio client interop (RFC-0049 / RFC-0067)
 │   │   └── src/hedron_gradio/
-│   ├── hedron-sim/                  # Alpha offline HTMX docs/demo simulator
+│   ├── hedron-sim/                  # Beta tooling-grade offline HTMX docs/demo simulator
 │   │   └── src/hedron_sim/
 │   ├── hedron-workbench/            # Posit Workbench compatibility adapter (0.33)
 │   │   └── src/hedron_workbench/
@@ -51,8 +51,8 @@ hedron/
 │   ├── hedron-native/             # Optional Rust acceleration (Beta 0.1.x)
 │   │   └── src/hedron_native/
 │   ├── hedron-elements/           # Alpha 0.36 Web Component ABI (D-064)
-│   ├── hedron-runtime-node/       # Experimental Node runtime (outside uv workspace)
-│   └── hedron-runtime-java/       # Experimental Java runtime (outside uv workspace)
+│   ├── hedron-runtime-node/       # Beta tooling-grade Node evaluator (outside uv workspace)
+│   └── hedron-runtime-java/       # Beta tooling-grade Java evaluator (outside uv workspace)
 ├── tests/
 │   ├── adapters/
 │   ├── conformance/
@@ -81,20 +81,21 @@ hedron/
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
-| `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` (Beta line `0.1.x`, tip `0.1.10`) |
+| `hedron-charts` | `hedron_charts` | `hedron-core`; chart backends remain extras; also `hedron[charts]` | `v0.6.0` (Beta line `0.1.x`, tip `0.1.11`) |
 | `hedron-flask` | `hedron_flask` | `hedron-core`, Flask | `v0.7.0` (Supported capability; Beta package) |
 | `hedron-django` | `hedron_django` | `hedron-core`, Django `>=5.2,<6` | `v0.7.0` (Supported; Beta package) |
 | `hedron-jinja` | `hedron_jinja` | `hedron-core`, Jinja; also `hedron[jinja]` | `v0.9.0` / train with `0.25.x` |
 | `hedron-conformance` | `hedron_conformance` | Fixture schema + runner (stdlib + pydantic) | `v0.16.0` |
 | `hedron-extras` | `hedron_extras` | Optional curated extras / workbenches; also `hedron[extras]` | `v0.16.0` |
-| `hedron-notebook` | `hedron_notebook` | Optional notebook preview (experimental Alpha); also `hedron[notebook]` | `v0.1.0` |
+| `hedron-notebook` | `hedron_notebook` | Beta tooling-grade localhost preview; also `hedron[notebook]` | `v0.1.0` |
 | `hedron-mcp` | `hedron_mcp` | Optional MCP projection (Beta Supported inventory; deny-by-default); also `hedron[mcp]` | `v0.2.0` |
-| `hedron-gradio` | `hedron_gradio` | Optional Gradio client interop (experimental Alpha); also `hedron[gradio]` | `v0.1.0` |
+| `hedron-gradio` | `hedron_gradio` | Beta allowlisted Gradio client interop; also `hedron[gradio]` | `v0.1.0` (current Beta line `0.2.x`) |
 | `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Beta tooling) | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
 | `hedron-elements` | `hedron_elements` | Alpha Web Component ABI / modules (phase 0.36) | `v0.36.0` |
-| `hedron-workbench` | `hedron_workbench` | `hedron-posit`; Posit Workbench compatibility; also `hedron[workbench]` | `v0.32.0` (0.34.x compat subclass) |
-| `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | `v0.34.0` |
+| `hedron-workbench` | `hedron_workbench` | `hedron-posit`; Posit Workbench compatibility; also `hedron[workbench]` | `v0.29.0` (current 0.36.x compatibility subclass) |
+| `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | `v0.33.0` |
+| `fastapi-workbench` | `fastapi_workbench` | Starlette, Uvicorn; independent plain-FastAPI/ASGI Workbench adapter | `v1.0.0` |
 
 `hedron` does not require Explorer or Jinja in production. `hedron[dev]` installs
 `hedron-explorer` for development diagnostics; `hedron[jinja]` installs the separate integration.

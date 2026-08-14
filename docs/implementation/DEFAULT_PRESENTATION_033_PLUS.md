@@ -1,6 +1,6 @@
 # Default presentation quality plan (0.33+)
 
-**Status:** Planned cross-cutting program for phases 0.33–0.41.  
+**Status:** Planned cross-cutting program for phases 0.33–0.42.
 **Roadmap owner:** [Default presentation quality program](../ROADMAP.md#default-presentation-quality-program-033-cross-cutting).  
 **Primary implementation surface:** `hedron-core` default theme, bundled stylesheet, semantic
 component markup, scaffolds, Component Explorer, reference application, and browser conformance.
@@ -130,10 +130,11 @@ and no fixture implies that Hedron owns user persistence, permissions, or email 
 | **0.35** | Audit the refreshed defaults in the whole-fleet inventory, supported package combinations, documentation, and supply evidence. |
 | **0.36** | Bind `hedron-elements` ABI, SSR fallback, state ownership, and HTMX lifecycle to the same tokens, focus, surface, and no-JavaScript visual contract. |
 | **0.37** | Complete form-associated controls, validation, async interaction states, dialogs, gestures/overlays, and generic public/recovery composition patterns. |
-| **0.38** | Complete dense data, table, editor, chart, map, and media containment, responsive density, loading, empty, error, and optimistic-state presentation. |
-| **0.39** | Publish third-party authoring rules for tokens, classes, parts, slots, variants, theme compatibility, visual fixtures, and safe application overrides. |
-| **0.40** | Complete active-navigation reveal, fragment-entry motion, history/focus/title behavior, bounded draft-state presentation, and multi-element failure isolation. |
-| **0.41** | Lock the Supported visual inventory and prove browser, accessibility, human-AT, performance, compatibility, upgrade/rollback, and supply-chain evidence for production-grade graduation. |
+| **0.38** | Establish publication-quality chart tokens, axes/guides/labels, responsive density, SVG/Canvas states, interactions, accessibility, print/export, and reviewed visual fixtures. |
+| **0.39** | Complete dense data, table, editor, map, and media containment, optimistic-state presentation, and integration with the 0.38 chart system. |
+| **0.40** | Publish third-party authoring rules for tokens, classes, parts, slots, variants, theme compatibility, visual fixtures, and safe application overrides. |
+| **0.41** | Complete active-navigation reveal, fragment-entry motion, history/focus/title behavior, bounded draft-state presentation, and multi-element failure isolation. |
+| **0.42** | Lock the Supported visual inventory and prove browser, accessibility, human-AT, performance, compatibility, upgrade/rollback, and supply-chain evidence for production-grade graduation. |
 
 The 0.33 work establishes evidence and fixes clear defects; it does not make `hedron-posit`
 delivery depend on a wholesale redesign. The refreshed default becomes mandatory at 0.34 only after the compatibility
@@ -177,7 +178,7 @@ antialiasing delta cannot hide a containment regression or create a permanently 
 - Focus rings are never clipped by cards, tabs, dialogs, sticky regions, or overflow containers.
 - Contrast and non-color state distinction pass in both token modes and forced colors.
 - Touch targets, reflow, and content expansion pass without hiding the active action.
-- Representative public form, settings, table, dialog, and navigation workflows join the 0.41
+- Representative public form, settings, chart, table, dialog, and navigation workflows join the 0.42
   human-AT evidence set; unproven patterns remain outside the Supported visual inventory.
 
 ### Performance and delivery
@@ -187,7 +188,7 @@ antialiasing delta cannot hide a containment regression or create a permanently 
 - Layout CSS works without JavaScript. Optional navigation reveal and fragment motion are small,
   local progressive enhancements with no correctness authority.
 - CSS, script, request, cumulative-layout-shift, long-task, and memory budgets are recorded before
-  the 0.34 default switch and locked for 0.41 graduation.
+  the 0.34 default switch and locked for 0.42 graduation.
 - Clean wheel/sdist installs include the exact audited assets used by the gallery and reference app.
 
 ## Compatibility and rollout
@@ -216,7 +217,7 @@ Likely owned areas include:
 - page asset/enhancer loading with strict CSP and no-JavaScript fallback;
 - project scaffolds, Component Explorer examples, and `examples/reference-app`;
 - browser geometry, screenshot, accessibility, snapshot, package, and upgrade fixtures; and
-- the 0.36–0.41 element tokens/parts/slots and SSR conformance corpus.
+- the 0.36–0.42 element tokens/parts/slots and SSR conformance corpus.
 
 Private implementation names remain flexible. Public behavior, semantic markup, tokens, and gates
 must be documented before the refreshed stylesheet becomes the default.
@@ -237,5 +238,5 @@ must be documented before the refreshed stylesheet becomes the default.
 The plan is complete when a freshly generated Hedron application and the no-app-CSS reference
 gallery meet the documented visual, responsive, accessibility, interaction, performance, and
 package gates; the refreshed presentation is the normal `default_styles=True` experience; custom
-canvas opt-out remains intact; and the 0.41 Supported visual inventory has upgrade, rollback,
+canvas opt-out remains intact; and the 0.42 Supported visual inventory has upgrade, rollback,
 human-AT, and independent review evidence with no hidden Deferred gate.

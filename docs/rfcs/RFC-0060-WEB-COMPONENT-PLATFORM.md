@@ -2,12 +2,13 @@
 
 **Status:** Accepted
 
-**Target phases:** 0.36–0.41
+**Target phases:** 0.36–0.42
 
 **Revision:** 2026-08-13 — Stage 0 refine for phase 0.36 under D-064: open questions
 resolved, public markup ABI frozen, 0.36/0.37 boundaries clarified. Prior: 2026-08-12 —
 D-058 shifted the planned program from 0.34–0.39 to 0.35–0.40; D-061 then shifted it to
-0.36–0.41. Scope and ordering are unchanged.
+0.36–0.41. D-066 inserts the RFC-0069 chart flagship at 0.38 and moves the previously planned
+0.38–0.41 capabilities to 0.39–0.42 without scope loss.
 
 **Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 (one enhancement issue per phase). Close each issue when its owning release-gate rows are
@@ -64,7 +65,7 @@ framework. FastAPI, Flask, and Django integrations consume the same assets and m
 existing registry and manifest contracts.
 
 The distribution begins as Alpha in phase 0.36. Selected beginner-facing elements may be
-re-exported from `hedron`; host adapters do not fork their browser implementations. Phase 0.39 may
+re-exported from `hedron`; host adapters do not fork their browser implementations. Phase 0.40 may
 publish the same browser modules as `@hedron/elements` for non-Python authors, but Python consumers
 never need npm or an application bundler.
 
@@ -135,7 +136,7 @@ diagnostics, and compatibility. Elements cannot rely on a global after-swap scan
 
 Outer swaps disconnect the old element and connect a new instance. Inner swaps are permitted only
 inside declared server-owned regions. Browser-local state is disposable unless the contract
-explicitly submits it, reflects it into bounded state, or participates in the phase 0.40 transfer
+explicitly submits it, reflects it into bounded state, or participates in the phase 0.41 transfer
 protocol.
 
 ### 6. Attributes, properties, methods, and events
@@ -180,7 +181,7 @@ Every mutable element field declares one ownership mode:
 Capabilities and durable server state are never element-owned. Programmatic controlled updates do
 not emit user-intent events by default. A dirty draft receiving new server state must explicitly
 replace, preserve, perform a proven typed rebase, or enter conflict; it cannot silently use
-last-write-wins. Phase 0.40 adds bounded transfer only for eligible drafts.
+last-write-wins. Phase 0.41 adds bounded transfer only for eligible drafts.
 
 ### 9. `InteractionState`
 
@@ -209,7 +210,9 @@ The browser distinguishes proposed/submitted from confirmed. Only a matching ser
 the mutation canonical. Rejection rolls back or refetches; conflicts preserve an explicit resolution
 path. Optimism is excluded by default for auth/permission changes, irreversible destruction,
 payments, secrets, publication, cross-tenant moves, and mutations without safe replay and recovery.
-Phase 0.38 first proves the contract on bounded DataEditor/collection edits.
+Phase 0.39 first proves the contract on bounded DataEditor/collection edits. Phase 0.38 uses the
+same revision/identity vocabulary for chart selection and updates but does not introduce optimistic
+server mutation.
 
 ### 11. `GestureOverlayCatalog`
 
@@ -225,7 +228,7 @@ information, and command surfaces invoke registered routes/actions only.
 
 ### 12. `ReactMigrationMatrix`
 
-Phase 0.39 publishes a coverage ledger mapping React components, props, callbacks, state, effects,
+Phase 0.40 publishes a coverage ledger mapping React components, props, callbacks, state, effects,
 context, reducers, fetching/mutations, routing, portals, loading/error boundaries, memoization, list
 identity, forms, gestures, virtualization, rich widgets, testing, styling, and deployment to Hedron,
 HTMX, and element contracts.
@@ -290,10 +293,11 @@ Performance claims use end-to-end browser scenarios rather than bundle size alon
 |---|---|
 | 0.36 | Element ABI, `hedron-elements`, state ownership, registry/assets, SSR fallback, HTMX lifecycle, CSP/a11y/browser baseline |
 | 0.37 | `InteractionState`, form-associated controls, gestures/overlays, and interactive semantic primitives |
-| 0.38 | `OptimisticMutation` plus data, chart, map, media, and editor convergence on the shared element contract |
-| 0.39 | `ReactMigrationMatrix`, third-party author kit, HDJ/plugin/Explorer integration, themes/slots/parts, npm mirror and conformance |
-| 0.40 | Typed composition, browser-local state transfer, history/navigation, diagnostics, and failure isolation |
-| 0.41 | Stable inventory, compatibility, independent review, human AT, performance, supply chain, and production-grade graduation |
+| 0.38 | RFC-0069 high-fidelity `hedron-chart` flagship: chart-scoped ABI profile, typed grammar/events, D3 renderer, a11y, visual/perf/export/review evidence |
+| 0.39 | `OptimisticMutation` plus data, chart integration, map, media, and editor convergence on the shared element contract |
+| 0.40 | `ReactMigrationMatrix`, third-party author kit, HDJ/plugin/Explorer integration, themes/slots/parts, npm mirror and conformance |
+| 0.41 | Typed composition, browser-local state transfer, history/navigation, diagnostics, and failure isolation |
+| 0.42 | Stable inventory, compatibility, independent review, human AT, performance, supply chain, and production-grade graduation |
 
 Detailed gates live in the roadmap and the Web Component acceptance specification.
 
@@ -359,9 +363,10 @@ SSR content remains visible before upgrade, so module latency does not block fir
 
 ## Compatibility and migration
 
-Existing ad hoc browser modules keep working during 0.36–0.38. Each migrated component publishes a
+Existing ad hoc browser modules keep working during 0.36–0.39. The 0.38 chart phase replaces chart
+host fragmentation with `hedron-chart`; other rich surfaces migrate in 0.39. Each migrated component publishes a
 compatibility note and retains its server-rendered fallback. Tag names and event schemas enter the
-stable inventory only in 0.41; prior phases are explicitly Alpha/Beta and pinned.
+stable inventory only in 0.42; prior phases are explicitly Alpha/Beta and pinned.
 
 The `ReactMigrationMatrix` is a migration aid, not a promise of universal React compatibility.
 Temporary React islands remain Experimental, explicitly inventoried, non-transitive, and removable.
@@ -382,26 +387,40 @@ rewrite Python routes merely because a component's internal browser implementati
 | `BROWSER-036` “100 elements” | **100 upgrade/swap cycle instances** of `hedron-example` (outer / authorized inner / OOB / history), not 100 distinct tag types. |
 | Registry `form_contract` | Present as a **reserved metadata stub** in the 0.36 registry schema; no `ElementInternals` runtime and no form-submission proof until `FORM-037` / `VALIDITY-037`. |
 | Events vs `InteractionState` | 0.36 ships typed `CustomEvent` detail schemas only. The idle/pending/success/error/canceled machine waits for `ACTIONSTATE-037`. |
-| Draft transfer vs `STATE-036` | Ownership, reflection, conflict, and rebase rules are in force in 0.36; **cross-instance draft transfer** remains a non-goal until phase 0.40. |
+| Draft transfer vs `STATE-036` | Ownership, reflection, conflict, and rebase rules are in force in 0.36; **cross-instance draft transfer** remains a non-goal until phase 0.41. |
 | Presentation | Bind tokens / focus / SSR no-JS visuals through `SSR-036` and `A11Y-036`. Do **not** invent `PRESENT-036`. |
+
+## Resolved questions (D-065)
+
+### 0.37 definitive
+
+| Question | Answer |
+|---|---|
+| 0.37 reference elements | **`hedron-field-text`**, **`hedron-field-choice`**, **`hedron-field-file`** (form association); **`hedron-disclosure`**, **`hedron-dialog`** (primitive catalog); **`hedron-action-async`** (`InteractionState`). **`hedron-example`** stays non-form and must not regress 0.36 ABI evidence. |
+| `hedron-elements` at 0.37 cut | Train-aligned Alpha **`0.37.0`**, pin `>=0.37.0,<0.38`, depends on `hedron-core` only. |
+| Registry `form_contract` | Required populated fields at 0.37+: association mode, value encoding, reset/restore policy, validation mapping, fallback tag (see [WEB_COMPONENT_PLATFORM.md](../implementation/WEB_COMPONENT_PLATFORM.md)). |
+| Events vs `InteractionState` | 0.36 typed `CustomEvent` schemas remain. Shared idle/pending/success/error/canceled machine and `ACTIONSTATE-037` evidence are **0.37-only**; do not retroactively apply to `hedron-example`. |
+| Primitive catalog | Disclosure, dialog, tabs, menu/popover, selection, and bounded upload per ROADMAP §0.37; native `<dialog>`, Popover API, and CSS anchoring preferred when the browser floor provides required semantics. |
+| Gesture/overlay catalog | Reorder/drag-drop, resize/splitter, pointer capture, keyboard equivalence, and overlay entries (dialog, popover/menu, combobox popup, tooltip, command palette, toast) per [WEB_COMPONENT_INTERACTION_CONTRACTS.md](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md) §4; typed intent with allowlisted targets only. |
+| Browser floor at 0.37 | Same three-engine Playwright family as 0.36; exact build IDs recorded in `REGRESS-037` / `HTMX-037` evidence at cut. |
 
 ### Later-phase provisional (unblocks Accept; amendable by phase-owned decisions)
 
 | Question | Provisional answer |
 |---|---|
-| 0.37 gesture/overlay catalog | Disclosure, dialog, tabs, menu/popover, selection, and bounded upload as listed in ROADMAP §0.37; native platform features preferred when sufficient. |
-| 0.38 rich-surface graduation | DataEditor and chart adapters may graduate behind the shared ABI; specialty UI (`CodeEditor` / `TerminalView` / device) remains Experimental. |
+| 0.38 chart flagship | `hedron-chart` may become Supported for the locked RFC-0069 inventory; the public Python/spec contract is stable for the 0.2 line while whole-platform ABI graduation remains 0.42. |
+| 0.39 rich-surface graduation | DataEditor and other rich adapters may graduate behind the shared ABI; they consume the 0.38 chart contract rather than creating another chart renderer. Specialty UI (`CodeEditor` / `TerminalView` / device) remains Experimental. |
 | First `OptimisticMutation` inventory | Bounded DataEditor / collection cell edits only; auth, irreversible destruction, payments, secrets, and cross-tenant moves stay deny-by-default. |
-| `@hedron/elements` in 0.39 | Modules and TypeScript types only for non-Python authors; no React runtime and no application bundler requirement. |
-| React-island bridge home | Documentation and reference code only in 0.39 — **not** shipped inside `hedron-elements`. |
-| Browser floor at 0.41 | Same three-engine family; exact build IDs re-recorded at graduation cut. |
+| `@hedron/elements` in 0.40 | Modules and TypeScript types only for non-Python authors; no React runtime and no application bundler requirement. |
+| React-island bridge home | Documentation and reference code only in 0.40 — **not** shipped inside `hedron-elements`. |
+| Browser floor at 0.42 | Same three-engine family; exact build IDs re-recorded at graduation cut. |
 
 None of these answers changes the server-owned state, no-hydration, progressive-enhancement, or
 HTMX lifecycle boundaries.
 
 ## Acceptance criteria
 
-- The roadmap owns every phase from 0.36 through 0.41 with explicit gates and non-goals.
+- The roadmap owns every phase from 0.36 through 0.42 with explicit gates and non-goals.
 - The implementation specification defines package direction, ABI artifacts, DOM ownership,
   lifecycle, fallback, events, forms, assets, diagnostics, and failure behavior.
 - `ElementStateOwnership`, `InteractionState`, `OptimisticMutation`, `GestureOverlayCatalog`, and
@@ -409,4 +428,6 @@ HTMX lifecycle boundaries.
 - The acceptance specification covers functional, security, accessibility, browser, performance,
   compatibility, documentation, packaging, and supply-chain evidence.
 - RFC-0021, RFC-0025, and this RFC have no unresolved normative conflict.
-- No phase claims production-grade Web Components before all 0.41 gates are Verified.
+- No phase claims production-grade Web Components before all 0.42 gates are Verified. Phase 0.38
+  may support the chart-scoped Python/spec/element workflow defined by RFC-0069 without promoting
+  unrelated tags or the general author ABI.

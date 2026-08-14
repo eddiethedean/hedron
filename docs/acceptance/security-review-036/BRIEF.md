@@ -19,8 +19,8 @@ Independent review of the **element ABI / bridge** surface:
 ## Out of scope
 
 - Form-associated controls, `InteractionState`, gestures (phase 0.37)
-- Optimistic mutation and rich-surface adapters (phase 0.38)
-- Production-grade / `stable` promotion (phase 0.41)
+- High-fidelity charts (phase 0.38) and optimistic/rich-surface adapters (phase 0.39)
+- Production-grade / `stable` promotion (phase 0.42)
 - Reopening `polling_only` live-transport disposition
 - Treating Shadow DOM or element events as an authorization boundary
 

@@ -117,9 +117,10 @@ extras only when you need them:
 | `hedron[conformance]` | Language-neutral conformance kit / CLI runner | [hedron-conformance](../packages/hedron-conformance.md) |
 | `hedron[native]` | Optional Rust HTML-escape acceleration (Beta) | [hedron-native](../packages/hedron-native.md) |
 | `hedron[extras]` | Curated extras / workbenches | [hedron-extras](../packages/hedron-extras.md) |
-| `hedron[notebook]` | Alpha server-side notebook preview | [hedron-notebook](../packages/hedron-notebook.md) |
+| `hedron[notebook]` | Beta tooling-grade localhost notebook preview | [hedron-notebook](../packages/hedron-notebook.md) |
 | `hedron[mcp]` | Beta deny-by-default MCP projection (Supported inventory) | [hedron-mcp](../packages/hedron-mcp.md) |
-| `hedron[gradio]` | Alpha Gradio client interop (experimental) | [hedron-gradio](../packages/hedron-gradio.md) |
+| `hedron[gradio]` | Beta allowlisted Gradio client interoperability | [hedron-gradio](../packages/hedron-gradio.md) |
+| `hedron[elements]` | Alpha Web Component ABI incubator | [hedron-elements](../packages/hedron-elements.md) |
 | `hedron[otel]` | Optional OpenTelemetry tracing helpers | [Observability](../guides/observability.md) |
 | `hedron[markdown]` / `[code]` / `[images]` / `[email]` / `[sanitize]` | Content rendering and validation helpers | [Content API](../api/CONTENT.md) |
 | `hedron[auth]` | Authlib-backed OIDC helpers | [OIDC walkthrough](../guides/oidc.md) |

@@ -2,7 +2,7 @@
 
 Offline HTMX simulation for Hedron docs and demos.
 
-**Package maturity:** Alpha (`0.1.x`) · pin `>=0.1.0,<0.2`  
+**Package maturity:** Beta tooling-grade (`0.1.x`) · pin `>=0.1.0,<0.2`
 **Flagship extra:** none — install directly · **Import:** `hedron_sim`  
 Author demos with ordinary Hedron components, then embed them in **static** docs —
 no FastAPI process required.

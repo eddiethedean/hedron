@@ -1,7 +1,8 @@
 # Data applications
 
 Render common Python objects with core `Auto`, then install the data extra for
-tabular `DataTable` / `DataEditor`. Charts are **Alpha** — see
+tabular `DataTable` / `DataEditor`. The charts package is **Beta**: Matplotlib/static is
+Supported, while Plotly and Altair browser hosts remain Experimental. See
 [Charts and HTMX](charts-and-htmx.md).
 
 ## Auto (core — no extra)
@@ -248,4 +249,4 @@ See [Charts and HTMX](charts-and-htmx.md) and
 ## See also
 
 - [Data API](../api/DATA.md) · [Data sources](../api/DATA_SOURCE.md)
-- [What’s ready](whats-ready.md) (Supported vs Alpha)
+- [What’s ready](whats-ready.md) (Supported vs Experimental)

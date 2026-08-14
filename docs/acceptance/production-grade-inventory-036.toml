@@ -1,6 +1,6 @@
 # Phase 0.36 whole-fleet inventory (machine-checked by verify_pkg_36 / PKG-036).
 # disposition: production_grade | incubator | fixture | eol
-# Extends the 0.35 fleet with Alpha hedron-elements (destination 0.41).
+# Extends the 0.35 fleet with Alpha hedron-elements (destination rephased to 0.42 by D-066).
 # Owning decision: D-064; extends D-063 fleet. RFC: RFC-0060.
 # PRESENT-034 deferred presentation audit is recorded under hedron-core (see present_034_status).
 
@@ -291,4 +291,4 @@ disposition = "incubator"
 supported = []
 experimental = ["web_component_abi", "hedron_example"]
 excluded = ["production_grade_until_0_41", "stable_tag_promotion"]
-production_grade_destination = "0.41"
+production_grade_destination = "0.42"

@@ -190,7 +190,7 @@ hedron                         FastAPI flagship and beginner API
 hedron-flask ──> hedron-core   Flask adapter (Supported capability; Beta package)
 hedron-django ─> hedron-core   Django adapter (Supported capability; Django >=5.2,<6)
 hedron-jinja ──> hedron-core   optional .hdj format
-hedron-gradio ─> hedron-core   optional Gradio client (Experimental Alpha)
+hedron-gradio ─> hedron-core   optional allowlisted Gradio client (Beta; bounded Supported inventory)
 ```
 
 `hedron-core` does not import application-framework or transport types. Inference scheduling

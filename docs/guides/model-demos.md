@@ -112,7 +112,7 @@ result = wf.run(principal="ops", registry=registry, inputs={"model": {"in": "meo
 assert result.status in {"completed", "partial", "failed", "cancelled"}
 ```
 
-## Gradio (optional Alpha)
+## Gradio (optional Beta client interop)
 
 ```bash
 pip install "hedron[gradio]>=0.36.0,<0.37"
@@ -126,4 +126,5 @@ See [Gradio migration](gradio-migration.md).
 
 - Feedback is never silently enabled and never treated as ground truth.
 - Graph JSON cannot execute host code or auto-publish HTTP/MCP endpoints.
-- Gradio interop is Experimental — pin Alpha and expect churn.
+- Gradio interop is Supported for declared allowlisted destinations on the Beta `0.2.x`
+  satellite. Vendor extensions and automatic UI composition remain Experimental.

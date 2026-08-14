@@ -25,4 +25,4 @@ No open critical or high findings.
 
 ## Residual risk
 
-Alpha `hedron-elements` is not production-grade. Adopters must pin and treat the ABI as evolving until phase 0.41.
+Alpha `hedron-elements` is not production-grade. Adopters must pin and treat the general ABI as evolving until phase 0.42.

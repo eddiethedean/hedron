@@ -104,10 +104,10 @@ def apply_incoming_update(
 
 
 def refuse_transfer() -> None:
-    """Cross-instance draft transfer is out of scope until phase 0.40."""
+    """Cross-instance draft transfer is out of scope until phase 0.41."""
     raise error(
         "HED-ELEMENT-STATE-0006",
         title="Draft transfer not available",
-        explanation="Cross-instance draft transfer is deferred to phase 0.40.",
+        explanation="Cross-instance draft transfer is deferred to phase 0.41.",
         remediation="Keep draft state instance-local until STATE-040.",
     )

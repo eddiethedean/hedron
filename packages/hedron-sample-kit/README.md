@@ -19,7 +19,7 @@ reference when authoring your own plugin distribution.
 pip install "hedron-sample-kit>=0.1.10,<0.2"
 ```
 
-Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.9` floor. See
+Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.10` floor. See
 [Compatibility](https://hedron.readthedocs.io/en/latest/COMPATIBILITY/#charts-and-sample-kit-compatibility-floor).
 
 Enable the plugin in your app’s `pyproject.toml`:

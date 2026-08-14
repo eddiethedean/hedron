@@ -1,0 +1,68 @@
+# Phase 0.37 form-associated elements and interactive primitives evidence index.
+# Consumed by scripts/check_release_gate.py (manifest path) / verify_pkg_37.py.
+# Zero Deferred policy: every 0.37-owned row must be Verified at cut.
+# Owning decision: D-065. Design: RFC-0060. Tracking: #93.
+# Stage 0 refine complete; all rows Planned until implementation evidence lands.
+
+[[evidence]]
+id = "FORM-037"
+state = "Planned"
+command = "python scripts/check_form_037.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "VALIDITY-037"
+state = "Planned"
+command = "python scripts/check_validity_037.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PRIMITIVE-037"
+state = "Planned"
+command = "python scripts/check_primitive_037.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "ACTIONSTATE-037"
+state = "Planned"
+command = "python scripts/check_actionstate_037.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "INTERACT-037"
+state = "Planned"
+command = "python scripts/check_interact_037.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "HTMX-037"
+state = "Planned"
+command = "python scripts/check_htmx_037.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "AT-037"
+state = "Planned"
+command = "python scripts/check_at_037.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-037"
+state = "Planned"
+command = "python scripts/check_regress_037.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-037"
+state = "Planned"
+command = "python scripts/verify_pkg_37.py"
+ci_job = "packaging"
+owner = "hedron"

@@ -8,10 +8,11 @@ Tooling-grade Java Hedron conformance runtime.
 
 Minimal evaluator for the published [`hedron-conformance`](https://pypi.org/project/hedron-conformance/)
 fixtures. Compiles a single Java source with `javac --release 11` and runs the
-bundled portable fixture. Lives outside the uv Python workspace and is **not**
-published to Maven Central.
+bundled portable fixture. Lives outside the uv Python workspace and publishes independently
+with coordinates `io.hedron:hedron-runtime-java:0.32.0`.
 
 **Maturity:** Beta tooling-grade · portable Java conformance evaluator
+**Version:** `0.32.0`
 
 ## Requirements
 
@@ -42,7 +43,7 @@ Failures print fixture id, contract version, and violated capability.
 |---|---|
 | Conformance fixture evaluator | Application server |
 | Portable IR parity check | Full Hedron component runtime |
-| Monorepo-only experimental package | Published Maven artifact |
+| Independently versioned Maven tooling | Application framework or full Hedron port |
 
 ## Links
 

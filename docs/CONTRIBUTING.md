@@ -54,6 +54,8 @@ uv run --group docs mkdocs build --strict
 # or preview: uv run --group docs mkdocs serve
 # or: ./scripts/mkdocs.sh serve
 uv run python scripts/check_docs_train_ssot.py
+uv run python scripts/check_package_docs_inventory.py
+uv run python scripts/verify_pkg_38.py --allow-planned
 uv run python scripts/check_documentation_ownership.py
 uv run python scripts/check_api_docs_coverage.py
 uv run python scripts/check_package_readme_links.py
@@ -75,6 +77,7 @@ Docs-only PRs (allowlisted paths in `.github/workflows/ci.yml`) still run **`qua
 - `docs/*`, `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `mkdocs.yml`
 - `scripts/sync_demo_code_tabs.py`, `scripts/generate_component_docs.py`,
   `scripts/generate_sim_demos.py`, `scripts/check_docs_train_ssot.py`,
+  `scripts/check_package_docs_inventory.py`,
   `scripts/check_documentation_ownership.py`, `scripts/check_api_docs_coverage.py`,
   `scripts/check_package_readme_links.py`, `scripts/check_external_links.py`,
   `scripts/check_recipe_code_sync.py`, `scripts/README.md`
@@ -151,10 +154,10 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 | Job | Suite (`ci_checks.sh …`) | On pull requests? |
 |---|---|---|
 | `test` | `test` — `pytest` on Python 3.11–3.14 | Yes, unless **docs-only** |
-| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, recipe/sim checks, relative doc links, `mkdocs build --strict` | **Always** |
+| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, recipe/sim checks, planned 0.37/0.38 packet shape, relative doc links, `mkdocs build --strict` | **Always** |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
-| `evidence` | `evidence` — Evidence bundle, dep audit, release-gate check for current train, `verify_pkg_28.py` | Yes, unless **docs-only**; also on release |
-| `release` (commit CI) | `packaging` — Packaging rehearsal (`verify_pkg_28`) | After `evidence` succeeds (skipped when docs-only) |
+| `evidence` | `evidence` — Evidence bundle, dependency audit, configured release gate, `verify_pkg_36.py`, and lenient planned 0.37/0.38 packet checks | Yes, unless **docs-only**; also on release |
+| `release` (commit CI) | `packaging` — Packaging rehearsal plus lenient planned 0.37/0.38 packet checks | After `evidence` succeeds (skipped when docs-only) |
 
 Release workflow (`release.yml`) runs the same `test` / `quality` / `browser` / `evidence`
 suites before `publish` (tag pushes only).
@@ -194,16 +197,21 @@ package builds.
 | `packages/hedron-explorer` | Dev Explorer (`hedron[dev]`) |
 | `packages/hedron-data` | DataTable / DataEditor (`hedron[data]`) |
 | `packages/hedron-charts` | Visualization adapters (`hedron[charts]`, Beta) |
-| `packages/hedron-sample-kit` | Sample plugin (Alpha) |
+| `packages/hedron-sample-kit` | Sample plugin (Beta tooling-grade) |
 | `packages/hedron-flask` | Flask adapter |
 | `packages/hedron-django` | Django adapter |
 | `packages/hedron-jinja` | Optional HDJ templates |
 | `packages/hedron-conformance` | Language-neutral conformance kit |
 | `packages/hedron-extras` | Curated extras / workbenches (`hedron[extras]`) |
 | `packages/hedron-native` | Optional Rust HTML-escape acceleration (Beta) |
-| `packages/hedron-notebook` | Server-side notebook preview (Alpha) |
+| `packages/hedron-notebook` | Localhost server-side notebook preview (Beta tooling-grade) |
 | `packages/hedron-mcp` | Deny-by-default MCP projection (Beta) |
-| `packages/hedron-gradio` | Gradio client interop (Alpha / Experimental) |
+| `packages/hedron-gradio` | Allowlisted Gradio client interoperability (Beta) |
+| `packages/hedron-sim` | Offline HTMX documentation simulator (Beta tooling-grade) |
+| `packages/hedron-workbench` | Posit Workbench compatibility adapter (Beta) |
+| `packages/hedron-posit` | Unified Posit Workbench / Connect adapter (Beta) |
+| `packages/hedron-elements` | Web Component ABI incubator (Alpha) |
+| `packages/fastapi-workbench` | Independent plain-FastAPI Workbench adapter (`1.x`) |
 | `tests/` | Unit, integration, conformance, adapters, security, browser |
 | `examples/reference-app` | FastAPI cumulative example |
 | `examples/notes-sqlalchemy` | SQLAlchemy notes recipe |

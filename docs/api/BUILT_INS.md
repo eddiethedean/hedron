@@ -137,5 +137,5 @@ enforced on the component API.
 ## Historical phase notes
 
 Phase 0.1–0.10 acceptance narratives remain in release notes / what’s-new pages. This
-index tracks the living **0.30** built-in catalog — do not treat older phase lists as the
+index tracks the living **0.36** built-in catalog — do not treat older phase lists as the
 complete API.

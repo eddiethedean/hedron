@@ -13,9 +13,9 @@ These symbols remain importable after the `hedron-posit` extraction:
 - `hedron[workbench]` extra
 - Existing `HEDRON_WORKBENCH_*` configuration keys
 
-## Behavioral deltas at `0.34.0` (after Stage 1)
+## Behavioral deltas at `0.33.0` (after Stage 1)
 
-| Topic | `0.32.x` | `0.34.x` |
+| Topic | `0.32.x` | `0.33.x` |
 |---|---|---|
 | Preferred facade | `HedronWorkbench` | `HedronPosit` (`hedron[posit]`) |
 | Compat class | primary | `HedronWorkbench(HedronPosit)` thin subclass |

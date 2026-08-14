@@ -15,6 +15,7 @@ scripts here when you add them.
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
 | `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors). CI: `--check` |
 | `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: quality job |
+| `check_package_docs_inventory.py` | Keep the package catalog, README maturity labels, PyPI classifiers, and package pages aligned with the living fleet inventory. CI: quality job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
 | `check_api_docs_coverage.py` | Require every `hedron.__all__` export in the public API coverage map. CI: quality job |
 | `check_package_readme_links.py` | Reject relative links that break when package READMEs render on PyPI. CI: quality job |
@@ -39,6 +40,17 @@ Documentation source ownership and review rules:
 | `verify_pkg_26.py` | Phase **0.26** living-train packet + production-grade graduation (`check_release_gate.py 0.26.0`) |
 | `verify_pkg_27.py` | Phase **0.27** satellite graduation packet (`check_release_gate.py 0.27.0`) |
 | `verify_pkg_28.py` | Phase **0.28** charts/native graduation packet (`check_release_gate.py 0.28.2`) |
+| `verify_pkg_29.py` | Phase **0.29** Posit Workbench adapter packet |
+| `verify_pkg_30.py` | Phase **0.30** standalone `fastapi-workbench` extraction packet |
+| `verify_pkg_31.py` | Phase **0.31** tooling and portable-conformance packet |
+| `verify_pkg_32.py` | Phase **0.32** production-grade MCP packet |
+| `verify_pkg_33.py` | Phase **0.33** unified Posit deployment adapter packet |
+| `verify_pkg_34.py` | Phase **0.34** production-grade Gradio packet |
+| `verify_pkg_35.py` | Phase **0.35** whole-fleet closure packet |
+| `verify_pkg_36.py` | Phase **0.36** Web Component ABI/lifecycle packet (living train) |
+| `verify_pkg_37.py` | Planned phase **0.37** form/primitives packet (`--allow-planned` before cut) |
+| `verify_pkg_38.py` | Planned phase **0.38** high-fidelity charts packet (`--allow-planned` before cut) |
+| `check_*_038.py` | Phase 0.38 grammar/render/design/visual/interaction/a11y/perf/export/security/compat/docs/regression gate entry points |
 | `check_contract_027.py` | Satellite production-grade inventory / install guards |
 | `check_data_027.py` | `DATA-027` bounded data evidence |
 | `check_flask_027.py` | `FLASK-027` host-only Flask evidence |
@@ -61,7 +73,7 @@ Documentation source ownership and review rules:
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
 | `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
-| `verify_pkg_26.py` / `verify_pkg_25.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_28.py`**) |
+| `verify_pkg_38.py` / `verify_pkg_37.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_36.py`**; 0.37/0.38 use `--allow-planned`) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

@@ -94,7 +94,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 | Surface | Disposition |
 |---|---|
 | `job_status_sse_response` and other `hedron.experimental` live helpers | Remain **experimental**; 0.24 Accepted `polling_only` |
-| Alpha notebook / Gradio; MCP Beta Supported inventory | Notebook/Gradio not promoted; MCP Supported inventory only |
+| Optional notebook / Gradio / MCP packages | Their later package graduations do not expand the 0.23 stable facade |
 | `hedron[data]` / DataEditor, extras, OIDC product surface | Stay `beta` (Supported capability OK) |
 | Dialog / Tabs / Pagination / Lazy, Map / media / capture, dashboards, inference | Stay `beta` |
 
@@ -103,7 +103,7 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 | Class | Public promise | Format / pin |
 |---|---|---|
 | Python public API | `__all__` exports of first-party packages | Import paths and type signatures |
-| CLI | Core subcommands `new`, `dev`, `build`, `check`, `routes`, `components` | [CLI.md](CLI.md); graph/audit/eject are experimental |
+| CLI | Compatibility-protected core: `new`, `dev`, `build`, `check`, `routes`, `components` | [CLI.md](CLI.md); additional shipped commands are API `beta` |
 | Configuration | `[tool.hedron]` schema | [CONFIGURATION.md](../CONFIGURATION.md) |
 | Diagnostics | `HED-*` codes + SARIF/JSON exporters | [DIAGNOSTICS.md](https://github.com/eddiethedean/hedron/blob/main/docs/DIAGNOSTICS.md) |
 | Plugin protocol | `PluginMeta`, `PluginCapabilities`, `PluginContext`, entry point `hedron.plugins`, `load_plugins` | [PLUGINS.md](PLUGINS.md); loader lives in `hedron-core` |
@@ -192,7 +192,7 @@ Live helpers are **experimental** (polling remains Supported fallback).
 
 ### `hedron-explorer` (Beta) — `beta` for `explorer_router`; panel internals **internal**
 
-### `hedron-sample-kit` (Alpha distribution; `>=0.1.10,<0.2`) — **experimental**
+### `hedron-sample-kit` (Beta tooling-grade; `>=0.1.10,<0.2`) — `beta`
 
 ### `hedron-jinja` / HDJ (Beta) — `beta`; HDJ format v1 frozen
 
@@ -210,11 +210,12 @@ CodeEditor and the browser-Python sandbox are **experimental** (align with
 `TerminalView`, joystick, and device-bridge surfaces are **experimental** and fail closed without
 explicit policy (RFC-0038). Native desktop shell is packaging documentation only.
 
-### `hedron-notebook` (Alpha / experimental — phase 0.17)
+### `hedron-notebook` (Beta tooling-grade — introduced in phase 0.17)
 
 Optional server-side notebook preview helper ([RFC-0042](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0042-NOTEBOOK-PREVIEW.md)).
-Distinct from the 0.16 browser-Python sandbox. D-015 separate distribution; maturity Alpha /
-API `experimental`. Localhost-oriented; not Supported production.
+Distinct from the 0.16 browser-Python sandbox. D-015 separate distribution; package maturity
+Beta and API `beta` for the localhost-only Supported tooling scope. It is not a Supported
+production server.
 
 ### `hedron-mcp` (Beta — phase 0.32 Supported inventory)
 
@@ -225,12 +226,14 @@ graduation). D-015 separate distribution; maturity Beta / API `beta` for the dec
 inventory. Pin `hedron-mcp>=0.2.0,<0.3`. Disabled and empty by default. Mutating tools remain
 Experimental (`allow_mutations=True`).
 
-### `hedron-gradio` (Alpha / experimental — phase 0.18)
+### `hedron-gradio` (Beta — phase 0.34 Supported inventory)
 
 Optional Gradio client interoperability
-([RFC-0049](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0049-GRADIO-ADAPTER.md)).
-D-015 / D-049 separate distribution; maturity Alpha / API `experimental`. Discover is empty while
-disabled; absence adds no core cost. Not Supported production parity with Gradio's UI runtime.
+([RFC-0049](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0049-GRADIO-ADAPTER.md)
+product contract; RFC-0067 graduation). D-015 / D-049 separate distribution; maturity Beta /
+API `beta` for declared allowlisted client interoperability. Discover is empty while disabled;
+absence adds no core cost. Vendor extensions and UI auto-composition remain Experimental, and
+the package does not embed Gradio's UI runtime.
 
 ### Phase 0.17 surfaces on existing packages (shipped)
 

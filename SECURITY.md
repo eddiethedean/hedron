@@ -4,37 +4,15 @@
 
 Security fixes land on the **current published train** (`0.36.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.34.x`) continues through approximately **2027-08-13** — after that, upgrade
+minor (`0.35.x`) continues through approximately **2027-08-13** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
 | `0.36.x` | Yes (current living tip — pin `>=0.36.0,<0.37`; published `v0.36.0`) |
-| `0.34.x` | Prefer upgrade to `0.36.x` (best-effort security triage through approximately 2027-08-13) |
-| `0.32.x` | Prefer upgrade to `0.36.x` |
-| `0.31.x` | Prefer upgrade to `0.36.x` |
-| `0.30.x` | Prefer upgrade to `0.36.x` |
-| `0.29.x` | Prefer upgrade to `0.36.x` |
-| `0.28.x` | Prefer upgrade to `0.36.x` |
-| `0.27.x` | Prefer upgrade to `0.36.x` |
-| `0.26.x` | Prefer upgrade to `0.36.x` |
-| `0.25.x` | Prefer upgrade to `0.36.x` |
-| `0.24.x` | Prefer upgrade to `0.36.x` |
-| `0.23.x` | Prefer upgrade to `0.36.x` |
-| `0.22.x` | Prefer upgrade to `0.36.x` |
-| `0.20.x` | Prefer upgrading to the current train |
-| `0.19.x` | Prefer upgrading to the current train |
-| `0.18.x` | Prefer upgrading to the current train |
-| `0.17.x` | Prefer upgrading to the current train |
-| `0.16.x` | Prefer upgrading to the current train |
-| `0.15.x` | Prefer upgrading to the current train |
-| `0.14.x` | Prefer upgrading to the current train |
-| `0.13.x` | Prefer upgrading to the current train |
-| `0.12.x` | Prefer upgrading to the current train |
-| `0.11.x` | Prefer upgrading to the current train |
-| `0.10.x` | Prefer upgrading to the current train |
-| `0.9.x` | Prefer upgrading to the current train |
-| `0.8.x` | Final HDN-capable line; critical issues may be noted only |
+| `0.35.x` | Best-effort security triage through approximately 2027-08-13; upgrade to `0.36.x` |
+| `0.9.x`–`0.34.x` | No; upgrade to the current train |
+| `0.8.x` | No; final HDN-capable line, retained only for historical migration context |
 | `< 0.8` | No |
 
 ## Reporting a vulnerability

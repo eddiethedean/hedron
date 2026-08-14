@@ -22,9 +22,10 @@ until evidence is green. Beta packages (`hedron`, `hedron-core`, `hedron-data`,
 `hedron-flask`, `hedron-django`, `hedron-jinja`, `hedron-explorer`, `hedron-conformance`,
 `hedron-extras`, `hedron-workbench`, `hedron-posit`)
 stay on the `0.36.x` train (Published as `v0.36.0`). Independent Beta packages
-`hedron-charts`, `hedron-native`, and `hedron-mcp` version on satellite lines.
-Alpha packages `hedron-elements`, `hedron-gradio`, and tooling packages `hedron-sample-kit`,
-`hedron-notebook`, and `hedron-sim` version independently.
+`hedron-charts`, `hedron-native`, `hedron-mcp`, and `hedron-gradio` version on satellite
+lines. Beta tooling-grade packages `hedron-sample-kit`, `hedron-notebook`, and `hedron-sim`
+also version independently. `hedron-elements` is the Alpha incubator on the coordinated
+0.36 line.
 
 ### Charts and sample-kit compatibility floor
 
@@ -35,9 +36,9 @@ that chart floor.
 !!! warning "Exclude older satellite wheels"
 
     Satellite versions through `0.1.6` require an older `hedron-core` bound; historical
-    `0.11.0` requires `hedron-core==0.11.0`. Do not loosen the lower bound below `0.1.9` in a
-    Hedron 0.29 environment. Use a clean virtual environment when replacing an older
-    chart or sample-kit installation.
+    `0.11.0` requires `hedron-core==0.11.0`. Do not loosen the current lower bound below
+    `0.1.10`. Use a clean virtual environment when replacing an older chart or sample-kit
+    installation.
 
 Pure-Python behavior remains the conformance reference when optional `hedron-native`
 acceleration is present or absent (D-001 / D-048).
@@ -58,7 +59,7 @@ when evaluating a new install. Maturity Supported vs Experimental claims:
 
     Phase 0.7–0.10 baselines below describe what each phase **introduced**. They are not
     the current maturity snapshot. Live transports introduced in 0.10 are **experimental**
-    on the 0.27 train (Accepted disposition `polling_only`).
+    on the current train (Accepted disposition `polling_only`).
 
 ## Dependency pin conflicts
 

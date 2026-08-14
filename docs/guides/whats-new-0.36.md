@@ -24,7 +24,7 @@ python -m pip install "hedron[elements]>=0.36.0,<0.37"
 ## Notes
 
 - Live SSE/WS remain experimental; polling stays the Supported production story.
-- `hedron-elements` is Alpha / incubator until phase **0.41**.
+- `hedron-elements` is Alpha / incubator until phase **0.42** (rephased by D-066).
 
 ## See also
 

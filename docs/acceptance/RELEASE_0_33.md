@@ -15,9 +15,9 @@ Owning decision: [D-061](../DECISIONS.md). Design: [RFC-0066](../rfcs/RFC-0066-H
 
 ## Release contract
 
-- `hedron-posit==0.33.*` depends on `hedron>=0.34,<0.35` and
+- `hedron-posit==0.33.*` depends on `hedron>=0.33,<0.34` and
   `fastapi-workbench>=1,<2`; it never imports `hedron-workbench`.
-- `hedron-workbench==0.33.*` depends on `hedron-posit>=0.34,<0.35` and retains its public 0.32
+- `hedron-workbench==0.33.*` depends on `hedron-posit>=0.33,<0.34` and retains its public 0.32
   imports, CLI, configuration, and Beta maturity.
 - `hedron[posit]` installs the new facade; `hedron[workbench]` remains installable.
 - Native Connect is the default and the only Supported Connect cookie lane in 0.33.

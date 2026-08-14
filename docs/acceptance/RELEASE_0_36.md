@@ -23,8 +23,8 @@ Implementation: [HEDRON_ELEMENTS_036](../implementation/HEDRON_ELEMENTS_036.md).
 - Reference element: light-DOM **`hedron-example`** (controlled `status` + disposable local UI;
   not form-associated).
 - Fleet inventory amendment at cut: register `hedron-elements` with owner, Alpha channel,
-  compatibility range, and production-grade destination at **0.41** without reopening
-  `FLEET-035` (append-only inventory row + disposition `incubator` until 0.41).
+  compatibility range, and production-grade destination at **0.42** without reopening
+  `FLEET-035` (append-only inventory row + disposition `incubator` until 0.42).
 - Python 3.11–3.14 remain the supported interpreter matrix.
 - Browser floor: Playwright Chromium / Firefox / WebKit
   (`tests/browser/test_browser_matrix.py`).

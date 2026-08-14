@@ -1,7 +1,7 @@
 # REVIEW-033 redacted security review report
 
-**Package:** `hedron-posit` `0.34.0` Beta (+ `hedron-workbench` `0.34.0` compatibility)
-**Baseline tip:** Published `v0.32.0` → cut `v0.34.0`
+**Package:** `hedron-posit` `0.33.0` Beta (+ `hedron-workbench` `0.33.0` compatibility)
+**Baseline tip:** Published `v0.32.0` → cut `v0.33.0`
 **Reviewer role:** Maintainer-led review independent of the feature-authoring pass
 **Date:** 2026-08-13
 **Owning decision:** D-061 / RFC-0066 · Tracking: #167

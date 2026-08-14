@@ -1,7 +1,8 @@
 # Threat model
 
-**Status:** Maintained for the **0.30** train (**Published**; last published
-PyPI/git = `v0.34.0`; baseline established in 0.11; refreshed for 0.15–0.33 surfaces)
+**Status:** Maintained for the current **0.36.x** train (**Published**; last published
+PyPI/git = `v0.36.0`; baseline established in 0.11 and extended through the 0.36
+Web Component ABI/lifecycle surface)
 
 **Owner:** hedron  
 **Evidence:** security acceptance on the current train; live-transport caveats on
@@ -44,7 +45,7 @@ PyPI/git = `v0.34.0`; baseline established in 0.11; refreshed for 0.15–0.33 su
 | `InferencePolicy` queues | In-process queues are **dev-only**; production needs app-owned scheduling/backends |
 | `InteractionRecorder` | Records only endpoints declared public; redacts credentials; never expands authority |
 | MCP projection (`hedron[mcp]`) | Deny-by-default tool exposure; apps must opt in each capability |
-| Gradio adapter (`hedron[gradio]`) | Deny-by-default discover; client interop is Experimental / Alpha |
+| Gradio adapter (`hedron[gradio]`) | Beta allowlisted client interop; arbitrary destinations and UI embedding remain excluded |
 | Notebook preview (`hedron[notebook]`) | Localhost-oriented; not a Supported production multi-tenant surface |
 
 ## Adversaries and controls

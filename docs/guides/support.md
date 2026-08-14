@@ -24,12 +24,12 @@ issues for undisclosed security problems.
 Package maturity **Beta** means the public API is usable and tested, but breaking changes
 may still land on the `0.x` line under the [compatibility policy](../COMPATIBILITY.md).
 Pin versions in production, read [upgrade](upgrade.md) notes before bumping trains, and
-Treat Alpha packages as more volatile. Charts and the sample kit require the compatible
+Treat the Alpha `hedron-elements` incubator as more volatile. Charts and the sample kit require the compatible
 `>=0.1.10,<0.2` satellite floor — see [Compatibility](../COMPATIBILITY.md).
 
 **Support window:** security fixes target the current published train (`0.36.x`). The
-previous `0.29.x` train receives best-effort security triage through approximately
-**2026-12-11**. There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).
+previous `0.35.x` train receives best-effort security triage through approximately
+**2027-08-13**. There is no multi-year LTS — see [SECURITY.md](../SECURITY.md).
 Community GitHub support only;
 [Ship a Hedron app](ship.md) for ops.
 

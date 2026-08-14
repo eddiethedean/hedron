@@ -8,11 +8,11 @@
 #   scripts/ci_checks.sh test [--python 3.12]
 #   scripts/ci_checks.sh quality [--python 3.12]
 #   scripts/ci_checks.sh browser [--python 3.12]
-#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.34.0]
+#   scripts/ci_checks.sh evidence [--python 3.12] [--gate-version 0.36.0]
 #   scripts/ci_checks.sh realwb [--python 3.12]
 #   scripts/ci_checks.sh realconnect [--python 3.12]
 #   scripts/ci_checks.sh packaging [--python 3.12]
-#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.34.0] [--with-browser]
+#   scripts/ci_checks.sh all [--python 3.12] [--gate-version 0.36.0] [--with-browser]
 #
 # Env:
 #   HEDRON_BROWSER / HEDRON_BROWSER_ENGINE — browser suite (default engine: chromium)
@@ -172,10 +172,13 @@ PY
   run uv run --python "$PYTHON" python scripts/generate_sim_demos.py --check
   run uv run --python "$PYTHON" python scripts/generate_component_docs.py --check
   run uv run --python "$PYTHON" python scripts/check_docs_train_ssot.py
+  run uv run --python "$PYTHON" python scripts/check_package_docs_inventory.py
   run uv run --python "$PYTHON" python scripts/check_documentation_ownership.py
   run uv run --python "$PYTHON" python scripts/check_api_docs_coverage.py
   run uv run --python "$PYTHON" python scripts/check_package_readme_links.py
   run uv run --python "$PYTHON" python scripts/check_recipe_code_sync.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
 
   uv run --python "$PYTHON" python - <<'PY'
 import re
@@ -227,6 +230,8 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/verify_pkg_34.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_35.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_36.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
 }
 
 cmd_realconnect() {
@@ -245,6 +250,8 @@ cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
   run uv run --python "$PYTHON" python scripts/verify_pkg_35.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_36.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
 }
 
 cmd_all() {

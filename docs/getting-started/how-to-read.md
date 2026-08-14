@@ -22,7 +22,7 @@ the [API stability catalog](../api/STABILITY.md).
 | **`internal` / `deferred`** | Not a public application contract |
 
 Package classifiers provide additional context: the flagship and adapters are **Beta**;
-some optional satellites are **Alpha**. Always pin package versions. Package maturity
+the optional `hedron-elements` incubator is **Alpha**. Always pin package versions. Package maturity
 does not override the two application questions above.
 
 ## Example

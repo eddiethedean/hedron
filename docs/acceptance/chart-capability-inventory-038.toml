@@ -1,0 +1,63 @@
+# Phase 0.38 chart capability inventory (Stage 0 planned state).
+# Living published baseline is v0.36.0; implementation entry requires v0.37.0.
+# This inventory describes the intended 0.38 cut and does not claim availability.
+
+schema = 1
+phase = "0.38"
+state = "planned"
+living_published_baseline = "v0.36.0"
+implementation_entry = "v0.37.0"
+hedron_cut = "v0.38.0"
+charts_cut = "0.2.0"
+owning_decision = "D-066"
+owning_rfc = "RFC-0069"
+
+[element]
+tag = "hedron-chart"
+abi = "public-hedron-element-abi"
+paint = ["svg", "canvas"]
+fallback = ["semantic_figure", "summary", "bounded_table", "authorized_export"]
+shadow_dom_required = false
+
+[supported]
+authoring = ["Chart", "ChartSpec", "ChartPlan", "LineChart", "AreaChart", "BarChart", "ScatterChart"]
+static = ["matplotlib_svg", "matplotlib_png", "first_party_svg"]
+marks = ["line", "area", "bar", "point", "rect", "rule", "box", "arc", "ohlc", "candlestick"]
+composition = ["layer", "facet", "small_multiple", "annotation", "reference_line", "reference_band"]
+interaction = ["inspect", "focus_navigation", "legend_filter", "crosshair", "select", "brush", "zoom_pan_reset", "drill_intent"]
+export = ["svg", "png", "csv", "json", "print"]
+
+[experimental]
+adapters = ["plotly", "altair", "vega_lite", "echarts", "chartjs", "bokeh", "holoviews", "hvplot", "pygal"]
+families = ["sankey", "chord", "hierarchy", "network", "geo", "three_d", "webgl"]
+
+[excluded]
+capabilities = [
+  "javascript_callbacks",
+  "open_expressions",
+  "remote_runtime_loading",
+  "remote_data_loading_by_default",
+  "raw_html_tooltips",
+  "client_authorization",
+  "unbounded_rows_marks_facets_exports",
+  "node_required_for_python_consumers",
+]
+
+[budgets]
+core_gzip_kib = 90
+gallery_total_gzip_kib = 160
+no_chart_route_bytes = 0
+marks_1k_initial_p95_ms = 150
+marks_1k_update_p95_ms = 75
+marks_10k_initial_p95_ms = 400
+max_long_task_ms = 150
+inspect_p95_ms = 50
+resize_p95_ms = 100
+lifecycle_cycles = 100
+
+[compatibility]
+beginner_api = "source_compatible"
+matplotlib = "supported"
+vendor_adapters = "experimental_explicit_opt_in"
+rollback = "hedron-charts>=0.1.10,<0.2"
+consumer_node_dependency = false

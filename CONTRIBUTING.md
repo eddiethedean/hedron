@@ -25,6 +25,8 @@ cd hedron
 uv sync --group docs
 uv run --group docs mkdocs build --strict
 uv run python scripts/check_docs_train_ssot.py
+uv run python scripts/check_package_docs_inventory.py
+uv run python scripts/verify_pkg_38.py --allow-planned
 uv run python scripts/check_recipe_code_sync.py
 uv run python scripts/generate_sim_demos.py --check
 ```

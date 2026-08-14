@@ -185,7 +185,7 @@ human AT sign-off, and do not market human AT as Supported until session gates a
 
 - Automatic WCAG conformance or legal certification
 - That every third-party chart/grid Web Component is accessible out of the box
-- That Alpha chart surfaces meet the same bar as core built-ins
+- That third-party or Experimental interactive chart hosts meet the same bar as core built-ins
 - That Playwright/axe results replace human AT evaluation
 
 ## Research and RFCs

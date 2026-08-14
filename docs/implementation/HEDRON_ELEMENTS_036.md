@@ -2,7 +2,7 @@
 
 This plan turns [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) into reviewable work for
 phase **0.36** only. It is not authorization to cut until every gate row is Verified.
-RFC-0060 is **Accepted** (D-064); later phases (0.37–0.41) keep their own Stage 0 packets.
+RFC-0060 is **Accepted** (D-064); later phases (0.37–0.42, with RFC-0069 at 0.38) keep their own Stage 0 packets.
 
 ## Outcome
 

@@ -44,6 +44,17 @@ def test_soft_wrapped_living_claim_is_checked() -> None:
     assert not failures(ok)
 
 
+def test_soft_wrapped_last_published_claim_is_checked() -> None:
+    assert failures("Status: last published\nPyPI/git = `v0.34.0`.")
+    assert not failures(f"Status: last published\nPyPI/git = `v{ssot.FACTS.published_version}`.")
+
+
+def test_current_tip_and_current_pin_claims_are_checked() -> None:
+    assert failures("Install the current tip under **0.34.0** above.")
+    assert failures("Prefer the living `hedron>=0.34.0,<0.35` train.")
+    assert not failures(f"Prefer the current `hedron{ssot.FACTS.pin}` train.")
+
+
 def test_last_version_claim_without_published_keyword() -> None:
     assert failures("| Version | **0.28.x** / last **v0.27.0** |")
     assert not failures(
@@ -61,6 +72,16 @@ def test_install_commands_require_the_canonical_bounded_pin() -> None:
     assert not failures(f'pip install "hedron{ssot.FACTS.pin}"')
     assert failures('pip install "hedron>=0.26.0"')
     assert failures("uv add hedron")
+
+
+def test_historical_install_can_be_skipped_without_skipping_current_claims() -> None:
+    text = 'pip install "hedron>=0.20.0,<0.21"'
+    assert not ssot.check_text(Path("historical.md"), text, check_installs=False)
+    assert ssot.check_text(
+        Path("historical.md"),
+        "The current train is 0.20.x.",
+        check_installs=False,
+    )
 
 
 def test_satellite_floors_come_from_release_metadata() -> None:

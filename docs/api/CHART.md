@@ -11,6 +11,14 @@ status: beta
 
 **Status:** Shipped in `0.6.0`
 
+!!! info "Planned phase 0.38"
+
+    [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) defines the next major chart line:
+    typed `ChartSpec` / `ChartPlan`, an ABI-conforming `hedron-chart` Web Component, a pinned
+    modular D3 renderer, SVG/Canvas output, publication-quality layout and themes, typed accessible
+    interactions, deterministic export, and strict visual/performance/security gates. It targets
+    `hedron-charts` `0.2.0` after phase 0.37 and is **not available** in the shipped 0.1 line.
+
 ## Availability
 
 Install `hedron[charts]>=0.36.0,<0.37`; this enforces the compatible

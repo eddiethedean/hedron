@@ -2,9 +2,19 @@
 
 Visualization adapters and chart components for Hedron.
 
-**Package maturity:** Beta · **0.30-compatible release:** `0.1.11` (floor `>=0.1.10`)
+**Package maturity:** Beta · **Current compatible release:** `0.1.11` (floor `>=0.1.10`)
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`  
 **Expect churn.** Interactive Plotly/Vega full browser runtimes remain **experimental**.
+
+## Planned phase 0.38 upgrade
+
+[RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066 defines a substantial
+`hedron-charts` `0.2.0` phase after 0.37: typed `ChartSpec` / `ChartPlan`, an ABI-conforming
+`hedron-chart` Web Component, a pinned modular D3 renderer, publication-quality SVG/Canvas output,
+keyboard/pointer/touch interactions, accessible summaries/tables, responsive themes, deterministic
+exports, reviewed visual fixtures, and hard performance/security/lifecycle gates. It is **Planned**,
+not available on the current `0.1.11` release. See the
+[0.38 acceptance packet](../acceptance/RELEASE_0_38.md).
 
 ## Install
 
@@ -14,7 +24,7 @@ pip install "hedron[charts]>=0.36.0,<0.37"
 pip install "hedron-charts[matplotlib]>=0.1.10,<0.2"
 ```
 
-Versions through `0.1.5` target older Hedron cores; keep the `>=0.1.9` floor. See
+Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.10` floor. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ### Optional backends
@@ -93,6 +103,7 @@ see [Charts API](../api/CHART.md).
 - API: [Charts](../api/CHART.md)
 - Components: [Charts overview](../components/charts.md)
 - [What’s ready](../guides/whats-ready.md)
+- Planned architecture: [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md)
 
 ## Links
 

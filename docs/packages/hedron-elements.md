@@ -11,7 +11,7 @@ pip install "hedron-elements>=0.36.0,<0.37"
 ```
 
 Depends on `hedron-core` only. Applications do not need Node.js. Disposition in the
-fleet inventory is `incubator` with production-grade destination **0.41**.
+fleet inventory is `incubator` with production-grade destination **0.42**.
 
 See [HEDRON_ELEMENTS_036](../implementation/HEDRON_ELEMENTS_036.md) and
 [WEB_COMPONENT_PLATFORM](../implementation/WEB_COMPONENT_PLATFORM.md).

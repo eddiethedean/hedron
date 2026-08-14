@@ -114,7 +114,7 @@ Create a project first: `uv init my-app && cd my-app`, then
 
 ## Should I use `uv init` or `hedron new`?
 
-Prefer **`hedron new`** for a ready scaffold on **0.34.x** (install Hedron first).
+Prefer **`hedron new`** for a ready scaffold on **0.36.x** (install Hedron first).
 `uv init` + a hand-written `app.py` from the quickstart also works. Do not nest both into
 the same directory by accident.
 
@@ -232,7 +232,7 @@ See [HDJ authoring](hdj-authoring.md) and [Installation](../getting-started/inst
 
 ## Where is the SBOM / evidence bundle?
 
-Prefer GitHub Release assets for the train tag (`v0.34.0`), or regenerate from the
+Prefer GitHub Release assets for the current train tag (`v0.36.0`), or regenerate from the
 tagged checkout with
 `scripts/build_evidence_bundle.py`. Step-by-step:
 [Evidence pack](evidence-pack.md). PyPI remains authoritative for package versions.

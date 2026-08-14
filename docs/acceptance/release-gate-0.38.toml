@@ -1,0 +1,94 @@
+# Phase 0.38 high-fidelity charts evidence index.
+# Stage 0 only: every row remains Planned until implementation evidence lands.
+# Owning decision: D-066. Design: RFC-0069. Zero Deferred at cut.
+
+[[evidence]]
+id = "GRAMMAR-038"
+state = "Planned"
+command = "python scripts/check_grammar_038.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "RENDER-038"
+state = "Planned"
+command = "python scripts/check_render_038.py"
+ci_job = "browser"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "DESIGN-038"
+state = "Planned"
+command = "python scripts/check_design_038.py"
+ci_job = "browser"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "VISUAL-038"
+state = "Planned"
+command = "python scripts/check_visual_038.py"
+ci_job = "browser"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "INTERACT-038"
+state = "Planned"
+command = "python scripts/check_interact_038.py"
+ci_job = "browser"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "A11Y-038"
+state = "Planned"
+command = "python scripts/check_a11y_038.py"
+ci_job = "browser"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "PERF-038"
+state = "Planned"
+command = "python scripts/check_perf_038.py"
+ci_job = "browser"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "EXPORT-038"
+state = "Planned"
+command = "python scripts/check_export_038.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "SECURITY-038"
+state = "Planned"
+command = "python scripts/check_security_038.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "COMPAT-038"
+state = "Planned"
+command = "python scripts/check_compat_038.py"
+ci_job = "test"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "DOCS-038"
+state = "Planned"
+command = "python scripts/check_docs_038.py"
+ci_job = "quality"
+owner = "hedron-charts"
+
+[[evidence]]
+id = "REGRESS-038"
+state = "Planned"
+command = "python scripts/check_regress_038.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-038"
+state = "Planned"
+command = "python scripts/verify_pkg_38.py"
+ci_job = "packaging"
+owner = "hedron-charts"

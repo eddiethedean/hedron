@@ -77,7 +77,7 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0057](RFC-0057-PRODUCTION-GRADE-CORE.md) | Production-grade core, FastAPI flagship, and Explorer | Accepted |
 | [0058](RFC-0058-PRODUCTION-GRADE-SATELLITES.md) | Production-grade adapters, data, HDJ, and curated extras | Accepted |
 | [0059](RFC-0059-PRODUCTION-GRADE-CHARTS-NATIVE.md) | Production-grade charts and optional native acceleration | Accepted |
-| [0060](RFC-0060-WEB-COMPONENT-PLATFORM.md) | Web Component platform program | Draft |
+| [0060](RFC-0060-WEB-COMPONENT-PLATFORM.md) | Web Component platform program | Accepted |
 | [0061](RFC-0061-STREAMLIT-AST-MIGRATOR.md) | Reviewable Streamlit AST migration assistant | Proposed |
 | [0062](RFC-0062-POSIT-WORKBENCH-ADAPTER.md) | Production-grade Posit Workbench deployment adapter | Accepted |
 | [0063](RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md) | Standalone FastAPI Workbench extraction | Accepted |
@@ -86,3 +86,4 @@ New RFCs and material revisions must address public behavior, alternatives, secu
 | [0066](RFC-0066-HEDRON-POSIT.md) | Unified `hedron-posit` Workbench and Connect deployment adapter | Accepted |
 | [0067](RFC-0067-PRODUCTION-GRADE-GRADIO.md) | Production-grade Gradio client interoperability | Accepted |
 | [0068](RFC-0068-WHOLE-FLEET-CLOSURE.md) | Whole-fleet production-grade closure | Accepted |
+| [0069](RFC-0069-HIGH-FIDELITY-CHARTS.md) | High-fidelity declarative charts | Accepted |

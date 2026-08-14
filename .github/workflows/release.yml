@@ -118,7 +118,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Install dependencies
-        # Docs group required: verify_pkg_34 DOCS/REGRESS gates run strict MkDocs.
+        # Docs group required: the living packet's DOCS/REGRESS gates run strict MkDocs.
         run: uv sync --locked --python 3.12 --group docs
       - name: Set up Java
         uses: actions/setup-java@v5

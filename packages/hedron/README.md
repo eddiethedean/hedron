@@ -144,7 +144,9 @@ interactions, security profiles, and CLI. Integrations are optional:
 | `hedron[markdown]` | Markdown rendering and sanitization |
 | `hedron[native]` | Optional Beta native acceleration |
 | `hedron[mcp]` | Beta MCP projection (Supported inventory; mutations Experimental) |
-| `hedron[notebook]`, `hedron[gradio]` | Experimental Alpha integrations |
+| `hedron[notebook]` | Beta tooling-grade localhost preview; not a production server |
+| `hedron[gradio]` | Beta allowlisted Gradio/Hugging Face client interoperability |
+| `hedron[elements]` | Alpha Web Component ABI incubator |
 
 For example:
 

@@ -12,13 +12,14 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Explorer backend](EXPLORER_BACKEND.md)
 - [Explorer frontend](EXPLORER_FRONTEND.md)
 - [Asset pipeline](ASSET_PIPELINE.md)
-- [Default presentation quality](DEFAULT_PRESENTATION_033_PLUS.md) — cross-cutting 0.33–0.41 plan
+- [Default presentation quality](DEFAULT_PRESENTATION_033_PLUS.md) — cross-cutting 0.33–0.42 plan
   for polished out-of-box styles, shell composition, responsive containment, and visual evidence
 - [`hedron-posit` phase 0.33](HEDRON_POSIT_033.md) — staged licensed Connect probe, package
   extraction, native mode, bounded authenticated bridge, compatibility, and release closure
 - [`hedron-gradio` phase 0.34](HEDRON_GRADIO_034.md) — production-grade remote client interop,
   allowlisted egress, bounded files/streams, and HF vendor evidence
-- [Web Component platform](WEB_COMPONENT_PLATFORM.md) — draft 0.36–0.41 program
+- [High-fidelity charts](HEDRON_CHARTS_038.md) — phase 0.38 D3-class typed chart platform
+- [Web Component platform](WEB_COMPONENT_PLATFORM.md) — 0.36–0.42 program
 - [Web Component interaction contracts](WEB_COMPONENT_INTERACTION_CONTRACTS.md) — state,
   async interaction, optimism, gestures/overlays, and React migration
 - [Plugin loader](PLUGIN_LOADER.md)

@@ -1,10 +1,10 @@
 # What’s new in 0.18
 
 
-!!! note "Living train is 0.32"
+!!! note "Current train is 0.36"
 
     Pin `hedron>=0.36.0,<0.37` for new apps. The pin below is historical for this train only.
-    See [What’s new in 0.32](whats-new-0.32.md).
+    See [What’s new in 0.36](whats-new-0.36.md).
 
 !!! note "Historical phase"
 
@@ -40,6 +40,6 @@ workflows, and optional Gradio interop. See
 
 ## Upgrade notes
 
-Prefer the living 0.26 train for new apps; stay on a historical upper-bound pin
+Prefer the current 0.36 train for new apps; stay on a historical upper-bound pin
 only when you must freeze this phase. Install `hedron[gradio]` only when needed.
 See [Gradio migration](gradio-migration.md).
