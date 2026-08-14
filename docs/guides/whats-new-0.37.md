@@ -1,6 +1,6 @@
 # What's new in Hedron 0.37
 
-Phase **0.37** ships Alpha **hedron-elements 0.37.0** with form-associated reference controls, an `InteractionState` bridge, semantic primitives, and high-severity remediations #230–#237.
+Phase **0.37** ships Alpha **hedron-elements 0.37.0** with form-associated reference controls, an `InteractionState` bridge, semantic primitives, and high-severity remediations #230–#237 plus follow-on #244.
 
 ## hedron-elements
 

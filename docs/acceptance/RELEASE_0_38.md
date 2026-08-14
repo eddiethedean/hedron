@@ -1,7 +1,7 @@
 # Hedron `v0.38` high-fidelity charts acceptance
 
-**Status:** Planned (Stage 0 packet refined). Living published tip remains **`v0.36.0`**; phase
-0.37 must publish before 0.38 implementation begins.
+**Status:** Planned (Stage 0 packet refined). Living published tip is **`v0.37.0`**; phase
+0.37 is Published and 0.38 implementation may begin.
 
 Phase 0.38 makes an ABI-conforming **`hedron-chart` Web Component** the first-party interactive
 default for `hedron-charts` `0.2.0`. Its typed grammar, rendering quality, interaction,

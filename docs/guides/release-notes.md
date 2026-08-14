@@ -3,6 +3,24 @@
 This is the canonical adopter-facing release history. Package-level implementation
 details remain in the [package changelogs](changelog.md).
 
+## 0.37.0 — 2026-08-14
+
+Coordinated Beta train cut for form-associated elements and interactive primitives
+(D-065 / RFC-0060).
+
+- Ships Alpha `hedron-elements` `0.37.0` with `hedron-field-text`,
+  `hedron-field-choice`, `hedron-field-file`, `hedron-disclosure`, `hedron-dialog`,
+  and `hedron-action-async` (`InteractionState`).
+- Shared gesture/overlay catalog and HTMX form/validation matrices.
+- Closes high-severity remediations #230–#237 and follow-on #244 (element-markup
+  `style=` / dangerous URL schemes).
+- Pin `hedron>=0.37.0,<0.38`.
+
+```bash
+python -m pip install -U "hedron>=0.37.0,<0.38"
+python -m pip install "hedron[elements]>=0.37.0,<0.38"
+```
+
 ## 0.36.0 — 2026-08-13
 
 Coordinated Beta train cut for Web Component ABI / lifecycle foundation
@@ -13,7 +31,8 @@ Coordinated Beta train cut for Web Component ABI / lifecycle foundation
 - Versioned element registry, `ElementStateOwnership`, and `HED-ELEMENT-*` /
   `HED-ELEMENT-STATE-*` diagnostics.
 - Fleet inventory-036 registers `hedron-elements` as incubator until the rephased 0.42 graduation.
-- Pin `hedron>=0.37.0,<0.38`.
+- Historical cut pin `hedron>=0.36.0,<0.37`. Install the current tip with the pin under
+  **0.37.0** above.
 
 ```bash
 python -m pip install -U "hedron>=0.37.0,<0.38"

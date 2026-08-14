@@ -1,6 +1,9 @@
-## [0.37.0]
+## [0.37.0] — 2026-08-14
 
-- Coordinated train cut for phase 0.37 (D-065).
+- Coordinated train cut for phase 0.37 (D-065): form-associated Alpha
+  `hedron-elements`, `InteractionState`, semantic primitives, and
+  `GestureOverlayCatalog`.
+- Closes high-severity remediations #230–#237 and follow-on #244.
 
 ## [0.36.0] — 2026-08-13
 

@@ -21,7 +21,7 @@ Independent review of the **form, async interaction, and gesture/overlay** surfa
 - Command palette / toast surfaces invoke registered routes under ordinary authz/CSRF validation
 - HTMX swap/history paths preserve server errors and do not drop unsent user intent silently
 - High-severity remediations in the 0.37 packet: HTMX `data-hx-*` / element-markup eval (#230,
-  #237), Flask production cookie flags (#231), MCP Origin and body-limit checks (#232, #233),
+  #237, #244), Flask production cookie flags (#231), MCP Origin and body-limit checks (#232, #233),
   directory-upload NUL paths (#234), SelectSlider value encoding (#235), Redis idempotency
   pointer delete (#236)
 
@@ -51,4 +51,6 @@ Independent review of the **form, async interaction, and gesture/overlay** surfa
 
 ## Status
 
-Stage 0: brief only. Full review artifacts required at `v0.37.0` cut.
+Complete at `v0.37.0` cut: [REDACTED_REPORT.md](REDACTED_REPORT.md) and
+[DISPOSITION.toml](DISPOSITION.toml) record zero open critical/high findings. Follow-on
+[#244](https://github.com/eddiethedean/hedron/issues/244) is closed.

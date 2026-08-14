@@ -1,9 +1,9 @@
 # Phase 0.37 form-associated elements and interactive primitives evidence index.
 # Consumed by scripts/check_release_gate.py (manifest path) / verify_pkg_37.py.
-# Zero Deferred policy: every 0.37-owned row must be Verified at cut.
-# Owning decision: D-065. Design: RFC-0060. Tracking: #93.
-# High-severity remediations (remain normative for REGRESS-037): #230 #231 #232 #233 #234 #235 #236 #237.
-# Stage 0 refine complete; all rows Planned until implementation evidence lands.
+# Zero Deferred policy: every 0.37-owned row is Verified at cut.
+# Owning decision: D-065. Design: RFC-0060. Tracking: #93 (closed).
+# High-severity remediations (normative for REGRESS-037, all closed): #230 #231 #232 #233 #234 #235 #236 #237.
+# Post-cut follow-on #244 (style=/vbscript:/data: markup) also closed.
 
 [[evidence]]
 id = "FORM-037"

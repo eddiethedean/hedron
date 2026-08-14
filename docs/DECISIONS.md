@@ -91,7 +91,9 @@ high-severity defects
 Issue bodies remain normative for `REGRESS-037` and the mapped form/HTMX/validity/action
 gates in [RELEASE_0_37](acceptance/RELEASE_0_37.md). Cut `v0.37.0` requires those issues
 closed. This does not add a tenth gate ID, does not reopen 0.37 non-goals, and does not
-move later Web Component phases.
+move later Web Component phases. Post-cut follow-on
+[#244](https://github.com/eddiethedean/hedron/issues/244) (`style=` / `vbscript:` /
+`data:` in `render_element_markup`) closed on the same `HTMX-037` helper.
 
 ## Phase 0.7 entry blockers
 

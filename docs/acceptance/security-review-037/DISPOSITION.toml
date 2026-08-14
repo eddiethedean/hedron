@@ -20,6 +20,11 @@ severity = "info"
 status = "accepted"
 
 [[findings]]
+id = "EL-037-07"
+severity = "info"
+status = "accepted"
+
+[[findings]]
 id = "EL-037-04"
 severity = "low"
 status = "accepted"

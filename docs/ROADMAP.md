@@ -2852,11 +2852,11 @@ metadata while server-rendered HTML and HTMX remain the canonical fallback and r
 
 ## 0.37 — Form-associated elements and interactive primitives (`v0.37.0`)
 
-**Status:** Planned (Stage 0 packet refined); depends on the published 0.36 ABI and RFC-0060 acceptance.
-Acceptance packet: [`docs/acceptance/RELEASE_0_37.md`](acceptance/RELEASE_0_37.md).
-**Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93). Close when all 0.37-owned
-gates are Verified. High-severity remediations (D-065 amendment; issue bodies remain
-normative for `REGRESS-037`):
+**Status:** **Published** as `v0.37.0` (2026-08-14; commit-based cut). Depends on the published
+0.36 ABI and RFC-0060 acceptance. Acceptance packet:
+[`docs/acceptance/RELEASE_0_37.md`](acceptance/RELEASE_0_37.md).
+**Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93) (closed). High-severity
+remediations (D-065 amendment; issue bodies remain normative for `REGRESS-037`) are closed:
 [#230](https://github.com/eddiethedean/hedron/issues/230),
 [#231](https://github.com/eddiethedean/hedron/issues/231),
 [#232](https://github.com/eddiethedean/hedron/issues/232),
@@ -2865,7 +2865,8 @@ normative for `REGRESS-037`):
 [#235](https://github.com/eddiethedean/hedron/issues/235),
 [#236](https://github.com/eddiethedean/hedron/issues/236),
 [#237](https://github.com/eddiethedean/hedron/issues/237).
-Close each when its owning 0.37 gate is Verified.
+Post-cut follow-on [#244](https://github.com/eddiethedean/hedron/issues/244) (`style=` /
+`vbscript:` / `data:` in `render_element_markup`) is also closed.
 
 **Outcome:** Hedron's richer controls use form-associated custom elements without splitting ordinary
 HTML navigation, HTMX submission, server validation, or accessible fallback into separate models.
@@ -2906,7 +2907,7 @@ Semantic interactive primitives share the same focus, lifecycle, and failure con
 | `INTERACT-037` | Gesture and overlay catalog passes pointer/keyboard/touch/focus/top-layer/security/swap/cleanup matrices |
 | `HTMX-037` | Swap/422/history/duplicate/slow/cancel matrices preserve values, errors, focus, and authority |
 | `AT-037` | Representative keyboard and human screen-reader form/primitives packet is dispositioned |
-| `REGRESS-037` / `PKG-037` | Cross-host/browser/security/performance/compatibility/docs/package suites pass; open high-severity issues #230–#237 are closed |
+| `REGRESS-037` / `PKG-037` | Cross-host/browser/security/performance/compatibility/docs/package suites pass; high-severity issues #230–#237 and follow-on #244 are closed |
 
 ### Non-goals
 
@@ -2921,8 +2922,8 @@ Semantic interactive primitives share the same focus, lifecycle, and failure con
 
 ## 0.38 — High-fidelity declarative charts (`v0.38.0`)
 
-**Status:** Planned (Stage 0 packet refined); runtime implementation begins after the 0.37 form and
-primitive cut. Owning design: [RFC-0069](rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066.
+**Status:** Planned (Stage 0 packet refined); runtime implementation begins after Published
+`v0.37.0`. Owning design: [RFC-0069](rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066.
 **Evidence:** [RELEASE_0_38](acceptance/RELEASE_0_38.md) ·
 [release-gate-0.38.toml](acceptance/release-gate-0.38.toml) ·
 [HEDRON_CHARTS_038](implementation/HEDRON_CHARTS_038.md).
@@ -3590,8 +3591,8 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 The following index assigns every currently open issue whose body declares **Medium** or **Low**
 severity to a planned phase at or after 0.38. Issue bodies remain normative for acceptance criteria.
 Closure is part of the owning phase's regression gate; moving an issue requires an explicit roadmap
-update rather than silently dropping it. Open high-severity issue #244 is intentionally outside
-this medium/low packet and follows the separate high-severity remediation policy.
+update rather than silently dropping it. Closed high-severity follow-on #244 is outside
+this medium/low packet; it was remediated on the 0.37 train (`HTMX-037`).
 
 | Issue | Severity | Title | Owning phase |
 |---:|:---:|---|---:|
@@ -3712,15 +3713,17 @@ Phase **0.33** shipped the unified `hedron-posit` Workbench/Connect facade (D-06
 to 0.34–0.41 without changing its scope. Tracking enhancement issues
 [#86](https://github.com/eddiethedean/hedron/issues/86)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 plus [#167](https://github.com/eddiethedean/hedron/issues/167) cover remaining Planned 0.21
-human-AT sessions and Planned phases 0.32–0.42. Phase **0.37** also owns open high-severity
+human-AT sessions and Planned phases 0.38–0.42. Phase **0.37** closed high-severity
 remediations
 [#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237)
+and follow-on [#244](https://github.com/eddiethedean/hedron/issues/244)
 (`REGRESS-037`; D-065 amendment). Close each issue
 only when its owning release-gate rows are Verified. An optional
 `1.0` definition of done without a calendar date is recorded in D-053; it does not create a `1.0`
 roadmap phase. D-066 inserts high-fidelity charts at **0.38** and re-homes the previously planned
-0.38–0.41 Web Component phases to **0.39–0.42** without scope loss. Planned phases **0.36–0.42**
-therefore establish a versioned Web Component ABI and lifecycle foundation, explicit state
+0.38–0.41 Web Component phases to **0.39–0.42** without scope loss. Published phases **0.36–0.37**
+and Planned phases **0.38–0.42** therefore establish a versioned Web Component ABI and lifecycle
+foundation, explicit state
 ownership and async interaction, form-associated gesture/overlay primitives, a D3-class chart
 flagship, optimistic rich data/visualization elements, a React migration matrix and third-party
 authoring/interoperability, typed browser composition, and a production-grade Supported inventory.

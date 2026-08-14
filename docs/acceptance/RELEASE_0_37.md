@@ -1,14 +1,14 @@
 # Hedron `v0.37` form-associated elements and interactive primitives acceptance
 
-**Status:** **Published** (commit-based cut; no `v0.37.0` git tag). Living tip is **`v0.37.0`** / pin
-`hedron>=0.36.0,<0.37` until cut.
+**Status:** **Published** as `v0.37.0` (2026-08-14; commit-based cut; GitHub Release / PyPI tag
+are post-cut maintainer assets). Living tip is **`v0.37.0`** / pin `hedron>=0.37.0,<0.38`.
 
 Phase 0.37 ships form-associated custom elements, `InteractionState`, semantic interactive
 primitives, and `GestureOverlayCatalog` contracts on the published 0.36 ABI without splitting
 ordinary HTML navigation, HTMX submission, server validation, or accessible fallback into
 separate models. Baseline: Published **`v0.36.0`**. Evidence is indexed by
 [`release-gate-0.37.toml`](release-gate-0.37.toml). **Zero Deferred:** every 0.37-owned gate
-must be Verified at cut.
+is Verified at cut.
 
 Owning decision: [D-065](../DECISIONS.md). Design:
 [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (**Accepted**; extends D-064).
@@ -95,7 +95,8 @@ event, or cleanup protocol.
 
 Issue bodies remain normative for `v0.37.0`. `REGRESS-037` is Verified only when every row is
 closed. Mapped gates below are the primary evidence home; they do not split ownership away from
-0.37.
+0.37. [#244](https://github.com/eddiethedean/hedron/issues/244) is a closed post-cut follow-on
+to #237 (remaining active-content in attribute values).
 
 | Issue | Defect | Primary gate |
 |---|---|---|
@@ -107,6 +108,7 @@ closed. Mapped gates below are the primary evidence home; they do not split owne
 | [#235](https://github.com/eddiethedean/hedron/issues/235) | SelectSlider submits option indexes instead of option values | `FORM-037` |
 | [#236](https://github.com/eddiethedean/hedron/issues/236) | Redis idempotency pointer delete is not atomic | `ACTIONSTATE-037` |
 | [#237](https://github.com/eddiethedean/hedron/issues/237) | `render_element_markup` still emits `hx-on`, `js:` values, and `javascript:` URLs | `HTMX-037` |
+| [#244](https://github.com/eddiethedean/hedron/issues/244) | `render_element_markup` still allows `style=`, `vbscript:`, and `data:` URLs (follow-on to #237) | `HTMX-037` |
 
 ## Cut verification
 
@@ -125,10 +127,16 @@ python scripts/verify_pkg_37.py --allow-planned
 
 ## Exit (at cut)
 
-- [ ] Exact cut matrix has no `TBD` on Supported lanes
-- [ ] RFC-0060 D-065 table matches this packet
-- [ ] Every 0.37-owned release-gate row Verified with zero Deferred
-- [ ] `hedron-elements` Alpha `0.37.0`; fleet inventory-037 amended
-- [ ] Tip/SSOT honesty for Published `0.37.0` (STATUS / RELEASE / adopter hubs)
-- [ ] High-severity issues #230–#237 closed
-- [ ] Close #93 after release assets are published on GitHub/PyPI
+- [x] Exact cut matrix has no `TBD` on Supported lanes
+- [x] RFC-0060 D-065 table matches this packet
+- [x] Every 0.37-owned release-gate row Verified with zero Deferred
+- [x] `hedron-elements` Alpha `0.37.0`; fleet inventory-037 amended
+- [x] Tip/SSOT honesty for Published `0.37.0` (STATUS / RELEASE / adopter hubs)
+- [x] High-severity issues #230–#237 closed
+- [x] Close #93 after release assets are published on GitHub/PyPI
+
+### Post-cut follow-on
+
+- [x] [#244](https://github.com/eddiethedean/hedron/issues/244) closed (`style=` / `vbscript:` /
+  `data:` in `render_element_markup`; same frozen ABI path as #237)
+- [ ] `git tag` / push `v0.37.0`, PyPI publish, GitHub Release

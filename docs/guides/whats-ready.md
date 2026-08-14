@@ -1,11 +1,11 @@
 # What’s ready today
 
-**Canonical maturity snapshot for Hedron 0.36.x** (last published `v0.37.0`). Other
+**Canonical maturity snapshot for Hedron 0.37.x** (last published `v0.37.0`). Other
 evaluator pages link here — do not treat parallel summaries as a second source of truth.
 Maintainer evidence tables live in the repository
 [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md).
 
-For a pinned internal admin/CRUD app on 0.36.x (`hedron>=0.37.0,<0.38`), you can use:
+For a pinned internal admin/CRUD app on 0.37.x (`hedron>=0.37.0,<0.38`), you can use:
 typed pages, HTMX fragments, CSRF (`standard`/`strict`), Flask/Django adapters,
 and polling for job status.
 

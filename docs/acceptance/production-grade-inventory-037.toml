@@ -1,4 +1,4 @@
-# Phase 0.37 whole-fleet inventory (Stage 0; baseline v0.36.0).
+# Phase 0.37 whole-fleet inventory (cut; baseline v0.37.0).
 # Machine-checked by verify_pkg_37 / PKG-037 at cut; shape validated during refine.
 # disposition: production_grade | incubator | fixture | eol
 # Extends the 0.36 fleet; hedron-elements remains incubator until 0.42 (D-066).

@@ -1,8 +1,8 @@
 # Phase 0.38 implementation plan: high-fidelity declarative charts
 
 This plan turns [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066 into reviewable
-work. The living published tip remains `v0.36.0`; implementation entry requires the 0.37 form and
-primitive cut. Stage 0 adds contracts only and does not change runtime behavior or versions.
+work. The living published tip is `v0.37.0`; implementation may begin after that Published
+form/primitive cut. Stage 0 adds contracts only and does not change runtime behavior or versions.
 
 ## Outcome
 

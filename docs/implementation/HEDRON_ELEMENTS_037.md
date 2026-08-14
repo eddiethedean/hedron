@@ -1,8 +1,11 @@
 # Phase 0.37 implementation plan: form-associated elements and interactive primitives
 
+**Status:** Complete at Published `v0.37.0` (2026-08-14). Every row in
+[`release-gate-0.37.toml`](../acceptance/release-gate-0.37.toml) is Verified.
+
 This plan turns [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) D-065 scope into
-reviewable work for phase **0.37** only. It is not authorization to cut until every gate row is
-Verified. RFC-0060 remains **Accepted** (D-064); this phase extends it under D-065.
+reviewable work for phase **0.37** only. RFC-0060 remains **Accepted** (D-064); this phase
+extends it under D-065.
 
 ## Outcome
 
@@ -95,11 +98,14 @@ slow/canceled requests — values, errors, focus, and authority preserved.
 Representative keyboard and human screen-reader sessions; independent review packet with
 redacted report and disposition ledger.
 
-## Stage 9 — cut (`PKG-037`, `REGRESS-037`)
+## Stage 9 — cut (`PKG-037`, `REGRESS-037`) — complete
 
-Flip gates to Verified; `verify_pkg_37.py` without `--allow-planned`; bump train to `0.37.0`;
-publish Alpha `hedron-elements`; close #93 and high-severity #230–#237 when GitHub/PyPI
-release artifacts are attached and those issues are fixed.
+Gates flipped to Verified; `verify_pkg_37.py` without `--allow-planned`; train bumped to
+`0.37.0`; Alpha `hedron-elements` published on the coordinated train. Tracking
+[#93](https://github.com/eddiethedean/hedron/issues/93) and high-severity #230–#237 are closed.
+Post-cut follow-on [#244](https://github.com/eddiethedean/hedron/issues/244) (element-markup
+`style=` / `vbscript:` / `data:`) is also closed. GitHub Release / PyPI tag remain maintainer
+publish assets.
 
 ## Cut verification
 
