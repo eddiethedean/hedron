@@ -46,13 +46,24 @@ def test_snowflake_bounded_fetch() -> None:
         "UPDATE t SET x=1 WHERE id IN (SELECT id FROM t)",
         "SELECT 1; DROP TABLE t",
         "WITH x AS (SELECT 1 AS n) INSERT INTO t SELECT * FROM x",
+        "SELECT id, email FROM customers INTO TABLE attacker_copy",
+        "SELECT * FROM t INTO TEMP TABLE u",
+        "SELECT * FROM t INTO TEMPORARY TABLE u",
+        "WITH x AS (SELECT 1 AS n) SELECT * FROM x INTO TABLE y",
+        "select id from customers\ninto\ttable attacker_copy",
     ],
 )
 def test_snowflake_rejects_mutating_sql(statement: str) -> None:
-    with pytest.raises(HedronError):
+    with pytest.raises(HedronError) as exc:
         SnowflakeDataSource(connection_factory=_Conn, statement=statement)
+    assert exc.value.diagnostic.code == "HED-DATA-0061"
 
 
 def test_assert_select_only_allows_with() -> None:
     cleaned = assert_select_only("WITH x AS (SELECT 1 AS n) SELECT * FROM x")
     assert cleaned.lower().startswith("with")
+
+
+def test_assert_select_only_allows_into_inside_string_literal() -> None:
+    cleaned = assert_select_only("SELECT ' into TABLE ' AS note, id FROM customers")
+    assert "into" in cleaned.lower()
