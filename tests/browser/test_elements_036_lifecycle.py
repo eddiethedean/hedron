@@ -11,11 +11,11 @@ import pytest
 
 pytest.importorskip("playwright")
 from playwright.sync_api import sync_playwright
+from tests.browser._harness import reset_browser_plugin_state, wait_for_port
 
 from hedron import Hedron
 from hedron_core.builtins import Page, Text
 from hedron_elements.example import Example
-from tests.browser._harness import reset_browser_plugin_state, wait_for_port
 
 pytestmark = pytest.mark.browser
 
