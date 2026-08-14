@@ -2730,9 +2730,9 @@ compatibility without embedding Gradio's UI runtime into Hedron.
 - Unsupported upstream versions and experimental vendor extensions fail clearly and remain outside the
   production-grade inventory.
 
-## 0.35 — Whole-fleet production-grade closure (`v0.35.0`)
+## 0.35 — Whole-fleet production-grade closure (`v0.36.0`)
 
-**Status:** **Published** as `v0.35.0` (2026-08-13). Final audit phase for the
+**Status:** **Published** as `v0.36.0` (2026-08-13). Final audit phase for the
 package-graduation program; not a `1.0` substitute.
 **Tracking:** [#91](https://github.com/eddiethedean/hedron/issues/91). Evidence:
 [`RELEASE_0_35.md`](acceptance/RELEASE_0_35.md) ·
@@ -2773,7 +2773,7 @@ no package remains Alpha merely because it lacked an owner.
 
 ### Non-goals
 
-- Renaming `v0.35.0` to `1.0`, freezing experimental APIs, or claiming all features are Supported.
+- Renaming `v0.36.0` to `1.0`, freezing experimental APIs, or claiming all features are Supported.
 - Commercial SLA, hosted-service, legal compliance, WCAG conformance, VPAT/ACR, or certification
   claims.
 - Keeping abandoned packages published solely to make the fleet look larger.
@@ -2788,10 +2788,9 @@ no package remains Alpha merely because it lacked an owner.
 
 ## 0.36 — Web Component ABI and lifecycle foundation (`v0.36.0`)
 
-**Status:** Planned; Stage 0 refined. [RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md)
-**Accepted** (D-064). Implementation may begin after Stage 0; cut requires every gate Verified.
-**Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92). Close when all 0.36-owned
-gates are Verified.
+**Status:** Published in-tree as `v0.36.0` (tag/PyPI pending). [RFC-0060](rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md)
+**Accepted** (D-064). All 0.36-owned gates Verified.
+**Tracking:** [#92](https://github.com/eddiethedean/hedron/issues/92). Close after GitHub/PyPI publish assets.
 **Evidence:** [RELEASE_0_36](acceptance/RELEASE_0_36.md) ·
 [release-gate-0.36.toml](acceptance/release-gate-0.36.toml) ·
 [HEDRON_ELEMENTS_036](implementation/HEDRON_ELEMENTS_036.md).

@@ -6,63 +6,63 @@
 
 [[evidence]]
 id = "ABI-036"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_abi_036.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "ELEMENTS-036"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_elements_036.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "LIFECYCLE-036"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_lifecycle_036.py"
 ci_job = "browser"
 owner = "hedron"
 
 [[evidence]]
 id = "SSR-036"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_ssr_036.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "STATE-036"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_state_036.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "SECURITY-036"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_security_036.py"
 ci_job = "test"
 owner = "hedron"
 
 [[evidence]]
 id = "A11Y-036"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_a11y_036.py"
 ci_job = "browser"
 owner = "hedron"
 
 [[evidence]]
 id = "BROWSER-036"
-state = "Planned"
+state = "Verified"
 command = "python scripts/check_browser_036.py"
 ci_job = "browser"
 owner = "hedron"
 
 [[evidence]]
 id = "PKG-036"
-state = "Planned"
+state = "Verified"
 command = "python scripts/verify_pkg_36.py"
 ci_job = "packaging"
 owner = "hedron"

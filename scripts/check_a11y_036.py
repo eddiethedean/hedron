@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A11Y-036 Stage 0 stub — packet presence only."""
+"""A11Y-036 evidence checker."""
 
 from __future__ import annotations
 
@@ -8,11 +8,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from _gate_036 import planned_stub_ok  # noqa: E402
+from _gate_036 import check_gate  # noqa: E402
 
 
 def main() -> int:
-    return planned_stub_ok("A11Y-036")
+    return check_gate("A11Y-036")
 
 
 if __name__ == "__main__":

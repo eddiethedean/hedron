@@ -1,4 +1,4 @@
-"""Packaging metadata checks for the coordinated 0.35 train."""
+"""Packaging metadata checks for the coordinated 0.36 train."""
 
 from __future__ import annotations
 
@@ -36,6 +36,9 @@ _INDEPENDENT_BETA_02 = {
 _INDEPENDENT_MAJOR = {
     "fastapi-workbench",
 }
+_TRAIN_ALIGNED_ALPHA = {
+    "hedron-elements",
+}
 _ALPHA_INDEPENDENT: set[str] = set()
 
 
@@ -43,8 +46,8 @@ def test_all_packages_declare_license_and_version() -> None:
     for pyproject in sorted((ROOT / "packages").glob("*/pyproject.toml")):
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
-        if name in _BETA_PACKAGES:
-            assert project["version"] == "0.35.0", pyproject
+        if name in _BETA_PACKAGES or name in _TRAIN_ALIGNED_ALPHA:
+            assert project["version"] == "0.36.0", pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert project["version"] == "0.2.0", pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:
@@ -84,6 +87,7 @@ def test_first_party_plugin_meta_matches_package_version() -> None:
     assert seen == {
         "hedron-charts",
         "hedron-data",
+        "hedron-elements",
         "hedron-extras",
         "hedron-gradio",
         "hedron-mcp",

@@ -23,7 +23,7 @@ The phase is complete only when every row in
 | Package | Alpha `hedron-elements` `0.36.0`, train-aligned pin |
 | Browser floor | Playwright Chromium / Firefox / WebKit |
 | “100 elements” | 100 upgrade/swap **instances** of the reference element |
-| Baseline | Published `v0.35.0` |
+| Baseline | Published `v0.36.0` |
 | Tracking | [#92](https://github.com/eddiethedean/hedron/issues/92) |
 | Non-goals | No hydration/VDOM/global store/app Node build; no forms/`InteractionState`/gestures; no tip bump in Stage 0 |
 
@@ -43,7 +43,7 @@ Deliverables:
 **Explicitly forbidden in Stage 0:**
 
 - Creating `packages/hedron-elements/` or adding a uv workspace member
-- Adding `hedron[elements]` extras or bumping the living tip off `0.35.x`
+- Adding `hedron[elements]` extras or bumping the living tip off `0.36.x`
 - Implementing browser modules, registry runtime, or host mounts
 
 **Exit:** `python scripts/verify_pkg_36.py --allow-planned` green.

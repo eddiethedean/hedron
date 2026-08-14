@@ -1,0 +1,29 @@
+# SECURITY-036 disposition ledger
+
+reviewer = "maintainer"
+date = "2026-08-13"
+gate = "SECURITY-036"
+
+[[findings]]
+id = "EL-036-01"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "EL-036-02"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "EL-036-03"
+severity = "low"
+status = "accepted"
+
+[[findings]]
+id = "EL-036-04"
+severity = "info"
+status = "accepted"
+
+[summary]
+open_critical = 0
+open_high = 0

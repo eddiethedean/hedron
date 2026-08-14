@@ -14,7 +14,7 @@ status: implemented
 **Status:** Adapters shipped (`hedron-flask`, `hedron-django`). Capability readiness:
 **Supported** for Blueprint/`init_app`, AppConfig, forms bridge, and bounded QuerySet
 DataSource. Package maturity remains **Beta** on PyPI — pin versions.
-Portable contracts live in `hedron-core`. Living train: **0.35.x** (last published **v0.35.0**).
+Portable contracts live in `hedron-core`. Living train: **0.36.x** (last published **v0.36.0**).
 
 Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapters). Quickstarts:
 [Flask](../getting-started/flask.md) · [Django](../getting-started/django.md).
@@ -22,8 +22,8 @@ Autodoc signatures: [Autodoc — Framework adapters](AUTODOC.md#framework-adapte
 ## Install
 
 ```bash
-pip install "hedron-flask>=0.35.0,<0.36"
-pip install "hedron-django>=0.35.0,<0.36"   # Django >=5.2,<6
+pip install "hedron-flask>=0.36.0,<0.37"
+pip install "hedron-django>=0.36.0,<0.37"   # Django >=5.2,<6
 ```
 
 ## Portable baseline

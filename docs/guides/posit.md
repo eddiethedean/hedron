@@ -3,8 +3,8 @@
 Run the same Hedron application locally, in Posit Workbench, and on Posit Connect
 with one facade.
 
-**Requires:** `hedron-posit>=0.35.0,<0.36` (or `hedron[posit]>=0.35.0,<0.36`).
-Compatibility package: `hedron-workbench>=0.35.0,<0.36` (or `hedron[workbench]`).
+**Requires:** `hedron-posit>=0.36.0,<0.37` (or `hedron[posit]>=0.36.0,<0.37`).
+Compatibility package: `hedron-workbench>=0.36.0,<0.37` (or `hedron[workbench]`).
 Generic Workbench ASGI behavior remains in `fastapi-workbench>=1.0.0,<2.0`.
 
 ## Preferred facade

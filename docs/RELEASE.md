@@ -1,7 +1,7 @@
 # Cutting a Hedron release
 
-This is the living maintainer runbook for the `0.35.x` train. Historical cut records
-live under `docs/archive/`. The last published release is `v0.35.0`; the next planned
+This is the living maintainer runbook for the `0.36.x` train. Historical cut records
+live under `docs/archive/`. The last published release is `v0.36.0`; the next planned
 patch is `v0.35.1`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;

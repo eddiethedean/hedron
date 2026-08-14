@@ -36,7 +36,7 @@ and the sample kit install directly. Charts require the compatible `0.1.10` sate
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
 
 ```bash
-pip install "hedron[data,dev,posit]>=0.35.0,<0.36"
+pip install "hedron[data,dev,posit]>=0.36.0,<0.37"
 ```
 
 ## Alpha lines
@@ -49,13 +49,14 @@ Gradio interop are **Experimental** / Alpha — not production defaults.
 | [hedron-notebook](hedron-notebook.md) | `hedron[notebook]` | Server-side notebook preview helper |
 | [hedron-mcp](hedron-mcp.md) | `hedron[mcp]` | Deny-by-default MCP projection |
 | [hedron-gradio](hedron-gradio.md) | `hedron[gradio]` | Gradio client interop |
+| [hedron-elements](hedron-elements.md) | `hedron[elements]` | Alpha Web Component ABI / `hedron-example` |
 | [hedron-sample-kit](hedron-sample-kit.md) | — | Reference third-party plugin shape; `>=0.1.10,<0.2` |
 | [hedron-sim](hedron-sim.md) | — | Offline HTMX sims for static docs |
 | [hedron-runtime-node](hedron-runtime-node.md) | npm | Portable Node conformance evaluator |
 | [hedron-runtime-java](hedron-runtime-java.md) | Maven | Portable Java conformance evaluator |
 
 ```bash
-pip install "hedron[charts]>=0.35.0,<0.36"
+pip install "hedron[charts]>=0.36.0,<0.37"
 pip install "hedron-sample-kit>=0.1.10,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 

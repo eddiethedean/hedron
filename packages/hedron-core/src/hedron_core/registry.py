@@ -16,6 +16,7 @@ __all__ = [
     "AddressableMeta",
     "AssetMeta",
     "BrowserModuleMeta",
+    "ElementDefinitionMeta",
     "ComponentMeta",
     "RouteKind",
     "RouteMeta",
@@ -27,6 +28,7 @@ __all__ = [
     "register_addressable",
     "register_asset",
     "register_browser_module",
+    "register_element_definition",
     "register_component",
     "register_route",
     "register_theme",
@@ -70,6 +72,7 @@ class RegistryBuilderSnapshot(TypedDict):
     themes: dict[str, ThemeMeta]
     assets: dict[str, AssetMeta]
     browser_modules: dict[str, BrowserModuleMeta]
+    element_definitions: dict[str, ElementDefinitionMeta]
 
 
 @dataclass(frozen=True, slots=True)
@@ -135,6 +138,46 @@ class BrowserModuleMeta:
     htmx_lifecycle: bool = True
 
 
+OwnershipMode = Literal["controlled", "local", "draft", "preference"]
+
+
+@dataclass(frozen=True, slots=True)
+class ElementFieldOwnership:
+    """Per-field ElementStateOwnership declaration (phase 0.36)."""
+
+    name: str
+    mode: OwnershipMode
+    reflection: str = "attribute"
+    incoming_update: str = "replace"
+    persistence: str = "none"
+    event: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ElementDefinitionMeta:
+    """Versioned Web Component ABI record (RFC-0060 / phase 0.36)."""
+
+    logical_id: str
+    tag_name: str
+    abi_version: int
+    module_asset_id: str
+    attributes: tuple[str, ...] = ()
+    structured_inputs: Mapping[str, str] = field(default_factory=dict)
+    properties: tuple[str, ...] = ()
+    methods: tuple[str, ...] = ()
+    state_ownership: tuple[ElementFieldOwnership, ...] = ()
+    events: tuple[str, ...] = ()
+    dom_policy: str = "light"
+    server_regions: tuple[str, ...] = ()
+    form_contract: Mapping[str, object] | None = None  # reserved stub in 0.36
+    a11y_contract: Mapping[str, str] = field(default_factory=dict)
+    style_contract: Mapping[str, str] = field(default_factory=dict)
+    resources: tuple[str, ...] = ()
+    lifecycle: Mapping[str, str] = field(default_factory=dict)
+    fallback: Mapping[str, str] = field(default_factory=dict)
+    first_party: bool = True
+
+
 @dataclass
 class RegistryBuilder:
     _components: dict[str, ComponentMeta] = field(default_factory=dict)
@@ -143,6 +186,7 @@ class RegistryBuilder:
     _themes: dict[str, ThemeMeta] = field(default_factory=dict)
     _assets: dict[str, AssetMeta] = field(default_factory=dict)
     _browser_modules: dict[str, BrowserModuleMeta] = field(default_factory=dict)
+    _element_definitions: dict[str, ElementDefinitionMeta] = field(default_factory=dict)
     _sealed: bool = False
 
     def register(self, meta: ComponentMeta) -> None:
@@ -230,6 +274,66 @@ class RegistryBuilder:
                 )
         self._browser_modules[key] = meta
 
+    def register_element_definition(self, meta: ElementDefinitionMeta) -> None:
+        self._ensure_open()
+        key = registry_resource_id("element", meta.logical_id)
+        if "-" not in meta.tag_name:
+            raise error(
+                "HED-ELEMENT-0003",
+                title="Invalid element tag",
+                explanation=f"Element tag {meta.tag_name!r} must contain a hyphen.",
+                remediation="Use a hyphenated custom element name.",
+            )
+        if meta.first_party and not meta.tag_name.startswith("hedron-"):
+            raise error(
+                "HED-ELEMENT-0003",
+                title="First-party element naming violation",
+                explanation=f"First-party tag {meta.tag_name!r} must use the hedron- prefix.",
+                remediation="Reserve hedron- for first-party elements.",
+            )
+        if meta.abi_version < 1:
+            raise error(
+                "HED-ELEMENT-0002",
+                title="Invalid element ABI version",
+                explanation=f"ABI version {meta.abi_version} is not supported.",
+                remediation="Use a positive integer ABI major.",
+            )
+        existing = self._element_definitions.get(key)
+        if existing is not None:
+            if existing == meta:
+                return  # idempotent same-definition registration
+            raise error(
+                "HED-ELEMENT-0001",
+                title="Element definition conflict",
+                explanation=(
+                    f"Element {meta.logical_id!r} already registered with a different definition."
+                ),
+                remediation=(
+                    "Register a compatible identical definition or choose a new logical id."
+                ),
+            )
+        for other in self._element_definitions.values():
+            if other.tag_name != meta.tag_name or other.logical_id == meta.logical_id:
+                continue
+            if other.abi_version != meta.abi_version:
+                raise error(
+                    "HED-ELEMENT-0002",
+                    title="Incompatible element ABI",
+                    explanation=(
+                        f"Tag {meta.tag_name!r} ABI {meta.abi_version} conflicts with "
+                        f"registered ABI {other.abi_version}."
+                    ),
+                    remediation="Align markup and module ABI majors or use a new tag.",
+                )
+            if other != meta:
+                raise error(
+                    "HED-ELEMENT-0001",
+                    title="Element tag conflict",
+                    explanation=f"Tag {meta.tag_name!r} is already owned by {other.logical_id!r}.",
+                    remediation="Use a unique tag or compatible same-definition registration.",
+                )
+        self._element_definitions[key] = meta
+
     def update_component(self, logical_id: str, **updates: object) -> None:
         self._ensure_open()
         key = registry_resource_id("component", logical_id)
@@ -256,6 +360,7 @@ class RegistryBuilder:
             dict(self._themes),
             dict(self._assets),
             dict(self._browser_modules),
+            dict(self._element_definitions),
         )
 
     def _ensure_open(self) -> None:
@@ -276,6 +381,7 @@ class Registry:
     _themes: Mapping[str, ThemeMeta] = field(default_factory=dict)
     _assets: Mapping[str, AssetMeta] = field(default_factory=dict)
     _browser_modules: Mapping[str, BrowserModuleMeta] = field(default_factory=dict)
+    _element_definitions: Mapping[str, ElementDefinitionMeta] = field(default_factory=dict)
 
     def get(self, logical_id: str) -> ComponentMeta | None:
         return self._components.get(registry_resource_id("component", logical_id))
@@ -312,6 +418,12 @@ class Registry:
 
     def browser_modules(self) -> Iterable[BrowserModuleMeta]:
         return tuple(sorted(self._browser_modules.values(), key=lambda m: m.logical_id))
+
+    def get_element_definition(self, logical_id: str) -> ElementDefinitionMeta | None:
+        return self._element_definitions.get(registry_resource_id("element", logical_id))
+
+    def element_definitions(self) -> Iterable[ElementDefinitionMeta]:
+        return tuple(sorted(self._element_definitions.values(), key=lambda m: m.logical_id))
 
 
 _builder = RegistryBuilder()
@@ -494,6 +606,53 @@ def register_browser_module(
     )
 
 
+def register_element_definition(
+    *,
+    logical_id: str,
+    tag_name: str,
+    abi_version: int,
+    module_asset_id: str,
+    attributes: Iterable[str] = (),
+    structured_inputs: Mapping[str, str] | None = None,
+    properties: Iterable[str] = (),
+    methods: Iterable[str] = (),
+    state_ownership: Iterable[ElementFieldOwnership] = (),
+    events: Iterable[str] = (),
+    dom_policy: str = "light",
+    server_regions: Iterable[str] = (),
+    form_contract: Mapping[str, object] | None = None,
+    a11y_contract: Mapping[str, str] | None = None,
+    style_contract: Mapping[str, str] | None = None,
+    resources: Iterable[str] = (),
+    lifecycle: Mapping[str, str] | None = None,
+    fallback: Mapping[str, str] | None = None,
+    first_party: bool = True,
+) -> None:
+    _builder.register_element_definition(
+        ElementDefinitionMeta(
+            logical_id=logical_id,
+            tag_name=tag_name,
+            abi_version=abi_version,
+            module_asset_id=module_asset_id,
+            attributes=tuple(attributes),
+            structured_inputs=dict(structured_inputs or {}),
+            properties=tuple(properties),
+            methods=tuple(methods),
+            state_ownership=tuple(state_ownership),
+            events=tuple(events),
+            dom_policy=dom_policy,
+            server_regions=tuple(server_regions),
+            form_contract=dict(form_contract) if form_contract is not None else None,
+            a11y_contract=dict(a11y_contract or {}),
+            style_contract=dict(style_contract or {}),
+            resources=tuple(resources),
+            lifecycle=dict(lifecycle or {}),
+            fallback=dict(fallback or {}),
+            first_party=first_party,
+        )
+    )
+
+
 def seal_registry() -> Registry:
     """Seal the builder. Idempotent: returns the existing snapshot if already sealed."""
     global _active
@@ -515,6 +674,7 @@ def get_registry() -> Registry:
         dict(_builder._themes),
         dict(_builder._assets),
         dict(_builder._browser_modules),
+        dict(_builder._element_definitions),
     )
 
 
@@ -527,6 +687,7 @@ def snapshot_registry_builder() -> RegistryBuilderSnapshot:
         "themes": dict(_builder._themes),
         "assets": dict(_builder._assets),
         "browser_modules": dict(_builder._browser_modules),
+        "element_definitions": dict(_builder._element_definitions),
     }
 
 
@@ -545,6 +706,7 @@ def restore_registry_builder(snapshot: RegistryBuilderSnapshot) -> None:
     _builder._themes = dict(snapshot["themes"])
     _builder._assets = dict(snapshot["assets"])
     _builder._browser_modules = dict(snapshot["browser_modules"])
+    _builder._element_definitions = dict(snapshot.get("element_definitions", {}))
 
 
 def reset_registry_for_tests() -> None:

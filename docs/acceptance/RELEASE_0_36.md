@@ -1,13 +1,13 @@
 # Hedron `v0.36` Web Component ABI / lifecycle foundation acceptance
 
-**Status:** Stage 0 refined (2026-08-13). **Not Published.** Living tip remains
-`v0.35.0` / pin `hedron>=0.35.0,<0.36` until cut.
+**Status:** **Published** in-tree as `v0.36.0` (2026-08-13; git tag / PyPI / GitHub Release
+pending). Living tip is `v0.36.0` / pin `hedron>=0.36.0,<0.37`.
 
 Phase 0.36 establishes one versioned, framework-neutral Web Component ABI and ships Alpha
 `hedron-elements` with SSR/native HTML as the canonical fallback and HTMX as the request
 layer. Baseline: Published `v0.35.0`. Evidence is indexed by
 [`release-gate-0.36.toml`](release-gate-0.36.toml). **Zero Deferred:** every 0.36-owned gate
-must be Verified at cut.
+is Verified at cut.
 
 Owning decision: [D-064](../DECISIONS.md). Design:
 [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (**Accepted** 2026-08-13).
@@ -33,7 +33,7 @@ Implementation: [HEDRON_ELEMENTS_036](../implementation/HEDRON_ELEMENTS_036.md).
 
 ## Entry criteria
 
-- [x] `v0.35.0` published; D-063 Accepted; #91 closed
+- [x] `v0.36.0` published; D-063 Accepted; #91 closed
 - [x] D-064 Accepted; RFC-0060 Accepted; open questions resolved
 - [x] Tracking issue #92 bound to phase 0.36 gate IDs
 - [x] Planned release-gate rows and checker ownership reviewed
@@ -52,7 +52,7 @@ Implementation: [HEDRON_ELEMENTS_036](../implementation/HEDRON_ELEMENTS_036.md).
 | Accessibility | Pre/upgraded/failed/swap/history | `check_a11y_036.py` |
 | Browser / perf | Three engines; 100 **instances**; bridge ≤12 KiB gzip | `check_browser_036.py` |
 | Packaging | Docs, manifests, SBOM/provenance, verifier | `verify_pkg_36.py` |
-| Upgrade path | From `v0.35.0` | [`upgrade-fixtures-036.md`](upgrade-fixtures-036.md) |
+| Upgrade path | From `v0.36.0` | [`upgrade-fixtures-036.md`](upgrade-fixtures-036.md) |
 
 ## Locked evidence gates
 
@@ -70,23 +70,19 @@ Implementation: [HEDRON_ELEMENTS_036](../implementation/HEDRON_ELEMENTS_036.md).
 
 ## Cut verification
 
-At `v0.36.0` cut (future):
+At in-tree `v0.36.0` tip bump (tag/PyPI later):
 
 ```bash
 python scripts/verify_pkg_36.py
 python scripts/check_release_gate.py 0.36.0 --execute-verified
 ```
 
-During packet refine (Stage 0):
-
-```bash
-python scripts/verify_pkg_36.py --allow-planned
-```
-
 ## Exit
 
-- [ ] Exact cut matrix has no `TBD` on Supported lanes
+- [x] Exact cut matrix has no `TBD` on Supported lanes
 - [x] RFC-0060 Accepted and implementation plan matches it
-- [ ] Every 0.36-owned release-gate row Verified with zero Deferred
-- [ ] `hedron-elements` published Alpha `0.36.0`; fleet inventory amended
+- [x] Every 0.36-owned release-gate row Verified with zero Deferred
+- [x] `hedron-elements` Alpha `0.36.0` in-tree; fleet inventory-036 amended
+- [x] Tip/SSOT honesty for living `0.36.0` (STATUS / RELEASE / adopter hubs)
 - [ ] Close #92 after release assets are published on GitHub/PyPI
+- [ ] `git tag` / push `v0.36.0`, PyPI publish, GitHub Release

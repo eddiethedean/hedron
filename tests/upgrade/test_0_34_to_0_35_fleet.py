@@ -16,10 +16,14 @@ def test_inventory_baseline_is_v0_34() -> None:
 
 
 def test_release_toml_train_is_documented_for_cut() -> None:
-    # During Stages 1–5 living tip may still be 0.34; after cut it is 0.35.
+    # Historical 0.35 cut facts remain documented even after later tip bumps.
     data = tomllib.loads(RELEASE.read_text(encoding="utf-8"))["release"]
-    assert data["train"] in {"0.34", "0.35"}
-    assert data["published_version"].startswith(data["train"] + ".")
+    if data["train"] == "0.36":
+        assert data["previous_train"] == "0.35"
+        assert data["previous_version"] == "0.35.0"
+    else:
+        assert data["train"] in {"0.34", "0.35"}
+        assert data["published_version"].startswith(data["train"] + ".")
 
 
 def test_fleet_dispositions_stable_across_upgrade() -> None:

@@ -1,3 +1,7 @@
+## [0.36.0] — 2026-08-13
+
+- Coordinated Beta train cut for Web Component ABI foundation (D-064 / RFC-0060).
+
 ## [0.35.0] — 2026-08-13
 
 ### Added

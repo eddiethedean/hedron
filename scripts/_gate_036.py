@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Shared paths and helpers for phase 0.36 Stage 0 / gate stubs."""
+"""Shared helpers for phase 0.36 release gates."""
 
 from __future__ import annotations
 
+import subprocess
+import sys
 import tomllib
 from pathlib import Path
 
@@ -16,6 +18,7 @@ UPGRADE = ROOT / "docs" / "acceptance" / "upgrade-fixtures-036.md"
 DECISIONS = ROOT / "docs" / "DECISIONS.md"
 PLATFORM_IMPL = ROOT / "docs" / "implementation" / "WEB_COMPONENT_PLATFORM.md"
 ELEMENTS_PKG = ROOT / "packages" / "hedron-elements"
+INVENTORY = ROOT / "docs" / "acceptance" / "production-grade-inventory-036.toml"
 
 EXPECTED_GATES = (
     "ABI-036",
@@ -28,6 +31,26 @@ EXPECTED_GATES = (
     "BROWSER-036",
     "PKG-036",
 )
+
+GATE_TESTS: dict[str, list[str]] = {
+    "ABI-036": ["tests/unit/test_elements_036_abi.py"],
+    "ELEMENTS-036": [
+        "tests/unit/test_elements_036_package.py",
+        "tests/integration/test_elements_036_hosts.py",
+    ],
+    "LIFECYCLE-036": [
+        "tests/unit/test_elements_036_lifecycle_corpus.py",
+        "tests/browser/test_elements_036_lifecycle.py",
+    ],
+    "SSR-036": ["tests/unit/test_elements_036_ssr.py"],
+    "STATE-036": ["tests/unit/test_elements_036_state.py"],
+    "SECURITY-036": ["tests/security/test_elements_036_security.py"],
+    "A11Y-036": ["tests/a11y/test_elements_036_a11y.py"],
+    "BROWSER-036": [
+        "tests/unit/test_elements_036_package.py",
+        "tests/browser/test_elements_036_browser.py",
+    ],
+}
 
 
 def require_files(paths: list[Path], errors: list[str]) -> None:
@@ -57,8 +80,7 @@ def gate_state(gate_id: str) -> str | None:
 def rfc_is_accepted() -> bool:
     if not RFC.is_file():
         return False
-    text = RFC.read_text(encoding="utf-8")
-    return "**Status:** Accepted" in text[:500]
+    return "**Status:** Accepted" in RFC.read_text(encoding="utf-8")[:500]
 
 
 def d064_present() -> bool:
@@ -67,13 +89,17 @@ def d064_present() -> bool:
     return "| D-064 | Accepted |" in DECISIONS.read_text(encoding="utf-8")
 
 
-def elements_package_absent() -> bool:
-    """Stage 0 forbids creating the package tree."""
-    return not ELEMENTS_PKG.exists()
+def elements_package_present() -> bool:
+    return (ELEMENTS_PKG / "pyproject.toml").is_file()
 
 
-def planned_stub_ok(gate_id: str) -> int:
-    """Exit 0 while the gate remains Planned; refuse premature Verified claims."""
+def run_pytest(paths: list[str], gate: str) -> int:
+    cmd = ["uv", "run", "pytest", "-q", "--tb=short", *paths]
+    print("+", *cmd, flush=True)
+    return subprocess.call(cmd, cwd=ROOT)
+
+
+def check_gate(gate_id: str, *, require_package: bool = True) -> int:
     errors: list[str] = []
     require_files(
         [GATE, RELEASE_PACKET, IMPLEMENTATION, RFC, REVIEW_BRIEF, UPGRADE, PLATFORM_IMPL],
@@ -83,20 +109,19 @@ def planned_stub_ok(gate_id: str) -> int:
         errors.append("RFC-0060 must be Accepted")
     if not d064_present():
         errors.append("D-064 must be Accepted in DECISIONS.md")
-    if not elements_package_absent():
-        errors.append(
-            "Stage 0 forbids packages/hedron-elements; remove it or advance past Stage 0"
-        )
+    if require_package and not elements_package_present():
+        errors.append("packages/hedron-elements is required")
     state = gate_state(gate_id)
     if state is None:
         errors.append(f"{gate_id} missing from release-gate-0.36.toml")
-    elif state == "Verified":
-        errors.append(
-            f"{gate_id} is Verified but Stage 0 stub has no cut evidence yet"
-        )
-    elif state not in {"Planned", "Implemented"}:
+    elif state not in {"Planned", "Implemented", "Verified"}:
         errors.append(f"{gate_id} unexpected state {state!r}")
     if fail_errors(errors, gate_id):
         return 1
-    print(f"ok: {gate_id} (Stage 0 planned stub)")
+    tests = GATE_TESTS.get(gate_id, [])
+    if tests:
+        code = run_pytest(tests, gate_id)
+        if code != 0:
+            return code
+    print(f"ok: {gate_id}")
     return 0

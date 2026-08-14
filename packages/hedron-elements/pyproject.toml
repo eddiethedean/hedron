@@ -1,0 +1,69 @@
+[project]
+name = "hedron-elements"
+version = "0.36.0"
+description = "Alpha Web Component ABI, shared bridge, and first-party elements for Hedron (RFC-0060)"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+maintainers = [
+    { name = "Odos Matthews", email = "odosmatthews@gmail.com" },
+]
+keywords = [
+    "hedron",
+    "web-components",
+    "htmx",
+    "custom-elements",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "hedron-core>=0.36.0,<0.37",
+]
+
+[project.entry-points."hedron.plugins"]
+hedron_elements = "hedron_elements.plugin:register"
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/hedron"
+Repository = "https://github.com/eddiethedean/hedron"
+Issues = "https://github.com/eddiethedean/hedron/issues"
+Changelog = "https://github.com/eddiethedean/hedron/blob/main/packages/hedron-elements/CHANGELOG.md"
+Documentation = "https://hedron.readthedocs.io/en/latest/"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hedron_elements"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/hedron_elements/static/hedron-bridge.mjs" = "hedron_elements/static/hedron-bridge.mjs"
+"src/hedron_elements/static/hedron-example.mjs" = "hedron_elements/static/hedron-example.mjs"
+"src/hedron_elements/static/hedron-example.css" = "hedron_elements/static/hedron-example.css"
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "src/hedron_elements",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "pyproject.toml",
+]

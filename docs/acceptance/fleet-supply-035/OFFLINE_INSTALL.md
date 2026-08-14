@@ -10,7 +10,7 @@ local wheelhouse without index access.
    ```bash
    mkdir -p /tmp/hedron-offline-wheels
    pip download -d /tmp/hedron-offline-wheels \
-     "hedron[data,jinja,charts,mcp,gradio,workbench,posit,extras]>=0.35.0,<0.36"
+     "hedron[data,jinja,charts,mcp,gradio,workbench,posit,extras]>=0.36.0,<0.37"
    ```
 
 2. **Transfer** `/tmp/hedron-offline-wheels` to an air-gapped environment.
@@ -19,7 +19,7 @@ local wheelhouse without index access.
 
    ```bash
    pip install --no-index --find-links=/tmp/hedron-offline-wheels \
-     "hedron[data,jinja,charts]>=0.35.0,<0.36"
+     "hedron[data,jinja,charts]>=0.36.0,<0.37"
    ```
 
 4. **Smoke**:

@@ -3,10 +3,10 @@
 
 Does **not** publish or tag.
 
-* ``--allow-planned``: validate the 0.35 evidence manifest shape while rows may
-  still be Planned and the living tip remains on ``0.34.x`` (packet refine).
+* ``--allow-planned``: validate the 0.35 evidence manifest shape while the living
+  tip may already be on a later train (historical packet shape after 0.36 cut).
 * Omit ``--allow-planned`` at ``v0.35.0`` cut once every evidence row is
-  ``Verified``.
+  ``Verified`` and package versions match the 0.35 train.
 """
 
 from __future__ import annotations
@@ -81,7 +81,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--allow-planned",
         action="store_true",
-        help=(f"Allow Planned rows (pre-cut / packet refine). Omit at v{RELEASE_CANDIDATE} cut."),
+        help=(
+            f"Allow Planned rows / skip train package pin checks (historical shape). "
+            f"Omit at v{RELEASE_CANDIDATE} cut."
+        ),
     )
     args = parser.parse_args(argv)
 
@@ -95,7 +98,7 @@ def main(argv: list[str] | None = None) -> int:
         errors = gate.check_evidence_manifest_lenient(EVIDENCE)
         if errors:
             raise SystemExit("\n".join(errors))
-        print("ok: release-gate-0.35.toml (planned shape)")
+        print("ok: release-gate-0.35.toml (historical shape)")
     else:
         gate_cmd = [
             sys.executable,

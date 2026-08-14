@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Verify phase 0.36 packaging / packet evidence for Web Component ABI foundation.
 
-Does **not** publish or tag. Does **not** require ``packages/hedron-elements`` during
-Stage 0 refine.
+Does **not** publish or tag.
 
 * ``--allow-planned``: validate the 0.36 evidence manifest shape while rows may
-  still be Planned and the living tip remains on ``0.35.x`` (packet refine).
+  still be Planned (packet refine / mid-implementation).
 * Omit ``--allow-planned`` at ``v0.36.0`` cut once every evidence row is
   ``Verified``.
 """
@@ -25,18 +24,43 @@ from _gate_036 import (  # noqa: E402
     EXPECTED_GATES,
     GATE,
     IMPLEMENTATION,
+    INVENTORY,
     RELEASE_PACKET,
     REVIEW_BRIEF,
     RFC,
     UPGRADE,
     d064_present,
-    elements_package_absent,
+    elements_package_present,
     rfc_is_accepted,
 )
 
 EVIDENCE = GATE
 RELEASE_CANDIDATE = "0.36.0"
 PYPROJECT = ROOT / "pyproject.toml"
+EXPECTED_PACKAGES = (
+    "hedron",
+    "hedron-core",
+    "hedron-explorer",
+    "hedron-data",
+    "hedron-flask",
+    "hedron-django",
+    "hedron-jinja",
+    "hedron-extras",
+    "hedron-conformance",
+    "hedron-charts",
+    "hedron-native",
+    "hedron-sample-kit",
+    "hedron-sim",
+    "hedron-notebook",
+    "hedron-mcp",
+    "hedron-gradio",
+    "hedron-workbench",
+    "hedron-posit",
+    "hedron-elements",
+    "fastapi-workbench",
+    "hedron-runtime-node",
+    "hedron-runtime-java",
+)
 
 
 def _check_packet_files() -> None:
@@ -74,17 +98,37 @@ def _check_gate_ids() -> None:
     print("ok: release-gate-0.36.toml gate ids")
 
 
-def _check_living_tip_035(*, allow_planned: bool) -> None:
-    """During refine, workspace train version must remain 0.35.x."""
-    if not allow_planned:
-        return
+def _check_inventory() -> None:
+    if not INVENTORY.is_file():
+        raise SystemExit(f"missing inventory: {INVENTORY}")
+    data = tomllib.loads(INVENTORY.read_text(encoding="utf-8"))
+    packages = data.get("packages")
+    if not isinstance(packages, list):
+        raise SystemExit(f"{INVENTORY}: packages list required")
+    missing = [name for name in EXPECTED_PACKAGES if name not in packages]
+    if missing:
+        raise SystemExit(f"{INVENTORY}: missing packages {missing}")
+    if str(data.get("baseline", "")).strip() != "v0.35.0":
+        raise SystemExit(f"{INVENTORY}: baseline must be v0.35.0")
+    elements = data.get("hedron-elements")
+    if not isinstance(elements, dict):
+        raise SystemExit(f"{INVENTORY}: hedron-elements table required")
+    if str(elements.get("disposition", "")).strip() != "incubator":
+        raise SystemExit(f"{INVENTORY}: hedron-elements disposition must be incubator")
+    print("ok: production-grade-inventory-036.toml")
+
+
+def _check_living_tip(*, allow_planned: bool) -> None:
     data = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
     version = str(data.get("project", {}).get("version", "")).strip()
-    if not version.startswith("0.35."):
-        raise SystemExit(
-            f"Stage 0 refine requires living tip on 0.35.x; found workspace version {version!r}"
-        )
-    print(f"ok: living tip remains {version}")
+    if allow_planned:
+        if not (version.startswith("0.35.") or version.startswith("0.36.")):
+            raise SystemExit(f"unexpected workspace version {version!r}")
+        print(f"ok: living tip {version} (allow-planned)")
+        return
+    if version != RELEASE_CANDIDATE:
+        raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE}; found {version!r}")
+    print(f"ok: living tip {version}")
 
 
 def _check_review_packet(*, allow_planned: bool) -> None:
@@ -98,7 +142,7 @@ def _check_review_packet(*, allow_planned: bool) -> None:
         path = packet / name
         if not path.is_file():
             raise SystemExit(f"missing review artifact: {path}")
-    if elements_package_absent():
+    if not elements_package_present():
         raise SystemExit("cut requires packages/hedron-elements")
     print("ok: security-review-036 full packet")
 
@@ -108,7 +152,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--allow-planned",
         action="store_true",
-        help=(f"Allow Planned rows (pre-cut / packet refine). Omit at v{RELEASE_CANDIDATE} cut."),
+        help=(f"Allow Planned rows (pre-cut). Omit at v{RELEASE_CANDIDATE} cut."),
     )
     args = parser.parse_args(argv)
 
@@ -119,14 +163,9 @@ def main(argv: list[str] | None = None) -> int:
     if not d064_present():
         raise SystemExit("D-064 must be Accepted in DECISIONS.md")
     print("ok: RFC-0060 Accepted + D-064")
+    _check_living_tip(allow_planned=args.allow_planned)
 
     if args.allow_planned:
-        if not elements_package_absent():
-            raise SystemExit(
-                "Stage 0 forbids packages/hedron-elements; remove before --allow-planned"
-            )
-        print("ok: packages/hedron-elements absent (Stage 0)")
-        _check_living_tip_035(allow_planned=True)
         _check_review_packet(allow_planned=True)
         import check_release_gate as gate
 
@@ -135,6 +174,7 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit("\n".join(errors))
         print("ok: release-gate-0.36.toml (planned shape)")
     else:
+        _check_inventory()
         _check_review_packet(allow_planned=False)
         gate_cmd = [
             sys.executable,

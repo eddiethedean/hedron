@@ -42,11 +42,14 @@ def _require_safe_attr_name(name: str) -> str:
     return name
 
 
-def _is_allowed_attr(name: str) -> bool:
+def _is_allowed_attr(name: str, *, tag: str = "") -> bool:
     lower = name.lower()
     if lower.startswith("data-") or lower.startswith("aria-"):
         return True
-    return lower in ALLOWED_ATTRS
+    if lower in ALLOWED_ATTRS:
+        return True
+    # Custom elements may declare observed scalar attributes (phase 0.36 ABI).
+    return bool("-" in tag and not lower.startswith("on"))
 
 
 def _normalize_srcset(value: object) -> str:
@@ -117,7 +120,7 @@ def _normalize_attrs(attrs: dict[str, HtmlAttrValue], *, tag: str) -> dict[str, 
                 explanation=f"Attribute {name!r} is not permitted under baseline policy.",
                 remediation="Remove style/srcdoc and use typed theme or trusted assets later.",
             )
-        if not _is_allowed_attr(lower):
+        if not _is_allowed_attr(lower, tag=tag):
             raise error(
                 "HED-HTML-0005",
                 title="Unknown HTML attribute",
@@ -260,6 +263,10 @@ class _HtmlNamespace:
     def __getattr__(self, name: str) -> _HtmlTag:
         if name.startswith("_"):
             raise AttributeError(name)
+        return _HtmlTag(name)
+
+    def tag(self, name: str) -> _HtmlTag:
+        """Return a constructor for ``name`` (including hyphenated custom elements)."""
         return _HtmlTag(name)
 
     def raw(self, value: TrustedHtml) -> _TrustedRaw:

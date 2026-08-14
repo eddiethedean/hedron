@@ -39,4 +39,4 @@ Independent review of the **element ABI / bridge** surface:
 
 ## Status
 
-**Planned** (Stage 0 refine) — brief only; full packet required before `SECURITY-036` Verified.
+**Verified** (2026-08-13) — maintainer-led review complete; see `REDACTED_REPORT.md` and `DISPOSITION.toml`.

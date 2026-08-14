@@ -14,7 +14,14 @@ This catalog is complete for the registered set enforced by
 | `HED-BUILD-0004` | blocker | Runtime compile refused in production | Prebuild assets; do not rely on runtime CSS compile under `HEDRON_ENV=production` |
 | `HED-SEC-0001` | blocker | Dangerous or invalid URL | Use `SafeUrl.parse` with the right `UrlPurpose` |
 | `HED-SEC-0006` | blocker | URL purpose mismatch for an attribute | Match purpose to `href` / `src` / `action` / redirect context |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.35.0,<0.36"` |
+
+| `HED-ELEMENT-0001` | blocker | Element tag/definition conflict | Align definitions or choose a new tag/logical id |
+| `HED-ELEMENT-0002` | blocker | Incompatible element ABI pair | Align markup/module ABI majors |
+| `HED-ELEMENT-0003` | blocker | First-party naming / prefix violation | Use `hedron-*` for first-party tags |
+| `HED-ELEMENT-0005` | blocker | Structured input bound/encoding failure | Reduce payload size/depth |
+| `HED-ELEMENT-STATE-0002` | blocker | Illegal element-owned capability | Keep capabilities server-controlled |
+| `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.40 | Keep drafts instance-local |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.36.0,<0.37"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -23,7 +30,7 @@ This catalog is complete for the registered set enforced by
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.35.0,<0.36"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.36.0,<0.37"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -358,6 +365,13 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-SEC-0009` | `HED_SEC_0009` |
 | `HED-SEC-0010` | `HED_SEC_0010` |
 | `HED-SEC-0011` | `HED_SEC_0011` |
+
+| `HED-ELEMENT-0001` | blocker | Element tag/definition conflict | Align definitions or choose a new tag/logical id |
+| `HED-ELEMENT-0002` | blocker | Incompatible element ABI pair | Align markup/module ABI majors |
+| `HED-ELEMENT-0003` | blocker | First-party naming / prefix violation | Use `hedron-*` for first-party tags |
+| `HED-ELEMENT-0005` | blocker | Structured input bound/encoding failure | Reduce payload size/depth |
+| `HED-ELEMENT-STATE-0002` | blocker | Illegal element-owned capability | Keep capabilities server-controlled |
+| `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.40 | Keep drafts instance-local |
 | `HED-SEC-0020` | `HED_SEC_0020` |
 
 ## HED-A11Y

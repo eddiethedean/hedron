@@ -268,6 +268,21 @@ HED_MIG_ST_0013 = "HED-MIG-ST-0013"  # scaffolded mapping requires review
 HED_MIG_ST_0014 = "HED-MIG-ST-0014"  # report-only construct (no generated code)
 
 
+# Web Component element ABI (0.36 RFC-0060 / D-064)
+HED_ELEMENT_0001 = "HED-ELEMENT-0001"  # tag or ABI definition conflict
+HED_ELEMENT_0002 = "HED-ELEMENT-0002"  # incompatible server/module ABI pair
+HED_ELEMENT_0003 = "HED-ELEMENT-0003"  # hedron- prefix / naming violation
+HED_ELEMENT_0004 = "HED-ELEMENT-0004"  # missing or undeclared module/CSS asset
+HED_ELEMENT_0005 = "HED-ELEMENT-0005"  # structured-input schema/bound/encoding failure
+HED_ELEMENT_0006 = "HED-ELEMENT-0006"  # module timeout / init / upgrade failure
+HED_ELEMENT_STATE_0001 = "HED-ELEMENT-STATE-0001"  # unknown/missing ownership mode
+HED_ELEMENT_STATE_0002 = "HED-ELEMENT-STATE-0002"  # illegal persistence / capability owned
+HED_ELEMENT_STATE_0003 = "HED-ELEMENT-STATE-0003"  # controlled update loop / illegal intent
+HED_ELEMENT_STATE_0004 = "HED-ELEMENT-STATE-0004"  # dirty-draft incoming without policy
+HED_ELEMENT_STATE_0005 = "HED-ELEMENT-STATE-0005"  # conflict entered; LWW refused
+HED_ELEMENT_STATE_0006 = "HED-ELEMENT-STATE-0006"  # transfer attempted before 0.40
+
+
 def registered_codes() -> frozenset[str]:
     """Return every ``HED-*`` code constant defined in this module."""
     return frozenset(

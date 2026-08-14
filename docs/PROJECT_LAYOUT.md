@@ -1,6 +1,6 @@
 # Project and package layout
 
-**Status:** Accepted; kept current with the **0.35.x** published train (tip `v0.35.0`)
+**Status:** Accepted; kept current with the **0.36.x** published train (tip `v0.36.0`)
 
 Hedron uses a Python monorepo with independently publishable distributions. Distribution
 names use hyphens; import packages use underscores. The flagship `hedron` package
@@ -50,7 +50,7 @@ hedron/
 │   │   └── src/hedron_posit/
 │   ├── hedron-native/             # Optional Rust acceleration (Beta 0.1.x)
 │   │   └── src/hedron_native/
-│   ├── hedron-elements/           # Planned Alpha 0.36 Web Component ABI (D-064; not yet in tree)
+│   ├── hedron-elements/           # Alpha 0.36 Web Component ABI (D-064)
 │   ├── hedron-runtime-node/       # Experimental Node runtime (outside uv workspace)
 │   └── hedron-runtime-java/       # Experimental Java runtime (outside uv workspace)
 ├── tests/
@@ -77,7 +77,7 @@ hedron/
 | Distribution | Import | Required dependencies | First release |
 |---|---|---|---:|
 | `hedron-core` | `hedron_core` | Pydantic and small framework-neutral utilities | `v0.1.0` |
-| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.35.x`) |
+| `hedron` | `hedron` | `hedron-core`, FastAPI; Starlette through FastAPI | `v0.2.0` (current train `0.36.x`) |
 | `hedron-explorer` | `hedron_explorer` | `hedron`, development UI dependencies | `v0.2.0` preview; full platform at `v0.4.0` |
 | `hedron-sample-kit` | `hedron_sample_kit` | `hedron-core`; sample plugin entry point | `v0.4.0` |
 | `hedron-data` | `hedron_data` | `hedron-core`; dataframe/grid dependencies remain extras; also `hedron[data]` | `v0.5.0` |
@@ -92,7 +92,7 @@ hedron/
 | `hedron-gradio` | `hedron_gradio` | Optional Gradio client interop (experimental Alpha); also `hedron[gradio]` | `v0.1.0` |
 | `hedron-sim` | `hedron_sim` | Offline HTMX docs/demo simulator (Beta tooling) | `v0.1.0` |
 | `hedron-native` | `hedron_native` | Optional PyO3 extension; pure-Python fallback | `0.1.x` (Beta; independent of train version) |
-| `hedron-elements` | `hedron_elements` | Planned Alpha Web Component ABI / modules (phase 0.36; **not yet packaged**) | Planned `0.36.0` |
+| `hedron-elements` | `hedron_elements` | Alpha Web Component ABI / modules (phase 0.36) | `v0.36.0` |
 | `hedron-workbench` | `hedron_workbench` | `hedron-posit`; Posit Workbench compatibility; also `hedron[workbench]` | `v0.32.0` (0.34.x compat subclass) |
 | `hedron-posit` | `hedron_posit` | `hedron`, `fastapi-workbench`; unified Posit facade; also `hedron[posit]` | `v0.34.0` |
 

@@ -9,7 +9,7 @@ scope and ordering are unchanged.
 The exact five interaction protocols are defined in the
 [interaction-contract specification](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md).
 
-Unchecked requirements are future release gates, not claims about the current 0.35 train. Each
+Unchecked requirements are future release gates, not claims about the current 0.36 train. Each
 phase requires a `release-gate-0.N.toml` index, retained evidence under the release evidence policy,
 and zero Deferred rows among that phase's owned gates at cut.
 

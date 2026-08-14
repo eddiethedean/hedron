@@ -12,10 +12,10 @@ Coordinated Beta train cut for whole-fleet production-grade closure
   for every publishable package/runtime.
 - Tooling packages (notebook, sample-kit, sim, runtimes) reconciled to Beta tooling-grade.
 - PRESENT-034 default presentation gallery remains deferred/experimental.
-- Pin `hedron>=0.35.0,<0.36`.
+- Pin `hedron>=0.36.0,<0.37`.
 
 ```bash
-python -m pip install -U "hedron>=0.35.0,<0.36"
+python -m pip install -U "hedron>=0.36.0,<0.37"
 ```
 
 ## 0.34.0 — 2026-08-13
@@ -69,7 +69,7 @@ Streamlit AST migrator (D-059 / RFC-0064 / RFC-0061).
   **0.34.0** above.
 
 ```bash
-python -m pip install -U "hedron>=0.35.0,<0.36"
+python -m pip install -U "hedron>=0.36.0,<0.37"
 hedron migrate streamlit streamlit_app.py --analyze-only --format text
 ```
 

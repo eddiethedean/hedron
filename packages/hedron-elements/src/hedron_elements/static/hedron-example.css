@@ -1,0 +1,10 @@
+hedron-example {
+  display: block;
+  border: 1px solid var(--hedron-border, #ccc);
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+}
+hedron-example [data-hedron-local="panel"] {
+  margin-top: 0.5rem;
+  color: var(--hedron-muted, #555);
+}
