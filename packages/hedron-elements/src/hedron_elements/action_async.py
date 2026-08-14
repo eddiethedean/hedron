@@ -7,6 +7,7 @@ from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.registry import ElementFieldOwnership
 from hedron_core.security import SafeUrl, UrlPurpose
+from hedron_core.typing_aliases import HtmlAttrMap
 from hedron_elements.markup import render_element_markup
 
 ABI_VERSION = 1
@@ -39,8 +40,8 @@ class ActionAsync(Component[ActionAsyncProps]):
         super().__init__(ActionAsyncProps(label=label, hx_post=url, **kwargs))
 
     def render(self) -> NodeLike:
-        btn_attrs: dict[str, object] = {"type": "button", "data-hedron-server-region": "control"}
-        tag_attrs: dict[str, object] = {
+        btn_attrs: HtmlAttrMap = {"type": "button", "data-hedron-server-region": "control"}
+        tag_attrs: HtmlAttrMap = {
             "data-hedron-abi": str(ABI_VERSION),
             "data-hedron-element": ELEMENT_ID,
         }

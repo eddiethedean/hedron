@@ -98,6 +98,8 @@ def _register_component(component_type: type, meta: Mapping[str, Any]) -> None:
         f"{component_type.distribution}:{component_type.__module__}."
         f"{getattr(component_type, 'logical_name', component_type.__name__)}"
     )
+    asset_id = str(meta["module_asset_id"])
+    module_name = _MODULE_FILENAMES.get(asset_id, asset_id.split(":")[-1])
     register_component(
         logical_id=logical,
         name=getattr(component_type, "logical_name", component_type.__name__)
@@ -105,14 +107,7 @@ def _register_component(component_type: type, meta: Mapping[str, Any]) -> None:
         module=component_type.__module__,
         distribution=component_type.distribution,
         props_model=component_type.props_type.__name__,
-        browser_modules=(
-            str(
-                _STATIC
-                / _MODULE_FILENAMES.get(
-                    str(meta["module_asset_id"]), meta["module_asset_id"].split(":")[-1]
-                )
-            ),
-        ),
+        browser_modules=(str(_STATIC / module_name),),
         accessibility_notes="Progressive-enhancement Web Component with native fallback.",
     )
 

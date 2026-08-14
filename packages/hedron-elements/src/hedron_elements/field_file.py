@@ -6,6 +6,7 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.registry import ElementFieldOwnership
+from hedron_core.typing_aliases import HtmlAttrMap
 from hedron_elements.form_contracts import FIELD_FILE_CONTRACT
 from hedron_elements.markup import render_element_markup
 
@@ -52,7 +53,7 @@ class FieldFile(Component[FieldFileProps]):
         )
 
     def render(self) -> NodeLike:
-        attrs: dict[str, object] = {
+        attrs: HtmlAttrMap = {
             "type": "file",
             "name": self.props.name,
             "required": self.props.required or None,

@@ -19,6 +19,7 @@ __all__ = [
     "AssetMeta",
     "BrowserModuleMeta",
     "ElementDefinitionMeta",
+    "ElementFieldOwnership",
     "ComponentMeta",
     "RouteKind",
     "RouteMeta",
@@ -330,9 +331,7 @@ class RegistryBuilder:
             validate_field_ownership(field) for field in meta.state_ownership
         )
         if validated_ownership != meta.state_ownership:
-            meta = ElementDefinitionMeta(
-                **{**meta.__dict__, "state_ownership": validated_ownership}
-            )
+            meta = replace(meta, state_ownership=validated_ownership)
         validate_form_contract(meta.form_contract, tag_name=meta.tag_name)
         self._element_definitions[key] = meta
 

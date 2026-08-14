@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 import uuid
-from collections.abc import Callable, Mapping
-from typing import Any
+from collections.abc import AsyncIterable, Callable, Mapping
+from typing import Any, cast
 
 from hedron_mcp.bounds import BoundsError
 from hedron_mcp.compat import (
@@ -62,7 +62,7 @@ async def _read_body_bounded(request: Any, max_bytes: int) -> bytes:
     total = 0
     stream = getattr(request, "stream", None)
     if callable(stream):
-        async for chunk in stream():
+        async for chunk in cast(AsyncIterable[bytes], stream()):
             total += len(chunk)
             if total > max_bytes:
                 raise BoundsError(f"MCP request exceeds max_request_bytes={max_bytes}")
