@@ -31,8 +31,8 @@ def missing_extra(extra: str, *, package: str = "hedron-charts") -> HedronError:
         title=f"Missing optional dependency: {extra}",
         explanation=f"This chart adapter requires the {extra!r} extra.",
         remediation=(
-            f'Install with: pip install "{package}[{extra}]>=0.1.11,<0.2" or '
-            f'pip install "hedron[charts]>=0.29.0,<0.30".'
+            f'Install with: pip install "{package}[{extra}]>=0.2.0,<0.3" or '
+            f'pip install "hedron[charts]>=0.38.0,<0.39".'
         ),
     )
 
@@ -51,8 +51,13 @@ def ensure_limits(
             explanation=f"Received {len(rows)} rows; max is {lim.max_rows}.",
             remediation="Aggregate server-side or raise VisualizationLimits.max_rows explicitly.",
         )
-    if payload is not None:
-        size = payload_size(payload)
+    checked_payload = payload
+    if checked_payload is None and rows is not None:
+        # Beginner ChartSpec paths pass rows only; still enforce the byte budget on
+        # the serialized tabular payload (same HED-CHART-0003 contract as hosts).
+        checked_payload = json.dumps(list(rows), default=str, separators=(",", ":"))
+    if checked_payload is not None:
+        size = payload_size(checked_payload)
         if size > lim.max_payload_bytes:
             raise error(
                 "HED-CHART-0003",
@@ -84,6 +89,17 @@ def redact_rows(rows: Sequence[Mapping[str, JsonValue]]) -> list[JsonObject]:
     return out
 
 
+_HTML_HANDLER = (
+    "onclick=",
+    "onload=",
+    "onerror=",
+    "onmouseover=",
+    "onfocus=",
+    "onmouseenter=",
+    "<script",
+)
+
+
 def reject_callbacks(obj: object) -> None:
     if _walk_callbacks(obj):
         raise error(
@@ -98,6 +114,7 @@ def reject_callbacks(obj: object) -> None:
         "function(" in lowered
         or "javascript:" in lowered
         or ('"click"' in lowered and "callback" in lowered)
+        or any(token in lowered for token in _HTML_HANDLER)
     ):
         raise error(
             "HED-CHART-0004",
@@ -113,16 +130,27 @@ def _walk_callbacks(obj: object) -> bool:
             key_l = str(key).lower()
             if key_l.startswith("on") and len(key_l) > 2:
                 return True
-            if key_l in {"callback", "callbacks", "js", "javascript"}:
-                return True
+            if key_l in {"callback", "callbacks", "js", "javascript", "formatter", "hovertemplate"}:
+                if isinstance(value, str) and _string_looks_executable(value):
+                    return True
+                if key_l in {"callback", "callbacks", "js", "javascript"}:
+                    return True
             if _walk_callbacks(value):
                 return True
     elif isinstance(obj, (list, tuple)):
         return any(_walk_callbacks(item) for item in obj)
     elif isinstance(obj, str):
-        lowered = obj.lower()
-        return "function(" in lowered or "javascript:" in lowered
+        return _string_looks_executable(obj)
     return False
+
+
+def _string_looks_executable(value: str) -> bool:
+    lowered = value.lower()
+    return (
+        "function(" in lowered
+        or "javascript:" in lowered
+        or any(token in lowered for token in _HTML_HANDLER)
+    )
 
 
 def reject_remote_urls(obj: object) -> None:

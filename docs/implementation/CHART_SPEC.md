@@ -4,7 +4,7 @@
 (D-066). Planning-only: these names are locked so Stage 2+ does not invent them ad hoc.
 This document does **not** ship `ChartSpec`, `hedron-chart`, or D3 runtime.
 
-Living baseline: Published **`v0.37.0`**. Cut: Hedron **`v0.38.0`**, `hedron-charts` **`0.2.0`**.
+Living baseline: Published **`v0.38.0`**. Cut: Hedron **`v0.38.0`**, `hedron-charts` **`0.2.0`**.
 Tracking: [#251](https://github.com/eddiethedean/hedron/issues/251).
 
 ## `ChartSpec` fields

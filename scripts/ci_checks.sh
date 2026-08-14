@@ -47,7 +47,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 PYTHON="${PYTHON:-3.12}"
-GATE_VERSION="${HEDRON_GATE_VERSION:-0.37.0}"
+GATE_VERSION="${HEDRON_GATE_VERSION:-0.38.0}"
 CI_PYTHONS=(3.11 3.12 3.13 3.14)
 PYTHON_EXPLICIT=0
 ALL_PYTHONS=0
@@ -237,9 +237,9 @@ PY
   run uv run --python "$PYTHON" python scripts/check_api_docs_coverage.py
   run uv run --python "$PYTHON" python scripts/check_package_readme_links.py
   run uv run --python "$PYTHON" python scripts/check_recipe_code_sync.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py
   run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py
 
   uv run --python "$PYTHON" python - <<'PY'
 import re
@@ -316,8 +316,8 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/verify_pkg_34.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_35.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py
 }
 
 cmd_realconnect() {
@@ -336,8 +336,8 @@ cmd_packaging() {
   # PKG packaging rehearsal (same verify helper as the evidence suite).
   run uv run --python "$PYTHON" python scripts/verify_pkg_35.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
-  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py
-  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
+  run uv run --python "$PYTHON" python scripts/verify_pkg_38.py
 }
 
 cmd_all() {

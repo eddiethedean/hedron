@@ -1,6 +1,6 @@
 # Hedron `v0.38` high-fidelity charts acceptance
 
-**Status:** Planned (Stage 0 contract refined against Published **`v0.37.0`**). Runtime
+**Status:** Verified (in-tree cut; no tag/PyPI) (Stage 0 contract refined against Published **`v0.37.0`**). Runtime
 implementation begins at Stage 1; this refine ships no `ChartSpec` / `hedron-chart` code.
 
 Phase 0.38 makes an ABI-conforming **`hedron-chart` Web Component** the first-party interactive

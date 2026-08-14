@@ -12,7 +12,7 @@ Phase **0.37** ships Alpha **hedron-elements 0.37.0** with form-associated refer
 
 ## Train pin
 
-Install with `hedron-elements>=0.37.0,<0.38` and matching Hedron train packages.
+Install with `hedron-elements>=0.38.0,<0.39` and matching Hedron train packages.
 
 ## Not in 0.37
 

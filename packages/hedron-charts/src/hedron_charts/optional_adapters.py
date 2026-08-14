@@ -23,6 +23,7 @@ from hedron_charts.limits import (
     reject_remote_urls,
 )
 from hedron_core.component import NodeLike
+from hedron_core.diagnostics import error
 from hedron_core.html import html
 from hedron_core.security import TrustedHtml
 from hedron_core.visualization import ChartAccessibility, ChartOutput, VisualizationLimits
@@ -762,7 +763,23 @@ class PlotlyResamplingAdapter:
         limits: VisualizationLimits | None = None,
     ) -> ChartOutput:
         assert isinstance(value, Mapping)
-        max_points = int(value.get("max_points") or 1000)
+        raw_max = value.get("max_points", 1000)
+        try:
+            max_points = int(raw_max)  # type: ignore[arg-type]
+        except (TypeError, ValueError) as exc:
+            raise error(
+                "HED-CHART-0002",
+                title="Invalid chart max_points",
+                explanation=f"max_points must be a positive integer; got {raw_max!r}.",
+                remediation="Pass max_points >= 1 or omit it to use the default of 1000.",
+            ) from exc
+        if max_points < 1:
+            raise error(
+                "HED-CHART-0002",
+                title="Invalid chart max_points",
+                explanation=f"max_points must be a positive integer; got {max_points}.",
+                remediation="Pass max_points >= 1 or omit it to use the default of 1000.",
+            )
         body = downsample_plotly_body(dict(value), max_points=max_points)
         return _json_output(
             kind="plotly-json",

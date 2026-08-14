@@ -6,9 +6,9 @@ changing only the launch command of an existing app. For a new application, inst
 [`hedron-posit` beginner walkthrough](../getting-started/first-app-posit-workbench.md) explains each
 step.
 
-**Preferred for new apps:** `hedron-posit>=0.37.0,<0.38` (or
-`hedron[posit]>=0.37.0,<0.38`). **Compatibility surface:**
-`hedron-workbench>=0.37.0,<0.38` (or `hedron[workbench]>=0.37.0,<0.38`).
+**Preferred for new apps:** `hedron-posit>=0.38.0,<0.39` (or
+`hedron[posit]>=0.38.0,<0.39`). **Compatibility surface:**
+`hedron-workbench>=0.38.0,<0.39` (or `hedron[workbench]>=0.38.0,<0.39`).
 Generic Workbench behavior is provided by `fastapi-workbench>=1.0.0,<2.0`; see
 [FastAPI Workbench](fastapi-workbench.md) for plain FastAPI apps.
 

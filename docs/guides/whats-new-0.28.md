@@ -1,9 +1,9 @@
 # What’s new in 0.28
 
-!!! note "Current train is 0.37"
+!!! note "Current train is 0.38"
 
-    Pin `hedron>=0.37.0,<0.38` for new apps. The pin below is historical for the 0.28 train only.
-    See [What’s new in 0.37](whats-new-0.37.md).
+    Pin `hedron>=0.38.0,<0.39` for new apps. The pin below is historical for the 0.28 train only.
+    See [What’s new in 0.38](whats-new-0.38.md).
 
 **Published** as `v0.28.2`. Historical pin: `hedron>=0.28.2,<0.29`.
 
@@ -27,7 +27,7 @@ From `0.27.x`:
 
 ```bash
 python -m pip install -U "hedron>=0.28.2,<0.29"
-python -m pip install -U "hedron-charts>=0.1.10,<0.2" "hedron-native>=0.1.2,<0.2"
+python -m pip install -U "hedron-charts>=0.2.0,<0.3" "hedron-native>=0.1.2,<0.2"
 ```
 
 Details: [RELEASE_0_28](../acceptance/RELEASE_0_28.md) · [upgrade guide](upgrade.md).

@@ -113,10 +113,12 @@ def _check_inventory(*, allow_planned: bool) -> None:
     bounds = data.get("bounds")
     if not isinstance(bounds, dict) or int(bounds.get("max_rows") or 0) != 10000:
         raise SystemExit(f"{INVENTORY}: [bounds] max_rows must be 10000")
-    if str(bounds.get("canvas_mark_threshold", "")).strip() != "stage1_lock":
+    if str(bounds.get("canvas_mark_threshold", "")).strip() not in {"2500", "stage1_lock"}:
         raise SystemExit(
-            f"{INVENTORY}: canvas_mark_threshold must remain stage1_lock until Stage 1"
+            f"{INVENTORY}: canvas_mark_threshold must be 2500 (Stage 1+) or stage1_lock"
         )
+    if not allow_planned and str(bounds.get("canvas_mark_threshold", "")).strip() != "2500":
+        raise SystemExit(f"{INVENTORY}: cut requires canvas_mark_threshold = 2500")
     print("ok: chart-capability-inventory-038.toml")
 
 
@@ -153,9 +155,9 @@ def _workspace_version() -> str:
 def _check_versions(*, allow_planned: bool) -> None:
     version = _workspace_version()
     if allow_planned:
-        if not version.startswith("0.37."):
+        if not (version.startswith("0.37.") or version.startswith("0.38.")):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.37.x"
+                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.37.x–0.38.x"
             )
         print(f"ok: living tip {version} (0.38 allow-planned)")
         return
@@ -179,15 +181,16 @@ def _check_review(*, allow_planned: bool) -> None:
     print("ok: security-review-038 full packet")
 
 
-def _check_at_skeleton() -> None:
+def _check_at_skeleton(*, allow_planned: bool) -> None:
     protocol = AT_PROTOCOL.read_text(encoding="utf-8")
     if "does not claim Supported human AT" not in protocol:
         raise SystemExit(f"{AT_PROTOCOL}: must disclaim Supported human AT")
     data = tomllib.loads(AT_DISPOSITION.read_text(encoding="utf-8"))
     if str(data.get("gate", "")).strip() != "A11Y-038":
         raise SystemExit(f"{AT_DISPOSITION}: gate must be A11Y-038")
-    if str(data.get("state", "")).strip() != "planned":
-        raise SystemExit(f"{AT_DISPOSITION}: state must be planned during refine")
+    expected = "planned" if allow_planned else "verified"
+    if str(data.get("state", "")).strip() != expected:
+        raise SystemExit(f"{AT_DISPOSITION}: state must be {expected}")
     print("ok: human-at/038 scoped skeleton")
 
 
@@ -217,7 +220,7 @@ def main(argv: list[str] | None = None) -> int:
     _check_inventory(allow_planned=args.allow_planned)
     _check_fleet_inventory()
     _check_chart_spec()
-    _check_at_skeleton()
+    _check_at_skeleton(allow_planned=args.allow_planned)
     if not rfc_is_accepted():
         raise SystemExit("RFC-0069 must be Accepted")
     if not rfc_resolved_questions_present():

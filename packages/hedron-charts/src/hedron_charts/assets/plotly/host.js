@@ -118,7 +118,17 @@
     el.setAttribute("data-hedron-chart-mounted", "1");
     if (plotted && typeof plotted.then === "function") {
       plotted.then(function () {
-        if (el._hedronPlotlyGen !== gen) return;
+        // #72: purge stale newPlot when a newer generation superseded this mount.
+        if (el._hedronPlotlyGen !== gen) {
+          try {
+            if (window.Plotly && typeof window.Plotly.purge === "function") {
+              window.Plotly.purge(el);
+            }
+          } catch (_) {
+            /* ignore stale purge */
+          }
+          return;
+        }
         bindEvents(el);
       });
     } else if (el._hedronPlotlyGen === gen) {

@@ -1,9 +1,9 @@
 # Upgrade fixtures — phase 0.37 (form-associated elements and interactive primitives)
 
-Baseline: Published **`v0.36.0`**. Cut: **`v0.37.0`**.
+Baseline: Published **`v0.36.0`**. Cut: **`v0.38.0`**.
 
-Pins at cut: `hedron>=0.37.0,<0.38` and Alpha
-`hedron-elements>=0.37.0,<0.38`.
+Pins at cut: `hedron>=0.38.0,<0.39` and Alpha
+`hedron-elements>=0.38.0,<0.39`.
 
 ## Goldens / suites
 
@@ -27,15 +27,15 @@ Pins at cut: `hedron>=0.37.0,<0.38` and Alpha
 
 | From tip | Historical pin | At 0.37 cut |
 |---|---|---|
-| `v0.36.0` | `hedron>=0.36.0,<0.37` | `hedron>=0.37.0,<0.38` |
-| `v0.36.0` | `hedron-elements>=0.36.0,<0.37` | `hedron-elements>=0.37.0,<0.38` |
+| `v0.36.0` | `hedron>=0.36.0,<0.37` | `hedron>=0.38.0,<0.39` |
+| `v0.36.0` | `hedron-elements>=0.36.0,<0.37` | `hedron-elements>=0.38.0,<0.39` |
 
 Independent satellites stay on their own lines (`hedron-mcp` / `hedron-gradio` `>=0.2.0,<0.3`,
 `hedron-charts` / tooling `0.1.x`, `fastapi-workbench` `>=1,<2`).
 
 ## Fleet inventory amendment (post-0.36 Alpha)
 
-At `v0.37.0` cut, update the `hedron-elements` row in the living fleet inventory without
+At `v0.38.0` cut, update the `hedron-elements` row in the living fleet inventory without
 reopening `FLEET-035`:
 
 | Field | Value |
@@ -44,6 +44,6 @@ reopening `FLEET-035`:
 | Owner | `hedron` |
 | Maturity | Alpha |
 | Disposition | `incubator` |
-| Compatibility | `hedron-core>=0.37.0,<0.38` |
+| Compatibility | `hedron-core>=0.38.0,<0.39` |
 | Channel | coordinated train Alpha |
 | Production-grade destination | phase **0.42** |

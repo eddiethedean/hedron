@@ -28,8 +28,8 @@ status commentary, not a satisfied release gate.
 - [Accessibility](ACCESSIBILITY.md)
 - [Web Component platform](WEB_COMPONENT_PLATFORM.md) — 0.36–0.42 program; **0.36 Published** (`v0.36.0`)
 - [`v0.36` Web Component ABI](RELEASE_0_36.md) — **Published**; all owned gates Verified; tip `v0.36.0`
-- [`v0.37` form-associated elements and primitives](RELEASE_0_37.md) — **Published** (`v0.37.0`)
-- [`v0.38` high-fidelity charts](RELEASE_0_38.md) — Planned Stage 0 contract refined against `v0.37.0`; RFC-0069 / D-066; [#251](https://github.com/eddiethedean/hedron/issues/251)
+- [`v0.37` form-associated elements and primitives](RELEASE_0_37.md) — **Published** (`v0.38.0`)
+- [`v0.38` high-fidelity charts](RELEASE_0_38.md) — Planned Stage 0 contract refined against `v0.38.0`; RFC-0069 / D-066; [#251](https://github.com/eddiethedean/hedron/issues/251)
 - [Human AT (0.21)](human-at/README.md) — protocol / ledger (D-052; engineering-complete /
   sessions outstanding)
 - [Packaging and deployment](PACKAGING_DEPLOYMENT.md)

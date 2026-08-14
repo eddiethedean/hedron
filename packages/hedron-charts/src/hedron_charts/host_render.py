@@ -117,7 +117,12 @@ def extract_folium_payload(value: object) -> dict[str, Any]:
 
 
 def downsample_plotly_body(body: Mapping[str, Any], *, max_points: int) -> dict[str, Any]:
-    """Downsample Plotly-like data arrays to ``max_points`` (stride sample)."""
+    """Downsample Plotly-like data arrays to ``max_points`` (stride sample).
+
+    ``max_points`` must be a positive integer (#83); non-positive values fail closed.
+    """
+    if not isinstance(max_points, int) or isinstance(max_points, bool) or max_points < 1:
+        raise ValueError("max_points must be a positive integer")
     out = dict(body)
     data = out.get("data")
     if not isinstance(data, list):

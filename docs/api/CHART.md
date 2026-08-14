@@ -9,21 +9,33 @@ status: beta
 
     Classifications for this surface are recorded in [STABILITY.md](STABILITY.md). Package maturity (Beta/Alpha) is separate from API level (`beta` / `experimental` / `internal` / `deferred`).
 
-**Status:** Shipped in `0.6.0`
+**Status:** Shipped in `0.6.0`; high-fidelity first-party line in **`0.38` / `hedron-charts` `0.2.0`**
 
-!!! info "Planned phase 0.38"
+!!! info "Phase 0.38 first-party charts"
 
-    [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) defines the next major chart line:
-    typed `ChartSpec` / `ChartPlan`, an ABI-conforming `hedron-chart` Web Component, a pinned
-    modular D3 renderer, SVG/Canvas output, publication-quality layout and themes, typed accessible
-    interactions, deterministic export, and strict visual/performance/security gates. It targets
-    `hedron-charts` `0.2.0` after phase 0.37 and is **not available** in the shipped 0.1 line.
+    [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066: typed `ChartSpec` / `ChartPlan`,
+    ABI-conforming `hedron-chart`, SVG/Canvas rendering, accessible fallbacks, and deterministic
+    export. Beginner `LineChart` / `AreaChart` / `BarChart` / `ScatterChart` compile to the new
+    grammar. `MatplotlibChart` remains Supported; Plotly/Altair stay Experimental.
 
 ## Availability
 
-Install `hedron[charts]>=0.37.0,<0.38`; this enforces the compatible
-`hedron-charts>=0.1.10,<0.2` floor. See
+Install `hedron[charts]>=0.38.0,<0.39` (or `hedron-charts>=0.2.0,<0.3`). See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
+
+### Advanced `Chart(spec=...)`
+
+```python
+from hedron_charts import Chart, ChartSpec
+
+spec = {
+    "schema_version": 1,
+    "data": {"rows": [{"x": 1, "y": 2}, {"x": 2, "y": 5}]},
+    "marks": [{"type": "line", "encodings": {"x": {"field": "x"}, "y": {"field": "y"}}}],
+    "accessibility": {"title": "Trend", "description": "Demo line"},
+}
+page_chart = Chart(spec)
+```
 
 ## Beginner `LineChart`
 

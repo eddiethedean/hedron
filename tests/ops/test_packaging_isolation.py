@@ -23,7 +23,6 @@ _BETA_PACKAGES = {
     "hedron-posit",
 }
 _INDEPENDENT_BETA = {
-    "hedron-charts",
     "hedron-native",
     "hedron-sample-kit",
     "hedron-sim",
@@ -32,6 +31,7 @@ _INDEPENDENT_BETA = {
 _INDEPENDENT_BETA_02 = {
     "hedron-mcp",
     "hedron-gradio",
+    "hedron-charts",
 }
 _INDEPENDENT_MAJOR = {
     "fastapi-workbench",
@@ -47,7 +47,7 @@ def test_all_packages_declare_license_and_version() -> None:
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
         if name in _BETA_PACKAGES or name in _TRAIN_ALIGNED_ALPHA:
-            assert project["version"] == "0.37.0", pyproject
+            assert project["version"] == "0.38.0", pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert project["version"] == "0.2.0", pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:
@@ -97,7 +97,7 @@ def test_first_party_plugin_meta_matches_package_version() -> None:
 
 
 def test_025_satellites_have_installable_patch_floors() -> None:
-    """The flagship extras must not resolve to pre-0.25 satellite releases."""
+    """The flagship extras must not resolve to pre-0.38 chart satellite releases."""
     hedron = tomllib.loads(
         (ROOT / "packages" / "hedron" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
@@ -105,7 +105,7 @@ def test_025_satellites_have_installable_patch_floors() -> None:
         (ROOT / "packages" / "hedron-extras" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
 
-    charts_pin = "hedron-charts>=0.1.10,<0.2"
+    charts_pin = "hedron-charts>=0.2.0,<0.3"
     assert hedron["optional-dependencies"]["charts"] == [charts_pin]
     assert charts_pin in extras["optional-dependencies"]["chart_workbench"]
     assert charts_pin in extras["optional-dependencies"]["all"]
@@ -115,9 +115,9 @@ def test_025_satellites_have_installable_patch_floors() -> None:
     sample = tomllib.loads(
         (ROOT / "packages" / "hedron-sample-kit" / "pyproject.toml").read_text(encoding="utf-8")
     )["project"]
-    # Tip may patch above the floor; pin floor stays >=0.1.10,<0.2.
-    assert charts["version"].startswith("0.1.")
-    assert tuple(int(p) for p in charts["version"].split(".")) >= (0, 1, 10)
+    # Tip may patch above the floor; pin floor stays >=0.2.0,<0.3.
+    assert charts["version"].startswith("0.2.")
+    assert tuple(int(p) for p in charts["version"].split(".")) >= (0, 2, 0)
     assert sample["version"] == "0.1.10"
 
 

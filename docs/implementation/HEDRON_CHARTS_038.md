@@ -1,7 +1,7 @@
 # Phase 0.38 implementation plan: high-fidelity declarative charts
 
 This plan turns [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066 into reviewable
-work. The living published tip is `v0.37.0`. Stage 0 (including the post-0.37 contract refine)
+work. The living published tip is `v0.38.0`. Stage 0 (including the post-0.38 contract refine)
 adds contracts only and does not change runtime behavior or versions. Tracking
 [#251](https://github.com/eddiethedean/hedron/issues/251). Grammar catalogs:
 [CHART_SPEC.md](CHART_SPEC.md).
@@ -39,7 +39,7 @@ Completion requires every row in
 - Renumber the previously planned Web Component phases to 0.39–0.42 without changing their scope.
 - Open tracking [#251](https://github.com/eddiethedean/hedron/issues/251) and bind medium
   remediations #71/#72/#75/#81/#82/#83/#201/#239 to owning gates.
-- Rebaseline living published tip to `v0.37.0`.
+- Rebaseline living published tip to `v0.38.0`.
 - Add lenient packet verification to CI.
 - Do not modify `hedron-charts` runtime, package versions, living pins, or release status.
 

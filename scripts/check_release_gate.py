@@ -114,11 +114,12 @@ def _is_independent_version_package(project: dict[str, object]) -> bool:
     satellite line (charts/native after 0.28 graduation) also stay independent of
     the ``0.N.0`` train tag. ``fastapi-workbench`` 1.x versions independently per D-058.
     ``hedron-mcp`` ``0.2.x`` Beta is an independent satellite per D-060 / RFC-0065.
+    ``hedron-charts`` ``0.2.x`` Beta is an independent satellite per D-066 / RFC-0069.
     """
     if _is_alpha_package(project):
         return True
     name = str(project.get("name", ""))
-    if name in {"fastapi-workbench", "hedron-mcp", "hedron-gradio"}:
+    if name in {"fastapi-workbench", "hedron-mcp", "hedron-gradio", "hedron-charts"}:
         return True
     version = str(project.get("version", ""))
     return version.startswith("0.1.")

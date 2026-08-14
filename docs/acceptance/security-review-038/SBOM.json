@@ -1,0 +1,27 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-14T00:00:00Z",
+    "component": {
+      "type": "library",
+      "name": "hedron-charts",
+      "version": "0.2.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "hedron-core",
+      "version": "0.38.0",
+      "purl": "pkg:pypi/hedron-core@0.38.0"
+    },
+    {
+      "type": "library",
+      "name": "hedron-chart",
+      "version": "0.2.0",
+      "description": "First-party SVG/Canvas renderer (D3-inspired embedded algorithms)"
+    }
+  ]
+}

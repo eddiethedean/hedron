@@ -65,7 +65,7 @@ def test_release_gate_0_23_manifest_passes_strict_checks() -> None:
 
 
 def test_current_patch_package_metadata_passes() -> None:
-    assert gate.check_packages("0.37.0") == []
+    assert gate.check_packages("0.38.0") == []
 
 
 def test_github_release_requires_successful_pypi_publish() -> None:

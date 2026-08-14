@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0] — 2026-08-14
+
+- Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
+
+
 ## [0.1.11] — 2026-08-11
 
 ### Fixed

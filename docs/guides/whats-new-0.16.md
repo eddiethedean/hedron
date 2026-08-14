@@ -1,14 +1,14 @@
 # What’s new in 0.16
 
 
-!!! note "Current train is 0.37"
+!!! note "Current train is 0.38"
 
-    Pin `hedron>=0.37.0,<0.38` for new apps. The pin below is historical for this train only.
-    See [What’s new in 0.37](whats-new-0.37.md).
+    Pin `hedron>=0.38.0,<0.39` for new apps. The pin below is historical for this train only.
+    See [What’s new in 0.38](whats-new-0.38.md).
 
 !!! note "Historical phase"
 
-    This page describes **0.16**. The current published train is **0.37.x** (last `v0.37.0`). Pin `hedron>=0.37.0,<0.38`.
+    This page describes **0.16**. The current published train is **0.38.x** (last `v0.38.0`). Pin `hedron>=0.38.0,<0.39`.
 
 Phase **0.16** adds an optional `hedron-extras` toolkit for specialized data-app interactions and
 analysis workbenches — without expanding the core runtime or adopting Streamlit-style reruns or a

@@ -1,0 +1,39 @@
+# SECURITY-038 disposition ledger
+
+reviewer = "maintainer"
+date = "2026-08-14"
+gate = "SECURITY-038"
+
+[[findings]]
+id = "CH-038-01"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "CH-038-02"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "CH-038-03"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "CH-038-04"
+severity = "info"
+status = "accepted"
+
+[[findings]]
+id = "CH-038-05"
+severity = "low"
+status = "accepted"
+
+[[findings]]
+id = "CH-038-06"
+severity = "info"
+status = "accepted"
+
+[summary]
+open_critical = 0
+open_high = 0

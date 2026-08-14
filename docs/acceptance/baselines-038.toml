@@ -1,0 +1,43 @@
+# Phase 0.38 Stage 1 baselines (locked on CI-like workstation).
+# canvas_mark_threshold locked after measurement of first-party renderer.
+schema = 1
+phase = "0.38"
+runner = "local-ci-chromium"
+canvas_mark_threshold = 2500
+core_gzip_kib_budget = 90
+gallery_total_gzip_kib_budget = 160
+
+[baselines.current_0_1]
+note = "hedron-charts 0.1.x static/host footprint reference"
+plotly_host_bytes = 5500
+mermaid_host_bytes = 2500
+
+[baselines.first_party]
+hedron_chart_mjs_gzip_kib_max = 90
+marks_1k_initial_p95_ms = 150
+marks_1k_update_p95_ms = 75
+marks_10k_initial_p95_ms = 400
+inspect_p95_ms = 50
+resize_p95_ms = 100
+lifecycle_cycles = 100
+max_long_task_ms = 150
+
+[d3_pins]
+# First-party renderer embeds D3-inspired algorithms; module set matches inventory.
+modules = [
+  "d3-array",
+  "d3-scale",
+  "d3-shape",
+  "d3-axis",
+  "d3-selection",
+  "d3-time",
+  "d3-time-format",
+  "d3-format",
+  "d3-interpolate",
+  "d3-color",
+  "d3-brush",
+  "d3-zoom",
+]
+optional_modules = ["d3-transition"]
+excluded_modules = ["d3-geo", "d3-hierarchy", "d3-force"]
+implementation = "embedded-in-hedron-chart.mjs"

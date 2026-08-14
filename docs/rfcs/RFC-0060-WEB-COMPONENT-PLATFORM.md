@@ -401,7 +401,7 @@ rewrite Python routes merely because a component's internal browser implementati
 | Question | Answer |
 |---|---|
 | 0.37 reference elements | **`hedron-field-text`**, **`hedron-field-choice`**, **`hedron-field-file`** (form association); **`hedron-disclosure`**, **`hedron-dialog`** (primitive catalog); **`hedron-action-async`** (`InteractionState`). **`hedron-example`** stays non-form and must not regress 0.36 ABI evidence. |
-| `hedron-elements` at 0.37 cut | Train-aligned Alpha **`0.37.0`**, pin `>=0.37.0,<0.38`, depends on `hedron-core` only. |
+| `hedron-elements` at 0.37 cut | Train-aligned Alpha **`0.37.0`**, pin `>=0.38.0,<0.39`, depends on `hedron-core` only. |
 | Registry `form_contract` | Required populated fields at 0.37+: association mode, value encoding, reset/restore policy, validation mapping, fallback tag (see [WEB_COMPONENT_PLATFORM.md](../implementation/WEB_COMPONENT_PLATFORM.md)). |
 | Events vs `InteractionState` | 0.36 typed `CustomEvent` schemas remain. Shared idle/pending/success/error/canceled machine and `ACTIONSTATE-037` evidence are **0.37-only**; do not retroactively apply to `hedron-example`. |
 | Primitive catalog | Disclosure, dialog, tabs, menu/popover, selection, and bounded upload per ROADMAP §0.37; native `<dialog>`, Popover API, and CSS anchoring preferred when the browser floor provides required semantics. |

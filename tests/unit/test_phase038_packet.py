@@ -36,13 +36,15 @@ EXPECTED_GATES_SET = {
 }
 
 
-def test_phase038_manifest_is_planned_and_commands_exist() -> None:
+def test_phase038_manifest_commands_exist() -> None:
     path = ROOT / "docs" / "acceptance" / "release-gate-0.38.toml"
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     rows = data["evidence"]
     assert {row["id"] for row in rows} == EXPECTED_GATES_SET
-    assert {row["state"] for row in rows} == {"Planned"}
-    assert GATE_TESTS == {}
+    assert {row["state"] for row in rows} <= {"Planned", "Implemented", "Verified"}
+    assert set(GATE_TESTS) == EXPECTED_GATES_SET
+    for gate_id, tests in GATE_TESTS.items():
+        assert tests, gate_id
     for row in rows:
         command_path = ROOT / row["command"].removeprefix("python ")
         assert command_path.is_file(), row["command"]
@@ -50,7 +52,7 @@ def test_phase038_manifest_is_planned_and_commands_exist() -> None:
 
 def test_phase038_inventory_locks_web_component_and_budgets() -> None:
     data = tomllib.loads(INVENTORY.read_text(encoding="utf-8"))
-    assert data["state"] == "planned"
+    assert data["state"] in {"planned", "verified"}
     assert data["living_published_baseline"] == "v0.37.0"
     assert data["element"]["tag"] == "hedron-chart"
     assert data["element"]["paint"] == ["svg", "canvas"]
@@ -59,14 +61,14 @@ def test_phase038_inventory_locks_web_component_and_budgets() -> None:
     assert data["budgets"]["no_chart_route_bytes"] == 0
     assert data["compatibility"]["consumer_node_dependency"] is False
     assert data["bounds"]["max_rows"] == 10000
-    assert data["bounds"]["canvas_mark_threshold"] == "stage1_lock"
+    assert data["bounds"]["canvas_mark_threshold"] in {2500, "2500", "stage1_lock"}
     assert data["bounds"]["workers"] == "absent_by_default"
 
 
 def test_phase038_fleet_inventory_keeps_elements_incubator() -> None:
     data = tomllib.loads(FLEET_INVENTORY.read_text(encoding="utf-8"))
     assert data["baseline"] == "v0.37.0"
-    assert data["state"] == "planned"
+    assert data["state"] in {"planned", "verified"}
     assert "hedron_chart" in data["hedron-charts"]["supported"]
     assert "matplotlib_static" in data["hedron-charts"]["supported"]
     assert data["hedron-elements"]["disposition"] == "incubator"

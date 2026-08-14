@@ -90,7 +90,7 @@ Rendering a component never implies a public route — only `@page` / `@componen
 | Unscoped job HTTP status | Fail closed | Pass `auth_subject` / `tenant_id` |
 | Wrong `HX-Target` | HTTP **403** | Declare `FragmentRegion` / `app.region` |
 | CSRF missing on POST | HTTP **403** | Seed token on GET; include field/header |
-| Chart satellite older than `0.1.7` on 0.25 | Resolver conflict / downgrade | Install `hedron[charts]>=0.37.0,<0.38` |
+| Chart satellite older than `0.1.7` on 0.25 | Resolver conflict / downgrade | Install `hedron[charts]>=0.38.0,<0.39` |
 
 ## Multi-worker, jobs, and inference
 

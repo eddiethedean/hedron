@@ -9,6 +9,7 @@ from hedron_charts.components import (
     AltairChart,
     AreaChart,
     BarChart,
+    Chart,
     LineChart,
     MatplotlibChart,
     PlotlyChart,
@@ -19,11 +20,19 @@ from hedron_core.auto import RendererSpec, register_renderer
 from hedron_core.component import NodeLike
 from hedron_core.identifiers import content_digest
 from hedron_core.plugins import PluginCapabilities, PluginContext, PluginMeta
-from hedron_core.registry import register_asset, register_browser_module, register_component
+from hedron_core.registry import (
+    ElementFieldOwnership,
+    register_asset,
+    register_browser_module,
+    register_component,
+    register_element_definition,
+)
 
 _ROOT = Path(__file__).resolve().parent
 _PLOTLY_HOST = _ROOT / "assets" / "plotly" / "host.js"
 _VEGA_HOST = _ROOT / "assets" / "vega" / "host.js"
+_CHART_MODULE = _ROOT / "static" / "hedron-chart.mjs"
+_CHART_CSS = _ROOT / "static" / "hedron-chart.css"
 _OPTIONAL_HOSTS = (
     (_ROOT / "assets" / "chartjs" / "host.js", "hedron-charts:chartjs.host.js", "chartjs"),
     (_ROOT / "assets" / "echarts" / "host.js", "hedron-charts:echarts.host.js", "echarts"),
@@ -43,9 +52,9 @@ _OPTIONAL_RUNTIMES = (
 
 PLUGIN_META = PluginMeta(
     name="hedron_charts",
-    version="0.1.11",
+    version="0.2.0",
     distribution="hedron-charts",
-    hedron_version=">=0.37,<0.38",
+    hedron_version=">=0.38,<0.39",
     capabilities=PluginCapabilities(
         python=True,
         styles=True,
@@ -78,6 +87,7 @@ def register(ctx: PluginContext) -> None:
         MatplotlibChart,
         PlotlyChart,
         AltairChart,
+        Chart,
     ):
         logical = f"{cls.distribution}:{cls.__module__}.{cls.logical_name}"
         register_component(
@@ -89,6 +99,92 @@ def register(ctx: PluginContext) -> None:
             accessibility_notes=(
                 "Charts require title and description/alt/waiver; tabular fallbacks when provided."
             ),
+        )
+
+    if _CHART_MODULE.is_file():
+        register_asset(
+            logical_id="hedron-charts:hedron-chart.mjs",
+            kind="js",
+            path=str(_CHART_MODULE),
+            digest=content_digest(_CHART_MODULE.read_bytes()),
+            content_type="text/javascript",
+        )
+        register_browser_module(
+            logical_id="hedron-charts:hedron-chart",
+            tag_name="hedron-chart",
+            module_path=str(_CHART_MODULE),
+            observed_attributes=("data-hedron-payload", "data-hedron-abi"),
+            events=(
+                "hedron-chart-inspect",
+                "hedron-chart-focus",
+                "hedron-chart-select",
+                "hedron-chart-legend_filter",
+                "hedron-chart-brush",
+                "hedron-chart-zoom",
+                "hedron-chart-pan",
+                "hedron-chart-reset",
+                "hedron-chart-crosshair",
+                "hedron-chart-drill_intent",
+            ),
+            shadow_dom=False,
+            htmx_lifecycle=True,
+        )
+        register_element_definition(
+            logical_id="hedron-chart",
+            tag_name="hedron-chart",
+            abi_version=1,
+            module_asset_id="hedron-charts:hedron-chart.mjs",
+            attributes=("data-hedron-payload", "data-hedron-abi", "data-hedron-element"),
+            state_ownership=(
+                ElementFieldOwnership(
+                    name="payload",
+                    mode="controlled",
+                    reflection="attribute",
+                    incoming_update="replace",
+                    persistence="none",
+                    event="hedron-chart-select",
+                ),
+            ),
+            events=(
+                "hedron-chart-inspect",
+                "hedron-chart-focus",
+                "hedron-chart-select",
+                "hedron-chart-legend_filter",
+                "hedron-chart-brush",
+                "hedron-chart-zoom",
+                "hedron-chart-pan",
+                "hedron-chart-reset",
+                "hedron-chart-crosshair",
+                "hedron-chart-drill_intent",
+            ),
+            dom_policy="light",
+            server_regions=("content",),
+            a11y_contract={
+                "role": "group",
+                "name_from": "aria-label",
+                "keyboard": "focusable-marks",
+            },
+            style_contract={"tokens": "--hedron-chart-*"},
+            resources=("hedron-charts:hedron-chart.mjs", "hedron-charts:hedron-chart.css"),
+            lifecycle={
+                "connect": "idempotent",
+                "disconnect": "abort+dispose",
+                "htmx": "beforeCleanupElement",
+            },
+            fallback={
+                "figure": "semantic",
+                "summary": "compiled",
+                "table": "bounded",
+            },
+            first_party=True,
+        )
+    if _CHART_CSS.is_file():
+        register_asset(
+            logical_id="hedron-charts:hedron-chart.css",
+            kind="css",
+            path=str(_CHART_CSS),
+            digest=content_digest(_CHART_CSS.read_bytes()),
+            content_type="text/css",
         )
 
     for path, logical_id, kind in (

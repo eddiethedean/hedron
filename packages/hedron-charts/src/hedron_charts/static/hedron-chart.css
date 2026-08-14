@@ -1,0 +1,97 @@
+/* Public chart tokens (CHART_SPEC.md) — light defaults; dark/forced-colors via media. */
+:root {
+  --hedron-chart-color-1: #2563eb;
+  --hedron-chart-color-2: #dc2626;
+  --hedron-chart-color-3: #16a34a;
+  --hedron-chart-color-4: #ca8a04;
+  --hedron-chart-color-5: #9333ea;
+  --hedron-chart-color-6: #0891b2;
+  --hedron-chart-color-7: #db2777;
+  --hedron-chart-color-8: #4b5563;
+  --hedron-chart-sequential: #2563eb;
+  --hedron-chart-diverging: #dc2626;
+  --hedron-chart-axis: #64748b;
+  --hedron-chart-grid: #e2e8f0;
+  --hedron-chart-label: #0f172a;
+  --hedron-chart-font: system-ui, sans-serif;
+  --hedron-chart-focus-ring: #2563eb;
+  --hedron-chart-tooltip-bg: #0f172a;
+  --hedron-chart-tooltip-fg: #f8fafc;
+  --hedron-chart-empty: #f8fafc;
+  --hedron-chart-loading: #94a3b8;
+  --hedron-chart-error: #b91c1c;
+  --hedron-chart-density-compact: 0.85;
+  --hedron-chart-density-ordinary: 1;
+  --hedron-chart-density-wide: 1.15;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hedron-chart-label: #f8fafc;
+    --hedron-chart-axis: #94a3b8;
+    --hedron-chart-grid: #334155;
+    --hedron-chart-empty: #0f172a;
+    --hedron-chart-tooltip-bg: #f8fafc;
+    --hedron-chart-tooltip-fg: #0f172a;
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --hedron-chart-color-1: CanvasText;
+    --hedron-chart-axis: CanvasText;
+    --hedron-chart-grid: GrayText;
+    --hedron-chart-focus-ring: Highlight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  hedron-chart * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media print {
+  :root {
+    --hedron-chart-empty: #ffffff;
+    --hedron-chart-label: #000000;
+  }
+}
+
+hedron-chart {
+  display: block;
+  font-family: var(--hedron-chart-font);
+  color: var(--hedron-chart-label);
+}
+
+hedron-chart [data-hedron-mark]:focus {
+  outline: 2px solid var(--hedron-chart-focus-ring);
+  outline-offset: 2px;
+}
+
+.hedron-chart-fallback-figure {
+  margin: 0;
+}
+
+.hedron-chart-summary {
+  font-size: 0.9rem;
+}
+
+.hedron-chart-canvas-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.hedron-chart-fallback {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.hedron-chart-fallback th,
+.hedron-chart-fallback td {
+  border: 1px solid var(--hedron-chart-grid);
+  padding: 0.25rem 0.5rem;
+  text-align: left;
+}

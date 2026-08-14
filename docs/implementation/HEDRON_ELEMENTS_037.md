@@ -1,6 +1,6 @@
 # Phase 0.37 implementation plan: form-associated elements and interactive primitives
 
-**Status:** Complete at Published `v0.37.0` (2026-08-14). Every row in
+**Status:** Complete at Published `v0.38.0` (2026-08-14). Every row in
 [`release-gate-0.37.toml`](../acceptance/release-gate-0.37.toml) is Verified.
 
 This plan turns [RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) D-065 scope into
@@ -9,7 +9,7 @@ extends it under D-065.
 
 ## Outcome
 
-Publish `v0.37.0` with Alpha `hedron-elements` `0.37.0`, form-associated reference controls,
+Publish `v0.38.0` with Alpha `hedron-elements` `0.38.0`, form-associated reference controls,
 `InteractionState`, semantic interactive primitives, and `GestureOverlayCatalog` proof on the
 published 0.36 ABI. This phase is **not** production-grade Web Components and **not** Hedron
 `1.0`.
@@ -27,7 +27,7 @@ The phase is complete only when every row in
 | Primitive references | `hedron-disclosure`, `hedron-dialog` (+ tabs/menu/selection/upload in catalog) |
 | InteractionState reference | `hedron-action-async` |
 | Non-form ABI reference | `hedron-example` (unchanged; must not regress 0.36 gates) |
-| Package | Alpha `hedron-elements` cut target `0.37.0`, train-aligned pin at cut |
+| Package | Alpha `hedron-elements` cut target `0.38.0`, train-aligned pin at cut |
 | Browser floor | Playwright Chromium / Firefox / WebKit |
 | Baseline | Published `v0.36.0` |
 | Tracking | [#93](https://github.com/eddiethedean/hedron/issues/93); high-severity #230–#237 |
@@ -51,7 +51,7 @@ Deliverables:
 **Explicitly forbidden in Stage 0:**
 
 - No `ElementInternals` runtime, no new shipped form/gesture modules beyond planning docs
-- No workspace version bump to `0.37.0`
+- No workspace version bump to `0.38.0`
 - No flip of any 0.37 gate to Verified
 - No adopter-facing “0.37 Published” wording in STATUS/RELEASE/release-notes
 
@@ -101,7 +101,7 @@ redacted report and disposition ledger.
 ## Stage 9 — cut (`PKG-037`, `REGRESS-037`) — complete
 
 Gates flipped to Verified; `verify_pkg_37.py` without `--allow-planned`; train bumped to
-`0.37.0`; Alpha `hedron-elements` published on the coordinated train. Tracking
+`0.38.0`; Alpha `hedron-elements` published on the coordinated train. Tracking
 [#93](https://github.com/eddiethedean/hedron/issues/93) and high-severity #230–#237 are closed.
 Post-cut follow-on [#244](https://github.com/eddiethedean/hedron/issues/244) (element-markup
 `style=` / `vbscript:` / `data:`) is also closed. GitHub Release / PyPI tag remain maintainer
@@ -109,7 +109,7 @@ publish assets.
 
 ## Cut verification
 
-At `v0.37.0` cut:
+At `v0.38.0` cut:
 
 ```bash
 python scripts/verify_pkg_37.py

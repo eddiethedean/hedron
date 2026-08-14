@@ -1,7 +1,7 @@
 # Cutting a Hedron release
 
-This is the living maintainer runbook for the `0.37.x` train. Historical cut records
-live under `docs/archive/`. The last published release is `v0.37.0`; the next planned
+This is the living maintainer runbook for the `0.38.x` train. Historical cut records
+live under `docs/archive/`. The last published release is `v0.38.0`; the next planned
 patch is `v0.37.1`.
 
 Hedron uses coordinated package versions for the core train. A Git tag includes `v`;
@@ -33,13 +33,13 @@ uv run python scripts/verify_pkg_37.py
 ## Tag and publish
 
 After reviewing the complete version/changelog diff (tip honesty already treats
-`v0.37.0` as published in adopter docs/`docs/release.toml`):
+`v0.38.0` as published in adopter docs/`docs/release.toml`):
 
 ```bash
 git fetch --tags origin
-git rev-parse v0.37.0 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
-git tag -a v0.37.0 -m "Hedron 0.37.0"
-git push origin v0.37.0
+git rev-parse v0.38.0 >/dev/null 2>&1 && { echo "tag exists; stop"; exit 1; }
+git tag -a v0.38.0 -m "Hedron 0.37.0"
+git push origin v0.38.0
 ```
 
 ## Template: next patch (`0.37.1`)

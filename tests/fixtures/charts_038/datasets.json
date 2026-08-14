@@ -1,0 +1,10 @@
+{
+  "numeric": [{"x": 1, "y": 2}, {"x": 2, "y": 5}, {"x": 3, "y": 3}],
+  "categorical": [{"x": "a", "y": 1}, {"x": "b", "y": 4}, {"x": "c", "y": 2}],
+  "missing": [{"x": 1, "y": null}, {"x": 2, "y": 3}, {"x": 3, "y": 1}],
+  "empty": [],
+  "one_row": [{"x": 1, "y": 1}],
+  "long_labels": [{"x": "extraordinarily-long-category-label-alpha", "y": 1}],
+  "adversarial": [{"x": "<script>", "y": 1}, {"x": "normal", "y": 2}],
+  "dense": null
+}

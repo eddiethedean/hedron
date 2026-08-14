@@ -2852,9 +2852,9 @@ metadata while server-rendered HTML and HTMX remain the canonical fallback and r
   accessibility, lifecycle, performance, and packaging proof.
 - SSR/native HTML remains usable before, without, and after failed element upgrade.
 
-## 0.37 — Form-associated elements and interactive primitives (`v0.37.0`)
+## 0.37 — Form-associated elements and interactive primitives (`v0.38.0`)
 
-**Status:** **Published** as `v0.37.0` (2026-08-14; commit-based cut). Depends on the published
+**Status:** **Published** as `v0.38.0` (2026-08-14; commit-based cut). Depends on the published
 0.36 ABI and RFC-0060 acceptance. Acceptance packet:
 [`docs/acceptance/RELEASE_0_37.md`](docs/acceptance/RELEASE_0_37.md).
 **Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93) (closed). High-severity
@@ -2924,8 +2924,7 @@ Semantic interactive primitives share the same focus, lifecycle, and failure con
 
 ## 0.38 — High-fidelity declarative charts (`v0.38.0`)
 
-**Status:** Planned (Stage 0 contract refined against Published `v0.37.0`). Runtime
-implementation begins at Stage 1. Owning design: [RFC-0069](docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066.
+**Status:** Verified in-tree (workspace `v0.38.0` / `hedron-charts` `0.2.0`; not tagged/published). Owning design: [RFC-0069](docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066.
 **Tracking:** [#251](https://github.com/eddiethedean/hedron/issues/251).
 **Evidence:** [RELEASE_0_38](docs/acceptance/RELEASE_0_38.md) ·
 [release-gate-0.38.toml](docs/acceptance/release-gate-0.38.toml) ·
@@ -3516,7 +3515,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0065 Production-grade deny-by-default MCP projection | 0.32 (D-060; Accepted; Alpha product contract remains 0043 @ 0.17) |
 | 0066 `hedron-posit` unified Posit deployment adapter | 0.33 (D-061; Draft; must be Accepted before implementation) |
 | 0060 Web Component platform program | 0.36–0.42 (**Accepted**; D-064 / D-066 rephase; 0.36 **Published**) |
-| 0069 High-fidelity declarative charts | 0.38 (**Accepted**; D-066; Stage 0 contract refined against `v0.37.0`; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
+| 0069 High-fidelity declarative charts | 0.38 (**Accepted**; D-066; Stage 0 contract refined against `v0.38.0`; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
 
 ## Open GitHub issue ownership (0.13+)
 

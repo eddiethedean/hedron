@@ -2,7 +2,7 @@
 
 !!! note "Living train"
 
-    Pin `hedron>=0.37.0,<0.38` for new apps. See [What’s new in 0.37](whats-new-0.37.md).
+    Pin `hedron>=0.38.0,<0.39` for new apps. See [What’s new in 0.38](whats-new-0.38.md).
 
 **Published** as `v0.32.0`. Historical pin for this train: `hedron>=0.32.0,<0.33`.
 

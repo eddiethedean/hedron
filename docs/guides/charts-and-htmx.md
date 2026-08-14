@@ -5,10 +5,10 @@ A short path from install → chart → Markdown → typed fragment response.
 ## Availability
 
 ```bash
-pip install "hedron[charts]>=0.37.0,<0.38"
+pip install "hedron[charts]>=0.38.0,<0.39"
 ```
 
-This enforces `hedron-charts>=0.1.10,<0.2`; older satellite releases target older cores.
+This enforces `hedron-charts>=0.2.0,<0.3`; older satellite releases target older cores.
 See [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ## LineChart on a page

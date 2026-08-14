@@ -85,19 +85,20 @@ def test_historical_install_can_be_skipped_without_skipping_current_claims() -> 
 
 
 def test_satellite_floors_come_from_release_metadata() -> None:
-    floor = f">={ssot.FACTS.satellite_minimum},<{ssot.FACTS.satellite_maximum}"
-    assert ssot._has_compatible_satellite_floor(f'pip install "hedron-charts[matplotlib]{floor}"')
-    assert ssot._has_compatible_satellite_floor(f'uv add "hedron-sample-kit{floor}"')
+    charts = ssot.FACTS.charts_pin
+    sample = ssot.FACTS.sample_kit_pin
+    assert ssot._has_compatible_satellite_floor(f'pip install "hedron-charts[matplotlib]{charts}"')
+    assert ssot._has_compatible_satellite_floor(f'uv add "hedron-sample-kit{sample}"')
     assert not ssot._has_compatible_satellite_floor(
-        f'pip install "hedron-charts>=0.1.5,<{ssot.FACTS.satellite_maximum}"'
+        f'pip install "hedron-charts>=0.1.5,<{ssot.FACTS.charts_maximum}"'
     )
 
 
 def test_unbounded_fixed_charts_floor_is_rejected() -> None:
-    floor = ssot.FACTS.satellite_minimum
+    floor = ssot.FACTS.charts_minimum
     assert ssot.UNBOUNDED_CHARTS_PKG.search(f"hedron-charts>={floor}")
     assert not ssot.UNBOUNDED_CHARTS_PKG.search(
-        f"hedron-charts>={floor},<{ssot.FACTS.satellite_maximum}"
+        f"hedron-charts>={floor},<{ssot.FACTS.charts_maximum}"
     )
 
 

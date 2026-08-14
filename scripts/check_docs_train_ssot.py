@@ -32,6 +32,8 @@ class ReleaseFacts:
     previous_security_until: str
     satellite_minimum: str
     satellite_maximum: str
+    charts_minimum: str
+    charts_maximum: str
 
     @property
     def pin(self) -> str:
@@ -40,6 +42,14 @@ class ReleaseFacts:
     @property
     def train_line(self) -> str:
         return f"{self.train}.x"
+
+    @property
+    def sample_kit_pin(self) -> str:
+        return f">={self.satellite_minimum},<{self.satellite_maximum}"
+
+    @property
+    def charts_pin(self) -> str:
+        return f">={self.charts_minimum},<{self.charts_maximum}"
 
 
 def load_release_facts(path: Path = RELEASE_FILE) -> ReleaseFacts:
@@ -57,6 +67,8 @@ def load_release_facts(path: Path = RELEASE_FILE) -> ReleaseFacts:
         previous_security_until=release["previous_security_until"],
         satellite_minimum=satellites["minimum_version"],
         satellite_maximum=satellites["maximum_version"],
+        charts_minimum=str(satellites.get("charts_minimum_version") or "0.2.0"),
+        charts_maximum=str(satellites.get("charts_maximum_version") or "0.3"),
     )
 
 
@@ -237,7 +249,11 @@ def check_text(
                 )
 
         for match in SATELLITE_REQUIREMENT.finditer(line):
-            expected = f">={facts.satellite_minimum},<{facts.satellite_maximum}"
+            name = match.group("name") or ""
+            if name.startswith("hedron-charts"):
+                expected = facts.charts_pin
+            else:
+                expected = facts.sample_kit_pin
             constraint = match.group("constraint") or ""
             prefix = line[: match.start()]
             is_requirement_position = bool(
@@ -256,22 +272,23 @@ def check_text(
 
 def _has_compatible_satellite_floor(line: str, facts: ReleaseFacts = FACTS) -> bool:
     flagship = f"hedron[charts]{facts.pin}"
-    satellite = f">={facts.satellite_minimum},<{facts.satellite_maximum}"
+    charts = facts.charts_pin
+    sample = facts.sample_kit_pin
     checks: list[bool] = []
     if "hedron[charts]" in line:
         checks.append(flagship in line)
     if "hedron-charts" in line:
         checks.append(
-            f"hedron-charts{satellite}" in line or "hedron-charts[" in line and satellite in line
+            f"hedron-charts{charts}" in line or "hedron-charts[" in line and charts in line
         )
     if "hedron-sample-kit" in line:
-        checks.append(f"hedron-sample-kit{satellite}" in line)
+        checks.append(f"hedron-sample-kit{sample}" in line)
     return bool(checks) and all(checks)
 
 
 UNBOUNDED_CHARTS_PKG = re.compile(
-    rf"hedron-charts(?:\[[^\]]+\])?>={re.escape(FACTS.satellite_minimum)}"
-    rf"(?!,<{re.escape(FACTS.satellite_maximum)})"
+    rf"hedron-charts(?:\[[^\]]+\])?>={re.escape(FACTS.charts_minimum)}"
+    rf"(?!,<{re.escape(FACTS.charts_maximum)})"
 )
 
 
@@ -310,8 +327,8 @@ def main() -> int:
         return 1
     print(
         f"ok: adopter docs agree with published v{FACTS.published_version}, "
-        f"train {FACTS.train_line}, pin {FACTS.pin}, and satellite floor "
-        f">={FACTS.satellite_minimum},<{FACTS.satellite_maximum}"
+        f"train {FACTS.train_line}, pin {FACTS.pin}, charts floor {FACTS.charts_pin}, "
+        f"and sample-kit floor {FACTS.sample_kit_pin}"
     )
     return 0
 

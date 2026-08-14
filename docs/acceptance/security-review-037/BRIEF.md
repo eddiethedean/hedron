@@ -1,6 +1,6 @@
 # Security review brief — phase 0.37 (form-associated elements and interactive primitives)
 
-**Package / train at cut:** Hedron `v0.37.0` + Alpha `hedron-elements` `0.37.0`  
+**Package / train at cut:** Hedron `v0.38.0` + Alpha `hedron-elements` `0.38.0`  
 **Owning RFC:** [RFC-0060](../../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (D-065)  
 **Gates:** `FORM-037`, `VALIDITY-037`, `INTERACT-037`, `ACTIONSTATE-037` (cross-cutting with `HTMX-037` / `PKG-037`)  
 **Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93); high-severity
@@ -51,6 +51,6 @@ Independent review of the **form, async interaction, and gesture/overlay** surfa
 
 ## Status
 
-Complete at `v0.37.0` cut: [REDACTED_REPORT.md](REDACTED_REPORT.md) and
+Complete at `v0.38.0` cut: [REDACTED_REPORT.md](REDACTED_REPORT.md) and
 [DISPOSITION.toml](DISPOSITION.toml) record zero open critical/high findings. Follow-on
 [#244](https://github.com/eddiethedean/hedron/issues/244) is closed.

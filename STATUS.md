@@ -2,14 +2,14 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.37 **Published** as `v0.37.0` (2026-08-14). Prior: 0.36 **Published** as `v0.36.0` (2026-08-13).
-Living tip = `v0.37.0`.
+**Roadmap position:** phase 0.38 **Verified in-tree** as workspace `v0.38.0` / `hedron-charts` `0.2.0` (2026-08-14; **not git-tagged / not PyPI-published** in this pass). Prior Published: 0.37 as `v0.38.0` (2026-08-14).
+Living tip = `v0.38.0` (workspace).
 **Date:** 2026-08-14
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` `0.37.0`; Alpha (train-aligned) — `hedron-elements` `0.37.0`;
+`hedron-workbench` / `hedron-posit` `0.38.0`; Alpha (train-aligned) — `hedron-elements` `0.38.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
-`0.1.11`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
+`0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
 `0.32.0`
 (MIT, D-033).
@@ -18,10 +18,10 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `hedron-workbench`, `hedron-posit`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
 `hedron-sim`, `hedron-mcp`, `hedron-gradio`. Alpha — `hedron-elements`.
 
-**Phase focus:** Living train is **0.37** (D-065 / RFC-0060) — form-associated elements,
-`InteractionState`, semantic primitives, and `GestureOverlayCatalog`
-(`release-gate-0.37.toml` Verified; tip `v0.37.0`). Prior Published **0.36** ABI /
-**0.35** fleet closure / **0.34** Gradio / **0.33** (unified Posit adapter as `v0.33.0`) and **0.32** (MCP as `v0.32.0`) remain in force.
+**Phase focus:** Living train is **0.38** (D-066 / RFC-0069) — high-fidelity `ChartSpec` /
+`ChartPlan`, ABI-conforming `hedron-chart`, SVG/Canvas rendering, interaction/a11y/export/
+security evidence (`release-gate-0.38.toml` Verified; tip `v0.38.0`). Prior Published **0.37**
+form/primitive packet / **0.36** ABI / **0.35** fleet closure remain in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
 Workbench **2025.05.1** through **2026.07.0** is Supported for `hedron-workbench`,
@@ -273,14 +273,14 @@ SSOT: [RELEASE_0_32](docs/acceptance/RELEASE_0_32.md) ·
 [production-grade-inventory-032.toml](docs/acceptance/production-grade-inventory-032.toml).
 Cut verify: `python scripts/verify_pkg_32.py` (no `--allow-planned`).
 
-## Phase 0.37 evidence (Verified — form-associated elements; published `v0.37.0`)
+## Phase 0.37 evidence (Verified — form-associated elements; published `v0.38.0`)
 
 **Owning decision / RFC:** [D-065](docs/DECISIONS.md) ·
 [RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) (extends D-064).
 **Baseline tip:** Published `v0.36.0`.
 **Tracking:** [#93](https://github.com/eddiethedean/hedron/issues/93) (closed).
 **High-severity remediations:** [#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237) closed at cut; follow-on [#244](https://github.com/eddiethedean/hedron/issues/244) closed (element-markup `style=` / `vbscript:` / `data:`).
-**Version policy at cut:** Alpha `hedron-elements` **`0.37.0`** (pin `>=0.37.0,<0.38`).
+**Version policy at cut:** Alpha `hedron-elements` **`0.38.0`** (pin `>=0.38.0,<0.39`).
 
 | ID | Disposition | Notes |
 |---|---|---|
@@ -317,22 +317,22 @@ see [implementation plan](docs/implementation/HEDRON_GRADIO_034.md) and
 Phase **0.36** is **Published** as `v0.36.0` (D-064 / [RFC-0060](docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md); [#92](https://github.com/eddiethedean/hedron/issues/92));
 see [implementation plan](docs/implementation/HEDRON_ELEMENTS_036.md) and
 [0.36 acceptance packet](docs/acceptance/RELEASE_0_36.md). Phase **0.37** is **Published** as
-`v0.37.0` (D-065 / RFC-0060; [#93](https://github.com/eddiethedean/hedron/issues/93) closed;
+`v0.38.0` (D-065 / RFC-0060; [#93](https://github.com/eddiethedean/hedron/issues/93) closed;
 high-severity remediations
 [#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237)
 and follow-on [#244](https://github.com/eddiethedean/hedron/issues/244) closed;
 see [implementation plan](docs/implementation/HEDRON_ELEMENTS_037.md) and
-[0.37 acceptance packet](docs/acceptance/RELEASE_0_37.md)). Phase **0.38** high-fidelity charts Stage 0 is **contract-refined** against Published
-`v0.37.0` (D-066 / [RFC-0069](docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md); Planned gates only;
-[#251](https://github.com/eddiethedean/hedron/issues/251); see
-[implementation plan](docs/implementation/HEDRON_CHARTS_038.md),
+[0.37 acceptance packet](docs/acceptance/RELEASE_0_37.md)). Phase **0.38** high-fidelity charts is
+**Verified in-tree** as workspace `v0.38.0` / `hedron-charts` `0.2.0` (D-066 /
+[RFC-0069](docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md); `release-gate-0.38.toml` Verified;
+[#251](https://github.com/eddiethedean/hedron/issues/251); **not git-tagged / not PyPI-published**
+in this pass; see [implementation plan](docs/implementation/HEDRON_CHARTS_038.md),
 [grammar catalogs](docs/implementation/CHART_SPEC.md), and
-[0.38 acceptance packet](docs/acceptance/RELEASE_0_38.md)). It targets an ABI-conforming
-`hedron-chart`, typed `ChartSpec` / `ChartPlan`, modular D3 rendering, visual/a11y/performance/
-export/security evidence, and independent `hedron-charts` `0.2.0`. Runtime implementation is
-Stage 1+. Later phases
+[0.38 acceptance packet](docs/acceptance/RELEASE_0_38.md)). It ships an ABI-conforming
+`hedron-chart`, typed `ChartSpec` / `ChartPlan`, modular first-party rendering, visual/a11y/performance/
+export/security evidence, and independent `hedron-charts` `0.2.0`. Later phases
 [#94](https://github.com/eddiethedean/hedron/issues/94)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(rephased to 0.39–0.42) still require their own Stage 0 packets. Living tip is **`v0.37.0`**.
+(rephased to 0.39–0.42) still require their own Stage 0 packets. Living tip is **`v0.38.0`** (workspace).
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

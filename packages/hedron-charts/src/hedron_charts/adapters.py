@@ -266,13 +266,26 @@ class AltairAdapter:
         )
 
 
-def _fallback_table(rows: Sequence[Mapping[str, JsonValue]] | None) -> NodeLike:
+def _fallback_table(
+    rows: Sequence[Mapping[str, JsonValue]] | None,
+    *,
+    max_rows: int | None = None,
+) -> NodeLike:
+    """Bounded tabular fallback that retains every admitted row (#82).
+
+    Cap is ``VisualizationLimits.max_rows`` (or an explicit ``max_rows``), never a
+    silent hard-coded slice that drops admitted data.
+    """
+    from hedron_core.visualization import DEFAULT_MAX_CHART_ROWS
+
     cleaned = redact_rows(list(rows or ()))
     if not cleaned:
         return Text("")
-    headers = list(cleaned[0].keys())
+    limit = DEFAULT_MAX_CHART_ROWS if max_rows is None else max(0, int(max_rows))
+    admitted = cleaned[:limit]
+    headers = list(admitted[0].keys())
     head = html.tr(*[html.th(h) for h in headers])
-    body = [html.tr(*[html.td(str(row.get(h, ""))) for h in headers]) for row in cleaned[:50]]
+    body = [html.tr(*[html.td(str(row.get(h, ""))) for h in headers]) for row in admitted]
     return html.table(html.thead(head), html.tbody(*body), class_="hedron-chart-fallback")
 
 

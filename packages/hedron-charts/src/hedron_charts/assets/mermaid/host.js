@@ -1,5 +1,6 @@
 /**
  * Mermaid host — expects window.mermaid from local mermaid.min.js.
+ * Generation guard (#71) prevents concurrent remount races from applying stale runs.
  */
 (function () {
   var initialized = false;
@@ -9,6 +10,7 @@
     if (!el.textContent) el.textContent = message;
   }
   function destroy(el) {
+    el._hedronMermaidGen = (el._hedronMermaidGen || 0) + 1;
     el.innerHTML = "";
     el.removeAttribute("data-hedron-chart-mounted");
   }
@@ -18,6 +20,8 @@
       return;
     }
     destroy(el);
+    var gen = (el._hedronMermaidGen || 0) + 1;
+    el._hedronMermaidGen = gen;
     var raw = el.getAttribute("data-hedron-payload");
     if (!raw) return;
     var payload;
@@ -37,8 +41,18 @@
       window.mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
       initialized = true;
     }
-    window.mermaid.run({ nodes: [pre] });
-    el.setAttribute("data-hedron-chart-mounted", "1");
+    var result = window.mermaid.run({ nodes: [pre] });
+    if (result && typeof result.then === "function") {
+      result.then(function () {
+        if (el._hedronMermaidGen !== gen) {
+          el.innerHTML = "";
+          return;
+        }
+        el.setAttribute("data-hedron-chart-mounted", "1");
+      });
+    } else if (el._hedronMermaidGen === gen) {
+      el.setAttribute("data-hedron-chart-mounted", "1");
+    }
   }
   function scan(root) {
     var base = root || document;

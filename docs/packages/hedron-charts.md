@@ -2,30 +2,30 @@
 
 Visualization adapters and chart components for Hedron.
 
-**Package maturity:** Beta · **Current compatible release:** `0.1.11` (floor `>=0.1.10`)
+**Package maturity:** Beta · Compatible with Hedron train `0.38.x` · **Package version:** `0.2.0` (pin `>=0.2.0,<0.3`)
 **Flagship extra:** `hedron[charts]` · **Import:** `hedron_charts`  
-**Expect churn.** Interactive Plotly/Vega full browser runtimes remain **experimental**.
+First-party interactive charts via `ChartSpec` / `ChartPlan` / `hedron-chart` are **Supported**.
+Interactive Plotly/Vega full browser runtimes remain **experimental**.
 
-## Planned phase 0.38 upgrade
+## Phase 0.38 first-party charts
 
-[RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066 defines a substantial
-`hedron-charts` `0.2.0` phase: typed `ChartSpec` / `ChartPlan`, an ABI-conforming
-`hedron-chart` Web Component, a pinned modular D3 renderer, publication-quality SVG/Canvas output,
-keyboard/pointer/touch interactions, accessible summaries/tables, responsive themes, deterministic
-exports, reviewed visual fixtures, and hard performance/security/lifecycle gates. Stage 0 is
-**contract-refined** against Published `v0.37.0` ([#251](https://github.com/eddiethedean/hedron/issues/251));
-it is **Planned**, not available on the current `0.1.11` release. See the
+[RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066 ships `hedron-charts` `0.2.0`:
+typed `ChartSpec` / `ChartPlan`, ABI-conforming `hedron-chart`, SVG/Canvas paint, accessible
+summary/table fallbacks, deterministic export, and gated visual/performance/security evidence.
+See [What’s new in 0.38](../guides/whats-new-0.38.md) and the
 [0.38 acceptance packet](../acceptance/RELEASE_0_38.md).
 
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.37.0,<0.38"
-# Add a backend when needed:
-pip install "hedron-charts[matplotlib]>=0.1.10,<0.2"
+pip install "hedron[charts]>=0.38.0,<0.39"
+# Or the independent charts line:
+pip install "hedron-charts>=0.2.0,<0.3"
+# Optional static Matplotlib path:
+pip install "hedron-charts[matplotlib]>=0.2.0,<0.3"
 ```
 
-Versions through `0.1.6` target older Hedron cores; keep the `>=0.1.10` floor. See
+Rollback to the prior static line with `hedron-charts>=0.2.0,<0.3` if needed. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 
 ### Optional backends

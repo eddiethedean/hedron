@@ -59,7 +59,7 @@ Live transports stay **experimental**; prefer polling. Upgrade notes:
 
 ## Surfaces introduced in 0.19 (available on the 0.31 train)
 
-These surfaces first shipped in the 0.19 phase and remain on the living **0.37.x**
+These surfaces first shipped in the 0.19 phase and remain on the living **0.38.x**
 train (includes the 0.9 authoring break, 0.10 live interaction, and later capability
 phases through 0.25).
 
@@ -100,7 +100,7 @@ phases through 0.25).
 - [Security types](SECURITY_TYPES.md)
 - [Auth](AUTH.md)
 - [Explorer](EXPLORER.md)
-- [Accessibility (`hedron_core.a11y`)](A11Y.md) — introduced in 0.19; available on the living 0.37 train
+- [Accessibility (`hedron_core.a11y`)](A11Y.md) — introduced in 0.19; available on the living 0.38 train
 - [Plugins](PLUGINS.md)
 - [Testing](TESTING.md)
 - [API diagnostics](DIAGNOSTICS.md)
@@ -114,7 +114,7 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 
 ## Stability and adapters
 
-- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.37.x)
+- [Stability classifications](STABILITY.md) — compatibility catalog (current train 0.38.x)
 - [Security types](SECURITY_TYPES.md) — `Secret` / `TrustedHtml` / `SafeUrl` / `SecurityPolicy`
 - [CSRF composition (0.22)](CSRF_COMPOSITION.md) — strategies, header merge, `CsrfField`
 - [Framework adapter contracts](ADAPTERS.md) — Supported FastAPI / Flask / Django
@@ -123,13 +123,13 @@ Also: [Configuration](../CONFIGURATION.md) · [Diagnostics format](https://githu
 ## Current train notes
 
 - Accessibility engineering (`hedron_core.a11y`, Explorer `/a11y`, PE / landmarks /
-  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.37.x**
-  (**Published**; last **v0.37.0**) — [A11Y API](A11Y.md),
+  `Page(scripts=)`, automated `AT-019`) shipped on **0.19**; living train **0.38.x**
+  (**Published**; last **v0.38.0**) — [A11Y API](A11Y.md),
   [What's new in 0.19](../guides/whats-new-0.19.md)
 - Native Flask/Django depth, QuerySet DataSource, forms bridge, HDJ manifests/CSP inventory
-  (introduced in 0.11; Supported on **0.37.x**)
+  (introduced in 0.11; Supported on **0.38.x**)
 - Advanced async / observability (`prepare`, audit sink, tracing, durable Redis job status)
-  — Supported on **0.37.x**
+  — Supported on **0.38.x**
 - Capture UI ships in **0.15+** (no longer deferred); specialty extras in **0.16** are Experimental
 - Optional `hedron-extras` curated toolkit ships in **0.16** (`hedron[extras]`) —
   narrative [What's new in 0.16](../guides/whats-new-0.16.md); package

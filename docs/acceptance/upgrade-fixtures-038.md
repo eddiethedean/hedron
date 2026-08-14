@@ -1,6 +1,6 @@
 # Upgrade fixtures — phase 0.38 high-fidelity charts
 
-Stage 0 contract refine baseline: living Published `v0.37.0`. Runtime implementation begins at
+Stage 0 contract refine baseline: living Published `v0.38.0`. Runtime implementation begins at
 Stage 1. Cut targets: Hedron `v0.38.0`, independent `hedron-charts` `0.2.0`. Tracking
 [#251](https://github.com/eddiethedean/hedron/issues/251).
 
@@ -24,8 +24,8 @@ Stage 1. Cut targets: Hedron `v0.38.0`, independent `hedron-charts` `0.2.0`. Tra
 
 | Surface | Before | At phase 0.38 cut |
 |---|---|---|
-| Hedron train | `hedron>=0.37.0,<0.38` | `hedron>=0.38.0,<0.39` |
-| Charts Supported 0.1 line | `hedron-charts>=0.1.10,<0.2` | `hedron-charts>=0.2.0,<0.3` |
+| Hedron train | `hedron>=0.38.0,<0.39` | `hedron>=0.38.0,<0.39` |
+| Charts Supported 0.1 line | `hedron-charts>=0.2.0,<0.3` | `hedron-charts>=0.2.0,<0.3` |
 | Matplotlib static | Supported | Supported |
 | First-party interactive | Not available | Supported declared 0.38 inventory |
 | Plotly/Altair/vendor adapters | Experimental | Experimental explicit opt-in |
@@ -33,7 +33,7 @@ Stage 1. Cut targets: Hedron `v0.38.0`, independent `hedron-charts` `0.2.0`. Tra
 ## Rollback
 
 Rollback removes `ChartSpec`/`Chart` usage or replaces it with beginner/Matplotlib components,
-pins `hedron-charts>=0.1.10,<0.2`, removes 0.2-only assets, and verifies no stale custom-element
+pins `hedron-charts>=0.2.0,<0.3`, removes 0.2-only assets, and verifies no stale custom-element
 definition or cached asset remains. Exported canonical data remains portable; browser-local
 selection/zoom state is disposable and is not migrated as server authority.
 

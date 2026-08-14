@@ -3,7 +3,7 @@
 **Planning status:** RFC-0060 **Accepted** (D-064); phases 0.36–0.42. Phase **0.36** is
 **Published** (`v0.36.0`; all owned gates Verified) — see [`RELEASE_0_36.md`](RELEASE_0_36.md) and
 [`release-gate-0.36.toml`](release-gate-0.36.toml). Phase **0.37** is **Published**
-(`v0.37.0`; all owned gates Verified) — see [`RELEASE_0_37.md`](RELEASE_0_37.md) and
+(`v0.38.0`; all owned gates Verified) — see [`RELEASE_0_37.md`](RELEASE_0_37.md) and
 [`release-gate-0.37.toml`](release-gate-0.37.toml). Phase **0.38** high-fidelity charts has a
 refined Planned packet under RFC-0069 / D-066. Later phases (0.39–0.42) remain draft until their
 own Stage 0 packets land.
@@ -12,7 +12,7 @@ at 0.38 and moves the former 0.38–0.41 capabilities to 0.39–0.42 without sco
 The exact five interaction protocols are defined in the
 [interaction-contract specification](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md).
 
-Unchecked requirements are future release gates, not claims about the current 0.37 train. Each
+Unchecked requirements are future release gates, not claims about the current 0.38 train. Each
 phase requires a `release-gate-0.N.toml` index, retained evidence under the release evidence policy,
 and zero Deferred rows among that phase's owned gates at cut.
 

@@ -1,7 +1,7 @@
 # Hedron `v0.37` form-associated elements and interactive primitives acceptance
 
 **Status:** **Published** as `v0.37.0` (2026-08-14; commit-based cut; GitHub Release / PyPI tag
-are post-cut maintainer assets). Living tip is **`v0.37.0`** / pin `hedron>=0.37.0,<0.38`.
+are post-cut maintainer assets). Living tip is **`v0.38.0`** / pin `hedron>=0.37.0,<0.38`.
 
 Phase 0.37 ships form-associated custom elements, `InteractionState`, semantic interactive
 primitives, and `GestureOverlayCatalog` contracts on the published 0.36 ABI without splitting

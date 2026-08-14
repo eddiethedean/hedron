@@ -1,9 +1,15 @@
-## [0.37.0] — 2026-08-14
+## [0.38.0] — 2026-08-14
+
+- Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
+
 
 - Coordinated train cut for phase 0.37 (D-065): form-associated Alpha
   `hedron-elements`, `InteractionState`, semantic primitives, and
   `GestureOverlayCatalog`.
 - Closes high-severity remediations #230–#237 and follow-on #244.
+
+## [0.37.0] — 2026-08-14
+
 
 ## [0.36.0] — 2026-08-13
 
@@ -78,7 +84,7 @@
 ### Changed
 
 - Coordinated Beta patch to `0.28.2` (pin `>=0.28.2,<0.29`).
-- Charts floor for `hedron[charts]` raised to `hedron-charts>=0.1.10,<0.2` (Plotly/Vega
+- Charts floor for `hedron[charts]` raised to `hedron-charts>=0.2.0,<0.3` (Plotly/Vega
   destroy-before-remount; tip charts `0.1.11` for OOB lifecycle).
 
 ## [0.28.1] — 2026-08-10

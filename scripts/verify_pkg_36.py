@@ -126,6 +126,7 @@ def _check_living_tip(*, allow_planned: bool) -> None:
             version.startswith("0.35.")
             or version.startswith("0.36.")
             or version.startswith("0.37.")
+            or version.startswith("0.38.")
         ):
             raise SystemExit(f"unexpected workspace version {version!r}")
         print(f"ok: living tip {version} (allow-planned)")

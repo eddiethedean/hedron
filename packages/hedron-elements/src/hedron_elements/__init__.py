@@ -10,7 +10,7 @@ from hedron_elements.state import (
     validate_field_ownership,
 )
 
-__version__ = "0.37.0"
+__version__ = "0.38.0"
 
 __all__ = [
     "Example",

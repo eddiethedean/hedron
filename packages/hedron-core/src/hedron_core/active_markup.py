@@ -33,7 +33,23 @@ _SMIL_ON_ATTR = re.compile(
 )
 
 
+# Remote CSS @import (including protocol-relative and quoted forms).
+_CSS_IMPORT = re.compile(
+    r"@import\b[^;]*?(?:url\s*\(\s*)?[\"']?\s*(?:https?:)?//",
+    re.IGNORECASE,
+)
+# SMIL set/animate that mutates href/xlink:href to a remote target (#239).
+_SMIL_REMOTE_HREF = re.compile(
+    r"<(?:set|animate|animateTransform)\b[^>]*\battributeName\s*=\s*[\"']?\s*"
+    r"(?:xlink:)?href\b[^>]*\bto\s*=\s*[\"']?\s*(?:https?:)?//",
+    re.IGNORECASE,
+)
+
+
 def _scan_payload(payload: str) -> str | None:
+    # #81: NUL bytes can split scanners; strip before matching.
+    if "\x00" in payload:
+        payload = payload.replace("\x00", "")
     lowered = payload.lower()
     if any(token in lowered for token in _BANNED_TAGS):
         return "banned active tag"
@@ -43,8 +59,13 @@ def _scan_payload(payload: str) -> str | None:
         return "event handler attribute"
     if _SMIL_ON_ATTR.search(payload) is not None:
         return "SMIL event handler attribute"
+    if _SMIL_REMOTE_HREF.search(payload) is not None:
+        return "SMIL remote href mutation"
     if _REMOTE_HREF.search(payload) is not None:
         return "remote href"
+    # #201: remote CSS @import
+    if _CSS_IMPORT.search(payload) is not None or "@import" in lowered and "//" in lowered:
+        return "remote css import"
     return None
 
 

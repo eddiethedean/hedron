@@ -1,12 +1,12 @@
 # Upgrade to Hedron 0.37
 
-This guide covers an application upgrade onto the **0.37.x** train
-(current tip **`v0.37.0`**). New applications should use
+This guide covers an application upgrade onto the **0.38.x** train
+(current tip **`v0.38.0`**). New applications should use
 [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
 
-Hedron 0.37.x ships form-associated Alpha **`hedron-elements`**, `InteractionState`,
+Hedron 0.38.x ships form-associated Alpha **`hedron-elements`**, `InteractionState`,
 and semantic primitives on the published 0.36 ABI (D-065 / RFC-0060). Prefer
 `hedron[posit]` / `HedronPosit` for Posit Workbench / Connect. Native Connect GUID
 on Connect **2025.06.0** through **2026.07.0** is Supported. Posit Workbench
@@ -35,12 +35,12 @@ status. SSE, WebSocket, streaming, and navigation preload remain experimental.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.37.0,<0.38"
-python -m pip install -U "hedron[posit]>=0.37.0,<0.38"
+python -m pip install -U "hedron>=0.38.0,<0.39"
+python -m pip install -U "hedron[posit]>=0.38.0,<0.39"
 # optional Alpha elements:
-python -m pip install -U "hedron[elements]>=0.37.0,<0.38"
+python -m pip install -U "hedron[elements]>=0.38.0,<0.39"
 # compatibility:
-python -m pip install -U "hedron[workbench]>=0.37.0,<0.38"
+python -m pip install -U "hedron[workbench]>=0.38.0,<0.39"
 ```
 
 ## 0.36 → 0.37 notes
@@ -54,7 +54,7 @@ python -m pip install -U "hedron[workbench]>=0.37.0,<0.38"
 ## Posit migration sketch
 
 Prefer `from hedron_posit import HedronPosit` over legacy Workbench-only imports when
-starting new apps. See [Posit](posit.md) and [What’s new in 0.37](whats-new-0.37.md).
+starting new apps. See [Posit](posit.md) and [What’s new in 0.38](whats-new-0.38.md).
 
 ## See also
 

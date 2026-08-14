@@ -42,8 +42,34 @@ EXPECTED_GATES = (
 TRACKING_ISSUE = "#251"
 MEDIUM_ISSUES = (71, 72, 75, 81, 82, 83, 201, 239)
 
-# Populated as implementation evidence lands. Stage 0 / contract refine keeps this empty.
-GATE_TESTS: dict[str, list[str]] = {}
+# Populated as implementation evidence lands.
+GATE_TESTS: dict[str, list[str]] = {
+    "GRAMMAR-038": [
+        "tests/unit/test_charts_038_grammar.py",
+        "tests/unit/test_phase038_packet.py",
+    ],
+    "DESIGN-038": ["tests/unit/test_charts_038_design.py"],
+    "RENDER-038": [
+        "tests/unit/test_charts_038_render.py",
+        "tests/browser/test_charts_038_render.py",
+    ],
+    "INTERACT-038": ["tests/unit/test_charts_038_interact.py"],
+    "A11Y-038": [
+        "tests/unit/test_charts_038_a11y.py",
+        "tests/a11y/test_charts_038_a11y.py",
+    ],
+    "VISUAL-038": ["tests/unit/test_charts_038_visual.py"],
+    "PERF-038": ["tests/unit/test_charts_038_perf.py"],
+    "EXPORT-038": ["tests/unit/test_charts_038_export.py"],
+    "SECURITY-038": ["tests/unit/test_charts_038_security.py"],
+    "COMPAT-038": ["tests/unit/test_charts_038_compat.py"],
+    "DOCS-038": ["tests/unit/test_charts_038_docs.py"],
+    "REGRESS-038": [
+        "tests/unit/test_charts_038_regress.py",
+        "tests/unit/test_phase038_packet.py",
+    ],
+    "PKG-038": ["tests/unit/test_phase038_packet.py"],
+}
 
 PACKET_FILES = (
     GATE,

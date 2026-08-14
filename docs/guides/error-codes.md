@@ -21,7 +21,7 @@ This catalog is complete for the registered set enforced by
 | `HED-ELEMENT-0005` | blocker | Structured input bound/encoding failure | Reduce payload size/depth |
 | `HED-ELEMENT-STATE-0002` | blocker | Illegal element-owned capability | Keep capabilities server-controlled |
 | `HED-ELEMENT-STATE-0006` | blocker | Draft transfer before 0.41 | Keep drafts instance-local |
-| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.37.0,<0.38"` |
+| `HED-SEC-0020` | blocker | `TrustedHtml.nh3` without nh3 installed | `pip install "hedron[sanitize]>=0.38.0,<0.39"` |
 | `HED-RENDER-0012` | blocker | Component render cycle | Remove self-recursion; nested same-type trees are allowed |
 | `HED-HTMX-*` / HTTP **403** on fragments | blocker | Unauthorized `HX-Target` / region | Declare `fragment_regions` — [Interaction API](../api/INTERACTION.md#errors) · [Troubleshooting](troubleshooting.md#htmx-403-on-fragment-request) |
 | `HED-HTMX-0002` | warning | Same id in `select_oob` and `OobUpdate` | Prefer explicit `OobUpdate`; omit matching `select_oob` — [Interaction API](../api/INTERACTION.md#out-of-band-updates) |
@@ -30,7 +30,7 @@ This catalog is complete for the registered set enforced by
 | `HED-PLUGIN-0002` | blocker | Plugin `hedron_version` incompatible | Upgrade/downgrade the plugin or pin Hedron into its range |
 | `HED-JOB-0001` | blocker | Job observation unauthorized / unscoped | Scope jobs with `auth_subject` / `tenant_id`; use `job_authorized_http` |
 | `HED-ASSET-0004` | warning | Asset missing from manifest / disk | Re-run `hedron build` or fix the asset path |
-| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.37.0,<0.38"` |
+| `HED-CONTENT-0003` | blocker | Images extra missing | `pip install "hedron[images]>=0.38.0,<0.39"` |
 | Mount / cookie Path mismatch | ops | App under reverse-proxy subpath | Set `HEDRON_ROOT_PATH` / ASGI `root_path` — [Mount API](../api/MOUNT.md) |
 
 Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index below.
@@ -95,6 +95,24 @@ Symptom-first help: [Troubleshooting](troubleshooting.md). Full symbol index bel
 | `HED-CHART-0012` | `HED_CHART_0012` |
 | `HED-CHART-0013` | `HED_CHART_0013` |
 | `HED-CHART-0014` | `HED_CHART_0014` |
+| `HED-CHART-0020` | `HED_CHART_0020` |
+| `HED-CHART-0021` | `HED_CHART_0021` |
+| `HED-CHART-0022` | `HED_CHART_0022` |
+| `HED-CHART-0023` | `HED_CHART_0023` |
+| `HED-CHART-0024` | `HED_CHART_0024` |
+| `HED-CHART-0025` | `HED_CHART_0025` |
+| `HED-CHART-0026` | `HED_CHART_0026` |
+| `HED-CHART-0030` | `HED_CHART_0030` |
+| `HED-CHART-0031` | `HED_CHART_0031` |
+| `HED-CHART-0032` | `HED_CHART_0032` |
+| `HED-CHART-0033` | `HED_CHART_0033` |
+| `HED-CHART-0061` | `HED_CHART_0061` |
+| `HED-CHART-0062` | `HED_CHART_0062` |
+| `HED-CHART-0063` | `HED_CHART_0063` |
+| `HED-CHART-0070` | `HED_CHART_0070` |
+| `HED-CHART-0071` | `HED_CHART_0071` |
+| `HED-CHART-0072` | `HED_CHART_0072` |
+| `HED-CHART-0073` | `HED_CHART_0073` |
 
 ## HED-COMPAT
 
