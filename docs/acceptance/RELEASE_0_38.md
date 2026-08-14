@@ -1,7 +1,7 @@
 # Hedron `v0.38` high-fidelity charts acceptance
 
-**Status:** Planned (Stage 0 packet refined). Living published tip is **`v0.37.0`**; phase
-0.37 is Published and 0.38 implementation may begin.
+**Status:** Planned (Stage 0 contract refined against Published **`v0.37.0`**). Runtime
+implementation begins at Stage 1; this refine ships no `ChartSpec` / `hedron-chart` code.
 
 Phase 0.38 makes an ABI-conforming **`hedron-chart` Web Component** the first-party interactive
 default for `hedron-charts` `0.2.0`. Its typed grammar, rendering quality, interaction,
@@ -12,8 +12,23 @@ Verified at cut.
 
 Owning decision: [D-066](../DECISIONS.md). Design:
 [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) (**Accepted**). Implementation:
-[HEDRON_CHARTS_038](../implementation/HEDRON_CHARTS_038.md). Capability inventory:
-[`chart-capability-inventory-038.toml`](chart-capability-inventory-038.toml).
+[HEDRON_CHARTS_038](../implementation/HEDRON_CHARTS_038.md). Grammar catalogs:
+[CHART_SPEC.md](../implementation/CHART_SPEC.md). Capability inventory:
+[`chart-capability-inventory-038.toml`](chart-capability-inventory-038.toml). Tracking:
+[#251](https://github.com/eddiethedean/hedron/issues/251). Medium remediations (issue bodies
+remain normative; `REGRESS-038` Verified only when closed):
+[#71](https://github.com/eddiethedean/hedron/issues/71),
+[#72](https://github.com/eddiethedean/hedron/issues/72) → `RENDER-038`;
+[#75](https://github.com/eddiethedean/hedron/issues/75),
+[#81](https://github.com/eddiethedean/hedron/issues/81),
+[#201](https://github.com/eddiethedean/hedron/issues/201),
+[#239](https://github.com/eddiethedean/hedron/issues/239) → `SECURITY-038`;
+[#82](https://github.com/eddiethedean/hedron/issues/82) → `A11Y-038`;
+[#83](https://github.com/eddiethedean/hedron/issues/83) → `PERF-038`.
+
+`A11Y-038` includes three-engine automated a11y plus a **scoped** keyboard/AT packet
+([human-at/038](human-at/038/PROTOCOL.md)). It does **not** claim Supported human AT
+([#86](https://github.com/eddiethedean/hedron/issues/86) / `SR-021`).
 
 ## Release contract at cut
 
@@ -95,8 +110,9 @@ Owning decision: [D-066](../DECISIONS.md). Design:
   equivalent HTML interaction model and does not hide unique data behind pixels.
 - [ ] Hover is never the only path. Focus is visible and stable across update/resize/HTMX; forced
   colors and 200%/400% zoom/reflow remain usable.
-- [ ] Three-engine automated evidence and representative keyboard/screen-reader sessions cover
-  inspect, series navigation, selection, legend filter, zoom reset, annotations, and fallback.
+- [ ] Three-engine automated evidence plus a **scoped** keyboard/AT packet cover inspect, series
+  navigation, selection, legend filter, zoom reset, annotations, and fallback. Do not market
+  Supported human AT; do not block this gate on `SR-021`.
 
 ### Performance and loading
 
@@ -131,13 +147,14 @@ Owning decision: [D-066](../DECISIONS.md). Design:
 
 ## Stage 0 entry/exit
 
-- [x] D-066 Accepted and RFC-0069 Accepted
+- [x] D-066 Accepted and RFC-0069 Accepted (Resolved questions (D-066) present)
 - [x] Phase 0.38 inserted; previous planned 0.38–0.41 phases re-homed to 0.39–0.42
-- [x] Gate manifest, implementation plan, capability inventory, upgrade fixture, and review brief
-  exist
-- [ ] Tracking issue is opened and bound to every 0.38 gate before Stage 1 implementation
-- [ ] `v0.37.0` is published before runtime implementation begins
-- [x] Stage 0 makes no runtime/version/living-tip claim
+- [x] Gate manifest, implementation plan, capability inventory, upgrade fixture, review brief,
+  production-grade inventory, grammar catalogs, and scoped AT-038 skeleton exist
+- [x] Tracking issue [#251](https://github.com/eddiethedean/hedron/issues/251) is opened and bound
+  to every 0.38 gate
+- [x] `v0.37.0` is Published; living baseline for this refine is `v0.37.0`
+- [x] Stage 0 / contract refine makes no runtime/version/living-tip claim
 
 ## Verification
 

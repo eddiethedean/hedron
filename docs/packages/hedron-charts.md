@@ -9,11 +9,12 @@ Visualization adapters and chart components for Hedron.
 ## Planned phase 0.38 upgrade
 
 [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066 defines a substantial
-`hedron-charts` `0.2.0` phase after 0.37: typed `ChartSpec` / `ChartPlan`, an ABI-conforming
+`hedron-charts` `0.2.0` phase: typed `ChartSpec` / `ChartPlan`, an ABI-conforming
 `hedron-chart` Web Component, a pinned modular D3 renderer, publication-quality SVG/Canvas output,
 keyboard/pointer/touch interactions, accessible summaries/tables, responsive themes, deterministic
-exports, reviewed visual fixtures, and hard performance/security/lifecycle gates. It is **Planned**,
-not available on the current `0.1.11` release. See the
+exports, reviewed visual fixtures, and hard performance/security/lifecycle gates. Stage 0 is
+**contract-refined** against Published `v0.37.0` ([#251](https://github.com/eddiethedean/hedron/issues/251));
+it is **Planned**, not available on the current `0.1.11` release. See the
 [0.38 acceptance packet](../acceptance/RELEASE_0_38.md).
 
 ## Install

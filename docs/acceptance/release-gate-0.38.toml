@@ -1,6 +1,6 @@
 # Phase 0.38 high-fidelity charts evidence index.
-# Stage 0 only: every row remains Planned until implementation evidence lands.
-# Owning decision: D-066. Design: RFC-0069. Zero Deferred at cut.
+# Stage 0 / contract refine: every row remains Planned until implementation evidence lands.
+# Owning decision: D-066. Design: RFC-0069. Tracking: #251. Zero Deferred at cut.
 
 [[evidence]]
 id = "GRAMMAR-038"

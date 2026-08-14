@@ -9,7 +9,7 @@ The full authoritative table lives in the repository (not duplicated here):
 
 | ID | Topic |
 |---|---|
-| D-066 | High-fidelity charts own 0.38; later Web Component phases move to 0.39–0.42 (RFC-0069) |
+| D-066 | High-fidelity charts own 0.38; later Web Component phases move to 0.39–0.42 (RFC-0069; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
 | D-065 | Form-associated elements, InteractionState, gesture/overlay primitives, and high-severity remediations #230–#237 own 0.37 |
 | D-064 | Web Component ABI and lifecycle foundation owns published 0.37 |
 | D-061 | Schedule unified `hedron-posit` for 0.33; move Gradio, fleet closure, and the Web Component program down to 0.34–0.41 without changing MCP 0.32 |

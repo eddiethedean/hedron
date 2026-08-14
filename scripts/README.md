@@ -47,9 +47,9 @@ Documentation source ownership and review rules:
 | `verify_pkg_33.py` | Phase **0.33** unified Posit deployment adapter packet |
 | `verify_pkg_34.py` | Phase **0.34** production-grade Gradio packet |
 | `verify_pkg_35.py` | Phase **0.35** whole-fleet closure packet |
-| `verify_pkg_36.py` | Phase **0.36** Web Component ABI/lifecycle packet (living train) |
-| `verify_pkg_37.py` | Planned phase **0.37** form/primitives packet (`--allow-planned` before cut) |
-| `verify_pkg_38.py` | Planned phase **0.38** high-fidelity charts packet (`--allow-planned` before cut) |
+| `verify_pkg_36.py` | Phase **0.36** Web Component ABI/lifecycle packet |
+| `verify_pkg_37.py` | Phase **0.37** form/primitives packet (Published `v0.37.0`) |
+| `verify_pkg_38.py` | Planned phase **0.38** high-fidelity charts packet (`--allow-planned` on `0.37.x`) |
 | `check_*_038.py` | Phase 0.38 grammar/render/design/visual/interaction/a11y/perf/export/security/compat/docs/regression gate entry points |
 | `check_contract_027.py` | Satellite production-grade inventory / install guards |
 | `check_data_027.py` | `DATA-027` bounded data evidence |
@@ -73,7 +73,7 @@ Documentation source ownership and review rules:
 | `write_release_manifest.py` | Record SHA-256 digests and sizes for every release asset |
 | `verify_release_manifest.py` | Verify local/downloaded assets against `release-manifest.json` |
 | `check_published_quickstart.py` | Install an exact PyPI version, scaffold an app, and import it before GitHub Release creation |
-| `verify_pkg_38.py` / `verify_pkg_37.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_36.py`**; 0.37/0.38 use `--allow-planned`) |
+| `verify_pkg_38.py` / `verify_pkg_37.py` / … / `verify_pkg_10.py` | Phase-tied package verify helpers (living train: **`verify_pkg_37.py`**; 0.38 uses `--allow-planned`) |
 | `generate_sbom.py` | SBOM generation |
 | `license_inventory.py` | License inventory |
 | `dep_audit.py` | Dependency audit |

@@ -1,7 +1,8 @@
 # Upgrade fixtures — phase 0.38 high-fidelity charts
 
-Stage 0 planning baseline: living Published `v0.36.0`; implementation begins only after
-`v0.37.0`. Cut targets: Hedron `v0.38.0`, independent `hedron-charts` `0.2.0`.
+Stage 0 contract refine baseline: living Published `v0.37.0`. Runtime implementation begins at
+Stage 1. Cut targets: Hedron `v0.38.0`, independent `hedron-charts` `0.2.0`. Tracking
+[#251](https://github.com/eddiethedean/hedron/issues/251).
 
 ## Required upgrade corpus
 
@@ -13,8 +14,8 @@ Stage 0 planning baseline: living Published `v0.36.0`; implementation begins onl
   silently changes them into the first-party renderer.
 - Common Plotly/Altair examples produce a migration report with converted fields and explicit
   unsupported features; conversion never drops traces/transforms/interactions silently.
-- Current chart event fixtures map to versioned stable datum/series identities or emit a named
-  remediation diagnostic.
+- Current chart event fixtures map to versioned 0.38 kinds in [CHART_SPEC.md](../implementation/CHART_SPEC.md)
+  or emit a named remediation diagnostic.
 - Current CSS overrides map to public chart tokens or are identified as private/unsupported.
 - JavaScript-off/static-only deployments retain semantic figure/summary/table/export fallbacks.
 - HTMX inner/outer/OOB lifecycle fixtures from `hedron-charts` 0.1.11 remain green under 0.2.

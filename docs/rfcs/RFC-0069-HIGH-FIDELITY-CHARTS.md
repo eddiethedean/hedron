@@ -7,6 +7,16 @@
 **Extends:** RFC-0011, RFC-0020, RFC-0021, RFC-0022, RFC-0023, RFC-0025,
 RFC-0059, and RFC-0060
 
+**Revision:** 2026-08-14 — D-066 contract refine against Published `v0.37.0`:
+resolved questions locked, catalogs in
+[CHART_SPEC.md](../implementation/CHART_SPEC.md), tracking
+[#251](https://github.com/eddiethedean/hedron/issues/251), medium remediations
+#71/#72/#75/#81/#82/#83/#201/#239 bound to 0.38 gates. Prior: Stage 0 packet
+inserted the phase after 0.37 and re-homed former 0.38–0.41 Web Component
+capabilities to 0.39–0.42.
+
+**Tracking:** [#251](https://github.com/eddiethedean/hedron/issues/251)
+
 ## Summary
 
 Phase 0.38 turns `hedron-charts` from a production-grade static-chart package with Experimental
@@ -263,6 +273,30 @@ Canvas helps dense data but is inferior as the universal semantic/debugging/expo
 hybrid SVG/Canvas design preserves quality and accessibility while scaling where measurements
 justify it.
 
+## Resolved questions (D-066)
+
+### 0.38 definitive
+
+| Question | Answer |
+|---|---|
+| Element home | **`hedron-chart`** ships in independent Beta **`hedron-charts` `0.2.0`**. It conforms to the public element ABI. **`hedron-elements` stays Alpha** and does **not** depend on charts. Charts may depend on `hedron-core` plus ABI metadata only. |
+| Schema | `ChartSpec.schema_version = 1` (JSON schema id **`hedron-chart-spec/1`**). Unknown versions, fields, and operators fail closed with `HED-CHART-*`. Catalogs: [CHART_SPEC.md](../implementation/CHART_SPEC.md). |
+| Beginner path | `LineChart` / `AreaChart` / `BarChart` / `ScatterChart` keep current call shapes and compile to `ChartSpec`. Advanced entry is `Chart(spec=...)`. |
+| Paint default | **SVG**. Canvas only via inspectable `ChartPlan.renderer` when Stage 1 records a mark threshold **or** the author sets `renderer: canvas`. Paint change must not change scales, identity, accessibility, or export meaning. |
+| Workers | **Absent by default.** Add only if `PERF-038` evidence requires them; then bounded, cancellable, and fully disposable. |
+| Interaction | Typed versioned `CustomEvent` payloads on stable datum/series keys. Async drill/actions reuse 0.37 **`InteractionState`**; no parallel chart state machine. Hover is never the only path. Selection is not authorization. |
+| Human AT | `A11Y-038` requires three-engine automated a11y plus a **scoped** keyboard/AT protocol packet (same honesty as `AT-037` / [#86](https://github.com/eddiethedean/hedron/issues/86)). Do **not** market Supported human AT; do **not** block 0.38 on `SR-021`. |
+| D3 candidate set | Pin exact versions in Stage 4, not now: `d3-array`, `d3-scale`, `d3-shape`, `d3-axis`, `d3-selection`, `d3-time`, `d3-time-format`, `d3-format`, `d3-interpolate`, `d3-color`, `d3-brush`, `d3-zoom`, optional `d3-transition` behind reduced-motion. **Not** `d3-geo` / `d3-hierarchy` / `d3-force`. |
+| Numeric floors | Keep `VisualizationLimits.max_rows = 10000` and `max_payload_bytes = 1_000_000`. Additional floors live in `chart-capability-inventory-038.toml`. Exact Canvas mark threshold is a Stage 1 lock. |
+| Tracking | [#251](https://github.com/eddiethedean/hedron/issues/251) owns every 0.38 gate. Medium remediations: #71/#72 → `RENDER-038`; #75/#81/#201/#239 → `SECURITY-038`; #82 → `A11Y-038`; #83 → `PERF-038`. Issue bodies remain normative; `REGRESS-038` Verified only when they are closed. |
+
+### Later-phase provisional (unblocks Accept; amendable by phase-owned decisions)
+
+| Question | Provisional answer |
+|---|---|
+| 0.39 chart consumption | DataTable/DataEditor/map/media surfaces consume the 0.38 `hedron-chart` contract rather than a parallel renderer ([#94](https://github.com/eddiethedean/hedron/issues/94)). |
+| Whole-platform ABI graduation | Chart-scoped Python/spec/element workflow may be Supported for the locked 0.38 inventory; unrelated tags and the general author ABI remain 0.42. |
+
 ## Acceptance
 
 Phase 0.38 requires every row in `release-gate-0.38.toml` Verified with zero Deferred:
@@ -271,5 +305,5 @@ Phase 0.38 requires every row in `release-gate-0.38.toml` Verified with zero Def
 - `INTERACT-038`, `A11Y-038`, `PERF-038`, `EXPORT-038`;
 - `SECURITY-038`, `COMPAT-038`, `DOCS-038`, `REGRESS-038`, `PKG-038`.
 
-The exact suites, artifacts, and cut procedure are defined by `RELEASE_0_38.md` and
-`HEDRON_CHARTS_038.md`.
+The exact suites, artifacts, and cut procedure are defined by `RELEASE_0_38.md`,
+`HEDRON_CHARTS_038.md`, and `CHART_SPEC.md`.

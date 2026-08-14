@@ -320,12 +320,15 @@ high-severity remediations
 [#230](https://github.com/eddiethedean/hedron/issues/230)–[#237](https://github.com/eddiethedean/hedron/issues/237)
 and follow-on [#244](https://github.com/eddiethedean/hedron/issues/244) closed;
 see [implementation plan](implementation/HEDRON_ELEMENTS_037.md) and
-[0.37 acceptance packet](acceptance/RELEASE_0_37.md)). Phase **0.38** high-fidelity charts Stage 0
-is **refined** (D-066 / [RFC-0069](rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md); Planned gates only;
-see [implementation plan](implementation/HEDRON_CHARTS_038.md) and
+[0.37 acceptance packet](acceptance/RELEASE_0_37.md)). Phase **0.38** high-fidelity charts Stage 0 is **contract-refined** against Published
+`v0.37.0` (D-066 / [RFC-0069](rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md); Planned gates only;
+[#251](https://github.com/eddiethedean/hedron/issues/251); see
+[implementation plan](implementation/HEDRON_CHARTS_038.md),
+[grammar catalogs](implementation/CHART_SPEC.md), and
 [0.38 acceptance packet](acceptance/RELEASE_0_38.md)). It targets an ABI-conforming
 `hedron-chart`, typed `ChartSpec` / `ChartPlan`, modular D3 rendering, visual/a11y/performance/
-export/security evidence, and independent `hedron-charts` `0.2.0` after the 0.37 cut. Later phases
+export/security evidence, and independent `hedron-charts` `0.2.0`. Runtime implementation is
+Stage 1+. Later phases
 [#94](https://github.com/eddiethedean/hedron/issues/94)–[#97](https://github.com/eddiethedean/hedron/issues/97)
 (rephased to 0.39–0.42) still require their own Stage 0 packets. Living tip is **`v0.37.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not

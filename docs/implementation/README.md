@@ -19,6 +19,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [`hedron-gradio` phase 0.34](HEDRON_GRADIO_034.md) — production-grade remote client interop,
   allowlisted egress, bounded files/streams, and HF vendor evidence
 - [High-fidelity charts](HEDRON_CHARTS_038.md) — phase 0.38 D3-class typed chart platform
+- [Chart grammar catalogs](CHART_SPEC.md) — `ChartSpec` / `ChartPlan` fields, operators, events,
+  diagnostics, tokens, fallback (0.38 planning)
 - [Web Component platform](WEB_COMPONENT_PLATFORM.md) — 0.36–0.42 program
 - [Web Component interaction contracts](WEB_COMPONENT_INTERACTION_CONTRACTS.md) — state,
   async interaction, optimism, gestures/overlays, and React migration

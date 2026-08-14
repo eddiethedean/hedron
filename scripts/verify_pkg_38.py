@@ -16,40 +16,63 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from _gate_038 import (  # noqa: E402
-    DECISIONS,
+    AT_DISPOSITION,
+    AT_PROTOCOL,
+    CHART_SPEC,
     EXPECTED_GATES,
+    FLEET_INVENTORY,
     GATE,
-    IMPLEMENTATION,
     INVENTORY,
-    RELEASE_PACKET,
+    PACKET_FILES,
     REVIEW_BRIEF,
-    RFC,
-    UPGRADE,
     d066_present,
+    missing_refine_citations,
     rfc_is_accepted,
+    rfc_resolved_questions_present,
 )
 
 RELEASE_CANDIDATE = "0.38.0"
 CHARTS_CANDIDATE = "0.2.0"
 PYPROJECT = ROOT / "pyproject.toml"
 CHARTS_PROJECT = ROOT / "packages" / "hedron-charts" / "pyproject.toml"
+EXPECTED_PACKAGES = (
+    "hedron",
+    "hedron-core",
+    "hedron-explorer",
+    "hedron-data",
+    "hedron-flask",
+    "hedron-django",
+    "hedron-jinja",
+    "hedron-extras",
+    "hedron-conformance",
+    "hedron-charts",
+    "hedron-native",
+    "hedron-sample-kit",
+    "hedron-sim",
+    "hedron-notebook",
+    "hedron-mcp",
+    "hedron-gradio",
+    "hedron-workbench",
+    "hedron-posit",
+    "hedron-elements",
+    "fastapi-workbench",
+    "hedron-runtime-node",
+    "hedron-runtime-java",
+)
 
 
 def _check_packet_files() -> None:
-    required = (
-        GATE,
-        RELEASE_PACKET,
-        IMPLEMENTATION,
-        RFC,
-        REVIEW_BRIEF,
-        UPGRADE,
-        INVENTORY,
-        DECISIONS,
-    )
-    missing = [str(path) for path in required if not path.is_file()]
+    missing = [str(path) for path in PACKET_FILES if not path.is_file()]
     if missing:
         raise SystemExit(f"missing Stage 0 artifacts: {missing}")
     print("ok: 0.38 Stage 0 packet files")
+
+
+def _check_refine_citations() -> None:
+    errors = missing_refine_citations()
+    if errors:
+        raise SystemExit("\n".join(errors))
+    print("ok: 0.38 tracking #251 and medium-issue citations")
 
 
 def _check_gate_ids() -> None:
@@ -73,6 +96,7 @@ def _check_inventory(*, allow_planned: bool) -> None:
         "charts_cut": CHARTS_CANDIDATE,
         "owning_decision": "D-066",
         "owning_rfc": "RFC-0069",
+        "living_published_baseline": "v0.37.0",
     }
     for key, expected in required.items():
         if str(data.get(key, "")).strip() != expected:
@@ -86,7 +110,39 @@ def _check_inventory(*, allow_planned: bool) -> None:
     supported = data.get("supported")
     if not isinstance(supported, dict) or "ChartSpec" not in (supported.get("authoring") or []):
         raise SystemExit(f"{INVENTORY}: supported authoring must include ChartSpec")
+    bounds = data.get("bounds")
+    if not isinstance(bounds, dict) or int(bounds.get("max_rows") or 0) != 10000:
+        raise SystemExit(f"{INVENTORY}: [bounds] max_rows must be 10000")
+    if str(bounds.get("canvas_mark_threshold", "")).strip() != "stage1_lock":
+        raise SystemExit(
+            f"{INVENTORY}: canvas_mark_threshold must remain stage1_lock until Stage 1"
+        )
     print("ok: chart-capability-inventory-038.toml")
+
+
+def _check_fleet_inventory() -> None:
+    data = tomllib.loads(FLEET_INVENTORY.read_text(encoding="utf-8"))
+    if str(data.get("baseline", "")).strip() != "v0.37.0":
+        raise SystemExit(f"{FLEET_INVENTORY}: baseline must be v0.37.0")
+    packages = data.get("packages")
+    if not isinstance(packages, list):
+        raise SystemExit(f"{FLEET_INVENTORY}: packages list required")
+    missing = [name for name in EXPECTED_PACKAGES if name not in packages]
+    if missing:
+        raise SystemExit(f"{FLEET_INVENTORY}: missing packages {missing}")
+    charts = data.get("hedron-charts")
+    if not isinstance(charts, dict):
+        raise SystemExit(f"{FLEET_INVENTORY}: hedron-charts table required")
+    supported = charts.get("supported") or []
+    for item in ("matplotlib_static", "chart_spec", "hedron_chart"):
+        if item not in supported:
+            raise SystemExit(f"{FLEET_INVENTORY}: hedron-charts.supported must include {item}")
+    elements = data.get("hedron-elements")
+    if not isinstance(elements, dict):
+        raise SystemExit(f"{FLEET_INVENTORY}: hedron-elements table required")
+    if str(elements.get("disposition", "")).strip() != "incubator":
+        raise SystemExit(f"{FLEET_INVENTORY}: hedron-elements disposition must be incubator")
+    print("ok: production-grade-inventory-038.toml")
 
 
 def _workspace_version() -> str:
@@ -97,10 +153,9 @@ def _workspace_version() -> str:
 def _check_versions(*, allow_planned: bool) -> None:
     version = _workspace_version()
     if allow_planned:
-        if not (version.startswith("0.36.") or version.startswith("0.37.")):
+        if not version.startswith("0.37."):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; "
-                "Stage 0/implementation expects 0.36.x or 0.37.x"
+                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.37.x"
             )
         print(f"ok: living tip {version} (0.38 allow-planned)")
         return
@@ -124,19 +179,52 @@ def _check_review(*, allow_planned: bool) -> None:
     print("ok: security-review-038 full packet")
 
 
+def _check_at_skeleton() -> None:
+    protocol = AT_PROTOCOL.read_text(encoding="utf-8")
+    if "does not claim Supported human AT" not in protocol:
+        raise SystemExit(f"{AT_PROTOCOL}: must disclaim Supported human AT")
+    data = tomllib.loads(AT_DISPOSITION.read_text(encoding="utf-8"))
+    if str(data.get("gate", "")).strip() != "A11Y-038":
+        raise SystemExit(f"{AT_DISPOSITION}: gate must be A11Y-038")
+    if str(data.get("state", "")).strip() != "planned":
+        raise SystemExit(f"{AT_DISPOSITION}: state must be planned during refine")
+    print("ok: human-at/038 scoped skeleton")
+
+
+def _check_chart_spec() -> None:
+    text = CHART_SPEC.read_text(encoding="utf-8")
+    for marker in (
+        "`ChartSpec` fields",
+        "Closed operator catalog",
+        "Versioned events",
+        "Diagnostic reservation",
+        "Public chart tokens",
+        "Fallback contract",
+    ):
+        if marker not in text:
+            raise SystemExit(f"{CHART_SPEC}: missing section {marker!r}")
+    print("ok: CHART_SPEC.md catalogs")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--allow-planned", action="store_true")
     args = parser.parse_args(argv)
 
     _check_packet_files()
+    _check_refine_citations()
     _check_gate_ids()
     _check_inventory(allow_planned=args.allow_planned)
+    _check_fleet_inventory()
+    _check_chart_spec()
+    _check_at_skeleton()
     if not rfc_is_accepted():
         raise SystemExit("RFC-0069 must be Accepted")
+    if not rfc_resolved_questions_present():
+        raise SystemExit("RFC-0069 must include Resolved questions (D-066)")
     if not d066_present():
         raise SystemExit("D-066 must be Accepted in DECISIONS.md")
-    print("ok: RFC-0069 Accepted + D-066")
+    print("ok: RFC-0069 Accepted + D-066 + resolved questions")
     _check_versions(allow_planned=args.allow_planned)
     _check_review(allow_planned=args.allow_planned)
 

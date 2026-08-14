@@ -1,16 +1,17 @@
 # Phase 0.38 chart capability inventory (Stage 0 planned state).
-# Living published baseline is v0.36.0; implementation entry requires v0.37.0.
-# This inventory describes the intended 0.38 cut and does not claim availability.
+# Living published baseline is v0.37.0. This inventory describes the intended 0.38
+# cut and does not claim availability. Tracking #251.
 
 schema = 1
 phase = "0.38"
 state = "planned"
-living_published_baseline = "v0.36.0"
+living_published_baseline = "v0.37.0"
 implementation_entry = "v0.37.0"
 hedron_cut = "v0.38.0"
 charts_cut = "0.2.0"
 owning_decision = "D-066"
 owning_rfc = "RFC-0069"
+tracking = "#251"
 
 [element]
 tag = "hedron-chart"
@@ -42,6 +43,37 @@ capabilities = [
   "unbounded_rows_marks_facets_exports",
   "node_required_for_python_consumers",
 ]
+
+[bounds]
+max_rows = 10000
+max_payload_bytes = 1000000
+max_fields = 64
+max_transforms = 32
+max_facets = 16
+max_marks = 10000
+max_labels = 500
+max_event_payload_bytes = 65536
+max_export_px = 4096
+canvas_mark_threshold = "stage1_lock"
+workers = "absent_by_default"
+
+[d3]
+candidate_modules = [
+  "d3-array",
+  "d3-scale",
+  "d3-shape",
+  "d3-axis",
+  "d3-selection",
+  "d3-time",
+  "d3-time-format",
+  "d3-format",
+  "d3-interpolate",
+  "d3-color",
+  "d3-brush",
+  "d3-zoom",
+]
+optional_modules = ["d3-transition"]
+excluded_modules = ["d3-geo", "d3-hierarchy", "d3-force"]
 
 [budgets]
 core_gzip_kib = 90

@@ -2,8 +2,12 @@
 
 **Cut targets:** Hedron `v0.38.0`; `hedron-charts` `0.2.0`  
 **Owning RFC / decision:** RFC-0069 / D-066  
+**Tracking:** [#251](https://github.com/eddiethedean/hedron/issues/251)  
+**Baseline:** Published `v0.37.0`  
 **Primary gates:** `GRAMMAR-038`, `RENDER-038`, `INTERACT-038`, `EXPORT-038`, `SECURITY-038`,
-`PKG-038`
+`PKG-038`  
+**Medium packet:** #75 / #81 / #201 / #239 are `SECURITY-038`-owned (issue bodies remain
+normative).
 
 ## Review scope
 

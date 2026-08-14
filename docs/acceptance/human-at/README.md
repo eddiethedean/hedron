@@ -10,6 +10,8 @@ Protocol, privacy rules, task scripts, and the redacted ledger schema for phase 
 | [task-scripts.md](task-scripts.md) | Reference-app task corpus |
 | [ledger.schema.json](ledger.schema.json) | Redacted ledger row schema |
 | [ledger/hat-example-0001.json](ledger/hat-example-0001.json) | Placeholder example row (not session evidence) |
+| [037/PROTOCOL.md](037/PROTOCOL.md) | Scoped 0.37 form/primitive AT packet (not Supported) |
+| [038/PROTOCOL.md](038/PROTOCOL.md) | Scoped 0.38 `hedron-chart` AT skeleton (not Supported; `A11Y-038`) |
 
 Validate the packet:
 

@@ -2922,11 +2922,13 @@ Semantic interactive primitives share the same focus, lifecycle, and failure con
 
 ## 0.38 — High-fidelity declarative charts (`v0.38.0`)
 
-**Status:** Planned (Stage 0 packet refined); runtime implementation begins after Published
-`v0.37.0`. Owning design: [RFC-0069](rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066.
+**Status:** Planned (Stage 0 contract refined against Published `v0.37.0`). Runtime
+implementation begins at Stage 1. Owning design: [RFC-0069](rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066.
+**Tracking:** [#251](https://github.com/eddiethedean/hedron/issues/251).
 **Evidence:** [RELEASE_0_38](acceptance/RELEASE_0_38.md) ·
 [release-gate-0.38.toml](acceptance/release-gate-0.38.toml) ·
-[HEDRON_CHARTS_038](implementation/HEDRON_CHARTS_038.md).
+[HEDRON_CHARTS_038](implementation/HEDRON_CHARTS_038.md) ·
+[CHART_SPEC](implementation/CHART_SPEC.md).
 
 **Outcome:** `hedron-charts` `0.2.0` provides Hedron's first-party, high-fidelity interactive chart
 system. A typed `ChartSpec` compiles into an inspectable `ChartPlan` and an ABI-conforming
@@ -3271,7 +3273,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Form-associated elements and semantic interactive primitives | 0.37 | Native-first controls preserve ordinary forms, HTMX, server validation, keyboard/focus, and failed-upgrade fallback ([#93](https://github.com/eddiethedean/hedron/issues/93)). |
 | `InteractionState` and `GestureOverlayCatalog` | 0.37 | Common async progress/cancel/error model plus accessible pointer/keyboard/touch/top-layer primitives ([#93](https://github.com/eddiethedean/hedron/issues/93)). |
 | Open high-severity remediations (#230–#237) | 0.37 | Cut-blocking `REGRESS-037` defects: HTMX `data-hx-*` / element-markup eval, Flask cookie flags, MCP Origin and body limits, upload NUL paths, SelectSlider values, Redis idempotency delete. |
-| High-fidelity typed charts and first-party `hedron-chart` Web Component | 0.38 | D3-backed SVG/Canvas renderer, visual system, interactions, a11y, export, performance, review, and migration are gated by RFC-0069 / D-066. |
+| High-fidelity typed charts and first-party `hedron-chart` Web Component | 0.38 | D3-backed SVG/Canvas renderer, visual system, interactions, a11y, export, performance, review, and migration are gated by RFC-0069 / D-066 ([#251](https://github.com/eddiethedean/hedron/issues/251)). |
 | Data/chart/map/media/editor convergence on the shared element ABI | 0.39 | Data and other rich surfaces consume the 0.38 chart contract; adapters stay optional, bounded, disposable, and paired with useful server-rendered fallbacks ([#94](https://github.com/eddiethedean/hedron/issues/94)). |
 | `OptimisticMutation` | 0.39 | Explicit typed revision/idempotency/confirmation/rollback/refetch/conflict contract; server-confirmed is default ([#94](https://github.com/eddiethedean/hedron/issues/94)). |
 | Third-party element authoring, HDJ/plugin/Explorer integration, tokens/parts/slots, portable fixtures | 0.40 | Public author kit and optional npm mirror do not change the Python no-Node consumer path ([#95](https://github.com/eddiethedean/hedron/issues/95)). |
@@ -3512,7 +3514,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | 0065 Production-grade deny-by-default MCP projection | 0.32 (D-060; Accepted; Alpha product contract remains 0043 @ 0.17) |
 | 0066 `hedron-posit` unified Posit deployment adapter | 0.33 (D-061; Draft; must be Accepted before implementation) |
 | 0060 Web Component platform program | 0.36–0.42 (**Accepted**; D-064 / D-066 rephase; 0.36 **Published**) |
-| 0069 High-fidelity declarative charts | 0.38 (**Accepted**; D-066; Stage 0 packet refined) |
+| 0069 High-fidelity declarative charts | 0.38 (**Accepted**; D-066; Stage 0 contract refined against `v0.37.0`; [#251](https://github.com/eddiethedean/hedron/issues/251)) |
 
 ## Open GitHub issue ownership (0.13+)
 
@@ -3573,6 +3575,7 @@ Issue bodies remain normative for acceptance criteria; this table is the roadmap
 | [#91](https://github.com/eddiethedean/hedron/issues/91) | Whole-fleet production-grade closure | 0.35 |
 | [#92](https://github.com/eddiethedean/hedron/issues/92) | Web Component ABI / `hedron-elements` / SSR / HTMX lifecycle | 0.36 |
 | [#93](https://github.com/eddiethedean/hedron/issues/93) | Form-associated elements / InteractionState / gesture overlays | 0.37 |
+| [#251](https://github.com/eddiethedean/hedron/issues/251) | High-fidelity declarative charts / `hedron-chart` / ChartSpec | 0.38 |
 | [#230](https://github.com/eddiethedean/hedron/issues/230) | HTMX `data-hx-*` aliases bypass EVAL-020 and SafeUrl gates | 0.37 |
 | [#231](https://github.com/eddiethedean/hedron/issues/231) | HedronFlask production session cookies omit Secure and SameSite | 0.37 |
 | [#232](https://github.com/eddiethedean/hedron/issues/232) | MCP Streamable HTTP skips Origin checks when `allowed_origins` is None | 0.37 |
