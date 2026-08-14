@@ -2,7 +2,7 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.36 train** (**Published**; last **v0.36.0**): typed FastAPI/HTMX applications,
+**0.36 train** (**Published**; last **v0.37.0**): typed FastAPI/HTMX applications,
 tooling-grade conformance/sim/notebook/sample-kit, Node/Java evaluators, and
 `hedron migrate streamlit` — [What’s ready](whats-ready.md).
 
@@ -155,7 +155,7 @@ Evaluating adoption? Use the **Evaluate** tab
   <a class="hedron-card" href="upgrade/">
     <span class="hedron-card__icon" aria-hidden="true">↑</span>
     <strong>Upgrade</strong>
-    <p>Upgrade to the living 0.36 train (also under Project → Upgrade).</p>
+    <p>Upgrade to the living 0.37 train (also under Project → Upgrade).</p>
   </a>
   <a class="hedron-card" href="openapi/">
     <span class="hedron-card__icon" aria-hidden="true">{ }</span>

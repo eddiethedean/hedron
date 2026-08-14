@@ -8,8 +8,8 @@ Hedron ships a **coordinated 0.x train**. The living runbook with exact cut comm
 
 | Item | Value |
 |---|---|
-| Published | **v0.36.0** (`hedron` / Beta packages `0.36.0`; Alpha `hedron-elements` `0.36.0`; `hedron-mcp` `0.2.0`; `fastapi-workbench` `1.0.0`) |
-| Pin | `hedron>=0.36.0,<0.37` |
+| Published | **v0.37.0** (`hedron` / Beta packages `0.36.0`; Alpha `hedron-elements` `0.36.0`; `hedron-mcp` `0.2.0`; `fastapi-workbench` `1.0.0`) |
+| Pin | `hedron>=0.37.0,<0.38` |
 | Gate checker | `python scripts/check_release_gate.py 0.36.0` |
 | Packet verify | `python scripts/verify_pkg_36.py` |
 

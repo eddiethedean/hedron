@@ -19,7 +19,7 @@ not available on the current `0.1.11` release. See the
 ## Install
 
 ```bash
-pip install "hedron[charts]>=0.36.0,<0.37"
+pip install "hedron[charts]>=0.37.0,<0.38"
 # Add a backend when needed:
 pip install "hedron-charts[matplotlib]>=0.1.10,<0.2"
 ```

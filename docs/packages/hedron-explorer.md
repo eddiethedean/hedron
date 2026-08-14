@@ -2,16 +2,16 @@
 
 Development Component Explorer for Hedron.
 
-**Package maturity:** Beta · **Train:** `0.36.x` (published `v0.36.0`) · pin `>=0.36.0,<0.37`
+**Package maturity:** Beta · **Train:** `0.37.x` (published `v0.37.0`) · pin `>=0.37.0,<0.38`
 **Flagship extra:** `hedron[dev]` · **Import:** `hedron_explorer`  
 **Mount:** `/hedron-explorer/` when enabled · **not required in production**
 
 ## Install
 
 ```bash
-pip install "hedron[dev]>=0.36.0,<0.37"
+pip install "hedron[dev]>=0.37.0,<0.38"
 # or
-pip install "hedron-explorer>=0.36.0,<0.37"
+pip install "hedron-explorer>=0.37.0,<0.38"
 ```
 
 Requires [`hedron`](https://pypi.org/project/hedron/) (FastAPI flagship).

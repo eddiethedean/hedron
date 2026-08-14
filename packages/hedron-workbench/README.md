@@ -12,7 +12,7 @@ application. `RS_SERVER_URL` is discovery-only and never grants trust.
 
 Also available as `hedron[workbench]`.
 
-**Package maturity:** Beta · **Train:** `0.36.x` · pin `>=0.36.0,<0.37`
+**Package maturity:** Beta · **Train:** `0.37.x` · pin `>=0.37.0,<0.38`
 
 Supported Workbench floor is **2025.05.1**; current verified lane is **2026.07.0**.
 
@@ -23,9 +23,9 @@ Behavior is reimplemented from observed
 ## Install
 
 ```bash
-pip install "hedron-workbench>=0.36.0,<0.37"
+pip install "hedron-workbench>=0.37.0,<0.38"
 # or
-uv add "hedron[workbench]>=0.36.0,<0.37"
+uv add "hedron[workbench]>=0.37.0,<0.38"
 ```
 
 ## Hedron application facade

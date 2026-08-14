@@ -55,5 +55,5 @@ def test_engine_can_parse_field_text_ssr(engine: str) -> None:
             f"<script type='module' src='file://{js / 'hedron-field-text.mjs'}'></script>"
         )
         assert page.locator("hedron-field-text").count() == 1
-        assert "a@b.c" in page.inner_text("hedron-field-text")
+        assert page.locator("hedron-field-text input").input_value() == "a@b.c"
         browser.close()

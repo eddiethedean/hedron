@@ -37,7 +37,7 @@ and the sample kit install directly. Charts require the compatible `0.1.10` sate
 | [hedron-posit](hedron-posit.md) | `hedron[posit]` | Preferred Posit Workbench / Connect facade (`HedronPosit`) |
 
 ```bash
-pip install "hedron[data,dev,posit]>=0.36.0,<0.37"
+pip install "hedron[data,dev,posit]>=0.37.0,<0.38"
 ```
 
 ## Tooling-grade and independent Beta lines
@@ -63,7 +63,7 @@ deny-by-default, and Gradio allows only declared remote destinations.
 | [hedron-elements](hedron-elements.md) | `hedron[elements]` | Alpha Web Component ABI / `hedron-example`; no Supported production inventory before its graduation phase |
 
 ```bash
-pip install "hedron[charts]>=0.36.0,<0.37"
+pip install "hedron[charts]>=0.37.0,<0.38"
 pip install "hedron-sample-kit>=0.1.10,<0.2" "hedron-sim>=0.1.0,<0.2"
 ```
 

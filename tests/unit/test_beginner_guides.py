@@ -4,9 +4,7 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-RELEASE = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))[
-    "release"
-]
+RELEASE = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
 PIN = f">={RELEASE['pin_floor']},<{RELEASE['pin_ceiling']}"
 
 VSCODE_PATH = ROOT / "docs" / "getting-started" / "first-app-vscode.md"

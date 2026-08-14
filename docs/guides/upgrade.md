@@ -1,7 +1,7 @@
 # Upgrade to Hedron 0.36
 
 This guide covers an application upgrade onto the **0.36.x** train
-(current tip **`v0.36.0`**). New applications should use
+(current tip **`v0.37.0`**). New applications should use
 [Build your first app](../getting-started/quickstart.md).
 
 ## Summary
@@ -32,12 +32,12 @@ status. SSE, WebSocket, streaming, and navigation preload remain experimental.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.36.0,<0.37"
-python -m pip install -U "hedron[posit]>=0.36.0,<0.37"
+python -m pip install -U "hedron>=0.37.0,<0.38"
+python -m pip install -U "hedron[posit]>=0.37.0,<0.38"
 # optional Alpha elements:
-python -m pip install -U "hedron[elements]>=0.36.0,<0.37"
+python -m pip install -U "hedron[elements]>=0.37.0,<0.38"
 # compatibility:
-python -m pip install -U "hedron[workbench]>=0.36.0,<0.37"
+python -m pip install -U "hedron[workbench]>=0.37.0,<0.38"
 ```
 
 ## Posit migration sketch
