@@ -213,3 +213,48 @@ def test_redis_mark_refreshes_idempotency_ttl_skew() -> None:
 
     again = backend.submit("demo", {"n": 2}, idempotency_key="k-skew", tenant_id="t")
     assert again.job_id == handle.job_id
+
+
+def test_cleanup_expired_preserves_idempotency_owned_by_newer_job() -> None:
+    """Aged terminal cleanup must not delete an idempotency pointer owned by a newer job (#198)."""
+    import json
+
+    shared: Any = _SharedRedis()
+    backend = RedisJobBackend(shared)
+    aged = backend.submit("demo", {}, idempotency_key="shared-scope", tenant_id="t1")
+    backend.mark(aged.job_id, JobState.SUCCEEDED)
+    raw = shared.get(f"h1:job:{aged.job_id}")
+    assert raw is not None
+    data = json.loads(raw)
+    data["updated_at"] = 1.0
+    shared.set(f"h1:job:{aged.job_id}", json.dumps(data))
+
+    live = backend.submit("demo", {"fresh": True}, tenant_id="t1")
+    scope = data["idempotency_scope_key"]
+    idem_key = f"h1:job:idem:{scope}"
+    shared.set(idem_key, live.job_id)
+
+    assert backend.cleanup_expired(older_than_seconds=10) == 1
+    assert shared.get(f"h1:job:{aged.job_id}") is None
+    assert shared.get(f"h1:job:{live.job_id}") is not None
+    assert shared.get(idem_key) == live.job_id
+
+
+def test_cleanup_expired_drops_idempotency_when_still_owner() -> None:
+    import json
+
+    shared: Any = _SharedRedis()
+    backend = RedisJobBackend(shared)
+    handle = backend.submit("demo", {}, idempotency_key="gone", tenant_id="t1")
+    backend.mark(handle.job_id, JobState.SUCCEEDED)
+    raw = shared.get(f"h1:job:{handle.job_id}")
+    assert raw is not None
+    data = json.loads(raw)
+    data["updated_at"] = 1.0
+    shared.set(f"h1:job:{handle.job_id}", json.dumps(data))
+    idem_key = f"h1:job:idem:{data['idempotency_scope_key']}"
+    assert shared.get(idem_key) == handle.job_id
+
+    assert backend.cleanup_expired(older_than_seconds=10) == 1
+    assert shared.get(f"h1:job:{handle.job_id}") is None
+    assert shared.get(idem_key) is None
