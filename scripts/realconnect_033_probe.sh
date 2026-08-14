@@ -35,10 +35,16 @@ PLACEHOLDER_MOUNT="/content/${PLACEHOLDER_GUID}"
 RESULT_BACKUP=""
 LICENSE_STOP_TIMEOUT="${HEDRON_CONNECT_LICENSE_STOP_TIMEOUT:-120}"
 CONNECT_LICENSE_MANAGER="/opt/rstudio-connect/bin/license-manager"
-DOCKER_PLATFORM_ARGS=()
-if [[ -n "$DOCKER_PLATFORM" ]]; then
-  DOCKER_PLATFORM_ARGS=(--platform "$DOCKER_PLATFORM")
-fi
+docker_cmd() {
+  # `set -u` treats `"${empty[@]}"` as unbound on some Bash versions.
+  local subcmd="$1"
+  shift
+  if [[ -n "$DOCKER_PLATFORM" ]]; then
+    docker "$subcmd" --platform "$DOCKER_PLATFORM" "$@"
+  else
+    docker "$subcmd" "$@"
+  fi
+}
 
 redact_stream() {
   sed -E \
@@ -187,7 +193,7 @@ for command in curl jq openssl rsync; do
 done
 
 if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
-  docker pull "${DOCKER_PLATFORM_ARGS[@]}" "$IMAGE" >/dev/null || \
+  docker_cmd pull "$IMAGE" >/dev/null || \
     fail "HED-CONNECT-0002" "could not pull the pinned Connect image"
 fi
 resolved_digests="$(docker image inspect "$IMAGE" --format '{{join .RepoDigests ","}}' 2>/dev/null || true)"
@@ -203,8 +209,7 @@ chmod 600 "$SMOKE_DIR/bootstrap.key"
 BOOTSTRAP_SECRET="$(tr -d '\n' < "$SMOKE_DIR/bootstrap.key")"
 
 log "container=start privileged=true"
-if ! docker run -d \
-  "${DOCKER_PLATFORM_ARGS[@]}" \
+if ! docker_cmd run -d \
   --name "$CONTAINER" \
   --privileged \
   --stop-timeout 120 \
