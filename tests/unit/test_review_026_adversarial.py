@@ -76,7 +76,7 @@ def test_production_explorer_development_forced_off(monkeypatch: pytest.MonkeyPa
             title="rev026",
             security="standard",
             explorer="development",
-            session_secret="test-secret-rev026-prod",
+            session_secret="test-secret-rev026-prod-ok-32chars!",
             production=True,
         )
     assert app.hedron_explorer_mode == "off"

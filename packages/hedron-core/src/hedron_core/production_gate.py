@@ -12,6 +12,7 @@ from hedron_core.jobs import InMemoryJobBackend, get_job_backend
 
 __all__ = [
     "DEFAULT_SESSION_SECRET_MARKERS",
+    "MIN_SESSION_SECRET_LENGTH",
     "RISK_ACCEPTANCE_ENV",
     "assert_durable_backends",
     "assert_production_security_config",
@@ -20,12 +21,21 @@ __all__ = [
 ]
 
 RISK_ACCEPTANCE_ENV = "HEDRON_SECURITY_RISK_ACCEPTANCE"
+# Match ``secrets.token_urlsafe(32)`` guidance used in first-party examples.
+MIN_SESSION_SECRET_LENGTH = 32
 DEFAULT_SESSION_SECRET_MARKERS = frozenset(
     {
         "hedron-dev-secret-change-me",
         "replace-in-production",
         "replace-me",
         "changeme",
+        "change-me",
+        "password",
+        "secret",
+        "dev",
+        "dev-only",
+        "test",
+        "test-secret",
     }
 )
 
@@ -97,6 +107,8 @@ def assert_durable_backends(
 def _is_weak_secret(secret: str) -> bool:
     lowered = secret.strip().lower()
     if not lowered:
+        return True
+    if len(lowered) < MIN_SESSION_SECRET_LENGTH:
         return True
     if lowered in DEFAULT_SESSION_SECRET_MARKERS:
         return True

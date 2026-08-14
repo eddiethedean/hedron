@@ -70,7 +70,7 @@ def test_production_refuses_development_explorer(monkeypatch: pytest.MonkeyPatch
             title="ex026",
             security="standard",
             explorer="development",
-            session_secret="test-secret-ex026-prod",
+            session_secret="test-secret-ex026-prod-ok-32chars!!",
             production=True,
         )
     assert app.hedron_explorer_mode == "off"
@@ -88,7 +88,7 @@ def test_explorer_off_absent_in_production(monkeypatch: pytest.MonkeyPatch) -> N
         title="ex026",
         security="standard",
         explorer="off",
-        session_secret="test-secret-ex026-prod",
+        session_secret="test-secret-ex026-prod-ok-32chars!!",
         production=True,
     )
     client = TestClient(app)

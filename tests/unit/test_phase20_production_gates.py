@@ -26,6 +26,35 @@ def test_production_rejects_weak_secret(monkeypatch: pytest.MonkeyPatch) -> None
         )
 
 
+@pytest.mark.parametrize("secret", ["x", "password", "dev", "short-but-not-placeholder"])
+def test_production_rejects_short_session_secrets(
+    monkeypatch: pytest.MonkeyPatch, secret: str
+) -> None:
+    """#196: gate message promises short secrets are refused."""
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    with pytest.raises(RuntimeError, match="weak-session-secret"):
+        assert_production_security_config(
+            production=True,
+            security_profile="standard",
+            session_secret=secret,
+            explorer_mode="off",
+            content_security_policy="default-src 'self'",
+        )
+
+
+def test_production_accepts_long_non_placeholder_secret(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HEDRON_ENV", "production")
+    monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
+    assert_production_security_config(
+        production=True,
+        security_profile="standard",
+        session_secret="a-sufficiently-long-production-secret",
+        explorer_mode="off",
+        content_security_policy="default-src 'self'",
+    )
+
+
 def test_production_rejects_development_profile(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("HEDRON_ENV", "production")
     monkeypatch.delenv(RISK_ACCEPTANCE_ENV, raising=False)
