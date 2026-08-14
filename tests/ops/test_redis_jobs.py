@@ -32,6 +32,7 @@ class _SharedRedis:
     def __init__(self) -> None:
         self._store: dict[str, str] = {}
         self._sets: dict[str, set[str]] = {}
+        self._ttl: dict[str, int] = {}
 
     def get(self, key: str) -> str | None:
         return self._store.get(key)
@@ -43,13 +44,15 @@ class _SharedRedis:
         ex: int | None = None,
         nx: bool = False,
     ) -> bool:
-        del ex
         if nx and key in self._store:
             return False
         self._store[key] = value
+        if ex is not None:
+            self._ttl[key] = int(ex)
         return True
 
     def delete(self, key: str) -> int:
+        self._ttl.pop(key, None)
         return 1 if self._store.pop(key, None) is not None else 0
 
     def keys(self, pattern: str) -> list[str]:
@@ -72,18 +75,15 @@ class _SharedPipeline:
 
     def __init__(self, client: _SharedRedis) -> None:
         self._client = client
-        self._watched: str | None = None
-        self._watched_value: str | None = None
+        self._watched: dict[str, str | None] = {}
         self._buffer: list[tuple[str, tuple[object, ...], dict[str, object]]] = []
         self._in_multi = False
 
     def watch(self, key: str) -> None:
-        self._watched = key
-        self._watched_value = self._client._store.get(key)
+        self._watched[key] = self._client._store.get(key)
 
     def unwatch(self) -> None:
-        self._watched = None
-        self._watched_value = None
+        self._watched.clear()
         self._buffer.clear()
         self._in_multi = False
 
@@ -104,9 +104,9 @@ class _SharedPipeline:
         self._buffer.append(("set", (key, value), {"ex": ex, "nx": nx}))
 
     def execute(self) -> list[object]:
-        if self._watched is not None:
-            current = self._client._store.get(self._watched)
-            if current != self._watched_value:
+        for watched_key, watched_value in self._watched.items():
+            current = self._client._store.get(watched_key)
+            if current != watched_value:
                 self.unwatch()
                 raise WatchError("watched key changed")
         results: list[object] = []
@@ -181,3 +181,35 @@ def test_redis_job_backend_cas_contends_on_watch() -> None:
     marked = backend.mark(handle.job_id, JobState.SUCCEEDED)
     assert marked is not None
     assert marked.state is JobState.SUCCEEDED
+
+
+def test_redis_mark_refreshes_idempotency_ttl_skew() -> None:
+    """#210: body TTL refresh must also refresh/recreate the idempotency key."""
+    shared: Any = _SharedRedis()
+    backend = RedisJobBackend(shared, ttl_seconds=10)
+    handle = backend.submit("demo", {"n": 1}, idempotency_key="k-skew", tenant_id="t")
+    idem_keys = [k for k in shared._store if ":idem:" in k]
+    assert len(idem_keys) == 1
+    idem_key = idem_keys[0]
+    assert shared._ttl[idem_key] == 10
+
+    # Simulate write-once idem TTL decaying while mark refreshes the body.
+    shared._ttl[idem_key] = 1
+    marked = backend.mark(handle.job_id, JobState.RUNNING)
+    assert marked is not None
+    assert marked.state is JobState.RUNNING
+    assert shared._ttl[idem_key] == 10
+    assert shared.get(idem_key) == handle.job_id
+
+    # Force-expire only the idempotency key while the body remains.
+    shared.delete(idem_key)
+    assert shared.get(idem_key) is None
+    assert shared.get(f"h1:job:{handle.job_id}") is not None
+
+    recreated = backend.mark(handle.job_id, JobState.RUNNING)
+    assert recreated is not None
+    assert shared.get(idem_key) == handle.job_id
+    assert shared._ttl[idem_key] == 10
+
+    again = backend.submit("demo", {"n": 2}, idempotency_key="k-skew", tenant_id="t")
+    assert again.job_id == handle.job_id

@@ -31,17 +31,14 @@ sys.modules.setdefault("redis.exceptions", _exc_mod)
 class _SharedPipeline:
     def __init__(self, client: _SharedRedis) -> None:
         self._client = client
-        self._watched: str | None = None
-        self._watched_value: str | None = None
+        self._watched: dict[str, str | None] = {}
         self._buffer: list[tuple[str, tuple[object, ...], dict[str, object]]] = []
 
     def watch(self, key: str) -> None:
-        self._watched = key
-        self._watched_value = self._client._store.get(key)
+        self._watched[key] = self._client._store.get(key)
 
     def unwatch(self) -> None:
-        self._watched = None
-        self._watched_value = None
+        self._watched.clear()
         self._buffer.clear()
 
     def get(self, key: str) -> str | None:
@@ -60,9 +57,9 @@ class _SharedPipeline:
         self._buffer.append(("set", (key, value), {"ex": ex, "nx": nx}))
 
     def execute(self) -> list[object]:
-        if self._watched is not None:
-            current = self._client._store.get(self._watched)
-            if current != self._watched_value:
+        for watched_key, watched_value in self._watched.items():
+            current = self._client._store.get(watched_key)
+            if current != watched_value:
                 self.unwatch()
                 raise WatchError("watched key changed")
         results: list[object] = []

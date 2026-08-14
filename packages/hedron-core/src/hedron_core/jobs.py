@@ -543,9 +543,21 @@ class RedisJobBackend:
             ex=self._ttl,
         )
 
+    def _idem_redis_key_from_data(self, data: Mapping[str, object]) -> str | None:
+        scope = data.get("idempotency_scope_key")
+        if isinstance(scope, str) and scope:
+            return f"{self._prefix}idem:{scope}"
+        return None
+
     def _store_cas(self, data: Mapping[str, object], *, expected_updated_at: float) -> bool:
-        """Compare-and-swap store when Redis WATCH/pipeline is available."""
-        key = self._key(str(data["job_id"]))
+        """Compare-and-swap store when Redis WATCH/pipeline is available.
+
+        Refreshes the associated idempotency key TTL in the same transaction so
+        long-running jobs cannot outlive the write-once idempotency TTL (#210).
+        """
+        job_id = str(data["job_id"])
+        key = self._key(job_id)
+        idem_key = self._idem_redis_key_from_data(data)
         pipeline_factory = getattr(self._client, "pipeline", None)
         if not callable(pipeline_factory):
             raise RuntimeError(
@@ -568,6 +580,8 @@ class RedisJobBackend:
         for _ in range(8):
             try:
                 pipe.watch(key)
+                if idem_key is not None:
+                    pipe.watch(idem_key)
                 raw = self._decode(pipe.get(key) if hasattr(pipe, "get") else self._client.get(key))
                 if raw is None:
                     pipe.unwatch()
@@ -585,12 +599,22 @@ class RedisJobBackend:
                     JobState.FAILED.value,
                 }:
                     merged["state"] = JobState.CANCELLED.value
+                refresh_idem = False
+                if idem_key is not None:
+                    pointed = self._decode(
+                        pipe.get(idem_key) if hasattr(pipe, "get") else self._client.get(idem_key)
+                    )
+                    # Refresh when we still own the key, or recreate when TTL skew
+                    # expired it while the job body remains (#210).
+                    refresh_idem = pointed is None or pointed == job_id
                 pipe.multi()
                 pipe.set(
                     key,
                     json.dumps(merged, default=str, separators=(",", ":")),
                     ex=self._ttl,
                 )
+                if idem_key is not None and refresh_idem:
+                    pipe.set(idem_key, job_id, ex=self._ttl)
                 pipe.execute()
                 return True
             except Exception as exc:
