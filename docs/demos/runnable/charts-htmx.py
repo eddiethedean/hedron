@@ -1,6 +1,7 @@
 import os
 
 from hedron import Hedron, InteractionResult, Page, Stack, html
+from hedron_charts import LineChart
 
 app = Hedron(
     title="Charts HTMX",
@@ -12,12 +13,29 @@ app = Hedron(
 panel = app.region("chart-panel", description="Chart panel")
 
 
-def chart_panel(label: str):
-    return html.div(
-        html.strong(label),
-        html.span("Simple panel stand-in for a chart fragment."),
+INITIAL_ROWS = [
+    {"month": "Jan", "revenue": 10},
+    {"month": "Feb", "revenue": 14},
+    {"month": "Mar", "revenue": 18},
+]
+UPDATED_ROWS = [
+    {"month": "Jan", "revenue": 10},
+    {"month": "Feb", "revenue": 14},
+    {"month": "Mar", "revenue": 21},
+]
+
+
+def chart_panel(rows, *, description: str):
+    return html.section(
+        LineChart(
+            rows,
+            x="month",
+            y="revenue",
+            title="Monthly revenue",
+            description=description,
+        ),
         id=panel.id,
-        role="status",
+        aria={"label": "Revenue chart panel"},
     )
 
 
@@ -25,7 +43,10 @@ def chart_panel(label: str):
 def home() -> Page:
     return Page(
         Stack(
-            chart_panel("Chart panel"),
+            chart_panel(
+                INITIAL_ROWS,
+                description="Revenue increased throughout the quarter.",
+            ),
             html.button(
                 "Refresh chart panel",
                 type="button",
@@ -43,7 +64,10 @@ def home() -> Page:
 @app.component("/charts/refresh", fragment_regions=(panel,))
 def refresh() -> InteractionResult:
     return InteractionResult(
-        content=chart_panel("Chart panel updated"),
+        content=chart_panel(
+            UPDATED_ROWS,
+            description="March revenue increased to 21 after the refresh.",
+        ),
         region_id=panel.id,
         trigger="chartRefreshed",
         cache="vary-htmx",

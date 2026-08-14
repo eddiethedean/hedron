@@ -55,4 +55,4 @@ python -m pip install -U "hedron[posit]>=0.38.0,<0.39"
 
 [Release notes](release-notes.md) · [What’s new in 0.38](whats-new-0.38.md) ·
 [What’s ready](whats-ready.md) · [Chart API](../api/CHART.md) ·
-[COMPATIBILITY](../COMPATIBILITY.md) · [RELEASE_0_38](../acceptance/RELEASE_0_38.md)
+[COMPATIBILITY](../COMPATIBILITY.md) · [RELEASE_0_38](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_38.md)

@@ -1,3 +1,5 @@
+# Changelog
+
 ## [0.2.0] — 2026-08-12
 
 - Production-grade deny-by-default Streamable HTTP MCP projection (phase 0.32 / RFC-0065).

@@ -1,8 +1,10 @@
 # Chart grammar catalogs (phase 0.38)
 
 **Status:** Normative under Accepted [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md)
-(D-066). Planning-only: these names are locked so Stage 2+ does not invent them ad hoc.
-This document does **not** ship `ChartSpec`, `hedron-chart`, or D3 runtime.
+(D-066). `ChartSpec`, `ChartPlan`, and `hedron-chart` ship in `hedron-charts 0.2.0`.
+This catalog records the accepted grammar; it is broader than some specialized behavior in the
+current host. The public [runtime coverage matrix](../api/CHART.md#compiler-contract-versus-current-host-coverage)
+is authoritative for observed `0.2.0` implementation coverage.
 
 Living baseline: Published **`v0.38.0`**. Cut: Hedron **`v0.38.0`**, `hedron-charts` **`0.2.0`**.
 Tracking: [#251](https://github.com/eddiethedean/hedron/issues/251).
@@ -14,14 +16,15 @@ Immutable, JSON-serializable, schema-versioned. Unknown keys fail closed.
 | Field | Meaning |
 |---|---|
 | `schema_version` | Integer `1`. JSON schema id `hedron-chart-spec/1`. |
-| `data` | Bounded inline rows and/or named data references; explicit field types; stable row/series keys. |
+| `data` | Bounded inline rows plus optional name metadata and field declarations. The compiler does not resolve a remote named source. |
 | `marks` | Allowlisted mark definitions (see Supported catalog in RFC-0069). |
 | `encodings` | Positional, color, size, opacity, shape, stroke, detail, grouping, ordering, tooltip. |
 | `scales` | Linear, log, symlog, power, time, UTC, ordinal, point, band, quantized. |
-| `guides` | Axes, legends, titles, captions. |
-| `transforms` | Closed operator catalog only (below). |
-| `composition` | Layer, facet, small multiple, annotation, reference line/band. |
-| `interaction` | Declared inspect, focus, select, brush, zoom/pan/reset, legend-filter, crosshair, drill intent. |
+| `guides` | Axis, legend, title, and caption metadata compiled into the plan; the current lightweight host does not paint axes/legends. |
+| `transforms` | Closed operator catalog only (below); dedicated `0.2.0` implementations are called out below. |
+| `composition` | Open metadata mapping. `0.2.0` only bounds `composition.facet` when it is a list. |
+| `annotations` | Typed text/reference-line/reference-band records validate at the schema boundary but are not copied into the current plan. |
+| `interaction` | Declared inspect, focus, select, brush, zoom/pan/reset, legend-filter, crosshair, drill intent; current host subset below. |
 | `theme` | Public chart token names; light/dark/forced-color/print; locale/timezone; density. |
 | `export` | SVG, PNG, CSV, JSON, print policy. |
 | `renderer` | Preference `svg` (default) or `canvas`. Compiler may select Canvas only under Stage 1 rules. |
@@ -55,6 +58,12 @@ Inference is visible. Explicit author values win or fail clearly; they are not s
 
 Calculations use this allowlist only. Unknown operators fail with a reserved `HED-CHART-*` code.
 
+In `0.2.0`, `filter`, `aggregate`, `sort`, `sample`, `stack`, `bin`, and `fold` have dedicated
+structural implementations. Numeric/string calculations have dedicated behavior for `add`,
+`subtract`, `multiply`, `divide`, `negate`, `abs`, `round`, `floor`, `ceil`, `min`, `max`,
+`coalesce`, `concat`, `lower`, `upper`, and `length`. Other catalog names validate but currently
+preserve the first input value rather than providing distinct temporal/window semantics.
+
 **Arithmetic / numeric:** `add`, `subtract`, `multiply`, `divide`, `negate`, `abs`, `round`,
 `floor`, `ceil`, `min`, `max`, `clamp`, `coalesce`.
 
@@ -77,6 +86,10 @@ Calculations use this allowlist only. Unknown operators fail with a reserved `HE
 
 0.38 public event kinds (typed `CustomEvent` detail; no DOM nodes, selectors, raw HTML, callbacks,
 or authorization state):
+
+The current first-party host directly emits `inspect`, `focus`, `select`, and `reset`. The other
+names are part of the accepted catalog and registered ABI but do not yet have dedicated host
+operations in `0.2.0`.
 
 | Kind | Intent |
 |---|---|
@@ -114,7 +127,7 @@ remediation diagnostic:
 
 Existing shipped codes **stay**: `HED-CHART-0001`…`0007`, `HED-CHART-0010`…`0014`.
 
-0.38 reserves (not implemented in this refine; do not emit until Stage 2+):
+0.38 reserves these ownership ranges:
 
 | Range | Owner |
 |---|---|
@@ -125,8 +138,9 @@ Existing shipped codes **stay**: `HED-CHART-0001`…`0007`, `HED-CHART-0010`…`
 | `HED-CHART-0060`…`0069` | Accessibility / export |
 | `HED-CHART-0070`…`0079` | Security / bounds / prototype pollution |
 
-Do not register these in `hedron_core.codes` or `docs/guides/error-codes.md` until the runtime
-emits them (`HEDDOC-017`).
+The `0.2.0` runtime emits `0020`–`0026`, `0030`–`0033`, `0061`–`0063`, and `0070`–`0073`;
+those codes are registered in [Error codes](../guides/error-codes.md#hed-chart). Unused values in
+the ranges remain reserved.
 
 ## Public chart tokens
 
@@ -157,15 +171,17 @@ JavaScript-off, failed upgrade, and module-load failure keep a useful semantic s
 1. **Figure** — titled container with description/alt.
 2. **Summary** — compiled encoding explanation (author-reviewed; not claimed insight).
 3. **Bounded table** — row-complete within `VisualizationLimits`; must not drop rows (#82).
-4. **Authorized export** — SVG/PNG/CSV/JSON/print according to policy; no remote fetches.
+4. **Authorized export** — Python supplies SVG/CSV/JSON/print bundle output according to policy;
+   PNG remains a browser capability in `0.2.0`.
 
 Static Matplotlib SVG/PNG remains a Supported path. First-party static SVG is also Supported for
 declared families. Pixel identity with the interactive renderer is a non-goal; semantic
 equivalence (data, encodings, identities, accessibility, export meaning) is required.
 
-## D3 candidate modules
+## Accepted D3 candidate modules
 
-Stage 4 pins exact versions. Candidate set: `d3-array`, `d3-scale`, `d3-shape`, `d3-axis`,
+The accepted design considered this candidate set: `d3-array`, `d3-scale`, `d3-shape`, `d3-axis`,
 `d3-selection`, `d3-time`, `d3-time-format`, `d3-format`, `d3-interpolate`, `d3-color`,
 `d3-brush`, `d3-zoom`, optional `d3-transition` (reduced-motion gated). Not `d3-geo`,
-`d3-hierarchy`, or `d3-force`.
+`d3-hierarchy`, or `d3-force`. The packaged `0.2.0` first-party host is a self-contained local
+module and does not expose these candidates as a consumer API or dependency contract.

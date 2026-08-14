@@ -456,7 +456,11 @@ COMPONENTS = (
             p("label", "str", "Visible link text."),
             p("href", "SafeUrl | str", "Validated navigation URL (also the no-JS fallback)."),
             p("method", "str", "HTMX verb mapped to hx-get / hx-post / … (default get)."),
-            p("target / swap", "str | None", "Approved hx-target and hx-swap for the primary region."),
+            p(
+                "target / swap",
+                "str | None",
+                "Approved hx-target and hx-swap for the primary region.",
+            ),
             p(
                 "select",
                 "str | None",
@@ -1500,6 +1504,27 @@ COMPONENTS = (
         demo="color-mode",
     ),
     ComponentDoc(
+        "Chart",
+        "charts",
+        "Render a validated ChartSpec through the first-party hedron-chart host.",
+        "Chart(spec=None, *, class_=None, **kwargs)",
+        "Chart(spec)",
+        (
+            p(
+                "spec",
+                "ChartSpec | Mapping[str, Any] | None",
+                "Schema-versioned chart specification; rendering without one raises `ValueError`.",
+            ),
+            p("class_", "str | None", "Optional class on the `hedron-chart` host."),
+            p("kwargs", "object", "Forwarded to `ChartProps`; unknown keys are rejected."),
+        ),
+        "Chart validates and compiles the specification into a deterministic ChartPlan, emits a semantic figure/summary/table fallback, and serializes the plan into the local `hedron-chart` custom element for progressive SVG or Canvas enhancement.",
+        "Provide a useful title and description in `spec.accessibility`; keep the generated summary and table fallback unless an equivalent accessible path is supplied.",
+        "Do not pass vendor Plotly/Vega dictionaries as ChartSpec or treat chart selection events as authorization.",
+        package="hedron[charts]",
+        demo="line-chart",
+    ),
+    ComponentDoc(
         "LineChart",
         "charts",
         "Plot one x/y series from row mappings with an accessible fallback.",
@@ -1513,7 +1538,7 @@ COMPONENTS = (
             p("waiver", "str | None", "Reviewed accessibility exception."),
             p("limits", "VisualizationLimits | None", "Complexity bounds."),
         ),
-        "LineChart prefers the Matplotlib adapter when installed and otherwise produces a reviewed accessible SVG plus a redacted table fallback. Numeric and categorical x values are supported.",
+        "LineChart converts the beginner call to ChartSpec, compiles a deterministic ChartPlan, emits the semantic fallback, and uses the first-party hedron-chart host. It does not select Matplotlib implicitly. Numeric and categorical x values are accepted.",
         "Supply a conclusion-oriented description and keep the tabular fallback available to users who cannot perceive the plot.",
         "Bound data and never insert raw labels into active SVG or bypass the accessibility contract.",
         package="hedron[charts]",
@@ -1533,7 +1558,7 @@ COMPONENTS = (
             p("waiver", "str | None", "Reviewed accessibility exception."),
             p("limits", "VisualizationLimits | None", "Complexity bounds."),
         ),
-        "AreaChart prefers the Matplotlib adapter when installed and otherwise produces a reviewed accessible SVG area plus a redacted table fallback.",
+        "AreaChart converts the beginner call to ChartSpec and renders it through the first-party hedron-chart host with a reviewed SVG fallback and redacted table. It does not select Matplotlib implicitly.",
         "Supply a conclusion-oriented description and keep the tabular fallback available to users who cannot perceive the plot.",
         "Bound data and never insert raw labels into active SVG or bypass the accessibility contract.",
         package="hedron[charts]",
@@ -1553,7 +1578,7 @@ COMPONENTS = (
             p("waiver", "str | None", "Reviewed accessibility exception."),
             p("limits", "VisualizationLimits | None", "Complexity bounds."),
         ),
-        "BarChart prefers the Matplotlib adapter when installed and otherwise produces a reviewed accessible SVG bar chart plus a redacted table fallback.",
+        "BarChart converts the beginner call to ChartSpec and renders it through the first-party hedron-chart host with a reviewed SVG fallback and redacted table. It does not select Matplotlib implicitly.",
         "Supply a conclusion-oriented description and keep the tabular fallback available to users who cannot perceive the plot.",
         "Bound data and never insert raw labels into active SVG or bypass the accessibility contract.",
         package="hedron[charts]",
@@ -1573,7 +1598,7 @@ COMPONENTS = (
             p("waiver", "str | None", "Reviewed accessibility exception."),
             p("limits", "VisualizationLimits | None", "Complexity bounds."),
         ),
-        "ScatterChart prefers the Matplotlib adapter when installed and otherwise produces a reviewed accessible SVG scatter plot plus a redacted table fallback.",
+        "ScatterChart converts the beginner call to a point-mark ChartSpec and renders it through the first-party hedron-chart host with a reviewed SVG fallback and redacted table. It does not select Matplotlib implicitly.",
         "Supply a conclusion-oriented description and keep the tabular fallback available to users who cannot perceive the plot.",
         "Bound data and never insert raw labels into active SVG or bypass the accessibility contract.",
         package="hedron[charts]",
@@ -2608,6 +2633,18 @@ def page_text(spec: ComponentDoc) -> str:
         if simulated
         else "This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform."
     )
+    if spec.name in {"Chart", "LineChart", "AreaChart", "BarChart", "ScatterChart"}:
+        server_note = (
+            "The server-rendered figure, summary, and table remain useful without JavaScript. "
+            "When the `hedron_charts` plugin assets load, the local `hedron-chart` module "
+            "progressively enhances that fallback and remounts safely after HTMX swaps."
+        )
+    elif spec.name in {"PlotlyChart", "AltairChart"}:
+        server_note = (
+            "The server emits bounded, non-executable JSON and accessible metadata. The "
+            "interactive visual requires the corresponding vendored browser host/runtime; "
+            "these adapters remain Experimental and fail closed when the runtime is unavailable."
+        )
     if simulated or spec.server not in {"No", "Page response"}:
         mutation_note = (
             "Mutating flows must use POST, validate CSRF, authorize on the server, "
@@ -2639,6 +2676,13 @@ def page_text(spec: ComponentDoc) -> str:
     workspace_only = ""
     import_module = "hedron_charts" if is_charts else "hedron"
     distribution = f"`{spec.package}`"
+    related = (
+        "[Charts guide](../guides/charts-and-htmx.md) · "
+        "[Charts API](../api/CHART.md) · "
+        "[hedron-charts package](../packages/hedron-charts.md)"
+        if is_charts
+        else "[All component demos](index.md) · [Built-in API](../api/BUILT_INS.md) · [Testing](../guides/testing.md)"
+    )
     return f"""---
 title: {spec.name}
 description: {spec.summary}
@@ -2717,7 +2761,7 @@ assert result.html
 assert not result.diagnostics
 ```
 
-[All component demos](index.md) · [Built-in API](../api/BUILT_INS.md) · [Testing](../guides/testing.md)
+{related}
 """
 
 
@@ -2827,6 +2871,7 @@ def discover_builtin_components() -> set[str]:
         "packages/hedron-data/src/hedron_data/table.py",
         "packages/hedron-data/src/hedron_data/editor.py",
         "packages/hedron-charts/src/hedron_charts/components.py",
+        "packages/hedron-charts/src/hedron_charts/element.py",
     )
     return names
 

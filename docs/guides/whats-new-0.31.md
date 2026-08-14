@@ -29,4 +29,4 @@ python -m pip install -U "hedron-sample-kit>=0.1.10,<0.2"
 hedron migrate streamlit streamlit_app.py --out hedron_app
 ```
 
-Details: [RELEASE_0_31](../acceptance/RELEASE_0_31.md) · [upgrade guide](upgrade.md).
+Details: [RELEASE_0_31](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_31.md) · [upgrade guide](upgrade.md).

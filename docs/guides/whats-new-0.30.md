@@ -42,5 +42,5 @@ python -m pip install -U "fastapi-workbench>=1.0.0,<2.0"
 fastapi-workbench run app:app
 ```
 
-Details: [RELEASE_0_30](../acceptance/RELEASE_0_30.md) · [upgrade guide](upgrade.md) ·
+Details: [RELEASE_0_30](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_30.md) · [upgrade guide](upgrade.md) ·
 [fastapi-workbench guide](fastapi-workbench.md).

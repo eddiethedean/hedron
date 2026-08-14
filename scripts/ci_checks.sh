@@ -236,6 +236,8 @@ PY
   run uv run --python "$PYTHON" python scripts/check_documentation_ownership.py
   run uv run --python "$PYTHON" python scripts/check_api_docs_coverage.py
   run uv run --python "$PYTHON" python scripts/check_package_readme_links.py
+  run uv run --python "$PYTHON" python scripts/check_public_doc_links.py
+  run uv run --python "$PYTHON" python scripts/check_changelog_structure.py
   run uv run --python "$PYTHON" python scripts/check_recipe_code_sync.py
   run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned

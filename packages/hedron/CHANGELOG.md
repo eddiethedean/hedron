@@ -1,15 +1,16 @@
+# Changelog
+
 ## [0.38.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
 
 
+## [0.37.0] — 2026-08-14
+
 - Coordinated train cut for phase 0.37 (D-065): form-associated Alpha
   `hedron-elements`, `InteractionState`, semantic primitives, and
   `GestureOverlayCatalog`.
 - Closes high-severity remediations #230–#237 and follow-on #244.
-
-## [0.37.0] — 2026-08-14
-
 
 ## [0.36.0] — 2026-08-13
 
@@ -26,8 +27,6 @@
 ### Added
 
 - Coordinated Beta train cut for production-grade Gradio client interop (D-062 / RFC-0067).
-
-# Changelog
 
 ## [0.33.0] — 2026-08-13
 

@@ -1,6 +1,7 @@
 # What’s new in 0.36
 
-**Published** as `v0.38.0`. Pin `hedron>=0.38.0,<0.39`.
+**Published** as `v0.36.0`. Historical pin: `hedron>=0.36.0,<0.37`.
+For new apps, use `hedron>=0.38.0,<0.39`; see [What’s new in 0.38](whats-new-0.38.md).
 
 Phase 0.36 establishes the Web Component ABI foundation (RFC-0060 / D-064): a versioned
 element registry, SSR/HTMX lifecycle rules, and `ElementStateOwnership`. This is **not**
@@ -17,8 +18,8 @@ production-grade Web Components and **not** Hedron `1.0`.
 ## Install
 
 ```bash
-python -m pip install -U "hedron>=0.38.0,<0.39"
-python -m pip install "hedron[elements]>=0.38.0,<0.39"
+# Historical 0.36 environment only; new apps should use the 0.38 pin above.
+python -m pip install "hedron>=0.36.0,<0.37" "hedron[elements]>=0.36.0,<0.37"
 ```
 
 ## Notes
@@ -28,7 +29,7 @@ python -m pip install "hedron[elements]>=0.38.0,<0.39"
 
 ## See also
 
-[RFC-0060](../rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) ·
-[RELEASE_0_36](../acceptance/RELEASE_0_36.md) ·
+[RFC-0060](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0060-WEB-COMPONENT-PLATFORM.md) ·
+[RELEASE_0_36](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_36.md) ·
 [What’s ready](whats-ready.md) ·
 [Upgrade](upgrade.md)

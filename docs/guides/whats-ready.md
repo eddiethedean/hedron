@@ -15,8 +15,8 @@ Prefer polling over SSE/WebSocket.
 
 **Charts / sample kit:** install with floors
 `hedron[charts]>=0.38.0,<0.39` and `hedron-sample-kit>=0.1.10,<0.2`.
-Matplotlib/static charts are the **Supported** default path on the Beta
-`hedron-charts` package; Plotly / Altair remain **Experimental**.
+First-party `ChartSpec` / `hedron-chart` (SVG or Canvas) and Matplotlib/static charts are
+**Supported** on the Beta `hedron-charts` package; Plotly / Altair remain **Experimental**.
 **Tooling-grade:** notebook preview is Supported only on localhost and is not a production
 server. **Experimental:** live SSE/WS. Gradio remote client interop is **Beta**
 (`hedron-gradio` `0.2.0`) for declared allowlisted destinations. MCP is **Beta** for its
@@ -84,7 +84,7 @@ sessions are not Supported yet** — do not market human AT as done.
 | Posit Workbench / RStudio Server | **Supported** (`hedron[workbench]` or `hedron[posit]`) | [Posit Workbench](posit-workbench.md) · [Posit deployments](posit.md) — Workbench **2025.05.1**–**2026.07.0**; `HedronWorkbench` / `HedronPosit`; no import auto-wrap |
 | Posit Connect (native GUID) | **Supported** (`hedron[posit]`) | [Posit deployments](posit.md) — Connect **2025.06.0**–**2026.07.0**; native cookies |
 | Live SSE / WebSocket updates | **Experimental** | Prefer [polling](live-interaction.md) |
-| Charts | **Supported** Matplotlib/static on Beta package | Install `hedron[charts]>=0.38.0,<0.39`; Matplotlib/static is Supported; Plotly / Altair remain **Experimental** ([compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor)) |
+| Charts | **Supported** first-party and Matplotlib/static paths on Beta package | Install `hedron[charts]>=0.38.0,<0.39`; `ChartSpec` / `hedron-chart` and Matplotlib/static are Supported; Plotly / Altair remain **Experimental** ([Chart API](../api/CHART.md)) |
 | Model demos / inference workflows | **Supported** capability (fail-closed; APIs `beta`) | Learn from [Model demos](model-demos.md) snippets — **no** Gradio-like product sample in-tree; evidence app is a [stub](https://github.com/eddiethedean/hedron/blob/main/examples/model-demo-0.18/README.md) |
 | MCP projection | **Supported** inventory on Beta `hedron-mcp` `0.2.0` | Deny-by-default; pin `hedron[mcp]`; mutations Experimental |
 | Notebook preview | **Supported tooling-grade scope** | Localhost preview only; not Supported production hosting |
@@ -160,7 +160,7 @@ guaranteed multi-worker live-transport proof.
 | Package | Role |
 |---|---|
 | `hedron[notebook]` / `hedron-notebook` | Localhost-oriented preview; tooling-grade Supported; not Supported production hosting |
-| `hedron-sample-kit` | Installable reference plugin (`>=0.2.0,<0.3`) |
+| `hedron-sample-kit` | Installable reference plugin (`>=0.1.10,<0.2`) |
 | `hedron-sim` | Deterministic offline fragment simulation (tooling-grade) |
 | `packages/hedron-runtime-*` | Tooling-grade Java / Node conformance evaluators |
 
@@ -170,7 +170,7 @@ guaranteed multi-worker live-transport proof.
 |---|---|
 | `hedron[mcp]` / `hedron-mcp` | Beta `0.2.0` (`>=0.2.0,<0.3`); deny-by-default Supported inventory; mutations Experimental |
 | `hedron[gradio]` / `hedron-gradio` | Beta `0.2.0` (`>=0.2.0,<0.3`); allowlisted remote predict/stream/file transport |
-| `hedron[charts]` / `hedron-charts` | Beta package (`>=0.2.0,<0.3`); Matplotlib/static Supported; Plotly/Altair Experimental |
+| `hedron[charts]` / `hedron-charts` | Beta package (`>=0.2.0,<0.3`); first-party `ChartSpec` / `hedron-chart` and Matplotlib/static Supported; Plotly/Altair Experimental |
 | `hedron[native]` / `hedron-native` | Optional Rust HTML-escape accel; pure-Python fallback Supported |
 
 ## Deferred (do not market as Supported)

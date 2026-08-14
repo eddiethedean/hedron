@@ -2,6 +2,7 @@
 
 Accessible visualization components and optional plotting adapters.
 
+- [`Chart`](chart.md) — Render a validated ChartSpec through the first-party hedron-chart host.
 - [`LineChart`](line-chart.md) — Plot one x/y series from row mappings with an accessible fallback.
 - [`AreaChart`](area-chart.md) — Plot a filled x/y area series from row mappings with an accessible fallback.
 - [`BarChart`](bar-chart.md) — Plot categorical bars from row mappings with an accessible fallback.

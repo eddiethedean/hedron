@@ -310,6 +310,28 @@ def check_metadata(facts: ReleaseFacts = FACTS) -> list[str]:
     return failures
 
 
+def check_security_policy(
+    path: Path,
+    text: str,
+    facts: ReleaseFacts = FACTS,
+) -> list[str]:
+    """Require the support matrix to follow release metadata exactly."""
+    normalized = " ".join(text.split())
+    required = (
+        f"current published train** (`{facts.train_line}`)",
+        f"immediately previous minor (`{facts.previous_train}.x`)",
+        f"| `{facts.train_line}` | Yes (current published train — pin "
+        f"`{facts.pin}`; published `v{facts.published_version}`) |",
+        f"| `{facts.previous_train}.x` | Best-effort security triage through "
+        f"approximately {facts.previous_security_until}; upgrade to `{facts.train_line}` |",
+    )
+    return [
+        f"{path}: security policy is missing release-derived text: {marker}"
+        for marker in required
+        if marker not in normalized
+    ]
+
+
 def main() -> int:
     failures = check_metadata()
     for path in adopter_files():
@@ -322,6 +344,12 @@ def main() -> int:
         failures.extend(
             check_text(relative, path.read_text(encoding="utf-8"), check_installs=False)
         )
+    root_security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
+    docs_security = (ROOT / "docs" / "SECURITY.md").read_text(encoding="utf-8")
+    failures.extend(check_security_policy(Path("SECURITY.md"), root_security))
+    failures.extend(check_security_policy(Path("docs/SECURITY.md"), docs_security))
+    if root_security != docs_security:
+        failures.append("SECURITY.md and docs/SECURITY.md must remain byte-for-byte identical")
     if failures:
         print("\n".join(failures), file=sys.stderr)
         return 1

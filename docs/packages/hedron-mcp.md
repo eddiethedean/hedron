@@ -8,7 +8,7 @@ Disabled and empty until resources and tools are **explicitly registered**. MCP
 never grants authority beyond the authenticated principal.
 
 Production-grade for the declared Supported inventory (phase **0.32** /
-[RFC-0065](../rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) / D-060). Mutating tools remain
+[RFC-0065](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0065-PRODUCTION-GRADE-MCP.md) / D-060). Mutating tools remain
 **Experimental** and require `allow_mutations=True`.
 
 ## Install
@@ -59,5 +59,5 @@ projection.register_tool(
 mount_mcp(app, projection)  # Streamable HTTP at POST /mcp
 ```
 
-See [STABILITY](../api/STABILITY.md), [RELEASE_0_32](../acceptance/RELEASE_0_32.md), and
-[upgrade fixtures](../acceptance/upgrade-fixtures-032.md).
+See [STABILITY](../api/STABILITY.md), [RELEASE_0_32](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_32.md), and
+[upgrade fixtures](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/upgrade-fixtures-032.md).

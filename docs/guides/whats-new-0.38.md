@@ -1,7 +1,10 @@
 # What's new in Hedron 0.38
 
+**Published** as `v0.38.0` on 2026-08-14. Pin `hedron>=0.38.0,<0.39` and
+`hedron-charts>=0.2.0,<0.3`.
+
 Phase **0.38** ships Hedron's first-party high-fidelity chart system
-([RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066).
+([RFC-0069](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066).
 
 ## Highlights
 
@@ -24,4 +27,4 @@ pip install "hedron-charts>=0.2.0,<0.3"
 - [Chart API](../api/CHART.md)
 - [hedron-charts package](../packages/hedron-charts.md)
 - [Upgrade](upgrade.md)
-- [RELEASE_0_38](../acceptance/RELEASE_0_38.md)
+- [RELEASE_0_38](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_38.md)

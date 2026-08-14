@@ -219,7 +219,7 @@ live status; SSE, WebSocket, streaming, and preload remain experimental.
 
 Install the current tip with the pin under **0.38.0** above.
 
-Read [Upgrade to 0.33](upgrade.md) before changing a production lockfile. Maintainer
+Read [Upgrade to 0.38](upgrade.md) before changing a production lockfile. Maintainer
 evidence identifiers and packets are linked from [What’s new in 0.27](whats-new-0.27.md).
 
 ## 0.26.1 — 2026-08-10

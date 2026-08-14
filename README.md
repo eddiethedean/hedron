@@ -85,7 +85,7 @@ Prefer Streamlit for notebook-style rerun dashboards, or raw FastAPI+HTMX if you
 want a component framework.
 
 [Evaluate Hedron](https://hedron.readthedocs.io/en/latest/guides/evaluate/) ·
-[What’s new in 0.36](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.36/) ·
+[What’s new in 0.38](https://hedron.readthedocs.io/en/latest/guides/whats-new-0.38/) ·
 [Changelog](https://hedron.readthedocs.io/en/latest/guides/changelog/).
 
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
@@ -105,7 +105,8 @@ Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/
 | [`hedron-explorer`](https://pypi.org/project/hedron-explorer/) | Component Explorer (also `hedron[dev]`) |
 
 Flagship and adapters are **Beta** package maturity on PyPI — pin versions. Optional extras
-(data, jinja, conformance, extras, native accel, notebook, MCP, Gradio):
+(data, charts, Jinja, conformance, curated UI, native acceleration, notebook, MCP, Gradio,
+Web Components, Workbench, and Posit):
 [installation](https://hedron.readthedocs.io/en/latest/getting-started/installation/).
 
 Charts require the fixed satellite floor: `pip install "hedron[charts]>=0.38.0,<0.39"`.

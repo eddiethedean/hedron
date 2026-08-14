@@ -242,7 +242,8 @@ For editable grids, supply `apply_changes` on `SQLAlchemyDataSource` (or an
 
 ## Charts
 
-Install `hedron[charts]>=0.38.0,<0.39` for the compatible `0.1.10` chart satellite.
+Install `hedron[charts]>=0.38.0,<0.39`; the flagship extra resolves the compatible
+`hedron-charts>=0.2.0,<0.3` satellite.
 See [Charts and HTMX](charts-and-htmx.md) and
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor).
 

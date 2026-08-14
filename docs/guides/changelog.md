@@ -15,11 +15,16 @@ below record package-specific implementation changes.
 | `hedron-conformance` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-conformance/CHANGELOG.md) |
 | `hedron-extras` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-extras/CHANGELOG.md) |
 | `hedron-charts` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-charts/CHANGELOG.md) |
+| `hedron-elements` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-elements/CHANGELOG.md) |
 | `hedron-native` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-native/CHANGELOG.md) |
 | `hedron-notebook` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-notebook/CHANGELOG.md) |
 | `hedron-mcp` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-mcp/CHANGELOG.md) |
 | `hedron-gradio` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-gradio/CHANGELOG.md) |
 | `hedron-sample-kit` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-sample-kit/CHANGELOG.md) |
+| `hedron-sim` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-sim/CHANGELOG.md) |
+| `hedron-workbench` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-workbench/CHANGELOG.md) |
+| `hedron-posit` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/hedron-posit/CHANGELOG.md) |
+| `fastapi-workbench` | [CHANGELOG](https://github.com/eddiethedean/hedron/blob/main/packages/fastapi-workbench/CHANGELOG.md) |
 
 PyPI is authoritative for package availability. GitHub Releases hold wheels, source
 archives, evidence, and checksums for a coordinated train.

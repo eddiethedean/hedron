@@ -1176,8 +1176,8 @@ publishing arbitrary callables or adding a second application runtime.
 
 ## 0.19 — Accessibility engineering and inclusive authoring (`v0.19.0`)
 
-**Status:** Published as `v0.19.0` (2026-08-07). The current train is **0.36.x**
-(last published tip `v0.36.0`).
+**Status:** Published as `v0.19.0` (2026-08-07). The current train is **0.38.x**
+(last published tip `v0.38.0`).
 See [STATUS](docs/STATUS.md) and
 [release-gate-0.19.toml](docs/acceptance/release-gate-0.19.toml). Decision: D-050.
 Owning RFCs: [RFC-0023](docs/rfcs/RFC-0023-ACCESSIBILITY.md) (umbrella),

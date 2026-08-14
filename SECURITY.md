@@ -4,14 +4,14 @@
 
 Security fixes land on the **current published train** (`0.38.x`). Older `0.x` lines should
 upgrade; there is **no multi-year LTS**. Best-effort triage for the immediately previous
-minor (`0.35.x`) continues through approximately **2027-08-13** — after that, upgrade
+minor (`0.37.x`) continues through approximately **2027-08-13** — after that, upgrade
 is required. There is **no contractual patch SLA**.
 
 | Version | Supported |
 |---|---|
-| `0.36.x` | Yes (current living tip — pin `>=0.38.0,<0.39`; published `v0.38.0`) |
-| `0.35.x` | Best-effort security triage through approximately 2027-08-13; upgrade to `0.36.x` |
-| `0.9.x`–`0.34.x` | No; upgrade to the current train |
+| `0.38.x` | Yes (current published train — pin `>=0.38.0,<0.39`; published `v0.38.0`) |
+| `0.37.x` | Best-effort security triage through approximately 2027-08-13; upgrade to `0.38.x` |
+| `0.9.x`–`0.36.x` | No; upgrade to the current train |
 | `0.8.x` | No; final HDN-capable line, retained only for historical migration context |
 | `< 0.8` | No |
 

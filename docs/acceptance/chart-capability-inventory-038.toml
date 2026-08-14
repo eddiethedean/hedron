@@ -1,6 +1,8 @@
-# Phase 0.38 chart capability inventory (Stage 0 planned state).
-# Living published baseline is v0.37.0. This inventory describes the intended 0.38
-# cut and does not claim availability. Tracking #251.
+# Phase 0.38 chart capability inventory (verified cut record).
+# `living_published_baseline` and `implementation_entry` preserve the v0.37.0
+# starting point used by the gate. Current shipped versions are `hedron_cut` and
+# `charts_cut`. The inventory records the accepted target; observed 0.2.0 host
+# coverage is documented in docs/api/CHART.md. Tracking #251.
 
 schema = 1
 phase = "0.38"

@@ -95,8 +95,8 @@ train is **0.38.x** (Published; last published PyPI/git = `v0.38.0`)—see
 hardened mount `..` / `%2e`, RedisStatusStore / Celery–RQ cancel CAS, adapter prepare under
 a running loop, SSE/streaming `Cache-Control`, and root-relative SafeUrl/Hx attrs — still
 relevant when upgrading from earlier 0.25 lines onto `>=0.38.0,<0.39`. If docs describe a
-feature missing from your install, upgrade to a matching `0.30.x` pin
-(`hedron>=0.38.0,<0.39`) or use a tagged checkout of that release.
+feature missing from your install, upgrade to the current `0.38.x` pin
+(`hedron>=0.38.0,<0.39`) or switch the docs to the tag matching your installed release.
 
 ## CSRF 403 on POST (FastAPI / Flask)
 
@@ -239,7 +239,7 @@ setting production mode.
 ## Cannot import `Auto` / `DataTable` / chart helpers
 
 **Cause:** `Auto` is core (`from hedron import Auto`). `DataTable` / `DataEditor` need the
-data extra. Charts require the corrected satellite floor shipped with 0.25.1.
+data extra. First-party charts on Hedron 0.38 require `hedron-charts>=0.2.0,<0.3`.
 
 **Fix:**
 
@@ -249,7 +249,7 @@ pip install "hedron[data]>=0.38.0,<0.39"      # DataTable, DataEditor
 pip install "hedron[charts]>=0.38.0,<0.39"   # chart components
 ```
 
-Versions before `hedron-charts 0.1.7` are incompatible with Hedron 0.27. See
+The old `hedron-charts 0.1.x` line is incompatible with Hedron 0.38. See
 [Compatibility](../COMPATIBILITY.md#charts-and-sample-kit-compatibility-floor),
 [Installation](../getting-started/installation.md), and
 [charts and HTMX](charts-and-htmx.md).

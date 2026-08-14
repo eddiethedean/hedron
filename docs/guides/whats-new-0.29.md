@@ -46,5 +46,5 @@ uvicorn app:app
 
 Uninstalling `hedron-workbench` restores the 0.28 launch command.
 
-Details: [RELEASE_0_29](../acceptance/RELEASE_0_29.md) · [Posit Workbench](posit-workbench.md) ·
+Details: [RELEASE_0_29](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_29.md) · [Posit Workbench](posit-workbench.md) ·
 [upgrade guide](upgrade.md).

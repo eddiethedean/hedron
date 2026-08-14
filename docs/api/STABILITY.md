@@ -163,12 +163,16 @@ Also inventoried on the Beginner facade (already minimal-stable): `Hedron`,
 - Dask/Snowflake sources, AG Grid Community host: **beta**
 - Spreadsheet I/O / collab helpers: **beta**
 
-### `hedron-charts` (Beta distribution; `>=0.2.0,<0.3` on 0.30)
+### `hedron-charts` (Beta distribution; `>=0.2.0,<0.3` on 0.38)
 
+- `Chart` / `ChartSpec` / `ChartPlan`, compiler, and deterministic exports: **beta**.
 - `MatplotlibChart` / static SVG: **beta** API on Beta distribution for Supported scopes.
 - `PlotlyChart` / `AltairChart`: **experimental**.
 - `LineChart` / `AreaChart` / `BarChart` / `ScatterChart`: **beta**.
 - Optional adapters + offline runtime pins: **experimental**.
+
+Schema acceptance is broader than specialized host painting in `hedron-charts 0.2.0`; see the
+[Chart API coverage matrix](CHART.md#compiler-contract-versus-current-host-coverage).
 
 ### `hedron-workbench` (Beta) — `beta` optional Workbench adapter
 
@@ -183,7 +187,7 @@ Uvicorn reload or multiple workers (not both). Excluded: Flask/Django/WSGI,
 wildcard proxy trust, arbitrary raw HTML/JavaScript rewriting, vendoring
 fastapi-workbench, and bundling `rserver-url`.
 
-See [production-grade-inventory-029.toml](../acceptance/production-grade-inventory-029.toml)
+See [production-grade-inventory-029.toml](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/production-grade-inventory-029.toml)
 and [Posit Workbench](../guides/posit-workbench.md).
 
 ### `hedron-flask` / `hedron-django` (Beta) — `beta` Supported adapters
@@ -192,7 +196,7 @@ Live helpers are **experimental** (polling remains Supported fallback).
 
 ### `hedron-explorer` (Beta) — `beta` for `explorer_router`; panel internals **internal**
 
-### `hedron-sample-kit` (Beta tooling-grade; `>=0.2.0,<0.3`) — `beta`
+### `hedron-sample-kit` (Beta tooling-grade; `>=0.1.10,<0.2`) — `beta`
 
 ### `hedron-jinja` / HDJ (Beta) — `beta`; HDJ format v1 frozen
 

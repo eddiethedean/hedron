@@ -228,6 +228,7 @@ Dashboard chart routes return `InteractionResult` fragments:
     import os
 
     from hedron import Hedron, InteractionResult, Page, Stack, html
+    from hedron_charts import LineChart
 
     app = Hedron(
         title="Charts HTMX",
@@ -239,12 +240,29 @@ Dashboard chart routes return `InteractionResult` fragments:
     panel = app.region("chart-panel", description="Chart panel")
 
 
-    def chart_panel(label: str):
-        return html.div(
-            html.strong(label),
-            html.span("Simple panel stand-in for a chart fragment."),
+    INITIAL_ROWS = [
+        {"month": "Jan", "revenue": 10},
+        {"month": "Feb", "revenue": 14},
+        {"month": "Mar", "revenue": 18},
+    ]
+    UPDATED_ROWS = [
+        {"month": "Jan", "revenue": 10},
+        {"month": "Feb", "revenue": 14},
+        {"month": "Mar", "revenue": 21},
+    ]
+
+
+    def chart_panel(rows, *, description: str):
+        return html.section(
+            LineChart(
+                rows,
+                x="month",
+                y="revenue",
+                title="Monthly revenue",
+                description=description,
+            ),
             id=panel.id,
-            role="status",
+            aria={"label": "Revenue chart panel"},
         )
 
 
@@ -252,7 +270,10 @@ Dashboard chart routes return `InteractionResult` fragments:
     def home() -> Page:
         return Page(
             Stack(
-                chart_panel("Chart panel"),
+                chart_panel(
+                    INITIAL_ROWS,
+                    description="Revenue increased throughout the quarter.",
+                ),
                 html.button(
                     "Refresh chart panel",
                     type="button",
@@ -270,7 +291,10 @@ Dashboard chart routes return `InteractionResult` fragments:
     @app.component("/charts/refresh", fragment_regions=(panel,))
     def refresh() -> InteractionResult:
         return InteractionResult(
-            content=chart_panel("Chart panel updated"),
+            content=chart_panel(
+                UPDATED_ROWS,
+                description="March revenue increased to 21 after the refresh.",
+            ),
             region_id=panel.id,
             trigger="chartRefreshed",
             cache="vary-htmx",
@@ -316,7 +340,7 @@ Prefer this path when validating production posture —
 | CSRF on forms | `csrf_token_for_request` + hidden field / `hx-headers` in `_create_form` | CSRF on forms |
 | Create user POST | `@users.action("", method="POST")` | Fragment list refresh |
 | Fragment table refresh | `@users.component("/table")`, addressable `user_table` | Fragment list refresh |
-| DataEditor / Auto / charts (workspace) | dashboard + `/charts/*` (monorepo/`hedron-charts` source — not PyPI on 0.25) | Chart panel refresh (sim) |
+| DataEditor / Auto / charts | dashboard + `/charts/*` (`hedron[charts]>=0.38.0,<0.39` or the monorepo source) | Chart panel refresh (sim) |
 | Color mode | `ColorModeToggle` + preference cookie helpers | — |
 | Production archetype | compose + `requirements-prod.txt` + README ingredient table | — |
 

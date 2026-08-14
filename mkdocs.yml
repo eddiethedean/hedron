@@ -248,6 +248,7 @@ nav:
     - Rendering: api/RENDERING.md
     - Models and props: api/MODELS.md
     - Built-ins: api/BUILT_INS.md
+    - Charts: api/CHART.md
     - Responses: api/RESPONSES.md
     - Exceptions: api/EXCEPTIONS.md
     - CLI: api/CLI.md
@@ -269,10 +270,12 @@ nav:
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md
-    - What's new in 0.33: guides/whats-new-0.33.md
+    - What's new in 0.38: guides/whats-new-0.38.md
+    - What's new in 0.37: guides/whats-new-0.37.md
     - What's new in 0.36: guides/whats-new-0.36.md
     - What's new in 0.35: guides/whats-new-0.35.md
     - What's new in 0.34: guides/whats-new-0.34.md
+    - What's new in 0.33: guides/whats-new-0.33.md
     - What's new in 0.32: guides/whats-new-0.32.md
     - What's new in 0.31: guides/whats-new-0.31.md
     - What's new in 0.30: guides/whats-new-0.30.md

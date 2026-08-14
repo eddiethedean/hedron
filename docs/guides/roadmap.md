@@ -41,7 +41,7 @@ in the [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/doc
 
 The maintainer roadmap also locks the 2026-08-14 open medium/low remediation snapshot into these
 future regression gates: 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42.
-See the [issue ownership index](../ROADMAP.md#open-mediumlow-remediation-ownership-2026-08-14-snapshot)
+See the [issue ownership index](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md#open-mediumlow-remediation-ownership-2026-08-14-snapshot)
 for the exact set and phase rationale.
 
 ### Cross-cutting default presentation plan (0.33+)

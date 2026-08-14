@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail when a public ``hedron`` export disappears from the API coverage map."""
+"""Fail when public flagship or charts exports disappear from API reference."""
 
 from __future__ import annotations
 
@@ -12,6 +12,8 @@ INIT = ROOT / "packages/hedron/src/hedron/__init__.py"
 COVERAGE = ROOT / "docs/api/COVERAGE.md"
 CLI_SOURCE = ROOT / "packages/hedron/src/hedron/cli.py"
 CLI_REFERENCE = ROOT / "docs/api/CLI.md"
+CHARTS_INIT = ROOT / "packages/hedron-charts/src/hedron_charts/__init__.py"
+CHARTS_REFERENCE = ROOT / "docs/api/CHART.md"
 
 
 def public_exports(source: str) -> set[str]:
@@ -85,9 +87,17 @@ def main() -> int:
         raise SystemExit(
             "docs/api/CLI.md is missing top-level commands:\n  " + "\n  ".join(missing_commands)
         )
+    charts_exports = public_exports(CHARTS_INIT.read_text(encoding="utf-8"))
+    charts_documented = documented_symbols(CHARTS_REFERENCE.read_text(encoding="utf-8"))
+    missing_charts = sorted(charts_exports - charts_documented)
+    if missing_charts:
+        raise SystemExit(
+            "docs/api/CHART.md is missing hedron_charts exports:\n  " + "\n  ".join(missing_charts)
+        )
     print(
         f"ok: all {len(exports)} hedron.__all__ exports and "
-        f"{len(commands)} CLI commands appear in API docs"
+        f"{len(charts_exports)} hedron_charts exports and {len(commands)} CLI commands "
+        "appear in API docs"
     )
     return 0
 

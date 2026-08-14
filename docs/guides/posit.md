@@ -131,4 +131,4 @@ supported.
 
 - Connect credentials / user-session headers are never Hedron authentication.
 - Product resolution never auto-enables bridge or peer trust.
-- See [threat model](threat-model.md) and [RELEASE_0_33](../acceptance/RELEASE_0_33.md).
+- See [threat model](threat-model.md) and [RELEASE_0_33](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_33.md).

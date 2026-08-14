@@ -1,9 +1,13 @@
 # Phase 0.38 implementation plan: high-fidelity declarative charts
 
-This plan turns [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066 into reviewable
-work. The living published tip is `v0.38.0`. Stage 0 (including the post-0.38 contract refine)
-adds contracts only and does not change runtime behavior or versions. Tracking
-[#251](https://github.com/eddiethedean/hedron/issues/251). Grammar catalogs:
+**Status:** Historical implementation plan; the `v0.38.0` / `hedron-charts 0.2.0` cut is
+published. This file records the accepted target and work slicing, not the exact current runtime
+surface. Use the public [runtime coverage matrix](../api/CHART.md#compiler-contract-versus-current-host-coverage)
+for implemented paint, interaction, transform, export, and limit behavior.
+
+This plan turned [RFC-0069](../rfcs/RFC-0069-HIGH-FIDELITY-CHARTS.md) / D-066 into reviewable
+work. The living published tip is `v0.38.0`. Tracking
+[#251](https://github.com/eddiethedean/hedron/issues/251). Grammar catalog:
 [CHART_SPEC.md](CHART_SPEC.md).
 
 ## Outcome

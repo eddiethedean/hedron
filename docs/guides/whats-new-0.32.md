@@ -38,5 +38,5 @@ From Alpha `hedron-mcp` `0.1.x`: re-register tools/resources explicitly; do not 
 on client-controlled identity headers — principals come from the authenticated
 session or an explicit host `principal_resolver`.
 
-Details: [RELEASE_0_32](../acceptance/RELEASE_0_32.md) · [upgrade guide](upgrade.md) ·
+Details: [RELEASE_0_32](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_32.md) · [upgrade guide](upgrade.md) ·
 [hedron-mcp](../packages/hedron-mcp.md).

@@ -1,8 +1,8 @@
 # Hedron reference application (FastAPI)
 
-Multi-worker production kitchen-sink sample for the living Hedron train (**0.26**).
+Multi-worker production kitchen-sink sample for the current Hedron train (**0.38**).
 Authenticated team-administration demo with CRUD, DataEditor, optional charts (workspace
-`hedron-charts` on 0.25 — not PyPI), and the production-archetype checklist
+`hedron-charts` or the published `hedron[charts]` extra), and the production-archetype checklist
 (reverse-proxy subpath, Redis, CSP, Explorer off).
 
 Contract: [PRODUCTION_ARCHETYPE.md](../../docs/api/PRODUCTION_ARCHETYPE.md).
@@ -69,7 +69,7 @@ production posture. Generic packaging notes:
 - Typed create/update/delete actions with CSRF validation
 - Progressive-enhancement create/edit (no-JS 303) plus HTMX `#user-table` swaps
 - DataEditor, Auto, cache helpers, ColorMode
-- Charts via workspace `hedron-charts` (Deferred from PyPI on 0.25 — not `hedron[charts]`)
+- Charts via workspace `hedron-charts` or published `hedron[charts]>=0.38.0,<0.39`
 - Optional `hedron[native]` acceleration
 
 ## Tests

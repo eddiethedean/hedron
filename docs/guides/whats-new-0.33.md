@@ -1,7 +1,7 @@
 # What’s new in 0.33
 
 **Published** as `v0.33.0`. Historical coordinated pin: `hedron>=0.33.0,<0.34`.
-For new apps, use `hedron>=0.38.0,<0.39`; see [What’s new in 0.36](whats-new-0.36.md).
+For new apps, use `hedron>=0.38.0,<0.39`; see [What’s new in 0.38](whats-new-0.38.md).
 
 Phase **0.33** (D-061 / RFC-0066) ships **`hedron-posit`** as the unified Posit
 Workbench / Connect deployment adapter. Native Connect GUID on Connect
@@ -32,5 +32,5 @@ python -m pip install -U "hedron[workbench]>=0.33.0,<0.34"
 Prefer `from hedron_posit import HedronPosit`. Existing
 `from hedron_workbench import HedronWorkbench` imports continue to work.
 
-Details: [RELEASE_0_33](../acceptance/RELEASE_0_33.md) · [Posit guide](posit.md) ·
+Details: [RELEASE_0_33](https://github.com/eddiethedean/hedron/blob/main/docs/acceptance/RELEASE_0_33.md) · [Posit guide](posit.md) ·
 [upgrade guide](upgrade.md).

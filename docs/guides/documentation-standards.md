@@ -112,6 +112,8 @@ uv run python scripts/check_package_docs_inventory.py
 uv run python scripts/check_documentation_ownership.py
 uv run python scripts/check_api_docs_coverage.py
 uv run python scripts/check_package_readme_links.py
+uv run python scripts/check_public_doc_links.py
+uv run python scripts/check_changelog_structure.py
 uv run python scripts/check_recipe_code_sync.py
 uv run --group docs mkdocs build --strict
 ```
@@ -145,6 +147,8 @@ bash scripts/ci_checks.sh quality --python 3.12
 - [ ] New public APIs appear in the coverage map and have reference documentation.
 - [ ] New built-ins have generated component pages and composition tests.
 - [ ] Relative links resolve and the strict MkDocs build passes.
+- [ ] Public pages do not link relatively to maintainer files excluded from MkDocs.
+- [ ] Package changelog releases are non-empty and remain under one top-level title.
 - [ ] Generated outputs were updated from their owning source.
 
 See also: [Contributing](../CONTRIBUTING.md) ·

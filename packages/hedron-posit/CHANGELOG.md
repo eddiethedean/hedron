@@ -1,12 +1,13 @@
+# Changelog
+
 ## [0.38.0] — 2026-08-14
 
 - Phase 0.38 high-fidelity charts / train alignment (D-066 / RFC-0069).
 
 
+## [0.37.0] — 2026-08-14
+
 - Coordinated train cut for phase 0.37 (D-065).
-
-## [0.37.0]
-
 
 ## [0.36.0] — 2026-08-13
 
@@ -26,8 +27,6 @@
 - Native Connect GUID path Supported on Connect **2025.06.0** (in addition to 2026.07.0).
   `hedron-posit` ships a `pkg_resources.parse_version` shim so Connect 2025.06 FastAPI
   workers start under setuptools 82+.
-
-# Changelog
 
 ## [0.33.0] — 2026-08-13
 

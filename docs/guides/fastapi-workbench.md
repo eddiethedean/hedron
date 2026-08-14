@@ -47,7 +47,7 @@ Hedron URL/CSRF integration.
 
 ## Reference
 
-- [RFC-0063](../rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md)
+- [RFC-0063](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0063-FASTAPI-WORKBENCH-EXTRACTION.md)
 - [Example app](https://github.com/eddiethedean/hedron/tree/main/examples/fastapi-workbench-reference)
 - REALWB-030 Docker smoke runs this app via `fastapi-workbench run` alongside the
   hedron-workbench reference (`examples/workbench-reference/app_facade.py`).

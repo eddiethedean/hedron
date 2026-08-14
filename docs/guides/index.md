@@ -2,9 +2,9 @@
 
 Task-oriented guidance from a working page to a maintainable Hedron project.
 
-**0.36 train** (**Published**; last **v0.38.0**): typed FastAPI/HTMX applications,
-tooling-grade conformance/sim/notebook/sample-kit, Node/Java evaluators, and
-`hedron migrate streamlit` — [What’s ready](whats-ready.md).
+**0.38 train** (**Published**; last **v0.38.0**): typed FastAPI/HTMX applications,
+first-party high-fidelity charts, tooling-grade conformance/sim/notebook/sample-kit,
+Node/Java evaluators, and `hedron migrate streamlit` — [What’s ready](whats-ready.md).
 
 Complete **Learn** first ([Learning path](../getting-started/learning-path.md):
 First app → HTMX → Minimal form). HTMX and minimal form live under **Learn** — this

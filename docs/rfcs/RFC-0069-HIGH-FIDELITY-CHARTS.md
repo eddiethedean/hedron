@@ -17,6 +17,12 @@ capabilities to 0.39–0.42.
 
 **Tracking:** [#251](https://github.com/eddiethedean/hedron/issues/251)
 
+> **Implementation note:** This Accepted RFC records the target contract and quality bar. It is not
+> an exhaustive statement of `hedron-charts 0.2.0` runtime coverage. See the public
+> [Chart API coverage matrix](../api/CHART.md#compiler-contract-versus-current-host-coverage) for
+> the current specialized painters, emitted interactions, transforms, exports, and enforced
+> bounds. Where the implementation is narrower, the public API page and source are authoritative.
+
 ## Summary
 
 Phase 0.38 turns `hedron-charts` from a production-grade static-chart package with Experimental

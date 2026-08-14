@@ -40,7 +40,7 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 The server compiles the chart specification under output and accessibility limits. Hedron owns the embedding contract instead of accepting arbitrary active markup.
 
-This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
+The server emits bounded, non-executable JSON and accessible metadata. The interactive visual requires the corresponding vendored browser host/runtime; these adapters remain Experimental and fail closed when the runtime is unavailable.
 
 ## Constructor and parameters
 
@@ -86,4 +86,4 @@ assert result.html
 assert not result.diagnostics
 ```
 
-[All component demos](index.md) · [Built-in API](../api/BUILT_INS.md) · [Testing](../guides/testing.md)
+[Charts guide](../guides/charts-and-htmx.md) · [Charts API](../api/CHART.md) · [hedron-charts package](../packages/hedron-charts.md)

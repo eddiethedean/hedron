@@ -38,9 +38,9 @@ Compose under `Page` for full documents, or return from a fragment route for HTM
 
 ## How it works
 
-LineChart prefers the Matplotlib adapter when installed and otherwise produces a reviewed accessible SVG plus a redacted table fallback. Numeric and categorical x values are supported.
+LineChart converts the beginner call to ChartSpec, compiles a deterministic ChartPlan, emits the semantic fallback, and uses the first-party hedron-chart host. It does not select Matplotlib implicitly. Numeric and categorical x values are accepted.
 
-This component's core behavior is server-rendered HTML and does not require a browser runtime. The preview is ordinary semantic HTML, so keyboard, form, link, and disclosure behavior comes from the platform.
+The server-rendered figure, summary, and table remain useful without JavaScript. When the `hedron_charts` plugin assets load, the local `hedron-chart` module progressively enhances that fallback and remounts safely after HTMX swaps.
 
 ## Constructor and parameters
 
@@ -89,4 +89,4 @@ assert result.html
 assert not result.diagnostics
 ```
 
-[All component demos](index.md) · [Built-in API](../api/BUILT_INS.md) · [Testing](../guides/testing.md)
+[Charts guide](../guides/charts-and-htmx.md) · [Charts API](../api/CHART.md) · [hedron-charts package](../packages/hedron-charts.md)

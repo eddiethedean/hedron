@@ -112,7 +112,7 @@ services, multiple contributors, or conventional production operations.
 ## Worked migration: sales dashboard
 
 This guide rewrites a small sales dashboard with filters, metrics, and a table. On Hedron
-**0.25.1+**, install `hedron[charts]>=0.38.0,<0.39` for Matplotlib charts; or keep
+**0.38.x**, install `hedron[charts]>=0.38.0,<0.39` for first-party or Matplotlib charts; or keep
 `Metric` + `DataTable` when charts are optional.
 
 ## The Streamlit version

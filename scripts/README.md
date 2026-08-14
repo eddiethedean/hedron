@@ -17,8 +17,10 @@ scripts here when you add them.
 | `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: quality job |
 | `check_package_docs_inventory.py` | Keep the package catalog, README maturity labels, PyPI classifiers, and package pages aligned with the living fleet inventory. CI: quality job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |
-| `check_api_docs_coverage.py` | Require every `hedron.__all__` export in the public API coverage map. CI: quality job |
+| `check_api_docs_coverage.py` | Require every `hedron.__all__` and `hedron_charts.__all__` export in public API reference. CI: quality job |
 | `check_package_readme_links.py` | Reject relative links that break when package READMEs render on PyPI. CI: quality job |
+| `check_public_doc_links.py` | Reject missing public links and relative links into files excluded from MkDocs. CI: quality job |
+| `check_changelog_structure.py` | Require one package changelog title, a current-version section, and non-empty release sections. CI: quality job |
 | `check_external_links.py` | Check public HTTP links. Runs weekly in `docs-health.yml` to avoid network flakes on ordinary PRs |
 | `check_recipe_code_sync.py` | Fail when a guide's recipe Code tab drifts from its marked runnable source. CI: quality job |
 
