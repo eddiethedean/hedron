@@ -413,12 +413,29 @@ rewrite Python routes merely because a component's internal browser implementati
 
 | Question | Provisional answer |
 |---|---|
-| 0.38 chart flagship | `hedron-chart` may become Supported for the locked RFC-0069 inventory; the public Python/spec contract is stable for the 0.2 line while whole-platform ABI graduation remains 0.42. |
-| 0.39 rich-surface graduation | DataEditor and other rich adapters may graduate behind the shared ABI; they consume the 0.38 chart contract rather than creating another chart renderer. Specialty UI (`CodeEditor` / `TerminalView` / device) remains Experimental. |
-| First `OptimisticMutation` inventory | Bounded DataEditor / collection cell edits only; auth, irreversible destruction, payments, secrets, and cross-tenant moves stay deny-by-default. |
+| 0.38 chart flagship | **Published** `hedron-chart` / `ChartSpec` for the locked RFC-0069 inventory; whole-platform ABI graduation remains 0.42. |
 | `@hedron/elements` in 0.40 | Modules and TypeScript types only for non-Python authors; no React runtime and no application bundler requirement. |
 | React-island bridge home | Documentation and reference code only in 0.40 — **not** shipped inside `hedron-elements`. |
 | Browser floor at 0.42 | Same three-engine family; exact build IDs re-recorded at graduation cut. |
+
+## Resolved questions (D-067)
+
+Tracking: [#94](https://github.com/eddiethedean/hedron/issues/94).
+
+### 0.39 definitive
+
+| Question | Answer |
+|---|---|
+| Stage 0 living baseline | Published **`v0.38.0`** / `hedron-charts` `0.2.0`. Stage 0 changes contracts only; tip stays `0.38.x` until cut. |
+| Cut target | Coordinated Hedron **`v0.39.0`**. |
+| First `OptimisticMutation` inventory | **Bounded DataEditor / collection cell edits only.** Deny-by-default: auth, irreversible destruction, payments, secrets, file publication, cross-tenant moves, and any operation lacking idempotency or a recoverable inverse/refetch. |
+| Chart integration | Consume the Published 0.38 `hedron-chart` / `ChartSpec` / `ChartPlan` contract for cross-filter and composition (`CHARTLINK-039`). **No parallel chart renderer.** Vendor adapters remain Experimental opt-ins. |
+| Rich-surface graduation | DataTable/DataEditor and eligible map/media/editor surfaces may graduate behind the shared element ABI. Specialty UI (`CodeEditor` / `TerminalView` / device capture) remains **Experimental** with an owned destination unless separately graduated. |
+| Experimental exception policy | Every first-party rich surface either shares the ABI **or** has a machine-visible Experimental exception with owner + destination; none keeps an unowned lifecycle/event/fallback protocol. |
+| Worker / remote bounds | Workers, WASM, object URLs, media streams, observers, buffers, third-party runtimes, and remote origins are inventoried and bounded; absence is the default; disconnect/cancel cleanup is mandatory (`WORKER-039`). |
+| Human AT | `A11Y-039` uses a **scoped** keyboard/AT packet plus three-engine automated a11y. Do **not** market Supported human AT; do **not** block 0.39 on `SR-021`. |
+| Medium/low remediations | `#73 #84 #102 #104 #105 #107 #113 #115 #116 #117 #118 #119 #120 #121 #176 #188 #189 #190 #191 #192 #193 #194 #221 #240 #241 #247 #248` are owned by 0.39; issue bodies remain normative; `REGRESS-039` Verified only when closed. |
+| Gate IDs | `DATA-039`, `OPTIMISTIC-039`, `CHARTLINK-039`, `RICH-039`, `WORKER-039`, `PERF-039`, `A11Y-039`, `REGRESS-039`, `PKG-039`. |
 
 None of these answers changes the server-owned state, no-hydration, progressive-enhancement, or
 HTMX lifecycle boundaries.

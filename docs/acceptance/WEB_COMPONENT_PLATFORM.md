@@ -1,12 +1,16 @@
 # Web Component platform acceptance
 
-**Planning status:** RFC-0060 **Accepted** (D-064); phases 0.36–0.42. Phase **0.36** is
-**Published** (`v0.36.0`; all owned gates Verified) — see [`RELEASE_0_36.md`](RELEASE_0_36.md) and
-[`release-gate-0.36.toml`](release-gate-0.36.toml). Phase **0.37** is **Published**
-(`v0.38.0`; all owned gates Verified) — see [`RELEASE_0_37.md`](RELEASE_0_37.md) and
-[`release-gate-0.37.toml`](release-gate-0.37.toml). Phase **0.38** high-fidelity charts has a
-refined Planned packet under RFC-0069 / D-066. Later phases (0.39–0.42) remain draft until their
-own Stage 0 packets land.
+**Planning status:** RFC-0060 **Accepted** (D-064 / D-065 / D-067); phases 0.36–0.42. Phase
+**0.36** is **Published** (`v0.36.0`; all owned gates Verified) — see
+[`RELEASE_0_36.md`](RELEASE_0_36.md) and [`release-gate-0.36.toml`](release-gate-0.36.toml).
+Phase **0.37** is **Published** (`v0.37.0`; all owned gates Verified) — see
+[`RELEASE_0_37.md`](RELEASE_0_37.md) and [`release-gate-0.37.toml`](release-gate-0.37.toml).
+Phase **0.38** high-fidelity charts is **Published** (`v0.38.0` / `hedron-charts` `0.2.0`;
+RFC-0069 / D-066; all owned gates Verified) — see [`RELEASE_0_38.md`](RELEASE_0_38.md) and
+[`release-gate-0.38.toml`](release-gate-0.38.toml). Phase **0.39** rich data /
+`OptimisticMutation` has a refined Planned Stage 0 packet under RFC-0060 / D-067 — see
+[`RELEASE_0_39.md`](RELEASE_0_39.md) and [`release-gate-0.39.toml`](release-gate-0.39.toml).
+Later phases (0.40–0.42) remain draft until their own Stage 0 packets land.
 Renumbered from 0.34–0.39 to 0.35–0.40 by D-058, then to 0.36–0.41 by D-061. D-066 inserts charts
 at 0.38 and moves the former 0.38–0.41 capabilities to 0.39–0.42 without scope loss.
 The exact five interaction protocols are defined in the
@@ -242,6 +246,14 @@ Normative acceptance: [`RELEASE_0_38.md`](RELEASE_0_38.md). Evidence index:
   without promoting unrelated element tags or the general author ABI before 0.42.
 
 ## 0.39 — Rich data and visualization convergence
+
+Normative acceptance: [`RELEASE_0_39.md`](RELEASE_0_39.md). Evidence index:
+[`release-gate-0.39.toml`](release-gate-0.39.toml). Design: RFC-0060 / D-067. Implementation:
+[HEDRON_RICH_ELEMENTS_039](../implementation/HEDRON_RICH_ELEMENTS_039.md). Catalogs:
+[RICH_SURFACE_039](../implementation/RICH_SURFACE_039.md) ·
+[WEB_COMPONENT_INTERACTION_CONTRACTS](../implementation/WEB_COMPONENT_INTERACTION_CONTRACTS.md) §3.
+**Status:** Stage 0 refined / Planned against Published `v0.38.0`. Tracking
+[#94](https://github.com/eddiethedean/hedron/issues/94).
 
 ### `DATA-039`
 

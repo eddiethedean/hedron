@@ -242,6 +242,7 @@ PY
   run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_38.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_39.py --allow-planned
 
   uv run --python "$PYTHON" python - <<'PY'
 import re
@@ -320,6 +321,7 @@ cmd_evidence() {
   run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_38.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_39.py --allow-planned
 }
 
 cmd_realconnect() {
@@ -340,6 +342,7 @@ cmd_packaging() {
   run uv run --python "$PYTHON" python scripts/verify_pkg_36.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_37.py --allow-planned
   run uv run --python "$PYTHON" python scripts/verify_pkg_38.py
+  run uv run --python "$PYTHON" python scripts/verify_pkg_39.py --allow-planned
 }
 
 cmd_all() {

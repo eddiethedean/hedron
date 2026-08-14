@@ -3000,7 +3000,9 @@ Supported for a locked catalog rather than delegated to incompatible vendor JSON
 
 ## 0.39 — Rich data and visualization elements (`v0.39.0`)
 
-**Status:** Planned; depends on the 0.37 form/primitive packet and the 0.38 chart system.
+**Status:** Planned; Stage 0 contract refined against Published `v0.38.0` (D-067). Depends on the
+0.37 form/primitive packet and the Published 0.38 chart system. Runtime implementation begins at
+Stage 1; this refine does not bump the living tip or flip gates to Verified.
 **Tracking:** [#94](https://github.com/eddiethedean/hedron/issues/94). Close when all 0.39-owned
 gates are Verified and every first-party rich surface shares the ABI or has an owned Experimental
 exception.

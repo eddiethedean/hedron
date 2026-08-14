@@ -1,0 +1,92 @@
+# Phase 0.39 rich-surface capability inventory (Stage 0 planned).
+# Living published baseline and implementation entry are Published v0.38.0.
+# Cut target: Hedron v0.39.0. Owning decision: D-067. RFC: RFC-0060. Tracking #94.
+
+schema = 1
+phase = "0.39"
+state = "planned"
+living_published_baseline = "v0.38.0"
+implementation_entry = "v0.38.0"
+hedron_cut = "v0.39.0"
+owning_decision = "D-067"
+owning_rfc = "RFC-0060"
+tracking = "#94"
+
+[data]
+surfaces = ["DataTable", "DataEditor"]
+abi = "public-hedron-element-abi"
+edit_events = ["cell_edit", "row_edit", "selection_change", "validation_error", "conflict"]
+virtualization = "required_for_large_scenarios"
+saved_view = "versioned"
+fallback = ["semantic_table", "summary", "authorized_export"]
+authz = "server_confirmed"
+teardown = "dispose_on_disconnect"
+
+[optimistic]
+first_inventory = ["DataEditor", "bounded_collection_edits"]
+states = ["proposed", "submitted", "confirmed"]
+required = [
+  "base_revision",
+  "idempotency_key",
+  "forward_patch_or_canonical_refetch",
+  "rollback",
+  "conflict",
+  "reconnect",
+]
+deny_by_default = [
+  "authentication_changes",
+  "irreversible_destruction",
+  "payments",
+  "secrets",
+  "file_publication",
+  "cross_tenant_moves",
+]
+
+[chartlink]
+consumes = ["hedron-chart", "ChartSpec", "ChartPlan"]
+parallel_renderer = false
+composition = ["cross_filter", "shared_visibility", "shared_failure_policy"]
+
+[rich]
+abi_or_owned_exception = [
+  "map_hosts",
+  "media_capture",
+  "code_editor",
+  "specialty_3d",
+  "graphviz",
+  "great_tables",
+]
+experimental_policy = "owner_and_destination_required"
+
+[workers]
+default = "absent_for_supported"
+bounded = [
+  "dedicated_workers",
+  "wasm",
+  "object_urls",
+  "media_streams",
+  "observers",
+  "third_party_runtimes",
+  "remote_origins",
+  "payload_sizes",
+  "cancellation",
+  "disconnect_cleanup",
+]
+
+[budgets]
+named_large_scenarios = "required"
+memory = "named"
+long_task = "named"
+cls = "named"
+rich_adapters_default = false
+rich_adapters_transitive = false
+
+[a11y]
+ssr_fallback = "required"
+upgraded_state = "budgeted"
+human_at = "scoped_not_sr021"
+
+[regress]
+upgrade_from = "v0.38.0"
+medium_low_issues = 27
+tracking = "#94"

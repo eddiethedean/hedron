@@ -1,0 +1,12 @@
+# Human AT disposition — A11Y-039 (scoped, not Supported)
+
+reviewer = "maintainer"
+date = "2026-08-14"
+gate = "A11Y-039"
+scope = "DataTable/DataEditor keyboard + JS-off table fallback; chartlink composition"
+state = "planned"
+
+[summary]
+sessions_recorded = 0
+blocking = 0
+note = "Scoped AT packet planned for Stage 0. Not a Supported human AT matrix. Do not market SR-021 as done."
