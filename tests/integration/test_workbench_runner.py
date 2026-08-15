@@ -201,7 +201,7 @@ def test_run_target_exports_process_environ_before_import(
     assert len(served) == 1
     app, resolved = served[0]
     assert resolved.browser_mount == "/s/cli/p/8050"
-    assert getattr(app, "hedron_workbench").active is True
+    assert app.hedron_workbench.active is True
     assert app.state.hedron_mount_path == "/s/cli/p/8050"
 
 
