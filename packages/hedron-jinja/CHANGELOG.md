@@ -8,6 +8,9 @@
 ### Changed
 - Coordinated train tip `0.42.0` (in-tree cut; tag/PyPI deferred).
 
+### Fixed
+- `reconcile_csp` matches CSP source tokens and origins instead of URL path/host substrings.
+
 ## [0.41.0] — Unreleased
 
 - Phase 0.41 browser composition, bounded draft transfer, navigation, tracing, failure isolation, and regression closure (D-069).
