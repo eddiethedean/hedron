@@ -17,6 +17,8 @@ class RedisCacheBackend(CacheBackend):
     Value SET and tag SADDs commit together via ``MULTI``/``EXEC`` (#218).
     Positive TTLs use millisecond ``PX`` so fractional lifetimes match in-memory (#242).
     Tag index keys receive a matching ``PEXPIRE`` so they cannot outlive values (#208).
+    Indexes with no TTL (PTTL -1) stay immortal so mixed non-TTL members stay
+    invalidatable (#285).
     """
 
     process_local = False
@@ -78,18 +80,20 @@ class RedisCacheBackend(CacheBackend):
             pipe: Any = pipe_factory(transaction=True)
             self._queue_set(pipe, redis_key, payload, px_ms=px_ms)
             for tag_key in tag_keys:
+                current = self._tag_pttl(tag_key) if px_ms is not None else None
                 pipe.sadd(tag_key, key)
                 if px_ms is not None:
-                    self._queue_tag_expire(pipe, tag_key, px_ms)
+                    self._queue_tag_expire(pipe, tag_key, px_ms, current=current)
             pipe.execute()
             return
 
         # Stubs without pipeline: still write value then tags (best-effort).
         self._queue_set(self._client, redis_key, payload, px_ms=px_ms)
         for tag_key in tag_keys:
+            current = self._tag_pttl(tag_key) if px_ms is not None else None
             self._client.sadd(tag_key, key)
             if px_ms is not None:
-                self._queue_tag_expire(self._client, tag_key, px_ms)
+                self._queue_tag_expire(self._client, tag_key, px_ms, current=current)
 
     @staticmethod
     def _queue_set(target: Any, redis_key: str, payload: str, *, px_ms: int | None) -> None:
@@ -98,18 +102,33 @@ class RedisCacheBackend(CacheBackend):
             return
         target.set(redis_key, payload, px=px_ms)
 
-    def _queue_tag_expire(self, target: Any, tag_key: str, px_ms: int) -> None:
-        """Extend tag-index TTL to at least the value TTL (never shorten)."""
-        current: int | None = None
+    def _tag_pttl(self, tag_key: str) -> int | None:
         pttl = getattr(self._client, "pttl", None)
-        if callable(pttl):
-            try:
-                raw_ttl = pttl(tag_key)
-                current = int(raw_ttl) if isinstance(raw_ttl, (int, float, str)) else None
-            except Exception:  # noqa: BLE001
-                current = None
-        # pttl: -2 missing, -1 no expire, >0 remaining ms
-        if current is not None and current >= px_ms:
+        if not callable(pttl):
+            return None
+        try:
+            raw_ttl = pttl(tag_key)
+        except Exception:  # noqa: BLE001
+            return None
+        if isinstance(raw_ttl, (int, float, str)):
+            return int(raw_ttl)
+        return None
+
+    def _queue_tag_expire(
+        self,
+        target: Any,
+        tag_key: str,
+        px_ms: int,
+        *,
+        current: int | None,
+    ) -> None:
+        """Extend tag-index TTL to at least the value TTL (never shorten).
+
+        ``current`` is PTTL sampled before SADD: ``-2`` missing, ``-1`` no
+        expire, ``>0`` remaining ms. Newly created indexes look like ``-1``
+        after SADD, so the sample must precede membership (#285 vs #208).
+        """
+        if current is not None and (current == -1 or current >= px_ms):
             return
         pexpire = getattr(target, "pexpire", None)
         if callable(pexpire):
