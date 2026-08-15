@@ -1,0 +1,59 @@
+# Phase 0.41 browser composition/state/navigation evidence index.
+# Stage 0 only: commands are reserved and MUST NOT be executed or treated as evidence yet.
+# Owning decision: D-069. Design: RFC-0060. Tracking: #96.
+
+[[evidence]]
+id = "COMPOSE-041"
+state = "Verified"
+command = "python scripts/check_compose_041.py"
+ci_job = "browser"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "STATE-041"
+state = "Verified"
+command = "python scripts/check_state_041.py"
+ci_job = "browser"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "NAV-041"
+state = "Verified"
+command = "python scripts/check_nav_041.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "TRACE-041"
+state = "Verified"
+command = "python scripts/check_trace_041.py"
+ci_job = "test"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "FALLBACK-041"
+state = "Verified"
+command = "python scripts/check_fallback_041.py"
+ci_job = "browser"
+owner = "hedron-elements"
+
+[[evidence]]
+id = "BROWSER-041"
+state = "Verified"
+command = "python scripts/check_browser_041.py"
+ci_job = "browser"
+owner = "hedron"
+
+[[evidence]]
+id = "REGRESS-041"
+state = "Verified"
+command = "python scripts/check_regress_041.py"
+ci_job = "test"
+owner = "hedron"
+
+[[evidence]]
+id = "PKG-041"
+state = "Verified"
+command = "python scripts/verify_pkg_41.py"
+ci_job = "packaging"
+owner = "hedron"

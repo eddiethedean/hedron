@@ -1,6 +1,6 @@
 # hedron-elements
 
-**Package maturity:** Alpha · **Train:** `0.40.x` · pin `>=0.40.0,<0.41`
+**Package maturity:** Alpha · **Train:** `0.41.x` · pin `>=0.41.0,<0.42`
 
 Framework-neutral Web Component ABI and HTMX-safe bridge. The package includes the
 `hedron-example` ABI reference plus Alpha form controls (`hedron-field-text`,
@@ -17,8 +17,8 @@ docs/reference only**
 ([react-island-reference](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/react-island-reference/README.md)).
 
 ```bash
-pip install "hedron[elements]>=0.40.0,<0.41"
-pip install "hedron-elements>=0.40.0,<0.41"
+pip install "hedron[elements]>=0.41.0,<0.42"
+pip install "hedron-elements>=0.41.0,<0.42"
 ```
 
 Depends on `hedron-core` only. Applications do not need Node.js. Disposition in the
@@ -28,7 +28,7 @@ These tags are registered through the package plugin; they are not Python compon
 They remain Alpha/incubator surfaces, and applications should test the light-DOM fallback and
 form behavior on their supported browser matrix.
 
-See [What’s new in 0.40](../guides/whats-new-0.40.md),
+See [What’s new in 0.41](../guides/whats-new-0.41.md),
 [Plugin authoring](../guides/plugin-authoring.md),
 [HEDRON_AUTHORING_040](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_AUTHORING_040.md),
 [HEDRON_ELEMENTS_036](https://github.com/eddiethedean/hedron/blob/main/docs/implementation/HEDRON_ELEMENTS_036.md),

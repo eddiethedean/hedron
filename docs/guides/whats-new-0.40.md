@@ -1,6 +1,10 @@
+!!! note "Current train is 0.41"
+
+    Pin `hedron>=0.41.0,<0.42` for new apps. See [What's new in 0.41](whats-new-0.41.md).
+
 # What's new in Hedron 0.40
 
-**Published** as `v0.40.0` on 2026-08-14. Pin: `hedron>=0.40.0,<0.41`. Charts remain on the
+**Published** as `v0.40.0` on 2026-08-14. Historical pin: `hedron>=0.40.0,<0.41`. Charts remain on the
 Published 0.2 line: `hedron-charts>=0.2.0,<0.3`.
 
 Phase **0.40** enables third-party authors to build portable Hedron elements without private
@@ -28,7 +32,7 @@ APIs and aligns plugins, HDJ, Explorer, themes, and conformance on shared elemen
 
 ## See also
 
-- [Upgrade to 0.40](upgrade.md)
+- [Upgrade to 0.41](upgrade.md)
 - [Plugin authoring](plugin-authoring.md)
 - [HDJ authoring](hdj-authoring.md)
 - [hedron-elements](../packages/hedron-elements.md)

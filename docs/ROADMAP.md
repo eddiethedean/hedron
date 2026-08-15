@@ -3050,7 +3050,7 @@ tables, summaries, forms, media links, and exports survive slow, absent, or fail
 
 ## 0.40 — Web Component authoring and interoperability (`v0.40.0`)
 
-**Status:** Published as `v0.40.0` (2026-08-14; D-068). Depends on proven first-party ABI use in 0.36–0.39. Living tip = `v0.40.0`.
+**Status:** Published as `v0.40.0` (2026-08-14; D-068). Depends on proven first-party ABI use in 0.36–0.39. Living tip = `v0.41.0`.
 **Tracking:** [#95](https://github.com/eddiethedean/hedron/issues/95). All 0.40-owned
 gates are Verified (React-island bridge remains Experimental).
 

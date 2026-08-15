@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from functools import lru_cache
 from typing import Any, Generic, TypeVar, get_origin
 
 from fastapi import Depends, Request
@@ -35,6 +36,8 @@ class SessionState(Generic[T]):
 
     @property
     def value(self) -> T:
+        if self._has_session(self._request) and self._key in self._request.session:
+            self._value = self._adapter.validate_python(self._request.session[self._key])
         return self._value
 
     @value.setter
@@ -68,8 +71,15 @@ class SessionState(Generic[T]):
         return None
 
 
-def session_state(key: str, annotation: type[T]) -> Any:
+@lru_cache(maxsize=256)
+def _session_dependency(key: str, annotation: type[T]) -> Any:
     async def dependency(request: Request) -> SessionState[T]:
         return SessionState(request, key, annotation)
+
+    return dependency
+
+
+def session_state(key: str, annotation: type[T]) -> Any:
+    dependency = _session_dependency(key, annotation)
 
     return Depends(dependency)

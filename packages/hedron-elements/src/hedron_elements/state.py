@@ -61,10 +61,10 @@ def apply_incoming_update(
 
 
 def refuse_transfer() -> None:
-    """Cross-instance draft transfer is out of scope until phase 0.41."""
+    """Retained 0.36 guard for callers that have not declared a 0.41 transfer schema."""
     raise error(
         "HED-ELEMENT-STATE-0006",
-        title="Draft transfer not available",
-        explanation="Cross-instance draft transfer is deferred to phase 0.41.",
-        remediation="Keep draft state instance-local until STATE-040.",
+        title="Draft transfer contract missing",
+        explanation="Cross-instance transfer requires an explicit phase 0.41 draft envelope.",
+        remediation="Declare a bounded DraftTransferEnvelope or keep the draft instance-local.",
     )

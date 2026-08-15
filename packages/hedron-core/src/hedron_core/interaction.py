@@ -918,9 +918,14 @@ def materialize_interaction_nodes(
     nodes: list[NodeLike] = []
     if result.content is not None:
         nodes.append(result.content)
+    seen_oob_ids: set[str] = set()
     for update in result.oob:
         authorize_oob_update(update, regions=regions)
         bound_id = _bound_oob_element_id(update, regions=regions)
+        if bound_id is not None and bound_id in seen_oob_ids:
+            raise ValueError(f"duplicate OobUpdate element_id: {bound_id!r}")
+        if bound_id is not None:
+            seen_oob_ids.add(bound_id)
         if bound_id is not None:
             # Always wrap to the authorized id so caller content cannot emit a
             # different hx-swap-oob target under declared regions.

@@ -79,9 +79,9 @@ not delay `hedron-posit` Stage 0 / RFC Accept / Stage 1.
   `1.0`; see the
   [maintainer roadmap](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md).
 
-## Honest gaps on the current train (0.40.x)
+## Honest gaps on the current train (0.41.x)
 
-- Current **published** PyPI train is **0.40.x** (last `v0.40.0`)
+- Current **published** PyPI train is **0.41.x** (last `v0.41.0`)
 - Production-grade label applies to declared `hedron-core` / `hedron` /
   `hedron-explorer` (0.26), `hedron-data` / `hedron-flask` / `hedron-django` /
   `hedron-jinja` / `hedron-extras` (0.27), `hedron-charts` / `hedron-native`

@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import contextvars
 import re
+import unicodedata
 from collections.abc import Iterator
 
 # Matches HDJ ``_HX_JS_VALUE_RE`` in hedron_jinja.source.
@@ -85,7 +86,12 @@ def hx_attribute_is_url(attribute: str) -> bool:
 def reject_hx_eval_value(attribute: str, value: object) -> None:
     """Raise ``HED-SEC-0011`` when ``js:`` appears without an explicit opt-in."""
     canonical = canonical_hx_attribute(attribute)
-    if not hx_value_needs_eval(canonical, value):
+    normalized = value
+    if isinstance(value, str):
+        normalized = "".join(
+            ch for ch in unicodedata.normalize("NFKC", value) if unicodedata.category(ch) != "Cf"
+        )
+    if not hx_value_needs_eval(canonical, normalized):
         return
     if htmx_eval_allowed():
         return

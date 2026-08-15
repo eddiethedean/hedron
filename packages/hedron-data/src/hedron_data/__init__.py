@@ -92,7 +92,7 @@ from hedron_data.sqlalchemy_source import SQLAlchemyDataSource
 from hedron_data.table import DataTable
 from hedron_data.views import SavedView
 
-__version__ = "0.40.0"
+__version__ = "0.41.0"
 
 __all__ = [
     "ABI_VERSION",

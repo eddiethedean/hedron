@@ -24,6 +24,8 @@ These documents describe how accepted RFC behavior will be implemented. They def
 - [Web Component platform](WEB_COMPONENT_PLATFORM.md) — 0.36–0.42 program
 - [Web Component interaction contracts](WEB_COMPONENT_INTERACTION_CONTRACTS.md) — state,
   async interaction, optimism, gestures/overlays, and React migration
+- [Browser composition, draft transfer, and navigation](HEDRON_COMPOSITION_041.md) — phase 0.41
+  D-069 architecture, work slices, failure boundaries, and evidence plan
 - [Plugin loader](PLUGIN_LOADER.md)
 - [Async runtime integration](ASYNC_RUNTIME.md)
 - [Cache layer](CACHE_LAYER.md)

@@ -41,7 +41,7 @@ class Hx:
     def as_html_attrs(self) -> dict[str, HtmlAttrValue]:
         target = _safe_optional_selector(self.target, label="target")
         select = _safe_optional_selector(self.select, label="select")
-        select_oob = _safe_optional_selector(self.select_oob, label="select-oob")
+        select_oob = self.select_oob or None
         if select_oob is not None:
             from hedron_core.interaction import unparsed_select_oob_tokens
 
@@ -89,7 +89,12 @@ def _validate_hx_attr_map(attrs: dict[str, HtmlAttrValue]) -> None:
     for key, value in attrs.items():
         if key in _HX_SELECTOR_ATTRS and isinstance(value, str) and value:
             label = key.removeprefix("hx-")
-            if not safe_css_selector(value):
+            if key == "hx-select-oob":
+                from hedron_core.interaction import unparsed_select_oob_tokens
+
+                if unparsed_select_oob_tokens(value):
+                    raise ValueError(f"Unsafe HTMX {label} selector: {value!r}")
+            elif not safe_css_selector(value):
                 raise ValueError(f"Unsafe HTMX {label} selector: {value!r}")
         if key == "hx-swap" and isinstance(value, str) and value and not safe_hx_swap(value):
             raise ValueError(f"Unsafe HTMX swap value: {value!r}")

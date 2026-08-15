@@ -47,7 +47,7 @@ def test_all_packages_declare_license_and_version() -> None:
         project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
         name = project["name"]
         if name in _BETA_PACKAGES or name in _TRAIN_ALIGNED_ALPHA:
-            assert project["version"] == "0.40.0", pyproject
+            assert project["version"] == "0.41.0", pyproject
         elif name in _INDEPENDENT_BETA_02:
             assert project["version"] == "0.2.0", pyproject
         elif name in _INDEPENDENT_BETA or name in _ALPHA_INDEPENDENT:

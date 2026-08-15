@@ -102,7 +102,9 @@ def explicit_mount_hint(
     mount_explicit = _first_str(
         explicit=config.mount,
         namespaced=env.get(_ENV_MOUNT),
-        resolved=env.get(RESOLVED_MOUNT_ENV),
+        resolved=(
+            env.get(ROOT_PATH_ENV) or env.get("HEDRON_ROOT_PATH") or env.get(RESOLVED_MOUNT_ENV)
+        ),
         alias=env.get("BASE_PATH") if compatibility_aliases else None,
         alias_name="BASE_PATH",
         warnings=w,
@@ -506,11 +508,7 @@ def resolve_deployment(
         )
         active = True
         if public_explicit is not None:
-            if (
-                public_mount
-                and browser_mount != public_mount
-                and not public_mount.endswith(browser_mount)
-            ):
+            if public_mount and browser_mount != public_mount and public_mount != browser_mount:
                 raise _error(
                     title="Conflicting Workbench mount and origin",
                     explanation="Explicit mount and public base path disagree.",

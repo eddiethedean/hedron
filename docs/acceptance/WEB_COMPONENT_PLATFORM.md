@@ -356,38 +356,54 @@ Normative acceptance: [`RELEASE_0_39.md`](RELEASE_0_39.md). Evidence index:
 
 ### `COMPOSE-041`
 
-- [ ] Typed element events compose through registered actions and `InteractionGraph` bindings with
+- [x] Typed element events compose through registered actions and `InteractionGraph` bindings with
   cycle, payload, target, authorization, cancellation, and full-fragment fallback controls.
-- [ ] Element-to-element communication uses DOM events or registered graph contracts, not hidden
+- [x] Element-to-element communication uses DOM events or registered graph contracts, not hidden
   global stores, direct private method calls, or arbitrary selector mutation.
+- [x] Every edge declares event/detail schema, action/target allowlist, authorization,
+  cancellation/concurrency, maximum graph depth, payload ceiling, and native/form/link or
+  full-fragment fallback; unknown, malformed, unauthorized, and cyclic input fails closed.
 
 ### `STATE-041`
 
-- [ ] Disposable, draft, preference, server, and capability state classes are machine-visible and
+- [x] Disposable, draft, preference, server, and capability state classes are machine-visible and
   enforce their persistence/authority rules.
-- [ ] Opt-in draft transfer is schema/version/route/identity/expiry/size bounded, clears on identity
+- [x] Opt-in draft transfer is schema/version/route/identity/expiry/size bounded, clears on identity
   or authorization change, and rejects secrets, capabilities, trusted HTML, files, and server state.
-- [ ] Every stateful element has an explicit submit/discard/reconnect/swap/history policy and a
+- [x] Every stateful element has an explicit submit/discard/reconnect/swap/history policy and a
   no-transfer fallback.
-- [ ] Controlled/local/draft/preference ownership and `InteractionState` operation identity remain
+- [x] Controlled/local/draft/preference ownership and `InteractionState` operation identity remain
   stable through transfer, composition, history, and late-response scenarios; transfer cannot turn
   local/draft state into canonical server state.
+- [x] Transfer uses same-origin `sessionStorage` only, is single-consume, and is namespaced by app,
+  route family, element contract, schema version, and opaque subject fingerprint. Storage denial,
+  quota, corruption, duplicate consumption, downgrade, expiry, and rollback preserve the
+  no-transfer path.
 
 ### `NAV-041` / `TRACE-041` / `FALLBACK-041`
 
-- [ ] Boosted navigation, push/replace URL, history cache, focus/title, preload, view transitions
+- [x] Boosted navigation, push/replace URL, history cache, focus/title, preload, view transitions
   where supported, and full navigation fallback preserve server authority and existing privacy rules.
-- [ ] Lifecycle, event, state-transfer, asset, action, and failure traces are correlated without
+- [x] Lifecycle, event, state-transfer, asset, action, and failure traces are correlated without
   recording payloads, secrets, field values, or user content by default.
-- [ ] One failing/slow/incompatible element cannot prevent unrelated elements, native navigation,
+- [x] One failing/slow/incompatible element cannot prevent unrelated elements, native navigation,
   form submission, or authorized HTMX regions from operating.
+- [x] Fragment-only navigation does not issue a request; popstate, swap, validation-error, deleted
+  focus target, autofocus, scroll restoration, title failure, reduced motion, and unsupported View
+  Transitions have deterministic outcomes.
+- [x] Trace schemas permit IDs, timings, outcomes, state transitions, and diagnostic codes only;
+  payloads, draft values, field names/values, user content, credentials, and URL query/fragment data
+  are rejected by portable fixtures.
 
 ### `BROWSER-041` / `REGRESS-041` / `PKG-041`
 
-- [ ] Multi-element dashboard/form/navigation scenarios pass three-engine browser, host, a11y,
+- [x] Multi-element dashboard/form/navigation scenarios pass three-engine browser, host, a11y,
   performance, memory, failure-injection, history/privacy, and compatibility matrices.
-- [ ] No phase 0.41 feature creates a hidden correctness dependency on live transports, preload,
+- [x] No phase 0.41 feature creates a hidden correctness dependency on live transports, preload,
   View Transitions, browser storage, or JavaScript.
+- [x] FastAPI, Flask, Django, HDJ, plugin, Workbench/Posit, and no-JS hosts cover upgrade from 0.40,
+  mixed 0.40/0.41 assets, rollback, CSP/Trusted Types, storage-disabled/private-history cases, and
+  the locked #70/#74/#85/#98/#103/#106/#135/#149/#150/#185/#186/#200/#202/#207 regressions.
 
 ## 0.42 — Production-grade Web Component platform
 

@@ -1,14 +1,14 @@
 # What’s new in 0.17
 
 
-!!! note "Current train is 0.40"
+!!! note "Current train is 0.41"
 
-    Pin `hedron>=0.40.0,<0.41` for new apps. The pin below is historical for this train only.
-    See [What’s new in 0.40](whats-new-0.40.md).
+    Pin `hedron>=0.41.0,<0.42` for new apps. The pin below is historical for this train only.
+    See [What’s new in 0.41](whats-new-0.41.md).
 
 !!! note "Historical phase"
 
-    This page describes **0.17**. The current published train is **0.40.x** (last `v0.40.0`). Pin `hedron>=0.40.0,<0.41`.
+    This page describes **0.17**. The current published train is **0.41.x** (last `v0.41.0`). Pin `hedron>=0.41.0,<0.42`.
 
 Phase **0.17** adds reactive dashboards and agent interfaces — finite interaction graphs,
 bounded patches, optional notebook preview and deny-by-default MCP — plus HTMX shell authoring

@@ -154,6 +154,12 @@ async def adaptive_gather(
     async def _wrapped(aw: Awaitable[Any]) -> Any:
         return await limiter.run(aw)
 
-    return list(
-        await asyncio.gather(*(_wrapped(aw) for aw in aws), return_exceptions=return_exceptions)
-    )
+    tasks = [asyncio.create_task(_wrapped(aw)) for aw in aws]
+    try:
+        return list(await asyncio.gather(*tasks, return_exceptions=return_exceptions))
+    except BaseException:
+        for task in tasks:
+            if not task.done():
+                task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
+        raise

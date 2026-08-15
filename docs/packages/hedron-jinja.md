@@ -2,16 +2,16 @@
 
 Explicit standards-first `.hdj` templates over Jinja, HTML, and HTMX.
 
-**Package maturity:** Beta · **Train:** `0.40.x` (published `v0.40.0`) · pin `>=0.40.0,<0.41`
+**Package maturity:** Beta · **Train:** `0.41.x` (published `v0.41.0`) · pin `>=0.41.0,<0.42`
 **Flagship extra:** `hedron[jinja]` · **Import:** `hedron_jinja`  
 **Format:** HDJ v1 frozen · templates are **trusted application code**
 
 ## Install
 
 ```bash
-pip install "hedron[jinja]>=0.40.0,<0.41"
+pip install "hedron[jinja]>=0.41.0,<0.42"
 # or
-pip install "hedron-jinja>=0.40.0,<0.41"
+pip install "hedron-jinja>=0.41.0,<0.42"
 ```
 
 Requires `hedron-core` and Jinja2.

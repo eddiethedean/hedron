@@ -239,7 +239,13 @@ def render_component_response(
         to_render: NodeLike = value
         if selected_mode is RenderMode.FRAGMENT:
             to_render = _fragment_value(value)
-        result = render(to_render, context=render_context, mode=selected_mode)
+        from hedron_core.htmx_eval import reset_htmx_eval_allowed, set_htmx_eval_allowed
+
+        eval_token = set_htmx_eval_allowed(bool(policy and policy.allow_htmx_eval))
+        try:
+            result = render(to_render, context=render_context, mode=selected_mode)
+        finally:
+            reset_htmx_eval_allowed(eval_token)
 
     if request is not None:
         result = _attach_manifest_assets(result, request)

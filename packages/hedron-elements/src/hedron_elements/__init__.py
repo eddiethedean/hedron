@@ -10,6 +10,7 @@ from hedron_elements.author import (
     packaging_checklist,
     validate_element_author_meta,
 )
+from hedron_elements.composition import BrowserTrace, CompositionEdge, validate_trace_payload
 from hedron_elements.example import Example
 from hedron_elements.markup import render_element_markup
 from hedron_elements.migrate import (
@@ -23,12 +24,16 @@ from hedron_elements.state import (
     apply_incoming_update,
     validate_field_ownership,
 )
+from hedron_elements.transfer import DraftTransferEnvelope, subject_fingerprint
 
-__version__ = "0.40.0"
+__version__ = "0.41.0"
 
 __all__ = [
     "AUTHOR_SURFACES",
     "DISPOSITIONS",
+    "BrowserTrace",
+    "CompositionEdge",
+    "DraftTransferEnvelope",
     "Example",
     "NON_FITS",
     "OwnershipMode",
@@ -42,5 +47,7 @@ __all__ = [
     "render_element_markup",
     "validate_element_author_meta",
     "validate_field_ownership",
+    "validate_trace_payload",
+    "subject_fingerprint",
     "__version__",
 ]

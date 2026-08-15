@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.41.0] — Unreleased
+
+- Phase 0.41 browser composition, bounded draft transfer, navigation, tracing, failure isolation, and regression closure (D-069).
+
 ## [0.40.0] — 2026-08-14
 
 ### Added

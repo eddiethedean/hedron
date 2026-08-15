@@ -130,7 +130,7 @@ class HtmxLink(Component[HtmxLinkProps]):
         url = _coerce_nav_url(href, allow_external=external)
         target = _safe_optional_selector(target, label="target")
         select = _safe_optional_selector(select, label="select")
-        select_oob = _safe_optional_selector(select_oob, label="select-oob")
+        select_oob = select_oob or None
         if select_oob is not None:
             from hedron_core.interaction import unparsed_select_oob_tokens
 

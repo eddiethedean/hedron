@@ -477,3 +477,29 @@ React-island rows for phase 0.40 ownership.
 - No phase claims production-grade Web Components before all 0.42 gates are Verified. Phase 0.38
   may support the chart-scoped Python/spec/element workflow defined by RFC-0069 without promoting
   unrelated tags or the general author ABI.
+
+## Resolved questions (D-069)
+
+Tracking: [#96](https://github.com/eddiethedean/hedron/issues/96). The issue's original 0.37 gate
+suffixes are historical; D-066 rephased this packet to 0.41 and these answers are normative.
+
+### 0.41 definitive
+
+| Question | Answer |
+|---|---|
+| Stage 0 / cut | Living baseline Published `v0.40.0`; coordinated Hedron and `hedron-elements` cut target `v0.41.0`. Refinement changes contracts only. |
+| Composition boundary | Allowlisted versioned `CustomEvent` → registered action / `InteractionGraph`. Details are untrusted. Each edge declares schema, target, authz, concurrency/cancel, maximum depth, payload ceiling, and ordinary form/link or full-fragment fallback. No selector mutation, callback values, private method calls, or ambient discovery. |
+| Cycle semantics | Registration rejects statically provable cycles. Runtime correlation tracks visited edge IDs and bounded depth; repeat/depth overflow cancels that graph with a named diagnostic and leaves native/fallback behavior intact. |
+| Transfer eligibility | Only fields declared `draft` with a transfer schema. `controlled`, `local`, `preference`, capability, and server state do not transfer. Transfer never confirms or rebases a server revision by itself. |
+| Storage / namespace | Same-origin `sessionStorage`, not localStorage, cookies, IndexedDB, service workers, URLs, DOM, or BroadcastChannel. Namespace: app + route family + element contract + schema + opaque authenticated-subject fingerprint. Single-consume with TTL, per-entry, and aggregate ceilings recorded in cut evidence. |
+| Mandatory clearing | Logout, subject or authority fingerprint change, successful submit, discard, expiry, schema/ABI mismatch, rollback, and explicit application clear. Storage denial/quota/corruption is a normal no-transfer path. |
+| Forbidden transfer | Secrets, credentials, cookies, CSRF/auth material, capabilities, files/blobs, trusted HTML, arbitrary URLs, raw responses/errors, server state, and undeclared fields. |
+| Navigation ownership | Ordinary same-origin links/forms remain canonical; HTMX owns boosted snapshots. Fragment-only movement uses native history/scroll and makes no request. Cross-origin/download/targeted/modified links and undeclared regions are not intercepted. |
+| Focus/title/motion | Server title wins after successful navigation. Focus follows validation error → declared target/heading → main fallback without stealing focus during fragment-only movement. View Transitions/preload are feature-detected and reduced-motion-aware, never required. |
+| Trace privacy | Allow IDs, bounded timings, transitions, outcomes, and diagnostic codes. Reject event details, draft/field values, user content, credentials, and query/fragment URL data. Trace failure is non-fatal. |
+| Regression packet | Exactly #70, #74, #85, #98, #103, #106, #135, #149, #150, #185, #186, #200, #202, #207; all close for `REGRESS-041`. |
+| Gate IDs | `COMPOSE-041`, `STATE-041`, `NAV-041`, `TRACE-041`, `FALLBACK-041`, `BROWSER-041`, `REGRESS-041`, `PKG-041`. |
+
+These answers do not create a client router/store, durable or cross-tab draft sync, offline
+authority, required live transport, or production-grade platform claim. Human AT remains governed
+by its existing evidence program; 0.41 planning does not claim Supported human-AT coverage.

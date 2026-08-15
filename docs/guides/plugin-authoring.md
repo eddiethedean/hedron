@@ -156,7 +156,7 @@ Load the plugin in CI via the same entry-point path production uses.
 ## 8. Publish and version
 
 - Pin against `hedron-core` (and optionally `hedron`) with an upper bound matching the
-  adopter train (for example `>=0.40.0,<0.41`).
+  adopter train (for example `>=0.41.0,<0.42`).
 - Declare license metadata; do not pull FastAPI/Flask/Django into a core-facing package.
 - Ship a CHANGELOG and document Experimental vs Supported claims honestly
   ([What’s ready](whats-ready.md)).
@@ -177,4 +177,4 @@ Load the plugin in CI via the same entry-point path production uses.
 - Sample kit: `packages/hedron-sample-kit`
 - Element author example: `examples/element-author-plugin`
 - Layout rules: [PROJECT_LAYOUT](https://github.com/eddiethedean/hedron/blob/main/docs/PROJECT_LAYOUT.md)
-- [What’s new in 0.40](whats-new-0.40.md)
+- [What’s new in 0.40](whats-new-0.41.md)

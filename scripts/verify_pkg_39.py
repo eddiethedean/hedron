@@ -164,9 +164,10 @@ def _check_versions(*, allow_planned: bool) -> None:
             version.startswith("0.38.")
             or version.startswith("0.39.")
             or version.startswith("0.40.")
+            or version.startswith("0.41.")
         ):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.38.x–0.40.x"
+                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.38.x–0.41.x"
             )
         print(f"ok: living tip {version} (0.39 allow-planned)")
         return

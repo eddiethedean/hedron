@@ -31,7 +31,7 @@ def test_coordinated_train_tracks_living_tip() -> None:
     release = tomllib.loads((ROOT / "docs" / "release.toml").read_text(encoding="utf-8"))["release"]
     pyproject = ROOT / "packages" / "hedron-workbench" / "pyproject.toml"
     data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
-    assert data["project"]["version"] == release["published_version"]
+    assert data["project"]["version"] == release["development_version"]
 
 
 def test_fastapi_workbench_independent_version() -> None:

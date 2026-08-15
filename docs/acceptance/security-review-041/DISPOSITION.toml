@@ -1,0 +1,6 @@
+phase = "0.41"
+state = "verified"
+critical_open = 0
+high_open = 0
+scope = "composition_draft_navigation_trace_isolation"
+graduation_review = false

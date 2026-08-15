@@ -109,6 +109,12 @@ async def accept_page_session_channel(
                 await websocket.send_text(json.dumps({"kind": "error", "detail": "invalid json"}))
                 await websocket.close(code=1003)
                 return
+            if not isinstance(data, dict):
+                await websocket.send_text(
+                    json.dumps({"kind": "error", "detail": "invalid json message"})
+                )
+                await websocket.close(code=1003)
+                return
             kind = str(data.get("kind", ""))
             if kind == "close":
                 break

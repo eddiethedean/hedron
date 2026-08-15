@@ -2,12 +2,12 @@
 
 # Specification and implementation status
 
-**Roadmap position:** phase 0.40 **Published** as `v0.40.0` (2026-08-14). Prior Published: 0.39 as `v0.39.0` (2026-08-14).
-Living tip = `v0.40.0`.
+**Roadmap position:** phase 0.41 **Published** as `v0.41.0` (2026-08-14; in-tree cut, tag/PyPI deferred). Prior Published: 0.40 as `v0.40.0` (2026-08-14).
+Living tip = `v0.41.0`.
 **Date:** 2026-08-14
 **Implementation:** Beta — `hedron` / `hedron-core` / `hedron-explorer` / `hedron-data` /
 `hedron-flask` / `hedron-django` / `hedron-jinja` / `hedron-conformance` / `hedron-extras` /
-`hedron-workbench` / `hedron-posit` `0.40.0`; Alpha (train-aligned) — `hedron-elements` `0.40.0`;
+`hedron-workbench` / `hedron-posit` `0.41.0`; Alpha (train-aligned) — `hedron-elements` `0.41.0`;
 Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `0.2.0`, `hedron-native` `0.1.2`, `hedron-sample-kit` `0.1.10`, `hedron-notebook` /
 `hedron-sim` `0.1.0`, `hedron-mcp` `0.2.0`, `hedron-gradio` `0.2.0`, `hedron-runtime-node` / `hedron-runtime-java`
@@ -18,11 +18,11 @@ Beta (independent) — `fastapi-workbench` `1.0.0`, `hedron-charts`
 `hedron-workbench`, `hedron-posit`, `hedron-charts`, `hedron-native`, `hedron-sample-kit`, `hedron-notebook`,
 `hedron-sim`, `hedron-mcp`, `hedron-gradio`. Alpha — `hedron-elements`.
 
-**Phase focus:** Living train is **0.40** (D-068 / RFC-0060) — public author kit and
+**Phase focus:** Living train is **0.41** (D-069 / RFC-0060) — public author kit and
 `hedron new element`, plugin/HDJ/Explorer/theme metadata parity, ReactMigrationMatrix with
 Experimental island docs/reference, optional `@hedron/elements` modules/types mirror, and the
-6-issue remediation packet (`release-gate-0.40.toml` Verified; tip `v0.40.0`). Prior Published
-**0.39** rich data / OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
+6-issue remediation packet (`release-gate-0.41.toml` Verified; tip `v0.41.0`). Prior Published
+**0.40** authoring / **0.39** rich data / OptimisticMutation / **0.38** charts (`hedron-charts` `0.2.0`) / **0.37** form packet /
 **0.36** ABI / **0.35** fleet closure remain in force.
 Stage 0 licensed Connect probe recorded `BRIDGE_DECISION=drop_supported` (native cookies on
 Connect 2025.06.0 and 2026.07.0); Supported bridge is out of 0.33 scope.
@@ -351,7 +351,7 @@ Web Component authoring and interoperability is **Published** as `v0.40.0` (D-06
 Experimental island docs/reference, optional `@hedron/elements` modules/types mirror, and the
 locked 6-issue remediation packet. Later phases
 [#96](https://github.com/eddiethedean/hedron/issues/96)–[#97](https://github.com/eddiethedean/hedron/issues/97)
-(rephased to 0.41–0.42) still require their own Stage 0 packets. Living tip is **`v0.40.0`**.
+(rephased to 0.41–0.42) still require their own Stage 0 packets. Living tip is **`v0.41.0`**.
 These phases require Verified evidence before any package maturity label changes. They do not
 schedule `1.0`, promote every experimental subfeature, or expand Supported live transports. Close
 each tracking issue only when its owning release-gate rows are Verified **and** publish assets exist.

@@ -1,6 +1,6 @@
 [project]
 name = "hedron-elements"
-version = "0.40.0"
+version = "0.41.0"
 description = "Alpha Web Component ABI, shared bridge, and first-party elements for Hedron (RFC-0060)"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"
@@ -34,7 +34,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "hedron-core>=0.40.0,<0.41",
+    "hedron-core>=0.41.0,<0.42",
 ]
 
 [project.entry-points."hedron.plugins"]
@@ -66,6 +66,7 @@ packages = ["src/hedron_elements"]
 "src/hedron_elements/static/hedron-disclosure.mjs" = "hedron_elements/static/hedron-disclosure.mjs"
 "src/hedron_elements/static/hedron-dialog.mjs" = "hedron_elements/static/hedron-dialog.mjs"
 "src/hedron_elements/static/hedron-action-async.mjs" = "hedron_elements/static/hedron-action-async.mjs"
+"src/hedron_elements/static/composition-041.mjs" = "hedron_elements/static/composition-041.mjs"
 
 [tool.hatch.build.targets.sdist]
 only-include = [

@@ -101,7 +101,11 @@ def _check_inventory(*, allow_planned: bool) -> None:
         if str(data.get(key, "")).strip() != expected:
             raise SystemExit(f"{INVENTORY}: {key} must be {expected!r}")
     expected_state = "planned" if allow_planned else "verified"
-    if str(data.get("state", "")).strip() != expected_state:
+    state = str(data.get("state", "")).strip()
+    if allow_planned:
+        if state not in {"planned", "verified"}:
+            raise SystemExit(f"{INVENTORY}: state must be planned or verified (post-cut)")
+    elif state != expected_state:
         raise SystemExit(f"{INVENTORY}: state must be {expected_state!r}")
     author = data.get("author_kit")
     if not isinstance(author, dict) or author.get("private_apis") is not False:
@@ -167,14 +171,17 @@ def _workspace_version() -> str:
 def _check_versions(*, allow_planned: bool) -> None:
     version = _workspace_version()
     if allow_planned:
-        if not (version.startswith("0.39.") or version.startswith("0.40.")):
+        if not version.startswith(("0.39.", "0.40.", "0.41.")):
             raise SystemExit(
-                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.39.x–0.40.x"
+                f"unexpected workspace version {version!r}; Stage 0/implementation expects 0.39.x–0.41.x"
             )
         print(f"ok: living tip {version} (0.40 allow-planned)")
         return
-    if version != RELEASE_CANDIDATE:
+    if version != RELEASE_CANDIDATE and not version.startswith("0.41."):
         raise SystemExit(f"cut requires workspace version {RELEASE_CANDIDATE}; found {version!r}")
+    if version.startswith("0.41."):
+        print(f"ok: post-cut living tip {version} (0.40 packet verified)")
+        return
     print(f"ok: cut version Hedron {version}")
 
 
@@ -197,7 +204,11 @@ def _check_at_skeleton(*, allow_planned: bool) -> None:
     if str(data.get("gate", "")).strip() != "AT-040":
         raise SystemExit(f"{AT_DISPOSITION}: gate must be AT-040")
     expected = "planned" if allow_planned else "verified"
-    if str(data.get("state", "")).strip() != expected:
+    state = str(data.get("state", "")).strip()
+    if allow_planned:
+        if state not in {"planned", "verified"}:
+            raise SystemExit(f"{AT_DISPOSITION}: state must be planned or verified")
+    elif state != expected:
         raise SystemExit(f"{AT_DISPOSITION}: state must be {expected}")
     print("ok: human-at/040 scoped skeleton")
 
@@ -231,6 +242,11 @@ def main(argv: list[str] | None = None) -> int:
         if errors:
             raise SystemExit("\n".join(errors))
         print("ok: release-gate-0.40.toml (planned shape)")
+    elif _workspace_version().startswith("0.41."):
+        errors = gate.check_evidence_manifest(GATE)
+        if errors:
+            raise SystemExit("\n".join(errors))
+        print("ok: release-gate-0.40.toml (verified historical packet)")
     else:
         command = [
             sys.executable,

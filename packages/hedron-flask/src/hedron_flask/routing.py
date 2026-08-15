@@ -49,11 +49,11 @@ class FlaskUrlReverser:
                 path = f"{path}?{parsed.query}"
         if request.script_name:
             prefix = request.script_name.rstrip("/")
-            if not path.startswith(prefix):
+            if path != prefix and not path.startswith(prefix + "/"):
                 path = f"{prefix}{path}"
         if request.root_path:
             root = request.root_path.rstrip("/")
-            if not path.startswith(root):
+            if path != root and not path.startswith(root + "/"):
                 path = f"{root}{path}"
         return path
 

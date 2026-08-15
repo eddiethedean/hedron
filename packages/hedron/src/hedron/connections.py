@@ -7,6 +7,7 @@ Secret values stay as opaque refs/strings; Hedron does not store a secret manage
 from __future__ import annotations
 
 import logging
+import threading
 from collections.abc import AsyncGenerator, Callable, Mapping
 from contextlib import asynccontextmanager, suppress
 from dataclasses import dataclass, field
@@ -118,6 +119,7 @@ class ConnectionRegistry:
         self._healthchecks: dict[str, Callable[[object], bool]] = {}
         self._instances: dict[str, object] = {}
         self._secret_refs: dict[str, Mapping[str, str]] = {}
+        self._lock = threading.RLock()
 
     def register(
         self,
@@ -174,11 +176,12 @@ class ConnectionRegistry:
 
     def get(self, name: str) -> object:
         """Return a cached instance, creating it via the registered factory once."""
-        if name not in self._factories:
-            raise KeyError(f"unknown connection {name!r}")
-        if name not in self._instances:
-            self._instances[name] = self._factories[name]()
-        return self._instances[name]
+        with self._lock:
+            if name not in self._factories:
+                raise KeyError(f"unknown connection {name!r}")
+            if name not in self._instances:
+                self._instances[name] = self._factories[name]()
+            return self._instances[name]
 
     def health(self, name: str) -> bool:
         """Run the registered healthcheck (or ``True`` when none is configured).

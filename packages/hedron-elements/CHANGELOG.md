@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.41.0] — Unreleased
+
+- Typed allowlisted browser composition with bounded graph execution and native fallback.
+- Subject-bound, session-scoped, single-consume draft transfer with strict clearing and ceilings.
+- Progressive fragment navigation, metadata-only traces, and per-element failure isolation.
+
 ## [0.40.0] — 2026-08-14
 
 ### Added

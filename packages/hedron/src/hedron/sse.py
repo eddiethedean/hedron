@@ -172,6 +172,7 @@ def job_status_sse_response(
                 await asyncio.sleep(
                     _poll_interval(poll_interval_seconds, retry_after=status_obj.retry_after)
                 )
+                last_emitted_key = (status_obj.state.value, status_obj.updated_at)
                 last_id = None  # only skip the first matching snapshot
                 continue
             key = (status_obj.state.value, status_obj.updated_at)
