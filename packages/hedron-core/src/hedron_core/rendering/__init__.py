@@ -16,7 +16,6 @@ from hedron_core._nodes import (
     Node,
     TextNode,
 )
-from hedron_core._serializer import serialize_tree
 from hedron_core.component import (
     Component,
     ComponentNode,
@@ -26,6 +25,7 @@ from hedron_core.component import (
 )
 from hedron_core.diagnostics import Diagnostic, DiagnosticSeverity, error, make_diagnostic
 from hedron_core.html import _NativeElement, _TrustedRaw
+from hedron_core.rendering.page_shell import serialize_page_or_fragment
 from hedron_core.security import Secret
 from hedron_core.typing_aliases import RenderTrace
 
@@ -57,6 +57,7 @@ class RenderMode(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class RenderContext:
+    """Per-render locale, theme, budgets, and CSRF token provider fields."""
     locale: str = "en"
     theme: str | None = None
     max_depth: int = 100
@@ -358,31 +359,12 @@ def _serialize_result(
     context: RenderContext,
     mode: RenderMode,
 ) -> str:
-    if mode is RenderMode.PAGE:
-        from hedron_core.builtins.document import Page
-
-        if isinstance(value, Page):
-            html_text = serialize_tree(nodes, mount_path=context.mount_path)
-            if not html_text.lstrip().lower().startswith("<!doctype"):
-                html_text = "<!DOCTYPE html>" + html_text
-        else:
-            body_html = serialize_tree(nodes, mount_path=context.mount_path)
-            html_text = (
-                "<!DOCTYPE html>"
-                f'<html lang="{_escape_attr(context.locale)}">'
-                '<head><meta charset="utf-8">'
-                '<meta name="viewport" content="width=device-width, initial-scale=1">'
-                "</head>"
-                f"<body>{body_html}</body></html>"
-            )
-    else:
-        html_text = serialize_tree(nodes, mount_path=context.mount_path)
-    return html_text
-
-
-def _escape_attr(value: str) -> str:
-    return (
-        value.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+    return serialize_page_or_fragment(
+        value,
+        nodes,
+        mount_path=context.mount_path,
+        locale=context.locale,
+        page_mode=mode is RenderMode.PAGE,
     )
 
 

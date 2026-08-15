@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import html as html_stdlib
-import re
 from collections.abc import Mapping
 
+from hedron_core._html.policy import default_html_policy
 from hedron_core._html_meta import (
     ATTR_ORDER,
     BOOLEAN_ATTRS,
@@ -58,17 +58,8 @@ def escape_attr(value: str) -> str:
     return html_stdlib.escape(value.replace("\x00", ""), quote=True)
 
 
-_SAFE_ATTR_NAME = re.compile(r"^[A-Za-z_][\w.-]*$")
-
-
 def _require_safe_attr_name(name: str) -> None:
-    if not name or not _SAFE_ATTR_NAME.match(name) or any(ord(ch) < 32 for ch in name):
-        raise error(
-            "HED-SEC-0010",
-            title="Unsafe attribute name rejected",
-            explanation=f"Attribute name {name!r} contains forbidden characters.",
-            remediation="Use token attribute names matching [A-Za-z_][\\w.-]*.",
-        )
+    default_html_policy.require_safe_attr_name(name)
 
 
 def _attr_sort_key(name: str) -> tuple[int, str]:
@@ -92,9 +83,7 @@ def _format_attr(name: str, value: HtmlAttrValue, *, mount_path: str = "") -> st
     lower = name.lower()
     reject_hx_eval_value(lower, value)
     if lower == "style":
-        from hedron_core.html import _is_safe_layout_style
-
-        if _is_safe_layout_style(value):
+        if default_html_policy.is_safe_layout_style(value):
             from html import escape
 
             return f'style="{escape(str(value).strip().rstrip(";"), quote=True)}"'
@@ -144,9 +133,7 @@ def _format_attr(name: str, value: HtmlAttrValue, *, mount_path: str = "") -> st
     if lower in URL_ATTRS or lower.endswith("href") or lower.endswith("src"):
         if lower == "srcset" and isinstance(value, str):
             # Construction already validates candidates; re-check schemes at serialize.
-            from hedron_core.html import _normalize_srcset
-
-            text = _normalize_srcset(value)
+            text = default_html_policy.normalize_srcset(value)
             candidates: list[str] = []
             for candidate in text.split(","):
                 tokens = candidate.strip().split()

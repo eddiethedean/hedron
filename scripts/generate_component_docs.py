@@ -2863,7 +2863,7 @@ def discover_builtin_components() -> set[str]:
         if name not in {"action_attrs", "oob_swap"}
     }
     names |= _direct_component_classes(
-        "packages/hedron-core/src/hedron_core/auto.py",
+        "packages/hedron-core/src/hedron_core/auto/widget.py",
         "packages/hedron-core/src/hedron_core/color_mode.py",
         "packages/hedron/src/hedron/builtins/files.py",
         "packages/hedron/src/hedron/builtins/chat.py",

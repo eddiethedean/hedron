@@ -1,9 +1,4 @@
-"""Versioned permissioned inference workflows (RFC-0050 / WORKFLOW-018).
-
-Graph JSON cannot execute arbitrary Python, install packages, access host paths,
-or automatically create HTTP/MCP endpoints. A structured list/outline/table editor
-exposes nodes without requiring a visual canvas.
-"""
+"""Versioned permissioned inference workflows (RFC-0050 / WORKFLOW-018)."""
 
 from __future__ import annotations
 
@@ -11,138 +6,27 @@ import time
 from collections import defaultdict, deque
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 
 from hedron_core.codes import HED_WORKFLOW_0001, HED_WORKFLOW_0002, HED_WORKFLOW_0003
-from hedron_core.diagnostics import HedronError, error
+from hedron_core.diagnostics import error
+from hedron_core.inference_workflow.graph import (
+    _FORBIDDEN_PARAM_KEYS,
+    PublishedRevision,
+    WorkflowEditorView,
+    WorkflowError,
+    WorkflowNode,
+    WorkflowNodeKind,
+    WorkflowNodeResult,
+    WorkflowPermission,
+    WorkflowPort,
+    WorkflowRunResult,
+)
 from hedron_core.typing_aliases import JsonValue
 
 if TYPE_CHECKING:
     from hedron_core.inference import InferencePolicy
     from hedron_core.model_demo import ActionRegistry
-
-__all__ = [
-    "InferenceWorkflow",
-    "PublishedRevision",
-    "WorkflowEditorView",
-    "WorkflowError",
-    "WorkflowNode",
-    "WorkflowNodeKind",
-    "WorkflowNodeResult",
-    "WorkflowPermission",
-    "WorkflowPort",
-    "WorkflowRunResult",
-]
-
-
-class WorkflowError(ValueError):
-    """Workflow validation, authorization, or adversarial failure."""
-
-    def __init__(
-        self,
-        message: str,
-        *,
-        code: str | None = None,
-        diagnostic: HedronError | None = None,
-    ) -> None:
-        super().__init__(message)
-        self.code = code
-        self.diagnostic = diagnostic
-
-
-class WorkflowNodeKind(StrEnum):
-    REFERENCE = "reference"
-    INPUT = "input"
-    ACTION = "action"
-    MODEL = "model"
-    REMOTE = "remote"
-    DATASET = "dataset"
-    ARTIFACT = "artifact"
-    OUTPUT = "output"
-
-
-class WorkflowPermission(StrEnum):
-    READ = "read"
-    RUN = "run"
-    EDIT = "edit"
-    PUBLISH = "publish"
-
-
-@dataclass(frozen=True, slots=True)
-class WorkflowPort:
-    port_id: str
-    name: str
-    type_name: str
-    direction: str  # "in" | "out"
-
-
-@dataclass(frozen=True, slots=True)
-class WorkflowNode:
-    node_id: str
-    kind: WorkflowNodeKind
-    label: str
-    ports: tuple[WorkflowPort, ...] = ()
-    action_id: str | None = None
-    parameters: Mapping[str, JsonValue] = field(default_factory=dict)
-    secret_refs: tuple[str, ...] = ()
-
-
-@dataclass(frozen=True, slots=True)
-class PublishedRevision:
-    revision_id: str
-    version: int
-    published_at: float
-    publisher: str
-    immutable: bool = True
-    snapshot: Mapping[str, Any] = field(default_factory=dict)
-
-
-@dataclass(frozen=True, slots=True)
-class WorkflowEditorView:
-    """Non-spatial structured editor: list / outline / table rows."""
-
-    mode: str  # "list" | "outline" | "table"
-    rows: tuple[Mapping[str, Any], ...]
-
-
-@dataclass(frozen=True, slots=True)
-class WorkflowNodeResult:
-    """Per-node execution outcome with provenance (no host code from graph JSON)."""
-
-    node_id: str
-    status: str  # "ok" | "skipped" | "failed" | "cancelled"
-    output: Any = None
-    error: str | None = None
-    provenance: Mapping[str, Any] = field(default_factory=dict)
-
-
-@dataclass(frozen=True, slots=True)
-class WorkflowRunResult:
-    """Aggregate workflow run with partial-failure semantics."""
-
-    workflow_id: str
-    status: str  # "completed" | "partial" | "cancelled" | "failed"
-    nodes: tuple[WorkflowNodeResult, ...]
-    outputs: Mapping[str, Any] = field(default_factory=dict)
-    request_id: str | None = None
-
-
-_FORBIDDEN_PARAM_KEYS = frozenset(
-    {
-        "python",
-        "code",
-        "eval",
-        "exec",
-        "host_path",
-        "file_path",
-        "cwd",
-        "install",
-        "pip",
-        "shell",
-    }
-)
-
 
 @dataclass
 class InferenceWorkflow:
@@ -163,21 +47,14 @@ class InferenceWorkflow:
     _mcp_exposed: bool = field(default=False, init=False)
 
     def grant(self, principal: str, *permissions: WorkflowPermission) -> None:
-        self._permissions.setdefault(principal, set()).update(permissions)
+        from hedron_core.inference_workflow.authz import grant as _grant
+
+        _grant(self._permissions, principal, *permissions)
 
     def assert_permission(self, principal: str, permission: WorkflowPermission) -> None:
-        allowed = self._permissions.get(principal, set())
-        if permission not in allowed:
-            raise WorkflowError(
-                f"Principal {principal!r} lacks {permission.value}",
-                code=HED_WORKFLOW_0002,
-                diagnostic=error(
-                    HED_WORKFLOW_0002,
-                    title="Workflow authorization failure",
-                    explanation=f"Missing permission {permission.value}.",
-                    remediation="Grant the required permission explicitly.",
-                ),
-            )
+        from hedron_core.inference_workflow.authz import assert_permission as _assert
+
+        _assert(self._permissions, principal, permission)
 
     def add_node(self, node: WorkflowNode, *, principal: str) -> None:
         self.assert_permission(principal, WorkflowPermission.EDIT)
@@ -342,27 +219,9 @@ class InferenceWorkflow:
         return tuple(self._published)
 
     def editor_view(self, *, mode: str = "table") -> WorkflowEditorView:
-        rows: list[Mapping[str, Any]] = []
-        for node in self._nodes.values():
-            rows.append(
-                {
-                    "node_id": node.node_id,
-                    "kind": node.kind.value,
-                    "label": node.label,
-                    "action_id": node.action_id,
-                    "ports": [p.port_id for p in node.ports],
-                    "parameters": dict(node.parameters),
-                }
-            )
-        for frm, fp, to, tp in self._edges:
-            rows.append(
-                {
-                    "connection": f"{frm}.{fp} -> {to}.{tp}",
-                    "from_node": frm,
-                    "to_node": to,
-                }
-            )
-        return WorkflowEditorView(mode=mode, rows=tuple(rows))
+        from hedron_core.inference_workflow.editor import editor_view as _editor_view
+
+        return _editor_view(self._nodes, self._edges, mode=mode)
 
     def to_json(self) -> dict[str, Any]:
         return {

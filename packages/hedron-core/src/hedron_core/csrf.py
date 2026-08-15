@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import hmac
 import secrets
-from typing import Any
+
+from hedron_core.security.secrets import redact_secret_like as redact_secret_like
 
 __all__ = [
     "generate_csrf_token",
@@ -36,22 +37,3 @@ def validate_double_submit(
     if not provided:
         return False
     return tokens_match(cookie_token, provided)
-
-
-def redact_secret_like(value: Any, *, keys: frozenset[str] | None = None) -> Any:
-    """Redact mapping values whose keys look secret-bearing."""
-    secret_keys = keys or frozenset(
-        {"password", "secret", "token", "api_key", "authorization", "cookie", "session"}
-    )
-    if isinstance(value, dict):
-        out: dict[str, Any] = {}
-        for k, v in value.items():  # type: ignore[assignment]
-            key = str(k).lower()
-            if any(s in key for s in secret_keys):
-                out[str(k)] = "[redacted]"
-            else:
-                out[str(k)] = redact_secret_like(v, keys=secret_keys)
-        return out
-    if isinstance(value, list):
-        return [redact_secret_like(v, keys=secret_keys) for v in value]  # type: ignore[misc]
-    return value

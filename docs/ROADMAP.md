@@ -40,6 +40,7 @@ This is the **single** Hedron roadmap (adopter phase table and maintainer detail
 | **0.40** | React migration matrix, temporary-island boundary, third-party authoring, and interoperability | **Published** (`v0.40.0`; in-tree cut, tag/PyPI deferred; D-068; [#95](https://github.com/eddiethedean/hedron/issues/95)) |
 | **0.41** | Typed browser composition, bounded draft state, and navigation | **Published** (`v0.41.0`; in-tree cut, tag/PyPI deferred; D-069; [#96](https://github.com/eddiethedean/hedron/issues/96)) |
 | **0.42** | Production-grade Web Component platform | Published (`v0.42.0`; in-tree cut, tag/PyPI deferred; D-070; [#97](https://github.com/eddiethedean/hedron/issues/97)) |
+| **0.43** | Refreshable views, command handles, and typed updates | **Planned** (`v0.43.0`; D-071 / RFC-0070; tracking issue required before Stage 1) |
 
 Open medium/low remediations from the 2026-08-14 snapshot are locked into future regression gates:
 8 issues in 0.38, 27 in 0.39, 6 in 0.40, 14 in 0.41, and 32 in 0.42. Exact ownership:
@@ -72,9 +73,11 @@ own phase 0.33 release gates** and must not delay `hedron-posit` Stage 0 / RFC A
 - Trust-program priorities (human AT → CSRF → stable tier → live disposition → archetype):
   [Production-quality maturity](guides/production-quality.md).
 - Planned **0.26–0.35** phases apply an evidence-based production-grade contract to the remaining
-  package fleet. **Published 0.36–0.42** then establish a standards-based Web
+  package fleet. **Published 0.36–0.42** establish a standards-based Web
   Component platform while preserving SSR, native forms/navigation, HTMX, and no-Node Python
-  consumption. Neither program is a blanket feature promotion or a scheduled `1.0`.
+  consumption. Planned **0.43** adds a handle-first interaction facade over the existing
+  region/`InteractionResult` stack. None of these programs is a blanket feature promotion or a
+  scheduled `1.0`.
 
 ### Honest gaps on the current train (0.42.x)
 
@@ -3332,6 +3335,126 @@ complete browser supply-chain provenance.
   published with compatibility, review, AT, performance, and supply evidence.
 - Experimental elements remain conspicuous, non-default, and independently owned.
 
+## 0.43 — Refreshable views, commands, and typed updates (`v0.43.0`)
+
+**Status:** Planned (D-071 / [RFC-0070](rfcs/RFC-0070-REFRESHABLE-VIEWS.md)). Stage 0
+requirements packet is defined against Published `v0.42.0`; target is `v0.43.0`. A tracking issue
+must be created and bound to every 0.43 gate before runtime implementation begins.
+
+**Outcome:** Ordinary server-rendered interactions use one handle for rendering, routing, mounted
+identity, controls, updates, tests, and diagnostics. Authors can express “render this view,” “run
+this command,” and “refresh these views” without manually coordinating region ids, selectors,
+route allowlists, copied URLs, or swap envelopes. The existing low-level region and
+`InteractionResult` surface remains supported and inspectable.
+
+### Scope
+
+- Add `@app.refreshable` returning a callable `FragmentHandle` with generated or explicit path/key,
+  a stable `FragmentHost`, route/region/reference metadata, handle-derived controls, and preserved
+  sync/async/dependency introspection.
+- Add validated `BoundFragment` instances for dynamic path/query parameters, repeated view
+  instances, mount prefixes, safe URL encoding, and non-secret deterministic identity.
+- Add `@app.command` returning an `ActionHandle` for POST+CSRF mutation routes, buttons, forms,
+  tests, generated/explicit paths, ordinary HTTP fallbacks, and Explorer/CLI inspection without
+  changing existing `@app.action` semantics.
+- Add bounded `refresh(view, ...)` intents that rerun each view through its normal GET route and
+  dependencies using typed HTMX events; document that fan-out is neither atomic nor free.
+- Add portable frozen `Patch` / `PatchSet` and `replace` / `update` / `patches` ergonomics that
+  compile to existing `InteractionResult`, `InteractionPolicy`, `OobUpdate`, cache/status/header,
+  rendering, and target-authorization contracts.
+- Make the server output canonical: missing client targets resolve to the declared handle; a
+  conflicting target fails closed and is audited. High-level patches accept registered app-owned
+  handles, not arbitrary selector strings.
+- Ship accessible host loading/error/retry/focus/announcement behavior, cancellation/late-response
+  rules, native controls, no-JavaScript command fallback, and three-engine browser evidence.
+- Extend typed route/output registry metadata, Explorer view-command-output graphs, CLI diagnostics,
+  handle-based `AppScenario` operations/assertions, scaffold, examples, and migration guidance.
+- Prove portable patch/refresh conformance on FastAPI, Flask, and Django or inventory a bounded
+  adapter exception with owner and destination; keep `hedron-core` framework-neutral.
+- Retain `Hedron.region`, `Hedron.fragment`, `FragmentRegion`, `fragment_regions=`,
+  `RefreshButton.for_region`, `swap`, `swap_oob`, `retarget`, `OobUpdate`, `InteractionPolicy`, and
+  `InteractionResult` with unchanged stability and behavior.
+
+### Locked public model
+
+```python
+@app.refreshable
+def status():
+    return StatusPanel(...)
+
+
+@app.command
+def restart_service():
+    restart()
+    return refresh(status).toast("Service restarted")
+
+
+@app.page("/")
+def home():
+    return Page(
+        status(),
+        status.refresh_button("Refresh"),
+        restart_service.button("Restart"),
+    )
+```
+
+Direct multi-output work remains explicit:
+
+```python
+return patches(
+    notes.replace(notes_panel()),
+    note_count.update(count_panel()),
+    toast="Saved",
+)
+```
+
+The public contract is
+[REFRESHABLE_VIEWS](api/REFRESHABLE_VIEWS.md); implementation requirements are
+[INTERACTION_HANDLES_043](implementation/INTERACTION_HANDLES_043.md); the machine inventory is
+[`interaction-capability-inventory-043.toml`](acceptance/interaction-capability-inventory-043.toml).
+
+### Locked exit evidence
+
+| Gate | Verified means |
+|---|---|
+| `VIEW-043` | Handle/host/binding/generated+explicit route/id/introspection/async/DI/mount matrix passes. |
+| `COMMAND-043` | Command handles, POST/CSRF, native controls/forms, validation/errors, and ordinary HTTP fallback pass. |
+| `UPDATE-043` | Refresh-intent and Patch/PatchSet bounds, ordering, target authority, OOB/status/cache/history conversion pass. |
+| `SECURITY-043` | App ownership, target disagreement, authz/CSRF, redaction, unsafe input, and resource-limit adversarial matrix passes. |
+| `A11Y-043` / `BROWSER-043` | Host semantics, busy/error/focus/announcements/keyboard/no-JS and three-engine lifecycle/cleanup pass without a new human-AT claim. |
+| `TOOLING-043` | Explorer, CLI, scaffold, registry metadata, and handle-based scenario UX pass. |
+| `COMPAT-043` | Unchanged 0.42 facade, mixed migration, rollback, and FastAPI/Flask/Django conformance pass. |
+| `PERF-043` | No required new browser asset; handle/refresh/patch latency, allocation, payload, request, and memory budgets pass. |
+| `DOCS-043` / `REGRESS-043` / `PKG-043` | Complete docs/migration plus full regression, clean package, inventory, and release rehearsal pass. |
+
+Evidence index: [`release-gate-0.43.toml`](acceptance/release-gate-0.43.toml). Acceptance packet:
+[RELEASE_0_43](acceptance/RELEASE_0_43.md). Upgrade fixtures:
+[upgrade-fixtures-043](acceptance/upgrade-fixtures-043.md).
+
+### Non-goals
+
+- Hidden dependency tracking, signals/hooks, global stores, full-script reruns, SPA routing,
+  hydration, VDOM, or automatic invalidation based on data reads.
+- Calling FastAPI dependency solvers through undocumented internals; `refresh(view)` issues the
+  view's normal GET instead.
+- Treating generated routes/ids as public compatibility promises or security boundaries.
+- Inferring authentication, authorization, tenancy, idempotency, transactions, or retry safety.
+- Required Web Components, Node/bundlers, live transports, preload, or a new general browser
+  runtime.
+- Removing, deprecating, or changing the return identity of existing stable decorators and
+  interaction helpers.
+- Closing `SR-021`, claiming unqualified human-AT support, scheduling `1.0`, or changing package
+  maturity solely because the new facade exists.
+
+### Exit gate
+
+- The scaffold's ordinary refresh contains no visible region, DOM target id, selector, allowlist,
+  copied route URL, or `swap` envelope.
+- View, command, refresh, and patch paths pass functional, security, accessibility, browser,
+  performance, tooling, adapter, migration, and package evidence.
+- Existing 0.42 interaction behavior passes unchanged.
+- Every 0.43-owned release-gate row is Verified with zero Deferred before `v0.43.0` is cut.
+
 ## Complete capability-to-release ledger
 
 This ledger is the coverage check for planned capabilities. The detailed phase sections above remain normative; the ledger prevents a subsystem or cross-cutting requirement from disappearing between plans.
@@ -3417,6 +3540,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | HTTP-faithful `AppScenario` application-flow harness | 0.15 | Route, session, typed control/action, fragment, redirect, and response assertions; explicitly no whole-script rerun simulation. |
 | HTMX InteractionResult / fragment / region / shell testing helpers | 0.15 | Asserts for headers, OOB, Toast, non-200 fragments, FragmentRegion authz, and panel-swap dual paths ([#22](https://github.com/eddiethedean/hedron/issues/22), [#23](https://github.com/eddiethedean/hedron/issues/23), [#25](https://github.com/eddiethedean/hedron/issues/25), [#26](https://github.com/eddiethedean/hedron/issues/26)); Dialog/Tabs/Pagination/Lazy asserts deferred to 0.17 ([#24](https://github.com/eddiethedean/hedron/issues/24)). |
 | Interaction authoring ergonomics (`region`, `@fragment`, `swap`, diagnostics) | 0.15 | Additive DX over RFC-0009 ([RFC-0039](https://github.com/eddiethedean/hedron/blob/main/docs/rfcs/RFC-0039-INTERACTION-ERGONOMICS.md)); fail-closed targets unchanged; no implicit widget state. |
+| Refreshable views, command handles, typed refresh intents, and `Patch`/`PatchSet` | 0.43 | Handle-first facade over the existing region/`InteractionResult` stack; generated plumbing, server-canonical outputs, accessible hosts, and no hidden reactive runtime (RFC-0070 / D-071). |
 | Workbench-flow scenarios | 0.16 | Validates bounded transform/action requests and HTTP/static fallbacks for enhanced analysis tools. |
 | Interaction-graph recorder and deterministic replay | 0.17 | Redacted contract fixtures exercise ordering, races, reconnects, and patch conflicts. |
 | Model-demo and inference scenario kit | 0.18 | Synthetic typed fixtures cover jobs, progress, cancellation, consent, redaction, and retention without real models. |
@@ -3428,6 +3552,7 @@ This ledger is the coverage check for planned capabilities. The detailed phase s
 | Accessibility scenarios, semantic-tree snapshots, ACT/axe provenance, and browser AT automation | 0.19 | `AT-019` Playwright/axe matrix; human SR / compensated evaluation owned by 0.21 (D-052). |
 | Human screen-reader matrix and compensated disabled-participant evaluation | 0.21 | VoiceOver/Safari, NVDA/Firefox, TalkBack; ≥2 compensated sessions; redacted ledger + remediations (D-052; [#86](https://github.com/eddiethedean/hedron/issues/86)). |
 | Progressive-enhancement form/mutation contract (no-JS + HTMX) | 0.19 | Guide, recipe, and automated non-`HX-Request` success path ([#8](https://github.com/eddiethedean/hedron/issues/8)). |
+| Handle-based Explorer/CLI/AppScenario interaction tooling and migration fixtures | 0.43 | View-command-output graph, human diagnostics, typed scenario operations/assertions, three-host conformance, and unchanged 0.42 rollback evidence. |
 | `hedron new --flask` / `--django` and adapter clean-wheel CI smoke | 0.20 | Scaffold parity with FastAPI; import-smoke flask/django wheels (`SCAFFOLD-020` / `WHEEL-020`; [#17](https://github.com/eddiethedean/hedron/issues/17), [#19](https://github.com/eddiethedean/hedron/issues/19)). |
 | Project scaffolding, author docs, package conventions | 0.4 | Supports third-party component packages. |
 

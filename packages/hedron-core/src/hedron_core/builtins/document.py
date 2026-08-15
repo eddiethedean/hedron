@@ -80,6 +80,7 @@ class Page(Component[PageProps]):
     """Full HTML document shell."""
 
     props_type = PageProps
+    hedron_document_shell: ClassVar[bool] = True
     slots: ClassVar[dict[str, str]] = {"head": "optional", "body": "required"}
 
     def __init__(

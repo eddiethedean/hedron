@@ -37,6 +37,8 @@ class RQJobBackend:
     evicted so long-lived workers do not retain unbounded RQ ``Job`` objects (#243).
     """
 
+    process_local = False
+
     def __init__(
         self,
         queue: Any,

@@ -9,11 +9,19 @@ from typing import Protocol, runtime_checkable
 from hedron_core.csrf import generate_csrf_token, tokens_match, validate_double_submit
 
 __all__ = [
+    "DEFAULT_CSRF_COOKIE_NAME",
+    "DEFAULT_CSRF_FORM_FIELD",
+    "DEFAULT_CSRF_HEADER_NAME",
     "CsrfStrategy",
+    "CsrfTokenProvider",
     "CsrfValidationError",
     "DoubleSubmitCookieCsrf",
     "SessionTokenCsrf",
 ]
+
+DEFAULT_CSRF_COOKIE_NAME = "hedron_csrf"
+DEFAULT_CSRF_HEADER_NAME = "X-CSRF-Token"
+DEFAULT_CSRF_FORM_FIELD = "csrf_token"
 
 
 class CsrfValidationError(Exception):
@@ -21,8 +29,54 @@ class CsrfValidationError(Exception):
 
 
 @runtime_checkable
+class CsrfTokenProvider(Protocol):
+    """Issued CSRF material for widgets (``RenderContext`` structurally matches)."""
+
+    @property
+    def csrf_token(self) -> str | None: ...
+
+    @property
+    def csrf_form_field(self) -> str: ...
+
+
+def resolve_csrf_field_values(
+    *,
+    token: str | None,
+    name: str | None,
+    provider: CsrfTokenProvider | None,
+) -> tuple[str, str]:
+    """Resolve hidden-input token/name from explicit values or a token provider.
+
+    Returns:
+        ``(token, field_name)``.
+
+    Raises:
+        ValueError: When no token is available from props or the provider.
+    """
+    resolved_token = token
+    if resolved_token is None and provider is not None:
+        resolved_token = provider.csrf_token
+    resolved_name = name
+    if resolved_name is None:
+        if provider is not None:
+            resolved_name = provider.csrf_form_field
+        else:
+            resolved_name = DEFAULT_CSRF_FORM_FIELD
+    if not resolved_token:
+        raise ValueError(
+            "CsrfField requires token= or a RenderContext with csrf_token "
+            "(FastAPI pages populate this automatically when CSRF is enabled)"
+        )
+    return resolved_token, resolved_name
+
+
+@runtime_checkable
 class CsrfStrategy(Protocol):
-    """Validate and optionally issue CSRF material for unsafe requests."""
+    """Validate and optionally issue CSRF material for unsafe requests.
+
+    Cookie, header, and form-field names live on the strategy. Hosts must read
+    names from the resolved strategy rather than duplicating them beside it.
+    """
 
     # Properties (not bare attrs) so frozen strategy dataclasses structurally match.
     @property
@@ -30,6 +84,9 @@ class CsrfStrategy(Protocol):
 
     @property
     def header_name(self) -> str: ...
+
+    @property
+    def cookie_name(self) -> str: ...
 
     def issue(self, request: object) -> str:
         """Return the token value to embed (cookie seed and/or form field)."""
@@ -72,9 +129,9 @@ def _state_set(request: object, attr: str, value: str) -> None:
 class DoubleSubmitCookieCsrf:
     """Cookie double-submit strategy (default for named security profiles)."""
 
-    cookie_name: str = "hedron_csrf"
-    form_field: str = "csrf_token"
-    header_name: str = "X-CSRF-Token"
+    cookie_name: str = DEFAULT_CSRF_COOKIE_NAME
+    form_field: str = DEFAULT_CSRF_FORM_FIELD
+    header_name: str = DEFAULT_CSRF_HEADER_NAME
     sets_cookie: bool = True
 
     def issue(self, request: object) -> str:
@@ -110,9 +167,10 @@ class SessionTokenCsrf:
     """App-owned synchronizer token (no Starlette cookie session required)."""
 
     get_expected: Callable[[object], str | None]
-    form_field: str = "csrf_token"
-    header_name: str = "X-CSRF-Token"
+    form_field: str = DEFAULT_CSRF_FORM_FIELD
+    header_name: str = DEFAULT_CSRF_HEADER_NAME
     sets_cookie: bool = False
+    cookie_name: str = ""
 
     def issue(self, request: object) -> str:
         # Missing tokens must not 500 safe GET/page renders; validate() rejects POSTs.

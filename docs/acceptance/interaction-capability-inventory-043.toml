@@ -1,0 +1,206 @@
+# Phase 0.43 refreshable-view and command capability inventory.
+# Stage 0 contract artifact: capabilities are Planned until their owning gate is Verified.
+
+schema_version = 1
+phase = "0.43"
+status = "Planned"
+baseline = "v0.42.0"
+target = "v0.43.0"
+decision = "D-071"
+owning_rfc = "RFC-0070"
+implementation = "docs/implementation/INTERACTION_HANDLES_043.md"
+public_contract = "docs/api/REFRESHABLE_VIEWS.md"
+
+[[capability]]
+id = "IH-VIEW-001..009"
+area = "view"
+gate = "VIEW-043"
+state = "Planned"
+packages = ["hedron", "hedron-core"]
+evidence = ["unit", "integration", "registry", "autodoc"]
+summary = "Refreshable decorator, callable handle, generated routes/ids, stable hosts, introspection, and duplicate-mount diagnostics."
+
+[[capability]]
+id = "IH-BIND-001..005"
+area = "binding"
+gate = "VIEW-043"
+state = "Planned"
+packages = ["hedron", "hedron-core"]
+evidence = ["unit", "integration", "security", "mount-matrix"]
+summary = "Validated bound fragment instances with deterministic non-secret identities and mount-aware URLs."
+
+[[capability]]
+id = "IH-CMD-001..006"
+area = "command"
+gate = "COMMAND-043"
+state = "Planned"
+packages = ["hedron"]
+evidence = ["integration", "csrf", "fallback", "autodoc"]
+summary = "Additive action handles, generated/explicit mutation routes, native controls/forms, and ordinary HTTP fallback."
+
+[[capability]]
+id = "IH-REFRESH-001..007"
+area = "refresh"
+gate = "UPDATE-043"
+state = "Planned"
+packages = ["hedron-core", "hedron"]
+evidence = ["unit", "browser", "conformance", "trace"]
+summary = "Bounded typed refresh intents that rerun normal view GET routes through HTMX events without internal DI invocation."
+
+[[capability]]
+id = "IH-PATCH-001..008"
+area = "patch"
+gate = "UPDATE-043"
+state = "Planned"
+packages = ["hedron-core", "hedron"]
+evidence = ["unit", "integration", "conformance", "adversarial"]
+summary = "Portable Patch/PatchSet values compiled into existing InteractionResult/OobUpdate authorization and rendering."
+
+[[capability]]
+id = "IH-HOST-001..007"
+area = "host"
+gate = "A11Y-043"
+state = "Planned"
+packages = ["hedron-core", "hedron"]
+evidence = ["browser", "accessibility", "fallback", "cleanup"]
+summary = "Semantic-neutral hosts with explicit semantics, busy/error/focus behavior, cancellation, no-JS, and scoped a11y evidence."
+
+[[capability]]
+id = "IH-HOST-002..006"
+area = "browser-lifecycle"
+gate = "BROWSER-043"
+state = "Planned"
+packages = ["hedron"]
+evidence = ["chromium", "firefox", "webkit", "htmx-lifecycle"]
+summary = "Three-engine loading, failure, refresh fan-out, late-response, nested/disconnected-host, and cleanup behavior."
+
+[[capability]]
+id = "IH-SEC-001..007"
+area = "security"
+gate = "SECURITY-043"
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-explorer"]
+evidence = ["threat-model", "adversarial", "csrf", "redaction", "limits"]
+summary = "App-owned handle capabilities, canonical server outputs, CSRF/authz preservation, redaction, and bounded resources."
+
+[[capability]]
+id = "IH-DX-001..007"
+area = "tooling"
+gate = "TOOLING-043"
+state = "Planned"
+packages = ["hedron", "hedron-explorer"]
+evidence = ["cli", "explorer", "scaffold", "snapshots"]
+summary = "Handle-first scaffold, human diagnostics, Explorer graph, CLI checks, autocomplete, and layered authoring."
+
+[[capability]]
+id = "IH-QUAL-001..004"
+area = "compatibility"
+gate = "COMPAT-043"
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-conformance", "hedron-flask", "hedron-django"]
+evidence = ["scenario", "adapter-matrix", "upgrade", "stability"]
+summary = "Handle scenario assertions, portable adapter fixtures, unchanged legacy tests, and explicit Beta/stable inventory."
+
+[[capability]]
+id = "IH-QUAL-005..007"
+area = "performance"
+gate = "PERF-043"
+state = "Planned"
+packages = ["hedron-core", "hedron"]
+evidence = ["latency", "allocation", "payload", "memory", "asset-diff"]
+summary = "No required browser runtime plus bounded registration, binding, response, fan-out, patch, payload, and memory costs."
+
+[[capability]]
+id = "IH-QUAL-008"
+area = "documentation"
+gate = "DOCS-043"
+state = "Planned"
+packages = ["docs"]
+evidence = ["api", "guides", "migration", "troubleshooting", "examples"]
+summary = "Complete handle-first documentation with progressive enhancement, security, accessibility, testing, escape hatches, and limits."
+
+[[capability]]
+id = "IH-QUAL-009"
+area = "packaging"
+gate = "PKG-043"
+state = "Planned"
+packages = ["hedron-core", "hedron", "hedron-explorer", "hedron-conformance", "hedron-flask", "hedron-django"]
+evidence = ["clean-wheel", "source-install", "import-smoke", "release-rehearsal"]
+summary = "Clean package matrix and release verification without optional dependency leakage."
+
+[[compatibility]]
+symbol = "Hedron.region"
+disposition = "Retained"
+stability = "unchanged"
+replacement_required = false
+
+[[compatibility]]
+symbol = "Hedron.fragment"
+disposition = "Retained"
+stability = "unchanged"
+replacement_required = false
+
+[[compatibility]]
+symbol = "FragmentRegion"
+disposition = "Retained"
+stability = "unchanged"
+replacement_required = false
+
+[[compatibility]]
+symbol = "InteractionResult"
+disposition = "Retained"
+stability = "unchanged"
+replacement_required = false
+
+[[compatibility]]
+symbol = "RefreshButton.for_region"
+disposition = "Retained"
+stability = "unchanged"
+replacement_required = false
+
+[[compatibility]]
+symbol = "swap/swap_oob/retarget"
+disposition = "Retained"
+stability = "unchanged"
+replacement_required = false
+
+[[limit]]
+name = "max_refresh_targets"
+value = 16
+unit = "targets"
+gate = "UPDATE-043"
+
+[[limit]]
+name = "max_patch_targets"
+value = 16
+unit = "targets"
+gate = "UPDATE-043"
+
+[[limit]]
+name = "simple_path_relative_p95_overhead"
+value = 10
+unit = "percent"
+gate = "PERF-043"
+
+[[limit]]
+name = "simple_path_absolute_p95_delta"
+value = 1
+unit = "millisecond"
+gate = "PERF-043"
+
+[[exclusion]]
+id = "IH-EX-001"
+summary = "No global reactive store, dependency tracking, hooks, signals, or full-script rerun runtime."
+
+[[exclusion]]
+id = "IH-EX-002"
+summary = "No existing interaction API removal or deprecation in 0.43."
+
+[[exclusion]]
+id = "IH-EX-003"
+summary = "No generated-route security-through-obscurity or inferred business authorization."
+
+[[exclusion]]
+id = "IH-EX-004"
+summary = "No required custom element, hydration, Node consumer build, live transport, or new general browser framework."
+

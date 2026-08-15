@@ -1,69 +1,34 @@
-"""Sealable component and resource registry."""
+"""Mutable registry builder, sealed snapshot, and process-wide gate."""
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Mapping
-from dataclasses import dataclass, field, fields, replace
-from typing import Any, Literal, TypedDict, cast
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass, field, replace
+from typing import Any, TypedDict, cast
 
 from hedron_core.diagnostics import error
 from hedron_core.element_form import validate_form_contract
 from hedron_core.element_types import validate_field_ownership
 from hedron_core.identifiers import registry_resource_id
-
-# Closed set of registry route kinds used by adapters and Explorer.
-RouteKind = Literal["page", "component", "action"]
+from hedron_core.registry.addressable import AddressableMeta
+from hedron_core.registry.asset import AssetMeta
+from hedron_core.registry.browser_module import BrowserModuleMeta
+from hedron_core.registry.component import _COMPONENT_UPDATE_KEYS, ComponentMeta
+from hedron_core.registry.element import ElementDefinitionMeta
+from hedron_core.registry.route import RouteKind, RouteMeta
+from hedron_core.registry.theme import ThemeMeta
 
 __all__ = [
-    "AddressableMeta",
-    "AssetMeta",
-    "BrowserModuleMeta",
-    "ElementDefinitionMeta",
-    "ElementFieldOwnership",
-    "ComponentMeta",
-    "RouteKind",
-    "RouteMeta",
-    "ThemeMeta",
     "Registry",
     "RegistryBuilder",
     "RegistryBuilderSnapshot",
+    "active_builder",
     "get_registry",
-    "register_addressable",
-    "register_asset",
-    "register_browser_module",
-    "register_element_definition",
-    "register_component",
-    "register_route",
-    "register_theme",
     "reset_registry_for_tests",
     "restore_registry_builder",
     "seal_registry",
     "snapshot_registry_builder",
-    "component_meta_from_class",
-    "update_component_meta",
 ]
-
-
-@dataclass(frozen=True, slots=True)
-class ComponentMeta:
-    logical_id: str
-    name: str
-    module: str
-    distribution: str
-    props_model: str | None
-    slots: Mapping[str, str]
-    examples: tuple[str, ...] = ()
-    docs: str | None = None
-    route: str | None = None
-    accessibility_notes: str | None = None
-    styles_path: str | None = None
-    browser_modules: tuple[str, ...] = ()
-    asset_roots: tuple[str, ...] = ()
-    style_symbols: Mapping[str, str] = field(default_factory=dict)
-    folder_path: str | None = None
-
-
-_COMPONENT_UPDATE_KEYS = frozenset(f.name for f in fields(ComponentMeta)) - {"logical_id"}
 
 
 class RegistryBuilderSnapshot(TypedDict):
@@ -76,104 +41,6 @@ class RegistryBuilderSnapshot(TypedDict):
     assets: dict[str, AssetMeta]
     browser_modules: dict[str, BrowserModuleMeta]
     element_definitions: dict[str, ElementDefinitionMeta]
-
-
-@dataclass(frozen=True, slots=True)
-class AddressableMeta:
-    logical_id: str
-    name: str
-    module: str
-    distribution: str
-    methods: tuple[str, ...]
-    include_in_schema: bool
-    cache_private: bool
-    tags: tuple[str, ...]
-    docs: str | None
-    factory: Callable[..., object] | None = None
-    route: str | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class RouteMeta:
-    """Adapter-populated page/action/component route metadata."""
-
-    kind: RouteKind
-    logical_id: str
-    name: str
-    path: str
-    methods: tuple[str, ...]
-    operation_id: str
-    include_in_schema: bool
-    module: str
-    tags: tuple[str, ...] = ()
-    docs: str | None = None
-    endpoint: Callable[..., object] | None = None
-    htmx_inference: Mapping[str, str] = field(default_factory=dict)
-
-
-@dataclass(frozen=True, slots=True)
-class ThemeMeta:
-    logical_id: str
-    name: str
-    tokens: Mapping[str, str]
-    modes: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-    variants: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
-
-
-@dataclass(frozen=True, slots=True)
-class AssetMeta:
-    logical_id: str
-    kind: str
-    path: str
-    digest: str
-    content_type: str
-    attributes: Mapping[str, str] = field(default_factory=dict)
-
-
-@dataclass(frozen=True, slots=True)
-class BrowserModuleMeta:
-    logical_id: str
-    tag_name: str
-    module_path: str
-    observed_attributes: tuple[str, ...] = ()
-    events: tuple[str, ...] = ()
-    shadow_dom: bool = False
-    htmx_lifecycle: bool = True
-
-
-OwnershipMode = Literal["controlled", "local", "draft", "preference"]
-
-
-# Re-export for backward compatibility (STATE-036).
-from hedron_core.element_types import ElementFieldOwnership  # noqa: E402
-
-
-@dataclass(frozen=True, slots=True)
-class ElementDefinitionMeta:
-    """Versioned Web Component ABI record (RFC-0060 / phase 0.36)."""
-
-    logical_id: str
-    tag_name: str
-    abi_version: int
-    module_asset_id: str
-    attributes: tuple[str, ...] = ()
-    structured_inputs: Mapping[str, str] = field(default_factory=dict)
-    properties: tuple[str, ...] = ()
-    methods: tuple[str, ...] = ()
-    state_ownership: tuple[ElementFieldOwnership, ...] = ()
-    events: tuple[str, ...] = ()
-    dom_policy: str = "light"
-    server_regions: tuple[str, ...] = ()
-    form_contract: Mapping[str, object] | None = None  # reserved stub in 0.36
-    a11y_contract: Mapping[str, str] = field(default_factory=dict)
-    style_contract: Mapping[str, str] = field(default_factory=dict)
-    resources: tuple[str, ...] = ()
-    lifecycle: Mapping[str, str] = field(default_factory=dict)
-    fallback: Mapping[str, str] = field(default_factory=dict)
-    parts: tuple[str, ...] = ()
-    slots: Mapping[str, str] = field(default_factory=dict)
-    tokens: tuple[str, ...] = ()
-    first_party: bool = True
 
 
 @dataclass
@@ -434,233 +301,8 @@ _builder = RegistryBuilder()
 _active: Registry | None = None
 
 
-def register_component(
-    *,
-    logical_id: str,
-    name: str,
-    module: str,
-    distribution: str = "hedron-core",
-    props_model: str | None = None,
-    slots: Mapping[str, str] | None = None,
-    examples: Iterable[str] = (),
-    docs: str | None = None,
-    accessibility_notes: str | None = None,
-    styles_path: str | None = None,
-    browser_modules: Iterable[str] = (),
-    asset_roots: Iterable[str] = (),
-    style_symbols: Mapping[str, str] | None = None,
-    folder_path: str | None = None,
-) -> None:
-    _builder.register(
-        ComponentMeta(
-            logical_id=logical_id,
-            name=name,
-            module=module,
-            distribution=distribution,
-            props_model=props_model,
-            slots=dict(slots or {}),
-            examples=tuple(examples),
-            docs=docs,
-            route=None,
-            accessibility_notes=accessibility_notes,
-            styles_path=styles_path,
-            browser_modules=tuple(browser_modules),
-            asset_roots=tuple(asset_roots),
-            style_symbols=dict(style_symbols or {}),
-            folder_path=folder_path,
-        )
-    )
-
-
-def update_component_meta(logical_id: str, **updates: object) -> None:
-    _builder.update_component(logical_id, **updates)
-
-
-def register_addressable(
-    *,
-    logical_id: str,
-    name: str,
-    module: str,
-    distribution: str = "hedron-core",
-    methods: tuple[str, ...] = ("GET",),
-    include_in_schema: bool = False,
-    cache_private: bool = True,
-    tags: tuple[str, ...] = (),
-    docs: str | None = None,
-    factory: Callable[..., object] | None = None,
-    route: str | None = None,
-) -> None:
-    _builder.register_addressable(
-        AddressableMeta(
-            logical_id=logical_id,
-            name=name,
-            module=module,
-            distribution=distribution,
-            methods=methods,
-            include_in_schema=include_in_schema,
-            cache_private=cache_private,
-            tags=tags,
-            docs=docs,
-            factory=factory,
-            route=route,
-        )
-    )
-
-
-def register_route(
-    *,
-    kind: RouteKind,
-    logical_id: str,
-    name: str,
-    path: str,
-    methods: tuple[str, ...],
-    operation_id: str,
-    include_in_schema: bool,
-    module: str,
-    tags: tuple[str, ...] = (),
-    docs: str | None = None,
-    endpoint: Callable[..., object] | None = None,
-    htmx_inference: Mapping[str, str] | None = None,
-) -> None:
-    _builder.register_route(
-        RouteMeta(
-            kind=kind,
-            logical_id=logical_id,
-            name=name,
-            path=path,
-            methods=methods,
-            operation_id=operation_id,
-            include_in_schema=include_in_schema,
-            module=module,
-            tags=tags,
-            docs=docs,
-            endpoint=endpoint,
-            htmx_inference=dict(htmx_inference or {}),
-        )
-    )
-
-
-def register_theme(
-    *,
-    logical_id: str,
-    name: str,
-    tokens: Mapping[str, str],
-    modes: Mapping[str, Mapping[str, str]] | None = None,
-    variants: Mapping[str, Mapping[str, str]] | None = None,
-) -> None:
-    _builder.register_theme(
-        ThemeMeta(
-            logical_id=logical_id,
-            name=name,
-            tokens=dict(tokens),
-            modes={k: dict(v) for k, v in (modes or {}).items()},
-            variants={k: dict(v) for k, v in (variants or {}).items()},
-        )
-    )
-
-
-def register_asset(
-    *,
-    logical_id: str,
-    kind: str,
-    path: str,
-    digest: str,
-    content_type: str,
-    attributes: Mapping[str, str] | None = None,
-) -> None:
-    _builder.register_asset(
-        AssetMeta(
-            logical_id=logical_id,
-            kind=kind,
-            path=path,
-            digest=digest,
-            content_type=content_type,
-            attributes=dict(attributes or {}),
-        )
-    )
-
-
-def register_browser_module(
-    *,
-    logical_id: str,
-    tag_name: str,
-    module_path: str,
-    observed_attributes: Iterable[str] = (),
-    events: Iterable[str] = (),
-    shadow_dom: bool = False,
-    htmx_lifecycle: bool = True,
-) -> None:
-    if "-" not in tag_name:
-        raise error(
-            "HED-ASSET-0011",
-            title="Invalid custom element tag",
-            explanation=f"Custom element tag {tag_name!r} must contain a hyphen.",
-            remediation="Use a hyphenated custom element name.",
-        )
-    _builder.register_browser_module(
-        BrowserModuleMeta(
-            logical_id=logical_id,
-            tag_name=tag_name,
-            module_path=module_path,
-            observed_attributes=tuple(observed_attributes),
-            events=tuple(events),
-            shadow_dom=shadow_dom,
-            htmx_lifecycle=htmx_lifecycle,
-        )
-    )
-
-
-def register_element_definition(
-    *,
-    logical_id: str,
-    tag_name: str,
-    abi_version: int,
-    module_asset_id: str,
-    attributes: Iterable[str] = (),
-    structured_inputs: Mapping[str, str] | None = None,
-    properties: Iterable[str] = (),
-    methods: Iterable[str] = (),
-    state_ownership: Iterable[ElementFieldOwnership] = (),
-    events: Iterable[str] = (),
-    dom_policy: str = "light",
-    server_regions: Iterable[str] = (),
-    form_contract: Mapping[str, object] | None = None,
-    a11y_contract: Mapping[str, str] | None = None,
-    style_contract: Mapping[str, str] | None = None,
-    resources: Iterable[str] = (),
-    lifecycle: Mapping[str, str] | None = None,
-    fallback: Mapping[str, str] | None = None,
-    parts: Iterable[str] = (),
-    slots: Mapping[str, str] | None = None,
-    tokens: Iterable[str] = (),
-    first_party: bool = True,
-) -> None:
-    _builder.register_element_definition(
-        ElementDefinitionMeta(
-            logical_id=logical_id,
-            tag_name=tag_name,
-            abi_version=abi_version,
-            module_asset_id=module_asset_id,
-            attributes=tuple(attributes),
-            structured_inputs=dict(structured_inputs or {}),
-            properties=tuple(properties),
-            methods=tuple(methods),
-            state_ownership=tuple(state_ownership),
-            events=tuple(events),
-            dom_policy=dom_policy,
-            server_regions=tuple(server_regions),
-            form_contract=dict(form_contract) if form_contract is not None else None,
-            a11y_contract=dict(a11y_contract or {}),
-            style_contract=dict(style_contract or {}),
-            resources=tuple(resources),
-            lifecycle=dict(lifecycle or {}),
-            fallback=dict(fallback or {}),
-            parts=tuple(parts),
-            slots=dict(slots or {}),
-            tokens=tuple(tokens),
-            first_party=first_party,
-        )
-    )
+def active_builder() -> RegistryBuilder:
+    return _builder
 
 
 def seal_registry() -> Registry:
@@ -724,20 +366,3 @@ def reset_registry_for_tests() -> None:
     global _builder, _active
     _builder = RegistryBuilder()
     _active = None
-
-
-def component_meta_from_class(cls: type[object]) -> ComponentMeta:
-    logical_id = (
-        f"{getattr(cls, 'distribution', 'hedron-core')}:"
-        f"{cls.__module__}.{getattr(cls, 'logical_name', cls.__name__)}"
-    )
-    props_type = getattr(cls, "props_type", None)
-    return ComponentMeta(
-        logical_id=logical_id,
-        name=getattr(cls, "logical_name", cls.__name__) or cls.__name__,
-        module=cls.__module__,
-        distribution=getattr(cls, "distribution", "hedron-core"),
-        props_model=props_type.__name__ if props_type else None,
-        slots=dict(getattr(cls, "slots", {}) or {}),
-        route=None,
-    )

@@ -1,10 +1,4 @@
-"""Inference execution policy over JobBackend (RFC-0047 / INFER-018).
-
-Admission, fairness, named concurrency groups, batch windows, queue position/ETA,
-generator streaming, and cancel/timeout semantics compose durable ``JobBackend``
-contracts. An in-process queue is development-only and is never the production
-durability promise.
-"""
+"""Frozen-config plus scheduler façade for inference admission."""
 
 from __future__ import annotations
 
@@ -14,119 +8,48 @@ import time
 from collections import OrderedDict, defaultdict, deque
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
-from enum import StrEnum
-from typing import Any
+from typing import Any, Protocol, runtime_checkable
 
 from hedron_core.codes import HED_INFER_0001, HED_INFER_0002, HED_INFER_0003
-from hedron_core.diagnostics import HedronError, error
+from hedron_core.diagnostics import error
+from hedron_core.inference.types import (
+    _PRIORITY_RANK,
+    BatchWindow,
+    ConcurrencyGroup,
+    InferenceAdmission,
+    InferenceDiagnostics,
+    InferenceError,
+    InferencePriority,
+    InferenceQueueStatus,
+    QueuedInference,
+)
 from hedron_core.jobs import JobBackend, JobHandle, get_job_backend
 from hedron_core.typing_aliases import JsonValue
 
-__all__ = [
-    "BatchWindow",
-    "ConcurrencyGroup",
-    "InferenceAdmission",
-    "InferenceDiagnostics",
-    "InferenceError",
-    "InferencePolicy",
-    "InferencePriority",
-    "InferenceQueueStatus",
-    "InProcessInferenceQueue",
-    "QueuedInference",
-]
 
+@runtime_checkable
+class InferenceScheduler(Protocol):
+    """Admit, cancel, and drain inference work over a ``JobBackend``."""
 
-class InferenceError(ValueError):
-    """Inference admission, scheduling, or lifecycle failure."""
-
-    def __init__(
+    def admit(
         self,
-        message: str,
+        job_type: str,
+        payload: Mapping[str, JsonValue],
         *,
-        code: str | None = None,
-        diagnostic: HedronError | None = None,
-    ) -> None:
-        super().__init__(message)
-        self.code = code
-        self.diagnostic = diagnostic
+        group: str,
+        tenant_id: str | None = None,
+        auth_subject: str | None = None,
+        backend: JobBackend | None = None,
+        timeout_s: float | None = None,
+        priority: InferencePriority | None = None,
+        shape_key: str | None = None,
+    ) -> QueuedInference: ...
 
+    def request_cancel(self, request_id: str, *, backend: JobBackend | None = None) -> bool: ...
 
-class InferencePriority(StrEnum):
-    LOW = "low"
-    NORMAL = "normal"
-    HIGH = "high"
-
-
-class InferenceAdmission(StrEnum):
-    ACCEPTED = "accepted"
-    QUEUED = "queued"
-    REJECTED = "rejected"
-    OVERLOAD = "overload"
-
-
-@dataclass(frozen=True, slots=True)
-class ConcurrencyGroup:
-    """Named model/resource/GPU capacity group (multi-worker aware via backend)."""
-
-    name: str
-    limit: int
-    fair: bool = True
-
-
-@dataclass(frozen=True, slots=True)
-class BatchWindow:
-    """Bounded batching window for compatible-shape grouping."""
-
-    max_size: int
-    max_wait_ms: int = 50
-    shape_key: str = "default"
-
-
-@dataclass(frozen=True, slots=True)
-class QueuedInference:
-    request_id: str
-    job_type: str
-    payload: Mapping[str, JsonValue]
-    group: str
-    priority: InferencePriority = InferencePriority.NORMAL
-    tenant_id: str | None = None
-    auth_subject: str | None = None
-    correlation_id: str = ""
-    shape_key: str = "default"
-    enqueued_at: float = 0.0
-
-
-@dataclass(frozen=True, slots=True)
-class InferenceQueueStatus:
-    request_id: str
-    admission: InferenceAdmission
-    position: int | None = None
-    queue_size: int = 0
-    eta_seconds: float | None = None
-    group: str | None = None
-    job_id: str | None = None
-    batch_id: str | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class InferenceDiagnostics:
-    """Explorer-facing timing and resource snapshot (redacted inputs)."""
-
-    request_id: str
-    group: str
-    queue_ms: float
-    execute_ms: float | None = None
-    batch_id: str | None = None
-    batch_size: int = 1
-    cancelled: bool = False
-    overload: bool = False
-
-
-_PRIORITY_RANK = {
-    InferencePriority.HIGH: 0,
-    InferencePriority.NORMAL: 1,
-    InferencePriority.LOW: 2,
-}
+    def drain_ready(
+        self, *, backend: JobBackend | None = None
+    ) -> list[tuple[QueuedInference, JobHandle]]: ...
 
 
 @dataclass
@@ -529,26 +452,3 @@ class InferencePolicy:
         ]
         for key in expired:
             del self._cancel[key]
-
-
-@dataclass
-class InProcessInferenceQueue:
-    """Development-only in-process queue. Not a production durability promise."""
-
-    policy: InferencePolicy
-    _pending: deque[QueuedInference] = field(default_factory=deque)
-
-    def __post_init__(self) -> None:
-        if not self.policy.development_in_process:
-            raise InferenceError(
-                "InProcessInferenceQueue requires development_in_process=True",
-                code=HED_INFER_0001,
-            )
-
-    def enqueue(self, item: QueuedInference) -> None:
-        self._pending.append(item)
-
-    def pop(self) -> QueuedInference | None:
-        if not self._pending:
-            return None
-        return self._pending.popleft()

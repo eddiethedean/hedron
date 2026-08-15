@@ -1,172 +1,21 @@
-"""Cache protocols, keying, single-flight, and in-memory backend."""
+"""Process-local in-memory cache backend."""
 
 from __future__ import annotations
 
 import asyncio
-import hashlib
 import inspect
 import json
 import threading
 import time
-from collections.abc import Callable, Mapping
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from enum import StrEnum
-from typing import Any, ParamSpec, TypeVar
+from typing import Any, TypeVar
 
-from hedron_core.security import Secret
-from hedron_core.typing_aliases import CacheTraceDict
-
-P = ParamSpec("P")
 R = TypeVar("R")
-
-__all__ = [
-    "CacheBackend",
-    "CacheEvent",
-    "CacheScope",
-    "CacheTrace",
-    "InMemoryCacheBackend",
-    "build_cache_key",
-    "get_cache_backend",
-    "get_cache_traces",
-    "invalidate_tags",
-    "record_cache_trace",
-    "reset_cache_for_tests",
-    "set_cache_backend",
-]
-
-
-class CacheScope(StrEnum):
-    PUBLIC = "public"
-    PRIVATE = "private"
-    USER = "user"
-    TENANT = "tenant"
-    SESSION = "session"
 
 
 class _AsyncSingleFlightRetry(Exception):
     """Owner cancelled; waiters should re-enter and take ownership."""
-
-
-@dataclass(frozen=True, slots=True)
-class CacheEvent:
-    kind: str  # hit|miss|wait|store|reject|invalidate
-    key_fingerprint: str
-    scope: str
-    age_ms: float | None = None
-    size: int | None = None
-    tags: tuple[str, ...] = ()
-    detail: str = ""
-
-
-_traces: list[CacheEvent] = []
-_TRACE_LIMIT = 200
-
-
-def record_cache_trace(event: CacheEvent) -> None:
-    _traces.append(event)
-    if len(_traces) > _TRACE_LIMIT:
-        del _traces[: len(_traces) - _TRACE_LIMIT]
-
-
-def get_cache_traces() -> tuple[CacheEvent, ...]:
-    return tuple(_traces)
-
-
-class CacheTrace:
-    """Explorer-facing snapshot of recent cache activity."""
-
-    @staticmethod
-    def recent(limit: int = 50) -> list[CacheTraceDict]:
-        events = list(_traces)[-limit:]
-        return [
-            {
-                "kind": e.kind,
-                "key_fingerprint": e.key_fingerprint,
-                "scope": e.scope,
-                "age_ms": e.age_ms,
-                "size": e.size,
-                "tags": list(e.tags),
-                "detail": e.detail,
-            }
-            for e in events
-        ]
-
-
-def _fingerprint(material: str) -> str:
-    return hashlib.sha256(material.encode("utf-8")).hexdigest()[:24]
-
-
-def _normalize_arg(value: Any) -> Any:
-    if isinstance(value, Secret):
-        # Non-reversible keyed transform — never store plaintext secret in key material.
-        return {"__secret__": _fingerprint(repr(value.reveal()))}
-    if isinstance(value, (str, int, float, bool)) or value is None:
-        return value
-    # Request/dependency objects must never be serialized. Starlette Request is a
-    # Mapping, so reject by type name before the Mapping branch.
-    type_name = type(value).__name__
-    if type_name in {"Request", "HTTPConnection"} or "Dependency" in type_name:
-        raise ValueError(f"Cannot use {type_name} as a cache key argument")
-    if isinstance(value, Mapping):
-        return {
-            str(k): _normalize_arg(v)
-            for k, v in sorted(value.items(), key=lambda kv: str(kv[0]))  # type: ignore[misc]
-        }
-    if isinstance(value, (list, tuple)):
-        return [_normalize_arg(v) for v in value]
-    if hasattr(value, "model_dump"):
-        return _normalize_arg(value.model_dump())
-    return repr(value)
-
-
-def build_cache_key(
-    *,
-    identity: str,
-    args: tuple[object, ...] = (),
-    kwargs: Mapping[str, object] | None = None,
-    version: str = "1",
-    scope: str = CacheScope.PRIVATE.value,
-    vary: Mapping[str, object] | None = None,
-) -> str:
-    payload = {
-        "identity": identity,
-        "version": version,
-        "scope": scope,
-        "args": [_normalize_arg(a) for a in args],
-        "kwargs": {k: _normalize_arg(v) for k, v in sorted((kwargs or {}).items())},
-        "vary": {k: _normalize_arg(v) for k, v in sorted((vary or {}).items())},
-    }
-    material = json.dumps(payload, sort_keys=True, default=str, separators=(",", ":"))
-    return _fingerprint(material)
-
-
-class CacheBackend:
-    def get(self, key: str) -> Any | None:  # pragma: no cover - protocol
-        raise NotImplementedError
-
-    def lookup(self, key: str) -> tuple[bool, Any]:
-        """Return ``(hit, value)`` so stored ``None`` is distinguishable from a miss.
-
-        Default implementation cannot distinguish a cached ``None`` from absence;
-        backends that store ``None`` should override.
-        """
-        value = self.get(key)
-        if value is None:
-            return False, None
-        return True, value
-
-    def set(
-        self,
-        key: str,
-        value: Any,
-        *,
-        ttl: float | None = None,
-        tags: tuple[str, ...] = (),
-    ) -> None:  # pragma: no cover
-        raise NotImplementedError
-
-    def invalidate(self, *, tags: tuple[str, ...] = (), keys: tuple[str, ...] = ()) -> int:
-        raise NotImplementedError
 
 
 @dataclass
@@ -178,7 +27,9 @@ class _Entry:
     size: int = 0
 
 
-class InMemoryCacheBackend(CacheBackend):
+class InMemoryCacheBackend:
+    process_local = True
+
     def __init__(self) -> None:
         self._store: dict[str, _Entry] = {}
         self._lock = threading.RLock()
@@ -332,54 +183,3 @@ class InMemoryCacheBackend(CacheBackend):
                 with self._lock:
                     if self._async_flights.get(flight_key) is fut:
                         self._async_flights.pop(flight_key, None)
-
-
-_backend: CacheBackend = InMemoryCacheBackend()
-
-
-def get_cache_backend() -> CacheBackend:
-    return _backend
-
-
-def set_cache_backend(backend: CacheBackend) -> None:
-    from hedron_core.compile_gate import is_production_env
-
-    if is_production_env() and isinstance(backend, InMemoryCacheBackend):
-        from hedron_core.audit import SecurityAuditEventType, emit_security_audit
-
-        emit_security_audit(
-            SecurityAuditEventType.PRODUCTION_GATE_FAILED,
-            "InMemoryCacheBackend refused in production",
-            attributes={"backend": "InMemoryCacheBackend", "via": "set_cache_backend"},
-        )
-        raise RuntimeError(
-            "InMemoryCacheBackend is not allowed under HEDRON_ENV=production. "
-            "Call set_cache_backend(...) with an external store, or unset production "
-            "for local demos."
-        )
-    global _backend
-    _backend = backend
-    if is_production_env():
-        from hedron_core.production_gate import assert_durable_backends
-
-        assert_durable_backends(production=True)
-
-
-def invalidate_tags(*tags: str) -> int:
-    count = get_cache_backend().invalidate(tags=tags)
-    record_cache_trace(
-        CacheEvent(
-            kind="invalidate",
-            key_fingerprint="*",
-            scope="*",
-            tags=tags,
-            detail=f"removed={count}",
-        )
-    )
-    return count
-
-
-def reset_cache_for_tests() -> None:
-    global _backend
-    _backend = InMemoryCacheBackend()
-    _traces.clear()

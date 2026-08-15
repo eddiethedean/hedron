@@ -6,7 +6,13 @@ from dataclasses import dataclass, field, fields
 from enum import StrEnum
 from typing import Any, Literal
 
-from hedron_core.csrf_strategy import CsrfStrategy, DoubleSubmitCookieCsrf
+from hedron_core.csrf_strategy import (
+    DEFAULT_CSRF_COOKIE_NAME,
+    DEFAULT_CSRF_FORM_FIELD,
+    DEFAULT_CSRF_HEADER_NAME,
+    CsrfStrategy,
+    DoubleSubmitCookieCsrf,
+)
 
 
 def _policy_field_values_without_csrf(policy: SecurityPolicy) -> tuple[Any, ...]:
@@ -48,9 +54,11 @@ class SecurityPolicy:
     profile: SecurityProfile = SecurityProfile.STANDARD
     version: int = 1
     csrf_enabled: bool = True
-    csrf_cookie_name: str = "hedron_csrf"
-    csrf_header_name: str = "X-CSRF-Token"
-    csrf_form_field: str = "csrf_token"
+    # Compatibility seeds for the default DoubleSubmitCookieCsrf when ``csrf`` is None.
+    # Active names are owned by ``resolve_csrf_strategy()``.
+    csrf_cookie_name: str = DEFAULT_CSRF_COOKIE_NAME
+    csrf_header_name: str = DEFAULT_CSRF_HEADER_NAME
+    csrf_form_field: str = DEFAULT_CSRF_FORM_FIELD
     # Strategies may hold callables; equality uses _csrf_identity() below.
     csrf: CsrfStrategy | None = field(default=None, hash=False, compare=False)
     private_authenticated_cache: bool = True
@@ -95,7 +103,11 @@ class SecurityPolicy:
         return hash((_policy_field_values_without_csrf(self), self._csrf_identity(self.csrf)))
 
     def resolve_csrf_strategy(self) -> CsrfStrategy | None:
-        """Return the active CSRF strategy, or None when CSRF is disabled."""
+        """Return the active CSRF strategy, or None when CSRF is disabled.
+
+        Cookie/header/field names are owned by the strategy. Policy name fields
+        exist only to construct the default double-submit strategy.
+        """
         if not self.csrf_enabled:
             return None
         if self.csrf is not None:

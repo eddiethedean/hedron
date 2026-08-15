@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
-from pathlib import PurePosixPath
 from typing import Literal
 
 from hedron_core.builtins._base import (
@@ -18,6 +16,8 @@ from hedron_core.component import Component, NodeLike
 from hedron_core.html import html
 from hedron_core.models import Props
 from hedron_core.typing_aliases import HtmlAttrValue
+from hedron_core.uploads import DirectoryUploadFile as DirectoryUploadFile
+from hedron_core.uploads import validate_directory_upload as validate_directory_upload
 
 
 def _aria_attrs(
@@ -42,6 +42,40 @@ class _NamedControlProps(Props):
     aria_describedby: str | None = None
     aria_invalid: str | None = None
     aria_required: str | None = None
+
+
+def _named_control_attrs(
+    props: _NamedControlProps,
+    *,
+    extra: dict[str, HtmlAttrValue] | None = None,
+    aria_extra: Mapping[str, str | bool | int | float | None] | None = None,
+    apply_mark: bool = True,
+) -> dict[str, HtmlAttrValue]:
+    """Shared name/id/required/disabled/aria/mark attrs for native named controls."""
+    attrs: dict[str, HtmlAttrValue] = {
+        "name": props.name,
+        "id": props.id,
+        **(extra or {}),
+    }
+    if props.required:
+        attrs["required"] = True
+    if props.disabled:
+        attrs["disabled"] = True
+    aria: dict[str, str | bool | int | float | None] = dict(
+        _aria_attrs(
+            describedby=props.aria_describedby,
+            invalid=props.aria_invalid,
+            required=props.aria_required,
+        )
+    )
+    if aria_extra:
+        aria.update(aria_extra)
+    attrs["aria"] = aria
+    if apply_mark:
+        data = mark_data(props.mark)
+        if data:
+            attrs["data"] = data
+    return attrs
 
 
 class NumberInputProps(_NamedControlProps):
@@ -94,35 +128,21 @@ class NumberInput(Component[NumberInputProps]):
         )
 
     def render(self) -> NodeLike:
-        attrs: dict[str, HtmlAttrValue] = {
+        extra: dict[str, HtmlAttrValue] = {
             "type": "number",
-            "name": self.props.name,
-            "id": self.props.id,
             "class_": "hedron-number-input",
         }
         if self.props.value is not None:
-            attrs["value"] = str(self.props.value)
+            extra["value"] = str(self.props.value)
         if self.props.min is not None:
-            attrs["min"] = str(self.props.min)
+            extra["min"] = str(self.props.min)
         if self.props.max is not None:
-            attrs["max"] = str(self.props.max)
+            extra["max"] = str(self.props.max)
         if self.props.step is not None:
-            attrs["step"] = str(self.props.step)
+            extra["step"] = str(self.props.step)
         if self.props.placeholder:
-            attrs["placeholder"] = self.props.placeholder
-        if self.props.required:
-            attrs["required"] = True
-        if self.props.disabled:
-            attrs["disabled"] = True
-        attrs["aria"] = _aria_attrs(
-            describedby=self.props.aria_describedby,
-            invalid=self.props.aria_invalid,
-            required=self.props.aria_required,
-        )
-        data = mark_data(self.props.mark)
-        if data:
-            attrs["data"] = data
-        return html.input(**attrs)
+            extra["placeholder"] = self.props.placeholder
+        return html.input(**_named_control_attrs(self.props, extra=extra))
 
 
 class RangeInputProps(_NamedControlProps):
@@ -257,30 +277,16 @@ class DateInput(Component[DateInputProps]):
         )
 
     def render(self) -> NodeLike:
-        attrs: dict[str, HtmlAttrValue] = {
+        extra: dict[str, HtmlAttrValue] = {
             "type": "date",
-            "name": self.props.name,
-            "id": self.props.id,
             "value": self.props.value,
             "class_": "hedron-date-input",
         }
         if self.props.min:
-            attrs["min"] = self.props.min
+            extra["min"] = self.props.min
         if self.props.max:
-            attrs["max"] = self.props.max
-        if self.props.required:
-            attrs["required"] = True
-        if self.props.disabled:
-            attrs["disabled"] = True
-        attrs["aria"] = _aria_attrs(
-            describedby=self.props.aria_describedby,
-            invalid=self.props.aria_invalid,
-            required=self.props.aria_required,
-        )
-        data = mark_data(self.props.mark)
-        if data:
-            attrs["data"] = data
-        return html.input(**attrs)
+            extra["max"] = self.props.max
+        return html.input(**_named_control_attrs(self.props, extra=extra))
 
 
 class TimeInputProps(_NamedControlProps):
@@ -330,32 +336,18 @@ class TimeInput(Component[TimeInputProps]):
         )
 
     def render(self) -> NodeLike:
-        attrs: dict[str, HtmlAttrValue] = {
+        extra: dict[str, HtmlAttrValue] = {
             "type": "time",
-            "name": self.props.name,
-            "id": self.props.id,
             "value": self.props.value,
             "class_": "hedron-time-input",
         }
         if self.props.min:
-            attrs["min"] = self.props.min
+            extra["min"] = self.props.min
         if self.props.max:
-            attrs["max"] = self.props.max
+            extra["max"] = self.props.max
         if self.props.step is not None:
-            attrs["step"] = str(self.props.step)
-        if self.props.required:
-            attrs["required"] = True
-        if self.props.disabled:
-            attrs["disabled"] = True
-        attrs["aria"] = _aria_attrs(
-            describedby=self.props.aria_describedby,
-            invalid=self.props.aria_invalid,
-            required=self.props.aria_required,
-        )
-        data = mark_data(self.props.mark)
-        if data:
-            attrs["data"] = data
-        return html.input(**attrs)
+            extra["step"] = str(self.props.step)
+        return html.input(**_named_control_attrs(self.props, extra=extra))
 
 
 class DateTimeInputProps(_NamedControlProps):
@@ -405,32 +397,18 @@ class DateTimeInput(Component[DateTimeInputProps]):
         )
 
     def render(self) -> NodeLike:
-        attrs: dict[str, HtmlAttrValue] = {
+        extra: dict[str, HtmlAttrValue] = {
             "type": "datetime-local",
-            "name": self.props.name,
-            "id": self.props.id,
             "value": self.props.value,
             "class_": "hedron-datetime-input",
         }
         if self.props.min:
-            attrs["min"] = self.props.min
+            extra["min"] = self.props.min
         if self.props.max:
-            attrs["max"] = self.props.max
+            extra["max"] = self.props.max
         if self.props.step is not None:
-            attrs["step"] = str(self.props.step)
-        if self.props.required:
-            attrs["required"] = True
-        if self.props.disabled:
-            attrs["disabled"] = True
-        attrs["aria"] = _aria_attrs(
-            describedby=self.props.aria_describedby,
-            invalid=self.props.aria_invalid,
-            required=self.props.aria_required,
-        )
-        data = mark_data(self.props.mark)
-        if data:
-            attrs["data"] = data
-        return html.input(**attrs)
+            extra["step"] = str(self.props.step)
+        return html.input(**_named_control_attrs(self.props, extra=extra))
 
 
 class MultiSelectProps(_NamedControlProps):
@@ -718,26 +696,12 @@ class ColorInput(Component[ColorInputProps]):
         )
 
     def render(self) -> NodeLike:
-        attrs: dict[str, HtmlAttrValue] = {
+        extra: dict[str, HtmlAttrValue] = {
             "type": "color",
-            "name": self.props.name,
-            "id": self.props.id,
             "value": self.props.value,
             "class_": "hedron-color-input",
         }
-        if self.props.required:
-            attrs["required"] = True
-        if self.props.disabled:
-            attrs["disabled"] = True
-        attrs["aria"] = _aria_attrs(
-            describedby=self.props.aria_describedby,
-            invalid=self.props.aria_invalid,
-            required=self.props.aria_required,
-        )
-        data = mark_data(self.props.mark)
-        if data:
-            attrs["data"] = data
-        return html.input(**attrs)
+        return html.input(**_named_control_attrs(self.props, extra=extra))
 
 
 class RatingInputProps(ElementProps):
@@ -1095,86 +1059,3 @@ class DirectoryUpload(Component[DirectoryUploadProps]):
             class_=class_names("hedron-directory-upload", self.props.class_),
             for_=self.props.id,
         )
-
-
-@dataclass(frozen=True, slots=True)
-class DirectoryUploadFile:
-    """Normalized directory-upload entry for server-side validation."""
-
-    name: str
-    size: int
-
-
-def _as_upload_file(
-    item: DirectoryUploadFile | tuple[str, int] | Mapping[str, object],
-) -> DirectoryUploadFile:
-    if isinstance(item, DirectoryUploadFile):
-        return item
-    if isinstance(item, tuple) and len(item) == 2:
-        return DirectoryUploadFile(name=str(item[0]), size=int(item[1]))
-    if isinstance(item, Mapping):
-        return DirectoryUploadFile(name=str(item["name"]), size=int(item["size"]))  # type: ignore[index]
-    raise TypeError(f"Unsupported directory upload entry: {type(item)!r}")
-
-
-def _reject_traversal(path: str) -> None:
-    from urllib.parse import unquote
-
-    if "\x00" in path:
-        raise ValueError(f"Unsafe directory upload path: {path!r}")
-    raw = path.replace("\\", "/")
-    if "\x00" in raw:
-        raise ValueError(f"Unsafe directory upload path: {path!r}")
-    if not raw or raw.strip() != raw:
-        raise ValueError(f"Unsafe directory upload path: {path!r}")
-    if raw.startswith("/") or (len(raw) > 1 and raw[1] == ":"):
-        raise ValueError(f"Absolute directory upload paths are not allowed: {path!r}")
-
-    decoded = raw
-    for _ in range(3):
-        next_decoded = unquote(decoded)
-        if next_decoded == decoded:
-            break
-        decoded = next_decoded
-        if "\\" in decoded or any(ord(ch) < 32 for ch in decoded):
-            raise ValueError(f"Unsafe directory upload path: {path!r}")
-        if decoded.startswith("/") or (len(decoded) > 1 and decoded[1] == ":"):
-            raise ValueError(f"Absolute directory upload paths are not allowed: {path!r}")
-
-    for candidate in (raw, decoded):
-        lowered = candidate.lower()
-        if "%2e%2e" in lowered or "%2e." in lowered or ".%2e" in lowered:
-            raise ValueError(f"Directory upload path traversal rejected: {path!r}")
-        normalized = candidate.replace(";", "/")
-        parts = [p for p in normalized.split("/") if p not in {"", "."}]
-        if any(part == ".." or part.startswith("..") for part in parts):
-            raise ValueError(f"Directory upload path traversal rejected: {path!r}")
-        if any(part == "" for part in PurePosixPath(candidate.replace(";", "/")).parts):
-            raise ValueError(f"Unsafe directory upload path: {path!r}")
-
-
-def validate_directory_upload(
-    files: Sequence[DirectoryUploadFile | tuple[str, int] | Mapping[str, object]],
-    *,
-    max_files: int,
-    max_total_size: int,
-) -> tuple[DirectoryUploadFile, ...]:
-    """Validate directory upload names, counts, and total size (server-side)."""
-    if max_files < 0:
-        raise ValueError("max_files must be >= 0")
-    if max_total_size < 0:
-        raise ValueError("max_total_size must be >= 0")
-    if len(files) > max_files:
-        raise ValueError(f"Directory upload exceeds max_files={max_files}")
-    validated: list[DirectoryUploadFile] = []
-    total = 0
-    for item in files:
-        entry = _as_upload_file(item)
-        _reject_traversal(entry.name)
-        if entry.size < 0:
-            raise ValueError(f"Negative file size for {entry.name!r}")
-        total += entry.size
-        if total > max_total_size:
-            raise ValueError(f"Directory upload exceeds max_total_size={max_total_size}")
-        validated.append(entry)
-    return tuple(validated)

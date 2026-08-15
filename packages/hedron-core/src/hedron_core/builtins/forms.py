@@ -3,81 +3,18 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass
 from typing import ClassVar, Literal
 
 from hedron_core.builtins._base import class_names, collect_children, dom_id_part
 from hedron_core.component import Component, NodeLike
+from hedron_core.csrf_strategy import CsrfTokenProvider, resolve_csrf_field_values
 from hedron_core.html import html
+from hedron_core.htmx.attrs import Hx as Hx
 from hedron_core.htmx_contract import safe_css_selector, safe_hx_swap
 from hedron_core.models import Props
 from hedron_core.rendering import active_render_context
 from hedron_core.security import SafeUrl, UrlPurpose
 from hedron_core.typing_aliases import HtmlAttrValue
-
-
-def _safe_optional_selector(value: str | None, *, label: str) -> str | None:
-    if value is None or value == "":
-        return None
-    if not safe_css_selector(value):
-        raise ValueError(f"Unsafe HTMX {label} selector: {value!r}")
-    return value
-
-
-@dataclass(frozen=True, slots=True)
-class Hx:
-    """First-class HTMX options for ``Form`` (FORM-022)."""
-
-    target: str | None = None
-    swap: str = "outerHTML"
-    select: str | None = None
-    select_oob: str | None = None
-    push_url: bool | str = False
-    disabled_elt: str | None = None
-    indicator: str | None = None
-    method: Literal["get", "post", "put", "patch", "delete"] | None = None
-    url: str | None = None
-
-    def as_html_attrs(self) -> dict[str, HtmlAttrValue]:
-        target = _safe_optional_selector(self.target, label="target")
-        select = _safe_optional_selector(self.select, label="select")
-        select_oob = self.select_oob or None
-        if select_oob is not None:
-            from hedron_core.interaction import unparsed_select_oob_tokens
-
-            unparsed = unparsed_select_oob_tokens(select_oob)
-            if unparsed:
-                tokens = ", ".join(sorted(unparsed))
-                raise ValueError(
-                    f"select_oob must use simple #id selectors only; unsupported token(s): {tokens}"
-                )
-        disabled_elt = _safe_optional_selector(self.disabled_elt, label="disabled-elt")
-        indicator = _safe_optional_selector(self.indicator, label="indicator")
-        if not safe_hx_swap(self.swap):
-            raise ValueError(f"Unsafe HTMX swap value: {self.swap!r}")
-        attrs: dict[str, HtmlAttrValue] = {}
-        if self.method and self.url:
-            safe = SafeUrl.parse(self.url, purpose=UrlPurpose.FORM_ACTION)
-            attrs[f"hx-{self.method.lower()}"] = safe
-        if target:
-            attrs["hx-target"] = target
-        if self.swap:
-            attrs["hx-swap"] = self.swap
-        if select:
-            attrs["hx-select"] = select
-        if select_oob:
-            attrs["hx-select-oob"] = select_oob
-        if self.push_url is True:
-            attrs["hx-push-url"] = "true"
-        elif isinstance(self.push_url, str) and self.push_url:
-            safe_push = SafeUrl.parse(self.push_url, purpose=UrlPurpose.NAVIGATION)
-            attrs["hx-push-url"] = safe_push
-        if disabled_elt:
-            attrs["hx-disabled-elt"] = disabled_elt
-        if indicator:
-            attrs["hx-indicator"] = indicator
-        return attrs
-
 
 _HX_SELECTOR_ATTRS = frozenset(
     {"hx-target", "hx-select", "hx-select-oob", "hx-indicator", "hx-disabled-elt"}
@@ -90,7 +27,7 @@ def _validate_hx_attr_map(attrs: dict[str, HtmlAttrValue]) -> None:
         if key in _HX_SELECTOR_ATTRS and isinstance(value, str) and value:
             label = key.removeprefix("hx-")
             if key == "hx-select-oob":
-                from hedron_core.interaction import unparsed_select_oob_tokens
+                from hedron_core.htmx.oob import unparsed_select_oob_tokens
 
                 if unparsed_select_oob_tokens(value):
                     raise ValueError(f"Unsafe HTMX {label} selector: {value!r}")
@@ -158,23 +95,18 @@ class CsrfField(Component[CsrfFieldProps]):
         *,
         name: str | None = None,
         token: str | None = None,
+        provider: CsrfTokenProvider | None = None,
         **kwargs: object,
     ) -> None:
         super().__init__(CsrfFieldProps(name=name, token=token, **kwargs))
+        self._provider = provider
 
     def render(self) -> NodeLike:
-        ctx = active_render_context()
-        token = self.props.token
-        name = self.props.name
-        if token is None and ctx is not None:
-            token = ctx.csrf_token
-        if name is None:
-            name = ctx.csrf_form_field if ctx is not None else "csrf_token"
-        if not token:
-            raise ValueError(
-                "CsrfField requires token= or a RenderContext with csrf_token "
-                "(FastAPI pages populate this automatically when CSRF is enabled)"
-            )
+        token, name = resolve_csrf_field_values(
+            token=self.props.token,
+            name=self.props.name,
+            provider=self._provider if self._provider is not None else active_render_context(),
+        )
         return html.input(type="hidden", name=name, value=token)
 
 

@@ -26,6 +26,8 @@ class CeleryJobBackend:
     multi-worker durable status and idempotency (phase 0.13 / #11).
     """
 
+    process_local = False
+
     def __init__(
         self,
         celery_app: Any,

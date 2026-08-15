@@ -1,4 +1,4 @@
-"""Security boundary types: Secret, TrustedHtml, SafeUrl."""
+"""Validated URLs and purpose checks."""
 
 from __future__ import annotations
 
@@ -6,17 +6,10 @@ import html as html_stdlib
 import posixpath
 import re
 from enum import StrEnum
-from typing import Any, Generic, TypeVar, get_args, get_origin
 from urllib.parse import unquote, urlsplit
-
-from pydantic import GetCoreSchemaHandler, TypeAdapter
-from pydantic_core import core_schema
 
 from hedron_core.diagnostics import HedronError, error
 
-T = TypeVar("T")
-
-_REDACTED = "***"
 _DECODE_ROUNDS = 3
 
 
@@ -25,156 +18,6 @@ class UrlPurpose(StrEnum):
     ASSET = "asset"
     FORM_ACTION = "form_action"
     REDIRECT = "redirect"
-
-
-def _validate_secret_inner(source_type: object, value: object) -> object:
-    """Validate ``value`` against the inner type of ``Secret[T]`` when present.
-
-    Raises:
-        HedronError: When pydantic rejects the value for the annotated inner type.
-    """
-    args = get_args(source_type)
-    if not args:
-        return value
-    inner = args[0]
-    origin = get_origin(inner) or inner
-    if origin is Any:
-        return value
-    try:
-        return TypeAdapter(inner).validate_python(value)
-    except Exception as exc:
-        raise error(
-            "HED-SEC-0010",
-            title="Secret value type mismatch",
-            explanation=f"Secret expected {inner!r}, got {type(value).__name__}.",
-            remediation="Pass a value matching the Secret[T] type parameter.",
-        ) from exc
-
-
-class Secret(Generic[T]):
-    """Typed sensitive value that never appears in public representations."""
-
-    __slots__ = ("_value",)
-    _value: T
-
-    def __init__(self, value: T) -> None:
-        object.__setattr__(self, "_value", value)
-
-    def reveal(self) -> T:
-        return self._value
-
-    def __str__(self) -> str:
-        return _REDACTED
-
-    def __repr__(self) -> str:
-        return "Secret(***)"
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Secret):
-            return NotImplemented
-        return self.reveal() == other.reveal()
-
-    def __hash__(self) -> int:
-        try:
-            return hash(("Secret", self.reveal()))
-        except TypeError:
-            # Unhashable payloads (e.g. list) fall back to identity hashing.
-            return hash(("Secret", id(self)))
-
-    def __getstate__(self) -> dict[str, object]:
-        return {"value": _REDACTED}
-
-    def __setattr__(self, name: str, value: object) -> None:
-        raise AttributeError("Secret is immutable")
-
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls,
-        source_type: Any,  # pydantic GetCoreSchemaHandler API uses Any for annotated forms
-        handler: GetCoreSchemaHandler,
-    ) -> core_schema.CoreSchema:
-        def validate(value: object) -> Secret[Any]:
-            if isinstance(value, Secret):
-                inner = _validate_secret_inner(source_type, value.reveal())
-                return Secret(inner)
-            inner = _validate_secret_inner(source_type, value)
-            return Secret(inner)
-
-        return core_schema.no_info_plain_validator_function(
-            validate,
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                lambda _v: _REDACTED,
-                info_arg=False,
-                return_schema=core_schema.str_schema(),
-            ),
-        )
-
-
-class TrustedHtml:
-    """Immutable raw-markup value created only at an explicit trust boundary."""
-
-    __slots__ = ("_value", "_source")
-    _value: str
-    _source: str
-
-    def __init__(self, *args: object, **kwargs: object) -> None:
-        raise TypeError("TrustedHtml has no public constructor; use TrustedHtml.reviewed(...)")
-
-    @classmethod
-    def reviewed(cls, value: str, *, source: str) -> TrustedHtml:
-        if not isinstance(value, str):
-            raise TypeError("TrustedHtml value must be a string")
-        if not source or not isinstance(source, str):
-            raise TypeError("TrustedHtml source must be a non-empty string")
-        obj = object.__new__(cls)
-        object.__setattr__(obj, "_value", value)
-        object.__setattr__(obj, "_source", source)
-        return obj
-
-    @classmethod
-    def nh3(cls, value: str, *, tags: set[str] | None = None) -> TrustedHtml:
-        """Sanitize HTML with nh3 and record policy provenance.
-
-        Requires the optional ``nh3`` dependency (``pip install "hedron[sanitize]"``
-        or ``pip install "hedron[markdown]"``).
-        """
-        if not isinstance(value, str):
-            raise TypeError("TrustedHtml value must be a string")
-        try:
-            import nh3
-        except ImportError as exc:  # pragma: no cover - exercised when extra missing
-            raise error(
-                "HED-SEC-0020",
-                title="nh3 sanitizer not installed",
-                explanation="TrustedHtml.nh3 requires the nh3 package.",
-                remediation='Install with: pip install "hedron[sanitize]" or pip install nh3',
-            ) from exc
-        cleaned = nh3.clean(value, tags=tags) if tags is not None else nh3.clean(value)
-        version = getattr(nh3, "__version__", "unknown")
-        return cls.reviewed(cleaned, source=f"nh3:{version}")
-
-    @property
-    def value(self) -> str:
-        return self._value
-
-    @property
-    def source(self) -> str:
-        return self._source
-
-    def __str__(self) -> str:
-        return f"TrustedHtml(source={self.source!r})"
-
-    def __repr__(self) -> str:
-        return f"TrustedHtml.reviewed(..., source={self.source!r})"
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, TrustedHtml):
-            return NotImplemented
-        return self.value == other.value and self.source == other.source
-
-    def __hash__(self) -> int:
-        return hash(("TrustedHtml", self.value, self.source))
-
 
 _DANGEROUS_SCHEMES = frozenset(
     {
@@ -473,18 +316,3 @@ def _url_error(message: str, purpose: UrlPurpose) -> HedronError:
         context={"purpose": purpose.value},
     )
 
-
-def is_secret(value: object) -> bool:
-    return isinstance(value, Secret)
-
-
-def redact_value(value: object) -> object:
-    if isinstance(value, Secret):
-        return _REDACTED
-    if isinstance(value, list):
-        return [redact_value(v) for v in value]
-    if isinstance(value, tuple):
-        return tuple(redact_value(v) for v in value)
-    if isinstance(value, dict):
-        return {k: redact_value(v) for k, v in value.items()}
-    return value

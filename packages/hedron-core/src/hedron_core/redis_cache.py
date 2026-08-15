@@ -19,6 +19,8 @@ class RedisCacheBackend(CacheBackend):
     Tag index keys receive a matching ``PEXPIRE`` so they cannot outlive values (#208).
     """
 
+    process_local = False
+
     def __init__(self, client: Any, *, prefix: str = "h1:") -> None:
         self._client = client
         self._prefix = prefix
