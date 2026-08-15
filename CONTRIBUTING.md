@@ -10,10 +10,10 @@
 | Docs voice / Diátaxis | [Documentation standards](docs/guides/documentation-standards.md) |
 | Code of Conduct | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
 | Status / freeze | [docs/STATUS.md](docs/STATUS.md) (root `STATUS.md` is a mirror) |
-| Roadmap | [docs/ROADMAP.md](docs/ROADMAP.md) (root `ROADMAP.md` and `docs/guides/roadmap.md` are generated) |
+| Roadmap | [docs/ROADMAP.md](docs/ROADMAP.md) (only roadmap file in the repo) |
 | Cutting a release | [docs/RELEASE.md](docs/RELEASE.md) |
 
-Edit STATUS/ROADMAP under `docs/`, then run `uv run python scripts/sync_status_roadmap.py`
+Edit `docs/STATUS.md` / `docs/ROADMAP.md`. Sync STATUS with `uv run python scripts/sync_status_roadmap.py`
 only when a maintainer asked — syncing root mirrors is **not** docs-only CI (see
 [CI path filters](docs/CONTRIBUTING.md#ci-path-filters)).
 

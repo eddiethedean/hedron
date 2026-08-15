@@ -13,7 +13,7 @@ scripts here when you add them.
 | `generate_component_docs.py` | After changing the component docs manifest; `--check` in CI/PR |
 | `generate_sim_demos.py` | After editing `docs/demos/*.py`; regenerates sim HTML and syncs Demo/Code tabs (`--check`) |
 | `sync_demo_code_tabs.py` | Refresh guide Demo/Code tabs from `docs/demos/runnable/` (also run via `generate_sim_demos.py`) |
-| `sync_status_roadmap.py` | After editing `docs/STATUS.md` or `docs/ROADMAP.md` (updates root mirrors + `docs/guides/roadmap.md`). CI: `--check` |
+| `sync_status_roadmap.py` | After editing `docs/STATUS.md` (updates root `STATUS.md`; forbids extra roadmap files). CI: `--check` |
 | `check_docs_train_ssot.py` | Fail on stale tip claims vs `docs/release.toml`, unsafe pins, or charts/sample-kit installs missing the published compatibility floors. CI: quality job |
 | `check_package_docs_inventory.py` | Keep the package catalog, README maturity labels, PyPI classifiers, and package pages aligned with the living fleet inventory. CI: quality job |
 | `check_documentation_ownership.py` | Require an owner and review cadence for every published Markdown page. CI: quality job |

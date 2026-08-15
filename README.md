@@ -91,7 +91,7 @@ want a component framework.
 Existing apps on older lines: [Upgrade](https://hedron.readthedocs.io/en/latest/guides/upgrade/).
 
 [Architecture](https://hedron.readthedocs.io/en/latest/ARCHITECTURE/) ·
-[Public roadmap](https://hedron.readthedocs.io/en/latest/guides/roadmap/).
+[Roadmap](https://hedron.readthedocs.io/en/latest/ROADMAP/).
 
 ## Packages
 

@@ -45,7 +45,7 @@ code, or internal decision number.
 | Component reference page | entry in `scripts/generate_component_docs.py` | generator with `--check` |
 | Interactive docs simulation | `docs/demos/*.py` and its runnable source | simulation generator and recipe sync |
 | Recipe Code tab | marked source under `docs/demos/runnable/` | `check_recipe_code_sync.py` |
-| STATUS / ROADMAP | `docs/STATUS.md`, `docs/ROADMAP.md` (public `guides/roadmap.md` is generated) | `sync_status_roadmap.py`, then `--check` |
+| STATUS / ROADMAP | `docs/STATUS.md`, `docs/ROADMAP.md` (only roadmap file) | STATUS sync: `sync_status_roadmap.py`, then `--check` |
 | Release procedure | `docs/RELEASE.md` | current release-gate checks |
 | Documentation owner/review cadence | `docs/documentation.toml` | `check_documentation_ownership.py` |
 

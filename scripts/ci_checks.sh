@@ -251,7 +251,7 @@ PY
 import re
 from pathlib import Path
 
-roots = [Path("docs"), Path("README.md"), Path("ROADMAP.md")]
+roots = [Path("docs"), Path("README.md")]
 missing = []
 files = []
 for root in roots:

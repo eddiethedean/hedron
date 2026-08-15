@@ -14,8 +14,8 @@ for `hedron-native`). A docs typo PR therefore waits on wheels in GitHub Actions
 your laptop never builds them. Allowlist:
 [CI path filters](../CONTRIBUTING.md#ci-path-filters).
 
-If your PR also changes `packages/`, `examples/`, `tests/`, root `STATUS.md` /
-`ROADMAP.md`, `scripts/sync_status_roadmap.py`, or CI itself, the **full** matrix runs.
+If your PR also changes `packages/`, `examples/`, `tests/`, root `STATUS.md`,
+`scripts/sync_status_roadmap.py`, or CI itself, the **full** matrix runs.
 
 1. Clone and sync docs deps:
 
@@ -48,14 +48,14 @@ For quality-suite work beyond docs, use `uv sync --all-groups` (and install a
 [Rust toolchain](https://rustup.rs/) if `hedron-native` wheel builds fail) before
 `bash scripts/ci_checks.sh quality --python 3.12`.
 
-### STATUS / ROADMAP footgun
+### STATUS sync footgun
 
-Canonical STATUS/ROADMAP live under `docs/`. Root `STATUS.md` / `ROADMAP.md` are
-generated mirrors, and `docs/guides/roadmap.md` is generated from the adopter
-section of `docs/ROADMAP.md`. Running `uv run python scripts/sync_status_roadmap.py`
-updates those outputs, which are **not** on the docs-only allowlist — that PR will run full CI.
-Prefer docs-only edits that leave generated mirrors untouched unless a maintainer asked for a
-STATUS/ROADMAP sync.
+Canonical STATUS lives under `docs/STATUS.md`; root `STATUS.md` is a generated mirror.
+The roadmap is only `docs/ROADMAP.md` (no generated copies). Running
+`uv run python scripts/sync_status_roadmap.py` updates root `STATUS.md`, which is
+**not** on the docs-only allowlist — that PR will run full CI.
+Prefer docs-only edits that leave the root STATUS mirror untouched unless a maintainer
+asked for a STATUS sync.
 
 ## Good first issues
 

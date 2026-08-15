@@ -82,9 +82,9 @@ Docs-only PRs (allowlisted paths in `.github/workflows/ci.yml`) still run **`qua
   `scripts/check_package_readme_links.py`, `scripts/check_external_links.py`,
   `scripts/check_recipe_code_sync.py`, `scripts/README.md`
 
-**Not docs-only** (triggers the full matrix): root `STATUS.md` / `ROADMAP.md` mirrors,
+**Not docs-only** (triggers the full matrix): root `STATUS.md` mirror,
 `scripts/sync_status_roadmap.py`, package/source changes, or any other non-allowlisted path.
-Edit STATUS/ROADMAP under `docs/`, then run `uv run python scripts/sync_status_roadmap.py`
+Edit `docs/STATUS.md` / `docs/ROADMAP.md`. Sync STATUS with `uv run python scripts/sync_status_roadmap.py`
 only when you intend a full CI run.
 
 Contributors should:
@@ -155,7 +155,7 @@ Both commit CI and release CI call the same suites after checkout / sync / tool 
 |---|---|---|
 | `test` | `test` — `pytest` on Python 3.11–3.14 | Yes, unless **docs-only** |
 | `workbench-dependencies` | `workbench` — Workbench contract tests at minimum/latest Starlette/Uvicorn bounds | Yes, unless **docs-only** |
-| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS/ROADMAP mirror `--check`, docs train SSOT, recipe/sim checks, historical 0.36–0.38 packet shape, living `verify_pkg_39.py` cut, relative doc links, `mkdocs build --strict` | **Always** |
+| `quality` | `quality` — ruff format/check, pyright, wheel build + smoke, STATUS mirror `--check` (forbids extra roadmap files), docs train SSOT, recipe/sim checks, historical 0.36–0.38 packet shape, living `verify_pkg_39.py` cut, relative doc links, `mkdocs build --strict` | **Always** |
 | `browser` | `browser` — Playwright HTMX suite (`HEDRON_BROWSER=1`) — **Chromium only on PRs**; Chromium+Firefox+WebKit on `main` / `workflow_dispatch` / release | Yes, unless **docs-only** |
 | `realwb` | `realwb` — REALWB-030 Docker smoke (skips when `PWB_LICENSE` unset) | Yes, unless **docs-only** or fork PR |
 | `realconnect` | `realconnect` — REALCONNECT-033 Docker smoke (skips when `CONNECT_LICENSE` unset) | Yes, unless **docs-only** or fork PR |
@@ -237,7 +237,7 @@ CI/toolchain contract: [`ENGINEERING_BASELINE.md`](https://github.com/eddiethede
 
 | Topic | Edit here | Notes |
 |---|---|---|
-| STATUS / ROADMAP | `docs/STATUS.md`, `docs/ROADMAP.md` | Then `uv run python scripts/sync_status_roadmap.py` (updates root mirrors + `docs/guides/roadmap.md`; CI `--check`) |
+| STATUS / ROADMAP | `docs/STATUS.md`, `docs/ROADMAP.md` (roadmap has no generated copies) | STATUS: `uv run python scripts/sync_status_roadmap.py` (CI `--check`) |
 | Adopter maturity | `docs/guides/whats-ready.md` | Public SSOT — do not send adopters to STATUS |
 | Documentation conventions | `docs/guides/documentation-standards.md` | Audience, source ownership, generation, review checklist |
 | Contributing | `docs/CONTRIBUTING.md` | Root `CONTRIBUTING.md` is a stub pointer |

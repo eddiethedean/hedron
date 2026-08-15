@@ -12,7 +12,7 @@ train). Detailed acceptance evidence maps live on GitHub under
 - Pyright runs strict type checking on public packages; documented narrow exceptions require justification.
 - pytest, httpx, and optional Playwright browser tooling implement the test layers.
 - Relative documentation links and `mkdocs build --strict` run in CI.
-- Root `STATUS.md` / `ROADMAP.md` mirrors must match `docs/` (`scripts/sync_status_roadmap.py --check`).
+- Root `STATUS.md` must match `docs/STATUS.md` (`scripts/sync_status_roadmap.py --check`). The roadmap is only `docs/ROADMAP.md`.
 - A Rust toolchain is required in CI (and for local `quality` / native wheel smoke) because
   `hedron-native` builds via maturin.
 

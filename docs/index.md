@@ -114,4 +114,4 @@ choices (cache, Explorer, assets) are inspectable and overrideable; components b
 HTTP endpoints only when you address them explicitly.
 
 [Read the architecture](ARCHITECTURE.md) · [Runnable examples](examples/runnable.md) ·
-[Public roadmap](guides/roadmap.md)
+[Roadmap](ROADMAP.md)

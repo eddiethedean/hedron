@@ -83,7 +83,6 @@ exclude_docs: |
   foundations/03_DESIGN_PRINCIPLES.md
   foundations/README.md
   implementation/**
-  /ROADMAP.md
   /STATUS.md
   /RELEASE.md
   /DECISIONS.md
@@ -266,7 +265,7 @@ nav:
     - Security disclosure: SECURITY.md
     - Support policy: guides/support.md
     - Evidence pack: guides/evidence-pack.md
-    - Roadmap: guides/roadmap.md
+    - Roadmap: ROADMAP.md
   - Releases:
     - Release notes: guides/release-notes.md
     - Upgrade guide: guides/upgrade.md

@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""Sync root STATUS.md / ROADMAP.md and the public roadmap page from docs/.
+"""Sync root STATUS.md from the docs/-canonical copy.
 
-``docs/STATUS.md`` and ``docs/ROADMAP.md`` are the single source of truth. Root
-mirrors are generated for GitHub browsing. The public Read the Docs page
-``docs/guides/roadmap.md`` is generated from the ``ADOPTER_ROADMAP`` marked
-section inside ``docs/ROADMAP.md`` (MkDocs cannot publish the full maintainer
-roadmap because it links into excluded RFCs/acceptance/implementation trees).
+``docs/STATUS.md`` is the single source of truth for project status. Root
+``STATUS.md`` is generated for GitHub browsing.
 
-Run after editing the docs copies:
+The capability roadmap lives in exactly one file: ``docs/ROADMAP.md`` (no root
+mirror, no generated guides page).
+
+Run after editing ``docs/STATUS.md``:
 
     uv run python scripts/sync_status_roadmap.py
 
-CI / pre-push check (exit 1 if generated files are stale):
+CI / pre-push check (exit 1 if root STATUS.md is stale, or if forbidden
+roadmap duplicates exist):
 
     uv run python scripts/sync_status_roadmap.py --check
 """
@@ -25,14 +26,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
-PUBLIC_ROADMAP = DOCS / "guides" / "roadmap.md"
+FORBIDDEN_ROADMAPS = (
+    ROOT / "ROADMAP.md",
+    DOCS / "guides" / "roadmap.md",
+)
 
 # Rewrite markdown links that target same-tree docs paths for root consumers.
 _LINK = re.compile(r"\]\((?!https?://|mailto:|#|docs/)([^)]+)\)")
-_ADOPTER_BLOCK = re.compile(
-    r"<!--\s*ADOPTER_ROADMAP_BEGIN\s*-->\n(.*)\n<!--\s*ADOPTER_ROADMAP_END\s*-->",
-    re.DOTALL,
-)
 
 
 def _to_root(text: str) -> str:
@@ -51,29 +51,11 @@ def _to_root(text: str) -> str:
     return _LINK.sub(repl, text)
 
 
-def _to_guides(text: str) -> str:
-    """Rewrite docs/-root relative links for a page living under docs/guides/."""
-
-    def repl(match: re.Match[str]) -> str:
-        target = match.group(1)
-        path, sep, frag = target.partition("#")
-        suffix = f"{sep}{frag}" if sep else ""
-        if path.startswith("guides/"):
-            return f"]({path[len('guides/') :]}{suffix})"
-        if path.startswith(("api/", "acceptance/", "rfcs/", "foundations/", "implementation/")):
-            return f"](../{path}{suffix})"
-        if path.endswith(".md") and "/" not in path:
-            return f"](../{path}{suffix})"
-        return match.group(0)
-
-    return _LINK.sub(repl, text)
-
-
-def _expected_root(name: str) -> str:
-    src = DOCS / name
+def _expected_root_status() -> str:
+    src = DOCS / "STATUS.md"
     body = src.read_text(encoding="utf-8")
     banner = (
-        f"<!-- Generated from docs/{name} — edit the docs/ copy, then run "
+        "<!-- Generated from docs/STATUS.md — edit the docs/ copy, then run "
         "scripts/sync_status_roadmap.py -->\n\n"
     )
     if body.startswith("<!-- Generated from docs/"):
@@ -81,62 +63,47 @@ def _expected_root(name: str) -> str:
     return banner + _to_root(body)
 
 
-def _adopter_section() -> str:
-    body = (DOCS / "ROADMAP.md").read_text(encoding="utf-8")
-    match = _ADOPTER_BLOCK.search(body)
-    if not match:
-        raise SystemExit(
-            "docs/ROADMAP.md missing <!-- ADOPTER_ROADMAP_BEGIN/END --> markers "
-            "for the public roadmap excerpt"
-        )
-    return match.group(1).strip() + "\n"
-
-
-def _expected_public_roadmap() -> str:
-    section = _to_guides(_adopter_section())
-    # Public page title; section body already starts with prose (not an H1).
-    return (
-        "<!-- Generated from docs/ROADMAP.md ADOPTER_ROADMAP section — "
-        "edit docs/ROADMAP.md, then run scripts/sync_status_roadmap.py -->\n\n"
-        "# Roadmap\n\n"
-        + section
-        + "\nMaintainer phase tables, gates, and RFC ownership continue below the adopter "
-        "summary in [`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md) "
-        "(root `ROADMAP.md` is a generated mirror of that file).\n"
-    )
+def _forbidden_roadmap_errors() -> list[str]:
+    errors: list[str] = []
+    for path in FORBIDDEN_ROADMAPS:
+        if path.exists():
+            errors.append(
+                f"forbidden roadmap duplicate: {path.relative_to(ROOT)} "
+                "(only docs/ROADMAP.md is allowed)"
+            )
+    return errors
 
 
 def sync() -> None:
-    for name in ("STATUS.md", "ROADMAP.md"):
-        dst = ROOT / name
-        dst.write_text(_expected_root(name), encoding="utf-8")
-        print(f"wrote {dst.relative_to(ROOT)}")
-    PUBLIC_ROADMAP.parent.mkdir(parents=True, exist_ok=True)
-    PUBLIC_ROADMAP.write_text(_expected_public_roadmap(), encoding="utf-8")
-    print(f"wrote {PUBLIC_ROADMAP.relative_to(ROOT)}")
+    for path in FORBIDDEN_ROADMAPS:
+        if path.exists():
+            path.unlink()
+            print(f"removed {path.relative_to(ROOT)}")
+    dst = ROOT / "STATUS.md"
+    dst.write_text(_expected_root_status(), encoding="utf-8")
+    print(f"wrote {dst.relative_to(ROOT)}")
 
 
 def check() -> int:
     stale: list[str] = []
-    for name in ("STATUS.md", "ROADMAP.md"):
-        dst = ROOT / name
-        expected = _expected_root(name)
-        actual = dst.read_text(encoding="utf-8") if dst.exists() else ""
-        if actual != expected:
-            stale.append(name)
-    expected_public = _expected_public_roadmap()
-    actual_public = PUBLIC_ROADMAP.read_text(encoding="utf-8") if PUBLIC_ROADMAP.exists() else ""
-    if actual_public != expected_public:
-        stale.append("docs/guides/roadmap.md")
+    dst = ROOT / "STATUS.md"
+    expected = _expected_root_status()
+    actual = dst.read_text(encoding="utf-8") if dst.exists() else ""
+    if actual != expected:
+        stale.append("STATUS.md")
+    errors = _forbidden_roadmap_errors()
     if stale:
         print(
-            "Generated roadmap/status files are stale: "
+            "Root STATUS.md mirror is stale: "
             + ", ".join(stale)
             + "\nRun: uv run python scripts/sync_status_roadmap.py",
             file=sys.stderr,
         )
+    if errors:
+        print("\n".join(errors), file=sys.stderr)
+    if stale or errors:
         return 1
-    print("ok: root STATUS.md / ROADMAP.md and docs/guides/roadmap.md match docs/")
+    print("ok: root STATUS.md matches docs/; only docs/ROADMAP.md exists")
     return 0
 
 
@@ -145,7 +112,7 @@ def main() -> None:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="exit 1 if generated files do not match docs/ (do not write)",
+        help="exit 1 if root STATUS.md is stale or forbidden roadmap files exist",
     )
     args = parser.parse_args()
     raise SystemExit(check() if args.check else sync() or 0)

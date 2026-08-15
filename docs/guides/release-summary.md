@@ -20,7 +20,7 @@ Adopter-facing notes: [What’s new in 0.41](whats-new-0.41.md) ·
 
 ## Contributor checklist (abbreviated)
 
-1. Sync STATUS/ROADMAP under `docs/`, then `uv run python scripts/sync_status_roadmap.py`
+1. Edit `docs/STATUS.md` / `docs/ROADMAP.md`; sync STATUS with `uv run python scripts/sync_status_roadmap.py`
 2. Pass `bash scripts/ci_checks.sh` suites required by the train
 3. Verify release-gate TOML + `verify_pkg_N.py` for the cut
 4. Tag `v0.N.0` **only if that tag is missing**, publish wheels, attach evidence assets

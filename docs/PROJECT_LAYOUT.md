@@ -9,7 +9,6 @@ re-exports the beginner-facing FastAPI API.
 ```text
 hedron/
 ├── README.md
-├── ROADMAP.md                 # generated mirror of docs/ROADMAP.md
 ├── STATUS.md                  # generated mirror of docs/STATUS.md
 ├── CONTRIBUTING.md            # stub → docs/CONTRIBUTING.md
 ├── pyproject.toml
@@ -128,8 +127,9 @@ Each distribution owns its own `pyproject.toml`, metadata, dependencies, typing 
 package assets, changelog, and tests. Hatchling is the PEP 517 build backend. Published
 artifacts remain installable with ordinary `pip` and are not coupled to `uv`.
 
-Edit canonical **STATUS** and **ROADMAP** under `docs/`, then run
-`scripts/sync_status_roadmap.py` so the root mirrors stay aligned.
+Edit canonical **STATUS** under `docs/STATUS.md`, then run
+`scripts/sync_status_roadmap.py` so root `STATUS.md` stays aligned.
+The roadmap is only `docs/ROADMAP.md` (no generated copies).
 
 ## Release numbering
 

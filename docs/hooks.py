@@ -4,7 +4,7 @@
 - Expand ``<!-- hedron-sim:NAME -->`` markers from ``docs/includes/sim/`` *after*
   Markdown runs, so tokens like ``__HEDRON_SIM_UTC__`` are not turned into
   ``<strong>`` and so absolute demo ``href``s are not rewritten by the MD pipeline.
-- STATUS.md / ROADMAP.md stay canonical under ``docs/`` (synced to root separately).
+- STATUS.md stays canonical under ``docs/`` (synced to root). ROADMAP.md lives only under ``docs/``.
 """
 
 from __future__ import annotations

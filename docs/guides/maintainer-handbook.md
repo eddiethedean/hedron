@@ -14,7 +14,7 @@ adopter-focused. The adopter maturity snapshot is **What's ready today** only.
 | Contributor setup | [Contributing](../CONTRIBUTING.md) |
 | Authority / coding gates | [`docs/SPECIFICATION.md`](https://github.com/eddiethedean/hedron/blob/main/docs/SPECIFICATION.md) |
 | Phase evidence | [`docs/STATUS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/STATUS.md) |
-| Capability phases | [Roadmap](roadmap.md) — generated from the adopter section of [`docs/ROADMAP.md`](https://github.com/eddiethedean/hedron/blob/main/docs/ROADMAP.md) |
+| Capability phases | [Roadmap](../ROADMAP.md) |
 | Decisions | [`docs/DECISIONS.md`](https://github.com/eddiethedean/hedron/blob/main/docs/DECISIONS.md) |
 | Cut procedure | [`docs/RELEASE.md`](https://github.com/eddiethedean/hedron/blob/main/docs/RELEASE.md) (living); historical cuts in [`docs/archive/`](https://github.com/eddiethedean/hedron/tree/main/docs/archive) |
 | Production-quality program | [Production-quality maturity](production-quality.md) (D-053 / RFC-0056) |
@@ -27,11 +27,11 @@ adopter-focused. The adopter maturity snapshot is **What's ready today** only.
 | Competitive / adapter research notes | Repo `docs/*FEATURE*`, `docs/*ADAPTER_RESEARCH*`, `docs/HTMX_2_*` — **excluded from the public MkDocs site**; browse on GitHub only |
 | Public evidence for evaluators | [Evidence pack](evidence-pack.md) |
 
-!!! note "STATUS / ROADMAP sync"
+!!! note "STATUS sync"
 
-    Edit `docs/STATUS.md` and `docs/ROADMAP.md`, then run
-    `uv run python scripts/sync_status_roadmap.py` so root mirrors and
-    `docs/guides/roadmap.md` stay current.
+    Edit `docs/STATUS.md`, then run
+    `uv run python scripts/sync_status_roadmap.py` so root `STATUS.md` stays current.
+    The roadmap is only `docs/ROADMAP.md` (edit it in place; no generated copies).
     MkDocs does **not** copy root → docs (that previously clobbered docs edits).
     CI runs `scripts/sync_status_roadmap.py --check`.
 

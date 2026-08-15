@@ -251,4 +251,4 @@ and `"hedron-sample-kit>=0.1.10,<0.2"`.
 | Trust / maturity program | [Production-quality maturity](production-quality.md) |
 | Security / procurement | [Enterprise diligence](enterprise-diligence.md) |
 
-Also: [Upgrade](upgrade.md) · [Roadmap](roadmap.md) · [Live interaction](live-interaction.md)
+Also: [Upgrade](upgrade.md) · [Roadmap](../ROADMAP.md) · [Live interaction](live-interaction.md)

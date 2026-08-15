@@ -59,6 +59,6 @@ SLA**. Confirm your intended surfaces against [What's ready](whats-ready.md).
 - Community support via GitHub Issues only — **no commercial SLA**
 - Supported version lines: see [SECURITY.md](../SECURITY.md)
 
-See [Error codes](error-codes.md) · [Roadmap](roadmap.md) ·
+See [Error codes](error-codes.md) · [Roadmap](../ROADMAP.md) ·
 [Production-quality maturity](production-quality.md) ·
 [Enterprise diligence](enterprise-diligence.md).

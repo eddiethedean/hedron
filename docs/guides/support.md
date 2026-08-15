@@ -37,5 +37,5 @@ Community GitHub support only;
 
 Issues without a minimal reproduction, version string (`hedron.__version__`), and expected
 vs actual behavior may be closed. Feature requests should map to the
-[roadmap](roadmap.md) or an RFC discussion rather
+[roadmap](../ROADMAP.md) or an RFC discussion rather
 than informal “please add X” without context.
